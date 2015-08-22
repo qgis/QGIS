@@ -29,6 +29,7 @@ from LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.core.parameters import ParameterBoolean
 
+
 class laszipPro(LAStoolsAlgorithm):
 
     REPORT_SIZE = "REPORT_SIZE"
@@ -40,11 +41,11 @@ class laszipPro(LAStoolsAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParameter(ParameterBoolean(laszipPro.REPORT_SIZE,
-            self.tr("only report size"), False))
+                                           self.tr("only report size"), False))
         self.addParameter(ParameterBoolean(laszipPro.CREATE_LAX,
-            self.tr("create spatial indexing file (*.lax)"), False))
+                                           self.tr("create spatial indexing file (*.lax)"), False))
         self.addParameter(ParameterBoolean(laszipPro.APPEND_LAX,
-            self.tr("append *.lax into *.laz file"), False))
+                                           self.tr("append *.lax into *.laz file"), False))
         self.addParametersOutputDirectoryGUI()
         self.addParametersOutputAppendixGUI()
         self.addParametersPointOutputFormatGUI()

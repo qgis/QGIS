@@ -57,13 +57,13 @@ class BasicStatisticsNumbers(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
-            self.tr('Input vector layer'), ParameterVector.VECTOR_TYPE_ANY, False))
+                                          self.tr('Input vector layer'), ParameterVector.VECTOR_TYPE_ANY, False))
         self.addParameter(ParameterTableField(self.FIELD_NAME,
-            self.tr('Field to calculate statistics on'),
-            self.INPUT_LAYER, ParameterTableField.DATA_TYPE_NUMBER))
+                                              self.tr('Field to calculate statistics on'),
+                                              self.INPUT_LAYER, ParameterTableField.DATA_TYPE_NUMBER))
 
         self.addOutput(OutputHTML(self.OUTPUT_HTML_FILE,
-            self.tr('Statistics')))
+                                  self.tr('Statistics')))
 
         self.addOutput(OutputNumber(self.CV, self.tr('Coefficient of Variation')))
         self.addOutput(OutputNumber(self.MIN, self.tr('Minimum value')))
@@ -132,8 +132,7 @@ class BasicStatisticsNumbers(GeoAlgorithm):
                 cvValue = stdDevValue / meanValue
 
         if count > 1:
-            tmp = values
-            tmp.sort()
+            tmp = sorted(values)
 
             # Calculate median
             if count % 2 == 0:

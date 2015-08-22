@@ -163,11 +163,11 @@ class ScriptAlgorithm(GeoAlgorithm):
             param = ParameterTable(tokens[0], desc, False)
         elif tokens[1].lower().strip() == 'multiple raster':
             param = ParameterMultipleInput(tokens[0], desc,
-                    ParameterMultipleInput.TYPE_RASTER)
+                                           ParameterMultipleInput.TYPE_RASTER)
             param.optional = False
         elif tokens[1].lower().strip() == 'multiple vector':
             param = ParameterMultipleInput(tokens[0], desc,
-                    ParameterMultipleInput.TYPE_VECTOR_ANY)
+                                           ParameterMultipleInput.TYPE_VECTOR_ANY)
             param.optional = False
         elif tokens[1].lower().strip().startswith('selectionfromfile'):
             options = tokens[1].strip()[len('selectionfromfile '):].split(';')
@@ -268,7 +268,7 @@ class ScriptAlgorithm(GeoAlgorithm):
             ns[out.name] = out.value
 
         script += self.script
-        exec(script) in ns
+        exec((script), ns)
         for out in self.outputs:
             out.setValue(ns[out.name])
 

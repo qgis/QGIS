@@ -45,9 +45,9 @@ class SplitLinesWithLines(GeoAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('Split lines with lines')
         self.group, self.i18n_group = self.trAlgorithm('Vector overlay tools')
         self.addParameter(ParameterVector(self.INPUT_A,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_LINE]))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_LINE]))
         self.addParameter(ParameterVector(self.INPUT_B,
-            self.tr('Split layer'), [ParameterVector.VECTOR_TYPE_LINE]))
+                                          self.tr('Split layer'), [ParameterVector.VECTOR_TYPE_LINE]))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Splitted')))
 
@@ -58,7 +58,7 @@ class SplitLinesWithLines(GeoAlgorithm):
         fieldList = layerA.pendingFields()
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldList,
-                QGis.WKBLineString, layerA.dataProvider().crs())
+                                                                     QGis.WKBLineString, layerA.dataProvider().crs())
 
         spatialIndex = vector.spatialindex(layerB)
 
@@ -104,7 +104,7 @@ class SplitLinesWithLines(GeoAlgorithm):
                                     result, newGeometries, topoTestPoints = inGeom.splitGeometry(splitterPList, False)
                                 except:
                                     ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
-                                        self.tr('Geometry exception while splitting'))
+                                                           self.tr('Geometry exception while splitting'))
                                     result = 1
 
                                 # splitGeometry: If there are several intersections
@@ -119,14 +119,13 @@ class SplitLinesWithLines(GeoAlgorithm):
                                         inLines.append(inGeom)
 
                                         for aNewGeom in newGeometries:
-                                           inLines.append(aNewGeom)
+                                            inLines.append(aNewGeom)
                                 else:
                                     outLines.append(inGeom)
                             else:
                                 outLines.append(inGeom)
 
                         inLines = outLines
-
 
             for aLine in inLines:
                 outFeat.setGeometry(aLine)

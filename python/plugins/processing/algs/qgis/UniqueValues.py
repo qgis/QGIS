@@ -47,10 +47,10 @@ class UniqueValues(GeoAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('List unique values')
         self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
         self.addParameter(ParameterVector(self.INPUT_LAYER,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterTableField(self.FIELD_NAME,
-            self.tr('Target field'),
-            self.INPUT_LAYER, ParameterTableField.DATA_TYPE_ANY))
+                                              self.tr('Target field'),
+                                              self.INPUT_LAYER, ParameterTableField.DATA_TYPE_ANY))
         self.addOutput(OutputHTML(self.OUTPUT, self.tr('Unique values')))
         self.addOutput(OutputNumber(self.TOTAL_VALUES, self.tr('Total unique values')))
         self.addOutput(OutputString(self.UNIQUE_VALUES, self.tr('Unique values')))

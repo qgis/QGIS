@@ -29,6 +29,7 @@ from LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.core.parameters import ParameterSelection
 
+
 class las2las_project(LAStoolsAlgorithm):
 
     STATE_PLANES = ["---", "AK_10", "AK_2", "AK_3", "AK_4", "AK_5", "AK_6", "AK_7", "AK_8", "AK_9", "AL_E", "AL_W", "AR_N", "AR_S", "AZ_C", "AZ_E", "AZ_W", "CA_I", "CA_II", "CA_III", "CA_IV", "CA_V", "CA_VI", "CA_VII", "CO_C", "CO_N", "CO_S", "CT", "DE", "FL_E", "FL_N", "FL_W", "GA_E", "GA_W", "HI_1", "HI_2", "HI_3", "HI_4", "HI_5", "IA_N", "IA_S", "ID_C", "ID_E", "ID_W", "IL_E", "IL_W", "IN_E", "IN_W", "KS_N", "KS_S", "KY_N", "KY_S", "LA_N", "LA_S", "MA_I", "MA_M", "MD", "ME_E", "ME_W", "MI_C", "MI_N", "MI_S", "MN_C", "MN_N", "MN_S", "MO_C", "MO_E", "MO_W", "MS_E", "MS_W", "MT_C", "MT_N", "MT_S", "NC", "ND_N", "ND_S", "NE_N", "NE_S", "NH", "NJ", "NM_C", "NM_E", "NM_W", "NV_C", "NV_E", "NV_W", "NY_C", "NY_E", "NY_LI", "NY_W", "OH_N", "OH_S", "OK_N", "OK_S", "OR_N", "OR_S", "PA_N", "PA_S", "PR", "RI", "SC_N", "SC_S", "SD_N", "SD_S", "St.Croix", "TN", "TX_C", "TX_N", "TX_NC", "TX_S", "TX_SC", "UT_C", "UT_N", "UT_S", "VA_N", "VA_S", "VT", "WA_N", "WA_S", "WI_C", "WI_N", "WI_S", "WV_N", "WV_S", "WY_E", "WY_EC", "WY_W", "WY_WC"]
@@ -51,17 +52,17 @@ class las2las_project(LAStoolsAlgorithm):
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParameter(ParameterSelection(las2las_project.SOURCE_PROJECTION,
-            self.tr("source projection"), las2las_project.PROJECTIONS, 0))
+                                             self.tr("source projection"), las2las_project.PROJECTIONS, 0))
         self.addParameter(ParameterSelection(las2las_project.SOURCE_UTM,
-            self.tr("source utm zone"), las2las_project.UTM_ZONES, 0))
+                                             self.tr("source utm zone"), las2las_project.UTM_ZONES, 0))
         self.addParameter(ParameterSelection(las2las_project.SOURCE_SP,
-            self.tr("source state plane code"), las2las_project.STATE_PLANES, 0))
+                                             self.tr("source state plane code"), las2las_project.STATE_PLANES, 0))
         self.addParameter(ParameterSelection(las2las_project.TARGET_PROJECTION,
-            self.tr("target projection"), las2las_project.PROJECTIONS, 0))
+                                             self.tr("target projection"), las2las_project.PROJECTIONS, 0))
         self.addParameter(ParameterSelection(las2las_project.TARGET_UTM,
-            self.tr("target utm zone"), las2las_project.UTM_ZONES, 0))
+                                             self.tr("target utm zone"), las2las_project.UTM_ZONES, 0))
         self.addParameter(ParameterSelection(las2las_project.TARGET_SP,
-            self.tr("target state plane code"), las2las_project.STATE_PLANES, 0))
+                                             self.tr("target state plane code"), las2las_project.STATE_PLANES, 0))
         self.addParametersPointOutputGUI()
         self.addParametersAdditionalGUI()
 

@@ -42,6 +42,7 @@ if ! type -p flip >/dev/null; then
 fi
 
 if ! type -p autopep8 >/dev/null; then
+	echo "autopep8 not found" >&2
 	autopep8() {
 		:
 	}

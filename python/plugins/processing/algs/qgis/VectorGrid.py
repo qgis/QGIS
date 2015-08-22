@@ -54,13 +54,13 @@ class VectorGrid(GeoAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('Vector grid')
         self.group, self.i18n_group = self.trAlgorithm('Vector creation tools')
         self.addParameter(ParameterExtent(self.EXTENT,
-            self.tr('Grid extent')))
+                                          self.tr('Grid extent')))
         self.addParameter(ParameterNumber(self.STEP_X,
-            self.tr('X spacing'), 0.0, 1000000000.0, 0.0001))
+                                          self.tr('X spacing'), 0.0, 1000000000.0, 0.0001))
         self.addParameter(ParameterNumber(self.STEP_Y,
-            self.tr('Y spacing'), 0.0, 1000000000.0, 0.0001))
+                                          self.tr('Y spacing'), 0.0, 1000000000.0, 0.0001))
         self.addParameter(ParameterSelection(self.TYPE,
-            self.tr('Grid type'), self.TYPES))
+                                             self.tr('Grid type'), self.TYPES))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Grid')))
 
@@ -117,7 +117,7 @@ class VectorGrid(GeoAlgorithm):
                 if int(math.fmod(count, count_update)) == 0:
                     progress.setPercentage(int(count / count_max * 50))
 
-            progress.setPercentage( 50 )
+            progress.setPercentage(50)
             # counters for progressbar - update every 5%
             count = 0
             count_max = (bbox.xMaximum() - bbox.xMinimum()) / xSpace

@@ -111,9 +111,9 @@ class RAlgorithmProvider(AlgorithmProvider):
                         alg = RAlgorithm(fullpath)
                         if alg.name.strip() != '':
                             self.algs.append(alg)
-                    except WrongScriptException, e:
+                    except WrongScriptException as e:
                         ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, e.msg)
-                    except Exception, e:
+                    except Exception as e:
                         ProcessingLog.addToLog(
                             ProcessingLog.LOG_ERROR,
                             self.tr('Could not load R script: %s\n%s' % (descriptionFile, unicode(e))))

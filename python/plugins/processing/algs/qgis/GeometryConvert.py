@@ -34,6 +34,7 @@ from processing.core.outputs import OutputVector
 
 from processing.tools import dataobjects, vector
 
+
 class GeometryConvert(GeoAlgorithm):
     INPUT = 'INPUT'
     TYPE = 'TYPE'
@@ -51,9 +52,9 @@ class GeometryConvert(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
 
         self.addParameter(ParameterVector(self.INPUT,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterSelection(self.TYPE,
-            self.tr('New geometry type'), self.TYPES))
+                                             self.tr('New geometry type'), self.TYPES))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Converted')))
 

@@ -62,21 +62,21 @@ class GridNetMulti(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Basic Grid Analysis tools')
 
         self.addParameter(ParameterFile(self.D8_FLOW_DIR_GRID,
-            self.tr('D8 Flow Direction Grid'), True, False))
+                                        self.tr('D8 Flow Direction Grid'), True, False))
         self.addParameter(ParameterVector(self.OUTLETS_SHAPE,
-            self.tr('Outlets Shapefile'),
-            [ParameterVector.VECTOR_TYPE_POINT], True))
+                                          self.tr('Outlets Shapefile'),
+                                          [ParameterVector.VECTOR_TYPE_POINT], True))
         self.addParameter(ParameterFile(self.MASK_GRID,
-            self.tr('Mask Grid'), True, True))
+                                        self.tr('Mask Grid'), True, True))
         self.addParameter(ParameterNumber(self.THRESHOLD,
-            self.tr('Mask Threshold'), 0, None, 100))
+                                          self.tr('Mask Threshold'), 0, None, 100))
 
         self.addOutput(OutputDirectory(self.LONGEST_LEN_GRID,
-            self.tr('Longest Upslope Length Grid')))
+                                       self.tr('Longest Upslope Length Grid')))
         self.addOutput(OutputDirectory(self.TOTAL_LEN_GRID,
-            self.tr('Total Upslope Length Grid')))
+                                       self.tr('Total Upslope Length Grid')))
         self.addOutput(OutputDirectory(self.STRAHLER_GRID,
-            self.tr('Strahler Network Order Grid')))
+                                       self.tr('Strahler Network Order Grid')))
 
     def processAlgorithm(self, progress):
         commands = []

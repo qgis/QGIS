@@ -141,7 +141,6 @@ class GeoAlgorithm:
         helpUrl = 'http://docs.qgis.org/{}/en/docs/user_manual/processing_algs/{}/{}/{}.html'.format(qgsVersion, providerName, safeGroupName, safeAlgName)
         return False, helpUrl
 
-
     def processAlgorithm(self, progress):
         """Here goes the algorithm itself.
 
@@ -284,7 +283,7 @@ class GeoAlgorithm:
             lines = f.readlines()
             for line in lines:
                 script += line
-            exec script in ns
+            exec(script, ns)
         except:
             # A wrong script should not cause problems, so we swallow
             # all exceptions
@@ -334,9 +333,8 @@ class GeoAlgorithm:
                         stdin=subprocess.PIPE,
                         stderr=subprocess.STDOUT,
                         universal_newlines=False,
-                        )
+                    )
                     proc.communicate()
-
 
             elif isinstance(out, OutputTable):
                 if out.compatible is not None:
@@ -438,7 +436,6 @@ class GeoAlgorithm:
                                 inputlayers[i] = layer.source()
                                 break
                     param.setValue(",".join(inputlayers))
-
 
     def checkInputCRS(self):
         """It checks that all input layers use the same CRS. If so,

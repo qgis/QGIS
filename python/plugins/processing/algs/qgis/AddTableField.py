@@ -53,15 +53,15 @@ class AddTableField(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
         self.addParameter(ParameterString(self.FIELD_NAME,
-            self.tr('Field name')))
+                                          self.tr('Field name')))
         self.addParameter(ParameterSelection(self.FIELD_TYPE,
-            self.tr('Field type'), self.TYPE_NAMES))
+                                             self.tr('Field type'), self.TYPE_NAMES))
         self.addParameter(ParameterNumber(self.FIELD_LENGTH,
-            self.tr('Field length'), 1, 255, 10))
+                                          self.tr('Field length'), 1, 255, 10))
         self.addParameter(ParameterNumber(self.FIELD_PRECISION,
-            self.tr('Field precision'), 0, 10, 0))
+                                          self.tr('Field precision'), 0, 10, 0))
         self.addOutput(OutputVector(
             self.OUTPUT_LAYER, self.tr('Added')))
 
@@ -80,7 +80,7 @@ class AddTableField(GeoAlgorithm):
         fields.append(QgsField(fieldName, self.TYPES[fieldType], '',
                       fieldLength, fieldPrecision))
         writer = output.getVectorWriter(fields, provider.geometryType(),
-                layer.crs())
+                                        layer.crs())
         outFeat = QgsFeature()
         inGeom = QgsGeometry()
         nElement = 0

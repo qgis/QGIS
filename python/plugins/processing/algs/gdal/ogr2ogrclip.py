@@ -34,6 +34,7 @@ from processing.tools.system import isWindows
 from processing.algs.gdal.OgrAlgorithm import OgrAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
+
 class Ogr2OgrClip(OgrAlgorithm):
 
     OUTPUT_LAYER = 'OUTPUT_LAYER'
@@ -46,11 +47,11 @@ class Ogr2OgrClip(OgrAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('[OGR] Geoprocessing')
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
         self.addParameter(ParameterVector(self.CLIP_LAYER,
-            self.tr('Clip layer'), [ParameterVector.VECTOR_TYPE_POLYGON], False))
+                                          self.tr('Clip layer'), [ParameterVector.VECTOR_TYPE_POLYGON], False))
         self.addParameter(ParameterString(self.OPTIONS,
-            self.tr('Additional creation options'), '', optional=True))
+                                          self.tr('Additional creation options'), '', optional=True))
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Clipped (polygon)')))
 

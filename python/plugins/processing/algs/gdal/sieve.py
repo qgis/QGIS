@@ -52,9 +52,9 @@ class sieve(GdalAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('[GDAL] Analysis')
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer'), False))
         self.addParameter(ParameterNumber(self.THRESHOLD,
-            self.tr('Threshold'), 0, 9999, 2))
+                                          self.tr('Threshold'), 0, 9999, 2))
         self.addParameter(ParameterSelection(self.CONNECTIONS,
-            self.tr('Pixel connection'), self.PIXEL_CONNECTIONS, 0))
+                                             self.tr('Pixel connection'), self.PIXEL_CONNECTIONS, 0))
 
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Sieved')))
 
@@ -66,8 +66,8 @@ class sieve(GdalAlgorithm):
         arguments.append(unicode(self.getParameterValue(self.THRESHOLD)))
 
         arguments.append('-' +
-            self.PIXEL_CONNECTIONS[self.getParameterValue(
-                self.CONNECTIONS)])
+                         self.PIXEL_CONNECTIONS[self.getParameterValue(
+                                                self.CONNECTIONS)])
 
         arguments.append('-of')
         arguments.append(GdalUtils.getFormatShortNameFromFilename(output))

@@ -48,6 +48,7 @@ class TableAttribute:
 
 
 class TableConstraint:
+
     """Class that represents a constraint of a table (relation).
     """
 
@@ -103,7 +104,7 @@ class DbError(Exception):
 class TableField:
 
     def __init__(self, name, data_type, is_null=None, default=None,
-                modifier=None):
+                 modifier=None):
         (self.name, self.data_type, self.is_null, self.default,
          self.modifier) = (name, data_type, is_null, default, modifier)
 
@@ -151,7 +152,7 @@ class GeoDB:
 
         try:
             self.con = psycopg2.connect(self.con_info())
-        except psycopg2.OperationalError, e:
+        except psycopg2.OperationalError as e:
             raise DbError(e.message)
 
         self.has_postgis = self.check_postgis()
@@ -181,7 +182,7 @@ class GeoDB:
 
         c = self.con.cursor()
         self._exec_sql(c,
-            "SELECT COUNT(*) FROM pg_proc WHERE proname = 'postgis_version'")
+                       "SELECT COUNT(*) FROM pg_proc WHERE proname = 'postgis_version'")
         return c.fetchone()[0] > 0
 
     def get_postgis_info(self):
@@ -196,7 +197,7 @@ class GeoDB:
 
         c = self.con.cursor()
         self._exec_sql(c,
-            'SELECT postgis_lib_version(), postgis_scripts_installed(), \
+                       'SELECT postgis_lib_version(), postgis_scripts_installed(), \
             postgis_scripts_released(), postgis_geos_version(), \
             postgis_proj_version(), postgis_uses_stats()')
         return c.fetchone()
@@ -420,7 +421,7 @@ class GeoDB:
         else:
             schema_part = ''
         sql = "SELECT DropGeometryColumn(%s'%s', '%s')" % (schema_part,
-                self._quote_unicode(table), self._quote_unicode(geom_column))
+                                                           self._quote_unicode(table), self._quote_unicode(geom_column))
         self._exec_sql_and_commit(sql)
 
     def delete_geometry_table(self, table, schema=None):
@@ -431,7 +432,7 @@ class GeoDB:
         else:
             schema_part = ''
         sql = "SELECT DropGeometryTable(%s'%s')" % (schema_part,
-                self._quote_unicode(table))
+                                                    self._quote_unicode(table))
         self._exec_sql_and_commit(sql)
 
     def create_table(self, table, fields, pkey=None, schema=None):
@@ -474,7 +475,7 @@ class GeoDB:
 
         table_name = self._table_name(schema, table)
         sql = 'ALTER TABLE %s RENAME TO %s' % (table_name,
-                self._quote(new_table))
+                                               self._quote(new_table))
         self._exec_sql_and_commit(sql)
 
         # Update geometry_columns if postgis is enabled
@@ -517,7 +518,7 @@ class GeoDB:
         """Rename a schema in database."""
 
         sql = 'ALTER SCHEMA %s RENAME TO %s' % (self._quote(schema),
-                self._quote(new_schema))
+                                                self._quote(new_schema))
         self._exec_sql_and_commit(sql)
 
         # Update geometry_columns if postgis is enabled
@@ -547,7 +548,7 @@ class GeoDB:
 
         table_name = self._table_name(schema, table)
         sql = 'ALTER TABLE %s RENAME %s TO %s' % (table_name,
-                self._quote(name), self._quote(new_name))
+                                                  self._quote(name), self._quote(new_name))
         self._exec_sql_and_commit(sql)
 
         # Update geometry_columns if postgis is enabled
@@ -565,7 +566,7 @@ class GeoDB:
 
         table_name = self._table_name(schema, table)
         sql = 'ALTER TABLE %s ALTER %s TYPE %s' % (table_name,
-                self._quote(column), data_type)
+                                                   self._quote(column), data_type)
         self._exec_sql_and_commit(sql)
 
     def table_column_set_default(self, table, column, default, schema=None):
@@ -577,10 +578,10 @@ class GeoDB:
         table_name = self._table_name(schema, table)
         if default:
             sql = 'ALTER TABLE %s ALTER %s SET DEFAULT %s' % (table_name,
-                    self._quote(column), default)
+                                                              self._quote(column), default)
         else:
             sql = 'ALTER TABLE %s ALTER %s DROP DEFAULT' % (table_name,
-                    self._quote(column))
+                                                            self._quote(column))
         self._exec_sql_and_commit(sql)
 
     def table_column_set_null(self, table, column, is_null, schema=None):
@@ -599,7 +600,7 @@ class GeoDB:
 
         table_name = self._table_name(schema, table)
         sql = 'ALTER TABLE %s ADD PRIMARY KEY (%s)' % (table_name,
-                self._quote(column))
+                                                       self._quote(column))
         self._exec_sql_and_commit(sql)
 
     def table_add_unique_constraint(self, table, column, schema=None):
@@ -607,7 +608,7 @@ class GeoDB:
 
         table_name = self._table_name(schema, table)
         sql = 'ALTER TABLE %s ADD UNIQUE (%s)' % (table_name,
-                self._quote(column))
+                                                  self._quote(column))
         self._exec_sql_and_commit(sql)
 
     def table_delete_constraint(self, table, constraint, schema=None):
@@ -615,7 +616,7 @@ class GeoDB:
 
         table_name = self._table_name(schema, table)
         sql = 'ALTER TABLE %s DROP CONSTRAINT %s' % (table_name,
-                self._quote(constraint))
+                                                     self._quote(constraint))
         self._exec_sql_and_commit(sql)
 
     def table_move_to_schema(self, table, new_schema, schema=None):
@@ -623,7 +624,7 @@ class GeoDB:
             return
         table_name = self._table_name(schema, table)
         sql = 'ALTER TABLE %s SET SCHEMA %s' % (table_name,
-                self._quote(new_schema))
+                                                self._quote(new_schema))
         self._exec_sql_and_commit(sql)
 
         # Update geometry_columns if postgis is enabled
@@ -641,14 +642,14 @@ class GeoDB:
         table_name = self._table_name(schema, table)
         idx_name = self._quote(name)
         sql = 'CREATE INDEX %s ON %s (%s)' % (idx_name, table_name,
-                self._quote(column))
+                                              self._quote(column))
         self._exec_sql_and_commit(sql)
 
     def create_spatial_index(self, table, schema=None, geom_column='the_geom'):
         table_name = self._table_name(schema, table)
         idx_name = self._quote('sidx_' + table)
         sql = 'CREATE INDEX %s ON %s USING GIST(%s)' % (idx_name, table_name,
-                self._quote(geom_column))
+                                                        self._quote(geom_column))
         self._exec_sql_and_commit(sql)
 
     def delete_index(self, name, schema=None):
@@ -713,8 +714,8 @@ class GeoDB:
         try:
             c = self.con.cursor()
             self._exec_sql(c,
-                    "SELECT srtext FROM spatial_ref_sys WHERE srid = '%d'"
-                    % srid)
+                           "SELECT srtext FROM spatial_ref_sys WHERE srid = '%d'"
+                           % srid)
             srtext = c.fetchone()[0]
 
             # Try to extract just SR name (should be qouted in double
@@ -723,7 +724,7 @@ class GeoDB:
             if x is not None:
                 srtext = x.group()
             return srtext
-        except DbError, e:
+        except DbError as e:
             return 'Unknown'
 
     def insert_table_row(self, table, values, schema=None, cursor=None):
@@ -749,7 +750,7 @@ class GeoDB:
     def _exec_sql(self, cursor, sql):
         try:
             cursor.execute(sql)
-        except psycopg2.Error, e:
+        except psycopg2.Error as e:
             raise DbError(e.message, e.cursor.query)
 
     def _exec_sql_and_commit(self, sql):
@@ -761,7 +762,7 @@ class GeoDB:
             c = self.con.cursor()
             self._exec_sql(c, sql)
             self.con.commit()
-        except DbError, e:
+        except DbError as e:
             self.con.rollback()
             raise
 

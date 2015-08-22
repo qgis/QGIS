@@ -33,21 +33,21 @@ from processing.core.parameters import ParameterFile
 from processing.tools import dataobjects
 from qgis.utils import iface
 
+
 class SetVectorStyle(GeoAlgorithm):
 
     INPUT = 'INPUT'
     STYLE = 'STYLE'
     OUTPUT = 'OUTPUT'
 
-
     def defineCharacteristics(self):
         #self.allowOnlyOpenedLayers = True
         self.name, self.i18n_name = self.trAlgorithm('Set style for vector layer')
         self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
         self.addParameter(ParameterVector(self.INPUT,
-            self.tr('Vector layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Vector layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterFile(self.STYLE,
-            self.tr('Style file'), False, False, 'qml'))
+                                        self.tr('Style file'), False, False, 'qml'))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Styled'), True))
 
     def processAlgorithm(self, progress):

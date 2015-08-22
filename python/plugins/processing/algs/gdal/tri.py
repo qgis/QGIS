@@ -46,9 +46,9 @@ class tri(GdalAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('[GDAL] Analysis')
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterNumber(self.BAND,
-            self.tr('Band number'), 1, 99, 1))
+                                          self.tr('Band number'), 1, 99, 1))
         self.addParameter(ParameterBoolean(self.COMPUTE_EDGES,
-            self.tr('Compute edges'), False))
+                                           self.tr('Compute edges'), False))
 
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Terrain Ruggedness Index')))
 

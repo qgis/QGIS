@@ -36,6 +36,7 @@ from qgis.core import QgsRasterLayer, QgsVectorLayer
 from processing.tools.system import isWindows
 from processing.tools import dataobjects
 
+
 def getParameterFromString(s):
     tokens = s.split("|")
     params = [t if unicode(t) != "None" else None for t in tokens[1:]]
@@ -50,6 +51,7 @@ def parseBool(s):
 
 
 class Parameter:
+
     """
     Base class for all parameters that a geoalgorithm might
     take as input.
@@ -152,6 +154,7 @@ class ParameterDataObject(Parameter):
             s = '"%s"' % s
             return s
 
+
 class ParameterExtent(Parameter):
 
     USE_MIN_COVERING_EXTENT = 'USE_MIN_COVERING_EXTENT'
@@ -247,6 +250,7 @@ class ParameterFixedTable(Parameter):
 
 
 class ParameterMultipleInput(ParameterDataObject):
+
     """A parameter representing several data objects.
 
     Its value is a string with substrings separated by semicolons,
@@ -389,6 +393,7 @@ class ParameterMultipleInput(ParameterDataObject):
         else:
             return 'any vectors'
 
+
 class ParameterNumber(Parameter):
 
     def __init__(self, name='', description='', minValue=None, maxValue=None,
@@ -517,7 +522,6 @@ class ParameterRaster(ParameterDataObject):
             self.value = unicode(obj)
             return True
 
-
     def getFileFilter(self):
         exts = dataobjects.getSupportedOutputRasterLayerExtensions()
         for i in range(len(exts)):
@@ -527,7 +531,7 @@ class ParameterRaster(ParameterDataObject):
 
 class ParameterSelection(Parameter):
 
-    def __init__(self, name='', description='', options=[], default=0, isSource = False):
+    def __init__(self, name='', description='', options=[], default=0, isSource=False):
         Parameter.__init__(self, name, description)
         self.options = options
         if isSource:
@@ -728,7 +732,6 @@ class ParameterVector(ParameterDataObject):
         else:
             self.value = unicode(obj)
             return True
-
 
     def getSafeExportedLayer(self):
         """Returns not the value entered by the user, but a string with

@@ -56,17 +56,17 @@ class SagaAlgorithmProvider(AlgorithmProvider):
     def initializeSettings(self):
         if isWindows() or isMac():
             ProcessingConfig.addSetting(Setting("SAGA",
-                SagaUtils.SAGA_FOLDER, self.tr('SAGA folder'), '',
-                valuetype=Setting.FOLDER))
+                                                SagaUtils.SAGA_FOLDER, self.tr('SAGA folder'), '',
+                                                valuetype=Setting.FOLDER))
         ProcessingConfig.addSetting(Setting("SAGA",
-            SagaUtils.SAGA_IMPORT_EXPORT_OPTIMIZATION,
-            self.tr('Enable SAGA Import/Export optimizations'), False))
+                                            SagaUtils.SAGA_IMPORT_EXPORT_OPTIMIZATION,
+                                            self.tr('Enable SAGA Import/Export optimizations'), False))
         ProcessingConfig.addSetting(Setting("SAGA",
-            SagaUtils.SAGA_LOG_COMMANDS,
-            self.tr('Log execution commands'), True))
+                                            SagaUtils.SAGA_LOG_COMMANDS,
+                                            self.tr('Log execution commands'), True))
         ProcessingConfig.addSetting(Setting("SAGA",
-            SagaUtils.SAGA_LOG_CONSOLE,
-            self.tr('Log console output'), True))
+                                            SagaUtils.SAGA_LOG_CONSOLE,
+                                            self.tr('Log console output'), True))
         ProcessingConfig.settingIcons["SAGA"] = self.getIcon()
         ProcessingConfig.addSetting(Setting("SAGA", "ACTIVATE_SAGA",
                                     self.tr('Activate'), self.activate))
@@ -84,11 +84,11 @@ class SagaAlgorithmProvider(AlgorithmProvider):
         version = SagaUtils.getSagaInstalledVersion(True)
         if version is None:
             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                self.tr('Problem with SAGA installation: SAGA was not found or is not correctly installed'))
+                                   self.tr('Problem with SAGA installation: SAGA was not found or is not correctly installed'))
             return
         if version not in self.supportedVersions:
             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                self.tr('Problem with SAGA installation: installed SAGA version (%s) is not supported' % version))
+                                   self.tr('Problem with SAGA installation: installed SAGA version (%s) is not supported' % version))
             return
 
         folder = SagaUtils.sagaDescriptionPath()
@@ -106,14 +106,14 @@ class SagaAlgorithmProvider(AlgorithmProvider):
                 self.algs.append(alg)
             else:
                 ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                    self.tr('Could not open SAGA algorithm: %s' % descriptionFile))
-        except Exception, e:
+                                       self.tr('Could not open SAGA algorithm: %s' % descriptionFile))
+        except Exception as e:
             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                self.tr('Could not open SAGA algorithm: %s\n%s' % (descriptionFile, unicode(e))))
+                                   self.tr('Could not open SAGA algorithm: %s\n%s' % (descriptionFile, unicode(e))))
 
     def getDescription(self):
         version = SagaUtils.getSagaInstalledVersion()
-        return 'SAGA (%s)' %  version if version is not None else 'SAGA'
+        return 'SAGA (%s)' % version if version is not None else 'SAGA'
 
     def getName(self):
         return 'saga'

@@ -50,9 +50,9 @@ class rasterize_over(OgrAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('[GDAL] Conversion')
         self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.FIELD,
-            self.tr('Attribute field'), self.INPUT))
+                                              self.tr('Attribute field'), self.INPUT))
         self.addParameter(ParameterRaster(self.INPUT_RASTER,
-            self.tr('Existing raster layer'), False))
+                                          self.tr('Existing raster layer'), False))
 
     def getConsoleCommands(self, progress):
         inLayer = self.getParameterValue(self.INPUT)

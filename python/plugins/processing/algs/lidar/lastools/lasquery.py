@@ -33,6 +33,7 @@ from processing.core.parameters import ParameterExtent
 from LAStoolsAlgorithm import LAStoolsAlgorithm
 from qgis.core import QgsMapLayer, QgsMapLayerRegistry
 
+
 class lasquery(LAStoolsAlgorithm):
 
     AOI = "AOI"
@@ -57,7 +58,7 @@ class lasquery(LAStoolsAlgorithm):
         layers = QgsMapLayerRegistry.instance().mapLayers()
 
         # loop over layers
-        for name,layer in layers.iteritems():
+        for name, layer in layers.iteritems():
             layerType = layer.type()
             if layerType == QgsMapLayer.VectorLayer:
                 shp_file_name = layer.source()

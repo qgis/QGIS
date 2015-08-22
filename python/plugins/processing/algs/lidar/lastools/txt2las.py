@@ -32,6 +32,7 @@ from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterFile
 from processing.core.parameters import ParameterSelection
 
+
 class txt2las(LAStoolsAlgorithm):
 
     INPUT = "INPUT"
@@ -55,21 +56,21 @@ class txt2las(LAStoolsAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParameter(ParameterFile(txt2las.INPUT,
-            self.tr("Input ASCII file")))
+                                        self.tr("Input ASCII file")))
         self.addParameter(ParameterString(txt2las.PARSE,
-            self.tr("parse lines as", "xyz")))
+                                          self.tr("parse lines as", "xyz")))
         self.addParameter(ParameterNumber(txt2las.SKIP,
-            self.tr("skip the first n lines"), 0, None, 0))
+                                          self.tr("skip the first n lines"), 0, None, 0))
         self.addParameter(ParameterNumber(txt2las.SCALE_FACTOR_XY,
-            self.tr("resolution of x and y coordinate"), 0, None, 0.01))
+                                          self.tr("resolution of x and y coordinate"), 0, None, 0.01))
         self.addParameter(ParameterNumber(txt2las.SCALE_FACTOR_Z,
-            self.tr("resolution of z coordinate"), 0, None, 0.01))
+                                          self.tr("resolution of z coordinate"), 0, None, 0.01))
         self.addParameter(ParameterSelection(txt2las.PROJECTION,
-            self.tr("projection"), txt2las.PROJECTIONS, 0))
+                                             self.tr("projection"), txt2las.PROJECTIONS, 0))
         self.addParameter(ParameterSelection(txt2las.UTM,
-            self.tr("utm zone"), txt2las.UTM_ZONES, 0))
+                                             self.tr("utm zone"), txt2las.UTM_ZONES, 0))
         self.addParameter(ParameterSelection(txt2las.SP,
-            self.tr("state plane code"), txt2las.STATE_PLANES, 0))
+                                             self.tr("state plane code"), txt2las.STATE_PLANES, 0))
         self.addParametersPointOutputGUI()
         self.addParametersAdditionalGUI()
 

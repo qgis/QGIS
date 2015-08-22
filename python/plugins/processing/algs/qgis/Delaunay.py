@@ -46,10 +46,10 @@ class Delaunay(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
 
         self.addParameter(ParameterVector(self.INPUT,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POINT]))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POINT]))
 
         self.addOutput(OutputVector(self.OUTPUT,
-            self.tr('Delaunay triangulation')))
+                                    self.tr('Delaunay triangulation')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(
@@ -60,7 +60,7 @@ class Delaunay(GeoAlgorithm):
                   QgsField('POINTC', QVariant.Double, '', 24, 15)]
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
-                QGis.WKBPolygon, layer.crs())
+                                                                     QGis.WKBPolygon, layer.crs())
 
         pts = []
         ptDict = {}

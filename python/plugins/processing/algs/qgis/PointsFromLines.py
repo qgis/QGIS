@@ -47,9 +47,9 @@ class PointsFromLines(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Vector analysis tools')
 
         self.addParameter(ParameterRaster(self.INPUT_RASTER,
-            self.tr('Raster layer')))
+                                          self.tr('Raster layer')))
         self.addParameter(ParameterVector(self.INPUT_VECTOR,
-            self.tr('Vector layer'), [ParameterVector.VECTOR_TYPE_LINE]))
+                                          self.tr('Vector layer'), [ParameterVector.VECTOR_TYPE_LINE]))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Points along line')))
 
     def processAlgorithm(self, progress):
@@ -89,9 +89,9 @@ class PointsFromLines(GeoAlgorithm):
                         p2 = line[i + 1]
 
                         (x1, y1) = raster.mapToPixel(p1.x(), p1.y(),
-                                geoTransform)
+                                                     geoTransform)
                         (x2, y2) = raster.mapToPixel(p2.x(), p2.y(),
-                                geoTransform)
+                                                     geoTransform)
 
                         self.buildLine(x1, y1, x2, y2, geoTransform,
                                        writer, outFeature)

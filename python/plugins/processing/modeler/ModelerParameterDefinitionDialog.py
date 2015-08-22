@@ -227,7 +227,7 @@ class ModelerParameterDefinitionDialog(QDialog):
         self.buttonBox = QDialogButtonBox(self)
         self.buttonBox.setOrientation(Qt.Horizontal)
         self.buttonBox.setStandardButtons(QDialogButtonBox.Cancel
-                | QDialogButtonBox.Ok)
+                                          | QDialogButtonBox.Ok)
         self.buttonBox.setObjectName('buttonBox')
         self.buttonBox.accepted.connect(self.okPressed)
         self.buttonBox.rejected.connect(self.cancelPressed)
@@ -254,7 +254,7 @@ class ModelerParameterDefinitionDialog(QDialog):
                 == ModelerParameterDefinitionDialog.PARAMETER_BOOLEAN \
                 or isinstance(self.param, ParameterBoolean):
             self.param = ParameterBoolean(name, description,
-                    self.state.isChecked())
+                                          self.state.isChecked())
         elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_TABLE_FIELD or \
                 isinstance(self.param, ParameterTableField):
             if self.parentCombo.currentIndex() < 0:
@@ -299,7 +299,7 @@ class ModelerParameterDefinitionDialog(QDialog):
                 else:
                     vmax = float(vmax)
                 self.param = ParameterNumber(name, description, vmin, vmax,
-                        unicode(self.defaultTextBox.text()))
+                                             unicode(self.defaultTextBox.text()))
             except:
                 QMessageBox.warning(self, self.tr('Unable to define parameter'),
                                     self.tr('Wrong or missing parameter values'))
@@ -307,7 +307,7 @@ class ModelerParameterDefinitionDialog(QDialog):
         elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_STRING or \
                 isinstance(self.param, ParameterString):
             self.param = ParameterString(name, description,
-                    unicode(self.defaultTextBox.text()))
+                                         unicode(self.defaultTextBox.text()))
         elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_EXTENT or \
                 isinstance(self.param, ParameterExtent):
             self.param = ParameterExtent(name, description)

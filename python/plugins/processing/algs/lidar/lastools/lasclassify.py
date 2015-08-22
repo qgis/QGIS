@@ -31,6 +31,7 @@ import os
 from LAStoolsUtils import LAStoolsUtils
 from LAStoolsAlgorithm import LAStoolsAlgorithm
 
+
 class lasclassify(LAStoolsAlgorithm):
 
     def defineCharacteristics(self):

@@ -122,7 +122,7 @@ class OracleDBPlugin(DBPlugin):
         err = u""
         try:
             return self.connectToUri(uri)
-        except ConnectionError, e:
+        except ConnectionError as e:
             err = unicode(e)
 
         # ask for valid credentials
@@ -138,7 +138,7 @@ class OracleDBPlugin(DBPlugin):
 
             try:
                 self.connectToUri(uri)
-            except ConnectionError, e:
+            except ConnectionError as e:
                 if i == max_attempts - 1:  # failed the last attempt
                     raise e
                 err = unicode(e)

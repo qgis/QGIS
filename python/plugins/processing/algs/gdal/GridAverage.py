@@ -57,22 +57,22 @@ class GridAverage(GdalAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('Grid (Moving average)')
         self.group, self.i18n_group = self.trAlgorithm('[GDAL] Analysis')
         self.addParameter(ParameterVector(self.INPUT,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POINT]))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POINT]))
         self.addParameter(ParameterTableField(self.Z_FIELD,
-            self.tr('Z field'), self.INPUT,
-            ParameterTableField.DATA_TYPE_NUMBER, True))
+                                              self.tr('Z field'), self.INPUT,
+                                              ParameterTableField.DATA_TYPE_NUMBER, True))
         self.addParameter(ParameterNumber(self.RADIUS_1,
-            self.tr('Radius 1'), 0.0, 99999999.999999, 0.0))
+                                          self.tr('Radius 1'), 0.0, 99999999.999999, 0.0))
         self.addParameter(ParameterNumber(self.RADIUS_2,
-            self.tr('Radius 2'), 0.0, 99999999.999999, 0.0))
+                                          self.tr('Radius 2'), 0.0, 99999999.999999, 0.0))
         self.addParameter(ParameterNumber(self.MIN_POINTS,
-            self.tr('Min points'), 0.0, 99999999.999999, 0.0))
+                                          self.tr('Min points'), 0.0, 99999999.999999, 0.0))
         self.addParameter(ParameterNumber(self.ANGLE,
-            self.tr('Angle'), 0.0, 359.0, 0.0))
+                                          self.tr('Angle'), 0.0, 359.0, 0.0))
         self.addParameter(ParameterNumber(self.NODATA,
-            self.tr('Nodata'), 0.0, 99999999.999999, 0.0))
+                                          self.tr('Nodata'), 0.0, 99999999.999999, 0.0))
         self.addParameter(ParameterSelection(self.RTYPE,
-            self.tr('Output raster type'), self.TYPE, 5))
+                                             self.tr('Output raster type'), self.TYPE, 5))
 
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Interpolated moving average')))
 
@@ -101,4 +101,4 @@ class GridAverage(GdalAlgorithm):
         arguments.append(unicode(self.getParameterValue(self.INPUT)))
         arguments.append(unicode(self.getOutputValue(self.OUTPUT)))
 
-        return ['gdal_grid',GdalUtils.escapeAndJoin(arguments)]
+        return ['gdal_grid', GdalUtils.escapeAndJoin(arguments)]

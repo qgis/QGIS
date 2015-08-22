@@ -77,7 +77,7 @@ class ModelerGraphicItem(QGraphicsItem):
                          - ModelerGraphicItem.BOX_HEIGHT / 2
                          + FlatButtonGraphicItem.HEIGHT / 2 + 1)
             self.deleteButton = FlatButtonGraphicItem(icon, pt,
-                    self.removeElement)
+                                                      self.removeElement)
             self.deleteButton.setParentItem(self)
 
         if isinstance(element, Algorithm):
@@ -166,7 +166,7 @@ class ModelerGraphicItem(QGraphicsItem):
     def editElement(self):
         if isinstance(self.element, ModelerParameter):
             dlg = ModelerParameterDefinitionDialog(self.model,
-                    param=self.element.param)
+                                                   param=self.element.param)
             dlg.exec_()
             if dlg.param is not None:
                 self.model.updateParameter(dlg.param)
@@ -187,15 +187,15 @@ class ModelerGraphicItem(QGraphicsItem):
         if isinstance(self.element, ModelerParameter):
             if not self.model.removeParameter(self.element.param.name):
                 QMessageBox.warning(None, 'Could not remove element',
-                        'Other elements depend on the selected one.\n'
-                        'Remove them before trying to remove it.')
+                                    'Other elements depend on the selected one.\n'
+                                    'Remove them before trying to remove it.')
             else:
                 self.model.updateModelerView()
         elif isinstance(self.element, Algorithm):
             if not self.model.removeAlgorithm(self.element.name):
                 QMessageBox.warning(None, 'Could not remove element',
-                        'Other elements depend on the selected one.\n'
-                        'Remove them before trying to remove it.')
+                                    'Other elements depend on the selected one.\n'
+                                    'Remove them before trying to remove it.')
             else:
                 self.model.updateModelerView()
 
@@ -254,7 +254,7 @@ class ModelerGraphicItem(QGraphicsItem):
                         h = -(fm.height() * 1.2) * (i + 1)
                         h = h - ModelerGraphicItem.BOX_HEIGHT / 2.0 + 5
                         pt = QPointF(-ModelerGraphicItem.BOX_WIDTH / 2
-                                + 33, h)
+                                     + 33, h)
                         painter.drawText(pt, text)
                         i += 1
             h = fm.height() * 1.2
@@ -267,7 +267,7 @@ class ModelerGraphicItem(QGraphicsItem):
                         h = fm.height() * 1.2 * (i + 2)
                         h = h + ModelerGraphicItem.BOX_HEIGHT / 2.0
                         pt = QPointF(-ModelerGraphicItem.BOX_WIDTH / 2
-                                + 33, h)
+                                     + 33, h)
                         painter.drawText(pt, text)
         if self.pixmap:
             painter.drawPixmap(-(ModelerGraphicItem.BOX_WIDTH / 2.0) + 3, -8,
@@ -286,7 +286,6 @@ class ModelerGraphicItem(QGraphicsItem):
         else:
             h = 0
         return QPointF(-ModelerGraphicItem.BOX_WIDTH / 2 + offsetX, h)
-
 
     def getLinkPointForOutput(self, outputIndex):
         if isinstance(self.element, Algorithm):

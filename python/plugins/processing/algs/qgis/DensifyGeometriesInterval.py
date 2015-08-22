@@ -48,10 +48,10 @@ class DensifyGeometriesInterval(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
 
         self.addParameter(ParameterVector(self.INPUT,
-            self.tr('Input layer'),
-            [ParameterVector.VECTOR_TYPE_POLYGON, ParameterVector.VECTOR_TYPE_LINE]))
+                                          self.tr('Input layer'),
+                                          [ParameterVector.VECTOR_TYPE_POLYGON, ParameterVector.VECTOR_TYPE_LINE]))
         self.addParameter(ParameterNumber(self.INTERVAL,
-            self.tr('Interval between vertices to add'), 0.0, 10000000.0, 1.0))
+                                          self.tr('Interval between vertices to add'), 0.0, 10000000.0, 1.0))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Densified')))
 
@@ -72,7 +72,7 @@ class DensifyGeometriesInterval(GeoAlgorithm):
             featGeometry = QgsGeometry(f.geometry())
             attrs = f.attributes()
             newGeometry = self.densifyGeometry(featGeometry, interval,
-                    isPolygon)
+                                               isPolygon)
             feature = QgsFeature()
             feature.setGeometry(newGeometry)
             feature.setAttributes(attrs)

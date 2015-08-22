@@ -25,13 +25,14 @@ from unittest import expectedFailure
 
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 
+
 class TestQgsFields(TestCase):
 
     def test_expections(self):
-        ml=QgsVectorLayer("Point?crs=epsg:4236&field=id:integer&field=value:double",
-                          "test_data", "memory")
+        ml = QgsVectorLayer("Point?crs=epsg:4236&field=id:integer&field=value:double",
+                            "test_data", "memory")
         assert ml.isValid()
-        fields=ml.fields()
+        fields = ml.fields()
 
         #check no error
         fields.remove(1)
@@ -41,7 +42,7 @@ class TestQgsFields(TestCase):
         with self.assertRaises(KeyError):
             fields.remove(111)
 
-        fields=ml.fields()
+        fields = ml.fields()
         #check no error
         fields.at(1)
         #check exceptions raised

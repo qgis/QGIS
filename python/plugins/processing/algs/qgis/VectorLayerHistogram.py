@@ -49,12 +49,12 @@ class VectorLayerHistogram(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Graphics')
 
         self.addParameter(ParameterVector(self.INPUT,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterTableField(self.FIELD,
-            self.tr('Attribute'), self.INPUT,
-            ParameterTableField.DATA_TYPE_NUMBER))
+                                              self.tr('Attribute'), self.INPUT,
+                                              ParameterTableField.DATA_TYPE_NUMBER))
         self.addParameter(ParameterNumber(self.BINS,
-            self.tr('number of bins'), 2, None, 10))
+                                          self.tr('number of bins'), 2, None, 10))
 
         self.addOutput(OutputHTML(self.OUTPUT, self.tr('Histogram')))
 

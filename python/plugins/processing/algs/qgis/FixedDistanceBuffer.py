@@ -48,13 +48,13 @@ class FixedDistanceBuffer(GeoAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('Fixed distance buffer')
         self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
         self.addParameter(ParameterVector(self.INPUT,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterNumber(self.DISTANCE,
-            self.tr('Distance'), default=10.0))
+                                          self.tr('Distance'), default=10.0))
         self.addParameter(ParameterNumber(self.SEGMENTS,
-            self.tr('Segments'), 1, default=5))
+                                          self.tr('Segments'), 1, default=5))
         self.addParameter(ParameterBoolean(self.DISSOLVE,
-            self.tr('Dissolve result'), False))
+                                           self.tr('Dissolve result'), False))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Buffer')))
 
@@ -66,7 +66,7 @@ class FixedDistanceBuffer(GeoAlgorithm):
 
         writer = self.getOutputFromName(
             self.OUTPUT).getVectorWriter(layer.pendingFields().toList(),
-                QGis.WKBPolygon, layer.crs())
+                                         QGis.WKBPolygon, layer.crs())
 
         buff.buffering(progress, writer, distance, None, False, layer,
                        dissolve, segments)

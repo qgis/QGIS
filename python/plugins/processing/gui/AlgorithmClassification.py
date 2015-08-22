@@ -31,6 +31,7 @@ from PyQt4.QtCore import QCoreApplication
 displayNames = {}
 classification = {}
 
+
 def loadClassification():
     global classification
     if not os.path.isfile(classificationFile()):
@@ -47,6 +48,7 @@ def loadClassification():
         line = lines.readline().strip('\n')
     lines.close()
 
+
 def loadDisplayNames():
     global displayNames
     if not os.path.isfile(displayNamesFile()):
@@ -62,11 +64,14 @@ def loadDisplayNames():
         line = lines.readline().strip('\n')
     lines.close()
 
+
 def classificationFile():
     return os.path.join(os.path.dirname(__file__), 'algclasssification.txt')
 
+
 def displayNamesFile():
     return os.path.join(os.path.dirname(__file__), 'algnames.txt')
+
 
 def getClassificationEn(alg):
     if alg.commandLineName().lower() in classification:
@@ -75,6 +80,7 @@ def getClassificationEn(alg):
     else:
         return None, None
 
+
 def getClassification(alg):
     group, subgroup = getClassificationEn(alg)
     if not group and not subgroup:
@@ -82,8 +88,10 @@ def getClassification(alg):
     return (QCoreApplication.translate('AlgorithmClassification', group),
             QCoreApplication.translate('AlgorithmClassification', subgroup))
 
+
 def getDisplayNameEn(alg):
     return alg.name
+
 
 def getDisplayName(alg):
     return alg.i18n_name if alg.i18n_name else "[" + alg.name + "]"

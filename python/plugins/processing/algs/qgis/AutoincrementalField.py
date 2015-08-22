@@ -46,7 +46,7 @@ class AutoincrementalField(GeoAlgorithm):
         fields = vprovider.fields()
         fields.append(QgsField('AUTO', QVariant.Int))
         writer = output.getVectorWriter(fields, vprovider.geometryType(),
-                vlayer.crs())
+                                        vlayer.crs())
         inFeat = QgsFeature()
         outFeat = QgsFeature()
         inGeom = QgsGeometry()
@@ -68,5 +68,5 @@ class AutoincrementalField(GeoAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('Add autoincremental field')
         self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
         self.addParameter(ParameterVector(self.INPUT,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Incremented')))

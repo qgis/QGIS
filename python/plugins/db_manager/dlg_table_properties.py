@@ -38,6 +38,7 @@ from .ui.ui_DlgTableProperties import Ui_DbManagerDlgTableProperties as Ui_Dialo
 
 
 class DlgTableProperties(QDialog, Ui_Dialog):
+
     def __init__(self, table, parent=None):
         QDialog.__init__(self, parent)
         self.table = table
@@ -69,7 +70,6 @@ class DlgTableProperties(QDialog, Ui_Dialog):
         self.populateViews()
         self.checkSupports()
 
-
     def checkSupports(self):
         allowEditColumns = self.db.connector.hasTableColumnEditingSupport()
         self.btnEditColumn.setEnabled(allowEditColumns)
@@ -79,12 +79,10 @@ class DlgTableProperties(QDialog, Ui_Dialog):
         self.btnAddGeometryColumn.setEnabled(allowSpatial)
         self.btnAddSpatialIndex.setEnabled(allowSpatial)
 
-
     def populateViews(self):
         self.populateFields()
         self.populateConstraints()
         self.populateIndexes()
-
 
     def populateFields(self):
         """ load field information from database """
@@ -120,7 +118,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
             # add column to table
             self.table.addField(fld)
             self.populateViews()
-        except BaseError, e:
+        except BaseError as e:
             DlgDbError.showError(e, self)
             return
         finally:
@@ -154,7 +152,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
         try:
             fld.update(new_fld.name, new_fld.type2String(), new_fld.notNull, new_fld.default2String())
             self.populateViews()
-        except BaseError, e:
+        except BaseError as e:
             DlgDbError.showError(e, self)
             return
         finally:
@@ -179,12 +177,11 @@ class DlgTableProperties(QDialog, Ui_Dialog):
         try:
             fld.delete()
             self.populateViews()
-        except BaseError, e:
+        except BaseError as e:
             DlgDbError.showError(e, self)
             return
         finally:
             QApplication.restoreOverrideCursor()
-
 
     def populateConstraints(self):
         constraints = self.table.constraints()
@@ -235,7 +232,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
         try:
             constr.delete()
             self.populateViews()
-        except BaseError, e:
+        except BaseError as e:
             DlgDbError.showError(e, self)
             return
         finally:
@@ -249,7 +246,6 @@ class DlgTableProperties(QDialog, Ui_Dialog):
             QMessageBox.information(self, self.tr("DB Manager"), self.tr("nothing selected"))
             return -1
         return indexes[0].row()
-
 
     def populateIndexes(self):
         indexes = self.table.indexes()
@@ -297,7 +293,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
         try:
             self.table.createSpatialIndex()
             self.populateViews()
-        except BaseError, e:
+        except BaseError as e:
             DlgDbError.showError(e, self)
             return
         finally:
@@ -331,7 +327,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
         try:
             idx.delete()
             self.populateViews()
-        except BaseError, e:
+        except BaseError as e:
             DlgDbError.showError(e, self)
             return
         finally:

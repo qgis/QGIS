@@ -51,18 +51,18 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Vector analysis tools')
 
         self.addParameter(ParameterVector(self.POINTS,
-            self.tr('Points'), [ParameterVector.VECTOR_TYPE_POINT]))
+                                          self.tr('Points'), [ParameterVector.VECTOR_TYPE_POINT]))
 
         self.addOutput(OutputHTML(self.OUTPUT, self.tr('Nearest neighbour')))
 
         self.addOutput(OutputNumber(self.OBSERVED_MD,
-            self.tr('Observed mean distance')))
+                                    self.tr('Observed mean distance')))
         self.addOutput(OutputNumber(self.EXPECTED_MD,
-            self.tr('Expected mean distance')))
+                                    self.tr('Expected mean distance')))
         self.addOutput(OutputNumber(self.NN_INDEX,
-            self.tr('Nearest neighbour index')))
+                                    self.tr('Nearest neighbour index')))
         self.addOutput(OutputNumber(self.POINT_COUNT,
-            self.tr('Number of points')))
+                                    self.tr('Number of points')))
         self.addOutput(OutputNumber(self.Z_SCORE, self.tr('Z-Score')))
 
     def processAlgorithm(self, progress):
@@ -88,7 +88,7 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
             request = QgsFeatureRequest().setFilterFid(neighbourID)
             neighbour = layer.getFeatures(request).next()
             sumDist += distance.measureLine(neighbour.geometry().asPoint(),
-                    feat.geometry().asPoint())
+                                            feat.geometry().asPoint())
 
             current += 1
             progress.setPercentage(int(current * total))

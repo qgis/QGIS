@@ -45,13 +45,13 @@ class DensifyGeometries(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
 
         self.addParameter(ParameterVector(self.INPUT,
-            self.tr('Input layer'),
-            [ParameterVector.VECTOR_TYPE_POLYGON, ParameterVector.VECTOR_TYPE_LINE]))
+                                          self.tr('Input layer'),
+                                          [ParameterVector.VECTOR_TYPE_POLYGON, ParameterVector.VECTOR_TYPE_LINE]))
         self.addParameter(ParameterNumber(self.VERTICES,
-            self.tr('Vertices to add'), 1, 10000000, 1))
+                                          self.tr('Vertices to add'), 1, 10000000, 1))
 
         self.addOutput(OutputVector(self.OUTPUT,
-            self.tr('Densified')))
+                                    self.tr('Densified')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(
@@ -71,7 +71,7 @@ class DensifyGeometries(GeoAlgorithm):
             featGeometry = QgsGeometry(f.geometry())
             attrs = f.attributes()
             newGeometry = self.densifyGeometry(featGeometry, int(vertices),
-                    isPolygon)
+                                               isPolygon)
             feature = QgsFeature()
             feature.setGeometry(newGeometry)
             feature.setAttributes(attrs)

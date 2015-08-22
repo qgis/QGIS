@@ -74,22 +74,22 @@ class DinfDistDownMulti(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Specialized Grid Analysis tools')
 
         self.addParameter(ParameterFile(self.DINF_FLOW_DIR_GRID,
-            self.tr('D-Infinity Flow Direction Grid'), True, False))
+                                        self.tr('D-Infinity Flow Direction Grid'), True, False))
         self.addParameter(ParameterFile(self.PIT_FILLED_GRID,
-            self.tr('Pit Filled Elevation Grid'), True, False))
+                                        self.tr('Pit Filled Elevation Grid'), True, False))
         self.addParameter(ParameterFile(self.STREAM_GRID,
-            self.tr('Stream Raster Grid'), True, False))
+                                        self.tr('Stream Raster Grid'), True, False))
         self.addParameter(ParameterFile(self.WEIGHT_PATH_GRID,
-            self.tr('Weight Path Grid'), True, True))
+                                        self.tr('Weight Path Grid'), True, True))
         self.addParameter(ParameterSelection(self.STAT_METHOD,
-            self.tr('Statistical Method'), self.STATISTICS, 2))
+                                             self.tr('Statistical Method'), self.STATISTICS, 2))
         self.addParameter(ParameterSelection(self.DIST_METHOD,
-            self.tr('Distance Method'), self.DISTANCE, 1))
+                                             self.tr('Distance Method'), self.DISTANCE, 1))
         self.addParameter(ParameterBoolean(self.EDGE_CONTAM,
-            self.tr('Check for edge contamination'), True))
+                                           self.tr('Check for edge contamination'), True))
 
         self.addOutput(OutputDirectory(self.DIST_DOWN_GRID,
-            self.tr('D-Infinity Drop to Stream Grid')))
+                                       self.tr('D-Infinity Drop to Stream Grid')))
 
     def processAlgorithm(self, progress):
         commands = []

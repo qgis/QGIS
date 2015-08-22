@@ -46,10 +46,10 @@ class SimplifyGeometries(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
 
         self.addParameter(ParameterVector(self.INPUT,
-            self.tr('Input layer'),
-            [ParameterVector.VECTOR_TYPE_POLYGON, ParameterVector.VECTOR_TYPE_LINE]))
+                                          self.tr('Input layer'),
+                                          [ParameterVector.VECTOR_TYPE_POLYGON, ParameterVector.VECTOR_TYPE_LINE]))
         self.addParameter(ParameterNumber(self.TOLERANCE,
-            self.tr('Tolerance'), 0.0, 10000000.0, 1.0))
+                                          self.tr('Tolerance'), 0.0, 10000000.0, 1.0))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Simplified')))
 
@@ -82,7 +82,7 @@ class SimplifyGeometries(GeoAlgorithm):
         del writer
 
         ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
-            self.tr('Simplify: Input geometries have been simplified from %s to %s points' % (pointsBefore, pointsAfter)))
+                               self.tr('Simplify: Input geometries have been simplified from %s to %s points' % (pointsBefore, pointsAfter)))
 
     def geomVertexCount(self, geometry):
         geomType = geometry.type()

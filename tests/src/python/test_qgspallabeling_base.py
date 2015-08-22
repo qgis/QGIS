@@ -389,7 +389,7 @@ class TestPALConfig(TestQgsPalLabeling):
 
     def tearDown(self):
         """Run after each test."""
-	pass
+        pass
 
     def test_default_pal_disabled(self):
         # Verify PAL labeling is disabled for layer by default

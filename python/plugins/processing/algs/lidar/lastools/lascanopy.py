@@ -32,6 +32,7 @@ from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterSelection
 
+
 class lascanopy(LAStoolsAlgorithm):
 
     PLOT_SIZE = "PLOT_SIZE"
@@ -61,35 +62,35 @@ class lascanopy(LAStoolsAlgorithm):
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParameter(ParameterNumber(lascanopy.PLOT_SIZE,
-            self.tr("square plot size"), 0, None, 20))
+                                          self.tr("square plot size"), 0, None, 20))
         self.addParameter(ParameterNumber(lascanopy.HEIGHT_CUTOFF,
-            self.tr("height cutoff / breast height"), 0, None, 1.37))
+                                          self.tr("height cutoff / breast height"), 0, None, 1.37))
         self.addParameter(ParameterSelection(lascanopy.PRODUCT1,
-            self.tr("create"), lascanopy.PRODUCTS, 0))
+                                             self.tr("create"), lascanopy.PRODUCTS, 0))
         self.addParameter(ParameterSelection(lascanopy.PRODUCT2,
-            self.tr("create"), lascanopy.PRODUCTS, 0))
+                                             self.tr("create"), lascanopy.PRODUCTS, 0))
         self.addParameter(ParameterSelection(lascanopy.PRODUCT3,
-            self.tr("create"), lascanopy.PRODUCTS, 0))
+                                             self.tr("create"), lascanopy.PRODUCTS, 0))
         self.addParameter(ParameterSelection(lascanopy.PRODUCT4,
-            self.tr("create"), lascanopy.PRODUCTS, 0))
+                                             self.tr("create"), lascanopy.PRODUCTS, 0))
         self.addParameter(ParameterSelection(lascanopy.PRODUCT5,
-            self.tr("create"), lascanopy.PRODUCTS, 0))
+                                             self.tr("create"), lascanopy.PRODUCTS, 0))
         self.addParameter(ParameterSelection(lascanopy.PRODUCT6,
-            self.tr("create"), lascanopy.PRODUCTS, 0))
+                                             self.tr("create"), lascanopy.PRODUCTS, 0))
         self.addParameter(ParameterSelection(lascanopy.PRODUCT7,
-            self.tr("create"), lascanopy.PRODUCTS, 0))
+                                             self.tr("create"), lascanopy.PRODUCTS, 0))
         self.addParameter(ParameterSelection(lascanopy.PRODUCT8,
-            self.tr("create"), lascanopy.PRODUCTS, 0))
+                                             self.tr("create"), lascanopy.PRODUCTS, 0))
         self.addParameter(ParameterSelection(lascanopy.PRODUCT9,
-            self.tr("create"), lascanopy.PRODUCTS, 0))
+                                             self.tr("create"), lascanopy.PRODUCTS, 0))
         self.addParameter(ParameterString(lascanopy.COUNTS,
-            self.tr("count rasters (e.g. 2.0 5.0 10.0 20.0)"), ""))
+                                          self.tr("count rasters (e.g. 2.0 5.0 10.0 20.0)"), ""))
         self.addParameter(ParameterString(lascanopy.DENSITIES,
-            self.tr("density rasters (e.g. 2.0 5.0 10.0 20.0)"), ""))
+                                          self.tr("density rasters (e.g. 2.0 5.0 10.0 20.0)"), ""))
         self.addParameter(ParameterBoolean(lascanopy.USE_TILE_BB,
-            self.tr("use tile bounding box (after tiling with buffer)"), False))
+                                           self.tr("use tile bounding box (after tiling with buffer)"), False))
         self.addParameter(ParameterBoolean(lascanopy.FILES_ARE_PLOTS,
-            self.tr("input file is single plot"), False))
+                                           self.tr("input file is single plot"), False))
         self.addParametersRasterOutputGUI()
         self.addParametersAdditionalGUI()
 

@@ -55,16 +55,16 @@ def TimestampFromTicks(ticks):
     return Timestamp(*time.localtime(ticks)[:6])
 
 
-class ConnectionError(StandardError):
+class ConnectionError(Exception):
 
     def __init__(self, *args, **kwargs):
-        super(StandardError, self).__init__(*args, **kwargs)
+        super(Exception, self).__init__(*args, **kwargs)
 
 
-class ExecError(StandardError):
+class ExecError(Exception):
 
     def __init__(self, *args, **kwargs):
-        super(StandardError, self).__init__(*args, **kwargs)
+        super(Exception, self).__init__(*args, **kwargs)
 
 
 class QtSqlDBCursor:

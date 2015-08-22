@@ -37,6 +37,7 @@ from .fieldsmapping import ParameterFieldsMapping
 from .ui.FieldsMapperDialogs import (FieldsMapperParametersDialog,
                                      FieldsMapperModelerParametersDialog)
 
+
 class FieldsMapper(GeoAlgorithm):
 
     INPUT_LAYER = 'INPUT_LAYER'
@@ -51,12 +52,12 @@ class FieldsMapper(GeoAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('Refactor fields')
         self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
         self.addParameter(ParameterVector(self.INPUT_LAYER,
-            self.tr('Input layer'),
-            [ParameterVector.VECTOR_TYPE_ANY], False))
+                                          self.tr('Input layer'),
+                                          [ParameterVector.VECTOR_TYPE_ANY], False))
         self.addParameter(ParameterFieldsMapping(self.FIELDS_MAPPING,
-            self.tr('Fields mapping'), self.INPUT_LAYER))
+                                                 self.tr('Fields mapping'), self.INPUT_LAYER))
         self.addOutput(OutputVector(self.OUTPUT_LAYER,
-            self.tr('Refactored')))
+                                    self.tr('Refactored')))
 
     def getCustomParametersDialog(self):
         return FieldsMapperParametersDialog(self)

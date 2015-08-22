@@ -50,17 +50,17 @@ class GrassAlgorithmProvider(AlgorithmProvider):
         AlgorithmProvider.initializeSettings(self)
         if isWindows() or isMac():
             ProcessingConfig.addSetting(Setting(self.getDescription(),
-                GrassUtils.GRASS_FOLDER, self.tr('GRASS folder'),
-                GrassUtils.grassPath(), valuetype=Setting.FOLDER))
+                                                GrassUtils.GRASS_FOLDER, self.tr('GRASS folder'),
+                                                GrassUtils.grassPath(), valuetype=Setting.FOLDER))
             ProcessingConfig.addSetting(Setting(self.getDescription(),
-                GrassUtils.GRASS_WIN_SHELL, self.tr('Msys folder'),
-                GrassUtils.grassWinShell(), valuetype=Setting.FOLDER))
+                                                GrassUtils.GRASS_WIN_SHELL, self.tr('Msys folder'),
+                                                GrassUtils.grassWinShell(), valuetype=Setting.FOLDER))
         ProcessingConfig.addSetting(Setting(self.getDescription(),
-            GrassUtils.GRASS_LOG_COMMANDS,
-            self.tr('Log execution commands'), False))
+                                            GrassUtils.GRASS_LOG_COMMANDS,
+                                            self.tr('Log execution commands'), False))
         ProcessingConfig.addSetting(Setting(self.getDescription(),
-            GrassUtils.GRASS_LOG_CONSOLE,
-            self.tr('Log console output'), False))
+                                            GrassUtils.GRASS_LOG_CONSOLE,
+                                            self.tr('Log console output'), False))
 
     def unload(self):
         AlgorithmProvider.unload(self)
@@ -81,10 +81,10 @@ class GrassAlgorithmProvider(AlgorithmProvider):
                         self.preloadedAlgs.append(alg)
                     else:
                         ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                            self.tr('Could not open GRASS algorithm: %s' % descriptionFile))
-                except Exception, e:
+                                               self.tr('Could not open GRASS algorithm: %s' % descriptionFile))
+                except Exception as e:
                     ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                        self.tr('Could not open GRASS algorithm: %s' % descriptionFile))
+                                           self.tr('Could not open GRASS algorithm: %s' % descriptionFile))
         self.preloadedAlgs.append(nviz())
 
     def _loadAlgorithms(self):

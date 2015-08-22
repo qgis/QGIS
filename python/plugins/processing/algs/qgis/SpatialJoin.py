@@ -59,24 +59,24 @@ class SpatialJoin(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
 
         self.addParameter(ParameterVector(self.TARGET,
-            self.tr('Target vector layer'),
-            [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Target vector layer'),
+                                          [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterVector(self.JOIN,
-            self.tr('Join vector layer'),
-            [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Join vector layer'),
+                                          [ParameterVector.VECTOR_TYPE_ANY]))
         predicates = list(ParameterGeometryPredicate.predicates)
         predicates.remove('disjoint')
         self.addParameter(ParameterGeometryPredicate(self.PREDICATE,
-            self.tr('Geometric predicate'),
-            left=self.TARGET, right=self.JOIN,
-            enabledPredicates=predicates))
+                                                     self.tr('Geometric predicate'),
+                                                     left=self.TARGET, right=self.JOIN,
+                                                     enabledPredicates=predicates))
         self.addParameter(ParameterSelection(self.SUMMARY,
-            self.tr('Attribute summary'), self.SUMMARYS))
+                                             self.tr('Attribute summary'), self.SUMMARYS))
         self.addParameter(ParameterString(self.STATS,
-            self.tr('Statistics for summary (comma separated)'),
-            'sum,mean,min,max,median', optional=True))
+                                          self.tr('Statistics for summary (comma separated)'),
+                                          'sum,mean,min,max,median', optional=True))
         self.addParameter(ParameterSelection(self.KEEP,
-            self.tr('Joined table'), self.KEEPS))
+                                             self.tr('Joined table'), self.KEEPS))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Joined layer')))
 
     def processAlgorithm(self, progress):
@@ -238,7 +238,6 @@ class SpatialJoin(GeoAlgorithm):
 
             progress.setPercentage(int(c * total))
         del writer
-
 
     def _filterNull(self, values):
         """Takes an iterator of values and returns a new iterator

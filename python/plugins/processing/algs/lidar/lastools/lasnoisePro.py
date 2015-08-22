@@ -30,6 +30,7 @@ from LAStoolsAlgorithm import LAStoolsAlgorithm
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterSelection
 
+
 class lasnoisePro(LAStoolsAlgorithm):
 
     ISOLATED = "ISOLATED"
@@ -44,22 +45,21 @@ class lasnoisePro(LAStoolsAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParameter(ParameterNumber(lasnoisePro.ISOLATED,
-            self.tr("isolated if surrounding cells have only"), 0, None, 5))
+                                          self.tr("isolated if surrounding cells have only"), 0, None, 5))
         self.addParameter(ParameterNumber(lasnoisePro.STEP_XY,
-            self.tr("resolution of isolation grid in xy"), 0, None, 4.0))
+                                          self.tr("resolution of isolation grid in xy"), 0, None, 4.0))
         self.addParameter(ParameterNumber(lasnoisePro.STEP_Z,
-            self.tr("resolution of isolation grid in z"), 0, None, 4.0))
+                                          self.tr("resolution of isolation grid in z"), 0, None, 4.0))
         self.addParameter(ParameterSelection(lasnoisePro.OPERATION,
-            self.tr("what to do with isolated points"), lasnoisePro.OPERATIONS, 0))
+                                             self.tr("what to do with isolated points"), lasnoisePro.OPERATIONS, 0))
         self.addParameter(ParameterNumber(lasnoisePro.CLASSIFY_AS,
-            self.tr("classify as"), 0, None, 7))
+                                          self.tr("classify as"), 0, None, 7))
         self.addParametersOutputDirectoryGUI()
         self.addParametersOutputAppendixGUI()
         self.addParametersPointOutputFormatGUI()
         self.addParametersAdditionalGUI()
         self.addParametersCoresGUI()
         self.addParametersVerboseGUI()
-
 
     def processAlgorithm(self, progress):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasnoise")]

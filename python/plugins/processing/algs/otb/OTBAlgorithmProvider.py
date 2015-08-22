@@ -47,7 +47,6 @@ class OTBAlgorithmProvider(AlgorithmProvider):
         self.activate = True
         self.createAlgsList()
 
-
     def getDescription(self):
         return self.tr("Orfeo Toolbox (Image analysis)")
 
@@ -72,32 +71,31 @@ class OTBAlgorithmProvider(AlgorithmProvider):
                         self.preloadedAlgs.append(alg)
                     else:
                         ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                            self.tr("Could not open OTB algorithm: %s" % descriptionFile))
-                except Exception, e:
+                                               self.tr("Could not open OTB algorithm: %s" % descriptionFile))
+                except Exception as e:
                     ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                        self.tr("Could not open OTB algorithm: %s" % descriptionFile))
-
+                                           self.tr("Could not open OTB algorithm: %s" % descriptionFile))
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
         if OTBUtils.findOtbPath() is None:
             ProcessingConfig.addSetting(Setting(self.getDescription(),
-                OTBUtils.OTB_FOLDER,
-                self.tr("OTB command line tools folder"), OTBUtils.otbPath(),
-                valuetype=Setting.FOLDER))
+                                                OTBUtils.OTB_FOLDER,
+                                                self.tr("OTB command line tools folder"), OTBUtils.otbPath(),
+                                                valuetype=Setting.FOLDER))
         if OTBUtils.findOtbLibPath() is None:
             ProcessingConfig.addSetting(Setting(self.getDescription(),
-                OTBUtils.OTB_LIB_FOLDER,
-                self.tr("OTB applications folder"), OTBUtils.otbLibPath(),
-                valuetype=Setting.FOLDER))
+                                                OTBUtils.OTB_LIB_FOLDER,
+                                                self.tr("OTB applications folder"), OTBUtils.otbLibPath(),
+                                                valuetype=Setting.FOLDER))
         ProcessingConfig.addSetting(Setting(self.getDescription(),
-            OTBUtils.OTB_SRTM_FOLDER,
-            self.tr("SRTM tiles folder"), OTBUtils.otbSRTMPath(),
-            valuetype=Setting.FOLDER))
+                                            OTBUtils.OTB_SRTM_FOLDER,
+                                            self.tr("SRTM tiles folder"), OTBUtils.otbSRTMPath(),
+                                            valuetype=Setting.FOLDER))
         ProcessingConfig.addSetting(Setting(self.getDescription(),
-            OTBUtils.OTB_GEOID_FILE,
-            self.tr("Geoid file"), OTBUtils.otbGeoidPath(),
-            valuetype=Setting.FOLDER))
+                                            OTBUtils.OTB_GEOID_FILE,
+                                            self.tr("Geoid file"), OTBUtils.otbGeoidPath(),
+                                            valuetype=Setting.FOLDER))
 
     def unload(self):
         AlgorithmProvider.unload(self)

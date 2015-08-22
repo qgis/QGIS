@@ -33,6 +33,7 @@ from LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.core.outputs import OutputFile
 
+
 class lasprecision(LAStoolsAlgorithm):
 
     OUTPUT = "OUTPUT"

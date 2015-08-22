@@ -115,7 +115,7 @@ class NumberInputDialog(BASE, WIDGET):
         extent = iface.mapCanvas().fullExtent()
         extentItem = QTreeWidgetItem()
         extentItem.setText(0,
-                self.tr('Full extent of all layers in map canvas'))
+                           self.tr('Full extent of all layers in map canvas'))
         extentItem.addChild(TreeValueItem(self.tr('Min X'), extent.xMinimum()))
         extentItem.addChild(TreeValueItem(self.tr('Max X'), extent.xMaximum()))
         extentItem.addChild(TreeValueItem(self.tr('Min Y'), extent.yMinimum()))
@@ -136,7 +136,7 @@ class NumberInputDialog(BASE, WIDGET):
             QDialog.accept(self)
         except:
             QMessageBox.critical(self, self.tr('Wrong expression'),
-                    self.tr('The expression entered is not correct'))
+                                 self.tr('The expression entered is not correct'))
 
     def reject(self):
         self.value = None

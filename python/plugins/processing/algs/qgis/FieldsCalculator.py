@@ -40,6 +40,7 @@ from processing.tools import dataobjects, vector, system
 
 from ui.FieldsCalculatorDialog import FieldsCalculatorDialog
 
+
 class FieldsCalculator(GeoAlgorithm):
 
     INPUT_LAYER = 'INPUT_LAYER'
@@ -58,17 +59,17 @@ class FieldsCalculator(GeoAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('Field calculator')
         self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
         self.addParameter(ParameterVector(self.INPUT_LAYER,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
         self.addParameter(ParameterString(self.FIELD_NAME,
-            self.tr('Result field name')))
+                                          self.tr('Result field name')))
         self.addParameter(ParameterSelection(self.FIELD_TYPE,
-            self.tr('Field type'), self.TYPE_NAMES))
+                                             self.tr('Field type'), self.TYPE_NAMES))
         self.addParameter(ParameterNumber(self.FIELD_LENGTH,
-            self.tr('Field length'), 1, 255, 10))
+                                          self.tr('Field length'), 1, 255, 10))
         self.addParameter(ParameterNumber(self.FIELD_PRECISION,
-            self.tr('Field precision'), 0, 15, 3))
+                                          self.tr('Field precision'), 0, 15, 3))
         self.addParameter(ParameterBoolean(self.NEW_FIELD,
-            self.tr('Create new field'), True))
+                                           self.tr('Create new field'), True))
         self.addParameter(ParameterString(self.FORMULA, self.tr('Formula')))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Calculated')))
 
@@ -150,7 +151,6 @@ class FieldsCalculator(GeoAlgorithm):
         fieldName = self.getParameterValue(self.FIELD_NAME).strip()
         if newField and len(fieldName) == 0:
             return self.tr('Field name is not set. Please enter a field name')
-
 
     def getCustomParametersDialog(self):
         return FieldsCalculatorDialog(self)

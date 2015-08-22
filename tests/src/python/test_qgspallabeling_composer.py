@@ -239,7 +239,7 @@ class TestComposerBase(TestQgsPalLabeling):
             ]
         elif PDFUTIL.strip().endswith('mudraw'):
             call = [
-                PDFUTIL,  '-c', 'rgba',
+                PDFUTIL, '-c', 'rgba',
                 '-r', str(dpi), '-w', str(width), '-h', str(height),
                 # '-b', '8',
                 '-o', filepath, pdfpath
@@ -344,9 +344,11 @@ class TestComposerSvgPoint(TestComposerPointBase, TestPointBase):
 
 
 class TestComposerSvgVsComposerPoint(TestComposerPointBase, TestPointBase):
+
     """
     Compare only to composer image, which is already compared to canvas point
     """
+
     def setUp(self):
         """Run before each test."""
         super(TestComposerSvgVsComposerPoint, self).setUp()
@@ -365,9 +367,11 @@ class TestComposerPdfPoint(TestComposerPointBase, TestPointBase):
 
 
 class TestComposerPdfVsComposerPoint(TestComposerPointBase, TestPointBase):
+
     """
     Compare only to composer image, which is already compared to canvas point
     """
+
     def setUp(self):
         """Run before each test."""
         super(TestComposerPdfVsComposerPoint, self).setUp()
@@ -375,6 +379,7 @@ class TestComposerPdfVsComposerPoint(TestComposerPointBase, TestPointBase):
         self.configTest('pal_composer', 'sp_img')
         self._Mismatch = 50
         self._ColorTol = 18
+
 
 class TestComposerLineBase(TestComposerBase):
 
@@ -412,9 +417,11 @@ class TestComposerSvgLine(TestComposerLineBase, TestLineBase):
 
 
 class TestComposerSvgVsComposerLine(TestComposerLineBase, TestLineBase):
+
     """
     Compare only to composer image, which is already compared to canvas line
     """
+
     def setUp(self):
         """Run before each test."""
         super(TestComposerSvgVsComposerLine, self).setUp()
@@ -433,9 +440,11 @@ class TestComposerPdfLine(TestComposerLineBase, TestLineBase):
 
 
 class TestComposerPdfVsComposerLine(TestComposerLineBase, TestLineBase):
+
     """
     Compare only to composer image, which is already compared to canvas line
     """
+
     def setUp(self):
         """Run before each test."""
         super(TestComposerPdfVsComposerLine, self).setUp()

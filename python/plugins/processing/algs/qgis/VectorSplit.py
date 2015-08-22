@@ -34,6 +34,7 @@ from processing.core.outputs import OutputDirectory
 from processing.tools import dataobjects, vector
 from processing.tools.system import mkdir
 
+
 class VectorSplit(GeoAlgorithm):
 
     INPUT = 'INPUT'
@@ -44,9 +45,9 @@ class VectorSplit(GeoAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('Split vector layer')
         self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
         self.addParameter(ParameterVector(self.INPUT,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterTableField(self.FIELD,
-            self.tr('Unique ID field'), self.INPUT))
+                                              self.tr('Unique ID field'), self.INPUT))
 
         self.addOutput(OutputDirectory(self.OUTPUT, self.tr('Output directory')))
 

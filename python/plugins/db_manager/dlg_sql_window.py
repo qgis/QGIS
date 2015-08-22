@@ -24,7 +24,7 @@ The content of this file is based on
 
 from PyQt4.QtCore import Qt, QObject, QSettings, QByteArray, SIGNAL, pyqtSignal
 from PyQt4.QtGui import QDialog, QWidget, QAction, QKeySequence, \
-                        QDialogButtonBox, QApplication, QCursor, QMessageBox, QClipboard, QInputDialog, QIcon
+    QDialogButtonBox, QApplication, QCursor, QMessageBox, QClipboard, QInputDialog, QIcon
 from PyQt4.Qsci import QsciAPIs
 
 from qgis.core import QgsProject
@@ -48,6 +48,7 @@ import re
 
 class DlgSqlWindow(QWidget, Ui_Dialog):
     nameChanged = pyqtSignal(str)
+
     def __init__(self, iface, db, parent=None):
         QWidget.__init__(self, parent)
         self.iface = iface
@@ -90,7 +91,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
             self.loadAsLayerToggled(False)
 
         self._createViewAvailable = self.db.connector.hasCreateSpatialViewSupport()
-        self.btnCreateView.setVisible( self._createViewAvailable )
+        self.btnCreateView.setVisible(self._createViewAvailable)
         if self._createViewAvailable:
             self.btnCreateView.clicked.connect(self.createView)
 
@@ -115,7 +116,8 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
 
     def storePreset(self):
         query = self._getSqlQuery()
-        if query == "": return
+        if query == "":
+            return
         name = self.presetName.text()
         QgsProject.instance().writeEntry('DBManager', 'savedQueries/q' + unicode(name.__hash__()) + '/name', name)
         QgsProject.instance().writeEntry('DBManager', 'savedQueries/q' + unicode(name.__hash__()) + '/query', query)
@@ -148,14 +150,16 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
     def executeSql(self):
 
         sql = self._getSqlQuery()
-        if sql == "": return
+        if sql == "":
+            return
 
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
 
         # delete the old model
         old_model = self.viewResult.model()
         self.viewResult.setModel(None)
-        if old_model: old_model.deleteLater()
+        if old_model:
+            old_model.deleteLater()
 
         self.uniqueCombo.clear()
         self.geomCombo.clear()
@@ -166,13 +170,12 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
             self.viewResult.setModel(model)
             self.lblResult.setText(self.tr("%d rows, %.1f seconds") % (model.affectedRows(), model.secs()))
 
-        except BaseError, e:
+        except BaseError as e:
             QApplication.restoreOverrideCursor()
             DlgDbError.showError(e, self)
             return
 
-        cols = self.viewResult.model().columnNames()
-        cols.sort()
+        cols = sorted(self.viewResult.model().columnNames())
         self.uniqueCombo.addItems(cols)
         self.geomCombo.addItems(cols)
 
@@ -192,7 +195,8 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
             geomFieldName = None
 
         query = self._getSqlQuery()
-        if query == "": return
+        if query == "":
+            return
 
         # remove a trailing ';' from query if present
         if query.strip().endswith(';'):
@@ -228,7 +232,8 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
 
     def fillColumnCombos(self):
         query = self._getSqlQuery()
-        if query == "": return
+        if query == "":
+            return
 
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         self.uniqueCombo.clear()
@@ -250,7 +255,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         # get all the columns
         cols = []
         connector = self.db.connector
-        sql = u"SELECT * FROM (%s\n) AS %s LIMIT 0" % ( unicode(query), connector.quoteId(alias) )
+        sql = u"SELECT * FROM (%s\n) AS %s LIMIT 0" % (unicode(query), connector.quoteId(alias))
 
         c = None
         try:
@@ -328,18 +333,18 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         api.prepare()
         self.editSql.lexer().setAPIs(api)
 
-    def displayQueryBuilder( self ):
-        dlg = QueryBuilderDlg( self.iface, self.db, self, reset=self.queryBuilderFirst )
+    def displayQueryBuilder(self):
+        dlg = QueryBuilderDlg(self.iface, self.db, self, reset=self.queryBuilderFirst)
         self.queryBuilderFirst = False
         r = dlg.exec_()
         if r == QDialog.Accepted:
-            self.editSql.setText( dlg.query )
+            self.editSql.setText(dlg.query)
 
-    def createView( self ):
+    def createView(self):
         name, ok = QInputDialog.getText(None, "View name", "View name")
         if ok:
             try:
-                self.db.connector.createSpatialView( name, self._getSqlQuery() )
+                self.db.connector.createSpatialView(name, self._getSqlQuery())
             except BaseError as e:
                 DlgDbError.showError(e, self)
 

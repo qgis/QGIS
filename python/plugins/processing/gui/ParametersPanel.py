@@ -234,7 +234,7 @@ class ParametersPanel(BASE, WIDGET):
                 for layer in layers:
                     items.append((self.getExtendedLayerName(layer), layer))
                 # if already set, put first in list
-                for i,(name,layer) in enumerate(items):
+                for i, (name, layer) in enumerate(items):
                     if layer and layer.source() == param.value:
                         items.insert(0, items.pop(i))
                 item = InputLayerSelectorPanel(items, param)
@@ -256,7 +256,7 @@ class ParametersPanel(BASE, WIDGET):
                 for layer in layers:
                     items.append((layer.name(), layer))
                 # if already set, put first in list
-                for i,(name,layer) in enumerate(items):
+                for i, (name, layer) in enumerate(items):
                     if layer and layer.source() == param.value:
                         items.insert(0, items.pop(i))
                 item = InputLayerSelectorPanel(items, param)

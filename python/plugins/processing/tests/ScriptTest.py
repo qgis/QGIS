@@ -33,6 +33,7 @@ from processing.tests.TestData import polygons, union
 
 
 class ScriptTest(unittest.TestCase):
+
     """Tests that use scripts."""
 
     def test_scriptcreatetilingfromvectorlayer(self):

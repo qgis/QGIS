@@ -29,6 +29,7 @@ from LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.core.parameters import ParameterBoolean
 
+
 class lasduplicatePro(LAStoolsAlgorithm):
 
     LOWEST_Z = "LOWEST_Z"
@@ -41,20 +42,19 @@ class lasduplicatePro(LAStoolsAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParameter(ParameterBoolean(lasduplicatePro.LOWEST_Z,
-            self.tr("keep duplicate with lowest z coordinate"), False))
+                                           self.tr("keep duplicate with lowest z coordinate"), False))
         self.addParameter(ParameterBoolean(lasduplicatePro.UNIQUE_XYZ,
-            self.tr("only remove duplicates in x y and z"), False))
+                                           self.tr("only remove duplicates in x y and z"), False))
         self.addParameter(ParameterBoolean(lasduplicatePro.SINGLE_RETURNS,
-            self.tr("mark surviving duplicate as single return"), False))
+                                           self.tr("mark surviving duplicate as single return"), False))
         self.addParameter(ParameterBoolean(lasduplicatePro.RECORD_REMOVED,
-            self.tr("record removed duplicates"), False))
+                                           self.tr("record removed duplicates"), False))
         self.addParametersOutputDirectoryGUI()
         self.addParametersOutputAppendixGUI()
         self.addParametersPointOutputFormatGUI()
         self.addParametersAdditionalGUI()
         self.addParametersCoresGUI()
         self.addParametersVerboseGUI()
-
 
     def processAlgorithm(self, progress):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasduplicate")]

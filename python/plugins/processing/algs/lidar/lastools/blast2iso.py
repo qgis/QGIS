@@ -29,6 +29,7 @@ from LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.core.parameters import ParameterNumber
 
+
 class blast2iso(LAStoolsAlgorithm):
 
     SMOOTH = "SMOOTH"
@@ -43,18 +44,18 @@ class blast2iso(LAStoolsAlgorithm):
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParameter(ParameterNumber(blast2iso.SMOOTH,
-            self.tr("smooth underlying TIN"), 0, None, 0))
+                                          self.tr("smooth underlying TIN"), 0, None, 0))
         self.addParameter(ParameterNumber(blast2iso.ISO_EVERY,
-            self.tr("extract isoline with a spacing of"), 0, None, 10.0))
+                                          self.tr("extract isoline with a spacing of"), 0, None, 10.0))
         self.addParameter(ParameterNumber(blast2iso.CLEAN,
-            self.tr("clean isolines shorter than (0 = do not clean)"),
-            None, None, 0.0))
+                                          self.tr("clean isolines shorter than (0 = do not clean)"),
+                                          None, None, 0.0))
         self.addParameter(ParameterNumber(blast2iso.SIMPLIFY_LENGTH,
-            self.tr("simplify segments shorter than (0 = do not simplify)"),
-            None, None, 0.0))
+                                          self.tr("simplify segments shorter than (0 = do not simplify)"),
+                                          None, None, 0.0))
         self.addParameter(ParameterNumber(blast2iso.SIMPLIFY_AREA,
-            self.tr("simplify segments pairs with area less than (0 = do not simplify)"),
-            None, None, 0.0))
+                                          self.tr("simplify segments pairs with area less than (0 = do not simplify)"),
+                                          None, None, 0.0))
         self.addParametersVectorOutputGUI()
         self.addParametersAdditionalGUI()
 

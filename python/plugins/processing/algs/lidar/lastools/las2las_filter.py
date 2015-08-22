@@ -42,7 +42,6 @@ class las2las_filter(LAStoolsAlgorithm):
         self.addParametersPointOutputGUI()
         self.addParametersAdditionalGUI()
 
-
     def processAlgorithm(self, progress):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2las")]
         self.addParametersVerboseCommands(commands)

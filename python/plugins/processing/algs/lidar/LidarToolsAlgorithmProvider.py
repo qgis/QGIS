@@ -128,6 +128,7 @@ from fusion.MergeData import MergeData
 from fusion.FilterData import FilterData
 from fusion.FusionUtils import FusionUtils
 
+
 class LidarToolsAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
@@ -186,7 +187,7 @@ class LidarToolsAlgorithmProvider(AlgorithmProvider):
                 hugeFileGroundClassify(), hugeFileNormalize()
             ]
         else:
-            lastoolsPipe = [ ]
+            lastoolsPipe = []
         for alg in lastoolsPipe:
             alg.group = 'LAStools Pipelines'
         self.algsList.extend(lastoolsPipe)

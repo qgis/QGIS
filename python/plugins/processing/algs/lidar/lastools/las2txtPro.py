@@ -29,6 +29,7 @@ from LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.core.parameters import ParameterString
 
+
 class las2txtPro(LAStoolsAlgorithm):
 
     PARSE = "PARSE"
@@ -38,7 +39,7 @@ class las2txtPro(LAStoolsAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParameter(ParameterString(las2txtPro.PARSE,
-            self.tr("parse string"), "xyz"))
+                                          self.tr("parse string"), "xyz"))
         self.addParametersOutputDirectoryGUI()
         self.addParametersOutputAppendixGUI()
         self.addParametersAdditionalGUI()

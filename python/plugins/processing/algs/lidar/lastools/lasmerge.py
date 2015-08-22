@@ -29,6 +29,7 @@ from LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.core.parameters import ParameterFile
 
+
 class lasmerge(LAStoolsAlgorithm):
 
     FILE2 = "FILE2"

@@ -33,6 +33,7 @@ from .ui.ui_DlgCreateIndex import Ui_DbManagerDlgCreateIndex as Ui_Dialog
 
 
 class DlgCreateIndex(QDialog, Ui_Dialog):
+
     def __init__(self, parent=None, table=None, db=None):
         QDialog.__init__(self, parent)
         self.table = table
@@ -44,7 +45,6 @@ class DlgCreateIndex(QDialog, Ui_Dialog):
         self.connect(self.cboColumn, SIGNAL("currentIndexChanged(int)"), self.columnChanged)
         self.populateColumns()
 
-
     def populateColumns(self):
         self.cboColumn.clear()
         for fld in self.table.fields():
@@ -52,7 +52,6 @@ class DlgCreateIndex(QDialog, Ui_Dialog):
 
     def columnChanged(self):
         self.editName.setText(u"idx_%s_%s" % (self.table.name, self.cboColumn.currentText()))
-
 
     def createIndex(self):
         idx = self.getIndex()
@@ -64,7 +63,7 @@ class DlgCreateIndex(QDialog, Ui_Dialog):
         QApplication.setOverrideCursor(Qt.WaitCursor)
         try:
             self.table.addIndex(idx)
-        except DbError, e:
+        except DbError as e:
             DlgDbError.showError(e, self)
             return
         finally:

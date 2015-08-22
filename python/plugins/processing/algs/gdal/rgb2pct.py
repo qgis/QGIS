@@ -40,14 +40,13 @@ class rgb2pct(GdalAlgorithm):
     OUTPUT = 'OUTPUT'
     NCOLORS = 'NCOLORS'
 
-
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('RGB to PCT')
         self.group, self.i18n_group = self.trAlgorithm('[GDAL] Conversion')
         self.addParameter(ParameterRaster(rgb2pct.INPUT,
-            self.tr('Input layer'), False))
+                                          self.tr('Input layer'), False))
         self.addParameter(ParameterNumber(rgb2pct.NCOLORS,
-            self.tr('Number of colors'), 1, None, 2))
+                                          self.tr('Number of colors'), 1, None, 2))
         self.addOutput(OutputRaster(rgb2pct.OUTPUT, self.tr('RGB to PCT')))
 
     def getConsoleCommands(self):

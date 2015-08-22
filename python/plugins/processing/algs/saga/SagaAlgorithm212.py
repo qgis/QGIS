@@ -102,7 +102,6 @@ class SagaAlgorithm212(GeoAlgorithm):
             line = lines.readline().strip('\n').strip()
         lines.close()
 
-
     def processAlgorithm(self, progress):
         commands = list()
         self.exportedLayers = {}
@@ -199,7 +198,7 @@ class SagaAlgorithm212(GeoAlgorithm):
                 values = param.value.split(',')
                 for i in range(0, len(values), 3):
                     s = values[i] + '\t' + values[i + 1] + '\t' + values[i
-                            + 2] + '\n'
+                                                                         + 2] + '\n'
                     f.write(s)
                 f.close()
                 command += ' -' + param.name + ' "' + tempTableFile + '"'
@@ -221,7 +220,6 @@ class SagaAlgorithm212(GeoAlgorithm):
             command += ' -' + out.name + ' "' + out.getCompatibleFileName(self) + '"'
 
         commands.append(command)
-
 
         # special treatment for RGB algorithm
         #TODO: improve this and put this code somewhere else
@@ -252,7 +250,6 @@ class SagaAlgorithm212(GeoAlgorithm):
                     prjFile = os.path.splitext(out.getCompatibleFileName(self))[0] + ".prj"
                 with open(prjFile, "w") as f:
                     f.write(self.crs.toWkt())
-
 
     def preProcessInputs(self):
         name = self.commandLineName().replace('.', '_')[len('saga:'):]
@@ -288,7 +285,6 @@ class SagaAlgorithm212(GeoAlgorithm):
                 break
         return cellsize
 
-
     def exportRasterLayer(self, source):
         global sessionExportedLayers
         if source in sessionExportedLayers:
@@ -310,7 +306,7 @@ class SagaAlgorithm212(GeoAlgorithm):
         destFilename = getTempFilenameInTempFolder(filename + '.sgrd')
         self.exportedLayers[source] = destFilename
         sessionExportedLayers[source] = destFilename
-        return 'io_gdal 0 -TRANSFORM -INTERPOL 0 -GRIDS "' + destFilename + '" -FILES "' + source +  '"'
+        return 'io_gdal 0 -TRANSFORM -INTERPOL 0 -GRIDS "' + destFilename + '" -FILES "' + source + '"'
 
     def checkParameterValuesBeforeExecuting(self):
         """
@@ -340,5 +336,3 @@ class SagaAlgorithm212(GeoAlgorithm):
                         extent2 = (layer.extent(), layer.height(), layer.width())
                         if extent != extent2:
                             return self.tr("Input layers do not have the same grid extent.")
-
-

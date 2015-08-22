@@ -44,7 +44,7 @@ class ExtractProjection(GdalAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('[GDAL] Projections')
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input file')))
         self.addParameter(ParameterBoolean(self.PRJ_FILE,
-            self.tr('Create also .prj file'), False))
+                                           self.tr('Create also .prj file'), False))
 
     def getConsoleCommands(self):
         return ""

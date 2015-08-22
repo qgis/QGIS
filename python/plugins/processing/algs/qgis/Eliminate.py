@@ -49,7 +49,7 @@ class Eliminate(GeoAlgorithm):
     COMPARISONVALUE = 'COMPARISONVALUE'
     COMPARISON = 'COMPARISON'
 
-    MODES = ['Largest area',  'Smallest Area', 'Largest common boundary']
+    MODES = ['Largest area', 'Smallest Area', 'Largest common boundary']
     MODE_LARGEST_AREA = 0
     MODE_SMALLEST_AREA = 1
     MODE_BOUNDARY = 2
@@ -58,11 +58,11 @@ class Eliminate(GeoAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('Eliminate sliver polygons')
         self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
         self.addParameter(ParameterVector(self.INPUT,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POLYGON]))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POLYGON]))
         self.addParameter(ParameterBoolean(self.KEEPSELECTION,
-            self.tr('Use current selection in input layer (works only if called from toolbox)'), False))
+                                           self.tr('Use current selection in input layer (works only if called from toolbox)'), False))
         self.addParameter(ParameterTableField(self.ATTRIBUTE,
-            self.tr('Selection attribute'), self.INPUT))
+                                              self.tr('Selection attribute'), self.INPUT))
         self.comparisons = [
             '==',
             '!=',
@@ -74,12 +74,12 @@ class Eliminate(GeoAlgorithm):
             'contains',
         ]
         self.addParameter(ParameterSelection(self.COMPARISON,
-            self.tr('Comparison'), self.comparisons, default=0))
+                                             self.tr('Comparison'), self.comparisons, default=0))
         self.addParameter(ParameterString(self.COMPARISONVALUE,
-            self.tr('Value'), default='0'))
+                                          self.tr('Value'), default='0'))
         self.addParameter(ParameterSelection(self.MODE,
-            self.tr('Merge selection with the neighbouring polygon with the'),
-            self.MODES))
+                                             self.tr('Merge selection with the neighbouring polygon with the'),
+                                             self.MODES))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Cleaned')))
 
     def processAlgorithm(self, progress):
@@ -144,7 +144,7 @@ class Eliminate(GeoAlgorithm):
             if (comparison == 'begins with' or comparison == 'contains') \
                and selectType != 10:
                 selectionError = True
-                msg =  self.tr('"%s" can only be used with string fields' % comparison)
+                msg = self.tr('"%s" can only be used with string fields' % comparison)
 
             selected = []
 
@@ -195,7 +195,7 @@ class Eliminate(GeoAlgorithm):
 
         if inLayer.selectedFeatureCount() == 0:
             ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
-                self.tr('%s: (No selection in input layer "%s")' % (self.commandLineName(), self.getParameterValue(self.INPUT))))
+                                   self.tr('%s: (No selection in input layer "%s")' % (self.commandLineName(), self.getParameterValue(self.INPUT))))
 
         # Keep references to the features to eliminate
         featToEliminate = []
@@ -303,7 +303,7 @@ class Eliminate(GeoAlgorithm):
         provider = inLayer.dataProvider()
         output = self.getOutputFromName(self.OUTPUT)
         writer = output.getVectorWriter(provider.fields(),
-                provider.geometryType(), inLayer.crs())
+                                        provider.geometryType(), inLayer.crs())
 
         # Write all features that are left over to output layer
         iterator = inLayer.getFeatures()

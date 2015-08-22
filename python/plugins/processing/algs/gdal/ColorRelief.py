@@ -57,11 +57,11 @@ class ColorRelief(GdalAlgorithm):
         self.addParameter(ParameterNumber(
             self.BAND, self.tr('Band number'), 1, 99, 1))
         self.addParameter(ParameterBoolean(self.COMPUTE_EDGES,
-            self.tr('Compute edges'), False))
+                                           self.tr('Compute edges'), False))
         self.addParameter(ParameterFile(self.COLOR_TABLE,
-            self.tr('Color configuration file'), optional=False))
+                                        self.tr('Color configuration file'), optional=False))
         self.addParameter(ParameterSelection(self.MATCH_MODE,
-            self.tr('Matching mode'), self.MATCHING_MODES, 0))
+                                             self.tr('Matching mode'), self.MATCHING_MODES, 0))
 
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Color relief')))
 

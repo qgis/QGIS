@@ -57,13 +57,13 @@ class Grid(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Vector creation tools')
 
         self.addParameter(ParameterSelection(self.TYPE,
-            self.tr('Grid type'), self.TYPES))
+                                             self.tr('Grid type'), self.TYPES))
         self.addParameter(ParameterExtent(self.EXTENT,
-            self.tr('Grid extent')))
+                                          self.tr('Grid extent')))
         self.addParameter(ParameterNumber(self.HSPACING,
-            self.tr('Horizontal spacing'), default=10.0))
+                                          self.tr('Horizontal spacing'), default=10.0))
         self.addParameter(ParameterNumber(self.VSPACING,
-            self.tr('Vertical spacing'), default=10.0))
+                                          self.tr('Vertical spacing'), default=10.0))
         self.addParameter(ParameterCrs(self.CRS, 'Grid CRS'))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Grid')))
@@ -109,7 +109,7 @@ class Grid(GeoAlgorithm):
                   ]
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
-            geometryType, crs)
+                                                                     geometryType, crs)
 
         if idx == 0:
             self._rectangleGridLine(
@@ -211,11 +211,11 @@ class Grid(GeoAlgorithm):
                     y3 = originY + (((row * 2) + 3) * halfVSpacing)
 
                 polyline = []
-                polyline.append(QgsPoint(x1,  y2))
-                polyline.append(QgsPoint(x2,  y1))
-                polyline.append(QgsPoint(x3,  y2))
-                polyline.append(QgsPoint(x2,  y3))
-                polyline.append(QgsPoint(x1,  y2))
+                polyline.append(QgsPoint(x1, y2))
+                polyline.append(QgsPoint(x2, y1))
+                polyline.append(QgsPoint(x3, y2))
+                polyline.append(QgsPoint(x2, y3))
+                polyline.append(QgsPoint(x1, y2))
 
                 ft.setGeometry(QgsGeometry.fromPolygon([polyline]))
                 ft.setAttributes([x1, y1, x3, y3])

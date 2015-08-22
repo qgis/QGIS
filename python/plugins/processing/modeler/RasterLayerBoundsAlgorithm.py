@@ -31,6 +31,7 @@ from processing.core.outputs import OutputNumber
 from processing.tools import dataobjects
 from processing.core.outputs import OutputExtent
 
+
 class RasterLayerBoundsAlgorithm(GeoAlgorithm):
 
     LAYER = 'LAYER'

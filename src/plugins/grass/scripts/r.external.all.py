@@ -82,7 +82,7 @@ try:
 except ImportError:
     import grass
 except:
-    raise Exception ("Cannot find 'grass' Python module. Python is supported by GRASS from version >= 6.4" )
+    raise Exception("Cannot find 'grass' Python module. Python is supported by GRASS from version >= 6.4")
 
 
 def import_directory_of_rasters(directory, recursive):
@@ -94,6 +94,7 @@ def import_directory_of_rasters(directory, recursive):
                 break
         for dirname in dirnames:
                 import_directory_of_rasters(dirname, recursive)
+
 
 def main():
     input = options['input']

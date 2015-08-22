@@ -86,7 +86,8 @@ try:
 except ImportError:
     import grass
 except:
-    raise Exception ("Cannot find 'grass' Python module. Python is supported by GRASS from version >= 6.4" )
+    raise Exception("Cannot find 'grass' Python module. Python is supported by GRASS from version >= 6.4")
+
 
 def main():
     host = options['host']
@@ -113,7 +114,7 @@ def main():
     # Try to connect
     print "Testing connection ..."
     sys.stdout.flush()
-    if grass.run_command('db.select', quiet=True, flags='c', driver="pg", database=conn, sql="select version()" ) != 0:
+    if grass.run_command('db.select', quiet=True, flags='c', driver="pg", database=conn, sql="select version()") != 0:
         if user or password:
             print "Deleting login (db.login) ..."
             sys.stdout.flush()

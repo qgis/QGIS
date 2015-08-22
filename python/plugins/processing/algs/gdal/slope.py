@@ -49,17 +49,17 @@ class slope(GdalAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('[GDAL] Analysis')
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterNumber(self.BAND,
-            self.tr('Band number'), 1, 99, 1))
+                                          self.tr('Band number'), 1, 99, 1))
         self.addParameter(ParameterBoolean(self.COMPUTE_EDGES,
-            self.tr('Compute edges'), False))
+                                           self.tr('Compute edges'), False))
         self.addParameter(ParameterBoolean(self.ZEVENBERGEN,
-            self.tr("Use Zevenbergen&Thorne formula (instead of the Horn's one)"),
-            False))
+                                           self.tr("Use Zevenbergen&Thorne formula (instead of the Horn's one)"),
+                                           False))
         self.addParameter(ParameterBoolean(self.AS_PERCENT,
-            self.tr('Slope expressed as percent (instead of degrees)'), False))
+                                           self.tr('Slope expressed as percent (instead of degrees)'), False))
         self.addParameter(ParameterNumber(self.SCALE,
-            self.tr('Scale (ratio of vert. units to horiz.)'),
-            0.0, 99999999.999999, 1.0))
+                                          self.tr('Scale (ratio of vert. units to horiz.)'),
+                                          0.0, 99999999.999999, 1.0))
 
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Slope')))
 

@@ -352,10 +352,10 @@ class FieldsMappingPanel(BASE, WIDGET):
         self.model.insertRows(rowCount, 1)
         index = self.model.index(rowCount, 0)
         self.fieldsView.selectionModel().select(index,
-            QtGui.QItemSelectionModel.SelectionFlags(QtGui.QItemSelectionModel.Clear
-                                                     + QtGui.QItemSelectionModel.Select
-                                                     + QtGui.QItemSelectionModel.Current
-                                                     + QtGui.QItemSelectionModel.Rows))
+                                                QtGui.QItemSelectionModel.SelectionFlags(QtGui.QItemSelectionModel.Clear
+                                                                                         + QtGui.QItemSelectionModel.Select
+                                                                                         + QtGui.QItemSelectionModel.Current
+                                                                                         + QtGui.QItemSelectionModel.Rows))
         self.fieldsView.scrollTo(index)
         self.fieldsView.scrollTo(index)
 

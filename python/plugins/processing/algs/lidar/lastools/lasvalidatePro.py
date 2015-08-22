@@ -30,6 +30,7 @@ from LAStoolsAlgorithm import LAStoolsAlgorithm
 from processing.core.parameters import ParameterBoolean
 from processing.core.outputs import OutputFile
 
+
 class lasvalidatePro(LAStoolsAlgorithm):
 
     ONE_REPORT_PER_FILE = "ONE_REPORT_PER_FILE"
@@ -40,7 +41,7 @@ class lasvalidatePro(LAStoolsAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParameter(ParameterBoolean(lasvalidatePro.ONE_REPORT_PER_FILE,
-            self.tr("generate one '*_LVS.xml' report per file"), False))
+                                           self.tr("generate one '*_LVS.xml' report per file"), False))
         self.addOutput(OutputFile(lasvalidatePro.OUTPUT, self.tr("Output XML file")))
         self.addParametersAdditionalGUI()
 

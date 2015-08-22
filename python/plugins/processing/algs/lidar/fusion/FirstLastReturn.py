@@ -39,7 +39,6 @@ class FirstLastReturn(FusionAlgorithm):
     OUTPUT = 'OUTPUT'
     SWITCH = 'SWITCH'
 
-
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('First&Last Return')
         self.group, self.i18n_group = self.trAlgorithm('Points')

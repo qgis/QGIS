@@ -31,6 +31,7 @@ from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterSelection
 
+
 class lasoverlapPro(LAStoolsAlgorithm):
 
     CHECK_STEP = "CHECK_STEP"
@@ -48,15 +49,15 @@ class lasoverlapPro(LAStoolsAlgorithm):
         self.addParametersFilesAreFlightlinesGUI()
         self.addParametersFilter1ReturnClassFlagsGUI()
         self.addParameter(ParameterNumber(lasoverlapPro.CHECK_STEP,
-            self.tr("size of grid used for overlap check"), 0, None, 2.0))
+                                          self.tr("size of grid used for overlap check"), 0, None, 2.0))
         self.addParameter(ParameterSelection(lasoverlapPro.ATTRIBUTE,
-            self.tr("attribute to check"), lasoverlapPro.ATTRIBUTES, 0))
+                                             self.tr("attribute to check"), lasoverlapPro.ATTRIBUTES, 0))
         self.addParameter(ParameterSelection(lasoverlapPro.OPERATION,
-            self.tr("operation on attribute per cell"), lasoverlapPro.OPERATIONS, 0))
+                                             self.tr("operation on attribute per cell"), lasoverlapPro.OPERATIONS, 0))
         self.addParameter(ParameterBoolean(lasoverlapPro.CREATE_OVERLAP_RASTER,
-            self.tr("create overlap raster"), True))
+                                           self.tr("create overlap raster"), True))
         self.addParameter(ParameterBoolean(lasoverlapPro.CREATE_DIFFERENCE_RASTER,
-            self.tr("create difference raster"), True))
+                                           self.tr("create difference raster"), True))
         self.addParametersOutputDirectoryGUI()
         self.addParametersOutputAppendixGUI()
         self.addParametersRasterOutputFormatGUI()

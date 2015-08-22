@@ -32,7 +32,7 @@ class TestQgsFeature(TestCase):
         feat = QgsFeature()
         feat.initAttributes(1)
         feat.setAttribute(0, "text")
-        feat.setGeometry(QgsGeometry.fromPoint(QgsPoint(123,456)))
+        feat.setGeometry(QgsGeometry.fromPoint(QgsPoint(123, 456)))
         myId = feat.id()
         myExpectedId = 0
         myMessage = '\nExpected: %s\nGot: %s' % (myExpectedId, myId)
@@ -59,10 +59,10 @@ class TestQgsFeature(TestCase):
         fit.nextFeature(feat)
         fit.close()
         myAttributes = feat.attributes()
-        myExpectedAttributes = [ "Highway", 1 ]
+        myExpectedAttributes = ["Highway", 1]
 
         # Only for printing purposes
-        myExpectedAttributes = [ "Highway",  1 ]
+        myExpectedAttributes = ["Highway", 1]
         myMessage = '\nExpected: %s\nGot: %s' % (
             myExpectedAttributes,
             myAttributes
@@ -84,14 +84,14 @@ class TestQgsFeature(TestCase):
         feat[1] = "text2"
         feat[2] = "text3"
         feat.deleteAttribute(1)
-        myAttrs = [ feat[0], feat[1] ]
-        myExpectedAttrs = [ "text1", "text3" ]
+        myAttrs = [feat[0], feat[1]]
+        myExpectedAttrs = ["text1", "text3"]
         myMessage = '\nExpected: %s\nGot: %s' % (str(myExpectedAttrs), str(myAttrs))
         assert myAttrs == myExpectedAttrs, myMessage
 
     def test_SetGeometry(self):
         feat = QgsFeature()
-        feat.setGeometry(QgsGeometry.fromPoint(QgsPoint(123,456)))
+        feat.setGeometry(QgsGeometry.fromPoint(QgsPoint(123, 456)))
         myGeometry = feat.geometry()
         myExpectedGeometry = "!None"
         myMessage = '\nExpected: %s\nGot: %s' % (myExpectedGeometry, myGeometry)

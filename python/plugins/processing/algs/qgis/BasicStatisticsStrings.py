@@ -54,14 +54,14 @@ class BasicStatisticsStrings(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
-            self.tr('Input vector layer'),
-            ParameterVector.VECTOR_TYPE_ANY, False))
+                                          self.tr('Input vector layer'),
+                                          ParameterVector.VECTOR_TYPE_ANY, False))
         self.addParameter(ParameterTableField(self.FIELD_NAME,
-            self.tr('Field to calculate statistics on'),
-            self.INPUT_LAYER, ParameterTableField.DATA_TYPE_STRING))
+                                              self.tr('Field to calculate statistics on'),
+                                              self.INPUT_LAYER, ParameterTableField.DATA_TYPE_STRING))
 
         self.addOutput(OutputHTML(self.OUTPUT_HTML_FILE,
-            self.tr('Statistics for text')))
+                                  self.tr('Statistics for text')))
 
         self.addOutput(OutputNumber(self.MIN_LEN, self.tr('Minimum length')))
         self.addOutput(OutputNumber(self.MAX_LEN, self.tr('Maximum length')))

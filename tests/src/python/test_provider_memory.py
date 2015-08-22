@@ -34,6 +34,7 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestPyQgsMemoryProvider(TestCase, ProviderTestCase):
+
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""

@@ -69,13 +69,13 @@ class EditRenderingStylesDialog(BASE, WIDGET):
             if isinstance(output, (OutputVector, OutputRaster)):
                 if not output.hidden:
                     item = QTableWidgetItem(output.description + '<'
-                            + output.__class__.__name__ + '>')
+                                            + output.__class__.__name__ + '>')
                     item.setFlags(Qt.ItemIsEnabled)
                     self.tblStyles.setItem(i, 0, item)
                     item = RenderingStyleFilePanel()
                     style = \
                         RenderingStyles.getStyle(self.alg.commandLineName(),
-                            output.name)
+                                                 output.name)
                     if style:
                         item.setText(unicode(style))
                     self.valueItems[output.name] = item

@@ -47,15 +47,15 @@ class JoinAttributes(GeoAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('Join attributes table')
         self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
         self.addParameter(ParameterVector(self.INPUT_LAYER,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
         self.addParameter(ParameterTable(self.INPUT_LAYER_2,
-            self.tr('Input layer 2'), False))
+                                         self.tr('Input layer 2'), False))
         self.addParameter(ParameterTableField(self.TABLE_FIELD,
-            self.tr('Table field'), self.INPUT_LAYER))
+                                              self.tr('Table field'), self.INPUT_LAYER))
         self.addParameter(ParameterTableField(self.TABLE_FIELD_2,
-            self.tr('Table field 2'), self.INPUT_LAYER_2))
+                                              self.tr('Table field 2'), self.INPUT_LAYER_2))
         self.addOutput(OutputVector(self.OUTPUT_LAYER,
-            self.tr('Joined layer')))
+                                    self.tr('Joined layer')))
 
     def processAlgorithm(self, progress):
         input = self.getParameterValue(self.INPUT_LAYER)
@@ -75,10 +75,10 @@ class JoinAttributes(GeoAlgorithm):
         joinField2Index = layer2.fieldNameIndex(field2)
 
         # Output
-        outFields = vector.combineVectorFields(layer,layer2)
+        outFields = vector.combineVectorFields(layer, layer2)
 
         writer = output.getVectorWriter(outFields, provider.geometryType(),
-                layer.crs())
+                                        layer.crs())
 
         inFeat = QgsFeature()
         inFeat2 = QgsFeature()

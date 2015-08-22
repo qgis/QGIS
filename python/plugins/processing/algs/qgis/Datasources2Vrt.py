@@ -40,7 +40,9 @@ import logging
 import os
 import xml.sax.saxutils
 
+
 class Datasources2Vrt(GeoAlgorithm):
+
     """ This algorithm merge the layers of different data sources in
     a single vrt file
 
@@ -75,13 +77,11 @@ class Datasources2Vrt(GeoAlgorithm):
                                            description=self.tr('Overwrite output vrt'),
                                            default=False))
 
-
         # We add outputs
         self.addOutput(OutputFile(self.OUTPUT_VRT_FILE,
                                   self.tr('Virtual vector')))
         self.addOutput(OutputString(self.OUTPUT_VRT_STRING,
                                     self.tr('Virtual string')))
-
 
     def processAlgorithm(self, progress):
         """Here is where the processing itself takes place."""
@@ -96,16 +96,14 @@ class Datasources2Vrt(GeoAlgorithm):
         # split list of input data sources to have a python list
         # inputDataSources is a string with path separated by ";"
         ds = input_layers.split(";")
-        if type(ds) != list:
+        if not isinstance(ds, list):
             msg = "Input datasources would be a ';' separated list of path strings"
             raise GeoAlgorithmExecutionException(msg)
-
 
         # check empty list
         if not ds:
             msg = "Input data sources is empty"
             raise GeoAlgorithmExecutionException(msg)
-
 
         # check if outVrt exist
         if not overwrite and os.path.exists(outVrtPath):
@@ -114,10 +112,10 @@ class Datasources2Vrt(GeoAlgorithm):
 
         # now process
         outVrtString = mergeDataSources2Vrt(data_sources=ds,
-                                           outfile=outVrtPath,
-                                           relative=False,
-                                           schema=False,
-                                           progress=progress)
+                                            outfile=outVrtPath,
+                                            relative=False,
+                                            schema=False,
+                                            progress=progress)
 
         # setting out values
         self.setOutputValue(self.OUTPUT_VRT_STRING, outVrtString)
@@ -128,11 +126,13 @@ class Datasources2Vrt(GeoAlgorithm):
 # IT NOT POSSIBILE TO ADD THIS FUNCTION AS Datasources2Vrt
 # CLASS METHOD => SET AS SIMPLE FUNCTION
 #######################################################
+
+
 def mergeDataSources2Vrt(data_sources=[],
-                          outfile=None,
-                          relative=False,
-                          schema=False,
-                          progress=None): # progress is passed because of avoid interferences with GeoAlgorithm
+                         outfile=None,
+                         relative=False,
+                         schema=False,
+                         progress=None): # progress is passed because of avoid interferences with GeoAlgorithm
     '''Function to do the work of merging datasources in a single vrt format
 
     @param data_sources: Array of path strings
@@ -151,7 +151,7 @@ def mergeDataSources2Vrt(data_sources=[],
 
     #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     # for each file Open the datasource to read.
-    for i, infile in  enumerate(data_sources):
+    for i, infile in enumerate(data_sources):
         progress.setPercentage(int(100 * i / len(data_sources)))
 
         src_ds = ogr.Open(infile, update=0)

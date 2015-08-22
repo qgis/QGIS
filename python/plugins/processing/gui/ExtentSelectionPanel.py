@@ -153,7 +153,7 @@ class ExtentSelectionPanel(BASE, WIDGET):
             extents.append(layer.name())
             extentsDict[layer.name()] = layer.extent()
         (item, ok) = QInputDialog.getItem(self, self.tr('Select extent'),
-                self.tr('Use extent from'), extents, False)
+                                          self.tr('Use extent from'), extents, False)
         if ok:
             self.setValueFromRect(extentsDict[item])
 

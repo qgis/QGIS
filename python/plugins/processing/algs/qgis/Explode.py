@@ -44,7 +44,7 @@ class Explode(GeoAlgorithm):
         vprovider = vlayer.dataProvider()
         fields = vprovider.fields()
         writer = output.getVectorWriter(fields, QGis.WKBLineString,
-                vlayer.crs())
+                                        vlayer.crs())
         outFeat = QgsFeature()
         inGeom = QgsGeometry()
         nElement = 0
@@ -86,5 +86,5 @@ class Explode(GeoAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('Explode lines')
         self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
         self.addParameter(ParameterVector(self.INPUT,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_LINE]))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_LINE]))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Exploded')))

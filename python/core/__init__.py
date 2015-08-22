@@ -2,6 +2,7 @@ import inspect
 import string
 from qgis._core import *
 
+
 def register_function(function, arg_count, group, usesgeometry=False, **kwargs):
     """
     Register a Python function to be used as a expression function.
@@ -30,6 +31,7 @@ def register_function(function, arg_count, group, usesgeometry=False, **kwargs):
     :return:
     """
     class QgsExpressionFunction(QgsExpression.Function):
+
         def __init__(self, func, name, args, group, helptext='', usesgeometry=False, expandargs=False):
             QgsExpression.Function.__init__(self, name, args, group, helptext, usesgeometry)
             self.function = func
@@ -130,12 +132,14 @@ try:
     QPyNullVariant.__ne__ = MethodType(__ne__, None, QPyNullVariant)
     QPyNullVariant.__hash__ = MethodType(__hash__, None, QPyNullVariant)
 
-    NULL = QPyNullVariant( int )
+    NULL = QPyNullVariant(int)
 
 except ImportError:
     pass
 
+
 class QgsEditError(Exception):
+
     def __init__(self, value):
         self.value = value
 
@@ -144,8 +148,10 @@ class QgsEditError(Exception):
 
 # Define a `with edit(layer)` statement
 
+
 class edit:
-    def __init__(self,layer):
+
+    def __init__(self, layer):
         self.layer = layer
 
     def __enter__(self):

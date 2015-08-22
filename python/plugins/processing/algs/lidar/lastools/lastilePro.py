@@ -31,6 +31,7 @@ from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterString
 
+
 class lastilePro(LAStoolsAlgorithm):
 
     TILE_SIZE = "TILE_SIZE"
@@ -45,16 +46,16 @@ class lastilePro(LAStoolsAlgorithm):
         self.addParametersFilesAreFlightlinesGUI()
         self.addParametersApplyFileSourceIdGUI()
         self.addParameter(ParameterNumber(lastilePro.TILE_SIZE,
-            self.tr("tile size (side length of square tile)"),
-            None, None, 1000.0))
+                                          self.tr("tile size (side length of square tile)"),
+                                          None, None, 1000.0))
         self.addParameter(ParameterNumber(lastilePro.BUFFER,
-            self.tr("buffer around each tile (avoids edge artifacts)"),
-            None, None, 25.0))
+                                          self.tr("buffer around each tile (avoids edge artifacts)"),
+                                          None, None, 25.0))
         self.addParameter(ParameterBoolean(lastilePro.EXTRA_PASS,
-            self.tr("more than 2000 tiles"), False))
+                                           self.tr("more than 2000 tiles"), False))
         self.addParametersOutputDirectoryGUI()
         self.addParameter(ParameterString(lastilePro.BASE_NAME,
-            self.tr("tile base name (using sydney.laz creates sydney_274000_4714000.laz)")))
+                                          self.tr("tile base name (using sydney.laz creates sydney_274000_4714000.laz)")))
         self.addParametersPointOutputFormatGUI()
         self.addParametersAdditionalGUI()
         self.addParametersVerboseGUI()

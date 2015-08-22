@@ -30,6 +30,7 @@ from LAStoolsAlgorithm import LAStoolsAlgorithm
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterSelection
 
+
 class lassplit(LAStoolsAlgorithm):
 
     DIGITS = "DIGITS"
@@ -43,11 +44,11 @@ class lassplit(LAStoolsAlgorithm):
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParameter(ParameterNumber(lassplit.DIGITS,
-            self.tr("number of digits for file names"), 0, None, 5))
+                                          self.tr("number of digits for file names"), 0, None, 5))
         self.addParameter(ParameterSelection(lassplit.OPERATION,
-            self.tr("how to split"), lassplit.OPERATIONS, 0))
+                                             self.tr("how to split"), lassplit.OPERATIONS, 0))
         self.addParameter(ParameterNumber(lassplit.INTERVAL,
-            self.tr("interval or number"), 0, None, 5))
+                                          self.tr("interval or number"), 0, None, 5))
         self.addParametersPointOutputGUI()
         self.addParametersAdditionalGUI()
 

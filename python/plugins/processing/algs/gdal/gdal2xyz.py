@@ -48,7 +48,7 @@ class gdal2xyz(GdalAlgorithm):
         self.addParameter(ParameterRaster(
             self.INPUT, self.tr('Input layer'), False))
         self.addParameter(ParameterNumber(self.BAND,
-            self.tr('Band number'), 1, 9999, 1))
+                                          self.tr('Band number'), 1, 9999, 1))
 
         self.addOutput(OutputTable(self.OUTPUT, self.tr('xyz')))
 

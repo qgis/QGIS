@@ -48,9 +48,9 @@ class Difference(GeoAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('Difference')
         self.group, self.i18n_group = self.trAlgorithm('Vector overlay tools')
         self.addParameter(ParameterVector(Difference.INPUT,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterVector(Difference.OVERLAY,
-            self.tr('Difference layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Difference layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addOutput(OutputVector(Difference.OUTPUT, self.tr('Difference')))
 
     def processAlgorithm(self, progress):
@@ -65,8 +65,8 @@ class Difference(GeoAlgorithm):
 
         writer = self.getOutputFromName(
             Difference.OUTPUT).getVectorWriter(layerA.pendingFields(),
-            layerA.dataProvider().geometryType(),
-            layerA.dataProvider().crs())
+                                               layerA.dataProvider().geometryType(),
+                                               layerA.dataProvider().crs())
 
         inFeatA = QgsFeature()
         inFeatB = QgsFeature()
@@ -117,7 +117,7 @@ class Difference(GeoAlgorithm):
 
         if not GEOS_EXCEPT:
             ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
-                self.tr('Geometry exception while computing difference'))
+                                   self.tr('Geometry exception while computing difference'))
         if not FEATURE_EXCEPT:
             ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
-                self.tr('Feature exception while computing difference'))
+                                   self.tr('Feature exception while computing difference'))

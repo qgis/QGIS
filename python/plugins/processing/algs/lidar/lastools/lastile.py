@@ -29,6 +29,7 @@ from LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.core.parameters import ParameterNumber
 
+
 class lastile(LAStoolsAlgorithm):
 
     TILE_SIZE = "TILE_SIZE"
@@ -43,12 +44,12 @@ class lastile(LAStoolsAlgorithm):
         self.addParametersFilesAreFlightlinesGUI()
         self.addParametersApplyFileSourceIdGUI()
         self.addParameter(ParameterNumber(lastile.TILE_SIZE,
-            self.tr("tile size (side length of square tile)"),
-            None, None, 1000.0))
+                                          self.tr("tile size (side length of square tile)"),
+                                          None, None, 1000.0))
         self.addParameter(ParameterNumber(lastile.BUFFER,
-            self.tr("buffer around each tile"), None, None, 0.0))
+                                          self.tr("buffer around each tile"), None, None, 0.0))
         self.addParameter(ParameterNumber(lastile.REVERSIBLE,
-            self.tr("make tiling reversible (advanced, usually not needed)"), False))
+                                          self.tr("make tiling reversible (advanced, usually not needed)"), False))
         self.addParametersPointOutputGUI()
         self.addParametersAdditionalGUI()
 

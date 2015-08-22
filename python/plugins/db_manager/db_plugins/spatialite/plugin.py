@@ -41,6 +41,7 @@ def classFactory():
 
 
 class SpatiaLiteDBPlugin(DBPlugin):
+
     @classmethod
     def icon(self):
         return QIcon(":/db_manager/spatialite/icon")
@@ -86,12 +87,12 @@ class SpatiaLiteDBPlugin(DBPlugin):
 
 
 class SLDatabase(Database):
+
     def __init__(self, connection, uri):
         Database.__init__(self, connection, uri)
 
     def connectorsFactory(self, uri):
         return SpatiaLiteDBConnector(uri)
-
 
     def dataTablesFactory(self, row, db, schema=None):
         return SLTable(row, db, schema)
@@ -101,7 +102,6 @@ class SLDatabase(Database):
 
     def rasterTablesFactory(self, row, db, schema=None):
         return SLRasterTable(row, db, schema)
-
 
     def info(self):
         from .info_model import SLDatabaseInfo
@@ -136,7 +136,6 @@ class SLDatabase(Database):
         self.database().connector.runVacuum()
         self.database().refresh()
 
-
     def runAction(self, action):
         action = unicode(action)
 
@@ -150,17 +149,18 @@ class SLDatabase(Database):
     def uniqueIdFunction(self):
         return None
 
-    def explicitSpatialIndex( self ):
+    def explicitSpatialIndex(self):
         return True
 
-    def spatialIndexClause( self, src_table, src_column, dest_table, dest_column ):
-        return """"%s".ROWID IN (\nSELECT ROWID FROM SpatialIndex WHERE f_table_name='%s' AND search_frame="%s"."%s") """ % (src_table,src_table,dest_table, dest_column)
+    def spatialIndexClause(self, src_table, src_column, dest_table, dest_column):
+        return """"%s".ROWID IN (\nSELECT ROWID FROM SpatialIndex WHERE f_table_name='%s' AND search_frame="%s"."%s") """ % (src_table, src_table, dest_table, dest_column)
+
 
 class SLTable(Table):
+
     def __init__(self, row, db, schema=None):
         Table.__init__(self, db, None)
         self.name, self.isView, self.isSysTable = row
-
 
     def tableFieldsFactory(self, row, table):
         return SLTableField(row, table)
@@ -171,7 +171,6 @@ class SLTable(Table):
     def tableTriggersFactory(self, row, table):
         return SLTableTrigger(row, table)
 
-
     def tableDataModel(self, parent):
         from .data_model import SLTableDataModel
 
@@ -179,6 +178,7 @@ class SLTable(Table):
 
 
 class SLVectorTable(SLTable, VectorTable):
+
     def __init__(self, row, db, schema=None):
         SLTable.__init__(self, row[:-5], db, schema)
         VectorTable.__init__(self, db, schema)
@@ -213,7 +213,6 @@ class SLVectorTable(SLTable, VectorTable):
     def refreshTableEstimatedExtent(self):
         return
 
-
     def runAction(self, action):
         if SLTable.runAction(self, action):
             return True
@@ -221,6 +220,7 @@ class SLVectorTable(SLTable, VectorTable):
 
 
 class SLRasterTable(SLTable, RasterTable):
+
     def __init__(self, row, db, schema=None):
         SLTable.__init__(self, row[:-3], db, schema)
         RasterTable.__init__(self, db, schema)
@@ -250,6 +250,7 @@ class SLRasterTable(SLTable, RasterTable):
 
 
 class SLTableField(TableField):
+
     def __init__(self, row, table):
         TableField.__init__(self, table)
         self.num, self.name, self.dataType, self.notNull, self.default, self.primaryKey = row
@@ -257,12 +258,14 @@ class SLTableField(TableField):
 
 
 class SLTableIndex(TableIndex):
+
     def __init__(self, row, table):
         TableIndex.__init__(self, table)
         self.num, self.name, self.isUnique, self.columns = row
 
 
 class SLTableTrigger(TableTrigger):
+
     def __init__(self, row, table):
         TableTrigger.__init__(self, table)
         self.name, self.function = row

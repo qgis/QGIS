@@ -54,13 +54,13 @@ class RandomSelectionWithinSubsets(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Vector selection tools')
 
         self.addParameter(ParameterVector(self.INPUT,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterTableField(self.FIELD,
-            self.tr('ID Field'), self.INPUT))
+                                              self.tr('ID Field'), self.INPUT))
         self.addParameter(ParameterSelection(self.METHOD,
-            self.tr('Method'), self.METHODS, 0))
+                                             self.tr('Method'), self.METHODS, 0))
         self.addParameter(ParameterNumber(self.NUMBER,
-            self.tr('Number/percentage of selected features'), 1, None, 10))
+                                          self.tr('Number/percentage of selected features'), 1, None, 10))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Selection stratified'), True))
 

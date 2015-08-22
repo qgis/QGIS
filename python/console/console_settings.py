@@ -25,7 +25,9 @@ from console_compile_apis import PrepareAPIDialog
 
 from ui_console_settings import Ui_SettingsDialogPythonConsole
 
+
 class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
+
     def __init__(self, parent):
         QDialog.__init__(self, parent)
         self.setWindowTitle(QCoreApplication.translate("SettingsDialogPythonConsole", "Settings Python Console"))
@@ -43,8 +45,8 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         self.removeAPIpath.setIcon(QIcon(":/images/themes/default/symbologyRemove.svg"))
         self.removeAPIpath.setToolTip(QCoreApplication.translate("PythonConsole", "Remove API path"))
 
-        self.connect( self.preloadAPI,
-                      SIGNAL("stateChanged(int)"), self.initialCheck)
+        self.connect(self.preloadAPI,
+                     SIGNAL("stateChanged(int)"), self.initialCheck)
         self.connect(self.addAPIpath,
                      SIGNAL("clicked()"), self.loadAPIFile)
         self.connect(self.removeAPIpath,
@@ -84,9 +86,9 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
     def _prepareAPI(self):
         if self.tableWidget.rowCount() != 0:
             pap_file = QFileDialog().getSaveFileName(self,
-                                                    "",
-                                                    '*.pap',
-                                                    "Prepared APIs file (*.pap)")
+                                                     "",
+                                                     '*.pap',
+                                                     "Prepared APIs file (*.pap)")
         else:
             QMessageBox.information(self, self.tr("Warning!"),
                                     self.tr('You need to add some APIs file in order to compile'))
@@ -118,7 +120,7 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
             return
         self.saveSettings()
         self.listPath = []
-        QDialog.accept( self )
+        QDialog.accept(self)
 
     def addAPI(self, pathAPI):
         count = self.tableWidget.rowCount()
@@ -311,7 +313,6 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         self.doubleQuoteFontColor.setColor(QColor(Qt.blue))
         self.tripleSingleQuoteFontColor.setColor(QColor(Qt.blue))
         self.tripleDoubleQuoteFontColor.setColor(QColor(Qt.blue))
-
 
     def _resetFontColorEditor(self):
         self.defaultFontColorEditor.setColor(QColor(Qt.black))

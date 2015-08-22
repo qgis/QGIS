@@ -31,6 +31,7 @@ import os
 from LAStoolsUtils import LAStoolsUtils
 from LAStoolsAlgorithm import LAStoolsAlgorithm
 
+
 class las2tin(LAStoolsAlgorithm):
 
     def defineCharacteristics(self):

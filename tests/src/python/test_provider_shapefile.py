@@ -31,6 +31,7 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestPyQgsPostgresProvider(TestCase, ProviderTestCase):
+
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""

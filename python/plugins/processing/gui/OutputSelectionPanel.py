@@ -126,7 +126,7 @@ class OutputSelectionPanel(BASE, WIDGET):
         lastDir = ''
 
         dirName = QFileDialog.getExistingDirectory(self,
-            self.tr('Select directory'), lastDir, QFileDialog.ShowDirsOnly)
+                                                   self.tr('Select directory'), lastDir, QFileDialog.ShowDirsOnly)
 
         self.leText.setText(dirName)
 

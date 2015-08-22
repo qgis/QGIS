@@ -100,9 +100,8 @@ class Algorithm():
         self.outputsFolded = True
         self.active = True
 
-
     def todict(self):
-        return {k:v for k,v in self.__dict__.iteritems() if not k.startswith("_")}
+        return {k: v for k, v in self.__dict__.iteritems() if not k.startswith("_")}
 
     @property
     def algorithm(self):
@@ -234,8 +233,8 @@ class ModelerAlgorithm(GeoAlgorithm):
         from processing.modeler.ModelerGraphicItem import ModelerGraphicItem
         for i, out in enumerate(alg.outputs):
             alg.outputs[out].pos = (alg.outputs[out].pos or
-                    alg.pos + QPointF(
-                        ModelerGraphicItem.BOX_WIDTH,
+                                    alg.pos + QPointF(
+                ModelerGraphicItem.BOX_WIDTH,
                         (i + 1.5) * ModelerGraphicItem.BOX_HEIGHT))
 
     def removeAlgorithm(self, name):
@@ -282,7 +281,6 @@ class ModelerAlgorithm(GeoAlgorithm):
                         return True
         return False
 
-
     def getDependsOnAlgorithms(self, name):
         """This method returns a list with names of algorithms
         a given one depends on.
@@ -301,7 +299,6 @@ class ModelerAlgorithm(GeoAlgorithm):
             elif isinstance(value, ValueFromOutput):
                 algs.add(value.alg)
                 algs.update(self.getDependsOnAlgorithms(value.alg))
-
 
         return algs
 
@@ -349,7 +346,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                 # We allow unexistent filepaths, since that allows
                 # algorithms to skip some conversion routines
                 if not param.setValue(value) and not isinstance(param,
-                        ParameterDataObject):
+                                                                ParameterDataObject):
                     raise GeoAlgorithmExecutionException(
                         self.tr('Wrong value: %s', 'ModelerAlgorithm') % value)
         for out in algInstance.outputs:
@@ -429,7 +426,6 @@ class ModelerAlgorithm(GeoAlgorithm):
             self.ymin = min(self.ymin, layer.extent().yMinimum())
             self.ymax = max(self.ymax, layer.extent().yMaximum())
 
-
     def processAlgorithm(self, progress):
         executed = []
         toExecute = [alg for alg in self.algs.values() if alg.active]
@@ -448,23 +444,22 @@ class ModelerAlgorithm(GeoAlgorithm):
                                 self.tr('Prepare algorithm: %s', 'ModelerAlgorithm') % alg.name)
                             self.prepareAlgorithm(alg)
                             progress.setText(
-                                self.tr('Running %s [%i/%i]', 'ModelerAlgorithm') % (alg.description, len(executed) + 1 ,len(toExecute)))
+                                self.tr('Running %s [%i/%i]', 'ModelerAlgorithm') % (alg.description, len(executed) + 1, len(toExecute)))
                             progress.setDebugInfo('Parameters: ' + ', '.join([unicode(p).strip()
-                                                + '=' + unicode(p.value) for p in alg.algorithm.parameters]))
+                                                                              + '=' + unicode(p.value) for p in alg.algorithm.parameters]))
                             t0 = time.time()
                             alg.algorithm.execute(progress, self)
                             dt = time.time() - t0
                             executed.append(alg.name)
                             progress.setDebugInfo(
                                 self.tr('OK. Execution took %0.3f ms (%i outputs).', 'ModelerAlgorithm') % (dt, len(alg.algorithm.outputs)))
-                        except GeoAlgorithmExecutionException, e:
+                        except GeoAlgorithmExecutionException as e:
                             progress.setDebugInfo(self.tr('Failed', 'ModelerAlgorithm'))
                             raise GeoAlgorithmExecutionException(
                                 self.tr('Error executing algorithm %s\n%s', 'ModelerAlgorithm') % (alg.description, e.msg))
 
         progress.setDebugInfo(
             self.tr('Model processed ok. Executed %i algorithms total', 'ModelerAlgorithm') % len(executed))
-
 
     def getAsCommand(self):
         if self.descriptionFile:
@@ -493,7 +488,7 @@ class ModelerAlgorithm(GeoAlgorithm):
 
     def todict(self):
         keys = ["inputs", "group", "name", "algs", "helpContent"]
-        return {k:v for k,v in self.__dict__.iteritems() if k in keys}
+        return {k: v for k, v in self.__dict__.iteritems() if k in keys}
 
     def toJson(self):
         def todict(o):
@@ -502,10 +497,9 @@ class ModelerAlgorithm(GeoAlgorithm):
             try:
                 d = o.todict()
                 return {"class": o.__class__.__module__ + "." + o.__class__.__name__, "values": d}
-            except Exception, e:
+            except Exception as e:
                 pass
         return json.dumps(self, default=todict, indent=4)
-
 
     @staticmethod
     def fromJson(s):
@@ -528,19 +522,18 @@ class ModelerAlgorithm(GeoAlgorithm):
                 module = _import(moduleName)
                 clazz = getattr(module, className)
                 instance = clazz()
-                for k,v in values.iteritems():
+                for k, v in values.iteritems():
                     instance.__dict__[k] = v
                 return instance
             except KeyError:
                 return d
-            except Exception, e:
+            except Exception as e:
                 raise e
         try:
             model = json.loads(s, object_hook=fromdict)
-        except Exception, e:
+        except Exception as e:
             raise WrongModelException(e.args[0])
         return model
-
 
     @staticmethod
     def fromJsonFile(filename):
@@ -549,7 +542,6 @@ class ModelerAlgorithm(GeoAlgorithm):
         alg = ModelerAlgorithm.fromJson(s)
         alg.descriptionFile = filename
         return alg
-
 
     ############LEGACY METHOD TO SUPPORT OLD FORMAT###########
 
@@ -560,10 +552,9 @@ class ModelerAlgorithm(GeoAlgorithm):
         try:
             alg = ModelerAlgorithm.fromJsonFile(filename)
             return alg
-        except WrongModelException, e:
+        except WrongModelException as e:
             alg = ModelerAlgorithm.fromOldFormatFile(filename)
             return alg
-
 
     @staticmethod
     def fromOldFormatFile(filename):
@@ -589,7 +580,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                     line = lines.readline().strip('\n')
                     tokens = line.split(',')
                     model.addParameter(ModelerParameter(param,
-                                       QPointF( float(tokens[0]), float(tokens[1]))))
+                                       QPointF(float(tokens[0]), float(tokens[1]))))
                     modelParameters.append(param.name)
                 elif line.startswith('VALUE:'):
                     valueLine = line[len('VALUE:'):]
@@ -615,7 +606,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                             if not param.hidden:
                                 line = lines.readline().strip('\n').strip('\r')
                                 if line == unicode(None):
-                                    modelAlg.params[param.name]  = None
+                                    modelAlg.params[param.name] = None
                                 else:
                                     tokens = line.split('|')
                                     algIdx = int(tokens[0])
@@ -635,7 +626,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                                         tokens = line.split('|')
                                         name = tokens[0]
                                         tokens = tokens[1].split(',')
-                                        pos = QPointF( float(tokens[0]), float(tokens[1]))
+                                        pos = QPointF(float(tokens[0]), float(tokens[1]))
                                     else:
                                         name = line
                                         pos = None
@@ -654,7 +645,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                     if isinstance(value, ValueFromOutput):
                         value.alg = modelAlgs[value.alg]
             return model
-        except Exception, e:
+        except Exception as e:
             if isinstance(e, WrongModelException):
                 raise e
             else:

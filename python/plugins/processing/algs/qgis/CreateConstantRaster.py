@@ -44,12 +44,12 @@ class CreateConstantRaster(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Raster tools')
 
         self.addParameter(ParameterRaster(self.INPUT,
-            self.tr('Reference layer')))
+                                          self.tr('Reference layer')))
         self.addParameter(ParameterNumber(self.NUMBER,
-            self.tr('Constant value'), default=1.0))
+                                          self.tr('Constant value'), default=1.0))
 
         self.addOutput(OutputRaster(self.OUTPUT,
-            self.tr('Constant')))
+                                    self.tr('Constant')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(

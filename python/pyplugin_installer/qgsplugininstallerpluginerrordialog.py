@@ -29,13 +29,12 @@ from PyQt4.QtGui import QDialog
 from ui_qgsplugininstallerpluginerrorbase import Ui_QgsPluginInstallerPluginErrorDialogBase
 
 
-
-
 class QgsPluginInstallerPluginErrorDialog(QDialog, Ui_QgsPluginInstallerPluginErrorDialogBase):
-  # ----------------------------------------- #
-  def __init__(self, parent, errorMessage):
-    QDialog.__init__(self, parent)
-    self.setupUi(self)
-    if not errorMessage:
-      errorMessage = self.tr("no error message received")
-    self.textBrowser.setText(errorMessage)
+    # ----------------------------------------- #
+
+    def __init__(self, parent, errorMessage):
+        QDialog.__init__(self, parent)
+        self.setupUi(self)
+        if not errorMessage:
+            errorMessage = self.tr("no error message received")
+        self.textBrowser.setText(errorMessage)

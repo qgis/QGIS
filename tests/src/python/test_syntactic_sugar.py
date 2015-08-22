@@ -17,61 +17,62 @@ import qgis
 from utilities import (unittest,
                        TestCase,
                        getQgisTestApp
-                      )
+                       )
 from qgis.core import (edit,
                        QgsFeature,
                        QgsGeometry,
                        QgsVectorLayer,
                        QgsEditError
-                      )
+                       )
 
 getQgisTestApp()
+
 
 class TestSyntacticSugar(TestCase):
 
     def testEdit(self):
         """Test `with edit(layer):` code"""
 
-        ml=QgsVectorLayer("Point?crs=epsg:4236&field=id:integer&field=value:double",
-                          "test_data", "memory")
+        ml = QgsVectorLayer("Point?crs=epsg:4236&field=id:integer&field=value:double",
+                            "test_data", "memory")
         # Data as list of x, y, id, value
         assert ml.isValid()
-        fields=ml.fields()
+        fields = ml.fields()
 
         # Check insert
         with edit(ml):
-            feat=QgsFeature(fields)
-            feat['id']=1
-            feat['value']=0.9
+            feat = QgsFeature(fields)
+            feat['id'] = 1
+            feat['value'] = 0.9
             assert ml.addFeature(feat)
 
-        assert ml.dataProvider().getFeatures().next()['value']==0.9
+        assert ml.dataProvider().getFeatures().next()['value'] == 0.9
 
         # Check update
         with edit(ml):
             f = ml.getFeatures().next()
-            f['value']=9.9
+            f['value'] = 9.9
             assert ml.updateFeature(f)
 
-        assert ml.dataProvider().getFeatures().next()['value']==9.9
+        assert ml.dataProvider().getFeatures().next()['value'] == 9.9
 
         # Check for rollBack after exceptions
         with self.assertRaises(NameError):
             with edit(ml):
                 f = ml.getFeatures().next()
-                f['value']=3.8
+                f['value'] = 3.8
                 crashycrash()
 
-        assert ml.dataProvider().getFeatures().next()['value']==9.9
-        assert ml.getFeatures().next()['value']==9.9
+        assert ml.dataProvider().getFeatures().next()['value'] == 9.9
+        assert ml.getFeatures().next()['value'] == 9.9
 
         # Check for `as`
         with edit(ml) as l:
             f = l.getFeatures().next()
-            f['value']=10
+            f['value'] = 10
             assert l.updateFeature(f)
 
-        assert ml.dataProvider().getFeatures().next()['value']==10
+        assert ml.dataProvider().getFeatures().next()['value'] == 10
 
         # Check that we get a QgsEditError exception when the commit fails
         with self.assertRaises(QgsEditError):

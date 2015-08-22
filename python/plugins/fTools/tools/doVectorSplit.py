@@ -35,7 +35,9 @@ from qgis.core import QGis, QgsFeature, QgsVectorFileWriter
 import ftools_utils
 from ui_frmVectorSplit import Ui_Dialog
 
+
 class Dialog(QDialog, Ui_Dialog):
+
     def __init__(self, iface):
         QDialog.__init__(self, iface.mainWindow())
         self.iface = iface
@@ -48,8 +50,8 @@ class Dialog(QDialog, Ui_Dialog):
 
         self.workThread = None
 
-        self.btnOk = self.buttonBox_2.button( QDialogButtonBox.Ok )
-        self.btnClose = self.buttonBox_2.button( QDialogButtonBox.Close )
+        self.btnOk = self.buttonBox_2.button(QDialogButtonBox.Ok)
+        self.btnClose = self.buttonBox_2.button(QDialogButtonBox.Close)
 
         # populate layer list
         layers = ftools_utils.getLayerNames([QGis.Point, QGis.Line, QGis.Polygon])
@@ -64,10 +66,10 @@ class Dialog(QDialog, Ui_Dialog):
 
     def outFile(self):
         self.outShape.clear()
-        ( self.folderName, self.encoding ) = ftools_utils.dirDialog( self )
+        (self.folderName, self.encoding) = ftools_utils.dirDialog(self)
         if self.folderName is None or self.encoding is None:
             return
-        self.outShape.setText( self.folderName )
+        self.outShape.setText(self.folderName)
 
     def accept(self):
         inShape = self.inShape.currentText()
@@ -81,7 +83,7 @@ class Dialog(QDialog, Ui_Dialog):
                                     self.tr("Please specify output shapefile"))
             return
 
-        self.btnOk.setEnabled( False )
+        self.btnOk.setEnabled(False)
 
         vLayer = ftools_utils.getVectorLayerByName(unicode(self.inShape.currentText()))
         self.workThread = SplitThread(vLayer, self.inField.currentText(), self.encoding, outDir)
@@ -115,7 +117,7 @@ class Dialog(QDialog, Ui_Dialog):
             self.workThread.stop()
             self.workThread = None
 
-    def processInterrupted( self ):
+    def processInterrupted(self):
         self.restoreGui()
 
     def processFinished(self, errors):
@@ -124,13 +126,15 @@ class Dialog(QDialog, Ui_Dialog):
         self.restoreGui()
 
         if errors:
-            msg = self.tr( "Processing of the following layers/files ended with error:<br><br>" ) + "<br>".join(errors)
-            QErrorMessage( self ).showMessage( msg )
+            msg = self.tr("Processing of the following layers/files ended with error:<br><br>") + "<br>".join(errors)
+            QErrorMessage(self).showMessage(msg)
 
         QMessageBox.information(self, self.tr("Vector Split"),
                                 self.tr("Created output shapefiles in folder:\n%s") % (outPath))
 
+
 class SplitThread(QThread):
+
     def __init__(self, layer, splitField, encoding, outDir):
         QThread.__init__(self, QThread.currentThread())
         self.layer = layer
@@ -161,7 +165,7 @@ class SplitThread(QThread):
         provider = self.layer.dataProvider()
         index = provider.fieldNameIndex(self.field)
         unique = ftools_utils.getUniqueValues(provider, int(index))
-        baseName = unicode( outPath + self.layer.name() + "_" + self.field + "_" )
+        baseName = unicode(outPath + self.layer.name() + "_" + self.field + "_")
 
         fieldList = ftools_utils.getFieldList(self.layer)
         sRs = provider.crs()
@@ -170,13 +174,12 @@ class SplitThread(QThread):
 
         self.emit(SIGNAL("rangeCalculated(PyQt_PyObject)"), len(unique))
 
-
         for i in unique:
             check = QFile(baseName + "_" + unicode(i).strip() + ".shp")
             fName = check.fileName()
             if check.exists():
                 if not QgsVectorFileWriter.deleteShapeFile(fName):
-                    self.errors.append( fName )
+                    self.errors.append(fName)
                     continue
 
             writer = QgsVectorFileWriter(fName, self.encoding, fieldList, geom, sRs)

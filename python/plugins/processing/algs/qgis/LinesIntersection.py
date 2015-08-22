@@ -47,9 +47,9 @@ class LinesIntersection(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Vector overlay tools')
 
         self.addParameter(ParameterVector(self.INPUT_A,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_LINE]))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_LINE]))
         self.addParameter(ParameterVector(self.INPUT_B,
-            self.tr('Intersect layer'), [ParameterVector.VECTOR_TYPE_LINE]))
+                                          self.tr('Intersect layer'), [ParameterVector.VECTOR_TYPE_LINE]))
         self.addParameter(ParameterTableField(
             self.FIELD_A,
             self.tr('Input unique ID field'),
@@ -76,7 +76,7 @@ class LinesIntersection(GeoAlgorithm):
                      layerB.pendingFields()[idxB]]
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldList,
-                QGis.WKBPoint, layerA.dataProvider().crs())
+                                                                     QGis.WKBPoint, layerA.dataProvider().crs())
 
         spatialIndex = vector.spatialindex(layerB)
 
@@ -121,7 +121,7 @@ class LinesIntersection(GeoAlgorithm):
                             for j in points:
                                 outFeat.setGeometry(tempGeom.fromPoint(j))
                                 outFeat.setAttributes([attrsA[idxA],
-                                        attrsB[idxB]])
+                                                       attrsB[idxB]])
                                 writer.addFeature(outFeat)
 
             current += 1

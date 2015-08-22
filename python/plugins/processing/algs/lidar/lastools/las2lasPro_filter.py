@@ -27,6 +27,7 @@ import os
 from LAStoolsUtils import LAStoolsUtils
 from LAStoolsAlgorithm import LAStoolsAlgorithm
 
+
 class las2lasPro_filter(LAStoolsAlgorithm):
 
     def defineCharacteristics(self):

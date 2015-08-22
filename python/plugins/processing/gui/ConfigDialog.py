@@ -31,8 +31,8 @@ import os
 from PyQt4 import uic
 from PyQt4.QtCore import Qt, QEvent
 from PyQt4.QtGui import (QFileDialog, QDialog, QIcon, QStyle,
-    QStandardItemModel, QStandardItem, QMessageBox, QStyledItemDelegate,
-    QLineEdit, QSpinBox, QDoubleSpinBox, QWidget, QToolButton, QHBoxLayout)
+                         QStandardItemModel, QStandardItem, QMessageBox, QStyledItemDelegate,
+                         QLineEdit, QSpinBox, QDoubleSpinBox, QWidget, QToolButton, QHBoxLayout)
 
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.core.Processing import Processing
@@ -74,7 +74,7 @@ class ConfigDialog(BASE, WIDGET):
         self.items = {}
         self.model.clear()
         self.model.setHorizontalHeaderLabels([self.tr('Setting'),
-                self.tr('Value')])
+                                              self.tr('Value')])
 
         text = unicode(self.searchBox.text())
         settings = ProcessingConfig.getSettings()
@@ -147,7 +147,7 @@ class ConfigDialog(BASE, WIDGET):
                     setting.value = value
                 except ValueError:
                     QMessageBox.critical(self, self.tr('Wrong value'),
-                            self.tr('Wrong parameter value:\n%1') % value)
+                                         self.tr('Wrong parameter value:\n%1') % value)
                     return
             else:
                 setting.value = unicode(self.items[setting].text())
@@ -272,12 +272,12 @@ class FileDirectorySelector(QWidget):
         lastDir = ''
         if not self.selectFile:
             selectedPath = QFileDialog.getExistingDirectory(None,
-                self.tr('Select directory'), lastDir,
-                QFileDialog.ShowDirsOnly)
+                                                            self.tr('Select directory'), lastDir,
+                                                            QFileDialog.ShowDirsOnly)
         else:
             selectedPath = QFileDialog.getOpenFileName(None,
-                self.tr('Select file'), lastDir, self.tr('All files (*.*)')
-            )
+                                                       self.tr('Select file'), lastDir, self.tr('All files (*.*)')
+                                                       )
 
         if not selectedPath:
             return

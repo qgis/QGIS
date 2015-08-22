@@ -146,7 +146,7 @@ class ScriptEdit(QsciScintilla):
 
         # Use Ctrl+Space for autocompletion
         self.shortcutAutocomplete = QShortcut(QKeySequence(Qt.CTRL
-                + Qt.Key_Space), self)
+                                                           + Qt.Key_Space), self)
         self.shortcutAutocomplete.setContext(Qt.WidgetShortcut)
         self.shortcutAutocomplete.activated.connect(self.autoComplete)
 
@@ -197,7 +197,7 @@ class ScriptEdit(QsciScintilla):
                 # Load QGIS API shipped with Python console
                 self.api.loadPrepared(
                     os.path.join(QgsApplication.pkgDataPath(),
-                    'python', 'qsci_apis', 'pyqgis.pap'))
+                                 'python', 'qsci_apis', 'pyqgis.pap'))
             else:
                 # Load user-defined API files
                 apiPaths = settings.value('pythonConsole/userAPI', [])

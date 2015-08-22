@@ -21,7 +21,8 @@ from qgis.core import QgsMessageLog
 from utilities import unitTestDataPath
 
 # Strip path and content length because path may vary
-RE_STRIP_PATH=r'MAP=[^&]+|Content-Length: \d+'
+RE_STRIP_PATH = r'MAP=[^&]+|Content-Length: \d+'
+
 
 class TestQgsServer(unittest.TestCase):
 
@@ -37,19 +38,16 @@ class TestQgsServer(unittest.TestCase):
                 pass
         self.server = QgsServer()
 
-
     def test_destructor_segfaults(self):
         """Segfault on destructor?"""
         server = QgsServer()
         del server
-
 
     def test_multiple_servers(self):
         """Segfaults?"""
         for i in range(10):
             locals()["s%s" % i] = QgsServer()
             locals()["s%s" % i].handleRequest()
-
 
     def test_api(self):
         """Using an empty query string (returns an XML exception)
@@ -67,7 +65,6 @@ class TestQgsServer(unittest.TestCase):
         expected = '<ServiceExceptionReport version="1.3.0" xmlns="http://www.opengis.net/ogc">\n <ServiceException code="Service configuration error">Service unknown or unsupported</ServiceException>\n</ServiceExceptionReport>\n'
         self.assertEqual(response, expected)
 
-
     def test_pluginfilters(self):
         """Test python plugins filters"""
         try:
@@ -77,6 +74,7 @@ class TestQgsServer(unittest.TestCase):
             return
 
         class SimpleHelloFilter(QgsServerFilter):
+
             def requestReady(self):
                 QgsMessageLog.logMessage("SimpleHelloFilter.requestReady")
 
@@ -93,15 +91,15 @@ class TestQgsServer(unittest.TestCase):
                     request.clearBody()
                     request.appendBody('Hello from SimpleServer!')
 
-
         serverIface = self.server.serverInterface()
         filter = SimpleHelloFilter(serverIface)
-        serverIface.registerFilter(filter, 100 )
+        serverIface.registerFilter(filter, 100)
         # Get registered filters
         self.assertEqual(filter, serverIface.filters()[100][0])
 
         # Register some more filters
         class Filter1(QgsServerFilter):
+
             def responseComplete(self):
                 request = self.serverInterface().requestHandler()
                 params = request.parameterMap()
@@ -109,6 +107,7 @@ class TestQgsServer(unittest.TestCase):
                     request.appendBody('Hello from Filter1!')
 
         class Filter2(QgsServerFilter):
+
             def responseComplete(self):
                 request = self.serverInterface().requestHandler()
                 params = request.parameterMap()
@@ -118,8 +117,8 @@ class TestQgsServer(unittest.TestCase):
         filter1 = Filter1(serverIface)
         filter2 = Filter2(serverIface)
         serverIface.registerFilter(filter1, 101)
-        serverIface.registerFilter(filter2, 200 )
-        serverIface.registerFilter(filter2, 100 )
+        serverIface.registerFilter(filter2, 200)
+        serverIface.registerFilter(filter2, 100)
         self.assertTrue(filter2 in serverIface.filters()[100])
         self.assertEqual(filter1, serverIface.filters()[101][0])
         self.assertEqual(filter2, serverIface.filters()[200][0])
@@ -128,7 +127,7 @@ class TestQgsServer(unittest.TestCase):
         self.assertEqual(response, expected)
 
         # Test that the bindings for complex type QgsServerFiltersMap are working
-        filters = { 100: [filter, filter2], 101: [filter1], 200: [filter2] }
+        filters = {100: [filter, filter2], 101: [filter1], 200: [filter2]}
         serverIface.setFilters(filters)
         self.assertTrue(filter in serverIface.filters()[100])
         self.assertTrue(filter2 in serverIface.filters()[100])
@@ -137,8 +136,6 @@ class TestQgsServer(unittest.TestCase):
         response = str(self.server.handleRequest('service=simple'))
         expected = 'Content-type: text/plain\n\nHello from SimpleServer!Hello from Filter1!Hello from Filter2!'
         self.assertEqual(response, expected)
-
-
 
     ## WMS tests
     def wms_request_compare(self, request):
@@ -162,7 +159,6 @@ class TestQgsServer(unittest.TestCase):
         response = re.sub(RE_STRIP_PATH, '', response)
         expected = re.sub(RE_STRIP_PATH, '', expected)
         self.assertEqual(response, expected, msg="request %s failed.\n Query: %s\n Expected:\n%s\n\n Response:\n%s" % (query_string, request, expected, response))
-
 
     def test_project_wms(self):
         """Test some WMS request"""

@@ -38,16 +38,17 @@ from processing.tools.system import isWindows
 from processing.algs.gdal.OgrAlgorithm import OgrAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
+
 class Ogr2OgrOneSideBuffer(OgrAlgorithm):
 
     OUTPUT_LAYER = 'OUTPUT_LAYER'
     INPUT_LAYER = 'INPUT_LAYER'
     OPERATION = 'OPERATION'
-    OPERATIONLIST = ['Single Side Buffer','Offset Curve']
+    OPERATIONLIST = ['Single Side Buffer', 'Offset Curve']
     GEOMETRY = 'GEOMETRY'
     RADIUS = 'RADIUS'
     LEFTRIGHT = 'LEFTRIGHT'
-    LEFTRIGHTLIST = ['Right','Left']
+    LEFTRIGHTLIST = ['Right', 'Left']
     DISSOLVEALL = 'DISSOLVEALL'
     FIELD = 'FIELD'
     MULTI = 'MULTI'
@@ -58,25 +59,25 @@ class Ogr2OgrOneSideBuffer(OgrAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('[OGR] Geoprocessing')
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_LINE], False))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_LINE], False))
         self.addParameter(ParameterSelection(self.OPERATION,
-            self.tr('Operation'),self.OPERATIONLIST, 0))
+                                             self.tr('Operation'), self.OPERATIONLIST, 0))
         self.addParameter(ParameterString(self.GEOMETRY,
-            self.tr('Geometry column name ("geometry" for Shapefiles, may be different for other formats)'),
-            'geometry', optional=False))
+                                          self.tr('Geometry column name ("geometry" for Shapefiles, may be different for other formats)'),
+                                          'geometry', optional=False))
         self.addParameter(ParameterString(self.RADIUS,
-            self.tr('Buffer distance'), '1000', optional=False))
+                                          self.tr('Buffer distance'), '1000', optional=False))
         self.addParameter(ParameterSelection(self.LEFTRIGHT,
-            self.tr('Buffer side'),self.LEFTRIGHTLIST, 0))
+                                             self.tr('Buffer side'), self.LEFTRIGHTLIST, 0))
         self.addParameter(ParameterBoolean(self.DISSOLVEALL,
-            self.tr('Dissolve all results'), False))
+                                           self.tr('Dissolve all results'), False))
         self.addParameter(ParameterTableField(self.FIELD,
-            self.tr('Dissolve by attribute'), self.INPUT_LAYER, optional=True))
+                                              self.tr('Dissolve by attribute'), self.INPUT_LAYER, optional=True))
         self.addParameter(ParameterBoolean(self.MULTI,
-            self.tr('Output as singlepart geometries (only used when dissolving by attribute)'), False))
+                                           self.tr('Output as singlepart geometries (only used when dissolving by attribute)'), False))
         self.addParameter(ParameterString(self.OPTIONS,
-            self.tr('Additional creation options (see ogr2ogr manual)'),
-            '', optional=True))
+                                          self.tr('Additional creation options (see ogr2ogr manual)'),
+                                          '', optional=True))
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Single sided buffer')))
 
@@ -103,37 +104,37 @@ class Ogr2OgrOneSideBuffer(OgrAlgorithm):
         arguments.append(ogrLayer)
         arguments.append(self.ogrLayerName(inLayer))
         if dissolveall or field != 'None':
-           if operation == 'Single Side Buffer':
-              arguments.append('-dialect sqlite -sql "SELECT ST_Union(ST_SingleSidedBuffer(')
-           else:
-              arguments.append('-dialect sqlite -sql "SELECT ST_Union(ST_OffsetCurve(')
+            if operation == 'Single Side Buffer':
+                arguments.append('-dialect sqlite -sql "SELECT ST_Union(ST_SingleSidedBuffer(')
+            else:
+                arguments.append('-dialect sqlite -sql "SELECT ST_Union(ST_OffsetCurve(')
         else:
-           if operation == 'Single Side Buffer':
-              arguments.append('-dialect sqlite -sql "SELECT ST_SingleSidedBuffer(')
-           else:
-              arguments.append('-dialect sqlite -sql "SELECT ST_OffsetCurve(')
+            if operation == 'Single Side Buffer':
+                arguments.append('-dialect sqlite -sql "SELECT ST_SingleSidedBuffer(')
+            else:
+                arguments.append('-dialect sqlite -sql "SELECT ST_OffsetCurve(')
         arguments.append(geometry)
         arguments.append(',')
         arguments.append(distance)
         if dissolveall or field != 'None':
-           if leftright == 'Left':
-              arguments.append(',0)),*')
-           else:
-              arguments.append(',1)),*')
+            if leftright == 'Left':
+                arguments.append(',0)),*')
+            else:
+                arguments.append(',1)),*')
         else:
-           if leftright == 'Left':
-              arguments.append(',0),*')
-           else:
-              arguments.append(',1),*')
+            if leftright == 'Left':
+                arguments.append(',0),*')
+            else:
+                arguments.append(',1),*')
         arguments.append('FROM')
         arguments.append(layername)
         if field != 'None':
-           arguments.append('GROUP')
-           arguments.append('BY')
-           arguments.append(field)
+            arguments.append('GROUP')
+            arguments.append('BY')
+            arguments.append(field)
         arguments.append('"')
         if field != 'None' and multi:
-           arguments.append('-explodecollections')
+            arguments.append('-explodecollections')
 
         if len(options) > 0:
             arguments.append(options)

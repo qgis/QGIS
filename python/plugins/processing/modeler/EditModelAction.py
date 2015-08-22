@@ -29,6 +29,7 @@ from processing.gui.ContextAction import ContextAction
 from processing.modeler.ModelerAlgorithm import ModelerAlgorithm
 from processing.modeler.ModelerDialog import ModelerDialog
 
+
 class EditModelAction(ContextAction):
 
     def __init__(self):

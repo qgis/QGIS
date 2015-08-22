@@ -26,6 +26,8 @@ from PyQt4.QtGui import QAction, QIcon, QApplication
 # children db objects (table o schema) is selected by the user.
 # @param db is the selected database
 # @param mainwindow is the DBManager mainwindow
+
+
 def load(db, mainwindow):
     # add the action to the DBManager menu
     action = QAction(QIcon(), QApplication.translate("DBManagerPlugin", "&Versioning"), db)

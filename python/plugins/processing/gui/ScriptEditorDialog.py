@@ -159,9 +159,9 @@ class ScriptEditorDialog(BASE, WIDGET):
     def closeEvent(self, evt):
         if self.hasChanged:
             ret = QMessageBox.question(self, self.tr('Unsaved changes'),
-                self.tr('There are unsaved changes in script. Continue?'),
-                QMessageBox.Yes | QMessageBox.No, QMessageBox.No
-            )
+                                       self.tr('There are unsaved changes in script. Continue?'),
+                                       QMessageBox.Yes | QMessageBox.No, QMessageBox.No
+                                       )
             if ret == QMessageBox.Yes:
                 evt.accept()
             else:
@@ -187,8 +187,8 @@ class ScriptEditorDialog(BASE, WIDGET):
     def openScript(self):
         if self.hasChanged:
             ret = QMessageBox.warning(self, self.tr('Unsaved changes'),
-                self.tr('There are unsaved changes in script. Continue?'),
-                QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+                                      self.tr('There are unsaved changes in script. Continue?'),
+                                      QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
             if ret == QMessageBox.No:
                 return
 
@@ -247,9 +247,9 @@ class ScriptEditorDialog(BASE, WIDGET):
                     fout.write(text)
             except IOError:
                 QMessageBox.warning(self, self.tr('I/O error'),
-                    self.tr('Unable to save edits. Reason:\n %s')
-                    % unicode(sys.exc_info()[1])
-                )
+                                    self.tr('Unable to save edits. Reason:\n %s')
+                                    % unicode(sys.exc_info()[1])
+                                    )
                 return
             self.update = True
 

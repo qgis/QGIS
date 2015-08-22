@@ -73,7 +73,7 @@ class ModelerParametersDialog(QDialog):
         self.buttonBox = QDialogButtonBox()
         self.buttonBox.setOrientation(Qt.Horizontal)
         self.buttonBox.setStandardButtons(QDialogButtonBox.Cancel
-                | QDialogButtonBox.Ok)
+                                          | QDialogButtonBox.Ok)
         tooltips = self._alg.getParameterDescriptions()
         self.setSizePolicy(QSizePolicy.Expanding,
                            QSizePolicy.Expanding)
@@ -245,7 +245,6 @@ class ModelerParametersDialog(QDialog):
             alg = self.model.algs[value.alg]
             return self.tr("'%s' from algorithm '%s'") % (alg.algorithm.getOutputFromName(value.output).description, alg.description)
 
-
     def getWidgetFromParameter(self, param):
         if isinstance(param, ParameterRaster):
             item = QComboBox()
@@ -372,7 +371,7 @@ class ModelerParametersDialog(QDialog):
 
         for i, output in visibleOutputs:
             item = QTableWidgetItem(output.description + '<'
-                    + output.__module__.split('.')[-1] + '>')
+                                    + output.__module__.split('.')[-1] + '>')
             item.setFlags(Qt.ItemIsEnabled)
             self.tableWidget.setItem(i, 0, item)
             item = QLineEdit()
@@ -492,7 +491,6 @@ class ModelerParametersDialog(QDialog):
             value = widget.itemData(widget.currentIndex())
             alg.params[param.name] = value
             return True
-
 
     def setParamTableFieldValue(self, alg, param, widget):
         idx = widget.findText(widget.currentText())

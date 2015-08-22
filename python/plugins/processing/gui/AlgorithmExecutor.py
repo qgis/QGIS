@@ -55,6 +55,7 @@ def runalg(alg, progress=None):
         progress.error(e.msg)
         return False
 
+
 def runalgIterating(alg, paramToIter, progress):
     # Generate all single-feature layers
     settings = QSettings()
@@ -70,7 +71,7 @@ def runalgIterating(alg, paramToIter, progress):
         output = getTempFilename('shp')
         filelist.append(output)
         writer = QgsVectorFileWriter(output, systemEncoding,
-                provider.fields(), provider.geometryType(), layer.crs())
+                                     provider.fields(), provider.geometryType(), layer.crs())
         writer.addFeature(feat)
         del writer
 
@@ -79,7 +80,7 @@ def runalgIterating(alg, paramToIter, progress):
         outputs[out.name] = out.value
 
     # now run all the algorithms
-    for i,f in enumerate(filelist):
+    for i, f in enumerate(filelist):
         alg.setParameterValue(paramToIter, f)
         for out in alg.outputs:
             filename = outputs[out.name]
@@ -95,6 +96,7 @@ def runalgIterating(alg, paramToIter, progress):
             return False
 
     return True
+
 
 def tr(string, context=''):
     if context == '':

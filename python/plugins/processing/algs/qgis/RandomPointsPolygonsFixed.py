@@ -55,13 +55,13 @@ class RandomPointsPolygonsFixed(GeoAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('Random points inside polygons (fixed)')
         self.group, self.i18n_group = self.trAlgorithm('Vector creation tools')
         self.addParameter(ParameterVector(self.VECTOR,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POLYGON]))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POLYGON]))
         self.addParameter(ParameterSelection(self.STRATEGY,
-            self.tr('Sampling strategy'), self.STRATEGIES, 0))
+                                             self.tr('Sampling strategy'), self.STRATEGIES, 0))
         self.addParameter(ParameterNumber(self.VALUE,
-            self.tr('Number or density of points'), 0.0001, 9999999.0, 1.0))
+                                          self.tr('Number or density of points'), 0.0001, 9999999.0, 1.0))
         self.addParameter(ParameterNumber(self.MIN_DISTANCE,
-            self.tr('Minimum distance'), 0.0, 9999999, 0.0))
+                                          self.tr('Minimum distance'), 0.0, 9999999, 0.0))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Random points')))
 
@@ -119,9 +119,9 @@ class RandomPointsPolygonsFixed(GeoAlgorithm):
                 nIterations += 1
 
             if nPoints < pointCount:
-                 ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
-                     self.tr('Can not generate requested number of random '
-                             'points. Maximum number of attempts exceeded.'))
+                ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
+                                       self.tr('Can not generate requested number of random '
+                                               'points. Maximum number of attempts exceeded.'))
 
             progress.setPercentage(0)
 

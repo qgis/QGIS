@@ -34,6 +34,7 @@ from LAStoolsAlgorithm import LAStoolsAlgorithm
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterSelection
 
+
 class lasground(LAStoolsAlgorithm):
 
     NO_BULGE = "NO_BULGE"
@@ -49,11 +50,11 @@ class lasground(LAStoolsAlgorithm):
         self.addParametersPointInputGUI()
         self.addParametersHorizontalAndVerticalFeetGUI()
         self.addParameter(ParameterBoolean(lasground.NO_BULGE,
-            self.tr("no triangle bulging during TIN refinement"), False))
+                                           self.tr("no triangle bulging during TIN refinement"), False))
         self.addParameter(ParameterSelection(lasground.TERRAIN,
-            self.tr("terrain type"), lasground.TERRAINS, 1))
+                                             self.tr("terrain type"), lasground.TERRAINS, 1))
         self.addParameter(ParameterSelection(lasground.GRANULARITY,
-            self.tr("preprocessing"), lasground.GRANULARITIES, 1))
+                                             self.tr("preprocessing"), lasground.GRANULARITIES, 1))
         self.addParametersPointOutputGUI()
         self.addParametersAdditionalGUI()
 

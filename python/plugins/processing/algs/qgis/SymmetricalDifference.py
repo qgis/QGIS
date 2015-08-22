@@ -43,11 +43,11 @@ class SymmetricalDifference(GeoAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('Symmetrical difference')
         self.group, self.i18n_group = self.trAlgorithm('Vector overlay tools')
         self.addParameter(ParameterVector(self.INPUT,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterVector(self.OVERLAY,
-            self.tr('Difference layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Difference layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addOutput(OutputVector(self.OUTPUT,
-            self.tr('Symetrical difference')))
+                                    self.tr('Symetrical difference')))
 
     def processAlgorithm(self, progress):
         layerA = dataobjects.getObjectFromUri(
@@ -140,7 +140,7 @@ class SymmetricalDifference(GeoAlgorithm):
 
         if not GEOS_EXCEPT:
             ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
-                self.tr('Geometry exception while computing symetrical difference'))
+                                   self.tr('Geometry exception while computing symetrical difference'))
         if not FEATURE_EXCEPT:
             ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
-                self.tr('Feature exception while computing symetrical difference'))
+                                   self.tr('Feature exception while computing symetrical difference'))

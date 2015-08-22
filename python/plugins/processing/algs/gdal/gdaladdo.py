@@ -66,13 +66,13 @@ class gdaladdo(GdalAlgorithm):
         self.addParameter(ParameterRaster(
             self.INPUT, self.tr('Input layer'), False))
         self.addParameter(ParameterString(self.LEVELS,
-            self.tr('Overview levels'), '2 4 8 16'))
+                                          self.tr('Overview levels'), '2 4 8 16'))
         self.addParameter(ParameterBoolean(self.CLEAN,
-            self.tr('Remove all existing overviews'), False))
+                                           self.tr('Remove all existing overviews'), False))
         self.addParameter(ParameterSelection(self.RESAMPLING_METHOD,
-            self.tr('Resampling method'), self.METHODS, 0))
+                                             self.tr('Resampling method'), self.METHODS, 0))
         self.addParameter(ParameterSelection(self.FORMAT,
-            self.tr('Overview format'), self.FORMATS, 0))
+                                             self.tr('Overview format'), self.FORMATS, 0))
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Pyramidized'), True))
 
     def getConsoleCommands(self):

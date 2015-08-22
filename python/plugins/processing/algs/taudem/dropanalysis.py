@@ -68,26 +68,26 @@ class DropAnalysis(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Stream Network Analysis tools')
 
         self.addParameter(ParameterRaster(self.D8_CONTRIB_AREA_GRID,
-            self.tr('D8 Contributing Area Grid'), False))
+                                          self.tr('D8 Contributing Area Grid'), False))
         self.addParameter(ParameterRaster(self.D8_FLOW_DIR_GRID,
-            self.tr('D8 Flow Direction Grid'), False))
+                                          self.tr('D8 Flow Direction Grid'), False))
         self.addParameter(ParameterRaster(self.PIT_FILLED_GRID,
-            self.tr('Pit Filled Elevation Grid'), False))
+                                          self.tr('Pit Filled Elevation Grid'), False))
         self.addParameter(ParameterRaster(self.ACCUM_STREAM_SOURCE_GRID,
-            self.tr('Accumulated Stream Source Grid'), False))
+                                          self.tr('Accumulated Stream Source Grid'), False))
         self.addParameter(ParameterVector(self.OUTLETS_SHAPE,
-            self.tr('Outlets Shapefile'),
-            [ParameterVector.VECTOR_TYPE_POINT], False))
+                                          self.tr('Outlets Shapefile'),
+                                          [ParameterVector.VECTOR_TYPE_POINT], False))
         self.addParameter(ParameterNumber(self.MIN_TRESHOLD,
-            self.tr('Minimum Threshold'), 0, None, 5))
+                                          self.tr('Minimum Threshold'), 0, None, 5))
         self.addParameter(ParameterNumber(self.MAX_THRESHOLD,
-            self.tr('Maximum Threshold'), 0, None, 500))
+                                          self.tr('Maximum Threshold'), 0, None, 500))
         self.addParameter(ParameterNumber(self.TRESHOLD_NUM,
-            self.tr('Number of Threshold Values'), 0, None, 10))
+                                          self.tr('Number of Threshold Values'), 0, None, 10))
         self.addParameter(ParameterSelection(self.STEP_TYPE,
-            self.tr('Spacing for Threshold Values'), self.STEPS, 0))
+                                             self.tr('Spacing for Threshold Values'), self.STEPS, 0))
         self.addOutput(OutputFile(self.DROP_ANALYSIS_FILE,
-            self.tr('D-Infinity Drop to Stream Grid')))
+                                  self.tr('D-Infinity Drop to Stream Grid')))
 
     def processAlgorithm(self, progress):
         commands = []

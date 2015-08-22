@@ -36,7 +36,9 @@ from random import seed, random, uniform
 from math import sqrt
 from ui_frmRegPoints import Ui_Dialog
 
+
 class Dialog(QDialog, Ui_Dialog):
+
     def __init__(self, iface):
         QDialog.__init__(self, iface.mainWindow())
         self.iface = iface
@@ -46,19 +48,19 @@ class Dialog(QDialog, Ui_Dialog):
         self.yMin.setValidator(QDoubleValidator(self.yMin))
         self.yMax.setValidator(QDoubleValidator(self.yMax))
         QObject.connect(self.toolOut, SIGNAL("clicked()"), self.outFile)
-        self.setWindowTitle( self.tr("Regular points") )
-        self.buttonOk = self.buttonBox_2.button( QDialogButtonBox.Ok )
+        self.setWindowTitle(self.tr("Regular points"))
+        self.buttonOk = self.buttonBox_2.button(QDialogButtonBox.Ok)
         self.progressBar.setValue(0)
         self.mapCanvas = self.iface.mapCanvas()
         self.populateLayers()
 
-    def populateLayers( self ):
+    def populateLayers(self):
         layers = ftools_utils.getLayerNames("all")
         self.inShape.clear()
         self.inShape.addItems(layers)
 
     def accept(self):
-        self.buttonOk.setEnabled( False )
+        self.buttonOk.setEnabled(False)
         if not self.rdoCoordinates.isChecked() and self.inShape.currentText() == "":
             QMessageBox.information(self, self.tr("Generate Regular Points"), self.tr("Please specify input layer"))
         elif self.rdoCoordinates.isChecked() and (self.xMin.text() == "" or self.xMax.text() == "" or self.yMin.text() == "" or self.yMax.text() == ""):
@@ -69,10 +71,14 @@ class Dialog(QDialog, Ui_Dialog):
             inName = self.inShape.currentText()
             outPath = self.outShape.text()
             self.outShape.clear()
-            if self.rdoSpacing.isChecked(): value = self.spnSpacing.value()
-            else: value = self.spnNumber.value()
-            if self.chkRandom.isChecked(): offset = True
-            else: offset = False
+            if self.rdoSpacing.isChecked():
+                value = self.spnSpacing.value()
+            else:
+                value = self.spnNumber.value()
+            if self.chkRandom.isChecked():
+                offset = True
+            else:
+                offset = False
             if self.rdoBoundary.isChecked():
                 mLayer = ftools_utils.getMapLayerByName(unicode(inName))
                 boundBox = mLayer.extent()
@@ -81,24 +87,25 @@ class Dialog(QDialog, Ui_Dialog):
                 boundBox = QgsRectangle(float(self.xMin.text()), float(self.yMin.text()), float(self.xMax.text()), float(self.yMax.text()))
                 crs = self.mapCanvas.mapRenderer().destinationCrs()
                 print crs.isValid()
-                if not crs.isValid(): crs = None
+                if not crs.isValid():
+                    crs = None
             self.regularize(boundBox, outPath, offset, value, self.rdoSpacing.isChecked(), self.spnInset.value(), crs)
             if self.addToCanvasCheck.isChecked():
                 addCanvasCheck = ftools_utils.addShapeToCanvas(unicode(outPath))
                 if not addCanvasCheck:
-                    QMessageBox.warning( self, self.tr("Generate Regular Points"), self.tr( "Error loading output shapefile:\n%s" ) % ( unicode( outPath ) ))
+                    QMessageBox.warning(self, self.tr("Generate Regular Points"), self.tr("Error loading output shapefile:\n%s") % (unicode(outPath)))
                 self.populateLayers()
             else:
-                QMessageBox.information(self, self.tr("Generate Regular Points"),self.tr("Created output shapefile:\n%s" ) % ( unicode( outPath )))
+                QMessageBox.information(self, self.tr("Generate Regular Points"), self.tr("Created output shapefile:\n%s") % (unicode(outPath)))
         self.progressBar.setValue(0)
-        self.buttonOk.setEnabled( True )
+        self.buttonOk.setEnabled(True)
 
     def outFile(self):
         self.outShape.clear()
-        ( self.shapefileName, self.encoding ) = ftools_utils.saveDialog( self )
+        (self.shapefileName, self.encoding) = ftools_utils.saveDialog(self)
         if self.shapefileName is None or self.encoding is None:
             return
-        self.outShape.setText( self.shapefileName )
+        self.outShape.setText(self.shapefileName)
 
 # Generate list of random points
     def simpleRandom(self, n, bound, xmin, xmax, ymin, ymax):
@@ -106,7 +113,7 @@ class Dialog(QDialog, Ui_Dialog):
         points = []
         i = 1
         while i <= n:
-            pGeom = QgsGeometry().fromPoint(QgsPoint(xmin + (xmax-xmin) * random(), ymin + (ymax-ymin) * random()))
+            pGeom = QgsGeometry().fromPoint(QgsPoint(xmin + (xmax - xmin) * random(), ymin + (ymax - ymin) * random()))
             if pGeom.intersects(bound):
                 points.append(pGeom)
                 i = i + 1
@@ -124,8 +131,8 @@ class Dialog(QDialog, Ui_Dialog):
         outFeat = QgsFeature()
         outFeat.initAttributes(1)
         fields = QgsFields()
-        fields.append( QgsField("ID", QVariant.Int) )
-        outFeat.setFields( fields )
+        fields.append(QgsField("ID", QVariant.Int))
+        outFeat.setFields(fields)
         check = QFile(self.shapefileName)
         if check.exists():
             if not QgsVectorFileWriter.deleteShapeFile(self.shapefileName):
@@ -139,7 +146,7 @@ class Dialog(QDialog, Ui_Dialog):
             x = bound.xMinimum() + inset
             while x <= bound.xMaximum():
                 if offset:
-                    pGeom = QgsGeometry().fromPoint( QgsPoint(
+                    pGeom = QgsGeometry().fromPoint(QgsPoint(
                         uniform(x - (pointSpacing / 2.0), x + (pointSpacing / 2.0)),
                         uniform(y - (pointSpacing / 2.0), y + (pointSpacing / 2.0))
                     ))

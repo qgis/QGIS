@@ -35,6 +35,7 @@ from LAStoolsAlgorithm import LAStoolsAlgorithm
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterBoolean
 
+
 class las2demPro(LAStoolsAlgorithm):
 
     ATTRIBUTE = "ATTRIBUTE"
@@ -50,11 +51,11 @@ class las2demPro(LAStoolsAlgorithm):
         self.addParametersFilter1ReturnClassFlagsGUI()
         self.addParametersStepGUI()
         self.addParameter(ParameterSelection(las2demPro.ATTRIBUTE,
-            self.tr("attribute (what to interpolate)"), las2demPro.ATTRIBUTES, 0))
+                                             self.tr("attribute (what to interpolate)"), las2demPro.ATTRIBUTES, 0))
         self.addParameter(ParameterSelection(las2demPro.PRODUCT,
-            self.tr("product (how to output per pixel)"), las2demPro.PRODUCTS, 0))
+                                             self.tr("product (how to output per pixel)"), las2demPro.PRODUCTS, 0))
         self.addParameter(ParameterBoolean(las2demPro.USE_TILE_BB,
-            self.tr("use tile bounding box (after tiling with buffer)"), False))
+                                           self.tr("use tile bounding box (after tiling with buffer)"), False))
         self.addParametersOutputDirectoryGUI()
         self.addParametersOutputAppendixGUI()
         self.addParametersRasterOutputFormatGUI()

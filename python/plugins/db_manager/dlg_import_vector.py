@@ -58,7 +58,6 @@ class DlgImportVector(QDialog, Ui_Dialog):
         self.setupWorkingMode(self.mode)
         self.connect(self.cboSchema, SIGNAL("currentIndexChanged(int)"), self.populateTables)
 
-
     def setupWorkingMode(self, mode):
         """ hide the widget to select a layer/file if the input layer is already set """
         self.wdgInput.setVisible(mode == self.ASK_FOR_INPUT_MODE)
@@ -97,7 +96,6 @@ class DlgImportVector(QDialog, Ui_Dialog):
         self.chkTargetSrid.setEnabled(allowSpatial and hasGeomType)
         self.chkSinglePart.setEnabled(allowSpatial and hasGeomType and isShapefile)
         self.chkSpatialIndex.setEnabled(allowSpatial and hasGeomType)
-
 
     def populateLayers(self):
         self.cboInputLayer.clear()
@@ -173,7 +171,6 @@ class DlgImportVector(QDialog, Ui_Dialog):
 
         self.checkSupports()
         return True
-
 
     def populateSchemas(self):
         if not self.db:
@@ -331,7 +328,6 @@ class DlgImportVector(QDialog, Ui_Dialog):
 
         QMessageBox.information(self, self.tr("Import to database"), self.tr("Import was successful."))
         return QDialog.accept(self)
-
 
     def closeEvent(self, event):
         # destroy the input layer instance but only if it was created

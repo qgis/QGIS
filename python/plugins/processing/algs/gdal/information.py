@@ -46,13 +46,13 @@ class information(GdalAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('Information')
         self.group, self.i18n_group = self.trAlgorithm('[GDAL] Miscellaneous')
         self.addParameter(ParameterRaster(information.INPUT,
-            self.tr('Input layer'), False))
+                                          self.tr('Input layer'), False))
         self.addParameter(ParameterBoolean(information.NOGCP,
-            self.tr('Suppress GCP info'), False))
+                                           self.tr('Suppress GCP info'), False))
         self.addParameter(ParameterBoolean(information.NOMETADATA,
-            self.tr('Suppress metadata info'), False))
+                                           self.tr('Suppress metadata info'), False))
         self.addOutput(OutputHTML(information.OUTPUT,
-            self.tr('Layer information')))
+                                  self.tr('Layer information')))
 
     def getConsoleCommands(self):
         arguments = []

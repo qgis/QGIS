@@ -144,7 +144,7 @@ class GrassAlgorithm(GeoAlgorithm):
                         self.addOutput(OutputFile("rawoutput", output.description +
                                                   " (raw output)", "txt"))
                 line = lines.readline().strip('\n').strip()
-            except Exception, e:
+            except Exception as e:
                 ProcessingLog.addToLog(
                     ProcessingLog.LOG_ERROR,
                     self.tr('Could not open GRASS algorithm: %s.\n%s' % (self.descriptionFile, line)))
@@ -300,7 +300,7 @@ class GrassAlgorithm(GeoAlgorithm):
         for param in self.parameters:
             if param.value is None or param.value == '':
                 continue
-            if param.name in [ self.GRASS_REGION_CELLSIZE_PARAMETER, self.GRASS_REGION_EXTENT_PARAMETER, self.GRASS_MIN_AREA_PARAMETER, self.GRASS_SNAP_TOLERANCE_PARAMETER, self.GRASS_OUTPUT_TYPE_PARAMETER, self.GRASS_REGION_ALIGN_TO_RESOLUTION ]:
+            if param.name in [self.GRASS_REGION_CELLSIZE_PARAMETER, self.GRASS_REGION_EXTENT_PARAMETER, self.GRASS_MIN_AREA_PARAMETER, self.GRASS_SNAP_TOLERANCE_PARAMETER, self.GRASS_OUTPUT_TYPE_PARAMETER, self.GRASS_REGION_ALIGN_TO_RESOLUTION]:
                 continue
             if isinstance(param, (ParameterRaster, ParameterVector)):
                 value = param.value
@@ -411,7 +411,6 @@ class GrassAlgorithm(GeoAlgorithm):
             GrassUtils.addSessionLayers(self.exportedLayers)
         else:
             GrassUtils.endGrassSession()
-
 
     def exportVectorLayer(self, orgFilename):
 

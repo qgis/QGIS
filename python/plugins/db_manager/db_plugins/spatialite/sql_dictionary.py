@@ -52,23 +52,23 @@ functions = [
     # TODO get them from a reference page
     "changes", "coalesce", "glob", "ifnull", "hex", "last_insert_rowid",
     "nullif", "quote", "random",
-    "randomblob", "replace", "round", "soundex", "total_change", 
+    "randomblob", "replace", "round", "soundex", "total_change",
     "typeof", "zeroblob", "date", "datetime", "julianday", "strftime"
 ]
-operators=[
-' AND ',' OR ','||',' < ',' <= ',' > ',' >= ',' = ',' <> ',' IS ',' IS NOT ',' IN ',' LIKE ',' GLOB ',' MATCH ',' REGEXP '
+operators = [
+    ' AND ', ' OR ', '||', ' < ', ' <= ', ' > ', ' >= ', ' = ', ' <> ', ' IS ', ' IS NOT ', ' IN ', ' LIKE ', ' GLOB ', ' MATCH ', ' REGEXP '
 ]
 
 math_functions = [
     # SQL math functions
     "Abs", "ACos", "ASin", "ATan", "Cos", "Cot", "Degrees", "Exp", "Floor", "Log", "Log2",
     "Log10", "Pi", "Radians", "Round", "Sign", "Sin", "Sqrt", "StdDev_Pop", "StdDev_Samp", "Tan",
-    "Var_Pop", "Var_Samp" ]
+    "Var_Pop", "Var_Samp"]
 
-string_functions=["Length", "Lower", "Upper", "Like", "Trim", "LTrim", "RTrim", "Replace", "Substr"]
+string_functions = ["Length", "Lower", "Upper", "Like", "Trim", "LTrim", "RTrim", "Replace", "Substr"]
 
-aggregate_functions=[
-"Max","Min","Avg","Count","Sum","Group_Concat","Total","Var_Pop","Var_Samp","StdDev_Pop","StdDev_Samp"
+aggregate_functions = [
+    "Max", "Min", "Avg", "Count", "Sum", "Group_Concat", "Total", "Var_Pop", "Var_Samp", "StdDev_Pop", "StdDev_Samp"
 ]
 
 spatialite_functions = [  # from www.gaia-gis.it/spatialite-2.3.0/spatialite-sql-2.3.0.html
@@ -126,6 +126,7 @@ spatialite_functions = [  # from www.gaia-gis.it/spatialite-2.3.0/spatialite-sql
 constants = ["null", "false", "true"]
 spatialite_constants = []
 
+
 def getSqlDictionary(spatial=True):
     def strip_star(s):
         if s[0] == '*':
@@ -140,17 +141,19 @@ def getSqlDictionary(spatial=True):
         f += spatialite_functions
         c += spatialite_constants
 
-    return {'keyword': map(strip_star,k), 'constant': map(strip_star,c), 'function': map(strip_star,f)}
+    return {'keyword': map(strip_star, k), 'constant': map(strip_star, c), 'function': map(strip_star, f)}
+
 
 def getQueryBuilderDictionary():
     # concat functions
-    def ff( l ):
-        return filter( lambda s:s[0] != '*', l )
-    def add_paren( l ):
-        return map( lambda s:s+"(", l )
-    foo = sorted(add_paren(ff( list(set.union(set(functions), set(spatialite_functions))) )))
-    m = sorted(add_paren(ff( math_functions )))
+    def ff(l):
+        return filter(lambda s: s[0] != '*', l)
+
+    def add_paren(l):
+        return map(lambda s: s + "(", l)
+    foo = sorted(add_paren(ff(list(set.union(set(functions), set(spatialite_functions))))))
+    m = sorted(add_paren(ff(math_functions)))
     agg = sorted(add_paren(ff(aggregate_functions)))
     op = ff(operators)
     s = sorted(add_paren(ff(string_functions)))
-    return {'function': foo, 'math' : m, 'aggregate': agg, 'operator': op, 'string': s }
+    return {'function': foo, 'math': m, 'aggregate': agg, 'operator': op, 'string': s}

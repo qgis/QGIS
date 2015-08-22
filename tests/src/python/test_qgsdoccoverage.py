@@ -40,7 +40,8 @@ def elemIsDocumentableClass(elem):
         return False
 
     #public or protected classes should be documented
-    return elem.get('prot') in ('public','protected')
+    return elem.get('prot') in ('public', 'protected')
+
 
 def memberSignature(elem):
     a = elem.find('argsstring')
@@ -52,12 +53,13 @@ def memberSignature(elem):
     except:
         return None
 
+
 def elemIsDocumentableMember(elem):
     if elem.get('kind') == 'variable':
         return False
 
     #only public or protected members should be documented
-    if not elem.get('prot') in ('public','protected'):
+    if not elem.get('prot') in ('public', 'protected'):
         return False
 
     #ignore reimplemented methods
@@ -80,14 +82,14 @@ def elemIsDocumentableMember(elem):
     definition = elem.find('definition')
     argsstring = elem.find('argsstring')
     try:
-        if definition.text == '{}::{}'.format(name.text,name.text) and argsstring.text == '()':
+        if definition.text == '{}::{}'.format(name.text, name.text) and argsstring.text == '()':
             return False
     except:
         pass
 
     #ignore certain obvious operators
     try:
-        if name.text in ('operator=','operator=='):
+        if name.text in ('operator=', 'operator=='):
             return False
     except:
         pass
@@ -96,11 +98,12 @@ def elemIsDocumentableMember(elem):
 
 
 def memberIsDocumented(m):
-    for doc_type in ('inbodydescription','briefdescription','detaileddescription'):
+    for doc_type in ('inbodydescription', 'briefdescription', 'detaileddescription'):
         doc = m.find(doc_type)
         if doc is not None and list(doc):
             return True
     return False
+
 
 def parseClassElem(e):
     documentable_members = 0
@@ -115,6 +118,7 @@ def parseClassElem(e):
                 undocumented_members.append(memberSignature(m))
     return documentable_members, documented_members, undocumented_members
 
+
 def parseFile(f):
     documentable_members = 0
     documented_members = 0
@@ -126,7 +130,7 @@ def parseFile(f):
                     documentable_members += members
                     documented_members += documented
                     if documented < members:
-                        print "Class {}, {}/{} members documented".format(elem.find('compoundname').text,documented,members)
+                        print "Class {}, {}/{} members documented".format(elem.find('compoundname').text, documented, members)
                         for u in undocumented:
                             print ' Missing: {}'.format(u)
                         print "\n"
@@ -137,29 +141,30 @@ def parseFile(f):
         with open(f, 'r') as xml_file:
             for i, l in enumerate(xml_file):
                 if i == line_num - 1:
-                   line = l
-                   break
-        caret = '{:=>{}}'.format('^', col )
-        print 'ParseError in {}\n{}\n{}\n{}'.format(f,e,line,caret)
+                    line = l
+                    break
+        caret = '{:=>{}}'.format('^', col)
+        print 'ParseError in {}\n{}\n{}\n{}'.format(f, e, line, caret)
     return documentable_members, documented_members
 
 
 def parseDocs(path):
     documentable_members = 0
     documented_members = 0
-    for f in glob.glob(os.path.join(path,'*.xml')):
-        members, documented = parseFile( f )
+    for f in glob.glob(os.path.join(path, '*.xml')):
+        members, documented = parseFile(f)
         documentable_members += members
         documented_members += documented
 
     return documentable_members, documented_members
+
 
 class TestQgsDocCoverage(TestCase):
 
     def testCoverage(self):
         print 'CTEST_FULL_OUTPUT'
         prefixPath = os.environ['QGIS_PREFIX_PATH']
-        docPath = os.path.join(prefixPath, '..', 'doc', 'api', 'xml' )
+        docPath = os.path.join(prefixPath, '..', 'doc', 'api', 'xml')
 
         documentable, documented = parseDocs(docPath)
         coverage = 100.0 * documented / documentable

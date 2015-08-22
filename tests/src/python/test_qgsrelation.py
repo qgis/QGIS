@@ -71,6 +71,7 @@ def formatAttributes(attrs):
 
 
 class TestQgsRelation(TestCase):
+
     def setUp(self):
         self.referencedLayer = createReferencedLayer()
         self.referencingLayer = createReferencingLayer()

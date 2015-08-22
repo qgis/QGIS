@@ -53,9 +53,9 @@ class TestQgsRasterLayer(TestCase):
         #print 'Extents: %s' % myRasterLayer.extent().toString()
         #myResult, myRasterValues = myRasterLayer.identify(myPoint)
         #assert myResult
-        myRasterValues =  myRasterLayer.dataProvider().identify(myPoint, QgsRaster.IdentifyFormatValue ).results()
+        myRasterValues = myRasterLayer.dataProvider().identify(myPoint, QgsRaster.IdentifyFormatValue).results()
 
-        assert len( myRasterValues ) > 0
+        assert len(myRasterValues) > 0
 
         # Get the name of the first band
         myBand = myRasterValues.keys()[0]
@@ -70,7 +70,7 @@ class TestQgsRasterLayer(TestCase):
         myValues = myRasterValues.values()
         myIntValues = []
         for myValue in myValues:
-          myIntValues.append( int(myValue) )
+            myIntValues.append(int(myValue))
         myValues = str(myIntValues)
         myExpectedValues = '[127, 141, 112, 72, 86, 126, 156, 211, 170]'
         myMessage = 'Expected: %s\nGot: %s' % (myValues, myExpectedValues)
@@ -107,8 +107,6 @@ class TestQgsRasterLayer(TestCase):
         #myType = myRasterLayer.dataProvider().dataType(1);
         #myEnhancement = QgsContrastEnhancement(myType);
 
-
-
         myTransparentSingleValuePixelList = []
         rasterTransparency = QgsRasterTransparency()
 
@@ -134,7 +132,7 @@ class TestQgsRasterLayer(TestCase):
 
         rasterRenderer.setRasterTransparency(rasterTransparency)
 
-        QgsMapLayerRegistry.instance().addMapLayers([ myRasterLayer, ])
+        QgsMapLayerRegistry.instance().addMapLayers([myRasterLayer, ])
 
         myMapRenderer = QgsMapRenderer()
 
@@ -188,7 +186,7 @@ class TestQgsRasterLayer(TestCase):
         myColorRampShader.setColorRampItemList(myItems)
         myRasterShader.setRasterShaderFunction(myColorRampShader)
         myPseudoRenderer = QgsSingleBandPseudoColorRenderer(
-            myRasterLayer.dataProvider(), 1,  myRasterShader)
+            myRasterLayer.dataProvider(), 1, myRasterShader)
         myRasterLayer.setRenderer(myPseudoRenderer)
 
         return
@@ -211,13 +209,13 @@ class TestQgsRasterLayer(TestCase):
         myRasterShader.setRasterShaderFunction(myColorRampShader)
         ######## crash on next line (fixed now)##################
         myPseudoRenderer = QgsSingleBandPseudoColorRenderer(
-            myRasterLayer.dataProvider(), 1,  myRasterShader)
+            myRasterLayer.dataProvider(), 1, myRasterShader)
         myRasterLayer.setRenderer(myPseudoRenderer)
 
-    def onRendererChanged( self ):
+    def onRendererChanged(self):
         self.rendererChanged = True
 
-    def test_setRenderer( self ):
+    def test_setRenderer(self):
         myPath = os.path.join(unitTestDataPath('raster'),
                               'band1_float32_noct_epsg4326.tif')
         myFileInfo = QFileInfo(myPath)
@@ -225,13 +223,13 @@ class TestQgsRasterLayer(TestCase):
         layer = QgsRasterLayer(myPath, myBaseName)
 
         self.rendererChanged = False
-        QObject.connect( layer, SIGNAL( "rendererChanged()" ),
-                         self.onRendererChanged )
+        QObject.connect(layer, SIGNAL("rendererChanged()"),
+                        self.onRendererChanged)
 
         rShader = QgsRasterShader()
-        r = QgsSingleBandPseudoColorRenderer( layer.dataProvider(), 1, rShader )
+        r = QgsSingleBandPseudoColorRenderer(layer.dataProvider(), 1, rShader)
 
-        layer.setRenderer( r )
+        layer.setRenderer(r)
         assert self.rendererChanged
         assert layer.renderer() == r
 

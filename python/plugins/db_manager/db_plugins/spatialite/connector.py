@@ -34,6 +34,7 @@ def classFactory():
 
 
 class SpatiaLiteDBConnector(DBConnector):
+
     def __init__(self, uri):
         DBConnector.__init__(self, uri)
 
@@ -44,7 +45,7 @@ class SpatiaLiteDBConnector(DBConnector):
         try:
             self.connection = sqlite.connect(self._connectionInfo())
 
-        except self.connection_error_types(), e:
+        except self.connection_error_types() as e:
             raise ConnectionError(e)
 
         self._checkSpatial()
@@ -72,7 +73,7 @@ class SpatiaLiteDBConnector(DBConnector):
             v = c.fetchone()[0]
             self.has_geometry_columns = v == 1 or v == 3
             self.has_spatialite4 = v == 3
-        except Exception, e:
+        except Exception as e:
             self.has_geometry_columns = False
             self.has_spatialite4 = False
 
@@ -126,8 +127,8 @@ class SpatiaLiteDBConnector(DBConnector):
         return True
 
     def isgpkg(self):
-        info = map( int, self.getInfo()[0].split('.')[0:2] )
-        if info[0] < 4 or (info[0]==4 and info[1]<2):
+        info = map(int, self.getInfo()[0].split('.')[0:2])
+        if info[0] < 4 or (info[0] == 4 and info[1] < 2):
             result = self.uri().database()[-5:] == ".gpkg"
         else:
             sql = u"SELECT HasGeoPackage()"
@@ -141,7 +142,6 @@ class SpatiaLiteDBConnector(DBConnector):
             "varchar", "varchar(255)", "character(20)", "text",  # strings
             "date", "datetime"  # date/time
         ]
-
 
     def getSchemas(self):
         return None
@@ -159,10 +159,10 @@ class SpatiaLiteDBConnector(DBConnector):
                       "sqlite_stat1", "sqlite_stat2", "spatialite_history",
                       "geometry_columns_field_infos",
                       "geometry_columns_statistics", "geometry_columns_time",
-                      "sql_statements_log","vector_layers", "vector_layers_auth", "vector_layers_field_infos", "vector_layers_statistics",
+                      "sql_statements_log", "vector_layers", "vector_layers_auth", "vector_layers_field_infos", "vector_layers_statistics",
                       "views_geometry_columns_auth", "views_geometry_columns_field_infos", "views_geometry_columns_statistics",
                       "virts_geometry_columns_auth", "virts_geometry_columns_field_infos", "virts_geometry_columns_statistics"
-                  ]
+                      ]
 
         try:
             vectors = self.getVectorTables(schema)
@@ -266,7 +266,6 @@ class SpatiaLiteDBConnector(DBConnector):
 
         return items
 
-
     def getRasterTables(self, schema=None):
         """ get list of table with a geometry column
                 it returns:
@@ -352,7 +351,6 @@ class SpatiaLiteDBConnector(DBConnector):
         sql = u"DROP TRIGGER %s" % self.quoteId(trigger)
         self._execute_and_commit(sql)
 
-
     def getTableExtent(self, table, geom):
         """ find out table extent """
         schema, tablename = self.getSchemaTableName(table)
@@ -409,7 +407,6 @@ class SpatiaLiteDBConnector(DBConnector):
 
         return False
 
-
     def createTable(self, table, field_defs, pkey):
         """ create ordinary table
                         'fields' is array containing field definitions
@@ -439,7 +436,6 @@ class SpatiaLiteDBConnector(DBConnector):
         sql = u"DELETE FROM geometry_columns WHERE upper(f_table_name) = upper(%s)" % self.quoteString(tablename)
         self._execute(c, sql)
         self._commit()
-
 
     def emptyTable(self, table):
         """ delete all rows from table """
@@ -499,7 +495,7 @@ class SpatiaLiteDBConnector(DBConnector):
         self.createView(view, query)
         # get type info about the view
         sql = u"PRAGMA table_info(%s)" % self.quoteString(view)
-        c = self._execute( None, sql )
+        c = self._execute(None, sql)
         geom_col = None
         for r in c.fetchall():
             if r[2].upper() in ('POINT', 'LINESTRING', 'POLYGON',
@@ -511,7 +507,7 @@ class SpatiaLiteDBConnector(DBConnector):
 
         # get geometry type and srid
         sql = u"SELECT geometrytype(%s), srid(%s) FROM %s LIMIT 1" % (self.quoteId(geom_col), self.quoteId(geom_col), self.quoteId(view))
-        c = self._execute( None, sql )
+        c = self._execute(None, sql)
         r = c.fetchone()
         if r is None:
             return
@@ -538,7 +534,6 @@ class SpatiaLiteDBConnector(DBConnector):
     def runVacuum(self):
         """ run vacuum on the db """
         self._execute_and_commit("VACUUM")
-
 
     def addTableColumn(self, table, field_def):
         """ add a column to table """
@@ -591,7 +586,6 @@ class SpatiaLiteDBConnector(DBConnector):
     def deleteGeometryColumn(self, table, geom_column):
         return self.deleteTableColumn(table, geom_column)
 
-
     def addTableUniqueConstraint(self, table, column):
         """ add a unique constraint to a table """
         return False  # constraints not supported
@@ -600,12 +594,10 @@ class SpatiaLiteDBConnector(DBConnector):
         """ delete constraint in a table """
         return False  # constraints not supported
 
-
     def addTablePrimaryKey(self, table, column):
         """ add a primery key (with one column) to a table """
         sql = u"ALTER TABLE %s ADD PRIMARY KEY (%s)" % (self.quoteId(table), self.quoteId(column))
         self._execute_and_commit(sql)
-
 
     def createTableIndex(self, table, name, column, unique=False):
         """ create index on one column using default options """

@@ -32,6 +32,7 @@ from processing.core.ProcessingConfig import Setting, ProcessingConfig
 
 
 class AlgorithmProvider(object):
+
     """This is the base class for algorithms providers.
 
     An algorithm provider is a set of related algorithms, typically

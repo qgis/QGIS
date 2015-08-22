@@ -35,7 +35,9 @@ BASE_CLASS = get_ui_class('recorddialog.ui')
 
 
 class RecordDialog(QDialog, BASE_CLASS):
+
     """Record Metadata Dialogue"""
+
     def __init__(self):
         """init"""
 

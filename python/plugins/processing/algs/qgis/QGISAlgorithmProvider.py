@@ -177,7 +177,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         SetVectorStyle(), SetRasterStyle(),
                         SelectByExpression(), HypsometricCurves(),
                         SplitLinesWithLines(), CreateConstantRaster(),
-                        FieldsMapper(),SelectByAttributeSum(), Datasources2Vrt(),
+                        FieldsMapper(), SelectByAttributeSum(), Datasources2Vrt(),
                         CheckValidity()
                         ]
 

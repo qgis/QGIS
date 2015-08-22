@@ -37,6 +37,7 @@ except ImportError:
 
 
 class TreeItem(QObject):
+
     def __init__(self, data, parent=None):
         QObject.__init__(self, parent)
         self.populated = False
@@ -102,6 +103,7 @@ class TreeItem(QObject):
 
 
 class PluginItem(TreeItem):
+
     def __init__(self, dbplugin, parent=None):
         TreeItem.__init__(self, dbplugin, parent)
 
@@ -116,7 +118,6 @@ class PluginItem(TreeItem):
         self.populated = True
         return True
 
-
     def data(self, column):
         if column == 0:
             return self.getItemData().typeNameString()
@@ -130,6 +131,7 @@ class PluginItem(TreeItem):
 
 
 class ConnectionItem(TreeItem):
+
     def __init__(self, connection, parent=None):
         TreeItem.__init__(self, connection, parent)
 
@@ -154,7 +156,7 @@ class ConnectionItem(TreeItem):
                 if not connection.connect():
                     return False
 
-            except BaseError, e:
+            except BaseError as e:
                 DlgDbError.showError(e, None)
                 return False
 
@@ -182,6 +184,7 @@ class ConnectionItem(TreeItem):
 
 
 class SchemaItem(TreeItem):
+
     def __init__(self, schema, parent):
         TreeItem.__init__(self, schema, parent)
         self.connect(schema, SIGNAL("changed"), self.itemChanged)
@@ -211,6 +214,7 @@ class SchemaItem(TreeItem):
 
 
 class TableItem(TreeItem):
+
     def __init__(self, table, parent):
         TreeItem.__init__(self, table, parent)
         self.connect(table, SIGNAL("changed"), self.itemChanged)
@@ -260,7 +264,7 @@ class TableItem(TreeItem):
             pathList.extend(self.parent().path())
 
         if self.getItemData().type == Table.VectorType:
-            pathList.append("%s::%s" % ( self.data(0), self.getItemData().geomColumn ))
+            pathList.append("%s::%s" % (self.data(0), self.getItemData().geomColumn))
         else:
             pathList.append(self.data(0))
 
@@ -268,6 +272,7 @@ class TableItem(TreeItem):
 
 
 class DBModel(QAbstractItemModel):
+
     def __init__(self, parent=None):
         QAbstractItemModel.__init__(self, parent)
         self.treeView = parent
@@ -281,7 +286,6 @@ class DBModel(QAbstractItemModel):
         for dbtype in supportedDbTypes():
             dbpluginclass = createDbPlugin(dbtype)
             PluginItem(dbpluginclass, self.rootItem)
-
 
     def refreshItem(self, item):
         if isinstance(item, TreeItem):
@@ -333,7 +337,6 @@ class DBModel(QAbstractItemModel):
             return None
         return index.internalPointer().path()
 
-
     def columnCount(self, parent):
         return 1
 
@@ -343,7 +346,8 @@ class DBModel(QAbstractItemModel):
 
         if role == Qt.DecorationRole and index.column() == 0:
             icon = index.internalPointer().icon()
-            if icon: return icon
+            if icon:
+                return icon
 
         if role != Qt.DisplayRole and role != Qt.EditRole:
             return None
@@ -405,7 +409,6 @@ class DBModel(QAbstractItemModel):
 
         return self.createIndex(parentItem.row(), 0, parentItem)
 
-
     def rowCount(self, parent):
         parentItem = parent.internalPointer() if parent.isValid() else self.rootItem
         if not parentItem.populated:
@@ -415,7 +418,6 @@ class DBModel(QAbstractItemModel):
     def hasChildren(self, parent):
         parentItem = parent.internalPointer() if parent.isValid() else self.rootItem
         return parentItem.childCount() > 0 or not parentItem.populated
-
 
     def setData(self, index, value, role):
         if role != Qt.EditRole or index.column() != 0:
@@ -435,7 +437,7 @@ class DBModel(QAbstractItemModel):
             try:
                 obj.rename(new_value)
                 self._onDataChanged(index)
-            except BaseError, e:
+            except BaseError as e:
                 DlgDbError.showError(e, self.treeView)
                 return False
             finally:
@@ -468,7 +470,7 @@ class DBModel(QAbstractItemModel):
                 else:
                     self.emit(SIGNAL("notPopulated"), index)
 
-        except BaseError, e:
+        except BaseError as e:
             item.populated = False
             return
 
@@ -476,9 +478,9 @@ class DBModel(QAbstractItemModel):
             QApplication.restoreOverrideCursor()
 
     def _onDataChanged(self, indexFrom, indexTo=None):
-        if indexTo is None: indexTo = indexFrom
+        if indexTo is None:
+            indexTo = indexFrom
         self.emit(SIGNAL('dataChanged(const QModelIndex &, const QModelIndex &)'), indexFrom, indexTo)
-
 
     QGIS_URI_MIME = "application/x-vnd.qgis.qgis.uri"
 
@@ -501,7 +503,6 @@ class DBModel(QAbstractItemModel):
 
         mimeData.setData(self.QGIS_URI_MIME, encodedData)
         return mimeData
-
 
     def dropMimeData(self, data, action, row, column, parent):
         if action == Qt.IgnoreAction:
@@ -542,7 +543,6 @@ class DBModel(QAbstractItemModel):
                         added += 1
 
         return added > 0
-
 
     def addConnection(self, filename, index):
         file = filename.split("/")[-1]

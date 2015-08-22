@@ -100,11 +100,11 @@ class Ogr2Ogr(OgrAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('[OGR] Conversion')
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
         self.addParameter(ParameterSelection(self.FORMAT,
-            self.tr('Destination Format'), FORMATS))
+                                             self.tr('Destination Format'), FORMATS))
         self.addParameter(ParameterString(self.OPTIONS,
-            self.tr('Creation options'), '', optional=True))
+                                          self.tr('Creation options'), '', optional=True))
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Converted')))
 

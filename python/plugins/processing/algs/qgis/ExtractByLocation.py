@@ -44,14 +44,14 @@ class ExtractByLocation(GeoAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('Extract by location')
         self.group, self.i18n_group = self.trAlgorithm('Vector selection tools')
         self.addParameter(ParameterVector(self.INPUT,
-            self.tr('Layer to select from'),
-            [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Layer to select from'),
+                                          [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterVector(self.INTERSECT,
-            self.tr('Additional layer (intersection layer)'),
-            [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Additional layer (intersection layer)'),
+                                          [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterGeometryPredicate(self.PREDICATE,
-            self.tr('Geometric predicate'),
-            left=self.INPUT, right=self.INTERSECT))
+                                                     self.tr('Geometric predicate'),
+                                                     left=self.INPUT, right=self.INTERSECT))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Extracted (location)')))
 
     def processAlgorithm(self, progress):
@@ -65,7 +65,7 @@ class ExtractByLocation(GeoAlgorithm):
 
         output = self.getOutputFromName(self.OUTPUT)
         writer = output.getVectorWriter(layer.pendingFields(),
-                layer.dataProvider().geometryType(), layer.crs())
+                                        layer.dataProvider().geometryType(), layer.crs())
 
         if 'disjoint' in predicates:
             disjoinSet = []

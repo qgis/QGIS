@@ -47,9 +47,9 @@ class SelectByAttributeSum(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Vector selection tools')
 
         self.addParameter(ParameterVector(self.INPUT,
-            self.tr('Input Layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input Layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterTableField(self.FIELD,
-            self.tr('Selection attribute'), self.INPUT, ParameterTableField.DATA_TYPE_NUMBER))
+                                              self.tr('Selection attribute'), self.INPUT, ParameterTableField.DATA_TYPE_NUMBER))
         self.addParameter(ParameterNumber(self.VALUE, self.tr('Value')))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Selected (attribute sum)'), True))

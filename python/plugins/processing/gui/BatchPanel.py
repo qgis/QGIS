@@ -56,6 +56,7 @@ pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
     os.path.join(pluginPath, 'ui', 'widgetBatchPanel.ui'))
 
+
 class BatchPanel(BASE, WIDGET):
 
     def __init__(self, parent, alg):
@@ -125,8 +126,6 @@ class BatchPanel(BASE, WIDGET):
         self.tblParameters.horizontalHeader().setResizeMode(QHeaderView.ResizeToContents)
         self.tblParameters.verticalHeader().setResizeMode(QHeaderView.ResizeToContents)
         self.tblParameters.horizontalHeader().setStretchLastSection(True)
-
-
 
     def getWidgetFromParameter(self, param, row, col):
         if isinstance(param, (ParameterRaster, ParameterVector, ParameterTable,

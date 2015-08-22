@@ -77,26 +77,26 @@ class TauDEMAlgorithmProvider(AlgorithmProvider):
         AlgorithmProvider.initializeSettings(self)
 
         ProcessingConfig.addSetting(Setting(self.getDescription(),
-            TauDEMUtils.TAUDEM_FOLDER,
-            self.tr('TauDEM command line tools folder'),
-            TauDEMUtils.taudemPath(), valuetype=Setting.FOLDER))
+                                            TauDEMUtils.TAUDEM_FOLDER,
+                                            self.tr('TauDEM command line tools folder'),
+                                            TauDEMUtils.taudemPath(), valuetype=Setting.FOLDER))
         ProcessingConfig.addSetting(Setting(self.getDescription(),
-            TauDEMUtils.TAUDEM_MULTIFILE_FOLDER,
-            self.tr('TauDEM multifile command line tools folder'),
-            TauDEMUtils.taudemMultifilePath(), valuetype=Setting.FOLDER))
+                                            TauDEMUtils.TAUDEM_MULTIFILE_FOLDER,
+                                            self.tr('TauDEM multifile command line tools folder'),
+                                            TauDEMUtils.taudemMultifilePath(), valuetype=Setting.FOLDER))
         ProcessingConfig.addSetting(Setting(self.getDescription(),
-            TauDEMUtils.TAUDEM_USE_SINGLEFILE,
-            self.tr('Enable singlefile TauDEM tools'), True))
+                                            TauDEMUtils.TAUDEM_USE_SINGLEFILE,
+                                            self.tr('Enable singlefile TauDEM tools'), True))
         ProcessingConfig.addSetting(Setting(self.getDescription(),
-            TauDEMUtils.TAUDEM_USE_MULTIFILE,
-            self.tr('Enable multifile TauDEM tools'), False))
+                                            TauDEMUtils.TAUDEM_USE_MULTIFILE,
+                                            self.tr('Enable multifile TauDEM tools'), False))
         ProcessingConfig.addSetting(Setting(self.getDescription(),
-            TauDEMUtils.MPIEXEC_FOLDER,
-            self.tr('MPICH2/OpenMPI bin directory'),
-            TauDEMUtils.mpiexecPath(), valuetype=Setting.FOLDER))
+                                            TauDEMUtils.MPIEXEC_FOLDER,
+                                            self.tr('MPICH2/OpenMPI bin directory'),
+                                            TauDEMUtils.mpiexecPath(), valuetype=Setting.FOLDER))
         ProcessingConfig.addSetting(Setting(self.getDescription(),
-            TauDEMUtils.MPI_PROCESSES,
-            self.tr('Number of MPI parallel processes to use'), 2))
+                                            TauDEMUtils.MPI_PROCESSES,
+                                            self.tr('Number of MPI parallel processes to use'), 2))
 
     def unload(self):
         AlgorithmProvider.unload(self)
@@ -158,7 +158,7 @@ class TauDEMAlgorithmProvider(AlgorithmProvider):
                 self.algs.append(alg)
             else:
                 ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                    self.tr('Could not open TauDEM algorithm: %s' % descriptionFile))
-        except Exception, e:
+                                       self.tr('Could not open TauDEM algorithm: %s' % descriptionFile))
+        except Exception as e:
             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                self.tr('Could not open TauDEM algorithm %s:\n%s' % (descriptionFile, unicode(e))))
+                                   self.tr('Could not open TauDEM algorithm %s:\n%s' % (descriptionFile, unicode(e))))

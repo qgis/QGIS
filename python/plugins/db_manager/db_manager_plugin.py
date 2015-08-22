@@ -30,6 +30,7 @@ except ImportError:
 
 
 class DBManagerPlugin:
+
     def __init__(self, iface):
         self.iface = iface
         self.dlg = None

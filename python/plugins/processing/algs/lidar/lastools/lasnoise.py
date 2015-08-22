@@ -30,6 +30,7 @@ from LAStoolsAlgorithm import LAStoolsAlgorithm
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterSelection
 
+
 class lasnoise(LAStoolsAlgorithm):
 
     ISOLATED = "ISOLATED"
@@ -45,15 +46,15 @@ class lasnoise(LAStoolsAlgorithm):
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParameter(ParameterNumber(lasnoise.ISOLATED,
-            self.tr("isolated if surrounding cells have only"), 0, None, 5))
+                                          self.tr("isolated if surrounding cells have only"), 0, None, 5))
         self.addParameter(ParameterNumber(lasnoise.STEP_XY,
-            self.tr("resolution of isolation grid in xy"), 0, None, 4.0))
+                                          self.tr("resolution of isolation grid in xy"), 0, None, 4.0))
         self.addParameter(ParameterNumber(lasnoise.STEP_Z,
-            self.tr("resolution of isolation grid in z"), 0, None, 4.0))
+                                          self.tr("resolution of isolation grid in z"), 0, None, 4.0))
         self.addParameter(ParameterSelection(lasnoise.OPERATION,
-            self.tr("what to do with isolated points"), lasnoise.OPERATIONS, 0))
+                                             self.tr("what to do with isolated points"), lasnoise.OPERATIONS, 0))
         self.addParameter(ParameterNumber(lasnoise.CLASSIFY_AS,
-            self.tr("classify as"), 0, None, 7))
+                                          self.tr("classify as"), 0, None, 7))
         self.addParametersPointOutputGUI()
         self.addParametersAdditionalGUI()
 

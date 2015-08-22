@@ -43,7 +43,7 @@ class PolygonsToLines(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
 
         self.addParameter(ParameterVector(self.INPUT,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POLYGON]))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POLYGON]))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Lines from polygons')))
 

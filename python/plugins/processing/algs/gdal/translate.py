@@ -71,43 +71,43 @@ class translate(GdalAlgorithm):
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer'),
                           False))
         self.addParameter(ParameterNumber(self.OUTSIZE,
-            self.tr('Set the size of the output file (In pixels or %)'),
-            1, None, 100))
+                                          self.tr('Set the size of the output file (In pixels or %)'),
+                                          1, None, 100))
         self.addParameter(ParameterBoolean(self.OUTSIZE_PERC,
-            self.tr('Output size is a percentage of input size'), True))
+                                           self.tr('Output size is a percentage of input size'), True))
         self.addParameter(ParameterString(self.NO_DATA,
-            self.tr("Nodata value, leave blank to take the nodata value from input"),
-            ''))
+                                          self.tr("Nodata value, leave blank to take the nodata value from input"),
+                                          ''))
         self.addParameter(ParameterSelection(self.EXPAND,
-            self.tr('Expand'), ['none', 'gray', 'rgb', 'rgba']))
+                                             self.tr('Expand'), ['none', 'gray', 'rgb', 'rgba']))
         self.addParameter(ParameterCrs(self.SRS,
-            self.tr('Output projection for output file [leave blank to use input projection]'), None))
+                                       self.tr('Output projection for output file [leave blank to use input projection]'), None))
         self.addParameter(ParameterExtent(self.PROJWIN,
-            self.tr('Subset based on georeferenced coordinates')))
+                                          self.tr('Subset based on georeferenced coordinates')))
         self.addParameter(ParameterBoolean(self.SDS,
-            self.tr('Copy all subdatasets of this file to individual output files'),
-            False))
+                                           self.tr('Copy all subdatasets of this file to individual output files'),
+                                           False))
         self.addParameter(ParameterSelection(self.RTYPE,
-            self.tr('Output raster type'), self.TYPE, 5))
+                                             self.tr('Output raster type'), self.TYPE, 5))
         self.addParameter(ParameterSelection(self.COMPRESS,
-            self.tr('GeoTIFF options. Compression type:'), self.COMPRESSTYPE, 4))
+                                             self.tr('GeoTIFF options. Compression type:'), self.COMPRESSTYPE, 4))
         self.addParameter(ParameterNumber(self.JPEGCOMPRESSION,
-            self.tr('Set the JPEG compression level'),
-            1, 100, 75))
+                                          self.tr('Set the JPEG compression level'),
+                                          1, 100, 75))
         self.addParameter(ParameterNumber(self.ZLEVEL,
-            self.tr('Set the DEFLATE compression level'),
-            1, 9, 6))
+                                          self.tr('Set the DEFLATE compression level'),
+                                          1, 9, 6))
         self.addParameter(ParameterNumber(self.PREDICTOR,
-            self.tr('Set the predictor for LZW or DEFLATE compression'),
-            1, 3, 1))
+                                          self.tr('Set the predictor for LZW or DEFLATE compression'),
+                                          1, 3, 1))
         self.addParameter(ParameterBoolean(self.TILED,
-            self.tr('Create tiled output (only used for the GTiff format)'), False))
+                                           self.tr('Create tiled output (only used for the GTiff format)'), False))
         self.addParameter(ParameterSelection(self.BIGTIFF,
-            self.tr('Control whether the created file is a BigTIFF or a classic TIFF'), self.BIGTIFFTYPE, 0))
+                                             self.tr('Control whether the created file is a BigTIFF or a classic TIFF'), self.BIGTIFFTYPE, 0))
         self.addParameter(ParameterBoolean(self.TFW,
-            self.tr('Force the generation of an associated ESRI world file (.tfw))'), False))
+                                           self.tr('Force the generation of an associated ESRI world file (.tfw))'), False))
         self.addParameter(ParameterString(self.EXTRA,
-            self.tr('Additional creation parameters'), '', optional=True))
+                                          self.tr('Additional creation parameters'), '', optional=True))
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Converted')))
 
     def getConsoleCommands(self):
@@ -162,19 +162,19 @@ class translate(GdalAlgorithm):
         if len(extra) > 0:
             arguments.append(extra)
         if GdalUtils.getFormatShortNameFromFilename(out) == "GTiff":
-            arguments.append("-co COMPRESS="+compress)
+            arguments.append("-co COMPRESS=" + compress)
             if compress == 'JPEG':
-               arguments.append("-co JPEG_QUALITY="+jpegcompression)
+                arguments.append("-co JPEG_QUALITY=" + jpegcompression)
             elif (compress == 'LZW') or (compress == 'DEFLATE'):
-               arguments.append("-co PREDICTOR="+predictor)
+                arguments.append("-co PREDICTOR=" + predictor)
             if compress == 'DEFLATE':
-               arguments.append("-co ZLEVEL="+zlevel)
+                arguments.append("-co ZLEVEL=" + zlevel)
             if tiled == "True":
-               arguments.append("-co TILED=YES")
+                arguments.append("-co TILED=YES")
             if tfw == "True":
-               arguments.append("-co TFW=YES")
+                arguments.append("-co TFW=YES")
             if len(bigtiff) > 0:
-               arguments.append("-co BIGTIFF="+bigtiff)
+                arguments.append("-co BIGTIFF=" + bigtiff)
         arguments.append(self.getParameterValue(self.INPUT))
         arguments.append(out)
 

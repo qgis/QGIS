@@ -66,8 +66,8 @@ class GetScriptsAction(ToolboxAction):
                 self.toolbox.updateProvider('script')
         except HTTPError:
             QMessageBox.critical(iface.mainWindow(),
-                self.tr('Connection problem', 'GetScriptsAction'),
-                self.tr('Could not connect to scripts/models repository', 'GetScriptsAction'))
+                                 self.tr('Connection problem', 'GetScriptsAction'),
+                                 self.tr('Could not connect to scripts/models repository', 'GetScriptsAction'))
 
 
 class GetRScriptsAction(ToolboxAction):
@@ -87,8 +87,8 @@ class GetRScriptsAction(ToolboxAction):
                 self.toolbox.updateProvider('r')
         except HTTPError:
             QMessageBox.critical(iface.mainWindow(),
-                self.tr('Connection problem', 'GetRScriptsAction'),
-                self.tr('Could not connect to scripts/models repository', 'GetRScriptsAction'))
+                                 self.tr('Connection problem', 'GetRScriptsAction'),
+                                 self.tr('Could not connect to scripts/models repository', 'GetRScriptsAction'))
 
 
 class GetModelsAction(ToolboxAction):
@@ -108,8 +108,8 @@ class GetModelsAction(ToolboxAction):
                 self.toolbox.updateProvider('model')
         except (HTTPError, URLError):
             QMessageBox.critical(iface.mainWindow(),
-                self.tr('Connection problem', 'GetModelsAction'),
-                self.tr('Could not connect to scripts/models repository', 'GetModelsAction'))
+                                 self.tr('Connection problem', 'GetModelsAction'),
+                                 self.tr('Could not connect to scripts/models repository', 'GetModelsAction'))
 
 
 def readUrl(url):
@@ -123,16 +123,16 @@ def readUrl(url):
 class GetScriptsAndModelsDialog(BASE, WIDGET):
 
     HELP_TEXT = QCoreApplication.translate('GetScriptsAndModelsDialog',
-        '<h3> Processing resources manager </h3>'
-        '<p>Check/uncheck algorithms in the tree to select the ones that you '
-        'want to install or remove</p>'
-        '<p>Algorithms are divided in 3 groups:</p>'
-        '<ul><li><b>Installed:</b> Algorithms already in your system, with '
-        'the latest version available</li>'
-        '<li><b>Updatable:</b> Algorithms already in your system, but with '
-        'a newer version available in the server</li>'
-        '<li><b>Not installed:</b> Algorithms not installed in your '
-        'system</li></ul>')
+                                           '<h3> Processing resources manager </h3>'
+                                           '<p>Check/uncheck algorithms in the tree to select the ones that you '
+                                           'want to install or remove</p>'
+                                           '<p>Algorithms are divided in 3 groups:</p>'
+                                           '<ul><li><b>Installed:</b> Algorithms already in your system, with '
+                                           'the latest version available</li>'
+                                           '<li><b>Updatable:</b> Algorithms already in your system, but with '
+                                           'a newer version available in the server</li>'
+                                           '<li><b>Not installed:</b> Algorithms not installed in your '
+                                           'system</li></ul>')
     MODELS = 0
     SCRIPTS = 1
     RSCRIPTS = 2
@@ -174,7 +174,7 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
         self.notinstalledItem.setIcon(0, self.icon)
         resources = readUrl(self.urlBase + 'list.txt').splitlines()
         resources = [r.split(',') for r in resources]
-        self.resources = {f:(v,n) for f,v,n in resources}
+        self.resources = {f: (v, n) for f, v, n in resources}
         for filename, version, name in resources:
             treeBranch = self.getTreeBranchForState(filename, float(version))
             item = TreeItem(filename, name, self.icon)
@@ -198,7 +198,7 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
                 html += self.tr('<p><b>Description:</b> %s</p>') % getDescription(ALG_DESC, descriptions)
                 html += self.tr('<p><b>Created by:</b> %s') % getDescription(ALG_CREATOR, descriptions)
                 html += self.tr('<p><b>Version:</b> %s') % getDescription(ALG_VERSION, descriptions)
-            except HTTPError, e:
+            except HTTPError as e:
                 html = self.tr('<h2>No detailed description available for this script</h2>')
             self.webView.setHtml(html)
         else:
@@ -220,7 +220,6 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
             else:
                 return self.uptodateItem
 
-
     def cancelPressed(self):
         self.close()
 
@@ -239,7 +238,7 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
             self.progressBar.setMaximum(len(toDownload))
             for i, filename in enumerate(toDownload):
                 QCoreApplication.processEvents()
-                url = self.urlBase + filename.replace(' ','%20')
+                url = self.urlBase + filename.replace(' ', '%20')
                 try:
                     code = readUrl(url)
                     path = os.path.join(self.folder, filename)
@@ -247,8 +246,8 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
                         f.write(code)
                 except HTTPError:
                     QMessageBox.critical(iface.mainWindow(),
-                        self.tr('Connection problem'),
-                        self.tr('Could not download file: %s') % filename)
+                                         self.tr('Connection problem'),
+                                         self.tr('Could not download file: %s') % filename)
                     return
                 url += '.help'
                 try:
@@ -261,7 +260,6 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
                     f.write(html)
                 self.progressBar.setValue(i + 1)
 
-
         toDelete = []
         for i in xrange(self.uptodateItem.childCount()):
             item = self.uptodateItem.child(i)
@@ -271,7 +269,7 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
             path = os.path.join(self.folder, filename)
             os.remove(path)
 
-        self.updateToolbox = len(toDownload) + len(toDelete)> 0
+        self.updateToolbox = len(toDownload) + len(toDelete) > 0
         self.close()
 
 

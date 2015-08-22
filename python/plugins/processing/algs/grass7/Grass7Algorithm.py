@@ -140,7 +140,7 @@ class Grass7Algorithm(GeoAlgorithm):
                     elif isinstance(output, OutputVector):
                         vectorOutputs += 1
                 line = lines.readline().strip('\n').strip()
-            except Exception, e:
+            except Exception as e:
                 ProcessingLog.addToLog(
                     ProcessingLog.LOG_ERROR,
                     self.tr('Could not open GRASS GIS 7 algorithm: %s\n%s' % (self.descriptionFile, line)))
@@ -297,7 +297,7 @@ class Grass7Algorithm(GeoAlgorithm):
         for param in self.parameters:
             if param.value is None or param.value == '':
                 continue
-            if param.name in [ self.GRASS_REGION_CELLSIZE_PARAMETER, self.GRASS_REGION_EXTENT_PARAMETER, self.GRASS_MIN_AREA_PARAMETER, self.GRASS_SNAP_TOLERANCE_PARAMETER, self.GRASS_OUTPUT_TYPE_PARAMETER, self.GRASS_REGION_ALIGN_TO_RESOLUTION ]:
+            if param.name in [self.GRASS_REGION_CELLSIZE_PARAMETER, self.GRASS_REGION_EXTENT_PARAMETER, self.GRASS_MIN_AREA_PARAMETER, self.GRASS_SNAP_TOLERANCE_PARAMETER, self.GRASS_OUTPUT_TYPE_PARAMETER, self.GRASS_REGION_ALIGN_TO_RESOLUTION]:
                 continue
             if isinstance(param, (ParameterRaster, ParameterVector)):
                 value = param.value
@@ -356,7 +356,7 @@ class Grass7Algorithm(GeoAlgorithm):
                     # r.statistics saves its results in a non-qgis compatible
                     # way. Post-process them with r.mapcalc.
                     calcExpression = 'correctedoutput' + uniqueSufix
-                    calcExpression += '=@' + out.name  + uniqueSufix
+                    calcExpression += '=@' + out.name + uniqueSufix
                     command = 'r.mapcalc expression="' + calcExpression + '"'
                     commands.append(command)
                     outputCommands.append(command)
@@ -393,18 +393,18 @@ class Grass7Algorithm(GeoAlgorithm):
                 # FIXME: check if needed: -c   Also export features without category (not labeled). Otherwise only features with category are exported.
                 typeidx = self.getParameterValue(self.GRASS_OUTPUT_TYPE_PARAMETER)
                 outtype = ('auto' if typeidx
-                        is None else self.OUTPUT_TYPES[typeidx])
+                           is None else self.OUTPUT_TYPES[typeidx])
                 if self.grass7Name == 'r.flow':
-                   command = 'v.out.ogr type=line layer=0 -c -e input=' + out.name + uniqueSufix
+                    command = 'v.out.ogr type=line layer=0 -c -e input=' + out.name + uniqueSufix
                 elif self.grass7Name == 'v.voronoi':
-                   if '-l' in command:
-                      command = 'v.out.ogr type=line layer=0 -c -e input=' + out.name + uniqueSufix
-                   else :
-                      command = 'v.out.ogr -s -e input=' + out.name + uniqueSufix
-                      command += ' type=' + outtype
+                    if '-l' in command:
+                        command = 'v.out.ogr type=line layer=0 -c -e input=' + out.name + uniqueSufix
+                    else:
+                        command = 'v.out.ogr -s -e input=' + out.name + uniqueSufix
+                        command += ' type=' + outtype
                 else:
-                   command = 'v.out.ogr -s -e input=' + out.name + uniqueSufix
-                   command += ' type=' + outtype
+                    command = 'v.out.ogr -s -e input=' + out.name + uniqueSufix
+                    command += ' type=' + outtype
                 command += ' output="' + os.path.dirname(out.value) + '"'
                 command += ' format=ESRI_Shapefile'
                 command += ' olayer=' + os.path.basename(out.value)[:-4]
@@ -436,7 +436,6 @@ class Grass7Algorithm(GeoAlgorithm):
             Grass7Utils.addSessionLayers(self.exportedLayers)
         else:
             Grass7Utils.endGrass7Session()
-
 
     def exportVectorLayer(self, orgFilename):
 

@@ -41,10 +41,10 @@ class SaveSelectedFeatures(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER,
-            self.tr('Selection')))
+                                    self.tr('Selection')))
 
     def processAlgorithm(self, progress):
         inputFilename = self.getParameterValue(self.INPUT_LAYER)
@@ -54,7 +54,7 @@ class SaveSelectedFeatures(GeoAlgorithm):
 
         provider = vectorLayer.dataProvider()
         writer = output.getVectorWriter(provider.fields(),
-                provider.geometryType(), vectorLayer.crs())
+                                        provider.geometryType(), vectorLayer.crs())
 
         features = vector.features(vectorLayer)
         total = len(features)

@@ -81,11 +81,11 @@ class PointsLayerFromTable(GeoAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('Points layer from table')
         self.group, self.i18n_group = self.trAlgorithm('Vector creation tools')
         self.addParameter(ParameterTable(self.INPUT,
-            self.tr('Input layer')))
+                                         self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.XFIELD,
-            self.tr('X field'), self.INPUT, ParameterTableField.DATA_TYPE_ANY))
+                                              self.tr('X field'), self.INPUT, ParameterTableField.DATA_TYPE_ANY))
         self.addParameter(ParameterTableField(self.YFIELD,
-            self.tr('Y field'), self.INPUT, ParameterTableField.DATA_TYPE_ANY))
+                                              self.tr('Y field'), self.INPUT, ParameterTableField.DATA_TYPE_ANY))
         self.addParameter(ParameterCrs(self.TARGET_CRS,
-            self.tr('Target CRS'), 'EPSG:4326'))
+                                       self.tr('Target CRS'), 'EPSG:4326'))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Points from table')))

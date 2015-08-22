@@ -115,12 +115,14 @@ class TestCanvasPoint(TestCanvasBasePoint, TestPointBase):
         super(TestCanvasPoint, self).setUp()
         self.configTest('pal_canvas', 'sp')
 
+
 class TestCanvasBaseLine(TestCanvasBase):
 
     @classmethod
     def setUpClass(cls):
         TestCanvasBase.setUpClass()
         cls.layer = TestQgsPalLabeling.loadFeatureLayer('line')
+
 
 class TestCanvasLine(TestCanvasBaseLine, TestLineBase):
 

@@ -37,6 +37,7 @@ from processing.tools.system import isWindows
 from processing.algs.gdal.OgrAlgorithm import OgrAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
+
 class Ogr2OgrDissolve(OgrAlgorithm):
 
     OUTPUT_LAYER = 'OUTPUT_LAYER'
@@ -56,27 +57,27 @@ class Ogr2OgrDissolve(OgrAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('[OGR] Geoprocessing')
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POLYGON], False))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POLYGON], False))
         self.addParameter(ParameterString(self.GEOMETRY,
-            self.tr('Geometry column name ("geometry" for Shapefiles, may be different for other formats)'),
-            'geometry', optional=False))
+                                          self.tr('Geometry column name ("geometry" for Shapefiles, may be different for other formats)'),
+                                          'geometry', optional=False))
         self.addParameter(ParameterTableField(self.FIELD,
-            self.tr('Dissolve field'), self.INPUT_LAYER))
+                                              self.tr('Dissolve field'), self.INPUT_LAYER))
         self.addParameter(ParameterBoolean(self.MULTI,
-            self.tr('Output as multipart geometries'), True))
+                                           self.tr('Output as multipart geometries'), True))
         self.addParameter(ParameterBoolean(self.FIELDS,
-            self.tr('Keep input attributes'), False))
+                                           self.tr('Keep input attributes'), False))
         self.addParameter(ParameterBoolean(self.COUNT,
-            self.tr('Count dissolved features'), False))
+                                           self.tr('Count dissolved features'), False))
         self.addParameter(ParameterBoolean(self.AREA,
-            self.tr('Compute area and perimeter of dissolved features'), False))
+                                           self.tr('Compute area and perimeter of dissolved features'), False))
         self.addParameter(ParameterBoolean(self.STATS,
-            self.tr('Compute min/max/sum/mean for the following numeric attribute'), False))
+                                           self.tr('Compute min/max/sum/mean for the following numeric attribute'), False))
         self.addParameter(ParameterTableField(self.STATSATT,
-            self.tr('Numeric attribute to compute dissolved features stats'), self.INPUT_LAYER))
+                                              self.tr('Numeric attribute to compute dissolved features stats'), self.INPUT_LAYER))
         self.addParameter(ParameterString(self.OPTIONS,
-            self.tr('Additional creation options (see ogr2ogr manual)'),
-            '', optional=True))
+                                          self.tr('Additional creation options (see ogr2ogr manual)'),
+                                          '', optional=True))
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Dissolved')))
 
@@ -95,21 +96,21 @@ class Ogr2OgrDissolve(OgrAlgorithm):
         querystart = '-dialect sqlite -sql "SELECT ST_Union(' + geometry + ')'
         queryend = ' FROM ' + layername + ' GROUP BY ' + field + '"'
         if fields:
-           queryfields = ",*"
+            queryfields = ",*"
         else:
-           queryfields = "," + field
+            queryfields = "," + field
         if count:
-           querycount = ", COUNT(" + geometry + ") AS count"
+            querycount = ", COUNT(" + geometry + ") AS count"
         else:
-           querycount = ""
+            querycount = ""
         if stats:
-           querystats = ", SUM(" + statsatt + ") AS sum_diss, MIN(" + statsatt + ") AS min_diss, MAX(" + statsatt + ") AS max_diss, AVG(" + statsatt + ") AS avg_diss"
+            querystats = ", SUM(" + statsatt + ") AS sum_diss, MIN(" + statsatt + ") AS min_diss, MAX(" + statsatt + ") AS max_diss, AVG(" + statsatt + ") AS avg_diss"
         else:
-           querystats = ""
+            querystats = ""
         if area:
-           queryarea = ", SUM(ST_area(" + geometry + ")) AS area_diss, ST_perimeter(ST_union(" + geometry + ")) AS peri_diss"
+            queryarea = ", SUM(ST_area(" + geometry + ")) AS area_diss, ST_perimeter(ST_union(" + geometry + ")) AS peri_diss"
         else:
-           queryarea = ""
+            queryarea = ""
 
         query = querystart + queryfields + querycount + querystats + queryarea + queryend
         output = self.getOutputFromName(self.OUTPUT_LAYER)

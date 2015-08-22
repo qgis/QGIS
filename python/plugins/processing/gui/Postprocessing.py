@@ -45,6 +45,7 @@ from processing.core.outputs import OutputHTML
 
 from processing.tools import dataobjects
 
+
 def handleAlgorithmResults(alg, progress=None, showResults=True):
     wrongLayers = []
     htmlResults = False
@@ -68,9 +69,9 @@ def handleAlgorithmResults(alg, progress=None, showResults=True):
                     else:
                         name = out.description
                     dataobjects.load(out.value, name, alg.crs,
-                            RenderingStyles.getStyle(alg.commandLineName(),
-                            out.name))
-            except Exception, e:
+                                     RenderingStyles.getStyle(alg.commandLineName(),
+                                                              out.name))
+            except Exception as e:
                 wrongLayers.append(out.description)
         elif isinstance(out, OutputHTML):
             ProcessingResults.addResult(out.description, out.value)
@@ -90,5 +91,5 @@ def handleAlgorithmResults(alg, progress=None, showResults=True):
         QApplication.restoreOverrideCursor()
         dlg = ResultsDialog()
         dlg.exec_()
-        
+
     return len(wrongLayers) == 0

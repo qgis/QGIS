@@ -38,6 +38,7 @@ from processing.tests.TestData import polygons2, polygonsGeoJson, raster
 
 
 class SagaTest(unittest.TestCase):
+
     """Tests for saga algorithms"""
 
     def test_sagametricconversions(self):

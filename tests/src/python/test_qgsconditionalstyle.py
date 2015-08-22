@@ -26,15 +26,16 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestPyQgsConditionalStyle(TestCase):
+
     def test_MatchesReturnsTrueForSimpleMatch(self):
         style = QgsConditionalStyle("@value > 10")
-        context = QgsExpressionContextUtils.createFeatureBasedContext( QgsFeature(), QgsFields() )
-        assert style.matches(20,context)
+        context = QgsExpressionContextUtils.createFeatureBasedContext(QgsFeature(), QgsFields())
+        assert style.matches(20, context)
 
     def test_MatchesReturnsTrueForComplexMatch(self):
         style = QgsConditionalStyle("@value > 10 and @value = 20")
-        context = QgsExpressionContextUtils.createFeatureBasedContext( QgsFeature(), QgsFields() )
-        assert style.matches(20,context)
+        context = QgsExpressionContextUtils.createFeatureBasedContext(QgsFeature(), QgsFields())
+        assert style.matches(20, context)
 
     def test_MatchesTrueForFields(self):
         feature = QgsFeature()
@@ -43,7 +44,7 @@ class TestPyQgsConditionalStyle(TestCase):
         feature.setFields(fields, True)
         feature["testfield"] = 20
         style = QgsConditionalStyle('"testfield" = @value')
-        context = QgsExpressionContextUtils.createFeatureBasedContext(feature,fields)
+        context = QgsExpressionContextUtils.createFeatureBasedContext(feature, fields)
         assert style.matches(20, context)
 
 

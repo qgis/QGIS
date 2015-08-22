@@ -87,7 +87,7 @@ class Grass7AlgorithmProvider(AlgorithmProvider):
                         ProcessingLog.addToLog(
                             ProcessingLog.LOG_ERROR,
                             self.tr('Could not open GRASS GIS 7 algorithm: %s' % descriptionFile))
-                except Exception, e:
+                except Exception as e:
                     ProcessingLog.addToLog(
                         ProcessingLog.LOG_ERROR,
                         self.tr('Could not open GRASS GIS 7 algorithm: %s' % descriptionFile))

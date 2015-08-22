@@ -31,6 +31,7 @@ QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 
 
 class TestQgsAtlasComposition(unittest.TestCase):
+
     def testCase(self):
         self.TEST_DATA_DIR = unitTestDataPath()
         tmppath = tempfile.mkdtemp()
@@ -107,7 +108,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
         self.mLabel2.setSceneRect(QRectF(150, 200, 60, 15))
 
         qWarning("feature number label font: %s exactMatch:%s" % (
-        self.mLabel2.font().toString(), self.mLabel2.font().exactMatch()))
+                 self.mLabel2.font().toString(), self.mLabel2.font().exactMatch()))
 
         self.filename_test()
         self.autoscale_render_test()

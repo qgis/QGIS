@@ -48,20 +48,20 @@ class PostGISExecuteSQL(GeoAlgorithm):
             host = settings.value(mySettings + '/host')
             port = settings.value(mySettings + '/port', type=int)
             password = settings.value(mySettings + '/password')
-        except Exception, e:
+        except Exception as e:
             raise GeoAlgorithmExecutionException(
                 self.tr('Wrong database connection name: %s' % connection))
         try:
             self.db = postgis_utils.GeoDB(host=host, port=port,
-                    dbname=database, user=username, passwd=password)
-        except postgis_utils.DbError, e:
+                                          dbname=database, user=username, passwd=password)
+        except postgis_utils.DbError as e:
             raise GeoAlgorithmExecutionException(
                 self.tr("Couldn't connect to database:\n%s" % e.message))
 
         sql = self.getParameterValue(self.SQL).replace('\n', ' ')
         try:
             self.db._exec_sql_and_commit(unicode(sql))
-        except postgis_utils.DbError, e:
+        except postgis_utils.DbError as e:
             raise GeoAlgorithmExecutionException(
                 self.tr('Error executing SQL:\n%s' % e.message))
 

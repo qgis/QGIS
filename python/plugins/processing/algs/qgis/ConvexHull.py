@@ -50,12 +50,12 @@ class ConvexHull(GeoAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('Convex hull')
         self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
         self.addParameter(ParameterVector(self.INPUT,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterTableField(self.FIELD,
-            self.tr('Field (optional, only used if creating convex hulls by classes)'),
-            self.INPUT, optional=True))
+                                              self.tr('Field (optional, only used if creating convex hulls by classes)'),
+                                              self.INPUT, optional=True))
         self.addParameter(ParameterSelection(self.METHOD,
-            self.tr('Method'), self.METHODS))
+                                             self.tr('Method'), self.METHODS))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Convex hull')))
 
     def processAlgorithm(self, progress):
@@ -83,7 +83,7 @@ class ConvexHull(GeoAlgorithm):
                   f,
                   QgsField('area', QVariant.Double, '', 20, 6),
                   QgsField('perim', QVariant.Double, '', 20, 6)
-                 ]
+                  ]
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
             fields, QGis.WKBPolygon, layer.dataProvider().crs())

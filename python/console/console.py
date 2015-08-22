@@ -38,37 +38,42 @@ import sys
 
 _console = None
 
+
 def show_console():
-  """ called from QGIS to open the console """
-  global _console
-  if _console is None:
-    parent = iface.mainWindow() if iface else None
-    _console = PythonConsole( parent )
-    _console.show() # force show even if it was restored as hidden
-    # set focus to the console so the user can start typing
-    # defer the set focus event so it works also whether the console not visible yet
-    QTimer.singleShot(0, _console.activate)
-  else:
-    _console.setVisible(not _console.isVisible())
-    # set focus to the console so the user can start typing
-    if _console.isVisible():
-      _console.activate()
-  ## Shows help on first launch of the console
-  settings = QSettings()
-  if settings.value('pythonConsole/contextHelpOnFirstLaunch', True, type=bool):
-      QgsContextHelp.run( "PythonConsole" )
-      settings.setValue('pythonConsole/contextHelpOnFirstLaunch', False)
+    """ called from QGIS to open the console """
+    global _console
+    if _console is None:
+        parent = iface.mainWindow() if iface else None
+        _console = PythonConsole(parent)
+        _console.show() # force show even if it was restored as hidden
+        # set focus to the console so the user can start typing
+        # defer the set focus event so it works also whether the console not visible yet
+        QTimer.singleShot(0, _console.activate)
+    else:
+        _console.setVisible(not _console.isVisible())
+        # set focus to the console so the user can start typing
+        if _console.isVisible():
+            _console.activate()
+    ## Shows help on first launch of the console
+    settings = QSettings()
+    if settings.value('pythonConsole/contextHelpOnFirstLaunch', True, type=bool):
+        QgsContextHelp.run("PythonConsole")
+        settings.setValue('pythonConsole/contextHelpOnFirstLaunch', False)
 
 _old_stdout = sys.stdout
 _console_output = None
 
 # hook for python console so all output will be redirected
 # and then shown in console
+
+
 def console_displayhook(obj):
     global _console_output
     _console_output = obj
 
+
 class PythonConsole(QDockWidget):
+
     def __init__(self, parent=None):
         QDockWidget.__init__(self, parent)
         self.setObjectName("PythonConsole")
@@ -76,8 +81,8 @@ class PythonConsole(QDockWidget):
         #self.setAllowedAreas(Qt.BottomDockWidgetArea)
 
         self.console = PythonConsoleWidget(self)
-        self.setWidget( self.console )
-        self.setFocusProxy( self.console )
+        self.setWidget(self.console)
+        self.setFocusProxy(self.console)
 
         # try to restore position from stored main window state
         if iface and not iface.mainWindow().restoreDockWidget(self):
@@ -92,7 +97,9 @@ class PythonConsole(QDockWidget):
         self.console.saveSettingsConsole()
         QWidget.closeEvent(self, event)
 
+
 class PythonConsoleWidget(QWidget):
+
     def __init__(self, parent=None):
         QWidget.__init__(self, parent)
         self.setWindowTitle(QCoreApplication.translate("PythonConsole", "Python Console"))
@@ -113,7 +120,7 @@ class PythonConsoleWidget(QWidget):
 
         self.shellOutWidget = QWidget(self)
         self.shellOutWidget.setLayout(QVBoxLayout())
-        self.shellOutWidget.layout().setContentsMargins(0,0,0,0)
+        self.shellOutWidget.layout().setContentsMargins(0, 0, 0, 0)
         self.shellOutWidget.layout().addWidget(self.shellOut)
 
         self.splitter = QSplitter(self.splitterEditor)
@@ -140,7 +147,6 @@ class PythonConsoleWidget(QWidget):
         self.listClassMethod.setHeaderLabels([objInspLabel, ''])
         self.listClassMethod.setColumnHidden(1, True)
         self.listClassMethod.setAlternatingRowColors(True)
-
 
         #self.splitterEditor.addWidget(self.widgetEditor)
         #self.splitterObj.addWidget(self.listClassMethod)
@@ -477,9 +483,9 @@ class PythonConsoleWidget(QWidget):
         placeHolderTxt = QCoreApplication.translate("PythonConsole", "Enter text to find...")
 
         if pyqtconfig.Configuration().qt_version >= 0x40700:
-          self.lineEditFind.setPlaceholderText(placeHolderTxt)
+            self.lineEditFind.setPlaceholderText(placeHolderTxt)
         else:
-          self.lineEditFind.setToolTip(placeHolderTxt)
+            self.lineEditFind.setToolTip(placeHolderTxt)
         self.findNextButton = QToolButton()
         self.findNextButton.setEnabled(False)
         toolTipfindNext = QCoreApplication.translate("PythonConsole", "Find Next")
@@ -579,13 +585,13 @@ class PythonConsoleWidget(QWidget):
         tabEditor.goToLine(objName, linenr)
 
     def processing(self):
-       self.shell.commandConsole('processing')
+        self.shell.commandConsole('processing')
 
     def qtCore(self):
-       self.shell.commandConsole('qtCore')
+        self.shell.commandConsole('qtCore')
 
     def qtGui(self):
-       self.shell.commandConsole('qtGui')
+        self.shell.commandConsole('qtGui')
 
     def toggleEditor(self, checked):
         self.splitterObj.show() if checked else self.splitterObj.hide()
@@ -650,7 +656,7 @@ class PythonConsoleWidget(QWidget):
         tabWidget = self.tabEditorWidget.currentWidget()
         try:
             tabWidget.save()
-        except (IOError, OSError), error:
+        except (IOError, OSError) as error:
             msgText = QCoreApplication.translate('PythonConsole',
                                                  'The file <b>{0}</b> could not be saved. Error: {1}').format(tabWidget.path,
                                                                                                               error.strerror)
@@ -663,19 +669,19 @@ class PythonConsoleWidget(QWidget):
         if not tabWidget.path:
             fileName = self.tabEditorWidget.tabText(index) + '.py'
             folder = self.settings.value("pythonConsole/lastDirPath", QDir.home())
-            pathFileName = os.path.join(folder,fileName)
+            pathFileName = os.path.join(folder, fileName)
             fileNone = True
         else:
             pathFileName = tabWidget.path
             fileNone = False
         saveAsFileTr = QCoreApplication.translate("PythonConsole", "Save File As")
         filename = QFileDialog.getSaveFileName(self,
-                        saveAsFileTr,
-                        pathFileName, "Script file (*.py)")
+                                               saveAsFileTr,
+                                               pathFileName, "Script file (*.py)")
         if filename:
             try:
                 tabWidget.save(filename)
-            except (IOError, OSError), error:
+            except (IOError, OSError) as error:
                 msgText = QCoreApplication.translate('PythonConsole',
                                                      'The file <b>{0}</b> could not be saved. Error: {1}').format(tabWidget.path,
                                                                                                                   error.strerror)
@@ -690,7 +696,7 @@ class PythonConsoleWidget(QWidget):
                 self.updateTabListScript(pathFileName, action='remove')
 
     def openHelp(self):
-        QgsContextHelp.run( "PythonConsole" )
+        QgsContextHelp.run("PythonConsole")
 
     def openSettings(self):
         if optionsDialog(self).exec_():

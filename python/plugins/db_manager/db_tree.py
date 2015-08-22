@@ -31,6 +31,7 @@ from .db_plugins.plugin import DBPlugin, Schema, Table
 
 
 class DBTree(QTreeView):
+
     def __init__(self, mainWindow):
         QTreeView.__init__(self, mainWindow)
         self.mainWindow = mainWindow
@@ -53,7 +54,8 @@ class DBTree(QTreeView):
     def refreshItem(self, item=None):
         if item is None:
             item = self.currentItem()
-            if item is None: return
+            if item is None:
+                return
         self.model().refreshItem(item)
 
     def showSystemTables(self, show):
@@ -65,10 +67,10 @@ class DBTree(QTreeView):
             return
         return self.model().getItem(indexes[0])
 
-
     def currentDatabase(self):
         item = self.currentItem()
-        if item is None: return
+        if item is None:
+            return
 
         if isinstance(item, (DBPlugin, Schema, Table)):
             return item.database()
@@ -76,7 +78,8 @@ class DBTree(QTreeView):
 
     def currentSchema(self):
         item = self.currentItem()
-        if item is None: return
+        if item is None:
+            return
 
         if isinstance(item, (Schema, Table)):
             return item.schema()
@@ -84,7 +87,8 @@ class DBTree(QTreeView):
 
     def currentTable(self):
         item = self.currentItem()
-        if item is None: return
+        if item is None:
+            return
 
         if isinstance(item, Table):
             return item

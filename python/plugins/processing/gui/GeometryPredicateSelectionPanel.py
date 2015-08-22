@@ -41,20 +41,20 @@ WIDGET, BASE = uic.loadUiType(
 class GeometryPredicateSelectionPanel(BASE, WIDGET):
 
     unusablePredicates = {
-        QGis.Point : {
-            QGis.Point : ('touches', 'crosses'),
-            QGis.Line : ('equals', 'contains', 'overlaps'),
-            QGis.Polygon : ('equals', 'contains', 'overlaps')
+        QGis.Point: {
+            QGis.Point: ('touches', 'crosses'),
+            QGis.Line: ('equals', 'contains', 'overlaps'),
+            QGis.Polygon: ('equals', 'contains', 'overlaps')
         },
-        QGis.Line : {
-            QGis.Point : ('equals', 'within', 'overlaps'),
-            QGis.Line : [],
-            QGis.Polygon : ('equals', 'contains', 'overlaps')
+        QGis.Line: {
+            QGis.Point: ('equals', 'within', 'overlaps'),
+            QGis.Line: [],
+            QGis.Polygon: ('equals', 'contains', 'overlaps')
         },
-        QGis.Polygon : {
-            QGis.Point : ('equals', 'within', 'overlaps'),
-            QGis.Line : ('equals', 'within', 'overlaps'),
-            QGis.Polygon : ('crosses')
+        QGis.Polygon: {
+            QGis.Point: ('equals', 'within', 'overlaps'),
+            QGis.Line: ('equals', 'within', 'overlaps'),
+            QGis.Polygon: ('crosses')
         }
     }
 

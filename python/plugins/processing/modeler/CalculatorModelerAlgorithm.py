@@ -42,6 +42,7 @@ NUMBER = 'NUMBER'
 RESULT = 'RESULT'
 AVAILABLE_VARIABLES = 10
 
+
 class CalculatorModelerAlgorithm(GeoAlgorithm):
 
     def defineCharacteristics(self):
@@ -50,12 +51,12 @@ class CalculatorModelerAlgorithm(GeoAlgorithm):
         self.name = self.tr('Calculator', 'CalculatorModelerAlgorithm')
         self.group = self.tr('Modeler-only tools', 'CalculatorModelerAlgorithm')
         self.addParameter(ParameterString(FORMULA,
-            self.tr('Formula', 'CalculatorModelerAlgorithm'), ''))
+                                          self.tr('Formula', 'CalculatorModelerAlgorithm'), ''))
         for i in range(AVAILABLE_VARIABLES):
             self.addParameter(ParameterNumber(NUMBER
                               + unicode(i), 'dummy'))
         self.addOutput(OutputNumber(RESULT,
-            self.tr('Result', 'CalculatorModelerAlgorithm')))
+                                    self.tr('Result', 'CalculatorModelerAlgorithm')))
 
     def processAlgorithm(self, progress):
         formula = self.getParameterValue(FORMULA)
@@ -83,11 +84,11 @@ class CalculatorModelerParametersDialog(ModelerParametersDialog):
         self.buttonBox = QDialogButtonBox()
         self.buttonBox.setOrientation(Qt.Horizontal)
         self.buttonBox.setStandardButtons(QDialogButtonBox.Cancel
-                | QDialogButtonBox.Ok)
+                                          | QDialogButtonBox.Ok)
         self.infoText = QTextEdit()
         numbers = self.getAvailableValuesOfType(ParameterNumber, OutputNumber)
         text = self.tr('You can refer to model values in your formula, using '
-            'single-letter variables, as follows:\n', 'CalculatorModelerParametersDialog')
+                       'single-letter variables, as follows:\n', 'CalculatorModelerParametersDialog')
         ichar = 97
         if numbers:
             for number in numbers:

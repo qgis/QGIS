@@ -4,6 +4,7 @@ from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
 from processing.gui.ParametersPanel import ParametersPanel
 
+
 class GdalAlgorithmDialog(AlgorithmDialog):
 
     def __init__(self, alg):
@@ -14,6 +15,7 @@ class GdalAlgorithmDialog(AlgorithmDialog):
         self.mainWidget = GdalParametersPanel(self, alg)
         self.setMainWidget()
         self.mainWidget.parametersHaveChanged()
+
 
 class GdalParametersPanel(ParametersPanel):
 

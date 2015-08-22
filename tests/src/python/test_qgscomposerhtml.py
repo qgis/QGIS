@@ -65,7 +65,7 @@ class TestQgsComposerHtml(TestCase):
         myTestResult, myMessage = checker.testComposition()
 
         qDebug(myMessage)
-        self.mComposition.removeMultiFrame( composerHtml )
+        self.mComposition.removeMultiFrame(composerHtml)
         composerHtml = None
 
         assert myTestResult, myMessage
@@ -78,23 +78,23 @@ class TestQgsComposerHtml(TestCase):
         composerHtml.addFrame(htmlFrame)
         composerHtml.setResizeMode(
             QgsComposerMultiFrame.RepeatUntilFinished)
-        composerHtml.setUseSmartBreaks( False )
+        composerHtml.setUseSmartBreaks(False)
         composerHtml.setUrl(self.htmlUrl())
         composerHtml.frame(0).setFrameEnabled(True)
 
         print "Checking page 1"
         myPage = 0
         checker1 = QgsCompositionChecker('composerhtml_multiframe1', self.mComposition)
-        myTestResult, myMessage = checker1.testComposition( myPage )
+        myTestResult, myMessage = checker1.testComposition(myPage)
         assert myTestResult, myMessage
 
         print "Checking page 2"
         myPage = 1
         checker2 = QgsCompositionChecker('composerhtml_multiframe2', self.mComposition)
-        myTestResult, myMessage = checker2.testComposition( myPage )
+        myTestResult, myMessage = checker2.testComposition(myPage)
         assert myTestResult, myMessage
 
-        self.mComposition.removeMultiFrame( composerHtml )
+        self.mComposition.removeMultiFrame(composerHtml)
         composerHtml = None
 
         assert myTestResult, myMessage
@@ -107,23 +107,23 @@ class TestQgsComposerHtml(TestCase):
         composerHtml.addFrame(htmlFrame)
         composerHtml.setResizeMode(
             QgsComposerMultiFrame.RepeatUntilFinished)
-        composerHtml.setUseSmartBreaks( True )
+        composerHtml.setUseSmartBreaks(True)
         composerHtml.setUrl(self.htmlUrl())
         composerHtml.frame(0).setFrameEnabled(True)
 
         print "Checking page 1"
         myPage = 0
         checker1 = QgsCompositionChecker('composerhtml_smartbreaks1', self.mComposition)
-        myTestResult, myMessage = checker1.testComposition( myPage, 200 )
+        myTestResult, myMessage = checker1.testComposition(myPage, 200)
         assert myTestResult, myMessage
 
         print "Checking page 2"
         myPage = 1
         checker2 = QgsCompositionChecker('composerhtml_smartbreaks2', self.mComposition)
-        myTestResult, myMessage = checker2.testComposition( myPage, 200 )
+        myTestResult, myMessage = checker2.testComposition(myPage, 200)
         assert myTestResult, myMessage
 
-        self.mComposition.removeMultiFrame( composerHtml )
+        self.mComposition.removeMultiFrame(composerHtml)
         composerHtml = None
 
         assert myTestResult, myMessage

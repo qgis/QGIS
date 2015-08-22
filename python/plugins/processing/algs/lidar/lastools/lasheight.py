@@ -30,6 +30,7 @@ from LAStoolsAlgorithm import LAStoolsAlgorithm
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterNumber
 
+
 class lasheight(LAStoolsAlgorithm):
 
     REPLACE_Z = "REPLACE_Z"
@@ -44,15 +45,15 @@ class lasheight(LAStoolsAlgorithm):
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParameter(ParameterBoolean(lasheight.REPLACE_Z,
-            self.tr("replace z"), False))
+                                           self.tr("replace z"), False))
         self.addParameter(ParameterBoolean(lasheight.DROP_ABOVE,
-            self.tr("drop above"), False))
+                                           self.tr("drop above"), False))
         self.addParameter(ParameterNumber(lasheight.DROP_ABOVE_HEIGHT,
-            self.tr("drop above height"), 0, None, 100.0))
+                                          self.tr("drop above height"), 0, None, 100.0))
         self.addParameter(ParameterBoolean(lasheight.DROP_BELOW,
-            self.tr("drop below"), False))
+                                           self.tr("drop below"), False))
         self.addParameter(ParameterNumber(lasheight.DROP_BELOW_HEIGHT,
-            self.tr("drop below height"), 0, None, -2.0))
+                                          self.tr("drop below height"), 0, None, -2.0))
         self.addParametersPointOutputGUI()
         self.addParametersAdditionalGUI()
 

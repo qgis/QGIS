@@ -250,7 +250,7 @@ class QgsComposerPicture: QgsComposerItem
      * @note added in 2.3
      */
     void refreshPicture( const QgsExpressionContext* context = 0 );
-    
+
     /** Prepares the picture's source expression after it is altered or the compositions
      * atlas coverage layer changes.
      * @note added in 2.3

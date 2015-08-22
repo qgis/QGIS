@@ -51,13 +51,13 @@ class SplitRGBBands(GeoAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('Split RGB bands')
         self.group, self.i18n_group = self.trAlgorithm('Grid - Tools')
         self.addParameter(ParameterRaster(SplitRGBBands.INPUT,
-            self.tr('Input layer'), False))
+                                          self.tr('Input layer'), False))
         self.addOutput(OutputRaster(SplitRGBBands.R,
-            self.tr('Output R band layer')))
+                                    self.tr('Output R band layer')))
         self.addOutput(OutputRaster(SplitRGBBands.G,
-            self.tr('Output G band layer')))
+                                    self.tr('Output G band layer')))
         self.addOutput(OutputRaster(SplitRGBBands.B,
-            self.tr('Output B band layer')))
+                                    self.tr('Output B band layer')))
 
     def processAlgorithm(self, progress):
         # TODO: check correct num of bands
@@ -78,13 +78,12 @@ class SplitRGBBands(GeoAlgorithm):
         lib = ""
         commands.append('%sio_gdal 0 -GRIDS "%s" -FILES "%s"' % (lib, temp, input)
                         )
-        commands.append('%sio_gdal 1 -GRIDS "%s_%s1.sgrd" -FORMAT 1 -TYPE 0 -FILE "%s"' %(lib, temp, trailing, r)
+        commands.append('%sio_gdal 1 -GRIDS "%s_%s1.sgrd" -FORMAT 1 -TYPE 0 -FILE "%s"' % (lib, temp, trailing, r)
                         )
-        commands.append('%sio_gdal 1 -GRIDS "%s_%s2.sgrd" -FORMAT 1 -TYPE 0 -FILE "%s"' %(lib, temp, trailing, g)
+        commands.append('%sio_gdal 1 -GRIDS "%s_%s2.sgrd" -FORMAT 1 -TYPE 0 -FILE "%s"' % (lib, temp, trailing, g)
                         )
-        commands.append('%sio_gdal 1 -GRIDS "%s_%s3.sgrd" -FORMAT 1 -TYPE 0 -FILE "%s"' %(lib, temp, trailing, b)
+        commands.append('%sio_gdal 1 -GRIDS "%s_%s3.sgrd" -FORMAT 1 -TYPE 0 -FILE "%s"' % (lib, temp, trailing, b)
                         )
-
 
         SagaUtils.createSagaBatchJobFileFromSagaCommands(commands)
         SagaUtils.executeSaga(progress)

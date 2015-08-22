@@ -38,6 +38,7 @@ from processing.tools import dataobjects, vector
 
 from math import sqrt
 
+
 class HubDistance(GeoAlgorithm):
     POINTS = 'POINTS'
     HUBS = 'HUBS'
@@ -62,15 +63,15 @@ class HubDistance(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Vector analysis tools')
 
         self.addParameter(ParameterVector(self.POINTS,
-            self.tr('Source points layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Source points layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterVector(self.HUBS,
-            self.tr('Destination hubs layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Destination hubs layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterTableField(self.FIELD,
-            self.tr('Hub layer name attribute'), self.HUBS))
+                                              self.tr('Hub layer name attribute'), self.HUBS))
         self.addParameter(ParameterSelection(self.GEOMETRY,
-            self.tr('Output shape type'), self.GEOMETRIES))
+                                             self.tr('Output shape type'), self.GEOMETRIES))
         self.addParameter(ParameterSelection(self.UNIT,
-            self.tr('Measurement unit'), self.UNITS))
+                                             self.tr('Measurement unit'), self.UNITS))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Hub distance')))
 
@@ -156,6 +157,7 @@ class HubDistance(GeoAlgorithm):
 
 
 class Hub:
+
     def __init__(self, point, name):
         self.point = point
         self.name = name

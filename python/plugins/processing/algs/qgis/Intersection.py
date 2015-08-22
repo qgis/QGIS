@@ -41,6 +41,7 @@ for key, value in wkbTypeGroups.items():
     for const in value:
         wkbTypeGroups[const] = key
 
+
 class Intersection(GeoAlgorithm):
 
     INPUT = 'INPUT'
@@ -56,7 +57,7 @@ class Intersection(GeoAlgorithm):
 
         fields = vector.combineVectorFields(vlayerA, vlayerB)
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
-                vproviderA.geometryType(), vproviderA.crs())
+                                                                     vproviderA.geometryType(), vproviderA.crs())
         inFeatA = QgsFeature()
         inFeatB = QgsFeature()
         outFeat = QgsFeature()
@@ -92,7 +93,7 @@ class Intersection(GeoAlgorithm):
                                 writer.addFeature(outFeat)
                         except:
                             ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
-                                self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
+                                                   self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
                             continue
                 except:
                     break
@@ -103,7 +104,7 @@ class Intersection(GeoAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('Intersection')
         self.group, self.i18n_group = self.trAlgorithm('Vector overlay tools')
         self.addParameter(ParameterVector(self.INPUT,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterVector(self.INPUT2,
-            self.tr('Intersect layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Intersect layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Intersection')))

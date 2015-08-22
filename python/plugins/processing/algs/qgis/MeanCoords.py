@@ -47,13 +47,13 @@ class MeanCoords(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Vector analysis tools')
 
         self.addParameter(ParameterVector(self.POINTS,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterTableField(self.WEIGHT,
-            self.tr('Weight field'), MeanCoords.POINTS,
-            ParameterTableField.DATA_TYPE_NUMBER, optional=True))
+                                              self.tr('Weight field'), MeanCoords.POINTS,
+                                              ParameterTableField.DATA_TYPE_NUMBER, optional=True))
         self.addParameter(ParameterTableField(self.UID,
-            self.tr('Unique ID field'), MeanCoords.POINTS,
-            ParameterTableField.DATA_TYPE_NUMBER, optional=True))
+                                              self.tr('Unique ID field'), MeanCoords.POINTS,
+                                              ParameterTableField.DATA_TYPE_NUMBER, optional=True))
 
         self.addOutput(OutputVector(MeanCoords.OUTPUT, self.tr('Mean coordinates')))
 

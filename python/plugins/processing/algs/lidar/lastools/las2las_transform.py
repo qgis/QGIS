@@ -30,6 +30,7 @@ from LAStoolsAlgorithm import LAStoolsAlgorithm
 from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterSelection
 
+
 class las2las_transform(LAStoolsAlgorithm):
 
     OPERATION = "OPERATION"
@@ -46,12 +47,11 @@ class las2las_transform(LAStoolsAlgorithm):
         self.addParametersTransform1OtherGUI()
         self.addParametersTransform2OtherGUI()
         self.addParameter(ParameterSelection(las2las_transform.OPERATION,
-            self.tr("operations (first 8 need an argument)"), las2las_transform.OPERATIONS, 0))
+                                             self.tr("operations (first 8 need an argument)"), las2las_transform.OPERATIONS, 0))
         self.addParameter(ParameterString(las2las_transform.OPERATIONARG,
-            self.tr("argument for operation")))
+                                          self.tr("argument for operation")))
         self.addParametersPointOutputGUI()
         self.addParametersAdditionalGUI()
-
 
     def processAlgorithm(self, progress):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2las")]

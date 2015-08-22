@@ -141,7 +141,7 @@ class TestPyQgsAppStartup(unittest.TestCase):
         testfile = 'pyqgis_startup.txt'
         testfilepath = os.path.join(self.TMP_DIR, testfile)
         testcode = [
-            "f = open('{0}', 'w')\n".format(testfilepath.replace('\\','\\\\')),
+            "f = open('{0}', 'w')\n".format(testfilepath.replace('\\', '\\\\')),
             "f.write('This is a test')\n",
             "f.close()\n"
         ]

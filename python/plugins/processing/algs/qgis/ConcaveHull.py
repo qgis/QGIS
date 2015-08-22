@@ -35,6 +35,7 @@ from processing.tools import dataobjects
 import processing
 from math import sqrt
 
+
 class ConcaveHull(GeoAlgorithm):
 
     INPUT = 'INPUT'
@@ -47,14 +48,14 @@ class ConcaveHull(GeoAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('Concave hull')
         self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
         self.addParameter(ParameterVector(ConcaveHull.INPUT,
-            self.tr('Input point layer'), [ParameterVector.VECTOR_TYPE_POINT]))
+                                          self.tr('Input point layer'), [ParameterVector.VECTOR_TYPE_POINT]))
         self.addParameter(ParameterNumber(self.ALPHA,
-            self.tr('Threshold (0-1, where 1 is equivalent with Convex Hull)'),
-            0, 1, 0.3))
+                                          self.tr('Threshold (0-1, where 1 is equivalent with Convex Hull)'),
+                                          0, 1, 0.3))
         self.addParameter(ParameterBoolean(self.HOLES,
-            self.tr('Allow holes'), True))
+                                           self.tr('Allow holes'), True))
         self.addParameter(ParameterBoolean(self.NO_MULTIGEOMETRY,
-            self.tr('Split multipart geometry into singleparts geometries'), False))
+                                           self.tr('Split multipart geometry into singleparts geometries'), False))
         self.addOutput(OutputVector(ConcaveHull.OUTPUT, self.tr('Concave hull')))
 
     def processAlgorithm(self, progress):
@@ -70,25 +71,25 @@ class ConcaveHull(GeoAlgorithm):
         #get max edge length from Delaunay triangles
         progress.setText(self.tr('Computing edges max length...'))
         features = delaunay_layer.getFeatures()
-        counter = 50./delaunay_layer.featureCount()
+        counter = 50. / delaunay_layer.featureCount()
         lengths = []
         edges = {}
         for feat in features:
             line = feat.geometry().asPolygon()[0]
-            for i in range(len(line)-1):
-                lengths.append(sqrt(line[i].sqrDist(line[i+1])))
+            for i in range(len(line) - 1):
+                lengths.append(sqrt(line[i].sqrDist(line[i + 1])))
             edges[feat.id()] = max(lengths[-3:])
-            progress.setPercentage(feat.id()*counter)
+            progress.setPercentage(feat.id() * counter)
         max_length = max(lengths)
         #get features with longest edge longer than alpha*max_length
         progress.setText(self.tr('Removing features...'))
-        counter = 50./len(edges)
+        counter = 50. / len(edges)
         i = 0
         ids = []
         for id, max_len in edges.iteritems():
-            if max_len > alpha*max_length:
+            if max_len > alpha * max_length:
                 ids.append(id)
-            progress.setPercentage(50+i*counter)
+            progress.setPercentage(50 + i * counter)
             i += 1
         #remove features
         delaunay_layer.setSelectedFeatures(ids)

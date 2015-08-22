@@ -35,19 +35,20 @@ from qgscompositionchecker import QgsCompositionChecker
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 TEST_DATA_DIR = unitTestDataPath()
 
+
 class TestQgsComposerPicture(TestCase):
 
     @classmethod
     def setUpClass(cls):
         # Bring up a simple HTTP server, for remote picture tests
-        os.chdir( unitTestDataPath() + '' )
+        os.chdir(unitTestDataPath() + '')
         handler = SimpleHTTPServer.SimpleHTTPRequestHandler
 
         cls.httpd = SocketServer.TCPServer(('localhost', 0), handler)
         cls.port = cls.httpd.server_address[1]
 
-        cls.httpd_thread = threading.Thread( target=cls.httpd.serve_forever )
-        cls.httpd_thread.setDaemon( True )
+        cls.httpd_thread = threading.Thread(target=cls.httpd.serve_forever)
+        cls.httpd_thread.setDaemon(True)
         cls.httpd_thread.start()
 
     def __init__(self, methodName):
@@ -55,22 +56,22 @@ class TestQgsComposerPicture(TestCase):
         unittest.TestCase.__init__(self, methodName)
 
         TEST_DATA_DIR = unitTestDataPath()
-        self.pngImage = TEST_DATA_DIR + "/sample_image.png";
+        self.pngImage = TEST_DATA_DIR + "/sample_image.png"
 
         # create composition
         self.mapSettings = QgsMapSettings()
         self.composition = QgsComposition(self.mapSettings)
         self.composition.setPaperSize(297, 210)
 
-        self.composerPicture = QgsComposerPicture( self.composition )
-        self.composerPicture.setPicturePath( self.pngImage )
-        self.composerPicture.setSceneRect( QRectF( 70, 70, 100, 100 ) )
-        self.composerPicture.setFrameEnabled( True )
+        self.composerPicture = QgsComposerPicture(self.composition)
+        self.composerPicture.setPicturePath(self.pngImage)
+        self.composerPicture.setSceneRect(QRectF(70, 70, 100, 100))
+        self.composerPicture.setFrameEnabled(True)
         self.composition.addComposerPicture(self.composerPicture)
 
     def testResizeZoom(self):
         """Test picture resize zoom mode."""
-        self.composerPicture.setResizeMode( QgsComposerPicture.Zoom )
+        self.composerPicture.setResizeMode(QgsComposerPicture.Zoom)
 
         checker = QgsCompositionChecker('composerpicture_resize_zoom', self.composition)
         testResult, message = checker.testComposition()
@@ -79,12 +80,12 @@ class TestQgsComposerPicture(TestCase):
 
     def testRemoteImage(self):
         """Test fetching remote picture."""
-        self.composerPicture.setPicturePath( 'http://localhost:' + str( TestQgsComposerPicture.port ) + '/qgis_local_server/logo.png' )
+        self.composerPicture.setPicturePath('http://localhost:' + str(TestQgsComposerPicture.port) + '/qgis_local_server/logo.png')
 
         checker = QgsCompositionChecker('composerpicture_remote', self.composition)
         testResult, message = checker.testComposition()
 
-        self.composerPicture.setPicturePath( self.pngImage )
+        self.composerPicture.setPicturePath(self.pngImage)
         assert testResult, message
 
 if __name__ == '__main__':

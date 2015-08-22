@@ -70,7 +70,6 @@ class Catalog(FusionAlgorithm):
         advanced_modifiers.isAdvanced = True
         self.addParameter(advanced_modifiers)
 
-
     def processAlgorithm(self, progress):
         commands = [os.path.join(FusionUtils.FusionPath(), 'Catalog.exe')]
         commands.append('/verbose')

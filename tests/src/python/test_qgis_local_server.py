@@ -25,8 +25,8 @@ import StringIO
 import tempfile
 
 if os.name == 'nt':
-	print "TestQgisLocalServer currently doesn't support windows"
-	sys.exit(0)
+    print "TestQgisLocalServer currently doesn't support windows"
+    sys.exit(0)
 
 from qgis.core import (
     QgsRectangle,

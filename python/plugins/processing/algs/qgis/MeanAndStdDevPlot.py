@@ -51,14 +51,14 @@ class MeanAndStdDevPlot(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Graphics')
 
         self.addParameter(ParameterTable(self.INPUT,
-            self.tr('Input table')))
+                                         self.tr('Input table')))
         self.addParameter(ParameterTableField(self.NAME_FIELD,
-            self.tr('Category name field'), self.INPUT,
-            ParameterTableField.DATA_TYPE_ANY))
+                                              self.tr('Category name field'), self.INPUT,
+                                              ParameterTableField.DATA_TYPE_ANY))
         self.addParameter(ParameterTableField(self.MEAN_FIELD,
-            self.tr('Mean field'), self.INPUT))
+                                              self.tr('Mean field'), self.INPUT))
         self.addParameter(ParameterTableField(self.STDDEV_FIELD,
-            self.tr('StdDev field'), self.INPUT))
+                                              self.tr('StdDev field'), self.INPUT))
 
         self.addOutput(OutputHTML(self.OUTPUT, self.tr('Plot')))
 

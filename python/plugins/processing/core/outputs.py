@@ -29,11 +29,13 @@ from processing.tools.system import isWindows, getTempFilenameInTempFolder
 from processing.tools.vector import VectorWriter, TableWriter
 from processing.tools import dataobjects
 
+
 def getOutputFromString(s):
     tokens = s.split("|")
     params = [t if unicode(t) != "None" else None for t in tokens[1:]]
     clazz = getattr(sys.modules[__name__], tokens[0])
     return clazz(*params)
+
 
 class Output(object):
 

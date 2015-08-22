@@ -56,16 +56,16 @@ class PeukerDouglas(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Stream Network Analysis tools')
 
         self.addParameter(ParameterRaster(self.ELEVATION_GRID,
-            self.tr('Elevation Grid'), False))
+                                          self.tr('Elevation Grid'), False))
         self.addParameter(ParameterNumber(self.CENTER_WEIGHT,
-            self.tr('Center Smoothing Weight'), 0, None, 0.4))
+                                          self.tr('Center Smoothing Weight'), 0, None, 0.4))
         self.addParameter(ParameterNumber(self.SIDE_WEIGHT,
-            self.tr('Side Smoothing Weight'), 0, None, 0.1))
+                                          self.tr('Side Smoothing Weight'), 0, None, 0.1))
         self.addParameter(ParameterNumber(self.DIAGONAL_WEIGHT,
-            self.tr('Diagonal Smoothing Weight'), 0, None, 0.05))
+                                          self.tr('Diagonal Smoothing Weight'), 0, None, 0.05))
 
         self.addOutput(OutputRaster(self.STREAM_SOURCE_GRID,
-            self.tr('Stream Source Grid')))
+                                    self.tr('Stream Source Grid')))
 
     def processAlgorithm(self, progress):
         commands = []

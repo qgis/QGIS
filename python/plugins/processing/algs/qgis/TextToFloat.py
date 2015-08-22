@@ -44,10 +44,10 @@ class TextToFloat(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
 
         self.addParameter(ParameterVector(self.INPUT,
-            self.tr('Input Layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input Layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterTableField(self.FIELD,
-            self.tr('Text attribute to convert to float'),
-            self.INPUT, ParameterTableField.DATA_TYPE_STRING))
+                                              self.tr('Text attribute to convert to float'),
+                                              self.INPUT, ParameterTableField.DATA_TYPE_STRING))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Float from text')))
 
     def processAlgorithm(self, progress):
@@ -59,7 +59,7 @@ class TextToFloat(GeoAlgorithm):
         fields[idx] = QgsField(fieldName, QVariant.Double, '', 24, 15)
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
-            layer.wkbType(), layer.crs())
+                                                                     layer.wkbType(), layer.crs())
 
         features = vector.features(layer)
 

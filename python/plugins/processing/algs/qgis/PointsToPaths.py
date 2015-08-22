@@ -54,13 +54,13 @@ class PointsToPaths(GeoAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('Points to path')
         self.group, self.i18n_group = self.trAlgorithm('Vector creation tools')
         self.addParameter(ParameterVector(self.VECTOR,
-            self.tr('Input point layer'), [ParameterVector.VECTOR_TYPE_POINT]))
+                                          self.tr('Input point layer'), [ParameterVector.VECTOR_TYPE_POINT]))
         self.addParameter(ParameterTableField(self.GROUP_FIELD,
-            self.tr('Group field'), self.VECTOR))
+                                              self.tr('Group field'), self.VECTOR))
         self.addParameter(ParameterTableField(self.ORDER_FIELD,
-            self.tr('Order field'), self.VECTOR))
+                                              self.tr('Order field'), self.VECTOR))
         self.addParameter(ParameterString(self.DATE_FORMAT,
-            self.tr('Date format (if order field is DateTime)'), '', optional=True))
+                                          self.tr('Date format (if order field is DateTime)'), '', optional=True))
         #self.addParameter(ParameterNumber(
         #    self.GAP_PERIOD,
         #    'Gap period (if order field is DateTime)', 0, 60, 0))
@@ -131,8 +131,8 @@ class PointsToPaths(GeoAlgorithm):
                     fl.write('survey=Polygonal\n')
                     fl.write('[data]\n')
                 else:
-                    angle = line[i-1].azimuth(line[i])
-                    distance = da.measureLine(line[i-1], line[i])
+                    angle = line[i - 1].azimuth(line[i])
+                    distance = da.measureLine(line[i - 1], line[i])
                     fl.write('%f;%f;90\n' % (angle, distance))
 
                 i += 1

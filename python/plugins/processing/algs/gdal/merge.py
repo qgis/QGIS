@@ -49,13 +49,13 @@ class merge(GdalAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('Merge')
         self.group, self.i18n_group = self.trAlgorithm('[GDAL] Miscellaneous')
         self.addParameter(ParameterMultipleInput(merge.INPUT,
-            self.tr('Input layers'), ParameterMultipleInput.TYPE_RASTER))
+                                                 self.tr('Input layers'), ParameterMultipleInput.TYPE_RASTER))
         self.addParameter(ParameterBoolean(merge.PCT,
-            self.tr('Grab pseudocolor table from first layer'), False))
+                                           self.tr('Grab pseudocolor table from first layer'), False))
         self.addParameter(ParameterBoolean(merge.SEPARATE,
-            self.tr('Layer stack'), False))
+                                           self.tr('Layer stack'), False))
         self.addParameter(ParameterSelection(self.RTYPE,
-            self.tr('Output raster type'), self.TYPE, 5))
+                                             self.tr('Output raster type'), self.TYPE, 5))
 
         self.addOutput(OutputRaster(merge.OUTPUT, self.tr('Merged')))
 

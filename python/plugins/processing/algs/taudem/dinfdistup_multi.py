@@ -75,22 +75,22 @@ class DinfDistUpMulti(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Specialized Grid Analysis tools')
 
         self.addParameter(ParameterFile(self.DINF_FLOW_DIR_GRID,
-            self.tr('D-Infinity Flow Direction Grid'), True, False))
+                                        self.tr('D-Infinity Flow Direction Grid'), True, False))
         self.addParameter(ParameterFile(self.PIT_FILLED_GRID,
-            self.tr('Pit Filled Elevation Grid'), True, False))
+                                        self.tr('Pit Filled Elevation Grid'), True, False))
         self.addParameter(ParameterFile(self.SLOPE_GRID,
-            self.tr('Slope Grid'), True, False))
+                                        self.tr('Slope Grid'), True, False))
         self.addParameter(ParameterSelection(self.STAT_METHOD,
-            self.tr('Statistical Method'), self.STATISTICS, 2))
+                                             self.tr('Statistical Method'), self.STATISTICS, 2))
         self.addParameter(ParameterSelection(self.DIST_METHOD,
-            self.tr('Distance Method'), self.DISTANCE, 1))
+                                             self.tr('Distance Method'), self.DISTANCE, 1))
         self.addParameter(ParameterNumber(self.THRESHOLD,
-            self.tr('Proportion Threshold'), 0, None, 0.5))
+                                          self.tr('Proportion Threshold'), 0, None, 0.5))
         self.addParameter(ParameterBoolean(self.EDGE_CONTAM,
-            self.tr('Check for edge contamination'), True))
+                                           self.tr('Check for edge contamination'), True))
 
         self.addOutput(OutputDirectory(self.DIST_UP_GRID,
-            self.tr('D-Infinity Distance Up')))
+                                       self.tr('D-Infinity Distance Up')))
 
     def processAlgorithm(self, progress):
         commands = []

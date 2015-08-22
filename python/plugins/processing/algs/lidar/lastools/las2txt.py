@@ -30,6 +30,7 @@ from LAStoolsAlgorithm import LAStoolsAlgorithm
 from processing.core.parameters import ParameterString
 from processing.core.outputs import OutputFile
 
+
 class las2txt(LAStoolsAlgorithm):
 
     PARSE = "PARSE"
@@ -41,7 +42,7 @@ class las2txt(LAStoolsAlgorithm):
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParameter(ParameterString(las2txt.PARSE,
-            self.tr("parse string"), "xyz"))
+                                          self.tr("parse string"), "xyz"))
         self.addOutput(OutputFile(las2txt.OUTPUT, self.tr("Output ASCII file")))
         self.addParametersAdditionalGUI()
 

@@ -298,7 +298,7 @@ class RAlgorithm(GeoAlgorithm):
 
         # Try to install packages if needed
         if isWindows():
-            commands.append('.libPaths(\"' + unicode(RUtils.RLibs()).replace('\\','/') + '\")')
+            commands.append('.libPaths(\"' + unicode(RUtils.RLibs()).replace('\\', '/') + '\")')
         packages = RUtils.getRequiredPackages(self.script)
         packages.extend(['rgdal', 'raster'])
         for p in packages:

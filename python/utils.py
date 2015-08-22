@@ -52,7 +52,7 @@ def showWarning(message, category, filename, lineno, file=None, line=None):
     for s in traceback.format_stack()[:-2]:
         stk += s.decode('utf-8', 'replace')
     QgsMessageLog.logMessage(
-        "warning:%s\ntraceback:%s" % ( warnings.formatwarning(message, category, filename, lineno), stk),
+        "warning:%s\ntraceback:%s" % (warnings.formatwarning(message, category, filename, lineno), stk),
         QCoreApplication.translate("Python", "Python warning")
     )
 
@@ -160,7 +160,8 @@ def updateAvailablePlugins():
     metadata_parser = {}
     for pluginpath in plugin_paths:
         for pluginName, parser in findPlugins(pluginpath):
-            if parser is None: continue
+            if parser is None:
+                continue
             if pluginName not in plugins:
                 plugins.append(pluginName)
                 metadata_parser[pluginName] = parser
@@ -198,7 +199,7 @@ def loadPlugin(packageName):
     except:
         msgTemplate = QCoreApplication.translate("Python", "Couldn't load plugin '%s' from ['%s']")
         msg = msgTemplate % (packageName, "', '".join(sys.path))
-        showException(sys.exc_type, sys.exc_value, sys.exc_traceback, msg)
+        showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg)
         return False
 
 
@@ -206,8 +207,10 @@ def startPlugin(packageName):
     """ initialize the plugin """
     global plugins, active_plugins, iface, plugin_times
 
-    if packageName in active_plugins: return False
-    if packageName not in sys.modules: return False
+    if packageName in active_plugins:
+        return False
+    if packageName not in sys.modules:
+        return False
 
     package = sys.modules[packageName]
 
@@ -220,7 +223,7 @@ def startPlugin(packageName):
     except:
         _unloadPluginModules(packageName)
         msg = QCoreApplication.translate("Python", "%s due to an error when calling its classFactory() method") % errMsg
-        showException(sys.exc_type, sys.exc_value, sys.exc_traceback, msg)
+        showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg)
         return False
 
     # initGui
@@ -230,7 +233,7 @@ def startPlugin(packageName):
         del plugins[packageName]
         _unloadPluginModules(packageName)
         msg = QCoreApplication.translate("Python", "%s due to an error when calling its initGui() method") % errMsg
-        showException(sys.exc_type, sys.exc_value, sys.exc_traceback, msg)
+        showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg)
         return False
 
     # add to active plugins
@@ -245,8 +248,10 @@ def canUninstallPlugin(packageName):
     """ confirm that the plugin can be uninstalled """
     global plugins, active_plugins
 
-    if packageName not in plugins: return False
-    if packageName not in active_plugins: return False
+    if packageName not in plugins:
+        return False
+    if packageName not in active_plugins:
+        return False
 
     try:
         metadata = plugins[packageName]
@@ -255,7 +260,7 @@ def canUninstallPlugin(packageName):
         return bool(metadata.canBeUninstalled())
     except:
         msg = "Error calling " + packageName + ".canBeUninstalled"
-        showException(sys.exc_type, sys.exc_value, sys.exc_traceback, msg)
+        showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg)
         return True
 
 
@@ -263,8 +268,10 @@ def unloadPlugin(packageName):
     """ unload and delete plugin! """
     global plugins, active_plugins
 
-    if packageName not in plugins: return False
-    if packageName not in active_plugins: return False
+    if packageName not in plugins:
+        return False
+    if packageName not in active_plugins:
+        return False
 
     try:
         plugins[packageName].unload()
@@ -272,9 +279,9 @@ def unloadPlugin(packageName):
         active_plugins.remove(packageName)
         _unloadPluginModules(packageName)
         return True
-    except Exception, e:
+    except Exception as e:
         msg = QCoreApplication.translate("Python", "Error while unloading plugin %s") % packageName
-        showException(sys.exc_type, sys.exc_value, sys.exc_traceback, msg)
+        showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg)
         return False
 
 
@@ -305,7 +312,8 @@ def isPluginLoaded(packageName):
     """ find out whether a plugin is active (i.e. has been started) """
     global plugins, active_plugins
 
-    if packageName not in plugins: return False
+    if packageName not in plugins:
+        return False
     return (packageName in active_plugins)
 
 
@@ -371,7 +379,7 @@ def reloadProjectMacros():
     mod = imp.new_module("proj_macros_mod")
 
     # set the module code and store it sys.modules
-    exec unicode(code) in mod.__dict__
+    exec(unicode(code), mod.__dict__)
     sys.modules["proj_macros_mod"] = mod
 
     # load new macros
@@ -442,8 +450,10 @@ def startServerPlugin(packageName):
     """ initialize the plugin """
     global server_plugins, server_active_plugins, serverIface
 
-    if packageName in server_active_plugins: return False
-    if packageName not in sys.modules: return False
+    if packageName in server_active_plugins:
+        return False
+    if packageName not in sys.modules:
+        return False
 
     package = sys.modules[packageName]
 
@@ -456,7 +466,7 @@ def startServerPlugin(packageName):
         _unloadPluginModules(packageName)
         msg = QCoreApplication.translate("Python",
                                          "%s due to an error when calling its serverClassFactory() method") % errMsg
-        showException(sys.exc_type, sys.exc_value, sys.exc_traceback, msg)
+        showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg)
         return False
 
     # add to active plugins

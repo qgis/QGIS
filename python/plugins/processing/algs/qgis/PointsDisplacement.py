@@ -47,12 +47,12 @@ class PointsDisplacement(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POINT]))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POINT]))
         self.addParameter(ParameterNumber(self.DISTANCE,
-            self.tr('Displacement distance'),
-            0.00001, 999999999.999990, 0.00015))
+                                          self.tr('Displacement distance'),
+                                          0.00001, 999999999.999990, 0.00015))
         self.addParameter(ParameterBoolean(self.HORIZONTAL,
-            self.tr('Horizontal distribution for two point case')))
+                                           self.tr('Horizontal distribution for two point case')))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Displaced')))
 
     def processAlgorithm(self, progress):
@@ -64,7 +64,7 @@ class PointsDisplacement(GeoAlgorithm):
 
         provider = layer.dataProvider()
         writer = output.getVectorWriter(provider.fields(),
-                provider.geometryType(), provider.crs())
+                                        provider.geometryType(), provider.crs())
 
         features = vector.features(layer)
 
@@ -111,7 +111,7 @@ class PointsDisplacement(GeoAlgorithm):
                     f = layer.getFeatures(request.setFilterFid(fid)).next()
 
                     new_point = QgsPoint(old_point.x() + dx, old_point.y()
-                            + dy)
+                                         + dy)
                     out_feature = QgsFeature()
                     out_feature.setGeometry(QgsGeometry.fromPoint(new_point))
                     out_feature.setAttributes(f.attributes())

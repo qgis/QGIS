@@ -29,6 +29,7 @@ QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 
 
 class TestQgsZonalStatistics(TestCase):
+
     """Tests for zonal stats class."""
 
     def testStatistics(self):

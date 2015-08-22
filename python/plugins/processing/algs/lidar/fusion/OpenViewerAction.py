@@ -47,7 +47,7 @@ class OpenViewerAction(ToolboxAction):
             subprocess.Popen(f)
         else:
             QtGui.QMessageBox.critical(None,
-                self.tr('Unable to open viewer'),
-                self.tr('The current Fusion folder does not contain the '
-                        'viewer executable.\nPlease check the configuration '
-                        'in the Processing settings dialog.'))
+                                       self.tr('Unable to open viewer'),
+                                       self.tr('The current Fusion folder does not contain the '
+                                               'viewer executable.\nPlease check the configuration '
+                                               'in the Processing settings dialog.'))

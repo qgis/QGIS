@@ -30,6 +30,7 @@ from LAStoolsAlgorithm import LAStoolsAlgorithm
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterFile
 
+
 class lasduplicate(LAStoolsAlgorithm):
 
     LOWEST_Z = "LOWEST_Z"
@@ -43,13 +44,13 @@ class lasduplicate(LAStoolsAlgorithm):
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParameter(ParameterBoolean(lasduplicate.LOWEST_Z,
-            self.tr("keep duplicate with lowest z coordinate"), False))
+                                           self.tr("keep duplicate with lowest z coordinate"), False))
         self.addParameter(ParameterBoolean(lasduplicate.UNIQUE_XYZ,
-            self.tr("only remove duplicates in x y and z"), False))
+                                           self.tr("only remove duplicates in x y and z"), False))
         self.addParameter(ParameterBoolean(lasduplicate.SINGLE_RETURNS,
-            self.tr("mark surviving duplicate as single return"), False))
+                                           self.tr("mark surviving duplicate as single return"), False))
         self.addParameter(ParameterFile(lasduplicate.RECORD_REMOVED,
-            self.tr("record removed duplicates to LAS/LAZ file")))
+                                        self.tr("record removed duplicates to LAS/LAZ file")))
         self.addParametersPointOutputGUI()
         self.addParametersAdditionalGUI()
 

@@ -32,6 +32,7 @@ from processing.core.outputs import OutputVector
 
 from processing.tools import dataobjects, vector
 
+
 class Merge(GeoAlgorithm):
     LAYER1 = 'LAYER1'
     LAYER2 = 'LAYER2'
@@ -42,9 +43,9 @@ class Merge(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
 
         self.addParameter(ParameterVector(self.LAYER1,
-            self.tr('Input layer 1'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer 1'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterVector(self.LAYER2,
-            self.tr('Input layer 2'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer 2'), [ParameterVector.VECTOR_TYPE_ANY]))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Merged')))
 

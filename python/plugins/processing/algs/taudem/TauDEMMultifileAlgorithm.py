@@ -79,9 +79,9 @@ class TauDEMMultifileAlgorithm(GeoAlgorithm):
                 else:
                     self.addOutput(getOutputFromString(line))
                 line = lines.readline().strip('\n').strip()
-            except Exception, e:
+            except Exception as e:
                 ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                    self.tr('Could not load TauDEM algorithm: %s\n%s' % (self.descriptionFile, line)))
+                                       self.tr('Could not load TauDEM algorithm: %s\n%s' % (self.descriptionFile, line)))
                 raise e
         lines.close()
 

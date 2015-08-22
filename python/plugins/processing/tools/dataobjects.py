@@ -40,9 +40,11 @@ ALL_TYPES = [-1]
 
 _loadedLayers = {}
 
+
 def resetLoadedLayers():
     global _loadedLayers
     _loadedLayers = {}
+
 
 def getSupportedOutputVectorLayerExtensions():
     formats = QgsVectorFileWriter.supportedFiltersAndFormats()
@@ -80,7 +82,7 @@ def getRasterLayers(sorting=True):
             if mapLayer.providerType() == 'gdal':  # only gdal file-based layers
                 raster.append(mapLayer)
     if sorting:
-        return sorted(raster,  key=lambda layer: layer.name().lower())
+        return sorted(raster, key=lambda layer: layer.name().lower())
     else:
         return raster
 
@@ -95,7 +97,7 @@ def getVectorLayers(shapetype=[-1], sorting=True):
                     (shapetype == ALL_TYPES or mapLayer.geometryType() in shapetype)):
                 vector.append(mapLayer)
     if sorting:
-        return sorted(vector,  key=lambda layer: layer.name().lower())
+        return sorted(vector, key=lambda layer: layer.name().lower())
     else:
         return vector
 
@@ -104,7 +106,7 @@ def getAllLayers():
     layers = []
     layers += getRasterLayers()
     layers += getVectorLayers()
-    return sorted(layers,  key=lambda layer: layer.name().lower())
+    return sorted(layers, key=lambda layer: layer.name().lower())
 
 
 def getTables(sorting=True):
@@ -115,7 +117,7 @@ def getTables(sorting=True):
         if mapLayer.type() == QgsMapLayer.VectorLayer:
             tables.append(mapLayer)
     if sorting:
-        return sorted(tables,  key=lambda table: table.name().lower())
+        return sorted(tables, key=lambda table: table.name().lower())
     else:
         return tables
 
@@ -208,6 +210,7 @@ def getObject(uriorname):
     if ret is None:
         ret = getObjectFromUri(uriorname)
     return ret
+
 
 def normalizeLayerSource(source):
     if isWindows():
@@ -385,6 +388,7 @@ def exportTable(table):
         else:
             return filename
 
+
 def getRasterSublayer(path, param):
 
     layer = QgsRasterLayer(path)
@@ -415,13 +419,13 @@ def getRasterSublayer(path, param):
                 if subLayer.endswith("\""):
                     subLayer = subLayer[:-1]
 
-                layers.append(unicode(subLayerNum)+"|"+subLayer)
+                layers.append(unicode(subLayerNum) + "|" + subLayer)
                 subLayerNum = subLayerNum + 1
 
             # Use QgsSublayersDialog
             # Would be good if QgsSublayersDialog had an option to allow only one sublayer to be selected
             chooseSublayersDialog = QgsSublayersDialog(QgsSublayersDialog.Gdal, "gdal")
-            chooseSublayersDialog.populateLayerTable( layers, "|" )
+            chooseSublayersDialog.populateLayerTable(layers, "|")
 
             if chooseSublayersDialog.exec_():
                 return layer.subLayers()[chooseSublayersDialog.selectionIndexes()[0]]

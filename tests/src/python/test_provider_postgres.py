@@ -28,12 +28,14 @@ from providertestbase import ProviderTestCase
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 TEST_DATA_DIR = unitTestDataPath()
 
+
 class TestPyQgsPostgresProvider(TestCase, ProviderTestCase):
+
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
         # Create test layer
-        cls.vl = QgsVectorLayer( u'dbname=\'qgis_test\' host=localhost port=5432 user=\'postgres\' password=\'postgres\' sslmode=disable key=\'pk\' srid=4326 type=POINT table="qgis_test"."someData" (geom) sql=', 'test', 'postgres' )
+        cls.vl = QgsVectorLayer(u'dbname=\'qgis_test\' host=localhost port=5432 user=\'postgres\' password=\'postgres\' sslmode=disable key=\'pk\' srid=4326 type=POINT table="qgis_test"."someData" (geom) sql=', 'test', 'postgres')
         assert(cls.vl.isValid())
         cls.provider = cls.vl.dataProvider()
 

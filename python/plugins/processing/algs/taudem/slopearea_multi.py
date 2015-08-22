@@ -59,16 +59,16 @@ class SlopeAreaMulti(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Stream Network Analysis tools')
 
         self.addParameter(ParameterFile(self.SLOPE_GRID,
-            self.tr('Slope Grid'), True, False))
+                                        self.tr('Slope Grid'), True, False))
         self.addParameter(ParameterFile(self.AREA_GRID,
-            self.tr('Contributing Area Grid'), True, False))
+                                        self.tr('Contributing Area Grid'), True, False))
         self.addParameter(ParameterNumber(self.SLOPE_EXPONENT,
-            self.tr('Slope Exponent'), 0, None, 2))
+                                          self.tr('Slope Exponent'), 0, None, 2))
         self.addParameter(ParameterNumber(self.AREA_EXPONENT,
-            self.tr('Area Exponent'), 0, None, 1))
+                                          self.tr('Area Exponent'), 0, None, 1))
 
         self.addOutput(OutputDirectory(self.SLOPE_AREA_GRID,
-            self.tr('Slope Area Grid')))
+                                       self.tr('Slope Area Grid')))
 
     def processAlgorithm(self, progress):
         commands = []

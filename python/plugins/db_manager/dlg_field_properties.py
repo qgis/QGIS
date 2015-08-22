@@ -32,6 +32,7 @@ from .ui.ui_DlgFieldProperties import Ui_DbManagerDlgFieldProperties as Ui_Dialo
 
 
 class DlgFieldProperties(QDialog, Ui_Dialog):
+
     def __init__(self, parent=None, fld=None, table=None, db=None):
         QDialog.__init__(self, parent)
         self.fld = fld
@@ -71,7 +72,6 @@ class DlgFieldProperties(QDialog, Ui_Dialog):
             ok = True
         fld.modifier = modifier if ok else None
         return fld
-
 
     def onOK(self):
         """ first check whether everything's fine """

@@ -57,20 +57,20 @@ class proximity(GdalAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('Proximity (raster distance)')
         self.group, self.i18n_group = self.trAlgorithm('[GDAL] Analysis')
         self.addParameter(ParameterRaster(self.INPUT,
-            self.tr('Input layer'), False))
+                                          self.tr('Input layer'), False))
         self.addParameter(ParameterString(self.VALUES,
-            self.tr('Values'), ''))
+                                          self.tr('Values'), ''))
         self.addParameter(ParameterSelection(self.UNITS,
-            self.tr('Distance units'), self.DISTUNITS, 0))
+                                             self.tr('Distance units'), self.DISTUNITS, 0))
         self.addParameter(ParameterNumber(self.MAX_DIST,
-            self.tr('Max distance (negative value to ignore)'), -1, 9999, -1))
+                                          self.tr('Max distance (negative value to ignore)'), -1, 9999, -1))
         self.addParameter(ParameterNumber(self.NODATA,
-            self.tr('Nodata (negative value to ignore)'), -1, 9999, -1))
+                                          self.tr('Nodata (negative value to ignore)'), -1, 9999, -1))
         self.addParameter(ParameterNumber(self.BUF_VAL,
-            self.tr('Fixed buf value (negative value to ignore)'),
-            -1, 9999, -1))
+                                          self.tr('Fixed buf value (negative value to ignore)'),
+                                          -1, 9999, -1))
         self.addParameter(ParameterSelection(self.RTYPE,
-            self.tr('Output raster type'), self.TYPE, 5))
+                                             self.tr('Output raster type'), self.TYPE, 5))
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Distance')))
 
     def getConsoleCommands(self):

@@ -50,17 +50,17 @@ class SelectByLocation(GeoAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('Select by location')
         self.group, self.i18n_group = self.trAlgorithm('Vector selection tools')
         self.addParameter(ParameterVector(self.INPUT,
-            self.tr('Layer to select from'),
-            [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Layer to select from'),
+                                          [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterVector(self.INTERSECT,
-            self.tr('Additional layer (intersection layer)'),
-            [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Additional layer (intersection layer)'),
+                                          [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterGeometryPredicate(self.PREDICATE,
-            self.tr('Geometric predicate'),
-            left=self.INPUT, right=self.INTERSECT))
+                                                     self.tr('Geometric predicate'),
+                                                     left=self.INPUT, right=self.INTERSECT))
         self.addParameter(ParameterSelection(self.METHOD,
-            self.tr('Modify current selection by'),
-            self.METHODS, 0))
+                                             self.tr('Modify current selection by'),
+                                             self.METHODS, 0))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Selected (location)'), True))
 
     def processAlgorithm(self, progress):

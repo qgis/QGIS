@@ -43,9 +43,9 @@ class Clip(GeoAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('Clip')
         self.group, self.i18n_group = self.trAlgorithm('Vector overlay tools')
         self.addParameter(ParameterVector(Clip.INPUT,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterVector(Clip.OVERLAY,
-            self.tr('Clip layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Clip layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addOutput(OutputVector(Clip.OUTPUT, self.tr('Clipped')))
 
     def processAlgorithm(self, progress):
@@ -95,9 +95,9 @@ class Clip(GeoAlgorithm):
                                 outFeat.setGeometry(QgsGeometry(new_geom))
                             except:
                                 ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                    self.tr('GEOS geoprocessing error: One or '
-                                            'more input features have invalid '
-                                            'geometry.'))
+                                                       self.tr('GEOS geoprocessing error: One or '
+                                                               'more input features have invalid '
+                                                               'geometry.'))
                                 break
                 if found:
                     try:
@@ -113,14 +113,14 @@ class Clip(GeoAlgorithm):
                             writer.addFeature(outFeat)
                         except:
                             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                self.tr('Feature geometry error: One or more '
-                                        'output features ignored due to '
-                                        'invalid geometry.'))
+                                                   self.tr('Feature geometry error: One or more '
+                                                           'output features ignored due to '
+                                                           'invalid geometry.'))
                             continue
                     except:
                         ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                            self.tr('GEOS geoprocessing error: One or more '
-                                    'input features have invalid geometry.'))
+                                               self.tr('GEOS geoprocessing error: One or more '
+                                                       'input features have invalid geometry.'))
                         continue
 
             current += 1

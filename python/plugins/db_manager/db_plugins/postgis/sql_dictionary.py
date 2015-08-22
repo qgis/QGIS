@@ -97,20 +97,20 @@ functions = [
     "nullif", "quote", "random",
     "replace", "soundex"
 ]
-operators=[
-' AND ',' OR ','||',' < ',' <= ',' > ',' >= ',' = ',' <> ',' IS ',' IS NOT ',' IN ',' LIKE ',' GLOB ',' MATCH ',' REGEXP '
+operators = [
+    ' AND ', ' OR ', '||', ' < ', ' <= ', ' > ', ' >= ', ' = ', ' <> ', ' IS ', ' IS NOT ', ' IN ', ' LIKE ', ' GLOB ', ' MATCH ', ' REGEXP '
 ]
 
 math_functions = [
     # SQL math functions
     "Abs", "ACos", "ASin", "ATan", "Cos", "Cot", "Degrees", "Exp", "Floor", "Log", "Log2",
     "Log10", "Pi", "Radians", "Round", "Sign", "Sin", "Sqrt", "StdDev_Pop", "StdDev_Samp", "Tan",
-    "Var_Pop", "Var_Samp" ]
+    "Var_Pop", "Var_Samp"]
 
-string_functions=["Length", "Lower", "Upper", "Like", "Trim", "LTrim", "RTrim", "Replace", "Substr"]
+string_functions = ["Length", "Lower", "Upper", "Like", "Trim", "LTrim", "RTrim", "Replace", "Substr"]
 
-aggregate_functions=[
-"Max","Min","Avg","Count","Sum","Group_Concat","Total","Var_Pop","Var_Samp","StdDev_Pop","StdDev_Samp"
+aggregate_functions = [
+    "Max", "Min", "Avg", "Count", "Sum", "Group_Concat", "Total", "Var_Pop", "Var_Samp", "StdDev_Pop", "StdDev_Samp"
 ]
 
 postgis_functions = [  # from http://www.postgis.org/docs/reference.html
@@ -196,17 +196,19 @@ def getSqlDictionary(spatial=True):
         f += postgis_functions
         c += postgis_constants
 
-    return {'keyword': map(strip_star,k), 'constant': map(strip_star,c), 'function': map(strip_star,f)}
+    return {'keyword': map(strip_star, k), 'constant': map(strip_star, c), 'function': map(strip_star, f)}
+
 
 def getQueryBuilderDictionary():
     # concat functions
-    def ff( l ):
-        return filter( lambda s:s[0] != '*', l )
-    def add_paren( l ):
-        return map( lambda s:s+"(", l )
-    foo = sorted(add_paren(ff( list(set.union(set(functions), set(postgis_functions))) )))
-    m = sorted(add_paren(ff( math_functions )))
+    def ff(l):
+        return filter(lambda s: s[0] != '*', l)
+
+    def add_paren(l):
+        return map(lambda s: s + "(", l)
+    foo = sorted(add_paren(ff(list(set.union(set(functions), set(postgis_functions))))))
+    m = sorted(add_paren(ff(math_functions)))
     agg = sorted(add_paren(ff(aggregate_functions)))
     op = ff(operators)
     s = sorted(add_paren(ff(string_functions)))
-    return {'function': foo, 'math' : m, 'aggregate': agg, 'operator': op, 'string': s }
+    return {'function': foo, 'math': m, 'aggregate': agg, 'operator': op, 'string': s}

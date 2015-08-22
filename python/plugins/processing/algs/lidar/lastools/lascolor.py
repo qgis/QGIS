@@ -33,6 +33,7 @@ from LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.core.parameters import ParameterRaster
 
+
 class lascolor(LAStoolsAlgorithm):
 
     ORTHO = "ORTHO"
@@ -43,7 +44,7 @@ class lascolor(LAStoolsAlgorithm):
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParameter(ParameterRaster(lascolor.ORTHO,
-            self.tr("Input ortho")))
+                                          self.tr("Input ortho")))
         self.addParametersPointOutputGUI()
         self.addParametersAdditionalGUI()
 

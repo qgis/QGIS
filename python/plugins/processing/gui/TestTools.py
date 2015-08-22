@@ -64,8 +64,8 @@ def createTest(text):
         filename = (tokens[i])[1:-1]
         if tokens[i] == unicode(None):
             QMessageBox.critical(None, tr('Error'),
-                tr('Cannot create unit test for that algorithm execution. The '
-                   'output cannot be a temporary file'))
+                                 tr('Cannot create unit test for that algorithm execution. The '
+                                    'output cannot be a temporary file'))
             return
         s += "\toutput=outputs['" + out.name + "']\n"
         if isinstance(out, (OutputNumber, OutputString)):
@@ -83,9 +83,9 @@ def createTest(text):
             s += '\tlayer=dataobjects.getObjectFromUri(output, True)\n'
             s += '\tfields=layer.pendingFields()\n'
             s += '\texpectednames=[' + ','.join(["'" + unicode(f.name()) + "'"
-                    for f in fields]) + ']\n'
+                                                 for f in fields]) + ']\n'
             s += '\texpectedtypes=[' + ','.join(["'" + unicode(f.typeName()) + "'"
-                    for f in fields]) + ']\n'
+                                                 for f in fields]) + ']\n'
             s += '\tnames=[unicode(f.name()) for f in fields]\n'
             s += '\ttypes=[unicode(f.typeName()) for f in fields]\n'
             s += '\tself.assertEqual(expectednames, names)\n'
@@ -100,7 +100,7 @@ def createTest(text):
                 s += '\tfeature=features.next()\n'
                 s += '\tattrs=feature.attributes()\n'
                 s += '\texpectedvalues=[' + ','.join(['"' + unicode(attr) + '"'
-                        for attr in attrs]) + ']\n'
+                                                      for attr in attrs]) + ']\n'
                 s += '\tvalues=[unicode(attr) for attr in attrs]\n'
                 s += '\tself.assertEqual(expectedvalues, values)\n'
                 s += "\twkt='" + unicode(feature.geometry().exportToWkt()) + "'\n"
@@ -109,6 +109,7 @@ def createTest(text):
 
     dlg = ShowTestDialog(s)
     dlg.exec_()
+
 
 def tr(string):
     return QCoreApplication.translate('TestTools', string)

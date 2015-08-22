@@ -93,7 +93,7 @@ class OracleDBConnector(DBConnector):
             self.connection = QtSqlDB.connect(
                 "QOCISPATIAL", self.dbname, self.user, self.passwd)
 
-        except self.connection_error_types(), e:
+        except self.connection_error_types() as e:
             raise ConnectionError(e)
 
         # Find if we can connect to data_sources_cache.db
@@ -770,7 +770,7 @@ class OracleDBConnector(DBConnector):
 
         try:
             c = self._execute(None, query)
-        except DbError, e:  # handle error views or other problems
+        except DbError as e:  # handle error views or other problems
             return [QGis.WKBUnknown], [-1]
 
         rows = self._fetchall(c)
@@ -1075,7 +1075,7 @@ class OracleDBConnector(DBConnector):
 
         try:
             c = self._execute(None, sql)
-        except DbError, e:  # no spatial index on table, try aggregation
+        except DbError as e:  # no spatial index on table, try aggregation
             return None
 
         res = self._fetchone(c)
@@ -1110,7 +1110,7 @@ class OracleDBConnector(DBConnector):
             sql = request.format(where, dimension)
             try:
                 c = self._execute(None, sql)
-            except DbError, e:  # no statistics for the current table
+            except DbError as e:  # no statistics for the current table
                 return None
 
             res_d = self._fetchone(c)
@@ -1164,7 +1164,7 @@ class OracleDBConnector(DBConnector):
                 None,
                 (u"SELECT CS_NAME FROM MDSYS.CS_SRS WHERE"
                  u" SRID = {}".format(srid)))
-        except DbError, e:
+        except DbError as e:
             return
         sr = self._fetchone(c)
         c.close()
@@ -1527,7 +1527,7 @@ class OracleDBConnector(DBConnector):
                 u"""MDSYS.SDO_DIM_ELEMENT(
                 '{0}', {1:.9f}, {2:.9f}, 0.005)""".format(dims[i],
                                                           extent[i],
-                                                          extent[i+1]))
+                                                          extent[i + 1]))
         extentParts = u",".join(extentParts)
         sqlExtent = u"""MDSYS.SDO_DIM_ARRAY(
                 {})
@@ -1651,7 +1651,7 @@ class OracleDBConnector(DBConnector):
             if c:
                 c.close()
 
-        except self.error_types(), e:
+        except self.error_types() as e:
             pass
 
         return
