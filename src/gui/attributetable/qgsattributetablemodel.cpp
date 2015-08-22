@@ -594,27 +594,12 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
     mRowStylesMap.insert( index.row(), styles );
 
   }
-  QgsConditionalStyle style = QgsConditionalStyle::stackStyles( styles );
-  // TODO Extract me out
-  foreach ( QgsConditionalStyle style, styles )
-  {
-    if ( style.isValid() )
-    {
-      if ( role == Qt::BackgroundColorRole && style.backgroundColor().isValid() )
-        return style.backgroundColor();
-      if ( role == Qt::TextColorRole && style.textColor().isValid() )
-        return style.textColor();
-      if ( role == Qt::DecorationRole )
-        return style.icon();
-      if ( role == Qt::FontRole )
-        return style.font();
-    }
 
-  }
-
+  QgsConditionalStyle rowstyle = QgsConditionalStyle::stackStyles( styles );
   QgsFieldUIProperties props = layer()->fieldUIProperties( field.name() );
   styles = QgsConditionalStyle::matchingConditionalStyles( props.conditionalStyles(), val,  &mFeat );
-  style = QgsConditionalStyle::stackStyles( styles );
+  styles.insert( 0, rowstyle );
+  QgsConditionalStyle style = QgsConditionalStyle::stackStyles( styles );
 
   if ( style.isValid() )
   {
