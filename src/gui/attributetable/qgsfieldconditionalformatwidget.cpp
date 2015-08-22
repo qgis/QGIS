@@ -21,15 +21,19 @@ QgsFieldConditionalFormatWidget::QgsFieldConditionalFormatWidget( QWidget *paren
   connect( mCancelButton, SIGNAL( clicked() ), SLOT( cancelRule() ) );
   connect( mDeleteButton, SIGNAL( clicked() ), SLOT( deleteRule() ) );
   connect( listView, SIGNAL( clicked( QModelIndex ) ), SLOT( ruleClicked( QModelIndex ) ) );
-  connect( mDefaultButtons , SIGNAL( buttonPressed( QAbstractButton* ) ), SLOT( defaultPressed( QAbstractButton* ) ) );
   connect( btnChangeIcon , SIGNAL( clicked() ), SLOT( updateIcon() ) );
   connect( btnBuildExpression , SIGNAL( clicked() ), SLOT( setExpression() ) );
+  connect( mPresetsList , SIGNAL( currentIndexChanged( int ) ), SLOT( presetSet( int ) ) );
   btnBackgroundColor->setAllowAlpha( true );
   btnBackgroundColor->setShowNoColor( true );
   btnTextColor->setAllowAlpha( true );
   btnTextColor->setShowNoColor( true );
   mModel = new QStandardItemModel();
+  mPresetsModel = new QStandardItemModel();
   listView->setModel( mModel );
+  mPresetsList->setModel( mPresetsModel );
+
+  setPresets( defaultPresets() );
 }
 
 void QgsFieldConditionalFormatWidget::updateIcon()
@@ -58,12 +62,13 @@ void QgsFieldConditionalFormatWidget::setExpression()
   }
 }
 
-void QgsFieldConditionalFormatWidget::defaultPressed( QAbstractButton *button )
+void QgsFieldConditionalFormatWidget::presetSet( int index )
 {
-  QColor backColor = button->property( "backColor" ).value<QColor>();
-  QColor fontColor = button->property( "fontColor" ).value<QColor>();
-  btnBackgroundColor->setColor( backColor );
-  btnTextColor->setColor( fontColor );
+  if ( index == -1 || mPresets.count() == 0 )
+    return;
+
+  QgsConditionalStyle style = mPresets.at( index );
+  setFormattingFromStyle( style );
 }
 
 void QgsFieldConditionalFormatWidget::setLayer( QgsVectorLayer *theLayer )
@@ -85,9 +90,18 @@ void QgsFieldConditionalFormatWidget::editStyle( int editIndex, QgsConditionalSt
   pages->setCurrentIndex( 1 );
   mEditIndex = editIndex;
   mEditing = true;
-
-  mRuleEdit->setText( style.rule() );
   mDeleteButton->show();
+  loadStyle( style );
+}
+
+void QgsFieldConditionalFormatWidget::loadStyle( QgsConditionalStyle style )
+{
+  mRuleEdit->setText( style.rule() );
+  mNameEdit->setText( style.name() );
+  setFormattingFromStyle( style );
+}
+void QgsFieldConditionalFormatWidget::setFormattingFromStyle( QgsConditionalStyle style )
+{
   btnBackgroundColor->setColor( style.backgroundColor() );
   btnTextColor->setColor( style.textColor() );
   if ( !style.icon().isNull() )
@@ -168,6 +182,7 @@ void QgsFieldConditionalFormatWidget::addNewRule()
 void QgsFieldConditionalFormatWidget::reset()
 {
   mSymbol = 0;
+  mNameEdit->clear();
   mRuleEdit->clear();
   if ( fieldRadio->isChecked() )
   {
@@ -175,8 +190,7 @@ void QgsFieldConditionalFormatWidget::reset()
   }
   btnBackgroundColor->setColor( QColor() );
   btnTextColor->setColor( QColor() );
-  mDefault1->toggle();
-  defaultPressed( mDefault1 );
+  mPresetsList->setCurrentIndex( 0 );
   mDeleteButton->hide();
   mEditing = false;
   checkIcon->setChecked( false );
@@ -186,6 +200,54 @@ void QgsFieldConditionalFormatWidget::reset()
   mFontItalicBtn->setChecked( false );
   mFontStrikethroughBtn->setChecked( false );
   mFontUnderlineBtn->setChecked( false );
+}
+
+
+void QgsFieldConditionalFormatWidget::setPresets( QList<QgsConditionalStyle> styles )
+{
+  mPresets.clear();
+  mPresetsModel->clear();
+  foreach ( QgsConditionalStyle style, styles )
+  {
+    if ( style.isValid() )
+    {
+      QStandardItem* item = new QStandardItem( "abc - 123" );
+      if ( style.backgroundColor().isValid() )
+        item->setBackground( style.backgroundColor() );
+      if ( style.textColor().isValid() )
+        item->setForeground( style.textColor() );
+      if ( style.symbol() )
+        item->setIcon( style.icon() );
+      item->setFont( style.font() );
+      mPresetsModel->appendRow( item );
+      mPresets.append( style );
+    }
+  }
+  mPresetsList->setCurrentIndex( 0 );
+}
+
+QList<QgsConditionalStyle> QgsFieldConditionalFormatWidget::defaultPresets() const
+{
+  QList<QgsConditionalStyle> styles;
+  QgsConditionalStyle style = QgsConditionalStyle();
+  style.setBackgroundColor( QColor( 154, 216, 113 ) );
+  styles.append( style );
+  style = QgsConditionalStyle();
+  style.setBackgroundColor( QColor( 251, 193, 78 ) );
+  styles.append( style );
+  style = QgsConditionalStyle();
+  style.setBackgroundColor( QColor( 251, 154, 153 ) );
+  styles.append( style );
+  style = QgsConditionalStyle();
+  style.setTextColor( QColor( 154, 216, 113 ) );
+  styles.append( style );
+  style = QgsConditionalStyle();
+  style.setTextColor( QColor( 251, 193, 78 ) );
+  styles.append( style );
+  style = QgsConditionalStyle();
+  style.setTextColor( QColor( 251, 154, 153 ) );
+  styles.append( style );
+  return styles;
 }
 
 void QgsFieldConditionalFormatWidget::saveRule()
@@ -204,6 +266,7 @@ void QgsFieldConditionalFormatWidget::saveRule()
   QgsConditionalStyle style = QgsConditionalStyle();
 
   style.setRule( mRuleEdit->text() );
+  style.setName( mNameEdit->text() );
 
   QColor backColor = btnBackgroundColor->color();
   QColor fontColor = btnTextColor->color();
@@ -254,7 +317,7 @@ void QgsFieldConditionalFormatWidget::reloadStyles()
 
   foreach ( QgsConditionalStyle style, getStyles() )
   {
-    QStandardItem* item = new QStandardItem( style.rule() );
+    QStandardItem* item = new QStandardItem( style.displayText() );
     item->setIcon( QIcon( style.renderPreview() ) );
     mModel->appendRow( item );
   }

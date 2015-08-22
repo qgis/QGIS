@@ -38,6 +38,12 @@ class CORE_EXPORT QgsConditionalStyle
     QPixmap renderPreview();
 
     /**
+     * @brief Set the name of the style.  Names are optional but handy for display
+     * @param value The name given to the style
+     */
+    void setName( QString value ) { mName = value; mValid = true; }
+
+    /**
      * @brief Set the rule for the style.  Rules should be of QgsExpression syntax.
      * Special value of \@value is replaced at run time with the check value
      * @param value The QgsExpression style rule to use for this style
@@ -67,6 +73,18 @@ class CORE_EXPORT QgsConditionalStyle
      * @param value QgsSymbolV2 to be used when generating the icon
      */
     void setSymbol( QgsSymbolV2* value );
+
+    /**
+     * @brief The name of the style.
+     * @return The name of the style. Names are optional so might be empty.
+     */
+    QString displayText() const;
+
+    /**
+     * @brief The name of the style.
+     * @return The name of the style. Names are optional so might be empty.
+     */
+    QString name() const { return mName; }
 
     /**
      * @brief The icon set for style generated from the set symbol
@@ -143,6 +161,7 @@ class CORE_EXPORT QgsConditionalStyle
   private:
 
     bool mValid;
+    QString mName;
     QString mRule;
     QScopedPointer<QgsSymbolV2> mSymbol;
     QFont mFont;
