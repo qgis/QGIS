@@ -1,4 +1,4 @@
-/** \class QgsCondtionalStyle
+/** \class QgsConditionalStyle
  *  \ingroup core
  * Conditional styling for a rule.
  */
@@ -18,6 +18,7 @@ class QgsConditionalStyle
      * @return True of the rule matches against the given feature
      */
     bool matches( QVariant value, QgsExpressionContext& context ) const;
+
     /**
      * @brief Render a preview icon of the rule.
      * @return QPixmap preview of the style
@@ -26,8 +27,8 @@ class QgsConditionalStyle
 
     /**
      * @brief Set the rule for the style.  Rules should be of QgsExpression syntax.
-     * Special value of @value is replaced at run time with the check value
-     * @param value
+     * Special value of \@value is replaced at run time with the check value
+     * @param value The QgsExpression style rule to use for this style
      */
     void setRule( QString value );
 
@@ -56,14 +57,14 @@ class QgsConditionalStyle
     void setSymbol( QgsSymbolV2* value );
 
     /**
-     * @brief The symbol used to generate the icon for the style
-     * @return The QgsSymbolV2 used for the icon
+     * @brief The icon set for style generated from the set symbol
+     * @return A QPixmap that was set for the icon using the symbol
      */
     QgsSymbolV2* symbol() const;
 
     /**
-     * @brief The icon set for style
-     * @return A QPixmap that was set for the icon
+     * @brief The symbol used to generate the icon for the style
+     * @return The QgsSymbolV2 used for the icon
      */
     QPixmap icon() const;
 
@@ -85,11 +86,12 @@ class QgsConditionalStyle
     QFont font() const;
 
     /**
-     * @brief The condtion rule set for the style. Rule may contain variable @value
+     * @brief The condition rule set for the style. Rule may contain variable \@value
      * to represent the current value
      * @return QString of the current set rule
      */
     QString rule() const;
+
     /**
      * @brief isValid Check if this rule is valid.  A valid rule has one or more properties
      * set.

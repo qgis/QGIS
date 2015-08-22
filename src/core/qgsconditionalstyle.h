@@ -98,7 +98,7 @@ class CORE_EXPORT QgsConditionalStyle
     QFont font() const { return mFont; }
 
     /**
-     * @brief The condtion rule set for the style. Rule may contain variable \@value
+     * @brief The condition rule set for the style. Rule may contain variable \@value
      * to represent the current value
      * @return QString of the current set rule
      */

@@ -2,7 +2,7 @@
  *  \ingroup core
  * Holds extra UI properties for a field.
  *
- * Currently this object holds informations about condtional styles but in future will hold
+ * Currently this object holds information about conditional styles but in future will hold
  * things like field widgets, etc
  */
 class QgsFieldUIProperties
@@ -14,14 +14,14 @@ class QgsFieldUIProperties
     QgsFieldUIProperties();
 
     /**
-     * @brief Set the condtional styles for the field UI properties.
+     * @brief Set the conditional styles for the field UI properties.
      * @param styles
      */
     void setConditionalStyles( QList<QgsConditionalStyle> styles );
 
     /**
-     * @brief Returns the condtional styles set for the field UI properties
-     * @return A list of condtional styles that have been set.
+     * @brief Returns the conditional styles set for the field UI properties
+     * @return A list of conditional styles that have been set.
      */
     const QList<QgsConditionalStyle> getConditionalStyles() const;
 
