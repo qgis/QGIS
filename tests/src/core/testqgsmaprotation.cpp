@@ -27,6 +27,8 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsapplication.h"
 #include "qgsmaprenderer.h"
+#include "qgspallabeling.h"
+#include "qgsfontutils.h"
 
 //qgis unit test includes
 #include <qgsrenderchecker.h>
@@ -65,8 +67,8 @@ class TestQgsMapRotation : public QObject
 
     QString mTestDataDir;
     QgsRasterLayer * mRasterLayer;
-    QgsMapLayer * mPointsLayer;
-    QgsMapLayer * mLinesLayer;
+    QgsVectorLayer* mPointsLayer;
+    QgsVectorLayer* mLinesLayer;
     QgsMapSettings *mMapSettings;
     QString mReport;
 };
@@ -113,6 +115,8 @@ void TestQgsMapRotation::initTestCase()
   mMapSettings->setOutputSize( QSize( 256, 256 ) );
 
   mReport += "<h1>Map Rotation Tests</h1>\n";
+
+  QgsFontUtils::loadStandardTestFonts( QStringList() << "Bold" );
 }
 
 TestQgsMapRotation::~TestQgsMapRotation()
@@ -203,6 +207,14 @@ void TestQgsMapRotation::linesLayer()
   QString qml = mTestDataDir + "lines_cardinals_arrowed_parallel_label.qml";
   bool success = false;
   mLinesLayer->loadNamedStyle( qml, success );
+
+  //use test font
+  QgsPalLayerSettings palSettings;
+  palSettings.readFromLayer( mLinesLayer );
+  palSettings.textFont = QgsFontUtils::getStandardTestFont( "Bold" );
+  palSettings.textFont.setPointSizeF( 16 );
+  palSettings.writeToLayer( mLinesLayer );
+
   QVERIFY( success );
   mMapSettings->setExtent( mLinesLayer->extent() ); //QgsRectangle(-150,-150,150,150) );
   mMapSettings->setRotation( 45 );
