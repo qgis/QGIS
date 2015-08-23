@@ -147,7 +147,13 @@ class CORE_EXPORT QgsConditionalStyle
      */
     static QgsConditionalStyle matchingConditionalStyle( QList<QgsConditionalStyle> styles, QVariant value, QgsFeature* feature );
 
-    static QgsConditionalStyle stackStyles( QList<QgsConditionalStyle> styles );
+    /**
+     * @brief Compress a list of styles into a single style.  This can be used to stack the elements of the
+     * styles. The font of the last style is used in the output.
+     * @param styles The list of styles to compress down
+     * @return A single style generated from joining each style property.
+     */
+    static QgsConditionalStyle compressStyles( QList<QgsConditionalStyle> styles );
 
     /** Reads vector conditional style specific state from layer Dom node.
      */

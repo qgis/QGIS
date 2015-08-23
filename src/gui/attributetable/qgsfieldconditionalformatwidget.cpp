@@ -150,11 +150,13 @@ void QgsFieldConditionalFormatWidget::deleteRule()
 {
   QList<QgsConditionalStyle> styles = getStyles();
   styles.removeAt( mEditIndex );
+  QString fieldName;
   if ( fieldRadio->isChecked() )
   {
     QgsFieldUIProperties props = mLayer->fieldUIProperties( mFieldCombo->currentField() );
     props.setConditionalStyles( styles );
     mLayer->setFieldUIProperties( mFieldCombo->currentField(), props );
+    fieldName =  mFieldCombo->currentField();
   }
   if ( rowRadio->isChecked() )
   {
@@ -163,7 +165,7 @@ void QgsFieldConditionalFormatWidget::deleteRule()
 
   pages->setCurrentIndex( 0 );
   reloadStyles();
-  emit rulesUpdated( mFieldCombo->currentField() );
+  emit rulesUpdated( fieldName );
 }
 
 void QgsFieldConditionalFormatWidget::cancelRule()
@@ -295,11 +297,14 @@ void QgsFieldConditionalFormatWidget::saveRule()
   {
     styles.append( style );
   }
+
+  QString fieldName;
   if ( fieldRadio->isChecked() )
   {
     QgsFieldUIProperties props = QgsFieldUIProperties();
     props.setConditionalStyles( styles );
     mLayer->setFieldUIProperties( mFieldCombo->currentField(), props );
+    fieldName =  mFieldCombo->currentField();
   }
   if ( rowRadio->isChecked() )
   {
@@ -307,7 +312,7 @@ void QgsFieldConditionalFormatWidget::saveRule()
   }
   pages->setCurrentIndex( 0 );
   reloadStyles();
-  emit rulesUpdated( mFieldCombo->currentField() );
+  emit rulesUpdated( fieldName );
   reset();
 }
 

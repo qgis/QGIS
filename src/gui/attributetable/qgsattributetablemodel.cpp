@@ -387,6 +387,13 @@ void QgsAttributeTableModel::loadLayer()
 
 void QgsAttributeTableModel::fieldConditionalStyleChanged( const QString &fieldName )
 {
+  if ( fieldName.isNull() )
+  {
+    mRowStylesMap.clear();
+    emit dataChanged( index( 0, 0 ), index( rowCount() - 1, columnCount() - 1 ) );
+    return;
+  }
+
   int fieldIndex = mLayerCache->layer()->fieldNameIndex( fieldName );
   if ( fieldIndex == -1 )
     return;
@@ -595,11 +602,11 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
 
   }
 
-  QgsConditionalStyle rowstyle = QgsConditionalStyle::stackStyles( styles );
+  QgsConditionalStyle rowstyle = QgsConditionalStyle::compressStyles( styles );
   QgsFieldUIProperties props = layer()->fieldUIProperties( field.name() );
   styles = QgsConditionalStyle::matchingConditionalStyles( props.conditionalStyles(), val,  &mFeat );
   styles.insert( 0, rowstyle );
-  QgsConditionalStyle style = QgsConditionalStyle::stackStyles( styles );
+  QgsConditionalStyle style = QgsConditionalStyle::compressStyles( styles );
 
   if ( style.isValid() )
   {
@@ -675,7 +682,6 @@ void QgsAttributeTableModel::reload( const QModelIndex &index1, const QModelInde
   mFeat.setFeatureId( std::numeric_limits<int>::min() );
   emit dataChanged( index1, index2 );
 }
-
 
 
 void QgsAttributeTableModel::executeAction( int action, const QModelIndex &idx ) const

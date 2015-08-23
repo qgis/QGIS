@@ -140,7 +140,7 @@ QgsConditionalStyle QgsConditionalStyle::matchingConditionalStyle( QList<QgsCond
   return QgsConditionalStyle();
 }
 
-QgsConditionalStyle QgsConditionalStyle::stackStyles( QList<QgsConditionalStyle> styles )
+QgsConditionalStyle QgsConditionalStyle::compressStyles( QList<QgsConditionalStyle> styles )
 {
   QgsConditionalStyle style;
   foreach ( QgsConditionalStyle s, styles )
