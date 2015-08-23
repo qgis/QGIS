@@ -60571,7 +60571,7 @@ Arazo bat dago zure ikurren datu-basearekin.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="58"/>
-        <source>If you need help using QGIS we have a &apos;users&apos; mailing list where users help each other with issues related to using our sofware. We also have a &apos;developers&apos; mailing list. for those wanting help and to discuss things relating to the QGIS code base. Details on how to subscribe are in the &lt;a href=&quot;http://qgis.org/en/site/forusers/support.html#mailing-lists&quot;&gt;community section&lt;/a&gt; of the QGIS home page.</source>
+        <source>If you need help using QGIS we have a &apos;users&apos; mailing list where users help each other with issues related to using our software. We also have a &apos;developers&apos; mailing list. for those wanting help and to discuss things relating to the QGIS code base. Details on how to subscribe are in the &lt;a href=&quot;http://qgis.org/en/site/forusers/support.html#mailing-lists&quot;&gt;community section&lt;/a&gt; of the QGIS home page.</source>
         <translation>QGIS erabiltzeko laguntza behar baduzu, erabiltzaileek gure softwarearen inguruko auziekin elkarri laguntzeko darabilten &apos;erabiltzaileen&apos; posta-zerrenda bat dugu. &apos;Garatzaileen&apos; posta-zerrenda bat ere baduzu, QGISen kodeari buruzko kontuak eztabaidatzeko. Zerrendotan izena emateko xehetasunak QGISen webgunearen &lt;a href=&quot;http://qgis.org/en/site/forusers/support.html#mailing-lists&quot;&gt;komunitatearen atalean&lt;/a&gt; aurki ditzakezu.</translation>
     </message>
     <message>

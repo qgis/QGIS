@@ -60585,7 +60585,7 @@ Det uppkom ett problem med din symboldatabas.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="58"/>
-        <source>If you need help using QGIS we have a &apos;users&apos; mailing list where users help each other with issues related to using our sofware. We also have a &apos;developers&apos; mailing list. for those wanting help and to discuss things relating to the QGIS code base. Details on how to subscribe are in the &lt;a href=&quot;http://qgis.org/en/site/forusers/support.html#mailing-lists&quot;&gt;community section&lt;/a&gt; of the QGIS home page.</source>
+        <source>If you need help using QGIS we have a &apos;users&apos; mailing list where users help each other with issues related to using our software. We also have a &apos;developers&apos; mailing list. for those wanting help and to discuss things relating to the QGIS code base. Details on how to subscribe are in the &lt;a href=&quot;http://qgis.org/en/site/forusers/support.html#mailing-lists&quot;&gt;community section&lt;/a&gt; of the QGIS home page.</source>
         <translation>Om du behöver hjälp med att använda QGIS så har vi en användar-maillista där användare hjälper varandra med problem som rör vår programvara. Vi har även en &apos;utvecklar&apos;-maillista för de som vill diskutera saker rörande QGIS kodbas. Närmare instruktioner om hur du anmäler dig till maillistan finns under &lt;a href=&quot;http://qgis.org/en/site/forusers/support.html#mailing-lists&quot;&gt;community section&lt;/a&gt; på QGIS hemsida.</translation>
     </message>
     <message>

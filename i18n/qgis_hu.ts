@@ -60501,7 +60501,7 @@ Probléma volt a szimbólum adatbázisoddal.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="58"/>
-        <source>If you need help using QGIS we have a &apos;users&apos; mailing list where users help each other with issues related to using our sofware. We also have a &apos;developers&apos; mailing list. for those wanting help and to discuss things relating to the QGIS code base. Details on how to subscribe are in the &lt;a href=&quot;http://qgis.org/en/site/forusers/support.html#mailing-lists&quot;&gt;community section&lt;/a&gt; of the QGIS home page.</source>
+        <source>If you need help using QGIS we have a &apos;users&apos; mailing list where users help each other with issues related to using our software. We also have a &apos;developers&apos; mailing list. for those wanting help and to discuss things relating to the QGIS code base. Details on how to subscribe are in the &lt;a href=&quot;http://qgis.org/en/site/forusers/support.html#mailing-lists&quot;&gt;community section&lt;/a&gt; of the QGIS home page.</source>
         <translation>Van egy felhasználói levelező listánk, ha segítségre lenne szükséged, ahol a felhasználók a szoftver használattal kapcsolatos kérdésekben segítenek egymásnak. Van egy fejlesztői levelező listánk is azoknak akiknek a QGIS forráskódjával kapcsolatban van szüksége segítségre. A listákra feliratkozás részletei a &lt;a href=&quot;http://qgis.org/en/site/forusers/support.html#mailing-lists&quot;&gt;community section&lt;/a&gt; részben találhatók a QGIS honlapon.</translation>
     </message>
     <message>

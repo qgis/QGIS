@@ -60695,7 +60695,7 @@ Es gab ein Problem mit Ihrer Symboldatenbank.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="58"/>
-        <source>If you need help using QGIS we have a &apos;users&apos; mailing list where users help each other with issues related to using our sofware. We also have a &apos;developers&apos; mailing list. for those wanting help and to discuss things relating to the QGIS code base. Details on how to subscribe are in the &lt;a href=&quot;http://qgis.org/en/site/forusers/support.html#mailing-lists&quot;&gt;community section&lt;/a&gt; of the QGIS home page.</source>
+        <source>If you need help using QGIS we have a &apos;users&apos; mailing list where users help each other with issues related to using our software. We also have a &apos;developers&apos; mailing list. for those wanting help and to discuss things relating to the QGIS code base. Details on how to subscribe are in the &lt;a href=&quot;http://qgis.org/en/site/forusers/support.html#mailing-lists&quot;&gt;community section&lt;/a&gt; of the QGIS home page.</source>
         <translation>Wenn Sie Hilfe bei der Benutzung von QGIS brauchen, gibt es eine englische Anwender-Mailingliste, wo die Anwender sich gegenseitig helfen können. Wir haben außerdem eine englische Entwickler-Mailingliste, auf der über die Codebasis diskutiert werden kann.  Details zum Abonnement stehen in der Abteilung &lt;a href=&quot;http://qgis.org/de/site/forusers/support.html#mailing-lists&quot;&gt;Gemeinschaft&lt;/a&gt; auf der QGIS-Homepage.</translation>
     </message>
     <message>
