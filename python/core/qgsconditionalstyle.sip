@@ -26,6 +26,12 @@ class QgsConditionalStyle
     QPixmap renderPreview();
 
     /**
+     * @brief Set the name of the style.  Names are optional but handy for display
+     * @param value The name given to the style
+     */
+    void setName( QString value );
+
+    /**
      * @brief Set the rule for the style.  Rules should be of QgsExpression syntax.
      * Special value of \@value is replaced at run time with the check value
      * @param value The QgsExpression style rule to use for this style
@@ -57,14 +63,26 @@ class QgsConditionalStyle
     void setSymbol( QgsSymbolV2* value );
 
     /**
-     * @brief The icon set for style generated from the set symbol
-     * @return A QPixmap that was set for the icon using the symbol
+     * @brief The name of the style.
+     * @return The name of the style. Names are optional so might be empty.
      */
-    QgsSymbolV2* symbol() const;
+    QString displayText() const;
+
+    /**
+     * @brief The name of the style.
+     * @return The name of the style. Names are optional so might be empty.
+     */
+    QString name() const;
 
     /**
      * @brief The symbol used to generate the icon for the style
      * @return The QgsSymbolV2 used for the icon
+     */
+    QgsSymbolV2* symbol() const;
+
+    /**
+     * @brief The icon set for style generated from the set symbol
+     * @return A QPixmap that was set for the icon using the symbol
      */
     QPixmap icon() const;
 
@@ -98,6 +116,32 @@ class QgsConditionalStyle
      * @return True if the rule is valid.
      */
     bool isValid() const;
+
+    /**
+     * @brief Find and return the matching styles for the value and feature.
+     * If no match is found a invalid QgsCondtionalStyle is return.
+     *
+     * @return A condtional style that matches the value and feature.
+     * Check with QgsCondtionalStyle::isValid()
+     */
+    static QList<QgsConditionalStyle> matchingConditionalStyles( QList<QgsConditionalStyle> styles, QVariant value, QgsFeature* feature );
+
+    /**
+     * @brief Find and return the matching style for the value and feature.
+     * If no match is found a invalid QgsCondtionalStyle is return.
+     *
+     * @return A condtional style that matches the value and feature.
+     * Check with QgsCondtionalStyle::isValid()
+     */
+    static QgsConditionalStyle matchingConditionalStyle( QList<QgsConditionalStyle> styles, QVariant value, QgsFeature* feature );
+
+    /**
+     * @brief Compress a list of styles into a single style.  This can be used to stack the elements of the
+     * styles. The font of the last style is used in the output.
+     * @param styles The list of styles to compress down
+     * @return A single style generated from joining each style property.
+     */
+    static QgsConditionalStyle compressStyles( QList<QgsConditionalStyle> styles );
 
     /** Reads vector conditional style specific state from layer Dom node.
      */

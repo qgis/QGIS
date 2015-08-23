@@ -56,9 +56,18 @@ class GUI_EXPORT QgsFieldConditionalFormatWidget : public QWidget, private Ui::Q
      */
     void editStyle( int index, QgsConditionalStyle style );
 
+    /**
+     * @param style initial conditional styling options
+     */
+    void loadStyle( QgsConditionalStyle style );
+
     /** Resets the formatting options to their default state.
      */
     void reset();
+
+    void setPresets( QList<QgsConditionalStyle> styles );
+
+    QList<QgsConditionalStyle> defaultPresets() const;
 
   signals:
 
@@ -74,12 +83,18 @@ class GUI_EXPORT QgsFieldConditionalFormatWidget : public QWidget, private Ui::Q
     int mEditIndex;
     bool mEditing;
     QStandardItemModel* mModel;
+    QStandardItemModel* mPresetsModel;
     QgsSymbolV2* mSymbol;
+    QList<QgsConditionalStyle> mPresets;
+
+    QList<QgsConditionalStyle> getStyles();
+
+    void setFormattingFromStyle( QgsConditionalStyle style );
 
   private slots:
     void setExpression();
     void updateIcon();
-    void defaultPressed( QAbstractButton*button );
+    void presetSet( int index );
     bool isCustomSet();
     void ruleClicked( QModelIndex index );
     void reloadStyles();

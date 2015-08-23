@@ -391,6 +391,13 @@ void QgsAttributeTableModel::loadLayer()
 
 void QgsAttributeTableModel::fieldConditionalStyleChanged( const QString &fieldName )
 {
+  if ( fieldName.isNull() )
+  {
+    mRowStylesMap.clear();
+    emit dataChanged( index( 0, 0 ), index( rowCount() - 1, columnCount() - 1 ) );
+    return;
+  }
+
   int fieldIndex = mLayerCache->layer()->fieldNameIndex( fieldName );
   if ( fieldIndex == -1 )
     return;
@@ -588,36 +595,39 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
   }
 
   if ( role == Qt::BackgroundColorRole || role == Qt::TextColorRole || role == Qt::DecorationRole || role == Qt::FontRole )
+    {
+  mExpressionContext.setFeature( mFeat );
+  QList<QgsConditionalStyle> styles;
+  if ( mRowStylesMap.contains( index.row() ) )
   {
-    mExpressionContext.setFeature( mFeat );
+    styles = mRowStylesMap[index.row()];
+  }
+  else
+  {
+    styles = QgsConditionalStyle::matchingConditionalStyles( layer()->rowStyles(), QVariant(),  &mFeat );
+    mRowStylesMap.insert( index.row(), styles );
 
-    QgsFieldUIProperties props = layer()->fieldUIProperties( field.name() );
-    QList<QgsConditionalStyle> styles = props.matchingConditionalStyles( val, mExpressionContext );
-    QgsConditionalStyle style;
-    foreach ( QgsConditionalStyle s, styles )
-    {
-      style.setFont( s.font() );
-      if ( s.backgroundColor().isValid() && s.backgroundColor().alpha() != 0 )
-        style.setBackgroundColor( s.backgroundColor() );
-      if ( s.textColor().isValid() && s.textColor().alpha() != 0 )
-        style.setTextColor( s.textColor() );
-      if ( s.symbol() )
-        style.setSymbol( s.symbol() );
-    }
-
-    if ( style.isValid() )
-    {
-      if ( role == Qt::BackgroundColorRole && style.backgroundColor().isValid() )
-        return style.backgroundColor();
-      if ( role == Qt::TextColorRole && style.textColor().isValid() )
-        return style.textColor();
-      if ( role == Qt::DecorationRole )
-        return style.icon();
-      if ( role == Qt::FontRole )
-        return style.font();
-    }
   }
 
+  QgsConditionalStyle rowstyle = QgsConditionalStyle::compressStyles( styles );
+  QgsFieldUIProperties props = layer()->fieldUIProperties( field.name() );
+  styles = QgsConditionalStyle::matchingConditionalStyles( props.conditionalStyles(), val,  &mFeat );
+  styles.insert( 0, rowstyle );
+  QgsConditionalStyle style = QgsConditionalStyle::compressStyles( styles );
+
+  if ( style.isValid() )
+  {
+    if ( role == Qt::BackgroundColorRole && style.backgroundColor().isValid() )
+      return style.backgroundColor();
+    if ( role == Qt::TextColorRole && style.textColor().isValid() )
+      return style.textColor();
+    if ( role == Qt::DecorationRole )
+      return style.icon();
+    if ( role == Qt::FontRole )
+      return style.font();
+  }
+
+    }
   return val;
 }
 
@@ -680,7 +690,6 @@ void QgsAttributeTableModel::reload( const QModelIndex &index1, const QModelInde
   mFeat.setFeatureId( std::numeric_limits<int>::min() );
   emit dataChanged( index1, index2 );
 }
-
 
 
 void QgsAttributeTableModel::executeAction( int action, const QModelIndex &idx ) const

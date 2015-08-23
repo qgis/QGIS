@@ -2044,6 +2044,16 @@ QgsFieldUIProperties QgsVectorLayer::fieldUIProperties( QString fieldName )
   return QgsFieldUIProperties();
 }
 
+QList<QgsConditionalStyle> QgsVectorLayer::rowStyles()
+{
+  return mRowStyles;
+}
+
+void QgsVectorLayer::setRowStyles( QList<QgsConditionalStyle> styles )
+{
+  mRowStyles = styles;
+}
+
 void QgsVectorLayer::setFieldUIProperties( QString fieldName, QgsFieldUIProperties props )
 {
   mFieldProperties.insert( fieldName, props );

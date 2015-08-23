@@ -25,6 +25,7 @@ QgsConditionalStyle::QgsConditionalStyle( const QgsConditionalStyle &other )
     , mBackColor( other.mBackColor )
     , mTextColor( other.mTextColor )
     , mIcon( other.mIcon )
+    , mName( other.mName )
 {
   if ( other.mSymbol.data() )
     mSymbol.reset( other.mSymbol->clone() );
@@ -38,6 +39,7 @@ QgsConditionalStyle& QgsConditionalStyle::operator=( const QgsConditionalStyle &
   mBackColor = other.mBackColor;
   mTextColor = other.mTextColor;
   mIcon = other.mIcon;
+  mName = other.mName;
   if ( other.mSymbol.data() )
   {
     mSymbol.reset( other.mSymbol->clone() );
@@ -51,6 +53,14 @@ QgsConditionalStyle& QgsConditionalStyle::operator=( const QgsConditionalStyle &
 
 QgsConditionalStyle::~QgsConditionalStyle()
 {
+}
+
+QString QgsConditionalStyle::displayText() const
+{
+  if ( name().isEmpty() )
+    return rule();
+  else
+    return QString( "%1 \n%2" ).arg( name() ).arg( rule() );
 }
 
 void QgsConditionalStyle::setSymbol( QgsSymbolV2* value )
@@ -103,10 +113,48 @@ QPixmap QgsConditionalStyle::renderPreview()
   return pixmap;
 }
 
+QList<QgsConditionalStyle> QgsConditionalStyle::matchingConditionalStyles( QList<QgsConditionalStyle> styles, QVariant value,  QgsFeature *feature )
+{
+  QList<QgsConditionalStyle> matchingstyles;
+  foreach ( QgsConditionalStyle style, styles )
+  {
+    if ( style.matches( value, feature ) )
+      matchingstyles.append( style );
+  }
+  return matchingstyles;
+}
+
+QgsConditionalStyle QgsConditionalStyle::matchingConditionalStyle( QList<QgsConditionalStyle> styles, QVariant value,  QgsFeature *feature )
+{
+  foreach ( QgsConditionalStyle style, styles )
+  {
+    if ( style.matches( value, feature ) )
+      return style;
+  }
+  return QgsConditionalStyle();
+}
+
+QgsConditionalStyle QgsConditionalStyle::compressStyles( QList<QgsConditionalStyle> styles )
+{
+  QgsConditionalStyle style;
+  foreach ( QgsConditionalStyle s, styles )
+  {
+    style.setFont( s.font() );
+    if ( s.backgroundColor().isValid() && s.backgroundColor().alpha() != 0 )
+      style.setBackgroundColor( s.backgroundColor() );
+    if ( s.textColor().isValid() && s.textColor().alpha() != 0 )
+      style.setTextColor( s.textColor() );
+    if ( s.symbol() )
+      style.setSymbol( s.symbol() );
+  }
+  return style;
+}
+
 bool QgsConditionalStyle::writeXml( QDomNode &node, QDomDocument &doc )
 {
   QDomElement stylesel = doc.createElement( "style" );
   stylesel.setAttribute( "rule", mRule );
+  stylesel.setAttribute( "name", mName );
   stylesel.setAttribute( "background_color", mBackColor.name() );
   stylesel.setAttribute( "text_color", mTextColor.name() );
   QDomElement labelFontElem = QgsFontUtils::toXmlElement( mFont, doc, "font" );
@@ -124,6 +172,7 @@ bool QgsConditionalStyle::readXml( const QDomNode &node )
 {
   QDomElement styleElm = node.toElement();
   setRule( styleElm.attribute( "rule" ) );
+  setName( styleElm.attribute( "name" ) );
   setBackgroundColor( QColor( styleElm.attribute( "background_color" ) ) );
   setTextColor( QColor( styleElm.attribute( "text_color" ) ) );
   QgsFontUtils::setFromXmlChildNode( mFont, styleElm, "font" );
