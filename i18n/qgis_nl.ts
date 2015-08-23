@@ -60606,7 +60606,7 @@ m elementen te verplaatsen. De linker (pijl naar rechts icoon) selecteert en ver
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="58"/>
-        <source>If you need help using QGIS we have a &apos;users&apos; mailing list where users help each other with issues related to using our sofware. We also have a &apos;developers&apos; mailing list. for those wanting help and to discuss things relating to the QGIS code base. Details on how to subscribe are in the &lt;a href=&quot;http://qgis.org/en/site/forusers/support.html#mailing-lists&quot;&gt;community section&lt;/a&gt; of the QGIS home page.</source>
+        <source>If you need help using QGIS we have a &apos;users&apos; mailing list where users help each other with issues related to using our software. We also have a &apos;developers&apos; mailing list. for those wanting help and to discuss things relating to the QGIS code base. Details on how to subscribe are in the &lt;a href=&quot;http://qgis.org/en/site/forusers/support.html#mailing-lists&quot;&gt;community section&lt;/a&gt; of the QGIS home page.</source>
         <translation>Indien u hulp nodig heeft bij het gebruiken van QGIS, dan bestaat er de (Engelstalige) mailinglijst &apos;users&apos; waar gebruikers elkaar helpen bij het vinden van oplossingen voor problemen met het gebruiken van onze software. Er bestaat ook een mailinglijst &apos;developers&apos; voor hen die willen helpen en dingen willen bespreken in relatie tot de  codebasis van QGIS. Details over hoe u zich kunt abonneren staan in het gedeelte &lt;a href=&quot;http://qgis.org/en/site/forusers/support.html#mailing-lists&quot;&gt;community&lt;/a&gt; van de thuispagina van QGIS.</translation>
     </message>
     <message>

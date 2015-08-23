@@ -57,7 +57,7 @@ QgsTipFactory::QgsTipFactory() : QObject()
   myTip.setTitle( tr( "QGIS Mailing lists" ) );
   myTip.setContent( tr( "If you need help using QGIS"
                         " we have a 'users' mailing list where users help each other with issues"
-                        " related to using our sofware. We also have a 'developers' mailing list."
+                        " related to using our software. We also have a 'developers' mailing list."
                         " for those wanting help and to discuss things relating to the QGIS code base."
                         " Details on how to subscribe are in the <a href=\"http://qgis.org/en/site/forusers/support.html#mailing-lists\">community section</a> of"
                         " the QGIS home page."
