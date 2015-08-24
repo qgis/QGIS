@@ -67,9 +67,6 @@ class QgsGrassModule : public QDialog, private  Ui::QgsGrassModuleBase
      */
     static QPixmap pixmap( QString path, int height );
 
-    //! Find element in GRASS module description by key, if not found, returned element is null
-    static QDomNode nodeByKey( QDomElement gDocElem, QString key );
-
     //! Returns pointer to QGIS interface
     QgisInterface *qgisIface();
 

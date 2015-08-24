@@ -1036,31 +1036,6 @@ QString QgsGrassModule::translate( QString msg )
   return QString::fromUtf8( G_gettext( "grassmods", msg.trimmed().toUtf8() ) );
 }
 
-QDomNode QgsGrassModule::nodeByKey( QDomElement elem, QString key )
-{
-  QgsDebugMsg( "called with key=" + key );
-  QDomNode n = elem.firstChild();
-
-  while ( !n.isNull() )
-  {
-    QDomElement e = n.toElement();
-
-    if ( !e.isNull() )
-    {
-      if ( e.tagName() == "parameter" || e.tagName() == "flag" )
-      {
-        if ( e.attribute( "name" ) == key )
-        {
-          return n;
-        }
-      }
-    }
-    n = n.nextSibling();
-  }
-
-  return QDomNode();
-}
-
 QString QgsGrassModule::libraryPathVariable()
 {
 #ifdef Q_OS_WIN
