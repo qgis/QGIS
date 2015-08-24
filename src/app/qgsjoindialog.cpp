@@ -47,7 +47,7 @@ QgsJoinDialog::QgsJoinDialog( QgsVectorLayer* layer, QList<QgsMapLayer*> already
   mCacheInMemoryCheckBox->setChecked( true );
 
   QgsMapLayer *joinLayer = mJoinLayerComboBox->currentLayer();
-  if ( joinLayer->isValid() )
+  if ( joinLayer && joinLayer->isValid() )
   {
     mJoinFieldComboBox->setLayer( joinLayer );
     joinedLayerChanged( joinLayer );
