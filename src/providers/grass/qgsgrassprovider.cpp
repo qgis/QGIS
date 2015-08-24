@@ -517,12 +517,21 @@ void QgsGrassProvider::loadAttributes( GLAYER &layer )
   else
   {
     QgsDebugMsg( "Field info found -> open database" );
-    dbDriver *databaseDriver = db_start_driver_open_database( layer.fieldInfo->driver,
-                               layer.fieldInfo->database );
+    dbDriver *databaseDriver = 0;
+    QString error = QString( "Cannot open database %1 by driver %2" ).arg( layer.fieldInfo->database ).arg( layer.fieldInfo->driver );
+    G_TRY
+    {
+      databaseDriver = db_start_driver_open_database( layer.fieldInfo->driver,
+      layer.fieldInfo->database );
+    }
+    G_CATCH( QgsGrass::Exception &e )
+    {
+      QgsGrass::warning( error + " : " + e.what() );
+    }
 
     if ( !databaseDriver )
     {
-      QgsDebugMsg( QString( "Cannot open database %1 by driver %2" ).arg( layer.fieldInfo->database ).arg( layer.fieldInfo->driver ) );
+      QgsDebugMsg( error );
     }
     else
     {
