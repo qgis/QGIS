@@ -1685,6 +1685,88 @@ static QVariant fcnGetFeature( const QVariantList& values, const QgsExpressionCo
   return QVariant();
 }
 
+static QVariant fcnGetLayerProperty( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QString layerIdOrName = getStringValue( values.at( 0 ), parent );
+
+  //try to find a matching layer by name
+  QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerIdOrName ); //search by id first
+  if ( !layer )
+  {
+    QList<QgsMapLayer *> layersByName = QgsMapLayerRegistry::instance()->mapLayersByName( layerIdOrName );
+    if ( layersByName.size() > 0 )
+    {
+      layer = layersByName.at( 0 );
+    }
+  }
+
+  if ( !layer )
+    return QVariant();
+
+  QString layerProperty = getStringValue( values.at( 1 ), parent );
+  if ( QString::compare( layerProperty, QString( "name" ), Qt::CaseInsensitive ) == 0 )
+    return layer->name();
+  else if ( QString::compare( layerProperty, QString( "id" ), Qt::CaseInsensitive ) == 0 )
+    return layer->id();
+  else if ( QString::compare( layerProperty, QString( "title" ), Qt::CaseInsensitive ) == 0 )
+    return layer->title();
+  else if ( QString::compare( layerProperty, QString( "abstract" ), Qt::CaseInsensitive ) == 0 )
+    return layer->abstract();
+  else if ( QString::compare( layerProperty, QString( "keywords" ), Qt::CaseInsensitive ) == 0 )
+    return layer->keywordList();
+  else if ( QString::compare( layerProperty, QString( "data_url" ), Qt::CaseInsensitive ) == 0 )
+    return layer->dataUrl();
+  else if ( QString::compare( layerProperty, QString( "attribution" ), Qt::CaseInsensitive ) == 0 )
+    return layer->attribution();
+  else if ( QString::compare( layerProperty, QString( "attribution_url" ), Qt::CaseInsensitive ) == 0 )
+    return layer->attributionUrl();
+  else if ( QString::compare( layerProperty, QString( "source" ), Qt::CaseInsensitive ) == 0 )
+    return layer->publicSource();
+  else if ( QString::compare( layerProperty, QString( "min_scale" ), Qt::CaseInsensitive ) == 0 )
+    return ( double )layer->minimumScale();
+  else if ( QString::compare( layerProperty, QString( "max_scale" ), Qt::CaseInsensitive ) == 0 )
+    return ( double )layer->maximumScale();
+  else if ( QString::compare( layerProperty, QString( "crs" ), Qt::CaseInsensitive ) == 0 )
+    return layer->crs().authid();
+  else if ( QString::compare( layerProperty, QString( "crs_definition" ), Qt::CaseInsensitive ) == 0 )
+    return layer->crs().toProj4();
+  else if ( QString::compare( layerProperty, QString( "extent" ), Qt::CaseInsensitive ) == 0 )
+  {
+    QgsGeometry* extentGeom = QgsGeometry::fromRect( layer->extent() );
+    QVariant result = QVariant::fromValue( *extentGeom );
+    delete extentGeom;
+    return result;
+  }
+  else if ( QString::compare( layerProperty, QString( "type" ), Qt::CaseInsensitive ) == 0 )
+  {
+    switch ( layer->type() )
+    {
+      case QgsMapLayer::VectorLayer:
+        return QCoreApplication::translate( "expressions", "Vector" );
+      case QgsMapLayer::RasterLayer:
+        return QCoreApplication::translate( "expressions", "Raster" );
+      case QgsMapLayer::PluginLayer:
+        return QCoreApplication::translate( "expressions", "Plugin" );
+    }
+  }
+  else
+  {
+    //vector layer methods
+    QgsVectorLayer* vLayer = dynamic_cast< QgsVectorLayer* >( layer );
+    if ( vLayer )
+    {
+      if ( QString::compare( layerProperty, QString( "storage_type" ), Qt::CaseInsensitive ) == 0 )
+        return vLayer->storageType();
+      else if ( QString::compare( layerProperty, QString( "geometry_type" ), Qt::CaseInsensitive ) == 0 )
+        return QGis::vectorGeometryType( vLayer->geometryType() );
+      else if ( QString::compare( layerProperty, QString( "feature_count" ), Qt::CaseInsensitive ) == 0 )
+        return QVariant::fromValue( vLayer->featureCount() );
+    }
+  }
+
+  return QVariant();
+}
+
 bool QgsExpression::registerFunction( QgsExpression::Function* function )
 {
   int fnIdx = functionIndex( function->name() );
@@ -1753,7 +1835,7 @@ const QStringList& QgsExpression::BuiltinFunctions()
     << "transform" << "get_feature" << "getFeature"
     << "levenshtein" << "longest_common_substring" << "hamming_distance"
     << "soundex"
-    << "attribute" << "var"
+    << "attribute" << "var" << "layer_property"
     << "$rownum" << "$id" << "$scale" << "_specialcol_";
   }
   return gmBuiltinFunctions;
@@ -1884,7 +1966,8 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( "$scale", 0, fcnScale, "Record" )
     << new StaticFunction( "uuid", 0, fcnUuid, "Record", QString(), false, QStringList(), false, QStringList() << "$uuid" )
     << new StaticFunction( "get_feature", 3, fcnGetFeature, "Record", QString(), false, QStringList(), false, QStringList() << "getFeature" )
-    << new StaticFunction( "var", 1, fcnGetVariable, "Variables" )
+    << new StaticFunction( "layer_property", 2, fcnGetLayerProperty, "General" )
+    << new StaticFunction( "var", 1, fcnGetVariable, "General" )
 
     //return all attributes string for referencedColumns - this is caught by
     // QgsFeatureRequest::setSubsetOfAttributes and causes all attributes to be fetched by the
@@ -3046,22 +3129,6 @@ void QgsExpression::initVariableHelp()
   //layer variables
   gVariableHelpTexts.insert( "layer_name", QCoreApplication::translate( "variable_help", "Name of current layer." ) );
   gVariableHelpTexts.insert( "layer_id", QCoreApplication::translate( "variable_help", "ID of current project." ) );
-  gVariableHelpTexts.insert( "layer_title", QCoreApplication::translate( "variable_help", "Title of current layer." ) );
-  gVariableHelpTexts.insert( "layer_abstract", QCoreApplication::translate( "variable_help", "Metadata abstract for current layer." ) );
-  gVariableHelpTexts.insert( "layer_keywords", QCoreApplication::translate( "variable_help", "Metadata keywords for current layer." ) );
-  gVariableHelpTexts.insert( "layer_dataurl", QCoreApplication::translate( "variable_help", "Metadata data URL for current layer." ) );
-  gVariableHelpTexts.insert( "layer_attribution", QCoreApplication::translate( "variable_help", "Metadata attribution for current layer." ) );
-  gVariableHelpTexts.insert( "layer_attributionurl", QCoreApplication::translate( "variable_help", "Metadata attribution URL for current layer." ) );
-  gVariableHelpTexts.insert( "layer_source", QCoreApplication::translate( "variable_help", "Source of current layer." ) );
-  gVariableHelpTexts.insert( "layer_minscale", QCoreApplication::translate( "variable_help", "Minimum display scale for current layer." ) );
-  gVariableHelpTexts.insert( "layer_maxscale", QCoreApplication::translate( "variable_help", "Maximum display scale for current layer." ) );
-  gVariableHelpTexts.insert( "layer_crs", QCoreApplication::translate( "variable_help", "CRS of current layer." ) );
-  gVariableHelpTexts.insert( "layer_crsdefinition", QCoreApplication::translate( "variable_help", "CRS definition of current layer." ) );
-  gVariableHelpTexts.insert( "layer_extent", QCoreApplication::translate( "variable_help", "Extent of current layer (as a geometry object)." ) );
-  gVariableHelpTexts.insert( "layer_type", QCoreApplication::translate( "variable_help", "Type of current layer, eg raster/vector." ) );
-  gVariableHelpTexts.insert( "layer_storagetype", QCoreApplication::translate( "variable_help", "Storage format of current layer." ) );
-  gVariableHelpTexts.insert( "layer_geometrytype", QCoreApplication::translate( "variable_help", "Geometry type of current layer." ) );
-  gVariableHelpTexts.insert( "layer_featurecount", QCoreApplication::translate( "variable_help", "Approximate feature count for current layer." ) );
 
   //composition variables
   gVariableHelpTexts.insert( "layout_numpages", QCoreApplication::translate( "variable_help", "Number of pages in composition." ) );
@@ -3116,6 +3183,7 @@ QString QgsExpression::group( QString name )
 {
   if ( gGroups.isEmpty() )
   {
+    gGroups.insert( "General", QObject::tr( "General" ) );
     gGroups.insert( "Operators", QObject::tr( "Operators" ) );
     gGroups.insert( "Conditionals", QObject::tr( "Conditionals" ) );
     gGroups.insert( "Fields and Values", QObject::tr( "Fields and Values" ) );

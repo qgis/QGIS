@@ -1,0 +1,34 @@
+<h3>layer_property function</h3>
+Returns a matching layer property or metadata value. 
+
+<h4>Syntax</h4>
+<pre>layer_property(layer,property)</pre>
+
+<h4>Arguments</h4>
+layer &rarr; a string, representing either a layer name or layer ID<br />
+property &rarr; a string corresponding to the property to return. Valid options are:<br />
+<ul>
+<li>name: layer name</li>
+<li>id: layer ID</li>
+<li>title: metadata title string</li>
+<li>abstract: metadata abstract string</li>
+<li>keywords: metadata keywords</li>
+<li>data_url: metadata URL</li>
+<li>attribution: metadata attribution string</li>
+<li>attribution_url: metadata attribution URL</li>
+<li>source: layer source</li>
+<li>min_scale: minimum display scale for layer</li>
+<li>max_scale: maximum display scale for layer</li>
+<li>crs: layer CRS</li>
+<li>crs_definition: layer CRS full definition</li>
+<li>extent: layer extent (as a geometry object)</li>
+<li>type: layer type, eg Vector or Raster</li>
+<li>storage_type: storage format (vector layers only)</li>
+<li>geometry_type: geometry type, eg Point (vector layers only)</li>
+<li>feature_count: approximate feature count for layer (vector layers only)</li>
+</ul>
+<h4>Example</h4>
+<pre> layer_property('streets','title') &rarr; 'Basemap Streets'</pre><br />
+<pre> layer_property('airports','feature_count') &rarr; 120</pre><br />
+<pre> layer_property('landsat','crs') &rarr;'EPSG:4326'</pre>
+

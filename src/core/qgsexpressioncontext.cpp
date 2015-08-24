@@ -571,35 +571,12 @@ QgsExpressionContextScope* QgsExpressionContextUtils::layerScope( const QgsMapLa
     scope->setVariable( variableName, varValue );
   }
 
-  //TODO - add tests for all of these:
   scope->addVariable( QgsExpressionContextScope::StaticVariable( "layer_name", layer->name(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( "layer_id", layer->id(), true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( "layer_title", layer->title(), true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( "layer_abstract", layer->abstract(), true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( "layer_keywords", layer->keywordList(), true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( "layer_dataurl", layer->dataUrl(), true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( "layer_attribution", layer->attribution(), true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( "layer_attributionurl", layer->attributionUrl(), true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( "layer_source", layer->publicSource(), true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( "layer_minscale", layer->minimumScale(), true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( "layer_maxscale", layer->maximumScale(), true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( "layer_crs", layer->crs().authid(), true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( "layer_crsdefinition", layer->crs().toProj4(), true ) );
 
-  //some methods we want aren't const
-  QgsMapLayer* nonConstLayer = const_cast< QgsMapLayer* >( layer );
-  QgsGeometry* extentGeom = QgsGeometry::fromRect( nonConstLayer->extent() );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( "layer_extent", QVariant::fromValue( *extentGeom ), true ) );
-  delete extentGeom;
-
-  QgsVectorLayer* vLayer = dynamic_cast< QgsVectorLayer* >( nonConstLayer );
+  const QgsVectorLayer* vLayer = dynamic_cast< const QgsVectorLayer* >( layer );
   if ( vLayer )
   {
-    scope->addVariable( QgsExpressionContextScope::StaticVariable( "layer_type", vLayer->type(), true ) );
-    scope->addVariable( QgsExpressionContextScope::StaticVariable( "layer_storagetype", vLayer->storageType(), true ) );
-    QString typeString( QGis::vectorGeometryType( vLayer->geometryType() ) );
-    scope->addVariable( QgsExpressionContextScope::StaticVariable( "layer_geometrytype", typeString, true ) );
-    scope->addVariable( QgsExpressionContextScope::StaticVariable( "layer_featurecount", QVariant::fromValue( vLayer->featureCount() ), true ) );
     scope->setFields( vLayer->fields() );
   }
 
