@@ -542,7 +542,7 @@ void QgsGrassModuleStandardOptions::freezeOutput()
 
         QgsDebugMsg( "source = " + source );
 
-        // Check GISBASE and LOCATION
+        // Check GISDBASE and LOCATION
         QStringList split = source.split( sep );
 
         if ( split.size() < 4 )
@@ -617,7 +617,7 @@ void QgsGrassModuleStandardOptions::thawOutput()
 
         QgsDebugMsg( "source = " + source );
 
-        // Check GISBASE and LOCATION
+        // Check GISDBASE and LOCATION
         QStringList split = source.split( sep );
 
         if ( split.size() < 4 )
@@ -1603,7 +1603,7 @@ void QgsGrassModuleInput::updateQgisLayers()
 
       QgsDebugMsg( "source = " + source );
 
-      // Check GISBASE and LOCATION
+      // Check GISDBASE and LOCATION
       QStringList split = source.split( sep, QString::SkipEmptyParts );
 
       if ( split.size() < 4 )
@@ -1720,7 +1720,7 @@ void QgsGrassModuleInput::updateQgisLayers()
         if ( source.contains( "cellhd" ) == 0 )
           continue;
 
-        // Most probably GRASS layer, check GISBASE and LOCATION
+        // Most probably GRASS layer, check GISDBASE and LOCATION
         QStringList split = source.split( sep, QString::SkipEmptyParts );
 
         if ( split.size() < 4 )

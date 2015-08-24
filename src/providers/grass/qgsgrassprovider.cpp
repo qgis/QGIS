@@ -816,8 +816,7 @@ int QgsGrassProvider::openMap( QString gisdbase, QString location, QString mapse
   }
   G_CATCH( QgsGrass::Exception &e )
   {
-    Q_UNUSED( e );
-    QgsDebugMsg( QString( "Cannot open GRASS vector head on level2: %1" ).arg( e.what() ) );
+    QgsGrass::warning( e );
     level = -1;
   }
 
@@ -844,8 +843,7 @@ int QgsGrassProvider::openMap( QString gisdbase, QString location, QString mapse
   }
   G_CATCH( QgsGrass::Exception &e )
   {
-    Q_UNUSED( e );
-    QgsDebugMsg( QString( "Cannot open GRASS vector: %1" ).arg( e.what() ) );
+    QgsGrass::warning( QString( "Cannot open GRASS vector: %1" ).arg( e.what() ) );
     return -1;
   }
 
@@ -862,8 +860,7 @@ int QgsGrassProvider::openMap( QString gisdbase, QString location, QString mapse
     }
     G_CATCH( QgsGrass::Exception &e )
     {
-      Q_UNUSED( e );
-      QgsDebugMsg( QString( "Cannot build topology: %1" ).arg( e.what() ) );
+      QgsGrass::warning( QString( "Cannot build topology: %1" ).arg( e.what() ) );
       return -1;
     }
   }
