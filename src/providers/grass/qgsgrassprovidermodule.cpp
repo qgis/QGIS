@@ -626,7 +626,9 @@ void QgsGrassMapsetItem::openMapset()
   if ( !error.isEmpty() )
   {
     QgsGrass::warning( error );
+    return;
   }
+  QgsGrass::saveMapset();
 }
 
 //----------------------- QgsGrassObjectItemBase ------------------------------

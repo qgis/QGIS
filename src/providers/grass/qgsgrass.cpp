@@ -856,7 +856,6 @@ QString QgsGrass::openMapset( const QString& gisdbase,
 
   mMapsetLock = lock;
 
-  saveMapset();
   emit QgsGrass::instance()->mapsetChanged();
   return QString::null;
 }
@@ -919,7 +918,6 @@ QString QgsGrass::closeMapset()
     }
   }
 
-  saveMapset();
   emit QgsGrass::instance()->mapsetChanged();
   return QString::null;
 }
