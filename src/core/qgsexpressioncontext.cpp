@@ -741,10 +741,6 @@ QgsExpressionContextScope *QgsExpressionContextUtils::composerItemScope( const Q
   //add known composer item context variables
   scope->addVariable( QgsExpressionContextScope::StaticVariable( "item_id", composerItem->id(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( "item_uuid", composerItem->uuid(), true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( "item_left", composerItem->sceneBoundingRect().left(), true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( "item_top", composerItem->sceneBoundingRect().top(), true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( "item_width", composerItem->sceneBoundingRect().width(), true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( "item_height", composerItem->sceneBoundingRect().height(), true ) );
 
   return scope;
 }
