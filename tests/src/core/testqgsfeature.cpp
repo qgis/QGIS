@@ -419,7 +419,7 @@ void TestQgsFeature::dataStream()
   originalFeature.setGeometry( new QgsGeometry( *mGeometry.data() ) );
 
   QByteArray ba;
-  QDataStream ds( &ba, QIODevice::ReadWrite );;
+  QDataStream ds( &ba, QIODevice::ReadWrite );
   ds << originalFeature;
 
   QgsFeature resultFeature;
@@ -434,7 +434,7 @@ void TestQgsFeature::dataStream()
   //also test with feature without geometry
   originalFeature.setGeometry( new QgsGeometry() );
   QByteArray ba2;
-  QDataStream ds2( &ba2, QIODevice::ReadWrite );;
+  QDataStream ds2( &ba2, QIODevice::ReadWrite );
   ds2 << originalFeature;
 
   ds2.device()->seek( 0 );

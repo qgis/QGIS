@@ -2246,6 +2246,12 @@ QDataStream& operator>>( QDataStream& in, QgsGeometry& geometry )
 {
   QByteArray byteArray;
   in >> byteArray;
+  if ( byteArray.isEmpty() )
+  {
+    geometry.setGeometry( 0 );
+    return in;
+  }
+
   char *data = new char[byteArray.size()];
   memcpy( data, byteArray.data(), byteArray.size() );
   geometry.fromWkb(( unsigned char* )data, byteArray.size() );

@@ -80,6 +80,8 @@ class TestQgsGeometry : public QObject
     void bufferCheck();
     void smoothCheck();
 
+    void dataStream();
+
   private:
     /** A helper method to do a render check to see if the geometry op is as expected */
     bool renderCheck( QString theTestName, QString theComment = "", int mismatchCount = 0 );
@@ -704,6 +706,34 @@ void TestQgsGeometry::smoothCheck()
                          <<  QgsPoint( 4.0, 3.8 ) << QgsPoint( 3.8, 4.0 ) << QgsPoint( 2.2, 4.0 ) << QgsPoint( 2.0, 3.8 )
                          << QgsPoint( 2, 2.2 ) << QgsPoint( 2.2, 2 ) ) );
   QVERIFY( QgsGeometry::compare( multipoly, expectedMultiPoly ) );
+}
+
+void TestQgsGeometry::dataStream()
+{
+  QString wkt = "Point (40 50)";
+  QScopedPointer<QgsGeometry> geom( QgsGeometry::fromWkt( wkt ) );
+
+  QByteArray ba;
+  QDataStream ds( &ba, QIODevice::ReadWrite );
+  ds << *geom;
+
+  QgsGeometry resultGeometry;
+  ds.device()->seek( 0 );
+  ds >> resultGeometry;
+
+  QCOMPARE( geom->geometry()->asWkt(), resultGeometry.geometry()->asWkt( ) );
+
+  //also test with geometry without data
+  QScopedPointer<QgsGeometry> emptyGeom( new QgsGeometry() );
+
+  QByteArray ba2;
+  QDataStream ds2( &ba2, QIODevice::ReadWrite );
+  ds2 << emptyGeom;
+
+  ds2.device()->seek( 0 );
+  ds2 >> resultGeometry;
+
+  QVERIFY( resultGeometry.isEmpty() );
 }
 
 bool TestQgsGeometry::renderCheck( QString theTestName, QString theComment, int mismatchCount )
