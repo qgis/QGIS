@@ -64,7 +64,12 @@ class CORE_EXPORT QgsLineStringV2: public QgsCurveV2
     void append( const QgsLineStringV2* line );
 
     void draw( QPainter& p ) const override;
-    void transform( const QgsCoordinateTransform& ct ) override;
+
+    /** Transforms the geometry using a coordinate transform
+     * @param ct coordinate transform
+       @param d transformation direction
+     */
+    void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform ) override;
     void transform( const QTransform& t ) override;
 
     void addToPainterPath( QPainterPath& path ) const override;

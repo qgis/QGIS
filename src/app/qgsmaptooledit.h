@@ -20,6 +20,7 @@
 #include "qgsmaptooladvanceddigitizing.h"
 
 class QgsRubberBand;
+class QgsGeometryRubberBand;
 class QgsVectorLayer;
 class QKeyEvent;
 
@@ -43,6 +44,9 @@ class APP_EXPORT QgsMapToolEdit: public QgsMapToolAdvancedDigitizing
     *   @param alternativeBand if true, rubber band will be set with more transparency and a dash pattern. defaut is false.
     */
     QgsRubberBand* createRubberBand( QGis::GeometryType geometryType = QGis::Line, bool alternativeBand = false );
+
+
+    QgsGeometryRubberBand* createGeometryRubberBand( QGis::GeometryType geometryType = QGis::Line ) const;
 
     /** Returns the current vector layer of the map canvas or 0*/
     QgsVectorLayer* currentVectorLayer();

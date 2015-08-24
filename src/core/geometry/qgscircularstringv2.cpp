@@ -577,7 +577,7 @@ void QgsCircularStringV2::draw( QPainter& p ) const
   p.drawPath( path );
 }
 
-void QgsCircularStringV2::transform( const QgsCoordinateTransform& ct )
+void QgsCircularStringV2::transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d )
 {
   double* zArray = mZ.data();
 
@@ -591,7 +591,7 @@ void QgsCircularStringV2::transform( const QgsCoordinateTransform& ct )
       zArray[i] = 0;
     }
   }
-  ct.transformCoords( nPoints, mX.data(), mY.data(), zArray );
+  ct.transformCoords( nPoints, mX.data(), mY.data(), zArray, d );
   if ( !hasZ )
   {
     delete[] zArray;

@@ -474,17 +474,17 @@ void QgsCurvePolygonV2::draw( QPainter& p ) const
   }
 }
 
-void QgsCurvePolygonV2::transform( const QgsCoordinateTransform& ct )
+void QgsCurvePolygonV2::transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d )
 {
   if ( mExteriorRing )
   {
-    mExteriorRing->transform( ct );
+    mExteriorRing->transform( ct, d );
   }
 
   QList<QgsCurveV2*>::iterator it = mInteriorRings.begin();
   for ( ; it != mInteriorRings.end(); ++it )
   {
-    ( *it )->transform( ct );
+    ( *it )->transform( ct, d );
   }
 }
 
