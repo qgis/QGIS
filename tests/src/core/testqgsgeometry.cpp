@@ -211,6 +211,7 @@ void TestQgsGeometry::cleanup()
   delete mpPolygonGeometryA;
   delete mpPolygonGeometryB;
   delete mpPolygonGeometryC;
+  delete mpPolylineGeometryD;
   delete mpPainter;
 }
 
@@ -456,6 +457,8 @@ void TestQgsGeometry::initTestCase()
 
 void TestQgsGeometry::cleanupTestCase()
 {
+
+
   //
   // Runs once after all tests are run
   //
