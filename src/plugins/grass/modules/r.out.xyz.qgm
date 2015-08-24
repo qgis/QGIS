@@ -3,6 +3,7 @@
 
 <qgisgrassmodule label="Export raster to text file as x,y,z values based on cell centers" module="r.out.xyz">
 	<option key="input" />
-	<option key="fs" />
+	<option key="fs" version_max="6.4"/>
+	<option key="separator" version_min="7.0"/>
 	<file key="output" type="new" />
 </qgisgrassmodule>

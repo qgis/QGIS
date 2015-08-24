@@ -2,6 +2,7 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
 <qgisgrassmodule label="Import attribute tables in various formats" module="db.in.ogr">
-	<file key="dsn" type="old" label="Input table" filters="dbf, csv (*.csv *.dbf)" />
+	<file key="dsn" type="old" label="Input table" filters="dbf, csv (*.csv *.dbf)" version_max="6.4"/>
+	<file key="input" type="old" label="Input table" filters="dbf, csv (*.csv *.dbf)" version_min="7.0"/>
 	<option key="output"/>
 </qgisgrassmodule>

@@ -5,7 +5,8 @@
 	<file key="input" type="old" filters="TXT (*.txt), CSV (*.csv)"/>
 	<option key="method" />
 	<option key="type" />
-	<option key="fs" />
+	<option key="fs" version_max="6.4" />
+	<option key="separator" version_min="7.0" />
 	<option key="x" />
 	<option key="y" />
 	<option key="z" />
