@@ -70,7 +70,7 @@ void QgsMapToolAddPart::canvasMapReleaseEvent( QgsMapMouseEvent * e )
     return;
   }
 
-  int errorCode;
+  int errorCode = 0;
   switch ( mode() )
   {
     case CapturePoint:
@@ -142,7 +142,6 @@ void QgsMapToolAddPart::canvasMapReleaseEvent( QgsMapMouseEvent * e )
       }
 
       vlayer->beginEditCommand( tr( "Part added" ) );
-      int errorCode = 0;
       if ( mode() == CapturePolygon )
       {
         //avoid intersections
