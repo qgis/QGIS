@@ -1137,7 +1137,7 @@ void QgisApp::readSettings()
   QStringList oldRecentProjects = settings.value( "/UI/recentProjectsList" ).toStringList();
   settings.remove( "/UI/recentProjectsList" );
 
-  Q_FOREACH ( const QString& project, oldRecentProjects )
+  Q_FOREACH( const QString& project, oldRecentProjects )
   {
     QgsWelcomePageItemsModel::RecentProjectData data;
     data.path = project;
@@ -1151,7 +1151,7 @@ void QgisApp::readSettings()
 
 
 
-  Q_FOREACH ( const QString& key, projectKeys )
+  Q_FOREACH( const QString& key, projectKeys )
   {
     QgsWelcomePageItemsModel::RecentProjectData data;
     settings.beginGroup( key );
@@ -2720,7 +2720,7 @@ void QgisApp::updateRecentProjectPaths()
 {
   mRecentProjectsMenu->clear();
 
-  Q_FOREACH ( const QgsWelcomePageItemsModel::RecentProjectData& recentProject, mRecentProjects )
+  Q_FOREACH( const QgsWelcomePageItemsModel::RecentProjectData& recentProject, mRecentProjects )
   {
     QAction* action = mRecentProjectsMenu->addAction( QString( "%1 (%2)" ).arg( recentProject.title ).arg( recentProject.path ) );
     action->setEnabled( QFile::exists(( recentProject.path ) ) );
@@ -2789,7 +2789,7 @@ void QgisApp::saveRecentProjectPath( QString projectPath, bool savePreviewImage 
   int idx = 0;
 
   // Persist the list
-  Q_FOREACH ( const QgsWelcomePageItemsModel::RecentProjectData& recentProject, mRecentProjects )
+  Q_FOREACH( const QgsWelcomePageItemsModel::RecentProjectData& recentProject, mRecentProjects )
   {
     ++idx;
     settings.beginGroup( QString( "/UI/recentProjects/%1" ).arg( idx ) );
@@ -9391,6 +9391,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionAddToOverview->setEnabled( false );
     mActionFeatureAction->setEnabled( false );
     mActionAddFeature->setEnabled( false );
+    mActionCircularStringCurvePoint->setEnabled( false );
+    mActionCircularStringRadius->setEnabled( false );
     mActionMoveFeature->setEnabled( false );
     mActionRotateFeature->setEnabled( false );
     mActionOffsetCurve->setEnabled( false );
@@ -9510,6 +9512,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       mActionPasteFeatures->setEnabled( isEditable && canAddFeatures && !clipboard()->empty() );
 
       mActionAddFeature->setEnabled( isEditable && canAddFeatures );
+      mActionCircularStringCurvePoint->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry ) );
+      mActionCircularStringRadius->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry ) );
 
       //does provider allow deleting of features?
       mActionDeleteSelected->setEnabled( isEditable && canDeleteFeatures && layerHasSelection );
