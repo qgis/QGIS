@@ -115,6 +115,9 @@ void TestQgsComposerRotation::cleanupTestCase()
     mComposition->removeItem( mComposerMap );
     delete mComposerMap;
   }
+
+  delete mComposerLabel;
+  delete mComposerRect;
   delete mComposition;
   delete mMapSettings;
 

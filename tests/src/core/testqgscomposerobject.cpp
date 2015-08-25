@@ -83,6 +83,8 @@ void TestQgsComposerObject::cleanupTestCase()
     myQTextStream << mReport;
     myFile.close();
   }
+
+  QgsApplication::exitQgis();
 }
 
 void TestQgsComposerObject::init()

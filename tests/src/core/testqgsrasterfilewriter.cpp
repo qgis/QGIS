@@ -108,8 +108,8 @@ bool TestQgsRasterFileWriter::writeTest( QString theRasterName )
   qDebug() << myFileName;
   QFileInfo myRasterFileInfo( myFileName );
 
-  QgsRasterLayer * mpRasterLayer =  new QgsRasterLayer( myRasterFileInfo.filePath(),
-      myRasterFileInfo.completeBaseName() );
+  QScopedPointer<QgsRasterLayer> mpRasterLayer( new QgsRasterLayer( myRasterFileInfo.filePath(),
+      myRasterFileInfo.completeBaseName() ) );
   qDebug() << theRasterName <<  " metadata: " << mpRasterLayer->dataProvider()->metadata();
 
   if ( !mpRasterLayer->isValid() ) return false;

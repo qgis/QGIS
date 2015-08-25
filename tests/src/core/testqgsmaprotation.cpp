@@ -121,12 +121,13 @@ void TestQgsMapRotation::initTestCase()
 
 TestQgsMapRotation::~TestQgsMapRotation()
 {
-  delete mMapSettings;
+
 }
 
 //runs after all tests
 void TestQgsMapRotation::cleanupTestCase()
 {
+  delete mMapSettings;
   QgsApplication::exitQgis();
 
   // TODO: delete layers (or is it done by exitQgis ?)

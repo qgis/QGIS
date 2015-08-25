@@ -104,6 +104,7 @@ void TestQgsComposerTable::initTestCase()
 
 void TestQgsComposerTable::cleanupTestCase()
 {
+  delete mComposerMap;
   delete mComposition;
   delete mMapSettings;
 

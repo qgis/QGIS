@@ -90,8 +90,7 @@ class TestQgsDiagram : public QObject
                                          myPointFileInfo.completeBaseName(), "ogr" );
 
       // Register the layer with the registry
-      QgsMapLayerRegistry::instance()->addMapLayers(
-        QList<QgsMapLayer *>() << mPointsLayer );
+      QgsMapLayerRegistry::instance()->addMapLayer( mPointsLayer );
 
       // Create map composition to draw on
       mMapSettings->setLayers( QStringList() << mPointsLayer->id() );
@@ -102,8 +101,6 @@ class TestQgsDiagram : public QObject
     // will be called after the last testfunction was executed.
     void cleanupTestCase()
     {
-      QgsApplication::exitQgis();
-
       delete mMapSettings;
 
       QString myReportFile = QDir::tempPath() + "/qgistest.html";
@@ -115,6 +112,7 @@ class TestQgsDiagram : public QObject
         myFile.close();
         //QDesktopServices::openUrl( "file:///" + myReportFile );
       }
+      QgsApplication::exitQgis();
     }
 
     // will be called before each testfunction is executed

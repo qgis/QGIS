@@ -80,6 +80,7 @@ void TestQgsComposerGroup::cleanupTestCase()
 {
   delete mComposition;
   delete mMapSettings;
+  QgsApplication::exitQgis();
 
   QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );

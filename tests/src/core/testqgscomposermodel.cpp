@@ -83,8 +83,12 @@ void TestQgsComposerModel::initTestCase()
 
 void TestQgsComposerModel::cleanupTestCase()
 {
+  delete mItem1;
+  delete mItem2;
+  delete mItem3;
   delete mComposition;
   delete mMapSettings;
+  QgsApplication::exitQgis();
 }
 
 void TestQgsComposerModel::init()
@@ -232,6 +236,9 @@ void TestQgsComposerModel::removeItem()
   QCOMPARE( mComposition->itemsModel()->rowCount(), 0 );
   //also check scene list
   QCOMPARE( mComposition->itemsModel()->mItemsInScene.size(), 0 );
+
+  delete item1;
+  delete item2;
 }
 
 void TestQgsComposerModel::reorderUp()
@@ -459,6 +466,7 @@ void TestQgsComposerModel::setItemRemoved()
   QCOMPARE( mComposition->itemsModel()->mItemsInScene.size(), 2 );
   QCOMPARE( mComposition->itemsModel()->mItemsInScene.at( 0 ), mItem2 );
   QCOMPARE( mComposition->itemsModel()->mItemsInScene.at( 1 ), mItem1 );
+  delete label;
 }
 
 void TestQgsComposerModel::rebuildZListWithRemoved()

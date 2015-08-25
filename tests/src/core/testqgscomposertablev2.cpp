@@ -129,6 +129,7 @@ void TestQgsComposerTableV2::init()
   mComposition->setPaperSize( 297, 210 ); //A4 portrait
 
   mComposerAttributeTable = new QgsComposerAttributeTableV2( mComposition, false );
+  mComposition->addMultiFrame( mComposerAttributeTable );
 
   mFrame1 = new QgsComposerFrame( mComposition, mComposerAttributeTable, 5, 5, 100, 30 );
   mFrame2 = new QgsComposerFrame( mComposition, mComposerAttributeTable, 5, 40, 100, 30 );
