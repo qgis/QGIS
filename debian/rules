@@ -47,13 +47,11 @@ CMAKE_OPTS := \
 	-DBUILDNAME=$(DEB_BUILD_NAME) \
 	-DCMAKE_VERBOSE_MAKEFILE=1 \
 	-DCMAKE_INSTALL_PREFIX=/usr \
-	-DGRASS_PREFIX=/usr/lib/$(GRASS) \
 	-DBINDINGS_GLOBAL_INSTALL=TRUE \
 	-DPEDANTIC=TRUE \
 	-DWITH_QSPATIALITE=TRUE \
 	-DWITH_SERVER=TRUE \
 	-DWITH_SERVER_PLUGINS=TRUE \
-	-DWITH_GRASS7=FALSE \
 	-DSERVER_SKIP_ECW=TRUE \
 	-DQGIS_CGIBIN_SUBDIR=/usr/lib/cgi-bin \
 	-DWITH_APIDOC=TRUE \
@@ -68,6 +66,18 @@ CMAKE_OPTS := \
 	-DWITH_INTERNAL_SIX=FALSE \
 	-DQT_TAG_FILE=/usr/share/qt4/doc/html/qt.tags \
 	-DQT_DOC_URL=/usr/share/qt4/doc/html/
+
+ifeq ($(GRASSVER),7)
+	CMAKE_OPTS += \
+		-DWITH_GRASS=FALSE \
+		-DWITH_GRASS7=TRUE \
+		-DGRASS_PREFIX7=/usr/lib/$(GRASS)
+else
+	CMAKE_OPTS += \
+		-DWITH_GRASS=TRUE \
+		-DWITH_GRASS7=FALSE \
+		-DGRASS_PREFIX=/usr/lib/$(GRASS)
+endif
 
 ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
 	NUMJOBS = $(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
@@ -132,11 +142,19 @@ ifneq (,$(findstring profile,$(DEB_BUILD_OPTIONS)))
 	LDFLAGS += -pg
 endif
 
+# multi distribution support:
+# - remove prefixes for current distribution
+# - remove lines that exclude current distribution
+# - remove prefixes that exclude other distributions
+# - remove remaining comments
+
 define gentemplate
 $(2): $(1)
 	sed -r \
 		-e 's/^#(.* |)$(DISTRIBUTION)( .*|)#//' \
-		-e '/^#($|[^!])/d' \
+		-e '/^#(.* |)!$(DISTRIBUTION)( .*|)#/d' \
+		-e 's/^#(.* |)![^ ]*( .*|)#//' \
+		-e '/^#/d' \
 		-e "s/\{DEB_BUILD_GNU_TYPE\}/$(DEB_BUILD_GNU_TYPE)/g" \
 		-e "s#\{QT_PLUGIN_DIR\}#$(QT_PLUGIN_DIR)#g" \
 		-e "s/\{QGIS_ABI\}/$(QGIS_ABI)/g" \
@@ -232,9 +250,9 @@ override_dh_auto_install:
 	$(RM) $(CURDIR)/debian/tmp/usr/bin/qbrowser
 
 	# qgis binary wrappers
-	install -o root -g root -m 755 -d $(CURDIR)/debian/qgis-plugin-grass/usr/bin
-	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis-plugin-grass/usr/bin/qgis
-	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis-plugin-grass/usr/bin/qbrowser
+	install -o root -g root -m 755 -d $(CURDIR)/debian/qgis-provider-grass/usr/bin
+	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis-provider-grass/usr/bin/qgis
+	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis-provider-grass/usr/bin/qbrowser
 
 override_dh_install:
 	# Don't ship srs.db, automatically updated in postinst with crssync

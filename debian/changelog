@@ -1,3 +1,10 @@
+qgis (2.10.1-1) UNRELEASED; urgency=medium
+
+  * split grass provider off into a separate package.
+  * disable grass plugin on sid (because of GRASS7)
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Tue, 25 Aug 2015 23:49:41 +0200
+
 qgis (2.10.1) UNRELEASED; urgency=medium
 
   * Release of 2.10.1
