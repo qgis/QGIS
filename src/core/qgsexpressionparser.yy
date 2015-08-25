@@ -149,6 +149,8 @@ struct expression_parser_context
 %destructor { delete $$; } <node>
 %destructor { delete $$; } <nodelist>
 %destructor { delete $$; } <text>
+%destructor { delete $$; } <whenthen>
+%destructor { delete $$; } <whenthenlist>
 
 %%
 
@@ -181,26 +183,29 @@ expression:
     | FUNCTION '(' exp_list ')'
         {
           int fnIndex = QgsExpression::functionIndex(*$1);
+          delete $1;
           if (fnIndex == -1)
           {
             // this should not actually happen because already in lexer we check whether an identifier is a known function
             // (if the name is not known the token is parsed as a column)
             exp_error(parser_ctx, "Function is not known");
+            delete $3;
             YYERROR;
           }
           if ( QgsExpression::Functions()[fnIndex]->params() != -1
                && QgsExpression::Functions()[fnIndex]->params() != $3->count() )
           {
             exp_error(parser_ctx, "Function is called with wrong number of arguments");
+            delete $3;
             YYERROR;
           }
           $$ = new QgsExpression::NodeFunction(fnIndex, $3);
-          delete $1;
         }
 
     | FUNCTION '(' ')'
         {
           int fnIndex = QgsExpression::functionIndex(*$1);
+          delete $1;
           if (fnIndex == -1)
           {
             // this should not actually happen because already in lexer we check whether an identifier is a known function
@@ -214,7 +219,6 @@ expression:
             YYERROR;
           }
           $$ = new QgsExpression::NodeFunction(fnIndex, new QgsExpression::NodeList());
-          delete $1;
         }
 
     | expression IN '(' exp_list ')'     { $$ = new QgsExpression::NodeInOperator($1, $4, false);  }
@@ -236,30 +240,31 @@ expression:
           if (fnIndex == -1)
           {
             if ( !QgsExpression::hasSpecialColumn( *$1 ) )
-	    {
+            {
               exp_error(parser_ctx, "Special column is not known");
-	      YYERROR;
-	    }
-	    // $var is equivalent to _specialcol_( "$var" )
-	    QgsExpression::NodeList* args = new QgsExpression::NodeList();
-	    QgsExpression::NodeLiteral* literal = new QgsExpression::NodeLiteral( *$1 );
-	    args->append( literal );
-	    $$ = new QgsExpression::NodeFunction( QgsExpression::functionIndex( "_specialcol_" ), args );
+              delete $1;
+              YYERROR;
+            }
+            // $var is equivalent to _specialcol_( "$var" )
+            QgsExpression::NodeList* args = new QgsExpression::NodeList();
+            QgsExpression::NodeLiteral* literal = new QgsExpression::NodeLiteral( *$1 );
+            args->append( literal );
+            $$ = new QgsExpression::NodeFunction( QgsExpression::functionIndex( "_specialcol_" ), args );
           }
-	  else
-	  {
-	    $$ = new QgsExpression::NodeFunction( fnIndex, NULL );
-	    delete $1;
-	  }
+          else
+          {
+            $$ = new QgsExpression::NodeFunction( fnIndex, NULL );
+          }
+          delete $1;
         }
 
     // variables
     | VARIABLE
         {
-	  // @var is equivalent to var( "var" )
-	  QgsExpression::NodeList* args = new QgsExpression::NodeList();
-	  QgsExpression::NodeLiteral* literal = new QgsExpression::NodeLiteral( QString(*$1).mid(1) );
-	  args->append( literal );
+          // @var is equivalent to var( "var" )
+          QgsExpression::NodeList* args = new QgsExpression::NodeList();
+          QgsExpression::NodeLiteral* literal = new QgsExpression::NodeLiteral( QString(*$1).mid(1) );
+          args->append( literal );
           $$ = new QgsExpression::NodeFunction( QgsExpression::functionIndex( "var" ), args );
           delete $1;
         }
@@ -308,6 +313,7 @@ QgsExpression::Node* parseExpression(const QString& str, QString& parserErrorMsg
   else // error?
   {
     parserErrorMsg = ctx.errorMsg;
+    delete ctx.rootNode;
     return NULL;
   }
 }
