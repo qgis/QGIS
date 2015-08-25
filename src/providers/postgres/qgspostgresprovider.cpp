@@ -1939,7 +1939,7 @@ bool QgsPostgresProvider::addAttributes( const QList<QgsField> &attributes )
     return false;
 
   if ( attributes.count() == 0 )
-      return true;
+    return true;
 
   QgsPostgresConn* conn = connectionRW();
   if ( !conn )

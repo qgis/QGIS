@@ -86,18 +86,23 @@ class DlgImportVector(QDialog, Ui_Dialog):
         isShapefile = self.inLayer and self.inLayer.providerType() == "ogr" and self.inLayer.storageType() == "ESRI Shapefile"
 
         self.chkGeomColumn.setEnabled(allowSpatial and hasGeomType)
-        if not self.chkGeomColumn.isEnabled(): self.chkGeomColumn.setChecked(False)
+        if not self.chkGeomColumn.isEnabled():
+            self.chkGeomColumn.setChecked(False)
 
         self.chkSourceSrid.setEnabled(allowSpatial and hasGeomType)
-        if not self.chkSourceSrid.isEnabled(): self.chkSourceSrid.setChecked(False)
+        if not self.chkSourceSrid.isEnabled():
+            self.chkSourceSrid.setChecked(False)
         self.chkTargetSrid.setEnabled(allowSpatial and hasGeomType)
-        if not self.chkTargetSrid.isEnabled(): self.chkTargetSrid.setChecked(False)
+        if not self.chkTargetSrid.isEnabled():
+            self.chkTargetSrid.setChecked(False)
 
         self.chkSinglePart.setEnabled(allowSpatial and hasGeomType and isShapefile)
-        if not self.chkSinglePart.isEnabled(): self.chkSinglePart.setChecked(False)
+        if not self.chkSinglePart.isEnabled():
+            self.chkSinglePart.setChecked(False)
 
         self.chkSpatialIndex.setEnabled(allowSpatial and hasGeomType)
-        if not self.chkSpatialIndex.isEnabled(): self.chkSpatialIndex.setChecked(False)
+        if not self.chkSpatialIndex.isEnabled():
+            self.chkSpatialIndex.setChecked(False)
 
     def populateLayers(self):
         self.cboInputLayer.clear()
@@ -242,7 +247,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
             # create the input layer (if not already done) and
             # update available options
             self.reloadInputLayer()
-            
+
         # sanity checks
         if self.inLayer is None:
             QMessageBox.information(self, self.tr("Import to database"), self.tr("Input layer missing or not valid"))
@@ -283,11 +288,13 @@ class DlgImportVector(QDialog, Ui_Dialog):
             srcUri = qgis.core.QgsDataSourceURI(self.inLayer.source())
 
             pk = srcUri.keyColumn() if not self.chkPrimaryKey.isChecked() else self.editPrimaryKey.text()
-            if not pk: pk = self.default_pk
+            if not pk:
+                pk = self.default_pk
 
             if self.inLayer.hasGeometryType() and self.chkGeomColumn.isEnabled():
                 geom = srcUri.geometryColumn() if not self.chkGeomColumn.isChecked() else self.editGeomColumn.text()
-                if not geom: geom = self.default_geom
+                if not geom:
+                    geom = self.default_geom
             else:
                 geom = None
 

@@ -26,6 +26,7 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestPyQgsConditionalStyle(TestCase):
+
     def new_context(self):
         feature = QgsFeature()
         fields = QgsFields()

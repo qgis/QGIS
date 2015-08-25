@@ -44,7 +44,7 @@ extern "C"
 
 /********************** QgsGrassModuleParam *************************/
 QgsGrassModuleParam::QgsGrassModuleParam( QgsGrassModule *module, QString key,
-                                        QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode, bool direct )
+    QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode, bool direct )
     : mModule( module )
     , mKey( key )
     , mHidden( false )
@@ -124,11 +124,11 @@ QStringList QgsGrassModuleParam::options()
   return QStringList();
 }
 
-QString QgsGrassModuleParam::getDescPrompt ( QDomElement descDomElement )
+QString QgsGrassModuleParam::getDescPrompt( QDomElement descDomElement )
 {
   QDomNode gispromptNode = descDomElement.namedItem( "gisprompt" );
 
-  if ( !gispromptNode.isNull())
+  if ( !gispromptNode.isNull() )
   {
     QDomElement gispromptElement = gispromptNode.toElement();
     if ( !gispromptElement.isNull() )
@@ -187,7 +187,7 @@ QList<QDomNode> QgsGrassModuleParam::nodesByType( QDomElement descDomElement, ST
 
   while ( !n.isNull() )
   {
-    QString prompt = getDescPrompt ( n.toElement() );
+    QString prompt = getDescPrompt( n.toElement() );
     if ( typeMap.value( prompt ) == optionType )
     {
       nodes << n;

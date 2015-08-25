@@ -87,7 +87,7 @@ class QgsGrassModuleParam
      * \param gnode option node in GRASS module XML description file
      */
     QgsGrassModuleParam( QgsGrassModule *module, QString key,
-                        QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode, bool direct );
+                         QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode, bool direct );
 
     //! Destructor
     virtual ~QgsGrassModuleParam();
@@ -111,7 +111,7 @@ class QgsGrassModuleParam
     QStringList errors() { return mErrors; }
 
     /** Get gisprompt tag prompt attribute */
-    static QString getDescPrompt ( QDomElement descDomElement );
+    static QString getDescPrompt( QDomElement descDomElement );
 
     //! Find element in GRASS module description by key, if not found, returned element is null
     static QDomNode nodeByKey( QDomElement descDocElement, QString key );
@@ -518,7 +518,7 @@ class QgsGrassModuleField : public QgsGrassModuleGroupBoxItem
     //! Retruns list of options which will be passed to module
     virtual QStringList options() override;
 
-    void setLayerInput( QgsGrassModuleInput * layerInput) { mLayerInput = layerInput; }
+    void setLayerInput( QgsGrassModuleInput * layerInput ) { mLayerInput = layerInput; }
     QgsGrassModuleInput * layerInput() const { return mLayerInput; }
 
   public slots:

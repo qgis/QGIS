@@ -961,7 +961,7 @@ bool QgsMssqlProvider::addAttributes( const QList<QgsField> &attributes )
   QString statement;
 
   if ( attributes.count() == 0 )
-      return true;
+    return true;
 
   for ( QList<QgsField>::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
   {

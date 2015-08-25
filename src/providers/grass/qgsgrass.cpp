@@ -606,11 +606,11 @@ void QgsGrass::setMapset( QString gisdbase, QString location, QString mapset )
   {
     G_add_mapset_to_search_path( ms[i] ); // only adds mapset if it is not yet in path
 #if GRASS_VERSION_MAJOR >= 7
-    free ( ms[i] );
+    free( ms[i] );
 #endif
   }
 #if GRASS_VERSION_MAJOR >= 7
-  free (ms);
+  free( ms );
 #endif
 #endif
 }
