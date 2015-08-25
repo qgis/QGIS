@@ -42,7 +42,6 @@
 %Include qgsfeatureiterator.sip
 %Include qgsfeaturerequest.sip
 %Include qgsfield.sip
-%Include qgsfielduiproperties.sip
 %Include qgsgeometryvalidator.sip
 %Include qgsgeometrysimplifier.sip
 %Include qgshistogram.sip

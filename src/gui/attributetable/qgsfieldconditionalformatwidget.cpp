@@ -1,7 +1,6 @@
 #include "qgsfieldconditionalformatwidget.h"
 
 #include "qgsexpressionbuilderdialog.h"
-#include "qgsfielduiproperties.h"
 #include "qgssymbolv2.h"
 #include "qgssymbolv2selectordialog.h"
 #include "qgssymbollayerv2utils.h"
@@ -143,12 +142,11 @@ QList<QgsConditionalStyle> QgsFieldConditionalFormatWidget::getStyles()
   QList<QgsConditionalStyle> styles;
   if ( fieldRadio->isChecked() )
   {
-    QgsFieldUIProperties props = mLayer->fieldUIProperties( mFieldCombo->currentField() );
-    styles = props.conditionalStyles();
+    styles = mLayer->conditionalStyles()->fieldStyles( mFieldCombo->currentField() );
   }
   if ( rowRadio->isChecked() )
   {
-    styles = mLayer->rowStyles();
+    styles = mLayer->conditionalStyles()->rowStyles();
   }
   return styles;
 }
@@ -160,14 +158,12 @@ void QgsFieldConditionalFormatWidget::deleteRule()
   QString fieldName;
   if ( fieldRadio->isChecked() )
   {
-    QgsFieldUIProperties props = mLayer->fieldUIProperties( mFieldCombo->currentField() );
-    props.setConditionalStyles( styles );
-    mLayer->setFieldUIProperties( mFieldCombo->currentField(), props );
     fieldName =  mFieldCombo->currentField();
+    mLayer->conditionalStyles()->setFieldStyles( fieldName, styles );
   }
   if ( rowRadio->isChecked() )
   {
-    mLayer->setRowStyles( styles );
+    mLayer->conditionalStyles()->setRowStyles( styles );
   }
 
   pages->setCurrentIndex( 0 );
@@ -204,6 +200,8 @@ void QgsFieldConditionalFormatWidget::reset()
   mEditing = false;
   checkIcon->setChecked( false );
   btnChangeIcon->setIcon( QIcon() );
+  btnBackgroundColor->setToNoColor();
+  btnTextColor->setToNoColor();
 
   mFontBoldBtn->setChecked( false );
   mFontItalicBtn->setChecked( false );
@@ -261,16 +259,7 @@ QList<QgsConditionalStyle> QgsFieldConditionalFormatWidget::defaultPresets() con
 
 void QgsFieldConditionalFormatWidget::saveRule()
 {
-  QList<QgsConditionalStyle> styles;
-  if ( fieldRadio->isChecked() )
-  {
-    QgsFieldUIProperties props = mLayer->fieldUIProperties( mFieldCombo->currentField() );
-    styles = props.conditionalStyles();
-  }
-  if ( rowRadio->isChecked() )
-  {
-    styles = mLayer->rowStyles();
-  }
+  QList<QgsConditionalStyle> styles = getStyles();
 
   QgsConditionalStyle style = QgsConditionalStyle();
 
@@ -308,14 +297,12 @@ void QgsFieldConditionalFormatWidget::saveRule()
   QString fieldName;
   if ( fieldRadio->isChecked() )
   {
-    QgsFieldUIProperties props = QgsFieldUIProperties();
-    props.setConditionalStyles( styles );
-    mLayer->setFieldUIProperties( mFieldCombo->currentField(), props );
     fieldName =  mFieldCombo->currentField();
+    mLayer->conditionalStyles()->setFieldStyles( fieldName, styles );
   }
   if ( rowRadio->isChecked() )
   {
-    mLayer->setRowStyles( styles );
+    mLayer->conditionalStyles()->setRowStyles( styles );
   }
   pages->setCurrentIndex( 0 );
   reloadStyles();

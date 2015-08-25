@@ -1,3 +1,48 @@
+typedef QList<QgsConditionalStyle> QgsConditionalStyles;
+
+/**
+ * @brief The QgsConditionalLayerStyles class holds conditional style information
+ * for a layer. This includes field styles and full row styles.
+ */
+class QgsConditionalLayerStyles
+{
+%TypeHeaderCode
+#include <qgsconditionalstyle.h>
+%End
+  public:
+    QgsConditionalLayerStyles();
+
+    QList<QgsConditionalStyle> rowStyles();
+
+    /**
+     * @brief Set the conditional styles that apply to full rows of data in the attribute table.
+     * Each row will check be checked against each rule.
+     * @param styles The styles to assign to all the rows
+     * @note added in QGIS 2.12
+     */
+    void setRowStyles( QList<QgsConditionalStyle> styles );
+
+    /**
+     * @brief Set the conditional styles for the field UI properties.
+     * @param styles
+     */
+    void setFieldStyles( QString fieldName, QList<QgsConditionalStyle> styles );
+
+    /**
+     * @brief Returns the conditional styles set for the field UI properties
+     * @return A list of conditional styles that have been set.
+     */
+    QList<QgsConditionalStyle> fieldStyles( QString fieldName );
+
+    /** Reads field ui properties specific state from Dom node.
+     */
+    virtual bool readXml( const QDomNode& node );
+
+    /** Write field ui properties specific state from Dom node.
+     */
+    virtual bool writeXml( QDomNode & node, QDomDocument & doc ) const;
+};
+
 /** \class QgsConditionalStyle
  *  \ingroup core
  * Conditional styling for a rule.
@@ -9,7 +54,9 @@ class QgsConditionalStyle
 %End
   public:
     QgsConditionalStyle();
+    QgsConditionalStyle( const QgsConditionalStyle& other );
     QgsConditionalStyle( QString rule );
+    ~QgsConditionalStyle();
 
     /**
      * @brief Check if the rule matches using the given value and feature
@@ -75,16 +122,16 @@ class QgsConditionalStyle
     QString name() const;
 
     /**
-     * @brief The symbol used to generate the icon for the style
-     * @return The QgsSymbolV2 used for the icon
-     */
-    QgsSymbolV2* symbol() const;
-
-    /**
      * @brief The icon set for style generated from the set symbol
      * @return A QPixmap that was set for the icon using the symbol
      */
     QPixmap icon() const;
+
+    /**
+     * @brief The symbol used to generate the icon for the style
+     * @return The QgsSymbolV2 used for the icon
+     */
+    QgsSymbolV2* symbol() const;
 
     /**
      * @brief The text color set for style
@@ -93,10 +140,24 @@ class QgsConditionalStyle
     QColor textColor() const;
 
     /**
+     * @brief Check if the text color is valid for render.
+     * Valid colors are non invalid QColors and a color with a > 0 alpha
+     * @return True of the color set for text is valid.
+     */
+    bool validTextColor() const;
+
+    /**
      * @brief The background color for style
      * @return QColor for background color
      */
     QColor backgroundColor() const;
+
+    /**
+     * @brief Check if the background color is valid for render.
+     * Valid colors are non invalid QColors and a color with a > 0 alpha
+     * @return True of the color set for background is valid.
+     */
+    bool validBackgroundColor() const;
     /**
      * @brief The font for the style
      * @return QFont for the style
@@ -124,7 +185,7 @@ class QgsConditionalStyle
      * @return A condtional style that matches the value and feature.
      * Check with QgsCondtionalStyle::isValid()
      */
-    static QList<QgsConditionalStyle> matchingConditionalStyles( QList<QgsConditionalStyle> styles, QVariant value, QgsFeature* feature );
+    static QList<QgsConditionalStyle> matchingConditionalStyles( QList<QgsConditionalStyle> styles, QVariant value, QgsExpressionContext& context );
 
     /**
      * @brief Find and return the matching style for the value and feature.
@@ -133,7 +194,7 @@ class QgsConditionalStyle
      * @return A condtional style that matches the value and feature.
      * Check with QgsCondtionalStyle::isValid()
      */
-    static QgsConditionalStyle matchingConditionalStyle( QList<QgsConditionalStyle> styles, QVariant value, QgsFeature* feature );
+    static QgsConditionalStyle matchingConditionalStyle( QList<QgsConditionalStyle> styles, QVariant value, QgsExpressionContext& context );
 
     /**
      * @brief Compress a list of styles into a single style.  This can be used to stack the elements of the

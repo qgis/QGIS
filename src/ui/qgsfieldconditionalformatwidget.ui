@@ -634,8 +634,24 @@
      <y>27</y>
     </hint>
     <hint type="destinationlabel">
-     <x>178</x>
-     <y>32</y>
+     <x>102</x>
+     <y>48</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkIcon</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>btnChangeIcon</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>48</x>
+     <y>215</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>76</x>
+     <y>215</y>
     </hint>
    </hints>
   </connection>
@@ -646,6 +662,5 @@
     <bool>false</bool>
    </property>
   </buttongroup>
-  <buttongroup name="mDefaultButtons"/>
  </buttongroups>
 </ui>

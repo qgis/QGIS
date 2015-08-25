@@ -38,6 +38,7 @@
 #include "qgis.h" //for globals
 #include "qgsapplication.h"
 #include "qgsclipper.h"
+#include "qgsconditionalstyle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
 #include "qgsdatasourceuri.h"
@@ -45,7 +46,6 @@
 #include "qgsfeature.h"
 #include "qgsfeaturerequest.h"
 #include "qgsfield.h"
-#include "qgsfielduiproperties.h"
 #include "qgsgeometrycache.h"
 #include "qgsgeometry.h"
 #include "qgslabel.h"
@@ -148,6 +148,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     , mEditCommandActive( false )
 {
   mActions = new QgsAttributeAction( this );
+  mConditionalStyles = new QgsConditionalLayerStyles();
 
   // if we're given a provider type, try to create and bind one to this layer
   if ( ! mProviderKey.isEmpty() )
@@ -188,6 +189,7 @@ QgsVectorLayer::~QgsVectorLayer()
   delete mActions;
 
   delete mRendererV2;
+  delete mConditionalStyles;
 }
 
 QString QgsVectorLayer::storageType() const
@@ -897,6 +899,11 @@ bool QgsVectorLayer::simplifyDrawingCanbeApplied( const QgsRenderContext& render
   return false;
 }
 
+QgsConditionalLayerStyles* QgsVectorLayer::conditionalStyles() const
+{
+  return mConditionalStyles;
+}
+
 QgsFeatureIterator QgsVectorLayer::getFeatures( const QgsFeatureRequest& request )
 {
   if ( !mDataProvider )
@@ -1322,18 +1329,6 @@ bool QgsVectorLayer::readXml( const QDomNode& layer_node )
 
   readStyleManager( layer_node );
 
-  mFieldProperties.clear();
-  QDomNodeList nodeList = layer_node.toElement().elementsByTagName( "fielduiproperty" );
-  for ( int i = 0;i < nodeList.count(); i++ )
-  {
-    QDomElement propElm = nodeList.at( i ).toElement();
-    QString fieldName = propElm.attribute( "fieldname" );
-    QgsDebugMsg( "FIELDS!!" );
-    QgsDebugMsg( fieldName );
-    QgsFieldUIProperties props = QgsFieldUIProperties();
-    props.readXml( propElm );
-    setFieldUIProperties( fieldName, props );
-  }
 
   setLegend( QgsMapLayerLegend::defaultVectorLegend( this ) );
 
@@ -1527,19 +1522,6 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
   mExpressionFieldBuffer->writeXml( layer_node, document );
 
   writeStyleManager( layer_node, document );
-
-  QDomElement properties = document.createElement( "fielduiproperties" );
-  QHash<QString, QgsFieldUIProperties>::iterator props;
-  for ( props = mFieldProperties.begin(); props != mFieldProperties.end(); ++props )
-  {
-    QDomElement fielduipropel = document.createElement( "fielduiproperty" );
-    fielduipropel.setAttribute( "fieldname", props.key() );
-    QgsFieldUIProperties property = props.value();
-    property.writeXml( fielduipropel, document );
-    properties.appendChild( fielduipropel );
-  }
-
-  layer_node.appendChild( properties );
 
   // renderer specific settings
   QString errorMsg;
@@ -1791,6 +1773,8 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
     mAttributeEditorElements.append( attributeEditorWidget );
   }
 
+  conditionalStyles()->readXml( node );
+
   return true;
 }
 
@@ -2032,31 +2016,9 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
   // add attribute actions
   mActions->writeXML( node, doc );
 
+  mConditionalStyles->writeXml( node, doc );
+
   return true;
-}
-
-QgsFieldUIProperties QgsVectorLayer::fieldUIProperties( QString fieldName )
-{
-  if ( mFieldProperties.contains( fieldName ) )
-  {
-    return mFieldProperties[fieldName];
-  }
-  return QgsFieldUIProperties();
-}
-
-QList<QgsConditionalStyle> QgsVectorLayer::rowStyles()
-{
-  return mRowStyles;
-}
-
-void QgsVectorLayer::setRowStyles( QList<QgsConditionalStyle> styles )
-{
-  mRowStyles = styles;
-}
-
-void QgsVectorLayer::setFieldUIProperties( QString fieldName, QgsFieldUIProperties props )
-{
-  mFieldProperties.insert( fieldName, props );
 }
 
 bool QgsVectorLayer::readSld( const QDomNode& node, QString& errorMessage )

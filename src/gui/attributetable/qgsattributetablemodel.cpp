@@ -21,7 +21,6 @@
 #include "qgseditorwidgetregistry.h"
 #include "qgsexpression.h"
 #include "qgsconditionalstyle.h"
-#include "qgsfielduiproperties.h"
 #include "qgsfield.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
@@ -595,39 +594,39 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
   }
 
   if ( role == Qt::BackgroundColorRole || role == Qt::TextColorRole || role == Qt::DecorationRole || role == Qt::FontRole )
+  {
+    mExpressionContext.setFeature( mFeat );
+    QList<QgsConditionalStyle> styles;
+    if ( mRowStylesMap.contains( index.row() ) )
     {
-  mExpressionContext.setFeature( mFeat );
-  QList<QgsConditionalStyle> styles;
-  if ( mRowStylesMap.contains( index.row() ) )
-  {
-    styles = mRowStylesMap[index.row()];
-  }
-  else
-  {
-    styles = QgsConditionalStyle::matchingConditionalStyles( layer()->rowStyles(), QVariant(),  &mFeat );
-    mRowStylesMap.insert( index.row(), styles );
-
-  }
-
-  QgsConditionalStyle rowstyle = QgsConditionalStyle::compressStyles( styles );
-  QgsFieldUIProperties props = layer()->fieldUIProperties( field.name() );
-  styles = QgsConditionalStyle::matchingConditionalStyles( props.conditionalStyles(), val,  &mFeat );
-  styles.insert( 0, rowstyle );
-  QgsConditionalStyle style = QgsConditionalStyle::compressStyles( styles );
-
-  if ( style.isValid() )
-  {
-    if ( role == Qt::BackgroundColorRole && style.backgroundColor().isValid() )
-      return style.backgroundColor();
-    if ( role == Qt::TextColorRole && style.textColor().isValid() )
-      return style.textColor();
-    if ( role == Qt::DecorationRole )
-      return style.icon();
-    if ( role == Qt::FontRole )
-      return style.font();
-  }
+      styles = mRowStylesMap[index.row()];
+    }
+    else
+    {
+      styles = QgsConditionalStyle::matchingConditionalStyles( layer()->conditionalStyles()->rowStyles(), QVariant(),  mExpressionContext );
+      mRowStylesMap.insert( index.row(), styles );
 
     }
+
+    QgsConditionalStyle rowstyle = QgsConditionalStyle::compressStyles( styles );
+    styles = layer()->conditionalStyles()->fieldStyles( field.name() );
+    styles = QgsConditionalStyle::matchingConditionalStyles( styles , val,  mExpressionContext );
+    styles.insert( 0, rowstyle );
+    QgsConditionalStyle style = QgsConditionalStyle::compressStyles( styles );
+
+    if ( style.isValid() )
+    {
+      if ( role == Qt::BackgroundColorRole && style.validBackgroundColor() )
+        return style.backgroundColor();
+      if ( role == Qt::TextColorRole && style.validTextColor() )
+        return style.textColor();
+      if ( role == Qt::DecorationRole )
+        return style.icon();
+      if ( role == Qt::FontRole )
+        return style.font();
+    }
+
+  }
   return val;
 }
 

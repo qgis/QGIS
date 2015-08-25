@@ -26,6 +26,7 @@
 
 #include "qgsvectorlayer.h" // QgsAttributeList
 #include "qgsvectorlayercache.h"
+#include "qgsconditionalstyle.h"
 #include "qgsattributeeditorcontext.h"
 
 class QgsMapCanvas;
