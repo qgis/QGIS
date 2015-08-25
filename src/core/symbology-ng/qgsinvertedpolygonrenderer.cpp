@@ -337,7 +337,7 @@ QgsFeatureRendererV2* QgsInvertedPolygonRenderer::clone() const
   }
   else
   {
-    newRenderer = new QgsInvertedPolygonRenderer( mSubRenderer->clone() );
+    newRenderer = new QgsInvertedPolygonRenderer( mSubRenderer.data() );
   }
   newRenderer->setPreprocessingEnabled( preprocessingEnabled() );
   copyPaintEffect( newRenderer );
@@ -351,7 +351,9 @@ QgsFeatureRendererV2* QgsInvertedPolygonRenderer::create( QDomElement& element )
   QDomElement embeddedRendererElem = element.firstChildElement( "renderer-v2" );
   if ( !embeddedRendererElem.isNull() )
   {
-    r->setEmbeddedRenderer( QgsFeatureRendererV2::load( embeddedRendererElem ) );
+    QgsFeatureRendererV2* renderer = QgsFeatureRendererV2::load( embeddedRendererElem );
+    r->setEmbeddedRenderer( renderer );
+    delete renderer;
   }
   r->setPreprocessingEnabled( element.attribute( "preprocessing", "0" ).toInt() == 1 );
   return r;
