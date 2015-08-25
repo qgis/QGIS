@@ -130,12 +130,12 @@ int QgsGeometryCollectionV2::dimension() const
   return maxDim;
 }
 
-void QgsGeometryCollectionV2::transform( const QgsCoordinateTransform& ct )
+void QgsGeometryCollectionV2::transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d )
 {
   QVector< QgsAbstractGeometryV2* >::iterator it = mGeometries.begin();
   for ( ; it != mGeometries.end(); ++it )
   {
-    ( *it )->transform( ct );
+    ( *it )->transform( ct, d );
   }
 }
 

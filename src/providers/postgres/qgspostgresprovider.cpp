@@ -1095,6 +1095,9 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
 
   //supports transactions
   mEnabledCapabilities |= QgsVectorDataProvider::TransactionSupport;
+
+  // supports circular geometries
+  mEnabledCapabilities |= QgsVectorDataProvider::CircularGeometries;
   return true;
 }
 
@@ -1934,6 +1937,9 @@ bool QgsPostgresProvider::addAttributes( const QList<QgsField> &attributes )
 
   if ( mIsQuery )
     return false;
+
+  if ( attributes.count() == 0 )
+      return true;
 
   QgsPostgresConn* conn = connectionRW();
   if ( !conn )

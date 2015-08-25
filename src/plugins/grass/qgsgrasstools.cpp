@@ -153,7 +153,7 @@ QgsGrassTools::QgsGrassTools( QgisInterface *iface, QWidget * parent, const char
   setupUi( this );
   QPushButton * closeMapsetButton = new QPushButton( QgsApplication::getThemeIcon( "mActionFileExit.png" ), tr( "Close mapset" ), this );
   mTabWidget->setCornerWidget( closeMapsetButton );
-  connect( closeMapsetButton, SIGNAL( clicked() ), QgsGrass::instance(), SLOT( closeMapsetWarn() ) );
+  connect( closeMapsetButton, SIGNAL( clicked() ), SLOT( closeMapset() ) );
 
   qRegisterMetaType<QgsDetailedItemData>();
 
@@ -535,6 +535,12 @@ void QgsGrassTools::removeEmptyItems( QStandardItem *item )
       item->removeRow( i );
     }
   }
+}
+
+void QgsGrassTools::closeMapset()
+{
+  QgsGrass::instance()->closeMapsetWarn();
+  QgsGrass::saveMapset();
 }
 
 void QgsGrassTools::mapsetChanged()

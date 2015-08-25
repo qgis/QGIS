@@ -328,7 +328,7 @@ void QgsGrass::init( void )
 #else
   QString gisBase = getenv( "GISBASE" );
 #endif
-  QgsDebugMsg( QString( "GRASS gisBase from GISBASE env var is: %1" ).arg( gisBase ) );
+  QgsDebugMsg( QString( "GRASS gisBase from GISBASE/WINGISBASE env var is: %1" ).arg( gisBase ) );
   if ( !isValidGrassBaseDir( gisBase ) )
   {
     // Look for gisbase in QSettings
@@ -381,7 +381,7 @@ void QgsGrass::init( void )
       break;
     }
 
-    // XXX Need to subclass this and add explantory message above to left side
+    // XXX Need to subclass this and add explantory message aboveSencha to left side
     userGisbase = true;
     // For Mac, GISBASE folder may be inside GRASS bundle. Use Qt file dialog
     // since Mac native dialog doesn't allow user to browse inside bundles.
@@ -412,7 +412,9 @@ void QgsGrass::init( void )
   }
 
   QgsDebugMsg( QString( "Valid GRASS gisBase is: %1" ).arg( gisBase ) );
+  // GISBASE environment variable must be set because is required by directly called GRASS functions
   putEnv( "GISBASE", gisBase );
+  mGisbase = gisBase;
 
   // Create list of paths to GRASS modules
   // PATH environment variable is not used to search for modules (since 2.12) because it could
@@ -420,8 +422,8 @@ void QgsGrass::init( void )
   // $GISBASE/bin somehow gets to PATH and another version plugin is loaded to QGIS, because if a module
   // is missing in one version, it could be found in another $GISBASE/bin and misleadin error could be reported
   mGrassModulesPaths.clear();
-  mGrassModulesPaths << gisBase + "/bin";
-  mGrassModulesPaths << gisBase + "/scripts";
+  mGrassModulesPaths << gisbase() + "/bin";
+  mGrassModulesPaths << gisbase() + "/scripts";
   mGrassModulesPaths << QgsApplication::pkgDataPath() + "/grass/scripts";
 
   // On windows the GRASS libraries are in
@@ -450,7 +452,7 @@ void QgsGrass::init( void )
 
   // TODO: move setting of PYTHONPATH to QProcess where necessary
   // Set PYTHONPATH
-  QString pythonpath = gisBase + "/etc/python";
+  QString pythonpath = gisbase() + "/etc/python";
   QString pp = getenv( "PYTHONPATH" );
   pythonpath.append( pathSeparator() + pp );
   QgsDebugMsg( QString( "set PYTHONPATH: %1" ).arg( pythonpath ) );
@@ -583,6 +585,10 @@ void QgsGrass::setMapset( QString gisdbase, QString location, QString mapset )
   G__setenv( "MAPSET", mapset.toUtf8().data() );
 
   // Add all available mapsets to search path
+  // Why? Other mapsets should not be necessary.
+#if 0
+  // G_get_available_mapsets in GRASS 6 returs pointer to memory managed by GRASS,
+  // in GRASS 7 it always allocates new memory and caller must free that
   char **ms = 0;
   G_TRY
   {
@@ -595,8 +601,18 @@ void QgsGrass::setMapset( QString gisdbase, QString location, QString mapset )
     return;
   }
 
+  // There seems to be no function to clear search path
   for ( int i = 0; ms[i]; i++ )
-    G_add_mapset_to_search_path( ms[i] );
+  {
+    G_add_mapset_to_search_path( ms[i] ); // only adds mapset if it is not yet in path
+#if GRASS_VERSION_MAJOR >= 7
+    free ( ms[i] );
+#endif
+  }
+#if GRASS_VERSION_MAJOR >= 7
+  free (ms);
+#endif
+#endif
 }
 
 jmp_buf QgsGrass::jumper;
@@ -609,6 +625,7 @@ QgsGrass::GERROR QgsGrass::lastError = QgsGrass::OK;
 
 QString QgsGrass::error_message;
 
+QString QgsGrass::mGisbase;
 QStringList QgsGrass::mGrassModulesPaths;
 QString QgsGrass::defaultGisdbase;
 QString QgsGrass::defaultLocation;
@@ -685,8 +702,7 @@ QString QgsGrass::openMapset( const QString& gisdbase,
   QString mapsetPath = gisdbase + "/" + location + "/" + mapset;
 
   // Check if the mapset is in use
-  QString gisBase = getenv( "GISBASE" );
-  if ( gisBase.isEmpty() )
+  if ( !isValidGrassBaseDir( gisbase() ) )
     return QObject::tr( "GISBASE is not set." );
 
   QFileInfo fi( mapsetPath + "/WIND" );
@@ -708,7 +724,7 @@ QString QgsGrass::openMapset( const QString& gisdbase,
 #ifndef Q_OS_WIN
   QFile lockFile( lock );
   QProcess process;
-  QString lockProgram( gisBase + "/etc/lock" );
+  QString lockProgram( gisbase() + "/etc/lock" );
   QStringList lockArguments;
   lockArguments << lock << QString::number( pid );
   QString lockCommand = lockProgram + " " + lockArguments.join( " " ); // for debug
@@ -854,7 +870,6 @@ QString QgsGrass::openMapset( const QString& gisdbase,
 
   mMapsetLock = lock;
 
-  saveMapset();
   emit QgsGrass::instance()->mapsetChanged();
   return QString::null;
 }
@@ -917,7 +932,6 @@ QString QgsGrass::closeMapset()
     }
   }
 
-  saveMapset();
   emit QgsGrass::instance()->mapsetChanged();
   return QString::null;
 }
@@ -2028,7 +2042,7 @@ QMap<QString, QString> QgsGrass::query( QString gisdbase, QString location, QStr
 void QgsGrass::renameObject( const QgsGrassObject & object, const QString& newName )
 {
   QgsDebugMsg( "entered" );
-  QString cmd = "g.rename";
+  QString cmd =  gisbase() + "/bin/g.rename";
   QStringList arguments;
 
   arguments << object.elementShort() + "=" + object.name() + "," + newName;
@@ -2048,7 +2062,7 @@ void QgsGrass::copyObject( const QgsGrassObject & srcObject, const QgsGrassObjec
     throw QgsGrass::Exception( QObject::tr( "Attempt to copy from different location." ) );
   }
 
-  QString cmd = "g.copy";
+  QString cmd = gisbase() + "/bin/g.copy";
   QStringList arguments;
 
   arguments << srcObject.elementShort() + "=" + srcObject.name() + "@" + srcObject.mapset() + "," + destObject.name();
@@ -2074,8 +2088,7 @@ bool QgsGrass::deleteObject( const QgsGrassObject & object )
   }
   */
 
-  // path to g.remove should be in PATH (added by QgsGrass::init())
-  QString cmd = "g.remove";
+  QString cmd = gisbase() + "/bin/g.remove";
   QStringList arguments;
 
 #if GRASS_VERSION_MAJOR < 7

@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1050</width>
-     <height>25</height>
+     <height>20</height>
     </rect>
    </property>
    <property name="toolTip">
@@ -356,6 +356,8 @@
    <addaction name="mActionToggleEditing"/>
    <addaction name="mActionSaveLayerEdits"/>
    <addaction name="mActionAddFeature"/>
+   <addaction name="mActionCircularStringCurvePoint"/>
+   <addaction name="mActionCircularStringRadius"/>
    <addaction name="mActionMoveFeature"/>
    <addaction name="mActionNodeTool"/>
    <addaction name="mActionDeleteSelected"/>
@@ -2350,6 +2352,30 @@ Acts on currently active editable layer</string>
   <action name="mActionShowAlignRasterTool">
    <property name="text">
     <string>Align Rasters...</string>
+   </property>
+  </action>
+  <action name="mActionCircularStringCurvePoint">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionCircularStringCurvePoint.png</normaloff>:/images/themes/default/mActionCircularStringCurvePoint.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add circular string</string>
+   </property>
+  </action>
+  <action name="mActionCircularStringRadius">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionCircularStringRadius.png</normaloff>:/images/themes/default/mActionCircularStringRadius.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add circular string by radius</string>
    </property>
   </action>
  </widget>

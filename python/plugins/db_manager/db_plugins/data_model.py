@@ -211,9 +211,8 @@ class TableFieldsModel(SimpleTableModel):
 
     def flags(self, index):
         flags = SimpleTableModel.flags(self, index)
-        if index.column() == 2:  # set Null column as checkable
-            flags &= ~Qt.ItemIsEditable
-            flags |= Qt.ItemIsUserCheckable
+        if index.column() == 2 and flags & Qt.ItemIsEditable:  # set Null column as checkable instead of editable
+            flags = flags & ~Qt.ItemIsEditable | Qt.ItemIsUserCheckable
         return flags
 
     def append(self, fld):
@@ -222,6 +221,8 @@ class TableFieldsModel(SimpleTableModel):
         row = self.rowCount() - 1
         self.setData(self.index(row, 0), fld, Qt.UserRole)
         self.setData(self.index(row, 1), fld.primaryKey, Qt.UserRole)
+        self.setData(self.index(row, 2), None, Qt.DisplayRole)
+        self.setData(self.index(row, 2), Qt.Unchecked if fld.notNull else Qt.Checked, Qt.CheckStateRole)
 
     def _getNewObject(self):
         from .plugin import TableField

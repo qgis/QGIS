@@ -271,7 +271,10 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer* layer, const QList<QgsMapT
   if ( !createMenu )
   {
     // case 1
-    layerAction = new QAction( layer->name(), this );
+    QString featureTitle = results[0].mFeature.attribute( layer->displayField() ).toString();
+    if ( featureTitle.isEmpty() )
+      featureTitle = QString( "%1" ).arg( results[0].mFeature.id() );
+    layerAction = new QAction( QString( "%1 (%2)" ).arg( layer->name() ).arg( featureTitle ), this );
   }
   else
   {
@@ -282,8 +285,19 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer* layer, const QList<QgsMapT
     }
     else
     {
-      // case 2
-      layerMenu = new QMenu( layer->name(), this );
+      // case 2a
+      if ( results.count() > 1 )
+      {
+        layerMenu = new QMenu( layer->name(), this );
+      }
+      // case 2b
+      else
+      {
+        QString featureTitle = results[0].mFeature.attribute( layer->displayField() ).toString();
+        if ( featureTitle.isEmpty() )
+          featureTitle = QString( "%1" ).arg( results[0].mFeature.id() );
+        layerMenu = new QMenu( QString( "%1 (%2)" ).arg( layer->name() ).arg( featureTitle ), this );
+      }
       layerAction = layerMenu->menuAction();
     }
   }

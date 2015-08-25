@@ -26,6 +26,8 @@
 #include <qgsgeometry.h>
 #include <qgsrenderchecker.h>
 #include "qgsexpressioncontext.h"
+#include "qgsvectorlayer.h"
+#include "qgsmaplayerregistry.h"
 
 static void _parseAndEvalExpr( int arg )
 {
@@ -40,6 +42,17 @@ static void _parseAndEvalExpr( int arg )
 class TestQgsExpression: public QObject
 {
     Q_OBJECT
+
+  public:
+
+    TestQgsExpression()
+        : mPointsLayer( 0 )
+    {}
+
+  private:
+
+    QgsVectorLayer* mPointsLayer;
+
   private slots:
 
     void initTestCase()
@@ -53,6 +66,22 @@ class TestQgsExpression: public QObject
       // Will make sure the settings dir with the style file for color ramp is created
       QgsApplication::createDB();
       QgsApplication::showSettings();
+
+      //create a point layer that will be used in all tests...
+      QString testDataDir = QString( TEST_DATA_DIR ) + "/";
+      QString pointsFileName = testDataDir + "points.shp";
+      QFileInfo pointFileInfo( pointsFileName );
+      mPointsLayer = new QgsVectorLayer( pointFileInfo.filePath(),
+                                         pointFileInfo.completeBaseName(), "ogr" );
+      QgsMapLayerRegistry::instance()->addMapLayer( mPointsLayer );
+      mPointsLayer->setTitle( "layer title" );
+      mPointsLayer->setAbstract( "layer abstract" );
+      mPointsLayer->setKeywordList( "layer,keywords" );
+      mPointsLayer->setDataUrl( "data url" );
+      mPointsLayer->setAttribution( "layer attribution" );
+      mPointsLayer->setAttributionUrl( "attribution url" );
+      mPointsLayer->setMaximumScale( 500 );
+      mPointsLayer->setMinimumScale( 1000 );
     }
 
     void cleanupTestCase()
@@ -465,6 +494,29 @@ class TestQgsExpression: public QObject
       QTest::newRow( "brackets first" ) << "(1+2)*(3+4)" << false << QVariant( 21 );
       QTest::newRow( "right associativity" ) << "(2^3)^2" << false << QVariant( 64. );
       QTest::newRow( "left associativity" ) << "1-(2-1)" << false << QVariant( 0 );
+
+      // layer_property tests
+      QTest::newRow( "layer_property no layer" ) << "layer_property('','title')" << false << QVariant();
+      QTest::newRow( "layer_property bad layer" ) << "layer_property('bad','title')" << false << QVariant();
+      QTest::newRow( "layer_property no property" ) << QString( "layer_property('%1','')" ).arg( mPointsLayer->name() ) << false << QVariant();
+      QTest::newRow( "layer_property bad property" ) << QString( "layer_property('%1','bad')" ).arg( mPointsLayer->name() ) << false << QVariant();
+      QTest::newRow( "layer_property by id" ) << QString( "layer_property('%1','name')" ).arg( mPointsLayer->id() ) << false << QVariant( mPointsLayer->name() );
+      QTest::newRow( "layer_property name" ) << QString( "layer_property('%1','name')" ).arg( mPointsLayer->name() ) << false << QVariant( mPointsLayer->name() );
+      QTest::newRow( "layer_property id" ) << QString( "layer_property('%1','id')" ).arg( mPointsLayer->name() ) << false << QVariant( mPointsLayer->id() );
+      QTest::newRow( "layer_property title" ) << QString( "layer_property('%1','title')" ).arg( mPointsLayer->name() ) << false << QVariant( mPointsLayer->title() );
+      QTest::newRow( "layer_property abstract" ) << QString( "layer_property('%1','abstract')" ).arg( mPointsLayer->name() ) << false << QVariant( mPointsLayer->abstract() );
+      QTest::newRow( "layer_property keywords" ) << QString( "layer_property('%1','keywords')" ).arg( mPointsLayer->name() ) << false << QVariant( mPointsLayer->keywordList() );
+      QTest::newRow( "layer_property data_url" ) << QString( "layer_property('%1','data_url')" ).arg( mPointsLayer->name() ) << false << QVariant( mPointsLayer->dataUrl() );
+      QTest::newRow( "layer_property attribution" ) << QString( "layer_property('%1','attribution')" ).arg( mPointsLayer->name() ) << false << QVariant( mPointsLayer->attribution() );
+      QTest::newRow( "layer_property attribution_url" ) << QString( "layer_property('%1','attribution_url')" ).arg( mPointsLayer->name() ) << false << QVariant( mPointsLayer->attributionUrl() );
+      QTest::newRow( "layer_property source" ) << QString( "layer_property('%1','source')" ).arg( mPointsLayer->name() ) << false << QVariant( mPointsLayer->publicSource() );
+      QTest::newRow( "layer_property min_scale" ) << QString( "layer_property('%1','min_scale')" ).arg( mPointsLayer->name() ) << false << QVariant(( double )mPointsLayer->minimumScale() );
+      QTest::newRow( "layer_property max_scale" ) << QString( "layer_property('%1','max_scale')" ).arg( mPointsLayer->name() ) << false << QVariant(( double )mPointsLayer->maximumScale() );
+      QTest::newRow( "layer_property crs" ) << QString( "layer_property('%1','crs')" ).arg( mPointsLayer->name() ) << false << QVariant( "EPSG:4326" );
+      QTest::newRow( "layer_property extent" ) << QString( "geom_to_wkt(layer_property('%1','extent'))" ).arg( mPointsLayer->name() ) << false << QVariant( "Polygon ((-118.88888889 22.80020704, -83.33333333 22.80020704, -83.33333333 46.87198068, -118.88888889 46.87198068, -118.88888889 22.80020704))" );
+      QTest::newRow( "layer_property type" ) << QString( "layer_property('%1','type')" ).arg( mPointsLayer->name() ) << false << QVariant( "Vector" );
+      QTest::newRow( "layer_property storage_type" ) << QString( "layer_property('%1','storage_type')" ).arg( mPointsLayer->name() ) << false << QVariant( "ESRI Shapefile" );
+      QTest::newRow( "layer_property geometry_type" ) << QString( "layer_property('%1','geometry_type')" ).arg( mPointsLayer->name() ) << false << QVariant( "Point" );
     }
 
     void run_evaluation_test( QgsExpression& exp, bool evalError, QVariant& result )

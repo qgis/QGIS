@@ -515,15 +515,10 @@ def adapt_list_to_string(c_list):
 
     a_list[1] = "-%s" % a_list[1]
 
-    def myunicode(par):
-        if isinstance(par, list):
-            return ";".join(par)
-        return unicode(par)
-
     if a_list[-1] is None:
         return ""
 
-    b_list = map(mystr, a_list)
+    b_list = map(lambda x: ";".join(x) if isinstance(x, list) else unicode(x), a_list)
     b_list = [b_list[1], b_list[-1]]
     res = " ".join(b_list)
     return res

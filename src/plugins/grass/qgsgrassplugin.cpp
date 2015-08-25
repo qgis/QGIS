@@ -93,6 +93,7 @@ QgsGrassPlugin::~QgsGrassPlugin()
   {
     mEdit->closeEdit();
   }
+  disconnect( QgsGrass::instance(), SIGNAL( mapsetChanged() ), this, SLOT( mapsetChanged() ) );
   QgsGrass::instance()->closeMapsetWarn();
 }
 
@@ -181,7 +182,7 @@ void QgsGrassPlugin::initGui()
   connect( mRegionAction, SIGNAL( toggled( bool ) ), this, SLOT( switchRegion( bool ) ) );
   connect( mOpenMapsetAction, SIGNAL( triggered() ), this, SLOT( openMapset() ) );
   connect( mNewMapsetAction, SIGNAL( triggered() ), this, SLOT( newMapset() ) );
-  connect( mCloseMapsetAction, SIGNAL( triggered() ), QgsGrass::instance(), SLOT( closeMapsetWarn() ) );
+  connect( mCloseMapsetAction, SIGNAL( triggered() ), SLOT( closeMapset() ) );
 
   // Add actions to a GRASS plugin menu
   qGisInterface->addPluginToMenu( tr( "&GRASS" ), mOpenMapsetAction );
@@ -527,6 +528,13 @@ void QgsGrassPlugin::openMapset()
     QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot open the mapset. %1" ).arg( err ) );
     return;
   }
+  QgsGrass::saveMapset();
+}
+
+void QgsGrassPlugin::closeMapset()
+{
+  QgsGrass::instance()->closeMapsetWarn();
+  QgsGrass::saveMapset();
 }
 
 void QgsGrassPlugin::newMapset()
@@ -577,6 +585,7 @@ void QgsGrassPlugin::projectRead()
   QgsGrass::instance()->closeMapsetWarn();
 
   QString err = QgsGrass::openMapset( gisdbase, location, mapset );
+  QgsGrass::saveMapset();
 
   if ( !err.isNull() )
   {

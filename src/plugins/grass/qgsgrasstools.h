@@ -77,6 +77,9 @@ class QgsGrassTools: public QDockWidget, private Ui::QgsGrassToolsBase
     //! Save window position
     void saveWindowLocation();
 
+    //! Close mapset and save it to project
+    void closeMapset();
+
     //! Current mapset changed
     void mapsetChanged();
 

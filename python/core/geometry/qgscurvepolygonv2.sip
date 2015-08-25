@@ -49,7 +49,7 @@ class QgsCurvePolygonV2: public QgsSurfaceV2
     bool removeInteriorRing( int nr );
 
     virtual void draw( QPainter& p ) const;
-    void transform( const QgsCoordinateTransform& ct );
+    void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform );
     void transform( const QTransform& t );
 
     virtual bool insertVertex( const QgsVertexId& position, const QgsPointV2& vertex );

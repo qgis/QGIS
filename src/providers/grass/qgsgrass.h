@@ -126,7 +126,7 @@ class GRASS_LIB_EXPORT QgsGrassObject
     Type mType;
 };
 
-/*!
+/** QString gisdbase()
    Methods for C library initialization and error handling.
 */
 class GRASS_LIB_EXPORT QgsGrass : public QObject
@@ -158,6 +158,9 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
 
     /** Get singleton instance of this class. Used as signals proxy between provider and plugin. */
     static QgsGrass* instance();
+
+    /** Path to where GRASS is installed (GISBASE) */
+    static QString gisbase() { return mGisbase; }
 
     //! Get info about the mode
     /** QgsGrass may be running in active or passive mode.
@@ -530,6 +533,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
   private:
     static int initialized; // Set to 1 after initialization
     static bool active; // is active mode
+    static QString mGisbase;
     static QStringList mGrassModulesPaths;
     static QString defaultGisdbase;
     static QString defaultLocation;

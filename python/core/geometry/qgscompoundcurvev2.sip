@@ -45,7 +45,7 @@ class QgsCompoundCurveV2: public QgsCurveV2
     void close();
 
     void draw( QPainter& p ) const;
-    void transform( const QgsCoordinateTransform& ct );
+    void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform );
     void transform( const QTransform& t );
     void addToPainterPath( QPainterPath& path ) const;
     void drawAsPolygon( QPainter& p ) const;

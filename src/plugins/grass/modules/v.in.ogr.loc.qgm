@@ -2,11 +2,17 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
 <qgisgrassmodule label="Import OGR vector and create a fitted location" module="v.in.ogr">
-	<file key="dsn" />
+	<file key="dsn" version_max="6.4"/>
+	<file key="input" version_min="7.0"/>
 	<option key="output" />
 	<option key="location" />
         <option key="type" advanced="yes"/>
-        <flag key="z" answer="off" hidden="no" advanced="yes"/>
+        <flag key="z" answer="off" hidden="no" advanced="yes" version_max="6.4"/>
+        <flag key="2" answer="off" hidden="no" advanced="yes" version_min="7.0"/>
+        <flag key="t" answer="off" hidden="no" advanced="yes"/>
+        <flag key="o" answer="off" hidden="no" advanced="yes"/>
+        <flag key="r" answer="off" hidden="no" advanced="yes"/>
+        <flag key="w" answer="off" hidden="no" advanced="yes"/>
         <flag key="e" answer="off" hidden="no" advanced="yes"/>
         <option key="snap" advanced="yes" /> 
         <option key="min_area" advanced="yes" />

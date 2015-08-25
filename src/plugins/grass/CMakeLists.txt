@@ -26,6 +26,7 @@ SET (GRASS_PLUGIN_SRCS
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmapcalc.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmodule.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmoduleoptions.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmoduleparam.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassnewmapset.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassattributes.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassregion.cpp
@@ -53,6 +54,7 @@ SET (GRASS_PLUGIN_MOC_HDRS
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmapcalc.h
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmodule.h
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmoduleoptions.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmoduleparam.h
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassnewmapset.h
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassattributes.h
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassregion.h
