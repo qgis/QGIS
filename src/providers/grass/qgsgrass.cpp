@@ -585,6 +585,10 @@ void QgsGrass::setMapset( QString gisdbase, QString location, QString mapset )
   G__setenv( "MAPSET", mapset.toUtf8().data() );
 
   // Add all available mapsets to search path
+  // Why? Other mapsets should not be necessary.
+#if 0
+  // G_get_available_mapsets in GRASS 6 returs pointer to memory managed by GRASS,
+  // in GRASS 7 it always allocates new memory and caller must free that
   char **ms = 0;
   G_TRY
   {
@@ -597,8 +601,18 @@ void QgsGrass::setMapset( QString gisdbase, QString location, QString mapset )
     return;
   }
 
+  // There seems to be no function to clear search path
   for ( int i = 0; ms[i]; i++ )
-    G_add_mapset_to_search_path( ms[i] );
+  {
+    G_add_mapset_to_search_path( ms[i] ); // only adds mapset if it is not yet in path
+#if GRASS_VERSION_MAJOR >= 7
+    free ( ms[i] );
+#endif
+  }
+#if GRASS_VERSION_MAJOR >= 7
+  free (ms);
+#endif
+#endif
 }
 
 jmp_buf QgsGrass::jumper;
