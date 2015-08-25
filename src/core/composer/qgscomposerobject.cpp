@@ -55,7 +55,7 @@ QgsComposerObject::QgsComposerObject( QgsComposition* composition )
 
 QgsComposerObject::~QgsComposerObject()
 {
-
+  qDeleteAll( mDataDefinedProperties );
 }
 
 bool QgsComposerObject::writeXML( QDomElement &elem, QDomDocument &doc ) const
