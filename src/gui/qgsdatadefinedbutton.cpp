@@ -26,6 +26,7 @@
 #include <QMenu>
 #include <QMouseEvent>
 #include <QPointer>
+#include <QGroupBox>
 
 
 QIcon QgsDataDefinedButton::mIconDataDefine;
