@@ -22,6 +22,7 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsproviderregistry.h"
+#include "qgsexpression.h"
 
 #include <QDir>
 #include <QFile>
@@ -634,6 +635,9 @@ void QgsApplication::exitQgis()
   //This isn't strictly necessary (since we're exiting anyway) but doing so prevents a lot of
   //LeakSanitiser noise which hides real issues
   QgsApplication::sendPostedEvents( 0, QEvent::DeferredDelete );
+
+  //delete all registered functions from expression engine (see above comment)
+  QgsExpression::cleanRegisteredFunctions();
 }
 
 QString QgsApplication::showSettings()

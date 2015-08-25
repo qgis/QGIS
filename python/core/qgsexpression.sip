@@ -299,8 +299,23 @@ class QgsExpression
     static const QList<QgsExpression::Function *>& Functions();
     static const QStringList& BuiltinFunctions();
 
+    /** Registers a function to the expression engine. This is required to allow expressions to utilise the function.
+     * @param function function to register
+     * @returns true on successful registration
+     * @see unregisterFunction
+     */
     static bool registerFunction( Function* function );
+
+    /** Unregisters a function from the expression engine. The function will no longer be usable in expressions.
+     * @param name function name
+     * @see registerFunction
+     */
     static bool unregisterFunction( QString name );
+
+    /** Deletes all registered functions whose ownership have been transferred to the expression engine.
+     * @note added in QGIS 2.12
+     */
+    static void cleanRegisteredFunctions();
 
     // tells whether the identifier is a name of existing function
     static bool isFunctionName( const QString& name );

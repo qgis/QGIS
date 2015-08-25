@@ -490,8 +490,27 @@ class CORE_EXPORT QgsExpression
     static QStringList gmBuiltinFunctions;
     static const QStringList& BuiltinFunctions();
 
-    static bool registerFunction( Function* function );
+    /** Registers a function to the expression engine. This is required to allow expressions to utilise the function.
+     * @param function function to register
+     * @param transferOwnership set to true to transfer ownership of function to expression engine
+     * @returns true on successful registration
+     * @see unregisterFunction
+     */
+    static bool registerFunction( Function* function, bool transferOwnership = false );
+
+    /** Unregisters a function from the expression engine. The function will no longer be usable in expressions.
+     * @param name function name
+     * @see registerFunction
+     */
     static bool unregisterFunction( QString name );
+
+    //! List of functions owned by the expression engine
+    static QList<Function*> gmOwnedFunctions;
+
+    /** Deletes all registered functions whose ownership have been transferred to the expression engine.
+     * @note added in QGIS 2.12
+     */
+    static void cleanRegisteredFunctions();
 
     // tells whether the identifier is a name of existing function
     static bool isFunctionName( const QString& name );
