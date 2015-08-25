@@ -26,7 +26,7 @@ QgsFieldConditionalFormatWidget::QgsFieldConditionalFormatWidget( QWidget *paren
   btnBackgroundColor->setShowNoColor( true );
   btnTextColor->setAllowAlpha( true );
   btnTextColor->setShowNoColor( true );
-  mModel = new QStandardItemModel();
+  mModel = new QStandardItemModel( listView );
   listView->setModel( mModel );
 }
 
