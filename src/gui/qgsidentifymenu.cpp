@@ -289,7 +289,6 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer* layer, const QList<QgsMapT
       if ( results.count() > 1 )
       {
         layerMenu = new QMenu( layer->name(), this );
-        layerAction = layerMenu->menuAction();
       }
       // case 2b
       else
