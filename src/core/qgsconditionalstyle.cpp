@@ -119,12 +119,12 @@ QgsConditionalStyle::QgsConditionalStyle( QString rule )
 
 QgsConditionalStyle::QgsConditionalStyle( const QgsConditionalStyle &other )
     : mValid( other.mValid )
+    , mName( other.mName )
     , mRule( other.mRule )
     , mFont( other.mFont )
     , mBackColor( other.mBackColor )
     , mTextColor( other.mTextColor )
     , mIcon( other.mIcon )
-    , mName( other.mName )
 {
   if ( other.mSymbol.data() )
     mSymbol.reset( other.mSymbol->clone() );

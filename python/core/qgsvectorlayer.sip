@@ -1245,7 +1245,7 @@ class QgsVectorLayer : QgsMapLayer
     /**
      * @brief Return the conditional styles that are set for this layer. Style information is
      * used to render conditional formatting in the attribute table.
-     * @return Return a \class QgsConditionalLayerStyles object holding the conditional attribute
+     * @return Return a QgsConditionalLayerStyles object holding the conditional attribute
      * style information. Style information is generic and can be used for anything.
      * @note added in QGIS 2.12
      */

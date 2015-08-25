@@ -24,6 +24,7 @@ class QgsConditionalLayerStyles
 
     /**
      * @brief Set the conditional styles for the field UI properties.
+     * @param fieldName name of field
      * @param styles
      */
     void setFieldStyles( QString fieldName, QList<QgsConditionalStyle> styles );
@@ -36,11 +37,11 @@ class QgsConditionalLayerStyles
 
     /** Reads field ui properties specific state from Dom node.
      */
-    virtual bool readXml( const QDomNode& node );
+    bool readXml( const QDomNode& node );
 
     /** Write field ui properties specific state from Dom node.
      */
-    virtual bool writeXml( QDomNode & node, QDomDocument & doc ) const;
+    bool writeXml( QDomNode & node, QDomDocument & doc ) const;
 };
 
 /** \class QgsConditionalStyle
