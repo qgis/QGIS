@@ -26,13 +26,14 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestPyQgsConditionalStyle(TestCase):
-    def new_feature(self):
+    def new_context(self):
         feature = QgsFeature()
         fields = QgsFields()
         fields.append(QgsField("testfield", QVariant.Int))
         feature.setFields(fields, True)
         feature["testfield"] = 20
-        return feature
+        context = QgsExpressionContextUtils.createFeatureBasedContext(feature, fields)
+        return context
 
     def test_MatchesReturnsTrueForSimpleMatch(self):
         style = QgsConditionalStyle("@value > 10")
@@ -45,13 +46,8 @@ class TestPyQgsConditionalStyle(TestCase):
         assert style.matches(20, context)
 
     def test_MatchesTrueForFields(self):
-        feature = QgsFeature()
-        fields = QgsFields()
-        fields.append(QgsField("testfield", QVariant.Int))
-        feature.setFields(fields, True)
-        feature["testfield"] = 20
         style = QgsConditionalStyle('"testfield" = @value')
-        context = QgsExpressionContextUtils.createFeatureBasedContext(feature, fields)
+        context = self.new_context()
         assert style.matches(20, context)
 
     def test_MatchingStylesReturnsListOfCorrectStyles(self):
@@ -65,7 +61,8 @@ class TestPyQgsConditionalStyle(TestCase):
         style = QgsConditionalStyle("@value < 5")
         style.setName("3")
         styles.append(style)
-        out = QgsConditionalStyle.matchingConditionalStyles(styles, 20, self.new_feature())
+        context = self.new_context()
+        out = QgsConditionalStyle.matchingConditionalStyles(styles, 20, context)
         assert len(out) == 2
         out[0].name() == "1"
         out[1].name() == "2"
