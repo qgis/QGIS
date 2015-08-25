@@ -80,6 +80,8 @@ void TestQgsComposerMultiFrame::cleanupTestCase()
     myQTextStream << mReport;
     myFile.close();
   }
+
+  QgsApplication::exitQgis();
 }
 
 void TestQgsComposerMultiFrame::init()

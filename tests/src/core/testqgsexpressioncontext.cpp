@@ -304,8 +304,8 @@ void TestQgsExpressionContext::contextCopy()
 
 void TestQgsExpressionContext::contextStackFunctions()
 {
-  QgsExpression::registerFunction( new GetTestValueFunction() );
-  QgsExpression::registerFunction( new GetTestValueFunction2() );
+  QgsExpression::registerFunction( new GetTestValueFunction(), true );
+  QgsExpression::registerFunction( new GetTestValueFunction2(), true );
 
   QgsExpressionContext context;
   //test retrieving from empty stack
@@ -381,7 +381,7 @@ void TestQgsExpressionContext::evaluate()
   QVERIFY( !expShorthandBad.evaluate( &context ).isValid() );
 
   //test with a function provided by a context
-  QgsExpression::registerFunction( new ModifiableFunction( 0 ) );
+  QgsExpression::registerFunction( new ModifiableFunction( 0 ), true );
   QgsExpression testExpWContextFunction( "test_function(1)" );
   QVERIFY( !testExpWContextFunction.evaluate( ).isValid() );
 
@@ -595,6 +595,7 @@ void TestQgsExpressionContext::layerScope()
   QCOMPARE( layerScope->variable( "testvar" ), QVariant() );
   QCOMPARE( layerScope->variable( "var1" ).toString(), QString( "val1" ) );
   QCOMPARE( layerScope->variable( "var2" ).toString(), QString( "val2" ) );
+  delete layerScope;
 }
 
 void TestQgsExpressionContext::featureBasedContext()

@@ -185,8 +185,8 @@ void TestQgsVectorLayer::cleanupTestCase()
     myFile.close();
     //QDesktopServices::openUrl( "file:///" + myReportFile );
   }
+  delete mpMapRenderer;
   QgsApplication::exitQgis();
-
 }
 
 void TestQgsVectorLayer::QgsVectorLayerNonSpatialIterator()

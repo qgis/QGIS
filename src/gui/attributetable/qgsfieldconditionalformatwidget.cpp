@@ -27,8 +27,8 @@ QgsFieldConditionalFormatWidget::QgsFieldConditionalFormatWidget( QWidget *paren
   btnBackgroundColor->setShowNoColor( true );
   btnTextColor->setAllowAlpha( true );
   btnTextColor->setShowNoColor( true );
-  mModel = new QStandardItemModel();
-  mPresetsModel = new QStandardItemModel();
+  mPresetsModel = new QStandardItemModel( listView );
+  mModel = new QStandardItemModel( listView );
   listView->setModel( mModel );
   mPresetsList->setModel( mPresetsModel );
 

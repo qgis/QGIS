@@ -17,15 +17,23 @@
 #include <QObject>
 #include <QString>
 
-#include <qgsscaleexpression.h>
+#include "qgsscaleexpression.h"
+#include "qgsapplication.h"
 
 class TestQgsScaleExpression: public QObject
 {
     Q_OBJECT
   private slots:
 
-    void initTestCase() {}
-    void cleanupTestCase() {}
+    void initTestCase()
+    {
+      QgsApplication::init();
+      QgsApplication::initQgis();
+    }
+    void cleanupTestCase()
+    {
+      QgsApplication::exitQgis();
+    }
 
     void parsing()
     {

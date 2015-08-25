@@ -1767,7 +1767,7 @@ static QVariant fcnGetLayerProperty( const QVariantList& values, const QgsExpres
   return QVariant();
 }
 
-bool QgsExpression::registerFunction( QgsExpression::Function* function )
+bool QgsExpression::registerFunction( QgsExpression::Function* function, bool transferOwnership )
 {
   int fnIdx = functionIndex( function->name() );
   if ( fnIdx != -1 )
@@ -1775,6 +1775,8 @@ bool QgsExpression::registerFunction( QgsExpression::Function* function )
     return false;
   }
   QgsExpression::gmFunctions.append( function );
+  if ( transferOwnership )
+    QgsExpression::gmOwnedFunctions.append( function );
   return true;
 }
 
@@ -1794,7 +1796,11 @@ bool QgsExpression::unregisterFunction( QString name )
   return false;
 }
 
-
+void QgsExpression::cleanRegisteredFunctions()
+{
+  qDeleteAll( QgsExpression::gmOwnedFunctions );
+  QgsExpression::gmOwnedFunctions.clear();
+}
 
 QStringList QgsExpression::gmBuiltinFunctions;
 
@@ -1842,6 +1848,7 @@ const QStringList& QgsExpression::BuiltinFunctions()
 }
 
 QList<QgsExpression::Function*> QgsExpression::gmFunctions;
+QList<QgsExpression::Function*> QgsExpression::gmOwnedFunctions;
 
 const QList<QgsExpression::Function*>& QgsExpression::Functions()
 {
@@ -1978,6 +1985,12 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     ;
 
     QgsExpressionContextUtils::registerContextFunctions();
+
+    //QgsExpression has ownership of all built-in functions
+    Q_FOREACH ( QgsExpression::Function* func, gmFunctions )
+    {
+      gmOwnedFunctions << func;
+    }
   }
   return gmFunctions;
 }

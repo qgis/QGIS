@@ -57,7 +57,7 @@ QgsLegendSymbolItemV2& QgsLegendSymbolItemV2::operator=( const QgsLegendSymbolIt
   if ( this == &other )
     return *this;
 
-  setSymbol( other.mSymbol ? other.mSymbol->clone() : 0 );
+  setSymbol( other.mSymbol );
   mLabel = other.mLabel;
   mKey = other.mKey;
   mCheckable = other.mCheckable;

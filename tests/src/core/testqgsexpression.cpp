@@ -1007,10 +1007,14 @@ class TestQgsExpression: public QObject
       QgsPolygon polygon;
       polygon << polygon_ring;
 
-      QTest::newRow( "geomFromWKT Point" ) << "geom_from_wkt('" + QgsGeometry::fromPoint( point )->exportToWkt() + "')" << ( void* ) QgsGeometry::fromPoint( point ) << false;
-      QTest::newRow( "geomFromWKT Line" ) << "geomFromWKT('" + QgsGeometry::fromPolyline( line )->exportToWkt() + "')" << ( void* ) QgsGeometry::fromPolyline( line ) << false;
-      QTest::newRow( "geomFromWKT Polyline" ) << "geomFromWKT('" + QgsGeometry::fromPolyline( polyline )->exportToWkt() + "')" << ( void* ) QgsGeometry::fromPolyline( polyline ) << false;
-      QTest::newRow( "geomFromWKT Polygon" ) << "geomFromWKT('" + QgsGeometry::fromPolygon( polygon )->exportToWkt() + "')" << ( void* ) QgsGeometry::fromPolygon( polygon ) << false;
+      QScopedPointer<QgsGeometry> sourcePoint( QgsGeometry::fromPoint( point ) );
+      QTest::newRow( "geomFromWKT Point" ) << "geom_from_wkt('" + sourcePoint->exportToWkt() + "')" << ( void* ) QgsGeometry::fromPoint( point ) << false;
+      QScopedPointer<QgsGeometry> sourceLine( QgsGeometry::fromPolyline( line ) );
+      QTest::newRow( "geomFromWKT Line" ) << "geomFromWKT('" + sourceLine->exportToWkt() + "')" << ( void* ) QgsGeometry::fromPolyline( line ) << false;
+      QScopedPointer<QgsGeometry> sourcePolyline( QgsGeometry::fromPolyline( polyline ) );
+      QTest::newRow( "geomFromWKT Polyline" ) << "geomFromWKT('" + sourcePolyline->exportToWkt() + "')" << ( void* ) QgsGeometry::fromPolyline( polyline ) << false;
+      QScopedPointer<QgsGeometry> sourcePolygon( QgsGeometry::fromPolygon( polygon ) );
+      QTest::newRow( "geomFromWKT Polygon" ) << "geomFromWKT('" + sourcePolygon->exportToWkt() + "')" << ( void* ) QgsGeometry::fromPolygon( polygon ) << false;
 
       // GML Point
       QTest::newRow( "GML Point (coordinates)" ) << "geomFromGML('<gml:Point><gml:coordinates>123,456</gml:coordinates></gml:Point>')" << ( void * ) QgsGeometry::fromPoint( point ) << false;

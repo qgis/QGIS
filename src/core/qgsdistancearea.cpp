@@ -56,6 +56,7 @@ QgsDistanceArea::QgsDistanceArea()
 
 //! Copy constructor
 QgsDistanceArea::QgsDistanceArea( const QgsDistanceArea & origDA )
+    : mCoordTransform( 0 )
 {
   _copy( origDA );
 }
@@ -88,6 +89,7 @@ void QgsDistanceArea::_copy( const QgsDistanceArea & origDA )
   // Some calculations and trig. Should not be TOO time consuming.
   // Alternatively we could copy the temp vars?
   computeAreaInit();
+  delete mCoordTransform;
   mCoordTransform = new QgsCoordinateTransform( origDA.mCoordTransform->sourceCrs(), origDA.mCoordTransform->destCRS() );
 }
 

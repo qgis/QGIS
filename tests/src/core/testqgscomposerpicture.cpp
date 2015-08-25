@@ -99,6 +99,7 @@ void TestQgsComposerPicture::initTestCase()
 
 void TestQgsComposerPicture::cleanupTestCase()
 {
+  delete mComposerPicture;
   delete mComposition;
   delete mMapSettings;
 

@@ -50,8 +50,8 @@ struct expression_parser_context;
 
 #define B_OP(x) yylval->b_op = QgsExpression::x
 #define U_OP(x) yylval->u_op = QgsExpression::x
-#define TEXT                   yylval->text = new QString(); *yylval->text = QString::fromUtf8(yytext);
-#define TEXT_FILTER(filter_fn) yylval->text = new QString(); *yylval->text = filter_fn( QString::fromUtf8(yytext) );
+#define TEXT                   yylval->text = new QString( QString::fromUtf8(yytext) );
+#define TEXT_FILTER(filter_fn) yylval->text = new QString( filter_fn( QString::fromUtf8(yytext) ) );
 
 static QString stripText(QString text)
 {

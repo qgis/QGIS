@@ -463,6 +463,8 @@ void TestQgsComposerUtils::readDataDefinedProperty()
   QVERIFY( !( dataDefinedProperties.value( QgsComposerObject::TestProperty ) )->useExpression() );
   QCOMPARE(( dataDefinedProperties.value( QgsComposerObject::TestProperty ) )->expressionString(), QString() );
   QCOMPARE(( dataDefinedProperties.value( QgsComposerObject::TestProperty ) )->field(), QString() );
+
+  qDeleteAll( dataDefinedProperties );
 }
 
 void TestQgsComposerUtils::readDataDefinedPropertyMap()
@@ -519,6 +521,7 @@ void TestQgsComposerUtils::readDataDefinedPropertyMap()
   QVERIFY( !( dataDefinedProperties.value( QgsComposerObject::TestProperty ) )->useExpression() );
   QCOMPARE(( dataDefinedProperties.value( QgsComposerObject::TestProperty ) )->expressionString(), QString( "test expression 3" ) );
   QCOMPARE(( dataDefinedProperties.value( QgsComposerObject::TestProperty ) )->field(), QString( "test field 3" ) );
+  qDeleteAll( dataDefinedProperties );
 }
 
 void TestQgsComposerUtils::writeDataDefinedPropertyMap()
@@ -569,6 +572,7 @@ void TestQgsComposerUtils::writeDataDefinedPropertyMap()
   QCOMPARE( dd3Elem.attribute( "useExpr", "bad" ), QString( "true" ) );
   QCOMPARE( dd3Elem.attribute( "expr", "bad" ), QString( "expression 3" ) );
   QCOMPARE( dd3Elem.attribute( "field", "bad" ), QString( "field 3" ) );
+  qDeleteAll( dataDefinedProperties );
 }
 
 void TestQgsComposerUtils::scaledFontPixelSize()

@@ -897,6 +897,7 @@ void TestQgsPaintEffect::composer()
   p.end();
 
   bool result = imageCheck( "painteffect_composer", outputImage );
+  delete composition;
   QVERIFY( result );
 }
 
