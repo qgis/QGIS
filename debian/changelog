@@ -1,3 +1,10 @@
+qgis (2.8.3-1) UNRELEASED; urgency=medium
+
+  * split grass provider off into a separate package.
+  * disable grass plugin on sid (because of GRASS7)
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Tue, 25 Aug 2015 21:47:32 +0200
+
 qgis (2.8.3) UNRELEASED; urgency=medium
 
   * Release of 2.8.3

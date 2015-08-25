@@ -127,11 +127,19 @@ ifneq (,$(findstring profile,$(DEB_BUILD_OPTIONS)))
 	LDFLAGS += -pg
 endif
 
+# multi distribution support:
+# - remove prefixes for current distribution
+# - remove lines that exclude current distribution
+# - remove prefixes that exclude other distributions
+# - remove remaining comments
+
 define gentemplate
 $(2): $(1)
 	sed -r \
 		-e 's/^#(.* |)$(DISTRIBUTION)( .*|)#//' \
-		-e '/^#($|[^!])/d' \
+		-e '/^#(.* |)!$(DISTRIBUTION)( .*|)#/d' \
+		-e 's/^#(.* |)![^ ]*( .*|)#//' \
+		-e '/^#/d' \
 		-e "s/\{DEB_BUILD_GNU_TYPE\}/$(DEB_BUILD_GNU_TYPE)/g" \
 		-e "s#\{QT_PLUGIN_DIR\}#$(QT_PLUGIN_DIR)#g" \
 		-e "s/\{QGIS_ABI\}/$(QGIS_ABI)/g" \
@@ -221,9 +229,9 @@ override_dh_auto_install:
 	$(RM) $(CURDIR)/debian/tmp/usr/bin/qbrowser
 
 	# qgis binary wrappers
-	install -o root -g root -m 755 -d $(CURDIR)/debian/qgis-plugin-grass/usr/bin
-	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis-plugin-grass/usr/bin/qgis
-	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis-plugin-grass/usr/bin/qbrowser
+	install -o root -g root -m 755 -d $(CURDIR)/debian/qgis-provider-grass/usr/bin
+	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis-provider-grass/usr/bin/qgis
+	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis-provider-grass/usr/bin/qbrowser
 
 override_dh_install:
 	# Don't ship srs.db, automatically updated in postinst with crssync
