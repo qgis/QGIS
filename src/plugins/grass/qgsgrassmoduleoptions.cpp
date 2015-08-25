@@ -444,7 +444,7 @@ void QgsGrassModuleStandardOptions::freezeOutput()
 {
   QgsDebugMsg( "called." );
 
-#ifdef Q_OS_WIN
+#if 0  // defined(Q_OS_WIN)
   for ( int i = 0; i < mItems.size(); i++ )
   {
     QgsGrassModuleOption *opt = dynamic_cast<QgsGrassModuleOption *>( mItems[i] );
@@ -519,7 +519,7 @@ void QgsGrassModuleStandardOptions::thawOutput()
 {
   QgsDebugMsg( "called." );
 
-#ifdef Q_OS_WIN
+#if 0 // defined(Q_OS_WIN)
   for ( int i = 0; i < mItems.size(); i++ )
   {
     QgsGrassModuleOption *opt = dynamic_cast<QgsGrassModuleOption *>( mItems[i] );
