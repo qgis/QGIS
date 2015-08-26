@@ -60,6 +60,7 @@ class CORE_EXPORT QgsLabelSearchTree
   private:
     // set as mutable because RTree template is not const-correct
     mutable RTree<QgsLabelPosition*, double, 2, double> mSpatialIndex;
+    QList< QgsLabelPosition* > mOwnedPositions;
 };
 
 #endif // QGSLABELTREE_H
