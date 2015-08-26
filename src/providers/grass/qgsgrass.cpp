@@ -2447,12 +2447,13 @@ struct Map_info *QgsGrass::vectNewMapStruct()
   // In OSGeo4W there is GRASS compiled by MinGW while QGIS compiled by MSVC, the compilers
   // may have different sizes of types, see issue #13002. Because there is no Vect_new_map_struct (GRASS 7.0.0, July 2015)
   // the structure is allocated here using doubled (should be enough) space.
+
+  // The same problem was also reported for QGIS 2.11-master compiled on Xubuntu 14.04 LTS
+  // using GRASS 7.0.1-2~ubuntu14.04.1 from https://launchpad.net/~grass/+archive/ubuntu/grass-stable
+  // -> allocate more space on all systems
+
   // TODO: replace by Vect_new_map_struct once it appears in GRASS
-#ifdef Q_OS_WIN
   return ( struct Map_info* ) qgsMalloc( 2*sizeof( struct Map_info ) );
-#else
-  return ( struct Map_info* ) qgsMalloc( sizeof( struct Map_info ) );
-#endif
 }
 
 void QgsGrass::vectDestroyMapStruct( struct Map_info *map )
