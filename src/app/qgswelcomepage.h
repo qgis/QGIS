@@ -16,12 +16,13 @@
 #ifndef QGSWELCOMEDIALOG_H
 #define QGSWELCOMEDIALOG_H
 
+#include <QTabWidget>
 #include <QWidget>
 #include <QLabel>
 
 #include "qgswelcomepageitemsmodel.h"
 
-class QgsWelcomePage : public QWidget
+class QgsWelcomePage : public QTabWidget
 {
     Q_OBJECT
 
