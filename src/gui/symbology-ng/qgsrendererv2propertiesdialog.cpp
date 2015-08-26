@@ -185,6 +185,7 @@ void QgsRendererV2PropertiesDialog::rendererChanged()
   QgsRendererV2AbstractMetadata* m = QgsRendererV2Registry::instance()->rendererMetadata( rendererName );
   if ( m != NULL )
     w = m->createRendererWidget( mLayer, mStyle, oldRenderer );
+  delete oldRenderer;
 
   if ( w != NULL )
   {
