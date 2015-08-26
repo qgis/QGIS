@@ -1,0 +1,4 @@
+usr/lib/qgis/grass/modules/qgis.d.rast{GRASSVER}
+usr/lib/qgis/grass/modules/qgis.g.info{GRASSVER}
+usr/lib/qgis/plugins/libgrassprovider{GRASSVER}.so
+usr/lib/qgis/plugins/libgrassrasterprovider{GRASSVER}.so

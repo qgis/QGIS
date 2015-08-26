@@ -213,7 +213,7 @@ Package: libqgis-dev
 Architecture: any
 Section: libdevel
 Depends:
- grass-dev (<< 7),
+ grass-dev,
  libexpat1-dev,
 #sid stretch jessie trusty utopic vivid# libgdal-dev (>= 1.10.1-0~),
 #precise# libgdal-dev (>= 1.9.0) | libgdal1-dev (<< 1.9.0),
@@ -267,20 +267,19 @@ Description: QGIS - debugging symbols
  .
  This package contains debugging symbols.
 
-Package: qgis-plugin-grass
+Package: qgis-provider-grass
 Architecture: any
 Depends:
  qgis (= ${binary:Version}),
- qgis-plugin-grass-common (= ${source:Version}),
  ${shlibs:Depends},
- ${misc:Depends},
+ ${misc:Depends}
 #grass7#Breaks: qgis-plugin-grass
 #grass7#Replaces: qgis-plugin-grass
 Description: GRASS plugin for QGIS
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
  .
- This plugin enables GRASS data access in the QGIS geographic data viewer.
+ This provider enables GRASS data access in QGIS.
 
 #grass6#Package: qgis-plugin-grass
 #grass6#Architecture: any
@@ -301,7 +300,7 @@ Description: GRASS plugin for QGIS
 #grass6#Package: qgis-plugin-grass-common
 #grass6#Architecture: all
 #grass6#Depends:
-#jessie saucy trusty trusty# python2.7,
+#jessie saucy trusty# python2.7,
 #wheezy precise# python,
 #grass6# ${misc:Depends}
 #grass6#Breaks: qgis-common (<< 1.5)
@@ -356,7 +355,7 @@ Depends:
  python-six,
 #sid stretch jessie trusty utopic vivid# python-pyspatialite,
 #jessie# liblwgeom-2.1.4,
-#sid stretch# liblwgeom-2.1.7,
+#stretch sid# liblwgeom-2.1.8,
  libqgispython{QGIS_ABI},
  ${shlibs:Depends},
  ${python:Depends},
