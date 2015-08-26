@@ -38,6 +38,7 @@ QgsRasterRenderer::QgsRasterRenderer( QgsRasterInterface* input, const QString& 
 
 QgsRasterRenderer::~QgsRasterRenderer()
 {
+  delete mRasterTransparency;
 }
 
 int QgsRasterRenderer::bandCount() const
