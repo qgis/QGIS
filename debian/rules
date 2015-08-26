@@ -24,7 +24,12 @@ ifeq (,$(DISTRIBUTION))
 	DISTRIBUTION := $(shell dpkg-parsechangelog --format rfc822 | sed -ne "s/^Distribution: //p")
 endif
 
-ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"wheezy jessie stretch precise trusty utopic vivid sid-oracle"))
+ifneq (,$(findstring -oracle,$(DISTRIBUTION)))
+	DISTRIBUTION := $(subst -oracle,,$(DISTRIBUTION))
+	WITH_ORACLE=1
+endif
+
+ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"wheezy jessie stretch precise trusty utopic vivid"))
 	DISTRIBUTION := sid
 endif
 
@@ -96,7 +101,7 @@ ifneq (,$(findstring $(DISTRIBUTION),"jessie stretch trusty utopic vivid sid sid
 	CMAKE_OPTS += -DPYTHON_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libpython2.7.so
 endif
 
-ifneq (,$(findstring -oracle,$(DISTRIBUTION)))
+ifneq (,$(WITH_ORACLE))
 	CMAKE_OPTS += -DWITH_ORACLE=TRUE
 endif
 
@@ -148,11 +153,20 @@ endif
 # - remove prefixes that exclude other distributions
 # - remove remaining comments
 
+ifneq (,$(WITH_ORACLE))
+	FILTER_ORACLE = \
+		-e 's/^#(.* |)oracle( .*|)#//' \
+		-e '/^#(.* |)!oracle( .*|)#/d'
+endif
+
 define gentemplate
 $(2): $(1)
 	sed -r \
 		-e 's/^#(.* |)$(DISTRIBUTION)( .*|)#//' \
 		-e '/^#(.* |)!$(DISTRIBUTION)( .*|)#/d' \
+		-e 's/^#(.* |)grass$(GRASSVER)( .*|)#//' \
+		-e '/^#(.* |)!grass$(GRASSVER)( .*|)#/d' \
+		$(FILTER_ORACLE) \
 		-e 's/^#(.* |)![^ ]*( .*|)#//' \
 		-e '/^#/d' \
 		-e "s/\{DEB_BUILD_GNU_TYPE\}/$(DEB_BUILD_GNU_TYPE)/g" \
