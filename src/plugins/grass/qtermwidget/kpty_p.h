@@ -25,21 +25,26 @@
 
 #include "kpty.h"
 
-#include <QtCore/QByteArray>
+#include <QByteArray>
 
-struct KPtyPrivate
-{
-  Q_DECLARE_PUBLIC( KPty )
+struct KPtyPrivate {
 
-  KPtyPrivate();
-  bool chownpty( bool grant );
+    Q_DECLARE_PUBLIC(KPty)
 
-  int masterFd;
-  int slaveFd;
+    KPtyPrivate(KPty* parent);
+    virtual ~KPtyPrivate();
 
-  QByteArray ttyName;
+#ifndef HAVE_OPENPTY
+    bool chownpty(bool grant);
+#endif
 
-  KPty *q_ptr;
+    int masterFd;
+    int slaveFd;
+    bool ownMaster:1;
+
+    QByteArray ttyName;
+
+    KPty *q_ptr;
 };
 
 #endif
