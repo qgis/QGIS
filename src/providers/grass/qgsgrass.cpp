@@ -450,14 +450,7 @@ void QgsGrass::init( void )
   QgsDebugMsg( "mGrassModulesPaths = " + mGrassModulesPaths.join( "," ) );
   //putEnv( "PATH", path );
 
-  // TODO: move setting of PYTHONPATH to QProcess where necessary
-  // Set PYTHONPATH
-  QString pythonpath = gisbase() + "/etc/python";
-  QString pp = getenv( "PYTHONPATH" );
-  pythonpath.append( pathSeparator() + pp );
-  QgsDebugMsg( QString( "set PYTHONPATH: %1" ).arg( pythonpath ) );
-  putEnv( "PYTHONPATH", pythonpath );
-
+  // TODO: move where it is required for QProcess
   // Set GRASS_PAGER if not set, it is necessary for some
   // modules printing to terminal, e.g. g.list
   // We use 'cat' because 'more' is not present in MSYS (Win)
@@ -2353,6 +2346,15 @@ void QgsGrass::putEnv( QString name, QString value )
   char *envChar = new char[env.toUtf8().length()+1];
   strcpy( envChar, env.toUtf8().constData() );
   putenv( envChar );
+}
+
+QString QgsGrass::getPythonPath()
+{
+  QString pythonpath = getenv( "PYTHONPATH" );
+  pythonpath += pathSeparator() + gisbase() + "/etc/python";
+  pythonpath += pathSeparator() + gisbase() + "/gui/wxpython";
+  QgsDebugMsg( "pythonpath = " + pythonpath );
+  return pythonpath;
 }
 
 QString QgsGrass::modulesConfigDefaultDirPath()

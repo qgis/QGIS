@@ -1005,9 +1005,10 @@ QDomDocument QgsGrassModuleStandardOptions::readInterfaceDescription( const QStr
     QString pathVariable = QgsGrassModule::libraryPathVariable();
     QgsDebugMsg( "process.exitCode() = " + QString::number( process.exitCode() ) );
     QString msg = tr( "Cannot start module %1" ).arg( mXName )
-                  + "<br>" + pathVariable + "=" + environment.value( pathVariable )
-                  + "<br>PATH=" + getenv( "PATH" )
-                  + "<br>" + tr( "command" ) + QString( ": %1 %2<br>%3<br>%4" )
+                  + "<br><br>" + pathVariable + "=" + environment.value( pathVariable )
+                  + "<br><br>PATH=" + environment.value( "PATH" )
+                  + "<br><br>PYTHONPATH=" + environment.value( "PYTHONPATH" )
+                  + "<br><br>" + tr( "command" ) + QString( ": %1 %2<br>%3<br>%4" )
                   .arg( cmd ).arg( arguments.join( " " ) )
                   .arg( process.readAllStandardOutput().constData() )
                   .arg( process.readAllStandardError().constData() );
