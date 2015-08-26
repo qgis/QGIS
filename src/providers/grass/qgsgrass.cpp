@@ -2453,7 +2453,20 @@ struct Map_info *QgsGrass::vectNewMapStruct()
   // -> allocate more space on all systems
 
   // TODO: replace by Vect_new_map_struct once it appears in GRASS
+  // Patch supplied: https://trac.osgeo.org/grass/ticket/2729
+#if GRASS_VERSION_MAJOR > 999
+  G_TRY
+  {
+    return Vect_new_map_struct();
+  }
+  G_CATCH( QgsGrass::Exception &e ) // out of memory
+  {
+    warning( e );
+    return 0;
+  }
+#else
   return ( struct Map_info* ) qgsMalloc( 2*sizeof( struct Map_info ) );
+#endif
 }
 
 void QgsGrass::vectDestroyMapStruct( struct Map_info *map )
