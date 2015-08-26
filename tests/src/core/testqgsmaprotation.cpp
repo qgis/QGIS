@@ -130,8 +130,6 @@ void TestQgsMapRotation::cleanupTestCase()
   delete mMapSettings;
   QgsApplication::exitQgis();
 
-  // TODO: delete layers (or is it done by exitQgis ?)
-
   QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )

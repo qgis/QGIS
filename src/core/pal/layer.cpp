@@ -235,6 +235,10 @@ namespace pal
           delete biggest_part; // safe with NULL part
           biggest_part = fpart;
         }
+        else
+        {
+          delete fpart;
+        }
         continue; // don't add the feature part now, do it later
         // TODO: we should probably add also other parts to act just as obstacles
       }
@@ -463,6 +467,7 @@ namespace pal
         newFeatureParts->append( newfpart );
         newfpart->getBoundingBox( bmin, bmax );
         rtree->Insert( bmin, bmax, newfpart );
+        delete fpart;
       }
       else
       {

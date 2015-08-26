@@ -330,6 +330,7 @@ namespace pal
 
       /** Add newly created feature part into r tree and to the list */
       void addFeaturePart( FeaturePart* fpart, const QString &labelText = QString() );
+
   };
 
 } // end namespace pal

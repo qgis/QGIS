@@ -386,6 +386,7 @@ namespace pal
 
     if ( isCancelled() )
     {
+      qDeleteAll( *fFeats );
       delete fFeats;
       delete prob;
       delete obstacles;
@@ -464,6 +465,7 @@ namespace pal
     {
       if ( isCancelled() )
       {
+        qDeleteAll( *fFeats );
         delete fFeats;
         delete prob;
         delete obstacles;

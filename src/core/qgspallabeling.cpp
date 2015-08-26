@@ -4227,6 +4227,7 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
   if ( context.renderingStopped() )
   {
     delete problem;
+    deleteTemporaryData();
     return; // it has been cancelled
   }
 

@@ -474,6 +474,9 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
       return QgsApplication::libexecPath() + "grass/modules";
     }
 
+    // Get PYTHONPATH with paths to GRASS Python modules
+    static QString getPythonPath();
+
     // path to default modules interface config dir
     static QString modulesConfigDefaultDirPath();
 

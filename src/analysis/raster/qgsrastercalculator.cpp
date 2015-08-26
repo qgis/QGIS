@@ -90,12 +90,12 @@ int QgsRasterCalculator::processCalculation( QProgressDialog* p )
     // if crs transform needed
     if ( it->raster->crs() != mOutputCrs )
     {
-      QgsRasterProjector* proj = new QgsRasterProjector();
-      proj->setCRS( it->raster->crs(), mOutputCrs );
-      proj->setInput( it->raster->dataProvider()->clone() );
-      proj->setPrecision( QgsRasterProjector::Exact );
+      QgsRasterProjector proj;
+      proj.setCRS( it->raster->crs(), mOutputCrs );
+      proj.setInput( it->raster->dataProvider() );
+      proj.setPrecision( QgsRasterProjector::Exact );
 
-      block = proj->block( it->bandNumber, mOutputRectangle, mNumOutputColumns, mNumOutputRows );
+      block = proj.block( it->bandNumber, mOutputRectangle, mNumOutputColumns, mNumOutputRows );
     }
     else
     {
@@ -155,10 +155,7 @@ int QgsRasterCalculator::processCalculation( QProgressDialog* p )
         qWarning( "RasterIO error!" );
       }
 
-      if ( resultIsNumber )
-      {
-        delete[] calcData;
-      }
+      delete[] calcData;
     }
 
   }

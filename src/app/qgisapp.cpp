@@ -582,7 +582,16 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   int myBlue = settings.value( "/qgis/default_canvas_color_blue", 255 ).toInt();
   mMapCanvas->setCanvasColor( QColor( myRed, myGreen, myBlue ) );
 
-  centralLayout->addWidget( mMapCanvas, 0, 0, 2, 1 );
+  mWelcomePage = new QgsWelcomePage;
+
+  mCentralContainer = new QStackedWidget;
+  mCentralContainer->insertWidget( 0, mMapCanvas );
+  mCentralContainer->insertWidget( 1, mWelcomePage );
+
+  qobject_cast<QGridLayout *>( centralWidget->layout() )->addWidget( mCentralContainer, 0, 0, 2, 1 );
+
+  mCentralContainer->setCurrentIndex( 1 );
+
 
   // a bar to warn the user with non-blocking messages
   mInfoBar = new QgsMessageBar( centralWidget );
@@ -1143,13 +1152,11 @@ void QgisApp::readSettings()
     data.path = project;
     data.title = project;
 
-    mRecentProjects.prepend( data );
+    mRecentProjects.append( data );
   }
 
   settings.beginGroup( "/UI/recentProjects" );
   QStringList projectKeys = settings.childGroups();
-
-
 
   Q_FOREACH ( const QString& key, projectKeys )
   {
@@ -1159,7 +1166,7 @@ void QgisApp::readSettings()
     data.path = settings.value( "path" ).toString();
     data.previewImagePath = settings.value( "previewImage" ).toString();
     settings.endGroup();
-    mRecentProjects.prepend( data );
+    mRecentProjects.append( data );
   }
   settings.endGroup();
 
@@ -3913,19 +3920,8 @@ void QgisApp::fileOpenAfterLaunch()
   QString projPath = QString();
   if ( projOpen == 0 ) // welcome page
   {
-    mWelcomePage = new QgsWelcomePage;
-
-    mCentralContainer = new QStackedWidget;
-    mCentralContainer->insertWidget( 0, mMapCanvas );
-    mCentralContainer->insertWidget( 1, mWelcomePage );
-
     connect( mMapCanvas, SIGNAL( layersChanged() ), this, SLOT( showMapCanvas() ) );
     connect( this, SIGNAL( newProject() ), this, SLOT( showMapCanvas() ) );
-
-    qobject_cast<QGridLayout *>( centralWidget()->layout() )->addWidget( mCentralContainer, 0, 0, 2, 1 );
-
-    mCentralContainer->setCurrentIndex( 1 );
-
     return;
   }
   if ( projOpen == 1 && mRecentProjects.size() > 0 ) // most recent project

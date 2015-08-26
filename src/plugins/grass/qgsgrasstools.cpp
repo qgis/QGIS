@@ -258,7 +258,7 @@ void QgsGrassTools::runModule( QString name, bool direct )
     return;  // Section
   }
 
-#if defined(HAVE_OPENPTY) && !defined(Q_OS_WIN)
+#ifdef HAVE_POSIX_OPENPT
   QgsGrassShell* sh = 0;
 #endif
 
@@ -274,14 +274,14 @@ void QgsGrassTools::runModule( QString name, bool direct )
     return;
 #else
 
-#ifdef HAVE_OPENPTY
+#ifdef HAVE_POSIX_OPENPT
     sh = new QgsGrassShell( this, mTabWidget );
     m = qobject_cast<QWidget *>( sh );
 #else
     QMessageBox::warning( 0, tr( "Warning" ), tr( "GRASS Shell is not compiled." ) );
-#endif // HAVE_OPENPTY
+#endif
 
-#endif // ! Q_OS_WIN
+#endif // Q_OS_WIN
   }
   else
   {
@@ -319,9 +319,11 @@ void QgsGrassTools::runModule( QString name, bool direct )
   /* TODO: Implement something that resizes the terminal without
    *       crashes.
    */
-#ifdef HAVE_OPENPTY
+#ifdef HAVE_POSIX_OPENPT
   if ( sh )
+  {
     sh->resizeTerminal();
+  }
 #endif
 #endif
 }
