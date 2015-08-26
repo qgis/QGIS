@@ -175,8 +175,6 @@ namespace pal
     probFeat = other.probFeat;
     nbOverlap = other.nbOverlap;
 
-    memcpy( x, other.x, sizeof( double )*4 );
-    memcpy( y, other.y, sizeof( double )*4 );
     alpha = other.alpha;
     w = other.w;
     h = other.h;

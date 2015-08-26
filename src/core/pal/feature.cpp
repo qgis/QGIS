@@ -110,6 +110,7 @@ namespace pal
     {
       mHoles.at( i )->holeOf = this;
     }
+
   }
 
 
@@ -119,7 +120,6 @@ namespace pal
 
     qDeleteAll( mHoles );
     mHoles.clear();
-
   }
 
   void FeaturePart::extractCoords( const GEOSGeometry* geom )
@@ -166,6 +166,7 @@ namespace pal
     xmax = ymax = -DBL_MAX;
 
     // initialize coordinate arrays
+    deleteCoords();
     x = new double[nbPoints];
     y = new double[nbPoints];
 
