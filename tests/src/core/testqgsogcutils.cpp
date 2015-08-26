@@ -20,7 +20,7 @@
 //qgis includes...
 #include <qgsgeometry.h>
 #include <qgsogcutils.h>
-
+#include "qgsapplication.h"
 
 /** \ingroup UnitTests
  * This is a unit test for OGC utilities
@@ -29,6 +29,21 @@ class TestQgsOgcUtils : public QObject
 {
     Q_OBJECT
   private slots:
+
+    void initTestCase()
+    {
+      //
+      // Runs once before any tests are run
+      //
+      // init QGIS's paths - true means that all path will be inited from prefix
+      QgsApplication::init();
+      QgsApplication::initQgis();
+    }
+
+    void cleanupTestCase()
+    {
+      QgsApplication::exitQgis();
+    }
 
     void testGeometryFromGML();
     void testGeometryToGML();

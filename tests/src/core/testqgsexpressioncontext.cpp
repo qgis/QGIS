@@ -305,7 +305,6 @@ void TestQgsExpressionContext::contextCopy()
 void TestQgsExpressionContext::contextStackFunctions()
 {
   QgsExpression::registerFunction( new GetTestValueFunction(), true );
-  QgsExpression::registerFunction( new GetTestValueFunction2(), true );
 
   QgsExpressionContext context;
   //test retrieving from empty stack

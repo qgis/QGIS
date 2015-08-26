@@ -160,6 +160,7 @@ void TestStyleV2::cleanupTestCase()
   // don't save
   // mStyle->save();
   delete mStyle;
+  QgsCptCityArchive::clearArchives();
   QgsApplication::exitQgis();
 
   QString myReportFile = QDir::tempPath() + "/qgistest.html";

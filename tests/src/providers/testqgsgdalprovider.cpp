@@ -82,6 +82,7 @@ void TestQgsGdalProvider::scaleDataType()
   //raster is an integer data type, but has a scale < 1, so data type must be float
   QCOMPARE( rp->dataType( 1 ), QGis::Float32 );
   QCOMPARE( rp->srcDataType( 1 ), QGis::Float32 );
+  delete provider;
 }
 
 void TestQgsGdalProvider::warpedVrt()
@@ -100,6 +101,7 @@ void TestQgsGdalProvider::warpedVrt()
   QVERIFY( qgsDoubleNear( rp->extent().xMaximum(), 3118999, 1 ) );
   QVERIFY( qgsDoubleNear( rp->extent().yMinimum(), 2281355, 1 ) );
   QVERIFY( qgsDoubleNear( rp->extent().yMaximum(), 3129683, 1 ) );
+  delete provider;
 }
 
 QTEST_MAIN( TestQgsGdalProvider )
