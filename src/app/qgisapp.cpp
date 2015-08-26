@@ -1152,13 +1152,11 @@ void QgisApp::readSettings()
     data.path = project;
     data.title = project;
 
-    mRecentProjects.prepend( data );
+    mRecentProjects.append( data );
   }
 
   settings.beginGroup( "/UI/recentProjects" );
   QStringList projectKeys = settings.childGroups();
-
-
 
   Q_FOREACH ( const QString& key, projectKeys )
   {
@@ -1168,7 +1166,7 @@ void QgisApp::readSettings()
     data.path = settings.value( "path" ).toString();
     data.previewImagePath = settings.value( "previewImage" ).toString();
     settings.endGroup();
-    mRecentProjects.prepend( data );
+    mRecentProjects.append( data );
   }
   settings.endGroup();
 
