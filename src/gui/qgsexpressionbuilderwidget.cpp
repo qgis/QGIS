@@ -42,14 +42,17 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
 //  highlighter = new QgsExpressionHighlighter( txtExpressionString->document() );
 
   mModel = new QStandardItemModel();
+  mGroupsModel = new QStandardItemModel();
+
   mProxyModel = new QgsExpressionItemSearchProxy();
   mProxyModel->setDynamicSortFilter( true );
   mProxyModel->setSourceModel( mModel );
-  expressionTree->setModel( mProxyModel );
-  expressionTree->setSortingEnabled( true );
-  expressionTree->sortByColumn( 0, Qt::AscendingOrder );
 
+  expressionGroupsList->setModel( mGroupsModel );
+  expressionTree->setModel( mProxyModel );
   expressionTree->setContextMenuPolicy( Qt::CustomContextMenu );
+
+  connect( expressionGroupsList, SIGNAL( currentIndexChanged( int ) ), this, SLOT( groupChanged( int ) ) );
   connect( this, SIGNAL( expressionParsed( bool ) ), this, SLOT( setExpressionState( bool ) ) );
   connect( expressionTree, SIGNAL( customContextMenuRequested( const QPoint & ) ), this, SLOT( showContextMenu( const QPoint & ) ) );
   connect( expressionTree->selectionModel(), SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ),
@@ -98,6 +101,13 @@ QgsExpressionBuilderWidget::~QgsExpressionBuilderWidget()
   QSettings settings;
   settings.setValue( "/windows/QgsExpressionBuilderWidget/splitter", splitter->saveState() );
   settings.setValue( "/windows/QgsExpressionBuilderWidget/functionsplitter", functionsplit->saveState() );
+}
+
+void QgsExpressionBuilderWidget::groupChanged( int groupIndex )
+{
+  QgsExpressionItem* item = dynamic_cast<QgsExpressionItem*>( mGroupsModel->item( groupIndex ) );
+  QString group = item->data( Qt::UserRole ).toString();
+  mProxyModel->setGroupFilter( group );
 }
 
 void QgsExpressionBuilderWidget::setLayer( QgsVectorLayer *layer )
@@ -346,6 +356,8 @@ void QgsExpressionBuilderWidget::registerItem( QString group,
   QgsExpressionItem* item = new QgsExpressionItem( label, expressionText, helpText, type );
   item->setData( label, Qt::UserRole );
   item->setData( sortOrder, QgsExpressionItem::CustomSortRole );
+  item->setData( group, QgsExpressionItem::GroupRole );
+  mModel->appendRow( item );
 
   // Look up the group and insert the new function.
   if ( mExpressionGroups.contains( group ) )
@@ -360,21 +372,22 @@ void QgsExpressionBuilderWidget::registerItem( QString group,
     newgroupNode->setData( group, Qt::UserRole );
     newgroupNode->setData( group == "Recent (Selection)" ? 2 : 1, QgsExpressionItem::CustomSortRole );
     newgroupNode->appendRow( item );
-    mModel->appendRow( newgroupNode );
+    mGroupsModel->appendRow( newgroupNode );
     mExpressionGroups.insert( group, newgroupNode );
   }
 
-  if ( highlightedItem )
-  {
-    //insert a copy as a top level item
-    QgsExpressionItem* topLevelItem = new QgsExpressionItem( label, expressionText, helpText, type );
-    topLevelItem->setData( label, Qt::UserRole );
-    item->setData( 0, QgsExpressionItem::CustomSortRole );
-    QFont font = topLevelItem->font();
-    font.setBold( true );
-    topLevelItem->setFont( font );
-    mModel->appendRow( topLevelItem );
-  }
+  // TODO Fix me
+//  if ( highlightedItem )
+//  {
+//    //insert a copy as a top level item
+//    QgsExpressionItem* topLevelItem = new QgsExpressionItem( label, expressionText, helpText, type );
+//    topLevelItem->setData( label, Qt::UserRole );
+//    item->setData( 0, QgsExpressionItem::CustomSortRole );
+//    QFont font = topLevelItem->font();
+//    font.setBold( true );
+//    topLevelItem->setFont( font );
+//    mModel->appendRow( topLevelItem );
+//  }
 
 }
 
@@ -422,6 +435,7 @@ void QgsExpressionBuilderWidget::loadRecent( QString key )
 
 void QgsExpressionBuilderWidget::updateFunctionTree()
 {
+  mGroupsModel->clear();
   mModel->clear();
   mExpressionGroups.clear();
   // TODO Can we move this stuff to QgsExpression, like the functions?
@@ -624,11 +638,12 @@ void QgsExpressionBuilderWidget::loadExpressionContext()
 
 void QgsExpressionBuilderWidget::on_txtSearchEdit_textChanged()
 {
+  mProxyModel->setGroupFilter(QString());
   mProxyModel->setFilterWildcard( txtSearchEdit->text() );
-  if ( txtSearchEdit->text().isEmpty() )
-    expressionTree->collapseAll();
-  else
-    expressionTree->expandAll();
+//  if ( txtSearchEdit->text().isEmpty() )
+//    expressionTree->collapseAll();
+//  else
+//    expressionTree->expandAll();
 }
 
 void QgsExpressionBuilderWidget::on_lblPreview_linkActivated( QString link )

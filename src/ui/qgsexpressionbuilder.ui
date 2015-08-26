@@ -340,7 +340,10 @@
                 </widget>
                </item>
                <item>
-                <widget class="QTreeView" name="expressionTree">
+                <widget class="QComboBox" name="expressionGroupsList"/>
+               </item>
+               <item>
+                <widget class="QListView" name="expressionTree">
                  <property name="frameShape">
                   <enum>QFrame::StyledPanel</enum>
                  </property>
@@ -350,18 +353,6 @@
                  <property name="editTriggers">
                   <set>QAbstractItemView::NoEditTriggers</set>
                  </property>
-                 <property name="uniformRowHeights">
-                  <bool>false</bool>
-                 </property>
-                 <property name="sortingEnabled">
-                  <bool>false</bool>
-                 </property>
-                 <property name="animated">
-                  <bool>true</bool>
-                 </property>
-                 <attribute name="headerVisible">
-                  <bool>false</bool>
-                 </attribute>
                 </widget>
                </item>
               </layout>
