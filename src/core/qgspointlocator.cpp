@@ -670,6 +670,9 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
 
     SpatialIndex::Region r( rect2region( f.constGeometry()->boundingBox() ) );
     dataList << new RTree::Data( 0, 0, r, f.id() );
+
+    if ( mGeoms.contains( f.id() ) )
+      delete mGeoms.take( f.id() );
     mGeoms[f.id()] = new QgsGeometry( *f.constGeometry() );
     ++indexedCount;
 
@@ -748,6 +751,9 @@ void QgsPointLocator::onFeatureAdded( QgsFeatureId fid )
     {
       SpatialIndex::Region r( rect2region( bbox ) );
       mRTree->insertData( 0, 0, r, f.id() );
+
+      if ( mGeoms.contains( f.id() ) )
+        delete mGeoms.take( f.id() );
       mGeoms[fid] = new QgsGeometry( *f.constGeometry() );
     }
   }
@@ -761,7 +767,7 @@ void QgsPointLocator::onFeatureDeleted( QgsFeatureId fid )
   if ( mGeoms.contains( fid ) )
   {
     mRTree->deleteData( rect2region( mGeoms[fid]->boundingBox() ), fid );
-    mGeoms.remove( fid );
+    delete mGeoms.take( fid );
   }
 }
 

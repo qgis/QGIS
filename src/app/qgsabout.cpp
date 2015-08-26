@@ -56,10 +56,15 @@ void QgsAbout::init()
   QTcpSocket socket;
   socket.connectToHost( "qgis.org", 80 );
   if ( socket.waitForConnected( 1000 ) )
+  {
     setDevelopersMap();
+  }
   else
+  {
     mOptionsListWidget->item( DEVELOPERS_MAP_INDEX )->setHidden( true );
-
+    QModelIndex firstItem = mOptionsListWidget->model()->index( 0, 0, QModelIndex() );
+    mOptionsListWidget->setCurrentIndex( firstItem );
+  }
   developersMapView->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
   developersMapView->setContextMenuPolicy( Qt::NoContextMenu );
 

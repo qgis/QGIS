@@ -157,6 +157,7 @@ QProcessEnvironment QgsGrassModule::processEnvironment( bool direct )
   QStringList paths = QgsGrass::grassModulesPaths();
   paths += environment.value( "PATH" ).split( QgsGrass::pathSeparator() );
   environment.insert( "PATH", paths.join( QgsGrass::pathSeparator() ) );
+  environment.insert( "PYTHONPATH", QgsGrass::getPythonPath() );
 
   if ( direct )
   {

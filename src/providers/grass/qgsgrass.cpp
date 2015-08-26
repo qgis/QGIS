@@ -450,14 +450,7 @@ void QgsGrass::init( void )
   QgsDebugMsg( "mGrassModulesPaths = " + mGrassModulesPaths.join( "," ) );
   //putEnv( "PATH", path );
 
-  // TODO: move setting of PYTHONPATH to QProcess where necessary
-  // Set PYTHONPATH
-  QString pythonpath = gisbase() + "/etc/python";
-  QString pp = getenv( "PYTHONPATH" );
-  pythonpath.append( pathSeparator() + pp );
-  QgsDebugMsg( QString( "set PYTHONPATH: %1" ).arg( pythonpath ) );
-  putEnv( "PYTHONPATH", pythonpath );
-
+  // TODO: move where it is required for QProcess
   // Set GRASS_PAGER if not set, it is necessary for some
   // modules printing to terminal, e.g. g.list
   // We use 'cat' because 'more' is not present in MSYS (Win)
@@ -2355,6 +2348,15 @@ void QgsGrass::putEnv( QString name, QString value )
   putenv( envChar );
 }
 
+QString QgsGrass::getPythonPath()
+{
+  QString pythonpath = getenv( "PYTHONPATH" );
+  pythonpath += pathSeparator() + gisbase() + "/etc/python";
+  pythonpath += pathSeparator() + gisbase() + "/gui/wxpython";
+  QgsDebugMsg( "pythonpath = " + pythonpath );
+  return pythonpath;
+}
+
 QString QgsGrass::modulesConfigDefaultDirPath()
 {
   if ( QgsApplication::isRunningFromBuildDir() )
@@ -2445,11 +2447,25 @@ struct Map_info *QgsGrass::vectNewMapStruct()
   // In OSGeo4W there is GRASS compiled by MinGW while QGIS compiled by MSVC, the compilers
   // may have different sizes of types, see issue #13002. Because there is no Vect_new_map_struct (GRASS 7.0.0, July 2015)
   // the structure is allocated here using doubled (should be enough) space.
+
+  // The same problem was also reported for QGIS 2.11-master compiled on Xubuntu 14.04 LTS
+  // using GRASS 7.0.1-2~ubuntu14.04.1 from https://launchpad.net/~grass/+archive/ubuntu/grass-stable
+  // -> allocate more space on all systems
+
   // TODO: replace by Vect_new_map_struct once it appears in GRASS
-#ifdef Q_OS_WIN
-  return ( struct Map_info* ) qgsMalloc( 2*sizeof( struct Map_info ) );
+  // Patch supplied: https://trac.osgeo.org/grass/ticket/2729
+#if GRASS_VERSION_MAJOR > 999
+  G_TRY
+  {
+    return Vect_new_map_struct();
+  }
+  G_CATCH( QgsGrass::Exception &e ) // out of memory
+  {
+    warning( e );
+    return 0;
+  }
 #else
-  return ( struct Map_info* ) qgsMalloc( sizeof( struct Map_info ) );
+  return ( struct Map_info* ) qgsMalloc( 2*sizeof( struct Map_info ) );
 #endif
 }
 

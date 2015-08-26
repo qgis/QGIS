@@ -98,6 +98,9 @@ QgsExpressionBuilderWidget::~QgsExpressionBuilderWidget()
   QSettings settings;
   settings.setValue( "/windows/QgsExpressionBuilderWidget/splitter", splitter->saveState() );
   settings.setValue( "/windows/QgsExpressionBuilderWidget/functionsplitter", functionsplit->saveState() );
+
+  delete mModel;
+  delete mProxyModel;
 }
 
 void QgsExpressionBuilderWidget::setLayer( QgsVectorLayer *layer )

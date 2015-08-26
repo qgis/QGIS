@@ -104,6 +104,7 @@ void TestQgsRasterSubLayer::initTestCase()
     qDebug() << "raster metadata: " << mpRasterLayer->dataProvider()->metadata();
     mReport += "raster metadata: " + mpRasterLayer->dataProvider()->metadata();
 
+    QgsMapLayerRegistry::instance()->addMapLayer( mpRasterLayer );
   }
   else
   {

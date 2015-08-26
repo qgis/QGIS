@@ -44,13 +44,19 @@
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
+         <property name="opaqueResize">
+          <bool>false</bool>
+         </property>
          <property name="handleWidth">
           <number>4</number>
+         </property>
+         <property name="childrenCollapsible">
+          <bool>false</bool>
          </property>
          <widget class="QWidget" name="layoutWidget_1">
           <layout class="QVBoxLayout" name="verticalLayout">
            <item>
-            <widget class="QGroupBox" name="groupBox">
+            <widget class="QFrame" name="frame">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                <horstretch>0</horstretch>
@@ -74,12 +80,6 @@
                <width>0</width>
                <height>0</height>
               </size>
-             </property>
-             <property name="title">
-              <string>Expression</string>
-             </property>
-             <property name="flat">
-              <bool>true</bool>
              </property>
              <layout class="QGridLayout" name="gridLayout">
               <property name="margin">
@@ -320,18 +320,15 @@
            </item>
           </layout>
          </widget>
-         <widget class="QGroupBox" name="moperationListGroup">
-          <property name="title">
-           <string>Functions</string>
-          </property>
-          <property name="flat">
-           <bool>true</bool>
-          </property>
+         <widget class="QFrame" name="moperationListGroup">
           <layout class="QGridLayout" name="gridLayout_5">
            <item row="0" column="0">
             <widget class="QSplitter" name="functionsplit">
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="opaqueResize">
+              <bool>false</bool>
              </property>
              <widget class="QWidget" name="layoutWidget">
               <layout class="QVBoxLayout" name="verticalLayout_4">

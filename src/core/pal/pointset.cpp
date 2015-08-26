@@ -126,12 +126,8 @@ namespace pal
     nbPoints = ps.nbPoints;
     x = new double[nbPoints];
     y = new double[nbPoints];
-
-    for ( i = 0; i < nbPoints; i++ )
-    {
-      x[i] = ps.x[i];
-      y[i] = ps.y[i];
-    }
+    memcpy( x, ps.x, sizeof( double )* nbPoints );
+    memcpy( y, ps.y, sizeof( double )* nbPoints );
 
     if ( ps.cHull )
     {
