@@ -11,17 +11,29 @@ class QgsPointDisplacementRenderer : QgsFeatureRendererV2
 
     virtual void toSld( QDomDocument& doc, QDomElement &element ) const;
 
-    /**Reimplemented from QgsFeatureRendererV2*/
+    /** Reimplemented from QgsFeatureRendererV2*/
     bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
 
-    QgsSymbolV2* symbolForFeature( QgsFeature& feature );
+    /** Partial proxy that will call this method on the embedded renderer. */
+    virtual QList<QString> usedAttributes();
+    /** Proxy that will call this method on the embedded renderer. */
+    virtual int capabilities();
+    /** Proxy that will call this method on the embedded renderer. */
+    virtual QgsSymbolV2List symbols( QgsRenderContext& context );
+    /** Proxy that will call this method on the embedded renderer. */
+    virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature, QgsRenderContext& context );
+    /** Proxy that will call this method on the embedded renderer. */
+    virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feat, QgsRenderContext& context );
+    /** Proxy that will call this method on the embedded renderer. */
+    virtual QgsSymbolV2List symbolsForFeature( QgsFeature& feat, QgsRenderContext& context );
+    /** Proxy that will call this method on the embedded renderer. */
+    virtual QgsSymbolV2List originalSymbolsForFeature( QgsFeature& feat, QgsRenderContext& context );
+    /** Proxy that will call this method on the embedded renderer. */
+    virtual bool willRenderFeature( QgsFeature& feat, QgsRenderContext& context );
 
-    void startRender( QgsRenderContext& context, const QgsFields& fields );
+    virtual void startRender( QgsRenderContext& context, const QgsFields& fields );
 
     void stopRender( QgsRenderContext& context );
-
-    QList<QString> usedAttributes();
-    QgsSymbolV2List symbols();
 
     //! create a renderer from XML element
     static QgsFeatureRendererV2* create( QDomElement& symbologyElem ) /Factory/;
@@ -35,7 +47,7 @@ class QgsPointDisplacementRenderer : QgsFeatureRendererV2
     void setLabelAttributeName( const QString& name );
     QString labelAttributeName() const;
 
-    /**Sets embedded renderer (takes ownership)*/
+    /** Sets embedded renderer (takes ownership)*/
     void setEmbeddedRenderer( QgsFeatureRendererV2* r /Transfer/ );
     QgsFeatureRendererV2* embeddedRenderer();
 
@@ -61,9 +73,9 @@ class QgsPointDisplacementRenderer : QgsFeatureRendererV2
     void setMaxLabelScaleDenominator( double d );
     double maxLabelScaleDenominator() const;
 
-    /**Returns the symbol for the center of a displacement group (but _not_ ownership of the symbol)*/
+    /** Returns the symbol for the center of a displacement group (but _not_ ownership of the symbol)*/
     QgsMarkerSymbolV2* centerSymbol();
-    /**Sets the center symbol (takes ownership)*/
+    /** Sets the center symbol (takes ownership)*/
     void setCenterSymbol( QgsMarkerSymbolV2* symbol /Transfer/ );
 
     void setTolerance( double t );

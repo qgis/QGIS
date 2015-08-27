@@ -19,8 +19,6 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
 #include <QObject>
-#include <QPen>
-
 
 class QgsGrassTools;
 class QgsGrassNewMapset;
@@ -75,10 +73,6 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
     //! Destructor
     virtual ~QgsGrassPlugin();
 
-    //! Get Region Pen
-    QPen & regionPen( void );
-    //! Set Region Pen
-    void setRegionPen( QPen & );
     //! Get an icon from the active theme if possible
     static QIcon getThemeIcon( const QString &theName );
 
@@ -95,10 +89,6 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
     void displayRegion();
     //! Switch region on/off
     void switchRegion( bool on );
-    //! Change region
-    void changeRegion( void );
-    //! Region dialog closed
-    void regionClosed();
     //! Redraw region
     void redrawRegion( void );
     //! Post render
@@ -107,9 +97,9 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
     void openTools( void );
     //! Create new mapset
     void newMapset();
-    //! Open existing mapset
+    //! Open existing mapset and save it to project
     void openMapset();
-    //! Close mapset
+    //! Close mapset and save it to project
     void closeMapset();
     //! Current mapset changed (opened/closed)
     void mapsetChanged();
@@ -119,8 +109,6 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
     void projectRead();
     //! New project
     void newProject();
-    //! Save mapset to project
-    void saveMapset();
     //! Set edit action
     void setEditAction();
     //! Close the edit if layer is removed
@@ -141,10 +129,7 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
 
     //! Pointer to Display region acction
     QAction *mRegionAction;
-    //! Region width
-    QPen mRegionPen;
-    //! Region dialog
-    QgsGrassRegion *mRegion;
+
     // Region rubber band
     QgsRubberBand *mRegionBand;
     //! GRASS tools
@@ -161,7 +146,6 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
     QAction *mNewMapsetAction;
     QAction *mCloseMapsetAction;
     QAction *mOpenToolsAction;
-    QAction *mEditRegionAction;
     QAction *mEditAction;
     QAction *mNewVectorAction;
 };

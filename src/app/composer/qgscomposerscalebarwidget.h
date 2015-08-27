@@ -69,10 +69,10 @@ class QgsComposerScaleBarWidget: public QgsComposerItemBaseWidget, private Ui::Q
     QButtonGroup mSegmentSizeRadioGroup;
 
     void refreshMapComboBox();
-    /**Enables/disables the signals of the input gui elements*/
+    /** Enables/disables the signals of the input gui elements*/
     void blockMemberSignals( bool enable );
 
-    /**Enables/disables controls based on scale bar style*/
+    /** Enables/disables controls based on scale bar style*/
     void toggleStyleSpecificControls( const QString& style );
 
     void connectUpdateSignal();

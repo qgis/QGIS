@@ -244,11 +244,12 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, Qg
   bool filter = false;
 
   QgsRenderContext context( QgsRenderContext::fromMapSettings( mCanvas->mapSettings() ) );
+  context.expressionContext() << QgsExpressionContextUtils::layerScope( layer );
   QgsFeatureRendererV2* renderer = layer->rendererV2();
   if ( renderer && renderer->capabilities() & QgsFeatureRendererV2::ScaleDependent )
   {
     // setup scale for scale dependent visibility (rule based)
-    renderer->startRender( context, layer->pendingFields() );
+    renderer->startRender( context, layer->fields() );
     filter = renderer->capabilities() & QgsFeatureRendererV2::Filter;
   }
 
@@ -257,8 +258,9 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, Qg
     QMap< QString, QString > derivedAttributes = commonDerivedAttributes;
 
     QgsFeatureId fid = f_it->id();
+    context.expressionContext().setFeature( *f_it );
 
-    if ( filter && !renderer->willRenderFeature( *f_it ) )
+    if ( filter && !renderer->willRenderFeature( *f_it, context ) )
       continue;
 
     featureCount++;
@@ -525,7 +527,7 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
     }
     else // text or html
     {
-      QgsDebugMsg( QString( "%1 html or text values" ).arg( values.size() ) );
+      QgsDebugMsg( QString( "%1 HTML or text values" ).arg( values.size() ) );
       foreach ( int bandNo, values.keys() )
       {
         QString value = values.value( bandNo ).toString();

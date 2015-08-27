@@ -34,11 +34,13 @@ from ui_console_history_dlg import Ui_HistoryDialogPythonConsole
 
 _init_commands = ["from qgis.core import *", "import qgis.utils",
                   "from qgis.utils import iface"]
-_historyFile = unicode( QgsApplication.qgisSettingsDirPath() + "console_history.txt" )
+_historyFile = unicode(QgsApplication.qgisSettingsDirPath() + "console_history.txt")
+
 
 class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
+
     def __init__(self, parent=None):
-        super(ShellScintilla,self).__init__(parent)
+        super(ShellScintilla, self).__init__(parent)
         code.InteractiveInterpreter.__init__(self, locals=None)
 
         self.parent = parent
@@ -93,13 +95,13 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         self.SendScintilla(QsciScintilla.SCI_EMPTYUNDOBUFFER)
 
         ## Disable command key
-        ctrl, shift = self.SCMOD_CTRL<<16, self.SCMOD_SHIFT<<16
-        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('L')+ ctrl)
-        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('T')+ ctrl)
-        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('D')+ ctrl)
-        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('Z')+ ctrl)
-        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('Y')+ ctrl)
-        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('L')+ ctrl+shift)
+        ctrl, shift = self.SCMOD_CTRL << 16, self.SCMOD_SHIFT << 16
+        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('L') + ctrl)
+        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('T') + ctrl)
+        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('D') + ctrl)
+        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('Z') + ctrl)
+        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('Y') + ctrl)
+        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('L') + ctrl + shift)
 
         ## New QShortcut = ctrl+space/ctrl+alt+space for Autocomplete
         self.newShortcutCSS = QShortcut(QKeySequence(Qt.CTRL + Qt.SHIFT + Qt.Key_Space), self)
@@ -239,8 +241,8 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
     def getBytes(self):
         """ Get the text as bytes (utf-8 encoded). This is how
         the data is stored internally. """
-        len = self.SendScintilla(self.SCI_GETLENGTH)+1
-        bb = QByteArray(len,'0')
+        len = self.SendScintilla(self.SCI_GETLENGTH) + 1
+        bb = QByteArray(len, '0')
         self.SendScintilla(self.SCI_GETTEXT, len, bb)
         return bytes(bb)[:-1]
 
@@ -417,7 +419,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             if newindex < 4:
                 # restore the prompt chars (if removed) and
                 # fix the cursor position
-                self.insert( cmd[:3-newindex] + " " )
+                self.insert(cmd[:3 - newindex] + " ")
                 self.setCursorPosition(line, 4)
             self.recolor()
 
@@ -443,7 +445,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
                     selText = self.selectedText()
                     self.removeSelectedText()
                     self.insert(self.opening[i] + selText + self.closing[i])
-                    self.setCursorPosition(endLine, endPos+2)
+                    self.setCursorPosition(endLine, endPos + 2)
                     return
                 elif t == '(' and (re.match(r'^[ \t]*def \w+$', txt)
                                    or re.match(r'^[ \t]*class \w+$', txt)):
@@ -455,8 +457,8 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             elif t in [')', ']', '}'] and self.autoCloseBracket:
                 txt = self.text(line)
                 try:
-                    if txt[index-1] in self.opening and t == txt[index]:
-                        self.setCursorPosition(line, index+1)
+                    if txt[index - 1] in self.opening and t == txt[index]:
+                        self.setCursorPosition(line, index + 1)
                         self.SendScintilla(QsciScintilla.SCI_DELETEBACK)
                 except IndexError:
                     pass
@@ -569,7 +571,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
 
     def entered(self):
         self.move_cursor_to_end()
-        self.runCommand( unicode(self.currentCommand()) )
+        self.runCommand(unicode(self.currentCommand()))
         self.setFocus()
         self.move_cursor_to_end()
 
@@ -586,9 +588,9 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         self.updateHistory(cmd)
         if cmd in ('_pyqgis', '_api'):
             if cmd == '_pyqgis':
-                webbrowser.open( "http://qgis.org/pyqgis-cookbook/" )
+                webbrowser.open("http://qgis.org/pyqgis-cookbook/")
             elif cmd == '_api':
-                webbrowser.open( "http://qgis.org/api/" )
+                webbrowser.open("http://qgis.org/api/")
             more = False
         else:
             self.buffer.append(cmd)
@@ -609,9 +611,11 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         if len(txt) > 0:
             getCmdString = self.text()
             prompt = getCmdString[0:4]
-            sys.stdout.write(prompt+txt+'\n')
+            sys.stdout.write(prompt + txt + '\n')
+
 
 class HistoryDialog(QDialog, Ui_HistoryDialogPythonConsole):
+
     def __init__(self, parent):
         QDialog.__init__(self, parent)
         self.setupUi(self)

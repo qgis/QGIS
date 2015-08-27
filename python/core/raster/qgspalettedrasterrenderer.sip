@@ -4,7 +4,7 @@ class QgsPalettedRasterRenderer : QgsRasterRenderer
     #include "qgspalettedrasterrenderer.h"
 %End
   public:
-    /**Renderer owns color array*/
+    /** Renderer owns color array*/
     QgsPalettedRasterRenderer( QgsRasterInterface* input, int bandNumber, QColor* colorArray /Array,Transfer/, int nColors /ArraySize/, const QVector<QString> labels = QVector<QString>() );
     ~QgsPalettedRasterRenderer();
     QgsRasterInterface * clone() const /Factory/;
@@ -12,12 +12,12 @@ class QgsPalettedRasterRenderer : QgsRasterRenderer
 
     QgsRasterBlock *block( int bandNo, const QgsRectangle & extent, int width, int height ) /Factory/;
 
-    /**Returns number of colors*/
+    /** Returns number of colors*/
     int nColors() const;
-    /**Returns copy of color array (caller takes ownership)*/
+    /** Returns copy of color array (caller takes ownership)*/
     QColor* colors() const /Factory/;
 
-    /**Returns copy of rgb array (caller takes ownership)
+    /** Returns copy of rgb array (caller takes ownership)
      @note not available in python bindings
      */
     // QRgb* rgbArray() const;

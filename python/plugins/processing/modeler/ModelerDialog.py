@@ -104,7 +104,7 @@ class ModelerDialog(BASE, WIDGET):
             self.view.setTransformationAnchor(QGraphicsView.AnchorUnderMouse)
             factor = 1.05
             if event.delta() > 0:
-                factor = 1/factor
+                factor = 1 / factor
             self.view.scale(factor, factor)
             self.repaintModel()
 
@@ -128,7 +128,6 @@ class ModelerDialog(BASE, WIDGET):
         self.view.enterEvent = _enterEvent
         self.view.mousePressEvent = _mousePressEvent
         self.view.mouseReleaseEvent = _mouseReleaseEvent
-
 
         def _mimeDataInput(items):
             mimeData = QMimeData()
@@ -231,8 +230,8 @@ class ModelerDialog(BASE, WIDGET):
     def runModel(self):
         if len(self.alg.algs) == 0:
             QMessageBox.warning(self, self.tr('Empty model'),
-                    self.tr("Model doesn't contains any algorithms and/or "
-                            "parameters and can't be executed"))
+                                self.tr("Model doesn't contains any algorithms and/or "
+                                        "parameters and can't be executed"))
             return
 
         if self.alg.provider is None:
@@ -301,13 +300,13 @@ class ModelerDialog(BASE, WIDGET):
             except:
                 if saveAs:
                     QMessageBox.warning(self, self.tr('I/O error'),
-                            self.tr('Unable to save edits. Reason:\n %s') % unicode(sys.exc_info()[1]))
+                                        self.tr('Unable to save edits. Reason:\n %s') % unicode(sys.exc_info()[1]))
                 else:
                     QMessageBox.warning(self, self.tr("Can't save model"),
-                            self.tr("This model can't be saved in its "
-                                    "original location (probably you do not "
-                                    "have permission to do it). Please, use "
-                                    "the 'Save as...' option."))
+                                        self.tr("This model can't be saved in its "
+                                                "original location (probably you do not "
+                                                "have permission to do it). Please, use "
+                                                "the 'Save as...' option."))
                 return
             fout.write(text)
             fout.close()
@@ -332,18 +331,18 @@ class ModelerDialog(BASE, WIDGET):
 
                 self.view.centerOn(0, 0)
                 self.hasChanged = False
-            except WrongModelException, e:
+            except WrongModelException as e:
                 ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                    self.tr('Could not load model %s\n%s') % (filename, e.msg))
+                                       self.tr('Could not load model %s\n%s') % (filename, e.msg))
                 QMessageBox.critical(self, self.tr('Could not open model'),
-                        self.tr('The selected model could not be loaded.\n'
-                                'See the log for more information.'))
-            except Exception, e:
+                                     self.tr('The selected model could not be loaded.\n'
+                                             'See the log for more information.'))
+            except Exception as e:
                 ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                    self.tr('Could not load model %s\n%s') % (filename, e.args[0]))
+                                       self.tr('Could not load model %s\n%s') % (filename, e.args[0]))
                 QMessageBox.critical(self, self.tr('Could not open model'),
-                    self.tr('The selected model could not be loaded.\n'
-                            'See the log for more information.'))
+                                     self.tr('The selected model could not be loaded.\n'
+                                             'See the log for more information.'))
 
     def repaintModel(self):
         self.scene = ModelerScene()
@@ -352,10 +351,9 @@ class ModelerDialog(BASE, WIDGET):
         self.scene.paintModel(self.alg)
         self.view.setScene(self.scene)
 
-
     def addInput(self):
         item = self.inputsTree.currentItem()
-        paramType = str(item.text(0))
+        paramType = unicode(item.text(0))
         self.addInputOfType(paramType)
 
     def addInputOfType(self, paramType, pos=None):
@@ -413,11 +411,11 @@ class ModelerDialog(BASE, WIDGET):
                 else:
                     dlg.alg.pos = pos
                 if isinstance(dlg.alg.pos, QPoint):
-                    dlg.alg.pos =  QPointF(pos)
+                    dlg.alg.pos = QPointF(pos)
                 from processing.modeler.ModelerGraphicItem import ModelerGraphicItem
                 for i, out in enumerate(dlg.alg.outputs):
                     dlg.alg.outputs[out].pos = dlg.alg.pos + QPointF(ModelerGraphicItem.BOX_WIDTH, (i + 1.5)
-                            * ModelerGraphicItem.BOX_HEIGHT)
+                                                                     * ModelerGraphicItem.BOX_HEIGHT)
                 self.alg.addAlgorithm(dlg.alg)
                 self.repaintModel()
                 self.hasChanged = True
@@ -436,7 +434,6 @@ class ModelerDialog(BASE, WIDGET):
             newX = MARGIN + BOX_WIDTH / 2
             newY = MARGIN * 2 + BOX_HEIGHT + BOX_HEIGHT / 2
         return QPointF(newX, newY)
-
 
     def fillAlgorithmTree(self):
         settings = QSettings()
@@ -526,8 +523,9 @@ class ModelerDialog(BASE, WIDGET):
                         groupItem = groups[alg.group]
                     else:
                         groupItem = QTreeWidgetItem()
-                        groupItem.setText(0, alg.group)
-                        groupItem.setToolTip(0, alg.group)
+                        name = alg.i18n_group
+                        groupItem.setText(0, name)
+                        groupItem.setToolTip(0, name)
                         groups[alg.group] = groupItem
                     algItem = TreeAlgorithmItem(alg)
                     groupItem.addChild(algItem)
@@ -535,9 +533,9 @@ class ModelerDialog(BASE, WIDGET):
             if len(groups) > 0:
                 providerItem = QTreeWidgetItem()
                 providerItem.setText(0,
-                        ModelerUtils.providers[providerName].getDescription())
+                                     ModelerUtils.providers[providerName].getDescription())
                 providerItem.setIcon(0,
-                        ModelerUtils.providers[providerName].getIcon())
+                                     ModelerUtils.providers[providerName].getIcon())
                 providerItem.setToolTip(0, providerItem.text(0))
                 for groupItem in groups.values():
                     providerItem.addChild(groupItem)
@@ -565,8 +563,9 @@ class ModelerDialog(BASE, WIDGET):
                         groupItem = groups[alg.group]
                     else:
                         groupItem = QTreeWidgetItem()
-                        groupItem.setText(0, alg.group)
-                        groupItem.setToolTip(0, alg.group)
+                        name = alg.i18n_group
+                        groupItem.setText(0, name)
+                        groupItem.setToolTip(0, name)
                         groups[alg.group] = groupItem
                     algItem = TreeAlgorithmItem(alg)
                     groupItem.addChild(algItem)
@@ -574,11 +573,11 @@ class ModelerDialog(BASE, WIDGET):
             if len(groups) > 0:
                 providerItem = QTreeWidgetItem()
                 providerItem.setText(0,
-                        ModelerUtils.providers[providerName].getDescription())
+                                     ModelerUtils.providers[providerName].getDescription())
                 providerItem.setToolTip(0,
-                        ModelerUtils.providers[providerName].getDescription())
+                                        ModelerUtils.providers[providerName].getDescription())
                 providerItem.setIcon(0,
-                        ModelerUtils.providers[providerName].getIcon())
+                                     ModelerUtils.providers[providerName].getIcon())
                 for groupItem in groups.values():
                     providerItem.addChild(groupItem)
                 self.algorithmTree.addTopLevelItem(providerItem)

@@ -41,10 +41,10 @@ class Catalog(FusionAlgorithm):
     ADVANCED_MODIFIERS = 'ADVANCED_MODIFIERS'
 
     def defineCharacteristics(self):
-        self.name = 'Catalog'
-        self.group = 'Points'
+        self.name, self.i18n_name = self.trAlgorithm('Catalog')
+        self.group, self.i18n_group = self.trAlgorithm('Points')
         self.addParameter(ParameterFile(
-            self.INPUT, self.tr('Input las layer')))
+            self.INPUT, self.tr('Input LAS layer')))
         self.addOutput(OutputFile(self.OUTPUT, self.tr('Output files')))
         density = ParameterString(
             self.DENSITY,
@@ -70,20 +70,19 @@ class Catalog(FusionAlgorithm):
         advanced_modifiers.isAdvanced = True
         self.addParameter(advanced_modifiers)
 
-
     def processAlgorithm(self, progress):
         commands = [os.path.join(FusionUtils.FusionPath(), 'Catalog.exe')]
         commands.append('/verbose')
         intensity = self.getParameterValue(self.INTENSITY)
-        if str(intensity).strip():
-            commands.append('/intensity:' + str(intensity))
+        if unicode(intensity).strip():
+            commands.append('/intensity:' + unicode(intensity))
         density = self.getParameterValue(self.DENSITY)
-        if str(density).strip():
-            commands.append('/density:' + str(density))
+        if unicode(density).strip():
+            commands.append('/density:' + unicode(density))
         firstdensity = self.getParameterValue(self.FIRSTDENSITY)
-        if str(firstdensity).strip():
-            commands.append('/firstdensity:' + str(firstdensity))
-        advanced_modifiers = str(self.getParameterValue(self.ADVANCED_MODIFIERS)).strip()
+        if unicode(firstdensity).strip():
+            commands.append('/firstdensity:' + unicode(firstdensity))
+        advanced_modifiers = unicode(self.getParameterValue(self.ADVANCED_MODIFIERS)).strip()
         if advanced_modifiers:
             commands.append(advanced_modifiers)
         files = self.getParameterValue(self.INPUT).split(';')

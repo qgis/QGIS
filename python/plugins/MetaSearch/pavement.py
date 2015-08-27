@@ -162,11 +162,11 @@ def upload():
                 server.plugin.upload(xmlrpclib.Binary(zfile.read()))
             info('Plugin ID: %s', plugin_id)
             info('Version ID: %s', version_id)
-    except xmlrpclib.Fault, err:
+    except xmlrpclib.Fault as err:
         error('ERROR: fault error')
         error('Fault code: %d', err.faultCode)
         error('Fault string: %s', err.faultString)
-    except xmlrpclib.ProtocolError, err:
+    except xmlrpclib.ProtocolError as err:
         error('Error: Protocol error')
         error("%s : %s", err.errcode, err.errmsg)
         if err.errcode == 403:
@@ -187,7 +187,7 @@ def test_default_csw_connections():
             csw = CatalogueServiceWeb(conn.attrib.get('url'))
             info('Success: %s', csw.identification.title)
             csw.getrecords2()
-        except Exception, err:
+        except Exception as err:
             raise ValueError('ERROR: %s', err)
 
 
@@ -215,7 +215,7 @@ def generate_csw_connections_file():
                 csw = CatalogueServiceWeb(url)
                 title = unicode(csw.identification.title)
                 conn = etree.SubElement(conns, 'csw', name=title, url=url)
-            except Exception, err:
+            except Exception as err:
                 error('ERROR on CSW %s: %s', url, err)
 
     with open('%s.xml' % filename, 'w') as connsxmlfh:

@@ -21,7 +21,7 @@
 #include <QMap>
 #include <QString>
 
-/**Class to store information about wkb types.*/
+/** Class to store information about wkb types.*/
 class CORE_EXPORT QgsWKBTypes
 {
   public:
@@ -97,14 +97,18 @@ class CORE_EXPORT QgsWKBTypes
 
     struct wkbEntry
     {
-      wkbEntry( QString name, bool isMultiType, Type multiType, Type singleType, Type flatType, GeometryType geometryType ):
-          mName( name ), mIsMultiType( isMultiType ), mMultiType( multiType ), mSingleType( singleType ), mFlatType( flatType ), mGeometryType( geometryType ) {}
+      wkbEntry( QString name, bool isMultiType, Type multiType, Type singleType, Type flatType, GeometryType geometryType,
+                bool hasZ, bool hasM ):
+          mName( name ), mIsMultiType( isMultiType ), mMultiType( multiType ), mSingleType( singleType ), mFlatType( flatType ), mGeometryType( geometryType ),
+          mHasZ( hasZ ), mHasM( hasM ) {}
       QString mName;
       bool mIsMultiType;
       Type mMultiType;
       Type mSingleType;
       Type mFlatType;
       GeometryType mGeometryType;
+      bool mHasZ;
+      bool mHasM;
     };
 
     static Type singleType( Type type );
@@ -116,6 +120,8 @@ class CORE_EXPORT QgsWKBTypes
     static int wkbDimensions( Type type );
     static GeometryType geometryType( Type type );
     static QString displayString( Type type );
+    static bool hasZ( Type type );
+    static bool hasM( Type type );
 
   private:
     static QMap<Type, wkbEntry> registerTypes();

@@ -910,12 +910,12 @@ update-mime-database %{?fedora:-n} %{_datadir}/mime &> /dev/null || :
 - fixing Requires statements for sub-packages
 
 * Tue May 15 2007 Douglas E. Warner <silfreed@silfreed.net> 0.8.0-2
-- added devel dependancy on qgis
+- added devel dependency on qgis
 - moved qgis-config to devel package
 - moving doc directory
 - removed zero-length NEWS doc
 - added postin/postun ldconfig calls
-- split packages up to reduce package size and split out dependancies
+- split packages up to reduce package size and split out dependencies
   grass, theme-nkids
 
 * Mon May 14 2007 Douglas E. Warner <silfreed@silfreed.net> 0.8.0-1

@@ -245,7 +245,7 @@ QSqlDatabase QgsMssqlProvider::GetDatabase( QString service, QString host, QStri
   }
   else
   {
-#ifdef WIN32
+#ifdef Q_OS_WIN
     connectionString = "driver={SQL Server}";
 #else
     connectionString = "driver={FreeTDS};port=1433";
@@ -959,6 +959,9 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList & flist )
 bool QgsMssqlProvider::addAttributes( const QList<QgsField> &attributes )
 {
   QString statement;
+
+  if ( attributes.count() == 0 )
+    return true;
 
   for ( QList<QgsField>::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
   {

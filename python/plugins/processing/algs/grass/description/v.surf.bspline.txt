@@ -1,5 +1,5 @@
 v.surf.bspline
-v.surf.bspline - Bicubic or bilinear spline interpolation with Tykhonov regularization.
+Bicubic or bilinear spline interpolation with Tykhonov regularization.
 Vector (v.*)
 ParameterVector|input|Input points layer|0|False
 ParameterNumber|sie|Length of each spline step in the east-west direction|None|None|4

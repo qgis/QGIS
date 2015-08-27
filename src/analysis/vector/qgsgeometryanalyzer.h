@@ -36,7 +36,7 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
 {
   public:
 
-    /**Simplify vector layer using (a modified) Douglas-Peucker algorithm
+    /** Simplify vector layer using (a modified) Douglas-Peucker algorithm
      and write it to a new shape file
       @param layer input vector layer
       @param shapefileName path to the output shp
@@ -47,7 +47,7 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
     bool simplify( QgsVectorLayer* layer, const QString& shapefileName, double tolerance,
                    bool onlySelectedFeatures = false, QProgressDialog* p = 0 );
 
-    /**Calculate the true centroids, or 'center of mass' for a vector layer and
+    /** Calculate the true centroids, or 'center of mass' for a vector layer and
        write it to a new shape file
       @param layer input vector layer
       @param shapefileName path to the output shp
@@ -57,7 +57,7 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
     bool centroids( QgsVectorLayer* layer, const QString& shapefileName,
                     bool onlySelectedFeatures = false, QProgressDialog* p = 0 );
 
-    /**Create a polygon based on the extent of all (selected) features and write it to a new shape file
+    /** Create a polygon based on the extent of all (selected) features and write it to a new shape file
       @param layer input vector layer
       @param shapefileName path to the output shp
       @param onlySelectedFeatures if true, only selected features are considered, else all the features
@@ -65,7 +65,7 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
       */
     bool extent( QgsVectorLayer* layer, const QString& shapefileName, bool onlySelectedFeatures = false, QProgressDialog* p = 0 );
 
-    /**Create buffers for a vector layer and write it to a new shape file
+    /** Create buffers for a vector layer and write it to a new shape file
       @param layer input vector layer
       @param shapefileName path to the output shp
       @param bufferDistance distance for buffering (if no buffer field is specified)
@@ -77,7 +77,7 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
     bool buffer( QgsVectorLayer* layer, const QString& shapefileName, double bufferDistance,
                  bool onlySelectedFeatures = false, bool dissolve = false, int bufferDistanceField = -1, QProgressDialog* p = 0 );
 
-    /**Create convex hull(s) of a vector layer and write it to a new shape file
+    /** Create convex hull(s) of a vector layer and write it to a new shape file
       @param layer input vector layer
       @param shapefileName path to the output shp
       @param onlySelectedFeatures if true, only selected features are considered, else all the features
@@ -88,7 +88,7 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
     bool convexHull( QgsVectorLayer* layer, const QString& shapefileName, bool onlySelectedFeatures = false,
                      int uniqueIdField = -1, QProgressDialog* p = 0 );
 
-    /**Dissolve a vector layer and write it to a new shape file
+    /** Dissolve a vector layer and write it to a new shape file
       @param layer input vector layer
       @param shapefileName path to the output shp
       @param onlySelectedFeatures if true, only selected features are considered, else all the features
@@ -99,7 +99,7 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
     bool dissolve( QgsVectorLayer* layer, const QString& shapefileName, bool onlySelectedFeatures = false,
                    int uniqueIdField = -1, QProgressDialog* p = 0 );
 
-    /**Creates an event layer (multipoint or multiline) by locating features from a (non-spatial) event table along the features of a line layer.
+    /** Creates an event layer (multipoint or multiline) by locating features from a (non-spatial) event table along the features of a line layer.
         Note that currently (until QgsGeometry supports m-values) the z-coordinate of the line layer is used for linear referencing
       @param lineLayer layer with the line geometry
       @param eventLayer layer with features and location field
@@ -120,9 +120,9 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
                      const QString& outputFormat, int locationField1, int locationField2 = -1, int offsetField = -1, double offsetScale = 1.0,
                      bool forceSingleGeometry = false, QgsVectorDataProvider* memoryProvider = 0, QProgressDialog* p = 0 );
 
-    /**Returns linear reference geometry as a multiline (or 0 if no match). Currently, the z-coordinates are considered to be the measures (no support for m-values in QGIS)*/
+    /** Returns linear reference geometry as a multiline (or 0 if no match). Currently, the z-coordinates are considered to be the measures (no support for m-values in QGIS)*/
     QgsGeometry* locateBetweenMeasures( double fromMeasure, double toMeasure, const QgsGeometry *lineGeom );
-    /**Returns linear reference geometry. Unlike the PostGIS function, this method always returns multipoint or 0 if no match (not geometry collection).
+    /** Returns linear reference geometry. Unlike the PostGIS function, this method always returns multipoint or 0 if no match (not geometry collection).
       Currently, the z-coordinates are considered to be the measures (no support for m-values in QGIS)*/
     QgsGeometry* locateAlongMeasure( double measure, const QgsGeometry* lineGeom );
 
@@ -130,22 +130,22 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
 
     QList<double> simpleMeasure( QgsGeometry* geometry );
     double perimeterMeasure( QgsGeometry* geometry, QgsDistanceArea& measure );
-    /**Helper function to simplify an individual feature*/
+    /** Helper function to simplify an individual feature*/
     void simplifyFeature( QgsFeature& f, QgsVectorFileWriter* vfw, double tolerance );
-    /**Helper function to get the cetroid of an individual feature*/
+    /** Helper function to get the cetroid of an individual feature*/
     void centroidFeature( QgsFeature& f, QgsVectorFileWriter* vfw );
-    /**Helper function to buffer an individual feature*/
+    /** Helper function to buffer an individual feature*/
     void bufferFeature( QgsFeature& f, int nProcessedFeatures, QgsVectorFileWriter* vfw, bool dissolve, QgsGeometry** dissolveGeometry,
                         double bufferDistance, int bufferDistanceField );
-    /**Helper function to get the convex hull of feature(s)*/
+    /** Helper function to get the convex hull of feature(s)*/
     void convexFeature( QgsFeature& f, int nProcessedFeatures, QgsGeometry** dissolveGeometry );
-    /**Helper function to dissolve feature(s)*/
+    /** Helper function to dissolve feature(s)*/
     void dissolveFeature( QgsFeature& f, int nProcessedFeatures, QgsGeometry** dissolveGeometry );
 
     //helper functions for event layer
     void addEventLayerFeature( QgsFeature& feature, QgsGeometry* geom, QgsGeometry* lineGeom, QgsVectorFileWriter* fileWriter, QgsFeatureList& memoryFeatures, int offsetField = -1, double offsetScale = 1.0,
                                bool forceSingleType = false );
-    /**Create geometry offset relative to line geometry.
+    /** Create geometry offset relative to line geometry.
         @param geom the geometry to modify
         @param lineGeom the line geometry to which the feature is referenced
         @param offset the offset value in layer unit. Negative values mean offset towards left, positive values offset to the right side*/

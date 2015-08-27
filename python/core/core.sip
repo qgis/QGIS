@@ -22,6 +22,7 @@
 %Include qgscontexthelp.sip
 %Include qgscoordinatereferencesystem.sip
 %Include qgscoordinatetransform.sip
+%Include qgsconditionalstyle.sip
 %Include qgscredentials.sip
 %Include qgscrscache.sip
 %Include qgsdatadefined.sip
@@ -36,6 +37,7 @@
 %Include qgseditorwidgetconfig.sip
 %Include qgserror.sip
 %Include qgsexpression.sip
+%Include qgsexpressioncontext.sip
 %Include qgsfeature.sip
 %Include qgsfeatureiterator.sip
 %Include qgsfeaturerequest.sip
@@ -104,6 +106,7 @@
 %Include qgssnappingutils.sip
 %Include qgsspatialindex.sip
 %Include qgsstatisticalsummary.sip
+%Include qgsstringutils.sip
 %Include qgstolerance.sip
 %Include qgsvectordataprovider.sip
 %Include qgsvectorfilewriter.sip
@@ -126,6 +129,7 @@
 %Include qgsprojectfiletransform.sip
 %Include qgsvectorlayereditutils.sip
 %Include qgsvectorlayerfeatureiterator.sip
+%Include qgsvisibilitypresetcollection.sip
 %Include qgslayerdefinition.sip
 
 %Include composer/qgsaddremoveitemcommand.sip

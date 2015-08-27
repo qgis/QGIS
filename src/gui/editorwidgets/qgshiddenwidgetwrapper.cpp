@@ -40,6 +40,11 @@ void QgsHiddenWidgetWrapper::initWidget( QWidget* editor )
   editor->setVisible( false );
 }
 
+bool QgsHiddenWidgetWrapper::valid()
+{
+  return true;
+}
+
 void QgsHiddenWidgetWrapper::setValue( const QVariant& value )
 {
   mValue = value;

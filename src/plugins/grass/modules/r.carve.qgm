@@ -2,8 +2,10 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
 <qgisgrassmodule label="Take vector stream data, transform it to raster, and subtract depth from the output DEM" module="r.carve">
-	<option key="rast" />
-	<option key="vect" />
+	<option key="rast" version_max="6.4"/>
+	<option key="raster" version_min="7.0"/>
+	<option key="vect" version_max="6.4"/>
+	<option key="vector" version_min="7.0"/>
 	<option key="width" />
 	<option key="depth" />
 	<flag key="n" />

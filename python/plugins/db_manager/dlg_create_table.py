@@ -34,6 +34,7 @@ from .ui.ui_DlgCreateTable import Ui_DbManagerDlgCreateTable as Ui_Dialog
 
 
 class TableFieldsDelegate(QItemDelegate):
+
     """ delegate with some special item editors """
 
     def __init__(self, field_types, parent=None):
@@ -117,7 +118,6 @@ class DlgCreateTable(QDialog, Ui_Dialog):
         self.updateUi()
         self.updateUiFields()
 
-
     def populateSchemas(self):
         self.cboSchema.clear()
         if not self.hasSchemas:
@@ -133,7 +133,6 @@ class DlgCreateTable(QDialog, Ui_Dialog):
 
     def hideSchemas(self):
         self.cboSchema.setEnabled(False)
-
 
     def updateUi(self):
         useGeom = self.chkGeomColumn.isChecked()
@@ -304,7 +303,7 @@ class DlgCreateTable(QDialog, Ui_Dialog):
                 geom = geomColumn, geomType, geomSrid, geomDim, useSpatialIndex
                 self.db.createVectorTable(table, flds, geom, schema)
 
-        except (ConnectionError, DbError), e:
+        except (ConnectionError, DbError) as e:
             DlgDbError.showError(e, self)
             return
 

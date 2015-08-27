@@ -186,7 +186,7 @@ class QgsSpatialIndexData : public QSharedData
                                         leafCapacity, dimension, variant, indexId );
     }
 
-    /** storage manager */
+    /** Storage manager */
     SpatialIndex::IStorageManager* mStorage;
 
     /** R-tree containing spatial index */

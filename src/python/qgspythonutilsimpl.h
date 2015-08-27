@@ -114,6 +114,25 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
 
   protected:
 
+    /* functions that do the initialization work */
+
+    //! initialize Python context
+    void init();
+
+    //! check qgis imports and plugins
+    //@return true if all imports worked
+    bool checkSystemImports();
+
+    //@return true if qgis.user could be imported
+    bool checkQgisUser();
+
+    //! import user defined Python code
+    void doUserImports();
+
+    //! cleanup Python context
+    void finish();
+
+
     void installErrorHook();
 
     void uninstallErrorHook();

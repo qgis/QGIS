@@ -58,7 +58,7 @@ class APP_EXPORT QgsLabelDialog: public QWidget, private Ui::QgsLabelDialogBase
     };
 
   public slots:
-    /** applies the changes to the label class */
+    /** Applies the changes to the label class */
     void apply( void );
 
     /** Change font - reimplements method from base class*/
@@ -81,7 +81,7 @@ class APP_EXPORT QgsLabelDialog: public QWidget, private Ui::QgsLabelDialogBase
 
   protected:
 
-    /** return field index based on field's name, -1 if not found */
+    /** Return field index based on field's name, -1 if not found */
     int fieldIndexFromName( QString name );
 
   private:

@@ -159,7 +159,7 @@ unless( $dopoint ) {
 	run( "git checkout -b $relbranch", "git checkout release branch failed" );
 }
 
-updateCMakeLists($newmajor,$newminor,$newpatch,$releasename);
+updateCMakeLists($newmajor,$newminor,$newpatch,$newreleasename);
 
 print "Updating version...\n";
 run( "dch -r ''", "dch failed" );
@@ -176,7 +176,7 @@ unless( $dopoint ) {
 		print "WARNING: NO images/splash/splash-release.xcf.bz2\n";
 	}
 
-	run( "git commit -a -m 'Release of $release ($releasename)'", "release commit failed" );
+	run( "git commit -a -m 'Release of $release ($newreleasename)'", "release commit failed" );
 	run( "git tag $reltag -m 'Version $release'", "release tag failed" );
 	run( "git tag $ltrtag -m 'Long term release $release'", "ltr tag failed" ) if $doltr;
 } else {

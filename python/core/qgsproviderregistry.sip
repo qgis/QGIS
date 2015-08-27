@@ -13,7 +13,7 @@ class QgsProviderRegistry
 
   public:
 
-    /** means of accessing canonical single instance  */
+    /** Means of accessing canonical single instance  */
     static QgsProviderRegistry* instance( QString pluginPath = QString::null );
 
     /** Virtual dectructor */
@@ -25,7 +25,7 @@ class QgsProviderRegistry
     /** Return list of provider plugins found */
     QString pluginList( bool asHtml = false ) const;
 
-    /** return library directory where plugins are found */
+    /** Return library directory where plugins are found */
     const QDir & libraryDirectory() const;
 
     /** Set library directory where to search for plugins */
@@ -64,7 +64,7 @@ class QgsProviderRegistry
     /** Return metadata of the provider or NULL if not found */
     const QgsProviderMetadata* providerMetadata( const QString& providerKey ) const;
 
-    /** return vector file filter string
+    /** Return vector file filter string
 
       Returns a string suitable for a QFileDialog of vector file formats
       supported by all data providers.
@@ -77,7 +77,7 @@ class QgsProviderRegistry
       It'd be nice to eventually be raster/vector neutral.
     */
     virtual QString fileVectorFilters() const;
-    /** return raster file filter string
+    /** Return raster file filter string
 
       Returns a string suitable for a QFileDialog of raster file formats
       supported by all data providers.
@@ -88,16 +88,16 @@ class QgsProviderRegistry
       @note This replaces QgsRasterLayer::buildSupportedRasterFileFilter()
     */
     virtual QString fileRasterFilters() const;
-    /** return a string containing the available database drivers */
+    /** Return a string containing the available database drivers */
     virtual QString databaseDrivers() const;
-    /** return a string containing the available directory drivers */
+    /** Return a string containing the available directory drivers */
     virtual QString directoryDrivers() const;
-    /** return a string containing the available protocol drivers */
+    /** Return a string containing the available protocol drivers */
     virtual QString protocolDrivers() const;
 
     void registerGuis( QWidget *widget );
 
   private:
-    /** ctor private since instance() creates it */
+    /** Ctor private since instance() creates it */
     QgsProviderRegistry( QString pluginPath );
 }; // class QgsProviderRegistry

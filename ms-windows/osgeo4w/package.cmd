@@ -13,14 +13,21 @@ REM *   the Free Software Foundation; either version 2 of the License, or     *
 REM *   (at your option) any later version.                                   *
 REM *                                                                         *
 REM ***************************************************************************
+
+setlocal enabledelayedexpansion
+
 set VERSION=%1
 set PACKAGE=%2
 set PACKAGENAME=%3
 set ARCH=%4
+set SHA=%5
+set SITE=%6
 if "%VERSION%"=="" goto usage
 if "%PACKAGE%"=="" goto usage
 if "%PACKAGENAME%"=="" goto usage
 if "%ARCH%"=="" goto usage
+if not "%SHA%"=="" set SHA=-%SHA%
+if "%SITE%"=="" set SITE=qgis.org
 
 set BUILDDIR=%CD%\build-%ARCH%
 
@@ -49,7 +56,7 @@ if "%ARCH%"=="x86" goto devenv_x86
 goto devenv_x86_64
 
 :devenv_x86
-set GRASS_VERSION=6.4.4
+set GRASS_VERSIONS=6.4.4 7.0.1
 call "%PF86%\Microsoft Visual Studio 10.0\VC\vcvarsall.bat" x86
 if exist "c:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.Cmd" call "c:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.Cmd" /x86 /Release
 path %path%;%PF86%\Microsoft Visual Studio 10.0\VC\bin
@@ -57,11 +64,15 @@ path %path%;%PF86%\Microsoft Visual Studio 10.0\VC\bin
 set CMAKE_OPT=^
 	-G "Visual Studio 10" ^
 	-D SIP_BINARY_PATH=%O4W_ROOT%/apps/Python27/sip.exe ^
-	-D QWT_LIBRARY=%O4W_ROOT%/lib/qwt.lib
+	-D QWT_LIBRARY=%O4W_ROOT%/lib/qwt.lib ^
+	-D WITH_GRASS=TRUE ^
+	-D WITH_GRASS7=TRUE ^
+	-D GRASS_PREFIX=%O4W_ROOT%/apps/grass/grass-6.4.4 ^
+	-D GRASS_PREFIX7=%O4W_ROOT%/apps/grass/grass-7.0.1
 goto devenv
 
 :devenv_x86_64
-set GRASS_VERSION=6.4.3
+set GRASS_VERSIONS=6.4.3
 call "%PF86%\Microsoft Visual Studio 10.0\VC\vcvarsall.bat" amd64
 if exist "c:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.Cmd" call "c:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.Cmd" /x64 /Release
 path %path%;%PF86%\Microsoft Visual Studio 10.0\VC\bin
@@ -73,6 +84,9 @@ if not exist "%SETUPAPI_LIBRARY%" (echo SETUPAPI_LIBRARY not found & goto error)
 set CMAKE_OPT=^
 	-G "Visual Studio 10 Win64" ^
 	-D SPATIALINDEX_LIBRARY=%O4W_ROOT%/lib/spatialindex-64.lib ^
+	-D WITH_GRASS=TRUE ^
+	-D WITH_GRASS7=FALSE ^
+	-D GRASS_PREFIX=%O4W_ROOT%/apps/grass/grass-6.4.3 ^
 	-D SIP_BINARY_PATH=%O4W_ROOT%/bin/sip.exe ^
 	-D QWT_LIBRARY=%O4W_ROOT%/lib/qwt5.lib ^
 	-D SETUPAPI_LIBRARY="%SETUPAPI_LIBRARY%" ^
@@ -91,6 +105,8 @@ set SRCDIR=%CD%
 
 if "%BUILDDIR:~1,1%"==":" %BUILDDIR:~0,2%
 cd %BUILDDIR%
+
+set PKGDIR=%OSGEO4W_ROOT%\apps\%PACKAGENAME%
 
 if exist repackage goto package
 
@@ -125,16 +141,19 @@ set >buildenv.log
 
 if exist qgsversion.h del qgsversion.h
 
-if exist CMakeCache.txt goto skipcmake
+if exist CMakeCache.txt if exist skipcmake goto skipcmake
+
+touch %SRCDIR%\CMakeLists.txt
 
 echo CMAKE: %DATE% %TIME%
 if errorlevel 1 goto error
 
 set LIB=%LIB%;%OSGEO4W_ROOT%\lib
 set INCLUDE=%INCLUDE%;%OSGEO4W_ROOT%\include
-set GRASS_PREFIX=%O4W_ROOT%/apps/grass/grass-%GRASS_VERSION%
 
 cmake %CMAKE_OPT% ^
+	-D BUILDNAME="%PACKAGENAME%-%VERSION%%SHA%-Release-VC10-%ARCH%" ^
+	-D SITE="%SITE%" ^
 	-D PEDANTIC=TRUE ^
 	-D WITH_QSPATIALITE=TRUE ^
 	-D WITH_SERVER=TRUE ^
@@ -142,7 +161,6 @@ cmake %CMAKE_OPT% ^
 	-D WITH_GLOBE=TRUE ^
 	-D WITH_TOUCH=TRUE ^
 	-D WITH_ORACLE=TRUE ^
-	-D WITH_GRASS=TRUE ^
 	-D WITH_CUSTOM_WIDGETS=TRUE ^
 	-D CMAKE_CXX_FLAGS_RELEASE="/MD /MP /O2 /Ob2 /D NDEBUG" ^
 	-D CMAKE_BUILD_TYPE=%BUILDCONF% ^
@@ -181,57 +199,93 @@ cmake --build %BUILDDIR% --config %BUILDCONF%
 if errorlevel 1 cmake --build %BUILDDIR% --config %BUILDCONF%
 if errorlevel 1 (echo build failed twice & goto error)
 
-if not exist ..\skiptests (
-	echo RUN_TESTS: %DATE% %TIME%
-	cmake --build %BUILDDIR% --target Experimental --config %BUILDCONF%
-	if errorlevel 1 echo TESTS WERE NOT SUCCESSFUL.
+if exist ..\skiptests goto skiptests
+
+echo RUN_TESTS: %DATE% %TIME%
+
+set oldpath=%PATH%
+for %%g IN (%GRASS_VERSIONS%) do (
+	set path=!path!;%OSGEO4W_ROOT%\apps\grass\grass-%%g\lib
+	set GISBASE=%OSGEO4W_ROOT%\apps\grass\grass-%%g
 )
+PATH %path%;%BUILDDIR%\output\plugins\%BUILDCONF%
 
-set PKGDIR=%OSGEO4W_ROOT%\apps\%PACKAGENAME%
+cmake --build %BUILDDIR% --target Experimental --config %BUILDCONF%
+if errorlevel 1 echo TESTS WERE NOT SUCCESSFUL.
 
-if exist %PKGDIR% (
+PATH %oldpath%
+
+:skiptests
+:package
+
+if exist "%PKGDIR%" (
 	echo REMOVE: %DATE% %TIME%
-	rmdir /s /q %PKGDIR%
+	rmdir /s /q "%PKGDIR%"
 )
 
 echo INSTALL: %DATE% %TIME%
 cmake --build %BUILDDIR% --target INSTALL --config %BUILDCONF%
 if errorlevel 1 (echo INSTALL failed & goto error)
 
-:package
 echo PACKAGE: %DATE% %TIME%
 
 cd ..
-sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%GRASS_VERSION%/g' postinstall-common.bat >%OSGEO4W_ROOT%\etc\postinstall\%PACKAGENAME%-common.bat
+sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' postinstall-common.bat >%OSGEO4W_ROOT%\etc\postinstall\%PACKAGENAME%-common.bat
 if errorlevel 1 (echo creation of common postinstall failed & goto error)
-sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%GRASS_VERSION%/g' postinstall-desktop.bat >%OSGEO4W_ROOT%\etc\postinstall\%PACKAGENAME%.bat
+
+sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' postinstall-desktop.bat >%OSGEO4W_ROOT%\etc\postinstall\%PACKAGENAME%.bat
 if errorlevel 1 (echo creation of desktop postinstall failed & goto error)
-sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%GRASS_VERSION%/g' preremove-desktop.bat >%OSGEO4W_ROOT%\etc\preremove\%PACKAGENAME%.bat
+
+sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' preremove-desktop.bat >%OSGEO4W_ROOT%\etc\preremove\%PACKAGENAME%.bat
 if errorlevel 1 (echo creation of desktop preremove failed & goto error)
-sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%GRASS_VERSION%/g' qgis.bat.tmpl >%OSGEO4W_ROOT%\bin\%PACKAGENAME%.bat.tmpl
+
+sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' qgis.bat.tmpl >%OSGEO4W_ROOT%\bin\%PACKAGENAME%.bat.tmpl
 if errorlevel 1 (echo creation of desktop template failed & goto error)
-sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%GRASS_VERSION%/g' designer-qgis.bat.tmpl >%OSGEO4W_ROOT%\bin\designer-%PACKAGENAME%.bat.tmpl
-if errorlevel 1 (echo creation of designer template failed & goto error)
-sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%GRASS_VERSION%/g' browser.bat.tmpl >%OSGEO4W_ROOT%\bin\%PACKAGENAME%-browser.bat.tmpl
+
+sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' browser.bat.tmpl >%OSGEO4W_ROOT%\bin\%PACKAGENAME%-browser.bat.tmpl
 if errorlevel 1 (echo creation of browser template & goto error)
-sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%GRASS_VERSION%/g' qgis.reg.tmpl >%PKGDIR%\bin\qgis.reg.tmpl
+
+sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' designer.bat.tmpl >%OSGEO4W_ROOT%\bin\%PACKAGENAME%-designer.bat.tmpl
+if errorlevel 1 (echo creation of designer template failed & goto error)
+
+sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' python.bat.tmpl >%OSGEO4W_ROOT%\bin\python-%PACKAGENAME%.bat.tmpl
+if errorlevel 1 (echo creation of python wrapper template failed & goto error)
+
+sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' qgis.reg.tmpl >%PKGDIR%\bin\qgis.reg.tmpl
 if errorlevel 1 (echo creation of registry template & goto error)
-sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%GRASS_VERSION%/g' postinstall-server.bat >%OSGEO4W_ROOT%\etc\postinstall\%PACKAGENAME%-server.bat
+
+sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' postinstall-server.bat >%OSGEO4W_ROOT%\etc\postinstall\%PACKAGENAME%-server.bat
 if errorlevel 1 (echo creation of server postinstall failed & goto error)
-sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%GRASS_VERSION%/g' preremove-server.bat >%OSGEO4W_ROOT%\etc\preremove\%PACKAGENAME%-server.bat
+
+sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' preremove-server.bat >%OSGEO4W_ROOT%\etc\preremove\%PACKAGENAME%-server.bat
 if errorlevel 1 (echo creation of server preremove failed & goto error)
+
 if not exist %OSGEO4W_ROOT%\httpd.d mkdir %OSGEO4W_ROOT%\httpd.d
-sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%GRASS_VERSION%/g' httpd.conf.tmpl >%OSGEO4W_ROOT%\httpd.d\httpd_%PACKAGENAME%.conf.tmpl
+sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' httpd.conf.tmpl >%OSGEO4W_ROOT%\httpd.d\httpd_%PACKAGENAME%.conf.tmpl
 if errorlevel 1 (echo creation of httpd.conf template failed & goto error)
 
-REM sed -e 's/%OSGEO4W_ROOT:\=\\\\\\\\%/@osgeo4w@/' %PKGDIR%\python\qgis\qgisconfig.py >%PKGDIR%\python\qgis\qgisconfig.py.tmpl
-REM if errorlevel 1 (echo creation of qgisconfig.py.tmpl failed & goto error)
+set packages="" "-common" "-server" "-devel" "-globe-plugin" "-oracle-provider" "-grass-plugin-common"
 
-REM del %PKGDIR%\python\qgis\qgisconfig.py
+for %%g IN (%GRASS_VERSIONS%) do (
+	for /F "delims=." %%i in ("%%g") do set v=%%i
+	set w=!v!
+	if !v!==6 set w=
+
+	sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%%g/g' -e 's/@grassmajor@/!v!/g' postinstall-grass.bat >%OSGEO4W_ROOT%\etc\postinstall\%PACKAGENAME%-grass-plugin!w!.bat
+	if errorlevel 1 (echo creation of grass desktop postinstall failed & goto error)
+	sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%%g/g' -e 's/@grassmajor@/!v!/g' preremove-grass.bat >%OSGEO4W_ROOT%\etc\preremove\%PACKAGENAME%-grass-plugin!w!.bat
+	if errorlevel 1 (echo creation of grass desktop preremove failed & goto error)
+	sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%%g/g' -e 's/@grassmajor@/!v!/g' qgis-grass.bat.tmpl >%OSGEO4W_ROOT%\bin\%PACKAGENAME%-grass!v!.bat.tmpl
+	if errorlevel 1 (echo creation of grass desktop template failed & goto error)
+	sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%%g/g' -e 's/@grassmajor@/!v!/g' browser-grass.bat.tmpl >%OSGEO4W_ROOT%\bin\%PACKAGENAME%-browser-grass!v!.bat.tmpl
+	if errorlevel 1 (echo creation of grass browser template & goto error)
+
+	set packages=!packages! "-grass-plugin!w!"
+)
 
 touch exclude
 
-for %%i in ("" "-common" "-server" "-devel" "-grass-plugin" "-globe-plugin" "-oracle-provider") do (
+for %%i in (%packages%) do (
 	if not exist %ARCH%\release\qgis\%PACKAGENAME%%%i mkdir %ARCH%\release\qgis\%PACKAGENAME%%%i
 )
 
@@ -273,6 +327,7 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%-server/%PACKAGENAME
 	"apps/%PACKAGENAME%/bin/qgis_server.dll" ^
 	"apps/%PACKAGENAME%/bin/admin.sld" ^
 	"apps/%PACKAGENAME%/bin/wms_metadata.xml" ^
+	"apps/%PACKAGENAME%/bin/schemaExtension.xsd" ^
 	"apps/%PACKAGENAME%/python/qgis/_server.pyd" ^
 	"apps/%PACKAGENAME%/python/qgis/_server.lib" ^
 	"apps/%PACKAGENAME%/python/qgis/server/" ^
@@ -306,9 +361,10 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%/%PACKAGENAME%-%VERS
 	--exclude "*.pyc" ^
 	--exclude "apps/%PACKAGENAME%/python/qgis/_server.pyd" ^
 	--exclude "apps/%PACKAGENAME%/python/qgis/_server.lib" ^
-	--exclude "apps/%PACKAGENAME%/python/qgis/server/" ^
+	--exclude "apps/%PACKAGENAME%/python/qgis/server" ^
 	"bin/%PACKAGENAME%-browser-bin.exe" ^
 	"bin/%PACKAGENAME%-bin.exe" ^
+	"bin/python-%PACKAGENAME%.bat.tmpl" ^
 	"apps/%PACKAGENAME%/bin/qgis.reg.tmpl" ^
 	"apps/%PACKAGENAME%/i18n/" ^
 	"apps/%PACKAGENAME%/icons/" ^
@@ -335,22 +391,52 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%/%PACKAGENAME%-%VERS
 	"apps/%PACKAGENAME%/resources/customization.xml" ^
 	"bin/%PACKAGENAME%.bat.tmpl" ^
 	"bin/%PACKAGENAME%-browser.bat.tmpl" ^
+	"bin/%PACKAGENAME%-designer.bat.tmpl" ^
 	"etc/postinstall/%PACKAGENAME%.bat" ^
 	"etc/preremove/%PACKAGENAME%.bat"
 if errorlevel 1 (echo tar desktop failed & goto error)
 
-tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%-grass-plugin/%PACKAGENAME%-grass-plugin-%VERSION%-%PACKAGE%.tar.bz2 ^
+tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%-grass-plugin-common/%PACKAGENAME%-grass-plugin-common-%VERSION%-%PACKAGE%.tar.bz2 ^
 	--exclude-from exclude ^
 	--exclude "*.pyc" ^
-	"apps/%PACKAGENAME%/grass" ^
-	"apps/%PACKAGENAME%/bin/qgisgrass.dll" ^
-	"apps/%PACKAGENAME%/plugins/grassrasterprovider.dll" ^
-	"apps/%PACKAGENAME%/plugins/grassplugin.dll" ^
-	"apps/%PACKAGENAME%/plugins/grassprovider.dll"
+	--exclude "apps/%PACKAGENAME%/grass/modules/qgis.d.rast6.exe" ^
+	--exclude "apps/%PACKAGENAME%/grass/modules/qgis.d.rast7.exe" ^
+	--exclude "apps/%PACKAGENAME%/grass/modules/qgis.g.info6.exe" ^
+	--exclude "apps/%PACKAGENAME%/grass/modules/qgis.g.info7.exe" ^
+	--exclude "apps/%PACKAGENAME%/grass/modules/qgis.r.in6.exe" ^
+	--exclude "apps/%PACKAGENAME%/grass/modules/qgis.r.in7.exe" ^
+	--exclude "apps/%PACKAGENAME%/grass/modules/qgis.v.in6.exe" ^
+	--exclude "apps/%PACKAGENAME%/grass/modules/qgis.v.in7.exe" ^
+	--exclude "apps/%PACKAGENAME%/grass/bin/qgis.g.browser6.exe" ^
+	--exclude "apps/%PACKAGENAME%/grass/bin/qgis.g.browser7.exe" ^
+	"apps/%PACKAGENAME%/grass"
 if errorlevel 1 (echo tar grass-plugin failed & goto error)
 
-REM grass direct library disabled
-REM     "apps/%PACKAGENAME%/plugins/libgrass_gis.%GRASS_VERSION%.dll"
+for %%g IN (%GRASS_VERSIONS%) do (
+	for /F "delims=." %%i in ("%%g") do set v=%%i
+	set w=!v!
+	if !v!==6 set w=
+
+	set files="apps/%PACKAGENAME%/bin/qgisgrass!v!.dll" ^
+		"apps/%PACKAGENAME%/grass/modules/qgis.d.rast!v!.exe" ^
+		"apps/%PACKAGENAME%/grass/modules/qgis.g.info!v!.exe" ^
+		"apps/%PACKAGENAME%/grass/modules/qgis.r.in!v!.exe" ^
+		"apps/%PACKAGENAME%/grass/modules/qgis.v.in!v!.exe" ^
+		"apps/%PACKAGENAME%/plugins/grassrasterprovider!v!.dll" ^
+		"apps/%PACKAGENAME%/plugins/grassprovider!v!.dll" ^
+		"bin/%PACKAGENAME%-grass!v!.bat.tmpl" ^
+		"bin/%PACKAGENAME%-browser-grass!v!.bat.tmpl" ^
+		"etc/postinstall/%PACKAGENAME%-grass-plugin!w!.bat" ^
+		"etc/preremove/%PACKAGENAME%-grass-plugin!w!.bat"
+
+	if !v!==6 set files=!files! ^
+		"apps/%PACKAGENAME%/plugins/grassplugin!v!.dll" ^
+		"apps/%PACKAGENAME%/grass/bin/qgis.g.browser!v!.exe"
+
+	tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%-grass-plugin!w!/%PACKAGENAME%-grass-plugin!w!-%VERSION%-%PACKAGE%.tar.bz2 ^
+		!files!
+	if errorlevel 1 (echo tar grass-plugin!w! failed & goto error)
+)
 
 tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%-globe-plugin/%PACKAGENAME%-globe-plugin-%VERSION%-%PACKAGE%.tar.bz2 ^
 	--exclude-from exclude ^
@@ -375,8 +461,8 @@ if errorlevel 1 (echo tar devel failed & goto error)
 goto end
 
 :usage
-echo usage: %0 version package packagename arch
-echo sample: %0 2.0.1 3 qgis x86
+echo usage: %0 version package packagename arch [sha [site]]
+echo sample: %0 2.0.1 3 qgis x86 f802808
 exit
 
 :error
@@ -387,3 +473,5 @@ for %%i in ("" "-common" "-server" "-devel" "-grass-plugin" "-globe-plugin" "-or
 
 :end
 echo FINISHED: %DATE% %TIME%
+
+endlocal

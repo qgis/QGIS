@@ -125,7 +125,7 @@ void QgsHighlight::setFillColor( const QColor & fillColor )
   mBrush.setStyle( Qt::SolidPattern );
 }
 
-QgsFeatureRendererV2 * QgsHighlight::getRenderer( const QgsRenderContext & context, const QColor & color, const QColor & fillColor )
+QgsFeatureRendererV2 * QgsHighlight::getRenderer( QgsRenderContext & context, const QColor & color, const QColor & fillColor )
 {
   QgsFeatureRendererV2 *renderer = 0;
   QgsVectorLayer *layer = qobject_cast<QgsVectorLayer*>( mLayer );
@@ -135,7 +135,7 @@ QgsFeatureRendererV2 * QgsHighlight::getRenderer( const QgsRenderContext & conte
   }
   if ( renderer )
   {
-    foreach ( QgsSymbolV2* symbol, renderer->symbols() )
+    foreach ( QgsSymbolV2* symbol, renderer->symbols( context ) )
     {
       if ( !symbol ) continue;
       setSymbol( symbol, context, color, fillColor );
@@ -368,7 +368,7 @@ void QgsHighlight::paint( QPainter* p )
 
       context.setPainter( imagePainter );
 
-      renderer->startRender( context, layer->pendingFields() );
+      renderer->startRender( context, layer->fields() );
       renderer->renderFeature( mFeature, context );
       renderer->stopRender( context );
 

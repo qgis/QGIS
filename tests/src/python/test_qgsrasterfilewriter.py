@@ -33,38 +33,40 @@ from utilities import (unitTestDataPath,
 # not used in this test
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 
+
 class TestQgsRasterFileWriter(TestCase):
 
-    def __init__(self,methodName):
-        unittest.TestCase.__init__(self,methodName)
+    def __init__(self, methodName):
+        unittest.TestCase.__init__(self, methodName)
         self.testDataDir = unitTestDataPath()
         self.report = "<h1>Python Raster File Writer Tests</h1>\n"
 
     def write(self, theRasterName):
         print theRasterName
 
-        path = "%s/%s" % ( self.testDataDir, theRasterName )
+        path = "%s/%s" % (self.testDataDir, theRasterName)
         rasterLayer = QgsRasterLayer(path, "test")
-        if not rasterLayer.isValid(): return False
+        if not rasterLayer.isValid():
+            return False
         provider = rasterLayer.dataProvider()
 
         tmpFile = QTemporaryFile()
         tmpFile.open() # fileName is no avialable until open
-        tmpName =  tmpFile.fileName()
+        tmpName = tmpFile.fileName()
         tmpFile.close()
         # do not remove when class is destroyed so that we can read
         # the file and see difference
-        tmpFile.setAutoRemove ( False )
+        tmpFile.setAutoRemove(False)
 
-        fileWriter = QgsRasterFileWriter ( tmpName )
+        fileWriter = QgsRasterFileWriter(tmpName)
         pipe = QgsRasterPipe()
-        if not pipe.set( provider.clone() ):
+        if not pipe.set(provider.clone()):
             print "Cannot set pipe provider"
             return False
 
         projector = QgsRasterProjector()
-        projector.setCRS( provider.crs(), provider.crs() )
-        if not pipe.insert( 2, projector ):
+        projector.setCRS(provider.crs(), provider.crs())
+        if not pipe.insert(2, projector):
             print "Cannot set pipe projector"
             return False
 
@@ -73,27 +75,28 @@ class TestQgsRasterFileWriter(TestCase):
             provider.xSize(),
             provider.ySize(),
             provider.extent(),
-            provider.crs() )
+            provider.crs())
 
         checker = QgsRasterChecker()
-        ok = checker.runTest( "gdal", tmpName, "gdal", path )
+        ok = checker.runTest("gdal", tmpName, "gdal", path)
         self.report += checker.report()
 
         # All OK, we can delete the file
-        tmpFile.setAutoRemove ( ok )
+        tmpFile.setAutoRemove(ok)
 
         return ok
 
     def testWrite(self):
-        for name in glob.glob( "%s/raster/*.tif" % self.testDataDir ):
-            baseName = os.path.basename ( name )
+        for name in glob.glob("%s/raster/*.tif" % self.testDataDir):
+            baseName = os.path.basename(name)
             allOk = True
-            ok = self.write( "raster/%s" % baseName )
-            if not ok: allOk = False
+            ok = self.write("raster/%s" % baseName)
+            if not ok:
+                allOk = False
 
         reportFilePath = "%s/qgistest.html" % QDir.tempPath()
-        reportFile = open(reportFilePath,'a')
-        reportFile.write( self.report )
+        reportFile = open(reportFilePath, 'a')
+        reportFile.write(self.report)
         reportFile.close()
 
         assert allOk, "Raster file writer test failed"

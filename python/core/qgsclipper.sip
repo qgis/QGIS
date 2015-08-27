@@ -49,7 +49,7 @@ class QgsClipper
 %End
     static void trimPolygon( QPolygonF& pts, const QgsRectangle& clipRect );
 
-    /**Reads a polyline from WKB and clips it to clipExtent
+    /** Reads a polyline from WKB and clips it to clipExtent
       @param wkb pointer to the start of the line wkb
       @param clipExtent clipping bounds
       @param line out: clipped line coordinates*/

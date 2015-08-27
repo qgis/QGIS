@@ -99,6 +99,11 @@ QVariant QgsRelationReferenceWidgetWrapper::value()
   }
 }
 
+bool QgsRelationReferenceWidgetWrapper::valid()
+{
+  return mWidget;
+}
+
 void QgsRelationReferenceWidgetWrapper::setValue( const QVariant& val )
 {
   if ( !mWidget || val == value() )

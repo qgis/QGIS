@@ -46,7 +46,7 @@ class MessageBarProgress:
     def error(self, msg):
         iface.messageBar().clearWidgets()
         iface.messageBar().pushMessage(self.tr('Error'),
-            msg, level=QgsMessageBar.CRITICAL, duration=3)
+                                       msg, level=QgsMessageBar.CRITICAL, duration=3)
 
     def setText(self, text):
         pass

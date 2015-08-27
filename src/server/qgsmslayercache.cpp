@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsmslayercache.h"
+#include "qgsmessagelog.h"
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
 #include <QFile>
@@ -55,18 +56,13 @@ QgsMSLayerCache::~QgsMSLayerCache()
 
 void QgsMSLayerCache::insertLayer( const QString& url, const QString& layerName, QgsMapLayer* layer, const QString& configFile, const QList<QString>& tempFiles )
 {
-  QgsDebugMsg( "inserting layer" );
+  QgsMessageLog::logMessage( "Layer cache: insert Layer '" + layerName + "' configFile: " + configFile, "Server", QgsMessageLog::INFO );
   if ( mEntries.size() > std::max( mDefaultMaxLayers, mProjectMaxLayers ) ) //force cache layer examination after 10 inserted layers
   {
     updateEntries();
   }
 
   QPair<QString, QString> urlLayerPair = qMakePair( url, layerName );
-  QHash<QPair<QString, QString>, QgsMSLayerCacheEntry>::iterator it = mEntries.find( urlLayerPair );
-  if ( it != mEntries.end() )
-  {
-    delete it.value().layerPointer;
-  }
 
   QgsMSLayerCacheEntry newEntry;
   newEntry.layerPointer = layer;
@@ -94,26 +90,37 @@ void QgsMSLayerCache::insertLayer( const QString& url, const QString& layerName,
   }
 }
 
-QgsMapLayer* QgsMSLayerCache::searchLayer( const QString& url, const QString& layerName )
+QgsMapLayer* QgsMSLayerCache::searchLayer( const QString& url, const QString& layerName, const QString& configFile )
 {
   QPair<QString, QString> urlNamePair = qMakePair( url, layerName );
   if ( !mEntries.contains( urlNamePair ) )
   {
-    QgsDebugMsg( "Layer not found in cache" );
+    QgsMessageLog::logMessage( "Layer '" + layerName + "' configFile: " + configFile + " not found in layer cache'", "Server", QgsMessageLog::INFO );
     return 0;
   }
   else
   {
-    QgsMSLayerCacheEntry &entry = mEntries[ urlNamePair ];
-    entry.lastUsedTime = time( NULL );
-    QgsDebugMsg( "Layer found in cache" );
-    return entry.layerPointer;
+    QList< QgsMSLayerCacheEntry > layers = mEntries.values( urlNamePair );
+    QList< QgsMSLayerCacheEntry >::iterator layerIt = layers.begin();
+    for ( ; layerIt != layers.end(); ++layerIt )
+    {
+      if ( configFile.isEmpty() || layerIt->configFile == configFile )
+      {
+        layerIt->lastUsedTime = time( NULL );
+        QgsMessageLog::logMessage( "Layer '" + layerName + "' configFile: " + configFile + " found in layer cache", "Server", QgsMessageLog::INFO );
+        return layerIt->layerPointer;
+      }
+    }
+    QgsMessageLog::logMessage( "Layer '" + layerName + "' configFile: " + configFile + " not found in layer cache'", "Server", QgsMessageLog::INFO );
+    return 0;
   }
 }
 
 void QgsMSLayerCache::removeProjectFileLayers( const QString& project )
 {
+  QgsMessageLog::logMessage( "Removing cache entries for project file: " + project, "Server", QgsMessageLog::INFO );
   QList< QPair< QString, QString > > removeEntries;
+  QList< QgsMSLayerCacheEntry > removeEntriesValues;
 
   QHash<QPair<QString, QString>, QgsMSLayerCacheEntry>::iterator entryIt = mEntries.begin();
   for ( ; entryIt != mEntries.end(); ++entryIt )
@@ -121,14 +128,17 @@ void QgsMSLayerCache::removeProjectFileLayers( const QString& project )
     if ( entryIt.value().configFile == project )
     {
       removeEntries.push_back( entryIt.key() );
+      removeEntriesValues.push_back( entryIt.value() );
       freeEntryRessources( entryIt.value() );
     }
   }
 
-  QList< QPair< QString, QString > >::const_iterator removeIt = removeEntries.constBegin();
-  for ( ; removeIt != removeEntries.constEnd(); ++removeIt )
+  for ( int i = 0; i < removeEntries.size(); ++i )
   {
-    mEntries.remove( *removeIt );
+    const QgsMSLayerCacheEntry& removeEntry = removeEntriesValues.at( i );
+    const QPair< QString, QString > removeKey = removeEntries.at( i );
+    QgsMessageLog::logMessage( "Removing cache entry for url:" +  removeKey.first + " layerName:" + removeKey.second + " project file:" + project, "Server", QgsMessageLog::INFO );
+    mEntries.remove( removeKey, removeEntry );
   }
 }
 
@@ -149,12 +159,11 @@ void QgsMSLayerCache::updateEntries()
 
 void QgsMSLayerCache::removeLeastUsedEntry()
 {
-
   if ( mEntries.size() < 1 )
   {
     return;
   }
-  QgsDebugMsg( "removeLeastUsedEntry" );
+
   QHash<QPair<QString, QString>, QgsMSLayerCacheEntry>::iterator it = mEntries.begin();
   QHash<QPair<QString, QString>, QgsMSLayerCacheEntry>::iterator lowest_it = it;
   time_t lowest_time = it->lastUsedTime;
@@ -168,6 +177,7 @@ void QgsMSLayerCache::removeLeastUsedEntry()
     }
   }
 
+  QgsMessageLog::logMessage( "Removing last accessed layer '" + lowest_it.value().layerPointer->name() + "' project file " + lowest_it.value().configFile + " from cache" , "Server", QgsMessageLog::INFO );
   freeEntryRessources( *lowest_it );
   mEntries.erase( lowest_it );
 }
@@ -201,5 +211,15 @@ void QgsMSLayerCache::freeEntryRessources( QgsMSLayerCacheEntry& entry )
     {
       mConfigFiles[entry.configFile] = configFileCount - 1;
     }
+  }
+}
+
+void QgsMSLayerCache::logCacheContents() const
+{
+  QgsMessageLog::logMessage( "Layer cache contents:" , "Server", QgsMessageLog::INFO );
+  QHash<QPair<QString, QString>, QgsMSLayerCacheEntry>::const_iterator it = mEntries.constBegin();
+  for ( ; it != mEntries.constEnd(); ++it )
+  {
+    QgsMessageLog::logMessage( "Url: " + it.value().url + " Layer name: " + it.value().layerPointer->name() + " Project: " + it.value().configFile, "Server", QgsMessageLog::INFO );
   }
 }

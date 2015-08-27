@@ -548,6 +548,16 @@ QString QgsPostgresUtils::whereClause( QgsFeatureIds featureIds, const QgsFields
   return whereClauses.isEmpty() ? "" : whereClauses.join( " OR " ).prepend( "(" ).append( ")" );
 }
 
+QString QgsPostgresUtils::andWhereClauses( const QString& c1, const QString& c2 )
+{
+  if ( c1.isEmpty() )
+    return c2;
+  if ( c2.isEmpty() )
+    return c1;
+
+  return QString( "(%1) AND (%2)" ).arg( c1 ).arg( c2 );
+}
+
 QString QgsPostgresProvider::filterWhereClause() const
 {
   QString where;
@@ -696,30 +706,34 @@ bool QgsPostgresProvider::loadFields()
         tableoids.insert( tableoid );
       }
     }
-    QStringList tableoidsList;
-    foreach ( int tableoid, tableoids )
-    {
-      tableoidsList.append( QString::number( tableoid ) );
-    }
 
-    QString tableoidsFilter = "(" + tableoidsList.join( "," ) + ")";
-
-    // Collect formatted field types
-    sql = "SELECT attrelid, attnum, pg_catalog.format_type(atttypid,atttypmod), pg_catalog.col_description(attrelid,attnum), pg_catalog.pg_get_expr(adbin,adrelid)"
-          " FROM pg_attribute"
-          " LEFT OUTER JOIN pg_attrdef ON attrelid=adrelid AND attnum=adnum"
-          " WHERE attrelid IN " + tableoidsFilter;
-    QgsPostgresResult fmtFieldTypeResult = connectionRO()->PQexec( sql );
-    for ( int i = 0; i < fmtFieldTypeResult.PQntuples(); ++i )
+    if ( !tableoids.isEmpty() )
     {
-      int attrelid = fmtFieldTypeResult.PQgetvalue( i, 0 ).toInt();
-      int attnum = fmtFieldTypeResult.PQgetvalue( i, 1 ).toInt();
-      QString formatType = fmtFieldTypeResult.PQgetvalue( i, 2 );
-      QString descr = fmtFieldTypeResult.PQgetvalue( i, 3 );
-      QString defVal = fmtFieldTypeResult.PQgetvalue( i, 4 );
-      fmtFieldTypeMap[attrelid][attnum] = formatType;
-      descrMap[attrelid][attnum] = descr;
-      defValMap[attrelid][attnum] = defVal;
+      QStringList tableoidsList;
+      foreach ( int tableoid, tableoids )
+      {
+        tableoidsList.append( QString::number( tableoid ) );
+      }
+
+      QString tableoidsFilter = "(" + tableoidsList.join( "," ) + ")";
+
+      // Collect formatted field types
+      sql = "SELECT attrelid, attnum, pg_catalog.format_type(atttypid,atttypmod), pg_catalog.col_description(attrelid,attnum), pg_catalog.pg_get_expr(adbin,adrelid)"
+            " FROM pg_attribute"
+            " LEFT OUTER JOIN pg_attrdef ON attrelid=adrelid AND attnum=adnum"
+            " WHERE attrelid IN " + tableoidsFilter;
+      QgsPostgresResult fmtFieldTypeResult = connectionRO()->PQexec( sql );
+      for ( int i = 0; i < fmtFieldTypeResult.PQntuples(); ++i )
+      {
+        int attrelid = fmtFieldTypeResult.PQgetvalue( i, 0 ).toInt();
+        int attnum = fmtFieldTypeResult.PQgetvalue( i, 1 ).toInt();
+        QString formatType = fmtFieldTypeResult.PQgetvalue( i, 2 );
+        QString descr = fmtFieldTypeResult.PQgetvalue( i, 3 );
+        QString defVal = fmtFieldTypeResult.PQgetvalue( i, 4 );
+        fmtFieldTypeMap[attrelid][attnum] = formatType;
+        descrMap[attrelid][attnum] = descr;
+        defValMap[attrelid][attnum] = defVal;
+      }
     }
   }
 
@@ -1081,6 +1095,9 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
 
   //supports transactions
   mEnabledCapabilities |= QgsVectorDataProvider::TransactionSupport;
+
+  // supports circular geometries
+  mEnabledCapabilities |= QgsVectorDataProvider::CircularGeometries;
   return true;
 }
 
@@ -1785,12 +1802,12 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
         if ( value.isNull() )
         {
           const QgsField &fld = field( attrIdx );
-          v = paramValue( defaultValues[ attrIdx ], defaultValues[ attrIdx ] );
+          v = paramValue( defaultValues[ i ], defaultValues[ i ] );
           features->setAttribute( attrIdx, convertValue( fld.type(), v ) );
         }
         else
         {
-          v = paramValue( value.toString(), defaultValues[ attrIdx ] );
+          v = paramValue( value.toString(), defaultValues[ i ] );
 
           if ( v != value.toString() )
           {
@@ -1920,6 +1937,9 @@ bool QgsPostgresProvider::addAttributes( const QList<QgsField> &attributes )
 
   if ( mIsQuery )
     return false;
+
+  if ( attributes.count() == 0 )
+    return true;
 
   QgsPostgresConn* conn = connectionRW();
   if ( !conn )
@@ -2487,8 +2507,8 @@ QgsRectangle QgsPostgresProvider::extent()
             sql = QString( "SELECT %1(%2,%3,%4)" )
                   .arg( connectionRO()->majorVersion() < 2 ? "estimated_extent" :
                         ( connectionRO()->majorVersion() == 2 && connectionRO()->minorVersion() < 1 ? "st_estimated_extent" : "st_estimatedextent" ) )
-                  .arg( quotedValue( quotedIdentifier( mSchemaName ) ) )
-                  .arg( quotedValue( quotedIdentifier( mTableName ) ) )
+                  .arg( quotedValue( mSchemaName ) )
+                  .arg( quotedValue( mTableName ) )
                   .arg( quotedValue( mGeometryColumn ) );
             result = mConnectionRO->PQexec( sql );
             if ( result.PQresultStatus() == PGRES_TUPLES_OK && result.PQntuples() == 1 && !result.PQgetisnull( 0, 0 ) )
@@ -2660,8 +2680,6 @@ bool QgsPostgresProvider::getGeometryDetails()
     {
       detectedType = result.PQgetvalue( 0, 0 );
       detectedSrid = result.PQgetvalue( 0, 1 );
-      if ( result.PQgetvalue( 0, 2 ).toInt() == 4 )
-        mForce2d = true;
       mSpatialColType = sctGeometry;
     }
     else
@@ -2878,7 +2896,7 @@ bool QgsPostgresProvider::getGeometryDetails()
     // explicitly disable adding new features and editing of geometries
     // as this would lead to corruption of measures
     QgsMessageLog::logMessage( tr( "Editing and adding disabled for 2D+ layer (%1; %2)" ).arg( mGeometryColumn ).arg( mQuery ) );
-    mEnabledCapabilities &= ~( QgsVectorDataProvider::ChangeGeometries | QgsVectorDataProvider::AddFeatures );
+    mEnabledCapabilities &= ~( QgsVectorDataProvider::AddFeatures );
   }
 
   QgsDebugMsg( QString( "Feature type name is %1" ).arg( QGis::featureType( geometryType() ) ) );
@@ -3414,6 +3432,40 @@ QGISEXTERN bool deleteLayer( const QString& uri, QString& errCause )
   {
     errCause = QObject::tr( "Unable to delete layer %1: \n%2" )
                .arg( schemaTableName )
+               .arg( result.PQresultErrorMessage() );
+    conn->unref();
+    return false;
+  }
+
+  conn->unref();
+  return true;
+}
+
+QGISEXTERN bool deleteSchema( const QString& schema, const QgsDataSourceURI& uri, QString& errCause, bool cascade = false )
+{
+  QgsDebugMsg( "deleting schema " + schema );
+
+  if ( schema.isEmpty() )
+    return false;
+
+  QString schemaName = QgsPostgresConn::quotedIdentifier( schema );
+
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri.connectionInfo(), false );
+  if ( !conn )
+  {
+    errCause = QObject::tr( "Connection to database failed" );
+    return false;
+  }
+
+  // drop the schema
+  QString sql = QString( "DROP SCHEMA %1 %2" )
+                .arg( schemaName ).arg( cascade ? QString( "CASCADE" ) : QString() );
+
+  QgsPostgresResult result = conn->PQexec( sql );
+  if ( result.PQresultStatus() != PGRES_COMMAND_OK )
+  {
+    errCause = QObject::tr( "Unable to delete schema %1: \n%2" )
+               .arg( schemaName )
                .arg( result.PQresultErrorMessage() );
     conn->unref();
     return false;

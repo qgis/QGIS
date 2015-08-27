@@ -1,4 +1,4 @@
-/**Evaluates NMEA sentences coming from gpsd*/
+/** Evaluates NMEA sentences coming from gpsd*/
 class QgsGpsdConnection: QgsNMEAConnection
 {
 %TypeHeaderCode

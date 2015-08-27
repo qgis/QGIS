@@ -1,5 +1,5 @@
 r.surf.contour
-r.surf.contour - Surface generation program from rasterized contours.
+Surface generation program from rasterized contours.
 Raster (r.*)
 ParameterRaster|input|Raster layer with rasterized contours|False
 OutputRaster|output|DTM from contours

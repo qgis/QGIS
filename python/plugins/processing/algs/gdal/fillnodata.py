@@ -49,20 +49,20 @@ class fillnodata(GdalAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def defineCharacteristics(self):
-        self.name = 'Fill nodata'
-        self.group = '[GDAL] Analysis'
+        self.name, self.i18n_name = self.trAlgorithm('Fill nodata')
+        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Analysis')
         self.addParameter(ParameterRaster(
             self.INPUT, self.tr('Input layer'), False))
         self.addParameter(ParameterNumber(self.DISTANCE,
-            self.tr('Search distance'), 0, 9999, 100))
+                                          self.tr('Search distance'), 0, 9999, 100))
         self.addParameter(ParameterNumber(self.ITERATIONS,
-            self.tr('Smooth iterations'), 0, 9999, 0))
+                                          self.tr('Smooth iterations'), 0, 9999, 0))
         self.addParameter(ParameterNumber(self.BAND,
-            self.tr('Band to operate on'), 1, 9999, 1))
+                                          self.tr('Band to operate on'), 1, 9999, 1))
         self.addParameter(ParameterRaster(self.MASK,
-            self.tr('Validity mask'), True))
+                                          self.tr('Validity mask'), True))
         self.addParameter(ParameterBoolean(self.NO_DEFAULT_MASK,
-            self.tr('Do not use default validity mask'), False))
+                                           self.tr('Do not use default validity mask'), False))
 
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Filled')))
 
@@ -71,14 +71,14 @@ class fillnodata(GdalAlgorithm):
 
         arguments = []
         arguments.append('-md')
-        arguments.append(str(self.getParameterValue(self.DISTANCE)))
+        arguments.append(unicode(self.getParameterValue(self.DISTANCE)))
 
         if self.getParameterValue(self.ITERATIONS) != 0:
             arguments.append('-si')
-            arguments.append(str(self.getParameterValue(self.ITERATIONS)))
+            arguments.append(unicode(self.getParameterValue(self.ITERATIONS)))
 
         arguments.append('-b')
-        arguments.append(str(self.getParameterValue(self.BAND)))
+        arguments.append(unicode(self.getParameterValue(self.BAND)))
 
         mask = self.getParameterValue(self.MASK)
         if mask is not None:

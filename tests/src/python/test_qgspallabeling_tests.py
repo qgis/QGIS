@@ -185,6 +185,8 @@ class TestPointBase(object):
         self.checkTest()
 
 # noinspection PyPep8Naming
+
+
 class TestLineBase(object):
 
     def __init__(self):

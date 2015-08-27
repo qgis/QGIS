@@ -1,5 +1,5 @@
 r.drain
-r.drain - Traces a flow through an elevation model on a raster map.
+Traces a flow through an elevation model on a raster map.
 Raster (r.*)
 ParameterRaster|input|Elevation|False
 ParameterString|start_coordinates|Map coordinates of starting point(s) (E,N)|(0,0)

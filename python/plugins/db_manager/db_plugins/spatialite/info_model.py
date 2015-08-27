@@ -27,6 +27,7 @@ from ..html_elems import HtmlTable
 
 
 class SLDatabaseInfo(DatabaseInfo):
+
     def __init__(self, db):
         self.db = db
 

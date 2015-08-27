@@ -35,8 +35,8 @@
 class QgsPointCompare
 {
   public:
-    QgsPointCompare( double tolerance ) :
-        mTolerance( tolerance )
+    explicit QgsPointCompare( double tolerance )
+        : mTolerance( tolerance )
     {  }
 
     bool operator()( const QgsPoint& p1, const QgsPoint& p2 ) const
@@ -325,6 +325,7 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
           TiePointInfo t;
           t.mFirstPoint = pt1;
           t.mLastPoint  = pt2;
+          t.mLength = 0.0;
           pointLengthIt = my_binary_search( pointLengthMap.begin(), pointLengthMap.end(), t, TiePointInfoCompare );
 
           if ( pointLengthIt != pointLengthMap.end() )

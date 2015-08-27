@@ -219,7 +219,7 @@ void QgisAppStyleSheet::setActiveValues()
 #else
   mLinuxOS = false;
 #endif
-#ifdef Q_OS_WIN32
+#ifdef Q_OS_WIN
   mWinOS = true;
 #else
   mWinOS = false;

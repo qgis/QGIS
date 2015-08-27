@@ -7,7 +7,7 @@ class QgsIDWInterpolator: QgsInterpolator
     QgsIDWInterpolator( const QList<QgsInterpolator::LayerData>& layerData );
     ~QgsIDWInterpolator();
 
-    /**Calculates interpolation value for map coordinates x, y
+    /** Calculates interpolation value for map coordinates x, y
        @param x x-coordinate (in map units)
        @param y y-coordinate (in map units)
        @param result out: interpolation result

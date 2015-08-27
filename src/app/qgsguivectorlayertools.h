@@ -23,8 +23,10 @@
  * or a feature is added.
  */
 
-class QgsGuiVectorLayerTools : public QgsVectorLayerTools, public QObject
+class QgsGuiVectorLayerTools : public QObject, public QgsVectorLayerTools
 {
+    Q_OBJECT
+
   public:
     QgsGuiVectorLayerTools();
 

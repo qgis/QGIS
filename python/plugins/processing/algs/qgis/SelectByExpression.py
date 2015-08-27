@@ -33,25 +33,26 @@ from processing.core.outputs import OutputVector
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterString
 
+
 class SelectByExpression(GeoAlgorithm):
 
     LAYERNAME = 'LAYERNAME'
-    EXPRESSION= 'EXPRESSION'
+    EXPRESSION = 'EXPRESSION'
     RESULT = 'RESULT'
     METHOD = 'METHOD'
     METHODS = ['creating new selection', 'adding to current selection',
                'removing from current selection']
 
     def defineCharacteristics(self):
-        self.name = 'Select by expression'
-        self.group = 'Vector selection tools'
+        self.name, self.i18n_name = self.trAlgorithm('Select by expression')
+        self.group, self.i18n_group = self.trAlgorithm('Vector selection tools')
 
         self.addParameter(ParameterVector(self.LAYERNAME,
-            self.tr('Input Layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input Layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterString(self.EXPRESSION,
-            self.tr("Expression")))
+                                          self.tr("Expression")))
         self.addParameter(ParameterSelection(self.METHOD,
-            self.tr('Modify current selection by'), self.METHODS, 0))
+                                             self.tr('Modify current selection by'), self.METHODS, 0))
         self.addOutput(OutputVector(self.RESULT, self.tr('Selected (expression)'), True))
 
     def processAlgorithm(self, progress):

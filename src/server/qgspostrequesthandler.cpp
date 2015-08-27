@@ -19,8 +19,10 @@
 #include "qgslogger.h"
 #include <QDomDocument>
 
-QgsPostRequestHandler::QgsPostRequestHandler()
+QgsPostRequestHandler::QgsPostRequestHandler( const bool captureOutput /*= FALSE*/ )
+    : QgsHttpRequestHandler( captureOutput )
 {
+
 }
 
 QgsPostRequestHandler::~QgsPostRequestHandler()

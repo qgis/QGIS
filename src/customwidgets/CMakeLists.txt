@@ -28,6 +28,7 @@ SET (QGIS_CUSTOMWIDGETS_SRCS
   qgsdatetimeeditplugin.cpp
   qgsdatadefinedbuttonplugin.cpp
   qgsdoublespinboxplugin.cpp
+  qgsextentgroupboxplugin.cpp
   qgsfieldcomboboxplugin.cpp
   qgsfieldexpressionwidgetplugin.cpp
   qgsfilterlineeditplugin.cpp
@@ -48,6 +49,7 @@ SET (QGIS_CUSTOMWIDGETS_MOC_HDRS
   qgsdatetimeeditplugin.h
   qgsdatadefinedbuttonplugin.h
   qgsdoublespinboxplugin.h
+  qgsextentgroupboxplugin.h
   qgsfieldcomboboxplugin.h
   qgsfieldexpressionwidgetplugin.h
   qgsfilterlineeditplugin.h
@@ -74,6 +76,7 @@ SET(QGIS_CUSTOMWIDGETS_HDRS
   qgsdatetimeeditplugin.h
   qgsdatadefinedbuttonplugin.h
   qgsdoublespinboxplugin.h
+  qgsextentgroupboxplugin.h
   qgsfieldcomboboxplugin.h
   qgsfieldexpressionwidgetplugin.h
   qgsfilterlineeditplugin.h

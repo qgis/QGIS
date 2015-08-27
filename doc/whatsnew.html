@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      html {
+        font-family: "Open Sans", "Helvetica Neue", Ubuntu, Arial, sans-serif;
+      }
+      body {
+        font-size: 80%;
+      }
+      a {
+        text-decoration: none;
+        color: #08c;
+      }
+
+      .#feed {
+        margin: 1em;
+        background-color: white;
+        border-radius: 9px;
+        padding: 1em;
+        border: 1px solid #999;
+      }
+
+      .feed-element {
+        overflow: auto;
+      }
+
+      .description {
+      }
+
+      .date {
+        font-size: 70%;
+        font-style: italic;
+        margin-bottom: 1em;
+        color: #666;
+      }
+
+      .feed-element .content-image {
+        float: left;
+        margin-right: 1em;
+      }
+
+
+      /* Spinner from http://tobiasahlin.com/spinkit */
+      .spinner {
+        margin: 100px auto 0;
+        width: 70px;
+        text-align: center;
+      }
+
+      .spinner > div {
+        width: 18px;
+        height: 18px;
+        background-color: #333;
+
+        border-radius: 100%;
+        display: inline-block;
+        -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+        animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+      }
+
+      .spinner .bounce1 {
+        -webkit-animation-delay: -0.32s;
+        animation-delay: -0.32s;
+      }
+
+      .spinner .bounce2 {
+        -webkit-animation-delay: -0.16s;
+        animation-delay: -0.16s;
+      }
+
+      @-webkit-keyframes sk-bouncedelay {
+        0%, 80%, 100% { -webkit-transform: scale(0) }
+        40% { -webkit-transform: scale(1.0) }
+      }
+
+      @keyframes sk-bouncedelay {
+        0%, 80%, 100% {
+          -webkit-transform: scale(0);
+          transform: scale(0);
+        } 40% {
+          -webkit-transform: scale(1.0);
+          transform: scale(1.0);
+        }
+      }
+    </style>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+
+    google.load("feeds", "1");
+
+    function initialize() {
+      var feed = new google.feeds.Feed('https://qgisblog.wordpress.com/feed/');
+      feed.load(function(result) {
+        var spinner = document.getElementById("loader");
+        spinner.parentNode.removeChild(spinner);
+        if (!result.error) {
+          var container = document.getElementById("feed");
+          result.feed.entries.forEach(
+              function(entry) {
+                var div = document.createElement("div");
+                div.setAttribute('class', 'feed-element')
+
+                var link = document.createElement("a");
+                link.setAttribute('href', entry.link);
+
+                var title = document.createElement("h2");
+                title.appendChild(document.createTextNode(entry.title));
+                link.appendChild(title);
+                div.appendChild(link);
+
+                var date = document.createElement("div");
+                date.setAttribute('class', 'date');
+                date.appendChild(document.createTextNode(entry.publishedDate));
+                div.appendChild(date);
+
+                var img = document.createElement("img");
+                img.setAttribute('src', entry.mediaGroups[0].contents[0].url);
+                img.setAttribute('class', 'content-image');
+                div.appendChild(img);
+
+                var description = document.createElement("div");
+                description.setAttribute('class', 'description');
+                description.innerHTML=entry.contentSnippet;
+                div.appendChild(description);
+
+                container.appendChild(div);
+              }
+          )
+        }
+        else {
+          container.innerHTML="<h1>No News</h1><p>Sorry, it seems that the news feed is unavailable. This indicates problems with the internet connection.</p>";
+        }
+      });
+    }
+    google.setOnLoadCallback(initialize);
+
+    </script>
+  </head>
+  <body>
+    <div id="loader" class="spinner">
+      <div class="bounce1"></div>
+      <div class="bounce2"></div>
+      <div class="bounce3"></div>
+    </div>
+
+    <div id="feed"></div>
+  </body>
+</html>

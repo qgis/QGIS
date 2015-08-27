@@ -21,7 +21,7 @@ class QgsDatumTransformStore
 
     bool hasEntryForLayer( QgsMapLayer* layer ) const;
 
-    /** will return transform from layer's CRS to current destination CRS.
+    /** Will return transform from layer's CRS to current destination CRS.
      *  Will emit datumTransformInfoRequested signal if the layer has no entry.
      *  Returns an instance from QgsCoordinateTransformCache
      */

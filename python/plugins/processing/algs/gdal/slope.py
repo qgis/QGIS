@@ -45,21 +45,21 @@ class slope(GdalAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def defineCharacteristics(self):
-        self.name = 'Slope'
-        self.group = '[GDAL] Analysis'
+        self.name, self.i18n_name = self.trAlgorithm('Slope')
+        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Analysis')
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterNumber(self.BAND,
-            self.tr('Band number'), 1, 99, 1))
+                                          self.tr('Band number'), 1, 99, 1))
         self.addParameter(ParameterBoolean(self.COMPUTE_EDGES,
-            self.tr('Compute edges'), False))
+                                           self.tr('Compute edges'), False))
         self.addParameter(ParameterBoolean(self.ZEVENBERGEN,
-            self.tr("Use Zevenbergen&Thorne formula (instead of the Horn's one)"),
-            False))
+                                           self.tr("Use Zevenbergen&Thorne formula (instead of the Horn's one)"),
+                                           False))
         self.addParameter(ParameterBoolean(self.AS_PERCENT,
-            self.tr('Slope expressed as percent (instead of degrees)'), False))
+                                           self.tr('Slope expressed as percent (instead of degrees)'), False))
         self.addParameter(ParameterNumber(self.SCALE,
-            self.tr('Scale (ratio of vert. units to horiz.)'),
-            0.0, 99999999.999999, 1.0))
+                                          self.tr('Scale (ratio of vert. units to horiz.)'),
+                                          0.0, 99999999.999999, 1.0))
 
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Slope')))
 
@@ -73,9 +73,9 @@ class slope(GdalAlgorithm):
         arguments.append(GdalUtils.getFormatShortNameFromFilename(output))
 
         arguments.append('-b')
-        arguments.append(str(self.getParameterValue(self.BAND)))
+        arguments.append(unicode(self.getParameterValue(self.BAND)))
         arguments.append('-s')
-        arguments.append(str(self.getParameterValue(self.SCALE)))
+        arguments.append(unicode(self.getParameterValue(self.SCALE)))
 
         if self.getParameterValue(self.COMPUTE_EDGES):
             arguments.append('-compute_edges')

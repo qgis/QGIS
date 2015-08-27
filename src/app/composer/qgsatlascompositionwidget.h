@@ -36,18 +36,15 @@ class QgsAtlasCompositionWidget:
 
   public slots:
     void on_mUseAtlasCheckBox_stateChanged( int state );
-    void changeCoverageLayer( QgsMapLayer* layer );
     void on_mAtlasFilenamePatternEdit_editingFinished();
     void on_mAtlasFilenameExpressionButton_clicked();
-    void on_mAtlasHideCoverageCheckBox_stateChanged( int state );
     void on_mAtlasSingleFileCheckBox_stateChanged( int state );
 
     void on_mAtlasSortFeatureCheckBox_stateChanged( int state );
-    void changesSortFeatureField( QString fieldName );
     void on_mAtlasSortFeatureDirectionButton_clicked();
-    void on_mAtlasFeatureFilterEdit_editingFinished();
     void on_mAtlasFeatureFilterButton_clicked();
     void on_mAtlasFeatureFilterCheckBox_stateChanged( int state );
+    void on_mApplyConfigButton_clicked();
 
   private slots:
     void updateGuiElements();

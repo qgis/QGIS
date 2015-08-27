@@ -234,7 +234,7 @@ class ParametersPanel(BASE, WIDGET):
                 for layer in layers:
                     items.append((self.getExtendedLayerName(layer), layer))
                 # if already set, put first in list
-                for i,(name,layer) in enumerate(items):
+                for i, (name, layer) in enumerate(items):
                     if layer and layer.source() == param.value:
                         items.insert(0, items.pop(i))
                 item = InputLayerSelectorPanel(items, param)
@@ -256,7 +256,7 @@ class ParametersPanel(BASE, WIDGET):
                 for layer in layers:
                     items.append((layer.name(), layer))
                 # if already set, put first in list
-                for i,(name,layer) in enumerate(items):
+                for i, (name, layer) in enumerate(items):
                     if layer and layer.source() == param.value:
                         items.insert(0, items.pop(i))
                 item = InputLayerSelectorPanel(items, param)
@@ -325,7 +325,7 @@ class ParametersPanel(BASE, WIDGET):
                 item = textEdit
             else:
                 item = QLineEdit()
-                item.setText(str(param.default))
+                item.setText(unicode(param.default))
         elif isinstance(param, ParameterGeometryPredicate):
             item = GeometryPredicateSelectionPanel(param.enabledPredicates)
             if param.left:
@@ -344,7 +344,7 @@ class ParametersPanel(BASE, WIDGET):
             item.setValue(param.default)
         else:
             item = QLineEdit()
-            item.setText(str(param.default))
+            item.setText(unicode(param.default))
 
         return item
 
@@ -369,7 +369,8 @@ class ParametersPanel(BASE, WIDGET):
         if datatype == ParameterTableField.DATA_TYPE_STRING:
             fieldTypes = [QVariant.String]
         elif datatype == ParameterTableField.DATA_TYPE_NUMBER:
-            fieldTypes = [QVariant.Int, QVariant.Double]
+            fieldTypes = [QVariant.Int, QVariant.Double, QVariant.ULongLong,
+                          QVariant.UInt]
 
         fieldNames = set()
         for field in layer.pendingFields():

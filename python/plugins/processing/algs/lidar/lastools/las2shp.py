@@ -32,6 +32,7 @@ from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputVector
 
+
 class las2shp(LAStoolsAlgorithm):
 
     POINT_Z = "POINT_Z"
@@ -39,16 +40,16 @@ class las2shp(LAStoolsAlgorithm):
     OUTPUT = "OUTPUT"
 
     def defineCharacteristics(self):
-        self.name = "las2shp"
-        self.group = "LAStools"
+        self.name, self.i18n_name = self.trAlgorithm('las2shp')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParameter(ParameterBoolean(las2shp.POINT_Z,
-            self.tr("use PointZ instead of MultiPointZ"), False))
+                                           self.tr("use PointZ instead of MultiPointZ"), False))
         self.addParameter(ParameterNumber(las2shp.RECORD_SIZE,
-            self.tr("number of points per record"), 0, None, 1024))
+                                          self.tr("number of points per record"), 0, None, 1024))
         self.addOutput(OutputVector(las2shp.OUTPUT,
-            self.tr("Output SHP file")))
+                                    self.tr("Output SHP file")))
         self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, progress):
@@ -60,7 +61,7 @@ class las2shp(LAStoolsAlgorithm):
         record_size = self.getParameterValue(las2shp.RECORD_SIZE)
         if record_size != 1024:
             commands.append("-record_size")
-            commands.append(str(record_size))
+            commands.append(unicode(record_size))
         commands.append("-o")
         commands.append(self.getOutputValue(las2shp.OUTPUT))
         self.addParametersAdditionalCommands(commands)

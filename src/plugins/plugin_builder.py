@@ -125,13 +125,13 @@ os.mkdir(pluginDir)
 # copy files to appropriate names
 shutil.copy(template_file('CMakeLists.txt'), pluginDir)
 shutil.copy(template_file('README.whatnext'), os.path.join(pluginDir, 'README'))
-shutil.copy(template_file('plugin.qrc'),      os.path.join(pluginDir, pluginLCaseName + '.qrc'))
-shutil.copy(template_file('plugin.png'),      os.path.join(pluginDir, pluginLCaseName + '.png'))
-shutil.copy(template_file('plugin.cpp'),      os.path.join(pluginDir, pluginLCaseName + '.cpp'))
-shutil.copy(template_file('plugin.h'),        os.path.join(pluginDir, pluginLCaseName + '.h'))
-shutil.copy(template_file('plugingui.cpp'),   os.path.join(pluginDir, pluginLCaseName + 'gui.cpp'))
-shutil.copy(template_file('plugingui.h'),     os.path.join(pluginDir, pluginLCaseName + 'gui.h'))
-shutil.copy(template_file('pluginguibase.ui'),    os.path.join(pluginDir, pluginLCaseName + 'guibase.ui'))
+shutil.copy(template_file('plugin.qrc'), os.path.join(pluginDir, pluginLCaseName + '.qrc'))
+shutil.copy(template_file('plugin.png'), os.path.join(pluginDir, pluginLCaseName + '.png'))
+shutil.copy(template_file('plugin.cpp'), os.path.join(pluginDir, pluginLCaseName + '.cpp'))
+shutil.copy(template_file('plugin.h'), os.path.join(pluginDir, pluginLCaseName + '.h'))
+shutil.copy(template_file('plugingui.cpp'), os.path.join(pluginDir, pluginLCaseName + 'gui.cpp'))
+shutil.copy(template_file('plugingui.h'), os.path.join(pluginDir, pluginLCaseName + 'gui.h'))
+shutil.copy(template_file('pluginguibase.ui'), os.path.join(pluginDir, pluginLCaseName + 'guibase.ui'))
 
 # Substitute the plugin specific vars in the various files
 # This is a brute force approach but its quick and dirty :)
@@ -174,7 +174,7 @@ for file in files:
 
 # Add an entry to src/plugins/CMakeLists.txt
 f = open('CMakeLists.txt', 'a')
-f.write('\nSUBDIRS ('+pluginDir+')\n')
+f.write('\nSUBDIRS (' + pluginDir + ')\n')
 f.close()
 
 print "Your plugin %s has been created in %s, CMakeLists.txt has been modified." % (pluginName, pluginDir)

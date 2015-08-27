@@ -91,16 +91,15 @@ class GUI_EXPORT QgsGraduatedSymbolRendererV2Widget : public QgsRendererV2Widget
     void rangesClicked( const QModelIndex & idx );
     void changeCurrentValue( QStandardItem * item );
 
-    /**Adds a class manually to the classification*/
+    /** Adds a class manually to the classification*/
     void addClass();
-    /**Removes currently selected classes */
+    /** Removes currently selected classes */
     void deleteClasses();
-    /**Removes all classes from the classification*/
+    /** Removes all classes from the classification*/
     void deleteAllClasses();
-    /**Toggle the link between classes boundaries */
+    /** Toggle the link between classes boundaries */
     void toggleBoundariesLink( bool linked );
 
-    void rotationFieldChanged( QString fldName );
     void sizeScaleFieldChanged( QString fldName );
     void scaleMethodChanged( QgsSymbolV2::ScaleMethod scaleMethod );
     void labelFormatChanged();
@@ -142,8 +141,6 @@ class GUI_EXPORT QgsGraduatedSymbolRendererV2Widget : public QgsRendererV2Widget
     QgsSymbolV2* mGraduatedSymbol;
 
     int mRowSelected;
-
-    QgsRendererV2DataDefinedMenus* mDataDefinedMenus;
 
     QgsGraduatedSymbolRendererV2Model* mModel;
 

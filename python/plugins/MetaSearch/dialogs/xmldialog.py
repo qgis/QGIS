@@ -31,7 +31,9 @@ BASE_CLASS = get_ui_class('xmldialog.ui')
 
 
 class XMLDialog(QDialog, BASE_CLASS):
+
     """Raw XML Dialogue"""
+
     def __init__(self):
         """init"""
 

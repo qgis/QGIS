@@ -38,7 +38,7 @@ class QgsSearchQueryBuilder : QDialog
     void on_btnOr_clicked();
     void on_btnClear_clicked();
 
-    /*! Test the constructed search string to see if it's correct.
+    /** Test the constructed search string to see if it's correct.
      * The number of rows that would be returned is displayed in a message box.
      */
     void on_btnTest_clicked();

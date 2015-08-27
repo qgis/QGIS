@@ -54,6 +54,7 @@ from processing.tools.system import getTempFilename
 
 import codecs
 
+
 class BatchAlgorithmDialog(AlgorithmDialogBase):
 
     def __init__(self, alg):
@@ -165,7 +166,7 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
 
         self.mainWidget.setEnabled(True)
         QMessageBox.information(self, self.tr('Batch processing'),
-            self.tr('Batch processing successfully completed!'))
+                                self.tr('Batch processing successfully completed!'))
 
     def loadHTMLResults(self, alg, num):
         for out in alg.outputs:

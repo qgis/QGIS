@@ -35,20 +35,18 @@ class TestQgsRangeWidget(TestCase):
     def setUpClass(cls):
         QgsEditorWidgetRegistry.initEditors()
 
-
     def setUp(self):
         """
         create a layer with one feature
         """
         self.layer = QgsVectorLayer("Point?crs=EPSG:21781&field=fldtxt:string&field=fldint:integer",
-                               "addfeat", "memory")
+                                    "addfeat", "memory")
         pr = self.layer.dataProvider()
         f = QgsFeature()
         f.setAttributes(["Hello World", 123])
-        f.setGeometry(QgsGeometry.fromPoint(QgsPoint(600000,200000)))
+        f.setGeometry(QgsGeometry.fromPoint(QgsPoint(600000, 200000)))
 
-
-    def __createRangeWidget(self, allownull = False):
+    def __createRangeWidget(self, allownull=False):
         """
         create a range widget
         """
@@ -60,9 +58,8 @@ class TestQgsRangeWidget(TestCase):
         if allownull == True:
             config["AllowNull"] = allownull
 
-        rangewidget = reg.create('Range', self.layer, 1, config, None, None )
+        rangewidget = reg.create('Range', self.layer, 1, config, None, None)
         return rangewidget
-       
 
     def test_range_widget_numbers(self):
         """
@@ -76,7 +73,6 @@ class TestQgsRangeWidget(TestCase):
         rangewidget.setValue(0)
         assert rangewidget.value() == 0
 
-
     def test_range_widget_no_null(self):
         """
         are None and NULL being returned as expected
@@ -88,7 +84,6 @@ class TestQgsRangeWidget(TestCase):
 
         rangewidget.setValue(None)
         assert rangewidget.value() == 0
-
 
     def test_range_widget_null_allowed(self):
         """
@@ -103,7 +98,5 @@ class TestQgsRangeWidget(TestCase):
         assert rangewidget.value() == NULL
 
 
-
 if __name__ == '__main__':
     unittest.main()
-

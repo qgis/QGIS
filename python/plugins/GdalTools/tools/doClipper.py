@@ -31,158 +31,159 @@ from ui_widgetClipper import Ui_GdalToolsWidget as Ui_Widget
 from widgetPluginBase import GdalToolsBasePluginWidget as BasePluginWidget
 import GdalTools_utils as Utils
 
+
 class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
 
-  def __init__(self, iface):
-      QWidget.__init__(self)
-      self.iface = iface
-      self.canvas = self.iface.mapCanvas()
+    def __init__(self, iface):
+        QWidget.__init__(self)
+        self.iface = iface
+        self.canvas = self.iface.mapCanvas()
 
-      self.setupUi(self)
-      BasePluginWidget.__init__(self, self.iface, "gdal_translate")
+        self.setupUi(self)
+        BasePluginWidget.__init__(self, self.iface, "gdal_translate")
 
-      self.outSelector.setType( self.outSelector.FILE )
-      self.extentSelector.setCanvas(self.canvas)
-      self.outputFormat = Utils.fillRasterOutputFormat()
+        self.outSelector.setType(self.outSelector.FILE)
+        self.extentSelector.setCanvas(self.canvas)
+        self.outputFormat = Utils.fillRasterOutputFormat()
 
-      self.setParamsStatus([
-          (self.inSelector, SIGNAL("filenameChanged()") ),
-          (self.outSelector, SIGNAL("filenameChanged()") ),
-          (self.noDataSpin, SIGNAL("valueChanged(int)"), self.noDataCheck, 1700),
-          (self.maskSelector, SIGNAL("filenameChanged()"), self.maskModeRadio, 1600),
-          (self.alphaBandCheck, SIGNAL( "stateChanged( int )") ),
-          (self.extentSelector, [SIGNAL("selectionStarted()"), SIGNAL("newExtentDefined()")], self.extentModeRadio),
-          (self.modeStackedWidget, SIGNAL("currentIndexChanged(int)"))
-      ])
+        self.setParamsStatus([
+            (self.inSelector, SIGNAL("filenameChanged()")),
+            (self.outSelector, SIGNAL("filenameChanged()")),
+            (self.noDataSpin, SIGNAL("valueChanged(int)"), self.noDataCheck, 1700),
+            (self.maskSelector, SIGNAL("filenameChanged()"), self.maskModeRadio, 1600),
+            (self.alphaBandCheck, SIGNAL("stateChanged( int )")),
+            (self.extentSelector, [SIGNAL("selectionStarted()"), SIGNAL("newExtentDefined()")], self.extentModeRadio),
+            (self.modeStackedWidget, SIGNAL("currentIndexChanged(int)"))
+        ])
 
-      self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFileEdit)
-      self.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFileEdit)
-      self.connect(self.maskSelector, SIGNAL("selectClicked()"), self.fillMaskFileEdit)
-      self.connect(self.extentSelector, SIGNAL("newExtentDefined()"), self.extentChanged)
-      self.connect(self.extentSelector, SIGNAL("selectionStarted()"), self.checkRun)
+        self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFileEdit)
+        self.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFileEdit)
+        self.connect(self.maskSelector, SIGNAL("selectClicked()"), self.fillMaskFileEdit)
+        self.connect(self.extentSelector, SIGNAL("newExtentDefined()"), self.extentChanged)
+        self.connect(self.extentSelector, SIGNAL("selectionStarted()"), self.checkRun)
 
-      self.connect(self.extentModeRadio, SIGNAL("toggled(bool)"), self.switchClippingMode)
+        self.connect(self.extentModeRadio, SIGNAL("toggled(bool)"), self.switchClippingMode)
 
-  def show_(self):
-      self.switchClippingMode()
-      BasePluginWidget.show_(self)
+    def show_(self):
+        self.switchClippingMode()
+        BasePluginWidget.show_(self)
 
-  def onClosing(self):
-      self.extentSelector.stop()
-      BasePluginWidget.onClosing(self)
-
-  def switchClippingMode(self):
-      if self.extentModeRadio.isChecked():
-        index = 0
-        self.extentSelector.start()
-      else:
+    def onClosing(self):
         self.extentSelector.stop()
-        index = 1
-      self.modeStackedWidget.setCurrentIndex( index )
-      self.checkRun()
+        BasePluginWidget.onClosing(self)
 
-  def checkRun(self):
-      if self.extentModeRadio.isChecked():
-        enabler = self.extentSelector.isCoordsValid()
-      else:
-        enabler = not self.maskSelector.filename() == ''
-      self.base.enableRun( enabler )
+    def switchClippingMode(self):
+        if self.extentModeRadio.isChecked():
+            index = 0
+            self.extentSelector.start()
+        else:
+            self.extentSelector.stop()
+            index = 1
+        self.modeStackedWidget.setCurrentIndex(index)
+        self.checkRun()
 
-  def extentChanged(self):
-      self.activateWindow()
-      self.raise_()
-      self.checkRun()
+    def checkRun(self):
+        if self.extentModeRadio.isChecked():
+            enabler = self.extentSelector.isCoordsValid()
+        else:
+            enabler = not self.maskSelector.filename() == ''
+        self.base.enableRun(enabler)
 
-  def onLayersChanged(self):
-      self.inSelector.setLayers( Utils.LayerRegistry.instance().getRasterLayers() )
-      self.maskSelector.setLayers( filter( lambda x: x.geometryType() == QGis.Polygon, Utils.LayerRegistry.instance().getVectorLayers() ) )
-      self.checkRun()
+    def extentChanged(self):
+        self.activateWindow()
+        self.raise_()
+        self.checkRun()
 
-  def fillInputFileEdit(self):
-      lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
-      inputFile = Utils.FileDialog.getOpenFileName(self, self.tr( "Select the input file for Polygonize" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter )
-      if inputFile == '':
-        return
-      Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
+    def onLayersChanged(self):
+        self.inSelector.setLayers(Utils.LayerRegistry.instance().getRasterLayers())
+        self.maskSelector.setLayers(filter(lambda x: x.geometryType() == QGis.Polygon, Utils.LayerRegistry.instance().getVectorLayers()))
+        self.checkRun()
 
-      self.inSelector.setFilename(inputFile)
+    def fillInputFileEdit(self):
+        lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
+        inputFile = Utils.FileDialog.getOpenFileName(self, self.tr("Select the input file for Polygonize"), Utils.FileFilter.allRastersFilter(), lastUsedFilter)
+        if inputFile == '':
+            return
+        Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
 
-  def fillOutputFileEdit(self):
-      lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
-      outputFile = Utils.FileDialog.getSaveFileName(self, self.tr( "Select the raster file to save the results to" ), Utils.FileFilter.saveRastersFilter(), lastUsedFilter)
-      if outputFile == '':
-        return
-      Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
+        self.inSelector.setFilename(inputFile)
 
-      self.outputFormat = Utils.fillRasterOutputFormat(lastUsedFilter, outputFile)
-      self.outSelector.setFilename(outputFile)
+    def fillOutputFileEdit(self):
+        lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
+        outputFile = Utils.FileDialog.getSaveFileName(self, self.tr("Select the raster file to save the results to"), Utils.FileFilter.saveRastersFilter(), lastUsedFilter)
+        if outputFile == '':
+            return
+        Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
 
-  def fillMaskFileEdit(self):
-      lastUsedFilter = Utils.FileFilter.lastUsedVectorFilter()
-      maskFile = Utils.FileDialog.getOpenFileName(self, self.tr( "Select the mask file" ), Utils.FileFilter.allVectorsFilter(), lastUsedFilter )
-      if maskFile == '':
-        return
-      Utils.FileFilter.setLastUsedVectorFilter(lastUsedFilter)
+        self.outputFormat = Utils.fillRasterOutputFormat(lastUsedFilter, outputFile)
+        self.outSelector.setFilename(outputFile)
 
-      self.maskSelector.setFilename(maskFile)
-      self.checkRun()
+    def fillMaskFileEdit(self):
+        lastUsedFilter = Utils.FileFilter.lastUsedVectorFilter()
+        maskFile = Utils.FileDialog.getOpenFileName(self, self.tr("Select the mask file"), Utils.FileFilter.allVectorsFilter(), lastUsedFilter)
+        if maskFile == '':
+            return
+        Utils.FileFilter.setLastUsedVectorFilter(lastUsedFilter)
 
-  def getArguments(self):
-      if not self.extentModeRadio.isChecked():
-        return self.getArgsModeMask()
-      return self.getArgsModeExtent()
+        self.maskSelector.setFilename(maskFile)
+        self.checkRun()
 
-  def getArgsModeExtent(self):
-      self.base.setPluginCommand( "gdal_translate" )
-      arguments = []
-      if self.noDataCheck.isChecked():
-        arguments.append("-a_nodata")
-        arguments.append( str(self.noDataSpin.value()))
-      if self.extentModeRadio.isChecked() and self.extentSelector.isCoordsValid():
-        rect = self.extentSelector.getExtent()
-        if rect is not None:
-          arguments.append("-projwin")
-          arguments.append(str(rect.xMinimum()))
-          arguments.append(str(rect.yMaximum()))
-          arguments.append(str(rect.xMaximum()))
-          arguments.append(str(rect.yMinimum()))
-      if not self.getOutputFileName() == '':
-        arguments.append("-of")
-        arguments.append(self.outputFormat)
-      arguments.append(self.getInputFileName())
-      arguments.append(self.getOutputFileName())
-      return arguments
+    def getArguments(self):
+        if not self.extentModeRadio.isChecked():
+            return self.getArgsModeMask()
+        return self.getArgsModeExtent()
 
-  def getArgsModeMask(self):
-      self.base.setPluginCommand( "gdalwarp" )
-      arguments = []
-      if self.noDataCheck.isChecked():
-        arguments.append("-dstnodata")
-        arguments.append(str(self.noDataSpin.value()))
-      if self.maskModeRadio.isChecked():
-        mask = self.maskSelector.filename()
-        if not mask == '':
-          arguments.append("-q")
-          arguments.append("-cutline")
-          arguments.append(mask)
-          if Utils.GdalConfig.versionNum() >= 1800:
-            arguments.append("-crop_to_cutline")
-          if self.alphaBandCheck.isChecked():
-            arguments.append("-dstalpha")
+    def getArgsModeExtent(self):
+        self.base.setPluginCommand("gdal_translate")
+        arguments = []
+        if self.noDataCheck.isChecked():
+            arguments.append("-a_nodata")
+            arguments.append(unicode(self.noDataSpin.value()))
+        if self.extentModeRadio.isChecked() and self.extentSelector.isCoordsValid():
+            rect = self.extentSelector.getExtent()
+            if rect is not None:
+                arguments.append("-projwin")
+                arguments.append(unicode(rect.xMinimum()))
+                arguments.append(unicode(rect.yMaximum()))
+                arguments.append(unicode(rect.xMaximum()))
+                arguments.append(unicode(rect.yMinimum()))
+        if not self.getOutputFileName() == '':
+            arguments.append("-of")
+            arguments.append(self.outputFormat)
+        arguments.append(self.getInputFileName())
+        arguments.append(self.getOutputFileName())
+        return arguments
 
-      outputFn = self.getOutputFileName()
-      if not outputFn == '':
-        arguments.append("-of")
-        arguments.append(self.outputFormat)
-      arguments.append(self.getInputFileName())
-      arguments.append(outputFn)
-      return arguments
+    def getArgsModeMask(self):
+        self.base.setPluginCommand("gdalwarp")
+        arguments = []
+        if self.noDataCheck.isChecked():
+            arguments.append("-dstnodata")
+            arguments.append(unicode(self.noDataSpin.value()))
+        if self.maskModeRadio.isChecked():
+            mask = self.maskSelector.filename()
+            if not mask == '':
+                arguments.append("-q")
+                arguments.append("-cutline")
+                arguments.append(mask)
+                if Utils.GdalConfig.versionNum() >= 1800:
+                    arguments.append("-crop_to_cutline")
+                if self.alphaBandCheck.isChecked():
+                    arguments.append("-dstalpha")
 
-  def getOutputFileName(self):
-      return self.outSelector.filename()
+        outputFn = self.getOutputFileName()
+        if not outputFn == '':
+            arguments.append("-of")
+            arguments.append(self.outputFormat)
+        arguments.append(self.getInputFileName())
+        arguments.append(outputFn)
+        return arguments
 
-  def getInputFileName(self):
-      return self.inSelector.filename()
+    def getOutputFileName(self):
+        return self.outSelector.filename()
 
-  def addLayerIntoCanvas(self, fileInfo):
-      self.iface.addRasterLayer(fileInfo.filePath())
+    def getInputFileName(self):
+        return self.inSelector.filename()
+
+    def addLayerIntoCanvas(self, fileInfo):
+        self.iface.addRasterLayer(fileInfo.filePath())

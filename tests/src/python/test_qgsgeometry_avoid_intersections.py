@@ -41,34 +41,35 @@ MULTIPOLYGON(((11556863.91276544518768787 1008143.53638577624224126,11632785.855
 
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 
+
 class TestQgsGeometryAvoidIntersections(TestCase):
 
-  def testNoSliverPolygons(self):
+    def testNoSliverPolygons(self):
 
-    # create a layer with some polygons that will be used as a source for "avoid intersections"
-    l = QgsVectorLayer('MultiPolygon', 'test_layer', 'memory')
-    assert l.isValid()
-    QgsMapLayerRegistry.instance().addMapLayer(l)
-    QgsProject.instance().writeEntry( "Digitizing", "/AvoidIntersectionsList", [l.id()] )
+        # create a layer with some polygons that will be used as a source for "avoid intersections"
+        l = QgsVectorLayer('MultiPolygon', 'test_layer', 'memory')
+        assert l.isValid()
+        QgsMapLayerRegistry.instance().addMapLayer(l)
+        QgsProject.instance().writeEntry("Digitizing", "/AvoidIntersectionsList", [l.id()])
 
-    features = []
-    for i,wkt in enumerate(feat_wkt):
-      f = QgsFeature(i+1)
-      f.setGeometry(QgsGeometry.fromWkt(wkt))
-      features.append(f)
+        features = []
+        for i, wkt in enumerate(feat_wkt):
+            f = QgsFeature(i + 1)
+            f.setGeometry(QgsGeometry.fromWkt(wkt))
+            features.append(f)
 
-    l.dataProvider().addFeatures(features)
-    assert l.pendingFeatureCount() == 7
+        l.dataProvider().addFeatures(features)
+        assert l.pendingFeatureCount() == 7
 
-    # create a geometry and remove its intersections with other geometries
+        # create a geometry and remove its intersections with other geometries
 
-    g = QgsGeometry.fromWkt(newg_wkt)
-    assert g.avoidIntersections() == 0
+        g = QgsGeometry.fromWkt(newg_wkt)
+        assert g.avoidIntersections() == 0
 
-    # the resulting multi-polygon must have exactly three parts
-    # (in QGIS 2.0 it has one more tiny part that appears at the border between two of the original polygons)
-    mpg = g.asMultiPolygon()
-    assert len(mpg) == 3
+        # the resulting multi-polygon must have exactly three parts
+        # (in QGIS 2.0 it has one more tiny part that appears at the border between two of the original polygons)
+        mpg = g.asMultiPolygon()
+        assert len(mpg) == 3
 
 
 if __name__ == '__main__':

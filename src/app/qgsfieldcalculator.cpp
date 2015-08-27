@@ -21,6 +21,7 @@
 #include "qgsproject.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include "qgsexpressioncontext.h"
 
 #include <QMessageBox>
 #include <QSettings>
@@ -147,12 +148,16 @@ void QgsFieldCalculator::accept()
   myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapSettings().hasCrsTransformEnabled() );
   myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
 
-
   QString calcString = builder->expressionText();
   QgsExpression exp( calcString );
   exp.setGeomCalculator( myDa );
 
-  if ( ! exp.prepare( mVectorLayer->pendingFields() ) )
+  QgsExpressionContext expContext;
+  expContext << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::layerScope( mVectorLayer );
+
+  if ( !exp.prepare( &expContext ) )
   {
     QMessageBox::critical( 0, tr( "Evaluation error" ), exp.evalErrorString() );
     return;
@@ -198,7 +203,7 @@ void QgsFieldCalculator::accept()
       }
 
       //get index of the new field
-      const QgsFields& fields = mVectorLayer->pendingFields();
+      const QgsFields& fields = mVectorLayer->fields();
 
       for ( int idx = 0; idx < fields.count(); ++idx )
       {
@@ -209,7 +214,9 @@ void QgsFieldCalculator::accept()
         }
       }
 
-      if ( ! exp.prepare( mVectorLayer->pendingFields() ) )
+      //update expression context with new fields
+      expContext.setFields( mVectorLayer->fields() );
+      if ( ! exp.prepare( &expContext ) )
       {
         QApplication::restoreOverrideCursor();
         QMessageBox::critical( 0, tr( "Evaluation error" ), exp.evalErrorString() );
@@ -235,7 +242,7 @@ void QgsFieldCalculator::accept()
     bool useGeometry = exp.needsGeometry();
     int rownum = 1;
 
-    const QgsField& field = mVectorLayer->pendingFields()[mAttributeId];
+    QgsField field = mVectorLayer->fields()[mAttributeId];
 
     bool newField = !mUpdateExistingGroupBox->isChecked();
     QVariant emptyAttribute;
@@ -252,8 +259,11 @@ void QgsFieldCalculator::accept()
           continue;
         }
       }
-      exp.setCurrentRowNumber( rownum );
-      QVariant value = exp.evaluate( &feature );
+
+      expContext.setFeature( feature );
+      expContext.lastScope()->setVariable( QString( "_rownum_" ), rownum );
+
+      QVariant value = exp.evaluate( &expContext );
       field.convertCompatible( value );
       if ( exp.hasEvalError() )
       {
@@ -400,7 +410,7 @@ void QgsFieldCalculator::populateFields()
   if ( !mVectorLayer )
     return;
 
-  const QgsFields& fields = mVectorLayer->pendingFields();
+  const QgsFields& fields = mVectorLayer->fields();
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
 

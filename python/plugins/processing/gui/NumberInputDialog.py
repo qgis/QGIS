@@ -115,7 +115,7 @@ class NumberInputDialog(BASE, WIDGET):
         extent = iface.mapCanvas().fullExtent()
         extentItem = QTreeWidgetItem()
         extentItem.setText(0,
-                self.tr('Full extent of all layers in map canvas'))
+                           self.tr('Full extent of all layers in map canvas'))
         extentItem.addChild(TreeValueItem(self.tr('Min X'), extent.xMinimum()))
         extentItem.addChild(TreeValueItem(self.tr('Max X'), extent.xMaximum()))
         extentItem.addChild(TreeValueItem(self.tr('Min Y'), extent.yMinimum()))
@@ -125,18 +125,18 @@ class NumberInputDialog(BASE, WIDGET):
     def addValue(self):
         item = self.treeValues.currentItem()
         if isinstance(item, TreeValueItem):
-            formula = self.leFormula.text() + ' ' + str(item.value)
+            formula = self.leFormula.text() + ' ' + unicode(item.value)
             self.leFormula.setText(formula.strip())
 
     def accept(self):
         try:
-            self.value = float(eval(str(self.leFormula.text())))
+            self.value = float(eval(unicode(self.leFormula.text())))
             if self.isInteger:
                 self.value = int(round(self.value))
             QDialog.accept(self)
         except:
             QMessageBox.critical(self, self.tr('Wrong expression'),
-                    self.tr('The expression entered is not correct'))
+                                 self.tr('The expression entered is not correct'))
 
     def reject(self):
         self.value = None
@@ -148,4 +148,4 @@ class TreeValueItem(QTreeWidgetItem):
     def __init__(self, name, value):
         QTreeWidgetItem.__init__(self)
         self.value = value
-        self.setText(0, name + ': ' + str(value))
+        self.setText(0, name + ': ' + unicode(value))

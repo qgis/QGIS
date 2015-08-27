@@ -30,22 +30,23 @@ from LAStoolsAlgorithm import LAStoolsAlgorithm
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterSelection
 
+
 class lasoveragePro(LAStoolsAlgorithm):
 
     CHECK_STEP = "CHECK_STEP"
     OPERATION = "OPERATION"
-    OPERATIONS= ["classify as overlap", "flag as withheld", "remove from output"]
+    OPERATIONS = ["classify as overlap", "flag as withheld", "remove from output"]
 
     def defineCharacteristics(self):
-        self.name = "lasoveragePro"
-        self.group = "LAStools Production"
+        self.name, self.i18n_name = self.trAlgorithm('lasoveragePro')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParametersHorizontalFeetGUI()
         self.addParametersFilesAreFlightlinesGUI()
         self.addParameter(ParameterNumber(lasoveragePro.CHECK_STEP,
-            self.tr("size of grid used for scan angle check"), 0, None, 1.0))
+                                          self.tr("size of grid used for scan angle check"), 0, None, 1.0))
         self.addParameter(ParameterSelection(lasoveragePro.OPERATION,
-            self.tr("mode of operation"), lasoveragePro.OPERATIONS, 0))
+                                             self.tr("mode of operation"), lasoveragePro.OPERATIONS, 0))
         self.addParametersOutputDirectoryGUI()
         self.addParametersOutputAppendixGUI()
         self.addParametersPointOutputFormatGUI()
@@ -62,7 +63,7 @@ class lasoveragePro(LAStoolsAlgorithm):
         step = self.getParameterValue(lasoveragePro.CHECK_STEP)
         if step != 1.0:
             commands.append("-step")
-            commands.append(str(step))
+            commands.append(unicode(step))
         operation = self.getParameterValue(lasoveragePro.OPERATION)
         if operation == 1:
             commands.append("-flag_as_withheld")

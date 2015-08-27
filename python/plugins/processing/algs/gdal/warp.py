@@ -60,55 +60,55 @@ class warp(GdalAlgorithm):
     TFW = 'TFW'
 
     def defineCharacteristics(self):
-        self.name = 'Warp (reproject)'
-        self.group = '[GDAL] Projections'
+        self.name, self.i18n_name = self.trAlgorithm('Warp (reproject)')
+        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Projections')
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer'), False))
         self.addParameter(ParameterCrs(self.SOURCE_SRS,
-            self.tr('Source SRS'), ''))
+                                       self.tr('Source SRS'), ''))
         self.addParameter(ParameterCrs(self.DEST_SRS,
-            self.tr('Destination SRS'), ''))
+                                       self.tr('Destination SRS'), ''))
         self.addParameter(ParameterString(self.NO_DATA,
-            self.tr("Nodata value, leave blank to take the nodata value from input"),
-            '-9999'))
+                                          self.tr("Nodata value, leave blank to take the nodata value from input"),
+                                          '-9999'))
         self.addParameter(ParameterNumber(self.TR,
-            self.tr('Output file resolution in target georeferenced units (leave 0 for no change)'),
-            0.0, None, 0.0))
+                                          self.tr('Output file resolution in target georeferenced units (leave 0 for no change)'),
+                                          0.0, None, 0.0))
         self.addParameter(ParameterSelection(self.METHOD,
-            self.tr('Resampling method'), self.METHOD_OPTIONS))
+                                             self.tr('Resampling method'), self.METHOD_OPTIONS))
         self.addParameter(ParameterSelection(self.RTYPE,
-            self.tr('Output raster type'), self.TYPE, 5))
+                                             self.tr('Output raster type'), self.TYPE, 5))
         self.addParameter(ParameterSelection(self.COMPRESS,
-            self.tr('GeoTIFF options. Compression type:'), self.COMPRESSTYPE, 4))
+                                             self.tr('GeoTIFF options. Compression type:'), self.COMPRESSTYPE, 4))
         self.addParameter(ParameterNumber(self.JPEGCOMPRESSION,
-            self.tr('Set the JPEG compression level'),
-            1, 100, 75))
+                                          self.tr('Set the JPEG compression level'),
+                                          1, 100, 75))
         self.addParameter(ParameterNumber(self.ZLEVEL,
-            self.tr('Set the DEFLATE compression level'),
-            1, 9, 6))
+                                          self.tr('Set the DEFLATE compression level'),
+                                          1, 9, 6))
         self.addParameter(ParameterNumber(self.PREDICTOR,
-            self.tr('Set the predictor for LZW or DEFLATE compression'),
-            1, 3, 1))
+                                          self.tr('Set the predictor for LZW or DEFLATE compression'),
+                                          1, 3, 1))
         self.addParameter(ParameterBoolean(self.TILED,
-            self.tr('Create tiled output (only used for the GTiff format)'), False))
+                                           self.tr('Create tiled output (only used for the GTiff format)'), False))
         self.addParameter(ParameterSelection(self.BIGTIFF,
-            self.tr('Control whether the created file is a BigTIFF or a classic TIFF'), self.BIGTIFFTYPE, 0))
+                                             self.tr('Control whether the created file is a BigTIFF or a classic TIFF'), self.BIGTIFFTYPE, 0))
         self.addParameter(ParameterBoolean(self.TFW,
-            self.tr('Force the generation of an associated ESRI world file (.tfw))'), False))
+                                           self.tr('Force the generation of an associated ESRI world file (.tfw))'), False))
         self.addParameter(ParameterString(self.EXTRA,
-            self.tr('Additional creation parameters'), '', optional=True))
+                                          self.tr('Additional creation parameters'), '', optional=True))
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Reprojected')))
 
     def getConsoleCommands(self):
-        noData = str(self.getParameterValue(self.NO_DATA))
+        noData = unicode(self.getParameterValue(self.NO_DATA))
         srccrs = self.getParameterValue(self.SOURCE_SRS)
         dstcrs = self.getParameterValue(self.DEST_SRS)
-        jpegcompression = str(self.getParameterValue(self.JPEGCOMPRESSION))
-        predictor = str(self.getParameterValue(self.PREDICTOR))
-        zlevel = str(self.getParameterValue(self.ZLEVEL))
-        tiled = str(self.getParameterValue(self.TILED))
+        jpegcompression = unicode(self.getParameterValue(self.JPEGCOMPRESSION))
+        predictor = unicode(self.getParameterValue(self.PREDICTOR))
+        zlevel = unicode(self.getParameterValue(self.ZLEVEL))
+        tiled = unicode(self.getParameterValue(self.TILED))
         compress = self.COMPRESSTYPE[self.getParameterValue(self.COMPRESS)]
         bigtiff = self.BIGTIFFTYPE[self.getParameterValue(self.BIGTIFF)]
-        tfw = str(self.getParameterValue(self.TFW))
+        tfw = unicode(self.getParameterValue(self.TFW))
 
         arguments = []
         arguments.append('-ot')
@@ -130,25 +130,25 @@ class warp(GdalAlgorithm):
         arguments.append(GdalUtils.getFormatShortNameFromFilename(out))
         if self.getParameterValue(self.TR) != 0:
             arguments.append('-tr')
-            arguments.append(str(self.getParameterValue(self.TR)))
-            arguments.append(str(self.getParameterValue(self.TR)))
-        extra = str(self.getParameterValue(self.EXTRA))
+            arguments.append(unicode(self.getParameterValue(self.TR)))
+            arguments.append(unicode(self.getParameterValue(self.TR)))
+        extra = unicode(self.getParameterValue(self.EXTRA))
         if len(extra) > 0:
             arguments.append(extra)
         if GdalUtils.getFormatShortNameFromFilename(out) == "GTiff":
-            arguments.append("-co COMPRESS="+compress)
+            arguments.append("-co COMPRESS=" + compress)
             if compress == 'JPEG':
-               arguments.append("-co JPEG_QUALITY="+jpegcompression)
+                arguments.append("-co JPEG_QUALITY=" + jpegcompression)
             elif (compress == 'LZW') or (compress == 'DEFLATE'):
-               arguments.append("-co PREDICTOR="+predictor)
+                arguments.append("-co PREDICTOR=" + predictor)
             if compress == 'DEFLATE':
-               arguments.append("-co ZLEVEL="+zlevel)
+                arguments.append("-co ZLEVEL=" + zlevel)
             if tiled == "True":
-               arguments.append("-co TILED=YES")
+                arguments.append("-co TILED=YES")
             if tfw == "True":
-               arguments.append("-co TFW=YES")
+                arguments.append("-co TFW=YES")
             if len(bigtiff) > 0:
-               arguments.append("-co BIGTIFF="+bigtiff)
+                arguments.append("-co BIGTIFF=" + bigtiff)
         arguments.append(self.getParameterValue(self.INPUT))
         arguments.append(out)
 

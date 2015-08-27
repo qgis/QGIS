@@ -41,6 +41,7 @@ HEIGHT = 60
 
 
 class CommanderWindow(QDialog):
+
     def __init__(self, parent, canvas):
         self.canvas = canvas
         QDialog.__init__(self, parent, Qt.FramelessWindowHint)
@@ -80,7 +81,7 @@ class CommanderWindow(QDialog):
         self.vlayout.setSpacing(2)
         self.vlayout.setMargin(0)
         self.vlayout.addSpacerItem(QSpacerItem(0, OFFSET,
-                QSizePolicy.Maximum, QSizePolicy.Expanding))
+                                               QSizePolicy.Maximum, QSizePolicy.Expanding))
         self.hlayout = QHBoxLayout()
         self.hlayout.addWidget(self.label)
         self.vlayout.addLayout(self.hlayout)
@@ -88,7 +89,7 @@ class CommanderWindow(QDialog):
         self.hlayout2.addWidget(self.combo)
         self.vlayout.addLayout(self.hlayout2)
         self.vlayout.addSpacerItem(QSpacerItem(0, OFFSET,
-                QSizePolicy.Maximum, QSizePolicy.Expanding))
+                                               QSizePolicy.Maximum, QSizePolicy.Expanding))
         self.setLayout(self.vlayout)
         self.combo.lineEdit().returnPressed.connect(self.run)
         self.prepareGui()
@@ -106,7 +107,7 @@ class CommanderWindow(QDialog):
         # Add functions
         for command in dir(self.commands):
             if isinstance(self.commands.__dict__.get(command),
-                    types.FunctionType):
+                          types.FunctionType):
                 self.combo.addItem('Command: ' + command)
 
         #Add menu entries
@@ -161,7 +162,7 @@ class CommanderWindow(QDialog):
             try:
                 self.runCommand(command)
                 self.close()
-            except Exception, e:
+            except Exception as e:
                 self.label.setVisible(True)
                 self.label.setText('Error:' + unicode(e))
 
@@ -180,7 +181,7 @@ class CommanderWindow(QDialog):
             try:
                 self.runCommand(s)
                 self.close()
-            except Exception, e:
+            except Exception as e:
                 self.label.setVisible(True)
                 self.label.setText('Error:' + unicode(e))
 
@@ -224,6 +225,7 @@ class CommanderWindow(QDialog):
 
 
 class ExtendedComboBox(QComboBox):
+
     def __init__(self, parent=None):
         super(ExtendedComboBox, self).__init__(parent)
 

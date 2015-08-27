@@ -59,7 +59,9 @@ BASE_CLASS = get_ui_class('maindialog.ui')
 
 
 class MetaSearchDialog(QDialog, BASE_CLASS):
+
     """main dialogue"""
+
     def __init__(self, iface):
         """init window"""
 
@@ -395,10 +397,10 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             maxx = extent.xMaximum()
             maxy = extent.yMaximum()
 
-        self.leNorth.setText(str(maxy)[0:9])
-        self.leSouth.setText(str(miny)[0:9])
-        self.leWest.setText(str(minx)[0:9])
-        self.leEast.setText(str(maxx)[0:9])
+        self.leNorth.setText(unicode(maxy)[0:9])
+        self.leSouth.setText(unicode(miny)[0:9])
+        self.leWest.setText(unicode(minx)[0:9])
+        self.leEast.setText(unicode(maxx)[0:9])
 
     def set_bbox_global(self):
         """set global bounding box"""
@@ -466,12 +468,12 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         try:
             self.catalog.getrecords2(constraints=self.constraints,
                                      maxrecords=self.maxrecords, esn='full')
-        except ExceptionReport, err:
+        except ExceptionReport as err:
             QApplication.restoreOverrideCursor()
             QMessageBox.warning(self, self.tr('Search error'),
                                 self.tr('Search error: %s') % err)
             return
-        except Exception, err:
+        except Exception as err:
             QApplication.restoreOverrideCursor()
             QMessageBox.warning(self, self.tr('Connection error'),
                                 self.tr('Connection error: %s') % err)
@@ -539,7 +541,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         identifier = get_item_data(item, 'identifier')
         try:
             record = self.catalog.records[identifier]
-        except KeyError, err:
+        except KeyError as err:
             QMessageBox.warning(self,
                                 self.tr('Record parsing error'),
                                 'Unable to locate record identifier')
@@ -556,11 +558,11 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
                     ctr = QgsCoordinateTransform(src, dst)
                     try:
                         geom.transform(ctr)
-                    except Exception, err:
+                    except Exception as err:
                         QMessageBox.warning(
                             self,
                             self.tr('Coordinate Transformation Error'),
-                            str(err))
+                            unicode(err))
                 self.rubber_band.setToGeometry(geom, None)
 
         # figure out if the data is interactive and can be operated on
@@ -646,12 +648,12 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             self.catalog.getrecords2(constraints=self.constraints,
                                      maxrecords=self.maxrecords,
                                      startposition=self.startfrom, esn='full')
-        except ExceptionReport, err:
+        except ExceptionReport as err:
             QApplication.restoreOverrideCursor()
             QMessageBox.warning(self, self.tr('Search error'),
                                 self.tr('Search error: %s') % err)
             return
-        except Exception, err:
+        except Exception as err:
             QApplication.restoreOverrideCursor()
             QMessageBox.warning(self, self.tr('Connection error'),
                                 self.tr('Connection error: %s') % err)
@@ -778,12 +780,12 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             cat = CatalogueServiceWeb(self.catalog_url, timeout=self.timeout)
             cat.getrecordbyid(
                 [self.catalog.records[identifier].identifier])
-        except ExceptionReport, err:
+        except ExceptionReport as err:
             QApplication.restoreOverrideCursor()
             QMessageBox.warning(self, self.tr('GetRecords error'),
                                 self.tr('Error getting response: %s') % err)
             return
-        except KeyError, err:
+        except KeyError as err:
             QMessageBox.warning(self,
                                 self.tr('Record parsing error'),
                                 'Unable to locate record identifier')
@@ -856,11 +858,11 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             self.catalog = CatalogueServiceWeb(self.catalog_url,
                                                timeout=self.timeout)
             return True
-        except ExceptionReport, err:
+        except ExceptionReport as err:
             msg = self.tr('Error connecting to service: %s') % err
-        except ValueError, err:
+        except ValueError as err:
             msg = self.tr('Value Error: %s') % err
-        except Exception, err:
+        except Exception as err:
             msg = self.tr('Unknown Error: %s') % err
 
         QMessageBox.warning(self, self.tr('CSW Connection error'), msg)

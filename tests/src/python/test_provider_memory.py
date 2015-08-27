@@ -17,7 +17,8 @@ import tempfile
 import shutil
 import glob
 
-from qgis.core import QGis, QgsField, QgsPoint, QgsVectorLayer, QgsFeatureRequest, QgsFeature, QgsProviderRegistry, QgsGeometry, NULL
+from qgis.core import QGis, QgsField, QgsPoint, QgsVectorLayer, QgsFeatureRequest, QgsFeature, QgsProviderRegistry, \
+    QgsGeometry, NULL
 from PyQt4.QtCore import QSettings
 from utilities import (unitTestDataPath,
                        getQgisTestApp,
@@ -33,40 +34,41 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestPyQgsMemoryProvider(TestCase, ProviderTestCase):
+
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
         # Create test layer
-        cls.vl = QgsVectorLayer(u'Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&key=pk', u'test', u'memory')
+        cls.vl = QgsVectorLayer(u'Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&key=pk',
+                                u'test', u'memory')
         assert (cls.vl.isValid())
         cls.provider = cls.vl.dataProvider()
 
-        f1 = QgsFeature()       
-        f1.setAttributes( [5, -200, NULL] )
-        f1.setGeometry( QgsGeometry.fromWkt('Point (-71.123 78.23)'))
+        f1 = QgsFeature()
+        f1.setAttributes([5, -200, NULL])
+        f1.setGeometry(QgsGeometry.fromWkt('Point (-71.123 78.23)'))
 
-        f2 = QgsFeature()      
-        f2.setAttributes( [3, 300, 'Pear'] )
+        f2 = QgsFeature()
+        f2.setAttributes([3, 300, 'Pear'])
 
-        f3 = QgsFeature()      
-        f3.setAttributes( [1, 100, 'Orange'] )
-        f3.setGeometry( QgsGeometry.fromWkt('Point (-70.332 66.33)'))
+        f3 = QgsFeature()
+        f3.setAttributes([1, 100, 'Orange'])
+        f3.setGeometry(QgsGeometry.fromWkt('Point (-70.332 66.33)'))
 
-        f4 = QgsFeature()       
-        f4.setAttributes( [2, 200, 'Apple'] )
-        f4.setGeometry( QgsGeometry.fromWkt('Point (-68.2 70.8)'))
+        f4 = QgsFeature()
+        f4.setAttributes([2, 200, 'Apple'])
+        f4.setGeometry(QgsGeometry.fromWkt('Point (-68.2 70.8)'))
 
-        f5 = QgsFeature()      
-        f5.setAttributes( [4, 400, 'Honey'] )
-        f5.setGeometry( QgsGeometry.fromWkt('Point (-65.32 78.3)'))
-       
-        cls.provider.addFeatures( [ f1, f2, f3, f4, f5] );
-        
+        f5 = QgsFeature()
+        f5.setAttributes([4, 400, 'Honey'])
+        f5.setGeometry(QgsGeometry.fromWkt('Point (-65.32 78.3)'))
+
+        cls.provider.addFeatures([f1, f2, f3, f4, f5])
 
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
-      
+
     def testPointCtor(self):
         layer = QgsVectorLayer("Point", "test", "memory")
         assert layer.isValid(), "Failed to create valid point memory layer"
@@ -86,8 +88,8 @@ class TestPyQgsMemoryProvider(TestCase, ProviderTestCase):
         layer = QgsVectorLayer("Point", "test", "memory")
         provider = layer.dataProvider()
 
-        res = provider.addAttributes([QgsField("name", QVariant.String,),
-                                      QgsField("age",  QVariant.Int),
+        res = provider.addAttributes([QgsField("name", QVariant.String, ),
+                                      QgsField("age", QVariant.Int),
                                       QgsField("size", QVariant.Double)])
         assert res, "Failed to add attributes"
 
@@ -97,10 +99,10 @@ class TestPyQgsMemoryProvider(TestCase, ProviderTestCase):
         assert len(provider.fields()) == 3, myMessage
 
         ft = QgsFeature()
-        ft.setGeometry(QgsGeometry.fromPoint(QgsPoint(10,10)))
-        ft.setAttributes([ "Johny",
-                           20,
-                           0.3 ])
+        ft.setGeometry(QgsGeometry.fromPoint(QgsPoint(10, 10)))
+        ft.setAttributes(["Johny",
+                          20,
+                          0.3])
         res, t = provider.addFeatures([ft])
 
         assert res, "Failed to add feature"
@@ -130,14 +132,14 @@ class TestPyQgsMemoryProvider(TestCase, ProviderTestCase):
             myMessage = ('Expected: %s\nGot: %s\n' %
                          ("Point (10 10)", str(geom.exportToWkt())))
 
-            assert compareWkt( str(geom.exportToWkt()), "Point (10 10)" ), myMessage
+            assert compareWkt(str(geom.exportToWkt()), "Point (10 10)"), myMessage
 
     def testGetFields(self):
         layer = QgsVectorLayer("Point", "test", "memory")
         provider = layer.dataProvider()
 
-        provider.addAttributes([QgsField("name", QVariant.String,),
-                                QgsField("age",  QVariant.Int),
+        provider.addAttributes([QgsField("name", QVariant.String, ),
+                                QgsField("age", QVariant.Int),
                                 QgsField("size", QVariant.Double)])
         myMessage = ('Expected: %s\nGot: %s\n' %
                      (3, len(provider.fields())))
@@ -145,7 +147,7 @@ class TestPyQgsMemoryProvider(TestCase, ProviderTestCase):
         assert len(provider.fields()) == 3, myMessage
 
         ft = QgsFeature()
-        ft.setGeometry(QgsGeometry.fromPoint(QgsPoint(10,10)))
+        ft.setGeometry(QgsGeometry.fromPoint(QgsPoint(10, 10)))
         ft.setAttributes(["Johny",
                           20,
                           0.3])
@@ -167,8 +169,8 @@ class TestPyQgsMemoryProvider(TestCase, ProviderTestCase):
 
         assert myMemoryLayer is not None, 'Provider not initialised'
         myProvider = myMemoryLayer.dataProvider()
-        assert myProvider is not None        
-        
-        
+        assert myProvider is not None
+
+
 if __name__ == '__main__':
     unittest.main()

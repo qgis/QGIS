@@ -31,7 +31,7 @@
 #define CONN_POOL_EXPIRATION_TIME           60    // in seconds
 
 
-/*! Template that stores data related to one server.
+/** Template that stores data related to one server.
  *
  * It is assumed that following functions exist:
  * - void qgsConnectionPool_ConnectionCreate(QString name, T& c)  ... create a new connection
@@ -164,7 +164,8 @@ class QgsConnectionPoolGroup
       QObject::connect( expirationTimer, SIGNAL( timeout() ), parent, SLOT( handleConnectionExpired() ) );
 
       // just to make sure the object belongs to main thread and thus will get events
-      parent->moveToThread( qApp->thread() );
+      if ( qApp )
+        parent->moveToThread( qApp->thread() );
     }
 
     void onConnectionExpired()
@@ -227,6 +228,17 @@ class QgsConnectionPool
   public:
 
     typedef QMap<QString, T_Group*> T_Groups;
+
+    virtual ~QgsConnectionPool()
+    {
+      mMutex.lock();
+      foreach ( T_Group* group, mGroups )
+      {
+        delete group;
+      }
+      mGroups.clear();
+      mMutex.unlock();
+    }
 
     //! Try to acquire a connection: if no connections are available, the thread will get blocked.
     //! @return initialized connection or null on error

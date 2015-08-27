@@ -148,7 +148,7 @@ class APP_EXPORT QgsAdvancedDigitizingDockWidget : public QDockWidget, private U
     const CadConstraint* constraintY() const {return mYConstraint;}
     bool commonAngleConstraint() const {return mCommonAngleConstraint;}
 
-    /** helpers for the CAD point list. The CAD point list is the list of points
+    /** Helpers for the CAD point list. The CAD point list is the list of points
      * currently digitized. It contains both  "normal" points and intermediate points (construction mode).
      */
     QgsPoint currentPoint( bool *exist = 0 ) const;

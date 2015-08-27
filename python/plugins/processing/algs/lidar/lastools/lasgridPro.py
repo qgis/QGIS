@@ -30,6 +30,7 @@ from LAStoolsAlgorithm import LAStoolsAlgorithm
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterBoolean
 
+
 class lasgridPro(LAStoolsAlgorithm):
 
     ATTRIBUTE = "ATTRIBUTE"
@@ -39,18 +40,18 @@ class lasgridPro(LAStoolsAlgorithm):
     USE_TILE_BB = "USE_TILE_BB"
 
     def defineCharacteristics(self):
-        self.name = "lasgridPro"
-        self.group = "LAStools Production"
+        self.name, self.i18n_name = self.trAlgorithm('lasgridPro')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParametersPointInputMergedGUI()
         self.addParametersFilter1ReturnClassFlagsGUI()
         self.addParametersStepGUI()
         self.addParameter(ParameterSelection(lasgridPro.ATTRIBUTE,
-            self.tr("Attribute"), lasgridPro.ATTRIBUTES, 0))
+                                             self.tr("Attribute"), lasgridPro.ATTRIBUTES, 0))
         self.addParameter(ParameterSelection(lasgridPro.METHOD,
-            self.tr("Method"), lasgridPro.METHODS, 0))
+                                             self.tr("Method"), lasgridPro.METHODS, 0))
         self.addParameter(ParameterBoolean(lasgridPro.USE_TILE_BB,
-            self.tr("use tile bounding box (after tiling with buffer)"), False))
+                                           self.tr("use tile bounding box (after tiling with buffer)"), False))
         self.addParametersOutputDirectoryGUI()
         self.addParametersOutputAppendixGUI()
         self.addParametersRasterOutputFormatGUI()

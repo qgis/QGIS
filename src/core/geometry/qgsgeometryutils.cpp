@@ -364,7 +364,7 @@ QList<QgsPointV2> QgsGeometryUtils::pointsFromWKT( const QString &wktCoordinateL
   foreach ( const QString& pointCoordinates, wktCoordinateList.split( ",", QString::SkipEmptyParts ) )
   {
     QStringList coordinates = pointCoordinates.split( " ", QString::SkipEmptyParts );
-    if ( coordinates.size() != dim )
+    if ( coordinates.size() < dim )
       continue;
 
     int idx = 0;
@@ -497,6 +497,9 @@ QStringList QgsGeometryUtils::wktGetChildBlocks( const QString &wkt, const QStri
   QStringList blocks;
   for ( int i = 0, n = wkt.length(); i < n; ++i )
   {
+    if ( wkt[i].isSpace() && level == 0 )
+      continue;
+
     if ( wkt[i] == ',' && level == 0 )
     {
       if ( !block.isEmpty() )

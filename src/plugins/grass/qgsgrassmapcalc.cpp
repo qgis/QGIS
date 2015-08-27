@@ -481,11 +481,13 @@ QStringList QgsGrassMapcalc::checkRegion()
   QList<QGraphicsItem *> l = mCanvasScene->items();
 
   struct Cell_head currentWindow;
-  if ( !QgsGrass::region( QgsGrass::getDefaultGisdbase(),
-                          QgsGrass::getDefaultLocation(),
-                          QgsGrass::getDefaultMapset(), &currentWindow ) )
+  try
   {
-    QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot get current region" ) );
+    QgsGrass::region( &currentWindow );
+  }
+  catch ( QgsGrass::Exception &e )
+  {
+    QgsGrass::warning( e );
     return list;
   }
 
@@ -536,11 +538,13 @@ bool QgsGrassMapcalc::inputRegion( struct Cell_head *window, QgsCoordinateRefere
   Q_UNUSED( all );
   QgsDebugMsg( "entered." );
 
-  if ( !QgsGrass::region( QgsGrass::getDefaultGisdbase(),
-                          QgsGrass::getDefaultLocation(),
-                          QgsGrass::getDefaultMapset(), window ) )
+  try
   {
-    QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot get current region" ) );
+    QgsGrass::region( window );
+  }
+  catch ( QgsGrass::Exception &e )
+  {
+    QgsGrass::warning( e );
     return false;
   }
 

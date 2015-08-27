@@ -46,6 +46,7 @@ class GUI_EXPORT QgsTextEditWrapper : public QgsEditorWidgetWrapper
   protected:
     QWidget*createWidget( QWidget* parent ) override;
     void initWidget( QWidget* editor ) override;
+    bool valid() override;
 
   public slots:
     void setValue( const QVariant& value ) override;

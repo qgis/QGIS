@@ -18,8 +18,6 @@
 #include <QStringList>
 #include <QPainter>
 #include <QTime>
-#include <iostream>
-
 #include <QApplication>
 #include <QDesktopServices>
 
@@ -53,7 +51,17 @@ class TestQgsMapRenderer : public QObject
     Q_OBJECT
 
   public:
-    TestQgsMapRenderer();
+    TestQgsMapRenderer()
+        : mError( QgsVectorFileWriter::NoError )
+        , mMapSettings( 0 )
+        , mpPolysLayer( 0 )
+    {
+    }
+
+    ~TestQgsMapRenderer()
+    {
+      delete mMapSettings;
+    }
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -69,17 +77,11 @@ class TestQgsMapRenderer : public QObject
     QgsVectorFileWriter::WriterError mError;
     QgsCoordinateReferenceSystem mCRS;
     QgsFields mFields;
-    QgsMapSettings mMapSettings;
+    QgsMapSettings *mMapSettings;
     QgsMapLayer * mpPolysLayer;
     QString mReport;
 };
 
-TestQgsMapRenderer::TestQgsMapRenderer()
-    : mError( QgsVectorFileWriter::NoError )
-    , mpPolysLayer( NULL )
-{
-
-}
 
 void TestQgsMapRenderer::initTestCase()
 {
@@ -90,6 +92,8 @@ void TestQgsMapRenderer::initTestCase()
   QgsApplication::initQgis();
   QgsApplication::showSettings();
 
+  mMapSettings = new QgsMapSettings();
+
   //create some objects that will be used in all tests...
   mEncoding = "UTF-8";
   QgsField myField1( "Value", QVariant::Int, "int", 10, 0, "Value on lon" );
@@ -99,8 +103,8 @@ void TestQgsMapRenderer::initTestCase()
   // Create the test dataset if it doesnt exist
   //
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
-  QString myTestDataDir = myDataDir + QDir::separator();
-  QString myTmpDir = QDir::tempPath() + QDir::separator();
+  QString myTestDataDir = myDataDir + "/";
+  QString myTmpDir = QDir::tempPath() + "/";
   QString myFileName = myTmpDir +  "maprender_testdata.shp";
   //copy over the default qml for our generated layer
   QString myQmlFileName = myTestDataDir +  "maprender_testdata.qml";
@@ -175,7 +179,7 @@ void TestQgsMapRenderer::initTestCase()
   // Register the layer with the registry
   QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << mpPolysLayer );
   // add the test layer to the maprender
-  mMapSettings.setLayers( QStringList() << mpPolysLayer->id() );
+  mMapSettings->setLayers( QStringList() << mpPolysLayer->id() );
   mReport += "<h1>Map Render Tests</h1>\n";
 }
 
@@ -183,7 +187,7 @@ void TestQgsMapRenderer::cleanupTestCase()
 {
   QgsApplication::exitQgis();
 
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -196,11 +200,11 @@ void TestQgsMapRenderer::cleanupTestCase()
 
 void TestQgsMapRenderer::performanceTest()
 {
-  mMapSettings.setExtent( mpPolysLayer->extent() );
+  mMapSettings->setExtent( mpPolysLayer->extent() );
   QgsRenderChecker myChecker;
   myChecker.setControlName( "expected_maprender" );
-  mMapSettings.setFlag( QgsMapSettings::Antialiasing );
-  myChecker.setMapSettings( mMapSettings );
+  mMapSettings->setFlag( QgsMapSettings::Antialiasing );
+  myChecker.setMapSettings( *mMapSettings );
   myChecker.setColorTolerance( 5 );
   bool myResultFlag = myChecker.runTest( "maprender" );
   mReport += myChecker.report();

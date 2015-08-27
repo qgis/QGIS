@@ -29,6 +29,7 @@
 #include <string.h>
 #include <math.h>
 #include <assert.h>
+#include <limits.h>
 #ifdef WIN32
 #include <fcntl.h>
 #include <io.h>
@@ -200,7 +201,7 @@ static int cell_draw( char *name,
   set = G_malloc( ncols );
 
   /* some buggy C libraries require BOTH setmode() and fdopen(bin) */
-#ifdef WIN32
+#ifdef Q_OS_WIN
   if ( _setmode( _fileno( stdout ), _O_BINARY ) == -1 )
     G_fatal_error( "Cannot set stdout mode" );
 #endif
@@ -256,7 +257,7 @@ static int cell_draw( char *name,
           if ( data_type == CELL_TYPE )
           {
             //int nul = -2000000000;
-            int nul = -2147483648;
+            int nul = INT_MIN;
             fwrite( &nul, 4, 1, fo );
           }
           else if ( data_type == DCELL_TYPE )

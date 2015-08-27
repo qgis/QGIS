@@ -19,10 +19,11 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsabstractgeometryv2.h"
 #include <QVector>
 
-/**\ingroup core
+/** \ingroup core
  * \class QgsGeometryCollectionV2
  * \brief Geometry collection
  * \note added in QGIS 2.10
+ * \note this API is not considered stable and may change for 2.12
  */
 class CORE_EXPORT QgsGeometryCollectionV2: public QgsAbstractGeometryV2
 {
@@ -53,7 +54,7 @@ class CORE_EXPORT QgsGeometryCollectionV2: public QgsAbstractGeometryV2
     virtual QString geometryType() const override { return "GeometryCollection"; }
     virtual void clear() override;
 
-    /**Adds a geometry and takes ownership. Returns true in case of success.*/
+    /** Adds a geometry and takes ownership. Returns true in case of success.*/
     virtual bool addGeometry( QgsAbstractGeometryV2* g );
 
     /** Removes a geometry from the collection.
@@ -62,7 +63,11 @@ class CORE_EXPORT QgsGeometryCollectionV2: public QgsAbstractGeometryV2
      */
     virtual bool removeGeometry( int nr );
 
-    virtual void transform( const QgsCoordinateTransform& ct ) override;
+    /** Transforms the geometry using a coordinate transform
+     * @param ct coordinate transform
+       @param d transformation direction
+     */
+    virtual void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform ) override;
     void transform( const QTransform& t ) override;
 #if 0
     virtual void clip( const QgsRectangle& rect ) override;
@@ -94,7 +99,7 @@ class CORE_EXPORT QgsGeometryCollectionV2: public QgsAbstractGeometryV2
 
     bool hasCurvedSegments() const override;
 
-    /**Returns a geometry without curves. Caller takes ownership*/
+    /** Returns a geometry without curves. Caller takes ownership*/
     QgsAbstractGeometryV2* segmentize() const override;
 
   protected:

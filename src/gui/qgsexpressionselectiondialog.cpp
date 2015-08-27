@@ -30,18 +30,24 @@ QgsExpressionSelectionDialog::QgsExpressionSelectionDialog( QgsVectorLayer* laye
   mActionSelect->setIcon( QgsApplication::getThemeIcon( "/mIconExpressionSelect.svg" ) );
   mActionAddToSelection->setIcon( QgsApplication::getThemeIcon( "/mIconSelectAdd.svg" ) );
   mActionRemoveFromSelection->setIcon( QgsApplication::getThemeIcon( "/mIconSelectRemove.svg" ) );
-  mActionSelectInstersect->setIcon( QgsApplication::getThemeIcon( "/mIconSelectIntersect.svg" ) );
+  mActionSelectIntersect->setIcon( QgsApplication::getThemeIcon( "/mIconSelectIntersect.svg" ) );
 
   mButtonSelect->addAction( mActionSelect );
   mButtonSelect->addAction( mActionAddToSelection );
   mButtonSelect->addAction( mActionRemoveFromSelection );
-  mButtonSelect->addAction( mActionSelectInstersect );
+  mButtonSelect->addAction( mActionSelectIntersect );
   mButtonSelect->setDefaultAction( mActionSelect );
 
   mExpressionBuilder->setLayer( layer );
   mExpressionBuilder->setExpressionText( startText );
   mExpressionBuilder->loadFieldNames();
   mExpressionBuilder->loadRecent( "Selection" );
+
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::layerScope( mLayer );
+  mExpressionBuilder->setExpressionContext( context );
 
   QSettings settings;
   restoreGeometry( settings.value( "/Windows/ExpressionSelectionDialog/geometry" ).toByteArray() );
@@ -73,19 +79,18 @@ void QgsExpressionSelectionDialog::on_mActionSelect_triggered()
   QgsFeatureIds newSelection;
   QgsExpression* expression = new QgsExpression( mExpressionBuilder->expressionText() );
 
-  const QgsFields fields = mLayer->pendingFields();
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::layerScope( mLayer );
 
-  QgsFeatureIterator features = mLayer->getFeatures();
-
-  expression->prepare( fields );
+  QgsFeatureRequest request = QgsFeatureRequest().setFilterExpression( mExpressionBuilder->expressionText() ).setExpressionContext( context );
+  QgsFeatureIterator features = mLayer->getFeatures( request );
 
   QgsFeature feat;
   while ( features.nextFeature( feat ) )
   {
-    if ( expression->evaluate( &feat, fields ).toBool() )
-    {
-      newSelection << feat.id();
-    }
+    newSelection << feat.id();
   }
 
   features.close();
@@ -101,19 +106,18 @@ void QgsExpressionSelectionDialog::on_mActionAddToSelection_triggered()
   QgsFeatureIds newSelection = mLayer->selectedFeaturesIds();
   QgsExpression* expression = new QgsExpression( mExpressionBuilder->expressionText() );
 
-  const QgsFields fields = mLayer->pendingFields();
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::layerScope( mLayer );
 
-  QgsFeatureIterator features = mLayer->getFeatures();
-
-  expression->prepare( fields );
+  QgsFeatureRequest request = QgsFeatureRequest().setFilterExpression( mExpressionBuilder->expressionText() ).setExpressionContext( context );
+  QgsFeatureIterator features = mLayer->getFeatures( request );
 
   QgsFeature feat;
   while ( features.nextFeature( feat ) )
   {
-    if ( expression->evaluate( &feat, fields ).toBool() )
-    {
-      newSelection << feat.id();
-    }
+    newSelection << feat.id();
   }
 
   features.close();
@@ -124,16 +128,19 @@ void QgsExpressionSelectionDialog::on_mActionAddToSelection_triggered()
   saveRecent();
 }
 
-void QgsExpressionSelectionDialog::on_mActionSelectInstersect_triggered()
+void QgsExpressionSelectionDialog::on_mActionSelectIntersect_triggered()
 {
   const QgsFeatureIds &oldSelection = mLayer->selectedFeaturesIds();
   QgsFeatureIds newSelection;
 
   QgsExpression* expression = new QgsExpression( mExpressionBuilder->expressionText() );
 
-  const QgsFields fields = mLayer->pendingFields();
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::layerScope( mLayer );
 
-  expression->prepare( fields );
+  expression->prepare( &context );
 
   QgsFeature feat;
   foreach ( const QgsFeatureId fid, oldSelection )
@@ -142,7 +149,8 @@ void QgsExpressionSelectionDialog::on_mActionSelectInstersect_triggered()
 
     if ( features.nextFeature( feat ) )
     {
-      if ( expression->evaluate( &feat, fields ).toBool() )
+      context.setFeature( feat );
+      if ( expression->evaluate( &context ).toBool() )
       {
         newSelection << feat.id();
       }
@@ -168,9 +176,12 @@ void QgsExpressionSelectionDialog::on_mActionRemoveFromSelection_triggered()
 
   QgsExpression* expression = new QgsExpression( mExpressionBuilder->expressionText() );
 
-  const QgsFields fields = mLayer->pendingFields();
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::layerScope( mLayer );
 
-  expression->prepare( fields );
+  expression->prepare( &context );
 
   QgsFeature feat;
   foreach ( const QgsFeatureId fid, oldSelection )
@@ -179,7 +190,8 @@ void QgsExpressionSelectionDialog::on_mActionRemoveFromSelection_triggered()
 
     if ( features.nextFeature( feat ) )
     {
-      if ( expression->evaluate( &feat, fields ).toBool() )
+      context.setFeature( feat );
+      if ( expression->evaluate( &context ).toBool() )
       {
         newSelection.remove( feat.id() );
       }

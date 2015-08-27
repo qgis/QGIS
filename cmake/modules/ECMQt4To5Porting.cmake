@@ -30,7 +30,7 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #=============================================================================
 
-# The automoc_qt4 macro is superceded by CMAKE_AUTOMOC from CMake 2.8.6
+# The automoc_qt4 macro is superceeded by CMAKE_AUTOMOC from CMake 2.8.6
 # A Qt 5 version is not provided by CMake or Qt.
 
 include(MacroAddFileDependencies)

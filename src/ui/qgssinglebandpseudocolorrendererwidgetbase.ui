@@ -198,6 +198,13 @@
            <widget class="QgsColorRampComboBox" name="mColorRampComboBox"/>
           </item>
           <item>
+           <widget class="QPushButton" name="mButtonEditRamp">
+            <property name="text">
+             <string>Edit</string>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QCheckBox" name="mInvertCheckBox">
             <property name="text">
              <string>Invert</string>
@@ -373,6 +380,26 @@
    <header>qgscolorrampcombobox.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mBandComboBox</tabstop>
+  <tabstop>mColorInterpolationComboBox</tabstop>
+  <tabstop>mAddEntryButton</tabstop>
+  <tabstop>mDeleteEntryButton</tabstop>
+  <tabstop>mSortButton</tabstop>
+  <tabstop>mLoadFromBandButton</tabstop>
+  <tabstop>mLoadFromFileButton</tabstop>
+  <tabstop>mExportToFileButton</tabstop>
+  <tabstop>mColormapTreeWidget</tabstop>
+  <tabstop>mClipCheckBox</tabstop>
+  <tabstop>mColorRampComboBox</tabstop>
+  <tabstop>mButtonEditRamp</tabstop>
+  <tabstop>mInvertCheckBox</tabstop>
+  <tabstop>mClassificationModeComboBox</tabstop>
+  <tabstop>mNumberOfEntriesSpinBox</tabstop>
+  <tabstop>mMinLineEdit</tabstop>
+  <tabstop>mMaxLineEdit</tabstop>
+  <tabstop>mClassifyButton</tabstop>
+ </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
  </resources>

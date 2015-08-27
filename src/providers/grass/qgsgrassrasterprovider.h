@@ -100,7 +100,7 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
      */
     QImage* draw( QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight ) override;
 
-    /** return a provider name
+    /** Return a provider name
 
     Essentially just returns the provider key.  Should be used to build file
     dialogs so that providers can be shown with their supported types. Thus
@@ -117,7 +117,7 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
     QString name() const override;
 
 
-    /** return description
+    /** Return description
 
     Return a terse string describing what the provider is.
 
@@ -130,7 +130,7 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
     */
     QString description() const override;
 
-    /*! Get the QgsCoordinateReferenceSystem for this layer
+    /** Get the QgsCoordinateReferenceSystem for this layer
      * @note Must be reimplemented by each provider.
      * If the provider isn't capable of returning
      * its projection an empty srs will be return, ti will return 0
@@ -141,7 +141,7 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
     */
     virtual QgsRectangle extent() override;
 
-    /**Returns true if layer is valid
+    /** Returns true if layer is valid
     */
     bool isValid() override;
 

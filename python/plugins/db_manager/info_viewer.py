@@ -28,6 +28,7 @@ from .dlg_db_error import DlgDbError
 
 
 class InfoViewer(QTextBrowser):
+
     def __init__(self, parent=None):
         QTextBrowser.__init__(self, parent)
         self.setOpenLinks(False)
@@ -49,12 +50,11 @@ class InfoViewer(QTextBrowser):
             try:
                 if self.item.runAction(url.path()):
                     self.refresh()
-            except BaseError, e:
+            except BaseError as e:
                 DlgDbError.showError(e, self)
                 return
             finally:
                 QApplication.restoreOverrideCursor()
-
 
     def refresh(self):
         self.setDirty(True)
@@ -91,7 +91,6 @@ class InfoViewer(QTextBrowser):
         self.item = None
         self.setHtml("")
 
-
     def _showPluginInfo(self):
         from .db_plugins import getDbPluginErrors
 
@@ -109,34 +108,31 @@ class InfoViewer(QTextBrowser):
                 html += connection.info().toHtml()
             else:
                 html += connection.database().info().toHtml()
-        except DbError, e:
+        except DbError as e:
             html += u'<p style="color:red">%s</p>' % unicode(e).replace('\n', '<br>')
         html += '</div>'
         self.setHtml(html)
-
 
     def _showSchemaInfo(self, schema):
         html = u'<div style="background-color:#ffcccc;"><h1>&nbsp;%s</h1></div>' % schema.name
         html += '<div style="margin-left:8px;">'
         try:
             html += schema.info().toHtml()
-        except DbError, e:
+        except DbError as e:
             html += u'<p style="color:red">%s</p>' % unicode(e).replace('\n', '<br>')
         html += "</div>"
         self.setHtml(html)
-
 
     def _showTableInfo(self, table):
         html = u'<div style="background-color:#ccccff"><h1>&nbsp;%s</h1></div>' % table.name
         html += '<div style="margin-left:8px;">'
         try:
             html += table.info().toHtml()
-        except DbError, e:
+        except DbError as e:
             html += u'<p style="color:red">%s</p>' % unicode(e).replace('\n', '<br>')
         html += '</div>'
         self.setHtml(html)
         return True
-
 
     def setHtml(self, html):
         # convert special tags :)

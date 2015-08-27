@@ -1,0 +1,17 @@
+<h3>hamming_distance function</h3>
+Returns the Hamming distance between two strings. This equates to the number of characters at
+corresponding positions within the input strings where the characters are different. The input
+strings must be the same length, and the comparison is case-sensitive.
+
+<h4>Syntax</h4>
+<pre>hamming_distance(string1,string2)</pre>
+
+<h4>Arguments</h4>
+string1 &rarr; a string<br />
+string2 &rarr; a string<br />
+
+<h4>Example</h4>
+<pre> hamming_distance('abc','xec') &rarr; 2</pre><br />
+<pre> hamming_distance('abc','ABc') &rarr; 2</pre><br />
+<pre> hamming_distance(upper('abc'),upper('ABC')) &rarr; 0</pre>
+

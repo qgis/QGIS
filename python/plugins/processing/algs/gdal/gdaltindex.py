@@ -35,6 +35,7 @@ from processing.algs.gdal.GdalUtils import GdalUtils
 
 import os
 
+
 class gdaltindex(GdalAlgorithm):
 
     INPUT = 'INPUT'
@@ -43,19 +44,19 @@ class gdaltindex(GdalAlgorithm):
     PROJ_DIFFERENCE = 'PROJ_DIFFERENCE'
 
     def defineCharacteristics(self):
-        self.name = 'Tile Index'
-        self.group = '[GDAL] Miscellaneous'
+        self.name, self.i18n_name = self.trAlgorithm('Tile Index')
+        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Miscellaneous')
         self.addParameter(ParameterMultipleInput(self.INPUT,
-            self.tr('Input layers'), ParameterMultipleInput.TYPE_RASTER))
+                                                 self.tr('Input layers'), ParameterMultipleInput.TYPE_RASTER))
         self.addParameter(ParameterString(self.FIELD_NAME,
-            self.tr('Tile index field'),
-            'location', optional=True))
+                                          self.tr('Tile index field'),
+                                          'location', optional=True))
         self.addParameter(ParameterBoolean(self.PROJ_DIFFERENCE,
-            self.tr('Skip files with different projection reference'), False))
+                                           self.tr('Skip files with different projection reference'), False))
         self.addOutput(OutputVector(gdaltindex.OUTPUT, self.tr('Tile index')))
 
     def getConsoleCommands(self):
-        fieldName = str(self.getParameterValue(self.FIELD_NAME))
+        fieldName = unicode(self.getParameterValue(self.FIELD_NAME))
 
         arguments = []
         if len(fieldName) > 0:
@@ -65,6 +66,5 @@ class gdaltindex(GdalAlgorithm):
             arguments.append('-skip_different_projection')
         arguments.append(unicode(self.getOutputValue(gdaltindex.OUTPUT)))
         arguments.extend(unicode(self.getParameterValue(gdaltindex.INPUT)).split(';'))
-
 
         return ['gdaltindex', GdalUtils.escapeAndJoin(arguments)]

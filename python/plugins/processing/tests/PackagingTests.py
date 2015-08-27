@@ -9,6 +9,7 @@ from processing.core.ProcessingConfig import ProcessingConfig
 from processing.algs.grass.GrassUtils import GrassUtils
 from processing.algs.otb.OTBUtils import OTBUtils
 
+
 class PackageTests(unittest.TestCase):
 
     def testSaga(self):
@@ -24,10 +25,10 @@ class PackageTests(unittest.TestCase):
         self.assertIsNone(msg)
         ProcessingConfig.setSettingValue(GrassUtils.GRASS_FOLDER, folder)
 
-
     def testOtb(self):
         folder = OTBUtils.findOtbPath()
         self.assertIsNotNone(folder)
+
 
 def runTests():
     t = unittest.TestLoader().loadTestsFromTestCase(PackageTests)

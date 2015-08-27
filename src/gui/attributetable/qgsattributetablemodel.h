@@ -26,11 +26,13 @@
 
 #include "qgsvectorlayer.h" // QgsAttributeList
 #include "qgsvectorlayercache.h"
+#include "qgsconditionalstyle.h"
 #include "qgsattributeeditorcontext.h"
 
 class QgsMapCanvas;
 class QgsMapLayerAction;
 class QgsEditorWidgetFactory;
+
 
 /**
  * A model backed by a {@link QgsVectorLayerCache} which is able to provide
@@ -227,6 +229,12 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      */
     virtual void loadLayer();
 
+    /** Handles updating the model when the conditional style for a field changes.
+     * @param fieldName name of field whose conditional style has changed
+     * @note added in QGIS 2.12
+     */
+    void fieldConditionalStyleChanged( const QString& fieldName );
+
   signals:
     /**
      * Model has been changed
@@ -292,6 +300,9 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
 
     QHash<QgsFeatureId, int> mIdRowMap;
     QHash<int, QgsFeatureId> mRowIdMap;
+    mutable QHash<int, QList<QgsConditionalStyle> > mRowStylesMap;
+
+    mutable QgsExpressionContext mExpressionContext;
 
     /**
       * Gets mFieldCount, mAttributes and mValueMaps

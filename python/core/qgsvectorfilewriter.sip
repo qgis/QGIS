@@ -156,7 +156,7 @@ class QgsVectorFileWriter
                                             const QgsRectangle* filterExtent = 0 // added in 2.4
                                           );
 
-    /** create shapefile and initialize it */
+    /** Create shapefile and initialize it */
     QgsVectorFileWriter( const QString& vectorFileName,
                          const QString& fileEncoding,
                          const QgsFields& fields,
@@ -169,37 +169,37 @@ class QgsVectorFileWriter
                          QgsVectorFileWriter::SymbologyExport symbologyExport = QgsVectorFileWriter::NoSymbology
                        );
 
-    /**Returns map with format filter string as key and OGR format key as value*/
+    /** Returns map with format filter string as key and OGR format key as value*/
     static QMap< QString, QString> supportedFiltersAndFormats();
 
-    /**Returns driver list that can be used for dialogs. It contains all OGR drivers
+    /** Returns driver list that can be used for dialogs. It contains all OGR drivers
      * + some additional internal QGIS driver names to distinguish between more
      * supported formats of the same OGR driver
      */
     static QMap< QString, QString> ogrDriverList();
 
-    /**Returns filter string that can be used for dialogs*/
+    /** Returns filter string that can be used for dialogs*/
     static QString fileFilterString();
 
-    /**Creates a filter for an OGR driver key*/
+    /** Creates a filter for an OGR driver key*/
     static QString filterForDriver( const QString& driverName );
 
-    /**Converts codec name to string passed to ENCODING layer creation option of OGR Shapefile*/
+    /** Converts codec name to string passed to ENCODING layer creation option of OGR Shapefile*/
     static QString convertCodecNameForEncodingOption( const QString &codecName );
 
-    /** checks whether there were any errors in constructor */
+    /** Checks whether there were any errors in constructor */
     WriterError hasError();
 
-    /** retrieves error message */
+    /** Retrieves error message */
     QString errorMessage();
 
-    /** add feature to the currently opened shapefile */
+    /** Add feature to the currently opened shapefile */
     bool addFeature( QgsFeature& feature, QgsFeatureRendererV2* renderer = 0, QGis::UnitType outputUnit = QGis::Meters );
 
     //! @note not available in python bindings
     // QMap<int, int> attrIdxToOgrIdx();
 
-    /** close opened shapefile for writing */
+    /** Close opened shapefile for writing */
     ~QgsVectorFileWriter();
 
     /** Delete a shapefile (and its accompanying shx / dbf / prf)

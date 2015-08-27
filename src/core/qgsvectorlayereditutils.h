@@ -21,6 +21,7 @@
 #include "qgsvectorlayer.h"
 
 class QgsGeometryCache;
+class QgsCurveV2;
 
 class CORE_EXPORT QgsVectorLayerEditUtils
 {
@@ -42,6 +43,12 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      */
     bool moveVertex( double x, double y, QgsFeatureId atFeatureId, int atVertex );
 
+    /** Moves the vertex at the given position number,
+     *  ring and item (first number is index 0), and feature
+     *  to the given coordinates
+     */
+    bool moveVertex( const QgsPointV2& p, QgsFeatureId atFeatureId, int atVertex );
+
     /** Deletes a vertex from a feature
      */
     bool deleteVertex( QgsFeatureId atFeatureId, int atVertex );
@@ -56,6 +63,16 @@ class CORE_EXPORT QgsVectorLayerEditUtils
        5 no feature found where ring can be inserted*/
     int addRing( const QList<QgsPoint>& ring );
 
+    /** Adds a ring to polygon/multipolygon features
+         @return
+           0 in case of success,
+           1 problem with feature type,
+           2 ring not closed,
+           3 ring not valid,
+           4 ring crosses existing rings,
+           5 no feature found where ring can be inserted*/
+    int addRing( QgsCurveV2* ring );
+
     /** Adds a new part polygon to a multipart feature
      @return
        0 in case of success,
@@ -66,6 +83,8 @@ class CORE_EXPORT QgsVectorLayerEditUtils
        5 if several features are selected,
        6 if selected geometry not found*/
     int addPart( const QList<QgsPoint>& ring, QgsFeatureId featureId );
+
+    int addPart( QgsCurveV2* ring, QgsFeatureId featureId );
 
     /** Translates feature by dx, dy
        @param featureId id of the feature to translate

@@ -43,16 +43,16 @@ class FilterData(FusionAlgorithm):
     WINDOWSIZE = 'WINDOWSIZE'
 
     def defineCharacteristics(self):
-        self.name = 'Filter Data outliers'
-        self.group = 'Points'
+        self.name, self.i18n_name = self.trAlgorithm('Filter Data outliers')
+        self.group, self.i18n_group = self.trAlgorithm('Points')
         self.addParameter(ParameterFile(
-            self.INPUT, self.tr('Input las layer')))
+            self.INPUT, self.tr('Input LAS layer')))
         self.addParameter(ParameterNumber(
             self.VALUE, self.tr('Standard Deviation multiplier')))
         self.addParameter(ParameterNumber(
             self.VALUE, self.tr('Window size'), None, None, 10))
         self.addOutput(OutputFile(
-            self.OUTPUT, self.tr('Output filtered las file')))
+            self.OUTPUT, self.tr('Output filtered LAS file')))
         self.addAdvancedModifiers()
 
     def processAlgorithm(self, progress):
@@ -60,8 +60,8 @@ class FilterData(FusionAlgorithm):
         commands.append('/verbose')
         self.addAdvancedModifiersToCommand(commands)
         commands.append('outlier')
-        commands.append(str(self.getParameterValue(self.VALUE)))
-        commands.append(str(self.getParameterValue(self.WINDOWSIZE)))
+        commands.append(unicode(self.getParameterValue(self.VALUE)))
+        commands.append(unicode(self.getParameterValue(self.WINDOWSIZE)))
         outFile = self.getOutputValue(self.OUTPUT) + '.lda'
         commands.append(outFile)
         files = self.getParameterValue(self.INPUT).split(';')

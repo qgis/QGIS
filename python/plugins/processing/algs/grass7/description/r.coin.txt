@@ -1,5 +1,5 @@
 r.coin
-r.coin - Tabulates the mutual occurrence (coincidence) of categories for two raster map layers.
+Tabulates the mutual occurrence (coincidence) of categories for two raster map layers.
 Raster (r.*)
 ParameterRaster|first|Name of first raster map|False
 ParameterRaster|second|Name of second raster map|False

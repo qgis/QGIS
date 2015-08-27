@@ -46,7 +46,7 @@
 #include "qwt5_histogram_item.h"
 #endif
 
-#ifdef WIN32
+#ifdef Q_OS_WIN
 #include <time.h>
 #endif
 

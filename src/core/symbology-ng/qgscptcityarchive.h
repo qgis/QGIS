@@ -80,7 +80,7 @@ class CORE_EXPORT QgsCptCityArchive
 
 };
 
-/** base class for all items in the model */
+/** Base class for all items in the model */
 class CORE_EXPORT QgsCptCityDataItem : public QObject
 {
     Q_OBJECT

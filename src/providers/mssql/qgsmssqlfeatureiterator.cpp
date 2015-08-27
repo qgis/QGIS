@@ -89,7 +89,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest& request )
 
   bool filterAdded = false;
   // set spatial filter
-  if ( request.filterType() == QgsFeatureRequest::FilterRect && mSource->isSpatial() && !request.filterRect().isEmpty() )
+  if ( !request.filterRect().isNull() && mSource->isSpatial() && !request.filterRect().isEmpty() )
   {
     // polygons should be CCW for SqlGeography
     QString r;

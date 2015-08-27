@@ -145,8 +145,8 @@ class TestQgsPalLabeling(TestCase):
 
     @classmethod
     def removeAllLayers(cls):
-        cls._MapRegistry.removeAllMapLayers()
         cls._MapSettings.setLayers([])
+        cls._MapRegistry.removeAllMapLayers()
 
     @classmethod
     def removeMapLayer(cls, layer):
@@ -378,6 +378,10 @@ class TestPALConfig(TestQgsPalLabeling):
     def setUpClass(cls):
         TestQgsPalLabeling.setUpClass()
         cls.layer = TestQgsPalLabeling.loadFeatureLayer('point')
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.removeMapLayer(cls.layer)
 
     def setUp(self):
         """Run before each test."""

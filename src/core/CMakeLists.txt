@@ -46,7 +46,7 @@ SET(QGIS_CORE_SRCS
   diagram/qgspiediagram.cpp
   diagram/qgstextdiagram.cpp
   diagram/qgshistogramdiagram.cpp
-  
+
   effects/qgsimageoperation.cpp
   effects/qgspainteffect.cpp
   effects/qgseffectstack.cpp
@@ -79,6 +79,7 @@ SET(QGIS_CORE_SRCS
   qgscontexthelp_texts.cpp
   qgscoordinatereferencesystem.cpp
   qgscoordinatetransform.cpp
+  qgsconditionalstyle.cpp
   qgscredentials.cpp
   qgsdartmeasurement.cpp
   qgscrscache.cpp
@@ -93,6 +94,7 @@ SET(QGIS_CORE_SRCS
   qgsdistancearea.cpp
   qgserror.cpp
   qgsexpression.cpp
+  qgsexpressioncontext.cpp
   qgsexpression_texts.cpp
   qgsexpressionfieldbuffer.cpp
   qgsfeature.cpp
@@ -169,6 +171,7 @@ SET(QGIS_CORE_SRCS
   qgssnappingutils.cpp
   qgsspatialindex.cpp
   qgsstatisticalsummary.cpp
+  qgsstringutils.cpp
   qgstransaction.cpp
   qgstolerance.cpp
   qgsvectordataprovider.cpp
@@ -184,6 +187,7 @@ SET(QGIS_CORE_SRCS
   qgsvectorlayerrenderer.cpp
   qgsvectorlayerundocommand.cpp
   qgsvectorsimplifymethod.cpp
+  qgsvisibilitypresetcollection.cpp
   qgsxmlutils.cpp
   qgsslconnect.cpp
   qgslocalec.cpp
@@ -248,8 +252,6 @@ SET(QGIS_CORE_SRCS
   pal/priorityqueue.cpp
   pal/problem.cpp
   pal/util.cpp
-  pal/linkedlist.hpp
-  pal/hashtable.hpp
   pal/rtree.hpp
 
   raster/qgscliptominmaxenhancement.cpp
@@ -290,7 +292,7 @@ SET(QGIS_CORE_SRCS
   raster/qgssinglebandpseudocolorrenderer.cpp
   raster/qgsbrightnesscontrastfilter.cpp
   raster/qgshuesaturationfilter.cpp
-  
+
   geometry/qgsabstractgeometryv2.cpp
   geometry/qgscircularstringv2.cpp
   geometry/qgscompoundcurvev2.cpp
@@ -335,10 +337,10 @@ IF (NOT QT5_BUILD)
   )
 ENDIF (NOT QT5_BUILD)
 
-IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+IF (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   # spatialindex headers produce warnings
   SET_SOURCE_FILES_PROPERTIES(qgsspatialindex.cpp PROPERTIES COMPILE_FLAGS -Wno-overloaded-virtual)
-ENDIF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+ENDIF (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 
 IF (WITH_INTERNAL_QEXTSERIALPORT)
   SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
@@ -409,36 +411,38 @@ SET(QGIS_CORE_MOC_HDRS
   qgsvectordataprovider.h
   qgsvectorlayercache.h
   qgsvectorlayerjoinbuffer.h
+  qgsvisibilitypresetcollection.h
   qgsgeometryvalidator.h
   qgswebview.h
 
   composer/qgsaddremoveitemcommand.h
-  composer/qgscomposerlegend.h
-  composer/qgscomposermap.h
-  composer/qgscomposermapitem.h
-  composer/qgscomposermapgrid.h
-  composer/qgscomposermapoverview.h
-  composer/qgscomposerpicture.h
-  composer/qgscomposerscalebar.h
-  composer/qgscomposerobject.h
-  composer/qgscomposeritem.h
-  composer/qgscomposeritemgroup.h
-  composer/qgscomposermousehandles.h
-  composer/qgscomposerlabel.h
-  composer/qgscomposershape.h
+  composer/qgsatlascomposition.h
   composer/qgscomposerattributetable.h
-  composer/qgscomposerattributetablev2.h
   composer/qgscomposerattributetablemodel.h
   composer/qgscomposerattributetablemodelv2.h
+  composer/qgscomposerattributetablev2.h
+  composer/qgscomposereffect.h
+  composer/qgscomposerframe.h
+  composer/qgscomposerhtml.h
+  composer/qgscomposeritemgroup.h
+  composer/qgscomposeritem.h
+  composer/qgscomposerlabel.h
+  composer/qgscomposerlegend.h
+  composer/qgscomposermapgrid.h
+  composer/qgscomposermap.h
+  composer/qgscomposermapitem.h
+  composer/qgscomposermapoverview.h
+  composer/qgscomposermodel.h
+  composer/qgscomposermousehandles.h
+  composer/qgscomposermultiframe.h
+  composer/qgscomposerobject.h
+  composer/qgscomposerpicture.h
+  composer/qgscomposerscalebar.h
+  composer/qgscomposershape.h
+  composer/qgscomposertablecolumn.h
   composer/qgscomposertable.h
   composer/qgscomposertablev2.h
-  composer/qgscomposertablecolumn.h
   composer/qgscomposertexttable.h
-  composer/qgscomposerhtml.h
-  composer/qgscomposermultiframe.h
-  composer/qgscomposereffect.h
-  composer/qgsatlascomposition.h
-  composer/qgscomposermodel.h
   composer/qgscomposition.h
   composer/qgslegendmodel.h
 
@@ -514,6 +518,7 @@ SET(QGIS_CORE_HDRS
   qgscolorschemeregistry.h
   qgsconnectionpool.h
   qgscontexthelp.h
+  qgsconditionalstyle.h
   qgscoordinatereferencesystem.h
   qgscrscache.h
   qgscsexception.h
@@ -532,6 +537,7 @@ SET(QGIS_CORE_HDRS
   qgserror.h
   qgsexception.h
   qgsexpression.h
+  qgsexpressioncontext.h
   qgsexpressionfieldbuffer.h
   qgsfeature.h
   qgsfeature_p.h
@@ -590,6 +596,7 @@ SET(QGIS_CORE_HDRS
   qgssnappingutils.h
   qgsspatialindex.h
   qgsstatisticalsummary.h
+  qgsstringutils.h
   qgstolerance.h
   qgstransaction.h
   qgsvectordataprovider.h
@@ -601,6 +608,7 @@ SET(QGIS_CORE_HDRS
   qgsvectorlayerrenderer.h
   qgsvectorlayerundocommand.h
   qgsvectorsimplifymethod.h
+  qgsvisibilitypresetcollection.h
   qgsxmlutils.h
   qgswebpage.h
   qgswebframe.h
@@ -702,10 +710,11 @@ SET(QGIS_CORE_HDRS
 
   layertree/qgslayertree.h
   layertree/qgslayertreeutils.h
-  
+
   geometry/qgsgeometry.h
   geometry/qgsabstractgeometryv2.h
   geometry/qgswkbtypes.h
+  geometry/qgspointv2.h
 )
 
 IF (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)

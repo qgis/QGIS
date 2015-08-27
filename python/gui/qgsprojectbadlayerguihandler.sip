@@ -13,7 +13,7 @@ class QgsProjectBadLayerGuiHandler : QObject, QgsProjectBadLayerHandler
   public:
     QgsProjectBadLayerGuiHandler();
 
-    /** implementation of the handler */
+    /** Implementation of the handler */
     virtual void handleBadLayers( QList<QDomNode> layers, QDomDocument projectDom );
 
     /** Flag to store the Ignore button press of MessageBox used by QgsLegend */
@@ -28,13 +28,13 @@ class QgsProjectBadLayerGuiHandler : QObject, QgsProjectBadLayerHandler
     enum ProviderType { IS_FILE, IS_DATABASE, IS_URL, IS_Unknown };
 
 
-    /** returns data type associated with the given QgsProject file Dom node
+    /** Returns data type associated with the given QgsProject file Dom node
 
       The Dom node should represent the state associated with a specific layer.
       */
     DataType dataType( QDomNode & layerNode );
 
-    /** return the data source for the given layer
+    /** Return the data source for the given layer
 
       The QDomNode is a QgsProject Dom node corresponding to a map layer state.
 
@@ -42,7 +42,7 @@ class QgsProjectBadLayerGuiHandler : QObject, QgsProjectBadLayerHandler
     */
     QString dataSource( QDomNode & layerNode );
 
-    /** return the physical storage type associated with the given layer
+    /** Return the physical storage type associated with the given layer
 
       The QDomNode is a QgsProject Dom node corresponding to a map layer state.
 
@@ -57,13 +57,13 @@ class QgsProjectBadLayerGuiHandler : QObject, QgsProjectBadLayerHandler
     */
     ProviderType providerType( QDomNode & layerNode );
 
-    /** set the datasource element to the new value */
+    /** Set the datasource element to the new value */
     void setDataSource( QDomNode & layerNode, const QString &dataSource );
 
-    /** this is used to locate files that have moved or otherwise are missing */
+    /** This is used to locate files that have moved or otherwise are missing */
     bool findMissingFile( const QString &fileFilters, QDomNode &layerNode );
 
-    /** find relocated data source for the given layer
+    /** Find relocated data source for the given layer
 
       This QDom object represents a QgsProject node that maps to a specific layer.
 
@@ -77,7 +77,7 @@ class QgsProjectBadLayerGuiHandler : QObject, QgsProjectBadLayerHandler
     */
     bool findLayer( const QString &fileFilters, const QDomNode &constLayerNode );
 
-    /** find relocated data sources for given layers
+    /** Find relocated data sources for given layers
 
       These QDom objects represent QgsProject nodes that map to specific layers.
     */

@@ -19,26 +19,26 @@
 
 #include "Point3D.h"
 
-/**Node is a class used by Line3D. It represents a node in the single directed linked list. Associated Point3D objects are deleted when the node is deleted.*/
+/** Node is a class used by Line3D. It represents a node in the single directed linked list. Associated Point3D objects are deleted when the node is deleted.*/
 class ANALYSIS_EXPORT Node
 {
   protected:
-    /**Pointer to the Point3D object associated with the node*/
+    /** Pointer to the Point3D object associated with the node*/
     Point3D* mPoint;
-    /**Pointer to the next Node in the linked list*/
+    /** Pointer to the next Node in the linked list*/
     Node* mNext;
   public:
     Node();
     Node( const Node& n );
     ~Node();
     Node& operator=( const Node& n );
-    /**Returns a pointer to the next element in the linked list*/
+    /** Returns a pointer to the next element in the linked list*/
     Node* getNext() const;
-    /**Returns a pointer to the Point3D object associated with the node*/
+    /** Returns a pointer to the Point3D object associated with the node*/
     Point3D* getPoint() const;
-    /**Sets the pointer to the next node*/
+    /** Sets the pointer to the next node*/
     void setNext( Node* n );
-    /**Sets a new pointer to an associated Point3D object*/
+    /** Sets a new pointer to an associated Point3D object*/
     void setPoint( Point3D* p );
 };
 

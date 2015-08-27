@@ -134,7 +134,7 @@ int main( int argc, char **argv )
   if ( G_parser( argc, argv ) )
     exit( EXIT_FAILURE );
 
-#ifdef Q_OS_WIN32
+#ifdef Q_OS_WIN
   _setmode( _fileno( stdin ), _O_BINARY );
   _setmode( _fileno( stdout ), _O_BINARY );
 #endif

@@ -58,8 +58,8 @@ class ProcessingToolbox(BASE, WIDGET):
         self.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
 
         self.modeComboBox.clear()
-        self.modeComboBox.addItems(['Simplified interface',
-                                   'Advanced interface'])
+        self.modeComboBox.addItems([self.tr('Simplified interface'),
+                                   self.tr('Advanced interface')])
         settings = QSettings()
         if not settings.contains(self.USE_CATEGORIES):
             settings.setValue(self.USE_CATEGORIES, True)
@@ -163,7 +163,7 @@ class ProcessingToolbox(BASE, WIDGET):
                 action.setData(alg, self)
                 if action.isEnabled():
                     contextMenuAction = QAction(action.name,
-                            self.algorithmTree)
+                                                self.algorithmTree)
                     contextMenuAction.triggered.connect(action.execute)
                     popupmenu.addAction(contextMenuAction)
 
@@ -335,7 +335,6 @@ class ProcessingToolbox(BASE, WIDGET):
             providerItem.setHidden(providerItem.childCount() == 0)
 
 
-
 class TreeAlgorithmItem(QTreeWidgetItem):
 
     def __init__(self, alg):
@@ -360,6 +359,7 @@ class TreeActionItem(QTreeWidgetItem):
         self.action = action
         self.setText(0, action.name)
         self.setIcon(0, action.getIcon())
+
 
 class TreeProviderItem(QTreeWidgetItem):
 
@@ -388,8 +388,9 @@ class TreeProviderItem(QTreeWidgetItem):
                 groupItem = groups[alg.group]
             else:
                 groupItem = QTreeWidgetItem()
-                groupItem.setText(0, alg.group)
-                groupItem.setToolTip(0, alg.group)
+                name = alg.i18n_group if alg.i18n_group else "[" + alg.group + "]"
+                groupItem.setText(0, name)
+                groupItem.setToolTip(0, name)
                 groups[alg.group] = groupItem
             algItem = TreeAlgorithmItem(alg)
             groupItem.addChild(algItem)
@@ -407,7 +408,7 @@ class TreeProviderItem(QTreeWidgetItem):
             groupItem.addChild(algItem)
 
         self.setText(0, self.provider.getDescription()
-                  + QCoreApplication.translate( "TreeProviderItem", " [{0} geoalgorithms]" ).format( count ) )
+                     + QCoreApplication.translate("TreeProviderItem", " [{0} geoalgorithms]").format(count))
         self.setToolTip(0, self.text(0))
         for groupItem in groups.values():
             self.addChild(groupItem)

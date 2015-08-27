@@ -40,7 +40,7 @@ class CORE_EXPORT QgsProjectFileTransform
     //QgsProjectfiletransform() {}
     ~QgsProjectFileTransform() {}
 
-    /*! Create an instance from a Dom and a supplied version
+    /** Create an instance from a Dom and a supplied version
      * @param domDocument The Dom document to use as content
      * @param version Version number
      */
@@ -54,7 +54,7 @@ class CORE_EXPORT QgsProjectFileTransform
 
     bool updateRevision( QgsProjectVersion version );
 
-    /*! Prints the contents via QgsDebugMsg()
+    /** Prints the contents via QgsDebugMsg()
      */
     void dump();
 

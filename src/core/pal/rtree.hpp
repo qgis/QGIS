@@ -14,10 +14,6 @@
  *    - 2008 Portability issues fixed by Maxence Laurent
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #ifdef _MSC_VER
 #ifndef _CRT_SECURE_NO_DEPRECATE
 #define _CRT_SECURE_NO_DEPRECATE
@@ -31,14 +27,9 @@
 #include <cmath>
 #include <cassert>
 #include <cstdlib>
+#include <QtGlobal>
 
 #define ASSERT assert // RTree uses ASSERT( condition )
-#ifndef Min
-#define Min(a,b) (a<b?a:b)
-#endif //Min
-#ifndef Max
-#define Max(a,b) (a>b?a:b)
-#endif //Max
 
 //
 // RTree.h
@@ -1088,8 +1079,8 @@ namespace pal
 
     for ( int index = 0; index < NUMDIMS; ++index )
     {
-      newRect.m_min[index] = Min( a_rectA->m_min[index], a_rectB->m_min[index] );
-      newRect.m_max[index] = Max( a_rectA->m_max[index], a_rectB->m_max[index] );
+      newRect.m_min[index] = qMin( a_rectA->m_min[index], a_rectB->m_min[index] );
+      newRect.m_max[index] = qMax( a_rectA->m_max[index], a_rectB->m_max[index] );
     }
 
     return newRect;

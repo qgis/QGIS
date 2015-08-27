@@ -63,7 +63,7 @@ typedef struct
   int maxCat;
 } MaxCat;
 
-/*! \class QgsGrassEdit
+/** \class QgsGrassEdit
  *  \brief GRASS vector edit.
  *
  */

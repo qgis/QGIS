@@ -22,12 +22,27 @@
 #include "qgsvectorlayer.h"
 #include "qgsexpressionbuilderdialog.h"
 
+static QgsExpressionContext _getExpressionContext( const void* context )
+{
+  QgsExpressionContext expContext;
+  expContext << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope();
+
+  const QgsVectorLayer* layer = ( const QgsVectorLayer* ) context;
+  if ( layer )
+    expContext << QgsExpressionContextUtils::layerScope( layer );
+
+  return expContext;
+}
 
 QgsRelationReferenceConfigDlg::QgsRelationReferenceConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
     : QgsEditorConfigWidget( vl, fieldIdx, parent )
     , mReferencedLayer( 0 )
 {
   setupUi( this );
+
+  mExpressionWidget->registerGetExpressionContextCallback( &_getExpressionContext, vl );
+
   connect( mComboRelation, SIGNAL( currentIndexChanged( int ) ), this, SLOT( relationChanged( int ) ) );
 
   foreach ( const QgsRelation& relation, vl->referencingRelations( fieldIdx ) )
@@ -156,7 +171,7 @@ void QgsRelationReferenceConfigDlg::loadFields()
   if ( mReferencedLayer )
   {
     QgsVectorLayer* l = mReferencedLayer;
-    const QgsFields& flds = l->pendingFields();
+    const QgsFields& flds = l->fields();
     for ( int i = 0; i < flds.count(); i++ )
     {
       mAvailableFieldsList->addItem( l->attributeAlias( i ).isEmpty() ? flds.at( i ).name() : l->attributeAlias( i ) );

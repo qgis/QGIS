@@ -83,7 +83,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
                                     QWidget* parent,
                                     const QgsAttributeEditorContext& context = QgsAttributeEditorContext() );
 
-    QgsEditorWidgetWrapper* createSearchWidget( const QString& widgetId,
+    QgsSearchWidgetWrapper* createSearchWidget( const QString& widgetId,
         QgsVectorLayer* vl,
         int fieldIdx,
         const QgsEditorWidgetConfig& config,
@@ -193,7 +193,10 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
     void writeSymbology( QDomElement& element, QDomDocument& doc, QString& errorMessage );
 
   private:
+    QString findSuitableWrapper( QWidget* editor , const QString& defaultWidget );
+
     QMap<QString, QgsEditorWidgetFactory*> mWidgetFactories;
+    QMap<const char*, QPair<int, QString> > mFactoriesByType;
 };
 
 #endif // QGSEDITORWIDGETREGISTRY_H

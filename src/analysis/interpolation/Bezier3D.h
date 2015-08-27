@@ -22,46 +22,46 @@
 #include "MathUtils.h"
 #include "qgslogger.h"
 
-/**Class Bezier3D represents a bezier curve, represented by control points. Parameter t is running from 0 to 1. The class is capable to calculate the curve point and the first two derivatives belonging to t.*/
+/** Class Bezier3D represents a bezier curve, represented by control points. Parameter t is running from 0 to 1. The class is capable to calculate the curve point and the first two derivatives belonging to t.*/
 class ANALYSIS_EXPORT Bezier3D: public ParametricLine
 {
   protected:
 
   public:
-    /**Default constructor*/
+    /** Default constructor*/
     Bezier3D();
-    /**Constructor, par is a pointer to the parent, controlpoly a controlpolygon*/
+    /** Constructor, par is a pointer to the parent, controlpoly a controlpolygon*/
     //! @note not available in python binding
     Bezier3D( ParametricLine* par, QVector<Point3D*>* controlpoly );
-    /**Destructor*/
+    /** Destructor*/
     virtual ~Bezier3D();
-    /**Do not use this method, since a Bezier curve does not consist of other curves*/
+    /** Do not use this method, since a Bezier curve does not consist of other curves*/
     virtual void add( ParametricLine *pl ) override;
-    /**Calculates the first derivative and assigns it to v*/
+    /** Calculates the first derivative and assigns it to v*/
     virtual void calcFirstDer( float t, Vector3D* v ) override;
-    /**Calculates the second derivative and assigns it to v*/
+    /** Calculates the second derivative and assigns it to v*/
     virtual void calcSecDer( float t, Vector3D* v ) override;
     //virtual Point3D calcPoint(float t);
-    /**Calculates the point on the curve and assigns it to p*/
+    /** Calculates the point on the curve and assigns it to p*/
     virtual void calcPoint( float t, Point3D* p ) override;
-    /**changes the order of control points*/
+    /** Changes the order of control points*/
     virtual void changeDirection() override;
     //virtual void draw(QPainter* p);
     //virtual bool intersects(ParametricLine* pal);
-    /**Do not use this method, since a Bezier curve does not consist of other curves*/
+    /** Do not use this method, since a Bezier curve does not consist of other curves*/
     virtual void remove( int i ) override;
-    /**Returns a control point*/
+    /** Returns a control point*/
     virtual const Point3D* getControlPoint( int number ) const override;
-    /**Returns a pointer to the control polygon*/
+    /** Returns a pointer to the control polygon*/
     //! @note not available in python binding
     virtual const QVector<Point3D*>* getControlPoly() const override;
-    /**Returns the degree of the curve*/
+    /** Returns the degree of the curve*/
     virtual int getDegree() const override;
-    /**Returns the parent*/
+    /** Returns the parent*/
     virtual ParametricLine* getParent() const override;
     /** Sets the parent*/
     virtual void setParent( ParametricLine* par ) override;
-    /**Sets the control polygon*/
+    /** Sets the control polygon*/
     //! @note not available in python binding
     virtual void setControlPoly( QVector<Point3D*>* cp ) override;
 

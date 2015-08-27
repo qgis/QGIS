@@ -33,9 +33,9 @@ class QgsRenderContext
 
     bool forceVectorOutput() const;
 
-    /**Returns true if advanced effects such as blend modes such be used */
+    /** Returns true if advanced effects such as blend modes such be used */
     bool useAdvancedEffects() const;
-    /**Used to enable or disable advanced effects such as blend modes */
+    /** Used to enable or disable advanced effects such as blend modes */
     void setUseAdvancedEffects( bool enabled );
 
     bool drawEditingInformation() const;
@@ -46,7 +46,7 @@ class QgsRenderContext
 
     QColor selectionColor() const;
 
-    /**Returns true if vector selections should be shown in the rendered map
+    /** Returns true if vector selections should be shown in the rendered map
      * @returns true if selections should be shown
      * @see setShowSelection
      * @see selectionColor
@@ -56,7 +56,7 @@ class QgsRenderContext
 
     //setters
 
-    /**Sets coordinate transformation. QgsRenderContext does not take ownership*/
+    /** Sets coordinate transformation. QgsRenderContext does not take ownership*/
     void setCoordinateTransform( const QgsCoordinateTransform* t );
     void setMapToPixel( const QgsMapToPixel& mtp );
     void setExtent( const QgsRectangle& extent );
@@ -70,7 +70,7 @@ class QgsRenderContext
     void setLabelingEngine( QgsLabelingEngineInterface* iface );
     void setSelectionColor( const QColor& color );
 
-    /**Sets whether vector selections should be shown in the rendered map
+    /** Sets whether vector selections should be shown in the rendered map
      * @param showSelection set to true if selections should be shown
      * @see showSelection
      * @see setSelectionColor
@@ -78,7 +78,7 @@ class QgsRenderContext
     */
     void setShowSelection( const bool showSelection );
 
-    /**Returns true if the rendering optimization (geometry simplification) can be executed*/
+    /** Returns true if the rendering optimization (geometry simplification) can be executed*/
     bool useRenderingOptimization() const;
     void setUseRenderingOptimization( bool enabled );
 

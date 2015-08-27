@@ -34,6 +34,7 @@ from LAStoolsAlgorithm import LAStoolsAlgorithm
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterNumber
 
+
 class lasview(LAStoolsAlgorithm):
 
     POINTS = "POINTS"
@@ -45,16 +46,16 @@ class lasview(LAStoolsAlgorithm):
     COLORINGS = ["default", "classification", "elevation1", "elevation2", "intensity", "return", "flightline", "rgb"]
 
     def defineCharacteristics(self):
-        self.name = "lasview"
-        self.group = "LAStools"
+        self.name, self.i18n_name = self.trAlgorithm('lasview')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParameter(ParameterNumber(lasview.POINTS,
-            self.tr("max number of points sampled"), 100000, 20000000, 5000000))
+                                          self.tr("max number of points sampled"), 100000, 20000000, 5000000))
         self.addParameter(ParameterSelection(lasview.COLORING,
-            self.tr("color by"), lasview.COLORINGS, 0))
+                                             self.tr("color by"), lasview.COLORINGS, 0))
         self.addParameter(ParameterSelection(lasview.SIZE,
-            self.tr("window size (x y) in pixels"), lasview.SIZES, 0))
+                                             self.tr("window size (x y) in pixels"), lasview.SIZES, 0))
         self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, progress):
@@ -62,7 +63,7 @@ class lasview(LAStoolsAlgorithm):
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
         points = self.getParameterValue(lasview.POINTS)
-        commands.append("-points " + str(points))
+        commands.append("-points " + unicode(points))
         coloring = self.getParameterValue(lasview.COLORING)
         if coloring != 0:
             commands.append("-color_by_" + lasview.COLORINGS[coloring])

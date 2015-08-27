@@ -70,6 +70,7 @@ class QgsPGConnectionItem : public QgsDataCollectionItem
     void editConnection();
     void deleteConnection();
     void refreshConnection();
+    void createSchema();
 
 };
 
@@ -82,6 +83,10 @@ class QgsPGSchemaItem : public QgsDataCollectionItem
 
     QVector<QgsDataItem*> createChildren() override;
     virtual QList<QAction*> actions() override;
+
+  public slots:
+    void deleteSchema();
+    void renameSchema();
 
   private:
     QgsPGLayerItem * createLayer( QgsPostgresLayerProperty layerProperty );
@@ -103,6 +108,8 @@ class QgsPGLayerItem : public QgsLayerItem
 
   public slots:
     void deleteLayer();
+    void renameLayer();
+    void truncateTable();
 
   private:
     QgsPostgresLayerProperty mLayerProperty;

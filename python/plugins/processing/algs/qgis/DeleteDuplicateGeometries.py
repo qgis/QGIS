@@ -37,11 +37,11 @@ class DeleteDuplicateGeometries(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def defineCharacteristics(self):
-        self.name = 'Delete duplicate geometries'
-        self.group = 'Vector general tools'
+        self.name, self.i18n_name = self.trAlgorithm('Delete duplicate geometries')
+        self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
 
         self.addParameter(ParameterVector(self.INPUT,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Cleaned')))
 
     def processAlgorithm(self, progress):
@@ -51,7 +51,7 @@ class DeleteDuplicateGeometries(GeoAlgorithm):
         fields = layer.pendingFields()
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
-            layer.wkbType(), layer.crs())
+                                                                     layer.wkbType(), layer.crs())
 
         features = vector.features(layer)
 

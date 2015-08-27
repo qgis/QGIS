@@ -85,13 +85,21 @@ void TestQgsFontUtils::xmlMethods()
   //test writing/reading with styles
   f1 = QgsFontUtils::getStandardTestFont( "Bold" );
   fontElem = QgsFontUtils::toXmlElement( f1, doc, "test" );
+#ifndef Q_OS_WIN
   QVERIFY( f2.styleName() != f1.styleName() );
+#else
+  QVERIFY( f2.bold() != f1.bold() );
+#endif
   QVERIFY( QgsFontUtils::setFromXmlElement( f2, fontElem ) );
   QCOMPARE( f2.family(), f1.family() );
   QCOMPARE( f2.pointSize(), f1.pointSize() );
   QCOMPARE( f2.italic(), f1.italic() );
   QCOMPARE( f2.weight(), f1.weight() );
+#ifndef Q_OS_WIN
   QCOMPARE( f2.styleName(), QString( "Bold" ) );
+#else
+  QVERIFY( f2.bold() );
+#endif
 
   //test numeric weight
   f1.setWeight( 5 );

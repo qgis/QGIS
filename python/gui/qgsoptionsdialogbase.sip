@@ -28,7 +28,7 @@ class QgsOptionsDialogBase : QDialog
      */
     void restoreOptionsBaseUi( QString title = QString() );
 
-    /** determine if the options list is in icon only mode
+    /** Determine if the options list is in icon only mode
      */
     bool iconOnly();
 

@@ -138,17 +138,55 @@ class CORE_EXPORT QgsRelation
      *
      * @param feature A feature from the referenced (parent) layer
      *
-     * @return An request for all the referenced features
+     * @return A request for all the referencing features
      */
     QgsFeatureRequest getRelatedFeaturesRequest( const QgsFeature& feature ) const;
 
-    const QString name() const;
+    /**
+     * Creates a request to return the feature on the referenced (parent) layer
+     * which is referenced by the provided feature.
+     *
+     * @param attributes An attribute vector containing the foreign key
+     *
+     * @return A request the referenced feature
+     */
+    QgsFeatureRequest getReferencedFeatureRequest( const QgsAttributes& attributes ) const;
 
     /**
-     * The id
-     * @return
+     * Creates a request to return the feature on the referenced (parent) layer
+     * which is referenced by the provided feature.
+     *
+     * @param feature A feature from the referencing (child) layer
+     *
+     * @return A request the referenced feature
      */
-    const QString& id() const;
+    QgsFeatureRequest getReferencedFeatureRequest( const QgsFeature& feature ) const;
+
+    /**
+     * Creates a request to return the feature on the referenced (parent) layer
+     * which is referenced by the provided feature.
+     *
+     * @param feature A feature from the referencing (child) layer
+     *
+     * @return A request the referenced feature
+     */
+    QgsFeature getReferencedFeature( const QgsFeature& feature ) const;
+
+    /**
+     * Returns a human readable name for this relation. Mostly used as title for the children.
+     *
+     * @see id()
+     *
+     * @return A name
+     */
+    QString name() const;
+
+    /**
+     * A (project-wide) unique id for this relation
+     *
+     * @return The id
+     */
+    QString id() const;
 
     /**
      * Access the referencing (child) layer's id
@@ -198,7 +236,6 @@ class CORE_EXPORT QgsRelation
 
   protected:
     void updateRelationStatus();
-    void runChecks();
 
   private:
     /** Unique Id */

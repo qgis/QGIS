@@ -14,11 +14,11 @@ class QgsSymbolLayerV2AbstractMetadata
     QString visibleName() const;
     QgsSymbolV2::SymbolType type() const;
 
-    /** create a symbol layer of this type given the map of properties. */
+    /** Create a symbol layer of this type given the map of properties. */
     virtual QgsSymbolLayerV2* createSymbolLayer( const QgsStringMap& map ) = 0 /Factory/;
-    /** create widget for symbol layer of this type. Can return NULL if there's no GUI */
+    /** Create widget for symbol layer of this type. Can return NULL if there's no GUI */
     virtual QgsSymbolLayerV2Widget* createSymbolLayerWidget( const QgsVectorLayer * ) /Factory/;
-    /** create a symbol layer of this type given the map of properties. */
+    /** Create a symbol layer of this type given the map of properties. */
     virtual QgsSymbolLayerV2* createSymbolLayerFromSld( QDomElement & ) /Factory/;
 };
 

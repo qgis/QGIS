@@ -59,6 +59,11 @@ void QgsClassificationWidgetWrapper::initWidget( QWidget* editor )
   }
 }
 
+bool QgsClassificationWidgetWrapper::valid()
+{
+  return mComboBox;
+}
+
 void QgsClassificationWidgetWrapper::setValue( const QVariant& value )
 {
   mComboBox->setCurrentIndex( mComboBox->findData( value ) );

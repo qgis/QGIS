@@ -36,11 +36,23 @@
 #include <QMessageBox>
 #include <QSettings>
 
+static QgsExpressionContext _getExpressionContext( const void* context )
+{
+  QgsExpressionContext expContext;
+  expContext << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope();
+
+  const QgsVectorLayer* layer = ( const QgsVectorLayer* ) context;
+  if ( layer )
+    expContext << QgsExpressionContextUtils::layerScope( layer );
+
+  return expContext;
+}
+
 QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* parent )
     : QWidget( parent )
 {
   mLayer = layer;
-
   if ( !layer )
   {
     return;
@@ -55,6 +67,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
   connect( mEnableDiagramsCheckBox, SIGNAL( toggled( bool ) ), mDiagramFrame, SLOT( setEnabled( bool ) ) );
 
   mScaleRangeWidget->setMapCanvas( QgisApp::instance()->mapCanvas() );
+  mSizeFieldExpressionWidget->registerGetExpressionContextCallback( &_getExpressionContext, mLayer );
 
   mBackgroundColorButton->setColorDialogTitle( tr( "Select background color" ) );
   mBackgroundColorButton->setAllowAlpha( true );
@@ -157,7 +170,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
   mSizeFieldExpressionWidget->setGeomCalculator( myDa );
 
   //insert all attributes into the combo boxes
-  const QgsFields& layerFields = layer->pendingFields();
+  const QgsFields& layerFields = layer->fields();
   for ( int idx = 0; idx < layerFields.count(); ++idx )
   {
     QTreeWidgetItem *newItem = new QTreeWidgetItem( mAttributesTreeWidget );
@@ -342,7 +355,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
         }
         else
         {
-          mSizeFieldExpressionWidget->setField( mLayer->pendingFields().at( lidr->classificationAttribute() ).name() );
+          mSizeFieldExpressionWidget->setField( mLayer->fields().at( lidr->classificationAttribute() ).name() );
         }
       }
     }
@@ -526,14 +539,20 @@ void QgsDiagramProperties::on_mFindMaximumValueButton_clicked()
   if ( isExpression )
   {
     QgsExpression exp( sizeFieldNameOrExp );
-    exp.prepare( mLayer->pendingFields() );
+    QgsExpressionContext context;
+    context << QgsExpressionContextUtils::globalScope()
+    << QgsExpressionContextUtils::projectScope()
+    << QgsExpressionContextUtils::layerScope( mLayer );
+
+    exp.prepare( &context );
     if ( !exp.hasEvalError() )
     {
       QgsFeature feature;
       QgsFeatureIterator features = mLayer->getFeatures();
       while ( features.nextFeature( *&feature ) )
       {
-        maxValue = qMax( maxValue, exp.evaluate( &feature ).toFloat() );
+        context.setFeature( feature );
+        maxValue = qMax( maxValue, exp.evaluate( &context ).toFloat() );
       }
     }
     else
@@ -543,7 +562,7 @@ void QgsDiagramProperties::on_mFindMaximumValueButton_clicked()
   }
   else
   {
-    int attributeNumber = mLayer->pendingFields().fieldNameIndex( sizeFieldNameOrExp );
+    int attributeNumber = mLayer->fields().fieldNameIndex( sizeFieldNameOrExp );
     maxValue = mLayer->maximumValue( attributeNumber ).toFloat();
   }
 
@@ -726,7 +745,7 @@ void QgsDiagramProperties::apply()
     }
     else
     {
-      int attributeNumber = mLayer->pendingFields().fieldNameIndex( sizeFieldNameOrExp );
+      int attributeNumber = mLayer->fields().fieldNameIndex( sizeFieldNameOrExp );
       dr->setClassificationAttribute( attributeNumber );
     }
     dr->setDiagram( diagram );
@@ -770,7 +789,13 @@ void QgsDiagramProperties::showAddAttributeExpressionDialog()
   {
     expression = selections[0]->text( 0 );
   }
-  QgsExpressionBuilderDialog dlg( mLayer, expression, this );
+
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::layerScope( mLayer );
+
+  QgsExpressionBuilderDialog dlg( mLayer, expression, this, "generic", context );
   dlg.setWindowTitle( tr( "Expression based attribute" ) );
 
   QgsDistanceArea myDa;

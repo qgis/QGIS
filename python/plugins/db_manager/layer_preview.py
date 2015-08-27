@@ -30,6 +30,7 @@ from .db_plugins.plugin import Table
 
 
 class LayerPreview(QgsMapCanvas):
+
     def __init__(self, parent=None):
         QgsMapCanvas.__init__(self, parent)
         self.parent = parent
@@ -46,7 +47,6 @@ class LayerPreview(QgsMapCanvas):
         self.setWheelAction(QgsMapCanvas.WheelAction(action), zoomFactor)
 
         self._clear()
-
 
     def refresh(self):
         self.setDirty(True)

@@ -47,7 +47,6 @@ class AlgorithmDialogBase(BASE, WIDGET):
         def __init__(self, param, widget):
             (self.parameter, self.widget) = (param, widget)
 
-
     def __init__(self, alg):
         super(AlgorithmDialogBase, self).__init__(iface.mainWindow())
         self.setupUi(self)

@@ -95,7 +95,7 @@ typedef SInt32 SRefCon;
 #include <errno.h>
 #endif
 
-/** print usage text
+/** Print usage text
  */
 void usage( std::string const & appName )
 {
@@ -372,7 +372,7 @@ void myMessageOutput( QtMsgType type, const char *msg )
   }
 }
 
-int main( int argc, char *argv[] )
+APP_EXPORT int main( int argc, char *argv[] )
 {
 #ifdef Q_OS_MACX
   // Increase file resource limits (i.e., number of allowed open files)
@@ -404,6 +404,7 @@ int main( int argc, char *argv[] )
                      .arg( rescLimit.rlim_cur ).arg( rescLimit.rlim_max ) );
       }
     }
+    Q_UNUSED( oldSoft ); //avoid warnings
     QgsDebugMsg( QString( "Mac RLIMIT_NOFILE Soft/Hard ORIG: %1 / %2" )
                  .arg( oldSoft ).arg( oldHard ) );
   }

@@ -1,7 +1,7 @@
 <root>
   <key>CompareImages</key>
   <exec>otbcli_CompareImages</exec>
-  <longname>Images comparaison</longname>
+  <longname>Images comparison</longname>
   <group>Miscellaneous</group>
   <description>Estimator between 2 images.</description>
   <parameter>

@@ -22,7 +22,7 @@
 
 #include <QAbstractSocket>
 
-/**Evaluates NMEA sentences coming from gpsd*/
+/** Evaluates NMEA sentences coming from gpsd*/
 class CORE_EXPORT QgsGpsdConnection: public QgsNMEAConnection
 {
     Q_OBJECT

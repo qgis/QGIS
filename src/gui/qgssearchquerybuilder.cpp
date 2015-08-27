@@ -73,7 +73,7 @@ void QgsSearchQueryBuilder::populateFields()
     return;
 
   QgsDebugMsg( "entering." );
-  const QgsFields& fields = mLayer->pendingFields();
+  const QgsFields& fields = mLayer->fields();
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
     QString fieldName = fields[idx].name();
@@ -114,7 +114,7 @@ void QgsSearchQueryBuilder::getFieldValues( int limit )
   // determine the field type
   QString fieldName = mModelFields->data( lstFields->currentIndex() ).toString();
   int fieldIndex = mFieldMap[fieldName];
-  QgsField field = mLayer->pendingFields()[fieldIndex];//provider->fields()[fieldIndex];
+  QgsField field = mLayer->fields()[fieldIndex];//provider->fields()[fieldIndex];
   bool numeric = ( field.type() == QVariant::Int || field.type() == QVariant::Double );
 
   QgsFeature feat;
@@ -130,7 +130,7 @@ void QgsSearchQueryBuilder::getFieldValues( int limit )
   mModelValues->blockSignals( true );
   lstValues->setUpdatesEnabled( false );
 
-  /**MH: keep already inserted values in a set. Querying is much faster compared to QStandardItemModel::findItems*/
+  /** MH: keep already inserted values in a set. Querying is much faster compared to QStandardItemModel::findItems*/
   QSet<QString> insertedValues;
 
   while ( fit.nextFeature( feat ) &&
@@ -199,9 +199,13 @@ long QgsSearchQueryBuilder::countRecords( QString searchString )
 
   int count = 0;
   QgsFeature feat;
-  const QgsFields& fields = mLayer->pendingFields();
 
-  if ( !search.prepare( fields ) )
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::layerScope( mLayer );
+
+  if ( !search.prepare( &context ) )
   {
     QMessageBox::critical( this, tr( "Evaluation error" ), search.evalErrorString() );
     return -1;
@@ -213,7 +217,8 @@ long QgsSearchQueryBuilder::countRecords( QString searchString )
 
   while ( fit.nextFeature( feat ) )
   {
-    QVariant value = search.evaluate( &feat );
+    context.setFeature( feat );
+    QVariant value = search.evaluate( &context );
     if ( value.toInt() != 0 )
     {
       count++;

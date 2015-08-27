@@ -33,6 +33,7 @@ from processing.tools.system import userFolder
 from processing.core.ProcessingConfig import ProcessingConfig
 from qgis.core import *
 
+
 class ProcessingLog:
 
     LOG_ERROR = 'ERROR'
@@ -69,8 +70,8 @@ class ProcessingLog:
             # to miss some log info that breaking the algorithm.
             if msgtype == ProcessingLog.LOG_ALGORITHM:
                 line = msgtype + '|' + datetime.datetime.now().strftime(
-                        ProcessingLog.DATE_FORMAT).decode('utf-8') + '|' \
-                        + msg + '\n'
+                    ProcessingLog.DATE_FORMAT).decode('utf-8') + '|' \
+                    + msg + '\n'
                 logfile = codecs.open(ProcessingLog.logFilename(), 'a',
                                       encoding='utf-8')
                 logfile.write(line)
@@ -88,7 +89,7 @@ class ProcessingLog:
                     msg = '\n'.join([m for m in msg])
                 msgtypes = {ProcessingLog.LOG_ERROR: QgsMessageLog.CRITICAL,
                             ProcessingLog.LOG_INFO: QgsMessageLog.INFO,
-                            ProcessingLog.LOG_WARNING: QgsMessageLog.WARNING,}
+                            ProcessingLog.LOG_WARNING: QgsMessageLog.WARNING, }
                 QgsMessageLog.logMessage(msg, "Processing", msgtypes[msgtype])
         except:
             pass
@@ -178,6 +179,7 @@ class LogEntry:
 
 
 class Tailer(object):
+
     """Implements tailing and heading functionality like GNU tail and
     head commands.
     """

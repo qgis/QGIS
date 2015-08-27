@@ -109,7 +109,7 @@ class ANALYSIS_EXPORT Triangulation
      */
     virtual QList<int>* getPointsAroundEdge( double x, double y ) = 0;
 
-    /** draws the points, edges and the forced lines*/
+    /** Draws the points, edges and the forced lines*/
     //virtual void draw(QPainter* p, double xlowleft, double ylowleft, double xupright, double yupright, double width, double height) const=0;
 
     /** Sets the behaviour of the triangulation in case of crossing forced lines*/

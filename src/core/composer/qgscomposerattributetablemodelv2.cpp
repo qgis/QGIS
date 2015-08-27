@@ -105,18 +105,42 @@ QVariant QgsComposerAttributeTableColumnModelV2::data( const QModelIndex &index,
         switch ( column->hAlignment() )
         {
           case Qt::AlignHCenter:
-            return tr( "Center" );
+            switch ( column->vAlignment() )
+            {
+              case Qt::AlignTop:
+                return tr( "Top center" );
+              case Qt::AlignBottom:
+                return tr( "Bottom center" );
+              default:
+                return tr( "Middle center" );
+            }
           case Qt::AlignRight:
-            return tr( "Right" );
+            switch ( column->vAlignment() )
+            {
+              case Qt::AlignTop:
+                return tr( "Top right" );
+              case Qt::AlignBottom:
+                return tr( "Bottom right" );
+              default:
+                return tr( "Middle right" );
+            }
           case Qt::AlignLeft:
           default:
-            return tr( "Left" );
+            switch ( column->vAlignment() )
+            {
+              case Qt::AlignTop:
+                return tr( "Top left" );
+              case Qt::AlignBottom:
+                return tr( "Bottom left" );
+              default:
+                return tr( "Middle left" );
+            }
         }
       }
       else
       {
         //edit role
-        return column->hAlignment();
+        return int( column->hAlignment() | column->vAlignment() );
       }
     }
     case 3:
@@ -212,7 +236,8 @@ bool QgsComposerAttributeTableColumnModelV2::setData( const QModelIndex& index, 
       emit dataChanged( index, index );
       return true;
     case 2:
-      column->setHAlignment(( Qt::AlignmentFlag )value.toInt() );
+      column->setHAlignment( Qt::AlignmentFlag( value.toInt() & Qt::AlignHorizontal_Mask ) );
+      column->setVAlignment( Qt::AlignmentFlag( value.toInt() & Qt::AlignVertical_Mask ) );
       emit dataChanged( index, index );
       return true;
     case 3:

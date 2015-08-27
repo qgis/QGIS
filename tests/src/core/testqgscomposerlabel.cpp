@@ -34,6 +34,7 @@ class TestQgsComposerLabel : public QObject
     TestQgsComposerLabel()
         : mComposition( 0 )
         , mComposerLabel( 0 )
+        , mMapSettings( 0 )
         , mVectorLayer( 0 )
     {}
 
@@ -55,7 +56,7 @@ class TestQgsComposerLabel : public QObject
   private:
     QgsComposition* mComposition;
     QgsComposerLabel* mComposerLabel;
-    QgsMapSettings mMapSettings;
+    QgsMapSettings *mMapSettings;
     QgsVectorLayer* mVectorLayer;
 };
 
@@ -64,18 +65,21 @@ void TestQgsComposerLabel::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
+  mMapSettings = new QgsMapSettings();
+
   //create maplayers from testdata and add to layer registry
-  QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + QDir::separator() +  "france_parts.shp" );
+  QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + "/" +  "france_parts.shp" );
   mVectorLayer = new QgsVectorLayer( vectorFileInfo.filePath(),
                                      vectorFileInfo.completeBaseName(),
                                      "ogr" );
   QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << mVectorLayer );
 
   //create composition with composer map
-  mMapSettings.setLayers( QStringList() << mVectorLayer->id() );
-  mMapSettings.setCrsTransformEnabled( false );
-  mComposition = new QgsComposition( mMapSettings );
+  mMapSettings->setLayers( QStringList() << mVectorLayer->id() );
+  mMapSettings->setCrsTransformEnabled( false );
+  mComposition = new QgsComposition( *mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
+  mComposition->atlasComposition().setCoverageLayer( mVectorLayer );
 
   mComposerLabel = new QgsComposerLabel( mComposition );
   mComposition->addComposerLabel( mComposerLabel );
@@ -86,16 +90,22 @@ void TestQgsComposerLabel::initTestCase()
 void TestQgsComposerLabel::cleanupTestCase()
 {
   delete mComposition;
+  delete mMapSettings;
 
   QgsApplication::exitQgis();
 }
 
 void TestQgsComposerLabel::init()
 {
+  mComposerLabel = new QgsComposerLabel( mComposition );
+  mComposition->addComposerLabel( mComposerLabel );
 }
 
 void TestQgsComposerLabel::cleanup()
 {
+  mComposition->removeItem( mComposerLabel );
+  delete mComposerLabel;
+  mComposerLabel = 0;
 }
 
 void TestQgsComposerLabel::evaluation()
@@ -136,22 +146,20 @@ void TestQgsComposerLabel::evaluation()
 
 void TestQgsComposerLabel::feature_evaluation()
 {
-  QgsFeatureIterator fit = mVectorLayer->getFeatures();
-  QgsFeature feat;
-
-  fit.nextFeature( feat );
+  mComposition->atlasComposition().setEnabled( true );
+  mComposition->setAtlasMode( QgsComposition::ExportAtlas );
+  mComposition->atlasComposition().updateFeatures();
+  mComposition->atlasComposition().prepareForFeature( 0 );
   {
     // evaluation with a feature
-    mComposerLabel->setExpressionContext( &feat, mVectorLayer );
     mComposerLabel->setText( "[%\"NAME_1\"||'_ok'%]" );
     QString evaluated = mComposerLabel->displayText();
     QString expected = "Basse-Normandie_ok";
     QCOMPARE( evaluated, expected );
   }
-  fit.nextFeature( feat );
+  mComposition->atlasComposition().prepareForFeature( 1 );
   {
     // evaluation with a feature
-    mComposerLabel->setExpressionContext( &feat, mVectorLayer );
     mComposerLabel->setText( "[%\"NAME_1\"||'_ok'%]" );
     QString evaluated = mComposerLabel->displayText();
     QString expected = "Bretagne_ok";
@@ -161,13 +169,13 @@ void TestQgsComposerLabel::feature_evaluation()
     // evaluation with a feature and local variables
     QMap<QString, QVariant> locals;
     locals.insert( "$test", "OK" );
-
-    mComposerLabel->setExpressionContext( &feat, mVectorLayer, locals );
+    mComposerLabel->setSubstitutions( locals );
     mComposerLabel->setText( "[%\"NAME_1\"||$test%]" );
     QString evaluated = mComposerLabel->displayText();
     QString expected = "BretagneOK";
     QCOMPARE( evaluated, expected );
   }
+  mComposition->atlasComposition().setEnabled( false );
 }
 
 void TestQgsComposerLabel::page_evaluation()

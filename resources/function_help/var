@@ -1,0 +1,12 @@
+<h3>var function</h3>
+Returns the value stored within a specified variable.
+
+<h4>Syntax</h4>
+<pre>var(variable_name)</pre>
+
+<h4>Arguments</h4>
+variable_name &rarr; variable name
+
+<h4>Example</h4>
+<pre> var('qgis_version') &rarr; '2.12'</pre>
+

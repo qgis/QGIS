@@ -22,7 +22,6 @@
 #include <QDesktopServices>
 #include <QPainter>
 
-#include <iostream>
 //qgis includes...
 // #include <qgisapp.h>
 #include <diagram/qgspiediagram.h>
@@ -50,21 +49,20 @@ class TestQgsDiagram : public QObject
   public:
     TestQgsDiagram()
         : mTestHasError( false )
+        , mMapSettings( 0 )
         , mPointsLayer( 0 )
     {}
 
   private:
     bool mTestHasError;
-    QgsMapSettings mMapSettings;
-    QgsVectorLayer * mPointsLayer;
+    QgsMapSettings *mMapSettings;
+    QgsVectorLayer *mPointsLayer;
     QString mTestDataDir;
     QString mReport;
 
     bool imageCheck( QString theTestType );
 
   private slots:
-
-
     // will be called before the first testfunction is executed.
     void initTestCase()
     {
@@ -73,13 +71,15 @@ class TestQgsDiagram : public QObject
       QgsApplication::initQgis();
       QgsApplication::showSettings();
 
+      mMapSettings = new QgsMapSettings();
+
       //create some objects that will be used in all tests...
 
       //
       //create a non spatial layer that will be used in all tests...
       //
       QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
-      mTestDataDir = myDataDir + QDir::separator();
+      mTestDataDir = myDataDir + "/";
 
       //
       //create a point layer that will be used in all tests...
@@ -90,11 +90,10 @@ class TestQgsDiagram : public QObject
                                          myPointFileInfo.completeBaseName(), "ogr" );
 
       // Register the layer with the registry
-      QgsMapLayerRegistry::instance()->addMapLayers(
-        QList<QgsMapLayer *>() << mPointsLayer );
+      QgsMapLayerRegistry::instance()->addMapLayer( mPointsLayer );
 
       // Create map composition to draw on
-      mMapSettings.setLayers( QStringList() << mPointsLayer->id() );
+      mMapSettings->setLayers( QStringList() << mPointsLayer->id() );
 
       mReport += "<h1>Diagram Tests</h1>\n";
     }
@@ -102,8 +101,9 @@ class TestQgsDiagram : public QObject
     // will be called after the last testfunction was executed.
     void cleanupTestCase()
     {
-      QgsApplication::exitQgis();
-      QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+      delete mMapSettings;
+
+      QString myReportFile = QDir::tempPath() + "/qgistest.html";
       QFile myFile( myReportFile );
       if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
       {
@@ -112,6 +112,7 @@ class TestQgsDiagram : public QObject
         myFile.close();
         //QDesktopServices::openUrl( "file:///" + myReportFile );
       }
+      QgsApplication::exitQgis();
     }
 
     // will be called before each testfunction is executed
@@ -215,12 +216,12 @@ bool TestQgsDiagram::imageCheck( QString theTestType )
   //ensure the rendered output matches our control image
 
   QgsRectangle extent( -126, 23, -70, 47 );
-  mMapSettings.setExtent( extent );
-  mMapSettings.setFlag( QgsMapSettings::ForceVectorOutput );
-  mMapSettings.setOutputDpi( 96 );
+  mMapSettings->setExtent( extent );
+  mMapSettings->setFlag( QgsMapSettings::ForceVectorOutput );
+  mMapSettings->setOutputDpi( 96 );
   QgsMultiRenderChecker myChecker;
   myChecker.setControlName( "expected_" + theTestType );
-  myChecker.setMapSettings( mMapSettings );
+  myChecker.setMapSettings( *mMapSettings );
   myChecker.setColorTolerance( 15 );
   bool myResultFlag = myChecker.runTest( theTestType, 200 );
   mReport += myChecker.report();

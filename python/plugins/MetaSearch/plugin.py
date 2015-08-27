@@ -35,7 +35,9 @@ LOGGER = logging.getLogger('MetaSearch')
 
 
 class MetaSearchPlugin(object):
+
     """base plugin"""
+
     def __init__(self, iface):
         """init"""
 

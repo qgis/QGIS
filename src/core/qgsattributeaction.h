@@ -27,7 +27,8 @@
 #include <QString>
 #include <QIcon>
 
-#include <qgsfeature.h>
+#include "qgsfeature.h"
+#include "qgsexpressioncontext.h"
 
 class QDomNode;
 class QDomDocument;
@@ -98,7 +99,7 @@ class CORE_EXPORT QgsAction
     bool mCaptureOutput;
 };
 
-/*! \class QgsAttributeAction
+/** \class QgsAttributeAction
  * \brief Storage and management of actions associated with Qgis layer
  * attributes.
  */
@@ -131,7 +132,7 @@ class  CORE_EXPORT QgsAttributeAction
     //! Remove an action at given index
     void removeAction( int index );
 
-    /*! Does the given values. defaultValueIndex is the index of the
+    /** Does the given values. defaultValueIndex is the index of the
      *  field to be used if the action has a $currfield placeholder.
      *  @note available in python bindings as doActionFeature
      */
@@ -139,7 +140,7 @@ class  CORE_EXPORT QgsAttributeAction
                    const QgsFeature &feat,
                    int defaultValueIndex = 0 );
 
-    /*! Does the action using the expression builder to expand it
+    /** Does the action using the expression builder to expand it
      *  and getting values from the passed feature attribute map.
      *  substitutionMap is used to pass custom substitutions, to replace
      *  each key in the map with the associated value
@@ -158,12 +159,12 @@ class  CORE_EXPORT QgsAttributeAction
     //! Return the layer
     QgsVectorLayer *layer() { return mLayer; }
 
-    /*! Expands the given action, replacing all %'s with the value as
+    /** Expands the given action, replacing all %'s with the value as
      *  given.
      */
     QString expandAction( QString action, const QgsAttributeMap &attributes, uint defaultValueIndex );
 
-    /*! Expands the given action using the expression builder
+    /** Expands the given action using the expression builder
      *  This function currently replaces each expression between [% and %]
      *  placeholders in the action with the result of its evaluation on
      *  the feature passed as argument.
@@ -202,6 +203,8 @@ class  CORE_EXPORT QgsAttributeAction
                     void ( *executePython )( const QString & ) = 0 );
 
     int mDefaultAction;
+
+    QgsExpressionContext createExpressionContext() const;
 };
 
 #endif

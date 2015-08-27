@@ -2,5 +2,6 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
 <qgisgrassmodule label="Set the region to match multiple vectors" module="g.region">
-	<file key="vect" label="Type in map names separated by a comma" />
+	<file key="vect" label="Type in map names separated by a comma" version_max="6.4"/>
+	<file key="vector" label="Type in map names separated by a comma" version_min="7.0"/>
 </qgisgrassmodule>

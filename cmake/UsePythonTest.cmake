@@ -50,17 +50,11 @@ MESSAGE(\"PYTHONPATH:\$ENV{PYTHONPATH}\")
 MESSAGE(STATUS \"Running ${PYTHON_EXECUTABLE} ${loc} ${wo_semicolon}\")
 EXECUTE_PROCESS(
   COMMAND ${PYTHON_EXECUTABLE} ${loc} ${wo_semicolumn}
-  #WORKING_DIRECTORY @LIBRARY_OUTPUT_PATH@
   RESULT_VARIABLE import_res
-  OUTPUT_VARIABLE import_output
-  ERROR_VARIABLE  import_output
 )
 # Pass the output back to ctest
-IF(import_output)
-  MESSAGE(" \${import_output} ")
-ENDIF(import_output)
 IF(import_res)
-  MESSAGE(SEND_ERROR " \${import_res} ")
+  MESSAGE(FATAL_ERROR \"Test failed: \${import_res}\")
 ENDIF(import_res)
 "
 )

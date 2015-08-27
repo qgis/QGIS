@@ -165,6 +165,7 @@ void TestQgsColorSchemeRegistry::removeScheme()
   QVERIFY( registry->schemes().length() == 0 );
   //try removing a scheme not in the registry
   QVERIFY( !registry->removeColorScheme( recentScheme ) );
+  delete recentScheme;
 }
 
 void TestQgsColorSchemeRegistry::matchingSchemes()

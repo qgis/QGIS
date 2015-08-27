@@ -314,6 +314,7 @@
         <file>themes/default/mIconClear.svg</file>
         <file>themes/default/mIconClose.png</file>
         <file>themes/default/mIconCollapse.png</file>
+        <file>themes/default/mIconCollapseSmall.svg</file>
         <file>themes/default/mIconColorBox.svg</file>
         <file>themes/default/mIconColorPicker.svg</file>
         <file>themes/default/mIconColorSwatches.svg</file>
@@ -333,6 +334,7 @@
         <file>themes/default/mIconEditable.png</file>
         <file>themes/default/mIconEditableEdits.png</file>
         <file>themes/default/mIconExpand.png</file>
+        <file>themes/default/mIconExpandSmall.svg</file>
         <file>themes/default/mIconExpression.svg</file>
         <file>themes/default/mIconExpressionEditorOpen.svg</file>
         <file>themes/default/mIconExpressionFilter.svg</file>
@@ -348,6 +350,7 @@
         <file>themes/default/mIconLast.png</file>
         <file>themes/default/mIconLayer.png</file>
         <file>themes/default/mIconLineLayer.svg</file>
+        <file>themes/default/mIconListView.png</file>
         <file>themes/default/mIconLock.png</file>
         <file>themes/default/mIconLoading.gif</file>
         <file>themes/default/mIconMssql.svg</file>
@@ -381,6 +384,7 @@
         <file>themes/default/mIconTableLayer.png</file>
         <file>themes/default/mIconTimerContinue.png</file>
         <file>themes/default/mIconTimerPause.png</file>
+        <file>themes/default/mIconTreeView.png</file>
         <file>themes/default/mIconUnknownLayerType.png</file>
         <file>themes/default/mIconWaitingForLayerType.png</file>
         <file>themes/default/mIconWarn.png</file>
@@ -403,7 +407,7 @@
         <file>themes/default/propertyicons/diagram.png</file>
         <file>themes/default/propertyicons/digitising.png</file>
         <file>themes/default/propertyicons/display.svg</file>
-        <file>themes/default/propertyicons/gdal.png</file>
+        <file>themes/default/propertyicons/gdal.svg</file>
         <file>themes/default/propertyicons/general.svg</file>
         <file>themes/default/propertyicons/histogram.png</file>
         <file>themes/default/propertyicons/join.png</file>
@@ -504,6 +508,8 @@
         <file>themes/default/mIconClear.png</file>
         <file>flags/zh.png</file>
         <file>themes/default/mIconPaintEffects.svg</file>
+	<file>themes/default/mActionCircularStringCurvePoint.png</file>
+	<file>themes/default/mActionCircularStringRadius.png</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

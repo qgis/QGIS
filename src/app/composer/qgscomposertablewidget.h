@@ -36,7 +36,7 @@ class QgsComposerTableWidget: public QgsComposerItemBaseWidget, private Ui::QgsC
   private:
     QgsComposerAttributeTable* mComposerTable;
 
-    /**Blocks / unblocks the signals of all GUI elements*/
+    /** Blocks / unblocks the signals of all GUI elements*/
     void blockAllSignals( bool b );
     void refreshMapComboBox();
 
@@ -60,10 +60,10 @@ class QgsComposerTableWidget: public QgsComposerItemBaseWidget, private Ui::QgsC
     void on_mHeaderHAlignmentComboBox_currentIndexChanged( int index );
     void changeLayer( QgsMapLayer* layer );
 
-    /**Inserts a new maximum number of features into the spin box (without the spinbox emitting a signal)*/
+    /** Inserts a new maximum number of features into the spin box (without the spinbox emitting a signal)*/
     void setMaximumNumberOfFeatures( int n );
 
-    /**Sets the GUI elements to the values of mComposerTable*/
+    /** Sets the GUI elements to the values of mComposerTable*/
     void updateGuiElements();
 
 };

@@ -53,17 +53,17 @@ class BasicStatisticsNumbers(GeoAlgorithm):
     UNIQUE = 'UNIQUE'
 
     def defineCharacteristics(self):
-        self.name = 'Basic statistics for numeric fields'
-        self.group = 'Vector table tools'
+        self.name, self.i18n_name = self.trAlgorithm('Basic statistics for numeric fields')
+        self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
-            self.tr('Input vector layer'), ParameterVector.VECTOR_TYPE_ANY, False))
+                                          self.tr('Input vector layer'), ParameterVector.VECTOR_TYPE_ANY, False))
         self.addParameter(ParameterTableField(self.FIELD_NAME,
-            self.tr('Field to calculate statistics on'),
-            self.INPUT_LAYER, ParameterTableField.DATA_TYPE_NUMBER))
+                                              self.tr('Field to calculate statistics on'),
+                                              self.INPUT_LAYER, ParameterTableField.DATA_TYPE_NUMBER))
 
         self.addOutput(OutputHTML(self.OUTPUT_HTML_FILE,
-            self.tr('Statistics')))
+                                  self.tr('Statistics')))
 
         self.addOutput(OutputNumber(self.CV, self.tr('Coefficient of Variation')))
         self.addOutput(OutputNumber(self.MIN, self.tr('Minimum value')))
@@ -132,8 +132,7 @@ class BasicStatisticsNumbers(GeoAlgorithm):
                 cvValue = stdDevValue / meanValue
 
         if count > 1:
-            tmp = values
-            tmp.sort()
+            tmp = sorted(values)
 
             # Calculate median
             if count % 2 == 0:
@@ -169,5 +168,5 @@ class BasicStatisticsNumbers(GeoAlgorithm):
     def createHTML(self, outputFile, algData):
         f = open(outputFile, 'w')
         for s in algData:
-            f.write('<p>' + str(s) + '</p>')
+            f.write('<p>' + unicode(s) + '</p>')
         f.close()

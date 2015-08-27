@@ -44,7 +44,7 @@ class GdalTest(unittest.TestCase):
         output = outputs['dst_filename']
         self.assertTrue(os.path.isfile(output))
         dataset = gdal.Open(output, GA_ReadOnly)
-        strhash = hash(str(dataset.ReadAsArray(0).tolist()))
+        strhash = hash(unicode(dataset.ReadAsArray(0).tolist()))
         self.assertEqual(strhash, -1353696889)
 
     def test_gdalogrsieveWithUnsupportedOutputFormat(self):
@@ -53,7 +53,7 @@ class GdalTest(unittest.TestCase):
         output = outputs['dst_filename']
         self.assertTrue(os.path.isfile(output))
         dataset = gdal.Open(output, GA_ReadOnly)
-        strhash = hash(str(dataset.ReadAsArray(0).tolist()))
+        strhash = hash(unicode(dataset.ReadAsArray(0).tolist()))
         self.assertEqual(strhash, -1353696889)
 
     def test_gdalogrwarpreproject(self):
@@ -70,7 +70,7 @@ class GdalTest(unittest.TestCase):
         output = outputs['OUTPUT']
         self.assertTrue(os.path.isfile(output))
         dataset = gdal.Open(output, GA_ReadOnly)
-        strhash = hash(str(dataset.ReadAsArray(0).tolist()))
+        strhash = hash(unicode(dataset.ReadAsArray(0).tolist()))
         self.assertEqual(strhash, -2021328784)
 
     def test_gdalogrmerge(self):
@@ -79,7 +79,7 @@ class GdalTest(unittest.TestCase):
         output = outputs['OUTPUT']
         self.assertTrue(os.path.isfile(output))
         dataset = gdal.Open(output, GA_ReadOnly)
-        strhash = hash(str(dataset.ReadAsArray(0).tolist()))
+        strhash = hash(unicode(dataset.ReadAsArray(0).tolist()))
         self.assertEqual(strhash, -1353696889)
 
     def test_gdalogrogr2ogr(self):
@@ -103,8 +103,8 @@ class GdalTest(unittest.TestCase):
             'Real',
             'String',
         ]
-        names = [str(f.name()) for f in fields]
-        types = [str(f.typeName()) for f in fields]
+        names = [unicode(f.name()) for f in fields]
+        types = [unicode(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
         features = processing.features(layer)
@@ -119,10 +119,10 @@ class GdalTest(unittest.TestCase):
             '1',
             'string a',
         ]
-        values = [str(attr) for attr in attrs]
+        values = [unicode(attr) for attr in attrs]
         self.assertEqual(expectedvalues, values)
         wkt = 'POLYGON((270807.08580285 4458940.1594565,270798.42294527 4458914.62661676,270780.81854858 4458914.21983449,270763.52289518 4458920.715993,270760.3449542 4458926.6570575,270763.78234766 4458958.22561242,270794.30290024 4458942.16424502,270807.08580285 4458940.1594565))'
-        self.assertEqual(wkt, str(feature.geometry().exportToWkt()))
+        self.assertEqual(wkt, unicode(feature.geometry().exportToWkt()))
 
     def test_gdalogrogr2ogrWrongExtension(self):
         outputs = processing.runalg('gdalogr:ogr2ogr', union(), 3, '',
@@ -146,8 +146,8 @@ class GdalTest(unittest.TestCase):
             'Real',
             'String',
         ]
-        names = [str(f.name()) for f in fields]
-        types = [str(f.typeName()) for f in fields]
+        names = [unicode(f.name()) for f in fields]
+        types = [unicode(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
         features = processing.features(layer)
@@ -162,10 +162,10 @@ class GdalTest(unittest.TestCase):
             '1',
             'string a',
         ]
-        values = [str(attr) for attr in attrs]
+        values = [unicode(attr) for attr in attrs]
         self.assertEqual(expectedvalues, values)
         wkt = 'POLYGON((270807.08580285 4458940.1594565,270798.42294527 4458914.62661676,270780.81854858 4458914.21983449,270763.52289518 4458920.715993,270760.3449542 4458926.6570575,270763.78234766 4458958.22561242,270794.30290024 4458942.16424502,270807.08580285 4458940.1594565))'
-        self.assertEqual(wkt, str(feature.geometry().exportToWkt()))
+        self.assertEqual(wkt, unicode(feature.geometry().exportToWkt()))
 
 
 def suite():

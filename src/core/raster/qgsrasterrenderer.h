@@ -79,13 +79,13 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
     void setAlphaBand( int band ) { mAlphaBand = band; }
     int alphaBand() const { return mAlphaBand; }
 
-    /**Get symbology items if provided by renderer*/
+    /** Get symbology items if provided by renderer*/
     virtual void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const { Q_UNUSED( symbolItems ); }
 
-    /**Sets base class members from xml. Usually called from create() methods of subclasses*/
+    /** Sets base class members from xml. Usually called from create() methods of subclasses*/
     void readXML( const QDomElement& rendererElem ) override;
 
-    /**Returns a list of band numbers used by the renderer*/
+    /** Returns a list of band numbers used by the renderer*/
     virtual QList<int> usesBands() const { return QList<int>(); }
 
     static QString minMaxOriginName( int theOrigin );
@@ -94,16 +94,16 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
 
   protected:
 
-    /**Write upper class info into rasterrenderer element (called by writeXML method of subclasses)*/
+    /** Write upper class info into rasterrenderer element (called by writeXML method of subclasses)*/
     void _writeXML( QDomDocument& doc, QDomElement& rasterRendererElem ) const;
 
     QString mType;
 
-    /**Global alpha value (0-1)*/
+    /** Global alpha value (0-1)*/
     double mOpacity;
-    /**Raster transparency per color or value. Overwrites global alpha value*/
+    /** Raster transparency per color or value. Overwrites global alpha value*/
     QgsRasterTransparency* mRasterTransparency;
-    /**Read alpha value from band. Is combined with value from raster transparency / global alpha value.
+    /** Read alpha value from band. Is combined with value from raster transparency / global alpha value.
         Default: -1 (not set)*/
     int mAlphaBand;
 };

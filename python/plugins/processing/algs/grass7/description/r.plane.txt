@@ -1,5 +1,5 @@
 r.plane
-r.plane - Creates raster plane layer given dip (inclination), aspect (azimuth) and one point.
+Creates raster plane layer given dip (inclination), aspect (azimuth) and one point.
 Raster (r.*)
 ParameterNumber|dip|Dip of plane. Value must be between -90 and 90 degrees|None|None|0.0
 ParameterNumber|azimuth|Azimuth of the plane. Value must be between 0 and 360 degrees|None|None|0.0

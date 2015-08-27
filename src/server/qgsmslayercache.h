@@ -20,7 +20,7 @@
 
 #include <time.h>
 #include <QFileSystemWatcher>
-#include <QHash>
+#include <QMultiHash>
 #include <QObject>
 #include <QPair>
 #include <QString>
@@ -35,9 +35,19 @@ struct QgsMSLayerCacheEntry
   QgsMapLayer* layerPointer;
   QList<QString> temporaryFiles; //path to the temporary files written for the layer
   QString configFile; //path to the project file associated with the layer
+
+  bool operator==( const QgsMSLayerCacheEntry& other ) const
+  {
+    return ( creationTime == other.creationTime
+             && lastUsedTime == other.lastUsedTime
+             && url == other.url
+             && layerPointer == other.layerPointer
+             && temporaryFiles == other.temporaryFiles
+             && configFile == other.configFile );
+  }
 };
 
-/**A singleton class that caches layer objects for the
+/** A singleton class that caches layer objects for the
 QGIS mapserver*/
 class QgsMSLayerCache: public QObject
 {
@@ -46,53 +56,56 @@ class QgsMSLayerCache: public QObject
     static QgsMSLayerCache* instance();
     ~QgsMSLayerCache();
 
-    /**Inserts a new layer into the cash
+    /** Inserts a new layer into the cash
     @param url the layer datasource
     @param layerName the layer name (to distinguish between different layers in a request using the same datasource
     @param configFile path of the config file (to invalidate entries if file changes). Can be empty (e.g. layers from sld)
     @param tempFiles some layers have temporary files. The cash makes sure they are removed when removing the layer from the cash*/
     void insertLayer( const QString& url, const QString& layerName, QgsMapLayer* layer, const QString& configFile = QString(), const QList<QString>& tempFiles = QList<QString>() );
-    /**Searches for the layer with the given url.
+    /** Searches for the layer with the given url.
      @return a pointer to the layer or 0 if no such layer*/
-    QgsMapLayer* searchLayer( const QString& url, const QString& layerName );
+    QgsMapLayer* searchLayer( const QString& url, const QString& layerName, const QString& configFile = QString() );
 
     int projectsMaxLayers() const { return mProjectMaxLayers; }
 
     void setProjectMaxLayers( int n ) { mProjectMaxLayers = n; }
 
+    //for debugging
+    void logCacheContents() const;
+
   protected:
-    /**Protected singleton constructor*/
+    /** Protected singleton constructor*/
     QgsMSLayerCache();
-    /**Goes through the list and removes entries and layers
+    /** Goes through the list and removes entries and layers
      depending on their time stamps and the number of other
     layers*/
     void updateEntries();
-    /**Removes the cash entry with the lowest 'lastUsedTime'*/
+    /** Removes the cash entry with the lowest 'lastUsedTime'*/
     void removeLeastUsedEntry();
-    /**Frees memory and removes temporary files of an entry*/
+    /** Frees memory and removes temporary files of an entry*/
     void freeEntryRessources( QgsMSLayerCacheEntry& entry );
 
   private:
-    /**Cash entries with pair url/layer name as a key. The layer name is necessary for cases where the same
+    /** Cash entries with pair url/layer name as a key. The layer name is necessary for cases where the same
       url is used several time in a request. It ensures that different layer instances are created for different
       layer names*/
-    QHash<QPair<QString, QString>, QgsMSLayerCacheEntry> mEntries;
+    QMultiHash<QPair<QString, QString>, QgsMSLayerCacheEntry> mEntries;
 
-    /**Config files used in the cache (with reference counter)*/
+    /** Config files used in the cache (with reference counter)*/
     QHash< QString, int > mConfigFiles;
 
-    /**Check for configuration file updates (remove layers from cache if configuration file changes)*/
+    /** Check for configuration file updates (remove layers from cache if configuration file changes)*/
     QFileSystemWatcher mFileSystemWatcher;
 
-    /**Maximum number of layers in the cache*/
+    /** Maximum number of layers in the cache*/
     int mDefaultMaxLayers;
 
-    /**Maximum number of layers in the cache, overrides DEFAULT_MAX_N_LAYERS if larger*/
+    /** Maximum number of layers in the cache, overrides DEFAULT_MAX_N_LAYERS if larger*/
     int mProjectMaxLayers;
 
   private slots:
 
-    /**Removes entries from a project (e.g. if a project file has changed)*/
+    /** Removes entries from a project (e.g. if a project file has changed)*/
     void removeProjectFileLayers( const QString& project );
 };
 

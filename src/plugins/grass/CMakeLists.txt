@@ -2,7 +2,9 @@ ADD_SUBDIRECTORY(modules)
 ADD_SUBDIRECTORY(scripts)
 
 #ADD_DEFINITIONS(-DGRASS_BASE=\\\"${GRASS_PREFIX}\\\")
-ADD_DEFINITIONS(-DHAVE_OPENPTY=${HAVE_OPENPTY})
+if (HAVE_OPENPTY)
+  ADD_DEFINITIONS(-DHAVE_OPENPTY)
+ENDIF (HAVE_OPENPTY)
 ADD_DEFINITIONS("-DGRASS_EXPORT=${DLLIMPORT} -DGRASS_LIB_EXPORT=${DLLIMPORT}")
 
 IF (WIN32)
@@ -25,6 +27,8 @@ SET (GRASS_PLUGIN_SRCS
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrasstools.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmapcalc.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmodule.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmoduleoptions.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmoduleparam.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassnewmapset.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassattributes.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassregion.cpp
@@ -51,6 +55,8 @@ SET (GRASS_PLUGIN_MOC_HDRS
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrasstools.h
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmapcalc.h
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmodule.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmoduleoptions.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmoduleparam.h
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassnewmapset.h
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassattributes.h
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassregion.h
@@ -62,11 +68,14 @@ IF(NOT WIN32)
   SET (GRASS_PLUGIN_SRCS ${GRASS_PLUGIN_SRCS}
     ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassshell.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/BlockArray.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/ColorScheme.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/Emulation.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/Filter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/History.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/HistorySearch.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/KeyboardTranslator.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/Pty.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/SearchBar.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/Screen.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/ScreenWindow.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/Session.cpp
@@ -74,24 +83,35 @@ IF(NOT WIN32)
     ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/TerminalCharacterDecoder.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/TerminalDisplay.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/Vt102Emulation.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/k3process.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/k3processcontroller.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/kprocess.cpp
+#    ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/k3processcontroller.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/konsole_wcwidth.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/kpty.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/kptydevice.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/kptyprocess.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/qtermwidget.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/tools.cpp
+  )
+
+  SET (GRASS_PLUGIN_UIS ${GRASS_PLUGIN_UIS}
+    ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/SearchBar.ui
   )
 
   SET (GRASS_PLUGIN_MOC_HDRS ${GRASS_PLUGIN_MOC_HDRS}
     ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassshell.h
     ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/Emulation.h
     ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/Filter.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/HistorySearch.h
     ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/Pty.h
     ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/ScreenWindow.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/SearchBar.h
     ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/Session.h
     ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/TerminalDisplay.h
     ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/Vt102Emulation.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/k3process.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/k3processcontroller.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/kprocess.h
+#    ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/k3processcontroller.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/kptydevice.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/kptyprocess.h
     ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/qtermwidget.h
   )
 
@@ -105,6 +125,13 @@ IF(NOT WIN32)
       PROPERTIES COMPILE_FLAGS "-Wno-overloaded-virtual -Wno-mismatched-tags"
     )
   ENDIF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+
+  SET(KB_LAYOUT_DIR "${QGIS_DATA_DIR}/grass/qtermwidget/kb-layouts")
+  ADD_DEFINITIONS(-DKB_LAYOUT_DIR=\\\"${CMAKE_INSTALL_PREFIX}/${KB_LAYOUT_DIR}\\\")
+
+  SET(COLORSCHEMES_DIR "${QGIS_DATA_DIR}/grass/qtermwidget/color-schemes")
+  ADD_DEFINITIONS(-DCOLORSCHEMES_DIR=\\\"${CMAKE_INSTALL_PREFIX}/${COLORSCHEMES_DIR}\\\")
+
 ENDIF(NOT WIN32)
 
 SET (GRASS_PLUGIN_RCCS ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrass_plugin.qrc)
@@ -126,6 +153,7 @@ INCLUDE_DIRECTORIES(
   ${GDAL_INCLUDE_DIR}
   ${PROJ_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
+  ${POSTGRES_INCLUDE_DIR}
   qtermwidget
 )
 
@@ -195,7 +223,14 @@ INSTALL (FILES ${GMLS}
 INSTALL (FILES themes/default/grass_arrow.svg themes/default/grass_plus.svg themes/default/grass_arrow.png themes/default/grass_plus.png
          DESTINATION ${QGIS_DATA_DIR}/grass/modules)
 
-FOREACH(GRASS_BUILD_VERSION 6) # GRASS 6, but not yet GRASS 7
+IF(NOT WIN32)
+  INSTALL(DIRECTORY qtermwidget/kb-layouts/ DESTINATION "${KB_LAYOUT_DIR}" FILES_MATCHING PATTERN "*.keytab" )
+  INSTALL(DIRECTORY qtermwidget/kb-layouts/ DESTINATION "${KB_LAYOUT_DIR}" )
+  message(STATUS "Keyboard layouts will be installed in: ${KB_LAYOUT_DIR}")
+  INSTALL(DIRECTORY qtermwidget/color-schemes/ DESTINATION "${COLORSCHEMES_DIR}" FILES_MATCHING PATTERN "*.*schem*")
+ENDIF(NOT WIN32)
+
+FOREACH(GRASS_BUILD_VERSION 6 7) # GRASS 6 and GRASS 7
   IF(GRASS_FOUND${GRASS_BUILD_VERSION})
     ADD_SUBDIRECTORY(${GRASS_BUILD_VERSION})
   ENDIF(GRASS_FOUND${GRASS_BUILD_VERSION})

@@ -26,6 +26,7 @@
 #include <QMenu>
 #include <QMouseEvent>
 #include <QPointer>
+#include <QGroupBox>
 
 
 QIcon QgsDataDefinedButton::mIconDataDefine;
@@ -41,6 +42,8 @@ QgsDataDefinedButton::QgsDataDefinedButton( QWidget* parent,
     DataTypes datatypes,
     QString description )
     : QToolButton( parent )
+    , mExpressionContextCallback( 0 )
+    , mExpressionContextCallbackContext( 0 )
 {
   // set up static icons
   if ( mIconDataDefine.isNull() )
@@ -67,10 +70,13 @@ QgsDataDefinedButton::QgsDataDefinedButton( QWidget* parent,
   setMenu( mDefineMenu );
 
   mFieldsMenu = new QMenu( this );
-
   mActionDataTypes = new QAction( this );
   // list fields and types in submenu, since there may be many
   mActionDataTypes->setMenu( mFieldsMenu );
+
+  mActionVariables = new QAction( tr( "Variable" ), this );
+  mVariablesMenu = new QMenu( this );
+  mActionVariables->setMenu( mVariablesMenu );
 
   mActionActive = new QAction( this );
   QFont f = mActionActive->font();
@@ -160,7 +166,7 @@ void QgsDataDefinedButton::init( const QgsVectorLayer* vl,
   if ( mVectorLayer )
   {
     // store just a list of fields of unknown type or those that match the expected type
-    const QgsFields& fields = mVectorLayer->pendingFields();
+    const QgsFields& fields = mVectorLayer->fields();
     for ( int i = 0; i < fields.count(); ++i )
     {
       const QgsField& f = fields.at( i );
@@ -203,9 +209,9 @@ void QgsDataDefinedButton::updateDataDefined( QgsDataDefined *dd ) const
     return;
 
   dd->setActive( isActive() );
-  dd->setUseExpression( useExpression() );
   dd->setExpressionString( getExpression() );
   dd->setField( getField() );
+  dd->setUseExpression( useExpression() );
 }
 
 QgsDataDefined QgsDataDefinedButton::currentDataDefined() const
@@ -316,6 +322,41 @@ void QgsDataDefinedButton::aboutToShowMenu()
   exprTitleAct->setFont( titlefont );
   exprTitleAct->setEnabled( false );
 
+  mVariablesMenu->clear();
+  bool variableActive = false;
+  if ( mExpressionContextCallback )
+  {
+    QgsExpressionContext context = mExpressionContextCallback( mExpressionContextCallbackContext );
+    QStringList variables = context.variableNames();
+    Q_FOREACH ( QString variable, variables )
+    {
+      if ( context.isReadOnly( variable ) ) //only want to show user-set variables
+        continue;
+      if ( variable.startsWith( "_" ) ) //no hidden variables
+        continue;
+
+      QAction* act = mVariablesMenu->addAction( variable );
+      act->setData( QVariant( variable ) );
+
+      if ( useExpression() && hasExp && getExpression() == "@" + variable )
+      {
+        act->setCheckable( true );
+        act->setChecked( true );
+        variableActive = true;
+      }
+    }
+  }
+
+  if ( mVariablesMenu->actions().isEmpty() )
+  {
+    QAction* act = mVariablesMenu->addAction( tr( "No variables set" ) );
+    act->setEnabled( false );
+  }
+
+  mDefineMenu->addAction( mActionVariables );
+  mVariablesMenu->menuAction()->setCheckable( true );
+  mVariablesMenu->menuAction()->setChecked( variableActive );
+
   if ( hasExp )
   {
     QString expString = getExpression();
@@ -337,7 +378,7 @@ void QgsDataDefinedButton::aboutToShowMenu()
       mActionExpression->setText( expString );
     }
     mDefineMenu->addAction( mActionExpression );
-    mActionExpression->setChecked( useExpression() );
+    mActionExpression->setChecked( useExpression() && !variableActive );
 
     mDefineMenu->addAction( mActionExpDialog );
     mDefineMenu->addAction( mActionCopyExpr );
@@ -421,6 +462,16 @@ void QgsDataDefinedButton::menuActionTriggered( QAction* action )
       updateGui();
     }
   }
+  else if ( mVariablesMenu->actions().contains( action ) )  // a variable name clicked
+  {
+    if ( getExpression() != action->text().prepend( "@" ) )
+    {
+      setExpression( action->data().toString().prepend( "@" ) );
+    }
+    setUseExpression( true );
+    setActive( true );
+    updateGui();
+  }
 }
 
 void QgsDataDefinedButton::showDescriptionDialog()
@@ -452,7 +503,9 @@ void QgsDataDefinedButton::showAssistant()
 
 void QgsDataDefinedButton::showExpressionDialog()
 {
-  QgsExpressionBuilderDialog d( const_cast<QgsVectorLayer*>( mVectorLayer ), getExpression() );
+  QgsExpressionContext context = mExpressionContextCallback ? mExpressionContextCallback( mExpressionContextCallbackContext ) : QgsExpressionContext();
+
+  QgsExpressionBuilderDialog d( const_cast<QgsVectorLayer*>( mVectorLayer ), getExpression(), this, "generic", context );
   if ( d.exec() == QDialog::Accepted )
   {
     QString newExp = d.expressionText();
@@ -630,6 +683,12 @@ QList<QWidget*> QgsDataDefinedButton::registeredCheckedWidgets()
     wdgtList << mCheckedWidgets.at( i );
   }
   return wdgtList;
+}
+
+void QgsDataDefinedButton::registerGetExpressionContextCallback( QgsDataDefinedButton::ExpressionContextCallback fnGetExpressionContext, const void *context )
+{
+  mExpressionContextCallback = fnGetExpressionContext;
+  mExpressionContextCallbackContext = context;
 }
 
 void QgsDataDefinedButton::setAssistant( const QString& title, QgsDataDefinedAssistant *assistant )

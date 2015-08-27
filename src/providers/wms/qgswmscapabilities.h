@@ -530,7 +530,7 @@ class QgsWmsSettings
 };
 
 
-/** keeps information about capabilities of particular URI */
+/** Keeps information about capabilities of particular URI */
 class QgsWmsCapabilities
 {
   public:
@@ -576,6 +576,9 @@ class QgsWmsCapabilities
 
     /** Find out whether to invert axis orientation when parsing/writing coordinates */
     bool shouldInvertAxisOrientation( const QString& ogcCrs );
+
+    /** Find out identify capabilities */
+    int identifyCapabilities() const;
 
   protected:
     bool parseCapabilitiesDom( QByteArray const &xml, QgsWmsCapabilitiesProperty& capabilitiesProperty );
@@ -674,20 +677,26 @@ class QgsWmsCapabilities
 
 
 
-/** class that handles download of capabilities */
+/** Class that handles download of capabilities */
 class QgsWmsCapabilitiesDownload : public QObject
 {
     Q_OBJECT
 
   public:
+    QgsWmsCapabilitiesDownload( QObject* parent = 0 );
+
     QgsWmsCapabilitiesDownload( const QString& baseUrl, const QgsWmsAuthorization& auth, QObject* parent = 0 );
 
     bool downloadCapabilities();
+
+    bool downloadCapabilities( const QString& baseUrl, const QgsWmsAuthorization& auth );
 
     QString lastError() const { return mError; }
 
     QByteArray response() const { return mHttpCapabilitiesResponse; }
 
+    /** Abort network request immediately */
+    void abort();
   signals:
     /** \brief emit a signal to be caught by qgisapp and display a msg on status bar */
     void statusChanged( QString const &  theStatusQString );
@@ -717,6 +726,7 @@ class QgsWmsCapabilitiesDownload : public QObject
     /** Capabilities of the WMS (raw) */
     QByteArray mHttpCapabilitiesResponse;
 
+    bool mIsAborted;
 };
 
 

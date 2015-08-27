@@ -65,7 +65,7 @@ eVisDatabaseConnectionGui::eVisDatabaseConnectionGui( QList<QTemporaryFile*>* th
   connect( mDatabaseLayerFieldSelector, SIGNAL( eVisDatabaseLayerFieldsSelected( QString, QString, QString ) ), this, SLOT( drawNewVectorLayer( QString, QString, QString ) ) );
 
   //Populate gui components
-#ifdef WIN32
+#ifdef Q_OS_WIN
   cboxDatabaseType->insertItem( 0, "MSAccess" );
 #endif
   cboxDatabaseType->insertItem( 0, "MYSQL" );

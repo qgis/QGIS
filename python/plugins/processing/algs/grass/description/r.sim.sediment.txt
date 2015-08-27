@@ -1,5 +1,5 @@
 r.sim.sediment
-r.sim.sediment - Sediment transport and erosion/deposition simulation using path sampling method (SIMWE).
+Sediment transport and erosion/deposition simulation using path sampling method (SIMWE).
 Raster (r.*)
 ParameterRaster|elevin|Name of the elevation raster map [m]|False
 ParameterRaster|wdepth|Name of the water depth raster map [m]|False

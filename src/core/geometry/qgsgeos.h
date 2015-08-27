@@ -23,14 +23,16 @@ email                : marco.hugentobler at sourcepole dot com
 class QgsLineStringV2;
 class QgsPolygonV2;
 
-/**Does vector analysis using the geos library and handles import, export, exception handling*/
+/** Does vector analysis using the geos library and handles import, export, exception handling*
+ * \note this API is not considered stable and may change for 2.12
+ */
 class CORE_EXPORT QgsGeos: public QgsGeometryEngine
 {
   public:
     QgsGeos( const QgsAbstractGeometryV2* geometry );
     ~QgsGeos();
 
-    /**Removes caches*/
+    /** Removes caches*/
     void geometryChanged() override;
     void prepareGeometry() override;
 
@@ -60,7 +62,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     bool isEqual( const QgsAbstractGeometryV2& geom ) const override;
     bool isEmpty() const override;
 
-    /**Splits this geometry according to a given line.
+    /** Splits this geometry according to a given line.
     @param splitLine the line that splits the geometry
     @param[out] newGeometries list of new geometries that have been created with the split
     @param topological true if topological editing is enabled
@@ -132,5 +134,47 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     static int pointContainedInLine( const GEOSGeometry* point, const GEOSGeometry* line );
     static int geomDigits( const GEOSGeometry* geom );
 };
+
+/// @cond
+
+class GEOSException
+{
+  public:
+    GEOSException( QString theMsg )
+    {
+      if ( theMsg == "Unknown exception thrown"  && lastMsg.isNull() )
+      {
+        msg = theMsg;
+      }
+      else
+      {
+        msg = theMsg;
+        lastMsg = msg;
+      }
+    }
+
+    // copy constructor
+    GEOSException( const GEOSException &rhs )
+    {
+      *this = rhs;
+    }
+
+    ~GEOSException()
+    {
+      if ( lastMsg == msg )
+        lastMsg = QString::null;
+    }
+
+    QString what()
+    {
+      return msg;
+    }
+
+  private:
+    QString msg;
+    static QString lastMsg;
+};
+
+/// @endcond
 
 #endif // QGSGEOS_H

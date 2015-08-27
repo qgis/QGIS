@@ -107,7 +107,7 @@ class RasterWriter:
         driver = gdal.GetDriverByName(format)
         dst_ds = driver.Create(self.fileName, self.nx, self.ny, 1,
                                gdal.GDT_Float32)
-        dst_ds.SetProjection(str(self.crs.toWkt()))
+        dst_ds.SetProjection(unicode(self.crs.toWkt()))
         dst_ds.SetGeoTransform([self.minx, self.cellsize, 0,
                                 self.maxy, self.cellsize, 0])
         dst_ds.GetRasterBand(1).WriteArray(self.matrix)

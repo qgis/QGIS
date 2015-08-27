@@ -156,6 +156,11 @@ void QgsPhotoWidgetWrapper::initWidget( QWidget* editor )
   }
 }
 
+bool QgsPhotoWidgetWrapper::valid()
+{
+  return mPhotoLabel || mLineEdit || mButton || mWebView;
+}
+
 void QgsPhotoWidgetWrapper::setValue( const QVariant& value )
 {
   if ( mLineEdit )

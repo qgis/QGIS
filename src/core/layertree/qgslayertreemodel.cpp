@@ -168,8 +168,8 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
       if ( nodeLayer->customProperty( "showFeatureCount", 0 ).toInt() && role == Qt::DisplayRole )
       {
         QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( nodeLayer->layer() );
-        if ( vlayer && vlayer->pendingFeatureCount() >= 0 )
-          name += QString( " [%1]" ).arg( vlayer->pendingFeatureCount() );
+        if ( vlayer && vlayer->featureCount() >= 0 )
+          name += QString( " [%1]" ).arg( vlayer->featureCount() );
       }
       return name;
     }
@@ -1118,6 +1118,10 @@ void QgsLayerTreeModel::addLegendToLayer( QgsLayerTreeLayer* nodeL )
 
   if ( hasStyleOverride )
     ml->styleManager()->restoreOverrideStyle();
+
+  // invalidate map based data even if the data is not map-based to make sure
+  // the symbol sizes are computed at least once
+  legendInvalidateMapBasedData();
 }
 
 
@@ -1299,11 +1303,41 @@ QList<QgsLayerTreeModelLegendNode*> QgsLayerTreeModel::layerLegendNodes( QgsLaye
 
 void QgsLayerTreeModel::legendInvalidateMapBasedData()
 {
+  // we have varying icon sizes, and we want icon to be centered and
+  // text to be left aligned, so we have to compute the max width of icons
+  //
+  // we do that for nodes who share a common parent
+  //
+  // we do that here because for symbols with size defined in map units
+  // the symbol sizes changes depends on the zoom level
+
   foreach ( const LayerLegendData& data, mLegend )
   {
+    QList<QgsSymbolV2LegendNode*> symbolNodes;
+    QMap<QString, int> widthMax;
+    foreach ( QgsLayerTreeModelLegendNode* legendNode, data.originalNodes )
+    {
+      QgsSymbolV2LegendNode* n = dynamic_cast<QgsSymbolV2LegendNode*>( legendNode );
+      if ( n )
+      {
+        const QSize sz( n->minimumIconSize() );
+        const QString parentKey( n->data( QgsLayerTreeModelLegendNode::ParentRuleKeyRole ).toString() );
+        widthMax[parentKey] = qMax( sz.width(), widthMax.contains( parentKey ) ? widthMax[parentKey] : 0 );
+        n->setIconSize( sz );
+        symbolNodes.append( n );
+      }
+    }
+    foreach ( QgsSymbolV2LegendNode* n, symbolNodes )
+    {
+      const QString parentKey( n->data( QgsLayerTreeModelLegendNode::ParentRuleKeyRole ).toString() );
+      Q_ASSERT( widthMax[parentKey] > 0 );
+      const int twiceMarginWidth = 2; // a one pixel margin avoids hugly rendering of icon
+      n->setIconSize( QSize( widthMax[parentKey] + twiceMarginWidth, n->iconSize().rheight() + twiceMarginWidth ) );
+    }
     foreach ( QgsLayerTreeModelLegendNode* legendNode, data.originalNodes )
       legendNode->invalidateMapBasedData();
   }
+
 }
 
 // Legend nodes routines - end

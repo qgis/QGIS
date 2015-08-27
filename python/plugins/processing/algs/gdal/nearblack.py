@@ -41,15 +41,15 @@ class nearblack(GdalAlgorithm):
     WHITE = 'WHITE'
 
     def defineCharacteristics(self):
-        self.name = 'Near black'
-        self.group = '[GDAL] Analysis'
+        self.name, self.i18n_name = self.trAlgorithm('Near black')
+        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Analysis')
         self.addParameter(ParameterRaster(nearblack.INPUT,
-           self.tr('Input layer'), False))
+                                          self.tr('Input layer'), False))
         self.addParameter(ParameterNumber(nearblack.NEAR,
-            self.tr('How far from black (white)'), 0, None, 15))
+                                          self.tr('How far from black (white)'), 0, None, 15))
         self.addParameter(ParameterBoolean(nearblack.WHITE,
-            self.tr('Search for nearly white pixels instead of nearly black'),
-            False))
+                                           self.tr('Search for nearly white pixels instead of nearly black'),
+                                           False))
         self.addOutput(OutputRaster(nearblack.OUTPUT, self.tr('Nearblack')))
 
     def getConsoleCommands(self):
@@ -57,7 +57,7 @@ class nearblack(GdalAlgorithm):
         arguments.append('-o')
         arguments.append(self.getOutputValue(nearblack.OUTPUT))
         arguments.append('-near')
-        arguments.append(str(self.getParameterValue(nearblack.NEAR)))
+        arguments.append(unicode(self.getParameterValue(nearblack.NEAR)))
         if self.getParameterValue(nearblack.WHITE):
             arguments.append('-white')
         arguments.append(self.getParameterValue(nearblack.INPUT))

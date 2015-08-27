@@ -34,6 +34,7 @@
 #include <QImage>
 #include <QPainter>
 #include <QSize>
+#include <QSvgGenerator>
 
 #include <cmath>
 
@@ -41,9 +42,9 @@ inline
 QgsDataDefined* rotateWholeSymbol( double additionalRotation, const QgsDataDefined& dd )
 {
   QgsDataDefined* rotatedDD = new QgsDataDefined( dd );
-  rotatedDD->setUseExpression( true );
   QString exprString = dd.useExpression() ? dd.expressionString() : dd.field();
   rotatedDD->setExpressionString( QString::number( additionalRotation ) + " + (" + exprString + ")" );
+  rotatedDD->setUseExpression( true );
   return rotatedDD;
 }
 
@@ -51,9 +52,9 @@ inline
 QgsDataDefined* scaleWholeSymbol( double scaleFactor, const QgsDataDefined& dd )
 {
   QgsDataDefined* scaledDD = new QgsDataDefined( dd );
-  scaledDD->setUseExpression( true );
   QString exprString = dd.useExpression() ? dd.expressionString() : dd.field();
   scaledDD->setExpressionString( QString::number( scaleFactor ) + "*(" + exprString + ")" );
+  scaledDD->setUseExpression( true );
   return scaledDD;
 }
 
@@ -61,12 +62,12 @@ inline
 QgsDataDefined* scaleWholeSymbol( double scaleFactorX, double scaleFactorY, const QgsDataDefined& dd )
 {
   QgsDataDefined* scaledDD = new QgsDataDefined( dd );
-  scaledDD->setUseExpression( true );
   QString exprString = dd.useExpression() ? dd.expressionString() : dd.field();
   scaledDD->setExpressionString(
     ( scaleFactorX ? "tostring(" + QString::number( scaleFactorX ) + "*(" + exprString + "))" : "'0'" ) +
     "|| ',' || " +
     ( scaleFactorY ? "tostring(" + QString::number( scaleFactorY ) + "*(" + exprString + "))" : "'0'" ) );
+  scaledDD->setUseExpression( true );
   return scaledDD;
 }
 
@@ -349,6 +350,26 @@ void QgsSymbolV2::drawPreviewIcon( QPainter* painter, QSize size, QgsRenderConte
     }
     else
       ( *it )->drawPreviewIcon( symbolContext, size );
+  }
+}
+
+void QgsSymbolV2::exportImage( QString path, QString format, QSize size )
+{
+  if ( format.toLower() == "svg" )
+  {
+    QSvgGenerator generator;
+    generator.setFileName( path );
+    generator.setSize( size );
+    generator.setViewBox( QRect( 0, 0, size.height(), size.height() ) );
+
+    QPainter painter( &generator );
+    drawPreviewIcon( &painter, size );
+    painter.end();
+  }
+  else
+  {
+    QImage image = asImage( size );
+    image.save( path );
   }
 }
 

@@ -35,6 +35,7 @@ from qgis.core import (QgsVectorLayer,
                        QgsMultiRenderChecker,
                        QgsRasterLayer,
                        QgsMultiBandColorRenderer,
+                       QgsRectangle
                        )
 
 from utilities import (unitTestDataPath,
@@ -45,6 +46,7 @@ from utilities import (unitTestDataPath,
 # Convenience instances in case you may need them
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 TEST_DATA_DIR = unitTestDataPath()
+
 
 class TestQgsBlendModes(TestCase):
 
@@ -93,7 +95,9 @@ class TestQgsBlendModes(TestCase):
         self.mMap.resize(QSize(400, 400))
         self.mapSettings = self.mCanvas.mapSettings()
         self.mapSettings.setOutputSize(QSize(400, 400))
-        self.mapSettings.setOutputDpi( 96 )
+        self.mapSettings.setOutputDpi(96)
+
+        self.extent = QgsRectangle(-118.8888888888887720, 22.8002070393376783, -83.3333333333331581, 46.8719806763287536)
 
     def testVectorBlending(self):
         """Test that blend modes work for vector layers."""
@@ -103,7 +107,7 @@ class TestQgsBlendModes(TestCase):
         myLayers.append(self.mLineLayer.id())
         myLayers.append(self.mPolygonLayer.id())
         self.mapSettings.setLayers(myLayers)
-        self.mapSettings.setExtent(self.mPointLayer.extent())
+        self.mapSettings.setExtent(self.extent)
 
         #Set blending modes for both layers
         self.mLineLayer.setBlendMode(QPainter.CompositionMode_Difference)
@@ -112,7 +116,7 @@ class TestQgsBlendModes(TestCase):
         checker = QgsMultiRenderChecker()
         checker.setControlName("expected_vector_blendmodes")
         checker.setMapSettings(self.mapSettings)
-        checker.setColorTolerance( 1 )
+        checker.setColorTolerance(1)
 
         myResult = checker.runTest("vector_blendmodes", 20)
         myMessage = ('vector blending failed')
@@ -130,7 +134,7 @@ class TestQgsBlendModes(TestCase):
         myLayers.append(self.mLineLayer.id())
         myLayers.append(self.mPolygonLayer.id())
         self.mapSettings.setLayers(myLayers)
-        self.mapSettings.setExtent(self.mPointLayer.extent())
+        self.mapSettings.setExtent(self.extent)
 
         #Set feature blending for line layer
         self.mLineLayer.setFeatureBlendMode(QPainter.CompositionMode_Plus)
@@ -138,7 +142,7 @@ class TestQgsBlendModes(TestCase):
         checker = QgsMultiRenderChecker()
         checker.setControlName("expected_vector_featureblendmodes")
         checker.setMapSettings(self.mapSettings)
-        checker.setColorTolerance( 1 )
+        checker.setColorTolerance(1)
 
         myResult = checker.runTest("vector_featureblendmodes", 20)
         myMessage = ('vector feature blending failed')
@@ -155,15 +159,15 @@ class TestQgsBlendModes(TestCase):
         myLayers.append(self.mLineLayer.id())
         myLayers.append(self.mPolygonLayer.id())
         self.mapSettings.setLayers(myLayers)
-        self.mapSettings.setExtent(self.mPointLayer.extent())
+        self.mapSettings.setExtent(self.extent)
 
         #Set feature blending for line layer
-        self.mLineLayer.setLayerTransparency( 50 )
+        self.mLineLayer.setLayerTransparency(50)
 
         checker = QgsMultiRenderChecker()
         checker.setControlName("expected_vector_layertransparency")
         checker.setMapSettings(self.mapSettings)
-        checker.setColorTolerance( 1 )
+        checker.setColorTolerance(1)
 
         myResult = checker.runTest("vector_layertransparency", 20)
         myMessage = ('vector layer transparency failed')
@@ -183,8 +187,8 @@ class TestQgsBlendModes(TestCase):
         checker = QgsMultiRenderChecker()
         checker.setControlName("expected_raster_blendmodes")
         checker.setMapSettings(self.mapSettings)
-        checker.setColorTolerance( 1 )
-        checker.setColorTolerance( 1 )
+        checker.setColorTolerance(1)
+        checker.setColorTolerance(1)
 
         myResult = checker.runTest("raster_blendmodes", 20)
         myMessage = ('raster blending failed')

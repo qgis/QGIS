@@ -29,6 +29,6 @@ class QgsRasterRendererWidget: QWidget
     virtual int selectedBand( int index = 0 );
 
   protected:
-    /**Returns a band name for display. First choice is color name, otherwise band number*/
+    /** Returns a band name for display. First choice is color name, otherwise band number*/
     QString displayBandName( int band ) const;
 };

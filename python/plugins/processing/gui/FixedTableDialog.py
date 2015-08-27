@@ -102,8 +102,7 @@ class FixedTableDialog(BASE, WIDGET):
             self.tblView.model().clear()
             self.tblView.model().setHorizontalHeaderLabels(self.param.cols)
         else:
-            indexes = self.tblView.selectionModel().selectedRows()
-            indexes.sort()
+            indexes = sorted(self.tblView.selectionModel().selectedRows())
             self.tblView.setUpdatesEnabled(False)
             for i in reversed(indexes):
                 self.tblView.model().removeRows(i.row(), 1)

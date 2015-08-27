@@ -1,4 +1,4 @@
-/**Item representing a grid. This is drawn separately to the underlying paper item since the grid needs to be
+/** Item representing a grid. This is drawn separately to the underlying paper item since the grid needs to be
  * drawn above all other composer items, while the paper item is drawn below all others.*/
 class QgsPaperGrid : QGraphicsRectItem
 {
@@ -14,7 +14,7 @@ class QgsPaperGrid : QGraphicsRectItem
 
 };
 
-/**Item representing the paper.*/
+/** Item representing the paper.*/
 class QgsPaperItem : QgsComposerItem
 {
 %TypeHeaderCode
@@ -25,19 +25,19 @@ class QgsPaperItem : QgsComposerItem
     QgsPaperItem( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition /TransferThis/ );
     ~QgsPaperItem();
 
-    /** return correct graphics item type. */
+    /** Return correct graphics item type. */
     virtual int type() const;
 
     /** \brief Reimplementation of QCanvasItem::paint*/
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
 
-    /** stores state in Dom element
+    /** Stores state in Dom element
        * @param elem is Dom element corresponding to 'Composer' tag
        * @param doc Dom document
        */
     bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
 
-    /** sets state from Dom document
+    /** Sets state from Dom document
      * @param itemElem is Dom node corresponding to item tag
      * @param doc is the Dom document
      */
@@ -47,6 +47,6 @@ class QgsPaperItem : QgsComposerItem
 
   private:
     QgsPaperItem();
-    /**Set flags and z-value*/
+    /** Set flags and z-value*/
     void initialize();
 };

@@ -49,19 +49,8 @@ QgsPythonUtilsImpl::~QgsPythonUtilsImpl()
 #endif
 }
 
-void QgsPythonUtilsImpl::initPython( QgisInterface* interface )
+bool QgsPythonUtilsImpl::checkSystemImports()
 {
-  // initialize python
-  Py_Initialize();
-
-  // initialize threading AND acquire GIL
-  PyEval_InitThreads();
-
-  mPythonEnabled = true;
-
-  mMainModule = PyImport_AddModule( "__main__" ); // borrowed reference
-  mMainDict = PyModule_GetDict( mMainModule ); // borrowed reference
-
   runString( "import sys" ); // import sys module (for display / exception hooks)
   runString( "import os" ); // import os module (for user paths)
 
@@ -116,8 +105,7 @@ void QgsPythonUtilsImpl::initPython( QgisInterface* interface )
   if ( !runString( "import sip",
                    QObject::tr( "Couldn't load SIP module." ) + "\n" + QObject::tr( "Python support will be disabled." ) ) )
   {
-    exitPython();
-    return;
+    return false;
   }
 
   // set PyQt4 api versions
@@ -128,8 +116,7 @@ void QgsPythonUtilsImpl::initPython( QgisInterface* interface )
     if ( !runString( QString( "sip.setapi('%1', 2)" ).arg( clsName ),
                      QObject::tr( "Couldn't set SIP API versions." ) + "\n" + QObject::tr( "Python support will be disabled." ) ) )
     {
-      exitPython();
-      return;
+      return false;
     }
   }
 
@@ -137,26 +124,22 @@ void QgsPythonUtilsImpl::initPython( QgisInterface* interface )
   if ( !runString( "from PyQt4 import QtCore, QtGui",
                    QObject::tr( "Couldn't load PyQt4." ) + "\n" + QObject::tr( "Python support will be disabled." ) ) )
   {
-    exitPython();
-    return;
+    return false;
   }
 
   // import QGIS bindings
   QString error_msg = QObject::tr( "Couldn't load PyQGIS." ) + "\n" + QObject::tr( "Python support will be disabled." );
   if ( !runString( "from qgis.core import *", error_msg ) || !runString( "from qgis.gui import *", error_msg ) )
   {
-    exitPython();
-    return;
+    return false;
   }
 
   // import QGIS utils
   error_msg = QObject::tr( "Couldn't load QGIS utils." ) + "\n" + QObject::tr( "Python support will be disabled." );
   if ( !runString( "import qgis.utils", error_msg ) )
   {
-    exitPython();
-    return;
+    return false;
   }
-
 
   // tell the utils script where to look for the plugins
   runString( "qgis.utils.plugin_paths = [" + pluginpaths.join( "," ) + "]" );
@@ -167,18 +150,24 @@ void QgsPythonUtilsImpl::initPython( QgisInterface* interface )
   runString( "if oldhome: os.environ['HOME']=oldhome\n" );
 #endif
 
-  // initialize 'iface' object
-  runString( "qgis.utils.initInterface(" + QString::number(( unsigned long ) interface ) + ")" );
+  return true;
+}
 
-  // import QGIS user
-  error_msg = QObject::tr( "Couldn't load qgis.user." ) + "\n" + QObject::tr( "Python support will be disabled." );
-  if ( !runString( "import qgis.user", error_msg ) )
-  {
-    // Should we really bail because of this?!
-    exitPython();
-    return;
-  }
+void QgsPythonUtilsImpl::init()
+{
+  // initialize python
+  Py_Initialize();
+  // initialize threading AND acquire GIL
+  PyEval_InitThreads();
 
+  mPythonEnabled = true;
+
+  mMainModule = PyImport_AddModule( "__main__" ); // borrowed reference
+  mMainDict = PyModule_GetDict( mMainModule ); // borrowed reference
+}
+
+void QgsPythonUtilsImpl::finish()
+{
   // release GIL!
   // Later on, we acquire GIL just before doing some Python calls and
   // release GIL again when the work with Python API is done.
@@ -187,103 +176,50 @@ void QgsPythonUtilsImpl::initPython( QgisInterface* interface )
   _mainState = PyEval_SaveThread();
 }
 
+bool QgsPythonUtilsImpl::checkQgisUser()
+{
+  // import QGIS user
+  QString error_msg = QObject::tr( "Couldn't load qgis.user." ) + "\n" + QObject::tr( "Python support will be disabled." );
+  if ( !runString( "import qgis.user", error_msg ) )
+  {
+    // Should we really bail because of this?!
+    return false;
+  }
+  return true;
+}
+
+void QgsPythonUtilsImpl::doUserImports()
+{
+
+  QString startuppath = homePythonPath() + " + \"/startup.py\"";
+  runString( "if os.path.exists(" + startuppath + "): from startup import *\n" );
+}
+
+void QgsPythonUtilsImpl::initPython( QgisInterface* interface )
+{
+  init();
+  if ( !checkSystemImports() )
+  {
+    exitPython();
+    return;
+  }
+  // initialize 'iface' object
+  runString( "qgis.utils.initInterface(" + QString::number(( unsigned long ) interface ) + ")" );
+  if ( !checkQgisUser() )
+  {
+    exitPython();
+    return;
+  }
+  doUserImports();
+  finish();
+}
+
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 void QgsPythonUtilsImpl::initServerPython( QgsServerInterface* interface )
 {
-  // initialize python
-  Py_Initialize();
-
-  // initialize threading AND acquire GIL
-  PyEval_InitThreads();
-
-  mPythonEnabled = true;
-
-  mMainModule = PyImport_AddModule( "__main__" ); // borrowed reference
-  mMainDict = PyModule_GetDict( mMainModule ); // borrowed reference
-
-  runString( "import sys" ); // import sys module (for display / exception hooks)
-  runString( "import os" ); // import os module (for user paths)
-
-  // support for PYTHONSTARTUP-like environment variable: PYQGIS_STARTUP
-  // (unlike PYTHONHOME and PYTHONPATH, PYTHONSTARTUP is not supported for embedded interpreter by default)
-  // this is different than user's 'startup.py' (below), since it is loaded just after Py_Initialize
-  // it is very useful for cleaning sys.path, which may have undesireable paths, or for
-  // isolating/loading the initial environ without requiring a virt env, e.g. homebrew or MacPorts installs on Mac
-  runString( "pyqgstart = os.getenv('PYQGIS_STARTUP')\n" );
-  runString( "if pyqgstart is not None and os.path.exists(pyqgstart): execfile(pyqgstart)\n" );
-
-#ifdef Q_OS_WIN
-  runString( "oldhome=None" );
-  runString( "if os.environ.has_key('HOME'): oldhome=os.environ['HOME']\n" );
-  runString( "os.environ['HOME']=os.environ['USERPROFILE']\n" );
-#endif
-
-  // construct a list of plugin paths
-  // plugin dirs passed in QGIS_PLUGINPATH env. variable have highest priority (usually empty)
-  // locally installed plugins have priority over the system plugins
-  // use os.path.expanduser to support usernames with special characters (see #2512)
-  QStringList pluginpaths;
-  foreach ( QString p, extraPluginsPaths() )
-  {
-    if ( !QDir( p ).exists() )
-    {
-      QgsMessageOutput* msg = QgsMessageOutput::createMessageOutput();
-      msg->setTitle( QObject::tr( "Python error" ) );
-      msg->setMessage( QString( QObject::tr( "The extra plugin path '%1' does not exist !" ) ).arg( p ), QgsMessageOutput::MessageText );
-      msg->showMessage();
-    }
-#ifdef Q_OS_WIN
-    p = p.replace( '\\', "\\\\" );
-#endif
-    // we store here paths in unicode strings
-    // the str constant will contain utf8 code (through runString)
-    // so we call '...'.decode('utf-8') to make a unicode string
-    pluginpaths << '"' + p + "\".decode('utf-8')";
-  }
-  pluginpaths << homePluginsPath();
-  pluginpaths << '"' + pluginsPath() + '"';
-
-  // expect that bindings are installed locally, so add the path to modules
-  // also add path to plugins
-  QStringList newpaths;
-  newpaths << '"' + pythonPath() + '"';
-  newpaths << homePythonPath();
-  newpaths << pluginpaths;
-  runString( "sys.path = [" + newpaths.join( "," ) + "] + sys.path" );
-
-  // import SIP
-  if ( !runString( "import sip",
-                   QObject::tr( "Couldn't load SIP module." ) + "\n" + QObject::tr( "Python support will be disabled." ) ) )
-  {
-    exitPython();
-    return;
-  }
-
-  // set PyQt4 api versions
-  QStringList apiV2classes;
-  apiV2classes << "QDate" << "QDateTime" << "QString" << "QTextStream" << "QTime" << "QUrl" << "QVariant";
-  foreach ( const QString& clsName, apiV2classes )
-  {
-    if ( !runString( QString( "sip.setapi('%1', 2)" ).arg( clsName ),
-                     QObject::tr( "Couldn't set SIP API versions." ) + "\n" + QObject::tr( "Python support will be disabled." ) ) )
-    {
-      exitPython();
-      return;
-    }
-  }
-
-  // import Qt bindings
-  if ( !runString( "from PyQt4 import QtCore, QtGui",
-                   QObject::tr( "Couldn't load PyQt4." ) + "\n" + QObject::tr( "Python support will be disabled." ) ) )
-  {
-    exitPython();
-    return;
-  }
-
-  // import QGIS bindings
-  QString error_msg = QObject::tr( "Couldn't load PyQGIS." ) + "\n" + QObject::tr( "Python support will be disabled." );
-  if ( !runString( "from qgis.core import *", error_msg ) || !runString( "from qgis.gui import *", error_msg ) )
+  init();
+  if ( !checkSystemImports() )
   {
     exitPython();
     return;
@@ -291,43 +227,17 @@ void QgsPythonUtilsImpl::initServerPython( QgsServerInterface* interface )
 
   // This is the main difference with initInterface() for desktop plugins
   // import QGIS Server bindings
-  error_msg = QObject::tr( "Couldn't load PyQGIS Server." ) + "\n" + QObject::tr( "Python support will be disabled." );
+  QString error_msg = QObject::tr( "Couldn't load PyQGIS Server." ) + "\n" + QObject::tr( "Python support will be disabled." );
   if ( !runString( "from qgis.server import *", error_msg ) )
   {
-    exitPython();
     return;
   }
-
-
-  // import QGIS utils
-  error_msg = QObject::tr( "Couldn't load QGIS utils." ) + "\n" + QObject::tr( "Python support will be disabled." );
-  if ( !runString( "import qgis.utils", error_msg ) )
-  {
-    exitPython();
-    return;
-  }
-
-  // tell the utils script where to look for the plugins
-  runString( "qgis.utils.plugin_paths = [" + pluginpaths.join( "," ) + "]" );
-  runString( "qgis.utils.sys_plugin_path = \"" + pluginsPath() + "\"" );
-  runString( "qgis.utils.home_plugin_path = " + homePluginsPath() );
-
-#ifdef Q_OS_WIN
-  runString( "if oldhome: os.environ['HOME']=oldhome\n" );
-#endif
 
   // This is the other main difference with initInterface() for desktop plugins
   runString( "qgis.utils.initServerInterface(" + QString::number(( unsigned long ) interface ) + ")" );
 
-  QString startuppath = homePythonPath() + " + \"/startup.py\"";
-  runString( "if os.path.exists(" + startuppath + "): from startup import *\n" );
-
-  // release GIL!
-  // Later on, we acquire GIL just before doing some Python calls and
-  // release GIL again when the work with Python API is done.
-  // (i.e. there must be PyGILState_Ensure + PyGILState_Release pair
-  // around any calls to Python API, otherwise we may segfault!)
-  _mainState = PyEval_SaveThread();
+  doUserImports();
+  finish();
 }
 
 bool QgsPythonUtilsImpl::startServerPlugin( QString packageName )

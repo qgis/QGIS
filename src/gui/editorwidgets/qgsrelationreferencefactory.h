@@ -75,6 +75,8 @@ class GUI_EXPORT QgsRelationReferenceFactory : public QgsEditorWidgetFactory
      */
     virtual void writeConfig( const QgsEditorWidgetConfig& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx ) override;
 
+    virtual QMap<const char*, int> supportedWidgetTypes() override;
+
   private:
     QgsAttributeEditorContext mEditorContext;
     QgsMapCanvas* mCanvas;

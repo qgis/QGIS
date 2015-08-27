@@ -36,7 +36,6 @@ from processing.core.parameters import ParameterString
 from processing.core.outputs import OutputRaster
 from processing.algs.gdal.OgrAlgorithm import OgrAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
-from processing.tools.system import isWindows
 
 
 class rasterize(OgrAlgorithm):
@@ -64,93 +63,99 @@ class rasterize(OgrAlgorithm):
         return "gdalogr:rasterize"
 
     def defineCharacteristics(self):
-        self.name = 'Rasterize (vector to raster)'
-        self.group = '[GDAL] Conversion'
+        self.name, self.i18n_name = self.trAlgorithm('Rasterize (vector to raster)')
+        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Conversion')
         self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.FIELD,
-            self.tr('Attribute field'), self.INPUT))
+                                              self.tr('Attribute field'), self.INPUT))
         self.addParameter(ParameterSelection(self.DIMENSIONS,
-            self.tr('Set output raster size (ignored if above option is checked)'),
-            ['Output size in pixels', 'Output resolution in map units per pixel'], 1))
+                                             self.tr('Set output raster size (ignored if above option is checked)'),
+                                             ['Output size in pixels', 'Output resolution in map units per pixel'], 1))
         self.addParameter(ParameterNumber(self.WIDTH,
-            self.tr('Horizontal'), 0.0, 99999999.999999, 100.0))
+                                          self.tr('Horizontal'), 0.0, 99999999.999999, 100.0))
         self.addParameter(ParameterNumber(self.HEIGHT,
-            self.tr('Vertical'), 0.0, 99999999.999999, 100.0))
-        self.addParameter(ParameterSelection(self.RTYPE, self.tr('Raster type'),
-            self.TYPE, 1))
-        self.addParameter(ParameterString(self.NO_DATA,
-            self.tr("Nodata value"),
-            '-9999'))
-        self.addParameter(ParameterSelection(self.COMPRESS,
-            self.tr('GeoTIFF options. Compression type:'), self.COMPRESSTYPE, 4))
-        self.addParameter(ParameterNumber(self.JPEGCOMPRESSION,
-            self.tr('Set the JPEG compression level'),
-            1, 100, 75))
-        self.addParameter(ParameterNumber(self.ZLEVEL,
-            self.tr('Set the DEFLATE compression level'),
-            1, 9, 6))
-        self.addParameter(ParameterNumber(self.PREDICTOR,
-            self.tr('Set the predictor for LZW or DEFLATE compression'),
-            1, 3, 1))
-        self.addParameter(ParameterBoolean(self.TILED,
-            self.tr('Create tiled output (only used for the GTiff format)'), False))
-        self.addParameter(ParameterSelection(self.BIGTIFF,
-            self.tr('Control whether the created file is a BigTIFF or a classic TIFF'), self.BIGTIFFTYPE, 0))
+                                          self.tr('Vertical'), 0.0, 99999999.999999, 100.0))
+
+        params = []
+        params.append(ParameterSelection(self.RTYPE, self.tr('Raster type'),
+                                         self.TYPE, 5))
+        params.append(ParameterString(self.NO_DATA,
+                                      self.tr("Nodata value"),
+                                      '-9999'))
+        params.append(ParameterSelection(self.COMPRESS,
+                                         self.tr('GeoTIFF options. Compression type:'), self.COMPRESSTYPE, 4))
+        params.append(ParameterNumber(self.JPEGCOMPRESSION,
+                                      self.tr('Set the JPEG compression level'),
+                                      1, 100, 75))
+        params.append(ParameterNumber(self.ZLEVEL,
+                                      self.tr('Set the DEFLATE compression level'),
+                                      1, 9, 6))
+        params.append(ParameterNumber(self.PREDICTOR,
+                                      self.tr('Set the predictor for LZW or DEFLATE compression'),
+                                      1, 3, 1))
+        params.append(ParameterBoolean(self.TILED,
+                                       self.tr('Create tiled output (only used for the GTiff format)'), False))
+        params.append(ParameterSelection(self.BIGTIFF,
+                                         self.tr('Control whether the created file is a BigTIFF or a classic TIFF'), self.BIGTIFFTYPE, 0))
         self.addParameter(ParameterBoolean(self.TFW,
-            self.tr('Force the generation of an associated ESRI world file (.tfw)'), False))
+                                           self.tr('Force the generation of an associated ESRI world file (.tfw)'), False))
+
+        for param in params:
+            param.isAdvanced = True
+            self.addParameter(param)
+
         self.addOutput(OutputRaster(self.OUTPUT,
-            self.tr('Rasterized')))
+                                    self.tr('Rasterized')))
 
     def getConsoleCommands(self):
         inLayer = self.getParameterValue(self.INPUT)
         ogrLayer = self.ogrConnectionString(inLayer)[1:-1]
-        noData = str(self.getParameterValue(self.NO_DATA))
-        jpegcompression = str(self.getParameterValue(self.JPEGCOMPRESSION))
-        predictor = str(self.getParameterValue(self.PREDICTOR))
-        zlevel = str(self.getParameterValue(self.ZLEVEL))
-        tiled = str(self.getParameterValue(self.TILED))
+        noData = unicode(self.getParameterValue(self.NO_DATA))
+        jpegcompression = unicode(self.getParameterValue(self.JPEGCOMPRESSION))
+        predictor = unicode(self.getParameterValue(self.PREDICTOR))
+        zlevel = unicode(self.getParameterValue(self.ZLEVEL))
+        tiled = unicode(self.getParameterValue(self.TILED))
         compress = self.COMPRESSTYPE[self.getParameterValue(self.COMPRESS)]
         bigtiff = self.BIGTIFFTYPE[self.getParameterValue(self.BIGTIFF)]
-        tfw = str(self.getParameterValue(self.TFW))
+        tfw = unicode(self.getParameterValue(self.TFW))
         out = self.getOutputValue(self.OUTPUT)
 
         arguments = []
         arguments.append('-a')
-        arguments.append(str(self.getParameterValue(self.FIELD)))
-
+        arguments.append(unicode(self.getParameterValue(self.FIELD)))
 
         arguments.append('-ot')
         arguments.append(self.TYPE[self.getParameterValue(self.RTYPE)])
         dimType = self.getParameterValue(self.DIMENSIONS)
         if dimType == 0:
-           # size in pixels
-           arguments.append('-ts')
-           arguments.append(str(self.getParameterValue(self.WIDTH)))
-           arguments.append(str(self.getParameterValue(self.HEIGHT)))
+            # size in pixels
+            arguments.append('-ts')
+            arguments.append(unicode(self.getParameterValue(self.WIDTH)))
+            arguments.append(unicode(self.getParameterValue(self.HEIGHT)))
         else:
-           # resolution in map units per pixel
-           arguments.append('-tr')
-           arguments.append(str(self.getParameterValue(self.WIDTH)))
-           arguments.append(str(self.getParameterValue(self.HEIGHT)))
+            # resolution in map units per pixel
+            arguments.append('-tr')
+            arguments.append(unicode(self.getParameterValue(self.WIDTH)))
+            arguments.append(unicode(self.getParameterValue(self.HEIGHT)))
 
         if len(noData) > 0:
-           arguments.append('-a_nodata')
-           arguments.append(noData)
+            arguments.append('-a_nodata')
+            arguments.append(noData)
 
         if (GdalUtils.getFormatShortNameFromFilename(out) == "GTiff"):
-            arguments.append("-co COMPRESS="+compress)
+            arguments.append("-co COMPRESS=" + compress)
             if compress == 'JPEG':
-               arguments.append("-co JPEG_QUALITY="+jpegcompression)
+                arguments.append("-co JPEG_QUALITY=" + jpegcompression)
             elif (compress == 'LZW') or (compress == 'DEFLATE'):
-               arguments.append("-co PREDICTOR="+predictor)
+                arguments.append("-co PREDICTOR=" + predictor)
             if compress == 'DEFLATE':
-               arguments.append("-co ZLEVEL="+zlevel)
+                arguments.append("-co ZLEVEL=" + zlevel)
             if tiled == "True":
-               arguments.append("-co TILED=YES")
+                arguments.append("-co TILED=YES")
             if tfw == "True":
-               arguments.append("-co TFW=YES")
+                arguments.append("-co TFW=YES")
             if len(bigtiff) > 0:
-               arguments.append("-co BIGTIFF="+bigtiff)
+                arguments.append("-co BIGTIFF=" + bigtiff)
         arguments.append('-l')
         arguments.append(self.ogrLayerName(inLayer))
         arguments.append(ogrLayer)

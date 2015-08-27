@@ -1,5 +1,5 @@
 r.spreadpath
-r.spreadpath - Recursively traces the least cost path backwards to cells from which the cumulative cost was determined.
+Recursively traces the least cost path backwards to cells from which the cumulative cost was determined.
 Raster (r.*)
 ParameterRaster|x_input|x_input|False
 ParameterRaster|y_input|y_input|False

@@ -39,7 +39,7 @@ import os
 
 try:
     import processing
-except ImportError, e:
+except ImportError as e:
     raise Exception("Processing must be installed and available in PYTHONPATH")
 
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -47,12 +47,11 @@ from processing.core.ProcessingConfig import ProcessingConfig
 from OTBUtils import OTBUtils
 
 
-
 def adaptBinaryMorphologicalOperation(commands_list):
     val = commands_list[commands_list.index("-filter") + 1]
 
     def replace_dilate(param, value):
-        if ".dilate" in str(param):
+        if ".dilate" in unicode(param):
             return param.replace("dilate", value)
         else:
             return param
@@ -105,7 +104,7 @@ def adaptSplitImage(commands_list):
             item = item.replace(".file", ".tif")
         if item == "-out":
             index = commands_list.index(item)
-            if "." not in os.path.basename(commands_list[index + 1] ):
+            if "." not in os.path.basename(commands_list[index + 1]):
                 commands_list[index + 1] = commands_list[index + 1][:-1] + ".tif" + commands_list[index + 1][-1]
         commands_list2.append(item)
     return commands_list2
@@ -122,11 +121,12 @@ def adaptLSMSVectorization(commands_list):
             item = item.replace(".file", ".shp")
         if item == "-out":
             index = commands_list.index(item)
-            if "." not in os.path.basename(commands_list[index + 1] ):
+            if "." not in os.path.basename(commands_list[index + 1]):
                 commands_list[index + 1] = commands_list[index + 1][:-1] + ".shp" + commands_list[index + 1][-1]
         commands_list2.append(item)
 
     return commands_list2
+
 
 def adaptComputeImagesStatistics(commands_list):
     """
@@ -140,7 +140,7 @@ def adaptComputeImagesStatistics(commands_list):
         commands_list2.append(item)
         if item == "-out":
             index = commands_list.index(item)
-            if "." not in os.path.basename(commands_list[index + 1] ):
+            if "." not in os.path.basename(commands_list[index + 1]):
                 commands_list[index + 1] = commands_list[index + 1][:-1] + ".xml" + commands_list[index + 1][-1]
 
     return commands_list2
@@ -159,7 +159,7 @@ def adaptKmzExport(commands_list):
             item = item.replace(".file", ".kmz")
         if item == "-out":
             index = commands_list.index(item)
-            if "." not in os.path.basename(commands_list[index + 1] ):
+            if "." not in os.path.basename(commands_list[index + 1]):
                 commands_list[index + 1] = commands_list[index + 1][:-1] + ".kmz" + commands_list[index + 1][-1]
 
         commands_list2.append(item)
@@ -171,9 +171,8 @@ def adaptColorMapping(commands_list):
     The output of this algorithm must be in uint8.
     """
     indexInput = commands_list.index("-out")
-    commands_list[indexInput+1] = commands_list[indexInput+1] + " uint8"
+    commands_list[indexInput + 1] = commands_list[indexInput + 1] + " uint8"
     return commands_list
-
 
 
 def adaptStereoFramework(commands_list):
@@ -186,7 +185,7 @@ def adaptStereoFramework(commands_list):
     for item in commands_list:
         if "None" in item:
             index = commands_list2.index(item)
-            argumentToRemove = commands_list2[index-1]
+            argumentToRemove = commands_list2[index - 1]
             commands_list2.remove(item)
             commands_list2.remove(argumentToRemove)
         #commands_list2.append(item)
@@ -204,7 +203,7 @@ def adaptComputeConfusionMatrix(commands_list):
             item = item.replace(".file", ".csv")
         if item == "-out":
             index = commands_list.index(item)
-            if "." not in os.path.basename(commands_list[index + 1] ):
+            if "." not in os.path.basename(commands_list[index + 1]):
                 commands_list[index + 1] = commands_list[index + 1][:-1] + ".csv" + commands_list[index + 1][-1]
 
         commands_list2.append(item)
@@ -222,12 +221,12 @@ def adaptRadiometricIndices(commands_list):
            "ri" : "Soil:RI", "ci" : "Soil:CI", "bi" : "Soil:BI", "bi2" : "Soil:BI2"}
     """
 #                 "laindvilog" : , "lairefl" : , "laindviformo" : ,
-    indices = {"ndvi" : "Vegetation:NDVI", "tndvi" : "Vegetation:TNDVI",  "rvi" : "Vegetation:RVI",  "savi" : "Vegetation:SAVI",
-               "tsavi" : "Vegetation:TSAVI", "msavi" : "Vegetation:MSAVI",  "msavi2" : "Vegetation:MSAVI2",  "gemi" : "Vegetation:GEMI",
-               "ipvi" : "Vegetation:IPVI",
-               "ndwi" : "Water:NDWI", "ndwi2" : "Water:NDWI2", "mndwi" :"Water:MNDWI" , "ndpi" : "Water:NDPI",
-               "ndti" : "Water:NDTI",
-               "ri" : "Soil:RI", "ci" : "Soil:CI", "bi" : "Soil:BI", "bi2" : "Soil:BI2"}
+    indices = {"ndvi": "Vegetation:NDVI", "tndvi": "Vegetation:TNDVI", "rvi": "Vegetation:RVI", "savi": "Vegetation:SAVI",
+               "tsavi": "Vegetation:TSAVI", "msavi": "Vegetation:MSAVI", "msavi2": "Vegetation:MSAVI2", "gemi": "Vegetation:GEMI",
+               "ipvi": "Vegetation:IPVI",
+               "ndwi": "Water:NDWI", "ndwi2": "Water:NDWI2", "mndwi": "Water:MNDWI", "ndpi": "Water:NDPI",
+               "ndti": "Water:NDTI",
+               "ri": "Soil:RI", "ci": "Soil:CI", "bi": "Soil:BI", "bi2": "Soil:BI2"}
     for item in commands_list:
         if item in indices:
             commands_list[commands_list.index(item)] = indices[item]
@@ -251,7 +250,7 @@ def adaptConnectedComponentSegmentation(commands_list):
     for item in commands_list:
         if "None" in item:
             index = commands_list2.index(item)
-            argumentToRemove = commands_list2[index-1]
+            argumentToRemove = commands_list2[index - 1]
             commands_list2.remove(item)
             commands_list2.remove(argumentToRemove)
         #commands_list2.append(item)
@@ -289,37 +288,36 @@ def adaptTrainImagesClassifier(commands_list):
     adaptGeoidSrtm(commands_list)
     return commands_list
 
+
 def adaptGeoidSrtm(commands_list):
     """
     Check geoid file, srtm folder and given elevation and manage arguments.
     """
     srtm, geoid = ckeckGeoidSrtmSettings()
 
-
-    if srtm :
-        if commands_list[0].endswith("ExtractROI") :
+    if srtm:
+        if commands_list[0].endswith("ExtractROI"):
             commands_list.append("-mode.fit.elev.dem")
             commands_list.append(srtm)
-        else :
+        else:
             commands_list.append("-elev.dem")
             commands_list.append(srtm)
-    if geoid :
-        if commands_list[0].endswith("ExtractROI") :
+    if geoid:
+        if commands_list[0].endswith("ExtractROI"):
             commands_list.append("-mode.fit.elev.geoid")
             commands_list.append(geoid)
-        else :
+        else:
             commands_list.append("-elev.geoid")
             commands_list.append(geoid)
-
 
 
 def ckeckGeoidSrtmSettings():
     folder = ProcessingConfig.getSetting(OTBUtils.OTB_SRTM_FOLDER)
     if folder is None:
-        folder =""
+        folder = ""
 
     filepath = ProcessingConfig.getSetting(OTBUtils.OTB_GEOID_FILE)
     if filepath is None:
-        filepath =""
+        filepath = ""
 
     return folder, filepath

@@ -1,5 +1,5 @@
 r.terraflow
-r.terraflow - Flow computation for massive grids (float version).
+Flow computation for massive grids (float version).
 Raster (r.*)
 ParameterRaster|elevation|Name of elevation raster map|False
 ParameterBoolean|-s|SFD (D8) flow (default is MFD)|False

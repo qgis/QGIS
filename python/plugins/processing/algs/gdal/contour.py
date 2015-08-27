@@ -45,26 +45,26 @@ class contour(GdalAlgorithm):
     EXTRA = 'EXTRA'
 
     def defineCharacteristics(self):
-        self.name = 'Contour'
-        self.group = '[GDAL] Extraction'
+        self.name, self.i18n_name = self.trAlgorithm('Contour')
+        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Extraction')
         self.addParameter(ParameterRaster(self.INPUT_RASTER,
-            self.tr('Input layer'), False))
+                                          self.tr('Input layer'), False))
         self.addParameter(ParameterNumber(self.INTERVAL,
-            self.tr('Interval between contour lines'), 0.0,
-            99999999.999999, 10.0))
+                                          self.tr('Interval between contour lines'), 0.0,
+                                          99999999.999999, 10.0))
         self.addParameter(ParameterString(self.FIELD_NAME,
-            self.tr('Attribute name (if not set, no elevation attribute is attached)'),
-            'ELEV', optional=True))
+                                          self.tr('Attribute name (if not set, no elevation attribute is attached)'),
+                                          'ELEV', optional=True))
         self.addParameter(ParameterString(self.EXTRA,
-            self.tr('Additional creation parameters'), '', optional=True))
+                                          self.tr('Additional creation parameters'), '', optional=True))
 
         self.addOutput(OutputVector(self.OUTPUT_VECTOR,
-            self.tr('Contours')))
+                                    self.tr('Contours')))
 
     def getConsoleCommands(self):
-        interval = str(self.getParameterValue(self.INTERVAL))
-        fieldName = str(self.getParameterValue(self.FIELD_NAME))
-        extra = str(self.getParameterValue(self.EXTRA))
+        interval = unicode(self.getParameterValue(self.INTERVAL))
+        fieldName = unicode(self.getParameterValue(self.FIELD_NAME))
+        extra = unicode(self.getParameterValue(self.EXTRA))
 
         arguments = []
         if len(fieldName) > 0:

@@ -1368,6 +1368,32 @@ void QgsComposerMapGrid::drawAnnotation( QPainter* p, const QPointF& pos, int ro
 
 QString QgsComposerMapGrid::gridAnnotationString( double value, QgsComposerMapGrid::AnnotationCoordinate coord ) const
 {
+  //check if we are using degrees (ie, geographic crs)
+  bool geographic = false;
+  if ( mCRS.isValid() && mCRS.geographicFlag() )
+  {
+    geographic = true;
+  }
+  else if ( mComposerMap && mComposerMap->composition() )
+  {
+    geographic = mComposerMap->composition()->mapSettings().destinationCrs().geographicFlag();
+  }
+
+  if ( geographic && coord == QgsComposerMapGrid::Longitude &&
+       ( mGridAnnotationFormat == QgsComposerMapGrid::Decimal || mGridAnnotationFormat == QgsComposerMapGrid::DecimalWithSuffix ) )
+  {
+    // wrap around longitudes > 180 or < -180 degrees, so that eg "190E" -> "170W"
+    double wrappedX = fmod( value, 360.0 );
+    if ( wrappedX > 180.0 )
+    {
+      value = wrappedX - 360.0;
+    }
+    else if ( wrappedX < -180.0 )
+    {
+      value = wrappedX + 360.0;
+    }
+  }
+
   if ( mGridAnnotationFormat == QgsComposerMapGrid::Decimal )
   {
     return QString::number( value, 'f', mGridAnnotationPrecision );
@@ -1375,17 +1401,6 @@ QString QgsComposerMapGrid::gridAnnotationString( double value, QgsComposerMapGr
   else if ( mGridAnnotationFormat == QgsComposerMapGrid::DecimalWithSuffix )
   {
     QString hemisphere;
-
-    //check if we are using degrees (ie, geographic crs)
-    bool geographic = false;
-    if ( mCRS.isValid() && mCRS.geographicFlag() )
-    {
-      geographic = true;
-    }
-    else if ( mComposerMap && mComposerMap->composition() )
-    {
-      geographic = mComposerMap->composition()->mapSettings().destinationCrs().geographicFlag();
-    }
 
     double coordRounded = qRound( value * pow( 10.0, mGridAnnotationPrecision ) ) / pow( 10.0, mGridAnnotationPrecision );
     if ( coord == QgsComposerMapGrid::Longitude )
@@ -1651,6 +1666,9 @@ int QgsComposerMapGrid::xGridLinesCRSTransform( const QgsRectangle& bbox, const 
     step = ( maxX + 360.0 - minX ) / 20;
   }
 
+  if ( step == 0 )
+    return 1;
+
   int gridLineCount = 0;
   while ( currentLevel >= bbox.yMinimum() && gridLineCount < MAX_GRID_LINES )
   {
@@ -1713,6 +1731,9 @@ int QgsComposerMapGrid::yGridLinesCRSTransform( const QgsRectangle& bbox, const 
   double minY = bbox.yMinimum();
   double maxY = bbox.yMaximum();
   double step = ( maxY - minY ) / 20;
+
+  if ( step == 0 )
+    return 1;
 
   bool crosses180 = false;
   bool crossed180 = false;

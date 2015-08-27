@@ -184,9 +184,32 @@ QgsPostgresExpressionCompiler::Result QgsPostgresExpressionCompiler::compile( co
       return Complete;
     }
 
+    case QgsExpression::ntInOperator:
+    {
+      const QgsExpression::NodeInOperator* n = static_cast<const QgsExpression::NodeInOperator*>( node );
+      QStringList list;
+
+      Q_FOREACH ( const QgsExpression::Node* ln, n->list()->list() )
+      {
+        QString s;
+        Result r = compile( ln, s );
+        if ( r == Complete )
+          list << s;
+        else
+          return r;
+      }
+
+      QString nd;
+      Result rn = compile( n->node(), nd );
+      if ( rn != Complete )
+        return rn;
+
+      result = QString( "%1 %2IN(%3)" ).arg( nd ).arg( n->isNotIn() ? "NOT " : "" ).arg( list.join( "," ) );
+      return Complete;
+    }
+
     case QgsExpression::ntFunction:
     case QgsExpression::ntCondition:
-    case QgsExpression::ntInOperator:
       break;
   }
 

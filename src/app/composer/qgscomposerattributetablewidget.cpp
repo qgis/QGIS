@@ -47,6 +47,9 @@ QgsComposerAttributeTableWidget::QgsComposerAttributeTableWidget( QgsComposerAtt
   mEmptyModeComboBox->addItem( tr( "Hide entire table" ), QgsComposerTableV2::HideTable );
   mEmptyModeComboBox->addItem( tr( "Show set message" ), QgsComposerTableV2::ShowMessage );
 
+  mWrapBehaviourComboBox->addItem( tr( "Truncate text" ), QgsComposerTableV2::TruncateText );
+  mWrapBehaviourComboBox->addItem( tr( "Wrap text" ), QgsComposerTableV2::WrapText );
+
   bool atlasEnabled = atlasComposition() && atlasComposition()->enabled();
   mSourceComboBox->addItem( tr( "Layer features" ), QgsComposerAttributeTableV2::LayerAttributes );
   toggleAtlasSpecificControls( atlasEnabled );
@@ -518,6 +521,8 @@ void QgsComposerAttributeTableWidget::updateGuiElements()
   mEmptyMessageLineEdit->setEnabled( mComposerTable->emptyTableBehaviour() == QgsComposerTableV2::ShowMessage );
   mEmptyMessageLabel->setEnabled( mComposerTable->emptyTableBehaviour() == QgsComposerTableV2::ShowMessage );
   mDrawEmptyCheckBox->setChecked( mComposerTable->showEmptyRows() );
+  mWrapStringLineEdit->setText( mComposerTable->wrapString() );
+  mWrapBehaviourComboBox->setCurrentIndex( mWrapBehaviourComboBox->findData( mComposerTable->wrapBehaviour() ) );
 
   mResizeModeComboBox->setCurrentIndex( mResizeModeComboBox->findData( mComposerTable->resizeMode() ) );
   mAddFramePushButton->setEnabled( mComposerTable->resizeMode() == QgsComposerMultiFrame::UseExistingFrames );
@@ -634,6 +639,8 @@ void QgsComposerAttributeTableWidget::blockAllSignals( bool b )
   mEmptyFrameCheckBox->blockSignals( b );
   mHideEmptyBgCheckBox->blockSignals( b );
   mDrawEmptyCheckBox->blockSignals( b );
+  mWrapStringLineEdit->blockSignals( b );
+  mWrapBehaviourComboBox->blockSignals( b );
 }
 
 void QgsComposerAttributeTableWidget::setMaximumNumberOfFeatures( int n )
@@ -791,7 +798,8 @@ void QgsComposerAttributeTableWidget::on_mFeatureFilterButton_clicked()
     return;
   }
 
-  QgsExpressionBuilderDialog exprDlg( mComposerTable->sourceLayer(), mFeatureFilterEdit->text(), this );
+  QScopedPointer<QgsExpressionContext> context( mComposerTable->createExpressionContext() );
+  QgsExpressionBuilderDialog exprDlg( mComposerTable->sourceLayer(), mFeatureFilterEdit->text(), this, "generic", *context );
   exprDlg.setWindowTitle( tr( "Expression based filter" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
   {
@@ -846,6 +854,25 @@ void QgsComposerAttributeTableWidget::on_mHeaderModeComboBox_currentIndexChanged
     composition->beginMultiFrameCommand( mComposerTable, tr( "Table header mode changed" ) );
   }
   mComposerTable->setHeaderMode(( QgsComposerTableV2::HeaderMode )index );
+  if ( composition )
+  {
+    composition->endMultiFrameCommand();
+  }
+}
+
+void QgsComposerAttributeTableWidget::on_mWrapStringLineEdit_editingFinished()
+{
+  if ( !mComposerTable )
+  {
+    return;
+  }
+
+  QgsComposition* composition = mComposerTable->composition();
+  if ( composition )
+  {
+    composition->beginMultiFrameCommand( mComposerTable, tr( "Table wrap string changed" ) );
+  }
+  mComposerTable->setWrapString( mWrapStringLineEdit->text() );
   if ( composition )
   {
     composition->endMultiFrameCommand();
@@ -979,6 +1006,22 @@ void QgsComposerAttributeTableWidget::on_mEmptyModeComboBox_currentIndexChanged(
     composition->endMultiFrameCommand();
     mEmptyMessageLineEdit->setEnabled( mComposerTable->emptyTableBehaviour() == QgsComposerTableV2::ShowMessage );
     mEmptyMessageLabel->setEnabled( mComposerTable->emptyTableBehaviour() == QgsComposerTableV2::ShowMessage );
+  }
+}
+
+void QgsComposerAttributeTableWidget::on_mWrapBehaviourComboBox_currentIndexChanged( int index )
+{
+  if ( !mComposerTable )
+  {
+    return;
+  }
+
+  QgsComposition* composition = mComposerTable->composition();
+  if ( composition )
+  {
+    composition->beginMultiFrameCommand( mComposerTable, tr( "Change table wrap mode" ) );
+    mComposerTable->setWrapBehaviour(( QgsComposerTableV2::WrapBehaviour ) mWrapBehaviourComboBox->itemData( index ).toInt() );
+    composition->endMultiFrameCommand();
   }
 }
 

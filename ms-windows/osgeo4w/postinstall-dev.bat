@@ -1,4 +1,4 @@
-textreplace -std -t bin\designer-@package@.bat
+textreplace -std -t bin\@package@-designer.bat
 textreplace -std -t bin\python-@package@.bat
 
 for %%g in (@grassversions@) do (
@@ -13,8 +13,8 @@ for %%g in (@grassversions@) do (
 	if not %OSGEO4W_DESKTOP_LINKS%==0 nircmd shortcut "%OSGEO4W_ROOT%\bin\nircmd.exe" "~$folder.desktop$" "QGIS Browser @version@ with GRASS %%g (Nightly)" "exec hide """%OSGEO4W_ROOT%\bin\@package@-browser-g%%g.bat"" "%OSGEO4W_ROOT%\apps\@package@\icons\browser.ico"
 )
 
-if not %OSGEO4W_MENU_LINKS%==0 nircmd shortcut "%OSGEO4W_ROOT%\bin\nircmd.exe" "%OSGEO4W_STARTMENU%" "Qt Designer with QGIS @version@ custom widgets (Nightly)" "exec hide """%OSGEO4W_ROOT%\bin\designer-@package@.bat"" "%OSGEO4W_ROOT%\apps\@package@\icons\QGIS.ico"
-if not %OSGEO4W_DESKTOP_LINKS%==0 nircmd shortcut "%OSGEO4W_ROOT%\bin\nircmd.exe" "~$folder.desktop$" "Qt Designer with QGIS @version@ custom widgets (Nightly)" "exec hide """%OSGEO4W_ROOT%\bin\designer-@package@.bat"" "%OSGEO4W_ROOT%\apps\@package@\icons\QGIS.ico"
+if not %OSGEO4W_MENU_LINKS%==0 nircmd shortcut "%OSGEO4W_ROOT%\bin\nircmd.exe" "%OSGEO4W_STARTMENU%" "Qt Designer with QGIS @version@ custom widgets (Nightly)" "exec hide """%OSGEO4W_ROOT%\bin\@package@-designer.bat"" "%OSGEO4W_ROOT%\apps\@package@\icons\QGIS.ico"
+if not %OSGEO4W_DESKTOP_LINKS%==0 nircmd shortcut "%OSGEO4W_ROOT%\bin\nircmd.exe" "~$folder.desktop$" "Qt Designer with QGIS @version@ custom widgets (Nightly)" "exec hide """%OSGEO4W_ROOT%\bin\@package@-designer.bat"" "%OSGEO4W_ROOT%\apps\@package@\icons\QGIS.ico"
 
 set O4W_ROOT=%OSGEO4W_ROOT%
 set OSGEO4W_ROOT=%OSGEO4W_ROOT:\=\\%

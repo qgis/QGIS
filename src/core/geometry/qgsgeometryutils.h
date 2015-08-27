@@ -19,10 +19,11 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgspointv2.h"
 #include <limits>
 
-/**\ingroup core
+/** \ingroup core
  * \class QgsGeometryUtils
  * \brief Contains various geometry utility functions.
  * \note added in QGIS 2.10
+ * \note this API is not considered stable and may change for 2.12
  */
 class CORE_EXPORT QgsGeometryUtils
 {

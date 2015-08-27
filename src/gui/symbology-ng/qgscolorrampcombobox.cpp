@@ -19,6 +19,11 @@
 #include "qgsstylev2.h"
 #include "qgsstylev2managerdialog.h"
 
+#include "qgsvectorgradientcolorrampv2dialog.h"
+#include "qgsvectorrandomcolorrampv2dialog.h"
+#include "qgsvectorcolorbrewercolorrampv2dialog.h"
+#include "qgscptcitycolorrampv2dialog.h"
+
 QSize QgsColorRampComboBox::rampIconSize( 50, 16 );
 
 QgsColorRampComboBox::QgsColorRampComboBox( QWidget *parent ) :
@@ -125,4 +130,54 @@ void QgsColorRampComboBox::colorRampChanged( int index )
 
   // make sure the color ramp is stored
   mStyle->save();
+}
+
+void QgsColorRampComboBox::editSourceRamp()
+{
+  QgsVectorColorRampV2* currentRamp = currentColorRamp();
+  if ( !currentRamp )
+    return;
+
+  QScopedPointer<QgsVectorColorRampV2> newRamp( currentRamp->clone() );
+
+  if ( newRamp->type() == "gradient" )
+  {
+    QgsVectorGradientColorRampV2* gradRamp = static_cast<QgsVectorGradientColorRampV2*>( newRamp.data() );
+    QgsVectorGradientColorRampV2Dialog dlg( gradRamp, this );
+    if ( dlg.exec() && gradRamp )
+    {
+      setSourceColorRamp( gradRamp );
+      emit sourceRampEdited();
+    }
+  }
+  else if ( newRamp->type() == "random" )
+  {
+    QgsVectorRandomColorRampV2* randRamp = static_cast<QgsVectorRandomColorRampV2*>( newRamp.data() );
+    QgsVectorRandomColorRampV2Dialog dlg( randRamp, this );
+    if ( dlg.exec() )
+    {
+      setSourceColorRamp( randRamp );
+      emit sourceRampEdited();
+    }
+  }
+  else if ( newRamp->type() == "colorbrewer" )
+  {
+    QgsVectorColorBrewerColorRampV2* brewerRamp = static_cast<QgsVectorColorBrewerColorRampV2*>( newRamp.data() );
+    QgsVectorColorBrewerColorRampV2Dialog dlg( brewerRamp, this );
+    if ( dlg.exec() )
+    {
+      setSourceColorRamp( brewerRamp );
+      emit sourceRampEdited();
+    }
+  }
+  else if ( newRamp->type() == "cpt-city" )
+  {
+    QgsCptCityColorRampV2* cptCityRamp = static_cast<QgsCptCityColorRampV2*>( newRamp.data() );
+    QgsCptCityColorRampV2Dialog dlg( cptCityRamp, this );
+    if ( dlg.exec() && cptCityRamp )
+    {
+      setSourceColorRamp( cptCityRamp );
+      emit sourceRampEdited();
+    }
+  }
 }

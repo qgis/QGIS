@@ -30,6 +30,7 @@ from LAStoolsAlgorithm import LAStoolsAlgorithm
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterBoolean
 
+
 class blast2dem(LAStoolsAlgorithm):
 
     ATTRIBUTE = "ATTRIBUTE"
@@ -39,18 +40,18 @@ class blast2dem(LAStoolsAlgorithm):
     USE_TILE_BB = "USE_TILE_BB"
 
     def defineCharacteristics(self):
-        self.name = "blast2dem"
-        self.group = "LAStools"
+        self.name, self.i18n_name = self.trAlgorithm('blast2dem')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParametersFilter1ReturnClassFlagsGUI()
         self.addParametersStepGUI()
         self.addParameter(ParameterSelection(blast2dem.ATTRIBUTE,
-            self.tr("Attribute"), blast2dem.ATTRIBUTES, 0))
+                                             self.tr("Attribute"), blast2dem.ATTRIBUTES, 0))
         self.addParameter(ParameterSelection(blast2dem.PRODUCT,
-            self.tr("Product"), blast2dem.PRODUCTS, 0))
+                                             self.tr("Product"), blast2dem.PRODUCTS, 0))
         self.addParameter(ParameterBoolean(blast2dem.USE_TILE_BB,
-            self.tr("Use tile bounding box (after tiling with buffer)"), False))
+                                           self.tr("Use tile bounding box (after tiling with buffer)"), False))
         self.addParametersRasterOutputGUI()
         self.addParametersAdditionalGUI()
 

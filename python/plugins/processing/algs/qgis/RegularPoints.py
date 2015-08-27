@@ -49,23 +49,23 @@ class RegularPoints(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def defineCharacteristics(self):
-        self.name = 'Regular points'
-        self.group = 'Vector creation tools'
+        self.name, self.i18n_name = self.trAlgorithm('Regular points')
+        self.group, self.i18n_group = self.trAlgorithm('Vector creation tools')
 
         self.addParameter(ParameterExtent(self.EXTENT,
-            self.tr('Input extent')))
+                                          self.tr('Input extent')))
         self.addParameter(ParameterNumber(self.SPACING,
-            self.tr('Point spacing/count'), 0.0001, 999999999.999999999, 0.0001))
+                                          self.tr('Point spacing/count'), 0.0001, 999999999.999999999, 0.0001))
         self.addParameter(ParameterNumber(self.INSET,
-            self.tr('Initial inset from corner (LH side)'), 0.0, 9999.9999, 0.0))
+                                          self.tr('Initial inset from corner (LH side)'), 0.0, 9999.9999, 0.0))
         self.addParameter(ParameterBoolean(self.RANDOMIZE,
-            self.tr('Apply random offset to point spacing'), False))
+                                           self.tr('Apply random offset to point spacing'), False))
         self.addParameter(ParameterBoolean(self.IS_SPACING,
-            self.tr('Use point spacing'), True))
+                                           self.tr('Use point spacing'), True))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Regular points')))
 
     def processAlgorithm(self, progress):
-        extent = str(self.getParameterValue(self.EXTENT)).split(',')
+        extent = unicode(self.getParameterValue(self.EXTENT)).split(',')
 
         spacing = float(self.getParameterValue(self.SPACING))
         inset = float(self.getParameterValue(self.INSET))
@@ -114,6 +114,6 @@ class RegularPoints(GeoAlgorithm):
                     writer.addFeature(f)
                     x += pSpacing
                     count += 1
-                    progress.setPercentage(int(count* total))
+                    progress.setPercentage(int(count * total))
             y = y - pSpacing
         del writer

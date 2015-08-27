@@ -218,7 +218,12 @@ void QgsHtmlAnnotationItem::setFeatureForMapPosition()
   mFeatureId = currentFeatureId;
   mFeature = currentFeature;
 
-  QString newtext = QgsExpression::replaceExpressionText( mHtmlSource, &mFeature, vectorLayer() );
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::layerScope( mVectorLayer );
+  context.setFeature( mFeature );
+  QString newtext = QgsExpression::replaceExpressionText( mHtmlSource, &context );
   mWebView->setHtml( newtext );
 }
 

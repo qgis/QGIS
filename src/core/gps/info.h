@@ -24,7 +24,7 @@
  *
  */
 
-/*! \file */
+/** \file */
 
 #ifndef __NMEA_INFO_H__
 #define __NMEA_INFO_H__

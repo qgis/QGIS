@@ -158,7 +158,7 @@ void QgsOracleNewConnection::on_btnConnect_clicked()
   }
 }
 
-/** end  Autoconnected SLOTS **/
+/** End  Autoconnected SLOTS **/
 
 QgsOracleNewConnection::~QgsOracleNewConnection()
 {

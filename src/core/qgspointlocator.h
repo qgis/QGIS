@@ -164,7 +164,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
     void onGeometryChanged( QgsFeatureId fid, QgsGeometry& geom );
 
   private:
-    /** storage manager */
+    /** Storage manager */
     SpatialIndex::IStorageManager* mStorage;
 
     QHash<QgsFeatureId, QgsGeometry*> mGeoms;

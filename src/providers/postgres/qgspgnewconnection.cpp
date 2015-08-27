@@ -158,7 +158,7 @@ void QgsPgNewConnection::on_cb_geometryColumnsOnly_clicked()
     cb_publicSchemaOnly->setEnabled( true );
 }
 
-/** end  Autoconnected SLOTS **/
+/** End  Autoconnected SLOTS **/
 
 QgsPgNewConnection::~QgsPgNewConnection()
 {

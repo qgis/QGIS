@@ -87,9 +87,9 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
 
     virtual ~QgsGraduatedSymbolRendererV2();
 
-    virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature );
+    virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature, QgsRenderContext& context );
 
-    virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feature );
+    virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feature, QgsRenderContext& context );
 
     virtual void startRender( QgsRenderContext& context, const QgsFields& fields );
 
@@ -106,7 +106,7 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
     //! returns bitwise OR-ed capabilities of the renderer
     virtual int capabilities();
 
-    virtual QgsSymbolV2List symbols();
+    virtual QgsSymbolV2List symbols( QgsRenderContext& context );
 
     QString classAttribute() const;
     void setClassAttribute( QString attr );
@@ -249,8 +249,8 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
     //! @note added in 2.10
     void setGraduatedMethod( GraduatedMethod method );
 
-    void setRotationField( QString fieldOrExpression );
-    QString rotationField() const;
+    void setRotationField( QString fieldOrExpression ) /Deprecated/;
+    QString rotationField() const /Deprecated/;
 
     void setSizeScaleField( QString fieldOrExpression );
     QString sizeScaleField() const;

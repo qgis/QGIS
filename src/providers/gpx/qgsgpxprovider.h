@@ -109,14 +109,14 @@ class QgsGPXProvider : public QgsVectorDataProvider
      */
     virtual QgsRectangle extent() override;
 
-    /**Returns true if this is a valid delimited file
+    /** Returns true if this is a valid delimited file
      */
     virtual bool isValid() override;
 
-    /** return a provider name */
+    /** Return a provider name */
     virtual QString name() const override;
 
-    /** return description */
+    /** Return description */
     virtual QString description() const override;
 
     virtual QgsCoordinateReferenceSystem crs() override;

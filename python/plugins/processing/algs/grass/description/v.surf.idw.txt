@@ -1,5 +1,5 @@
 v.surf.idw
-v.surf.idw - Surface interpolation from vector point data by Inverse Distance Squared Weighting.
+Surface interpolation from vector point data by Inverse Distance Squared Weighting.
 Vector (v.*)
 ParameterVector|input|Input vector layer|0|False
 ParameterNumber|npoints|Number of interpolation points|None|None|12

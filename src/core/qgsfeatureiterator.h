@@ -105,7 +105,7 @@ class CORE_EXPORT QgsAbstractFeatureIterator
 
 
 
-/** helper template that cares of two things: 1. automatic deletion of source if owned by iterator, 2. notification of open/closed iterator */
+/** Helper template that cares of two things: 1. automatic deletion of source if owned by iterator, 2. notification of open/closed iterator */
 template<typename T>
 class QgsAbstractFeatureIteratorFromSource : public QgsAbstractFeatureIterator
 {

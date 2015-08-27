@@ -119,6 +119,19 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
      */
     static QgsWidgetWrapper* fromWidget( QWidget* widget );
 
+    /**
+     * Return true if the widget has been properly initialized.
+     * This acts as hint for the calling party if this wrapper can be used
+     * after initializing it.
+     * If it cannot be used this is a hint tothe caller that he may try to find
+     * another suitable widget type instead.
+     *
+     * @return Validity status of this widget.
+     *
+     * @note Added in 2.12
+     */
+    virtual bool valid() = 0;
+
   protected:
     /**
      * This method should create a new widget with the provided parent. This will only be called

@@ -1,0 +1,15 @@
+<h3>if function</h3>
+Tests a condition and returns a different result depending on the conditional
+check.
+
+<h4>Syntax</h4>
+<pre>IF (condition, result_when_true, result_when_false)</pre>
+
+<h4>Arguments</h4>
+condition &rarr; The condition which should be checked.
+result_when_true &rarr; The result which will be returned when the condition is True.
+result_when_false  &rarr; The result which will be returned when the condition is False.
+
+<h4>Example</h4>
+<pre> IF( 1, 'One', 'Not One' ) &rarr; returns 'One' </pre>
+<pre> IF( 8, 'One', 'Not One' ) &rarr; returns 'Not One' </pre>

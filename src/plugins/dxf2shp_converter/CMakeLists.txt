@@ -33,6 +33,7 @@ ADD_LIBRARY (dxf2shpconverterplugin MODULE ${dxf2shpconverter_SRCS} ${dxf2shpcon
 INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_BINARY_DIR}
      ../../core
+     ../../core/geometry
      ../../core/raster
      ../../gui
      ..

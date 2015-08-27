@@ -108,7 +108,7 @@ void TestQgsDistanceArea::test_distances()
   myDa.setEllipsoidalMode( true );
   myDa.setEllipsoid( "WGS84" );
 
-  QString myFileName = QString( TEST_DATA_DIR ) + QDir::separator() + "GeodTest-nano.dat";
+  QString myFileName = QString( TEST_DATA_DIR ) + "/GeodTest-nano.dat";
 
   QFile myFile( myFileName );
   if ( ! myFile.open( QIODevice::ReadOnly | QIODevice::Text ) )

@@ -66,20 +66,20 @@ void  TestQgsVectorAnalyzer::initTestCase()
   //create a map layer that will be used in all tests...
   QString myBaseFileName( TEST_DATA_DIR ); //defined in CmakeLists.txt
   QString myEndName = "lines.shp";
-  QString myFileName = myBaseFileName + QDir::separator() + myEndName;
+  QString myFileName = myBaseFileName + "/" + myEndName;
   qDebug() << myFileName;
   QFileInfo myLineInfo( myFileName );
   mpLineLayer = new QgsVectorLayer( myLineInfo.filePath(),
                                     myLineInfo.completeBaseName(), "ogr" );
 
   myEndName = "polys.shp";
-  myFileName = myBaseFileName + QDir::separator() + myEndName;
+  myFileName = myBaseFileName + "/" + myEndName;
   QFileInfo myPolyInfo( myFileName );
   mpPolyLayer = new QgsVectorLayer( myPolyInfo.filePath(),
                                     myPolyInfo.completeBaseName(), "ogr" );
 
   myEndName = "points.shp";
-  myFileName = myBaseFileName + QDir::separator() + myEndName;
+  myFileName = myBaseFileName + "/" + myEndName;
   QFileInfo myPointInfo( myFileName );
   mpPointLayer = new QgsVectorLayer( myPointInfo.filePath(),
                                      myPointInfo.completeBaseName(), "ogr" );
@@ -118,21 +118,21 @@ void TestQgsVectorAnalyzer::exportGeometryInfo()
 
 void TestQgsVectorAnalyzer::simplifyGeometry()
 {
-  QString myTmpDir = QDir::tempPath() + QDir::separator();
+  QString myTmpDir = QDir::tempPath() + "/";
   QString myFileName = myTmpDir +  "simplify_layer.shp";
   QVERIFY( mAnalyzer.simplify( mpLineLayer, myFileName, 1.0 ) );
 }
 
 void TestQgsVectorAnalyzer::polygonCentroids()
 {
-  QString myTmpDir = QDir::tempPath() + QDir::separator();
+  QString myTmpDir = QDir::tempPath() + "/";
   QString myFileName = myTmpDir +  "centroid_layer.shp";
   QVERIFY( mAnalyzer.centroids( mpPolyLayer, myFileName ) );
 }
 
 void TestQgsVectorAnalyzer::layerExtent()
 {
-  QString myTmpDir = QDir::tempPath() + QDir::separator();
+  QString myTmpDir = QDir::tempPath() + "/";
   QString myFileName = myTmpDir +  "extent_layer.shp";
   QVERIFY( mAnalyzer.extent( mpPointLayer, myFileName ) );
 }

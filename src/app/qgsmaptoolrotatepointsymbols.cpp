@@ -21,6 +21,7 @@
 #include "qgssnappingutils.h"
 #include "qgssymbolv2.h"
 #include "qgsvectorlayer.h"
+#include "qgsdatadefined.h"
 #include <QGraphicsPixmapItem>
 #include <QMouseEvent>
 
@@ -56,13 +57,8 @@ bool QgsMapToolRotatePointSymbols::layerIsRotatable( QgsMapLayer* ml )
     return false;
   }
 
-  //does it have a least one rotation attribute?
-  QList<int> rotationAttributes;
-  layerRotationAttributes( vLayer, rotationAttributes );
-  if ( rotationAttributes.size() < 1 )
-  {
-    return false;
-  }
+  //we consider all point layers as rotatable, as data defined rotation can be set on a per
+  //symbol/feature basis
   return true;
 }
 
@@ -100,27 +96,65 @@ void QgsMapToolRotatePointSymbols::canvasPressEvent( QMouseEvent *e )
   }
 
   mFeatureNumber = m.featureId();
-
-  //get list with renderer rotation attributes
-  if ( layerRotationAttributes( mActiveLayer, mCurrentRotationAttributes ) != 0 )
-  {
-    return;
-  }
-
-  if ( mCurrentRotationAttributes.size() < 1 )
-  {
-    emit messageEmitted( tr( "The active point layer does not have a rotation attribute." ), QgsMessageBar::CRITICAL );
-    return;
-  }
-
+  mCurrentRotationAttributes.clear();
   mSnappedPoint = toCanvasCoordinates( m.point() );
 
-  //find out initial arrow direction
   QgsFeature pointFeature;
   if ( !mActiveLayer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setFilterFid( mFeatureNumber ) ).nextFeature( pointFeature ) )
   {
     return;
   }
+
+  //check whether selected feature has a rotatable symbol
+  QgsFeatureRendererV2* renderer = mActiveLayer->rendererV2();
+  if ( !renderer )
+    return;
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( mCanvas->mapSettings() );
+  context.expressionContext() << QgsExpressionContextUtils::layerScope( mActiveLayer );
+  context.expressionContext().setFeature( pointFeature );
+  renderer->startRender( context, mActiveLayer->fields() );
+
+  //find all rotation fields used by renderer for feature
+  QgsMarkerSymbolV2* markerSymbol = 0;
+  if ( renderer->capabilities() & QgsFeatureRendererV2::MoreSymbolsPerFeature )
+  {
+    //could be multiple symbols for this feature, so check them all
+    foreach ( QgsSymbolV2* s, renderer->originalSymbolsForFeature( pointFeature, context ) )
+    {
+      if ( s && s->type() == QgsSymbolV2::Marker )
+      {
+        markerSymbol = static_cast< QgsMarkerSymbolV2* >( s );
+        QString rotationField = ( markerSymbol->dataDefinedAngle().isActive() && !markerSymbol->dataDefinedAngle().useExpression() ) ?
+                                markerSymbol->dataDefinedAngle().field() : QString();
+        if ( !rotationField.isEmpty() )
+        {
+          int fieldIndex = mActiveLayer->fields().indexFromName( rotationField );
+          if ( !mCurrentRotationAttributes.contains( fieldIndex ) )
+            mCurrentRotationAttributes << fieldIndex;
+        }
+      }
+    }
+  }
+  else
+  {
+    QgsSymbolV2* s = renderer->originalSymbolForFeature( pointFeature, context );
+    if ( s && s->type() == QgsSymbolV2::Marker )
+    {
+      markerSymbol = static_cast< QgsMarkerSymbolV2* >( s );
+      QString rotationField = ( markerSymbol->dataDefinedAngle().isActive() && !markerSymbol->dataDefinedAngle().useExpression() ) ?
+                              markerSymbol->dataDefinedAngle().field() : QString();
+      if ( !rotationField.isEmpty() )
+        mCurrentRotationAttributes << mActiveLayer->fields().indexFromName( rotationField );
+    }
+  }
+
+  if ( mCurrentRotationAttributes.isEmpty() )
+  {
+    emit messageEmitted( tr( "The selected point does not have a rotation attribute." ), QgsMessageBar::CRITICAL );
+    return;
+  }
+
+  //find out initial arrow direction
   QVariant attrVal = pointFeature.attribute( mCurrentRotationAttributes.at( 0 ) );
   if ( !attrVal.isValid() )
   {
@@ -128,7 +162,7 @@ void QgsMapToolRotatePointSymbols::canvasPressEvent( QMouseEvent *e )
   }
 
   mCurrentRotationFeature = attrVal.toDouble();
-  createPixmapItem( pointFeature );
+  createPixmapItem( markerSymbol );
   if ( mRotationItem )
   {
     mRotationItem->setPointLocation( m.point() );
@@ -227,34 +261,6 @@ void QgsMapToolRotatePointSymbols::canvasReleaseEvent( QMouseEvent *e )
   mCanvas->refresh();
 }
 
-int QgsMapToolRotatePointSymbols::layerRotationAttributes( QgsVectorLayer* vl, QList<int>& attList )
-{
-  attList.clear();
-  if ( !vl )
-  {
-    return 1;
-  }
-
-  //new symbology
-  const QgsFeatureRendererV2* symbologyNgRenderer = vl->rendererV2();
-  if ( symbologyNgRenderer )
-  {
-    //rotation field is supported for QgsSingleSymbolRendererV2, QgsCategorizedRendererV2, QgsUniqueCategorizedRendererV2
-    QString rotationFieldName = symbologyNgRenderer->rotationField();
-
-    if ( !rotationFieldName.isEmpty() )
-    {
-      attList.push_back( vl->fieldNameIndex( rotationFieldName ) );
-    }
-    return 0;
-  }
-
-  //no renderer
-  return 2;
-}
-
-
-
 double QgsMapToolRotatePointSymbols::calculateAzimut( const QPoint& mousePos )
 {
   int dx = mousePos.x() - mSnappedPoint.x();
@@ -262,31 +268,23 @@ double QgsMapToolRotatePointSymbols::calculateAzimut( const QPoint& mousePos )
   return 180 - atan2(( double ) dx, ( double ) dy ) * 180.0 / M_PI;
 }
 
-void QgsMapToolRotatePointSymbols::createPixmapItem( QgsFeature& f )
+void QgsMapToolRotatePointSymbols::createPixmapItem( QgsMarkerSymbolV2* markerSymbol )
 {
   if ( !mCanvas )
   {
     return;
   }
 
-  QgsRenderContext renderContext( QgsRenderContext::fromMapSettings( mCanvas->mapSettings() ) );
-
   //get the image that is used for that symbol, but without point rotation
   QImage pointImage;
 
-  if ( mActiveLayer && mActiveLayer->rendererV2() ) //symbology-ng
+  if ( markerSymbol )
   {
-    QgsFeatureRendererV2* rv2 = mActiveLayer->rendererV2()->clone();
-    rv2->setRotationField( "" );
-    rv2->startRender( renderContext, mActiveLayer->pendingFields() );
-
-    QgsSymbolV2* symbolV2 = rv2->symbolForFeature( f );
-    if ( symbolV2 )
-    {
-      pointImage = symbolV2->bigSymbolPreviewImage();
-    }
-    rv2->stopRender( renderContext );
-    delete rv2;
+    QgsSymbolV2* clone = markerSymbol->clone();
+    QgsMarkerSymbolV2* markerClone = static_cast<QgsMarkerSymbolV2*>( clone );
+    markerClone->setDataDefinedAngle( QgsDataDefined() );
+    pointImage = markerClone->bigSymbolPreviewImage();
+    delete clone;
   }
 
   mRotationItem = new QgsPointRotationItem( mCanvas );

@@ -83,16 +83,16 @@ class QgsSymbolLayerV2Utils
     static QPixmap symbolPreviewPixmap( QgsSymbolV2* symbol, QSize size, QgsRenderContext* customContext = 0 );
     static QPixmap colorRampPreviewPixmap( QgsVectorColorRampV2* ramp, QSize size );
 
-    /**Returns the maximum estimated bleed for the symbol */
+    /** Returns the maximum estimated bleed for the symbol */
     static double estimateMaxSymbolBleed( QgsSymbolV2* symbol );
 
-    /**Attempts to load a symbol from a DOM element
+    /** Attempts to load a symbol from a DOM element
      * @param element DOM element representing symbol
      * @returns decoded symbol, if possible
      */
     static QgsSymbolV2* loadSymbol( const QDomElement& element ) /Factory/;
 
-    /**Attempts to load a symbol from a DOM element and cast it to a particular symbol
+    /** Attempts to load a symbol from a DOM element and cast it to a particular symbol
      * type.
      * @param element DOM element representing symbol
      * @returns decoded symbol cast to specified type, if possible
@@ -171,13 +171,13 @@ class QgsSymbolLayerV2Utils
     static void labelTextToSld( QDomDocument &doc, QDomElement &element, QString label,
                                 QFont font, QColor color = QColor(), double size = -1 );
 
-    /**Create ogr feature style string for pen */
+    /** Create ogr feature style string for pen */
     static QString ogrFeatureStylePen( double width, double mmScaleFactor, double mapUnitsScaleFactor, const QColor& c,
                                        Qt::PenJoinStyle joinStyle = Qt::MiterJoin,
                                        Qt::PenCapStyle capStyle = Qt::FlatCap,
                                        double offset = 0.0,
                                        const QVector<qreal>* dashPattern = 0 );
-    /**Create ogr feature style string for brush
+    /** Create ogr feature style string for brush
      @param fillColr fill color*/
     static QString ogrFeatureStyleBrush( const QColor& fillColr );
 
@@ -311,14 +311,14 @@ class QgsSymbolLayerV2Utils
      */
     static QColor parseColorWithAlpha( const QString colorStr, bool &containsAlpha, bool strictEval = false );
 
-    /**Returns the line width scale factor depending on the unit and the paint device*/
+    /** Returns the line width scale factor depending on the unit and the paint device*/
     static double lineWidthScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u, const QgsMapUnitScale& scale = QgsMapUnitScale() );
-    /**Returns scale factor painter units -> pixel dimensions*/
+    /** Returns scale factor painter units -> pixel dimensions*/
     static double pixelSizeScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u, const QgsMapUnitScale& scale = QgsMapUnitScale() );
-    /**Creates a render context for a pixel based device*/
+    /** Creates a render context for a pixel based device*/
     static QgsRenderContext createRenderContext( QPainter* p );
 
-    /**Multiplies opacity of image pixel values with a (global) transparency value*/
+    /** Multiplies opacity of image pixel values with a (global) transparency value*/
     static void multiplyImageOpacity( QImage* image, qreal alpha );
 
     /** Blurs an image in place, e.g. creating Qt-independent drop shadows */
@@ -329,9 +329,9 @@ class QgsSymbolLayerV2Utils
      */
     static void premultiplyColor( QColor& rgb, int alpha );
 
-    /**Sorts the passed list in requested order*/
+    /** Sorts the passed list in requested order*/
     static void sortVariantList( QList<QVariant>& list, Qt::SortOrder order );
-    /**Returns a point on the line from startPoint to directionPoint that is a certain distance away from the starting point*/
+    /** Returns a point on the line from startPoint to directionPoint that is a certain distance away from the starting point*/
     static QPointF pointOnLineWithDistance( const QPointF& startPoint, const QPointF& directionPoint, double distance );
 
     //! Return a list of all available svg files

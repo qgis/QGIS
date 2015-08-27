@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsvisibilitypresets.h"
+#include "qgsvisibilitypresetcollection.h"
 
 #include "qgslayertree.h"
 #include "qgslayertreemapcanvasbridge.h"
@@ -26,6 +27,7 @@
 #include "qgsrendererv2.h"
 #include "qgsvectorlayer.h"
 #include "qgisapp.h"
+#include "qgsnewnamedialog.h"
 
 #include <QInputDialog>
 
@@ -43,38 +45,17 @@ QgsVisibilityPresets::QgsVisibilityPresets()
   mMenu->addAction( QgisApp::instance()->actionHideSelectedLayers() );
   mMenu->addSeparator();
 
-  mMenu->addAction( tr( "Add Preset..." ), this, SLOT( addPreset() ) );
+  mReplaceMenu = new QMenu( tr( "Replace Preset" ) );
+  mMenu->addMenu( mReplaceMenu );
+  mActionAddPreset = mMenu->addAction( tr( "Add Preset..." ), this, SLOT( addPreset() ) );
   mMenuSeparator = mMenu->addSeparator();
 
   mActionRemoveCurrentPreset = mMenu->addAction( tr( "Remove Current Preset" ), this, SLOT( removeCurrentPreset() ) );
 
   connect( mMenu, SIGNAL( aboutToShow() ), this, SLOT( menuAboutToShow() ) );
-
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersRemoved( QStringList ) ),
-           this, SLOT( registryLayersRemoved( QStringList ) ) );
-
-  connect( QgsProject::instance(), SIGNAL( readProject( const QDomDocument & ) ),
-           this, SLOT( readProject( const QDomDocument & ) ) );
-  connect( QgsProject::instance(), SIGNAL( writeProject( QDomDocument & ) ),
-           this, SLOT( writeProject( QDomDocument & ) ) );
 }
 
-void QgsVisibilityPresets::addVisibleLayersToPreset( QgsLayerTreeGroup* parent, QgsVisibilityPresets::PresetRecord& rec )
-{
-  foreach ( QgsLayerTreeNode* node, parent->children() )
-  {
-    if ( QgsLayerTree::isGroup( node ) )
-      addVisibleLayersToPreset( QgsLayerTree::toGroup( node ), rec );
-    else if ( QgsLayerTree::isLayer( node ) )
-    {
-      QgsLayerTreeLayer* nodeLayer = QgsLayerTree::toLayer( node );
-      if ( nodeLayer->isVisible() )
-        rec.mVisibleLayerIDs << nodeLayer->layerId();
-    }
-  }
-}
-
-void QgsVisibilityPresets::addPerLayerCheckedLegendSymbols( QgsVisibilityPresets::PresetRecord& rec )
+void QgsVisibilityPresets::addPerLayerCheckedLegendSymbols( QgsVisibilityPresetCollection::PresetRecord& rec )
 {
   QgsLayerTreeModel* model = QgisApp::instance()->layerTreeView()->layerTreeModel();
 
@@ -105,7 +86,7 @@ void QgsVisibilityPresets::addPerLayerCheckedLegendSymbols( QgsVisibilityPresets
   }
 }
 
-void QgsVisibilityPresets::addPerLayerCurrentStyle( QgsVisibilityPresets::PresetRecord& rec )
+void QgsVisibilityPresets::addPerLayerCurrentStyle( QgsVisibilityPresetCollection::PresetRecord& rec )
 {
   QgsLayerTreeModel* model = QgisApp::instance()->layerTreeView()->layerTreeModel();
 
@@ -119,11 +100,11 @@ void QgsVisibilityPresets::addPerLayerCurrentStyle( QgsVisibilityPresets::Preset
   }
 }
 
-QgsVisibilityPresets::PresetRecord QgsVisibilityPresets::currentState()
+QgsVisibilityPresetCollection::PresetRecord QgsVisibilityPresets::currentState()
 {
-  PresetRecord rec;
+  QgsVisibilityPresetCollection::PresetRecord rec;
   QgsLayerTreeGroup* root = QgsProject::instance()->layerTreeRoot();
-  addVisibleLayersToPreset( root, rec );
+  QgsVisibilityPresetCollection::addVisibleLayersToPreset( root, rec );
   addPerLayerCheckedLegendSymbols( rec );
   addPerLayerCurrentStyle( rec );
   return rec;
@@ -139,43 +120,17 @@ QgsVisibilityPresets* QgsVisibilityPresets::instance()
 
 void QgsVisibilityPresets::addPreset( const QString& name )
 {
-  mPresets.insert( name, currentState() );
-
-  reconnectToLayersStyleManager();
+  QgsProject::instance()->visibilityPresetCollection()->insert( name, currentState() );
 }
 
 void QgsVisibilityPresets::updatePreset( const QString& name )
 {
-  if ( !mPresets.contains( name ) )
-    return;
-
-  mPresets[name] = currentState();
-
-  reconnectToLayersStyleManager();
+  QgsProject::instance()->visibilityPresetCollection()->update( name, currentState() );
 }
 
-void QgsVisibilityPresets::removePreset( const QString& name )
+QStringList QgsVisibilityPresets::orderedPresetVisibleLayers( const QString& name ) const
 {
-  mPresets.remove( name );
-
-  reconnectToLayersStyleManager();
-}
-
-void QgsVisibilityPresets::clear()
-{
-  mPresets.clear();
-
-  reconnectToLayersStyleManager();
-}
-
-QStringList QgsVisibilityPresets::presets() const
-{
-  return mPresets.keys();
-}
-
-QStringList QgsVisibilityPresets::presetVisibleLayers( const QString& name ) const
-{
-  QSet<QString> visibleIds = mPresets.value( name ).mVisibleLayerIDs;
+  QStringList visibleIds = QgsProject::instance()->visibilityPresetCollection()->presetVisibleLayers( name );
 
   // also make sure to order the layers according to map canvas order
   QgsLayerTreeMapCanvasBridge* bridge = QgisApp::instance()->layerTreeCanvasBridge();
@@ -190,71 +145,6 @@ QStringList QgsVisibilityPresets::presetVisibleLayers( const QString& name ) con
   return order2;
 }
 
-
-void QgsVisibilityPresets::applyPresetCheckedLegendNodesToLayer( const QString& name, const QString& layerID )
-{
-  if ( !mPresets.contains( name ) )
-    return;
-
-  QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerID );
-  if ( !layer )
-    return;
-
-  const PresetRecord& rec = mPresets[name];
-
-  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( layer );
-  if ( !vlayer || !vlayer->rendererV2() )
-    return;
-
-  if ( !vlayer->rendererV2()->legendSymbolItemsCheckable() )
-    return; // no need to do anything
-
-  bool someNodesUnchecked = rec.mPerLayerCheckedLegendSymbols.contains( layerID );
-
-  foreach ( const QgsLegendSymbolItemV2& item, vlayer->rendererV2()->legendSymbolItemsV2() )
-  {
-    bool checked = vlayer->rendererV2()->legendSymbolItemChecked( item.ruleKey() );
-    bool shouldBeChecked = someNodesUnchecked ? rec.mPerLayerCheckedLegendSymbols[layerID].contains( item.ruleKey() ) : true;
-    if ( checked != shouldBeChecked )
-      vlayer->rendererV2()->checkLegendSymbolItem( item.ruleKey(), shouldBeChecked );
-  }
-}
-
-
-QMap<QString, QString> QgsVisibilityPresets::presetStyleOverrides( const QString& presetName )
-{
-  QMap<QString, QString> styleOverrides;
-  if ( !mPresets.contains( presetName ) )
-    return styleOverrides;
-
-  QStringList lst = QgsVisibilityPresets::instance()->presetVisibleLayers( presetName );
-  const QgsVisibilityPresets::PresetRecord& rec = mPresets[presetName];
-  foreach ( const QString& layerID, lst )
-  {
-    QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerID );
-    if ( !layer )
-      continue;
-
-    // use either the stored style name or the current one if none has been stored
-    QString overrideStyleName = rec.mPerLayerCurrentStyle.value( layerID, layer->styleManager()->currentStyle() );
-
-    // store original style and temporarily apply a style
-    layer->styleManager()->setOverrideStyle( overrideStyleName );
-
-    // set the checked legend nodes
-    applyPresetCheckedLegendNodesToLayer( presetName, layerID );
-
-    // save to overrides
-    QgsMapLayerStyle layerStyle;
-    layerStyle.readFromLayer( layer );
-    styleOverrides[layerID] = layerStyle.xmlData();
-
-    layer->styleManager()->restoreOverrideStyle();
-  }
-  return styleOverrides;
-}
-
-
 QMenu* QgsVisibilityPresets::menu()
 {
   return mMenu;
@@ -263,12 +153,16 @@ QMenu* QgsVisibilityPresets::menu()
 
 void QgsVisibilityPresets::addPreset()
 {
-  bool ok;
-  QString name = QInputDialog::getText( 0, tr( "Visibility Presets" ), tr( "Name of the new preset" ), QLineEdit::Normal, QString(), &ok );
-  if ( !ok && name.isEmpty() )
+  QStringList existingNames = QgsProject::instance()->visibilityPresetCollection()->presets();
+  QgsNewNameDialog dlg( tr( "preset" ) , tr( "Preset" ), QStringList(), existingNames, QRegExp(), Qt::CaseInsensitive, mMenu );
+  dlg.setWindowTitle( tr( "Visibility Presets" ) );
+  dlg.setHintString( tr( "Name of the new preset" ) );
+  dlg.setOverwriteEnabled( false );
+  dlg.setConflictingNameWarning( tr( "A preset with this name already exists" ) );
+  if ( dlg.exec() != QDialog::Accepted || dlg.name().isEmpty() )
     return;
 
-  addPreset( name );
+  addPreset( dlg.name() );
 }
 
 
@@ -281,8 +175,17 @@ void QgsVisibilityPresets::presetTriggerred()
   applyState( actionPreset->text() );
 }
 
+void QgsVisibilityPresets::replaceTriggerred()
+{
+  QAction* actionPreset = qobject_cast<QAction*>( sender() );
+  if ( !actionPreset )
+    return;
 
-void QgsVisibilityPresets::applyStateToLayerTreeGroup( QgsLayerTreeGroup* parent, const PresetRecord& rec )
+  //adding preset with same name is effectively a replace
+  addPreset( actionPreset->text() );
+}
+
+void QgsVisibilityPresets::applyStateToLayerTreeGroup( QgsLayerTreeGroup* parent, const QgsVisibilityPresetCollection::PresetRecord& rec )
 {
   foreach ( QgsLayerTreeNode* node, parent->children() )
   {
@@ -333,34 +236,14 @@ void QgsVisibilityPresets::applyStateToLayerTreeGroup( QgsLayerTreeGroup* parent
 
 void QgsVisibilityPresets::applyState( const QString& presetName )
 {
-  if ( !mPresets.contains( presetName ) )
+  if ( !QgsProject::instance()->visibilityPresetCollection()->hasPreset( presetName ) )
     return;
 
-  applyStateToLayerTreeGroup( QgsProject::instance()->layerTreeRoot(), mPresets[presetName] );
+  applyStateToLayerTreeGroup( QgsProject::instance()->layerTreeRoot(), QgsProject::instance()->visibilityPresetCollection()->presetState( presetName ) );
 
   // also make sure that the preset is up-to-date (not containing any non-existent legend items)
-  mPresets[presetName] = currentState();
+  QgsProject::instance()->visibilityPresetCollection()->update( presetName, currentState() );
 }
-
-void QgsVisibilityPresets::reconnectToLayersStyleManager()
-{
-  // disconnect( 0, 0, this, SLOT( layerStyleRenamed( QString, QString ) ) );
-
-  QSet<QString> layerIDs;
-  foreach ( const QString& grpName, mPresets.keys() )
-  {
-    const PresetRecord& rec = mPresets[grpName];
-    foreach ( const QString& layerID, rec.mPerLayerCurrentStyle.keys() )
-      layerIDs << layerID;
-  }
-
-  foreach ( const QString& layerID, layerIDs )
-  {
-    if ( QgsMapLayer* ml = QgsMapLayerRegistry::instance()->mapLayer( layerID ) )
-      connect( ml->styleManager(), SIGNAL( styleRenamed( QString, QString ) ), this, SLOT( layerStyleRenamed( QString, QString ) ) );
-  }
-}
-
 
 void QgsVisibilityPresets::removeCurrentPreset()
 {
@@ -368,158 +251,43 @@ void QgsVisibilityPresets::removeCurrentPreset()
   {
     if ( a->isChecked() )
     {
-      removePreset( a->text() );
+      QgsProject::instance()->visibilityPresetCollection()->removePreset( a->text() );
       break;
     }
   }
 }
 
-
 void QgsVisibilityPresets::menuAboutToShow()
 {
   qDeleteAll( mMenuPresetActions );
   mMenuPresetActions.clear();
+  mReplaceMenu->clear();
+  qDeleteAll( mMenuReplaceActions );
+  mMenuReplaceActions.clear();
 
-  PresetRecord rec = currentState();
+  QgsVisibilityPresetCollection::PresetRecord rec = currentState();
   bool hasCurrent = false;
 
-  foreach ( const QString& grpName, mPresets.keys() )
+  foreach ( const QString& grpName, QgsProject::instance()->visibilityPresetCollection()->presets() )
   {
     QAction* a = new QAction( grpName, mMenu );
     a->setCheckable( true );
-    if ( rec == mPresets[grpName] )
+    if ( !hasCurrent && rec == QgsProject::instance()->visibilityPresetCollection()->presetState( grpName ) )
     {
       a->setChecked( true );
       hasCurrent = true;
     }
     connect( a, SIGNAL( triggered() ), this, SLOT( presetTriggerred() ) );
     mMenuPresetActions.append( a );
+
+    QAction* replaceAction = new QAction( grpName, mReplaceMenu );
+    replaceAction->setEnabled( !a->isChecked() ); //can't replace current preset
+    connect( replaceAction, SIGNAL( triggered() ), this, SLOT( replaceTriggerred() ) );
+    mReplaceMenu->addAction( replaceAction );
   }
   mMenu->insertActions( mMenuSeparator, mMenuPresetActions );
+  mReplaceMenu->addActions( mMenuReplaceActions );
 
+  mActionAddPreset->setEnabled( !hasCurrent );
   mActionRemoveCurrentPreset->setEnabled( hasCurrent );
-}
-
-
-void QgsVisibilityPresets::readProject( const QDomDocument& doc )
-{
-  clear();
-
-  QDomElement visPresetsElem = doc.firstChildElement( "qgis" ).firstChildElement( "visibility-presets" );
-  if ( visPresetsElem.isNull() )
-    return;
-
-  QDomElement visPresetElem = visPresetsElem.firstChildElement( "visibility-preset" );
-  while ( !visPresetElem.isNull() )
-  {
-    QString presetName = visPresetElem.attribute( "name" );
-    PresetRecord rec;
-    QDomElement visPresetLayerElem = visPresetElem.firstChildElement( "layer" );
-    while ( !visPresetLayerElem.isNull() )
-    {
-      QString layerID = visPresetLayerElem.attribute( "id" );
-      if ( QgsMapLayerRegistry::instance()->mapLayer( layerID ) )
-      {
-        rec.mVisibleLayerIDs << layerID; // only use valid layer IDs
-        if ( visPresetLayerElem.hasAttribute( "style" ) )
-          rec.mPerLayerCurrentStyle[layerID] = visPresetLayerElem.attribute( "style" );
-      }
-      visPresetLayerElem = visPresetLayerElem.nextSiblingElement( "layer" );
-    }
-
-    QDomElement checkedLegendNodesElem = visPresetElem.firstChildElement( "checked-legend-nodes" );
-    while ( !checkedLegendNodesElem.isNull() )
-    {
-      QSet<QString> checkedLegendNodes;
-
-      QDomElement checkedLegendNodeElem = checkedLegendNodesElem.firstChildElement( "checked-legend-node" );
-      while ( !checkedLegendNodeElem.isNull() )
-      {
-        checkedLegendNodes << checkedLegendNodeElem.attribute( "id" );
-        checkedLegendNodeElem = checkedLegendNodeElem.nextSiblingElement( "checked-legend-node" );
-      }
-
-      QString layerID = checkedLegendNodesElem.attribute( "id" );
-      if ( QgsMapLayerRegistry::instance()->mapLayer( layerID ) ) // only use valid IDs
-        rec.mPerLayerCheckedLegendSymbols.insert( layerID, checkedLegendNodes );
-      checkedLegendNodesElem = checkedLegendNodesElem.nextSiblingElement( "checked-legend-nodes" );
-    }
-
-    mPresets.insert( presetName, rec );
-
-    visPresetElem = visPresetElem.nextSiblingElement( "visibility-preset" );
-  }
-
-  reconnectToLayersStyleManager();
-}
-
-void QgsVisibilityPresets::writeProject( QDomDocument& doc )
-{
-  QDomElement visPresetsElem = doc.createElement( "visibility-presets" );
-  foreach ( const QString& grpName, mPresets.keys() )
-  {
-    const PresetRecord& rec = mPresets[grpName];
-    QDomElement visPresetElem = doc.createElement( "visibility-preset" );
-    visPresetElem.setAttribute( "name", grpName );
-    foreach ( QString layerID, rec.mVisibleLayerIDs )
-    {
-      QDomElement layerElem = doc.createElement( "layer" );
-      layerElem.setAttribute( "id", layerID );
-      if ( rec.mPerLayerCurrentStyle.contains( layerID ) )
-        layerElem.setAttribute( "style", rec.mPerLayerCurrentStyle[layerID] );
-      visPresetElem.appendChild( layerElem );
-    }
-
-    foreach ( QString layerID, rec.mPerLayerCheckedLegendSymbols.keys() )
-    {
-      QDomElement checkedLegendNodesElem = doc.createElement( "checked-legend-nodes" );
-      checkedLegendNodesElem.setAttribute( "id", layerID );
-      foreach ( QString checkedLegendNode, rec.mPerLayerCheckedLegendSymbols[layerID] )
-      {
-        QDomElement checkedLegendNodeElem = doc.createElement( "checked-legend-node" );
-        checkedLegendNodeElem.setAttribute( "id", checkedLegendNode );
-        checkedLegendNodesElem.appendChild( checkedLegendNodeElem );
-      }
-      visPresetElem.appendChild( checkedLegendNodesElem );
-    }
-
-    visPresetsElem.appendChild( visPresetElem );
-  }
-
-  doc.firstChildElement( "qgis" ).appendChild( visPresetsElem );
-}
-
-void QgsVisibilityPresets::registryLayersRemoved( QStringList layerIDs )
-{
-  foreach ( QString layerID, layerIDs )
-  {
-    foreach ( QString presetName, mPresets.keys() )
-    {
-      PresetRecord& rec = mPresets[presetName];
-      rec.mVisibleLayerIDs.remove( layerID );
-      rec.mPerLayerCheckedLegendSymbols.remove( layerID );
-      rec.mPerLayerCurrentStyle.remove( layerID );
-    }
-  }
-}
-
-void QgsVisibilityPresets::layerStyleRenamed( const QString& oldName, const QString& newName )
-{
-  QgsMapLayerStyleManager* styleMgr = qobject_cast<QgsMapLayerStyleManager*>( sender() );
-  if ( !styleMgr )
-    return;
-
-  QString layerID = styleMgr->layer()->id();
-
-  foreach ( QString presetName, mPresets.keys() )
-  {
-    PresetRecord& rec = mPresets[presetName];
-
-    if ( rec.mPerLayerCurrentStyle.contains( layerID ) )
-    {
-      QString styleName = rec.mPerLayerCurrentStyle[layerID];
-      if ( styleName == oldName )
-        rec.mPerLayerCurrentStyle[layerID] = newName;
-    }
-  }
 }

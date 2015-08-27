@@ -122,7 +122,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
 
     /* Implementation of functions from QgsDataProvider */
 
-    /** return a provider name
+    /** Return a provider name
 
         Essentially just returns the provider key.  Should be used to build file
         dialogs so that providers can be shown with their supported types. Thus
@@ -137,7 +137,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
      */
     QString name() const override;
 
-    /** return description
+    /** Return description
 
         Return a terse string describing what the provider is.
 

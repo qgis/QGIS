@@ -47,10 +47,10 @@
 // Do we need this?
 // #define TESTLIB
 #ifdef TESTLIB
-// This doesn't work on WIN32 and causes problems with plugins
+// This doesn't work on windows and causes problems with plugins
 // on OS X (the code doesn't cause a problem but including dlfcn.h
 // renders plugins unloadable)
-#if !defined(WIN32) && !defined(Q_OS_MACX)
+#if !defined(Q_OS_WIN) && !defined(Q_OS_MACX)
 #include <dlfcn.h>
 #endif
 #endif
@@ -291,7 +291,7 @@ void QgsPluginManager::savePluginState( QString id, bool state )
 void QgsPluginManager::getCppPluginsMetadata()
 {
   QString sharedLibExtension;
-#if defined(WIN32) || defined(__CYGWIN__)
+#if defined(Q_OS_WIN) || defined(__CYGWIN__)
   sharedLibExtension = "*.dll";
 #else
   sharedLibExtension = "*.so*";
@@ -325,12 +325,12 @@ void QgsPluginManager::getCppPluginsMetadata()
       QString lib = QString( "%1/%2" ).arg( myPluginDir ).arg( pluginDir[i] );
 
 #ifdef TESTLIB
-      // This doesn't work on WIN32 and causes problems with plugins
+      // This doesn't work on windows and causes problems with plugins
       // on OS X (the code doesn't cause a problem but including dlfcn.h
       // renders plugins unloadable)
-#if !defined(WIN32) && !defined(Q_OS_MACX)
+#if !defined(Q_OS_WIN) && !defined(Q_OS_MACX)
       // test code to help debug loading problems
-      // This doesn't work on WIN32 and causes problems with plugins
+      // This doesn't work on windows and causes problems with plugins
       // on OS X (the code doesn't cause a problem but including dlfcn.h
       // renders plugins unloadable)
 
@@ -346,7 +346,7 @@ void QgsPluginManager::getCppPluginsMetadata()
         QgsDebugMsg( "dlopen suceeded for " + lib );
         dlclose( handle );
       }
-#endif //#ifndef WIN32 && Q_OS_MACX
+#endif //#ifndef Q_OS_WIN && Q_OS_MACX
 #endif //#ifdef TESTLIB
 
       QgsDebugMsg( "Examining: " + lib );

@@ -1,5 +1,5 @@
 v.drape
-v.drape - Converts vector map to 3D by sampling of elevation raster map.
+Converts vector map to 3D by sampling of elevation raster map.
 Vector (v.*)
 ParameterVector|input|Iput vector layer|-1|False
 ParameterRaster|elevation|Elevation raster map for height extraction|False

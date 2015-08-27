@@ -13,11 +13,11 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsgrassdatafile.h"
+
 #ifdef Q_OS_UNIX
 #include <sys/select.h>
 #endif
-
-#include "qgsgrassdatafile.h"
 
 QgsGrassDataFile::QgsGrassDataFile( QObject *parent )
     : QFile( parent )

@@ -24,7 +24,7 @@
  *
  */
 
-/*! \file gmath.h */
+/** \file gmath.h */
 
 #include "gmath.h"
 

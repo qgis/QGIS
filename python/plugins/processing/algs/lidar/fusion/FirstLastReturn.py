@@ -39,11 +39,10 @@ class FirstLastReturn(FusionAlgorithm):
     OUTPUT = 'OUTPUT'
     SWITCH = 'SWITCH'
 
-
     def defineCharacteristics(self):
-        self.name = 'First&Last Return'
-        self.group = 'Points'
-        self.addParameter(ParameterFile(self.INPUT, self.tr('Input .las')))
+        self.name, self.i18n_name = self.trAlgorithm('First&Last Return')
+        self.group, self.i18n_group = self.trAlgorithm('Points')
+        self.addParameter(ParameterFile(self.INPUT, self.tr('Input LAS layer')))
         self.addParameter(ParameterBoolean(
             self.SWITCH, self.tr('Use LAS info'), True))
         self.addOutput(OutputFile(self.OUTPUT, self.tr('Output layers')))

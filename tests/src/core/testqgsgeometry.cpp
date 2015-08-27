@@ -25,7 +25,6 @@
 #include <QImage>
 #include <QPainter>
 
-#include <iostream>
 //qgis includes...
 #include <qgsapplication.h>
 #include <qgsgeometry.h>
@@ -80,6 +79,8 @@ class TestQgsGeometry : public QObject
     void differenceCheck2();
     void bufferCheck();
     void smoothCheck();
+
+    void dataStream();
 
   private:
     /** A helper method to do a render check to see if the geometry op is as expected */
@@ -210,6 +211,7 @@ void TestQgsGeometry::cleanup()
   delete mpPolygonGeometryA;
   delete mpPolygonGeometryB;
   delete mpPolygonGeometryC;
+  delete mpPolylineGeometryD;
   delete mpPainter;
 }
 
@@ -455,10 +457,12 @@ void TestQgsGeometry::initTestCase()
 
 void TestQgsGeometry::cleanupTestCase()
 {
+
+
   //
   // Runs once after all tests are run
   //
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -707,11 +711,39 @@ void TestQgsGeometry::smoothCheck()
   QVERIFY( QgsGeometry::compare( multipoly, expectedMultiPoly ) );
 }
 
+void TestQgsGeometry::dataStream()
+{
+  QString wkt = "Point (40 50)";
+  QScopedPointer<QgsGeometry> geom( QgsGeometry::fromWkt( wkt ) );
+
+  QByteArray ba;
+  QDataStream ds( &ba, QIODevice::ReadWrite );
+  ds << *geom;
+
+  QgsGeometry resultGeometry;
+  ds.device()->seek( 0 );
+  ds >> resultGeometry;
+
+  QCOMPARE( geom->geometry()->asWkt(), resultGeometry.geometry()->asWkt( ) );
+
+  //also test with geometry without data
+  QScopedPointer<QgsGeometry> emptyGeom( new QgsGeometry() );
+
+  QByteArray ba2;
+  QDataStream ds2( &ba2, QIODevice::ReadWrite );
+  ds2 << emptyGeom;
+
+  ds2.device()->seek( 0 );
+  ds2 >> resultGeometry;
+
+  QVERIFY( resultGeometry.isEmpty() );
+}
+
 bool TestQgsGeometry::renderCheck( QString theTestName, QString theComment, int mismatchCount )
 {
   mReport += "<h2>" + theTestName + "</h2>\n";
   mReport += "<h3>" + theComment + "</h3>\n";
-  QString myTmpDir = QDir::tempPath() + QDir::separator();
+  QString myTmpDir = QDir::tempPath() + "/";
   QString myFileName = myTmpDir + theTestName + ".png";
   mImage.save( myFileName, "PNG" );
   QgsRenderChecker myChecker;

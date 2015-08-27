@@ -16,7 +16,6 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <iostream>
 #include <QApplication>
 #include <QFileInfo>
 #include <QDir>
@@ -79,7 +78,7 @@ void TestQgsMapLayer::initTestCase()
   //create some objects that will be used in all tests...
   //create a map layer that will be used in all tests...
   QString myFileName( TEST_DATA_DIR ); //defined in CmakeLists.txt
-  myFileName = myFileName + QDir::separator() + "points.shp";
+  myFileName = myFileName + "/points.shp";
   QFileInfo myMapFileInfo( myFileName );
   mpLayer = new QgsVectorLayer( myMapFileInfo.filePath(),
                                 myMapFileInfo.completeBaseName(), "ogr" );

@@ -130,6 +130,11 @@ void QgsTextEditWrapper::initWidget( QWidget* editor )
   }
 }
 
+bool QgsTextEditWrapper::valid()
+{
+  return mLineEdit || mTextEdit || mPlainTextEdit;
+}
+
 void QgsTextEditWrapper::setValue( const QVariant& val )
 {
   QString v;

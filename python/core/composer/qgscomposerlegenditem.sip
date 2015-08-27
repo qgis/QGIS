@@ -20,7 +20,7 @@ class QgsComposerLegendItem : QStandardItem
     };
 
     virtual void writeXML( QDomElement& elem, QDomDocument& doc ) const = 0;
-    /**Read item content from xml
+    /** Read item content from xml
       @param itemElem item to read from
       @param xServerAvailable Read item icons if true (QIcon needs x-server)*/
     virtual void readXML( const QDomElement& itemElem, bool xServerAvailable = true ) = 0;
@@ -57,7 +57,7 @@ class QgsComposerSymbolV2Item: QgsComposerLegendItem
     virtual void writeXML( QDomElement& elem, QDomDocument& doc ) const;
     virtual void readXML( const QDomElement& itemElem, bool xServerAvailable = true );
 
-    /**Set symbol (takes ownership)*/
+    /** Set symbol (takes ownership)*/
     void setSymbolV2( QgsSymbolV2* s /Transfer/ );
     QgsSymbolV2* symbolV2();
 

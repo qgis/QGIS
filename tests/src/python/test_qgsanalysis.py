@@ -22,7 +22,7 @@ from utilities import unitTestDataPath, getQgisTestApp
 
 # support python < 2.7 via unittest2
 # needed for expected failure decorator
-if sys.version_info[0:2] < (2,7):
+if sys.version_info[0:2] < (2, 7):
     try:
         from unittest2 import TestCase, expectedFailure
     except ImportError:

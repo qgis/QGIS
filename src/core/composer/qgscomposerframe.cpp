@@ -115,6 +115,19 @@ bool QgsComposerFrame::isEmpty() const
 
 }
 
+QgsExpressionContext *QgsComposerFrame::createExpressionContext() const
+{
+  if ( !mMultiFrame )
+    return QgsComposerItem::createExpressionContext();
+
+  //start with multiframe's context
+  QgsExpressionContext* context = mMultiFrame->createExpressionContext();
+  //add frame's individual context
+  context->appendScope( QgsExpressionContextUtils::composerItemScope( this ) );
+
+  return context;
+}
+
 QString QgsComposerFrame::displayName() const
 {
   if ( !id().isEmpty() )

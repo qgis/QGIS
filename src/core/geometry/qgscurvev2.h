@@ -24,7 +24,7 @@
 class QgsLineStringV2;
 class QPainterPath;
 
-/**\ingroup core
+/** \ingroup core
  * \class QgsCurveV2
  * \brief Abstract base class for curved geometry type
  * \note added in QGIS 2.10

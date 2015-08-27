@@ -33,6 +33,7 @@ from .ui.ui_DlgCreateConstraint import Ui_DbManagerDlgCreateConstraint as Ui_Dia
 
 
 class DlgCreateConstraint(QDialog, Ui_Dialog):
+
     def __init__(self, parent=None, table=None, db=None):
         QDialog.__init__(self, parent)
         self.table = table
@@ -47,7 +48,6 @@ class DlgCreateConstraint(QDialog, Ui_Dialog):
         for fld in self.table.fields():
             self.cboColumn.addItem(fld.name)
 
-
     def createConstraint(self):
         constr = self.getConstraint()
 
@@ -55,7 +55,7 @@ class DlgCreateConstraint(QDialog, Ui_Dialog):
         QApplication.setOverrideCursor(Qt.WaitCursor)
         try:
             self.table.addConstraint(constr)
-        except DbError, e:
+        except DbError as e:
             DlgDbError.showError(e, self)
             return
         finally:

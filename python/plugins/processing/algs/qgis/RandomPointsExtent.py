@@ -38,6 +38,7 @@ from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputVector
 from processing.tools import vector
 
+
 class RandomPointsExtent(GeoAlgorithm):
 
     EXTENT = 'EXTENT'
@@ -46,21 +47,21 @@ class RandomPointsExtent(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def defineCharacteristics(self):
-        self.name = 'Random points in extent'
-        self.group = 'Vector creation tools'
+        self.name, self.i18n_name = self.trAlgorithm('Random points in extent')
+        self.group, self.i18n_group = self.trAlgorithm('Vector creation tools')
         self.addParameter(ParameterExtent(self.EXTENT,
-            self.tr('Input extent')))
+                                          self.tr('Input extent')))
         self.addParameter(ParameterNumber(self.POINT_NUMBER,
-            self.tr('Points number'), 1, 9999999, 1))
+                                          self.tr('Points number'), 1, 9999999, 1))
         self.addParameter(ParameterNumber(self.MIN_DISTANCE,
-            self.tr('Minimum distance'), 0.0, 9999999, 0.0))
+                                          self.tr('Minimum distance'), 0.0, 9999999, 0.0))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Random points')))
 
     def processAlgorithm(self, progress):
         pointCount = int(self.getParameterValue(self.POINT_NUMBER))
         minDistance = float(self.getParameterValue(self.MIN_DISTANCE))
-        extent = str(self.getParameterValue(self.EXTENT)).split(',')
+        extent = unicode(self.getParameterValue(self.EXTENT)).split(',')
 
         xMin = float(extent[0])
         xMax = float(extent[1])
@@ -106,8 +107,8 @@ class RandomPointsExtent(GeoAlgorithm):
             nIterations += 1
 
         if nPoints < pointCount:
-             ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
-                 self.tr('Can not generate requested number of random points. '
-                         'Maximum number of attempts exceeded.'))
+            ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
+                                   self.tr('Can not generate requested number of random points. '
+                                           'Maximum number of attempts exceeded.'))
 
         del writer

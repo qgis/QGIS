@@ -28,7 +28,7 @@ class QgsLayerItem;
 class QgsDataItem;
 class QgsBrowserTreeFilterProxyModel;
 
-/**A dock widget which displays a statistical summary of the values in a field or expression
+/** A dock widget which displays a statistical summary of the values in a field or expression
  */
 class APP_EXPORT QgsStatisticalSummaryDockWidget : public QDockWidget, private Ui::QgsStatisticalSummaryWidgetBase
 {
@@ -38,9 +38,14 @@ class APP_EXPORT QgsStatisticalSummaryDockWidget : public QDockWidget, private U
     QgsStatisticalSummaryDockWidget( QWidget *parent = 0 );
     ~QgsStatisticalSummaryDockWidget();
 
+    /** Returns the currently active layer for the widget
+     * @note added in QGIS 2.12
+     */
+    QgsVectorLayer* layer() const { return mLayer; }
+
   public slots:
 
-    /**Recalculates the displayed statistics
+    /** Recalculates the displayed statistics
      */
     void refreshStatistics();
 

@@ -3,6 +3,7 @@ SET(QGIS_APP_SRCS
   qgisappinterface.cpp
   qgisappstylesheet.cpp
   qgsabout.cpp
+  qgsalignrasterdialog.cpp
   qgsapplayertreeviewmenuprovider.cpp
   qgssponsors.cpp
   qgsaddattrdialog.cpp
@@ -49,6 +50,9 @@ SET(QGIS_APP_SRCS
   qgsmapmouseevent.cpp
   qgssavestyletodbdialog.cpp
   qgsguivectorlayertools.cpp
+  qgswelcomepageitemsmodel.cpp
+  qgswelcomepage.cpp
+  qgsversioninfo.cpp
 
   qgsmaptooladdfeature.cpp
   qgsmaptooladdpart.cpp
@@ -91,6 +95,7 @@ SET(QGIS_APP_SRCS
   nodetool/qgsmaptoolnodetool.cpp
   nodetool/qgsselectedfeature.cpp
   nodetool/qgsvertexentry.cpp
+  nodetool/qgsnodeeditor.cpp
 
   qgsmeasuredialog.cpp
   qgsmeasuretool.cpp
@@ -106,7 +111,6 @@ SET(QGIS_APP_SRCS
   qgsstatisticalsummarydockwidget.cpp
   qgstextannotationdialog.cpp
   qgsshortcutsmanager.cpp
-  qgsguivectorlayertools.h
   qgssnappingdialog.cpp
   qgssvgannotationdialog.cpp
   qgsundowidget.cpp
@@ -115,6 +119,9 @@ SET(QGIS_APP_SRCS
   qgsvectorlayerproperties.cpp
   qgsvisibilitypresets.cpp
   qgshandlebadlayers.cpp
+  qgsmaptooladdcircularstring.cpp
+  qgsmaptoolcircularstringcurvepoint.cpp
+  qgsmaptoolcircularstringradius.cpp
 
   composer/qgsattributeselectiondialog.cpp
   composer/qgscomposer.cpp
@@ -164,6 +171,7 @@ SET (QGIS_APP_MOC_HDRS
   qgisappstylesheet.h
   qgsabout.h
   qgsaddattrdialog.h
+  qgsalignrasterdialog.h
   qgsjoindialog.h
   qgsaddtaborgroup.h
   qgsannotationwidget.h
@@ -205,11 +213,17 @@ SET (QGIS_APP_MOC_HDRS
   qgssavestyletodbdialog.h
   qgsshortcutsmanager.h
   qgsapplayertreeviewmenuprovider.h
+  qgsguivectorlayertools.h
+  qgswelcomepageitemsmodel.h
+  qgswelcomepage.h
+  qgsversioninfo.h
 
   qgsmaptooladdfeature.h
   qgsmaptoolcapture.h
+  qgsmaptoolcircularstringradius.h
   qgsmaptooladdpart.h
   qgsmaptooladdring.h
+  qgsmaptooledit.h
   qgsmaptoolfillring.h
   qgsmaptoolchangelabelproperties.h
   qgsmaptooldeletepart.h
@@ -235,9 +249,11 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptoolsimplify.h
   qgsmaptoolsplitfeatures.h
   qgsmaptoolsplitparts.h
+  qgsmaptooladdcircularstring.h
 
   nodetool/qgsmaptoolnodetool.h
   nodetool/qgsselectedfeature.h
+  nodetool/qgsnodeeditor.h
 
   qgsmeasuredialog.h
   qgsmeasuretool.h

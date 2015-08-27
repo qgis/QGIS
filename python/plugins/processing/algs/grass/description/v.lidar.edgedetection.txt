@@ -1,5 +1,5 @@
 v.lidar.edgedetection
-v.lidar.edgedetection - Detects the object's edges from a LIDAR data set.
+Detects the object's edges from a LIDAR data set.
 Vector (v.*)
 ParameterVector|input|Input vector layer|0|False
 ParameterString|see|Interpolation spline step value in east direction|4

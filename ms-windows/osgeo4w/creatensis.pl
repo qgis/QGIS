@@ -102,12 +102,22 @@ close F;
 my %pkgs;
 
 sub getDeps {
-	my ($pkg) = @_;
+	my $pkg = shift;
 
-	return if exists $pkgs{$pkg};
+	my $deponly = $pkg =~ /-$/;
+	$pkg =~ s/-$//;
 
-	print " Including package $pkg\n" if $verbose;
-	$pkgs{$pkg} = 1;
+	unless($deponly) {
+		return if exists $pkgs{$pkg};
+		print " Including package $pkg\n" if $verbose;
+		$pkgs{$pkg} = 1;
+	} elsif( exists $pkgs{$pkg} ) {
+		print " Excluding package $pkg\n" if $verbose;
+		delete $pkgs{$pkg};
+		return;
+	} else {
+		print " Including dependencies of package $pkg\n" if $verbose;
+	}
 
 	foreach my $p ( @{ $dep{$pkg} } ) {
 		getDeps($p);
@@ -461,4 +471,5 @@ creatensis.pl [options] [packages...]
   If no packages are given 'qgis-full' and it's dependencies will be retrieved
   and packaged.
 
+  Packages with a appended '-' are excluded, but their dependencies are included.
 =cut

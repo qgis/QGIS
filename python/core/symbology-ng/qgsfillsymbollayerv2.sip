@@ -158,51 +158,51 @@ class QgsGradientFillSymbolLayerV2 : QgsFillSymbolLayerV2
 
     double estimateMaxBleed() const;
 
-    /**Type of gradient, eg linear or radial*/
+    /** Type of gradient, eg linear or radial*/
     GradientType gradientType() const;
     void setGradientType( GradientType gradientType );
 
-    /**Gradient color mode, controls how gradient color stops are created*/
+    /** Gradient color mode, controls how gradient color stops are created*/
     GradientColorType gradientColorType() const;
     void setGradientColorType( GradientColorType gradientColorType );
 
-    /**Color ramp used for the gradient fill, only used if the gradient color type is set to ColorRamp*/
+    /** Color ramp used for the gradient fill, only used if the gradient color type is set to ColorRamp*/
     QgsVectorColorRampV2* colorRamp();
     void setColorRamp( QgsVectorColorRampV2* ramp );
 
-    /**Color for endpoint of gradient, only used if the gradient color type is set to SimpleTwoColor*/
+    /** Color for endpoint of gradient, only used if the gradient color type is set to SimpleTwoColor*/
     QColor color2() const;
     void setColor2( QColor color2 );
 
-    /**Coordinate mode for gradient. Controls how the gradient stops are positioned.*/
+    /** Coordinate mode for gradient. Controls how the gradient stops are positioned.*/
     GradientCoordinateMode coordinateMode() const;
     void setCoordinateMode( GradientCoordinateMode coordinateMode );
 
-    /**Gradient spread mode. Controls how the gradient behaves outside of the predefined stops*/
+    /** Gradient spread mode. Controls how the gradient behaves outside of the predefined stops*/
     GradientSpread gradientSpread() const;
     void setGradientSpread( GradientSpread gradientSpread );
 
-    /**Starting point of gradient fill, in the range [0,0] - [1,1]*/
+    /** Starting point of gradient fill, in the range [0,0] - [1,1]*/
     void setReferencePoint1( QPointF referencePoint );
     QPointF referencePoint1() const;
 
-    /**Sets the starting point of the gradient to be the feature centroid*/
+    /** Sets the starting point of the gradient to be the feature centroid*/
     void setReferencePoint1IsCentroid( bool isCentroid );
     bool referencePoint1IsCentroid() const;
 
-    /**End point of gradient fill, in the range [0,0] - [1,1]*/
+    /** End point of gradient fill, in the range [0,0] - [1,1]*/
     void setReferencePoint2( QPointF referencePoint );
     QPointF referencePoint2() const;
 
-    /**Sets the end point of the gradient to be the feature centroid*/
+    /** Sets the end point of the gradient to be the feature centroid*/
     void setReferencePoint2IsCentroid( bool isCentroid );
     bool referencePoint2IsCentroid() const;
 
-    /**Offset for gradient fill*/
+    /** Offset for gradient fill*/
     void setOffset( QPointF offset );
     QPointF offset() const;
 
-    /**Units for gradient fill offset*/
+    /** Units for gradient fill offset*/
     void setOffsetUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit offsetUnit() const;
 
@@ -256,20 +256,20 @@ class QgsShapeburstFillSymbolLayerV2 : QgsFillSymbolLayerV2
 
     double estimateMaxBleed() const;
 
-    /**Sets the blur radius, which controls the amount of blurring applied to the fill.
+    /** Sets the blur radius, which controls the amount of blurring applied to the fill.
      * @param blurRadius Radius for fill blur. Values between 0 - 17 are valid, where higher values results in a stronger blur. Set to 0 to disable blur.
      * @note added in 2.3
      * @see blurRadius
     */
     void setBlurRadius( int blurRadius );
-    /**Returns the blur radius, which controls the amount of blurring applied to the fill.
+    /** Returns the blur radius, which controls the amount of blurring applied to the fill.
      * @returns Integer representing the radius for fill blur. Higher values indicate a stronger blur. A 0 value indicates that blurring is disabled.
      * @note added in 2.3
      * @see setBlurRadius
     */
     int blurRadius() const;
 
-    /**Sets whether the shapeburst fill should be drawn using the entire shape.
+    /** Sets whether the shapeburst fill should be drawn using the entire shape.
      * @param useWholeShape Set to true if shapeburst should cover entire shape. If false, setMaxDistance is used to calculate how far from the boundary of the shape should
      * be shaded
      * @note added in 2.3
@@ -277,7 +277,7 @@ class QgsShapeburstFillSymbolLayerV2 : QgsFillSymbolLayerV2
      * @see setMaxDistance
     */
     void setUseWholeShape( bool useWholeShape );
-    /**Returns whether the shapeburst fill is set to cover the entire shape.
+    /** Returns whether the shapeburst fill is set to cover the entire shape.
      * @returns True if shapeburst fill will cover the entire shape. If false, shapeburst is drawn to a distance of maxDistance from the polygon's boundary.
      * @note added in 2.3
      * @see setUseWholeShape
@@ -285,7 +285,7 @@ class QgsShapeburstFillSymbolLayerV2 : QgsFillSymbolLayerV2
     */
     bool useWholeShape() const;
 
-    /**Sets the maximum distance to shape inside of the shape from the polygon's boundary.
+    /** Sets the maximum distance to shape inside of the shape from the polygon's boundary.
      * @param maxDistance distance from boundary to shade. setUseWholeShape must be set to false for this parameter to take effect. Distance unit is controlled by setDistanceUnit.
      * @note added in 2.3
      * @see maxDistance
@@ -293,7 +293,7 @@ class QgsShapeburstFillSymbolLayerV2 : QgsFillSymbolLayerV2
      * @see setDistanceUnit
     */
     void setMaxDistance( double maxDistance );
-    /**Returns the maximum distance from the shape's boundary which is shaded. This parameter is only effective if useWholeShape is false.
+    /** Returns the maximum distance from the shape's boundary which is shaded. This parameter is only effective if useWholeShape is false.
      * @returns the maximum distance from the polygon's boundary which is shaded. Distance units are indicated by distanceUnit.
      * @note added in 2.3
      * @see useWholeShape
@@ -302,14 +302,14 @@ class QgsShapeburstFillSymbolLayerV2 : QgsFillSymbolLayerV2
     */
     double maxDistance() const;
 
-    /**Sets the unit for the maximum distance to shade inside of the shape from the polygon's boundary.
+    /** Sets the unit for the maximum distance to shade inside of the shape from the polygon's boundary.
      * @param unit distance unit for the maximum distance
      * @note added in 2.3
      * @see setMaxDistance
      * @see distanceUnit
     */
     void setDistanceUnit( QgsSymbolV2::OutputUnit unit );
-    /**Returns the unit for the maximum distance to shade inside of the shape from the polygon's boundary.
+    /** Returns the unit for the maximum distance to shade inside of the shape from the polygon's boundary.
      * @returns distance unit for the maximum distance
      * @note added in 2.3
      * @see maxDistance
@@ -320,7 +320,7 @@ class QgsShapeburstFillSymbolLayerV2 : QgsFillSymbolLayerV2
     void setDistanceMapUnitScale( const QgsMapUnitScale& scale );
     const QgsMapUnitScale& distanceMapUnitScale() const;
 
-    /**Sets the color mode to use for the shapeburst fill. Shapeburst can either be drawn using a QgsVectorColorRampV2 color ramp
+    /** Sets the color mode to use for the shapeburst fill. Shapeburst can either be drawn using a QgsVectorColorRampV2 color ramp
      * or by simply specificing a start and end color. setColorType is used to specify which mode to use for the fill.
      * @param colorType color type to use for shapeburst fill
      * @note added in 2.3
@@ -330,7 +330,7 @@ class QgsShapeburstFillSymbolLayerV2 : QgsFillSymbolLayerV2
      * @see setColorRamp
     */
     void setColorType( ShapeburstColorType colorType );
-    /**Returns the color mode used for the shapeburst fill. Shapeburst can either be drawn using a QgsVectorColorRampV2 color ramp
+    /** Returns the color mode used for the shapeburst fill. Shapeburst can either be drawn using a QgsVectorColorRampV2 color ramp
      * or by simply specificing a start and end color.
      * @returns current color mode used for the shapeburst fill
      * @note added in 2.3
@@ -341,14 +341,14 @@ class QgsShapeburstFillSymbolLayerV2 : QgsFillSymbolLayerV2
     */
     ShapeburstColorType colorType() const;
 
-    /**Sets the color ramp used to draw the shapeburst fill. Color ramps are only used if setColorType is set ShapeburstColorType::ColorRamp.
+    /** Sets the color ramp used to draw the shapeburst fill. Color ramps are only used if setColorType is set ShapeburstColorType::ColorRamp.
      * @param ramp color ramp to use for shapeburst fill
      * @note added in 2.3
      * @see setColorType
      * @see colorRamp
     */
     void setColorRamp( QgsVectorColorRampV2* ramp );
-    /**Returns the color ramp used for the shapeburst fill. The color ramp is only used if the colorType is set to ShapeburstColorType::ColorRamp
+    /** Returns the color ramp used for the shapeburst fill. The color ramp is only used if the colorType is set to ShapeburstColorType::ColorRamp
      * @returns a QgsVectorColorRampV2 color ramp
      * @note added in 2.3
      * @see setColorRamp
@@ -356,14 +356,14 @@ class QgsShapeburstFillSymbolLayerV2 : QgsFillSymbolLayerV2
     */
     QgsVectorColorRampV2* colorRamp();
 
-    /**Sets the color for the endpoint of the shapeburst fill. This color is only used if setColorType is set ShapeburstColorType::SimpleTwoColor.
+    /** Sets the color for the endpoint of the shapeburst fill. This color is only used if setColorType is set ShapeburstColorType::SimpleTwoColor.
      * @param color2 QColor to use for endpoint of gradient
      * @note added in 2.3
      * @see setColorType
      * @see color2
     */
     void setColor2( QColor color2 );
-    /**Returns the color used for the endpoint of the shapeburst fill. This color is only used if the colorType is set to ShapeburstColorType::SimpleTwoColor
+    /** Returns the color used for the endpoint of the shapeburst fill. This color is only used if the colorType is set to ShapeburstColorType::SimpleTwoColor
      * @returns a QColor indicating the color of the endpoint of the gradient
      * @note added in 2.3
      * @see setColor2
@@ -371,28 +371,28 @@ class QgsShapeburstFillSymbolLayerV2 : QgsFillSymbolLayerV2
     */
     QColor color2() const;
 
-    /**Sets whether the shapeburst fill should ignore polygon rings when calculating
+    /** Sets whether the shapeburst fill should ignore polygon rings when calculating
      * the buffered shading.
      * @param ignoreRings Set to true if buffers should ignore interior rings for polygons.
      * @note added in 2.3
      * @see ignoreRings
     */
     void setIgnoreRings( bool ignoreRings );
-    /**Returns whether the shapeburst fill is set to ignore polygon interior rings.
+    /** Returns whether the shapeburst fill is set to ignore polygon interior rings.
      * @returns True if the shapeburst fill will ignore interior rings when calculating buffered shading.
      * @note added in 2.3
      * @see setIgnoreRings
     */
     bool ignoreRings() const;
 
-    /**Sets the offset for the shapeburst fill.
+    /** Sets the offset for the shapeburst fill.
      * @param offset QPointF indicating the horizontal/vertical offset amount
      * @note added in 2.3
      * @see offset
      * @see setOffsetUnit
     */
     void setOffset( QPointF offset );
-    /**Returns the offset for the shapeburst fill.
+    /** Returns the offset for the shapeburst fill.
      * @returns a QPointF indicating the horizontal/vertical offset amount
      * @note added in 2.3
      * @see setOffset
@@ -400,14 +400,14 @@ class QgsShapeburstFillSymbolLayerV2 : QgsFillSymbolLayerV2
     */
     QPointF offset() const;
 
-    /**Sets the units used for the offset for the shapeburst fill.
+    /** Sets the units used for the offset for the shapeburst fill.
      * @param unit units for fill offset
      * @note added in 2.3
      * @see setOffset
      * @see offsetUnit
     */
     void setOffsetUnit( QgsSymbolV2::OutputUnit unit );
-    /**Returns the units used for the offset of the shapeburst fill.
+    /** Returns the units used for the offset of the shapeburst fill.
      * @returns units used for the fill offset
      * @note added in 2.3
      * @see offset
@@ -425,7 +425,7 @@ class QgsShapeburstFillSymbolLayerV2 : QgsFillSymbolLayerV2
     QgsMapUnitScale mapUnitScale() const;
 };
 
-/**Base class for polygon renderers generating texture images*/
+/** Base class for polygon renderers generating texture images*/
 class QgsImageFillSymbolLayer: QgsFillSymbolLayerV2
 {
 %TypeHeaderCode
@@ -495,49 +495,49 @@ class QgsRasterFillSymbolLayer: QgsImageFillSymbolLayer
     virtual QgsSymbolV2* subSymbol();
     virtual bool setSubSymbol( QgsSymbolV2* symbol );
 
-    /**Sets the path to the raster image used for the fill.
+    /** Sets the path to the raster image used for the fill.
      * @param imagePath path to image file
      * @see imageFilePath
     */
     void setImageFilePath( const QString& imagePath );
-    /**The path to the raster image used for the fill.
+    /** The path to the raster image used for the fill.
      * @returns path to image file
      * @see setImageFilePath
     */
     QString imageFilePath() const;
 
-    /**Set the coordinate mode for fill. Controls how the top left corner of the image
+    /** Set the coordinate mode for fill. Controls how the top left corner of the image
      * fill is positioned relative to the feature.
      * @param mode coordinate mode
      * @see coordinateMode
     */
     void setCoordinateMode( const FillCoordinateMode mode );
-    /**Coordinate mode for fill. Controls how the top left corner of the image
+    /** Coordinate mode for fill. Controls how the top left corner of the image
      * fill is positioned relative to the feature.
      * @returns coordinate mode
      * @see setCoordinateMode
     */
     FillCoordinateMode coordinateMode() const;
 
-    /**Sets the opacity for the raster image used in the fill.
+    /** Sets the opacity for the raster image used in the fill.
      * @param alpha opacity value between 0 (fully transparent) and 1 (fully opaque)
      * @see alpha
     */
     void setAlpha( const double alpha );
-    /**The opacity for the raster image used in the fill.
+    /** The opacity for the raster image used in the fill.
      * @returns opacity value between 0 (fully transparent) and 1 (fully opaque)
      * @see setAlpha
     */
     double alpha() const;
 
-    /**Sets the offset for the fill.
+    /** Sets the offset for the fill.
      * @param offset offset for fill
      * @see offset
      * @see setOffsetUnit
      * @see setOffsetMapUnitScale
     */
     void setOffset( const QPointF& offset );
-    /**Returns the offset for the fill.
+    /** Returns the offset for the fill.
      * @returns offset for fill
      * @see setOffset
      * @see offsetUnit
@@ -545,14 +545,14 @@ class QgsRasterFillSymbolLayer: QgsImageFillSymbolLayer
     */
     QPointF offset() const;
 
-    /**Sets the units for the fill's offset.
+    /** Sets the units for the fill's offset.
      * @param unit units for offset
      * @see offsetUnit
      * @see setOffset
      * @see setOffsetMapUnitScale
     */
     void setOffsetUnit( const QgsSymbolV2::OutputUnit unit );
-    /**Returns the units for the fill's offset.
+    /** Returns the units for the fill's offset.
      * @returns units for offset
      * @see setOffsetUnit
      * @see offset
@@ -560,14 +560,14 @@ class QgsRasterFillSymbolLayer: QgsImageFillSymbolLayer
     */
     QgsSymbolV2::OutputUnit offsetUnit() const;
 
-    /**Sets the map unit scale for the fill's offset.
+    /** Sets the map unit scale for the fill's offset.
      * @param scale map unit scale for offset
      * @see offsetMapUnitScale
      * @see setOffset
      * @see setOffsetUnit
     */
     void setOffsetMapUnitScale( const QgsMapUnitScale& scale );
-    /**Returns the map unit scale for the fill's offset.
+    /** Returns the map unit scale for the fill's offset.
      * @returns map unit scale for offset
      * @see setOffsetMapUnitScale
      * @see offset
@@ -575,7 +575,7 @@ class QgsRasterFillSymbolLayer: QgsImageFillSymbolLayer
     */
     const QgsMapUnitScale& offsetMapUnitScale() const;
 
-    /**Sets the width for scaling the image used in the fill. The image's height will also be
+    /** Sets the width for scaling the image used in the fill. The image's height will also be
      * scaled to maintain the image's aspect ratio.
      * @param width width for scaling the image
      * @see width
@@ -583,7 +583,7 @@ class QgsRasterFillSymbolLayer: QgsImageFillSymbolLayer
      * @see setWidthMapUnitScale
     */
     void setWidth( const double width );
-    /**Returns the width used for scaling the image used in the fill. The image's height is
+    /** Returns the width used for scaling the image used in the fill. The image's height is
      * scaled to maintain the image's aspect ratio.
      * @returns width used for scaling the image
      * @see setWidth
@@ -592,14 +592,14 @@ class QgsRasterFillSymbolLayer: QgsImageFillSymbolLayer
     */
     double width() const;
 
-    /**Sets the units for the image's width.
+    /** Sets the units for the image's width.
      * @param unit units for width
      * @see widthUnit
      * @see setWidth
      * @see setWidthMapUnitScale
     */
     void setWidthUnit( const QgsSymbolV2::OutputUnit unit );
-    /**Returns the units for the image's width.
+    /** Returns the units for the image's width.
      * @returns units for width
      * @see setWidthUnit
      * @see width
@@ -607,14 +607,14 @@ class QgsRasterFillSymbolLayer: QgsImageFillSymbolLayer
     */
     QgsSymbolV2::OutputUnit widthUnit() const;
 
-    /**Sets the map unit scale for the image's width.
+    /** Sets the map unit scale for the image's width.
      * @param scale map unit scale for width
      * @see widthMapUnitScale
      * @see setWidth
      * @see setWidthUnit
     */
     void setWidthMapUnitScale( const QgsMapUnitScale& scale );
-    /**Returns the map unit scale for the image's width.
+    /** Returns the map unit scale for the image's width.
      * @returns map unit scale for width
      * @see setWidthMapUnitScale
      * @see width
@@ -628,7 +628,7 @@ class QgsRasterFillSymbolLayer: QgsImageFillSymbolLayer
 
 };
 
-/**A class for svg fill patterns. The class automatically scales the pattern to
+/** A class for svg fill patterns. The class automatically scales the pattern to
    the appropriate pixel dimensions of the output device*/
 class QgsSVGFillSymbolLayer: QgsImageFillSymbolLayer
 {

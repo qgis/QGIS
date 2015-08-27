@@ -1,5 +1,5 @@
 r.quantile
-r.quantile - Compute quantiles using two passes.
+Compute quantiles using two passes.
 Raster (r.*)
 ParameterRaster|input|Input raster layer|False
 ParameterNumber|quantiles|Number of quantiles|2|None|4

@@ -393,6 +393,10 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
   long featureCounter = 0;
   int layerPrec = 8;
 
+  QgsExpressionContext expressionContext;
+  expressionContext << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope();
+
   QDomDocument doc;
   QString errorMsg;
   if ( doc.setContent( mParameters.value( "REQUEST_BODY" ), true, &errorMsg ) )
@@ -434,6 +438,8 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
       QgsVectorLayer* layer = dynamic_cast<QgsVectorLayer*>( currentLayer );
       if ( layer && wfsLayersId.contains( layer->id() ) )
       {
+        expressionContext << QgsExpressionContextUtils::layerScope( layer );
+
         //is there alias info for this vector layer?
         QMap< int, QString > layerAliasInfo;
         const QMap< QString, QString >& aliasMap = layer->attributeAliases();
@@ -462,9 +468,6 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
         }
 
         QgsFeature feature;
-        QgsAttributeMap featureAttributes;
-        //const QgsFields& fields = provider->fields();
-        const QgsFields& fields = layer->pendingFields();
 
         mWithGeom = true;
         //QgsAttributeList attrIndexes = provider->attributeIndexes();
@@ -599,7 +602,9 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
               }
               while ( fit.nextFeature( feature ) && ( maxFeatures == -1 || featureCounter < maxFeat ) )
               {
-                QVariant res = filter->evaluate( &feature, fields );
+                expressionContext.setFeature( feature );
+
+                QVariant res = filter->evaluate( &expressionContext );
                 if ( filter->hasEvalError() )
                 {
                   throw QgsMapServiceException( "RequestNotWellFormed", filter->evalErrorString() );
@@ -783,6 +788,8 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
     QgsVectorLayer* layer = dynamic_cast<QgsVectorLayer*>( currentLayer );
     if ( layer && wfsLayersId.contains( layer->id() ) )
     {
+      expressionContext << QgsExpressionContextUtils::layerScope( layer );
+
       //is there alias info for this vector layer?
       QMap< int, QString > layerAliasInfo;
       const QMap< QString, QString >& aliasMap = layer->attributeAliases();
@@ -811,9 +818,6 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
       }
 
       QgsFeature feature;
-      QgsAttributeMap featureAttributes;
-      //const QgsFields& fields = provider->fields();
-      const QgsFields& fields = layer->pendingFields();
 
       //map extent
       searchRect = layer->extent();
@@ -908,7 +912,8 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
           }
           while ( fit.nextFeature( feature ) && ( maxFeatures == -1 || featureCounter < maxFeat ) )
           {
-            QVariant res = filter->evaluate( &feature, fields );
+            expressionContext.setFeature( feature );
+            QVariant res = filter->evaluate( &expressionContext );
             if ( filter->hasEvalError() )
             {
               throw QgsMapServiceException( "RequestNotWellFormed", QString( "Expression filter eval error message: %1." ).arg( filter->evalErrorString() ) );
@@ -1026,7 +1031,8 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
             QgsFeatureIterator fit = layer->getFeatures( req );
             while ( fit.nextFeature( feature ) && ( maxFeatures == -1 || featureCounter < maxFeat ) )
             {
-              QVariant res = filter->evaluate( &feature, fields );
+              expressionContext.setFeature( feature );
+              QVariant res = filter->evaluate( &expressionContext );
               if ( filter->hasEvalError() )
               {
                 throw QgsMapServiceException( "RequestNotWellFormed", QString( "OGC expression filter eval error message: %1." ).arg( filter->evalErrorString() ) );
@@ -1662,9 +1668,12 @@ QgsFeatureIds QgsWFSServer::getFeatureIdsFromFilter( QDomElement filterElem, Qgs
       QgsFeature feature;
       const QgsFields& fields = provider->fields();
       QgsFeatureIterator fit = layer->getFeatures();
+      QgsExpressionContext context = QgsExpressionContextUtils::createFeatureBasedContext( feature, fields );
+
       while ( fit.nextFeature( feature ) )
       {
-        QVariant res = filter->evaluate( &feature, fields );
+        context.setFeature( feature );
+        QVariant res = filter->evaluate( &context );
         if ( filter->hasEvalError() )
         {
           throw QgsMapServiceException( "RequestNotWellFormed", filter->evalErrorString() );

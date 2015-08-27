@@ -128,6 +128,7 @@ from fusion.MergeData import MergeData
 from fusion.FilterData import FilterData
 from fusion.FusionUtils import FusionUtils
 
+
 class LidarToolsAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
@@ -186,7 +187,7 @@ class LidarToolsAlgorithmProvider(AlgorithmProvider):
                 hugeFileGroundClassify(), hugeFileNormalize()
             ]
         else:
-            lastoolsPipe = [ ]
+            lastoolsPipe = []
         for alg in lastoolsPipe:
             alg.group = 'LAStools Pipelines'
         self.algsList.extend(lastoolsPipe)
@@ -209,15 +210,17 @@ class LidarToolsAlgorithmProvider(AlgorithmProvider):
         ProcessingConfig.addSetting(Setting(
             self.getDescription(),
             LAStoolsUtils.LASTOOLS_FOLDER,
-            self.tr('LAStools folder'), LAStoolsUtils.LAStoolsPath()))
+            self.tr('LAStools folder'), LAStoolsUtils.LAStoolsPath(),
+            valuetype=Setting.FOLDER))
         ProcessingConfig.addSetting(Setting(
             self.getDescription(),
             FusionUtils.FUSION_FOLDER,
-            self.tr('Fusion folder'), FusionUtils.FusionPath()))
+            self.tr('Fusion folder'), FusionUtils.FusionPath(),
+            valuetype=Setting.FOLDER))
         ProcessingConfig.addSetting(Setting(
             self.getDescription(),
             LAStoolsUtils.WINE_FOLDER,
-            self.tr('Wine folder'), ''))
+            self.tr('Wine folder'), '', valuetype=Setting.FOLDER))
 
     def getName(self):
         return 'lidartools'

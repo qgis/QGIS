@@ -29,7 +29,7 @@ class QgsTINInterpolatorDialog: public QgsInterpolatorDialog, private Ui::QgsTIN
 
     ~QgsTINInterpolatorDialog();
 
-    /**Method that returns an interpolator object from the settings or 0 in case of error.
+    /** Method that returns an interpolator object from the settings or 0 in case of error.
      The calling method takes ownership of the created interpolator and is responsible for its proper destruction*/
     QgsInterpolator* createInterpolator() const override;
 

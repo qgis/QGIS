@@ -52,7 +52,7 @@ void QgsClipboard::replaceWithCopyOf( QgsVectorLayer *src )
     return;
 
   // Replace the QGis clipboard.
-  mFeatureFields = src->pendingFields();
+  mFeatureFields = src->fields();
   mFeatureClipboard = src->selectedFeatures();
   mCRS = src->crs();
 

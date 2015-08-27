@@ -44,7 +44,6 @@ QgsComposerHtml::QgsComposerHtml( QgsComposition* c, bool createUndoCommands )
     , mEvaluateExpressions( true )
     , mUseSmartBreaks( true )
     , mMaxBreakDistance( 10 )
-    , mExpressionFeature( 0 )
     , mExpressionLayer( 0 )
     , mDistanceArea( 0 )
     , mEnableUserStylesheet( false )
@@ -75,7 +74,7 @@ QgsComposerHtml::QgsComposerHtml( QgsComposition* c, bool createUndoCommands )
   {
     //a html item added while atlas preview is enabled needs to have the expression context set,
     //otherwise fields in the html aren't correctly evaluated until atlas preview feature changes (#9457)
-    setExpressionContext( mComposition->atlasComposition().currentFeature(), mComposition->atlasComposition().coverageLayer() );
+    setExpressionContext( mComposition->atlasComposition().feature(), mComposition->atlasComposition().coverageLayer() );
   }
 
   //connect to atlas feature changes
@@ -123,11 +122,19 @@ void QgsComposerHtml::setEvaluateExpressions( bool evaluateExpressions )
   emit changed();
 }
 
-void QgsComposerHtml::loadHtml( const bool useCache )
+void QgsComposerHtml::loadHtml( const bool useCache, const QgsExpressionContext *context )
 {
   if ( !mWebPage )
   {
     return;
+  }
+
+  const QgsExpressionContext* evalContext = context;
+  QScopedPointer< QgsExpressionContext > scopedContext;
+  if ( !evalContext )
+  {
+    scopedContext.reset( createExpressionContext() );
+    evalContext = scopedContext.data();
   }
 
   QString loadedHtml;
@@ -140,7 +147,7 @@ void QgsComposerHtml::loadHtml( const bool useCache )
 
       //data defined url set?
       QVariant exprVal;
-      if ( dataDefinedEvaluate( QgsComposerObject::SourceUrl, exprVal ) )
+      if ( dataDefinedEvaluate( QgsComposerObject::SourceUrl, exprVal, *evalContext ) )
       {
         currentUrl = exprVal.toString().trimmed();;
         QgsDebugMsg( QString( "exprVal Source Url:%1" ).arg( currentUrl ) );
@@ -169,7 +176,7 @@ void QgsComposerHtml::loadHtml( const bool useCache )
   //evaluate expressions
   if ( mEvaluateExpressions )
   {
-    loadedHtml = QgsExpression::replaceExpressionText( loadedHtml, mExpressionFeature, mExpressionLayer, 0, mDistanceArea );
+    loadedHtml = QgsExpression::replaceExpressionText( loadedHtml, evalContext, 0, mDistanceArea );
   }
 
   mLoaded = false;
@@ -454,7 +461,7 @@ void QgsComposerHtml::setUserStylesheetEnabled( const bool stylesheetEnabled )
 
 QString QgsComposerHtml::displayName() const
 {
-  return tr( "<html frame>" );
+  return tr( "<HTML frame>" );
 }
 
 bool QgsComposerHtml::writeXML( QDomElement& elem, QDomDocument & doc, bool ignoreFrames ) const
@@ -513,7 +520,7 @@ bool QgsComposerHtml::readXML( const QDomElement& itemElem, const QDomDocument& 
   return true;
 }
 
-void QgsComposerHtml::setExpressionContext( QgsFeature* feature, QgsVectorLayer* layer )
+void QgsComposerHtml::setExpressionContext( const QgsFeature &feature, QgsVectorLayer* layer )
 {
   mExpressionFeature = feature;
   mExpressionLayer = layer;
@@ -538,7 +545,7 @@ void QgsComposerHtml::setExpressionContext( QgsFeature* feature, QgsVectorLayer*
 void QgsComposerHtml::refreshExpressionContext()
 {
   QgsVectorLayer * vl = 0;
-  QgsFeature* feature = 0;
+  QgsFeature feature;
 
   if ( mComposition->atlasComposition().enabled() )
   {
@@ -546,19 +553,27 @@ void QgsComposerHtml::refreshExpressionContext()
   }
   if ( mComposition->atlasMode() != QgsComposition::AtlasOff )
   {
-    feature = mComposition->atlasComposition().currentFeature();
+    feature = mComposition->atlasComposition().feature();
   }
 
   setExpressionContext( feature, vl );
   loadHtml( true );
 }
 
-void QgsComposerHtml::refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property )
+void QgsComposerHtml::refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, const QgsExpressionContext* context )
 {
+  const QgsExpressionContext* evalContext = context;
+  QScopedPointer< QgsExpressionContext > scopedContext;
+  if ( !evalContext )
+  {
+    scopedContext.reset( createExpressionContext() );
+    evalContext = scopedContext.data();
+  }
+
   //updates data defined properties and redraws item to match
   if ( property == QgsComposerObject::SourceUrl || property == QgsComposerObject::AllProperties )
   {
-    loadHtml( true );
+    loadHtml( true, evalContext );
   }
-  QgsComposerObject::refreshDataDefinedProperty( property );
+  QgsComposerObject::refreshDataDefinedProperty( property, context );
 }

@@ -35,6 +35,7 @@ from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterNumber
 
+
 class lasboundary(LAStoolsAlgorithm):
 
     MODE = "MODE"
@@ -44,19 +45,19 @@ class lasboundary(LAStoolsAlgorithm):
     HOLES = "HOLES"
 
     def defineCharacteristics(self):
-        self.name = "lasboundary"
-        self.group = "LAStools"
+        self.name, self.i18n_name = self.trAlgorithm('lasboundary')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParametersFilter1ReturnClassFlagsGUI()
         self.addParameter(ParameterSelection(lasboundary.MODE,
-            self.tr("compute boundary based on"), lasboundary.MODES, 0))
+                                             self.tr("compute boundary based on"), lasboundary.MODES, 0))
         self.addParameter(ParameterNumber(lasboundary.CONCAVITY,
-            self.tr("concavity"), 0, None, 50.0))
+                                          self.tr("concavity"), 0, None, 50.0))
         self.addParameter(ParameterBoolean(lasboundary.HOLES,
-            self.tr("interior holes"), False))
+                                           self.tr("interior holes"), False))
         self.addParameter(ParameterBoolean(lasboundary.DISJOINT,
-            self.tr("disjoint polygon"), False))
+                                           self.tr("disjoint polygon"), False))
         self.addParametersVectorOutputGUI()
         self.addParametersAdditionalGUI()
 
@@ -74,7 +75,7 @@ class lasboundary(LAStoolsAlgorithm):
         else:
             concavity = self.getParameterValue(lasboundary.CONCAVITY)
             commands.append("-concavity")
-            commands.append(str(concavity))
+            commands.append(unicode(concavity))
             if self.getParameterValue(lasboundary.HOLES):
                 commands.append("-holes")
             if self.getParameterValue(lasboundary.DISJOINT):

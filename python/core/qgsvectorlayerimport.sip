@@ -45,7 +45,7 @@ class QProgressDialog;
                                     QProgressDialog *progress = 0
                                   );
 
-    /** create a empty layer and add fields to it */
+    /** Create a empty layer and add fields to it */
     QgsVectorLayerImport( const QString &uri,
                           const QString &provider,
                           const QgsFields &fields,
@@ -56,24 +56,24 @@ class QProgressDialog;
                           QProgressDialog *progress = 0
                         );
 
-    /** checks whether there were any errors */
+    /** Checks whether there were any errors */
     ImportError hasError();
 
-    /** retrieves error message */
+    /** Retrieves error message */
     QString errorMessage();
 
     int errorCount() const;
 
-    /** add feature to the new created layer */
+    /** Add feature to the new created layer */
     bool addFeature( QgsFeature& feature );
 
-    /** close the new created layer */
+    /** Close the new created layer */
     ~QgsVectorLayerImport();
 
   protected:
-    /** flush the buffer writing the features to the new layer */
+    /** Flush the buffer writing the features to the new layer */
     bool flushBuffer();
 
-    /** create index */
+    /** Create index */
     bool createSpatialIndex();
 };

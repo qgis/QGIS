@@ -24,7 +24,7 @@
 #include <QDialog>
 
 
-/**A dialog to enter data defined label attributes*/
+/** A dialog to enter data defined label attributes*/
 class APP_EXPORT QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPropertyDialogBase
 {
     Q_OBJECT
@@ -32,7 +32,7 @@ class APP_EXPORT QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPro
     QgsLabelPropertyDialog( const QString& layerId, int featureId, const QFont& labelFont, const QString& labelText, QWidget * parent = 0, Qt::WindowFlags f = 0 );
     ~QgsLabelPropertyDialog();
 
-    /**Returns properties changed by the user*/
+    /** Returns properties changed by the user*/
     const QgsAttributeMap& changedProperties() const { return mChangedProperties; }
 
   signals:
@@ -67,10 +67,10 @@ class APP_EXPORT QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPro
     void on_mLabelTextLineEdit_textChanged( const QString& text );
 
   private:
-    /**Sets activation / values to the gui elements depending on the label settings and feature values*/
+    /** Sets activation / values to the gui elements depending on the label settings and feature values*/
     void init( const QString& layerId, int featureId, const QString& labelText );
     void disableGuiElements();
-    /**Block / unblock all input element signals*/
+    /** Block / unblock all input element signals*/
     void blockElementSignals( bool block );
 
     void setDataDefinedValues( const QgsPalLayerSettings &layerSettings, QgsVectorLayer* vlayer );
@@ -85,7 +85,7 @@ class APP_EXPORT QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPro
     void fillHaliComboBox();
     void fillValiComboBox();
 
-    /**Insert changed value into mChangedProperties*/
+    /** Insert changed value into mChangedProperties*/
     void insertChangedValue( QgsPalLayerSettings::DataDefinedProperties p, QVariant value );
 
     QgsAttributeMap mChangedProperties;
@@ -94,7 +94,7 @@ class APP_EXPORT QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPro
 
     QFontDatabase mFontDB;
 
-    /**Label field for the current layer (or -1 if none)*/
+    /** Label field for the current layer (or -1 if none)*/
     int mCurLabelField;
 
     /** Current feature */

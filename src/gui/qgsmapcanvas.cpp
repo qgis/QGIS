@@ -65,7 +65,7 @@ email                : sherman at mrcc.com
 #include <math.h>
 
 
-/**  @deprecated to be deleted, stuff from here should be moved elsewhere */
+/** @deprecated to be deleted, stuff from here should be moved elsewhere */
 class QgsMapCanvas::CanvasProperties
 {
   public:
@@ -660,6 +660,12 @@ void QgsMapCanvas::refreshMap()
 
   //update $map variable to canvas
   QgsExpression::setSpecialColumn( "$map", tr( "canvas" ) );
+
+  //build the expression context
+  QgsExpressionContext expressionContext;
+  expressionContext << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope();
+  mSettings.setExpressionContext( expressionContext );
 
   // create the renderer job
   Q_ASSERT( mJob == 0 );
@@ -1642,6 +1648,20 @@ QGis::UnitType QgsMapCanvas::mapUnits() const
   return mapSettings().mapUnits();
 }
 
+QMap<QString, QString> QgsMapCanvas::layerStyleOverrides() const
+{
+  return mSettings.layerStyleOverrides();
+}
+
+void QgsMapCanvas::setLayerStyleOverrides( const QMap<QString, QString>& overrides )
+{
+  if ( overrides == mSettings.layerStyleOverrides() )
+    return;
+
+  mSettings.setLayerStyleOverrides( overrides );
+  emit layerStyleOverridesChanged();
+}
+
 
 void QgsMapCanvas::setRenderFlag( bool theFlag )
 {
@@ -1837,7 +1857,7 @@ void QgsMapCanvas::writeProject( QDomDocument & doc )
   // TODO: store only units, extent, projections, dest CRS
 }
 
-/**Ask user which datum transform to use*/
+/** Ask user which datum transform to use*/
 void QgsMapCanvas::getDatumTransformInfo( const QgsMapLayer* ml, const QString& srcAuthId, const QString& destAuthId )
 {
   if ( !ml )

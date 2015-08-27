@@ -73,7 +73,7 @@ void QgsRangeWidgetFactory::writeConfig( const QgsEditorWidgetConfig& config, QD
 
 bool QgsRangeWidgetFactory::isFieldSupported( QgsVectorLayer* vl, int fieldIdx )
 {
-  switch ( vl->pendingFields()[fieldIdx].type() )
+  switch ( vl->fields()[fieldIdx].type() )
   {
     case QVariant::LongLong:
     case QVariant::Double:
@@ -83,4 +83,14 @@ bool QgsRangeWidgetFactory::isFieldSupported( QgsVectorLayer* vl, int fieldIdx )
     default:
       return false;
   }
+}
+
+QMap<const char*, int> QgsRangeWidgetFactory::supportedWidgetTypes()
+{
+  QMap<const char*, int> map = QMap<const char*, int>();
+  map.insert( QSlider::staticMetaObject.className(), 10 );
+  map.insert( QDial::staticMetaObject.className(), 10 );
+  map.insert( QSpinBox::staticMetaObject.className(), 10 );
+  map.insert( QDoubleSpinBox::staticMetaObject.className(), 10 );
+  return map;
 }

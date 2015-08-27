@@ -88,6 +88,18 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     //! Returns the currently used layer
     QgsVectorLayer* layer() const;
 
+    //! Callback function for retrieving the expression context for the expression
+    typedef QgsExpressionContext( *ExpressionContextCallback )( const void* context );
+
+    /** Register callback function for retrieving the expression context for the expression
+     * @param fnGetExpressionContext call back function, will be called when the widget requires
+     * the current expression context
+     * @param context context for callback function
+     * @note added in QGIS 2.12
+     * @note not available in Python bindings
+     */
+    void registerGetExpressionContextCallback( ExpressionContextCallback fnGetExpressionContext, const void* context );
+
   signals:
     //! the signal is emitted when the currently selected field changes
     void fieldChanged( QString fieldName );
@@ -137,6 +149,9 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     QgsFieldProxyModel* mFieldProxyModel;
     QString mExpressionDialogTitle;
     QSharedPointer<const QgsDistanceArea> mDa;
+    QScopedPointer< QgsExpressionContext > mExpressionContext;
+    ExpressionContextCallback mExpressionContextCallback;
+    const void* mExpressionContextCallbackContext;
 };
 
 #endif // QGSFIELDEXPRESSIONWIDGET_H

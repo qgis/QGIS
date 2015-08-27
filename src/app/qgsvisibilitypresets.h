@@ -16,6 +16,7 @@
 #ifndef QGSVISIBILITYPRESETS_H
 #define QGSVISIBILITYPRESETS_H
 
+#include "qgsvisibilitypresetcollection.h"
 #include <QMap>
 #include <QObject>
 #include <QSet>
@@ -29,106 +30,71 @@ class QgsLayerTreeNode;
 class QgsLayerTreeGroup;
 
 /**
- * Controller class that allows creation of visibility presets consisting of currently visible
- * map layers in map canvas.
+ * Contains methods for app-specific visibility preset functions.
  */
-class QgsVisibilityPresets : public QObject
+class APP_EXPORT QgsVisibilityPresets : public QObject
 {
     Q_OBJECT
   public:
 
-    typedef struct PresetRecord
-    {
-      bool operator==( const PresetRecord& other ) const
-      {
-        return mVisibleLayerIDs == other.mVisibleLayerIDs
-               && mPerLayerCheckedLegendSymbols == other.mPerLayerCheckedLegendSymbols
-               && mPerLayerCurrentStyle == other.mPerLayerCurrentStyle;
-      }
-      bool operator!=( const PresetRecord& other ) const
-      {
-        return !( *this == other );
-      }
-
-      //! List of layers that are visible
-      QSet<QString> mVisibleLayerIDs;
-      //! For layers that have checkable legend symbols and not all symbols are checked - list which ones are
-      QMap<QString, QSet<QString> > mPerLayerCheckedLegendSymbols;
-      //! For layers that use multiple styles - which one is currently selected
-      QMap<QString, QString> mPerLayerCurrentStyle;
-    } PresetRecord;
-
-
+    /** Returns the instance QgsVisibilityPresets.
+     */
     static QgsVisibilityPresets* instance();
 
     //! Add a new preset using the current state of project's layer tree
     void addPreset( const QString& name );
     //! Update existing preset using the current state of project's layer tree
     void updatePreset( const QString& name );
-    //! Remove existing preset
-    void removePreset( const QString& name );
 
-    //! Remove all presets
-    void clear();
-
-    //! Return list of existing preset names
-    QStringList presets() const;
-
-    //! Return recorded state of a preset
-    PresetRecord presetState( const QString& presetName ) const { return mPresets[presetName]; }
-
-    //! Return list of layer IDs that should be visible for particular preset
-    QStringList presetVisibleLayers( const QString& name ) const;
-
-    //! Apply check states of legend nodes of a given layer as defined in the preset
-    void applyPresetCheckedLegendNodesToLayer( const QString& name, const QString& layerID );
+    //! Return list of layer IDs that should be visible for particular preset.
+    //! The order will match the layer order from the map canvas
+    QStringList orderedPresetVisibleLayers( const QString& name ) const;
 
     //! Convenience menu that lists available presets and actions for management
     QMenu* menu();
 
-    //! Get layer style overrides (for QgsMapSettings) of the visible layers for given preset
-    QMap<QString, QString> presetStyleOverrides( const QString& presetName );
-
-  signals:
-    void presetsChanged();
-
   protected slots:
+
+    //! Handles adding a preset to the project's collection
     void addPreset();
+
+    //! Handles apply a preset to the map canvas
     void presetTriggerred();
+
+    //! Handles replacing a preset's state
+    void replaceTriggerred();
+
+    //! Handles removal of current preset from the project's collection
     void removeCurrentPreset();
+
+    //! Handles creation of preset menu
     void menuAboutToShow();
-
-    void readProject( const QDomDocument& doc );
-    void writeProject( QDomDocument& doc );
-
-    void registryLayersRemoved( QStringList layerIDs );
-
-    //! Update style name if a stored style gets renamed
-    void layerStyleRenamed( const QString& oldName, const QString& newName );
 
   protected:
     QgsVisibilityPresets(); // singleton
 
-    typedef QMap<QString, PresetRecord> PresetRecordMap;
+    //! Applies current layer state to a preset record
+    void applyStateToLayerTreeGroup( QgsLayerTreeGroup* parent, const QgsVisibilityPresetCollection::PresetRecord& rec );
+    //! Applies layer checked legend symbols to a preset record
+    void addPerLayerCheckedLegendSymbols( QgsVisibilityPresetCollection::PresetRecord& rec );
+    //! Applies current layer styles to a preset record
+    void addPerLayerCurrentStyle( QgsVisibilityPresetCollection::PresetRecord& rec );
 
-    void addVisibleLayersToPreset( QgsLayerTreeGroup* parent, PresetRecord& rec );
-    void applyStateToLayerTreeGroup( QgsLayerTreeGroup* parent, const PresetRecord& rec );
-    void addPerLayerCheckedLegendSymbols( PresetRecord& rec );
-    void addPerLayerCurrentStyle( PresetRecord& rec );
+    //! Returns the current state of the map canvas as a preset record
+    QgsVisibilityPresetCollection::PresetRecord currentState();
 
-    PresetRecord currentState();
+    //! Applies a preset for the project's collection to the canvas
     void applyState( const QString& presetName );
-
-    void reconnectToLayersStyleManager();
 
     static QgsVisibilityPresets* sInstance;
 
-    PresetRecordMap mPresets;
-
     QMenu* mMenu;
+    QMenu* mReplaceMenu;
     QAction* mMenuSeparator;
+    QAction* mActionAddPreset;
     QAction* mActionRemoveCurrentPreset;
     QList<QAction*> mMenuPresetActions;
+    QList<QAction*> mMenuReplaceActions;
 };
 
 

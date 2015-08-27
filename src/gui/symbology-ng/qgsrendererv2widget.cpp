@@ -130,7 +130,7 @@ void QgsRendererV2Widget::changeSymbolWidth()
 
   QgsDataDefinedWidthDialog dlg( symbolList, mLayer );
 
-  if ( QMessageBox::Ok == dlg.exec() )
+  if ( QDialog::Accepted == dlg.exec() )
   {
     if ( !dlg.mDDBtn->isActive() )
     {
@@ -155,7 +155,7 @@ void QgsRendererV2Widget::changeSymbolSize()
 
   QgsDataDefinedSizeDialog dlg( symbolList, mLayer );
 
-  if ( QMessageBox::Ok == dlg.exec() )
+  if ( QDialog::Accepted == dlg.exec() )
   {
     if ( !dlg.mDDBtn->isActive() )
     {
@@ -180,7 +180,7 @@ void QgsRendererV2Widget::changeSymbolAngle()
 
   QgsDataDefinedRotationDialog dlg( symbolList, mLayer );
 
-  if ( QMessageBox::Ok == dlg.exec() )
+  if ( QDialog::Accepted == dlg.exec() )
   {
     if ( !dlg.mDDBtn->isActive() )
     {
@@ -276,7 +276,7 @@ void QgsRendererV2DataDefinedMenus::populateMenu( QMenu* menu, QString fieldName
   menu->addSeparator();
 
   bool hasField = false;
-  const QgsFields & flds = mLayer->pendingFields();
+  const QgsFields & flds = mLayer->fields();
   for ( int idx = 0; idx < flds.count(); ++idx )
   {
     const QgsField& fld = flds[idx];
@@ -398,10 +398,24 @@ QgsDataDefinedValueDialog::QgsDataDefinedValueDialog( const QList<QgsSymbolV2*>&
 
 }
 
+static QgsExpressionContext _getExpressionContext( const void* context )
+{
+  QgsExpressionContext expContext;
+  expContext << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope();
+
+  const QgsVectorLayer* layer = ( const QgsVectorLayer* ) context;
+  if ( layer )
+    expContext << QgsExpressionContextUtils::layerScope( layer );
+
+  return expContext;
+}
+
 void QgsDataDefinedValueDialog::init( const QString & description )
 {
   QgsDataDefined dd = symbolDataDefined();
   mDDBtn->init( mLayer, &dd, QgsDataDefinedButton::Double, description );
+  mDDBtn->registerGetExpressionContextCallback( &_getExpressionContext, const_cast< QgsVectorLayer* >( mLayer ) );
   mSpinBox->setValue( value( mSymbolList.back() ) );
   mSpinBox->setEnabled( !mDDBtn->isActive() );
 }

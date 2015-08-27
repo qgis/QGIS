@@ -53,6 +53,7 @@ class APP_EXPORT QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     void updatePlacementWidgets();
     void updateSvgWidgets( const QString& svgPath );
 
+    void on_mLabelModeComboBox_currentIndexChanged( int index );
     void on_mPreviewSizeSlider_valueChanged( int i );
     void on_mFontSizeSpinBox_valueChanged( double d );
     void on_mFontCapitalsComboBox_currentIndexChanged( int index );
@@ -79,6 +80,7 @@ class APP_EXPORT QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     void on_mPreviewBackgroundBtn_colorChanged( const QColor &color );
     void on_mDirectSymbLeftToolBtn_clicked();
     void on_mDirectSymbRightToolBtn_clicked();
+    void on_mChkNoObstacle_toggled( bool active );
 
   protected:
     void blockInitSignals( bool block );
@@ -90,7 +92,7 @@ class APP_EXPORT QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     void populatePlacementMethods();
     void populateFieldNames();
     void populateDataDefinedButtons( QgsPalLayerSettings& s );
-    /**Sets data defined property attribute to map */
+    /** Sets data defined property attribute to map */
     void setDataDefinedProperty( const QgsDataDefinedButton* ddBtn, QgsPalLayerSettings::DataDefinedProperties p, QgsPalLayerSettings& lyr );
     void updateFont( QFont font );
 
@@ -123,6 +125,7 @@ class APP_EXPORT QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     void showBackgroundRadius( bool show );
     void showBackgroundPenStyle( bool show );
     void on_mShapeSVGPathLineEdit_textChanged( const QString& text );
+    void updateLinePlacementOptions();
 };
 
 #endif

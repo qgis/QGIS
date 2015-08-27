@@ -213,6 +213,7 @@ class TestServerVsCanvasPoint(TestServerBasePoint, TestPointBase):
         super(TestServerVsCanvasPoint, self).setUp()
         self.configTest('pal_canvas', 'sp')
 
+
 class TestServerBaseLine(TestServerBase):
 
     @classmethod
@@ -220,12 +221,14 @@ class TestServerBaseLine(TestServerBase):
         TestServerBase.setUpClass()
         cls.layer = TestQgsPalLabeling.loadFeatureLayer('line')
 
+
 class TestServerLine(TestServerBaseLine, TestLineBase):
 
     def setUp(self):
         """Run before each test."""
         super(TestServerLine, self).setUp()
         self.configTest('pal_server_line', 'sp')
+
 
 class TestServerVsCanvasLine(TestServerBaseLine, TestLineBase):
 

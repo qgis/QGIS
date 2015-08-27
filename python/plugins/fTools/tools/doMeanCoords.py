@@ -35,7 +35,9 @@ from qgis.core import QGis, QgsFeature, QgsVectorFileWriter, QgsFields, QgsField
 from math import sqrt
 from ui_frmMeanCoords import Ui_Dialog
 
+
 class Dialog(QDialog, Ui_Dialog):
+
     def __init__(self, iface, function):
         QDialog.__init__(self, iface.mainWindow())
         self.iface = iface
@@ -44,11 +46,11 @@ class Dialog(QDialog, Ui_Dialog):
         self.updateUi()
         QObject.connect(self.toolOut, SIGNAL("clicked()"), self.outFile)
         QObject.connect(self.inShape, SIGNAL("currentIndexChanged(QString)"), self.update)
-        self.buttonOk = self.buttonBox_2.button( QDialogButtonBox.Ok )
+        self.buttonOk = self.buttonBox_2.button(QDialogButtonBox.Ok)
         self.progressBar.setValue(0)
         self.populateLayers()
 
-    def populateLayers( self ):
+    def populateLayers(self):
         layers = ftools_utils.getLayerNames([QGis.Point, QGis.Line, QGis.Polygon])
         self.inShape.blockSignals(True)
         self.inShape.clear()
@@ -57,18 +59,18 @@ class Dialog(QDialog, Ui_Dialog):
 
     def updateUi(self):
         if self.function == 1:
-            self.setWindowTitle( self.tr("Mean coordinates") )
+            self.setWindowTitle(self.tr("Mean coordinates"))
             self.sizeValue.setVisible(False)
             self.label_size.setVisible(False)
         elif self.function == 2:
-            self.setWindowTitle( self.tr("Standard distance") )
+            self.setWindowTitle(self.tr("Standard distance"))
         self.resize(381, 100)
 
     def update(self, inputLayer):
         self.weightField.clear()
         self.uniqueField.clear()
-        self.weightField.addItem( self.tr("(Optional) Weight field") )
-        self.uniqueField.addItem( self.tr("(Optional) Unique ID field") )
+        self.weightField.addItem(self.tr("(Optional) Weight field"))
+        self.uniqueField.addItem(self.tr("(Optional) Unique ID field"))
         self.changedLayer = ftools_utils.getVectorLayerByName(inputLayer)
         changedField = ftools_utils.getFieldList(self.changedLayer)
         for f in changedField:
@@ -77,7 +79,7 @@ class Dialog(QDialog, Ui_Dialog):
             self.uniqueField.addItem(unicode(f.name()))
 
     def accept(self):
-        self.buttonOk.setEnabled( False )
+        self.buttonOk.setEnabled(False)
         if self.inShape.currentText() == "":
             QMessageBox.information(self, self.tr("Coordinate statistics"), self.tr("No input vector layer specified"))
         elif self.outShape.text() == "":
@@ -92,19 +94,19 @@ class Dialog(QDialog, Ui_Dialog):
             if self.addToCanvasCheck.isChecked():
                 addCanvasCheck = ftools_utils.addShapeToCanvas(unicode(outPath))
                 if not addCanvasCheck:
-                    QMessageBox.warning( self, self.tr("Coordinate statistics"), self.tr( "Error loading output shapefile:\n%s" ) % ( unicode( outPath ) ))
+                    QMessageBox.warning(self, self.tr("Coordinate statistics"), self.tr("Error loading output shapefile:\n%s") % (unicode(outPath)))
                 self.populateLayers()
             else:
-                QMessageBox.information(self, self.tr("Coordinate statistics"),self.tr("Created output shapefile:\n%s" ) % ( unicode( outPath )))
+                QMessageBox.information(self, self.tr("Coordinate statistics"), self.tr("Created output shapefile:\n%s") % (unicode(outPath)))
         self.progressBar.setValue(0)
-        self.buttonOk.setEnabled( True )
+        self.buttonOk.setEnabled(True)
 
     def outFile(self):
         self.outShape.clear()
-        ( self.shapefileName, self.encoding ) = ftools_utils.saveDialog( self )
+        (self.shapefileName, self.encoding) = ftools_utils.saveDialog(self)
         if self.shapefileName is None or self.encoding is None:
             return
-        self.outShape.setText( self.shapefileName )
+        self.outShape.setText(self.shapefileName)
 
     def compute(self, inName, weightField="", times=1, uniqueField=""):
         vlayer = ftools_utils.getVectorLayerByName(inName)
@@ -118,24 +120,24 @@ class Dialog(QDialog, Ui_Dialog):
             if not QgsVectorFileWriter.deleteShapeFile(self.shapefileName):
                 return
         if uniqueIndex != -1:
-            uniqueValues = ftools_utils.getUniqueValues(provider, int( uniqueIndex ) )
+            uniqueValues = ftools_utils.getUniqueValues(provider, int(uniqueIndex))
             single = False
         else:
             uniqueValues = [1]
             single = True
         if self.function == 2:
             fieldList = QgsFields()
-            fieldList.append( QgsField("STD_DIST", QVariant.Double) )
-            fieldList.append( QgsField("UID", QVariant.String) )
+            fieldList.append(QgsField("STD_DIST", QVariant.Double))
+            fieldList.append(QgsField("UID", QVariant.String))
             writer = QgsVectorFileWriter(self.shapefileName, self.encoding, fieldList, QGis.WKBPolygon, sRs)
         else:
             fieldList = QgsFields()
-            fieldList.append( QgsField("MEAN_X", QVariant.Double) )
-            fieldList.append( QgsField("MEAN_Y", QVariant.Double) )
-            fieldList.append( QgsField("UID", QVariant.String) )
+            fieldList.append(QgsField("MEAN_X", QVariant.Double))
+            fieldList.append(QgsField("MEAN_Y", QVariant.Double))
+            fieldList.append(QgsField("UID", QVariant.String))
             writer = QgsVectorFileWriter(self.shapefileName, self.encoding, fieldList, QGis.WKBPoint, sRs)
         outfeat = QgsFeature()
-        outfeat.setFields( fieldList )
+        outfeat.setFields(fieldList)
         points = []
         weights = []
         nFeat = provider.featureCount() * len(uniqueValues)
@@ -192,8 +194,8 @@ class Dialog(QDialog, Ui_Dialog):
                     md += tempDist
                 md = md / item
                 for i in values:
-                    sd += (i-md)*(i-md)
-                sd = sqrt(sd/item)
+                    sd += (i - md) * (i - md)
+                sd = sqrt(sd / item)
                 outfeat.setGeometry(QgsGeometry.fromPoint(meanPoint).buffer(sd * times, 10))
                 outfeat.setAttribute(0, sd)
                 outfeat.setAttribute(1, j)

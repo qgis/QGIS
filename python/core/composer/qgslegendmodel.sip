@@ -28,7 +28,7 @@ class QgsLegendModel : QStandardItemModel
      */
     void setLayerSetAndGroups( const QStringList& layerIds, const QList<  QPair< QString, QList<QString> > >& groupInfo ) /Deprecated/;
     void setLayerSet( const QStringList& layerIds, double scaleDenominator = -1, QString rule = "" );
-    /**Adds a group
+    /** Adds a group
       @param text name of group (defaults to translation of "Group")
       @param position insertion position (toplevel position (or -1 if it should be placed at the end of the legend).
       @param parentItem parent item
@@ -36,11 +36,11 @@ class QgsLegendModel : QStandardItemModel
       */
     QStandardItem *addGroup( QString text = QString::null, int position = -1, QStandardItem* parentItem = 0 );
 
-    /**Tries to automatically update a model entry (e.g. a whole layer or only a single item)*/
+    /** Tries to automatically update a model entry (e.g. a whole layer or only a single item)*/
     void updateItem( QStandardItem* item );
-    /**Updates the whole symbology of a layer*/
+    /** Updates the whole symbology of a layer*/
     void updateLayer( QStandardItem* layerItem );
-    /**Tries to update a single classification item*/
+    /** Tries to update a single classification item*/
     void updateVectorV2ClassificationItem( QStandardItem* classificationItem, QgsSymbolV2* symbol, QString itemText );
 
     void updateRasterClassificationItem( QStandardItem* classificationItem );
@@ -55,14 +55,14 @@ class QgsLegendModel : QStandardItemModel
     Qt::DropActions supportedDropActions() const;
     Qt::ItemFlags flags( const QModelIndex &index ) const;
 
-    /**Implemented to support drag operations*/
+    /** Implemented to support drag operations*/
     virtual bool removeRows( int row, int count, const QModelIndex & parent = QModelIndex() );
 
-    /**For the drag operation*/
+    /** For the drag operation*/
     QMimeData* mimeData( const QModelIndexList &indexes ) const;
     QStringList mimeTypes() const;
 
-    /**Implements the drop operation*/
+    /** Implements the drop operation*/
     bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent );
 
     void setAutoUpdate( bool autoUpdate );

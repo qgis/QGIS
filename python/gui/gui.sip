@@ -94,6 +94,7 @@
 %Include qgsmessageviewer.sip
 %Include qgsnewhttpconnection.sip
 %Include qgsnewmemorylayerdialog.sip
+%Include qgsnewnamedialog.sip
 %Include qgsnewvectorlayerdialog.sip
 %Include qgsnumericsortlistviewitem.sip
 %Include qgsoptionsdialogbase.sip
@@ -117,6 +118,7 @@
 %Include qgssvgannotationitem.sip
 %Include qgstextannotationitem.sip
 %Include qgsuserinputdockwidget.sip
+%Include qgsvariableeditorwidget.sip
 %Include qgsvectorlayertools.sip
 %Include qgsvertexmarker.sip
 
@@ -130,6 +132,7 @@
 %Include attributetable/qgsfeaturelistviewdelegate.sip
 %Include attributetable/qgsfeaturemodel.sip
 %Include attributetable/qgsfeatureselectionmodel.sip
+%Include attributetable/qgsfieldconditionalformatwidget.sip
 %Include attributetable/qgsifeatureselectionmanager.sip
 
 %Include layertree/qgscustomlayerorderwidget.sip

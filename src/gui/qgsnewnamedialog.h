@@ -46,6 +46,48 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
                       const QRegExp& regexp = QRegExp(), Qt::CaseSensitivity cs = Qt::CaseSensitive,
                       QWidget *parent = 0, Qt::WindowFlags flags = QgisGui::ModalDialogFlags );
 
+    /** Sets the hint string for the dialog (the text shown above the name
+     * input box).
+     * @param hintString hint text
+     * @see hintString()
+     * @note added in QGIS 2.12
+     */
+    void setHintString( const QString& hintString );
+
+    /** Returns the hint string for the dialog (the text shown above the name
+     * input box).
+     * @see setHintString()
+     * @note added in QGIS 2.12
+     */
+    QString hintString() const;
+
+    /** Sets whether users are permitted to overwrite existing names. If true, then
+     * the dialog will reflect that the new name will overwrite an existing name. If false,
+     * then the dialog will not accept names which already exist.
+     * @note added in QGIS 2.12
+     * @see overwriteEnabled()
+     */
+    void setOverwriteEnabled( bool enabled );
+
+    /** Returns whether users are permitted to overwrite existing names.
+     * @note added in QGIS 2.12
+     * @see setOverwriteEnabled()
+     */
+    bool overwriteEnabled() const { return mOverwriteEnabled; }
+
+    /** Sets the string used for warning users if a conflicting name exists.
+     * @param string warning string. If empty a default warning string will be used.
+     * @note added in QGIS 2.12
+     * @see conflictingNameWarning()
+     */
+    void setConflictingNameWarning( const QString& string );
+
+    /** Returns the string used for warning users if a conflicting name exists.
+     * @note added in QGIS 2.12
+     * @see setConflictingNameWarning()
+     */
+    QString conflictingNameWarning() const { return mConflictingNameWarning; }
+
     /** Name entered by user.
      * @return new name
      */
@@ -67,11 +109,15 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
     QStringList mExiting;
     QStringList mExtensions;
     Qt::CaseSensitivity mCaseSensitivity;
+    QLabel* mHintLabel;
     QLineEdit *mLineEdit;
     QLabel *mNamesLabel; // list of names with extensions
     QLabel *mErrorLabel;
     QString mOkString;
     QRegExp mRegexp;
+    bool mOverwriteEnabled;
+    QString mConflictingNameWarning;
+
     QString highlightText( const QString& text );
     static QStringList fullNames( const QString& name, const QStringList& extensions );
     // get list of existing names

@@ -29,7 +29,7 @@ class QgsSlopeFilter;
 class QgsHillshadeFilter;
 class QProgressDialog;
 
-/**Produces coloured relief rasters from DEM*/
+/** Produces coloured relief rasters from DEM*/
 class ANALYSIS_EXPORT QgsRelief
 {
   public:
@@ -44,7 +44,7 @@ class ANALYSIS_EXPORT QgsRelief
     QgsRelief( const QString& inputFile, const QString& outputFile, const QString& outputFormat );
     ~QgsRelief();
 
-    /**Starts the calculation, reads from mInputFile and stores the result in mOutputFile
+    /** Starts the calculation, reads from mInputFile and stores the result in mOutputFile
       @param p progress dialog that receives update and that is checked for abort. 0 if no progress bar is needed.
       @return 0 in case of success*/
     int processRaster( QProgressDialog* p );
@@ -57,11 +57,11 @@ class ANALYSIS_EXPORT QgsRelief
     const QList< ReliefColor >& reliefColors() const { return mReliefColors; }
     void setReliefColors( const QList< ReliefColor >& c ) { mReliefColors = c; }
 
-    /**Calculates class breaks according with the method of Buenzli (2011) using an iterative algorithm for segmented regression
+    /** Calculates class breaks according with the method of Buenzli (2011) using an iterative algorithm for segmented regression
       @return true in case of success*/
     QList< ReliefColor > calculateOptimizedReliefClasses();
 
-    /**Write frequency of elevation values to file for manual inspection*/
+    /** Write frequency of elevation values to file for manual inspection*/
     bool exportFrequencyDistributionToCsv( const QString& file );
 
   private:
@@ -72,9 +72,9 @@ class ANALYSIS_EXPORT QgsRelief
 
     double mCellSizeX;
     double mCellSizeY;
-    /**The nodata value of the input layer*/
+    /** The nodata value of the input layer*/
     float mInputNodataValue;
-    /**The nodata value of the output layer*/
+    /** The nodata value of the output layer*/
     float mOutputNodataValue;
 
     double mZFactor;
@@ -91,26 +91,26 @@ class ANALYSIS_EXPORT QgsRelief
     bool processNineCellWindow( float* x1, float* x2, float* x3, float* x4, float* x5, float* x6, float* x7, float* x8, float* x9,
                                 unsigned char* red, unsigned char* green, unsigned char* blue );
 
-    /**Opens the input file and returns the dataset handle and the number of pixels in x-/y- direction*/
+    /** Opens the input file and returns the dataset handle and the number of pixels in x-/y- direction*/
     GDALDatasetH openInputFile( int& nCellsX, int& nCellsY );
-    /**Opens the output driver and tests if it supports the creation of a new dataset
+    /** Opens the output driver and tests if it supports the creation of a new dataset
       @return NULL on error and the driver handle on success*/
     GDALDriverH openOutputDriver();
-    /**Opens the output file and sets the same geotransform and CRS as the input data
+    /** Opens the output file and sets the same geotransform and CRS as the input data
       @return the output dataset or NULL in case of error*/
     GDALDatasetH openOutputFile( GDALDatasetH inputDataset, GDALDriverH outputDriver );
 
-    /**Set elevation color*/
+    /** Set elevation color*/
     bool setElevationColor( double elevation, int* red, int* green, int* blue );
 
-    /**Sets relief colors*/
+    /** Sets relief colors*/
     void setDefaultReliefColors();
-    /**Returns class (0-255) for an elevation value
+    /** Returns class (0-255) for an elevation value
       @return elevation class or -1 in case of error*/
     int frequencyClassForElevation( double elevation, double minElevation, double elevationClassRange );
-    /**Do one iteration of class break optimisation (algorithm from Garcia and Rodriguez)*/
+    /** Do one iteration of class break optimisation (algorithm from Garcia and Rodriguez)*/
     void optimiseClassBreaks( QList<int>& breaks, double* frequencies );
-    /**Calculates coefficients a and b
+    /** Calculates coefficients a and b
       @param input data points ( elevation class / frequency )
       @param a slope
       @param b y value for x=0

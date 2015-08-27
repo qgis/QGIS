@@ -265,8 +265,16 @@ void QgsComposition::setAllUnselected()
   }
 }
 
-void QgsComposition::refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property )
+void QgsComposition::refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, const QgsExpressionContext* context )
 {
+  const QgsExpressionContext* evalContext = context;
+  QScopedPointer< QgsExpressionContext > scopedContext;
+  if ( !evalContext )
+  {
+    scopedContext.reset( createExpressionContext() );
+    evalContext = scopedContext.data();
+  }
+
   //updates data defined properties and redraws composition to match
   if ( property == QgsComposerObject::NumPages || property == QgsComposerObject::AllProperties )
   {
@@ -276,7 +284,7 @@ void QgsComposition::refreshDataDefinedProperty( const QgsComposerObject::DataDe
        property == QgsComposerObject::PaperOrientation || property == QgsComposerObject::PresetPaperSize ||
        property == QgsComposerObject::AllProperties )
   {
-    refreshPageSize();
+    refreshPageSize( evalContext );
   }
 }
 
@@ -376,7 +384,8 @@ void QgsComposition::setNumPages( const int pages )
 
   //data defined num pages set?
   QVariant exprVal;
-  if ( dataDefinedEvaluate( QgsComposerObject::NumPages, exprVal, &mDataDefinedProperties ) )
+  QScopedPointer< QgsExpressionContext > context( createExpressionContext() );
+  if ( dataDefinedEvaluate( QgsComposerObject::NumPages, exprVal, *context.data(), &mDataDefinedProperties ) )
   {
     bool ok = false;
     int pagesD = exprVal.toInt( &ok );
@@ -847,6 +856,9 @@ bool QgsComposition::writeXML( QDomElement& composerElem, QDomDocument& doc )
   //data defined properties
   QgsComposerUtils::writeDataDefinedPropertyMap( compositionElem, doc, &mDataDefinedNames, &mDataDefinedProperties );
 
+  //custom properties
+  mCustomProperties.writeXml( compositionElem, doc );
+
   return true;
 }
 
@@ -914,6 +926,9 @@ bool QgsComposition::readXML( const QDomElement& compositionElem, const QDomDocu
 
   //data defined properties
   QgsComposerUtils::readDataDefinedPropertyMap( compositionElem, &mDataDefinedNames, &mDataDefinedProperties );
+
+  //custom properties
+  mCustomProperties.readXml( compositionElem );
 
   updatePaperItems();
 
@@ -2918,14 +2933,22 @@ bool QgsComposition::ddPageSizeActive() const
          dataDefinedActive( QgsComposerObject::PaperOrientation, &mDataDefinedProperties );
 }
 
-void QgsComposition::refreshPageSize()
+void QgsComposition::refreshPageSize( const QgsExpressionContext* context )
 {
+  const QgsExpressionContext* evalContext = context;
+  QScopedPointer< QgsExpressionContext > scopedContext;
+  if ( !evalContext )
+  {
+    scopedContext.reset( createExpressionContext() );
+    evalContext = scopedContext.data();
+  }
+
   double pageWidth = mPageWidth;
   double pageHeight = mPageHeight;
 
   QVariant exprVal;
   //in order of precedence - first consider predefined page size
-  if ( dataDefinedEvaluate( QgsComposerObject::PresetPaperSize, exprVal, &mDataDefinedProperties ) )
+  if ( dataDefinedEvaluate( QgsComposerObject::PresetPaperSize, exprVal, *evalContext, &mDataDefinedProperties ) )
   {
     QString presetString = exprVal.toString().trimmed();
     QgsDebugMsg( QString( "exprVal Paper Preset size :%1" ).arg( presetString ) );
@@ -2939,7 +2962,7 @@ void QgsComposition::refreshPageSize()
   }
 
   //which is overwritten by data defined width/height
-  if ( dataDefinedEvaluate( QgsComposerObject::PaperWidth, exprVal, &mDataDefinedProperties ) )
+  if ( dataDefinedEvaluate( QgsComposerObject::PaperWidth, exprVal, *evalContext, &mDataDefinedProperties ) )
   {
     bool ok;
     double widthD = exprVal.toDouble( &ok );
@@ -2949,7 +2972,7 @@ void QgsComposition::refreshPageSize()
       pageWidth = widthD;
     }
   }
-  if ( dataDefinedEvaluate( QgsComposerObject::PaperHeight, exprVal, &mDataDefinedProperties ) )
+  if ( dataDefinedEvaluate( QgsComposerObject::PaperHeight, exprVal, *evalContext, &mDataDefinedProperties ) )
   {
     bool ok;
     double heightD = exprVal.toDouble( &ok );
@@ -2961,7 +2984,7 @@ void QgsComposition::refreshPageSize()
   }
 
   //which is finally overwritten by data defined orientation
-  if ( dataDefinedEvaluate( QgsComposerObject::PaperOrientation, exprVal, &mDataDefinedProperties ) )
+  if ( dataDefinedEvaluate( QgsComposerObject::PaperOrientation, exprVal, *evalContext, &mDataDefinedProperties ) )
   {
     bool ok;
     QString orientationString = exprVal.toString().trimmed();
@@ -3024,9 +3047,9 @@ void QgsComposition::setDataDefinedProperty( const QgsComposerObject::DataDefine
     {
       QgsDataDefined* dd = it.value();
       dd->setActive( active );
-      dd->setUseExpression( useExpression );
       dd->setExpressionString( expression );
       dd->setField( field );
+      dd->setUseExpression( useExpression );
     }
   }
   else if ( !defaultVals )
@@ -3036,7 +3059,29 @@ void QgsComposition::setDataDefinedProperty( const QgsComposerObject::DataDefine
   }
 }
 
-bool QgsComposition::dataDefinedEvaluate( QgsComposerObject::DataDefinedProperty property, QVariant &expressionValue, QMap<QgsComposerObject::DataDefinedProperty, QgsDataDefined *> *dataDefinedProperties )
+void QgsComposition::setCustomProperty( const QString& key, const QVariant& value )
+{
+  mCustomProperties.setValue( key, value );
+}
+
+QVariant QgsComposition::customProperty( const QString& key, const QVariant& defaultValue ) const
+{
+  return mCustomProperties.value( key, defaultValue );
+}
+
+void QgsComposition::removeCustomProperty( const QString& key )
+{
+  mCustomProperties.remove( key );
+}
+
+QStringList QgsComposition::customProperties() const
+{
+  return mCustomProperties.keys();
+}
+
+bool QgsComposition::dataDefinedEvaluate( QgsComposerObject::DataDefinedProperty property, QVariant &expressionValue,
+    const QgsExpressionContext& context,
+    QMap<QgsComposerObject::DataDefinedProperty, QgsDataDefined *> *dataDefinedProperties )
 {
   if ( property == QgsComposerObject::NoProperty || property == QgsComposerObject::AllProperties )
   {
@@ -3048,23 +3093,25 @@ bool QgsComposition::dataDefinedEvaluate( QgsComposerObject::DataDefinedProperty
   expressionValue.clear();
 
   //get fields and feature from atlas
-  const QgsFeature* currentFeature = 0;
-  const QgsFields* layerFields = 0;
+  QgsFeature currentFeature;
+  QgsFields layerFields;
+  bool useFeature = false;
   if ( mAtlasComposition.enabled() )
   {
     QgsVectorLayer* atlasLayer = mAtlasComposition.coverageLayer();
     if ( atlasLayer )
     {
-      layerFields = &atlasLayer->pendingFields();
+      layerFields = atlasLayer->fields();
     }
     if ( mAtlasMode != QgsComposition::AtlasOff )
     {
-      currentFeature = mAtlasComposition.currentFeature();
+      useFeature = true;
+      currentFeature = mAtlasComposition.feature();
     }
   }
 
   //evaluate data defined property using current atlas context
-  QVariant result = dataDefinedValue( property, currentFeature, layerFields, dataDefinedProperties );
+  QVariant result = dataDefinedValue( property, useFeature ? &currentFeature : 0, layerFields, context, dataDefinedProperties );
 
   if ( result.isValid() )
   {
@@ -3104,7 +3151,7 @@ bool QgsComposition::dataDefinedActive( const QgsComposerObject::DataDefinedProp
   return dd->isActive();
 }
 
-QVariant QgsComposition::dataDefinedValue( QgsComposerObject::DataDefinedProperty property, const QgsFeature *feature, const QgsFields *fields, QMap<QgsComposerObject::DataDefinedProperty, QgsDataDefined *> *dataDefinedProperties ) const
+QVariant QgsComposition::dataDefinedValue( QgsComposerObject::DataDefinedProperty property, const QgsFeature *feature, const QgsFields& fields, const QgsExpressionContext& context, QMap<QgsComposerObject::DataDefinedProperty, QgsDataDefined *> *dataDefinedProperties ) const
 {
   if ( property == QgsComposerObject::AllProperties || property == QgsComposerObject::NoProperty )
   {
@@ -3140,28 +3187,28 @@ QVariant QgsComposition::dataDefinedValue( QgsComposerObject::DataDefinedPropert
 
   if ( !dd->expressionIsPrepared() )
   {
-    prepareDataDefinedExpression( dd, dataDefinedProperties );
+    prepareDataDefinedExpression( dd, dataDefinedProperties, context );
   }
 
   if ( useExpression && dd->expressionIsPrepared() )
   {
     QgsExpression* expr = dd->expression();
 
-    result = expr->evaluate( feature );
+    result = expr->evaluate( &context );
     if ( expr->hasEvalError() )
     {
       QgsDebugMsgLevel( QString( "Evaluate error:" ) + expr->evalErrorString(), 4 );
       return QVariant();
     }
   }
-  else if ( !useExpression && !field.isEmpty() && fields )
+  else if ( !useExpression && !field.isEmpty() )
   {
     if ( !feature )
     {
       return QVariant();
     }
     // use direct attribute access instead of evaluating "field" expression (much faster)
-    int indx = fields->indexFromName( field );
+    int indx = fields.indexFromName( field );
     if ( indx != -1 )
     {
       result = feature->attribute( indx );
@@ -3170,34 +3217,42 @@ QVariant QgsComposition::dataDefinedValue( QgsComposerObject::DataDefinedPropert
   return result;
 }
 
-void QgsComposition::prepareDataDefinedExpression( QgsDataDefined *dd, QMap<QgsComposerObject::DataDefinedProperty, QgsDataDefined *> *dataDefinedProperties ) const
+void QgsComposition::prepareDataDefinedExpression( QgsDataDefined *dd, QMap<QgsComposerObject::DataDefinedProperty, QgsDataDefined *> *dataDefinedProperties,
+    const QgsExpressionContext& context ) const
 {
-  QgsVectorLayer* atlasLayer = 0;
-
-  if ( mAtlasComposition.enabled() )
-  {
-    atlasLayer = mAtlasComposition.coverageLayer();
-  }
-
   //if specific QgsDataDefined passed, prepare it
   //otherwise prepare all QgsDataDefineds
   if ( dd )
   {
-    dd->prepareExpression( atlasLayer );
+    dd->prepareExpression( context );
   }
   else
   {
     QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >::const_iterator it = dataDefinedProperties->constBegin();
     for ( ; it != dataDefinedProperties->constEnd();  ++it )
     {
-      it.value()->prepareExpression( atlasLayer );
+      it.value()->prepareExpression( context );
     }
   }
 }
 
+QgsExpressionContext* QgsComposition::createExpressionContext() const
+{
+  QgsExpressionContext* context = new QgsExpressionContext();
+  context->appendScope( QgsExpressionContextUtils::globalScope() );
+  context->appendScope( QgsExpressionContextUtils::projectScope() );
+  context->appendScope( QgsExpressionContextUtils::compositionScope( this ) );
+  if ( mAtlasComposition.enabled() )
+  {
+    context->appendScope( QgsExpressionContextUtils::atlasScope( &mAtlasComposition ) );
+  }
+  return context;
+}
+
 void QgsComposition::prepareAllDataDefinedExpressions()
 {
-  prepareDataDefinedExpression( 0, &mDataDefinedProperties );
+  QScopedPointer< QgsExpressionContext > context( createExpressionContext() );
+  prepareDataDefinedExpression( 0, &mDataDefinedProperties, *context.data() );
 }
 
 void QgsComposition::relativeResizeRect( QRectF& rectToResize, const QRectF& boundsBefore, const QRectF& boundsAfter )

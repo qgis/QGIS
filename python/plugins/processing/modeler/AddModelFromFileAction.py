@@ -50,12 +50,12 @@ class AddModelFromFileAction(ToolboxAction):
         settings = QSettings()
         lastDir = settings.value('Processing/lastModelsDir', '')
         filename = QFileDialog.getOpenFileName(self.toolbox,
-            self.tr('Open model', 'AddModelFromFileAction'), lastDir,
-            self.tr('Processing model files (*.model *.MODEL)', 'AddModelFromFileAction'))
+                                               self.tr('Open model', 'AddModelFromFileAction'), lastDir,
+                                               self.tr('Processing model files (*.model *.MODEL)', 'AddModelFromFileAction'))
         if filename:
             try:
                 settings.setValue('Processing/lastModelsDir',
-                    QFileInfo(filename).absoluteDir().absolutePath())
+                                  QFileInfo(filename).absoluteDir().absolutePath())
 
                 ModelerAlgorithm.fromFile(filename)
             except WrongModelException:
@@ -66,9 +66,9 @@ class AddModelFromFileAction(ToolboxAction):
                 return
             except:
                 QMessageBox.warning(self.toolbox,
-                    self.tr('Error reading model', 'AddModelFromFileAction'),
-                    self.tr('Cannot read file', 'AddModelFromFileAction'))
+                                    self.tr('Error reading model', 'AddModelFromFileAction'),
+                                    self.tr('Cannot read file', 'AddModelFromFileAction'))
                 return
             destFilename = os.path.join(ModelerUtils.modelsFolder(), os.path.basename(filename))
-            shutil.copyfile(filename,destFilename)
+            shutil.copyfile(filename, destFilename)
             self.toolbox.updateProvider('model')

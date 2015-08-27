@@ -6,8 +6,11 @@
 	<option key="elevation" />
 	<flag key="p" answer="off" />
 	<option key="null" />
-	<option key="elevation2d" />
-	<option key="elevscale" />
-	<option key="dp" />
+	<option key="elevation2d" version_max="6.4"/>
+	<option key="elevscale" version_max="6.4"/>
+	<option key="dp" version_max="6.4"/>
+	<option key="z" version_min="7.0"/>
+	<option key="zscale" version_min="7.0"/>
+	<option key="precision" version_min="7.0"/>
 	<file key="output" type="new" filters="VTK (*.vtk)" />
 </qgisgrassmodule>

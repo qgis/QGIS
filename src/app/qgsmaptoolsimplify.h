@@ -66,12 +66,12 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
     QString statusText() const;
 
   public slots:
-    /** slot to change display when slidebar is moved */
+    /** Slot to change display when slidebar is moved */
     void setTolerance( double tolerance );
 
     void setToleranceUnits( int units );
 
-    /** slot to store feture after simplification */
+    /** Slot to store feture after simplification */
     void storeSimplified();
 
     void clearSelection();
@@ -94,7 +94,7 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
     /** Features with which we are working */
     QList<QgsFeature> mSelectedFeatures;
 
-    /** real value of tolerance */
+    /** Real value of tolerance */
     double mTolerance;
 
     QgsTolerance::UnitType mToleranceUnits;

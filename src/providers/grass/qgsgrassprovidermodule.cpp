@@ -116,7 +116,7 @@ void QgsGrassMapsetItem::setState( State state )
 {
   QgsDebugMsg( "Entered" );
   QgsDirectoryItem::setState( state );
-  // TODO: verify and reenable, it seems to be causing strange icon switching during import, sometimes
+  // TODO: verify and re-enable, it seems to be causing strange icon switching during import, sometimes
 #if 0
   if ( state == Populated )
   {
@@ -342,7 +342,12 @@ QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
 
 QList<QAction*> QgsGrassMapsetItem::actions()
 {
-  return QgsGrassItemActions::instance()->actions();
+  QList<QAction*> list = QgsGrassItemActions::instance()->actions();
+  // TODO: check mapset ownership
+  QAction* actionOpen = new QAction( QgsApplication::getThemeIcon( "grass_open_mapset.png" ), tr( "Open mapset" ), this );
+  connect( actionOpen, SIGNAL( triggered() ), SLOT( openMapset() ) );
+  list.append( actionOpen );
+  return list;
 }
 
 bool QgsGrassMapsetItem::handleDrop( const QMimeData * data, Qt::DropAction )
@@ -612,6 +617,18 @@ void QgsGrassMapsetItem::onImportFinished( QgsGrassImport* import )
   mImports.removeOne( import );
   import->deleteLater();
   refresh();
+}
+
+void QgsGrassMapsetItem::openMapset()
+{
+  QgsDebugMsg( "entered" );
+  QString error = QgsGrass::openMapset( mGisdbase, mLocation, name() );
+  if ( !error.isEmpty() )
+  {
+    QgsGrass::warning( error );
+    return;
+  }
+  QgsGrass::saveMapset();
 }
 
 //----------------------- QgsGrassObjectItemBase ------------------------------

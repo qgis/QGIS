@@ -63,32 +63,32 @@ class DropAnalysisMulti(GeoAlgorithm):
         return QIcon(os.path.dirname(__file__) + '/../../images/taudem.png')
 
     def defineCharacteristics(self):
-        self.name = 'Stream Drop Analysis (multifile)'
+        self.name, self.i18n_name = self.trAlgorithm('Stream Drop Analysis (multifile)')
         self.cmdName = 'dropanalysis'
-        self.group = 'Stream Network Analysis tools'
+        self.group, self.i18n_group = self.trAlgorithm('Stream Network Analysis tools')
 
         self.addParameter(ParameterFile(self.D8_CONTRIB_AREA_GRID,
-            self.tr('D8 Contributing Area Grid'), True, False))
+                                        self.tr('D8 Contributing Area Grid'), True, False))
         self.addParameter(ParameterFile(self.D8_FLOW_DIR_GRID,
-            self.tr('D8 Flow Direction Grid'), True, False))
+                                        self.tr('D8 Flow Direction Grid'), True, False))
         self.addParameter(ParameterFile(self.PIT_FILLED_GRID,
-            self.tr('Pit Filled Elevation Grid'), True, False))
+                                        self.tr('Pit Filled Elevation Grid'), True, False))
         self.addParameter(ParameterFile(self.ACCUM_STREAM_SOURCE_GRID,
-            self.tr('Accumulated Stream Source Grid'), True, False))
+                                        self.tr('Accumulated Stream Source Grid'), True, False))
         self.addParameter(ParameterVector(self.OUTLETS_SHAPE,
-            self.tr('Outlets Shapefile'),
-            [ParameterVector.VECTOR_TYPE_POINT], False))
+                                          self.tr('Outlets Shapefile'),
+                                          [ParameterVector.VECTOR_TYPE_POINT], False))
         self.addParameter(ParameterNumber(self.MIN_TRESHOLD,
-            self.tr('Minimum Threshold'), 0, None, 5))
+                                          self.tr('Minimum Threshold'), 0, None, 5))
         self.addParameter(ParameterNumber(self.MAX_THRESHOLD,
-            self.tr('Maximum Threshold'), 0, None, 500))
+                                          self.tr('Maximum Threshold'), 0, None, 500))
         self.addParameter(ParameterNumber(self.TRESHOLD_NUM,
-            self.tr('Number of Threshold Values'), 0, None, 10))
+                                          self.tr('Number of Threshold Values'), 0, None, 10))
         self.addParameter(ParameterSelection(self.STEP_TYPE,
-            self.tr('Spacing for Threshold Values'), self.STEPS, 0))
+                                             self.tr('Spacing for Threshold Values'), self.STEPS, 0))
 
         self.addOutput(OutputFile(self.DROP_ANALYSIS_FILE,
-            self.tr('D-Infinity Drop to Stream Grid')))
+                                  self.tr('D-Infinity Drop to Stream Grid')))
 
     def processAlgorithm(self, progress):
         commands = []
@@ -101,7 +101,7 @@ class DropAnalysisMulti(GeoAlgorithm):
                         'correct number before running TauDEM algorithms.'))
 
         commands.append('-n')
-        commands.append(str(processNum))
+        commands.append(unicode(processNum))
         commands.append(os.path.join(TauDEMUtils.taudemMultifilePath(), self.cmdName))
         commands.append('-ad8')
         commands.append(self.getParameterValue(self.D8_CONTRIB_AREA_GRID))
@@ -114,10 +114,10 @@ class DropAnalysisMulti(GeoAlgorithm):
         commands.append('-o')
         commands.append(self.getParameterValue(self.OUTLETS_SHAPE))
         commands.append('-par')
-        commands.append(str(self.getParameterValue(self.MIN_TRESHOLD)))
-        commands.append(str(self.getParameterValue(self.MAX_THRESHOLD)))
-        commands.append(str(self.getParameterValue(self.TRESHOLD_NUM)))
-        commands.append(str(self.getParameterValue(self.STEPS)))
+        commands.append(unicode(self.getParameterValue(self.MIN_TRESHOLD)))
+        commands.append(unicode(self.getParameterValue(self.MAX_THRESHOLD)))
+        commands.append(unicode(self.getParameterValue(self.TRESHOLD_NUM)))
+        commands.append(unicode(self.getParameterValue(self.STEPS)))
         commands.append('-drp')
         commands.append(self.getOutputValue(self.DROP_ANALYSIS_FILE))
 

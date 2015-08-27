@@ -28,6 +28,7 @@ from ..db_plugins import createDbPlugin
 
 
 class BaseError(Exception):
+
     """Base class for exceptions in the plugin."""
 
     def __init__(self, e):
@@ -60,6 +61,7 @@ class ConnectionError(BaseError):
 
 
 class DbError(BaseError):
+
     def __init__(self, e, query=None):
         BaseError.__init__(self, e)
         self.query = unicode(query) if query is not None else None
@@ -75,6 +77,7 @@ class DbError(BaseError):
 
 
 class DBPlugin(QObject):
+
     def __init__(self, conn_name, parent=None):
         QObject.__init__(self, parent)
         self.connName = conn_name
@@ -133,6 +136,11 @@ class DBPlugin(QObject):
         pass
 
     @classmethod
+    def connectionSettingsFileKey(self):
+        # return the filekey for the settings
+        pass
+
+    @classmethod
     def connections(self):
         # get the list of connections
         conn_list = []
@@ -143,12 +151,12 @@ class DBPlugin(QObject):
         settings.endGroup()
         return conn_list
 
-
     def databasesFactory(self, connection, uri):
         return None
 
 
 class DbItemObject(QObject):
+
     def __init__(self, parent=None):
         QObject.__init__(self, parent)
 
@@ -172,6 +180,7 @@ class DbItemObject(QObject):
 
 
 class Database(DbItemObject):
+
     def __init__(self, dbplugin, uri):
         DbItemObject.__init__(self, dbplugin)
         self.connector = self.connectorsFactory(uri)
@@ -208,11 +217,11 @@ class Database(DbItemObject):
 
         return SqlResultModel(self, sql, parent)
 
-    def columnUniqueValuesModel( self, col, table, limit = 10 ):
+    def columnUniqueValuesModel(self, col, table, limit=10):
         l = ""
         if limit is not None:
             l = "LIMIT %d" % limit
-        return self.sqlResultModel( "SELECT DISTINCT %s FROM %s %s" % (col, table, l), self)
+        return self.sqlResultModel("SELECT DISTINCT %s FROM %s %s" % (col, table, l), self)
 
     def uniqueIdFunction(self):
         """Return a SQL function used to generate a unique id for rows of a query"""
@@ -248,7 +257,7 @@ class Database(DbItemObject):
     def registerSubPluginActions(self, mainWindow):
         # load plugins!
         try:
-            exec ( u"from .%s.plugins import load" % self.dbplugin().typeName() )
+            exec (u"from .%s.plugins import load" % self.dbplugin().typeName())
         except ImportError:
             pass
         else:
@@ -293,12 +302,10 @@ class Database(DbItemObject):
             QObject.connect(action.menu(), SIGNAL("aboutToShow()"), invoke_callback)
             mainWindow.registerAction(action, QApplication.translate("DBManagerPlugin", "&Table"))
 
-
     def reconnectActionSlot(self, item, action, parent):
         db = item.database()
         db.connection().reconnect()
         db.refresh()
-
 
     def deleteActionSlot(self, item, action, parent):
         if isinstance(item, Schema):
@@ -310,7 +317,6 @@ class Database(DbItemObject):
             parent.infoBar.pushMessage(QApplication.translate("DBManagerPlugin", "Cannot delete the selected item."),
                                        QgsMessageBar.INFO, parent.iface.messageTimeout())
             QApplication.setOverrideCursor(Qt.WaitCursor)
-
 
     def createSchemaActionSlot(self, item, action, parent):
         QApplication.restoreOverrideCursor()
@@ -360,7 +366,6 @@ class Database(DbItemObject):
     def createSchema(self, name):
         self.connector.createSchema(name)
         self.refresh()
-
 
     def createTableActionSlot(self, item, action, parent):
         QApplication.restoreOverrideCursor()
@@ -444,7 +449,6 @@ class Database(DbItemObject):
 
         item.moveToSchema(new_schema)
 
-
     def tablesFactory(self, row, db, schema=None):
         typ, row = row[0], row[1:]
         if typ == Table.VectorType:
@@ -500,14 +504,15 @@ class Database(DbItemObject):
             self.refresh()
         return True
 
-    def explicitSpatialIndex( self ):
+    def explicitSpatialIndex(self):
         return False
 
-    def spatialIndexClause( self, src_table, src_column, dest_table, dest_table_column ):
+    def spatialIndexClause(self, src_table, src_column, dest_table, dest_table_column):
         return None
 
 
 class Schema(DbItemObject):
+
     def __init__(self, db):
         DbItemObject.__init__(self, db)
         self.oid = self.name = self.owner = self.perms = None
@@ -566,7 +571,7 @@ class Table(DbItemObject):
     def __del__(self):
         pass  # print "Table.__del__", self
 
-    def canBeAddedToCanvas( self ):
+    def canBeAddedToCanvas(self):
         return True
 
     def database(self):
@@ -580,7 +585,6 @@ class Table(DbItemObject):
 
     def quotedName(self):
         return self.database().connector.quoteId((self.schemaName(), self.name))
-
 
     def delete(self):
         self.aboutToChange()
@@ -632,6 +636,9 @@ class Table(DbItemObject):
 
     def mimeUri(self):
         layerType = "raster" if self.type == Table.RasterType else "vector"
+        if self.database().dbplugin().typeName() == "spatialite" and self.database().connector.isgpkg():
+            url = unicode(self.database().connector._connectionInfo() + "|layername=" + self.name)
+            return u"%s:%s:%s:%s" % (layerType, "ogr", self.name, url)
         return u"%s:%s:%s:%s" % (layerType, self.database().dbplugin().providerName(), self.name, self.uri().uri())
 
     def toMapLayer(self):
@@ -652,7 +659,8 @@ class Table(DbItemObject):
 
         # add the pk
         pkcols = filter(lambda x: x.primaryKey, self.fields())
-        if len(pkcols) == 1: ret.append(pkcols[0])
+        if len(pkcols) == 1:
+            ret.append(pkcols[0])
 
         # then add both oid, serial and int fields with an unique index
         indexes = self.indexes()
@@ -672,10 +680,8 @@ class Table(DbItemObject):
             return ret[0] if len(ret) > 0 else None
         return ret
 
-
     def tableDataModel(self, parent):
         pass
-
 
     def tableFieldsFactory(self):
         return None
@@ -723,7 +729,6 @@ class Table(DbItemObject):
             self.schema().refresh() if self.schema() else self.database().refresh()  # another table was added
         return True
 
-
     def tableConstraintsFactory(self):
         return None
 
@@ -758,7 +763,6 @@ class Table(DbItemObject):
         if ret is not False:
             self.refreshConstraints()
         return ret
-
 
     def tableIndexesFactory(self):
         return None
@@ -803,7 +807,6 @@ class Table(DbItemObject):
         self._triggers = None  # refresh table triggers
         self.refresh()
 
-
     def tableRulesFactory(self, row, table):
         return None
 
@@ -818,7 +821,6 @@ class Table(DbItemObject):
         self._rules = None  # refresh table rules
         self.refresh()
 
-
     def refreshRowCount(self):
         self.aboutToChange()
         prevRowCount = self.rowCount
@@ -829,7 +831,6 @@ class Table(DbItemObject):
             self.rowCount = None
         if self.rowCount != prevRowCount:
             self.refresh()
-
 
     def runAction(self, action):
         action = unicode(action)
@@ -891,6 +892,7 @@ class Table(DbItemObject):
 
 
 class VectorTable(Table):
+
     def __init__(self, db, schema=None, parent=None):
         if not hasattr(self, 'type'):  # check if the superclass constructor was called yet!
             Table.__init__(self, db, schema, parent)
@@ -933,7 +935,6 @@ class VectorTable(Table):
             self.refreshIndexes()
         return ret
 
-
     def refreshTableExtent(self):
         prevExtent = self.extent
         try:
@@ -953,7 +954,6 @@ class VectorTable(Table):
         if self.estimatedExtent != prevEstimatedExtent:
             self.refresh()
 
-
     def runAction(self, action):
         action = unicode(action)
 
@@ -962,7 +962,7 @@ class VectorTable(Table):
             spatialIndex_action = parts[1]
 
             msg = QApplication.translate("DBManagerPlugin", "Do you want to %s spatial index for field %s?") % (
-                spatialIndex_action, self.geomColumn )
+                spatialIndex_action, self.geomColumn)
             QApplication.restoreOverrideCursor()
             try:
                 if QMessageBox.question(None, QApplication.translate("DBManagerPlugin", "Spatial Index"), msg,
@@ -991,6 +991,7 @@ class VectorTable(Table):
 
 
 class RasterTable(Table):
+
     def __init__(self, db, schema=None, parent=None):
         if not hasattr(self, 'type'):  # check if the superclass constructor was called yet!
             Table.__init__(self, db, schema, parent)
@@ -1005,6 +1006,7 @@ class RasterTable(Table):
 
 
 class TableSubItemObject(QObject):
+
     def __init__(self, table):
         QObject.__init__(self, table)
 
@@ -1016,6 +1018,7 @@ class TableSubItemObject(QObject):
 
 
 class TableField(TableSubItemObject):
+
     def __init__(self, table):
         TableSubItemObject.__init__(self, table)
         self.num = self.name = self.dataType = self.modifier = self.notNull = self.default = self.hasDefault = self.primaryKey = None
@@ -1052,10 +1055,14 @@ class TableField(TableSubItemObject):
 
     def update(self, new_name, new_type_str=None, new_not_null=None, new_default_str=None):
         self.table().aboutToChange()
-        if self.name == new_name: new_name = None
-        if self.type2String() == new_type_str: new_type_str = None
-        if self.notNull == new_not_null: new_not_null = None
-        if self.default2String() == new_default_str: new_default_str = None
+        if self.name == new_name:
+            new_name = None
+        if self.type2String() == new_type_str:
+            new_type_str = None
+        if self.notNull == new_not_null:
+            new_not_null = None
+        if self.default2String() == new_default_str:
+            new_default_str = None
 
         ret = self.table().database().connector.updateTableColumn((self.table().schemaName(), self.table().name),
                                                                   self.name, new_name, new_type_str, new_not_null,
@@ -1066,6 +1073,7 @@ class TableField(TableSubItemObject):
 
 
 class TableConstraint(TableSubItemObject):
+
     """ class that represents a constraint of a table (relation) """
 
     TypeCheck, TypeForeignKey, TypePrimaryKey, TypeUnique, TypeExclusion, TypeUnknown = range(6)
@@ -1079,11 +1087,16 @@ class TableConstraint(TableSubItemObject):
         self.name = self.type = self.columns = None
 
     def type2String(self):
-        if self.type == TableConstraint.TypeCheck: return QApplication.translate("DBManagerPlugin", "Check")
-        if self.type == TableConstraint.TypePrimaryKey: return QApplication.translate("DBManagerPlugin", "Primary key")
-        if self.type == TableConstraint.TypeForeignKey: return QApplication.translate("DBManagerPlugin", "Foreign key")
-        if self.type == TableConstraint.TypeUnique: return QApplication.translate("DBManagerPlugin", "Unique")
-        if self.type == TableConstraint.TypeExclusion: return QApplication.translate("DBManagerPlugin", "Exclusion")
+        if self.type == TableConstraint.TypeCheck:
+            return QApplication.translate("DBManagerPlugin", "Check")
+        if self.type == TableConstraint.TypePrimaryKey:
+            return QApplication.translate("DBManagerPlugin", "Primary key")
+        if self.type == TableConstraint.TypeForeignKey:
+            return QApplication.translate("DBManagerPlugin", "Foreign key")
+        if self.type == TableConstraint.TypeUnique:
+            return QApplication.translate("DBManagerPlugin", "Unique")
+        if self.type == TableConstraint.TypeExclusion:
+            return QApplication.translate("DBManagerPlugin", "Exclusion")
         return QApplication.translate("DBManagerPlugin", 'Unknown')
 
     def fields(self):
@@ -1105,6 +1118,7 @@ class TableConstraint(TableSubItemObject):
 
 
 class TableIndex(TableSubItemObject):
+
     def __init__(self, table):
         TableSubItemObject.__init__(self, table)
         self.name = self.columns = self.isUnique = None
@@ -1113,7 +1127,8 @@ class TableIndex(TableSubItemObject):
         def fieldFromNum(num, fields):
             """ return field specified by its number or None if doesn't exist """
             for fld in fields:
-                if fld.num == num: return fld
+                if fld.num == num:
+                    return fld
             return None
 
         fields = self.table().fields()
@@ -1127,6 +1142,7 @@ class TableIndex(TableSubItemObject):
 
 
 class TableTrigger(TableSubItemObject):
+
     """ class that represents a trigger """
 
     # Bits within tgtype (pg_trigger.h)
@@ -1145,10 +1161,14 @@ class TableTrigger(TableSubItemObject):
     def type2String(self):
         trig_type = u''
         trig_type += "Before " if self.type & TableTrigger.TypeBefore else "After "
-        if self.type & TableTrigger.TypeInsert: trig_type += "INSERT "
-        if self.type & TableTrigger.TypeUpdate: trig_type += "UPDATE "
-        if self.type & TableTrigger.TypeDelete: trig_type += "DELETE "
-        if self.type & TableTrigger.TypeTruncate: trig_type += "TRUNCATE "
+        if self.type & TableTrigger.TypeInsert:
+            trig_type += "INSERT "
+        if self.type & TableTrigger.TypeUpdate:
+            trig_type += "UPDATE "
+        if self.type & TableTrigger.TypeDelete:
+            trig_type += "DELETE "
+        if self.type & TableTrigger.TypeTruncate:
+            trig_type += "TRUNCATE "
         trig_type += "\n"
         trig_type += "for each "
         trig_type += "row" if self.type & TableTrigger.TypeRow else "statement"
@@ -1156,6 +1176,7 @@ class TableTrigger(TableSubItemObject):
 
 
 class TableRule(TableSubItemObject):
+
     def __init__(self, table):
         TableSubItemObject.__init__(self, table)
         self.name = self.definition = None

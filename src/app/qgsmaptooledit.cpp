@@ -16,6 +16,7 @@
 #include "qgsmaptooledit.h"
 #include "qgsproject.h"
 #include "qgsmapcanvas.h"
+#include "qgsgeometryrubberband.h"
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
 
@@ -95,6 +96,21 @@ int QgsMapToolEdit::addTopologicalPoints( const QList<QgsPoint>& geom )
     vlayer->addTopologicalPoints( *list_it );
   }
   return 0;
+}
+
+QgsGeometryRubberBand* QgsMapToolEdit::createGeometryRubberBand( QGis::GeometryType geometryType ) const
+{
+  QSettings settings;
+  QgsGeometryRubberBand* rb = new QgsGeometryRubberBand( mCanvas, geometryType );
+  QColor color( settings.value( "/qgis/digitizing/line_color_red", 255 ).toInt(),
+                settings.value( "/qgis/digitizing/line_color_green", 0 ).toInt(),
+                settings.value( "/qgis/digitizing/line_color_blue", 0 ).toInt() );
+  double myAlpha = settings.value( "/qgis/digitizing/line_color_alpha", 200 ).toInt() / 255.0 ;
+  color.setAlphaF( myAlpha );
+  rb->setOutlineColor( color );
+  rb->setFillColor( color );
+  rb->show();
+  return rb;
 }
 
 void QgsMapToolEdit::notifyNotVectorLayer()

@@ -50,7 +50,7 @@ class QgsComposerHtmlWidget: public QgsComposerItemBaseWidget, private Ui::QgsCo
     void on_mEmptyFrameCheckBox_toggled( bool checked );
     void on_mHideEmptyBgCheckBox_toggled( bool checked );
 
-    /**Sets the GUI elements to the values of mHtmlItem*/
+    /** Sets the GUI elements to the values of mHtmlItem*/
     void setGuiElementValues();
 
   protected:
@@ -58,7 +58,7 @@ class QgsComposerHtmlWidget: public QgsComposerItemBaseWidget, private Ui::QgsCo
     QgsComposerItem::DataDefinedProperty ddPropertyForWidget( QgsDataDefinedButton *widget ) override;
 
   protected slots:
-    /**Initializes data defined buttons to current atlas coverage layer*/
+    /** Initializes data defined buttons to current atlas coverage layer*/
     void populateDataDefinedButtons();
 
   private:

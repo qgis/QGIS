@@ -1,5 +1,5 @@
 v.kcv
-v.kcv - Randomly partition points into test/train sets.
+Randomly partition points into test/train sets.
 Vector (v.*)
 ParameterVector|input|Input layer|-1|False
 ParameterNumber|k|Number of partitions|2.0|32767|10

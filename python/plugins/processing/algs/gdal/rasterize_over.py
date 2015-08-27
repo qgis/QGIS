@@ -46,13 +46,13 @@ class rasterize_over(OgrAlgorithm):
         return "gdalogr:rasterize_over"
 
     def defineCharacteristics(self):
-        self.name = 'Rasterize (write over existing raster)'
-        self.group = '[GDAL] Conversion'
+        self.name, self.i18n_name = self.trAlgorithm('Rasterize (write over existing raster)')
+        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Conversion')
         self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.FIELD,
-            self.tr('Attribute field'), self.INPUT))
+                                              self.tr('Attribute field'), self.INPUT))
         self.addParameter(ParameterRaster(self.INPUT_RASTER,
-            self.tr('Existing raster layer'), False))
+                                          self.tr('Existing raster layer'), False))
 
     def getConsoleCommands(self, progress):
         inLayer = self.getParameterValue(self.INPUT)
@@ -62,7 +62,7 @@ class rasterize_over(OgrAlgorithm):
 
         arguments = []
         arguments.append('-a')
-        arguments.append(str(self.getParameterValue(self.FIELD)))
+        arguments.append(unicode(self.getParameterValue(self.FIELD)))
 
         arguments.append('-l')
         arguments.append(self.ogrLayerName(inLayer))

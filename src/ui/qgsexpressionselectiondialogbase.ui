@@ -75,7 +75,7 @@
     <string>Remove from selection</string>
    </property>
   </action>
-  <action name="mActionSelectInstersect">
+  <action name="mActionSelectIntersect">
    <property name="text">
     <string>Select within selection</string>
    </property>

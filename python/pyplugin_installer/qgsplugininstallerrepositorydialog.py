@@ -29,19 +29,18 @@ from PyQt4.QtGui import QDialog, QDialogButtonBox
 from ui_qgsplugininstallerrepositorybase import Ui_QgsPluginInstallerRepositoryDetailsDialogBase
 
 
-
-
 class QgsPluginInstallerRepositoryDialog(QDialog, Ui_QgsPluginInstallerRepositoryDetailsDialogBase):
-  # ----------------------------------------- #
-  def __init__(self, parent=None):
-    QDialog.__init__(self, parent)
-    self.setupUi(self)
-    self.editURL.setText("http://")
-    self.editName.textChanged.connect(self.textChanged)
-    self.editURL.textChanged.connect(self.textChanged)
-    self.textChanged(None)
+    # ----------------------------------------- #
 
-  # ----------------------------------------- #
-  def textChanged(self, string):
-    enable = (len(self.editName.text()) > 0 and len(self.editURL.text()) > 0)
-    self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(enable)
+    def __init__(self, parent=None):
+        QDialog.__init__(self, parent)
+        self.setupUi(self)
+        self.editURL.setText("http://")
+        self.editName.textChanged.connect(self.textChanged)
+        self.editURL.textChanged.connect(self.textChanged)
+        self.textChanged(None)
+
+    # ----------------------------------------- #
+    def textChanged(self, string):
+        enable = (len(self.editName.text()) > 0 and len(self.editURL.text()) > 0)
+        self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(enable)

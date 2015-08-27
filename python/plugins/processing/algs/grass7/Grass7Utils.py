@@ -87,7 +87,7 @@ class Grass7Utils:
         folder = ProcessingConfig.getSetting(Grass7Utils.GRASS_FOLDER)
         if folder is None:
             if isWindows():
-                testfolder = os.path.dirname(str(QgsApplication.prefixPath()))
+                testfolder = os.path.dirname(unicode(QgsApplication.prefixPath()))
                 testfolder = os.path.join(testfolder, 'grass7')
                 if os.path.isdir(testfolder):
                     for subfolder in os.listdir(testfolder):
@@ -95,8 +95,7 @@ class Grass7Utils:
                             folder = os.path.join(testfolder, subfolder)
                             break
             else:
-                folder = os.path.join(str(QgsApplication.prefixPath()), 'grass7'
-                                      )
+                folder = os.path.join(unicode(QgsApplication.prefixPath()), 'grass7')
                 if not os.path.isdir(folder):
                     folder = '/Applications/GRASS-7.0.app/Contents/MacOS'
 
@@ -106,7 +105,7 @@ class Grass7Utils:
     def grassWinShell():
         folder = ProcessingConfig.getSetting(Grass7Utils.GRASS_WIN_SHELL)
         if folder is None:
-            folder = os.path.dirname(str(QgsApplication.prefixPath()))
+            folder = os.path.dirname(unicode(QgsApplication.prefixPath()))
             folder = os.path.join(folder, 'msys')
         return folder
 
@@ -143,7 +142,7 @@ class Grass7Utils:
         output.write('set GISBASE=' + folder + '\n')
         output.write('set GRASS_PROJSHARE=' + folder + os.sep + 'share'
                      + os.sep + 'proj' + '\n')
-        output.write('set GRASS_MESSAGE_FORMAT=gui\n')
+        output.write('set GRASS_MESSAGE_FORMAT=plain\n')
 
         # Replacement code for etc/Init.bat
         output.write('if "%GRASS_ADDON_PATH%"=="" set PATH=%WINGISBASE%\\bin;%WINGISBASE%\\lib;%PATH%\n')
@@ -240,14 +239,17 @@ class Grass7Utils:
 
     @staticmethod
     def prepareGrass7Execution(commands):
+        env = os.environ.copy()
+
         if isWindows():
             Grass7Utils.createGrass7Script(commands)
             command = ['cmd.exe', '/C ', Grass7Utils.grassScriptFilename()]
         else:
             gisrc = userFolder() + os.sep + 'processing.gisrc7'
-            os.putenv('GISRC', gisrc)
-            os.putenv('GRASS_MESSAGE_FORMAT', 'gui')
-            os.putenv('GRASS_BATCH_JOB', Grass7Utils.grassBatchJobFilename())
+            env['GISRC'] = gisrc
+            env['GRASS_MESSAGE_FORMAT'] = 'plain'
+            env['GRASS_BATCH_JOB'] = Grass7Utils.grassBatchJobFilename()
+            del env['GISBASE']
             Grass7Utils.createGrass7BatchJobFileFromGrass7Commands(commands)
             os.chmod(Grass7Utils.grassBatchJobFilename(), stat.S_IEXEC
                      | stat.S_IREAD | stat.S_IWRITE)
@@ -258,14 +260,14 @@ class Grass7Utils:
                 command = 'grass70 ' + Grass7Utils.grassMapsetFolder() \
                     + '/PERMANENT'
 
-        return command
+        return command, env
 
     @staticmethod
     def executeGrass7(commands, progress, outputCommands=None):
         loglines = []
         loglines.append(Grass7Utils.tr('GRASS GIS 7 execution console output'))
         grassOutDone = False
-        command = Grass7Utils.prepareGrass7Execution(commands)
+        command, grassenv = Grass7Utils.prepareGrass7Execution(commands)
         proc = subprocess.Popen(
             command,
             shell=True,
@@ -273,6 +275,7 @@ class Grass7Utils:
             stdin=open(os.devnull),
             stderr=subprocess.STDOUT,
             universal_newlines=True,
+            env=grassenv
         ).stdout
         for line in iter(proc.readline, ''):
             if 'GRASS_INFO_PERCENT' in line:
@@ -293,7 +296,7 @@ class Grass7Utils:
         # commands again.
 
         if not grassOutDone and outputCommands:
-            command = Grass7Utils.prepareGrass7Execution(outputCommands)
+            command, grassenv = Grass7Utils.prepareGrass7Execution(outputCommands)
             proc = subprocess.Popen(
                 command,
                 shell=True,
@@ -301,6 +304,7 @@ class Grass7Utils:
                 stdin=open(os.devnull),
                 stderr=subprocess.STDOUT,
                 universal_newlines=True,
+                env=grassenv
             ).stdout
             for line in iter(proc.readline, ''):
                 if 'GRASS_INFO_PERCENT' in line:

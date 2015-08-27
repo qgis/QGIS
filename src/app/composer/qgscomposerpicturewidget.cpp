@@ -609,12 +609,26 @@ QgsComposerObject::DataDefinedProperty QgsComposerPictureWidget::ddPropertyForWi
   return QgsComposerObject::NoProperty;
 }
 
+static QgsExpressionContext _getExpressionContext( const void* context )
+{
+  const QgsComposerObject* composerObject = ( const QgsComposerObject* ) context;
+  if ( !composerObject )
+  {
+    return QgsExpressionContext();
+  }
+
+  QScopedPointer< QgsExpressionContext > expContext( composerObject->createExpressionContext() );
+  return QgsExpressionContext( *expContext );
+}
+
 void QgsComposerPictureWidget::populateDataDefinedButtons()
 {
   QgsVectorLayer* vl = atlasCoverageLayer();
 
   //block signals from data defined buttons
   mSourceDDBtn->blockSignals( true );
+
+  mSourceDDBtn->registerGetExpressionContextCallback( &_getExpressionContext, mPicture );
 
   //initialise buttons to use atlas coverage layer
   mSourceDDBtn->init( vl, mPicture->dataDefinedProperty( QgsComposerObject::PictureSource ),

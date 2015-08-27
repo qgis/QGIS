@@ -51,17 +51,17 @@ class ColorRelief(GdalAlgorithm):
     #    return QIcon(filepath)
 
     def defineCharacteristics(self):
-        self.name = 'Color relief'
-        self.group = '[GDAL] Analysis'
+        self.name, self.i18n_name = self.trAlgorithm('Color relief')
+        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Analysis')
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterNumber(
             self.BAND, self.tr('Band number'), 1, 99, 1))
         self.addParameter(ParameterBoolean(self.COMPUTE_EDGES,
-            self.tr('Compute edges'), False))
+                                           self.tr('Compute edges'), False))
         self.addParameter(ParameterFile(self.COLOR_TABLE,
-            self.tr('Color configuration file'), optional=False))
+                                        self.tr('Color configuration file'), optional=False))
         self.addParameter(ParameterSelection(self.MATCH_MODE,
-            self.tr('Matching mode'), self.MATCHING_MODES, 0))
+                                             self.tr('Matching mode'), self.MATCHING_MODES, 0))
 
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Color relief')))
 
@@ -76,7 +76,7 @@ class ColorRelief(GdalAlgorithm):
         arguments.append(unicode(self.getOutputValue(self.OUTPUT)))
 
         arguments.append('-b')
-        arguments.append(str(self.getParameterValue(self.BAND)))
+        arguments.append(unicode(self.getParameterValue(self.BAND)))
 
         if self.getParameterValue(self.COMPUTE_EDGES):
             arguments.append('-compute_edges')

@@ -47,7 +47,7 @@ QgsJoinDialog::QgsJoinDialog( QgsVectorLayer* layer, QList<QgsMapLayer*> already
   mCacheInMemoryCheckBox->setChecked( true );
 
   QgsMapLayer *joinLayer = mJoinLayerComboBox->currentLayer();
-  if ( joinLayer->isValid() )
+  if ( joinLayer && joinLayer->isValid() )
   {
     mJoinFieldComboBox->setLayer( joinLayer );
     joinedLayerChanged( joinLayer );
@@ -101,6 +101,8 @@ QgsVectorJoinInfo QgsJoinDialog::joinInfo() const
   info.joinFieldName = mJoinFieldComboBox->currentField();
   info.targetFieldName = mTargetFieldComboBox->currentField();
   info.memoryCache = mCacheInMemoryCheckBox->isChecked();
+  info.targetFieldIndex = -1;
+  info.joinFieldIndex = -1;
 
   if ( mUseCustomPrefix->isChecked() )
     info.prefix = mCustomPrefix->text();
@@ -143,7 +145,7 @@ void QgsJoinDialog::joinedLayerChanged( QgsMapLayer* layer )
 
   mUseJoinFieldsSubset->setChecked( false );
   QStandardItemModel* subsetModel = new QStandardItemModel( this );
-  const QgsFields& layerFields = vLayer->pendingFields();
+  const QgsFields& layerFields = vLayer->fields();
   for ( int idx = 0; idx < layerFields.count(); ++idx )
   {
     QStandardItem* subsetItem = new QStandardItem( layerFields[idx].name() );

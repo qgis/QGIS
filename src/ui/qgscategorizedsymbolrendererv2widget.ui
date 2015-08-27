@@ -91,6 +91,13 @@
       </widget>
      </item>
      <item>
+      <widget class="QPushButton" name="mButtonEditRamp">
+       <property name="text">
+        <string>Edit</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QCheckBox" name="cbxInvertedColorRamp">
        <property name="text">
         <string>Invert</string>
@@ -203,6 +210,7 @@
  <tabstops>
   <tabstop>btnChangeCategorizedSymbol</tabstop>
   <tabstop>cboCategorizedColorRamp</tabstop>
+  <tabstop>mButtonEditRamp</tabstop>
   <tabstop>cbxInvertedColorRamp</tabstop>
   <tabstop>viewCategories</tabstop>
   <tabstop>btnAddCategories</tabstop>

@@ -16,6 +16,7 @@ email                : marco.hugentobler at sourcepole dot com
 #ifndef QGSABSTRACTGEOMETRYV2
 #define QGSABSTRACTGEOMETRYV2
 
+#include "qgscoordinatetransform.h"
 #include "qgsrectangle.h"
 #include "qgswkbtypes.h"
 #include <QString>
@@ -30,10 +31,11 @@ class QgsConstWkbPtr;
 class QgsWkbPtr;
 class QPainter;
 
-/**\ingroup core
+/** \ingroup core
  * \class QgsVertexId
  * \brief Utility class for identifying a unique vertex within a geometry.
  * \note added in QGIS 2.10
+ * \note this API is not considered stable and may change for 2.12
  */
 struct CORE_EXPORT QgsVertexId
 {
@@ -66,7 +68,7 @@ struct CORE_EXPORT QgsVertexId
   VertexType type;
 };
 
-/**\ingroup core
+/** \ingroup core
  * \class QgsAbstractGeometryV2
  * \brief Abstract base class for all geometries
  * \note added in QGIS 2.10
@@ -215,8 +217,9 @@ class CORE_EXPORT QgsAbstractGeometryV2
 
     /** Transforms the geometry using a coordinate transform
      * @param ct coordinate transform
+       @param d transformation direction
      */
-    virtual void transform( const QgsCoordinateTransform& ct ) = 0;
+    virtual void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform ) = 0;
 
     /** Transforms the geometry using a QTransform object
      * @param t QTransform transformation

@@ -41,7 +41,7 @@
 					<grass name="r.in.ascii"/>
 					<grass name="r.in.poly"/>
 					<grass name="r.in.bin"/>
-					<grass name="r.in.arc"/>
+					<grass name="r.in.arc" version_max="6.4"/>
 					<grass name="r.in.gridatb"/>
 					<grass name="r.in.mat"/>
 					<grass name="i.in.spotvgt"/>
@@ -61,10 +61,10 @@
 					<grass name="v.in.ascii"/>
 					<grass name="v.in.mapgen"/>
 					<grass name="v.in.db"/>
-					<grass name="v.in.garmin"/>
-					<grass name="v.in.gpsbabel"/>
+					<grass name="v.in.garmin" version_max="6.4"/>
+					<grass name="v.in.gpsbabel" version_max="6.4"/>
 					<grass name="v.in.geonames" version_min="6.4"/>
-					<grass name="v.in.gns"/>
+					<grass name="v.in.gns" version_max="6.4"/>
 			</section>
 			<section label="Import from database into GRASS">
 				<grass name="db.in.ogr"/>
@@ -76,7 +76,7 @@
 				<grass name="r.out.gdal"/>
 				<grass name="r.out.ascii"/>
 				<grass name="r.out.xyz"/>
-				<grass name="r.out.arc"/>
+				<grass name="r.out.arc" version_max="6.4"/>
 				<grass name="r.out.gridatb"/>
 				<grass name="r.out.mat"/>
 				<grass name="r.out.bin"/>
@@ -85,7 +85,7 @@
 				<grass name="r.out.ppm"/>
 				<grass name="r.out.ppm3"/>
 				<grass name="r.out.pov"/>
-				<grass name="r.out.tiff"/>
+				<grass name="r.out.tiff" version_max="6.4"/>
 				<grass name="r.out.vrml"/>
 				<grass name="r.out.vtk"/>
 			</section>
@@ -179,7 +179,9 @@
 				<grass name="r.buffer"/>
 			</section>
 			<section label="Mask">
-				<grass name="r.mask"/>
+				<grass name="r.mask" version_max="6.4"/>
+				<grass name="r.mask.rast" version_min="7.0"/>
+				<grass name="r.mask.vect" version_min="7.0"/>
 			</section>
 			<section label="Map algebra">
 				<grass name="r.mapcalc"/>

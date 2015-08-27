@@ -16,7 +16,6 @@
 #include "qgseditorwidgetregistry.h"
 
 #include "qgsattributeeditorcontext.h"
-//#include "qgseditorwidgetfactory.h"
 #include "qgslegacyhelpers.h"
 #include "qgsmessagelog.h"
 #include "qgsproject.h"
@@ -36,7 +35,9 @@
 #include "qgsvaluerelationwidgetfactory.h"
 #include "qgsuuidwidgetfactory.h"
 #include "qgsphotowidgetfactory.h"
+#ifdef WITH_QTWEBKIT
 #include "qgswebviewwidgetfactory.h"
+#endif
 #include "qgscolorwidgetfactory.h"
 #include "qgsrelationreferencefactory.h"
 #include "qgsdatetimeeditfactory.h"
@@ -96,17 +97,29 @@ QgsEditorWidgetWrapper* QgsEditorWidgetRegistry::create( const QString& widgetId
       // Make sure that there is a widget created at this point
       // so setValue() et al won't crash
       ww->widget();
+
+      // If we tried to set a widget which is not supported by this wrapper
+      if ( !ww->valid() )
+      {
+        delete ww;
+        QString wid = findSuitableWrapper( editor, "TextEdit" );
+        ww = mWidgetFactories[wid]->create( vl, fieldIdx, editor, parent );
+        ww->setConfig( config );
+        ww->setContext( context );
+      }
+
       return ww;
     }
   }
+
   return 0;
 }
 
-QgsEditorWidgetWrapper* QgsEditorWidgetRegistry::createSearchWidget( const QString& widgetId, QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, QWidget* parent, const QgsAttributeEditorContext &context )
+QgsSearchWidgetWrapper* QgsEditorWidgetRegistry::createSearchWidget( const QString& widgetId, QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, QWidget* parent, const QgsAttributeEditorContext &context )
 {
   if ( mWidgetFactories.contains( widgetId ) )
   {
-    QgsEditorWidgetWrapper* ww = mWidgetFactories[widgetId]->createSearchWidget( vl, fieldIdx, parent );
+    QgsSearchWidgetWrapper* ww = mWidgetFactories[widgetId]->createSearchWidget( vl, fieldIdx, parent );
 
     if ( ww )
     {
@@ -165,6 +178,20 @@ bool QgsEditorWidgetRegistry::registerWidget( const QString& widgetId, QgsEditor
   else
   {
     mWidgetFactories.insert( widgetId, widgetFactory );
+
+    // Use this factory as default where it provides the heighest priority
+    QMap<const char*, int> types = widgetFactory->supportedWidgetTypes();
+    QMap<const char*, int>::ConstIterator it;
+    it = types.constBegin();
+
+    for ( ; it != types.constEnd(); ++it )
+    {
+      if ( it.value() > mFactoriesByType[it.key()].first )
+      {
+        mFactoriesByType[it.key()] = qMakePair( it.value(), widgetId );
+      }
+    }
+
     return true;
   }
 }
@@ -255,9 +282,10 @@ void QgsEditorWidgetRegistry::writeMapLayer( QgsMapLayer* mapLayer, QDomElement&
 
   QDomNode editTypesNode = doc.createElement( "edittypes" );
 
-  for ( int idx = 0; idx < vectorLayer->pendingFields().count(); ++idx )
+  QgsFields fields = vectorLayer->fields();
+  for ( int idx = 0; idx < fields.count(); ++idx )
   {
-    const QgsField &field = vectorLayer->pendingFields()[ idx ];
+    const QgsField &field = fields[ idx ];
     const QString& widgetType = vectorLayer->editorWidgetV2( idx );
     if ( !mWidgetFactories.contains( widgetType ) )
     {
@@ -316,4 +344,35 @@ void QgsEditorWidgetRegistry::writeSymbology( QDomElement& element, QDomDocument
   Q_ASSERT( vl );
 
   writeMapLayer( vl, element, doc );
+}
+
+QString QgsEditorWidgetRegistry::findSuitableWrapper( QWidget* editor, const QString& defaultWidget )
+{
+  QMap<const char*, QPair<int, QString> >::ConstIterator it;
+
+  QString widgetid;
+  int weight = 0;
+
+  it = mFactoriesByType.constBegin();
+  for ( ; it != mFactoriesByType.constEnd(); ++it )
+  {
+    if ( editor->staticMetaObject.className() == it.key() )
+    {
+      // if it's a perfect match: return it directly
+      return it.value().second;
+    }
+    else if ( editor->inherits( it.key() ) )
+    {
+      // if it's a subclass, continue evaluating, maybe we find a more-specific or one with more weight
+      if ( it.value().first > weight )
+      {
+        weight = it.value().first;
+        widgetid = it.value().second;
+      }
+    }
+  }
+
+  if ( widgetid.isNull() )
+    widgetid = defaultWidget;
+  return widgetid;
 }

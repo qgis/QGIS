@@ -1,5 +1,5 @@
 
-/**  Raster checker for tests in python */
+/** Raster checker for tests in python */
 
 class QgsRasterChecker
 {

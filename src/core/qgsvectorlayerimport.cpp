@@ -243,7 +243,7 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
     forceSinglePartGeom = options->take( "forceSinglePartGeometryType" ).toBool();
   }
 
-  QgsFields fields = skipAttributeCreation ? QgsFields() : layer->pendingFields();
+  QgsFields fields = skipAttributeCreation ? QgsFields() : layer->fields();
   QGis::WkbType wkbType = layer->wkbType();
 
   // Special handling for Shapefiles
@@ -302,7 +302,7 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
     errorMessage->clear();
   }
 
-  QgsAttributeList allAttr = skipAttributeCreation ? QgsAttributeList() : layer->pendingAllAttributesList();
+  QgsAttributeList allAttr = skipAttributeCreation ? QgsAttributeList() : layer->attributeList();
   QgsFeature fet;
 
   QgsFeatureRequest req;

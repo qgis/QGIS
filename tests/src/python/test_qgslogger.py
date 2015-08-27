@@ -28,6 +28,7 @@ from utilities import TestCase, unittest
 #from utilities import getQgisTestApp
 #QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 
+
 class TestQgsLogger(TestCase):
 
     def testLogger(self):

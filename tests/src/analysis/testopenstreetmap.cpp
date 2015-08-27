@@ -72,7 +72,7 @@ void TestOpenStreetMap::download()
   // start download
   QgsOSMDownload download;
   download.setQuery( QgsOSMDownload::queryFromRect( rect ) );
-  download.setOutputFileName( "/tmp/dl-test.osm" );
+  download.setOutputFileName( QDir::tempPath() + "/dl-test.osm" );
   bool res = download.start();
   QVERIFY( res );
 
@@ -95,7 +95,7 @@ void TestOpenStreetMap::download()
 
 void TestOpenStreetMap::importAndQueries()
 {
-  QString dbFilename = "/tmp/testdata.db";
+  QString dbFilename =  QDir::tempPath() + "/testdata.db";
   QString xmlFilename = TEST_DATA_DIR "/openstreetmap/testdata.xml";
 
   QgsOSMXmlImport import( xmlFilename, dbFilename );

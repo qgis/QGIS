@@ -66,7 +66,7 @@ class TestQgsGrassProvider: public QObject
     void reportRow( QString message );
     void reportHeader( QString message );
     // verify result and report result
-    void verify( bool ok );
+    bool verify( bool ok );
     // compare expected and got string and set ok to false if not equal
     bool compare( QString expected, QString got, bool& ok );
     // lists are considered equal if contains the same values regardless order
@@ -81,6 +81,7 @@ class TestQgsGrassProvider: public QObject
     QString mBuildMapset;
 };
 
+#define GVERIFY(x) QVERIFY( verify(x) )
 
 void TestQgsGrassProvider::reportRow( QString message )
 {
@@ -108,7 +109,11 @@ void TestQgsGrassProvider::initTestCase()
   mReport += QString( "<h1>GRASS %1 provider tests</h1>\n" ).arg( GRASS_BUILD_VERSION );
   mReport += "<p>" + mySettings + "</p>\n";
 
+#ifndef Q_OS_WIN
   reportRow( "LD_LIBRARY_PATH: " + QString( getenv( "LD_LIBRARY_PATH" ) ) );
+#else
+  reportRow( "PATH: " + QString( getenv( "PATH" ) ) );
+#endif
 
   QgsGrass::init();
 
@@ -138,11 +143,11 @@ void TestQgsGrassProvider::cleanupTestCase()
   //QgsApplication::exitQgis();
 }
 
-void TestQgsGrassProvider::verify( bool ok )
+bool TestQgsGrassProvider::verify( bool ok )
 {
   reportRow( "" );
   reportRow( QString( "Test result: " ) + ( ok ? "ok" : "error" ) );
-  QVERIFY( ok );
+  return ok;
 }
 
 bool TestQgsGrassProvider::compare( QString expected, QString got, bool &ok )
@@ -199,7 +204,7 @@ void TestQgsGrassProvider::fatalError()
     compare( errorMessage, e.what(), ok );
   }
   compare( errorMessage, QgsGrass::errorMessage(), ok );
-  verify( ok );
+  GVERIFY( ok );
 }
 
 void TestQgsGrassProvider::locations()
@@ -212,7 +217,7 @@ void TestQgsGrassProvider::locations()
   reportRow( "expectedLocations: " + expectedLocations.join( ", " ) );
   reportRow( "locations: " + locations.join( ", " ) );
   compare( expectedLocations, locations, ok );
-  verify( ok );
+  GVERIFY( ok );
 }
 
 void TestQgsGrassProvider::mapsets()
@@ -274,7 +279,7 @@ void TestQgsGrassProvider::mapsets()
       }
     }
   }
-  verify( ok );
+  GVERIFY( ok );
 }
 
 void TestQgsGrassProvider::maps()
@@ -295,7 +300,7 @@ void TestQgsGrassProvider::maps()
   reportRow( "expectedRasters: " + expectedRasters.join( ", " ) );
   reportRow( "rasters: " + rasters.join( ", " ) );
   compare( expectedRasters, rasters, ok );
-  verify( ok );
+  GVERIFY( ok );
 }
 
 void TestQgsGrassProvider::vectorLayers()
@@ -322,7 +327,7 @@ void TestQgsGrassProvider::vectorLayers()
     ok = false;
     reportRow( QString( "ERROR: %1" ).arg( e.what() ) );
   }
-  verify( ok );
+  GVERIFY( ok );
 }
 
 void TestQgsGrassProvider::region()
@@ -330,12 +335,19 @@ void TestQgsGrassProvider::region()
   reportHeader( "TestQgsGrassProvider::region" );
   struct Cell_head window;
   struct Cell_head windowCopy;
-  bool ok = QgsGrass::region( mGisdbase, mLocation, "PERMANENT", &window );
-  if ( !ok )
+  bool ok = true;
+  try
   {
-    reportRow( "QgsGrass::region() failed" );
+    QgsGrass::region( mGisdbase, mLocation, "PERMANENT", &window );
   }
-  else
+  catch ( QgsGrass::Exception &e )
+  {
+    Q_UNUSED( e );
+    reportRow( "QgsGrass::region() failed" );
+    ok = false;
+  }
+
+  if ( ok )
   {
     QString expectedRegion = "proj:3;zone:0;north:90N;south:90S;east:180E;west:180W;cols:1000;rows:500;e-w resol:0:21:36;n-s resol:0:21:36;";
     QString region = QgsGrass::regionString( &window );
@@ -352,7 +364,7 @@ void TestQgsGrassProvider::region()
     reportRow( "regionCopy: " + regionCopy );
     compare( expectedRegion, regionCopy, ok );
   }
-  verify( ok );
+  GVERIFY( ok );
 }
 
 void TestQgsGrassProvider::info()
@@ -408,7 +420,7 @@ void TestQgsGrassProvider::info()
     ok = false;
   }
 
-  verify( ok );
+  GVERIFY( ok );
 }
 
 // create temporary output location
@@ -458,7 +470,7 @@ void TestQgsGrassProvider::rasterImport()
   if ( !createTmpLocation( tmpGisdbase, tmpLocation, tmpMapset ) )
   {
     reportRow( "cannot create temporary location" );
-    verify( false );
+    GVERIFY( false );
     return;
   }
 
@@ -515,7 +527,7 @@ void TestQgsGrassProvider::rasterImport()
     delete import;
   }
 
-  verify( ok );
+  GVERIFY( ok );
 }
 
 void TestQgsGrassProvider::vectorImport()
@@ -530,7 +542,7 @@ void TestQgsGrassProvider::vectorImport()
   if ( !createTmpLocation( tmpGisdbase, tmpLocation, tmpMapset ) )
   {
     reportRow( "cannot create temporary location" );
-    verify( false );
+    GVERIFY( false );
     return;
   }
 
@@ -570,7 +582,7 @@ void TestQgsGrassProvider::vectorImport()
     QStringList layers = QgsGrass::vectorLayers( tmpGisdbase, tmpLocation, tmpMapset, name );
     reportRow( "created layers: " + layers.join( "," ) );
   }
-  verify( ok );
+  GVERIFY( ok );
 }
 
 QTEST_MAIN( TestQgsGrassProvider )

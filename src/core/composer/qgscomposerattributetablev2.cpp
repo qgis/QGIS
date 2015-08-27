@@ -253,7 +253,7 @@ void QgsComposerAttributeTableV2::resetColumns()
   mColumns.clear();
 
   //rebuild columns list from vector layer fields
-  const QgsFields& fields = source->pendingFields();
+  const QgsFields& fields = source->fields();
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
     QString currentAlias = source->attributeDisplayName( idx );
@@ -371,7 +371,7 @@ void QgsComposerAttributeTableV2::setDisplayAttributes( const QSet<int>& attr, b
   qDeleteAll( mColumns );
   mColumns.clear();
 
-  const QgsFields& fields = source->pendingFields();
+  const QgsFields& fields = source->fields();
 
   if ( !attr.empty() )
   {
@@ -451,6 +451,9 @@ bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents &co
     return false;
   }
 
+  QScopedPointer< QgsExpressionContext > context( createExpressionContext() );
+  context->setFields( layer->fields() );
+
   //prepare filter expression
   QScopedPointer<QgsExpression> filterExpression;
   bool activeFilter = false;
@@ -488,16 +491,8 @@ bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents &co
   if ( mSource == QgsComposerAttributeTableV2::RelationChildren )
   {
     QgsRelation relation = QgsProject::instance()->relationManager()->relation( mRelationId );
-    QgsFeature* atlasFeature = mComposition->atlasComposition().currentFeature();
-    if ( atlasFeature )
-    {
-      req = relation.getRelatedFeaturesRequest( *atlasFeature );
-    }
-    else
-    {
-      //no atlas feature, so empty table
-      return true;
-    }
+    QgsFeature atlasFeature = mComposition->atlasComposition().feature();
+    req = relation.getRelatedFeaturesRequest( atlasFeature );
   }
 
   if ( !selectionRect.isEmpty() )
@@ -509,16 +504,8 @@ bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents &co
        && mComposition->atlasComposition().enabled() )
   {
     //source mode is current atlas feature
-    QgsFeature* atlasFeature = mComposition->atlasComposition().currentFeature();
-    if ( atlasFeature )
-    {
-      req.setFilterFid( atlasFeature->id() );
-    }
-    else
-    {
-      //no atlas feature, so empty table
-      return true;
-    }
+    QgsFeature atlasFeature = mComposition->atlasComposition().feature();
+    req.setFilterFid( atlasFeature.id() );
   }
 
   QgsFeature f;
@@ -527,10 +514,11 @@ bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents &co
 
   while ( fit.nextFeature( f ) && counter < mMaximumNumberOfFeatures )
   {
+    context->setFeature( f );
     //check feature against filter
     if ( activeFilter && !filterExpression.isNull() )
     {
-      QVariant result = filterExpression->evaluate( &f, layer->pendingFields() );
+      QVariant result = filterExpression->evaluate( context.data() );
       // skip this feature if the filter evaluation is false
       if ( !result.toBool() )
       {
@@ -544,9 +532,9 @@ bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents &co
       {
         continue;
       }
-      QgsFeature* atlasFeature = mComposition->atlasComposition().currentFeature();
-      if ( !atlasFeature || !atlasFeature->constGeometry() ||
-           !f.constGeometry()->intersects( atlasFeature->constGeometry() ) )
+      QgsFeature atlasFeature = mComposition->atlasComposition().feature();
+      if ( !atlasFeature.constGeometry() ||
+           !f.constGeometry()->intersects( atlasFeature.constGeometry() ) )
       {
         //feature falls outside current atlas feature
         continue;
@@ -561,15 +549,15 @@ bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents &co
       int idx = layer->fieldNameIndex(( *columnIt )->attribute() );
       if ( idx != -1 )
       {
-        currentRow << f.attributes()[idx];
+        currentRow << replaceWrapChar( f.attributes()[idx] );
       }
       else
       {
         // Lets assume it's an expression
         QgsExpression* expression = new QgsExpression(( *columnIt )->attribute() );
-        expression->setCurrentRowNumber( counter + 1 );
-        expression->prepare( layer->pendingFields() );
-        QVariant value = expression->evaluate( f );
+        context->lastScope()->setVariable( QString( "_rownum_" ), counter + 1 );
+        expression->prepare( context.data() );
+        QVariant value = expression->evaluate( context.data() );
         currentRow << value;
       }
     }
@@ -593,6 +581,29 @@ bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents &co
 
   recalculateTableSize();
   return true;
+}
+
+QgsExpressionContext *QgsComposerAttributeTableV2::createExpressionContext() const
+{
+  QgsExpressionContext* context = QgsComposerTableV2::createExpressionContext();
+
+  if ( mSource == LayerAttributes )
+  {
+    context->appendScope( QgsExpressionContextUtils::layerScope( mVectorLayer ) );
+  }
+
+  return context;
+}
+
+QVariant QgsComposerAttributeTableV2::replaceWrapChar( const QVariant &variant ) const
+{
+  //avoid converting variants to string if not required (try to maintain original type for sorting)
+  if ( mWrapString.isEmpty() || !variant.toString().contains( mWrapString ) )
+    return variant;
+
+  QString replaced = variant.toString();
+  replaced.replace( mWrapString, "\n" );
+  return replaced;
 }
 
 QgsVectorLayer *QgsComposerAttributeTableV2::sourceLayer()
@@ -661,6 +672,18 @@ QList<QPair<int, bool> > QgsComposerAttributeTableV2::sortAttributes() const
   return attributesBySortRank;
 }
 
+void QgsComposerAttributeTableV2::setWrapString( const QString &wrapString )
+{
+  if ( wrapString == mWrapString )
+  {
+    return;
+  }
+
+  mWrapString = wrapString;
+  refreshAttributes();
+  emit changed();
+}
+
 bool QgsComposerAttributeTableV2::writeXML( QDomElement& elem, QDomDocument & doc, bool ignoreFrames ) const
 {
   QDomElement composerTableElem = doc.createElement( "ComposerAttributeTableV2" );
@@ -672,6 +695,7 @@ bool QgsComposerAttributeTableV2::writeXML( QDomElement& elem, QDomDocument & do
   composerTableElem.setAttribute( "maxFeatures", mMaximumNumberOfFeatures );
   composerTableElem.setAttribute( "filterFeatures", mFilterFeatures ? "true" : "false" );
   composerTableElem.setAttribute( "featureFilter", mFeatureFilter );
+  composerTableElem.setAttribute( "wrapString", mWrapString );
 
   if ( mComposerMap )
   {
@@ -727,6 +751,7 @@ bool QgsComposerAttributeTableV2::readXML( const QDomElement& itemElem, const QD
   mFilterFeatures = itemElem.attribute( "filterFeatures", "false" ) == "true" ? true : false;
   mFeatureFilter = itemElem.attribute( "featureFilter", "" );
   mMaximumNumberOfFeatures = itemElem.attribute( "maxFeatures", "5" ).toInt();
+  mWrapString = itemElem.attribute( "wrapString" );
 
   //composer map
   int composerMapId = itemElem.attribute( "composerMap", "-1" ).toInt();

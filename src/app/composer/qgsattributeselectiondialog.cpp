@@ -48,9 +48,20 @@ QWidget* QgsComposerColumnAlignmentDelegate::createEditor( QWidget* parent, cons
 
   //create a combo box showing alignment options
   QComboBox *comboBox = new QComboBox( parent );
-  QStringList alignments;
-  alignments << tr( "Left" ) << tr( "Center" ) << tr( "Right" );
-  comboBox->addItems( alignments );
+
+  comboBox->addItem( tr( "Top left" ), int( Qt::AlignTop | Qt::AlignLeft ) );
+  comboBox->addItem( tr( "Top center" ), int( Qt::AlignTop | Qt::AlignHCenter ) );
+  comboBox->addItem( tr( "Top right" ), int( Qt::AlignTop | Qt::AlignRight ) );
+  comboBox->addItem( tr( "Middle left" ), int( Qt::AlignVCenter | Qt::AlignLeft ) );
+  comboBox->addItem( tr( "Middle center" ), int( Qt::AlignVCenter | Qt::AlignHCenter ) );
+  comboBox->addItem( tr( "Middle right" ), int( Qt::AlignVCenter | Qt::AlignRight ) );
+  comboBox->addItem( tr( "Bottom left" ), int( Qt::AlignBottom | Qt::AlignLeft ) );
+  comboBox->addItem( tr( "Bottom center" ), int( Qt::AlignBottom | Qt::AlignHCenter ) );
+  comboBox->addItem( tr( "Bottom right" ), int( Qt::AlignBottom | Qt::AlignRight ) );
+
+  Qt::AlignmentFlag alignment = ( Qt::AlignmentFlag )index.model()->data( index, Qt::EditRole ).toInt();
+  comboBox->setCurrentIndex( comboBox->findData( alignment ) );
+
   return comboBox;
 }
 
@@ -60,40 +71,13 @@ void QgsComposerColumnAlignmentDelegate::setEditorData( QWidget* editor, const Q
 
   //set the value for the combobox
   QComboBox *comboBox = static_cast<QComboBox*>( editor );
-  switch ( alignment )
-  {
-    case Qt::AlignHCenter:
-      comboBox->setCurrentIndex( 1 );
-      break;
-    case Qt::AlignRight:
-      comboBox->setCurrentIndex( 2 );
-      break;
-    case Qt::AlignLeft:
-    default:
-      comboBox->setCurrentIndex( 0 );
-      break;
-  }
+  comboBox->setCurrentIndex( comboBox->findData( alignment ) );
 }
 
 void QgsComposerColumnAlignmentDelegate::setModelData( QWidget* editor, QAbstractItemModel* model, const QModelIndex& index ) const
 {
   QComboBox *comboBox = static_cast<QComboBox*>( editor );
-  int value = comboBox->currentIndex();
-  Qt::AlignmentFlag alignment;
-  switch ( value )
-  {
-    case 1:
-      alignment = Qt::AlignHCenter;
-      break;
-    case 2:
-      alignment = Qt::AlignRight;
-      break;
-    case 0:
-    default:
-      alignment = Qt::AlignLeft;
-      break;
-  }
-
+  Qt::AlignmentFlag alignment = ( Qt::AlignmentFlag ) comboBox->itemData( comboBox->currentIndex() ).toInt();
   model->setData( index, alignment, Qt::EditRole );
 }
 
@@ -106,10 +90,24 @@ void QgsComposerColumnAlignmentDelegate::updateEditorGeometry( QWidget* editor, 
 
 // QgsComposerColumnSourceDelegate
 
-QgsComposerColumnSourceDelegate::QgsComposerColumnSourceDelegate( QgsVectorLayer* vlayer, QObject* parent ) : QItemDelegate( parent ),
-    mVectorLayer( vlayer )
+QgsComposerColumnSourceDelegate::QgsComposerColumnSourceDelegate( QgsVectorLayer* vlayer, QObject* parent, const QgsComposerObject* composerObject )
+    : QItemDelegate( parent )
+    , mVectorLayer( vlayer )
+    , mComposerObject( composerObject )
 {
 
+}
+
+static QgsExpressionContext _getExpressionContext( const void* context )
+{
+  const QgsComposerObject* object = ( const QgsComposerObject* ) context;
+  if ( !object )
+  {
+    return QgsExpressionContext();
+  }
+
+  QScopedPointer< QgsExpressionContext > expContext( object->createExpressionContext() );
+  return QgsExpressionContext( *expContext );
 }
 
 QWidget* QgsComposerColumnSourceDelegate::createEditor( QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index ) const
@@ -119,6 +117,7 @@ QWidget* QgsComposerColumnSourceDelegate::createEditor( QWidget* parent, const Q
 
   QgsFieldExpressionWidget *fieldExpression = new QgsFieldExpressionWidget( parent );
   fieldExpression->setLayer( mVectorLayer );
+  fieldExpression->registerGetExpressionContextCallback( &_getExpressionContext, mComposerObject );
 
   //listen out for field changes
   connect( fieldExpression, SIGNAL( fieldChanged( QString ) ), this, SLOT( commitAndCloseEditor() ) );
@@ -297,7 +296,7 @@ QgsAttributeSelectionDialog::QgsAttributeSelectionDialog( QgsComposerAttributeTa
     mColumnsTableView->setModel( mColumnModel );
     mColumnsTableView->horizontalHeader()->setResizeMode( QHeaderView::Stretch );
 
-    mColumnSourceDelegate = new QgsComposerColumnSourceDelegate( vLayer, mColumnsTableView );
+    mColumnSourceDelegate = new QgsComposerColumnSourceDelegate( vLayer, mColumnsTableView, mComposerTable );
     mColumnsTableView->setItemDelegateForColumn( 0, mColumnSourceDelegate );
     mColumnAlignmentDelegate = new QgsComposerColumnAlignmentDelegate( mColumnsTableView );
     mColumnsTableView->setItemDelegateForColumn( 2, mColumnAlignmentDelegate );
@@ -352,7 +351,7 @@ QgsAttributeSelectionDialog::QgsAttributeSelectionDialog( QgsComposerAttributeTa
     mColumnsTableView->setModel( mColumnModelV1 );
     mColumnsTableView->horizontalHeader()->setResizeMode( QHeaderView::Stretch );
 
-    mColumnSourceDelegate = new QgsComposerColumnSourceDelegate( vLayer, mColumnsTableView );
+    mColumnSourceDelegate = new QgsComposerColumnSourceDelegate( vLayer, mColumnsTableView, mComposerTableV1 );
     mColumnsTableView->setItemDelegateForColumn( 0, mColumnSourceDelegate );
     mColumnAlignmentDelegate = new QgsComposerColumnAlignmentDelegate( mColumnsTableView );
     mColumnsTableView->setItemDelegateForColumn( 2, mColumnAlignmentDelegate );

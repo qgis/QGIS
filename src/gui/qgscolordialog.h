@@ -66,7 +66,7 @@ class GUI_EXPORT QgsColorDialogV2 : public QDialog, private Ui::QgsColorDialogBa
 
   public:
 
-    /**Create a new color picker dialog
+    /** Create a new color picker dialog
      * @param parent parent widget
      * @param fl window flags
      * @param color initial color for dialog
@@ -76,23 +76,23 @@ class GUI_EXPORT QgsColorDialogV2 : public QDialog, private Ui::QgsColorDialogBa
 
     ~QgsColorDialogV2();
 
-    /**Returns the current color for the dialog
+    /** Returns the current color for the dialog
      * @returns dialog color
      */
     QColor color() const;
 
-    /**Sets the title for the color dialog
+    /** Sets the title for the color dialog
      * @param title title for dialog box
      */
     void setTitle( const QString title );
 
-    /**Sets whether alpha modification (transparency) is permitted
+    /** Sets whether alpha modification (transparency) is permitted
      * for the color dialog. Defaults to true.
      * @param allowAlpha set to false to disable alpha modification
      */
     void setAllowAlpha( const bool allowAlpha );
 
-    /**Return a color selection from a color dialog, with live updating of interim selections.
+    /** Return a color selection from a color dialog, with live updating of interim selections.
      * @param initialColor the initial color of the selection dialog.
      * @param updateObject the receiver object of the live updating.
      * @param updateSlot the receiver object's slot for live updating (e.g. SLOT( setValidColor( const QColor& ) ) ).
@@ -107,7 +107,7 @@ class GUI_EXPORT QgsColorDialogV2 : public QDialog, private Ui::QgsColorDialogBa
                                 const QString& title = QString(),
                                 const bool allowAlpha = true );
 
-    /**Return a color selection from a color dialog.
+    /** Return a color selection from a color dialog.
      * @param initialColor the initial color of the selection dialog.
      * @param parent parent widget
      * @param title the title of the dialog.
@@ -120,14 +120,14 @@ class GUI_EXPORT QgsColorDialogV2 : public QDialog, private Ui::QgsColorDialogBa
 
   signals:
 
-    /**Emitted when the dialog's color changes
+    /** Emitted when the dialog's color changes
      * @param color current color
      */
     void currentColorChanged( const QColor &color );
 
   public slots:
 
-    /**Sets the current color for the dialog
+    /** Sets the current color for the dialog
      * @param color desired color
      */
     void setColor( const QColor &color );
@@ -182,34 +182,34 @@ class GUI_EXPORT QgsColorDialogV2 : public QDialog, private Ui::QgsColorDialogBa
 
     bool mPickingColor;
 
-    /**Saves all dialog and widget settings
+    /** Saves all dialog and widget settings
      */
     void saveSettings();
 
-    /**Ends a color picking operation
+    /** Ends a color picking operation
      * @param eventPos global position of pixel to sample color from
      * @param takeSample set to true to actually sample the color, false to just cancel
      * the color picking operation
      */
     void stopPicking( const QPoint& eventPos, const bool takeSample = true );
 
-    /**Returns the average color from the pixels in an image
+    /** Returns the average color from the pixels in an image
      * @param image image to sample
      * @returns average color from image
      */
     QColor averageColor( const QImage &image ) const;
 
-    /**Samples a color from the desktop
+    /** Samples a color from the desktop
      * @param point position of color to sample
      * @returns average color from sampled position
      */
     QColor sampleColor( const QPoint &point ) const;
 
-    /**Repopulates the scheme combo box with current color schemes
+    /** Repopulates the scheme combo box with current color schemes
      */
     void refreshSchemeComboBox();
 
-    /**Returns the path to the user's palette folder
+    /** Returns the path to the user's palette folder
      */
     QString gplFilePath();
 };

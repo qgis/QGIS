@@ -32,104 +32,103 @@ import GdalTools_utils as Utils
 
 import platform
 
-class GdalToolsDialog( QWidget, Ui_Widget, BasePluginWidget ):
 
-  def __init__( self, iface ):
-      QWidget.__init__( self )
-      self.iface = iface
+class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
 
-      self.setupUi( self )
-      BasePluginWidget.__init__( self, self.iface, "gdalinfo" )
+    def __init__(self, iface):
+        QWidget.__init__(self)
+        self.iface = iface
 
-      # we don't need load to canvas functionality
-      self.base.loadCheckBox.hide()
-      # make window large
-      self.base.resize( 400, 360 )
+        self.setupUi(self)
+        BasePluginWidget.__init__(self, self.iface, "gdalinfo")
 
-      self.setParamsStatus([
-          (self.inSelector, SIGNAL("filenameChanged()") ),
-          ( self.suppressGCPCheck, SIGNAL( "stateChanged( int )" ) ),
-          ( self.suppressMDCheck, SIGNAL( "stateChanged( int )" ) )
-      ])
+        # we don't need load to canvas functionality
+        self.base.loadCheckBox.hide()
+        # make window large
+        self.base.resize(400, 360)
 
-      self.connect( self.inSelector, SIGNAL( "selectClicked()" ), self.fillInputFileEdit )
+        self.setParamsStatus([
+            (self.inSelector, SIGNAL("filenameChanged()")),
+            (self.suppressGCPCheck, SIGNAL("stateChanged( int )")),
+            (self.suppressMDCheck, SIGNAL("stateChanged( int )"))
+        ])
 
-      # helper actions for copying info output
-      self.copyLine = QAction( self.tr( "Copy" ), self )
-      QObject.connect( self.copyLine, SIGNAL( "triggered()" ), self.doCopyLine )
-      self.copyAll = QAction( self.tr( "Copy all" ), self )
-      QObject.connect( self.copyAll, SIGNAL( "triggered()" ), self.doCopyAll )
+        self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFileEdit)
 
+        # helper actions for copying info output
+        self.copyLine = QAction(self.tr("Copy"), self)
+        QObject.connect(self.copyLine, SIGNAL("triggered()"), self.doCopyLine)
+        self.copyAll = QAction(self.tr("Copy all"), self)
+        QObject.connect(self.copyAll, SIGNAL("triggered()"), self.doCopyAll)
 
-  def doCopyLine( self ):
-      output = ''
-      items = self.rasterInfoList.selectedItems()
-      for r in items:
-        output += r.text() + "\n"
-      if output:
-        clipboard = QApplication.clipboard()
-        clipboard.setText( output )
+    def doCopyLine(self):
+        output = ''
+        items = self.rasterInfoList.selectedItems()
+        for r in items:
+            output += r.text() + "\n"
+        if output:
+            clipboard = QApplication.clipboard()
+            clipboard.setText(output)
 
-  def doCopyAll( self ):
-      output = ''
-      for r in range( self.rasterInfoList.count() ):
-        output += self.rasterInfoList.item( r ).text() + "\n"
-      if output:
-        clipboard = QApplication.clipboard()
-        clipboard.setText( output )
+    def doCopyAll(self):
+        output = ''
+        for r in range(self.rasterInfoList.count()):
+            output += self.rasterInfoList.item(r).text() + "\n"
+        if output:
+            clipboard = QApplication.clipboard()
+            clipboard.setText(output)
 
-  def keyPressEvent( self, e ):
-      if ( e.modifiers() == Qt.ControlModifier or e.modifiers() == Qt.MetaModifier ) and e.key() == Qt.Key_C:
-        items = ''
-        for r in range( self.rasterInfoList.count() ):
-          items.append( self.rasterInfoList.item( r ).text() + "\n" )
-        if items:
-          clipboard = QApplication.clipboard()
-          clipboard.setText( items )
-      else:
-        QWidget.keyPressEvent( self, e )
+    def keyPressEvent(self, e):
+        if (e.modifiers() == Qt.ControlModifier or e.modifiers() == Qt.MetaModifier) and e.key() == Qt.Key_C:
+            items = ''
+            for r in range(self.rasterInfoList.count()):
+                items.append(self.rasterInfoList.item(r).text() + "\n")
+            if items:
+                clipboard = QApplication.clipboard()
+                clipboard.setText(items)
+        else:
+            QWidget.keyPressEvent(self, e)
 
-  def onLayersChanged(self):
-      self.inSelector.setLayers( Utils.LayerRegistry.instance().getRasterLayers() )
+    def onLayersChanged(self):
+        self.inSelector.setLayers(Utils.LayerRegistry.instance().getRasterLayers())
 
-  def finished( self ):
-      self.rasterInfoList.clear()
-      arr = str(self.base.process.readAllStandardOutput()).strip()
-      if platform.system() == "Windows":
-        #info = QString.fromLocal8Bit( arr ).strip().split( "\r\n" )
-        # TODO test
-        info = arr.splitlines()
-      else:
-        info = arr.splitlines()
-      self.rasterInfoList.addItems( info )
+    def finished(self):
+        self.rasterInfoList.clear()
+        arr = unicode(self.base.process.readAllStandardOutput()).strip()
+        if platform.system() == "Windows":
+            #info = QString.fromLocal8Bit( arr ).strip().split( "\r\n" )
+            # TODO test
+            info = arr.splitlines()
+        else:
+            info = arr.splitlines()
+        self.rasterInfoList.addItems(info)
 
-  def fillInputFileEdit( self ):
-      lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
-      inputFile = Utils.FileDialog.getOpenFileName( self, self.tr( "Select the file to analyse" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter )
-      if not inputFile:
-        return
-      Utils.FileFilter.setLastUsedRasterFilter( lastUsedFilter )
+    def fillInputFileEdit(self):
+        lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
+        inputFile = Utils.FileDialog.getOpenFileName(self, self.tr("Select the file to analyse"), Utils.FileFilter.allRastersFilter(), lastUsedFilter)
+        if not inputFile:
+            return
+        Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
 
-      self.inSelector.setFilename( inputFile )
+        self.inSelector.setFilename(inputFile)
 
-  def getArguments( self ):
-      arguments = []
-      if self.suppressGCPCheck.isChecked():
-        arguments.append("-nogcp")
-      if self.suppressMDCheck.isChecked():
-        arguments.append("-nomd")
-      arguments.append(self.getInputFileName())
-      return arguments
+    def getArguments(self):
+        arguments = []
+        if self.suppressGCPCheck.isChecked():
+            arguments.append("-nogcp")
+        if self.suppressMDCheck.isChecked():
+            arguments.append("-nomd")
+        arguments.append(self.getInputFileName())
+        return arguments
 
 #  def getOutputFileName( self ):
 #      return self.inSelector.filename()
 
-  def getInputFileName( self ):
-      return self.inSelector.filename()
+    def getInputFileName(self):
+        return self.inSelector.filename()
 
-
-  def contextMenuEvent( self, event ):
-      menu = QMenu( self )
-      menu.addAction( self.copyLine )
-      menu.addAction( self.copyAll )
-      menu.exec_( event.globalPos() )
+    def contextMenuEvent(self, event):
+        menu = QMenu(self)
+        menu.addAction(self.copyLine)
+        menu.addAction(self.copyAll)
+        menu.exec_(event.globalPos())

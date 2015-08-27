@@ -21,10 +21,11 @@
 #include "qgscurvev2.h"
 #include <QVector>
 
-/**\ingroup core
+/** \ingroup core
  * \class QgsCircularStringV2
  * \brief Circular string geometry type
  * \note added in QGIS 2.10
+ * \note this API is not considered stable and may change for 2.12
  */
 class CORE_EXPORT QgsCircularStringV2: public QgsCurveV2
 {
@@ -67,7 +68,11 @@ class CORE_EXPORT QgsCircularStringV2: public QgsCurveV2
     virtual QgsLineStringV2* curveToLine() const override;
 
     void draw( QPainter& p ) const override;
-    void transform( const QgsCoordinateTransform& ct ) override;
+    /** Transforms the geometry using a coordinate transform
+     * @param ct coordinate transform
+       @param d transformation direction
+     */
+    void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform ) override;
     void transform( const QTransform& t ) override;
 #if 0
     void clip( const QgsRectangle& rect ) override;

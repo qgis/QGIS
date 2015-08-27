@@ -27,9 +27,9 @@ from ..html_elems import HtmlSection, HtmlParagraph, HtmlTable, HtmlTableHeader,
 
 
 class PGTableInfo(TableInfo):
+
     def __init__(self, table):
         self.table = table
-
 
     def generalInfo(self):
         ret = []
@@ -53,7 +53,7 @@ class PGTableInfo(TableInfo):
 
         tbl.extend([
             (QApplication.translate("DBManagerPlugin", "Pages:"), self.table.pages),
-            (QApplication.translate("DBManagerPlugin", "Rows (estimation):"), self.table.estimatedRowCount )
+            (QApplication.translate("DBManagerPlugin", "Rows (estimation):"), self.table.estimatedRowCount)
         ])
 
         # privileges
@@ -65,7 +65,7 @@ class PGTableInfo(TableInfo):
         elif not schema_priv[1]:  # no usage privileges on the schema
             tbl.append((QApplication.translate("DBManagerPlugin", "Privileges:"),
                         QApplication.translate("DBManagerPlugin",
-                                               "<warning> This user doesn't have usage privileges for this schema!") ))
+                                               "<warning> This user doesn't have usage privileges for this schema!")))
         else:
             table_priv = self.table.database().connector.getTablePrivileges((self.table.schemaName(), self.table.name))
             privileges = []
@@ -77,12 +77,15 @@ class PGTableInfo(TableInfo):
                                 self.table.rowCount if self.table.rowCount is not None else QApplication.translate(
                                     "DBManagerPlugin", 'Unknown (<a href="action:rows/count">find out</a>)')))
 
-            if table_priv[1]: privileges.append("insert")
-            if table_priv[2]: privileges.append("update")
-            if table_priv[3]: privileges.append("delete")
+            if table_priv[1]:
+                privileges.append("insert")
+            if table_priv[2]:
+                privileges.append("update")
+            if table_priv[3]:
+                privileges.append("delete")
             priv_string = u", ".join(privileges) if len(privileges) > 0 else QApplication.translate("DBManagerPlugin",
                                                                                                     '<warning> This user has no privileges!')
-            tbl.append((QApplication.translate("DBManagerPlugin", "Privileges:"), priv_string ))
+            tbl.append((QApplication.translate("DBManagerPlugin", "Privileges:"), priv_string))
 
         ret.append(HtmlTable(tbl))
 
@@ -139,7 +142,6 @@ class PGTableInfo(TableInfo):
 
         return ret
 
-
     def fieldsDetails(self):
         tbl = []
 
@@ -147,7 +149,7 @@ class PGTableInfo(TableInfo):
         header = (
             "#", QApplication.translate("DBManagerPlugin", "Name"), QApplication.translate("DBManagerPlugin", "Type"),
             QApplication.translate("DBManagerPlugin", "Length"), QApplication.translate("DBManagerPlugin", "Null"),
-            QApplication.translate("DBManagerPlugin", "Default") )
+            QApplication.translate("DBManagerPlugin", "Default"))
         tbl.append(HtmlTableHeader(header))
 
         # add table contents
@@ -163,7 +165,6 @@ class PGTableInfo(TableInfo):
 
         return HtmlTable(tbl, {"class": "header"})
 
-
     def triggersDetails(self):
         if self.table.triggers() is None or len(self.table.triggers()) <= 0:
             return None
@@ -174,7 +175,7 @@ class PGTableInfo(TableInfo):
         # define the table header
         header = (
             QApplication.translate("DBManagerPlugin", "Name"), QApplication.translate("DBManagerPlugin", "Function"),
-            QApplication.translate("DBManagerPlugin", "Type"), QApplication.translate("DBManagerPlugin", "Enabled") )
+            QApplication.translate("DBManagerPlugin", "Type"), QApplication.translate("DBManagerPlugin", "Enabled"))
         tbl.append(HtmlTableHeader(header))
 
         # add table contents
@@ -195,7 +196,6 @@ class PGTableInfo(TableInfo):
                                                         '<a href="action:triggers/enable">Enable all triggers</a> / <a href="action:triggers/disable">Disable all triggers</a>')))
         return ret
 
-
     def rulesDetails(self):
         if self.table.rules() is None or len(self.table.rules()) <= 0:
             return None
@@ -203,7 +203,7 @@ class PGTableInfo(TableInfo):
         tbl = []
         # define the table header
         header = (
-            QApplication.translate("DBManagerPlugin", "Name"), QApplication.translate("DBManagerPlugin", "Definition") )
+            QApplication.translate("DBManagerPlugin", "Name"), QApplication.translate("DBManagerPlugin", "Definition"))
         tbl.append(HtmlTableHeader(header))
 
         # add table contents
@@ -213,7 +213,6 @@ class PGTableInfo(TableInfo):
             tbl.append((name, rule.definition))
 
         return HtmlTable(tbl, {"class": "header"})
-
 
     def getTableInfo(self):
         ret = TableInfo.getTableInfo(self)
@@ -229,6 +228,7 @@ class PGTableInfo(TableInfo):
 
 
 class PGVectorTableInfo(PGTableInfo, VectorTableInfo):
+
     def __init__(self, table):
         VectorTableInfo.__init__(self, table)
         PGTableInfo.__init__(self, table)
@@ -238,6 +238,7 @@ class PGVectorTableInfo(PGTableInfo, VectorTableInfo):
 
 
 class PGRasterTableInfo(PGTableInfo, RasterTableInfo):
+
     def __init__(self, table):
         RasterTableInfo.__init__(self, table)
         PGTableInfo.__init__(self, table)

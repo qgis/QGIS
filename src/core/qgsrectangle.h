@@ -115,20 +115,20 @@ class CORE_EXPORT QgsRectangle
     QString toString( int thePrecision ) const;
     //! returns rectangle as a polygon
     QString asPolygon() const;
-    /*! Comparison operator
+    /** Comparison operator
       @return True if rectangles are equal
     */
     bool operator==( const QgsRectangle &r1 ) const;
-    /*! Comparison operator
+    /** Comparison operator
     @return False if rectangles are equal
      */
     bool operator!=( const QgsRectangle &r1 ) const;
-    /*! Assignment operator
+    /** Assignment operator
      * @param r1 QgsRectangle to assign from
      */
     QgsRectangle & operator=( const QgsRectangle &r1 );
 
-    /** updates rectangle to include passed argument */
+    /** Updates rectangle to include passed argument */
     void unionRect( const QgsRectangle& rect );
 
     /** Returns true if the rectangle has finite boundaries. Will

@@ -36,7 +36,9 @@ from random import seed, random
 import ftools_utils
 from ui_frmRandPoints import Ui_Dialog
 
+
 class Dialog(QDialog, Ui_Dialog):
+
     def __init__(self, iface):
         QDialog.__init__(self, iface.mainWindow())
         self.iface = iface
@@ -45,10 +47,10 @@ class Dialog(QDialog, Ui_Dialog):
         QObject.connect(self.inShape, SIGNAL("currentIndexChanged(QString)"), self.update)
         self.progressBar.setValue(0)
         self.setWindowTitle(self.tr("Random Points"))
-        self.buttonOk = self.buttonBox_2.button( QDialogButtonBox.Ok )
+        self.buttonOk = self.buttonBox_2.button(QDialogButtonBox.Ok)
         self.populateLayers()
 
-    def populateLayers( self ):
+    def populateLayers(self):
         layers = ftools_utils.getLayerNames([QGis.Polygon, "Raster"])
         self.inShape.blockSignals(True)
         self.inShape.clear()
@@ -67,8 +69,8 @@ class Dialog(QDialog, Ui_Dialog):
             changedLayer = ftools_utils.getVectorLayerByName(inputLayer)
             changedFields = ftools_utils.getFieldList(changedLayer)
             for f in changedFields:
-              if f.typeName().lower() == "integer":
-                self.cmbField.addItem(unicode(f.name()))
+                if f.typeName().lower() == "integer":
+                    self.cmbField.addItem(unicode(f.name()))
         else:
             self.rdoUnstratified.setChecked(True)
             self.rdoStratified.setEnabled(False)
@@ -81,7 +83,7 @@ class Dialog(QDialog, Ui_Dialog):
 
     # when 'OK' button is pressed, gather required inputs, and initiate random points generation
     def accept(self):
-        self.buttonOk.setEnabled( False )
+        self.buttonOk.setEnabled(False)
         if self.inShape.currentText() == "":
             QMessageBox.information(self, self.tr("Random Points"), self.tr("No input layer specified"))
         elif self.outShape.text() == "":
@@ -116,24 +118,24 @@ class Dialog(QDialog, Ui_Dialog):
             minimum = 0.00
             self.progressBar.setValue(10)
             if self.randomize(inLayer, outPath, minimum, design, value):
-              self.progressBar.setValue(100)
-              self.outShape.clear()
-              if self.addToCanvasCheck.isChecked():
-                addCanvasCheck = ftools_utils.addShapeToCanvas(unicode(outPath))
-                if not addCanvasCheck:
-                    QMessageBox.warning( self, self.tr("Random Points"), self.tr( "Error loading output shapefile:\n%s" ) % ( unicode( outPath ) ))
-                self.populateLayers()
-              else:
-                QMessageBox.information(self, self.tr("Random Points"),self.tr("Created output shapefile:\n%s" ) % ( unicode( outPath )))
+                self.progressBar.setValue(100)
+                self.outShape.clear()
+                if self.addToCanvasCheck.isChecked():
+                    addCanvasCheck = ftools_utils.addShapeToCanvas(unicode(outPath))
+                    if not addCanvasCheck:
+                        QMessageBox.warning(self, self.tr("Random Points"), self.tr("Error loading output shapefile:\n%s") % (unicode(outPath)))
+                    self.populateLayers()
+                else:
+                    QMessageBox.information(self, self.tr("Random Points"), self.tr("Created output shapefile:\n%s") % (unicode(outPath)))
         self.progressBar.setValue(0)
-        self.buttonOk.setEnabled( True )
+        self.buttonOk.setEnabled(True)
 
     def outFile(self):
         self.outShape.clear()
-        ( self.shapefileName, self.encoding ) = ftools_utils.saveDialog( self )
+        (self.shapefileName, self.encoding) = ftools_utils.saveDialog(self)
         if self.shapefileName is None or self.encoding is None:
             return
-        self.outShape.setText( self.shapefileName )
+        self.outShape.setText(self.shapefileName)
 
 # combine all polygons in layer to create single polygon (slow for complex polygons)
     def createSinglePolygon(self, vlayer):
@@ -144,9 +146,9 @@ class Dialog(QDialog, Ui_Dialog):
         fit.nextFeature(feat)
         geom = QgsGeometry(feat.geometry())
         count = 10.00
-        add = ( 40.00 - 10.00 ) / provider.featureCount()
+        add = (40.00 - 10.00) / provider.featureCount()
         while fit.nextFeature(feat):
-            geom = geom.combine(QgsGeometry( feat.geometry() ))
+            geom = geom.combine(QgsGeometry(feat.geometry()))
             count = count + add
             self.progressBar.setValue(count)
         return geom
@@ -158,10 +160,10 @@ class Dialog(QDialog, Ui_Dialog):
         i = 1
         count = 40.00
         if n == 0:
-          return []
-        add = ( 70.00 - 40.00 ) / n
+            return []
+        add = (70.00 - 40.00) / n
         while i <= n:
-            pGeom = QgsGeometry().fromPoint(QgsPoint(xmin + (xmax-xmin) * random(), ymin + (ymax-ymin) * random()))
+            pGeom = QgsGeometry().fromPoint(QgsPoint(xmin + (xmax - xmin) * random(), ymin + (ymax - ymin) * random()))
             if pGeom.intersects(bound):
                 points.append(pGeom)
                 i = i + 1
@@ -177,13 +179,13 @@ class Dialog(QDialog, Ui_Dialog):
         feat = QgsFeature()
         i = 1
         count = 40.00
-        add = ( 70.00 - 40.00 ) / n
+        add = (70.00 - 40.00) / n
         while i <= n:
-            point = QgsPoint(xmin + (xmax-xmin) * random(), ymin + (ymax-ymin) * random())
+            point = QgsPoint(xmin + (xmax - xmin) * random(), ymin + (ymax - ymin) * random())
             pGeom = QgsGeometry().fromPoint(point)
-            ids = index.intersects(pGeom.buffer(5,5).boundingBox())
+            ids = index.intersects(pGeom.buffer(5, 5).boundingBox())
             for id in ids:
-                provider.getFeatures( QgsFeatureRequest().setFilterFid( int(id) ) ).nextFeature( feat )
+                provider.getFeatures(QgsFeatureRequest().setFilterFid(int(id))).nextFeature(feat)
                 tGeom = QgsGeometry(feat.geometry())
                 if pGeom.intersects(tGeom):
                     points.append(pGeom)
@@ -194,61 +196,62 @@ class Dialog(QDialog, Ui_Dialog):
         return points
 
     def randomize(self, inLayer, outPath, minimum, design, value):
-      outFeat = QgsFeature()
-      outFeat.initAttributes(1)
-      if design == self.tr("unstratified"):
-          ext = inLayer.extent()
-          if inLayer.type() == QgsMapLayer.RasterLayer:
-              points = self.simpleRandom(
-                  int(value), ext, ext.xMinimum(),
-                  ext.xMaximum(), ext.yMinimum(), ext.yMaximum())
-          else:
-              points = self.vectorRandom(
-                  int(value), inLayer,
-                  ext.xMinimum(), ext.xMaximum(), ext.yMinimum(), ext.yMaximum())
-      else:
-        points, featErrors = self.loopThruPolygons(inLayer, value, design)
-        if featErrors:
-          if len(featErrors) >= 10:
-            err_msg = "Too many features couldn't be calculated due to conversion error. "
-            err_msg += "Please check out message log for more info."
-            msgLogInstance = QgsMessageLog.instance()
-            msgLogInstance.logMessage( "WARNING - fTools: " + self.tr( "Random Points" ) )
-            msgLogInstance.logMessage( "The following feature ids should be checked." )
-            for feat in featErrors:
-              msgLogInstance.logMessage( "Feature id: %d" % feat.id() )
-            msgLogInstance.logMessage( "End of features to be checked." )
-          else:
-            features_ids = []
-            for feat in featErrors:
-              features_ids.append( str( feat.id() ) )
-            erroneous_ids = ', '.join(features_ids)
-            err_msg = "The following features IDs couldn't be calculated due to conversion error: %s" % erroneous_ids
-          self.iface.messageBar().pushMessage("Errors", err_msg)
-      if len(points):
-        crs = self.iface.mapCanvas().mapRenderer().destinationCrs()
-        if not crs.isValid(): crs = None
-        fields = QgsFields()
-        fields.append( QgsField("ID", QVariant.Int) )
-        outFeat.setFields(fields)
-        check = QFile(self.shapefileName)
-        if check.exists():
-            if not QgsVectorFileWriter.deleteShapeFile(self.shapefileName):
-                return
-        writer = QgsVectorFileWriter(self.shapefileName, self.encoding, fields, QGis.WKBPoint, crs)
-        idVar = 0
-        count = 70.00
-        add = ( 100.00 - 70.00 ) / len(points)
-        for i in points:
-            outFeat.setGeometry(i)
-            outFeat.setAttribute(0, idVar)
-            writer.addFeature(outFeat)
-            idVar = idVar + 1
-            count = count + add
-            self.progressBar.setValue(count)
-        del writer
-        return True
-      return False
+        outFeat = QgsFeature()
+        outFeat.initAttributes(1)
+        if design == self.tr("unstratified"):
+            ext = inLayer.extent()
+            if inLayer.type() == QgsMapLayer.RasterLayer:
+                points = self.simpleRandom(
+                    int(value), ext, ext.xMinimum(),
+                    ext.xMaximum(), ext.yMinimum(), ext.yMaximum())
+            else:
+                points = self.vectorRandom(
+                    int(value), inLayer,
+                    ext.xMinimum(), ext.xMaximum(), ext.yMinimum(), ext.yMaximum())
+        else:
+            points, featErrors = self.loopThruPolygons(inLayer, value, design)
+            if featErrors:
+                if len(featErrors) >= 10:
+                    err_msg = "Too many features couldn't be calculated due to conversion error. "
+                    err_msg += "Please check out message log for more info."
+                    msgLogInstance = QgsMessageLog.instance()
+                    msgLogInstance.logMessage("WARNING - fTools: " + self.tr("Random Points"))
+                    msgLogInstance.logMessage("The following feature ids should be checked.")
+                    for feat in featErrors:
+                        msgLogInstance.logMessage("Feature id: %d" % feat.id())
+                    msgLogInstance.logMessage("End of features to be checked.")
+                else:
+                    features_ids = []
+                    for feat in featErrors:
+                        features_ids.append(unicode(feat.id()))
+                    erroneous_ids = ', '.join(features_ids)
+                    err_msg = "The following features IDs couldn't be calculated due to conversion error: %s" % erroneous_ids
+                self.iface.messageBar().pushMessage("Errors", err_msg)
+        if len(points):
+            crs = self.iface.mapCanvas().mapRenderer().destinationCrs()
+            if not crs.isValid():
+                crs = None
+            fields = QgsFields()
+            fields.append(QgsField("ID", QVariant.Int))
+            outFeat.setFields(fields)
+            check = QFile(self.shapefileName)
+            if check.exists():
+                if not QgsVectorFileWriter.deleteShapeFile(self.shapefileName):
+                    return
+            writer = QgsVectorFileWriter(self.shapefileName, self.encoding, fields, QGis.WKBPoint, crs)
+            idVar = 0
+            count = 70.00
+            add = (100.00 - 70.00) / len(points)
+            for i in points:
+                outFeat.setGeometry(i)
+                outFeat.setAttribute(0, idVar)
+                writer.addFeature(outFeat)
+                idVar = idVar + 1
+                count = count + add
+                self.progressBar.setValue(count)
+            del writer
+            return True
+        return False
 
 #
     def loopThruPolygons(self, inLayer, numRand, design):
@@ -257,7 +260,7 @@ class Dialog(QDialog, Ui_Dialog):
         sGeom = QgsGeometry()
         sPoints = []
         if design == self.tr("field"):
-          index = sProvider.fieldNameIndex(numRand)
+            index = sProvider.fieldNameIndex(numRand)
         count = 10.00
         add = 60.00 / sProvider.featureCount()
         sFit = sProvider.getFeatures()
@@ -270,10 +273,10 @@ class Dialog(QDialog, Ui_Dialog):
             elif design == self.tr("field"):
                 sAtMap = sFeat.attributes()
                 try:
-                  value = int(sAtMap[index])
-                except (ValueError,TypeError):
-                  featureErrors.append(sFeat)
-                  continue
+                    value = int(sAtMap[index])
+                except (ValueError, TypeError):
+                    featureErrors.append(sFeat)
+                    continue
             else:
                 value = numRand
             sExt = sGeom.boundingBox()

@@ -222,7 +222,7 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     //! deletes provider registry and map layer registry
     static void exitQgis();
 
-    /** constants for endian-ness */
+    /** Constants for endian-ness */
     enum endian_t
     {
       XDR, // network, or big-endian, byte order
@@ -254,9 +254,9 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
      */
     static void registerOgrDrivers();
 
-    /**Converts absolute path to path relative to target */
+    /** Converts absolute path to path relative to target */
     static QString absolutePathToRelativePath( QString apath, QString targetPath );
-    /**Converts path relative to target to an absolute path */
+    /** Converts path relative to target to an absolute path */
     static QString relativePathToAbsolutePath( QString rpath, QString targetPath );
 
     /** Indicates whether running from build directory (not installed) */

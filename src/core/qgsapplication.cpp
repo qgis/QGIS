@@ -22,6 +22,7 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsproviderregistry.h"
+#include "qgsexpression.h"
 
 #include <QDir>
 #include <QFile>
@@ -154,7 +155,7 @@ void QgsApplication::init( QString customConfigPath )
     char *prefixPath = getenv( "QGIS_PREFIX_PATH" );
     if ( !prefixPath )
     {
-#if defined(Q_OS_MACX) || defined(Q_OS_WIN32) || defined(WIN32)
+#if defined(Q_OS_MACX) || defined(Q_OS_WIN)
       setPrefixPath( applicationDirPath(), true );
 #elif defined(ANDROID)
       // this is  "/data/data/org.qgis.qgis" in android
@@ -447,6 +448,11 @@ const QString QgsApplication::developersMapFilePath()
 {
   return ABISYM( mPkgDataPath ) + QString( "/doc/developersmap.html" );
 }
+
+const QString QgsApplication::whatsNewFilePath()
+{
+  return ABISYM( mPkgDataPath ) + QString( "/doc/whatsnew.html" );
+}
 /*!
   Returns the path to the sponsors file.
 */
@@ -624,6 +630,14 @@ void QgsApplication::initQgis()
 void QgsApplication::exitQgis()
 {
   delete QgsProviderRegistry::instance();
+
+  //Ensure that all remaining deleteLater QObjects are actually deleted before we exit.
+  //This isn't strictly necessary (since we're exiting anyway) but doing so prevents a lot of
+  //LeakSanitiser noise which hides real issues
+  QgsApplication::sendPostedEvents( 0, QEvent::DeferredDelete );
+
+  //delete all registered functions from expression engine (see above comment)
+  QgsExpression::cleanRegisteredFunctions();
 }
 
 QString QgsApplication::showSettings()
@@ -924,7 +938,7 @@ bool QgsApplication::createDB( QString *errorMessage )
     myDir.mkpath( myPamPath ); //fail silently
   }
 
-#if defined(Q_OS_WIN32) || defined(WIN32)
+#if defined(Q_OS_WIN)
   CPLSetConfigOption( "GDAL_PAM_PROXY_DIR", myPamPath.toUtf8() );
 #else
   //under other OS's we use an environment var so the user can

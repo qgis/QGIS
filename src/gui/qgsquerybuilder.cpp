@@ -69,7 +69,7 @@ void QgsQueryBuilder::showEvent( QShowEvent *event )
 
 void QgsQueryBuilder::populateFields()
 {
-  const QgsFields& fields = mLayer->pendingFields();
+  const QgsFields& fields = mLayer->fields();
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
     if ( fields.fieldOrigin( idx ) != QgsFields::OriginProvider )
@@ -325,7 +325,7 @@ void QgsQueryBuilder::on_lstFields_clicked( const QModelIndex &index )
 
 void QgsQueryBuilder::on_lstFields_doubleClicked( const QModelIndex &index )
 {
-  txtSQL->insertText( "\"" + mLayer->pendingFields()[ mModelFields->data( index, Qt::UserRole+1 ).toInt()].name() + "\"" );
+  txtSQL->insertText( "\"" + mLayer->fields()[ mModelFields->data( index, Qt::UserRole+1 ).toInt()].name() + "\"" );
   txtSQL->setFocus();
 }
 

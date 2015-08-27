@@ -1,5 +1,7 @@
 import os
 import subprocess
+
+
 def getAlgParams(f):
     params = []
     booleanparams = []
@@ -35,9 +37,10 @@ def getAlgParams(f):
     lines.close()
     return cmdname, group, params, booleanparams, numparams
 
+
 def testDescriptionFile(f):
     usage = ""
-    cmdname,group,params,booleanparams,numparams = getAlgParams(f)
+    cmdname, group, params, booleanparams, numparams = getAlgParams(f)
     command = [r'd:\saga2.1.2\saga_cmd.exe', group, cmdname]
     for p in params:
         command.append(p)
@@ -66,7 +69,7 @@ def testDescriptionFile(f):
         print lines
         print usage
         print "Name in description:" + cmdname
-        print "Parameters in description:" + str(params)
+        print "Parameters in description:" + unicode(params)
         print "-" * 50
         print
 

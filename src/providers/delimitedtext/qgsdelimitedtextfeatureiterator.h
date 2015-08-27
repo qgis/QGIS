@@ -18,6 +18,7 @@
 #include <QList>
 #include "qgsfeatureiterator.h"
 #include "qgsfeature.h"
+#include "qgsexpressioncontext.h"
 
 #include "qgsdelimitedtextprovider.h"
 
@@ -32,6 +33,7 @@ class QgsDelimitedTextFeatureSource : public QgsAbstractFeatureSource
   protected:
     QgsDelimitedTextProvider::GeomRepresentationType mGeomRep;
     QgsExpression *mSubsetExpression;
+    QgsExpressionContext mExpressionContext;
     QgsRectangle mExtent;
     bool mUseSpatialIndex;
     QgsSpatialIndex *mSpatialIndex;

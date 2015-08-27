@@ -35,24 +35,22 @@ class TestQgsTextEditWidget(TestCase):
     def setUpClass(cls):
         QgsEditorWidgetRegistry.initEditors()
 
-
-
     def createLayerWithOnePoint(self):
         self.layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
-                               "addfeat", "memory")
+                                    "addfeat", "memory")
         pr = self.layer.dataProvider()
         f = QgsFeature()
         f.setAttributes(["test", 123])
-        f.setGeometry(QgsGeometry.fromPoint(QgsPoint(100,200)))
+        f.setGeometry(QgsGeometry.fromPoint(QgsPoint(100, 200)))
         assert pr.addFeatures([f])
         assert self.layer.pendingFeatureCount() == 1
         return self.layer
 
-    def doAttributeTest(self,idx,expected):
+    def doAttributeTest(self, idx, expected):
         reg = QgsEditorWidgetRegistry.instance()
         configWdg = reg.createConfigWidget('TextEdit', self.layer, idx, None)
         config = configWdg.config()
-        editwidget = reg.create('TextEdit', self.layer, idx, config, None, None )
+        editwidget = reg.create('TextEdit', self.layer, idx, config, None, None)
 
         editwidget.setValue('value')
         assert editwidget.value() == expected[0]
@@ -69,9 +67,8 @@ class TestQgsTextEditWidget(TestCase):
     def test_SetValue(self):
         self.createLayerWithOnePoint()
 
-        self.doAttributeTest(0, ['value','123',NULL, NULL])
-        self.doAttributeTest(1, [NULL,123,NULL, NULL])
-
+        self.doAttributeTest(0, ['value', '123', NULL, NULL])
+        self.doAttributeTest(1, [NULL, 123, NULL, NULL])
 
 
 if __name__ == '__main__':

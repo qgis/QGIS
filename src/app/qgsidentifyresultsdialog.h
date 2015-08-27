@@ -136,10 +136,10 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     /** Add feature from identify results */
     void addFeature( QgsMapToolIdentify::IdentifyResult result );
 
-    /** map tool was deactivated */
+    /** Map tool was deactivated */
     void deactivate();
 
-    /** map tool was activated */
+    /** Map tool was activated */
     void activate();
 
   signals:

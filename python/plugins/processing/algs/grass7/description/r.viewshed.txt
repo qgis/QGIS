@@ -1,5 +1,5 @@
 r.viewshed
-r.viewshed - Computes the viewshed of a point on an elevation raster map.
+Computes the viewshed of a point on an elevation raster map.
 Raster (r.*)
 ParameterRaster|input|Elevation|False
 ParameterString|coordinates|Coordinate identifying the viewing position|0,0

@@ -1,4 +1,4 @@
-/**An annotation item can be either placed either on screen corrdinates or on map coordinates.
+/** An annotation item can be either placed either on screen corrdinates or on map coordinates.
   It may reference a feature and displays that associatiation with a balloon like appearance*/
 class QgsAnnotationItem: QgsMapCanvasItem
 {
@@ -31,10 +31,10 @@ class QgsAnnotationItem: QgsMapCanvasItem
 
     virtual QSizeF minimumFrameSize() const;
 
-    /**Returns the mouse move behaviour for a given position
+    /** Returns the mouse move behaviour for a given position
       @param pos the position in scene coordinates*/
     QgsAnnotationItem::MouseMoveAction moveActionForPosition( const QPointF& pos ) const;
-    /**Returns suitable cursor shape for mouse move action*/
+    /** Returns suitable cursor shape for mouse move action*/
     Qt::CursorShape cursorShapeForAction( MouseMoveAction moveAction ) const;
 
     //setters and getters
@@ -50,7 +50,7 @@ class QgsAnnotationItem: QgsMapCanvasItem
     void setOffsetFromReferencePoint( const QPointF& offset );
     QPointF offsetFromReferencePoint() const;
 
-    /**Set symbol that is drawn on map position. Takes ownership*/
+    /** Set symbol that is drawn on map position. Takes ownership*/
     void setMarkerSymbol( QgsMarkerSymbolV2* symbol /Transfer/ );
     const QgsMarkerSymbolV2* markerSymbol() const;
 
@@ -71,18 +71,18 @@ class QgsAnnotationItem: QgsMapCanvasItem
 
   protected:
     void updateBoundingRect();
-    /**Check where to attach the balloon connection between frame and map point*/
+    /** Check where to attach the balloon connection between frame and map point*/
     void updateBalloon();
 
     void drawFrame( QPainter* p );
     void drawMarkerSymbol( QPainter* p );
     void drawSelectionBoxes( QPainter* p );
-    /**Returns frame width in painter units*/
+    /** Returns frame width in painter units*/
     //double scaledFrameWidth( QPainter* p) const;
-    /**Gets the frame line (0 is the top line, 1 right, 2 bottom, 3 left)*/
+    /** Gets the frame line (0 is the top line, 1 right, 2 bottom, 3 left)*/
     QLineF segment( int index );
-    /**Returns a point on the line from startPoint to directionPoint that is a certain distance away from the starting point*/
+    /** Returns a point on the line from startPoint to directionPoint that is a certain distance away from the starting point*/
     QPointF pointOnLineWithDistance( const QPointF& startPoint, const QPointF& directionPoint, double distance ) const;
-    /**Returns the symbol size scaled in (mapcanvas) pixels. Used for the counding rect calculation*/
+    /** Returns the symbol size scaled in (mapcanvas) pixels. Used for the counding rect calculation*/
     double scaledSymbolSize() const;
 };
