@@ -27,12 +27,26 @@
 QgsWMSConnectionItem::QgsWMSConnectionItem( QgsDataItem* parent, QString name, QString path, QString uri )
     : QgsDataCollectionItem( parent, name, path )
     , mUri( uri )
+    , mCapabilitiesDownload( 0 )
 {
   mIconName = "mIconConnect.png";
+  mCapabilitiesDownload = new QgsWmsCapabilitiesDownload();
 }
 
 QgsWMSConnectionItem::~QgsWMSConnectionItem()
 {
+  QgsDebugMsg( "Entered" );
+  delete mCapabilitiesDownload;
+}
+
+void QgsWMSConnectionItem::deleteLater()
+{
+  QgsDebugMsg( "Entered" );
+  if ( mCapabilitiesDownload )
+  {
+    mCapabilitiesDownload->abort();
+  }
+  QgsDataCollectionItem::deleteLater();
 }
 
 QVector<QgsDataItem*> QgsWMSConnectionItem::createChildren()
@@ -52,9 +66,7 @@ QVector<QgsDataItem*> QgsWMSConnectionItem::createChildren()
     return children;
   }
 
-  QgsWmsCapabilitiesDownload capDownload( wmsSettings.baseUrl(), wmsSettings.authorization() );
-
-  bool res = capDownload.downloadCapabilities();
+  bool res = mCapabilitiesDownload->downloadCapabilities( wmsSettings.baseUrl(), wmsSettings.authorization() );
 
   if ( !res )
   {
@@ -63,7 +75,7 @@ QVector<QgsDataItem*> QgsWMSConnectionItem::createChildren()
   }
 
   QgsWmsCapabilities caps;
-  if ( !caps.parseResponse( capDownload.response(), wmsSettings.parserSettings() ) )
+  if ( !caps.parseResponse( mCapabilitiesDownload->response(), wmsSettings.parserSettings() ) )
   {
     children.append( new QgsErrorItem( this, tr( "Failed to parse capabilities" ), mPath + "/error" ) );
     return children;
