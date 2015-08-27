@@ -1146,7 +1146,7 @@ void QgisApp::readSettings()
   QStringList oldRecentProjects = settings.value( "/UI/recentProjectsList" ).toStringList();
   settings.remove( "/UI/recentProjectsList" );
 
-  Q_FOREACH ( const QString& project, oldRecentProjects )
+  Q_FOREACH( const QString& project, oldRecentProjects )
   {
     QgsWelcomePageItemsModel::RecentProjectData data;
     data.path = project;
@@ -1158,7 +1158,7 @@ void QgisApp::readSettings()
   settings.beginGroup( "/UI/recentProjects" );
   QStringList projectKeys = settings.childGroups();
 
-  Q_FOREACH ( const QString& key, projectKeys )
+  Q_FOREACH( const QString& key, projectKeys )
   {
     QgsWelcomePageItemsModel::RecentProjectData data;
     settings.beginGroup( key );
@@ -1800,6 +1800,15 @@ void QgisApp::createToolBars()
 
   newLayerAction->setObjectName( "ActionNewLayer" );
   connect( bt, SIGNAL( triggered( QAction * ) ), this, SLOT( toolButtonActionTriggered( QAction * ) ) );
+
+  //circular string digitize tool button
+  QToolButton* tbAddCircularString = new QToolButton( mDigitizeToolBar );
+  tbAddCircularString->setPopupMode( QToolButton::MenuButtonPopup );
+  tbAddCircularString->addAction( mActionCircularStringCurvePoint );
+  tbAddCircularString->addAction( mActionCircularStringRadius );
+  tbAddCircularString->setDefaultAction( mActionCircularStringCurvePoint );
+  connect( tbAddCircularString, SIGNAL( triggered( QAction * ) ), this, SLOT( toolButtonActionTriggered( QAction * ) ) );
+  mDigitizeToolBar->insertWidget( mActionMoveFeature, tbAddCircularString );
 
   // Help Toolbar
   QAction* actionWhatsThis = QWhatsThis::createAction( this );
@@ -2727,7 +2736,7 @@ void QgisApp::updateRecentProjectPaths()
 {
   mRecentProjectsMenu->clear();
 
-  Q_FOREACH ( const QgsWelcomePageItemsModel::RecentProjectData& recentProject, mRecentProjects )
+  Q_FOREACH( const QgsWelcomePageItemsModel::RecentProjectData& recentProject, mRecentProjects )
   {
     QAction* action = mRecentProjectsMenu->addAction( QString( "%1 (%2)" ).arg( recentProject.title ).arg( recentProject.path ) );
     action->setEnabled( QFile::exists(( recentProject.path ) ) );
@@ -2796,7 +2805,7 @@ void QgisApp::saveRecentProjectPath( QString projectPath, bool savePreviewImage 
   int idx = 0;
 
   // Persist the list
-  Q_FOREACH ( const QgsWelcomePageItemsModel::RecentProjectData& recentProject, mRecentProjects )
+  Q_FOREACH( const QgsWelcomePageItemsModel::RecentProjectData& recentProject, mRecentProjects )
   {
     ++idx;
     settings.beginGroup( QString( "/UI/recentProjects/%1" ).arg( idx ) );

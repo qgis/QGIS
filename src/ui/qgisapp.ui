@@ -356,8 +356,6 @@
    <addaction name="mActionToggleEditing"/>
    <addaction name="mActionSaveLayerEdits"/>
    <addaction name="mActionAddFeature"/>
-   <addaction name="mActionCircularStringCurvePoint"/>
-   <addaction name="mActionCircularStringRadius"/>
    <addaction name="mActionMoveFeature"/>
    <addaction name="mActionNodeTool"/>
    <addaction name="mActionDeleteSelected"/>
