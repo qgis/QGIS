@@ -2,9 +2,11 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
 <qgisgrassmodule label="Create a map containing concentric rings" module="r.circle">
-	<option key="coordinate" />
+	<option key="coordinate" version_max="6.4"/>
+	<option key="coordinates" version_min="7.0"/>
 	<option key="min" answer="0" />
 	<option key="max" />
-	<option key="mult" answer="1"/>
+	<option key="mult" answer="1" version_max="6.4"/>
+	<option key="multiplier" answer="1" version_min="7.0"/>
 	<option key="output" />
 </qgisgrassmodule>

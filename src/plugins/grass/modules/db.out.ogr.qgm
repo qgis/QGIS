@@ -4,7 +4,7 @@
 <qgisgrassmodule label="Exports attribute tables into various format" module="db.out.ogr">
 	<option key="input" />
 	<file key="dsn" type="new" version_max="6.4"/>
-	<file key="output" type="new" version_max="7.0"/>
+	<file key="output" type="new" version_min="7.0"/>
 	<option key="format" />
 	<option key="db_table" version_max="6.4"/>
 	<option key="table" version_min="7.0"/>

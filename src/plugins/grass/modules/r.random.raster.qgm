@@ -3,6 +3,8 @@
 
 <qgisgrassmodule label="Create random raster" module="r.random" direct="1">
 	<option key="input"/>
-	<option key="n" answer="1" hidden="no"/>
-	<option key="raster_output" />
+	<option key="n" answer="1" hidden="no" version_max="6.4"/>
+	<option key="npoints" answer="1" hidden="no" version_min="7.0"/>
+	<option key="raster_output" version_max="6.4"/>
+	<option key="raster" version_min="7.0"/>
 </qgisgrassmodule>
