@@ -368,14 +368,11 @@ bool QgsGrassModuleOption::checkVersion( const QString& version_min, const QStri
 
   bool minOk = true;
   bool maxOk = true;
+  QRegExp rxVersionMajor( "(\\d+)" );
   QRegExp rxVersion( "(\\d+)\\.(\\d+)" );
   if ( !version_min.isEmpty() )
   {
-    if ( !rxVersion.exactMatch( version_min ) )
-    {
-      errors << tr( "Cannot parse version_min %1" ).arg( version_min );
-    }
-    else
+    if ( rxVersion.exactMatch( version_min ) )
     {
       int versionMajorMin = rxVersion.cap( 1 ).toInt();
       int versionMinorMin = rxVersion.cap( 2 ).toInt();
@@ -384,15 +381,23 @@ bool QgsGrassModuleOption::checkVersion( const QString& version_min, const QStri
         minOk = false;
       }
     }
+    else if ( rxVersionMajor.exactMatch( version_min ) )
+    {
+      int versionMajorMin = rxVersionMajor.cap( 1 ).toInt();
+      if ( QgsGrass::versionMajor() < versionMajorMin )
+      {
+        minOk = false;
+      }
+    }
+    else
+    {
+      errors << tr( "Cannot parse version_min %1" ).arg( version_min );
+    }
   }
 
   if ( !version_max.isEmpty() )
   {
-    if ( !rxVersion.exactMatch( version_max ) )
-    {
-      errors << tr( "Cannot parse version_max %1" ).arg( version_max );
-    }
-    else
+    if ( rxVersion.exactMatch( version_max ) )
     {
       int versionMajorMax = rxVersion.cap( 1 ).toInt();
       int versionMinorMax = rxVersion.cap( 2 ).toInt();
@@ -400,6 +405,18 @@ bool QgsGrassModuleOption::checkVersion( const QString& version_min, const QStri
       {
         maxOk = false;
       }
+    }
+    else if ( rxVersionMajor.exactMatch( version_max ) )
+    {
+      int versionMajorMax = rxVersionMajor.cap( 1 ).toInt();
+      if ( QgsGrass::versionMajor() > versionMajorMax )
+      {
+        maxOk = false;
+      }
+    }
+    else
+    {
+      errors << tr( "Cannot parse version_max %1" ).arg( version_max );
     }
   }
   return errors.isEmpty() && minOk && maxOk;
