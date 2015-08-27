@@ -46,7 +46,7 @@ void QgsMapToolCircularStringCurvePoint::canvasMapReleaseEvent( QgsMapMouseEvent
       createCenterPointRubberBand();
     }
 
-    if ( mPoints.size() > 1 )
+    if ( mPoints.size() >= 1 )
     {
       if ( !mRubberBand )
       {
