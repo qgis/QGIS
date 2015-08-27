@@ -148,26 +148,23 @@ ifneq (,$(findstring profile,$(DEB_BUILD_OPTIONS)))
 endif
 
 # multi distribution support:
-# - remove prefixes for current distribution
-# - remove lines that exclude current distribution
-# - remove prefixes that exclude other distributions
+# - remove lines with applicable excludes
+# - remove prefixes with applicable includes
+# - remove prefixes with not applicable excludes
 # - remove remaining comments
 
+CONTROL_EXPRESSIONS = $(DISTRIBUTION) grass$(GRASSVER)
+
 ifneq (,$(WITH_ORACLE))
-	FILTER_ORACLE = \
-		-e 's/^#(.* |)oracle( .*|)#//' \
-		-e '/^#(.* |)!oracle( .*|)#/d'
+	CONTROL_EXPRESSIONS += oracle
 endif
 
 define gentemplate
 $(2): $(1)
 	sed -r \
-		-e 's/^#(.* |)$(DISTRIBUTION)( .*|)#//' \
-		-e '/^#(.* |)!$(DISTRIBUTION)( .*|)#/d' \
-		-e 's/^#(.* |)grass$(GRASSVER)( .*|)#//' \
-		-e '/^#(.* |)!grass$(GRASSVER)( .*|)#/d' \
-		$(FILTER_ORACLE) \
-		-e 's/^#(.* |)![^ ]*( .*|)#//' \
+		-e '/#(.+ |)!($(subst $(eval) ,|,$(CONTROL_EXPRESSIONS)))( .+|)#/d' \
+		-e 's/#([^#]+ |)($(subst $(eval) ,|,$(CONTROL_EXPRESSIONS)))( [^#]+|)#//g' \
+		-e 's/#([^#]+ |)![^#]+( [^#]*|)#//g' \
 		-e '/^#/d' \
 		-e "s/\{DEB_BUILD_GNU_TYPE\}/$(DEB_BUILD_GNU_TYPE)/g" \
 		-e "s#\{QT_PLUGIN_DIR\}#$(QT_PLUGIN_DIR)#g" \
