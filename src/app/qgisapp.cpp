@@ -590,8 +590,10 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
 
   qobject_cast<QGridLayout *>( centralWidget->layout() )->addWidget( mCentralContainer, 0, 0, 2, 1 );
 
-  mCentralContainer->setCurrentIndex( 1 );
+  connect( mMapCanvas, SIGNAL( layersChanged() ), this, SLOT( showMapCanvas() ) );
+  connect( this, SIGNAL( newProject() ), this, SLOT( showMapCanvas() ) );
 
+  mCentralContainer->setCurrentIndex( 1 );
 
   // a bar to warn the user with non-blocking messages
   mInfoBar = new QgsMessageBar( centralWidget );
@@ -3929,8 +3931,6 @@ void QgisApp::fileOpenAfterLaunch()
   QString projPath = QString();
   if ( projOpen == 0 ) // welcome page
   {
-    connect( mMapCanvas, SIGNAL( layersChanged() ), this, SLOT( showMapCanvas() ) );
-    connect( this, SIGNAL( newProject() ), this, SLOT( showMapCanvas() ) );
     return;
   }
   if ( projOpen == 1 && mRecentProjects.size() > 0 ) // most recent project
