@@ -289,8 +289,8 @@ Description: GRASS plugin for QGIS
 #grass6# qgis-provider-grass (= ${source:Version}),
 #grass6# ${shlibs:Depends},
 #grass6# ${misc:Depends},
-#!sid !precise# grass-core
-#precise# grass
+#grass6##!precise# grass-core (<< 7)
+#grass6##precise# grass (<< 7)
 #grass6#Description: GRASS plugin for QGIS
 #grass6# QGIS is a Geographic Information System (GIS) which manages, analyzes and
 #grass6# display databases of geographic information.
@@ -300,8 +300,8 @@ Description: GRASS plugin for QGIS
 #grass6#Package: qgis-plugin-grass-common
 #grass6#Architecture: all
 #grass6#Depends:
-#jessie saucy trusty# python2.7,
-#wheezy precise# python,
+#grass6##saucy trusty# python2.7,
+#grass6##precise# python,
 #grass6# ${misc:Depends}
 #grass6#Breaks: qgis-common (<< 1.5)
 #grass6#Replaces: qgis-common (<< 1.5)
