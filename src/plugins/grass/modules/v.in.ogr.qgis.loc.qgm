@@ -3,7 +3,7 @@
 
 <qgisgrassmodule label="Import loaded vector and create a fitted location" module="v.in.ogr"> 
 	<ogr key="dsn" layeroption="layer" whereoption="where" label="Loaded layer" version_max="6.4"/>
-	<ogr key="input" layeroption="layer" whereoption="where" label="Loaded layer" version_max="6.4"/>
+	<ogr key="input" layeroption="layer" whereoption="where" label="Loaded layer" version_min="7.0"/>
 	<option key="output" />	
 	<option key="location" />
         <option key="type" advanced="yes"/>
