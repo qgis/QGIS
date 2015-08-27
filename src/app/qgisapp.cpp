@@ -2787,7 +2787,7 @@ void QgisApp::saveRecentProjectPath( QString projectPath, bool savePreviewImage 
 
   // Keep the list to 8 items by trimming excess off the bottom
   // And remove the associated image
-  while ( mRecentProjects.count() > 8 )
+  while ( mRecentProjects.count() > 10 )
   {
     QFile( mRecentProjects.takeLast().previewImagePath ).remove();
   }
