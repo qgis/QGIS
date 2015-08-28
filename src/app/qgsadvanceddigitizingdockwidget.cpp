@@ -185,6 +185,12 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas* 
 QgsAdvancedDigitizingDockWidget::~QgsAdvancedDigitizingDockWidget()
 {
   delete mErrorMessage;
+  delete mCadPaintItem;
+  delete mAngleConstraint;
+  delete mDistanceConstraint;
+  delete mXConstraint;
+  delete mYConstraint;
+
 }
 
 void QgsAdvancedDigitizingDockWidget::hideEvent( QHideEvent* )

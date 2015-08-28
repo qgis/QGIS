@@ -1041,6 +1041,7 @@ QgisApp::~QgisApp()
   delete mComposerManager;
 
   delete mVectorLayerTools;
+  delete mWelcomePage;
 
   deletePrintComposers();
   removeAnnotationItems();
