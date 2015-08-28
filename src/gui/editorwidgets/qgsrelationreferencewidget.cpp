@@ -371,7 +371,7 @@ void QgsRelationReferenceWidget::setEditorContext( const QgsAttributeEditorConte
   if ( mMapTool )
     delete mMapTool;
   mMapTool = new QgsMapToolIdentifyFeature( mCanvas );
-  mMapTool->setAction( mMapIdentificationButton->defaultAction() );
+  mMapTool->setButton( mMapIdentificationButton );
 }
 
 void QgsRelationReferenceWidget::setEmbedForm( bool display )
