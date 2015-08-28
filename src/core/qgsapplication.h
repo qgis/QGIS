@@ -86,7 +86,7 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     /**
      * @brief All themes found in the application resources folder
-     * and ~\.qgis2\themes folder. The path is to the root folder for the theme
+     * and ~/.qgis2/themes folder. The path is to the root folder for the theme
      * @note Valid theme folders must contain a style.qss file.
      * @return A hash of theme name and theme path. Valid theme folders contain style.qss
      */
