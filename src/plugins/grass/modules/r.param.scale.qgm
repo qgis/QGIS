@@ -2,8 +2,9 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
 <qgisgrassmodule label="Extracts terrain parameters from DEM" module="r.param.scale">
-	<option key="input"/>
-	<option key="param"/>
-	<option key="size" answer="3" hidden="no"/>
-	<option key="output"/>
+    <option key="input"/>
+    <option key="param" version_max="6.4"/>
+    <option key="method" version_min="7.0"/>
+    <option key="size" answer="3" hidden="no"/>
+    <option key="output"/>
 </qgisgrassmodule>
