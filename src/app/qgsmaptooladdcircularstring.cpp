@@ -79,7 +79,7 @@ void QgsMapToolAddCircularString::keyPressEvent( QKeyEvent* e )
 
 void QgsMapToolAddCircularString::keyReleaseEvent( QKeyEvent* e )
 {
-  if ( e->isAutoRepeat() )
+  if ( e && e->isAutoRepeat() )
   {
     return;
   }

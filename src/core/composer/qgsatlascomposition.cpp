@@ -838,7 +838,7 @@ QgsExpressionContext QgsAtlasComposition::createExpressionContext()
   expressionContext << new QgsExpressionContextScope( "Atlas" );
   if ( mCoverageLayer )
     expressionContext.lastScope()->setFields( mCoverageLayer->fields() );
-  if ( mComposition->atlasMode() != QgsComposition::AtlasOff )
+  if ( mComposition && mComposition->atlasMode() != QgsComposition::AtlasOff )
     expressionContext.lastScope()->setFeature( mCurrentFeature );
 
   return expressionContext;
