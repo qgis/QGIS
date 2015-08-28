@@ -1056,6 +1056,7 @@ int QgsVectorLayer::addRing( QgsCurveV2* ring )
 {
   if ( !mEditBuffer || !mDataProvider )
   {
+    delete ring;
     return 6;
   }
 
@@ -1066,7 +1067,8 @@ int QgsVectorLayer::addRing( QgsCurveV2* ring )
 
   if ( !ring->isClosed() )
   {
-    delete ring; return 2;
+    delete ring;
+    return 2;
   }
 
   QgsVectorLayerEditUtils utils( this );

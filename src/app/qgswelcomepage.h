@@ -22,12 +22,16 @@
 
 #include "qgswelcomepageitemsmodel.h"
 
+class QgsVersionInfo;
+
 class QgsWelcomePage : public QTabWidget
 {
     Q_OBJECT
 
   public:
     QgsWelcomePage( QWidget* parent = 0 );
+
+    ~QgsWelcomePage();
 
     void setRecentProjects( const QList<QgsWelcomePageItemsModel::RecentProjectData>& recentProjects );
 
@@ -39,6 +43,7 @@ class QgsWelcomePage : public QTabWidget
   private:
     QgsWelcomePageItemsModel* mModel;
     QLabel* mVersionInformation;
+    QgsVersionInfo* mVersionInfo;
 };
 
 #endif // QGSWELCOMEDIALOG_H

@@ -88,7 +88,10 @@ QgsVariableEditorWidget::QgsVariableEditorWidget( QWidget *parent )
   connect( mTreeWidget, SIGNAL( itemSelectionChanged() ), this, SLOT( selectionChanged() ) );
   connect( mTreeWidget, SIGNAL( scopeChanged() ), this, SIGNAL( scopeChanged() ) );
 
-  setContext( new QgsExpressionContext() );
+  //setContext clones context
+  QgsExpressionContext* context = new QgsExpressionContext();
+  setContext( context );
+  delete context;
 }
 
 QgsVariableEditorWidget::~QgsVariableEditorWidget()

@@ -60621,7 +60621,7 @@ Symbolien tietokannassa oli ongelma.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="58"/>
-        <source>If you need help using QGIS we have a &apos;users&apos; mailing list where users help each other with issues related to using our sofware. We also have a &apos;developers&apos; mailing list. for those wanting help and to discuss things relating to the QGIS code base. Details on how to subscribe are in the &lt;a href=&quot;http://qgis.org/en/site/forusers/support.html#mailing-lists&quot;&gt;community section&lt;/a&gt; of the QGIS home page.</source>
+        <source>If you need help using QGIS we have a &apos;users&apos; mailing list where users help each other with issues related to using our software. We also have a &apos;developers&apos; mailing list. for those wanting help and to discuss things relating to the QGIS code base. Details on how to subscribe are in the &lt;a href=&quot;http://qgis.org/en/site/forusers/support.html#mailing-lists&quot;&gt;community section&lt;/a&gt; of the QGIS home page.</source>
         <translation>Jos tarvitset apua QGIS käytössä, on meillä &apos;käyttäjien&apos; sähköpostilista jossa käyttäjä auttavat toinen toisiaan erilaisissa ohjelmistoon liittyvissä asioissa. Meillä on myös &apos;kehittäjien&apos; lista, niille jotka haluavat auttaa kehitystyössä ja keskustella erilaisista seikoista jotka liittyvät itse QGIS koodiin. Yksityiskohdat kuinka liittyä löytyvät &lt;a href=&quot;http://qgis.org/en/site/forusers/support.html#mailing-lists&quot;&gt;yhteisö osasta&lt;/a&gt; QGIS kotisivuilla.</translation>
     </message>
     <message>

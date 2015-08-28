@@ -58,6 +58,8 @@ class APP_EXPORT QgsMapToolCapture : public QgsMapToolEdit
 
     const QgsCompoundCurveV2* captureCurve() const { return &mCaptureCurve; }
 
+    void deleteTempRubberBand();
+
   public slots:
     void currentLayerChanged( QgsMapLayer *layer );
     void addError( QgsGeometry::Error );
@@ -77,7 +79,6 @@ class APP_EXPORT QgsMapToolCapture : public QgsMapToolEdit
     void startCapturing();
     bool isCapturing() const;
     void stopCapturing();
-    void deleteTempRubberBand();
 
     int size();
     QList<QgsPoint> points();

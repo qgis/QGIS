@@ -130,7 +130,7 @@ class CORE_EXPORT QgsExpression
     //! Evaluate the feature and return the result
     //! @note prepare() should be called before calling this method
     //! @note available in python bindings as evaluatePrepared
-    Q_DECL_DEPRECATED inline QVariant evaluate( const QgsFeature& f ) { Q_NOWARN_DEPRECATED_PUSH return evaluate( &f ); Q_NOWARN_DEPRECATED_POP }
+    Q_DECL_DEPRECATED QVariant evaluate( const QgsFeature& f );
 
     //! Evaluate the feature and return the result
     //! @note this method does not expect that prepare() has been called on this instance
@@ -139,7 +139,7 @@ class CORE_EXPORT QgsExpression
     //! Evaluate the feature and return the result
     //! @note this method does not expect that prepare() has been called on this instance
     //! @note not available in python bindings
-    Q_DECL_DEPRECATED inline QVariant evaluate( const QgsFeature& f, const QgsFields& fields );
+    Q_DECL_DEPRECATED QVariant evaluate( const QgsFeature& f, const QgsFields& fields );
 
     /** Evaluate the feature and return the result.
      * @note this method does not expect that prepare() has been called on this instance
@@ -437,6 +437,7 @@ class CORE_EXPORT QgsExpression
                                           bool handlesNull = false )
             : Function( fnname, params, group, helpText, usesGeometry, referencedColumns, lazyEval, handlesNull )
             , mFnc( fcn )
+            , mContextFnc( 0 )
             , mAliases( aliases )
         {}
 
@@ -455,15 +456,11 @@ class CORE_EXPORT QgsExpression
                         const QStringList& aliases = QStringList(),
                         bool handlesNull = false )
             : Function( fnname, params, group, helpText, usesGeometry, referencedColumns, lazyEval, handlesNull )
+            , mFnc( 0 )
             , mContextFnc( fcn )
             , mAliases( aliases )
         {}
-        Q_DECL_DEPRECATED virtual QVariant func( const QVariantList& values, const QgsFeature* f, QgsExpression* parent ) override
-        {
-          Q_NOWARN_DEPRECATED_PUSH
-          return mFnc( values, f, parent );
-          Q_NOWARN_DEPRECATED_POP
-        }
+        Q_DECL_DEPRECATED virtual QVariant func( const QVariantList& values, const QgsFeature* f, QgsExpression* parent ) override;
 
         /** Returns result of evaluating the function.
          * @param values list of values passed to the function
@@ -473,7 +470,7 @@ class CORE_EXPORT QgsExpression
          */
         virtual QVariant func( const QVariantList& values, const QgsExpressionContext* context, QgsExpression* parent ) override
         {
-          return mContextFnc( values, context, parent );
+          return mContextFnc ? mContextFnc( values, context, parent ) : QVariant();
         }
 
         virtual QStringList aliases() const override { return mAliases; }

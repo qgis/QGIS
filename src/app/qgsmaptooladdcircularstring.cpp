@@ -79,7 +79,7 @@ void QgsMapToolAddCircularString::keyPressEvent( QKeyEvent* e )
 
 void QgsMapToolAddCircularString::keyReleaseEvent( QKeyEvent* e )
 {
-  if ( e->isAutoRepeat() )
+  if ( e && e->isAutoRepeat() )
   {
     return;
   }
@@ -109,6 +109,16 @@ void QgsMapToolAddCircularString::deactivate()
   mPoints.clear();
   delete mRubberBand; mRubberBand = 0;
   removeCenterPointRubberBand();
+  QgsMapToolCapture::deactivate();
+}
+
+void QgsMapToolAddCircularString::activate()
+{
+  if ( mParentTool )
+  {
+    mParentTool->deleteTempRubberBand();
+  }
+  QgsMapToolCapture::activate();
 }
 
 void QgsMapToolAddCircularString::createCenterPointRubberBand()

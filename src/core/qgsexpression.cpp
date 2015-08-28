@@ -2240,6 +2240,13 @@ QVariant QgsExpression::evaluate( const QgsFeature* f )
   return mRootNode->eval( this, &context );
 }
 
+QVariant QgsExpression::evaluate( const QgsFeature &f )
+{
+  Q_NOWARN_DEPRECATED_PUSH
+  return evaluate( &f );
+  Q_NOWARN_DEPRECATED_POP
+}
+
 QVariant QgsExpression::evaluate( const QgsFeature* f, const QgsFields& fields )
 {
   // first prepare
@@ -3270,5 +3277,12 @@ bool QgsExpression::Node::prepare( QgsExpression* parent, const QgsExpressionCon
 
   Q_NOWARN_DEPRECATED_PUSH
   return prepare( parent, f );
+  Q_NOWARN_DEPRECATED_POP
+}
+
+QVariant QgsExpression::StaticFunction::func( const QVariantList &values, const QgsFeature* f, QgsExpression* parent )
+{
+  Q_NOWARN_DEPRECATED_PUSH
+  return mFnc ? mFnc( values, f, parent ) : QVariant();
   Q_NOWARN_DEPRECATED_POP
 }

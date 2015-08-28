@@ -66,6 +66,15 @@ QgsRectangle QgsCircularStringV2::calculateBoundingBox() const
       bbox.combineExtentWith( &segmentBox );
     }
   }
+
+  if ( nPoints > 0 && nPoints % 2 == 0 )
+  {
+    if ( nPoints == 2 )
+    {
+      bbox.combineExtentWith( mX[ 0 ], mY[ 0 ] );
+    }
+    bbox.combineExtentWith( mX[ nPoints - 1 ], mY[ nPoints - 1 ] );
+  }
   return bbox;
 }
 
@@ -638,6 +647,12 @@ void QgsCircularStringV2::addToPainterPath( QPainterPath& path ) const
       path.lineTo( pt.at( j ).x(), pt.at( j ).y() );
     }
     //arcTo( path, QPointF( mX[i], mY[i] ), QPointF( mX[i + 1], mY[i + 1] ), QPointF( mX[i + 2], mY[i + 2] ) );
+  }
+
+  //if number of points is even, connect to last point with straight line (even though the circular string is not valid)
+  if ( nPoints % 2 == 0 )
+  {
+    path.lineTo( mX[ nPoints - 1 ], mY[ nPoints - 1 ] );
   }
 }
 

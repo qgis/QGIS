@@ -619,10 +619,10 @@ void TestQgsComposerTableV2::removeDuplicates()
 
   //check if removing attributes in unique mode works correctly (should result in duplicate rows,
   //which will be stripped out)
-  table->columns()->removeLast();
+  delete table->columns()->takeLast();
   table->refreshAttributes();
   QCOMPARE( table->contents()->length(), 2 );
-  table->columns()->removeLast();
+  delete table->columns()->takeLast();
   table->refreshAttributes();
   QCOMPARE( table->contents()->length(), 1 );
   table->setUniqueRowsOnly( false );

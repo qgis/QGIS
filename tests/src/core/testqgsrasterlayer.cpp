@@ -281,13 +281,14 @@ bool TestQgsRasterLayer::testColorRamp( QString name, QgsVectorColorRampV2* colo
 void TestQgsRasterLayer::colorRamp1()
 {
   // gradient ramp
-  QgsVectorGradientColorRampV2 colorRamp( QColor( Qt::red ), QColor( Qt::black ) );
+  QgsVectorGradientColorRampV2* colorRamp = new QgsVectorGradientColorRampV2( QColor( Qt::red ), QColor( Qt::black ) );
   QgsGradientStopsList stops;
   stops.append( QgsGradientStop( 0.5, QColor( Qt::white ) ) );
-  colorRamp.setStops( stops );
+  colorRamp->setStops( stops );
 
   // QVERIFY( testColorRamp( "raster_colorRamp1", colorRamp, QgsColorRampShader::INTERPOLATED, 5 ) );
-  QVERIFY( testColorRamp( "raster_colorRamp1", &colorRamp, QgsColorRampShader::DISCRETE, 10 ) );
+  QVERIFY( testColorRamp( "raster_colorRamp1", colorRamp, QgsColorRampShader::DISCRETE, 10 ) );
+  delete colorRamp;
 }
 
 void TestQgsRasterLayer::colorRamp2()

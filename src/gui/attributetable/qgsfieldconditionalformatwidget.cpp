@@ -6,9 +6,12 @@
 #include "qgssymbollayerv2utils.h"
 #include "qgsstylev2.h"
 
-QgsFieldConditionalFormatWidget::QgsFieldConditionalFormatWidget( QWidget *parent ) :
-    QWidget( parent )
+QgsFieldConditionalFormatWidget::QgsFieldConditionalFormatWidget( QWidget *parent )
+    : QWidget( parent )
+    , mLayer( 0 )
+    , mEditIndex( 0 )
     , mEditing( false )
+    , mSymbol( 0 )
 {
   setupUi( this );
   mDeleteButton->hide();
@@ -33,6 +36,11 @@ QgsFieldConditionalFormatWidget::QgsFieldConditionalFormatWidget( QWidget *paren
   mPresetsList->setModel( mPresetsModel );
 
   setPresets( defaultPresets() );
+}
+
+QgsFieldConditionalFormatWidget::~QgsFieldConditionalFormatWidget()
+{
+  delete mSymbol;
 }
 
 void QgsFieldConditionalFormatWidget::updateIcon()

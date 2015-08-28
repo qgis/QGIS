@@ -99,6 +99,11 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
     cmbStyle->addItem( style );
   }
 
+  QStringList themes = QgsApplication::uiThemes().keys();
+  cmbUITheme->addItems( themes );
+
+  connect( cmbUITheme, SIGNAL( currentIndexChanged(const QString& ) ), this, SLOT( uiThemeChanged( const QString& ) ) );
+
   mIdentifyHighlightColorButton->setColorDialogTitle( tr( "Identify highlight color" ) );
   mIdentifyHighlightColorButton->setAllowAlpha( true );
   mIdentifyHighlightColorButton->setContext( "gui" );
@@ -520,6 +525,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   QString name = QApplication::style()->objectName();
   cmbStyle->setCurrentIndex( cmbStyle->findText( name, Qt::MatchFixedString ) );
 
+  QString theme  = QgsApplication::uiThemeName();
+  cmbUITheme->setCurrentIndex( cmbUITheme->findText( theme, Qt::MatchFixedString ) );
+
   mNativeColorDialogsChkBx->setChecked( settings.value( "/qgis/native_color_dialogs", false ).toBool() );
   mLiveColorDialogsChkBx->setChecked( settings.value( "/qgis/live_color_dialogs", false ).toBool() );
 
@@ -926,6 +934,11 @@ void QgsOptions::on_pbnTemplateFolderReset_pressed()
 void QgsOptions::iconSizeChanged( const QString &iconSize )
 {
   QgisApp::instance()->setIconSizes( iconSize.toInt() );
+}
+
+void QgsOptions::uiThemeChanged( const QString &theme )
+{
+  QgsApplication::setUITheme( theme );
 }
 
 void QgsOptions::on_mProjectOnLaunchCmbBx_currentIndexChanged( int indx )

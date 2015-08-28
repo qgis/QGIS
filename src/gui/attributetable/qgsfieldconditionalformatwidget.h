@@ -41,6 +41,8 @@ class GUI_EXPORT QgsFieldConditionalFormatWidget : public QWidget, private Ui::Q
      */
     explicit QgsFieldConditionalFormatWidget( QWidget *parent = 0 );
 
+    ~QgsFieldConditionalFormatWidget();
+
     /** Switches the widget to the rules page.
      */
     void viewRules();

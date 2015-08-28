@@ -1439,6 +1439,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
             , mMeasureArea( 0 )
             , mMeasureAngle( 0 )
             , mAddFeature( 0 )
+            , mCircularStringCurvePoint( 0 )
+            , mCircularStringRadius( 0 )
             , mMoveFeature( 0 )
             , mOffsetCurve( 0 )
             , mReshapeFeatures( 0 )

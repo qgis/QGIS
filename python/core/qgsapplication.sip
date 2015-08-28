@@ -100,82 +100,102 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
      * but plugin writers etc can use this method as a basis for searching
      * for resources in their own datastores e.g. a Qt4 resource bundle.
      */
-    static const QString themeName();
+    static QString themeName();
+
+    static void setUITheme( const QString &themeName );
+
+    /**
+     * @brief Return the active UI theme set in the settings.
+     * @return The name of the current UI theme.
+     */
+    static QString uiThemeName();
+
+    /**
+     * @brief All themes found in the application resources folder
+     * and ~/.qgis2/themes folder. The path is to the root folder for the theme
+     * @note Valid theme folders must contain a style.qss file.
+     * @return A hash of theme name and theme path. Valid theme folders contain style.qss
+     */
+    static QHash<QString, QString> uiThemes();
 
     //! Returns the path to the authors file.
-    static const QString authorsFilePath();
+    static QString authorsFilePath();
 
     /** Returns the path to the contributors file.
      * Contributors are people who have submitted patches
      * but don't have commit access. */
-    static const QString contributorsFilePath();
+    static QString contributorsFilePath();
 
     /** Returns the path to the developers map file.
      * The developers map was created by using leaflet framework,
      * it shows the doc/contributors.json file.
      * @note this function was added in version 2.7 */
-    static const QString developersMapFilePath();
+    static QString developersMapFilePath();
+
+    /** Returns the path to the whats new html page
+     * @note this function was added in version 2.11 */
+    static QString whatsNewFilePath();
 
     /** Returns the path to the sponsors file. */
-    static const QString sponsorsFilePath();
+    static QString sponsorsFilePath();
 
     /** Returns the path to the donors file. */
-    static const QString donorsFilePath();
+    static QString donorsFilePath();
 
     /**
      * Returns the path to the sponsors file.
      */
-    static const QString translatorsFilePath();
+    static QString translatorsFilePath();
 
     /*!
       Returns the path to the licence file.
     */
-    static const QString licenceFilePath();
+    static QString licenceFilePath();
 
     //! Returns the path to the help application.
-    static const QString helpAppPath();
+    static QString helpAppPath();
 
     //! Returns the path to the translation directory.
-    static const QString i18nPath();
+    static QString i18nPath();
 
     //! Returns the path to the master qgis.db file.
-    static const QString qgisMasterDbFilePath();
+    static QString qgisMasterDbFilePath();
 
     //! Returns the path to the settings directory in user's home dir
-    static const QString qgisSettingsDirPath();
+    static QString qgisSettingsDirPath();
 
     //! Returns the path to the user qgis.db file.
-    static const QString qgisUserDbFilePath();
+    static QString qgisUserDbFilePath();
 
     //! Returns the path to the splash screen image directory.
-    static const QString splashPath();
+    static QString splashPath();
 
     //! Returns the path to the icons image directory.
-    static const QString iconsPath();
+    static QString iconsPath();
 
     //! Returns the path to the srs.db file.
-    static const QString srsDbFilePath();
+    static QString srsDbFilePath();
 
     //! Returns the pathes to svg directories.
-    static const QStringList svgPaths();
+    static QStringList svgPaths();
 
     //! Returns the system environment variables passed to application.
-    static const QMap<QString, QString> systemEnvVars();
+    static QMap<QString, QString> systemEnvVars();
 
     //! Returns the path to the application prefix directory.
-    static const QString prefixPath();
+    static QString prefixPath();
 
     //! Returns the path to the application plugin directory.
-    static const QString pluginPath();
+    static QString pluginPath();
 
     //! Returns the common root path of all application data directories.
-    static const QString pkgDataPath();
+    static QString pkgDataPath();
 
     //! Returns the path to the currently active theme directory.
-    static const QString activeThemePath();
+    static QString activeThemePath();
 
     //! Returns the path to the default theme directory.
-    static const QString defaultThemePath();
+    static QString defaultThemePath();
 
     //! Returns path to the desired icon file.
     //! First it tries to use the active theme path, then default theme path
@@ -189,17 +209,18 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     //! default theme if the active theme does not have the required icon.
     static QPixmap getThemePixmap( const QString &theName );
 
+
     //! Returns the path to user's style.
-    static const QString userStyleV2Path();
+    static QString userStyleV2Path();
 
     //! Returns the path to default style (works as a starting point).
-    static const QString defaultStyleV2Path();
+    static QString defaultStyleV2Path();
 
     //! Returns the path containing qgis_core, qgis_gui, qgispython (and other) libraries
-    static const QString libraryPath();
+    static QString libraryPath();
 
     //! Returns the path with utility executables (help viewer, crssync, ...)
-    static const QString libexecPath();
+    static QString libexecPath();
 
     //! Alters prefix path - used by 3rd party apps
     static void setPrefixPath( const QString &thePrefixPath, bool useDefaultPaths = false );

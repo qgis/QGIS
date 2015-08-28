@@ -787,6 +787,21 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     bool isDrawingOutlineLabels() const { return mDrawOutlineLabels; }
     void setDrawingOutlineLabels( bool outline ) { mDrawOutlineLabels = outline; }
 
+    /** Returns whether the engine will only draw the outline rectangles of labels,
+     * not the label contents themselves. Used for debugging and testing purposes.
+     * @see setDrawLabelRectOnly
+     * @note added in QGIS 2.12
+     */
+    bool drawLabelRectOnly() const { return mDrawLabelRectOnly; }
+
+    /** Sets whether the engine should only draw the outline rectangles of labels,
+     * not the label contents themselves. Used for debugging and testing purposes.
+     * @param drawRect set to true to enable rect drawing only
+     * @see drawLabelRectOnly
+     * @note added in QGIS 2.12
+     */
+    void setDrawLabelRectOnly( bool drawRect ) { mDrawLabelRectOnly = drawRect; }
+
     // implemented methods from labeling engine interface
 
     //! called when we're going to start with rendering
@@ -952,6 +967,9 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
 
     // list of candidates from last labeling
     QList<QgsLabelCandidate> mCandidates;
+
+    //! Whether to only draw the label rect and not the actual label text (used for unit tests)
+    bool mDrawLabelRectOnly;
     bool mShowingCandidates;
     bool mShowingAllLabels; // whether to avoid collisions or not
     bool mShowingShadowRects; // whether to show debugging rectangles for drop shadows

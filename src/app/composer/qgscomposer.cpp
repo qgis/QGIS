@@ -1485,6 +1485,7 @@ void QgsComposer::setComposition( QgsComposition* composition )
 
   deleteItemWidgets();
 
+  delete mComposition;
   mComposition = composition;
 
   connectCompositionSlots();
@@ -3250,6 +3251,9 @@ void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& 
   //delete composition widget
   QgsCompositionWidget* oldCompositionWidget = qobject_cast<QgsCompositionWidget *>( mGeneralDock->widget() );
   delete oldCompositionWidget;
+
+  deleteItemWidgets();
+  delete mComposition;
 
   createComposerView();
 

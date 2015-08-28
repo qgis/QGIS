@@ -60572,7 +60572,7 @@ Il y a un problème avec votre base de symboles.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="58"/>
-        <source>If you need help using QGIS we have a &apos;users&apos; mailing list where users help each other with issues related to using our sofware. We also have a &apos;developers&apos; mailing list. for those wanting help and to discuss things relating to the QGIS code base. Details on how to subscribe are in the &lt;a href=&quot;http://qgis.org/en/site/forusers/support.html#mailing-lists&quot;&gt;community section&lt;/a&gt; of the QGIS home page.</source>
+        <source>If you need help using QGIS we have a &apos;users&apos; mailing list where users help each other with issues related to using our software. We also have a &apos;developers&apos; mailing list. for those wanting help and to discuss things relating to the QGIS code base. Details on how to subscribe are in the &lt;a href=&quot;http://qgis.org/en/site/forusers/support.html#mailing-lists&quot;&gt;community section&lt;/a&gt; of the QGIS home page.</source>
         <translation>Si vous avez besoin d&apos;aide pour QGIS, nous disposons d&apos;une liste de diffusion «utilisateurs» pour les questions relatives à l&apos;utilisation du logiciel. Nous avons aussi une liste de diffusion «développeurs». pour ceux qui cherchent de l&apos;aide ou qui veulent discuter de sujets relatifs au code source de QGIS. Les modalités d&apos;abonnement sont décrites dans la &lt;a href=&quot;http://qgis.org/fr/site/forusers/support.html#mailing-lists&quot;&gt; section communauté &lt;/a&gt; de la page d&apos;accueil QGIS.</translation>
     </message>
     <message>

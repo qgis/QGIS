@@ -120,7 +120,10 @@ int QgsVectorLayerEditUtils::addRing( const QList<QgsPoint>& ring )
 int QgsVectorLayerEditUtils::addRing( QgsCurveV2* ring )
 {
   if ( !L->hasGeometryType() )
+  {
+    delete ring;
     return 5;
+  }
 
   int addRingReturnCode = 5; //default: return code for 'ring not inserted'
   QgsRectangle bBox = ring->boundingBox();
@@ -129,7 +132,8 @@ int QgsVectorLayerEditUtils::addRing( QgsCurveV2* ring )
   QgsFeature f;
   while ( fit.nextFeature( f ) )
   {
-    addRingReturnCode = f.geometry()->addRing( ring );
+    //add ring takes ownership of ring, and deletes it if there's an error
+    addRingReturnCode = f.geometry()->addRing( static_cast< QgsCurveV2* >( ring->clone() ) );
     if ( addRingReturnCode == 0 )
     {
       L->editBuffer()->changeGeometry( f.id(), f.geometry() );
@@ -139,6 +143,7 @@ int QgsVectorLayerEditUtils::addRing( QgsCurveV2* ring )
     }
   }
 
+  delete ring;
   return addRingReturnCode;
 }
 

@@ -60521,7 +60521,7 @@ There was a problem with your symbol database.</source>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="58"/>
-        <source>If you need help using QGIS we have a &apos;users&apos; mailing list where users help each other with issues related to using our sofware. We also have a &apos;developers&apos; mailing list. for those wanting help and to discuss things relating to the QGIS code base. Details on how to subscribe are in the &lt;a href=&quot;http://qgis.org/en/site/forusers/support.html#mailing-lists&quot;&gt;community section&lt;/a&gt; of the QGIS home page.</source>
+        <source>If you need help using QGIS we have a &apos;users&apos; mailing list where users help each other with issues related to using our software. We also have a &apos;developers&apos; mailing list. for those wanting help and to discuss things relating to the QGIS code base. Details on how to subscribe are in the &lt;a href=&quot;http://qgis.org/en/site/forusers/support.html#mailing-lists&quot;&gt;community section&lt;/a&gt; of the QGIS home page.</source>
         <translation>如果您在QGIS使用上有任何問題，我們有&apos;使用者&apos;郵寄列表，在郵件中我們會相互討論使用上的問題。我們也有&apos;開發者&apos;郵寄列表，給那些想要幫助與討論QGIS相關程式碼的人使用。詳細的訂閱資訊可以在QGIS首頁的&lt;a href=&quot;http://qgis.org/en/site/forusers/support.html#mailing-lists&quot;&gt;社群專區&lt;/a&gt; 。</translation>
     </message>
     <message>

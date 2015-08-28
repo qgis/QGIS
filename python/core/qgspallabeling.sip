@@ -714,6 +714,21 @@ class QgsPalLabeling : QgsLabelingEngineInterface
     bool isDrawingOutlineLabels() const;
     void setDrawingOutlineLabels( bool outline );
 
+    /** Returns whether the engine will only draw the outline rectangles of labels,
+     * not the label contents themselves. Used for debugging and testing purposes.
+     * @see setDrawLabelRectOnly
+     * @note added in QGIS 2.12
+     */
+    bool drawLabelRectOnly() const;
+
+    /** Sets whether the engine should only draw the outline rectangles of labels,
+     * not the label contents themselves. Used for debugging and testing purposes.
+     * @param drawRect set to true to enable rect drawing only
+     * @see drawLabelRectOnly
+     * @note added in QGIS 2.12
+     */
+    void setDrawLabelRectOnly( bool drawRect );
+
     // implemented methods from labeling engine interface
 
     //! called when we're going to start with rendering

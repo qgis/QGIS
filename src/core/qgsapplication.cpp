@@ -56,6 +56,7 @@ QString ABISYM( QgsApplication::mPkgDataPath );
 QString ABISYM( QgsApplication::mLibraryPath );
 QString ABISYM( QgsApplication::mLibexecPath );
 QString ABISYM( QgsApplication::mThemeName );
+QString ABISYM( QgsApplication::mUIThemeName );
 QStringList ABISYM( QgsApplication::mDefaultSvgPaths );
 QMap<QString, QString> ABISYM( QgsApplication::mSystemEnvVars );
 QString ABISYM( QgsApplication::mConfigPath );
@@ -113,7 +114,7 @@ void QgsApplication::init( QString customConfigPath )
   // check if QGIS is run from build directory (not the install directory)
   QFile f;
   // "/../../.." is for Mac bundled app in build directory
-  foreach ( QString path, QStringList() << "" << "/.." << "/bin" << "/../../.." )
+  foreach ( const QString& path, QStringList() << "" << "/.." << "/bin" << "/../../.." )
   {
     f.setFileName( prefixPath + path + "/qgisbuildpath.txt" );
     if ( f.exists() )
@@ -329,7 +330,7 @@ void QgsApplication::setDefaultSvgPaths( const QStringList& pathList )
   ABISYM( mDefaultSvgPaths ) = pathList;
 }
 
-const QString QgsApplication::prefixPath()
+QString QgsApplication::prefixPath()
 {
   if ( ABISYM( mRunningFromBuildDir ) )
   {
@@ -341,19 +342,19 @@ const QString QgsApplication::prefixPath()
 
   return ABISYM( mPrefixPath );
 }
-const QString QgsApplication::pluginPath()
+QString QgsApplication::pluginPath()
 {
   return ABISYM( mPluginPath );
 }
-const QString QgsApplication::pkgDataPath()
+QString QgsApplication::pkgDataPath()
 {
   return ABISYM( mPkgDataPath );
 }
-const QString QgsApplication::defaultThemePath()
+QString QgsApplication::defaultThemePath()
 {
   return ":/images/themes/default/";
 }
-const QString QgsApplication::activeThemePath()
+QString QgsApplication::activeThemePath()
 {
   return ":/images/themes/" + themeName() + "/";
 }
@@ -426,37 +427,81 @@ void QgsApplication::setThemeName( const QString &theThemeName )
 /*!
  * Get the active theme name
  */
-const QString QgsApplication::themeName()
+QString QgsApplication::themeName()
 {
   return ABISYM( mThemeName );
 }
+
+void QgsApplication::setUITheme( const QString &themeName )
+{
+  // Loop all style sheets, find matching name, load it.
+  QHash<QString, QString> themes = QgsApplication::uiThemes();
+  QString path = themes[themeName];
+  QString styleSheet = QLatin1String( "file:///" );
+  styleSheet.append( path + "/style.qss" );
+  qApp->setStyleSheet( styleSheet );
+  QSettings settings;
+  return settings.setValue( "UI/UITheme", themeName );
+}
+
+QHash<QString, QString> QgsApplication::uiThemes()
+{
+  QString themepath = ABISYM( mPkgDataPath ) + QString( "/resources/themes" );
+  QString userthemes = qgisSettingsDirPath() + QString( "/themes" );
+  QStringList paths = QStringList() << themepath << userthemes;
+  QHash<QString, QString> mapping;
+  mapping.insert( "default", "" );
+  foreach ( const QString& path, paths )
+  {
+    QDir folder( path );
+    QFileInfoList styleFiles = folder.entryInfoList( QDir::Dirs | QDir::NoDotAndDotDot );
+    foreach ( const QFileInfo& info, styleFiles )
+    {
+      QFileInfo styleFile( info.absoluteFilePath() + "/style.qss" );
+      if ( !styleFile.exists() )
+        continue;
+
+      QString name = info.baseName();
+      QString path = info.absoluteFilePath();
+      mapping.insert( name, path );
+    }
+  }
+  return mapping;
+}
+
+QString QgsApplication::uiThemeName()
+{
+  QSettings settings;
+  return settings.value( "UI/UITheme", "default" ).toString();
+}
+
 /*!
   Returns the path to the authors file.
 */
-const QString QgsApplication::authorsFilePath()
+QString QgsApplication::authorsFilePath()
 {
   return ABISYM( mPkgDataPath ) + QString( "/doc/AUTHORS" );
 }
 /*!
   Returns the path to the contributors file.
 */
-const QString QgsApplication::contributorsFilePath()
+QString QgsApplication::contributorsFilePath()
 {
   return ABISYM( mPkgDataPath ) + QString( "/doc/CONTRIBUTORS" );
 }
-const QString QgsApplication::developersMapFilePath()
+QString QgsApplication::developersMapFilePath()
 {
   return ABISYM( mPkgDataPath ) + QString( "/doc/developersmap.html" );
 }
 
-const QString QgsApplication::whatsNewFilePath()
+QString QgsApplication::whatsNewFilePath()
 {
   return ABISYM( mPkgDataPath ) + QString( "/doc/whatsnew.html" );
 }
 /*!
   Returns the path to the sponsors file.
 */
-const QString QgsApplication::sponsorsFilePath()
+QString QgsApplication::sponsorsFilePath()
 {
   return ABISYM( mPkgDataPath ) + QString( "/doc/SPONSORS" );
 }
@@ -464,19 +509,19 @@ const QString QgsApplication::sponsorsFilePath()
 /*!
   Returns the path to the donors file.
 */
-const QString QgsApplication::donorsFilePath()
+QString QgsApplication::donorsFilePath()
 {
   return ABISYM( mPkgDataPath ) + QString( "/doc/DONORS" );
 }
 
 /** Returns the path to the sponsors file. */
-const QString QgsApplication::translatorsFilePath()
+QString QgsApplication::translatorsFilePath()
 {
   return ABISYM( mPkgDataPath ) + QString( "/doc/TRANSLATORS" );
 }
 
 /** Returns the path to the licence file. */
-const QString QgsApplication::licenceFilePath()
+QString QgsApplication::licenceFilePath()
 {
   return ABISYM( mPkgDataPath ) + QString( "/doc/LICENSE" );
 }
@@ -484,7 +529,7 @@ const QString QgsApplication::licenceFilePath()
 /*!
   Returns the path to the help application.
 */
-const QString QgsApplication::helpAppPath()
+QString QgsApplication::helpAppPath()
 {
   QString helpAppPath;
 #ifdef Q_OS_MACX
@@ -501,7 +546,7 @@ const QString QgsApplication::helpAppPath()
 /*!
   Returns the path to the translation directory.
 */
-const QString QgsApplication::i18nPath()
+QString QgsApplication::i18nPath()
 {
   if ( ABISYM( mRunningFromBuildDir ) )
     return ABISYM( mBuildOutputPath ) + QString( "/i18n" );
@@ -512,7 +557,7 @@ const QString QgsApplication::i18nPath()
 /*!
   Returns the path to the master qgis.db file.
 */
-const QString QgsApplication::qgisMasterDbFilePath()
+QString QgsApplication::qgisMasterDbFilePath()
 {
   return ABISYM( mPkgDataPath ) + QString( "/resources/qgis.db" );
 }
@@ -520,7 +565,7 @@ const QString QgsApplication::qgisMasterDbFilePath()
 /*!
   Returns the path to the settings directory in user's home dir
  */
-const QString QgsApplication::qgisSettingsDirPath()
+QString QgsApplication::qgisSettingsDirPath()
 {
   return ABISYM( mConfigPath );
 }
@@ -528,7 +573,7 @@ const QString QgsApplication::qgisSettingsDirPath()
 /*!
   Returns the path to the user qgis.db file.
 */
-const QString QgsApplication::qgisUserDbFilePath()
+QString QgsApplication::qgisUserDbFilePath()
 {
   return qgisSettingsDirPath() + QString( "qgis.db" );
 }
@@ -536,7 +581,7 @@ const QString QgsApplication::qgisUserDbFilePath()
 /*!
   Returns the path to the splash screen image directory.
 */
-const QString QgsApplication::splashPath()
+QString QgsApplication::splashPath()
 {
   return QString( ":/images/splash/" );
 }
@@ -544,14 +589,14 @@ const QString QgsApplication::splashPath()
 /*!
   Returns the path to the icons image directory.
 */
-const QString QgsApplication::iconsPath()
+QString QgsApplication::iconsPath()
 {
   return ABISYM( mPkgDataPath ) + QString( "/images/icons/" );
 }
 /*!
   Returns the path to the srs.db file.
 */
-const QString QgsApplication::srsDbFilePath()
+QString QgsApplication::srsDbFilePath()
 {
   if ( ABISYM( mRunningFromBuildDir ) )
   {
@@ -577,7 +622,7 @@ const QString QgsApplication::srsDbFilePath()
 /*!
   Returns the paths to the svg directories.
 */
-const QStringList QgsApplication::svgPaths()
+QStringList QgsApplication::svgPaths()
 {
   //local directories to search when looking for an SVG with a given basename
   //defined by user in options dialog
@@ -593,22 +638,22 @@ const QStringList QgsApplication::svgPaths()
   return myPathList;
 }
 
-const QString QgsApplication::userStyleV2Path()
+QString QgsApplication::userStyleV2Path()
 {
   return qgisSettingsDirPath() + QString( "symbology-ng-style.db" );
 }
 
-const QString QgsApplication::defaultStyleV2Path()
+QString QgsApplication::defaultStyleV2Path()
 {
   return ABISYM( mPkgDataPath ) + QString( "/resources/symbology-ng-style.db" );
 }
 
-const QString QgsApplication::libraryPath()
+QString QgsApplication::libraryPath()
 {
   return ABISYM( mLibraryPath );
 }
 
-const QString QgsApplication::libexecPath()
+QString QgsApplication::libexecPath()
 {
   return ABISYM( mLibexecPath );
 }
