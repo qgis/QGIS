@@ -437,6 +437,7 @@ class CORE_EXPORT QgsExpression
                                           bool handlesNull = false )
             : Function( fnname, params, group, helpText, usesGeometry, referencedColumns, lazyEval, handlesNull )
             , mFnc( fcn )
+            , mContextFnc( 0 )
             , mAliases( aliases )
         {}
 
@@ -455,6 +456,7 @@ class CORE_EXPORT QgsExpression
                         const QStringList& aliases = QStringList(),
                         bool handlesNull = false )
             : Function( fnname, params, group, helpText, usesGeometry, referencedColumns, lazyEval, handlesNull )
+            , mFnc( 0 )
             , mContextFnc( fcn )
             , mAliases( aliases )
         {}
@@ -468,7 +470,7 @@ class CORE_EXPORT QgsExpression
          */
         virtual QVariant func( const QVariantList& values, const QgsExpressionContext* context, QgsExpression* parent ) override
         {
-          return mContextFnc( values, context, parent );
+          return mContextFnc ? mContextFnc( values, context, parent ) : QVariant();
         }
 
         virtual QStringList aliases() const override { return mAliases; }

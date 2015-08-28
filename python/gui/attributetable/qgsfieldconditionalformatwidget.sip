@@ -17,6 +17,8 @@ class QgsFieldConditionalFormatWidget : QWidget
      */
     explicit QgsFieldConditionalFormatWidget( QWidget *parent /TransferThis/ = 0 );
 
+    ~QgsFieldConditionalFormatWidget();
+
     /** Switches the widget to the rules page.
      */
     void viewRules();

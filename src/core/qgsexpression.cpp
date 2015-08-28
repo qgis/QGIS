@@ -3283,6 +3283,6 @@ bool QgsExpression::Node::prepare( QgsExpression* parent, const QgsExpressionCon
 QVariant QgsExpression::StaticFunction::func( const QVariantList &values, const QgsFeature* f, QgsExpression* parent )
 {
   Q_NOWARN_DEPRECATED_PUSH
-  return mFnc( values, f, parent );
+  return mFnc ? mFnc( values, f, parent ) : QVariant();
   Q_NOWARN_DEPRECATED_POP
 }
