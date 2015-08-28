@@ -550,6 +550,7 @@ int QgsGeometry::addRing( QgsCurveV2* ring )
 {
   if ( !d || !d->geometry )
   {
+    delete ring;
     return 1;
   }
 
