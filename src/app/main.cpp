@@ -788,6 +788,7 @@ APP_EXPORT int main( int argc, char *argv[] )
 #endif
 #endif
 
+  QgsApplication::setUITheme( QgsApplication::uiThemeName() );
   /* Translation file for QGIS.
    */
   QString i18nPath = QgsApplication::i18nPath();

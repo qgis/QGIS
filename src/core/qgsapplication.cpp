@@ -56,6 +56,7 @@ QString ABISYM( QgsApplication::mPkgDataPath );
 QString ABISYM( QgsApplication::mLibraryPath );
 QString ABISYM( QgsApplication::mLibexecPath );
 QString ABISYM( QgsApplication::mThemeName );
+QString ABISYM( QgsApplication::mUIThemeName );
 QStringList ABISYM( QgsApplication::mDefaultSvgPaths );
 QMap<QString, QString> ABISYM( QgsApplication::mSystemEnvVars );
 QString ABISYM( QgsApplication::mConfigPath );
@@ -430,6 +431,50 @@ const QString QgsApplication::themeName()
 {
   return ABISYM( mThemeName );
 }
+
+void QgsApplication::setUITheme( const QString &themeName )
+{
+  // Loop all style sheets, find matching name, load it.
+  QHash<QString, QString> themes = QgsApplication::uiThemes();
+  QString path = themes[themeName];
+  QString styleSheet = QLatin1String( "file:///" );
+  styleSheet.append( path + "/style.qss" );
+  qApp->setStyleSheet( styleSheet );
+  QSettings settings;
+  return settings.setValue( "UI/UITheme", themeName );
+}
+
+const QHash<QString, QString> QgsApplication::uiThemes()
+{
+  QString themepath = ABISYM( mPkgDataPath ) + QString( "/resources/themes" );
+  QString userthemes = qgisSettingsDirPath() + QString( "/themes" );
+  QStringList paths = QStringList() << themepath << userthemes;
+  QHash<QString, QString> mapping;
+  mapping.insert( "default", "" );
+  foreach( const QString path, paths )
+  {
+      QDir folder( path );
+      QFileInfoList styleFiles = folder.entryInfoList( QDir::Dirs | QDir::NoDotAndDotDot );
+      foreach ( QFileInfo info, styleFiles )
+      {
+        QFileInfo styleFile( info.absoluteFilePath() + "/style.qss" );
+        if ( !styleFile.exists() )
+          continue;
+
+        QString name = info.baseName();
+        QString path = info.absoluteFilePath();
+        mapping.insert( name, path );
+      }
+    }
+  return mapping;
+}
+
+const QString QgsApplication::uiThemeName()
+{
+  QSettings settings;
+  return settings.value( "UI/UITheme", "default" ).toString();
+}
+
 /*!
   Returns the path to the authors file.
 */

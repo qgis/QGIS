@@ -189,6 +189,12 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     //! default theme if the active theme does not have the required icon.
     static QPixmap getThemePixmap( const QString &theName );
 
+    static const QHash<QString, QString> uiThemes();
+
+    static void setUITheme( const QString &themeName );
+
+    static const QString uiThemeName();
+
     //! Returns the path to user's style.
     static const QString userStyleV2Path();
 

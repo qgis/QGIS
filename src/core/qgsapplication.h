@@ -76,6 +76,22 @@ class CORE_EXPORT QgsApplication : public QApplication
      */
     static const QString themeName();
 
+    static void setUITheme( const QString &themeName );
+
+    /**
+     * @brief Return the active UI theme set in the settings.
+     * @return The name of the current UI theme.
+     */
+    static const QString uiThemeName();
+
+    /**
+     * @brief All themes found in the application resources folder
+     * and ~\.qgis2\themes folder. The path is to the root folder for the theme
+     * @note Valid theme folders must contain a style.qss file.
+     * @return A hash of theme name and theme path. Valid theme folders contain style.qss
+     */
+    static const QHash<QString, QString> uiThemes();
+
     //! Returns the path to the authors file.
     static const QString authorsFilePath();
 
@@ -307,6 +323,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QObject* ABISYM( mFileOpenEventReceiver );
     static QStringList ABISYM( mFileOpenEventList );
 
+    static QString ABISYM( mUIThemeName );
     static QString ABISYM( mPrefixPath );
     static QString ABISYM( mPluginPath );
     static QString ABISYM( mPkgDataPath );
