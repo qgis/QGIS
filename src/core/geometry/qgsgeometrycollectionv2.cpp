@@ -367,7 +367,12 @@ bool QgsGeometryCollectionV2::insertVertex( const QgsVertexId& position, const Q
     return false;
   }
 
-  return mGeometries[position.part]->insertVertex( position, vertex );
+  bool success = mGeometries[position.part]->insertVertex( position, vertex );
+  if ( success )
+  {
+    mBoundingBox = QgsRectangle(); //set bounding box invalid
+  }
+  return success;
 }
 
 bool QgsGeometryCollectionV2::moveVertex( const QgsVertexId& position, const QgsPointV2& newPos )
@@ -377,7 +382,12 @@ bool QgsGeometryCollectionV2::moveVertex( const QgsVertexId& position, const Qgs
     return false;
   }
 
-  return mGeometries[position.part]->moveVertex( position, newPos );
+  bool success = mGeometries[position.part]->moveVertex( position, newPos );
+  if ( success )
+  {
+    mBoundingBox = QgsRectangle(); //set bounding box invalid
+  }
+  return success;
 }
 
 bool QgsGeometryCollectionV2::deleteVertex( const QgsVertexId& position )
@@ -401,6 +411,10 @@ bool QgsGeometryCollectionV2::deleteVertex( const QgsVertexId& position )
     removeGeometry( position.part );
   }
 
+  if ( success )
+  {
+    mBoundingBox = QgsRectangle(); //set bounding box invalid
+  }
   return success;
 }
 
