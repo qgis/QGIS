@@ -3163,7 +3163,13 @@ double QgsPalLayerSettings::scaleToPixelContext( double size, const QgsRenderCon
 // -------------
 
 QgsPalLabeling::QgsPalLabeling()
-    : mMapSettings( NULL ), mPal( NULL )
+    : mMapSettings( NULL )
+    , mPal( NULL )
+    , mDrawLabelRectOnly( false )
+    , mShowingCandidates( false )
+    , mShowingAllLabels( false )
+    , mShowingShadowRects( false )
+    , mDrawOutlineLabels( true )
     , mResults( 0 )
 {
 
@@ -3172,6 +3178,7 @@ QgsPalLabeling::QgsPalLabeling()
   mCandPoint = p.getPointP();
   mCandLine = p.getLineP();
   mCandPolygon = p.getPolyP();
+  mShowingPartialsLabels = p.getShowPartial();
 
   switch ( p.getSearch() )
   {
@@ -3181,12 +3188,6 @@ QgsPalLabeling::QgsPalLabeling()
     case POPMUSIC_TABU_CHAIN: mSearch = Popmusic_Tabu_Chain; break;
     case FALP: mSearch = Falp; break;
   }
-
-  mShowingCandidates = false;
-  mShowingShadowRects = false;
-  mShowingAllLabels = false;
-  mShowingPartialsLabels = p.getShowPartial();
-  mDrawOutlineLabels = true;
 }
 
 QgsPalLabeling::~QgsPalLabeling()
@@ -4601,6 +4602,39 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& con
   component.setOrigin( outPt );
   component.setRotation( label->getAlpha() );
 
+  if ( mDrawLabelRectOnly )
+  {
+    //debugging rect
+    if ( drawType != QgsPalLabeling::LabelText )
+      return;
+
+    QgsPoint outPt2 = xform.transform( label->getX() + label->getWidth(), label->getY() + label->getHeight() );
+    QRectF rect( 0, 0, outPt2.x() - outPt.x(), outPt2.y() - outPt.y() );
+    painter->save();
+    painter->setRenderHint( QPainter::Antialiasing, false );
+    painter->translate( QPointF( outPt.x(), outPt.y() ) );
+    painter->rotate( -label->getAlpha() * 180 / M_PI );
+
+    if ( label->conflictsWithObstacle() )
+    {
+      painter->setBrush( QColor( 255, 0, 0, 100 ) );
+      painter->setPen( QColor( 255, 0, 0, 150 ) );
+    }
+    else
+    {
+      painter->setBrush( QColor( 0, 255, 0, 100 ) );
+      painter->setPen( QColor( 0, 255, 0, 150 ) );
+    }
+
+    painter->drawRect( rect );
+    painter->restore();
+
+    if ( label->getNextPart() )
+      drawLabel( label->getNextPart(), context, tmpLyr, drawType, dpiRatio );
+
+    return;
+  }
+
   if ( drawType == QgsPalLabeling::LabelShape )
   {
     // get rotated label's center point
@@ -5341,6 +5375,8 @@ void QgsPalLabeling::loadEngineSettings()
                    "PAL", "/CandidatesPolygon", p.getPolyP(), &saved );
   mShowingCandidates = QgsProject::instance()->readBoolEntry(
                          "PAL", "/ShowingCandidates", false, &saved );
+  mDrawLabelRectOnly = QgsProject::instance()->readBoolEntry(
+                         "PAL", "/DrawRectOnly", false, &saved );
   mShowingShadowRects = QgsProject::instance()->readBoolEntry(
                           "PAL", "/ShowingShadowRects", false, &saved );
   mShowingAllLabels = QgsProject::instance()->readBoolEntry(
@@ -5358,6 +5394,7 @@ void QgsPalLabeling::saveEngineSettings()
   QgsProject::instance()->writeEntry( "PAL", "/CandidatesLine", mCandLine );
   QgsProject::instance()->writeEntry( "PAL", "/CandidatesPolygon", mCandPolygon );
   QgsProject::instance()->writeEntry( "PAL", "/ShowingCandidates", mShowingCandidates );
+  QgsProject::instance()->writeEntry( "PAL", "/DrawRectOnly", mDrawLabelRectOnly );
   QgsProject::instance()->writeEntry( "PAL", "/ShowingShadowRects", mShowingShadowRects );
   QgsProject::instance()->writeEntry( "PAL", "/ShowingAllLabels", mShowingAllLabels );
   QgsProject::instance()->writeEntry( "PAL", "/ShowingPartialsLabels", mShowingPartialsLabels );
@@ -5382,6 +5419,7 @@ QgsLabelingEngineInterface* QgsPalLabeling::clone()
   QgsPalLabeling* lbl = new QgsPalLabeling();
   lbl->mShowingAllLabels = mShowingAllLabels;
   lbl->mShowingCandidates = mShowingCandidates;
+  lbl->mDrawLabelRectOnly = mDrawLabelRectOnly;
   lbl->mShowingShadowRects = mShowingShadowRects;
   lbl->mShowingPartialsLabels = mShowingPartialsLabels;
   lbl->mDrawOutlineLabels = mDrawOutlineLabels;

@@ -683,14 +683,20 @@ class QgsWmsCapabilitiesDownload : public QObject
     Q_OBJECT
 
   public:
+    QgsWmsCapabilitiesDownload( QObject* parent = 0 );
+
     QgsWmsCapabilitiesDownload( const QString& baseUrl, const QgsWmsAuthorization& auth, QObject* parent = 0 );
 
     bool downloadCapabilities();
+
+    bool downloadCapabilities( const QString& baseUrl, const QgsWmsAuthorization& auth );
 
     QString lastError() const { return mError; }
 
     QByteArray response() const { return mHttpCapabilitiesResponse; }
 
+    /** Abort network request immediately */
+    void abort();
   signals:
     /** \brief emit a signal to be caught by qgisapp and display a msg on status bar */
     void statusChanged( QString const &  theStatusQString );
@@ -720,6 +726,7 @@ class QgsWmsCapabilitiesDownload : public QObject
     /** Capabilities of the WMS (raw) */
     QByteArray mHttpCapabilitiesResponse;
 
+    bool mIsAborted;
 };
 
 

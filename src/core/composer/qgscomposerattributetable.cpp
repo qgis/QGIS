@@ -396,7 +396,7 @@ bool QgsComposerAttributeTable::getFeatureAttributes( QList<QgsAttributeMap> &at
   if ( mComposerMap && mShowOnlyVisibleFeatures )
   {
     selectionRect = *mComposerMap->currentMapExtent();
-    if ( mVectorLayer && mComposition->mapSettings().hasCrsTransformEnabled() )
+    if ( mComposition->mapSettings().hasCrsTransformEnabled() )
     {
       //transform back to layer CRS
       QgsCoordinateTransform coordTransform( mVectorLayer->crs(), mComposition->mapSettings().destinationCrs() );

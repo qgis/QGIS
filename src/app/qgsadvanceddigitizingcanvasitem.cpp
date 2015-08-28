@@ -32,6 +32,10 @@ QgsAdvancedDigitizingCanvasItem::QgsAdvancedDigitizingCanvasItem( QgsMapCanvas* 
 {
 }
 
+QgsAdvancedDigitizingCanvasItem::~QgsAdvancedDigitizingCanvasItem()
+{
+}
+
 void QgsAdvancedDigitizingCanvasItem::paint( QPainter* painter )
 {
   if ( !mAdvancedDigitizingDockWidget->cadEnabled() )

@@ -590,8 +590,10 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
 
   qobject_cast<QGridLayout *>( centralWidget->layout() )->addWidget( mCentralContainer, 0, 0, 2, 1 );
 
-  mCentralContainer->setCurrentIndex( 1 );
+  connect( mMapCanvas, SIGNAL( layersChanged() ), this, SLOT( showMapCanvas() ) );
+  connect( this, SIGNAL( newProject() ), this, SLOT( showMapCanvas() ) );
 
+  mCentralContainer->setCurrentIndex( 1 );
 
   // a bar to warn the user with non-blocking messages
   mInfoBar = new QgsMessageBar( centralWidget );
@@ -846,6 +848,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   mMapCanvas->clearExtentHistory(); // reset zoomnext/zoomlast
   mLastComposerId = 0;
 
+
   // Show a nice tip of the day
   if ( settings.value( QString( "/qgis/showTips%1" ).arg( QGis::QGIS_VERSION_INT / 100 ), true ).toBool() )
   {
@@ -880,6 +883,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   // request notification of FileOpen events (double clicking a file icon in Mac OS X Finder)
   // should come after fileNewBlank to ensure project is properly set up to receive any data source files
   QgsApplication::setFileOpenEventReceiver( this );
+
 
 #ifdef ANDROID
   toggleFullScreen();
@@ -1027,6 +1031,8 @@ QgisApp::~QgisApp()
   delete mMapTools.mSplitParts;
   delete mMapTools.mSvgAnnotation;
   delete mMapTools.mTextAnnotation;
+  delete mMapTools.mCircularStringCurvePoint;
+  delete mMapTools.mCircularStringRadius;
 
   delete mpMaptip;
 
@@ -1037,6 +1043,7 @@ QgisApp::~QgisApp()
   delete mComposerManager;
 
   delete mVectorLayerTools;
+  delete mWelcomePage;
 
   deletePrintComposers();
   removeAnnotationItems();
@@ -1800,6 +1807,15 @@ void QgisApp::createToolBars()
 
   newLayerAction->setObjectName( "ActionNewLayer" );
   connect( bt, SIGNAL( triggered( QAction * ) ), this, SLOT( toolButtonActionTriggered( QAction * ) ) );
+
+  //circular string digitize tool button
+  QToolButton* tbAddCircularString = new QToolButton( mDigitizeToolBar );
+  tbAddCircularString->setPopupMode( QToolButton::MenuButtonPopup );
+  tbAddCircularString->addAction( mActionCircularStringCurvePoint );
+  tbAddCircularString->addAction( mActionCircularStringRadius );
+  tbAddCircularString->setDefaultAction( mActionCircularStringCurvePoint );
+  connect( tbAddCircularString, SIGNAL( triggered( QAction * ) ), this, SLOT( toolButtonActionTriggered( QAction * ) ) );
+  mDigitizeToolBar->insertWidget( mActionMoveFeature, tbAddCircularString );
 
   // Help Toolbar
   QAction* actionWhatsThis = QWhatsThis::createAction( this );
@@ -2787,7 +2803,7 @@ void QgisApp::saveRecentProjectPath( QString projectPath, bool savePreviewImage 
 
   // Keep the list to 8 items by trimming excess off the bottom
   // And remove the associated image
-  while ( mRecentProjects.count() > 8 )
+  while ( mRecentProjects.count() > 10 )
   {
     QFile( mRecentProjects.takeLast().previewImagePath ).remove();
   }
@@ -3920,8 +3936,6 @@ void QgisApp::fileOpenAfterLaunch()
   QString projPath = QString();
   if ( projOpen == 0 ) // welcome page
   {
-    connect( mMapCanvas, SIGNAL( layersChanged() ), this, SLOT( showMapCanvas() ) );
-    connect( this, SIGNAL( newProject() ), this, SLOT( showMapCanvas() ) );
     return;
   }
   if ( projOpen == 1 && mRecentProjects.size() > 0 ) // most recent project

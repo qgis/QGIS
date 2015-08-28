@@ -134,6 +134,14 @@ void QgsMapToolCapture::canvasMapMoveEvent( QgsMapMouseEvent * e )
     mSnappingMarker->setCenter( point );
   }
 
+  if ( !mTempRubberBand && mCaptureCurve.numPoints() > 0 )
+  {
+    mTempRubberBand = createRubberBand( mCaptureMode == CapturePolygon ? QGis::Polygon : QGis::Line, true );
+    QgsPointV2 pt = mCaptureCurve.endPoint();
+    mTempRubberBand->addPoint( QgsPoint( pt.x(), pt.y() ) );
+    mTempRubberBand->addPoint( point );
+  }
+
   if ( mCaptureMode != CapturePoint && mTempRubberBand && mCapturing )
   {
     mTempRubberBand->movePoint( point );

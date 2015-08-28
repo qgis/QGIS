@@ -44,7 +44,7 @@ QgsBookmarks::QgsBookmarks( QWidget *parent ) : QDockWidget( parent )
   btnImpExp->setIcon( QgsApplication::getThemeIcon( "/mActionSharing.svg" ) );
   btnImpExp->setPopupMode( QToolButton::InstantPopup );
 
-  QMenu *share = new QMenu();
+  QMenu *share = new QMenu( this );
   QAction *btnExport = share->addAction( tr( "&Export" ) );
   QAction *btnImport = share->addAction( tr( "&Import" ) );
   btnExport->setIcon( QgsApplication::getThemeIcon( "/mActionSharingExport.svg" ) );

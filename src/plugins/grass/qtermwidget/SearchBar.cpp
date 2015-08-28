@@ -46,7 +46,7 @@ SearchBar::SearchBar(QWidget *parent) : QWidget(parent)
     m_useRegularExpressionMenuEntry->setCheckable(true);
     connect(m_useRegularExpressionMenuEntry, SIGNAL(toggled(bool)), this, SIGNAL(searchCriteriaChanged()));
 
-    m_highlightMatchesMenuEntry = optionsMenu->addAction(tr("Higlight all matches"));
+    m_highlightMatchesMenuEntry = optionsMenu->addAction(tr("Highlight all matches"));
     m_highlightMatchesMenuEntry->setCheckable(true);
     m_highlightMatchesMenuEntry->setChecked(true);
     connect(m_highlightMatchesMenuEntry, SIGNAL(toggled(bool)), this, SIGNAL(highlightMatchesChanged(bool)));

@@ -88,11 +88,16 @@ QgsWelcomePage::QgsWelcomePage( QWidget* parent )
   mainLayout->addWidget( mVersionInformation );
   mVersionInformation->setVisible( false );
 
-  QgsVersionInfo* versionInfo = new QgsVersionInfo();
-  connect( versionInfo, SIGNAL( versionInfoAvailable() ), this, SLOT( versionInfoReceived() ) );
-  versionInfo->checkVersion();
+  mVersionInfo = new QgsVersionInfo();
+  connect( mVersionInfo, SIGNAL( versionInfoAvailable() ), this, SLOT( versionInfoReceived() ) );
+  mVersionInfo->checkVersion();
 
   connect( recentProjectsListView, SIGNAL( activated( QModelIndex ) ), this, SLOT( itemActivated( QModelIndex ) ) );
+}
+
+QgsWelcomePage::~QgsWelcomePage()
+{
+  delete mVersionInfo;
 }
 
 void QgsWelcomePage::setRecentProjects( const QList<QgsWelcomePageItemsModel::RecentProjectData>& recentProjects )

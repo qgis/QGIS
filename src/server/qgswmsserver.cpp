@@ -2687,11 +2687,8 @@ void QgsWMSServer::applyOpacities( const QStringList& layerList, QList< QPair< Q
       //modify symbols of current renderer
       QgsRenderContext context;
       context.expressionContext() << QgsExpressionContextUtils::globalScope()
-      << QgsExpressionContextUtils::projectScope();
-      if ( vl )
-      {
-        context.expressionContext() << QgsExpressionContextUtils::layerScope( vl );
-      }
+      << QgsExpressionContextUtils::projectScope()
+      << QgsExpressionContextUtils::layerScope( vl );
 
       QgsSymbolV2List symbolList = rendererV2->symbols( context );
       QgsSymbolV2List::iterator symbolIt = symbolList.begin();
