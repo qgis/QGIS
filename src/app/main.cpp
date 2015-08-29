@@ -798,7 +798,7 @@ APP_EXPORT int main( int argc, char *argv[] )
   //
   // Priority of translation is:
   //  - command line
-  //  - user secified in options dialog (with group checked on)
+  //  - user specified in options dialog (with group checked on)
   //  - system locale
   //
   //  When specifying from the command line it will change the user

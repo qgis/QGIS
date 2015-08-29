@@ -166,7 +166,7 @@ void QgsVisibilityPresets::addPreset()
 }
 
 
-void QgsVisibilityPresets::presetTriggerred()
+void QgsVisibilityPresets::presetTriggered()
 {
   QAction* actionPreset = qobject_cast<QAction*>( sender() );
   if ( !actionPreset )
@@ -175,7 +175,7 @@ void QgsVisibilityPresets::presetTriggerred()
   applyState( actionPreset->text() );
 }
 
-void QgsVisibilityPresets::replaceTriggerred()
+void QgsVisibilityPresets::replaceTriggered()
 {
   QAction* actionPreset = qobject_cast<QAction*>( sender() );
   if ( !actionPreset )
@@ -277,12 +277,12 @@ void QgsVisibilityPresets::menuAboutToShow()
       a->setChecked( true );
       hasCurrent = true;
     }
-    connect( a, SIGNAL( triggered() ), this, SLOT( presetTriggerred() ) );
+    connect( a, SIGNAL( triggered() ), this, SLOT( presetTriggered() ) );
     mMenuPresetActions.append( a );
 
     QAction* replaceAction = new QAction( grpName, mReplaceMenu );
     replaceAction->setEnabled( !a->isChecked() ); //can't replace current preset
-    connect( replaceAction, SIGNAL( triggered() ), this, SLOT( replaceTriggerred() ) );
+    connect( replaceAction, SIGNAL( triggered() ), this, SLOT( replaceTriggered() ) );
     mReplaceMenu->addAction( replaceAction );
   }
   mMenu->insertActions( mMenuSeparator, mMenuPresetActions );
