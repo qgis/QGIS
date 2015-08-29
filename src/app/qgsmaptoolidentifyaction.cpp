@@ -101,17 +101,17 @@ void QgsMapToolIdentifyAction::showAttributeTable( QgsMapLayer* layer, const QLi
   tableDialog->show();
 }
 
-void QgsMapToolIdentifyAction::canvasMoveEvent( QMouseEvent *e )
+void QgsMapToolIdentifyAction::canvasMoveEvent( QgsMapMouseEvent* e )
 {
   Q_UNUSED( e );
 }
 
-void QgsMapToolIdentifyAction::canvasPressEvent( QMouseEvent *e )
+void QgsMapToolIdentifyAction::canvasPressEvent( QgsMapMouseEvent* e )
 {
   Q_UNUSED( e );
 }
 
-void QgsMapToolIdentifyAction::canvasReleaseEvent( QMouseEvent *e )
+void QgsMapToolIdentifyAction::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   resultsDialog()->clear();
   connect( this, SIGNAL( identifyProgress( int, int ) ), QgisApp::instance(), SLOT( showProgress( int, int ) ) );

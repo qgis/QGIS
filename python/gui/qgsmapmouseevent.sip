@@ -13,26 +13,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSMAPMOUSEEVENT_H
-#define QGSMAPMOUSEEVENT_H
-
-#include <QMouseEvent>
-
-#include "qgspoint.h"
-#include "qgspointlocator.h"
-#include "qgssnappingutils.h"
-
-class QgsMapCanvas;
-class QgsMapToolAdvancedDigitizing;
-
 /**
  * A QgsMapMouseEvent is the result of a user interaction with the mouse on a QgsMapCanvas.
  * It is sent whenever the user moves, clicks, releases or double clicks the mouse.
  * In addition to the coordiantes in pixel space it also knows the coordinates in the mapcanvas' CRS
  * as well as it knows the concept of snapping.
  */
-class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
+class QgsMapMouseEvent : QMouseEvent
 {
+%TypeHeaderCode
+#include "qgsmapmouseevent.h"
+%End
   public:
 
     enum SnappingMode
@@ -49,9 +40,6 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
      * @param event     The original mouse event
      */
     QgsMapMouseEvent( QgsMapCanvas* mapCanvas, QMouseEvent* event );
-
-    QgsMapMouseEvent( QgsMapCanvas* mapCanvas, Type type, const QPoint &pos, Qt::MouseButton button = Qt::NoButton,
-                      Qt::MouseButtons buttons = Qt::NoButton, Qt::KeyboardModifiers modifiers = Qt::NoModifier );
 
     /**
      * @brief snapPoint will snap the points using the map canvas snapping utils configuration
@@ -74,42 +62,17 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
      *
      * @return True if there is a snapped point cached.
      */
-    bool isSnapped() const { return mSnapMatch.isValid(); }
+    bool isSnapped() const;
 
     /**
      * @brief mapPoint returns the point in coordinates
      * @return the point in map coordinates, after snapping if requested in the event.
      */
-    inline QgsPoint mapPoint() const { return mMapPoint; }
+    QgsPoint mapPoint() const;
 
-    void setMapPoint( const QgsPoint& point );
+    QgsPoint originalMapPoint() const;
 
-    QgsPoint originalMapPoint() const { return mMapPoint; }
+    QPoint pixelPoint() const;
 
-    QPoint pixelPoint() const { return mPixelPoint; }
-
-    QPoint originalPixelPoint() const { return pos(); }
-
-  private:
-
-    QPoint mapToPixelCoordinates( const QgsPoint& point );
-
-    SnappingMode mSnappingMode;
-
-    //! Unsnapped point in map coordinates.
-    QgsPoint mOriginalMapPoint;
-
-    //! Location in map coordinates. May be snapped.
-    QgsPoint mMapPoint;
-
-    //! Location in pixel coordinates. May be snapped.
-    //! Original pixel point available through the parent QMouseEvent.
-    QPoint mPixelPoint;
-
-    //! The map canvas on which the event was triggered.
-    QgsMapCanvas* mMapCanvas;
-
-    QgsPointLocator::Match mSnapMatch;
+    QPoint originalPixelPoint() const;
 };
-
-#endif // QGSMAPMOUSEEVENT_H

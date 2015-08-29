@@ -59,17 +59,17 @@ QgsMapToolIdentify::~QgsMapToolIdentify()
   delete mIdentifyMenu;
 }
 
-void QgsMapToolIdentify::canvasMoveEvent( QMouseEvent * e )
+void QgsMapToolIdentify::canvasMoveEvent( QgsMapMouseEvent* e )
 {
   Q_UNUSED( e );
 }
 
-void QgsMapToolIdentify::canvasPressEvent( QMouseEvent * e )
+void QgsMapToolIdentify::canvasPressEvent( QgsMapMouseEvent* e )
 {
   Q_UNUSED( e );
 }
 
-void QgsMapToolIdentify::canvasReleaseEvent( QMouseEvent * e )
+void QgsMapToolIdentify::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   Q_UNUSED( e );
 }

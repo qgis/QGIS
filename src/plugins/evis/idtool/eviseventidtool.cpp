@@ -59,7 +59,7 @@ eVisEventIdTool::eVisEventIdTool( QgsMapCanvas* theCanvas )
 * Mouse release, i.e., select, event
 * @param theMouseEvent - Pointer to a QMouseEvent
 */
-void eVisEventIdTool::canvasReleaseEvent( QMouseEvent* theMouseEvent )
+void eVisEventIdTool::canvasReleaseEvent( QgsMapMouseEvent* theMouseEvent )
 {
   if ( 0 == mCanvas || 0 == theMouseEvent )
     return;

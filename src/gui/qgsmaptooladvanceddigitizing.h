@@ -18,6 +18,7 @@
 #define QGSMAPTOOLADVANCEDDIGITIZE_H
 
 #include "qgsmaptool.h"
+#include "qgsmaptooledit.h"
 #include "qgsadvanceddigitizingdockwidget.h"
 
 class QgsMapMouseEvent;
@@ -27,10 +28,10 @@ class QgsMapMouseEvent;
  * Events from QgsMapTool are caught and their QMouseEvent are transformed into QgsMapMouseEvent (with map coordinates).
  * Events are then forwarded to corresponding virtual methods which can be reimplemented in subclasses.
  * An event filter can be set on the map tool to filter and modify the events in map coordinates (@see QgsMapToolMapEventFilter).
- * @note at the momemt, the event filter is used by the CAD tools (@see QgsCadDocWidget).
+ * @note at the moment, the event filter is used by the CAD tools (@see QgsCadDocWidget).
  * @note the event filter definition is not exposed in python API to avoid any unexpected behavior.
  */
-class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapTool
+class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
 {
     Q_OBJECT
   public:
@@ -47,41 +48,24 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapTool
     ~QgsMapToolAdvancedDigitizing();
 
     //! catch the mouse press event, filters it, transforms it to map coordinates and send it to virtual method
-    void canvasPressEvent( QMouseEvent* e ) override;
+    void canvasPressEvent( QgsMapMouseEvent* e ) override;
     //! catch the mouse release event, filters it, transforms it to map coordinates and send it to virtual method
-    void canvasReleaseEvent( QMouseEvent* e ) override;
+    void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
     //! catch the mouse move event, filters it, transforms it to map coordinates and send it to virtual method
-    void canvasMoveEvent( QMouseEvent* e ) override;
-    //! catch the mouse double click event, filters it, transforms it to map coordinates and send it to virtual method
-    void canvasDoubleClickEvent( QMouseEvent* e ) override;
-    //! catch the key press event, filters it and send it to virtual method
-    void keyPressEvent( QKeyEvent* event ) override;
-    //! catch the key release event, filters it and send it to virtual method
-    void keyReleaseEvent( QKeyEvent* event ) override;
+    void canvasMoveEvent( QgsMapMouseEvent* e ) override;
 
-    //! mouse press event in map coordinates (eventually filtered) to be redefined in subclass
-    virtual void canvasMapPressEvent( QgsMapMouseEvent* e );
-    //! mouse release event in map coordinates (eventually filtered) to be redefined in subclass
-    virtual void canvasMapReleaseEvent( QgsMapMouseEvent* e );
-    //! mouse move event in map coordinates (eventually filtered) to be redefined in subclass
-    virtual void canvasMapMoveEvent( QgsMapMouseEvent* e );
-    //! mouse double click event in map coordinates (eventually filtered) to be redefined in subclass
-    virtual void canvasMapDoubleClickEvent( QgsMapMouseEvent* e );
-    //! key press event (eventually filtered) to be redefined in subclass
-    virtual void canvasKeyPressEvent( QKeyEvent* e );
-    //! key press release (eventually filtered) to be redefined in subclass
-    virtual void canvasKeyReleaseEvent( QKeyEvent* e );
+    CaptureMode mode() const { return mCaptureMode; }
 
-    //! return if CAD is allowed in the map tool
-    bool cadAllowed() { return mCadAllowed; }
+    void activate();
 
-    //! return the capture mode of the map tool
-    CaptureMode mode() { return mCaptureMode; }
+    void deactivate();
+
+    QgsAdvancedDigitizingDockWidget* cadDockWidget() const { return mCadDockWidget; }
 
   protected:
-    QgsAdvancedDigitizingDockWidget* mCadDockWidget;
-
-    bool mCadAllowed;
+    virtual void cadCanvasPressEvent( QgsMapMouseEvent* e ) { Q_UNUSED( e ) }
+    virtual void cadCanvasReleaseEvent( QgsMapMouseEvent* e ) { Q_UNUSED( e ) }
+    virtual void cadCanvasMoveEvent( QgsMapMouseEvent* e ) { Q_UNUSED( e ) }
 
     CaptureMode mCaptureMode;
 
@@ -89,6 +73,12 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapTool
     bool mSnapOnRelease;
     bool mSnapOnMove;
     bool mSnapOnDoubleClick;
+
+  private slots:
+    void cadPointChanged( const QgsPoint& point );
+
+  private:
+    QgsAdvancedDigitizingDockWidget* mCadDockWidget;
 };
 
 #endif // QGSMAPTOOLADVANCEDDIGITIZE_H

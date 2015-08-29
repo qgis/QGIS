@@ -42,7 +42,7 @@ QgsMapToolMeasureAngle::~QgsMapToolMeasureAngle()
   stopMeasuring();
 }
 
-void QgsMapToolMeasureAngle::canvasMoveEvent( QMouseEvent * e )
+void QgsMapToolMeasureAngle::canvasMoveEvent( QgsMapMouseEvent* e )
 {
   if ( !mRubberBand || mAnglePoints.size() < 1 || mAnglePoints.size() > 2 || !mRubberBand )
   {
@@ -81,7 +81,7 @@ void QgsMapToolMeasureAngle::canvasMoveEvent( QMouseEvent * e )
   }
 }
 
-void QgsMapToolMeasureAngle::canvasReleaseEvent( QMouseEvent * e )
+void QgsMapToolMeasureAngle::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   //add points until we have three
   if ( mAnglePoints.size() == 3 )

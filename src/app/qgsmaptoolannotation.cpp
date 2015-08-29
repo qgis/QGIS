@@ -81,7 +81,7 @@ QDialog* QgsMapToolAnnotation::createItemEditor( QgsAnnotationItem *item )
   return 0;
 }
 
-void QgsMapToolAnnotation::canvasReleaseEvent( QMouseEvent *e )
+void QgsMapToolAnnotation::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   Q_UNUSED( e );
 
@@ -89,7 +89,7 @@ void QgsMapToolAnnotation::canvasReleaseEvent( QMouseEvent *e )
   mCanvas->setCursor( mCursor );
 }
 
-void QgsMapToolAnnotation::canvasPressEvent( QMouseEvent * e )
+void QgsMapToolAnnotation::canvasPressEvent( QgsMapMouseEvent* e )
 {
   if ( !mCanvas )
   {
@@ -149,7 +149,7 @@ void QgsMapToolAnnotation::keyPressEvent( QKeyEvent* e )
   }
 }
 
-void QgsMapToolAnnotation::canvasMoveEvent( QMouseEvent * e )
+void QgsMapToolAnnotation::canvasMoveEvent( QgsMapMouseEvent* e )
 {
   QgsAnnotationItem* sItem = selectedItem();
   if ( sItem && ( e->buttons() & Qt::LeftButton ) )
@@ -233,7 +233,7 @@ void QgsMapToolAnnotation::canvasMoveEvent( QMouseEvent * e )
   mLastMousePosition = e->posF();
 }
 
-void QgsMapToolAnnotation::canvasDoubleClickEvent( QMouseEvent * e )
+void QgsMapToolAnnotation::canvasDoubleClickEvent( QgsMapMouseEvent* e )
 {
   QgsAnnotationItem* item = itemAtPos( e->posF() );
   if ( !item )

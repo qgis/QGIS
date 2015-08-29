@@ -24,8 +24,8 @@
 #include <QSettings>
 
 
-QgsMapToolEdit::QgsMapToolEdit( QgsMapCanvas* canvas, QgsAdvancedDigitizingDockWidget* cadDockWidget )
-    : QgsMapToolAdvancedDigitizing( canvas, cadDockWidget )
+QgsMapToolEdit::QgsMapToolEdit( QgsMapCanvas* canvas )
+    : QgsMapTool( canvas )
 {
 }
 
@@ -60,18 +60,7 @@ QgsRubberBand* QgsMapToolEdit::createRubberBand( QGis::GeometryType geometryType
 
 QgsVectorLayer* QgsMapToolEdit::currentVectorLayer()
 {
-  QgsMapLayer* currentLayer = mCanvas->currentLayer();
-  if ( !currentLayer )
-  {
-    return 0;
-  }
-
-  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( currentLayer );
-  if ( !vlayer )
-  {
-    return 0;
-  }
-  return vlayer;
+  return qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
 }
 
 

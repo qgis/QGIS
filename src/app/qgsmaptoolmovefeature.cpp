@@ -28,7 +28,7 @@
 #include <limits>
 
 QgsMapToolMoveFeature::QgsMapToolMoveFeature( QgsMapCanvas* canvas )
-    : QgsMapToolEdit( canvas, QgisApp::instance()->cadDockWidget() )
+    : QgsMapToolEdit( canvas )
     , mRubberBand( 0 )
 {
   mToolName = tr( "Move feature" );
@@ -39,7 +39,7 @@ QgsMapToolMoveFeature::~QgsMapToolMoveFeature()
   delete mRubberBand;
 }
 
-void QgsMapToolMoveFeature::canvasMoveEvent( QMouseEvent * e )
+void QgsMapToolMoveFeature::canvasMoveEvent( QgsMapMouseEvent* e )
 {
   if ( mRubberBand )
   {
@@ -52,7 +52,7 @@ void QgsMapToolMoveFeature::canvasMoveEvent( QMouseEvent * e )
   }
 }
 
-void QgsMapToolMoveFeature::canvasPressEvent( QMouseEvent * e )
+void QgsMapToolMoveFeature::canvasPressEvent( QgsMapMouseEvent* e )
 {
   delete mRubberBand;
   mRubberBand = 0;
@@ -140,7 +140,7 @@ void QgsMapToolMoveFeature::canvasPressEvent( QMouseEvent * e )
 
 }
 
-void QgsMapToolMoveFeature::canvasReleaseEvent( QMouseEvent * e )
+void QgsMapToolMoveFeature::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   //QgsDebugMsg("entering.");
   if ( !mRubberBand )

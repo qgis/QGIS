@@ -30,8 +30,8 @@ class QgsGrassEditTool : public QgsMapTool
     QgsGrassEditTool( QgsGrassEdit* edit );
 
     //! events from canvas
-    virtual void canvasPressEvent( QMouseEvent * e ) override;
-    virtual void canvasMoveEvent( QMouseEvent * e ) override;
+    virtual void canvasPressEvent( QgsMapMouseEvent* e ) override;
+    virtual void canvasMoveEvent( QgsMapMouseEvent* e ) override;
 
     //! functions to be overridden by grass edit tools
     virtual void mouseClick( QgsPoint & point, Qt::MouseButton button )

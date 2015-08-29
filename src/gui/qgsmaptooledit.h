@@ -17,7 +17,7 @@
 #define QGSMAPTOOLEDIT_H
 
 #include "qgis.h"
-#include "qgsmaptooladvanceddigitizing.h"
+#include "qgsmaptool.h"
 
 class QgsRubberBand;
 class QgsGeometryRubberBand;
@@ -25,12 +25,12 @@ class QgsVectorLayer;
 class QKeyEvent;
 
 /** Base class for map tools that edit vector geometry*/
-class GUI_EXPORT QgsMapToolEdit: public QgsMapToolAdvancedDigitizing
+class GUI_EXPORT QgsMapToolEdit: public QgsMapTool
 {
     Q_OBJECT
 
   public:
-    QgsMapToolEdit( QgsMapCanvas* canvas , QgsAdvancedDigitizingDockWidget* cadDockWidget );
+    QgsMapToolEdit( QgsMapCanvas* canvas );
     virtual ~QgsMapToolEdit();
 
     virtual bool isEditTool() override { return true; }

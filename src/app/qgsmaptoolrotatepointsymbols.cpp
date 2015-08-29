@@ -28,7 +28,7 @@
 #include <QMouseEvent>
 
 QgsMapToolRotatePointSymbols::QgsMapToolRotatePointSymbols( QgsMapCanvas* canvas )
-    : QgsMapToolEdit( canvas, QgisApp::instance()->cadDockWidget() ),
+    : QgsMapToolEdit( canvas ),
     mActiveLayer( 0 ),
     mFeatureNumber( 0 ),
     mCurrentMouseAzimut( 0.0 ),
@@ -70,7 +70,7 @@ bool QgsMapToolRotatePointSymbols::layerIsRotatable( QgsMapLayer* ml )
   return true;
 }
 
-void QgsMapToolRotatePointSymbols::canvasPressEvent( QMouseEvent *e )
+void QgsMapToolRotatePointSymbols::canvasPressEvent( QgsMapMouseEvent* e )
 {
   if ( !mCanvas )
   {
@@ -180,7 +180,7 @@ void QgsMapToolRotatePointSymbols::canvasPressEvent( QMouseEvent *e )
   mRotating = true;
 }
 
-void QgsMapToolRotatePointSymbols::canvasMoveEvent( QMouseEvent *e )
+void QgsMapToolRotatePointSymbols::canvasMoveEvent( QgsMapMouseEvent* e )
 {
   if ( !mRotating )
   {
@@ -225,7 +225,7 @@ void QgsMapToolRotatePointSymbols::canvasMoveEvent( QMouseEvent *e )
   setPixmapItemRotation( displayValue );
 }
 
-void QgsMapToolRotatePointSymbols::canvasReleaseEvent( QMouseEvent *e )
+void QgsMapToolRotatePointSymbols::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   Q_UNUSED( e );
 

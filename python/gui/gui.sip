@@ -79,6 +79,7 @@
 %Include qgsmaplayercombobox.sip
 %Include qgsmaplayermodel.sip
 %Include qgsmaplayerproxymodel.sip
+%Include qgsmapmouseevent.sip
 %Include qgsmapoverviewcanvas.sip
 %Include qgsmaptip.sip
 %Include qgsmaptool.sip

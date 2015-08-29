@@ -43,7 +43,7 @@ QgsGrassEditTool::QgsGrassEditTool( QgsGrassEdit* edit )
 {
 }
 
-void QgsGrassEditTool::canvasPressEvent( QMouseEvent * event )
+void QgsGrassEditTool::canvasPressEvent( QgsMapMouseEvent * event )
 {
   QgsPoint point = toLayerCoordinates( e->layer(), event->pos() );
   mouseClick( point,  event->button() );
@@ -56,7 +56,7 @@ void QgsGrassEditTool::canvasPressEvent( QMouseEvent * event )
   QgsDebugMsg( QString( "n_points = %1" ).arg( e->mEditPoints->n_points ) );
 }
 
-void QgsGrassEditTool::canvasMoveEvent( QMouseEvent * event )
+void QgsGrassEditTool::canvasMoveEvent( QgsMapMouseEvent * event )
 {
   QgsPoint point = toLayerCoordinates( e->layer(), event->pos() );
   mouseMove( point );

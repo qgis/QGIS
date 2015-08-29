@@ -34,15 +34,14 @@
 #include <QStatusBar>
 
 
-QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas* canvas, QgsLayerTreeView* layerTreeView, QgsAdvancedDigitizingDockWidget* cadDockWidget, enum CaptureMode tool )
-    : QgsMapToolEdit( canvas, cadDockWidget )
+QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas* canvas, QgsAdvancedDigitizingDockWidget* cadDockWidget, CaptureMode mode )
+    : QgsMapToolAdvancedDigitizing( canvas, cadDockWidget )
     , mRubberBand( 0 )
     , mTempRubberBand( 0 )
     , mValidator( 0 )
     , mSnappingMarker( 0 )
 {
-  mCaptureMode = tool;
-  mCadAllowed = true;
+  mCaptureMode = mode;
 
   // enable the snapping on mouse move / release
   mSnapOnMove = true;
@@ -50,13 +49,13 @@ QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas* canvas, QgsLayerTreeView* la
   mSnapOnDoubleClick = false;
   mSnapOnPress = false;
 
-  mCaptureModeFromLayer = tool == CaptureNone;
+  mCaptureModeFromLayer = mode == CaptureNone;
   mCapturing = false;
 
   QPixmap mySelectQPixmap = QPixmap(( const char ** ) capture_point_cursor );
-  mCursor = QCursor( mySelectQPixmap, 8, 8 );
+  setCursor( QCursor( mySelectQPixmap, 8, 8 ) );
 
-  connect( layerTreeView, SIGNAL( currentLayerChanged( QgsMapLayer * ) ),
+  connect( canvas, SIGNAL( currentLayerChanged( QgsMapLayer * ) ),
            this, SLOT( currentLayerChanged( QgsMapLayer * ) ) );
 }
 
@@ -121,8 +120,9 @@ void QgsMapToolCapture::currentLayerChanged( QgsMapLayer *layer )
   }
 }
 
-void QgsMapToolCapture::canvasMapMoveEvent( QgsMapMouseEvent * e )
+void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent * e )
 {
+  QgsMapToolAdvancedDigitizing::cadCanvasMoveEvent( e );
   bool snapped = e->isSnapped();
   QgsPoint point = e->mapPoint();
 
@@ -156,13 +156,6 @@ void QgsMapToolCapture::canvasMapMoveEvent( QgsMapMouseEvent * e )
     mTempRubberBand->movePoint( point );
   }
 } // mouseMoveEvent
-
-
-void QgsMapToolCapture::canvasMapPressEvent( QgsMapMouseEvent* e )
-{
-  Q_UNUSED( e );
-  // nothing to be done
-}
 
 int QgsMapToolCapture::nextPoint( const QgsPoint& mapPoint, QgsPoint& layerPoint )
 {
@@ -323,7 +316,7 @@ void QgsMapToolCapture::undo()
   }
 }
 
-void QgsMapToolCapture::canvasKeyPressEvent( QKeyEvent* e )
+void QgsMapToolCapture::keyPressEvent( QKeyEvent* e )
 {
   if ( e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Delete )
   {
@@ -425,7 +418,7 @@ void QgsMapToolCapture::validateGeometry()
     case CaptureLine:
       if ( size() < 2 )
         return;
-      g.reset( QgsGeometry::fromPolyline( mCaptureList.curveToLine() ) );
+      g.reset( new QgsGeometry( mCaptureCurve.curveToLine() ) );
       break;
     case CapturePolygon:
       if ( size() < 3 )
@@ -434,7 +427,7 @@ void QgsMapToolCapture::validateGeometry()
       exteriorRing->close();
       QgsPolygonV2* polygon = new QgsPolygonV2();
       polygon->setExteriorRing( exteriorRing );
-      g = new QgsGeometry( polygon );
+      g.reset( new QgsGeometry( polygon ) );
       break;
   }
 

@@ -7,7 +7,8 @@
 #include <QMouseEvent>
 
 QgsMapToolCircularStringCurvePoint::QgsMapToolCircularStringCurvePoint( QgsMapToolCapture* parentTool,
-    QgsMapCanvas* canvas, CaptureMode mode ): QgsMapToolAddCircularString( parentTool, canvas, mode )
+    QgsMapCanvas* canvas, CaptureMode mode )
+    : QgsMapToolAddCircularString( parentTool, canvas, mode )
 {
 
 }
@@ -16,7 +17,7 @@ QgsMapToolCircularStringCurvePoint::~QgsMapToolCircularStringCurvePoint()
 {
 }
 
-void QgsMapToolCircularStringCurvePoint::canvasMapReleaseEvent( QgsMapMouseEvent* e )
+void QgsMapToolCircularStringCurvePoint::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   QgsPointV2 mapPoint( e->mapPoint().x(), e->mapPoint().y() );
 
@@ -75,7 +76,7 @@ void QgsMapToolCircularStringCurvePoint::canvasMapReleaseEvent( QgsMapMouseEvent
   }
 }
 
-void QgsMapToolCircularStringCurvePoint::canvasMapMoveEvent( QgsMapMouseEvent* e )
+void QgsMapToolCircularStringCurvePoint::canvasMoveEvent( QgsMapMouseEvent* e )
 {
   QgsPointV2 mapPoint( e->mapPoint().x(), e->mapPoint().y() );
   QgsVertexId idx; idx.part = 0; idx.ring = 0; idx.vertex = mPoints.size();

@@ -38,7 +38,7 @@ class QgsMapToolAddCircularString: public QgsMapToolCapture
     void setParentTool( QgsMapTool* newTool, QgsMapTool* oldTool );
 
   protected:
-    QgsMapToolAddCircularString( QgsMapCanvas* canvas = 0 ); //forbidden
+    QgsMapToolAddCircularString( QgsMapCanvas* canvas ); //forbidden
 
     QgsMapToolCapture* mParentTool;
     /** Circular string points (in map coordinates)*/

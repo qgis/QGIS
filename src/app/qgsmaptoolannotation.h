@@ -27,10 +27,10 @@ class APP_EXPORT QgsMapToolAnnotation: public QgsMapTool
     QgsMapToolAnnotation( QgsMapCanvas* canvas );
     ~QgsMapToolAnnotation();
 
-    void canvasPressEvent( QMouseEvent * e ) override;
-    void canvasReleaseEvent( QMouseEvent * e ) override;
-    void canvasMoveEvent( QMouseEvent * e ) override;
-    void canvasDoubleClickEvent( QMouseEvent * e ) override;
+    void canvasPressEvent( QgsMapMouseEvent* e ) override;
+    void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
+    void canvasMoveEvent( QgsMapMouseEvent* e ) override;
+    void canvasDoubleClickEvent( QgsMapMouseEvent* e ) override;
     void keyPressEvent( QKeyEvent* e ) override;
 
   protected:

@@ -30,6 +30,10 @@
 #include "qgspoint.h"
 #include "qgslinestringv2.h"
 
+struct EdgesOnlyFilter : public QgsPointLocator::MatchFilter
+{
+  bool acceptMatch( const QgsPointLocator::Match& m ) override { return m.hasEdge(); }
+};
 
 bool QgsAdvancedDigitizingDockWidget::lineCircleIntersection( const QgsPoint& center, const double radius, const QList<QgsPoint>& segment, QgsPoint& intersection )
 {
@@ -85,14 +89,11 @@ bool QgsAdvancedDigitizingDockWidget::lineCircleIntersection( const QgsPoint& ce
 QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas* canvas, QWidget *parent )
     : QDockWidget( parent )
     , mMapCanvas( canvas )
-    , mMapToolList( QList<QgsMapToolAdvancedDigitizing*>() )
-    , mCurrentMapTool( 0 )
     , mCadEnabled( false )
     , mConstructionMode( false )
-    , mSnappingMode(( QgsMapMouseEvent::SnappingMode ) QSettings().value( "/Cad/SnappingMode", ( int )QgsMapMouseEvent::SnapProjectConfig ).toInt() )
+    , mSnappingMode(( QgsMapMouseEvent::SnappingMode ) QSettings().value( "/Cad/SnappingMode", QgsMapMouseEvent::SnapProjectConfig ).toInt() )
     , mCommonAngleConstraint( QSettings().value( "/Cad/CommonAngle", 90 ).toInt() )
     , mCadPointList( QList<QgsPoint>() )
-    , mSnappedToVertex( false )
     , mSnappedSegment( QList<QgsPoint>() )
     , mErrorMessage( 0 )
 {
@@ -106,6 +107,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas* 
   mYConstraint = new CadConstraint( mYLineEdit, mLockYButton, mRelativeYButton ) ;
   mAdditionalConstraint = NoConstraint ;
 
+  mMapCanvas->installEventFilter( this );
   mAngleLineEdit->installEventFilter( this );
   mDistanceLineEdit->installEventFilter( this );
   mXLineEdit->installEventFilter( this );
@@ -118,9 +120,6 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas* 
   mEnableAction->setCheckable( true );
   mEnabledButton->addAction( mEnableAction );
   mEnabledButton->setDefaultAction( mEnableAction );
-
-  // enable/disable on map tool change
-  connect( canvas, SIGNAL( mapToolSet( QgsMapTool* ) ), this, SLOT( mapToolChanged( QgsMapTool* ) ) );
 
   // Connect the UI to the event filter to update constraints
   connect( mEnableAction, SIGNAL( triggered( bool ) ), this, SLOT( activateCad( bool ) ) );
@@ -138,8 +137,6 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas* 
   connect( mDistanceLineEdit, SIGNAL( returnPressed() ), this, SLOT( lockConstraint() ) );
   connect( mXLineEdit, SIGNAL( returnPressed() ), this, SLOT( lockConstraint() ) );
   connect( mYLineEdit, SIGNAL( returnPressed() ), this, SLOT( lockConstraint() ) );
-
-  mapToolChanged( NULL );
 
   // config menu
   QMenu *menu = new QMenu( this );
@@ -184,75 +181,11 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas* 
   updateCapacity( true );
 }
 
-QgsAdvancedDigitizingDockWidget::~QgsAdvancedDigitizingDockWidget()
-{
-  delete mErrorMessage;
-  delete mAngleConstraint;
-  delete mDistanceConstraint;
-  delete mXConstraint;
-  delete mYConstraint;
-
-}
-
 void QgsAdvancedDigitizingDockWidget::hideEvent( QHideEvent* )
 {
   // disable CAD but do not unset map event filter
   // so it will be reactivated whenever the map tool is show again
   setCadEnabled( false );
-}
-
-void QgsAdvancedDigitizingDockWidget::mapToolChanged( QgsMapTool* tool )
-{
-  QgsMapToolAdvancedDigitizing* toolMap = dynamic_cast<QgsMapToolAdvancedDigitizing*>( tool );
-  mCurrentMapTool = 0;
-  QString lblText;
-  if ( !tool )
-  {
-    lblText = tr( "No map tool set" );
-  }
-  else if ( !toolMap || !toolMap->cadAllowed() )
-  {
-    lblText = tr( "CAD tools are not enabled for the current map tool" );
-    QString toolName = tool->toolName();
-    if ( !toolName.isEmpty() )
-    {
-      lblText.append( QString( " (%1)" ).arg( toolName ) );
-    }
-  }
-  else if ( mMapCanvas->mapSettings().destinationCrs().geographicFlag() )
-  {
-    lblText = tr( "CAD tools can not be used on geographic coordinates. Change the coordinates system in the project properties." );
-  }
-  else
-  {
-    mCurrentMapTool = toolMap;
-  }
-
-  if ( mCurrentMapTool )
-  {
-    mEnableAction->setEnabled( true );
-    mErrorLabel->hide();
-    mCadWidget->show();
-    setMaximumSize( 5000, 220 );
-
-    // restore previous status
-    const bool enabled = QSettings().value( "/Cad/SessionActive", false ).toBool();
-    if ( enabled && !isVisible() )
-    {
-      show();
-    }
-    setCadEnabled( enabled );
-  }
-  else
-  {
-    mEnableAction->setEnabled( false );
-    mErrorLabel->setText( lblText );
-    mErrorLabel->show();
-    mCadWidget->hide();
-    setMaximumSize( 5000, 80 );
-
-    setCadEnabled( false );
-  }
 }
 
 void QgsAdvancedDigitizingDockWidget::setCadEnabled( bool enabled )
@@ -269,9 +202,9 @@ void QgsAdvancedDigitizingDockWidget::setCadEnabled( bool enabled )
 
 void QgsAdvancedDigitizingDockWidget::activateCad( bool enabled )
 {
-  enabled &= mCurrentMapTool != 0;
+  enabled &= mCurrentMapToolSupportsCad;
 
-  QSettings().setValue( "/Cad/SessionActive", enabled );
+  mSessionActive = enabled;
 
   if ( enabled && !isVisible() )
   {
@@ -312,7 +245,6 @@ void QgsAdvancedDigitizingDockWidget::setConstraintRelative( bool activate )
   {
     mYConstraint->setRelative( activate );
   }
-  triggerMouseMoveEvent();
 }
 
 void QgsAdvancedDigitizingDockWidget::setConstructionMode( bool enabled )
@@ -356,7 +288,8 @@ void QgsAdvancedDigitizingDockWidget::releaseLocks()
   mYConstraint->setLockMode( CadConstraint::NoLock );
 }
 
-void QgsAdvancedDigitizingDockWidget::triggerMouseMoveEvent()
+#if 0
+void QgsAdvancedDigitizingDockWidget::emit pointChanged()
 {
   // run a fake map mouse event to update the paint item
   QPoint globalPos = mMapCanvas->cursor().pos();
@@ -364,6 +297,7 @@ void QgsAdvancedDigitizingDockWidget::triggerMouseMoveEvent()
   QMouseEvent* e = new QMouseEvent( QEvent::MouseMove, pos, globalPos, Qt::NoButton, Qt::NoButton, Qt::NoModifier );
   mCurrentMapTool->canvasMoveEvent( e );
 }
+#endif
 
 void QgsAdvancedDigitizingDockWidget::lockConstraint( bool activate /* default true */ )
 {
@@ -433,7 +367,7 @@ void QgsAdvancedDigitizingDockWidget::lockConstraint( bool activate /* default t
     }
 
     // run a fake map mouse event to update the paint item
-    triggerMouseMoveEvent();
+    emit pointChanged( mCadPointList.value( 0 ) );
   }
 }
 
@@ -520,8 +454,8 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent* e )
   QgsDebugMsg( QString( "Y:        %1 %2 %3" ).arg( mYConstraint->isLocked() ).arg( mYConstraint->relative() ).arg( mYConstraint->value() ) );
 
   QgsPoint point = e->mapPoint();
-  mSnappedToVertex = e->isSnappedToVertex();
-  mSnappedSegment = e->snapSegment();
+
+  mSnappedSegment = e->snapSegment( mSnappingMode );
 
   bool previousPointExist, penulPointExist;
   QgsPoint previousPt = previousPoint( &previousPointExist );
@@ -754,8 +688,10 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent* e )
   QgsDebugMsg( QString( "penultimate point: %1 %2" ).arg( penultimatePt.x() ).arg( penultimatePt.y() ) );
   //QgsDebugMsg( QString( "dx: %1 dy: %2" ).arg( point.x() - previousPt.x() ).arg( point.y() - previousPt.y() ) );
   //QgsDebugMsg( QString( "ddx: %1 ddy: %2" ).arg( previousPt.x() - penultimatePt.x() ).arg( previousPt.y() - penultimatePt.y() ) );
+
   // set the point coordinates in the map event
-  e->setPoint( point );
+  e->setMapPoint( point );
+
   // update the point list
   updateCurrentPoint( point );
 
@@ -822,7 +758,7 @@ bool QgsAdvancedDigitizingDockWidget::alignToSegment( QgsMapMouseEvent* e, CadCo
   bool previousPointExist, penulPointExist, mSnappedSegmentExist;
   QgsPoint previousPt = previousPoint( &previousPointExist );
   QgsPoint penultimatePt = penultimatePoint( &penulPointExist );
-  QList<QgsPoint> mSnappedSegment = e->snapSegment( &mSnappedSegmentExist, true );
+  QList<QgsPoint> mSnappedSegment = e->snapSegment( mSnappingMode, &mSnappedSegmentExist, true );
 
   if ( !previousPointExist || !mSnappedSegmentExist )
   {
@@ -853,13 +789,13 @@ bool QgsAdvancedDigitizingDockWidget::alignToSegment( QgsMapMouseEvent* e, CadCo
   return true;
 }
 
-bool QgsAdvancedDigitizingDockWidget::canvasPressEventFilter( QgsMapMouseEvent* e )
+bool QgsAdvancedDigitizingDockWidget::canvasPressEvent( QgsMapMouseEvent* e )
 {
   applyConstraints( e );
   return mCadEnabled && mConstructionMode;
 }
 
-bool QgsAdvancedDigitizingDockWidget::canvasReleaseEventFilter( QgsMapMouseEvent* e )
+bool QgsAdvancedDigitizingDockWidget::canvasReleaseEvent( QgsMapMouseEvent* e, bool captureSegment )
 {
   if ( !mCadEnabled )
     return false;
@@ -878,7 +814,7 @@ bool QgsAdvancedDigitizingDockWidget::canvasReleaseEventFilter( QgsMapMouseEvent
   if ( alignToSegment( e ) )
   {
     // launch a fake move event so rubber bands of map tools will be adapted with new constraints
-    mCurrentMapTool->canvasMoveEvent( e );
+    // emit pointChanged( e );
 
     // Parallel or perpendicular mode and snapped to segment
     // this has emitted the lockAngle signal
@@ -892,9 +828,7 @@ bool QgsAdvancedDigitizingDockWidget::canvasReleaseEventFilter( QgsMapMouseEvent
   if ( e->button() == Qt::LeftButton )
   {
     // stop digitizing if not intermediate point and if line or polygon
-    if ( !mConstructionMode &&
-         ( e->mapTool()->mode() == QgsMapToolCapture::CaptureNone ||
-           e->mapTool()->mode() == QgsMapToolCapture::CapturePoint ) )
+    if ( !mConstructionMode && !captureSegment )
     {
       clearPoints();
     }
@@ -902,7 +836,7 @@ bool QgsAdvancedDigitizingDockWidget::canvasReleaseEventFilter( QgsMapMouseEvent
   return mConstructionMode;
 }
 
-bool QgsAdvancedDigitizingDockWidget::canvasMoveEventFilter( QgsMapMouseEvent* e )
+bool QgsAdvancedDigitizingDockWidget::canvasMoveEvent( QgsMapMouseEvent* e )
 {
   if ( !mCadEnabled )
     return false;
@@ -953,6 +887,12 @@ bool QgsAdvancedDigitizingDockWidget::canvasKeyPressEventFilter( QKeyEvent* e )
   }
   // for map tools, continues with key press in any case
   return false;
+}
+
+void QgsAdvancedDigitizingDockWidget::clear()
+{
+  clearPoints();
+  releaseLocks();
 }
 
 void QgsAdvancedDigitizingDockWidget::keyPressEvent( QKeyEvent *e )
@@ -1009,14 +949,14 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent* e )
       if ( e->modifiers() == Qt::AltModifier || e->modifiers() == Qt::ControlModifier )
       {
         mXConstraint->toggleLocked();
-        triggerMouseMoveEvent();
+        emit pointChanged( mCadPointList.value( 0 ) );
       }
       else if ( e->modifiers() == Qt::ShiftModifier )
       {
         if ( mCapacities.testFlag( RelativeCoordinates ) )
         {
           mXConstraint->toggleRelative();
-          triggerMouseMoveEvent();
+          emit pointChanged( mCadPointList.value( 0 ) );
         }
       }
       else
@@ -1031,14 +971,14 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent* e )
       if ( e->modifiers() == Qt::AltModifier || e->modifiers() == Qt::ControlModifier )
       {
         mYConstraint->toggleLocked();
-        triggerMouseMoveEvent();
+        emit pointChanged( mCadPointList.value( 0 ) );
       }
       else if ( e->modifiers() == Qt::ShiftModifier )
       {
         if ( mCapacities.testFlag( RelativeCoordinates ) )
         {
           mYConstraint->toggleRelative();
-          triggerMouseMoveEvent();
+          emit pointChanged( mCadPointList.value( 0 ) );
         }
       }
       else
@@ -1055,7 +995,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent* e )
         if ( mCapacities.testFlag( AbsoluteAngle ) )
         {
           mAngleConstraint->toggleLocked();
-          triggerMouseMoveEvent();
+          emit pointChanged( mCadPointList.value( 0 ) );
         }
       }
       else if ( e->modifiers() == Qt::ShiftModifier )
@@ -1063,7 +1003,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent* e )
         if ( mCapacities.testFlag( RelativeAngle ) )
         {
           mAngleConstraint->toggleRelative();
-          triggerMouseMoveEvent();
+          emit pointChanged( mCadPointList.value( 0 ) );
         }
       }
       else
@@ -1080,7 +1020,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent* e )
         if ( mCapacities.testFlag( RelativeCoordinates ) )
         {
           mDistanceConstraint->toggleLocked();
-          triggerMouseMoveEvent();
+          emit pointChanged( mCadPointList.value( 0 ) );
         }
       }
       else
@@ -1122,34 +1062,43 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent* e )
   return true; // stop the event
 }
 
-QgsPoint QgsAdvancedDigitizingDockWidget::currentPoint( bool* exist ) const
+void QgsAdvancedDigitizingDockWidget::enable()
 {
-  if ( exist )
-    *exist = pointsCount() > 0;
-  if ( pointsCount() > 0 )
-    return mCadPointList.at( 0 );
+  if ( mMapCanvas->mapSettings().destinationCrs().geographicFlag() )
+  {
+    mErrorLabel->setText( tr( "CAD tools can not be used on geographic coordinates. Change the coordinates system in the project properties." ) );
+    mErrorLabel->show();
+    mEnableAction->setEnabled( false );
+    setCadEnabled( false );
+  }
   else
-    return QgsPoint();
+  {
+    mEnableAction->setEnabled( true );
+    mErrorLabel->hide();
+    mCadWidget->show();
+    setMaximumHeight( 220 );
+
+    mCurrentMapToolSupportsCad = true;
+
+    if ( mSessionActive && !isVisible() )
+    {
+      show();
+    }
+    setCadEnabled( mSessionActive );
+  }
 }
 
-QgsPoint QgsAdvancedDigitizingDockWidget::previousPoint( bool* exist ) const
+void QgsAdvancedDigitizingDockWidget::disable()
 {
-  if ( exist )
-    *exist = pointsCount() > 1;
-  if ( pointsCount() > 1 )
-    return mCadPointList.at( 1 );
-  else
-    return QgsPoint();
-}
+  mEnableAction->setEnabled( false );
+  mErrorLabel->setText( tr( "CAD tools are not enabled for the current map tool" ) );
+  mErrorLabel->show();
+  mCadWidget->hide();
+  setMaximumHeight( 80 );
 
-QgsPoint QgsAdvancedDigitizingDockWidget::penultimatePoint( bool* exist ) const
-{
-  if ( exist )
-    *exist = pointsCount() > 2;
-  if ( pointsCount() > 2 )
-    return mCadPointList.at( 2 );
-  else
-    return QgsPoint();
+  mCurrentMapToolSupportsCad = false;
+
+  setCadEnabled( false );
 }
 
 void QgsAdvancedDigitizingDockWidget::addPoint( QgsPoint point )
@@ -1233,4 +1182,34 @@ void QgsAdvancedDigitizingDockWidget::CadConstraint::toggleLocked()
 void QgsAdvancedDigitizingDockWidget::CadConstraint::toggleRelative()
 {
   setRelative( mRelative ? false : true );
+}
+
+QgsPoint QgsAdvancedDigitizingDockWidget::currentPoint( bool* exist ) const
+{
+  if ( exist )
+    *exist = pointsCount() > 0;
+  if ( pointsCount() > 0 )
+    return mCadPointList.value( 0 );
+  else
+    return QgsPoint();
+}
+
+QgsPoint QgsAdvancedDigitizingDockWidget::previousPoint( bool* exist ) const
+{
+  if ( exist )
+    *exist = pointsCount() > 1;
+  if ( pointsCount() > 1 )
+    return mCadPointList.value( 1 );
+  else
+    return QgsPoint();
+}
+
+QgsPoint QgsAdvancedDigitizingDockWidget::penultimatePoint( bool* exist ) const
+{
+  if ( exist )
+    *exist = pointsCount() > 2;
+  if ( pointsCount() > 2 )
+    return mCadPointList.value( 2 );
+  else
+    return QgsPoint();
 }
