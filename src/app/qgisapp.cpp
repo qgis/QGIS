@@ -588,12 +588,12 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   mCentralContainer->insertWidget( 0, mMapCanvas );
   mCentralContainer->insertWidget( 1, mWelcomePage );
 
-  qobject_cast<QGridLayout *>( centralWidget->layout() )->addWidget( mCentralContainer, 0, 0, 2, 1 );
+  centralLayout->addWidget( mCentralContainer, 0, 0, 2, 1 );
 
   connect( mMapCanvas, SIGNAL( layersChanged() ), this, SLOT( showMapCanvas() ) );
-  connect( this, SIGNAL( newProject() ), this, SLOT( showMapCanvas() ) );
 
   mCentralContainer->setCurrentIndex( 1 );
+
 
   // a bar to warn the user with non-blocking messages
   mInfoBar = new QgsMessageBar( centralWidget );
@@ -3932,12 +3932,15 @@ void QgisApp::fileOpenAfterLaunch()
   // what type of project to auto-open
   int projOpen = settings.value( "/qgis/projOpenAtLaunch", 0 ).toInt();
 
-  // get path of project file to open, or was attempted
-  QString projPath = QString();
   if ( projOpen == 0 ) // welcome page
   {
+    connect( this, SIGNAL( newProject() ), this, SLOT( showMapCanvas() ) );
     return;
   }
+
+  // get path of project file to open, or was attempted
+  QString projPath;
+
   if ( projOpen == 1 && mRecentProjects.size() > 0 ) // most recent project
   {
     projPath = mRecentProjects.at( 0 ).path;
