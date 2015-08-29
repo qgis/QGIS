@@ -49,6 +49,29 @@ QMenuBar::item:pressed
     padding-bottom:1px;
 }
 
+QAbstractSpinBox {
+    padding-right: 0px; /* make room for the arrows */
+    border: 1px solid #222;
+    background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #565656, stop: 0.1 #525252, stop: 0.5 #4e4e4e, stop: 0.9 #4a4a4a, stop: 1 #464646);
+ }
+
+ QAbstractSpinBox::up-button {
+    subcontrol-origin: border;
+     subcontrol-position: top right;
+
+     width: 16px;
+    image: url(icons/up_arrow.png) 1;
+ }
+
+ QAbstractSpinBox::down-button {
+     subcontrol-origin: border;
+     subcontrol-position: bottom right;
+
+     width: 16px;
+    image: url(icons/down_arrow.png);
+ }
+
+
 /* ==================================================================================== */
 /* MENU                                                                                 */
 /* ==================================================================================== */
@@ -122,8 +145,9 @@ QComboBox {
     background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #565656, stop: 0.1 #525252, stop: 0.5 #4e4e4e, stop: 0.9 #4a4a4a, stop: 1 #464646);
     border-style: solid;
     border: 1px solid #1e1e1e; 
-    padding: 1px 0px 1px 3px; /*This makes text colour work*/
+    padding: 3px 3px 3px 3px;
 }
+
 
 QComboBox:hover,QPushButton:hover {
     background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1,
@@ -133,7 +157,6 @@ QComboBox:hover,QPushButton:hover {
         stop: 0.9   #4a4a4a,
         stop: 1     #464646);
 }
-
 
 QComboBox:on {
     padding-top: 1px;
@@ -145,6 +168,10 @@ QComboBox:on {
         stop: 0.9   #414141,
         stop: 1     #444);
     selection-background-color: #ffaa00;
+}
+
+QComboBox:editable {
+    background: #323232;
 }
 
 QComboBox QAbstractItemView {
@@ -163,6 +190,8 @@ QComboBox::down-arrow
 {
     image: url(icons/down_arrow.png);
 }
+
+
 QLineEdit:focus
 {
     border: 2px solid QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #ffa02f, stop: 1 #d7801a);
@@ -483,18 +512,21 @@ QgsLayerTreeView
 {
 }
 
-QgsLayerTreeView::item
+QgsLayerTreeView::item,
+QTreeView#viewCategories::item
 {
     border-top: 0.5px solid rgba(108,108,108,50);
     border-bottom: 0.5px solid rgba(108,108,108,50);
     padding: 3px;
 }
 
-QgsLayerTreeView::indicator:unchecked{
+QgsLayerTreeView::indicator:unchecked,
+QTreeView#viewCategories::indicator:unchecked {
     image: url(icons/eye-blocked.svg);
 }
 
-QgsLayerTreeView::indicator:checked {
+QgsLayerTreeView::indicator:checked,
+QTreeView#viewCategories::indicator:checked {
     image: url(icons/eye.svg);
 }
 
