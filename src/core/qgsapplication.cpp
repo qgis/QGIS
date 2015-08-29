@@ -1028,6 +1028,7 @@ bool QgsApplication::createThemeFolder()
   }
 
   copyPath( defaultThemesFolder(), userThemesFolder() );
+  return true;
 }
 
 void QgsApplication::copyPath( QString src, QString dst )
