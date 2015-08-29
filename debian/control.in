@@ -36,7 +36,7 @@ Build-Depends:
 #saucy wheezy# python-dev,
 #saucy# libpython2.7-dev,
 #sid stretch jessie trusty utopic vivid# python-all (>= 2.6.6-3~), python-all-dev (>= 2.6.6-3~),
-#sid stretch jessie wheezy precise saucy sid-oracle trusty utopic vivid# python-qt4 (>= 4.1.0), python-qt4-dev,
+#sid stretch jessie wheezy precise saucy trusty utopic vivid# python-qt4 (>= 4.1.0), python-qt4-dev,
 #sid stretch jessie# pyqt4.qsci-dev,
 #sid stretch jessie trusty utopic vivid# python-pyspatialite,
  python-sip (>= 4.5.0),
@@ -54,7 +54,7 @@ Build-Depends:
  spawn-fcgi, lighttpd, poppler-utils, locales, qt4-doc-html,
  libqt4-sql-sqlite
 Build-Conflicts: libqgis-dev, qgis-dev
-#sid stretch jessie sid-oracle vivid#Standards-Version: 3.9.6
+#sid stretch jessie vivid#Standards-Version: 3.9.6
 #wheezy#Standards-Version: 3.9.3
 #precise saucy trusty utopic#Standards-Version: 3.8.4
 #sid stretch jessie#X-Python-Version: >= 2.7, << 2.8
