@@ -473,12 +473,14 @@
 			<grass name="v.db.droptable"/>
 		</section>
 		<section label="Columns management">
-			<grass name="v.db.addcol"/>
+			<grass name="v.db.addcol" version_max="6.4"/>
+			<grass name="v.db.addcolumn" version_min="7.0"/>
 			<grass name="v.db.update_const"/>
 			<grass name="v.db.update_query"/>
 			<grass name="v.db.update_op"/>
 			<grass name="v.db.update_op_query"/>
-			<grass name="v.db.dropcol" version_min="6.4"/>
+			<grass name="v.db.dropcol" version_max="6.4"/>
+			<grass name="v.db.dropcolumn" version_min="7.0"/>
 			<grass name="v.db.renamecol"/>
 			<grass name="db.execute"/>
 			<grass name="db.select"/>

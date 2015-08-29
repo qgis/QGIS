@@ -4,10 +4,10 @@
 <!-- direct note: the module runs, but it was not tested with real data -->
 <qgisgrassmodule label="Create watershed subbasins raster" module="r.basins.fill" direct="1">
 	<option key="number" />
-	<option key="c_map" version_max="6.4"/>
-	<option key="cnetwork" version_min="7.0"/>
-	<option key="t_map" version_max="6.4"/>
-	<option key="tnetwork" version_min="7.0"/>
-	<option key="result" version_max="6.4"/>
-	<option key="output" version_min="7.0"/>
+	<option key="c_map" version_max="6"/>
+	<option key="cnetwork" version_min="7"/>
+	<option key="t_map" version_max="6"/>
+	<option key="tnetwork" version_min="7"/>
+	<option key="result" version_max="6"/>
+	<option key="output" version_min="7"/>
 </qgisgrassmodule>
