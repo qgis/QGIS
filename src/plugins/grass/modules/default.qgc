@@ -206,13 +206,15 @@
 				<grass name="r.cost.rast"/>
 				<grass name="r.cost.vect"/>
 				<grass name="r.drain"/>
-				<grass name="r.shaded.relief"/>
+				<grass name="r.shaded.relief" version_max="6.4"/>
+				<grass name="r.relief" version_min="7.0"/>
 				<grass name="r.slope"/>
 				<grass name="r.aspect"/>
 				<grass name="r.param.scale"/>
 				<grass name="r.texture"/>
 				<grass name="r.texture.bis"/>
-				<grass name="r.los"/>
+				<grass name="r.los" version_max="6.4"/>
+				<grass name="r.viewshed" version_min="7.0"/>
 				<grass name="r.grow.distance" version_min="6.4"/>
 				<grass name="r.walk.coord"/>
 				<grass name="r.walk.vect"/>
