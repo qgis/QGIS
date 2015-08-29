@@ -27,6 +27,7 @@
 #include "qgisapp.h"
 #include "qgslayertreemapcanvasbridge.h"
 #include "qgsvisibilitypresetcollection.h"
+#include "qgsmapcanvas.h"
 
 #include <QFileDialog>
 #include <QPushButton>
@@ -329,7 +330,23 @@ QList< QPair<QgsVectorLayer *, int> > QgsVectorLayerAndAttributeModel::layers() 
 
 void QgsVectorLayerAndAttributeModel::applyVisibilityPreset( const QString &name )
 {
-  QSet<QString> visibleLayers = QgsProject::instance()->visibilityPresetCollection()->presetVisibleLayers( name ).toSet();
+  QSet<QString> visibleLayers;
+
+  if ( name.isEmpty() )
+  {
+    foreach ( const QgsMapLayer *ml, QgisApp::instance()->mapCanvas()->layers() )
+    {
+      const QgsVectorLayer *vl = qobject_cast<const QgsVectorLayer *>( ml );
+      if ( !vl )
+        continue;
+      visibleLayers.insert( vl->id() );
+    }
+  }
+  else
+  {
+    visibleLayers = QgsProject::instance()->visibilityPresetCollection()->presetVisibleLayers( name ).toSet();
+  }
+
   if ( visibleLayers.isEmpty() )
     return;
 
@@ -423,20 +440,22 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
 
   //last dxf symbology mode
   QSettings s;
-  mSymbologyModeComboBox->setCurrentIndex( s.value( "qgis/lastDxfSymbologyMode", "2" ).toInt() );
+  mSymbologyModeComboBox->setCurrentIndex( QgsProject::instance()->readEntry( "dxf", "/lastDxfSymbologyMode", s.value( "qgis/lastDxfSymbologyMode", "2" ).toString() ).toInt() );
+
   //last symbol scale
   mScaleWidget->setMapCanvas( QgisApp::instance()->mapCanvas() );
-  mScaleWidget->setScale( s.value( "qgis/lastSymbologyExportScale", "1/50000" ).toDouble() );
-  mMapExtentCheckBox->setChecked( s.value( "qgis/lastDxfMapRectangle", "false" ).toBool() );
+  mScaleWidget->setScale( QgsProject::instance()->readEntry( "dxf", "/lastSymbologyExportScale", s.value( "qgis/lastSymbologyExportScale", "1/50000" ).toString() ).toDouble() );
+  mMapExtentCheckBox->setChecked( QgsProject::instance()->readEntry( "dxf", "/lastDxfMapRectangle", s.value( "qgis/lastDxfMapRectangle", "false" ).toString() ) != "false" );
 
   QStringList ids = QgsProject::instance()->visibilityPresetCollection()->presets();
   ids.prepend( "" );
   mVisibilityPresets->addItems( ids );
+  mVisibilityPresets->setCurrentIndex( mVisibilityPresets->findText( QgsProject::instance()->readEntry( "dxf", "/lastVisibilityPreset", "" ) ) );
 
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
   restoreGeometry( s.value( "/Windows/DxfExport/geometry" ).toByteArray() );
   mEncoding->addItems( QgsDxfExport::encodings() );
-  mEncoding->setCurrentIndex( mEncoding->findText( s.value( "qgis/lastDxfEncoding", "CP1252" ).toString() ) );
+  mEncoding->setCurrentIndex( mEncoding->findText( QgsProject::instance()->readEntry( "dxf", "/lastDxfEncoding", s.value( "qgis/lastDxfEncoding", "CP1252" ).toString() ) ) );
 }
 
 
@@ -571,7 +590,14 @@ void QgsDxfExportDialog::saveSettings()
   s.setValue( "qgis/lastSymbologyExportScale", mScaleWidget->scale() );
   s.setValue( "qgis/lastDxfMapRectangle", mMapExtentCheckBox->isChecked() );
   s.setValue( "qgis/lastDxfEncoding", mEncoding->currentText() );
+
+  QgsProject::instance()->writeEntry( "dxf", "/lastDxfSymbologyMode", mSymbologyModeComboBox->currentIndex() );
+  QgsProject::instance()->writeEntry( "dxf", "/lastSymbologyExportScale", mScaleWidget->scale() );
+  QgsProject::instance()->writeEntry( "dxf", "/lastDxfMapRectangle", mMapExtentCheckBox->isChecked() );
+  QgsProject::instance()->writeEntry( "dxf", "/lastDxfEncoding", mEncoding->currentText() );
+  QgsProject::instance()->writeEntry( "dxf", "/lastVisibilityPreset", mVisibilityPresets->currentText() );
 }
+
 
 QString QgsDxfExportDialog::encoding() const
 {
