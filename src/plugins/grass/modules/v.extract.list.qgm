@@ -3,6 +3,7 @@
 
 <qgisgrassmodule label="Extract selected features" module="v.extract">
 	<option key="input" typeoption="type" layeroption="layer" id="input"/>
-	<selection key="list" layerid="input" label="Cats" />
+	<selection key="list" layerid="input" label="Cats" version_max="6"/>
+	<selection key="cats" layerid="input" label="Cats" version_min="7"/>
 	<option key="output" />
 </qgisgrassmodule>
