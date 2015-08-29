@@ -186,8 +186,14 @@ class CORE_EXPORT QgsApplication : public QApplication
     //! Returns the path to user's style.
     static QString userStyleV2Path();
 
+    //! Returns the path to user's themes folder
+    static QString userThemesFolder();
+
     //! Returns the path to default style (works as a starting point).
     static QString defaultStyleV2Path();
+
+    //! Returns the path to default themes folder from install (works as a starting point).
+    static QString defaultThemesFolder();
 
     //! Returns the path containing qgis_core, qgis_gui, qgispython (and other) libraries
     static QString libraryPath();
@@ -212,6 +218,9 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     //! initialise qgis.db
     static bool createDB( QString* errorMessage = 0 );
+
+    //! Create the users theme folder
+    static bool createThemeFolder( );
 
     //! deletes provider registry and map layer registry
     static void exitQgis();
@@ -320,6 +329,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     void preNotify( QObject * receiver, QEvent * event, bool * done );
 
   private:
+    static void copyPath( QString src, QString dst );
     static QObject* ABISYM( mFileOpenEventReceiver );
     static QStringList ABISYM( mFileOpenEventList );
 

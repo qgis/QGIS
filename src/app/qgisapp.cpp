@@ -552,6 +552,9 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
     QMessageBox::critical( this, tr( "Private qgis.db" ), dbError );
   }
 
+  // Create the themes folder for the user
+  QgsApplication::createThemeFolder();
+
   mSplash->showMessage( tr( "Reading settings" ), Qt::AlignHCenter | Qt::AlignBottom );
   qApp->processEvents();
 

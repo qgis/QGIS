@@ -2,20 +2,20 @@ QToolTip
 {
     border: 1px solid #222;
     background-color: #333;
-    color: #aaa;
+    color: @text;
 }
 
 QWidget
 {
-    color: #aaa;
-    background-color: #323232;
+    color: @text;
+    background-color: @background;
 }
 
 
 QWidget:item:hover
 {
     background-color: #507098;
-    color: #aaa;
+    color: @text;
 }
 
 QWidget:item:selected
@@ -24,7 +24,7 @@ QWidget:item:selected
 }
 
 QMenuBar {
-    background-color: #323232;
+    background-color: @background;
 }
 
 QMenuBar::item
@@ -87,7 +87,7 @@ QMenu
 QMenu::item
 {
     background: transparent;
-    padding: 2px 20px 2px 20px;
+    padding: 5px 20px 5px 20px;
 }
 
 QMenu::item:disabled
@@ -101,13 +101,13 @@ QMenu::item:disabled
 QMenu::item:selected
 {
     background-color: #507098;
-    color: #aaa;
+    color: @text;
 }
 
 QWidget:disabled
 {
     color: #404040;
-    background-color: #323232;
+    background-color: @background;
 }
 
 QLineEdit
@@ -171,7 +171,7 @@ QComboBox:on {
 }
 
 QComboBox:editable {
-    background: #323232;
+    background: @background;
 }
 
 QComboBox QAbstractItemView {
@@ -279,7 +279,7 @@ QDockWidget::title
 {
     text-align: center;
     spacing: 3px; /* spacing between items in the tool bar */
-    background-color: #323232;
+    background-color: @background;
 	font-weight: bold;
 }
 
@@ -319,8 +319,8 @@ QMainWindow::separator:hover
 }
 
 QToolBar {
-    background: #323232;
-    border: 1px solid #323232;
+    background: @background;
+    border: 1px solid @background;
 	font-weight: bold;
 }
 
@@ -373,7 +373,7 @@ QTabBar::tab {
     color: #b1b1b1;
     border: 1px solid #444;
     border-bottom-style: none;
-    background-color: #323232;
+    background-color: @background;
     padding-left: 10px;
     padding-right: 10px;
     padding-top: 3px;
@@ -396,12 +396,13 @@ QTabBar::tab:first:!selected
   margin-left: 0px; /* the last selected tab has nothing to overlap with on the right */
 }
 
+QTabBar::tab:bottom {
+    border-bottom: 1px solid rgb(190, 190, 190);
+}
+
 QTabBar::tab:!selected
 {
-    color: #b1b1b1;
-    border-bottom-style: solid;
-    margin-top: 3px;
-    /*background-color: QLinearGradient(x1:0, y1:0, x2:0, y2:1, stop:1 #212121, stop:.4 #343434);*/
+    margin-top: 5px;
 }
 
 QTabBar::tab:selected
@@ -423,23 +424,32 @@ QTabBar::tab:!selected:hover
 QGroupBox::indicator:unchecked,
 QGroupBox::indicator:checked,
 QCheckBox::indicator:checked,
-QCheckBox::indicator:unchecked,
+QCheckBox::indicator:unchecked
 QRadioButton::indicator:checked,
 QRadioButton::indicator:unchecked{
     color: #b1b1b1;
-    background-color: #323232;
+    background-color: @background;
     border: 1px solid #b1b1b1;
 }
 
 QGroupBox::indicator:checked,
-QCheckBox::indicator:checked,
+QCheckBox::indicator:checked
+{
+    background-color: qradialgradient(
+        cx: 0.5, cy: 0.5,
+        fx: 0.5, fy: 0.5,
+        radius: 1.0,
+        stop: 0.25 #ffaa00,
+        stop: 0.3 @background
+    );
+}
 QRadioButton::indicator:checked {
     background-color: qradialgradient(
         cx: 0.5, cy: 0.5,
         fx: 0.5, fy: 0.5,
         radius: 1.0,
         stop: 0.25 #ffaa00,
-        stop: 0.3 #323232
+        stop: 0.3 @background
     );
 }
 
@@ -461,7 +471,7 @@ QRadioButton::indicator:hover
 QAbstractItemView
 {
   background-color: #222;
-	alternate-background-color: #323232;
+	alternate-background-color: @background;
 	color: silver;
 	border: none;
 	border-radius: 3px;
@@ -513,7 +523,9 @@ QgsLayerTreeView
 }
 
 QgsLayerTreeView::item,
-QTreeView#viewCategories::item
+QTreeView#viewGraduated::item,
+QTreeView#viewCategories::item,
+QTreeView#viewRules::item
 {
     border-top: 0.5px solid rgba(108,108,108,50);
     border-bottom: 0.5px solid rgba(108,108,108,50);
@@ -521,12 +533,18 @@ QTreeView#viewCategories::item
 }
 
 QgsLayerTreeView::indicator:unchecked,
-QTreeView#viewCategories::indicator:unchecked {
+QTreeView#viewGraduated::indicator:unchecked,
+QTreeView#viewCategories::indicator:unchecked,
+QTreeView#viewRules::indicator:unchecked 
+{
     image: url(icons/eye-blocked.svg);
 }
 
 QgsLayerTreeView::indicator:checked,
-QTreeView#viewCategories::indicator:checked {
+QTreeView#viewGraduated::indicator:checked, 
+QTreeView#viewCategories::indicator:checked, 
+QTreeView#viewRules::indicator:checked 
+{
     image: url(icons/eye.svg);
 }
 
@@ -539,7 +557,7 @@ QHeaderView {
 
 QHeaderView::section {
     background: transparent;
-    background-color: #323232;
+    background-color: @background;
     color: #777;
     border-right: 0px solid #777;
     border-top: 0px solid #777;

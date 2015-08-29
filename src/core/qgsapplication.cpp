@@ -437,8 +437,47 @@ void QgsApplication::setUITheme( const QString &themeName )
   // Loop all style sheets, find matching name, load it.
   QHash<QString, QString> themes = QgsApplication::uiThemes();
   QString path = themes[themeName];
+  QString stylesheetname = path + "/style.qss";
+  QString autostylesheet = stylesheetname + ".auto";
+
+  QFile file( stylesheetname );
+  QFile variablesfile( path + "/variables.qss" );
+  QFile fileout( autostylesheet );
+
+  QFileInfo variableInfo( variablesfile );
+
+  if ( variableInfo.exists() && variablesfile.open( QIODevice::ReadOnly ) )
+  {
+    if ( !file.open( QIODevice::ReadOnly ) || !fileout.open( QIODevice::WriteOnly | QIODevice::Text ) )
+    {
+      return;
+    }
+
+    QHash<QString, QString> variables;
+    QString styledata = file.readAll();
+    QTextStream in( &variablesfile );
+    while ( !in.atEnd() )
+    {
+      QString line = in.readLine();
+      // This is is a variable
+      if ( line.startsWith( "@" ) )
+      {
+        int index = line.indexOf( ":" );
+        QString name = line.mid( 0, index );
+        QString value = line.mid( index + 1, line.length() );
+        styledata.replace( name, value );
+      }
+    }
+    variablesfile.close();
+    QTextStream out( &fileout );
+    out << styledata;
+    fileout.close();
+    file.close();
+    stylesheetname = autostylesheet;
+  }
+
   QString styleSheet = QLatin1String( "file:///" );
-  styleSheet.append( path + "/style.qss" );
+  styleSheet.append( stylesheetname );
   qApp->setStyleSheet( styleSheet );
   QSettings settings;
   return settings.setValue( "UI/UITheme", themeName );
@@ -446,9 +485,7 @@ void QgsApplication::setUITheme( const QString &themeName )
 
 QHash<QString, QString> QgsApplication::uiThemes()
 {
-  QString themepath = ABISYM( mPkgDataPath ) + QString( "/resources/themes" );
-  QString userthemes = qgisSettingsDirPath() + QString( "/themes" );
-  QStringList paths = QStringList() << themepath << userthemes;
+  QStringList paths = QStringList() << userThemesFolder();
   QHash<QString, QString> mapping;
   mapping.insert( "default", "" );
   foreach ( const QString& path, paths )
@@ -643,9 +680,19 @@ QString QgsApplication::userStyleV2Path()
   return qgisSettingsDirPath() + QString( "symbology-ng-style.db" );
 }
 
+QString QgsApplication::userThemesFolder()
+{
+  return qgisSettingsDirPath() + QString( "/themes" );
+}
+
 QString QgsApplication::defaultStyleV2Path()
 {
   return ABISYM( mPkgDataPath ) + QString( "/resources/symbology-ng-style.db" );
+}
+
+QString QgsApplication::defaultThemesFolder()
+{
+  return ABISYM( mPkgDataPath ) + QString( "/resources/themes" );
 }
 
 QString QgsApplication::libraryPath()
@@ -969,6 +1016,37 @@ void QgsApplication::applyGdalSkippedDrivers()
   QgsDebugMsg( myDriverList );
   CPLSetConfigOption( "GDAL_SKIP", myDriverList.toUtf8() );
   GDALAllRegister(); //to update driver list and skip missing ones
+}
+
+bool QgsApplication::createThemeFolder()
+{
+  QString folder = userThemesFolder();
+  QDir myDir( folder );
+  if ( !myDir.exists() )
+  {
+    myDir.mkpath( folder );
+  }
+
+  copyPath( defaultThemesFolder(), userThemesFolder() );
+}
+
+void QgsApplication::copyPath( QString src, QString dst )
+{
+  QDir dir( src );
+  if ( ! dir.exists() )
+    return;
+
+  foreach ( QString d, dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
+  {
+    QString dst_path = dst + QDir::separator() + d;
+    dir.mkpath( dst_path );
+    copyPath( src + QDir::separator() + d, dst_path );
+  }
+
+  foreach ( QString f, dir.entryList( QDir::Files ) )
+  {
+    QFile::copy( src + QDir::separator() + f, dst + QDir::separator() + f );
+  }
 }
 
 bool QgsApplication::createDB( QString *errorMessage )
