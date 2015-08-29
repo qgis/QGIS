@@ -320,6 +320,8 @@ class QgsVectorDataProvider : QgsDataProvider
      */
     virtual QgsTransaction* transaction() const;
 
+    virtual void forceReload();
+
   protected:
     void clearMinMaxCache();
     void fillMinMaxCache();

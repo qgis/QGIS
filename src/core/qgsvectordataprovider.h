@@ -371,6 +371,15 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      */
     virtual QgsTransaction* transaction() const { return 0; }
 
+    /**
+     * Forces a reload of the underlying datasource if the provider implements this
+     * method.
+     * In particular on the OGR provider, a pooled connection will be invalidated.
+     * This forces QGIS to reopen a file or connection.
+     * This can be required if the underlying file is replaced.
+     */
+    virtual void forceReload() {}
+
   protected:
     void clearMinMaxCache();
     void fillMinMaxCache();

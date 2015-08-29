@@ -2439,6 +2439,11 @@ QByteArray QgsOgrProvider::quotedIdentifier( QByteArray field )
   return QgsOgrUtils::quotedIdentifier( field, ogrDriverName );
 }
 
+void QgsOgrProvider::forceReload()
+{
+  QgsOgrConnPool::instance()->invalidateConnections( filePath() );
+}
+
 QByteArray QgsOgrUtils::quotedIdentifier( QByteArray field, const QString& ogrDriverName )
 {
   if ( ogrDriverName == "MySQL" )
