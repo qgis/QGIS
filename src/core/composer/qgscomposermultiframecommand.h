@@ -73,7 +73,8 @@ class CORE_EXPORT QgsComposerMultiFrameMergeCommand: public QgsComposerMultiFram
       //attribute table
       TableMaximumFeatures,
       TableMargin,
-      TableGridStrokeWidth
+      TableGridStrokeWidth,
+      TableCellStyle
     };
 
     QgsComposerMultiFrameMergeCommand( Context c, QgsComposerMultiFrame* multiFrame, const QString& text );

@@ -42,8 +42,47 @@ typedef QList< QgsComposerTableRow > QgsComposerTableContents;
 */
 typedef QList<QgsComposerTableColumn*> QgsComposerTableColumns;
 
+
+
+/** \ingroup MapComposer
+ *  \class QgsComposerTableStyle
+ *  \brief Styling option for a composer table cell
+ *  \note added in QGIS 2.12
+ */
+
+class CORE_EXPORT QgsComposerTableStyle
+{
+  public:
+
+    QgsComposerTableStyle()
+        : enabled( false )
+        , cellBackgroundColor( QColor( 255, 255, 255, 255 ) )
+    {}
+
+    //! Whether the styling option is enabled
+    bool enabled;
+
+    //! Cell background color
+    QColor cellBackgroundColor;
+
+    /** Writes the style's properties to XML for storage.
+     * @param styleElem an existing QDomElement in which to store the style's properties.
+     * @param doc QDomDocument for the destination XML.
+     * @see readXML
+     */
+    bool writeXML( QDomElement& styleElem, QDomDocument & doc ) const;
+
+    /** Reads the style's properties from XML.
+     * @param styleElem a QDomElement holding the style's desired properties.
+     * @see writeXML
+     */
+    bool readXML( const QDomElement& styleElem );
+
+};
+
 /** A class to display a table in the print composer, and allow
  * the table to span over multiple frames
+ * \ingroup MapComposer
  * @note added in QGIS 2.5
  */
 class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
@@ -86,6 +125,21 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
     {
       TruncateText = 0, /*!< text which doesn't fit inside the cell is truncated */
       WrapText /*!< text which doesn't fit inside the cell is wrapped. Note that this only applies to text in columns with a fixed width. */
+    };
+
+    /** Row or column groups for cell styling
+     */
+    enum CellStyleGroup
+    {
+      OddColumns, /*!< Style odd numbered columns */
+      EvenColumns, /*!< Style even numbered columns */
+      OddRows, /*!< Style odd numbered rows */
+      EvenRows, /*!< Style even numbered rows */
+      FirstColumn, /*!< Style first column only */
+      LastColumn, /*!< Style last column only */
+      HeaderRow, /*!< Style header row */
+      FirstRow, /*!< Style first row only */
+      LastRow /*!< Style last row only */
     };
 
     QgsComposerTableV2( QgsComposition* composition, bool createUndoCommands );
@@ -324,6 +378,21 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      */
     void setColumns( QgsComposerTableColumns columns );
 
+    /** Sets the cell style for a cell group.
+     * @param group group to set style for
+     * @param style new cell style
+     * @see cellStyle()
+     * @note added in QGIS 2.12
+     */
+    void setCellStyle( CellStyleGroup group, const QgsComposerTableStyle& style );
+
+    /** Returns the cell style for a cell group.
+     * @param group group to retreive style for
+     * @see setCellStyle()
+     * @note added in QGIS 2.12
+     */
+    const QgsComposerTableStyle* cellStyle( CellStyleGroup group ) const;
+
     /** Returns the text used in the column headers for the table.
      * @returns QMap of int to QString, where the int is the column index (starting at 0),
      * and the string is the text to use for the column's header
@@ -423,6 +492,8 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
     QSizeF mTableSize;
 
     WrapBehaviour mWrapBehaviour;
+
+    QMap< CellStyleGroup, QgsComposerTableStyle* > mCellStyles;
 
     /** Calculates the maximum width of text shown in columns.
      */
@@ -565,9 +636,21 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
 
   private:
 
+    QMap< CellStyleGroup, QString > mCellStyleNames;
+
+    /** Initializes cell style map */
+    void initStyles();
+
     bool textRequiresWrapping( const QString& text, double columnWidth , const QFont &font ) const;
 
     QString wrappedText( const QString &value, double columnWidth, const QFont &font ) const;
+
+    /** Returns the calculated background color for a row and column combination.
+     * @param row row number, where -1 is the header row, and 0 is the first body row
+     * @param column column number, where 0 is the first column
+     * @returns background color, or invalid QColor if no background should be drawn
+     */
+    QColor backgroundColor( int row, int column ) const;
 
     friend class TestQgsComposerTableV2;
 };
