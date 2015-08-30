@@ -815,6 +815,8 @@ bool QgsRuleBasedRendererV2::renderFeature( QgsFeature& feature,
 {
   Q_UNUSED( layer );
 
+  setRenderResult( QgsRenderResult( false ) );
+
   int flags = ( selected ? FeatIsSelected : 0 ) | ( drawVertexMarker ? FeatDrawMarkers : 0 );
   mCurrentFeatures.append( FeatureToRender( feature, flags ) );
 
@@ -873,6 +875,10 @@ void QgsRuleBasedRendererV2::stopRender( QgsRenderContext& context )
         {
           int flags = job->ftr.flags;
           renderFeatureWithSymbol( job->ftr.feat, job->symbol, context, i, flags & FeatIsSelected, flags & FeatDrawMarkers );
+
+          QgsRenderResult newRenderResult = job->symbol->renderResult();
+          newRenderResult.unite( renderResult() );
+          setRenderResult( newRenderResult );
         }
       }
     }

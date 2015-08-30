@@ -81,6 +81,7 @@ QgsSymbolV2::QgsSymbolV2( SymbolType type, QgsSymbolLayerV2List layers )
     , mRenderHints( 0 )
     , mClipFeaturesToExtent( true )
     , mLayer( 0 )
+    , mRenderResult( QgsRenderResult( true ) )
 {
 
   // check they're all correct symbol layers
@@ -831,6 +832,8 @@ void QgsMarkerSymbolV2::renderPointUsingLayer( QgsMarkerSymbolLayerV2* layer, co
   {
     layer->renderPoint( point, context );
   }
+
+  mRenderResult = layer->renderResult();
 }
 
 void QgsMarkerSymbolV2::renderPoint( const QPointF& point, const QgsFeature* f, QgsRenderContext& context, int layer, bool selected )
@@ -846,10 +849,13 @@ void QgsMarkerSymbolV2::renderPoint( const QPointF& point, const QgsFeature* f, 
     return;
   }
 
+  QgsRenderResult combinedResult( false );
   for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
   {
     renderPointUsingLayer(( QgsMarkerSymbolLayerV2* ) * it, point, symbolContext );
+    combinedResult.unite(( *it )->renderResult() );
   }
+  mRenderResult = combinedResult;
 }
 
 QgsSymbolV2* QgsMarkerSymbolV2::clone() const
@@ -1032,6 +1038,8 @@ void QgsLineSymbolV2::renderPolylineUsingLayer( QgsLineSymbolLayerV2 *layer, con
   {
     layer->renderPolyline( points, context );
   }
+
+  mRenderResult = layer->renderResult();
 }
 
 
@@ -1112,6 +1120,8 @@ void QgsFillSymbolV2::renderPolygonUsingLayer( QgsSymbolLayerV2* layer, const QP
       (( QgsLineSymbolLayerV2* )layer )->renderPolygonOutline( points, rings, context );
     }
   }
+
+  mRenderResult = layer->renderResult();
 }
 
 QRectF QgsFillSymbolV2::polygonBounds( const QPolygonF& points, const QList<QPolygonF>* rings ) const

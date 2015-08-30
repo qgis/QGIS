@@ -541,15 +541,18 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV
     }
   }
 
+  QgsRenderResult result( true );
   if ( mUsingCache )
   {
     //QgsDebugMsg( QString("XXX using cache") );
     // we will use cached image
     QImage &img = context.selected() ? mSelCache : mCache;
     double s = img.width() / context.renderContext().rasterScaleFactor();
-    p->drawImage( QRectF( point.x() - s / 2.0 + off.x(),
-                          point.y() - s / 2.0 + off.y(),
-                          s, s ), img );
+    QRectF imgRect( point.x() - s / 2.0 + off.x(),
+                    point.y() - s / 2.0 + off.y(),
+                    s, s );
+    p->drawImage( imgRect, img );
+    result.symbolBounds = imgRect;
   }
   else
   {
@@ -606,11 +609,25 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV
     p->setBrush( context.selected() ? mSelBrush : mBrush );
     p->setPen( context.selected() ? mSelPen : mPen );
 
+    QRectF boundingRect;
     if ( !mPolygon.isEmpty() )
-      p->drawPolygon( transform.map( mPolygon ) );
+    {
+      QPolygonF transformed = transform.map( mPolygon );
+      boundingRect = transformed.boundingRect();
+      p->drawPolygon( transformed );
+
+    }
     else
-      p->drawPath( transform.map( mPath ) );
+    {
+      QPainterPath transformed = transform.map( mPath );
+      boundingRect = transformed.boundingRect();
+      p->drawPath( transformed );
+    }
+    //adjust bounding rect for pen width
+    result.symbolBounds = boundingRect.adjusted( -mPen.widthF() / 2.0, -mPen.widthF() / 2.0,
+                          mPen.widthF() / 2.0, mPen.widthF() / 2.0 );
   }
+  setRenderResult( result );
 }
 
 

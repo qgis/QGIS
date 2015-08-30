@@ -247,6 +247,15 @@ class CORE_EXPORT QgsSymbolLayerV2
      */
     void setPaintEffect( QgsPaintEffect* effect );
 
+    /** Returns the result of the symbol rendering operation. This should only be
+     * called immediately after a rendering operation (eg calling renderPoint).
+     * @note added in QGIS 2.12
+     * @note this is a temporary method until QGIS 3.0. For QGIS 3.0 the render methods
+     * will return a QgsRenderResult object
+     */
+    // TODO - QGIS 3.0. Remove and make renderPoint, etc return a QgsRenderResult
+    const QgsRenderResult& renderResult() const { return mRenderResult; }
+
   protected:
     QgsSymbolLayerV2( QgsSymbolV2::SymbolType type, bool locked = false );
 
@@ -307,6 +316,16 @@ class CORE_EXPORT QgsSymbolLayerV2
      */
     void copyPaintEffect( QgsSymbolLayerV2* destLayer ) const;
 
+    /** Sets the result of the symbol rendering operation. Subclasses should call
+     * this method after rendering a symbol and update the render result to reflect
+     * to actual result of the symbol render.
+     * @note added in QGIS 2.12
+     * @note this is a temporary method until QGIS 3.0. For QGIS 3.0 the render methods
+     * will return a QgsRenderResult object
+     */
+    // TODO - QGIS 3.0. Remove and make renderPoint, etc return a QgsRenderResult
+    void setRenderResult( const QgsRenderResult& result );
+
     static const QString EXPR_SIZE;
     static const QString EXPR_ANGLE;
     static const QString EXPR_NAME;
@@ -365,6 +384,10 @@ class CORE_EXPORT QgsSymbolLayerV2
     static const QString EXPR_OFFSET_ALONG_LINE;
     static const QString EXPR_HORIZONTAL_ANCHOR_POINT;
     static const QString EXPR_VERTICAL_ANCHOR_POINT;
+
+  private:
+
+    QgsRenderResult mRenderResult;
 };
 
 //////////////////////
