@@ -32,7 +32,7 @@
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="../../images/images.qrc">
+            <iconset resource="../../../images/images.qrc">
              <normaloff>:/images/themes/default/symbologyUp.svg</normaloff>:/images/themes/default/symbologyUp.svg</iconset>
            </property>
           </widget>
@@ -43,7 +43,7 @@
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="../../images/images.qrc">
+            <iconset resource="../../../images/images.qrc">
              <normaloff>:/images/themes/default/symbologyDown.svg</normaloff>:/images/themes/default/symbologyDown.svg</iconset>
            </property>
           </widget>
@@ -54,7 +54,7 @@
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="../../images/images.qrc">
+            <iconset resource="../../../images/images.qrc">
              <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
            </property>
           </widget>
@@ -65,7 +65,7 @@
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="../../images/images.qrc">
+            <iconset resource="../../../images/images.qrc">
              <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
            </property>
           </widget>
@@ -167,7 +167,7 @@
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="../../images/images.qrc">
+            <iconset resource="../../../images/images.qrc">
              <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
            </property>
           </widget>
@@ -182,7 +182,7 @@
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="../../images/images.qrc">
+            <iconset resource="../../../images/images.qrc">
              <normaloff>:/images/themes/default/symbologyUp.png</normaloff>:/images/themes/default/symbologyUp.png</iconset>
            </property>
           </widget>
@@ -193,7 +193,7 @@
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="../../images/images.qrc">
+            <iconset resource="../../../images/images.qrc">
              <normaloff>:/images/themes/default/symbologyDown.png</normaloff>:/images/themes/default/symbologyDown.png</iconset>
            </property>
           </widget>
@@ -204,7 +204,7 @@
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="../../images/images.qrc">
+            <iconset resource="../../../images/images.qrc">
              <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
            </property>
           </widget>
@@ -270,7 +270,7 @@
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources>
-  <include location="../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
  </resources>
  <connections>
   <connection>

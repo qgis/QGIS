@@ -21,7 +21,16 @@
     <bool>true</bool>
    </property>
    <layout class="QGridLayout" name="gridLayout">
-    <property name="margin">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
      <number>0</number>
     </property>
     <item row="0" column="0">
@@ -166,7 +175,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset resource="../../images/images.qrc">
+    <iconset resource="../../../images/images.qrc">
      <normaloff>:/images/themes/default/mActionFilePrint.png</normaloff>:/images/themes/default/mActionFilePrint.png</iconset>
    </property>
    <property name="text">
@@ -178,7 +187,7 @@
   </action>
   <action name="mActionZoomAll">
    <property name="icon">
-    <iconset resource="../../images/images.qrc">
+    <iconset resource="../../../images/images.qrc">
      <normaloff>:/images/themes/default/mActionZoomFullExtent.svg</normaloff>:/images/themes/default/mActionZoomFullExtent.svg</iconset>
    </property>
    <property name="text">
@@ -193,7 +202,7 @@
   </action>
   <action name="mActionZoomIn">
    <property name="icon">
-    <iconset resource="../../images/images.qrc">
+    <iconset resource="../../../images/images.qrc">
      <normaloff>:/images/themes/default/mActionZoomIn.svg</normaloff>:/images/themes/default/mActionZoomIn.svg</iconset>
    </property>
    <property name="text">
@@ -208,7 +217,7 @@
   </action>
   <action name="mActionZoomOut">
    <property name="icon">
-    <iconset resource="../../images/images.qrc">
+    <iconset resource="../../../images/images.qrc">
      <normaloff>:/images/themes/default/mActionZoomOut.svg</normaloff>:/images/themes/default/mActionZoomOut.svg</iconset>
    </property>
    <property name="text">
@@ -223,7 +232,7 @@
   </action>
   <action name="mActionZoomActual">
    <property name="icon">
-    <iconset resource="../../images/images.qrc">
+    <iconset resource="../../../images/images.qrc">
      <normaloff>:/images/themes/default/mActionZoomActual.svg</normaloff>:/images/themes/default/mActionZoomActual.svg</iconset>
    </property>
    <property name="text">
@@ -238,7 +247,7 @@
   </action>
   <action name="mActionMouseZoom">
    <property name="icon">
-    <iconset resource="../../images/images.qrc">
+    <iconset resource="../../../images/images.qrc">
      <normaloff>:/images/themes/default/mActionZoomToSelected.svg</normaloff>:/images/themes/default/mActionZoomToSelected.svg</iconset>
    </property>
    <property name="text">
@@ -253,7 +262,7 @@
   </action>
   <action name="mActionAddNewMap">
    <property name="icon">
-    <iconset resource="../../images/images.qrc">
+    <iconset resource="../../../images/images.qrc">
      <normaloff>:/images/themes/default/mActionAddMap.png</normaloff>:/images/themes/default/mActionAddMap.png</iconset>
    </property>
    <property name="text">
@@ -265,7 +274,7 @@
   </action>
   <action name="mActionAddNewLabel">
    <property name="icon">
-    <iconset resource="../../images/images.qrc">
+    <iconset resource="../../../images/images.qrc">
      <normaloff>:/images/themes/default/mActionLabel.png</normaloff>:/images/themes/default/mActionLabel.png</iconset>
    </property>
    <property name="text">
@@ -277,7 +286,7 @@
   </action>
   <action name="mActionAddNewLegend">
    <property name="icon">
-    <iconset resource="../../images/images.qrc">
+    <iconset resource="../../../images/images.qrc">
      <normaloff>:/images/themes/default/mActionAddLegend.png</normaloff>:/images/themes/default/mActionAddLegend.png</iconset>
    </property>
    <property name="text">
@@ -289,7 +298,7 @@
   </action>
   <action name="mActionSelectMoveItem">
    <property name="icon">
-    <iconset resource="../../images/images.qrc">
+    <iconset resource="../../../images/images.qrc">
      <normaloff>:/images/themes/default/mActionPan.svg</normaloff>:/images/themes/default/mActionPan.svg</iconset>
    </property>
    <property name="text">
@@ -304,7 +313,7 @@
   </action>
   <action name="mActionExportAsImage">
    <property name="icon">
-    <iconset resource="../../images/images.qrc">
+    <iconset resource="../../../images/images.qrc">
      <normaloff>:/images/themes/default/mActionSaveMapAsImage.png</normaloff>:/images/themes/default/mActionSaveMapAsImage.png</iconset>
    </property>
    <property name="text">
@@ -316,7 +325,7 @@
   </action>
   <action name="mActionExportAsPDF">
    <property name="icon">
-    <iconset resource="../../images/images.qrc">
+    <iconset resource="../../../images/images.qrc">
      <normaloff>:/images/themes/default/mActionSaveAsPDF.png</normaloff>:/images/themes/default/mActionSaveAsPDF.png</iconset>
    </property>
    <property name="text">
@@ -325,7 +334,7 @@
   </action>
   <action name="mActionExportAsSVG">
    <property name="icon">
-    <iconset resource="../../images/images.qrc">
+    <iconset resource="../../../images/images.qrc">
      <normaloff>:/images/themes/default/mActionSaveAsSVG.png</normaloff>:/images/themes/default/mActionSaveAsSVG.png</iconset>
    </property>
    <property name="text">
@@ -334,7 +343,7 @@
   </action>
   <action name="mActionAddNewScalebar">
    <property name="icon">
-    <iconset resource="../../images/images.qrc">
+    <iconset resource="../../../images/images.qrc">
      <normaloff>:/images/themes/default/mActionScaleBar.png</normaloff>:/images/themes/default/mActionScaleBar.png</iconset>
    </property>
    <property name="text">
@@ -346,7 +355,7 @@
   </action>
   <action name="mActionRefreshView">
    <property name="icon">
-    <iconset resource="../../images/images.qrc">
+    <iconset resource="../../../images/images.qrc">
      <normaloff>:/images/themes/default/mActionDraw.svg</normaloff>:/images/themes/default/mActionDraw.svg</iconset>
    </property>
    <property name="text">
@@ -361,7 +370,7 @@
   </action>
   <action name="mActionShowGrid">
    <property name="icon">
-    <iconset resource="../../python/plugins/fTools/resources.qrc">
+    <iconset resource="../../../python/plugins/fTools/resources.qrc">
      <normaloff>:/icons/default/vector_grid.png</normaloff>:/icons/default/vector_grid.png</iconset>
    </property>
    <property name="text">
@@ -428,7 +437,7 @@
   </action>
   <action name="mActionAddImage">
    <property name="icon">
-    <iconset resource="../../images/images.qrc">
+    <iconset resource="../../../images/images.qrc">
      <normaloff>:/images/themes/default/mActionAddImage.png</normaloff>:/images/themes/default/mActionAddImage.png</iconset>
    </property>
    <property name="text">
@@ -652,7 +661,7 @@
   </action>
   <action name="mActionRedo">
    <property name="icon">
-    <iconset resource="../../images/images.qrc">
+    <iconset resource="../../../images/images.qrc">
      <normaloff>:/images/themes/default/mActionRedo.png</normaloff>:/images/themes/default/mActionRedo.png</iconset>
    </property>
    <property name="text">
@@ -749,7 +758,7 @@
   </action>
   <action name="mActionLockItems">
    <property name="icon">
-    <iconset resource="../../images/images.qrc">
+    <iconset resource="../../../images/images.qrc">
      <normaloff>:/images/themes/default/locked.svg</normaloff>:/images/themes/default/locked.svg</iconset>
    </property>
    <property name="text">
@@ -761,7 +770,7 @@
   </action>
   <action name="mActionUnlockAll">
    <property name="icon">
-    <iconset resource="../../images/images.qrc">
+    <iconset resource="../../../images/images.qrc">
      <normaloff>:/images/themes/default/unlocked.svg</normaloff>:/images/themes/default/unlocked.svg</iconset>
    </property>
    <property name="text">
@@ -787,7 +796,7 @@
   </action>
   <action name="mActionDeleteSelection">
    <property name="icon">
-    <iconset resource="../../images/images.qrc">
+    <iconset resource="../../../images/images.qrc">
      <normaloff>:/images/themes/default/mActionDeleteSelected.svg</normaloff>:/images/themes/default/mActionDeleteSelected.svg</iconset>
    </property>
    <property name="text">
@@ -802,7 +811,7 @@
   </action>
   <action name="mActionDeselectAll">
    <property name="icon">
-    <iconset resource="../../images/images.qrc">
+    <iconset resource="../../../images/images.qrc">
      <normaloff>:/images/themes/default/mActionDeselectAll.svg</normaloff>:/images/themes/default/mActionDeselectAll.svg</iconset>
    </property>
    <property name="text">
@@ -828,7 +837,7 @@
   </action>
   <action name="mActionInvertSelection">
    <property name="icon">
-    <iconset resource="../../images/images.qrc">
+    <iconset resource="../../../images/images.qrc">
      <normaloff>:/images/themes/default/mActionInvertSelection.png</normaloff>:/images/themes/default/mActionInvertSelection.png</iconset>
    </property>
    <property name="text">
@@ -862,7 +871,7 @@
   </action>
   <action name="mActionPan">
    <property name="icon">
-    <iconset resource="../../images/images.qrc">
+    <iconset resource="../../../images/images.qrc">
      <normaloff>:/images/themes/default/mActionPan.svg</normaloff>:/images/themes/default/mActionPan.svg</iconset>
    </property>
    <property name="text">
@@ -874,7 +883,7 @@
   </action>
   <action name="mActionOptions">
    <property name="icon">
-    <iconset resource="../../images/images.qrc">
+    <iconset resource="../../../images/images.qrc">
      <normaloff>:/images/themes/default/mActionOptions.svg</normaloff>:/images/themes/default/mActionOptions.svg</iconset>
    </property>
    <property name="text">
@@ -897,7 +906,7 @@
   </action>
   <action name="mActionAtlasFirst">
    <property name="icon">
-    <iconset resource="../../images/images.qrc">
+    <iconset resource="../../../images/images.qrc">
      <normaloff>:/images/themes/default/mActionAtlasFirst.svg</normaloff>:/images/themes/default/mActionAtlasFirst.svg</iconset>
    </property>
    <property name="text">
@@ -909,7 +918,7 @@
   </action>
   <action name="mActionAtlasPrev">
    <property name="icon">
-    <iconset resource="../../images/images.qrc">
+    <iconset resource="../../../images/images.qrc">
      <normaloff>:/images/themes/default/mActionAtlasPrev.svg</normaloff>:/images/themes/default/mActionAtlasPrev.svg</iconset>
    </property>
    <property name="text">
@@ -921,7 +930,7 @@
   </action>
   <action name="mActionAtlasNext">
    <property name="icon">
-    <iconset resource="../../images/images.qrc">
+    <iconset resource="../../../images/images.qrc">
      <normaloff>:/images/themes/default/mActionAtlasNext.svg</normaloff>:/images/themes/default/mActionAtlasNext.svg</iconset>
    </property>
    <property name="text">
@@ -933,7 +942,7 @@
   </action>
   <action name="mActionAtlasLast">
    <property name="icon">
-    <iconset resource="../../images/images.qrc">
+    <iconset resource="../../../images/images.qrc">
      <normaloff>:/images/themes/default/mActionAtlasLast.svg</normaloff>:/images/themes/default/mActionAtlasLast.svg</iconset>
    </property>
    <property name="text">
@@ -945,7 +954,7 @@
   </action>
   <action name="mActionAtlasPreview">
    <property name="icon">
-    <iconset resource="../../images/images.qrc">
+    <iconset resource="../../../images/images.qrc">
      <normaloff>:/images/themes/default/mIconAtlas.svg</normaloff>:/images/themes/default/mIconAtlas.svg</iconset>
    </property>
    <property name="text">
@@ -957,7 +966,7 @@
   </action>
   <action name="mActionPrintAtlas">
    <property name="icon">
-    <iconset resource="../../images/images.qrc">
+    <iconset resource="../../../images/images.qrc">
      <normaloff>:/images/themes/default/mActionFilePrint.png</normaloff>:/images/themes/default/mActionFilePrint.png</iconset>
    </property>
    <property name="text">
@@ -966,7 +975,7 @@
   </action>
   <action name="mActionExportAtlasAsImage">
    <property name="icon">
-    <iconset resource="../../images/images.qrc">
+    <iconset resource="../../../images/images.qrc">
      <normaloff>:/images/themes/default/mActionSaveMapAsImage.png</normaloff>:/images/themes/default/mActionSaveMapAsImage.png</iconset>
    </property>
    <property name="text">
@@ -975,7 +984,7 @@
   </action>
   <action name="mActionExportAtlasAsSVG">
    <property name="icon">
-    <iconset resource="../../images/images.qrc">
+    <iconset resource="../../../images/images.qrc">
      <normaloff>:/images/themes/default/mActionSaveAsSVG.png</normaloff>:/images/themes/default/mActionSaveAsSVG.png</iconset>
    </property>
    <property name="text">
@@ -984,7 +993,7 @@
   </action>
   <action name="mActionExportAtlasAsPDF">
    <property name="icon">
-    <iconset resource="../../images/images.qrc">
+    <iconset resource="../../../images/images.qrc">
      <normaloff>:/images/themes/default/mActionSaveAsPDF.png</normaloff>:/images/themes/default/mActionSaveAsPDF.png</iconset>
    </property>
    <property name="text">
@@ -996,7 +1005,7 @@
   </action>
   <action name="mActionAtlasSettings">
    <property name="icon">
-    <iconset resource="../../images/images.qrc">
+    <iconset resource="../../../images/images.qrc">
      <normaloff>:/images/themes/default/mActionAtlasSettings.svg</normaloff>:/images/themes/default/mActionAtlasSettings.svg</iconset>
    </property>
    <property name="text">
@@ -1044,8 +1053,8 @@
   </action>
  </widget>
  <resources>
-  <include location="../../images/images.qrc"/>
-  <include location="../../python/plugins/fTools/resources.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../python/plugins/fTools/resources.qrc"/>
  </resources>
  <connections/>
 </ui>

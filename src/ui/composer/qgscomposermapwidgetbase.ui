@@ -495,7 +495,7 @@
                <string/>
               </property>
               <property name="icon">
-               <iconset resource="../../images/images.qrc">
+               <iconset resource="../../../images/images.qrc">
                 <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
               </property>
              </widget>
@@ -509,7 +509,7 @@
                <string/>
               </property>
               <property name="icon">
-               <iconset resource="../../images/images.qrc">
+               <iconset resource="../../../images/images.qrc">
                 <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
               </property>
              </widget>
@@ -523,7 +523,7 @@
                <string/>
               </property>
               <property name="icon">
-               <iconset resource="../../images/images.qrc">
+               <iconset resource="../../../images/images.qrc">
                 <normaloff>:/images/themes/default/symbologyUp.svg</normaloff>:/images/themes/default/symbologyUp.svg</iconset>
               </property>
              </widget>
@@ -537,7 +537,7 @@
                <string/>
               </property>
               <property name="icon">
-               <iconset resource="../../images/images.qrc">
+               <iconset resource="../../../images/images.qrc">
                 <normaloff>:/images/themes/default/symbologyDown.svg</normaloff>:/images/themes/default/symbologyDown.svg</iconset>
               </property>
              </widget>
@@ -1253,7 +1253,7 @@
                <string/>
               </property>
               <property name="icon">
-               <iconset resource="../../images/images.qrc">
+               <iconset resource="../../../images/images.qrc">
                 <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
               </property>
              </widget>
@@ -1267,7 +1267,7 @@
                <string/>
               </property>
               <property name="icon">
-               <iconset resource="../../images/images.qrc">
+               <iconset resource="../../../images/images.qrc">
                 <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
               </property>
              </widget>
@@ -1281,7 +1281,7 @@
                <string/>
               </property>
               <property name="icon">
-               <iconset resource="../../images/images.qrc">
+               <iconset resource="../../../images/images.qrc">
                 <normaloff>:/images/themes/default/symbologyUp.svg</normaloff>:/images/themes/default/symbologyUp.svg</iconset>
               </property>
              </widget>
@@ -1295,7 +1295,7 @@
                <string/>
               </property>
               <property name="icon">
-               <iconset resource="../../images/images.qrc">
+               <iconset resource="../../../images/images.qrc">
                 <normaloff>:/images/themes/default/symbologyDown.svg</normaloff>:/images/themes/default/symbologyDown.svg</iconset>
               </property>
              </widget>
@@ -1399,15 +1399,16 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
+   <class>QgsCollapsibleGroupBoxBasic</class>
+   <extends>QGroupBox</extends>
+   <header location="global">qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsColorButtonV2</class>
    <extends>QToolButton</extends>
    <header>qgscolorbuttonv2.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsDataDefinedButton</class>
-   <extends>QToolButton</extends>
-   <header>qgsdatadefinedbutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsDoubleSpinBox</class>
@@ -1420,10 +1421,9 @@
    <header>qgsspinbox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsCollapsibleGroupBoxBasic</class>
-   <extends>QGroupBox</extends>
-   <header location="global">qgscollapsiblegroupbox.h</header>
-   <container>1</container>
+   <class>QgsDataDefinedButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsdatadefinedbutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsBlendModeComboBox</class>
@@ -1528,7 +1528,7 @@
   <tabstop>mOverviewCenterCheckbox</tabstop>
  </tabstops>
  <resources>
-  <include location="../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
  </resources>
  <connections/>
 </ui>

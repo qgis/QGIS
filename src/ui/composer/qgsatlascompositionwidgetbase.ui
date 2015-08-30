@@ -23,7 +23,16 @@
    <property name="spacing">
     <number>0</number>
    </property>
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item>
@@ -32,14 +41,23 @@
       <enum>QFrame::StyledPanel</enum>
      </property>
      <layout class="QGridLayout" name="gridLayout">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
       <property name="horizontalSpacing">
        <number>0</number>
       </property>
       <property name="verticalSpacing">
        <number>3</number>
-      </property>
-      <property name="margin">
-       <number>0</number>
       </property>
       <item row="0" column="1">
        <widget class="QCheckBox" name="mUseAtlasCheckBox">
@@ -151,7 +169,7 @@
                 <string>...</string>
                </property>
                <property name="icon">
-                <iconset resource="../../images/images.qrc">
+                <iconset resource="../../../images/images.qrc">
                  <normaloff>:/images/themes/default/mIconExpression.svg</normaloff>:/images/themes/default/mIconExpression.svg</iconset>
                </property>
               </widget>
@@ -280,7 +298,7 @@
                 <string>...</string>
                </property>
                <property name="icon">
-                <iconset resource="../../images/images.qrc">
+                <iconset resource="../../../images/images.qrc">
                  <normaloff>:/images/themes/default/mIconExpression.svg</normaloff>:/images/themes/default/mIconExpression.svg</iconset>
                </property>
               </widget>
@@ -362,7 +380,7 @@
   <tabstop>mAtlasSingleFileCheckBox</tabstop>
  </tabstops>
  <resources>
-  <include location="../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
  </resources>
  <connections/>
 </ui>
