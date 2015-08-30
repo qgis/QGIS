@@ -459,6 +459,70 @@
 		</section>
 	</section>
 
+	<section label="Temporal" version_min="7.0">
+		<section label="Manage datasets" version_min="7.0">
+			<grass name="t.create" version_min="7.0"/>
+			<grass name="t.rename" version_min="7.0"/>
+			<grass name="t.remove" version_min="7.0"/>
+			<grass name="t.support" version_min="7.0"/>
+			<grass name="t.merge" version_min="7.0"/>
+			<grass name="t.shift" version_min="7.0"/>
+			<grass name="t.snap" version_min="7.0"/>
+			<grass name="t.list" version_min="7.0"/>
+			<grass name="t.connect" version_min="7.0"/>
+			<grass name="t.select" version_min="7.0"/>
+		</section>
+		<section label="Manage maps in datasets" version_min="7.0">
+			<grass name="t.register" version_min="7.0"/>
+			<grass name="t.unregister" version_min="7.0"/>
+			<grass name="t.vect.list" version_min="7.0"/>
+			<grass name="t.rast.list" version_min="7.0"/>
+			<grass name="t.rast3d.list" version_min="7.0"/>
+		</section>
+		<section label="Import" version_min="7.0">
+			<grass name="t.rast.import" version_min="7.0"/>
+			<grass name="t.vect.import" version_min="7.0"/>
+		</section>
+		<section label="Export" version_min="7.0">
+			<grass name="t.rast.export" version_min="7.0"/>
+			<grass name="t.rast.out.vtk" version_min="7.0"/>
+			<grass name="t.vect.export" version_min="7.0"/>
+		</section>
+		<grass name="t.rast.to.rast3" version_min="7.0"/>
+		<section label="Extraction" version_min="7.0">
+			<grass name="t.rast.extract" version_min="7.0"/>
+			<grass name="t.rast3d.extract" version_min="7.0"/>
+			<grass name="t.vect.extract" version_min="7.0"/>
+		</section>
+		<grass name="t.vect.db.select" version_min="7.0"/>
+		<grass name="t.rast.colors.predefined" version_min="7.0"/>
+		<grass name="t.rast.colors.copy" version_min="7.0"/>
+		<grass name="t.rast.colors.rules" version_min="7.0"/>
+		<grass name="t.rast.mapcalc" version_min="7.0"/>
+		<grass name="t.rast3d.mapcalc" version_min="7.0"/>
+		<grass name="t.rast.gapfill" version_min="7.0"/>
+		<section label="Aggregation" version_min="7.0">
+			<grass name="t.rast.neighbors" version_min="7.0"/>
+			<grass name="t.rast.series" version_min="7.0"/>
+			<grass name="t.rast.aggregate" version_min="7.0"/>
+			<grass name="t.rast.aggregate.ds" version_min="7.0"/>
+			<grass name="t.rast.accdetect" version_min="7.0"/>
+			<grass name="t.rast.accumulate" version_min="7.0"/>
+		</section>
+		<section label="Sampling" version_min="7.0">
+			<grass name="t.sample" version_min="7.0"/>
+			<grass name="t.vect.what.strds" version_min="7.0"/>
+			<grass name="t.vect.observe.strds" version_min="7.0"/>
+		</section>
+		<section label="Report and statistics" version_min="7.0">
+			<grass name="t.info" version_min="7.0"/>
+			<grass name="t.rast.univar" version_min="7.0"/>
+			<grass name="t.rast3d.univar" version_min="7.0"/>
+			<grass name="t.vect.univar" version_min="7.0"/>
+			<grass name="t.topology" version_min="7.0"/>
+		</section>
+	</section>
+
 	<section label="Database">
 		<section label="Database management">
 			<grass name="db.connect"/>
