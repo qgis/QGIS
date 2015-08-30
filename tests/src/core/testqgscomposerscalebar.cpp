@@ -142,6 +142,7 @@ void TestQgsComposerScaleBar::singleBox()
 {
   mComposerScaleBar->setStyle( "Single Box" );
   QgsCompositionChecker checker( "composerscalebar_singlebox", mComposition );
+  checker.setControlPathPrefix( "composer_scalebar" );
   QVERIFY( checker.testComposition( mReport, 0, 0 ) );
 }
 
@@ -156,6 +157,7 @@ void TestQgsComposerScaleBar::singleBoxAlpha()
   mComposerScaleBar->setPen( newPen );
   mComposerScaleBar->setFontColor( QColor( 255, 0, 255, 100 ) );
   QgsCompositionChecker checker( "composerscalebar_singlebox_alpha", mComposition );
+  checker.setControlPathPrefix( "composer_scalebar" );
   QVERIFY( checker.testComposition( mReport, 0, 0 ) );
 }
 
@@ -169,6 +171,7 @@ void TestQgsComposerScaleBar::doubleBox()
   mComposerScaleBar->setStyle( "Double Box" );
 
   QgsCompositionChecker checker( "composerscalebar_doublebox", mComposition );
+  checker.setControlPathPrefix( "composer_scalebar" );
   QVERIFY( checker.testComposition( mReport, 0, 0 ) );
 }
 
@@ -177,6 +180,7 @@ void TestQgsComposerScaleBar::numeric()
   mComposerScaleBar->setStyle( "Numeric" );
   mComposerScaleBar->setSceneRect( QRectF( 20, 180, 50, 20 ) );
   QgsCompositionChecker checker( "composerscalebar_numeric", mComposition );
+  checker.setControlPathPrefix( "composer_scalebar" );
   QVERIFY( checker.testComposition( mReport, 0, 0 ) );
 }
 
@@ -184,6 +188,7 @@ void TestQgsComposerScaleBar::tick()
 {
   mComposerScaleBar->setStyle( "Line Ticks Up" );
   QgsCompositionChecker checker( "composerscalebar_tick", mComposition );
+  checker.setControlPathPrefix( "composer_scalebar" );
   QVERIFY( checker.testComposition( mReport, 0, 0 ) );
 }
 

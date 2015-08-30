@@ -183,6 +183,7 @@ bool TestQgsInvertedPolygon::imageCheck( QString theTestType, const QgsRectangle
   }
   mMapSettings.setOutputDpi( 96 );
   QgsMultiRenderChecker myChecker;
+  myChecker.setControlPathPrefix( "symbol_invertedpolygon" );
   myChecker.setControlName( "expected_" + theTestType );
   myChecker.setMapSettings( mMapSettings );
   myChecker.setColorTolerance( 20 );

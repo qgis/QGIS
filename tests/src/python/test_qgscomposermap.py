@@ -79,6 +79,7 @@ class TestQgsComposerMap(TestCase):
         overviewMap.setNewExtent(myRectangle2)
         overviewMap.setOverviewFrameMap(self.mComposerMap.id())
         checker = QgsCompositionChecker('composermap_overview', self.mComposition)
+        checker.setControlPathPrefix("composer_mapoverview")
         myTestResult, myMessage = checker.testComposition()
         self.mComposition.removeComposerItem(overviewMap)
         assert myTestResult, myMessage
@@ -95,6 +96,7 @@ class TestQgsComposerMap(TestCase):
         overviewMap.setOverviewFrameMap(self.mComposerMap.id())
         overviewMap.setOverviewBlendMode(QPainter.CompositionMode_Multiply)
         checker = QgsCompositionChecker('composermap_overview_blending', self.mComposition)
+        checker.setControlPathPrefix("composer_mapoverview")
         myTestResult, myMessage = checker.testComposition()
         self.mComposition.removeComposerItem(overviewMap)
         assert myTestResult, myMessage
@@ -111,6 +113,7 @@ class TestQgsComposerMap(TestCase):
         overviewMap.setOverviewFrameMap(self.mComposerMap.id())
         overviewMap.setOverviewInverted(True)
         checker = QgsCompositionChecker('composermap_overview_invert', self.mComposition)
+        checker.setControlPathPrefix("composer_mapoverview")
         myTestResult, myMessage = checker.testComposition()
         self.mComposition.removeComposerItem(overviewMap)
         assert myTestResult, myMessage
@@ -128,6 +131,7 @@ class TestQgsComposerMap(TestCase):
         overviewMap.setOverviewInverted(False)
         overviewMap.setOverviewCentered(True)
         checker = QgsCompositionChecker('composermap_overview_center', self.mComposition)
+        checker.setControlPathPrefix("composer_mapoverview")
         myTestResult, myMessage = checker.testComposition()
         self.mComposition.removeComposerItem(overviewMap)
         assert myTestResult, myMessage

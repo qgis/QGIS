@@ -214,6 +214,7 @@ bool TestQgsRasterFill::imageCheck( QString theTestType )
   mMapSettings.setExtent( mpPolysLayer->extent() );
   mMapSettings.setOutputDpi( 96 );
   QgsMultiRenderChecker myChecker;
+  myChecker.setControlPathPrefix( "symbol_rasterfill" );
   myChecker.setControlName( "expected_" + theTestType );
   myChecker.setMapSettings( mMapSettings );
   myChecker.setColorTolerance( 20 );

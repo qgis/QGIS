@@ -920,6 +920,7 @@ bool TestQgsPaintEffect::imageCheck( QString testName, QImage &image, int mismat
   QString fileName = tempDir + testName + ".png";
   imageWithBackground.save( fileName, "PNG" );
   QgsRenderChecker checker;
+  checker.setControlPathPrefix( "effects" );
   checker.setControlName( "expected_" + testName );
   checker.setRenderedImage( fileName );
   checker.setColorTolerance( 2 );
@@ -931,6 +932,7 @@ bool TestQgsPaintEffect::imageCheck( QString testName, QImage &image, int mismat
 bool TestQgsPaintEffect::mapRenderCheck( QString testName, QgsMapSettings& mapSettings, int mismatchCount )
 {
   QgsMultiRenderChecker checker;
+  checker.setControlPathPrefix( "effects" );
   mapSettings.setOutputDpi( 96 );
   checker.setControlName( "expected_" + testName );
   checker.setMapSettings( mapSettings );

@@ -114,6 +114,7 @@ void TestQgsComposerShapes::rectangle()
   mComposerShape->setShapeType( QgsComposerShape::Rectangle );
 
   QgsCompositionChecker checker( "composershapes_rectangle", mComposition );
+  checker.setControlPathPrefix( "composer_shapes" );
   QVERIFY( checker.testComposition( mReport ) );
 }
 
@@ -122,6 +123,7 @@ void TestQgsComposerShapes::triangle()
   mComposerShape->setShapeType( QgsComposerShape::Triangle );
 
   QgsCompositionChecker checker( "composershapes_triangle", mComposition );
+  checker.setControlPathPrefix( "composer_shapes" );
   QVERIFY( checker.testComposition( mReport ) );
 }
 
@@ -130,6 +132,7 @@ void TestQgsComposerShapes::ellipse()
   mComposerShape->setShapeType( QgsComposerShape::Ellipse );
 
   QgsCompositionChecker checker( "composershapes_ellipse", mComposition );
+  checker.setControlPathPrefix( "composer_shapes" );
   QVERIFY( checker.testComposition( mReport ) );
 }
 
@@ -139,6 +142,7 @@ void TestQgsComposerShapes::roundedRectangle()
   mComposerShape->setCornerRadius( 30 );
 
   QgsCompositionChecker checker( "composershapes_roundedrect", mComposition );
+  checker.setControlPathPrefix( "composer_shapes" );
   QVERIFY( checker.testComposition( mReport ) );
   mComposerShape->setCornerRadius( 0 );
 }
@@ -155,6 +159,7 @@ void TestQgsComposerShapes::symbolV2()
   mComposerShape->setUseSymbolV2( true );
 
   QgsCompositionChecker checker( "composershapes_symbolv2", mComposition );
+  checker.setControlPathPrefix( "composer_shapes" );
   QVERIFY( checker.testComposition( mReport ) );
 }
 

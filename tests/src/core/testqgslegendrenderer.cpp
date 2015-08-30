@@ -65,6 +65,7 @@ static void _renderLegend( const QString& testName, QgsLayerTreeModel* legendMod
 static bool _verifyImage( const QString& testName, QString &report )
 {
   QgsRenderChecker checker;
+  checker.setControlPathPrefix( "legend" );
   checker.setControlName( "expected_" + testName );
   checker.setRenderedImage( _fileNameForTest( testName ) );
   checker.setSizeTolerance( 3, 3 );

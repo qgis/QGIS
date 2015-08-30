@@ -74,6 +74,7 @@ class TestQgsComposerPicture(TestCase):
         self.composerPicture.setResizeMode(QgsComposerPicture.Zoom)
 
         checker = QgsCompositionChecker('composerpicture_resize_zoom', self.composition)
+        checker.setControlPathPrefix("composer_picture")
         testResult, message = checker.testComposition()
 
         assert testResult, message
@@ -83,6 +84,7 @@ class TestQgsComposerPicture(TestCase):
         self.composerPicture.setPicturePath('http://localhost:' + str(TestQgsComposerPicture.port) + '/qgis_local_server/logo.png')
 
         checker = QgsCompositionChecker('composerpicture_remote', self.composition)
+        checker.setControlPathPrefix("composer_picture")
         testResult, message = checker.testComposition()
 
         self.composerPicture.setPicturePath(self.pngImage)

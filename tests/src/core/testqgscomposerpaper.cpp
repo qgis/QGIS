@@ -117,6 +117,7 @@ void TestQgsComposerPaper::cleanup()
 void TestQgsComposerPaper::defaultPaper()
 {
   QgsCompositionChecker checker( "composerpaper_default", mComposition );
+  checker.setControlPathPrefix( "composer_paper" );
   QVERIFY( checker.testComposition( mReport ) );
 }
 
@@ -126,6 +127,7 @@ void TestQgsComposerPaper::transparentPaper()
   mSimpleFill->setBorderColor( Qt::transparent );
   mComposition->setPageStyleSymbol( mFillSymbol );
   QgsCompositionChecker checker( "composerpaper_transparent", mComposition );
+  checker.setControlPathPrefix( "composer_paper" );
   QVERIFY( checker.testComposition( mReport ) );
 }
 
@@ -135,6 +137,7 @@ void TestQgsComposerPaper::borderedPaper()
   mSimpleFill->setBorderColor( Qt::black );
   mSimpleFill->setBorderWidth( 6 );
   QgsCompositionChecker checker( "composerpaper_bordered", mComposition );
+  checker.setControlPathPrefix( "composer_paper" );
   QVERIFY( checker.testComposition( mReport ) );
 }
 
@@ -142,6 +145,7 @@ void TestQgsComposerPaper::markerLinePaper()
 {
   mComposition->setPageStyleSymbol( mMarkerLineSymbol );
   QgsCompositionChecker checker( "composerpaper_markerborder", mComposition );
+  checker.setControlPathPrefix( "composer_paper" );
   QVERIFY( checker.testComposition( mReport, 0, 0 ) );
 }
 

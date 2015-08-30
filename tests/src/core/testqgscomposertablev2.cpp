@@ -326,6 +326,7 @@ void TestQgsComposerTableV2::attributeTableRender()
 {
   mComposerAttributeTable->setMaximumNumberOfFeatures( 20 );
   QgsCompositionChecker checker( "composerattributetable_render", mComposition );
+  checker.setControlPathPrefix( "composer_table" );
   bool result = checker.testComposition( mReport );
   QVERIFY( result );
 }
@@ -335,6 +336,7 @@ void TestQgsComposerTableV2::manualColumnWidth()
   mComposerAttributeTable->setMaximumNumberOfFeatures( 20 );
   mComposerAttributeTable->columns()->at( 0 )->setWidth( 5 );
   QgsCompositionChecker checker( "composerattributetable_columnwidth", mComposition );
+  checker.setControlPathPrefix( "composer_table" );
   bool result = checker.testComposition( mReport, 0 );
   mComposerAttributeTable->columns()->at( 0 )->setWidth( 0 );
   QVERIFY( result );
@@ -349,15 +351,18 @@ void TestQgsComposerTableV2::attributeTableEmpty()
 
   mComposerAttributeTable->setEmptyTableBehaviour( QgsComposerTableV2::HeadersOnly );
   QgsCompositionChecker checker( "composerattributetable_headersonly", mComposition );
+  checker.setControlPathPrefix( "composer_table" );
   QVERIFY( checker.testComposition( mReport, 0 ) );
 
   mComposerAttributeTable->setEmptyTableBehaviour( QgsComposerTableV2::HideTable );
   QgsCompositionChecker checker2( "composerattributetable_hidetable", mComposition );
+  checker2.setControlPathPrefix( "composer_table" );
   QVERIFY( checker2.testComposition( mReport, 0 ) );
 
   mComposerAttributeTable->setEmptyTableBehaviour( QgsComposerTableV2::ShowMessage );
   mComposerAttributeTable->setEmptyTableMessage( "no rows" );
   QgsCompositionChecker checker3( "composerattributetable_showmessage", mComposition );
+  checker3.setControlPathPrefix( "composer_table" );
   QVERIFY( checker3.testComposition( mReport, 0 ) );
 
   mComposerAttributeTable->setFilterFeatures( false );
@@ -368,6 +373,7 @@ void TestQgsComposerTableV2::showEmptyRows()
   mComposerAttributeTable->setMaximumNumberOfFeatures( 3 );
   mComposerAttributeTable->setShowEmptyRows( true );
   QgsCompositionChecker checker( "composerattributetable_drawempty", mComposition );
+  checker.setControlPathPrefix( "composer_table" );
   QVERIFY( checker.testComposition( mReport, 0 ) );
   mComposerAttributeTable->setMaximumNumberOfFeatures( 20 );
   mComposerAttributeTable->setShowEmptyRows( false );
@@ -660,6 +666,7 @@ void TestQgsComposerTableV2::multiLineText()
   mComposerAttributeTable->setMaximumNumberOfFeatures( 20 );
   mComposerAttributeTable->setVectorLayer( multiLineLayer );
   QgsCompositionChecker checker( "composerattributetable_multiline", mComposition );
+  checker.setControlPathPrefix( "composer_table" );
   bool result = checker.testComposition( mReport );
   QVERIFY( result );
 
@@ -700,6 +707,7 @@ void TestQgsComposerTableV2::align()
   mComposerAttributeTable->columns()->at( 2 )->setHAlignment( Qt::AlignRight );
   mComposerAttributeTable->columns()->at( 2 )->setVAlignment( Qt::AlignBottom );
   QgsCompositionChecker checker( "composerattributetable_align", mComposition );
+  checker.setControlPathPrefix( "composer_table" );
   bool result = checker.testComposition( mReport );
   QVERIFY( result );
 
@@ -760,6 +768,7 @@ void TestQgsComposerTableV2::autoWrap()
   mComposerAttributeTable->columns()->at( 0 )->setWidth( 25 );
   mComposerAttributeTable->columns()->at( 1 )->setWidth( 25 );
   QgsCompositionChecker checker( "composerattributetable_autowrap", mComposition );
+  checker.setControlPathPrefix( "composer_table" );
   bool result = checker.testComposition( mReport, 0 );
   mComposerAttributeTable->columns()->at( 0 )->setWidth( 0 );
   QVERIFY( result );

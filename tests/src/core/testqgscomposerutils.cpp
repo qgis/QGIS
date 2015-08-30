@@ -707,6 +707,7 @@ bool TestQgsComposerUtils::renderCheck( QString testName, QImage &image, int mis
   QString myFileName = myTmpDir + testName + ".png";
   image.save( myFileName, "PNG" );
   QgsRenderChecker myChecker;
+  myChecker.setControlPathPrefix( "composer_utils" );
   myChecker.setControlName( "expected_" + testName );
   myChecker.setRenderedImage( myFileName );
   bool myResultFlag = myChecker.compareImages( testName, mismatchCount );

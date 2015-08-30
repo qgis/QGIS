@@ -140,6 +140,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
             self.mLabel1.adjustSizeToText()
 
             checker = QgsCompositionChecker('atlas_autoscale%d' % (i + 1), self.mComposition)
+            checker.setControlPathPrefix("atlas")
             myTestResult, myMessage = checker.testComposition(0, 200)
 
             assert myTestResult
@@ -161,6 +162,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
             self.mLabel1.adjustSizeToText()
 
             checker = QgsCompositionChecker('atlas_autoscale_old_api%d' % (i + 1), self.mComposition)
+            checker.setControlPathPrefix("atlas")
             myTestResult, myMessage = checker.testComposition(0, 200)
 
             assert myTestResult
@@ -183,6 +185,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
             self.mLabel1.adjustSizeToText()
 
             checker = QgsCompositionChecker('atlas_fixedscale%d' % (i + 1), self.mComposition)
+            checker.setControlPathPrefix("atlas")
             myTestResult, myMessage = checker.testComposition(0, 200)
 
             assert myTestResult
@@ -205,6 +208,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
             self.mLabel1.adjustSizeToText()
 
             checker = QgsCompositionChecker('atlas_predefinedscales%d' % (i + 1), self.mComposition)
+            checker.setControlPathPrefix("atlas")
             myTestResult, myMessage = checker.testComposition(0, 200)
 
             assert myTestResult
@@ -222,6 +226,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
             self.mLabel1.adjustSizeToText()
 
             checker = QgsCompositionChecker('atlas_hiding%d' % (i + 1), self.mComposition)
+            checker.setControlPathPrefix("atlas")
             myTestResult, myMessage = checker.testComposition(0, 200)
 
             assert myTestResult
@@ -243,6 +248,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
             self.mLabel1.adjustSizeToText()
 
             checker = QgsCompositionChecker('atlas_sorting%d' % (i + 1), self.mComposition)
+            checker.setControlPathPrefix("atlas")
             myTestResult, myMessage = checker.testComposition(0, 200)
 
             assert myTestResult
@@ -265,6 +271,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
             self.mLabel1.adjustSizeToText()
 
             checker = QgsCompositionChecker('atlas_filtering%d' % (i + 1), self.mComposition)
+            checker.setControlPathPrefix("atlas")
             myTestResult, myMessage = checker.testComposition(0, 200)
 
             assert myTestResult

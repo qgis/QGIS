@@ -109,6 +109,7 @@ void TestQgsComposerHtml::sourceMode()
   htmlItem->loadHtml();
 
   QgsCompositionChecker checker( "composerhtml_manual", mComposition );
+  checker.setControlPathPrefix( "composer_html" );
   bool result = checker.testComposition( mReport, 0, 100 );
   mComposition->removeMultiFrame( htmlItem );
   delete htmlItem;
@@ -130,6 +131,7 @@ void TestQgsComposerHtml::userStylesheets()
   htmlItem->setUserStylesheetEnabled( true );
 
   QgsCompositionChecker checker( "composerhtml_userstylesheet", mComposition );
+  checker.setControlPathPrefix( "composer_html" );
   bool result = checker.testComposition( mReport, 0, 100 );
   mComposition->removeMultiFrame( htmlItem );
   delete htmlItem;
@@ -149,6 +151,7 @@ void TestQgsComposerHtml::evalExpressions()
   htmlItem->loadHtml();
 
   QgsCompositionChecker checker( "composerhtml_expressions_enabled", mComposition );
+  checker.setControlPathPrefix( "composer_html" );
   bool result = checker.testComposition( mReport );
   mComposition->removeMultiFrame( htmlItem );
   delete htmlItem;
@@ -167,6 +170,7 @@ void TestQgsComposerHtml::evalExpressionsOff()
   htmlItem->loadHtml();
 
   QgsCompositionChecker checker( "composerhtml_expressions_disabled", mComposition );
+  checker.setControlPathPrefix( "composer_html" );
   bool result = checker.testComposition( mReport );
   mComposition->removeMultiFrame( htmlItem );
   delete htmlItem;
@@ -182,6 +186,7 @@ void TestQgsComposerHtml::table()
   htmlItem->setUrl( QUrl( QString( "file:///%1/test_html.html" ).arg( TEST_DATA_DIR ) ) );
 
   QgsCompositionChecker checker( "composerhtml_table", mComposition );
+  checker.setControlPathPrefix( "composer_html" );
   bool result = checker.testComposition( mReport );
   mComposition->removeMultiFrame( htmlItem );
   delete htmlItem;
@@ -200,10 +205,12 @@ void TestQgsComposerHtml::tableMultiFrame()
   htmlItem->setUrl( QUrl( QString( "file:///%1/test_html.html" ).arg( TEST_DATA_DIR ) ) );
   htmlItem->frame( 0 )->setFrameEnabled( true );
   QgsCompositionChecker checker1( "composerhtml_multiframe1", mComposition );
+  checker1.setControlPathPrefix( "composer_html" );
   bool result = checker1.testComposition( mReport );
 
   //page2
   QgsCompositionChecker checker2( "composerhtml_multiframe2", mComposition );
+  checker2.setControlPathPrefix( "composer_html" );
   result = checker2.testComposition( mReport, 1 ) && result;
 
   mComposition->removeMultiFrame( htmlItem );
@@ -223,10 +230,12 @@ void TestQgsComposerHtml::htmlMultiFrameSmartBreak()
   htmlItem->setUrl( QUrl( QString( "file:///%1/test_html.html" ).arg( TEST_DATA_DIR ) ) );
   htmlItem->frame( 0 )->setFrameEnabled( true );
   QgsCompositionChecker checker1( "composerhtml_smartbreaks1", mComposition );
+  checker1.setControlPathPrefix( "composer_html" );
   bool result = checker1.testComposition( mReport, 0, 200 );
 
   //page2
   QgsCompositionChecker checker2( "composerhtml_smartbreaks2", mComposition );
+  checker2.setControlPathPrefix( "composer_html" );
   result = checker2.testComposition( mReport, 1, 200 ) && result;
 
   mComposition->removeMultiFrame( htmlItem );
