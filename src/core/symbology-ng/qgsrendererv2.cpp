@@ -216,6 +216,7 @@ QgsFeatureRendererV2::QgsFeatureRendererV2( QString type )
     , mCurrentVertexMarkerSize( 3 )
     , mPaintEffect( 0 )
     , mForceRaster( false )
+    , mRenderResult( QgsRenderResult( true ) )
 {
   mPaintEffect = QgsPaintEffectRegistry::defaultStack();
   mPaintEffect->setEnabled( false );
@@ -268,9 +269,13 @@ bool QgsFeatureRendererV2::renderFeature( QgsFeature& feature, QgsRenderContext&
 {
   QgsSymbolV2* symbol = symbolForFeature( feature, context );
   if ( symbol == NULL )
+  {
+    setRenderResult( QgsRenderResult( false ) );
     return false;
+  }
 
   renderFeatureWithSymbol( feature, symbol, context, layer, selected, drawVertexMarker );
+  setRenderResult( symbol->renderResult() );
   return true;
 }
 
@@ -780,4 +785,9 @@ void QgsFeatureRendererV2::convertSymbolRotation( QgsSymbolV2 * symbol, const QS
                               : QString() ) + field );
     s->setDataDefinedAngle( dd );
   }
+}
+
+void QgsFeatureRendererV2::setRenderResult( const QgsRenderResult& result )
+{
+  mRenderResult = result;
 }
