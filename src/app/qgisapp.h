@@ -1693,6 +1693,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsWelcomePage* mWelcomePage;
 
     QStackedWidget* mCentralContainer;
+
+    int mProjOpen;
 #ifdef HAVE_TOUCH
     bool gestureEvent( QGestureEvent *event );
     void tapAndHoldTriggered( QTapAndHoldGesture *gesture );

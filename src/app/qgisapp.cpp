@@ -585,6 +585,9 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   int myBlue = settings.value( "/qgis/default_canvas_color_blue", 255 ).toInt();
   mMapCanvas->setCanvasColor( QColor( myRed, myGreen, myBlue ) );
 
+  // what type of project to auto-open
+  mProjOpen = settings.value( "/qgis/projOpenAtLaunch", 0 ).toInt();
+
   mWelcomePage = new QgsWelcomePage;
 
   mCentralContainer = new QStackedWidget;
@@ -595,8 +598,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
 
   connect( mMapCanvas, SIGNAL( layersChanged() ), this, SLOT( showMapCanvas() ) );
 
-  mCentralContainer->setCurrentIndex( 1 );
-
+  mCentralContainer->setCurrentIndex( mProjOpen ? 0 : 1 );
 
   // a bar to warn the user with non-blocking messages
   mInfoBar = new QgsMessageBar( centralWidget );
@@ -1155,7 +1157,7 @@ void QgisApp::readSettings()
   QStringList oldRecentProjects = settings.value( "/UI/recentProjectsList" ).toStringList();
   settings.remove( "/UI/recentProjectsList" );
 
-  Q_FOREACH ( const QString& project, oldRecentProjects )
+  Q_FOREACH( const QString& project, oldRecentProjects )
   {
     QgsWelcomePageItemsModel::RecentProjectData data;
     data.path = project;
@@ -1167,7 +1169,7 @@ void QgisApp::readSettings()
   settings.beginGroup( "/UI/recentProjects" );
   QStringList projectKeys = settings.childGroups();
 
-  Q_FOREACH ( const QString& key, projectKeys )
+  Q_FOREACH( const QString& key, projectKeys )
   {
     QgsWelcomePageItemsModel::RecentProjectData data;
     settings.beginGroup( key );
@@ -2745,7 +2747,7 @@ void QgisApp::updateRecentProjectPaths()
 {
   mRecentProjectsMenu->clear();
 
-  Q_FOREACH ( const QgsWelcomePageItemsModel::RecentProjectData& recentProject, mRecentProjects )
+  Q_FOREACH( const QgsWelcomePageItemsModel::RecentProjectData& recentProject, mRecentProjects )
   {
     QAction* action = mRecentProjectsMenu->addAction( QString( "%1 (%2)" ).arg( recentProject.title ).arg( recentProject.path ) );
     action->setEnabled( QFile::exists(( recentProject.path ) ) );
@@ -2814,7 +2816,7 @@ void QgisApp::saveRecentProjectPath( QString projectPath, bool savePreviewImage 
   int idx = 0;
 
   // Persist the list
-  Q_FOREACH ( const QgsWelcomePageItemsModel::RecentProjectData& recentProject, mRecentProjects )
+  Q_FOREACH( const QgsWelcomePageItemsModel::RecentProjectData& recentProject, mRecentProjects )
   {
     ++idx;
     settings.beginGroup( QString( "/UI/recentProjects/%1" ).arg( idx ) );
@@ -3931,23 +3933,19 @@ void QgisApp::fileOpenAfterLaunch()
   QSettings settings;
   QString autoOpenMsgTitle = tr( "Auto-open Project" );
 
-  // what type of project to auto-open
-  int projOpen = settings.value( "/qgis/projOpenAtLaunch", 0 ).toInt();
+  // get path of project file to open, or was attempted
+  QString projPath;
 
-  if ( projOpen == 0 ) // welcome page
+  if ( mProjOpen == 0 ) // welcome page
   {
     connect( this, SIGNAL( newProject() ), this, SLOT( showMapCanvas() ) );
     return;
   }
-
-  // get path of project file to open, or was attempted
-  QString projPath;
-
-  if ( projOpen == 1 && mRecentProjects.size() > 0 ) // most recent project
+  if ( mProjOpen == 1 && mRecentProjects.size() > 0 ) // most recent project
   {
     projPath = mRecentProjects.at( 0 ).path;
   }
-  if ( projOpen == 2 ) // specific project
+  if ( mProjOpen == 2 ) // specific project
   {
     projPath = settings.value( "/qgis/projOpenAtLaunchPath" ).toString();
   }
@@ -3974,7 +3972,7 @@ void QgisApp::fileOpenAfterLaunch()
     return;
   }
 
-  if ( projOpen == 0 ) // new project (default)
+  if ( mProjOpen == 3 ) // new project
   {
     // open default template, if defined
     if ( settings.value( "/qgis/newProjectDefault", QVariant( false ) ).toBool() )
