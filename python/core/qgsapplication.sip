@@ -105,12 +105,6 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     static void setUITheme( const QString &themeName );
 
     /**
-     * @brief Return the active UI theme set in the settings.
-     * @return The name of the current UI theme.
-     */
-    static QString uiThemeName();
-
-    /**
      * @brief All themes found in the application resources folder
      * and ~/.qgis2/themes folder. The path is to the root folder for the theme
      * @note Valid theme folders must contain a style.qss file.

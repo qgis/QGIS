@@ -1146,9 +1146,8 @@ QgisAppStyleSheet* QgisApp::styleSheetBuilder()
 void QgisApp::readSettings()
 {
   QSettings settings;
-  // get the users theme preference from the settings
-  // 'gis' theme is new /themes/default directory (2013-04-15)
-  setTheme( settings.value( "/Themes", "default" ).toString() );
+  QString themename = settings.value( "UI/UITheme", "default" ).toString();
+  setTheme( themename );
 
   // Read legacy settings
   mRecentProjects.clear();
@@ -2067,7 +2066,7 @@ void QgisApp::setTheme( QString theThemeName )
   // for the user to choose from.
   //
   */
-  QgsApplication::setThemeName( theThemeName );
+  QgsApplication::setUITheme( theThemeName );
   //QgsDebugMsg("Setting theme to \n" + theThemeName);
   mActionNewProject->setIcon( QgsApplication::getThemeIcon( "/mActionFileNew.svg" ) );
   mActionOpenProject->setIcon( QgsApplication::getThemeIcon( "/mActionFileOpen.svg" ) );

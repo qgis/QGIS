@@ -356,7 +356,7 @@ QString QgsApplication::defaultThemePath()
 }
 QString QgsApplication::activeThemePath()
 {
-  return ":/images/themes/" + themeName() + "/";
+  return userThemesFolder() + QDir::separator() + themeName() + QDir::separator() + "icons/";
 }
 
 
@@ -413,16 +413,7 @@ QPixmap QgsApplication::getThemePixmap( const QString &theName )
 */
 void QgsApplication::setThemeName( const QString &theThemeName )
 {
-  QString myPath = ":/images/themes/" + theThemeName + "/";
-  //check it exists and if not roll back to default theme
-  if ( QFile::exists( myPath ) )
-  {
-    ABISYM( mThemeName ) = theThemeName;
-  }
-  else
-  {
-    ABISYM( mThemeName ) = "default";
-  }
+  ABISYM( mThemeName ) = theThemeName;
 }
 /*!
  * Get the active theme name
@@ -436,7 +427,11 @@ void QgsApplication::setUITheme( const QString &themeName )
 {
   // Loop all style sheets, find matching name, load it.
   QHash<QString, QString> themes = QgsApplication::uiThemes();
-  QString path = themes[themeName];
+  QString themename = themeName;
+  if (!themes.contains(themename))
+    themename = "default";
+
+  QString path = themes[themename];
   QString stylesheetname = path + "/style.qss";
   QString autostylesheet = stylesheetname + ".auto";
 
@@ -479,8 +474,7 @@ void QgsApplication::setUITheme( const QString &themeName )
   QString styleSheet = QLatin1String( "file:///" );
   styleSheet.append( stylesheetname );
   qApp->setStyleSheet( styleSheet );
-  QSettings settings;
-  return settings.setValue( "UI/UITheme", themeName );
+  setThemeName( themename );
 }
 
 QHash<QString, QString> QgsApplication::uiThemes()
@@ -504,12 +498,6 @@ QHash<QString, QString> QgsApplication::uiThemes()
     }
   }
   return mapping;
-}
-
-QString QgsApplication::uiThemeName()
-{
-  QSettings settings;
-  return settings.value( "UI/UITheme", "default" ).toString();
 }
 
 /*!
