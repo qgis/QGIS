@@ -27,12 +27,12 @@ class QgsMapToolAddCircularString: public QgsMapToolCapture
     QgsMapToolAddCircularString( QgsMapToolCapture* parentTool, QgsMapCanvas* canvas, CaptureMode mode = CaptureLine );
     ~QgsMapToolAddCircularString();
 
-    void keyPressEvent( QKeyEvent* e );
-    void keyReleaseEvent( QKeyEvent* e );
+    void keyPressEvent( QKeyEvent* e ) override;
+    void keyReleaseEvent( QKeyEvent* e ) override;
 
-    void deactivate();
+    void deactivate() override;
 
-    void activate();
+    void activate() override;
 
   private slots:
     void setParentTool( QgsMapTool* newTool, QgsMapTool* oldTool );

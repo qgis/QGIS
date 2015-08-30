@@ -36,9 +36,9 @@ class QgsWelcomePageItemsModel : public QAbstractListModel
 
     void setRecentProjects( const QList<RecentProjectData>& recentProjects );
 
-    int rowCount( const QModelIndex& parent ) const;
-    QVariant data( const QModelIndex& index, int role ) const;
-    Qt::ItemFlags flags( const QModelIndex& index ) const;
+    int rowCount( const QModelIndex& parent ) const override;
+    QVariant data( const QModelIndex& index, int role ) const override;
+    Qt::ItemFlags flags( const QModelIndex& index ) const override;
 
   private:
     QList<RecentProjectData> mRecentProjects;
