@@ -36,7 +36,7 @@ QMenuBar::item:selected
 {
     /*
     background: transparent;
-    border: 1px solid #ffaa00;
+    border: 1px solid @hover;
     */
     background: #444;
 }
@@ -118,10 +118,9 @@ QLineEdit
     color: #111;
 }
 
-QPushButton
+QPushButton 
 {
     color: #b1b1b1;
-/*    background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #565656, stop: 0.1 #525252, stop: 0.5 #4e4e4e, stop: 0.9 #4a4a4a, stop: 1 #464646);*/
     border-width: 1px;
     border-color: #1e1e1e;
     border-style: solid;
@@ -131,9 +130,41 @@ QPushButton
     padding-right: 5px;
 }
 
-QPushButton:pressed
+QToolButton
 {
-/*    background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #2d2d2d, stop: 0.1 #2b2b2b, stop: 0.5 #292929, stop: 0.9 #282828, stop: 1 #252525);*/
+    color: #b1b1b1;
+    padding: 3px 5px 3px 5px;
+    font-size: 12px;
+    border-width: 1px;
+    border-color: #1e1e1e;
+    border-style: solid;
+    background-color:@itembackground;
+}
+QToolButton[popupMode="1"]
+{
+    padding-right: 18px;
+}
+QToolButton::menu-button {
+    width: 14px;
+    border-width: 1px;
+    border-color: none;
+    background: none;
+}
+QToolButton::hover, QToolButton::menu-button::hover
+{
+    border-width: 1px;
+    border-color: #1e1e1e;
+    border-style: solid;
+    background-color:@itembackground;
+}
+QToolButton::menu-arrow 
+{
+    image: url(icons/down_arrow.png);
+}
+QToolBar QToolButton, QToolButton::menu-button
+{
+    border:0;
+    background-color: none;
 }
 
 /* ==================================================================================== */
@@ -141,7 +172,7 @@ QPushButton:pressed
 /* ==================================================================================== */
 
 QComboBox {
-    selection-background-color: #ffaa00;
+    selection-background-color: @hover;
     background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #565656, stop: 0.1 #525252, stop: 0.5 #4e4e4e, stop: 0.9 #4a4a4a, stop: 1 #464646);
     border-style: solid;
     border: 1px solid #1e1e1e; 
@@ -167,7 +198,7 @@ QComboBox:on {
         stop: 0.5   #464646,
         stop: 0.9   #414141,
         stop: 1     #444);
-    selection-background-color: #ffaa00;
+    selection-background-color: @hover;
 }
 
 QComboBox:editable {
@@ -216,7 +247,7 @@ QScrollBar:horizontal {
 
 QScrollBar::handle:horizontal {
     border: 1px solid #111;
-    background: #535353;
+    background: @itembackground;
 }
 
 QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal,
@@ -233,7 +264,7 @@ QScrollBar:vertical {
 
 QScrollBar::handle:vertical {
     border: 1px solid #111;
-    background: #535353;
+    background: @itembackground;
 }
 
 QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical,
@@ -412,60 +443,86 @@ QTabBar::tab:selected
 
 QTabBar::tab:!selected:hover
 {
-    /*border-top: 2px solid #ffaa00;
+    /*border-top: 2px solid @hover;
     padding-bottom: 3px;*/
     /*background-color: QLinearGradient(x1:0, y1:0, x2:0, y2:1, stop:1 #212121, stop:0.4 #343434, stop:0.2 #343434, stop:0.1 #ffaa00);*/
-}
-
-/* ==================================================================================== */
-/* RADIO BUTTON                                                                         */
-/* ==================================================================================== */
-
-QGroupBox::indicator:unchecked,
-QGroupBox::indicator:checked,
-QCheckBox::indicator:checked,
-QCheckBox::indicator:unchecked
-QRadioButton::indicator:checked,
-QRadioButton::indicator:unchecked{
-    color: #b1b1b1;
-    background-color: @background;
-    border: 1px solid #b1b1b1;
-}
-
-QGroupBox::indicator:checked,
-QCheckBox::indicator:checked
-{
-    background-color: qradialgradient(
-        cx: 0.5, cy: 0.5,
-        fx: 0.5, fy: 0.5,
-        radius: 1.0,
-        stop: 0.25 #ffaa00,
-        stop: 0.3 @background
-    );
-}
-QRadioButton::indicator:checked {
-    background-color: qradialgradient(
-        cx: 0.5, cy: 0.5,
-        fx: 0.5, fy: 0.5,
-        radius: 1.0,
-        stop: 0.25 #ffaa00,
-        stop: 0.3 @background
-    );
-}
-
-QRadioButton::indicator
-{
 }
 
 QGroupBox::indicator:hover,
 QCheckBox::indicator:hover,
 QRadioButton::indicator:hover
 {
-    border: 1px solid #ffaa00;
+    border: 1px solid @hover;
+}
+
+/* ==================================================================================== */
+/* GROUP                                                                                */
+/* ==================================================================================== */
+
+QGroupBox::title { color:#FFFFFF; }
+
+QGroupBox::indicator:unchecked {
+    background-color: @toggleoff;
+}
+
+QGroupBox::indicator:checked {
+    background-color:  @toggleon;
+}
+/* ==================================================================================== */
+/* RADIO BUTTON                                                                         */
+/* ==================================================================================== */
+
+QRadioButton::indicator:unchecked {
+    background-color: @toggleoff;
+    border-radius:10px;
+}
+
+QRadioButton::indicator:checked {
+    background-color:  @toggleon;
+    border-radius:10px;
 }
 
 /* ==================================================================================== */
 /* CHECKBOX                                                                             */
+/* ==================================================================================== */
+
+QCheckBox::indicator:unchecked {
+    background-color: @toggleoff;
+}
+
+QCheckBox::indicator:checked {
+    background-color:  @toggleon;
+}
+
+/* ==================================================================================== */
+/* SLIDER                                                                                */
+/* ==================================================================================== */
+
+QSlider::groove:horizontal,
+QSlider::groove:vertical  {
+    border: 1px solid #262626;
+    height: 8px; /* the groove expands to the size of the slider by default. by giving it a height, it has a fixed size */
+    background-color: @itembackground;
+    margin: 2px 0;
+}
+
+QSlider::handle:horizontal {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #b4b4b4, stop:1 #8f8f8f);
+    border: 1px solid #5c5c5c;
+    width: 18px;
+    margin: -2px 0; /* handle is placed by default on the contents rect of the groove. Expand outside the groove */
+    border-radius: 3px;
+}
+QSlider::handle:vertical {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #b4b4b4, stop:1 #8f8f8f);
+    border: 1px solid #5c5c5c;
+    height: 18px;
+    margin: -2px 0; /* handle is placed by default on the contents rect of the groove. Expand outside the groove */
+    border-radius: 3px;
+}
+
+/* ==================================================================================== */
+/* OTHER                                                                                */
 /* ==================================================================================== */
 
 QAbstractItemView
@@ -497,12 +554,12 @@ QTreeView::item, QTreeView::branch {
 }
 
 QTreeView::item:hover, QTreeView::branch:hover {
-    background-color: #507098;
+    background-color: @toggleoff;
     color: #DDD;
 }
 
 QTreeView::item:selected, QTreeView::branch:selected {
-    background-color: #507098;
+    background-color: @selection;
     color: #DDD;
 }
 

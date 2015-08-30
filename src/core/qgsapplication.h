@@ -76,6 +76,12 @@ class CORE_EXPORT QgsApplication : public QApplication
      */
     static QString themeName();
 
+    /**
+     * @brief Set the current UI theme used to style the interface.  Use uiThemes() to
+     * find valid themes to use. Variabels found in variables.qss will be added to the stylesheet
+     * on load.
+     * @param themeName The name of the theme.
+     */
     static void setUITheme( const QString &themeName );
 
     /**
@@ -85,8 +91,8 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QString uiThemeName();
 
     /**
-     * @brief All themes found in the application resources folder
-     * and ~/.qgis2/themes folder. The path is to the root folder for the theme
+     * @brief All themes found in ~/.qgis2/themes folder.
+     * The path is to the root folder for the theme
      * @note Valid theme folders must contain a style.qss file.
      * @return A hash of theme name and theme path. Valid theme folders contain style.qss
      */
