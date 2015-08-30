@@ -73,6 +73,8 @@ class TestQgsComposerTableV2 : public QObject
     void align(); //test alignment of table cells
     void wrapChar(); //test setting wrap character
     void autoWrap(); //test auto word wrap
+    void cellStyles(); //test cell styles
+    void cellStylesRender(); //test rendering cell styles
 
   private:
     QgsComposition* mComposition;
@@ -772,6 +774,225 @@ void TestQgsComposerTableV2::autoWrap()
   bool result = checker.testComposition( mReport, 0 );
   mComposerAttributeTable->columns()->at( 0 )->setWidth( 0 );
   QVERIFY( result );
+}
+
+void TestQgsComposerTableV2::cellStyles()
+{
+  QgsComposerTableStyle original;
+  original.enabled = true;
+  original.cellBackgroundColor = QColor( 200, 100, 150, 90 );
+
+  //write to xml
+  QDomImplementation DomImplementation;
+  QDomDocumentType documentType =
+    DomImplementation.createDocumentType(
+      "qgis", "http://mrcc.com/qgis.dtd", "SYSTEM" );
+  QDomDocument doc( documentType );
+
+  //test writing with no node
+  QDomElement node = doc.createElement( "style" );
+  QVERIFY( original.writeXML( node, doc ) );
+
+  //read from xml
+  QgsComposerTableStyle styleFromXml;
+  styleFromXml.readXML( node );
+
+  //check
+  QCOMPARE( original.enabled, styleFromXml.enabled );
+  QCOMPARE( original.cellBackgroundColor, styleFromXml.cellBackgroundColor );
+
+
+  // check writing/reading whole set of styles
+  QgsComposerAttributeTableV2 originalTable( mComposition, false );
+
+  QgsComposerTableStyle style1;
+  style1.enabled = true;
+  style1.cellBackgroundColor = QColor( 25, 50, 75, 100 );
+  originalTable.setCellStyle( QgsComposerTableV2::FirstRow, style1 );
+  QgsComposerTableStyle style2;
+  style1.enabled = false;
+  style1.cellBackgroundColor = QColor( 60, 62, 64, 68 );
+  originalTable.setCellStyle( QgsComposerTableV2::LastColumn, style2 );
+
+  //write to XML
+  QDomElement tableElement = doc.createElement( "table" );
+  QVERIFY( originalTable.writeXML( tableElement, doc, true ) );
+
+  //read from XML
+  QgsComposerAttributeTableV2 tableFromXml( mComposition, false );
+  tableFromXml.readXML( tableElement, doc, true );
+
+  //check that styles were correctly read
+  QCOMPARE( tableFromXml.cellStyle( QgsComposerTableV2::FirstRow )->enabled, originalTable.cellStyle( QgsComposerTableV2::FirstRow )->enabled );
+  QCOMPARE( tableFromXml.cellStyle( QgsComposerTableV2::FirstRow )->cellBackgroundColor, originalTable.cellStyle( QgsComposerTableV2::FirstRow )->cellBackgroundColor );
+  QCOMPARE( tableFromXml.cellStyle( QgsComposerTableV2::LastColumn )->enabled, originalTable.cellStyle( QgsComposerTableV2::LastColumn )->enabled );
+  QCOMPARE( tableFromXml.cellStyle( QgsComposerTableV2::LastColumn )->cellBackgroundColor, originalTable.cellStyle( QgsComposerTableV2::LastColumn )->cellBackgroundColor );
+
+  //check backgroundColor method
+  //build up rules in descending order of precedence
+  mComposerAttributeTable->setBackgroundColor( QColor( 50, 50, 50, 50 ) );
+  QgsComposerTableStyle style;
+  style.enabled = true;
+  style.cellBackgroundColor = QColor( 25, 50, 75, 100 );
+  mComposerAttributeTable->setCellStyle( QgsComposerTableV2::OddColumns, style );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 0 ), QColor( 25, 50, 75, 100 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 1 ), QColor( 50, 50, 50, 50 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 2 ), QColor( 25, 50, 75, 100 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 3 ), QColor( 50, 50, 50, 50 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 0 ), QColor( 25, 50, 75, 100 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 1 ), QColor( 50, 50, 50, 50 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 2 ), QColor( 25, 50, 75, 100 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 3 ), QColor( 50, 50, 50, 50 ) );
+  style.cellBackgroundColor = QColor( 30, 80, 90, 23 );
+  mComposerAttributeTable->setCellStyle( QgsComposerTableV2::EvenColumns, style );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 0 ), QColor( 25, 50, 75, 100 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 1 ), QColor( 30, 80, 90, 23 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 2 ), QColor( 25, 50, 75, 100 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 3 ), QColor( 30, 80, 90, 23 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 0 ), QColor( 25, 50, 75, 100 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 1 ), QColor( 30, 80, 90, 23 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 2 ), QColor( 25, 50, 75, 100 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 3 ), QColor( 30, 80, 90, 23 ) );
+  style.cellBackgroundColor = QColor( 111, 112, 113, 114 );
+  mComposerAttributeTable->setCellStyle( QgsComposerTableV2::OddRows, style );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 0 ), QColor( 111, 112, 113, 114 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 1 ), QColor( 111, 112, 113, 114 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 2 ), QColor( 111, 112, 113, 114 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 3 ), QColor( 111, 112, 113, 114 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 0 ), QColor( 25, 50, 75, 100 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 1 ), QColor( 30, 80, 90, 23 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 2 ), QColor( 25, 50, 75, 100 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 3 ), QColor( 30, 80, 90, 23 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 2, 0 ), QColor( 111, 112, 113, 114 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 2, 1 ), QColor( 111, 112, 113, 114 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 2, 2 ), QColor( 111, 112, 113, 114 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 2, 3 ), QColor( 111, 112, 113, 114 ) );
+  style.cellBackgroundColor = QColor( 222, 223, 224, 225 );
+  mComposerAttributeTable->setCellStyle( QgsComposerTableV2::EvenRows, style );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 0 ), QColor( 111, 112, 113, 114 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 1 ), QColor( 111, 112, 113, 114 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 2 ), QColor( 111, 112, 113, 114 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 3 ), QColor( 111, 112, 113, 114 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 0 ), QColor( 222, 223, 224, 225 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 1 ), QColor( 222, 223, 224, 225 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 2 ), QColor( 222, 223, 224, 225 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 3 ), QColor( 222, 223, 224, 225 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 2, 0 ), QColor( 111, 112, 113, 114 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 2, 1 ), QColor( 111, 112, 113, 114 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 2, 2 ), QColor( 111, 112, 113, 114 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 2, 3 ), QColor( 111, 112, 113, 114 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 3, 0 ), QColor( 222, 223, 224, 225 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 3, 1 ), QColor( 222, 223, 224, 225 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 3, 2 ), QColor( 222, 223, 224, 225 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 3, 3 ), QColor( 222, 223, 224, 225 ) );
+  style.cellBackgroundColor = QColor( 1, 2, 3, 4 );
+  mComposerAttributeTable->setCellStyle( QgsComposerTableV2::FirstColumn, style );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 0 ), QColor( 1, 2, 3, 4 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 1 ), QColor( 111, 112, 113, 114 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 2 ), QColor( 111, 112, 113, 114 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 3 ), QColor( 111, 112, 113, 114 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 0 ), QColor( 1, 2, 3, 4 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 1 ), QColor( 222, 223, 224, 225 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 2 ), QColor( 222, 223, 224, 225 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 3 ), QColor( 222, 223, 224, 225 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 2, 0 ), QColor( 1, 2, 3, 4 ) );
+  style.cellBackgroundColor = QColor( 7, 8, 9, 10 );
+  mComposerAttributeTable->setCellStyle( QgsComposerTableV2::LastColumn, style );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 0 ), QColor( 1, 2, 3, 4 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 1 ), QColor( 111, 112, 113, 114 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 2 ), QColor( 111, 112, 113, 114 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 5 ), QColor( 7, 8, 9, 10 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 0 ), QColor( 1, 2, 3, 4 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 1 ), QColor( 222, 223, 224, 225 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 2 ), QColor( 222, 223, 224, 225 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 5 ), QColor( 7, 8, 9, 10 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 2, 0 ), QColor( 1, 2, 3, 4 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 2, 5 ), QColor( 7, 8, 9, 10 ) );
+  style.cellBackgroundColor = QColor( 87, 88, 89, 90 );
+  mComposerAttributeTable->setCellStyle( QgsComposerTableV2::HeaderRow, style );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( -1, 0 ), QColor( 87, 88, 89, 90 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( -1, 1 ), QColor( 87, 88, 89, 90 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( -1, 2 ), QColor( 87, 88, 89, 90 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( -1, 5 ), QColor( 87, 88, 89, 90 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 0 ), QColor( 1, 2, 3, 4 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 1 ), QColor( 111, 112, 113, 114 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 2 ), QColor( 111, 112, 113, 114 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 5 ), QColor( 7, 8, 9, 10 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 0 ), QColor( 1, 2, 3, 4 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 1 ), QColor( 222, 223, 224, 225 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 2 ), QColor( 222, 223, 224, 225 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 5 ), QColor( 7, 8, 9, 10 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 2, 0 ), QColor( 1, 2, 3, 4 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 2, 5 ), QColor( 7, 8, 9, 10 ) );
+  style.cellBackgroundColor = QColor( 187, 188, 189, 190 );
+  mComposerAttributeTable->setCellStyle( QgsComposerTableV2::FirstRow, style );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( -1, 0 ), QColor( 87, 88, 89, 90 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( -1, 1 ), QColor( 87, 88, 89, 90 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( -1, 2 ), QColor( 87, 88, 89, 90 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( -1, 5 ), QColor( 87, 88, 89, 90 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 0 ), QColor( 187, 188, 189, 190 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 1 ), QColor( 187, 188, 189, 190 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 2 ), QColor( 187, 188, 189, 190 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 5 ), QColor( 187, 188, 189, 190 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 0 ), QColor( 1, 2, 3, 4 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 1 ), QColor( 222, 223, 224, 225 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 2 ), QColor( 222, 223, 224, 225 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 5 ), QColor( 7, 8, 9, 10 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 2, 0 ), QColor( 1, 2, 3, 4 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 2, 5 ), QColor( 7, 8, 9, 10 ) );
+  style.cellBackgroundColor = QColor( 147, 148, 149, 150 );
+  mComposerAttributeTable->setCellStyle( QgsComposerTableV2::LastRow, style );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( -1, 0 ), QColor( 87, 88, 89, 90 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( -1, 1 ), QColor( 87, 88, 89, 90 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( -1, 2 ), QColor( 87, 88, 89, 90 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( -1, 5 ), QColor( 87, 88, 89, 90 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 0 ), QColor( 187, 188, 189, 190 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 1 ), QColor( 187, 188, 189, 190 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 2 ), QColor( 187, 188, 189, 190 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 0, 5 ), QColor( 187, 188, 189, 190 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 0 ), QColor( 1, 2, 3, 4 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 1 ), QColor( 222, 223, 224, 225 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 2 ), QColor( 222, 223, 224, 225 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 1, 5 ), QColor( 7, 8, 9, 10 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 2, 0 ), QColor( 1, 2, 3, 4 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 2, 5 ), QColor( 7, 8, 9, 10 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 9, 0 ), QColor( 147, 148, 149, 150 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 9, 1 ), QColor( 147, 148, 149, 150 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 9, 2 ), QColor( 147, 148, 149, 150 ) );
+  QCOMPARE( mComposerAttributeTable->backgroundColor( 9, 5 ), QColor( 147, 148, 149, 150 ) );
+
+  mComposition->removeMultiFrame( &originalTable );
+  mComposition->removeMultiFrame( &tableFromXml );
+}
+
+void TestQgsComposerTableV2::cellStylesRender()
+{
+  mComposerAttributeTable->setMaximumNumberOfFeatures( 3 );
+  mComposerAttributeTable->setShowEmptyRows( true );
+
+  QgsComposerTableStyle style;
+  style.enabled = true;
+  style.cellBackgroundColor = QColor( 25, 50, 75, 100 );
+  mComposerAttributeTable->setCellStyle( QgsComposerTableV2::OddColumns, style );
+  style.cellBackgroundColor = QColor( 90, 110, 150, 200 );
+  mComposerAttributeTable->setCellStyle( QgsComposerTableV2::EvenRows, style );
+  style.cellBackgroundColor = QColor( 150, 160, 210, 200 );
+  mComposerAttributeTable->setCellStyle( QgsComposerTableV2::HeaderRow, style );
+  style.cellBackgroundColor = QColor( 0, 200, 50, 200 );
+  mComposerAttributeTable->setCellStyle( QgsComposerTableV2::FirstColumn, style );
+  style.cellBackgroundColor = QColor( 200, 50, 0, 200 );
+  mComposerAttributeTable->setCellStyle( QgsComposerTableV2::LastColumn, style );
+  style.cellBackgroundColor = QColor( 200, 50, 200, 200 );
+  mComposerAttributeTable->setCellStyle( QgsComposerTableV2::FirstRow, style );
+  style.cellBackgroundColor = QColor( 50, 200, 200, 200 );
+  mComposerAttributeTable->setCellStyle( QgsComposerTableV2::LastRow, style );
+
+  QgsCompositionChecker checker( "composerattributetable_cellstyle", mComposition );
+  checker.setColorTolerance( 10 );
+  checker.setControlPathPrefix( "composer_table" );
+  QVERIFY( checker.testComposition( mReport, 0 ) );
+  mComposerAttributeTable->setMaximumNumberOfFeatures( 20 );
+  mComposerAttributeTable->setShowEmptyRows( false );
 }
 
 QTEST_MAIN( TestQgsComposerTableV2 )
