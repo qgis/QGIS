@@ -47,6 +47,7 @@ class QgsGrassModuleOptions
       RegionInput = 1,  // intersection of input maps extent and highest input resolution
       RegionCurrent = 0 // current map canvas extent and resolution
     };
+
     //! Constructor
     QgsGrassModuleOptions(
       QgsGrassTools *tools, QgsGrassModule *module,
@@ -182,6 +183,11 @@ class QgsGrassModuleStandardOptions: public QWidget, public QgsGrassModuleOption
      * @param errors - list to which possible errors are added
      */
     QDomDocument readInterfaceDescription( const QString & xname, QStringList & errors );
+
+    /** Get region for currently selected map. It will show warning dialog if region could not be read.
+     * @return true if region was successfully read
+     */
+    bool getCurrentMapRegion( QgsGrassModuleInput * param, struct Cell_head *window );
 
     //! Name of module executable
     QString mXName;

@@ -683,28 +683,14 @@ QStringList QgsGrassModuleStandardOptions::checkRegion()
     if ( !item )
       continue;
 
-    QgsGrassObject::Type mapType = QgsGrassObject::Vector;
-    switch ( item->type() )
+    QgsDebugMsg( "currentMap = " +  item->currentMap() );
+    // The input may be empty, it means input is not used.
+    if ( item->currentMap().isEmpty() )
     {
-      case QgsGrassModuleInput::Raster :
-        mapType = QgsGrassObject::Raster;
-        break;
-      case QgsGrassModuleInput::Vector :
-        mapType = QgsGrassObject::Vector;
-        break;
+      continue;
     }
-
-    QStringList mm = item->currentMap().split( "@" );
-    QString map = mm.at( 0 );
-    QString mapset = QgsGrass::getDefaultMapset();
-    if ( mm.size() > 1 )
-      mapset = mm.at( 1 );
-    if ( !QgsGrass::mapRegion( mapType,
-                               QgsGrass::getDefaultGisdbase(),
-                               QgsGrass::getDefaultLocation(), mapset, map,
-                               &window ) )
+    if ( !getCurrentMapRegion( item, &window ) )
     {
-      QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot check region of map %1" ).arg( item->currentMap() ) );
       continue;
     }
 
@@ -868,31 +854,18 @@ bool QgsGrassModuleStandardOptions::inputRegion( struct Cell_head *window, QgsCo
       else
       {
         if ( !all && !item->useRegion() )
-          continue;
-
-        QgsGrassObject::Type mapType = QgsGrassObject::Vector;
-
-        switch ( item->type() )
         {
-          case QgsGrassModuleInput::Raster :
-            mapType = QgsGrassObject::Raster;
-            break;
-          case QgsGrassModuleInput::Vector :
-            mapType = QgsGrassObject::Vector;
-            break;
+          continue;
         }
 
-        QStringList mm = item->currentMap().split( "@" );
-        QString map = mm.at( 0 );
-        QString mapset = QgsGrass::getDefaultMapset();
-        if ( mm.size() > 1 )
-          mapset = mm.at( 1 );
-        if ( !QgsGrass::mapRegion( mapType,
-                                   QgsGrass::getDefaultGisdbase(),
-                                   QgsGrass::getDefaultLocation(), mapset, map,
-                                   &mapWindow ) )
+        QgsDebugMsg( "currentMap = " +  item->currentMap() );
+        // The input may be empty, it means input is not used.
+        if ( item->currentMap().isEmpty() )
         {
-          QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot set region of map %1" ).arg( item->currentMap() ) );
+          continue;
+        }
+        if ( !getCurrentMapRegion( item, &mapWindow ) )
+        {
           return false;
         }
       }
@@ -961,6 +934,55 @@ bool QgsGrassModuleStandardOptions::usesRegion()
   QgsDebugMsg( "NO usesRegion()" );
   return false;
 }
+
+bool QgsGrassModuleStandardOptions::getCurrentMapRegion( QgsGrassModuleInput* input, struct Cell_head * window )
+{
+  if ( !input )
+  {
+    return false;
+  }
+
+  QgsDebugMsg( "currentMap = " +  input->currentMap() );
+  if ( input->currentMap().isEmpty() )
+  {
+    // The input may be empty, it means input is not used.
+    return false;
+  }
+
+  QgsGrassObject::Type mapType;
+
+  switch ( input->type() )
+  {
+    case QgsGrassModuleInput::Raster :
+      mapType = QgsGrassObject::Raster;
+      break;
+    case QgsGrassModuleInput::Vector :
+      mapType = QgsGrassObject::Vector;
+      break;
+    default:
+      // should not happen
+      QgsGrass::warning( "getCurrentMapRegion mapType not supported" );
+      return false;
+  }
+
+  QStringList mm = input->currentMap().split( "@" );
+  QString map = mm.value( 0 );
+  QString mapset = QgsGrass::getDefaultMapset();
+  if ( mm.size() > 1 )
+  {
+    mapset = mm.value( 1 );
+  }
+  if ( !QgsGrass::mapRegion( mapType,
+                             QgsGrass::getDefaultGisdbase(),
+                             QgsGrass::getDefaultLocation(), mapset, map,
+                             window ) )
+  {
+    QgsGrass::warning( tr( "Cannot get region of map %1" ).arg( input->currentMap() ) );
+    return false;
+  }
+  return true;
+}
+
 
 QgsGrassModuleStandardOptions::~QgsGrassModuleStandardOptions()
 {
