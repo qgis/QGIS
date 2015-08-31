@@ -1168,7 +1168,7 @@ APP_EXPORT int main( int argc, char *argv[] )
     QFile dxfFile;
     if ( dxfOutputFile == "-" )
     {
-      if ( !dxfFile.open( STDOUT_FILENO, QIODevice::WriteOnly ) )
+      if ( !dxfFile.open( stdout, QIODevice::WriteOnly ) )
       {
         std::cerr << "could not open stdout" << std::endl;
         return 2;
