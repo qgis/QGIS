@@ -1580,7 +1580,7 @@ void QgsIdentifyResultsDialog::featureForm()
   if ( !featItem )
     return;
 
-  int fid = STRING_TO_FID( featItem->data( 0, Qt::UserRole ) );
+  QgsFeatureId fid = STRING_TO_FID( featItem->data( 0, Qt::UserRole ) );
   int idx = featItem->data( 0, Qt::UserRole + 1 ).toInt();
 
   QgsFeature f;
