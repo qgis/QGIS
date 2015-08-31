@@ -61,7 +61,7 @@ namespace pal
         {
           case PolygonInterior:
             // n ranges from 0 -> 12
-            n = lp->getNumPointsInPolygon( obstacle );
+            n = lp->polygonIntersectionCost( obstacle );
             break;
           case PolygonBoundary:
             // penalty may need tweaking, given that interior mode ranges up to 12

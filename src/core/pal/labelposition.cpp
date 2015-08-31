@@ -574,36 +574,52 @@ namespace pal
     return false;
   }
 
-  int LabelPosition::getNumPointsInPolygon( PointSet *polygon ) const
+  int LabelPosition::polygonIntersectionCost( PointSet *polygon ) const
   {
-    int a, k, count = 0;
-    double px, py;
+    if ( !mGeos )
+      createGeosGeom();
 
-    // check each corner
-    for ( k = 0; k < 4; k++ )
+    if ( !polygon->mGeos )
+      polygon->createGeosGeom();
+
+    GEOSContextHandle_t geosctxt = geosContext();
+
+    int cost = 0;
+    //check the label center. if covered by polygon, initial cost of 4
+    if ( polygon->containsPoint(( x[0] + x[2] ) / 2.0, ( y[0] + y[2] ) / 2.0 ) )
+      cost += 4;
+
+    try
     {
-      px = x[k];
-      py = y[k];
+      //calculate proportion of label candidate which is covered by polygon
+      GEOSGeometry* intersectionGeom = GEOSIntersection_r( geosctxt, mGeos, polygon->mGeos );
+      if ( !intersectionGeom )
+        return cost;
 
-      for ( a = 0; a < 2; a++ ) // and each middle of segment
+      double positionArea = 0;
+      if ( GEOSArea_r( geosctxt, mGeos, &positionArea ) != 1 )
       {
-        if ( polygon->containsPoint( px, py ) )
-          count++;
-        px = ( x[k] + x[( k+1 ) %4] ) / 2.0;
-        py = ( y[k] + y[( k+1 ) %4] ) / 2.0;
+        GEOSGeom_destroy_r( geosctxt, intersectionGeom );
+        return cost;
       }
+
+      double intersectionArea = 0;
+      if ( GEOSArea_r( geosctxt, intersectionGeom, &intersectionArea ) != 1 )
+      {
+        intersectionArea = 0;
+      }
+
+      GEOSGeom_destroy_r( geosctxt, intersectionGeom );
+
+      double portionCovered = intersectionArea / positionArea;
+      cost += ceil( portionCovered * 8.0 ); //cost of 8 if totally covered
+      return cost;
     }
-
-    px = ( x[0] + x[2] ) / 2.0;
-    py = ( y[0] + y[2] ) / 2.0;
-
-    // and the label center
-    if ( polygon->containsPoint( px, py ) )
-      count += 4; // virtually 4 points
-
-    // TODO: count with nextFeature
-
-    return count;
+    catch ( GEOSException &e )
+    {
+      QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
+      return cost;
+    }
   }
 
 } // end namespace
