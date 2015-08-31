@@ -2939,14 +2939,7 @@ bool QgsPostgresProvider::convertField( QgsField &field, const QMap<QString, QVa
       break;
 
     case QVariant::Int:
-      if ( fieldPrec < 10 )
-      {
-        fieldType = "int4";
-      }
-      else
-      {
-        fieldType = "numeric";
-      }
+      fieldType = "int4";
       fieldPrec = 0;
       break;
 
@@ -3054,7 +3047,8 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer(
     }
   }
 
-  // if the field doesn't not exist yet, create it as a serial field
+  // if the pk field doesn't exist yet, create a serial pk field
+  // as it's autoincremental
   if ( primaryKeyType.isEmpty() )
   {
     primaryKeyType = "serial";
@@ -3065,6 +3059,19 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer(
       primaryKeyType = "serial8";
     }
 #endif
+  }
+  else
+  {
+      // if the pk field's type is one of the postgres integer types,
+      // use the equivalent autoincremental type (serialN)
+      if ( primaryKeyType == "int2" || primaryKeyType == "int4" )
+      {
+        primaryKeyType = "serial";
+      }
+      else if ( primaryKeyType == "int8" )
+      {
+        primaryKeyType = "serial8";
+      }
   }
 
   try
