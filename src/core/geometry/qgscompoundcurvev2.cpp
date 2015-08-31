@@ -467,7 +467,13 @@ bool QgsCompoundCurveV2::insertVertex( const QgsVertexId& position, const QgsPoi
   {
     return false;
   }
-  return mCurves[curveId]->insertVertex( curveIds.at( 0 ).second, vertex );
+
+  bool success = mCurves[curveId]->insertVertex( curveIds.at( 0 ).second, vertex );
+  if ( success )
+  {
+    mBoundingBox = QgsRectangle(); //bbox changed
+  }
+  return success;
 }
 
 bool QgsCompoundCurveV2::moveVertex( const QgsVertexId& position, const QgsPointV2& newPos )
@@ -478,8 +484,13 @@ bool QgsCompoundCurveV2::moveVertex( const QgsVertexId& position, const QgsPoint
   {
     mCurves[idIt->first]->moveVertex( idIt->second, newPos );
   }
-  mBoundingBox = QgsRectangle(); //bbox changed
-  return curveIds.size() > 0;
+
+  bool success = curveIds.size() > 0;
+  if ( success )
+  {
+    mBoundingBox = QgsRectangle(); //bbox changed
+  }
+  return success;
 }
 
 bool QgsCompoundCurveV2::deleteVertex( const QgsVertexId& position )
@@ -490,7 +501,13 @@ bool QgsCompoundCurveV2::deleteVertex( const QgsVertexId& position )
   {
     mCurves[idIt->first]->deleteVertex( idIt->second );
   }
-  return curveIds.size() > 0;
+
+  bool success = curveIds.size() > 0;
+  if ( success )
+  {
+    mBoundingBox = QgsRectangle(); //bbox changed
+  }
+  return success;
 }
 
 QList< QPair<int, QgsVertexId> > QgsCompoundCurveV2::curveVertexId( const QgsVertexId& id ) const

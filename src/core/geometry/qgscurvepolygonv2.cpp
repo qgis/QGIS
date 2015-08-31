@@ -580,13 +580,19 @@ bool QgsCurvePolygonV2::insertVertex( const QgsVertexId& vId, const QgsPointV2& 
   QgsCurveV2* ring = vId.ring == 0 ? mExteriorRing : mInteriorRings[vId.ring - 1];
   int n = ring->numPoints();
   bool success = ring->insertVertex( QgsVertexId( 0, 0, vId.vertex ), vertex );
+  if ( !success )
+  {
+    return false;
+  }
+
   // If first or last vertex is inserted, re-sync the last/first vertex
   if ( vId.vertex == 0 )
     ring->moveVertex( QgsVertexId( 0, 0, n ), vertex );
   else if ( vId.vertex == n )
     ring->moveVertex( QgsVertexId( 0, 0, 0 ), vertex );
 
-  return success;
+  mBoundingBox = QgsRectangle();
+  return true;
 }
 
 bool QgsCurvePolygonV2::moveVertex( const QgsVertexId& vId, const QgsPointV2& newPos )

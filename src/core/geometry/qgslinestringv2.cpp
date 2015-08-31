@@ -358,6 +358,7 @@ bool QgsLineStringV2::insertVertex( const QgsVertexId& position, const QgsPointV
   {
     mM.insert( position.vertex, vertex.m() );
   }
+  mBoundingBox = QgsRectangle(); //set bounding box invalid
   return true;
 }
 
@@ -397,6 +398,7 @@ bool QgsLineStringV2::deleteVertex( const QgsVertexId& position )
   {
     mM.remove( position.vertex );
   }
+  mBoundingBox = QgsRectangle(); //set bounding box invalid
   return true;
 }
 
@@ -416,6 +418,7 @@ void QgsLineStringV2::addVertex( const QgsPointV2& pt )
   {
     mM.append( pt.m() );
   }
+  mBoundingBox = QgsRectangle(); //set bounding box invalid
 }
 
 double QgsLineStringV2::closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const
