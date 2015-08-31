@@ -150,13 +150,61 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QgsPoint& point, QList<Qg
     mSnapper->setSnapMode( QgsSnapper::SnapWithResultsWithinTolerances );
   }
 
+  QgsVectorLayer* currentVectorLayer = dynamic_cast<QgsVectorLayer*>( mMapCanvas->currentLayer() );
+  if ( !currentVectorLayer )
+  {
+    return 1;
+  }
+
   //read snapping settings from project
-  bool snappingDefinedInProject, ok;
-  QStringList layerIdList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingList", QStringList(), &snappingDefinedInProject );
-  QStringList enabledList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingEnabledList", QStringList(), &ok );
-  QStringList toleranceList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingToleranceList", QStringList(), &ok );
-  QStringList toleranceUnitList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingToleranceUnitList", QStringList(), &ok );
-  QStringList snapToList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnapToList", QStringList(), &ok );
+  QStringList layerIdList, enabledList, toleranceList, toleranceUnitList, snapToList;
+
+  bool ok, snappingDefinedInProject;
+
+  QSettings settings;
+  QString snappingMode = QgsProject::instance()->readEntry( "Digitizing", "/SnappingMode", "current_layer", &snappingDefinedInProject );
+  QString defaultSnapToleranceUnit = snappingDefinedInProject ? QgsProject::instance()->readEntry( "Digitizing", "/DefaultSnapToleranceUnit" ) : settings.value( "/qgis/digitizing/default_snapping_tolerance_unit", "0" ).toString();
+  QString defaultSnapType = snappingDefinedInProject ? QgsProject::instance()->readEntry( "Digitizing", "/DefaultSnapType" ) : settings.value( "/qgis/digitizing/default_snap_mode", "off" ).toString();
+  QString defaultSnapTolerance = snappingDefinedInProject ? QString::number( QgsProject::instance()->readDoubleEntry( "Digitizing", "/DefaultSnapTolerance" ) ) : settings.value( "/qgis/digitizing/default_snapping_tolerance", "0" ).toString();
+
+  if ( !snappingDefinedInProject && defaultSnapType == "off" )
+  {
+    return 0;
+  }
+
+  if ( snappingMode == "current_layer" || !snappingDefinedInProject )
+  {
+    layerIdList.append( currentVectorLayer->id() );
+    enabledList.append( "enabled" );
+    toleranceList.append( defaultSnapTolerance );
+    toleranceUnitList.append( defaultSnapToleranceUnit );
+    snapToList.append( defaultSnapType );
+  }
+  else if ( snappingMode == "all_layers" )
+  {
+    QList<QgsMapLayer*> allLayers = mMapCanvas->layers();
+    QList<QgsMapLayer*>::const_iterator layerIt = allLayers.constBegin();
+    for ( ; layerIt != allLayers.constEnd(); ++layerIt )
+    {
+      if ( !( *layerIt ) )
+      {
+        continue;
+      }
+      layerIdList.append(( *layerIt )->id() );
+      enabledList.append( "enabled" );
+      toleranceList.append( defaultSnapTolerance );
+      toleranceUnitList.append( defaultSnapToleranceUnit );
+      snapToList.append( defaultSnapType );
+    }
+  }
+  else //advanced
+  {
+    layerIdList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingList", QStringList(), &ok );
+    enabledList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingEnabledList", QStringList(), &ok );
+    toleranceList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingToleranceList", QStringList(), &ok );
+    toleranceUnitList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingToleranceUnitList", QStringList(), &ok );
+    snapToList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnapToList", QStringList(), &ok );
+  }
 
   if ( !( layerIdList.size() == enabledList.size() &&
           layerIdList.size() == toleranceList.size() &&
@@ -170,88 +218,50 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QgsPoint& point, QList<Qg
   QList<QgsSnapper::SnapLayer> snapLayers;
   QgsSnapper::SnapLayer snapLayer;
 
-  // Use snapping information from the project
-  if ( snappingDefinedInProject )
+
+
+  // set layers, tolerances, snap to segment/vertex to QgsSnapper
+  QStringList::const_iterator layerIt( layerIdList.constBegin() );
+  QStringList::const_iterator tolIt( toleranceList.constBegin() );
+  QStringList::const_iterator tolUnitIt( toleranceUnitList.constBegin() );
+  QStringList::const_iterator snapIt( snapToList.constBegin() );
+  QStringList::const_iterator enabledIt( enabledList.constBegin() );
+  for ( ; layerIt != layerIdList.constEnd(); ++layerIt, ++tolIt, ++tolUnitIt, ++snapIt, ++enabledIt )
   {
-    // set layers, tolerances, snap to segment/vertex to QgsSnapper
-    QStringList::const_iterator layerIt( layerIdList.constBegin() );
-    QStringList::const_iterator tolIt( toleranceList.constBegin() );
-    QStringList::const_iterator tolUnitIt( toleranceUnitList.constBegin() );
-    QStringList::const_iterator snapIt( snapToList.constBegin() );
-    QStringList::const_iterator enabledIt( enabledList.constBegin() );
-    for ( ; layerIt != layerIdList.constEnd(); ++layerIt, ++tolIt, ++tolUnitIt, ++snapIt, ++enabledIt )
+    if ( *enabledIt != "enabled" )
     {
-      if ( *enabledIt != "enabled" )
-      {
-        // skip layer if snapping is not enabled
-        continue;
-      }
-
-      //layer
-      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( QgsMapLayerRegistry::instance()->mapLayer( *layerIt ) );
-      if ( !vlayer || !vlayer->hasGeometryType() )
-        continue;
-
-      snapLayer.mLayer = vlayer;
-
-      //tolerance
-      snapLayer.mTolerance = tolIt->toDouble();
-      snapLayer.mUnitType = ( QgsTolerance::UnitType ) tolUnitIt->toInt();
-
-      // segment or vertex
-      if ( *snapIt == "to_vertex" )
-      {
-        snapLayer.mSnapTo = QgsSnapper::SnapToVertex;
-      }
-      else if ( *snapIt == "to_segment" )
-      {
-        snapLayer.mSnapTo = QgsSnapper::SnapToSegment;
-      }
-      else
-      {
-        // to vertex and segment
-        snapLayer.mSnapTo = QgsSnapper::SnapToVertexAndSegment;
-      }
-
-      snapLayers.append( snapLayer );
+      // skip layer if snapping is not enabled
+      continue;
     }
-  }
-  else
-  {
-    // nothing in project. Use default snapping tolerance to vertex of current layer
-    QgsMapLayer* currentLayer = mMapCanvas->currentLayer();
-    if ( !currentLayer )
-      return 2;
 
-    QgsVectorLayer* currentVectorLayer = qobject_cast<QgsVectorLayer *>( currentLayer );
-    if ( !currentVectorLayer )
-      return 3;
+    //layer
+    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( QgsMapLayerRegistry::instance()->mapLayer( *layerIt ) );
+    if ( !vlayer || !vlayer->hasGeometryType() )
+      continue;
 
-    snapLayer.mLayer = currentVectorLayer;
+    snapLayer.mLayer = vlayer;
 
-    //default snap mode
-    QSettings settings;
-    QString defaultSnapString = settings.value( "/qgis/digitizing/default_snap_mode", "off" ).toString();
-    if ( defaultSnapString == "to segment" )
-    {
-      snapLayer.mSnapTo = QgsSnapper::SnapToSegment;
-    }
-    else if ( defaultSnapString == "to vertex and segment" )
-    {
-      snapLayer.mSnapTo = QgsSnapper::SnapToVertexAndSegment;
-    }
-    else if ( defaultSnapString == "to vertex" )
+    //tolerance
+    snapLayer.mTolerance = tolIt->toDouble();
+    snapLayer.mUnitType = ( QgsTolerance::UnitType ) tolUnitIt->toInt();
+
+    // segment or vertex
+    if ( *snapIt == "to vertex" || *snapIt == "to_vertex" )
     {
       snapLayer.mSnapTo = QgsSnapper::SnapToVertex;
     }
-    else
+    else if ( *snapIt == "to segment" || *snapIt == "to_segment" )
     {
-      return 0;
+      snapLayer.mSnapTo = QgsSnapper::SnapToSegment;
     }
-
-    //default snapping tolerance (returned in map units)
-    snapLayer.mTolerance = QgsTolerance::defaultTolerance( currentVectorLayer, mMapCanvas->mapSettings() );
-    snapLayer.mUnitType = QgsTolerance::LayerUnits;
+    else if ( *snapIt == "to vertex and segment" || *snapIt == "to_vertex_and_segment" )
+    {
+      snapLayer.mSnapTo = QgsSnapper::SnapToVertexAndSegment;
+    }
+    else //off
+    {
+      continue;
+    }
 
     snapLayers.append( snapLayer );
   }
