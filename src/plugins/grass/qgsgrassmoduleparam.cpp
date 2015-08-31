@@ -705,17 +705,15 @@ QStringList QgsGrassModuleOption::options()
 
 QString QgsGrassModuleOption::ready()
 {
-  QgsDebugMsg( "called." );
+  QgsDebugMsg( "key = " + key() );
 
   QString error;
 
-  if ( mControlType == LineEdit )
+  if ( value().isEmpty() && mRequired )
   {
-    if ( mLineEdits.at( 0 )->text().trimmed().length() == 0 && mRequired )
-    {
-      error.append( tr( "%1:&nbsp;missing value" ).arg( title() ) );
-    }
+    error.append( tr( "%1:&nbsp;missing value" ).arg( title() ) );
   }
+
   return error;
 }
 
@@ -1424,7 +1422,7 @@ void QgsGrassModuleGroupBoxItem::adjustTitle()
 /***************** QgsGrassModuleGdalInput *********************/
 
 QgsGrassModuleGdalInput::QgsGrassModuleGdalInput(
-  QgsGrassModule *module, int type, QString key, QDomElement &qdesc,
+  QgsGrassModule *module, Type type, QString key, QDomElement &qdesc,
   QDomElement &gdesc, QDomNode &gnode, bool direct, QWidget * parent )
     : QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, direct, parent )
     , mType( type )
@@ -1694,7 +1692,7 @@ QString QgsGrassModuleGdalInput::ready()
 
 void QgsGrassModuleGdalInput::changed( int i )
 {
-  mLayerPassword->setEnabled( i < mUri.size() && mUri[i].startsWith( "PG:" ) && !mUri[i].contains( "password=" ) );
+  mLayerPassword->setEnabled( i < mUri.size() && mUri.value( i ).startsWith( "PG:" ) && !mUri.value( i ).contains( "password=" ) );
 }
 
 QgsGrassModuleGdalInput::~QgsGrassModuleGdalInput()
@@ -2028,7 +2026,7 @@ void QgsGrassModuleFile::browse()
 
 QString QgsGrassModuleFile::ready()
 {
-  QgsDebugMsg( "called." );
+  QgsDebugMsg( "key = " + key() );
 
   QString error;
   QString path = mLineEdit->text().trimmed();

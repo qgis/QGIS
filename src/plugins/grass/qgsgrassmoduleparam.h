@@ -440,18 +440,18 @@ class QgsGrassModuleGdalInput : public QgsGrassModuleGroupBoxItem
     Q_OBJECT
 
   public:
+    enum Type { Gdal, Ogr };
+
     /** \brief Constructor
      * \param qdesc option element in QGIS module description XML file
      * \param gdesc GRASS module XML description file
      */
-    QgsGrassModuleGdalInput( QgsGrassModule *module, int type, QString key,
+    QgsGrassModuleGdalInput( QgsGrassModule *module, QgsGrassModuleGdalInput::Type type, QString key,
                              QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
                              bool direct, QWidget * parent = 0 );
 
     //! Destructor
     ~QgsGrassModuleGdalInput();
-
-    enum Type { Gdal, Ogr };
 
     //! Reimplemented
     QStringList options() override;
