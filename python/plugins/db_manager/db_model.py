@@ -134,6 +134,8 @@ class ConnectionItem(TreeItem):
 
     def __init__(self, connection, parent=None):
         TreeItem.__init__(self, connection, parent)
+        self.connect(connection, SIGNAL("changed"), self.itemChanged)
+        self.connect(connection, SIGNAL("deleted"), self.itemRemoved)
 
         # load (shared) icon with first instance of table item
         if not hasattr(ConnectionItem, 'connectedIcon'):
@@ -285,7 +287,8 @@ class DBModel(QAbstractItemModel):
         self.rootItem = TreeItem(None, None)
         for dbtype in supportedDbTypes():
             dbpluginclass = createDbPlugin(dbtype)
-            PluginItem(dbpluginclass, self.rootItem)
+            item = PluginItem(dbpluginclass, self.rootItem)
+            self.connect(item, SIGNAL("itemChanged"), self.refreshItem)
 
     def refreshItem(self, item):
         if isinstance(item, TreeItem):
@@ -363,9 +366,6 @@ class DBModel(QAbstractItemModel):
 
         if index.column() == 0:
             item = index.internalPointer()
-
-            if not isinstance(item, SchemaItem) and not isinstance(item, TableItem):
-                flags |= Qt.ItemIsDropEnabled
 
             if isinstance(item, SchemaItem) or isinstance(item, TableItem):
                 flags |= Qt.ItemIsEditable
@@ -514,48 +514,28 @@ class DBModel(QAbstractItemModel):
         added = 0
 
         if data.hasUrls():
-            if row == -1 and column == -1:
-                for u in data.urls():
-                    filename = u.toLocalFile()
-                    if self.addConnection(filename, parent):
-                        added += 1
-            else:
-                for u in data.urls():
-                    filename = u.toLocalFile()
-                    if filename == "":
-                        continue
+            for u in data.urls():
+                filename = u.toLocalFile()
+                if filename == "":
+                    continue
+                if qgis.core.QgsRasterLayer.isValidRasterFileName(filename):
+                    layerType = 'raster'
+                    providerKey = 'gdal'
+                else:
+                    layerType = 'vector'
+                    providerKey = 'ogr'
 
-                    if qgis.core.QgsRasterLayer.isValidRasterFileName(filename):
-                        layerType = 'raster'
-                        providerKey = 'gdal'
-                    else:
-                        layerType = 'vector'
-                        providerKey = 'ogr'
+                layerName = QFileInfo(filename).completeBaseName()
 
-                    layerName = QFileInfo(filename).completeBaseName()
+                if self.importLayer(layerType, providerKey, layerName, filename, parent):
+                    added += 1
 
-                    if self.importLayer(layerType, providerKey, layerName, filename, parent):
-                        added += 1
-
-            if data.hasFormat(self.QGIS_URI_MIME):
-                for uri in qgis.core.QgsMimeDataUtils.decodeUriList(data):
-                    if self.importLayer(uri.layerType, uri.providerKey, uri.name, uri.uri, parent):
-                        added += 1
+        if data.hasFormat(self.QGIS_URI_MIME):
+            for uri in qgis.core.QgsMimeDataUtils.decodeUriList(data):
+                if self.importLayer(uri.layerType, uri.providerKey, uri.name, uri.uri, parent):
+                    added += 1
 
         return added > 0
-
-    def addConnection(self, filename, index):
-        file = filename.split("/")[-1]
-        if filename == "":
-            return False
-        s = QSettings()
-        connKey = index.internalPointer().getItemData().connectionSettingsKey()
-        conn = index.internalPointer().getItemData().connectionSettingsFileKey()
-        s.beginGroup("/%s/%s" % (connKey, file))
-        s.setValue(conn, filename)
-        self.treeView.setCurrentIndex(index)
-        self.treeView.mainWindow.refreshActionSlot()
-        return True
 
     def importLayer(self, layerType, providerKey, layerName, uriString, parent):
         if not self.isImportVectorAvail:
