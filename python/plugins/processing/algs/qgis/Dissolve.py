@@ -57,7 +57,7 @@ class Dissolve(GeoAlgorithm):
         if useField:
             fieldname = self.getParameterValue(Dissolve.FIELD)
             fieldIdx = vlayerA.fieldNameIndex(fieldname)
-            field = vlayerA.fields()[fieldIdx]
+            field = vlayerA.fields().field(fieldname)
             fields.append(field)
 
         countField = QgsField("count", QVariant.Int, '', 10, 0)
