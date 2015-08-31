@@ -268,9 +268,9 @@
                 <grass name="v.surf.bspline"/>
                 <grass name="v.surf.idw"/>
                 <grass name="v.surf.rst"/>
-                <grass name="r.bilinear" version_min="6.4"/>
+                <grass name="r.bilinear" version_max="6.4"/>
                 <grass name="r.surf.idw"/>
-                <grass name="r.surf.idw2"/>
+                <grass name="r.surf.idw2" version_max="6.4"/>
                 <grass name="r.fillnulls"/>
                 <grass name="r.surf.contour"/>
             </section>
@@ -281,9 +281,9 @@
             </section>
             <section label="Statistics">
                 <grass name="r.stats"/>
-                <grass name="r.sum"/>
+                <grass name="r.sum" version_max="6.4"/>
                 <grass name="r.report"/>
-                <grass name="r.average"/>
+                <grass name="r.average" version_max="6.4"/>
                 <grass name="r.median"/>
                 <grass name="r.mode"/>
                 <grass name="r.volume"/>
@@ -431,14 +431,16 @@
     </section>
 
     <section label="Imagery">
-        <section label="Develop images and group">
-            <grass name="i.image.mosaic"/>
+        <section label="Develop images and group" version_max="6.4">
+            <grass name="i.image.mosaic" version_max="6.4"/>
         </section>
         <section label="Manage image colors">
             <grass name="i.rgb.his"/>
             <grass name="i.his.rgb"/>
-            <grass name="i.landsat.rgb"/>
-            <grass name="i.fusion.brovey"/>
+            <grass name="i.landsat.rgb" version_max="6.4"/>
+            <grass name="i.colors.enhance" version_min="7.0"/>
+            <grass name="i.fusion.brovey" version_max="6.4"/>
+            <grass name="i.pansharpen" version_min="7.0"/>
         </section>
         <section label="Filter image">
             <grass name="i.zc"/>
