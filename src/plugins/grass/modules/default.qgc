@@ -25,7 +25,7 @@
     <section label="File management">
         <section label="Import into GRASS">
             <section label="Import raster into GRASS">
-                                <section label="Import raster into GRASS from QGIS view">
+                    <section label="Import raster into GRASS from QGIS view">
                     <grass name="r.in.gdal.qgis"/>
                     <grass name="r.in.gdal.qgis.loc"/>
                 </section>
@@ -51,7 +51,7 @@
                 </section>
             </section>
             <section label="Import vector into GRASS">
-                                    <grass name="v.in.ogr.qgis"/>
+                    <grass name="v.in.ogr.qgis"/>
                     <grass name="v.in.ogr"/>
                     <grass name="v.in.ogr.loc"/>
                     <grass name="v.in.ogr.all"/>
@@ -268,11 +268,11 @@
                 <grass name="v.surf.bspline"/>
                 <grass name="v.surf.idw"/>
                 <grass name="v.surf.rst"/>
-                                <grass name="r.bilinear" version_min="6.4"/>
-                                <grass name="r.surf.idw"/>
-                                <grass name="r.surf.idw2"/>
+                <grass name="r.bilinear" version_min="6.4"/>
+                <grass name="r.surf.idw"/>
+                <grass name="r.surf.idw2"/>
                 <grass name="r.fillnulls"/>
-                                <grass name="r.surf.contour"/>
+                <grass name="r.surf.contour"/>
             </section>
         </section>
         <section label="Reports and statistics">
@@ -280,7 +280,7 @@
                 <grass name="r.category"/>
             </section>
             <section label="Statistics">
-                                <grass name="r.stats"/>
+                <grass name="r.stats"/>
                 <grass name="r.sum"/>
                 <grass name="r.report"/>
                 <grass name="r.average"/>
@@ -475,12 +475,14 @@
             <grass name="v.db.droptable"/>
         </section>
         <section label="Columns management">
-            <grass name="v.db.addcol"/>
+			      <grass name="v.db.addcol" version_max="6.4"/>
+    		  	<grass name="v.db.addcolumn" version_min="7.0"/>
             <grass name="v.db.update_const"/>
             <grass name="v.db.update_query"/>
             <grass name="v.db.update_op"/>
             <grass name="v.db.update_op_query"/>
-            <grass name="v.db.dropcol" version_min="6.4"/>
+			      <grass name="v.db.dropcol" version_min="6.4" version_max="6.4"/>
+    		  	<grass name="v.db.dropcolumn" version_min="7.0"/>
             <grass name="v.db.renamecol"/>
             <grass name="db.execute"/>
             <grass name="db.select"/>

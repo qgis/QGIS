@@ -2,10 +2,10 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
 <qgisgrassmodule label="Fill lake from seed at given level" module="r.lake">
-	<option key="dem" version_max="6.4"/>
-	<option key="elevation" version_min="7.0"/>
+	<option key="dem" version_max="6"/>
+	<option key="elevation" version_min="7"/>
 	<option key="seed" />
-	<option key="wl" version_max="6.4"/>
-	<option key="water_level" version_min="7.0"/>
+	<option key="wl" version_max="6"/>
+	<option key="water_level" version_min="7"/>
 	<option key="lake" />
 </qgisgrassmodule>

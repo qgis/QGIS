@@ -2,9 +2,12 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
 <qgisgrassmodule label="Cut network by cost isolines" module="v.net.iso">
-	<option key="input" layeroption="alayer" typemask="line,boundary" label="Input arcs" id="arcs" />
-	<option key="input" mapid="arcs" layeroption="nlayer" typemask="point" label="Input nodes" id="nodes" />
-	<selection key="ccats" layerid="nodes" label="Cats (select from the map or using their id)" />
+	<option key="input" layeroption="alayer" typemask="line,boundary" label="Input arcs" id="arcs" version_max="6"/>
+	<option key="input" layeroption="arc_layer" typemask="line,boundary" label="Input arcs" id="arcs" version_min="7"/>
+	<option key="input" mapid="arcs" layeroption="nlayer" typemask="point" label="Input nodes" id="nodes" version_max="6"/>
+	<option key="input" mapid="arcs" layeroption="node_layer" typemask="point" label="Input nodes" id="nodes" version_min="7"/>
+	<selection key="ccats" layerid="nodes" label="Cats (select from the map or using their id)" version_max="6"/>
+	<selection key="center_cats" layerid="nodes" label="Cats (select from the map or using their id)" version_min="7"/>
 	<option key="costs" />
 	<option key="output" />
 </qgisgrassmodule>

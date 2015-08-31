@@ -3,8 +3,8 @@
 
 <qgisgrassmodule label="Create random vector point contained in raster" module="r.random">
 	<option key="input"/>
-	<option key="n" answer="1" hidden="no" version_max="6.4"/>
-	<option key="npoints" answer="1" hidden="no" version_min="7.0"/>
-	<option key="vector_output" version_max="6.4"/>
-	<option key="vector" version_min="7.0"/>
+	<option key="n" answer="1" hidden="no" version_max="6"/>
+	<option key="npoints" answer="1" hidden="no" version_min="7"/>
+	<option key="vector_output" version_max="6"/>
+	<option key="vector" version_min="7"/>
 </qgisgrassmodule>

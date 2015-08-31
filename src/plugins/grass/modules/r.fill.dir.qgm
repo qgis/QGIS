@@ -3,9 +3,9 @@
 
 <qgisgrassmodule label="Filter and create depressionless elevation map and flow direction map from elevation raster" module="r.fill.dir">
 	<option key="input" />
-	<option key="type" answer="grass" hidden="yes" version_max="6.4"/>
-	<option key="format" answer="grass" hidden="yes" version_min="7.0"/>
-	<option key="elevation" version_max="6.4"/>
-	<option key="output" version_min="7.0"/>
+	<option key="type" answer="grass" hidden="yes" version_max="6"/>
+	<option key="format" answer="grass" hidden="yes" version_min="7"/>
+	<option key="elevation" version_max="6"/>
+	<option key="output" version_min="7"/>
 	<option key="direction" />
 </qgisgrassmodule>
