@@ -4,7 +4,7 @@
 <qgisgrassmodule label="Generate raster of cumulative cost of moving between locations, based on elevation and friction input rasters and starting point(s) coordinates" module="r.walk">
     <option key="elevation"/>
     <option key="friction"/>
-    <option key="coordinate"version_max="6.4"/>
+    <option key="coordinate" version_max="6.4"/>
     <option key="start_coordinates" version_min="7.0"/>
     <option key="output"/>
     <flag key="k" hidden="no"/>

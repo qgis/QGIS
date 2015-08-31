@@ -185,7 +185,7 @@
             </section>
             <section label="Map algebra">
                 <grass name="r.mapcalc"/>
-                <grass name="r.mapcalculator"version_max="6.4"/>
+                <grass name="r.mapcalculator" version_max="6.4"/>
             </section>
             <section label="Neighborhood analysis">
                 <grass name="r.neighbors"/>

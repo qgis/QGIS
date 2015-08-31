@@ -3,7 +3,7 @@
 
 <qgisgrassmodule label="Generate raster of cumulative cost of moving between locations based on cost input raster and starting point(s) coordinates" module="r.cost">
     <option key="input"/>
-    <option key="coordinate"version_max="6.4"/>
+    <option key="coordinate" version_max="6.4"/>
     <option key="start_coordinates" version_min="7.0"/>
     <option key="output"/>
     <option key="max_cost" hidden="no"/>
