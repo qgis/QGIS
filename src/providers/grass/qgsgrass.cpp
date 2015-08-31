@@ -1618,17 +1618,24 @@ bool QgsGrass::mapRegion( QgsGrassObject::Type type, QString gisdbase,
   if ( type == QgsGrassObject::Raster )
   {
 
+    QString error = tr( "Cannot read raster map region" ) + " (" + gisdbase + "/" + location + "/" + mapset + ")";
 #if GRASS_VERSION_MAJOR < 7
     if ( G_get_cellhd( map.toUtf8().data(),
                        mapset.toUtf8().data(), window ) < 0 )
     {
-      QMessageBox::warning( 0, QObject::tr( "Warning" ),
-                            QObject::tr( "Cannot read raster map region" ) );
+      warning( error );
       return false;
     }
 #else
-    // TODO7: unfortunately Rast_get_cellhd does not return error code and calls G_fatal_error on error
-    Rast_get_cellhd( map.toUtf8().data(), mapset.toUtf8().data(), window );
+    G_TRY
+    {
+      Rast_get_cellhd( map.toUtf8().data(), mapset.toUtf8().data(), window );
+    }
+    G_CATCH( QgsGrass::Exception &e )
+    {
+      warning( error + " : " + e.what() );
+      return false;
+    }
 #endif
   }
   else if ( type == QgsGrassObject::Vector )
