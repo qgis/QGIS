@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Assignes a predefined color table to each raster map of the space time raster dataset" module="t.rast.colors">
+<qgisgrassmodule label="Assigns a predefined color table to each raster map of the space time raster dataset" module="t.rast.colors">
 	<option key="input"/>
 	<option key="color"/>
 	<flag key="r" hidden="no" advanced="yes"/>
