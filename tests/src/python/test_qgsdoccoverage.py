@@ -94,6 +94,21 @@ def elemIsDocumentableMember(elem):
     except:
         pass
 
+    #ignore on_* slots
+    try:
+        if name.text.startswith('on_'):
+            return False
+    except:
+        pass
+
+    #ignore deprecated members
+    typeelem = elem.find('type')
+    try:
+        if typeelem.text and 'Q_DECL_DEPRECATED' in typeelem.text:
+            return False
+    except:
+        pass
+
     return True
 
 
