@@ -254,6 +254,9 @@ QgsGrassModuleOption::QgsGrassModuleOption( QgsGrassModule *module, QString key,
   {
     QDomElement gelem = gnode.toElement();
 
+    // Output option may have missing gisprompt if output may be both vector and raster according to other options (e.g. v.kernel)
+    // outputType qgm attribute allows to force output type
+
     // Predefined values ?
     QDomNode valuesNode = gnode.namedItem( "values" );
     QDomElement valuesElem = valuesNode.toElement(); // null if valuesNode is null
@@ -335,6 +338,29 @@ QgsGrassModuleOption::QgsGrassModuleOption( QgsGrassModule *module, QString key,
     {
       // Line edit
       mControlType = LineEdit;
+
+      // Output option may have missing gisprompt if output may be both vector and raster according to other options (e.g. v.kernel)
+      // outputType qgm attribute allows to force output type
+      QgsDebugMsg( "outputType = " + qdesc.attribute( "outputType" ) );
+      if ( qdesc.hasAttribute( "outputType" ) )
+      {
+        QString outputType = qdesc.attribute( "outputType" );
+        mIsOutput = true;
+        if ( outputType == "vector" )
+        {
+          mOutputElement = "vector";
+          mOutputType = Vector;
+        }
+        else if ( outputType == "raster" )
+        {
+          mOutputElement = "cell";
+          mOutputType = Raster;
+        }
+        else
+        {
+          mErrors << tr( "Unknown outputType" ) + " : " + outputType;
+        }
+      }
 
       if ( gelem.attribute( "type" ) == "integer" )
       {
