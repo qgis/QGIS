@@ -1692,6 +1692,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
       QDomElement diagramSettingsElem = node.firstChildElement( "DiagramLayerSettings" );
       if ( !diagramSettingsElem.isNull() )
       {
+        delete mDiagramLayerSettings;
         mDiagramLayerSettings = new QgsDiagramLayerSettings();
         mDiagramLayerSettings->readXML( diagramSettingsElem, this );
       }
