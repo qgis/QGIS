@@ -42,13 +42,14 @@ class SelectByLocation(GeoAlgorithm):
     METHOD = 'METHOD'
     OUTPUT = 'OUTPUT'
 
-    METHODS = ['creating new selection',
-               'adding to current selection',
-               'removing from current selection']
-
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Select by location')
         self.group, self.i18n_group = self.trAlgorithm('Vector selection tools')
+
+        self.methods = [self.tr('creating new selection'),
+                        self.tr('adding to current selection'),
+                        self.tr('removing from current selection')]
+
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Layer to select from'),
                                           [ParameterVector.VECTOR_TYPE_ANY]))
@@ -60,7 +61,7 @@ class SelectByLocation(GeoAlgorithm):
                                                      left=self.INPUT, right=self.INTERSECT))
         self.addParameter(ParameterSelection(self.METHOD,
                                              self.tr('Modify current selection by'),
-                                             self.METHODS, 0))
+                                             self.methods, 0))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Selected (location)'), True))
 
     def processAlgorithm(self, progress):

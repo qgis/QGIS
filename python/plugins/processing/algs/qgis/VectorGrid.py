@@ -46,13 +46,13 @@ class VectorGrid(GeoAlgorithm):
     TYPE = 'TYPE'
     OUTPUT = 'OUTPUT'
 
-    TYPES = ['Output grid as polygons',
-             'Output grid as lines'
-             ]
-
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Vector grid')
         self.group, self.i18n_group = self.trAlgorithm('Vector creation tools')
+
+        self.types = [self.tr('Output grid as polygons'),
+                      self.tr('Output grid as lines')]
+
         self.addParameter(ParameterExtent(self.EXTENT,
                                           self.tr('Grid extent')))
         self.addParameter(ParameterNumber(self.STEP_X,
@@ -60,7 +60,7 @@ class VectorGrid(GeoAlgorithm):
         self.addParameter(ParameterNumber(self.STEP_Y,
                                           self.tr('Y spacing'), 0.0, 1000000000.0, 0.0001))
         self.addParameter(ParameterSelection(self.TYPE,
-                                             self.tr('Grid type'), self.TYPES))
+                                             self.tr('Grid type'), self.types))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Grid')))
 

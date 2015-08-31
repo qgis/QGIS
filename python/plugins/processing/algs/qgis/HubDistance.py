@@ -62,6 +62,12 @@ class HubDistance(GeoAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('Distance to nearest hub')
         self.group, self.i18n_group = self.trAlgorithm('Vector analysis tools')
 
+        self.units = [self.tr('Meters'),
+                      self.tr('Feet'),
+                      self.tr('Miles'),
+                      self.tr('Kilometers'),
+                      self.tr('Layer units')]
+
         self.addParameter(ParameterVector(self.POINTS,
                                           self.tr('Source points layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterVector(self.HUBS,
@@ -71,7 +77,7 @@ class HubDistance(GeoAlgorithm):
         self.addParameter(ParameterSelection(self.GEOMETRY,
                                              self.tr('Output shape type'), self.GEOMETRIES))
         self.addParameter(ParameterSelection(self.UNIT,
-                                             self.tr('Measurement unit'), self.UNITS))
+                                             self.tr('Measurement unit'), self.units))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Hub distance')))
 
