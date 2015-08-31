@@ -402,7 +402,6 @@ namespace pal
     return (( LabelPosition* ) l )->mCost > (( LabelPosition* ) r )->mCost;
   }
 
-
   bool LabelPosition::polygonObstacleCallback( FeaturePart *obstacle, void *ctx )
   {
     PolygonCostCalculator *pCost = ( PolygonCostCalculator* ) ctx;

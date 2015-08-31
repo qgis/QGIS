@@ -60,10 +60,6 @@ namespace pal
       , mUpsidedownLabels( Upright )
   {
     rtree = new RTree<FeaturePart*, double, 2, double>();
-    hashtable = new QHash< QString, Feature*>;
-
-    connectedHashtable = new QHash< QString, QLinkedList<FeaturePart*>* >;
-    connectedTexts = new QLinkedList< QString >;
 
     if ( defaultPriority < 0.0001 )
       mDefaultPriority = 0.0001;
@@ -73,7 +69,6 @@ namespace pal
       mDefaultPriority = defaultPriority;
 
     featureParts = new QLinkedList<FeaturePart*>;
-    features = new QLinkedList<Feature*>;
   }
 
   Layer::~Layer()
@@ -86,27 +81,23 @@ namespace pal
       delete featureParts;
     }
 
-    // this hashtable and list should be empty if they still exist
-    delete connectedHashtable;
-
     // features in the hashtable
-    if ( features )
-    {
-      qDeleteAll( *features );
-      delete features;
-    }
+    qDeleteAll( features );
+    features.clear();
+
+    //should already be empty
+    qDeleteAll( mConnectedHashtable );
+    mConnectedHashtable.clear();
 
     delete rtree;
 
-    delete hashtable;
     mMutex.unlock();
-    delete connectedTexts;
   }
 
   Feature* Layer::getFeature( const QString& geom_id )
   {
-    QHash< QString, Feature*>::const_iterator i = hashtable->find( geom_id );
-    if ( i != hashtable->constEnd() )
+    QHash< QString, Feature*>::const_iterator i = mHashtable.find( geom_id );
+    if ( i != mHashtable.constEnd() )
       return *i;
     else
       return 0;
@@ -131,7 +122,7 @@ namespace pal
 
     mMutex.lock();
 
-    if ( hashtable->contains( geom_id ) )
+    if ( mHashtable.contains( geom_id ) )
     {
       mMutex.unlock();
       //A feature with this id already exists. Don't throw an exception as sometimes,
@@ -264,8 +255,8 @@ namespace pal
     // add feature to layer if we have added something
     if ( !first_feat )
     {
-      features->append( f );
-      hashtable->insert( geom_id, f );
+      features << f;
+      mHashtable.insert( geom_id, f );
     }
     else
     {
@@ -290,18 +281,17 @@ namespace pal
     // add to hashtable with equally named feature parts
     if ( mMergeLines && !labelText.isEmpty() )
     {
-      QHash< QString, QLinkedList<FeaturePart*>* >::const_iterator lstPtr = connectedHashtable->find( labelText );
       QLinkedList< FeaturePart*>* lst;
-      if ( lstPtr == connectedHashtable->constEnd() )
+      if ( !mConnectedHashtable.contains( labelText ) )
       {
         // entry doesn't exist yet
         lst = new QLinkedList<FeaturePart*>;
-        connectedHashtable->insert( labelText, lst );
-        connectedTexts->append( labelText );
+        mConnectedHashtable.insert( labelText, lst );
+        mConnectedTexts << labelText;
       }
       else
       {
-        lst = *lstPtr;
+        lst = mConnectedHashtable.value( labelText );
       }
       lst->append( fpart ); // add to the list
     }
@@ -327,16 +317,12 @@ namespace pal
   void Layer::joinConnectedFeatures()
   {
     // go through all label texts
-    QString labelText;
-    while ( !connectedTexts->isEmpty() )
+    Q_FOREACH ( QString labelText, mConnectedTexts )
     {
-      labelText = connectedTexts->takeFirst();
-
-      //std::cerr << "JOIN: " << labelText << std::endl;
-      QHash< QString, QLinkedList<FeaturePart*>* >::const_iterator partsPtr = connectedHashtable->find( labelText );
-      if ( partsPtr == connectedHashtable->constEnd() )
+      if ( !mConnectedHashtable.contains( labelText ) )
         continue; // shouldn't happen
-      QLinkedList<FeaturePart*>* parts = *partsPtr;
+
+      QLinkedList<FeaturePart*>* parts = mConnectedHashtable.value( labelText );
 
       // go one-by-one part, try to merge
       while ( !parts->isEmpty() )
@@ -365,18 +351,22 @@ namespace pal
             otherPart->getBoundingBox( bmin, bmax );
             rtree->Insert( bmin, bmax, otherPart );
           }
+          delete partCheck;
         }
       }
 
       // we're done processing feature parts with this particular label text
       delete parts;
+      mConnectedHashtable.remove( labelText );
     }
 
-    // we're done processing connected fetures
-    delete connectedHashtable;
-    connectedHashtable = NULL;
-    delete connectedTexts;
-    connectedTexts = NULL;
+    // we're done processing connected features
+
+    //should be empty, but clear to be safe
+    qDeleteAll( mConnectedHashtable );
+    mConnectedHashtable.clear();
+
+    mConnectedTexts.clear();
   }
 
   void Layer::chopFeaturesAtRepeatDistance()
