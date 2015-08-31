@@ -50,11 +50,15 @@ namespace pal
   class Feats
   {
     public:
+      Feats()
+          : feature( 0 )
+          , shape( 0 )
+      {}
+
       FeaturePart *feature;
       PointSet *shape;
       double priority;
-      int nblp;
-      LabelPosition **lPos;
+      QList< LabelPosition*> lPos;
   };
 
 

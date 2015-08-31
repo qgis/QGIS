@@ -223,7 +223,7 @@ namespace pal
        * @param mapShape optional geometry of source polygon
        * @returns the number of generated candidates
        */
-      int setPositionForPoint( double x, double y, LabelPosition ***lPos, double angle, PointSet *mapShape = 0 );
+      int setPositionForPoint( double x, double y, QList<LabelPosition *> &lPos, double angle, PointSet *mapShape = 0 );
 
       /** Generate one candidate over or offset the specified point.
        * @param x x coordinate of the point
@@ -233,14 +233,14 @@ namespace pal
        * @param mapShape optional geometry of source polygon
        * @returns the number of generated candidates (always 1)
        */
-      int setPositionOverPoint( double x, double y, LabelPosition ***lPos, double angle, PointSet *mapShape = 0 );
+      int setPositionOverPoint( double x, double y, QList<LabelPosition *> &lPos, double angle, PointSet *mapShape = 0 );
 
       /** Generate candidates for line feature.
        * @param lPos pointer to an array of candidates, will be filled by generated candidates
        * @param mapShape a pointer to the line
        * @returns the number of generated candidates
        */
-      int setPositionForLine( LabelPosition ***lPos, PointSet *mapShape );
+      int setPositionForLine( QList<LabelPosition *> &lPos, PointSet *mapShape );
 
       LabelPosition* curvedPlacementAtOffset( PointSet* path_positions, double* path_distances,
                                               int orientation, int index, double distance );
@@ -250,14 +250,14 @@ namespace pal
        * @param mapShape a pointer to the line
        * @returns the number of generated candidates
        */
-      int setPositionForLineCurved( LabelPosition ***lPos, PointSet* mapShape );
+      int setPositionForLineCurved( QList<LabelPosition *> &lPos, PointSet* mapShape );
 
       /** Generate candidates for polygon features.
        * \param lPos pointer to an array of candidates, will be filled by generated candidates
        * \param mapShape a pointer to the polygon
        * \return the number of generated candidates
        */
-      int setPositionForPolygon( LabelPosition ***lPos, PointSet *mapShape );
+      int setPositionForPolygon( QList<LabelPosition *> &lPos, PointSet *mapShape );
 
       /** Returns the parent feature.
        */
@@ -276,7 +276,7 @@ namespace pal
        * \param candidates index for candidates
        * \return the number of candidates in *lPos
        */
-      int setPosition( LabelPosition ***lPos, double bbox_min[2], double bbox_max[2], PointSet *mapShape, RTree<LabelPosition*, double, 2, double>*candidates );
+      int setPosition( QList<LabelPosition *> &lPos, double bbox_min[2], double bbox_max[2], PointSet *mapShape, RTree<LabelPosition*, double, 2, double>*candidates );
 
       /** Returns the unique ID of the feature.
        */
@@ -315,7 +315,7 @@ namespace pal
        * Return true on success, false if the feature wasn't modified */
       bool mergeWithFeaturePart( FeaturePart* other );
 
-      void addSizePenalty( int nbp, LabelPosition** lPos, double bbx[4], double bby[4] );
+      void addSizePenalty( int nbp, QList<LabelPosition *> &lPos, double bbx[4], double bby[4] );
 
     protected:
 

@@ -239,10 +239,8 @@ namespace pal
 
   void PointSet::deleteCoords()
   {
-    if ( x )
-      delete[] x;
-    if ( y )
-      delete[] y;
+    delete[] x;
+    delete[] y;
     x = NULL;
     y = NULL;
   }
