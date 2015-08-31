@@ -938,6 +938,9 @@ void QgsOptions::iconSizeChanged( const QString &iconSize )
 
 void QgsOptions::uiThemeChanged( const QString &theme )
 {
+  if ( theme == QgsApplication::themeName() )
+    return;
+
   QgsApplication::setUITheme( theme );
 }
 
@@ -966,6 +969,8 @@ void QgsOptions::on_mProjectOnLaunchPushBtn_pressed()
 void QgsOptions::saveOptions()
 {
   QSettings settings;
+
+  settings.setValue( "UI/UITheme", cmbUITheme->currentText());
 
   // custom environment variables
   settings.setValue( "qgis/customEnvVarsUse", QVariant( mCustomVariablesChkBx->isChecked() ) );
