@@ -4658,7 +4658,7 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="page">
+         <widget class="QWidget" name="mOptionsPageVariables">
           <layout class="QVBoxLayout" name="verticalLayout_40">
            <item>
             <widget class="QGroupBox" name="groupBox_25">

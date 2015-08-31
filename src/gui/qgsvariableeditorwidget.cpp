@@ -75,11 +75,11 @@ QgsVariableEditorWidget::QgsVariableEditorWidget( QWidget *parent )
   QSpacerItem* horizontalSpacer = new QSpacerItem( 40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
   horizontalLayout->addItem( horizontalSpacer );
   mAddButton = new QPushButton();
-  mAddButton->setIcon( QgsApplication::getThemeIcon( "/mActionSignPlus.png" ) );
+  mAddButton->setIcon( QgsApplication::getThemeIcon( "/symbologyAdd.svg" ) );
   mAddButton->setEnabled( false );
   horizontalLayout->addWidget( mAddButton );
   mRemoveButton = new QPushButton();
-  mRemoveButton->setIcon( QgsApplication::getThemeIcon( "/symbologyRemove.png" ) );
+  mRemoveButton->setIcon( QgsApplication::getThemeIcon( "/symbologyRemove.svg" ) );
   mRemoveButton->setEnabled( false );
   horizontalLayout->addWidget( mRemoveButton );
   verticalLayout->addLayout( horizontalLayout );
