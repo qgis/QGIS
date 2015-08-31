@@ -123,6 +123,16 @@ class TestPointPlacement(TestPlacementBase):
         self.removeMapLayer(self.layer)
         self.layer = None
 
+    def test_point_placement_narrow_polygon_obstacle(self):
+        # Default point label placement with narrow polygon obstacle
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('point')
+        polyLayer = TestQgsPalLabeling.loadFeatureLayer('narrow_polygon')
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.removeMapLayer(polyLayer)
+        self.layer = None
+
 if __name__ == '__main__':
     # NOTE: unless PAL_SUITE env var is set all test class methods will be run
     # SEE: test_qgspallabeling_tests.suiteTests() to define suite
