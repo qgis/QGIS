@@ -1934,20 +1934,7 @@ QgsGrassModuleFile::QgsGrassModuleFile(
     mType = Directory;
   }
 
-  if ( !qdesc.attribute( "filters" ).isNull() )
-  {
-    mFilters = qdesc.attribute( "filters" ).split( ";;" );
-
-    if ( mFilters.size() > 0 )
-    {
-      QRegExp rx( ".*\\( *..([^ )]*).*" );
-      QString ext;
-      if ( rx.indexIn( mFilters.at( 0 ) ) == 0 )
-      {
-        mSuffix = rx.cap( 1 );
-      }
-    }
-  }
+  mFilters = qdesc.attribute( "filters" );
 
   mFileOption = qdesc.attribute( "fileoption" );
 
@@ -1997,7 +1984,7 @@ void QgsGrassModuleFile::browse()
     else
       path = QFileInfo( path ).absolutePath();
 
-    QStringList files = QFileDialog::getOpenFileNames( this, 0, path );
+    QStringList files = QFileDialog::getOpenFileNames( this, 0, path, mFilters );
     if ( files.isEmpty() )
       return;
 
@@ -2016,7 +2003,7 @@ void QgsGrassModuleFile::browse()
     else if ( mType == Directory )
       selectedFile = QFileDialog::getExistingDirectory( this, 0, selectedFile );
     else
-      selectedFile = QFileDialog::getOpenFileName( this, 0, selectedFile );
+      selectedFile = QFileDialog::getOpenFileName( this, 0, selectedFile, mFilters );
 
     lastDir = QFileInfo( selectedFile ).absolutePath();
 

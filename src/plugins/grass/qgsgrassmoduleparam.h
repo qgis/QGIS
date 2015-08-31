@@ -634,9 +634,6 @@ class QgsGrassModuleFile : public QgsGrassModuleGroupBoxItem
     // ! Optionaly split file to dir and file path
     QString mFileOption;
 
-    // ! Default suffix
-    QString mSuffix;
-
     //! Line
     QLineEdit *mLineEdit;
 
@@ -644,7 +641,7 @@ class QgsGrassModuleFile : public QgsGrassModuleGroupBoxItem
     QPushButton *mBrowseButton;
 
     //! File filters
-    QStringList mFilters;
+    QString mFilters;
 };
 
 #endif // QGSGRASSMODULEPARAM_H
