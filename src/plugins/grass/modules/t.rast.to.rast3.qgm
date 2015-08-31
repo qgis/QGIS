@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Converts a space time raster dataset into a 3D raster map" module="t.rast.to.rast3">
+	<option key="input"/>
+	<option key="output"/>
+</qgisgrassmodule>

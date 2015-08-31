@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Computes cyclic accumulations of a space time raster dataset" module="t.rast.accumulate">
+	<option key="input"/>
+	<option key="output"/>
+	<option key="basename"/>
+	<option key="granularity"/>
+	<option key="method"/>
+	<option key="lower"/>
+	<option key="upper"/>
+	<option key="start"/>
+	<option key="stop"/>
+	<option key="cycle"/>
+	<option key="offset" advanced="yes"/>
+	<option key="limits" advanced="yes"/>
+	<option key="shift" advanced="yes"/>
+	<option key="scale" advanced="yes"/>
+	<flag key="r" hidden="no" advanced="yes"/>
+	<flag key="n" hidden="no" advanced="yes"/>
+</qgisgrassmodule>
