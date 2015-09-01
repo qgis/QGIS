@@ -14,6 +14,8 @@
  ***************************************************************************/
 
 #include "qgslinesymbollayerv2.h"
+#include "qgscurvev2.h"
+#include "qgscurvepolygonv2.h"
 #include "qgsdxfexport.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgsexpression.h"
@@ -751,6 +753,8 @@ QgsSymbolLayerV2* QgsMarkerLineSymbolLayerV2::create( const QgsStringMap& props 
       x->setPlacement( FirstVertex );
     else if ( props["placement"] == "centralpoint" )
       x->setPlacement( CentralPoint );
+    else if ( props["placement"] == "curvepoint" )
+      x->setPlacement( CurvePoint );
     else
       x->setPlacement( Interval );
   }
@@ -827,6 +831,10 @@ void QgsMarkerLineSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSym
       {
         placement = CentralPoint;
       }
+      else if ( placementString.compare( "curvepoint", Qt::CaseInsensitive ) == 0 )
+      {
+        placement = CurvePoint;
+      }
       else
       {
         placement = Interval;
@@ -845,6 +853,7 @@ void QgsMarkerLineSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSym
   }
   else
   {
+    context.renderContext().setGeometry( 0 ); //always use segmented geometry with offset
     QList<QPolygonF> mline = ::offsetLine( points, offset * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit, mOffsetMapUnitScale ), context.feature() ? context.feature()->constGeometry()->type() : QGis::Line );
 
     for ( int part = 0; part < mline.count(); ++part )
@@ -863,12 +872,24 @@ void QgsMarkerLineSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSym
 
 void QgsMarkerLineSymbolLayerV2::renderPolygonOutline( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context )
 {
+  const QgsCurvePolygonV2* curvePolygon = dynamic_cast<const QgsCurvePolygonV2*>( context.renderContext().geometry() );
+
+  if ( curvePolygon )
+  {
+    context.renderContext().setGeometry( curvePolygon->exteriorRing() );
+  }
   renderPolyline( points, context );
   if ( rings )
   {
     mOffset = -mOffset; // invert the offset for rings!
-    foreach ( const QPolygonF& ring, *rings )
-      renderPolyline( ring, context );
+    for ( int i = 0; i < rings->size(); ++i )
+    {
+      if ( curvePolygon )
+      {
+        context.renderContext().setGeometry( curvePolygon->interiorRing( i ) );
+      }
+      renderPolyline( rings->at( i ), context );
+    }
     mOffset = -mOffset;
   }
 }
@@ -976,6 +997,39 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineVertex( const QPolygonF& points, 
   {
     //scale offset along line
     offsetAlongLine *= QgsSymbolLayerV2Utils::lineWidthScaleFactor( rc, mOffsetAlongLineUnit, mOffsetAlongLineMapUnitScale );
+  }
+
+  if ( !mRotateMarker && offsetAlongLine == 0 && context.renderContext().geometry()
+       && context.renderContext().geometry()->hasCurvedSegments() && ( placement == Vertex || placement == CurvePoint ) )
+  {
+    const QgsCoordinateTransform* ct = context.renderContext().coordinateTransform();
+    const QgsMapToPixel& mtp = context.renderContext().mapToPixel();
+
+    QgsVertexId vId;
+    QgsPointV2 vPoint;
+    double z;
+    QPointF mapPoint;
+    while ( context.renderContext().geometry()->nextVertex( vId, vPoint ) )
+    {
+      if (( placement == Vertex && vId.type == QgsVertexId::SegmentVertex )
+          || ( placement == CurvePoint && vId.type == QgsVertexId::CurveVertex ) )
+      {
+        //transform
+        mapPoint.setX( vPoint.x() ); mapPoint.setY( vPoint.y() ); z = vPoint.z();
+        mtp.transformInPlace( mapPoint.rx(), mapPoint.ry() );
+        if ( ct )
+        {
+          ct->transformInPlace( mapPoint.rx(), mapPoint.ry(), z );
+        }
+
+        if ( mRotateMarker )
+        {
+          //todo: function to calculate angle...
+        }
+        mMarker->renderPoint( mapPoint, context.feature(), rc, -1, context.selected() );
+      }
+    }
+    return;
   }
 
   if ( placement == FirstVertex )
@@ -1230,6 +1284,8 @@ QgsStringMap QgsMarkerLineSymbolLayerV2::properties() const
     map["placement"] = "firstvertex";
   else if ( mPlacement == CentralPoint )
     map["placement"] = "centralpoint";
+  else if ( mPlacement == CurvePoint )
+    map["placement"] = "curvepoint";
   else
     map["placement"] = "interval";
 

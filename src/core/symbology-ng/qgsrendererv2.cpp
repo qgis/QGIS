@@ -26,6 +26,7 @@
 #include "qgsrendercontext.h"
 #include "qgsclipper.h"
 #include "qgsgeometry.h"
+#include "qgsgeometrycollectionv2.h"
 #include "qgsfeature.h"
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"
@@ -288,6 +289,7 @@ void QgsFeatureRendererV2::renderFeatureWithSymbol( QgsFeature& feature, QgsSymb
 
   const QgsGeometry* segmentizedGeometry = geom;
   bool deleteSegmentizedGeometry = false;
+  context.setGeometry( geom->geometry() );
 
   //convert curve types to normal point/line/polygon ones
   switch ( QgsWKBTypes::flatType( geom->geometry()->wkbType() ) )
@@ -387,8 +389,14 @@ void QgsFeatureRendererV2::renderFeatureWithSymbol( QgsFeature& feature, QgsSymb
       const unsigned char* ptr = wkbPtr;
       QPolygonF pts;
 
+      const QgsGeometryCollectionV2* geomCollection = dynamic_cast<const QgsGeometryCollectionV2*>( geom->geometry() );
+
       for ( unsigned int i = 0; i < num; ++i )
       {
+        if ( geomCollection )
+        {
+          context.setGeometry( geomCollection->geometryN( i ) );
+        }
         ptr = QgsConstWkbPtr( _getLineString( pts, context, ptr, symbol->clipFeaturesToExtent() ) );
         (( QgsLineSymbolV2* )symbol )->renderPolyline( pts, &feature, context, layer, selected );
       }
@@ -411,8 +419,14 @@ void QgsFeatureRendererV2::renderFeatureWithSymbol( QgsFeature& feature, QgsSymb
       QPolygonF pts;
       QList<QPolygonF> holes;
 
+      const QgsGeometryCollectionV2* geomCollection = dynamic_cast<const QgsGeometryCollectionV2*>( geom->geometry() );
+
       for ( unsigned int i = 0; i < num; ++i )
       {
+        if ( geomCollection )
+        {
+          context.setGeometry( geomCollection->geometryN( i ) );
+        }
         ptr = _getPolygon( pts, holes, context, ptr, symbol->clipFeaturesToExtent() );
         (( QgsFillSymbolV2* )symbol )->renderPolygon( pts, ( holes.count() ? &holes : NULL ), &feature, context, layer, selected );
       }
