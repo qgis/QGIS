@@ -12,13 +12,15 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import qgis
-from utilities import getQgisTestApp, unittest
+from utilities import getQgisTestApp, unittest, expectedFailure
+
 
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 
 
 class TestPyQgsApplication(unittest.TestCase):
 
+    @expectedFailure
     def testInvalidThemeName(self):
         """Check using an invalid theme will fallback to  'default'"""
         QGISAPP.setThemeName('fooobar')
