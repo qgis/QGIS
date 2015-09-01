@@ -442,9 +442,7 @@ namespace pal
       fFeats->append( feat );
     }
 
-    idlp = 0;
     int nbOverlaps = 0;
-    prob->labelpositions = new LabelPosition*[prob->nblp];
 
     while ( fFeats->size() > 0 ) // foreach feature
     {
@@ -472,7 +470,7 @@ namespace pal
         // make sure that candidate's cost is less than 1
         lp->validateCost();
 
-        prob->labelpositions[idlp] = lp;
+        prob->addCandidatePosition( lp );
         //prob->feat[idlp] = j;
 
         lp->getBoundingBox( amin, amax );
@@ -481,7 +479,6 @@ namespace pal
         prob->candidates->Search( amin, amax, LabelPosition::countOverlapCallback, ( void* ) lp );
 
         nbOverlaps += lp->getNumOverlaps();
-        idlp++;
       }
       delete feat;
     }
