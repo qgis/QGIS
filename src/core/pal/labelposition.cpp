@@ -305,6 +305,14 @@ namespace pal
     return false; // no conflict found
   }
 
+  int LabelPosition::partCount() const
+  {
+    if ( nextPart )
+      return nextPart->partCount() + 1;
+    else
+      return 1;
+  }
+
   void LabelPosition::offsetPosition( double xOffset, double yOffset )
   {
     for ( int i = 0; i < 4; i++ )
@@ -575,6 +583,14 @@ namespace pal
 
   int LabelPosition::polygonIntersectionCost( PointSet *polygon ) const
   {
+    //effectively take the average polygon intersection cost for all label parts
+    double totalCost = polygonIntersectionCostForParts( polygon );
+    int n = partCount();
+    return ceil( totalCost / n );
+  }
+
+  double LabelPosition::polygonIntersectionCostForParts( PointSet *polygon ) const
+  {
     if ( !mGeos )
       createGeosGeom();
 
@@ -583,7 +599,7 @@ namespace pal
 
     GEOSContextHandle_t geosctxt = geosContext();
 
-    int cost = 0;
+    double cost = 0;
     //check the label center. if covered by polygon, initial cost of 4
     if ( polygon->containsPoint(( x[0] + x[2] ) / 2.0, ( y[0] + y[2] ) / 2.0 ) )
       cost += 4;
@@ -592,33 +608,32 @@ namespace pal
     {
       //calculate proportion of label candidate which is covered by polygon
       GEOSGeometry* intersectionGeom = GEOSIntersection_r( geosctxt, mGeos, polygon->mGeos );
-      if ( !intersectionGeom )
-        return cost;
-
-      double positionArea = 0;
-      if ( GEOSArea_r( geosctxt, mGeos, &positionArea ) != 1 )
+      if ( intersectionGeom )
       {
+        double positionArea = 0;
+        if ( GEOSArea_r( geosctxt, mGeos, &positionArea ) == 1 )
+        {
+          double intersectionArea = 0;
+          if ( GEOSArea_r( geosctxt, intersectionGeom, &intersectionArea ) == 1 )
+          {
+            double portionCovered = intersectionArea / positionArea;
+            cost += portionCovered * 8.0; //cost of 8 if totally covered
+          }
+        }
         GEOSGeom_destroy_r( geosctxt, intersectionGeom );
-        return cost;
       }
-
-      double intersectionArea = 0;
-      if ( GEOSArea_r( geosctxt, intersectionGeom, &intersectionArea ) != 1 )
-      {
-        intersectionArea = 0;
-      }
-
-      GEOSGeom_destroy_r( geosctxt, intersectionGeom );
-
-      double portionCovered = intersectionArea / positionArea;
-      cost += ceil( portionCovered * 8.0 ); //cost of 8 if totally covered
-      return cost;
     }
     catch ( GEOSException &e )
     {
       QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
-      return cost;
     }
+
+    if ( nextPart )
+    {
+      cost += nextPart->polygonIntersectionCostForParts( polygon );
+    }
+
+    return cost;
   }
 
 } // end namespace
