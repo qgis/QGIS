@@ -47,7 +47,7 @@ class QgsGeometry
      * geom is transferred.
      * @note added in QGIS 2.10
      */
-    QgsGeometry( QgsAbstractGeometryV2* geom /Transfer/ );
+    explicit QgsGeometry( QgsAbstractGeometryV2* geom /Transfer/ );
 
     //! Destructor
     ~QgsGeometry();
