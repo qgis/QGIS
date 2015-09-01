@@ -1154,22 +1154,28 @@ void QgisApp::readSettings()
   // Read legacy settings
   mRecentProjects.clear();
 
-  QStringList oldRecentProjects = settings.value( "/UI/recentProjectsList" ).toStringList();
-  settings.remove( "/UI/recentProjectsList" );
+  settings.beginGroup( "/UI" );
 
-  Q_FOREACH( const QString& project, oldRecentProjects )
+  // Migrate old recent projects if first time with new system
+  if ( !settings.childGroups().contains( "recentProjects" ) )
   {
-    QgsWelcomePageItemsModel::RecentProjectData data;
-    data.path = project;
-    data.title = project;
+    QStringList oldRecentProjects = settings.value( "/UI/recentProjectsList" ).toStringList();
 
-    mRecentProjects.append( data );
+    Q_FOREACH ( const QString& project, oldRecentProjects )
+    {
+      QgsWelcomePageItemsModel::RecentProjectData data;
+      data.path = project;
+      data.title = project;
+
+      mRecentProjects.append( data );
+    }
   }
+  settings.endGroup();
 
   settings.beginGroup( "/UI/recentProjects" );
   QStringList projectKeys = settings.childGroups();
 
-  Q_FOREACH( const QString& key, projectKeys )
+  Q_FOREACH ( const QString& key, projectKeys )
   {
     QgsWelcomePageItemsModel::RecentProjectData data;
     settings.beginGroup( key );
@@ -2747,7 +2753,7 @@ void QgisApp::updateRecentProjectPaths()
 {
   mRecentProjectsMenu->clear();
 
-  Q_FOREACH( const QgsWelcomePageItemsModel::RecentProjectData& recentProject, mRecentProjects )
+  Q_FOREACH ( const QgsWelcomePageItemsModel::RecentProjectData& recentProject, mRecentProjects )
   {
     QAction* action = mRecentProjectsMenu->addAction( QString( "%1 (%2)" ).arg( recentProject.title ).arg( recentProject.path ) );
     action->setEnabled( QFile::exists(( recentProject.path ) ) );
@@ -2816,7 +2822,7 @@ void QgisApp::saveRecentProjectPath( QString projectPath, bool savePreviewImage 
   int idx = 0;
 
   // Persist the list
-  Q_FOREACH( const QgsWelcomePageItemsModel::RecentProjectData& recentProject, mRecentProjects )
+  Q_FOREACH ( const QgsWelcomePageItemsModel::RecentProjectData& recentProject, mRecentProjects )
   {
     ++idx;
     settings.beginGroup( QString( "/UI/recentProjects/%1" ).arg( idx ) );
