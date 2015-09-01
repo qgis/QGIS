@@ -67,19 +67,14 @@ namespace pal
       mDefaultPriority = 1.0;
     else
       mDefaultPriority = defaultPriority;
-
-    featureParts = new QLinkedList<FeaturePart*>;
   }
 
   Layer::~Layer()
   {
     mMutex.lock();
 
-    if ( featureParts )
-    {
-      qDeleteAll( *featureParts );
-      delete featureParts;
-    }
+    qDeleteAll( mFeatureParts );
+    mFeatureParts.clear();
 
     // features in the hashtable
     qDeleteAll( features );
@@ -162,7 +157,7 @@ namespace pal
     // feature inherits layer setting for acting as an obstacle
     f->setIsObstacle( mObstacle );
 
-    bool first_feat = true;
+    bool addedFeature = false;
 
     double geom_size = -1, biggest_size = -1;
     FeaturePart* biggest_part = NULL;
@@ -171,6 +166,7 @@ namespace pal
     QLinkedList<const GEOSGeometry*>* simpleGeometries = unmulti( the_geom );
     if ( simpleGeometries == NULL ) // unmulti() failed?
     {
+      delete f;
       mMutex.unlock();
       throw InternalException::UnknownGeometry();
     }
@@ -236,8 +232,7 @@ namespace pal
 
       // feature part is ready!
       addFeaturePart( fpart, labelText );
-
-      first_feat = false;
+      addedFeature = true;
     }
     delete simpleGeometries;
 
@@ -249,11 +244,11 @@ namespace pal
     if (( mMode == LabelPerFeature || f->fixedPosition() ) && biggest_part != NULL )
     {
       addFeaturePart( biggest_part, labelText );
-      first_feat = false;
+      addedFeature = true;
     }
 
     // add feature to layer if we have added something
-    if ( !first_feat )
+    if ( addedFeature )
     {
       features << f;
       mHashtable.insert( geom_id, f );
@@ -263,7 +258,7 @@ namespace pal
       delete f;
     }
 
-    return !first_feat; // true if we've added something
+    return addedFeature; // true if we've added something
   }
 
   void Layer::addFeaturePart( FeaturePart* fpart, const QString& labelText )
@@ -273,7 +268,7 @@ namespace pal
     fpart->getBoundingBox( bmin, bmax );
 
     // add to list of layer's feature parts
-    featureParts->append( fpart );
+    mFeatureParts << fpart;
 
     // add to r-tree for fast spatial access
     rtree->Insert( bmin, bmax, fpart );
@@ -339,7 +334,7 @@ namespace pal
           double bmin[2], bmax[2];
           partCheck->getBoundingBox( bmin, bmax );
           rtree->Remove( bmin, bmax, partCheck );
-          featureParts->removeOne( partCheck );
+          mFeatureParts.removeOne( partCheck );
 
           otherPart->getBoundingBox( bmin, bmax );
 
@@ -372,10 +367,10 @@ namespace pal
   void Layer::chopFeaturesAtRepeatDistance()
   {
     GEOSContextHandle_t geosctxt = geosContext();
-    QLinkedList<FeaturePart*> * newFeatureParts = new QLinkedList<FeaturePart*>;
-    while ( !featureParts->isEmpty() )
+    QLinkedList<FeaturePart*> newFeatureParts;
+    while ( !mFeatureParts.isEmpty() )
     {
-      FeaturePart* fpart = featureParts->takeFirst();
+      FeaturePart* fpart = mFeatureParts.takeFirst();
       const GEOSGeometry* geom = fpart->geos();
       double chopInterval = fpart->getFeature()->repeatDistance();
       if ( chopInterval != 0. && GEOSGeomTypeId_r( geosctxt, geom ) == GEOS_LINESTRING )
@@ -437,7 +432,7 @@ namespace pal
 
           GEOSGeometry* newgeom = GEOSGeom_createLineString_r( geosctxt, cooSeq );
           FeaturePart* newfpart = new FeaturePart( fpart->getFeature(), newgeom );
-          newFeatureParts->append( newfpart );
+          newFeatureParts.append( newfpart );
           newfpart->getBoundingBox( bmin, bmax );
           rtree->Insert( bmin, bmax, newfpart );
           part.clear();
@@ -454,19 +449,18 @@ namespace pal
 
         GEOSGeometry* newgeom = GEOSGeom_createLineString_r( geosctxt, cooSeq );
         FeaturePart* newfpart = new FeaturePart( fpart->getFeature(), newgeom );
-        newFeatureParts->append( newfpart );
+        newFeatureParts.append( newfpart );
         newfpart->getBoundingBox( bmin, bmax );
         rtree->Insert( bmin, bmax, newfpart );
         delete fpart;
       }
       else
       {
-        newFeatureParts->append( fpart );
+        newFeatureParts.append( fpart );
       }
     }
 
-    delete featureParts;
-    featureParts = newFeatureParts;
+    mFeatureParts = newFeatureParts;
   }
 
 

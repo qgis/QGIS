@@ -279,7 +279,7 @@ namespace pal
       QString mName; /* unique */
 
       /** List of feature parts */
-      QLinkedList<FeaturePart*> *featureParts;
+      QLinkedList<FeaturePart*> mFeatureParts;
 
       /** List of features - for deletion */
       QList<Feature*> features;
