@@ -1859,6 +1859,7 @@ QgsWmsCapabilitiesDownload::QgsWmsCapabilitiesDownload( QObject *parent )
     , mCapabilitiesReply( 0 )
     , mIsAborted( false )
 {
+  connectManager();
 }
 
 QgsWmsCapabilitiesDownload::QgsWmsCapabilitiesDownload( const QString& baseUrl, const QgsWmsAuthorization& auth, QObject *parent )
@@ -1868,6 +1869,22 @@ QgsWmsCapabilitiesDownload::QgsWmsCapabilitiesDownload( const QString& baseUrl, 
     , mCapabilitiesReply( 0 )
     , mIsAborted( false )
 {
+  connectManager();
+}
+
+void QgsWmsCapabilitiesDownload::connectManager()
+{
+  // The instance of this class may live on a thread different from QgsNetworkAccessManager instance's thread,
+  // so we cannot call QgsNetworkAccessManager::get() directly and we must send a signal instead.
+  connect( this, SIGNAL( sendRequest( const QNetworkRequest & ) ),
+           QgsNetworkAccessManager::instance(), SLOT( sendGet( const QNetworkRequest & ) ) );
+  connect( this, SIGNAL( deleteReply( QNetworkReply * ) ),
+           QgsNetworkAccessManager::instance(), SLOT( deleteReply( QNetworkReply * ) ) );
+}
+
+QgsWmsCapabilitiesDownload::~QgsWmsCapabilitiesDownload()
+{
+  abort();
 }
 
 bool QgsWmsCapabilitiesDownload::downloadCapabilities( const QString& baseUrl, const QgsWmsAuthorization& auth )
@@ -1880,7 +1897,9 @@ bool QgsWmsCapabilitiesDownload::downloadCapabilities( const QString& baseUrl, c
 bool QgsWmsCapabilitiesDownload::downloadCapabilities()
 {
   QgsDebugMsg( "entering." );
+  abort(); // cancel previous
   mIsAborted = false;
+
   QString url = mBaseUrl;
   QgsDebugMsg( "url = " + url );
   if ( !url.contains( "SERVICE=WMTS" ) &&
@@ -1896,17 +1915,9 @@ bool QgsWmsCapabilitiesDownload::downloadCapabilities()
   request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferNetwork );
   request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
-  QgsDebugMsg( QString( "getcapabilities: %1" ).arg( url ) );
-  // This is causing Qt warning: "Cannot create children for a parent that is in a different thread."
-  // but it only means that the reply will have no parent
-  if ( mIsAborted )
-  {
-    return false;
-  }
-  mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
-
-  connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ), Qt::DirectConnection );
-  connect( mCapabilitiesReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( capabilitiesReplyProgress( qint64, qint64 ) ), Qt::DirectConnection );
+  connect( QgsNetworkAccessManager::instance(), SIGNAL( requestSent( QNetworkReply *, QObject * ) ),
+           SLOT( requestSent( QNetworkReply *, QObject * ) ) );
+  emit sendRequest( request );
 
   QEventLoop loop;
   connect( this, SIGNAL( downloadFinished() ), &loop, SLOT( quit() ) );
@@ -1915,13 +1926,41 @@ bool QgsWmsCapabilitiesDownload::downloadCapabilities()
   return mError.isEmpty();
 }
 
+void QgsWmsCapabilitiesDownload::requestSent( QNetworkReply * reply, QObject *sender )
+{
+  QgsDebugMsg( "Entered" );
+  if ( sender != this ) // it is not our reply
+  {
+    return;
+  }
+  disconnect( QgsNetworkAccessManager::instance(), SIGNAL( requestSent( QNetworkReply *, QObject * ) ),
+              this, SLOT( requestSent( QNetworkReply *, QObject * ) ) );
+
+  if ( !reply )
+  {
+    emit downloadFinished();
+    return;
+  }
+  if ( mIsAborted )
+  {
+    emit deleteReply( reply );
+    emit downloadFinished();
+    return;
+  }
+  // Note: the reply was created on QgsNetworkAccessManager's thread
+  mCapabilitiesReply = reply;
+  connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ), Qt::DirectConnection );
+  connect( mCapabilitiesReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( capabilitiesReplyProgress( qint64, qint64 ) ), Qt::DirectConnection );
+}
+
 void QgsWmsCapabilitiesDownload::abort()
 {
   QgsDebugMsg( "Entered" );
   mIsAborted = true;
   if ( mCapabilitiesReply )
   {
-    mCapabilitiesReply->abort();
+    emit deleteReply( mCapabilitiesReply );
+    mCapabilitiesReply = 0;
   }
 }
 
@@ -1935,7 +1974,7 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyProgress( qint64 bytesReceived
 void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
 {
   QgsDebugMsg( "entering." );
-  if ( !mIsAborted )
+  if ( !mIsAborted && mCapabilitiesReply )
   {
     if ( mCapabilitiesReply->error() == QNetworkReply::NoError )
     {
@@ -1962,10 +2001,8 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
 
           mCapabilitiesReply->deleteLater();
           QgsDebugMsg( QString( "redirected getcapabilities: %1" ).arg( redirect.toString() ) );
-          mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
-
-          connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ) );
-          connect( mCapabilitiesReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( capabilitiesReplyProgress( qint64, qint64 ) ) );
+          //mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
+          emit sendRequest( request );
           return;
         }
       }
@@ -1987,8 +2024,11 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
     }
   }
 
-  mCapabilitiesReply->deleteLater();
-  mCapabilitiesReply = 0;
+  if ( mCapabilitiesReply )
+  {
+    mCapabilitiesReply->deleteLater();
+    mCapabilitiesReply = 0;
+  }
 
   emit downloadFinished();
 }

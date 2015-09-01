@@ -341,3 +341,20 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache()
     setCache( newcache );
 }
 
+void QgsNetworkAccessManager::sendGet( const QNetworkRequest & request )
+{
+  QgsDebugMsg( "Entered" );
+  QNetworkReply * reply = get( request );
+  emit requestSent( reply, QObject::sender() );
+}
+
+void QgsNetworkAccessManager::deleteReply( QNetworkReply * reply )
+{
+  QgsDebugMsg( "Entered" );
+  if ( !reply )
+  {
+    return;
+  }
+  reply->abort();
+  reply->deleteLater();
+}
