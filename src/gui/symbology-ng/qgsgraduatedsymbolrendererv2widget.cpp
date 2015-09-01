@@ -503,6 +503,7 @@ QgsGraduatedSymbolRendererV2Widget::~QgsGraduatedSymbolRendererV2Widget()
 {
   delete mRenderer;
   delete mModel;
+  delete mGraduatedSymbol;
 }
 
 QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2Widget::renderer()
@@ -645,7 +646,7 @@ void QgsGraduatedSymbolRendererV2Widget::on_methodComboBox_currentIndexChanged( 
         QMessageBox::critical( this, tr( "Error" ), tr( "The selected color ramp is not available." ) );
       return;
     }
-    mRenderer->setSourceColorRamp( ramp->clone() );
+    mRenderer->setSourceColorRamp( ramp );
     reapplyColorRamp();
   }
   else
@@ -716,7 +717,7 @@ void QgsGraduatedSymbolRendererV2Widget::classifyGraduated()
         QMessageBox::critical( this, tr( "Error" ), tr( "The selected color ramp is not available." ) );
       return;
     }
-    mRenderer->setSourceColorRamp( ramp->clone() );
+    mRenderer->setSourceColorRamp( ramp );
   }
   else
   {
@@ -775,6 +776,7 @@ void QgsGraduatedSymbolRendererV2Widget::changeGraduatedSymbol()
     return;
   }
 
+  delete mGraduatedSymbol;
   mGraduatedSymbol = newSymbol;
 
   mSizeUnitWidget->blockSignals( true );

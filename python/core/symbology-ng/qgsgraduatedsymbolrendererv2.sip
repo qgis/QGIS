@@ -213,13 +213,20 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
     void setSourceSymbol( QgsSymbolV2* sym /Transfer/ );
 
     QgsVectorColorRampV2* sourceColorRamp();
+
+    /** Sets the source color ramp.
+     * @param ramp color ramp. Ownership is transferred to the renderer
+    */
     void setSourceColorRamp( QgsVectorColorRampV2* ramp /Transfer/ );
+
     //! @note added in 2.1
     bool invertedColorRamp();
     void setInvertedColorRamp( bool inverted );
 
     /** Update the color ramp used. Also updates all symbols colors.
       * Doesn't alter current breaks.
+      * @param ramp color ramp. Ownership is transferred to the renderer
+      * @param inverted set to true to invert ramp colors
       */
     void updateColorRamp( QgsVectorColorRampV2* ramp /Transfer/ = 0, bool inverted = false );
 

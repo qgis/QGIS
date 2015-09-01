@@ -231,7 +231,7 @@ QgsSymbolV2SelectorDialog::QgsSymbolV2SelectorDialog( QgsSymbolV2* symbol, QgsSt
   btnUp->setIcon( QIcon( QgsApplication::iconPath( "symbologyUp.svg" ) ) );
   btnDown->setIcon( QIcon( QgsApplication::iconPath( "symbologyDown.svg" ) ) );
 
-  model = new QStandardItemModel();
+  model = new QStandardItemModel( layersTree );
   // Set the symbol
   layersTree->setModel( model );
   layersTree->setHeaderHidden( true );
@@ -273,7 +273,7 @@ QMenu* QgsSymbolV2SelectorDialog::advancedMenu()
 {
   if ( mAdvancedMenu == NULL )
   {
-    mAdvancedMenu = new QMenu;
+    mAdvancedMenu = new QMenu( this );
     // Brute force method to activate the Advanced menu
     layerChanged();
   }

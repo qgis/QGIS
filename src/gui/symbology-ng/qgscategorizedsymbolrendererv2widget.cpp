@@ -472,6 +472,7 @@ QgsCategorizedSymbolRendererV2Widget::~QgsCategorizedSymbolRendererV2Widget()
 {
   if ( mRenderer ) delete mRenderer;
   if ( mModel ) delete mModel;
+  delete mCategorizedSymbol;
 }
 
 void QgsCategorizedSymbolRendererV2Widget::updateUiFromRenderer()
@@ -557,6 +558,7 @@ void QgsCategorizedSymbolRendererV2Widget::changeCategorizedSymbol()
     return;
   }
 
+  delete mCategorizedSymbol;
   mCategorizedSymbol = newSymbol;
   updateCategorizedSymbolIcon();
 
@@ -781,6 +783,7 @@ void QgsCategorizedSymbolRendererV2Widget::addCategories()
   delete mRenderer;
   mRenderer = r;
   if ( ! keepExistingColors && ramp ) applyColorRamp();
+  delete ramp;
 }
 
 void QgsCategorizedSymbolRendererV2Widget::applyColorRamp()
@@ -788,7 +791,7 @@ void QgsCategorizedSymbolRendererV2Widget::applyColorRamp()
   QgsVectorColorRampV2* ramp = getColorRamp();
   if ( ramp )
   {
-    mRenderer->updateColorRamp( ramp->clone(), cbxInvertedColorRamp->isChecked() );
+    mRenderer->updateColorRamp( ramp, cbxInvertedColorRamp->isChecked() );
   }
   mModel->updateSymbology();
 }
