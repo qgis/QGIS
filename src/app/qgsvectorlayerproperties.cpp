@@ -169,7 +169,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   if ( layer->dataProvider()->isSaveAndLoadStyleToDBSupported() )
   {
     //for loading
-    mLoadStyleMenu = new QMenu();
+    mLoadStyleMenu = new QMenu( this );
     mLoadStyleMenu->addAction( tr( "Load from file..." ) );
     mLoadStyleMenu->addAction( tr( "Load from database" ) );
     //mActionLoadStyle->setContextMenuPolicy( Qt::PreventContextMenu );

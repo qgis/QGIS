@@ -26,7 +26,7 @@
 QgsRendererV2Widget::QgsRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style )
     : QWidget(), mLayer( layer ), mStyle( style )
 {
-  contextMenu = new QMenu( "Renderer Options " );
+  contextMenu = new QMenu( "Renderer Options", this );
 
   mCopyAction = contextMenu->addAction( tr( "Copy" ), this, SLOT( copy() ) );
   mCopyAction->setShortcut( QKeySequence( QKeySequence::Copy ) );
