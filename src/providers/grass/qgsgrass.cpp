@@ -1113,9 +1113,9 @@ QStringList QgsGrass::vectorLayers( const QString& gisdbase, const QString& loca
   //Vect_set_open_level( 2 );
 
   // TODO: We are currently using vectDestroyMapStruct in G_CATCH blocks because we know
-  // that it does cannot call another G_fatal_error, but once we switch to hypothetical Vect_destroy_map_struct
+  // that it cannot call another G_fatal_error, but once we switch to hypothetical Vect_destroy_map_struct
   // it should be verified if it can still be in G_CATCH
-  struct Map_info *map = vectNewMapStruct();
+  struct Map_info *map = 0;
   int level = -1;
 
   // Vect_open_old_head GRASS is raising fatal error if topo exists but it is in different (older) version.
@@ -1124,6 +1124,7 @@ QStringList QgsGrass::vectorLayers( const QString& gisdbase, const QString& loca
 
   G_TRY
   {
+    map = vectNewMapStruct();
     level = Vect_open_old_head( map, ( char * ) mapName.toUtf8().data(), ( char * ) mapset.toUtf8().data() );
   }
   G_CATCH( QgsGrass::Exception &e )
@@ -1647,24 +1648,44 @@ bool QgsGrass::mapRegion( QgsGrassObject::Type type, QString gisdbase,
     }
     catch ( QgsGrass::Exception &e )
     {
-      QgsGrass::warning( e );
+      warning( e );
       return false;
     }
 
-    struct Map_info Map;
-
-    int level = Vect_open_old_head( &Map,
-                                    map.toUtf8().data(), mapset.toUtf8().data() );
+    struct Map_info *Map = 0;
+    int level = -1;
+    G_TRY
+    {
+      Map = vectNewMapStruct();
+      level = Vect_open_old_head( Map, map.toUtf8().data(), mapset.toUtf8().data() );
+    }
+    G_CATCH( QgsGrass::Exception &e )
+    {
+      warning( e );
+      vectDestroyMapStruct( Map );
+      return false;
+    }
 
     if ( level < 2 )
     {
-      QMessageBox::warning( 0, QObject::tr( "Warning" ),
-                            QObject::tr( "Cannot read vector map region" ) );
+      warning( QObject::tr( "Cannot read vector map region" ) );
+      if ( level == 1 )
+      {
+        G_TRY
+        {
+          Vect_close( Map );
+        }
+        G_CATCH( QgsGrass::Exception &e )
+        {
+          QgsDebugMsg( e.what() );
+        }
+      }
+      vectDestroyMapStruct( Map );
       return false;
     }
 
     BOUND_BOX box;
-    Vect_get_map_box( &Map, &box );
+    Vect_get_map_box( Map, &box );
     window->north = box.N;
     window->south = box.S;
     window->west  = box.W;
@@ -1686,7 +1707,8 @@ bool QgsGrass::mapRegion( QgsGrassObject::Type type, QString gisdbase,
     }
     G_adjust_Cell_head3( window, 0, 0, 0 );
 
-    Vect_close( &Map );
+    Vect_close( Map );
+    vectDestroyMapStruct( Map );
   }
   else if ( type == QgsGrassObject::Region )
   {
@@ -1700,8 +1722,16 @@ bool QgsGrass::mapRegion( QgsGrassObject::Type type, QString gisdbase,
       return false;
     }
 #else
-    // TODO7: unfortunately G__get_window does not return error code and calls G_fatal_error on error
-    G__get_window( window, ( char * ) "windows", map.toUtf8().data(), mapset.toUtf8().data() );
+    // G__get_window does not return error code in GRASS 7 and calls G_fatal_error on error
+    G_TRY
+    {
+      G__get_window( window, ( char * ) "windows", map.toUtf8().data(), mapset.toUtf8().data() );
+    }
+    G_CATCH( QgsGrass::Exception &e )
+    {
+      warning( e );
+      return false;
+    }
 #endif
   }
   return true;

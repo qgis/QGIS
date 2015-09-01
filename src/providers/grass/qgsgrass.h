@@ -502,7 +502,8 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     /** Show warning dialog with exception message */
     static void warning( QgsGrass::Exception &e );
 
-    // Allocate struct Map_info
+    /** Allocate struct Map_info. Call to this function may result in G_fatal_error
+     * and must be surrounded by G_TRY/G_CATCH. */
     static struct Map_info * vectNewMapStruct();
     // Free struct Map_info
     static void vectDestroyMapStruct( struct Map_info *map );
