@@ -20,10 +20,9 @@ QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 
 class TestPyQgsApplication(unittest.TestCase):
 
-    @expectedFailure
     def testInvalidThemeName(self):
         """Check using an invalid theme will fallback to  'default'"""
-        QGISAPP.setThemeName('fooobar')
+        QGISAPP.setUITheme('fooobar')
         myExpectedResult = 'default'
         myResult = QGISAPP.themeName()
         myMessage = ('Expected:\n%s\nGot:\n%s\n' %
