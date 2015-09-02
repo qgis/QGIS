@@ -231,6 +231,8 @@ void TestQgsGrassProvider::mapsets()
   reportRow( "mapsets: " + mapsets.join( ", " ) );
   compare( expectedMapsets, mapsets, ok );
   QgsGrass::setLocation( mGisdbase,  mLocation ); // for G_is_mapset_in_search_path
+  // Disabled because adding of all mapsets to search path was disabled in setLocation()
+#if 0
   foreach ( QString expectedMapset, expectedMapsets )
   {
     if ( G_is_mapset_in_search_path( expectedMapset.toAscii().data() ) != 1 )
@@ -239,6 +241,7 @@ void TestQgsGrassProvider::mapsets()
       ok = false;
     }
   }
+#endif
 
   // open/close mapset try twice to be sure that lock was not left etc.
   for ( int i = 1; i < 3; i++ )
