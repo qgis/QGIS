@@ -2,7 +2,10 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
 <qgisgrassmodule label="Inverse fast fourier transform for image processing" module="i.ifft">
-	<option key="real_image" />
-	<option key="imaginary_image" />
-	<option key="output_image" />
+	<option key="real_image" version_max="6"/>
+	<option key="real" version_min="7"/>
+	<option key="imaginary_image" version_max="6"/>
+	<option key="imaginary" version_min="7"/>
+	<option key="output_image" version_max="6"/>
+	<option key="output" version_min="7"/>
 </qgisgrassmodule>

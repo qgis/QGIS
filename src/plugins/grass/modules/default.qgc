@@ -284,7 +284,7 @@
                 <grass name="r.sum" version_max="6.4"/>
                 <grass name="r.report"/>
                 <grass name="r.average" version_max="6.4"/>
-                <grass name="r.median"/>
+                <grass name="r.median" version_max="6.4"/>
                 <grass name="r.mode"/>
                 <grass name="r.volume"/>
                 <grass name="r.surf.area"/>
@@ -446,10 +446,10 @@
             <grass name="i.zc"/>
             <grass name="r.mfilter"/>
         </section>
-        <section label="Tassled cap vegetation index">
-            <grass name="i.tasscap4"/>
-            <grass name="i.tasscap5"/>
-            <grass name="i.tasscap7"/>
+        <section label="Tassled cap vegetation index" version_max="6.4">
+            <grass name="i.tasscap4" version_max="6.4"/>
+            <grass name="i.tasscap5" version_max="6.4"/>
+            <grass name="i.tasscap7" version_max="6.4"/>
         </section>
         <section label="Transform image">
             <grass name="i.fft"/>
@@ -457,9 +457,10 @@
         </section>
         <section label="Reports and statistics">
             <grass name="r.describe"/>
-            <grass name="r.bitpattern"/>
+            <grass name="r.bitpattern" version_max="6.4"/>
+            <grass name="i.modis.qc" version_min="7.0"/>
             <grass name="r.kappa"/>
-            <grass name="i.oif"/>
+            <grass name="i.oif" version_max="6.4"/>
         </section>
     </section>
 
@@ -547,9 +548,10 @@
             <grass name="v.db.update_query"/>
             <grass name="v.db.update_op"/>
             <grass name="v.db.update_op_query"/>
-            <grass name="v.db.dropcol" version_min="6.4" version_max="6.4"/>
+            <grass name="v.db.dropcol" version_max="6.4"/>
             <grass name="v.db.dropcolumn" version_min="7.0"/>
-            <grass name="v.db.renamecol"/>
+            <grass name="v.db.renamecol" version_max="6.4"/>
+            <grass name="v.db.renamecolumn" version_min="7.0"/>
             <grass name="db.execute"/>
             <grass name="db.select"/>
             <grass name="v.db.select"/>

@@ -4,6 +4,8 @@
 <qgisgrassmodule label="Join table to existing vector table" module="v.db.join">
 	<option key="map" layeroption="layer" />
 	<field key="column" layer="map" type="integer,string" label="Attribute field" />
-	<option key="otable"/>
-	<option key="ocolumn" label="Attribute field to join" />
+	<option key="otable" version_max="6"/>
+	<option key="other_table" version_min="7"/>
+	<option key="ocolumn" label="Attribute field to join" version_max="6"/>
+	<option key="other_column" label="Attribute field to join" version_min="7"/>
 </qgisgrassmodule>

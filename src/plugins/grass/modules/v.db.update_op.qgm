@@ -4,5 +4,6 @@
 <qgisgrassmodule label="Assign new value as result of operation on columns to column in attribute table" module="v.db.update">
 	<option key="map" layeroption="layer" />
 	<field key="column" layer="map" type="integer,double,varchar,string" label="Attribute field" />
-	<option key="qcolumn" />
+	<option key="qcolumn" version_max="6"/>
+	<option key="query_column" version_min="7"/>
 </qgisgrassmodule>
