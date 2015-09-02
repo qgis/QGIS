@@ -44,5 +44,29 @@ class SLDatabaseInfo(DatabaseInfo):
         ]
         return HtmlTable(tbl)
 
+    def spatialInfo(self):
+        ret = []
+
+        info = self.db.connector.getSpatialInfo()
+        if info is None:
+            return
+
+        tbl = [
+            (QApplication.translate("DBManagerPlugin", "Library:"), info[0]),
+            ("GEOS:", info[1]),
+            ("Proj:", info[2])
+        ]
+        ret.append(HtmlTable(tbl))
+
+        if self.db.connector.is_gpkg:
+            pass
+
+        elif not self.db.connector.has_geometry_columns:
+            ret.append(HtmlParagraph(
+                QApplication.translate("DBManagerPlugin", "<warning> geometry_columns table doesn't exist!\n"
+                                                          "This table is essential for many GIS applications for enumeration of tables.")))
+
+        return ret
+
     def privilegesDetails(self):
         return None

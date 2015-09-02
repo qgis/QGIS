@@ -64,10 +64,6 @@ class PostGisDBPlugin(DBPlugin):
     def connectionSettingsKey(self):
         return '/PostgreSQL/connections'
 
-    @classmethod
-    def connectionSettingsFileKey(self):
-        return "database"
-
     def databasesFactory(self, connection, uri):
         return PGDatabase(connection, uri)
 
@@ -284,6 +280,7 @@ class PGRasterTable(PGTable, RasterTable):
         return gdalUri
 
     def mimeUri(self):
+        # QGIS has no provider for PGRasters, let's use GDAL
         uri = u"raster:gdal:%s:%s" % (self.name, re.sub(":", "\:", self.gdalUri()))
         return uri
 
