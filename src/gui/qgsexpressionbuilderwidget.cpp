@@ -138,7 +138,6 @@ void QgsExpressionBuilderWidget::currentChanged( const QModelIndex &index, const
   // Show the help for the current item.
   QString help = loadFunctionHelp( item );
   txtHelpText->setText( help );
-  txtHelpText->setToolTip( txtHelpText->toPlainText() );
 }
 
 void QgsExpressionBuilderWidget::on_btnRun_pressed()
