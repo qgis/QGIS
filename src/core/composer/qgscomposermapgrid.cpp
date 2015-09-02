@@ -656,6 +656,9 @@ void QgsComposerMapGrid::draw( QPainter* p )
   QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
   context.setForceVectorOutput( true );
   context.setPainter( p );
+  QgsExpressionContext* expressionContext = createExpressionContext();
+  context.setExpressionContext( *expressionContext );
+  delete expressionContext;
 
   QList< QPair< double, QLineF > > verticalLines;
   QList< QPair< double, QLineF > > horizontalLines;

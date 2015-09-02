@@ -97,6 +97,9 @@ void QgsComposerMapOverview::draw( QPainter *painter )
   QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
   context.setForceVectorOutput( true );
   context.setPainter( painter );
+  QgsExpressionContext* expressionContext = createExpressionContext();
+  context.setExpressionContext( *expressionContext );
+  delete expressionContext;
 
   painter->save();
   painter->setCompositionMode( mBlendMode );
