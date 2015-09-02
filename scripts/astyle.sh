@@ -29,16 +29,16 @@ if [ -z "$ASTYLE" ]; then
 fi
 
 if ! type -p flip >/dev/null; then
-	if type -p dos2unix >/dev/null; then
-		flip() {
-			dos2unix $2
-		}
-	else
-		echo "flip not found" >&2
-		flip() {
-			:
-		}
-	fi
+  if type -p dos2unix >/dev/null; then
+    flip() {
+      dos2unix -k $2
+    }
+  else
+    echo "flip not found" >&2
+    flip() {
+      :
+    }
+  fi
 fi
 
 if ! type -p autopep8 >/dev/null; then
