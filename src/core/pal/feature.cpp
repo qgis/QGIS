@@ -92,6 +92,14 @@ namespace pal
 
   double Feature::calculatePriority() const
   {
+    if ( alwaysShow )
+    {
+      //if feature is set to always show, bump the priority up by orders of magnitude
+      //so that other feature's labels are unlikely to be placed over the label for this feature
+      //(negative numbers due to how pal::extract calculates inactive cost)
+      return 0.2;
+    }
+
     return mPriority >= 0 ? mPriority : layer->priority();
   }
 
