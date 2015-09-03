@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>482</width>
-    <height>436</height>
+    <height>496</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -256,7 +256,7 @@
       <item row="4" column="0" colspan="2">
        <widget class="QCheckBox" name="chkDropTable">
         <property name="text">
-         <string>Drop existing table</string>
+         <string>Replace existing table</string>
         </property>
        </widget>
       </item>
