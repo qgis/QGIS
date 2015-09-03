@@ -117,10 +117,7 @@ void QgsComposerShapeWidget::on_mShapeStyleButton_clicked()
     updateShapeStyle();
     mComposerShape->endCommand();
   }
-  else
-  {
-    delete newSymbol;
-  }
+  delete newSymbol;
 }
 
 void QgsComposerShapeWidget::updateShapeStyle()

@@ -74,7 +74,7 @@ void QgsComposerShape::setUseSymbolV2( bool useSymbolV2 )
 void QgsComposerShape::setShapeStyleSymbol( QgsFillSymbolV2* symbol )
 {
   delete mShapeStyleSymbol;
-  mShapeStyleSymbol = symbol;
+  mShapeStyleSymbol = static_cast<QgsFillSymbolV2*>( symbol->clone() );
   refreshSymbol();
 }
 

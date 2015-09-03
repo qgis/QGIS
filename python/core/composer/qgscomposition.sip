@@ -115,7 +115,7 @@ class QgsComposition : QGraphicsScene
     bool shouldExportPage( const int page ) const;
 
     /** Note: added in version 2.1*/
-    void setPageStyleSymbol( QgsFillSymbolV2* symbol /Transfer/ );
+    void setPageStyleSymbol( QgsFillSymbolV2* symbol );
     /** Note: added in version 2.1*/
     QgsFillSymbolV2* pageStyleSymbol();
 

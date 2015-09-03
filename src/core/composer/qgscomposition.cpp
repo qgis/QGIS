@@ -492,7 +492,7 @@ bool QgsComposition::shouldExportPage( const int page ) const
 void QgsComposition::setPageStyleSymbol( QgsFillSymbolV2* symbol )
 {
   delete mPageStyleSymbol;
-  mPageStyleSymbol = symbol;
+  mPageStyleSymbol = static_cast<QgsFillSymbolV2*>( symbol->clone() );
   QgsProject::instance()->dirty( true );
 }
 

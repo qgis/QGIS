@@ -563,10 +563,7 @@ void QgsCompositionWidget::on_mPageStyleButton_clicked()
     mComposition->setPageStyleSymbol( newSymbol );
     updatePageStyle();
   }
-  else
-  {
-    delete newSymbol;
-  }
+  delete newSymbol;
 }
 
 void QgsCompositionWidget::updatePageStyle()
