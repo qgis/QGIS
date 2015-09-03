@@ -124,7 +124,7 @@ QStringList QgsGrassModuleParam::options()
   return QStringList();
 }
 
-QString QgsGrassModuleParam::getDescPrompt( QDomElement descDomElement )
+QString QgsGrassModuleParam::getDescPrompt( QDomElement descDomElement, const QString & name )
 {
   QDomNode gispromptNode = descDomElement.namedItem( "gisprompt" );
 
@@ -133,7 +133,7 @@ QString QgsGrassModuleParam::getDescPrompt( QDomElement descDomElement )
     QDomElement gispromptElement = gispromptNode.toElement();
     if ( !gispromptElement.isNull() )
     {
-      return gispromptElement.attribute( "prompt" );
+      return gispromptElement.attribute( name );
     }
   }
   return QString();
@@ -164,7 +164,7 @@ QDomNode QgsGrassModuleParam::nodeByKey( QDomElement descDomElement, QString key
   return QDomNode();
 }
 
-QList<QDomNode> QgsGrassModuleParam::nodesByType( QDomElement descDomElement, STD_OPT optionType )
+QList<QDomNode> QgsGrassModuleParam::nodesByType( QDomElement descDomElement, STD_OPT optionType, const QString & age )
 {
   // TODO: never tested
   QList<QDomNode> nodes;
@@ -182,15 +182,19 @@ QList<QDomNode> QgsGrassModuleParam::nodesByType( QDomElement descDomElement, ST
   typeMap.insert( "dbname", G_OPT_DB_DATABASE );
   typeMap.insert( "dbcolumn", G_OPT_DB_COLUMN );
 #endif
+  typeMap.insert( "vector", G_OPT_V_INPUT );
 
   QDomNode n = descDomElement.firstChild();
 
   while ( !n.isNull() )
   {
-    QString prompt = getDescPrompt( n.toElement() );
+    QString prompt = getDescPrompt( n.toElement(), "prompt" );
     if ( typeMap.value( prompt ) == optionType )
     {
-      nodes << n;
+      if ( age.isEmpty() || getDescPrompt( n.toElement(), "age" ) == age )
+      {
+        nodes << n;
+      }
     }
 
     n = n.nextSibling();

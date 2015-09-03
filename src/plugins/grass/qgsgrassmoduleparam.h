@@ -110,15 +110,17 @@ class QgsGrassModuleParam
 
     QStringList errors() { return mErrors; }
 
-    /** Get gisprompt tag prompt attribute */
-    static QString getDescPrompt( QDomElement descDomElement );
+    /** Get gisprompt attribute
+     * @paream name gisprompt tag attribute name (age, element, prompt)
+     */
+    static QString getDescPrompt( QDomElement descDomElement, const QString & name );
 
     //! Find element in GRASS module description by key, if not found, returned element is null
     static QDomNode nodeByKey( QDomElement descDocElement, QString key );
 
     /** Find list of elements in GRASS module description by option type.
      *  Option type is identified by gisprompt prompt. Only few types are supported */
-    static QList<QDomNode> nodesByType( QDomElement descDomElement, STD_OPT optionType );
+    static QList<QDomNode> nodesByType( QDomElement descDomElement, STD_OPT optionType, const QString & age = QString() );
 
   protected:
 
@@ -538,7 +540,7 @@ class QgsGrassModuleField : public QgsGrassModuleGroupBoxItem
     // ! Field type (integer,double,string,datetime)
     QString mType;
 
-    //! Combobox for QGIS layer fields
+    //! Combobox for QGIS layer fieldsnviz
     QComboBox *mFieldComboBox;
 };
 
