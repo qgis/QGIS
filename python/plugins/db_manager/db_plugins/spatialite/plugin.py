@@ -23,8 +23,9 @@ email                : brush.tyler@gmail.com
 # this will disable the dbplugin if the connector raise an ImportError
 from .connector import SpatiaLiteDBConnector
 
-from PyQt4.QtCore import Qt, QSettings
-from PyQt4.QtGui import QIcon, QApplication, QAction
+from PyQt4.QtCore import Qt, SIGNAL, QSettings, QFileInfo
+from PyQt4.QtGui import QIcon, QApplication, QAction, QFileDialog
+from qgis.core import QgsDataSourceURI
 from qgis.gui import QgsMessageBar
 
 from ..plugin import DBPlugin, Database, Table, VectorTable, RasterTable, TableField, TableIndex, TableTrigger, \
@@ -75,9 +76,7 @@ class SpatiaLiteDBPlugin(DBPlugin):
 
         database = settings.value("sqlitepath")
 
-        import qgis.core
-
-        uri = qgis.core.QgsDataSourceURI()
+        uri = QgsDataSourceURI()
         uri.setDatabase(database)
         return self.connectToUri(uri)
 
@@ -93,17 +92,17 @@ class SpatiaLiteDBPlugin(DBPlugin):
     def addConnectionActionSlot(self, item, action, parent, index):
         QApplication.restoreOverrideCursor()
         try:
-            filename = QFileDialog.getOpenFileName(self, "Choose Sqlite/Spatialite/Geopackage file")
+            filename = QFileDialog.getOpenFileName(parent, "Choose Sqlite/Spatialite/Geopackage file")
             if not filename:
                 return
         finally:
             QApplication.setOverrideCursor(Qt.WaitCursor)
 
-        conn_name = QFileInfo(filepath).fileName()
-        uri = qgis.core.QgsDataSourceURI()
-        uri.setDatabase(filepath)
+        conn_name = QFileInfo(filename).fileName()
+        uri = QgsDataSourceURI()
+        uri.setDatabase(filename)
         self.addConnection(conn_name, uri)
-        index.internalPointer().emit(SIGNAL('itemChanged'))
+        index.internalPointer().emit(SIGNAL('itemChanged'), index.internalPointer())
 
 
 

@@ -21,7 +21,7 @@ email                : brush.tyler@gmail.com
 """
 
 from PyQt4.QtCore import SIGNAL, SLOT, QSettings, Qt
-from PyQt4.QtGui import QWidget, QTreeView, QMenu, QLabel, QFileDialog
+from PyQt4.QtGui import QWidget, QTreeView, QMenu, QLabel
 
 from qgis.core import QgsMapLayerRegistry, QgsMessageLog
 from qgis.gui import QgsMessageBar, QgsMessageBarItem

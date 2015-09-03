@@ -270,7 +270,7 @@ class DBManager(QMainWindow):
 
         return True
 
-    def invokeCallback(self, callback, params=None):
+    def invokeCallback(self, callback, *params):
         """ Call a method passing the selected item in the database tree,
                 the sender (usually a QAction), the plugin mainWindow and
                 optionally additional parameters.
@@ -280,10 +280,7 @@ class DBManager(QMainWindow):
         """
         QApplication.setOverrideCursor(Qt.WaitCursor)
         try:
-            if params is None:
-                callback(self.tree.currentItem(), self.sender(), self)
-            else:
-                callback(self.tree.currentItem(), self.sender(), self, *params)
+            callback(self.tree.currentItem(), self.sender(), self, *params)
 
         except BaseError as e:
             # catch database errors and display the error dialog
