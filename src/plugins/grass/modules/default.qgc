@@ -402,6 +402,7 @@
             </section>
             <section label="Create points">
                 <grass name="v.random"/>
+                <grass name="v.random.3d"/>
                 <grass name="v.perturb"/>
             </section>
             <section label="Manage training dataset">
@@ -563,8 +564,8 @@
         </section>
     </section>
 
-    <section label="3d Visualization">
-        <grass name="nviz"/>
+    <section label="3d Visualization" version_max="6.4">
+        <grass name="nviz" version_max="6.4"/>
     </section>
     <section label="Convert coordinates">
         <grass name="m.cogo"/>
