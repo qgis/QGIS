@@ -591,7 +591,11 @@ QString QgsGrassModuleOption::value()
 {
   QString value;
 
-  if ( mControlType == LineEdit )
+  if ( mHidden )
+  {
+    return mAnswer;
+  }
+  else if ( mControlType == LineEdit )
   {
     for ( int i = 0; i < mLineEdits.size(); i++ )
     {
@@ -688,18 +692,12 @@ QStringList QgsGrassModuleOption::options()
 {
   QStringList list;
 
-  if ( mHidden )
+  QString val = value();
+  if ( !val.isEmpty() )
   {
-    list.push_back( mKey + "=" + mAnswer );
+    list.push_back( mKey + "=" + val );
   }
-  else
-  {
-    QString val = value();
-    if ( !val.isEmpty() )
-    {
-      list.push_back( mKey + "=" + val );
-    }
-  }
+
   return list;
 }
 
