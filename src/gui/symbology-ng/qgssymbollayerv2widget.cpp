@@ -49,11 +49,16 @@
 
 static QgsExpressionContext _getExpressionContext( const void* context )
 {
+  const QgsSymbolLayerV2Widget* widget = ( const QgsSymbolLayerV2Widget* ) context;
+
+  if ( widget->expressionContext() )
+    return QgsExpressionContext( *widget->expressionContext() );
+
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope();
 
-  const QgsVectorLayer* layer = ( const QgsVectorLayer* ) context;
+  const QgsVectorLayer* layer = widget->vectorLayer();
   if ( layer )
     expContext << QgsExpressionContextUtils::layerScope( layer );
 
@@ -68,7 +73,7 @@ void QgsSymbolLayerV2Widget::registerDataDefinedButton( QgsDataDefinedButton * b
   connect( button, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty() ) );
   connect( button, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty() ) );
 
-  button->registerGetExpressionContextCallback( &_getExpressionContext, const_cast< QgsVectorLayer* >( mVectorLayer ) );
+  button->registerGetExpressionContextCallback( &_getExpressionContext, this );
 }
 
 void QgsSymbolLayerV2Widget::updateDataDefinedProperty()

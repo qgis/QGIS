@@ -76,6 +76,23 @@ class GUI_EXPORT QgsSymbolV2SelectorDialog : public QDialog, private Ui::QgsSymb
     //! return menu for "advanced" button - create it if doesn't exist and show the advanced button
     QMenu* advancedMenu();
 
+    /** Sets the optional expression context used for the widget. This expression context is used for
+     * evaluating data defined symbol properties and for populating based expression widgets in
+     * the layer widget.
+     * @param context expression context pointer. Ownership is transferred to the dialog.
+     * @note added in QGIS 2.12
+     * @see expressionContext()
+     */
+    void setExpressionContext( QgsExpressionContext* context );
+
+    /** Returns the expression context used for the dialog, if set. This expression context is used for
+     * evaluating data defined symbol properties and for populating based expression widgets in
+     * the dialog.
+     * @note added in QGIS 2.12
+     * @see setExpressionContext()
+     */
+    QgsExpressionContext* expressionContext() const { return mPresetExpressionContext.data(); }
+
   protected:
     //! Reimplements dialog keyPress event so we can ignore it
     void keyPressEvent( QKeyEvent * event ) override;
@@ -132,6 +149,7 @@ class GUI_EXPORT QgsSymbolV2SelectorDialog : public QDialog, private Ui::QgsSymb
 
   private:
     QScopedPointer<DataDefinedRestorer> mDataDefineRestorer;
+    QScopedPointer< QgsExpressionContext > mPresetExpressionContext;
 };
 
 #endif

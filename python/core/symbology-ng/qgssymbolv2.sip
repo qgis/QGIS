@@ -112,7 +112,11 @@ class QgsSymbolV2
     //! Generate symbol as image
     QImage asImage( QSize size, QgsRenderContext* customContext = 0 );
 
-    QImage bigSymbolPreviewImage();
+    /** Returns a large (roughly 100x100 pixel) preview image for the symbol.
+     * @param expressionContext optional expression context, for evaluation of
+     * data defined symbol properties
+     */
+    QImage bigSymbolPreviewImage( QgsExpressionContext* expressionContext = 0 );
 
     QString dump() const;
 

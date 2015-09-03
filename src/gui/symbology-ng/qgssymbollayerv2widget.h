@@ -29,14 +29,42 @@ class GUI_EXPORT QgsSymbolLayerV2Widget : public QWidget
     Q_OBJECT
 
   public:
-    QgsSymbolLayerV2Widget( QWidget* parent, const QgsVectorLayer* vl = 0 ) : QWidget( parent ), mVectorLayer( vl ) {}
+    QgsSymbolLayerV2Widget( QWidget* parent, const QgsVectorLayer* vl = 0 ) : QWidget( parent ), mVectorLayer( vl ), mPresetExpressionContext( 0 ) {}
     virtual ~QgsSymbolLayerV2Widget() {}
 
     virtual void setSymbolLayer( QgsSymbolLayerV2* layer ) = 0;
     virtual QgsSymbolLayerV2* symbolLayer() = 0;
 
+    /** Returns the expression context used for the widget, if set. This expression context is used for
+     * evaluating data defined symbol properties and for populating based expression widgets in
+     * the layer widget.
+     * @note added in QGIS 2.12
+     * @see setExpressionContext()
+     */
+    QgsExpressionContext* expressionContext() const { return mPresetExpressionContext; }
+
+    /** Returns the vector layer associated with the widget.
+     * @note added in QGIS 2.12
+     */
+    const QgsVectorLayer* vectorLayer() const { return mVectorLayer; }
+
+  public slots:
+
+    /** Sets the optional expression context used for the widget. This expression context is used for
+     * evaluating data defined symbol properties and for populating based expression widgets in
+     * the layer widget.
+     * @param context expression context pointer. Ownership is not transferred and the object must
+     * be kept alive for the lifetime of the layer widget.
+     * @note added in QGIS 2.12
+     * @see expressionContext()
+     */
+    void setExpressionContext( QgsExpressionContext* context ) { mPresetExpressionContext = context; }
+
   protected:
     const QgsVectorLayer* mVectorLayer;
+
+    //! Optional preset expression context
+    QgsExpressionContext* mPresetExpressionContext;
 
     void registerDataDefinedButton( QgsDataDefinedButton * button, const QString & propertyName, QgsDataDefinedButton::DataType type, const QString & description );
 

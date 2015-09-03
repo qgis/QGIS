@@ -387,7 +387,7 @@ QImage QgsSymbolV2::asImage( QSize size, QgsRenderContext* customContext )
 }
 
 
-QImage QgsSymbolV2::bigSymbolPreviewImage()
+QImage QgsSymbolV2::bigSymbolPreviewImage( QgsExpressionContext* expressionContext )
 {
   QImage preview( QSize( 100, 100 ), QImage::Format_ARGB32_Premultiplied );
   preview.fill( 0 );
@@ -404,6 +404,9 @@ QImage QgsSymbolV2::bigSymbolPreviewImage()
   }
 
   QgsRenderContext context = QgsSymbolLayerV2Utils::createRenderContext( &p );
+  if ( expressionContext )
+    context.setExpressionContext( *expressionContext );
+
   startRender( context );
 
   if ( mType == QgsSymbolV2::Line )
