@@ -1162,7 +1162,7 @@ void QgsComposer::atlasPageComboEditingFinished()
   QString text = mAtlasPageComboBox->lineEdit()->text();
 
   //find matching record in combo box
-  int page = -1;
+  int page = -1; //note - first page starts at 1, not 0
   for ( int i = 0; i < mAtlasPageComboBox->count(); ++i )
   {
     if ( text.compare( mAtlasPageComboBox->itemData( i, Qt::UserRole + 1 ).toString(), Qt::CaseInsensitive ) == 0
@@ -1175,7 +1175,7 @@ void QgsComposer::atlasPageComboEditingFinished()
   }
   bool ok = ( page > 0 );
 
-  if ( !ok || page >= mComposition->atlasComposition().numFeatures() || page < 1 )
+  if ( !ok || page > mComposition->atlasComposition().numFeatures() || page < 1 )
   {
     mAtlasPageComboBox->blockSignals( true );
     mAtlasPageComboBox->setCurrentIndex( mComposition->atlasComposition().currentFeatureNumber() );
