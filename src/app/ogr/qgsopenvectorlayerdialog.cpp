@@ -273,7 +273,10 @@ void QgsOpenVectorLayerDialog::on_buttonSelectSrc_clicked()
   {
     QStringList selected = openFile();
     if ( selected.count() > 0 )
+    {
       inputSrcDataset->setText( selected.join( ";" ) );
+      buttonBox->button( QDialogButtonBox::Open )->setFocus();
+    }
   }
   else if ( radioSrcDirectory->isChecked() )
   {
