@@ -288,7 +288,10 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext& context )
       feat.setGeometry( QgsGeometry::fromMultiPolygon( finalMulti ) );
     }
     if ( feat.constGeometry() )
+    {
+      mContext.expressionContext().setFeature( feat );
       mSubRenderer->renderFeature( feat, mContext );
+    }
   }
   for ( FeatureCategoryVector::iterator cit = mFeaturesCategories.begin(); cit != mFeaturesCategories.end(); ++cit )
   {

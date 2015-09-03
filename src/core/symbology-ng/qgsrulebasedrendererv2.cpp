@@ -859,6 +859,7 @@ void QgsRuleBasedRendererV2::stopRender( QgsRenderContext& context )
     // go through all jobs at the level
     foreach ( const RenderJob* job, level.jobs )
     {
+      context.expressionContext().setFeature( job->ftr.feat );
       //QgsDebugMsg(QString("job fid %1").arg(job->f->id()));
       // render feature - but only with symbol layers with specified zIndex
       QgsSymbolV2* s = job->symbol;
