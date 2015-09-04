@@ -277,6 +277,7 @@
         </section>
         <section label="Reports and statistics">
             <section label="Reports">
+				<grass name="r.info"/>
                 <grass name="r.category"/>
             </section>
             <section label="Statistics">
@@ -424,6 +425,7 @@
             <grass name="v.sample"/>
         </section>
         <section label="Reports and statistics">
+			<grass name="v.info"/>
             <grass name="v.to.db"/>
             <grass name="v.report"/>
             <grass name="v.univar"/>

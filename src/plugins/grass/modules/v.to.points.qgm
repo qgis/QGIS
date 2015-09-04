@@ -7,6 +7,6 @@
 	<option key="output"/>
 	<option key="dmax" answer="100" hidden="no"/>
 	<flag key="v" answer="on" hidden="no" version_max="6"/>
-	<option key="use" answer="Vertex" hidden="no" version_min="7"/>
+	<option key="use" answer="vertex" hidden="no" version_min="7"/>
 	<flag key="i"/>
 </qgisgrassmodule>
