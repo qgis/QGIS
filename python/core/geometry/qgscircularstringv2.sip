@@ -55,6 +55,10 @@ class QgsCircularStringV2: public QgsCurveV2
 
     bool hasCurvedSegments() const;
 
+    /** Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
+        @return rotation in radians, clockwise from north*/
+    double vertexAngle( const QgsVertexId& vertex ) const;
+
   private:
     void segmentize( const QgsPointV2& p1, const QgsPointV2& p2, const QgsPointV2& p3, QList<QgsPointV2>& points ) const;
 };

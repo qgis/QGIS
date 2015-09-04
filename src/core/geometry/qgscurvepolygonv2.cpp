@@ -665,3 +665,14 @@ QgsAbstractGeometryV2* QgsCurvePolygonV2::segmentize() const
 {
   return toPolygon();
 }
+
+double QgsCurvePolygonV2::vertexAngle( const QgsVertexId& vertex ) const
+{
+  if ( !mExteriorRing || vertex.ring < 0 || vertex.ring >= 1 + mInteriorRings.size() )
+  {
+    return false;
+  }
+
+  QgsCurveV2* ring = vertex.ring == 0 ? mExteriorRing : mInteriorRings[vertex.ring - 1];
+  return ring->vertexAngle( vertex );
+}

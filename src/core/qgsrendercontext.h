@@ -141,7 +141,9 @@ class CORE_EXPORT QgsRenderContext
      */
     const QgsExpressionContext& expressionContext() const { return mExpressionContext; }
 
+    /** Returns pointer to the unsegmentized geometry*/
     const QgsAbstractGeometryV2* geometry() const { return mGeometry; }
+    /** Sets pointer to original (unsegmentized) geometry*/
     void setGeometry( const QgsAbstractGeometryV2* geometry ) { mGeometry = geometry; }
 
   private:

@@ -509,3 +509,19 @@ QgsAbstractGeometryV2* QgsGeometryCollectionV2::segmentize() const
   }
   return geomCollection;
 }
+
+double QgsGeometryCollectionV2::vertexAngle( const QgsVertexId& vertex ) const
+{
+  if ( vertex.part >= mGeometries.size() )
+  {
+    return 0.0;
+  }
+
+  QgsAbstractGeometryV2* geom = mGeometries[vertex.part];
+  if ( !geom )
+  {
+    return 0.0;
+  }
+
+  return geom->vertexAngle( vertex );
+}

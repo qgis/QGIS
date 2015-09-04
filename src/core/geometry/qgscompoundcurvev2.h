@@ -104,6 +104,10 @@ class CORE_EXPORT QgsCompoundCurveV2: public QgsCurveV2
 
     bool hasCurvedSegments() const override;
 
+    /** Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
+        @return rotation in radians, clockwise from north*/
+    double vertexAngle( const QgsVertexId& vertex ) const override;
+
   private:
     QList< QgsCurveV2* > mCurves;
     /** Turns a vertex id for the compound curve into one or more ids for the subcurves

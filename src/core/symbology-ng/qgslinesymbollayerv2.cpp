@@ -999,7 +999,7 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineVertex( const QPolygonF& points, 
     offsetAlongLine *= QgsSymbolLayerV2Utils::lineWidthScaleFactor( rc, mOffsetAlongLineUnit, mOffsetAlongLineMapUnitScale );
   }
 
-  if ( !mRotateMarker && offsetAlongLine == 0 && context.renderContext().geometry()
+  if ( offsetAlongLine == 0 && context.renderContext().geometry()
        && context.renderContext().geometry()->hasCurvedSegments() && ( placement == Vertex || placement == CurvePoint ) )
   {
     const QgsCoordinateTransform* ct = context.renderContext().coordinateTransform();
@@ -1024,7 +1024,8 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineVertex( const QPolygonF& points, 
 
         if ( mRotateMarker )
         {
-          //todo: function to calculate angle...
+          double angle = context.renderContext().geometry()->vertexAngle( vId );
+          mMarker->setAngle( angle * 180 / M_PI );
         }
         mMarker->renderPoint( mapPoint, context.feature(), rc, -1, context.selected() );
       }
@@ -1042,12 +1043,16 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineVertex( const QPolygonF& points, 
     i = points.count() - 1;
     maxCount = points.count();
   }
-  else
+  else if ( placement == Vertex )
   {
     i = 0;
     maxCount = points.count();
     if ( points.first() == points.last() )
       isRing = true;
+  }
+  else
+  {
+    return;
   }
 
   if ( offsetAlongLine > 0 && ( placement == FirstVertex || placement == LastVertex ) )

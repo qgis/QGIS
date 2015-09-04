@@ -94,6 +94,10 @@ class CORE_EXPORT QgsCurvePolygonV2: public QgsSurfaceV2
     bool hasCurvedSegments() const override;
     QgsAbstractGeometryV2* segmentize() const override;
 
+    /** Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
+        @return rotation in radians, clockwise from north*/
+    double vertexAngle( const QgsVertexId& vertex ) const override;
+
   protected:
 
     QgsCurveV2* mExteriorRing;

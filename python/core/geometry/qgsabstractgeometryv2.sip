@@ -116,4 +116,8 @@ class QgsAbstractGeometryV2
     virtual bool hasCurvedSegments() const;
     /** Returns a geometry without curves. Caller takes ownership*/
     virtual QgsAbstractGeometryV2* segmentize() const /Factory/;
+
+    /** Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
+        @return rotation in radians, clockwise from north*/
+    virtual double vertexAngle( const QgsVertexId& vertex ) const = 0;
 };
