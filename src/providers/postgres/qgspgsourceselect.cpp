@@ -84,6 +84,7 @@ QWidget *QgsPgSourceSelectDelegate::createEditor( QWidget *parent, const QStyleO
       {
         QStandardItem *item = new QStandardItem( value );
         item->setFlags( Qt::ItemIsUserCheckable | Qt::ItemIsEnabled );
+        item->setCheckable( true );
         item->setData( Qt::Unchecked, Qt::CheckStateRole );
         model->setItem( row++, 0, item );
       }
