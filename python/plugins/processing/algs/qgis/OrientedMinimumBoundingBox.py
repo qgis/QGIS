@@ -65,8 +65,8 @@ class OrientedMinimumBoundingBox(GeoAlgorithm):
             
         fields = [ 
             QgsField('AREA', QVariant.Double),
-            QgsField('ANGLE', QVariant.Double),
             QgsField('PERIMETER', QVariant.Double),
+            QgsField('ANGLE', QVariant.Double),
             QgsField('WIDTH', QVariant.Double),
             QgsField('HEIGHT', QVariant.Double),
         ]
