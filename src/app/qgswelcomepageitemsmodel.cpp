@@ -17,6 +17,7 @@
 
 #include <QPixmap>
 #include <QFile>
+#include <QPainter>
 
 QgsWelcomePageItemsModel::QgsWelcomePageItemsModel( QObject* parent )
     : QAbstractListModel( parent )
@@ -48,9 +49,23 @@ QVariant QgsWelcomePageItemsModel::data( const QModelIndex& index, int role ) co
 
     case Qt::DecorationRole:
     {
-      QPixmap previewImage;
-      previewImage.load( mRecentProjects.at( index.row() ).previewImagePath );
-      return previewImage;
+      QImage thumbnail( mRecentProjects.at( index.row() ).previewImagePath );
+      if ( thumbnail.isNull() )
+        return QVariant();
+
+      //nicely round corners so users don't get paper cuts
+      QImage previewImage( thumbnail.size(), QImage::Format_ARGB32 );
+      previewImage.fill( Qt::transparent );
+      QPainter previewPainter( &previewImage );
+      previewPainter.setRenderHint( QPainter::Antialiasing, true );
+      previewPainter.setPen( Qt::NoPen );
+      previewPainter.setBrush( Qt::black );
+      previewPainter.drawRoundedRect( 0, 0, previewImage.width(), previewImage.height(), 8, 8 );
+      previewPainter.setCompositionMode( QPainter::CompositionMode_SourceIn );
+      previewPainter.drawImage( 0, 0, thumbnail );
+      previewPainter.end();
+
+      return QPixmap::fromImage( previewImage );
       break;
     }
 
