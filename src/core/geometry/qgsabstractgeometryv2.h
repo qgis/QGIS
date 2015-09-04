@@ -318,6 +318,7 @@ class CORE_EXPORT QgsAbstractGeometryV2
     virtual QgsAbstractGeometryV2* segmentize() const { return clone(); }
 
     /** Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
+        @param vertex the vertex id
         @return rotation in radians, clockwise from north*/
     virtual double vertexAngle( const QgsVertexId& vertex ) const = 0;
 

@@ -85,7 +85,9 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometryV2
     double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const override;
     bool nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const override;
 
-    /** Angle undefined. Always returns 0.0*/
+    /** Angle undefined. Always returns 0.0
+        @param vertex the vertex id
+        @return 0.0*/
     double vertexAngle( const QgsVertexId& vertex ) const override { Q_UNUSED( vertex ); return 0.0; }
 
   private:
