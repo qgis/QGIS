@@ -219,13 +219,17 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
 
           if ( promptElem.attribute( "prompt" ) == "dbcolumn" )
           {
-            // G_OPT_DB_COLUMN may be also used for new columns (v.in.db) so we check also if there is at least one input vector
-            // but a vector input may also exist (v.random).
-            QList<QDomNode> vectorNodes = QgsGrassModuleParam::nodesByType( descDocElem, G_OPT_V_INPUT, "old" );
-            QgsDebugMsg( QString( "vectorNodes.size() = %1" ).arg( vectorNodes.size() ) );
-            if ( !vectorNodes.isEmpty() )
+            // Give only warning if the option is not hidden
+            if ( !so->hidden() )
             {
-              mErrors << tr( "Option '%1' should be configured as field" ).arg( so->key() );
+              // G_OPT_DB_COLUMN may be also used for new columns (v.in.db) so we check also if there is at least one input vector
+              // but a vector input may also exist (v.random).
+              QList<QDomNode> vectorNodes = QgsGrassModuleParam::nodesByType( descDocElem, G_OPT_V_INPUT, "old" );
+              QgsDebugMsg( QString( "vectorNodes.size() = %1" ).arg( vectorNodes.size() ) );
+              if ( !vectorNodes.isEmpty() )
+              {
+                mErrors << tr( "Option '%1' should be configured as field" ).arg( so->key() );
+              }
             }
           }
         }
