@@ -237,6 +237,7 @@ class CORE_EXPORT QgsFeatureRendererV2
     //! return rotation field name (or empty string if not set or not supported by renderer)
     //! @deprecated use the symbol's methods instead
     Q_DECL_DEPRECATED virtual QString rotationField() const { return QString(); }
+
     //! sets rotation field of renderer (if supported by the renderer)
     //! @deprecated use the symbol's methods instead
     Q_DECL_DEPRECATED virtual void setRotationField( QString fieldName ) { Q_UNUSED( fieldName ); }

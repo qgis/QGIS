@@ -85,6 +85,8 @@ or they can be converted to numeric types.
 Arithmetic operators do integer arithmetics if both operands are integer. That is
 2+2 yields integer 4, but 2.0+2 returns real number 4.0. There are also two versions of
 division and modulo operators: 1.0/2 returns 0.5 while 1/2 returns 0. */
+
+Q_NOWARN_DEPRECATED_PUSH
 class CORE_EXPORT QgsExpression
 {
   public:
@@ -460,6 +462,7 @@ class CORE_EXPORT QgsExpression
             , mContextFnc( fcn )
             , mAliases( aliases )
         {}
+
         Q_DECL_DEPRECATED virtual QVariant func( const QVariantList& values, const QgsFeature* f, QgsExpression* parent ) override;
 
         /** Returns result of evaluating the function.
@@ -749,10 +752,10 @@ class CORE_EXPORT QgsExpression
 
         virtual QStringList referencedColumns() const override { QStringList lst( mNode->referencedColumns() ); foreach ( Node* n, mList->list() ) lst.append( n->referencedColumns() ); return lst; }
         virtual bool needsGeometry() const override { bool needs = false; foreach ( Node* n, mList->list() ) needs |= n->needsGeometry(); return needs; }
-        virtual void accept( Visitor& v ) const override { v.visit( *this ); }
+          virtual void accept( Visitor& v ) const override { v.visit( *this ); }
 
-      protected:
-        Node* mNode;
+          protected:
+            Node* mNode;
         NodeList* mList;
         bool mNotIn;
     };
@@ -934,6 +937,7 @@ class CORE_EXPORT QgsExpression
   private:
     Q_DISABLE_COPY( QgsExpression )  // for now - until we have proper copy constructor / implicit sharing
 };
+Q_NOWARN_DEPRECATED_POP
 
 Q_DECLARE_METATYPE( QgsExpression::Interval );
 Q_DECLARE_METATYPE( QgsExpression::Node* );

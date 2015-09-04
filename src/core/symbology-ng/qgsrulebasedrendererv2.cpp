@@ -516,7 +516,7 @@ QgsRuleBasedRendererV2::Rule::RenderResult QgsRuleBasedRendererV2::Rule::renderF
   if ( mSymbol && mIsActive )
   {
     // add job to the queue: each symbol's zLevel must be added
-    Q_FOREACH ( int normZLevel, mSymbolNormZLevels )
+    Q_FOREACH( int normZLevel, mSymbolNormZLevels )
     {
       //QgsDebugMsg(QString("add job at level %1").arg(normZLevel));
       renderQueue[normZLevel].jobs.append( new RenderJob( featToRender, mSymbol ) );
@@ -527,7 +527,7 @@ QgsRuleBasedRendererV2::Rule::RenderResult QgsRuleBasedRendererV2::Rule::renderF
   bool willrendersomething = false;
 
   // process children
-  Q_FOREACH ( Rule* rule, mChildren )
+  Q_FOREACH( Rule* rule, mChildren )
   {
     // Don't process else rules yet
     if ( !rule->isElse() )
@@ -543,7 +543,7 @@ QgsRuleBasedRendererV2::Rule::RenderResult QgsRuleBasedRendererV2::Rule::renderF
   {
     foreach ( Rule* rule, mElseRules )
     {
-      rendered |= rule->renderFeature( featToRender, context, renderQueue );
+      rendered |= rule->renderFeature( featToRender, context, renderQueue ) != Filtered;
     }
   }
   if ( !mIsActive )

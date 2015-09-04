@@ -110,6 +110,7 @@ class CORE_EXPORT QgsRendererRangeV2LabelFormat
 class QgsVectorLayer;
 class QgsVectorColorRampV2;
 
+Q_NOWARN_DEPRECATED_PUSH
 class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
 {
   public:
@@ -358,5 +359,6 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
     static const char * graduatedMethodStr( GraduatedMethod method );
 
 };
+Q_NOWARN_DEPRECATED_POP
 
 #endif // QGSGRADUATEDSYMBOLRENDERERV2_H

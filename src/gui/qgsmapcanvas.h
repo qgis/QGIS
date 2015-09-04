@@ -102,6 +102,7 @@ class GUI_EXPORT QgsMapCanvasLayer
  * Map canvas is a class for displaying all GIS data types on a canvas.
  */
 
+Q_NOWARN_DEPRECATED_PUSH
 class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 {
     Q_OBJECT
@@ -698,6 +699,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     QgsSnappingUtils* mSnappingUtils;
 
 }; // class QgsMapCanvas
+Q_NOWARN_DEPRECATED_POP
 
 
 
