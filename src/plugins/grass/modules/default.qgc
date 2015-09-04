@@ -268,9 +268,9 @@
                 <grass name="v.surf.bspline"/>
                 <grass name="v.surf.idw"/>
                 <grass name="v.surf.rst"/>
-                <grass name="r.bilinear" version_min="6.4"/>
+                <grass name="r.bilinear" version_max="6.4"/>
                 <grass name="r.surf.idw"/>
-                <grass name="r.surf.idw2"/>
+                <grass name="r.surf.idw2" version_max="6.4"/>
                 <grass name="r.fillnulls"/>
                 <grass name="r.surf.contour"/>
             </section>
@@ -281,10 +281,10 @@
             </section>
             <section label="Statistics">
                 <grass name="r.stats"/>
-                <grass name="r.sum"/>
+                <grass name="r.sum" version_max="6.4"/>
                 <grass name="r.report"/>
-                <grass name="r.average"/>
-                <grass name="r.median"/>
+                <grass name="r.average" version_max="6.4"/>
+                <grass name="r.median" version_max="6.4"/>
                 <grass name="r.mode"/>
                 <grass name="r.volume"/>
                 <grass name="r.surf.area"/>
@@ -402,6 +402,7 @@
             </section>
             <section label="Create points">
                 <grass name="v.random"/>
+                <grass name="v.random.3d"/>
                 <grass name="v.perturb"/>
             </section>
             <section label="Manage training dataset">
@@ -431,23 +432,25 @@
     </section>
 
     <section label="Imagery">
-        <section label="Develop images and group">
-            <grass name="i.image.mosaic"/>
+        <section label="Develop images and group" version_max="6.4">
+            <grass name="i.image.mosaic" version_max="6.4"/>
         </section>
         <section label="Manage image colors">
             <grass name="i.rgb.his"/>
             <grass name="i.his.rgb"/>
-            <grass name="i.landsat.rgb"/>
-            <grass name="i.fusion.brovey"/>
+            <grass name="i.landsat.rgb" version_max="6.4"/>
+            <grass name="i.colors.enhance" version_min="7.0"/>
+            <grass name="i.fusion.brovey" version_max="6.4"/>
+            <grass name="i.pansharpen" version_min="7.0"/>
         </section>
         <section label="Filter image">
             <grass name="i.zc"/>
             <grass name="r.mfilter"/>
         </section>
-        <section label="Tassled cap vegetation index">
-            <grass name="i.tasscap4"/>
-            <grass name="i.tasscap5"/>
-            <grass name="i.tasscap7"/>
+        <section label="Tassled cap vegetation index" version_max="6.4">
+            <grass name="i.tasscap4" version_max="6.4"/>
+            <grass name="i.tasscap5" version_max="6.4"/>
+            <grass name="i.tasscap7" version_max="6.4"/>
         </section>
         <section label="Transform image">
             <grass name="i.fft"/>
@@ -455,9 +458,10 @@
         </section>
         <section label="Reports and statistics">
             <grass name="r.describe"/>
-            <grass name="r.bitpattern"/>
+            <grass name="r.bitpattern" version_max="6.4"/>
+            <grass name="i.modis.qc" version_min="7.0"/>
             <grass name="r.kappa"/>
-            <grass name="i.oif"/>
+            <grass name="i.oif" version_max="6.4"/>
         </section>
     </section>
 
@@ -545,9 +549,10 @@
             <grass name="v.db.update_query"/>
             <grass name="v.db.update_op"/>
             <grass name="v.db.update_op_query"/>
-            <grass name="v.db.dropcol" version_min="6.4" version_max="6.4"/>
+            <grass name="v.db.dropcol" version_max="6.4"/>
             <grass name="v.db.dropcolumn" version_min="7.0"/>
-            <grass name="v.db.renamecol"/>
+            <grass name="v.db.renamecol" version_max="6.4"/>
+            <grass name="v.db.renamecolumn" version_min="7.0"/>
             <grass name="db.execute"/>
             <grass name="db.select"/>
             <grass name="v.db.select"/>
@@ -559,8 +564,8 @@
         </section>
     </section>
 
-    <section label="3d Visualization">
-        <grass name="nviz"/>
+    <section label="3d Visualization" version_max="6.4">
+        <grass name="nviz" version_max="6.4"/>
     </section>
     <section label="Convert coordinates">
         <grass name="m.cogo"/>
