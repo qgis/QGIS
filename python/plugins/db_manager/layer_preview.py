@@ -38,6 +38,7 @@ class LayerPreview(QgsMapCanvas):
 
         self.item = None
         self.dirty = False
+        self.currentLayer = None
 
         # reuse settings from QGIS
         settings = QSettings()
@@ -45,8 +46,6 @@ class LayerPreview(QgsMapCanvas):
         action = settings.value("/qgis/wheel_action", 0, type=float)
         zoomFactor = settings.value("/qgis/zoom_factor", 2, type=float)
         self.setWheelAction(QgsMapCanvas.WheelAction(action), zoomFactor)
-
-        self._clear()
 
     def refresh(self):
         self.setDirty(True)
@@ -80,19 +79,18 @@ class LayerPreview(QgsMapCanvas):
                 self.disconnect(self.item, SIGNAL('aboutToChange'), self.setDirty)
             except RuntimeError:
                 pass
+
         self.item = None
         self.dirty = False
-
-        self.currentLayerId = None
-        self.setLayerSet([])
+        self._loadTablePreview(None)
 
     def _loadTablePreview(self, table, limit=False):
         """ if has geometry column load to map canvas """
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         self.setRenderFlag(False)
-        newLayerId = None
+        vl = None
 
-        if table.geomType:
+        if table and table.geomType:
             # limit the query result if required
             if limit and table.rowCount > 1000:
                 uniqueField = table.getValidQGisUniqueFields(True)
@@ -112,17 +110,21 @@ class LayerPreview(QgsMapCanvas):
                 vl = table.toMapLayer()
 
             if not vl.isValid():
-                self.setLayerSet([])
-            else:
-                newLayerId = vl.id() if hasattr(vl, 'id') else vl.id()
-                self.setLayerSet([QgsMapCanvasLayer(vl)])
-                QgsMapLayerRegistry.instance().addMapLayers([vl], False)
-                self.zoomToFullExtent()
+                vl.deleteLater()
+                vl = None
 
         # remove old layer (if any) and set new
-        if self.currentLayerId:
-            QgsMapLayerRegistry.instance().removeMapLayers([self.currentLayerId], False)
-        self.currentLayerId = newLayerId
+        if self.currentLayer:
+            QgsMapLayerRegistry.instance().removeMapLayers([self.currentLayer.id()])
+
+        if vl:
+            self.setLayerSet([QgsMapCanvasLayer(vl)])
+            QgsMapLayerRegistry.instance().addMapLayers([vl], False)
+            self.zoomToFullExtent()
+        else:
+            self.setLayerSet([])
+
+        self.currentLayer = vl
 
         self.setRenderFlag(True)
         QApplication.restoreOverrideCursor()

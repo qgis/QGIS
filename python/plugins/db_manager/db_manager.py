@@ -58,6 +58,8 @@ class DBManager(QMainWindow):
 
     def closeEvent(self, e):
         self.unregisterAllActions()
+        # clear preview, this will delete the layer in preview tab
+        self.preview.loadPreview(None)
 
         # save the window state
         settings = QSettings()
@@ -82,6 +84,8 @@ class DBManager(QMainWindow):
         QApplication.setOverrideCursor(Qt.WaitCursor)
         try:
             self.reloadButtons()
+            # clear preview, this will delete the layer in preview tab
+            self.preview.loadPreview(None)
             self.refreshTabs()
         except BaseError as e:
             DlgDbError.showError(e, self)
