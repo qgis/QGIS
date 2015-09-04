@@ -4802,6 +4802,7 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& con
       {
         // draw label's text, QPainterPath method
         QPainterPath path;
+        path.setFillRule( Qt::WindingFill );
         path.addText( 0, 0, tmpLyr.textFont, component.text() );
 
         // store text's drawing in QPicture for drop shadow call
@@ -4870,6 +4871,7 @@ void QgsPalLabeling::drawLabelBuffer( QgsRenderContext& context,
                    ( tmpLyr.bufferSizeInMapUnits ? QgsPalLayerSettings::MapUnits : QgsPalLayerSettings::MM ), true, tmpLyr.bufferSizeMapUnitScale );
 
   QPainterPath path;
+  path.setFillRule( Qt::WindingFill );
   path.addText( 0, 0, tmpLyr.textFont, component.text() );
   QPen pen( tmpLyr.bufferColor );
   pen.setWidthF( penSize );
