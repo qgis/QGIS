@@ -1180,14 +1180,69 @@ bool QgsPostgresProvider::determinePrimaryKey()
 
         if ( !primaryKey.isEmpty() )
         {
-          int idx = fieldNameIndex( primaryKey );
+          QStringList cols;
 
-          if ( idx >= 0 )
+          // remove quotes from key list
+          if ( primaryKey.startsWith( '"' ) && primaryKey.endsWith( '"' ) )
+          {
+            int i = 1;
+            QString col;
+            while ( i < primaryKey.size() )
+            {
+              if ( primaryKey[i] == '"' )
+              {
+                if ( i + 1 < primaryKey.size() && primaryKey[i+1] == '"' )
+                {
+                  i++;
+                }
+                else
+                {
+                  cols << col;
+                  col = "";
+
+                  if ( ++i == primaryKey.size() )
+                    break;
+
+                  Q_ASSERT( primaryKey[i] == ',' );
+                  i++;
+                  Q_ASSERT( primaryKey[i] == '"' );
+                  i++;
+                  col = "";
+                  continue;
+                }
+              }
+
+              col += primaryKey[i++];
+            }
+          }
+          else if ( primaryKey.contains( "," ) )
+          {
+            cols = primaryKey.split( "," );
+          }
+          else
+          {
+            cols << primaryKey;
+            primaryKey = quotedIdentifier( primaryKey );
+          }
+
+          foreach ( QString col, cols )
+          {
+            int idx = fieldNameIndex( col );
+            if ( idx < 0 )
+            {
+              QgsMessageLog::logMessage( tr( "Key field '%1' for view not found." ).arg( col ), tr( "PostGIS" ) );
+              mPrimaryKeyAttrs.clear();
+              break;
+            }
+
+            mPrimaryKeyAttrs << idx;
+          }
+
+          if ( mPrimaryKeyAttrs.size() > 0 )
           {
             if ( mUseEstimatedMetadata || uniqueData( mQuery, primaryKey ) )
             {
-              mPrimaryKeyType = ( mAttributeFields[idx].type() == QVariant::Int || mAttributeFields[idx].type() == QVariant::LongLong ) ? pktInt : pktFidMap;
-              mPrimaryKeyAttrs << idx;
+              mPrimaryKeyType = ( mPrimaryKeyAttrs.size() == 1 && ( mAttributeFields[ mPrimaryKeyAttrs[0] ].type() == QVariant::Int || mAttributeFields[ mPrimaryKeyAttrs[0] ].type() == QVariant::LongLong ) ) ? pktInt : pktFidMap;
             }
             else
             {
@@ -1196,7 +1251,7 @@ bool QgsPostgresProvider::determinePrimaryKey()
           }
           else
           {
-            QgsMessageLog::logMessage( tr( "Key field '%1' for view not found." ).arg( primaryKey ), tr( "PostGIS" ) );
+            QgsMessageLog::logMessage( tr( "Keys for view undefined." ).arg( primaryKey ), tr( "PostGIS" ) );
           }
         }
         else
@@ -1269,12 +1324,12 @@ bool QgsPostgresProvider::determinePrimaryKey()
   return mValid;
 }
 
-bool QgsPostgresProvider::uniqueData( QString query, QString colName )
+bool QgsPostgresProvider::uniqueData( QString query, QString quotedColName )
 {
   Q_UNUSED( query );
   // Check to see if the given column contains unique data
   QString sql = QString( "SELECT count(distinct %1)=count(%1) FROM %2%3" )
-                .arg( quotedIdentifier( colName ) )
+                .arg( quotedColName )
                 .arg( mQuery )
                 .arg( filterWhereClause() );
 
@@ -3062,16 +3117,16 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer(
   }
   else
   {
-      // if the pk field's type is one of the postgres integer types,
-      // use the equivalent autoincremental type (serialN)
-      if ( primaryKeyType == "int2" || primaryKeyType == "int4" )
-      {
-        primaryKeyType = "serial";
-      }
-      else if ( primaryKeyType == "int8" )
-      {
-        primaryKeyType = "serial8";
-      }
+    // if the pk field's type is one of the postgres integer types,
+    // use the equivalent autoincremental type (serialN)
+    if ( primaryKeyType == "int2" || primaryKeyType == "int4" )
+    {
+      primaryKeyType = "serial";
+    }
+    else if ( primaryKeyType == "int8" )
+    {
+      primaryKeyType = "serial8";
+    }
   }
 
   try

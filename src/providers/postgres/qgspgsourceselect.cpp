@@ -76,7 +76,20 @@ QWidget *QgsPgSourceSelectDelegate::createEditor( QWidget *parent, const QStyleO
     if ( values.size() > 0 )
     {
       QComboBox *cb = new QComboBox( parent );
-      cb->addItems( values );
+
+      QStandardItemModel *model = new QStandardItemModel( values.size(), 1, cb );
+
+      int row = 0;
+      foreach ( QString value, values )
+      {
+        QStandardItem *item = new QStandardItem( value );
+        item->setFlags( Qt::ItemIsUserCheckable | Qt::ItemIsEnabled );
+        item->setData( Qt::Unchecked, Qt::CheckStateRole );
+        model->setItem( row++, 0, item );
+      }
+
+      cb->setModel( model );
+
       return cb;
     }
   }
@@ -101,8 +114,25 @@ void QgsPgSourceSelectDelegate::setEditorData( QWidget *editor, const QModelInde
     if ( index.column() == QgsPgTableModel::dbtmType )
       cb->setCurrentIndex( cb->findData( index.data( Qt::UserRole + 2 ).toInt() ) );
 
-    if ( index.column() == QgsPgTableModel::dbtmPkCol && !index.data( Qt::UserRole + 2 ).toString().isEmpty() )
-      cb->setCurrentIndex( cb->findText( index.data( Qt::UserRole + 2 ).toString() ) );
+    if ( index.column() == QgsPgTableModel::dbtmPkCol && !index.data( Qt::UserRole + 2 ).toStringList().isEmpty() )
+    {
+      QStringList cols = index.data( Qt::UserRole + 2 ).toStringList();
+
+      foreach ( QString col, cols )
+      {
+        QStandardItemModel *cbm = qobject_cast<QStandardItemModel*>( cb->model() );
+        for ( int idx = 0; idx < cbm->rowCount(); idx++ )
+        {
+          QStandardItem *item = cbm->item( idx, 0 );
+          if ( item->text() != col )
+            continue;
+
+          item->setData( Qt::Checked, Qt::CheckStateRole );
+          break;
+        }
+      }
+
+    }
   }
 
   QLineEdit *le = qobject_cast<QLineEdit*>( editor );
@@ -132,9 +162,17 @@ void QgsPgSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemMode
     }
     else if ( index.column() == QgsPgTableModel::dbtmPkCol )
     {
-      QString value( cb->currentText() );
-      model->setData( index, value.isEmpty() ? tr( "Select..." ) : value );
-      model->setData( index, value, Qt::UserRole + 2 );
+      QStandardItemModel *cbm = qobject_cast<QStandardItemModel*>( cb->model() );
+      QStringList cols;
+      for ( int idx = 0; idx < cbm->rowCount(); idx++ )
+      {
+        QStandardItem *item = cbm->item( idx, 0 );
+        if ( item->data( Qt::CheckStateRole ) == Qt::Checked )
+          cols << item->text();
+      }
+
+      model->setData( index, cols.isEmpty() ? tr( "Select..." ) : cols.join( ", " ) );
+      model->setData( index, cols, Qt::UserRole + 2 );
     }
   }
 
@@ -196,7 +234,7 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool 
   mSearchColumnComboBox->addItem( tr( "Table" ) );
   mSearchColumnComboBox->addItem( tr( "Type" ) );
   mSearchColumnComboBox->addItem( tr( "Geometry column" ) );
-  mSearchColumnComboBox->addItem( tr( "Primary key column" ) );
+  mSearchColumnComboBox->addItem( tr( "Feature id" ) );
   mSearchColumnComboBox->addItem( tr( "SRID" ) );
   mSearchColumnComboBox->addItem( tr( "Sql" ) );
 
@@ -378,7 +416,7 @@ void QgsPgSourceSelect::on_mSearchColumnComboBox_currentIndexChanged( const QStr
   {
     mProxyModel.setFilterKeyColumn( QgsPgTableModel::dbtmGeomCol );
   }
-  else if ( text == tr( "Primary key column" ) )
+  else if ( text == tr( "Feature id" ) )
   {
     mProxyModel.setFilterKeyColumn( QgsPgTableModel::dbtmPkCol );
   }
