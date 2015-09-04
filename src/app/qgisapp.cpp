@@ -2755,7 +2755,15 @@ void QgisApp::updateRecentProjectPaths()
 
   Q_FOREACH ( const QgsWelcomePageItemsModel::RecentProjectData& recentProject, mRecentProjects )
   {
-    QAction* action = mRecentProjectsMenu->addAction( QString( "%1 (%2)" ).arg( recentProject.title ).arg( recentProject.path ) );
+    QAction* action;
+    if ( recentProject.title != recentProject.path )
+    {
+      action = mRecentProjectsMenu->addAction( QString( "%1 (%2)" ).arg( recentProject.title ).arg( recentProject.path ) );
+    }
+    else
+    {
+      action = mRecentProjectsMenu->addAction( QString( "%1" ).arg( recentProject.path ) );
+    }
     action->setEnabled( QFile::exists(( recentProject.path ) ) );
     action->setData( recentProject.path );
   }
