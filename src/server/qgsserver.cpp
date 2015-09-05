@@ -403,47 +403,14 @@ bool QgsServer::init( int & argc, char ** argv )
 }
 
 
-/**
- * Handles the request
- */
-QByteArray QgsServer::handleRequest( const QString queryString /*= QString( )*/ )
-{
-  return handleRequest( queryString, TRUE, TRUE );
-}
-
-/**
- * @brief Handles the request, returning only the body
- * @param queryString
- * @return response body if mCaptureOutput is set, empty QByteArray if not
- */
-QByteArray QgsServer::handleRequestGetBody( const QString queryString /*= QString( )*/ )
-{
-  return handleRequest( queryString, FALSE, TRUE );
-}
-
-/**
- * @brief Handles the request, returning only the headers
- * @param queryString
- * @return response headers if mCaptureOutput is set, empty QByteArray if not
- */
-QByteArray QgsServer::handleRequestGetHeaders( const QString queryString /*= QString( )*/ )
-{
-  return handleRequest( queryString, TRUE, FALSE );
-}
 
 /**
  * @brief Handles the request
  * @param queryString
- * @param returnBody
- * @param returnHeaders
- * @return response body and headers if mCaptureOutput is set and the
- * flags are set, empty QByteArray if not
+ * @return response body and headers
  */
-QByteArray QgsServer::handleRequest( const QString queryString ,
-                                     bool returnHeaders,
-                                     bool returnBody )
+QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString queryString /*= QString( )*/ )
 {
-
   // Run init if handleRequest was called without previously initialising
   // the server
   if ( ! mInitialised )
@@ -603,6 +570,7 @@ QByteArray QgsServer::handleRequest( const QString queryString ,
   }
   // TODO: if HAVE_SERVER_PYTHON
   // Returns the response bytestream
-  return theRequestHandler->getResponse( returnHeaders , returnBody );
+  return theRequestHandler->getResponse( );
+
 }
 

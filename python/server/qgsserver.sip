@@ -17,6 +17,48 @@
  ***************************************************************************/
 
 
+%MappedType QPair<QByteArray, QByteArray>
+{
+%TypeHeaderCode
+#include <QPair>
+#include <QByteArray>
+%End
+
+
+%TypeCode
+// Convenience function for converting a QByteArray to a Python str object. (from QtCore/qbytearray.sip)
+static PyObject *QByteArrayToPyStr(QByteArray *ba)
+{
+  char *data = ba->data();
+
+  if (data)
+    // QByteArrays may have embedded '\0's so set the size explicitly.
+    return SIPBytes_FromStringAndSize(data, ba->size());
+  return SIPBytes_FromString("");
+}
+%End
+
+
+%ConvertFromTypeCode
+    // Create the tuple.
+    return Py_BuildValue((char *)"OO", QByteArrayToPyStr( &sipCpp->first ), QByteArrayToPyStr( &sipCpp->second ) );
+%End
+
+%ConvertToTypeCode
+    // Check the type if that is all that is required.
+    if (sipIsErr == NULL)
+        return (PyTuple_Size(sipPy) == 2);
+
+    QPair<QByteArray, QByteArray> *qp = new QPair<QByteArray, QByteArray>;
+
+    qp->first = SIPLong_AsLong(PyTuple_GET_ITEM(sipPy, 0));
+    qp->second = SIPLong_AsLong(PyTuple_GET_ITEM(sipPy, 1));
+
+    *sipCppPtr = qp;
+
+    return sipGetState(sipTransferObj);
+%End
+};
 
 class QgsServer
 {
@@ -31,21 +73,12 @@ class QgsServer
     //void init( int argc, char* argv[] );
     // init for python bindings:
     void init( );
-    QByteArray handleRequest( const QString queryString = QString( ) );
-    // TODO: if HAVE_SERVER_PYTHON
-    QByteArray handleRequest( const QString queryString,
-                              const bool returnHeaders,
-                              const bool returnBody );
-    QByteArray handleRequestGetBody( const QString queryString = QString( ) );
-    QByteArray handleRequestGetHeaders( const QString queryString = QString( ) );
-    //QgsServerContext& serverContext ( ) /KeepReference/;
+    QPair<QByteArray, QByteArray> handleRequest( const QString queryString = QString( ) );
 %If (HAVE_SERVER_PYTHON_PLUGINS)
      QgsServerInterface* serverInterface( );
-     // Needs %MethodCode
-     //QMultiMap<int, QgsServerFilter*> pluginFilters( );
 %End
 
-    // The following is needed because otherwise SIP fails trying to create copy
+  // The following is needed because otherwise SIP fails trying to create copy
   // ctor
   private:
     QgsServer( const QgsServer& );

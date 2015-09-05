@@ -53,17 +53,15 @@ class TestQgsServer(unittest.TestCase):
         """Using an empty query string (returns an XML exception)
         we are going to test if headers and body are returned correctly"""
         # Test as a whole
-        response = str(self.server.handleRequest())
+        header, body = [str(_v) for _v in self.server.handleRequest()]
+        response = header + body
         expected = 'Content-Length: 206\nContent-Type: text/xml; charset=utf-8\n\n<ServiceExceptionReport version="1.3.0" xmlns="http://www.opengis.net/ogc">\n <ServiceException code="Service configuration error">Service unknown or unsupported</ServiceException>\n</ServiceExceptionReport>\n'
         self.assertEqual(response, expected)
-        # Test header
-        response = str(self.server.handleRequestGetHeaders())
         expected = 'Content-Length: 206\nContent-Type: text/xml; charset=utf-8\n\n'
-        self.assertEqual(response, expected)
+        self.assertEqual(header, expected)
         # Test body
-        response = str(self.server.handleRequestGetBody())
         expected = '<ServiceExceptionReport version="1.3.0" xmlns="http://www.opengis.net/ogc">\n <ServiceException code="Service configuration error">Service unknown or unsupported</ServiceException>\n</ServiceExceptionReport>\n'
-        self.assertEqual(response, expected)
+        self.assertEqual(body, expected)
 
     def test_pluginfilters(self):
         """Test python plugins filters"""
@@ -122,7 +120,8 @@ class TestQgsServer(unittest.TestCase):
         self.assertTrue(filter2 in serverIface.filters()[100])
         self.assertEqual(filter1, serverIface.filters()[101][0])
         self.assertEqual(filter2, serverIface.filters()[200][0])
-        response = str(self.server.handleRequest('service=simple'))
+        header, body = [str(_v) for _v in self.server.handleRequest('service=simple')]
+        response = header + body
         expected = 'Content-type: text/plain\n\nHello from SimpleServer!Hello from Filter1!Hello from Filter2!'
         self.assertEqual(response, expected)
 
@@ -133,7 +132,8 @@ class TestQgsServer(unittest.TestCase):
         self.assertTrue(filter2 in serverIface.filters()[100])
         self.assertEqual(filter1, serverIface.filters()[101][0])
         self.assertEqual(filter2, serverIface.filters()[200][0])
-        response = str(self.server.handleRequest('service=simple'))
+        header, body = [str(_v) for _v in self.server.handleRequest('service=simple')]
+        response = header + body
         expected = 'Content-type: text/plain\n\nHello from SimpleServer!Hello from Filter1!Hello from Filter2!'
         self.assertEqual(response, expected)
 
@@ -143,7 +143,8 @@ class TestQgsServer(unittest.TestCase):
         assert os.path.exists(project), "Project file not found: " + project
 
         query_string = 'MAP=%s&SERVICE=WMS&VERSION=1.3&REQUEST=%s' % (urllib.quote(project), request)
-        response = str(self.server.handleRequest(query_string))
+        header, body = [str(_v) for _v in self.server.handleRequest(query_string)]
+        response = header + body
         f = open(self.testdata_path + request.lower() + '.txt')
         expected = f.read()
         f.close()
