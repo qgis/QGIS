@@ -417,7 +417,7 @@ void TestQgsExpressionContext::setFeature()
   QCOMPARE( emptyContext.scopeCount(), 1 );
   QVERIFY( emptyContext.hasVariable( QgsExpressionContext::EXPR_FEATURE ) );
   QCOMPARE(( qvariant_cast<QgsFeature>( emptyContext.variable( QgsExpressionContext::EXPR_FEATURE ) ) ).id(), 50LL );
-  QCOMPARE( emptyContext.feature(), feature() );
+  QCOMPARE( emptyContext.feature().id(), 50LL );
 
   QgsExpressionContext contextWithScope;
   contextWithScope << new QgsExpressionContextScope();
@@ -425,7 +425,7 @@ void TestQgsExpressionContext::setFeature()
   QCOMPARE( contextWithScope.scopeCount(), 1 );
   QVERIFY( contextWithScope.hasVariable( QgsExpressionContext::EXPR_FEATURE ) );
   QCOMPARE(( qvariant_cast<QgsFeature>( contextWithScope.variable( QgsExpressionContext::EXPR_FEATURE ) ) ).id(), 50LL );
-  QCOMPARE( contextWithScope.feature(), feature() );
+  QCOMPARE( contextWithScope.feature().id(), 50LL );
 }
 
 void TestQgsExpressionContext::setFields()
