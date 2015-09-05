@@ -36,6 +36,7 @@ email                : sherman at mrcc.com
 #include <QTextStream>
 #include <QHeaderView>
 #include <QStringList>
+#include <QStyledItemDelegate>
 
 /** Used to create an editor for when the user tries to change the contents of a cell */
 QWidget *QgsPgSourceSelectDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
@@ -76,6 +77,7 @@ QWidget *QgsPgSourceSelectDelegate::createEditor( QWidget *parent, const QStyleO
     if ( values.size() > 0 )
     {
       QComboBox *cb = new QComboBox( parent );
+      cb->setItemDelegate( new QStyledItemDelegate( parent ) );
 
       QStandardItemModel *model = new QStandardItemModel( values.size(), 1, cb );
 
