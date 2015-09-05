@@ -275,6 +275,7 @@ Depends:
  ${misc:Depends}
 #grass7#Breaks: qgis-plugin-grass
 #grass7#Replaces: qgis-plugin-grass
+#grass6#Breaks: qgis-plugin-grass (<< 1:2.11.0+git20150906)
 Description: GRASS plugin for QGIS
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
