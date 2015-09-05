@@ -94,15 +94,12 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   connect( this, SIGNAL( rejected() ), this, SLOT( rejectOptions() ) );
 
   QStringList styles = QStyleFactory::keys();
-  foreach ( QString style, styles )
-  {
-    cmbStyle->addItem( style );
-  }
+  cmbStyle->addItems( styles );
 
   QStringList themes = QgsApplication::uiThemes().keys();
   cmbUITheme->addItems( themes );
 
-  connect( cmbUITheme, SIGNAL( currentIndexChanged(const QString& ) ), this, SLOT( uiThemeChanged( const QString& ) ) );
+  connect( cmbUITheme, SIGNAL( currentIndexChanged( const QString& ) ), this, SLOT( uiThemeChanged( const QString& ) ) );
 
   mIdentifyHighlightColorButton->setColorDialogTitle( tr( "Identify highlight color" ) );
   mIdentifyHighlightColorButton->setAllowAlpha( true );
@@ -522,10 +519,10 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
 
   mMessageTimeoutSpnBx->setValue( settings.value( "/qgis/messageTimeout", 5 ).toInt() );
 
-  QString name = QApplication::style()->objectName();
+  QString name = settings.value( "/qgis/style" ).toString();
   cmbStyle->setCurrentIndex( cmbStyle->findText( name, Qt::MatchFixedString ) );
 
-  QString theme  = QgsApplication::themeName();
+  QString theme = QgsApplication::themeName();
   cmbUITheme->setCurrentIndex( cmbUITheme->findText( theme, Qt::MatchFixedString ) );
 
   mNativeColorDialogsChkBx->setChecked( settings.value( "/qgis/native_color_dialogs", false ).toBool() );
@@ -970,7 +967,7 @@ void QgsOptions::saveOptions()
 {
   QSettings settings;
 
-  settings.setValue( "UI/UITheme", cmbUITheme->currentText());
+  settings.setValue( "UI/UITheme", cmbUITheme->currentText() );
 
   // custom environment variables
   settings.setValue( "qgis/customEnvVarsUse", QVariant( mCustomVariablesChkBx->isChecked() ) );

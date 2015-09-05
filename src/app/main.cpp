@@ -881,7 +881,10 @@ APP_EXPORT int main( int argc, char *argv[] )
   // as it looks really ugly so we use QPlastiqueStyle.
   QString style = mySettings.value( "/qgis/style" ).toString();
   if ( !style.isNull() )
+  {
     QApplication::setStyle( style );
+    mySettings.setValue( "/qgis/style", QApplication::style()->objectName() );
+  }
 #ifdef Q_OS_WIN
 #if QT_VERSION < 0x050000
   else
