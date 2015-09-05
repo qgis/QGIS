@@ -517,8 +517,8 @@ class DBModel(QAbstractItemModel):
 
         # vectors/tables to be imported must be dropped on connected db, schema or table
         canImportLayer = self.isImportVectorAvail and parent.isValid() and \
-                               ( isinstance(parent.internalPointer(), (SchemaItem, TableItem)) or \
-                                 ( isinstance(parent.internalPointer(), ConnectionItem) and parent.internalPointer().populated ) )
+            (isinstance(parent.internalPointer(), (SchemaItem, TableItem)) or
+             (isinstance(parent.internalPointer(), ConnectionItem) and parent.internalPointer().populated))
 
         added = 0
 

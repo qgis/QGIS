@@ -183,12 +183,12 @@ QgsSpatiaLiteProvider::createEmptyLayer(
     }
     else
     {
-        // if the pk field's type is bigint, use the autoincremental
-        // integer type instead
-        if ( primaryKeyType == "BIGINT" )
-        {
-          primaryKeyType = "INTEGER";
-        }
+      // if the pk field's type is bigint, use the autoincremental
+      // integer type instead
+      if ( primaryKeyType == "BIGINT" )
+      {
+        primaryKeyType = "INTEGER";
+      }
     }
 
     try

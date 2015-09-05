@@ -87,7 +87,6 @@ class SpatiaLiteDBPlugin(DBPlugin):
         settings.setValue("sqlitepath", uri.database())
         return True
 
-
     @classmethod
     def addConnectionActionSlot(self, item, action, parent, index):
         QApplication.restoreOverrideCursor()
@@ -103,7 +102,6 @@ class SpatiaLiteDBPlugin(DBPlugin):
         uri.setDatabase(filename)
         self.addConnection(conn_name, uri)
         index.internalPointer().emit(SIGNAL('itemChanged'), index.internalPointer())
-
 
 
 class SLDatabase(Database):

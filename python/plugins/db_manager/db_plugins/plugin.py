@@ -165,7 +165,7 @@ class DBPlugin(QObject):
 
     @classmethod
     def addConnectionActionSlot(self, item, action, parent):
-		raise NotImplemented
+        raise NotImplemented
 
     def removeActionSlot(self, item, action, parent):
         QApplication.restoreOverrideCursor()

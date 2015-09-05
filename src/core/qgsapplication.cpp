@@ -428,7 +428,7 @@ void QgsApplication::setUITheme( const QString &themeName )
   // Loop all style sheets, find matching name, load it.
   QHash<QString, QString> themes = QgsApplication::uiThemes();
   QString themename = themeName;
-  if (!themes.contains(themename))
+  if ( !themes.contains( themename ) )
     themename = "default";
 
   QString path = themes[themename];

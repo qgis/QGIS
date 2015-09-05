@@ -178,4 +178,3 @@ class DBTree(QTreeView):
         db = self.currentDatabase()
         if db is not None:
             self.mainWindow.invokeCallback(db.reconnectActionSlot)
-

@@ -76,7 +76,7 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
 
     void iconSizeChanged( const QString &iconSize );
 
-    void uiThemeChanged(const QString &theme );
+    void uiThemeChanged( const QString &theme );
 
     /** Slot to handle when type of project to open after launch is changed
      */
