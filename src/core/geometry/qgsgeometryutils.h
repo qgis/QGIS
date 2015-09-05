@@ -95,10 +95,13 @@ class CORE_EXPORT QgsGeometryUtils
     static QDomElement pointsToGML3( const QList<QgsPointV2>& points, QDomDocument &doc, int precision, const QString& ns, bool is3D );
     /** Returns a geoJSON coordinates string */
     static QString pointsToJSON( const QList<QgsPointV2>& points, int precision );
-
+    /**Calculates direction of line (clockwise from north direction) in radians*/
     static double lineAngle( double x1, double y1, double x2, double y2 );
+    /**Calculates angle perpendicular to line*/
     static double linePerpendicularAngle( double x1, double y1, double x2, double y2 );
+    /**Angle between two linear segments*/
     static double averageAngle( double x1, double y1, double x2, double y2, double x3, double y3 );
+    /**Averages two angles*/
     static double averageAngle( double a1, double a2 );
 
 
