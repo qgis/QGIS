@@ -586,3 +586,25 @@ bool QgsCompoundCurveV2::hasCurvedSegments() const
   return false;
 }
 
+double QgsCompoundCurveV2::vertexAngle( const QgsVertexId& vertex ) const
+{
+  QList< QPair<int, QgsVertexId> > curveIds = curveVertexId( vertex );
+  if ( curveIds.size() == 1 )
+  {
+    QgsCurveV2* curve = mCurves[curveIds.at( 0 ).first];
+    return curve->vertexAngle( curveIds.at( 0 ).second );
+  }
+  else if ( curveIds.size() > 1 )
+  {
+    QgsCurveV2* curve1 = mCurves[curveIds.at( 0 ).first];
+    QgsCurveV2* curve2 = mCurves[curveIds.at( 1 ).first];
+    double angle1 = curve1->vertexAngle( curveIds.at( 0 ).second );
+    double angle2 = curve2->vertexAngle( curveIds.at( 1 ).second );
+    return QgsGeometryUtils::averageAngle( angle1, angle2 );
+  }
+  else
+  {
+    return 0.0;
+  }
+}
+

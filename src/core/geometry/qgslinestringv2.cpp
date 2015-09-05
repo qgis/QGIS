@@ -500,3 +500,34 @@ void QgsLineStringV2::close()
   }
   addVertex( startPoint() );
 }
+
+double QgsLineStringV2::vertexAngle( const QgsVertexId& vertex ) const
+{
+  if ( vertex.vertex == 0 || vertex.vertex >= ( numPoints() - 1 ) )
+  {
+    if ( isClosed() )
+    {
+      QPointF previous = mCoords[numPoints() - 1 ];
+      QPointF current = mCoords[0];
+      QPointF after = mCoords[1];
+      return QgsGeometryUtils::averageAngle( previous.x(), previous.y(), current.x(), current.y(), after.x(), after.y() );
+    }
+    else if ( vertex.vertex == 0 )
+    {
+      return QgsGeometryUtils::linePerpendicularAngle( mCoords[0].x(), mCoords[0].y(), mCoords[1].x(), mCoords[1].y() );
+    }
+    else
+    {
+      int a = numPoints() - 2;
+      int b = numPoints() - 1;
+      return QgsGeometryUtils::linePerpendicularAngle( mCoords[a].x(), mCoords[a].y(), mCoords[b].x(), mCoords[b].y() );
+    }
+  }
+  else
+  {
+    QPointF previous = mCoords[vertex.vertex - 1 ];
+    QPointF current = mCoords[vertex.vertex];
+    QPointF after = mCoords[vertex.vertex + 1];
+    return QgsGeometryUtils::averageAngle( previous.x(), previous.y(), current.x(), current.y(), after.x(), after.y() );
+  }
+}

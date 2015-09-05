@@ -85,4 +85,11 @@ class QgsRenderContext
     //! Added in QGIS v2.4
     const QgsVectorSimplifyMethod& vectorSimplifyMethod() const;
     void setVectorSimplifyMethod( const QgsVectorSimplifyMethod& simplifyMethod );
+
+    /** Returns pointer to the unsegmentized geometry
+        @return the geometry*/
+    const QgsAbstractGeometryV2* geometry() const;
+    /** Sets pointer to original (unsegmentized) geometry
+        @geometry the geometry*/
+    void setGeometry( const QgsAbstractGeometryV2* geometry );
 };

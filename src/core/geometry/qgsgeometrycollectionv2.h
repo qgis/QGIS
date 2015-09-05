@@ -102,6 +102,11 @@ class CORE_EXPORT QgsGeometryCollectionV2: public QgsAbstractGeometryV2
     /** Returns a geometry without curves. Caller takes ownership*/
     QgsAbstractGeometryV2* segmentize() const override;
 
+    /** Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
+        @param vertex the vertex id
+        @return rotation in radians, clockwise from north*/
+    double vertexAngle( const QgsVertexId& vertex ) const override;
+
   protected:
     QVector< QgsAbstractGeometryV2* > mGeometries;
 
