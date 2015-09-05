@@ -290,8 +290,9 @@ class QgsExpression
          * @param context context expression is being evaluated against
          * @param parent parent expression
          * @returns result of function
+         * @note named funcV2 in Python bindings. Will be renamed to func to replace deprecated method in QGIS 3.0.
          */
-     	virtual QVariant func( const QVariantList& values, const QgsExpressionContext* context, QgsExpression* parent );
+     	virtual QVariant func( const QVariantList& values, const QgsExpressionContext* context, QgsExpression* parent ) /PyName=funcV2/;
 
         virtual bool handlesNull() const;
     };

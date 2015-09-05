@@ -378,15 +378,27 @@ class CORE_EXPORT QgsExpressionContext
      * will be set within the last scope of the context, so will override any
      * existing features within the context.
      * @param feature feature for context
+     * @see feature()
      */
     void setFeature( const QgsFeature& feature );
+
+    /** Convenience function for retrieving the feature for the context, if set.
+     * @see setFeature
+     */
+    QgsFeature feature() const;
 
     /** Convenience function for setting a fields for the context. The fields
      * will be set within the last scope of the context, so will override any
      * existing fields within the context.
      * @param fields fields for context
+     * @see fields()
      */
     void setFields( const QgsFields& fields );
+
+    /** Convenience function for retrieving the fields for the context, if set.
+     * @see setFields
+     */
+    QgsFields fields() const;
 
     static const QString EXPR_FIELDS;
     static const QString EXPR_FEATURE;

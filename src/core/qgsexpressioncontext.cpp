@@ -350,12 +350,22 @@ void QgsExpressionContext::setFeature( const QgsFeature &feature )
   mStack.last()->setFeature( feature );
 }
 
+QgsFeature QgsExpressionContext::feature() const
+{
+  return qvariant_cast<QgsFeature>( variable( QgsExpressionContext::EXPR_FEATURE ) );
+}
+
 void QgsExpressionContext::setFields( const QgsFields &fields )
 {
   if ( mStack.isEmpty() )
     mStack.append( new QgsExpressionContextScope() );
 
   mStack.last()->setFields( fields );
+}
+
+QgsFields QgsExpressionContext::fields() const
+{
+  return qvariant_cast<QgsFields>( variable( QgsExpressionContext::EXPR_FIELDS ) );
 }
 
 

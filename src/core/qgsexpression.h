@@ -399,7 +399,9 @@ class CORE_EXPORT QgsExpression
          * @param context context expression is being evaluated against
          * @param parent parent expression
          * @returns result of function
+         * @note named funcV2 in Python bindings. Will be renamed to func to replace deprecated method in QGIS 3.0.
          */
+        //TODO QGIS 3.0 - rename python method
         virtual QVariant func( const QVariantList& values, const QgsExpressionContext* context, QgsExpression* parent );
 
         bool operator==( const Function& other ) const
@@ -752,10 +754,10 @@ class CORE_EXPORT QgsExpression
 
         virtual QStringList referencedColumns() const override { QStringList lst( mNode->referencedColumns() ); foreach ( Node* n, mList->list() ) lst.append( n->referencedColumns() ); return lst; }
         virtual bool needsGeometry() const override { bool needs = false; foreach ( Node* n, mList->list() ) needs |= n->needsGeometry(); return needs; }
-          virtual void accept( Visitor& v ) const override { v.visit( *this ); }
+        virtual void accept( Visitor& v ) const override { v.visit( *this ); }
 
-          protected:
-            Node* mNode;
+      protected:
+        Node* mNode;
         NodeList* mList;
         bool mNotIn;
     };
