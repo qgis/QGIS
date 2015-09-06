@@ -39,6 +39,7 @@
 #include "problem.h"
 #include "util.h"
 #include "priorityqueue.h"
+#include "internalexception.h"
 #include <iostream>
 #include <fstream>
 #include <cfloat>
@@ -328,7 +329,14 @@ namespace pal
       for ( j = 0; j < featNbLp[i]; j++ )
       {
         label = featStartId[i] + j;
-        list->insert( label, ( double ) mLabelPositions.at( label )->getNumOverlaps() );
+        try
+        {
+          list->insert( label, ( double ) mLabelPositions.at( label )->getNumOverlaps() );
+        }
+        catch ( pal::InternalException::Full )
+        {
+          continue;
+        }
       }
 
     while ( list->getSize() > 0 ) // O (log size)

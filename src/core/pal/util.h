@@ -53,6 +53,7 @@ namespace pal
       Feats()
           : feature( 0 )
           , shape( 0 )
+          , priority( 0 )
       {}
 
       FeaturePart *feature;

@@ -64,7 +64,7 @@ void QgsMapToolAddCircularString::setParentTool( QgsMapTool* newTool, QgsMapTool
 
 void QgsMapToolAddCircularString::keyPressEvent( QKeyEvent* e )
 {
-  if ( e->isAutoRepeat() )
+  if ( e && e->isAutoRepeat() )
   {
     return;
   }

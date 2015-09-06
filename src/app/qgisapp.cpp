@@ -976,6 +976,7 @@ QgisApp::QgisApp()
     , mProjectLastModified()
     , mWelcomePage( 0 )
     , mCentralContainer( 0 )
+    , mProjOpen( 0 )
 {
   smInstance = this;
   setupUi( this );
