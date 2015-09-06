@@ -45,20 +45,7 @@ QgsWelcomePage::QgsWelcomePage( QWidget* parent )
   QListView* recentProjectsListView = new QListView();
   mModel = new QgsWelcomePageItemsModel( recentProjectsListView );
   recentProjectsListView->setModel( mModel );
-  recentProjectsListView->setStyleSheet( "QListView::item {"
-                                         "  margin-top: 5px;"
-                                         "  margin-bottom: 5px;"
-                                         "  margin-left: 15px;"
-                                         "  margin-right: 15px;"
-                                         "  border-width: 1px;"
-                                         "  border-color: #999;"
-                                         "  border-radius: 9px;"
-                                         "  background: #eee;"
-                                         "  padding: 10px;"
-                                         "}"
-                                         "QListView::item:selected:active {"
-                                         "  background: #aaaaaa;"
-                                         "}" );
+  recentProjectsListView->setItemDelegate( new QgsWelcomePageItemDelegate( recentProjectsListView ) );
 
   recentProjctsContainer->layout()->addWidget( recentProjectsListView );
 
