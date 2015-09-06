@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgswelcomepage.h"
+#include "qgswelcomepageitemdelegate.h"
 #include "qgsproject.h"
 #include "qgisapp.h"
 #include "qgsversioninfo.h"
@@ -45,6 +46,7 @@ QgsWelcomePage::QgsWelcomePage( QWidget* parent )
   QListView* recentProjectsListView = new QListView();
   mModel = new QgsWelcomePageItemsModel( recentProjectsListView );
   recentProjectsListView->setModel( mModel );
+  recentProjectsListView->setItemDelegate( new QgsWelcomePageItemDelegate( recentProjectsListView ) );
   recentProjectsListView->setStyleSheet( "QListView::item {"
                                          "  margin-top: 5px;"
                                          "  margin-bottom: 5px;"

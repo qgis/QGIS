@@ -1,7 +1,7 @@
 /***************************************************************************
 
                ----------------------------------------------------
-              date                 : 18.8.2015
+              date                 : 17.8.2015
               copyright            : (C) 2015 by Matthias Kuhn
               email                : matthias (at) opengis.ch
  ***************************************************************************
@@ -13,38 +13,19 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSWELCOMEDIALOG_H
-#define QGSWELCOMEDIALOG_H
+#ifndef QGSWELCOMEPAGEITEMDELEGATE_H
+#define QGSWELCOMEPAGEITEMDELEGATE_H
 
-#include <QTabWidget>
-#include <QWidget>
-#include <QLabel>
+#include <QStyledItemDelegate>
 
-#include "qgswelcomepageitemsmodel.h"
-#include "qgswelcomepageitemdelegate.h"
-
-class QgsVersionInfo;
-
-class QgsWelcomePage : public QTabWidget
+class QgsWelcomePageItemDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
 
   public:
-    QgsWelcomePage( QWidget* parent = 0 );
-
-    ~QgsWelcomePage();
-
-    void setRecentProjects( const QList<QgsWelcomePageItemsModel::RecentProjectData>& recentProjects );
-
-  private slots:
-    void itemActivated( const QModelIndex& index );
-    void versionInfoReceived();
-    void whatsNewLinkClicked( const QUrl& url );
-
-  private:
-    QgsWelcomePageItemsModel* mModel;
-    QLabel* mVersionInformation;
-    QgsVersionInfo* mVersionInfo;
+    QgsWelcomePageItemDelegate( QObject * parent = 0 );
+    void paint ( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const override;
+    QSize sizeHint ( const QStyleOptionViewItem & option, const QModelIndex & index ) const override;
 };
 
-#endif // QGSWELCOMEDIALOG_H
+#endif // QGSWELCOMEPAGEITEMDELEGATE_H
