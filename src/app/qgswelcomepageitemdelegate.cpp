@@ -42,7 +42,7 @@ void QgsWelcomePageItemDelegate::paint(QPainter* painter, const QStyleOptionView
 
 QSize QgsWelcomePageItemDelegate::sizeHint ( const QStyleOptionViewItem & option, const QModelIndex & index ) const
 {    
-    QgsMessageLog::logMessage( QString( "width: %1" ).arg( index.data( Qt::DisplayRole ).toString() ) );
+    QgsMessageLog::logMessage( QString( "width: %1" ).arg( option.rect.width() ) );
     
     QTextDocument doc;
     doc.setHtml( index.data( Qt::DisplayRole ).toString() );

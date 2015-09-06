@@ -50,6 +50,7 @@ SET(QGIS_APP_SRCS
   qgsmapmouseevent.cpp
   qgssavestyletodbdialog.cpp
   qgsguivectorlayertools.cpp
+  qgswelcomepageitemdelegate.cpp
   qgswelcomepageitemsmodel.cpp
   qgswelcomepage.cpp
   qgsversioninfo.cpp
@@ -214,6 +215,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsshortcutsmanager.h
   qgsapplayertreeviewmenuprovider.h
   qgsguivectorlayertools.h
+  qgswelcomepageitemdelegate.h
   qgswelcomepageitemsmodel.h
   qgswelcomepage.h
   qgsversioninfo.h

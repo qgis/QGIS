@@ -21,7 +21,6 @@
 #include <QLabel>
 
 #include "qgswelcomepageitemsmodel.h"
-#include "qgswelcomepageitemdelegate.h"
 
 class QgsVersionInfo;
 
