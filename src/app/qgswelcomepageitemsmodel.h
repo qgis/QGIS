@@ -18,6 +18,17 @@
 
 #include <QAbstractListModel>
 #include <QStringList>
+#include <QStyledItemDelegate>
+
+class QgsWelcomePageItemDelegate : public QStyledItemDelegate
+{
+    Q_OBJECT
+
+  public:
+    QgsWelcomePageItemDelegate( QObject * parent = 0 );
+    void paint( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const override;
+    QSize sizeHint( const QStyleOptionViewItem & option, const QModelIndex & index ) const override;
+};
 
 class QgsWelcomePageItemsModel : public QAbstractListModel
 {
