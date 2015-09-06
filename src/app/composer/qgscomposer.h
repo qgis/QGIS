@@ -319,6 +319,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //!Show/hide bounding boxes
     void on_mActionShowBoxes_triggered( bool checked );
 
+    //!Show/hide pages
+    void on_mActionShowPage_triggered( bool checked );
+
     //!Show/hide rulers
     void toggleRulers( bool checked );
 

@@ -48,6 +48,7 @@ class TestQgsComposerPaper : public QObject
     void transparentPaper(); //test totally transparent paper style
     void borderedPaper(); //test page with border
     void markerLinePaper(); //test page with marker line border
+    void hiddenPages(); //test hidden page boundaries
 
   private:
     QgsComposition* mComposition;
@@ -145,6 +146,24 @@ void TestQgsComposerPaper::markerLinePaper()
   QgsCompositionChecker checker( "composerpaper_markerborder", mComposition );
   checker.setControlPathPrefix( "composer_paper" );
   QVERIFY( checker.testComposition( mReport, 0, 0 ) );
+}
+
+void TestQgsComposerPaper::hiddenPages()
+{
+  QgsSimpleFillSymbolLayerV2* simpleFill = new QgsSimpleFillSymbolLayerV2();
+  QgsFillSymbolV2* fillSymbol = new QgsFillSymbolV2();
+  fillSymbol->changeSymbolLayer( 0, simpleFill );
+  simpleFill->setColor( Qt::blue );
+  simpleFill->setBorderColor( Qt::transparent );
+  mComposition->setPageStyleSymbol( fillSymbol );
+  delete fillSymbol;
+
+  mComposition->setPagesVisible( false );
+  QgsCompositionChecker checker( "composerpaper_hidden", mComposition );
+  checker.setControlPathPrefix( "composer_paper" );
+  bool result = checker.testComposition( mReport );
+  mComposition->setPagesVisible( true );
+  QVERIFY( result );
 }
 
 QTEST_MAIN( TestQgsComposerPaper )

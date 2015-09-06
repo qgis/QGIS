@@ -155,6 +155,23 @@ class QgsComposition : QGraphicsScene
     void setSmartGuidesEnabled( const bool b );
     bool smartGuidesEnabled() const;
 
+    /** Sets whether the page items should be visible in the composition. Removing
+     * them will prevent both display of the page boundaries in composer views and
+     * will also prevent them from being rendered in composition exports.
+     * @param visible set to true to show pages, false to hide pages
+     * @note added in QGIS 2.12
+     * @see pagesVisible()
+     */
+    void setPagesVisible( bool visible );
+
+    /** Returns whether the page items are be visible in the composition. This setting
+     * effects both display of the page boundaries in composer views and
+     * whether they will be rendered in composition exports.
+     * @note added in QGIS 2.12
+     * @see setPagesVisible()
+     */
+    bool pagesVisible() const;
+
     /** Removes all snap lines*/
     void clearSnapLines();
 

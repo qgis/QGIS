@@ -339,6 +339,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   viewMenu->addSeparator();
   viewMenu->addAction( mActionShowBoxes );
   viewMenu->addAction( mActionShowRulers );
+  viewMenu->addAction( mActionShowPage );
 
   // Panel and toolbar submenus
   mPanelMenu = new QMenu( tr( "P&anels" ), this );
@@ -529,6 +530,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
     connect( mComposition->undoStack(), SIGNAL( canRedoChanged( bool ) ), mActionRedo, SLOT( setEnabled( bool ) ) );
   }
 
+  mActionShowPage->setChecked( mComposition->pagesVisible() );
   restoreGridSettings();
   connectViewSlots();
   connectCompositionSlots();
@@ -1325,6 +1327,15 @@ void QgsComposer::on_mActionShowBoxes_triggered( bool checked )
   }
 }
 
+void QgsComposer::on_mActionShowPage_triggered( bool checked )
+{
+  //toggle page display
+  if ( mComposition )
+  {
+    mComposition->setPagesVisible( checked );
+  }
+}
+
 void QgsComposer::on_mActionClearGuides_triggered()
 {
   //clear guide lines
@@ -1500,6 +1511,8 @@ void QgsComposer::setComposition( QgsComposition* composition )
   createCompositionWidget();
   restoreGridSettings();
   setupUndoView();
+
+  mActionShowPage->setChecked( mComposition->pagesVisible() );
 
   //setup atlas composition widget
   QgsAtlasCompositionWidget* oldAtlasWidget = qobject_cast<QgsAtlasCompositionWidget *>( mAtlasDock->widget() );
@@ -3319,6 +3332,8 @@ void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& 
 
   //restore grid settings
   restoreGridSettings();
+
+  mActionShowPage->setChecked( mComposition->pagesVisible() );
 
   // look for world file composer map, if needed
   // Note: this must be done after maps have been added by addItemsFromXML

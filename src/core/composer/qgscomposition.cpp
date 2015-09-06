@@ -88,6 +88,7 @@ void QgsComposition::init()
   mUseAdvancedEffects = true;
   mSnapToGrid = false;
   mGridVisible = false;
+  mPagesVisible = true;
   mSnapGridResolution = 0;
   mSnapGridOffsetX = 0;
   mSnapGridOffsetY = 0;
@@ -800,6 +801,8 @@ bool QgsComposition::writeXML( QDomElement& composerElem, QDomDocument& doc )
   compositionElem.setAttribute( "snapGridOffsetX", QString::number( mSnapGridOffsetX ) );
   compositionElem.setAttribute( "snapGridOffsetY", QString::number( mSnapGridOffsetY ) );
 
+  compositionElem.setAttribute( "showPages", mPagesVisible );
+
   //custom snap lines
   QList< QGraphicsLineItem* >::const_iterator snapLineIt = mSnapLines.constBegin();
   for ( ; snapLineIt != mSnapLines.constEnd(); ++snapLineIt )
@@ -916,6 +919,7 @@ bool QgsComposition::readXML( const QDomElement& compositionElem, const QDomDocu
     snapItem->setLine( x1, y1, x2, y2 );
   }
 
+  mPagesVisible = ( compositionElem.attribute( "showPages", "1" ) != "0" );
   mPrintAsRaster = compositionElem.attribute( "printAsRaster" ).toInt();
   mPrintResolution = compositionElem.attribute( "printResolution", "300" ).toInt();
 
@@ -1983,6 +1987,12 @@ void QgsComposition::setSnapLinesVisible( const bool visible )
       ( *it )->hide();
     }
   }
+}
+
+void QgsComposition::setPagesVisible( bool visible )
+{
+  mPagesVisible = visible;
+  update();
 }
 
 QGraphicsLineItem* QgsComposition::nearestSnapLine( const bool horizontal, const double x, const double y, const double tolerance,
