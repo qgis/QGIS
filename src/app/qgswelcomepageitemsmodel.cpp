@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgswelcomepageitemsmodel.h"
+#include "qgsmessagelog.h"
 
 #include <QPixmap>
 #include <QFile>
@@ -44,10 +45,23 @@ QVariant QgsWelcomePageItemsModel::data( const QModelIndex& index, int role ) co
   switch ( role )
   {
     case Qt::DisplayRole:
-      return mRecentProjects.at( index.row() ).title;
+      if ( mRecentProjects.at( index.row() ).previewImagePath != "" )
+      {
+      return QString( "<table style='border:0;' cellpadding='0'><tr>"
+                      "<td style='padding:6px;background-color:#dddddd;'><img src='%1'></td>"
+                      "<td style='padding:10px 10px 10px 10px;'><span style='font-size:18px;font-weight:bold;'>%2</span><br>%3</td"
+                      "</tr></table>" ).arg( mRecentProjects.at( index.row() ).previewImagePath ).arg( mRecentProjects.at( index.row() ).title != mRecentProjects.at( index.row() ).path ? mRecentProjects.at( index.row() ).title : QString( "- untitled -" ) ).arg( mRecentProjects.at( index.row() ).path );
+      }
+      else
+      {
+      return QString( "<table style='border:0;' cellpadding='5'><tr>"
+                      "<td width='262' height='170' style='padding:6px;background-color:#dddddd;'></td>"
+                      "<td style='padding:10px 10px 10px 10px;'><span style='font-size:18px;font-weight:bold;'>%1</span><br>%2</td"
+                      "</tr></table>" ).arg( mRecentProjects.at( index.row() ).title != mRecentProjects.at( index.row() ).path ? mRecentProjects.at( index.row() ).title : QString( "- untitled -" ) ).arg( mRecentProjects.at( index.row() ).path );
+      }
       break;
 
-    case Qt::DecorationRole:
+    /*case Qt::DecorationRole:
     {
       QImage thumbnail( mRecentProjects.at( index.row() ).previewImagePath );
       if ( thumbnail.isNull() )
@@ -67,7 +81,7 @@ QVariant QgsWelcomePageItemsModel::data( const QModelIndex& index, int role ) co
 
       return QPixmap::fromImage( previewImage );
       break;
-    }
+    }*/
 
     case Qt::ToolTipRole:
       return mRecentProjects.at( index.row() ).path;
