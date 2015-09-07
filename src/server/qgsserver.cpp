@@ -403,47 +403,14 @@ bool QgsServer::init( int & argc, char ** argv )
 }
 
 
-/**
- * Handles the request
- */
-QByteArray QgsServer::handleRequest( const QString queryString /*= QString( )*/ )
-{
-  return handleRequest( queryString, TRUE, TRUE );
-}
-
-/**
- * @brief Handles the request, returning only the body
- * @param queryString
- * @return response body if mCaptureOutput is set, empty QByteArray if not
- */
-QByteArray QgsServer::handleRequestGetBody( const QString queryString /*= QString( )*/ )
-{
-  return handleRequest( queryString, FALSE, TRUE );
-}
-
-/**
- * @brief Handles the request, returning only the headers
- * @param queryString
- * @return response headers if mCaptureOutput is set, empty QByteArray if not
- */
-QByteArray QgsServer::handleRequestGetHeaders( const QString queryString /*= QString( )*/ )
-{
-  return handleRequest( queryString, TRUE, FALSE );
-}
 
 /**
  * @brief Handles the request
  * @param queryString
- * @param returnBody
- * @param returnHeaders
- * @return response body and headers if mCaptureOutput is set and the
- * flags are set, empty QByteArray if not
+ * @return response headers and body
  */
-QByteArray QgsServer::handleRequest( const QString queryString ,
-                                     bool returnHeaders,
-                                     bool returnBody )
+QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString queryString /*= QString( )*/ )
 {
-
   // Run init if handleRequest was called without previously initialising
   // the server
   if ( ! mInitialised )
@@ -501,7 +468,6 @@ QByteArray QgsServer::handleRequest( const QString queryString ,
   //Pass the filters to the requestHandler, this is needed for the following reasons:
   // 1. allow core services to access plugin filters and implement thir own plugin hooks
   // 2. allow requestHandler to call sendResponse plugin hook
-
   theRequestHandler->setPluginFilters( mServerInterface->filters() );
 #endif
 
@@ -601,8 +567,14 @@ QByteArray QgsServer::handleRequest( const QString queryString ,
   {
     QgsMessageLog::logMessage( "Request finished in " + QString::number( time.elapsed() ) + " ms", "Server", QgsMessageLog::INFO );
   }
-  // TODO: if HAVE_SERVER_PYTHON
-  // Returns the response bytestream
-  return theRequestHandler->getResponse( returnHeaders , returnBody );
+  // Returns the header and response bytestreams (to be used in Python bindings)
+  return theRequestHandler->getResponse( );
 }
+
+/* The following code was used to test type conversion in python bindings
+QPair<QByteArray, QByteArray> QgsServer::testQPair(QPair<QByteArray, QByteArray> pair)
+{
+  return pair;
+}
+*/
 

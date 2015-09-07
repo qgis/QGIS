@@ -61,36 +61,18 @@ class SERVER_EXPORT QgsServer
     /** Handles the request. The output is normally printed trough FCGI printf
      * by the request handler or, in case the server has been invoked from python
      * bindings, a flag is set that captures all the output headers and body, instead
-     * of printing it returns the output as a QByteArray.
-     * When calling handleRequest() from python bindings an additional argument
-     * specify if we only want the headers or the body back, this is mainly useful
-     * for testing purposes.
+     * of printing it returns the output as a QPair of QByteArray.
      * The query string is normally read from environment
      * but can be also passed in args and in this case overrides the environment
      * variable
      *
      * @param queryString optional QString containing the query string
-     * @return the response QByteArray if called from python bindings, empty otherwise
+     * @return the response headers and body QPair of QByteArray if called from python bindings, empty otherwise
      */
-    QByteArray handleRequest( const QString queryString = QString( ) );
-    QByteArray handleRequest( const QString queryString,
-                              const bool returnHeaders,
-                              const bool returnBody );
-    /**
-     * Handles the request and returns only the body
-     *
-     * @param queryString optional QString containing the query string
-     * @return the response body QByteArray if called from python bindings, empty otherwise
-     */
-    QByteArray handleRequestGetBody( const QString queryString = QString( ) );
-
-    /**
-     * Handles the request and returns only the headers
-     *
-     * @param queryString optional QString containing the query string
-     * @return the response headers QByteArray if called from python bindings, empty otherwise
-     */
-    QByteArray handleRequestGetHeaders( const QString queryString = QString( ) );
+    QPair<QByteArray, QByteArray> handleRequest( const QString queryString = QString( ) );
+    /* The following code was used to test type conversion in python bindings
+    QPair<QByteArray, QByteArray> testQPair( QPair<QByteArray, QByteArray> pair );
+    */
 
     /** Returns a pointer to the server interface */
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
