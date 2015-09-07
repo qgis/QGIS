@@ -376,7 +376,9 @@ static QgsExpressionContext _getExpressionContext( const void* context )
   //otherwise create a default symbol context
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope();
+  << QgsExpressionContextUtils::projectScope()
+  //TODO - use actual map canvas settings
+  << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
 
   const QgsVectorLayer* layer = widget->layer();
   if ( layer )

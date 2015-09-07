@@ -22,6 +22,8 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsmaprenderer.h"
 #include "qgsvectorlayer.h"
+#include "qgisapp.h"
+#include "qgsmapcanvas.h"
 
 #include <QColorDialog>
 #include <QFontDatabase>
@@ -208,6 +210,7 @@ void QgsLabelPropertyDialog::setDataDefinedValues( const QgsPalLayerSettings &la
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() )
   << QgsExpressionContextUtils::layerScope( vlayer );
   context.setFeature( mCurLabelFeat );
 

@@ -40,7 +40,8 @@ static QgsExpressionContext _getExpressionContext( const void* context )
 {
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope();
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() );
 
   const QgsVectorLayer* layer = ( const QgsVectorLayer* ) context;
   if ( layer )
@@ -542,6 +543,7 @@ void QgsDiagramProperties::on_mFindMaximumValueButton_clicked()
     QgsExpressionContext context;
     context << QgsExpressionContextUtils::globalScope()
     << QgsExpressionContextUtils::projectScope()
+    << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() )
     << QgsExpressionContextUtils::layerScope( mLayer );
 
     exp.prepare( &context );
@@ -793,6 +795,7 @@ void QgsDiagramProperties::showAddAttributeExpressionDialog()
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() )
   << QgsExpressionContextUtils::layerScope( mLayer );
 
   QgsExpressionBuilderDialog dlg( mLayer, expression, this, "generic", context );

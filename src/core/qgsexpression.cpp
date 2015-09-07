@@ -859,6 +859,16 @@ static QVariant fcnRowNumber( const QVariantList&, const QgsExpressionContext* c
   //when above is removed - return QVariant()
 }
 
+static QVariant fcnMapId( const QVariantList&, const QgsExpressionContext* context, QgsExpression* )
+{
+  if ( context && context->hasVariable( "map_id" ) )
+    return context->variable( "map_id" );
+
+  Q_NOWARN_DEPRECATED_PUSH
+  return QgsExpression::specialColumn( "$map" );
+  Q_NOWARN_DEPRECATED_POP
+}
+
 #define FEAT_FROM_CONTEXT(c, f) if (!c || !c->hasVariable(QgsExpressionContext::EXPR_FEATURE)) return QVariant(); \
   QgsFeature f = qvariant_cast<QgsFeature>( c->variable( QgsExpressionContext::EXPR_FEATURE ) );
 
@@ -1605,7 +1615,7 @@ static QVariant fncColorCmyka( const QVariantList &values, const QgsExpressionCo
   return QgsSymbolLayerV2Utils::encodeColor( color );
 }
 
-static QVariant fcnSpecialColumn( const QVariantList& values, const QgsExpressionContext* /*f*/, QgsExpression* parent )
+static QVariant fcnSpecialColumn( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   QString varName = getStringValue( values.at( 0 ), parent );
   return QgsExpression::specialColumn( varName );
@@ -1971,6 +1981,7 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( "$id", 0, fcnFeatureId, "Record" )
     << new StaticFunction( "$currentfeature", 0, fcnFeature, "Record" )
     << new StaticFunction( "$scale", 0, fcnScale, "Record" )
+    << new StaticFunction( "$map", 0, fcnMapId, "deprecated" )
     << new StaticFunction( "uuid", 0, fcnUuid, "Record", QString(), false, QStringList(), false, QStringList() << "$uuid" )
     << new StaticFunction( "get_feature", 3, fcnGetFeature, "Record", QString(), false, QStringList(), false, QStringList() << "getFeature" )
     << new StaticFunction( "layer_property", 2, fcnGetLayerProperty, "General" )
@@ -2052,7 +2063,6 @@ bool QgsExpression::hasSpecialColumn( const QString& name )
     lst << qMakePair( QString( "$atlasfeatureid" ), QString( "Atlas" ) );
     lst << qMakePair( QString( "$atlasgeometry" ), QString( "Atlas" ) );
     lst << qMakePair( QString( "$atlasfeature" ), QString( "Atlas" ) );
-    lst << qMakePair( QString( "$map" ), QString( "Composer" ) );
 
     QList< QPair<QString, QString> >::const_iterator it = lst.constBegin();
     for ( ; it != lst.constEnd(); ++it )
@@ -3171,6 +3181,11 @@ void QgsExpression::initVariableHelp()
   gVariableHelpTexts.insert( "item_top", QCoreApplication::translate( "variable_help", "Top position of composer item (in mm)." ) );
   gVariableHelpTexts.insert( "item_width", QCoreApplication::translate( "variable_help", "Width of composer item (in mm)." ) );
   gVariableHelpTexts.insert( "item_height", QCoreApplication::translate( "variable_help", "Height of composer item (in mm)." ) );
+
+  //map settings item variables
+  gVariableHelpTexts.insert( "map_id", QCoreApplication::translate( "variable_help", "ID of current map destination. This will be 'canvas' for canvas renders, and the item ID for composer map renders." ) );
+  gVariableHelpTexts.insert( "map_rotation", QCoreApplication::translate( "variable_help", "Current rotation of map." ) );
+  gVariableHelpTexts.insert( "map_scale", QCoreApplication::translate( "variable_help", "Current scale of map." ) );
 }
 
 QString QgsExpression::variableHelpText( const QString &variableName, bool showValue, const QVariant &value )

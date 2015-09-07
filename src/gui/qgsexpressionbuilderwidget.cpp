@@ -469,6 +469,8 @@ void QgsExpressionBuilderWidget::updateFunctionTree()
     QString name = func->name();
     if ( name.startsWith( "_" ) ) // do not display private functions
       continue;
+    if ( func->group() == "deprecated" ) // don't show deprecated functions
+      continue;
     if ( func->isContextual() )
     {
       //don't show contextual functions by default - it's up the the QgsExpressionContext

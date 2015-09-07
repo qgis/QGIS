@@ -658,10 +658,6 @@ void QgsMapCanvas::refreshMap()
   // from now on we can accept refresh requests again
   mRefreshScheduled = false;
 
-  //update $map variable to canvas
-  QgsExpression::setSpecialColumn( "$map", tr( "canvas" ) );
-  mExpressionContextScope.setVariable( "map_id", "canvas" );
-
   //build the expression context
   QgsExpressionContext expressionContext;
   expressionContext << QgsExpressionContextUtils::globalScope()

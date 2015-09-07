@@ -508,6 +508,8 @@ void QgsRuleBasedRendererV2Widget::countFeatures()
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
+  //TODO - use actual map canvas settings
+  << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() )
   << QgsExpressionContextUtils::layerScope( mLayer );
 
   renderContext.setExpressionContext( context );
@@ -630,6 +632,8 @@ void QgsRendererRulePropsDialog::buildExpression()
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
+  //TODO - use actual map canvas settings
+  << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() )
   << QgsExpressionContextUtils::layerScope( mLayer );
 
   QgsExpressionBuilderDialog dlg( mLayer, editFilter->text(), this, "generic", context );
@@ -650,6 +654,8 @@ void QgsRendererRulePropsDialog::testFilter()
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
+  //TODO - use actual map canvas settings
+  << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() )
   << QgsExpressionContextUtils::layerScope( mLayer );
 
   if ( !filter.prepare( &context ) )

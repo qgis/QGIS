@@ -101,6 +101,9 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPoint &mapPosition, QgsM
     context << QgsExpressionContextUtils::globalScope()
     << QgsExpressionContextUtils::projectScope()
     << QgsExpressionContextUtils::layerScope( vlayer );
+    if ( mpMapCanvas )
+      context.appendScope( QgsExpressionContextUtils::mapSettingsScope( mpMapCanvas->mapSettings() ) );
+
     context.setFeature( feature );
     return QgsExpression::replaceExpressionText( vlayer->displayField(), &context );
   }

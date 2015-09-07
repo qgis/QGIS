@@ -15,6 +15,8 @@
 #include "qgsstatisticalsummarydockwidget.h"
 #include "qgsstatisticalsummary.h"
 #include "qgsmaplayerregistry.h"
+#include "qgisapp.h"
+#include "qgsmapcanvas.h"
 #include <QTableWidget>
 #include <QAction>
 #include <QSettings>
@@ -42,7 +44,8 @@ static QgsExpressionContext _getExpressionContext( const void* context )
 {
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope();
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() );
 
   const QgsStatisticalSummaryDockWidget* widget = ( const QgsStatisticalSummaryDockWidget* ) context;
   if ( widget )
