@@ -47,108 +47,107 @@ static PyObject *QByteArrayToPyStr(QByteArray *ba)
 
 %ConvertToTypeCode
 
+// See if we are just being asked to check the type of the Python
+// object.
+if (!sipIsErr)
+{
+    // Checking whether or not None has been passed instead of a list
+    // has already been done.
+    if (!PyTuple_Check(sipPy) || PyTuple_Size(sipPy) != 2)
+        return 0;
 
-            // See if we are just being asked to check the type of the Python
-            // object.
-            if (!sipIsErr)
-            {
-                // Checking whether or not None has been passed instead of a list
-                // has already been done.
-                if (!PyTuple_Check(sipPy) || PyTuple_Size(sipPy) != 2)
-                    return 0;
-
-                // Check the type of each element.  We specify SIP_NOT_NONE to
-                // disallow None because it is a list of QPoint, not of a pointer
-                // to a QPoint, so None isn't appropriate.
-                for (int i = 0; i < PyTuple_Size(sipPy); ++i)
-                    if (!sipCanConvertToType(PyTuple_GET_ITEM(sipPy, i),
-                                             sipType_QByteArray, SIP_NOT_NONE))
-                        return 0;
-
-                // The type is valid.
-                return 1;
-            }
-
-    // Create the instance on the heap.
-    QPair<QByteArray, QByteArray> *qp = new QPair<QByteArray, QByteArray>;
-
-        QByteArray *qba1;
-        int state;
-
-        // Get the address of the element's C++ instance.  Note that, in
-        // this case, we don't apply any ownership changes to the list
-        // elements, only to the list itself.
-        qba1 = reinterpret_cast<QByteArray *>(sipConvertToType(
-                                                PyTuple_GET_ITEM(sipPy, 0),
-                                                sipType_QByteArray, 0,
-                                                SIP_NOT_NONE,
-                                                &state, sipIsErr));
-
-        // Deal with any errors.
-        if (*sipIsErr)
-        {
-            sipReleaseType(qba1, sipType_QByteArray, state);
-
-            // Tidy up.
-            delete qp;
-
-            // There is no temporary instance.
+    // Check the type of each element.  We specify SIP_NOT_NONE to
+    // disallow None because it is a list of QPoint, not of a pointer
+    // to a QPoint, so None isn't appropriate.
+    for (int i = 0; i < PyTuple_Size(sipPy); ++i)
+        if (!sipCanConvertToType(PyTuple_GET_ITEM(sipPy, i),
+                                    sipType_QByteArray, SIP_NOT_NONE))
             return 0;
-        }
 
-        qp->first = *qba1;
+    // The type is valid.
+    return 1;
+}
 
-        // A copy of the QByteArray was assigned to the pair so we no longer
-        // need it.  It may be a temporary instance that should be
-        // destroyed, or a wrapped instance that should not be destroyed.
-        // sipReleaseType() will do the right thing.
-        //sipReleaseType(qba1, sipType_QByteArray, state);
+// Create the instance on the heap.
+QPair<QByteArray, QByteArray> *qp = new QPair<QByteArray, QByteArray>;
 
-        /////////////////////////////////////////////
-        // Second item
+QByteArray *qba1;
+int state;
 
-        QByteArray *qba2;
+// Get the address of the element's C++ instance.  Note that, in
+// this case, we don't apply any ownership changes to the list
+// elements, only to the list itself.
+qba1 = reinterpret_cast<QByteArray *>(sipConvertToType(
+                                        PyTuple_GET_ITEM(sipPy, 0),
+                                        sipType_QByteArray, 0,
+                                        SIP_NOT_NONE,
+                                        &state, sipIsErr));
 
-        // Get the address of the element's C++ instance.  Note that, in
-        // this case, we don't apply any ownership changes to the list
-        // elements, only to the list itself.
-        qba2 = reinterpret_cast<QByteArray *>(sipConvertToType(
-                                                PyTuple_GET_ITEM(sipPy, 1),
-                                                sipType_QByteArray, 0,
-                                                SIP_NOT_NONE,
-                                                &state, sipIsErr));
+// Deal with any errors.
+if (*sipIsErr)
+{
+    sipReleaseType(qba1, sipType_QByteArray, state);
 
-        // Deal with any errors.
-        if (*sipIsErr)
-        {
-            sipReleaseType(qba1, sipType_QByteArray, state);
-            sipReleaseType(qba2, sipType_QByteArray, state);
+    // Tidy up.
+    delete qp;
 
-            // Tidy up.
-            delete qp;
+    // There is no temporary instance.
+    return 0;
+}
 
-            // There is no temporary instance.
-            return 0;
-        }
+qp->first = *qba1;
 
-        qp->second = *qba2;
+// A copy of the QByteArray was assigned to the pair so we no longer
+// need it.  It may be a temporary instance that should be
+// destroyed, or a wrapped instance that should not be destroyed.
+// sipReleaseType() will do the right thing.
+sipReleaseType(qba1, sipType_QByteArray, state);
+
+/////////////////////////////////////////////
+// Second item
+
+QByteArray *qba2;
+
+// Get the address of the element's C++ instance.  Note that, in
+// this case, we don't apply any ownership changes to the list
+// elements, only to the list itself.
+qba2 = reinterpret_cast<QByteArray *>(sipConvertToType(
+                                        PyTuple_GET_ITEM(sipPy, 1),
+                                        sipType_QByteArray, 0,
+                                        SIP_NOT_NONE,
+                                        &state, sipIsErr));
+
+// Deal with any errors.
+if (*sipIsErr)
+{
+    sipReleaseType(qba1, sipType_QByteArray, state);
+    sipReleaseType(qba2, sipType_QByteArray, state);
+
+    // Tidy up.
+    delete qp;
+
+    // There is no temporary instance.
+    return 0;
+}
+
+qp->second = *qba2;
 
 
-        // A copy of the QByteArray was assigned to the pair so we no longer
-        // need it.  It may be a temporary instance that should be
-        // destroyed, or a wrapped instance that should not be destroyed.
-        // sipReleaseType() will do the right thing.
-        //sipReleaseType(qba2, sipType_QByteArray, state);
+// A copy of the QByteArray was assigned to the pair so we no longer
+// need it.  It may be a temporary instance that should be
+// destroyed, or a wrapped instance that should not be destroyed.
+// sipReleaseType() will do the right thing.
+sipReleaseType(qba2, sipType_QByteArray, state);
 
 
-    // Return the instance.
-    *sipCppPtr = qp;
+// Return the instance.
+*sipCppPtr = qp;
 
-    // The instance should be regarded as temporary (and be destroyed as
-    // soon as it has been used) unless it has been transferred from
-    // Python.  sipGetState() is a convenience function that implements
-    // this common transfer behaviour.
-    return sipGetState(sipTransferObj);
+// The instance should be regarded as temporary (and be destroyed as
+// soon as it has been used) unless it has been transferred from
+// Python.  sipGetState() is a convenience function that implements
+// this common transfer behaviour.
+return sipGetState(sipTransferObj);
 
 %End
 };
