@@ -220,6 +220,7 @@ void QgsHttpRequestHandler::sendResponse()
 
 QPair<QByteArray, QByteArray> QgsHttpRequestHandler::getResponse()
 {
+  // TODO: check that this is not an evil bug!
   QPair<QByteArray, QByteArray> response( mResponseHeader, mResponseBody );
   return response;
 }

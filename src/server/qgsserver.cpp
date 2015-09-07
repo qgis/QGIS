@@ -566,8 +566,8 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString queryStrin
   if ( logLevel < 1 )
   {
     QgsMessageLog::logMessage( "Request finished in " + QString::number( time.elapsed() ) + " ms", "Server", QgsMessageLog::INFO );
-  }  
-  // Returns the header and response bytestreams  
+  }
+  // Returns the header and response bytestreams (to be used in Python bindings)
   return theRequestHandler->getResponse( );
 }
 
