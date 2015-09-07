@@ -17,6 +17,7 @@
 
 #include "qgsfilterlineedit.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgsproject.h"
 
 #include <QGridLayout>
 #include <QFileDialog>
@@ -32,8 +33,13 @@ QgsWebViewWidgetWrapper::QgsWebViewWidgetWrapper( QgsVectorLayer* vl, int fieldI
 
 void QgsWebViewWidgetWrapper::loadUrl( const QString &url )
 {
+  QString path = url;
+
+  if ( QUrl( url ).isRelative() )
+    path = QDir( QgsProject::instance()->fileInfo().absolutePath() ).filePath( url );
+
   if ( mWebView )
-    mWebView->load( url );
+    mWebView->load( path );
 }
 
 QVariant QgsWebViewWidgetWrapper::value()
@@ -160,6 +166,12 @@ void QgsWebViewWidgetWrapper::selectFileName()
   if ( fileName.isNull() )
     return;
 
+  QString projPath = QDir::toNativeSeparators( QDir::cleanPath( QgsProject::instance()->fileInfo().absolutePath() ) );
+  QString filePath = QDir::toNativeSeparators( QDir::cleanPath( QFileInfo( fileName ).absoluteFilePath() ) );
+
+  if ( filePath.startsWith( projPath ) )
+    filePath = QDir( projPath ).relativeFilePath( filePath );
+
   if ( mLineEdit )
-    mLineEdit->setText( QDir::toNativeSeparators( fileName ) );
+    mLineEdit->setText( filePath );
 }

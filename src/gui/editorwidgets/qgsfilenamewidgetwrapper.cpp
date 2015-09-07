@@ -16,6 +16,7 @@
 #include "qgsfilenamewidgetwrapper.h"
 
 #include "qgsfilterlineedit.h"
+#include "qgsproject.h"
 
 #include <QFileDialog>
 #include <QSettings>
@@ -127,9 +128,15 @@ void QgsFileNameWidgetWrapper::selectFileName()
   if ( fileName.isNull() )
     return;
 
+  QString projPath = QDir::toNativeSeparators( QDir::cleanPath( QgsProject::instance()->fileInfo().absolutePath() ) );
+  QString filePath = QDir::toNativeSeparators( QDir::cleanPath( QFileInfo( fileName ).absoluteFilePath() ) );
+
+  if ( filePath.startsWith( projPath ) )
+    filePath = QDir( projPath ).relativeFilePath( filePath );
+
   if ( mLineEdit )
-    mLineEdit->setText( QDir::toNativeSeparators( fileName ) );
+    mLineEdit->setText( fileName );
 
   if ( mLabel )
-    mLineEdit->setText( QDir::toNativeSeparators( fileName ) );
+    mLineEdit->setText( fileName );
 }

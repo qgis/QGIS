@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsphotowidgetwrapper.h"
+#include "qgsproject.h"
 
 #include <QGridLayout>
 #include <QFileDialog>
@@ -34,24 +35,38 @@ QgsPhotoWidgetWrapper::QgsPhotoWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, 
 
 void QgsPhotoWidgetWrapper::selectFileName()
 {
-  if ( mLineEdit )
-  {
-    QString fileName = QFileDialog::getOpenFileName( 0, tr( "Select a picture" ), QFileInfo( mLineEdit->text() ).absolutePath() );
-    if ( !fileName.isNull() )
-      mLineEdit->setText( QDir::toNativeSeparators( fileName ) );
-  }
+  if ( !mLineEdit )
+    return;
+
+  QString fileName = QFileDialog::getOpenFileName( 0, tr( "Select a picture" ), QFileInfo( mLineEdit->text() ).absolutePath() );
+
+  if ( fileName.isNull() )
+    return;
+
+  QString projPath = QDir::toNativeSeparators( QDir::cleanPath( QgsProject::instance()->fileInfo().absolutePath() ) );
+  QString filePath = QDir::toNativeSeparators( QDir::cleanPath( QFileInfo( fileName ).absoluteFilePath() ) );
+
+  if ( filePath.startsWith( projPath ) )
+    filePath = QDir( projPath ).relativeFilePath( filePath );
+
+  mLineEdit->setText( filePath );
 }
 
-void QgsPhotoWidgetWrapper::loadPixmap( const QString &fileName )
+void QgsPhotoWidgetWrapper::loadPixmap( const QString& fileName )
 {
+  QString filePath = fileName;
+
+  if ( QUrl( fileName ).isRelative() )
+    filePath = QDir( QgsProject::instance()->fileInfo().absolutePath() ).filePath( fileName );
+
 #ifdef WITH_QTWEBKIT
   if ( mWebView )
   {
-    mWebView->setUrl( fileName );
+    mWebView->setUrl( filePath );
   }
 #endif
 
-  QPixmap pm( fileName );
+  QPixmap pm( filePath );
   if ( !pm.isNull() && mPhotoLabel )
   {
     QSize size( config( "Width" ).toInt(), config( "Height" ).toInt() );
