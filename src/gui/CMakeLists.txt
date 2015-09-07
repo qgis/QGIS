@@ -212,6 +212,7 @@ SET(QGIS_GUI_SRCS
   qgsnumericsortlistviewitem.cpp
   qgsoptionsdialogbase.cpp
   qgsowssourceselect.cpp
+  qgspixmaplabel.cpp
   qgspluginmanagerinterface.cpp
   qgsprojectbadlayerguihandler.cpp
   qgsprojectionselectionwidget.cpp
@@ -333,6 +334,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsnewvectorlayerdialog.h
   qgsoptionsdialogbase.h
   qgsowssourceselect.h
+  qgspixmaplabel.h
   qgspluginmanagerinterface.h
   qgsprevieweffect.h
   qgsprojectbadlayerguihandler.h
