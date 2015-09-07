@@ -660,11 +660,14 @@ void QgsMapCanvas::refreshMap()
 
   //update $map variable to canvas
   QgsExpression::setSpecialColumn( "$map", tr( "canvas" ) );
+  mExpressionContextScope.setVariable( "map_id", "canvas" );
 
   //build the expression context
   QgsExpressionContext expressionContext;
   expressionContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope();
+  << QgsExpressionContextUtils::projectScope()
+  << new QgsExpressionContextScope( mExpressionContextScope );
+
   mSettings.setExpressionContext( expressionContext );
 
   // create the renderer job

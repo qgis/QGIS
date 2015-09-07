@@ -338,6 +338,24 @@ class QgsMapCanvas : QGraphicsView
      */
     void setSnappingUtils( QgsSnappingUtils* utils );
 
+    /** Sets an expression context scope for the map canvas. This scope is injected into the expression
+     * context used for rendering the map, and can be used to apply specific variable overrides for
+     * expression evaluation for the map canvas render. This method will overwrite the existing expression
+     * context scope for the canvas.
+     * @param scope new expression context scope
+     * @note added in QGIS 2.12
+     * @see expressionContextScope()
+     */
+    void setExpressionContextScope( const QgsExpressionContextScope& scope );
+
+    /** Returns a reference to the expression context scope for the map canvas. This scope is injected
+     * into the expression context used for rendering the map, and can be used to apply specific variable
+     * overrides for expression evaluation for the map canvas render.
+     * @note added in QGIS 2.12
+     * @see setExpressionContextScope()
+     */
+    QgsExpressionContextScope& expressionContextScope();
+
   public slots:
 
     /** Repaints the canvas map*/
