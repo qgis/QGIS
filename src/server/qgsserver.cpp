@@ -407,7 +407,7 @@ bool QgsServer::init( int & argc, char ** argv )
 /**
  * @brief Handles the request
  * @param queryString
- * @return response body and headers
+ * @return response headers and body
  */
 QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString queryString /*= QString( )*/ )
 {
@@ -468,7 +468,6 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString queryStrin
   //Pass the filters to the requestHandler, this is needed for the following reasons:
   // 1. allow core services to access plugin filters and implement thir own plugin hooks
   // 2. allow requestHandler to call sendResponse plugin hook
-
   theRequestHandler->setPluginFilters( mServerInterface->filters() );
 #endif
 
@@ -567,10 +566,15 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString queryStrin
   if ( logLevel < 1 )
   {
     QgsMessageLog::logMessage( "Request finished in " + QString::number( time.elapsed() ) + " ms", "Server", QgsMessageLog::INFO );
-  }
-  // TODO: if HAVE_SERVER_PYTHON
-  // Returns the response bytestream
+  }  
+  // Returns the header and response bytestreams  
   return theRequestHandler->getResponse( );
-
 }
+
+/* The following code was used to test type conversion in python bindings
+QPair<QByteArray, QByteArray> QgsServer::testQPair(QPair<QByteArray, QByteArray> pair)
+{
+  return pair;
+}
+*/
 

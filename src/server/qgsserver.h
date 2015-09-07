@@ -70,6 +70,9 @@ class SERVER_EXPORT QgsServer
      * @return the response headers and body QPair of QByteArray if called from python bindings, empty otherwise
      */
     QPair<QByteArray, QByteArray> handleRequest( const QString queryString = QString( ) );
+    /* The following code was used to test type conversion in python bindings
+    QPair<QByteArray, QByteArray> testQPair( QPair<QByteArray, QByteArray> pair );
+    */
 
     /** Returns a pointer to the server interface */
 #ifdef HAVE_SERVER_PYTHON_PLUGINS

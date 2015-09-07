@@ -148,7 +148,7 @@ class TestQgsServer(unittest.TestCase):
         f = open(self.testdata_path + request.lower() + '.txt')
         expected = f.read()
         f.close()
-        # Store for debug or to regenerate the reference documents:
+        # Store the output for debug or to regenerate the reference documents:
         """
         f = open(os.path.dirname(__file__) + '/expected.txt', 'w+')
         f.write(expected)
@@ -165,6 +165,13 @@ class TestQgsServer(unittest.TestCase):
         """Test some WMS request"""
         for request in ('GetCapabilities', 'GetProjectSettings'):
             self.wms_request_compare(request)
+
+    # The following code was used to test type conversion in python bindings
+    #def test_qpair(self):
+    #    """Test QPair bindings"""
+    #    f, s = self.server.testQPair(('First', 'Second'))
+    #    self.assertEqual(f, 'First')
+    #    self.assertEqual(s, 'Second')
 
 
 if __name__ == '__main__':
