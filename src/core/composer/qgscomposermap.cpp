@@ -2120,6 +2120,22 @@ void QgsComposerMap::requestedExtent( QgsRectangle& extent ) const
   }
 }
 
+QgsExpressionContext* QgsComposerMap::createExpressionContext() const
+{
+  QgsExpressionContext* context = QgsComposerItem::createExpressionContext();
+
+  //Can't utilise QgsExpressionContextUtils::mapSettingsScope as we don't always
+  //have a QgsMapSettings object available when the context is required, so we manually
+  //add the same variables here
+  QgsExpressionContextScope* scope = new QgsExpressionContextScope( tr( "Map Settings" ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( "map_id", QgsComposerItem::id(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( "map_rotation", mMapRotation, true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( "map_scale", scale(), true ) );
+  context->appendScope( scope );
+
+  return context;
+}
+
 double QgsComposerMap::mapUnitsToMM() const
 {
   double extentWidth = currentMapExtent()->width();

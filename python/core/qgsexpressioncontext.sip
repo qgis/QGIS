@@ -460,6 +460,11 @@ class QgsExpressionContextUtils
      */
     static void setLayerVariables( QgsMapLayer* layer, const QgsStringMap variables );
 
+    /** Creates a new scope which contains variables and functions relating to a QgsMapSettings object.
+     * For instance, map scale and rotation.
+     */
+    static QgsExpressionContextScope* mapSettingsScope( const QgsMapSettings &mapSettings ) /Factory/;
+
     /** Creates a new scope which contains variables and functions relating to a QgsComposition.
      * For instance, number of pages and page sizes.
      * @param composition source composition

@@ -27,6 +27,7 @@ class QgsMapLayer;
 class QgsComposition;
 class QgsComposerItem;
 class QgsAtlasComposition;
+class QgsMapSettings;
 
 /** \ingroup core
  * \class QgsScopedExpressionFunction
@@ -490,6 +491,11 @@ class CORE_EXPORT QgsExpressionContextUtils
      * @see layerScope()
      */
     static void setLayerVariables( QgsMapLayer* layer, const QgsStringMap variables );
+
+    /** Creates a new scope which contains variables and functions relating to a QgsMapSettings object.
+     * For instance, map scale and rotation.
+     */
+    static QgsExpressionContextScope* mapSettingsScope( const QgsMapSettings &mapSettings );
 
     /** Creates a new scope which contains variables and functions relating to a QgsComposition.
      * For instance, number of pages and page sizes.

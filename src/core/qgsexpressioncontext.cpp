@@ -631,6 +631,17 @@ void QgsExpressionContextUtils::setLayerVariables( QgsMapLayer* layer, const Qgs
   layer->setCustomProperty( "variableValues", variableValues );
 }
 
+QgsExpressionContextScope* QgsExpressionContextUtils::mapSettingsScope( const QgsMapSettings& mapSettings )
+{
+  QgsExpressionContextScope* scope = new QgsExpressionContextScope( QObject::tr( "Map Settings" ) );
+
+  //add known map settings context variables
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( "map_rotation", mapSettings.rotation(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( "map_scale", mapSettings.scale(), true ) );
+
+  return scope;
+}
+
 QgsExpressionContextScope *QgsExpressionContextUtils::compositionScope( const QgsComposition *composition )
 {
   QgsExpressionContextScope* scope = new QgsExpressionContextScope( QObject::tr( "Composition" ) );

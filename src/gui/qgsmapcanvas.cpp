@@ -666,6 +666,7 @@ void QgsMapCanvas::refreshMap()
   QgsExpressionContext expressionContext;
   expressionContext << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::mapSettingsScope( mSettings )
   << new QgsExpressionContextScope( mExpressionContextScope );
 
   mSettings.setExpressionContext( expressionContext );
