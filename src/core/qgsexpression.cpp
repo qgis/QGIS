@@ -850,8 +850,8 @@ static QVariant fcnSubstr( const QVariantList& values, const QgsExpressionContex
 
 static QVariant fcnRowNumber( const QVariantList&, const QgsExpressionContext* context, QgsExpression* parent )
 {
-  if ( context && context->hasVariable( "_rownum_" ) )
-    return context->variable( "_rownum_" );
+  if ( context && context->hasVariable( "row_number" ) )
+    return context->variable( "row_number" );
 
   Q_NOWARN_DEPRECATED_PUSH
   return QVariant( parent->currentRowNumber() );
@@ -1925,7 +1925,7 @@ const QStringList& QgsExpression::BuiltinFunctions()
     << "levenshtein" << "longest_common_substring" << "hamming_distance"
     << "soundex"
     << "attribute" << "var" << "layer_property"
-    << "$rownum" << "$id" << "$scale" << "_specialcol_";
+    << "$id" << "$scale" << "_specialcol_";
   }
   return gmBuiltinFunctions;
 }
@@ -2050,7 +2050,7 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( "geom_to_wkt", -1, fcnGeomToWKT, "GeometryGroup", QString(), false, QStringList(), false, QStringList() << "geomToWKT" )
     << new StaticFunction( "geometry", 1, fcnGetGeometry, "GeometryGroup" )
     << new StaticFunction( "transform", 3, fcnTransformGeometry, "GeometryGroup" )
-    << new StaticFunction( "$rownum", 0, fcnRowNumber, "Record" )
+    << new StaticFunction( "$rownum", 0, fcnRowNumber, "deprecated" )
     << new StaticFunction( "$id", 0, fcnFeatureId, "Record" )
     << new StaticFunction( "$currentfeature", 0, fcnFeature, "Record" )
     << new StaticFunction( "$scale", 0, fcnScale, "Record" )
@@ -3243,6 +3243,8 @@ void QgsExpression::initVariableHelp()
   gVariableHelpTexts.insert( "map_id", QCoreApplication::translate( "variable_help", "ID of current map destination. This will be 'canvas' for canvas renders, and the item ID for composer map renders." ) );
   gVariableHelpTexts.insert( "map_rotation", QCoreApplication::translate( "variable_help", "Current rotation of map." ) );
   gVariableHelpTexts.insert( "map_scale", QCoreApplication::translate( "variable_help", "Current scale of map." ) );
+
+  gVariableHelpTexts.insert( "row_number", QCoreApplication::translate( "variable_help", "Stores the number of the current row." ) );
 }
 
 QString QgsExpression::variableHelpText( const QString &variableName, bool showValue, const QVariant &value )

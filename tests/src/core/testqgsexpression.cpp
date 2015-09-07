@@ -647,7 +647,7 @@ class TestQgsExpression: public QObject
 
       QgsExpressionContext context;
       context << new QgsExpressionContextScope();
-      context.lastScope()->setVariable( "_rownum_", 101 );
+      context.lastScope()->setVariable( "row_number", 101 );
       QVariant v3 = exp.evaluate();
       QCOMPARE( v3.toInt(), 101 );
     }

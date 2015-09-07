@@ -451,7 +451,7 @@ bool QgsComposerAttributeTable::getFeatureAttributes( QList<QgsAttributeMap> &at
       {
         // Lets assume it's an expression
         QgsExpression* expression = new QgsExpression(( *columnIt )->attribute() );
-        context->lastScope()->setVariable( QString( "_rownum_" ), counter + 1 );
+        context->lastScope()->setVariable( QString( "row_number" ), counter + 1 );
         expression->prepare( context.data() );
         QVariant value = expression->evaluate( context.data() );
         attributeMaps.last().insert( i, value.toString() );
