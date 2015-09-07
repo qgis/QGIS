@@ -94,7 +94,6 @@ QgsPalLayerSettings::QgsPalLayerSettings()
 
   // text style
   textFont = QApplication::font();
-  textNamedStyle = QString( "" );
   fontSizeInMapUnits = false;
   textColor = Qt::black;
   textTransp = 0;
@@ -4329,7 +4328,7 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
         //for diagrams, remove the additional 'd' at the end of the layer id
         QString layerId = layerName;
         layerId.chop( 1 );
-        mResults->mLabelSearchTree->insertLabel( *it, QString( palGeometry->strId() ).toInt(), layerId, QString( "" ), QFont(), true, false );
+        mResults->mLabelSearchTree->insertLabel( *it, QString( palGeometry->strId() ).toInt(), layerId, QString(), QFont(), true, false );
       }
       continue;
     }

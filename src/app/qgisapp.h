@@ -256,14 +256,14 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * @param currentTitle base name for initial title choice
      * @return QString::null if user cancels input dialog
      */
-    QString uniqueComposerTitle( QWidget *parent, bool acceptEmpty, const QString& currentTitle = QString( "" ) );
+    QString uniqueComposerTitle( QWidget *parent, bool acceptEmpty, const QString& currentTitle = QString() );
     /** Creates a new composer and returns a pointer to it*/
-    QgsComposer* createNewComposer( QString title = QString( "" ) );
+    QgsComposer* createNewComposer( QString title = QString() );
     /** Deletes a composer and removes entry from Set*/
     void deleteComposer( QgsComposer *c );
     /** Duplicates a composer and adds it to Set
      */
-    QgsComposer *duplicateComposer( QgsComposer *currentComposer, QString title = QString( "" ) );
+    QgsComposer *duplicateComposer( QgsComposer *currentComposer, QString title = QString() );
 
     /** Overloaded function used to sort menu entries alphabetically */
     QMenu* createPopupMenu() override;

@@ -266,7 +266,7 @@ void QgsSvgSelectorWidget::on_mFilePushButton_clicked()
   QFileInfo fi( file );
   if ( !fi.exists() || !fi.isReadable() )
   {
-    updateCurrentSvgPath( QString( "" ) );
+    updateCurrentSvgPath( QString() );
     updateLineEditFeedback( false );
     return;
   }
@@ -288,7 +288,7 @@ void QgsSvgSelectorWidget::on_mFileLineEdit_textChanged( const QString& text )
   bool validSVG = !resolvedPath.isNull();
 
   updateLineEditFeedback( validSVG, resolvedPath );
-  updateCurrentSvgPath( validSVG ? resolvedPath : QString( "" ) );
+  updateCurrentSvgPath( validSVG ? resolvedPath : QString() );
 }
 
 void QgsSvgSelectorWidget::populateList()

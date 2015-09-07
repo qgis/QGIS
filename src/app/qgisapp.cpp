@@ -5736,13 +5736,12 @@ QString QgisApp::uniqueComposerTitle( QWidget* parent, bool acceptEmpty, const Q
       }
       else
       {
-        newTitle = QString( "" );
         titleValid = true;
       }
     }
     else if ( cNames.indexOf( newTitle, 1 ) >= 0 )
     {
-      cNames[0] = QString( "" ); // clear non-unique name
+      cNames[0] = QString(); // clear non-unique name
       titleMsg = chooseMsg + "\n\n" + tr( "Title already exists!" );
     }
     else
@@ -7400,7 +7399,7 @@ void QgisApp::duplicateLayers( QList<QgsMapLayer *> lyrList )
   foreach ( QgsMapLayer * selectedLyr, selectedLyrs )
   {
     dupLayer = 0;
-    unSppType = QString( "" );
+    unSppType.clear();
     layerDupName = selectedLyr->name() + " " + tr( "copy" );
 
     if ( selectedLyr->type() == QgsMapLayer::PluginLayer )
@@ -10212,7 +10211,7 @@ void QgisApp::oldProjectVersionWarning( QString oldVersion )
       .replace( QString( "<p>" ), QString( "\n\n" ) )
       .replace( QString( "<br>" ), QString( "\n" ) )
       .replace( QString( "<a href=\"http://hub.qgis.org/projects/quantum-gis\">http://hub.qgis.org/projects/quantum-gis</a> " ), QString( "\nhttp://hub.qgis.org/projects/quantum-gis" ) )
-      .replace( QRegExp( "</?tt>" ), QString( "" ) )
+      .replace( QRegExp( "</?tt>" ), QString() )
     );
     box.exec();
 #else

@@ -994,8 +994,8 @@ void QgsGrassModuleInput::updateQgisLayers()
   // layer containers.
   if ( !mRequired )
   {
-    mMaps.push_back( QString( "" ) );
-    mVectorLayerNames.push_back( QString( "" ) );
+    mMaps.push_back( QString() );
+    mVectorLayerNames.push_back( QString() );
     mMapLayers.push_back( NULL );
     mBands.append( 0 );
     mLayerComboBox->addItem( tr( "Select a layer" ), QVariant() );

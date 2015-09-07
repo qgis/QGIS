@@ -190,7 +190,7 @@ void QgsCollapsibleGroupBoxBasic::changeEvent( QEvent *event )
 void QgsCollapsibleGroupBoxBasic::setSyncGroup( QString grp )
 {
   mSyncGroup = grp;
-  QString tipTxt = QString( "" );
+  QString tipTxt;
   if ( !grp.isEmpty() )
   {
     tipTxt = tr( "Ctrl (or Alt)-click to toggle all" ) + "\n" + tr( "Shift-click to expand, then collapse others" );

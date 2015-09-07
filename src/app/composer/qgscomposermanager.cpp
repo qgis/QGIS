@@ -96,7 +96,7 @@ QgsComposerManager::QgsComposerManager( QWidget * parent, Qt::WindowFlags f ): Q
     }
   }
 
-  mTemplatePathLineEdit->setText( settings.value( "/UI/ComposerManager/templatePath", QString( "" ) ).toString() );
+  mTemplatePathLineEdit->setText( settings.value( "/UI/ComposerManager/templatePath", QString() ).toString() );
 
   refreshComposers();
 }

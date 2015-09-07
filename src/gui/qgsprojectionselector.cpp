@@ -308,7 +308,7 @@ QString QgsProjectionSelector::selectedProj4String()
   {
     databaseFileName = QgsApplication::qgisUserDbFilePath();
     if ( !QFileInfo( databaseFileName ).exists() ) //its unlikely that this condition will ever be reached
-      return QString( "" );
+      return QString();
   }
   else //must be a system projection then
   {

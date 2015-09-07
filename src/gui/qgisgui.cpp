@@ -42,7 +42,7 @@ namespace QgisGui
     }
     else //we have to use non-native dialog to add cancel all button
     {
-      QgsEncodingFileDialog* openFileDialog = new QgsEncodingFileDialog( 0, title, lastUsedDir, filters, QString( "" ) );
+      QgsEncodingFileDialog* openFileDialog = new QgsEncodingFileDialog( 0, title, lastUsedDir, filters, QString() );
 
       // allow for selection of more than one file
       openFileDialog->setFileMode( QFileDialog::ExistingFiles );

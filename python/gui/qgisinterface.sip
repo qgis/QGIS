@@ -179,7 +179,7 @@ class QgisInterface : QObject
      * @return pointer to composer's view
      * @note new composer window will be shown and activated
      */
-    virtual QgsComposerView* createNewComposer( QString title = QString( "" ) ) = 0;
+    virtual QgsComposerView* createNewComposer( QString title = QString() ) = 0;
 
     /** Duplicate an existing parent composer from composer view
      * @param composerView pointer to existing composer view
@@ -187,7 +187,7 @@ class QgisInterface : QObject
      * @return pointer to duplicate composer's view
      * @note dupicate composer window will be hidden until loaded, then shown and activated
      */
-    virtual QgsComposerView* duplicateComposer( QgsComposerView* composerView, QString title = QString( "" ) ) = 0;
+    virtual QgsComposerView* duplicateComposer( QgsComposerView* composerView, QString title = QString() ) = 0;
 
     /** Deletes parent composer of composer view, after closing composer window */
     virtual void deleteComposer( QgsComposerView* composerView ) = 0;

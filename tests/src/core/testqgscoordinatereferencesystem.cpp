@@ -148,7 +148,7 @@ void TestQgsCoordinateReferenceSystem::createFromOgcWmsCrs()
   QgsCoordinateReferenceSystem myCrs;
   //@todo implement this - for now we just check that if fails
   //if passed an empty string
-  QVERIFY( !myCrs.createFromOgcWmsCrs( QString( "" ) ) );
+  QVERIFY( !myCrs.createFromOgcWmsCrs( QString() ) );
 }
 void TestQgsCoordinateReferenceSystem::createFromSrid()
 {

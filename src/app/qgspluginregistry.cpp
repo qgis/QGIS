@@ -507,7 +507,7 @@ void QgsPluginRegistry::restoreSessionPlugins( QString thePluginDirString )
       {
         if ( corePlugins.contains( packageName ) )
         {
-          QgsApplication::setPkgDataPath( QString( "" ) );
+          QgsApplication::setPkgDataPath( QString() );
         }
         else
         {

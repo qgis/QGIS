@@ -46,7 +46,7 @@ QgsAngleMagnetWidget::QgsAngleMagnetWidget( QString label , QWidget *parent )
   //mLayout->setAlignment( Qt::AlignLeft );
   setLayout( mLayout );
 
-  if ( !label.isNull() )
+  if ( !label.isEmpty() )
   {
     QLabel* lbl = new QLabel( label, this );
     lbl->setAlignment( Qt::AlignRight | Qt::AlignCenter );

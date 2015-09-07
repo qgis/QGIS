@@ -559,7 +559,7 @@ static QgsProjectVersion _getVersion( QDomDocument const &doc )
   if ( !nl.count() )
   {
     QgsDebugMsg( " unable to find qgis element in project file" );
-    return QgsProjectVersion( 0, 0, 0, QString( "" ) );
+    return QgsProjectVersion( 0, 0, 0, QString() );
   }
 
   QDomNode qgisNode = nl.item( 0 );  // there should only be one, so zeroth element ok

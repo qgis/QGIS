@@ -913,7 +913,7 @@ QString QgsGdalProvider::generateBandName( int theBandNumber ) const
         val = values.at( 1 );
         if ( values.at( 0 ) == "NETCDF_DIM_EXTRA" )
         {
-          dimExtraValues = val.replace( QString( "{" ), QString( "" ) ).replace( QString( "}" ), QString( "" ) ).split( "," );
+          dimExtraValues = val.replace( QString( "{" ), QString() ).replace( QString( "}" ), QString() ).split( "," );
           //http://qt-project.org/doc/qt-4.8/qregexp.html#capturedTexts
         }
         else

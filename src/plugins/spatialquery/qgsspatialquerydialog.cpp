@@ -256,7 +256,7 @@ QString QgsSpatialQueryDialog::getSubsetFIDs( const QgsFeatureIds *fids, QString
 {
   if ( fids->size() == 0 )
   {
-    return QString( "" );
+    return QString();
   }
   QSetIterator <QgsFeatureId> item( *fids );
   QStringList lstFID;

@@ -178,7 +178,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
     varStrItms << varStrName << varStrValue;
 
     // check if different than system variable
-    QString sysVarVal = QString( "" );
+    QString sysVarVal;
     bool sysVarMissing = !sysVarsMap.contains( varStrName );
     if ( sysVarMissing )
       sysVarVal = tr( "not present" );
@@ -1554,7 +1554,7 @@ void QgsOptions::addCustomEnvVarRow( QString varName, QString varVal, QString va
 
 void QgsOptions::on_mAddCustomVarBtn_clicked()
 {
-  addCustomEnvVarRow( QString( "" ), QString( "" ) );
+  addCustomEnvVarRow( QString(), QString() );
   mCustomVariablesTable->setFocus();
   mCustomVariablesTable->setCurrentCell( mCustomVariablesTable->rowCount() - 1, 1 );
   mCustomVariablesTable->edit( mCustomVariablesTable->currentIndex() );
