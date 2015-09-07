@@ -732,6 +732,7 @@ QgsExpressionContextScope* QgsExpressionContextUtils::atlasScope( const QgsAtlas
     scope->setFeature( atlasFeature );
     scope->addVariable( QgsExpressionContextScope::StaticVariable( "atlas_feature", QVariant::fromValue( atlasFeature ), true ) );
     scope->addVariable( QgsExpressionContextScope::StaticVariable( "atlas_featureid", atlasFeature.id(), true ) );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( "atlas_geometry", atlasFeature.constGeometry(), true ) );
   }
 
   return scope;
@@ -763,6 +764,7 @@ QgsExpressionContextScope *QgsExpressionContextUtils::composerItemScope( const Q
   //add known composer item context variables
   scope->addVariable( QgsExpressionContextScope::StaticVariable( "item_id", composerItem->id(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( "item_uuid", composerItem->uuid(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( "layout_page", composerItem->page(), true ) );
 
   return scope;
 }

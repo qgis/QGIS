@@ -201,7 +201,7 @@ void TestQgsAtlasComposition::init()
   // feature number label
   mLabel2 = new QgsComposerLabel( mComposition );
   mComposition->addComposerLabel( mLabel2 );
-  mLabel2->setText( "# [%$feature || ' / ' || $numfeatures%]" );
+  mLabel2->setText( "# [%@atlas_featurenumber || ' / ' || @atlas_totalfeatures%]" );
   mLabel2->setFont( QgsFontUtils::getStandardTestFont() );
   mLabel2->setSceneRect( QRectF( 150, 200, 60, 15 ) );
 
@@ -217,7 +217,7 @@ void TestQgsAtlasComposition::cleanup()
 
 void TestQgsAtlasComposition::filename()
 {
-  mAtlas->setFilenamePattern( "'output_' || $feature" );
+  mAtlas->setFilenamePattern( "'output_' || @atlas_featurenumber" );
   mAtlas->beginRender();
   for ( int fi = 0; fi < mAtlas->numFeatures(); ++fi )
   {

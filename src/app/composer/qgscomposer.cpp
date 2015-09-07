@@ -1622,7 +1622,7 @@ void QgsComposer::exportCompositionAsPDF( QgsComposer::OutputMode mode )
       {
         return;
       }
-      atlasMap->setFilenamePattern( "'output_'||$feature" );
+      atlasMap->setFilenamePattern( "'output_'||@atlas_featurenumber" );
     }
 
     QSettings myQSettings;
@@ -2034,7 +2034,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
       {
         return;
       }
-      atlasMap->setFilenamePattern( "'output_'||$feature" );
+      atlasMap->setFilenamePattern( "'output_'||@atlas_featurenumber" );
     }
 
     QSettings myQSettings;
@@ -2335,7 +2335,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
       {
         return;
       }
-      atlasMap->setFilenamePattern( "'output_'||$feature" );
+      atlasMap->setFilenamePattern( "'output_'||@atlas_featurenumber" );
     }
 
     QSettings myQSettings;

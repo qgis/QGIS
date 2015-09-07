@@ -428,9 +428,6 @@ void QgsComposition::setNumPages( const int pages )
     }
   }
 
-  //update the corresponding variable
-  QgsExpression::setSpecialColumn( "$numpages", QVariant(( int )numPages() ) );
-
   QgsProject::instance()->dirty( true );
   updateBounds();
 
@@ -2617,15 +2614,12 @@ void QgsComposition::addPaperItem()
   addItem( paperItem );
   paperItem->setZValue( 0 );
   mPages.push_back( paperItem );
-
-  QgsExpression::setSpecialColumn( "$numpages", QVariant(( int )mPages.size() ) );
 }
 
 void QgsComposition::removePaperItems()
 {
   qDeleteAll( mPages );
   mPages.clear();
-  QgsExpression::setSpecialColumn( "$numpages", QVariant(( int )0 ) );
 }
 
 void QgsComposition::deleteAndRemoveMultiFrames()

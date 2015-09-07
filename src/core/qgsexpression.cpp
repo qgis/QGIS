@@ -869,6 +869,77 @@ static QVariant fcnMapId( const QVariantList&, const QgsExpressionContext* conte
   Q_NOWARN_DEPRECATED_POP
 }
 
+static QVariant fcnComposerNumPages( const QVariantList&, const QgsExpressionContext* context, QgsExpression* )
+{
+  if ( context && context->hasVariable( "layout_numpages" ) )
+    return context->variable( "layout_numpages" );
+
+  Q_NOWARN_DEPRECATED_PUSH
+  return QgsExpression::specialColumn( "$numpages" );
+  Q_NOWARN_DEPRECATED_POP
+}
+
+static QVariant fcnComposerPage( const QVariantList&, const QgsExpressionContext* context, QgsExpression* )
+{
+  if ( context && context->hasVariable( "layout_page" ) )
+    return context->variable( "layout_page" );
+
+  Q_NOWARN_DEPRECATED_PUSH
+  return QgsExpression::specialColumn( "$page" );
+  Q_NOWARN_DEPRECATED_POP
+}
+
+static QVariant fcnAtlasFeature( const QVariantList&, const QgsExpressionContext* context, QgsExpression* )
+{
+  if ( context && context->hasVariable( "atlas_featurenumber" ) )
+    return context->variable( "atlas_featurenumber" );
+
+  Q_NOWARN_DEPRECATED_PUSH
+  return QgsExpression::specialColumn( "$feature" );
+  Q_NOWARN_DEPRECATED_POP
+}
+
+static QVariant fcnAtlasFeatureId( const QVariantList&, const QgsExpressionContext* context, QgsExpression* )
+{
+  if ( context && context->hasVariable( "atlas_featureid" ) )
+    return context->variable( "atlas_featureid" );
+
+  Q_NOWARN_DEPRECATED_PUSH
+  return QgsExpression::specialColumn( "$atlasfeatureid" );
+  Q_NOWARN_DEPRECATED_POP
+}
+
+
+static QVariant fcnAtlasCurrentFeature( const QVariantList&, const QgsExpressionContext* context, QgsExpression* )
+{
+  if ( context && context->hasVariable( "atlas_feature" ) )
+    return context->variable( "atlas_feature" );
+
+  Q_NOWARN_DEPRECATED_PUSH
+  return QgsExpression::specialColumn( "$atlasfeature" );
+  Q_NOWARN_DEPRECATED_POP
+}
+
+static QVariant fcnAtlasCurrentGeometry( const QVariantList&, const QgsExpressionContext* context, QgsExpression* )
+{
+  if ( context && context->hasVariable( "atlas_geometry" ) )
+    return context->variable( "atlas_geometry" );
+
+  Q_NOWARN_DEPRECATED_PUSH
+  return QgsExpression::specialColumn( "$atlasgeometry" );
+  Q_NOWARN_DEPRECATED_POP
+}
+
+static QVariant fcnAtlasNumFeatures( const QVariantList&, const QgsExpressionContext* context, QgsExpression* )
+{
+  if ( context && context->hasVariable( "atlas_totalfeatures" ) )
+    return context->variable( "atlas_totalfeatures" );
+
+  Q_NOWARN_DEPRECATED_PUSH
+  return QgsExpression::specialColumn( "$numfeatures" );
+  Q_NOWARN_DEPRECATED_POP
+}
+
 #define FEAT_FROM_CONTEXT(c, f) if (!c || !c->hasVariable(QgsExpressionContext::EXPR_FEATURE)) return QVariant(); \
   QgsFeature f = qvariant_cast<QgsFeature>( c->variable( QgsExpressionContext::EXPR_FEATURE ) );
 
@@ -1982,6 +2053,13 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( "$currentfeature", 0, fcnFeature, "Record" )
     << new StaticFunction( "$scale", 0, fcnScale, "Record" )
     << new StaticFunction( "$map", 0, fcnMapId, "deprecated" )
+    << new StaticFunction( "$numpages", 0, fcnComposerNumPages, "deprecated" )
+    << new StaticFunction( "$page", 0, fcnComposerPage, "deprecated" )
+    << new StaticFunction( "$feature", 0, fcnAtlasFeature, "deprecated" )
+    << new StaticFunction( "$atlasfeatureid", 0, fcnAtlasFeatureId, "deprecated" )
+    << new StaticFunction( "$atlasfeature", 0, fcnAtlasCurrentFeature, "deprecated" )
+    << new StaticFunction( "$atlasgeometry", 0, fcnAtlasCurrentGeometry, "deprecated" )
+    << new StaticFunction( "$numfeatures", 0, fcnAtlasNumFeatures, "deprecated" )
     << new StaticFunction( "uuid", 0, fcnUuid, "Record", QString(), false, QStringList(), false, QStringList() << "$uuid" )
     << new StaticFunction( "get_feature", 3, fcnGetFeature, "Record", QString(), false, QStringList(), false, QStringList() << "getFeature" )
     << new StaticFunction( "layer_property", 2, fcnGetLayerProperty, "General" )
@@ -2047,33 +2125,6 @@ QVariant QgsExpression::specialColumn( const QString& name )
 
 bool QgsExpression::hasSpecialColumn( const QString& name )
 {
-  static bool initialized = false;
-  if ( !initialized )
-  {
-    // Pre-register special columns that will exist within QGIS so that expressions that may use them are parsed correctly.
-    // This is really sub-optimal, we should get rid of the special columns and instead have contexts in which some values
-    // are defined and some are not ($rownum makes sense only in field calculator, $scale only when rendering, $page only for composer etc.)
-
-    //pairs of column name to group name
-    QList< QPair<QString, QString> > lst;
-    lst << qMakePair( QString( "$page" ), QString( "Composer" ) );
-    lst << qMakePair( QString( "$feature" ), QString( "Atlas" ) );
-    lst << qMakePair( QString( "$numpages" ), QString( "Composer" ) );
-    lst << qMakePair( QString( "$numfeatures" ), QString( "Atlas" ) );
-    lst << qMakePair( QString( "$atlasfeatureid" ), QString( "Atlas" ) );
-    lst << qMakePair( QString( "$atlasgeometry" ), QString( "Atlas" ) );
-    lst << qMakePair( QString( "$atlasfeature" ), QString( "Atlas" ) );
-
-    QList< QPair<QString, QString> >::const_iterator it = lst.constBegin();
-    for ( ; it != lst.constEnd(); ++it )
-    {
-      setSpecialColumn(( *it ).first, QVariant() );
-      gmSpecialColumnGroups[( *it ).first ] = ( *it ).second;
-    }
-
-    initialized = true;
-  }
-
   if ( functionIndex( name ) != -1 )
     return false;
   return gmSpecialColumns.contains( name );

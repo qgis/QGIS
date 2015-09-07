@@ -48,7 +48,7 @@ class TestQgsComposerLabel : public QObject
     void evaluation();
     // test expression evaluation when a feature is set
     void feature_evaluation();
-    // test "$page" expressions
+    // test page expressions
     void page_evaluation();
 
     void marginMethods(); //tests getting/setting margins
@@ -182,7 +182,7 @@ void TestQgsComposerLabel::page_evaluation()
 {
   mComposition->setNumPages( 2 );
   {
-    mComposerLabel->setText( "[%$page||'/'||$numpages%]" );
+    mComposerLabel->setText( "[%@layout_page||'/'||@layout_numpages%]" );
     QString evaluated = mComposerLabel->displayText();
     QString expected = "1/2";
     QCOMPARE( evaluated, expected );
