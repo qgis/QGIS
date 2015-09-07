@@ -443,17 +443,18 @@ void QgsFeatureRendererV2::renderFeatureWithSymbol( QgsFeature& feature, QgsSymb
 
     QgsPointV2 vertexPoint;
     QgsVertexId vertexId;
-    double z;
+    double x, y, z;
     QPointF mapPoint;
     while ( geom->geometry()->nextVertex( vertexId, vertexPoint ) )
     {
       //transform
-      mapPoint.setX( vertexPoint.x() ); mapPoint.setY( vertexPoint.y() ); z = vertexPoint.z();
-      mtp.transformInPlace( mapPoint.rx(), mapPoint.ry() );
+      x = vertexPoint.x(); y = vertexPoint.y(); z = vertexPoint.z();
       if ( ct )
       {
-        ct->transformInPlace( mapPoint.rx(), mapPoint.ry(), z );
+        ct->transformInPlace( x, y, z );
       }
+      mapPoint.setX( x ); mapPoint.setY( y );
+      mtp.transformInPlace( mapPoint.rx(), mapPoint.ry() );
       renderVertexMarker( mapPoint, context );
     }
   }

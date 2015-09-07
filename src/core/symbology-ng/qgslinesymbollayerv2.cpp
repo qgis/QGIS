@@ -1007,7 +1007,7 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineVertex( const QPolygonF& points, 
 
     QgsVertexId vId;
     QgsPointV2 vPoint;
-    double z;
+    double x, y, z;
     QPointF mapPoint;
     while ( context.renderContext().geometry()->nextVertex( vId, vPoint ) )
     {
@@ -1015,13 +1015,13 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineVertex( const QPolygonF& points, 
           || ( placement == CurvePoint && vId.type == QgsVertexId::CurveVertex ) )
       {
         //transform
-        mapPoint.setX( vPoint.x() ); mapPoint.setY( vPoint.y() ); z = vPoint.z();
-        mtp.transformInPlace( mapPoint.rx(), mapPoint.ry() );
+        x = vPoint.x(), y = vPoint.y(); z = vPoint.z();
         if ( ct )
         {
-          ct->transformInPlace( mapPoint.rx(), mapPoint.ry(), z );
+          ct->transformInPlace( x, y, z );
         }
-
+        mapPoint.setX( x ); mapPoint.setY( y );
+        mtp.transformInPlace( mapPoint.rx(), mapPoint.ry() );
         if ( mRotateMarker )
         {
           double angle = context.renderContext().geometry()->vertexAngle( vId );
