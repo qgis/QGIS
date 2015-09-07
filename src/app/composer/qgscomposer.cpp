@@ -1033,6 +1033,14 @@ void QgsComposer::atlasFeatureChanged( QgsFeature *feature )
     mAtlasPageComboBox->setEditText( QString::number( mComposition->atlasComposition().currentFeatureNumber() + 1 ) );
   }
   mAtlasPageComboBox->blockSignals( false );
+
+  //update expression context variables in map canvas to allow for previewing atlas feature based renderering
+  mapCanvas()->expressionContextScope().addVariable( QgsExpressionContextScope::StaticVariable( "atlas_featurenumber", mComposition->atlasComposition().currentFeatureNumber() + 1, true ) );
+  mapCanvas()->expressionContextScope().addVariable( QgsExpressionContextScope::StaticVariable( "atlas_pagename", mComposition->atlasComposition().currentPageName(), true ) );
+  QgsFeature atlasFeature = mComposition->atlasComposition().feature();
+  mapCanvas()->expressionContextScope().addVariable( QgsExpressionContextScope::StaticVariable( "atlas_feature", QVariant::fromValue( atlasFeature ), true ) );
+  mapCanvas()->expressionContextScope().addVariable( QgsExpressionContextScope::StaticVariable( "atlas_featureid", atlasFeature.id(), true ) );
+  mapCanvas()->expressionContextScope().addVariable( QgsExpressionContextScope::StaticVariable( "atlas_geometry", QVariant::fromValue( *atlasFeature.constGeometry() ), true ) );
 }
 
 void QgsComposer::on_mActionAtlasPreview_triggered( bool checked )
