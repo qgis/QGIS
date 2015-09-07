@@ -1689,7 +1689,9 @@ static QVariant fncColorCmyka( const QVariantList &values, const QgsExpressionCo
 static QVariant fcnSpecialColumn( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   QString varName = getStringValue( values.at( 0 ), parent );
+  Q_NOWARN_DEPRECATED_PUSH
   return QgsExpression::specialColumn( varName );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 static QVariant fcnGetGeometry( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
@@ -2383,12 +2385,14 @@ QString QgsExpression::replaceExpressionText( const QString &action, const QgsEx
     // variables with a local scope (must be restored after evaluation)
     for ( QMap<QString, QVariant>::const_iterator sit = substitutionMap->begin(); sit != substitutionMap->end(); ++sit )
     {
+      Q_NOWARN_DEPRECATED_PUSH
       QVariant oldValue = QgsExpression::specialColumn( sit.key() );
       if ( !oldValue.isNull() )
         savedValues.insert( sit.key(), oldValue );
 
       // set the new value
       QgsExpression::setSpecialColumn( sit.key(), sit.value() );
+      Q_NOWARN_DEPRECATED_POP
     }
   }
 
@@ -2436,10 +2440,12 @@ QString QgsExpression::replaceExpressionText( const QString &action, const QgsEx
   expr_action += action.mid( index );
 
   // restore overwritten local values
+  Q_NOWARN_DEPRECATED_PUSH
   for ( QMap<QString, QVariant>::const_iterator sit = savedValues.begin(); sit != savedValues.end(); ++sit )
   {
     QgsExpression::setSpecialColumn( sit.key(), sit.value() );
   }
+  Q_NOWARN_DEPRECATED_POP
 
   return expr_action;
 }

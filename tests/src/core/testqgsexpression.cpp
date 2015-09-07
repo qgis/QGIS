@@ -1295,6 +1295,7 @@ class TestQgsExpression: public QObject
 
     void eval_special_columns()
     {
+      Q_NOWARN_DEPRECATED_PUSH
       QTest::addColumn<QString>( "string" );
       QTest::addColumn<QVariant>( "result" );
 
@@ -1317,6 +1318,7 @@ class TestQgsExpression: public QObject
       QCOMPARE( v4, QVariant() );
 
       QgsExpression::unsetSpecialColumn( "$var1" );
+      Q_NOWARN_DEPRECATED_POP
     }
 
     void expression_from_expression_data()

@@ -168,14 +168,24 @@ class CORE_EXPORT QgsExpression
     //! Return the number used for $rownum special column
     Q_DECL_DEPRECATED int currentRowNumber() { return mRowNumber; }
 
-    //! Assign a special column
-    static void setSpecialColumn( const QString& name, QVariant value );
-    //! Unset a special column
-    static void unsetSpecialColumn( const QString& name );
-    //! Return the value of the given special column or a null QVariant if undefined
-    static QVariant specialColumn( const QString& name );
-    //! Check whether a special column exists
-    //! @note added in 2.2
+    //TODO QGIS 3.0: make the following methods private. They are still required for replaceExpressionText
+    //but should not be publicly used
+    /** Assign a special column
+     * @deprecated use global or project QgsExpressionContext variables instead
+     */
+    Q_DECL_DEPRECATED static void setSpecialColumn( const QString& name, QVariant value );
+    /** Unset a special column
+     * @deprecated use global or project QgsExpressionContext variables instead
+     */
+    Q_DECL_DEPRECATED static void unsetSpecialColumn( const QString& name );
+    /** Return the value of the given special column or a null QVariant if undefined
+     * @deprecated use global or project QgsExpressionContext variables instead
+     */
+    Q_DECL_DEPRECATED static QVariant specialColumn( const QString& name );
+
+    /** Check whether a special column exists
+     * @note added in 2.2
+     */
     static bool hasSpecialColumn( const QString& name );
 
     /** Checks whether an expression consists only of a single field reference
