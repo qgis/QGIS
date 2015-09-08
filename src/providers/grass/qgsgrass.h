@@ -96,7 +96,12 @@ class GRASS_LIB_EXPORT QgsGrassObject
     QString mapsetPath() const { return mGisdbase + "/" + mLocation + "/" + mMapset; }
     QString name() const { return mName; }
     void setName( const QString& name ) { mName = name; }
-    QString fullName() const { return mName + "@" + mMapset; }
+    /** Return full name (map@mapset)
+     * @return full name or empty string if map name is empty */
+    QString fullName() const;
+    /** Parse full name in map@mapset form and set map and mapset. If mapset is not
+     * specified, mapset is set to the current mapset. */
+    void setFullName( const QString& fullName );
     Type type() const { return mType; }
     void setType( Type type ) { mType = type; }
     // set from QGIS layer uri, returns true if set correctly, verifies also if location is a GRASS location
@@ -158,6 +163,10 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
 
     /** Get singleton instance of this class. Used as signals proxy between provider and plugin. */
     static QgsGrass* instance();
+
+    /** Global GRASS library lock */
+    static void lock() { sMutex.lock(); }
+    static void unlock() { sMutex.unlock(); }
 
     /** Path to where GRASS is installed (GISBASE) */
     static QString gisbase() { return mGisbase; }
@@ -436,6 +445,18 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     /** Adjust cell header, G_adjust_Cell_head wrapper
      * @throws QgsGrass::Exception */
     static void adjustCellHead( struct Cell_head *cellhd, int row_flag, int col_flag );
+
+    /** Get map of vector types / names */
+    static QMap<int, QString> vectorTypeMap();
+
+    /** Get GRASS vector type from name
+     * @param point,centroid,line,boundary,area,face,kernel
+     * @returns type GV_POINT, GV_CENTROID, GV_LINE, GV_BOUNDARY, GV_AREA, GV_FACE,GV_KERNEL  */
+    static int vectorType( const QString & name );
+
+    /** Get name for vector primitive type
+     * @param type GV_POINT, GV_CENTROID, GV_LINE, GV_BOUNDARY, GV_AREA, GV_FACE, GV_KERNEL  */
+    static QString vectorTypeName( int type );
 
     //! Library version
     static int versionMajor();

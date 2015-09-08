@@ -16,6 +16,7 @@
 #include <QObject>
 #include <QTextCodec>
 
+#include "qgsgrass.h"
 #include "qgsgrassfeatureiterator.h"
 #include "qgsgrassprovider.h"
 
@@ -282,7 +283,7 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature& feature )
     if ( mSource->mLayerType == QgsGrassProvider::TOPO_LINE )
 #endif
     {
-      feature.setAttribute( 1, QgsGrassProvider::primitiveTypeName( type ) );
+      feature.setAttribute( 1, QgsGrass::vectorTypeName( type ) );
 
       int node1, node2;
       Vect_get_line_nodes( mSource->mMap, id, &node1, &node2 );

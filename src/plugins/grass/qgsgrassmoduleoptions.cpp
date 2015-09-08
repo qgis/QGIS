@@ -32,7 +32,9 @@
 
 #include "qgsgrass.h"
 #include "qgsgrassmodule.h"
+#include "qgsgrassmoduleinput.h"
 #include "qgsgrassmoduleoptions.h"
+#include "qgsgrassmoduleparam.h"
 #include "qgsgrassplugin.h"
 
 extern "C"
@@ -696,6 +698,7 @@ QStringList QgsGrassModuleStandardOptions::checkRegion()
 
     QgsDebugMsg( "currentMap = " +  item->currentMap() );
     // The input may be empty, it means input is not used.
+
     if ( item->currentMap().isEmpty() )
     {
       continue;
@@ -781,108 +784,25 @@ bool QgsGrassModuleStandardOptions::inputRegion( struct Cell_head *window, QgsCo
       if ( !item )
         continue;
 
-      if ( mDirect )
+
+      if ( !all && !item->useRegion() )
       {
-        QgsGrass::initRegion( &mapWindow );
-        QgsMapLayer * layer = item->currentLayer();
-        if ( !layer )
-        {
-          QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot get selected layer" ) );
-          return false;
-        }
-
-        QgsCoordinateReferenceSystem sourceCrs;
-        QgsRasterLayer* rasterLayer = 0;
-        QgsVectorLayer* vectorLayer = 0;
-        if ( layer->type() == QgsMapLayer::RasterLayer )
-        {
-          rasterLayer = qobject_cast<QgsRasterLayer *>( layer );
-          if ( !rasterLayer || !rasterLayer->dataProvider() )
-          {
-            QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot get provider" ) );
-            return false;
-          }
-          sourceCrs = rasterLayer->dataProvider()->crs();
-        }
-        else if ( layer->type() == QgsMapLayer::VectorLayer )
-        {
-          vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
-          if ( !vectorLayer || !vectorLayer->dataProvider() )
-          {
-            QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot get provider" ) );
-            return false;
-          }
-          sourceCrs = vectorLayer->dataProvider()->crs();
-        }
-
-        QgsDebugMsg( "layer crs = " + layer->crs().toProj4() );
-        QgsDebugMsg( "source crs = " + sourceCrs.toProj4() );
-
-        // TODO: Problem: Layer may have defined in QGIS running application
-        // a different CRS from that defined in data source (provider)
-        // Currently we don't have system of passing such info to module
-        // and result may be wrong -> error in such cases
-        if ( layer->crs() != sourceCrs )
-        {
-          QMessageBox::warning( 0, tr( "Warning" ), tr( "The layer CRS (defined in QGIS) and data source CRS differ. We are not yet able to pass the layer CRS to GRASS module. Please set correct data source CRS or change layer CRS to data source CRS." ) );
-          return false;
-        }
-
-        QgsRectangle rect = layer->extent();
-        if ( rasterCount + vectorCount == 0 )
-        {
-          crs = layer->crs();
-        }
-        else if ( layer->crs() != crs )
-        {
-          QgsCoordinateTransform transform( layer->crs(), crs );
-          rect = transform.transformBoundingBox( rect );
-        }
-        QgsGrass::setRegion( &mapWindow, rect );
-
-        if ( layer->type() == QgsMapLayer::RasterLayer )
-        {
-          if ( !rasterLayer || !rasterLayer->dataProvider() )
-          {
-            QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot get raster provider" ) );
-            return false;
-          }
-          QgsRasterDataProvider *provider = qobject_cast<QgsRasterDataProvider*>( rasterLayer->dataProvider() );
-          mapWindow.cols = provider->xSize();
-          mapWindow.rows = provider->ySize();
-
-          try
-          {
-            QgsGrass::adjustCellHead( &mapWindow, 1, 1 );
-          }
-          catch ( QgsGrass::Exception &e )
-          {
-            QgsGrass::warning( e );
-            return false;
-          }
-        }
+        continue;
       }
-      else
-      {
-        if ( !all && !item->useRegion() )
-        {
-          continue;
-        }
 
-        QgsDebugMsg( "currentMap = " +  item->currentMap() );
-        // The input may be empty, it means input is not used.
-        if ( item->currentMap().isEmpty() )
-        {
-          continue;
-        }
-        if ( !getCurrentMapRegion( item, &mapWindow ) )
-        {
-          return false;
-        }
+      QgsDebugMsg( "currentMap = " +  item->currentMap() );
+      // The input may be empty, it means input is not used.
+      if ( item->currentMap().isEmpty() )
+      {
+        continue;
+      }
+      if ( !getCurrentMapRegion( item, &mapWindow ) )
+      {
+        return false;
       }
 
       // TODO: best way to set resolution ?
-      if ( item->type() == QgsGrassModuleInput::Raster
+      if ( item->type() == QgsGrassObject::Raster
            && rasterCount == 0 )
       {
         QgsGrass::copyRegionResolution( &mapWindow, window );
@@ -896,9 +816,9 @@ bool QgsGrassModuleStandardOptions::inputRegion( struct Cell_head *window, QgsCo
         QgsGrass::extendRegion( &mapWindow, window );
       }
 
-      if ( item->type() == QgsGrassModuleInput::Raster )
+      if ( item->type() == QgsGrassObject::Raster )
         rasterCount++;
-      else if ( item->type() == QgsGrassModuleInput::Vector )
+      else if ( item->type() == QgsGrassObject::Vector )
         vectorCount++;
     }
 
@@ -960,22 +880,6 @@ bool QgsGrassModuleStandardOptions::getCurrentMapRegion( QgsGrassModuleInput* in
     return false;
   }
 
-  QgsGrassObject::Type mapType;
-
-  switch ( input->type() )
-  {
-    case QgsGrassModuleInput::Raster :
-      mapType = QgsGrassObject::Raster;
-      break;
-    case QgsGrassModuleInput::Vector :
-      mapType = QgsGrassObject::Vector;
-      break;
-    default:
-      // should not happen
-      QgsGrass::warning( "getCurrentMapRegion mapType not supported" );
-      return false;
-  }
-
   QStringList mm = input->currentMap().split( "@" );
   QString map = mm.value( 0 );
   QString mapset = QgsGrass::getDefaultMapset();
@@ -983,7 +887,7 @@ bool QgsGrassModuleStandardOptions::getCurrentMapRegion( QgsGrassModuleInput* in
   {
     mapset = mm.value( 1 );
   }
-  if ( !QgsGrass::mapRegion( mapType,
+  if ( !QgsGrass::mapRegion( input->type(),
                              QgsGrass::getDefaultGisdbase(),
                              QgsGrass::getDefaultLocation(), mapset, map,
                              window ) )
