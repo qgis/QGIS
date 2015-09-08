@@ -3245,6 +3245,8 @@ void QgsExpression::initVariableHelp()
   gVariableHelpTexts.insert( "map_scale", QCoreApplication::translate( "variable_help", "Current scale of map." ) );
 
   gVariableHelpTexts.insert( "row_number", QCoreApplication::translate( "variable_help", "Stores the number of the current row." ) );
+  gVariableHelpTexts.insert( "grid_number", QCoreApplication::translate( "variable_help", "Current grid annotation value." ) );
+  gVariableHelpTexts.insert( "grid_axis", QCoreApplication::translate( "variable_help", "Current grid annotation axis (eg, 'x' for longitude, 'y' for latitude)." ) );
 }
 
 QString QgsExpression::variableHelpText( const QString &variableName, bool showValue, const QVariant &value )
