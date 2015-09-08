@@ -61,4 +61,4 @@ class SagaAlgorithm214(SagaAlgorithm213):
         destFilename = getTempFilenameInTempFolder(filename + '.sgrd')
         self.exportedLayers[source] = destFilename
         sessionExportedLayers[source] = destFilename
-        return 'io_gdal -TRANSFORM -INTERPOL 0 -GRIDS "' + destFilename + '" -FILES "' + source + '"'
+        return 'io_gdal 0 -TRANSFORM 1 -INTERPOL 0 -GRIDS "' + destFilename + '" -FILES "' + source + '"'
