@@ -288,7 +288,6 @@ void QgsMapToolNodeTool::keyPressEvent( QKeyEvent* e )
       return;
 
     mSelectedFeature->deleteSelectedVertexes();
-    safeSelectVertex( firstSelectedIndex );
     mCanvas->refresh();
 
     // Override default shortcut management in MapCanvas
