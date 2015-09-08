@@ -1174,12 +1174,20 @@ void QgisApp::readSettings()
   settings.endGroup();
 
   settings.beginGroup( "/UI/recentProjects" );
-  QStringList projectKeys = settings.childGroups();
+  QStringList projectKeysList = settings.childGroups();
 
-  Q_FOREACH ( const QString& key, projectKeys )
+  //convert list to int values to obtain proper order
+  QList<int> projectKeys;
+  Q_FOREACH ( const QString& key, projectKeysList )
+  {
+    projectKeys.append( key.toInt() );
+  }
+  qSort( projectKeys );
+
+  Q_FOREACH ( const int& key, projectKeys )
   {
     QgsWelcomePageItemsModel::RecentProjectData data;
-    settings.beginGroup( key );
+    settings.beginGroup( QString::number( key ) );
     data.title = settings.value( "title" ).toString();
     data.path = settings.value( "path" ).toString();
     data.previewImagePath = settings.value( "previewImage" ).toString();
@@ -10758,4 +10766,3 @@ LONG WINAPI QgisApp::qgisCrashDump( struct _EXCEPTION_POINTERS *ExceptionInfo )
   return EXCEPTION_EXECUTE_HANDLER;
 }
 #endif
-
