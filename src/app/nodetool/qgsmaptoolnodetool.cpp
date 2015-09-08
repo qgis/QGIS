@@ -337,6 +337,10 @@ void QgsMapToolNodeTool::safeSelectVertex( int vertexNr )
   if ( mSelectedFeature )
   {
     int n = mSelectedFeature->vertexMap().size();
+    if ( n < 1 )
+    {
+      return;
+    }
     mSelectedFeature->selectVertex(( vertexNr + n ) % n );
   }
 }

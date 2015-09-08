@@ -405,7 +405,7 @@ void QgsSelectedFeature::createVertexMap()
     updateGeometry( 0 );
   }
 
-  if ( !mGeometry )
+  if ( !mGeometry || !mGeometry->geometry() )
   {
     return;
   }
