@@ -533,7 +533,8 @@ QgsRuleBasedRendererV2::Rule::RenderResult QgsRuleBasedRendererV2::Rule::renderF
     if ( !rule->isElse() )
     {
       RenderResult res = rule->renderFeature( featToRender, context, renderQueue );
-      willrendersomething |= ( res == Rendered );
+      // consider inactive items as "rendered" so the else rule will ignore them
+      willrendersomething |= ( res == Rendered || res == Inactive );
       rendered |= willrendersomething;
     }
   }
