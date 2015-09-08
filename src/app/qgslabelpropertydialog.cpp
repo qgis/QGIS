@@ -210,6 +210,7 @@ void QgsLabelPropertyDialog::setDataDefinedValues( const QgsPalLayerSettings &la
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::atlasScope( 0 )
   << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() )
   << QgsExpressionContextUtils::layerScope( vlayer );
   context.setFeature( mCurLabelFeat );

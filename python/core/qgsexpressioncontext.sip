@@ -490,6 +490,12 @@ class QgsExpressionContextUtils
      */
     static void setCompositionVariables( QgsComposition* composition, const QgsStringMap variables );
 
+    /** Creates a new scope which contains variables and functions relating to a QgsAtlasComposition.
+     * For instance, current page name and number.
+     * @param atlas source atlas. If null, a set of default atlas variables will be added to the scope.
+     */
+    static QgsExpressionContextScope* atlasScope( const QgsAtlasComposition* atlas ) /Factory/;
+
     /** Creates a new scope which contains variables and functions relating to a QgsComposerItem.
      * For instance, item size and position.
      * @param composerItem source composer item

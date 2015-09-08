@@ -43,6 +43,7 @@ static QgsExpressionContext _getExpressionContext( const void* context )
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::atlasScope( 0 )
   << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() );
 
   const QgsVectorLayer* layer = ( const QgsVectorLayer* ) context;

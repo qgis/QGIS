@@ -3230,6 +3230,7 @@ void QgsExpression::initVariableHelp()
   gVariableHelpTexts.insert( "atlas_pagename", QCoreApplication::translate( "variable_help", "Current atlas page name." ) );
   gVariableHelpTexts.insert( "atlas_feature", QCoreApplication::translate( "variable_help", "Current atlas feature (as feature object)." ) );
   gVariableHelpTexts.insert( "atlas_featureid", QCoreApplication::translate( "variable_help", "Current atlas feature ID." ) );
+  gVariableHelpTexts.insert( "atlas_geometry", QCoreApplication::translate( "variable_help", "Current atlas feature geometry." ) );
 
   //composer item variables
   gVariableHelpTexts.insert( "item_id", QCoreApplication::translate( "variable_help", "Composer item user ID (not necessarily unique)." ) );

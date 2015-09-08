@@ -508,6 +508,7 @@ void QgsRuleBasedRendererV2Widget::countFeatures()
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::atlasScope( 0 )
   //TODO - use actual map canvas settings
   << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() )
   << QgsExpressionContextUtils::layerScope( mLayer );
@@ -632,6 +633,7 @@ void QgsRendererRulePropsDialog::buildExpression()
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::atlasScope( 0 )
   //TODO - use actual map canvas settings
   << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() )
   << QgsExpressionContextUtils::layerScope( mLayer );
@@ -654,6 +656,7 @@ void QgsRendererRulePropsDialog::testFilter()
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::atlasScope( 0 )
   //TODO - use actual map canvas settings
   << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() )
   << QgsExpressionContextUtils::layerScope( mLayer );

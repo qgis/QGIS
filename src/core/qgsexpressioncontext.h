@@ -524,7 +524,7 @@ class CORE_EXPORT QgsExpressionContextUtils
 
     /** Creates a new scope which contains variables and functions relating to a QgsAtlasComposition.
      * For instance, current page name and number.
-     * @param atlas source atlas
+     * @param atlas source atlas. If null, a set of default atlas variables will be added to the scope.
      */
     static QgsExpressionContextScope* atlasScope( const QgsAtlasComposition* atlas );
 

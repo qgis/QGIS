@@ -713,7 +713,15 @@ QgsExpressionContextScope* QgsExpressionContextUtils::atlasScope( const QgsAtlas
 {
   QgsExpressionContextScope* scope = new QgsExpressionContextScope( QObject::tr( "Atlas" ) );
   if ( !atlas )
+  {
+    //add some dummy atlas variables. This is done so that as in certain contexts we want to show
+    //users that these variables are available even if they have no current value
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( "atlas_pagename", QString(), true ) );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( "atlas_feature", QVariant::fromValue( QgsFeature() ), true ) );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( "atlas_featureid", 0, true ) );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( "atlas_geometry", QVariant::fromValue( QgsGeometry() ), true ) );
     return scope;
+  }
 
   //add known atlas variables
   scope->addVariable( QgsExpressionContextScope::StaticVariable( "atlas_totalfeatures", atlas->numFeatures(), true ) );

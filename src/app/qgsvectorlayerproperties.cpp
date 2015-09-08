@@ -348,6 +348,7 @@ void QgsVectorLayerProperties::insertExpression()
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::atlasScope( 0 )
   << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() )
   << QgsExpressionContextUtils::layerScope( layer );
 

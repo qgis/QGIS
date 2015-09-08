@@ -403,6 +403,7 @@ static QgsExpressionContext _getExpressionContext( const void* context )
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::atlasScope( 0 )
   //TODO - use actual map canvas settings
   << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
 
