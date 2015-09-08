@@ -101,7 +101,13 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
         void setFilterExpression( QString filterExp );
         void setDescription( QString description );
         //! @note added in 2.6
+        //! @deprecated use setActive instead
         void setCheckState( bool state );
+        /**
+         * Sets if this rule is active
+         * @param state Determines if the rule should be activated or deactivated
+         */
+        void setActive( bool state );
 
         //! clone this rule, return new instance
         QgsRuleBasedRendererV2::Rule* clone() const /Factory/;
