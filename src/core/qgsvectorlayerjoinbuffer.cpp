@@ -287,7 +287,7 @@ void QgsVectorLayerJoinBuffer::writeXml( QDomNode& layer_node, QDomDocument& doc
     if ( joinIt->joinFieldNamesSubset() )
     {
       QDomElement subsetElem = document.createElement( "joinFieldsSubset" );
-      foreach ( QString fieldName, *joinIt->joinFieldNamesSubset() )
+      foreach ( const QString& fieldName, *joinIt->joinFieldNamesSubset() )
       {
         QDomElement fieldElem = document.createElement( "field" );
         fieldElem.setAttribute( "name", fieldName );

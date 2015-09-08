@@ -109,7 +109,7 @@ void QgsBrowserModel::addRootItems()
   }
 
   // add drives
-  foreach ( QFileInfo drive, QDir::drives() )
+  foreach ( const QFileInfo& drive, QDir::drives() )
   {
     QString path = drive.absolutePath();
     QgsDirectoryItem *item = new QgsDirectoryItem( NULL, path, path );

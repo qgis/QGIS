@@ -1182,7 +1182,7 @@ QgsLegendSymbolListV2 QgsGraduatedSymbolRendererV2::legendSymbolItemsV2() const
   {
     // check that all symbols that have the same size expression
     QgsDataDefined ddSize;
-    foreach ( QgsRendererRangeV2 range, mRanges )
+    foreach ( const QgsRendererRangeV2& range, mRanges )
     {
       const QgsMarkerSymbolV2 * symbol = static_cast<const QgsMarkerSymbolV2 *>( range.symbol() );
       if ( !ddSize.hasDefaultValues() && symbol->dataDefinedSize() != ddSize )
@@ -1216,7 +1216,7 @@ QgsLegendSymbolListV2 QgsGraduatedSymbolRendererV2::legendSymbolItemsV2() const
       }
       // now list the graduated symbols
       const QgsLegendSymbolListV2 list2 = QgsFeatureRendererV2::legendSymbolItemsV2() ;
-      foreach ( QgsLegendSymbolItemV2 item, list2 )
+      foreach ( const QgsLegendSymbolItemV2& item, list2 )
         list << item;
       return list;
     }
@@ -1316,7 +1316,7 @@ void QgsGraduatedSymbolRendererV2::updateColorRamp( QgsVectorColorRampV2 *ramp, 
 
   if ( mSourceColorRamp )
   {
-    foreach ( QgsRendererRangeV2 range, mRanges )
+    foreach ( const QgsRendererRangeV2& range, mRanges )
     {
       QgsSymbolV2 *symbol = range.symbol() ? range.symbol()->clone() : 0;
       if ( symbol )
@@ -1341,7 +1341,7 @@ void QgsGraduatedSymbolRendererV2::updateSymbols( QgsSymbolV2 *sym )
     return;
 
   int i = 0;
-  foreach ( QgsRendererRangeV2 range, mRanges )
+  foreach ( const QgsRendererRangeV2& range, mRanges )
   {
     QScopedPointer<QgsSymbolV2> symbol( sym->clone() );
     if ( mGraduatedMethod == GraduatedColor )

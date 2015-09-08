@@ -60,7 +60,7 @@ class QgsNetworkProxyFactory : public QNetworkProxyFactory
 
       QString url = query.url().toString();
 
-      foreach ( QString exclude, nam->excludeList() )
+      foreach ( const QString& exclude, nam->excludeList() )
       {
         if ( url.startsWith( exclude ) )
         {

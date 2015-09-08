@@ -53,7 +53,7 @@ QgsPaintEffectRegistry::QgsPaintEffectRegistry()
 
 QgsPaintEffectRegistry::~QgsPaintEffectRegistry()
 {
-  foreach ( QString name, mMetadata.keys() )
+  foreach ( const QString& name, mMetadata.keys() )
   {
     delete mMetadata[name];
   }

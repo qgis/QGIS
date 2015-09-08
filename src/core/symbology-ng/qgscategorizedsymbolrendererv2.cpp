@@ -727,7 +727,7 @@ QgsLegendSymbolListV2 QgsCategorizedSymbolRendererV2::legendSymbolItemsV2() cons
   {
     // check that all symbols that have the same size expression
     QgsDataDefined ddSize;
-    foreach ( QgsRendererCategoryV2 category, mCategories )
+    foreach ( const QgsRendererCategoryV2& category, mCategories )
     {
       const QgsMarkerSymbolV2 * symbol = static_cast<const QgsMarkerSymbolV2 *>( category.symbol() );
       if ( !ddSize.hasDefaultValues() && symbol->dataDefinedSize() != ddSize )
@@ -761,7 +761,7 @@ QgsLegendSymbolListV2 QgsCategorizedSymbolRendererV2::legendSymbolItemsV2() cons
       }
       // now list the categorized symbols
       const QgsLegendSymbolListV2 list2 = QgsFeatureRendererV2::legendSymbolItemsV2() ;
-      foreach ( QgsLegendSymbolItemV2 item, list2 )
+      foreach ( const QgsLegendSymbolItemV2& item, list2 )
         lst << item;
       return lst;
     }
@@ -847,7 +847,7 @@ QString QgsCategorizedSymbolRendererV2::sizeScaleField() const
 void QgsCategorizedSymbolRendererV2::updateSymbols( QgsSymbolV2 * sym )
 {
   int i = 0;
-  foreach ( QgsRendererCategoryV2 cat, mCategories )
+  foreach ( const QgsRendererCategoryV2& cat, mCategories )
   {
     QgsSymbolV2* symbol = sym->clone();
     symbol->setColor( cat.symbol()->color() );

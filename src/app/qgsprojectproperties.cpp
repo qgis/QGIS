@@ -311,7 +311,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
     if ( grpWMSList->isChecked() )
     {
       QStringList list;
-      foreach ( QString value, values )
+      foreach ( const QString& value, values )
       {
         list << QString( "EPSG:%1" ).arg( value );
       }

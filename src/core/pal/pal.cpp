@@ -313,7 +313,7 @@ namespace pal
     QStringList layersWithFeaturesInBBox;
 
     mMutex.lock();
-    Q_FOREACH ( QString layerName, layerNames )
+    Q_FOREACH ( const QString& layerName, layerNames )
     {
       layer = mLayers.value( layerName, 0 );
       if ( !layer )

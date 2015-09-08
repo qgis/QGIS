@@ -62,7 +62,7 @@ QStringList QgsProjectLayerGroupDialog::selectedGroups() const
 {
   QStringList groups;
   QgsLayerTreeModel* model = mTreeView->layerTreeModel();
-  foreach ( QModelIndex index, mTreeView->selectionModel()->selectedIndexes() )
+  foreach ( const QModelIndex& index, mTreeView->selectionModel()->selectedIndexes() )
   {
     QgsLayerTreeNode* node = model->index2node( index );
     if ( QgsLayerTree::isGroup( node ) )
@@ -75,7 +75,7 @@ QStringList QgsProjectLayerGroupDialog::selectedLayerIds() const
 {
   QStringList layerIds;
   QgsLayerTreeModel* model = mTreeView->layerTreeModel();
-  foreach ( QModelIndex index, mTreeView->selectionModel()->selectedIndexes() )
+  foreach ( const QModelIndex& index, mTreeView->selectionModel()->selectedIndexes() )
   {
     QgsLayerTreeNode* node = model->index2node( index );
     if ( QgsLayerTree::isLayer( node ) )
@@ -88,7 +88,7 @@ QStringList QgsProjectLayerGroupDialog::selectedLayerNames() const
 {
   QStringList layerNames;
   QgsLayerTreeModel* model = mTreeView->layerTreeModel();
-  foreach ( QModelIndex index, mTreeView->selectionModel()->selectedIndexes() )
+  foreach ( const QModelIndex& index, mTreeView->selectionModel()->selectedIndexes() )
   {
     QgsLayerTreeNode* node = model->index2node( index );
     if ( QgsLayerTree::isLayer( node ) )
@@ -204,7 +204,7 @@ void QgsProjectLayerGroupDialog::removeEmbeddedNodes( QgsLayerTreeGroup* node )
 
 void QgsProjectLayerGroupDialog::onTreeViewSelectionChanged()
 {
-  foreach ( QModelIndex index, mTreeView->selectionModel()->selectedIndexes() )
+  foreach ( const QModelIndex& index, mTreeView->selectionModel()->selectedIndexes() )
   {
     unselectChildren( index );
   }

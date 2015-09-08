@@ -775,10 +775,9 @@ QVector<QgsDataItem*> QgsDirectoryItem::createChildren()
 {
   QVector<QgsDataItem*> children;
   QDir dir( mDirPath );
-  QSettings settings;
 
   QStringList entries = dir.entryList( QDir::AllDirs | QDir::NoDotAndDotDot, QDir::Name | QDir::IgnoreCase );
-  foreach ( QString subdir, entries )
+  foreach ( const QString& subdir, entries )
   {
     if ( mRefreshLater )
     {
@@ -796,7 +795,7 @@ QVector<QgsDataItem*> QgsDirectoryItem::createChildren()
   }
 
   QStringList fileEntries = dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot | QDir::Files, QDir::Name );
-  foreach ( QString name, fileEntries )
+  foreach ( const QString& name, fileEntries )
   {
     if ( mRefreshLater )
     {
@@ -931,7 +930,7 @@ QgsDirectoryParamWidget::QgsDirectoryParamWidget( QString path, QWidget* parent 
 
   QDir dir( path );
   QStringList entries = dir.entryList( QDir::AllEntries | QDir::NoDotAndDotDot, QDir::Name | QDir::IgnoreCase );
-  foreach ( QString name, entries )
+  foreach ( const QString& name, entries )
   {
     QFileInfo fi( dir.absoluteFilePath( name ) );
     QStringList texts;
@@ -1002,7 +1001,7 @@ QgsDirectoryParamWidget::QgsDirectoryParamWidget( QString path, QWidget* parent 
   // hide columns that are not requested
   QSettings settings;
   QList<QVariant> lst = settings.value( "/dataitem/directoryHiddenColumns" ).toList();
-  foreach ( QVariant colVariant, lst )
+  foreach ( const QVariant& colVariant, lst )
   {
     setColumnHidden( colVariant.toInt(), true );
   }
@@ -1083,7 +1082,7 @@ QVector<QgsDataItem*> QgsFavouritesItem::createChildren()
   QSettings settings;
   QStringList favDirs = settings.value( "/browser/favourites", QVariant() ).toStringList();
 
-  foreach ( QString favDir, favDirs )
+  foreach ( const QString& favDir, favDirs )
   {
     QString pathName = pathComponent( favDir );
     QgsDataItem *item = new QgsDirectoryItem( this, favDir, favDir, mPath + "/" + pathName );
@@ -1303,7 +1302,7 @@ QVector<QgsDataItem*> QgsZipItem::createChildren()
   getZipFileList();
 
   // loop over files inside zip
-  foreach ( QString fileName, mZipFileList )
+  foreach ( const QString& fileName, mZipFileList )
   {
     QFileInfo info( fileName );
     tmpPath = mVsiPrefix + mFilePath + "/" + fileName;

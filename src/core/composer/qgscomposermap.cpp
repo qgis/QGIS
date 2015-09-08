@@ -555,7 +555,7 @@ QStringList QgsComposerMap::layersToRender() const
 
     QStringList layerNames = exprVal.toString().split( "|" );
     //need to convert layer names to layer ids
-    Q_FOREACH ( QString name, layerNames )
+    Q_FOREACH ( const QString& name, layerNames )
     {
       QList< QgsMapLayer* > matchingLayers = QgsMapLayerRegistry::instance()->mapLayersByName( name );
       Q_FOREACH ( QgsMapLayer* layer, matchingLayers )

@@ -59,7 +59,7 @@ void QgsVisibilityPresets::addPerLayerCheckedLegendSymbols( QgsVisibilityPresetC
 {
   QgsLayerTreeModel* model = QgisApp::instance()->layerTreeView()->layerTreeModel();
 
-  foreach ( QString layerID, rec.mVisibleLayerIDs )
+  foreach ( const QString& layerID, rec.mVisibleLayerIDs )
   {
     QgsLayerTreeLayer* nodeLayer = model->rootGroup()->findLayer( layerID );
     if ( !nodeLayer )
@@ -90,7 +90,7 @@ void QgsVisibilityPresets::addPerLayerCurrentStyle( QgsVisibilityPresetCollectio
 {
   QgsLayerTreeModel* model = QgisApp::instance()->layerTreeView()->layerTreeModel();
 
-  foreach ( QString layerID, rec.mVisibleLayerIDs )
+  foreach ( const QString& layerID, rec.mVisibleLayerIDs )
   {
     QgsLayerTreeLayer* nodeLayer = model->rootGroup()->findLayer( layerID );
     if ( !nodeLayer )
@@ -136,7 +136,7 @@ QStringList QgsVisibilityPresets::orderedPresetVisibleLayers( const QString& nam
   QgsLayerTreeMapCanvasBridge* bridge = QgisApp::instance()->layerTreeCanvasBridge();
   QStringList order = bridge->hasCustomLayerOrder() ? bridge->customLayerOrder() : bridge->defaultLayerOrder();
   QStringList order2;
-  foreach ( QString layerID, order )
+  foreach ( const QString& layerID, order )
   {
     if ( visibleIds.contains( layerID ) )
       order2 << layerID;

@@ -548,9 +548,9 @@ QString QgsDataSourceURI::uri() const
 QByteArray QgsDataSourceURI::encodedUri() const
 {
   QUrl url;
-  foreach ( QString key, mParams.uniqueKeys() )
+  foreach ( const QString& key, mParams.uniqueKeys() )
   {
-    foreach ( QString value, mParams.values( key ) )
+    foreach ( const QString& value, mParams.values( key ) )
     {
       url.addQueryItem( key, value );
     }
@@ -660,7 +660,7 @@ void QgsDataSourceURI::setParam( const QString &key, const QString &value )
 
 void QgsDataSourceURI::setParam( const QString &key, const QStringList &value )
 {
-  foreach ( QString val, value )
+  foreach ( const QString& val, value )
   {
     mParams.insertMulti( key, val );
   }

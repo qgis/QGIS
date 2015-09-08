@@ -459,7 +459,7 @@ void QgsSnappingDialog::addLayer( QgsMapLayer *theMapLayer )
 
 void QgsSnappingDialog::layersWillBeRemoved( QStringList thelayers )
 {
-  foreach ( QString theLayerId, thelayers )
+  foreach ( const QString& theLayerId, thelayers )
   {
     QTreeWidgetItem *item = 0;
 

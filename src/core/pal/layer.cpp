@@ -312,7 +312,7 @@ namespace pal
   void Layer::joinConnectedFeatures()
   {
     // go through all label texts
-    Q_FOREACH ( QString labelText, mConnectedTexts )
+    Q_FOREACH ( const QString& labelText, mConnectedTexts )
     {
       if ( !mConnectedHashtable.contains( labelText ) )
         continue; // shouldn't happen

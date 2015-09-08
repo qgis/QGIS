@@ -1124,7 +1124,7 @@ QStringList QgsStyleV2::symbolsOfSmartgroup( StyleEntity type, int id )
       {
         resultNames = type == SymbolEntity ? symbolNames() : colorRampNames();
         QStringList unwanted = symbolsWithTag( type, tagId( param ) );
-        foreach ( QString name, unwanted )
+        foreach ( const QString& name, unwanted )
         {
           resultNames.removeAll( name );
         }
@@ -1133,7 +1133,7 @@ QStringList QgsStyleV2::symbolsOfSmartgroup( StyleEntity type, int id )
       {
         resultNames = type == SymbolEntity ? symbolNames() : colorRampNames();
         QStringList unwanted = symbolsOfGroup( type, groupId( param ) );
-        foreach ( QString name, unwanted )
+        foreach ( const QString& name, unwanted )
         {
           resultNames.removeAll( name );
         }

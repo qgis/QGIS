@@ -622,7 +622,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &theProj4Strin
     // also with parameters containing spaces (e.g. +nadgrids)
     // make sure result is trimmed (#5598)
     QStringList myParams;
-    foreach ( QString param, myProj4String.split( QRegExp( "\\s+(?=\\+)" ), QString::SkipEmptyParts ) )
+    foreach ( const QString& param, myProj4String.split( QRegExp( "\\s+(?=\\+)" ), QString::SkipEmptyParts ) )
     {
       QString arg = QString( "' '||parameters||' ' LIKE %1" ).arg( quotedValue( QString( "% %1 %" ).arg( param.trimmed() ) ) );
       if ( param.startsWith( "+datum=" ) )
@@ -1623,7 +1623,7 @@ bool QgsCoordinateReferenceSystem::loadIDs( QHash<int, QString> &wkts )
 {
   OGRSpatialReferenceH crs = OSRNewSpatialReference( NULL );
 
-  foreach ( QString csv, QStringList() << "gcs.csv" << "pcs.csv" << "vertcs.csv" << "compdcs.csv" << "geoccs.csv" )
+  foreach ( const QString& csv, QStringList() << "gcs.csv" << "pcs.csv" << "vertcs.csv" << "compdcs.csv" << "geoccs.csv" )
   {
     QString filename = CPLFindFile( "gdal", csv.toUtf8() );
 

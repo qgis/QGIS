@@ -1523,7 +1523,7 @@ bool QgsRasterLayer::writeXml( QDomNode & layer_node,
     noDataRangeList.setAttribute( "bandNo", bandNo );
     noDataRangeList.setAttribute( "useSrcNoData", mDataProvider->useSrcNoDataValue( bandNo ) );
 
-    foreach ( QgsRasterRange range, mDataProvider->userNoDataValues( bandNo ) )
+    foreach ( const QgsRasterRange& range, mDataProvider->userNoDataValues( bandNo ) )
     {
       QDomElement noDataRange =  document.createElement( "noDataRange" );
 

@@ -293,7 +293,7 @@ void QgsBookmarks::importFromXML()
   QStringList queriesList = queries.split( ";" );
   QSqlQuery query( model->database() );
 
-  foreach ( QString queryTxt, queriesList )
+  foreach ( const QString& queryTxt, queriesList )
   {
     if ( queryTxt.trimmed().isEmpty() )
     {

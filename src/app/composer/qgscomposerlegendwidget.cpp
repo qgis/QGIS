@@ -795,7 +795,7 @@ void QgsComposerLegendWidget::resetLayerNodeToDefaults()
 
   mLegend->beginCommand( tr( "Legend updated" ) );
 
-  foreach ( QString key, nodeLayer->customProperties() )
+  foreach ( const QString& key, nodeLayer->customProperties() )
   {
     if ( key.startsWith( "legend/" ) )
       nodeLayer->removeCustomProperty( key );

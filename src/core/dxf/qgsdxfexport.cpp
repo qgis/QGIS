@@ -588,7 +588,7 @@ void QgsDxfExport::writeTables()
   writeGroup( 100, "AcDbSymbolTable" );
   writeGroup( 70, 0 );
 
-  foreach ( QString block, QStringList() << "*Model_Space" << "*Paper_Space" << "*Paper_Space0" )
+  foreach ( const QString& block, QStringList() << "*Model_Space" << "*Paper_Space" << "*Paper_Space0" )
   {
     writeGroup( 0, "BLOCK_RECORD" );
     mBlockHandles.insert( block, writeHandle() );
@@ -722,7 +722,7 @@ void QgsDxfExport::writeTables()
       {
         QList<QVariant> values;
         layerIt->first->uniqueValues( layerIt->second, values );
-        foreach ( QVariant v, values )
+        foreach ( const QVariant& v, values )
         {
           layerNames << dxfLayerName( v.toString() );
         }
@@ -748,7 +748,7 @@ void QgsDxfExport::writeTables()
   writeGroup( 6, "CONTINUOUS" );
   writeHandle( 390, DXF_HANDPLOTSTYLE );
 
-  foreach ( QString layerName, layerNames )
+  foreach ( const QString& layerName, layerNames )
   {
     writeGroup( 0, "LAYER" );
     writeHandle();
@@ -794,7 +794,7 @@ void QgsDxfExport::writeBlocks()
   startSection();
   writeGroup( 2, "BLOCKS" );
 
-  foreach ( QString block, QStringList() << "*Model_Space" << "*Paper_Space" << "*Paper_Space0" )
+  foreach ( const QString& block, QStringList() << "*Model_Space" << "*Paper_Space" << "*Paper_Space0" )
   {
     writeGroup( 0, "BLOCK" );
     writeHandle();
@@ -3869,7 +3869,7 @@ QList< QPair< QgsSymbolLayerV2*, QgsSymbolV2* > > QgsDxfExport::symbolLayers( Qg
 void QgsDxfExport::writeDefaultLinetypes()
 {
   // continuous (Qt solid line)
-  foreach ( QString ltype, QStringList() << "ByLayer" << "ByBlock" << "CONTINUOUS" )
+  foreach ( const QString& ltype, QStringList() << "ByLayer" << "ByBlock" << "CONTINUOUS" )
   {
     writeGroup( 0, "LTYPE" );
     writeHandle();

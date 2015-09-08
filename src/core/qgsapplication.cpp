@@ -1025,14 +1025,14 @@ void QgsApplication::copyPath( QString src, QString dst )
   if ( ! dir.exists() )
     return;
 
-  foreach ( QString d, dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
+  foreach ( const QString& d, dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
   {
     QString dst_path = dst + QDir::separator() + d;
     dir.mkpath( dst_path );
     copyPath( src + QDir::separator() + d, dst_path );
   }
 
-  foreach ( QString f, dir.entryList( QDir::Files ) )
+  foreach ( const QString& f, dir.entryList( QDir::Files ) )
   {
     QFile::copy( src + QDir::separator() + f, dst + QDir::separator() + f );
   }

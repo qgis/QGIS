@@ -1141,7 +1141,7 @@ APP_EXPORT int main( int argc, char *argv[] )
     QList< QPair<QgsVectorLayer *, int > > layers;
     if ( !dxfPreset.isEmpty() )
     {
-      foreach ( QString layer, QgsProject::instance()->visibilityPresetCollection()->presetVisibleLayers( dxfPreset ) )
+      foreach ( const QString& layer, QgsProject::instance()->visibilityPresetCollection()->presetVisibleLayers( dxfPreset ) )
       {
         QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( QgsMapLayerRegistry::instance()->mapLayer( layer ) );
         if ( !vl )

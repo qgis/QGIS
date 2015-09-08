@@ -70,7 +70,7 @@ void QgsAtlasComposition::removeLayers( QStringList layers )
     return;
   }
 
-  foreach ( QString layerId, layers )
+  foreach ( const QString& layerId, layers )
   {
     if ( layerId == mCoverageLayer->id() )
     {

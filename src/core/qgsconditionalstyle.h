@@ -225,7 +225,7 @@ class CORE_EXPORT QgsConditionalStyle
 
     /** Write vector conditional style specific state from layer Dom node.
      */
-    virtual bool writeXml( QDomNode & node, QDomDocument & doc );
+    virtual bool writeXml( QDomNode & node, QDomDocument & doc ) const;
 
 
   private:

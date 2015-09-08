@@ -323,7 +323,7 @@ void QgsVectorLayer::drawLabels( QgsRenderContext& rendererContext )
            rendererContext.rendererScale() <= mLabel->maxScale() ) ) )
   {
     QgsAttributeList attributes;
-    foreach ( QString attrName, mRendererV2->usedAttributes() )
+    foreach ( const QString& attrName, mRendererV2->usedAttributes() )
     {
       int attrNum = fieldNameIndex( attrName );
       attributes.append( attrNum );
@@ -3290,7 +3290,7 @@ QList<double> QgsVectorLayer::getDoubleValues( const QString &fieldOrExpression,
     return values;
 
   bool convertOk;
-  foreach ( QVariant value, variantValues )
+  foreach ( const QVariant& value, variantValues )
   {
     double val = value.toDouble( &convertOk );
     if ( convertOk )

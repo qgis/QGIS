@@ -50,7 +50,7 @@ QgsCptCityArchive::QgsCptCityArchive( QString archiveName, QString baseDir )
 
   // make Author items
   QgsCptCityDirectoryItem* dirItem = 0;
-  foreach ( QString path, QDir( mBaseDir ).entryList( QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name ) )
+  foreach ( const QString& path, QDir( mBaseDir ).entryList( QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name ) )
   {
     if ( path == "selections" )
       continue;
@@ -66,7 +66,7 @@ QgsCptCityArchive::QgsCptCityArchive( QString archiveName, QString baseDir )
   QgsCptCitySelectionItem* selItem = 0;
   QDir seldir( mBaseDir + "/" + "selections" );
   QgsDebugMsg( "populating selection from " + seldir.path() );
-  foreach ( QString selfile, seldir.entryList( QStringList( "*.xml" ), QDir::Files ) )
+  foreach ( const QString& selfile, seldir.entryList( QStringList( "*.xml" ), QDir::Files ) )
   {
     QgsDebugMsg( "file= " + seldir.path() + "/" + selfile );
     selItem = new QgsCptCitySelectionItem( NULL, QFileInfo( selfile ).baseName(),
@@ -459,7 +459,7 @@ void QgsCptCityArchive::initArchives( bool loadAll )
   if ( loadAll )
   {
     QDir dir( baseDir );
-    foreach ( QString entry, dir.entryList( QStringList( "cpt-city*" ), QDir::Dirs ) )
+    foreach ( const QString& entry, dir.entryList( QStringList( "cpt-city*" ), QDir::Dirs ) )
     {
       if ( QFile::exists( baseDir + "/" + entry + "/VERSION.xml" ) )
         archivesMap[ entry ] = baseDir + "/" + entry;
@@ -951,7 +951,7 @@ QVector<QgsCptCityDataItem*> QgsCptCityDirectoryItem::createChildren()
   }
 
   // add children dirs
-  foreach ( QString childPath, dirEntries() )
+  foreach ( const QString& childPath, dirEntries() )
   {
     QgsCptCityDataItem* childItem =
       QgsCptCityDirectoryItem::dataItem( this, childPath, mPath + "/" + childPath );

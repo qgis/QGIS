@@ -2870,7 +2870,7 @@ void QgisApp::updateProjectFromTemplates()
   mProjectFromTemplateMenu->clear();
 
   // Add entries
-  foreach ( QString templateFile, templateFiles )
+  foreach ( const QString& templateFile, templateFiles )
   {
     mProjectFromTemplateMenu->addAction( templateFile );
   }
@@ -3003,7 +3003,7 @@ QString QgisApp::crsAndFormatAdjustedLayerUri( const QString &uri, const QString
 
   // Adjust layer CRS to project CRS
   QgsCoordinateReferenceSystem testCrs;
-  foreach ( QString c, supportedCrs )
+  foreach ( const QString& c, supportedCrs )
   {
     testCrs.createFromOgcWmsCrs( c );
     if ( testCrs == mMapCanvas->mapSettings().destinationCrs() )
@@ -3016,7 +3016,7 @@ QString QgisApp::crsAndFormatAdjustedLayerUri( const QString &uri, const QString
 
   // Use the last used image format
   QString lastImageEncoding = QSettings().value( "/qgis/lastWmsImageEncoding", "image/png" ).toString();
-  foreach ( QString fmt, supportedFormats )
+  foreach ( const QString& fmt, supportedFormats )
   {
     if ( fmt == lastImageEncoding )
     {
@@ -3561,7 +3561,7 @@ void QgisApp::addDatabaseLayers( QStringList const & layerPathList, QString cons
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  foreach ( QString layerPath, layerPathList )
+  foreach ( const QString& layerPath, layerPathList )
   {
     // create the layer
     QgsDataSourceURI uri( layerPath );

@@ -46,7 +46,7 @@ QgsExpressionContextScope::QgsExpressionContextScope( const QgsExpressionContext
     : mName( other.mName )
     , mVariables( other.mVariables )
 {
-  Q_FOREACH ( QString key, other.mFunctions.keys() )
+  Q_FOREACH ( const QString& key, other.mFunctions.keys() )
   {
     mFunctions.insert( key, other.mFunctions.value( key )->clone() );
   }
@@ -59,7 +59,7 @@ QgsExpressionContextScope& QgsExpressionContextScope::operator=( const QgsExpres
 
   qDeleteAll( mFunctions );
   mFunctions.clear();
-  Q_FOREACH ( QString key, other.mFunctions.keys() )
+  Q_FOREACH ( const QString& key, other.mFunctions.keys() )
   {
     mFunctions.insert( key, other.mFunctions.value( key )->clone() );
   }
@@ -269,7 +269,7 @@ QStringList QgsExpressionContext::filteredVariableNames() const
 {
   QStringList allVariables = variableNames();
   QStringList filtered;
-  Q_FOREACH ( QString variable, allVariables )
+  Q_FOREACH ( const QString& variable, allVariables )
   {
     if ( variable.startsWith( "_" ) )
       continue;
@@ -432,7 +432,7 @@ void QgsExpressionContextUtils::setGlobalVariables( const QgsStringMap &variable
   QList< QVariant > customVariableVariants;
   QList< QVariant > customVariableNames;
 
-  Q_FOREACH ( QString variable, variables.keys() )
+  Q_FOREACH ( const QString& variable, variables.keys() )
   {
     customVariableNames << variable;
     customVariableVariants << variables.value( variable );
@@ -502,7 +502,7 @@ QgsExpressionContextScope* QgsExpressionContextUtils::projectScope()
   QStringList variableValues = project->readListEntry( "Variables", "/variableValues" );
 
   int varIndex = 0;
-  foreach ( QString variableName, variableNames )
+  foreach ( const QString& variableName, variableNames )
   {
     if ( varIndex >= variableValues.length() )
     {
@@ -547,7 +547,7 @@ void QgsExpressionContextUtils::setProjectVariables( const QgsStringMap &variabl
   QStringList variableNames;
   QStringList variableValues;
 
-  Q_FOREACH ( QString variable, variables.keys() )
+  Q_FOREACH ( const QString& variable, variables.keys() )
   {
     variableNames << variable;
     variableValues << variables.value( variable );
@@ -569,7 +569,7 @@ QgsExpressionContextScope* QgsExpressionContextUtils::layerScope( const QgsMapLa
   QStringList variableValues = layer->customProperty( "variableValues" ).toStringList();
 
   int varIndex = 0;
-  foreach ( QString variableName, variableNames )
+  foreach ( const QString& variableName, variableNames )
   {
     if ( varIndex >= variableValues.length() )
     {
@@ -621,7 +621,7 @@ void QgsExpressionContextUtils::setLayerVariables( QgsMapLayer* layer, const Qgs
   QStringList variableNames;
   QStringList variableValues;
 
-  Q_FOREACH ( QString variable, variables.keys() )
+  Q_FOREACH ( const QString& variable, variables.keys() )
   {
     variableNames << variable;
     variableValues << variables.value( variable );
@@ -654,7 +654,7 @@ QgsExpressionContextScope *QgsExpressionContextUtils::compositionScope( const Qg
   QStringList variableValues = composition->customProperty( "variableValues" ).toStringList();
 
   int varIndex = 0;
-  foreach ( QString variableName, variableNames )
+  foreach ( const QString& variableName, variableNames )
   {
     if ( varIndex >= variableValues.length() )
     {
@@ -699,7 +699,7 @@ void QgsExpressionContextUtils::setCompositionVariables( QgsComposition* composi
   QStringList variableNames;
   QStringList variableValues;
 
-  Q_FOREACH ( QString variable, variables.keys() )
+  Q_FOREACH ( const QString& variable, variables.keys() )
   {
     variableNames << variable;
     variableValues << variables.value( variable );
@@ -757,7 +757,7 @@ QgsExpressionContextScope *QgsExpressionContextUtils::composerItemScope( const Q
   QStringList variableValues = composerItem->customProperty( "variableValues" ).toStringList();
 
   int varIndex = 0;
-  foreach ( QString variableName, variableNames )
+  foreach ( const QString& variableName, variableNames )
   {
     if ( varIndex >= variableValues.length() )
     {
@@ -801,7 +801,7 @@ void QgsExpressionContextUtils::setComposerItemVariables( QgsComposerItem* compo
   QStringList variableNames;
   QStringList variableValues;
 
-  Q_FOREACH ( QString variable, variables.keys() )
+  Q_FOREACH ( const QString& variable, variables.keys() )
   {
     variableNames << variable;
     variableValues << variables.value( variable );

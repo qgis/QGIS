@@ -95,7 +95,7 @@ bool QgsLayerTreeUtils::readOldLegendLayerOrder( const QDomElement& legendElem, 
   if ( !res && hasCustomOrder )
     return false; // invalid state
 
-  foreach ( QString layerId, layerIndexes )
+  foreach ( const QString& layerId, layerIndexes )
   {
     QgsDebugMsg( layerId );
     order.append( layerId );

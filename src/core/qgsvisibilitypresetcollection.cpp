@@ -240,7 +240,7 @@ void QgsVisibilityPresetCollection::writeXML( QDomDocument& doc )
     const PresetRecord& rec = mPresets[grpName];
     QDomElement visPresetElem = doc.createElement( "visibility-preset" );
     visPresetElem.setAttribute( "name", grpName );
-    foreach ( QString layerID, rec.mVisibleLayerIDs )
+    foreach ( const QString& layerID, rec.mVisibleLayerIDs )
     {
       QDomElement layerElem = doc.createElement( "layer" );
       layerElem.setAttribute( "id", layerID );
@@ -249,11 +249,11 @@ void QgsVisibilityPresetCollection::writeXML( QDomDocument& doc )
       visPresetElem.appendChild( layerElem );
     }
 
-    foreach ( QString layerID, rec.mPerLayerCheckedLegendSymbols.keys() )
+    foreach ( const QString& layerID, rec.mPerLayerCheckedLegendSymbols.keys() )
     {
       QDomElement checkedLegendNodesElem = doc.createElement( "checked-legend-nodes" );
       checkedLegendNodesElem.setAttribute( "id", layerID );
-      foreach ( QString checkedLegendNode, rec.mPerLayerCheckedLegendSymbols[layerID] )
+      foreach ( const QString& checkedLegendNode, rec.mPerLayerCheckedLegendSymbols[layerID] )
       {
         QDomElement checkedLegendNodeElem = doc.createElement( "checked-legend-node" );
         checkedLegendNodeElem.setAttribute( "id", checkedLegendNode );
@@ -270,9 +270,9 @@ void QgsVisibilityPresetCollection::writeXML( QDomDocument& doc )
 
 void QgsVisibilityPresetCollection::registryLayersRemoved( QStringList layerIDs )
 {
-  foreach ( QString layerID, layerIDs )
+  foreach ( const QString& layerID, layerIDs )
   {
-    foreach ( QString presetName, mPresets.keys() )
+    foreach ( const QString& presetName, mPresets.keys() )
     {
       PresetRecord& rec = mPresets[presetName];
       rec.mVisibleLayerIDs.remove( layerID );
@@ -290,7 +290,7 @@ void QgsVisibilityPresetCollection::layerStyleRenamed( const QString& oldName, c
 
   QString layerID = styleMgr->layer()->id();
 
-  foreach ( QString presetName, mPresets.keys() )
+  foreach ( const QString& presetName, mPresets.keys() )
   {
     PresetRecord& rec = mPresets[presetName];
 

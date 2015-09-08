@@ -73,7 +73,7 @@ QgsExpression::Interval QgsExpression::Interval::fromString( QString string )
   map.insert( 0 + MONTHS, QStringList() << "month" << "months" << QObject::tr( "month|months", "list of words separated by | which reference months" ).split( "|" ) );
   map.insert( 0 + YEARS, QStringList() << "year" << "years" << QObject::tr( "year|years", "list of words separated by | which reference years" ).split( "|" ) );
 
-  foreach ( QString match, list )
+  foreach ( const QString& match, list )
   {
     QStringList split = match.split( QRegExp( "\\s+" ) );
     bool ok;
@@ -86,7 +86,7 @@ QgsExpression::Interval QgsExpression::Interval::fromString( QString string )
     bool matched = false;
     foreach ( int duration, map.keys() )
     {
-      foreach ( QString name, map[duration] )
+      foreach ( const QString& name, map[duration] )
       {
         if ( match.contains( name, Qt::CaseInsensitive ) )
         {
@@ -2184,7 +2184,7 @@ int QgsExpression::functionIndex( const QString &name )
   {
     if ( QString::compare( name, Functions()[i]->name(), Qt::CaseInsensitive ) == 0 )
       return i;
-    foreach ( QString alias, Functions()[i]->aliases() )
+    foreach ( const QString& alias, Functions()[i]->aliases() )
     {
       if ( QString::compare( name, alias, Qt::CaseInsensitive ) == 0 )
         return i;

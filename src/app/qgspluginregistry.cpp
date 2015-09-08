@@ -138,8 +138,9 @@ void QgsPluginRegistry::dump()
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
     QgsDebugMsg( "PYTHON PLUGINS IN REGISTRY:" );
-    foreach ( QString pluginName, mPythonUtils->listActivePlugins() )
+    foreach ( const QString& pluginName, mPythonUtils->listActivePlugins() )
     {
+      Q_UNUSED( pluginName );
       QgsDebugMsg( pluginName );
     }
   }
@@ -176,7 +177,7 @@ void QgsPluginRegistry::unloadAll()
 
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
-    foreach ( QString pluginName, mPythonUtils->listActivePlugins() )
+    foreach ( const QString& pluginName, mPythonUtils->listActivePlugins() )
     {
       mPythonUtils->unloadPlugin( pluginName );
     }

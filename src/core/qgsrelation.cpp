@@ -97,7 +97,7 @@ void QgsRelation::writeXML( QDomNode &node, QDomDocument &doc ) const
   elem.setAttribute( "referencingLayer", mReferencingLayerId );
   elem.setAttribute( "referencedLayer", mReferencedLayerId );
 
-  Q_FOREACH ( FieldPair fields, mFieldPairs )
+  Q_FOREACH ( const FieldPair& fields, mFieldPairs )
   {
     QDomElement referenceElem = doc.createElement( "fieldRef" );
     referenceElem.setAttribute( "referencingField", fields.first );

@@ -1772,7 +1772,7 @@ QgsLayerTreeGroup *QgsProject::createEmbeddedGroup( const QString &groupName, co
   mLayerTreeRegistryBridge->setEnabled( true );
 
   // consider the layers might be identify disabled in its project
-  foreach ( QString layerId, newGroup->findLayerIds() )
+  foreach ( const QString& layerId, newGroup->findLayerIds() )
   {
     if ( embeddedIdentifyDisabledLayers.contains( layerId ) )
     {

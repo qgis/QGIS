@@ -415,7 +415,7 @@ static bool _isChildOfNodes( QgsLayerTreeNode* child, QList<QgsLayerTreeNode*> n
 QList<QgsLayerTreeNode*> QgsLayerTreeModel::indexes2nodes( const QModelIndexList& list, bool skipInternal ) const
 {
   QList<QgsLayerTreeNode*> nodes;
-  foreach ( QModelIndex index, list )
+  foreach ( const QModelIndex& index, list )
   {
     QgsLayerTreeNode* node = index2node( index );
     if ( !node )
