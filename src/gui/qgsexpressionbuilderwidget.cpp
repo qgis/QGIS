@@ -138,7 +138,6 @@ void QgsExpressionBuilderWidget::currentChanged( const QModelIndex &index, const
   // Show the help for the current item.
   QString help = loadFunctionHelp( item );
   txtHelpText->setText( help );
-  txtHelpText->setToolTip( txtHelpText->toPlainText() );
 }
 
 void QgsExpressionBuilderWidget::on_btnRun_pressed()
@@ -709,6 +708,19 @@ void QgsExpressionBuilderWidget::setExpressionState( bool state )
   mExpressionValid = state;
 }
 
+QString QgsExpressionBuilderWidget::helpStylesheet() const
+{
+  //start with default QGIS report style
+  QString style = QgsApplication::reportStyleSheet();
+
+  //add some tweaks
+  style += " .functionname {color: #0a6099; font-weight: bold;} "
+           " .argument {font-family: monospace; color: #bf0c0c; font-style: italic; } "
+           " td.argument { padding-right: 10px; }";
+
+  return style;
+}
+
 QString QgsExpressionBuilderWidget::loadFunctionHelp( QgsExpressionItem* expressionItem )
 {
   if ( !expressionItem )
@@ -727,8 +739,7 @@ QString QgsExpressionBuilderWidget::loadFunctionHelp( QgsExpressionItem* express
       helpContents = QgsExpression::helptext( name );
   }
 
-  QString myStyle = QgsApplication::reportStyleSheet();
-  return "<head><style>" + myStyle + "</style></head><body>" + helpContents + "</body>";
+  return "<head><style>" + helpStylesheet() + "</style></head><body>" + helpContents + "</body>";
 }
 
 

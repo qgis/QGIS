@@ -1,0 +1,8 @@
+{
+  "function": "geometry",
+  "description": "Returns a feature's geometry.",
+  "arguments": [ {"arg":"feature","description":"a feature object"}],
+  "examples": [ { "expression":"geom_to_wkt( geometry( get_feature( layer, attributeField, value ) ) )", "returns":"'POINT(6 50)'"},
+  { "expression":"intersects( $geometry, geometry( get_feature( layer, attributeField, value ) ) )", "returns":"true"}
+  ]
+}

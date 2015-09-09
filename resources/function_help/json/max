@@ -1,0 +1,10 @@
+{
+  "function": "max",
+  "description": "Returns the largest value in a set of values.",
+  "variableLenArguments": true,
+  "arguments": [ {"arg":"value1", "syntaxOnly": true},
+                 {"arg":"value2", "syntaxOnly": true},
+                 {"arg":"value", "descOnly": true, "description":"a number"}],
+  "examples": [ { "expression":"max(2,10.2,5.5)", "returns":"10.2"}
+  ]
+}

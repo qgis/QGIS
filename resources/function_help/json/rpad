@@ -1,0 +1,10 @@
+{
+  "function": "rpad",
+  "description": "Returns a string padded to supplied width using a fill character.",
+  "arguments": [ {"arg":"string","description":"string to pad"},
+  {"arg":"width","description":"length of new string"},
+  {"arg":"fill","description":"character to pad the remaining space with"}
+  ],
+  "examples": [ { "expression":"rpad('Hello', 10, 'x')", "returns":"'xxxxxHello'"}
+  ]
+}

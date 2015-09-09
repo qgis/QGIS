@@ -1,0 +1,10 @@
+{
+  "function": "min",
+  "description": "Returns the smallest value in a set of values.",
+  "variableLenArguments": true,
+  "arguments": [ {"arg":"value1", "syntaxOnly": true},
+                 {"arg":"value2", "syntaxOnly": true},
+                 {"arg":"value", "descOnly": true, "description":"a number"}],
+  "examples": [ { "expression":"min(20.5,10,6.2)", "returns":"6.2"}
+  ]
+}

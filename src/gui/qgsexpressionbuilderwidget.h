@@ -261,6 +261,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void updateFunctionTree();
     void fillFieldValues( const QString &fieldName, int countLimit );
     QString loadFunctionHelp( QgsExpressionItem* functionName );
+    QString helpStylesheet() const;
 
     /** Formats an expression preview result for display in the widget
      * by truncating the string

@@ -1,0 +1,7 @@
+{
+  "function": "x_max",
+  "description": "Returns the maximum x coordinate of a geometry. Calculations are in the spatial reference system of this geometry.",
+  "arguments": [ {"arg":"geom","description":"a geometry"}],
+  "examples": [ { "expression":"x_max( geom_from_wkt( 'LINESTRING(2 5, 3 6, 4 8)') )", "returns":"4"}
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "function": "touches",
+  "description": "Tests whether a geometry touches another. Returns true if the geometries have at least one point in common, but their interiors do not intersect.",
+  "arguments": [ {"arg":"geometry a","description":"a geometry"},
+                 {"arg":"geometry b","description":"a geometry"}],
+  "examples": [ { "expression":"touches( geom_from_wkt( 'LINESTRING(5 3, 4 4)' ), geom_from_wkt( 'LINESTRING(3 3, 4 4, 5 5)' ) )", "returns":"true"},
+  { "expression":"touches( geom_from_wkt( 'POINT(4 4)' ), geom_from_wkt( 'POINT(5 5)' ) )", "returns":"false"}
+  ]
+}

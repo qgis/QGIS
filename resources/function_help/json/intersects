@@ -1,0 +1,9 @@
+{
+  "function": "intersects",
+  "description": "Tests whether a geometry intersects another. Returns true if the geometries spatially intersect (share any portion of space) and false if they do not.",
+  "arguments": [ {"arg":"geometry a","description":"a geometry"},
+                 {"arg":"geometry b","description":"a geometry"}],
+  "examples": [ { "expression":"intersects( geom_from_wkt( 'POINT(4 4)' ), geom_from_wkt( 'LINESTRING(3 3, 4 4, 5 5)' ) )", "returns":"true"},
+  { "expression":"intersects( geom_from_wkt( 'POINT(4 5)' ), geom_from_wkt( 'POINT(5 5)' ) )", "returns":"false"}
+  ]
+}

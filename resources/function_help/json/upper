@@ -1,0 +1,6 @@
+{
+  "function": "upper",
+  "description": "Converts a string to upper case letters.",
+  "arguments": [ {"arg":"string","description":"the string to convert to upper case"}],
+  "examples": [ { "expression":"upper('hello WOrld')", "returns":"'HELLO WORLD'"}]
+}

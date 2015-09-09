@@ -1,0 +1,6 @@
+{
+  "function": "geom_from_gml",
+  "description": "Returns a geometry from a GML representation of geometry.",
+  "arguments": [ {"arg":"gml","description":"GML representation of a geometry as a string"}],
+  "examples": [ { "expression":"geom_from_gml( '<gml:LineString srsName=\"EPSG:4326\"><gml:coordinates>4,4 5,5 6,6</gml:coordinates></gml:LineString>')", "returns":"a geometry object"}]
+}

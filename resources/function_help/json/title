@@ -1,0 +1,6 @@
+{
+  "function": "title",
+  "description": "Converts all words of a string to title case (all words lower case with leading capital letter).",
+  "arguments": [ {"arg":"string","description":"the string to convert to title case"}],
+  "examples": [ { "expression":"title('hello WOrld')", "returns":"'Hello World'"}]
+}
