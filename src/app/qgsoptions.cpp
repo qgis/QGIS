@@ -1680,7 +1680,7 @@ void QgsOptions::on_mOptionsStackedWidget_currentChanged( int theIndx )
 {
   Q_UNUSED( theIndx );
   // load gdal driver list when gdal tab is first opened
-  if ( mOptionsStackedWidget->currentWidget()->objectName() == QString( "mOptionsPageGDAL" )
+  if ( mOptionsStackedWidget->currentWidget()->objectName() == "mOptionsPageGDAL"
        && ! mLoadedGdalDriverList )
   {
     loadGdalDriverList();

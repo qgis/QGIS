@@ -810,9 +810,9 @@ APP_EXPORT int main( int argc, char *argv[] )
   if ( mySettings.contains( "/Themes" ) )
   {
     QString theme = mySettings.value( "/Themes", "default" ).toString();
-    if ( theme == QString( "gis" )
-         || theme == QString( "classic" )
-         || theme == QString( "nkids" ) )
+    if ( theme == "gis"
+         || theme == "classic"
+         || theme == "nkids" )
     {
       mySettings.setValue( "/Themes", QString( "default" ) );
     }

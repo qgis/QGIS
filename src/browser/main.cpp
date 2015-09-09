@@ -37,9 +37,9 @@ int main( int argc, char ** argv )
   QgsApplication a( argc, argv, true );
   // update any saved setting for older themes to new default 'gis' theme (2013-04-15)
   QString theme = settings.value( "/Themes", "default" ).toString();
-  if ( theme == QString( "gis" )
-       || theme == QString( "classic" )
-       || theme == QString( "nkids" ) )
+  if ( theme == "gis"
+       || theme == "classic"
+       || theme == "nkids" )
   {
     theme = QString( "default" );
   }

@@ -582,8 +582,25 @@ class CORE_EXPORT QgsPalLayerSettings
                                   QMap < QgsPalLayerSettings::DataDefinedProperties,
                                   QgsDataDefined* > & propertyMap );
 
+    enum DataDefinedValueType
+    {
+      DDBool,
+      DDInt,
+      DDIntPos,
+      DDDouble,
+      DDDoublePos,
+      DDRotation180,
+      DDTransparency,
+      DDString,
+      DDUnits,
+      DDColor,
+      DDJoinStyle,
+      DDBlendMode,
+      DDPointF
+    };
+
     // convenience data defined evaluation function
-    bool dataDefinedValEval( const QString& valType,
+    bool dataDefinedValEval( DataDefinedValueType valType,
                              QgsPalLayerSettings::DataDefinedProperties p,
                              QVariant& exprVal, const QgsExpressionContext& context );
 

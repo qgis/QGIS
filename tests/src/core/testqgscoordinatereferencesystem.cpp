@@ -418,7 +418,7 @@ void TestQgsCoordinateReferenceSystem::setValidationHint()
 {
   QgsCoordinateReferenceSystem myCrs;
   myCrs.setValidationHint( "<head>" );
-  QVERIFY( myCrs.validationHint() == QString( "<head>" ) );
+  QVERIFY( myCrs.validationHint() == "<head>" );
   debugPrint( myCrs );
 }
 
