@@ -50,6 +50,7 @@ class QgsCompositionWidget: public QWidget, private Ui::QgsCompositionWidgetBase
     void on_mPaperHeightDoubleSpinBox_editingFinished();
     void on_mNumPagesSpinBox_valueChanged( int value );
     void on_mPageStyleButton_clicked();
+    void on_mResizePageButton_clicked();
     void on_mResolutionSpinBox_valueChanged( const int value );
     void on_mPrintAsRasterCheckBox_toggled( bool state );
     void on_mGenerateWorldFileCheckBox_toggled( bool state );
@@ -84,6 +85,8 @@ class QgsCompositionWidget: public QWidget, private Ui::QgsCompositionWidgetBase
     void populateDataDefinedButtons();
 
     void variablesChanged();
+
+    void resizeMarginsChanged();
 
   private:
     QgsComposition* mComposition;

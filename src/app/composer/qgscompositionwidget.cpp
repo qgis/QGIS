@@ -63,6 +63,16 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
     //read printout resolution from composition
     mResolutionSpinBox->setValue( mComposition->printResolution() );
 
+    double topMargin = 0;
+    double rightMargin = 0;
+    double bottomMargin = 0;
+    double leftMargin = 0;
+    mComposition->resizeToContentsMargins( topMargin, rightMargin, bottomMargin, leftMargin );
+    mTopMarginSpinBox->setValue( topMargin );
+    mRightMarginSpinBox->setValue( rightMargin );
+    mBottomMarginSpinBox->setValue( bottomMargin );
+    mLeftMarginSpinBox->setValue( leftMargin );
+
     //print as raster
     mPrintAsRasterCheckBox->setChecked( mComposition->printAsRaster() );
 
@@ -104,6 +114,11 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
       connect( atlas, SIGNAL( toggled( bool ) ), this, SLOT( populateDataDefinedButtons() ) );
     }
   }
+
+  connect( mTopMarginSpinBox, SIGNAL( valueChanged( double ) ), this, SLOT( resizeMarginsChanged() ) );
+  connect( mRightMarginSpinBox, SIGNAL( valueChanged( double ) ), this, SLOT( resizeMarginsChanged() ) );
+  connect( mBottomMarginSpinBox, SIGNAL( valueChanged( double ) ), this, SLOT( resizeMarginsChanged() ) );
+  connect( mLeftMarginSpinBox, SIGNAL( valueChanged( double ) ), this, SLOT( resizeMarginsChanged() ) );
 
   connect( mPaperSizeDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty() ) );
   connect( mPaperSizeDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty() ) );
@@ -193,6 +208,17 @@ void QgsCompositionWidget::populateDataDefinedButtons()
 void QgsCompositionWidget::variablesChanged()
 {
   QgsExpressionContextUtils::setCompositionVariables( mComposition, mVariableEditor->variablesInActiveScope() );
+}
+
+void QgsCompositionWidget::resizeMarginsChanged()
+{
+  if ( !mComposition )
+    return;
+
+  mComposition->setResizeToContentsMargins( mTopMarginSpinBox->value(),
+      mRightMarginSpinBox->value(),
+      mBottomMarginSpinBox->value(),
+      mLeftMarginSpinBox->value() );
 }
 
 void QgsCompositionWidget::setDataDefinedProperty( const QgsDataDefinedButton* ddBtn, QgsComposerObject::DataDefinedProperty property )
@@ -565,6 +591,19 @@ void QgsCompositionWidget::on_mPageStyleButton_clicked()
     updatePageStyle();
   }
   delete newSymbol;
+}
+
+void QgsCompositionWidget::on_mResizePageButton_clicked()
+{
+  if ( !mComposition )
+  {
+    return;
+  }
+
+  mComposition->resizePageToContents( mTopMarginSpinBox->value(),
+                                      mRightMarginSpinBox->value(),
+                                      mBottomMarginSpinBox->value(),
+                                      mLeftMarginSpinBox->value() );
 }
 
 void QgsCompositionWidget::updatePageStyle()

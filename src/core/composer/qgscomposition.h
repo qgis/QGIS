@@ -118,14 +118,16 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
 
     ~QgsComposition();
 
-    /** Changes size of paper item. Also moves all items so that they retain
-     * their same relative position to the top left corner of their current page.
+    /** Changes size of paper item.
      * @param width page width in mm
      * @param height page height in mm
+     * @param keepRelativeItemPosition if true, all items and guides will be moved so that they retain
+     * their same relative position to the top left corner of their current page.
      * @see paperHeight
      * @see paperWidth
     */
-    void setPaperSize( const double width, const double height );
+    void setPaperSize( double width, double height,
+                       bool keepRelativeItemPosition = true );
 
     /** Height of paper item
      * @returns height in mm
@@ -140,6 +142,48 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
      * @see setPaperSize
     */
     double paperWidth() const;
+
+    /** Resizes the composition page to fit the current contents of the composition.
+     * Calling this method resets the number of pages to 1, with the size set to the
+     * minimum size required to fit all existing composer items. Items will also be
+     * repositioned so that the new top-left bounds of the composition is at the point
+     * (marginLeft, marginTop). An optional margin can be specified.
+     * @param marginTop top margin (millimeters)
+     * @param marginRight right margin  (millimeters)
+     * @param marginBottom bottom margin  (millimeters)
+     * @param marginLeft left margin (millimeters)
+     * @note added in QGIS 2.12
+     * @see setResizeToContentsMargins()
+     * @see resizeToContentsMargins()
+     */
+    void resizePageToContents( double marginTop = 0.0, double marginRight = 0.0,
+                               double marginBottom = 0.0, double marginLeft = 0.0 );
+
+    /** Sets the resize to contents margins. These margins are saved in the composition
+     * so that they can be restored with the composer.
+     * @param marginTop top margin (millimeters)
+     * @param marginRight right margin  (millimeters)
+     * @param marginBottom bottom margin  (millimeters)
+     * @param marginLeft left margin (millimeters)
+     * @note added in QGIS 2.12
+     * @see resizePageToContents()
+     * @see resizeToContentsMargins()
+     */
+    void setResizeToContentsMargins( double marginTop, double marginRight,
+                                     double marginBottom, double marginLeft );
+
+    /** Returns the resize to contents margins. These margins are saved in the composition
+     * so that they can be restored with the composer.
+     * @param marginTop reference for top margin (millimeters)
+     * @param marginRight reference for right margin  (millimeters)
+     * @param marginBottom reference for bottom margin  (millimeters)
+     * @param marginLeft reference for left margin (millimeters)
+     * @note added in QGIS 2.12
+     * @see resizePageToContents()
+     * @see setResizeToContentsMargins()
+     */
+    void resizeToContentsMargins( double& marginTop, double& marginRight,
+                                  double& marginBottom, double& marginLeft ) const;
 
     /** Returns the vertical space between pages in a composer view
      * @returns space between pages in mm
@@ -818,6 +862,11 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     /** Arbitraty snap lines (horizontal and vertical)*/
     QList< QGraphicsLineItem* > mSnapLines;
 
+    double mResizeToContentsMarginTop;
+    double mResizeToContentsMarginRight;
+    double mResizeToContentsMarginBottom;
+    double mResizeToContentsMarginLeft;
+
     bool mBoundingBoxesVisible;
     bool mPagesVisible;
     QgsComposerMouseHandles* mSelectionHandles;
@@ -845,8 +894,11 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
 
     QgsComposition(); //default constructor is forbidden
 
-    /** Calculates the bounds of all non-gui items in the composition. Ignores snap lines and mouse handles*/
-    QRectF compositionBounds() const;
+    /** Calculates the bounds of all non-gui items in the composition. Ignores snap lines and mouse handles.
+     * @param ignorePages set to true to ignore page items
+     * @param margin optional marginal (in percent, eg 0.05 = 5% ) to add around items
+     */
+    QRectF compositionBounds( bool ignorePages = false, double margin = 0.0 ) const;
 
     /** Reset z-values of items based on position in z list*/
     void updateZValues( const bool addUndoCommands = true );
