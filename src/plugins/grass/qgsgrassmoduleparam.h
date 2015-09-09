@@ -102,6 +102,9 @@ class QgsGrassModuleParam
     //! Item's key
     QString key() { return mKey; }
 
+    //! Multiple values
+    bool multiple() const { return mMultiple; }
+
     //! Item's id
     QString id() { return mId; }
 
@@ -130,6 +133,9 @@ class QgsGrassModuleParam
 
     //! Option key, for flags without '-'
     QString mKey;
+
+    //! Multiple values
+    bool mMultiple;
 
     //! Optional option id used by other options which depend on this
     QString mId;

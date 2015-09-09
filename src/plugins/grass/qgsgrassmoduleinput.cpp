@@ -18,6 +18,8 @@
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QHBoxLayout>
+#include <QIcon>
+#include <QLatin1String>
 #include <QMessageBox>
 #include <QMouseEvent>
 #include <QSettings>
@@ -250,26 +252,24 @@ void QgsGrassModuleInputCompleterProxy::map( const QModelIndex & parent, int lev
 }
 
 /**************************** QgsGrassModuleInputCompleter ****************************/
-QgsGrassModuleInputCompleter::QgsGrassModuleInputCompleter( QWidget * parent )
-    : QCompleter( parent )
-    , mSeparator( ":" )
-{
-}
-
 QgsGrassModuleInputCompleter::QgsGrassModuleInputCompleter( QAbstractItemModel * model, QWidget * parent )
     : QCompleter( model, parent )
-    , mSeparator( ":" )
 {
 }
 
-QString QgsGrassModuleInputCompleter::pathFromIndex( const QModelIndex& index ) const
+bool QgsGrassModuleInputCompleter::eventFilter( QObject * watched, QEvent * event )
 {
-  return QCompleter::pathFromIndex( index );
-}
-
-QStringList QgsGrassModuleInputCompleter::splitPath( const QString& path ) const
-{
-  return QCompleter::splitPath( path );
+  if ( event->type() == QEvent::KeyPress && watched == widget() )
+  {
+    QKeyEvent *keyEvent = static_cast<QKeyEvent *>( event );
+    // Disable Up/Down in edit line (causing selection of previous/next item + activated() signal)
+    if ( keyEvent->key() == Qt::Key_Up || keyEvent->key() == Qt::Key_Down )
+    {
+      QgsDebugMsg( "Up/Down" );
+      return true;
+    }
+  }
+  return QCompleter::eventFilter( watched, event );
 }
 
 /**************************** QgsGrassModuleInputComboBox ****************************/
@@ -287,41 +287,37 @@ QgsGrassModuleInputComboBox::QgsGrassModuleInputComboBox( QgsGrassObject::Type t
   setInsertPolicy( QComboBox::NoInsert );
 
   mModel = QgsGrassModuleInputModel::instance();
-
   mProxy = new QgsGrassModuleInputProxy( mType, this );
   mProxy->setSourceModel( mModel );
-  //setModel ( mModel );
   setModel( mProxy );
 
   mTreeView = new QgsGrassModuleInputTreeView( this );
   mTreeView->setSelectionMode( QAbstractItemView::SingleSelection );
-  //view->setSelectionMode(QAbstractItemView::MultiSelection);
+  //mTreeView->setSelectionMode(QAbstractItemView::MultiSelection); // does not work
   mTreeView->viewport()->installEventFilter( this );
-  setView( mTreeView );
+  setView( mTreeView ); // takes ownership
   mTreeView->expandAll();
 
   QgsGrassModuleInputCompleterProxy *completerProxy = new QgsGrassModuleInputCompleterProxy( this );
   completerProxy->setSourceModel( mProxy );
 
-  QCompleter *completer = new QgsGrassModuleInputCompleter( completerProxy );
+  QCompleter *completer = new QgsGrassModuleInputCompleter( completerProxy, this );
   completer->setCompletionRole( Qt::DisplayRole );
   completer->setCaseSensitivity( Qt::CaseInsensitive );
   completer->setCompletionMode( QCompleter::PopupCompletion );
-  //completer->setCompletionMode( QCompleter::UnfilteredPopupCompletion );
   completer->setMaxVisibleItems( 20 );
-
-  // TODO: set custom treeview for popup to show items in tree structure, if possible
+  // TODO: set custom treeview for completer popup to show items in tree structure, if feasible
   //QgsGrassModuleInputPopup *popupView = new QgsGrassModuleInputPopup();
   //completer->setPopup( popupView );
   //popupView->setModel( mModel );
-
   setCompleter( completer );
+
   setCurrentIndex( -1 );
 }
 
 bool QgsGrassModuleInputComboBox::eventFilter( QObject * watched, QEvent * event )
 {
-  //QgsDebugMsg( QString( "event type = %1" ).arg( event->type() ) );
+  // mSkipHide does not seem to be necessary anymore, not sure why
   if ( event->type() == QEvent::MouseButtonPress && watched == view()->viewport() )
   {
     QMouseEvent* mouseEvent = static_cast<QMouseEvent*>( event );
@@ -352,6 +348,7 @@ void QgsGrassModuleInputComboBox::hidePopup()
       setCurrentIndex( view()->currentIndex().row() );
     }
   }
+
   if ( mSkipHide )
   {
     mSkipHide = false;
@@ -361,6 +358,7 @@ void QgsGrassModuleInputComboBox::hidePopup()
     QComboBox::hidePopup();
   }
 
+  //QComboBox::hidePopup();
   // reset state to fix the bug after drag
   mTreeView->resetState();
 }
@@ -368,6 +366,112 @@ void QgsGrassModuleInputComboBox::hidePopup()
 QgsGrassModuleInputComboBox::~QgsGrassModuleInputComboBox()
 {
 
+}
+
+/******************** QgsGrassModuleInputSelectedDelegate *********************/
+// Taken from Qt Creator
+QgsGrassModuleInputSelectedDelegate::QgsGrassModuleInputSelectedDelegate( QObject *parent )
+    : QStyledItemDelegate( parent )
+{
+}
+
+void QgsGrassModuleInputSelectedDelegate::handlePressed( const QModelIndex &index )
+{
+  if ( index.column() == 1 )
+  {
+    mPressedIndex = index;
+  }
+}
+
+void QgsGrassModuleInputSelectedDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option,
+    const QModelIndex &index ) const
+{
+  if ( option.state & QStyle::State_MouseOver )
+  {
+    if (( QApplication::mouseButtons() & Qt::LeftButton ) == 0 )
+      mPressedIndex = QModelIndex();
+    QBrush brush = option.palette.alternateBase();
+    if ( index == mPressedIndex )
+      brush = option.palette.dark();
+    painter->fillRect( option.rect, brush );
+  }
+
+
+  QStyledItemDelegate::paint( painter, option, index );
+
+  if ( index.column() == 1 && option.state & QStyle::State_MouseOver )
+  {
+    const QIcon icon = ( option.state & QStyle::State_Selected ) ? QgsGrassPlugin::getThemeIcon( "closebutton.png" ) : QgsGrassPlugin::getThemeIcon( "darkclosebutton.png" );
+
+
+    QRect iconRect( option.rect.right() - option.rect.height(),
+                    option.rect.top(),
+                    option.rect.height(),
+                    option.rect.height() );
+
+    icon.paint( painter, iconRect, Qt::AlignRight | Qt::AlignVCenter );
+  }
+}
+
+/******************** QgsGrassModuleInputSelectedView *********************/
+QgsGrassModuleInputSelectedView::QgsGrassModuleInputSelectedView( QWidget *parent )
+    : QTreeView( parent )
+{
+  mDelegate = new QgsGrassModuleInputSelectedDelegate( this );
+  setItemDelegate( mDelegate );
+  setIndentation( 0 );
+  setUniformRowHeights( true );
+  setTextElideMode( Qt::ElideMiddle );
+  setFrameStyle( QFrame::NoFrame );
+  setAttribute( Qt::WA_MacShowFocusRect, false );
+  viewport()->setAttribute( Qt::WA_Hover );
+
+  setSelectionMode( QAbstractItemView::SingleSelection );
+  setSelectionBehavior( QAbstractItemView::SelectRows );
+
+  installEventFilter( this );
+  viewport()->installEventFilter( this );
+
+  connect( this, SIGNAL( pressed( const QModelIndex & ) ),
+           mDelegate, SLOT( handlePressed( const QModelIndex & ) ) );
+}
+
+void QgsGrassModuleInputSelectedView::setModel( QAbstractItemModel *model )
+{
+  QTreeView::setModel( model );
+  header()->hide();
+  header()->setStretchLastSection( false );
+  header()->setResizeMode( 0, QHeaderView::Stretch );
+  header()->setResizeMode( 1, QHeaderView::Fixed );
+  header()->resizeSection( 1, 16 );
+}
+
+bool QgsGrassModuleInputSelectedView::eventFilter( QObject *obj, QEvent *event )
+{
+  if ( obj == this && event->type() == QEvent::KeyPress && currentIndex().isValid() )
+  {
+    QgsDebugMsg( "KeyPress" );
+    QKeyEvent *ke = static_cast<QKeyEvent*>( event );
+    if (( ke->key() == Qt::Key_Delete || ke->key() == Qt::Key_Backspace ) && ke->modifiers() == 0 )
+    {
+      emit deleteItem( currentIndex() );
+    }
+  }
+  else if ( obj == viewport() && event->type() == QEvent::MouseButtonRelease )
+  {
+    QgsDebugMsg( "MouseButtonRelease" );
+    QMouseEvent * me = static_cast<QMouseEvent*>( event );
+    if ( me->button() == Qt::LeftButton && me->modifiers() == Qt::NoModifier )
+    {
+      QModelIndex index = indexAt( me->pos() );
+      if ( index.isValid() && index.column() == 1 )
+      {
+        emit deleteItem( index );
+        return true;
+      }
+    }
+  }
+  return false;
 }
 
 /**************************** QgsGrassModuleInput ****************************/
@@ -379,10 +483,13 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
     , mType( QgsGrassObject::Vector )
     , mModuleStandardOptions( options )
     , mModel( 0 )
+    , mSelectedModel( 0 )
+    , mSelectedProxy( 0 )
     , mComboBox( 0 )
     , mRegionButton( 0 )
     , mLayerLabel( 0 )
     , mLayerComboBox( 0 )
+    , mSelectedTreeView( 0 )
     , mVector( 0 )
     , mUpdate( false )
     , mUsesRegion( false )
@@ -413,7 +520,6 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
     QString opt = qdesc.attribute( "typeoption" );
     if ( ! opt.isNull() )
     {
-
       typeNode = nodeByKey( gdesc, opt );
 
       if ( typeNode.isNull() )
@@ -505,7 +611,6 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
   }
 
   QVBoxLayout *layout = new QVBoxLayout( this );
-  //mModel = new QgsGrassModuleInputModel(this);
   // Map + region
   QHBoxLayout *mapLayout = new QHBoxLayout( this );
   layout->addLayout( mapLayout );
@@ -513,14 +618,16 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
   // Map input
   mComboBox = new QgsGrassModuleInputComboBox( mType, this );
   mComboBox->setSizePolicy( QSizePolicy::Expanding, QSizePolicy:: Preferred );
-  //connect( mComboBox, SIGNAL( activated( int ) ), this, SLOT( changed( int ) ) );
-  connect( mComboBox, SIGNAL( activated( const QString & ) ), this, SLOT( onChanged( const QString & ) ) );
+  // QComboBox does not emit activated() when item is selected in completer popup
+  connect( mComboBox, SIGNAL( activated( const QString & ) ), this, SLOT( onActivated( const QString & ) ) );
+  connect( mComboBox->completer(), SIGNAL( activated( const QString & ) ), this, SLOT( onActivated( const QString & ) ) );
   connect( mComboBox, SIGNAL( editTextChanged( const QString & ) ), this, SLOT( onChanged( const QString & ) ) );
   mapLayout->addWidget( mComboBox );
 
   // Region button
   QString region = qdesc.attribute( "region" );
-  if ( mType == QgsGrassObject::Raster && region != "no" && !mDirect )
+  // TODO: implement region for multiple
+  if ( mType == QgsGrassObject::Raster && region != "no" && !mDirect && !multiple() )
   {
     mRegionButton = new QPushButton( QgsGrassPlugin::getThemeIcon( "grass_set_region.png" ), "" );
 
@@ -530,8 +637,19 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
     mapLayout->addWidget( mRegionButton );
   }
 
+  if ( multiple() )
+  {
+    mSelectedModel = new QStandardItemModel( 0, 2 );
+    mSelectedProxy = new QSortFilterProxyModel( this );
+    mSelectedProxy->setSourceModel( mSelectedModel );
+    mSelectedTreeView = new QgsGrassModuleInputSelectedView( this );
+    mSelectedTreeView->setModel( mSelectedProxy );
+    connect( mSelectedTreeView, SIGNAL( deleteItem( const QModelIndex & ) ), this, SLOT( deleteSelectedItem( const QModelIndex & ) ) );
+    layout->addWidget( mSelectedTreeView );
+  }
+
   // Vector layer + type
-  if ( mType == QgsGrassObject::Vector )
+  if ( mType == QgsGrassObject::Vector && !multiple() )
   {
     QHBoxLayout *layerLayout = new QHBoxLayout( this );
     layout->addLayout( layerLayout );
@@ -615,26 +733,38 @@ QStringList QgsGrassModuleInput::options()
 {
   QStringList list;
 
-  QgsGrassObject grassObject = currentGrassObject();
-
-  // TODO: this is hack for network nodes, do it somehow better
-  if ( mMapId.isEmpty() )
+  if ( multiple() )
   {
-    if ( !grassObject.name().isEmpty() )
+    QStringList maps;
+    for ( int i = 0; i < mSelectedModel->rowCount(); i++ )
     {
-      list << mKey + "=" + grassObject.fullName() ;
+      maps << mSelectedModel->item( i )->text();
     }
+    list << mKey + "=" + maps.join( "," );
   }
-
-  if ( !mVectorLayerOption.isEmpty() && currentLayer() )
+  else
   {
-    list << mVectorLayerOption + "=" + QString::number( currentLayer()->number() );
-  }
+    QgsGrassObject grassObject = currentGrassObject();
 
-  if ( !mGeometryTypeOption.isEmpty() )
-  {
+    // TODO: this is hack for network nodes, do it somehow better
+    if ( mMapId.isEmpty() )
+    {
+      if ( !grassObject.name().isEmpty() )
+      {
+        list << mKey + "=" + grassObject.fullName() ;
+      }
+    }
 
-    list << mGeometryTypeOption + "=" + currentGeometryTypeNames().join( "," );
+    if ( !mVectorLayerOption.isEmpty() && currentLayer() )
+    {
+      list << mVectorLayerOption + "=" + QString::number( currentLayer()->number() );
+    }
+
+    if ( !mGeometryTypeOption.isEmpty() )
+    {
+
+      list << mGeometryTypeOption + "=" + currentGeometryTypeNames().join( "," );
+    }
   }
 
   return list;
@@ -651,28 +781,6 @@ QgsFields QgsGrassModuleInput::currentFields()
   }
   return layer->fields();
 }
-
-#if 0
-QgsMapLayer * QgsGrassModuleInput::currentLayer()
-{
-  QgsDebugMsg( "entered" );
-
-  int limit = 0;
-  if ( !mRequired )
-    limit = 1;
-
-  int current = mComboBox->currentIndex();
-  if ( current < limit )
-    return 0;
-
-  if ( current >= limit && current <  mMapLayers.size() )
-  {
-    return mMapLayers[current];
-  }
-
-  return 0;
-}
-#endif
 
 QgsGrassObject QgsGrassModuleInput::currentGrassObject()
 {
@@ -719,6 +827,10 @@ void QgsGrassModuleInput::onChanged( const QString & text )
 {
   QgsDebugMsg( "text = " + text );
 
+  if ( multiple() )
+  {
+    return;
+  }
   if ( mType == QgsGrassObject::Vector )
   {
     mLayers.clear();
@@ -766,7 +878,6 @@ void QgsGrassModuleInput::onChanged( const QString & text )
   }
   else // Raster
   {
-    QgsDebugMsg( "map does not exist" );
     emit valueChanged();
   }
 }
@@ -775,6 +886,11 @@ void QgsGrassModuleInput::onLayerChanged()
 {
   QgsDebugMsg( "entered" );
 
+  // TODO(?): support vector sublayers/types for multiple input
+  if ( multiple() )
+  {
+    return;
+  }
   foreach ( int checkBoxType, mTypeCheckBoxes.keys() )
   {
     QCheckBox *checkBox = mTypeCheckBoxes.value( checkBoxType );
@@ -783,35 +899,35 @@ void QgsGrassModuleInput::onLayerChanged()
   }
 
   QgsGrassVectorLayer * layer = currentLayer();
-
-  if ( layer )
-  {
-    // number of types  in the layer matching mGeometryTypeMask
-    int typeCount = 0;
-    foreach ( int type, layer->types() )
+  if ( multiple() )
+    if ( layer )
     {
-      if ( type & mGeometryTypeMask )
+      // number of types  in the layer matching mGeometryTypeMask
+      int typeCount = 0;
+      foreach ( int type, layer->types() )
       {
-        typeCount++;
-      }
-    }
-    QgsDebugMsg( QString( "typeCount = %1" ).arg( typeCount ) );
-
-    int layerType = layer->type(); // may be multiple
-    foreach ( int checkBoxType, mTypeCheckBoxes.keys() )
-    {
-      QCheckBox *checkBox = mTypeCheckBoxes.value( checkBoxType );
-      checkBox->hide();
-      if ( checkBoxType & layerType )
-      {
-        checkBox->setChecked( true );
-        if ( typeCount > 1 )
+        if ( type & mGeometryTypeMask )
         {
-          checkBox->show();
+          typeCount++;
+        }
+      }
+      QgsDebugMsg( QString( "typeCount = %1" ).arg( typeCount ) );
+
+      int layerType = layer->type(); // may be multiple
+      foreach ( int checkBoxType, mTypeCheckBoxes.keys() )
+      {
+        QCheckBox *checkBox = mTypeCheckBoxes.value( checkBoxType );
+        checkBox->hide();
+        if ( checkBoxType & layerType )
+        {
+          checkBox->setChecked( true );
+          if ( typeCount > 1 )
+          {
+            checkBox->show();
+          }
         }
       }
     }
-  }
 
   emit valueChanged();
 }
@@ -822,22 +938,33 @@ QString QgsGrassModuleInput::ready()
 
   QString error;
 
-  QgsDebugMsg( QString( "count = %1" ).arg( mComboBox->count() ) );
-  if ( mComboBox->count() == 0 )
+  QString noInput = tr( "no input" );
+  if ( multiple() )
   {
-    error = tr( "no input" );
+    if ( mSelectedModel->rowCount() == 0 )
+    {
+      error = noInput;
+    }
   }
   else
   {
-    if ( !mVectorLayerOption.isEmpty() && currentLayer() && currentLayer()->number() < 1 )
+    QgsDebugMsg( QString( "count = %1" ).arg( mComboBox->count() ) );
+    if ( mComboBox->count() == 0 )
     {
-      error = tr( "current map does not contain features of required type" );
+      error = noInput;
     }
     else
     {
-      if ( !mGeometryTypeOption.isEmpty() && currentGeometryTypeNames().isEmpty() )
+      if ( !mVectorLayerOption.isEmpty() && currentLayer() && currentLayer()->number() < 1 )
       {
-        error = tr( "geometry type not selected" );
+        error = tr( "current map does not contain features of required type" );
+      }
+      else
+      {
+        if ( !mGeometryTypeOption.isEmpty() && currentGeometryTypeNames().isEmpty() )
+        {
+          error = tr( "geometry type not selected" );
+        }
       }
     }
   }
@@ -848,4 +975,44 @@ QString QgsGrassModuleInput::ready()
   return error;
 }
 
+void QgsGrassModuleInput::onActivated( const QString & text )
+{
+  QgsDebugMsg( "text = " + text );
+  if ( multiple() )
+  {
+    if ( mSelectedModel->findItems( text ).size() == 0 )
+    {
+      QStandardItem *item = new QStandardItem( text );
+      mSelectedModel->appendRow( item );
+      emit valueChanged();
+    }
+    // QCompleter resets the text after activated() if the text is cleared here,
+    // so we have unset/reset the completer to clear the text
+    if ( sender() == mComboBox->completer() )
+    {
+      QCompleter *completer = mComboBox->completer();
+      mComboBox->setCompleter( 0 );
+      mComboBox->clearEditText();
+      mComboBox->setCompleter( completer );
+    }
+    else
+    {
+      mComboBox->clearEditText();
+    }
+  }
+  else
+  {
+    onChanged( text );
+  }
+}
 
+void QgsGrassModuleInput::deleteSelectedItem( const QModelIndex &index )
+{
+  QgsDebugMsg( "entered" );
+  QModelIndex sourceIndex = mSelectedProxy->mapToSource( index );
+  if ( sourceIndex.isValid() )
+  {
+    mSelectedModel->removeRow( sourceIndex.row() );
+    emit valueChanged();
+  }
+}

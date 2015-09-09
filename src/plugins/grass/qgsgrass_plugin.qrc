@@ -1,5 +1,7 @@
 <RCC>
     <qresource prefix="/images/themes/default/grass">
+        <file alias="closebutton.png">themes/default/closebutton.png</file>
+        <file alias="darkclosebutton.png">themes/default/darkclosebutton.png</file>
         <file alias="grass_add_vertex.png">themes/default/grass_add_vertex.png</file>
         <file alias="grass_clear_input.png">themes/default/grass_clear_input.png</file>
         <file alias="grass_close_edit.png">themes/default/grass_close_edit.png</file>

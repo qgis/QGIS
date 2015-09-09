@@ -22,10 +22,12 @@
 #include <QCompleter>
 #include <QFileSystemModel>
 #include <QGroupBox>
+#include <QListView>
 #include <QMap>
 #include <QSortFilterProxyModel>
 #include <QStandardItem>
 #include <QStandardItemModel>
+#include <QStyledItemDelegate>
 #include <QTreeView>
 
 #include "qgis.h"
@@ -142,22 +144,14 @@ class QgsGrassModuleInputCompleterProxy : public QAbstractProxyModel
 
 class QgsGrassModuleInputCompleter : public QCompleter
 {
-    Q_OBJECT
   public:
-    explicit QgsGrassModuleInputCompleter( QWidget * parent = 0 );
     explicit QgsGrassModuleInputCompleter( QAbstractItemModel * model, QWidget * parent = 0 );
 
-    virtual QString pathFromIndex( const QModelIndex & index ) const override;
-    virtual QStringList splitPath( const QString & path ) const override;
-
-  private:
-    QString mSeparator;
+    virtual bool eventFilter( QObject * watched, QEvent * event ) override;
 };
 
 class QgsGrassModuleInputComboBox : public QComboBox
 {
-    Q_OBJECT
-
   public:
     explicit QgsGrassModuleInputComboBox( QgsGrassObject::Type type, QWidget *parent = 0 );
     ~QgsGrassModuleInputComboBox();
@@ -166,10 +160,6 @@ class QgsGrassModuleInputComboBox : public QComboBox
     virtual void showPopup() override;
     virtual void hidePopup() override;
 
-  public slots:
-
-  signals:
-
   protected:
     QgsGrassObject::Type mType;
     QgsGrassModuleInputModel *mModel;
@@ -177,6 +167,36 @@ class QgsGrassModuleInputComboBox : public QComboBox
     QgsGrassModuleInputTreeView *mTreeView;
     // Skip next hidePopup
     bool mSkipHide;
+};
+
+class QgsGrassModuleInputSelectedDelegate : public QStyledItemDelegate
+{
+  public:
+    explicit QgsGrassModuleInputSelectedDelegate( QObject *parent = 0 );
+
+    void handlePressed( const QModelIndex &index );
+    void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
+
+  private:
+    mutable QModelIndex mPressedIndex;
+};
+
+class QgsGrassModuleInputSelectedView : public QTreeView
+{
+    Q_OBJECT
+  public:
+    explicit QgsGrassModuleInputSelectedView( QWidget * parent = 0 );
+
+    void setModel( QAbstractItemModel *model );
+
+  signals:
+    void deleteItem( const QModelIndex &index );
+
+  protected:
+    bool eventFilter( QObject *obj, QEvent *event );
+
+  private:
+    QgsGrassModuleInputSelectedDelegate *mDelegate;
 };
 
 
@@ -232,10 +252,13 @@ class QgsGrassModuleInput : public QgsGrassModuleGroupBoxItem
     QString geometryTypeOption() const { return mGeometryTypeOption; }
 
   public slots:
-    //void changed( int );
+    void onActivated( const QString & text );
+
     void onChanged( const QString & text );
 
     void onLayerChanged();
+
+    void deleteSelectedItem( const QModelIndex &index );
 
   signals:
     // emitted when value changed/selected
@@ -261,6 +284,11 @@ class QgsGrassModuleInput : public QgsGrassModuleGroupBoxItem
     //! Model used in combo
     QgsGrassModuleInputModel *mModel;
 
+    //! Model containing currently selected maps
+    QStandardItemModel *mSelectedModel;
+
+    QSortFilterProxyModel *mSelectedProxy;
+
     //! Combo box with GRASS layers
     QgsGrassModuleInputComboBox *mComboBox;
 
@@ -273,10 +301,8 @@ class QgsGrassModuleInput : public QgsGrassModuleGroupBoxItem
     //! Vector sublayer combo
     QComboBox *mLayerComboBox;
 
-    // Module type option names    , mMapId(0)
-    //QStringList mTypeNames;
-    // Module type option types
-    //QList<int> mTypes;
+    //! List of multiple selected maps
+    QTreeView *mSelectedTreeView;
 
     // Vector type checkboxes
     QMap<int, QCheckBox*> mTypeCheckBoxes;

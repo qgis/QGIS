@@ -50,6 +50,7 @@ QgsGrassModuleParam::QgsGrassModuleParam( QgsGrassModule *module, QString key,
     QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode, bool direct )
     : mModule( module )
     , mKey( key )
+    , mMultiple( false )
     , mHidden( false )
     , mRequired( false )
     , mDirect( direct )
@@ -107,10 +108,9 @@ QgsGrassModuleParam::QgsGrassModuleParam( QgsGrassModule *module, QString key,
     mTitle = description;
   }
 
-  if ( gnode.toElement().attribute( "required" ) == "yes" )
-  {
-    mRequired = true;
-  }
+  mRequired = gnode.toElement().attribute( "required" ) == "yes";
+
+  mMultiple = gnode.toElement().attribute( "multiple" ) == "yes";
 
   mId = qdesc.attribute( "id" );
 }
