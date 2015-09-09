@@ -254,11 +254,22 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
       }
       else if ( optionType == "field" )
       {
-        QgsGrassModuleField *mi = new QgsGrassModuleField(
-          mModule, this, key, confDomElement,
-          descDocElem, gnode, mDirect, this );
-        layout->addWidget( mi );
-        mParams.append( mi );
+        if ( confDomElement.hasAttribute( "layer" ) )
+        {
+          QgsGrassModuleVectorField *mi = new QgsGrassModuleVectorField(
+            mModule, this, key, confDomElement,
+            descDocElem, gnode, mDirect, this );
+          layout->addWidget( mi );
+          mParams.append( mi );
+        }
+        else
+        {
+          QgsGrassModuleField *mi = new QgsGrassModuleField(
+            mModule, key, confDomElement,
+            descDocElem, gnode, mDirect, this );
+          layout->addWidget( mi );
+          mParams.append( mi );
+        }
       }
       else if ( optionType == "selection" )
       {

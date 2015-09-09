@@ -1070,8 +1070,24 @@ QgsGrassModuleGdalInput::~QgsGrassModuleGdalInput()
 }
 
 /***************** QgsGrassModuleField *********************/
+QgsGrassModuleField::QgsGrassModuleField( QgsGrassModule *module, QString key,
+    QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode, bool direct, QWidget * parent )
+    : QgsGrassModuleOption( module, key, qdesc, gdesc, gnode, direct, parent )
+{
+  QRegExp rx( "^[a-zA-Z_][a-zA-Z0-9_]*$" );
+  foreach ( QLineEdit *lineEdit, mLineEdits )
+  {
+    lineEdit->setValidator( new QRegExpValidator( rx, this ) );
+  }
+}
 
-QgsGrassModuleField::QgsGrassModuleField(
+QgsGrassModuleField::~QgsGrassModuleField()
+{
+}
+
+/***************** QgsGrassModuleVectorField *********************/
+
+QgsGrassModuleVectorField::QgsGrassModuleVectorField(
   QgsGrassModule *module, QgsGrassModuleStandardOptions *options,
   QString key, QDomElement &qdesc,
   QDomElement &gdesc, QDomNode &gnode, bool direct, QWidget * parent )
@@ -1114,7 +1130,7 @@ QgsGrassModuleField::QgsGrassModuleField(
   updateFields();
 }
 
-void QgsGrassModuleField::updateFields()
+void QgsGrassModuleVectorField::updateFields()
 {
   QgsDebugMsg( "entered" );
 
@@ -1141,7 +1157,7 @@ void QgsGrassModuleField::updateFields()
   }
 }
 
-QStringList QgsGrassModuleField::options()
+QStringList QgsGrassModuleVectorField::options()
 {
   QStringList list;
 
@@ -1154,7 +1170,7 @@ QStringList QgsGrassModuleField::options()
   return list;
 }
 
-QgsGrassModuleField::~QgsGrassModuleField()
+QgsGrassModuleVectorField::~QgsGrassModuleVectorField()
 {
 }
 

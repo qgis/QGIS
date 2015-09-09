@@ -257,6 +257,10 @@ class QgsGrassModuleOption : public QgsGrassModuleGroupBoxItem
     // Browse output
     void browse( bool checked );
 
+  protected:
+    //! Line
+    QList<QLineEdit*> mLineEdits;
+
   private:
     //! Control type
     ControlType mControlType;
@@ -279,9 +283,6 @@ class QgsGrassModuleOption : public QgsGrassModuleGroupBoxItem
 
     //! Check boxes
     QList<QgsGrassModuleCheckBox*> mCheckBoxes;
-
-    //! Line
-    QList<QLineEdit*> mLineEdits;
 
     //! True if this option is GRASS output
     bool mIsOutput;
@@ -385,12 +386,13 @@ class QgsGrassModuleGdalInput : public QgsGrassModuleGroupBoxItem
     bool mRequired;
 };
 
+
 /*********************** QgsGrassModuleField **********************/
 
 /** \class QgsGrassModuleField
- *  \brief GRASS vector attribute column.
+ *  \brief GRASS column, not existing column of input vector, may be output column or input column from a table not linked to layer
  */
-class QgsGrassModuleField : public QgsGrassModuleGroupBoxItem
+class QgsGrassModuleField : public QgsGrassModuleOption
 {
     Q_OBJECT
 
@@ -399,14 +401,36 @@ class QgsGrassModuleField : public QgsGrassModuleGroupBoxItem
      * \param qdesc option element in QGIS module description XML file
      * \param gdesc GRASS module XML description file
      */
-    QgsGrassModuleField( QgsGrassModule *module,
-                         QgsGrassModuleStandardOptions *options,
-                         QString key,
+    QgsGrassModuleField( QgsGrassModule *module, QString key,
                          QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
                          bool direct, QWidget * parent = 0 );
 
     //! Destructor
     ~QgsGrassModuleField();
+};
+
+/*********************** QgsGrassModuleVectorField **********************/
+
+/** \class QgsGrassModuleVectorField
+ *  \brief GRASS vector attribute column.
+ */
+class QgsGrassModuleVectorField : public QgsGrassModuleGroupBoxItem
+{
+    Q_OBJECT
+
+  public:
+    /** \brief Constructor
+     * \param qdesc option element in QGIS module description XML file
+     * \param gdesc GRASS module XML description file
+     */
+    QgsGrassModuleVectorField( QgsGrassModule *module,
+                               QgsGrassModuleStandardOptions *options,
+                               QString key,
+                               QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
+                               bool direct, QWidget * parent = 0 );
+
+    //! Destructor
+    ~QgsGrassModuleVectorField();
 
     //! Retruns list of options which will be passed to module
     virtual QStringList options() override;
