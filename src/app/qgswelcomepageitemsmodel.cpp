@@ -14,10 +14,76 @@
  ***************************************************************************/
 
 #include "qgswelcomepageitemsmodel.h"
+#include "qgsmessagelog.h"
 
+#include <QApplication>
+#include <QAbstractTextDocumentLayout>
 #include <QPixmap>
 #include <QFile>
 #include <QPainter>
+#include <QTextDocument>
+
+QgsWelcomePageItemDelegate::QgsWelcomePageItemDelegate( QObject * parent )
+    : QStyledItemDelegate( parent )
+{
+
+}
+
+void QgsWelcomePageItemDelegate::paint( QPainter* painter, const QStyleOptionViewItem & option, const QModelIndex &index ) const
+{
+  painter->save();
+
+  QTextDocument doc;
+  QAbstractTextDocumentLayout::PaintContext ctx;
+  
+  QColor color;
+  if ( option.state & QStyle::State_Selected )
+  {
+    color = QColor( 255, 255, 255, 60 ); 
+    QStyle *style = QApplication::style();   
+    style->drawPrimitive( QStyle::PE_PanelItemViewItem, &option, painter, NULL );
+  }
+  else if ( option.state & QStyle::State_Enabled )
+  {
+    color = QColor( 100, 100, 100, 30 );
+  }
+  else
+  {
+    color = QColor( 100, 100, 100, 30 );
+    ctx.palette.setColor( QPalette::Text, QColor( 150, 150, 150, 255 ) );
+  }
+  
+  painter->setRenderHint( QPainter::Antialiasing );
+  painter->setPen( QColor( 0, 0, 0, 0 ) );
+  painter->setBrush( QBrush( color ) );
+  painter->drawRoundedRect( option.rect.left() + 5, option.rect.top() + 5, option.rect.width() - 10, option.rect.height() - 10, 8, 8 );
+
+  doc.setHtml( index.data( Qt::DisplayRole ).toString() );
+  doc.setTextWidth( 800 );
+
+  QPixmap icon = qvariant_cast<QPixmap>( index.data( Qt::DecorationRole ) );
+  if ( !icon.isNull() )
+  {
+    painter->drawPixmap( option.rect.left() + 10, option.rect.top()  + 10, icon );
+  }
+
+  painter->translate( option.rect.left() + ( !icon.isNull() ? icon.width() + 25 : 15 ), option.rect.top() + 15 );
+  ctx.clip = QRect( 0, 0, option.rect.width() - ( !icon.isNull() ? icon.width() - 35 : 25 ), option.rect.height() - 25 );
+  doc.documentLayout()->draw( painter, ctx );
+
+  painter->restore();
+}
+
+QSize QgsWelcomePageItemDelegate::sizeHint( const QStyleOptionViewItem & option, const QModelIndex & index ) const
+{
+  QTextDocument doc;
+  doc.setHtml( index.data( Qt::DisplayRole ).toString() );
+  doc.setTextWidth( 800 );
+
+  QPixmap icon = qvariant_cast<QPixmap>( index.data( Qt::DecorationRole ) );
+
+  return QSize( option.rect.width(), qMax( doc.size().height() + 10, ( double )icon.height() ) + 20 );
+}
 
 QgsWelcomePageItemsModel::QgsWelcomePageItemsModel( QObject* parent )
     : QAbstractListModel( parent )
@@ -44,9 +110,8 @@ QVariant QgsWelcomePageItemsModel::data( const QModelIndex& index, int role ) co
   switch ( role )
   {
     case Qt::DisplayRole:
-      return mRecentProjects.at( index.row() ).title;
+      return QString( "<span style='font-size:18px;font-weight:bold;'>%1</span><br>%2" ).arg( mRecentProjects.at( index.row() ).title != mRecentProjects.at( index.row() ).path ? mRecentProjects.at( index.row() ).title : QString( tr( "- untitled -" ) ) ).arg( mRecentProjects.at( index.row() ).path );
       break;
-
     case Qt::DecorationRole:
     {
       QImage thumbnail( mRecentProjects.at( index.row() ).previewImagePath );
@@ -66,12 +131,10 @@ QVariant QgsWelcomePageItemsModel::data( const QModelIndex& index, int role ) co
       previewPainter.end();
 
       return QPixmap::fromImage( previewImage );
-      break;
     }
 
     case Qt::ToolTipRole:
       return mRecentProjects.at( index.row() ).path;
-      break;
 
     default:
       return QVariant();
@@ -89,5 +152,5 @@ Qt::ItemFlags QgsWelcomePageItemsModel::flags( const QModelIndex& index ) const
     flags &= ~Qt::ItemIsEnabled;
 
   return flags;
-
 }
+
