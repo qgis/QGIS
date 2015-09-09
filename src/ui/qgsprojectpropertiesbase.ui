@@ -993,7 +993,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>379</width>
-                <height>582</height>
+                <height>562</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -2233,7 +2233,7 @@
            <item>
             <widget class="QGroupBox" name="groupBox_4">
              <property name="title">
-              <string>Variables</string>
+              <string>Expression Variables</string>
              </property>
              <layout class="QHBoxLayout" name="horizontalLayout_7">
               <item>
