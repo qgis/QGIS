@@ -3,6 +3,8 @@
 
 SET(QGIS_CORE_SRCS
 
+  geosextra/geos_c_extra.cpp
+
   gps/qgsgpsconnection.cpp
   gps/qgsgpsconnectionregistry.cpp
   gps/qgsnmeaconnection.cpp
@@ -521,6 +523,8 @@ SET(QGIS_CORE_HDRS
   ${CMAKE_BINARY_DIR}/qgsconfig.h
   ../plugins/qgisplugin.h
 
+  geosextra/geos_c_extra.h
+
   qgis.h
   qgsattributeaction.h
   qgscachedfeatureiterator.h
@@ -845,6 +849,7 @@ TARGET_LINK_LIBRARIES(qgis_core
 
   ${PROJ_LIBRARY}
   ${GEOS_LIBRARY}
+  ${GEOS_CPP_LIBRARY}
   ${GDAL_LIBRARY}
   ${SPATIALINDEX_LIBRARY}
   ${EXPAT_LIBRARY}

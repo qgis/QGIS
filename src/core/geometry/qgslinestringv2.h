@@ -36,7 +36,7 @@ class CORE_EXPORT QgsLineStringV2: public QgsCurveV2
 
     virtual QString geometryType() const override { return "LineString"; }
     virtual int dimension() const override { return 1; }
-    virtual QgsAbstractGeometryV2* clone() const override;
+    virtual QgsLineStringV2* clone() const override;
     virtual void clear() override;
 
     virtual bool fromWkb( const unsigned char* wkb ) override;

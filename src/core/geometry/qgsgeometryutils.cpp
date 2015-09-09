@@ -145,6 +145,89 @@ double QgsGeometryUtils::sqrDistToLine( double ptX, double ptY, double x1, doubl
   return dist;
 }
 
+bool QgsGeometryUtils::lineIntersection( const QgsPointV2& p1, const QgsVector& v, const QgsPointV2& q1, const QgsVector& w, QgsPointV2& inter )
+{
+  double d = v.y() * w.x() - v.x() * w.y();
+
+  if ( d == 0 )
+    return false;
+
+  double dx = q1.x() - p1.x();
+  double dy = q1.y() - p1.y();
+  double k = ( dy * w.x() - dx * w.y() ) / d;
+
+  inter = QgsPointV2( p1.x() + v.x() * k, p1.y() + v.y() * k );
+
+  return true;
+}
+
+bool QgsGeometryUtils::segmentIntersection( const QgsPointV2 &p1, const QgsPointV2 &p2, const QgsPointV2 &q1, const QgsPointV2 &q2, QgsPointV2 &inter, double tolerance )
+{
+  QgsVector v( p2.x() - p1.x(), p2.y() - p1.y() );
+  QgsVector w( q2.x() - q1.x(), q2.y() - q1.y() );
+  double vl = v.length();
+  double wl = w.length();
+
+  if ( qFuzzyIsNull( vl ) || qFuzzyIsNull( wl ) )
+  {
+    return false;
+  }
+  v = v / vl;
+  w = w / wl;
+
+  if ( !QgsGeometryUtils::lineIntersection( p1, v, q1, w, inter ) )
+    return false;
+
+  double lambdav = QgsVector( inter.x() - p1.x(), inter.y() - p1.y() ) *  v;
+  if ( lambdav < 0. + tolerance || lambdav > vl - tolerance )
+    return false;
+
+  double lambdaw = QgsVector( inter.x() - q1.x(), inter.y() - q1.y() ) * w;
+  if ( lambdaw < 0. + tolerance || lambdaw >= wl - tolerance )
+    return false;
+
+  return true;
+}
+
+QList<QgsGeometryUtils::SelfIntersection> QgsGeometryUtils::getSelfIntersections( const QgsAbstractGeometryV2 *geom, int part, int ring, double tolerance )
+{
+  QList<SelfIntersection> intersections;
+
+  int n = geom->vertexCount( part, ring );
+  bool isClosed = geom->vertexAt( QgsVertexId( part, ring, 0 ) ) == geom->vertexAt( QgsVertexId( part, ring, n - 1 ) );
+
+  // Check every pair of segments for intersections
+  for ( int i = 0, j = 1; j < n; i = j++ )
+  {
+    QgsPointV2 pi = geom->vertexAt( QgsVertexId( part, ring, i ) );
+    QgsPointV2 pj = geom->vertexAt( QgsVertexId( part, ring, j ) );
+    if ( QgsGeometryUtils::sqrDistance2D( pi, pj ) < tolerance * tolerance ) continue;
+
+    // Don't test neighboring edges
+    int start = j + 1;
+    int end = i == 0 && isClosed ? n - 1 : n;
+    for ( int k = start, l = start + 1; l < end; k = l++ )
+    {
+      QgsPointV2 pk = geom->vertexAt( QgsVertexId( part, ring, k ) );
+      QgsPointV2 pl = geom->vertexAt( QgsVertexId( part, ring, l ) );
+
+      QgsPointV2 inter;
+      if ( !QgsGeometryUtils::segmentIntersection( pi, pj, pk, pl, inter, tolerance ) ) continue;
+
+      SelfIntersection s;
+      s.segment1 = i;
+      s.segment2 = k;
+      if ( s.segment1 > s.segment2 )
+      {
+        qSwap( s.segment1, s.segment2 );
+      }
+      s.point = inter;
+      intersections.append( s );
+    }
+  }
+  return intersections;
+}
+
 double QgsGeometryUtils::leftOfLine( double x, double y, double x1, double y1, double x2, double y2 )
 {
   double f1 = x - x1;

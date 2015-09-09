@@ -33,7 +33,7 @@ QgsLineStringV2::QgsLineStringV2(): QgsCurveV2()
 QgsLineStringV2::~QgsLineStringV2()
 {}
 
-QgsAbstractGeometryV2 *QgsLineStringV2::clone() const
+QgsLineStringV2 *QgsLineStringV2::clone() const
 {
   return new QgsLineStringV2( *this );
 }

@@ -28,7 +28,7 @@ class CORE_EXPORT QgsMultiPointV2: public QgsGeometryCollectionV2
 {
   public:
     virtual QString geometryType() const override { return "MultiPoint"; }
-    QgsAbstractGeometryV2* clone() const override;
+    QgsMultiPointV2* clone() const override;
 
     bool fromWkt( const QString& wkt ) override;
 

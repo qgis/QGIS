@@ -81,6 +81,10 @@ class CORE_EXPORT QgsRectangle
     //! Scale the rectangle around its center point
     void scale( double scaleFactor, const QgsPoint *c = 0 );
     void scale( double scaleFactor, double centerX, double centerY );
+    //! Grow the rectangle by the specified amount
+    void grow( double delta );
+    /** Updates the rectangle to include the specified point */
+    void include( const QgsPoint& p );
     /** Get rectangle enlarged by buffer.
      * @note added in 2.1 */
     QgsRectangle buffer( double width );

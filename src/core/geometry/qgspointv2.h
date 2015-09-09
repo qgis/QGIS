@@ -30,12 +30,13 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometryV2
 {
   public:
     QgsPointV2( double x = 0.0, double y = 0.0 );
+    QgsPointV2( const QgsPoint& p );
     QgsPointV2( QgsWKBTypes::Type type, double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0 );
 
     bool operator==( const QgsPointV2& pt ) const;
     bool operator!=( const QgsPointV2& pt ) const;
 
-    virtual QgsAbstractGeometryV2* clone() const override;
+    virtual QgsPointV2* clone() const override;
     void clear() override;
 
     double x() const { return mX; }
@@ -89,6 +90,11 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometryV2
         @param vertex the vertex id
         @return 0.0*/
     double vertexAngle( const QgsVertexId& vertex ) const override { Q_UNUSED( vertex ); return 0.0; }
+
+    virtual int vertexCount( int /*part*/ = 0, int /*ring*/ = 0 ) const override { return 1; }
+    virtual int ringCount( int /*part*/ = 0 ) const override { return 1; }
+    virtual int partCount() const override { return 1; }
+    virtual QgsPointV2 vertexAt( const QgsVertexId& /*id*/ ) const override { return *this; }
 
   private:
     double mX;

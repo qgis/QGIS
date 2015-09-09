@@ -10,7 +10,7 @@ class QgsLineStringV2: public QgsCurveV2
 
     virtual QString geometryType() const;
     virtual int dimension() const;
-    virtual QgsAbstractGeometryV2* clone() const;
+    virtual QgsLineStringV2* clone() const;
     virtual void clear();
 
     virtual bool fromWkb( const unsigned char* wkb );

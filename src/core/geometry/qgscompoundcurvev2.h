@@ -36,7 +36,7 @@ class CORE_EXPORT QgsCompoundCurveV2: public QgsCurveV2
 
     virtual QString geometryType() const override { return "CompoundCurve"; }
     virtual int dimension() const override { return 1; }
-    virtual QgsAbstractGeometryV2* clone() const override;
+    virtual QgsCompoundCurveV2* clone() const override;
     virtual void clear() override;
 
     virtual QgsRectangle calculateBoundingBox() const override;
