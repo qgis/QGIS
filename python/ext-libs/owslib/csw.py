@@ -13,10 +13,7 @@ import warnings
 import StringIO
 import random
 from urllib import urlencode
-from urllib2 import urlopen
-
 from owslib.util import OrderedDict
-
 from owslib.etree import etree
 from owslib import fes
 from owslib import util
@@ -26,6 +23,9 @@ from owslib.fgdc import Metadata
 from owslib.dif import DIF
 from owslib.namespaces import Namespaces
 from owslib.util import cleanup_namespaces, bind_url, add_namespaces
+from PyQt4.QtCore import *
+from PyQt4.QtNetwork import *
+from qgis.core import *
 
 # default variables
 outputformat = 'application/xml'
@@ -267,7 +267,15 @@ class CatalogueServiceWeb:
             'id': ','.join(id),
         }
 
-        self.request = '%s%s' % (bind_url(self.url), urlencode(data))
+        l = []
+        data = data.items()
+        for k, v in data:
+            k = str(k)
+            v = str(v)
+            l.append(k + '=' + v)
+        data = '&'.join(l)
+
+        self.request = '%s%s' % (bind_url(self.url), data)
 
         self._invoke()
 
@@ -419,7 +427,7 @@ class CatalogueServiceWeb:
 
         if ttype == 'delete':
             self._setconstraint(node1, None, propertyname, keywords, bbox, cql, identifier)
-
+       
         self.request = node0
 
         self._invoke()
@@ -458,7 +466,7 @@ class CatalogueServiceWeb:
             etree.SubElement(node0, util.nspath_eval('csw:HarvestInterval', namespaces)).text = harvestinterval
         if responsehandler is not None:
             etree.SubElement(node0, util.nspath_eval('csw:ResponseHandler', namespaces)).text = responsehandler
-       
+
         self.request = node0
 
         self._invoke()
@@ -499,7 +507,7 @@ class CatalogueServiceWeb:
             #create a generator object, and iterate through it until the match is found
             #if not found, gets the default value (here "none")
             url = next((d['url'] for d in rec.references if d['scheme'] == service_string), None)
-            if url is not None:
+            if url is not None: 
                 urls.append(url)
         return urls
 
@@ -553,7 +561,7 @@ class CatalogueServiceWeb:
         return el
 
     def _setidentifierkey(self, el):
-        if el is None: 
+        if el is None:
             return 'owslib_random_%i' % random.randint(1,65536)
         else:
             return el
@@ -584,7 +592,12 @@ class CatalogueServiceWeb:
         # do HTTP request
 
         if isinstance(self.request, basestring):  # GET KVP
-            self.response = urlopen(self.request, timeout=self.timeout).read()
+            request = QNetworkRequest(QUrl(self.request))
+            reply = QgsNetworkAccessManager.instance().get(request)
+            evloop = QEventLoop()
+            reply.finished.connect(evloop.quit)
+            evloop.exec_(QEventLoop.ExcludeUserInputEvents)
+            self.response = bytearray(reply.readAll())
         else:
             xml_post_url = self.url
             # Get correct POST URL based on Operation list.

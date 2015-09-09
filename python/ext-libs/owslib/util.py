@@ -23,6 +23,9 @@ from urllib import urlencode
 import re
 from copy import deepcopy
 import warnings
+from PyQt4.QtNetwork import *
+from PyQt4.QtCore import *
+from qgis.core import *
 
 
 """
@@ -117,6 +120,9 @@ def xml_to_dict(root, prefix=None, depth=1, diction=None):
 
     return ret
 
+#
+# Deprecated: Use QgsNetworkAccessManager instead
+#
 def openURL(url_base, data, method='Get', cookies=None, username=None, password=None, timeout=30):
     ''' function to open urls - wrapper around urllib2.urlopen but with additional checks for OGC service exceptions and url formatting, also handles cookies and simple user password authentication'''
     url_base.strip() 
@@ -335,33 +341,28 @@ def http_post(url=None, request=None, lang='en-US', timeout=10):
 
     if url is not None:
         u = urlparse.urlsplit(url)
-        r = urllib2.Request(url, request)
-        r.add_header('User-Agent', 'OWSLib (https://geopython.github.io/OWSLib)')
-        r.add_header('Content-type', 'text/xml')
-        r.add_header('Content-length', '%d' % len(request))
-        r.add_header('Accept', 'text/xml')
-        r.add_header('Accept-Language', lang)
-        r.add_header('Accept-Encoding', 'gzip,deflate')
-        r.add_header('Host', u.netloc)
+        r = QNetworkRequest(QUrl(url))
 
-        try:
-            up = urllib2.urlopen(r,timeout=timeout);
-        except TypeError:
-            import socket
-            socket.setdefaulttimeout(timeout)
-            up = urllib2.urlopen(r)
+        r.setRawHeader('User-Agent', 'OWSLib (https://geopython.github.io/OWSLib)')
+        r.setRawHeader('Content-type', 'text/xml')
+        r.setRawHeader('Content-length', '%d' % len(request))
+        r.setRawHeader('Accept', 'text/xml')
+        r.setRawHeader('Accept-Language', lang)
+        r.setRawHeader('Accept-Encoding', 'gzip,deflate')
+        r.setRawHeader('Host', u.netloc)
 
-        ui = up.info()  # headers
-        response = up.read()
-        up.close()
+        reply = QgsNetworkAccessManager.instance().post(r, request)
+        evloop = QEventLoop()
+        reply.finished.connect(evloop.quit)
+        evloop.exec_(QEventLoop.ExcludeUserInputEvents)
+        response = bytearray(reply.readAll())
 
-        # check if response is gzip compressed
-        if ui.has_key('Content-Encoding'):
-            if ui['Content-Encoding'] == 'gzip':  # uncompress response
-                import gzip
-                cds = StringIO(response)
-                gz = gzip.GzipFile(fileobj=cds)
-                response = gz.read()
+        if bytearray(reply.rawHeader('Content-Encoding')) == bytearray('gzip'):
+            import gzip
+            cds = StringIO(response)
+            gz = gzip.GzipFile(fileobj=cds)
+
+            response = gz.read()
 
         return response
 

@@ -24,6 +24,7 @@
 WMSWMST_LINK_TYPES = [
     'OGC:WMS',
     'OGC:WMTS',
+    'OGC:WMS-http-get-map',
     'OGC:WMS-1.1.1-http-get-map',
     'OGC:WMS-1.1.1-http-get-capabilities',
     'OGC:WMS-1.3.0-http-get-map',
