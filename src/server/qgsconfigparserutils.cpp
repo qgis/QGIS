@@ -60,7 +60,7 @@ void QgsConfigParserUtils::appendCRSElementsToLayer( QDomElement& layerElement, 
   }
   else //no crs constraint
   {
-    foreach ( const QString& crs, crsList )
+    Q_FOREACH ( const QString& crs, crsList )
     {
       appendCRSElementToLayer( layerElement, CRSPrecedingElement, crs, doc );
     }

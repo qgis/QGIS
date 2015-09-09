@@ -34,7 +34,7 @@ static void _setStandardTestFont( QgsLegendSettings& settings )
   << QgsComposerLegendStyle::Group
   << QgsComposerLegendStyle::Subgroup
   << QgsComposerLegendStyle::SymbolLabel;
-  foreach ( QgsComposerLegendStyle::Style st, styles )
+  Q_FOREACH ( QgsComposerLegendStyle::Style st, styles )
   {
     QFont font( QgsFontUtils::getStandardTestFont() );
     font.setPointSizeF( settings.style( st ).font().pointSizeF() );
@@ -313,7 +313,7 @@ void TestQgsLegendRenderer::testFilterByMap()
   mapSettings.setOutputSize( QSize( 400, 100 ) );
   mapSettings.setOutputDpi( 96 );
   QStringList ll;
-  foreach ( QgsMapLayer *l, QgsMapLayerRegistry::instance()->mapLayers() )
+  Q_FOREACH ( QgsMapLayer *l, QgsMapLayerRegistry::instance()->mapLayers() )
   {
     ll << l->id();
   }

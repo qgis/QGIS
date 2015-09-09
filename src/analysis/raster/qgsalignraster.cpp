@@ -366,7 +366,7 @@ bool QgsAlignRaster::run()
 
   //dump();
 
-  foreach ( const Item& r, mRasters )
+  Q_FOREACH ( const Item& r, mRasters )
   {
     if ( !createAndWarp( r ) )
       return false;
@@ -401,7 +401,7 @@ int QgsAlignRaster::suggestedReferenceLayer() const
   QgsCoordinateReferenceSystem destCRS( "EPSG:4326" );
   QString destWkt = destCRS.toWkt();
 
-  foreach ( const Item& raster, mRasters )
+  Q_FOREACH ( const Item& raster, mRasters )
   {
     if ( !suggestedWarpOutput( RasterInfo( raster.inputFilename ), destWkt, &cs ) )
       return false;

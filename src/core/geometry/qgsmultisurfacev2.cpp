@@ -38,7 +38,7 @@ QDomElement QgsMultiSurfaceV2::asGML2( QDomDocument& doc, int precision, const Q
 {
   // GML2 does not support curves
   QDomElement elemMultiPolygon = doc.createElementNS( ns, "MultiPolygon" );
-  foreach ( const QgsAbstractGeometryV2 *geom, mGeometries )
+  Q_FOREACH ( const QgsAbstractGeometryV2 *geom, mGeometries )
   {
     if ( dynamic_cast<const QgsSurfaceV2*>( geom ) )
     {
@@ -58,7 +58,7 @@ QDomElement QgsMultiSurfaceV2::asGML2( QDomDocument& doc, int precision, const Q
 QDomElement QgsMultiSurfaceV2::asGML3( QDomDocument& doc, int precision, const QString& ns ) const
 {
   QDomElement elemMultiSurface = doc.createElementNS( ns, "MultiSurface" );
-  foreach ( const QgsAbstractGeometryV2 *geom, mGeometries )
+  Q_FOREACH ( const QgsAbstractGeometryV2 *geom, mGeometries )
   {
     if ( dynamic_cast<const QgsSurfaceV2*>( geom ) )
     {
@@ -75,7 +75,7 @@ QString QgsMultiSurfaceV2::asJSON( int precision ) const
 {
   // GeoJSON does not support curves
   QString json = "{\"type\": \"MultiPolygon\", \"coordinates\": [";
-  foreach ( const QgsAbstractGeometryV2 *geom, mGeometries )
+  Q_FOREACH ( const QgsAbstractGeometryV2 *geom, mGeometries )
   {
     if ( dynamic_cast<const QgsSurfaceV2*>( geom ) )
     {

@@ -282,7 +282,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList& commitErrors )
       commitErrors << tr( "ERROR: %n attribute(s) not deleted.", "not deleted attributes count", mDeletedAttributeIds.size() );
 #if 0
       QString list = "ERROR: Pending attribute deletes:";
-      foreach ( int idx, mDeletedAttributeIds )
+      Q_FOREACH ( int idx, mDeletedAttributeIds )
       {
         list.append( " " + L->pendingFields()[idx].name() );
       }
@@ -311,7 +311,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList& commitErrors )
       commitErrors << tr( "ERROR: %n new attribute(s) not added", "not added attributes count", mAddedAttributes.size() );
 #if 0
       QString list = "ERROR: Pending adds:";
-      foreach ( QgsField f, mAddedAttributes )
+      Q_FOREACH ( QgsField f, mAddedAttributes )
       {
         list.append( " " + f.name() );
       }
@@ -385,10 +385,10 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList& commitErrors )
         commitErrors << tr( "ERROR: %n attribute value change(s) not applied.", "not changed attribute values count", mChangedAttributeValues.size() );
 #if 0
         QString list = "ERROR: pending changes:";
-        foreach ( QgsFeatureId id, mChangedAttributeValues.keys() )
+        Q_FOREACH ( QgsFeatureId id, mChangedAttributeValues.keys() )
         {
           list.append( "\n  " + FID_TO_STRING( id ) + "[" );
-          foreach ( int idx, mChangedAttributeValues[ id ].keys() )
+          Q_FOREACH ( int idx, mChangedAttributeValues[ id ].keys() )
           {
             list.append( QString( " %1:%2" ).arg( L->pendingFields()[idx].name() ).arg( mChangedAttributeValues[id][idx].toString() ) );
           }
@@ -424,7 +424,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList& commitErrors )
         commitErrors << tr( "ERROR: %n feature(s) not deleted.", "not deleted features count", mDeletedFeatureIds.size() );
 #if 0
         QString list = "ERROR: pending deletes:";
-        foreach ( QgsFeatureId id, mDeletedFeatureIds )
+        Q_FOREACH ( QgsFeatureId id, mDeletedFeatureIds )
         {
           list.append( " " + FID_TO_STRING( id ) );
         }
@@ -476,7 +476,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList& commitErrors )
           commitErrors << tr( "ERROR: %n feature(s) not added.", "not added features count", mAddedFeatures.size() );
 #if 0
           QString list = "ERROR: pending adds:";
-          foreach ( QgsFeature f, mAddedFeatures )
+          Q_FOREACH ( QgsFeature f, mAddedFeatures )
           {
             list.append( " " + FID_TO_STRING( f.id() ) + "[" );
             for ( int i = 0; i < L->pendingFields().size(); i++ )
@@ -525,7 +525,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList& commitErrors )
   if ( !success && provider->hasErrors() )
   {
     commitErrors << tr( "\n  Provider errors:" );
-    foreach ( QString e, provider->errors() )
+    Q_FOREACH ( QString e, provider->errors() )
     {
       commitErrors << "    " + e.replace( "\n", "\n    " );
     }

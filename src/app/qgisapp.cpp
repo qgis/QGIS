@@ -1092,7 +1092,7 @@ void QgisApp::dropEvent( QDropEvent *event )
   if ( QgsMimeDataUtils::isUriList( event->mimeData() ) )
   {
     QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( event->mimeData() );
-    foreach ( const QgsMimeDataUtils::Uri& u, lst )
+    Q_FOREACH ( const QgsMimeDataUtils::Uri& u, lst )
     {
       QString uri = crsAndFormatAdjustedLayerUri( u.uri, u.supportedCrs, u.supportedFormats );
 
@@ -1560,7 +1560,7 @@ void QgisApp::setAppStyleSheet( const QString& stylesheet )
   setStyleSheet( stylesheet );
 
   // cascade styles to any current project composers
-  foreach ( QgsComposer *c, mPrintComposers )
+  Q_FOREACH ( QgsComposer *c, mPrintComposers )
   {
     c->setStyleSheet( stylesheet );
   }
@@ -1711,7 +1711,7 @@ void QgisApp::createToolBars()
 
   QList<QAction*> toolbarMenuActions;
   // Set action names so that they can be used in customization
-  foreach ( QToolBar *toolBar, toolbarMenuToolBars )
+  Q_FOREACH ( QToolBar *toolBar, toolbarMenuToolBars )
   {
     toolBar->toggleViewAction()->setObjectName( "mActionToggle" + toolBar->objectName().mid( 1 ) );
     toolbarMenuActions << toolBar->toggleViewAction();
@@ -2042,7 +2042,7 @@ void QgisApp::setIconSizes( int size )
 
   //Change all current icon sizes.
   QList<QToolBar *> toolbars = findChildren<QToolBar *>();
-  foreach ( QToolBar * toolbar, toolbars )
+  Q_FOREACH ( QToolBar * toolbar, toolbars )
   {
     QString className = toolbar->parent()->metaObject()->className();
     if ( className == "QgisApp" )
@@ -2055,7 +2055,7 @@ void QgisApp::setIconSizes( int size )
     }
   }
 
-  foreach ( QgsComposer *c, mPrintComposers )
+  Q_FOREACH ( QgsComposer *c, mPrintComposers )
   {
     c->setIconSizes( size );
   }
@@ -2743,7 +2743,7 @@ void QgisApp::createDecorations()
 
 void QgisApp::renderDecorationItems( QPainter *p )
 {
-  foreach ( QgsDecorationItem* item, mDecorationItems )
+  Q_FOREACH ( QgsDecorationItem* item, mDecorationItems )
   {
     item->render( p );
   }
@@ -2751,7 +2751,7 @@ void QgisApp::renderDecorationItems( QPainter *p )
 
 void QgisApp::projectReadDecorationItems()
 {
-  foreach ( QgsDecorationItem* item, mDecorationItems )
+  Q_FOREACH ( QgsDecorationItem* item, mDecorationItems )
   {
     item->projectRead();
   }
@@ -2870,7 +2870,7 @@ void QgisApp::updateProjectFromTemplates()
   mProjectFromTemplateMenu->clear();
 
   // Add entries
-  foreach ( const QString& templateFile, templateFiles )
+  Q_FOREACH ( const QString& templateFile, templateFiles )
   {
     mProjectFromTemplateMenu->addAction( templateFile );
   }
@@ -3003,7 +3003,7 @@ QString QgisApp::crsAndFormatAdjustedLayerUri( const QString &uri, const QString
 
   // Adjust layer CRS to project CRS
   QgsCoordinateReferenceSystem testCrs;
-  foreach ( const QString& c, supportedCrs )
+  Q_FOREACH ( const QString& c, supportedCrs )
   {
     testCrs.createFromOgcWmsCrs( c );
     if ( testCrs == mMapCanvas->mapSettings().destinationCrs() )
@@ -3016,7 +3016,7 @@ QString QgisApp::crsAndFormatAdjustedLayerUri( const QString &uri, const QString
 
   // Use the last used image format
   QString lastImageEncoding = QSettings().value( "/qgis/lastWmsImageEncoding", "image/png" ).toString();
-  foreach ( const QString& fmt, supportedFormats )
+  Q_FOREACH ( const QString& fmt, supportedFormats )
   {
     if ( fmt == lastImageEncoding )
     {
@@ -3057,7 +3057,7 @@ bool QgisApp::addVectorLayers( const QStringList &theLayerQStringList, const QSt
 {
   bool wasfrozen = mMapCanvas->isFrozen();
   QList<QgsMapLayer *> myList;
-  foreach ( QString src, theLayerQStringList )
+  Q_FOREACH ( QString src, theLayerQStringList )
   {
     src = src.trimmed();
     QString base;
@@ -3164,7 +3164,7 @@ bool QgisApp::addVectorLayers( const QStringList &theLayerQStringList, const QSt
 
   // Register this layer with the layers registry
   QgsMapLayerRegistry::instance()->addMapLayers( myList );
-  foreach ( QgsMapLayer *l, myList )
+  Q_FOREACH ( QgsMapLayer *l, myList )
   {
     bool ok;
     l->loadDefaultStyle( ok );
@@ -3255,7 +3255,7 @@ bool QgisApp::askUserForZipItemLayers( QString path )
 
     if ( chooseSublayersDialog.exec() )
     {
-      foreach ( int i, chooseSublayersDialog.selectionIndexes() )
+      Q_FOREACH ( int i, chooseSublayersDialog.selectionIndexes() )
       {
         childItems << zipItem->children()[i];
       }
@@ -3269,7 +3269,7 @@ bool QgisApp::askUserForZipItemLayers( QString path )
   }
 
   // add childItems
-  foreach ( QgsDataItem* item, childItems )
+  Q_FOREACH ( QgsDataItem* item, childItems )
   {
     QgsLayerItem *layerItem = dynamic_cast<QgsLayerItem *>( item );
     if ( !layerItem )
@@ -3355,7 +3355,7 @@ void QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
 
   if ( chooseSublayersDialog.exec() )
   {
-    foreach ( int i, chooseSublayersDialog.selectionIndexes() )
+    Q_FOREACH ( int i, chooseSublayersDialog.selectionIndexes() )
     {
       QgsRasterLayer *rlayer = new QgsRasterLayer( sublayers[i], names[i] );
       if ( rlayer && rlayer->isValid() )
@@ -3512,7 +3512,7 @@ void QgisApp::loadOGRSublayers( QString layertype, QString uri, QStringList list
   {
     // Register layer(s) with the layers registry
     QgsMapLayerRegistry::instance()->addMapLayers( myList );
-    foreach ( QgsMapLayer *l, myList )
+    Q_FOREACH ( QgsMapLayer *l, myList )
     {
       bool ok;
       l->loadDefaultStyle( ok );
@@ -3561,7 +3561,7 @@ void QgisApp::addDatabaseLayers( QStringList const & layerPathList, QString cons
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  foreach ( const QString& layerPath, layerPathList )
+  Q_FOREACH ( const QString& layerPath, layerPathList )
   {
     // create the layer
     QgsDataSourceURI uri( layerPath );
@@ -3600,7 +3600,7 @@ void QgisApp::addDatabaseLayers( QStringList const & layerPathList, QString cons
   QgsMapLayerRegistry::instance()->addMapLayers( myList );
 
   // load default style after adding to process readCustomSymbology signals
-  foreach ( QgsMapLayer *l, myList )
+  Q_FOREACH ( QgsMapLayer *l, myList )
   {
     bool ok;
     l->loadDefaultStyle( ok );
@@ -4720,7 +4720,7 @@ void QgisApp::addAllToOverview()
 {
   if ( mLayerTreeView )
   {
-    foreach ( QgsLayerTreeLayer* nodeL, mLayerTreeView->layerTreeModel()->rootGroup()->findLayers() )
+    Q_FOREACH ( QgsLayerTreeLayer* nodeL, mLayerTreeView->layerTreeModel()->rootGroup()->findLayers() )
       nodeL->setCustomProperty( "overview", 1 );
   }
 
@@ -4732,7 +4732,7 @@ void QgisApp::removeAllFromOverview()
 {
   if ( mLayerTreeView )
   {
-    foreach ( QgsLayerTreeLayer* nodeL, mLayerTreeView->layerTreeModel()->rootGroup()->findLayers() )
+    Q_FOREACH ( QgsLayerTreeLayer* nodeL, mLayerTreeView->layerTreeModel()->rootGroup()->findLayers() )
       nodeL->setCustomProperty( "overview", 0 );
   }
 
@@ -4847,7 +4847,7 @@ void QgisApp::hideAllLayers()
 {
   QgsDebugMsg( "hiding all layers!" );
 
-  foreach ( QgsLayerTreeLayer* nodeLayer, mLayerTreeView->layerTreeModel()->rootGroup()->findLayers() )
+  Q_FOREACH ( QgsLayerTreeLayer* nodeLayer, mLayerTreeView->layerTreeModel()->rootGroup()->findLayers() )
     nodeLayer->setVisible( Qt::Unchecked );
 }
 
@@ -4857,7 +4857,7 @@ void QgisApp::showAllLayers()
 {
   QgsDebugMsg( "Showing all layers!" );
 
-  foreach ( QgsLayerTreeLayer* nodeLayer, mLayerTreeView->layerTreeModel()->rootGroup()->findLayers() )
+  Q_FOREACH ( QgsLayerTreeLayer* nodeLayer, mLayerTreeView->layerTreeModel()->rootGroup()->findLayers() )
     nodeLayer->setVisible( Qt::Checked );
 }
 
@@ -4866,7 +4866,7 @@ void QgisApp::hideSelectedLayers()
 {
   QgsDebugMsg( "hiding selected layers!" );
 
-  foreach ( QgsLayerTreeNode* node, mLayerTreeView->selectedNodes() )
+  Q_FOREACH ( QgsLayerTreeNode* node, mLayerTreeView->selectedNodes() )
   {
     if ( QgsLayerTree::isGroup( node ) )
       QgsLayerTree::toGroup( node )->setVisible( Qt::Unchecked );
@@ -4881,7 +4881,7 @@ void QgisApp::showSelectedLayers()
 {
   QgsDebugMsg( "show selected layers!" );
 
-  foreach ( QgsLayerTreeNode* node, mLayerTreeView->selectedNodes() )
+  Q_FOREACH ( QgsLayerTreeNode* node, mLayerTreeView->selectedNodes() )
   {
     if ( QgsLayerTree::isGroup( node ) )
       QgsLayerTree::toGroup( node )->setVisible( Qt::Checked );
@@ -5717,7 +5717,7 @@ QString QgisApp::uniqueComposerTitle( QWidget* parent, bool acceptEmpty, const Q
 
   QStringList cNames;
   cNames << newTitle;
-  foreach ( QgsComposer* c, printComposers() )
+  Q_FOREACH ( QgsComposer* c, printComposers() )
   {
     cNames << c->title();
   }
@@ -6104,7 +6104,7 @@ void QgisApp::mergeAttributesOfSelectedFeatures()
 
   QgsAttributes merged = d.mergedAttributes();
 
-  foreach ( QgsFeatureId fid, vl->selectedFeaturesIds() )
+  Q_FOREACH ( QgsFeatureId fid, vl->selectedFeaturesIds() )
   {
     for ( int i = 0; i < merged.count(); ++i )
     {
@@ -6637,7 +6637,7 @@ QgsVectorLayer *QgisApp::pasteToNewMemoryVector()
   layer->startEditing();
   layer->setCrs( clipboard()->crs(), false );
 
-  foreach ( QgsField f, clipboard()->fields().toList() )
+  Q_FOREACH ( QgsField f, clipboard()->fields().toList() )
   {
     QgsDebugMsg( QString( "field %1 (%2)" ).arg( f.name() ).arg( QVariant::typeToName( f.type() ) ) );
     if ( !layer->addAttribute( f ) )
@@ -7006,7 +7006,7 @@ void QgisApp::cancelEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerR
 
 void QgisApp::saveEdits()
 {
-  foreach ( QgsMapLayer * layer, mLayerTreeView->selectedLayers() )
+  Q_FOREACH ( QgsMapLayer * layer, mLayerTreeView->selectedLayers() )
   {
     saveEdits( layer, true, false );
   }
@@ -7022,7 +7022,7 @@ void QgisApp::saveAllEdits( bool verifyAction )
       return;
   }
 
-  foreach ( QgsMapLayer * layer, editableLayers( true ) )
+  Q_FOREACH ( QgsMapLayer * layer, editableLayers( true ) )
   {
     saveEdits( layer, true, false );
   }
@@ -7032,7 +7032,7 @@ void QgisApp::saveAllEdits( bool verifyAction )
 
 void QgisApp::rollbackEdits()
 {
-  foreach ( QgsMapLayer * layer, mLayerTreeView->selectedLayers() )
+  Q_FOREACH ( QgsMapLayer * layer, mLayerTreeView->selectedLayers() )
   {
     cancelEdits( layer, true, false );
   }
@@ -7048,7 +7048,7 @@ void QgisApp::rollbackAllEdits( bool verifyAction )
       return;
   }
 
-  foreach ( QgsMapLayer * layer, editableLayers( true ) )
+  Q_FOREACH ( QgsMapLayer * layer, editableLayers( true ) )
   {
     cancelEdits( layer, true, false );
   }
@@ -7058,7 +7058,7 @@ void QgisApp::rollbackAllEdits( bool verifyAction )
 
 void QgisApp::cancelEdits()
 {
-  foreach ( QgsMapLayer * layer, mLayerTreeView->selectedLayers() )
+  Q_FOREACH ( QgsMapLayer * layer, mLayerTreeView->selectedLayers() )
   {
     cancelEdits( layer, false, false );
   }
@@ -7074,7 +7074,7 @@ void QgisApp::cancelAllEdits( bool verifyAction )
       return;
   }
 
-  foreach ( QgsMapLayer * layer, editableLayers() )
+  Q_FOREACH ( QgsMapLayer * layer, editableLayers() )
   {
     cancelEdits( layer, false, false );
   }
@@ -7136,7 +7136,7 @@ QList<QgsMapLayer *> QgisApp::editableLayers( bool modified ) const
 {
   QList<QgsMapLayer*> editLayers;
   // use legend layers (instead of registry) so QList mirrors its order
-  foreach ( QgsLayerTreeLayer* nodeLayer, mLayerTreeView->layerTreeModel()->rootGroup()->findLayers() )
+  Q_FOREACH ( QgsLayerTreeLayer* nodeLayer, mLayerTreeView->layerTreeModel()->rootGroup()->findLayers() )
   {
     if ( !nodeLayer->layer() )
       continue;
@@ -7326,7 +7326,7 @@ void QgisApp::isInOverview()
 
 void QgisApp::removingLayers( QStringList theLayers )
 {
-  foreach ( const QString &layerId, theLayers )
+  Q_FOREACH ( const QString &layerId, theLayers )
   {
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer*>(
                                QgsMapLayerRegistry::instance()->mapLayer( layerId ) );
@@ -7349,7 +7349,7 @@ void QgisApp::removeLayer()
     return;
   }
 
-  foreach ( QgsMapLayer * layer, mLayerTreeView->selectedLayers() )
+  Q_FOREACH ( QgsMapLayer * layer, mLayerTreeView->selectedLayers() )
   {
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer*>( layer );
     if ( vlayer && vlayer->isEditable() && !toggleEditing( vlayer, true ) )
@@ -7374,7 +7374,7 @@ void QgisApp::removeLayer()
     return;
   }
 
-  foreach ( QgsLayerTreeNode* node, selectedNodes )
+  Q_FOREACH ( QgsLayerTreeNode* node, selectedNodes )
   {
     QgsLayerTreeGroup* parentGroup = qobject_cast<QgsLayerTreeGroup*>( node->parent() );
     if ( parentGroup )
@@ -7404,7 +7404,7 @@ void QgisApp::duplicateLayers( QList<QgsMapLayer *> lyrList )
   QString layerDupName, unSppType;
   QList<QgsMessageBarItem *> msgBars;
 
-  foreach ( QgsMapLayer * selectedLyr, selectedLyrs )
+  Q_FOREACH ( QgsMapLayer * selectedLyr, selectedLyrs )
   {
     dupLayer = 0;
     unSppType.clear();
@@ -7495,7 +7495,7 @@ void QgisApp::duplicateLayers( QList<QgsMapLayer *> lyrList )
     QgsVectorLayer* vDupLayer = dynamic_cast<QgsVectorLayer*>( dupLayer );
     if ( vLayer && vDupLayer )
     {
-      foreach ( const QgsVectorJoinInfo& join, vLayer->vectorJoins() )
+      Q_FOREACH ( const QgsVectorJoinInfo& join, vLayer->vectorJoins() )
       {
         vDupLayer->addJoin( join );
       }
@@ -7507,7 +7507,7 @@ void QgisApp::duplicateLayers( QList<QgsMapLayer *> lyrList )
   mMapCanvas->freeze( false );
 
   // display errors in message bar after duplication of layers
-  foreach ( QgsMessageBarItem * msgBar, msgBars )
+  Q_FOREACH ( QgsMessageBarItem * msgBar, msgBars )
   {
     mInfoBar->pushItem( msgBar );
   }
@@ -7534,7 +7534,7 @@ void QgisApp::setLayerScaleVisibility()
   if ( dlg->exec() )
   {
     mMapCanvas->freeze();
-    foreach ( QgsMapLayer* layer, layers )
+    Q_FOREACH ( QgsMapLayer* layer, layers )
     {
       layer->setScaleBasedVisibility( dlg->hasScaleVisibility() );
       layer->setMinimumScale( 1.0 / dlg->maximumScale() );
@@ -7564,11 +7564,11 @@ void QgisApp::setLayerCRS()
 
   QgsCoordinateReferenceSystem crs( mySelector.selectedCrsId(), QgsCoordinateReferenceSystem::InternalCrsId );
 
-  foreach ( QgsLayerTreeNode* node, mLayerTreeView->selectedNodes() )
+  Q_FOREACH ( QgsLayerTreeNode* node, mLayerTreeView->selectedNodes() )
   {
     if ( QgsLayerTree::isGroup( node ) )
     {
-      foreach ( QgsLayerTreeLayer* child, QgsLayerTree::toGroup( node )->findLayers() )
+      Q_FOREACH ( QgsLayerTreeLayer* child, QgsLayerTree::toGroup( node )->findLayers() )
       {
         if ( child->layer() )
         {
@@ -7695,7 +7695,7 @@ void QgisApp::legendGroupSetCRS()
   }
 
   QgsCoordinateReferenceSystem crs( mySelector.selectedCrsId(), QgsCoordinateReferenceSystem::InternalCrsId );
-  foreach ( QgsLayerTreeLayer* nodeLayer, currentGroup->findLayers() )
+  Q_FOREACH ( QgsLayerTreeLayer* nodeLayer, currentGroup->findLayers() )
   {
     if ( nodeLayer->layer() )
     {
@@ -7905,7 +7905,7 @@ void QgisApp::showOptionsDialog( QWidget *parent, QString currentPage )
     if ( oldCapitalise != mySettings.value( "/qgis/capitaliseLayerName", QVariant( false ) ).toBool() )
     {
       // if the layer capitalization has changed, we need to update all layer names
-      foreach ( QgsMapLayer* layer, QgsMapLayerRegistry::instance()->mapLayers() )
+      Q_FOREACH ( QgsMapLayer* layer, QgsMapLayerRegistry::instance()->mapLayers() )
         layer->setLayerName( layer->originalName() );
     }
 
@@ -8033,7 +8033,7 @@ void QgisApp::decreaseContrast()
 
 void QgisApp::adjustBrightnessContrast( int delta, bool updateBrightness )
 {
-  foreach ( QgsMapLayer * layer, mLayerTreeView->selectedLayers() )
+  Q_FOREACH ( QgsMapLayer * layer, mLayerTreeView->selectedLayers() )
   {
     if ( !layer )
     {
@@ -10530,7 +10530,7 @@ void QgisApp::namSslErrors( QNetworkReply *reply, const QList<QSslError> &errors
   bool otherError = false;
   static QSet<QSslError::SslError> ignoreErrors;
 
-  foreach ( const QSslError& error, errors )
+  Q_FOREACH ( const QSslError& error, errors )
   {
     if ( error.error() == QSslError::NoError )
       continue;
@@ -10550,7 +10550,7 @@ void QgisApp::namSslErrors( QNetworkReply *reply, const QList<QSslError> &errors
                              msg,
                              QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Ok )
   {
-    foreach ( const QSslError& error, errors )
+    Q_FOREACH ( const QSslError& error, errors )
     {
       ignoreErrors << error.error();
     }
@@ -10653,7 +10653,7 @@ QMenu* QgisApp::createPopupMenu()
     plabel->setAlignment( Qt::AlignHCenter );
     panelstitle->setDefaultWidget( plabel );
     menu->addAction( panelstitle );
-    foreach ( QAction* a, panels )
+    Q_FOREACH ( QAction* a, panels )
     {
       menu->addAction( a );
     }
@@ -10665,7 +10665,7 @@ QMenu* QgisApp::createPopupMenu()
     toolbarstitle->setDefaultWidget( tlabel );
     menu->addAction( toolbarstitle );
     qSort( toolbars.begin(), toolbars.end(), cmpByText_ );
-    foreach ( QAction* a, toolbars )
+    Q_FOREACH ( QAction* a, toolbars )
     {
       menu->addAction( a );
     }

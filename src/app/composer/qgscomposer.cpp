@@ -561,7 +561,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mPanelMenu->addAction( mItemsDock->toggleViewAction() );
 
   QList<QDockWidget *> docks = findChildren<QDockWidget *>();
-  foreach ( QDockWidget* dock, docks )
+  Q_FOREACH ( QDockWidget* dock, docks )
   {
     dock->setFeatures( QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetClosable );
     connect( dock, SIGNAL( visibilityChanged( bool ) ), this, SLOT( dockVisibilityChanged( bool ) ) );
@@ -729,7 +729,7 @@ void QgsComposer::setIconSizes( int size )
 
   //Change all current icon sizes.
   QList<QToolBar *> toolbars = findChildren<QToolBar *>();
-  foreach ( QToolBar * toolbar, toolbars )
+  Q_FOREACH ( QToolBar * toolbar, toolbars )
   {
     toolbar->setIconSize( QSize( size, size ) );
   }
@@ -1384,14 +1384,14 @@ void QgsComposer::on_mActionHidePanels_triggered()
     mPanelStatus.clear();
     //record status of all docks
 
-    foreach ( QDockWidget* dock, docks )
+    Q_FOREACH ( QDockWidget* dock, docks )
     {
       mPanelStatus.insert( dock->windowTitle(), PanelStatus( dock->isVisible(), false ) );
       dock->setVisible( false );
     }
 
     //record active dock tabs
-    foreach ( QTabBar* tabBar, tabBars )
+    Q_FOREACH ( QTabBar* tabBar, tabBars )
     {
       QString currentTabTitle = tabBar->tabText( tabBar->currentIndex() );
       mPanelStatus[ currentTabTitle ].isActive = true;
@@ -1400,7 +1400,7 @@ void QgsComposer::on_mActionHidePanels_triggered()
   else
   {
     //restore visibility of all docks
-    foreach ( QDockWidget* dock, docks )
+    Q_FOREACH ( QDockWidget* dock, docks )
     {
       if ( ! mPanelStatus.contains( dock->windowTitle() ) )
       {
@@ -1411,7 +1411,7 @@ void QgsComposer::on_mActionHidePanels_triggered()
     }
 
     //restore previously active dock tabs
-    foreach ( QTabBar* tabBar, tabBars )
+    Q_FOREACH ( QTabBar* tabBar, tabBars )
     {
       //loop through all tabs in tab bar
       for ( int i = 0; i < tabBar->count(); ++i )
@@ -3725,7 +3725,7 @@ void QgsComposer::populateHelpMenu()
 void QgsComposer::populateWithOtherMenu( QMenu* thisMenu, QMenu* otherMenu )
 {
   thisMenu->clear();
-  foreach ( QAction* act, otherMenu->actions() )
+  Q_FOREACH ( QAction* act, otherMenu->actions() )
   {
     if ( act->menu() )
     {
@@ -3741,7 +3741,7 @@ void QgsComposer::populateWithOtherMenu( QMenu* thisMenu, QMenu* otherMenu )
 QMenu* QgsComposer::mirrorOtherMenu( QMenu* otherMenu )
 {
   QMenu* newMenu = new QMenu( otherMenu->title(), this );
-  foreach ( QAction* act, otherMenu->actions() )
+  Q_FOREACH ( QAction* act, otherMenu->actions() )
   {
     if ( act->menu() )
     {

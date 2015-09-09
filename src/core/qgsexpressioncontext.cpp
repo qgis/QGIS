@@ -502,7 +502,7 @@ QgsExpressionContextScope* QgsExpressionContextUtils::projectScope()
   QStringList variableValues = project->readListEntry( "Variables", "/variableValues" );
 
   int varIndex = 0;
-  foreach ( const QString& variableName, variableNames )
+  Q_FOREACH ( const QString& variableName, variableNames )
   {
     if ( varIndex >= variableValues.length() )
     {
@@ -569,7 +569,7 @@ QgsExpressionContextScope* QgsExpressionContextUtils::layerScope( const QgsMapLa
   QStringList variableValues = layer->customProperty( "variableValues" ).toStringList();
 
   int varIndex = 0;
-  foreach ( const QString& variableName, variableNames )
+  Q_FOREACH ( const QString& variableName, variableNames )
   {
     if ( varIndex >= variableValues.length() )
     {
@@ -654,7 +654,7 @@ QgsExpressionContextScope *QgsExpressionContextUtils::compositionScope( const Qg
   QStringList variableValues = composition->customProperty( "variableValues" ).toStringList();
 
   int varIndex = 0;
-  foreach ( const QString& variableName, variableNames )
+  Q_FOREACH ( const QString& variableName, variableNames )
   {
     if ( varIndex >= variableValues.length() )
     {
@@ -757,7 +757,7 @@ QgsExpressionContextScope *QgsExpressionContextUtils::composerItemScope( const Q
   QStringList variableValues = composerItem->customProperty( "variableValues" ).toStringList();
 
   int varIndex = 0;
-  foreach ( const QString& variableName, variableNames )
+  Q_FOREACH ( const QString& variableName, variableNames )
   {
     if ( varIndex >= variableValues.length() )
     {

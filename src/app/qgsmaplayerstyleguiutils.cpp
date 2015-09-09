@@ -62,7 +62,7 @@ QList<QAction*> QgsMapLayerStyleGuiUtils::actionsUseStyle( QgsMapLayer* layer, Q
   bool onlyOneStyle = mgr->styles().count() == 1;
 
   QList<QAction*> actions;
-  foreach ( QString name, mgr->styles() )
+  Q_FOREACH ( QString name, mgr->styles() )
   {
     bool active = name == mgr->currentStyle();
     if ( name.isEmpty() )
@@ -86,7 +86,7 @@ void QgsMapLayerStyleGuiUtils::addStyleManagerActions( QMenu* m, QgsMapLayer* la
     m->addAction( actionRemoveStyle( layer ) );
   m->addAction( actionRenameStyle( layer ) );
   m->addSeparator();
-  foreach ( QAction* a, actionsUseStyle( layer ) )
+  Q_FOREACH ( QAction* a, actionsUseStyle( layer ) )
     m->addAction( a );
 }
 

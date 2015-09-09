@@ -1598,7 +1598,7 @@ void QgsComposerMap::setLayerStyleOverrides( const QMap<QString, QString>& overr
 void QgsComposerMap::storeCurrentLayerStyles()
 {
   mLayerStyleOverrides.clear();
-  foreach ( const QString& layerID, mLayerSet )
+  Q_FOREACH ( const QString& layerID, mLayerSet )
   {
     if ( QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerID ) )
     {

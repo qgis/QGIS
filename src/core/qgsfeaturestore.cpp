@@ -40,7 +40,7 @@ QgsFeatureStore::~QgsFeatureStore()
 void QgsFeatureStore::setFields( const QgsFields & fields )
 {
   mFields = fields;
-  foreach ( QgsFeature feature, mFeatures )
+  Q_FOREACH ( QgsFeature feature, mFeatures )
   {
     feature.setFields( mFields );
   }

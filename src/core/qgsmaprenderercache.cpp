@@ -35,7 +35,7 @@ void QgsMapRendererCache::clearInternal()
   mScale = 0;
 
   // make sure we are disconnected from all layers
-  foreach ( const QString& layerId, mCachedImages.keys() )
+  Q_FOREACH ( const QString& layerId, mCachedImages.keys() )
   {
     QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerId );
     if ( layer )

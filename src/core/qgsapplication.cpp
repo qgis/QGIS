@@ -114,7 +114,7 @@ void QgsApplication::init( QString customConfigPath )
   // check if QGIS is run from build directory (not the install directory)
   QFile f;
   // "/../../.." is for Mac bundled app in build directory
-  foreach ( const QString& path, QStringList() << "" << "/.." << "/bin" << "/../../.." )
+  Q_FOREACH ( const QString& path, QStringList() << "" << "/.." << "/bin" << "/../../.." )
   {
     f.setFileName( prefixPath + path + "/qgisbuildpath.txt" );
     if ( f.exists() )
@@ -186,7 +186,7 @@ void QgsApplication::init( QString customConfigPath )
 
   // store system environment variables passed to application, before they are adjusted
   QMap<QString, QString> systemEnvVarMap;
-  foreach ( const QString &varStr, QProcess::systemEnvironment() )
+  Q_FOREACH ( const QString &varStr, QProcess::systemEnvironment() )
   {
     int pos = varStr.indexOf( QLatin1Char( '=' ) );
     if ( pos == -1 )
@@ -482,11 +482,11 @@ QHash<QString, QString> QgsApplication::uiThemes()
   QStringList paths = QStringList() << userThemesFolder();
   QHash<QString, QString> mapping;
   mapping.insert( "default", "" );
-  foreach ( const QString& path, paths )
+  Q_FOREACH ( const QString& path, paths )
   {
     QDir folder( path );
     QFileInfoList styleFiles = folder.entryInfoList( QDir::Dirs | QDir::NoDotAndDotDot );
-    foreach ( const QFileInfo& info, styleFiles )
+    Q_FOREACH ( const QFileInfo& info, styleFiles )
     {
       QFileInfo styleFile( info.absoluteFilePath() + "/style.qss" );
       if ( !styleFile.exists() )
@@ -1025,14 +1025,14 @@ void QgsApplication::copyPath( QString src, QString dst )
   if ( ! dir.exists() )
     return;
 
-  foreach ( const QString& d, dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
+  Q_FOREACH ( const QString& d, dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
   {
     QString dst_path = dst + QDir::separator() + d;
     dir.mkpath( dst_path );
     copyPath( src + QDir::separator() + d, dst_path );
   }
 
-  foreach ( const QString& f, dir.entryList( QDir::Files ) )
+  Q_FOREACH ( const QString& f, dir.entryList( QDir::Files ) )
   {
     QFile::copy( src + QDir::separator() + f, dst + QDir::separator() + f );
   }

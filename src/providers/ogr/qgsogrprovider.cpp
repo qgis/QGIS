@@ -676,7 +676,7 @@ QStringList QgsOgrProvider::subLayers() const
         fCount[wkbUnknown] = 0;
       }
       bool bIs25D = (( layerGeomType & wkb25DBit ) != 0 );
-      foreach ( OGRwkbGeometryType gType, fCount.keys() )
+      Q_FOREACH ( OGRwkbGeometryType gType, fCount.keys() )
       {
         QString geom = ogrWkbGeometryTypeName(( bIs25D ) ? ( OGRwkbGeometryType )( gType | wkb25DBit ) : gType );
 
@@ -1172,7 +1172,7 @@ bool QgsOgrProvider::deleteAttributes( const QgsAttributeIds &attributes )
   QList<int> attrsLst = attributes.toList();
   // sort in descending order
   qSort( attrsLst.begin(), attrsLst.end(), qGreater<int>() );
-  foreach ( int attr, attrsLst )
+  Q_FOREACH ( int attr, attrsLst )
   {
     if ( OGR_L_DeleteField( ogrLayer, attr ) != OGRERR_NONE )
     {

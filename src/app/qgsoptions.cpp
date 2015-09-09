@@ -133,7 +133,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
     mCustomVariablesTable->setEnabled( false );
   }
   QStringList customVarsList = settings.value( "qgis/customEnvVars", "" ).toStringList();
-  foreach ( const QString &varStr, customVarsList )
+  Q_FOREACH ( const QString &varStr, customVarsList )
   {
     int pos = varStr.indexOf( QLatin1Char( '|' ) );
     if ( pos == -1 )
@@ -167,7 +167,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   QMap<QString, QString> sysVarsMap = QgsApplication::systemEnvVars();
   QStringList currentVarsList = QProcess::systemEnvironment();
 
-  foreach ( const QString &varStr, currentVarsList )
+  Q_FOREACH ( const QString &varStr, currentVarsList )
   {
     int pos = varStr.indexOf( QLatin1Char( '=' ) );
     if ( pos == -1 )
@@ -750,7 +750,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   lblSystemLocale->setText( tr( "Detected active locale on your system: %1" ).arg( mySystemLocale ) );
   QString myUserLocale = settings.value( "locale/userLocale", "" ).toString();
   QStringList myI18nList = i18nList();
-  foreach ( const QString& l, myI18nList )
+  Q_FOREACH ( const QString& l, myI18nList )
   {
     cboLocale->addItem( QIcon( QString( ":/images/flags/%1.png" ).arg( l ) ), QLocale( l ).nativeLanguageName(), l );
   }
@@ -1762,11 +1762,11 @@ void QgsOptions::loadGdalDriverList()
   // myDrivers.sort();
   // sort list case insensitive - no existing function for this!
   QMap<QString, QString> strMap;
-  foreach ( const QString& str, myDrivers )
+  Q_FOREACH ( const QString& str, myDrivers )
     strMap.insert( str.toLower(), str );
   myDrivers = strMap.values();
 
-  foreach ( const QString& myName, myDrivers )
+  Q_FOREACH ( const QString& myName, myDrivers )
   {
     QTreeWidgetItem * mypItem = new QTreeWidgetItem( QStringList( myName ) );
     if ( mySkippedDrivers.contains( myName ) )
@@ -1794,13 +1794,13 @@ void QgsOptions::loadGdalDriverList()
 
   // populate cmbEditCreateOptions with gdal write drivers - sorted, GTiff first
   strMap.clear();
-  foreach ( const QString& str, myGdalWriteDrivers )
+  Q_FOREACH ( const QString& str, myGdalWriteDrivers )
     strMap.insert( str.toLower(), str );
   myGdalWriteDrivers = strMap.values();
   myGdalWriteDrivers.removeAll( "Gtiff" );
   myGdalWriteDrivers.prepend( "GTiff" );
   cmbEditCreateOptions->clear();
-  foreach ( const QString& myName, myGdalWriteDrivers )
+  Q_FOREACH ( const QString& myName, myGdalWriteDrivers )
   {
     cmbEditCreateOptions->addItem( myName );
   }

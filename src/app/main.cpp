@@ -827,7 +827,7 @@ APP_EXPORT int main( int argc, char *argv[] )
     QStringList customVarsList = mySettings.value( "qgis/customEnvVars", "" ).toStringList();
     if ( !customVarsList.isEmpty() )
     {
-      foreach ( const QString &varStr, customVarsList )
+      Q_FOREACH ( const QString &varStr, customVarsList )
       {
         int pos = varStr.indexOf( QLatin1Char( '|' ) );
         if ( pos == -1 )
@@ -1141,7 +1141,7 @@ APP_EXPORT int main( int argc, char *argv[] )
     QList< QPair<QgsVectorLayer *, int > > layers;
     if ( !dxfPreset.isEmpty() )
     {
-      foreach ( const QString& layer, QgsProject::instance()->visibilityPresetCollection()->presetVisibleLayers( dxfPreset ) )
+      Q_FOREACH ( const QString& layer, QgsProject::instance()->visibilityPresetCollection()->presetVisibleLayers( dxfPreset ) )
       {
         QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( QgsMapLayerRegistry::instance()->mapLayer( layer ) );
         if ( !vl )
@@ -1152,7 +1152,7 @@ APP_EXPORT int main( int argc, char *argv[] )
     }
     else
     {
-      foreach ( QgsMapLayer *ml, QgsMapLayerRegistry::instance()->mapLayers().values() )
+      Q_FOREACH ( QgsMapLayer *ml, QgsMapLayerRegistry::instance()->mapLayers().values() )
       {
         QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
         if ( !vl )

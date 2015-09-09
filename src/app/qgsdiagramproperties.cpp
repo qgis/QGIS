@@ -509,7 +509,7 @@ void QgsDiagramProperties::addAttribute( QTreeWidgetItem * item )
 
 void QgsDiagramProperties::on_mAddCategoryPushButton_clicked()
 {
-  foreach ( QTreeWidgetItem *attributeItem, mAttributesTreeWidget->selectedItems() )
+  Q_FOREACH ( QTreeWidgetItem *attributeItem, mAttributesTreeWidget->selectedItems() )
   {
     addAttribute( attributeItem );
   }
@@ -523,7 +523,7 @@ void QgsDiagramProperties::on_mAttributesTreeWidget_itemDoubleClicked( QTreeWidg
 
 void QgsDiagramProperties::on_mRemoveCategoryPushButton_clicked()
 {
-  foreach ( QTreeWidgetItem *attributeItem, mDiagramAttributesTreeWidget->selectedItems() )
+  Q_FOREACH ( QTreeWidgetItem *attributeItem, mDiagramAttributesTreeWidget->selectedItems() )
   {
     delete attributeItem;
   }

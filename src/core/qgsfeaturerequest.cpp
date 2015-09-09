@@ -145,7 +145,7 @@ QgsFeatureRequest& QgsFeatureRequest::setSubsetOfAttributes( const QStringList& 
   mFlags |= SubsetOfAttributes;
   mAttrs.clear();
 
-  foreach ( const QString& attrName, attrNames )
+  Q_FOREACH ( const QString& attrName, attrNames )
   {
     int attrNum = fields.fieldNameIndex( attrName );
     if ( attrNum != -1 && !mAttrs.contains( attrNum ) )

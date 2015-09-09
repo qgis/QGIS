@@ -62,7 +62,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
     struct RenderLevel
     {
       RenderLevel( int z ): zIndex( z ) {}
-      ~RenderLevel() { foreach ( RenderJob* j, jobs ) delete j; }
+      ~RenderLevel() { Q_FOREACH ( RenderJob* j, jobs ) delete j; }
       int zIndex;
       QList<RenderJob*> jobs;
     };
@@ -180,7 +180,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
         static Rule* create( QDomElement& ruleElem, QgsSymbolV2Map& symbolMap );
 
         RuleList& children() { return mChildren; }
-        RuleList descendants() const { RuleList l; foreach ( Rule *c, mChildren ) { l += c; l += c->descendants(); } return l; }
+        RuleList descendants() const { RuleList l; Q_FOREACH ( Rule *c, mChildren ) { l += c; l += c->descendants(); } return l; }
         Rule* parent() { return mParent; }
 
         //! add child rule, take ownership, sets this as parent

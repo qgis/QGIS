@@ -51,7 +51,7 @@ void QgsStatisticalSummary::calculate( const QList<double> &values )
 {
   reset();
 
-  foreach ( double value, values )
+  Q_FOREACH ( double value, values )
   {
     mCount++;
     mSum += value;
@@ -70,7 +70,7 @@ void QgsStatisticalSummary::calculate( const QList<double> &values )
   if ( mStatistics & QgsStatisticalSummary::StDev )
   {
     double sumSquared = 0;
-    foreach ( double value, values )
+    Q_FOREACH ( double value, values )
     {
       double diff = value - mMean;
       sumSquared += diff * diff;

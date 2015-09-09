@@ -123,7 +123,7 @@ QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::findRuleByKey( QStri
   if ( key == mRuleKey )
     return this;
 
-  foreach ( Rule* rule, mChildren )
+  Q_FOREACH ( Rule* rule, mChildren )
   {
     Rule* r = rule->findRuleByKey( key );
     if ( r )
@@ -135,7 +135,7 @@ QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::findRuleByKey( QStri
 void QgsRuleBasedRendererV2::Rule::updateElseRules()
 {
   mElseRules.clear();
-  foreach ( Rule* rule, mChildren )
+  Q_FOREACH ( Rule* rule, mChildren )
   {
     if ( rule->isElse() )
       mElseRules << rule;
@@ -153,7 +153,7 @@ QString QgsRuleBasedRendererV2::Rule::dump( int offset ) const
                 .arg( mFilterExp ).arg( symbolDump );
 
   QStringList lst;
-  foreach ( Rule* rule, mChildren )
+  Q_FOREACH ( Rule* rule, mChildren )
   {
     lst.append( rule->dump( offset + 2 ) );
   }
@@ -262,7 +262,7 @@ QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::clone() const
   Rule* newrule = new Rule( sym, mScaleMinDenom, mScaleMaxDenom, mFilterExp, mLabel, mDescription );
   newrule->setCheckState( mIsActive );
   // clone children
-  foreach ( Rule* rule, mChildren )
+  Q_FOREACH ( Rule* rule, mChildren )
     newrule->appendChild( rule->clone() );
   return newrule;
 }
@@ -542,7 +542,7 @@ QgsRuleBasedRendererV2::Rule::RenderResult QgsRuleBasedRendererV2::Rule::renderF
   // If none of the rules passed then we jump into the else rules and process them.
   if ( !willrendersomething )
   {
-    foreach ( Rule* rule, mElseRules )
+    Q_FOREACH ( Rule* rule, mElseRules )
     {
       rendered |= rule->renderFeature( featToRender, context, renderQueue ) != Filtered;
     }
@@ -839,7 +839,7 @@ void QgsRuleBasedRendererV2::startRender( QgsRenderContext& context, const QgsFi
   // and prepare rendering queue
   QMap<int, int> zLevelsToNormLevels;
   int maxNormLevel = -1;
-  foreach ( int zLevel, symbolZLevels )
+  Q_FOREACH ( int zLevel, symbolZLevels )
   {
     zLevelsToNormLevels[zLevel] = ++maxNormLevel;
     mRenderQueue.append( RenderLevel( zLevel ) );
@@ -856,11 +856,11 @@ void QgsRuleBasedRendererV2::stopRender( QgsRenderContext& context )
   //
 
   // go through all levels
-  foreach ( const RenderLevel& level, mRenderQueue )
+  Q_FOREACH ( const RenderLevel& level, mRenderQueue )
   {
     //QgsDebugMsg(QString("level %1").arg(level.zIndex));
     // go through all jobs at the level
-    foreach ( const RenderJob* job, level.jobs )
+    Q_FOREACH ( const RenderJob* job, level.jobs )
     {
       context.expressionContext().setFeature( job->ftr.feat );
       //QgsDebugMsg(QString("job fid %1").arg(job->f->id()));
@@ -1060,7 +1060,7 @@ QgsFeatureRendererV2* QgsRuleBasedRendererV2::createFromSld( QDomElement& elemen
 
 void QgsRuleBasedRendererV2::refineRuleCategories( QgsRuleBasedRendererV2::Rule* initialRule, QgsCategorizedSymbolRendererV2* r )
 {
-  foreach ( const QgsRendererCategoryV2& cat, r->categories() )
+  Q_FOREACH ( const QgsRendererCategoryV2& cat, r->categories() )
   {
     QString attr = QgsExpression::quotedColumnRef( r->classAttribute() );
     QString value;
@@ -1081,7 +1081,7 @@ void QgsRuleBasedRendererV2::refineRuleCategories( QgsRuleBasedRendererV2::Rule*
 
 void QgsRuleBasedRendererV2::refineRuleRanges( QgsRuleBasedRendererV2::Rule* initialRule, QgsGraduatedSymbolRendererV2* r )
 {
-  foreach ( const QgsRendererRangeV2& rng, r->ranges() )
+  Q_FOREACH ( const QgsRendererRangeV2& rng, r->ranges() )
   {
     // due to the loss of precision in double->string conversion we may miss out values at the limit of the range
     // TODO: have a possibility to construct expressions directly as a parse tree to avoid loss of precision
@@ -1100,7 +1100,7 @@ void QgsRuleBasedRendererV2::refineRuleScales( QgsRuleBasedRendererV2::Rule* ini
   int oldScale = initialRule->scaleMinDenom();
   int maxDenom = initialRule->scaleMaxDenom();
   QgsSymbolV2* symbol = initialRule->symbol();
-  foreach ( int scale, scales )
+  Q_FOREACH ( int scale, scales )
   {
     if ( initialRule->scaleMinDenom() >= scale )
       continue; // jump over the first scales out of the interval

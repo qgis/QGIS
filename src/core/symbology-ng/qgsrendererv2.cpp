@@ -713,20 +713,20 @@ void QgsFeatureRendererV2::renderVertexMarker( QPointF& pt, QgsRenderContext& co
 
 void QgsFeatureRendererV2::renderVertexMarkerPolyline( QPolygonF& pts, QgsRenderContext& context )
 {
-  foreach ( QPointF pt, pts )
+  Q_FOREACH ( QPointF pt, pts )
     renderVertexMarker( pt, context );
 }
 
 void QgsFeatureRendererV2::renderVertexMarkerPolygon( QPolygonF& pts, QList<QPolygonF>* rings, QgsRenderContext& context )
 {
-  foreach ( QPointF pt, pts )
+  Q_FOREACH ( QPointF pt, pts )
     renderVertexMarker( pt, context );
 
   if ( rings )
   {
-    foreach ( QPolygonF ring, *rings )
+    Q_FOREACH ( QPolygonF ring, *rings )
     {
-      foreach ( QPointF pt, ring )
+      Q_FOREACH ( QPointF pt, ring )
         renderVertexMarker( pt, context );
     }
   }

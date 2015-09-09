@@ -298,7 +298,7 @@ void QgsComposerMapWidget::aboutToShowVisibilityPresetsMenu()
     return;
 
   menu->clear();
-  foreach ( const QString& presetName, QgsProject::instance()->visibilityPresetCollection()->presets() )
+  Q_FOREACH ( const QString& presetName, QgsProject::instance()->visibilityPresetCollection()->presets() )
   {
     QAction* a = menu->addAction( presetName, this, SLOT( visibilityPresetSelected() ) );
     a->setCheckable( true );

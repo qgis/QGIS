@@ -381,7 +381,7 @@ QList<QgsPointV2> QgsGeometryUtils::pointsFromWKT( const QString &wktCoordinateL
 {
   int dim = 2 + is3D + isMeasure;
   QList<QgsPointV2> points;
-  foreach ( const QString& pointCoordinates, wktCoordinateList.split( ",", QString::SkipEmptyParts ) )
+  Q_FOREACH ( const QString& pointCoordinates, wktCoordinateList.split( ",", QString::SkipEmptyParts ) )
   {
     QStringList coordinates = pointCoordinates.split( " ", QString::SkipEmptyParts );
     if ( coordinates.size() < dim )
@@ -418,7 +418,7 @@ QList<QgsPointV2> QgsGeometryUtils::pointsFromWKT( const QString &wktCoordinateL
 void QgsGeometryUtils::pointsToWKB( QgsWkbPtr& wkb, const QList<QgsPointV2> &points, bool is3D, bool isMeasure )
 {
   wkb << static_cast<quint32>( points.size() );
-  foreach ( const QgsPointV2& point, points )
+  Q_FOREACH ( const QgsPointV2& point, points )
   {
     wkb << point.x() << point.y();
     if ( is3D )
@@ -435,7 +435,7 @@ void QgsGeometryUtils::pointsToWKB( QgsWkbPtr& wkb, const QList<QgsPointV2> &poi
 QString QgsGeometryUtils::pointsToWKT( const QList<QgsPointV2>& points, int precision, bool is3D, bool isMeasure )
 {
   QString wkt = "(";
-  foreach ( const QgsPointV2& p, points )
+  Q_FOREACH ( const QgsPointV2& p, points )
   {
     wkt += qgsDoubleToString( p.x(), precision );
     wkt += " " + qgsDoubleToString( p.y(), precision );
@@ -457,7 +457,7 @@ QDomElement QgsGeometryUtils::pointsToGML2( const QList<QgsPointV2>& points, QDo
 
   QString strCoordinates;
 
-  foreach ( const QgsPointV2& p, points )
+  Q_FOREACH ( const QgsPointV2& p, points )
     strCoordinates += qgsDoubleToString( p.x(), precision ) + "," + qgsDoubleToString( p.y(), precision ) + " ";
 
   if ( strCoordinates.endsWith( " " ) )
@@ -473,7 +473,7 @@ QDomElement QgsGeometryUtils::pointsToGML3( const QList<QgsPointV2>& points, QDo
   elemPosList.setAttribute( "srsDimension", is3D ? 3 : 2 );
 
   QString strCoordinates;
-  foreach ( const QgsPointV2& p, points )
+  Q_FOREACH ( const QgsPointV2& p, points )
   {
     strCoordinates += qgsDoubleToString( p.x(), precision ) + " " + qgsDoubleToString( p.y(), precision ) + " ";
     if ( is3D )
@@ -489,7 +489,7 @@ QDomElement QgsGeometryUtils::pointsToGML3( const QList<QgsPointV2>& points, QDo
 QString QgsGeometryUtils::pointsToJSON( const QList<QgsPointV2>& points, int precision )
 {
   QString json = "[ ";
-  foreach ( const QgsPointV2& p, points )
+  Q_FOREACH ( const QgsPointV2& p, points )
   {
     json += "[" + qgsDoubleToString( p.x(), precision ) + ", " + qgsDoubleToString( p.y(), precision ) + "], ";
   }

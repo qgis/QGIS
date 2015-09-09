@@ -58,7 +58,7 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   connect( btnLoadAll, SIGNAL( pressed() ), this, SLOT( loadAllValues() ) );
   connect( btnLoadSample, SIGNAL( pressed() ), this, SLOT( loadSampleValues() ) );
 
-  foreach ( QPushButton* button, mOperatorsGroupBox->findChildren<QPushButton *>() )
+  Q_FOREACH ( QPushButton* button, mOperatorsGroupBox->findChildren<QPushButton *>() )
   {
     connect( button, SIGNAL( pressed() ), this, SLOT( operatorButtonClicked() ) );
   }
@@ -188,7 +188,7 @@ void QgsExpressionBuilderWidget::updateFunctionFileList( QString path )
   dir.setNameFilters( QStringList() << "*.py" );
   QStringList files = dir.entryList( QDir::Files );
   cmbFileNames->clear();
-  foreach ( const QString& name, files )
+  Q_FOREACH ( const QString& name, files )
   {
     QFileInfo info( mFunctionsPath + QDir::separator() + name );
     if ( info.baseName() == "__init__" ) continue;
@@ -279,7 +279,7 @@ void QgsExpressionBuilderWidget::loadFieldNames( const QgsFields& fields )
     return;
 
   QStringList fieldNames;
-  //foreach ( const QgsField& field, fields )
+  //Q_FOREACH ( const QgsField& field, fields )
   for ( int i = 0; i < fields.count(); ++i )
   {
     QString fieldName = fields[i].name();
@@ -292,7 +292,7 @@ void QgsExpressionBuilderWidget::loadFieldNames( const QgsFields& fields )
 void QgsExpressionBuilderWidget::loadFieldsAndValues( const QMap<QString, QStringList> &fieldValues )
 {
   QgsFields fields;
-  foreach ( const QString& fieldName, fieldValues.keys() )
+  Q_FOREACH ( const QString& fieldName, fieldValues.keys() )
   {
     fields.append( QgsField( fieldName ) );
   }
@@ -321,7 +321,7 @@ void QgsExpressionBuilderWidget::fillFieldValues( const QString& fieldName, int 
   QList<QVariant> values;
   QStringList strValues;
   mLayer->uniqueValues( fieldIndex, values, countLimit );
-  foreach ( const QVariant& value, values )
+  Q_FOREACH ( const QVariant& value, values )
   {
     QString strValue;
     if ( value.isNull() )
@@ -416,7 +416,7 @@ void QgsExpressionBuilderWidget::loadRecent( QString key )
   QSettings settings;
   QString location = QString( "/expressions/recent/%1" ).arg( key );
   QStringList expressions = settings.value( location ).toStringList();
-  foreach ( const QString& expression, expressions )
+  Q_FOREACH ( const QString& expression, expressions )
   {
     this->registerItem( name, expression, expression, expression );
   }

@@ -67,7 +67,7 @@ class TestQgsSpatialIndex : public QObject
     void testQuery()
     {
       QgsSpatialIndex index;
-      foreach ( const QgsFeature& f, _pointFeatures() )
+      Q_FOREACH ( const QgsFeature& f, _pointFeatures() )
         index.insertFeature( f );
 
       QList<QgsFeatureId> fids = index.intersects( QgsRectangle( 0, 0, 10, 10 ) );
@@ -83,7 +83,7 @@ class TestQgsSpatialIndex : public QObject
     void testCopy()
     {
       QgsSpatialIndex* index = new QgsSpatialIndex;
-      foreach ( const QgsFeature& f, _pointFeatures() )
+      Q_FOREACH ( const QgsFeature& f, _pointFeatures() )
         index->insertFeature( f );
 
       // create copy of the index

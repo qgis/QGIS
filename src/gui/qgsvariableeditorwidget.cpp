@@ -210,7 +210,7 @@ void QgsVariableEditorWidget::on_mRemoveButton_clicked()
   QgsExpressionContextScope* editableScope = mContext->scope( mEditableScopeIndex );
   QList<QTreeWidgetItem*> selectedItems = mTreeWidget->selectedItems();
 
-  foreach ( QTreeWidgetItem* item, selectedItems )
+  Q_FOREACH ( QTreeWidgetItem* item, selectedItems )
   {
     if ( !( item->flags() & Qt::ItemIsEditable ) )
       continue;
@@ -241,7 +241,7 @@ void QgsVariableEditorWidget::selectionChanged()
   QList<QTreeWidgetItem*> selectedItems = mTreeWidget->selectedItems();
 
   bool removeEnabled = true;
-  foreach ( QTreeWidgetItem* item, selectedItems )
+  Q_FOREACH ( QTreeWidgetItem* item, selectedItems )
   {
     if ( !( item->flags() & Qt::ItemIsEditable ) )
     {
@@ -366,7 +366,7 @@ void QgsVariableEditorTree::refreshScopeVariables( QgsExpressionContextScope* sc
   bool isCurrent = scopeIndex == mEditableScopeIndex;
   QTreeWidgetItem* scopeItem = mScopeToItem.value( scopeIndex );
 
-  foreach ( const QString& name, scope->variableNames() )
+  Q_FOREACH ( const QString& name, scope->variableNames() )
   {
     if ( name.startsWith( QChar( '_' ) ) )
       continue;

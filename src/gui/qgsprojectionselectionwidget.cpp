@@ -241,7 +241,7 @@ void QgsProjectionSelectionWidget::addRecentCrs()
 {
   QStringList recentProjections = QgsCoordinateReferenceSystem::recentProjections();
   int i = 0;
-  foreach ( const QString& projection, recentProjections )
+  Q_FOREACH ( const QString& projection, recentProjections )
   {
     long srsid = projection.toLong();
 

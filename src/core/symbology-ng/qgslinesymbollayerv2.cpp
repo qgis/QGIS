@@ -271,7 +271,7 @@ void QgsSimpleLineSymbolLayerV2::renderPolygonOutline( const QPolygonF& points, 
   if ( rings )
   {
     mOffset = -mOffset; // invert the offset for rings!
-    foreach ( const QPolygonF& ring, *rings )
+    Q_FOREACH ( const QPolygonF& ring, *rings )
       renderPolyline( ring, context );
     mOffset = -mOffset;
   }

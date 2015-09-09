@@ -45,7 +45,7 @@ QgsRelationReferenceConfigDlg::QgsRelationReferenceConfigDlg( QgsVectorLayer* vl
 
   connect( mComboRelation, SIGNAL( currentIndexChanged( int ) ), this, SLOT( relationChanged( int ) ) );
 
-  foreach ( const QgsRelation& relation, vl->referencingRelations( fieldIdx ) )
+  Q_FOREACH ( const QgsRelation& relation, vl->referencingRelations( fieldIdx ) )
   {
     mComboRelation->addItem( QString( "%1 (%2)" ).arg( relation.id(), relation.referencedLayerId() ), relation.id() );
     if ( relation.referencedLayer() )

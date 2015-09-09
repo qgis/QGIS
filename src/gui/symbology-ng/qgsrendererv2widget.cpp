@@ -379,7 +379,7 @@ void QgsRendererV2DataDefinedMenus::scaleMethodSelected( QAction* a )
 #if 0 // MK: is there any reason for this?
 void QgsRendererV2DataDefinedMenus::updateMenu( QActionGroup* actionGroup, QString fieldName )
 {
-  foreach ( QAction* a, actionGroup->actions() )
+  Q_FOREACH ( QAction* a, actionGroup->actions() )
   {
     a->setChecked( a->text() == fieldName );
   }
@@ -427,7 +427,7 @@ QgsDataDefined QgsDataDefinedValueDialog::symbolDataDefined() const
 {
   // check that all symbols share the same size expression
   QgsDataDefined dd = symbolDataDefined( mSymbolList.back() );
-  foreach ( QgsSymbolV2 * it, mSymbolList )
+  Q_FOREACH ( QgsSymbolV2 * it, mSymbolList )
   {
     if ( symbolDataDefined( it ) != dd ) return  QgsDataDefined();
   }
@@ -444,7 +444,7 @@ void QgsDataDefinedValueDialog::dataDefinedChanged()
     // shall we set the "en masse" expression for properties ?
     || dd.isActive() )
   {
-    foreach ( QgsSymbolV2 * it, mSymbolList )
+    Q_FOREACH ( QgsSymbolV2 * it, mSymbolList )
       setDataDefined( it, dd );
   }
 }

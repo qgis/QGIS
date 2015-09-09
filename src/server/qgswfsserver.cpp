@@ -669,7 +669,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
     featureIdOk = true;
     featureIdList = feature_id_it.value().split( "," );
     QStringList typeNameList;
-    foreach ( const QString &fidStr, featureIdList )
+    Q_FOREACH ( const QString &fidStr, featureIdList )
     {
       // testing typename in the WFS featureID
       if ( !fidStr.contains( "." ) )
@@ -773,7 +773,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
   }
 
   mTypeNames = mTypeName.split( "," );
-  foreach ( const QString &tnStr, mTypeNames )
+  Q_FOREACH ( const QString &tnStr, mTypeNames )
   {
     mTypeName = tnStr;
     layerList = mConfigParser->mapLayerFromTypeName( tnStr );
@@ -862,7 +862,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
       long featCounter = 0;
       if ( featureIdOk )
       {
-        foreach ( const QString &fidStr, featureIdList )
+        Q_FOREACH ( const QString &fidStr, featureIdList )
         {
           if ( !fidStr.startsWith( tnStr ) )
             continue;
@@ -1614,7 +1614,7 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
   // Put the Feature Ids of the inserted feature
   if ( insertResults.size() > 0 )
   {
-    foreach ( const QString &fidStr, insertResults )
+    Q_FOREACH ( const QString &fidStr, insertResults )
     {
       QDomElement irElem = doc.createElement( "InsertResult" );
       QDomElement fiElem = doc.createElement( "ogc:FeatureId" );

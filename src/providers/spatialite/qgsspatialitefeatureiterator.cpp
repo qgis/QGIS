@@ -212,7 +212,7 @@ QString QgsSpatiaLiteFeatureIterator::whereClauseFids()
     return "";
 
   QString expr = QString( "%1 IN (" ).arg( quotedPrimaryKey() ), delim;
-  foreach ( const QgsFeatureId featureId, mRequest.filterFids() )
+  Q_FOREACH ( const QgsFeatureId featureId, mRequest.filterFids() )
   {
     expr += delim + QString::number( featureId );
     delim = ",";

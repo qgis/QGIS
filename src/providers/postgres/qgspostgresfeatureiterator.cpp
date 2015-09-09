@@ -396,7 +396,7 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause )
       break;
 
     case pktFidMap:
-      foreach ( int idx, mSource->mPrimaryKeyAttrs )
+      Q_FOREACH ( int idx, mSource->mPrimaryKeyAttrs )
       {
         query += delim + mConn->fieldExpression( mSource->mFields[idx] );
         delim = ",";
@@ -410,7 +410,7 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause )
   }
 
   bool subsetOfAttributes = mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes;
-  foreach ( int idx, subsetOfAttributes ? mRequest.subsetOfAttributes() : mSource->mFields.allAttributesList() )
+  Q_FOREACH ( int idx, subsetOfAttributes ? mRequest.subsetOfAttributes() : mSource->mFields.allAttributesList() )
   {
     if ( mSource->mPrimaryKeyAttrs.contains( idx ) )
       continue;
@@ -536,7 +536,7 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
     {
       QList<QVariant> primaryKeyVals;
 
-      foreach ( int idx, mSource->mPrimaryKeyAttrs )
+      Q_FOREACH ( int idx, mSource->mPrimaryKeyAttrs )
       {
         const QgsField &fld = mSource->mFields[idx];
 
@@ -565,7 +565,7 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
   // iterate attributes
   if ( subsetOfAttributes )
   {
-    foreach ( int idx, fetchAttributes )
+    Q_FOREACH ( int idx, fetchAttributes )
       getFeatureAttribute( idx, queryResult, row, col, feature );
   }
   else

@@ -119,7 +119,7 @@ void QgsMapToolRotatePointSymbols::canvasPressEvent( QMouseEvent *e )
   if ( renderer->capabilities() & QgsFeatureRendererV2::MoreSymbolsPerFeature )
   {
     //could be multiple symbols for this feature, so check them all
-    foreach ( QgsSymbolV2* s, renderer->originalSymbolsForFeature( pointFeature, context ) )
+    Q_FOREACH ( QgsSymbolV2* s, renderer->originalSymbolsForFeature( pointFeature, context ) )
     {
       if ( s && s->type() == QgsSymbolV2::Marker )
       {

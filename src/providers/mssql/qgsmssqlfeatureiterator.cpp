@@ -68,7 +68,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest& request )
   mAttributesToFetch.append( mFidCol );
 
   bool subsetOfAttributes = mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes;
-  foreach ( int i, subsetOfAttributes ? mRequest.subsetOfAttributes() : mSource->mFields.allAttributesList() )
+  Q_FOREACH ( int i, subsetOfAttributes ? mRequest.subsetOfAttributes() : mSource->mFields.allAttributesList() )
   {
     QString fieldname = mSource->mFields[i].name();
     if ( mSource->mFidColName == fieldname )

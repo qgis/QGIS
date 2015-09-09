@@ -257,7 +257,7 @@ void QgsMapOverviewCanvas::setLayerSet( const QStringList& layerSet )
 {
   QgsDebugMsg( "layerSet: " + layerSet.join( ", " ) );
 
-  foreach ( const QString& layerID, mSettings.layers() )
+  Q_FOREACH ( const QString& layerID, mSettings.layers() )
   {
     if ( QgsMapLayer* ml = QgsMapLayerRegistry::instance()->mapLayer( layerID ) )
       disconnect( ml, SIGNAL( repaintRequested() ), this, SLOT( layerRepaintRequested() ) );
@@ -265,7 +265,7 @@ void QgsMapOverviewCanvas::setLayerSet( const QStringList& layerSet )
 
   mSettings.setLayers( layerSet );
 
-  foreach ( const QString& layerID, mSettings.layers() )
+  Q_FOREACH ( const QString& layerID, mSettings.layers() )
   {
     if ( QgsMapLayer* ml = QgsMapLayerRegistry::instance()->mapLayer( layerID ) )
       connect( ml, SIGNAL( repaintRequested() ), this, SLOT( layerRepaintRequested() ) );

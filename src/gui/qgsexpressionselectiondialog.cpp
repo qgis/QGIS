@@ -143,7 +143,7 @@ void QgsExpressionSelectionDialog::on_mActionSelectIntersect_triggered()
   expression->prepare( &context );
 
   QgsFeature feat;
-  foreach ( const QgsFeatureId fid, oldSelection )
+  Q_FOREACH ( const QgsFeatureId fid, oldSelection )
   {
     QgsFeatureIterator features = mLayer->getFeatures( QgsFeatureRequest().setFilterFid( fid ) );
 
@@ -184,7 +184,7 @@ void QgsExpressionSelectionDialog::on_mActionRemoveFromSelection_triggered()
   expression->prepare( &context );
 
   QgsFeature feat;
-  foreach ( const QgsFeatureId fid, oldSelection )
+  Q_FOREACH ( const QgsFeatureId fid, oldSelection )
   {
     QgsFeatureIterator features = mLayer->getFeatures( QgsFeatureRequest().setFilterFid( fid ) );
 

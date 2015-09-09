@@ -194,7 +194,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
     case pktFidMap:
     {
       QString delim;
-      foreach ( int idx, mPrimaryKeyAttrs )
+      Q_FOREACH ( int idx, mPrimaryKeyAttrs )
       {
         key += delim + mAttributeFields[ idx ].name();
         delim = ",";
@@ -540,7 +540,7 @@ QString QgsPostgresUtils::whereClause( QgsFeatureId featureId, const QgsFields& 
 QString QgsPostgresUtils::whereClause( QgsFeatureIds featureIds, const QgsFields& fields, QgsPostgresConn* conn, QgsPostgresPrimaryKeyType pkType, const QList<int>& pkAttrs, QSharedPointer<QgsPostgresSharedData> sharedData )
 {
   QStringList whereClauses;
-  foreach ( const QgsFeatureId featureId, featureIds )
+  Q_FOREACH ( const QgsFeatureId featureId, featureIds )
   {
     whereClauses << whereClause( featureId, fields, conn, pkType, pkAttrs, sharedData );
   }
@@ -710,7 +710,7 @@ bool QgsPostgresProvider::loadFields()
     if ( !tableoids.isEmpty() )
     {
       QStringList tableoidsList;
-      foreach ( int tableoid, tableoids )
+      Q_FOREACH ( int tableoid, tableoids )
       {
         tableoidsList.append( QString::number( tableoid ) );
       }
@@ -1225,7 +1225,7 @@ bool QgsPostgresProvider::determinePrimaryKey()
             primaryKey = quotedIdentifier( primaryKey );
           }
 
-          foreach ( const QString& col, cols )
+          Q_FOREACH ( const QString& col, cols )
           {
             int idx = fieldNameIndex( col );
             if ( idx < 0 )
@@ -1726,7 +1726,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
 
     if ( mPrimaryKeyType == pktInt || mPrimaryKeyType == pktFidMap )
     {
-      foreach ( int idx, mPrimaryKeyAttrs )
+      Q_FOREACH ( int idx, mPrimaryKeyAttrs )
       {
         insert += delim + quotedIdentifier( field( idx ).name() );
         values += delim + QString( "$%1" ).arg( defaultValues.size() + offset );
@@ -1900,7 +1900,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
         {
           QList<QVariant> primaryKeyVals;
 
-          foreach ( int idx, mPrimaryKeyAttrs )
+          Q_FOREACH ( int idx, mPrimaryKeyAttrs )
           {
             primaryKeyVals << attrs[ idx ];
           }

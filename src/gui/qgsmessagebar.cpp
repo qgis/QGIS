@@ -166,7 +166,7 @@ bool QgsMessageBar::popWidget( QgsMessageBarItem *item )
     return true;
   }
 
-  foreach ( QgsMessageBarItem *existingItem, mItems )
+  Q_FOREACH ( QgsMessageBarItem *existingItem, mItems )
   {
     if ( existingItem == item )
     {

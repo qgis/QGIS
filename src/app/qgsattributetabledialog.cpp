@@ -309,7 +309,7 @@ void QgsAttributeTableDialog::keyPressEvent( QKeyEvent* event )
 
 void QgsAttributeTableDialog::columnBoxInit()
 {
-  foreach ( QAction* a, mFilterColumnsMenu->actions() )
+  Q_FOREACH ( QAction* a, mFilterColumnsMenu->actions() )
   {
     mFilterColumnsMenu->removeAction( a );
     mFilterActionMapper->removeMappings( a );
@@ -329,7 +329,7 @@ void QgsAttributeTableDialog::columnBoxInit()
 
   QList<QgsField> fields = mLayer->fields().toList();
 
-  foreach ( const QgsField field, fields )
+  Q_FOREACH ( const QgsField field, fields )
   {
     int idx = mLayer->fieldNameIndex( field.name() );
     if ( idx < 0 )

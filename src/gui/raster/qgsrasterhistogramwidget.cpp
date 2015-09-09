@@ -892,7 +892,7 @@ void QgsRasterHistogramWidget::histoAction( const QString &actionName, bool acti
     leHistoMax->blockSignals( true );
 
     // process each band
-    foreach ( int theBandNo, myBands )
+    Q_FOREACH ( int theBandNo, myBands )
     {
       ok = false;
 #if 0

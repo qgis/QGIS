@@ -244,7 +244,7 @@ QMimeData *QgsGraduatedSymbolRendererV2Model::mimeData( const QModelIndexList &i
   QDataStream stream( &encodedData, QIODevice::WriteOnly );
 
   // Create list of rows
-  foreach ( const QModelIndex &index, indexes )
+  Q_FOREACH ( const QModelIndex &index, indexes )
   {
     if ( !index.isValid() || index.column() != 0 )
       continue;
@@ -813,7 +813,7 @@ QList<int> QgsGraduatedSymbolRendererV2Widget::selectedClasses()
   QList<int> rows;
   QModelIndexList selectedRows = viewGraduated->selectionModel()->selectedRows();
 
-  foreach ( const QModelIndex& r, selectedRows )
+  Q_FOREACH ( const QModelIndex& r, selectedRows )
   {
     if ( r.isValid() )
     {
@@ -866,7 +866,7 @@ void QgsGraduatedSymbolRendererV2Widget::changeSelectedSymbols()
       return;
     }
 
-    foreach ( const QModelIndex& idx, selectedIndexes )
+    Q_FOREACH ( const QModelIndex& idx, selectedIndexes )
     {
       if ( idx.isValid() )
       {

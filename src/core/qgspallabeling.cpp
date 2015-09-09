@@ -3309,7 +3309,7 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QStringList& attrNames,
       {
         QgsDebugMsgLevel( "Prepare error:" + exp->evalErrorString(), 4 );
       }
-      foreach ( const QString& name, exp->referencedColumns() )
+      Q_FOREACH ( const QString& name, exp->referencedColumns() )
       {
         QgsDebugMsgLevel( "REFERENCED COLUMN = " + name, 4 );
         attrNames.append( name );
@@ -3342,7 +3342,7 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QStringList& attrNames,
       QStringList cols = dd->referencedColumns( ctx.expressionContext() ); // <-- prepares any expressions, too
 
       //QgsDebugMsgLevel( QString( "Data defined referenced columns:" ) + cols.join( "," ), 4 );
-      foreach ( const QString& name, cols )
+      Q_FOREACH ( const QString& name, cols )
       {
         attrNames.append( name );
       }
@@ -3530,7 +3530,7 @@ QStringList QgsPalLabeling::splitToLines( const QString &text, const QString &wr
   if ( !wrapCharacter.isEmpty() && wrapCharacter != QString( "\n" ) )
   {
     //wrap on both the wrapchr and new line characters
-    foreach ( const QString& line, text.split( wrapCharacter ) )
+    Q_FOREACH ( const QString& line, text.split( wrapCharacter ) )
     {
       multiLineSplit.append( line.split( QString( "\n" ) ) );
     }

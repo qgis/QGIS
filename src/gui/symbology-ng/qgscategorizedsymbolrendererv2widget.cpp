@@ -249,7 +249,7 @@ QMimeData *QgsCategorizedSymbolRendererV2Model::mimeData( const QModelIndexList 
   QDataStream stream( &encodedData, QIODevice::WriteOnly );
 
   // Create list of rows
-  foreach ( const QModelIndex &index, indexes )
+  Q_FOREACH ( const QModelIndex &index, indexes )
   {
     if ( !index.isValid() || index.column() != 0 )
       continue;
@@ -528,7 +528,7 @@ void QgsCategorizedSymbolRendererV2Widget::changeSelectedSymbols()
       return;
     }
 
-    foreach ( int idx, selectedCats )
+    Q_FOREACH ( int idx, selectedCats )
     {
       QgsRendererCategoryV2 category = mRenderer->categories().value( idx );
 
@@ -813,7 +813,7 @@ QList<int> QgsCategorizedSymbolRendererV2Widget::selectedCategories()
   QList<int> rows;
   QModelIndexList selectedRows = viewCategories->selectionModel()->selectedRows();
 
-  foreach ( const QModelIndex& r, selectedRows )
+  Q_FOREACH ( const QModelIndex& r, selectedRows )
   {
     if ( r.isValid() )
     {

@@ -449,7 +449,7 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
     QgsGeometry geometry;
     if ( format == QgsRaster::IdentifyFormatValue )
     {
-      foreach ( int bandNo, values.keys() )
+      Q_FOREACH ( int bandNo, values.keys() )
       {
         QString valueString;
         if ( values.value( bandNo ).isNull() )
@@ -468,7 +468,7 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
     }
     else if ( format == QgsRaster::IdentifyFormatFeature )
     {
-      foreach ( int i, values.keys() )
+      Q_FOREACH ( int i, values.keys() )
       {
         QVariant value = values.value( i );
         if ( value.type() == QVariant::Bool && !value.toBool() )
@@ -492,9 +492,9 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
         // list of feature stores for a single sublayer
         QgsFeatureStoreList featureStoreList = values.value( i ).value<QgsFeatureStoreList>();
 
-        foreach ( QgsFeatureStore featureStore, featureStoreList )
+        Q_FOREACH ( QgsFeatureStore featureStore, featureStoreList )
         {
-          foreach ( QgsFeature feature, featureStore.features() )
+          Q_FOREACH ( QgsFeature feature, featureStore.features() )
           {
             attributes.clear();
             // WMS sublayer and feature type, a sublayer may contain multiple feature types.
@@ -528,7 +528,7 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
     else // text or html
     {
       QgsDebugMsg( QString( "%1 HTML or text values" ).arg( values.size() ) );
-      foreach ( int bandNo, values.keys() )
+      Q_FOREACH ( int bandNo, values.keys() )
       {
         QString value = values.value( bandNo ).toString();
         attributes.clear();

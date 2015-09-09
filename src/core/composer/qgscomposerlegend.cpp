@@ -540,7 +540,7 @@ void QgsComposerLegend::mapLayerStyleOverridesChanged()
 
   mLegendModel2->setLayerStyleOverrides( mComposerMap->layerStyleOverrides() );
 
-  foreach ( QgsLayerTreeLayer* nodeLayer, mLegendModel2->rootGroup()->findLayers() )
+  Q_FOREACH ( QgsLayerTreeLayer* nodeLayer, mLegendModel2->rootGroup()->findLayers() )
     mLegendModel2->refreshLayerLegend( nodeLayer );
 
   adjustBoxSize();

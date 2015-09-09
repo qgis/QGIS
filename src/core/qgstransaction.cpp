@@ -69,7 +69,7 @@ QgsTransaction* QgsTransaction::create( const QStringList& layerIds )
     return 0;
   }
 
-  foreach ( const QString& layerId, layerIds )
+  Q_FOREACH ( const QString& layerId, layerIds )
   {
     if ( !ts->addLayer( layerId ) )
     {
@@ -155,7 +155,7 @@ bool QgsTransaction::commit( QString& errorMsg )
     return false;
   }
 
-  foreach ( const QString& layerid, mLayers )
+  Q_FOREACH ( const QString& layerid, mLayers )
   {
     QgsMapLayer* l = QgsMapLayerRegistry::instance()->mapLayer( layerid );
     if ( !l || l->isEditable() )
@@ -181,7 +181,7 @@ bool QgsTransaction::rollback( QString& errorMsg )
     return false;
   }
 
-  foreach ( const QString& layerid, mLayers )
+  Q_FOREACH ( const QString& layerid, mLayers )
   {
     QgsMapLayer* l = QgsMapLayerRegistry::instance()->mapLayer( layerid );
     if ( !l || l->isEditable() )
@@ -202,7 +202,7 @@ bool QgsTransaction::rollback( QString& errorMsg )
 
 void QgsTransaction::setLayerTransactionIds( QgsTransaction* transaction )
 {
-  foreach ( const QString& layerid, mLayers )
+  Q_FOREACH ( const QString& layerid, mLayers )
   {
     QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerid ) );
     if ( vl && vl->dataProvider() )

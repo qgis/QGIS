@@ -123,7 +123,7 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty& layerProper
     childItemList << selItem;
     childItemList << sqlItem;
 
-    foreach ( QStandardItem *item, childItemList )
+    Q_FOREACH ( QStandardItem *item, childItemList )
     {
       if ( tip.isEmpty() )
       {
@@ -372,7 +372,7 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString& conn
   QgsDataSourceURI uri( connInfo );
 
   QStringList cols;
-  foreach ( const QString& col, s1 )
+  Q_FOREACH ( const QString& col, s1 )
   {
     cols << QgsPostgresConn::quotedIdentifier( col );
   }

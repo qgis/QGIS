@@ -171,7 +171,7 @@ QString QgsProjectionSelector::ogcWmsCrsFilterAsSqlExpression( QSet<QString> * c
 
   // iterate through all incoming CRSs
 
-  foreach ( const QString& auth_id, crsFilter->values() )
+  Q_FOREACH ( const QString& auth_id, crsFilter->values() )
   {
     QStringList parts = auth_id.split( ":" );
 
@@ -187,7 +187,7 @@ QString QgsProjectionSelector::ogcWmsCrsFilterAsSqlExpression( QSet<QString> * c
   if ( authParts.size() > 0 )
   {
     QString prefix = " AND (";
-    foreach ( const QString& auth_name, authParts.keys() )
+    Q_FOREACH ( const QString& auth_name, authParts.keys() )
     {
       sqlExpression += QString( "%1(upper(auth_name)='%2' AND upper(auth_id) IN ('%3'))" )
                        .arg( prefix )

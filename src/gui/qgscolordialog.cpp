@@ -796,7 +796,7 @@ void QgsColorDialogV2::setColor( const QColor &color )
     fixedColor.setAlpha( 255 );
   }
   QList<QgsColorWidget*> colorWidgets = this->findChildren<QgsColorWidget *>();
-  foreach ( QgsColorWidget* widget, colorWidgets )
+  Q_FOREACH ( QgsColorWidget* widget, colorWidgets )
   {
     if ( widget == mSamplePreview )
     {

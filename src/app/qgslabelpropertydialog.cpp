@@ -462,7 +462,7 @@ void QgsLabelPropertyDialog::updateFont( const QFont& font, bool block )
 void QgsLabelPropertyDialog::populateFontStyleComboBox()
 {
   mFontStyleCmbBx->clear();
-  foreach ( const QString &style, mFontDB.styles( mLabelFont.family() ) )
+  Q_FOREACH ( const QString &style, mFontDB.styles( mLabelFont.family() ) )
   {
     mFontStyleCmbBx->addItem( style );
   }

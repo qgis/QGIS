@@ -40,7 +40,7 @@ class CoordinateItemDelegate : public QStyledItemDelegate
     QString displayText( const QVariant & value, const QLocale & locale ) const override
     {
       return locale.toString( value.toDouble(), 'f', 4 );
-  }
+    }
 
   protected:
 
@@ -49,19 +49,19 @@ class CoordinateItemDelegate : public QStyledItemDelegate
       QLineEdit* lineEdit = new QLineEdit( parent );
       QDoubleValidator* validator = new QDoubleValidator();
       if ( !index.data( MinRadiusRole ).isNull() )
-      validator->setBottom( index.data( MinRadiusRole ).toDouble() );
+        validator->setBottom( index.data( MinRadiusRole ).toDouble() );
       lineEdit->setValidator( validator );
       return lineEdit;
     }
 
     void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override
-      {
-        QLineEdit* lineEdit = qobject_cast<QLineEdit*>( editor );
-        if ( lineEdit->hasAcceptableInput() )
     {
-      QStyledItemDelegate::setModelData( editor, model, index );
+      QLineEdit* lineEdit = qobject_cast<QLineEdit*>( editor );
+      if ( lineEdit->hasAcceptableInput() )
+      {
+        QStyledItemDelegate::setModelData( editor, model, index );
       }
-  }
+    }
 };
 
 
@@ -112,7 +112,7 @@ void QgsNodeEditor::rebuildTable()
   mTableWidget->setRowCount( 0 );
   int row = 0;
   bool hasR = false;
-  foreach ( const QgsVertexEntry* entry, mSelectedFeature->vertexMap() )
+  Q_FOREACH ( const QgsVertexEntry* entry, mSelectedFeature->vertexMap() )
   {
     mTableWidget->insertRow( row );
 
@@ -231,7 +231,7 @@ void QgsNodeEditor::updateNodeSelection()
   disconnect( mSelectedFeature, SIGNAL( selectionChanged() ), this, SLOT( updateTableSelection() ) );
 
   mSelectedFeature->deselectAllVertexes();
-  foreach ( const QModelIndex& index, mTableWidget->selectionModel()->selectedRows() )
+  Q_FOREACH ( const QModelIndex& index, mTableWidget->selectionModel()->selectedRows() )
   {
     int nodeIdx = mTableWidget->item( index.row(), 0 )->data( Qt::DisplayRole ).toInt();
     mSelectedFeature->selectVertex( nodeIdx );

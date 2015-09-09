@@ -59,7 +59,7 @@ void QgsVisibilityPresets::addPerLayerCheckedLegendSymbols( QgsVisibilityPresetC
 {
   QgsLayerTreeModel* model = QgisApp::instance()->layerTreeView()->layerTreeModel();
 
-  foreach ( const QString& layerID, rec.mVisibleLayerIDs )
+  Q_FOREACH ( const QString& layerID, rec.mVisibleLayerIDs )
   {
     QgsLayerTreeLayer* nodeLayer = model->rootGroup()->findLayer( layerID );
     if ( !nodeLayer )
@@ -68,7 +68,7 @@ void QgsVisibilityPresets::addPerLayerCheckedLegendSymbols( QgsVisibilityPresetC
     bool hasCheckableItems = false;
     bool someItemsUnchecked = false;
     QSet<QString> checkedItems;
-    foreach ( QgsLayerTreeModelLegendNode* legendNode, model->layerLegendNodes( nodeLayer ) )
+    Q_FOREACH ( QgsLayerTreeModelLegendNode* legendNode, model->layerLegendNodes( nodeLayer ) )
     {
       if ( legendNode->flags() & Qt::ItemIsUserCheckable )
       {
@@ -90,7 +90,7 @@ void QgsVisibilityPresets::addPerLayerCurrentStyle( QgsVisibilityPresetCollectio
 {
   QgsLayerTreeModel* model = QgisApp::instance()->layerTreeView()->layerTreeModel();
 
-  foreach ( const QString& layerID, rec.mVisibleLayerIDs )
+  Q_FOREACH ( const QString& layerID, rec.mVisibleLayerIDs )
   {
     QgsLayerTreeLayer* nodeLayer = model->rootGroup()->findLayer( layerID );
     if ( !nodeLayer )
@@ -136,7 +136,7 @@ QStringList QgsVisibilityPresets::orderedPresetVisibleLayers( const QString& nam
   QgsLayerTreeMapCanvasBridge* bridge = QgisApp::instance()->layerTreeCanvasBridge();
   QStringList order = bridge->hasCustomLayerOrder() ? bridge->customLayerOrder() : bridge->defaultLayerOrder();
   QStringList order2;
-  foreach ( const QString& layerID, order )
+  Q_FOREACH ( const QString& layerID, order )
   {
     if ( visibleIds.contains( layerID ) )
       order2 << layerID;
@@ -187,7 +187,7 @@ void QgsVisibilityPresets::replaceTriggered()
 
 void QgsVisibilityPresets::applyStateToLayerTreeGroup( QgsLayerTreeGroup* parent, const QgsVisibilityPresetCollection::PresetRecord& rec )
 {
-  foreach ( QgsLayerTreeNode* node, parent->children() )
+  Q_FOREACH ( QgsLayerTreeNode* node, parent->children() )
   {
     if ( QgsLayerTree::isGroup( node ) )
       applyStateToLayerTreeGroup( QgsLayerTree::toGroup( node ), rec );
@@ -210,7 +210,7 @@ void QgsVisibilityPresets::applyStateToLayerTreeGroup( QgsLayerTreeGroup* parent
         {
           const QSet<QString>& checkedNodes = rec.mPerLayerCheckedLegendSymbols[nodeLayer->layerId()];
           // some nodes are not checked
-          foreach ( QgsLayerTreeModelLegendNode* legendNode, model->layerLegendNodes( nodeLayer ) )
+          Q_FOREACH ( QgsLayerTreeModelLegendNode* legendNode, model->layerLegendNodes( nodeLayer ) )
           {
             Qt::CheckState shouldHaveState = checkedNodes.contains( legendNode->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString() ) ? Qt::Checked : Qt::Unchecked;
             if (( legendNode->flags() & Qt::ItemIsUserCheckable ) &&
@@ -221,7 +221,7 @@ void QgsVisibilityPresets::applyStateToLayerTreeGroup( QgsLayerTreeGroup* parent
         else
         {
           // all nodes should be checked
-          foreach ( QgsLayerTreeModelLegendNode* legendNode, model->layerLegendNodes( nodeLayer ) )
+          Q_FOREACH ( QgsLayerTreeModelLegendNode* legendNode, model->layerLegendNodes( nodeLayer ) )
           {
             if (( legendNode->flags() & Qt::ItemIsUserCheckable ) &&
                 legendNode->data( Qt::CheckStateRole ).toInt() != Qt::Checked )
@@ -247,7 +247,7 @@ void QgsVisibilityPresets::applyState( const QString& presetName )
 
 void QgsVisibilityPresets::removeCurrentPreset()
 {
-  foreach ( QAction* a, mMenuPresetActions )
+  Q_FOREACH ( QAction* a, mMenuPresetActions )
   {
     if ( a->isChecked() )
     {
@@ -268,7 +268,7 @@ void QgsVisibilityPresets::menuAboutToShow()
   QgsVisibilityPresetCollection::PresetRecord rec = currentState();
   bool hasCurrent = false;
 
-  foreach ( const QString& grpName, QgsProject::instance()->visibilityPresetCollection()->presets() )
+  Q_FOREACH ( const QString& grpName, QgsProject::instance()->visibilityPresetCollection()->presets() )
   {
     QAction* a = new QAction( grpName, mMenu );
     a->setCheckable( true );

@@ -142,7 +142,7 @@ void QgsDualView::columnBoxInit()
 
       // ... concat all fields
       QStringList fieldNames;
-      foreach ( const QgsField& field, fields )
+      Q_FOREACH ( const QgsField& field, fields )
       {
         fieldNames.append( "COALESCE(\"" + field.name() + "\", '<NULL>')" );
       }
