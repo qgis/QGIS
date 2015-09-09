@@ -751,17 +751,17 @@ class TestQgsGeometry(TestCase):
         assert multipoint.vertexAt(0) == QgsPoint(5, 5), "MULTIPOINT fromWkt failed"
 
         assert multipoint.insertVertex(4, 4, 0), "MULTIPOINT insert 4,4 at 0 failed"
-        expwkt = "MultiPoint ((4 4, 5 5))"
+        expwkt = "MultiPoint ((4 4),(5 5))"
         wkt = multipoint.exportToWkt()
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
 
         assert multipoint.insertVertex(7, 7, 2), "MULTIPOINT append 7,7 at 2 failed"
-        expwkt = "MultiPoint ((4 4, 5 5, 7 7))"
+        expwkt = "MultiPoint ((4 4),(5 5),(7 7))"
         wkt = multipoint.exportToWkt()
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
 
         assert multipoint.insertVertex(6, 6, 2), "MULTIPOINT append 6,6 at 2 failed"
-        expwkt = "MultiPoint ((4 4, 5 5, 6 6, 7 7))"
+        expwkt = "MultiPoint ((4 4),(5 5),(6 6),(7 7))"
         wkt = multipoint.exportToWkt()
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
 
@@ -769,12 +769,12 @@ class TestQgsGeometry(TestCase):
         assert not multipoint.deleteVertex(-1), "MULTIPOINT delete at -1 unexpectedly succeeded"
 
         assert multipoint.deleteVertex(1), "MULTIPOINT delete at 1 failed"
-        expwkt = "MultiPoint ((4 4, 6 6, 7 7))"
+        expwkt = "MultiPoint ((4 4),(6 6),(7 7))"
         wkt = multipoint.exportToWkt()
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
 
         assert multipoint.deleteVertex(2), "MULTIPOINT delete at 2 failed"
-        expwkt = "MultiPoint ((4 4, 6 6))"
+        expwkt = "MultiPoint ((4 4),(6 6))"
         wkt = multipoint.exportToWkt()
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
 

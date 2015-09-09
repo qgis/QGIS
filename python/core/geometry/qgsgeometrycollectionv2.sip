@@ -21,6 +21,12 @@ class QgsGeometryCollectionV2: public QgsAbstractGeometryV2
 
     /** Adds a geometry and takes ownership. Returns true in case of success*/
     virtual bool addGeometry( QgsAbstractGeometryV2* g /Transfer/ );
+
+    /** Inserts a geometry before a specified index and takes ownership. Returns true in case of success.
+     * @param index position to insert geometry before
+    */
+    virtual bool insertGeometry( QgsAbstractGeometryV2* g /Transfer/, int index );
+
     virtual bool removeGeometry( int nr );
 
     virtual void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform );
