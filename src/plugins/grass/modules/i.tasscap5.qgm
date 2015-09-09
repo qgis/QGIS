@@ -2,7 +2,7 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
 <qgisgrassmodule label="Tasseled Cap (Kauth Thomas) transformation for LANDSAT-TM 5 raster" module="i.tasscap">
-	<flag key="5" version_max="6"/>
+	<flag key="5" answer="on" hidden="yes" version_max="6"/>
 	<option key="band1" version_max="6"/>
 	<option key="band2" version_max="6"/>
 	<option key="band3" version_max="6"/>
