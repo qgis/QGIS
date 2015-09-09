@@ -330,10 +330,9 @@ class DlgImportVector(QDialog, Ui_Dialog):
 
             # do the import!
             ret, errMsg = qgis.core.QgsVectorLayerImport.importLayer(self.inLayer, uri, providerName, outCrs, onlySelected, False, options)
-                                                                     False, options)
         except Exception as e:
-            ret=-1
-            errMsg=unicode(e)
+            ret = -1
+            errMsg = unicode(e)
 
         finally:
             # restore input layer crs and encoding
@@ -343,7 +342,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
             QApplication.restoreOverrideCursor()
 
         if ret != 0:
-            output=qgis.gui.QgsMessageViewer()
+            output = qgis.gui.QgsMessageViewer()
             output.setTitle(self.tr("Import to database"))
             output.setMessageAsPlainText(self.tr("Error %d\n%s") % (ret, errMsg))
             output.showMessage()
@@ -366,7 +365,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
 if __name__ == '__main__':
     import sys
 
-    a=QApplication(sys.argv)
-    dlg=DlgImportVector()
+    a = QApplication(sys.argv)
+    dlg = DlgImportVector()
     dlg.show()
     sys.exit(a.exec_())
