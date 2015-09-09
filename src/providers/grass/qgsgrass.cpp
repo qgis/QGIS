@@ -2245,15 +2245,24 @@ bool QgsGrass::isExternal( const QgsGrassObject & object )
   {
     return false;
   }
+  lock();
   bool isExternal = false;
-  QgsGrass::setLocation( object.gisdbase(), object.location() );
-  struct GDAL_link *gdal;
-  gdal = G_get_gdal_link( object.name().toUtf8().data(), object.mapset().toUtf8().data() );
-  if ( gdal )
+  G_TRY
   {
-    isExternal = true;
-    G_close_gdal_link( gdal );
+    QgsGrass::setLocation( object.gisdbase(), object.location() );
+    struct GDAL_link *gdal;
+    gdal = G_get_gdal_link( object.name().toUtf8().data(), object.mapset().toUtf8().data() );
+    if ( gdal )
+    {
+      isExternal = true;
+      G_close_gdal_link( gdal );
+    }
   }
+  G_CATCH( QgsGrass::Exception &e )
+  {
+    QgsDebugMsg( "error getting external link: " + QString(e.what()) );
+  }
+  unlock();
   return isExternal;
 }
 

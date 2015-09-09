@@ -662,7 +662,7 @@ bool QgsGrassExternal::import()
 
   try
   {
-    QString cmd = "r.external";
+    QString cmd = QgsGrass::gisbase() + "/bin/r.external";
     QStringList arguments;
 
     if ( QFileInfo( mSource ).exists() )
