@@ -1137,6 +1137,9 @@ QString QgsPalLayerSettings::updateDataDefinedString( const QString& value )
 
 QgsDataDefined* QgsPalLayerSettings::dataDefinedProperty( DataDefinedProperties p )
 {
+  if ( dataDefinedProperties.isEmpty() )
+    return 0;
+
   QMap< QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* >::const_iterator it = dataDefinedProperties.find( p );
   if ( it != dataDefinedProperties.constEnd() )
   {
@@ -1158,7 +1161,7 @@ QMap<QString, QString> QgsPalLayerSettings::dataDefinedMap( DataDefinedPropertie
 
 QVariant QgsPalLayerSettings::dataDefinedValue( DataDefinedProperties p, QgsFeature& f, const QgsFields& fields, const QgsExpressionContext *context ) const
 {
-  if ( !dataDefinedProperties.contains( p ) )
+  if ( dataDefinedProperties.isEmpty() || !dataDefinedProperties.contains( p ) )
   {
     return QVariant();
   }
@@ -1227,6 +1230,8 @@ bool QgsPalLayerSettings::dataDefinedEvaluate( DataDefinedProperties p, QVariant
 {
   // null passed-around QVariant
   exprVal.clear();
+  if ( dataDefinedProperties.isEmpty() )
+    return false;
 
   //try to keep < 2.12 API - handle no passed expression context
   QScopedPointer< QgsExpressionContext > scopedEc;
@@ -1254,7 +1259,11 @@ bool QgsPalLayerSettings::dataDefinedEvaluate( DataDefinedProperties p, QVariant
 
 bool QgsPalLayerSettings::dataDefinedIsActive( DataDefinedProperties p ) const
 {
+  if ( dataDefinedProperties.isEmpty() )
+    return false;
+
   bool isActive = false;
+
   QMap< DataDefinedProperties, QgsDataDefined* >::const_iterator it = dataDefinedProperties.find( p );
   if ( it != dataDefinedProperties.constEnd() )
   {
@@ -1266,6 +1275,9 @@ bool QgsPalLayerSettings::dataDefinedIsActive( DataDefinedProperties p ) const
 
 bool QgsPalLayerSettings::dataDefinedUseExpression( DataDefinedProperties p ) const
 {
+  if ( dataDefinedProperties.isEmpty() )
+    return false;
+
   bool useExpression = false;
   QMap< DataDefinedProperties, QgsDataDefined* >::const_iterator it = dataDefinedProperties.find( p );
   if ( it != dataDefinedProperties.constEnd() )
