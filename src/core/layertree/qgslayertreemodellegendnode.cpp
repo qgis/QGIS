@@ -173,7 +173,7 @@ QSize QgsSymbolV2LegendNode::minimumIconSize() const
   {
     QScopedPointer<QgsRenderContext> context( createTemporaryRenderContext() );
     minSz = QgsImageOperation::nonTransparentImageRect(
-              QgsSymbolLayerV2Utils::symbolPreviewPixmap( mItem.symbol(), QSize( mIconSize.width(), 512 ),
+              QgsSymbolLayerV2Utils::symbolPreviewPixmap( mItem.symbol(), QSize( minSz.width(), 512 ),
                   context.data() ).toImage(),
               minSz,
               true ).size();
