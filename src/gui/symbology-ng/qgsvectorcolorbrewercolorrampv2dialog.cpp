@@ -41,7 +41,7 @@ QgsVectorColorBrewerColorRampV2Dialog::QgsVectorColorBrewerColorRampV2Dialog( Qg
   cboSchemeName->setIconSize( iconSize );
 
   QStringList schemes = QgsVectorColorBrewerColorRampV2::listSchemeNames();
-  foreach ( QString schemeName, schemes )
+  foreach ( const QString& schemeName, schemes )
   {
     // create a preview icon using five color variant
     QgsVectorColorBrewerColorRampV2* r = new QgsVectorColorBrewerColorRampV2( schemeName, 5 );

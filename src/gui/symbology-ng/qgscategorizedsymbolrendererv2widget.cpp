@@ -528,7 +528,7 @@ void QgsCategorizedSymbolRendererV2Widget::changeSelectedSymbols()
       return;
     }
 
-    foreach ( const int idx, selectedCats )
+    foreach ( int idx, selectedCats )
     {
       QgsRendererCategoryV2 category = mRenderer->categories().value( idx );
 
@@ -813,7 +813,7 @@ QList<int> QgsCategorizedSymbolRendererV2Widget::selectedCategories()
   QList<int> rows;
   QModelIndexList selectedRows = viewCategories->selectionModel()->selectedRows();
 
-  foreach ( QModelIndex r, selectedRows )
+  foreach ( const QModelIndex& r, selectedRows )
   {
     if ( r.isValid() )
     {

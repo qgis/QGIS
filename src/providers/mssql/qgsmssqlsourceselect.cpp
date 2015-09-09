@@ -433,7 +433,7 @@ void QgsMssqlSourceSelect::addTables()
   QgsDebugMsg( QString( "mConnInfo:%1" ).arg( mConnInfo ) );
   mSelectedTables.clear();
 
-  foreach ( QModelIndex idx, mTablesTreeView->selectionModel()->selection().indexes() )
+  foreach ( const QModelIndex& idx, mTablesTreeView->selectionModel()->selection().indexes() )
   {
     if ( idx.column() != QgsMssqlTableModel::dbtmTable )
       continue;

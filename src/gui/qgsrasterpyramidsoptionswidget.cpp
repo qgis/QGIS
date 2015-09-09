@@ -96,7 +96,7 @@ void QgsRasterPyramidsOptionsWidget::updateUi()
       mOverviewCheckBoxes[ i ]->setChecked( false );
   }
   tmpStr = mySettings.value( prefix + "overviewList", "" ).toString();
-  foreach ( QString lev, tmpStr.split( " ", QString::SkipEmptyParts ) )
+  foreach ( const QString& lev, tmpStr.split( " ", QString::SkipEmptyParts ) )
   {
     if ( mOverviewCheckBoxes.contains( lev.toInt() ) )
       mOverviewCheckBoxes[ lev.toInt()]->setChecked( true );
@@ -178,7 +178,7 @@ void QgsRasterPyramidsOptionsWidget::setOverviewList()
   if ( cbxPyramidsLevelsCustom->isChecked() )
   {
     // should we also validate that numbers are increasing?
-    foreach ( QString lev, lePyramidsLevels->text().trimmed().split( " ", QString::SkipEmptyParts ) )
+    foreach ( const QString& lev, lePyramidsLevels->text().trimmed().split( " ", QString::SkipEmptyParts ) )
     {
       QgsDebugMsg( "lev= " + lev );
       int tmpInt = lev.toInt();

@@ -678,7 +678,7 @@ void QgsMapCanvas::refreshMap()
   mJob->setCache( mCache );
 
   QStringList layersForGeometryCache;
-  foreach ( QString id, mSettings.layers() )
+  foreach ( const QString& id, mSettings.layers() )
   {
     if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( id ) ) )
     {
@@ -1574,7 +1574,7 @@ int QgsMapCanvas::layerCount() const
 QList<QgsMapLayer*> QgsMapCanvas::layers() const
 {
   QList<QgsMapLayer*> lst;
-  foreach ( QString layerID, mapSettings().layers() )
+  foreach ( const QString& layerID, mapSettings().layers() )
   {
     QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerID );
     if ( layer )
@@ -1689,7 +1689,7 @@ void QgsMapCanvas::updateDatumTransformEntries()
     return;
 
   QString destAuthId = mSettings.destinationCrs().authid();
-  foreach ( QString layerID, mSettings.layers() )
+  foreach ( const QString& layerID, mSettings.layers() )
   {
     QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerID );
     if ( !layer )

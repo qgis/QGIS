@@ -74,7 +74,7 @@ void QgsRelationAddDlg::loadLayerAttributes( QComboBox* cbx, QgsVectorLayer* lay
     return;
   }
 
-  foreach ( QgsField fld, layer->fields().toList() )
+  foreach ( const QgsField& fld, layer->fields().toList() )
   {
     cbx->addItem( fld.name(), fld.name() );
   }

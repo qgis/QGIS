@@ -1333,7 +1333,7 @@ QgsRasterHistogram QgsGdalProvider::histogram( int theBandNo,
   initHistogram( myHistogram, theBandNo, theBinCount, theMinimum, theMaximum, theExtent, theSampleSize, theIncludeOutOfRange );
 
   // Find cached
-  foreach ( QgsRasterHistogram histogram, mHistograms )
+  foreach ( const QgsRasterHistogram& histogram, mHistograms )
   {
     if ( histogram == myHistogram )
     {
@@ -1566,7 +1566,7 @@ QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> & theRaste
   // add any driver-specific configuration options, save values to be restored later
   if ( theFormat != QgsRaster::PyramidsErdas && ! theConfigOptions.isEmpty() )
   {
-    foreach ( QString option, theConfigOptions )
+    foreach ( const QString& option, theConfigOptions )
     {
       QStringList opt = option.split( "=" );
       QByteArray key = opt[0].toLocal8Bit();
@@ -2309,7 +2309,7 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int theBandNo, int theStats,
   QgsRasterBandStats myRasterBandStats;
   initStatistics( myRasterBandStats, theBandNo, theStats, theExtent, theSampleSize );
 
-  foreach ( QgsRasterBandStats stats, mStatistics )
+  foreach ( const QgsRasterBandStats& stats, mStatistics )
   {
     if ( stats.contains( myRasterBandStats ) )
     {
@@ -2687,7 +2687,7 @@ void QgsGdalProvider::initBaseDataset()
 char** papszFromStringList( const QStringList& list )
 {
   char **papszRetList = NULL;
-  foreach ( QString elem, list )
+  foreach ( const QString& elem, list )
   {
     papszRetList = CSLAddString( papszRetList, elem.toLocal8Bit().constData() );
   }
@@ -2882,7 +2882,7 @@ QString QgsGdalProvider::validateCreationOptions( const QStringList& createOptio
 
   // prepare a map for easier lookup
   QMap< QString, QString > optionsMap;
-  foreach ( QString option, createOptions )
+  foreach ( const QString& option, createOptions )
   {
     QStringList opt = option.split( "=" );
     optionsMap[ opt[0].toUpper()] = opt[1];

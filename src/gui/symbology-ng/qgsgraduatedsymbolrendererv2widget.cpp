@@ -813,7 +813,7 @@ QList<int> QgsGraduatedSymbolRendererV2Widget::selectedClasses()
   QList<int> rows;
   QModelIndexList selectedRows = viewGraduated->selectionModel()->selectedRows();
 
-  foreach ( QModelIndex r, selectedRows )
+  foreach ( const QModelIndex& r, selectedRows )
   {
     if ( r.isValid() )
     {
@@ -866,7 +866,7 @@ void QgsGraduatedSymbolRendererV2Widget::changeSelectedSymbols()
       return;
     }
 
-    foreach ( QModelIndex idx, selectedIndexes )
+    foreach ( const QModelIndex& idx, selectedIndexes )
     {
       if ( idx.isValid() )
       {

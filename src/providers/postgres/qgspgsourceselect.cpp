@@ -82,7 +82,7 @@ QWidget *QgsPgSourceSelectDelegate::createEditor( QWidget *parent, const QStyleO
       QStandardItemModel *model = new QStandardItemModel( values.size(), 1, cb );
 
       int row = 0;
-      foreach ( QString value, values )
+      foreach ( const QString& value, values )
       {
         QStandardItem *item = new QStandardItem( value );
         item->setFlags( Qt::ItemIsUserCheckable | Qt::ItemIsEnabled );
@@ -121,7 +121,7 @@ void QgsPgSourceSelectDelegate::setEditorData( QWidget *editor, const QModelInde
     {
       QStringList cols = index.data( Qt::UserRole + 2 ).toStringList();
 
-      foreach ( QString col, cols )
+      foreach ( const QString& col, cols )
       {
         QStandardItemModel *cbm = qobject_cast<QStandardItemModel*>( cb->model() );
         for ( int idx = 0; idx < cbm->rowCount(); idx++ )
@@ -484,7 +484,7 @@ void QgsPgSourceSelect::addTables()
 {
   mSelectedTables.clear();
 
-  foreach ( QModelIndex idx, mTablesTreeView->selectionModel()->selection().indexes() )
+  foreach ( const QModelIndex& idx, mTablesTreeView->selectionModel()->selection().indexes() )
   {
     if ( idx.column() != QgsPgTableModel::dbtmTable )
       continue;

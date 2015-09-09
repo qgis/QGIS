@@ -71,7 +71,7 @@ QVector<QgsDataItem*> QgsPGConnectionItem::createChildren()
     return items;
   }
 
-  foreach ( QgsPostgresSchemaProperty schema, schemas )
+  foreach ( const QgsPostgresSchemaProperty& schema, schemas )
   {
     QgsPGSchemaItem * schemaItem = new QgsPGSchemaItem( this, mName, schema.name, mPath + "/" + schema.name );
     if ( !schema.description.isEmpty() )
@@ -677,7 +677,7 @@ QgsPGRootItem::~QgsPGRootItem()
 QVector<QgsDataItem*> QgsPGRootItem::createChildren()
 {
   QVector<QgsDataItem*> connections;
-  foreach ( QString connName, QgsPostgresConn::connectionList() )
+  foreach ( const QString& connName, QgsPostgresConn::connectionList() )
   {
     connections << new QgsPGConnectionItem( this, connName, mPath + "/" + connName );
   }

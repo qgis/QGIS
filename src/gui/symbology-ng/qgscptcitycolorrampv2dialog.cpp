@@ -203,7 +203,7 @@ void QgsCptCityColorRampV2Dialog::populateVariants()
     QIcon blankIcon( blankPixmap );
     int index;
 
-    foreach ( QString variant, variantList )
+    foreach ( const QString& variant, variantList )
     {
       QString variantStr = variant;
       if ( variantStr.startsWith( "-" ) || variantStr.startsWith( "_" ) )

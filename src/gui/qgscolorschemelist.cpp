@@ -85,7 +85,7 @@ void QgsColorSchemeList::removeSelection()
 
   //remove rows in descending order
   qSort( rowsToRemove.begin(), rowsToRemove.end(), qGreater<int>() );
-  foreach ( const int row, rowsToRemove )
+  foreach ( int row, rowsToRemove )
   {
     mModel->removeRow( row );
   }
@@ -125,7 +125,7 @@ void QgsColorSchemeList::copyColors()
   QList<int> rowsToCopy =  QList<int>::fromSet( rows.toSet() );
 
   QgsNamedColorList colorsToCopy;
-  foreach ( const int row, rowsToCopy )
+  foreach ( int row, rowsToCopy )
   {
     colorsToCopy << mModel->colors().at( row );
   }
@@ -150,7 +150,7 @@ void QgsColorSchemeList::keyPressEvent( QKeyEvent *event )
 
     //remove rows in descending order
     qSort( rowsToRemove.begin(), rowsToRemove.end(), qGreater<int>() );
-    foreach ( const int row, rowsToRemove )
+    foreach ( int row, rowsToRemove )
     {
       mModel->removeRow( row );
     }

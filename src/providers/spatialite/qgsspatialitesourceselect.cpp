@@ -243,7 +243,7 @@ void QgsSpatiaLiteSourceSelect::setLayerType( QString table, QString column, QSt
 void QgsSpatiaLiteSourceSelect::populateConnectionList()
 {
   cmbConnections->clear();
-  foreach ( QString name, QgsSpatiaLiteConnection::connectionList() )
+  foreach ( const QString& name, QgsSpatiaLiteConnection::connectionList() )
   {
     // retrieving the SQLite DB name and full path
     QString text = name + tr( "@" ) + QgsSpatiaLiteConnection::connectionPath( name );

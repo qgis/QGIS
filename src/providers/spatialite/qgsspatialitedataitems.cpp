@@ -269,7 +269,7 @@ QgsSLRootItem::~QgsSLRootItem()
 QVector<QgsDataItem*> QgsSLRootItem::createChildren()
 {
   QVector<QgsDataItem*> connections;
-  foreach ( QString connName, QgsSpatiaLiteConnection::connectionList() )
+  foreach ( const QString& connName, QgsSpatiaLiteConnection::connectionList() )
   {
     QgsDataItem * conn = new QgsSLConnectionItem( this, connName, mPath + "/" + connName );
     connections.push_back( conn );

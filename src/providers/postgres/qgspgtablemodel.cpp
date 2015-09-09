@@ -372,7 +372,7 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString& conn
   QgsDataSourceURI uri( connInfo );
 
   QStringList cols;
-  foreach ( QString col, s1 )
+  foreach ( const QString& col, s1 )
   {
     cols << QgsPostgresConn::quotedIdentifier( col );
   }

@@ -145,7 +145,7 @@ QVector<QgsDataItem*> QgsWMSConnectionItem::createChildren()
             styleItem->addChildItem( linkItem );
           }
 
-          foreach ( QString format, l.formats )
+          foreach ( const QString& format, l.formats )
           {
             QString name = format;
             if ( linkItem == styleItem )
@@ -273,7 +273,7 @@ QString QgsWMSLayerItem::createUri()
   QString crs;
   // get first known if possible
   QgsCoordinateReferenceSystem testCrs;
-  foreach ( QString c, mLayerProperty.crs )
+  foreach ( const QString& c, mLayerProperty.crs )
   {
     testCrs.createFromOgcWmsCrs( c );
     if ( testCrs.isValid() )
@@ -351,7 +351,7 @@ QVector<QgsDataItem*> QgsWMSRootItem::createChildren()
 {
   QVector<QgsDataItem*> connections;
 
-  foreach ( QString connName, QgsWMSConnection::connectionList() )
+  foreach ( const QString& connName, QgsWMSConnection::connectionList() )
   {
     QgsWMSConnection connection( connName );
     QgsDataItem * conn = new QgsWMSConnectionItem( this, connName, mPath + "/" + connName, connection.uri().encodedUri() );

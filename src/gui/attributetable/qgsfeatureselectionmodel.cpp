@@ -59,7 +59,7 @@ void QgsFeatureSelectionModel::selectFeatures( const QItemSelection &selection, 
 {
   QgsFeatureIds ids;
 
-  foreach ( const QModelIndex index, selection.indexes() )
+  foreach ( const QModelIndex& index, selection.indexes() )
   {
     QgsFeatureId id = index.model()->data( index, QgsAttributeTableModel::FeatureIdRole ).toLongLong();
 
@@ -124,7 +124,7 @@ void QgsFeatureSelectionModel::selectFeatures( const QItemSelection &selection, 
   connect( mFeatureSelectionManager, SIGNAL( selectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) ), this, SLOT( layerSelectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) ) );
 
   QModelIndexList updatedIndexes;
-  foreach ( QModelIndex idx, selection.indexes() )
+  foreach ( const QModelIndex& idx, selection.indexes() )
   {
     updatedIndexes.append( expandIndexToRow( idx ) );
   }

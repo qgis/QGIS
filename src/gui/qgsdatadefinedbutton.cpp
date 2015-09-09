@@ -328,7 +328,7 @@ void QgsDataDefinedButton::aboutToShowMenu()
   {
     QgsExpressionContext context = mExpressionContextCallback( mExpressionContextCallbackContext );
     QStringList variables = context.variableNames();
-    Q_FOREACH ( QString variable, variables )
+    Q_FOREACH ( const QString& variable, variables )
     {
       if ( context.isReadOnly( variable ) ) //only want to show user-set variables
         continue;

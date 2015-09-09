@@ -85,7 +85,7 @@ class CORE_EXPORT QgsConditionalStyle
      * @brief Render a preview icon of the rule.
      * @return QPixmap preview of the style
      */
-    QPixmap renderPreview();
+    QPixmap renderPreview() const;
 
     /**
      * @brief Set the name of the style.  Names are optional but handy for display

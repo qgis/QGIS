@@ -50,7 +50,7 @@ void QgsMapLayerModel::setItemsCheckable( bool checkable )
 
 void QgsMapLayerModel::checkAll( Qt::CheckState checkState )
 {
-  foreach ( const QString key, mLayersChecked.keys() )
+  foreach ( const QString& key, mLayersChecked.keys() )
   {
     mLayersChecked[key] = checkState;
   }
@@ -78,7 +78,7 @@ QModelIndex QgsMapLayerModel::indexFromLayer( QgsMapLayer *layer ) const
 
 void QgsMapLayerModel::removeLayers( const QStringList layerIds )
 {
-  foreach ( const QString layerId, layerIds )
+  foreach ( const QString& layerId, layerIds )
   {
     QModelIndex startIndex = index( 0, 0 );
     QModelIndexList list = match( startIndex, LayerIdRole, layerId, 1 );

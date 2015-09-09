@@ -76,7 +76,7 @@ void TestVectorLayerCache::initTestCase()
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   QString myTestDataDir = myDataDir + "/";
 
-  foreach ( QString f, backupFiles )
+  foreach ( const QString& f, backupFiles )
   {
     QString origFileName = myTestDataDir + f;
     QFileInfo origFileInfo( origFileName );

@@ -666,7 +666,7 @@ void QgsComposerLegendWidget::on_mRemoveToolButton_clicked()
 
   // first try to remove legend nodes
   QHash<QgsLayerTreeLayer*, QList<int> > nodesWithRemoval;
-  foreach ( const QPersistentModelIndex index, indexes )
+  foreach ( const QPersistentModelIndex& index, indexes )
   {
     if ( QgsLayerTreeModelLegendNode* legendNode = mItemTreeView->layerTreeModel()->index2legendNode( index ) )
     {
@@ -691,7 +691,7 @@ void QgsComposerLegendWidget::on_mRemoveToolButton_clicked()
   }
 
   // then remove layer tree nodes
-  foreach ( const QPersistentModelIndex index, indexes )
+  foreach ( const QPersistentModelIndex& index, indexes )
   {
     if ( index.isValid() && mItemTreeView->layerTreeModel()->index2node( index ) )
       mLegend->modelV2()->removeRow( index.row(), index.parent() );

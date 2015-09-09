@@ -48,7 +48,7 @@ void QgsExpressionHighlighter::addFields( QStringList fieldList )
 {
   columnNameFormat.setForeground( Qt::darkRed );
   HighlightingRule rule;
-  foreach ( const QString field, fieldList )
+  foreach ( const QString& field, fieldList )
   {
     if ( field.isEmpty() ) // this really happened :)
       continue;

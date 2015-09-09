@@ -222,7 +222,7 @@ void QgsFieldConditionalFormatWidget::setPresets( QList<QgsConditionalStyle> sty
 {
   mPresets.clear();
   mPresetsModel->clear();
-  foreach ( QgsConditionalStyle style, styles )
+  foreach ( const QgsConditionalStyle& style, styles )
   {
     if ( style.isValid() )
     {
@@ -322,7 +322,7 @@ void QgsFieldConditionalFormatWidget::reloadStyles()
 {
   mModel->clear();
 
-  foreach ( QgsConditionalStyle style, getStyles() )
+  foreach ( const QgsConditionalStyle& style, getStyles() )
   {
     QStandardItem* item = new QStandardItem( style.displayText() );
     item->setIcon( QIcon( style.renderPreview() ) );

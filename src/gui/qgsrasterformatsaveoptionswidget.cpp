@@ -172,7 +172,7 @@ void QgsRasterFormatSaveOptionsWidget::updateProfiles()
   mOptionsMap.clear();
   mProfileComboBox->blockSignals( true );
   mProfileComboBox->clear();
-  foreach ( QString profileKey, profileKeys )
+  foreach ( const QString& profileKey, profileKeys )
   {
     QString profileName, profileOptions;
     profileOptions = createOptions( profileKey );

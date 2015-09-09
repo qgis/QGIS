@@ -187,7 +187,7 @@ void QgsMSLayerCache::freeEntryRessources( QgsMSLayerCacheEntry& entry )
   delete entry.layerPointer;
 
   //remove the temporary files of a layer
-  foreach ( QString file, entry.temporaryFiles )
+  foreach ( const QString& file, entry.temporaryFiles )
   {
     //remove the temporary file
     QFile removeFile( file );

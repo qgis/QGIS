@@ -463,7 +463,7 @@ QgsComposition* QgsWMSProjectParser::initComposition( const QString& composerTem
         QStringList layerIds = root->findLayerIds();
         // foreach layer find in the layer tree
         // load it if the layer id is not QgsMapLayerRegistry
-        foreach ( QString layerId, layerIds )
+        foreach ( const QString& layerId, layerIds )
         {
           QgsMapLayer * layer = QgsMapLayerRegistry::instance()->mapLayer( layerId );
           if ( layer )

@@ -277,7 +277,7 @@ bool QgsWMSSourceSelect::populateLayerList( const QgsWmsCapabilities& capabiliti
   QVector<QgsWmsLayerProperty> layers = capabilities.supportedLayers();
 
   bool first = true;
-  foreach ( QString encoding, capabilities.supportedImageEncodings() )
+  foreach ( const QString& encoding, capabilities.supportedImageEncodings() )
   {
     int id = mMimeMap.value( encoding, -1 );
     if ( id < 0 )
@@ -363,7 +363,7 @@ bool QgsWMSSourceSelect::populateLayerList( const QgsWmsCapabilities& capabiliti
       {
         foreach ( const QgsWmtsTileMatrixSetLink &setLink, l.setLinks )
         {
-          foreach ( QString format, l.formats )
+          foreach ( const QString& format, l.formats )
           {
             QTableWidgetItem *item = new QTableWidgetItem( l.identifier );
             item->setData( Qt::UserRole + 0, l.identifier );

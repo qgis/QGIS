@@ -1499,7 +1499,7 @@ void QgsProjectProperties::populateEllipsoidList()
   const char   *myTail;
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
-  EllipsoidDefs myItem, i;
+  EllipsoidDefs myItem;
 
   myItem.acronym = GEO_NONE;
   myItem.description =  tr( GEO_NONE_DESC );
@@ -1567,7 +1567,7 @@ void QgsProjectProperties::populateEllipsoidList()
 
   // Add all items to selector
 
-  foreach ( i, mEllipsoidList )
+  foreach ( const EllipsoidDefs& i, mEllipsoidList )
   {
     cmbEllipsoid->addItem( i.description );
   }

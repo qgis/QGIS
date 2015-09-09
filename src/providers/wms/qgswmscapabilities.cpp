@@ -73,7 +73,7 @@ bool QgsWmsSettings::parseUri( QString uriString )
   if ( uri.hasParam( "tileDimensions" ) )
   {
     mTiled = true;
-    foreach ( QString param, uri.param( "tileDimensions" ).split( ";" ) )
+    foreach ( const QString& param, uri.param( "tileDimensions" ).split( ";" ) )
     {
       QStringList kv = param.split( "=" );
       if ( kv.size() == 1 )
@@ -156,7 +156,7 @@ bool QgsWmsCapabilities::parseResponse( const QByteArray& response, const QgsWms
   }
 
   // get identify formats
-  foreach ( QString f, mCapabilities.capability.request.getFeatureInfo.format )
+  foreach ( const QString& f, mCapabilities.capability.request.getFeatureInfo.format )
   {
     // Don't use mSupportedGetFeatureFormats, there are too many possibilities
     QgsDebugMsg( "supported format = " + f );
@@ -766,7 +766,7 @@ void QgsWmsCapabilities::parseLayer( QDomElement const & e, QgsWmsLayerProperty&
       {
         // CRS can contain several definitions separated by whitespace
         // though this was deprecated in WMS 1.1.1
-        foreach ( QString srs, e1.text().split( QRegExp( "\\s+" ) ) )
+        foreach ( const QString& srs, e1.text().split( QRegExp( "\\s+" ) ) )
         {
           layerProperty.crs.push_back( srs );
         }
@@ -1242,7 +1242,7 @@ void QgsWmsCapabilities::parseTileSetProfile( QDomElement const &e )
   mTileLayersSupported.append( l );
 
   int i = 0;
-  foreach ( QString rS, resolutions )
+  foreach ( const QString& rS, resolutions )
   {
     double r = rS.toDouble();
     m.identifier = QString::number( i );

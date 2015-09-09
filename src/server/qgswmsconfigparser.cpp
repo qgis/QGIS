@@ -200,7 +200,7 @@ QgsComposition* QgsWMSConfigParser::createPrintComposition( const QString& compo
 
       // foreach layer find in the layer tree
       // remove it if the layer id is not in map layerIds
-      foreach ( QString layerId, layerIds )
+      foreach ( const QString& layerId, layerIds )
       {
         QgsLayerTreeLayer* nodeLayer = root->findLayer( layerId );
         if ( !nodeLayer )

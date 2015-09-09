@@ -183,7 +183,7 @@ bool QgsConditionalStyle::matches( QVariant value, QgsExpressionContext& context
   return exp.evaluate( &context ).toBool();
 }
 
-QPixmap QgsConditionalStyle::renderPreview()
+QPixmap QgsConditionalStyle::renderPreview() const
 {
   QPixmap pixmap( 64, 32 );
   pixmap.fill( Qt::transparent );

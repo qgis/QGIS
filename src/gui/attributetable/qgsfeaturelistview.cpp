@@ -103,7 +103,7 @@ QString QgsFeatureListView::parserErrorString()
 QgsFeatureIds QgsFeatureListView::currentEditSelection()
 {
   QgsFeatureIds selection;
-  Q_FOREACH ( QModelIndex idx, mCurrentEditSelectionModel->selectedIndexes() )
+  Q_FOREACH ( const QModelIndex& idx, mCurrentEditSelectionModel->selectedIndexes() )
   {
     selection << idx.data( QgsAttributeTableModel::FeatureIdRole ).value<QgsFeatureId>();
   }
@@ -200,7 +200,7 @@ void QgsFeatureListView::setEditSelection( const QModelIndex& index, QItemSelect
 
 void QgsFeatureListView::repaintRequested( QModelIndexList indexes )
 {
-  foreach ( const QModelIndex index, indexes )
+  foreach ( const QModelIndex& index, indexes )
   {
     update( index );
   }

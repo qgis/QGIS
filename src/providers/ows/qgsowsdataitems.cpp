@@ -43,7 +43,7 @@ QVector<QgsDataItem*> QgsOWSConnectionItem::createChildren()
 
   int layerCount = 0;
   // Try to open with WMS,WFS,WCS
-  foreach ( QString key, QStringList() << "wms" << "WFS" << "wcs" )
+  foreach ( const QString& key, QStringList() << "wms" << "WFS" << "wcs" )
   {
     QgsDebugMsg( "Add connection for provider " + key );
     QLibrary *library = QgsProviderRegistry::instance()->providerLibrary( key );
@@ -188,9 +188,9 @@ QVector<QgsDataItem*> QgsOWSRootItem::createChildren()
   QVector<QgsDataItem*> connections;
   // Combine all WMS,WFS,WCS connections
   QStringList connNames;
-  foreach ( QString service, QStringList() << "WMS" << "WFS" << "WCS" )
+  foreach ( const QString& service, QStringList() << "WMS" << "WFS" << "WCS" )
   {
-    foreach ( QString connName, QgsOWSConnection::connectionList( service ) )
+    foreach ( const QString& connName, QgsOWSConnection::connectionList( service ) )
     {
       if ( !connNames.contains( connName ) )
       {
@@ -198,7 +198,7 @@ QVector<QgsDataItem*> QgsOWSRootItem::createChildren()
       }
     }
   }
-  foreach ( QString connName, connNames )
+  foreach ( const QString& connName, connNames )
   {
     QgsDataItem * conn = new QgsOWSConnectionItem( this, connName, "ows:/" + connName );
     connections.append( conn );

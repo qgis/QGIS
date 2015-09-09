@@ -166,7 +166,7 @@ QgsStringMap QgsVariableEditorWidget::variablesInActiveScope() const
   }
 
   QgsExpressionContextScope* scope = mContext->scope( mEditableScopeIndex );
-  Q_FOREACH ( QString variable, scope->variableNames() )
+  Q_FOREACH ( const QString& variable, scope->variableNames() )
   {
     if ( scope->isReadOnly( variable ) )
       continue;
@@ -366,7 +366,7 @@ void QgsVariableEditorTree::refreshScopeVariables( QgsExpressionContextScope* sc
   bool isCurrent = scopeIndex == mEditableScopeIndex;
   QTreeWidgetItem* scopeItem = mScopeToItem.value( scopeIndex );
 
-  foreach ( QString name, scope->variableNames() )
+  foreach ( const QString& name, scope->variableNames() )
   {
     if ( name.startsWith( QChar( '_' ) ) )
       continue;

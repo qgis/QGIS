@@ -209,7 +209,7 @@ void QgsRelationEditorWidget::addFeature()
 
   QgsFields fields = mRelation.referencingLayer()->fields();
 
-  Q_FOREACH ( QgsRelation::FieldPair fieldPair, mRelation.fieldPairs() )
+  Q_FOREACH ( const QgsRelation::FieldPair& fieldPair, mRelation.fieldPairs() )
   {
     keyAttrs.insert( fields.indexFromName( fieldPair.referencingField() ), mFeature.attribute( fieldPair.referencedField() ) );
   }
@@ -224,7 +224,7 @@ void QgsRelationEditorWidget::linkFeature()
   if ( selectionDlg.exec() )
   {
     QMap<int, QVariant> keys;
-    Q_FOREACH ( const QgsRelation::FieldPair fieldPair, mRelation.fieldPairs() )
+    Q_FOREACH ( const QgsRelation::FieldPair& fieldPair, mRelation.fieldPairs() )
     {
       int idx = mRelation.referencingLayer()->fieldNameIndex( fieldPair.referencingField() );
       QVariant val = mFeature.attribute( fieldPair.referencedField() );
@@ -254,7 +254,7 @@ void QgsRelationEditorWidget::deleteFeature()
 void QgsRelationEditorWidget::unlinkFeature()
 {
   QMap<int, QgsField> keyFields;
-  Q_FOREACH ( const QgsRelation::FieldPair fieldPair, mRelation.fieldPairs() )
+  Q_FOREACH ( const QgsRelation::FieldPair& fieldPair, mRelation.fieldPairs() )
   {
     int idx = mRelation.referencingLayer()->fieldNameIndex( fieldPair.referencingField() );
     if ( idx < 0 )

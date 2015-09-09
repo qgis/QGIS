@@ -811,7 +811,7 @@ QIcon QgsCptCityColorRampItem::icon()
 
 QIcon QgsCptCityColorRampItem::icon( const QSize& size )
 {
-  foreach ( QIcon icon, mIcons )
+  foreach ( const QIcon& icon, mIcons )
   {
     if ( icon.availableSizes().contains( size ) )
       return icon;

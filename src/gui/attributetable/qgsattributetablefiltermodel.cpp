@@ -322,7 +322,7 @@ QModelIndex QgsAttributeTableFilterModel::fidToIndex( QgsFeatureId fid )
 QModelIndexList QgsAttributeTableFilterModel::fidToIndexList( QgsFeatureId fid )
 {
   QModelIndexList indexes;
-  foreach ( QModelIndex idx, masterModel()->idToIndexList( fid ) )
+  foreach ( const QModelIndex& idx, masterModel()->idToIndexList( fid ) )
   {
     indexes.append( mapFromMaster( idx ) );
   }

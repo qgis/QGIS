@@ -539,7 +539,7 @@ QVector<QgsDataItem*> QgsMssqlRootItem::createChildren()
   QVector<QgsDataItem*> connections;
   QSettings settings;
   settings.beginGroup( "/MSSQL/connections" );
-  foreach ( QString connName, settings.childGroups() )
+  foreach ( const QString& connName, settings.childGroups() )
   {
     connections << new QgsMssqlConnectionItem( this, connName, mPath + "/" + connName );
   }

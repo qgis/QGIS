@@ -72,7 +72,7 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* sty
   groupsCombo->addItem( "" );
   populateGroups();
   QStringList groups = style->smartgroupNames();
-  foreach ( QString group, groups )
+  foreach ( const QString& group, groups )
   {
     groupsCombo->addItem( group, QVariant( "smart" ) );
   }

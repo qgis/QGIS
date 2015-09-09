@@ -1912,7 +1912,7 @@ QString QgsWmsProvider::metadata()
                   .arg( tr( "Top" ) ).arg( tr( "Left" ) )
                   .arg( tr( "Bottom" ) ).arg( tr( "Right" ) );
 
-      foreach ( QVariant res, property( "resolutions" ).toList() )
+      foreach ( const QVariant& res, property( "resolutions" ).toList() )
       {
         double key = res.toDouble();
 
@@ -2561,7 +2561,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
         // GetMap and GetFeatureInfo will return data for the group of the same name.
         // https://github.com/mapserver/mapserver/issues/318#issuecomment-4923208
         QgsFeatureStoreList featureStoreList;
-        foreach ( QString featureTypeName, featureTypeNames )
+        foreach ( const QString& featureTypeName, featureTypeNames )
         {
           QgsDebugMsg( QString( "featureTypeName = %1" ).arg( featureTypeName ) );
 

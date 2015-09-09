@@ -188,7 +188,7 @@ void QgsExpressionBuilderWidget::updateFunctionFileList( QString path )
   dir.setNameFilters( QStringList() << "*.py" );
   QStringList files = dir.entryList( QDir::Files );
   cmbFileNames->clear();
-  foreach ( QString name, files )
+  foreach ( const QString& name, files )
   {
     QFileInfo info( mFunctionsPath + QDir::separator() + name );
     if ( info.baseName() == "__init__" ) continue;
@@ -321,7 +321,7 @@ void QgsExpressionBuilderWidget::fillFieldValues( const QString& fieldName, int 
   QList<QVariant> values;
   QStringList strValues;
   mLayer->uniqueValues( fieldIndex, values, countLimit );
-  foreach ( QVariant value, values )
+  foreach ( const QVariant& value, values )
   {
     QString strValue;
     if ( value.isNull() )
@@ -416,7 +416,7 @@ void QgsExpressionBuilderWidget::loadRecent( QString key )
   QSettings settings;
   QString location = QString( "/expressions/recent/%1" ).arg( key );
   QStringList expressions = settings.value( location ).toStringList();
-  foreach ( QString expression, expressions )
+  foreach ( const QString& expression, expressions )
   {
     this->registerItem( name, expression, expression, expression );
   }
@@ -604,7 +604,7 @@ QString QgsExpressionBuilderWidget::formatPreviewString( const QString& previewS
 void QgsExpressionBuilderWidget::loadExpressionContext()
 {
   QStringList variableNames = mExpressionContext.filteredVariableNames();
-  Q_FOREACH ( QString variable, variableNames )
+  Q_FOREACH ( const QString& variable, variableNames )
   {
     registerItem( "Variables", variable, " @" + variable + " ",
                   QgsExpression::variableHelpText( variable, true, mExpressionContext.variable( variable ) ),
@@ -614,7 +614,7 @@ void QgsExpressionBuilderWidget::loadExpressionContext()
 
   // Load the functions from the expression context
   QStringList contextFunctions = mExpressionContext.functionNames();
-  Q_FOREACH ( QString functionName, contextFunctions )
+  Q_FOREACH ( const QString& functionName, contextFunctions )
   {
     QgsExpression::Function* func = mExpressionContext.function( functionName );
     QString name = func->name();

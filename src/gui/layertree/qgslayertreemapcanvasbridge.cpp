@@ -119,7 +119,7 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers()
 
   if ( mHasCustomLayerOrder )
   {
-    foreach ( QString layerId, mCustomLayerOrder )
+    foreach ( const QString& layerId, mCustomLayerOrder )
     {
       QgsLayerTreeLayer* nodeLayer = mRoot->findLayer( layerId );
       if ( nodeLayer )
@@ -236,7 +236,7 @@ void QgsLayerTreeMapCanvasBridge::writeProject( QDomDocument& doc )
   QDomElement customOrderElem = doc.createElement( "custom-order" );
   customOrderElem.setAttribute( "enabled", mHasCustomLayerOrder ? 1 : 0 );
 
-  foreach ( QString layerId, mCustomLayerOrder )
+  foreach ( const QString& layerId, mCustomLayerOrder )
   {
     QDomElement itemElem = doc.createElement( "item" );
     itemElem.appendChild( doc.createTextNode( layerId ) );
@@ -289,7 +289,7 @@ void QgsLayerTreeMapCanvasBridge::nodeAddedChildren( QgsLayerTreeNode* node, int
     }
   }
 
-  foreach ( QString layerId, layerIds )
+  foreach ( const QString& layerId, layerIds )
   {
     if ( !mCustomLayerOrder.contains( layerId ) )
       mCustomLayerOrder.append( layerId );

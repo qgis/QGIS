@@ -1225,7 +1225,7 @@ bool QgsPostgresProvider::determinePrimaryKey()
             primaryKey = quotedIdentifier( primaryKey );
           }
 
-          foreach ( QString col, cols )
+          foreach ( const QString& col, cols )
           {
             int idx = fieldNameIndex( col );
             if ( idx < 0 )

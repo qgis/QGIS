@@ -7495,7 +7495,7 @@ void QgisApp::duplicateLayers( QList<QgsMapLayer *> lyrList )
     QgsVectorLayer* vDupLayer = dynamic_cast<QgsVectorLayer*>( dupLayer );
     if ( vLayer && vDupLayer )
     {
-      foreach ( const QgsVectorJoinInfo join, vLayer->vectorJoins() )
+      foreach ( const QgsVectorJoinInfo& join, vLayer->vectorJoins() )
       {
         vDupLayer->addJoin( join );
       }
@@ -10530,7 +10530,7 @@ void QgisApp::namSslErrors( QNetworkReply *reply, const QList<QSslError> &errors
   bool otherError = false;
   static QSet<QSslError::SslError> ignoreErrors;
 
-  foreach ( QSslError error, errors )
+  foreach ( const QSslError& error, errors )
   {
     if ( error.error() == QSslError::NoError )
       continue;
@@ -10550,7 +10550,7 @@ void QgisApp::namSslErrors( QNetworkReply *reply, const QList<QSslError> &errors
                              msg,
                              QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Ok )
   {
-    foreach ( QSslError error, errors )
+    foreach ( const QSslError& error, errors )
     {
       ignoreErrors << error.error();
     }

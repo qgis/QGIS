@@ -97,7 +97,7 @@ void QgsGCPListWidget::updateGCPList()
 
 void QgsGCPListWidget::closeEditors()
 {
-  Q_FOREACH ( QModelIndex index, selectedIndexes() )
+  Q_FOREACH ( const QModelIndex& index, selectedIndexes() )
   {
     closePersistentEditor( index );
   }

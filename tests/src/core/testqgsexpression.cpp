@@ -761,7 +761,7 @@ class TestQgsExpression: public QObject
       QStringList refCols = exp.referencedColumns();
       // make sure we have lower case
       QSet<QString> refColsSet;
-      foreach ( QString col, refCols )
+      foreach ( const QString& col, refCols )
         refColsSet.insert( col.toLower() );
 
       QCOMPARE( refColsSet, expectedCols );

@@ -141,7 +141,7 @@ void TestQgsRasterSubLayer::subLayersList()
     expected << "Band2";
 
     QStringList sublayers;
-    foreach ( QString s, mpRasterLayer->subLayers() )
+    foreach ( const QString& s, mpRasterLayer->subLayers() )
     {
       qDebug() << "sublayer: " << s;
       sublayers << s.split( ':' ).last();

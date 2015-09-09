@@ -118,9 +118,9 @@ void TestQgsWcsProvider::read()
   tmpFile->open();
   QString tmpFilePath = tmpFile->fileName();
   delete tmpFile; // removes the file
-  foreach ( QString version, versions )
+  foreach ( const QString& version, versions )
   {
-    foreach ( QString identifier, identifiers )
+    foreach ( const QString& identifier, identifiers )
     {
       // copy to temporary to avoid creation/changes/use of GDAL .aux.xml files
       QString testFilePath = mTestDataDir + "/" + identifier + ".tif";

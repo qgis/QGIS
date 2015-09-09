@@ -652,7 +652,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &theProj4Strin
     {
       // Bugfix 8487 : test param lists are equal, except for +datum
       QStringList foundParams;
-      foreach ( QString param, myRecord["parameters"].split( QRegExp( "\\s+(?=\\+)" ), QString::SkipEmptyParts ) )
+      foreach ( const QString& param, myRecord["parameters"].split( QRegExp( "\\s+(?=\\+)" ), QString::SkipEmptyParts ) )
       {
         if ( !param.startsWith( "+datum=" ) )
           foundParams << param.trimmed();

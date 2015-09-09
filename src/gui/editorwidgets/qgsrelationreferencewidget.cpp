@@ -449,7 +449,7 @@ void QgsRelationReferenceWidget::init()
         QVariant nullValue = QSettings().value( "qgis/nullValue", "NULL" );
         cb->addItem( nullValue.toString(), QVariant( mReferencedLayer->fields()[idx].type() ) );
 
-        Q_FOREACH ( QVariant v, uniqueValues )
+        Q_FOREACH ( const QVariant& v, uniqueValues )
         {
           cb->addItem( v.toString(), v );
         }
