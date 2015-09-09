@@ -21,6 +21,7 @@
 #include <QComboBox>
 #include <QCompleter>
 #include <QFileSystemModel>
+#include <QFileSystemWatcher>
 #include <QGroupBox>
 #include <QListView>
 #include <QMap>
@@ -70,10 +71,20 @@ class QgsGrassModuleInputModel : public QStandardItemModel
     /** Reload current mapset */
     void reload();
 
+    void onDirectoryChanged( const QString & path );
+
   signals:
 
-  protected:
-
+  private:
+    void addMapset( const QString & mapset );
+    void refreshMapset( QStandardItem *mapsetItem, const QString & mapset );
+    // Add to watched paths if exists and if not yet watched
+    void watch( const QString & path );
+    // mapset watched dirs
+    QStringList watchedDirs() { QStringList l; l << "cellhd" << "vector"; return l; }
+    // names of
+    QStringList locationDirNames();
+    QFileSystemWatcher *mWatcher;
 
 };
 
@@ -171,11 +182,14 @@ class QgsGrassModuleInputComboBox : public QComboBox
 
 class QgsGrassModuleInputSelectedDelegate : public QStyledItemDelegate
 {
+    Q_OBJECT
   public:
     explicit QgsGrassModuleInputSelectedDelegate( QObject *parent = 0 );
 
+    void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+
+  public slots:
     void handlePressed( const QModelIndex &index );
-    void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
 
   private:
     mutable QModelIndex mPressedIndex;

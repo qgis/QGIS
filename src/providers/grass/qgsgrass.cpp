@@ -576,6 +576,16 @@ QString QgsGrass::getDefaultLocation()
   return defaultLocation;
 }
 
+QString QgsGrass::getDefaultLocationPath()
+{
+  init();
+  if ( !active )
+  {
+    return QString();
+  }
+  return defaultGisdbase + "/" + defaultLocation;
+}
+
 QString QgsGrass::getDefaultMapset()
 {
   init();

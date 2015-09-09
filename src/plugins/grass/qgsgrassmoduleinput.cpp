@@ -57,9 +57,194 @@ extern "C"
 /**************************** QgsGrassModuleInputModel ****************************/
 QgsGrassModuleInputModel::QgsGrassModuleInputModel( QObject *parent )
     : QStandardItemModel( parent )
+    , mWatcher( 0 )
 {
   setColumnCount( 1 );
   reload();
+
+  QString locationPath = QgsGrass::getDefaultLocationPath();
+  mWatcher = new QFileSystemWatcher( this );
+  mWatcher->addPath( locationPath );
+
+  // Watching all dirs in loacation because a dir may become a mapset later, when WIND is created
+
+  //QStringList mapsets = QgsGrass::mapsets( QgsGrass::getDefaultGisdbase(), QgsGrass::getDefaultLocation() );
+  QStringList dirNames = locationDirNames();
+  foreach ( QString dirName, dirNames )
+  {
+    QString dirPath = locationPath + "/" + dirName;
+    // Watch the dir in any case, WIND mabe created later
+    mWatcher->addPath( dirPath );
+
+    foreach ( QString watchedDir, watchedDirs() )
+    {
+      watch( dirPath + "/" + watchedDir );
+    }
+  }
+  connect( mWatcher, SIGNAL( directoryChanged( const QString & ) ), SLOT( onDirectoryChanged( const QString & ) ) );
+}
+
+void QgsGrassModuleInputModel::onDirectoryChanged( const QString & path )
+{
+  QgsDebugMsg( "path = " + path );
+
+  QString locationPath = QgsGrass::getDefaultLocationPath();
+  QDir parentDir( path );
+  parentDir.cdUp();
+  QString mapset;
+
+  if ( path == locationPath )
+  {
+    QgsDebugMsg( "location = " + path );
+    QStringList dirNames = locationDirNames();
+    //QStringList mapsets = QgsGrass::mapsets( QgsGrass::getDefaultGisdbase(), QgsGrass::getDefaultLocation() );
+
+    for ( int i = rowCount() - 1; i >= 0; i-- )
+    {
+      QString mapset = item( i )->text();
+      if ( !QgsGrass::isMapset( locationPath + "/" + mapset ) )
+      {
+        QgsDebugMsg( "removed mapset " + mapset );
+        removeRows( i, 1 );
+      }
+    }
+
+    foreach ( QString dirName, dirNames )
+    {
+      // Add to watcher in any case, either for WIND, cellhd or vector
+      QString dirPath = locationPath + "/" + dirName;
+      watch( dirPath );
+      if ( QgsGrass::isMapset( dirPath ) && findItems( dirName ).isEmpty() )
+      {
+        addMapset( dirName );
+      }
+    }
+  }
+  else if ( parentDir.canonicalPath() == QDir( locationPath ).canonicalPath() ) // mapset
+  {
+    QgsDebugMsg( "mapset = " + path );
+    QDir dir( path );
+    mapset = dir.dirName();
+    foreach ( QString watchedDir, watchedDirs() )
+    {
+      watch( path + "/" + watchedDir );
+    }
+  }
+  else // cellhd or vector dir
+  {
+    QgsDebugMsg( "cellhd/vector = " + path );
+    mapset = parentDir.dirName();
+  }
+  if ( !mapset.isEmpty() )
+  {
+    QList<QStandardItem *> items = findItems( mapset );
+    if ( items.size() == 1 )
+    {
+      refreshMapset( items[0], mapset );
+    }
+  }
+}
+
+void QgsGrassModuleInputModel::watch( const QString & path )
+{
+  if ( !mWatcher->directories().contains( path ) && QFileInfo( path ).exists() )
+  {
+    mWatcher->addPath( path );
+  }
+}
+
+QStringList QgsGrassModuleInputModel::locationDirNames()
+{
+  QString locationPath = QgsGrass::getDefaultLocationPath();
+  QDir locationDir( locationPath );
+  return locationDir.entryList( QDir::Dirs | QDir::NoDotAndDotDot );
+}
+
+void QgsGrassModuleInputModel::addMapset( const QString & mapset )
+{
+  QgsDebugMsg( "mapset = " + mapset );
+
+
+  QStandardItem *mapsetItem = new QStandardItem( mapset );
+  mapsetItem->setData( mapset, MapsetRole );
+  mapsetItem->setData( mapset, Qt::EditRole );
+  mapsetItem->setData( QgsGrassObject::None, TypeRole );
+  mapsetItem->setSelectable( false );
+
+  refreshMapset( mapsetItem, mapset );
+
+  appendRow( mapsetItem );
+}
+
+void QgsGrassModuleInputModel::refreshMapset( QStandardItem *mapsetItem, const QString & mapset )
+{
+  QgsDebugMsg( "mapset = " + mapset );
+  if ( !mapsetItem )
+  {
+    return;
+  }
+  bool currentMapset = mapset == QgsGrass::getDefaultMapset();
+  QList<QgsGrassObject::Type> types;
+  types << QgsGrassObject::Raster << QgsGrassObject::Vector;
+  foreach ( QgsGrassObject::Type type, types )
+  {
+    QStringList maps = QgsGrass::grassObjects( QgsGrass::getDefaultGisdbase() + "/" + QgsGrass::getDefaultLocation() + "/" + mapset, type );
+    QStringList mapNames;
+    foreach ( QString map, maps )
+    {
+      if ( map.startsWith( "qgis_import_tmp_" ) )
+      {
+        continue;
+      }
+      QString mapName = map;
+      // For now, for completer popup simplicity
+      // TODO: implement tree view in popup
+      if ( !currentMapset )
+      {
+        mapName += "@" + mapset;
+      }
+
+      bool found = false;
+      for ( int i = 0; i < mapsetItem->rowCount(); i++ )
+      {
+        QStandardItem * item = mapsetItem->child( i );
+        if ( item->text() == mapName && item->data( TypeRole ).toInt() == type )
+        {
+          found = true;
+          break;
+        }
+      }
+      if ( !found )
+      {
+        QgsDebugMsg( "add map : " + mapName );
+        QStandardItem *mapItem = new QStandardItem( mapName );
+        mapItem->setData( mapName, Qt::EditRole );
+        mapItem->setData( map, MapRole );
+        mapItem->setData( mapset, MapsetRole );
+        mapItem->setData( type, TypeRole );
+        mapsetItem->appendRow( mapItem );
+      }
+      else
+      {
+        QgsDebugMsg( "map exists : " + mapName );
+      }
+      mapNames << mapName;
+    }
+
+    for ( int i = mapsetItem->rowCount() - 1; i >= 0; i-- )
+    {
+      if ( mapsetItem->child( i )->data( TypeRole ).toInt() != type )
+      {
+        continue;
+      }
+      QString mapName = mapsetItem->child( i )->text();
+      if ( !mapNames.contains( mapName ) )
+      {
+        QgsDebugMsg( "remove map : " + mapName );
+        mapsetItem->removeRows( i, 1 );
+      }
+    }
+  }
 }
 
 void QgsGrassModuleInputModel::reload()
@@ -72,40 +257,7 @@ void QgsGrassModuleInputModel::reload()
 
   foreach ( QString mapset, mapsets )
   {
-    bool currentMapset = mapset == QgsGrass::getDefaultMapset();
-    QStandardItem *mapsetItem = new QStandardItem( mapset );
-    mapsetItem->setData( mapset, MapsetRole );
-    mapsetItem->setData( mapset, Qt::EditRole );
-    mapsetItem->setData( QgsGrassObject::None, TypeRole );
-    mapsetItem->setSelectable( false );
-
-    QList<QgsGrassObject::Type> types;
-    types << QgsGrassObject::Raster << QgsGrassObject::Vector;
-    foreach ( QgsGrassObject::Type type, types )
-    {
-      QStringList maps = QgsGrass::grassObjects( QgsGrass::getDefaultGisdbase() + "/" + QgsGrass::getDefaultLocation() + "/" + mapset, type );
-      foreach ( QString map, maps )
-      {
-        if ( map.startsWith( "qgis_import_tmp_" ) )
-        {
-          continue;
-        }
-        QString mapName = map;
-        // For now, for completer popup simplicity
-        // TODO: implement tree view in popup
-        if ( !currentMapset )
-        {
-          mapName += "@" + mapset;
-        }
-        QStandardItem *mapItem = new QStandardItem( mapName );
-        mapItem->setData( mapName, Qt::EditRole );
-        mapItem->setData( map, MapRole );
-        mapItem->setData( mapset, MapsetRole );
-        mapItem->setData( type, TypeRole );
-        mapsetItem->appendRow( mapItem );
-      }
-    }
-    appendRow( mapsetItem );
+    addMapset( mapset );
   }
 }
 
@@ -612,7 +764,7 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
 
   QVBoxLayout *layout = new QVBoxLayout( this );
   // Map + region
-  QHBoxLayout *mapLayout = new QHBoxLayout( this );
+  QHBoxLayout *mapLayout = new QHBoxLayout();
   layout->addLayout( mapLayout );
 
   // Map input
@@ -651,7 +803,7 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
   // Vector layer + type
   if ( mType == QgsGrassObject::Vector && !multiple() )
   {
-    QHBoxLayout *layerLayout = new QHBoxLayout( this );
+    QHBoxLayout *layerLayout = new QHBoxLayout();
     layout->addLayout( layerLayout );
 
     mLayerLabel = new QLabel( tr( "Sublayer" ), this );
@@ -661,7 +813,7 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
     connect( mLayerComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( onLayerChanged() ) );
     layerLayout->addWidget( mLayerComboBox );
 
-    QHBoxLayout *typeLayout = new QHBoxLayout( this );
+    QHBoxLayout *typeLayout = new QHBoxLayout();
     layerLayout->addLayout( typeLayout );
 
     // Vector types
@@ -685,13 +837,6 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
 
     layerLayout->addItem( new QSpacerItem( 10, 10, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
   }
-
-
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersAdded( QList<QgsMapLayer *> ) ),
-           this, SLOT( updateQgisLayers() ) );
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersRemoved( QStringList ) ),
-           this, SLOT( updateQgisLayers() ) );
-
 
   if ( !mMapId.isEmpty() )
   {
