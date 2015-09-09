@@ -24,7 +24,7 @@
 
 #include "qgsgrass.h"
 
-class QgsGrassVectorLayer : public QObject
+class GRASS_LIB_EXPORT QgsGrassVectorLayer : public QObject
 {
     Q_OBJECT
   public:
@@ -73,7 +73,7 @@ class QgsGrassVectorLayer : public QObject
     QString mError;
 };
 
-class QgsGrassVector : public QObject
+class GRASS_LIB_EXPORT QgsGrassVector : public QObject
 {
     Q_OBJECT
   public:
