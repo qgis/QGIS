@@ -28,7 +28,7 @@ class QgsMultiCurveV2;
 class QgsMultiPointV2;
 class QgsPointV2;
 class QgsConstWkbPtr;
-class QgsVertexId;
+struct QgsVertexId;
 class QgsWkbPtr;
 class QPainter;
 
