@@ -18,34 +18,66 @@
 #include "qgslabelsearchtree.h"
 #include "qgspalgeometry.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayerfeatureiterator.h"
 #include "diagram/qgsdiagram.h"
 
 #include "feature.h"
 #include "labelposition.h"
 
 
-QgsVectorLayerDiagramProvider::QgsVectorLayerDiagramProvider( QgsVectorLayer* layer )
-    : mLayer( layer )
+QgsVectorLayerDiagramProvider::QgsVectorLayerDiagramProvider( const QgsDiagramLayerSettings* diagSettings,
+                                                              const QgsDiagramRendererV2* diagRenderer,
+                                                              const QString& layerId,
+                                                              const QgsFields& fields,
+                                                              const QgsCoordinateReferenceSystem& crs,
+                                                              QgsAbstractFeatureSource* source,
+                                                              bool ownsSource )
+  : mSettings( *diagSettings )
+  , mDiagRenderer( diagRenderer->clone() )
+  , mLayerId( layerId )
+  , mFields( fields )
+  , mLayerCrs( crs )
+  , mSource( source )
+  , mOwnsSource( ownsSource )
 {
-  const QgsDiagramLayerSettings* diagSettings = layer->diagramLayerSettings();
-
-  // initialize the local copy
-  mSettings = *diagSettings;
-
-  mPriority = 1 - diagSettings->priority / 10.0; // convert 0..10 --> 1..0
-  mPlacement = QgsPalLayerSettings::Placement( diagSettings->placement );
-  mLinePlacementFlags = diagSettings->placementFlags;
-  if ( diagSettings->obstacle ) mFlags |= GeometriesAreObstacles;
+  init();
 }
+
+
+QgsVectorLayerDiagramProvider::QgsVectorLayerDiagramProvider( QgsVectorLayer* layer )
+ : mSettings( *layer->diagramLayerSettings() )
+ , mDiagRenderer( layer->diagramRenderer()->clone() )
+ , mLayerId( layer->id() )
+ , mFields( layer->fields() )
+ , mLayerCrs( layer->crs() )
+ , mSource( new QgsVectorLayerFeatureSource( layer ) )
+ , mOwnsSource( true )
+{
+  init();
+}
+
+
+void QgsVectorLayerDiagramProvider::init()
+{
+  mPriority = 1 - mSettings.priority / 10.0; // convert 0..10 --> 1..0
+  mPlacement = QgsPalLayerSettings::Placement( mSettings.placement );
+  mLinePlacementFlags = mSettings.placementFlags;
+  if ( mSettings.obstacle ) mFlags |= GeometriesAreObstacles;
+}
+
 
 QgsVectorLayerDiagramProvider::~QgsVectorLayerDiagramProvider()
 {
   qDeleteAll( mSettings.geometries );
+
+  if ( mOwnsSource )
+    delete mSource;
 }
+
 
 QString QgsVectorLayerDiagramProvider::id() const
 {
-  return mLayer->id() + "d";
+  return mLayerId + "d";
 }
 
 QList<QgsLabelFeature*> QgsVectorLayerDiagramProvider::labelFeatures( const QgsMapSettings& mapSettings, const QgsRenderContext& context )
@@ -55,16 +87,15 @@ QList<QgsLabelFeature*> QgsVectorLayerDiagramProvider::labelFeatures( const QgsM
 
   s2.ct = 0;
   if ( mapSettings.hasCrsTransformEnabled() )
-    s2.ct = new QgsCoordinateTransform( mLayer->crs(), mapSettings.destinationCrs() );
+    s2.ct = new QgsCoordinateTransform( mLayerCrs, mapSettings.destinationCrs() );
 
   s2.xform = &mapSettings.mapToPixel();
 
-  s2.fields = mLayer->fields();
+  s2.fields = mFields;
 
-  s2.renderer = mLayer->diagramRenderer()->clone();
+  s2.renderer = mDiagRenderer;
 
-  const QgsDiagramRendererV2* diagRenderer = mLayer->diagramRenderer();
-  QgsFields fields = mLayer->fields();
+  const QgsDiagramRendererV2* diagRenderer = s2.renderer;
 
   QStringList attributeNames;
 
@@ -99,7 +130,7 @@ QList<QgsLabelFeature*> QgsVectorLayerDiagramProvider::labelFeatures( const QgsM
     }
     else
     {
-      QString name = fields.at( linearlyInterpolatedDiagramRenderer->classificationAttribute() ).name();
+      QString name = mFields.at( linearlyInterpolatedDiagramRenderer->classificationAttribute() ).name();
       if ( !attributeNames.contains( name ) )
         attributeNames << name;
     }
@@ -107,15 +138,15 @@ QList<QgsLabelFeature*> QgsVectorLayerDiagramProvider::labelFeatures( const QgsM
 
   //and the ones needed for data defined diagram positions
   if ( mSettings.xPosColumn != -1 )
-    attributeNames << fields.at( mSettings.xPosColumn ).name();
+    attributeNames << mFields.at( mSettings.xPosColumn ).name();
   if ( mSettings.yPosColumn != -1 )
-    attributeNames << fields.at( mSettings.yPosColumn ).name();
+    attributeNames << mFields.at( mSettings.yPosColumn ).name();
 
 
   QgsFeatureRequest request;
   request.setFilterRect( context.extent() );
-  request.setSubsetOfAttributes( attributeNames, mLayer->fields() );
-  QgsFeatureIterator fit = mLayer->getFeatures( request );
+  request.setSubsetOfAttributes( attributeNames, mFields );
+  QgsFeatureIterator fit = mSource->getFeatures( request );
 
   QList<QgsLabelFeature*> features;
 

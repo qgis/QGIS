@@ -20,6 +20,7 @@
 
 //#include "qgsdiagramrendererv2.h"
 
+class QgsAbstractFeatureSource;
 
 /**
  * @brief The QgsVectorLayerDiagramProvider class implements support for diagrams within
@@ -30,7 +31,18 @@
 class CORE_EXPORT QgsVectorLayerDiagramProvider : public QgsAbstractLabelProvider
 {
   public:
-    QgsVectorLayerDiagramProvider( QgsVectorLayer* layer );
+
+    //! Convenience constructor to initialize the provider from given vector layer
+    explicit QgsVectorLayerDiagramProvider( QgsVectorLayer* layer );
+
+    QgsVectorLayerDiagramProvider( const QgsDiagramLayerSettings* diagSettings,
+                                   const QgsDiagramRendererV2* diagRenderer,
+                                   const QString& layerId,
+                                   const QgsFields& fields,
+                                   const QgsCoordinateReferenceSystem& crs,
+                                   QgsAbstractFeatureSource* source,
+                                   bool ownsSource );
+
     ~QgsVectorLayerDiagramProvider();
 
     virtual QString id() const override;
@@ -40,12 +52,20 @@ class CORE_EXPORT QgsVectorLayerDiagramProvider : public QgsAbstractLabelProvide
     virtual void drawLabel( QgsRenderContext& context, pal::LabelPosition* label ) const override;
 
   protected:
+    void init();
     QgsLabelFeature* registerDiagram( QgsFeature& feat, const QgsMapSettings& mapSettings, const QgsRenderContext& context );
 
   protected:
-    QgsVectorLayer* mLayer;
 
     QgsDiagramLayerSettings mSettings;
+    QgsDiagramRendererV2* mDiagRenderer;
+
+    QString mLayerId;
+    QgsFields mFields;
+    QgsCoordinateReferenceSystem mLayerCrs;
+    QgsAbstractFeatureSource* mSource;
+    bool mOwnsSource;
+
 };
 
 #endif // QGSVECTORLAYERDIAGRAMPROVIDER_H

@@ -43,8 +43,6 @@ class QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
 
   protected:
 
-    QgsVectorLayer* mLayer;
-
     QgsAbstractFeatureSource* mProviderFeatureSource;
 
     QgsVectorLayerJoinBuffer* mJoinBuffer;

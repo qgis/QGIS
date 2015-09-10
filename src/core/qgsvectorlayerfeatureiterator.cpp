@@ -26,7 +26,6 @@
 
 QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource( QgsVectorLayer *layer )
 {
-  mLayer = layer;
   mProviderFeatureSource = layer->dataProvider()->featureSource();
   mFields = layer->fields();
   mJoinBuffer = layer->mJoinBuffer->clone();

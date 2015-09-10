@@ -21,6 +21,7 @@
 #include "qgspalgeometry.h"
 #include "qgspallabeling.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayerfeatureiterator.h"
 
 #include "feature.h"
 #include "labelposition.h"
@@ -45,13 +46,35 @@ static void _fixQPictureDPI( QPainter* p )
 typedef QgsPalLayerSettings QgsVectorLayerLabelSettings;
 
 QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( QgsVectorLayer* layer )
-    : mLayer( layer )
 {
-  if ( mLayer->customProperty( "labeling" ).toString() != QString( "pal" ) || !mLayer->labelsEnabled() )
+  if ( layer->customProperty( "labeling" ).toString() != QString( "pal" ) || !layer->labelsEnabled() )
     return;
 
-  mSettings = QgsVectorLayerLabelSettings::fromLayer( mLayer );
+  mSettings = QgsVectorLayerLabelSettings::fromLayer( layer );
+  mLayerId = layer->id();
+  mFields = layer->fields();
+  mSource = new QgsVectorLayerFeatureSource( layer );
 
+  init();
+}
+
+QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( const QgsPalLayerSettings& settings,
+                                                          const QString& layerId,
+                                                          const QgsFields& fields,
+                                                          QgsAbstractFeatureSource* source,
+                                                          bool ownsSource )
+  : mSettings( settings )
+  , mLayerId( layerId )
+  , mFields( fields )
+  , mSource( source )
+  , mOwnsSource( ownsSource )
+{
+  init();
+}
+
+
+void QgsVectorLayerLabelProvider::init()
+{
   mPlacement = mSettings.placement;
   mLinePlacementFlags = mSettings.placementFlags;
   mFlags = Flags();
@@ -67,6 +90,7 @@ QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( QgsVectorLayer* layer 
   mUpsidedownLabels = mSettings.upsidedownLabels;
 }
 
+
 QgsVectorLayerLabelProvider::~QgsVectorLayerLabelProvider()
 {
   qDeleteAll( mSettings.geometries );
@@ -74,14 +98,15 @@ QgsVectorLayerLabelProvider::~QgsVectorLayerLabelProvider()
 
 QString QgsVectorLayerLabelProvider::id() const
 {
-  return mLayer->id();
+  return mLayerId;
 }
+
 
 QList<QgsLabelFeature*> QgsVectorLayerLabelProvider::labelFeatures( const QgsMapSettings& mapSettings, const QgsRenderContext& ctx )
 {
   QgsVectorLayerLabelSettings& lyr = mSettings;
 
-  QgsDebugMsgLevel( "PREPARE LAYER " + mLayer->id(), 4 );
+  QgsDebugMsgLevel( "PREPARE LAYER " + mLayerId, 4 );
 
   if ( lyr.drawLabels )
   {
@@ -102,7 +127,7 @@ QList<QgsLabelFeature*> QgsVectorLayerLabelProvider::labelFeatures( const QgsMap
     else
     {
       // If we aren't an expression, we check to see if we can find the column.
-      if ( mLayer->fieldNameIndex( lyr.fieldName ) == -1 )
+      if ( mFields.fieldNameIndex( lyr.fieldName ) == -1 )
       {
         return QList<QgsLabelFeature*>();
       }
@@ -111,7 +136,7 @@ QList<QgsLabelFeature*> QgsVectorLayerLabelProvider::labelFeatures( const QgsMap
 
   QStringList attrNames;
 
-  lyr.mCurFields = mLayer->fields();
+  lyr.mCurFields = mFields;
 
   if ( lyr.drawLabels )
   {
@@ -172,7 +197,7 @@ QList<QgsLabelFeature*> QgsVectorLayerLabelProvider::labelFeatures( const QgsMap
   lyr.rasterCompressFactor = ctx.rasterScaleFactor();
 
   // save the pal layer to our layer context (with some additional info)
-  lyr.fieldIndex = mLayer->fieldNameIndex( lyr.fieldName );
+  lyr.fieldIndex = mFields.fieldNameIndex( lyr.fieldName );
 
   lyr.xform = &mapSettings.mapToPixel();
   lyr.ct = 0;
@@ -194,8 +219,8 @@ QList<QgsLabelFeature*> QgsVectorLayerLabelProvider::labelFeatures( const QgsMap
 
   QgsFeatureRequest request;
   request.setFilterRect( ctx.extent() );
-  request.setSubsetOfAttributes( attrNames, mLayer->fields() );
-  QgsFeatureIterator fit = mLayer->getFeatures( request );
+  request.setSubsetOfAttributes( attrNames, mFields );
+  QgsFeatureIterator fit = mSource->getFeatures( request );
 
   QList<QgsLabelFeature*> labels;
 
@@ -210,6 +235,7 @@ QList<QgsLabelFeature*> QgsVectorLayerLabelProvider::labelFeatures( const QgsMap
 
   return labels;
 }
+
 
 void QgsVectorLayerLabelProvider::drawLabel( QgsRenderContext& context, pal::LabelPosition* label ) const
 {
@@ -307,7 +333,6 @@ void QgsVectorLayerLabelProvider::drawLabel( QgsRenderContext& context, pal::Lab
   QString labeltext = (( QgsPalGeometry* )label->getFeaturePart()->getUserGeometry() )->text();
   mEngine->results()->mLabelSearchTree->insertLabel( label, QString( palGeometry->strId() ).toInt(), id(), labeltext, dFont, false, palGeometry->isPinned() );
 }
-
 
 
 void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition* label, QgsRenderContext& context, QgsPalLayerSettings& tmpLyr, QgsPalLabeling::DrawLabelType drawType, double dpiRatio ) const

@@ -18,6 +18,8 @@
 
 #include "qgslabelingenginev2.h"
 
+class QgsAbstractFeatureSource;
+
 /**
  * @brief The QgsVectorLayerLabelProvider class implements a label provider
  * for vector layers. Parameters for the labeling are taken from the layer's
@@ -28,7 +30,16 @@
 class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
 {
   public:
-    QgsVectorLayerLabelProvider( QgsVectorLayer* layer );
+
+    //! Convenience constructor to initialize the provider from given vector layer
+    explicit QgsVectorLayerLabelProvider( QgsVectorLayer* layer );
+
+    QgsVectorLayerLabelProvider( const QgsPalLayerSettings& settings,
+                                 const QString& layerId,
+                                 const QgsFields& fields,
+                                 QgsAbstractFeatureSource* source,
+                                 bool ownsSource );
+
     ~QgsVectorLayerLabelProvider();
 
     virtual QString id() const override;
@@ -39,12 +50,15 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
 
 
   protected:
+    void init();
     void drawLabelPrivate( pal::LabelPosition* label, QgsRenderContext& context, QgsPalLayerSettings& tmpLyr, QgsPalLabeling::DrawLabelType drawType, double dpiRatio = 1.0 ) const;
 
   protected:
-    QgsVectorLayer* mLayer;
-
     QgsPalLayerSettings mSettings;
+    QString mLayerId;
+    QgsFields mFields;
+    QgsAbstractFeatureSource* mSource;
+    bool mOwnsSource;
 };
 
 
