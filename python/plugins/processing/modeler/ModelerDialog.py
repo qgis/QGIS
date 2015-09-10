@@ -31,7 +31,7 @@ import sys
 import os
 
 from PyQt4 import uic
-from PyQt4.QtCore import Qt, QRectF, QMimeData, QPoint, QPointF, QSettings
+from PyQt4.QtCore import Qt, QRectF, QMimeData, QPoint, QPointF, QSettings, QByteArray
 from PyQt4.QtGui import QGraphicsView, QTreeWidget, QIcon, QMessageBox, QFileDialog, QImage, QPainter, QTreeWidgetItem
 from qgis.core import QgsApplication
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -66,6 +66,10 @@ class ModelerDialog(BASE, WIDGET):
         self.setWindowFlags(Qt.WindowMinimizeButtonHint |
                             Qt.WindowMaximizeButtonHint |
                             Qt.WindowCloseButtonHint)
+        
+        settings = QSettings()
+        self.splitter.restoreState(settings.value("/Processing/splitterModeler", QByteArray()))
+        self.restoreGeometry(settings.value("/Processing/geometryModeler", QByteArray()))
 
         self.tabWidget.setCurrentIndex(0)
         self.scene = ModelerScene(self)
@@ -203,6 +207,10 @@ class ModelerDialog(BASE, WIDGET):
         self.hasChanged = False
 
     def closeEvent(self, evt):
+        settings = QSettings()
+        settings.setValue("/Processing/splitterModeler", self.splitter.saveState())
+        settings.setValue("/Processing/geometryModeler", self.saveGeometry())
+        
         if self.hasChanged:
             ret = QMessageBox.question(
                 self, self.tr('Unsaved changes'),
