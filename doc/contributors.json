@@ -685,6 +685,23 @@
           46.50825
         ]
       }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Alvaro Huarte",
+        "Committer": "No",
+        "First Commit Message": "Feature #8725: Fast rendering of geometries",
+        "First Commit Date": "07-10-2013",
+        "GIT Nickname": "ahuarte47"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1.6588156567,
+          42.810529897
+        ]
+      }
     }
   ]
 }
