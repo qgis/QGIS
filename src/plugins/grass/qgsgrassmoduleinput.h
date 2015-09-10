@@ -301,8 +301,6 @@ class QgsGrassModuleInput : public QgsGrassModuleGroupBoxItem
     //! Model containing currently selected maps
     QStandardItemModel *mSelectedModel;
 
-    QSortFilterProxyModel *mSelectedProxy;
-
     //! Combo box with GRASS layers
     QgsGrassModuleInputComboBox *mComboBox;
 

@@ -456,6 +456,8 @@ QgsGrassModuleInputComboBox::QgsGrassModuleInputComboBox( QgsGrassObject::Type t
   QCompleter *completer = new QgsGrassModuleInputCompleter( completerProxy, this );
   completer->setCompletionRole( Qt::DisplayRole );
   completer->setCaseSensitivity( Qt::CaseInsensitive );
+  // TODO: enable when Qt version requirement gets over 5.2
+  //setFilterMode( Qt::MatchWildcard );
   completer->setCompletionMode( QCompleter::PopupCompletion );
   completer->setMaxVisibleItems( 20 );
   // TODO: set custom treeview for completer popup to show items in tree structure, if feasible
@@ -636,7 +638,6 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
     , mModuleStandardOptions( options )
     , mModel( 0 )
     , mSelectedModel( 0 )
-    , mSelectedProxy( 0 )
     , mComboBox( 0 )
     , mRegionButton( 0 )
     , mLayerLabel( 0 )
@@ -792,10 +793,8 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
   if ( multiple() )
   {
     mSelectedModel = new QStandardItemModel( 0, 2 );
-    mSelectedProxy = new QSortFilterProxyModel( this );
-    mSelectedProxy->setSourceModel( mSelectedModel );
     mSelectedTreeView = new QgsGrassModuleInputSelectedView( this );
-    mSelectedTreeView->setModel( mSelectedProxy );
+    mSelectedTreeView->setModel( mSelectedModel );
     connect( mSelectedTreeView, SIGNAL( deleteItem( const QModelIndex & ) ), this, SLOT( deleteSelectedItem( const QModelIndex & ) ) );
     layout->addWidget( mSelectedTreeView );
   }
@@ -1154,10 +1153,9 @@ void QgsGrassModuleInput::onActivated( const QString & text )
 void QgsGrassModuleInput::deleteSelectedItem( const QModelIndex &index )
 {
   QgsDebugMsg( "entered" );
-  QModelIndex sourceIndex = mSelectedProxy->mapToSource( index );
-  if ( sourceIndex.isValid() )
+  if ( index.isValid() )
   {
-    mSelectedModel->removeRow( sourceIndex.row() );
+    mSelectedModel->removeRow( index.row() );
     emit valueChanged();
   }
 }
