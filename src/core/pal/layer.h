@@ -37,6 +37,8 @@
 #include <QHash>
 #include <fstream>
 
+class QgsLabelFeature;
+
 namespace pal
 {
 
@@ -265,6 +267,8 @@ namespace pal
                             bool fixedPos = false, double angle = 0.0, bool fixedAngle = false,
                             int xQuadOffset = 0, int yQuadOffset = 0, double xOffset = 0.0, double yOffset = 0.0,
                             bool alwaysShow = false, double repeatDistance = 0 );
+
+      bool registerFeature( QgsLabelFeature* label );
 
       /** Return pointer to feature or NULL if doesn't exist */
       Feature* getFeature( const QString &geom_id );

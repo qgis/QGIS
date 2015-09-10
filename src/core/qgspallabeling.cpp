@@ -43,6 +43,7 @@
 #include "qgslabelsearchtree.h"
 #include "qgsexpression.h"
 #include "qgsdatadefined.h"
+#include "qgslabelingenginev2.h"
 
 #include <qgslogger.h>
 #include <qgsvectorlayer.h>
@@ -1464,13 +1465,17 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString t
 #endif
 }
 
-void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext& context, QString dxfLayer )
+
+void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext& context, QString dxfLayer, QgsLabelFeature** labelFeature )
 {
+  // either used in QgsPalLabeling (palLayer is set) or in QgsLabelingEngineV2 (labelFeature is set)
+  Q_ASSERT(( palLayer || labelFeature ) && !( palLayer && labelFeature ) );
+
   if ( !drawLabels )
   {
     if ( obstacle )
     {
-      registerObstacleFeature( f, context, dxfLayer );
+      registerObstacleFeature( f, context, dxfLayer, labelFeature );
     }
     return;
   }
@@ -2180,10 +2185,13 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
   //  feature to the layer
   try
   {
-    if ( !palLayer->registerFeature( lbl->strId(), lbl, labelX, labelY, labelText,
-                                     xPos, yPos, dataDefinedPosition, angle, dataDefinedRotation,
-                                     quadOffsetX, quadOffsetY, offsetX, offsetY, alwaysShow, repeatDist ) )
-      return;
+    if ( !palLayer )
+      *labelFeature = new QgsLabelFeature( lbl->strId(), lbl, QSizeF( labelX, labelY ) );
+    else
+      if ( !palLayer->registerFeature( lbl->strId(), lbl, labelX, labelY, labelText,
+                                       xPos, yPos, dataDefinedPosition, angle, dataDefinedRotation,
+                                       quadOffsetX, quadOffsetY, offsetX, offsetY, alwaysShow, repeatDist ) )
+        return;
   }
   catch ( std::exception &e )
   {
@@ -2193,9 +2201,12 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
   }
 
   // TODO: only for placement which needs character info
-  pal::Feature* feat = palLayer->getFeature( lbl->strId() );
+  pal::Feature* feat = palLayer ? palLayer->getFeature( lbl->strId() ) : 0;
   // account for any data defined font metrics adjustments
-  feat->setLabelInfo( lbl->info( labelFontMetrics, xform, rasterCompressFactor, maxcharanglein, maxcharangleout ) );
+  lbl->calculateInfo( labelFontMetrics, xform, rasterCompressFactor, maxcharanglein, maxcharangleout );
+  // for labelFeature the LabelInfo is passed to feat when it is registered
+  if ( feat )
+    feat->setLabelInfo( lbl->info() );
   delete labelFontMetrics;
 
   // TODO: allow layer-wide feature dist in PAL...?
@@ -2234,12 +2245,19 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
     {
       distance *= vectorScaleFactor;
     }
-    feat->setDistLabel( qAbs( ptOne.x() - ptZero.x() )* distance );
+    double d = qAbs( ptOne.x() - ptZero.x() ) * distance;
+    if ( feat )
+      feat->setDistLabel( d );
+    else
+      ( *labelFeature )->setDistLabel( d );
   }
 
   if ( ddFixedQuad )
   {
-    feat->setFixedQuadrant( true );
+    if ( feat )
+      feat->setFixedQuadrant( true );
+    else
+      ( *labelFeature )->setHasFixedQuadrant( true );
   }
 
   // data defined priority?
@@ -2251,15 +2269,24 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
     {
       priorityD = qBound( 0.0, priorityD, 10.0 );
       priorityD = 1 - priorityD / 10.0; // convert 0..10 --> 1..0
-      feat->setPriority( priorityD );
+      if ( feat )
+        feat->setPriority( priorityD );
+      else
+        ( *labelFeature )->setPriority( priorityD );
     }
   }
 
   // data defined is obstacle?
+  bool isObstacle = obstacle; // start with layer default
   if ( dataDefinedEvaluate( QgsPalLayerSettings::IsObstacle, exprVal, &context.expressionContext() ) )
   {
-    feat->setIsObstacle( exprVal.toBool() );
+    isObstacle = exprVal.toBool();
   }
+
+  if ( feat )
+    feat->setIsObstacle( isObstacle );
+  else
+    ( *labelFeature )->setIsObstacle( isObstacle );
 
   double featObstacleFactor = obstacleFactor;
   if ( dataDefinedEvaluate( QgsPalLayerSettings::ObstacleFactor, exprVal, &context.expressionContext() ) )
@@ -2273,7 +2300,10 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
       featObstacleFactor = factorD;
     }
   }
-  feat->setObstacleFactor( featObstacleFactor );
+  if ( feat )
+    feat->setObstacleFactor( featObstacleFactor );
+  else
+    ( *labelFeature )->setObstacleFactor( featObstacleFactor );
 
   //add parameters for data defined labeling to QgsPalGeometry
   QMap< DataDefinedProperties, QVariant >::const_iterator dIt = dataDefinedValues.constBegin();
@@ -2286,7 +2316,8 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
   lbl->setIsPinned( labelIsPinned );
 }
 
-void QgsPalLayerSettings::registerObstacleFeature( QgsFeature& f, const QgsRenderContext& context, QString dxfLayer )
+
+void QgsPalLayerSettings::registerObstacleFeature( QgsFeature& f, const QgsRenderContext& context, QString dxfLayer , QgsLabelFeature** obstacleFeature )
 {
   mCurFeat = &f;
 
@@ -2327,6 +2358,9 @@ void QgsPalLayerSettings::registerObstacleFeature( QgsFeature& f, const QgsRende
   //  feature to the layer
   try
   {
+    if ( obstacleFeature )
+      *obstacleFeature = new QgsLabelFeature( lbl->strId(), lbl, QSizeF( 0, 0 ) );
+    else
     if ( !palLayer->registerFeature( lbl->strId(), lbl, 0, 0 ) )
       return;
   }
@@ -4544,7 +4578,7 @@ QgsPalLabeling::Search QgsPalLabeling::searchMethod() const
   return mSearch;
 }
 
-void QgsPalLabeling::drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* painter, const QgsMapToPixel* xform )
+void QgsPalLabeling::drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* painter, const QgsMapToPixel* xform, QList<QgsLabelCandidate>* candidates )
 {
   QgsPoint outPt = xform->transform( lp->getX(), lp->getY() );
 
@@ -4595,11 +4629,12 @@ void QgsPalLabeling::drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* p
 
   // save the rect
   rect.moveTo( outPt.x(), outPt.y() );
-  mCandidates.append( QgsLabelCandidate( rect, lp->cost() * 1000 ) );
+  if ( candidates )
+    candidates->append( QgsLabelCandidate( rect, lp->cost() * 1000 ) );
 
   // show all parts of the multipart label
   if ( lp->getNextPart() )
-    drawLabelCandidateRect( lp->getNextPart(), painter, xform );
+    drawLabelCandidateRect( lp->getNextPart(), painter, xform, candidates );
 }
 
 void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& context, QgsPalLayerSettings& tmpLyr, DrawLabelType drawType, double dpiRatio )

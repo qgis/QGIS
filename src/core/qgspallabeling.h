@@ -55,6 +55,7 @@ class QgsMapRenderer;
 class QgsCoordinateTransform;
 class QgsLabelSearchTree;
 class QgsMapSettings;
+class QgsLabelFeature;
 
 class CORE_EXPORT QgsPalLayerSettings
 {
@@ -467,8 +468,9 @@ class CORE_EXPORT QgsPalLayerSettings
      * @param context render context. The QgsExpressionContext contained within the render context
      * must have already had the feature and fields sets prior to calling this method.
      * @param dxfLayer dxfLayer name
+     * @param labelFeature if using QgsLabelingEngineV2, this will receive the label feature
      */
-    void registerFeature( QgsFeature& f, const QgsRenderContext& context, QString dxfLayer );
+    void registerFeature( QgsFeature& f, const QgsRenderContext& context, QString dxfLayer, QgsLabelFeature** labelFeature = 0 );
 
     void readFromLayer( QgsVectorLayer* layer );
     void writeToLayer( QgsVectorLayer* layer );
@@ -622,7 +624,7 @@ class CORE_EXPORT QgsPalLayerSettings
 
     /** Registers a feature as an obstacle only (no label rendered)
      */
-    void registerObstacleFeature( QgsFeature &f, const QgsRenderContext &context, QString dxfLayer );
+    void registerObstacleFeature( QgsFeature &f, const QgsRenderContext &context, QString dxfLayer, QgsLabelFeature** obstacleFeature );
 
     QMap<DataDefinedProperties, QVariant> dataDefinedValues;
     QgsExpression* expression;
@@ -759,6 +761,8 @@ class CORE_EXPORT QgsLabelingResults
     QgsLabelSearchTree* mLabelSearchTree;
 
     friend class QgsPalLabeling;
+    friend class QgsVectorLayerLabelProvider;
+    friend class QgsVectorLayerDiagramProvider;
 };
 
 Q_NOWARN_DEPRECATED_PUSH
@@ -873,7 +877,7 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     virtual QgsLabelingEngineInterface* clone() override;
 
     //! @note not available in python bindings
-    void drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* painter, const QgsMapToPixel* xform );
+    static void drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* painter, const QgsMapToPixel* xform, QList<QgsLabelCandidate>* candidates = 0 );
 
     //!drawLabel
     //! @note not available in python bindings
@@ -940,24 +944,26 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
 
   protected:
     // update temporary QgsPalLayerSettings with any data defined text style values
-    void dataDefinedTextStyle( QgsPalLayerSettings& tmpLyr,
-                               const QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant >& ddValues );
+    static void dataDefinedTextStyle( QgsPalLayerSettings& tmpLyr,
+                                      const QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant >& ddValues );
 
     // update temporary QgsPalLayerSettings with any data defined text formatting values
-    void dataDefinedTextFormatting( QgsPalLayerSettings& tmpLyr,
-                                    const QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant >& ddValues );
+    static void dataDefinedTextFormatting( QgsPalLayerSettings& tmpLyr,
+                                           const QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant >& ddValues );
 
     // update temporary QgsPalLayerSettings with any data defined text buffer values
-    void dataDefinedTextBuffer( QgsPalLayerSettings& tmpLyr,
-                                const QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant >& ddValues );
+    static void dataDefinedTextBuffer( QgsPalLayerSettings& tmpLyr,
+                                       const QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant >& ddValues );
 
     // update temporary QgsPalLayerSettings with any data defined shape background values
-    void dataDefinedShapeBackground( QgsPalLayerSettings& tmpLyr,
-                                     const QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant >& ddValues );
+    static void dataDefinedShapeBackground( QgsPalLayerSettings& tmpLyr,
+                                            const QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant >& ddValues );
 
     // update temporary QgsPalLayerSettings with any data defined drop shadow values
-    void dataDefinedDropShadow( QgsPalLayerSettings& tmpLyr,
-                                const QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant >& ddValues );
+    static void dataDefinedDropShadow( QgsPalLayerSettings& tmpLyr,
+                                       const QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant >& ddValues );
+
+    friend class QgsVectorLayerLabelProvider; // to allow calling the static methods above
 
     void deleteTemporaryData();
 

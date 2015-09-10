@@ -40,6 +40,9 @@
 #include <cmath>
 #include <vector>
 
+#include "qgslabelingenginev2.h"
+#include "qgspalgeometry.h"
+
 namespace pal
 {
 
@@ -259,6 +262,22 @@ namespace pal
     }
 
     return addedFeature; // true if we've added something
+  }
+
+  bool Layer::registerFeature( QgsLabelFeature* label )
+  {
+    QgsPalGeometry* g = label->geometry();
+    if ( !registerFeature( g->strId(), g, label->size().width(), label->size().height() ) )
+      return false;
+
+    pal::Feature* pf = getFeature( g->strId() );
+    pf->setLabelInfo( g->info() );
+    pf->setPriority( label->priority() );
+    pf->setDistLabel( label->distLabel() );
+    pf->setFixedQuadrant( label->hasFixedQuadrant() );
+    pf->setIsObstacle( label->isObstacle() );
+    pf->setObstacleFactor( label->obstacleFactor() );
+    return true;
   }
 
   void Layer::addFeaturePart( FeaturePart* fpart, const QString& labelText )

@@ -63,10 +63,12 @@ class QgsPalGeometry : public PalGeometry
         return mClusters.at( partId );
     }
 
-    pal::LabelInfo* info( QFontMetricsF* fm, const QgsMapToPixel* xform, double fontScale, double maxinangle, double maxoutangle )
+    pal::LabelInfo* info() const { return mInfo; }
+
+    void calculateInfo( QFontMetricsF* fm, const QgsMapToPixel* xform, double fontScale, double maxinangle, double maxoutangle )
     {
       if ( mInfo )
-        return mInfo;
+        return;
 
       mFontMetrics = new QFontMetricsF( *fm ); // duplicate metrics for when drawing label
 
@@ -125,7 +127,6 @@ class QgsPalGeometry : public PalGeometry
         double labelWidth = mapScale * charWidth / fontScale;
         mInfo->char_info[i].width = labelWidth;
       }
-      return mInfo;
     }
 
     const QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant >& dataDefinedValues() const { return mDataDefinedValues; }

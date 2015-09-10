@@ -112,6 +112,7 @@ SET(QGIS_CORE_SRCS
   qgslayerdefinition.cpp
   qgslabel.cpp
   qgslabelattributes.cpp
+  qgslabelingenginev2.cpp
   qgslabelsearchtree.cpp
   qgslegacyhelpers.cpp
   qgslegendrenderer.cpp
@@ -178,12 +179,14 @@ SET(QGIS_CORE_SRCS
   qgsvectorfilewriter.cpp
   qgsvectorlayer.cpp
   qgsvectorlayercache.cpp
+  qgsvectorlayerdiagramprovider.cpp
   qgsvectorlayereditbuffer.cpp
   qgsvectorlayereditpassthrough.cpp
   qgsvectorlayereditutils.cpp
   qgsvectorlayerfeatureiterator.cpp
   qgsvectorlayerimport.cpp
   qgsvectorlayerjoinbuffer.cpp
+  qgsvectorlayerlabelprovider.cpp
   qgsvectorlayerrenderer.cpp
   qgsvectorlayerundocommand.cpp
   qgsvectorsimplifymethod.cpp
@@ -562,6 +565,7 @@ SET(QGIS_CORE_HDRS
   qgslayerdefinition.h
   qgslabel.h
   qgslabelattributes.h
+  qgslabelingenginev2.h
   qgslabelsearchtree.h
   qgslegacyhelpers.h
   qgslegendrenderer.h
@@ -612,9 +616,11 @@ SET(QGIS_CORE_HDRS
   qgsvectordataprovider.h
   qgsvectorlayercache.h
   qgsvectorfilewriter.h
+  qgsvectorlayerdiagramprovider.h
   qgsvectorlayereditutils.h
   qgsvectorlayerfeatureiterator.h
   qgsvectorlayerimport.h
+  qgsvectorlayerlabelprovider.h
   qgsvectorlayerrenderer.h
   qgsvectorlayerundocommand.h
   qgsvectorsimplifymethod.h
