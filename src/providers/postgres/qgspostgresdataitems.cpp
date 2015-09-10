@@ -71,7 +71,7 @@ QVector<QgsDataItem*> QgsPGConnectionItem::createChildren()
     return items;
   }
 
-  foreach ( QgsPostgresSchemaProperty schema, schemas )
+  Q_FOREACH ( const QgsPostgresSchemaProperty& schema, schemas )
   {
     QgsPGSchemaItem * schemaItem = new QgsPGSchemaItem( this, mName, schema.name, mPath + "/" + schema.name );
     if ( !schema.description.isEmpty() )
@@ -204,7 +204,7 @@ bool QgsPGConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction )
   QStringList importResults;
   bool hasError = false;
   QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
-  foreach ( const QgsMimeDataUtils::Uri& u, lst )
+  Q_FOREACH ( const QgsMimeDataUtils::Uri& u, lst )
   {
     if ( u.layerType != "vector" )
     {
@@ -473,7 +473,7 @@ QVector<QgsDataItem*> QgsPGSchemaItem::createChildren()
   }
 
   bool dontResolveType = QgsPostgresConn::dontResolveType( mConnectionName );
-  foreach ( QgsPostgresLayerProperty layerProperty, layerProperties )
+  Q_FOREACH ( QgsPostgresLayerProperty layerProperty, layerProperties )
   {
     if ( layerProperty.schemaName != mName )
       continue;
@@ -677,7 +677,7 @@ QgsPGRootItem::~QgsPGRootItem()
 QVector<QgsDataItem*> QgsPGRootItem::createChildren()
 {
   QVector<QgsDataItem*> connections;
-  foreach ( QString connName, QgsPostgresConn::connectionList() )
+  Q_FOREACH ( const QString& connName, QgsPostgresConn::connectionList() )
   {
     connections << new QgsPGConnectionItem( this, connName, mPath + "/" + connName );
   }

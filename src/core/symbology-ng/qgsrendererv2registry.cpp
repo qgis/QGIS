@@ -59,7 +59,7 @@ QgsRendererV2Registry::QgsRendererV2Registry()
 
 QgsRendererV2Registry::~QgsRendererV2Registry()
 {
-  foreach ( QString name, mRenderers.keys() )
+  Q_FOREACH ( const QString& name, mRenderers.keys() )
   {
     delete mRenderers[name];
   }

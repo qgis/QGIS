@@ -417,7 +417,7 @@ QgsLegendSymbolListV2 QgsSingleSymbolRendererV2::legendSymbolItemsV2() const
       {
         QgsLegendSymbolItemV2 title( NULL, scaleExp.baseExpression(), 0 );
         lst << title;
-        foreach ( double v, QgsSymbolLayerV2Utils::prettyBreaks( scaleExp.minValue(), scaleExp.maxValue(), 4 ) )
+        Q_FOREACH ( double v, QgsSymbolLayerV2Utils::prettyBreaks( scaleExp.minValue(), scaleExp.maxValue(), 4 ) )
         {
           QgsLegendSymbolItemV2 si( mSymbol.data(), QString::number( v ), 0 );
           QgsMarkerSymbolV2 * s = static_cast<QgsMarkerSymbolV2 *>( si.symbol() );

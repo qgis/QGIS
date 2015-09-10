@@ -438,6 +438,16 @@ bool QgsGeometry::deleteVertex( int atVertex )
     return false;
   }
 
+  //if it is a point, set the geometry to NULL
+  if ( QgsWKBTypes::flatType( d->geometry->wkbType() ) == QgsWKBTypes::Point )
+  {
+    detach( false );
+    delete d->geometry;
+    removeWkbGeos();
+    d->geometry = 0;
+    return true;
+  }
+
   QgsVertexId id;
   if ( !vertexIdFromVertexNr( atVertex, id ) )
   {
@@ -550,6 +560,7 @@ int QgsGeometry::addRing( QgsCurveV2* ring )
 {
   if ( !d || !d->geometry )
   {
+    delete ring;
     return 1;
   }
 

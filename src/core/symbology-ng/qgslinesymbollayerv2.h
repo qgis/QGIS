@@ -148,7 +148,8 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
       Vertex,
       LastVertex,
       FirstVertex,
-      CentralPoint
+      CentralPoint,
+      CurvePoint
     };
 
     // static stuff

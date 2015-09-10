@@ -82,6 +82,7 @@ static void _initWidgetFunctions()
 
 QgsLayerPropertiesWidget::QgsLayerPropertiesWidget( QgsSymbolLayerV2* layer, const QgsSymbolV2* symbol, const QgsVectorLayer* vl, QWidget* parent )
     : QWidget( parent )
+    , mPresetExpressionContext( 0 )
 {
 
   mLayer = layer;
@@ -113,6 +114,15 @@ QgsLayerPropertiesWidget::QgsLayerPropertiesWidget( QgsSymbolLayerV2* layer, con
 
   connect( mEffectWidget, SIGNAL( changed() ), this, SLOT( emitSignalChanged() ) );
   mEffectWidget->setPaintEffect( mLayer->paintEffect() );
+}
+
+void QgsLayerPropertiesWidget::setExpressionContext( QgsExpressionContext *context )
+{
+  mPresetExpressionContext = context;
+
+  QgsSymbolLayerV2Widget* w = dynamic_cast< QgsSymbolLayerV2Widget* >( stackedWidget->currentWidget() );
+  if ( w )
+    w->setExpressionContext( mPresetExpressionContext );
 }
 
 void QgsLayerPropertiesWidget::populateLayerTypes()
@@ -154,6 +164,7 @@ void QgsLayerPropertiesWidget::updateSymbolLayerWidget( QgsSymbolLayerV2* layer 
     if ( w )
     {
       w->setSymbolLayer( layer );
+      w->setExpressionContext( mPresetExpressionContext );
       stackedWidget->addWidget( w );
       stackedWidget->setCurrentWidget( w );
       // start receiving updates from widget

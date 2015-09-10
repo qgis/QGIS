@@ -33,7 +33,7 @@ QgsAtlasComposition::QgsAtlasComposition( QgsComposition* composition )
     : mComposition( composition )
     , mEnabled( false )
     , mHideCoverage( false )
-    , mFilenamePattern( "'output_'||$feature" )
+    , mFilenamePattern( "'output_'||@atlas_featurenumber" )
     , mCoverageLayer( 0 )
     , mSingleFile( false )
     , mSortFeatures( false )
@@ -41,15 +41,6 @@ QgsAtlasComposition::QgsAtlasComposition( QgsComposition* composition )
     , mCurrentFeatureNo( 0 )
     , mFilterFeatures( false )
 {
-
-  // declare special columns with a default value
-  QgsExpression::setSpecialColumn( "$page", QVariant(( int )1 ) );
-  QgsExpression::setSpecialColumn( "$feature", QVariant(( int )0 ) );
-  QgsExpression::setSpecialColumn( "$numpages", QVariant(( int )1 ) );
-  QgsExpression::setSpecialColumn( "$numfeatures", QVariant(( int )0 ) );
-  QgsExpression::setSpecialColumn( "$atlasfeatureid", QVariant(( int )0 ) );
-  QgsExpression::setSpecialColumn( "$atlasfeature", QVariant::fromValue( QgsFeature() ) );
-  QgsExpression::setSpecialColumn( "$atlasgeometry", QVariant::fromValue( QgsGeometry() ) );
 
   //listen out for layer removal
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( removeLayers( QStringList ) ) );
@@ -79,7 +70,7 @@ void QgsAtlasComposition::removeLayers( QStringList layers )
     return;
   }
 
-  foreach ( QString layerId, layers )
+  Q_FOREACH ( const QString& layerId, layers )
   {
     if ( layerId == mCoverageLayer->id() )
     {
@@ -99,20 +90,6 @@ void QgsAtlasComposition::setCoverageLayer( QgsVectorLayer* layer )
   }
 
   mCoverageLayer = layer;
-
-  // update the number of features
-  QgsExpression::setSpecialColumn( "$numfeatures", QVariant(( int )mFeatureIds.size() ) );
-
-  // Grab the first feature so that user can use it to test the style in rules.
-  if ( layer )
-  {
-    QgsFeature fet;
-    layer->getFeatures().nextFeature( fet );
-    QgsExpression::setSpecialColumn( "$atlasfeatureid", fet.id() );
-    QgsExpression::setSpecialColumn( "$atlasgeometry", QVariant::fromValue( *fet.constGeometry() ) );
-    QgsExpression::setSpecialColumn( "$atlasfeature", QVariant::fromValue( fet ) );
-  }
-
   emit coverageLayerChanged( layer );
 }
 
@@ -291,7 +268,6 @@ int QgsAtlasComposition::updateFeatures()
     qSort( mFeatureIds.begin(), mFeatureIds.end(), sorter );
   }
 
-  QgsExpression::setSpecialColumn( "$numfeatures", QVariant(( int )mFeatureIds.size() ) );
   emit numberFeaturesChanged( mFeatureIds.size() );
 
   //jump to first feature if currently using an atlas preview
@@ -324,10 +300,6 @@ bool QgsAtlasComposition::beginRender()
     //no matching features found
     return false;
   }
-
-  // special columns for expressions
-  QgsExpression::setSpecialColumn( "$numpages", QVariant( mComposition->numPages() ) );
-  QgsExpression::setSpecialColumn( "$numfeatures", QVariant(( int )mFeatureIds.size() ) );
 
   return true;
 }
@@ -452,11 +424,6 @@ bool QgsAtlasComposition::prepareForFeature( const int featureI, const bool upda
   mCoverageLayer->getFeatures( QgsFeatureRequest().setFilterFid( mFeatureIds[ featureI ].first ) ).nextFeature( mCurrentFeature );
 
   QgsExpressionContext expressionContext = createExpressionContext();
-
-  QgsExpression::setSpecialColumn( "$atlasfeatureid", mCurrentFeature.id() );
-  QgsExpression::setSpecialColumn( "$atlasgeometry", QVariant::fromValue( *mCurrentFeature.constGeometry() ) );
-  QgsExpression::setSpecialColumn( "$atlasfeature", QVariant::fromValue( mCurrentFeature ) );
-  QgsExpression::setSpecialColumn( "$feature", QVariant(( int )featureI + 1 ) );
 
   // generate filename for current feature
   if ( !evalFeatureFilename( expressionContext ) )
@@ -835,10 +802,10 @@ QgsExpressionContext QgsAtlasComposition::createExpressionContext()
   if ( mComposition )
     expressionContext << QgsExpressionContextUtils::compositionScope( mComposition );
 
-  expressionContext << new QgsExpressionContextScope( "Atlas" );
+  expressionContext.appendScope( QgsExpressionContextUtils::atlasScope( this ) );
   if ( mCoverageLayer )
     expressionContext.lastScope()->setFields( mCoverageLayer->fields() );
-  if ( mComposition->atlasMode() != QgsComposition::AtlasOff )
+  if ( mComposition && mComposition->atlasMode() != QgsComposition::AtlasOff )
     expressionContext.lastScope()->setFeature( mCurrentFeature );
 
   return expressionContext;

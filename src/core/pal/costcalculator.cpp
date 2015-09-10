@@ -28,6 +28,16 @@
 namespace pal
 {
 
+  bool CostCalculator::candidateSortGrow( const LabelPosition *c1, const LabelPosition *c2 )
+  {
+    return c1->cost() < c2->cost();
+  }
+
+  bool CostCalculator::candidateSortShrink( const LabelPosition *c1, const LabelPosition *c2 )
+  {
+    return c1->cost() > c2->cost();
+  }
+
   void CostCalculator::addObstacleCostPenalty( LabelPosition* lp, FeaturePart* obstacle )
   {
     int n = 0;
@@ -61,7 +71,7 @@ namespace pal
         {
           case PolygonInterior:
             // n ranges from 0 -> 12
-            n = lp->getNumPointsInPolygon( obstacle );
+            n = lp->polygonIntersectionCost( obstacle );
             break;
           case PolygonBoundary:
             // penalty may need tweaking, given that interior mode ranges up to 12
@@ -85,7 +95,7 @@ namespace pal
 
   ////////
 
-  void CostCalculator::setPolygonCandidatesCost( int nblp, LabelPosition **lPos, int max_p, RTree<FeaturePart*, double, 2, double> *obstacles, double bbx[4], double bby[4] )
+  void CostCalculator::setPolygonCandidatesCost( int nblp, QList< LabelPosition* >& lPos, int max_p, RTree<FeaturePart*, double, 2, double> *obstacles, double bbx[4], double bby[4] )
   {
     int i;
 
@@ -98,14 +108,13 @@ namespace pal
     for ( i = 0; i < nblp; i++ )
       setCandidateCostFromPolygon( lPos[i], obstacles, bbx, bby );
 
-    // lPos with big values came fisrts (value = min distance from label to Polygon's Perimeter)
-    //sort ( (void**) lPos, nblp, costGrow);
-    sort(( void** ) lPos, nblp, LabelPosition::costShrink );
+    // lPos with big values came first (value = min distance from label to Polygon's Perimeter)
+    qSort( lPos.begin(), lPos.end(), candidateSortShrink );
 
 
     // define the value's range
-    double cost_max = lPos[0]->cost();
-    double cost_min = lPos[max_p-1]->cost();
+    double cost_max = lPos.at( 0 )->cost();
+    double cost_min = lPos.at( max_p - 1 )->cost();
 
     cost_max -= cost_min;
 
@@ -128,7 +137,7 @@ namespace pal
       //if (cost_max - cost_min < EPSILON)
       if ( cost_max > EPSILON )
       {
-        lPos[i]->mCost = 0.0021 - ( lPos[i]->cost() - cost_min ) * normalizer;
+        lPos[i]->mCost = 0.0021 - ( lPos.at( i )->cost() - cost_min ) * normalizer;
       }
       else
       {
@@ -174,11 +183,11 @@ namespace pal
   int CostCalculator::finalizeCandidatesCosts( Feats* feat, int max_p, RTree <FeaturePart*, double, 2, double> *obstacles, double bbx[4], double bby[4] )
   {
     // If candidates list is smaller than expected
-    if ( max_p > feat->nblp )
-      max_p = feat->nblp;
+    if ( max_p > feat->lPos.count() )
+      max_p = feat->lPos.count();
     //
     // sort candidates list, best label to worst
-    sort(( void** ) feat->lPos, feat->nblp, LabelPosition::costGrow );
+    qSort( feat->lPos.begin(), feat->lPos.end(), candidateSortGrow );
 
     // try to exclude all conflitual labels (good ones have cost < 1 by pruning)
     double discrim = 0.0;
@@ -186,10 +195,10 @@ namespace pal
     do
     {
       discrim += 1.0;
-      for ( stop = 0; stop < feat->nblp && feat->lPos[stop]->cost() < discrim; stop++ )
+      for ( stop = 0; stop < feat->lPos.count() && feat->lPos[stop]->cost() < discrim; stop++ )
         ;
     }
-    while ( stop == 0 && discrim < feat->lPos[feat->nblp-1]->cost() + 2.0 );
+    while ( stop == 0 && discrim < feat->lPos.last()->cost() + 2.0 );
 
     if ( discrim > 1.5 )
     {
@@ -211,7 +220,7 @@ namespace pal
     {
       int arrangement = feat->feature->layer()->arrangement();
       if ( arrangement == P_FREE || arrangement == P_HORIZ )
-        setPolygonCandidatesCost( stop, ( LabelPosition** ) feat->lPos, max_p, obstacles, bbx, bby );
+        setPolygonCandidatesCost( stop, feat->lPos, max_p, obstacles, bbx, bby );
     }
 
     // add size penalty (small lines/polygons get higher cost)

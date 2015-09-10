@@ -4,7 +4,7 @@
   -------------------
          begin                : August 2012
          copyright            : (C) Matthias Kuhn
-         email                : matthias dot kuhn at gmx dot ch
+         email                : matthias at opengis dot ch
 
  ***************************************************************************
  *                                                                         *
@@ -40,7 +40,9 @@ static QgsExpressionContext _getExpressionContext( const void* context )
 {
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope();
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::atlasScope( 0 )
+  << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() );
 
   const QgsVectorLayer* layer = ( const QgsVectorLayer* ) context;
   if ( layer )
@@ -507,7 +509,7 @@ void QgsDiagramProperties::addAttribute( QTreeWidgetItem * item )
 
 void QgsDiagramProperties::on_mAddCategoryPushButton_clicked()
 {
-  foreach ( QTreeWidgetItem *attributeItem, mAttributesTreeWidget->selectedItems() )
+  Q_FOREACH ( QTreeWidgetItem *attributeItem, mAttributesTreeWidget->selectedItems() )
   {
     addAttribute( attributeItem );
   }
@@ -521,7 +523,7 @@ void QgsDiagramProperties::on_mAttributesTreeWidget_itemDoubleClicked( QTreeWidg
 
 void QgsDiagramProperties::on_mRemoveCategoryPushButton_clicked()
 {
-  foreach ( QTreeWidgetItem *attributeItem, mDiagramAttributesTreeWidget->selectedItems() )
+  Q_FOREACH ( QTreeWidgetItem *attributeItem, mDiagramAttributesTreeWidget->selectedItems() )
   {
     delete attributeItem;
   }
@@ -542,6 +544,7 @@ void QgsDiagramProperties::on_mFindMaximumValueButton_clicked()
     QgsExpressionContext context;
     context << QgsExpressionContextUtils::globalScope()
     << QgsExpressionContextUtils::projectScope()
+    << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() )
     << QgsExpressionContextUtils::layerScope( mLayer );
 
     exp.prepare( &context );
@@ -793,6 +796,8 @@ void QgsDiagramProperties::showAddAttributeExpressionDialog()
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::atlasScope( 0 )
+  << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() )
   << QgsExpressionContextUtils::layerScope( mLayer );
 
   QgsExpressionBuilderDialog dlg( mLayer, expression, this, "generic", context );

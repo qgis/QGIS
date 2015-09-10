@@ -45,20 +45,7 @@ QgsWelcomePage::QgsWelcomePage( QWidget* parent )
   QListView* recentProjectsListView = new QListView();
   mModel = new QgsWelcomePageItemsModel( recentProjectsListView );
   recentProjectsListView->setModel( mModel );
-  recentProjectsListView->setStyleSheet( "QListView::item {"
-                                         "  margin-top: 5px;"
-                                         "  margin-bottom: 5px;"
-                                         "  margin-left: 15px;"
-                                         "  margin-right: 15px;"
-                                         "  border-width: 1px;"
-                                         "  border-color: #999;"
-                                         "  border-radius: 9px;"
-                                         "  background: #eee;"
-                                         "  padding: 10px;"
-                                         "}"
-                                         "QListView::item:selected:active {"
-                                         "  background: #aaaaaa;"
-                                         "}" );
+  recentProjectsListView->setItemDelegate( new QgsWelcomePageItemDelegate( recentProjectsListView ) );
 
   recentProjctsContainer->layout()->addWidget( recentProjectsListView );
 
@@ -88,11 +75,16 @@ QgsWelcomePage::QgsWelcomePage( QWidget* parent )
   mainLayout->addWidget( mVersionInformation );
   mVersionInformation->setVisible( false );
 
-  QgsVersionInfo* versionInfo = new QgsVersionInfo();
-  connect( versionInfo, SIGNAL( versionInfoAvailable() ), this, SLOT( versionInfoReceived() ) );
-  versionInfo->checkVersion();
+  mVersionInfo = new QgsVersionInfo();
+  connect( mVersionInfo, SIGNAL( versionInfoAvailable() ), this, SLOT( versionInfoReceived() ) );
+  mVersionInfo->checkVersion();
 
   connect( recentProjectsListView, SIGNAL( activated( QModelIndex ) ), this, SLOT( itemActivated( QModelIndex ) ) );
+}
+
+QgsWelcomePage::~QgsWelcomePage()
+{
+  delete mVersionInfo;
 }
 
 void QgsWelcomePage::setRecentProjects( const QList<QgsWelcomePageItemsModel::RecentProjectData>& recentProjects )

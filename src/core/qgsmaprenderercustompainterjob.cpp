@@ -327,7 +327,7 @@ void QgsMapRendererJob::drawNewLabeling( const QgsMapSettings& settings, QgsRend
 
 void QgsMapRendererJob::updateLayerGeometryCaches()
 {
-  foreach ( QString id, mGeometryCaches.keys() )
+  Q_FOREACH ( const QString& id, mGeometryCaches.keys() )
   {
     const QgsGeometryCache& cache = mGeometryCaches[id];
     if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( id ) ) )

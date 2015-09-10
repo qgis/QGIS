@@ -218,21 +218,11 @@ void QgsHttpRequestHandler::sendResponse()
   clearBody();
 }
 
-QByteArray QgsHttpRequestHandler::getResponse( const bool returnHeaders,
-    const bool returnBody )
+QPair<QByteArray, QByteArray> QgsHttpRequestHandler::getResponse()
 {
-  if ( ! returnHeaders )
-  {
-    return mResponseBody;
-  }
-  else if ( ! returnBody )
-  {
-    return mResponseHeader;
-  }
-  else
-  {
-    return mResponseHeader.append( mResponseBody );
-  }
+  // TODO: check that this is not an evil bug!
+  QPair<QByteArray, QByteArray> response( mResponseHeader, mResponseBody );
+  return response;
 }
 
 QString QgsHttpRequestHandler::formatToMimeType( const QString& format ) const
@@ -559,7 +549,7 @@ void QgsHttpRequestHandler::requestStringToParameterMap( const QString& request,
 
 
   //insert key and value into the map (parameters are separated by &)
-  foreach ( QString element, request.split( "&" ) )
+  Q_FOREACH ( const QString& element, request.split( "&" ) )
   {
     int sepidx = element.indexOf( "=", 0, Qt::CaseSensitive );
     if ( sepidx == -1 )

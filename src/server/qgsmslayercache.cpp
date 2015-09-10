@@ -48,7 +48,7 @@ QgsMSLayerCache::QgsMSLayerCache()
 QgsMSLayerCache::~QgsMSLayerCache()
 {
   QgsDebugMsg( "removing all entries" );
-  foreach ( QgsMSLayerCacheEntry entry, mEntries )
+  Q_FOREACH ( QgsMSLayerCacheEntry entry, mEntries )
   {
     delete entry.layerPointer;
   }
@@ -187,7 +187,7 @@ void QgsMSLayerCache::freeEntryRessources( QgsMSLayerCacheEntry& entry )
   delete entry.layerPointer;
 
   //remove the temporary files of a layer
-  foreach ( QString file, entry.temporaryFiles )
+  Q_FOREACH ( const QString& file, entry.temporaryFiles )
   {
     //remove the temporary file
     QFile removeFile( file );

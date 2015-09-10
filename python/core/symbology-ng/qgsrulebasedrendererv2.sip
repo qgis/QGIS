@@ -54,6 +54,13 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
     class Rule
     {
       public:
+        enum RenderResult
+        {
+          Filtered = 0, //!< The rule does not apply
+          Inactive,     //!< The rule is inactive
+          Rendered      //!< Something was rendered
+        };
+
         //! Constructor takes ownership of the symbol
         Rule( QgsSymbolV2* symbol /Transfer/, int scaleMinDenom = 0, int scaleMaxDenom = 0, QString filterExp = QString(),
               QString label = QString(), QString description = QString(), bool elseRule = false );
@@ -94,7 +101,13 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
         void setFilterExpression( QString filterExp );
         void setDescription( QString description );
         //! @note added in 2.6
+        //! @deprecated use setActive instead
         void setCheckState( bool state );
+        /**
+         * Sets if this rule is active
+         * @param state Determines if the rule should be activated or deactivated
+         */
+        void setActive( bool state );
 
         //! clone this rule, return new instance
         QgsRuleBasedRendererV2::Rule* clone() const /Factory/;
@@ -114,7 +127,7 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
         //! @note not available in python bindings
         // void setNormZLevels( const QMap<int, int>& zLevelsToNormLevels );
 
-        bool renderFeature( QgsRuleBasedRendererV2::FeatureToRender& featToRender, QgsRenderContext& context, QgsRuleBasedRendererV2::RenderQueue& renderQueue );
+        QgsRuleBasedRendererV2::Rule::RenderResult renderFeature( QgsRuleBasedRendererV2::FeatureToRender& featToRender, QgsRenderContext& context, QgsRuleBasedRendererV2::RenderQueue& renderQueue );
 
         //! only tell whether a feature will be rendered without actually rendering it
         bool willRenderFeature( QgsFeature& feat, QgsRenderContext* context = 0);

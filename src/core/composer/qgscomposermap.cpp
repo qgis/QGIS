@@ -236,9 +236,6 @@ QgsMapSettings QgsComposerMap::mapSettings( const QgsRectangle& extent, const QS
   jobMapSettings.setExpressionContext( *context );
   delete context;
 
-  //update $map variable. Use QgsComposerItem's id since that is user-definable
-  QgsExpression::setSpecialColumn( "$map", QgsComposerItem::id() );
-
   // composer-specific overrides of flags
   jobMapSettings.setFlag( QgsMapSettings::ForceVectorOutput ); // force vector output (no caching of marker images etc.)
   jobMapSettings.setFlag( QgsMapSettings::DrawEditingInfo, false );
@@ -558,7 +555,7 @@ QStringList QgsComposerMap::layersToRender() const
 
     QStringList layerNames = exprVal.toString().split( "|" );
     //need to convert layer names to layer ids
-    Q_FOREACH ( QString name, layerNames )
+    Q_FOREACH ( const QString& name, layerNames )
     {
       QList< QgsMapLayer* > matchingLayers = QgsMapLayerRegistry::instance()->mapLayersByName( name );
       Q_FOREACH ( QgsMapLayer* layer, matchingLayers )
@@ -1601,7 +1598,7 @@ void QgsComposerMap::setLayerStyleOverrides( const QMap<QString, QString>& overr
 void QgsComposerMap::storeCurrentLayerStyles()
 {
   mLayerStyleOverrides.clear();
-  foreach ( const QString& layerID, mLayerSet )
+  Q_FOREACH ( const QString& layerID, mLayerSet )
   {
     if ( QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerID ) )
     {
@@ -2118,6 +2115,24 @@ void QgsComposerMap::requestedExtent( QgsRectangle& extent ) const
     extent.setYMinimum( bRect.top() );
     extent.setYMaximum( bRect.bottom() );
   }
+}
+
+QgsExpressionContext* QgsComposerMap::createExpressionContext() const
+{
+  QgsExpressionContext* context = QgsComposerItem::createExpressionContext();
+
+  //Can't utilise QgsExpressionContextUtils::mapSettingsScope as we don't always
+  //have a QgsMapSettings object available when the context is required, so we manually
+  //add the same variables here
+  QgsExpressionContextScope* scope = new QgsExpressionContextScope( tr( "Map Settings" ) );
+
+  //use QgsComposerItem's id, not map item's ID, since that is user-definable
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( "map_id", QgsComposerItem::id(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( "map_rotation", mMapRotation, true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( "map_scale", scale(), true ) );
+  context->appendScope( scope );
+
+  return context;
 }
 
 double QgsComposerMap::mapUnitsToMM() const

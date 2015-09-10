@@ -41,7 +41,7 @@ QgsCodeEditorSQL::~QgsCodeEditorSQL()
 
 void QgsCodeEditorSQL::setSciLexerSQL()
 {
-  QsciLexerSQL* sqlLexer = new QsciLexerSQL();
+  QsciLexerSQL* sqlLexer = new QsciLexerSQL( this );
   sqlLexer->setDefaultFont( QFont( "Sans", 10 ) );
 
   setLexer( sqlLexer );

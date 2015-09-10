@@ -36,7 +36,7 @@ Build-Depends:
 #saucy wheezy# python-dev,
 #saucy# libpython2.7-dev,
 #sid stretch jessie trusty utopic vivid# python-all (>= 2.6.6-3~), python-all-dev (>= 2.6.6-3~),
-#sid stretch jessie wheezy precise saucy sid-oracle trusty utopic vivid# python-qt4 (>= 4.1.0), python-qt4-dev,
+#sid stretch jessie wheezy precise saucy trusty utopic vivid# python-qt4 (>= 4.1.0), python-qt4-dev,
 #sid stretch jessie# pyqt4.qsci-dev,
 #sid stretch jessie trusty utopic vivid# python-pyspatialite,
  python-sip (>= 4.5.0),
@@ -54,7 +54,7 @@ Build-Depends:
  spawn-fcgi, lighttpd, poppler-utils, locales, qt4-doc-html,
  libqt4-sql-sqlite
 Build-Conflicts: libqgis-dev, qgis-dev
-#sid stretch jessie sid-oracle vivid#Standards-Version: 3.9.6
+#sid stretch jessie vivid#Standards-Version: 3.9.6
 #wheezy#Standards-Version: 3.9.3
 #precise saucy trusty utopic#Standards-Version: 3.8.4
 #sid stretch jessie#X-Python-Version: >= 2.7, << 2.8
@@ -275,6 +275,7 @@ Depends:
  ${misc:Depends}
 #grass7#Breaks: qgis-plugin-grass
 #grass7#Replaces: qgis-plugin-grass
+#grass6#Breaks: qgis-plugin-grass (<< 1:2.11.0+git20150906)
 Description: GRASS plugin for QGIS
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
@@ -289,8 +290,8 @@ Description: GRASS plugin for QGIS
 #grass6# qgis-provider-grass (= ${source:Version}),
 #grass6# ${shlibs:Depends},
 #grass6# ${misc:Depends},
-#!sid !precise# grass-core
-#precise# grass
+#grass6##!precise# grass-core (<< 7)
+#grass6##precise# grass (<< 7)
 #grass6#Description: GRASS plugin for QGIS
 #grass6# QGIS is a Geographic Information System (GIS) which manages, analyzes and
 #grass6# display databases of geographic information.
@@ -300,8 +301,8 @@ Description: GRASS plugin for QGIS
 #grass6#Package: qgis-plugin-grass-common
 #grass6#Architecture: all
 #grass6#Depends:
-#jessie saucy trusty# python2.7,
-#wheezy precise# python,
+#grass6##saucy trusty# python2.7,
+#grass6##precise# python,
 #grass6# ${misc:Depends}
 #grass6#Breaks: qgis-common (<< 1.5)
 #grass6#Replaces: qgis-common (<< 1.5)

@@ -15,6 +15,8 @@
 #include "qgsstatisticalsummarydockwidget.h"
 #include "qgsstatisticalsummary.h"
 #include "qgsmaplayerregistry.h"
+#include "qgisapp.h"
+#include "qgsmapcanvas.h"
 #include <QTableWidget>
 #include <QAction>
 #include <QSettings>
@@ -42,7 +44,8 @@ static QgsExpressionContext _getExpressionContext( const void* context )
 {
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope();
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() );
 
   const QgsStatisticalSummaryDockWidget* widget = ( const QgsStatisticalSummaryDockWidget* ) context;
   if ( widget )
@@ -74,7 +77,7 @@ QgsStatisticalSummaryDockWidget::QgsStatisticalSummaryDockWidget( QWidget *paren
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( layersRemoved( QStringList ) ) );
 
   QSettings settings;
-  foreach ( QgsStatisticalSummary::Statistic stat, mDisplayStats )
+  Q_FOREACH ( QgsStatisticalSummary::Statistic stat, mDisplayStats )
   {
     QAction* action = new QAction( QgsStatisticalSummary::displayName( stat ), mOptionsToolButton );
     action->setCheckable( true );
@@ -124,7 +127,7 @@ void QgsStatisticalSummaryDockWidget::refreshStatistics()
 
   QList< QgsStatisticalSummary::Statistic > statsToDisplay;
   QgsStatisticalSummary::Statistics statsToCalc = 0;
-  foreach ( QgsStatisticalSummary::Statistic stat, mDisplayStats )
+  Q_FOREACH ( QgsStatisticalSummary::Statistic stat, mDisplayStats )
   {
     if ( mStatsActions.value( stat )->isChecked() )
     {
@@ -145,7 +148,7 @@ void QgsStatisticalSummaryDockWidget::refreshStatistics()
   mStatisticsTable->setColumnCount( 2 );
 
   int row = 0;
-  foreach ( QgsStatisticalSummary::Statistic stat, statsToDisplay )
+  Q_FOREACH ( QgsStatisticalSummary::Statistic stat, statsToDisplay )
   {
     QTableWidgetItem* nameItem = new QTableWidgetItem( QgsStatisticalSummary::displayName( stat ) );
     nameItem->setToolTip( nameItem->text() );

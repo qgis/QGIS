@@ -36,8 +36,18 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer* vl )
   if ( !vl )
     return;
 
+
+  QgsExpressionContext expContext;
+  expContext << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::layerScope( mVectorLayer );
+
+  expContext.lastScope()->setVariable( "row_number", 1 );
+  expContext.setHighlightedVariables( QStringList() << "row_number" );
+
   builder->setLayer( vl );
   builder->loadFieldNames();
+  builder->setExpressionContext( expContext );
 
   populateFields();
   populateOutputFieldTypes();
@@ -261,7 +271,7 @@ void QgsFieldCalculator::accept()
       }
 
       expContext.setFeature( feature );
-      expContext.lastScope()->setVariable( QString( "_rownum_" ), rownum );
+      expContext.lastScope()->setVariable( QString( "row_number" ), rownum );
 
       QVariant value = exp.evaluate( &expContext );
       field.convertCompatible( value );

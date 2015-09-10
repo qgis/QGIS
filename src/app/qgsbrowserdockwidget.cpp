@@ -135,7 +135,7 @@ class QgsBrowserTreeFilterProxyModel : public QSortFilterProxyModel
       mREList.clear();
       if ( mPatternSyntax == "normal" )
       {
-        foreach ( QString f, mFilter.split( "|" ) )
+        Q_FOREACH ( const QString& f, mFilter.split( "|" ) )
         {
           QRegExp rx( QString( "*%1*" ).arg( f.trimmed() ) );
           rx.setPatternSyntax( QRegExp::Wildcard );
@@ -145,7 +145,7 @@ class QgsBrowserTreeFilterProxyModel : public QSortFilterProxyModel
       }
       else if ( mPatternSyntax == "wildcard" )
       {
-        foreach ( QString f, mFilter.split( "|" ) )
+        Q_FOREACH ( const QString& f, mFilter.split( "|" ) )
         {
           QRegExp rx( f.trimmed() );
           rx.setPatternSyntax( QRegExp::Wildcard );
@@ -175,7 +175,7 @@ class QgsBrowserTreeFilterProxyModel : public QSortFilterProxyModel
     {
       if ( mPatternSyntax == "normal" || mPatternSyntax == "wildcard" )
       {
-        foreach ( QRegExp rx, mREList )
+        Q_FOREACH ( const QRegExp& rx, mREList )
         {
           QgsDebugMsg( QString( "value: [%1] rx: [%2] match: %3" ).arg( value ).arg( rx.pattern() ).arg( rx.exactMatch( value ) ) );
           if ( rx.exactMatch( value ) )
@@ -184,7 +184,7 @@ class QgsBrowserTreeFilterProxyModel : public QSortFilterProxyModel
       }
       else
       {
-        foreach ( QRegExp rx, mREList )
+        Q_FOREACH ( const QRegExp& rx, mREList )
         {
           QgsDebugMsg( QString( "value: [%1] rx: [%2] match: %3" ).arg( value ).arg( rx.pattern() ).arg( rx.indexIn( value ) ) );
           if ( rx.indexIn( value ) != -1 )

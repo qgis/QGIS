@@ -45,6 +45,48 @@ class QgsDataDefined;
 
 typedef QList<QgsSymbolLayerV2*> QgsSymbolLayerV2List;
 
+
+/** \ingroup core
+ * \class QgsRenderResult
+ * \brief A simple container for the results of a rendering operation
+ * \note Added in version 2.12
+ */
+
+class QgsRenderResult
+{
+  public:
+
+    /** Constructor for QgsRenderResult
+     * @param symbolRendered initial value for symbolRendered member
+     */
+    QgsRenderResult( bool symbolRendered )
+        : symbolRendered( symbolRendered )
+    { }
+
+    /** Bounds of rendered symbol shape.
+     * @note only implemented for marker symbol types
+     */
+    QRectF symbolBounds;
+
+    //! True if a symbol was rendered during the render operation
+    bool symbolRendered;
+
+    /** Unites the render result with another QgsRenderResult object
+     * @param other other render result
+     */
+    void unite( const QgsRenderResult& other )
+    {
+      symbolRendered = symbolRendered || other.symbolRendered;
+      if ( !symbolBounds.isValid() )
+        symbolBounds = other.symbolBounds;
+      else
+        symbolBounds = symbolBounds.united( other.symbolBounds );
+    }
+};
+
+
+//////////////////////
+
 class CORE_EXPORT QgsSymbolV2
 {
   public:
@@ -160,7 +202,11 @@ class CORE_EXPORT QgsSymbolV2
     //! Generate symbol as image
     QImage asImage( QSize size, QgsRenderContext* customContext = 0 );
 
-    QImage bigSymbolPreviewImage();
+    /** Returns a large (roughly 100x100 pixel) preview image for the symbol.
+     * @param expressionContext optional expression context, for evaluation of
+     * data defined symbol properties
+     */
+    QImage bigSymbolPreviewImage( QgsExpressionContext* expressionContext = 0 );
 
     QString dump() const;
 
@@ -208,6 +254,15 @@ class CORE_EXPORT QgsSymbolV2
     void setLayer( const QgsVectorLayer* layer ) { mLayer = layer; }
     const QgsVectorLayer* layer() const { return mLayer; }
 
+    /** Returns the result of the symbol rendering operation. This should only be
+     * called immediately after a rendering operation (eg calling renderPoint).
+     * @note added in QGIS 2.12
+     * @note this is a temporary method until QGIS 3.0. For QGIS 3.0 the render methods
+     * will return a QgsRenderResult object
+     */
+    // TODO - QGIS 3.0. Remove and make renderPoint, etc return a QgsRenderResult
+    const QgsRenderResult& renderResult() const { return mRenderResult; }
+
   protected:
     QgsSymbolV2( SymbolType type, QgsSymbolLayerV2List layers ); // can't be instantiated
 
@@ -227,6 +282,8 @@ class CORE_EXPORT QgsSymbolV2
     bool mClipFeaturesToExtent;
 
     const QgsVectorLayer* mLayer; //current vectorlayer
+
+    QgsRenderResult mRenderResult;
 
 };
 
@@ -286,9 +343,7 @@ class CORE_EXPORT QgsSymbolV2RenderContext
 };
 
 
-
 //////////////////////
-
 
 
 class CORE_EXPORT QgsMarkerSymbolV2 : public QgsSymbolV2

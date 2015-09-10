@@ -289,6 +289,7 @@ bool TestQgsGradients::imageCheck( QString theTestType )
   //ensure the rendered output matches our control image
   mMapSettings.setExtent( mpPolysLayer->extent() );
   QgsRenderChecker myChecker;
+  myChecker.setControlPathPrefix( "symbol_gradient" );
   myChecker.setControlName( "expected_" + theTestType );
   myChecker.setMapSettings( mMapSettings );
   bool myResultFlag = myChecker.runTest( theTestType );

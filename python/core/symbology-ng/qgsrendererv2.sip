@@ -263,6 +263,15 @@ class QgsFeatureRendererV2
      */
     void setForceRasterRender( bool forceRaster );
 
+    /** Returns the result of the feature rendering operation. This should only be
+     * called immediately after a rendering operation (eg calling renderFeature).
+     * @note added in QGIS 2.12
+     * @note this is a temporary method until QGIS 3.0. For QGIS 3.0 renderFeature
+     * will return a QgsRenderResult object
+     */
+    // TODO - QGIS 3.0. Remove and make renderFeature return a QgsRenderResult
+    const QgsRenderResult& renderResult() const;
+
   protected:
     QgsFeatureRendererV2( QString type );
 
@@ -290,6 +299,16 @@ class QgsFeatureRendererV2
      * @param destRenderer destination renderer for copied effect
      */
     void copyPaintEffect( QgsFeatureRendererV2 *destRenderer ) const;
+
+    /** Sets the result of the symbol rendering operation. Subclasses should call
+     * this method after rendering a feature and update the render result to reflect
+     * to actual result of the feature render.
+     * @note added in QGIS 2.12
+     * @note this is a temporary method until QGIS 3.0. For QGIS 3.0 the renderFeature method
+     * will return a QgsRenderResult object
+     */
+    // TODO - QGIS 3.0. Remove and make renderPoint, etc return a QgsRenderResult
+    void setRenderResult( const QgsRenderResult& result );
 
   private:
     QgsFeatureRendererV2( const QgsFeatureRendererV2 & );

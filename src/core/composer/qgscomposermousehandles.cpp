@@ -705,7 +705,7 @@ void QgsComposerMouseHandles::resetStatusBar()
   else
   {
     //clear status bar message
-    mComposition->setStatusMessage( QString( "" ) );
+    mComposition->setStatusMessage( QString() );
   }
 }
 

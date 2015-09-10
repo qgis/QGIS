@@ -263,6 +263,13 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     QByteArray quotedIdentifier( QByteArray field );
 
+    /**
+     * A forced reload invalidates the underlying connection.
+     * E.g. in case a shapefile is replaced, the old file will be closed
+     * and the new file will be opened.
+     */
+    void forceReload();
+
   protected:
     /** Loads fields from input file to member attributeFields */
     void loadFields();

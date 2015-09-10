@@ -74,7 +74,7 @@ QgsVectorLayer* RgExportDlg::mapLayer() const
   QgsVectorLayer* myLayer = NULL;
   QString layerId = mcbLayers->itemData( mcbLayers->currentIndex() ).toString();
 
-  if ( layerId == QString( "-1" ) )
+  if ( layerId == "-1" )
   {
     // create a temporary layer
     myLayer = new QgsVectorLayer( QString( "LineString?crs=epsg:4326&memoryid=%1" ).arg( QUuid::createUuid().toString() ), "shortest path", "memory" );

@@ -82,7 +82,10 @@ static QgsExpressionContext _getExpressionContext( const void* context )
 {
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope();
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::atlasScope( 0 )
+  //TODO - use actual map canvas settings
+  << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
 
   const QgsVectorLayer* layer = ( const QgsVectorLayer* ) context;
   if ( layer )
@@ -226,6 +229,7 @@ void QgsSizeScaleWidget::computeFromLayerTriggered()
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::atlasScope( 0 )
   << QgsExpressionContextUtils::layerScope( mLayer );
 
   if ( ! expression.prepare( &context ) )

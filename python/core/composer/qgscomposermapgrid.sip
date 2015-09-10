@@ -182,9 +182,10 @@ class QgsComposerMapGrid : QgsComposerMapItem
       DegreeMinuteSecond, /*!< degree/minutes/seconds, use NSEW suffix */
       DecimalWithSuffix, /*!< decimal degrees, use NSEW suffix */
       DegreeMinuteNoSuffix, /*!< degree/minutes, use - for S/W coordinates */
-      DegreeMinutePadded, /*!< degree/minutes, with minutes using leading zeros were required */
+      DegreeMinutePadded, /*!< degree/minutes, with minutes using leading zeros where required */
       DegreeMinuteSecondNoSuffix, /*!< degree/minutes/seconds, use - for S/W coordinates */
-      DegreeMinuteSecondPadded /*!< degree/minutes/seconds, with minutes using leading zeros were required */
+      DegreeMinuteSecondPadded, /*!< degree/minutes/seconds, with minutes using leading zeros where required */
+      CustomFormat /*!< custom expression-based format */
     };
 
     /** Border sides for annotations
@@ -586,6 +587,22 @@ class QgsComposerMapGrid : QgsComposerMapItem
     */
     AnnotationFormat annotationFormat() const;
 
+    /** Sets the expression used for drawing grid annotations. This is only used when annotationFormat()
+     * is QgsComposerMapGrid::CustomFormat.
+     * @param expression expression for evaluating custom grid annotations
+     * @see annotationExpression
+     * @note added in QGIS 2.12
+    */
+    void setAnnotationExpression( const QString& expression );
+
+    /** Returns the expression used for drawing grid annotations. This is only used when annotationFormat()
+     * is QgsComposerMapGrid::CustomFormat.
+     * @returns expression for evaluating custom grid annotations
+     * @see setAnnotationExpression
+     * @note added in QGIS 2.12
+    */
+    QString annotationExpression() const;
+
     //
     // GRID FRAME
     //
@@ -734,5 +751,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
      * @see frameFillColor1
     */
     QColor frameFillColor2() const;
+
+    virtual QgsExpressionContext* createExpressionContext() const;
 
 };

@@ -1,0 +1,17 @@
+{
+  "function": "minute",
+  "description": "Extract the minutes part from a datetime or time, or the number of minutes from an interval.",
+  "variants": [
+  { "variant": "Time variant",
+      "variant_description": "Extract the minutes part from a time or datetime.",
+      "arguments": [ {"arg":"datetime","description":"a time or datetime value"}],
+      "examples": [ { "expression":"minute('2012-07-22T13:24:57')", "returns":"24"}] },
+      {
+      "variant": "Interval variant",
+      "variant_description": "Calculate the length in minutes of an interval.",
+      "arguments": [ {"arg":"interval","description":"interval value to return number of minutes from"}],
+      "examples": [ { "expression":"minute(tointerval('3 minutes'))", "returns":"3"},
+                    { "expression":"minute(age('2012-07-22T00:20:00','2012-07-22T00:00:00'))", "returns":"20"},
+                    { "expression":"minute(age('2012-01-01','2010-01-01'))", "returns":"1051200"}]
+  }]
+}

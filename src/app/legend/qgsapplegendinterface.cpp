@@ -107,7 +107,7 @@ void QgsAppLegendInterface::setGroupVisible( int groupIndex, bool visible )
 static QgsLayerTreeGroup* _groupIndexToNode( int groupIndex, QgsLayerTreeGroup* parentGroup, int& currentIndex )
 {
   ++currentIndex;
-  foreach ( QgsLayerTreeNode* child, parentGroup->children() )
+  Q_FOREACH ( QgsLayerTreeNode* child, parentGroup->children() )
   {
     if ( QgsLayerTree::isGroup( child ) )
     {
@@ -132,7 +132,7 @@ QgsLayerTreeGroup* QgsAppLegendInterface::groupIndexToNode( int itemIndex )
 static int _groupNodeToIndex( QgsLayerTreeGroup* group, QgsLayerTreeGroup* parentGroup, int& currentIndex )
 {
   ++currentIndex;
-  foreach ( QgsLayerTreeNode* child, parentGroup->children() )
+  Q_FOREACH ( QgsLayerTreeNode* child, parentGroup->children() )
   {
     if ( QgsLayerTree::isGroup( child ) )
     {
@@ -169,7 +169,7 @@ void QgsAppLegendInterface::setLayerExpanded( QgsMapLayer * ml, bool expand )
 
 static void _collectGroups( QgsLayerTreeGroup* parentGroup, QStringList& list )
 {
-  foreach ( QgsLayerTreeNode* child, parentGroup->children() )
+  Q_FOREACH ( QgsLayerTreeNode* child, parentGroup->children() )
   {
     if ( QgsLayerTree::isGroup( child ) )
     {
@@ -206,7 +206,7 @@ QList< GroupLayerInfo > QgsAppLegendInterface::groupLayerRelationship()
     else if ( QgsLayerTree::isGroup( currentNode ) )
     {
       QList<QString> layerList;
-      foreach ( QgsLayerTreeNode* gNode, QgsLayerTree::toGroup( currentNode )->children() )
+      Q_FOREACH ( QgsLayerTreeNode* gNode, QgsLayerTree::toGroup( currentNode )->children() )
       {
         if ( QgsLayerTree::isLayer( gNode ) )
         {
@@ -273,7 +273,7 @@ QList<QgsMapLayer *> QgsAppLegendInterface::selectedLayers( bool inDrawOrder ) c
 QList< QgsMapLayer * > QgsAppLegendInterface::layers() const
 {
   QList<QgsMapLayer*> lst;
-  foreach ( QgsLayerTreeLayer* node, mLayerTreeView->layerTreeModel()->rootGroup()->findLayers() )
+  Q_FOREACH ( QgsLayerTreeLayer* node, mLayerTreeView->layerTreeModel()->rootGroup()->findLayers() )
   {
     if ( node->layer() )
       lst << node->layer();

@@ -112,7 +112,7 @@ QAction* QgsShortcutsManager::actionByName( QString name )
 
 void QgsShortcutsManager::registerAllChildrenActions( QObject* object )
 {
-  foreach ( QObject* child, object->children() )
+  Q_FOREACH ( QObject* child, object->children() )
   {
     if ( child->inherits( "QAction" ) )
     {

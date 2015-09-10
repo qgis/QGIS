@@ -641,9 +641,6 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
 
     void setTopoFields();
 
-    /* Get name of GRASS primitive type */
-    static QString primitiveTypeName( int type );
-
     /* Static arrays of opened layers and vectors */
     static QVector<GLAYER> mLayers; // Map + field/attributes
     static QVector<GMAP> mMaps;     // Map

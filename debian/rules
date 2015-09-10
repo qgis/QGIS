@@ -93,11 +93,15 @@ ifneq (,$(findstring $(DISTRIBUTION),"wheezy precise"))
 	CMAKE_OPTS += -DWITH_PYSPATIALITE=TRUE
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"sid sid-oracle stretch"))
+ifneq (,$(findstring $(DISTRIBUTION),"sid stretch"))
 	CMAKE_OPTS += -DPOSTGRES_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libpq.so
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"jessie stretch trusty utopic vivid sid sid-oracle"))
+ifneq (,$(findstring $(DISTRIBUTION),"sid"))
+	CMAKE_OPTS += -DGEOS_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libgeos_c.so
+endif
+
+ifneq (,$(findstring $(DISTRIBUTION),"jessie stretch trusty utopic vivid sid"))
 	CMAKE_OPTS += -DPYTHON_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libpython2.7.so
 endif
 
@@ -122,7 +126,7 @@ else
 	CMAKE_OPTS += -DENABLE_TESTS=TRUE
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"wheezy jessie stretch trusty sid sid-oracle"))
+ifneq (,$(findstring $(DISTRIBUTION),"wheezy jessie stretch trusty sid"))
 CPPFLAGS := $(shell dpkg-buildflags --get CPPFLAGS)
 CFLAGS   := $(shell dpkg-buildflags --get CFLAGS) $(CPPFLAGS)
 CXXFLAGS := $(shell dpkg-buildflags --get CXXFLAGS) $(CPPFLAGS)
@@ -148,26 +152,23 @@ ifneq (,$(findstring profile,$(DEB_BUILD_OPTIONS)))
 endif
 
 # multi distribution support:
-# - remove prefixes for current distribution
-# - remove lines that exclude current distribution
-# - remove prefixes that exclude other distributions
+# - remove lines with applicable excludes
+# - remove prefixes with applicable includes
+# - remove prefixes with not applicable excludes
 # - remove remaining comments
 
+CONTROL_EXPRESSIONS = $(DISTRIBUTION) grass$(GRASSVER)
+
 ifneq (,$(WITH_ORACLE))
-	FILTER_ORACLE = \
-		-e 's/^#(.* |)oracle( .*|)#//' \
-		-e '/^#(.* |)!oracle( .*|)#/d'
+	CONTROL_EXPRESSIONS += oracle
 endif
 
 define gentemplate
 $(2): $(1)
 	sed -r \
-		-e 's/^#(.* |)$(DISTRIBUTION)( .*|)#//' \
-		-e '/^#(.* |)!$(DISTRIBUTION)( .*|)#/d' \
-		-e 's/^#(.* |)grass$(GRASSVER)( .*|)#//' \
-		-e '/^#(.* |)!grass$(GRASSVER)( .*|)#/d' \
-		$(FILTER_ORACLE) \
-		-e 's/^#(.* |)![^ ]*( .*|)#//' \
+		-e '/#(.+ |)!($(subst $(eval) ,|,$(CONTROL_EXPRESSIONS)))( .+|)#/d' \
+		-e 's/#([^#]+ |)($(subst $(eval) ,|,$(CONTROL_EXPRESSIONS)))( [^#]+|)#//g' \
+		-e 's/#([^#]+ |)![^#]+( [^#]*|)#//g' \
 		-e '/^#/d' \
 		-e "s/\{DEB_BUILD_GNU_TYPE\}/$(DEB_BUILD_GNU_TYPE)/g" \
 		-e "s#\{QT_PLUGIN_DIR\}#$(QT_PLUGIN_DIR)#g" \

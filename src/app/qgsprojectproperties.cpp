@@ -311,7 +311,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
     if ( grpWMSList->isChecked() )
     {
       QStringList list;
-      foreach ( QString value, values )
+      Q_FOREACH ( const QString& value, values )
       {
         list << QString( "EPSG:%1" ).arg( value );
       }
@@ -505,7 +505,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   mTabRelations->layout()->addWidget( mRelationManagerDlg );
 
   QList<QgsVectorLayer*> vectorLayers;
-  foreach ( QgsMapLayer* mapLayer, mapLayers.values() )
+  Q_FOREACH ( QgsMapLayer* mapLayer, mapLayers.values() )
   {
     if ( QgsMapLayer::VectorLayer == mapLayer->type() )
     {
@@ -1115,7 +1115,7 @@ void QgsProjectProperties::on_pbnWMSAddSRS_clicked()
 
 void QgsProjectProperties::on_pbnWMSRemoveSRS_clicked()
 {
-  foreach ( QListWidgetItem *item, mWMSList->selectedItems() )
+  Q_FOREACH ( QListWidgetItem *item, mWMSList->selectedItems() )
   {
     delete item;
   }
@@ -1499,7 +1499,7 @@ void QgsProjectProperties::populateEllipsoidList()
   const char   *myTail;
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
-  EllipsoidDefs myItem, i;
+  EllipsoidDefs myItem;
 
   myItem.acronym = GEO_NONE;
   myItem.description =  tr( GEO_NONE_DESC );
@@ -1567,7 +1567,7 @@ void QgsProjectProperties::populateEllipsoidList()
 
   // Add all items to selector
 
-  foreach ( i, mEllipsoidList )
+  Q_FOREACH ( const EllipsoidDefs& i, mEllipsoidList )
   {
     cmbEllipsoid->addItem( i.description );
   }

@@ -323,7 +323,7 @@ void QgsVectorLayer::drawLabels( QgsRenderContext& rendererContext )
            rendererContext.rendererScale() <= mLabel->maxScale() ) ) )
   {
     QgsAttributeList attributes;
-    foreach ( QString attrName, mRendererV2->usedAttributes() )
+    Q_FOREACH ( const QString& attrName, mRendererV2->usedAttributes() )
     {
       int attrNum = fieldNameIndex( attrName );
       attributes.append( attrNum );
@@ -616,7 +616,7 @@ QgsRectangle QgsVectorLayer::boundingBoxOfSelected()
   QgsFeature fet;
   if ( mDataProvider->capabilities() & QgsVectorDataProvider::SelectAtId )
   {
-    foreach ( QgsFeatureId fid, mSelectedFeatureIds )
+    Q_FOREACH ( QgsFeatureId fid, mSelectedFeatureIds )
     {
       if ( getFeatures( QgsFeatureRequest()
                         .setFilterFid( fid )
@@ -1027,7 +1027,7 @@ bool QgsVectorLayer::deleteSelectedFeatures( int* deletedCount )
   int count = mSelectedFeatureIds.size();
   // Make a copy since deleteFeature modifies mSelectedFeatureIds
   QgsFeatureIds selectedFeatures( mSelectedFeatureIds );
-  foreach ( QgsFeatureId fid, selectedFeatures )
+  Q_FOREACH ( QgsFeatureId fid, selectedFeatures )
   {
     deleted += deleteFeature( fid );  // removes from selection
   }
@@ -1056,6 +1056,7 @@ int QgsVectorLayer::addRing( QgsCurveV2* ring )
 {
   if ( !mEditBuffer || !mDataProvider )
   {
+    delete ring;
     return 6;
   }
 
@@ -1066,7 +1067,8 @@ int QgsVectorLayer::addRing( QgsCurveV2* ring )
 
   if ( !ring->isClosed() )
   {
-    delete ring; return 2;
+    delete ring;
+    return 2;
   }
 
   QgsVectorLayerEditUtils utils( this );
@@ -1690,6 +1692,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
       QDomElement diagramSettingsElem = node.firstChildElement( "DiagramLayerSettings" );
       if ( !diagramSettingsElem.isNull() )
       {
+        delete mDiagramLayerSettings;
         mDiagramLayerSettings = new QgsDiagramLayerSettings();
         mDiagramLayerSettings->readXML( diagramSettingsElem, this );
       }
@@ -2406,7 +2409,7 @@ QgsFeatureList QgsVectorLayer::selectedFeatures()
   {
     // for small amount of selected features, fetch them directly
     // because request with FilterFids would go iterate over the whole layer
-    foreach ( QgsFeatureId fid, mSelectedFeatureIds )
+    Q_FOREACH ( QgsFeatureId fid, mSelectedFeatureIds )
     {
       getFeatures( QgsFeatureRequest( fid ) ).nextFeature( f );
       features << f;
@@ -3287,7 +3290,7 @@ QList<double> QgsVectorLayer::getDoubleValues( const QString &fieldOrExpression,
     return values;
 
   bool convertOk;
-  foreach ( QVariant value, variantValues )
+  Q_FOREACH ( const QVariant& value, variantValues )
   {
     double val = value.toDouble( &convertOk );
     if ( convertOk )
@@ -3636,7 +3639,7 @@ QString QgsVectorLayer::metadata()
   {
     myMetadata += "<p class=\"glossy\">" + tr( "Primary key attributes" ) + "</p>\n";
     myMetadata += "<p>";
-    foreach ( int idx, pkAttrList )
+    Q_FOREACH ( int idx, pkAttrList )
     {
       myMetadata += fields()[ idx ].name() + " ";
     }

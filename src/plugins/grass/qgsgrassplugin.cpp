@@ -380,28 +380,28 @@ void QgsGrassPlugin::newVector()
                        QgsGrass::getDefaultLocation(),
                        QgsGrass::getDefaultMapset() );
 
-  try
+  struct Map_info *Map = 0;
+  G_TRY
   {
-    struct Map_info Map;
-    Vect_open_new( &Map, name.toUtf8().data(), 0 );
+    Map = QgsGrass::vectNewMapStruct();
+    Vect_open_new( Map, name.toUtf8().data(), 0 );
 
 #if defined(GRASS_VERSION_MAJOR) && defined(GRASS_VERSION_MINOR) && \
   ( ( GRASS_VERSION_MAJOR == 6 && GRASS_VERSION_MINOR >= 4 ) || GRASS_VERSION_MAJOR > 6 )
-    Vect_build( &Map );
+    Vect_build( Map );
 #else
-    Vect_build( &Map, stderr );
+    Vect_build( Map, stderr );
 #endif
-    Vect_set_release_support( &Map );
-    Vect_close( &Map );
+    Vect_set_release_support( Map );
+    Vect_close( Map );
+    QgsGrass::vectDestroyMapStruct( Map );
   }
-  catch ( QgsGrass::Exception &e )
+  G_CATCH( QgsGrass::Exception &e )
   {
-    QMessageBox::warning( 0, tr( "Warning" ),
-                          tr( "Cannot create new vector: %1" ).arg( e.what() ) );
+    QgsGrass::warning( tr( "Cannot create new vector: %1" ).arg( e.what() ) );
+    QgsGrass::vectDestroyMapStruct( Map );
     return;
   }
-
-
 
   // Open in GRASS vector provider
 

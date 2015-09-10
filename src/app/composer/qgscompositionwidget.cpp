@@ -557,16 +557,14 @@ void QgsCompositionWidget::on_mPageStyleButton_clicked()
     newSymbol = new QgsFillSymbolV2();
   }
   QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), coverageLayer, this );
+  d.setExpressionContext( mComposition->createExpressionContext() );
 
   if ( d.exec() == QDialog::Accepted )
   {
     mComposition->setPageStyleSymbol( newSymbol );
     updatePageStyle();
   }
-  else
-  {
-    delete newSymbol;
-  }
+  delete newSymbol;
 }
 
 void QgsCompositionWidget::updatePageStyle()

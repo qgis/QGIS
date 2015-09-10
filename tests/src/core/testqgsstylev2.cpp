@@ -307,7 +307,7 @@ void TestStyleV2::testLoadColorRamps()
 
   QgsDebugMsg( "loaded colorRamps: " + colorRamps.join( " " ) );
 
-  foreach ( QString name, colorRampsTest )
+  Q_FOREACH ( const QString& name, colorRampsTest )
   {
     QgsDebugMsg( "colorRamp " + name );
     QVERIFY( colorRamps.contains( name ) );
@@ -340,7 +340,7 @@ void TestStyleV2::testSaveLoad()
 
   QStringList colorRampsTest = QStringList() << "test_gradient";
 
-  foreach ( QString name, colorRampsTest )
+  Q_FOREACH ( const QString& name, colorRampsTest )
   {
     QgsDebugMsg( "colorRamp " + name );
     QVERIFY( colorRamps.contains( name ) );

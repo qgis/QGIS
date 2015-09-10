@@ -60632,7 +60632,7 @@ Houbo un problema coa base de datos de símbolos.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="58"/>
-        <source>If you need help using QGIS we have a &apos;users&apos; mailing list where users help each other with issues related to using our sofware. We also have a &apos;developers&apos; mailing list. for those wanting help and to discuss things relating to the QGIS code base. Details on how to subscribe are in the &lt;a href=&quot;http://qgis.org/en/site/forusers/support.html#mailing-lists&quot;&gt;community section&lt;/a&gt; of the QGIS home page.</source>
+        <source>If you need help using QGIS we have a &apos;users&apos; mailing list where users help each other with issues related to using our software. We also have a &apos;developers&apos; mailing list. for those wanting help and to discuss things relating to the QGIS code base. Details on how to subscribe are in the &lt;a href=&quot;http://qgis.org/en/site/forusers/support.html#mailing-lists&quot;&gt;community section&lt;/a&gt; of the QGIS home page.</source>
         <translation>Se necesita axuda con QGIS existe unha lista de correo de &apos;usuarios&apos; onde os usuarios axúdanse uns ós outros con temas relacionados coa utilización deste software. Existe tamén unha lista de correo de &apos;desarrolladores&apos; para aqueles que busquen axuda e para discutir cousas relacionadas co código base de QGIS. Hai detalles de como subscribirse na &lt;a href=&quot;http://qgis.org/en/site/forusers/support.html#mailing-lists&quot;&gt;sección da comunidade&lt;/a&gt; da páxina de inicio de QGIS.</translation>
     </message>
     <message>

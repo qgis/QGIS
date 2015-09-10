@@ -43,7 +43,7 @@ QVector<QgsDataItem*> QgsOWSConnectionItem::createChildren()
 
   int layerCount = 0;
   // Try to open with WMS,WFS,WCS
-  foreach ( QString key, QStringList() << "wms" << "WFS" << "wcs" )
+  Q_FOREACH ( const QString& key, QStringList() << "wms" << "WFS" << "wcs" )
   {
     QgsDebugMsg( "Add connection for provider " + key );
     QLibrary *library = QgsProviderRegistry::instance()->providerLibrary( key );
@@ -83,14 +83,14 @@ QVector<QgsDataItem*> QgsOWSConnectionItem::createChildren()
     }
   }
 
-  foreach ( QgsDataItem* item, serviceItems.keys() )
+  Q_FOREACH ( QgsDataItem* item, serviceItems.keys() )
   {
     QgsDebugMsg( QString( "serviceItems.size = %1 layerCount = %2 rowCount = %3" ).arg( serviceItems.size() ).arg( layerCount ).arg( item->rowCount() ) );
     QString providerKey = serviceItems.value( item );
     if ( serviceItems.size() == 1 || layerCount <= 30 || item->rowCount() <= 10 )
     {
       // Add layers directly to OWS connection
-      foreach ( QgsDataItem* subItem, item->children() )
+      Q_FOREACH ( QgsDataItem* subItem, item->children() )
       {
         item->removeChildItem( subItem );
         subItem->setParent( this );
@@ -113,7 +113,7 @@ QVector<QgsDataItem*> QgsOWSConnectionItem::createChildren()
 void QgsOWSConnectionItem::replacePath( QgsDataItem* item, QString before, QString after )
 {
   item->setPath( item->path().replace( before, after ) );
-  foreach ( QgsDataItem* subItem, item->children() )
+  Q_FOREACH ( QgsDataItem* subItem, item->children() )
   {
     replacePath( subItem, before, after );
   }
@@ -188,9 +188,9 @@ QVector<QgsDataItem*> QgsOWSRootItem::createChildren()
   QVector<QgsDataItem*> connections;
   // Combine all WMS,WFS,WCS connections
   QStringList connNames;
-  foreach ( QString service, QStringList() << "WMS" << "WFS" << "WCS" )
+  Q_FOREACH ( const QString& service, QStringList() << "WMS" << "WFS" << "WCS" )
   {
-    foreach ( QString connName, QgsOWSConnection::connectionList( service ) )
+    Q_FOREACH ( const QString& connName, QgsOWSConnection::connectionList( service ) )
     {
       if ( !connNames.contains( connName ) )
       {
@@ -198,7 +198,7 @@ QVector<QgsDataItem*> QgsOWSRootItem::createChildren()
       }
     }
   }
-  foreach ( QString connName, connNames )
+  Q_FOREACH ( const QString& connName, connNames )
   {
     QgsDataItem * conn = new QgsOWSConnectionItem( this, connName, "ows:/" + connName );
     connections.append( conn );

@@ -647,7 +647,7 @@ class TestQgsExpression: public QObject
 
       QgsExpressionContext context;
       context << new QgsExpressionContextScope();
-      context.lastScope()->setVariable( "_rownum_", 101 );
+      context.lastScope()->setVariable( "row_number", 101 );
       QVariant v3 = exp.evaluate();
       QCOMPARE( v3.toInt(), 101 );
     }
@@ -761,7 +761,7 @@ class TestQgsExpression: public QObject
       QStringList refCols = exp.referencedColumns();
       // make sure we have lower case
       QSet<QString> refColsSet;
-      foreach ( QString col, refCols )
+      Q_FOREACH ( const QString& col, refCols )
         refColsSet.insert( col.toLower() );
 
       QCOMPARE( refColsSet, expectedCols );
@@ -1295,6 +1295,7 @@ class TestQgsExpression: public QObject
 
     void eval_special_columns()
     {
+      Q_NOWARN_DEPRECATED_PUSH
       QTest::addColumn<QString>( "string" );
       QTest::addColumn<QVariant>( "result" );
 
@@ -1317,6 +1318,7 @@ class TestQgsExpression: public QObject
       QCOMPARE( v4, QVariant() );
 
       QgsExpression::unsetSpecialColumn( "$var1" );
+      Q_NOWARN_DEPRECATED_POP
     }
 
     void expression_from_expression_data()

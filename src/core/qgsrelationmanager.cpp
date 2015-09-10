@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 1.3.2013
     Copyright            : (C) 2013 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -33,7 +33,7 @@ QgsRelationManager::QgsRelationManager( QgsProject* project )
 void QgsRelationManager::setRelations( const QList<QgsRelation>& relations )
 {
   mRelations.clear();
-  foreach ( const QgsRelation& rel, relations )
+  Q_FOREACH ( const QgsRelation& rel, relations )
   {
     addRelation( rel );
   }
@@ -88,14 +88,14 @@ QList<QgsRelation> QgsRelationManager::referencingRelations( QgsVectorLayer* lay
 
   QList<QgsRelation> relations;
 
-  foreach ( const QgsRelation& rel, mRelations )
+  Q_FOREACH ( const QgsRelation& rel, mRelations )
   {
     if ( rel.referencingLayer() == layer )
     {
       if ( fieldIdx != -2 )
       {
         bool containsField = false;
-        foreach ( const QgsRelation::FieldPair& fp, rel.fieldPairs() )
+        Q_FOREACH ( const QgsRelation::FieldPair& fp, rel.fieldPairs() )
         {
           if ( fieldIdx == layer->fieldNameIndex( fp.referencingField() ) )
           {
@@ -125,7 +125,7 @@ QList<QgsRelation> QgsRelationManager::referencedRelations( QgsVectorLayer* laye
 
   QList<QgsRelation> relations;
 
-  foreach ( const QgsRelation& rel, mRelations )
+  Q_FOREACH ( const QgsRelation& rel, mRelations )
   {
     if ( rel.referencedLayer() == layer )
     {
@@ -173,7 +173,7 @@ void QgsRelationManager::writeProject( QDomDocument & doc )
   QDomElement relationsNode = doc.createElement( "relations" );
   qgisNode.appendChild( relationsNode );
 
-  foreach ( const QgsRelation& relation, mRelations )
+  Q_FOREACH ( const QgsRelation& relation, mRelations )
   {
     relation.writeXML( relationsNode, doc );
   }

@@ -182,7 +182,7 @@ void QgsAttributeTableView::keyPressEvent( QKeyEvent *event )
 
 void QgsAttributeTableView::repaintRequested( QModelIndexList indexes )
 {
-  foreach ( const QModelIndex index, indexes )
+  Q_FOREACH ( const QModelIndex& index, indexes )
   {
     update( index );
   }

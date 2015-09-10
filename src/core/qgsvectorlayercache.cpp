@@ -4,7 +4,7 @@
   -------------------
          begin                : January 2013
          copyright            : (C) Matthias Kuhn
-         email                : matthias dot kuhn at gmx dot ch
+         email                : matthias at opengis dot ch
 
  ***************************************************************************
  *                                                                         *
@@ -176,7 +176,7 @@ void QgsVectorLayerCache::requestCompleted( QgsFeatureRequest featureRequest, Qg
   // If a request is too large for the cache don't notify to prevent from indexing incomplete requests
   if ( fids.count() < mCache.size() )
   {
-    foreach ( QgsAbstractCacheIndex* idx, mCacheIndices )
+    Q_FOREACH ( QgsAbstractCacheIndex* idx, mCacheIndices )
     {
       idx->requestCompleted( featureRequest, fids );
     }
@@ -282,7 +282,7 @@ QgsFeatureIterator QgsVectorLayerCache::getFeatures( const QgsFeatureRequest &fe
     else
     {
       // Check if an index is able to deliver the requested features
-      foreach ( QgsAbstractCacheIndex *idx, mCacheIndices )
+      Q_FOREACH ( QgsAbstractCacheIndex *idx, mCacheIndices )
       {
         if ( idx->getCacheIterator( it, featureRequest ) )
         {
@@ -338,7 +338,7 @@ bool QgsVectorLayerCache::checkInformationCovered( const QgsFeatureRequest& feat
   }
 
   // Check if we even cache the information requested
-  foreach ( int attr, requestedAttributes )
+  Q_FOREACH ( int attr, requestedAttributes )
   {
     if ( !mCachedAttributes.contains( attr ) )
     {

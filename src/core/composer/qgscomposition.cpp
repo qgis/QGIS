@@ -428,9 +428,6 @@ void QgsComposition::setNumPages( const int pages )
     }
   }
 
-  //update the corresponding variable
-  QgsExpression::setSpecialColumn( "$numpages", QVariant(( int )numPages() ) );
-
   QgsProject::instance()->dirty( true );
   updateBounds();
 
@@ -492,7 +489,7 @@ bool QgsComposition::shouldExportPage( const int page ) const
 void QgsComposition::setPageStyleSymbol( QgsFillSymbolV2* symbol )
 {
   delete mPageStyleSymbol;
-  mPageStyleSymbol = symbol;
+  mPageStyleSymbol = static_cast<QgsFillSymbolV2*>( symbol->clone() );
   QgsProject::instance()->dirty( true );
 }
 
@@ -2617,15 +2614,12 @@ void QgsComposition::addPaperItem()
   addItem( paperItem );
   paperItem->setZValue( 0 );
   mPages.push_back( paperItem );
-
-  QgsExpression::setSpecialColumn( "$numpages", QVariant(( int )mPages.size() ) );
 }
 
 void QgsComposition::removePaperItems()
 {
   qDeleteAll( mPages );
   mPages.clear();
-  QgsExpression::setSpecialColumn( "$numpages", QVariant(( int )0 ) );
 }
 
 void QgsComposition::deleteAndRemoveMultiFrames()

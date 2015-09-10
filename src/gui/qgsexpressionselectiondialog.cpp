@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 24.1.2013
     Copyright            : (C) 2013 by Matthias kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -143,7 +143,7 @@ void QgsExpressionSelectionDialog::on_mActionSelectIntersect_triggered()
   expression->prepare( &context );
 
   QgsFeature feat;
-  foreach ( const QgsFeatureId fid, oldSelection )
+  Q_FOREACH ( const QgsFeatureId fid, oldSelection )
   {
     QgsFeatureIterator features = mLayer->getFeatures( QgsFeatureRequest().setFilterFid( fid ) );
 
@@ -184,7 +184,7 @@ void QgsExpressionSelectionDialog::on_mActionRemoveFromSelection_triggered()
   expression->prepare( &context );
 
   QgsFeature feat;
-  foreach ( const QgsFeatureId fid, oldSelection )
+  Q_FOREACH ( const QgsFeatureId fid, oldSelection )
   {
     QgsFeatureIterator features = mLayer->getFeatures( QgsFeatureRequest().setFilterFid( fid ) );
 

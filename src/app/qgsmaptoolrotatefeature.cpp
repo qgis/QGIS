@@ -46,7 +46,7 @@ QgsAngleMagnetWidget::QgsAngleMagnetWidget( QString label , QWidget *parent )
   //mLayout->setAlignment( Qt::AlignLeft );
   setLayout( mLayout );
 
-  if ( !label.isNull() )
+  if ( !label.isEmpty() )
   {
     QLabel* lbl = new QLabel( label, this );
     lbl->setAlignment( Qt::AlignRight | Qt::AlignCenter );
@@ -372,7 +372,7 @@ void QgsMapToolRotateFeature::applyRotation( double rotation )
   }
 
   int i = 0;
-  foreach ( QgsFeatureId id, mRotatedFeatures )
+  Q_FOREACH ( QgsFeatureId id, mRotatedFeatures )
   {
     QgsFeature feat;
     vlayer->getFeatures( QgsFeatureRequest().setFilterFid( id ) ).nextFeature( feat );

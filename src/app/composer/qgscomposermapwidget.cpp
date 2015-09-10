@@ -74,14 +74,15 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap )
   insertFrameDisplayEntries( mFrameDivisionsTopComboBox );
   insertFrameDisplayEntries( mFrameDivisionsBottomComboBox );
 
-  mAnnotationFormatComboBox->insertItem( 0, tr( "Decimal" ) );
-  mAnnotationFormatComboBox->insertItem( 1, tr( "Decimal with suffix" ) );
-  mAnnotationFormatComboBox->insertItem( 2, tr( "Degree, minute" ) );
-  mAnnotationFormatComboBox->insertItem( 3, tr( "Degree, minute with suffix" ) );
-  mAnnotationFormatComboBox->insertItem( 4, tr( "Degree, minute aligned" ) );
-  mAnnotationFormatComboBox->insertItem( 5, tr( "Degree, minute, second" ) );
-  mAnnotationFormatComboBox->insertItem( 6, tr( "Degree, minute, second with suffix" ) );
-  mAnnotationFormatComboBox->insertItem( 7, tr( "Degree, minute, second aligned" ) );
+  mAnnotationFormatComboBox->addItem( tr( "Decimal" ), QgsComposerMapGrid::Decimal );
+  mAnnotationFormatComboBox->addItem( tr( "Decimal with suffix" ), QgsComposerMapGrid::DecimalWithSuffix );
+  mAnnotationFormatComboBox->addItem( tr( "Degree, minute" ), QgsComposerMapGrid::DegreeMinuteNoSuffix );
+  mAnnotationFormatComboBox->addItem( tr( "Degree, minute with suffix" ), QgsComposerMapGrid::DegreeMinute );
+  mAnnotationFormatComboBox->addItem( tr( "Degree, minute aligned" ), QgsComposerMapGrid::DegreeMinutePadded );
+  mAnnotationFormatComboBox->addItem( tr( "Degree, minute, second" ), QgsComposerMapGrid::DegreeMinuteSecondNoSuffix );
+  mAnnotationFormatComboBox->addItem( tr( "Degree, minute, second with suffix" ), QgsComposerMapGrid::DegreeMinuteSecond );
+  mAnnotationFormatComboBox->addItem( tr( "Degree, minute, second aligned" ), QgsComposerMapGrid::DegreeMinuteSecondPadded );
+  mAnnotationFormatComboBox->addItem( tr( "Custom" ), QgsComposerMapGrid::CustomFormat );
 
   mAnnotationFontColorButton->setColorDialogTitle( tr( "Select font color" ) );
   mAnnotationFontColorButton->setAllowAlpha( true );
@@ -297,7 +298,7 @@ void QgsComposerMapWidget::aboutToShowVisibilityPresetsMenu()
     return;
 
   menu->clear();
-  foreach ( QString presetName, QgsProject::instance()->visibilityPresetCollection()->presets() )
+  Q_FOREACH ( const QString& presetName, QgsProject::instance()->visibilityPresetCollection()->presets() )
   {
     QAction* a = menu->addAction( presetName, this, SLOT( visibilityPresetSelected() ) );
     a->setCheckable( true );
@@ -1494,34 +1495,8 @@ void QgsComposerMapWidget::setGridItems( const QgsComposerMapGrid* grid )
 
   mAnnotationFontColorButton->setColor( grid->annotationFontColor() );
 
-  //mAnnotationFormatComboBox
-  switch ( grid->annotationFormat() )
-  {
-    case QgsComposerMapGrid::Decimal:
-      mAnnotationFormatComboBox->setCurrentIndex( 0 );
-      break;
-    case QgsComposerMapGrid::DegreeMinute:
-      mAnnotationFormatComboBox->setCurrentIndex( 3 );
-      break;
-    case QgsComposerMapGrid::DegreeMinuteSecond:
-      mAnnotationFormatComboBox->setCurrentIndex( 6 );
-      break;
-    case QgsComposerMapGrid::DecimalWithSuffix:
-      mAnnotationFormatComboBox->setCurrentIndex( 1 );
-      break;
-    case QgsComposerMapGrid::DegreeMinuteNoSuffix:
-      mAnnotationFormatComboBox->setCurrentIndex( 2 );
-      break;
-    case QgsComposerMapGrid::DegreeMinutePadded:
-      mAnnotationFormatComboBox->setCurrentIndex( 4 );
-      break;
-    case QgsComposerMapGrid::DegreeMinuteSecondNoSuffix:
-      mAnnotationFormatComboBox->setCurrentIndex( 5 );
-      break;
-    case QgsComposerMapGrid::DegreeMinuteSecondPadded:
-      mAnnotationFormatComboBox->setCurrentIndex( 7 );
-      break;
-  }
+  mAnnotationFormatComboBox->setCurrentIndex( mAnnotationFormatComboBox->findData( grid->annotationFormat() ) );
+  mAnnotationFormatButton->setEnabled( grid->annotationFormat() == QgsComposerMapGrid::CustomFormat );
   mDistanceToMapFrameSpinBox->setValue( grid->annotationFrameDistance() );
   mCoordinatePrecisionSpinBox->setValue( grid->annotationPrecision() );
 
@@ -2023,6 +1998,30 @@ void QgsComposerMapWidget::on_mDrawAnnotationGroupBox_toggled( bool state )
   mComposerMap->endCommand();
 }
 
+void QgsComposerMapWidget::on_mAnnotationFormatButton_clicked()
+{
+  QgsComposerMapGrid* grid = currentGrid();
+  if ( !grid )
+  {
+    return;
+  }
+
+  QScopedPointer< QgsExpressionContext> expressionContext( grid->createExpressionContext() );
+
+  QgsExpressionBuilderDialog exprDlg( 0, grid->annotationExpression(), this, "generic", *expressionContext );
+  exprDlg.setWindowTitle( tr( "Expression based annotation" ) );
+
+  if ( exprDlg.exec() == QDialog::Accepted )
+  {
+    QString expression =  exprDlg.expressionText();
+    mComposerMap->beginCommand( tr( "Annotation format changed" ) );
+    grid->setAnnotationExpression( expression );
+    mComposerMap->updateBoundingRect();
+    mComposerMap->update();
+    mComposerMap->endCommand();
+  }
+}
+
 void QgsComposerMapWidget::on_mAnnotationDisplayLeftComboBox_currentIndexChanged( const QString &text )
 {
   handleChangedAnnotationDisplay( QgsComposerMapGrid::Left, text );
@@ -2142,40 +2141,13 @@ void QgsComposerMapWidget::on_mAnnotationFormatComboBox_currentIndexChanged( int
 
   mComposerMap->beginCommand( tr( "Annotation format changed" ) );
 
-  switch ( index )
-  {
-    case 0:
-      grid->setAnnotationFormat( QgsComposerMapGrid::Decimal );
-      break;
-    case 3:
-      grid->setAnnotationFormat( QgsComposerMapGrid::DegreeMinute );
-      break;
-    case 6:
-      grid->setAnnotationFormat( QgsComposerMapGrid::DegreeMinuteSecond );
-      break;
-    case 1:
-      grid->setAnnotationFormat( QgsComposerMapGrid::DecimalWithSuffix );
-      break;
-    case 2:
-      grid->setAnnotationFormat( QgsComposerMapGrid::DegreeMinuteNoSuffix );
-      break;
-    case 4:
-      grid->setAnnotationFormat( QgsComposerMapGrid::DegreeMinutePadded );
-      break;
-    case 5:
-      grid->setAnnotationFormat( QgsComposerMapGrid::DegreeMinuteSecondNoSuffix );
-      break;
-    case 7:
-      grid->setAnnotationFormat( QgsComposerMapGrid::DegreeMinuteSecondPadded );
-      break;
-  }
+  grid->setAnnotationFormat(( QgsComposerMapGrid::AnnotationFormat )mAnnotationFormatComboBox->itemData( index ).toInt() );
+  mAnnotationFormatButton->setEnabled( grid->annotationFormat() == QgsComposerMapGrid::CustomFormat );
 
   mComposerMap->updateBoundingRect();
   mComposerMap->update();
   mComposerMap->endCommand();
 }
-
-
 
 void QgsComposerMapWidget::on_mCoordinatePrecisionSpinBox_valueChanged( int value )
 {

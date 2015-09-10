@@ -49,7 +49,7 @@ QgsRasterPipe::QgsRasterPipe( const QgsRasterPipe& thePipe )
 
 QgsRasterPipe::~QgsRasterPipe()
 {
-  foreach ( QgsRasterInterface* interface, mInterfaces )
+  Q_FOREACH ( QgsRasterInterface* interface, mInterfaces )
   {
     delete interface;
   }

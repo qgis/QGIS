@@ -146,7 +146,7 @@ void QgsMapToolNodeTool::canvasMapMoveEvent( QgsMapMouseEvent* e )
       rbGeom->transform( *mCanvas->mapSettings().layerTransform( vlayer ) );
     rb->setGeometry( rbGeom );
     mMoveRubberBands.insert( mSelectedFeature->featureId(), rb );
-    foreach ( const QgsVertexEntry* vertexEntry, mSelectedFeature->vertexMap() )
+    Q_FOREACH ( const QgsVertexEntry* vertexEntry, mSelectedFeature->vertexMap() )
     {
       if ( vertexEntry->isSelected() )
         mMoveVertices[mSelectedFeature->featureId()].append( qMakePair( vertexEntry->vertexId(), toMapCoordinates( vlayer, vertexEntry->point() ) ) );
@@ -167,10 +167,10 @@ void QgsMapToolNodeTool::canvasMapMoveEvent( QgsMapMouseEvent* e )
     double diffX = curPos.x() - origPos.x();
     double diffY = curPos.y() - origPos.y();
 
-    foreach ( const QgsFeatureId& fid, mMoveRubberBands.keys() )
+    Q_FOREACH ( const QgsFeatureId& fid, mMoveRubberBands.keys() )
     {
       typedef QPair<QgsVertexId, QgsPointV2> MoveVertex;
-      foreach ( const MoveVertex& pair, mMoveVertices[fid] )
+      Q_FOREACH ( const MoveVertex& pair, mMoveVertices[fid] )
       {
         QgsPointV2 pos = pair.second;
         pos.setX( pos.x() + diffX );
@@ -288,7 +288,6 @@ void QgsMapToolNodeTool::keyPressEvent( QKeyEvent* e )
       return;
 
     mSelectedFeature->deleteSelectedVertexes();
-    safeSelectVertex( firstSelectedIndex );
     mCanvas->refresh();
 
     // Override default shortcut management in MapCanvas
@@ -337,6 +336,10 @@ void QgsMapToolNodeTool::safeSelectVertex( int vertexNr )
   if ( mSelectedFeature )
   {
     int n = mSelectedFeature->vertexMap().size();
+    if ( n < 1 )
+    {
+      return;
+    }
     mSelectedFeature->selectVertex(( vertexNr + n ) % n );
   }
 }
@@ -391,7 +394,7 @@ void QgsMapToolNodeTool::createTopologyRubberBands()
 {
   QgsVectorLayer* vlayer = mSelectedFeature->vlayer();
 
-  foreach ( const QgsVertexEntry* vertexEntry, mSelectedFeature->vertexMap() )
+  Q_FOREACH ( const QgsVertexEntry* vertexEntry, mSelectedFeature->vertexMap() )
   {
     if ( !vertexEntry->isSelected() )
     {
@@ -401,7 +404,7 @@ void QgsMapToolNodeTool::createTopologyRubberBands()
     // Snap vertex
     QMultiMap<double, QgsSnappingResult> snapResults;
     vlayer->snapWithContext( vertexEntry->pointV1(), ZERO_TOLERANCE, snapResults, QgsSnapper::SnapToVertex );
-    foreach ( const QgsSnappingResult& snapResult, snapResults.values() )
+    Q_FOREACH ( const QgsSnappingResult& snapResult, snapResults.values() )
     {
       // Get geometry of snapped feature
       QgsFeatureId snapFeatureId = snapResult.snappedAtGeometry;

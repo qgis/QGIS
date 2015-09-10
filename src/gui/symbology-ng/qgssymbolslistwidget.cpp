@@ -47,6 +47,7 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* sty
     , mAdvancedMenu( 0 )
     , mClipFeaturesAction( 0 )
     , mLayer( layer )
+    , mPresetExpressionContext( 0 )
 {
   setupUi( this );
 
@@ -71,7 +72,7 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* sty
   groupsCombo->addItem( "" );
   populateGroups();
   QStringList groups = style->smartgroupNames();
-  foreach ( QString group, groups )
+  Q_FOREACH ( const QString& group, groups )
   {
     groupsCombo->addItem( group, QVariant( "smart" ) );
   }
@@ -114,6 +115,11 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* sty
   btnColor->setAllowAlpha( true );
   btnColor->setColorDialogTitle( tr( "Select color" ) );
   btnColor->setContext( "symbology" );
+}
+
+void QgsSymbolsListWidget::setExpressionContext( QgsExpressionContext *context )
+{
+  mPresetExpressionContext = context;
 }
 
 void QgsSymbolsListWidget::populateGroups( QString parent, QString prepend )
@@ -362,11 +368,20 @@ void QgsSymbolsListWidget::updateSymbolColor()
 
 static QgsExpressionContext _getExpressionContext( const void* context )
 {
+  const QgsSymbolsListWidget* widget = ( const QgsSymbolsListWidget* ) context;
+
+  if ( widget->expressionContext() )
+    return QgsExpressionContext( *widget->expressionContext() );
+
+  //otherwise create a default symbol context
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope();
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::atlasScope( 0 )
+  //TODO - use actual map canvas settings
+  << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
 
-  const QgsVectorLayer* layer = ( const QgsVectorLayer* ) context;
+  const QgsVectorLayer* layer = widget->layer();
   if ( layer )
     expContext << QgsExpressionContextUtils::layerScope( layer );
 
@@ -379,7 +394,7 @@ void QgsSymbolsListWidget::updateSymbolInfo()
 
   Q_FOREACH ( QgsDataDefinedButton* button, findChildren< QgsDataDefinedButton* >() )
   {
-    button->registerGetExpressionContextCallback( &_getExpressionContext, mLayer );
+    button->registerGetExpressionContextCallback( &_getExpressionContext, this );
   }
 
   if ( mSymbol->type() == QgsSymbolV2::Marker )

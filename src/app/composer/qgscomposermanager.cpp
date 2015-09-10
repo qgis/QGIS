@@ -96,7 +96,7 @@ QgsComposerManager::QgsComposerManager( QWidget * parent, Qt::WindowFlags f ): Q
     }
   }
 
-  mTemplatePathLineEdit->setText( settings.value( "/UI/ComposerManager/templatePath", QString( "" ) ).toString() );
+  mTemplatePathLineEdit->setText( settings.value( "/UI/ComposerManager/templatePath", QString() ).toString() );
 
   refreshComposers();
 }
@@ -528,7 +528,7 @@ void QgsComposerNameDelegate::setModelData( QWidget *editor, QAbstractItemModel 
 
   //check if name already exists
   QStringList cNames;
-  foreach ( QgsComposer* c, QgisApp::instance()->printComposers() )
+  Q_FOREACH ( QgsComposer* c, QgisApp::instance()->printComposers() )
   {
     cNames << c->title();
   }

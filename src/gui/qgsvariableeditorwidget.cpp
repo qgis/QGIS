@@ -75,11 +75,11 @@ QgsVariableEditorWidget::QgsVariableEditorWidget( QWidget *parent )
   QSpacerItem* horizontalSpacer = new QSpacerItem( 40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
   horizontalLayout->addItem( horizontalSpacer );
   mAddButton = new QPushButton();
-  mAddButton->setIcon( QgsApplication::getThemeIcon( "/mActionSignPlus.png" ) );
+  mAddButton->setIcon( QgsApplication::getThemeIcon( "/symbologyAdd.svg" ) );
   mAddButton->setEnabled( false );
   horizontalLayout->addWidget( mAddButton );
   mRemoveButton = new QPushButton();
-  mRemoveButton->setIcon( QgsApplication::getThemeIcon( "/symbologyRemove.png" ) );
+  mRemoveButton->setIcon( QgsApplication::getThemeIcon( "/symbologyRemove.svg" ) );
   mRemoveButton->setEnabled( false );
   horizontalLayout->addWidget( mRemoveButton );
   verticalLayout->addLayout( horizontalLayout );
@@ -88,7 +88,10 @@ QgsVariableEditorWidget::QgsVariableEditorWidget( QWidget *parent )
   connect( mTreeWidget, SIGNAL( itemSelectionChanged() ), this, SLOT( selectionChanged() ) );
   connect( mTreeWidget, SIGNAL( scopeChanged() ), this, SIGNAL( scopeChanged() ) );
 
-  setContext( new QgsExpressionContext() );
+  //setContext clones context
+  QgsExpressionContext* context = new QgsExpressionContext();
+  setContext( context );
+  delete context;
 }
 
 QgsVariableEditorWidget::~QgsVariableEditorWidget()
@@ -163,7 +166,7 @@ QgsStringMap QgsVariableEditorWidget::variablesInActiveScope() const
   }
 
   QgsExpressionContextScope* scope = mContext->scope( mEditableScopeIndex );
-  Q_FOREACH ( QString variable, scope->variableNames() )
+  Q_FOREACH ( const QString& variable, scope->variableNames() )
   {
     if ( scope->isReadOnly( variable ) )
       continue;
@@ -207,7 +210,7 @@ void QgsVariableEditorWidget::on_mRemoveButton_clicked()
   QgsExpressionContextScope* editableScope = mContext->scope( mEditableScopeIndex );
   QList<QTreeWidgetItem*> selectedItems = mTreeWidget->selectedItems();
 
-  foreach ( QTreeWidgetItem* item, selectedItems )
+  Q_FOREACH ( QTreeWidgetItem* item, selectedItems )
   {
     if ( !( item->flags() & Qt::ItemIsEditable ) )
       continue;
@@ -238,7 +241,7 @@ void QgsVariableEditorWidget::selectionChanged()
   QList<QTreeWidgetItem*> selectedItems = mTreeWidget->selectedItems();
 
   bool removeEnabled = true;
-  foreach ( QTreeWidgetItem* item, selectedItems )
+  Q_FOREACH ( QTreeWidgetItem* item, selectedItems )
   {
     if ( !( item->flags() & Qt::ItemIsEditable ) )
     {
@@ -363,7 +366,7 @@ void QgsVariableEditorTree::refreshScopeVariables( QgsExpressionContextScope* sc
   bool isCurrent = scopeIndex == mEditableScopeIndex;
   QTreeWidgetItem* scopeItem = mScopeToItem.value( scopeIndex );
 
-  foreach ( QString name, scope->variableNames() )
+  Q_FOREACH ( const QString& name, scope->variableNames() )
   {
     if ( name.startsWith( QChar( '_' ) ) )
       continue;

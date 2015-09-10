@@ -163,7 +163,7 @@ QString QgsNewNameDialog::name() const
 QStringList QgsNewNameDialog::fullNames( const QString& name, const QStringList& extensions )
 {
   QStringList list;
-  foreach ( QString ext, extensions )
+  Q_FOREACH ( const QString& ext, extensions )
   {
     list << name + ext;
 
@@ -180,9 +180,9 @@ QStringList QgsNewNameDialog::matching( const QStringList& newNames, const QStri
 {
   QStringList list;
 
-  foreach ( QString newName, newNames )
+  Q_FOREACH ( const QString& newName, newNames )
   {
-    foreach ( QString existingName, existingNames )
+    Q_FOREACH ( const QString& existingName, existingNames )
     {
       if ( existingName.compare( newName, cs ) == 0 )
       {

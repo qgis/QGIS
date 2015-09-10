@@ -2727,9 +2727,9 @@ bool TerminalDisplay::handleShortcutOverrideEvent(QKeyEvent* keyEvent)
         }
         if (modifierCount < 2)
         {
-            bool override = false;
-            emit overrideShortcutCheck(keyEvent,override);
-            if (override)
+            bool over_ride = false;
+            emit overrideShortcutCheck(keyEvent,over_ride);
+            if (over_ride)
             {
                 keyEvent->accept();
                 return true;

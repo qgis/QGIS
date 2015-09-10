@@ -79,7 +79,7 @@ namespace pal
 
       /** Returns the number of features in layer.
        */
-      int featureCount() { return features->size(); }
+      int featureCount() { return features.size(); }
 
       /** Returns the layer's name.
        */
@@ -279,10 +279,10 @@ namespace pal
       QString mName; /* unique */
 
       /** List of feature parts */
-      QLinkedList<FeaturePart*> *featureParts;
+      QLinkedList<FeaturePart*> mFeatureParts;
 
       /** List of features - for deletion */
-      QLinkedList<Feature*> *features;
+      QList<Feature*> features;
 
       Pal *pal;
 
@@ -306,10 +306,10 @@ namespace pal
 
       // indexes (spatial and id)
       RTree<FeaturePart*, double, 2, double, 8, 4> *rtree;
-      QHash< QString, Feature*> *hashtable;
+      QHash< QString, Feature*> mHashtable;
 
-      QHash< QString, QLinkedList<FeaturePart*>* >* connectedHashtable;
-      QLinkedList< QString >* connectedTexts;
+      QHash< QString, QLinkedList<FeaturePart*>* > mConnectedHashtable;
+      QStringList mConnectedTexts;
 
       QMutex mMutex;
 

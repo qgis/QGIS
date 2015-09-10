@@ -1,0 +1,8 @@
+{
+  "function": "buffer",
+  "description": "Returns a geometry that represents all points whose distance from this geometry is less than or equal to distance. Calculations are in the Spatial Reference System of this geometry.",
+  "arguments": [ {"arg":"geom","description":"a geometry"},
+                 {"arg":"distance","description":"buffer distance in layer units"}],
+  "examples": [ { "expression":"buffer($geometry, 10.5)", "returns":"polygon of $geometry buffered by 10.5 units"}]
+}
+

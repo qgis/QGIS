@@ -231,7 +231,7 @@ QgsSymbolV2SelectorDialog::QgsSymbolV2SelectorDialog( QgsSymbolV2* symbol, QgsSt
   btnUp->setIcon( QIcon( QgsApplication::iconPath( "symbologyUp.svg" ) ) );
   btnDown->setIcon( QIcon( QgsApplication::iconPath( "symbologyDown.svg" ) ) );
 
-  model = new QStandardItemModel();
+  model = new QStandardItemModel( layersTree );
   // Set the symbol
   layersTree->setModel( model );
   layersTree->setHeaderHidden( true );
@@ -273,11 +273,18 @@ QMenu* QgsSymbolV2SelectorDialog::advancedMenu()
 {
   if ( mAdvancedMenu == NULL )
   {
-    mAdvancedMenu = new QMenu;
+    mAdvancedMenu = new QMenu( this );
     // Brute force method to activate the Advanced menu
     layerChanged();
   }
   return mAdvancedMenu;
+}
+
+void QgsSymbolV2SelectorDialog::setExpressionContext( QgsExpressionContext *context )
+{
+  mPresetExpressionContext.reset( context );
+  layerChanged();
+  updatePreview();
 }
 
 void QgsSymbolV2SelectorDialog::loadSymbol( QgsSymbolV2* symbol, SymbolLayerItem* parent )
@@ -336,7 +343,7 @@ void QgsSymbolV2SelectorDialog::updateUi()
 
 void QgsSymbolV2SelectorDialog::updatePreview()
 {
-  QImage preview = mSymbol->bigSymbolPreviewImage();
+  QImage preview = mSymbol->bigSymbolPreviewImage( mPresetExpressionContext.data() );
   lblPreview->setPixmap( QPixmap::fromImage( preview ) );
   // Hope this is a appropriate place
   emit symbolModified();
@@ -390,7 +397,8 @@ void QgsSymbolV2SelectorDialog::layerChanged()
   {
     SymbolLayerItem *parent = static_cast<SymbolLayerItem*>( currentItem->parent() );
     mDataDefineRestorer.reset( new DataDefinedRestorer( parent->symbol(), currentItem->layer() ) );
-    QWidget *layerProp = new QgsLayerPropertiesWidget( currentItem->layer(), parent->symbol(), mVectorLayer );
+    QgsLayerPropertiesWidget *layerProp = new QgsLayerPropertiesWidget( currentItem->layer(), parent->symbol(), mVectorLayer );
+    layerProp->setExpressionContext( mPresetExpressionContext.data() );
     setWidget( layerProp );
     connect( layerProp, SIGNAL( changed() ), mDataDefineRestorer.data(), SLOT( restore() ) );
     connect( layerProp, SIGNAL( changed() ), this, SLOT( updateLayerPreview() ) );
@@ -403,7 +411,8 @@ void QgsSymbolV2SelectorDialog::layerChanged()
     // then it must be a symbol
     currentItem->symbol()->setLayer( mVectorLayer );
     // Now populate symbols of that type using the symbols list widget:
-    QWidget *symbolsList = new QgsSymbolsListWidget( currentItem->symbol(), mStyle, mAdvancedMenu, this, mVectorLayer );
+    QgsSymbolsListWidget *symbolsList = new QgsSymbolsListWidget( currentItem->symbol(), mStyle, mAdvancedMenu, this, mVectorLayer );
+    symbolsList->setExpressionContext( mPresetExpressionContext.data() );
 
     setWidget( symbolsList );
     connect( symbolsList, SIGNAL( changed() ), this, SLOT( symbolChanged() ) );

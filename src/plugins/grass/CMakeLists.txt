@@ -10,7 +10,7 @@ ADD_DEFINITIONS("-DGRASS_EXPORT=${DLLIMPORT} -DGRASS_LIB_EXPORT=${DLLIMPORT}")
 IF (WIN32)
   ADD_DEFINITIONS(-DHAVE_GETPT)
 ELSE (WIN32)
-  ADD_DEFINITIONS(-DHAVE_POSIX_OPENPT)
+  ADD_DEFINITIONS(-DHAVE_POSIX_OPENPT -DHAVE_SYS_TIME_H)
 ENDIF (WIN32)
 
 # GRASS Direct disabled in 2.0
@@ -27,6 +27,7 @@ SET (GRASS_PLUGIN_SRCS
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrasstools.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmapcalc.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmodule.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmoduleinput.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmoduleoptions.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmoduleparam.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassnewmapset.cpp
@@ -55,6 +56,7 @@ SET (GRASS_PLUGIN_MOC_HDRS
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrasstools.h
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmapcalc.h
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmodule.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmoduleinput.h
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmoduleoptions.h
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmoduleparam.h
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassnewmapset.h
@@ -125,6 +127,15 @@ IF(NOT WIN32)
       PROPERTIES COMPILE_FLAGS "-Wno-overloaded-virtual -Wno-mismatched-tags"
     )
   ENDIF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+
+  IF (APPLE)
+    ADD_DEFINITIONS(-DHAVE_UTMPX -D_UTMPX_COMPAT)
+  ENDIF(APPLE)
+  CHECK_FUNCTION_EXISTS(updwtmpx HAVE_UPDWTMPX)
+  IF(HAVE_UPDWTMPX)
+    ADD_DEFINITIONS(-DHAVE_UPDWTMPX)
+  ENDIF(HAVE_UPDWTMPX)
+
 
   SET(KB_LAYOUT_DIR "${QGIS_DATA_DIR}/grass/qtermwidget/kb-layouts")
   ADD_DEFINITIONS(-DKB_LAYOUT_DIR=\\\"${CMAKE_INSTALL_PREFIX}/${KB_LAYOUT_DIR}\\\")

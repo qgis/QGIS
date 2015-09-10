@@ -481,7 +481,7 @@ void QgsProviderRegistry::registerGuis( QWidget *parent )
 {
   typedef void registerGui_function( QWidget * parent );
 
-  foreach ( const QString &provider, providerList() )
+  Q_FOREACH ( const QString &provider, providerList() )
   {
     registerGui_function *registerGui = ( registerGui_function * ) cast_to_fptr( function( provider, "registerGui" ) );
 

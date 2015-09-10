@@ -36,12 +36,6 @@
 #include <QImageReader>
 #include <QMessageBox>
 
-#include "qgscustomization.h"
-#include "qgsfontutils.h"
-#include "qgspluginregistry.h"
-#include "qgsmessagelog.h"
-#include "qgspythonrunner.h"
-
 #include <cstdio>
 #include <stdio.h>
 #include <stdlib.h>
@@ -76,17 +70,6 @@ typedef SInt32 SRefCon;
 #include <limits.h>
 #endif
 
-#include "qgisapp.h"
-#include "qgsmapcanvas.h"
-#include "qgsapplication.h"
-#include <qgsconfig.h>
-#include <qgscustomization.h>
-#include <qgsversion.h>
-#include "qgsexception.h"
-#include "qgsproject.h"
-#include "qgsrectangle.h"
-#include "qgslogger.h"
-
 #if ((defined(linux) || defined(__linux__)) && !defined(ANDROID)) || defined(__FreeBSD__)
 #include <unistd.h>
 #include <execinfo.h>
@@ -94,6 +77,26 @@ typedef SInt32 SRefCon;
 #include <sys/wait.h>
 #include <errno.h>
 #endif
+
+#include "qgscustomization.h"
+#include "qgsfontutils.h"
+#include "qgspluginregistry.h"
+#include "qgsmessagelog.h"
+#include "qgspythonrunner.h"
+#include "qgslocalec.h"
+#include "qgisapp.h"
+#include "qgsmapcanvas.h"
+#include "qgsapplication.h"
+#include "qgsconfig.h"
+#include "qgsversion.h"
+#include "qgsexception.h"
+#include "qgsproject.h"
+#include "qgsrectangle.h"
+#include "qgslogger.h"
+#include "qgsdxfexport.h"
+#include "qgsvisibilitypresets.h"
+#include "qgsmaplayerregistry.h"
+#include "qgsvectorlayer.h"
 
 /** Print usage text
  */
@@ -118,6 +121,12 @@ void usage( std::string const & appName )
             << "\t[--configpath path]\tuse the given path for all user configuration\n"
             << "\t[--code path]\trun the given python file on load\n"
             << "\t[--defaultui]\tstart by resetting user ui settings to default\n"
+            << "\t[--dxf-export filename.dxf]\temit dxf output of loaded datasets to given file\n"
+            << "\t[--dxf-extent xmin,ymin,xmax,ymax]\tset extent to export to dxf\n"
+            << "\t[--dxf-symbology-mode none|symbollayer|feature]\tsymbology mode for dxf output\n"
+            << "\t[--dxf-scale-denom scale]\tscale for dxf output\n"
+            << "\t[--dxf-encoding encoding]\tencoding to use for dxf output\n"
+            << "\t[--dxf-preset visiblity-preset]\tlayer visibility preset to use for dxf output\n"
             << "\t[--help]\t\tthis text\n\n"
             << "  FILE:\n"
             << "    Files specified on the command line can include rasters,\n"
@@ -469,6 +478,13 @@ APP_EXPORT int main( int argc, char *argv[] )
   bool myRestorePlugins = true;
   bool myCustomization = true;
 
+  QString dxfOutputFile;
+  QgsDxfExport::SymbologyExport dxfSymbologyMode = QgsDxfExport::SymbolLayerSymbology;
+  double dxfScaleDenom = 50000.0;
+  QString dxfEncoding = "CP1252";
+  QString dxfPreset;
+  QgsRectangle dxfExtent;
+
   // This behaviour will set initial extent of map canvas, but only if
   // there are no command line arguments. This gives a usable map
   // extent when qgis starts with no layers loaded. When layers are
@@ -508,7 +524,7 @@ APP_EXPORT int main( int argc, char *argv[] )
 
     for ( int i = 1; i < args.size(); ++i )
     {
-      QString arg = args[i];
+      const QString &arg = args[i];
 
       if ( arg == "--help" || arg == "-?" )
       {
@@ -570,6 +586,91 @@ APP_EXPORT int main( int argc, char *argv[] )
       else if ( arg == "--defaultui" || arg == "-d" )
       {
         myRestoreDefaultWindowState = true;
+      }
+      else if ( arg == "--dxf-export" )
+      {
+        dxfOutputFile = args[++i];
+      }
+      else if ( arg == "--dxf-extent" )
+      {
+        QgsLocaleNumC l;
+        QString ext( args[++i] );
+        QStringList coords( ext.split( "," ) );
+
+        if ( coords.size() != 4 )
+        {
+          std::cerr << "invalid dxf extent " << ext.toStdString() << std::endl;
+          return 2;
+        }
+
+        for ( int i = 0; i < 4; i++ )
+        {
+          bool ok;
+          double d;
+
+          d = coords[i].toDouble( &ok );
+          if ( !ok )
+          {
+            std::cerr << "invalid dxf coordinate " << coords[i].toStdString() << " in extent " << ext.toStdString() << std::endl;
+            return 2;
+          }
+
+          switch ( i )
+          {
+            case 0:
+              dxfExtent.setXMinimum( d );
+              break;
+            case 1:
+              dxfExtent.setYMinimum( d );
+              break;
+            case 2:
+              dxfExtent.setXMaximum( d );
+              break;
+            case 3:
+              dxfExtent.setYMaximum( d );
+              break;
+          }
+        }
+      }
+      else if ( arg == "--dxf-symbology-mode" )
+      {
+        QString mode( args[++i] );
+        if ( mode == "none" )
+        {
+          dxfSymbologyMode = QgsDxfExport::NoSymbology;
+        }
+        else if ( mode == "symbollayer" )
+        {
+          dxfSymbologyMode = QgsDxfExport::SymbolLayerSymbology;
+        }
+        else if ( mode == "feature" )
+        {
+          dxfSymbologyMode = QgsDxfExport::FeatureSymbology;
+        }
+        else
+        {
+          std::cerr << "invalid dxf symbology mode " << mode.toStdString() << std::endl;
+          return 2;
+        }
+      }
+      else if ( arg == "--dxf-scale-denom" )
+      {
+        bool ok;
+        QString scale( args[++i] );
+        dxfScaleDenom = scale.toDouble( &ok );
+        if ( !ok )
+        {
+          std::cerr << "invalid dxf scale " << scale.toStdString() << std::endl;
+          return 2;
+        }
+      }
+      else if ( arg == "--dxf-encoding" )
+      {
+        dxfEncoding = args[++i];
+      }
+      else if ( arg == "--dxf-preset" )
+      {
+        dxfPreset = args[++i];
       }
       else
       {
@@ -709,9 +810,9 @@ APP_EXPORT int main( int argc, char *argv[] )
   if ( mySettings.contains( "/Themes" ) )
   {
     QString theme = mySettings.value( "/Themes", "default" ).toString();
-    if ( theme == QString( "gis" )
-         || theme == QString( "classic" )
-         || theme == QString( "nkids" ) )
+    if ( theme == "gis"
+         || theme == "classic"
+         || theme == "nkids" )
     {
       mySettings.setValue( "/Themes", QString( "default" ) );
     }
@@ -726,7 +827,7 @@ APP_EXPORT int main( int argc, char *argv[] )
     QStringList customVarsList = mySettings.value( "qgis/customEnvVars", "" ).toStringList();
     if ( !customVarsList.isEmpty() )
     {
-      foreach ( const QString &varStr, customVarsList )
+      Q_FOREACH ( const QString &varStr, customVarsList )
       {
         int pos = varStr.indexOf( QLatin1Char( '|' ) );
         if ( pos == -1 )
@@ -780,7 +881,10 @@ APP_EXPORT int main( int argc, char *argv[] )
   // as it looks really ugly so we use QPlastiqueStyle.
   QString style = mySettings.value( "/qgis/style" ).toString();
   if ( !style.isNull() )
+  {
     QApplication::setStyle( style );
+    mySettings.setValue( "/qgis/style", QApplication::style()->objectName() );
+  }
 #ifdef Q_OS_WIN
 #if QT_VERSION < 0x050000
   else
@@ -797,7 +901,7 @@ APP_EXPORT int main( int argc, char *argv[] )
   //
   // Priority of translation is:
   //  - command line
-  //  - user secified in options dialog (with group checked on)
+  //  - user specified in options dialog (with group checked on)
   //  - system locale
   //
   //  When specifying from the command line it will change the user
@@ -946,11 +1050,10 @@ APP_EXPORT int main( int argc, char *argv[] )
   /////////////////////////////////////////////////////////////////////
   if ( ! myInitialExtent.isEmpty() )
   {
+    QgsLocaleNumC l;
     double coords[4];
     int pos, posOld = 0;
     bool ok = true;
-
-    // XXX is it necessary to switch to "C" locale?
 
     // parse values from string
     // extent is defined by string "xmin,ymin,xmax,ymax"
@@ -1005,7 +1108,6 @@ APP_EXPORT int main( int argc, char *argv[] )
   /////////////////////////////////////////////////////////////////////
   if ( mySnapshotFileName != "" )
   {
-
     /*You must have at least one paintEvent() delivered for the window to be
       rendered properly.
 
@@ -1023,9 +1125,71 @@ APP_EXPORT int main( int argc, char *argv[] )
     myApp.processEvents();
     qgis->hide();
 
-    QgsPluginRegistry::instance()->unloadAll();
-
     return 1;
+  }
+
+  if ( !dxfOutputFile.isEmpty() )
+  {
+    qgis->hide();
+
+    QgsDxfExport dxfExport;
+    dxfExport.setSymbologyScaleDenominator( dxfScaleDenom );
+    dxfExport.setSymbologyExport( dxfSymbologyMode );
+    dxfExport.setExtent( dxfExtent );
+
+    QStringList layerIds;
+    QList< QPair<QgsVectorLayer *, int > > layers;
+    if ( !dxfPreset.isEmpty() )
+    {
+      Q_FOREACH ( const QString& layer, QgsProject::instance()->visibilityPresetCollection()->presetVisibleLayers( dxfPreset ) )
+      {
+        QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( QgsMapLayerRegistry::instance()->mapLayer( layer ) );
+        if ( !vl )
+          continue;
+        layers << qMakePair<QgsVectorLayer *, int>( vl, -1 );
+        layerIds << vl->id();
+      }
+    }
+    else
+    {
+      Q_FOREACH ( QgsMapLayer *ml, QgsMapLayerRegistry::instance()->mapLayers().values() )
+      {
+        QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
+        if ( !vl )
+          continue;
+        layers << qMakePair<QgsVectorLayer *, int>( vl, -1 );
+        layerIds << vl->id();
+      }
+    }
+
+    if ( !layers.isEmpty() )
+    {
+      dxfExport.addLayers( layers );
+    }
+
+    QFile dxfFile;
+    if ( dxfOutputFile == "-" )
+    {
+      if ( !dxfFile.open( stdout, QIODevice::WriteOnly ) )
+      {
+        std::cerr << "could not open stdout" << std::endl;
+        return 2;
+      }
+    }
+    else
+    {
+      if ( !dxfOutputFile.endsWith( ".dxf", Qt::CaseInsensitive ) )
+        dxfOutputFile += ".dxf";
+      dxfFile.setFileName( dxfOutputFile );
+    }
+
+    int res = dxfExport.writeToFile( &dxfFile, dxfEncoding );
+    if ( res )
+      std::cerr << "dxf output failed with error code " << res << std::endl;
+
+    delete qgis;
+
+    return res;
   }
 
   /////////////////////////////////////////////////////////////////////

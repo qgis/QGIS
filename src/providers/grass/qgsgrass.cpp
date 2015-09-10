@@ -29,6 +29,7 @@
 #endif
 
 #include "qgsgrass.h"
+#include "qgsgrassvector.h"
 
 #include "qgsapplication.h"
 #include "qgsconfig.h"
@@ -88,6 +89,30 @@ QgsGrassObject::QgsGrassObject( const QString& gisdbase, const QString& location
     , mName( name )
     , mType( type )
 {
+}
+
+QString QgsGrassObject::fullName() const
+{
+  if ( mName.isEmpty() )
+  {
+    return QString();
+  }
+  if ( mMapset.isEmpty() )
+  {
+    return mName;
+  }
+  return mName + "@" + mMapset;
+}
+
+void QgsGrassObject::setFullName( const QString& fullName )
+{
+  QStringList parts = fullName.split( '@' );
+  mName = parts.value( 0 );
+  mMapset.clear();
+  if ( !fullName.isEmpty() )
+  {
+    mMapset = parts.size() > 1 ? parts.value( 1 ) : QgsGrass::getDefaultMapset();
+  }
 }
 
 bool QgsGrassObject::setFromUri( const QString& uri )
@@ -549,6 +574,16 @@ QString QgsGrass::getDefaultLocation()
 {
   init();
   return defaultLocation;
+}
+
+QString QgsGrass::getDefaultLocationPath()
+{
+  init();
+  if ( !active )
+  {
+    return QString();
+  }
+  return defaultGisdbase + "/" + defaultLocation;
 }
 
 QString QgsGrass::getDefaultMapset()
@@ -1101,157 +1136,86 @@ bool QgsGrass::topoVersion( const QString& gisdbase, const QString& location,
 QStringList QgsGrass::vectorLayers( const QString& gisdbase, const QString& location,
                                     const QString& mapset, const QString& mapName )
 {
-  GRASS_LOCK
   QgsDebugMsg( QString( "gisdbase = %1 location = %2 mapset = %3 mapName = %4" ).arg( gisdbase ).arg( location ).arg( mapset ).arg( mapName ) );
+
   QStringList list;
-
-  // Set location
-  QgsGrass::setLocation( gisdbase, location );
-
-  /* Open vector */
-  QgsGrass::resetError();
-  //Vect_set_open_level( 2 );
-
-  // TODO: We are currently using vectDestroyMapStruct in G_CATCH blocks because we know
-  // that it does cannot call another G_fatal_error, but once we switch to hypothetical Vect_destroy_map_struct
-  // it should be verified if it can still be in G_CATCH
-  struct Map_info *map = vectNewMapStruct();
-  int level = -1;
-
-  // Vect_open_old_head GRASS is raising fatal error if topo exists but it is in different (older) version.
-  // It means that even we could open it on level one, it ends with exception,
-  // but we need level 2 anyway to get list of layers, so it does not matter, only the error message may be misleading.
-
-  G_TRY
+  QgsGrassVector vector( gisdbase, location, mapset, mapName );
+  if ( !vector.openHead() )
   {
-    level = Vect_open_old_head( map, ( char * ) mapName.toUtf8().data(), ( char * ) mapset.toUtf8().data() );
-  }
-  G_CATCH( QgsGrass::Exception &e )
-  {
-    QgsDebugMsg( QString( "Cannot open GRASS vector: %1" ).arg( e.what() ) );
-    vectDestroyMapStruct( map );
-    GRASS_UNLOCK
-    throw e;
-  }
-
-  // TODO: Handle errors as exceptions. Do not open QMessageBox here! This method is also used in browser
-  // items which are populated in threads and creating dialog QPixmap is causing crash or even X server freeze.
-  if ( level == 1 )
-  {
-    QgsDebugMsg( "Cannot open vector on level 2" );
-    // Do not open QMessageBox here!
-    //QMessageBox::warning( 0, QObject::tr( "Warning" ), QObject::tr( "Cannot open vector %1 in mapset %2 on level 2 (topology not available, try to rebuild topology using v.build module)." ).arg( mapName ).arg( mapset ) );
-    // Vect_close here is correct, it should work, but it seems to cause
-    // crash on win http://trac.osgeo.org/qgis/ticket/2003
-    // disabled on win test it
-#ifndef Q_OS_WIN
-    Vect_close( map );
-#endif
-    vectDestroyMapStruct( map );
-    GRASS_UNLOCK
-    throw QgsGrass::Exception( QObject::tr( "Cannot open vector on level 2" ) );
-  }
-  else if ( level < 1 )
-  {
-    QgsDebugMsg( "Cannot open vector" );
-    // Do not open QMessageBox here!
-    //QMessageBox::warning( 0, QObject::tr( "Warning" ), QObject::tr( "Cannot open vector %1 in mapset %2" ).arg( mapName ).arg( mapset ) );
-    vectDestroyMapStruct( map );
-    GRASS_UNLOCK
-    throw QgsGrass::Exception( QObject::tr( "Cannot open vector" ) );
+    throw QgsGrass::Exception( vector.error() );
   }
 
   QgsDebugMsg( "GRASS vector successfully opened" );
 
-  G_TRY
+  // Get layers
+  foreach ( QgsGrassVectorLayer * layer, vector.layers() )
   {
-    // Get layers
-    int ncidx = Vect_cidx_get_num_fields( map );
+    QString fs = QString::number( layer->number() );
+    QgsDebugMsg( "layer number = " + fs );
 
-    for ( int i = 0; i < ncidx; i++ )
+    /* Points */
+    int npoints = layer->typeCount( GV_POINT );
+    QgsDebugMsg( QString( "npoints = %1" ).arg( npoints ) );
+    if ( npoints > 0 )
     {
-      int field = Vect_cidx_get_field_number( map, i );
-      QString fs;
-      fs.sprintf( "%d", field );
-
-      QgsDebugMsg( QString( "i = %1 layer = %2" ).arg( i ).arg( field ) );
-
-      /* Points */
-      int npoints = Vect_cidx_get_type_count( map, field, GV_POINT );
-      QgsDebugMsg( QString( "npoints = %1" ).arg( npoints ) );
-      if ( npoints > 0 )
-      {
-        QString l = fs + "_point";
-        list.append( l );
-      }
-
-      /* Lines */
-      /* Lines without category appears in layer 0, but not boundaries */
-      int tp;
-      if ( field == 0 )
-        tp = GV_LINE;
-      else
-        tp = GV_LINE | GV_BOUNDARY;
-
-      int nlines = Vect_cidx_get_type_count( map, field, tp );
-      QgsDebugMsg( QString( "nlines = %1" ).arg( nlines ) );
-      if ( nlines > 0 )
-      {
-        QString l = fs + "_line";
-        list.append( l );
-      }
-
-      /* Faces */
-      int nfaces = Vect_cidx_get_type_count( map, field, GV_FACE );
-      QgsDebugMsg( QString( "nfaces = %1" ).arg( nfaces ) );
-      if ( nfaces > 0 )
-      {
-        QString l = fs + "_face";
-        list.append( l );
-      }
-
-      /* Polygons */
-      int nareas = Vect_cidx_get_type_count( map, field, GV_AREA );
-      QgsDebugMsg( QString( "nareas = %1" ).arg( nareas ) );
-      if ( nareas > 0 )
-      {
-        QString l = fs + "_polygon";
-        list.append( l );
-      }
+      QString l = fs + "_point";
+      list.append( l );
     }
-    QgsDebugMsg( "standard layers listed: " + list.join( "," ) );
 
-    // TODO: add option in GUI to set listTopoLayers
-    QSettings settings;
-    bool listTopoLayers =  settings.value( "/GRASS/listTopoLayers", false ).toBool();
-    if ( listTopoLayers )
+    /* Lines */
+    /* Lines without category appears in layer 0, but not boundaries */
+    int nlines = layer->typeCount( GV_LINE );
+    if ( layer->number() > 0 )
     {
-      // add topology layers
-      if ( Vect_get_num_primitives( map, GV_POINTS ) > 0 )
-      {
-#if GRASS_VERSION_MAJOR < 7 /* no more point in GRASS 7 topo */
-        list.append( "topo_point" );
-#endif
-      }
-      if ( Vect_get_num_primitives( map, GV_LINES ) > 0 )
-      {
-        list.append( "topo_line" );
-      }
-      if ( Vect_get_num_nodes( map ) > 0 )
-      {
-        list.append( "topo_node" );
-      }
+      nlines += layer->typeCount( GV_BOUNDARY );
     }
-    Vect_close( map );
-    vectDestroyMapStruct( map );
-    GRASS_UNLOCK
+    QgsDebugMsg( QString( "nlines = %1" ).arg( nlines ) );
+    if ( nlines > 0 )
+    {
+      QString l = fs + "_line";
+      list.append( l );
+    }
+
+    /* Faces */
+    int nfaces = layer->typeCount( GV_FACE );
+    QgsDebugMsg( QString( "nfaces = %1" ).arg( nfaces ) );
+    if ( nfaces > 0 )
+    {
+      QString l = fs + "_face";
+      list.append( l );
+    }
+
+    /* Polygons */
+    int nareas = layer->typeCount( GV_AREA );
+    QgsDebugMsg( QString( "nareas = %1" ).arg( nareas ) );
+    if ( nareas > 0 )
+    {
+      QString l = fs + "_polygon";
+      list.append( l );
+    }
   }
-  G_CATCH( QgsGrass::Exception &e )
+  QgsDebugMsg( "standard layers listed: " + list.join( "," ) );
+
+  // TODO: add option in GUI to set listTopoLayers
+  QSettings settings;
+  bool listTopoLayers =  settings.value( "/GRASS/listTopoLayers", false ).toBool();
+  if ( listTopoLayers )
   {
-    QgsDebugMsg( QString( "Cannot get vector layers: %1" ).arg( e.what() ) );
-    vectDestroyMapStruct( map );
-    GRASS_UNLOCK
-    throw e;
+    // add topology layers
+    if ( vector.typeCount( GV_POINTS ) > 0 )
+    {
+#if GRASS_VERSION_MAJOR < 7 /* no more point in GRASS 7 topo */
+      list.append( "topo_point" );
+#endif
+    }
+    if ( vector.typeCount( GV_LINES ) > 0 )
+    {
+      list.append( "topo_line" );
+    }
+    if ( vector.nodeCount() > 0 )
+    {
+      list.append( "topo_node" );
+    }
   }
 
   return list;
@@ -1369,6 +1333,10 @@ QStringList QgsGrass::grassObjects( const QString& mapsetPath, QgsGrassObject::T
 
 bool QgsGrass::objectExists( const QgsGrassObject& grassObject )
 {
+  if ( grassObject.name().isEmpty() )
+  {
+    return false;
+  }
   QString path = grassObject.mapsetPath() + "/" + QgsGrassObject::dirName( grassObject.type() )
                  + "/" + grassObject.name();
   QFileInfo fi( path );
@@ -1618,17 +1586,24 @@ bool QgsGrass::mapRegion( QgsGrassObject::Type type, QString gisdbase,
   if ( type == QgsGrassObject::Raster )
   {
 
+    QString error = tr( "Cannot read raster map region" ) + " (" + gisdbase + "/" + location + "/" + mapset + ")";
 #if GRASS_VERSION_MAJOR < 7
     if ( G_get_cellhd( map.toUtf8().data(),
                        mapset.toUtf8().data(), window ) < 0 )
     {
-      QMessageBox::warning( 0, QObject::tr( "Warning" ),
-                            QObject::tr( "Cannot read raster map region" ) );
+      warning( error );
       return false;
     }
 #else
-    // TODO7: unfortunately Rast_get_cellhd does not return error code and calls G_fatal_error on error
-    Rast_get_cellhd( map.toUtf8().data(), mapset.toUtf8().data(), window );
+    G_TRY
+    {
+      Rast_get_cellhd( map.toUtf8().data(), mapset.toUtf8().data(), window );
+    }
+    G_CATCH( QgsGrass::Exception &e )
+    {
+      warning( error + " : " + e.what() );
+      return false;
+    }
 #endif
   }
   else if ( type == QgsGrassObject::Vector )
@@ -1640,24 +1615,44 @@ bool QgsGrass::mapRegion( QgsGrassObject::Type type, QString gisdbase,
     }
     catch ( QgsGrass::Exception &e )
     {
-      QgsGrass::warning( e );
+      warning( e );
       return false;
     }
 
-    struct Map_info Map;
-
-    int level = Vect_open_old_head( &Map,
-                                    map.toUtf8().data(), mapset.toUtf8().data() );
+    struct Map_info *Map = 0;
+    int level = -1;
+    G_TRY
+    {
+      Map = vectNewMapStruct();
+      level = Vect_open_old_head( Map, map.toUtf8().data(), mapset.toUtf8().data() );
+    }
+    G_CATCH( QgsGrass::Exception &e )
+    {
+      warning( e );
+      vectDestroyMapStruct( Map );
+      return false;
+    }
 
     if ( level < 2 )
     {
-      QMessageBox::warning( 0, QObject::tr( "Warning" ),
-                            QObject::tr( "Cannot read vector map region" ) );
+      warning( QObject::tr( "Cannot read vector map region" ) );
+      if ( level == 1 )
+      {
+        G_TRY
+        {
+          Vect_close( Map );
+        }
+        G_CATCH( QgsGrass::Exception &e )
+        {
+          QgsDebugMsg( e.what() );
+        }
+      }
+      vectDestroyMapStruct( Map );
       return false;
     }
 
     BOUND_BOX box;
-    Vect_get_map_box( &Map, &box );
+    Vect_get_map_box( Map, &box );
     window->north = box.N;
     window->south = box.S;
     window->west  = box.W;
@@ -1679,7 +1674,8 @@ bool QgsGrass::mapRegion( QgsGrassObject::Type type, QString gisdbase,
     }
     G_adjust_Cell_head3( window, 0, 0, 0 );
 
-    Vect_close( &Map );
+    Vect_close( Map );
+    vectDestroyMapStruct( Map );
   }
   else if ( type == QgsGrassObject::Region )
   {
@@ -1693,8 +1689,16 @@ bool QgsGrass::mapRegion( QgsGrassObject::Type type, QString gisdbase,
       return false;
     }
 #else
-    // TODO7: unfortunately G__get_window does not return error code and calls G_fatal_error on error
-    G__get_window( window, ( char * ) "windows", map.toUtf8().data(), mapset.toUtf8().data() );
+    // G__get_window does not return error code in GRASS 7 and calls G_fatal_error on error
+    G_TRY
+    {
+      G__get_window( window, ( char * ) "windows", map.toUtf8().data(), mapset.toUtf8().data() );
+    }
+    G_CATCH( QgsGrass::Exception &e )
+    {
+      warning( e );
+      return false;
+    }
 #endif
   }
   return true;
@@ -2241,15 +2245,24 @@ bool QgsGrass::isExternal( const QgsGrassObject & object )
   {
     return false;
   }
+  lock();
   bool isExternal = false;
-  QgsGrass::setLocation( object.gisdbase(), object.location() );
-  struct GDAL_link *gdal;
-  gdal = G_get_gdal_link( object.name().toUtf8().data(), object.mapset().toUtf8().data() );
-  if ( gdal )
+  G_TRY
   {
-    isExternal = true;
-    G_close_gdal_link( gdal );
+    QgsGrass::setLocation( object.gisdbase(), object.location() );
+    struct GDAL_link *gdal;
+    gdal = G_get_gdal_link( object.name().toUtf8().data(), object.mapset().toUtf8().data() );
+    if ( gdal )
+    {
+      isExternal = true;
+      G_close_gdal_link( gdal );
+    }
   }
+  G_CATCH( QgsGrass::Exception &e )
+  {
+    QgsDebugMsg( "error getting external link: " + QString(e.what()) );
+  }
+  unlock();
   return isExternal;
 }
 
@@ -2264,6 +2277,40 @@ void QgsGrass::adjustCellHead( struct Cell_head *cellhd, int row_flag, int col_f
 #else
   G_FATAL_THROW( G_adjust_Cell_head( cellhd, row_flag, col_flag ) );
 #endif
+}
+
+// Map of vector types
+
+QMap<int, QString> QgsGrass::vectorTypeMap()
+{
+  static QMap<int, QString> vectorTypes;
+  static QMutex sMutex;
+  if ( vectorTypes.isEmpty() )
+  {
+    sMutex.lock();
+    if ( vectorTypes.isEmpty() )
+    {
+      vectorTypes.insert( GV_POINT, "point" );
+      vectorTypes.insert( GV_CENTROID, "centroid" );
+      vectorTypes.insert( GV_LINE, "line" );
+      vectorTypes.insert( GV_BOUNDARY, "boundary" );
+      vectorTypes.insert( GV_AREA, "area" );
+      vectorTypes.insert( GV_FACE, "face" );
+      vectorTypes.insert( GV_KERNEL, "kernel" );
+    }
+    sMutex.unlock();
+  }
+  return vectorTypes;
+}
+
+int QgsGrass::vectorType( const QString & typeName )
+{
+  return QgsGrass::vectorTypeMap().key( typeName );
+}
+
+QString QgsGrass::vectorTypeName( int type )
+{
+  return QgsGrass::vectorTypeMap().value( type );
 }
 
 // GRASS version constants have been changed on 26.4.2007

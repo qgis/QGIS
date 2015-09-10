@@ -90,7 +90,7 @@ class CORE_EXPORT QgsGeometry
      * geom is transferred.
      * @note added in QGIS 2.10
      */
-    QgsGeometry( QgsAbstractGeometryV2* geom );
+    explicit QgsGeometry( QgsAbstractGeometryV2* geom );
 
     //! Destructor
     ~QgsGeometry();

@@ -746,6 +746,8 @@ class QgsComposerMap : QgsComposerItem
      * @note added in 2.6 */
     void requestedExtent( QgsRectangle& extent ) const;
 
+    virtual QgsExpressionContext* createExpressionContext() const;
+
   signals:
     void extentChanged();
 

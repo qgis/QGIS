@@ -56,7 +56,7 @@ void QgsMapLayerStyleManager::writeXml( QDomElement& mgrElement ) const
   QDomDocument doc = mgrElement.ownerDocument();
   mgrElement.setAttribute( "current", mCurrentStyle );
 
-  foreach ( const QString& name, styles() )
+  Q_FOREACH ( const QString& name, styles() )
   {
     QDomElement ch = doc.createElement( "map-layer-style" );
     ch.setAttribute( "name", name );

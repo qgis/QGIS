@@ -297,7 +297,6 @@ QString QgsComposerLabel::displayText() const
   QString displayText = mText;
   replaceDateText( displayText );
   QMap<QString, QVariant> subs = mSubstitutions;
-  subs[ "$page" ] = QVariant(( int )mComposition->itemPageNumber( this ) + 1 );
 
   QScopedPointer<QgsExpressionContext> context( createExpressionContext() );
   //overwrite layer/feature if they have been set via setExpressionContext

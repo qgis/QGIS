@@ -334,6 +334,7 @@ QgsSymbolLayerV2::QgsSymbolLayerV2( QgsSymbolV2::SymbolType type, bool locked )
     , mLocked( locked )
     , mRenderingPass( 0 )
     , mPaintEffect( 0 )
+    , mRenderResult( QgsRenderResult( true ) )
 {
   mPaintEffect = QgsPaintEffectRegistry::defaultStack();
   mPaintEffect->setEnabled( false );
@@ -480,6 +481,11 @@ void QgsSymbolLayerV2::copyPaintEffect( QgsSymbolLayerV2 *destLayer ) const
     return;
 
   destLayer->setPaintEffect( mPaintEffect->clone() );
+}
+
+void QgsSymbolLayerV2::setRenderResult( const QgsRenderResult& result )
+{
+  mRenderResult = result;
 }
 
 QgsMarkerSymbolLayerV2::QgsMarkerSymbolLayerV2( bool locked )
@@ -696,7 +702,7 @@ void QgsLineSymbolLayerV2::renderPolygonOutline( const QPolygonF& points, QList<
   renderPolyline( points, context );
   if ( rings )
   {
-    foreach ( const QPolygonF& ring, *rings )
+    Q_FOREACH ( const QPolygonF& ring, *rings )
       renderPolyline( ring, context );
   }
 }

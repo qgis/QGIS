@@ -122,7 +122,7 @@ void QgsLayerTreeViewDefaultActions::addGroup()
 
 void QgsLayerTreeViewDefaultActions::removeGroupOrLayer()
 {
-  foreach ( QgsLayerTreeNode* node, mView->selectedNodes( true ) )
+  Q_FOREACH ( QgsLayerTreeNode* node, mView->selectedNodes( true ) )
   {
     // could be more efficient if working directly with ranges instead of individual nodes
     qobject_cast<QgsLayerTreeGroup*>( node->parent() )->removeChildNode( node );
@@ -172,7 +172,7 @@ void QgsLayerTreeViewDefaultActions::zoomToGroup( QgsMapCanvas* canvas )
     return;
 
   QList<QgsMapLayer*> layers;
-  foreach ( QString layerId, groupNode->findLayerIds() )
+  Q_FOREACH ( const QString& layerId, groupNode->findLayerIds() )
     layers << QgsMapLayerRegistry::instance()->mapLayer( layerId );
 
   zoomToLayers( canvas, layers );
@@ -275,12 +275,12 @@ void QgsLayerTreeViewDefaultActions::groupSelected()
   int insertIdx = parentGroup->children().indexOf( nodes[0] );
 
   QgsLayerTreeGroup* newGroup = new QgsLayerTreeGroup( uniqueGroupName( parentGroup ) );
-  foreach ( QgsLayerTreeNode* node, nodes )
+  Q_FOREACH ( QgsLayerTreeNode* node, nodes )
     newGroup->addChildNode( node->clone() );
 
   parentGroup->insertChildNode( insertIdx, newGroup );
 
-  foreach ( QgsLayerTreeNode* node, nodes )
+  Q_FOREACH ( QgsLayerTreeNode* node, nodes )
   {
     QgsLayerTreeGroup* group = qobject_cast<QgsLayerTreeGroup*>( node->parent() );
     if ( group )

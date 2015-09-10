@@ -37,7 +37,6 @@ QgsProjectVersion::QgsProjectVersion( QString string )
 
   mMinor = 0;
   mSub   = 0;
-  mName  = "";
   mMajor = fileVersionParts.at( 0 ).toInt();
 
   if ( fileVersionParts.size() > 1 )
@@ -83,7 +82,7 @@ bool QgsProjectVersion::operator>( const QgsProjectVersion &other )
 
 QString QgsProjectVersion::text()
 {
-  if ( mName.isNull() )
+  if ( mName.isEmpty() )
   {
     return QString( "%1.%2.%3" ).arg( mMajor ).arg( mMinor ).arg( mSub );
   }

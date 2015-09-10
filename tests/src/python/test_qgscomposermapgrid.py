@@ -77,6 +77,7 @@ class TestQgsComposerMap(TestCase):
         self.mComposerMap.updateBoundingRect()
 
         checker = QgsCompositionChecker('composermap_grid', self.mComposition)
+        checker.setControlPathPrefix("composer_mapgrid")
         myTestResult, myMessage = checker.testComposition()
         self.mComposerMap.setGridEnabled(False)
         self.mComposerMap.setShowGridAnnotation(False)
@@ -98,6 +99,7 @@ class TestQgsComposerMap(TestCase):
         self.mComposerMap.updateBoundingRect()
 
         checker = QgsCompositionChecker('composermap_crossgrid', self.mComposition)
+        checker.setControlPathPrefix("composer_mapgrid")
         myTestResult, myMessage = checker.testComposition()
 
         self.mComposerMap.grid().setStyle(QgsComposerMapGrid.Solid)
@@ -119,6 +121,7 @@ class TestQgsComposerMap(TestCase):
         self.mComposerMap.updateBoundingRect()
 
         checker = QgsCompositionChecker('composermap_markergrid', self.mComposition)
+        checker.setControlPathPrefix("composer_mapgrid")
         myTestResult, myMessage = checker.testComposition()
 
         self.mComposerMap.grid().setStyle(QgsComposerMapGrid.Solid)
@@ -141,6 +144,7 @@ class TestQgsComposerMap(TestCase):
         self.mComposerMap.updateBoundingRect()
 
         checker = QgsCompositionChecker('composermap_gridframeonly', self.mComposition)
+        checker.setControlPathPrefix("composer_mapgrid")
         myTestResult, myMessage = checker.testComposition()
 
         self.mComposerMap.grid().setStyle(QgsComposerMapGrid.Solid)
@@ -171,6 +175,7 @@ class TestQgsComposerMap(TestCase):
         self.mComposerMap.updateBoundingRect()
 
         checker = QgsCompositionChecker('composermap_zebrastyle', self.mComposition)
+        checker.setControlPathPrefix("composer_mapgrid")
         myTestResult, myMessage = checker.testComposition(0, 100)
         assert myTestResult, myMessage
 
@@ -199,18 +204,21 @@ class TestQgsComposerMap(TestCase):
         self.mComposerMap.updateBoundingRect()
 
         checker = QgsCompositionChecker('composermap_zebrastyle_left', self.mComposition)
+        checker.setControlPathPrefix("composer_mapgrid")
         myTestResult, myMessage = checker.testComposition(0, 100)
         assert myTestResult, myMessage
 
         self.mComposerMap.grid().setFrameSideFlag(QgsComposerMapGrid.FrameTop, True)
         self.mComposerMap.updateBoundingRect()
         checker = QgsCompositionChecker('composermap_zebrastyle_lefttop', self.mComposition)
+        checker.setControlPathPrefix("composer_mapgrid")
         myTestResult, myMessage = checker.testComposition(0, 100)
         assert myTestResult, myMessage
 
         self.mComposerMap.grid().setFrameSideFlag(QgsComposerMapGrid.FrameRight, True)
         self.mComposerMap.updateBoundingRect()
         checker = QgsCompositionChecker('composermap_zebrastyle_lefttopright', self.mComposition)
+        checker.setControlPathPrefix("composer_mapgrid")
         myTestResult, myMessage = checker.testComposition(0, 100)
         assert myTestResult, myMessage
 
@@ -234,6 +242,7 @@ class TestQgsComposerMap(TestCase):
         self.mComposerMap.updateBoundingRect()
 
         checker = QgsCompositionChecker('composermap_interiorticks', self.mComposition)
+        checker.setControlPathPrefix("composer_mapgrid")
         myTestResult, myMessage = checker.testComposition(0, 100)
         assert myTestResult, myMessage
 

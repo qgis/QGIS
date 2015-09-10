@@ -60,10 +60,6 @@ namespace pal
       , mUpsidedownLabels( Upright )
   {
     rtree = new RTree<FeaturePart*, double, 2, double>();
-    hashtable = new QHash< QString, Feature*>;
-
-    connectedHashtable = new QHash< QString, QLinkedList<FeaturePart*>* >;
-    connectedTexts = new QLinkedList< QString >;
 
     if ( defaultPriority < 0.0001 )
       mDefaultPriority = 0.0001;
@@ -71,42 +67,32 @@ namespace pal
       mDefaultPriority = 1.0;
     else
       mDefaultPriority = defaultPriority;
-
-    featureParts = new QLinkedList<FeaturePart*>;
-    features = new QLinkedList<Feature*>;
   }
 
   Layer::~Layer()
   {
     mMutex.lock();
 
-    if ( featureParts )
-    {
-      qDeleteAll( *featureParts );
-      delete featureParts;
-    }
-
-    // this hashtable and list should be empty if they still exist
-    delete connectedHashtable;
+    qDeleteAll( mFeatureParts );
+    mFeatureParts.clear();
 
     // features in the hashtable
-    if ( features )
-    {
-      qDeleteAll( *features );
-      delete features;
-    }
+    qDeleteAll( features );
+    features.clear();
+
+    //should already be empty
+    qDeleteAll( mConnectedHashtable );
+    mConnectedHashtable.clear();
 
     delete rtree;
 
-    delete hashtable;
     mMutex.unlock();
-    delete connectedTexts;
   }
 
   Feature* Layer::getFeature( const QString& geom_id )
   {
-    QHash< QString, Feature*>::const_iterator i = hashtable->find( geom_id );
-    if ( i != hashtable->constEnd() )
+    QHash< QString, Feature*>::const_iterator i = mHashtable.find( geom_id );
+    if ( i != mHashtable.constEnd() )
       return *i;
     else
       return 0;
@@ -131,7 +117,7 @@ namespace pal
 
     mMutex.lock();
 
-    if ( hashtable->contains( geom_id ) )
+    if ( mHashtable.contains( geom_id ) )
     {
       mMutex.unlock();
       //A feature with this id already exists. Don't throw an exception as sometimes,
@@ -171,7 +157,7 @@ namespace pal
     // feature inherits layer setting for acting as an obstacle
     f->setIsObstacle( mObstacle );
 
-    bool first_feat = true;
+    bool addedFeature = false;
 
     double geom_size = -1, biggest_size = -1;
     FeaturePart* biggest_part = NULL;
@@ -180,6 +166,7 @@ namespace pal
     QLinkedList<const GEOSGeometry*>* simpleGeometries = unmulti( the_geom );
     if ( simpleGeometries == NULL ) // unmulti() failed?
     {
+      delete f;
       mMutex.unlock();
       throw InternalException::UnknownGeometry();
     }
@@ -245,8 +232,7 @@ namespace pal
 
       // feature part is ready!
       addFeaturePart( fpart, labelText );
-
-      first_feat = false;
+      addedFeature = true;
     }
     delete simpleGeometries;
 
@@ -258,21 +244,21 @@ namespace pal
     if (( mMode == LabelPerFeature || f->fixedPosition() ) && biggest_part != NULL )
     {
       addFeaturePart( biggest_part, labelText );
-      first_feat = false;
+      addedFeature = true;
     }
 
     // add feature to layer if we have added something
-    if ( !first_feat )
+    if ( addedFeature )
     {
-      features->append( f );
-      hashtable->insert( geom_id, f );
+      features << f;
+      mHashtable.insert( geom_id, f );
     }
     else
     {
       delete f;
     }
 
-    return !first_feat; // true if we've added something
+    return addedFeature; // true if we've added something
   }
 
   void Layer::addFeaturePart( FeaturePart* fpart, const QString& labelText )
@@ -282,7 +268,7 @@ namespace pal
     fpart->getBoundingBox( bmin, bmax );
 
     // add to list of layer's feature parts
-    featureParts->append( fpart );
+    mFeatureParts << fpart;
 
     // add to r-tree for fast spatial access
     rtree->Insert( bmin, bmax, fpart );
@@ -290,18 +276,17 @@ namespace pal
     // add to hashtable with equally named feature parts
     if ( mMergeLines && !labelText.isEmpty() )
     {
-      QHash< QString, QLinkedList<FeaturePart*>* >::const_iterator lstPtr = connectedHashtable->find( labelText );
       QLinkedList< FeaturePart*>* lst;
-      if ( lstPtr == connectedHashtable->constEnd() )
+      if ( !mConnectedHashtable.contains( labelText ) )
       {
         // entry doesn't exist yet
         lst = new QLinkedList<FeaturePart*>;
-        connectedHashtable->insert( labelText, lst );
-        connectedTexts->append( labelText );
+        mConnectedHashtable.insert( labelText, lst );
+        mConnectedTexts << labelText;
       }
       else
       {
-        lst = *lstPtr;
+        lst = mConnectedHashtable.value( labelText );
       }
       lst->append( fpart ); // add to the list
     }
@@ -327,16 +312,12 @@ namespace pal
   void Layer::joinConnectedFeatures()
   {
     // go through all label texts
-    QString labelText;
-    while ( !connectedTexts->isEmpty() )
+    Q_FOREACH ( const QString& labelText, mConnectedTexts )
     {
-      labelText = connectedTexts->takeFirst();
-
-      //std::cerr << "JOIN: " << labelText << std::endl;
-      QHash< QString, QLinkedList<FeaturePart*>* >::const_iterator partsPtr = connectedHashtable->find( labelText );
-      if ( partsPtr == connectedHashtable->constEnd() )
+      if ( !mConnectedHashtable.contains( labelText ) )
         continue; // shouldn't happen
-      QLinkedList<FeaturePart*>* parts = *partsPtr;
+
+      QLinkedList<FeaturePart*>* parts = mConnectedHashtable.value( labelText );
 
       // go one-by-one part, try to merge
       while ( !parts->isEmpty() )
@@ -353,7 +334,7 @@ namespace pal
           double bmin[2], bmax[2];
           partCheck->getBoundingBox( bmin, bmax );
           rtree->Remove( bmin, bmax, partCheck );
-          featureParts->removeOne( partCheck );
+          mFeatureParts.removeOne( partCheck );
 
           otherPart->getBoundingBox( bmin, bmax );
 
@@ -365,27 +346,31 @@ namespace pal
             otherPart->getBoundingBox( bmin, bmax );
             rtree->Insert( bmin, bmax, otherPart );
           }
+          delete partCheck;
         }
       }
 
       // we're done processing feature parts with this particular label text
       delete parts;
+      mConnectedHashtable.remove( labelText );
     }
 
-    // we're done processing connected fetures
-    delete connectedHashtable;
-    connectedHashtable = NULL;
-    delete connectedTexts;
-    connectedTexts = NULL;
+    // we're done processing connected features
+
+    //should be empty, but clear to be safe
+    qDeleteAll( mConnectedHashtable );
+    mConnectedHashtable.clear();
+
+    mConnectedTexts.clear();
   }
 
   void Layer::chopFeaturesAtRepeatDistance()
   {
     GEOSContextHandle_t geosctxt = geosContext();
-    QLinkedList<FeaturePart*> * newFeatureParts = new QLinkedList<FeaturePart*>;
-    while ( !featureParts->isEmpty() )
+    QLinkedList<FeaturePart*> newFeatureParts;
+    while ( !mFeatureParts.isEmpty() )
     {
-      FeaturePart* fpart = featureParts->takeFirst();
+      FeaturePart* fpart = mFeatureParts.takeFirst();
       const GEOSGeometry* geom = fpart->geos();
       double chopInterval = fpart->getFeature()->repeatDistance();
       if ( chopInterval != 0. && GEOSGeomTypeId_r( geosctxt, geom ) == GEOS_LINESTRING )
@@ -447,7 +432,7 @@ namespace pal
 
           GEOSGeometry* newgeom = GEOSGeom_createLineString_r( geosctxt, cooSeq );
           FeaturePart* newfpart = new FeaturePart( fpart->getFeature(), newgeom );
-          newFeatureParts->append( newfpart );
+          newFeatureParts.append( newfpart );
           newfpart->getBoundingBox( bmin, bmax );
           rtree->Insert( bmin, bmax, newfpart );
           part.clear();
@@ -464,19 +449,18 @@ namespace pal
 
         GEOSGeometry* newgeom = GEOSGeom_createLineString_r( geosctxt, cooSeq );
         FeaturePart* newfpart = new FeaturePart( fpart->getFeature(), newgeom );
-        newFeatureParts->append( newfpart );
+        newFeatureParts.append( newfpart );
         newfpart->getBoundingBox( bmin, bmax );
         rtree->Insert( bmin, bmax, newfpart );
         delete fpart;
       }
       else
       {
-        newFeatureParts->append( fpart );
+        newFeatureParts.append( fpart );
       }
     }
 
-    delete featureParts;
-    featureParts = newFeatureParts;
+    mFeatureParts = newFeatureParts;
   }
 
 

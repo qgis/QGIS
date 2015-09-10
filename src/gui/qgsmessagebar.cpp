@@ -166,7 +166,7 @@ bool QgsMessageBar::popWidget( QgsMessageBarItem *item )
     return true;
   }
 
-  foreach ( QgsMessageBarItem *existingItem, mItems )
+  Q_FOREACH ( QgsMessageBarItem *existingItem, mItems )
   {
     if ( existingItem == item )
     {
@@ -339,7 +339,7 @@ void QgsMessageBar::resetCountdown()
 
 void QgsMessageBar::updateItemCount()
 {
-  mItemCount->setText( mItems.count() > 0 ? tr( "%n more", "unread messages", mItems.count() ) : QString( "" ) );
+  mItemCount->setText( mItems.count() > 0 ? tr( "%n more", "unread messages", mItems.count() ) : QString() );
 
   // do not show the down arrow for opening menu with "close all" if there is just one message
   mCloseBtn->setMenu( mItems.count() > 0 ? mCloseMenu : 0 );

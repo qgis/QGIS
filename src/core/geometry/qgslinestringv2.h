@@ -90,6 +90,11 @@ class CORE_EXPORT QgsLineStringV2: public QgsCurveV2
     /** Appends first point if not already closed*/
     void close();
 
+    /** Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
+        @param vertex the vertex id
+        @return rotation in radians, clockwise from north*/
+    double vertexAngle( const QgsVertexId& vertex ) const override;
+
   private:
     QPolygonF mCoords;
     QVector<double> mZ;

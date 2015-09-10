@@ -1,0 +1,6 @@
+{
+  "function": "centroid",
+  "description": "Returns the geometric center of a geometry.",
+  "arguments": [ {"arg":"geom","description":"a geometry"}],
+  "examples": [ { "expression":"centroid($geometry)", "returns":"a point geometry"}]
+}

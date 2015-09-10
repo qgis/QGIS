@@ -1,0 +1,9 @@
+{
+  "function": "concat",
+  "description": "Concatenates several strings to one.",
+  "variableLenArguments": true,
+  "arguments": [ {"arg":"string1", "syntaxOnly": true},
+                 {"arg":"string2", "syntaxOnly": true},
+                 {"arg":"string", "descOnly": true, "description":"a string value"}],
+  "examples": [ { "expression":"concat('a','b','c','d','e')", "returns":"'abcde'"}]
+}

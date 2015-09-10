@@ -29,6 +29,7 @@
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
 #include "qgisgui.h"
+#include "qgscomposertablebackgroundcolorsdialog.h"
 
 QgsComposerAttributeTableWidget::QgsComposerAttributeTableWidget( QgsComposerAttributeTableV2* table, QgsComposerFrame* frame )
     : QgsComposerItemBaseWidget( 0, table )
@@ -1023,6 +1024,17 @@ void QgsComposerAttributeTableWidget::on_mWrapBehaviourComboBox_currentIndexChan
     mComposerTable->setWrapBehaviour(( QgsComposerTableV2::WrapBehaviour ) mWrapBehaviourComboBox->itemData( index ).toInt() );
     composition->endMultiFrameCommand();
   }
+}
+
+void QgsComposerAttributeTableWidget::on_mAdvancedCustomisationButton_clicked()
+{
+  if ( !mComposerTable )
+  {
+    return;
+  }
+
+  QgsComposerTableBackgroundColorsDialog d( mComposerTable, this );
+  d.exec();
 }
 
 void QgsComposerAttributeTableWidget::on_mDrawEmptyCheckBox_toggled( bool checked )

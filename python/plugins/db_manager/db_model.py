@@ -134,6 +134,8 @@ class ConnectionItem(TreeItem):
 
     def __init__(self, connection, parent=None):
         TreeItem.__init__(self, connection, parent)
+        self.connect(connection, SIGNAL("changed"), self.itemChanged)
+        self.connect(connection, SIGNAL("deleted"), self.itemRemoved)
 
         # load (shared) icon with first instance of table item
         if not hasattr(ConnectionItem, 'connectedIcon'):
@@ -282,10 +284,13 @@ class DBModel(QAbstractItemModel):
         if self.isImportVectorAvail:
             self.connect(self, SIGNAL("importVector"), self.importVector)
 
+        self.hasSpatialiteSupport = "spatialite" in supportedDbTypes()
+
         self.rootItem = TreeItem(None, None)
         for dbtype in supportedDbTypes():
             dbpluginclass = createDbPlugin(dbtype)
-            PluginItem(dbpluginclass, self.rootItem)
+            item = PluginItem(dbpluginclass, self.rootItem)
+            self.connect(item, SIGNAL("itemChanged"), self.refreshItem)
 
     def refreshItem(self, item):
         if isinstance(item, TreeItem):
@@ -364,21 +369,23 @@ class DBModel(QAbstractItemModel):
         if index.column() == 0:
             item = index.internalPointer()
 
-            if not isinstance(item, SchemaItem) and not isinstance(item, TableItem):
-                flags |= Qt.ItemIsDropEnabled
-
             if isinstance(item, SchemaItem) or isinstance(item, TableItem):
                 flags |= Qt.ItemIsEditable
 
             if isinstance(item, TableItem):
                 flags |= Qt.ItemIsDragEnabled
 
-            if self.isImportVectorAvail:  # allow to import a vector layer
+            # vectors/tables can be dropped on connected databases to be imported
+            if self.isImportVectorAvail:
                 if isinstance(item, ConnectionItem) and item.populated:
                     flags |= Qt.ItemIsDropEnabled
 
-                if isinstance(item, SchemaItem) or isinstance(item, TableItem):
+                if isinstance(item, (SchemaItem, TableItem)):
                     flags |= Qt.ItemIsDropEnabled
+
+            # SL/Geopackage db files can be dropped everywhere in the tree
+            if self.hasSpatialiteSupport:
+                flags |= Qt.ItemIsDropEnabled
 
         return flags
 
@@ -508,23 +515,38 @@ class DBModel(QAbstractItemModel):
         if action == Qt.IgnoreAction:
             return True
 
-        if not self.isImportVectorAvail:
-            return False
+        # vectors/tables to be imported must be dropped on connected db, schema or table
+        canImportLayer = self.isImportVectorAvail and parent.isValid() and \
+            (isinstance(parent.internalPointer(), (SchemaItem, TableItem)) or
+             (isinstance(parent.internalPointer(), ConnectionItem) and parent.internalPointer().populated))
 
         added = 0
 
         if data.hasUrls():
-            if row == -1 and column == -1:
-                for u in data.urls():
-                    filename = u.toLocalFile()
-                    if self.addConnection(filename, parent):
+            for u in data.urls():
+                filename = u.toLocalFile()
+                if filename == "":
+                    continue
+
+                if self.hasSpatialiteSupport:
+                    from .db_plugins.spatialite.connector import SpatiaLiteDBConnector
+
+                    if SpatiaLiteDBConnector.isValidDatabase(filename):
+                        # retrieve the SL plugin tree item using its path
+                        index = self._rPath2Index(["spatialite"])
+                        if not index.isValid():
+                            continue
+                        item = index.internalPointer()
+
+                        conn_name = QFileInfo(filename).fileName()
+                        uri = qgis.core.QgsDataSourceURI()
+                        uri.setDatabase(filename)
+                        item.getItemData().addConnection(conn_name, uri)
+                        item.emit(SIGNAL('itemChanged'), item)
                         added += 1
-            else:
-                for u in data.urls():
-                    filename = u.toLocalFile()
-                    if filename == "":
                         continue
 
+                if canImportLayer:
                     if qgis.core.QgsRasterLayer.isValidRasterFileName(filename):
                         layerType = 'raster'
                         providerKey = 'gdal'
@@ -533,29 +555,16 @@ class DBModel(QAbstractItemModel):
                         providerKey = 'ogr'
 
                     layerName = QFileInfo(filename).completeBaseName()
-
                     if self.importLayer(layerType, providerKey, layerName, filename, parent):
                         added += 1
 
-            if data.hasFormat(self.QGIS_URI_MIME):
-                for uri in qgis.core.QgsMimeDataUtils.decodeUriList(data):
+        if data.hasFormat(self.QGIS_URI_MIME):
+            for uri in qgis.core.QgsMimeDataUtils.decodeUriList(data):
+                if canImportLayer:
                     if self.importLayer(uri.layerType, uri.providerKey, uri.name, uri.uri, parent):
                         added += 1
 
         return added > 0
-
-    def addConnection(self, filename, index):
-        file = filename.split("/")[-1]
-        if filename == "":
-            return False
-        s = QSettings()
-        connKey = index.internalPointer().getItemData().connectionSettingsKey()
-        conn = index.internalPointer().getItemData().connectionSettingsFileKey()
-        s.beginGroup("/%s/%s" % (connKey, file))
-        s.setValue(conn, filename)
-        self.treeView.setCurrentIndex(index)
-        self.treeView.mainWindow.refreshActionSlot()
-        return True
 
     def importLayer(self, layerType, providerKey, layerName, uriString, parent):
         if not self.isImportVectorAvail:

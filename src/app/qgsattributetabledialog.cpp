@@ -71,6 +71,10 @@ static QgsExpressionContext _getExpressionContext( const void* context )
   if ( layer )
     expContext << QgsExpressionContextUtils::layerScope( layer );
 
+  expContext.lastScope()->setVariable( "row_number", 1 );
+
+  expContext.setHighlightedVariables( QStringList() << "row_number" );
+
   return expContext;
 }
 
@@ -305,7 +309,7 @@ void QgsAttributeTableDialog::keyPressEvent( QKeyEvent* event )
 
 void QgsAttributeTableDialog::columnBoxInit()
 {
-  foreach ( QAction* a, mFilterColumnsMenu->actions() )
+  Q_FOREACH ( QAction* a, mFilterColumnsMenu->actions() )
   {
     mFilterColumnsMenu->removeAction( a );
     mFilterActionMapper->removeMappings( a );
@@ -325,7 +329,7 @@ void QgsAttributeTableDialog::columnBoxInit()
 
   QList<QgsField> fields = mLayer->fields().toList();
 
-  foreach ( const QgsField field, fields )
+  Q_FOREACH ( const QgsField field, fields )
   {
     int idx = mLayer->fieldNameIndex( field.name() );
     if ( idx < 0 )
@@ -398,7 +402,7 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer* layer, QStrin
     }
 
     context.setFeature( feature );
-    context.lastScope()->setVariable( QString( "_rownum_" ), rownum );
+    context.lastScope()->setVariable( QString( "row_number" ), rownum );
 
     QVariant value = exp.evaluate( &context );
     fld.convertCompatible( value );

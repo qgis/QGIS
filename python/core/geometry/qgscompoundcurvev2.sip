@@ -60,4 +60,9 @@ class QgsCompoundCurveV2: public QgsCurveV2
     void sumUpArea( double& sum ) const;
 
     bool hasCurvedSegments() const;
+
+    /** Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
+        @param vertex the vertex id
+        @return rotation in radians, clockwise from north*/
+    double vertexAngle( const QgsVertexId& vertex ) const;
 };

@@ -217,16 +217,13 @@ namespace pal
     }
 
     // generate candidates for the feature part
-    LabelPosition** lPos = NULL;
-    int nblp = ft_ptr->setPosition( &lPos, context->bbox_min, context->bbox_max, ft_ptr, context->candidates );
-
-    if ( nblp > 0 )
+    QList< LabelPosition* > lPos;
+    if ( ft_ptr->setPosition( lPos, context->bbox_min, context->bbox_max, ft_ptr, context->candidates ) )
     {
       // valid features are added to fFeats
       Feats *ft = new Feats();
       ft->feature = ft_ptr;
       ft->shape = NULL;
-      ft->nblp = nblp;
       ft->lPos = lPos;
       ft->priority = ft_ptr->getFeature()->calculatePriority();
       context->fFeats->append( ft );
@@ -234,7 +231,7 @@ namespace pal
     else
     {
       // Others are deleted
-      delete[] lPos;
+      qDeleteAll( lPos );
     }
 
     return true;
@@ -316,7 +313,7 @@ namespace pal
     QStringList layersWithFeaturesInBBox;
 
     mMutex.lock();
-    Q_FOREACH ( QString layerName, layerNames )
+    Q_FOREACH ( const QString& layerName, layerNames )
     {
       layer = mLayers.value( layerName, 0 );
       if ( !layer )
@@ -386,6 +383,12 @@ namespace pal
 
     if ( isCancelled() )
     {
+      Q_FOREACH ( Feats* feat, *fFeats )
+      {
+        qDeleteAll( feat->lPos );
+        feat->lPos.clear();
+      }
+
       qDeleteAll( *fFeats );
       delete fFeats;
       delete prob;
@@ -397,9 +400,7 @@ namespace pal
     for ( i = 0; i < prob->nbft; i++ ) /* foreach feature into prob */
     {
       feat = fFeats->takeFirst();
-#ifdef _DEBUG_FULL_
-      std::cout << "Feature:" << feat->feature->getLayer()->getName() << "/" << feat->feature->getUID() << " candidates " << feat->nblp << std::endl;
-#endif
+
       prob->featStartId[i] = idlp;
       prob->inactiveCost[i] = pow( 2, 10 - 10 * feat->priority );
 
@@ -419,24 +420,20 @@ namespace pal
       // sort candidates by cost, skip less interesting ones, calculate polygon costs (if using polygons)
       max_p = CostCalculator::finalizeCandidatesCosts( feat, max_p, obstacles, bbx, bby );
 
-#ifdef _DEBUG_FULL_
-      std::cout << "All costs are set" << std::endl;
-#endif
       // only keep the 'max_p' best candidates
-      for ( j = max_p; j < feat->nblp; j++ )
+      while ( feat->lPos.count() > max_p )
       {
         // TODO remove from index
-        feat->lPos[j]->removeFromIndex( prob->candidates );
-        delete feat->lPos[j];
+        feat->lPos.last()->removeFromIndex( prob->candidates );
+        delete feat->lPos.takeLast();
       }
-      feat->nblp = max_p;
 
       // update problem's # candidate
-      prob->featNbLp[i] = feat->nblp;
-      prob->nblp += feat->nblp;
+      prob->featNbLp[i] = feat->lPos.count();
+      prob->nblp += feat->lPos.count();
 
       // add all candidates into a rtree (to speed up conflicts searching)
-      for ( j = 0; j < feat->nblp; j++, idlp++ )
+      for ( j = 0; j < feat->lPos.count(); j++, idlp++ )
       {
         lp = feat->lPos[j];
         //lp->insertIntoIndex(prob->candidates);
@@ -445,26 +442,18 @@ namespace pal
       fFeats->append( feat );
     }
 
-#ifdef _DEBUG_FULL_
-    std::cout << "Malloc problem...." << std::endl;
-#endif
-
-
-    idlp = 0;
     int nbOverlaps = 0;
-    prob->labelpositions = new LabelPosition*[prob->nblp];
-    //prob->feat = new int[prob->nblp];
 
-#ifdef _DEBUG_FULL_
-    std::cout << "problem malloc'd" << std::endl;
-#endif
-
-
-    j = 0;
     while ( fFeats->size() > 0 ) // foreach feature
     {
       if ( isCancelled() )
       {
+        Q_FOREACH ( Feats* feat, *fFeats )
+        {
+          qDeleteAll( feat->lPos );
+          feat->lPos.clear();
+        }
+
         qDeleteAll( *fFeats );
         delete fFeats;
         delete prob;
@@ -473,15 +462,15 @@ namespace pal
       }
 
       feat = fFeats->takeFirst();
-      for ( i = 0; i < feat->nblp; i++, idlp++ )  // foreach label candidate
+      while ( !feat->lPos.isEmpty() ) // foreach label candidate
       {
-        lp = feat->lPos[i];
+        lp = feat->lPos.takeFirst();
         lp->resetNumOverlaps();
 
         // make sure that candidate's cost is less than 1
         lp->validateCost();
 
-        prob->labelpositions[idlp] = lp;
+        prob->addCandidatePosition( lp );
         //prob->feat[idlp] = j;
 
         lp->getBoundingBox( amin, amax );
@@ -490,12 +479,7 @@ namespace pal
         prob->candidates->Search( amin, amax, LabelPosition::countOverlapCallback, ( void* ) lp );
 
         nbOverlaps += lp->getNumOverlaps();
-#ifdef _DEBUG_FULL_
-        std::cout << "Nb overlap for " << idlp << "/" << prob->nblp - 1 << " : " << lp->getNumOverlaps() << std::endl;
-#endif
       }
-      j++;
-      delete[] feat->lPos;
       delete feat;
     }
     delete fFeats;

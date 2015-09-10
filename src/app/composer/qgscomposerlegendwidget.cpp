@@ -68,7 +68,7 @@ class QgsComposerLegendMenuProvider : public QObject, public QgsLayerTreeViewMen
 
       QList<QgsComposerLegendStyle::Style> lst;
       lst << QgsComposerLegendStyle::Hidden << QgsComposerLegendStyle::Group << QgsComposerLegendStyle::Subgroup;
-      foreach ( QgsComposerLegendStyle::Style style, lst )
+      Q_FOREACH ( QgsComposerLegendStyle::Style style, lst )
       {
         QAction* action = menu->addAction( QgsComposerLegendStyle::styleLabel( style ), mWidget, SLOT( setCurrentNodeStyleFromAction() ) );
         action->setCheckable( true );
@@ -572,7 +572,7 @@ void QgsComposerLegendWidget::on_mCheckBoxAutoUpdate_stateChanged( int state )
   QList<QWidget*> widgets;
   widgets << mMoveDownToolButton << mMoveUpToolButton << mRemoveToolButton << mAddToolButton
   << mEditPushButton << mCountToolButton << mUpdateAllPushButton << mAddGroupToolButton;
-  foreach ( QWidget* w, widgets )
+  Q_FOREACH ( QWidget* w, widgets )
     w->setEnabled( state != Qt::Checked );
 }
 
@@ -661,12 +661,12 @@ void QgsComposerLegendWidget::on_mRemoveToolButton_clicked()
   mLegend->beginCommand( "Legend item removed" );
 
   QList<QPersistentModelIndex> indexes;
-  foreach ( const QModelIndex &index, selectionModel->selectedIndexes() )
+  Q_FOREACH ( const QModelIndex &index, selectionModel->selectedIndexes() )
     indexes << index;
 
   // first try to remove legend nodes
   QHash<QgsLayerTreeLayer*, QList<int> > nodesWithRemoval;
-  foreach ( const QPersistentModelIndex index, indexes )
+  Q_FOREACH ( const QPersistentModelIndex& index, indexes )
   {
     if ( QgsLayerTreeModelLegendNode* legendNode = mItemTreeView->layerTreeModel()->index2legendNode( index ) )
     {
@@ -674,13 +674,13 @@ void QgsComposerLegendWidget::on_mRemoveToolButton_clicked()
       nodesWithRemoval[nodeLayer].append( index.row() );
     }
   }
-  foreach ( QgsLayerTreeLayer* nodeLayer, nodesWithRemoval.keys() )
+  Q_FOREACH ( QgsLayerTreeLayer* nodeLayer, nodesWithRemoval.keys() )
   {
     QList<int> toDelete = nodesWithRemoval[nodeLayer];
     qSort( toDelete.begin(), toDelete.end(), qGreater<int>() );
     QList<int> order = QgsMapLayerLegendUtils::legendNodeOrder( nodeLayer );
 
-    foreach ( int i, toDelete )
+    Q_FOREACH ( int i, toDelete )
     {
       if ( i >= 0 && i < order.count() )
         order.removeAt( i );
@@ -691,7 +691,7 @@ void QgsComposerLegendWidget::on_mRemoveToolButton_clicked()
   }
 
   // then remove layer tree nodes
-  foreach ( const QPersistentModelIndex index, indexes )
+  Q_FOREACH ( const QPersistentModelIndex& index, indexes )
   {
     if ( index.isValid() && mItemTreeView->layerTreeModel()->index2node( index ) )
       mLegend->modelV2()->removeRow( index.row(), index.parent() );
@@ -795,7 +795,7 @@ void QgsComposerLegendWidget::resetLayerNodeToDefaults()
 
   mLegend->beginCommand( tr( "Legend updated" ) );
 
-  foreach ( QString key, nodeLayer->customProperties() )
+  Q_FOREACH ( const QString& key, nodeLayer->customProperties() )
   {
     if ( key.startsWith( "legend/" ) )
       nodeLayer->removeCustomProperty( key );

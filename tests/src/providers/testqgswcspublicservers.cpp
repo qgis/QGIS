@@ -97,7 +97,7 @@ void TestQgsWcsPublicServers::init()
 
   QStringList providers;
   providers << "wcs" << "gdal";
-  foreach ( QString provider, providers )
+  Q_FOREACH ( const QString& provider, providers )
   {
     QString prefix = provider == "gdal" ? "GDAL " : "";
     mHead << prefix + "CRS";
@@ -189,7 +189,7 @@ void TestQgsWcsPublicServers::init()
 
 TestQgsWcsPublicServers::Server TestQgsWcsPublicServers::getServer( const QString & url )
 {
-  foreach ( Server server, mServers )
+  Q_FOREACH ( const Server& server, mServers )
   {
     if ( server.url == url ) return server;
   }
@@ -199,11 +199,11 @@ TestQgsWcsPublicServers::Server TestQgsWcsPublicServers::getServer( const QStrin
 QList<TestQgsWcsPublicServers::Issue> TestQgsWcsPublicServers::issues( const QString & url, const QString & coverage, const QString &version )
 {
   QList<Issue> issues;
-  foreach ( Server server, mServers )
+  Q_FOREACH ( const Server& server, mServers )
   {
     if ( server.url == url )
     {
-      foreach ( Issue issue, server.issues )
+      Q_FOREACH ( const Issue& issue, server.issues )
       {
         if (( issue.coverages.size() == 0 || issue.coverages.contains( coverage ) ) &&
             ( issue.versions.size() == 0 || issue.versions.contains( version ) ) )
@@ -219,7 +219,7 @@ QList<TestQgsWcsPublicServers::Issue> TestQgsWcsPublicServers::issues( const QSt
 QStringList TestQgsWcsPublicServers::issueDescriptions( const QString & url, const QString & coverage, const QString &version )
 {
   QStringList descriptions;
-  foreach ( Issue myIssue, issues( url, coverage, version ) )
+  Q_FOREACH ( const Issue& myIssue, issues( url, coverage, version ) )
   {
     descriptions << myIssue.description;
   }
@@ -229,7 +229,7 @@ QStringList TestQgsWcsPublicServers::issueDescriptions( const QString & url, con
 int TestQgsWcsPublicServers::issueOffender( const QString & url, const QString & coverage, const QString &version )
 {
   int offender = NoOffender;
-  foreach ( Issue myIssue, issues( url, coverage, version ) )
+  Q_FOREACH ( const Issue& myIssue, issues( url, coverage, version ) )
   {
     if ( myIssue.offender == "server" )
     {
@@ -268,13 +268,13 @@ void TestQgsWcsPublicServers::test()
   }
   else
   {
-    foreach ( Server server, mServers )
+    Q_FOREACH ( const Server& server, mServers )
     {
       serverUrls << server.url;
     }
   }
 
-  foreach ( QString serverUrl, serverUrls )
+  Q_FOREACH ( const QString& serverUrl, serverUrls )
   {
     Server myServer = getServer( serverUrl );
     QStringList myServerLog;
@@ -293,7 +293,7 @@ void TestQgsWcsPublicServers::test()
 
     QString myServerLogPath = myServerDir.absolutePath() + "/server.log";
 
-    foreach ( QString version, versions )
+    Q_FOREACH ( const QString& version, versions )
     {
       QgsDebugMsg( "server: " + serverUrl + " version: " + version );
       QStringList myVersionLog;
@@ -319,7 +319,7 @@ void TestQgsWcsPublicServers::test()
       }
       myServerUri.setParam( "cache", "AlwaysNetwork" );
 
-      foreach ( QString key, myServer.params.keys() )
+      Q_FOREACH ( const QString& key, myServer.params.keys() )
       {
         myServerUri.setParam( key, myServer.params.value( key ) );
       }
@@ -351,7 +351,7 @@ void TestQgsWcsPublicServers::test()
       int myStep = myCoverages.size() / qMin( mMaxCoverages, myCoverages.size() );
       int myStepCount = -1;
       bool myCoverageFound = false;
-      foreach ( QgsWcsCoverageSummary myCoverage, myCoverages )
+      Q_FOREACH ( QgsWcsCoverageSummary myCoverage, myCoverages )
       {
         QgsDebugMsg( "coverage: " + myCoverage.identifier );
         if ( !mCoverage.isEmpty() && myCoverage.identifier != mCoverage ) continue;
@@ -410,7 +410,7 @@ void TestQgsWcsPublicServers::test()
         QStringList providers;
         providers << "wcs" << "gdal";
 
-        foreach ( QString provider, providers )
+        Q_FOREACH ( const QString& provider, providers )
         {
           QTime time;
           time.start();
@@ -577,7 +577,7 @@ void TestQgsWcsPublicServers::report()
   int myCoverageErrCount = 0;
   int myCoverageWarnCount = 0;
 
-  foreach ( QString myServerDirName, mCacheDir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
+  Q_FOREACH ( const QString& myServerDirName, mCacheDir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
   {
     myServerCount++;
     QDir myServerDir( mCacheDir.absolutePath() + "/" + myServerDirName );
@@ -594,7 +594,7 @@ void TestQgsWcsPublicServers::report()
     if ( myServer.params.size() > 0 )
     {
       myReport += "<br>Additional params: ";
-      foreach ( QString key, myServer.params.keys() )
+      Q_FOREACH ( const QString& key, myServer.params.keys() )
       {
         myReport += key + "=" + myServer.params.value( key ) + " ";
       }
@@ -605,7 +605,7 @@ void TestQgsWcsPublicServers::report()
 
     bool myServerErr = false;
     bool myServerWarn = false;
-    foreach ( QString myVersionDirName, myServerDir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
+    Q_FOREACH ( const QString& myVersionDirName, myServerDir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
     {
       QString myVersionReport;
       int myVersionCoverageCount = 0;
@@ -623,7 +623,7 @@ void TestQgsWcsPublicServers::report()
       if ( !myVersionLog.value( "error" ).isEmpty() )
       {
         // Server may have more errors, for each version
-        //foreach ( QString err, myServerLog.values( "error" ) )
+        //Q_FOREACH ( QString err, myServerLog.values( "error" ) )
         //{
         //myVersionReport += error( err );
         //}
@@ -637,7 +637,7 @@ void TestQgsWcsPublicServers::report()
         QStringList filters;
         filters << "*.log";
         myVersionDir.setNameFilters( filters );
-        foreach ( QString myLogFileName, myVersionDir.entryList( QDir::Files ) )
+        Q_FOREACH ( const QString& myLogFileName, myVersionDir.entryList( QDir::Files ) )
         {
           if ( myLogFileName == "version.log" ) continue;
           myVersionCoverageCount++;
@@ -660,7 +660,7 @@ void TestQgsWcsPublicServers::report()
           providers << "wcs" << "gdal";
 
           bool hasErr = false;
-          foreach ( QString provider, providers )
+          Q_FOREACH ( const QString& provider, providers )
           {
             QString imgPath = myVersionDir.absolutePath() + "/" + QFileInfo( myLogPath ).completeBaseName() + "-" + provider + ".png";
 
@@ -801,7 +801,7 @@ QMap<QString, QString> TestQgsWcsPublicServers::readLog( QString theFileName )
   if ( myFile.open( QIODevice::ReadOnly ) )
   {
     QTextStream myStream( &myFile );
-    foreach ( QString row, myStream.readAll().split( "\n" ) )
+    Q_FOREACH ( const QString& row, myStream.readAll().split( "\n" ) )
     {
       int sepIdx = row.indexOf( ":" );
       myMap.insert( row.left( sepIdx ), row.mid( sepIdx + 1 ) );

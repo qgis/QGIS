@@ -58,6 +58,8 @@ class DBManager(QMainWindow):
 
     def closeEvent(self, e):
         self.unregisterAllActions()
+        # clear preview, this will delete the layer in preview tab
+        self.preview.loadPreview(None)
 
         # save the window state
         settings = QSettings()
@@ -82,6 +84,8 @@ class DBManager(QMainWindow):
         QApplication.setOverrideCursor(Qt.WaitCursor)
         try:
             self.reloadButtons()
+            # clear preview, this will delete the layer in preview tab
+            self.preview.loadPreview(None)
             self.refreshTabs()
         except BaseError as e:
             DlgDbError.showError(e, self)
@@ -270,7 +274,7 @@ class DBManager(QMainWindow):
 
         return True
 
-    def invokeCallback(self, callback, params=None):
+    def invokeCallback(self, callback, *params):
         """ Call a method passing the selected item in the database tree,
                 the sender (usually a QAction), the plugin mainWindow and
                 optionally additional parameters.
@@ -280,10 +284,7 @@ class DBManager(QMainWindow):
         """
         QApplication.setOverrideCursor(Qt.WaitCursor)
         try:
-            if params is None:
-                callback(self.tree.currentItem(), self.sender(), self)
-            else:
-                callback(self.tree.currentItem(), self.sender(), self, *params)
+            callback(self.tree.currentItem(), self.sender(), self, *params)
 
         except BaseError as e:
             # catch database errors and display the error dialog

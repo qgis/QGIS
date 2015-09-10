@@ -140,6 +140,7 @@ void TestQgsComposerMapGrid::grid()
   mComposerMap->updateBoundingRect();
   qWarning() << "grid annotation font: " << mComposerMap->grid()->annotationFont().toString() << " exactMatch:" << mComposerMap->grid()->annotationFont().exactMatch();
   QgsCompositionChecker checker( "composermap_grid", mComposition );
+  checker.setControlPathPrefix( "composer_mapgrid" );
 
   bool testResult = checker.testComposition( mReport, 0, 0 );
   mComposerMap->grid()->setEnabled( false );
@@ -162,6 +163,7 @@ void TestQgsComposerMapGrid::reprojected()
   mComposerMap->setFrameEnabled( false );
   mComposerMap->updateBoundingRect();
   QgsCompositionChecker checker( "composermap_gridreprojected", mComposition );
+  checker.setControlPathPrefix( "composer_mapgrid" );
 
   bool testResult = checker.testComposition( mReport, 0, 0 );
   mComposerMap->grid()->setEnabled( false );
@@ -182,6 +184,7 @@ void TestQgsComposerMapGrid::crossGrid()
   mComposerMap->grid()->setBlendMode( QPainter::CompositionMode_SourceOver );
   mComposerMap->updateBoundingRect();
   QgsCompositionChecker checker( "composermap_crossgrid", mComposition );
+  checker.setControlPathPrefix( "composer_mapgrid" );
 
   bool testResult = checker.testComposition( mReport, 0, 0 );
   mComposerMap->grid()->setStyle( QgsComposerMapGrid::Solid );
@@ -199,6 +202,7 @@ void TestQgsComposerMapGrid::markerGrid()
   mComposerMap->grid()->setBlendMode( QPainter::CompositionMode_SourceOver );
   mComposerMap->updateBoundingRect();
   QgsCompositionChecker checker( "composermap_markergrid", mComposition );
+  checker.setControlPathPrefix( "composer_mapgrid" );
 
   bool testResult = checker.testComposition( mReport, 0, 0 );
   mComposerMap->grid()->setStyle( QgsComposerMapGrid::Solid );
@@ -220,6 +224,7 @@ void TestQgsComposerMapGrid::frameOnly()
   mComposerMap->grid()->setBlendMode( QPainter::CompositionMode_SourceOver );
   mComposerMap->updateBoundingRect();
   QgsCompositionChecker checker( "composermap_gridframeonly", mComposition );
+  checker.setControlPathPrefix( "composer_mapgrid" );
 
   bool testResult = checker.testComposition( mReport, 0, 0 );
   mComposerMap->grid()->setStyle( QgsComposerMapGrid::Solid );
@@ -245,6 +250,7 @@ void TestQgsComposerMapGrid::zebraStyle()
   mComposerMap->updateBoundingRect();
 
   QgsCompositionChecker checker( "composermap_zebrastyle", mComposition );
+  checker.setControlPathPrefix( "composer_mapgrid" );
 
   bool testResult = checker.testComposition( mReport, 0, 0 );
   QVERIFY( testResult );
@@ -271,18 +277,21 @@ void TestQgsComposerMapGrid::zebraStyleSides()
   mComposerMap->updateBoundingRect();
 
   QgsCompositionChecker checker( "composermap_zebrastyle_left", mComposition );
+  checker.setControlPathPrefix( "composer_mapgrid" );
   bool testResult = checker.testComposition( mReport, 0, 0 );
   QVERIFY( testResult );
 
   mComposerMap->grid()->setFrameSideFlag( QgsComposerMapGrid::FrameTop, true );
   mComposerMap->updateBoundingRect();
   QgsCompositionChecker checker2( "composermap_zebrastyle_lefttop", mComposition );
+  checker2.setControlPathPrefix( "composer_mapgrid" );
   bool testResult2 = checker2.testComposition( mReport, 0, 0 );
   QVERIFY( testResult2 );
 
   mComposerMap->grid()->setFrameSideFlag( QgsComposerMapGrid::FrameRight, true );
   mComposerMap->updateBoundingRect();
   QgsCompositionChecker checker3( "composermap_zebrastyle_lefttopright", mComposition );
+  checker3.setControlPathPrefix( "composer_mapgrid" );
   bool testResult3 = checker3.testComposition( mReport, 0, 0 );
   QVERIFY( testResult3 );
 
@@ -314,6 +323,7 @@ void TestQgsComposerMapGrid::frameDivisions()
   mComposerMap->updateBoundingRect();
 
   QgsCompositionChecker checker( "composermap_rotatedframe", mComposition );
+  checker.setControlPathPrefix( "composer_mapgrid" );
   bool testResult = checker.testComposition( mReport, 0, 0 );
   QVERIFY( testResult );
 
@@ -324,6 +334,7 @@ void TestQgsComposerMapGrid::frameDivisions()
   mComposerMap->updateBoundingRect();
 
   QgsCompositionChecker checker2( "composermap_framedivisions", mComposition );
+  checker2.setControlPathPrefix( "composer_mapgrid" );
   testResult = checker2.testComposition( mReport, 0, 0 );
   QVERIFY( testResult );
 
@@ -355,6 +366,7 @@ void TestQgsComposerMapGrid::annotationFilter()
   mComposerMap->updateBoundingRect();
 
   QgsCompositionChecker checker( "composermap_rotatedannotations", mComposition );
+  checker.setControlPathPrefix( "composer_mapgrid" );
   bool testResult = checker.testComposition( mReport, 0, 0 );
   QVERIFY( testResult );
 
@@ -365,6 +377,7 @@ void TestQgsComposerMapGrid::annotationFilter()
   mComposerMap->updateBoundingRect();
 
   QgsCompositionChecker checker2( "composermap_filteredannotations", mComposition );
+  checker2.setControlPathPrefix( "composer_mapgrid" );
   testResult = checker2.testComposition( mReport, 0, 0 );
   QVERIFY( testResult );
 
@@ -389,6 +402,7 @@ void TestQgsComposerMapGrid::interiorTicks()
   mComposerMap->updateBoundingRect();
 
   QgsCompositionChecker checker( "composermap_interiorticks", mComposition );
+  checker.setControlPathPrefix( "composer_mapgrid" );
   bool testResult = checker.testComposition( mReport, 0, 0 );
   QVERIFY( testResult );
 
@@ -414,6 +428,7 @@ void TestQgsComposerMapGrid::interiorTicksAnnotated()
   mComposerMap->updateBoundingRect();
 
   QgsCompositionChecker checker( "composermap_interiorticks_annotated", mComposition );
+  checker.setControlPathPrefix( "composer_mapgrid" );
   bool testResult = checker.testComposition( mReport, 0, 0 );
   QVERIFY( testResult );
 
@@ -424,6 +439,7 @@ void TestQgsComposerMapGrid::interiorTicksAnnotated()
   mComposerMap->updateBoundingRect();
 
   QgsCompositionChecker checker2( "composermap_interiorticks_annotated2", mComposition );
+  checker2.setControlPathPrefix( "composer_mapgrid" );
   bool testResult2 = checker2.testComposition( mReport, 0, 0 );
   QVERIFY( testResult2 );
 
@@ -444,6 +460,7 @@ void TestQgsComposerMapGrid::exteriorTicks()
   mComposerMap->updateBoundingRect();
 
   QgsCompositionChecker checker( "composermap_exteriorticks", mComposition );
+  checker.setControlPathPrefix( "composer_mapgrid" );
   bool testResult = checker.testComposition( mReport, 0, 0 );
   QVERIFY( testResult );
 
@@ -469,6 +486,7 @@ void TestQgsComposerMapGrid::exteriorTicksAnnotated()
   mComposerMap->updateBoundingRect();
 
   QgsCompositionChecker checker( "composermap_exteriorticks_annotated", mComposition );
+  checker.setControlPathPrefix( "composer_mapgrid" );
   bool testResult = checker.testComposition( mReport, 0, 0 );
   QVERIFY( testResult );
 
@@ -479,6 +497,7 @@ void TestQgsComposerMapGrid::exteriorTicksAnnotated()
   mComposerMap->updateBoundingRect();
 
   QgsCompositionChecker checker2( "composermap_exteriorticks_annotated2", mComposition );
+  checker2.setControlPathPrefix( "composer_mapgrid" );
   bool testResult2 = checker2.testComposition( mReport, 0, 0 );
   QVERIFY( testResult2 );
 
@@ -499,6 +518,7 @@ void TestQgsComposerMapGrid::interiorExteriorTicks()
   mComposerMap->updateBoundingRect();
 
   QgsCompositionChecker checker( "composermap_interiorexteriorticks", mComposition );
+  checker.setControlPathPrefix( "composer_mapgrid" );
   bool testResult = checker.testComposition( mReport, 0, 0 );
   QVERIFY( testResult );
 
@@ -524,6 +544,7 @@ void TestQgsComposerMapGrid::interiorExteriorTicksAnnotated()
   mComposerMap->updateBoundingRect();
 
   QgsCompositionChecker checker( "composermap_interiorexteriorticks_annotated", mComposition );
+  checker.setControlPathPrefix( "composer_mapgrid" );
   bool testResult = checker.testComposition( mReport, 0, 0 );
   QVERIFY( testResult );
 
@@ -534,6 +555,7 @@ void TestQgsComposerMapGrid::interiorExteriorTicksAnnotated()
   mComposerMap->updateBoundingRect();
 
   QgsCompositionChecker checker2( "composermap_interiorexteriorticks_annotated2", mComposition );
+  checker2.setControlPathPrefix( "composer_mapgrid" );
   bool testResult2 = checker2.testComposition( mReport, 0, 0 );
   QVERIFY( testResult2 );
 
@@ -554,6 +576,7 @@ void TestQgsComposerMapGrid::lineBorder()
   mComposerMap->updateBoundingRect();
 
   QgsCompositionChecker checker( "composermap_lineborder", mComposition );
+  checker.setControlPathPrefix( "composer_mapgrid" );
   bool testResult = checker.testComposition( mReport, 0, 0 );
   QVERIFY( testResult );
 
@@ -579,6 +602,7 @@ void TestQgsComposerMapGrid::lineBorderAnnotated()
   mComposerMap->updateBoundingRect();
 
   QgsCompositionChecker checker( "composermap_lineborder_annotated", mComposition );
+  checker.setControlPathPrefix( "composer_mapgrid" );
   bool testResult = checker.testComposition( mReport, 0, 0 );
   QVERIFY( testResult );
 
@@ -589,6 +613,7 @@ void TestQgsComposerMapGrid::lineBorderAnnotated()
   mComposerMap->updateBoundingRect();
 
   QgsCompositionChecker checker2( "composermap_lineborder_annotated2", mComposition );
+  checker2.setControlPathPrefix( "composer_mapgrid" );
   bool testResult2 = checker2.testComposition( mReport, 0, 0 );
   QVERIFY( testResult2 );
 
@@ -615,26 +640,33 @@ void TestQgsComposerMapGrid::annotationFormats()
   gridProjected.setAnnotationFormat( QgsComposerMapGrid::DecimalWithSuffix );
   gridProjected.setAnnotationPrecision( 1 );
 
+  QScopedPointer< QgsExpressionContext> expressionContext( gridGeographic.createExpressionContext() );
+
   //normal e/w
-  QCOMPARE( gridGeographic.gridAnnotationString( 90, QgsComposerMapGrid::Longitude ), QString( "90.0" ) + QChar( 176 ) + QString( "E" ) );
-  QCOMPARE( gridProjected.gridAnnotationString( 90, QgsComposerMapGrid::Longitude ), QString( "90.0E" ) );
+  QCOMPARE( gridGeographic.gridAnnotationString( 90, QgsComposerMapGrid::Longitude, *expressionContext ), QString( "90.0" ) + QChar( 176 ) + QString( "E" ) );
+  QCOMPARE( gridProjected.gridAnnotationString( 90, QgsComposerMapGrid::Longitude, *expressionContext ), QString( "90.0E" ) );
 
   //0 degrees
-  QCOMPARE( gridGeographic.gridAnnotationString( 0, QgsComposerMapGrid::Longitude ), QString( "0.0" ) + QChar( 176 ) );
-  QCOMPARE( gridProjected.gridAnnotationString( 0, QgsComposerMapGrid::Longitude ), QString( "0.0E" ) );
+  QCOMPARE( gridGeographic.gridAnnotationString( 0, QgsComposerMapGrid::Longitude, *expressionContext ), QString( "0.0" ) + QChar( 176 ) );
+  QCOMPARE( gridProjected.gridAnnotationString( 0, QgsComposerMapGrid::Longitude, *expressionContext ), QString( "0.0E" ) );
 
   //180 degrees
-  QCOMPARE( gridGeographic.gridAnnotationString( 180, QgsComposerMapGrid::Longitude ), QString( "180.0" ) + QChar( 176 ) );
-  QCOMPARE( gridProjected.gridAnnotationString( 180, QgsComposerMapGrid::Longitude ), QString( "180.0E" ) );
+  QCOMPARE( gridGeographic.gridAnnotationString( 180, QgsComposerMapGrid::Longitude, *expressionContext ), QString( "180.0" ) + QChar( 176 ) );
+  QCOMPARE( gridProjected.gridAnnotationString( 180, QgsComposerMapGrid::Longitude, *expressionContext ), QString( "180.0E" ) );
 
   //normal n/s
-  QCOMPARE( gridGeographic.gridAnnotationString( 45, QgsComposerMapGrid::Latitude ), QString( "45.0" ) + QChar( 176 ) + QString( "N" ) );
-  QCOMPARE( gridProjected.gridAnnotationString( 45, QgsComposerMapGrid::Latitude ), QString( "45.0N" ) );
+  QCOMPARE( gridGeographic.gridAnnotationString( 45, QgsComposerMapGrid::Latitude, *expressionContext ), QString( "45.0" ) + QChar( 176 ) + QString( "N" ) );
+  QCOMPARE( gridProjected.gridAnnotationString( 45, QgsComposerMapGrid::Latitude, *expressionContext ), QString( "45.0N" ) );
 
   //0 north/south
-  QCOMPARE( gridGeographic.gridAnnotationString( 0, QgsComposerMapGrid::Latitude ), QString( "0.0" ) + QChar( 176 ) );
-  QCOMPARE( gridProjected.gridAnnotationString( 0, QgsComposerMapGrid::Latitude ), QString( "0.0N" ) );
+  QCOMPARE( gridGeographic.gridAnnotationString( 0, QgsComposerMapGrid::Latitude, *expressionContext ), QString( "0.0" ) + QChar( 176 ) );
+  QCOMPARE( gridProjected.gridAnnotationString( 0, QgsComposerMapGrid::Latitude, *expressionContext ), QString( "0.0N" ) );
 
+  //Custom format annotations
+  gridProjected.setAnnotationFormat( QgsComposerMapGrid::CustomFormat );
+  gridProjected.setAnnotationExpression( "(@grid_number/10) || case when @grid_axis ='x' then 'a' else 'b' end" );
+  QCOMPARE( gridProjected.gridAnnotationString( 45, QgsComposerMapGrid::Latitude, *expressionContext ), QString( "4.5b" ) );
+  QCOMPARE( gridProjected.gridAnnotationString( 33, QgsComposerMapGrid::Longitude, *expressionContext ), QString( "3.3a" ) );
 }
 
 void TestQgsComposerMapGrid::descendingAnnotations()
@@ -657,6 +689,7 @@ void TestQgsComposerMapGrid::descendingAnnotations()
   mComposerMap->updateBoundingRect();
 
   QgsCompositionChecker checker( "composermap_verticaldescending_inside", mComposition );
+  checker.setControlPathPrefix( "composer_mapgrid" );
   bool testResult = checker.testComposition( mReport, 0, 0 );
   QVERIFY( testResult );
 
@@ -667,6 +700,7 @@ void TestQgsComposerMapGrid::descendingAnnotations()
   mComposerMap->updateBoundingRect();
 
   QgsCompositionChecker checker2( "composermap_verticaldescending_outside", mComposition );
+  checker2.setControlPathPrefix( "composer_mapgrid" );
   bool testResult2 = checker2.testComposition( mReport, 0, 0 );
   QVERIFY( testResult2 );
 

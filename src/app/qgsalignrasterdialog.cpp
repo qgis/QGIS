@@ -22,7 +22,7 @@
 static QgsMapLayer* _rasterLayer( const QString& filename )
 {
   QMap<QString, QgsMapLayer*> layers = QgsMapLayerRegistry::instance()->mapLayers();
-  foreach ( QgsMapLayer* layer, layers.values() )
+  Q_FOREACH ( QgsMapLayer* layer, layers.values() )
   {
     if ( layer->type() == QgsMapLayer::RasterLayer && layer->source() == filename )
       return layer;
@@ -116,7 +116,7 @@ void QgsAlignRasterDialog::populateLayersView()
 
   QStandardItemModel* model = new QStandardItemModel();
   int i = 0;
-  foreach ( QgsAlignRaster::Item item, mAlign->rasters() )
+  Q_FOREACH ( QgsAlignRaster::Item item, mAlign->rasters() )
   {
     QString layerName = _rasterLayerName( item.inputFilename );
 
@@ -344,7 +344,7 @@ void QgsAlignRasterDialog::runAlign()
   {
     if ( mChkAddToCanvas->isChecked() )
     {
-      foreach ( const QgsAlignRaster::Item& item, mAlign->rasters() )
+      Q_FOREACH ( const QgsAlignRaster::Item& item, mAlign->rasters() )
       {
         QgsRasterLayer* layer = new QgsRasterLayer( item.outputFilename, QFileInfo( item.outputFilename ).baseName() );
         if ( layer->isValid() )

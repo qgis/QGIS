@@ -264,7 +264,7 @@ void QgsWMSSourceSelect::clear()
 
   mCRSs.clear();
 
-  foreach ( QAbstractButton *b, mImageFormatGroup->buttons() )
+  Q_FOREACH ( QAbstractButton *b, mImageFormatGroup->buttons() )
   {
     b->setHidden( true );
   }
@@ -277,7 +277,7 @@ bool QgsWMSSourceSelect::populateLayerList( const QgsWmsCapabilities& capabiliti
   QVector<QgsWmsLayerProperty> layers = capabilities.supportedLayers();
 
   bool first = true;
-  foreach ( QString encoding, capabilities.supportedImageEncodings() )
+  Q_FOREACH ( const QString& encoding, capabilities.supportedImageEncodings() )
   {
     int id = mMimeMap.value( encoding, -1 );
     if ( id < 0 )
@@ -347,7 +347,7 @@ bool QgsWMSSourceSelect::populateLayerList( const QgsWmsCapabilities& capabiliti
     QHash<QString, QgsWmtsTileMatrixSet> tileMatrixSets = capabilities.supportedTileMatrixSets();
 
     int rows = 0;
-    foreach ( const QgsWmtsTileLayer &l, mTileLayers )
+    Q_FOREACH ( const QgsWmtsTileLayer &l, mTileLayers )
     {
       rows += l.styles.size() * l.setLinks.size() * l.formats.size();
     }
@@ -357,13 +357,13 @@ bool QgsWMSSourceSelect::populateLayerList( const QgsWmsCapabilities& capabiliti
     lstTilesets->setSortingEnabled( false );
 
     int row = 0;
-    foreach ( const QgsWmtsTileLayer &l, mTileLayers )
+    Q_FOREACH ( const QgsWmtsTileLayer &l, mTileLayers )
     {
-      foreach ( const QgsWmtsStyle &style, l.styles )
+      Q_FOREACH ( const QgsWmtsStyle &style, l.styles )
       {
-        foreach ( const QgsWmtsTileMatrixSetLink &setLink, l.setLinks )
+        Q_FOREACH ( const QgsWmtsTileMatrixSetLink &setLink, l.setLinks )
         {
-          foreach ( QString format, l.formats )
+          Q_FOREACH ( const QString& format, l.formats )
           {
             QTableWidgetItem *item = new QTableWidgetItem( l.identifier );
             item->setData( Qt::UserRole + 0, l.identifier );
@@ -515,7 +515,7 @@ void QgsWMSSourceSelect::addClicked()
 
     const QgsWmtsTileLayer *layer = 0;
 
-    foreach ( const QgsWmtsTileLayer &l, mTileLayers )
+    Q_FOREACH ( const QgsWmtsTileLayer &l, mTileLayers )
     {
       if ( l.identifier == layers.join( "," ) )
       {
@@ -605,7 +605,7 @@ void QgsWMSSourceSelect::enableLayersForCrs( QTreeWidgetItem *item )
 void QgsWMSSourceSelect::on_btnChangeSpatialRefSys_clicked()
 {
   QStringList layers;
-  foreach ( QTreeWidgetItem *item, lstLayers->selectedItems() )
+  Q_FOREACH ( QTreeWidgetItem *item, lstLayers->selectedItems() )
   {
     QString layer = item->data( 0, Qt::UserRole + 0 ).toString();
     if ( !layer.isEmpty() )
@@ -782,7 +782,7 @@ void QgsWMSSourceSelect::on_lstLayers_itemSelectionChanged()
   mCRSs.clear();
 
   // determine selected layers and styles and set of crses that are available for all layers
-  foreach ( QTreeWidgetItem *item, lstLayers->selectedItems() )
+  Q_FOREACH ( QTreeWidgetItem *item, lstLayers->selectedItems() )
   {
     QString layerName = item->data( 0, Qt::UserRole + 0 ).toString();
     QString styleName = item->data( 0, Qt::UserRole + 1 ).toString();

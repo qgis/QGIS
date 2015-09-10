@@ -3,6 +3,6 @@
 
 <qgisgrassmodule label="Recode raster" module="r.recode.file">
 	<option key="input"/>
-	<file key="rules_file" type="new" fileoption="olayer" label="Text file" filters="Txt (*.txt), Csv (*.csv)" />
+	<file key="rules_file" type="new" fileoption="olayer" label="Text file" filters="Txt (*.txt);;Csv (*.csv)" />
 	<option key="output" />
 </qgisgrassmodule> 

@@ -192,7 +192,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
     {
       QStringList allExts = exts.split( " ", QString::SkipEmptyParts );
       bool found = false;
-      foreach ( QString ext, allExts )
+      Q_FOREACH ( const QString& ext, allExts )
       {
         if ( vectorFileName.endsWith( "." + ext, Qt::CaseInsensitive ) )
         {
@@ -2099,7 +2099,7 @@ bool QgsVectorFileWriter::deleteShapeFile( QString theFileName )
   }
 
   bool ok = true;
-  foreach ( QString file, dir.entryList( filter ) )
+  Q_FOREACH ( const QString& file, dir.entryList( filter ) )
   {
     QFile f( dir.canonicalPath() + "/" + file );
     if ( !f.remove( ) )
@@ -2202,7 +2202,7 @@ QMap<QString, QString> QgsVectorFileWriter::ogrDriverList()
     }
   }
 
-  foreach ( QString drvName, writableDrivers )
+  Q_FOREACH ( const QString& drvName, writableDrivers )
   {
     QString longName;
     QString trLongName;

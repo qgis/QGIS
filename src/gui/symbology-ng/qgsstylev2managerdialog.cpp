@@ -189,7 +189,7 @@ void QgsStyleV2ManagerDialog::on_tabItemType_currentChanged( int )
     rampTypes << tr( "Gradient" ) << tr( "Random" ) << tr( "ColorBrewer" );
     rampTypes << tr( "cpt-city" ); // todo, only for rasters?
     QMenu* menu = new QMenu( btnAddItem );
-    foreach ( QString rampType, rampTypes )
+    Q_FOREACH ( const QString& rampType, rampTypes )
     {
       menu->addAction( rampType );
     }
@@ -685,7 +685,7 @@ void QgsStyleV2ManagerDialog::removeItem()
 bool QgsStyleV2ManagerDialog::removeSymbol()
 {
   QModelIndexList indexes = listItems->selectionModel()->selectedIndexes();
-  foreach ( QModelIndex index, indexes )
+  Q_FOREACH ( const QModelIndex& index, indexes )
   {
     QString symbolName = index.data().toString();
     // delete from style and update list
@@ -760,7 +760,7 @@ void QgsStyleV2ManagerDialog::exportSelectedItemsImages( QString dir, QString fo
     return;
 
   QModelIndexList indexes =  listItems->selectionModel()->selection().indexes();
-  foreach ( QModelIndex index, indexes )
+  Q_FOREACH ( const QModelIndex& index, indexes )
   {
     QString name = index.data().toString();
     QString path = dir + "/" + name + "." + format;
@@ -1151,10 +1151,10 @@ void QgsStyleV2ManagerDialog::regrouped( QStandardItem *item )
 void QgsStyleV2ManagerDialog::setSymbolsChecked( QStringList symbols )
 {
   QStandardItemModel *model = qobject_cast<QStandardItemModel*>( listItems->model() );
-  foreach ( const QString symbol, symbols )
+  Q_FOREACH ( const QString& symbol, symbols )
   {
     QList<QStandardItem*> items = model->findItems( symbol );
-    foreach ( QStandardItem* item, items )
+    Q_FOREACH ( QStandardItem* item, items )
       item->setCheckState( Qt::Checked );
   }
 }
@@ -1198,27 +1198,27 @@ void QgsStyleV2ManagerDialog::tagsChanged()
     return;
   }
   // compare old with new to find removed tags
-  foreach ( const QString &tag, oldtags )
+  Q_FOREACH ( const QString &tag, oldtags )
   {
     if ( !newtags.contains( tag ) )
       removetags.append( tag );
   }
   if ( removetags.size() > 0 )
   {
-    foreach ( QModelIndex index, indexes )
+    Q_FOREACH ( const QModelIndex& index, indexes )
     {
       mStyle->detagSymbol( type, index.data().toString(), removetags );
     }
   }
   // compare new with old to find added tags
-  foreach ( const QString &tag, newtags )
+  Q_FOREACH ( const QString &tag, newtags )
   {
     if ( !oldtags.contains( tag ) )
       addtags.append( tag );
   }
   if ( addtags.size() > 0 )
   {
-    foreach ( QModelIndex index, indexes )
+    Q_FOREACH ( const QModelIndex& index, indexes )
     {
       mStyle->tagSymbol( type, index.data().toString(), addtags );
     }
@@ -1339,7 +1339,7 @@ void QgsStyleV2ManagerDialog::listitemsContextMenu( const QPoint& point )
   groupList->setTitle( tr( "Apply Group" ) );
 
   QStringList groups = mStyle->groupNames();
-  foreach ( QString group, groups )
+  Q_FOREACH ( const QString& group, groups )
   {
     groupList->addAction( group );
   }
@@ -1362,7 +1362,7 @@ void QgsStyleV2ManagerDialog::listitemsContextMenu( const QPoint& point )
       groupId = mStyle->groupId( selectedItem->text() );
     }
     QModelIndexList indexes =  listItems->selectionModel()->selectedIndexes();
-    foreach ( QModelIndex index, indexes )
+    Q_FOREACH ( const QModelIndex& index, indexes )
     {
       mStyle->group( type, index.data().toString(), groupId );
     }

@@ -106,6 +106,7 @@ class QgsComposerMapWidget: public QgsComposerItemBaseWidget, private Ui::QgsCom
     void on_mFrameDivisionsBottomComboBox_currentIndexChanged( int index );
 
     void on_mDrawAnnotationGroupBox_toggled( bool state );
+    void on_mAnnotationFormatButton_clicked();
 
     //annotation display
     void on_mAnnotationDisplayLeftComboBox_currentIndexChanged( const QString& text );

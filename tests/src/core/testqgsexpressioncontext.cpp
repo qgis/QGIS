@@ -411,11 +411,13 @@ void TestQgsExpressionContext::setFeature()
 
   //test setting a feature in a context with no scopes
   QgsExpressionContext emptyContext;
+  QVERIFY( !emptyContext.feature().isValid() );
   emptyContext.setFeature( feature );
   //setFeature should have created a scope
   QCOMPARE( emptyContext.scopeCount(), 1 );
   QVERIFY( emptyContext.hasVariable( QgsExpressionContext::EXPR_FEATURE ) );
   QCOMPARE(( qvariant_cast<QgsFeature>( emptyContext.variable( QgsExpressionContext::EXPR_FEATURE ) ) ).id(), 50LL );
+  QCOMPARE( emptyContext.feature().id(), 50LL );
 
   QgsExpressionContext contextWithScope;
   contextWithScope << new QgsExpressionContextScope();
@@ -423,6 +425,7 @@ void TestQgsExpressionContext::setFeature()
   QCOMPARE( contextWithScope.scopeCount(), 1 );
   QVERIFY( contextWithScope.hasVariable( QgsExpressionContext::EXPR_FEATURE ) );
   QCOMPARE(( qvariant_cast<QgsFeature>( contextWithScope.variable( QgsExpressionContext::EXPR_FEATURE ) ) ).id(), 50LL );
+  QCOMPARE( contextWithScope.feature().id(), 50LL );
 }
 
 void TestQgsExpressionContext::setFields()
@@ -438,11 +441,13 @@ void TestQgsExpressionContext::setFields()
 
   //test setting a fields in a context with no scopes
   QgsExpressionContext emptyContext;
+  QVERIFY( emptyContext.fields().isEmpty() );
   emptyContext.setFields( fields );
   //setFeature should have created a scope
   QCOMPARE( emptyContext.scopeCount(), 1 );
   QVERIFY( emptyContext.hasVariable( QgsExpressionContext::EXPR_FIELDS ) );
   QCOMPARE(( qvariant_cast<QgsFields>( emptyContext.variable( QgsExpressionContext::EXPR_FIELDS ) ) ).at( 0 ).name(), QString( "testfield" ) );
+  QCOMPARE( emptyContext.fields().at( 0 ).name(), QString( "testfield" ) );
 
   QgsExpressionContext contextWithScope;
   contextWithScope << new QgsExpressionContextScope();
@@ -450,6 +455,7 @@ void TestQgsExpressionContext::setFields()
   QCOMPARE( contextWithScope.scopeCount(), 1 );
   QVERIFY( contextWithScope.hasVariable( QgsExpressionContext::EXPR_FIELDS ) );
   QCOMPARE(( qvariant_cast<QgsFields>( contextWithScope.variable( QgsExpressionContext::EXPR_FIELDS ) ) ).at( 0 ).name(), QString( "testfield" ) );
+  QCOMPARE( contextWithScope.fields().at( 0 ).name(), QString( "testfield" ) );
 }
 
 void TestQgsExpressionContext::globalScope()

@@ -1,0 +1,7 @@
+{
+  "function": "rand",
+  "description": "Returns a random integer within the range specified by the minimum and maximum argument (inclusive).",
+  "arguments": [ {"arg":"min","description":"an integer representing the smallest possible random number desired"},
+                 {"arg":"max","description":"an integer representing the largest possible random number desired"}],
+  "examples": [ { "expression":"rand(1, 10)", "returns":"8"}]
+}

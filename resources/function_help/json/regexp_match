@@ -1,0 +1,8 @@
+{
+  "function": "regexp_match",
+  "description": "Returns true if any part of a string matches the supplied regular expression.",
+  "arguments": [ {"arg":"input_string","description":"the string to test against the regular expression"},
+  {"arg":"regex","description":"The regular expression to test against. Backslash characters must be double escaped (eg \"\\\\s\" to match a white space character). Non-greedy regular expressions are not supported."}
+  ],
+  "examples": [ { "expression":"regexp_match('QGIS ROCKS','\\\\sROCKS')", "returns":"true"}]
+}

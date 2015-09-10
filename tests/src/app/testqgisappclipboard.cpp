@@ -82,7 +82,7 @@ void TestQgisAppClipboard::copyPaste()
   filesCounts.insert( "lines.shp", 6 );
   filesCounts.insert( "polys.shp", 10 );
 
-  foreach ( QString fileName, filesCounts.keys() )
+  Q_FOREACH ( const QString& fileName, filesCounts.keys() )
   {
     // add vector layer
     QString filePath = mTestDataDir + fileName;

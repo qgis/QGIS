@@ -2722,7 +2722,7 @@ QDomElement QgsSymbolLayerV2Utils::saveSymbols( QgsSymbolV2Map& symbols, QString
 
 void QgsSymbolLayerV2Utils::clearSymbolMap( QgsSymbolV2Map& symbols )
 {
-  foreach ( QString name, symbols.keys() )
+  Q_FOREACH ( const QString& name, symbols.keys() )
   {
     delete symbols.value( name );
   }
@@ -3520,12 +3520,12 @@ QStringList QgsSymbolLayerV2Utils::listSvgFiles()
   for ( int i = 0; i < svgPaths.size(); i++ )
   {
     QDir dir( svgPaths[i] );
-    foreach ( QString item, dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
+    Q_FOREACH ( const QString& item, dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
     {
       svgPaths.insert( i + 1, dir.path() + "/" + item );
     }
 
-    foreach ( QString item, dir.entryList( QStringList( "*.svg" ), QDir::Files ) )
+    Q_FOREACH ( const QString& item, dir.entryList( QStringList( "*.svg" ), QDir::Files ) )
     {
       // TODO test if it is correct SVG
       list.append( dir.path() + "/" + item );
@@ -3546,12 +3546,12 @@ QStringList QgsSymbolLayerV2Utils::listSvgFilesAt( QString directory )
   for ( int i = 0; i < svgPaths.size(); i++ )
   {
     QDir dir( svgPaths[i] );
-    foreach ( QString item, dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
+    Q_FOREACH ( const QString& item, dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
     {
       svgPaths.insert( i + 1, dir.path() + "/" + item );
     }
 
-    foreach ( QString item, dir.entryList( QStringList( "*.svg" ), QDir::Files ) )
+    Q_FOREACH ( const QString& item, dir.entryList( QStringList( "*.svg" ), QDir::Files ) )
     {
       list.append( dir.path() + "/" + item );
     }

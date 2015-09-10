@@ -87,6 +87,7 @@ bool QgsColorRampComboBox::createNewColorRampSelected() const
 
 void QgsColorRampComboBox::setSourceColorRamp( QgsVectorColorRampV2* sourceRamp )
 {
+  delete mSourceColorRamp;
   mSourceColorRamp = sourceRamp->clone();
 
   QIcon icon = QgsSymbolLayerV2Utils::colorRampPreviewIcon( mSourceColorRamp, rampIconSize );

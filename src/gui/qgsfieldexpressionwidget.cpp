@@ -31,11 +31,13 @@ QgsFieldExpressionWidget::QgsFieldExpressionWidget( QWidget *parent )
 {
   QHBoxLayout* layout = new QHBoxLayout( this );
   layout->setContentsMargins( 0, 0, 0, 0 );
+
   mCombo = new QComboBox( this );
   mCombo->setEditable( true );
   mCombo->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum );
   int width = mCombo->minimumSizeHint().width();
   mCombo->setMinimumWidth( width );
+
   mFieldProxyModel = new QgsFieldProxyModel( mCombo );
   mFieldProxyModel->sourceFieldModel()->setAllowExpression( true );
   mCombo->setModel( mFieldProxyModel );

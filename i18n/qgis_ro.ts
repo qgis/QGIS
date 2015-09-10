@@ -60657,7 +60657,7 @@ A apărut o problemă cu baza de date a simbolurilor.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="58"/>
-        <source>If you need help using QGIS we have a &apos;users&apos; mailing list where users help each other with issues related to using our sofware. We also have a &apos;developers&apos; mailing list. for those wanting help and to discuss things relating to the QGIS code base. Details on how to subscribe are in the &lt;a href=&quot;http://qgis.org/en/site/forusers/support.html#mailing-lists&quot;&gt;community section&lt;/a&gt; of the QGIS home page.</source>
+        <source>If you need help using QGIS we have a &apos;users&apos; mailing list where users help each other with issues related to using our software. We also have a &apos;developers&apos; mailing list. for those wanting help and to discuss things relating to the QGIS code base. Details on how to subscribe are in the &lt;a href=&quot;http://qgis.org/en/site/forusers/support.html#mailing-lists&quot;&gt;community section&lt;/a&gt; of the QGIS home page.</source>
         <translation>Dacă aveți nevoie de ajutor în folosirea QGIS avem o listă de discuții &apos;a utilizatorilor&apos;, în care utilizatorii se ajută reciproc în chestiuni legate de utilizarea aplicației noastre. Avem, de asemenea o listă de corespondență a &apos;dezvoltatorilor&apos;, pentru cei care doresc ajutor și care discută aspecte referitoare la baza de cod QGIS. Detalii cu privire la modul de subscriere găsiți în &lt;a href=&quot;http://qgis.org/en/site/forusers/support.html#mailing-lists&quot;&gt;secțiunea comunității&lt;/a&gt; din site-ul principal al QGIS.</translation>
     </message>
     <message>

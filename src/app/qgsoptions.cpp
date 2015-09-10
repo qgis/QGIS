@@ -94,10 +94,12 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   connect( this, SIGNAL( rejected() ), this, SLOT( rejectOptions() ) );
 
   QStringList styles = QStyleFactory::keys();
-  foreach ( QString style, styles )
-  {
-    cmbStyle->addItem( style );
-  }
+  cmbStyle->addItems( styles );
+
+  QStringList themes = QgsApplication::uiThemes().keys();
+  cmbUITheme->addItems( themes );
+
+  connect( cmbUITheme, SIGNAL( currentIndexChanged( const QString& ) ), this, SLOT( uiThemeChanged( const QString& ) ) );
 
   mIdentifyHighlightColorButton->setColorDialogTitle( tr( "Identify highlight color" ) );
   mIdentifyHighlightColorButton->setAllowAlpha( true );
@@ -131,7 +133,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
     mCustomVariablesTable->setEnabled( false );
   }
   QStringList customVarsList = settings.value( "qgis/customEnvVars", "" ).toStringList();
-  foreach ( const QString &varStr, customVarsList )
+  Q_FOREACH ( const QString &varStr, customVarsList )
   {
     int pos = varStr.indexOf( QLatin1Char( '|' ) );
     if ( pos == -1 )
@@ -165,7 +167,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   QMap<QString, QString> sysVarsMap = QgsApplication::systemEnvVars();
   QStringList currentVarsList = QProcess::systemEnvironment();
 
-  foreach ( const QString &varStr, currentVarsList )
+  Q_FOREACH ( const QString &varStr, currentVarsList )
   {
     int pos = varStr.indexOf( QLatin1Char( '=' ) );
     if ( pos == -1 )
@@ -176,7 +178,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
     varStrItms << varStrName << varStrValue;
 
     // check if different than system variable
-    QString sysVarVal = QString( "" );
+    QString sysVarVal;
     bool sysVarMissing = !sysVarsMap.contains( varStrName );
     if ( sysVarMissing )
       sysVarVal = tr( "not present" );
@@ -517,8 +519,11 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
 
   mMessageTimeoutSpnBx->setValue( settings.value( "/qgis/messageTimeout", 5 ).toInt() );
 
-  QString name = QApplication::style()->objectName();
+  QString name = settings.value( "/qgis/style" ).toString();
   cmbStyle->setCurrentIndex( cmbStyle->findText( name, Qt::MatchFixedString ) );
+
+  QString theme = QgsApplication::themeName();
+  cmbUITheme->setCurrentIndex( cmbUITheme->findText( theme, Qt::MatchFixedString ) );
 
   mNativeColorDialogsChkBx->setChecked( settings.value( "/qgis/native_color_dialogs", false ).toBool() );
   mLiveColorDialogsChkBx->setChecked( settings.value( "/qgis/live_color_dialogs", false ).toBool() );
@@ -745,7 +750,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   lblSystemLocale->setText( tr( "Detected active locale on your system: %1" ).arg( mySystemLocale ) );
   QString myUserLocale = settings.value( "locale/userLocale", "" ).toString();
   QStringList myI18nList = i18nList();
-  foreach ( QString l, myI18nList )
+  Q_FOREACH ( const QString& l, myI18nList )
   {
     cboLocale->addItem( QIcon( QString( ":/images/flags/%1.png" ).arg( l ) ), QLocale( l ).nativeLanguageName(), l );
   }
@@ -928,6 +933,14 @@ void QgsOptions::iconSizeChanged( const QString &iconSize )
   QgisApp::instance()->setIconSizes( iconSize.toInt() );
 }
 
+void QgsOptions::uiThemeChanged( const QString &theme )
+{
+  if ( theme == QgsApplication::themeName() )
+    return;
+
+  QgsApplication::setUITheme( theme );
+}
+
 void QgsOptions::on_mProjectOnLaunchCmbBx_currentIndexChanged( int indx )
 {
   bool specific = ( indx == 2 );
@@ -953,6 +966,8 @@ void QgsOptions::on_mProjectOnLaunchPushBtn_pressed()
 void QgsOptions::saveOptions()
 {
   QSettings settings;
+
+  settings.setValue( "UI/UITheme", cmbUITheme->currentText() );
 
   // custom environment variables
   settings.setValue( "qgis/customEnvVarsUse", QVariant( mCustomVariablesChkBx->isChecked() ) );
@@ -1539,7 +1554,7 @@ void QgsOptions::addCustomEnvVarRow( QString varName, QString varVal, QString va
 
 void QgsOptions::on_mAddCustomVarBtn_clicked()
 {
-  addCustomEnvVarRow( QString( "" ), QString( "" ) );
+  addCustomEnvVarRow( QString(), QString() );
   mCustomVariablesTable->setFocus();
   mCustomVariablesTable->setCurrentCell( mCustomVariablesTable->rowCount() - 1, 1 );
   mCustomVariablesTable->edit( mCustomVariablesTable->currentIndex() );
@@ -1665,7 +1680,7 @@ void QgsOptions::on_mOptionsStackedWidget_currentChanged( int theIndx )
 {
   Q_UNUSED( theIndx );
   // load gdal driver list when gdal tab is first opened
-  if ( mOptionsStackedWidget->currentWidget()->objectName() == QString( "mOptionsPageGDAL" )
+  if ( mOptionsStackedWidget->currentWidget()->objectName() == "mOptionsPageGDAL"
        && ! mLoadedGdalDriverList )
   {
     loadGdalDriverList();
@@ -1747,11 +1762,11 @@ void QgsOptions::loadGdalDriverList()
   // myDrivers.sort();
   // sort list case insensitive - no existing function for this!
   QMap<QString, QString> strMap;
-  foreach ( QString str, myDrivers )
+  Q_FOREACH ( const QString& str, myDrivers )
     strMap.insert( str.toLower(), str );
   myDrivers = strMap.values();
 
-  foreach ( QString myName, myDrivers )
+  Q_FOREACH ( const QString& myName, myDrivers )
   {
     QTreeWidgetItem * mypItem = new QTreeWidgetItem( QStringList( myName ) );
     if ( mySkippedDrivers.contains( myName ) )
@@ -1779,13 +1794,13 @@ void QgsOptions::loadGdalDriverList()
 
   // populate cmbEditCreateOptions with gdal write drivers - sorted, GTiff first
   strMap.clear();
-  foreach ( QString str, myGdalWriteDrivers )
+  Q_FOREACH ( const QString& str, myGdalWriteDrivers )
     strMap.insert( str.toLower(), str );
   myGdalWriteDrivers = strMap.values();
   myGdalWriteDrivers.removeAll( "Gtiff" );
   myGdalWriteDrivers.prepend( "GTiff" );
   cmbEditCreateOptions->clear();
-  foreach ( QString myName, myGdalWriteDrivers )
+  Q_FOREACH ( const QString& myName, myGdalWriteDrivers )
   {
     cmbEditCreateOptions->addItem( myName );
   }

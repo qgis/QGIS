@@ -1330,7 +1330,7 @@ QString QgsWcsProvider::metadata()
 
   // Dialog takes too long to open if there are too many coverages (1000 for example)
   int count = 0;
-  foreach ( QgsWcsCoverageSummary c, mCapabilities.coverages() )
+  Q_FOREACH ( const QgsWcsCoverageSummary& c, mCapabilities.coverages() )
   {
     metadata += coverageMetadata( c );
     count++;

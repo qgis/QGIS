@@ -3,7 +3,7 @@
     ---------------------
     begin                : August 2012
     copyright            : (C) 2012 by Matthias Kuhn
-    email                : matthias dot kuhn at gmx dot ch
+    email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -53,7 +53,7 @@ QSizeF QgsHistogramDiagram::diagramSize( const QgsFeature& feature, const QgsRen
   if ( feature.fields() )
     expressionContext.setFields( *feature.fields() );
 
-  foreach ( QString cat, s.categoryAttributes )
+  Q_FOREACH ( const QString& cat, s.categoryAttributes )
   {
     QgsExpression* expression = getExpression( cat, expressionContext );
     maxValue = qMax( expression->evaluate( &expressionContext ).toDouble(), maxValue );
@@ -135,7 +135,7 @@ void QgsHistogramDiagram::renderDiagram( const QgsFeature& feature, QgsRenderCon
   if ( feature.fields() )
     expressionContext.setFields( *feature.fields() );
 
-  foreach ( QString cat, s.categoryAttributes )
+  Q_FOREACH ( const QString& cat, s.categoryAttributes )
   {
     QgsExpression* expression = getExpression( cat, expressionContext );
     double currentVal = expression->evaluate( &expressionContext ).toDouble();

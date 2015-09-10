@@ -109,6 +109,7 @@ void QgsComposerShapeWidget::on_mShapeStyleButton_clicked()
 
   QgsFillSymbolV2* newSymbol = dynamic_cast<QgsFillSymbolV2*>( mComposerShape->shapeStyleSymbol()->clone() );
   QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), coverageLayer, this );
+  d.setExpressionContext( mComposerShape->createExpressionContext() );
 
   if ( d.exec() == QDialog::Accepted )
   {
@@ -117,10 +118,7 @@ void QgsComposerShapeWidget::on_mShapeStyleButton_clicked()
     updateShapeStyle();
     mComposerShape->endCommand();
   }
-  else
-  {
-    delete newSymbol;
-  }
+  delete newSymbol;
 }
 
 void QgsComposerShapeWidget::updateShapeStyle()

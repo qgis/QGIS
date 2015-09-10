@@ -99,8 +99,7 @@ QMap<QString, QVariant> QgisAppStyleSheet::defaultOptions()
 
 void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant>& opts )
 {
-  QString ss = QString( "" );
-
+  QString ss;
 
   // QgisApp-wide font
   QString fontSize = opts.value( "fontPointSize" ).toString();

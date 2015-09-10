@@ -464,6 +464,7 @@ bool TestQgsImageOperation::imageCheck( QString testName, QImage &image, int mis
   QString fileName = tempDir + testName + ".png";
   imageWithBackground.save( fileName, "PNG" );
   QgsRenderChecker checker;
+  checker.setControlPathPrefix( "image_operations" );
   checker.setControlName( "expected_" + testName );
   checker.setRenderedImage( fileName );
   checker.setColorTolerance( 2 );

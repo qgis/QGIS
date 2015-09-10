@@ -73,7 +73,7 @@ QVector<QgsDataItem*> QgsWFSConnectionItem::createChildren()
   if ( mCapabilities->errorCode() == QgsWFSCapabilities::NoError )
   {
     QgsWFSCapabilities::GetCapabilities caps = mCapabilities->capabilities();
-    foreach ( const QgsWFSCapabilities::FeatureType& featureType, caps.featureTypes )
+    Q_FOREACH ( const QgsWFSCapabilities::FeatureType& featureType, caps.featureTypes )
     {
       //QgsWFSLayerItem* layer = new QgsWFSLayerItem( this, mName, featureType.name, featureType.title );
       QgsWFSLayerItem* layer = new QgsWFSLayerItem( this, mName, uri, featureType.name, featureType.title, featureType.crslist.first() );
@@ -152,7 +152,7 @@ QVector<QgsDataItem*> QgsWFSRootItem::createChildren()
 {
   QVector<QgsDataItem*> connections;
 
-  foreach ( QString connName, QgsOWSConnection::connectionList( "WFS" ) )
+  Q_FOREACH ( const QString& connName, QgsOWSConnection::connectionList( "WFS" ) )
   {
     QgsOWSConnection connection( "WFS", connName );
     QString path = "wfs:/" + connName;

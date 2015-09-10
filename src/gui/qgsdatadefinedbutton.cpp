@@ -120,8 +120,8 @@ void QgsDataDefinedButton::init( const QgsVectorLayer* vl,
   {
     mProperty.insert( "active", "0" );
     mProperty.insert( "useexpr", "0" );
-    mProperty.insert( "expression", "" );
-    mProperty.insert( "field", "" );
+    mProperty.insert( "expression", QString() );
+    mProperty.insert( "field", QString() );
   }
   else
   {
@@ -136,12 +136,12 @@ void QgsDataDefinedButton::init( const QgsVectorLayer* vl,
   mFieldTypeList.clear();
 
   mInputDescription = description;
-  mFullDescription = QString( "" );
-  mUsageInfo = QString( "" );
-  mCurrentDefinition = QString( "" );
+  mFullDescription.clear();
+  mUsageInfo.clear();
+  mCurrentDefinition.clear();
 
   // set up data types string
-  mDataTypesString = QString( "" );
+  mDataTypesString.clear();
 
   QStringList ts;
   if ( mDataTypes.testFlag( String ) )
@@ -328,7 +328,7 @@ void QgsDataDefinedButton::aboutToShowMenu()
   {
     QgsExpressionContext context = mExpressionContextCallback( mExpressionContextCallbackContext );
     QStringList variables = context.variableNames();
-    Q_FOREACH ( QString variable, variables )
+    Q_FOREACH ( const QString& variable, variables )
     {
       if ( context.isReadOnly( variable ) ) //only want to show user-set variables
         continue;
@@ -442,7 +442,7 @@ void QgsDataDefinedButton::menuActionTriggered( QAction* action )
       setUseExpression( false );
       setActive( false );
     }
-    setExpression( QString( "" ) );
+    setExpression( QString() );
     updateGui();
   }
   else if ( action == mActionAssistant )

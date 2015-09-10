@@ -39,6 +39,7 @@
 #include "problem.h"
 #include "util.h"
 #include "priorityqueue.h"
+#include "internalexception.h"
 #include <iostream>
 #include <fstream>
 #include <cfloat>
@@ -59,10 +60,21 @@ namespace pal
     }
   }
 
-  Problem::Problem() : nbLabelledLayers( 0 ), nblp( 0 ), all_nblp( 0 ), nbft( 0 ), displayAll( false ),
-      labelPositionCost( NULL ), nbOlap( NULL ),
-      labelpositions( NULL ), featStartId( NULL ), featNbLp( NULL ), inactiveCost( NULL ), sol( NULL ), nbActive( 0 ), nbOverlap( 0.0 ),
-      pal( NULL )
+  Problem::Problem()
+      : nbLabelledLayers( 0 )
+      , nblp( 0 )
+      , all_nblp( 0 )
+      , nbft( 0 )
+      , displayAll( false )
+      , labelPositionCost( NULL )
+      , nbOlap( NULL )
+      , featStartId( NULL )
+      , featNbLp( NULL )
+      , inactiveCost( NULL )
+      , sol( NULL )
+      , nbActive( 0 )
+      , nbOverlap( 0.0 )
+      , pal( NULL )
   {
     bbox[0] = 0;
     bbox[1] = 0;
@@ -76,15 +88,12 @@ namespace pal
 
   Problem::~Problem()
   {
-    int i;
-
     if ( sol )
     {
       if ( sol->s )
         delete[] sol->s;
       delete sol;
     }
-
 
     if ( featWrap )
       delete[] featWrap;
@@ -93,11 +102,8 @@ namespace pal
     if ( featNbLp )
       delete[] featNbLp;
 
-    for ( i = 0; i < all_nblp; i++ )
-      delete labelpositions[i];
-
-    if ( labelpositions )
-      delete[] labelpositions;
+    qDeleteAll( mLabelPositions );
+    mLabelPositions.clear();
 
     if ( inactiveCost )
       delete[] inactiveCost;
@@ -173,7 +179,7 @@ namespace pal
         {
           if ( !ok[featStartId[i] + j] )
           {
-            if ( labelpositions[featStartId[i] + j]->getNumOverlaps() == 0 ) // if candidate has no overlap
+            if ( mLabelPositions.at( featStartId[i] + j )->getNumOverlaps() == 0 ) // if candidate has no overlap
             {
               run = true;
               ok[featStartId[i] + j] = true;
@@ -186,7 +192,7 @@ namespace pal
 
                 lpid = featStartId[i] + k;
                 ok[lpid] = true;
-                lp2 = labelpositions[lpid];
+                lp2 = mLabelPositions.at( lpid );
 
                 lp2->getBoundingBox( amin, amax );
 
@@ -323,7 +329,14 @@ namespace pal
       for ( j = 0; j < featNbLp[i]; j++ )
       {
         label = featStartId[i] + j;
-        list->insert( label, ( double ) labelpositions[label]->getNumOverlaps() );
+        try
+        {
+          list->insert( label, ( double ) mLabelPositions.at( label )->getNumOverlaps() );
+        }
+        catch ( pal::InternalException::Full )
+        {
+          continue;
+        }
       }
 
     while ( list->getSize() > 0 ) // O (log size)
@@ -338,7 +351,7 @@ namespace pal
       label = list->getBest();   // O (log size)
 
 
-      lp = labelpositions[label];
+      lp = mLabelPositions.at( label );
 
       if ( lp->getId() != label )
       {
@@ -354,8 +367,7 @@ namespace pal
 
       for ( i = featStartId[probFeatId]; i < featStartId[probFeatId] + featNbLp[probFeatId]; i++ )
       {
-        ignoreLabel( labelpositions[i], list, candidates );
-
+        ignoreLabel( mLabelPositions.at( i ), list, candidates );
       }
 
 
@@ -386,7 +398,7 @@ namespace pal
           start_p = featStartId[i];
           for ( p = 0; p < featNbLp[i]; p++ )
           {
-            lp = labelpositions[start_p+p];
+            lp = mLabelPositions.at( start_p + p );
             lp->resetNumOverlaps();
 
             lp->getBoundingBox( amin, amax );
@@ -518,11 +530,9 @@ namespace pal
         current->sol[i] = sol->s[current->sub[i]];
         if ( current->sol[i] != -1 )
         {
-          labelpositions[current->sol[i]]->insertIntoIndex( candidates_subsol );
+          mLabelPositions.at( current->sol[i] )->insertIntoIndex( candidates_subsol );
         }
       }
-
-
 
       switch ( searchMethod )
       {
@@ -570,14 +580,14 @@ namespace pal
 
           if ( sol->s[current->sub[i]] != -1 )
           {
-            labelpositions[sol->s[current->sub[i]]]->removeFromIndex( candidates_sol );
+            mLabelPositions.at( sol->s[current->sub[i]] )->removeFromIndex( candidates_sol );
           }
 
           sol->s[current->sub[i]] = current->sol[i];
 
           if ( current->sol[i] != -1 )
           {
-            labelpositions[current->sol[i]]->insertIntoIndex( candidates_sol );
+            mLabelPositions.at( current->sol[i] )->insertIntoIndex( candidates_sol );
           }
 
           ok[current->sub[i]] = false;
@@ -689,7 +699,7 @@ namespace pal
 
       for ( i = featS; i < featS + p; i++ )  // foreach candidat of feature 'id'
       {
-        lp = labelpositions[i];
+        lp = mLabelPositions.at( i );
 
         lp->getBoundingBox( amin, amax );
 
@@ -751,7 +761,7 @@ namespace pal
 
     if ( label_id >= 0 ) // is the feature displayed ?
     {
-      lp = labelpositions[label_id];
+      lp = mLabelPositions.at( label_id );
 
       lp->getBoundingBox( amin, amax );
 
@@ -1068,13 +1078,13 @@ namespace pal
             else
             {
               delta = -labelPositionCost[sol[feat_id]];
-              delta -= nbOlap[sol[feat_id]] * ( inactiveCost[feat_sub_id] + labelpositions[label_id]->cost() );
+              delta -= nbOlap[sol[feat_id]] * ( inactiveCost[feat_sub_id] + mLabelPositions.at( label_id )->cost() );
             }
 
             if ( j >= 0 )
             {
               delta += labelPositionCost[featStartId[feat_sub_id] + j];
-              delta += nbOlap[featStartId[feat_sub_id] + j] * ( inactiveCost[feat_sub_id] + labelpositions[featStartId[feat_sub_id] + j]->cost() );
+              delta += nbOlap[featStartId[feat_sub_id] + j] * ( inactiveCost[feat_sub_id] + mLabelPositions.at( featStartId[feat_sub_id] + j )->cost() );
             }
             else
             {
@@ -1153,7 +1163,7 @@ namespace pal
         candidateList[candidateId]->label_id = choosed_label;
 
         if ( old_label != -1 )
-          labelpositions[old_label]->removeFromIndex( candidates_subsol );
+          mLabelPositions.at( old_label )->removeFromIndex( candidates_subsol );
 
         /* re-compute all labelpositioncost that overlap with old an new label */
         double local_inactive = inactiveCost[sub[choosed_feat]];
@@ -1186,24 +1196,24 @@ namespace pal
 
         if ( old_label >= 0 )
         {
-          lp = labelpositions[old_label];
+          lp = mLabelPositions.at( old_label );
 
           lp->getBoundingBox( amin, amax );
 
-          context.diff_cost = -local_inactive - labelpositions[old_label]->cost();
-          context.lp = labelpositions[old_label];
+          context.diff_cost = -local_inactive - lp->cost();
+          context.lp = lp;
 
           candidates->Search( amin, amax, updateCandidatesCost, &context );
         }
 
         if ( choosed_label >= 0 )
         {
-          lp = labelpositions[choosed_label];
+          lp = mLabelPositions.at( choosed_label );
 
           lp->getBoundingBox( amin, amax );
 
-          context.diff_cost = local_inactive + labelpositions[choosed_label]->cost();
-          context.lp = labelpositions[choosed_label];
+          context.diff_cost = local_inactive + lp->cost();
+          context.lp = lp;
 
 
           candidates->Search( amin, amax, updateCandidatesCost, &context );
@@ -1414,7 +1424,7 @@ namespace pal
       if ( tmpsol[seed] == -1 )
         delta -= inactiveCost[subseed];
       else
-        delta -= labelpositions[tmpsol[seed]]->cost();
+        delta -= mLabelPositions.at( tmpsol[seed] )->cost();
 
       // TODO modify to handle displayAll param
       for ( i = -1; i < seedNbLp; i++ )
@@ -1429,7 +1439,7 @@ namespace pal
               lid = featStartId[subseed] + i;
               delta_tmp = delta;
 
-              lp = labelpositions[lid];
+              lp = mLabelPositions.at( lid );
 
               // evaluate conflicts graph in solution after moving seed's label
               lp->getBoundingBox( amin, amax );
@@ -1448,7 +1458,7 @@ namespace pal
               // no conflict -> end of chain
               if ( conflicts->size() == 0 )
               {
-                if ( !retainedChain || delta + labelpositions[lid]->cost() < delta_best )
+                if ( !retainedChain || delta + lp->cost() < delta_best )
                 {
 
                   if ( retainedChain )
@@ -1461,7 +1471,7 @@ namespace pal
                     retainedChain = new Chain(); // HERE
                   }
 
-                  delta_best = delta + labelpositions[lid]->cost();
+                  delta_best = delta + lp->cost();
 
                   retainedChain->degree = currentChain->size() + 1;
                   retainedChain->feat  = new int[retainedChain->degree]; // HERE
@@ -1479,7 +1489,7 @@ namespace pal
                   }
                   retainedChain->feat[j] = seed;
                   retainedChain->label[j] = lid;
-                  retainedChain->delta = delta + labelpositions[retainedChain->label[j]]->cost();
+                  retainedChain->delta = delta + mLabelPositions.at( retainedChain->label[j] )->cost();
                 }
               }
 
@@ -1519,7 +1529,7 @@ namespace pal
 
                 newChain->feat[j] = seed;
                 newChain->label[j] = lid;
-                newChain->delta = delta + labelpositions[newChain->label[j]]->cost();
+                newChain->delta = delta + mLabelPositions.at( newChain->label[j] )->cost();
                 j++;
 
 
@@ -1613,16 +1623,16 @@ namespace pal
 
         if ( et->old_label != -1 )
         {
-          labelpositions[et->old_label]->removeFromIndex( candidates_subsol );
+          mLabelPositions.at( et->old_label )->removeFromIndex( candidates_subsol );
         }
 
         if ( et->new_label != -1 )
         {
-          labelpositions[et->new_label]->insertIntoIndex( candidates_subsol );
+          mLabelPositions.at( et->new_label )->insertIntoIndex( candidates_subsol );
         }
 
         tmpsol[seed] = retainedLabel;
-        delta += labelpositions[retainedLabel]->cost();
+        delta += mLabelPositions.at( retainedLabel )->cost();
         seed = next_seed;
       }
     }
@@ -1633,12 +1643,12 @@ namespace pal
 
       if ( et->new_label != -1 )
       {
-        labelpositions[et->new_label]->removeFromIndex( candidates_subsol );
+        mLabelPositions.at( et->new_label )->removeFromIndex( candidates_subsol );
       }
 
       if ( et->old_label != -1 )
       {
-        labelpositions[et->old_label]->insertIntoIndex( candidates_subsol );
+        mLabelPositions.at( et->old_label )->insertIntoIndex( candidates_subsol );
       }
 
       delete et;
@@ -1707,7 +1717,7 @@ namespace pal
       if ( tmpsol[seed] == -1 )
         delta -= inactiveCost[seed];
       else
-        delta -= labelpositions[tmpsol[seed]]->cost();
+        delta -= mLabelPositions.at( tmpsol[seed] )->cost();
 
       for ( i = -1; i < seedNbLp; i++ )
       {
@@ -1721,7 +1731,7 @@ namespace pal
               lid = featStartId[seed] + i;
               delta_tmp = delta;
 
-              lp = labelpositions[lid];
+              lp = mLabelPositions.at( lid );
 
               // evaluate conflicts graph in solution after moving seed's label
               lp->getBoundingBox( amin, amax );
@@ -1735,7 +1745,7 @@ namespace pal
               // no conflict -> end of chain
               if ( conflicts->size() == 0 )
               {
-                if ( !retainedChain || delta + labelpositions[lid]->cost() < delta_best )
+                if ( !retainedChain || delta + lp->cost() < delta_best )
                 {
                   if ( retainedChain )
                   {
@@ -1747,7 +1757,7 @@ namespace pal
                     retainedChain = new Chain();
                   }
 
-                  delta_best = delta + labelpositions[lid]->cost();
+                  delta_best = delta + lp->cost();
 
                   retainedChain->degree = currentChain->size() + 1;
                   retainedChain->feat  = new int[retainedChain->degree];
@@ -1765,7 +1775,7 @@ namespace pal
                   }
                   retainedChain->feat[j] = seed;
                   retainedChain->label[j] = lid;
-                  retainedChain->delta = delta + labelpositions[lid]->cost();
+                  retainedChain->delta = delta + lp->cost();
                 }
               }
 
@@ -1807,7 +1817,7 @@ namespace pal
                 // add the current candidates into the chain
                 newChain->feat[j] = seed;
                 newChain->label[j] = lid;
-                newChain->delta = delta + labelpositions[newChain->label[j]]->cost();
+                newChain->delta = delta + mLabelPositions.at( newChain->label[j] )->cost();
                 j++;
 
                 // hide all conflictual candidates
@@ -1900,17 +1910,17 @@ namespace pal
 
         if ( et->old_label != -1 )
         {
-          labelpositions[et->old_label]->removeFromIndex( candidates_sol );
+          mLabelPositions.at( et->old_label )->removeFromIndex( candidates_sol );
         }
 
         if ( et->new_label != -1 )
         {
-          labelpositions[et->new_label]->insertIntoIndex( candidates_sol );
+          mLabelPositions.at( et->new_label )->insertIntoIndex( candidates_sol );
         }
 
 
         tmpsol[seed] = retainedLabel;
-        delta += labelpositions[retainedLabel]->cost();
+        delta += mLabelPositions.at( retainedLabel )->cost();
         seed = next_seed;
       }
     }
@@ -1922,12 +1932,12 @@ namespace pal
 
       if ( et->new_label != -1 )
       {
-        labelpositions[et->new_label]->removeFromIndex( candidates_sol );
+        mLabelPositions.at( et->new_label )->removeFromIndex( candidates_sol );
       }
 
       if ( et->old_label != -1 )
       {
-        labelpositions[et->old_label]->insertIntoIndex( candidates_sol );
+        mLabelPositions.at( et->old_label )->insertIntoIndex( candidates_sol );
       }
 
       delete et;
@@ -2030,13 +2040,13 @@ namespace pal
 
             if ( sol[fid] >= 0 )
             {
-              labelpositions[sol[fid]]->removeFromIndex( candidates_subsol );
+              mLabelPositions.at( sol[fid] )->removeFromIndex( candidates_subsol );
             }
             sol[fid] = lid;
 
             if ( sol[fid] >= 0 )
             {
-              labelpositions[lid]->insertIntoIndex( candidates_subsol );
+              mLabelPositions.at( lid )->insertIntoIndex( candidates_subsol );
             }
 
             tabu_list[fid] = it + tenure;
@@ -2170,7 +2180,7 @@ namespace pal
       candidates[i]->feat_id = i + borderSize;
       candidatesUnsorted[i] = candidates[i];
 
-      candidates[i]->cost = ( sol[i+borderSize] == -1 ? inactiveCost[i+borderSize] : labelpositions[sol[i+borderSize]]->cost() );
+      candidates[i]->cost = ( sol[i+borderSize] == -1 ? inactiveCost[i+borderSize] : mLabelPositions.at( sol[i+borderSize] )->cost() );
     }
 
     sort(( void** ) candidates, probSize, decreaseCost );
@@ -2267,12 +2277,12 @@ namespace pal
 #endif
 
           if ( sol[fid] >= 0 )
-            labelpositions[sol[fid]]->removeFromIndex( candidates_subsol );
+            mLabelPositions.at( sol[fid] )->removeFromIndex( candidates_subsol );
 
           sol[fid] = lid;
 
           if ( lid >= 0 )
-            labelpositions[lid]->insertIntoIndex( candidates_subsol );
+            mLabelPositions.at( lid )->insertIntoIndex( candidates_subsol );
 
           tabu_list[fid] = it + tenure;
 #ifdef _DEBUG_FULL_
@@ -2287,7 +2297,7 @@ namespace pal
             std::cout << "label[lid]->cost: " << labelpositions[lid]->cost << std::endl;
           }
 #endif
-          candidatesUnsorted[fid-borderSize]->cost = ( lid == -1 ? inactiveCost[sub[fid]] : labelpositions[lid]->cost() );
+          candidatesUnsorted[fid-borderSize]->cost = ( lid == -1 ? inactiveCost[sub[fid]] : mLabelPositions.at( lid )->cost() );
 
         }
 
@@ -2547,7 +2557,7 @@ namespace pal
 
           if ( sol->s[fid] >= 0 )
           {
-            LabelPosition *old = labelpositions[sol->s[fid]];
+            LabelPosition *old = mLabelPositions.at( sol->s[fid] );
             old->removeFromIndex( candidates_sol );
 
             old->getBoundingBox( amin, amax );
@@ -2560,7 +2570,7 @@ namespace pal
 
           if ( sol->s[fid] >= 0 )
           {
-            labelpositions[lid]->insertIntoIndex( candidates_sol );
+            mLabelPositions.at( lid )->insertIntoIndex( candidates_sol );
           }
 
           ok[fid] = false;
@@ -2621,13 +2631,13 @@ namespace pal
     {
       if ( sol->s[i] != -1 )
       {
-        solList->push_back( labelpositions[sol->s[i]] ); // active labels
+        solList->push_back( mLabelPositions.at( sol->s[i] ) ); // active labels
       }
       else if ( returnInactive
-                || labelpositions[featStartId[i]]->getFeaturePart()->layer()->displayAll()
-                || labelpositions[featStartId[i]]->getFeaturePart()->getAlwaysShow() )
+                || mLabelPositions.at( featStartId[i] )->getFeaturePart()->layer()->displayAll()
+                || mLabelPositions.at( featStartId[i] )->getFeaturePart()->getAlwaysShow() )
       {
-        solList->push_back( labelpositions[featStartId[i]] ); // unplaced label
+        solList->push_back( mLabelPositions.at( featStartId[i] ) ); // unplaced label
       }
     }
 
@@ -2664,7 +2674,7 @@ namespace pal
     int k;
     for ( i = 0; i < nbft; i++ )
     {
-      lyrName = labelpositions[featStartId[i]]->getLayerName();
+      lyrName = mLabelPositions.at( featStartId[i] )->getLayerName();
       k = -1;
       for ( j = 0; j < stats->nbLayers; j++ )
       {
@@ -2726,7 +2736,7 @@ namespace pal
       else
       {
         nbOv = 0;
-        lp = labelpositions[sol->s[i]];
+        lp = mLabelPositions.at( sol->s[i] );
 
         lp->getBoundingBox( amin, amax );
 

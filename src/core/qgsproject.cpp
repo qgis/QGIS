@@ -559,7 +559,7 @@ static QgsProjectVersion _getVersion( QDomDocument const &doc )
   if ( !nl.count() )
   {
     QgsDebugMsg( " unable to find qgis element in project file" );
-    return QgsProjectVersion( 0, 0, 0, QString( "" ) );
+    return QgsProjectVersion( 0, 0, 0, QString() );
   }
 
   QDomNode qgisNode = nl.item( 0 );  // there should only be one, so zeroth element ok
@@ -914,7 +914,7 @@ bool QgsProject::read()
 
 void QgsProject::loadEmbeddedNodes( QgsLayerTreeGroup *group )
 {
-  foreach ( QgsLayerTreeNode *child, group->children() )
+  Q_FOREACH ( QgsLayerTreeNode *child, group->children() )
   {
     if ( QgsLayerTree::isGroup( child ) )
     {
@@ -929,7 +929,7 @@ void QgsProject::loadEmbeddedNodes( QgsLayerTreeGroup *group )
         if ( newGroup )
         {
           QList<QgsLayerTreeNode*> clonedChildren;
-          foreach ( QgsLayerTreeNode *newGroupChild, newGroup->children() )
+          Q_FOREACH ( QgsLayerTreeNode *newGroupChild, newGroup->children() )
             clonedChildren << newGroupChild->clone();
           delete newGroup;
 
@@ -1772,7 +1772,7 @@ QgsLayerTreeGroup *QgsProject::createEmbeddedGroup( const QString &groupName, co
   mLayerTreeRegistryBridge->setEnabled( true );
 
   // consider the layers might be identify disabled in its project
-  foreach ( QString layerId, newGroup->findLayerIds() )
+  Q_FOREACH ( const QString& layerId, newGroup->findLayerIds() )
   {
     if ( embeddedIdentifyDisabledLayers.contains( layerId ) )
     {
@@ -1793,7 +1793,7 @@ QgsLayerTreeGroup *QgsProject::createEmbeddedGroup( const QString &groupName, co
 
 void QgsProject::initializeEmbeddedSubtree( const QString &projectFilePath, QgsLayerTreeGroup *group )
 {
-  foreach ( QgsLayerTreeNode *child, group->children() )
+  Q_FOREACH ( QgsLayerTreeNode *child, group->children() )
   {
     // all nodes in the subtree will have "embedded" custom property set
     child->setCustomProperty( "embedded", 1 );

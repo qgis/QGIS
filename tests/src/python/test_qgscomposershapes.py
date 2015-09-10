@@ -53,6 +53,7 @@ class TestQgsComposerShapes(TestCase):
         self.mComposerShape.setShapeType(QgsComposerShape.Rectangle)
 
         checker = QgsCompositionChecker('composershapes_rectangle', self.mComposition)
+        checker.setControlPathPrefix("composer_shapes")
         myTestResult, myMessage = checker.testComposition()
 
         assert myTestResult, myMessage
@@ -63,6 +64,7 @@ class TestQgsComposerShapes(TestCase):
         self.mComposerShape.setShapeType(QgsComposerShape.Ellipse)
 
         checker = QgsCompositionChecker('composershapes_ellipse', self.mComposition)
+        checker.setControlPathPrefix("composer_shapes")
         myTestResult, myMessage = checker.testComposition()
 
         assert myTestResult, myMessage
@@ -73,6 +75,7 @@ class TestQgsComposerShapes(TestCase):
         self.mComposerShape.setShapeType(QgsComposerShape.Triangle)
 
         checker = QgsCompositionChecker('composershapes_triangle', self.mComposition)
+        checker.setControlPathPrefix("composer_shapes")
         myTestResult, myMessage = checker.testComposition()
 
         assert myTestResult, myMessage
@@ -84,6 +87,7 @@ class TestQgsComposerShapes(TestCase):
         self.mComposerShape.setCornerRadius(30)
 
         checker = QgsCompositionChecker('composershapes_roundedrect', self.mComposition)
+        checker.setControlPathPrefix("composer_shapes")
         myTestResult, myMessage = checker.testComposition()
 
         self.mComposerShape.setCornerRadius(0)

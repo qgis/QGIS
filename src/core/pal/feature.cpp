@@ -45,6 +45,7 @@
 #include "qgis.h"
 #include "qgsgeos.h"
 #include "qgsmessagelog.h"
+#include "costcalculator.h"
 #include <QLinkedList>
 #include <cmath>
 #include <cfloat>
@@ -91,6 +92,14 @@ namespace pal
 
   double Feature::calculatePriority() const
   {
+    if ( alwaysShow )
+    {
+      //if feature is set to always show, bump the priority up by orders of magnitude
+      //so that other feature's labels are unlikely to be placed over the label for this feature
+      //(negative numbers due to how pal::extract calculates inactive cost)
+      return 0.2;
+    }
+
     return mPriority >= 0 ? mPriority : layer->priority();
   }
 
@@ -242,10 +251,9 @@ namespace pal
     }
   }
 
-  int FeaturePart::setPositionOverPoint( double x, double y, LabelPosition ***lPos, double angle, PointSet *mapShape )
+  int FeaturePart::setPositionOverPoint( double x, double y, QList< LabelPosition*>& lPos, double angle, PointSet *mapShape )
   {
     int nbp = 1;
-    *lPos = new LabelPosition *[nbp];
 
     // get from feature
     double labelW = mFeature->label_x;
@@ -317,17 +325,15 @@ namespace pal
     {
       if ( !mapShape->containsLabelCandidate( lx, ly, labelW, labelH, angle ) )
       {
-        delete[] *lPos;
-        *lPos = 0;
         return 0;
       }
     }
 
-    ( *lPos )[0] = new LabelPosition( id, lx, ly, labelW, labelH, angle, cost, this, false, quadrantFromOffset() );
+    lPos << new LabelPosition( id, lx, ly, labelW, labelH, angle, cost, this, false, quadrantFromOffset() );
     return nbp;
   }
 
-  int FeaturePart::setPositionForPoint( double x, double y, LabelPosition ***lPos, double angle, PointSet *mapShape )
+  int FeaturePart::setPositionForPoint( double x, double y, QList< LabelPosition* >& lPos, double angle, PointSet *mapShape )
   {
 
 #ifdef _DEBUG_
@@ -483,10 +489,9 @@ namespace pal
 
     if ( !candidates.isEmpty() )
     {
-      *lPos = new LabelPosition *[candidates.count()];
       for ( int i = 0; i < candidates.count(); ++i )
       {
-        ( *lPos )[i] = candidates.at( i );
+        lPos << candidates.at( i );
       }
     }
 
@@ -494,7 +499,7 @@ namespace pal
   }
 
 // TODO work with squared distance by removing call to sqrt or dist_euc2d
-  int FeaturePart::setPositionForLine( LabelPosition ***lPos, PointSet *mapShape )
+  int FeaturePart::setPositionForLine( QList< LabelPosition* >& lPos, PointSet *mapShape )
   {
 #ifdef _DEBUG_
     std::cout << "SetPosition (line) : " << layer->name << "/" << uid << std::endl;
@@ -669,12 +674,9 @@ namespace pal
     delete[] ad;
 
     int nbp = positions.size();
-    *lPos = new LabelPosition *[nbp];
-    i = 0;
     while ( positions.size() > 0 )
     {
-      ( *lPos )[i] = positions.takeFirst();
-      i++;
+      lPos << positions.takeFirst();
     }
 
     return nbp;
@@ -885,7 +887,7 @@ namespace pal
     return newLp;
   }
 
-  int FeaturePart::setPositionForLineCurved( LabelPosition ***lPos, PointSet* mapShape )
+  int FeaturePart::setPositionForLineCurved( QList< LabelPosition* >& lPos, PointSet* mapShape )
   {
     // label info must be present
     if ( mFeature->labelInfo == NULL || mFeature->labelInfo->char_num == 0 )
@@ -976,11 +978,11 @@ namespace pal
 
 
     int nbp = positions.size();
-    ( *lPos ) = new LabelPosition*[nbp];
     for ( int i = 0; i < nbp; i++ )
     {
-      ( *lPos )[i] = positions.takeFirst();
+      lPos << positions.takeFirst();
     }
+
     delete[] path_distances;
 
     return nbp;
@@ -1001,7 +1003,7 @@ namespace pal
    *
    */
 
-  int FeaturePart::setPositionForPolygon( LabelPosition ***lPos, PointSet *mapShape )
+  int FeaturePart::setPositionForPolygon( QList< LabelPosition*>& lPos, PointSet *mapShape )
   {
 
 #ifdef _DEBUG_
@@ -1207,10 +1209,9 @@ namespace pal
 
       nbp = positions.size();
 
-      ( *lPos ) = new LabelPosition*[nbp];
       for ( i = 0; i < nbp; i++ )
       {
-        ( *lPos )[i] = positions.takeFirst();
+        lPos << positions.takeFirst();
       }
 
       for ( bbid = 0; bbid < j; bbid++ )
@@ -1256,12 +1257,10 @@ namespace pal
   }
 #endif
 
-  int FeaturePart::setPosition( LabelPosition ***lPos,
+  int FeaturePart::setPosition( QList< LabelPosition*>& lPos,
                                 double bbox_min[2], double bbox_max[2],
                                 PointSet *mapShape, RTree<LabelPosition*, double, 2, double> *candidates )
   {
-    int nbp = 0;
-    int i;
     double bbox[4];
 
     bbox[0] = bbox_min[0];
@@ -1273,9 +1272,7 @@ namespace pal
 
     if ( mFeature->fixedPosition() )
     {
-      nbp = 1;
-      *lPos = new LabelPosition *[nbp];
-      ( *lPos )[0] = new LabelPosition( 0, mFeature->fixedPosX, mFeature->fixedPosY, mFeature->label_x, mFeature->label_y, angle, 0.0, this );
+      lPos << new LabelPosition( 0, mFeature->fixedPosX, mFeature->fixedPosY, mFeature->label_x, mFeature->label_y, angle, 0.0, this );
     }
     else
     {
@@ -1283,15 +1280,15 @@ namespace pal
       {
         case GEOS_POINT:
           if ( mFeature->layer->arrangement() == P_POINT_OVER || mFeature->fixedQuadrant() )
-            nbp = setPositionOverPoint( x[0], y[0], lPos, angle );
+            setPositionOverPoint( x[0], y[0], lPos, angle );
           else
-            nbp = setPositionForPoint( x[0], y[0], lPos, angle );
+            setPositionForPoint( x[0], y[0], lPos, angle );
           break;
         case GEOS_LINESTRING:
           if ( mFeature->layer->arrangement() == P_CURVED )
-            nbp = setPositionForLineCurved( lPos, mapShape );
+            setPositionForLineCurved( lPos, mapShape );
           else
-            nbp = setPositionForLine( lPos, mapShape );
+            setPositionForLine( lPos, mapShape );
           break;
 
         case GEOS_POLYGON:
@@ -1302,52 +1299,47 @@ namespace pal
               double cx, cy;
               mapShape->getCentroid( cx, cy, mFeature->layer->centroidInside() );
               if ( mFeature->layer->arrangement() == P_POINT_OVER )
-                nbp = setPositionOverPoint( cx, cy, lPos, angle, mapShape );
+                setPositionOverPoint( cx, cy, lPos, angle, mapShape );
               else
-                nbp = setPositionForPoint( cx, cy, lPos, angle, mapShape );
+                setPositionForPoint( cx, cy, lPos, angle, mapShape );
               break;
             case P_LINE:
-              nbp = setPositionForLine( lPos, mapShape );
+              setPositionForLine( lPos, mapShape );
               break;
             default:
-              nbp = setPositionForPolygon( lPos, mapShape );
+              setPositionForPolygon( lPos, mapShape );
               break;
           }
       }
     }
 
-    int rnbp = nbp;
-
     // purge candidates that are outside the bbox
-    for ( i = 0; i < nbp; i++ )
+
+    QMutableListIterator< LabelPosition*> i( lPos );
+    while ( i.hasNext() )
     {
+      LabelPosition* pos = i.next();
       bool outside = false;
       if ( mFeature->layer->pal->getShowPartial() )
-        outside = !( *lPos )[i]->isIntersect( bbox );
+        outside = !pos->isIntersect( bbox );
       else
-        outside = !( *lPos )[i]->isInside( bbox );
+        outside = !pos->isInside( bbox );
       if ( outside )
       {
-        rnbp--;
-        ( *lPos )[i]->setCost( DBL_MAX ); // infinite cost => do not use
+        i.remove();
+        delete pos;
       }
       else   // this one is OK
       {
-        ( *lPos )[i]->insertIntoIndex( candidates );
+        pos->insertIntoIndex( candidates );
       }
     }
 
-    sort(( void** )( *lPos ), nbp, LabelPosition::costGrow );
-
-    for ( i = rnbp; i < nbp; i++ )
-    {
-      delete( *lPos )[i];
-    }
-
-    return rnbp;
+    qSort( lPos.begin(), lPos.end(), CostCalculator::candidateSortGrow );
+    return lPos.count();
   }
 
-  void FeaturePart::addSizePenalty( int nbp, LabelPosition** lPos, double bbx[4], double bby[4] )
+  void FeaturePart::addSizePenalty( int nbp, QList< LabelPosition* >& lPos, double bbx[4], double bby[4] )
   {
     if ( !mGeos )
       createGeosGeom();
@@ -1402,7 +1394,7 @@ namespace pal
     // apply the penalty
     for ( int i = 0; i < nbp; i++ )
     {
-      lPos[i]->setCost( lPos[i]->cost() + sizeCost / 100 );
+      lPos.at( i )->setCost( lPos.at( i )->cost() + sizeCost / 100 );
     }
   }
 

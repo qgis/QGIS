@@ -133,8 +133,10 @@ namespace pal
       /** Returns true if this label crosses the boundary of the specified polygon */
       bool crossesBoundary( PointSet* polygon ) const;
 
-      /** Returns number of intersections with polygon (testing border and center) */
-      int getNumPointsInPolygon( PointSet* polygon ) const;
+      /** Returns cost of position intersection with polygon (testing area of intersection and center).
+       * Cost ranges between 0 and 12, with extra cost if center of label position is covered.
+       */
+      int polygonIntersectionCost( PointSet* polygon ) const;
 
       /** Shift the label by specified offset */
       void offsetPosition( double xOffset, double yOffset );
@@ -296,6 +298,15 @@ namespace pal
     private:
       double mCost;
       bool mHasObstacleConflict;
+
+      /** Calculates the total number of parts for this label position
+       */
+      int partCount() const;
+
+      /** Calculates the polygon intersection cost for a single label position part
+       * @returns double between 0 - 12
+       */
+      double polygonIntersectionCostForParts( PointSet* polygon ) const;
 
   };
 

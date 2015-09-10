@@ -191,7 +191,7 @@ void QgsDecorationGrid::saveToProject()
   }
   if ( mMarkerSymbol )
   {
-    doc.setContent( QString( "" ) );
+    doc.setContent( QString() );
     elem = QgsSymbolLayerV2Utils::saveSymbol( "marker symbol", mMarkerSymbol, doc );
     doc.appendChild( elem );
     QgsProject::instance()->writeEntry( mNameConfig, "/MarkerSymbol", doc.toString() );

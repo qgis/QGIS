@@ -8,7 +8,7 @@ compiler:
   - clang
 
 git:
-  depth: 1
+  depth: 30
 
 cache: apt
 

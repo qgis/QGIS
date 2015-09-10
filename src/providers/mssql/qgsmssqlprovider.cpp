@@ -438,7 +438,7 @@ void QgsMssqlProvider::loadFields()
         mFidColName = query.value( 3 ).toString();
         return;
       }
-      foreach ( QString pk, pkCandidates )
+      Q_FOREACH ( const QString& pk, pkCandidates )
       {
         query.clear();
         query.setForwardOnly( true );

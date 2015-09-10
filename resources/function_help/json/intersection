@@ -1,0 +1,7 @@
+{
+  "function": "intersection",
+  "description": "Returns a geometry that represents the shared portion of two geometries.",
+  "arguments": [ {"arg":"geometry1","description":"a geometry"},
+                 {"arg":"geometry2","description":"a geometry"}],
+  "examples": [ { "expression":"geom_to_wkt( intersection( geom_from_wkt( 'LINESTRING(3 3, 4 4, 5 5)' ), geom_from_wkt( 'LINESTRING(3 3, 4 4)' ) ) )", "returns":"LINESTRING(3 3, 4 4)"} ]
+}

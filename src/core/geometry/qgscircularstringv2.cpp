@@ -701,6 +701,7 @@ bool QgsCircularStringV2::insertVertex( const QgsVertexId& position, const QgsPo
   {
     insertVertexBetween( position.vertex, position.vertex + 1, position.vertex - 1 );
   }
+  mBoundingBox = QgsRectangle(); //set bounding box invalid
   return true;
 }
 
@@ -749,6 +750,7 @@ bool QgsCircularStringV2::deleteVertex( const QgsVertexId& position )
     deleteVertex( position.vertex - 1 );
   }
 
+  mBoundingBox = QgsRectangle(); //set bounding box invalid
   return true;
 }
 
@@ -950,4 +952,59 @@ void QgsCircularStringV2::insertVertexBetween( int after, int before, int pointO
   {
     mM.insert( before, ( mM[after] + mM[before] ) / 2.0 );
   }
+}
+
+double QgsCircularStringV2::vertexAngle( const QgsVertexId& vId ) const
+{
+  int before = vId.vertex - 1;
+  int vertex = vId.vertex;
+  int after = vId.vertex + 1;
+
+  if ( vId.vertex % 2 != 0 ) // a curve vertex
+  {
+    if ( vId.vertex >= 1 && vId.vertex < numPoints() - 1 )
+    {
+      return QgsGeometryUtils::circleTangentDirection( QgsPointV2( mX[vertex], mY[vertex] ), QgsPointV2( mX[before], mY[before] ),
+             QgsPointV2( mX[vertex], mY[vertex] ), QgsPointV2( mX[after], mY[after] ) );
+    }
+  }
+  else //a point vertex
+  {
+    if ( vId.vertex == 0 )
+    {
+      return QgsGeometryUtils::circleTangentDirection( QgsPointV2( mX[0], mY[0] ), QgsPointV2( mX[0], mY[0] ),
+             QgsPointV2( mX[1], mY[1] ), QgsPointV2( mX[2], mY[2] ) );
+    }
+    if ( vId.vertex >= numPoints() - 1 )
+    {
+      if ( numPoints() < 3 )
+      {
+        return 0.0;
+      }
+      int a = numPoints() - 3;
+      int b = numPoints() - 2;
+      int c = numPoints() - 1;
+      return QgsGeometryUtils::circleTangentDirection( QgsPointV2( mX[c], mY[c] ), QgsPointV2( mX[a], mY[a] ),
+             QgsPointV2( mX[b], mY[b] ), QgsPointV2( mX[c], mY[c] ) );
+    }
+    else
+    {
+      if ( vId.vertex + 2 > numPoints() - 1 )
+      {
+        return 0.0;
+      }
+
+      int vertex1 = vId.vertex - 2;
+      int vertex2 = vId.vertex - 1;
+      int vertex3 = vId.vertex;
+      double angle1 = QgsGeometryUtils::circleTangentDirection( QgsPointV2( mX[vertex3], mY[vertex3] ),
+                      QgsPointV2( mX[vertex1], mY[vertex1] ), QgsPointV2( mX[vertex2], mY[vertex2] ), QgsPointV2( mX[vertex3], mY[vertex3] ) );
+      int vertex4 = vId.vertex + 1;
+      int vertex5 = vId.vertex + 2;
+      double angle2 = QgsGeometryUtils::circleTangentDirection( QgsPointV2( mX[vertex3], mY[vertex3] ),
+                      QgsPointV2( mX[vertex3], mY[vertex3] ), QgsPointV2( mX[vertex4], mY[vertex4] ), QgsPointV2( mX[vertex5], mY[vertex5] ) );
+      return QgsGeometryUtils::averageAngle( angle1, angle2 );
+    }
+  }
+  return 0.0;
 }

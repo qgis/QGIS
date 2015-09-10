@@ -79,6 +79,9 @@ class CORE_EXPORT QgsGeometryUtils
     /** Calculates midpoint on circle passing through p1 and p2, closest to given coordinate*/
     static bool segmentMidPoint( const QgsPointV2& p1, const QgsPointV2& p2, QgsPointV2& result, double radius, const QgsPointV2& mousePos );
 
+    /** Calculates the direction angle of a circle tangent (clockwise from north in radians)*/
+    static double circleTangentDirection( const QgsPointV2& tangentPoint, const QgsPointV2& cp1, const QgsPointV2& cp2, const QgsPointV2& cp3 );
+
     /** Returns a list of points contained in a WKT string.
      */
     static QList<QgsPointV2> pointsFromWKT( const QString& wktCoordinateList, bool is3D, bool isMeasure );
@@ -92,6 +95,15 @@ class CORE_EXPORT QgsGeometryUtils
     static QDomElement pointsToGML3( const QList<QgsPointV2>& points, QDomDocument &doc, int precision, const QString& ns, bool is3D );
     /** Returns a geoJSON coordinates string */
     static QString pointsToJSON( const QList<QgsPointV2>& points, int precision );
+    /** Calculates direction of line (clockwise from north direction) in radians*/
+    static double lineAngle( double x1, double y1, double x2, double y2 );
+    /** Calculates angle perpendicular to line*/
+    static double linePerpendicularAngle( double x1, double y1, double x2, double y2 );
+    /** Angle between two linear segments*/
+    static double averageAngle( double x1, double y1, double x2, double y2, double x3, double y3 );
+    /** Averages two angles*/
+    static double averageAngle( double a1, double a2 );
+
 
     /** Parses a WKT block of the format "TYPE( contents )" and returns a pair of geometry type to contents ("Pair(wkbType, "contents")")
      */

@@ -178,7 +178,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
     // initialize resampling methods
     cboResamplingMethod->clear();
     QPair<QString, QString> method;
-    foreach ( method, QgsRasterDataProvider::pyramidResamplingMethods( mRasterLayer->providerType() ) )
+    Q_FOREACH ( method, QgsRasterDataProvider::pyramidResamplingMethods( mRasterLayer->providerType() ) )
     {
       cboResamplingMethod->addItem( method.second, method.first );
     }
@@ -355,7 +355,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
 
   //fill available renderers into combo box
   QgsRasterRendererRegistryEntry entry;
-  foreach ( QString name, QgsRasterRendererRegistry::instance()->renderersList() )
+  Q_FOREACH ( const QString& name, QgsRasterRendererRegistry::instance()->renderersList() )
   {
     if ( QgsRasterRendererRegistry::instance()->rendererData( name, entry ) )
     {

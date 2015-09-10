@@ -561,7 +561,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mPanelMenu->addAction( mItemsDock->toggleViewAction() );
 
   QList<QDockWidget *> docks = findChildren<QDockWidget *>();
-  foreach ( QDockWidget* dock, docks )
+  Q_FOREACH ( QDockWidget* dock, docks )
   {
     dock->setFeatures( QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetClosable );
     connect( dock, SIGNAL( visibilityChanged( bool ) ), this, SLOT( dockVisibilityChanged( bool ) ) );
@@ -729,7 +729,7 @@ void QgsComposer::setIconSizes( int size )
 
   //Change all current icon sizes.
   QList<QToolBar *> toolbars = findChildren<QToolBar *>();
-  foreach ( QToolBar * toolbar, toolbars )
+  Q_FOREACH ( QToolBar * toolbar, toolbars )
   {
     toolbar->setIconSize( QSize( size, size ) );
   }
@@ -1033,6 +1033,14 @@ void QgsComposer::atlasFeatureChanged( QgsFeature *feature )
     mAtlasPageComboBox->setEditText( QString::number( mComposition->atlasComposition().currentFeatureNumber() + 1 ) );
   }
   mAtlasPageComboBox->blockSignals( false );
+
+  //update expression context variables in map canvas to allow for previewing atlas feature based renderering
+  mapCanvas()->expressionContextScope().addVariable( QgsExpressionContextScope::StaticVariable( "atlas_featurenumber", mComposition->atlasComposition().currentFeatureNumber() + 1, true ) );
+  mapCanvas()->expressionContextScope().addVariable( QgsExpressionContextScope::StaticVariable( "atlas_pagename", mComposition->atlasComposition().currentPageName(), true ) );
+  QgsFeature atlasFeature = mComposition->atlasComposition().feature();
+  mapCanvas()->expressionContextScope().addVariable( QgsExpressionContextScope::StaticVariable( "atlas_feature", QVariant::fromValue( atlasFeature ), true ) );
+  mapCanvas()->expressionContextScope().addVariable( QgsExpressionContextScope::StaticVariable( "atlas_featureid", atlasFeature.id(), true ) );
+  mapCanvas()->expressionContextScope().addVariable( QgsExpressionContextScope::StaticVariable( "atlas_geometry", QVariant::fromValue( *atlasFeature.constGeometry() ), true ) );
 }
 
 void QgsComposer::on_mActionAtlasPreview_triggered( bool checked )
@@ -1162,7 +1170,7 @@ void QgsComposer::atlasPageComboEditingFinished()
   QString text = mAtlasPageComboBox->lineEdit()->text();
 
   //find matching record in combo box
-  int page = -1;
+  int page = -1; //note - first page starts at 1, not 0
   for ( int i = 0; i < mAtlasPageComboBox->count(); ++i )
   {
     if ( text.compare( mAtlasPageComboBox->itemData( i, Qt::UserRole + 1 ).toString(), Qt::CaseInsensitive ) == 0
@@ -1175,7 +1183,7 @@ void QgsComposer::atlasPageComboEditingFinished()
   }
   bool ok = ( page > 0 );
 
-  if ( !ok || page >= mComposition->atlasComposition().numFeatures() || page < 1 )
+  if ( !ok || page > mComposition->atlasComposition().numFeatures() || page < 1 )
   {
     mAtlasPageComboBox->blockSignals( true );
     mAtlasPageComboBox->setCurrentIndex( mComposition->atlasComposition().currentFeatureNumber() );
@@ -1376,14 +1384,14 @@ void QgsComposer::on_mActionHidePanels_triggered()
     mPanelStatus.clear();
     //record status of all docks
 
-    foreach ( QDockWidget* dock, docks )
+    Q_FOREACH ( QDockWidget* dock, docks )
     {
       mPanelStatus.insert( dock->windowTitle(), PanelStatus( dock->isVisible(), false ) );
       dock->setVisible( false );
     }
 
     //record active dock tabs
-    foreach ( QTabBar* tabBar, tabBars )
+    Q_FOREACH ( QTabBar* tabBar, tabBars )
     {
       QString currentTabTitle = tabBar->tabText( tabBar->currentIndex() );
       mPanelStatus[ currentTabTitle ].isActive = true;
@@ -1392,7 +1400,7 @@ void QgsComposer::on_mActionHidePanels_triggered()
   else
   {
     //restore visibility of all docks
-    foreach ( QDockWidget* dock, docks )
+    Q_FOREACH ( QDockWidget* dock, docks )
     {
       if ( ! mPanelStatus.contains( dock->windowTitle() ) )
       {
@@ -1403,7 +1411,7 @@ void QgsComposer::on_mActionHidePanels_triggered()
     }
 
     //restore previously active dock tabs
-    foreach ( QTabBar* tabBar, tabBars )
+    Q_FOREACH ( QTabBar* tabBar, tabBars )
     {
       //loop through all tabs in tab bar
       for ( int i = 0; i < tabBar->count(); ++i )
@@ -1485,6 +1493,7 @@ void QgsComposer::setComposition( QgsComposition* composition )
 
   deleteItemWidgets();
 
+  delete mComposition;
   mComposition = composition;
 
   connectCompositionSlots();
@@ -1621,7 +1630,7 @@ void QgsComposer::exportCompositionAsPDF( QgsComposer::OutputMode mode )
       {
         return;
       }
-      atlasMap->setFilenamePattern( "'output_'||$feature" );
+      atlasMap->setFilenamePattern( "'output_'||@atlas_featurenumber" );
     }
 
     QSettings myQSettings;
@@ -2033,7 +2042,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
       {
         return;
       }
-      atlasMap->setFilenamePattern( "'output_'||$feature" );
+      atlasMap->setFilenamePattern( "'output_'||@atlas_featurenumber" );
     }
 
     QSettings myQSettings;
@@ -2334,7 +2343,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
       {
         return;
       }
-      atlasMap->setFilenamePattern( "'output_'||$feature" );
+      atlasMap->setFilenamePattern( "'output_'||@atlas_featurenumber" );
     }
 
     QSettings myQSettings;
@@ -3251,6 +3260,9 @@ void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& 
   QgsCompositionWidget* oldCompositionWidget = qobject_cast<QgsCompositionWidget *>( mGeneralDock->widget() );
   delete oldCompositionWidget;
 
+  deleteItemWidgets();
+  delete mComposition;
+
   createComposerView();
 
   //read composition settings
@@ -3713,7 +3725,7 @@ void QgsComposer::populateHelpMenu()
 void QgsComposer::populateWithOtherMenu( QMenu* thisMenu, QMenu* otherMenu )
 {
   thisMenu->clear();
-  foreach ( QAction* act, otherMenu->actions() )
+  Q_FOREACH ( QAction* act, otherMenu->actions() )
   {
     if ( act->menu() )
     {
@@ -3729,7 +3741,7 @@ void QgsComposer::populateWithOtherMenu( QMenu* thisMenu, QMenu* otherMenu )
 QMenu* QgsComposer::mirrorOtherMenu( QMenu* otherMenu )
 {
   QMenu* newMenu = new QMenu( otherMenu->title(), this );
-  foreach ( QAction* act, otherMenu->actions() )
+  Q_FOREACH ( QAction* act, otherMenu->actions() )
   {
     if ( act->menu() )
     {

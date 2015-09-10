@@ -162,7 +162,7 @@ QgsFeatureList QgsClipboard::copyOf( const QgsFields &fields )
     return mFeatureClipboard;
 
   QgsFeatureList features;
-  foreach ( QString row, values )
+  Q_FOREACH ( const QString& row, values )
   {
     // Assume that it's just WKT for now.
     QgsGeometry* geometry = QgsGeometry::fromWkt( row );

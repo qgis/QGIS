@@ -396,7 +396,7 @@ bool QgsComposerAttributeTable::getFeatureAttributes( QList<QgsAttributeMap> &at
   if ( mComposerMap && mShowOnlyVisibleFeatures )
   {
     selectionRect = *mComposerMap->currentMapExtent();
-    if ( mVectorLayer && mComposition->mapSettings().hasCrsTransformEnabled() )
+    if ( mComposition->mapSettings().hasCrsTransformEnabled() )
     {
       //transform back to layer CRS
       QgsCoordinateTransform coordTransform( mVectorLayer->crs(), mComposition->mapSettings().destinationCrs() );
@@ -451,7 +451,7 @@ bool QgsComposerAttributeTable::getFeatureAttributes( QList<QgsAttributeMap> &at
       {
         // Lets assume it's an expression
         QgsExpression* expression = new QgsExpression(( *columnIt )->attribute() );
-        context->lastScope()->setVariable( QString( "_rownum_" ), counter + 1 );
+        context->lastScope()->setVariable( QString( "row_number" ), counter + 1 );
         expression->prepare( context.data() );
         QVariant value = expression->evaluate( context.data() );
         attributeMaps.last().insert( i, value.toString() );

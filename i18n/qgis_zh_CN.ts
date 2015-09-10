@@ -60558,7 +60558,7 @@ There was a problem with your symbol database.</source>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="58"/>
-        <source>If you need help using QGIS we have a &apos;users&apos; mailing list where users help each other with issues related to using our sofware. We also have a &apos;developers&apos; mailing list. for those wanting help and to discuss things relating to the QGIS code base. Details on how to subscribe are in the &lt;a href=&quot;http://qgis.org/en/site/forusers/support.html#mailing-lists&quot;&gt;community section&lt;/a&gt; of the QGIS home page.</source>
+        <source>If you need help using QGIS we have a &apos;users&apos; mailing list where users help each other with issues related to using our software. We also have a &apos;developers&apos; mailing list. for those wanting help and to discuss things relating to the QGIS code base. Details on how to subscribe are in the &lt;a href=&quot;http://qgis.org/en/site/forusers/support.html#mailing-lists&quot;&gt;community section&lt;/a&gt; of the QGIS home page.</source>
         <translation>如果你在使用QGIS时需要帮助，我们有一个“用户（users）”邮件列表，用户们在这个邮件列表中就使用我们软件过程中遇到的问题相互帮助。我们也有一个“开发者”邮件列表，供那些想要帮助和讨论有关QGIS代码库的人讨论问题。如何订阅的细节都在QGIS主页的&lt;a href=&quot;http://qgis.org/en/site/forusers/support.html#mailing-lists&quot;&gt;社区部分&lt;/a&gt;。</translation>
     </message>
     <message>

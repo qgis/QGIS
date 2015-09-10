@@ -3488,8 +3488,8 @@ font-style: italic;</string>
                      <property name="geometry">
                       <rect>
                        <x>0</x>
-                       <y>-466</y>
-                       <width>578</width>
+                       <y>0</y>
+                       <width>427</width>
                        <height>829</height>
                       </rect>
                      </property>
@@ -5526,12 +5526,15 @@ font-style: italic;</string>
                             <item>
                              <widget class="QLabel" name="label_40">
                               <property name="text">
-                               <string>Low priority</string>
+                               <string>Low weight</string>
                               </property>
                              </widget>
                             </item>
                             <item>
                              <widget class="QSlider" name="mObstacleFactorSlider">
+                              <property name="toolTip">
+                               <string>Controls how likely labels are to cover features in this layer</string>
+                              </property>
                               <property name="minimum">
                                <number>0</number>
                               </property>
@@ -5555,7 +5558,7 @@ font-style: italic;</string>
                             <item>
                              <widget class="QLabel" name="label_41">
                               <property name="text">
-                               <string>High priority</string>
+                               <string>High weight</string>
                               </property>
                              </widget>
                             </item>

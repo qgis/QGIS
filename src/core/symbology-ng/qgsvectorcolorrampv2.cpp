@@ -61,7 +61,7 @@ QgsVectorColorRampV2* QgsVectorGradientColorRampV2::create( const QgsStringMap& 
   QgsGradientStopsList stops;
   if ( props.contains( "stops" ) )
   {
-    foreach ( QString stop, props["stops"].split( ':' ) )
+    Q_FOREACH ( const QString& stop, props["stops"].split( ':' ) )
     {
       int i = stop.indexOf( ';' );
       if ( i == -1 )

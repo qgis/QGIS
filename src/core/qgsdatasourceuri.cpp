@@ -64,8 +64,8 @@ QgsDataSourceURI::QgsDataSourceURI( QString uri )
 
     if ( i == uri.length() || uri[i] != '=' )
     {
-      QgsDebugMsg( "= expected after parameter name" );
-      return;
+      QgsDebugMsg( QString( "= expected after parameter name, skipping text '%1'" ).arg( pname ) );
+      continue;
     }
 
     i++;
@@ -101,7 +101,6 @@ QgsDataSourceURI::QgsDataSourceURI( QString uri )
           i++;
 
           int start = i;
-          QString col;
           while ( i < uri.length() && uri[i] != ')' )
           {
             if ( uri[i] == '\\' )
@@ -548,9 +547,9 @@ QString QgsDataSourceURI::uri() const
 QByteArray QgsDataSourceURI::encodedUri() const
 {
   QUrl url;
-  foreach ( QString key, mParams.uniqueKeys() )
+  Q_FOREACH ( const QString& key, mParams.uniqueKeys() )
   {
-    foreach ( QString value, mParams.values( key ) )
+    Q_FOREACH ( const QString& value, mParams.values( key ) )
     {
       url.addQueryItem( key, value );
     }
@@ -564,7 +563,7 @@ void QgsDataSourceURI::setEncodedUri( const QByteArray & uri )
   QUrl url;
   url.setEncodedQuery( uri );
   QPair<QString, QString> item;
-  foreach ( item, url.queryItems() )
+  Q_FOREACH ( item, url.queryItems() )
   {
     mParams.insertMulti( item.first, item.second );
   }
@@ -660,7 +659,7 @@ void QgsDataSourceURI::setParam( const QString &key, const QString &value )
 
 void QgsDataSourceURI::setParam( const QString &key, const QStringList &value )
 {
-  foreach ( QString val, value )
+  Q_FOREACH ( const QString& val, value )
   {
     mParams.insertMulti( key, val );
   }

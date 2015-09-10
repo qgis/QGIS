@@ -71,7 +71,7 @@ class QgsConnectionPoolGroup
 
     ~QgsConnectionPoolGroup()
     {
-      foreach ( Item item, conns )
+      Q_FOREACH ( Item item, conns )
       {
         qgsConnectionPool_ConnectionDestroy( item.c );
       }
@@ -146,11 +146,11 @@ class QgsConnectionPoolGroup
     void invalidateConnections()
     {
       connMutex.lock();
-      foreach ( Item i, conns )
+      Q_FOREACH ( Item i, conns )
       {
         qgsConnectionPool_InvalidateConnection( i.c );
       }
-      foreach ( T c, acquiredConns )
+      Q_FOREACH ( T c, acquiredConns )
         qgsConnectionPool_InvalidateConnection( c );
       connMutex.unlock();
     }
@@ -232,7 +232,7 @@ class QgsConnectionPool
     virtual ~QgsConnectionPool()
     {
       mMutex.lock();
-      foreach ( T_Group* group, mGroups )
+      Q_FOREACH ( T_Group* group, mGroups )
       {
         delete group;
       }

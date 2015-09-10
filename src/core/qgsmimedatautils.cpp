@@ -89,7 +89,7 @@ QMimeData* QgsMimeDataUtils::encodeUriList( QgsMimeDataUtils::UriList layers )
   QByteArray encodedData;
 
   QDataStream stream( &encodedData, QIODevice::WriteOnly );
-  foreach ( const Uri& u, layers )
+  Q_FOREACH ( const Uri& u, layers )
   {
     stream << u.data();
   }
@@ -117,7 +117,7 @@ QgsMimeDataUtils::UriList QgsMimeDataUtils::decodeUriList( const QMimeData* data
 QString QgsMimeDataUtils::encode( const QStringList& items )
 {
   QString encoded;
-  foreach ( const QString& item, items )
+  Q_FOREACH ( const QString& item, items )
   {
     QString str = item;
     str.replace( "\\", "\\\\" );
@@ -132,7 +132,7 @@ QStringList QgsMimeDataUtils::decode( const QString& encoded )
   QStringList items;
   QString item;
   bool inEscape = false;
-  foreach ( const QChar& c, encoded )
+  Q_FOREACH ( const QChar& c, encoded )
   {
     if ( c == '\\' && inEscape )
     {

@@ -213,9 +213,10 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
       DegreeMinuteSecond, /*!< degree/minutes/seconds, use NSEW suffix */
       DecimalWithSuffix, /*!< decimal degrees, use NSEW suffix */
       DegreeMinuteNoSuffix, /*!< degree/minutes, use - for S/W coordinates */
-      DegreeMinutePadded, /*!< degree/minutes, with minutes using leading zeros were required */
+      DegreeMinutePadded, /*!< degree/minutes, with minutes using leading zeros where required */
       DegreeMinuteSecondNoSuffix, /*!< degree/minutes/seconds, use - for S/W coordinates */
-      DegreeMinuteSecondPadded /*!< degree/minutes/seconds, with minutes using leading zeros were required */
+      DegreeMinuteSecondPadded, /*!< degree/minutes/seconds, with minutes using leading zeros where required */
+      CustomFormat /*!< custom expression-based format */
     };
 
     /** Border sides for annotations
@@ -635,6 +636,22 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     */
     AnnotationFormat annotationFormat() const { return mGridAnnotationFormat; }
 
+    /** Sets the expression used for drawing grid annotations. This is only used when annotationFormat()
+     * is QgsComposerMapGrid::CustomFormat.
+     * @param expression expression for evaluating custom grid annotations
+     * @see annotationExpression
+     * @note added in QGIS 2.12
+    */
+    void setAnnotationExpression( const QString& expression ) { mGridAnnotationExpressionString = expression; mGridAnnotationExpression.reset(); }
+
+    /** Returns the expression used for drawing grid annotations. This is only used when annotationFormat()
+     * is QgsComposerMapGrid::CustomFormat.
+     * @returns expression for evaluating custom grid annotations
+     * @see setAnnotationExpression
+     * @note added in QGIS 2.12
+    */
+    QString annotationExpression() const { return mGridAnnotationExpressionString; }
+
     //
     // GRID FRAME
     //
@@ -784,6 +801,8 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     */
     QColor frameFillColor2() const { return mGridFrameFillColor2; }
 
+    virtual QgsExpressionContext* createExpressionContext() const override;
+
   private:
 
     QgsComposerMapGrid(); //forbidden
@@ -840,6 +859,10 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     /** Annotation direction on bottom side ( horizontal or vertical )*/
     AnnotationDirection mBottomGridAnnotationDirection;
     AnnotationFormat mGridAnnotationFormat;
+
+    QString mGridAnnotationExpressionString;
+    mutable QScopedPointer< QgsExpression > mGridAnnotationExpression;
+
     FrameStyle mGridFrameStyle;
     FrameSideFlags mGridFrameSides;
     double mGridFrameWidth;
@@ -889,8 +912,10 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     /** Draw coordinates for mGridAnnotationType Coordinate
         @param p drawing painter
         @param hLines horizontal coordinate lines in item coordinates
-        @param vLines vertical coordinate lines in item coordinates*/
-    void drawCoordinateAnnotations( QPainter* p, const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines ) const;
+        @param vLines vertical coordinate lines in item coordinates
+        @param expressionContext expression context for evaluating custom annotation formats
+    */
+    void drawCoordinateAnnotations( QPainter* p, const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines, QgsExpressionContext& expressionContext ) const;
 
     void drawCoordinateAnnotation( QPainter* p, const QPointF& pos, QString annotationString, const AnnotationCoordinate coordinateType ) const;
 
@@ -902,7 +927,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     */
     void drawAnnotation( QPainter* p, const QPointF& pos, int rotation, const QString& annotationText ) const;
 
-    QString gridAnnotationString( double value, AnnotationCoordinate coord ) const;
+    QString gridAnnotationString( double value, AnnotationCoordinate coord, QgsExpressionContext& expressionContext ) const;
 
     /** Returns the grid lines with associated coordinate value
         @return 0 in case of success*/

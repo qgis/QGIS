@@ -1,0 +1,11 @@
+{
+  "function": "if",
+  "description": "Tests a condition and returns a different result depending on the conditional check.",
+  "arguments": [ {"arg":"condition","description":"the condition which should be checked"},
+  {"arg":"result_when_true","description":"the result which will be returned when the condition is True"},
+  {"arg":"result_when_false","description":"the result which will be returned when the condition is False"}
+  ],
+  "examples": [ { "expression":"if( 1, 'One', 'Not One' )", "returns":"'One'"},
+  { "expression":"if( 8, 'One', 'Not One' )", "returns":"'Not One'"}
+  ]
+}

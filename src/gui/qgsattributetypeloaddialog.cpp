@@ -70,7 +70,7 @@ void QgsAttributeTypeLoadDialog::fillLayerList()
 {
   layerComboBox->blockSignals( true );
   layerComboBox->clear();
-  foreach ( QgsMapLayer *l, QgsMapLayerRegistry::instance()->mapLayers() )
+  Q_FOREACH ( QgsMapLayer *l, QgsMapLayerRegistry::instance()->mapLayers() )
   {
     QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( l );
     if ( vl )

@@ -32,7 +32,7 @@ from PyQt4.QtCore import qDebug
 # DON'T RAISE THIS THRESHOLD!!!
 # (changes which lower this threshold are welcomed though!)
 
-ACCEPTABLE_MISSING_DOCS = 4229
+ACCEPTABLE_MISSING_DOCS = 4064
 
 
 def elemIsDocumentableClass(elem):
@@ -90,6 +90,21 @@ def elemIsDocumentableMember(elem):
     #ignore certain obvious operators
     try:
         if name.text in ('operator=', 'operator=='):
+            return False
+    except:
+        pass
+
+    #ignore on_* slots
+    try:
+        if name.text.startswith('on_'):
+            return False
+    except:
+        pass
+
+    #ignore deprecated members
+    typeelem = elem.find('type')
+    try:
+        if typeelem.text and 'Q_DECL_DEPRECATED' in typeelem.text:
             return False
     except:
         pass

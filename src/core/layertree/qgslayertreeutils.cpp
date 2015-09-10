@@ -95,7 +95,7 @@ bool QgsLayerTreeUtils::readOldLegendLayerOrder( const QDomElement& legendElem, 
   if ( !res && hasCustomOrder )
     return false; // invalid state
 
-  foreach ( QString layerId, layerIndexes )
+  Q_FOREACH ( const QString& layerId, layerIndexes )
   {
     QgsDebugMsg( layerId );
     order.append( layerId );
@@ -155,7 +155,7 @@ static QDomElement _writeOldLegendGroup( QDomDocument& doc, QgsLayerTreeGroup* n
 
 static void _writeOldLegendGroupChildren( QDomDocument& doc, QDomElement& groupElem, QgsLayerTreeGroup* nodeGroup, bool hasCustomOrder, const QStringList& order )
 {
-  foreach ( QgsLayerTreeNode* node, nodeGroup->children() )
+  Q_FOREACH ( QgsLayerTreeNode* node, nodeGroup->children() )
   {
     if ( QgsLayerTree::isGroup( node ) )
     {
@@ -260,7 +260,7 @@ static void _readOldLegendLayer( const QDomElement& layerElem, QgsLayerTreeGroup
 
 bool QgsLayerTreeUtils::layersEditable( const QList<QgsLayerTreeLayer*>& layerNodes )
 {
-  foreach ( QgsLayerTreeLayer* layerNode, layerNodes )
+  Q_FOREACH ( QgsLayerTreeLayer* layerNode, layerNodes )
   {
     QgsVectorLayer *vl = qobject_cast<QgsVectorLayer*>( layerNode->layer() );
     if ( !vl )
@@ -274,7 +274,7 @@ bool QgsLayerTreeUtils::layersEditable( const QList<QgsLayerTreeLayer*>& layerNo
 
 bool QgsLayerTreeUtils::layersModified( const QList<QgsLayerTreeLayer*>& layerNodes )
 {
-  foreach ( QgsLayerTreeLayer* layerNode, layerNodes )
+  Q_FOREACH ( QgsLayerTreeLayer* layerNode, layerNodes )
   {
     QgsVectorLayer *vl = qobject_cast<QgsVectorLayer*>( layerNode->layer() );
     if ( !vl )
@@ -289,7 +289,7 @@ bool QgsLayerTreeUtils::layersModified( const QList<QgsLayerTreeLayer*>& layerNo
 void QgsLayerTreeUtils::removeInvalidLayers( QgsLayerTreeGroup* group )
 {
   QList<QgsLayerTreeNode*> nodesToRemove;
-  foreach ( QgsLayerTreeNode* node, group->children() )
+  Q_FOREACH ( QgsLayerTreeNode* node, group->children() )
   {
     if ( QgsLayerTree::isGroup( node ) )
       removeInvalidLayers( QgsLayerTree::toGroup( node ) );
@@ -300,7 +300,7 @@ void QgsLayerTreeUtils::removeInvalidLayers( QgsLayerTreeGroup* group )
     }
   }
 
-  foreach ( QgsLayerTreeNode* node, nodesToRemove )
+  Q_FOREACH ( QgsLayerTreeNode* node, nodesToRemove )
     group->removeChildNode( node );
 }
 
@@ -310,7 +310,7 @@ QStringList QgsLayerTreeUtils::invisibleLayerList( QgsLayerTreeNode *node )
 
   if ( QgsLayerTree::isGroup( node ) )
   {
-    foreach ( QgsLayerTreeNode *child, QgsLayerTree::toGroup( node )->children() )
+    Q_FOREACH ( QgsLayerTreeNode *child, QgsLayerTree::toGroup( node )->children() )
     {
       list << invisibleLayerList( child );
     }
@@ -328,7 +328,7 @@ QStringList QgsLayerTreeUtils::invisibleLayerList( QgsLayerTreeNode *node )
 
 void QgsLayerTreeUtils::replaceChildrenOfEmbeddedGroups( QgsLayerTreeGroup* group )
 {
-  foreach ( QgsLayerTreeNode* child, group->children() )
+  Q_FOREACH ( QgsLayerTreeNode* child, group->children() )
   {
     if ( QgsLayerTree::isGroup( child ) )
     {
@@ -348,7 +348,7 @@ void QgsLayerTreeUtils::replaceChildrenOfEmbeddedGroups( QgsLayerTreeGroup* grou
 
 void QgsLayerTreeUtils::updateEmbeddedGroupsProjectPath( QgsLayerTreeGroup* group )
 {
-  foreach ( QgsLayerTreeNode* node, group->children() )
+  Q_FOREACH ( QgsLayerTreeNode* node, group->children() )
   {
     if ( !node->customProperty( "embedded_project" ).toString().isEmpty() )
     {

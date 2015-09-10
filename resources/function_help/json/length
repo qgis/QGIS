@@ -1,0 +1,7 @@
+{
+  "function": "length",
+  "description": "Returns the length of a string.",
+  "arguments": [ {"arg":"string","description":"string to count length of"}],
+  "examples": [ { "expression":"length('hello')", "returns":"5"}
+  ]
+}

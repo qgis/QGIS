@@ -58,7 +58,7 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   connect( btnLoadAll, SIGNAL( pressed() ), this, SLOT( loadAllValues() ) );
   connect( btnLoadSample, SIGNAL( pressed() ), this, SLOT( loadSampleValues() ) );
 
-  foreach ( QPushButton* button, mOperatorsGroupBox->findChildren<QPushButton *>() )
+  Q_FOREACH ( QPushButton* button, mOperatorsGroupBox->findChildren<QPushButton *>() )
   {
     connect( button, SIGNAL( pressed() ), this, SLOT( operatorButtonClicked() ) );
   }
@@ -138,7 +138,6 @@ void QgsExpressionBuilderWidget::currentChanged( const QModelIndex &index, const
   // Show the help for the current item.
   QString help = loadFunctionHelp( item );
   txtHelpText->setText( help );
-  txtHelpText->setToolTip( txtHelpText->toPlainText() );
 }
 
 void QgsExpressionBuilderWidget::on_btnRun_pressed()
@@ -189,7 +188,7 @@ void QgsExpressionBuilderWidget::updateFunctionFileList( QString path )
   dir.setNameFilters( QStringList() << "*.py" );
   QStringList files = dir.entryList( QDir::Files );
   cmbFileNames->clear();
-  foreach ( QString name, files )
+  Q_FOREACH ( const QString& name, files )
   {
     QFileInfo info( mFunctionsPath + QDir::separator() + name );
     if ( info.baseName() == "__init__" ) continue;
@@ -280,7 +279,7 @@ void QgsExpressionBuilderWidget::loadFieldNames( const QgsFields& fields )
     return;
 
   QStringList fieldNames;
-  //foreach ( const QgsField& field, fields )
+  //Q_FOREACH ( const QgsField& field, fields )
   for ( int i = 0; i < fields.count(); ++i )
   {
     QString fieldName = fields[i].name();
@@ -293,7 +292,7 @@ void QgsExpressionBuilderWidget::loadFieldNames( const QgsFields& fields )
 void QgsExpressionBuilderWidget::loadFieldsAndValues( const QMap<QString, QStringList> &fieldValues )
 {
   QgsFields fields;
-  foreach ( const QString& fieldName, fieldValues.keys() )
+  Q_FOREACH ( const QString& fieldName, fieldValues.keys() )
   {
     fields.append( QgsField( fieldName ) );
   }
@@ -322,7 +321,7 @@ void QgsExpressionBuilderWidget::fillFieldValues( const QString& fieldName, int 
   QList<QVariant> values;
   QStringList strValues;
   mLayer->uniqueValues( fieldIndex, values, countLimit );
-  foreach ( QVariant value, values )
+  Q_FOREACH ( const QVariant& value, values )
   {
     QString strValue;
     if ( value.isNull() )
@@ -417,7 +416,7 @@ void QgsExpressionBuilderWidget::loadRecent( QString key )
   QSettings settings;
   QString location = QString( "/expressions/recent/%1" ).arg( key );
   QStringList expressions = settings.value( location ).toStringList();
-  foreach ( QString expression, expressions )
+  Q_FOREACH ( const QString& expression, expressions )
   {
     this->registerItem( name, expression, expression, expression );
   }
@@ -468,6 +467,8 @@ void QgsExpressionBuilderWidget::updateFunctionTree()
     QgsExpression::Function* func = QgsExpression::Functions()[i];
     QString name = func->name();
     if ( name.startsWith( "_" ) ) // do not display private functions
+      continue;
+    if ( func->group() == "deprecated" ) // don't show deprecated functions
       continue;
     if ( func->isContextual() )
     {
@@ -603,7 +604,7 @@ QString QgsExpressionBuilderWidget::formatPreviewString( const QString& previewS
 void QgsExpressionBuilderWidget::loadExpressionContext()
 {
   QStringList variableNames = mExpressionContext.filteredVariableNames();
-  Q_FOREACH ( QString variable, variableNames )
+  Q_FOREACH ( const QString& variable, variableNames )
   {
     registerItem( "Variables", variable, " @" + variable + " ",
                   QgsExpression::variableHelpText( variable, true, mExpressionContext.variable( variable ) ),
@@ -613,7 +614,7 @@ void QgsExpressionBuilderWidget::loadExpressionContext()
 
   // Load the functions from the expression context
   QStringList contextFunctions = mExpressionContext.functionNames();
-  Q_FOREACH ( QString functionName, contextFunctions )
+  Q_FOREACH ( const QString& functionName, contextFunctions )
   {
     QgsExpression::Function* func = mExpressionContext.function( functionName );
     QString name = func->name();
@@ -707,6 +708,19 @@ void QgsExpressionBuilderWidget::setExpressionState( bool state )
   mExpressionValid = state;
 }
 
+QString QgsExpressionBuilderWidget::helpStylesheet() const
+{
+  //start with default QGIS report style
+  QString style = QgsApplication::reportStyleSheet();
+
+  //add some tweaks
+  style += " .functionname {color: #0a6099; font-weight: bold;} "
+           " .argument {font-family: monospace; color: #bf0c0c; font-style: italic; } "
+           " td.argument { padding-right: 10px; }";
+
+  return style;
+}
+
 QString QgsExpressionBuilderWidget::loadFunctionHelp( QgsExpressionItem* expressionItem )
 {
   if ( !expressionItem )
@@ -725,8 +739,7 @@ QString QgsExpressionBuilderWidget::loadFunctionHelp( QgsExpressionItem* express
       helpContents = QgsExpression::helptext( name );
   }
 
-  QString myStyle = QgsApplication::reportStyleSheet();
-  return "<head><style>" + myStyle + "</style></head><body>" + helpContents + "</body>";
+  return "<head><style>" + helpStylesheet() + "</style></head><body>" + helpContents + "</body>";
 }
 
 

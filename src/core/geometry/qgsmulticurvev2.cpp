@@ -37,7 +37,7 @@ QDomElement QgsMultiCurveV2::asGML2( QDomDocument& doc, int precision, const QSt
 {
   // GML2 does not support curves
   QDomElement elemMultiLineString = doc.createElementNS( ns, "MultiLineString" );
-  foreach ( const QgsAbstractGeometryV2 *geom, mGeometries )
+  Q_FOREACH ( const QgsAbstractGeometryV2 *geom, mGeometries )
   {
     if ( dynamic_cast<const QgsCurveV2*>( geom ) )
     {
@@ -57,7 +57,7 @@ QDomElement QgsMultiCurveV2::asGML2( QDomDocument& doc, int precision, const QSt
 QDomElement QgsMultiCurveV2::asGML3( QDomDocument& doc, int precision, const QString& ns ) const
 {
   QDomElement elemMultiCurve = doc.createElementNS( ns, "MultiCurve" );
-  foreach ( const QgsAbstractGeometryV2 *geom, mGeometries )
+  Q_FOREACH ( const QgsAbstractGeometryV2 *geom, mGeometries )
   {
     if ( dynamic_cast<const QgsCurveV2*>( geom ) )
     {
@@ -76,7 +76,7 @@ QString QgsMultiCurveV2::asJSON( int precision ) const
 {
   // GeoJSON does not support curves
   QString json = "{\"type\": \"MultiLineString\", \"coordinates\": [";
-  foreach ( const QgsAbstractGeometryV2 *geom, mGeometries )
+  Q_FOREACH ( const QgsAbstractGeometryV2 *geom, mGeometries )
   {
     if ( dynamic_cast<const QgsCurveV2*>( geom ) )
     {

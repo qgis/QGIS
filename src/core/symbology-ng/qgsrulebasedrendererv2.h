@@ -62,7 +62,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
     struct RenderLevel
     {
       RenderLevel( int z ): zIndex( z ) {}
-      ~RenderLevel() { foreach ( RenderJob* j, jobs ) delete j; }
+      ~RenderLevel() { Q_FOREACH ( RenderJob* j, jobs ) delete j; }
       int zIndex;
       QList<RenderJob*> jobs;
     };
@@ -84,6 +84,13 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
     class CORE_EXPORT Rule
     {
       public:
+        enum RenderResult
+        {
+          Filtered = 0, //!< The rule does not apply
+          Inactive,     //!< The rule is inactive
+          Rendered      //!< Something was rendered
+        };
+
         //! Constructor takes ownership of the symbol
         Rule( QgsSymbolV2* symbol, int scaleMinDenom = 0, int scaleMaxDenom = 0, QString filterExp = QString(),
               QString label = QString(), QString description = QString(), bool elseRule = false );
@@ -107,7 +114,14 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
         QString filterExpression() const { return mFilterExp; }
         QString description() const { return mDescription; }
         //! @note added in 2.6
-        bool checkState() const { return mCheckState; }
+        //! @deprecated use active instead
+        bool checkState() const { return mIsActive; }
+        /**
+         * Returns if this rule is active
+         *
+         * @return True if the rule is active
+         */
+        bool active() const { return mIsActive; }
 
         //! Unique rule identifier (for identification of rule within renderer)
         //! @note added in 2.6
@@ -124,7 +138,13 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
         void setFilterExpression( QString filterExp ) { mFilterExp = filterExp; initFilter(); }
         void setDescription( QString description ) { mDescription = description; }
         //! @note added in 2.6
-        void setCheckState( bool state ) { mCheckState = state; }
+        //! @deprecated use setActive instead
+        void setCheckState( bool state ) { mIsActive = state; }
+        /**
+         * Sets if this rule is active
+         * @param state Determines if the rule should be activated or deactivated
+         */
+        void setActive( bool state ) { mIsActive = state; }
 
         //! clone this rule, return new instance
         Rule* clone() const;
@@ -144,7 +164,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
         //! @note not available in python bindings
         void setNormZLevels( const QMap<int, int>& zLevelsToNormLevels );
 
-        bool renderFeature( FeatureToRender& featToRender, QgsRenderContext& context, RenderQueue& renderQueue );
+        RenderResult renderFeature( FeatureToRender& featToRender, QgsRenderContext& context, RenderQueue& renderQueue );
 
         //! only tell whether a feature will be rendered without actually rendering it
         bool willRenderFeature( QgsFeature& feat, QgsRenderContext* context = 0 );
@@ -160,7 +180,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
         static Rule* create( QDomElement& ruleElem, QgsSymbolV2Map& symbolMap );
 
         RuleList& children() { return mChildren; }
-        RuleList descendants() const { RuleList l; foreach ( Rule *c, mChildren ) { l += c; l += c->descendants(); } return l; }
+        RuleList descendants() const { RuleList l; Q_FOREACH ( Rule *c, mChildren ) { l += c; l += c->descendants(); } return l; }
         Rule* parent() { return mParent; }
 
         //! add child rule, take ownership, sets this as parent
@@ -195,7 +215,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
         bool mElseRule;
         RuleList mChildren;
         RuleList mElseRules;
-        bool mCheckState; // whether it is enabled or not
+        bool mIsActive; // whether it is enabled or not
 
         QString mRuleKey; // string used for unique identification of rule within renderer
 

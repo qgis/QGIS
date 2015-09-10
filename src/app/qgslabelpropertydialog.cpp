@@ -22,6 +22,8 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsmaprenderer.h"
 #include "qgsvectorlayer.h"
+#include "qgisapp.h"
+#include "qgsmapcanvas.h"
 
 #include <QColorDialog>
 #include <QFontDatabase>
@@ -134,8 +136,8 @@ void QgsLabelPropertyDialog::init( const QString& layerId, int featureId, const 
   mBufferColorButton->setColor( layerSettings.bufferColor );
   mMinScaleSpinBox->setValue( layerSettings.scaleMin );
   mMaxScaleSpinBox->setValue( layerSettings.scaleMax );
-  mHaliComboBox->setCurrentIndex( mHaliComboBox->findText( "Left" ) );
-  mValiComboBox->setCurrentIndex( mValiComboBox->findText( "Bottom" ) );
+  mHaliComboBox->setCurrentIndex( mHaliComboBox->findData( "Left" ) );
+  mValiComboBox->setCurrentIndex( mValiComboBox->findData( "Bottom" ) );
   mFontColorButton->setColorDialogTitle( tr( "Font color" ) );
   mBufferColorButton->setColorDialogTitle( tr( "Buffer color" ) );
 
@@ -208,6 +210,8 @@ void QgsLabelPropertyDialog::setDataDefinedValues( const QgsPalLayerSettings &la
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::atlasScope( 0 )
+  << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() )
   << QgsExpressionContextUtils::layerScope( vlayer );
   context.setFeature( mCurLabelFeat );
 
@@ -300,10 +304,10 @@ void QgsLabelPropertyDialog::setDataDefinedValues( const QgsPalLayerSettings &la
         break;
       }
       case QgsPalLayerSettings::Hali:
-        mHaliComboBox->setCurrentIndex( mHaliComboBox->findText( result.toString(), Qt::MatchFixedString ) );
+        mHaliComboBox->setCurrentIndex( mHaliComboBox->findData( result.toString() ) );
         break;
       case QgsPalLayerSettings::Vali:
-        mValiComboBox->setCurrentIndex( mValiComboBox->findText( result.toString(), Qt::MatchFixedString ) );
+        mValiComboBox->setCurrentIndex( mValiComboBox->findData( result.toString() ) );
         break;
       case QgsPalLayerSettings::BufferColor:
         mBufferColorButton->setColor( QColor( result.toString() ) );
@@ -458,7 +462,7 @@ void QgsLabelPropertyDialog::updateFont( const QFont& font, bool block )
 void QgsLabelPropertyDialog::populateFontStyleComboBox()
 {
   mFontStyleCmbBx->clear();
-  foreach ( const QString &style, mFontDB.styles( mLabelFont.family() ) )
+  Q_FOREACH ( const QString &style, mFontDB.styles( mLabelFont.family() ) )
   {
     mFontStyleCmbBx->addItem( style );
   }
@@ -475,17 +479,18 @@ void QgsLabelPropertyDialog::populateFontStyleComboBox()
 
 void QgsLabelPropertyDialog::fillHaliComboBox()
 {
-  mHaliComboBox->addItem( "Left" );
-  mHaliComboBox->addItem( "Center" );
-  mHaliComboBox->addItem( "Right" );
+  mHaliComboBox->addItem( tr( "Left" ), "Left" );
+  mHaliComboBox->addItem( tr( "Center" ), "Center" );
+  mHaliComboBox->addItem( tr( "Right" ), "Right" );
 }
 
 void QgsLabelPropertyDialog::fillValiComboBox()
 {
-  mValiComboBox->addItem( "Bottom" );
-  mValiComboBox->addItem( "Base" );
-  mValiComboBox->addItem( "Half" );
-  mValiComboBox->addItem( "Top" );
+  mValiComboBox->addItem( tr( "Bottom" ), "Bottom" );
+  mValiComboBox->addItem( tr( "Base" ), "Base" );
+  mValiComboBox->addItem( tr( "Half" ), "Half" );
+  mValiComboBox->addItem( tr( "Cap" ), "Cap" );
+  mValiComboBox->addItem( tr( "Top" ), "Top" );
 }
 
 void QgsLabelPropertyDialog::on_mShowLabelChkbx_toggled( bool chkd )
@@ -626,14 +631,14 @@ void QgsLabelPropertyDialog::on_mBufferColorButton_colorChanged( const QColor &c
   insertChangedValue( QgsPalLayerSettings::BufferColor, color.name() );
 }
 
-void QgsLabelPropertyDialog::on_mHaliComboBox_currentIndexChanged( const QString& text )
+void QgsLabelPropertyDialog::on_mHaliComboBox_currentIndexChanged( const int index )
 {
-  insertChangedValue( QgsPalLayerSettings::Hali, text );
+  insertChangedValue( QgsPalLayerSettings::Hali, mHaliComboBox->itemData( index ) );
 }
 
-void QgsLabelPropertyDialog::on_mValiComboBox_currentIndexChanged( const QString& text )
+void QgsLabelPropertyDialog::on_mValiComboBox_currentIndexChanged( const int index )
 {
-  insertChangedValue( QgsPalLayerSettings::Vali, text );
+  insertChangedValue( QgsPalLayerSettings::Vali, mValiComboBox->itemData( index ) );
 }
 
 void QgsLabelPropertyDialog::on_mLabelTextLineEdit_textChanged( const QString& text )

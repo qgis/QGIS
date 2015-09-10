@@ -59,10 +59,10 @@ class APP_EXPORT QgsVisibilityPresets : public QObject
     void addPreset();
 
     //! Handles apply a preset to the map canvas
-    void presetTriggerred();
+    void presetTriggered();
 
     //! Handles replacing a preset's state
-    void replaceTriggerred();
+    void replaceTriggered();
 
     //! Handles removal of current preset from the project's collection
     void removeCurrentPreset();

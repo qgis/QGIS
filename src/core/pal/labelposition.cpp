@@ -305,6 +305,14 @@ namespace pal
     return false; // no conflict found
   }
 
+  int LabelPosition::partCount() const
+  {
+    if ( nextPart )
+      return nextPart->partCount() + 1;
+    else
+      return 1;
+  }
+
   void LabelPosition::offsetPosition( double xOffset, double yOffset )
   {
     for ( int i = 0; i < 4; i++ )
@@ -401,7 +409,6 @@ namespace pal
   {
     return (( LabelPosition* ) l )->mCost > (( LabelPosition* ) r )->mCost;
   }
-
 
   bool LabelPosition::polygonObstacleCallback( FeaturePart *obstacle, void *ctx )
   {
@@ -574,36 +581,59 @@ namespace pal
     return false;
   }
 
-  int LabelPosition::getNumPointsInPolygon( PointSet *polygon ) const
+  int LabelPosition::polygonIntersectionCost( PointSet *polygon ) const
   {
-    int a, k, count = 0;
-    double px, py;
+    //effectively take the average polygon intersection cost for all label parts
+    double totalCost = polygonIntersectionCostForParts( polygon );
+    int n = partCount();
+    return ceil( totalCost / n );
+  }
 
-    // check each corner
-    for ( k = 0; k < 4; k++ )
+  double LabelPosition::polygonIntersectionCostForParts( PointSet *polygon ) const
+  {
+    if ( !mGeos )
+      createGeosGeom();
+
+    if ( !polygon->mGeos )
+      polygon->createGeosGeom();
+
+    GEOSContextHandle_t geosctxt = geosContext();
+
+    double cost = 0;
+    //check the label center. if covered by polygon, initial cost of 4
+    if ( polygon->containsPoint(( x[0] + x[2] ) / 2.0, ( y[0] + y[2] ) / 2.0 ) )
+      cost += 4;
+
+    try
     {
-      px = x[k];
-      py = y[k];
-
-      for ( a = 0; a < 2; a++ ) // and each middle of segment
+      //calculate proportion of label candidate which is covered by polygon
+      GEOSGeometry* intersectionGeom = GEOSIntersection_r( geosctxt, mGeos, polygon->mGeos );
+      if ( intersectionGeom )
       {
-        if ( polygon->containsPoint( px, py ) )
-          count++;
-        px = ( x[k] + x[( k+1 ) %4] ) / 2.0;
-        py = ( y[k] + y[( k+1 ) %4] ) / 2.0;
+        double positionArea = 0;
+        if ( GEOSArea_r( geosctxt, mGeos, &positionArea ) == 1 )
+        {
+          double intersectionArea = 0;
+          if ( GEOSArea_r( geosctxt, intersectionGeom, &intersectionArea ) == 1 )
+          {
+            double portionCovered = intersectionArea / positionArea;
+            cost += portionCovered * 8.0; //cost of 8 if totally covered
+          }
+        }
+        GEOSGeom_destroy_r( geosctxt, intersectionGeom );
       }
     }
+    catch ( GEOSException &e )
+    {
+      QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
+    }
 
-    px = ( x[0] + x[2] ) / 2.0;
-    py = ( y[0] + y[2] ) / 2.0;
+    if ( nextPart )
+    {
+      cost += nextPart->polygonIntersectionCostForParts( polygon );
+    }
 
-    // and the label center
-    if ( polygon->containsPoint( px, py ) )
-      count += 4; // virtually 4 points
-
-    // TODO: count with nextFeature
-
-    return count;
+    return cost;
   }
 
 } // end namespace

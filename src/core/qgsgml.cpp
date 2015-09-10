@@ -948,9 +948,9 @@ int QgsGml::createMultiPolygonFromFragments()
 int QgsGml::totalWKBFragmentSize() const
 {
   int result = 0;
-  foreach ( const QList<int> &list, mCurrentWKBFragmentSizes )
+  Q_FOREACH ( const QList<int> &list, mCurrentWKBFragmentSizes )
   {
-    foreach ( int i, list )
+    Q_FOREACH ( int i, list )
     {
       result += i;
     }

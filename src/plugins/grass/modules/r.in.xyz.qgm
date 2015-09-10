@@ -2,7 +2,7 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
 <qgisgrassmodule label="Import raster from coordinates using univariate statistics" module="r.in.xyz">
-	<file key="input" type="old" filters="TXT (*.txt), CSV (*.csv)"/>
+	<file key="input" type="old" filters="TXT (*.txt);;CSV (*.csv)"/>
 	<option key="method" />
 	<option key="type" />
 	<option key="fs" version_max="6.4" />

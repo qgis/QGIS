@@ -125,7 +125,7 @@ QgsSvgSelectorGroupsModel::QgsSvgSelectorGroupsModel( QObject* parent )
 void QgsSvgSelectorGroupsModel::createTree( QStandardItem* &parentGroup )
 {
   QDir parentDir( parentGroup->data().toString() );
-  foreach ( QString item, parentDir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
+  Q_FOREACH ( const QString& item, parentDir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
   {
     QStandardItem* group = new QStandardItem( item );
     group->setData( QVariant( parentDir.path() + "/" + item ) );
@@ -266,7 +266,7 @@ void QgsSvgSelectorWidget::on_mFilePushButton_clicked()
   QFileInfo fi( file );
   if ( !fi.exists() || !fi.isReadable() )
   {
-    updateCurrentSvgPath( QString( "" ) );
+    updateCurrentSvgPath( QString() );
     updateLineEditFeedback( false );
     return;
   }
@@ -288,7 +288,7 @@ void QgsSvgSelectorWidget::on_mFileLineEdit_textChanged( const QString& text )
   bool validSVG = !resolvedPath.isNull();
 
   updateLineEditFeedback( validSVG, resolvedPath );
-  updateCurrentSvgPath( validSVG ? resolvedPath : QString( "" ) );
+  updateCurrentSvgPath( validSVG ? resolvedPath : QString() );
 }
 
 void QgsSvgSelectorWidget::populateList()

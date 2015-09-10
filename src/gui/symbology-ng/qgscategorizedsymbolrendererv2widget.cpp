@@ -249,7 +249,7 @@ QMimeData *QgsCategorizedSymbolRendererV2Model::mimeData( const QModelIndexList 
   QDataStream stream( &encodedData, QIODevice::WriteOnly );
 
   // Create list of rows
-  foreach ( const QModelIndex &index, indexes )
+  Q_FOREACH ( const QModelIndex &index, indexes )
   {
     if ( !index.isValid() || index.column() != 0 )
       continue;
@@ -374,7 +374,10 @@ static QgsExpressionContext _getExpressionContext( const void* context )
 {
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope();
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::atlasScope( 0 )
+  //TODO - use actual map canvas settings
+  << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
 
   const QgsVectorLayer* layer = ( const QgsVectorLayer* ) context;
   if ( layer )
@@ -472,6 +475,7 @@ QgsCategorizedSymbolRendererV2Widget::~QgsCategorizedSymbolRendererV2Widget()
 {
   if ( mRenderer ) delete mRenderer;
   if ( mModel ) delete mModel;
+  delete mCategorizedSymbol;
 }
 
 void QgsCategorizedSymbolRendererV2Widget::updateUiFromRenderer()
@@ -524,7 +528,7 @@ void QgsCategorizedSymbolRendererV2Widget::changeSelectedSymbols()
       return;
     }
 
-    foreach ( const int idx, selectedCats )
+    Q_FOREACH ( int idx, selectedCats )
     {
       QgsRendererCategoryV2 category = mRenderer->categories().value( idx );
 
@@ -557,6 +561,7 @@ void QgsCategorizedSymbolRendererV2Widget::changeCategorizedSymbol()
     return;
   }
 
+  delete mCategorizedSymbol;
   mCategorizedSymbol = newSymbol;
   updateCategorizedSymbolIcon();
 
@@ -664,6 +669,7 @@ void QgsCategorizedSymbolRendererV2Widget::addCategories()
     QgsExpressionContext context;
     context << QgsExpressionContextUtils::globalScope()
     << QgsExpressionContextUtils::projectScope()
+    << QgsExpressionContextUtils::atlasScope( 0 )
     << QgsExpressionContextUtils::layerScope( mLayer );
 
     expression->prepare( &context );
@@ -781,6 +787,7 @@ void QgsCategorizedSymbolRendererV2Widget::addCategories()
   delete mRenderer;
   mRenderer = r;
   if ( ! keepExistingColors && ramp ) applyColorRamp();
+  delete ramp;
 }
 
 void QgsCategorizedSymbolRendererV2Widget::applyColorRamp()
@@ -788,7 +795,7 @@ void QgsCategorizedSymbolRendererV2Widget::applyColorRamp()
   QgsVectorColorRampV2* ramp = getColorRamp();
   if ( ramp )
   {
-    mRenderer->updateColorRamp( ramp->clone(), cbxInvertedColorRamp->isChecked() );
+    mRenderer->updateColorRamp( ramp, cbxInvertedColorRamp->isChecked() );
   }
   mModel->updateSymbology();
 }
@@ -806,7 +813,7 @@ QList<int> QgsCategorizedSymbolRendererV2Widget::selectedCategories()
   QList<int> rows;
   QModelIndexList selectedRows = viewCategories->selectionModel()->selectedRows();
 
-  foreach ( QModelIndex r, selectedRows )
+  Q_FOREACH ( const QModelIndex& r, selectedRows )
   {
     if ( r.isValid() )
     {

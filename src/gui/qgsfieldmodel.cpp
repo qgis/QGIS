@@ -75,16 +75,14 @@ void QgsFieldModel::setLayer( QgsVectorLayer *layer )
     disconnect( mLayer, SIGNAL( layerDeleted() ), this, SLOT( layerDeleted() ) );
   }
 
-  if ( !layer )
+  mLayer = layer;
+
+  if ( mLayer )
   {
-    mLayer = 0;
-    updateModel();
-    return;
+    connect( mLayer, SIGNAL( updatedFields() ), this, SLOT( updateModel() ) );
+    connect( mLayer, SIGNAL( layerDeleted() ), this, SLOT( layerDeleted() ) );
   }
 
-  mLayer = layer;
-  connect( mLayer, SIGNAL( updatedFields() ), this, SLOT( updateModel() ) );
-  connect( mLayer, SIGNAL( layerDeleted() ), this, SLOT( layerDeleted() ) );
   updateModel();
 }
 

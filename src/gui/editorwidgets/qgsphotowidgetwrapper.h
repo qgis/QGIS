@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 5.1.2014
     Copyright            : (C) 2014 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,6 +17,7 @@
 #define QGSPHOTOWIDGETWRAPPER_H
 
 #include "qgseditorwidgetwrapper.h"
+#include "qgspixmaplabel.h"
 
 #include <QLabel>
 #include <QPushButton>
@@ -61,6 +62,9 @@ class GUI_EXPORT QgsPhotoWidgetWrapper : public QgsEditorWidgetWrapper
   private:
     //! This label is used as a container to display the picture
     QLabel* mPhotoLabel;
+    //! This label is used as a container to display a picture that scales with the dialog layout.
+    //! It will always point to the same label as mPhotoLabel, but may be NULL if the widget is of type QLabel.
+    QgsPixmapLabel* mPhotoPixmapLabel;
 #ifdef WITH_QTWEBKIT
     //! This webview is used as a container to display the picture
     QWebView* mWebView;

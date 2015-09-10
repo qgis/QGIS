@@ -107,6 +107,8 @@ static QgsExpressionContext _getExpressionContext( const void* context )
   }
 
   QScopedPointer< QgsExpressionContext > expContext( object->createExpressionContext() );
+  expContext->lastScope()->setVariable( "row_number", 1 );
+  expContext->setHighlightedVariables( QStringList() << "row_number" );
   return QgsExpressionContext( *expContext );
 }
 

@@ -198,7 +198,7 @@ QList<QgsWCSSourceSelect::SupportedFormat> QgsWCSSourceSelect::providerFormats()
   QList<SupportedFormat> formats;
 
   QMap<QString, QString> mimes = QgsWcsProvider::supportedMimes();
-  foreach ( QString mime, mimes.keys() )
+  Q_FOREACH ( const QString& mime, mimes.keys() )
   {
     SupportedFormat format = { mime, mimes.value( mime ) };
 

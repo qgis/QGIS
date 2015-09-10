@@ -39,6 +39,9 @@ class TestQgsComposerMap : public QObject
         , mComposerMap( 0 )
         , mMapSettings( 0 )
         , mRasterLayer( 0 )
+        , mPointsLayer( 0 )
+        , mPolysLayer( 0 )
+        , mLinesLayer( 0 )
     {}
 
   private slots:
@@ -133,6 +136,7 @@ void TestQgsComposerMap::render()
 {
   mComposerMap->setNewExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3345223.125 ) );
   QgsCompositionChecker checker( "composermap_render", mComposition );
+  checker.setControlPathPrefix( "composer_map" );
 
   QVERIFY( checker.testComposition( mReport, 0, 0 ) );
 }
@@ -279,6 +283,7 @@ void TestQgsComposerMap::dataDefinedLayers()
   mComposerMap->setNewExtent( QgsRectangle( -110.0, 25.0, -90, 40.0 ) );
 
   QgsCompositionChecker checker( "composermap_ddlayers", mComposition );
+  checker.setControlPathPrefix( "composer_map" );
   QVERIFY( checker.testComposition( mReport, 0, 0 ) );
 }
 
@@ -334,6 +339,7 @@ void TestQgsComposerMap::dataDefinedStyles()
   mComposerMap->setNewExtent( QgsRectangle( -110.0, 25.0, -90, 40.0 ) );
 
   QgsCompositionChecker checker( "composermap_ddstyles", mComposition );
+  checker.setControlPathPrefix( "composer_map" );
   QVERIFY( checker.testComposition( mReport, 0, 0 ) );
 }
 

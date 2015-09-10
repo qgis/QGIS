@@ -28,6 +28,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgslogger.h"
 #include "qgsfontutils.h"
+#include "qgsexpressioncontext.h"
 
 #include <QPainter>
 #include <QPen>
@@ -296,6 +297,7 @@ bool QgsComposerMapGrid::writeXML( QDomElement& elem, QDomDocument& doc ) const
 
   mapGridElem.setAttribute( "annotationFormat", mGridAnnotationFormat );
   mapGridElem.setAttribute( "showAnnotation", mShowGridAnnotation );
+  mapGridElem.setAttribute( "annotationExpression", mGridAnnotationExpressionString );
   mapGridElem.setAttribute( "leftAnnotationDisplay", mLeftGridAnnotationDisplay );
   mapGridElem.setAttribute( "rightAnnotationDisplay", mRightGridAnnotationDisplay );
   mapGridElem.setAttribute( "topAnnotationDisplay", mTopGridAnnotationDisplay );
@@ -395,6 +397,8 @@ bool QgsComposerMapGrid::readXML( const QDomElement& itemElem, const QDomDocumen
   //annotation
   mShowGridAnnotation = ( itemElem.attribute( "showAnnotation", "0" ) != "0" );
   mGridAnnotationFormat = QgsComposerMapGrid::AnnotationFormat( itemElem.attribute( "annotationFormat", "0" ).toInt() );
+  mGridAnnotationExpressionString = itemElem.attribute( "annotationExpression" );
+  mGridAnnotationExpression.reset();
   mLeftGridAnnotationPosition = QgsComposerMapGrid::AnnotationPosition( itemElem.attribute( "leftAnnotationPosition", "0" ).toInt() );
   mRightGridAnnotationPosition = QgsComposerMapGrid::AnnotationPosition( itemElem.attribute( "rightAnnotationPosition", "0" ).toInt() );
   mTopGridAnnotationPosition = QgsComposerMapGrid::AnnotationPosition( itemElem.attribute( "topAnnotationPosition", "0" ).toInt() );
@@ -656,6 +660,9 @@ void QgsComposerMapGrid::draw( QPainter* p )
   QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
   context.setForceVectorOutput( true );
   context.setPainter( p );
+  QgsExpressionContext* expressionContext = createExpressionContext();
+  context.setExpressionContext( *expressionContext );
+  delete expressionContext;
 
   QList< QPair< double, QLineF > > verticalLines;
   QList< QPair< double, QLineF > > horizontalLines;
@@ -686,7 +693,7 @@ void QgsComposerMapGrid::draw( QPainter* p )
 
   if ( mShowGridAnnotation )
   {
-    drawCoordinateAnnotations( p, horizontalLines, verticalLines );
+    drawCoordinateAnnotations( p, horizontalLines, verticalLines, context.expressionContext() );
   }
 }
 
@@ -1034,7 +1041,7 @@ void QgsComposerMapGrid::drawGridFrameLineBorder( QPainter* p, QgsComposerMapGri
   }
 }
 
-void QgsComposerMapGrid::drawCoordinateAnnotations( QPainter* p, const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines ) const
+void QgsComposerMapGrid::drawCoordinateAnnotations( QPainter* p, const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines, QgsExpressionContext &expressionContext ) const
 {
   if ( !p )
   {
@@ -1045,7 +1052,7 @@ void QgsComposerMapGrid::drawCoordinateAnnotations( QPainter* p, const QList< QP
   QList< QPair< double, QLineF > >::const_iterator it = hLines.constBegin();
   for ( ; it != hLines.constEnd(); ++it )
   {
-    currentAnnotationString = gridAnnotationString( it->first, QgsComposerMapGrid::Latitude );
+    currentAnnotationString = gridAnnotationString( it->first, QgsComposerMapGrid::Latitude, expressionContext );
     drawCoordinateAnnotation( p, it->second.p1(), currentAnnotationString, QgsComposerMapGrid::Latitude );
     drawCoordinateAnnotation( p, it->second.p2(), currentAnnotationString, QgsComposerMapGrid::Latitude );
   }
@@ -1053,7 +1060,7 @@ void QgsComposerMapGrid::drawCoordinateAnnotations( QPainter* p, const QList< QP
   it = vLines.constBegin();
   for ( ; it != vLines.constEnd(); ++it )
   {
-    currentAnnotationString =  gridAnnotationString( it->first, QgsComposerMapGrid::Longitude );
+    currentAnnotationString =  gridAnnotationString( it->first, QgsComposerMapGrid::Longitude, expressionContext );
     drawCoordinateAnnotation( p, it->second.p1(), currentAnnotationString, QgsComposerMapGrid::Longitude );
     drawCoordinateAnnotation( p, it->second.p2(), currentAnnotationString, QgsComposerMapGrid::Longitude );
   }
@@ -1366,7 +1373,7 @@ void QgsComposerMapGrid::drawAnnotation( QPainter* p, const QPointF& pos, int ro
   p->restore();
 }
 
-QString QgsComposerMapGrid::gridAnnotationString( double value, QgsComposerMapGrid::AnnotationCoordinate coord ) const
+QString QgsComposerMapGrid::gridAnnotationString( double value, QgsComposerMapGrid::AnnotationCoordinate coord, QgsExpressionContext &expressionContext ) const
 {
   //check if we are using degrees (ie, geographic crs)
   bool geographic = false;
@@ -1428,6 +1435,17 @@ QString QgsComposerMapGrid::gridAnnotationString( double value, QgsComposerMapGr
     {
       return QString::number( qAbs( value ), 'f', mGridAnnotationPrecision ) + hemisphere;
     }
+  }
+  else if ( mGridAnnotationFormat == CustomFormat )
+  {
+    expressionContext.lastScope()->setVariable( "grid_number", value );
+    expressionContext.lastScope()->setVariable( "grid_axis", coord == QgsComposerMapGrid::Longitude ? "x" : "y" );
+    if ( !mGridAnnotationExpression.data() )
+    {
+      mGridAnnotationExpression.reset( new QgsExpression( mGridAnnotationExpressionString ) );
+      mGridAnnotationExpression->prepare( &expressionContext );
+    }
+    return mGridAnnotationExpression->evaluate( &expressionContext ).toString();
   }
 
   QgsPoint p;
@@ -2005,6 +2023,9 @@ double QgsComposerMapGrid::maxExtension() const
   }
 
   const QgsMapSettings& ms = mComposerMap->composition()->mapSettings();
+
+  QScopedPointer< QgsExpressionContext> expressionContext( createExpressionContext() );
+
   QStringList coordStrings;
   if ( mCRS.isValid() && mCRS != ms.destinationCrs() )
   {
@@ -2027,12 +2048,12 @@ double QgsComposerMapGrid::maxExtension() const
     QList< QPair< double, QPolygonF > >::const_iterator it = xGridLines.constBegin();
     for ( ; it != xGridLines.constEnd(); ++it )
     {
-      coordStrings.append( gridAnnotationString( it->first, QgsComposerMapGrid::Latitude ) );
+      coordStrings.append( gridAnnotationString( it->first, QgsComposerMapGrid::Latitude, *expressionContext ) );
     }
     it = yGridLines.constBegin();
     for ( ; it != yGridLines.constEnd(); ++it )
     {
-      coordStrings.append( gridAnnotationString( it->first, QgsComposerMapGrid::Longitude ) );
+      coordStrings.append( gridAnnotationString( it->first, QgsComposerMapGrid::Longitude, *expressionContext ) );
     }
   }
   else
@@ -2049,13 +2070,13 @@ double QgsComposerMapGrid::maxExtension() const
     QList< QPair< double, QLineF > >::const_iterator it = xLines.constBegin();
     for ( ; it != xLines.constEnd(); ++it )
     {
-      coordStrings.append( gridAnnotationString( it->first, QgsComposerMapGrid::Latitude ) );
+      coordStrings.append( gridAnnotationString( it->first, QgsComposerMapGrid::Latitude, *expressionContext ) );
     }
 
     it = yLines.constBegin();
     for ( ; it != yLines.constEnd(); ++it )
     {
-      coordStrings.append( gridAnnotationString( it->first, QgsComposerMapGrid::Longitude ) );
+      coordStrings.append( gridAnnotationString( it->first, QgsComposerMapGrid::Longitude, *expressionContext ) );
     }
   }
 
@@ -2178,6 +2199,16 @@ void QgsComposerMapGrid::setFrameSideFlag( QgsComposerMapGrid::FrameSideFlag fla
 QgsComposerMapGrid::FrameSideFlags QgsComposerMapGrid::frameSideFlags() const
 {
   return mGridFrameSides;
+}
+
+QgsExpressionContext* QgsComposerMapGrid::createExpressionContext() const
+{
+  QgsExpressionContext* context = QgsComposerObject::createExpressionContext();
+  context->appendScope( new QgsExpressionContextScope( tr( "Grid" ) ) );
+  context->lastScope()->setVariable( "grid_number", 0 );
+  context->lastScope()->setVariable( "grid_axis", "x" );
+  context->setHighlightedVariables( QStringList() << "grid_number" << "grid_axis" );
+  return context;
 }
 
 bool QgsComposerMapGrid::testFrameSideFlag( QgsComposerMapGrid::FrameSideFlag flag ) const

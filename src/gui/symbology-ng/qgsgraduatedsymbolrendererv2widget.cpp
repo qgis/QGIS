@@ -244,7 +244,7 @@ QMimeData *QgsGraduatedSymbolRendererV2Model::mimeData( const QModelIndexList &i
   QDataStream stream( &encodedData, QIODevice::WriteOnly );
 
   // Create list of rows
-  foreach ( const QModelIndex &index, indexes )
+  Q_FOREACH ( const QModelIndex &index, indexes )
   {
     if ( !index.isValid() || index.column() != 0 )
       continue;
@@ -383,7 +383,10 @@ static QgsExpressionContext _getExpressionContext( const void* context )
 {
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope();
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::atlasScope( 0 )
+  //TODO - use actual map canvas settings
+  << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
 
   const QgsVectorLayer* layer = ( const QgsVectorLayer* ) context;
   if ( layer )
@@ -503,6 +506,7 @@ QgsGraduatedSymbolRendererV2Widget::~QgsGraduatedSymbolRendererV2Widget()
 {
   delete mRenderer;
   delete mModel;
+  delete mGraduatedSymbol;
 }
 
 QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2Widget::renderer()
@@ -645,7 +649,7 @@ void QgsGraduatedSymbolRendererV2Widget::on_methodComboBox_currentIndexChanged( 
         QMessageBox::critical( this, tr( "Error" ), tr( "The selected color ramp is not available." ) );
       return;
     }
-    mRenderer->setSourceColorRamp( ramp->clone() );
+    mRenderer->setSourceColorRamp( ramp );
     reapplyColorRamp();
   }
   else
@@ -716,7 +720,7 @@ void QgsGraduatedSymbolRendererV2Widget::classifyGraduated()
         QMessageBox::critical( this, tr( "Error" ), tr( "The selected color ramp is not available." ) );
       return;
     }
-    mRenderer->setSourceColorRamp( ramp->clone() );
+    mRenderer->setSourceColorRamp( ramp );
   }
   else
   {
@@ -775,6 +779,7 @@ void QgsGraduatedSymbolRendererV2Widget::changeGraduatedSymbol()
     return;
   }
 
+  delete mGraduatedSymbol;
   mGraduatedSymbol = newSymbol;
 
   mSizeUnitWidget->blockSignals( true );
@@ -808,7 +813,7 @@ QList<int> QgsGraduatedSymbolRendererV2Widget::selectedClasses()
   QList<int> rows;
   QModelIndexList selectedRows = viewGraduated->selectionModel()->selectedRows();
 
-  foreach ( QModelIndex r, selectedRows )
+  Q_FOREACH ( const QModelIndex& r, selectedRows )
   {
     if ( r.isValid() )
     {
@@ -861,7 +866,7 @@ void QgsGraduatedSymbolRendererV2Widget::changeSelectedSymbols()
       return;
     }
 
-    foreach ( QModelIndex idx, selectedIndexes )
+    Q_FOREACH ( const QModelIndex& idx, selectedIndexes )
     {
       if ( idx.isValid() )
       {

@@ -2,15 +2,17 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
 <qgisgrassmodule label="Create raster images with textural features from raster (first serie of indices)" module="r.texture">
-	<option key="input" />
-	<option key="size" />
-	<option key="distance" />
-	<flag key="a" />
-	<flag key="c" />
-	<flag key="k" />
-	<flag key="v" />
-	<flag key="i" />
-	<flag key="s" />
-	<flag key="w" />
-	<option key="prefix" />
+    <option key="input" />
+    <option key="size" />
+    <option key="distance" />
+    <flag key="a" version_max="6.4"/>
+    <flag key="c" version_max="6.4"/>
+    <flag key="k" version_max="6.4"/>
+    <flag key="v" version_max="6.4"/>
+    <flag key="i" version_max="6.4"/>
+    <flag key="s" version_max="6.4"/>
+    <flag key="w" version_max="6.4"/>
+    <option key="method" version_min="7.0"/>
+    <option key="prefix" version_max="6.4"/>
+    <option key="output" version_min="7.0"/>
 </qgisgrassmodule>

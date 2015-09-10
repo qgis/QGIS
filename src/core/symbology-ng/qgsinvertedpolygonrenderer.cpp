@@ -154,7 +154,7 @@ bool QgsInvertedPolygonRenderer::renderFeature( QgsFeature& feature, QgsRenderCo
   if ( capabilities() & MoreSymbolsPerFeature )
   {
     QgsSymbolV2List syms( mSubRenderer->symbolsForFeature( feature, context ) );
-    foreach ( QgsSymbolV2* sym, syms )
+    Q_FOREACH ( QgsSymbolV2* sym, syms )
     {
       // append the memory address
       catId.append( reinterpret_cast<const char*>( &sym ), sizeof( sym ) );
@@ -252,7 +252,7 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext& context )
       // operations do not need geometries to be valid
       QgsMultiPolygon finalMulti;
       finalMulti.append( mExtentPolygon );
-      foreach ( QgsGeometry* geom, cit->geometries )
+      Q_FOREACH ( QgsGeometry* geom, cit->geometries )
       {
         QgsMultiPolygon multi;
         if (( geom->wkbType() == QGis::WKBPolygon ) ||
@@ -288,11 +288,14 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext& context )
       feat.setGeometry( QgsGeometry::fromMultiPolygon( finalMulti ) );
     }
     if ( feat.constGeometry() )
+    {
+      mContext.expressionContext().setFeature( feat );
       mSubRenderer->renderFeature( feat, mContext );
+    }
   }
   for ( FeatureCategoryVector::iterator cit = mFeaturesCategories.begin(); cit != mFeaturesCategories.end(); ++cit )
   {
-    foreach ( QgsGeometry* g, cit->geometries )
+    Q_FOREACH ( QgsGeometry* g, cit->geometries )
     {
       delete g;
     }
@@ -311,7 +314,7 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext& context )
   }
 
   // draw feature decorations
-  foreach ( FeatureDecoration deco, mFeatureDecorations )
+  Q_FOREACH ( FeatureDecoration deco, mFeatureDecorations )
   {
     mSubRenderer->renderFeature( deco.feature, mContext, deco.layer, deco.selected, deco.drawMarkers );
   }

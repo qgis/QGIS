@@ -108,7 +108,7 @@ QList<int> QgsSublayersDialog::selectionIndexes()
 
 void QgsSublayersDialog::populateLayerTable( QStringList theList, QString delim )
 {
-  foreach ( QString item, theList )
+  Q_FOREACH ( const QString& item, theList )
   {
     QStringList elements = item.split( delim );
     while ( elements.size() > 4 )

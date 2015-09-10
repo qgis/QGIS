@@ -110,6 +110,7 @@ class CORE_EXPORT QgsRendererRangeV2LabelFormat
 class QgsVectorLayer;
 class QgsVectorColorRampV2;
 
+Q_NOWARN_DEPRECATED_PUSH
 class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
 {
   public:
@@ -259,13 +260,20 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
     void setSourceSymbol( QgsSymbolV2* sym );
 
     QgsVectorColorRampV2* sourceColorRamp();
+
+    /** Sets the source color ramp.
+      * @param ramp color ramp. Ownership is transferred to the renderer
+      */
     void setSourceColorRamp( QgsVectorColorRampV2* ramp );
+
     //! @note added in 2.1
     bool invertedColorRamp() { return mInvertedColorRamp; }
     void setInvertedColorRamp( bool inverted ) { mInvertedColorRamp = inverted; }
 
     /** Update the color ramp used. Also updates all symbols colors.
       * Doesn't alter current breaks.
+      * @param ramp color ramp. Ownership is transferred to the renderer
+      * @param inverted set to true to invert ramp colors
       */
     void updateColorRamp( QgsVectorColorRampV2* ramp = 0, bool inverted = false );
 
@@ -351,5 +359,6 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
     static const char * graduatedMethodStr( GraduatedMethod method );
 
 };
+Q_NOWARN_DEPRECATED_POP
 
 #endif // QGSGRADUATEDSYMBOLRENDERERV2_H

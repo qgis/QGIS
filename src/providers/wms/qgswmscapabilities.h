@@ -677,7 +677,13 @@ class QgsWmsCapabilities
 
 
 
-/** Class that handles download of capabilities */
+/** Class that handles download of capabilities.
+ * Methods of this class may only be called directly from the thread to which instance of the class has affinity.
+ * It is possible to connect to abort() slot from another thread however.
+ */
+/* The requirement to call methods only from the thread to which this class instance has affinity guarantees that
+ * abort() cannot be called in the middle of another method and makes it simple to check if the request was aborted.
+ */
 class QgsWmsCapabilitiesDownload : public QObject
 {
     Q_OBJECT
@@ -687,6 +693,8 @@ class QgsWmsCapabilitiesDownload : public QObject
 
     QgsWmsCapabilitiesDownload( const QString& baseUrl, const QgsWmsAuthorization& auth, QObject* parent = 0 );
 
+    virtual ~QgsWmsCapabilitiesDownload();
+
     bool downloadCapabilities();
 
     bool downloadCapabilities( const QString& baseUrl, const QgsWmsAuthorization& auth );
@@ -695,8 +703,10 @@ class QgsWmsCapabilitiesDownload : public QObject
 
     QByteArray response() const { return mHttpCapabilitiesResponse; }
 
+  public slots:
     /** Abort network request immediately */
     void abort();
+
   signals:
     /** \brief emit a signal to be caught by qgisapp and display a msg on status bar */
     void statusChanged( QString const &  theStatusQString );
@@ -704,7 +714,14 @@ class QgsWmsCapabilitiesDownload : public QObject
     /** \brief emit a signal once the download is finished */
     void downloadFinished();
 
+    /** Send request via signal/slot to main another thread */
+    void sendRequest( const QNetworkRequest & request );
+
+    /** Abort request through QgsNetworkAccessManager */
+    void deleteReply( QNetworkReply * reply );
+
   protected slots:
+    void requestSent( QNetworkReply * reply, QObject *sender );
     void capabilitiesReplyFinished();
     void capabilitiesReplyProgress( qint64, qint64 );
 
@@ -727,6 +744,9 @@ class QgsWmsCapabilitiesDownload : public QObject
     QByteArray mHttpCapabilitiesResponse;
 
     bool mIsAborted;
+
+  private:
+    void connectManager();
 };
 
 

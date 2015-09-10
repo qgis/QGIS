@@ -50,7 +50,7 @@ void QgsLayerTreeRegistryBridge::layersAdded( QList<QgsMapLayer*> layers )
     return;
 
   QList<QgsLayerTreeNode*> nodes;
-  foreach ( QgsMapLayer* layer, layers )
+  Q_FOREACH ( QgsMapLayer* layer, layers )
   {
     QgsLayerTreeLayer* nodeLayer = new QgsLayerTreeLayer( layer );
     nodeLayer->setVisible( mNewLayersVisible ? Qt::Checked : Qt::Unchecked );
@@ -84,7 +84,7 @@ void QgsLayerTreeRegistryBridge::layersWillBeRemoved( QStringList layerIds )
   // the registry _again_ in groupRemovedChildren() - this prevents it
   mRegistryRemovingLayers = true;
 
-  foreach ( QString layerId, layerIds )
+  Q_FOREACH ( const QString& layerId, layerIds )
   {
     QgsLayerTreeLayer* nodeLayer = mRoot->findLayer( layerId );
     if ( nodeLayer )
@@ -132,7 +132,7 @@ void QgsLayerTreeRegistryBridge::groupRemovedChildren()
   // remove only those that really do not exist in the tree
   // (ignores layers that were dragged'n'dropped: 1. drop new 2. remove old)
   QStringList toRemove;
-  foreach ( QString layerId, mLayerIdsForRemoval )
+  Q_FOREACH ( const QString& layerId, mLayerIdsForRemoval )
     if ( !mRoot->findLayer( layerId ) )
       toRemove << layerId;
   mLayerIdsForRemoval.clear();

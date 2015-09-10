@@ -90,7 +90,7 @@ void TestQgsDataDefined::create()
   QCOMPARE( stringConstructorExp->expressionString(), QString( "1 + 2" ) );
   QVERIFY( stringConstructorExp->field().isEmpty() );
 
-  QScopedPointer<QgsDataDefined> stringConstructorEmpty( new QgsDataDefined( QString( "" ) ) );
+  QScopedPointer<QgsDataDefined> stringConstructorEmpty( new QgsDataDefined( QString() ) );
   QVERIFY( ! stringConstructorEmpty->isActive() );
 }
 

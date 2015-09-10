@@ -1283,7 +1283,7 @@ void QgsGeorefPluginGui::saveGCPs()
   {
     QTextStream points( &pointFile );
     points << "mapX,mapY,pixelX,pixelY,enable" << endl;
-    foreach ( QgsGeorefDataPoint *pt, mPoints )
+    Q_FOREACH ( QgsGeorefDataPoint *pt, mPoints )
     {
       points << QString( "%1,%2,%3,%4,%5" )
       .arg( qgsDoubleToString( pt->mapCoords().x() ) )
@@ -1861,7 +1861,7 @@ QString QgsGeorefPluginGui::generateGDALtranslateCommand( bool generateTFW )
     gdalCommand << "-co TFW=YES";
   }
 
-  foreach ( QgsGeorefDataPoint *pt, mPoints )
+  Q_FOREACH ( QgsGeorefDataPoint *pt, mPoints )
   {
     gdalCommand << QString( "-gcp %1 %2 %3 %4" ).arg( pt->pixelCoords().x() ).arg( -pt->pixelCoords().y() )
     .arg( pt->mapCoords().x() ).arg( pt->mapCoords().y() );

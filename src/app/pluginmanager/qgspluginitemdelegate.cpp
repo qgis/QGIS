@@ -88,8 +88,8 @@ void QgsPluginItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
   }
 
   if ( ! index.data( PLUGIN_ERROR_ROLE ).toString().isEmpty()
-       || index.data( PLUGIN_STATUS_ROLE ).toString() == QString( "upgradeable" )
-       || index.data( PLUGIN_STATUS_ROLE ).toString() == QString( "new" ) )
+       || index.data( PLUGIN_STATUS_ROLE ).toString() == "upgradeable"
+       || index.data( PLUGIN_STATUS_ROLE ).toString() == "new" )
   {
     QFont font = painter->font();
     font.setBold( true );

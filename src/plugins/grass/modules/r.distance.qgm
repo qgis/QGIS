@@ -2,8 +2,12 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
 <qgisgrassmodule label="Locate the closest points between objects in two raster maps" module="r.distance">
-        <option key="maps" option="map1"/>
-        <option key="maps" option="map2"/>
-	<option key="fs" advanced="yes"/>
+	<option key="maps" option="map1" version_max="6"/>
+	<option key="map" option="map1" version_min="7"/>
+	<option key="maps" option="map2" version_max="6"/>
+	<option key="map" option="map2" version_min="7"/>
+		<option key="fs" advanced="yes" version_max="6"/>
+		<option key="separator" advanced="yes" version_min="7"/>
+		<option key="sort" advanced="yes" version_min="7"/>
 </qgisgrassmodule>
 

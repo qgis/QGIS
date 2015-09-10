@@ -357,11 +357,31 @@ bool QgsGeometryUtils::segmentMidPoint( const QgsPointV2& p1, const QgsPointV2& 
   return true;
 }
 
+double QgsGeometryUtils::circleTangentDirection( const QgsPointV2& tangentPoint, const QgsPointV2& cp1,
+    const QgsPointV2& cp2, const QgsPointV2& cp3 )
+{
+  //calculate circle midpoint
+  double mX, mY, radius;
+  circleCenterRadius( cp1, cp2, cp3, radius, mX, mY );
+
+  double p1Angle = QgsGeometryUtils::ccwAngle( cp1.y() - mY, cp1.x() - mX );
+  double p2Angle = QgsGeometryUtils::ccwAngle( cp2.y() - mY, cp2.x() - mX );
+  double p3Angle = QgsGeometryUtils::ccwAngle( cp3.y() - mY, cp3.x() - mX );
+  if ( circleClockwise( p1Angle, p2Angle, p3Angle ) )
+  {
+    return lineAngle( tangentPoint.x(), tangentPoint.y(), mX, mY );
+  }
+  else
+  {
+    return lineAngle( mX, mY, tangentPoint.x(), tangentPoint.y() );
+  }
+}
+
 QList<QgsPointV2> QgsGeometryUtils::pointsFromWKT( const QString &wktCoordinateList, bool is3D, bool isMeasure )
 {
   int dim = 2 + is3D + isMeasure;
   QList<QgsPointV2> points;
-  foreach ( const QString& pointCoordinates, wktCoordinateList.split( ",", QString::SkipEmptyParts ) )
+  Q_FOREACH ( const QString& pointCoordinates, wktCoordinateList.split( ",", QString::SkipEmptyParts ) )
   {
     QStringList coordinates = pointCoordinates.split( " ", QString::SkipEmptyParts );
     if ( coordinates.size() < dim )
@@ -398,7 +418,7 @@ QList<QgsPointV2> QgsGeometryUtils::pointsFromWKT( const QString &wktCoordinateL
 void QgsGeometryUtils::pointsToWKB( QgsWkbPtr& wkb, const QList<QgsPointV2> &points, bool is3D, bool isMeasure )
 {
   wkb << static_cast<quint32>( points.size() );
-  foreach ( const QgsPointV2& point, points )
+  Q_FOREACH ( const QgsPointV2& point, points )
   {
     wkb << point.x() << point.y();
     if ( is3D )
@@ -415,7 +435,7 @@ void QgsGeometryUtils::pointsToWKB( QgsWkbPtr& wkb, const QList<QgsPointV2> &poi
 QString QgsGeometryUtils::pointsToWKT( const QList<QgsPointV2>& points, int precision, bool is3D, bool isMeasure )
 {
   QString wkt = "(";
-  foreach ( const QgsPointV2& p, points )
+  Q_FOREACH ( const QgsPointV2& p, points )
   {
     wkt += qgsDoubleToString( p.x(), precision );
     wkt += " " + qgsDoubleToString( p.y(), precision );
@@ -437,7 +457,7 @@ QDomElement QgsGeometryUtils::pointsToGML2( const QList<QgsPointV2>& points, QDo
 
   QString strCoordinates;
 
-  foreach ( const QgsPointV2& p, points )
+  Q_FOREACH ( const QgsPointV2& p, points )
     strCoordinates += qgsDoubleToString( p.x(), precision ) + "," + qgsDoubleToString( p.y(), precision ) + " ";
 
   if ( strCoordinates.endsWith( " " ) )
@@ -453,7 +473,7 @@ QDomElement QgsGeometryUtils::pointsToGML3( const QList<QgsPointV2>& points, QDo
   elemPosList.setAttribute( "srsDimension", is3D ? 3 : 2 );
 
   QString strCoordinates;
-  foreach ( const QgsPointV2& p, points )
+  Q_FOREACH ( const QgsPointV2& p, points )
   {
     strCoordinates += qgsDoubleToString( p.x(), precision ) + " " + qgsDoubleToString( p.y(), precision ) + " ";
     if ( is3D )
@@ -469,7 +489,7 @@ QDomElement QgsGeometryUtils::pointsToGML3( const QList<QgsPointV2>& points, QDo
 QString QgsGeometryUtils::pointsToJSON( const QList<QgsPointV2>& points, int precision )
 {
   QString json = "[ ";
-  foreach ( const QgsPointV2& p, points )
+  Q_FOREACH ( const QgsPointV2& p, points )
   {
     json += "[" + qgsDoubleToString( p.x(), precision ) + ", " + qgsDoubleToString( p.y(), precision ) + "], ";
   }
@@ -524,4 +544,72 @@ QStringList QgsGeometryUtils::wktGetChildBlocks( const QString &wkt, const QStri
     blocks.append( block );
   }
   return blocks;
+}
+
+double QgsGeometryUtils::lineAngle( double x1, double y1, double x2, double y2 )
+{
+  double at = atan2( y2 - y1, x2 - x1 );
+  double a = -at + M_PI / 2.0;
+  if ( a < 0 )
+  {
+    a = 2 * M_PI + a;
+  }
+  if ( a >= 2 * M_PI )
+  {
+    a -= 2 * M_PI;
+  }
+  return a;
+}
+
+double QgsGeometryUtils::linePerpendicularAngle( double x1, double y1, double x2, double y2 )
+{
+  double a = lineAngle( x1, y1, x2, y2 );
+  a += ( M_PI / 2.0 );
+  if ( a >= 2 * M_PI )
+  {
+    a -= ( 2 * M_PI );
+  }
+  return a;
+}
+
+double QgsGeometryUtils::averageAngle( double x1, double y1, double x2, double y2, double x3, double y3 )
+{
+  // calc average angle between the previous and next point
+  double a1 = linePerpendicularAngle( x1, y1, x2, y2 );
+  double a2 = linePerpendicularAngle( x2, y2, x3, y3 );
+  return averageAngle( a1, a2 );
+}
+
+double QgsGeometryUtils::averageAngle( double a1, double a2 )
+{
+  double clockwiseDiff = 0.0;
+  if ( a2 >= a1 )
+  {
+    clockwiseDiff = a2 - a1;
+  }
+  else
+  {
+    clockwiseDiff = a2 + ( 2 * M_PI - a1 );
+  }
+  double counterClockwiseDiff = 2 * M_PI - clockwiseDiff;
+
+  double resultAngle = 0;
+  if ( clockwiseDiff <= counterClockwiseDiff )
+  {
+    resultAngle = a1 + clockwiseDiff / 2.0;
+  }
+  else
+  {
+    resultAngle = a1 - counterClockwiseDiff / 2.0;
+  }
+
+  if ( resultAngle >= 2 * M_PI )
+  {
+    resultAngle -= 2 * M_PI;
+  }
+  else if ( resultAngle < 0 )
+  {
+    resultAngle = 2 * M_PI - resultAngle;
+  }
+  return resultAngle;
 }

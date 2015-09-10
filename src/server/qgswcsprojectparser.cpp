@@ -73,7 +73,7 @@ void QgsWCSProjectParser::wcsContentMetadata( QDomElement& parentElement, QDomDo
 
   QMap<QString, QgsMapLayer *> layerMap;
 
-  foreach ( const QDomElement &elem, projectLayerElements )
+  Q_FOREACH ( const QDomElement &elem, projectLayerElements )
   {
     QString type = elem.attribute( "type" );
     if ( type == "raster" )
@@ -185,7 +185,7 @@ void QgsWCSProjectParser::describeCoverage( const QString& aCoveName, QDomElemen
   if ( aCoveName != "" )
   {
     QStringList coveNameSplit = aCoveName.split( "," );
-    foreach ( const QString &str, coveNameSplit )
+    Q_FOREACH ( const QString &str, coveNameSplit )
     {
       coveNameList << str;
     }
@@ -193,7 +193,7 @@ void QgsWCSProjectParser::describeCoverage( const QString& aCoveName, QDomElemen
 
   QMap<QString, QgsMapLayer *> layerMap;
 
-  foreach ( const QDomElement &elem, projectLayerElements )
+  Q_FOREACH ( const QDomElement &elem, projectLayerElements )
   {
     QString type = elem.attribute( "type" );
     if ( type == "raster" )
@@ -395,7 +395,7 @@ QList<QgsMapLayer*> QgsWCSProjectParser::mapLayerFromCoverage( const QString& cN
 
   QStringList wcsLayersId = wcsLayers();
 
-  foreach ( const QDomElement &elem, projectLayerElements )
+  Q_FOREACH ( const QDomElement &elem, projectLayerElements )
   {
     QString type = elem.attribute( "type" );
     if ( type == "raster" )

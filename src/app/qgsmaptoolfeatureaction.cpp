@@ -131,7 +131,7 @@ bool QgsMapToolFeatureAction::doAction( QgsVectorLayer *layer, int x, int y )
   if ( featList.size() == 0 )
     return false;
 
-  foreach ( QgsFeature feat, featList )
+  Q_FOREACH ( const QgsFeature& feat, featList )
   {
     if ( layer->actions()->defaultAction() >= 0 )
     {

@@ -28,6 +28,7 @@
 
 class QPainter;
 
+class QgsAbstractGeometryV2;
 class QgsLabelingEngineInterface;
 class QgsMapSettings;
 
@@ -140,6 +141,11 @@ class CORE_EXPORT QgsRenderContext
      */
     const QgsExpressionContext& expressionContext() const { return mExpressionContext; }
 
+    /** Returns pointer to the unsegmentized geometry*/
+    const QgsAbstractGeometryV2* geometry() const { return mGeometry; }
+    /** Sets pointer to original (unsegmentized) geometry*/
+    void setGeometry( const QgsAbstractGeometryV2* geometry ) { mGeometry = geometry; }
+
   private:
 
     /** Painter for rendering operations*/
@@ -190,6 +196,9 @@ class CORE_EXPORT QgsRenderContext
 
     /** Expression context */
     QgsExpressionContext mExpressionContext;
+
+    /** Pointer to the (unsegmentized) geometry*/
+    const QgsAbstractGeometryV2* mGeometry;
 };
 
 #endif

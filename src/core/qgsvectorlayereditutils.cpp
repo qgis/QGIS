@@ -120,7 +120,10 @@ int QgsVectorLayerEditUtils::addRing( const QList<QgsPoint>& ring )
 int QgsVectorLayerEditUtils::addRing( QgsCurveV2* ring )
 {
   if ( !L->hasGeometryType() )
+  {
+    delete ring;
     return 5;
+  }
 
   int addRingReturnCode = 5; //default: return code for 'ring not inserted'
   QgsRectangle bBox = ring->boundingBox();
@@ -129,7 +132,8 @@ int QgsVectorLayerEditUtils::addRing( QgsCurveV2* ring )
   QgsFeature f;
   while ( fit.nextFeature( f ) )
   {
-    addRingReturnCode = f.geometry()->addRing( ring );
+    //add ring takes ownership of ring, and deletes it if there's an error
+    addRingReturnCode = f.geometry()->addRing( static_cast< QgsCurveV2* >( ring->clone() ) );
     if ( addRingReturnCode == 0 )
     {
       L->editBuffer()->changeGeometry( f.id(), f.geometry() );
@@ -139,6 +143,7 @@ int QgsVectorLayerEditUtils::addRing( QgsCurveV2* ring )
     }
   }
 
+  delete ring;
   return addRingReturnCode;
 }
 
@@ -302,7 +307,7 @@ int QgsVectorLayerEditUtils::splitFeatures( const QList<QgsPoint>& splitLine, bo
         //use default value where possible for primary key (e.g. autoincrement),
         //and use the value from the original (split) feature if not primary key
         QgsAttributes newAttributes = feat.attributes();
-        foreach ( int pkIdx, L->dataProvider()->pkAttributeIndexes() )
+        Q_FOREACH ( int pkIdx, L->dataProvider()->pkAttributeIndexes() )
         {
           const QVariant defaultValue = L->dataProvider()->defaultValue( pkIdx );
           if ( !defaultValue.isNull() )

@@ -14,7 +14,7 @@ void QgsRelationAddDlg::addLayers( QList< QgsVectorLayer* > layers )
   mCbxReferencingLayer->addItem( "", "" );
   mCbxReferencedLayer->addItem( "", "" );
 
-  foreach ( QgsVectorLayer* layer, layers )
+  Q_FOREACH ( QgsVectorLayer* layer, layers )
   {
     mCbxReferencingLayer->addItem( layer->name(), layer->id() );
     mCbxReferencedLayer->addItem( layer->name(), layer->id() );
@@ -74,7 +74,7 @@ void QgsRelationAddDlg::loadLayerAttributes( QComboBox* cbx, QgsVectorLayer* lay
     return;
   }
 
-  foreach ( QgsField fld, layer->fields().toList() )
+  Q_FOREACH ( const QgsField& fld, layer->fields().toList() )
   {
     cbx->addItem( fld.name(), fld.name() );
   }

@@ -710,7 +710,7 @@ QgsLegendSymbolList QgsCategorizedSymbolRendererV2::legendSymbolItems( double sc
   Q_UNUSED( scaleDenominator );
   QgsLegendSymbolList lst;
 
-  foreach ( const QgsRendererCategoryV2& cat, mCategories )
+  Q_FOREACH ( const QgsRendererCategoryV2& cat, mCategories )
   {
     if ( rule.isEmpty() || cat.label() == rule )
     {
@@ -727,7 +727,7 @@ QgsLegendSymbolListV2 QgsCategorizedSymbolRendererV2::legendSymbolItemsV2() cons
   {
     // check that all symbols that have the same size expression
     QgsDataDefined ddSize;
-    foreach ( QgsRendererCategoryV2 category, mCategories )
+    Q_FOREACH ( const QgsRendererCategoryV2& category, mCategories )
     {
       const QgsMarkerSymbolV2 * symbol = static_cast<const QgsMarkerSymbolV2 *>( category.symbol() );
       if ( !ddSize.hasDefaultValues() && symbol->dataDefinedSize() != ddSize )
@@ -751,7 +751,7 @@ QgsLegendSymbolListV2 QgsCategorizedSymbolRendererV2::legendSymbolItemsV2() cons
     {
       QgsLegendSymbolItemV2 title( NULL, exp.baseExpression(), "" );
       lst << title;
-      foreach ( double v, QgsSymbolLayerV2Utils::prettyBreaks( exp.minValue(), exp.maxValue(), 4 ) )
+      Q_FOREACH ( double v, QgsSymbolLayerV2Utils::prettyBreaks( exp.minValue(), exp.maxValue(), 4 ) )
       {
         QgsLegendSymbolItemV2 si( mSourceSymbol.data(), QString::number( v ), "" );
         QgsMarkerSymbolV2 * s = static_cast<QgsMarkerSymbolV2 *>( si.symbol() );
@@ -761,7 +761,7 @@ QgsLegendSymbolListV2 QgsCategorizedSymbolRendererV2::legendSymbolItemsV2() cons
       }
       // now list the categorized symbols
       const QgsLegendSymbolListV2 list2 = QgsFeatureRendererV2::legendSymbolItemsV2() ;
-      foreach ( QgsLegendSymbolItemV2 item, list2 )
+      Q_FOREACH ( const QgsLegendSymbolItemV2& item, list2 )
         lst << item;
       return lst;
     }
@@ -804,7 +804,7 @@ void QgsCategorizedSymbolRendererV2::updateColorRamp( QgsVectorColorRampV2* ramp
     randomRamp->setTotalColorCount( mCategories.count() );
   }
 
-  foreach ( const QgsRendererCategoryV2 &cat, mCategories )
+  Q_FOREACH ( const QgsRendererCategoryV2 &cat, mCategories )
   {
     double value = count / num;
     if ( mInvertedColorRamp ) value = 1.0 - value;
@@ -847,7 +847,7 @@ QString QgsCategorizedSymbolRendererV2::sizeScaleField() const
 void QgsCategorizedSymbolRendererV2::updateSymbols( QgsSymbolV2 * sym )
 {
   int i = 0;
-  foreach ( QgsRendererCategoryV2 cat, mCategories )
+  Q_FOREACH ( const QgsRendererCategoryV2& cat, mCategories )
   {
     QgsSymbolV2* symbol = sym->clone();
     symbol->setColor( cat.symbol()->color() );

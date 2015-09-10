@@ -37,7 +37,7 @@ QgsRasterRange::~QgsRasterRange()
 
 bool QgsRasterRange::contains( double value, const QgsRasterRangeList &rangeList )
 {
-  foreach ( QgsRasterRange range, rangeList )
+  Q_FOREACH ( const QgsRasterRange& range, rangeList )
   {
     if (( value >= range.mMin && value <= range.mMax ) ||
         qgsDoubleNear( value, range.mMin ) ||

@@ -2,11 +2,11 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
 <qgisgrassmodule label="Create watershed basin" module="r.water.outlet">
-	<option key="drainage" version_max="6.4"/>
-	<option key="input" version_min="7.0"/>
-	<option key="easting" version_max="6.4"/>
-	<option key="northing" version_max="6.4"/>
-	<option key="coordinates" version_min="7.0"/>
-	<option key="basin" version_max="6.4"/>
-	<option key="output" version_min="7.0"/>
+	<option key="drainage" version_max="6"/>
+	<option key="input" version_min="7"/>
+	<option key="easting" version_max="6"/>
+	<option key="northing" version_max="6"/>
+	<option key="coordinates" version_min="7"/>
+	<option key="basin" version_max="6"/>
+	<option key="output" version_min="7"/>
 </qgisgrassmodule>

@@ -24,6 +24,7 @@
 #include <memory>
 #include <deque>
 
+#include "qgsexpressioncontext.h"
 #include "qgsrectangle.h"
 #include "qgspoint.h"
 #include "qgis.h"
@@ -102,6 +103,7 @@ class GUI_EXPORT QgsMapCanvasLayer
  * Map canvas is a class for displaying all GIS data types on a canvas.
  */
 
+Q_NOWARN_DEPRECATED_PUSH
 class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 {
     Q_OBJECT
@@ -408,6 +410,24 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      */
     void setSnappingUtils( QgsSnappingUtils* utils );
 
+    /** Sets an expression context scope for the map canvas. This scope is injected into the expression
+     * context used for rendering the map, and can be used to apply specific variable overrides for
+     * expression evaluation for the map canvas render. This method will overwrite the existing expression
+     * context scope for the canvas.
+     * @param scope new expression context scope
+     * @note added in QGIS 2.12
+     * @see expressionContextScope()
+     */
+    void setExpressionContextScope( const QgsExpressionContextScope& scope ) { mExpressionContextScope = scope; }
+
+    /** Returns a reference to the expression context scope for the map canvas. This scope is injected
+     * into the expression context used for rendering the map, and can be used to apply specific variable
+     * overrides for expression evaluation for the map canvas render.
+     * @note added in QGIS 2.12
+     * @see setExpressionContextScope()
+     */
+    QgsExpressionContextScope& expressionContextScope() { return mExpressionContextScope; }
+
   public slots:
 
     /** Repaints the canvas map*/
@@ -697,7 +717,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     QgsSnappingUtils* mSnappingUtils;
 
+    QgsExpressionContextScope mExpressionContextScope;
+
 }; // class QgsMapCanvas
+Q_NOWARN_DEPRECATED_POP
 
 
 
