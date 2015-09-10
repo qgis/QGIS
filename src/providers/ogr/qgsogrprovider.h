@@ -268,7 +268,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
      * E.g. in case a shapefile is replaced, the old file will be closed
      * and the new file will be opened.
      */
-    void forceReload();
+    void forceReload() override;
 
   protected:
     /** Loads fields from input file to member attributeFields */
