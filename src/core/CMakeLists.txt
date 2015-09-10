@@ -523,8 +523,6 @@ SET(QGIS_CORE_HDRS
   ${CMAKE_BINARY_DIR}/qgsconfig.h
   ../plugins/qgisplugin.h
 
-  geosextra/geos_c_extra.h
-
   qgis.h
   qgsattributeaction.h
   qgscachedfeatureiterator.h
@@ -736,6 +734,12 @@ SET(QGIS_CORE_HDRS
   geometry/qgswkbtypes.h
   geometry/qgspointv2.h
 )
+
+IF(GEOS_CPP_LIBRARY)
+  SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS} geosextra/geos_c_extra.cpp)
+  SET(QGIS_CORE_HDRS ${QGIS_CORE_HDRS} geosextra/geos_c_extra.h)
+  ADD_DEFINITIONS("-DHAVE_GEOS_CPP")
+ENDIF(GEOS_CPP_LIBRARY)
 
 IF (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)
   SET(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}

@@ -18,8 +18,10 @@ email                : marco.hugentobler at sourcepole dot com
 
 #include "qgsgeometryengine.h"
 #include "qgspointv2.h"
-#include "geosextra/geos_c_extra.h"
 #include <geos_c.h>
+#ifdef HAVE_GEOS_CPP
+#include "geosextra/geos_c_extra.h"
+#endif
 
 class QgsLineStringV2;
 class QgsPolygonV2;
@@ -89,9 +91,11 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
   private:
     mutable GEOSGeometry* mGeos;
     const GEOSPreparedGeometry* mGeosPrepared;
+#ifdef HAVE_GEOS_CPP
     //precision reducer
     GEOSPrecisionModel* mPrecisionModel;
     GEOSGeometryPrecisionReducer* mPrecisionReducer;
+#endif
 
     enum Overlay
     {

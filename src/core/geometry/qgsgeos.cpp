@@ -117,18 +117,24 @@ class GEOSGeomScopedPtr
 
 QgsGeos::QgsGeos( const QgsAbstractGeometryV2* geometry, int precision ): QgsGeometryEngine( geometry ), mGeos( 0 ), mGeosPrepared( 0 )
 {
+#ifdef HAVE_GEOS_CPP
   double prec = qPow( 10, -precision );
   mPrecisionModel = GEOSPrecisionModel_createFixed( 1.f / prec );
   mPrecisionReducer = GEOSGeometryPrecisionReducer_create( mPrecisionModel );
+#else
+  Q_UNUSED( precision )
+#endif
   cacheGeos();
 }
 
 QgsGeos::~QgsGeos()
 {
+#ifdef HAVE_GEOS_CPP
   GEOSGeom_destroy_r( geosinit.ctxt, mGeos );
   GEOSPreparedGeom_destroy_r( geosinit.ctxt, mGeosPrepared );
   GEOSGeometryPrecisionReducer_destroy( mPrecisionReducer );
   GEOSPrecisionModel_destroy( mPrecisionModel );
+#endif
 }
 
 void QgsGeos::geometryChanged()
@@ -158,11 +164,15 @@ void QgsGeos::cacheGeos() const
   }
 
   GEOSGeometry* g = asGeos( mGeometry );
+#ifdef HAVE_GEOS_CPP
   if ( g )
   {
     mGeos = GEOSGeometryPrecisionReducer_reduce( mPrecisionReducer, g );
     GEOSGeom_destroy_r( geosinit.ctxt, g );
   }
+#else
+  mGeos = g;
+#endif
 }
 
 QgsAbstractGeometryV2* QgsGeos::intersection( const QgsAbstractGeometryV2& geom, QString* errorMsg ) const
@@ -1047,12 +1057,18 @@ QgsAbstractGeometryV2* QgsGeos::overlay( const QgsAbstractGeometryV2& geom, Over
   {
     return 0;
   }
+
+#ifdef HAVE_GEOS_CPP
   GEOSGeomScopedPtr geosGeom;
   geosGeom.reset( gG );
 
   //reduce precision
   GEOSGeomScopedPtr pg2;
   pg2.reset( GEOSGeometryPrecisionReducer_reduce( mPrecisionReducer, geosGeom.get() ) );
+#else
+  GEOSGeomScopedPtr pg2;
+  pg2.reset( gG );
+#endif
 
   try
   {
@@ -1099,14 +1115,18 @@ bool QgsGeos::relation( const QgsAbstractGeometryV2& geom, Relation r, QString* 
   {
     return false;
   }
+#ifdef HAVE_GEOS_CPP
   GEOSGeomScopedPtr geosGeom;
   geosGeom.reset( gG );
 
-  bool result = false;
-
   GEOSGeomScopedPtr pg2;
   pg2.reset( GEOSGeometryPrecisionReducer_reduce( mPrecisionReducer, geosGeom.get() ) );
+#else
+  GEOSGeomScopedPtr pg2;
+  pg2.reset( gG );
+#endif
 
+  bool result = false;
   try
   {
     if ( mGeosPrepared ) //use faster version with prepared geometry
