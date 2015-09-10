@@ -434,8 +434,8 @@
     </section>
 
     <section label="Imagery">
-        <section label="Develop images and group" version_max="6.4">
-            <grass name="i.image.mosaic" version_max="6.4"/>
+        <section label="Develop images and group">
+            <grass name="i.image.mosaic"/>
         </section>
         <section label="Manage image colors">
             <grass name="i.rgb.his"/>
@@ -449,10 +449,12 @@
             <grass name="i.zc"/>
             <grass name="r.mfilter"/>
         </section>
-        <section label="Tassled cap vegetation index" version_max="6.4">
-            <grass name="i.tasscap4" version_max="6.4"/>
-            <grass name="i.tasscap5" version_max="6.4"/>
-            <grass name="i.tasscap7" version_max="6.4"/>
+        <section label="Tassled cap vegetation index">
+            <grass name="i.tasscap4"/>
+            <grass name="i.tasscap5"/>
+            <grass name="i.tasscap7"/>
+            <grass name="i.tasscap8" version_min="7.0"/>
+            <grass name="i.tasscap.modis" version_min="7.0"/>
         </section>
         <section label="Transform image">
             <grass name="i.fft"/>
@@ -463,7 +465,7 @@
             <grass name="r.bitpattern" version_max="6.4"/>
             <grass name="i.modis.qc" version_min="7.0"/>
             <grass name="r.kappa"/>
-            <grass name="i.oif" version_max="6.4"/>
+            <grass name="i.oif"/>
         </section>
     </section>
 
