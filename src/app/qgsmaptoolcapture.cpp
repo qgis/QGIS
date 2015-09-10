@@ -323,6 +323,13 @@ void QgsMapToolCapture::canvasKeyPressEvent( QKeyEvent* e )
     // Override default shortcut management in MapCanvas
     e->ignore();
   }
+  else if ( e->key() == Qt::Key_Escape )
+  {
+    stopCapturing();
+
+    // Override default shortcut management in MapCanvas
+    e->ignore();
+  }
 }
 
 void QgsMapToolCapture::startCapturing()
