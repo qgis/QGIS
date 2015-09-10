@@ -325,6 +325,34 @@ QRectF QgsComposition::compositionBounds( bool ignorePages, double margin ) cons
   return bounds;
 }
 
+QRectF QgsComposition::pageItemBounds( int pageNumber, bool visibleOnly ) const
+{
+  //start with an empty rectangle
+  QRectF bounds;
+
+  //add all QgsComposerItems on page
+  QList<QGraphicsItem *> itemList = items();
+  QList<QGraphicsItem *>::iterator itemIt = itemList.begin();
+  for ( ; itemIt != itemList.end(); ++itemIt )
+  {
+    const QgsComposerItem* composerItem = dynamic_cast<const QgsComposerItem *>( *itemIt );
+    const QgsPaperItem* paperItem = dynamic_cast<const QgsPaperItem*>( *itemIt );
+    if ( composerItem && !paperItem && itemPageNumber( composerItem ) == pageNumber )
+    {
+      if ( visibleOnly && !composerItem->isVisible() )
+        continue;
+
+      //expand bounds with current item's bounds
+      if ( bounds.isValid() )
+        bounds = bounds.united(( *itemIt )->sceneBoundingRect() );
+      else
+        bounds = ( *itemIt )->sceneBoundingRect();
+    }
+  }
+
+  return bounds;
+}
+
 void QgsComposition::setPaperSize( const double width, const double height, bool keepRelativeItemPosition )
 {
   if ( width == mPageWidth && height == mPageHeight )
@@ -2877,6 +2905,23 @@ QImage QgsComposition::printPageAsRaster( int page )
   return image;
 }
 
+QImage QgsComposition::renderRectAsRaster( const QRectF& rect )
+{
+  int width = ( int )( printResolution() * rect.width() / 25.4 );
+  int height = ( int )( printResolution() * rect.height() / 25.4 );
+  QImage image( QSize( width, height ), QImage::Format_ARGB32 );
+  if ( !image.isNull() )
+  {
+    image.setDotsPerMeterX( printResolution() / 25.4 * 1000 );
+    image.setDotsPerMeterY( printResolution() / 25.4 * 1000 );
+    image.fill( Qt::transparent );
+    QPainter imagePainter( &image );
+    renderRect( &imagePainter, rect );
+    if ( !imagePainter.isActive() ) return QImage();
+  }
+  return image;
+}
+
 void QgsComposition::renderPage( QPainter* p, int page )
 {
   if ( mPages.size() <= page )
@@ -2890,13 +2935,17 @@ void QgsComposition::renderPage( QPainter* p, int page )
     return;
   }
 
+  QRectF paperRect = QRectF( paperItem->pos().x(), paperItem->pos().y(), paperItem->rect().width(), paperItem->rect().height() );
+  renderRect( p, paperRect );
+}
+
+void QgsComposition::renderRect( QPainter* p, const QRectF& rect )
+{
   QPaintDevice* paintDevice = p->device();
   if ( !paintDevice )
   {
     return;
   }
-
-  QRectF paperRect = QRectF( paperItem->pos().x(), paperItem->pos().y(), paperItem->rect().width(), paperItem->rect().height() );
 
   QgsComposition::PlotStyle savedPlotStyle = mPlotStyle;
   mPlotStyle = QgsComposition::Print;
@@ -2904,7 +2953,7 @@ void QgsComposition::renderPage( QPainter* p, int page )
   setSnapLinesVisible( false );
   //hide background before rendering
   setBackgroundBrush( Qt::NoBrush );
-  render( p, QRectF( 0, 0, paintDevice->width(), paintDevice->height() ), paperRect );
+  render( p, QRectF( 0, 0, paintDevice->width(), paintDevice->height() ), rect );
   //show background after rendering
   setBackgroundBrush( QColor( 215, 215, 215 ) );
   setSnapLinesVisible( true );
@@ -2938,6 +2987,19 @@ QGraphicsView *QgsComposition::graphicsView() const
 
 void QgsComposition::computeWorldFileParameters( double& a, double& b, double& c, double& d, double& e, double& f ) const
 {
+  if ( !mWorldFileMap )
+  {
+    return;
+  }
+
+  int pageNumber = mWorldFileMap->page() - 1;
+  double pageY = pageNumber * ( mPageHeight + mSpaceBetweenPages );
+  QRectF pageRect( 0, pageY, mPageWidth, mPageHeight );
+  computeWorldFileParameters( pageRect, a, b, c, d, e, f );
+}
+
+void QgsComposition::computeWorldFileParameters( const QRectF& exportRegion, double& a, double& b, double& c, double& d, double& e, double& f ) const
+{
   // World file parameters : affine transformation parameters from pixel coordinates to map coordinates
 
   if ( !mWorldFileMap )
@@ -2945,8 +3007,8 @@ void QgsComposition::computeWorldFileParameters( double& a, double& b, double& c
     return;
   }
 
-  double destinationHeight = paperHeight();
-  double destinationWidth = paperWidth();
+  double destinationHeight = exportRegion.height();
+  double destinationWidth = exportRegion.width();
 
   QRectF mapItemSceneRect = mWorldFileMap->mapRectToScene( mWorldFileMap->rect() );
   QgsRectangle mapExtent = *mWorldFileMap->currentMapExtent();
@@ -2959,10 +3021,14 @@ void QgsComposition::computeWorldFileParameters( double& a, double& b, double& c
   double xCenter = mapExtent.center().x();
   double yCenter = mapExtent.center().y();
 
-  // get the extent (in map units) for the page
-  QPointF mapItemPosOnPage = mWorldFileMap->pagePos();
-  double xmin = mapExtent.xMinimum() - mapItemPosOnPage.x() * xRatio;
-  double ymax = mapExtent.yMaximum() + mapItemPosOnPage.y() * yRatio;
+  // get the extent (in map units) for the region
+  QPointF mapItemPos = mWorldFileMap->pos();
+  //adjust item position so it is relative to export region
+  mapItemPos.rx() -= exportRegion.left();
+  mapItemPos.ry() -= exportRegion.top();
+
+  double xmin = mapExtent.xMinimum() - mapItemPos.x() * xRatio;
+  double ymax = mapExtent.yMaximum() + mapItemPos.y() * yRatio;
   QgsRectangle paperExtent( xmin, ymax - destinationHeight * yRatio, xmin + destinationWidth * xRatio, ymax );
 
   double X0 = paperExtent.xMinimum();

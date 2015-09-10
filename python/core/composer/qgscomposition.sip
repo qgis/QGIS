@@ -601,17 +601,58 @@ class QgsComposition : QGraphicsScene
     */
     bool exportAsPDF( const QString& file );
 
-    //! print composer page to image
-    //! If the image does not fit into memory, a null image is returned
+    /** Renders a composer page to an image.
+    * @param page page number, 0 based such that the first page is page 0
+    * @returns rendered image, or null image if image does not fit into available memory
+    * @see renderRectAsRaster()
+    * @see renderPage()
+    */
     QImage printPageAsRaster( int page );
 
-    /** Render a page to a paint device
+    /** Renders a portion of the composition to an image. This method can be used to render
+     * sections of pages rather than full pages.
+     * @param rect region of composition to render
+     * @returns rendered image, or null image if image does not fit into available memory
+     * @note added in QGIS 2.12
+     * @see printPageAsRaster()
+     * @see renderRect()
+     */
+    QImage renderRectAsRaster( const QRectF& rect );
+
+    /** Renders a full page to a paint device.
      * @param p destination painter
-     * @param page page number, 0 based such that the first page is page 0 */
+     * @param page page number, 0 based such that the first page is page 0
+     * @see renderRect()
+     * @see printPageAsRaster()
+    */
     void renderPage( QPainter* p, int page );
 
-    /** Compute world file parameters */
+    /** Renders a portion of the composition to a paint device. This method can be used
+     * to render sections of pages rather than full pages.
+     * @param p destination painter
+     * @param rect region of composition to render
+     * @note added in QGIS 2.12
+     * @see renderPage()
+     * @see renderRectAsRaster()
+     */
+    void renderRect( QPainter* p, const QRectF& rect );
+
+    /** Compute world file parameters. Assumes the whole page containing the associated map item
+     * will be exported.
+     */
     void computeWorldFileParameters( double& a, double& b, double& c, double& d, double& e, double& f ) const;
+
+    /** Computes the world file parameters for a specified region of the composition.
+     * @param exportRegion region of the composition which will be associated with world file
+     * @param a
+     * @param b
+     * @param c
+     * @param d
+     * @param e
+     * @param f
+     * @note added in QGIS 2.12
+     */
+    void computeWorldFileParameters( const QRectF& exportRegion, double& a, double& b, double& c, double& d, double& e, double& f ) const;
 
     QgsAtlasComposition& atlasComposition();
 
@@ -702,6 +743,20 @@ class QgsComposition : QGraphicsScene
      * @note added in QGIS 2.12
      */
     QStringList customProperties() const;
+
+    /** Returns the bounding box of the items contained on a specified page.
+     * @param pageNumber page number, where 0 is the first page
+     * @param visibleOnly set to true to only include visible items
+     * @note added in QGIS 2.12
+     */
+    QRectF pageItemBounds( int pageNumber, bool visibleOnly = false ) const;
+
+    /** Calculates the bounds of all non-gui items in the composition. Ignores snap lines and mouse handles.
+     * @param ignorePages set to true to ignore page items
+     * @param margin optional marginal (in percent, eg 0.05 = 5% ) to add around items
+     */
+    QRectF compositionBounds( bool ignorePages = false, double margin = 0.0 ) const;
+
 
   public slots:
     /** Casts object to the proper subclass type and calls corresponding itemAdded signal*/

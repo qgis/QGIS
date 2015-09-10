@@ -61,6 +61,7 @@
 #include "qgspaperitem.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsprevieweffect.h"
+#include "qgscomposerimageexportoptionsdialog.h"
 #include "ui_qgssvgexportoptions.h"
 
 #include <QCloseEvent>
@@ -1965,6 +1966,19 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
       return;
   }
 
+  //get some defaults from the composition
+  bool cropToContents = mComposition->customProperty( "imageCropToContents", false ).toBool();
+  int marginTop = mComposition->customProperty( "imageCropMarginTop", 0 ).toInt();
+  int marginRight = mComposition->customProperty( "imageCropMarginRight", 0 ).toInt();
+  int marginBottom = mComposition->customProperty( "imageCropMarginBottom", 0 ).toInt();
+  int marginLeft = mComposition->customProperty( "imageCropMarginLeft", 0 ).toInt();
+
+  QgsComposerImageExportOptionsDialog imageDlg( this );
+  imageDlg.setImageSize( QSizeF( mComposition->paperWidth(), mComposition->paperHeight() ) );
+  imageDlg.setResolution( mComposition->printResolution() );
+  imageDlg.setCropToContents( cropToContents );
+  imageDlg.setCropMargins( marginTop, marginRight, marginBottom, marginLeft );
+
   QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
   if ( mode == QgsComposer::Single )
   {
@@ -1983,6 +1997,17 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
       return;
     }
 
+    if ( !imageDlg.exec() )
+      return;
+
+    cropToContents = imageDlg.cropToContents();
+    imageDlg.getCropMargins( marginTop, marginRight, marginBottom, marginLeft );
+    mComposition->setCustomProperty( "imageCropToContents", cropToContents );
+    mComposition->setCustomProperty( "imageCropMarginTop", marginTop );
+    mComposition->setCustomProperty( "imageCropMarginRight", marginRight );
+    mComposition->setCustomProperty( "imageCropMarginBottom", marginBottom );
+    mComposition->setCustomProperty( "imageCropMarginLeft", marginLeft );
+
     mView->setPaintingEnabled( false );
 
     int worldFilePageNo = -1;
@@ -1997,7 +2022,38 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
       {
         continue;
       }
-      QImage image = mComposition->printPageAsRaster( i );
+
+      QImage image;
+      QRectF bounds;
+      if ( cropToContents )
+      {
+        if ( mComposition->numPages() == 1 )
+        {
+          // single page, so include everything
+          bounds = mComposition->compositionBounds( true );
+        }
+        else
+        {
+          // multi page, so just clip to items on current page
+          bounds = mComposition->pageItemBounds( i, true );
+        }
+        if ( bounds.width() <= 0 || bounds.height() <= 0 )
+        {
+          //invalid size, skip page
+          continue;
+        }
+        double pixelToMm = 25.4 / mComposition->printResolution();
+        bounds = bounds.adjusted( -marginLeft * pixelToMm,
+                                  -marginTop * pixelToMm,
+                                  marginRight * pixelToMm,
+                                  marginBottom * pixelToMm );
+        image = mComposition->renderRectAsRaster( bounds );
+      }
+      else
+      {
+        image = mComposition->printPageAsRaster( i );
+      }
+
       if ( image.isNull() )
       {
         QMessageBox::warning( 0, tr( "Memory Allocation Error" ),
@@ -2037,7 +2093,10 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
       {
         // should generate world file for this page
         double a, b, c, d, e, f;
-        mComposition->computeWorldFileParameters( a, b, c, d, e, f );
+        if ( bounds.isValid() )
+          mComposition->computeWorldFileParameters( bounds, a, b, c, d, e, f );
+        else
+          mComposition->computeWorldFileParameters( a, b, c, d, e, f );
 
         QFileInfo fi( outputFilePath );
         // build the world file name
@@ -2127,6 +2186,17 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
       return;
     }
 
+    if ( !imageDlg.exec() )
+      return;
+
+    cropToContents = imageDlg.cropToContents();
+    imageDlg.getCropMargins( marginTop, marginRight, marginBottom, marginLeft );
+    mComposition->setCustomProperty( "imageCropToContents", cropToContents );
+    mComposition->setCustomProperty( "imageCropMarginTop", marginTop );
+    mComposition->setCustomProperty( "imageCropMarginRight", marginRight );
+    mComposition->setCustomProperty( "imageCropMarginBottom", marginBottom );
+    mComposition->setCustomProperty( "imageCropMarginLeft", marginLeft );
+
     myQSettings.setValue( "/UI/lastSaveAtlasAsImagesDir", dir );
 
     // So, now we can render the atlas
@@ -2184,7 +2254,38 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
         {
           continue;
         }
-        QImage image = mComposition->printPageAsRaster( i );
+
+        QImage image;
+        QRectF bounds;
+        if ( cropToContents )
+        {
+          if ( mComposition->numPages() == 1 )
+          {
+            // single page, so include everything
+            bounds = mComposition->compositionBounds( true );
+          }
+          else
+          {
+            // multi page, so just clip to items on current page
+            bounds = mComposition->pageItemBounds( i, true );
+          }
+          if ( bounds.width() <= 0 || bounds.height() <= 0 )
+          {
+            //invalid size, skip page
+            continue;
+          }
+          double pixelToMm = 25.4 / mComposition->printResolution();
+          bounds = bounds.adjusted( -marginLeft * pixelToMm,
+                                    -marginTop * pixelToMm,
+                                    marginRight * pixelToMm,
+                                    marginBottom * pixelToMm );
+          image = mComposition->renderRectAsRaster( bounds );
+        }
+        else
+        {
+          image = mComposition->printPageAsRaster( i );
+        }
+
         QString imageFilename = filename;
 
         if ( i != 0 )
@@ -2210,7 +2311,10 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
         {
           // should generate world file for this page
           double a, b, c, d, e, f;
-          mComposition->computeWorldFileParameters( a, b, c, d, e, f );
+          if ( bounds.isValid() )
+            mComposition->computeWorldFileParameters( bounds, a, b, c, d, e, f );
+          else
+            mComposition->computeWorldFileParameters( a, b, c, d, e, f );
 
           QFileInfo fi( imageFilename );
           // build the world file name
@@ -2317,6 +2421,11 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
   QString outputDir;
   bool groupLayers = false;
   bool prevSettingLabelsAsOutlines = QgsProject::instance()->readBoolEntry( "PAL", "/DrawOutlineLabels", true );
+  bool clipToContent = false;
+  double marginTop = 0.0;
+  double marginRight = 0.0;
+  double marginBottom = 0.0;
+  double marginLeft = 0.0;
 
   if ( mode == QgsComposer::Single )
   {
@@ -2335,25 +2444,12 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
     // open file dialog
     outputFileName = QFileDialog::getSaveFileName(
                        this,
-                       tr( "Choose a file name to save the map as" ),
+                       tr( "Choose a file name to save the composition as" ),
                        outputFileName,
                        tr( "SVG Format" ) + " (*.svg *.SVG)" );
 
     if ( outputFileName.isEmpty() )
       return;
-
-    // open otions dialog
-    {
-      QDialog dialog;
-      Ui::QgsSvgExportOptionsDialog options;
-      options.setupUi( &dialog );
-      options.chkTextAsOutline->setChecked( prevSettingLabelsAsOutlines );
-
-      dialog.exec();
-      groupLayers = options.chkMapLayersAsGroup->isChecked();
-      //temporarily override label draw outlines setting
-      QgsProject::instance()->writeEntry( "PAL", "/DrawOutlineLabels", options.chkTextAsOutline->isChecked() );
-    }
 
     if ( !outputFileName.endsWith( ".svg", Qt::CaseInsensitive ) )
     {
@@ -2400,23 +2496,41 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
                             QMessageBox::Ok );
       return;
     }
-
-    // open otions dialog
-    {
-      QDialog dialog;
-      Ui::QgsSvgExportOptionsDialog options;
-      options.setupUi( &dialog );
-      options.chkTextAsOutline->setChecked( prevSettingLabelsAsOutlines );
-
-      dialog.exec();
-      groupLayers = options.chkMapLayersAsGroup->isChecked();
-      //temporarily override label draw outlines setting
-      QgsProject::instance()->writeEntry( "PAL", "/DrawOutlineLabels", options.chkTextAsOutline->isChecked() );
-    }
-
-
     myQSettings.setValue( "/UI/lastSaveAtlasAsSvgDir", outputDir );
   }
+
+  // open options dialog
+  QDialog dialog;
+  Ui::QgsSvgExportOptionsDialog options;
+  options.setupUi( &dialog );
+  options.chkTextAsOutline->setChecked( prevSettingLabelsAsOutlines );
+  options.chkMapLayersAsGroup->setChecked( mComposition->customProperty( "svgGroupLayers", false ).toBool() );
+  options.mClipToContentGroupBox->setChecked( mComposition->customProperty( "svgCropToContents", false ).toBool() );
+  options.mTopMarginSpinBox->setValue( mComposition->customProperty( "svgCropMarginTop", 0 ).toInt() );
+  options.mRightMarginSpinBox->setValue( mComposition->customProperty( "svgCropMarginRight", 0 ).toInt() );
+  options.mBottomMarginSpinBox->setValue( mComposition->customProperty( "svgCropMarginBottom", 0 ).toInt() );
+  options.mLeftMarginSpinBox->setValue( mComposition->customProperty( "svgCropMarginLeft", 0 ).toInt() );
+
+  if ( dialog.exec() != QDialog::Accepted )
+    return;
+
+  groupLayers = options.chkMapLayersAsGroup->isChecked();
+  clipToContent = options.mClipToContentGroupBox->isChecked();
+  marginTop = options.mTopMarginSpinBox->value();
+  marginRight = options.mRightMarginSpinBox->value();
+  marginBottom = options.mBottomMarginSpinBox->value();
+  marginLeft = options.mLeftMarginSpinBox->value();
+
+  //save dialog settings
+  mComposition->setCustomProperty( "svgGroupLayers", groupLayers );
+  mComposition->setCustomProperty( "svgCropToContents", clipToContent );
+  mComposition->setCustomProperty( "svgCropMarginTop", marginTop );
+  mComposition->setCustomProperty( "svgCropMarginRight", marginRight );
+  mComposition->setCustomProperty( "svgCropMarginBottom", marginBottom );
+  mComposition->setCustomProperty( "svgCropMarginLeft", marginLeft );
+
+  //temporarily override label draw outlines setting
+  QgsProject::instance()->writeEntry( "PAL", "/DrawOutlineLabels", options.chkTextAsOutline->isChecked() );
 
   mView->setPaintingEnabled( false );
 
@@ -2488,10 +2602,33 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
           generator.setFileName( currentFileName );
         }
 
+        QRectF bounds;
+        if ( clipToContent )
+        {
+          if ( mComposition->numPages() == 1 )
+          {
+            // single page, so include everything
+            bounds = mComposition->compositionBounds( true );
+          }
+          else
+          {
+            // multi page, so just clip to items on current page
+            bounds = mComposition->pageItemBounds( i, true );
+          }
+          bounds = bounds.adjusted( -marginLeft, -marginTop, marginRight, marginBottom );
+        }
+        else
+          bounds = QRectF( 0, 0, mComposition->paperWidth(), mComposition->paperHeight() );
+
         //width in pixel
-        int width = ( int )( mComposition->paperWidth() * mComposition->printResolution() / 25.4 );
+        int width = ( int )( bounds.width() * mComposition->printResolution() / 25.4 );
         //height in pixel
-        int height = ( int )( mComposition->paperHeight() * mComposition->printResolution() / 25.4 );
+        int height = ( int )( bounds.height() * mComposition->printResolution() / 25.4 );
+        if ( width == 0 || height == 0 )
+        {
+          //invalid size, skip this page
+          continue;
+        }
         generator.setSize( QSize( width, height ) );
         generator.setViewBox( QRect( 0, 0, width, height ) );
         generator.setResolution( mComposition->printResolution() ); //because the rendering is done in mm, convert the dpi
@@ -2509,15 +2646,18 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
           return;
         }
 
-        mComposition->renderPage( &p, i );
+        if ( clipToContent )
+          mComposition->renderRect( &p, bounds );
+        else
+          mComposition->renderPage( &p, i );
         p.end();
       }
     }
     else
     {
       //width and height in pixel
-      const int width = ( int )( mComposition->paperWidth() * mComposition->printResolution() / 25.4 );
-      const int height = ( int )( mComposition->paperHeight() * mComposition->printResolution() / 25.4 );
+      const int pageWidth = ( int )( mComposition->paperWidth() * mComposition->printResolution() / 25.4 );
+      const int pageHeight = ( int )( mComposition->paperHeight() * mComposition->printResolution() / 25.4 );
       QList< QgsPaperItem* > paperItems( mComposition->pages() );
 
       for ( int i = 0; i < mComposition->numPages(); ++i )
@@ -2526,6 +2666,34 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
         {
           continue;
         }
+
+        int width = pageWidth;
+        int height = pageHeight;
+
+        QRectF bounds;
+        if ( clipToContent )
+        {
+          if ( mComposition->numPages() == 1 )
+          {
+            // single page, so include everything
+            bounds = mComposition->compositionBounds( true );
+          }
+          else
+          {
+            // multi page, so just clip to items on current page
+            bounds = mComposition->pageItemBounds( i, true );
+          }
+          bounds = bounds.adjusted( -marginLeft, -marginTop, marginRight, marginBottom );
+          width = bounds.width() * mComposition->printResolution() / 25.4;
+          height = bounds.height() * mComposition->printResolution() / 25.4;
+        }
+
+        if ( width == 0 || height == 0 )
+        {
+          //invalid size, skip this page
+          continue;
+        }
+
         QDomDocument svg;
         QDomNode svgDocRoot;
         QgsPaperItem * paperItem = paperItems[i];
@@ -2581,7 +2749,10 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
             generator.setResolution( mComposition->printResolution() ); //because the rendering is done in mm, convert the dpi
 
             QPainter p( &generator );
-            mComposition->renderPage( &p, i );
+            if ( clipToContent )
+              mComposition->renderRect( &p, bounds );
+            else
+              mComposition->renderPage( &p, i );
           }
           // post-process svg output to create groups in a single svg file
           // we create inkscape layers since it's nice and clean and free

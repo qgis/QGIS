@@ -1,50 +1,118 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>QgsSvgExportOptionsDialog</class>
- <widget class="QDialog" name="QgsSvgExportOptionsDialog">
+ <class>QgsComposerImageExportOptionsDialog</class>
+ <widget class="QDialog" name="QgsComposerImageExportOptionsDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>489</width>
-    <height>282</height>
+    <height>325</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>SVG export options</string>
+   <string>Image export options</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox">
+    <widget class="QGroupBox" name="groupBox">
      <property name="title">
-      <string>SVG options</string>
+      <string>Export options</string>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout_2">
-      <item>
-       <widget class="QCheckBox" name="chkMapLayersAsGroup">
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0" colspan="2">
+       <widget class="QLabel" name="label_9">
         <property name="text">
-         <string>Export map layers as svg groups (may affect label placement)</string>
+         <string>Export resolution</string>
         </property>
-        <property name="checked">
+       </widget>
+      </item>
+      <item row="2" column="0" colspan="2">
+       <widget class="QLabel" name="label_13">
+        <property name="text">
+         <string>Page height</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2" colspan="2">
+       <widget class="QgsSpinBox" name="mResolutionSpinBox">
+        <property name="suffix">
+         <string> dpi</string>
+        </property>
+        <property name="prefix">
+         <string/>
+        </property>
+        <property name="maximum">
+         <number>3000</number>
+        </property>
+        <property name="showClearButton" stdset="0">
          <bool>false</bool>
         </property>
        </widget>
       </item>
-      <item>
-       <widget class="QCheckBox" name="chkTextAsOutline">
-        <property name="enabled">
-         <bool>true</bool>
+      <item row="1" column="2" colspan="2">
+       <widget class="QgsSpinBox" name="mWidthSpinBox">
+        <property name="specialValueText">
+         <string>Auto</string>
         </property>
-        <property name="toolTip">
-         <string>Uncheck to render map labels as text objects. This will degrade the quality of the map labels but allow editing in vector illustration software.</string>
+        <property name="suffix">
+         <string> px</string>
         </property>
-        <property name="text">
-         <string>Render map labels as outlines</string>
+        <property name="prefix">
+         <string/>
         </property>
-        <property name="checked">
-         <bool>true</bool>
+        <property name="minimum">
+         <number>0</number>
+        </property>
+        <property name="maximum">
+         <number>99999999</number>
+        </property>
+        <property name="showClearButton" stdset="0">
+         <bool>false</bool>
         </property>
        </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_10">
+        <property name="text">
+         <string>Page width</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2" colspan="2">
+       <widget class="QgsSpinBox" name="mHeightSpinBox">
+        <property name="specialValueText">
+         <string>Auto</string>
+        </property>
+        <property name="suffix">
+         <string> px</string>
+        </property>
+        <property name="prefix">
+         <string/>
+        </property>
+        <property name="minimum">
+         <number>0</number>
+        </property>
+        <property name="maximum">
+         <number>99999999</number>
+        </property>
+        <property name="showClearButton" stdset="0">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="4">
+       <spacer name="horizontalSpacer_3">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
       </item>
      </layout>
     </widget>
@@ -63,13 +131,6 @@
      <layout class="QVBoxLayout" name="verticalLayout_5">
       <item>
        <layout class="QGridLayout" name="gridLayout_5">
-        <item row="0" column="2">
-         <widget class="QgsDoubleSpinBox" name="mTopMarginSpinBox">
-          <property name="singleStep">
-           <double>0.100000000000000</double>
-          </property>
-         </widget>
-        </item>
         <item row="1" column="0" colspan="4">
          <layout class="QHBoxLayout" name="horizontalLayout_7">
           <item>
@@ -80,9 +141,12 @@
            </widget>
           </item>
           <item>
-           <widget class="QgsDoubleSpinBox" name="mLeftMarginSpinBox">
-            <property name="singleStep">
-             <double>0.100000000000000</double>
+           <widget class="QgsSpinBox" name="mLeftMarginSpinBox">
+            <property name="suffix">
+             <string> px</string>
+            </property>
+            <property name="maximum">
+             <number>1000</number>
             </property>
            </widget>
           </item>
@@ -94,9 +158,12 @@
            </widget>
           </item>
           <item>
-           <widget class="QgsDoubleSpinBox" name="mRightMarginSpinBox">
-            <property name="singleStep">
-             <double>0.100000000000000</double>
+           <widget class="QgsSpinBox" name="mRightMarginSpinBox">
+            <property name="suffix">
+             <string> px</string>
+            </property>
+            <property name="maximum">
+             <number>1000</number>
             </property>
            </widget>
           </item>
@@ -109,17 +176,10 @@
           </property>
          </widget>
         </item>
-        <item row="2" column="2">
-         <widget class="QgsDoubleSpinBox" name="mBottomMarginSpinBox">
-          <property name="singleStep">
-           <double>0.100000000000000</double>
-          </property>
-         </widget>
-        </item>
         <item row="0" column="1">
          <widget class="QLabel" name="label_4">
           <property name="text">
-           <string>Top margin (mm)</string>
+           <string>Top margin</string>
           </property>
          </widget>
         </item>
@@ -148,6 +208,26 @@
            </size>
           </property>
          </spacer>
+        </item>
+        <item row="0" column="2">
+         <widget class="QgsSpinBox" name="mTopMarginSpinBox">
+          <property name="suffix">
+           <string> px</string>
+          </property>
+          <property name="maximum">
+           <number>1000</number>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="2">
+         <widget class="QgsSpinBox" name="mBottomMarginSpinBox">
+          <property name="suffix">
+           <string> px</string>
+          </property>
+          <property name="maximum">
+           <number>1000</number>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
@@ -181,20 +261,18 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsCollapsibleGroupBoxBasic</class>
    <extends>QGroupBox</extends>
    <header location="global">qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
-  <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
-  </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>chkMapLayersAsGroup</tabstop>
-  <tabstop>chkTextAsOutline</tabstop>
   <tabstop>mClipToContentGroupBox</tabstop>
   <tabstop>mTopMarginSpinBox</tabstop>
   <tabstop>mLeftMarginSpinBox</tabstop>
@@ -206,7 +284,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>QgsSvgExportOptionsDialog</receiver>
+   <receiver>QgsComposerImageExportOptionsDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -222,7 +300,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>QgsSvgExportOptionsDialog</receiver>
+   <receiver>QgsComposerImageExportOptionsDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

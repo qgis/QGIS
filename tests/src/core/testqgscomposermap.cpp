@@ -201,6 +201,17 @@ void TestQgsComposerMap::worldFileGeneration()
   QVERIFY( qgsDoubleNear( e, -4.17997, 0.001 ) );
   QVERIFY( qgsDoubleNear( f, 3.34241e+06, 1e+03 ) );
 
+  //test computing parameters for specific region
+  mComposerMap->setItemPosition( 20, 20, QgsComposerItem::UpperLeft, 2 );
+  mComposition->computeWorldFileParameters( QRectF( 10, 5, 260, 200 ), a, b, c, d, e, f );
+
+  QVERIFY( qgsDoubleNear( a, 4.18061, 0.001 ) );
+  QVERIFY( qgsDoubleNear( b, 2.41321, 0.001 ) );
+  QVERIFY( qgsDoubleNear( c, 773810, 1 ) );
+  QVERIFY( qgsDoubleNear( d, 2.4137, 0.001 ) );
+  QVERIFY( qgsDoubleNear( e, -4.1798, 0.001 ) );
+  QVERIFY( qgsDoubleNear( f, 3.35331e+06, 1e+03 ) );
+
   mComposition->setGenerateWorldFile( false );
   mComposerMap->setMapRotation( 0.0 );
 

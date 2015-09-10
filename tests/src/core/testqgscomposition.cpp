@@ -47,6 +47,7 @@ class TestQgsComposition : public QObject
     void pageIsEmpty(); //test the pageIsEmpty method
     void customProperties();
     void writeRetrieveCustomProperties();
+    void bounds();
     void resizeToContents();
     void resizeToContentsMargin();
     void resizeToContentsMultiPage();
@@ -325,6 +326,64 @@ void TestQgsComposition::writeRetrieveCustomProperties()
   delete composition;
   delete readComposition;
 }
+
+void TestQgsComposition::bounds()
+{
+  //add some items to a composition
+  QgsComposition* composition = new QgsComposition( *mMapSettings );
+  QgsComposerShape* shape1 = new QgsComposerShape( composition );
+  shape1->setShapeType( QgsComposerShape::Rectangle );
+  composition->addComposerShape( shape1 );
+  shape1->setItemPosition( 90, 50, 90, 50, QgsComposerItem::UpperLeft, false, 1 );
+  shape1->setItemRotation( 45 );
+  QgsComposerShape* shape2 = new QgsComposerShape( composition );
+  shape2->setShapeType( QgsComposerShape::Rectangle );
+  composition->addComposerShape( shape2 );
+  shape2->setItemPosition( 100, 150, 110, 50, QgsComposerItem::UpperLeft, false, 1 );
+  QgsComposerShape* shape3 = new QgsComposerShape( composition );
+  shape3->setShapeType( QgsComposerShape::Rectangle );
+  composition->addComposerShape( shape3 );
+  shape3->setItemPosition( 210, 30, 50, 100, QgsComposerItem::UpperLeft, false, 2 );
+  QgsComposerShape* shape4 = new QgsComposerShape( composition );
+  shape4->setShapeType( QgsComposerShape::Rectangle );
+  composition->addComposerShape( shape4 );
+  shape4->setItemPosition( 10, 120, 50, 30, QgsComposerItem::UpperLeft, false, 2 );
+  shape4->setVisibility( false );
+
+  //check bounds
+  QRectF compositionBounds = composition->compositionBounds( false );
+  QVERIFY( qgsDoubleNear( compositionBounds.height(), 372.15, 0.01 ) );
+  QVERIFY( qgsDoubleNear( compositionBounds.width(), 301.00, 0.01 ) );
+  QVERIFY( qgsDoubleNear( compositionBounds.left(), -2, 0.01 ) );
+  QVERIFY( qgsDoubleNear( compositionBounds.top(), -2, 0.01 ) );
+
+  QRectF compositionBoundsNoPage = composition->compositionBounds( true );
+  QVERIFY( qgsDoubleNear( compositionBoundsNoPage.height(), 320.36, 0.01 ) );
+  QVERIFY( qgsDoubleNear( compositionBoundsNoPage.width(), 250.30, 0.01 ) );
+  QVERIFY( qgsDoubleNear( compositionBoundsNoPage.left(), 9.85, 0.01 ) );
+  QVERIFY( qgsDoubleNear( compositionBoundsNoPage.top(), 49.79, 0.01 ) );
+
+  QRectF page1Bounds = composition->pageItemBounds( 0, true );
+  QVERIFY( qgsDoubleNear( page1Bounds.height(), 150.36, 0.01 ) );
+  QVERIFY( qgsDoubleNear( page1Bounds.width(), 155.72, 0.01 ) );
+  QVERIFY( qgsDoubleNear( page1Bounds.left(), 54.43, 0.01 ) );
+  QVERIFY( qgsDoubleNear( page1Bounds.top(), 49.79, 0.01 ) );
+
+  QRectF page2Bounds = composition->pageItemBounds( 1, true );
+  QVERIFY( qgsDoubleNear( page2Bounds.height(), 100.30, 0.01 ) );
+  QVERIFY( qgsDoubleNear( page2Bounds.width(), 50.30, 0.01 ) );
+  QVERIFY( qgsDoubleNear( page2Bounds.left(), 209.85, 0.01 ) );
+  QVERIFY( qgsDoubleNear( page2Bounds.top(), 249.85, 0.01 ) );
+
+  QRectF page2BoundsWithHidden = composition->pageItemBounds( 1, false );
+  QVERIFY( qgsDoubleNear( page2BoundsWithHidden.height(), 120.30, 0.01 ) );
+  QVERIFY( qgsDoubleNear( page2BoundsWithHidden.width(), 250.30, 0.01 ) );
+  QVERIFY( qgsDoubleNear( page2BoundsWithHidden.left(), 9.85, 0.01 ) );
+  QVERIFY( qgsDoubleNear( page2BoundsWithHidden.top(), 249.85, 0.01 ) );
+
+  delete composition;
+}
+
 
 void TestQgsComposition::resizeToContents()
 {
