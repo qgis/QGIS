@@ -54,17 +54,56 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
     //! catch the mouse move event, filters it, transforms it to map coordinates and send it to virtual method
     void canvasMoveEvent( QgsMapMouseEvent* e ) override;
 
+    /**
+     * The capture mode
+     *
+     * @return Capture mode
+     */
     CaptureMode mode() const { return mCaptureMode; }
 
+    /**
+     * Registers this maptool with the cad dock widget
+     */
     void activate();
 
+    /**
+     * Unregisters this maptool from the cad dock widget
+     */
     void deactivate();
 
     QgsAdvancedDigitizingDockWidget* cadDockWidget() const { return mCadDockWidget; }
 
   protected:
+    /**
+     * Override this method when subclassing this class.
+     * This will receive adapted events from the cad system whenever a
+     * canvasPressEvent is triggered and it's not hidden by the cad's
+     * construction mode.
+     *
+     * @param e Mouse events prepared by the cad system
+     */
     virtual void cadCanvasPressEvent( QgsMapMouseEvent* e ) { Q_UNUSED( e ) }
+
+
+    /**
+     * Override this method when subclassing this class.
+     * This will receive adapted events from the cad system whenever a
+     * canvasReleaseEvent is triggered and it's not hidden by the cad's
+     * construction mode.
+     *
+     * @param e Mouse events prepared by the cad system
+     */
     virtual void cadCanvasReleaseEvent( QgsMapMouseEvent* e ) { Q_UNUSED( e ) }
+
+
+    /**
+     * Override this method when subclassing this class.
+     * This will receive adapted events from the cad system whenever a
+     * canvasMoveEvent is triggered and it's not hidden by the cad's
+     * construction mode.
+     *
+     * @param e Mouse events prepared by the cad system
+     */
     virtual void cadCanvasMoveEvent( QgsMapMouseEvent* e ) { Q_UNUSED( e ) }
 
     CaptureMode mCaptureMode;
@@ -75,6 +114,14 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
     bool mSnapOnDoubleClick;
 
   private slots:
+    /**
+     * Is to be called by the cad system whenever a point changes outside of a
+     * mouse event. E.g. when additional constraints are triggered.
+     * The specified point will be used to generate a fake mouse event which will
+     * be sent as move event to cadCanvasMoveEvent.
+     *
+     * @param point The last point known to the cad system.
+     */
     void cadPointChanged( const QgsPoint& point );
 
   private:

@@ -50,6 +50,16 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
      */
     QgsMapMouseEvent( QgsMapCanvas* mapCanvas, QMouseEvent* event );
 
+    /**
+     * Creates a new QgsMapMouseEvent. Should only be required to be called from the QgsMapCanvas.
+     *
+     * @param mapCanvas The map canvas on which the event occured
+     * @param type      The type of the event
+     * @param pos       The pixel position of the mouse
+     * @param button    The pressed button
+     * @param buttons   Further buttons that are pressed
+     * @param modifiers Keyboard modifiers
+     */
     QgsMapMouseEvent( QgsMapCanvas* mapCanvas, Type type, const QPoint &pos, Qt::MouseButton button = Qt::NoButton,
                       Qt::MouseButtons buttons = Qt::NoButton, Qt::KeyboardModifiers modifiers = Qt::NoModifier );
 
@@ -82,12 +92,34 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
      */
     inline QgsPoint mapPoint() const { return mMapPoint; }
 
+    /**
+     * Set the (snapped) point this event points to in map coordinates.
+     * The point in pixel coordinates will be calculated accordingly.
+     *
+     * @param point The point in map coordinates
+     */
     void setMapPoint( const QgsPoint& point );
 
+    /**
+     * Returns the original, unmodified map point of the mouse cursor.
+     *
+     * @return The cursor position in map coordinates.
+     */
     QgsPoint originalMapPoint() const { return mMapPoint; }
 
+    /**
+     * The snapped mouse cursor in pixel coordinates.
+     *
+     * @return The snapped mouse cursor position in pixel coordinates.
+     */
     QPoint pixelPoint() const { return mPixelPoint; }
 
+    /**
+     * The unsnapped, real mouse cursor position in pixel coordinates.
+     * Alias to pos()
+     *
+     * @return Mouse position in pixel coordinates
+     */
     QPoint originalPixelPoint() const { return pos(); }
 
   private:
