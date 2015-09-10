@@ -23,7 +23,6 @@
 class QgsGrassTools;
 class QgsGrassNewMapset;
 class QgsGrassRegion;
-class QgsGrassEdit;
 
 class QgsMapCanvas;
 class QgsRubberBand;
@@ -79,8 +78,6 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
   public slots:
     //! init the gui
     virtual void initGui() override;
-    //! Start vector editing
-    void edit();
     //! unload the plugin
     void unload() override;
     //! show the help document
@@ -109,16 +106,9 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
     void projectRead();
     //! New project
     void newProject();
-    //! Set edit action
-    void setEditAction();
-    //! Close the edit if layer is removed
-    void closeEdit( QString layerId );
-    //! Cleanup the Grass Edit
-    void cleanUp();
     //! update plugin icons when the app tells us its theme is changed
     void setCurrentTheme( QString theThemeName );
     void setTransform();
-    void editClosed();
   private:
     //! Pointer to our toolbar
     QToolBar *mToolBarPointer;
@@ -136,7 +126,6 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
     QgsGrassTools *mTools;
     //! Pointer to QgsGrassNewMapset
     QgsGrassNewMapset *mNewMapset;
-    QgsGrassEdit *mEdit;
 
     QgsCoordinateReferenceSystem mCrs;
     QgsCoordinateTransform mCoordinateTransform;
@@ -146,7 +135,6 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
     QAction *mNewMapsetAction;
     QAction *mCloseMapsetAction;
     QAction *mOpenToolsAction;
-    QAction *mEditAction;
     QAction *mNewVectorAction;
 };
 

@@ -35,7 +35,7 @@ class QgsGrassToolsTreeFilterProxyModel;
  *  \brief Interface to GRASS modules.
  *
  */
-class QgsGrassTools: public QDockWidget, private Ui::QgsGrassToolsBase
+class QgsGrassTools: public QDockWidget, public Ui::QgsGrassToolsBase
 {
     Q_OBJECT
 
