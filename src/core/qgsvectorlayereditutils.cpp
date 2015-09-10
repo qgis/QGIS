@@ -163,6 +163,8 @@ int QgsVectorLayerEditUtils::addPart( const QList<QgsPoint> &points, QgsFeatureI
     geometry = *f.geometry();
   }
 
+  geometry.convertToMultiType();
+
   int errorCode = geometry.addPart( points, L->geometryType() );
   if ( errorCode == 0 )
   {
@@ -186,6 +188,8 @@ int QgsVectorLayerEditUtils::addPart( QgsCurveV2* ring, QgsFeatureId featureId )
 
     geometry = *f.geometry();
   }
+
+  geometry.convertToMultiType();
 
   int errorCode = geometry.addPart( ring );
   if ( errorCode == 0 )
