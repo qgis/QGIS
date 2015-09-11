@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>399</width>
-    <height>431</height>
+    <width>709</width>
+    <height>396</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -26,203 +26,196 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout">
-   <property name="margin">
+   <property name="leftMargin">
+    <number>9</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>9</number>
+   </property>
+   <property name="bottomMargin">
     <number>9</number>
    </property>
    <property name="spacing">
     <number>6</number>
    </property>
-   <item row="0" column="0">
+   <item row="0" column="0" colspan="2">
+    <widget class="QgsMessageBar" name="bar" native="true"/>
+   </item>
+   <item row="1" column="0">
     <widget class="QGroupBox" name="GroupBox1">
      <property name="title">
-      <string>Connection Information</string>
+      <string>Connection Details</string>
      </property>
-     <layout class="QGridLayout">
-      <property name="margin">
-       <number>0</number>
-      </property>
-      <property name="spacing">
-       <number>5</number>
-      </property>
+     <layout class="QFormLayout" name="formLayout">
       <item row="0" column="0">
-       <layout class="QHBoxLayout">
-        <property name="spacing">
-         <number>6</number>
-        </property>
-        <property name="margin">
-         <number>0</number>
-        </property>
-        <item>
-         <layout class="QVBoxLayout">
-          <property name="spacing">
-           <number>6</number>
-          </property>
-          <property name="margin">
-           <number>0</number>
-          </property>
-          <item>
-           <widget class="QLabel" name="TextLabel1_2">
-            <property name="text">
-             <string>Name</string>
-            </property>
-            <property name="buddy">
-             <cstring>txtName</cstring>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="label">
-            <property name="text">
-             <string>Provider/DSN</string>
-            </property>
-            <property name="buddy">
-             <cstring>txtService</cstring>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="TextLabel1">
-            <property name="text">
-             <string>Host</string>
-            </property>
-            <property name="buddy">
-             <cstring>txtHost</cstring>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="TextLabel2">
-            <property name="text">
-             <string>Database</string>
-            </property>
-            <property name="buddy">
-             <cstring>txtDatabase</cstring>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_2">
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="TextLabel3">
-            <property name="text">
-             <string>Username</string>
-            </property>
-            <property name="buddy">
-             <cstring>txtUsername</cstring>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="TextLabel3_2">
-            <property name="text">
-             <string>Password</string>
-            </property>
-            <property name="buddy">
-             <cstring>txtPassword</cstring>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QVBoxLayout">
-          <property name="spacing">
-           <number>6</number>
-          </property>
-          <property name="margin">
-           <number>0</number>
-          </property>
-          <item>
-           <widget class="QLineEdit" name="txtName">
-            <property name="toolTip">
-             <string>Name of the new connection</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="txtService"/>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="txtHost"/>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="txtDatabase"/>
-          </item>
-          <item>
-           <widget class="QCheckBox" name="cb_trustedConnection">
-            <property name="text">
-             <string>Trusted Connection</string>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="txtUsername"/>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="txtPassword">
-            <property name="echoMode">
-             <enum>QLineEdit::Password</enum>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </item>
-      <item row="1" column="0">
-       <layout class="QGridLayout" name="gridLayout_1">
-        <property name="margin">
-         <number>0</number>
-        </property>
-        <item row="0" column="0">
-         <widget class="QCheckBox" name="chkStoreUsername">
-          <property name="text">
-           <string>Save Username</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1" rowspan="2">
-         <widget class="QPushButton" name="btnConnect">
-          <property name="text">
-           <string>&amp;Test Connect</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0">
-         <widget class="QCheckBox" name="chkStorePassword">
-          <property name="text">
-           <string>Save Password</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item row="2" column="0">
-       <widget class="QCheckBox" name="cb_geometryColumns">
+       <widget class="QLabel" name="TextLabel1_2">
         <property name="text">
-         <string>Only look in the geometry_columns metadata table</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
+         <string>Connection name</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="0">
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="txtName">
+        <property name="toolTip">
+         <string>Name of the new connection</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Provider/DSN</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="txtService"/>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="TextLabel1">
+        <property name="text">
+         <string>Host</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLineEdit" name="txtHost"/>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0" colspan="2">
+       <widget class="QGroupBox" name="groupBox">
+        <property name="title">
+         <string>Login</string>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
+        </property>
+        <layout class="QFormLayout" name="formLayout_2">
+         <item row="0" column="1">
+          <widget class="QCheckBox" name="cb_trustedConnection">
+           <property name="text">
+            <string>Trusted Connection</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="TextLabel3">
+           <property name="text">
+            <string>Username</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QLineEdit" name="txtUsername">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="chkStoreUsername">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>Save</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="TextLabel3_2">
+           <property name="text">
+            <string>Password</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QLineEdit" name="txtPassword">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="echoMode">
+              <enum>QLineEdit::Password</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="chkStorePassword">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>Save</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="3" column="1">
+          <widget class="QLabel" name="lblWarning">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>HEADS UP: You have opted to save your password. It will be stored in plain text in your project files and in your home directory on Unix-like systems, or in your user profile on Windows
+
+Untick save if you don't wish to be the case.</string>
+           </property>
+           <property name="wordWrap">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="title">
+      <string>Database details</string>
+     </property>
+     <layout class="QFormLayout" name="formLayout_3">
+      <item row="1" column="1">
+       <widget class="QListWidget" name="listDatabase"/>
+      </item>
+      <item row="3" column="0" colspan="2">
        <widget class="QCheckBox" name="cb_allowGeometrylessTables">
         <property name="text">
          <string>Also list tables with no geometry</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="0">
+      <item row="4" column="0" colspan="2">
        <widget class="QCheckBox" name="cb_useEstimatedMetadata">
         <property name="text">
          <string>Use estimated table parameters</string>
@@ -232,10 +225,41 @@
         </property>
        </widget>
       </item>
+      <item row="2" column="0" colspan="2">
+       <widget class="QCheckBox" name="cb_geometryColumns">
+        <property name="text">
+         <string>Only look in the geometry_columns metadata table</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0" colspan="2">
+       <widget class="QPushButton" name="btnConnect">
+        <property name="text">
+         <string>Test Connection</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QPushButton" name="btnListDatabase">
+        <property name="text">
+         <string>List Databases</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="TextLabel2">
+        <property name="text">
+         <string>Database</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
-   <item row="1" column="0">
+   <item row="2" column="0" colspan="2">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="standardButtons">
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
@@ -245,21 +269,18 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>QgsMessageBar</class>
+   <extends>QWidget</extends>
+   <header>qgsmessagebar.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>txtName</tabstop>
   <tabstop>txtService</tabstop>
   <tabstop>txtHost</tabstop>
-  <tabstop>txtDatabase</tabstop>
-  <tabstop>cb_trustedConnection</tabstop>
-  <tabstop>txtUsername</tabstop>
-  <tabstop>txtPassword</tabstop>
-  <tabstop>chkStoreUsername</tabstop>
-  <tabstop>chkStorePassword</tabstop>
-  <tabstop>btnConnect</tabstop>
-  <tabstop>cb_geometryColumns</tabstop>
-  <tabstop>cb_allowGeometrylessTables</tabstop>
-  <tabstop>cb_useEstimatedMetadata</tabstop>
-  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
  <connections>
@@ -270,11 +291,11 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>313</x>
-     <y>501</y>
+     <x>322</x>
+     <y>386</y>
     </hint>
     <hint type="destinationlabel">
-     <x>451</x>
+     <x>391</x>
      <y>312</y>
     </hint>
    </hints>
@@ -286,12 +307,92 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>395</x>
-     <y>501</y>
+     <x>382</x>
+     <y>386</y>
     </hint>
     <hint type="destinationlabel">
-     <x>450</x>
+     <x>391</x>
      <y>287</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cb_trustedConnection</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>chkStoreUsername</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>148</x>
+     <y>143</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>306</x>
+     <y>163</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cb_trustedConnection</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>chkStorePassword</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>126</x>
+     <y>136</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>312</x>
+     <y>198</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cb_trustedConnection</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>txtUsername</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>129</x>
+     <y>146</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>129</x>
+     <y>166</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cb_trustedConnection</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>txtPassword</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>94</x>
+     <y>139</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>95</x>
+     <y>200</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chkStorePassword</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>lblWarning</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>312</x>
+     <y>186</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>266</x>
+     <y>241</y>
     </hint>
    </hints>
   </connection>

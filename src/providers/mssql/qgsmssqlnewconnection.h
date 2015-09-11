@@ -20,6 +20,7 @@
 #include "qgisgui.h"
 #include "qgscontexthelp.h"
 
+
 /** \class QgsMssqlNewConnection
  * \brief Dialog to allow the user to configure and save connection
  * information for an MSSQL database
@@ -30,12 +31,20 @@ class QgsMssqlNewConnection : public QDialog, private Ui::QgsMssqlNewConnectionB
   public:
     //! Constructor
     QgsMssqlNewConnection( QWidget *parent = 0, const QString& connName = QString::null, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+
     //! Destructor
     ~QgsMssqlNewConnection();
+
     //! Tests the connection using the parameters supplied
-    void testConnection();
+    bool testConnection( QString testDatabase = QString() );
+
+    /**
+     * @brief List all databases found for the given server.
+     */
+    void listDatabases();
   public slots:
     void accept() override;
+    void on_btnListDatabase_clicked();
     void on_btnConnect_clicked();
     void on_cb_trustedConnection_clicked();
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
