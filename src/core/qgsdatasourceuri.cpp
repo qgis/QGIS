@@ -359,6 +359,11 @@ void QgsDataSourceURI::clearSchema()
   mSchema = "";
 }
 
+void QgsDataSourceURI::setSchema( QString schema )
+{
+  mSchema = schema;
+}
+
 QString QgsDataSourceURI::escape( const QString &theVal, QChar delim = '\'' ) const
 {
   QString val = theVal;
@@ -547,9 +552,9 @@ QString QgsDataSourceURI::uri() const
 QByteArray QgsDataSourceURI::encodedUri() const
 {
   QUrl url;
-  Q_FOREACH ( const QString& key, mParams.uniqueKeys() )
+  Q_FOREACH( const QString& key, mParams.uniqueKeys() )
   {
-    Q_FOREACH ( const QString& value, mParams.values( key ) )
+    Q_FOREACH( const QString& value, mParams.values( key ) )
     {
       url.addQueryItem( key, value );
     }
@@ -563,7 +568,7 @@ void QgsDataSourceURI::setEncodedUri( const QByteArray & uri )
   QUrl url;
   url.setEncodedQuery( uri );
   QPair<QString, QString> item;
-  Q_FOREACH ( item, url.queryItems() )
+  Q_FOREACH( item, url.queryItems() )
   {
     mParams.insertMulti( item.first, item.second );
   }
@@ -659,7 +664,7 @@ void QgsDataSourceURI::setParam( const QString &key, const QString &value )
 
 void QgsDataSourceURI::setParam( const QString &key, const QStringList &value )
 {
-  Q_FOREACH ( const QString& val, value )
+  Q_FOREACH( const QString& val, value )
   {
     mParams.insertMulti( key, val );
   }

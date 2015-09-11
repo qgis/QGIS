@@ -131,6 +131,11 @@ class CORE_EXPORT QgsDataSourceURI
     bool selectAtIdDisabled() const;
 
     void clearSchema();
+
+    //! set the table schema
+    // @note added in 2.11
+    void setSchema( QString schema );
+
     void setSql( QString sql );
 
     QString host() const;
