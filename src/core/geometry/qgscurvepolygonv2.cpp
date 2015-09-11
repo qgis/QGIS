@@ -638,7 +638,6 @@ bool QgsCurvePolygonV2::deleteVertex( const QgsVertexId& vId )
 
     if ( ring->numPoints() < 1 )
     {
-      qWarning( "Deleting ring" );
       delete ring;
       if ( vId.ring == 0 )
       {

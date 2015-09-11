@@ -288,7 +288,7 @@ void QgsMapToolNodeTool::keyPressEvent( QKeyEvent* e )
       return;
 
     mSelectedFeature->deleteSelectedVertexes();
-    safeSelectVertex( firstSelectedIndex );
+    safeSelectVertex( firstSelectedIndex - 1 );
     mCanvas->refresh();
 
     // Override default shortcut management in MapCanvas
@@ -301,7 +301,7 @@ void QgsMapToolNodeTool::keyPressEvent( QKeyEvent* e )
       return;
 
     mSelectedFeature->deselectAllVertexes();
-    safeSelectVertex( firstSelectedIndex - 1 );
+    safeSelectVertex( firstSelectedIndex );
     e->ignore();
   }
   else if ( mSelectedFeature && ( e->key() == Qt::Key_Greater || e->key() == Qt::Key_Period ) )
@@ -341,7 +341,16 @@ void QgsMapToolNodeTool::safeSelectVertex( int vertexNr )
     {
       return;
     }
-    mSelectedFeature->selectVertex(( vertexNr + n ) % n );
+
+    if ( n > 0 && vertexNr >= n )
+    {
+      vertexNr = ( n - 1 );
+    }
+    if ( vertexNr < 0 )
+    {
+      vertexNr = 0;
+    }
+    mSelectedFeature->selectVertex( vertexNr );
   }
 }
 
