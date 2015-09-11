@@ -438,16 +438,6 @@ bool QgsGeometry::deleteVertex( int atVertex )
     return false;
   }
 
-  //if it is a point, set the geometry to NULL
-  if ( QgsWKBTypes::flatType( d->geometry->wkbType() ) == QgsWKBTypes::Point )
-  {
-    detach( false );
-    delete d->geometry;
-    removeWkbGeos();
-    d->geometry = 0;
-    return true;
-  }
-
   QgsVertexId id;
   if ( !vertexIdFromVertexNr( atVertex, id ) )
   {
@@ -457,7 +447,16 @@ bool QgsGeometry::deleteVertex( int atVertex )
   detach( true );
 
   removeWkbGeos();
-  return d->geometry->deleteVertex( id );
+  bool success = d->geometry->deleteVertex( id );
+  if ( d->geometry->isEmpty() )
+  {
+    detach( false );
+    delete d->geometry;
+    removeWkbGeos();
+    d->geometry = 0;
+    return true;
+  }
+  return success;
 }
 
 bool QgsGeometry::insertVertex( double x, double y, int beforeVertex )
