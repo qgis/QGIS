@@ -256,7 +256,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * @param currentTitle base name for initial title choice
      * @return QString::null if user cancels input dialog
      */
-    QString uniqueComposerTitle( QWidget *parent, bool acceptEmpty, const QString& currentTitle = QString() );
+    bool uniqueComposerTitle( QWidget *parent, QString& composerTitle, bool acceptEmpty, const QString& currentTitle = QString() );
     /** Creates a new composer and returns a pointer to it*/
     QgsComposer* createNewComposer( QString title = QString() );
     /** Deletes a composer and removes entry from Set*/

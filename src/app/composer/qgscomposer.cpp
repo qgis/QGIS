@@ -2717,8 +2717,8 @@ void QgsComposer::on_mActionSaveProject_triggered()
 
 void QgsComposer::on_mActionNewComposer_triggered()
 {
-  QString title = mQgis->uniqueComposerTitle( this, true );
-  if ( title.isNull() )
+  QString title;
+  if ( !mQgis->uniqueComposerTitle( this, title, true ) )
   {
     return;
   }
@@ -2727,8 +2727,8 @@ void QgsComposer::on_mActionNewComposer_triggered()
 
 void QgsComposer::on_mActionDuplicateComposer_triggered()
 {
-  QString newTitle = mQgis->uniqueComposerTitle( this, false, title() + tr( " copy" ) );
-  if ( newTitle.isNull() )
+  QString newTitle;
+  if ( !mQgis->uniqueComposerTitle( this, newTitle, false, title() + tr( " copy" ) ) )
   {
     return;
   }
@@ -2827,8 +2827,8 @@ void QgsComposer::loadTemplate( const bool newComposer )
 
   if ( newComposer )
   {
-    QString newTitle = mQgis->uniqueComposerTitle( this, true );
-    if ( newTitle.isNull() )
+    QString newTitle;
+    if ( !mQgis->uniqueComposerTitle( this, newTitle, true ) )
     {
       return;
     }

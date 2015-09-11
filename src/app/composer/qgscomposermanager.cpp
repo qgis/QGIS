@@ -193,8 +193,8 @@ void QgsComposerManager::on_mAddButton_clicked()
   QgsComposer* newComposer = 0;
   bool loadedOK = false;
 
-  QString title = QgisApp::instance()->uniqueComposerTitle( this, true );
-  if ( title.isNull() )
+  QString title;
+  if ( !QgisApp::instance()->uniqueComposerTitle( this, title, true ) )
   {
     return;
   }
@@ -255,7 +255,7 @@ void QgsComposerManager::on_mTemplatePathBtn_pressed()
                      tr( "Choose template" ),
                      lastTmplDir,
                      tr( "Composer templates" ) + " (*.qpt)" );
-  if ( !tmplPath.isNull() )
+  if ( !tmplPath.isEmpty() )
   {
     mTemplatePathLineEdit->setText( tmplPath );
     settings.setValue( "UI/ComposerManager/templatePath", tmplPath );
@@ -420,8 +420,8 @@ void QgsComposerManager::duplicate_clicked()
     return;
   }
 
-  QString newTitle = QgisApp::instance()->uniqueComposerTitle( this, false, currentTitle + tr( " copy" ) );
-  if ( newTitle.isNull() )
+  QString newTitle;
+  if ( !QgisApp::instance()->uniqueComposerTitle( this, newTitle, false, currentTitle + tr( " copy" ) ) )
   {
     return;
   }
@@ -469,8 +469,8 @@ void QgsComposerManager::rename_clicked()
   {
     return;
   }
-  QString newTitle = QgisApp::instance()->uniqueComposerTitle( this, false, currentTitle );
-  if ( newTitle.isNull() )
+  QString newTitle;
+  if ( !QgisApp::instance()->uniqueComposerTitle( this, newTitle, false, currentTitle ) )
   {
     return;
   }

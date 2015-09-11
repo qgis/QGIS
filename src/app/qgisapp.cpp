@@ -4596,8 +4596,8 @@ void QgisApp::openFile( const QString & fileName )
 
 void QgisApp::newPrintComposer()
 {
-  QString title = uniqueComposerTitle( this, true );
-  if ( title.isNull() )
+  QString title;
+  if ( !uniqueComposerTitle( this, title, true ) )
   {
     return;
   }
@@ -5695,7 +5695,7 @@ QgsGeometry* QgisApp::unionGeometries( const QgsVectorLayer* vl, QgsFeatureList&
   return unionGeom;
 }
 
-QString QgisApp::uniqueComposerTitle( QWidget* parent, bool acceptEmpty, const QString& currentName )
+bool QgisApp::uniqueComposerTitle( QWidget* parent, QString& composerTitle, bool acceptEmpty, const QString& currentName )
 {
   if ( !parent )
   {
@@ -5729,7 +5729,7 @@ QString QgisApp::uniqueComposerTitle( QWidget* parent, bool acceptEmpty, const Q
                                       &ok );
     if ( !ok )
     {
-      return QString::null;
+      return false;
     }
 
     if ( newTitle.isEmpty() )
@@ -5754,7 +5754,9 @@ QString QgisApp::uniqueComposerTitle( QWidget* parent, bool acceptEmpty, const Q
     }
   }
 
-  return newTitle;
+  composerTitle = newTitle;
+
+  return true;
 }
 
 QgsComposer* QgisApp::createNewComposer( QString title )
