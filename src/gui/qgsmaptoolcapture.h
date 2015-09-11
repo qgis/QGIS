@@ -54,6 +54,10 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     void cadCanvasMoveEvent( QgsMapMouseEvent * e );
     void keyPressEvent( QKeyEvent* e );
 
+#ifdef Q_OS_WIN
+    virtual bool eventFilter( QObject *obj, QEvent *e ) override;
+#endif
+
   private slots:
     void validationFinished();
 
@@ -103,6 +107,10 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     bool mCaptureModeFromLayer;
 
     QgsVertexMarker* mSnappingMarker;
+
+#ifdef Q_OS_WIN
+    int mSkipNextContextMenuEvent;
+#endif
 };
 
 #endif

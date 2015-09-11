@@ -40,6 +40,9 @@ QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas* canvas, QgsAdvancedDigitizin
     , mTempRubberBand( 0 )
     , mValidator( 0 )
     , mSnappingMarker( 0 )
+#ifdef Q_OS_WIN
+    , mSkipNextContextMenuEvent( 0 )
+#endif
 {
   mCaptureMode = mode;
 
@@ -366,8 +369,15 @@ void QgsMapToolCapture::stopCapturing()
   mGeomErrors.clear();
 
 #ifdef Q_OS_WIN
-  // hope your wearing your peril sensitive sunglasses.
-  QgisApp::instance()->skipNextContextMenuEvent();
+  Q_FOREACH ( QWidget *w, qApp->topLevelWidgets() )
+  {
+    if ( w->objectName() == "QgisApp" )
+    {
+      if ( mSkipNextContextMenuEvent++ == 0 )
+        w->installEventFilter( this );
+      break;
+    }
+  }
 #endif
 
   mCapturing = false;
@@ -490,3 +500,16 @@ void QgsMapToolCapture::setPoints( const QList<QgsPoint>& pointList )
   mCaptureCurve.clear();
   mCaptureCurve.addCurve( line );
 }
+
+#ifdef Q_OS_WIN
+bool QgsMapToolCapture::eventFilter( QObject *obj, QEvent *event )
+{
+  if ( event->type() != QEvent::ContextMenu )
+    return false;
+
+  if ( --mSkipNextContextMenuEvent == 0 )
+    obj->removeEventFilter( this );
+
+  return mSkipNextContextMenuEvent >= 0;
+}
+#endif

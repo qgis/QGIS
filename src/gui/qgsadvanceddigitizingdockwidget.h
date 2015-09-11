@@ -73,7 +73,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QDockWidget, private U
      * It contains all values (locked, value, relative) and pointers to corresponding widgets.
      * @note Relative is not mandatory since it is not used for distance.
      */
-    class CadConstraint
+    class GUI_EXPORT CadConstraint
     {
       public:
         enum LockMode

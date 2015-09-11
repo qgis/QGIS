@@ -474,9 +474,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     static QString normalizedMenuName( const QString & name ) { return name.normalized( QString::NormalizationForm_KD ).remove( QRegExp( "[^a-zA-Z]" ) ); }
 
 #ifdef Q_OS_WIN
-    //! ugly hack
-    void skipNextContextMenuEvent();
-
     static LONG WINAPI qgisCrashDump( struct _EXCEPTION_POINTERS *ExceptionInfo );
 #endif
 
@@ -668,11 +665,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 #ifdef ANDROID
     //! reimplements widget keyReleaseEvent event so we can check if back was pressed
     virtual void keyReleaseEvent( QKeyEvent *event );
-#endif
-
-#ifdef Q_OS_WIN
-    //! reimplements context menu event
-    virtual void contextMenuEvent( QContextMenuEvent *event );
 #endif
 
   private slots:
@@ -1655,10 +1647,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QList<QgsDecorationItem*> mDecorationItems;
 
     int mLastComposerId;
-
-#ifdef Q_OS_WIN
-    int mSkipNextContextMenuEvent; // ugly hack
-#endif
 
     //! Persistent GPS toolbox
     QgsGPSInformationWidget *mpGpsWidget;

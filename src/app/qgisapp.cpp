@@ -487,9 +487,6 @@ QgisApp *QgisApp::smInstance = 0;
 // constructor starts here
 QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, Qt::WindowFlags fl )
     : QMainWindow( parent, fl )
-#ifdef Q_OS_WIN
-    , mSkipNextContextMenuEvent( 0 )
-#endif
     , mNonEditMapTool( 0 )
     , mScaleLabel( 0 )
     , mScaleEdit( 0 )
@@ -10126,35 +10123,6 @@ void QgisApp::mapCanvas_keyPressed( QKeyEvent *e )
   }
 }
 
-#ifdef Q_OS_WIN
-// hope your wearing your peril sensitive sunglasses.
-void QgisApp::contextMenuEvent( QContextMenuEvent *e )
-{
-  if ( mSkipNextContextMenuEvent )
-  {
-    mSkipNextContextMenuEvent--;
-    e->ignore();
-    return;
-  }
-
-  QMainWindow::contextMenuEvent( e );
-}
-
-void QgisApp::skipNextContextMenuEvent()
-{
-  mSkipNextContextMenuEvent++;
-}
-#endif
-
-// Debug hook - used to output diagnostic messages when evoked (usually from the menu)
-/* Temporarily disabled...
-   void QgisApp::debugHook()
-   {
-   QgsDebugMsg("Hello from debug hook");
-// show the map canvas extent
-QgsDebugMsg(mMapCanvas->extent());
-}
-*/
 void QgisApp::customProjection()
 {
   // Create an instance of the Custom Projection Designer modeless dialog.

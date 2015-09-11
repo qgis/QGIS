@@ -30,7 +30,6 @@
 #include <QPushButton>
 #include <QNetworkRequest>
 
-class QgisApp;
 class QgsDataProvider;
 class QButtonGroup;
 class QgsNumericSortTreeWidgetItem;

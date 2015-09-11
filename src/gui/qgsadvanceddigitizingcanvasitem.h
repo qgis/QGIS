@@ -25,7 +25,7 @@ class QgsAdvancedDigitizingDockWidget;
 /**
  * @brief The QgsAdvancedDigitizingCanvasItem class draws the graphical elements of the CAD tools (@see QgsAdvancedDigitizingDock) on the map canvas.
  */
-class APP_EXPORT QgsAdvancedDigitizingCanvasItem : public QgsMapCanvasItem
+class GUI_EXPORT QgsAdvancedDigitizingCanvasItem : public QgsMapCanvasItem
 {
   public:
     explicit QgsAdvancedDigitizingCanvasItem( QgsMapCanvas* canvas, QgsAdvancedDigitizingDockWidget* cadDockWidget );
