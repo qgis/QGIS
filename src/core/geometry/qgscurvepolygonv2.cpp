@@ -43,7 +43,7 @@ QgsCurvePolygonV2::QgsCurvePolygonV2( const QgsCurvePolygonV2& p ) : QgsSurfaceV
     mExteriorRing = static_cast<QgsCurveV2*>( p.mExteriorRing->clone() );
   }
 
-  Q_FOREACH ( const QgsCurveV2* ring, p.mInteriorRings )
+  Q_FOREACH( const QgsCurveV2* ring, p.mInteriorRings )
   {
     mInteriorRings.push_back( static_cast<QgsCurveV2*>( ring->clone() ) );
   }
@@ -59,7 +59,7 @@ QgsCurvePolygonV2& QgsCurvePolygonV2::operator=( const QgsCurvePolygonV2 & p )
       mExteriorRing = static_cast<QgsCurveV2*>( p.mExteriorRing->clone() );
     }
 
-    Q_FOREACH ( const QgsCurveV2* ring, p.mInteriorRings )
+    Q_FOREACH( const QgsCurveV2* ring, p.mInteriorRings )
     {
       mInteriorRings.push_back( static_cast<QgsCurveV2*>( ring->clone() ) );
     }
@@ -153,7 +153,7 @@ bool QgsCurvePolygonV2::fromWkt( const QString& wkt )
 
   QString defaultChildWkbType = QString( "LineString%1%2" ).arg( is3D() ? "Z" : "" ).arg( isMeasure() ? "M" : "" );
 
-  Q_FOREACH ( const QString& childWkt, QgsGeometryUtils::wktGetChildBlocks( parts.second, defaultChildWkbType ) )
+  Q_FOREACH( const QString& childWkt, QgsGeometryUtils::wktGetChildBlocks( parts.second, defaultChildWkbType ) )
   {
     QPair<QgsWKBTypes::Type, QString> childParts = QgsGeometryUtils::wktReadBlock( childWkt );
 
@@ -195,7 +195,7 @@ int QgsCurvePolygonV2::wkbSize() const
   {
     size += mExteriorRing->wkbSize();
   }
-  Q_FOREACH ( const QgsCurveV2* curve, mInteriorRings )
+  Q_FOREACH( const QgsCurveV2* curve, mInteriorRings )
   {
     size += curve->wkbSize();
   }
@@ -217,7 +217,7 @@ unsigned char* QgsCurvePolygonV2::asWkb( int& binarySize ) const
     memcpy( wkb, ringWkb, curveWkbLen );
     wkb += curveWkbLen;
   }
-  Q_FOREACH ( const QgsCurveV2* curve, mInteriorRings )
+  Q_FOREACH( const QgsCurveV2* curve, mInteriorRings )
   {
     int curveWkbLen = 0;
     unsigned char* ringWkb = curve->asWkb( curveWkbLen );
@@ -240,7 +240,7 @@ QString QgsCurvePolygonV2::asWkt( int precision ) const
     }
     wkt += childWkt + ",";
   }
-  Q_FOREACH ( const QgsCurveV2* curve, mInteriorRings )
+  Q_FOREACH( const QgsCurveV2* curve, mInteriorRings )
   {
     QString childWkt = curve->asWkt( precision );
     if ( dynamic_cast<const QgsLineStringV2*>( curve ) )
@@ -626,19 +626,29 @@ bool QgsCurvePolygonV2::deleteVertex( const QgsVertexId& vId )
 
   QgsCurveV2* ring = vId.ring == 0 ? mExteriorRing : mInteriorRings[vId.ring - 1];
   int n = ring->numPoints();
-  if ( n <= 4 )
-  {
-    return false;
-  }
   bool success = ring->deleteVertex( vId );
   if ( success )
   {
     // If first or last vertex is removed, re-sync the last/first vertex
-    if ( vId.vertex == 0 )
+    if ( vId.vertex == 0 && n >= 4 )
       ring->moveVertex( QgsVertexId( 0, 0, n - 2 ), ring->vertexAt( QgsVertexId( 0, 0, 0 ) ) );
-    else if ( vId.vertex == n - 1 )
+    else if ( vId.vertex == n - 1 && n >= 4 )
       ring->moveVertex( QgsVertexId( 0, 0, 0 ), ring->vertexAt( QgsVertexId( 0, 0, n - 2 ) ) );
     mBoundingBox = QgsRectangle();
+
+    if ( ring->numPoints() < 1 )
+    {
+      delete ring;
+      if ( vId.ring == 0 )
+      {
+        mExteriorRing = 0;
+      }
+      else
+      {
+        mInteriorRings.removeAt( vId.ring - 1 );
+      }
+      return true;
+    }
   }
   return success;
 }
