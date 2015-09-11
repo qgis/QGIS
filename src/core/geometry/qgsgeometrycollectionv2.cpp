@@ -105,9 +105,20 @@ bool QgsGeometryCollectionV2::addGeometry( QgsAbstractGeometryV2* g )
   return true;
 }
 
+bool QgsGeometryCollectionV2::insertGeometry( QgsAbstractGeometryV2 *g, int index )
+{
+  if ( !g )
+  {
+    return false;
+  }
+
+  mGeometries.insert( index, g );
+  return true;
+}
+
 bool QgsGeometryCollectionV2::removeGeometry( int nr )
 {
-  if ( nr >= mGeometries.size() )
+  if ( nr >= mGeometries.size() || nr < 0 )
   {
     return false;
   }

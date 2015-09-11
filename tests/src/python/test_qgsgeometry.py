@@ -433,7 +433,7 @@ class TestQgsGeometry(TestCase):
         (dist, minDistPoint, afterVertex) = polygon.closestSegmentWithContext(QgsPoint(0.7, 1.1))
         self.assertEqual(afterVertex, 2)
         self.assertEqual(minDistPoint, QgsPoint(1, 1))
-        exp = 0.3**2 + 0.1**2
+        exp = 0.3 ** 2 + 0.1 ** 2
         assert abs(dist - exp) < 0.00001, "Expected: %f; Got:%f" % (exp, dist)
 
         # 3-+-+-2
@@ -748,6 +748,42 @@ class TestQgsGeometry(TestCase):
             i += 1
 
         multipoint = QgsGeometry.fromWkt("MultiPoint ((5 5))")
+        assert multipoint.vertexAt(0) == QgsPoint(5, 5), "MULTIPOINT fromWkt failed"
+
+        assert multipoint.insertVertex(4, 4, 0), "MULTIPOINT insert 4,4 at 0 failed"
+        expwkt = "MultiPoint ((4 4),(5 5))"
+        wkt = multipoint.exportToWkt()
+        assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
+
+        assert multipoint.insertVertex(7, 7, 2), "MULTIPOINT append 7,7 at 2 failed"
+        expwkt = "MultiPoint ((4 4),(5 5),(7 7))"
+        wkt = multipoint.exportToWkt()
+        assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
+
+        assert multipoint.insertVertex(6, 6, 2), "MULTIPOINT append 6,6 at 2 failed"
+        expwkt = "MultiPoint ((4 4),(5 5),(6 6),(7 7))"
+        wkt = multipoint.exportToWkt()
+        assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
+
+        assert not multipoint.deleteVertex(4), "MULTIPOINT delete at 4 unexpectedly succeeded"
+        assert not multipoint.deleteVertex(-1), "MULTIPOINT delete at -1 unexpectedly succeeded"
+
+        assert multipoint.deleteVertex(1), "MULTIPOINT delete at 1 failed"
+        expwkt = "MultiPoint ((4 4),(6 6),(7 7))"
+        wkt = multipoint.exportToWkt()
+        assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
+
+        assert multipoint.deleteVertex(2), "MULTIPOINT delete at 2 failed"
+        expwkt = "MultiPoint ((4 4),(6 6))"
+        wkt = multipoint.exportToWkt()
+        assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
+
+        assert multipoint.deleteVertex(0), "MULTIPOINT delete at 2 failed"
+        expwkt = "MultiPoint ((6 6))"
+        wkt = multipoint.exportToWkt()
+        assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
+
+        multipoint = QgsGeometry.fromWkt("MultiPoint ((5 5))")
         assert multipoint.vertexAt(0) == QgsPoint(5, 5), "MultiPoint fromWkt failed"
 
     def testMoveVertex(self):
@@ -928,10 +964,10 @@ class TestQgsGeometry(TestCase):
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
 
         polygon = QgsGeometry.fromWkt("MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)),((4 0, 5 0, 5 2, 3 2, 3 1, 4 1, 4 0)))")
-        for i in range(3):  # cannot have less than four points in a ring
+        for i in range(6):
             assert polygon.deleteVertex(0), "Delete vertex 0 failed"
 
-        expwkt = "MultiPolygon (((2 1, 2 2, 0 2, 2 1)),((4 0, 5 0, 5 2, 3 2, 3 1, 4 1, 4 0)))"
+        expwkt = "MultiPolygon (((4 0, 5 0, 5 2, 3 2, 3 1, 4 1, 4 0)))"
         wkt = polygon.exportToWkt()
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
 
@@ -943,19 +979,29 @@ class TestQgsGeometry(TestCase):
         # |                 |
         # 0-+-+-+-+---+-+-+-1
         polygon = QgsGeometry.fromWkt("Polygon ((0 0, 9 0, 9 3, 0 3, 0 0),(1 1, 2 1, 2 2, 1 2, 1 1),(3 1, 4 1, 4 2, 3 2, 3 1),(5 1, 6 1, 6 2, 5 2, 5 1),(7 1, 8 1, 8 2, 7 2, 7 1))")
-        #                                          0   1   2   3   4     5   6   7   8   9    10  11  12  13  14    15  16  17  18  19    20  21  22  23  24
+        #                                         0   1    2    3    4     5    6    7    8    9     10   11   12   13   14    15   16   17   18   19    20  21   22   23   24
 
-        #cannot have less than 4 vertices in a ring
-        assert polygon.deleteVertex(16), "Delete vertex 16 failed" % i
+        for i in range(4):
+            assert polygon.deleteVertex(16), "Delete vertex 16 failed" % i
 
-        expwkt = "Polygon ((0 0, 9 0, 9 3, 0 3, 0 0),(1 1, 2 1, 2 2, 1 2, 1 1),(3 1, 4 1, 4 2, 3 2, 3 1),(5 1, 6 2, 5 2, 5 1),(7 1, 8 1, 8 2, 7 2, 7 1))"
+        expwkt = "Polygon ((0 0, 9 0, 9 3, 0 3, 0 0),(1 1, 2 1, 2 2, 1 2, 1 1),(3 1, 4 1, 4 2, 3 2, 3 1),(7 1, 8 1, 8 2, 7 2, 7 1))"
         wkt = polygon.exportToWkt()
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
 
-        #ring needs to have at least 4 vertices!
-        assert polygon.deleteVertex(5), "Delete vertex 5 failed" % i
+        for i in range(3):
+            for j in range(4):
+                assert polygon.deleteVertex(5), "Delete vertex 5 failed" % i
 
-        expwkt = "Polygon ((0 0, 9 0, 9 3, 0 3, 0 0),(2 1, 2 2, 1 2, 2 1),(3 1, 4 1, 4 2, 3 2, 3 1),(5 1, 6 2, 5 2, 5 1),(7 1, 8 1, 8 2, 7 2, 7 1))"
+        expwkt = "Polygon ((0 0, 9 0, 9 3, 0 3, 0 0))"
+        wkt = polygon.exportToWkt()
+        assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
+
+        #Remove whole outer ring, inner ring should become outer
+        polygon = QgsGeometry.fromWkt("Polygon ((0 0, 9 0, 9 3, 0 3, 0 0),(1 1, 2 1, 2 2, 1 2, 1 1))")
+        for i in range(4):
+            assert polygon.deleteVertex(0), "Delete vertex 16 failed" % i
+
+        expwkt = "Polygon ((1 1, 2 1, 2 2, 1 2, 1 1))"
         wkt = polygon.exportToWkt()
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
 

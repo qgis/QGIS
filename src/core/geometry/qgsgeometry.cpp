@@ -438,6 +438,15 @@ bool QgsGeometry::deleteVertex( int atVertex )
     return false;
   }
 
+  //maintain compatibility with < 2.10 API
+  if ( d->geometry->geometryType() == "MultiPoint" )
+  {
+    detach( true );
+    removeWkbGeos();
+    //delete geometry instead of point
+    return static_cast< QgsGeometryCollectionV2* >( d->geometry )->removeGeometry( atVertex );
+  }
+
   //if it is a point, set the geometry to NULL
   if ( QgsWKBTypes::flatType( d->geometry->wkbType() ) == QgsWKBTypes::Point )
   {
@@ -467,7 +476,14 @@ bool QgsGeometry::insertVertex( double x, double y, int beforeVertex )
     return false;
   }
 
-  detach( true );
+  //maintain compatibility with < 2.10 API
+  if ( d->geometry->geometryType() == "MultiPoint" )
+  {
+    detach( true );
+    removeWkbGeos();
+    //insert geometry instead of point
+    return static_cast< QgsGeometryCollectionV2* >( d->geometry )->insertGeometry( new QgsPointV2( x, y ), beforeVertex );
+  }
 
   QgsVertexId id;
   if ( !vertexIdFromVertexNr( beforeVertex, id ) )
@@ -475,7 +491,10 @@ bool QgsGeometry::insertVertex( double x, double y, int beforeVertex )
     return false;
   }
 
+  detach( true );
+
   removeWkbGeos();
+
   return d->geometry->insertVertex( id, QgsPointV2( x, y ) );
 }
 

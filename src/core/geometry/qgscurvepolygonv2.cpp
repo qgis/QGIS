@@ -447,7 +447,7 @@ bool QgsCurvePolygonV2::removeInteriorRing( int nr )
   {
     return false;
   }
-  mInteriorRings.removeAt( nr );
+  delete mInteriorRings.takeAt( nr );
   return true;
 }
 
@@ -626,10 +626,26 @@ bool QgsCurvePolygonV2::deleteVertex( const QgsVertexId& vId )
 
   QgsCurveV2* ring = vId.ring == 0 ? mExteriorRing : mInteriorRings[vId.ring - 1];
   int n = ring->numPoints();
-  if ( n <= 4 )
+  if ( n <= 2 )
   {
-    return false;
+    //no points will be left in ring, so remove whole ring
+    if ( vId.ring == 0 )
+    {
+      delete mExteriorRing;
+      mExteriorRing = 0;
+      if ( !mInteriorRings.isEmpty() )
+      {
+        mExteriorRing = mInteriorRings.takeFirst();
+      }
+    }
+    else
+    {
+      removeInteriorRing( vId.ring - 1 );
+    }
+    mBoundingBox = QgsRectangle();
+    return true;
   }
+
   bool success = ring->deleteVertex( vId );
   if ( success )
   {
