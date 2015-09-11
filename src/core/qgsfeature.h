@@ -112,13 +112,27 @@ class CORE_EXPORT QgsAttributes : public QVector<QVariant>
     QgsAttributes()
         : QVector<QVariant>()
     {}
+    /**
+     * Create a new vector of attributes with the given size
+     *
+     * @param size Number of attributes
+     */
     QgsAttributes( int size )
         : QVector<QVariant>( size )
     {}
+    /**
+     * Constructs a vector with an initial size of size elements. Each element is initialized with value.
+     * @param size Number of elements
+     * @param v    Initial value
+     */
     QgsAttributes( int size, const QVariant& v )
         : QVector<QVariant>( size, v )
     {}
 
+    /**
+     * Copies another vector of attributes
+     * @param v Attributes to copy
+     */
     QgsAttributes( const QVector<QVariant>& v )
         : QVector<QVariant>( v )
     {}

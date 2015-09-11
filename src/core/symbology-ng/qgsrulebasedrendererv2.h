@@ -84,6 +84,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
     class CORE_EXPORT Rule
     {
       public:
+        //! The result of rendering a rule
         enum RenderResult
         {
           Filtered = 0, //!< The rule does not apply
@@ -95,14 +96,43 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
         Rule( QgsSymbolV2* symbol, int scaleMinDenom = 0, int scaleMaxDenom = 0, QString filterExp = QString(),
               QString label = QString(), QString description = QString(), bool elseRule = false );
         ~Rule();
-        QString dump( int offset = 0 ) const;
+
+        /**
+         * Dump for debug purpose
+         * @param indent How many characters to indent. Will increase by two with every of the recursive calls
+         * @return A string representing this rule
+         */
+        QString dump( int indent = 0 ) const;
+
+        /**
+         * Return the attributes used to evaluate the expression of this rule
+         * @return A set of attribute names
+         */
         QSet<QString> usedAttributes();
+
         QgsSymbolV2List symbols( const QgsRenderContext& context = QgsRenderContext() );
+
         //! @note not available in python bindings
         QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, QString rule = "" );
+
         //! @note added in 2.6
         QgsLegendSymbolListV2 legendSymbolItemsV2( int currentLevel = -1 ) const;
+
+        /**
+         * Check if a given feature shall be rendered by this rule
+         *
+         * @param f         The feature to test
+         * @param context   The context in which the rendering happens
+         * @return          True if the feature shall be rendered
+         */
         bool isFilterOK( QgsFeature& f, QgsRenderContext *context = 0 ) const;
+
+        /**
+         * Check if this rule applies for a given scale
+         * @param scale The scale to check. If set to 0, it will always return true.
+         *
+         * @return If the rule will be evaluated at this scale
+         */
         bool isScaleOK( double scale ) const;
 
         QgsSymbolV2* symbol() { return mSymbol; }
@@ -110,9 +140,26 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
         bool dependsOnScale() const { return mScaleMinDenom != 0 || mScaleMaxDenom != 0; }
         int scaleMinDenom() const { return mScaleMinDenom; }
         int scaleMaxDenom() const { return mScaleMaxDenom; }
+
+        /**
+         * A filter that will check if this rule applies
+         * @return An expression
+         */
         QgsExpression* filter() const { return mFilter; }
+
+        /**
+         * A filter that will check if this rule applies
+         * @return An expression
+         */
         QString filterExpression() const { return mFilterExp; }
+
+        /**
+         * A human readable description for this rule
+         *
+         * @return Description
+         */
         QString description() const { return mDescription; }
+
         //! @note added in 2.6
         //! @deprecated use active instead
         bool checkState() const { return mIsActive; }
@@ -133,13 +180,41 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
         //! set a new symbol (or NULL). Deletes old symbol.
         void setSymbol( QgsSymbolV2* sym );
         void setLabel( QString label ) { mLabel = label; }
+
+        /**
+         * Set the minimum denominator for which this rule shall apply.
+         * E.g. 1000 if it shall be evaluated between 1:1000 and 1:100'000
+         * Set to 0 to disable the minimum check
+         * @param scaleMinDenom The minimum scale denominator for this rule
+         */
         void setScaleMinDenom( int scaleMinDenom ) { mScaleMinDenom = scaleMinDenom; }
+
+        /**
+         * Set the maximum denominator for which this rule shall apply.
+         * E.g. 100'000 if it shall be evaluated between 1:1000 and 1:100'000
+         * Set to 0 to disable the maximum check
+         * @param scaleMaxDenom maximum scale denominator for this rule
+         */
         void setScaleMaxDenom( int scaleMaxDenom ) { mScaleMaxDenom = scaleMaxDenom; }
+
+        /**
+         * Set the expression used to check if a given feature shall be rendered with this rule
+         *
+         * @param filterExp An expression
+         */
         void setFilterExpression( QString filterExp ) { mFilterExp = filterExp; initFilter(); }
+
+        /**
+         * Set a human readable description for this rule
+         *
+         * @param description Description
+         */
         void setDescription( QString description ) { mDescription = description; }
+
         //! @note added in 2.6
         //! @deprecated use setActive instead
         void setCheckState( bool state ) { mIsActive = state; }
+
         /**
          * Sets if this rule is active
          * @param state Determines if the rule should be activated or deactivated
@@ -156,14 +231,26 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
 
         //! prepare the rule for rendering and its children (build active children array)
         Q_DECL_DEPRECATED bool startRender( QgsRenderContext& context, const QgsFields& fields );
+
         //! prepare the rule for rendering and its children (build active children array)
         bool startRender( QgsRenderContext& context, const QgsFields& fields, QString& filter );
+
         //! get all used z-levels from this rule and children
         QSet<int> collectZLevels();
+
         //! assign normalized z-levels [0..N-1] for this rule's symbol for quick access during rendering
         //! @note not available in python bindings
         void setNormZLevels( const QMap<int, int>& zLevelsToNormLevels );
 
+        /**
+         * Render a given feature, will recursively call subclasses and only render if the constraints apply.
+         *
+         * @param featToRender The feature to render
+         * @param context      The rendering context
+         * @param renderQueue  The rendering queue to which the feature should be added
+         * @return             The result of the rendering. In explicit if the feature is added to the queue or
+         *                     the reason for not rendering the feature.
+         */
         RenderResult renderFeature( FeatureToRender& featToRender, QgsRenderContext& context, RenderQueue& renderQueue );
 
         //! only tell whether a feature will be rendered without actually rendering it
@@ -175,24 +262,59 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
         //! tell which rules will be used to render the feature
         RuleList rulesForFeature( QgsFeature& feat, QgsRenderContext* context = 0 );
 
+        /**
+         * Stop a rendering process. Used to clean up the internal state of this rule
+         *
+         * @param context The rendering context
+         */
         void stopRender( QgsRenderContext& context );
 
+        /**
+         * Create a rule from an XML definition
+         *
+         * @param ruleElem  The XML rule element
+         * @param symbolMap Symbol map
+         *
+         * @return A new rule
+         */
         static Rule* create( QDomElement& ruleElem, QgsSymbolV2Map& symbolMap );
 
+        /**
+         * Return all children rules of this rule
+         *
+         * @return A list of rules
+         */
         RuleList& children() { return mChildren; }
+
+        /**
+         * Returns all children, grand-children, grand-grand-children, grand-gra... you get it
+         *
+         * @return A list of descendant rules
+         */
         RuleList descendants() const { RuleList l; Q_FOREACH ( Rule *c, mChildren ) { l += c; l += c->descendants(); } return l; }
+
+        /**
+         * The parent rule
+         *
+         * @return Parent rule
+         */
         Rule* parent() { return mParent; }
 
         //! add child rule, take ownership, sets this as parent
         void appendChild( Rule* rule );
+
         //! add child rule, take ownership, sets this as parent
         void insertChild( int i, Rule* rule );
+
         //! delete child rule
         void removeChild( Rule* rule );
+
         //! delete child rule
         void removeChildAt( int i );
+
         //! take child rule out, set parent as null
         void takeChild( Rule* rule );
+
         //! take child rule out, set parent as null
         Rule* takeChildAt( int i );
 
@@ -200,9 +322,25 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
         //! @note added in 2.6
         Rule* findRuleByKey( QString key );
 
+        /**
+         * Check which child rules are else rules and update the internal list of else rules
+         *
+         * TODO QGIS 3: Does this need to be public?
+         */
         void updateElseRules();
 
+        /**
+         * Sets if this rule is an ELSE rule
+         *
+         * @param iselse If true, this rule is an ELSE rule
+         */
         void setIsElse( bool iselse ) { mElseRule = iselse; }
+
+        /**
+         * Check if this rule is an ELSE rule
+         *
+         * @return True if this rule is an else rule
+         */
         bool isElse() { return mElseRule; }
 
       protected:

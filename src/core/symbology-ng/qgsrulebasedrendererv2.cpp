@@ -143,10 +143,10 @@ void QgsRuleBasedRendererV2::Rule::updateElseRules()
 }
 
 
-QString QgsRuleBasedRendererV2::Rule::dump( int offset ) const
+QString QgsRuleBasedRendererV2::Rule::dump( int indent ) const
 {
   QString off;
-  off.fill( QChar( ' ' ), offset );
+  off.fill( QChar( ' ' ), indent );
   QString symbolDump = ( mSymbol ? mSymbol->dump() : QString( "[]" ) );
   QString msg = off + QString( "RULE %1 - scale [%2,%3] - filter %4 - symbol %5\n" )
                 .arg( mLabel ).arg( mScaleMinDenom ).arg( mScaleMaxDenom )
@@ -155,7 +155,7 @@ QString QgsRuleBasedRendererV2::Rule::dump( int offset ) const
   QStringList lst;
   Q_FOREACH ( Rule* rule, mChildren )
   {
-    lst.append( rule->dump( offset + 2 ) );
+    lst.append( rule->dump( indent + 2 ) );
   }
   msg += lst.join( "\n" );
   return msg;

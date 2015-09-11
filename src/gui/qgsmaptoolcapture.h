@@ -48,19 +48,37 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     /** Adds a whole curve (e.g. circularstring) to the captured geometry. Curve must be in map CRS*/
     int addCurve( QgsCurveV2* c );
 
+    /**
+     * Get the capture curve
+     *
+     * @return Capture curve
+     */
     const QgsCompoundCurveV2* captureCurve() const { return &mCaptureCurve; }
 
-    void deleteTempRubberBand();
+
+    /**
+     * Update the rubberband according to mouse position
+     *
+     * @param e The mouse event
+     */
     void cadCanvasMoveEvent( QgsMapMouseEvent * e );
+
+    /**
+     * Intercept key events like Esc or Del to delete the last point
+     * @param e key event
+     */
     void keyPressEvent( QKeyEvent* e );
 
 #ifdef Q_OS_WIN
     virtual bool eventFilter( QObject *obj, QEvent *e ) override;
+    /**
+     * Clean a temporary rubberband
+     */
+    void deleteTempRubberBand();
 #endif
 
   private slots:
     void validationFinished();
-
     void currentLayerChanged( QgsMapLayer *layer );
     void addError( QgsGeometry::Error );
 
@@ -76,13 +94,46 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     /** Removes the last vertex from mRubberBand and mCaptureList*/
     void undo();
 
+    /**
+     * Start capturing
+     */
     void startCapturing();
+
+    /**
+     * Are we currently capturing?
+     *
+     * @return Is the tool in capture mode?
+     */
     bool isCapturing() const;
+
+    /**
+     * Stop capturing
+     */
     void stopCapturing();
 
+    /**
+     * Number of points digitized
+     *
+     * @return Number of points
+     */
     int size();
+
+    /**
+     * List of digitized points
+     * @return List of points
+     */
     QList<QgsPoint> points();
+
+    /**
+     * Set the points on which to work
+     *
+     * @param pointList A list of points
+     */
     void setPoints( const QList<QgsPoint>& pointList );
+
+    /**
+     * Close an open polygon
+     */
     void closePolygon();
 
   private:

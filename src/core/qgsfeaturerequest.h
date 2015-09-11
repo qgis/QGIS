@@ -31,9 +31,13 @@ typedef QList<int> QgsAttributeList;
  * The request may apply a filter to fetch only a particular subset of features. Currently supported filters:
  * - no filter - all features are returned
  * - feature id - only feature that matches given feature id is returned
- * - rectangle - only features that intersect given rectangle should be fetched. For the sake of speed,
- *               the intersection is often done only using feature's bounding box. There is a flag
- *               ExactIntersect that makes sure that only intersecting features will be returned.
+ * - feature ids - only features that match any of the given feature ids are returned
+ * - filter expression - only features that match the given filter expression are returned
+ *
+ * Additionally a spatial rectangle can be set in combination:
+ * Only features that intersect given rectangle should be fetched. For the sake of speed,
+ * the intersection is often done only using feature's bounding box. There is a flag
+ * ExactIntersect that makes sure that only intersecting features will be returned.
  *
  * For efficiency, it is also possible to tell provider that some data is not required:
  * - NoGeometry flag
@@ -68,6 +72,9 @@ class CORE_EXPORT QgsFeatureRequest
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
+    /**
+     * Types of filters.
+     */
     enum FilterType
     {
       FilterNone,       //!< No filter is applied
@@ -77,6 +84,9 @@ class CORE_EXPORT QgsFeatureRequest
       FilterFids        //!< Filter using feature IDs
     };
 
+    /**
+     * A special attribute that if set matches all attributes
+     */
     static const QString AllAttributes;
 
     //! construct a default request: for all features get attributes and geometries
@@ -89,24 +99,36 @@ class CORE_EXPORT QgsFeatureRequest
     explicit QgsFeatureRequest( const QgsExpression& expr, const QgsExpressionContext& context = QgsExpressionContext() );
     //! copy constructor
     QgsFeatureRequest( const QgsFeatureRequest& rh );
-
+    //! Assignment operator
     QgsFeatureRequest& operator=( const QgsFeatureRequest& rh );
 
     ~QgsFeatureRequest();
 
+    /**
+     * Return the filter type which is currently set on this request
+     *
+     * @return Filter type
+     */
     FilterType filterType() const { if ( mFilter == FilterNone && !mFilterRect.isNull() ) return FilterRect; else return mFilter; }
 
-    //! Set rectangle from which features will be taken. Empty rectangle removes the filter.
-    //!
+    /**
+     * Set rectangle from which features will be taken. Empty rectangle removes the filter.
+     */
     QgsFeatureRequest& setFilterRect( const QgsRectangle& rect );
+
+    /**
+     * Get the rectangle from which features will be taken.
+     */
     const QgsRectangle& filterRect() const { return mFilterRect; }
 
     //! Set feature ID that should be fetched.
     QgsFeatureRequest& setFilterFid( QgsFeatureId fid );
+    //! Get the feature ID that should be fetched.
     const QgsFeatureId& filterFid() const { return mFilterFid; }
 
-    //! Set feature ID that should be fetched.
+    //! Set feature IDs that should be fetched.
     QgsFeatureRequest& setFilterFids( QgsFeatureIds fids );
+    //! Get feature IDs that should be fetched.
     const QgsFeatureIds& filterFids() const { return mFilterFids; }
 
     /** Set the filter expression. {@see QgsExpression}
@@ -153,6 +175,10 @@ class CORE_EXPORT QgsFeatureRequest
     //! Set a subset of attributes that will be fetched. Empty list means that all attributes are used.
     //! To disable fetching attributes, reset the FetchAttributes flag (which is set by default)
     QgsFeatureRequest& setSubsetOfAttributes( const QgsAttributeList& attrs );
+    /**
+     * Return the subset of attributes which at least need to be fetched
+     * @return A list of attributes to be fetched
+     */
     const QgsAttributeList& subsetOfAttributes() const { return mAttrs; }
 
     //! Set a subset of attributes by names that will be fetched
@@ -206,6 +232,11 @@ class CORE_EXPORT QgsAbstractFeatureSource
   public:
     virtual ~QgsAbstractFeatureSource();
 
+    /**
+     * Get an iterator for features matching the specified request
+     * @param request The request
+     * @return A feature iterator
+     */
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) = 0;
 
   protected:

@@ -33,6 +33,10 @@ class GUI_EXPORT QgsMapToolEdit: public QgsMapTool
     QgsMapToolEdit( QgsMapCanvas* canvas );
     virtual ~QgsMapToolEdit();
 
+    /**
+     * Is this an edit tool?
+     * @return  Of course it is or you would not be inheriting from it.
+     */
     virtual bool isEditTool() override { return true; }
 
   protected:
@@ -44,7 +48,6 @@ class GUI_EXPORT QgsMapToolEdit: public QgsMapTool
     *   @param alternativeBand if true, rubber band will be set with more transparency and a dash pattern. defaut is false.
     */
     QgsRubberBand* createRubberBand( QGis::GeometryType geometryType = QGis::Line, bool alternativeBand = false );
-
 
     QgsGeometryRubberBand* createGeometryRubberBand( QGis::GeometryType geometryType = QGis::Line ) const;
 

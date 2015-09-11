@@ -49,23 +49,26 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QDockWidget, private U
   public:
 
     /**
-     * @brief The CadCapacity enum defines the possible constraints to be set
-     *  depending on the number of points in the CAD point list (the list of points
+     * The CadCapacity enum defines the possible constraints to be set
+     * depending on the number of points in the CAD point list (the list of points
      * currently digitized)
      */
     enum CadCapacity
     {
-      AbsoluteAngle = 1, // = Azimuth
-      RelativeAngle = 2, // also for parallel and perpendicular
-      RelativeCoordinates = 4, // this corresponds to distance and relative coordinates
+      AbsoluteAngle = 1, //!< Azimuth
+      RelativeAngle = 2, //!< also for parallel and perpendicular
+      RelativeCoordinates = 4, //!< this corresponds to distance and relative coordinates
     };
     Q_DECLARE_FLAGS( CadCapacities, CadCapacity )
 
+    /**
+     * Additional constraints which can be enabled
+     */
     enum AdditionalConstraint
     {
-      NoConstraint,
-      Perpendicular,
-      Parallel
+      NoConstraint,  //!< No additional constraint
+      Perpendicular, //!< Perpendicular
+      Parallel       //!< Parallel
     };
 
     /**
@@ -76,6 +79,9 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QDockWidget, private U
     class GUI_EXPORT CadConstraint
     {
       public:
+        /**
+         * The lock mode
+         */
         enum LockMode
         {
           NoLock,
@@ -92,18 +98,52 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QDockWidget, private U
             , mValue( 0.0 )
         {}
 
+        /**
+         * The current lock mode of this constraint
+         * @return Lock mode
+         */
         LockMode lockMode() const { return mLockMode; }
+        /**
+         * Is any kind of lock mode enabled
+         */
         bool isLocked() const { return mLockMode != NoLock; }
+        /**
+         * Is the constraint in relative mode
+         */
         bool relative() const { return mRelative; }
+        /**
+         * The value of the constraint
+         */
         double value() const { return mValue; }
 
+        /**
+         * The line edit that manages the value of the constraint
+         */
         QLineEdit* lineEdit() const { return mLineEdit; }
 
+        /**
+         * Set the lock mode
+         */
         void setLockMode( LockMode mode );
+
+        /**
+         * Set if the constraint should be treated relative
+         */
         void setRelative( bool relative );
+
+        /**
+         * Set the value of the constraint
+         */
         void setValue( double value );
 
+        /**
+         * Toggle lock mode
+         */
         void toggleLocked();
+
+        /**
+         * Toggle relative mode
+         */
         void toggleRelative();
 
       private:
@@ -119,21 +159,61 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QDockWidget, private U
     //! @note from the two solutions, the intersection will be set to the closest point
     static bool lineCircleIntersection( const QgsPoint& center, const double radius, const QList<QgsPoint>& segment, QgsPoint& intersection );
 
+    /**
+     * Create an advanced digitizing dock widget
+     * @param canvas The map canvas on which the widget operates
+     * @param parent The parent
+     */
     explicit QgsAdvancedDigitizingDockWidget( QgsMapCanvas* canvas, QWidget *parent = 0 );
 
+    /**
+     * Disables the CAD tools when hiding the dock
+     */
     void hideEvent( QHideEvent* ) override;
 
+    /**
+     * Will react on a canvas press event
+     *
+     * @param e A mouse event (may be modified)
+     * @return  If the event is hidden (construction mode hides events from the maptool)
+     */
     bool canvasPressEvent( QgsMapMouseEvent* e );
+    /**
+     * Will react on a canvas release event
+     *
+     * @param e A mouse event (may be modified)
+     * @param captureSegment Capture segments?
+     * @return  If the event is hidden (construction mode hides events from the maptool)
+     */
     bool canvasReleaseEvent( QgsMapMouseEvent* e , bool captureSegment );
+    /**
+     * Will react on a canvas move event
+     *
+     * @param e A mouse event (may be modified)
+     * @return  If the event is hidden (construction mode hides events from the maptool)
+     */
     bool canvasMoveEvent( QgsMapMouseEvent* e );
+    /**
+     * Filter key events to e.g. toggle construction mode or adapt constraints
+     *
+     * @param e A mouse event (may be modified)
+     * @return  If the event is hidden (construction mode hides events from the maptool)
+     */
     bool canvasKeyPressEventFilter( QKeyEvent *e );
 
     //! apply the CAD constraints. The will modify the position of the map event in map coordinates by applying the CAD constraints.
     //! @return false if no solution was found (invalid constraints)
     virtual bool applyConstraints( QgsMapMouseEvent* e );
 
+    /**
+     * Clear any cached previous clicks and helper lines
+     */
     void clear();
 
+    /**
+     * The snapping mode
+     * @return Snapping mode
+     */
     QgsMapMouseEvent::SnappingMode snappingMode() { return mSnappingMode; }
 
     //! key press event on the dock
@@ -147,34 +227,88 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QDockWidget, private U
 
     //! Additional constraints are used to place perpendicular/parallel segments to snapped segments on the canvas
     AdditionalConstraint additionalConstraint() const  { return mAdditionalConstraint; }
-    const CadConstraint* constraintAngle()const  { return mAngleConstraint; }
+    //! Constraint on the angle
+    const CadConstraint* constraintAngle() const  { return mAngleConstraint; }
+    //! Constraint on the distance
     const CadConstraint* constraintDistance() const { return mDistanceConstraint; }
+    //! Constraint on the X coordinate
     const CadConstraint* constraintX() const { return mXConstraint; }
+    //! Constraint on the Y coordinate
     const CadConstraint* constraintY() const { return mYConstraint; }
+    //! Constraint on a common angle
     bool commonAngleConstraint() const { return mCommonAngleConstraint; }
 
-    /** Helpers for the CAD point list. The CAD point list is the list of points
+    /**
+     * The last point.
+     * Helper for the CAD point list. The CAD point list is the list of points
      * currently digitized. It contains both  "normal" points and intermediate points (construction mode).
      */
     QgsPoint currentPoint( bool* exists  = 0 ) const;
+
+    /**
+     * The previous point.
+     * Helper for the CAD point list. The CAD point list is the list of points
+     * currently digitized. It contains both  "normal" points and intermediate points (construction mode).
+     */
     QgsPoint previousPoint( bool* exists = 0 ) const;
+
+    /**
+     * The penultimate point.
+     * Helper for the CAD point list. The CAD point list is the list of points
+     * currently digitized. It contains both  "normal" points and intermediate points (construction mode).
+     */
     QgsPoint penultimatePoint( bool* exists = 0 ) const;
+
+    /**
+     * The number of points in the CAD point helper list
+     */
     inline int pointsCount() const { return mCadPointList.count(); }
+
+    /**
+     * Is it snapped to a vertex
+     */
     inline bool snappedToVertex() const { return mSnappedToVertex; }
+
+    /**
+     * Snapped to a segment
+     */
     const QList<QgsPoint>& snappedSegment() const { return mSnappedSegment; }
 
     //! return the action used to enable/disable the tools
     QAction* enableAction() { return mEnableAction; }
 
+    /**
+     * Enables the tool (call this when an appropriate map tool is set and in the condition to make use of
+     * cad digitizing)
+     * Normally done automatically from QgsMapToolAdvancedDigitizing::activate() but may need to be fine tuned
+     * if the map tool depends on preconditions like a feature selection.
+     */
     void enable();
 
+    /**
+     * Disable the widget. Normally done automatically from QgsMapToolAdvancedDigitizing::deactivate().
+     */
     void disable();
 
   signals:
+    /**
+     * Push a warning
+     *
+     * @param message An informative message
+     */
     void pushWarning( const QString& message );
 
+    /**
+     * Remove any previously emitted warnings (if any)
+     */
     void popWarning();
 
+    /**
+     * Sometimes a constraint may change the current point out of a mouse event. This happens normally
+     * when a constraint is toggled.
+     *
+     * @param point The last known digitizing point. Can be used to emulate a mouse event.
+     */
     void pointChanged( const QgsPoint& point );
 
   private slots:
