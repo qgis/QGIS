@@ -131,7 +131,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
                     options = dataobjects.getVectorLayers([param.datatype], sorting=False)
                 return param.setValue([options[i] for i in widget.selectedoptions])
         elif isinstance(param, (ParameterNumber, ParameterFile, ParameterCrs,
-                        ParameterExtent)):
+                                ParameterExtent)):
             return param.setValue(widget.getValue())
         elif isinstance(param, ParameterString):
             if param.multiline:
@@ -144,6 +144,8 @@ class AlgorithmDialog(AlgorithmDialogBase):
             return param.setValue(unicode(widget.text()))
 
     def accept(self):
+        self.settings.setValue("/Processing/dialogBase", self.saveGeometry())
+
         checkCRS = ProcessingConfig.getSetting(ProcessingConfig.WARN_UNMATCHING_CRS)
         try:
             self.setParamValues()
