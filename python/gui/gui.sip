@@ -83,6 +83,9 @@
 %Include qgsmapoverviewcanvas.sip
 %Include qgsmaptip.sip
 %Include qgsmaptool.sip
+%Include qgsmaptooladvanceddigitizing.sip
+%Include qgsmaptoolcapture.sip
+%Include qgsmaptooledit.sip
 %Include qgsmaptoolemitpoint.sip
 %Include qgsmaptoolidentify.sip
 %Include qgsmaptoolidentifyfeature.sip
