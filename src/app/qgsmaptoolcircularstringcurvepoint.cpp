@@ -17,7 +17,7 @@ QgsMapToolCircularStringCurvePoint::~QgsMapToolCircularStringCurvePoint()
 {
 }
 
-void QgsMapToolCircularStringCurvePoint::canvasReleaseEvent( QgsMapMouseEvent* e )
+void QgsMapToolCircularStringCurvePoint::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
 {
   QgsPointV2 mapPoint( e->mapPoint().x(), e->mapPoint().y() );
 
@@ -76,7 +76,7 @@ void QgsMapToolCircularStringCurvePoint::canvasReleaseEvent( QgsMapMouseEvent* e
   }
 }
 
-void QgsMapToolCircularStringCurvePoint::canvasMoveEvent( QgsMapMouseEvent* e )
+void QgsMapToolCircularStringCurvePoint::cadCanvasMoveEvent( QgsMapMouseEvent* e )
 {
   QgsPointV2 mapPoint( e->mapPoint().x(), e->mapPoint().y() );
   QgsVertexId idx; idx.part = 0; idx.ring = 0; idx.vertex = mPoints.size();

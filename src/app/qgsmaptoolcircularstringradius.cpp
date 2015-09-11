@@ -41,7 +41,7 @@ QgsMapToolCircularStringRadius::~QgsMapToolCircularStringRadius()
 
 }
 
-void QgsMapToolCircularStringRadius::canvasReleaseEvent( QgsMapMouseEvent* e )
+void QgsMapToolCircularStringRadius::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
 {
   QgsPointV2 mapPoint( e->mapPoint().x(), e->mapPoint().y() );
 
@@ -115,7 +115,7 @@ void QgsMapToolCircularStringRadius::canvasReleaseEvent( QgsMapMouseEvent* e )
   }
 }
 
-void QgsMapToolCircularStringRadius::canvasMoveEvent( QgsMapMouseEvent* e )
+void QgsMapToolCircularStringRadius::cadCanvasMoveEvent( QgsMapMouseEvent* e )
 {
   if ( mPoints.size() > 0 && mRadiusMode )
   {

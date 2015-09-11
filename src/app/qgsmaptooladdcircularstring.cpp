@@ -24,8 +24,6 @@
 #include "qgspointv2.h"
 #include "qgisapp.h"
 
-#include <QMouseEvent>
-
 QgsMapToolAddCircularString::QgsMapToolAddCircularString( QgsMapToolCapture* parentTool, QgsMapCanvas* canvas, CaptureMode mode )
     : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), mode )
     , mParentTool( parentTool )
