@@ -65,6 +65,7 @@ class CORE_EXPORT QgsMapRendererParallelJob : public QgsMapRendererQImageJob
     LayerRenderJobs mLayerJobs;
 
     QgsPalLabeling* mLabelingEngine;
+    QgsLabelingEngineV2* mLabelingEngineV2;
     QgsRenderContext mLabelingRenderContext;
     QFuture<void> mLabelingFuture;
     QFutureWatcher<void> mLabelingFutureWatcher;

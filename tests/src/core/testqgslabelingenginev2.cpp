@@ -77,8 +77,8 @@ void TestQgsLabelingEngineV2::testBasic()
   vl->setCustomProperty( "labeling/enabled", true );
   vl->setCustomProperty( "labeling/fieldName", "Class" );
 
-  QgsVectorLayerLabelProvider lp( vl );
-  QgsLabelingEngineV2 engine( mapSettings, QList<QgsAbstractLabelProvider*>() << &lp );
+  QgsLabelingEngineV2 engine( mapSettings );
+  engine.addProvider( new QgsVectorLayerLabelProvider( vl ) );
   //engine.setFlags( QgsLabelingEngineV2::RenderOutlineLabels | QgsLabelingEngineV2::DrawLabelRectOnly );
   engine.run( context );
 
@@ -112,8 +112,8 @@ void TestQgsLabelingEngineV2::testDiagrams()
   vl->loadNamedStyle( QString( TEST_DATA_DIR ) + "/points_diagrams.qml", res );
   Q_ASSERT( res );
 
-  QgsVectorLayerDiagramProvider dp( vl );
-  QgsLabelingEngineV2 engine( mapSettings, QList<QgsAbstractLabelProvider*>() << &dp );
+  QgsLabelingEngineV2 engine( mapSettings );
+  engine.addProvider( new QgsVectorLayerDiagramProvider( vl ) );
   engine.run( context );
 
   p.end();

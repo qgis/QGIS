@@ -29,6 +29,7 @@
 
 #include "qgsgeometrycache.h"
 
+class QgsLabelingEngineV2;
 class QgsLabelingResults;
 class QgsMapLayerRenderer;
 class QgsMapRendererCache;
@@ -149,7 +150,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
     static bool reprojectToLayerExtent( const QgsCoordinateTransform* ct, bool layerCrsGeographic, QgsRectangle& extent, QgsRectangle& r2 );
 
     //! @note not available in python bindings
-    LayerRenderJobs prepareJobs( QPainter* painter, QgsPalLabeling* labelingEngine );
+    LayerRenderJobs prepareJobs( QPainter* painter, QgsPalLabeling* labelingEngine, QgsLabelingEngineV2* labelingEngine2 );
 
     //! @note not available in python bindings
     void cleanupJobs( LayerRenderJobs& jobs );
@@ -158,7 +159,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
 
     bool needTemporaryImage( QgsMapLayer* ml );
 
-    static void drawLabeling( const QgsMapSettings& settings, QgsRenderContext& renderContext, QgsPalLabeling* labelingEngine, QPainter* painter );
+    static void drawLabeling( const QgsMapSettings& settings, QgsRenderContext& renderContext, QgsPalLabeling* labelingEngine, QgsLabelingEngineV2* labelingEngine2, QPainter* painter );
     static void drawOldLabeling( const QgsMapSettings& settings, QgsRenderContext& renderContext );
     static void drawNewLabeling( const QgsMapSettings& settings, QgsRenderContext& renderContext, QgsPalLabeling* labelingEngine );
 

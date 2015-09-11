@@ -30,6 +30,7 @@ class QPainter;
 
 class QgsAbstractGeometryV2;
 class QgsLabelingEngineInterface;
+class QgsLabelingEngineV2;
 class QgsMapSettings;
 
 /** \ingroup core
@@ -78,6 +79,9 @@ class CORE_EXPORT QgsRenderContext
 
     QgsLabelingEngineInterface* labelingEngine() const { return mLabelingEngine; }
 
+    //! Get access to new labeling engine (may be NULL)
+    QgsLabelingEngineV2* labelingEngineV2() const { return mLabelingEngine2; }
+
     QColor selectionColor() const { return mSelectionColor; }
 
     /** Returns true if vector selections should be shown in the rendered map
@@ -102,6 +106,8 @@ class CORE_EXPORT QgsRenderContext
     void setPainter( QPainter* p ) {mPainter = p;}
     void setForceVectorOutput( bool force ) {mForceVectorOutput = force;}
     void setLabelingEngine( QgsLabelingEngineInterface* iface ) { mLabelingEngine = iface; }
+    //! Assign new labeling engine
+    void setLabelingEngineV2( QgsLabelingEngineV2* engine2 ) { mLabelingEngine2 = engine2; }
     void setSelectionColor( const QColor& color ) { mSelectionColor = color; }
 
     /** Sets whether vector selections should be shown in the rendered map
@@ -181,6 +187,9 @@ class CORE_EXPORT QgsRenderContext
 
     /** Labeling engine (can be NULL)*/
     QgsLabelingEngineInterface* mLabelingEngine;
+
+    /** Newer labeling engine implementation (can be NULL) */
+    QgsLabelingEngineV2* mLabelingEngine2;
 
     /** Whether selection should be shown*/
     bool mShowSelection;

@@ -25,33 +25,34 @@
 #include "labelposition.h"
 
 
-QgsVectorLayerDiagramProvider::QgsVectorLayerDiagramProvider( const QgsDiagramLayerSettings* diagSettings,
-                                                              const QgsDiagramRendererV2* diagRenderer,
-                                                              const QString& layerId,
-                                                              const QgsFields& fields,
-                                                              const QgsCoordinateReferenceSystem& crs,
-                                                              QgsAbstractFeatureSource* source,
-                                                              bool ownsSource )
-  : mSettings( *diagSettings )
-  , mDiagRenderer( diagRenderer->clone() )
-  , mLayerId( layerId )
-  , mFields( fields )
-  , mLayerCrs( crs )
-  , mSource( source )
-  , mOwnsSource( ownsSource )
+QgsVectorLayerDiagramProvider::QgsVectorLayerDiagramProvider(
+  const QgsDiagramLayerSettings* diagSettings,
+  const QgsDiagramRendererV2* diagRenderer,
+  const QString& layerId,
+  const QgsFields& fields,
+  const QgsCoordinateReferenceSystem& crs,
+  QgsAbstractFeatureSource* source,
+  bool ownsSource )
+    : mSettings( *diagSettings )
+    , mDiagRenderer( diagRenderer->clone() )
+    , mLayerId( layerId )
+    , mFields( fields )
+    , mLayerCrs( crs )
+    , mSource( source )
+    , mOwnsSource( ownsSource )
 {
   init();
 }
 
 
 QgsVectorLayerDiagramProvider::QgsVectorLayerDiagramProvider( QgsVectorLayer* layer )
- : mSettings( *layer->diagramLayerSettings() )
- , mDiagRenderer( layer->diagramRenderer()->clone() )
- , mLayerId( layer->id() )
- , mFields( layer->fields() )
- , mLayerCrs( layer->crs() )
- , mSource( new QgsVectorLayerFeatureSource( layer ) )
- , mOwnsSource( true )
+    : mSettings( *layer->diagramLayerSettings() )
+    , mDiagRenderer( layer->diagramRenderer()->clone() )
+    , mLayerId( layer->id() )
+    , mFields( layer->fields() )
+    , mLayerCrs( layer->crs() )
+    , mSource( new QgsVectorLayerFeatureSource( layer ) )
+    , mOwnsSource( true )
 {
   init();
 }
@@ -142,9 +143,12 @@ QList<QgsLabelFeature*> QgsVectorLayerDiagramProvider::labelFeatures( const QgsM
   if ( mSettings.yPosColumn != -1 )
     attributeNames << mFields.at( mSettings.yPosColumn ).name();
 
+  QgsRectangle layerExtent = context.extent();
+  if ( mSettings.ct )
+    layerExtent = mSettings.ct->transformBoundingBox( context.extent(), QgsCoordinateTransform::ReverseTransform );
 
   QgsFeatureRequest request;
-  request.setFilterRect( context.extent() );
+  request.setFilterRect( layerExtent );
   request.setSubsetOfAttributes( attributeNames, mFields );
   QgsFeatureIterator fit = mSource->getFeatures( request );
 
@@ -213,7 +217,7 @@ QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& fea
   if ( dr )
   {
     QList<QgsDiagramSettings> settingList = dr->diagramSettings();
-    if ( settingList.size() > 0 )
+    if ( settingList.size() > 0 && settingList.at( 0 ).scaleBasedVisibility )
     {
       double minScale = settingList.at( 0 ).minScaleDenominator;
       if ( minScale > 0 && context.rendererScale() < minScale )

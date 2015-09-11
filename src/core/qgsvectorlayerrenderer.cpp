@@ -27,7 +27,9 @@
 #include "qgssymbollayerv2.h"
 #include "qgssymbolv2.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayerdiagramprovider.h"
 #include "qgsvectorlayerfeatureiterator.h"
+#include "qgsvectorlayerlabelprovider.h"
 #include "qgspainteffect.h"
 
 #include <QSettings>
@@ -463,7 +465,16 @@ void QgsVectorLayerRenderer::stopRendererV2( QgsSingleSymbolRendererV2* selRende
 void QgsVectorLayerRenderer::prepareLabeling( QgsVectorLayer* layer, QStringList& attributeNames )
 {
   if ( !mContext.labelingEngine() )
+  {
+    if ( QgsLabelingEngineV2* engine2 = mContext.labelingEngineV2() )
+    {
+      if ( layer->labelsEnabled() )
+        engine2->addProvider( new QgsVectorLayerLabelProvider( layer ) );
+      if ( layer->diagramsEnabled() )
+        engine2->addProvider( new QgsVectorLayerDiagramProvider( layer ) );
+    }
     return;
+  }
 
   if ( mContext.labelingEngine()->prepareLayer( layer, attributeNames, mContext ) )
   {

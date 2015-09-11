@@ -53,21 +53,25 @@ QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( QgsVectorLayer* layer 
   mSettings = QgsVectorLayerLabelSettings::fromLayer( layer );
   mLayerId = layer->id();
   mFields = layer->fields();
+  mCrs = layer->crs();
   mSource = new QgsVectorLayerFeatureSource( layer );
 
   init();
 }
 
-QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( const QgsPalLayerSettings& settings,
-                                                          const QString& layerId,
-                                                          const QgsFields& fields,
-                                                          QgsAbstractFeatureSource* source,
-                                                          bool ownsSource )
-  : mSettings( settings )
-  , mLayerId( layerId )
-  , mFields( fields )
-  , mSource( source )
-  , mOwnsSource( ownsSource )
+QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider(
+  const QgsPalLayerSettings& settings,
+  const QString& layerId,
+  const QgsFields& fields,
+  const QgsCoordinateReferenceSystem& crs,
+  QgsAbstractFeatureSource* source,
+  bool ownsSource )
+    : mSettings( settings )
+    , mLayerId( layerId )
+    , mFields( fields )
+    , mCrs( crs )
+    , mSource( source )
+    , mOwnsSource( ownsSource )
 {
   init();
 }
@@ -201,8 +205,8 @@ QList<QgsLabelFeature*> QgsVectorLayerLabelProvider::labelFeatures( const QgsMap
 
   lyr.xform = &mapSettings.mapToPixel();
   lyr.ct = 0;
-  if ( mapSettings.hasCrsTransformEnabled() && ctx.coordinateTransform() )
-    lyr.ct = ctx.coordinateTransform()->clone();
+  if ( mapSettings.hasCrsTransformEnabled() )
+    lyr.ct = new QgsCoordinateTransform( mCrs, mapSettings.destinationCrs() );
   lyr.ptZero = lyr.xform->toMapCoordinates( 0, 0 );
   lyr.ptOne = lyr.xform->toMapCoordinates( 1, 0 );
 
@@ -216,9 +220,12 @@ QList<QgsLabelFeature*> QgsVectorLayerLabelProvider::labelFeatures( const QgsMap
 
   lyr.mFeatsSendingToPal = 0;
 
+  QgsRectangle layerExtent = ctx.extent();
+  if ( lyr.ct )
+    layerExtent = lyr.ct->transformBoundingBox( ctx.extent(), QgsCoordinateTransform::ReverseTransform );
 
   QgsFeatureRequest request;
-  request.setFilterRect( ctx.extent() );
+  request.setFilterRect( layerExtent );
   request.setSubsetOfAttributes( attrNames, mFields );
   QgsFeatureIterator fit = mSource->getFeatures( request );
 

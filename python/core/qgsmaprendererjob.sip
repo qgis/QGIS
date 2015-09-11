@@ -122,7 +122,7 @@ class QgsMapRendererJob : QObject
 
     bool needTemporaryImage( QgsMapLayer* ml );
 
-    static void drawLabeling( const QgsMapSettings& settings, QgsRenderContext& renderContext, QgsPalLabeling* labelingEngine, QPainter* painter );
+    // TODO static void drawLabeling( const QgsMapSettings& settings, QgsRenderContext& renderContext, QgsPalLabeling* labelingEngine, QPainter* painter );
     static void drawOldLabeling( const QgsMapSettings& settings, QgsRenderContext& renderContext );
     static void drawNewLabeling( const QgsMapSettings& settings, QgsRenderContext& renderContext, QgsPalLabeling* labelingEngine );
 

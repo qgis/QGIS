@@ -210,7 +210,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( QgsAbstractLabelProvider::Flags )
 class CORE_EXPORT QgsLabelingEngineV2
 {
   public:
-    QgsLabelingEngineV2( const QgsMapSettings& mapSettings, const QList<QgsAbstractLabelProvider*>& providers );
+    QgsLabelingEngineV2( const QgsMapSettings& mapSettings );
     ~QgsLabelingEngineV2();
 
     enum Flag
@@ -223,6 +223,9 @@ class CORE_EXPORT QgsLabelingEngineV2
       DrawShadowRects       = 1 << 6,  //!< Whether to show debugging rectangles for drop shadows
     };
     Q_DECLARE_FLAGS( Flags, Flag )
+
+    //! Add provider of label features. Takes ownership of the provider
+    void addProvider( QgsAbstractLabelProvider* provider );
 
     //! compute the labeling with given map settings and providers
     void run( QgsRenderContext& context );

@@ -37,6 +37,7 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
     QgsVectorLayerLabelProvider( const QgsPalLayerSettings& settings,
                                  const QString& layerId,
                                  const QgsFields& fields,
+                                 const QgsCoordinateReferenceSystem& crs,
                                  QgsAbstractFeatureSource* source,
                                  bool ownsSource );
 
@@ -57,6 +58,7 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
     QgsPalLayerSettings mSettings;
     QString mLayerId;
     QgsFields mFields;
+    QgsCoordinateReferenceSystem mCrs;
     QgsAbstractFeatureSource* mSource;
     bool mOwnsSource;
 };

@@ -33,9 +33,8 @@ static bool _palIsCancelled( void* ctx )
 }
 
 
-QgsLabelingEngineV2::QgsLabelingEngineV2( const QgsMapSettings& mapSettings, const QList<QgsAbstractLabelProvider*>& providers )
+QgsLabelingEngineV2::QgsLabelingEngineV2( const QgsMapSettings& mapSettings )
     : mMapSettings( mapSettings )
-    , mProviders( providers )
     , mFlags( RenderOutlineLabels | UsePartialCandidates )
     , mSearchMethod( QgsPalLabeling::Chain )
     , mCandPoint( 8 )
@@ -43,15 +42,19 @@ QgsLabelingEngineV2::QgsLabelingEngineV2( const QgsMapSettings& mapSettings, con
     , mCandPolygon( 8 )
     , mResults( 0 )
 {
-  foreach ( QgsAbstractLabelProvider* provider, mProviders )
-    provider->setEngine( this );
-
   mResults = new QgsLabelingResults;
 }
 
 QgsLabelingEngineV2::~QgsLabelingEngineV2()
 {
   delete mResults;
+  qDeleteAll( mProviders );
+}
+
+void QgsLabelingEngineV2::addProvider( QgsAbstractLabelProvider* provider )
+{
+  provider->setEngine( this );
+  mProviders << provider;
 }
 
 void QgsLabelingEngineV2::run( QgsRenderContext& context )
