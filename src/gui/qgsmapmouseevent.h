@@ -70,9 +70,10 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
     QgsPoint snapPoint( SnappingMode snappingMode );
 
     /**
-     * returns the first snapped segment. If the cached snapped match is a segment, it will simply return it.
+     * Returns the first snapped segment. If the cached snapped match is a segment, it will simply return it.
      * Otherwise it will try to snap a segment according to the event's snapping mode. In this case the cache
      * will not be overwritten.
+     * @param snappingMode snapping mode
      * @param snapped if given, determines if a segment has been snapped
      * @param allLayers if true, override snapping mode
      */

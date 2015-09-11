@@ -19,10 +19,12 @@
 
 #include "qgssnappingutils.h"
 
+/// @cond
 struct EdgesOnlyFilter : public QgsPointLocator::MatchFilter
 {
   bool acceptMatch( const QgsPointLocator::Match& m ) override { return m.hasEdge(); }
 };
+/// @endcond
 
 QgsMapMouseEvent::QgsMapMouseEvent( QgsMapCanvas* mapCanvas, QMouseEvent* event )
     : QMouseEvent( event->type(), event->pos(), event->button(), event->buttons(), event->modifiers() )
