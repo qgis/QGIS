@@ -60,7 +60,7 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
      * @param buttons   Further buttons that are pressed
      * @param modifiers Keyboard modifiers
      */
-    QgsMapMouseEvent( QgsMapCanvas* mapCanvas, Type type, const QPoint &pos, Qt::MouseButton button = Qt::NoButton,
+    QgsMapMouseEvent( QgsMapCanvas* mapCanvas, QEvent::Type type, const QPoint &pos, Qt::MouseButton button = Qt::NoButton,
                       Qt::MouseButtons buttons = Qt::NoButton, Qt::KeyboardModifiers modifiers = Qt::NoModifier );
 
     /**
@@ -73,7 +73,7 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
      * Returns the first snapped segment. If the cached snapped match is a segment, it will simply return it.
      * Otherwise it will try to snap a segment according to the event's snapping mode. In this case the cache
      * will not be overwritten.
-     * @param snappingMode snapping mode
+     * @param snappingMode Specify if the default project settings or all layers should be used for snapping
      * @param snapped if given, determines if a segment has been snapped
      * @param allLayers if true, override snapping mode
      */
