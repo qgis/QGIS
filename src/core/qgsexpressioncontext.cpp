@@ -112,6 +112,51 @@ QStringList QgsExpressionContextScope::variableNames() const
   return names;
 }
 
+bool QgsExpressionContextScope::variableNameSort( const QString& a, const QString& b )
+{
+  return QString::localeAwareCompare( a, b ) < 0;
+}
+
+// not public API
+/// @cond
+class QgsExpressionContextVariableCompare
+{
+  public:
+    explicit QgsExpressionContextVariableCompare( const QgsExpressionContextScope& scope )
+        : mScope( scope )
+    {  }
+
+    bool operator()( const QString& a, const QString& b ) const
+    {
+      bool aReadOnly = mScope.isReadOnly( a );
+      bool bReadOnly = mScope.isReadOnly( b );
+      if ( aReadOnly != bReadOnly )
+        return aReadOnly;
+      return QString::localeAwareCompare( a, b ) < 0;
+    }
+
+  private:
+    const QgsExpressionContextScope& mScope;
+};
+/// @endcond
+
+QStringList QgsExpressionContextScope::filteredVariableNames() const
+{
+  QStringList allVariables = mVariables.keys();
+  QStringList filtered;
+  Q_FOREACH ( const QString& variable, allVariables )
+  {
+    if ( variable.startsWith( "_" ) )
+      continue;
+
+    filtered << variable;
+  }
+  QgsExpressionContextVariableCompare cmp( *this );
+  qSort( filtered.begin(), filtered.end(), cmp );
+
+  return filtered;
+}
+
 bool QgsExpressionContextScope::isReadOnly( const QString &name ) const
 {
   return hasVariable( name ) ? mVariables.value( name ).readOnly : false;

@@ -366,11 +366,8 @@ void QgsVariableEditorTree::refreshScopeVariables( QgsExpressionContextScope* sc
   bool isCurrent = scopeIndex == mEditableScopeIndex;
   QTreeWidgetItem* scopeItem = mScopeToItem.value( scopeIndex );
 
-  Q_FOREACH ( const QString& name, scope->variableNames() )
+  Q_FOREACH ( const QString& name, scope->filteredVariableNames() )
   {
-    if ( name.startsWith( QChar( '_' ) ) )
-      continue;
-
     QTreeWidgetItem* item;
     if ( mVariableToItem.contains( qMakePair( scopeIndex, name ) ) )
     {

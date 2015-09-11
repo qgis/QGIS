@@ -165,6 +165,10 @@ void TestQgsExpressionContext::contextScope()
   scope.setVariable( "readonly", "newvalue" );
   QVERIFY( scope.isReadOnly( "readonly" ) );
 
+  //test retrieving filtered variable names
+  scope.setVariable( "_hidden_", "hidden" );
+  QCOMPARE( scope.filteredVariableNames(), QStringList() << "readonly" << "notreadonly" << "test" );
+
   //removal
   scope.setVariable( "toremove", 5 );
   QVERIFY( scope.hasVariable( "toremove" ) );

@@ -125,8 +125,16 @@ class QgsExpressionContextScope
 
     /** Returns a list of variable names contained within the scope.
      * @see functionNames()
+     * @see filteredVariableNames()
      */
     QStringList variableNames() const;
+
+    /** Returns a fitlered and sorted list of variable names contained within the scope.
+     * Hidden variable names will be excluded, and the list will be sorted so that
+     * read only variables are listed first.
+     * @see variableNames()
+     */
+    QStringList filteredVariableNames() const;
 
     /** Tests whether the specified variable is read only and should not be editable
      * by users.
