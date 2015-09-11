@@ -1191,6 +1191,7 @@ void QgisApp::readSettings()
     data.title = settings.value( "title" ).toString();
     data.path = settings.value( "path" ).toString();
     data.previewImagePath = settings.value( "previewImage" ).toString();
+    data.crs = settings.value( "crs" ).toString();
     settings.endGroup();
     mRecentProjects.append( data );
   }
@@ -2786,6 +2787,8 @@ void QgisApp::saveRecentProjectPath( QString projectPath, bool savePreviewImage 
   if ( projectData.title.isEmpty() )
     projectData.title = projectData.path;
 
+  projectData.crs = mMapCanvas->mapSettings().destinationCrs().authid();
+
   if ( savePreviewImage )
   {
     // Generate a unique file name
@@ -2820,7 +2823,7 @@ void QgisApp::saveRecentProjectPath( QString projectPath, bool savePreviewImage 
   // Prepend this file to the list
   mRecentProjects.prepend( projectData );
 
-  // Keep the list to 8 items by trimming excess off the bottom
+  // Keep the list to 10 items by trimming excess off the bottom
   // And remove the associated image
   while ( mRecentProjects.count() > 10 )
   {
@@ -2838,6 +2841,7 @@ void QgisApp::saveRecentProjectPath( QString projectPath, bool savePreviewImage 
     settings.setValue( "title", recentProject.title );
     settings.setValue( "path", recentProject.path );
     settings.setValue( "previewImage", recentProject.previewImagePath );
+    settings.setValue( "crs", recentProject.crs );
     settings.endGroup();
   }
 

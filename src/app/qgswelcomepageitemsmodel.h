@@ -38,7 +38,8 @@ class QgsWelcomePageItemsModel : public QAbstractListModel
     enum Role
     {
       TitleRole = Qt::UserRole + 1,
-      PathRole = Qt::UserRole + 2
+      PathRole = Qt::UserRole + 2,
+      CrsRole = Qt::UserRole + 3
     };
 
     struct RecentProjectData
@@ -47,6 +48,7 @@ class QgsWelcomePageItemsModel : public QAbstractListModel
       QString path;
       QString title;
       QString previewImagePath;
+      QString crs;
     };
 
     QgsWelcomePageItemsModel( QObject* parent = 0 );
