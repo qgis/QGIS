@@ -3215,7 +3215,7 @@ void QgsExpression::initVariableHelp()
 
   //layer variables
   gVariableHelpTexts.insert( "layer_name", QCoreApplication::translate( "variable_help", "Name of current layer." ) );
-  gVariableHelpTexts.insert( "layer_id", QCoreApplication::translate( "variable_help", "ID of current project." ) );
+  gVariableHelpTexts.insert( "layer_id", QCoreApplication::translate( "variable_help", "ID of current layer." ) );
 
   //composition variables
   gVariableHelpTexts.insert( "layout_numpages", QCoreApplication::translate( "variable_help", "Number of pages in composition." ) );
