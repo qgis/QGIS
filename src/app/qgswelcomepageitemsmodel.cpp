@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgswelcomepageitemsmodel.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgsmessagelog.h"
 
 #include <QApplication>
@@ -59,7 +60,7 @@ void QgsWelcomePageItemDelegate::paint( QPainter* painter, const QStyleOptionVie
   painter->setBrush( QBrush( color ) );
   painter->drawRoundedRect( option.rect.left() + 5, option.rect.top() + 5, option.rect.width() - 10, option.rect.height() - 10, 8, 8 );
 
-  doc.setHtml( QString( "<span style='font-size:18px;font-weight:bold;'>%1</span><br>%2" ).arg( index.data( QgsWelcomePageItemsModel::TitleRole ).toString() ).arg( index.data( QgsWelcomePageItemsModel::PathRole ).toString() ) );
+  doc.setHtml( QString( "<span style='font-size:18px;font-weight:bold;'>%1</span><br>%2<br>%3" ).arg( index.data( QgsWelcomePageItemsModel::TitleRole ).toString() ).arg( index.data( QgsWelcomePageItemsModel::PathRole ).toString() ).arg( index.data( QgsWelcomePageItemsModel::CrsRole ).toString() ) );
   doc.setTextWidth( 800 );
 
   QPixmap icon = qvariant_cast<QPixmap>( index.data( Qt::DecorationRole ) );
@@ -79,7 +80,7 @@ QSize QgsWelcomePageItemDelegate::sizeHint( const QStyleOptionViewItem & option,
 {
   QTextDocument doc;
 
-  doc.setHtml( QString( "<span style='font-size:18px;font-weight:bold;'>%1</span><br>%2" ).arg( index.data( QgsWelcomePageItemsModel::TitleRole ).toString() ).arg( index.data( QgsWelcomePageItemsModel::PathRole ).toString() ) );
+  doc.setHtml( QString( "<span style='font-size:18px;font-weight:bold;'>%1</span><br>%2<br>%3" ).arg( index.data( QgsWelcomePageItemsModel::TitleRole ).toString() ).arg( index.data( QgsWelcomePageItemsModel::PathRole ).toString() ).arg( index.data( QgsWelcomePageItemsModel::CrsRole ).toString() ) );
   doc.setTextWidth( 800 );
 
   QPixmap icon = qvariant_cast<QPixmap>( index.data( Qt::DecorationRole ) );
@@ -114,10 +115,19 @@ QVariant QgsWelcomePageItemsModel::data( const QModelIndex& index, int role ) co
     case Qt::DisplayRole:
     case TitleRole:
       return mRecentProjects.at( index.row() ).title != mRecentProjects.at( index.row() ).path ? mRecentProjects.at( index.row() ).title : QFileInfo( mRecentProjects.at( index.row() ).path ).baseName();
-      break;
     case PathRole:
       return mRecentProjects.at( index.row() ).path;
-      break;
+    case CrsRole:
+      if ( mRecentProjects.at( index.row() ).crs != "" )
+      {
+        QgsCoordinateReferenceSystem crs;
+        crs.createFromOgcWmsCrs( mRecentProjects.at( index.row() ).crs );
+        return  QString( "%1 (%2)" ).arg( mRecentProjects.at( index.row() ).crs ).arg( crs.description() );
+      }
+      else
+      {
+        return QString();
+      }
     case Qt::DecorationRole:
     {
       QImage thumbnail( mRecentProjects.at( index.row() ).previewImagePath );
