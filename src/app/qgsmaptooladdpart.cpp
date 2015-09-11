@@ -36,6 +36,18 @@ QgsMapToolAddPart::~QgsMapToolAddPart()
 {
 }
 
+void QgsMapToolAddPart::canvasReleaseEvent( QgsMapMouseEvent * e )
+{
+  if ( checkSelection() )
+  {
+    QgsMapToolAdvancedDigitizing::canvasReleaseEvent( e );
+  }
+  else
+  {
+    cadDockWidget()->clear();
+  }
+}
+
 void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
 {
   //check if we operate on a vector layer
@@ -52,21 +64,8 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
     return;
   }
 
-  //inform user at the begin of the digitising action that the island tool only works if exactly one feature is selected
-  int nSelectedFeatures = vlayer->selectedFeatureCount();
-  QString selectionErrorMsg;
-  if ( nSelectedFeatures < 1 )
+  if ( !checkSelection() )
   {
-    selectionErrorMsg = tr( "No feature selected. Please select a feature with the selection tool or in the attribute table" );
-  }
-  else if ( nSelectedFeatures > 1 )
-  {
-    selectionErrorMsg = tr( "Several features are selected. Please select only one feature to which an part should be added." );
-  }
-
-  if ( !selectionErrorMsg.isEmpty() )
-  {
-    emit messageEmitted( tr( "Could not add part. %1" ).arg( selectionErrorMsg ), QgsMessageBar::WARNING );
     stopCapturing();
     return;
   }
@@ -224,4 +223,40 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
 
   emit messageEmitted( errorMessage, QgsMessageBar::WARNING );
   vlayer->destroyEditCommand();
+}
+
+void QgsMapToolAddPart::activate()
+{
+  checkSelection();
+  QgsMapToolCapture::activate();
+}
+
+bool QgsMapToolAddPart::checkSelection()
+{
+  //check if we operate on a vector layer
+  QgsVectorLayer *vlayer = currentVectorLayer();
+  if ( !vlayer )
+  {
+    notifyNotVectorLayer();
+    return false;
+  }
+
+  //inform user at the begin of the digitising action that the island tool only works if exactly one feature is selected
+  int nSelectedFeatures = vlayer->selectedFeatureCount();
+  QString selectionErrorMsg;
+  if ( nSelectedFeatures < 1 )
+  {
+    selectionErrorMsg = tr( "No feature selected. Please select a feature with the selection tool or in the attribute table" );
+  }
+  else if ( nSelectedFeatures > 1 )
+  {
+    selectionErrorMsg = tr( "Several features are selected. Please select only one feature to which an part should be added." );
+  }
+
+  if ( !selectionErrorMsg.isEmpty() )
+  {
+    emit messageEmitted( tr( "Could not add part. %1" ).arg( selectionErrorMsg ), QgsMessageBar::WARNING );
+  }
+
+  return selectionErrorMsg.isEmpty();
 }
