@@ -18,6 +18,7 @@
 
 %Include qgisinterface.sip
 %Include qgsannotationitem.sip
+%Include qgsadvanceddigitizingdockwidget.sip
 %Include qgsattributeeditor.sip
 %Include qgsattributeeditorcontext.sip
 %Include qgsattributedialog.sip
@@ -63,6 +64,7 @@
 %Include qgsfilterlineedit.sip
 %Include qgsformannotationitem.sip
 %Include qgsgenericprojectionselector.sip
+%Include qgsgeometryrubberband.sip
 %Include qgshighlight.sip
 %Include qgshistogramwidget.sip
 %Include qgshtmlannotationitem.sip
@@ -83,6 +85,9 @@
 %Include qgsmapoverviewcanvas.sip
 %Include qgsmaptip.sip
 %Include qgsmaptool.sip
+%Include qgsmaptooladvanceddigitizing.sip
+%Include qgsmaptoolcapture.sip
+%Include qgsmaptooledit.sip
 %Include qgsmaptoolemitpoint.sip
 %Include qgsmaptoolidentify.sip
 %Include qgsmaptoolidentifyfeature.sip

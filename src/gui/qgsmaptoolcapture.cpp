@@ -77,7 +77,7 @@ void QgsMapToolCapture::deactivate()
   delete mSnappingMarker;
   mSnappingMarker = 0;
 
-  QgsMapToolEdit::deactivate();
+  QgsMapToolAdvancedDigitizing::deactivate();
 }
 
 void QgsMapToolCapture::validationFinished()
