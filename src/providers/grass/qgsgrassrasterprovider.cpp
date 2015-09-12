@@ -55,7 +55,11 @@ QgsGrassRasterProvider::QgsGrassRasterProvider( QString const & uri )
 {
   QgsDebugMsg( "QgsGrassRasterProvider: constructing with uri '" + uri + "'." );
 
-  mValid = false;
+  if ( !QgsGrass::init() )
+  {
+    return;
+  }
+
   // Parse URI, it is the same like using GDAL, i.e. path to raster cellhd, i.e.
   // /path/to/gisdbase/location/mapset/cellhd/map
   QFileInfo fileInfo( uri );

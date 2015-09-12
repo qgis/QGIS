@@ -91,12 +91,14 @@ QgsGrassProvider::QgsGrassProvider( QString uri )
 {
   QgsDebugMsg( QString( "QgsGrassProvider URI: %1" ).arg( uri ) );
 
-  QgsGrass::init();
+  mValid = false;
+  if ( !QgsGrass::init() )
+  {
+    return;
+  }
 
   QTime time;
   time.start();
-
-  mValid = false;
 
   // Parse URI
   QDir dir( uri );   // it is not a directory in fact

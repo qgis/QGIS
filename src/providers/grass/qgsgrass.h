@@ -339,10 +339,12 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     static void extendRegion( struct Cell_head *source,
                               struct Cell_head *target );
 
-    static void init( void );
+    /** Initialize GRASS library. This has to be called before any other function is used.
+     * @return true if successfully initialized */
+    static bool init( void );
 
     //! test if the directory is location
-    static bool isLocation( const QString& path );;
+    static bool isLocation( const QString& path );
 
     // ! test if the directory is mapset
     static bool isMapset( const QString& path );

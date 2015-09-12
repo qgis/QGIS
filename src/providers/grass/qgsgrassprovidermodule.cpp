@@ -939,6 +939,10 @@ QGISEXTERN int dataCapabilities()
 
 QGISEXTERN QgsDataItem * dataItem( QString theDirPath, QgsDataItem* parentItem )
 {
+  if ( !QgsGrass::init() )
+  {
+    return 0;
+  }
   if ( QgsGrass::isLocation( theDirPath ) )
   {
     QString path;
@@ -993,6 +997,9 @@ QGISEXTERN bool isProvider()
   // Init GRASS in the first function called by provider registry so that it is called
   // on main thread, not sure but suspicious that init in thread is causing problems,
   // at least on Windows, not that dataItem() is called in thread
-  QgsGrass::init();
+  if ( !QgsGrass::init() )
+  {
+    QgsDebugMsg( "init failed" );
+  }
   return true;
 }

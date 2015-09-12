@@ -133,12 +133,17 @@ int QgsGrassPlugin::type()
  */
 void QgsGrassPlugin::initGui()
 {
+  if ( !QgsGrass::init() )
+  {
+    // TODO: add a widget with warning
+    return;
+  }
+
   mToolBarPointer = 0;
   mTools = 0;
   mNewMapset = 0;
 
   QSettings settings;
-  QgsGrass::init();
   mCanvas = qGisInterface->mapCanvas();
   QWidget* qgis = qGisInterface->mainWindow();
 

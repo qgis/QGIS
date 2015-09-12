@@ -290,17 +290,29 @@ QString QgsGrass::shortPath( const QString &path )
 }
 #endif
 
-void QgsGrass::init( void )
+bool QgsGrass::init( void )
 {
   // Warning!!!
   // G_set_error_routine() once called from plugin
   // is not valid in provider -> call it always
 
+  // nonInitializable is set to tru if G_no_gisinit() fails to avoid other attempts
+  static bool nonInitializable = false;
+
+  if ( nonInitializable )
+  {
+    return false;
+  }
+
+  if ( initialized )
+  {
+    return true;
+  }
+
   // Set error function
   G_set_error_routine( &error_routine );
 
-  if ( initialized )
-    return;
+  lock();
 
   QgsDebugMsg( "do init" );
   QSettings settings;
@@ -327,7 +339,18 @@ void QgsGrass::init( void )
   G_set_gisrc_mode( G_GISRC_MODE_MEMORY );
 
   // Init GRASS libraries (required)
-  G_no_gisinit();  // Doesn't check write permissions for mapset compare to G_gisinit("libgrass++");
+  // G_no_gisinit() may end with fatal error if QGIS is run with a version of GRASS different from that used for compilation
+  G_TRY
+  {
+    G_no_gisinit();  // Doesn't check write permissions for mapset compare to G_gisinit("libgrass++");
+  }
+  G_CATCH( QgsGrass::Exception &e )
+  {
+    warning( tr( "Problem in GRASS initialization, GRASS provider and plugin will not work" ) + " : " + e.what() );
+    nonInitializable = true;
+    unlock();
+    return false;
+  }
 
   // I think that mask should not be used in QGIS as it can only confuses people,
   // anyway, I don't think anybody is using MASK
@@ -518,6 +541,8 @@ void QgsGrass::init( void )
   }
 
   initialized = 1;
+  unlock();
+  return true;
 }
 
 /*
@@ -560,25 +585,21 @@ QgsGrass *QgsGrass::instance()
 
 bool QgsGrass::activeMode()
 {
-  init();
   return active;
 }
 
 QString QgsGrass::getDefaultGisdbase()
 {
-  init();
   return defaultGisdbase;
 }
 
 QString QgsGrass::getDefaultLocation()
 {
-  init();
   return defaultLocation;
 }
 
 QString QgsGrass::getDefaultLocationPath()
 {
-  init();
   if ( !active )
   {
     return QString();
@@ -588,7 +609,6 @@ QString QgsGrass::getDefaultLocationPath()
 
 QString QgsGrass::getDefaultMapset()
 {
-  init();
   return defaultMapset;
 }
 
@@ -2260,7 +2280,7 @@ bool QgsGrass::isExternal( const QgsGrassObject & object )
   }
   G_CATCH( QgsGrass::Exception &e )
   {
-    QgsDebugMsg( "error getting external link: " + QString(e.what()) );
+    QgsDebugMsg( "error getting external link: " + QString( e.what() ) );
   }
   unlock();
   return isExternal;
