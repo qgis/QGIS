@@ -28,12 +28,12 @@ __revision__ = '$Format:%H$'
 from PyQt4.QtCore import QVariant
 from qgis.core import QGis, QgsField, QgsPoint, QgsGeometry, QgsFeature
 from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterBoolean
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
-from math import *
-
+from math import degrees, atan2
 
 
 class OrientedMinimumBoundingBox(GeoAlgorithm):
@@ -44,13 +44,13 @@ class OrientedMinimumBoundingBox(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def defineCharacteristics(self):
-        self.name = 'Oriented Minimum Bounding Box'
-        self.group = 'Vector general tools'
+        self.name, self.i18n_name = self.trAlgorithm('Oriented minimum bounding box')
+        self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterBoolean(self.BY_FEATURE,
-            self.tr('Calculate OMBB for each feature separately'), True))
+                                           self.tr('Calculate OMBB for each feature separately'), True))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Oriented_MBBox')))
 
@@ -58,12 +58,11 @@ class OrientedMinimumBoundingBox(GeoAlgorithm):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT_LAYER))
         byFeature = self.getParameterValue(self.BY_FEATURE)
-        
-        if byFeature and layer.geometryType() == 0:
-            progress.setInfo(self.tr("Can't calculate an OMBB for each point, it's a point."))
-            byFeature = False
+
+        if byFeature and layer.geometryType() == QGis.Point and layer.featureCount() <= 2:
+            raise GeoAlgorithmExecutionException(self.tr("Can't calculate an OMBB for each point, it's a point. The number of points must be greater than 2"))
             
-        fields = [ 
+        fields = [
             QgsField('AREA', QVariant.Double),
             QgsField('PERIMETER', QVariant.Double),
             QgsField('ANGLE', QVariant.Double),
@@ -72,7 +71,7 @@ class OrientedMinimumBoundingBox(GeoAlgorithm):
         ]
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
-                QGis.WKBPolygon, layer.crs())
+                                                                     QGis.WKBPolygon, layer.crs())
 
         if byFeature:
             self.featureOmbb(layer, writer, progress)
@@ -105,11 +104,11 @@ class OrientedMinimumBoundingBox(GeoAlgorithm):
             outFeat = QgsFeature()
 
             outFeat.setGeometry(geometry)
-            outFeat.setAttributes([ area,
-                                    perim,
-                                    angle,
-                                    width,
-                                    height])
+            outFeat.setAttributes([area,
+                                   perim,
+                                   angle,
+                                   width,
+                                   height])
             writer.addFeature(outFeat)
 
     def featureOmbb(self, layer, writer, progress):
@@ -120,20 +119,20 @@ class OrientedMinimumBoundingBox(GeoAlgorithm):
         inFeat = QgsFeature()
         for inFeat in features:
             geometry, area, perim, angle, width, height = self.OMBBox(
-                    inFeat.geometry())
+                inFeat.geometry())
             if geometry:
                 outFeat.setGeometry(geometry)
-                outFeat.setAttributes([ area,
-                                        perim,
-                                        angle,
-                                        width,
-                                        height])
+                outFeat.setAttributes([area,
+                                       perim,
+                                       angle,
+                                       width,
+                                       height])
                 writer.addFeature(outFeat)
             else:
                 progress.setInfo(self.tr("Can't calculate an OMBB for features n°") + str(inFeat.id()) + ".")
             current += 1
             progress.setPercentage(int(current * total))
-            
+
     def GetAngleOfLineBetweenTwoPoints(self, p1, p2, angle_unit="degrees"):
         xDiff = p2.x() - p1.x()
         yDiff = p2.y() - p1.y()
@@ -141,12 +140,12 @@ class OrientedMinimumBoundingBox(GeoAlgorithm):
             return atan2(yDiff, xDiff)
         else:
             return degrees(atan2(yDiff, xDiff))
-        
+
     def OMBBox(self, geom):
 
         g = geom.convexHull()
-        
-        if g.type() != 2:
+
+        if g.type() != QGis.Polygon:
             return None, None, None, None, None, None
         r = g.asPolygon()[0]
 
@@ -169,10 +168,10 @@ class OrientedMinimumBoundingBox(GeoAlgorithm):
             bb = QgsGeometry.fromWkt(bbox.asWktPolygon())
             bb.rotate(-angle, p0)
 
-            a = bb.area()
-            if a <= OMBBox_area:
+            areabb = bb.area()
+            if areabb <= OMBBox_area:
                 OMBBox = QgsGeometry(bb)
-                OMBBox_area = a
+                OMBBox_area = areabb
                 OMBBox_angle = angle
                 OMBBox_width = bbox.width()
                 OMBBox_heigth = bbox.height()
