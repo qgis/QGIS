@@ -327,11 +327,11 @@ class Processing:
 
         msg = alg._checkParameterValuesBeforeExecuting()
         if msg:
-            QgsMessageLog(Processing.tr('Unable to execute algorithm\n{0}').format(msg), Processing.tr("Processing"))
+            QgsMessageLog.logMessage(Processing.tr('Unable to execute algorithm\n{0}').format(msg), Processing.tr("Processing"))
             return
 
         if not alg.checkInputCRS():
-            QgsMessageLog(Processing.tr('Warning: Not all input layers use the same CRS.\nThis can cause unexpected results.'), Processing.tr("Processing"))
+            QgsMessageLog.logMessage(Processing.tr('Warning: Not all input layers use the same CRS.\nThis can cause unexpected results.'), Processing.tr("Processing"))
 
         if iface is not None:
             # Don't set the wait cursor twice, because then when you
@@ -350,7 +350,7 @@ class Processing:
             if onFinish is not None:
                 onFinish(alg, progress)
         else:
-            QgsMessageLog(Processing.tr("There were errors executing the algorithm.\nCheck the QGIS log to get more information"), Processing.tr("Processing"))
+            QgsMessageLog.logMessage(Processing.tr("There were errors executing the algorithm."), Processing.tr("Processing"))
 
         if iface is not None:
             QApplication.restoreOverrideCursor()
