@@ -71,6 +71,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     @param[out] newGeometries list of new geometries that have been created with the split
     @param topological true if topological editing is enabled
     @param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
+    @param[out] errorMsg error messages emitted, if any
     @return 0 in case of success, 1 if geometry has not been split, error else*/
     int splitGeometry( const QgsLineStringV2& splitLine,
                        QList<QgsAbstractGeometryV2*>& newGeometries,
@@ -152,14 +153,14 @@ class GEOSException
   public:
     GEOSException( QString theMsg )
     {
-      if ( theMsg == "Unknown exception thrown"  && lastMsg.isNull() )
+      if ( theMsg == "Unknown exception thrown"  && lastMsg().isNull() )
       {
         msg = theMsg;
       }
       else
       {
         msg = theMsg;
-        lastMsg = msg;
+        lastMsg() = msg;
       }
     }
 
@@ -171,8 +172,8 @@ class GEOSException
 
     ~GEOSException()
     {
-      if ( lastMsg == msg )
-        lastMsg = QString::null;
+      if ( lastMsg() == msg )
+        lastMsg() = QString::null;
     }
 
     QString what()
@@ -182,7 +183,7 @@ class GEOSException
 
   private:
     QString msg;
-    static QString lastMsg;
+    static QString& lastMsg() { static QString _lastMsg; return _lastMsg; }
 };
 
 /// @endcond

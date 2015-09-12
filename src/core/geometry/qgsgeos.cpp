@@ -49,8 +49,6 @@ email                : marco.hugentobler at sourcepole dot com
     return r; \
   }
 
-QString GEOSException::lastMsg;
-
 static void throwGEOSException( const char *fmt, ... )
 {
   va_list ap;

@@ -63,9 +63,10 @@ class CORE_EXPORT QgsGeometryUtils
      * @param q1 Second segment start point
      * @param q2 Second segment end point
      * @param inter Output parameter, the intersection point
+     * @param tolerance The tolerance to use
      * @return  Whether the segments intersect
      */
-    static bool segmentIntersection( const QgsPointV2 &p1, const QgsPointV2 &p2, const QgsPointV2 &q1, const QgsPointV2 &q2, QgsPointV2& inter , double tolerance );
+    static bool segmentIntersection( const QgsPointV2 &p1, const QgsPointV2 &p2, const QgsPointV2 &q1, const QgsPointV2 &q2, QgsPointV2& inter, double tolerance );
 
     /**
      * @brief Project the point on a segment
@@ -91,8 +92,12 @@ class CORE_EXPORT QgsGeometryUtils
 
     /**
      * @brief Find self intersections in a polyline
-     * @param line The line
+     * @param geom The geometry to check
+     * @param part The part of the geometry to check
+     * @param ring The ring of the geometry part to check
+     * @param tolerance The tolerance to use
      * @return The list of self intersections
+     * @note added in QGIS 2.12
      */
     static QList<SelfIntersection> getSelfIntersections( const QgsAbstractGeometryV2* geom, int part, int ring, double tolerance );
 

@@ -44,8 +44,7 @@ extern "C"
   {
     try
     {
-      std::auto_ptr<GEOSGeometry> ptr = reducer->reduce( *geometry );
-      return ptr.release();
+      return reducer->reduce( *geometry ).release();
     }
     catch ( const geos::util::GEOSException& )
     {
