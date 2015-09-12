@@ -71,11 +71,12 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 
 #ifdef Q_OS_WIN
     virtual bool eventFilter( QObject *obj, QEvent *e ) override;
+#endif
+
     /**
      * Clean a temporary rubberband
      */
     void deleteTempRubberBand();
-#endif
 
   private slots:
     void validationFinished();
