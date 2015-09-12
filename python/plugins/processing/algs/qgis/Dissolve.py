@@ -59,7 +59,7 @@ class Dissolve(GeoAlgorithm):
             useField = True
         except:
             useField = False
-            
+
         countField = QgsField("count", QVariant.Int, '', 10, 0)
         fields.append(countField)
         writer = self.getOutputFromName(
@@ -113,7 +113,7 @@ class Dissolve(GeoAlgorithm):
 
             for key, value in myDict.items():
                 nElement += 1
-                progress.setPercentage(int(nElement * 100/ nFeat))
+                progress.setPercentage(int(nElement * 100 / nFeat))
                 for i in range(len(value)):
                     if i == 0:
                         tempItem = value[i]
@@ -143,6 +143,6 @@ class Dissolve(GeoAlgorithm):
                                           self.tr('Input layer'),
                                           [ParameterVector.VECTOR_TYPE_POLYGON, ParameterVector.VECTOR_TYPE_LINE]))
         self.addParameter(ParameterTableField(Dissolve.FIELD,
-                                              self.tr('Dissolve field (if not set all features are dissolved)'), 
+                                              self.tr('Dissolve field (if not set all features are dissolved)'),
                                               Dissolve.INPUT, optional=True))
         self.addOutput(OutputVector(Dissolve.OUTPUT, self.tr('Dissolved')))

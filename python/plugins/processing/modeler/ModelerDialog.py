@@ -66,7 +66,7 @@ class ModelerDialog(BASE, WIDGET):
         self.setWindowFlags(Qt.WindowMinimizeButtonHint |
                             Qt.WindowMaximizeButtonHint |
                             Qt.WindowCloseButtonHint)
-        
+
         settings = QSettings()
         self.splitter.restoreState(settings.value("/Processing/splitterModeler", QByteArray()))
         self.restoreGeometry(settings.value("/Processing/geometryModeler", QByteArray()))
@@ -210,7 +210,7 @@ class ModelerDialog(BASE, WIDGET):
         settings = QSettings()
         settings.setValue("/Processing/splitterModeler", self.splitter.saveState())
         settings.setValue("/Processing/geometryModeler", self.saveGeometry())
-        
+
         if self.hasChanged:
             ret = QMessageBox.question(
                 self, self.tr('Unsaved changes'),

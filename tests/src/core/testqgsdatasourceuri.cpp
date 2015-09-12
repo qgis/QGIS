@@ -15,7 +15,6 @@
 #include <QtTest/QtTest>
 #include <QObject>
 #include <QString>
-#include <QObject>
 //header for class being tested
 #include <qgsdatasourceuri.h>
 
@@ -134,4 +133,3 @@ void TestQgsDataSourceUri::checkparser()
 
 QTEST_MAIN( TestQgsDataSourceUri )
 #include "testqgsdatasourceuri.moc"
-
