@@ -155,7 +155,7 @@ bool QgsMssqlNewConnection::testConnection( QString testDatabase )
   if ( txtService->text().isEmpty() && txtHost->text().isEmpty() )
   {
     bar->clearWidgets();
-    bar->pushWarning( tr( "Connection Failed" ), tr( "Host name hasn't been specified' " ) );
+    bar->pushWarning( tr( "Connection Failed" ), tr( "Host name hasn't been specified" ) );
     return false;
   }
 
