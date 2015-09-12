@@ -70,12 +70,12 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
     /**
      * Registers this maptool with the cad dock widget
      */
-    void activate();
+    void activate() override;
 
     /**
      * Unregisters this maptool from the cad dock widget
      */
-    void deactivate();
+    void deactivate() override;
 
     QgsAdvancedDigitizingDockWidget* cadDockWidget() const { return mCadDockWidget; }
 

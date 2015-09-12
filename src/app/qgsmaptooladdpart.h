@@ -26,7 +26,7 @@ class APP_EXPORT QgsMapToolAddPart : public QgsMapToolCapture
     void canvasReleaseEvent( QgsMapMouseEvent * e ) override;
     void cadCanvasReleaseEvent( QgsMapMouseEvent * e ) override;
 
-    void activate();
+    void activate() override;
 
   private:
     /** Check if there is any feature selected */
