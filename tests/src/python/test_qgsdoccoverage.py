@@ -32,7 +32,7 @@ from PyQt4.QtCore import qDebug
 # DON'T RAISE THIS THRESHOLD!!!
 # (changes which lower this threshold are welcomed though!)
 
-ACCEPTABLE_MISSING_DOCS = 4064
+ACCEPTABLE_MISSING_DOCS = 4038
 
 
 def elemIsDocumentableClass(elem):
