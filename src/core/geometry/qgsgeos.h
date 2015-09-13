@@ -144,6 +144,9 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     static int lineContainedInLine( const GEOSGeometry* line1, const GEOSGeometry* line2 );
     static int pointContainedInLine( const GEOSGeometry* point, const GEOSGeometry* line );
     static int geomDigits( const GEOSGeometry* geom );
+
+  private:
+    inline GEOSGeometry *getReducedGeometry( GEOSGeometry* geom ) const;
 };
 
 /// @cond
