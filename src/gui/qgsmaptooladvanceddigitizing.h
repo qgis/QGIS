@@ -123,7 +123,7 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
   private slots:
     /**
      * Is to be called by the cad system whenever a point changes outside of a
-     * mouse event. E.g. when additional constraints are triggered.
+     * mouse event. E.g. when additional constraints are toggled.
      * The specified point will be used to generate a fake mouse event which will
      * be sent as move event to cadCanvasMoveEvent.
      *
@@ -133,6 +133,8 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
 
   private:
     QgsAdvancedDigitizingDockWidget* mCadDockWidget;
+
+    void snap( QgsMapMouseEvent* e );
 };
 
 #endif // QGSMAPTOOLADVANCEDDIGITIZE_H

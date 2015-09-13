@@ -34,18 +34,21 @@ QgsMapToolAdvancedDigitizing::~QgsMapToolAdvancedDigitizing()
 
 void QgsMapToolAdvancedDigitizing::canvasPressEvent( QgsMapMouseEvent* e )
 {
+  snap( e );
   if ( !mCadDockWidget->canvasPressEvent( e ) )
     cadCanvasPressEvent( e );
 }
 
 void QgsMapToolAdvancedDigitizing::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
+  snap( e );
   if ( !mCadDockWidget->canvasReleaseEvent( e, mCaptureMode == CaptureLine || mCaptureMode == CapturePolygon ) )
     cadCanvasReleaseEvent( e );
 }
 
 void QgsMapToolAdvancedDigitizing::canvasMoveEvent( QgsMapMouseEvent* e )
 {
+  snap( e );
   if ( !mCadDockWidget->canvasMoveEvent( e ) )
     cadCanvasMoveEvent( e );
 }
@@ -69,4 +72,10 @@ void QgsMapToolAdvancedDigitizing::cadPointChanged( const QgsPoint& point )
   QgsMapMouseEvent fakeEvent( mCanvas, QMouseEvent::Move, QPoint( 0, 0 ) );
   fakeEvent.setMapPoint( point );
   canvasMoveEvent( &fakeEvent );
+}
+
+void QgsMapToolAdvancedDigitizing::snap( QgsMapMouseEvent* e )
+{
+  if ( !mCadDockWidget->cadEnabled() )
+    e->snapPoint( QgsMapMouseEvent::SnapProjectConfig );
 }
