@@ -1041,6 +1041,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! map layers changed
     void showMapCanvas();
 
+    //! change log message icon in statusbar
+    void toggleLogMessageIcon( bool hasLogMessage );
+
     /** Called when some layer's editing mode was toggled on/off */
     void layerEditStateChanged();
 

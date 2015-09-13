@@ -48,6 +48,8 @@ class CORE_EXPORT QgsMessageLog : public QObject
   signals:
     void messageReceived( QString message, QString tag, QgsMessageLog::MessageLevel level );
 
+    void messageReceived( bool received );
+
   private:
     QgsMessageLog();
 

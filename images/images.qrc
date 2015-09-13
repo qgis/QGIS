@@ -394,6 +394,8 @@
         <file>themes/default/mIconZip.png</file>
         <file>themes/default/mIconZoom.svg</file>
         <file>themes/default/mMapserverExport.png</file>
+        <file>themes/default/mMessageLog.svg</file>
+        <file>themes/default/mMessageLogRead.svg</file>
         <file>themes/default/north_arrow.png</file>
         <file>themes/default/pie-chart.png</file>
         <file>themes/default/plugin.png</file>
@@ -504,7 +506,6 @@
         <file>themes/default/cadtools/parallel.png</file>
         <file>themes/default/cadtools/perpendicular.png</file>
         <file>themes/default/mIconSuccess.png</file>
-        <file>themes/default/bubble.svg</file>
         <file>themes/default/mIconClear.png</file>
         <file>flags/zh.png</file>
         <file>themes/default/mIconPaintEffects.svg</file>
