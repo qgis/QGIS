@@ -127,7 +127,7 @@ void QgsComposerMapOverview::draw( QPainter *painter )
   if ( !mInverted )
   {
     //Render the intersecting map extent
-    mFrameSymbol->renderPolygon( intersectPolygon, &rings, 0, context );;
+    mFrameSymbol->renderPolygon( intersectPolygon, &rings, 0, context );
   }
   else
   {

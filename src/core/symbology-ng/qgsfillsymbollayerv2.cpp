@@ -2657,7 +2657,7 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolV2RenderContext
     tempPt = QgsSymbolLayerV2Utils::pointOnLineWithDistance( p1, p3, outputPixelOffset );
     p1 = QPointF( tempPt.x(), tempPt.y() );
     tempPt = QgsSymbolLayerV2Utils::pointOnLineWithDistance( p2, p4, outputPixelOffset );
-    p2 = QPointF( tempPt.x(), tempPt.y() );;
+    p2 = QPointF( tempPt.x(), tempPt.y() );
   }
 
   QPainter p( &patternImage );

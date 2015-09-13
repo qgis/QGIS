@@ -174,7 +174,7 @@ void TestQgsRasterFill::alpha()
 void TestQgsRasterFill::offset()
 {
   mReport += "<h2>Raster fill offset</h2>\n";
-  mRasterFill->setOffset( QPointF( 5, 10 ) );;
+  mRasterFill->setOffset( QPointF( 5, 10 ) );
   bool result = imageCheck( "rasterfill_offset" );
   QVERIFY( result );
 }

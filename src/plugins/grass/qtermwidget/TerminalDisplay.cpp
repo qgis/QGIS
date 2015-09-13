@@ -904,25 +904,25 @@ QRegion TerminalDisplay::hotSpotRegion() const
             r.setTop(hotSpot->startLine());
             r.setRight(hotSpot->endColumn());
             r.setBottom(hotSpot->endLine());
-            region |= imageToWidget(r);;
+            region |= imageToWidget(r);
         } else {
             r.setLeft(hotSpot->startColumn());
             r.setTop(hotSpot->startLine());
             r.setRight(_columns);
             r.setBottom(hotSpot->startLine());
-            region |= imageToWidget(r);;
+            region |= imageToWidget(r);
             for ( int line = hotSpot->startLine()+1 ; line < hotSpot->endLine() ; line++ ) {
                 r.setLeft(0);
                 r.setTop(line);
                 r.setRight(_columns);
                 r.setBottom(line);
-                region |= imageToWidget(r);;
+                region |= imageToWidget(r);
             }
             r.setLeft(0);
             r.setTop(hotSpot->endLine());
             r.setRight(hotSpot->endColumn());
             r.setBottom(hotSpot->endLine());
-            region |= imageToWidget(r);;
+            region |= imageToWidget(r);
         }
     }
     return region;

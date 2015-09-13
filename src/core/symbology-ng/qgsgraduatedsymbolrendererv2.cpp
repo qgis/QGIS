@@ -707,7 +707,7 @@ static QList<double> _calcJenksBreaks( QList<double> values, int classes,
     QgsDebugMsg( QString( "values:%1" ).arg( values.size() ) );
 
     sample[ 0 ] = minimum;
-    sample[ 1 ] = maximum;;
+    sample[ 1 ] = maximum;
     for ( int i = 2; i < sample.size(); i++ )
     {
       // pick a random integer from 0 to n

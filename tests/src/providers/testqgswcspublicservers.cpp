@@ -671,7 +671,7 @@ void TestQgsWcsPublicServers::report()
               int offender = NoOffender;
               if ( provider == "wcs" )
               {
-                myValues << issuesString;;
+                myValues << issuesString;
 
                 offender = issueOffender( myServerLog.value( "server" ), myLog.value( "identifier" ), myLog.value( "version" ) );
                 myVersionErrCount++;

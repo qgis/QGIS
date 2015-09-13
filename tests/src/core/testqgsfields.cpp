@@ -425,7 +425,7 @@ void TestQgsFields::dataStream()
   originalFields.append( original2 );
 
   QByteArray ba;
-  QDataStream ds( &ba, QIODevice::ReadWrite );;
+  QDataStream ds( &ba, QIODevice::ReadWrite );
   ds << originalFields;
 
   QgsFields resultFields;

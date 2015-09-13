@@ -46,7 +46,7 @@ QgsRelation QgsRelation::createFromXML( const QDomNode &node )
   const QMap<QString, QgsMapLayer*>& mapLayers = QgsMapLayerRegistry::instance()->mapLayers();
 
   QgsMapLayer* referencingLayer = mapLayers[referencingLayerId];
-  QgsMapLayer* referencedLayer = mapLayers[referencedLayerId];;
+  QgsMapLayer* referencedLayer = mapLayers[referencedLayerId];
 
   if ( NULL == referencingLayer )
   {

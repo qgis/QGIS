@@ -296,7 +296,7 @@ void TestQgsField::dataStream()
   original.setComment( "comment1" );
 
   QByteArray ba;
-  QDataStream ds( &ba, QIODevice::ReadWrite );;
+  QDataStream ds( &ba, QIODevice::ReadWrite );
   ds << original;
 
   QgsField result;
