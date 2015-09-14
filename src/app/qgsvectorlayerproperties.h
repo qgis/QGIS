@@ -140,6 +140,10 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     void aboutToShowStyleMenu();
 
+    /** Updates the variable editor to reflect layer changes
+     */
+    void updateVariableEditor();
+
   protected:
 
     void saveStyleAs( StyleType styleType );
