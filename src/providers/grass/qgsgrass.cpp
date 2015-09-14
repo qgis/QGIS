@@ -413,7 +413,9 @@ bool QgsGrass::init( void )
   }
 
   bool userGisbase = false;
-  bool valid = false;
+  bool valid = isValidGrassBaseDir( gisBase );
+  // TODO add GISBASE selection to options dialog
+#if 0
   while ( !( valid = isValidGrassBaseDir( gisBase ) ) )
   {
 
@@ -446,103 +448,111 @@ bool QgsGrass::init( void )
     gisBase = shortPath( gisBase );
 #endif
   }
+#endif
 
   if ( !valid )
   {
-    // warn user
-    QMessageBox::information( 0, QObject::tr( "GRASS plugin" ),
-                              QObject::tr( "GRASS data won't be available if GISBASE is not specified." ) );
-  }
-
-  if ( userGisbase )
-  {
-    settings.setValue( "/GRASS/gisbase", gisBase );
-  }
-
-  QgsDebugMsg( QString( "Valid GRASS gisBase is: %1" ).arg( gisBase ) );
-  // GISBASE environment variable must be set because is required by directly called GRASS functions
-  putEnv( "GISBASE", gisBase );
-  mGisbase = gisBase;
-
-  // Create list of paths to GRASS modules
-  // PATH environment variable is not used to search for modules (since 2.12) because it could
-  // create a lot of confusion especially if both GRASS 6 and 7 are installed and path to one version
-  // $GISBASE/bin somehow gets to PATH and another version plugin is loaded to QGIS, because if a module
-  // is missing in one version, it could be found in another $GISBASE/bin and misleadin error could be reported
-  mGrassModulesPaths.clear();
-  mGrassModulesPaths << gisbase() + "/bin";
-  mGrassModulesPaths << gisbase() + "/scripts";
-  mGrassModulesPaths << QgsApplication::pkgDataPath() + "/grass/scripts";
-
-  // On windows the GRASS libraries are in
-  // QgsApplication::prefixPath(), we have to add them
-  // to PATH to enable running of GRASS modules
-  // and database drivers
-#ifdef Q_OS_WIN
-  // It seems that QgsApplication::prefixPath() is not initialized at this point
-  // TODO: verify if this is required and why (PATH to required libs should be set in qgis-grass.bat)
-  //mGrassModulesPaths << shortPath( QCoreApplication::applicationDirPath() ) );
-
-  // Add path to MSYS bin
-  // Warning: MSYS sh.exe will translate this path to '/bin'
-  QString msysBin = QCoreApplication::applicationDirPath() + "/msys/bin/";
-  if ( QFileInfo( msysBin ).isDir() )
-  {
-    mGrassModulesPaths << shortPath( QCoreApplication::applicationDirPath() + "/msys/bin/" );
-  }
+    nonInitializable = true;
+    error_message = tr( "GRASS was not found in '%1'(GISBASE), provider and plugin will not work." ).arg( gisBase );
+    QgsDebugMsg( error_message );
+#if 0
+    // TODO: how to emit message from provider (which does not know about QgisApp)
+    QgisApp::instance()->messageBar()->pushMessage( tr( "GRASS error" ),
+      error_message, QgsMessageBar: WARNING );
 #endif
-
-  //QString p = getenv( "PATH" );
-  //path.append( sep + p );
-
-  QgsDebugMsg( "mGrassModulesPaths = " + mGrassModulesPaths.join( "," ) );
-  //putEnv( "PATH", path );
-
-  // TODO: move where it is required for QProcess
-  // Set GRASS_PAGER if not set, it is necessary for some
-  // modules printing to terminal, e.g. g.list
-  // We use 'cat' because 'more' is not present in MSYS (Win)
-  // and it doesn't work well in built in shell (Unix/Mac)
-  // and 'less' is not user friendly (for example user must press
-  // 'q' to quit which is definitely difficult for normal user)
-  // Also scroling can be don in scrollable window in both
-  // MSYS terminal and built in shell.
-  if ( !getenv( "GRASS_PAGER" ) )
+  }
+  else
   {
-    QString pager;
-    QStringList pagers;
-    //pagers << "more" << "less" << "cat"; // se notes above
-    pagers << "cat";
-
-    for ( int i = 0; i < pagers.size(); i++ )
+    if ( userGisbase )
     {
-      int state;
-
-      QProcess p;
-      p.start( pagers.at( i ) );
-      p.waitForStarted();
-      state = p.state();
-      p.write( "\004" ); // Ctrl-D
-      p.closeWriteChannel();
-      p.waitForFinished( 1000 );
-      p.kill();
-
-      if ( state == QProcess::Running )
-      {
-        pager = pagers.at( i );
-        break;
-      }
+      settings.setValue( "/GRASS/gisbase", gisBase );
     }
 
-    if ( pager.length() > 0 )
+    QgsDebugMsg( QString( "Valid GRASS gisBase is: %1" ).arg( gisBase ) );
+    // GISBASE environment variable must be set because is required by directly called GRASS functions
+    putEnv( "GISBASE", gisBase );
+    mGisbase = gisBase;
+
+    // Create list of paths to GRASS modules
+    // PATH environment variable is not used to search for modules (since 2.12) because it could
+    // create a lot of confusion especially if both GRASS 6 and 7 are installed and path to one version
+    // $GISBASE/bin somehow gets to PATH and another version plugin is loaded to QGIS, because if a module
+    // is missing in one version, it could be found in another $GISBASE/bin and misleadin error could be reported
+    mGrassModulesPaths.clear();
+    mGrassModulesPaths << gisbase() + "/bin";
+    mGrassModulesPaths << gisbase() + "/scripts";
+    mGrassModulesPaths << QgsApplication::pkgDataPath() + "/grass/scripts";
+
+    // On windows the GRASS libraries are in
+    // QgsApplication::prefixPath(), we have to add them
+    // to PATH to enable running of GRASS modules
+    // and database drivers
+#ifdef Q_OS_WIN
+    // It seems that QgsApplication::prefixPath() is not initialized at this point
+    // TODO: verify if this is required and why (PATH to required libs should be set in qgis-grass.bat)
+    //mGrassModulesPaths << shortPath( QCoreApplication::applicationDirPath() ) );
+
+    // Add path to MSYS bin
+    // Warning: MSYS sh.exe will translate this path to '/bin'
+    QString msysBin = QCoreApplication::applicationDirPath() + "/msys/bin/";
+    if ( QFileInfo( msysBin ).isDir() )
     {
-      putEnv( "GRASS_PAGER", pager );
+      mGrassModulesPaths << shortPath( QCoreApplication::applicationDirPath() + "/msys/bin/" );
+    }
+#endif
+
+    //QString p = getenv( "PATH" );
+    //path.append( sep + p );
+
+    QgsDebugMsg( "mGrassModulesPaths = " + mGrassModulesPaths.join( "," ) );
+    //putEnv( "PATH", path );
+
+    // TODO: move where it is required for QProcess
+    // Set GRASS_PAGER if not set, it is necessary for some
+    // modules printing to terminal, e.g. g.list
+    // We use 'cat' because 'more' is not present in MSYS (Win)
+    // and it doesn't work well in built in shell (Unix/Mac)
+    // and 'less' is not user friendly (for example user must press
+    // 'q' to quit which is definitely difficult for normal user)
+    // Also scroling can be don in scrollable window in both
+    // MSYS terminal and built in shell.
+    if ( !getenv( "GRASS_PAGER" ) )
+    {
+      QString pager;
+      QStringList pagers;
+      //pagers << "more" << "less" << "cat"; // se notes above
+      pagers << "cat";
+
+      for ( int i = 0; i < pagers.size(); i++ )
+      {
+        int state;
+
+        QProcess p;
+        p.start( pagers.at( i ) );
+        p.waitForStarted();
+        state = p.state();
+        p.write( "\004" ); // Ctrl-D
+        p.closeWriteChannel();
+        p.waitForFinished( 1000 );
+        p.kill();
+
+        if ( state == QProcess::Running )
+        {
+          pager = pagers.at( i );
+          break;
+        }
+      }
+
+      if ( pager.length() > 0 )
+      {
+        putEnv( "GRASS_PAGER", pager );
+      }
     }
   }
 
   initialized = 1;
   unlock();
-  return true;
+  return valid;
 }
 
 /*

@@ -94,6 +94,7 @@ QgsGrassProvider::QgsGrassProvider( QString uri )
   mValid = false;
   if ( !QgsGrass::init() )
   {
+    appendError( QgsGrass::errorMessage() );
     return;
   }
 
