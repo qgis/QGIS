@@ -41,3 +41,5 @@ before_script:
 script:
   - ./ci/travis/${TRAVIS_OS_NAME}/script.sh
 
+after_script:
+  - ./ci/travis/${TRAVIS_OS_NAME}/after_script.sh

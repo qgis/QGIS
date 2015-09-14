@@ -174,7 +174,7 @@ def setCanvasCrs(theEpsgId, theOtfpFlag=False):
 
     # Create CRS Instance
     myCrs = QgsCoordinateReferenceSystem()
-    myCrs.createFromId(theEpsgId, QgsCoordinateReferenceSystem.EpsgCrsId)
+    myCrs.createFromId(theEpsgId, QgsCoordinateReferenceSystem.E)
 
     # Reproject all layers to WGS84 geographic CRS
     CANVAS.mapRenderer().setDestinationCrs(myCrs)
@@ -361,3 +361,15 @@ def openInBrowserTab(url):
         subprocess.Popen([sys.executable, "-c", cmd],
                          stdout=subprocess.PIPE,
                          stderr=subprocess.STDOUT)
+
+
+def printImportant(info):
+    """
+    Prints important information to stdout and to a file which in the end
+    should be printed on test result pages.
+    :param info: A string to print
+    """
+
+    print(info)
+    with open(os.path.join(tempfile.gettempdir(), 'ctest-important.log'), 'a+') as f:
+        f.write(u'{}\n'.format(info))
