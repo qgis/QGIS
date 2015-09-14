@@ -16,7 +16,8 @@ import os
 import glob
 
 from utilities import (TestCase,
-                       unittest)
+                       unittest,
+                       printImportant)
 
 try:
     import xml.etree.cElementTree as ET
@@ -39,7 +40,7 @@ def elemIsDocumentableClass(elem):
     if not elem.get('kind') == 'class':
         return False
 
-    #public or protected classes should be documented
+    # public or protected classes should be documented
     return elem.get('prot') in ('public', 'protected')
 
 
@@ -58,19 +59,19 @@ def elemIsDocumentableMember(elem):
     if elem.get('kind') == 'variable':
         return False
 
-    #only public or protected members should be documented
+    # only public or protected members should be documented
     if not elem.get('prot') in ('public', 'protected'):
         return False
 
-    #ignore reimplemented methods
-    #use two different tests, as doxygen will not detect reimplemented qt methods
+    # ignore reimplemented methods
+    # use two different tests, as doxygen will not detect reimplemented qt methods
     if elem.find('reimplements') is not None:
         return False
     args = elem.find('argsstring')
     if args is not None and args.text and ' override' in args.text:
         return False
 
-    #ignore destructor
+    # ignore destructor
     name = elem.find('name')
     try:
         if name.text and name.text.startswith('~'):
@@ -78,7 +79,7 @@ def elemIsDocumentableMember(elem):
     except:
         pass
 
-    #ignore constructors with no arguments
+    # ignore constructors with no arguments
     definition = elem.find('definition')
     argsstring = elem.find('argsstring')
     try:
@@ -87,21 +88,21 @@ def elemIsDocumentableMember(elem):
     except:
         pass
 
-    #ignore certain obvious operators
+    # ignore certain obvious operators
     try:
         if name.text in ('operator=', 'operator=='):
             return False
     except:
         pass
 
-    #ignore on_* slots
+    # ignore on_* slots
     try:
         if name.text.startswith('on_'):
             return False
     except:
         pass
 
-    #ignore deprecated members
+    # ignore deprecated members
     typeelem = elem.find('type')
     try:
         if typeelem.text and 'Q_DECL_DEPRECATED' in typeelem.text:
@@ -151,7 +152,7 @@ def parseFile(f):
                         print "\n"
                 elem.clear()
     except ET.ParseError as e:
-        #sometimes Doxygen generates malformed xml (eg for < and > operators)
+        # sometimes Doxygen generates malformed xml (eg for < and > operators)
         line_num, col = e.position
         with open(f, 'r') as xml_file:
             for i, l in enumerate(xml_file):
@@ -186,11 +187,11 @@ class TestQgsDocCoverage(TestCase):
         missing = documentable - documented
 
         print "---------------------------------"
-        print "{} total documentable members".format(documentable)
-        print "{} total contain valid documentation".format(documented)
-        print "Total documentation coverage {}%".format(coverage)
-        print "---------------------------------"
-        print "{} members missing documentation, out of {} allowed".format(missing, ACCEPTABLE_MISSING_DOCS)
+        printImportant("{} total documentable members".format(documentable))
+        printImportant("{} total contain valid documentation".format(documented))
+        printImportant("Total documentation coverage {}%".format(coverage))
+        printImportant("---------------------------------")
+        printImportant("{} members missing documentation, out of {} allowed".format(missing, ACCEPTABLE_MISSING_DOCS))
 
         assert missing <= ACCEPTABLE_MISSING_DOCS, 'FAIL: new undocumented members have been introduced, please add documentation for these members'
 
