@@ -135,6 +135,7 @@ void QgsGrassPlugin::initGui()
 {
   if ( !QgsGrass::init() )
   {
+    qGisInterface->messageBar()->pushMessage( tr( "GRASS error" ), QgsGrass::errorMessage(), QgsMessageBar::WARNING );
     // TODO: add a widget with warning
     return;
   }
@@ -143,7 +144,6 @@ void QgsGrassPlugin::initGui()
   mTools = 0;
   mNewMapset = 0;
 
-  QSettings settings;
   mCanvas = qGisInterface->mapCanvas();
   QWidget* qgis = qGisInterface->mainWindow();
 
