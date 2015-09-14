@@ -382,6 +382,7 @@ void QgsMapToolCapture::stopCapturing()
 
   mCapturing = false;
   mCaptureCurve.clear();
+  currentVectorLayer()->triggerRepaint();
 }
 
 void QgsMapToolCapture::deleteTempRubberBand()
