@@ -71,7 +71,5 @@ IF(NOT ${TESTRES} EQUAL 0)
   MESSAGE( FATAL_ERROR "Tests failed" )
 ENDIF(NOT ${TESTRES} EQUAL 0)
 
-ctest_submit (RETRY_COUNT 3 RETRY_DELAY 30)
-MESSAGE("${Green}Test results submitted to${ColorReset}")
-MESSAGE("${BoldGreen}http://dash.orfeo-toolbox.org/index.php?project=QGIS&filtercount=1&showfilters=1&field1=buildname/string&compare1=63&value1=$ENV{TRAVIS_COMMIT}${ColorReset}" )
-
+MESSAGE("${BoldGreen}Success${ColorReset}")
+MESSAGE("${Green}All tests passed successfully.${ColorReset}")
