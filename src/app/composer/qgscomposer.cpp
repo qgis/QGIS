@@ -2303,6 +2303,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
   QString outputFileName;
   QString outputDir;
   bool groupLayers = false;
+  bool prevSettingLabelsAsOutlines = QgsProject::instance()->readBoolEntry( "PAL", "/DrawOutlineLabels", true );
 
   if ( mode == QgsComposer::Single )
   {
@@ -2333,8 +2334,12 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
       QDialog dialog;
       Ui::QgsSvgExportOptionsDialog options;
       options.setupUi( &dialog );
+      options.chkTextAsOutline->setChecked( prevSettingLabelsAsOutlines );
+
       dialog.exec();
       groupLayers = options.chkMapLayersAsGroup->isChecked();
+      //temporarily override label draw outlines setting
+      QgsProject::instance()->writeEntry( "PAL", "/DrawOutlineLabels", options.chkTextAsOutline->isChecked() );
     }
 
     if ( !outputFileName.endsWith( ".svg", Qt::CaseInsensitive ) )
@@ -2388,8 +2393,12 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
       QDialog dialog;
       Ui::QgsSvgExportOptionsDialog options;
       options.setupUi( &dialog );
+      options.chkTextAsOutline->setChecked( prevSettingLabelsAsOutlines );
+
       dialog.exec();
       groupLayers = options.chkMapLayersAsGroup->isChecked();
+      //temporarily override label draw outlines setting
+      QgsProject::instance()->writeEntry( "PAL", "/DrawOutlineLabels", options.chkTextAsOutline->isChecked() );
     }
 
 
@@ -2409,6 +2418,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
                             QMessageBox::Ok,
                             QMessageBox::Ok );
       mView->setPaintingEnabled( true );
+      QgsProject::instance()->writeEntry( "PAL", "/DrawOutlineLabels", prevSettingLabelsAsOutlines );
       return;
     }
   }
@@ -2437,6 +2447,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
                               QMessageBox::Ok,
                               QMessageBox::Ok );
         mView->setPaintingEnabled( true );
+        QgsProject::instance()->writeEntry( "PAL", "/DrawOutlineLabels", prevSettingLabelsAsOutlines );
         return;
       }
       outputFileName = QDir( outputDir ).filePath( atlasMap->currentFilename() ) + ".svg";
@@ -2481,6 +2492,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
                                 QMessageBox::Ok,
                                 QMessageBox::Ok );
           mView->setPaintingEnabled( true );
+          QgsProject::instance()->writeEntry( "PAL", "/DrawOutlineLabels", prevSettingLabelsAsOutlines );
           return;
         }
 
@@ -2604,6 +2616,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
                                 QMessageBox::Ok,
                                 QMessageBox::Ok );
           mView->setPaintingEnabled( true );
+          QgsProject::instance()->writeEntry( "PAL", "/DrawOutlineLabels", prevSettingLabelsAsOutlines );
           return;
         }
 
@@ -2618,6 +2631,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
     atlasMap->endRender();
 
   mView->setPaintingEnabled( true );
+  QgsProject::instance()->writeEntry( "PAL", "/DrawOutlineLabels", prevSettingLabelsAsOutlines );
 }
 
 void QgsComposer::on_mActionSelectMoveItem_triggered()

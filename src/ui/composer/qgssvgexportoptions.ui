@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>463</width>
+    <width>471</width>
     <height>103</height>
    </rect>
   </property>
@@ -29,10 +29,13 @@
      <item>
       <widget class="QCheckBox" name="chkTextAsOutline">
        <property name="enabled">
-        <bool>false</bool>
+        <bool>true</bool>
+       </property>
+       <property name="toolTip">
+        <string>Uncheck to render map labels as text objects. This will degrade the quality of the map labels but allow editing in vector illustration software.</string>
        </property>
        <property name="text">
-        <string>Render text as outline</string>
+        <string>Render map labels as outlines</string>
        </property>
        <property name="checked">
         <bool>true</bool>
