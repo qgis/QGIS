@@ -186,6 +186,8 @@ class QgsVariableEditorTree : public QTreeWidget
     void toggleContextExpanded( QTreeWidgetItem *item );
     void editNext( const QModelIndex &index );
 
+    QModelIndex moveCursor( CursorAction cursorAction, Qt::KeyboardModifiers modifiers ) override;
+
     static QIcon mExpandIcon;
 
   private:
