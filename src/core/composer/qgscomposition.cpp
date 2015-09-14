@@ -2835,35 +2835,38 @@ QGraphicsView *QgsComposition::graphicsView() const
 
 void QgsComposition::computeWorldFileParameters( double& a, double& b, double& c, double& d, double& e, double& f ) const
 {
-  //
-  // Word file parameters : affine transformation parameters from pixel coordinates to map coordinates
+  // World file parameters : affine transformation parameters from pixel coordinates to map coordinates
 
   if ( !mWorldFileMap )
   {
     return;
   }
 
-  QRectF brect = mWorldFileMap->mapRectToScene( mWorldFileMap->rect() );
-  QgsRectangle extent = *mWorldFileMap->currentMapExtent();
+  double destinationHeight = paperHeight();
+  double destinationWidth = paperWidth();
+
+  QRectF mapItemSceneRect = mWorldFileMap->mapRectToScene( mWorldFileMap->rect() );
+  QgsRectangle mapExtent = *mWorldFileMap->currentMapExtent();
 
   double alpha = mWorldFileMap->mapRotation() / 180 * M_PI;
 
-  double xr = extent.width() / brect.width();
-  double yr = extent.height() / brect.height();
+  double xRatio = mapExtent.width() / mapItemSceneRect.width();
+  double yRatio = mapExtent.height() / mapItemSceneRect.height();
 
-  double XC = extent.center().x();
-  double YC = extent.center().y();
+  double xCenter = mapExtent.center().x();
+  double yCenter = mapExtent.center().y();
 
-  // get the extent for the page
-  double xmin = extent.xMinimum() - mWorldFileMap->pos().x() * xr;
-  double ymax = extent.yMaximum() + mWorldFileMap->pos().y() * yr;
-  QgsRectangle paperExtent( xmin, ymax - paperHeight() * yr, xmin + paperWidth() * xr, ymax );
+  // get the extent (in map units) for the page
+  QPointF mapItemPosOnPage = mWorldFileMap->pagePos();
+  double xmin = mapExtent.xMinimum() - mapItemPosOnPage.x() * xRatio;
+  double ymax = mapExtent.yMaximum() + mapItemPosOnPage.y() * yRatio;
+  QgsRectangle paperExtent( xmin, ymax - destinationHeight * yRatio, xmin + destinationWidth * xRatio, ymax );
 
   double X0 = paperExtent.xMinimum();
   double Y0 = paperExtent.yMinimum();
 
-  int widthPx = ( int )( printResolution() * paperWidth() / 25.4 );
-  int heightPx = ( int )( printResolution() * paperHeight() / 25.4 );
+  int widthPx = ( int )( printResolution() * destinationWidth / 25.4 );
+  int heightPx = ( int )( printResolution() * destinationHeight / 25.4 );
 
   double Ww = paperExtent.width() / widthPx;
   double Hh = paperExtent.height() / heightPx;
@@ -2881,10 +2884,10 @@ void QgsComposition::computeWorldFileParameters( double& a, double& b, double& c
   double r[6];
   r[0] = cos( alpha );
   r[1] = -sin( alpha );
-  r[2] = XC * ( 1 - cos( alpha ) ) + YC * sin( alpha );
+  r[2] = xCenter * ( 1 - cos( alpha ) ) + yCenter * sin( alpha );
   r[3] = sin( alpha );
   r[4] = cos( alpha );
-  r[5] = - XC * sin( alpha ) + YC * ( 1 - cos( alpha ) );
+  r[5] = - xCenter * sin( alpha ) + yCenter * ( 1 - cos( alpha ) );
 
   // result = rotation x scaling = rotation(scaling(X))
   a = r[0] * s[0] + r[1] * s[3];

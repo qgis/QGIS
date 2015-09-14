@@ -182,12 +182,23 @@ void TestQgsComposerMap::worldFileGeneration()
   double a, b, c, d, e, f;
   mComposition->computeWorldFileParameters( a, b, c, d, e, f );
 
-  QVERIFY( fabs( a - 4.18048 ) < 0.001 );
-  QVERIFY( fabs( b - 2.41331 ) < 0.001 );
-  QVERIFY( fabs( c - 779444 ) < 1 );
-  QVERIFY( fabs( d - 2.4136 ) < 0.001 );
-  QVERIFY( fabs( e + 4.17997 ) < 0.001 );
-  QVERIFY( fabs( f - 3.34241e+06 ) < 1e+03 );
+  QVERIFY( qgsDoubleNear( a, 4.18048, 0.001 ) );
+  QVERIFY( qgsDoubleNear( b, 2.41331, 0.001 ) );
+  QVERIFY( qgsDoubleNear( c, 779444, 1 ) );
+  QVERIFY( qgsDoubleNear( d, 2.4136, 0.001 ) );
+  QVERIFY( qgsDoubleNear( e, -4.17997, 0.001 ) );
+  QVERIFY( qgsDoubleNear( f, 3.34241e+06, 1e+03 ) );
+
+  //test with map on second page. Parameters should be the same
+  mComposerMap->setItemPosition( 20, 20, QgsComposerItem::UpperLeft, 2 );
+  mComposition->computeWorldFileParameters( a, b, c, d, e, f );
+
+  QVERIFY( qgsDoubleNear( a, 4.18048, 0.001 ) );
+  QVERIFY( qgsDoubleNear( b, 2.41331, 0.001 ) );
+  QVERIFY( qgsDoubleNear( c, 779444, 1 ) );
+  QVERIFY( qgsDoubleNear( d, 2.4136, 0.001 ) );
+  QVERIFY( qgsDoubleNear( e, -4.17997, 0.001 ) );
+  QVERIFY( qgsDoubleNear( f, 3.34241e+06, 1e+03 ) );
 
   mComposition->setGenerateWorldFile( false );
   mComposerMap->setMapRotation( 0.0 );
