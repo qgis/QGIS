@@ -118,7 +118,7 @@ QList<QgsMapLayer*> QgsWMSProjectParser::mapLayerFromStyle( const QString& lName
   }
 
   // can't use layer cache if we are going to apply a non-default style
-  if ( !styleName.isEmpty() )
+  if ( !styleName.isEmpty() && styleName != EMPTY_STYLE_NAME )
     useCache = false;
 
   //does lName refer to a leaf layer
@@ -127,7 +127,7 @@ QList<QgsMapLayer*> QgsWMSProjectParser::mapLayerFromStyle( const QString& lName
   if ( layerElemIt != projectLayerElements.constEnd() )
   {
     QgsMapLayer* ml = mProjectParser->createLayerFromElement( layerElemIt.value(), useCache );
-    if ( !styleName.isEmpty() )
+    if ( !styleName.isEmpty() && styleName != EMPTY_STYLE_NAME )
     {
       // try to apply the specified style
       if ( !ml->styleManager()->setCurrentStyle( styleName != EMPTY_STYLE_NAME ? styleName : QString() ) )
