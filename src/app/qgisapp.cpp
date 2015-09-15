@@ -7637,7 +7637,7 @@ void QgisApp::legendLayerZoomNative()
 
     if ( mMapCanvas->hasCrsTransformEnabled() )
     {
-      // get legth of central canvas pixel width in source raster crs
+      // get length of central canvas pixel width in source raster crs
       QgsRectangle e = mMapCanvas->extent();
       QSize s = mMapCanvas->mapSettings().outputSize();
       QgsPoint p1( e.center().x(), e.center().y() );
@@ -7645,9 +7645,8 @@ void QgisApp::legendLayerZoomNative()
       QgsCoordinateTransform ct( mMapCanvas->mapSettings().destinationCrs(), layer->crs() );
       p1 = ct.transform( p1 );
       p2 = ct.transform( p2 );
-      double width = sqrt( p1.sqrDist( p2 ) ); // width of reprojected pixel
-      // This is not perfect of course, we use the resolution in just one direction
-      mMapCanvas->zoomByFactor( qAbs( layer->rasterUnitsPerPixelX() / width ) );
+      double width = sqrt( p1.sqrDist( p2 ) ); // width (actually the diagonal) of reprojected pixel
+      mMapCanvas->zoomByFactor( sqrt( layer->rasterUnitsPerPixelX() * layer->rasterUnitsPerPixelX() + layer->rasterUnitsPerPixelY() * layer->rasterUnitsPerPixelY() ) / width );
     }
     else
     {
