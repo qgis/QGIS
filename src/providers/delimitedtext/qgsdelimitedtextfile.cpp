@@ -160,7 +160,7 @@ bool QgsDelimitedTextFile::setFromUrl( const QUrl &url )
   //
   if ( url.hasQueryItem( "useWatcher" ) )
   {
-    mUseWatcher = ! url.queryItemValue( "useWatcher" ).toUpper().startsWith( 'N' );;
+    mUseWatcher = ! url.queryItemValue( "useWatcher" ).toUpper().startsWith( 'N' );
   }
 
   // The default type is csv, to be consistent with the
@@ -222,7 +222,7 @@ bool QgsDelimitedTextFile::setFromUrl( const QUrl &url )
   }
   if ( url.hasQueryItem( "trimFields" ) )
   {
-    mTrimFields = ! url.queryItemValue( "trimFields" ).toUpper().startsWith( 'N' );;
+    mTrimFields = ! url.queryItemValue( "trimFields" ).toUpper().startsWith( 'N' );
   }
   if ( url.hasQueryItem( "maxFields" ) )
   {

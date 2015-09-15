@@ -288,7 +288,7 @@ class ModelerGraphicItem(QGraphicsItem):
         return QPointF(-ModelerGraphicItem.BOX_WIDTH / 2 + offsetX, h)
 
     def getLinkPointForOutput(self, outputIndex):
-        if isinstance(self.element, Algorithm):
+        if isinstance(self.element, Algorithm) and self.element.algorithm.outputs:
             outputIndex = (outputIndex if not self.element.outputsFolded else -1)
             text = self.getAdjustedText(self.element.algorithm.outputs[outputIndex].description)
             font = QFont('Verdana', 8)

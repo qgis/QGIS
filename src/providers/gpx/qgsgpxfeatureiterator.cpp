@@ -434,7 +434,7 @@ QgsGeometry* QgsGPXFeatureIterator::readTrackGeometry( const QgsTrack& trk )
     return 0;
 
   // A track consists of several segments. Add all those segments into one.
-  int totalPoints = 0;;
+  int totalPoints = 0;
   for ( int i = 0; i < trk.segments.size(); i ++ )
   {
     totalPoints += trk.segments[i].points.size();

@@ -24,6 +24,7 @@
 #include "qgsmultibandcolorrenderer.h"
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectordataprovider.h"
 #include "qgsproject.h"
 #include "qgsvisibilitypresetcollection.h"
 #include <QObject>
@@ -287,6 +288,32 @@ void TestQgsComposerMap::dataDefinedLayers()
                                         QString( "''" ), QString() );
   result = mComposerMap->layersToRender();
   QVERIFY( result.isEmpty() );
+
+
+  //test with atlas feature evaluation
+  QgsVectorLayer* atlasLayer = new QgsVectorLayer( "Point?field=col1:string", "atlas", "memory" );
+  QVERIFY( atlasLayer->isValid() );
+  QgsFeature f1( atlasLayer->dataProvider()->fields(), 1 );
+  f1.setAttribute( "col1", mLinesLayer->name() );
+  QgsFeature f2( atlasLayer->dataProvider()->fields(), 1 );
+  f2.setAttribute( "col1", mPointsLayer->name() );
+  atlasLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 );
+  mComposition->atlasComposition().setCoverageLayer( atlasLayer );
+  mComposition->atlasComposition().setEnabled( true );
+  mComposition->setAtlasMode( QgsComposition::ExportAtlas );
+  mComposition->atlasComposition().beginRender();
+  mComposition->atlasComposition().prepareForFeature( 0 );
+
+  mComposerMap->setDataDefinedProperty( QgsComposerObject::MapLayers, true, true, QString( "\"col1\"" ), QString() );
+  result = mComposerMap->layersToRender();
+  QCOMPARE( result.count(), 1 );
+  QCOMPARE( result.at( 0 ), mLinesLayer->id() );
+  mComposition->atlasComposition().prepareForFeature( 1 );
+  result = mComposerMap->layersToRender();
+  QCOMPARE( result.count(), 1 );
+  QCOMPARE( result.at( 0 ), mPointsLayer->id() );
+  mComposition->atlasComposition().setEnabled( false );
+  delete atlasLayer;
 
   //render test
   mComposerMap->setDataDefinedProperty( QgsComposerObject::MapLayers, true, true,

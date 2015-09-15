@@ -319,7 +319,7 @@ bool QgsAlignRaster::checkInputParameters()
   // output raster grid configuration (with no rotation/shear)
   // ... and raster width/height
 
-  double originX = ceil_with_tolerance(( finalExtent[0] - mGridOffsetX ) / mCellSizeX ) * mCellSizeX + mGridOffsetX;;
+  double originX = ceil_with_tolerance(( finalExtent[0] - mGridOffsetX ) / mCellSizeX ) * mCellSizeX + mGridOffsetX;
   double originY = ceil_with_tolerance(( finalExtent[1] - mGridOffsetY ) / mCellSizeY ) * mCellSizeY + mGridOffsetY;
   int xSize = floor_with_tolerance(( finalExtent[2] - originX ) / mCellSizeX );
   int ySize = floor_with_tolerance(( finalExtent[3] - originY ) / mCellSizeY );

@@ -391,7 +391,7 @@ void QgsMssqlGeometryParser::ReadPolygon( int iShape )
 void QgsMssqlGeometryParser::ReadMultiPolygon( int iShape )
 {
   int i;
-  int iCount = nNumShapes - iShape - 1;;
+  int iCount = nNumShapes - iShape - 1;
   if ( iCount <= 0 )
     return;
   // copy byte order
@@ -423,13 +423,13 @@ void QgsMssqlGeometryParser::ReadMultiPolygon( int iShape )
 void QgsMssqlGeometryParser::ReadGeometryCollection( int iShape )
 {
   int i;
-  int iCount = nNumShapes - iShape - 1;;
+  int iCount = nNumShapes - iShape - 1;
   if ( iCount <= 0 )
     return;
   // copy byte order
   CopyBytes( &chByteOrder, 1 );
   // copy type
-  int wkbType = QGis::WKBUnknown;;
+  int wkbType = QGis::WKBUnknown;
   CopyBytes( &wkbType, 4 );
   // copy geom count
   CopyBytes( &iCount, 4 );

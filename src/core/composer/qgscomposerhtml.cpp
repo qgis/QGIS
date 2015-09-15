@@ -149,7 +149,7 @@ void QgsComposerHtml::loadHtml( const bool useCache, const QgsExpressionContext 
       QVariant exprVal;
       if ( dataDefinedEvaluate( QgsComposerObject::SourceUrl, exprVal, *evalContext ) )
       {
-        currentUrl = exprVal.toString().trimmed();;
+        currentUrl = exprVal.toString().trimmed();
         QgsDebugMsg( QString( "exprVal Source Url:%1" ).arg( currentUrl ) );
       }
       if ( currentUrl.isEmpty() )
