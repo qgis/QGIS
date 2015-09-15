@@ -309,7 +309,7 @@ void QgsAttributeTableDialog::keyPressEvent( QKeyEvent* event )
 
 void QgsAttributeTableDialog::columnBoxInit()
 {
-  Q_FOREACH ( QAction* a, mFilterColumnsMenu->actions() )
+  Q_FOREACH( QAction* a, mFilterColumnsMenu->actions() )
   {
     mFilterColumnsMenu->removeAction( a );
     mFilterActionMapper->removeMappings( a );
@@ -329,7 +329,7 @@ void QgsAttributeTableDialog::columnBoxInit()
 
   QList<QgsField> fields = mLayer->fields().toList();
 
-  Q_FOREACH ( const QgsField field, fields )
+  Q_FOREACH( const QgsField field, fields )
   {
     int idx = mLayer->fieldNameIndex( field.name() );
     if ( idx < 0 )
@@ -506,7 +506,6 @@ void QgsAttributeTableDialog::filterShowAll()
   mFilterQuery->setVisible( false );
   mApplyFilterButton->setVisible( false );
   mMainView->setFilterMode( QgsAttributeTableFilterModel::ShowAll );
-  updateTitle();
 }
 
 void QgsAttributeTableDialog::filterSelected()
@@ -746,7 +745,6 @@ void QgsAttributeTableDialog::filterQueryChanged( const QString& query )
   }
 
   setFilterExpression( str );
-  updateTitle();
 }
 
 void QgsAttributeTableDialog::filterQueryAccepted()
@@ -782,8 +780,6 @@ void QgsAttributeTableDialog::setFilterExpression( QString filterString )
     }
   }
 
-  mMainView->setFilterMode( QgsAttributeTableFilterModel::ShowFilteredList );
-
   QgsFeatureIds filteredFeatures;
   QgsDistanceArea myDa;
 
@@ -804,7 +800,7 @@ void QgsAttributeTableDialog::setFilterExpression( QString filterString )
   << QgsExpressionContextUtils::projectScope()
   << QgsExpressionContextUtils::layerScope( mLayer );
 
-  if ( ! filterExpression.prepare( &context ) )
+  if ( !filterExpression.prepare( &context ) )
   {
     QgisApp::instance()->messageBar()->pushMessage( tr( "Evaluation error" ), filterExpression.evalErrorString(), QgsMessageBar::WARNING, QgisApp::instance()->messageTimeout() );
   }
@@ -846,4 +842,5 @@ void QgsAttributeTableDialog::setFilterExpression( QString filterString )
     QgisApp::instance()->messageBar()->pushMessage( tr( "Error filtering" ), filterExpression.evalErrorString(), QgsMessageBar::WARNING, QgisApp::instance()->messageTimeout() );
     return;
   }
+  mMainView->setFilterMode( QgsAttributeTableFilterModel::ShowFilteredList );
 }
