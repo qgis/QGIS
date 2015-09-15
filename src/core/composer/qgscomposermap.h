@@ -921,10 +921,10 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void updateToolTip();
 
     /** Returns a list of the layers to render for this map item*/
-    QStringList layersToRender() const;
+    QStringList layersToRender( const QgsExpressionContext* context = 0 ) const;
 
     /** Returns current layer style overrides for this map item*/
-    QMap<QString, QString> layerStyleOverridesToRender() const;
+    QMap<QString, QString> layerStyleOverridesToRender( const QgsExpressionContext& context ) const;
 
     /** Returns extent that considers mOffsetX / mOffsetY (during content move)*/
     QgsRectangle transformedExtent() const;
