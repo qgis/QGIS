@@ -4,6 +4,17 @@ os:
   - linux
   - osx
 
+env:
+  - QT=4
+  - QT=5
+
+matrix:
+  exclude:
+    - os: osx
+      env: QT=5
+# Temporarily disable Qt4, we don't need to run them
+    - env: QT=4
+
 compiler:
   - clang
 
