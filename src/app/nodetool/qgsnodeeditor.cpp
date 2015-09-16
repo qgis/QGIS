@@ -109,7 +109,7 @@ void QgsNodeEditor::rebuildTable()
   mTableWidget->setRowCount( 0 );
   int row = 0;
   bool hasR = false;
-  foreach ( const QgsVertexEntry* entry, mSelectedFeature->vertexMap() )
+  Q_FOREACH ( const QgsVertexEntry* entry, mSelectedFeature->vertexMap() )
   {
     mTableWidget->insertRow( row );
 
@@ -227,7 +227,7 @@ void QgsNodeEditor::updateNodeSelection()
 {
   mSelectedFeature->blockSignals( true );
   mSelectedFeature->deselectAllVertexes();
-  foreach ( const QModelIndex& index, mTableWidget->selectionModel()->selectedRows() )
+  Q_FOREACH ( const QModelIndex& index, mTableWidget->selectionModel()->selectedRows() )
   {
     int nodeIdx = mTableWidget->item( index.row(), 0 )->data( Qt::DisplayRole ).toInt();
     mSelectedFeature->selectVertex( nodeIdx );
