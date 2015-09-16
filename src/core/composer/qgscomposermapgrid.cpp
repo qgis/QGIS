@@ -124,19 +124,37 @@ bool QgsComposerMapGridStack::readXML( const QDomElement &elem, const QDomDocume
 
 double QgsComposerMapGridStack::maxGridExtension() const
 {
-  double maxGridExtension = 0;
+  double top = 0.0;
+  double right = 0.0;
+  double bottom = 0.0;
+  double left = 0.0;
+  calculateMaxGridExtension( top, right, bottom, left );
+  return qMax( qMax( qMax( top, right ), bottom ), left );
+}
 
-  QList< QgsComposerMapItem* >::const_iterator it = mItems.constBegin();
-  for ( ; it != mItems.constEnd(); ++it )
+void QgsComposerMapGridStack::calculateMaxGridExtension( double& top, double& right, double& bottom, double& left ) const
+{
+  top = 0.0;
+  right = 0.0;
+  bottom = 0.0;
+  left = 0.0;
+
+  Q_FOREACH ( QgsComposerMapItem* item, mItems )
   {
-    QgsComposerMapGrid* grid = dynamic_cast<QgsComposerMapGrid*>( *it );
+    QgsComposerMapGrid* grid = dynamic_cast<QgsComposerMapGrid*>( item );
     if ( grid )
     {
-      maxGridExtension = qMax( maxGridExtension, grid->maxExtension() );
+      double gridTop = 0.0;
+      double gridRight = 0.0;
+      double gridBottom = 0.0;
+      double gridLeft = 0.0;
+      grid->calculateMaxExtension( gridTop, gridRight, gridBottom, gridLeft );
+      top = qMax( top, gridTop );
+      right = qMax( right, gridRight );
+      bottom = qMax( bottom, gridBottom );
+      left = qMax( left, gridLeft );
     }
   }
-
-  return maxGridExtension;
 }
 
 
@@ -463,7 +481,7 @@ QPolygonF QgsComposerMapGrid::scalePolygon( const QPolygonF &polygon, const doub
 }
 
 void QgsComposerMapGrid::drawGridCRSTransform( QgsRenderContext &context, double dotsPerMM, QList< QPair< double, QLineF > > &horizontalLines,
-    QList< QPair< double, QLineF > > &verticalLines )
+    QList< QPair< double, QLineF > > &verticalLines, bool calculateLinesOnly )
 {
   if ( !mComposerMap || !mEnabled )
   {
@@ -484,47 +502,50 @@ void QgsComposerMapGrid::drawGridCRSTransform( QgsRenderContext &context, double
   }
 
   //draw lines
-  if ( mGridStyle == QgsComposerMapGrid::Solid )
+  if ( !calculateLinesOnly )
   {
-    QList< QPair< double, QPolygonF > >::const_iterator xGridIt = mTransformedXLines.constBegin();
-    for ( ; xGridIt != mTransformedXLines.constEnd(); ++xGridIt )
+    if ( mGridStyle == QgsComposerMapGrid::Solid )
     {
-      drawGridLine( scalePolygon( xGridIt->second, dotsPerMM ), context );
-    }
-
-    QList< QPair< double, QPolygonF > >::const_iterator yGridIt = mTransformedYLines.constBegin();
-    for ( ; yGridIt != mTransformedYLines.constEnd(); ++yGridIt )
-    {
-      drawGridLine( scalePolygon( yGridIt->second, dotsPerMM ), context );
-    }
-  }
-  else if ( mGridStyle == QgsComposerMapGrid::Cross || mGridStyle == QgsComposerMapGrid::Markers )
-  {
-    double maxX = mComposerMap->rect().width();
-    double maxY = mComposerMap->rect().height();
-
-    QList< QgsPoint >::const_iterator intersectionIt = mTransformedIntersections.constBegin();
-    for ( ; intersectionIt != mTransformedIntersections.constEnd(); ++intersectionIt )
-    {
-      double x = intersectionIt->x();
-      double y = intersectionIt->y();
-      if ( mGridStyle == QgsComposerMapGrid::Cross )
+      QList< QPair< double, QPolygonF > >::const_iterator xGridIt = mTransformedXLines.constBegin();
+      for ( ; xGridIt != mTransformedXLines.constEnd(); ++xGridIt )
       {
-        //ensure that crosses don't overshoot the map item bounds
-        QLineF line1 = QLineF( x - mCrossLength, y, x + mCrossLength, y );
-        line1.p1().rx() = line1.p1().x() < 0 ? 0 : line1.p1().x();
-        line1.p2().rx() = line1.p2().x() > maxX ? maxX : line1.p2().x();
-        QLineF line2 = QLineF( x, y - mCrossLength, x, y + mCrossLength );
-        line2.p1().ry() = line2.p1().y() < 0 ? 0 : line2.p1().y();
-        line2.p2().ry() = line2.p2().y() > maxY ? maxY : line2.p2().y();
-
-        //draw line using coordinates scaled to dots
-        drawGridLine( QLineF( line1.p1() * dotsPerMM, line1.p2() * dotsPerMM ), context );
-        drawGridLine( QLineF( line2.p1() * dotsPerMM, line2.p2() * dotsPerMM ), context );
+        drawGridLine( scalePolygon( xGridIt->second, dotsPerMM ), context );
       }
-      else if ( mGridStyle == QgsComposerMapGrid::Markers )
+
+      QList< QPair< double, QPolygonF > >::const_iterator yGridIt = mTransformedYLines.constBegin();
+      for ( ; yGridIt != mTransformedYLines.constEnd(); ++yGridIt )
       {
-        drawGridMarker( QPointF( x, y ) * dotsPerMM, context );
+        drawGridLine( scalePolygon( yGridIt->second, dotsPerMM ), context );
+      }
+    }
+    else if ( mGridStyle == QgsComposerMapGrid::Cross || mGridStyle == QgsComposerMapGrid::Markers )
+    {
+      double maxX = mComposerMap->rect().width();
+      double maxY = mComposerMap->rect().height();
+
+      QList< QgsPoint >::const_iterator intersectionIt = mTransformedIntersections.constBegin();
+      for ( ; intersectionIt != mTransformedIntersections.constEnd(); ++intersectionIt )
+      {
+        double x = intersectionIt->x();
+        double y = intersectionIt->y();
+        if ( mGridStyle == QgsComposerMapGrid::Cross )
+        {
+          //ensure that crosses don't overshoot the map item bounds
+          QLineF line1 = QLineF( x - mCrossLength, y, x + mCrossLength, y );
+          line1.p1().rx() = line1.p1().x() < 0 ? 0 : line1.p1().x();
+          line1.p2().rx() = line1.p2().x() > maxX ? maxX : line1.p2().x();
+          QLineF line2 = QLineF( x, y - mCrossLength, x, y + mCrossLength );
+          line2.p1().ry() = line2.p1().y() < 0 ? 0 : line2.p1().y();
+          line2.p2().ry() = line2.p2().y() > maxY ? maxY : line2.p2().y();
+
+          //draw line using coordinates scaled to dots
+          drawGridLine( QLineF( line1.p1() * dotsPerMM, line1.p2() * dotsPerMM ), context );
+          drawGridLine( QLineF( line2.p1() * dotsPerMM, line2.p2() * dotsPerMM ), context );
+        }
+        else if ( mGridStyle == QgsComposerMapGrid::Markers )
+        {
+          drawGridMarker( QPointF( x, y ) * dotsPerMM, context );
+        }
       }
     }
   }
@@ -698,12 +719,16 @@ void QgsComposerMapGrid::draw( QPainter* p )
 }
 
 void QgsComposerMapGrid::drawGridNoTransform( QgsRenderContext &context, double dotsPerMM, QList< QPair< double, QLineF > > &horizontalLines,
-    QList< QPair< double, QLineF > > &verticalLines ) const
+    QList< QPair< double, QLineF > > &verticalLines, bool calculateLinesOnly ) const
 {
   //get line positions
   yGridLines( verticalLines );
-  QList< QPair< double, QLineF > >::const_iterator vIt = verticalLines.constBegin();
   xGridLines( horizontalLines );
+
+  if ( calculateLinesOnly )
+    return;
+
+  QList< QPair< double, QLineF > >::const_iterator vIt = verticalLines.constBegin();
   QList< QPair< double, QLineF > >::const_iterator hIt = horizontalLines.constBegin();
 
   //simple approach: draw vertical lines first, then horizontal ones
@@ -780,10 +805,13 @@ void QgsComposerMapGrid::drawGridNoTransform( QgsRenderContext &context, double 
   }
 }
 
-void QgsComposerMapGrid::drawGridFrame( QPainter* p, const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines ) const
+void QgsComposerMapGrid::drawGridFrame( QPainter* p, const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines, GridExtension* extension ) const
 {
-  p->save();
-  p->setRenderHint( QPainter::Antialiasing );
+  if ( p )
+  {
+    p->save();
+    p->setRenderHint( QPainter::Antialiasing );
+  }
 
   //Sort the coordinate positions for each side
   QMap< double, double > leftGridFrame;
@@ -795,21 +823,22 @@ void QgsComposerMapGrid::drawGridFrame( QPainter* p, const QList< QPair< double,
 
   if ( testFrameSideFlag( QgsComposerMapGrid::FrameLeft ) )
   {
-    drawGridFrameBorder( p, leftGridFrame, QgsComposerMapGrid::Left );
+    drawGridFrameBorder( p, leftGridFrame, QgsComposerMapGrid::Left, extension ? &extension->left : 0 );
   }
   if ( testFrameSideFlag( QgsComposerMapGrid::FrameRight ) )
   {
-    drawGridFrameBorder( p, rightGridFrame, QgsComposerMapGrid::Right );
+    drawGridFrameBorder( p, rightGridFrame, QgsComposerMapGrid::Right, extension ? &extension->right : 0 );
   }
   if ( testFrameSideFlag( QgsComposerMapGrid::FrameTop ) )
   {
-    drawGridFrameBorder( p, topGridFrame, QgsComposerMapGrid::Top );
+    drawGridFrameBorder( p, topGridFrame, QgsComposerMapGrid::Top, extension ? &extension->top : 0 );
   }
   if ( testFrameSideFlag( QgsComposerMapGrid::FrameBottom ) )
   {
-    drawGridFrameBorder( p, bottomGridFrame, QgsComposerMapGrid::Bottom );
+    drawGridFrameBorder( p, bottomGridFrame, QgsComposerMapGrid::Bottom, extension ? &extension->bottom : 0 );
   }
-  p->restore();
+  if ( p )
+    p->restore();
 }
 
 void QgsComposerMapGrid::drawGridLine( const QLineF& line, QgsRenderContext& context ) const
@@ -843,7 +872,7 @@ void QgsComposerMapGrid::drawGridMarker( const QPointF& point, QgsRenderContext&
   mGridMarkerSymbol->stopRender( context );
 }
 
-void QgsComposerMapGrid::drawGridFrameBorder( QPainter* p, const QMap< double, double >& borderPos, QgsComposerMapGrid::BorderSide border ) const
+void QgsComposerMapGrid::drawGridFrameBorder( QPainter* p, const QMap< double, double >& borderPos, QgsComposerMapGrid::BorderSide border, double* extension ) const
 {
   if ( !mComposerMap )
   {
@@ -853,16 +882,16 @@ void QgsComposerMapGrid::drawGridFrameBorder( QPainter* p, const QMap< double, d
   switch ( mGridFrameStyle )
   {
     case QgsComposerMapGrid::Zebra:
-      drawGridFrameZebraBorder( p, borderPos, border );
+      drawGridFrameZebraBorder( p, borderPos, border, extension );
       break;
     case QgsComposerMapGrid::InteriorTicks:
     case QgsComposerMapGrid::ExteriorTicks:
     case QgsComposerMapGrid::InteriorExteriorTicks:
-      drawGridFrameTicks( p, borderPos, border );
+      drawGridFrameTicks( p, borderPos, border, extension );
       break;
 
     case QgsComposerMapGrid::LineBorder:
-      drawGridFrameLineBorder( p, border );
+      drawGridFrameLineBorder( p, border, extension );
       break;
 
     case QgsComposerMapGrid::NoFrame:
@@ -871,10 +900,16 @@ void QgsComposerMapGrid::drawGridFrameBorder( QPainter* p, const QMap< double, d
 
 }
 
-void QgsComposerMapGrid::drawGridFrameZebraBorder( QPainter* p, const QMap< double, double >& borderPos, QgsComposerMapGrid::BorderSide border ) const
+void QgsComposerMapGrid::drawGridFrameZebraBorder( QPainter* p, const QMap< double, double >& borderPos, QgsComposerMapGrid::BorderSide border, double* extension ) const
 {
   if ( !mComposerMap )
   {
+    return;
+  }
+
+  if ( extension )
+  {
+    *extension = mGridFrameWidth + mGridFramePenThickness / 2.0;
     return;
   }
 
@@ -944,10 +979,17 @@ void QgsComposerMapGrid::drawGridFrameZebraBorder( QPainter* p, const QMap< doub
   }
 }
 
-void QgsComposerMapGrid::drawGridFrameTicks( QPainter* p, const QMap< double, double >& borderPos, QgsComposerMapGrid::BorderSide border ) const
+void QgsComposerMapGrid::drawGridFrameTicks( QPainter* p, const QMap< double, double >& borderPos, QgsComposerMapGrid::BorderSide border, double* extension ) const
 {
   if ( !mComposerMap )
   {
+    return;
+  }
+
+  if ( extension )
+  {
+    if ( mGridFrameStyle != QgsComposerMapGrid::InteriorTicks )
+      *extension = mGridFrameWidth;
     return;
   }
 
@@ -1010,10 +1052,16 @@ void QgsComposerMapGrid::drawGridFrameTicks( QPainter* p, const QMap< double, do
   }
 }
 
-void QgsComposerMapGrid::drawGridFrameLineBorder( QPainter* p, QgsComposerMapGrid::BorderSide border ) const
+void QgsComposerMapGrid::drawGridFrameLineBorder( QPainter* p, QgsComposerMapGrid::BorderSide border, double* extension ) const
 {
   if ( !mComposerMap )
   {
+    return;
+  }
+
+  if ( extension )
+  {
+    *extension = mGridFramePenThickness / 2.0;
     return;
   }
 
@@ -1041,32 +1089,28 @@ void QgsComposerMapGrid::drawGridFrameLineBorder( QPainter* p, QgsComposerMapGri
   }
 }
 
-void QgsComposerMapGrid::drawCoordinateAnnotations( QPainter* p, const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines, QgsExpressionContext &expressionContext ) const
+void QgsComposerMapGrid::drawCoordinateAnnotations( QPainter* p, const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines, QgsExpressionContext &expressionContext,
+    GridExtension* extension ) const
 {
-  if ( !p )
-  {
-    return;
-  }
-
   QString currentAnnotationString;
   QList< QPair< double, QLineF > >::const_iterator it = hLines.constBegin();
   for ( ; it != hLines.constEnd(); ++it )
   {
     currentAnnotationString = gridAnnotationString( it->first, QgsComposerMapGrid::Latitude, expressionContext );
-    drawCoordinateAnnotation( p, it->second.p1(), currentAnnotationString, QgsComposerMapGrid::Latitude );
-    drawCoordinateAnnotation( p, it->second.p2(), currentAnnotationString, QgsComposerMapGrid::Latitude );
+    drawCoordinateAnnotation( p, it->second.p1(), currentAnnotationString, QgsComposerMapGrid::Latitude, extension );
+    drawCoordinateAnnotation( p, it->second.p2(), currentAnnotationString, QgsComposerMapGrid::Latitude, extension );
   }
 
   it = vLines.constBegin();
   for ( ; it != vLines.constEnd(); ++it )
   {
     currentAnnotationString =  gridAnnotationString( it->first, QgsComposerMapGrid::Longitude, expressionContext );
-    drawCoordinateAnnotation( p, it->second.p1(), currentAnnotationString, QgsComposerMapGrid::Longitude );
-    drawCoordinateAnnotation( p, it->second.p2(), currentAnnotationString, QgsComposerMapGrid::Longitude );
+    drawCoordinateAnnotation( p, it->second.p1(), currentAnnotationString, QgsComposerMapGrid::Longitude, extension );
+    drawCoordinateAnnotation( p, it->second.p2(), currentAnnotationString, QgsComposerMapGrid::Longitude, extension );
   }
 }
 
-void QgsComposerMapGrid::drawCoordinateAnnotation( QPainter* p, const QPointF& pos, QString annotationString, const AnnotationCoordinate coordinateType ) const
+void QgsComposerMapGrid::drawCoordinateAnnotation( QPainter* p, const QPointF& pos, QString annotationString, const AnnotationCoordinate coordinateType, GridExtension* extension ) const
 {
   if ( !mComposerMap )
   {
@@ -1075,7 +1119,8 @@ void QgsComposerMapGrid::drawCoordinateAnnotation( QPainter* p, const QPointF& p
   QgsComposerMapGrid::BorderSide frameBorder = borderForLineCoord( pos, coordinateType );
   double textWidth = QgsComposerUtils::textWidthMM( mGridAnnotationFont, annotationString );
   //relevant for annotations is the height of digits
-  double textHeight = QgsComposerUtils::fontHeightCharacterMM( mGridAnnotationFont, QChar( '0' ) );
+  double textHeight = extension ? QgsComposerUtils::fontAscentMM( mGridAnnotationFont )
+                      : QgsComposerUtils::fontHeightCharacterMM( mGridAnnotationFont, QChar( '0' ) );
   double xpos = pos.x();
   double ypos = pos.y();
   int rotation = 0;
@@ -1138,24 +1183,29 @@ void QgsComposerMapGrid::drawCoordinateAnnotation( QPainter* p, const QPointF& p
         xpos -= ( mAnnotationFrameDistance + gridFrameDistance );
         ypos += textWidth / 2.0;
         rotation = 270;
+        if ( extension )
+          extension->left = qMax( extension->left, mAnnotationFrameDistance + gridFrameDistance + textHeight );
       }
       else if ( mLeftGridAnnotationDirection == QgsComposerMapGrid::VerticalDescending )
       {
         xpos -= textHeight + mAnnotationFrameDistance + gridFrameDistance;
         ypos -= textWidth / 2.0;
         rotation = 90;
+        if ( extension )
+          extension->left = qMax( extension->left, mAnnotationFrameDistance + gridFrameDistance + textHeight );
       }
       else
       {
         xpos -= ( textWidth + mAnnotationFrameDistance + gridFrameDistance );
         ypos += textHeight / 2.0;
+        if ( extension )
+          extension->left = qMax( extension->left, mAnnotationFrameDistance + gridFrameDistance + textWidth );
       }
     }
     else
     {
       return;
     }
-
   }
   else if ( frameBorder == QgsComposerMapGrid::Right )
   {
@@ -1205,17 +1255,23 @@ void QgsComposerMapGrid::drawCoordinateAnnotation( QPainter* p, const QPointF& p
         xpos += ( textHeight + mAnnotationFrameDistance + gridFrameDistance );
         ypos += textWidth / 2.0;
         rotation = 270;
+        if ( extension )
+          extension->right = qMax( extension->right, mAnnotationFrameDistance + gridFrameDistance + textHeight );
       }
       else if ( mRightGridAnnotationDirection == QgsComposerMapGrid::VerticalDescending || mRightGridAnnotationDirection == QgsComposerMapGrid::BoundaryDirection )
       {
         xpos += ( mAnnotationFrameDistance + gridFrameDistance );
         ypos -= textWidth / 2.0;
         rotation = 90;
+        if ( extension )
+          extension->right = qMax( extension->right, mAnnotationFrameDistance + gridFrameDistance + textHeight );
       }
       else //Horizontal
       {
         xpos += ( mAnnotationFrameDistance + gridFrameDistance );
         ypos += textHeight / 2.0;
+        if ( extension )
+          extension->right = qMax( extension->right, mAnnotationFrameDistance + gridFrameDistance + textWidth );
       }
     }
     else
@@ -1270,18 +1326,24 @@ void QgsComposerMapGrid::drawCoordinateAnnotation( QPainter* p, const QPointF& p
       {
         ypos += ( mAnnotationFrameDistance + textHeight + gridFrameDistance );
         xpos -= textWidth / 2.0;
+        if ( extension )
+          extension->bottom = qMax( extension->bottom, mAnnotationFrameDistance + gridFrameDistance + textHeight );
       }
       else if ( mBottomGridAnnotationDirection == QgsComposerMapGrid::VerticalDescending )
       {
         xpos -= textHeight / 2.0;
         ypos += gridFrameDistance + mAnnotationFrameDistance;
         rotation = 90;
+        if ( extension )
+          extension->bottom = qMax( extension->bottom, mAnnotationFrameDistance + gridFrameDistance + textWidth );
       }
       else //Vertical
       {
         xpos += textHeight / 2.0;
         ypos += ( textWidth + mAnnotationFrameDistance + gridFrameDistance );
         rotation = 270;
+        if ( extension )
+          extension->bottom = qMax( extension->bottom, mAnnotationFrameDistance + gridFrameDistance + textWidth );
       }
     }
     else
@@ -1336,18 +1398,24 @@ void QgsComposerMapGrid::drawCoordinateAnnotation( QPainter* p, const QPointF& p
       {
         xpos -= textWidth / 2.0;
         ypos -= ( mAnnotationFrameDistance + gridFrameDistance );
+        if ( extension )
+          extension->top = qMax( extension->top, mAnnotationFrameDistance + gridFrameDistance + textHeight );
       }
       else if ( mTopGridAnnotationDirection == QgsComposerMapGrid::VerticalDescending )
       {
         xpos -= textHeight / 2.0;
         ypos -= textWidth + mAnnotationFrameDistance + gridFrameDistance;
         rotation = 90;
+        if ( extension )
+          extension->top = qMax( extension->top, mAnnotationFrameDistance + gridFrameDistance + textWidth );
       }
       else //Vertical
       {
         xpos += textHeight / 2.0;
         ypos -= ( mAnnotationFrameDistance + gridFrameDistance );
         rotation = 270;
+        if ( extension )
+          extension->top = qMax( extension->top, mAnnotationFrameDistance + gridFrameDistance + textWidth );
       }
     }
     else
@@ -1355,6 +1423,9 @@ void QgsComposerMapGrid::drawCoordinateAnnotation( QPainter* p, const QPointF& p
       return;
     }
   }
+
+  if ( extension || !p )
+    return;
 
   drawAnnotation( p, QPointF( xpos, ypos ), rotation, annotationString );
 }
@@ -2006,93 +2077,63 @@ QgsComposerMapGrid::DisplayMode QgsComposerMapGrid::annotationDisplay( const Qgs
   }
 }
 
-double QgsComposerMapGrid::maxExtension() const
+double QgsComposerMapGrid::maxExtension()
 {
-  if ( !mComposerMap )
+  double top = 0.0;
+  double right = 0.0;
+  double bottom = 0.0;
+  double left = 0.0;
+  calculateMaxExtension( top, right, bottom, left );
+  return qMax( qMax( qMax( top, right ), bottom ), left );
+}
+
+void QgsComposerMapGrid::calculateMaxExtension( double& top, double& right, double& bottom, double& left )
+{
+  top = 0.0;
+  right = 0.0;
+  bottom = 0.0;
+  left = 0.0;
+
+  if ( !mComposerMap || !mEnabled )
   {
-    return 0;
+    return;
   }
 
-  if ( !mEnabled || ( mGridFrameStyle == QgsComposerMapGrid::NoFrame && ( !mShowGridAnnotation ||
-                      (( mLeftGridAnnotationPosition != QgsComposerMapGrid::OutsideMapFrame || mLeftGridAnnotationDisplay == QgsComposerMapGrid::HideAll ) &&
-                       ( mRightGridAnnotationPosition != QgsComposerMapGrid::OutsideMapFrame || mRightGridAnnotationDisplay == QgsComposerMapGrid::HideAll ) &&
-                       ( mTopGridAnnotationPosition != QgsComposerMapGrid::OutsideMapFrame || mTopGridAnnotationDisplay == QgsComposerMapGrid::HideAll ) &&
-                       ( mBottomGridAnnotationPosition != QgsComposerMapGrid::OutsideMapFrame || mBottomGridAnnotationDisplay == QgsComposerMapGrid::HideAll ) ) ) ) )
+  //setup render context
+  QgsMapSettings ms = mComposerMap->composition()->mapSettings();
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
+  QgsExpressionContext* expressionContext = createExpressionContext();
+  context.setExpressionContext( *expressionContext );
+  delete expressionContext;
+
+  GridExtension extension;
+
+  //collect grid lines
+  QList< QPair< double, QLineF > > verticalLines;
+  QList< QPair< double, QLineF > > horizontalLines;
+  if ( mGridUnit == MapUnit && mCRS.isValid() && mCRS != ms.destinationCrs() )
   {
-    return 0;
-  }
-
-  const QgsMapSettings& ms = mComposerMap->composition()->mapSettings();
-
-  QScopedPointer< QgsExpressionContext> expressionContext( createExpressionContext() );
-
-  QStringList coordStrings;
-  if ( mCRS.isValid() && mCRS != ms.destinationCrs() )
-  {
-    QList< QPair< double, QPolygonF > > xGridLines;
-    QList< QPair< double, QPolygonF > > yGridLines;
-    QgsRectangle crsRect;
-    QgsCoordinateTransform inverseTransform;
-    if ( crsGridParams( crsRect, inverseTransform ) != 0 )
-    {
-      return 0;
-    }
-
-    int xGridReturn = xGridLinesCRSTransform( crsRect, inverseTransform, xGridLines );
-    int yGridReturn = yGridLinesCRSTransform( crsRect, inverseTransform, yGridLines );
-    if ( xGridReturn != 0 || yGridReturn != 0 )
-    {
-      return 0;
-    }
-
-    QList< QPair< double, QPolygonF > >::const_iterator it = xGridLines.constBegin();
-    for ( ; it != xGridLines.constEnd(); ++it )
-    {
-      coordStrings.append( gridAnnotationString( it->first, QgsComposerMapGrid::Latitude, *expressionContext ) );
-    }
-    it = yGridLines.constBegin();
-    for ( ; it != yGridLines.constEnd(); ++it )
-    {
-      coordStrings.append( gridAnnotationString( it->first, QgsComposerMapGrid::Longitude, *expressionContext ) );
-    }
+    drawGridCRSTransform( context, 0, horizontalLines, verticalLines, false );
   }
   else
   {
-    QList< QPair< double, QLineF > > xLines;
-    QList< QPair< double, QLineF > > yLines;
-    int xGridReturn = xGridLines( xLines );
-    int yGridReturn = yGridLines( yLines );
-    if ( xGridReturn != 0 && yGridReturn != 0 )
-    {
-      return 0;
-    }
-
-    QList< QPair< double, QLineF > >::const_iterator it = xLines.constBegin();
-    for ( ; it != xLines.constEnd(); ++it )
-    {
-      coordStrings.append( gridAnnotationString( it->first, QgsComposerMapGrid::Latitude, *expressionContext ) );
-    }
-
-    it = yLines.constBegin();
-    for ( ; it != yLines.constEnd(); ++it )
-    {
-      coordStrings.append( gridAnnotationString( it->first, QgsComposerMapGrid::Longitude, *expressionContext ) );
-    }
+    drawGridNoTransform( context, 0, horizontalLines, verticalLines, false );
   }
 
-  double maxExtension = 0;
-  double currentExtension = 0;
-
-  QStringList::const_iterator coordIt = coordStrings.constBegin();
-  for ( ; coordIt != coordStrings.constEnd(); ++coordIt )
+  if ( mGridFrameStyle != QgsComposerMapGrid::NoFrame )
   {
-    currentExtension = qMax( QgsComposerUtils::textWidthMM( mGridAnnotationFont, *coordIt ), QgsComposerUtils::fontAscentMM( mGridAnnotationFont ) );
-    maxExtension = qMax( maxExtension, currentExtension );
+    drawGridFrame( 0, horizontalLines, verticalLines, &extension );
   }
 
-  //grid frame
-  double gridFrameDist = ( mGridFrameStyle == QgsComposerMapGrid::NoFrame ) ? 0 : mGridFrameWidth + ( mGridFramePenThickness / 2.0 );
-  return maxExtension + mAnnotationFrameDistance + gridFrameDist;
+  if ( mShowGridAnnotation )
+  {
+    drawCoordinateAnnotations( 0, horizontalLines, verticalLines, context.expressionContext(), &extension );
+  }
+
+  top = extension.top;
+  right = extension.right;
+  bottom = extension.bottom;
+  left = extension.left;
 }
 
 void QgsComposerMapGrid::setUnits( const QgsComposerMapGrid::GridUnit unit )

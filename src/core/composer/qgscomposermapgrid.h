@@ -132,9 +132,21 @@ class CORE_EXPORT QgsComposerMapGridStack : public QgsComposerMapItemStack
     /** Calculates the maximum distance grids within the stack extend
      * beyond the QgsComposerMap's item rect
      * @returns maximum grid extension
+     * @see calculateMaxGridExtension()
      */
     double maxGridExtension() const;
 
+    /** Calculates the maximum distance grids within the stack extend beyond the
+     * QgsComposerMap's item rect. This method calculates the distance for each side of the
+     * map item seperately
+     * @param top storage for top extension
+     * @param right storage for right extension
+     * @param bottom storage for bottom extension
+     * @param left storage for left extension
+     * @note added in QGIS 2.12
+     * @see maxGridExtension()
+     */
+    void calculateMaxGridExtension( double& top, double& right, double& bottom, double& left ) const;
 };
 
 //
@@ -317,7 +329,20 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      * item rect
      * @returns maximum extension in millimetres
      */
-    double maxExtension() const;
+    double maxExtension();
+
+
+    /** Calculates the maximum distance the grid extends beyond the
+     * QgsComposerMap's item rect. This method calculates the distance for each side of the
+     * map item seperately
+     * @param top storage for top extension
+     * @param right storage for right extension
+     * @param bottom storage for bottom extension
+     * @param left storage for left extension
+     * @note added in QGIS 2.12
+     * @see maxExtension()
+     */
+    void calculateMaxExtension( double& top, double& right, double& bottom, double& left );
 
     //
     // GRID UNITS
@@ -807,6 +832,15 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
 
     QgsComposerMapGrid(); //forbidden
 
+    struct GridExtension
+    {
+      GridExtension() : top( 0.0 ), right( 0.0 ), bottom( 0.0 ), left( 0.0 ) {}
+      double top;
+      double right;
+      double bottom;
+      double left;
+    };
+
     /*True if a re-transformation of grid lines is required*/
     bool mTransformDirty;
 
@@ -906,18 +940,25 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
 
     void init();
 
-    /** Draws the map grid*/
-    void drawGridFrame( QPainter* p, const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines ) const;
+    /** Draws the map grid. If extension is specified, then no grid will be drawn and instead the maximum extension
+     * for the grid outside of the map frame will be calculated.
+    */
+    void drawGridFrame( QPainter* p, const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines, GridExtension* extension = 0 ) const;
 
     /** Draw coordinates for mGridAnnotationType Coordinate
         @param p drawing painter
         @param hLines horizontal coordinate lines in item coordinates
         @param vLines vertical coordinate lines in item coordinates
         @param expressionContext expression context for evaluating custom annotation formats
+        @param extension optional. If specified, nothing will be drawn and instead the maximum extension for the grid
+        annotations will be stored in this variable.
     */
-    void drawCoordinateAnnotations( QPainter* p, const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines, QgsExpressionContext& expressionContext ) const;
+    void drawCoordinateAnnotations( QPainter* p, const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines, QgsExpressionContext& expressionContext, GridExtension* extension = 0 ) const;
 
-    void drawCoordinateAnnotation( QPainter* p, const QPointF& pos, QString annotationString, const AnnotationCoordinate coordinateType ) const;
+    /** Draw an annotation. If optional extension argument is specified, nothing will be drawn and instead
+     * the extension of the annotation outside of the map frame will be stored in this variable.
+     */
+    void drawCoordinateAnnotation( QPainter* p, const QPointF& pos, QString annotationString, const AnnotationCoordinate coordinateType, GridExtension* extension = 0 ) const;
 
     /** Draws a single annotation
      * @param p drawing painter
@@ -948,7 +989,10 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     void sortGridLinesOnBorders( const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines, QMap< double, double >& leftFrameEntries,
                                  QMap< double, double >& rightFrameEntries, QMap< double, double >& topFrameEntries, QMap< double, double >& bottomFrameEntries ) const;
 
-    void drawGridFrameBorder( QPainter* p, const QMap< double, double >& borderPos, BorderSide border ) const;
+    /** Draw the grid frame's border. If optional extension argument is specified, nothing will be drawn and instead
+     * the maximum extension of the frame border outside of the map frame will be stored in this variable.
+     */
+    void drawGridFrameBorder( QPainter* p, const QMap< double, double >& borderPos, BorderSide border, double* extension = 0 ) const;
 
     /** Returns the item border of a point (in item coordinates)
      * @param p point
@@ -965,9 +1009,9 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
 
     /** Draws grid if CRS is different to map CRS*/
     void drawGridCRSTransform( QgsRenderContext &context, double dotsPerMM, QList< QPair< double, QLineF > > &horizontalLines,
-                               QList< QPair< double, QLineF > > &verticalLines );
+                               QList< QPair< double, QLineF > > &verticalLines , bool calculateLinesOnly = false );
 
-    void drawGridNoTransform( QgsRenderContext &context, double dotsPerMM, QList<QPair<double, QLineF> > &horizontalLines, QList<QPair<double, QLineF> > &verticalLines ) const;
+    void drawGridNoTransform( QgsRenderContext &context, double dotsPerMM, QList<QPair<double, QLineF> > &horizontalLines, QList<QPair<double, QLineF> > &verticalLines, bool calculateLinesOnly = false ) const;
 
     void createDefaultGridLineSymbol();
 
@@ -975,11 +1019,11 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
 
     void drawGridMarker( const QPointF &point, QgsRenderContext &context ) const;
 
-    void drawGridFrameZebraBorder( QPainter *p, const QMap<double, double> &borderPos, BorderSide border ) const;
+    void drawGridFrameZebraBorder( QPainter *p, const QMap<double, double> &borderPos, BorderSide border, double* extension = 0 ) const;
 
-    void drawGridFrameTicks( QPainter *p, const QMap<double, double> &borderPos, BorderSide border ) const;
+    void drawGridFrameTicks( QPainter *p, const QMap<double, double> &borderPos, BorderSide border, double* extension = 0 ) const;
 
-    void drawGridFrameLineBorder( QPainter *p, BorderSide border ) const;
+    void drawGridFrameLineBorder( QPainter *p, BorderSide border, double* extension = 0 ) const;
 
     void calculateCRSTransformLines();
 

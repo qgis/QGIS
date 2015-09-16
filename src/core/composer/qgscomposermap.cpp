@@ -2000,14 +2000,24 @@ void QgsComposerMap::updateBoundingRect()
 {
   QRectF rectangle = rect();
   double frameExtension = mFrame ? pen().widthF() / 2.0 : 0.0;
-  double maxGridExtension = mGridStack ? mGridStack->maxGridExtension() : 0;
 
-  double maxExtension = qMax( frameExtension, maxGridExtension );
+  double topExtension = 0.0;
+  double rightExtension = 0.0;
+  double bottomExtension = 0.0;
+  double leftExtension = 0.0;
 
-  rectangle.setLeft( rectangle.left() - maxExtension );
-  rectangle.setRight( rectangle.right() + maxExtension );
-  rectangle.setTop( rectangle.top() - maxExtension );
-  rectangle.setBottom( rectangle.bottom() + maxExtension );
+  if ( mGridStack )
+    mGridStack->calculateMaxGridExtension( topExtension, rightExtension, bottomExtension, leftExtension );
+
+  topExtension = qMax( topExtension, frameExtension );
+  rightExtension = qMax( rightExtension, frameExtension );
+  bottomExtension = qMax( bottomExtension, frameExtension );
+  leftExtension = qMax( leftExtension, frameExtension );
+
+  rectangle.setLeft( rectangle.left() - leftExtension );
+  rectangle.setRight( rectangle.right() + rightExtension );
+  rectangle.setTop( rectangle.top() - topExtension );
+  rectangle.setBottom( rectangle.bottom() + bottomExtension );
   if ( rectangle != mCurrentRectangle )
   {
     prepareGeometryChange();

@@ -807,6 +807,7 @@ void QgsComposerMapWidget::handleChangedFrameDisplay( QgsComposerMapGrid::Border
   mComposerMap->beginCommand( tr( "Frame divisions changed" ) );
   grid->setFrameDivisions( mode, border );
   mComposerMap->endCommand();
+  mComposerMap->updateBoundingRect();
 }
 
 void QgsComposerMapWidget::handleChangedAnnotationDisplay( QgsComposerMapGrid::BorderSide border, const QString &text )
@@ -1677,6 +1678,7 @@ void QgsComposerMapWidget::on_mFrameWidthSpinBox_valueChanged( double val )
 
   mComposerMap->beginCommand( tr( "Frame width changed" ) );
   grid->setFrameWidth( val );
+  mComposerMap->updateBoundingRect();
   mComposerMap->update();
   mComposerMap->endCommand();
 }
@@ -1691,6 +1693,7 @@ void QgsComposerMapWidget::on_mCheckGridLeftSide_toggled( bool checked )
 
   mComposerMap->beginCommand( tr( "Frame left side changed" ) );
   grid->setFrameSideFlag( QgsComposerMapGrid::FrameLeft, checked );
+  mComposerMap->updateBoundingRect();
   mComposerMap->update();
   mComposerMap->endCommand();
 }
@@ -1705,6 +1708,7 @@ void QgsComposerMapWidget::on_mCheckGridRightSide_toggled( bool checked )
 
   mComposerMap->beginCommand( tr( "Frame right side changed" ) );
   grid->setFrameSideFlag( QgsComposerMapGrid::FrameRight, checked );
+  mComposerMap->updateBoundingRect();
   mComposerMap->update();
   mComposerMap->endCommand();
 }
@@ -1719,6 +1723,7 @@ void QgsComposerMapWidget::on_mCheckGridTopSide_toggled( bool checked )
 
   mComposerMap->beginCommand( tr( "Frame top side changed" ) );
   grid->setFrameSideFlag( QgsComposerMapGrid::FrameTop, checked );
+  mComposerMap->updateBoundingRect();
   mComposerMap->update();
   mComposerMap->endCommand();
 }
@@ -1733,6 +1738,7 @@ void QgsComposerMapWidget::on_mCheckGridBottomSide_toggled( bool checked )
 
   mComposerMap->beginCommand( tr( "Frame bottom side changed" ) );
   grid->setFrameSideFlag( QgsComposerMapGrid::FrameBottom, checked );
+  mComposerMap->updateBoundingRect();
   mComposerMap->update();
   mComposerMap->endCommand();
 }
@@ -1956,6 +1962,7 @@ void QgsComposerMapWidget::on_mGridTypeComboBox_currentIndexChanged( const QStri
     mGridBlendLabel->setVisible( false );
   }
 
+  mComposerMap->updateBoundingRect();
   mComposerMap->update();
   mComposerMap->endCommand();
 }
@@ -1978,6 +1985,7 @@ void QgsComposerMapWidget::on_mMapGridCRSButton_clicked()
     mComposerMap->beginCommand( tr( "Grid CRS changed" ) );
     QString selectedAuthId = crsDialog.selectedAuthId();
     grid->setCrs( QgsCoordinateReferenceSystem( selectedAuthId ) );
+    mComposerMap->updateBoundingRect();
     mMapGridCRSButton->setText( selectedAuthId );
     mComposerMap->endCommand();
   }
