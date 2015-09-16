@@ -6922,8 +6922,6 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
         }
         mMapCanvas->freeze( false );
 
-        vlayer->triggerRepaint();
-
         QApplication::restoreOverrideCursor();
         break;
 
