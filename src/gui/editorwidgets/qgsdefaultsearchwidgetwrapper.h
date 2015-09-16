@@ -42,6 +42,7 @@ class GUI_EXPORT QgsDefaultSearchWidgetWrapper : public QgsSearchWidgetWrapper
 
   private slots:
     void setCaseString( int );
+    void filterChanged();
 
   protected:
     QWidget* createWidget( QWidget* parent ) override;
