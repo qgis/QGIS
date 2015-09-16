@@ -367,6 +367,8 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
     static double lineWidthScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u, const QgsMapUnitScale& scale = QgsMapUnitScale() );
     /** Returns scale factor painter units -> pixel dimensions*/
     static double pixelSizeScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u, const QgsMapUnitScale& scale = QgsMapUnitScale() );
+    /** Returns scale factor painter units -> map units*/
+    static double mapUnitScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u, const QgsMapUnitScale& scale = QgsMapUnitScale() );
     /** Creates a render context for a pixel based device*/
     static QgsRenderContext createRenderContext( QPainter* p );
 

@@ -3310,6 +3310,22 @@ double QgsSymbolLayerV2Utils::pixelSizeScaleFactor( const QgsRenderContext& c, Q
   }
 }
 
+double QgsSymbolLayerV2Utils::mapUnitScaleFactor( const QgsRenderContext &c, QgsSymbolV2::OutputUnit u, const QgsMapUnitScale &scale )
+{
+  if ( u == QgsSymbolV2::MM )
+  {
+    return scale.computeMapUnitsPerPixel( c ) * c.scaleFactor() * c.rasterScaleFactor();
+  }
+  else if ( u == QgsSymbolV2::MapUnit )
+  {
+    return 1.0;
+  }
+  else //QgsSymbol::Pixel
+  {
+    return scale.computeMapUnitsPerPixel( c );
+  }
+}
+
 QgsRenderContext QgsSymbolLayerV2Utils::createRenderContext( QPainter* p )
 {
   QgsRenderContext context;

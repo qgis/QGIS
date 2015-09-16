@@ -36,6 +36,7 @@ QgsPointDisplacementRenderer::QgsPointDisplacementRenderer( const QString& label
     , mLabelAttributeName( labelAttributeName )
     , mLabelIndex( -1 )
     , mTolerance( 0.00001 )
+    , mToleranceUnit( QgsSymbolV2::MapUnit )
     , mCircleWidth( 0.4 )
     , mCircleColor( QColor( 125, 125, 125 ) )
     , mCircleRadiusAddition( 0 )
@@ -64,6 +65,8 @@ QgsFeatureRendererV2* QgsPointDisplacementRenderer::clone() const
   r->setCircleRadiusAddition( mCircleRadiusAddition );
   r->setMaxLabelScaleDenominator( mMaxLabelScaleDenominator );
   r->setTolerance( mTolerance );
+  r->setToleranceUnit( mToleranceUnit );
+  r->setToleranceMapUnitScale( mToleranceMapUnitScale );
   if ( mCenterSymbol )
   {
     r->setCenterSymbol( dynamic_cast<QgsMarkerSymbolV2*>( mCenterSymbol->clone() ) );
@@ -106,7 +109,8 @@ bool QgsPointDisplacementRenderer::renderFeature( QgsFeature& feature, QgsRender
   if ( selected )
     mSelectedFeatures.insert( feature.id() );
 
-  QList<QgsFeatureId> intersectList = mSpatialIndex->intersects( searchRect( feature.constGeometry()->asPoint() ) );
+  double searchDistance = mTolerance * QgsSymbolLayerV2Utils::mapUnitScaleFactor( context, mToleranceUnit, mToleranceMapUnitScale );
+  QList<QgsFeatureId> intersectList = mSpatialIndex->intersects( searchRect( feature.constGeometry()->asPoint(), searchDistance ) );
   if ( intersectList.empty() )
   {
     mSpatialIndex->insertFeature( feature );
@@ -351,6 +355,8 @@ QgsFeatureRendererV2* QgsPointDisplacementRenderer::create( QDomElement& symbolo
   r->setCircleRadiusAddition( symbologyElem.attribute( "circleRadiusAddition", "0.0" ).toDouble() );
   r->setMaxLabelScaleDenominator( symbologyElem.attribute( "maxLabelScaleDenominator", "-1" ).toDouble() );
   r->setTolerance( symbologyElem.attribute( "tolerance", "0.00001" ).toDouble() );
+  r->setToleranceUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( symbologyElem.attribute( "toleranceUnit", "MapUnit" ) ) );
+  r->setToleranceMapUnitScale( QgsSymbolLayerV2Utils::decodeMapUnitScale( symbologyElem.attribute( "toleranceUnitScale" ) ) );
 
   //look for an embedded renderer <renderer-v2>
   QDomElement embeddedRendererElem = symbologyElem.firstChildElement( "renderer-v2" );
@@ -381,6 +387,8 @@ QDomElement QgsPointDisplacementRenderer::save( QDomDocument& doc )
   rendererElement.setAttribute( "circleRadiusAddition", QString::number( mCircleRadiusAddition ) );
   rendererElement.setAttribute( "maxLabelScaleDenominator", QString::number( mMaxLabelScaleDenominator ) );
   rendererElement.setAttribute( "tolerance", QString::number( mTolerance ) );
+  rendererElement.setAttribute( "toleranceUnit", QgsSymbolLayerV2Utils::encodeOutputUnit( mToleranceUnit ) );
+  rendererElement.setAttribute( "toleranceUnitScale", QgsSymbolLayerV2Utils::encodeMapUnitScale( mToleranceMapUnitScale ) );
 
   if ( mRenderer )
   {
@@ -418,9 +426,9 @@ QgsLegendSymbolList QgsPointDisplacementRenderer::legendSymbolItems( double scal
 }
 
 
-QgsRectangle QgsPointDisplacementRenderer::searchRect( const QgsPoint& p ) const
+QgsRectangle QgsPointDisplacementRenderer::searchRect( const QgsPoint& p, double distance ) const
 {
-  return QgsRectangle( p.x() - mTolerance, p.y() - mTolerance, p.x() + mTolerance, p.y() + mTolerance );
+  return QgsRectangle( p.x() - distance, p.y() - distance, p.x() + distance, p.y() + distance );
 }
 
 void QgsPointDisplacementRenderer::printInfoDisplacementGroups()

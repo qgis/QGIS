@@ -57,7 +57,7 @@
     </widget>
    </item>
    <item row="4" column="0">
-    <widget class="QGroupBox" name="mLabellingGroupBox">
+    <widget class="QgsCollapsibleGroupBoxBasic" name="mLabellingGroupBox">
      <property name="title">
       <string>Labels</string>
      </property>
@@ -133,7 +133,7 @@
     </widget>
    </item>
    <item row="3" column="0">
-    <widget class="QGroupBox" name="mDisplacementCirclesGroupBox">
+    <widget class="QgsCollapsibleGroupBoxBasic" name="mDisplacementCirclesGroupBox">
      <property name="title">
       <string>Displacement circles</string>
      </property>
@@ -171,19 +171,6 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
-       <widget class="QDoubleSpinBox" name="mCircleWidthSpinBox"/>
-      </item>
-      <item row="6" column="1">
-       <widget class="QDoubleSpinBox" name="mDistanceSpinBox">
-        <property name="decimals">
-         <number>7</number>
-        </property>
-        <property name="maximum">
-         <double>999999999.000000000000000</double>
-        </property>
-       </widget>
-      </item>
       <item row="2" column="0">
        <widget class="QLabel" name="mCircleColorLabel">
         <property name="text">
@@ -199,11 +186,35 @@
        </widget>
       </item>
       <item row="3" column="1">
-       <widget class="QDoubleSpinBox" name="mCircleModificationSpinBox">
+       <widget class="QgsDoubleSpinBox" name="mCircleModificationSpinBox">
         <property name="minimum">
          <double>-99.000000000000000</double>
         </property>
        </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QgsDoubleSpinBox" name="mCircleWidthSpinBox"/>
+      </item>
+      <item row="6" column="1">
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QgsDoubleSpinBox" name="mDistanceSpinBox">
+          <property name="decimals">
+           <number>7</number>
+          </property>
+          <property name="maximum">
+           <double>999999999.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QgsUnitSelectionWidget" name="mDistanceUnitWidget" native="true">
+          <property name="focusPolicy">
+           <enum>Qt::StrongFocus</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
     </widget>
@@ -217,6 +228,23 @@
    <header>qgscolorbuttonv2.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsUnitSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsunitselectionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBoxBasic</class>
+   <extends>QGroupBox</extends>
+   <header location="global">qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mCenterSymbolPushButton</tabstop>
@@ -226,6 +254,7 @@
   <tabstop>mCircleColorButton</tabstop>
   <tabstop>mCircleModificationSpinBox</tabstop>
   <tabstop>mDistanceSpinBox</tabstop>
+  <tabstop>mDistanceUnitWidget</tabstop>
   <tabstop>mLabelFieldComboBox</tabstop>
   <tabstop>mLabelFontButton</tabstop>
   <tabstop>mLabelColorButton</tabstop>
