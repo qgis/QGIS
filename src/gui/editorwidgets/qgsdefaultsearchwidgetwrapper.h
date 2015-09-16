@@ -36,6 +36,7 @@ class GUI_EXPORT QgsDefaultSearchWidgetWrapper : public QgsSearchWidgetWrapper
   public:
     QString expression() override;
     bool applyDirectly() override;
+
   protected slots:
     void setExpression( QString exp ) override;
 

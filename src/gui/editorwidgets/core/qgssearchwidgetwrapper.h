@@ -70,6 +70,7 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
   signals:
 
     void expressionChanged( QString exp );
+    void expressionChanged();
 
   protected slots:
 
