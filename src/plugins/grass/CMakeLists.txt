@@ -20,6 +20,7 @@ ENDIF (WIN32)
 # Files
 
 SET (GRASS_PLUGIN_SRCS
+   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrasseditrenderer.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassplugin.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassselect.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrasstools.cpp
@@ -45,6 +46,7 @@ SET (GRASS_PLUGIN_UIS
 )
 
 SET (GRASS_PLUGIN_MOC_HDRS
+   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrasseditrenderer.h
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassplugin.h
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassselect.h
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrasstools.h
@@ -149,8 +151,13 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_BINARY_DIR}
   ../../core
   ../../core/geometry
+  ../../core/layertree
   ../../core/raster
+  ../../core/symbology-ng
   ../../gui
+  ../../gui/editorwidgets
+  ../../gui/symbology-ng
+  ../../gui/layertree
   ../../providers/grass
   ${CMAKE_CURRENT_BINARY_DIR}/../../ui
   ${GDAL_INCLUDE_DIR}

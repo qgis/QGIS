@@ -165,8 +165,8 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     static QgsGrass* instance();
 
     /** Global GRASS library lock */
-    static void lock() { sMutex.lock(); }
-    static void unlock() { sMutex.unlock(); }
+    static void lock();
+    static void unlock();
 
     /** Path to where GRASS is installed (GISBASE) */
     static QString gisbase() { return mGisbase; }

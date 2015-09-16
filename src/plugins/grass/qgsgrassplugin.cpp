@@ -17,8 +17,9 @@
 #include "qgsgrassplugin.h"
 #include "qgis.h"
 #include "qgsgrass.h"
+#include "qgsgrassprovider.h"
 
-//the gui subclass
+#include "qgsgrasseditrenderer.h"
 #include "qgsgrassnewmapset.h"
 #include "qgsgrassregion.h"
 #include "qgsgrassselect.h"
@@ -28,10 +29,14 @@
 // includes
 #include "qgisinterface.h"
 #include "qgsapplication.h"
+#include "qgslayertreeview.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
+#include "qgsmaplayerstylemanager.h"
 #include "qgsrubberband.h"
 #include "qgsproject.h"
+#include "qgsproviderregistry.h"
+#include "qgsrendererv2registry.h"
 #include "qgsvectorlayer.h"
 #include "qgsmaplayerregistry.h"
 
@@ -211,11 +216,103 @@ void QgsGrassPlugin::initGui()
   connect( QgsGrass::instance(), SIGNAL( regionChanged() ), SLOT( displayRegion() ) );
   connect( QgsGrass::instance(), SIGNAL( regionPenChanged() ), SLOT( displayRegion() ) );
 
+  // Connect start/stop editing
+  connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWasAdded( QgsMapLayer* ) ), this, SLOT( onLayerWasAdded( QgsMapLayer* ) ) );
+
+  connect( qGisInterface->layerTreeView(), SIGNAL( currentLayerChanged( QgsMapLayer* ) ),
+           SLOT( onCurrentLayerChanged( QgsMapLayer* ) ) );
+
   mapsetChanged();
 
   // open tools when plugin is loaded so that main app restores tools dock widget state
   mTools = new QgsGrassTools( qGisInterface, qGisInterface->mainWindow() );
   qGisInterface->addDockWidget( Qt::RightDockWidgetArea, mTools );
+
+
+}
+
+void QgsGrassPlugin::onLayerWasAdded( QgsMapLayer* theMapLayer )
+{
+  QgsDebugMsg( "name = " + theMapLayer->name() );
+  QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( theMapLayer );
+  if ( !vectorLayer )
+    return;
+  QgsGrassProvider* grassProvider = dynamic_cast<QgsGrassProvider*>( vectorLayer->dataProvider() );
+  if ( !grassProvider )
+    return;
+
+  QgsDebugMsg( "connect editing" );
+  connect( vectorLayer, SIGNAL( editingStarted() ), this, SLOT( onEditingStarted() ) );
+}
+
+void QgsGrassPlugin::onCurrentLayerChanged( QgsMapLayer* layer )
+{
+  Q_UNUSED( layer );
+  QgsDebugMsg( "Entered" );
+}
+
+void QgsGrassPlugin::onEditingStarted()
+{
+  QgsDebugMsg( "Entered" );
+  QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( sender() );
+  if ( !vectorLayer )
+    return;
+  QgsDebugMsg( "started editing of layer " + vectorLayer->name() );
+
+  // Set editing renderer
+  QgsGrassProvider* grassProvider = dynamic_cast<QgsGrassProvider*>( vectorLayer->dataProvider() );
+  if ( !grassProvider )
+    return;
+
+  QgsRendererV2Registry::instance()->addRenderer( new QgsRendererV2Metadata( "grassEdit",
+      QObject::tr( "GRASS Edit" ),
+      QgsGrassEditRenderer::create,
+      QIcon(),
+      QgsGrassEditRendererWidget::create ) );
+
+  QgsGrassEditRenderer *renderer = new QgsGrassEditRenderer();
+
+  mOldStyles[vectorLayer] = vectorLayer->styleManager()->currentStyle();
+
+  // Because the edit style may be stored to project:
+  // - do not translate because it may be loaded in QGIS running with different language
+  // - do not change the name until really necessary because it could not be found in project
+  QString editStyleName = "GRASS Edit"; // should not be translated
+
+  if ( vectorLayer->styleManager()->styles().contains( editStyleName ) )
+  {
+    QgsDebugMsg( editStyleName + " style exists -> set as current" );
+    vectorLayer->styleManager()->setCurrentStyle( editStyleName );
+  }
+  else
+  {
+    QgsDebugMsg( "create and set style " + editStyleName );
+    vectorLayer->styleManager()->addStyleFromLayer( editStyleName );
+
+    //vectorLayer->styleManager()->addStyle( editStyleName, QgsMapLayerStyle() );
+    vectorLayer->styleManager()->setCurrentStyle( editStyleName );
+    vectorLayer->setRendererV2( renderer );
+  }
+
+  grassProvider->startEditing( vectorLayer );
+  vectorLayer->updateFields();
+
+  connect( vectorLayer, SIGNAL( editingStopped() ), SLOT( onEditingStopped() ) );
+}
+
+void QgsGrassPlugin::onEditingStopped()
+{
+  QgsDebugMsg( "entered" );
+  QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( sender() );
+  if ( vectorLayer )
+  {
+    QString style = mOldStyles.value( vectorLayer );
+    if ( vectorLayer->styleManager()->currentStyle() == "GRASS Edit" ) // not changed by user
+    {
+      QgsDebugMsg( "reset style to " + style );
+      vectorLayer->styleManager()->setCurrentStyle( style );
+    }
+  }
 }
 
 void QgsGrassPlugin::mapsetChanged()
@@ -490,7 +587,7 @@ void QgsGrassPlugin::projectRead()
 
 void QgsGrassPlugin::newProject()
 {
-// QgsDebugMsg("entered.");
+  QgsDebugMsg( "entered" );
 }
 
 // Unload the plugin by cleaning up the GUI
@@ -519,8 +616,6 @@ void QgsGrassPlugin::unload()
 
   // disconnect slots of QgsGrassPlugin so they're not fired also after unload
   disconnect( mCanvas, SIGNAL( renderComplete( QPainter * ) ), this, SLOT( postRender( QPainter * ) ) );
-  disconnect( qGisInterface, SIGNAL( currentLayerChanged( QgsMapLayer * ) ),
-              this, SLOT( setEditAction() ) );
 
   QWidget* qgis = qGisInterface->mainWindow();
   disconnect( qgis, SIGNAL( projectRead() ), this, SLOT( projectRead() ) );

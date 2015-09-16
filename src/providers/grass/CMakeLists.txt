@@ -24,10 +24,13 @@ MACRO(ADD_GRASSLIB GRASS_BUILD_VERSION)
 
     QT4_WRAP_CPP(GRASS_LIBRARY_MOC_SRCS
       ../qgsgrass.h
+      ../qgsgrassfeatureiterator.h
       ../qgsgrassimport.h
       ../qgsgrassoptions.h
       ../qgsgrassprovider.h
       ../qgsgrassvector.h
+      ../qgsgrassvectormap.h
+      ../qgsgrassvectormaplayer.h
     )
 
     SET (GRASS_LIBRARY_SRCS
@@ -38,6 +41,8 @@ MACRO(ADD_GRASSLIB GRASS_BUILD_VERSION)
       ../qgsgrassoptions.cpp
       ../qgsgrassprovider.cpp
       ../qgsgrassvector.cpp
+      ../qgsgrassvectormap.cpp
+      ../qgsgrassvectormaplayer.cpp
     )
 
     QT4_WRAP_UI (GRASS_LIBRARY_UIS_H
@@ -108,8 +113,16 @@ MACRO(ADD_GRASSLIB GRASS_BUILD_VERSION)
     #
     # GRASS vector provider
     #
-    QT4_WRAP_CPP(GRASS_PROVIDER_MOC_SRCS ../qgsgrassprovidermodule.h)
-    ADD_LIBRARY(grassprovider${GRASS_BUILD_VERSION} MODULE ../qgsgrassprovidermodule.cpp ${GRASS_PROVIDER_MOC_SRCS})
+    SET (GRASS_VECTOR_PROVIDER_SRCS
+      ../qgsgrassvectormap.cpp
+      ../qgsgrassvectormaplayer.cpp
+      ../qgsgrassprovidermodule.cpp
+    )
+    QT4_WRAP_CPP(GRASS_VECTOR_PROVIDER_MOC_SRCS
+      ../qgsgrassfeatureiterator.h
+      ../qgsgrassprovidermodule.h
+    )
+    ADD_LIBRARY(grassprovider${GRASS_BUILD_VERSION} MODULE ${GRASS_VECTOR_PROVIDER_SRCS} ${GRASS_VECTOR_PROVIDER_MOC_SRCS})
     SET_TARGET_PROPERTIES(grassprovider${GRASS_BUILD_VERSION} PROPERTIES
       COMPILE_FLAGS "-DGRASS_BASE=\\\"${GRASS_PREFIX}\\\" \"-DGRASS_EXPORT=${DLLEXPORT}\" \"-DGRASS_LIB_EXPORT=${DLLIMPORT}\""
     )

@@ -25,7 +25,9 @@ class QgsGrassNewMapset;
 class QgsGrassRegion;
 
 class QgsMapCanvas;
+class QgsMapLayer;
 class QgsRubberBand;
+class QgsVectorLayer;
 
 class QAction;
 class QIcon;
@@ -109,6 +111,12 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
     //! update plugin icons when the app tells us its theme is changed
     void setCurrentTheme( QString theThemeName );
     void setTransform();
+    //! Called when a new layer was added to map registry
+    void onLayerWasAdded( QgsMapLayer* theMapLayer );
+    //! Called when editing of a layer started
+    void onEditingStarted();
+    void onEditingStopped();
+    void onCurrentLayerChanged( QgsMapLayer* layer );
   private:
     //! Pointer to our toolbar
     QToolBar *mToolBarPointer;
@@ -136,6 +144,9 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
     QAction *mCloseMapsetAction;
     QAction *mOpenToolsAction;
     QAction *mNewVectorAction;
+
+    // Names of layer styles before editing started
+    QMap<QgsVectorLayer *, QString> mOldStyles;
 };
 
 #endif // QGSGRASSPLUGIN_H
