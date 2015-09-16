@@ -1337,6 +1337,7 @@ void QgsGrassProvider::bufferGeometryChanged( QgsFeatureId fid, QgsGeometry &geo
 
 void QgsGrassProvider::onUndoIndexChanged( int index )
 {
+  Q_UNUSED( index )
   QgsDebugMsg( QString( "index = %1" ).arg( index ) );
 }
 

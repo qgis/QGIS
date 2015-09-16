@@ -969,6 +969,7 @@ QStringList QgsGrassModuleInput::currentGeometryTypeNames()
 
 void QgsGrassModuleInput::onChanged( const QString & text )
 {
+  Q_UNUSED( text ) // silence warning
   QgsDebugMsg( "text = " + text );
 
   if ( multiple() )

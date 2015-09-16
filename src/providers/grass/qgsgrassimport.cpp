@@ -185,7 +185,9 @@ bool QgsGrassRasterImport::import()
     }
 
     QGis::DataType qgis_out_type = QGis::UnknownDataType;
+#ifdef QGISDEBUG
     RASTER_MAP_TYPE data_type = -1;
+#endif
     switch ( provider->dataType( band ) )
     {
       case QGis::Byte:
