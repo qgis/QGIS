@@ -24,7 +24,7 @@ class QgsVectorLayer;
 class QgsStyleV2;
 class QgsFeatureRendererV2;
 class QgsSymbolV2SelectorDialog;
-
+class QgsMapCanvas;
 
 /**
   Base class for renderer settings widgets
@@ -50,12 +50,20 @@ class GUI_EXPORT QgsRendererV2Widget : public QWidget
     //! show a dialog with renderer's symbol level settings
     void showSymbolLevelsDialog( QgsFeatureRendererV2* r );
 
+    /** Sets the map canvas associated with the widget. This allows the widget to retrieve the current
+     * map scale and other properties from the canvas.
+     * @param canvas map canvas
+     * @note added in QGIS 2.12
+     */
+    virtual void setMapCanvas( QgsMapCanvas* canvas );
+
   protected:
     QgsVectorLayer* mLayer;
     QgsStyleV2* mStyle;
     QMenu* contextMenu;
     QAction* mCopyAction;
     QAction* mPasteAction;
+    QgsMapCanvas* mMapCanvas;
 
     /** Subclasses may provide the capability of changing multiple symbols at once by implementing the following two methods
       and by connecting the slot contextMenuViewCategories(const QPoint&)*/

@@ -773,6 +773,7 @@ void QgsGraduatedSymbolRendererV2Widget::changeGraduatedSymbol()
   QgsSymbolV2* newSymbol = mGraduatedSymbol->clone();
 
   QgsSymbolV2SelectorDialog dlg( newSymbol, mStyle, mLayer, this );
+  dlg.setMapCanvas( mMapCanvas );
   if ( !dlg.exec() )
   {
     delete newSymbol;
@@ -860,6 +861,7 @@ void QgsGraduatedSymbolRendererV2Widget::changeSelectedSymbols()
   {
     QgsSymbolV2* newSymbol = mGraduatedSymbol->clone();
     QgsSymbolV2SelectorDialog dlg( newSymbol, mStyle, mLayer, this );
+    dlg.setMapCanvas( mMapCanvas );
     if ( !dlg.exec() )
     {
       delete newSymbol;
@@ -885,6 +887,7 @@ void QgsGraduatedSymbolRendererV2Widget::changeRangeSymbol( int rangeIdx )
   QgsSymbolV2* newSymbol = mRenderer->ranges()[rangeIdx].symbol()->clone();
 
   QgsSymbolV2SelectorDialog dlg( newSymbol, mStyle, mLayer, this );
+  dlg.setMapCanvas( mMapCanvas );
   if ( !dlg.exec() )
   {
     delete newSymbol;

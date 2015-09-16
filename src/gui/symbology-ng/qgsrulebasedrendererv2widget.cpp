@@ -129,7 +129,7 @@ void QgsRuleBasedRendererV2Widget::addRule()
   QgsSymbolV2* s = QgsSymbolV2::defaultSymbol( mLayer->geometryType() );
   QgsRuleBasedRendererV2::Rule* newrule = new QgsRuleBasedRendererV2::Rule( s );
 
-  QgsRendererRulePropsDialog dlg( newrule, mLayer, mStyle, this );
+  QgsRendererRulePropsDialog dlg( newrule, mLayer, mStyle, this, mMapCanvas );
   if ( dlg.exec() )
   {
     QgsRuleBasedRendererV2::Rule* current = currentRule();
@@ -173,7 +173,7 @@ void QgsRuleBasedRendererV2Widget::editRule( const QModelIndex& index )
     return;
   QgsRuleBasedRendererV2::Rule* rule = mModel->ruleForIndex( index );
 
-  QgsRendererRulePropsDialog dlg( rule, mLayer, mStyle, this );
+  QgsRendererRulePropsDialog dlg( rule, mLayer, mStyle, this, mMapCanvas );
   if ( dlg.exec() )
   {
     // model should know about the change and emit dataChanged signal for the view
@@ -256,6 +256,7 @@ void QgsRuleBasedRendererV2Widget::refineRuleCategoriesGui( const QModelIndexLis
   dlg.setWindowTitle( tr( "Refine a rule to categories" ) );
   QVBoxLayout* l = new QVBoxLayout();
   QgsCategorizedSymbolRendererV2Widget* w = new QgsCategorizedSymbolRendererV2Widget( mLayer, mStyle, NULL );
+  w->setMapCanvas( mMapCanvas );
   l->addWidget( w );
   QDialogButtonBox* bb = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
   l->addWidget( bb );
@@ -286,6 +287,7 @@ void QgsRuleBasedRendererV2Widget::refineRuleRangesGui( const QModelIndexList& i
   dlg.setWindowTitle( tr( "Refine a rule to ranges" ) );
   QVBoxLayout* l = new QVBoxLayout();
   QgsGraduatedSymbolRendererV2Widget* w = new QgsGraduatedSymbolRendererV2Widget( mLayer, mStyle, NULL );
+  w->setMapCanvas( mMapCanvas );
   l->addWidget( w );
   QDialogButtonBox* bb = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
   l->addWidget( bb );
@@ -571,8 +573,8 @@ void QgsRuleBasedRendererV2Widget::countFeatures()
 
 ///////////
 
-QgsRendererRulePropsDialog::QgsRendererRulePropsDialog( QgsRuleBasedRendererV2::Rule* rule, QgsVectorLayer* layer, QgsStyleV2* style, QWidget* parent )
-    : QDialog( parent ), mRule( rule ), mLayer( layer ), mSymbolSelector( NULL ), mSymbol( NULL )
+QgsRendererRulePropsDialog::QgsRendererRulePropsDialog( QgsRuleBasedRendererV2::Rule* rule, QgsVectorLayer* layer, QgsStyleV2* style, QWidget* parent , QgsMapCanvas* mapCanvas )
+    : QDialog( parent ), mRule( rule ), mLayer( layer ), mSymbolSelector( NULL ), mSymbol( NULL ), mMapCanvas( mapCanvas )
 {
   setupUi( this );
 #ifdef Q_OS_MAC
@@ -597,6 +599,7 @@ QgsRendererRulePropsDialog::QgsRendererRulePropsDialog( QgsRuleBasedRendererV2::
     if ( rule->scaleMaxDenom() > 0 )
       mScaleRangeWidget->setMinimumScale( 1.0 / rule->scaleMaxDenom() );
   }
+  mScaleRangeWidget->setMapCanvas( mMapCanvas );
 
   if ( mRule->symbol() )
   {
@@ -610,6 +613,7 @@ QgsRendererRulePropsDialog::QgsRendererRulePropsDialog( QgsRuleBasedRendererV2::
   }
 
   mSymbolSelector = new QgsSymbolV2SelectorDialog( mSymbol, style, mLayer, this, true );
+  mSymbolSelector->setMapCanvas( mMapCanvas );
   QVBoxLayout* l = new QVBoxLayout;
   l->addWidget( mSymbolSelector );
   groupSymbol->setLayout( l );

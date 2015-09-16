@@ -23,13 +23,14 @@
 
 class QgsSymbolLayerV2;
 class QgsVectorLayer;
+class QgsMapCanvas;
 
 class GUI_EXPORT QgsSymbolLayerV2Widget : public QWidget
 {
     Q_OBJECT
 
   public:
-    QgsSymbolLayerV2Widget( QWidget* parent, const QgsVectorLayer* vl = 0 ) : QWidget( parent ), mVectorLayer( vl ), mPresetExpressionContext( 0 ) {}
+    QgsSymbolLayerV2Widget( QWidget* parent, const QgsVectorLayer* vl = 0 ) : QWidget( parent ), mVectorLayer( vl ), mPresetExpressionContext( 0 ), mMapCanvas( 0 ) {}
     virtual ~QgsSymbolLayerV2Widget() {}
 
     virtual void setSymbolLayer( QgsSymbolLayerV2* layer ) = 0;
@@ -42,6 +43,13 @@ class GUI_EXPORT QgsSymbolLayerV2Widget : public QWidget
      * @see setExpressionContext()
      */
     QgsExpressionContext* expressionContext() const { return mPresetExpressionContext; }
+
+    /** Sets the map canvas associated with the widget. This allows the widget to retrieve the current
+     * map scale and other properties from the canvas.
+     * @param canvas map canvas
+     * @note added in QGIS 2.12
+     */
+    virtual void setMapCanvas( QgsMapCanvas* canvas );
 
     /** Returns the vector layer associated with the widget.
      * @note added in QGIS 2.12
@@ -65,6 +73,8 @@ class GUI_EXPORT QgsSymbolLayerV2Widget : public QWidget
 
     //! Optional preset expression context
     QgsExpressionContext* mPresetExpressionContext;
+
+    QgsMapCanvas* mMapCanvas;
 
     void registerDataDefinedButton( QgsDataDefinedButton * button, const QString & propertyName, QgsDataDefinedButton::DataType type, const QString & description );
 

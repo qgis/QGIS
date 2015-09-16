@@ -24,7 +24,10 @@
 #include <QMenu>
 
 QgsRendererV2Widget::QgsRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style )
-    : QWidget(), mLayer( layer ), mStyle( style )
+    : QWidget()
+    , mLayer( layer )
+    , mStyle( style )
+    , mMapCanvas( 0 )
 {
   contextMenu = new QMenu( tr( "Renderer Options" ), this );
 
@@ -205,6 +208,11 @@ void QgsRendererV2Widget::showSymbolLevelsDialog( QgsFeatureRendererV2* r )
   {
     r->setUsingSymbolLevels( dlg.usingLevels() );
   }
+}
+
+void QgsRendererV2Widget::setMapCanvas( QgsMapCanvas *canvas )
+{
+  mMapCanvas = canvas;
 }
 
 

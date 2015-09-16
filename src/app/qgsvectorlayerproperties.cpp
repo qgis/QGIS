@@ -1237,6 +1237,7 @@ void QgsVectorLayerProperties::updateSymbologyPage()
   if ( layer->rendererV2() )
   {
     mRendererDialog = new QgsRendererV2PropertiesDialog( layer, QgsStyleV2::defaultStyle(), true );
+    mRendererDialog->setMapCanvas( QgisApp::instance()->mapCanvas() );
 
     // display the menu to choose the output format (fix #5136)
     mActionSaveStyleAs->setText( tr( "Save Style" ) );

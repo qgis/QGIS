@@ -160,6 +160,13 @@ QgsFeatureRendererV2* QgsPointDisplacementRendererWidget::renderer()
   return mRenderer;
 }
 
+void QgsPointDisplacementRendererWidget::setMapCanvas( QgsMapCanvas* canvas )
+{
+  QgsRendererV2Widget::setMapCanvas( canvas );
+  mDistanceUnitWidget->setMapCanvas( canvas );
+  mEmbeddedRendererWidget->setMapCanvas( canvas );
+}
+
 void QgsPointDisplacementRendererWidget::on_mLabelFieldComboBox_currentIndexChanged( const QString& text )
 {
   if ( mRenderer )
@@ -183,6 +190,7 @@ void QgsPointDisplacementRendererWidget::on_mRendererComboBox_currentIndexChange
   {
     delete mEmbeddedRendererWidget;
     mEmbeddedRendererWidget = m->createRendererWidget( mLayer, mStyle, mRenderer->embeddedRenderer()->clone() );
+    mEmbeddedRendererWidget->setMapCanvas( mMapCanvas );
   }
 }
 
@@ -332,6 +340,7 @@ void QgsPointDisplacementRendererWidget::on_mCenterSymbolPushButton_clicked()
   }
   QgsMarkerSymbolV2* markerSymbol = dynamic_cast<QgsMarkerSymbolV2*>( mRenderer->centerSymbol()->clone() );
   QgsSymbolV2SelectorDialog dlg( markerSymbol, QgsStyleV2::defaultStyle(), mLayer, this );
+  dlg.setMapCanvas( mMapCanvas );
   if ( dlg.exec() == QDialog::Rejected )
   {
     delete markerSymbol;

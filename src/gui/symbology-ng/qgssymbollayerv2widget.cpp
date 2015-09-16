@@ -68,6 +68,15 @@ static QgsExpressionContext _getExpressionContext( const void* context )
   return expContext;
 }
 
+void QgsSymbolLayerV2Widget::setMapCanvas( QgsMapCanvas *canvas )
+{
+  mMapCanvas = canvas;
+  Q_FOREACH ( QgsUnitSelectionWidget* unitWidget, findChildren<QgsUnitSelectionWidget*>() )
+  {
+    unitWidget->setMapCanvas( mMapCanvas );
+  }
+}
+
 void QgsSymbolLayerV2Widget::registerDataDefinedButton( QgsDataDefinedButton * button, const QString & propertyName, QgsDataDefinedButton::DataType type, const QString & description )
 {
   const QgsDataDefined* dd = symbolLayer()->getDataDefinedProperty( propertyName );

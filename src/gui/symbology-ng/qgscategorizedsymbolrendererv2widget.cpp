@@ -522,6 +522,7 @@ void QgsCategorizedSymbolRendererV2Widget::changeSelectedSymbols()
   {
     QgsSymbolV2* newSymbol = mCategorizedSymbol->clone();
     QgsSymbolV2SelectorDialog dlg( newSymbol, mStyle, mLayer, this );
+    dlg.setMapCanvas( mMapCanvas );
     if ( !dlg.exec() )
     {
       delete newSymbol;
@@ -555,6 +556,7 @@ void QgsCategorizedSymbolRendererV2Widget::changeCategorizedSymbol()
   QgsSymbolV2* newSymbol = mCategorizedSymbol->clone();
 
   QgsSymbolV2SelectorDialog dlg( newSymbol, mStyle, mLayer, this );
+  dlg.setMapCanvas( mMapCanvas );
   if ( !dlg.exec() )
   {
     delete newSymbol;
@@ -605,6 +607,7 @@ void QgsCategorizedSymbolRendererV2Widget::changeCategorySymbol()
   }
 
   QgsSymbolV2SelectorDialog dlg( symbol, mStyle, mLayer, this );
+  dlg.setMapCanvas( mMapCanvas );
   if ( !dlg.exec() )
   {
     delete symbol;

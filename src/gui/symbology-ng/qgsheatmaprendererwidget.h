@@ -43,6 +43,8 @@ class GUI_EXPORT QgsHeatmapRendererWidget : public QgsRendererV2Widget, private 
     /** @returns the current feature renderer */
     virtual QgsFeatureRendererV2* renderer() override;
 
+    void setMapCanvas( QgsMapCanvas* canvas ) override;
+
   protected:
     QgsHeatmapRenderer* mRenderer;
 
