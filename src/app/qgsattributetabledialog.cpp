@@ -469,6 +469,7 @@ void QgsAttributeTableDialog::filterColumnChanged( QObject* filterAction )
   }
   else
   {
+    connect( mCurrentSearchWidgetWrapper, SIGNAL( expressionChanged() ), SLOT( filterQueryAccepted() ) );
     mApplyFilterButton->setVisible( true );
   }
 
@@ -504,6 +505,10 @@ void QgsAttributeTableDialog::filterShowAll()
   mFilterButton->setDefaultAction( mActionShowAllFilter );
   mFilterButton->setPopupMode( QToolButton::InstantPopup );
   mFilterQuery->setVisible( false );
+  if ( mCurrentSearchWidgetWrapper != 0 )
+  {
+    mCurrentSearchWidgetWrapper->widget()->setVisible( false );
+  }
   mApplyFilterButton->setVisible( false );
   mMainView->setFilterMode( QgsAttributeTableFilterModel::ShowAll );
 }

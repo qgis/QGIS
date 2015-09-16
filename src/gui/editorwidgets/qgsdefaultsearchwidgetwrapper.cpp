@@ -96,6 +96,7 @@ void QgsDefaultSearchWidgetWrapper::initWidget( QWidget* widget )
   mContainer->layout()->addWidget( mLineEdit );
   mContainer->layout()->addWidget( mCheckbox );
   connect( mLineEdit, SIGNAL( textChanged( QString ) ), this, SLOT( setExpression( QString ) ) );
+  connect( mLineEdit, SIGNAL( returnPressed() ), this, SLOT( filterChanged() ) );
   connect( mCheckbox, SIGNAL( stateChanged( int ) ), this, SLOT( setCaseString( int ) ) );
   mCheckbox->setChecked( Qt::Unchecked );
   mCaseString = "ILIKE";
@@ -104,4 +105,9 @@ void QgsDefaultSearchWidgetWrapper::initWidget( QWidget* widget )
 bool QgsDefaultSearchWidgetWrapper::valid()
 {
   return true;
+}
+
+void QgsDefaultSearchWidgetWrapper::filterChanged()
+{
+  emit expressionChanged();
 }
