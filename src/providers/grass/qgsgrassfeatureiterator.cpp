@@ -249,6 +249,7 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature& feature )
   int lid = 0;
   QgsFeatureId featureId = 0;
 
+#ifdef QGISDEBUG
   if ( mSource->mEditing )
   {
     QgsDebugMsg( "newLids:" );
@@ -257,6 +258,7 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature& feature )
       QgsDebugMsg( QString( "%1 -> %2" ).arg( oldLid ).arg( mSource->mLayer->map()->newLids().value( oldLid ) ) );
     }
   }
+#endif
 
   if ( filterById )
   {
