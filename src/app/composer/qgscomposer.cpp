@@ -1866,6 +1866,12 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
 
     mView->setPaintingEnabled( false );
 
+    int worldFilePageNo = -1;
+    if ( mComposition->generateWorldFile() && mComposition->worldFileMap() )
+    {
+      worldFilePageNo = mComposition->worldFileMap()->page() - 1;
+    }
+
     for ( int i = 0; i < mComposition->numPages(); ++i )
     {
       if ( !mComposition->shouldExportPage( i + 1 ) )
@@ -1885,16 +1891,19 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
         return;
       }
       bool saveOk;
+      QString outputFilePath;
       if ( i == 0 )
       {
-        saveOk = image.save( fileNExt.first, fileNExt.second.toLocal8Bit().constData() );
+        outputFilePath = fileNExt.first;
       }
       else
       {
         QFileInfo fi( fileNExt.first );
-        QString outputFilePath = fi.absolutePath() + "/" + fi.baseName() + "_" + QString::number( i + 1 ) + "." + fi.suffix();
-        saveOk = image.save( outputFilePath, fileNExt.second.toLocal8Bit().constData() );
+        outputFilePath = fi.absolutePath() + "/" + fi.baseName() + "_" + QString::number( i + 1 ) + "." + fi.suffix();
       }
+
+      saveOk = image.save( outputFilePath, fileNExt.second.toLocal8Bit().constData() );
+
       if ( !saveOk )
       {
         QMessageBox::warning( this, tr( "Image export error" ),
@@ -1904,21 +1913,20 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
         mView->setPaintingEnabled( true );
         return;
       }
-    }
 
-    //
-    // Write the world file if asked to
-    if ( mComposition->generateWorldFile() )
-    {
-      double a, b, c, d, e, f;
-      mComposition->computeWorldFileParameters( a, b, c, d, e, f );
+      if ( i == worldFilePageNo )
+      {
+        // should generate world file for this page
+        double a, b, c, d, e, f;
+        mComposition->computeWorldFileParameters( a, b, c, d, e, f );
 
-      QFileInfo fi( fileNExt.first );
-      // build the world file name
-      QString worldFileName = fi.absolutePath() + "/" + fi.baseName() + "."
-                              + fi.suffix()[0] + fi.suffix()[fi.suffix().size()-1] + "w";
+        QFileInfo fi( outputFilePath );
+        // build the world file name
+        QString worldFileName = fi.absolutePath() + "/" + fi.baseName() + "."
+                                + fi.suffix()[0] + fi.suffix()[fi.suffix().size()-1] + "w";
 
-      writeWorldFile( worldFileName, a, b, c, d, e, f );
+        writeWorldFile( worldFileName, a, b, c, d, e, f );
+      }
     }
 
     mView->setPaintingEnabled( true );
@@ -2044,6 +2052,12 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
 
       QString filename = QDir( dir ).filePath( atlasMap->currentFilename() ) + fileExt;
 
+      int worldFilePageNo = -1;
+      if ( mComposition->generateWorldFile() && mComposition->worldFileMap() )
+      {
+        worldFilePageNo = mComposition->worldFileMap()->page() - 1;
+      }
+
       for ( int i = 0; i < mComposition->numPages(); ++i )
       {
         if ( !mComposition->shouldExportPage( i + 1 ) )
@@ -2071,21 +2085,20 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
           QApplication::restoreOverrideCursor();
           return;
         }
-      }
 
-      //
-      // Write the world file if asked to
-      if ( mComposition->generateWorldFile() )
-      {
-        double a, b, c, d, e, f;
-        mComposition->computeWorldFileParameters( a, b, c, d, e, f );
+        if ( i == worldFilePageNo )
+        {
+          // should generate world file for this page
+          double a, b, c, d, e, f;
+          mComposition->computeWorldFileParameters( a, b, c, d, e, f );
 
-        QFileInfo fi( filename );
-        // build the world file name
-        QString worldFileName = fi.absolutePath() + "/" + fi.baseName() + "."
-                                + fi.suffix()[0] + fi.suffix()[fi.suffix().size()-1] + "w";
+          QFileInfo fi( imageFilename );
+          // build the world file name
+          QString worldFileName = fi.absolutePath() + "/" + fi.baseName() + "."
+                                  + fi.suffix()[0] + fi.suffix()[fi.suffix().size()-1] + "w";
 
-        writeWorldFile( worldFileName, a, b, c, d, e, f );
+          writeWorldFile( worldFileName, a, b, c, d, e, f );
+        }
       }
     }
     atlasMap->endRender();
