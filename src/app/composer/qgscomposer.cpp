@@ -1616,7 +1616,7 @@ void QgsComposer::exportCompositionAsPDF( QgsComposer::OutputMode mode )
 
     outputFileName = QFileDialog::getSaveFileName(
                        this,
-                       tr( "Choose a file name to save the map as" ),
+                       tr( "Save composition as" ),
                        outputFileName,
                        tr( "PDF Format" ) + " (*.pdf *.PDF)" );
     if ( outputFileName.isEmpty() )
@@ -1650,7 +1650,7 @@ void QgsComposer::exportCompositionAsPDF( QgsComposer::OutputMode mode )
     QSettings myQSettings;
     QString lastUsedDir = myQSettings.value( "/UI/lastSaveAtlasAsPdfDir", "." ).toString();
     outputDir = QFileDialog::getExistingDirectory( this,
-                tr( "Directory where to save PDF files" ),
+                tr( "Export atlas to directory" ),
                 lastUsedDir,
                 QFileDialog::ShowDirsOnly );
     if ( outputDir.isEmpty() )
@@ -1990,7 +1990,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
       outputFileName = QDir( lastUsedDir ).filePath( atlasMap->currentFilename() );
     }
 
-    QPair<QString, QString> fileNExt = QgisGui::getSaveAsImageName( this, tr( "Choose a file name to save the map image as" ), outputFileName );
+    QPair<QString, QString> fileNExt = QgisGui::getSaveAsImageName( this, tr( "Save composition as" ), outputFileName );
 
     if ( fileNExt.first.isEmpty() )
     {
@@ -2129,7 +2129,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
     QString lastUsedDir = myQSettings.value( "/UI/lastSaveAtlasAsImagesDir", "." ).toString();
     QString lastUsedFormat = myQSettings.value( "/UI/lastSaveAtlasAsImagesFormat", "jpg" ).toString();
 
-    QFileDialog dlg( this, tr( "Directory where to save image files" ) );
+    QFileDialog dlg( this, tr( "Export atlas to directory" ) );
     dlg.setFileMode( QFileDialog::Directory );
     dlg.setOption( QFileDialog::ShowDirsOnly, true );
     dlg.setDirectory( lastUsedDir );
@@ -2444,7 +2444,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
     // open file dialog
     outputFileName = QFileDialog::getSaveFileName(
                        this,
-                       tr( "Choose a file name to save the composition as" ),
+                       tr( "Save composition as" ),
                        outputFileName,
                        tr( "SVG Format" ) + " (*.svg *.SVG)" );
 
@@ -2479,7 +2479,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
 
     // open file dialog
     outputDir = QFileDialog::getExistingDirectory( this,
-                tr( "Directory where to save SVG files" ),
+                tr( "Export atlas to directory" ),
                 lastUsedDir,
                 QFileDialog::ShowDirsOnly );
 
