@@ -83,7 +83,8 @@ class QgsExpressionItem : public QStandardItem
     static const int CustomSortRole = Qt::UserRole + 1;
     //! Item type role
     static const int ItemTypeRole = Qt::UserRole + 2;
-
+    //! Group role
+    static const int GroupRole = Qt::UserRole + 3;
   private:
     QString mExpressionText;
     QString mHelpText;
@@ -103,14 +104,20 @@ class QgsExpressionItemSearchProxy : public QSortFilterProxyModel
       setFilterCaseSensitivity( Qt::CaseInsensitive );
     }
 
+    void setGroupFilter( QString groupName )
+    {
+      groupFilter = groupName;
+      invalidateFilter();
+    }
+
     bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override
     {
       QModelIndex index = sourceModel()->index( source_row, 0, source_parent );
-      QgsExpressionItem::ItemType itemType = QgsExpressionItem::ItemType( sourceModel()->data( index, QgsExpressionItem::ItemTypeRole ).toInt() );
-
-      if ( itemType == QgsExpressionItem::Header )
-        return true;
-
+      if ( !groupFilter.isNull() )
+      {
+        QString group = sourceModel()->data( index, QgsExpressionItem::GroupRole ).toString();
+        return QString::localeAwareCompare( group, groupFilter ) == 0;
+      }
       return QSortFilterProxyModel::filterAcceptsRow( source_row, source_parent );
     }
 
@@ -134,6 +141,9 @@ class QgsExpressionItemSearchProxy : public QSortFilterProxyModel
 
       return QString::localeAwareCompare( leftString, rightString ) < 0;
     }
+
+  private:
+    QString groupFilter;
 };
 
 /** A reusable widget that can be used to build a expression string.
@@ -231,6 +241,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
 
   public slots:
     void currentChanged( const QModelIndex &index, const QModelIndex & );
+    void groupChanged( int groupIndex );
     void on_btnRun_pressed();
     void on_btnNewFile_pressed();
     void on_cmbFileNames_currentIndexChanged( int index );
@@ -274,6 +285,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     QString mFunctionsPath;
     QgsVectorLayer *mLayer;
     QStandardItemModel *mModel;
+    QStandardItemModel *mGroupsModel;
     QgsExpressionItemSearchProxy *mProxyModel;
     QMap<QString, QgsExpressionItem*> mExpressionGroups;
     QgsFeature mFeature;
