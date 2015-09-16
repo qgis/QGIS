@@ -2432,7 +2432,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
     QString lastUsedFile = settings.value( "/UI/lastSaveAsSvgFile", "qgis.svg" ).toString();
     QFileInfo file( lastUsedFile );
 
-    if ( atlasMap->enabled() )
+    if ( atlasMap->enabled() && mComposition->atlasMode() == QgsComposition::PreviewAtlas )
     {
       outputFileName = QDir( file.path() ).filePath( atlasMap->currentFilename() ) + ".svg";
     }
