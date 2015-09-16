@@ -1946,6 +1946,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
     QFileDialog dlg( this, tr( "Directory where to save image files" ) );
     dlg.setFileMode( QFileDialog::Directory );
     dlg.setOption( QFileDialog::ShowDirsOnly, true );
+    dlg.setDirectory( lastUsedDir );
 
     //
     // Build an augmented FileDialog with a combo box to select the output format
