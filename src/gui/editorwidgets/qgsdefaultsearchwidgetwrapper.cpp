@@ -109,5 +109,5 @@ bool QgsDefaultSearchWidgetWrapper::valid()
 
 void QgsDefaultSearchWidgetWrapper::filterChanged()
 {
-  emit expressionChanged();
+  emit expressionChanged( mExpression );
 }
