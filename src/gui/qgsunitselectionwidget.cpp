@@ -40,6 +40,14 @@ void QgsMapUnitScaleDialog::setMapUnitScale( const QgsMapUnitScale &scale )
   mComboBoxMaxScale->setEnabled( scale.maxScale > 0.0 );
 }
 
+void QgsMapUnitScaleDialog::setMapCanvas( QgsMapCanvas *canvas )
+{
+  mComboBoxMinScale->setMapCanvas( canvas );
+  mComboBoxMinScale->setShowCurrentScaleButton( true );
+  mComboBoxMaxScale->setMapCanvas( canvas );
+  mComboBoxMaxScale->setShowCurrentScaleButton( true );
+}
+
 void QgsMapUnitScaleDialog::configureMinComboBox()
 {
   mComboBoxMinScale->setEnabled( mCheckBoxMinScale->isChecked() );
@@ -142,6 +150,11 @@ void QgsUnitSelectionWidget::setUnit( QgsSymbolV2::OutputUnit unit )
 {
   int idx = mUnitCombo->findData( QVariant(( int ) unit ) );
   mUnitCombo->setCurrentIndex( idx == -1 ? 0 : idx );
+}
+
+void QgsUnitSelectionWidget::setMapCanvas( QgsMapCanvas *canvas )
+{
+  mUnitScaleDialog->setMapCanvas( canvas );
 }
 
 void QgsUnitSelectionWidget::showDialog()

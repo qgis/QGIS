@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>320</width>
-    <height>134</height>
+    <width>329</width>
+    <height>155</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -33,20 +33,18 @@
     </widget>
    </item>
    <item row="1" column="1" colspan="2">
-    <widget class="QgsScaleComboBox" name="mComboBoxMaxScale"/>
-   </item>
-   <item row="4" column="0" colspan="2">
-    <widget class="QDialogButtonBox" name="mButtonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+    <widget class="QgsScaleWidget" name="mComboBoxMaxScale" native="true">
+     <property name="focusPolicy">
+      <enum>Qt::StrongFocus</enum>
      </property>
     </widget>
    </item>
    <item row="2" column="1" colspan="2">
-    <widget class="QgsScaleComboBox" name="mComboBoxMinScale"/>
+    <widget class="QgsScaleWidget" name="mComboBoxMinScale" native="true">
+     <property name="focusPolicy">
+      <enum>Qt::StrongFocus</enum>
+     </property>
+    </widget>
    </item>
    <item row="0" column="0" colspan="3">
     <widget class="QLabel" name="label">
@@ -58,13 +56,23 @@
      </property>
     </widget>
    </item>
+   <item row="4" column="0" colspan="3">
+    <widget class="QDialogButtonBox" name="mButtonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsScaleComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgsscalecombobox.h</header>
+   <class>QgsScaleWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsscalewidget.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
