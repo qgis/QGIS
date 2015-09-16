@@ -42,10 +42,10 @@ class QgsMapToolNodeTool: public QgsMapToolEdit
 
     void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
 
-    void keyPressEvent( QKeyEvent* e );
+    void keyPressEvent( QKeyEvent* e ) override;
 
     //! called when map tool is being deactivated
-    void deactivate();
+    void deactivate() override;
 
   public slots:
     void selectedFeatureDestroyed();
