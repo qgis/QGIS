@@ -36,7 +36,7 @@ QString QgsDefaultSearchWidgetWrapper::expression()
   return mExpression;
 }
 
-void QgsDefaultSearchWidgetWrapper::setCaseString( int caseSensitiveCheckState )
+void QgsDefaultSearchWidgetWrapper::setCaseString( Qt::CheckState caseSensitiveCheckState )
 {
   if ( caseSensitiveCheckState == Qt::Checked )
   {
