@@ -38,12 +38,28 @@ class CORE_EXPORT QgsMapUnitScale
      * @param minScale minimum allowed scale, or 0.0 if no minimum scale set
      * @param maxScale maximum allowed scale, or 0.0 if no maximum scale set
      */
-    QgsMapUnitScale( double minScale = 0.0, double maxScale = 0.0 ) : minScale( minScale ), maxScale( maxScale ) {}
+    QgsMapUnitScale( double minScale = 0.0, double maxScale = 0.0 )
+        : minScale( minScale )
+        , maxScale( maxScale )
+        , minSizeMMEnabled( false )
+        , minSizeMM( 0.0 )
+        , maxSizeMMEnabled( false )
+        , maxSizeMM( 0.0 )
+    {}
 
     /** The minimum scale, or 0.0 if unset */
     double minScale;
     /** The maximum scale, or 0.0 if unset */
     double maxScale;
+
+    /** Whether the minimum size in mm should be respected */
+    bool minSizeMMEnabled;
+    /** The minimum size in millimeters, or 0.0 if unset */
+    double minSizeMM;
+    /** Whether the maximum size in mm should be respected */
+    bool maxSizeMMEnabled;
+    /** The maximum size in millimeters, or 0.0 if unset */
+    double maxSizeMM;
 
     /** Computes a map units per pixel scaling factor, respecting the minimum and maximum scales
      * set for the object.
@@ -67,12 +83,16 @@ class CORE_EXPORT QgsMapUnitScale
 
     bool operator==( const QgsMapUnitScale& other ) const
     {
-      return minScale == other.minScale && maxScale == other.maxScale;
+      return minScale == other.minScale && maxScale == other.maxScale
+             && minSizeMMEnabled == other.minSizeMMEnabled
+             && minSizeMM == other.minSizeMM
+             && maxSizeMMEnabled == other.maxSizeMMEnabled
+             && maxSizeMM == other.maxSizeMM;
     }
 
     bool operator!=( const QgsMapUnitScale& other ) const
     {
-      return minScale != other.minScale || maxScale != other.maxScale;
+      return !operator==( other );
     }
 };
 

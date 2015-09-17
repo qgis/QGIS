@@ -156,15 +156,15 @@ void QgsPointDisplacementRenderer::drawGroup( const DisplacementGroup& group, Qg
 
   //draw symbol
   double diagonal = 0;
-  double currentWidthFactor; //scale symbol size to map unit and output resolution
 
   QList<QgsMarkerSymbolV2*>::const_iterator it = symbolList.constBegin();
   for ( ; it != symbolList.constEnd(); ++it )
   {
     if ( *it )
     {
-      currentWidthFactor = QgsSymbolLayerV2Utils::lineWidthScaleFactor( context, ( *it )->outputUnit(), ( *it )->mapUnitScale() );
-      double currentDiagonal = sqrt( 2 * (( *it )->size() * ( *it )->size() ) ) * currentWidthFactor;
+      double currentDiagonal = QgsSymbolLayerV2Utils::convertToPainterUnits( context,
+                               sqrt( 2 * (( *it )->size() * ( *it )->size() ) ),
+                               ( *it )->outputUnit(), ( *it )->mapUnitScale() );
       if ( currentDiagonal > diagonal )
       {
         diagonal = currentDiagonal;

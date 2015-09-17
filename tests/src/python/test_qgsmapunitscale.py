@@ -35,17 +35,41 @@ class PyQgsMapUnitScale(TestCase):
         #test equality operator
 
         c1 = QgsMapUnitScale(0.0001, 0.005)
+        c1.minSizeMMEnabled = True
+        c1.minSizeMM = 3
+        c1.maxSizeMMEnabled = True
+        c1.maxSizeMM = 8
         c2 = QgsMapUnitScale(0.0001, 0.005)
+        c2.minSizeMMEnabled = True
+        c2.minSizeMM = 3
+        c2.maxSizeMMEnabled = True
+        c2.maxSizeMM = 8
         self.assertEqual(c1, c2)
 
         c2.minScale = 0.0004
         self.assertNotEqual(c1, c2)
-
         c2.minScale = 0.0001
+
         c2.maxScale = 0.007
         self.assertNotEqual(c1, c2)
-
         c2.maxScale = 0.005
+
+        c2.minSizeMMEnabled = False
+        self.assertNotEqual(c1, c2)
+        c2.minSizeMMEnabled = True
+
+        c2.maxSizeMMEnabled = False
+        self.assertNotEqual(c1, c2)
+        c2.maxSizeMMEnabled = True
+
+        c2.minSizeMM = 1
+        self.assertNotEqual(c1, c2)
+        c2.minSizeMM = 3
+
+        c2.maxSizeMM = 100
+        self.assertNotEqual(c1, c2)
+        c2.maxSizeMM = 8
+
         self.assertEqual(c1, c2)
 
     def testMapUnitsPerPixel(self):
@@ -139,6 +163,50 @@ class PyQgsMapUnitScale(TestCase):
         sf = QgsSymbolLayerV2Utils.lineWidthScaleFactor(r, QgsSymbolV2.Pixel, c)
         self.assertAlmostEqual(sf, 1.0, places=5)
 
+    def testConvertToPainterUnits(self):
+        #test QgsSymbolLayerV2Utils::convertToPainterUnits() using QgsMapUnitScale
+
+        ms = QgsMapSettings()
+        ms.setExtent(QgsRectangle(0, 0, 100, 100))
+        ms.setOutputSize(QSize(100, 50))
+        ms.setOutputDpi(300)
+        r = QgsRenderContext.fromMapSettings(ms)
+
+        #renderer scale should be about 1:291937841
+
+        #start with no min/max scale
+        c = QgsMapUnitScale()
+
+        size = QgsSymbolLayerV2Utils.convertToPainterUnits(r, 2, QgsSymbolV2.MapUnit, c)
+        self.assertAlmostEqual(size, 1.0, places=5)
+        size = QgsSymbolLayerV2Utils.convertToPainterUnits(r, 2, QgsSymbolV2.MM, c)
+        self.assertAlmostEqual(size, 23.622047, places=5)
+        size = QgsSymbolLayerV2Utils.convertToPainterUnits(r, 2, QgsSymbolV2.Pixel, c)
+        self.assertAlmostEqual(size, 2.0, places=5)
+
+        #minimum size greater than the calculated size, so size should be limited to minSizeMM
+        c.minSizeMM = 5
+        c.minSizeMMEnabled = True
+        size = QgsSymbolLayerV2Utils.convertToPainterUnits(r, 2, QgsSymbolV2.MapUnit, c)
+        self.assertAlmostEqual(size, 59.0551181, places=5)
+        #only conversion from mapunits should be affected
+        size = QgsSymbolLayerV2Utils.convertToPainterUnits(r, 2, QgsSymbolV2.MM, c)
+        self.assertAlmostEqual(size, 23.622047, places=5)
+        size = QgsSymbolLayerV2Utils.convertToPainterUnits(r, 2, QgsSymbolV2.Pixel, c)
+        self.assertAlmostEqual(size, 2.0, places=5)
+        c.minSizeMMEnabled = False
+
+        #maximum size less than the calculated size, so size should be limited to maxSizeMM
+        c.maxSizeMM = 0.1
+        c.maxSizeMMEnabled = True
+        size = QgsSymbolLayerV2Utils.convertToPainterUnits(r, 2, QgsSymbolV2.MapUnit, c)
+        self.assertAlmostEqual(size, 1.0, places=5)
+        #only conversion from mapunits should be affected
+        size = QgsSymbolLayerV2Utils.convertToPainterUnits(r, 2, QgsSymbolV2.MM, c)
+        self.assertAlmostEqual(size, 23.622047, places=5)
+        size = QgsSymbolLayerV2Utils.convertToPainterUnits(r, 2, QgsSymbolV2.Pixel, c)
+        self.assertAlmostEqual(size, 2.0, places=5)
+
     def testPixelSizeScaleFactor(self):
         #test QgsSymbolLayerV2Utils::pixelSizeScaleFactor() using QgsMapUnitScale
 
@@ -199,6 +267,31 @@ class PyQgsMapUnitScale(TestCase):
         self.assertAlmostEqual(sf, 23.622047, places=5)
         sf = QgsSymbolLayerV2Utils.mapUnitScaleFactor(r, QgsSymbolV2.Pixel, c)
         self.assertAlmostEqual(sf, 2.0, places=5)
+
+    def testEncodeDecode(self):
+        # test encoding and decoding QgsMapUnitScale
+
+        s = QgsMapUnitScale()
+        s.minScale = 50
+        s.maxScale = 100
+        s.minSizeMMEnabled = True
+        s.minSizeMM = 3
+        s.maxSizeMMEnabled = False
+        s.maxSizeMM = 99
+
+        encode = QgsSymbolLayerV2Utils.encodeMapUnitScale(s)
+        r = QgsSymbolLayerV2Utils.decodeMapUnitScale(encode)
+        self.assertEqual(s, r)
+
+        # check old style encoding
+        encode = '9,78.3'
+        r = QgsSymbolLayerV2Utils.decodeMapUnitScale(encode)
+        self.assertEqual(r.minScale, 9)
+        self.assertEqual(r.maxScale, 78.3)
+        self.assertFalse(r.minSizeMMEnabled)
+        self.assertEqual(r.minSizeMM, 0)
+        self.assertFalse(r.maxSizeMMEnabled)
+        self.assertEqual(r.maxSizeMM, 0)
 
 
 if __name__ == '__main__':
