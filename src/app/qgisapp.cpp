@@ -7643,8 +7643,9 @@ void QgisApp::legendLayerZoomNative()
       QgsCoordinateTransform ct( mMapCanvas->mapSettings().destinationCrs(), layer->crs() );
       p1 = ct.transform( p1 );
       p2 = ct.transform( p2 );
-      double width = sqrt( p1.sqrDist( p2 ) ); // width (actually the diagonal) of reprojected pixel
-      mMapCanvas->zoomByFactor( sqrt( layer->rasterUnitsPerPixelX() * layer->rasterUnitsPerPixelX() + layer->rasterUnitsPerPixelY() * layer->rasterUnitsPerPixelY() ) / width );
+      const double diagonalLengthOfReprojectedPixel = sqrt( p1.sqrDist( p2 ) );
+      mMapCanvas->zoomByFactor( QgsVector( layer->rasterUnitsPerPixelX(), layer->rasterUnitsPerPixelY() ).length()
+                                / diagonalLengthOfReprojectedPixel );
     }
     else
     {
