@@ -101,7 +101,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "invalid binary operator" ) << "1+" << false;
       QTest::newRow( "invalid function no params" ) << "cos" << false;
       QTest::newRow( "invalid function not known" ) << "coz(1)" << false;
-      QTest::newRow( "invalid operator IN" ) << "x in y" << false;
+      QTest::newRow( "invalid operator IN" ) << "n in m" << false;
       QTest::newRow( "empty node list" ) << "1 in ()" << false;
       QTest::newRow( "invalid sqrt params" ) << "sqrt(2,4)" << false;
       QTest::newRow( "special column as function" ) << "$id()" << false;
@@ -117,23 +117,23 @@ class TestQgsExpression: public QObject
       QTest::newRow( "unary minus" ) << "-(-3)" << true;
       QTest::newRow( "function" ) << "cos(0)" << true;
       QTest::newRow( "function2" ) << "atan2(0,1)" << true;
-      QTest::newRow( "operator IN" ) << "x in (a,b)" << true;
+      QTest::newRow( "operator IN" ) << "n in (a,b)" << true;
       QTest::newRow( "pow" ) << "2 ^ 8" << true;
       QTest::newRow( "$id" ) << "$id + 1" << true;
 
       QTest::newRow( "arithmetics" ) << "1+2*3" << true;
       QTest::newRow( "logic" ) << "be or not be" << true;
 
-      QTest::newRow( "conditions +1" ) << "case when x then y end" << true;
-      QTest::newRow( "conditions +2" ) << "case when x then y else z end" << true;
-      QTest::newRow( "conditions +3" ) << "case when x then y when a then b end" << true;
-      QTest::newRow( "conditions +4" ) << "case when x then y when a then b else z end" << true;
+      QTest::newRow( "conditions +1" ) << "case when n then m end" << true;
+      QTest::newRow( "conditions +2" ) << "case when n then m else o end" << true;
+      QTest::newRow( "conditions +3" ) << "case when n then m when a then b end" << true;
+      QTest::newRow( "conditions +4" ) << "case when n then ym when a then b else z end" << true;
 
       QTest::newRow( "conditions -1" ) << "case end" << false;
-      QTest::newRow( "conditions -2" ) << "when x then y" << false;
+      QTest::newRow( "conditions -2" ) << "when n then m" << false;
       QTest::newRow( "conditions -3" ) << "case" << false;
-      QTest::newRow( "conditions -4" ) << "case when x y end" << false;
-      QTest::newRow( "conditions -5" ) << "case y end" << false;
+      QTest::newRow( "conditions -4" ) << "case when n m end" << false;
+      QTest::newRow( "conditions -5" ) << "case m end" << false;
     }
     void parsing()
     {
@@ -398,6 +398,36 @@ class TestQgsExpression: public QObject
 
       // geometry functions
       QTest::newRow( "num_points" ) << "num_points(geom_from_wkt('GEOMETRYCOLLECTION(LINESTRING(0 0, 1 0),POINT(6 5))'))" << false << QVariant( 3 );
+      QTest::newRow( "length line" ) << "length(geom_from_wkt('LINESTRING(0 0, 4 0)'))" << false << QVariant( 4.0 );
+      QTest::newRow( "length polygon" ) << "length(geom_from_wkt('POLYGON((0 0, 4 0, 4 2, 0 2, 0 0))'))" << false << QVariant();
+      QTest::newRow( "length point" ) << "length(geom_from_wkt('POINT(0 0)'))" << false << QVariant();
+      QTest::newRow( "area polygon" ) << "area(geom_from_wkt('POLYGON((0 0, 4 0, 4 2, 0 2, 0 0))'))" << false << QVariant( 8.0 );
+      QTest::newRow( "area line" ) << "area(geom_from_wkt('LINESTRING(0 0, 4 0)'))" << false << QVariant();
+      QTest::newRow( "area point" ) << "area(geom_from_wkt('POINT(0 0)'))" << false << QVariant();
+      QTest::newRow( "perimeter polygon" ) << "perimeter(geom_from_wkt('POLYGON((0 0, 4 0, 4 2, 0 2, 0 0))'))" << false << QVariant( 12.0 );
+      QTest::newRow( "perimeter line" ) << "perimeter(geom_from_wkt('LINESTRING(0 0, 4 0)'))" << false << QVariant();
+      QTest::newRow( "perimeter point" ) << "perimeter(geom_from_wkt('POINT(0 0)'))" << false << QVariant();
+      QTest::newRow( "point_n point" ) << "geom_to_wkt(point_n(geom_from_wkt('POINT(0 0)'),1))" << false << QVariant( "Point (0 0)" );
+      QTest::newRow( "point_n bad index" ) << "geom_to_wkt(point_n(geom_from_wkt('POINT(0 0)'),0))" << true << QVariant();
+      QTest::newRow( "point_n bad index" ) << "geom_to_wkt(point_n(geom_from_wkt('POINT(0 0)'),2))" << true << QVariant();
+      QTest::newRow( "point_n multipoint" ) << "geom_to_wkt(point_n(geom_from_wkt('MULTIPOINT((0 0), (1 1), (2 2))'),2))" << false << QVariant( "Point (1 1)" );
+      QTest::newRow( "point_n line" ) << "geom_to_wkt(point_n(geom_from_wkt('LINESTRING(0 0, 1 1, 2 2)'),3))" << false << QVariant( "Point (2 2)" );
+      QTest::newRow( "point_n polygon" ) << "geom_to_wkt(point_n(geom_from_wkt('POLYGON((0 0, 4 0, 4 2, 0 2, 0 0))'),3))" << false << QVariant( "Point (4 2)" );
+      QTest::newRow( "start_point point" ) << "geom_to_wkt(start_point(geom_from_wkt('POINT(2 0)')))" << false << QVariant( "Point (2 0)" );
+      QTest::newRow( "start_point multipoint" ) << "geom_to_wkt(start_point(geom_from_wkt('MULTIPOINT((3 3), (1 1), (2 2))')))" << false << QVariant( "Point (3 3)" );
+      QTest::newRow( "start_point line" ) << "geom_to_wkt(start_point(geom_from_wkt('LINESTRING(4 1, 1 1, 2 2)')))" << false << QVariant( "Point (4 1)" );
+      QTest::newRow( "start_point polygon" ) << "geom_to_wkt(start_point(geom_from_wkt('POLYGON((-1 -1, 4 0, 4 2, 0 2, -1 -1))')))" << false << QVariant( "Point (-1 -1)" );
+      QTest::newRow( "end_point point" ) << "geom_to_wkt(end_point(geom_from_wkt('POINT(2 0)')))" << false << QVariant( "Point (2 0)" );
+      QTest::newRow( "end_point multipoint" ) << "geom_to_wkt(end_point(geom_from_wkt('MULTIPOINT((3 3), (1 1), (2 2))')))" << false << QVariant( "Point (2 2)" );
+      QTest::newRow( "end_point line" ) << "geom_to_wkt(end_point(geom_from_wkt('LINESTRING(4 1, 1 1, 2 2)')))" << false << QVariant( "Point (2 2)" );
+      QTest::newRow( "end_point polygon" ) << "geom_to_wkt(end_point(geom_from_wkt('POLYGON((-1 -1, 4 0, 4 2, 0 2, -1 -1))')))" << false << QVariant( "Point (-1 -1)" );
+      QTest::newRow( "make_point" ) << "geom_to_wkt(make_point(2.2,4.4))" << false << QVariant( "Point (2.2 4.4)" );
+      QTest::newRow( "x point" ) << "x(make_point(2.2,4.4))" << false << QVariant( 2.2 );
+      QTest::newRow( "y point" ) << "y(make_point(2.2,4.4))" << false << QVariant( 4.4 );
+      QTest::newRow( "x line" ) << "x(geom_from_wkt('LINESTRING(2 0,2 2, 3 2, 3 0)'))" << false << QVariant( 2.5 );
+      QTest::newRow( "x line" ) << "y(geom_from_wkt('LINESTRING(2 0,2 2, 3 2, 3 0)'))" << false << QVariant( 1.2 );
+      QTest::newRow( "x polygon" ) << "x(geom_from_wkt('POLYGON((2 0,2 2, 3 2, 3 0, 2 0))'))" << false << QVariant( 2.5 );
+      QTest::newRow( "x polygon" ) << "y(geom_from_wkt('POLYGON((2 0,2 2, 3 2, 3 0, 2 0))'))" << false << QVariant( 1.0 );
 
       // string functions
       QTest::newRow( "lower" ) << "lower('HeLLo')" << false << QVariant( "hello" );
@@ -786,7 +816,7 @@ class TestQgsExpression: public QObject
       QTest::addColumn<bool>( "needsGeom" );
 
       // literal evaluation
-      QTest::newRow( "x > 0" ) << "x > 0" << false;
+      QTest::newRow( "n > 0" ) << "n > 0" << false;
       QTest::newRow( "1 = 1" ) << "1 = 1" << false;
       QTest::newRow( "$x > 0" ) << "$x > 0" << true;
       QTest::newRow( "xat(0) > 0" ) << "xat(0) > 0" << true;
@@ -942,6 +972,17 @@ class TestQgsExpression: public QObject
       QVariant vVertices = exp10.evaluate( &fPolygon );
       QCOMPARE( vVertices.toInt(), 5 );
 
+      QgsExpression exp11( "length($geometry)" );
+      QVariant vLengthLine = exp11.evaluate( &fPolyline );
+      QCOMPARE( vLengthLine.toDouble(), 10.0 );
+
+      QgsExpression exp12( "area($geometry)" );
+      QVariant vAreaPoly = exp12.evaluate( &fPolygon );
+      QCOMPARE( vAreaPoly.toDouble(), 40.0 );
+
+      QgsExpression exp13( "perimeter($geometry)" );
+      QVariant vPerimeterPoly = exp13.evaluate( &fPolygon );
+      QCOMPARE( vPerimeterPoly.toDouble(), 26.0 );
 
       Q_NOWARN_DEPRECATED_POP
 

@@ -38,6 +38,8 @@
 #include "qgsexpressioncontext.h"
 #include "qgsproject.h"
 #include "qgsstringutils.h"
+#include "qgsgeometrycollectionv2.h"
+#include "qgspointv2.h"
 
 // from parser
 extern QgsExpression::Node* parseExpression( const QString& str, QString& parserErrorMsg );
@@ -771,9 +773,22 @@ static QVariant fcnWordwrap( const QVariantList& values, const QgsExpressionCont
 
 static QVariant fcnLength( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
+  // two variants, one for geometry, one for string
+  if ( values.at( 0 ).canConvert<QgsGeometry>() )
+  {
+    //geometry variant
+    QgsGeometry geom = getGeometry( values.at( 0 ), parent );
+    if ( geom.type() != QGis::Line )
+      return QVariant();
+
+    return QVariant( geom.length() );
+  }
+
+  //otherwise fall back to string variant
   QString str = getStringValue( values.at( 0 ), parent );
   return QVariant( str.length() );
 }
+
 static QVariant fcnReplace( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   QString str = getStringValue( values.at( 0 ), parent );
@@ -1171,6 +1186,7 @@ static QVariant fcnX( const QVariantList&, const QgsExpressionContext* context, 
     return g->asPoint().x();
   }
 }
+
 static QVariant fcnY( const QVariantList&, const QgsExpressionContext* context, QgsExpression* )
 {
   FEAT_FROM_CONTEXT( context, f );
@@ -1183,6 +1199,106 @@ static QVariant fcnY( const QVariantList&, const QgsExpressionContext* context, 
   {
     return g->asPoint().y();
   }
+}
+
+static QVariant fcnGeomX( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QgsGeometry geom = getGeometry( values.at( 0 ), parent );
+  if ( geom.isEmpty() )
+    return QVariant();
+
+  //if single point, return the point's x coordinate
+  if ( geom.type() == QGis::Point && !geom.isMultipart() )
+  {
+    return geom.asPoint().x();
+  }
+
+  //otherwise return centroid x
+  QgsGeometry* centroid = geom.centroid();
+  QVariant result( centroid->asPoint().x() );
+  delete centroid;
+  return result;
+}
+
+static QVariant fcnGeomY( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QgsGeometry geom = getGeometry( values.at( 0 ), parent );
+  if ( geom.isEmpty() )
+    return QVariant();
+
+  //if single point, return the point's y coordinate
+  if ( geom.type() == QGis::Point && !geom.isMultipart() )
+  {
+    return geom.asPoint().y();
+  }
+
+  //otherwise return centroid y
+  QgsGeometry* centroid = geom.centroid();
+  QVariant result( centroid->asPoint().y() );
+  delete centroid;
+  return result;
+}
+
+static QVariant fcnPointN( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QgsGeometry geom = getGeometry( values.at( 0 ), parent );
+
+  if ( geom.isEmpty() )
+    return QVariant();
+
+  //idx is 1 based
+  int idx = getIntValue( values.at( 1 ), parent ) - 1;
+
+  QgsVertexId vId;
+  if ( idx < 0 || !geom.vertexIdFromVertexNr( idx, vId ) )
+  {
+    parent->setEvalErrorString( QObject::tr( "Point index is out of range" ) );
+    return QVariant();
+  }
+
+  QgsPointV2 point = geom.geometry()->vertexAt( vId );
+  return QVariant::fromValue( QgsGeometry( new QgsPointV2( point ) ) );
+}
+
+static QVariant fcnStartPoint( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QgsGeometry geom = getGeometry( values.at( 0 ), parent );
+
+  if ( geom.isEmpty() )
+    return QVariant();
+
+  QgsVertexId vId;
+  if ( !geom.vertexIdFromVertexNr( 0, vId ) )
+  {
+    return QVariant();
+  }
+
+  QgsPointV2 point = geom.geometry()->vertexAt( vId );
+  return QVariant::fromValue( QgsGeometry( new QgsPointV2( point ) ) );
+}
+
+static QVariant fcnEndPoint( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QgsGeometry geom = getGeometry( values.at( 0 ), parent );
+
+  if ( geom.isEmpty() )
+    return QVariant();
+
+  QgsVertexId vId;
+  if ( !geom.vertexIdFromVertexNr( geom.geometry()->nCoordinates() - 1, vId ) )
+  {
+    return QVariant();
+  }
+
+  QgsPointV2 point = geom.geometry()->vertexAt( vId );
+  return QVariant::fromValue( QgsGeometry( new QgsPointV2( point ) ) );
+}
+
+static QVariant fcnMakePoint( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  double x = getDoubleValue( values.at( 0 ), parent );
+  double y = getDoubleValue( values.at( 1 ), parent );
+  return QVariant::fromValue( QgsGeometry( new QgsPointV2( x, y ) ) );
 }
 
 static QVariant pointAt( const QVariantList& values, const QgsExpressionContext* context, QgsExpression* parent ) // helper function
@@ -1251,6 +1367,17 @@ static QVariant fcnGeomArea( const QVariantList&, const QgsExpressionContext* co
   QgsDistanceArea* calc = parent->geomCalculator();
   return QVariant( calc->measure( f.constGeometry() ) );
 }
+
+static QVariant fcnArea( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QgsGeometry geom = getGeometry( values.at( 0 ), parent );
+
+  if ( geom.type() != QGis::Polygon )
+    return QVariant();
+
+  return QVariant( geom.area() );
+}
+
 static QVariant fcnGeomLength( const QVariantList&, const QgsExpressionContext* context, QgsExpression* parent )
 {
   FEAT_FROM_CONTEXT( context, f );
@@ -1258,6 +1385,7 @@ static QVariant fcnGeomLength( const QVariantList&, const QgsExpressionContext* 
   QgsDistanceArea* calc = parent->geomCalculator();
   return QVariant( calc->measure( f.constGeometry() ) );
 }
+
 static QVariant fcnGeomPerimeter( const QVariantList&, const QgsExpressionContext* context, QgsExpression* parent )
 {
   FEAT_FROM_CONTEXT( context, f );
@@ -1265,10 +1393,22 @@ static QVariant fcnGeomPerimeter( const QVariantList&, const QgsExpressionContex
   QgsDistanceArea* calc = parent->geomCalculator();
   return QVariant( calc->measurePerimeter( f.constGeometry() ) );
 }
+
+static QVariant fcnPerimeter( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QgsGeometry geom = getGeometry( values.at( 0 ), parent );
+
+  if ( geom.type() != QGis::Polygon )
+    return QVariant();
+
+  //length for polygons = perimeter
+  return QVariant( geom.length() );
+}
+
 static QVariant fcnGeomNumPoints( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   QgsGeometry geom = getGeometry( values.at( 0 ), parent );
-  return QVariant( geom.geometry()->nCoordinates() );
+  return QVariant( geom.isEmpty() ? 0 : geom.geometry()->nCoordinates() );
 }
 
 static QVariant fcnBounds( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
@@ -1916,9 +2056,10 @@ const QStringList& QgsExpression::BuiltinFunctions()
     << "color_rgb" << "color_rgba" << "ramp_color"
     << "color_hsl" << "color_hsla" << "color_hsv" << "color_hsva"
     << "color_cymk" << "color_cymka"
-    << "xat" << "yat" << "$area"
-    << "$length" << "$perimeter" << "$x" << "$y" << "num_points"
-    << "x_at" << "xat" << "y_at" << "yat" << "x_min" << "xmin" << "x_max" << "xmax"
+    << "xat" << "yat" << "$area" << "area" << "perimeter"
+    << "$length" << "$perimeter" << "x" << "y" << "$x" << "$y" << "num_points"
+    << "point_n" << "start_point" << "end_point" << "make_point"
+    << "$x_at" << "x_at" << "xat" << "$y_at" << "y_at" << "yat" << "x_min" << "xmin" << "x_max" << "xmax"
     << "y_min" << "ymin" << "y_max" << "ymax" << "geom_from_wkt" << "geomFromWKT"
     << "geom_from_gml" << "geomFromGML" << "intersects_bbox" << "bbox"
     << "disjoint" << "intersects" << "touches" << "crosses" << "contains"
@@ -1975,7 +2116,7 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( "to_time", 1, fcnToTime, "Conversions", QString(), false, QStringList(), false, QStringList() << "totime" )
     << new StaticFunction( "to_interval", 1, fcnToInterval, "Conversions", QString(), false, QStringList(), false, QStringList() << "tointerval" )
     << new StaticFunction( "coalesce", -1, fcnCoalesce, "Conditionals", QString(), false, QStringList(), false, QStringList(), true )
-    << new StaticFunction( "if", 3, fcnIf, "Conditionals", "", False, QStringList(), true )
+    << new StaticFunction( "if", 3, fcnIf, "Conditionals", QString(), False, QStringList(), true )
     << new StaticFunction( "regexp_match", 2, fcnRegexpMatch, "Conditionals" )
     << new StaticFunction( "now", 0, fcnNow, "Date and Time", QString(), false, QStringList(), false, QStringList() << "$now" )
     << new StaticFunction( "age", 2, fcnAge, "Date and Time" )
@@ -2018,18 +2159,26 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( "color_hsva", 4, fncColorHsva, "Color" )
     << new StaticFunction( "color_cmyk", 4, fcnColorCmyk, "Color" )
     << new StaticFunction( "color_cmyka", 5, fncColorCmyka, "Color" )
-    << new StaticFunction( "$geometry", 0, fcnGeometry, "GeometryGroup", "", true )
-    << new StaticFunction( "$area", 0, fcnGeomArea, "GeometryGroup", "", true )
-    << new StaticFunction( "$length", 0, fcnGeomLength, "GeometryGroup", "", true )
-    << new StaticFunction( "$perimeter", 0, fcnGeomPerimeter, "GeometryGroup", "", true )
-    << new StaticFunction( "$x", 0, fcnX, "GeometryGroup", "", true )
-    << new StaticFunction( "$y", 0, fcnY, "GeometryGroup", "", true )
-    << new StaticFunction( "x_at", 1, fcnXat, "GeometryGroup", "", true, QStringList(), false, QStringList() << "xat" )
-    << new StaticFunction( "y_at", 1, fcnYat, "GeometryGroup", "", true, QStringList(), false, QStringList() << "yat" )
-    << new StaticFunction( "x_min", 1, fcnXMin, "GeometryGroup", "", true, QStringList(), false, QStringList() << "xmin" )
-    << new StaticFunction( "x_max", 1, fcnXMax, "GeometryGroup", "", true, QStringList(), false, QStringList() << "xmax" )
-    << new StaticFunction( "y_min", 1, fcnYMin, "GeometryGroup", "", true, QStringList(), false, QStringList() << "ymin" )
-    << new StaticFunction( "y_max", 1, fcnYMax, "GeometryGroup", "", true, QStringList(), false, QStringList() << "ymax" )
+    << new StaticFunction( "$geometry", 0, fcnGeometry, "GeometryGroup", QString(), true )
+    << new StaticFunction( "$area", 0, fcnGeomArea, "GeometryGroup", QString(), true )
+    << new StaticFunction( "area", 1, fcnArea, "GeometryGroup" )
+    << new StaticFunction( "$length", 0, fcnGeomLength, "GeometryGroup", QString(), true )
+    << new StaticFunction( "$perimeter", 0, fcnGeomPerimeter, "GeometryGroup", QString(), true )
+    << new StaticFunction( "perimeter", 1, fcnPerimeter, "GeometryGroup" )
+    << new StaticFunction( "$x", 0, fcnX, "GeometryGroup", QString(), true )
+    << new StaticFunction( "$y", 0, fcnY, "GeometryGroup", QString(), true )
+    << new StaticFunction( "x", 1, fcnGeomX, "GeometryGroup" )
+    << new StaticFunction( "y", 1, fcnGeomY, "GeometryGroup" )
+    << new StaticFunction( "point_n", 2, fcnPointN, "GeometryGroup" )
+    << new StaticFunction( "start_point", 1, fcnStartPoint, "GeometryGroup" )
+    << new StaticFunction( "end_point", 1, fcnEndPoint, "GeometryGroup" )
+    << new StaticFunction( "make_point", 2, fcnMakePoint, "GeometryGroup" )
+    << new StaticFunction( "$x_at", 1, fcnXat, "GeometryGroup", QString(), true, QStringList(), false, QStringList() << "xat" << "x_at" )
+    << new StaticFunction( "$y_at", 1, fcnYat, "GeometryGroup", QString(), true, QStringList(), false, QStringList() << "yat" << "y_at" )
+    << new StaticFunction( "x_min", 1, fcnXMin, "GeometryGroup", QString(), false, QStringList(), false, QStringList() << "xmin" )
+    << new StaticFunction( "x_max", 1, fcnXMax, "GeometryGroup", QString(), false, QStringList(), false, QStringList() << "xmax" )
+    << new StaticFunction( "y_min", 1, fcnYMin, "GeometryGroup", QString(), false, QStringList(), false, QStringList() << "ymin" )
+    << new StaticFunction( "y_max", 1, fcnYMax, "GeometryGroup", QString(), false, QStringList(), false, QStringList() << "ymax" )
     << new StaticFunction( "geom_from_wkt", 1, fcnGeomFromWKT, "GeometryGroup", QString(), false, QStringList(), false, QStringList() << "geomFromWKT" )
     << new StaticFunction( "geom_from_gml", 1, fcnGeomFromGML, "GeometryGroup", QString(), false, QStringList(), false, QStringList() << "geomFromGML" )
     << new StaticFunction( "intersects_bbox", 2, fcnBbox, "GeometryGroup", QString(), false, QStringList(), false, QStringList() << "bbox" )
@@ -2042,10 +2191,10 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( "within", 2, fcnWithin, "GeometryGroup" )
     << new StaticFunction( "buffer", -1, fcnBuffer, "GeometryGroup" )
     << new StaticFunction( "centroid", 1, fcnCentroid, "GeometryGroup" )
-    << new StaticFunction( "bounds", 1, fcnBounds, "GeometryGroup", "", true )
-    << new StaticFunction( "num_points", 1, fcnGeomNumPoints, "GeometryGroup", "", true )
-    << new StaticFunction( "bounds_width", 1, fcnBoundsWidth, "GeometryGroup", "", true )
-    << new StaticFunction( "bounds_height", 1, fcnBoundsHeight, "GeometryGroup", "", true )
+    << new StaticFunction( "bounds", 1, fcnBounds, "GeometryGroup" )
+    << new StaticFunction( "num_points", 1, fcnGeomNumPoints, "GeometryGroup" )
+    << new StaticFunction( "bounds_width", 1, fcnBoundsWidth, "GeometryGroup" )
+    << new StaticFunction( "bounds_height", 1, fcnBoundsHeight, "GeometryGroup" )
     << new StaticFunction( "convex_hull", 1, fcnConvexHull, "GeometryGroup", QString(), false, QStringList(), false, QStringList() << "convexHull" )
     << new StaticFunction( "difference", 2, fcnDifference, "GeometryGroup" )
     << new StaticFunction( "distance", 2, fcnDistance, "GeometryGroup" )
