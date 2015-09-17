@@ -103,7 +103,7 @@ class QgsGrassObjectItem : public QgsLayerItem, public QgsGrassObjectItemBase
                         bool showObjectActions = true );
 
     virtual QList<QAction*> actions() override;
-    virtual bool equal( const QgsDataItem *other );
+    virtual bool equal( const QgsDataItem *other ) override;
 
   public slots:
     void renameGrassObject();
