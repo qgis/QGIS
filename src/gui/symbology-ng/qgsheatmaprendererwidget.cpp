@@ -120,6 +120,12 @@ QgsFeatureRendererV2* QgsHeatmapRendererWidget::renderer()
   return mRenderer;
 }
 
+void QgsHeatmapRendererWidget::setMapCanvas( QgsMapCanvas* canvas )
+{
+  QgsRendererV2Widget::setMapCanvas( canvas );
+  mRadiusUnitWidget->setMapCanvas( canvas );
+}
+
 void QgsHeatmapRendererWidget::applyColorRamp()
 {
   if ( !mRenderer )

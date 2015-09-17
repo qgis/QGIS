@@ -39,6 +39,8 @@ class QgsLineSymbolV2;
 class QgsMarkerSymbolLayerV2;
 class QgsLineSymbolLayerV2;
 
+class QgsMapCanvas;
+
 class DataDefinedRestorer: public QObject
 {
     Q_OBJECT
@@ -92,6 +94,13 @@ class GUI_EXPORT QgsSymbolV2SelectorDialog : public QDialog, private Ui::QgsSymb
      * @see setExpressionContext()
      */
     QgsExpressionContext* expressionContext() const { return mPresetExpressionContext.data(); }
+
+    /** Sets the map canvas associated with the dialog. This allows the widget to retrieve the current
+     * map scale and other properties from the canvas.
+     * @param canvas map canvas
+     * @note added in QGIS 2.12
+     */
+    void setMapCanvas( QgsMapCanvas* canvas );
 
   protected:
     //! Reimplements dialog keyPress event so we can ignore it
@@ -150,6 +159,8 @@ class GUI_EXPORT QgsSymbolV2SelectorDialog : public QDialog, private Ui::QgsSymb
   private:
     QScopedPointer<DataDefinedRestorer> mDataDefineRestorer;
     QScopedPointer< QgsExpressionContext > mPresetExpressionContext;
+
+    QgsMapCanvas* mMapCanvas;
 };
 
 #endif

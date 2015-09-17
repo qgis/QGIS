@@ -593,6 +593,18 @@ QgsGrass *QgsGrass::instance()
   return &sInstance;
 }
 
+void QgsGrass::lock()
+{
+  QgsDebugMsg( "lock" );
+  sMutex.lock();
+}
+
+void QgsGrass::unlock()
+{
+  QgsDebugMsg( "unlock" );
+  sMutex.unlock();
+}
+
 bool QgsGrass::activeMode()
 {
   return active;
@@ -895,7 +907,7 @@ QString QgsGrass::openMapset( const QString& gisdbase,
   out.close();
 
   // Set GISRC environment variable
-
+  // Mapset must be set before Vect_close()
   /* _Correct_ putenv() implementation is not making copy! */
   putEnv( "GISRC", mGisrc );
 

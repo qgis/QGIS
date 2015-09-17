@@ -78,6 +78,7 @@ QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog( QgsVectorLayer* la
     , mStyle( style )
     , mActiveWidget( NULL )
     , mPaintEffect( 0 )
+    , mMapCanvas( 0 )
 {
   setupUi( this );
 
@@ -149,6 +150,13 @@ QgsRendererV2PropertiesDialog::~QgsRendererV2PropertiesDialog()
   delete mPaintEffect;
 }
 
+void QgsRendererV2PropertiesDialog::setMapCanvas( QgsMapCanvas* canvas )
+{
+  mMapCanvas = canvas;
+  if ( mActiveWidget )
+    mActiveWidget->setMapCanvas( mMapCanvas );
+}
+
 
 void QgsRendererV2PropertiesDialog::rendererChanged()
 {
@@ -193,6 +201,8 @@ void QgsRendererV2PropertiesDialog::rendererChanged()
     mActiveWidget = w;
     stackedWidget->addWidget( mActiveWidget );
     stackedWidget->setCurrentWidget( mActiveWidget );
+    if ( mMapCanvas )
+      mActiveWidget->setMapCanvas( mMapCanvas );
   }
   else
   {

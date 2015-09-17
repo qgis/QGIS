@@ -18,9 +18,11 @@
 #include "qgsfeatureiterator.h"
 
 #include <QMutex>
+#include <QBitArray>
 
-class QgsGrassProvider;
-
+#include "qgsgrassprovider.h"
+//class QgsGrassProvider;
+class QgsGrassVectorMapLayer;
 
 class QgsGrassFeatureSource : public QgsAbstractFeatureSource
 {
@@ -31,24 +33,43 @@ class QgsGrassFeatureSource : public QgsAbstractFeatureSource
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;
 
   protected:
-    struct Map_info* mMap;
-    int     mLayerType;     // layer type POINT, LINE, ...
-    int     mGrassType;     // grass feature type: GV_POINT, GV_LINE | GV_BOUNDARY, GV_AREA,
-    int     mLayerId;       // ID used in layers
-    QGis::WkbType mQgisType;// WKBPoint, WKBLineString, ...
+#if 0
+    enum Selection
+    {
 
-    int    mCidxFieldIndex;    // !UPDATE! Index for layerField in category index or -1 if no such field
-    int    mCidxFieldNumCats;  // !UPDATE! Number of records in field index
+      NotSelected = 0, /*!< not selected */
+      Selected = 1, /*!< line/area selected */
+      Used = 2 /*!< the line was already used to create feature read in this cycle.
+                * The codes Used must be reset to Selected if getFirstFeature() or select() is called.
+                * Distinction between Selected and Used is used if attribute table exists, in which case
+                * attributes are read from the table and line geometry is attached to attributes and selection
+                * for that line is set to Used. In the end the selection is scanned for Selected (attributes missing)
+                * and the geometry is returned without attributes. */
+    };
+#endif
+
+
+    struct Map_info* map();
+    QgsGrassVectorMapLayer * mLayer;
+    int mLayerType;     // layer type POINT, LINE, ...
+    int mGrassType;     // grass feature type: GV_POINT, GV_LINE | GV_BOUNDARY, GV_AREA,
+
+    QGis::WkbType mQgisType; // WKBPoint, WKBLineString, ...
+
+    int mCidxFieldIndex;    // !UPDATE! Index for layerField in category index or -1 if no such field
+    int mCidxFieldNumCats;  // !UPDATE! Number of records in field index
 
     QgsFields mFields;
     QTextCodec* mEncoding;
 
+    bool mEditing; // Standard QGIS editing mode
     friend class QgsGrassFeatureIterator;
 };
 
 
-class QgsGrassFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsGrassFeatureSource>
+class QgsGrassFeatureIterator : public QObject, public QgsAbstractFeatureIteratorFromSource<QgsGrassFeatureSource>
 {
+    Q_OBJECT
   public:
     QgsGrassFeatureIterator( QgsGrassFeatureSource* source, bool ownSource, const QgsFeatureRequest& request );
 
@@ -63,60 +84,65 @@ class QgsGrassFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsG
     //! end of iterating: free the resources / lock
     virtual bool close() override;
 
-  protected:
-
     // create QgsFeatureId from GRASS geometry object id and cat
     static QgsFeatureId makeFeatureId( int grassId, int cat );
+
+    // Get GRASS line id from QGIS fid
+    static int lidFormFid( QgsFeatureId fid );
+
+    // Get GRASS cat from QGIS fid
+    static int catFormFid( QgsFeatureId fid );
+
+  public slots:
+    /** Cancel iterator, iterator will be closed on next occasion, probably when next getFeature() gets called.
+     * This function can be called directly from other threads (setting bool is atomic) */
+    void cancel();
+
+    void doClose();
+
+  protected:
+    //void lock();
+    //void unlock();
+
+    /** Reset selection */
+    void resetSelection( bool value );
 
     void setSelectionRect( const QgsRectangle& rect, bool useIntersect );
 
     void setFeatureGeometry( QgsFeature& feature, int id, int type );
 
-
     /** Set feature attributes.
      *  @param feature
      *  @param cat category number
      */
-    void setFeatureAttributes( int cat, QgsFeature *feature );
+    void setFeatureAttributes( int cat, QgsFeature *feature, QgsGrassProvider::TopoSymbol symbol );
 
     /** Set feature attributes.
      *  @param feature
      *  @param cat category number
      *  @param attlist a list containing the index number of the fields to set
      */
-    void setFeatureAttributes( int cat, QgsFeature *feature, const QgsAttributeList & attlist );
+    void setFeatureAttributes( int cat, QgsFeature *feature, const QgsAttributeList & attlist, QgsGrassProvider::TopoSymbol symbol );
 
-    struct line_pnts *mPoints; // points structure
-    struct line_cats *mCats;   // cats structure
-    struct ilist     *mList;
+    /** Get topology symbol code
+     * @param lid line or area number
+     * @param type geometry type */
+    QgsGrassProvider::TopoSymbol topoSymbol( int lid, int type );
 
-    // selection: array of size nlines or nareas + 1, set to 1 - selected or 0 - not selected, 2 - read
-    // Code 2 means that the line was already read in this cycle, all 2 must be reset to 1
-    // if getFirstFeature() or select() is calles.
-    // Distinction between 1 and 2 is used if attribute table exists, in that case attributes are
-    // read from the table and geometry is append and selection set to 2.
-    // In the end the selection array is scanned for 1 (attributes missing), and the geometry
-    // is returned without attributes
-    char    *mSelection;           // !UPDATE!
-    int     mSelectionSize;        // !UPDATE! Size of selection array
+    /** Canceled -> close when possible */
+    bool mCanceled;
 
-    // Either mNextCidx or mNextTopoId is used according to type
-    int    mNextCidx;          // !UPDATE! Next index in cidxFieldIndex to be read, used to find nextFeature
-    int    mNextTopoId;          // !UPDATE! Next topology id to be read, used to find nextFeature, starts from 1
+    /** Selection array */
+    QBitArray mSelection; // !UPDATE!
 
-    /** Reset selection */
-    void resetSelection( bool sel );
+    // Edit mode is using mNextLid + mNextCidx
+    // Next index in cidxFieldIndex to be read in standard mode or next index of line Cats in editing mode
+    int mNextCidx;
+    // Next topology line/node id to be read in topo mode or next line id in edit mode, starts from 1
+    int mNextLid;
 
-    /** Allocate sellection array for given map id. The array is large enough for lines or areas
-     *  (bigger from num lines and num areas)
-     *  @param map pointer to map structure
-     */
-    void allocateSelection( struct Map_info *map );
 
-    //! Mutex that protects GRASS library from parallel access from multiple iterators at once.
-    //! The library uses static/global variables in various places when accessing vector data,
-    //! making it non-reentrant and thus impossible to use from multiple threads.
-    //! (e.g. static LocList in Vect_select_lines_by_box, global BranchBuf in RTreeGetBranches)
+
     static QMutex sMutex;
 };
 

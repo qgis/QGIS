@@ -40,6 +40,7 @@ class QgsVectorLayer;
 class QgsLabelingGui;
 class QgsDiagramProperties;
 class QgsFieldsProperties;
+class QgsRendererV2PropertiesDialog;
 
 class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private Ui::QgsVectorLayerPropertiesBase
 {
@@ -164,7 +165,7 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     QAction* mActionSaveStyleAs;
 
     /** Renderer dialog which is shown*/
-    QDialog* mRendererDialog;
+    QgsRendererV2PropertiesDialog* mRendererDialog;
     /** Labeling dialog. If apply is pressed, options are applied to vector's QgsLabel */
     QgsLabelingGui* labelingDialog;
     /** Label dialog. If apply is pressed, options are applied to vector's QgsLabel */

@@ -117,6 +117,14 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* sty
   btnColor->setContext( "symbology" );
 }
 
+void QgsSymbolsListWidget::setMapCanvas( QgsMapCanvas* canvas )
+{
+  Q_FOREACH ( QgsUnitSelectionWidget* unitWidget, findChildren<QgsUnitSelectionWidget*>() )
+  {
+    unitWidget->setMapCanvas( canvas );
+  }
+}
+
 void QgsSymbolsListWidget::setExpressionContext( QgsExpressionContext *context )
 {
   mPresetExpressionContext = context;

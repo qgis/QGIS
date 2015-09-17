@@ -11,6 +11,8 @@ class QgsSingleSymbolRendererV2Widget : QgsRendererV2Widget
 
     virtual QgsFeatureRendererV2* renderer();
 
+    virtual void setMapCanvas( QgsMapCanvas* canvas );
+
   public slots:
     void changeSingleSymbol();
 

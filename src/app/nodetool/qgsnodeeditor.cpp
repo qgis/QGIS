@@ -36,15 +36,13 @@ static const int MinRadiusRole = Qt::UserRole + 1;
 class CoordinateItemDelegate : public QStyledItemDelegate
 {
   public:
-
-    QString displayText( const QVariant & value, const QLocale & locale ) const override
+    QString displayText( const QVariant & value, const QLocale & locale ) const
     {
       return locale.toString( value.toDouble(), 'f', 4 );
     }
 
   protected:
-
-    QWidget* createEditor( QWidget * parent, const QStyleOptionViewItem &, const QModelIndex & index ) const override
+    QWidget* createEditor( QWidget * parent, const QStyleOptionViewItem & /*option*/, const QModelIndex & index ) const
     {
       QLineEdit* lineEdit = new QLineEdit( parent );
       QDoubleValidator* validator = new QDoubleValidator();
@@ -53,8 +51,7 @@ class CoordinateItemDelegate : public QStyledItemDelegate
       lineEdit->setValidator( validator );
       return lineEdit;
     }
-
-    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override
+    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
     {
       QLineEdit* lineEdit = qobject_cast<QLineEdit*>( editor );
       if ( lineEdit->hasAcceptableInput() )
@@ -170,8 +167,8 @@ void QgsNodeEditor::rebuildTable()
 
     ++row;
   }
-  mTableWidget->setColumnHidden( 3, mSelectedFeature->vertexMap().size() < 1 || !mSelectedFeature->vertexMap()[0]->point().is3D() );
-  mTableWidget->setColumnHidden( 4, mSelectedFeature->vertexMap().size() < 1 || !mSelectedFeature->vertexMap()[0]->point().isMeasure() );
+  mTableWidget->setColumnHidden( 3, !mSelectedFeature->vertexMap()[0]->point().is3D() );
+  mTableWidget->setColumnHidden( 4, !mSelectedFeature->vertexMap()[0]->point().isMeasure() );
   mTableWidget->setColumnHidden( 5, !hasR );
   mTableWidget->resizeColumnToContents( 0 );
   mTableWidget->blockSignals( false );
@@ -228,14 +225,12 @@ void QgsNodeEditor::updateTableSelection()
 
 void QgsNodeEditor::updateNodeSelection()
 {
-  disconnect( mSelectedFeature, SIGNAL( selectionChanged() ), this, SLOT( updateTableSelection() ) );
-
+  mSelectedFeature->blockSignals( true );
   mSelectedFeature->deselectAllVertexes();
   Q_FOREACH ( const QModelIndex& index, mTableWidget->selectionModel()->selectedRows() )
   {
     int nodeIdx = mTableWidget->item( index.row(), 0 )->data( Qt::DisplayRole ).toInt();
     mSelectedFeature->selectVertex( nodeIdx );
   }
-
-  connect( mSelectedFeature, SIGNAL( selectionChanged() ), this, SLOT( updateTableSelection() ) );
+  mSelectedFeature->blockSignals( false );
 }

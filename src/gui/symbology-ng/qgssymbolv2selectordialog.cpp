@@ -205,7 +205,10 @@ class SymbolLayerItem : public QStandardItem
 //////////
 
 QgsSymbolV2SelectorDialog::QgsSymbolV2SelectorDialog( QgsSymbolV2* symbol, QgsStyleV2* style, const QgsVectorLayer* vl, QWidget* parent, bool embedded )
-    : QDialog( parent ), mAdvancedMenu( NULL ), mVectorLayer( vl )
+    : QDialog( parent )
+    , mAdvancedMenu( NULL )
+    , mVectorLayer( vl )
+    , mMapCanvas( 0 )
 {
 #ifdef Q_OS_MAC
   setWindowModality( Qt::WindowModal );
@@ -285,6 +288,20 @@ void QgsSymbolV2SelectorDialog::setExpressionContext( QgsExpressionContext *cont
   mPresetExpressionContext.reset( context );
   layerChanged();
   updatePreview();
+}
+
+void QgsSymbolV2SelectorDialog::setMapCanvas( QgsMapCanvas *canvas )
+{
+  mMapCanvas = canvas;
+
+  QWidget* widget = stackedWidget->currentWidget();
+  QgsLayerPropertiesWidget* layerProp = dynamic_cast< QgsLayerPropertiesWidget* >( widget );
+  QgsSymbolsListWidget* listWidget = dynamic_cast< QgsSymbolsListWidget* >( widget );
+
+  if ( layerProp )
+    layerProp->setMapCanvas( canvas );
+  if ( listWidget )
+    listWidget->setMapCanvas( canvas );
 }
 
 void QgsSymbolV2SelectorDialog::loadSymbol( QgsSymbolV2* symbol, SymbolLayerItem* parent )
@@ -399,6 +416,7 @@ void QgsSymbolV2SelectorDialog::layerChanged()
     mDataDefineRestorer.reset( new DataDefinedRestorer( parent->symbol(), currentItem->layer() ) );
     QgsLayerPropertiesWidget *layerProp = new QgsLayerPropertiesWidget( currentItem->layer(), parent->symbol(), mVectorLayer );
     layerProp->setExpressionContext( mPresetExpressionContext.data() );
+    layerProp->setMapCanvas( mMapCanvas );
     setWidget( layerProp );
     connect( layerProp, SIGNAL( changed() ), mDataDefineRestorer.data(), SLOT( restore() ) );
     connect( layerProp, SIGNAL( changed() ), this, SLOT( updateLayerPreview() ) );
@@ -413,6 +431,7 @@ void QgsSymbolV2SelectorDialog::layerChanged()
     // Now populate symbols of that type using the symbols list widget:
     QgsSymbolsListWidget *symbolsList = new QgsSymbolsListWidget( currentItem->symbol(), mStyle, mAdvancedMenu, this, mVectorLayer );
     symbolsList->setExpressionContext( mPresetExpressionContext.data() );
+    symbolsList->setMapCanvas( mMapCanvas );
 
     setWidget( symbolsList );
     connect( symbolsList, SIGNAL( changed() ), this, SLOT( symbolChanged() ) );

@@ -88,9 +88,9 @@ void QgsMapToolCapture::validationFinished()
   emit messageDiscarded();
   QString msgFinished = tr( "Validation finished" );
   if ( mValidationWarnings.count() )
+  {
     emit messageEmitted( mValidationWarnings.join( "\n" ).append( "\n" ).append( msgFinished ), QgsMessageBar::WARNING );
-  else
-    emit messageEmitted( msgFinished );
+  }
 }
 
 void QgsMapToolCapture::currentLayerChanged( QgsMapLayer *layer )

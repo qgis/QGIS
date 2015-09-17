@@ -80,6 +80,12 @@ QgsFeatureRendererV2* QgsSingleSymbolRendererV2Widget::renderer()
   return mRenderer;
 }
 
+void QgsSingleSymbolRendererV2Widget::setMapCanvas( QgsMapCanvas* canvas )
+{
+  QgsRendererV2Widget::setMapCanvas( canvas );
+  mSelector->setMapCanvas( canvas );
+}
+
 void QgsSingleSymbolRendererV2Widget::changeSingleSymbol()
 {
   // update symbol from the GUI

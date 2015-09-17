@@ -78,8 +78,50 @@ class QgsPointDisplacementRenderer : QgsFeatureRendererV2
     /** Sets the center symbol (takes ownership)*/
     void setCenterSymbol( QgsMarkerSymbolV2* symbol /Transfer/ );
 
+    /** Sets the tolerance distance for grouping points. Units are specified using
+     * setToleranceUnit().
+     * @param t tolerance distance
+     * @see tolerance()
+     * @see setToleranceUnit()
+     */
     void setTolerance( double t );
+
+    /** Returns the tolerance distance for grouping points. Units are retrieved using
+     * toleranceUnit().
+     * @see setTolerance()
+     * @see toleranceUnit()
+     */
     double tolerance() const;
+
+    /** Sets the units for the tolerance distance.
+     * @param unit tolerance distance units
+     * @see setTolerance()
+     * @see toleranceUnit()
+     * @note added in QGIS 2.12
+     */
+    void setToleranceUnit( QgsSymbolV2::OutputUnit unit );
+
+    /** Returns the units for the tolerance distance.
+     * @see tolerance()
+     * @see setToleranceUnit()
+     * @note added in QGIS 2.12
+     */
+    QgsSymbolV2::OutputUnit toleranceUnit() const;
+
+    /** Sets the map unit scale object for the distance tolerance. This is only used if the
+     * toleranceUnit() is set to QgsSymbolV2::MapUnit.
+     * @param scale scale for distance tolerance
+     * @see toleranceMapUnitScale()
+     * @see setToleranceUnit()
+     */
+    void setToleranceMapUnitScale( const QgsMapUnitScale& scale );
+
+    /** Returns the map unit scale object for the distance tolerance. This is only used if the
+     * toleranceUnit() is set to QgsSymbolV2::MapUnit.
+     * @see setToleranceMapUnitScale()
+     * @see toleranceUnit()
+     */
+    const QgsMapUnitScale& toleranceMapUnitScale() const;
 
     //! creates a QgsPointDisplacementRenderer from an existing renderer.
     //! @note added in 2.5

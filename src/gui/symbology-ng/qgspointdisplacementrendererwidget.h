@@ -32,6 +32,7 @@ class GUI_EXPORT QgsPointDisplacementRendererWidget: public QgsRendererV2Widget,
     ~QgsPointDisplacementRendererWidget();
 
     QgsFeatureRendererV2* renderer() override;
+    void setMapCanvas( QgsMapCanvas* canvas ) override;
 
   private:
     QgsPointDisplacementRenderer* mRenderer;
@@ -48,6 +49,7 @@ class GUI_EXPORT QgsPointDisplacementRendererWidget: public QgsRendererV2Widget,
     void on_mCircleWidthSpinBox_valueChanged( double d );
     void on_mCircleColorButton_colorChanged( const QColor& newColor );
     void on_mDistanceSpinBox_valueChanged( double d );
+    void on_mDistanceUnitWidget_changed();
     void on_mLabelColorButton_colorChanged( const QColor& newColor );
     void on_mCircleModificationSpinBox_valueChanged( double d );
     void on_mScaleDependentLabelsCheckBox_stateChanged( int state );

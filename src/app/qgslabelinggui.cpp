@@ -75,6 +75,10 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, 
 
   mFieldExpressionWidget->registerGetExpressionContextCallback( &_getExpressionContext, mLayer );
 
+  Q_FOREACH ( QgsUnitSelectionWidget* unitWidget, findChildren<QgsUnitSelectionWidget*>() )
+  {
+    unitWidget->setMapCanvas( mMapCanvas );
+  }
   mFontSizeUnitWidget->setUnits( QStringList() << tr( "Points" ) << tr( "Map unit" ), 1 );
   mBufferUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit );
   mShapeSizeUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit );
