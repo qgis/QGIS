@@ -394,7 +394,7 @@ QVariant QgsGrassProvider::minimumValue( int index )
 {
   if ( isValid() )
   {
-    mLayer->minMax().value( index ).first;
+    return mLayer->minMax().value( index ).first;
   }
   return QVariant();
 }
@@ -404,7 +404,7 @@ QVariant QgsGrassProvider::maxValue( int index )
 {
   if ( isValid() )
   {
-    mLayer->minMax().value( index ).second;
+    return mLayer->minMax().value( index ).second;
   }
   return QVariant();
 }
