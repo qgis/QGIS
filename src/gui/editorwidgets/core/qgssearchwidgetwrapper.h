@@ -69,6 +69,10 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
 
   signals:
 
+    /**
+     * Emitted whenever the expression changes
+     * @param exp The new search expression
+     */
     void expressionChanged( QString exp );
 
   protected slots:

@@ -634,7 +634,6 @@ CompactHistoryLine::CompactHistoryLine ( const TextLine& line, CompactHistoryBlo
     Q_ASSERT (text!=NULL);
 
     length=line.size();
-    formatLength=formatLength;
     wrapped=false;
 
     // record formats and their positions in the format array

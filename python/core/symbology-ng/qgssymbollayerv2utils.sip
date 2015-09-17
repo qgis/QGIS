@@ -311,8 +311,27 @@ class QgsSymbolLayerV2Utils
      */
     static QColor parseColorWithAlpha( const QString colorStr, bool &containsAlpha, bool strictEval = false );
 
-    /** Returns the line width scale factor depending on the unit and the paint device*/
+    /** Returns the line width scale factor depending on the unit and the paint device.
+     * Consider using convertToPainterUnits() instead, as convertToPainterUnits() respects the size limits specified by the scale
+     * parameter.
+     * @param c render context
+     * @param u units to convert from
+     * @param scale map unit scale, specifying limits for the map units to convert from
+     * @see convertToPainterUnits()
+    */
     static double lineWidthScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u, const QgsMapUnitScale& scale = QgsMapUnitScale() );
+
+    /** Converts a size from the specied units to painter units. The conversion respects the limits
+     * specified by the optional scale parameter.
+     * @param c render context
+     * @param size size to convert
+     * @param unit units for specified size
+     * @param scale map unit scale
+     * @note added in QGIS 2.12
+     * @see lineWidthScaleFactor
+     */
+    static double convertToPainterUnits( const QgsRenderContext&c, double size, QgsSymbolV2::OutputUnit unit, const QgsMapUnitScale& scale = QgsMapUnitScale() );
+
     /** Returns scale factor painter units -> pixel dimensions*/
     static double pixelSizeScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u, const QgsMapUnitScale& scale = QgsMapUnitScale() );
     /** Returns scale factor painter units -> map units*/

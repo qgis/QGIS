@@ -114,8 +114,6 @@ MACRO(ADD_GRASSLIB GRASS_BUILD_VERSION)
     # GRASS vector provider
     #
     SET (GRASS_VECTOR_PROVIDER_SRCS
-      ../qgsgrassvectormap.cpp
-      ../qgsgrassvectormaplayer.cpp
       ../qgsgrassprovidermodule.cpp
     )
     QT4_WRAP_CPP(GRASS_VECTOR_PROVIDER_MOC_SRCS

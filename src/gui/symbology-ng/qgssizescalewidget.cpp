@@ -24,6 +24,7 @@
 #include "qgssymbollayerv2utils.h"
 #include "qgsscaleexpression.h"
 #include "qgsdatadefined.h"
+#include "qgsmapcanvas.h"
 
 #include <QMenu>
 #include <QAction>
@@ -80,16 +81,25 @@ void QgsSizeScaleWidget::setFromSymbol()
 
 static QgsExpressionContext _getExpressionContext( const void* context )
 {
+  const QgsSizeScaleWidget* widget = ( const QgsSizeScaleWidget* ) context;
+
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::atlasScope( 0 )
-  //TODO - use actual map canvas settings
-  << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+  << QgsExpressionContextUtils::atlasScope( 0 );
 
-  const QgsVectorLayer* layer = ( const QgsVectorLayer* ) context;
-  if ( layer )
-    expContext << QgsExpressionContextUtils::layerScope( layer );
+  if ( widget->mapCanvas() )
+  {
+    expContext << QgsExpressionContextUtils::mapSettingsScope( widget->mapCanvas()->mapSettings() )
+    << new QgsExpressionContextScope( widget->mapCanvas()->expressionContextScope() );
+  }
+  else
+  {
+    expContext << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+  }
+
+  if ( widget->layer() )
+    expContext << QgsExpressionContextUtils::layerScope( widget->layer() );
 
   return expContext;
 }
@@ -99,11 +109,12 @@ QgsSizeScaleWidget::QgsSizeScaleWidget( const QgsVectorLayer * layer, const QgsM
     // we just use the minimumValue and maximumValue from the layer, unfortunately they are
     // non const, so we get the layer from the registry instead
     , mLayer( layer ? dynamic_cast<QgsVectorLayer *>( QgsMapLayerRegistry::instance()->mapLayer( layer->id() ) ) : 0 )
+    , mMapCanvas( 0 )
 {
   setupUi( this );
   setWindowFlags( Qt::WindowStaysOnTopHint );
 
-  mExpressionWidget->registerGetExpressionContextCallback( &_getExpressionContext, mLayer );
+  mExpressionWidget->registerGetExpressionContextCallback( &_getExpressionContext, this );
 
   if ( mLayer )
   {

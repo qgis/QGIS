@@ -121,8 +121,10 @@ void QgsGrassVectorMapLayer::load()
       }
       else
       {
+#ifdef QGISDEBUG
         int nRecords = db_get_num_rows( &databaseCursor );
         QgsDebugMsg( QString( "Number of records: %1" ).arg( nRecords ) );
+#endif
 
         dbTable  *databaseTable = db_get_cursor_table( &databaseCursor );
         int nColumns = db_get_table_number_of_columns( databaseTable );

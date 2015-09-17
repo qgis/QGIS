@@ -36,11 +36,13 @@ class GUI_EXPORT QgsDefaultSearchWidgetWrapper : public QgsSearchWidgetWrapper
   public:
     QString expression() override;
     bool applyDirectly() override;
+
   protected slots:
     void setExpression( QString exp ) override;
 
   private slots:
-    void setCaseString( int );
+    void setCaseString( Qt::CheckState );
+    void filterChanged();
 
   protected:
     QWidget* createWidget( QWidget* parent ) override;

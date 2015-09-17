@@ -1074,11 +1074,14 @@ QgsGrassModuleField::QgsGrassModuleField( QgsGrassModule *module, QString key,
     QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode, bool direct, QWidget * parent )
     : QgsGrassModuleOption( module, key, qdesc, gdesc, gnode, direct, parent )
 {
+  // Validator is disabled to allow to enter also expressions
+#if 0
   QRegExp rx( "^[a-zA-Z_][a-zA-Z0-9_]*$" );
   foreach ( QLineEdit *lineEdit, mLineEdits )
   {
     lineEdit->setValidator( new QRegExpValidator( rx, this ) );
   }
+#endif
 }
 
 QgsGrassModuleField::~QgsGrassModuleField()

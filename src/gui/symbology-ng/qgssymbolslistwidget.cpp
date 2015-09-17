@@ -25,7 +25,7 @@
 #include "qgsstylev2.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgsmarkersymbollayerv2.h"
-
+#include "qgsmapcanvas.h"
 #include "qgsapplication.h"
 
 #include <QString>
@@ -47,11 +47,12 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* sty
     , mAdvancedMenu( 0 )
     , mClipFeaturesAction( 0 )
     , mLayer( layer )
+    , mMapCanvas( 0 )
     , mPresetExpressionContext( 0 )
 {
   setupUi( this );
 
-  mSymbolUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit );
+  mSymbolUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit << QgsSymbolV2::Pixel );
 
   btnAdvanced->hide(); // advanced button is hidden by default
   if ( menu ) // show it if there is a menu pointer
@@ -119,10 +120,21 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* sty
 
 void QgsSymbolsListWidget::setMapCanvas( QgsMapCanvas* canvas )
 {
+  mMapCanvas = canvas;
   Q_FOREACH ( QgsUnitSelectionWidget* unitWidget, findChildren<QgsUnitSelectionWidget*>() )
   {
     unitWidget->setMapCanvas( canvas );
   }
+  Q_FOREACH ( QgsDataDefinedButton* ddButton, findChildren<QgsDataDefinedButton*>() )
+  {
+    if ( ddButton->assistant() )
+      ddButton->assistant()->setMapCanvas( mMapCanvas );
+  }
+}
+
+const QgsMapCanvas*QgsSymbolsListWidget::mapCanvas() const
+{
+  return mMapCanvas;
 }
 
 void QgsSymbolsListWidget::setExpressionContext( QgsExpressionContext *context )
@@ -385,9 +397,17 @@ static QgsExpressionContext _getExpressionContext( const void* context )
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::atlasScope( 0 )
-  //TODO - use actual map canvas settings
-  << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+  << QgsExpressionContextUtils::atlasScope( 0 );
+
+  if ( widget->mapCanvas() )
+  {
+    expContext << QgsExpressionContextUtils::mapSettingsScope( widget->mapCanvas()->mapSettings() )
+    << new QgsExpressionContextScope( widget->mapCanvas()->expressionContextScope() );
+  }
+  else
+  {
+    expContext << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+  }
 
   const QgsVectorLayer* layer = widget->layer();
   if ( layer )

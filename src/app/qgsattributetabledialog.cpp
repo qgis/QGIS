@@ -309,7 +309,7 @@ void QgsAttributeTableDialog::keyPressEvent( QKeyEvent* event )
 
 void QgsAttributeTableDialog::columnBoxInit()
 {
-  Q_FOREACH( QAction* a, mFilterColumnsMenu->actions() )
+  Q_FOREACH ( QAction* a, mFilterColumnsMenu->actions() )
   {
     mFilterColumnsMenu->removeAction( a );
     mFilterActionMapper->removeMappings( a );
@@ -329,7 +329,7 @@ void QgsAttributeTableDialog::columnBoxInit()
 
   QList<QgsField> fields = mLayer->fields().toList();
 
-  Q_FOREACH( const QgsField field, fields )
+  Q_FOREACH ( const QgsField field, fields )
   {
     int idx = mLayer->fieldNameIndex( field.name() );
     if ( idx < 0 )
@@ -469,6 +469,7 @@ void QgsAttributeTableDialog::filterColumnChanged( QObject* filterAction )
   }
   else
   {
+    connect( mCurrentSearchWidgetWrapper, SIGNAL( expressionChanged( QString ) ), SLOT( filterQueryAccepted() ) );
     mApplyFilterButton->setVisible( true );
   }
 
@@ -504,6 +505,10 @@ void QgsAttributeTableDialog::filterShowAll()
   mFilterButton->setDefaultAction( mActionShowAllFilter );
   mFilterButton->setPopupMode( QToolButton::InstantPopup );
   mFilterQuery->setVisible( false );
+  if ( mCurrentSearchWidgetWrapper != 0 )
+  {
+    mCurrentSearchWidgetWrapper->widget()->setVisible( false );
+  }
   mApplyFilterButton->setVisible( false );
   mMainView->setFilterMode( QgsAttributeTableFilterModel::ShowAll );
 }

@@ -394,7 +394,7 @@ QVariant QgsGrassProvider::minimumValue( int index )
 {
   if ( isValid() )
   {
-    mLayer->minMax().value( index ).first;
+    return mLayer->minMax().value( index ).first;
   }
   return QVariant();
 }
@@ -404,7 +404,7 @@ QVariant QgsGrassProvider::maxValue( int index )
 {
   if ( isValid() )
   {
-    mLayer->minMax().value( index ).second;
+    return mLayer->minMax().value( index ).second;
   }
   return QVariant();
 }
@@ -1337,6 +1337,7 @@ void QgsGrassProvider::bufferGeometryChanged( QgsFeatureId fid, QgsGeometry &geo
 
 void QgsGrassProvider::onUndoIndexChanged( int index )
 {
+  Q_UNUSED( index )
   QgsDebugMsg( QString( "index = %1" ).arg( index ) );
 }
 
