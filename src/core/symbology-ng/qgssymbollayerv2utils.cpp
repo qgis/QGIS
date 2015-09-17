@@ -3267,63 +3267,75 @@ QColor QgsSymbolLayerV2Utils::parseColorWithAlpha( const QString colorStr, bool 
 
 double QgsSymbolLayerV2Utils::lineWidthScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u, const QgsMapUnitScale& scale )
 {
-
-  if ( u == QgsSymbolV2::MM )
+  switch ( u )
   {
-    return c.scaleFactor();
-  }
-  else //QgsSymbol::MapUnit
-  {
-    double mup = scale.computeMapUnitsPerPixel( c );
-    if ( mup > 0 )
+    case QgsSymbolV2::MM:
+      return c.scaleFactor();
+    case QgsSymbolV2::MapUnit:
     {
-      return 1.0 / mup;
+      double mup = scale.computeMapUnitsPerPixel( c );
+      if ( mup > 0 )
+      {
+        return 1.0 / mup;
+      }
+      else
+      {
+        return 1.0;
+      }
     }
-    else
-    {
+    case QgsSymbolV2::Pixel:
+      return 1.0 / c.rasterScaleFactor();
+    case QgsSymbolV2::Mixed:
+      //no sensible value
       return 1.0;
-    }
   }
+  return 1.0;
 }
 
 double QgsSymbolLayerV2Utils::pixelSizeScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u, const QgsMapUnitScale& scale )
 {
-  if ( u == QgsSymbolV2::MM )
+  switch ( u )
   {
-    return ( c.scaleFactor() * c.rasterScaleFactor() );
-  }
-  else if ( u == QgsSymbolV2::Pixel )
-  {
-    return 1.0;
-  }
-  else //QgsSymbol::MapUnit
-  {
-    double mup = scale.computeMapUnitsPerPixel( c );
-    if ( mup > 0 )
+    case QgsSymbolV2::MM:
+      return ( c.scaleFactor() * c.rasterScaleFactor() );
+    case QgsSymbolV2::MapUnit:
     {
-      return c.rasterScaleFactor() / mup;
+      double mup = scale.computeMapUnitsPerPixel( c );
+      if ( mup > 0 )
+      {
+        return c.rasterScaleFactor() / mup;
+      }
+      else
+      {
+        return 1.0;
+      }
     }
-    else
-    {
+    case QgsSymbolV2::Pixel:
       return 1.0;
-    }
+    case QgsSymbolV2::Mixed:
+      //no sensible value
+      return 1.0;
   }
+  return 1.0;
 }
 
 double QgsSymbolLayerV2Utils::mapUnitScaleFactor( const QgsRenderContext &c, QgsSymbolV2::OutputUnit u, const QgsMapUnitScale &scale )
 {
-  if ( u == QgsSymbolV2::MM )
+  switch ( u )
   {
-    return scale.computeMapUnitsPerPixel( c ) * c.scaleFactor() * c.rasterScaleFactor();
+    case QgsSymbolV2::MM:
+      return scale.computeMapUnitsPerPixel( c ) * c.scaleFactor() * c.rasterScaleFactor();
+    case QgsSymbolV2::MapUnit:
+    {
+      return 1.0;
+    }
+    case QgsSymbolV2::Pixel:
+      return scale.computeMapUnitsPerPixel( c );
+    case QgsSymbolV2::Mixed:
+      //no sensible value
+      return 1.0;
   }
-  else if ( u == QgsSymbolV2::MapUnit )
-  {
-    return 1.0;
-  }
-  else //QgsSymbol::Pixel
-  {
-    return scale.computeMapUnitsPerPixel( c );
-  }
+  return 1.0;
 }
 
 QgsRenderContext QgsSymbolLayerV2Utils::createRenderContext( QPainter* p )
