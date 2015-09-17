@@ -356,6 +356,12 @@ class QgsMapCanvas : QGraphicsView
      */
     QgsExpressionContextScope& expressionContextScope();
 
+    /** Returns a const reference to the expression context scope for the map canvas.
+     * @note added in QGIS 2.12
+     * @see setExpressionContextScope()
+     */
+    // const QgsExpressionContextScope& expressionContextScope() const;
+
   public slots:
 
     /** Repaints the canvas map*/

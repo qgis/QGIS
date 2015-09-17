@@ -29,6 +29,7 @@
 
 #include "qgsproject.h"
 #include "qgsexpression.h"
+#include "qgsmapcanvas.h"
 
 #include <QKeyEvent>
 #include <QMenu>
@@ -372,16 +373,25 @@ QgsRendererV2Widget* QgsCategorizedSymbolRendererV2Widget::create( QgsVectorLaye
 
 static QgsExpressionContext _getExpressionContext( const void* context )
 {
+  const QgsCategorizedSymbolRendererV2Widget* widget = ( const QgsCategorizedSymbolRendererV2Widget* ) context;
+
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::atlasScope( 0 )
-  //TODO - use actual map canvas settings
-  << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+  << QgsExpressionContextUtils::atlasScope( 0 );
 
-  const QgsVectorLayer* layer = ( const QgsVectorLayer* ) context;
-  if ( layer )
-    expContext << QgsExpressionContextUtils::layerScope( layer );
+  if ( widget->mapCanvas() )
+  {
+    expContext << QgsExpressionContextUtils::mapSettingsScope( widget->mapCanvas()->mapSettings() )
+    << new QgsExpressionContextScope( widget->mapCanvas()->expressionContextScope() );
+  }
+  else
+  {
+    expContext << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+  }
+
+  if ( widget->vectorLayer() )
+    expContext << QgsExpressionContextUtils::layerScope( widget->vectorLayer() );
 
   return expContext;
 }
@@ -468,7 +478,7 @@ QgsCategorizedSymbolRendererV2Widget::QgsCategorizedSymbolRendererV2Widget( QgsV
 
   btnAdvanced->setMenu( advMenu );
 
-  mExpressionWidget->registerGetExpressionContextCallback( &_getExpressionContext, layer );
+  mExpressionWidget->registerGetExpressionContextCallback( &_getExpressionContext, this );
 }
 
 QgsCategorizedSymbolRendererV2Widget::~QgsCategorizedSymbolRendererV2Widget()

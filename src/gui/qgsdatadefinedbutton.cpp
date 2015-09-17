@@ -698,6 +698,11 @@ void QgsDataDefinedButton::setAssistant( const QString& title, QgsDataDefinedAss
   mAssistant.data()->setParent( this, Qt::Dialog );
 }
 
+QgsDataDefinedAssistant *QgsDataDefinedButton::assistant()
+{
+  return mAssistant.data();
+}
+
 void QgsDataDefinedButton::checkCheckedWidgets( bool check )
 {
   // don't uncheck, only set to checked

@@ -17,9 +17,16 @@ class QgsSymbolsListWidget : QWidget
     /** Sets the map canvas associated with the widget. This allows the widget to retrieve the current
      * map scale and other properties from the canvas.
      * @param canvas map canvas
+     * @see mapCanvas()
      * @note added in QGIS 2.12
      */
     virtual void setMapCanvas( QgsMapCanvas* canvas );
+
+    /** Returns the map canvas associated with the widget.
+     * @see setMapCanvas
+     * @note added in QGIS 2.12
+     */
+    const QgsMapCanvas* mapCanvas() const;
 
     /** Returns the vector layer associated with the widget.
      * @note added in QGIS 2.12

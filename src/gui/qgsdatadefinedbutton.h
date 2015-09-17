@@ -25,6 +25,7 @@
 
 class QgsVectorLayer;
 class QgsDataDefined;
+class QgsMapCanvas;
 
 /** \ingroup gui
  * \class QgsDataDefinedAssistant
@@ -36,7 +37,27 @@ class QgsDataDefined;
 class GUI_EXPORT QgsDataDefinedAssistant: public QDialog
 {
   public:
+    QgsDataDefinedAssistant() : mMapCanvas( 0 ) {}
+
     virtual QgsDataDefined dataDefined() const = 0;
+
+    /** Sets the map canvas associated with the widget. This allows the widget to retrieve the current
+     * map scale and other properties from the canvas.
+     * @param canvas map canvas
+     * @see mapCanvas()
+     * @note added in QGIS 2.12
+     */
+    virtual void setMapCanvas( QgsMapCanvas* canvas ) { mMapCanvas = canvas; }
+
+    /** Returns the map canvas associated with the widget.
+     * @see setMapCanvas
+     * @note added in QGIS 2.12
+     */
+    const QgsMapCanvas* mapCanvas() const { return mMapCanvas; }
+
+  protected:
+
+    QgsMapCanvas* mMapCanvas;
 };
 
 /** \ingroup gui
@@ -214,8 +235,15 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
      * @param assistant data defined assistant. Set to null to remove the assistant
      * option from the button.
      * @note added in 2.10
+     * @see assistant()
      */
     void setAssistant( const QString& title, QgsDataDefinedAssistant * assistant );
+
+    /** Returns the assistant used to defined the data defined object properties, if set.
+     * @see setAssistant()
+     * @note added in QGIS 2.12
+     */
+    QgsDataDefinedAssistant* assistant();
 
     /**
      * Common descriptions for expected input values

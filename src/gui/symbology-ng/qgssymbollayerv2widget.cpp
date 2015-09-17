@@ -30,7 +30,7 @@
 #include "qgsvectorgradientcolorrampv2dialog.h"
 #include "qgsdatadefined.h"
 #include "qgsstylev2.h" //for symbol selector dialog
-
+#include "qgsmapcanvas.h"
 #include "qgsapplication.h"
 
 #include "qgslogger.h"
@@ -57,9 +57,17 @@ static QgsExpressionContext _getExpressionContext( const void* context )
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::atlasScope( 0 )
-  //TODO - use actual map canvas settings
-  << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+  << QgsExpressionContextUtils::atlasScope( 0 );
+
+  if ( widget->mapCanvas() )
+  {
+    expContext << QgsExpressionContextUtils::mapSettingsScope( widget->mapCanvas()->mapSettings() )
+    << new QgsExpressionContextScope( widget->mapCanvas()->expressionContextScope() );
+  }
+  else
+  {
+    expContext << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+  }
 
   const QgsVectorLayer* layer = widget->vectorLayer();
   if ( layer )
@@ -75,6 +83,16 @@ void QgsSymbolLayerV2Widget::setMapCanvas( QgsMapCanvas *canvas )
   {
     unitWidget->setMapCanvas( mMapCanvas );
   }
+  Q_FOREACH ( QgsDataDefinedButton* ddButton, findChildren<QgsDataDefinedButton*>() )
+  {
+    if ( ddButton->assistant() )
+      ddButton->assistant()->setMapCanvas( mMapCanvas );
+  }
+}
+
+const QgsMapCanvas* QgsSymbolLayerV2Widget::mapCanvas() const
+{
+  return mMapCanvas;
 }
 
 void QgsSymbolLayerV2Widget::registerDataDefinedButton( QgsDataDefinedButton * button, const QString & propertyName, QgsDataDefinedButton::DataType type, const QString & description )

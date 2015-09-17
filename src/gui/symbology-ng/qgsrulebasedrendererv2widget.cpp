@@ -510,10 +510,17 @@ void QgsRuleBasedRendererV2Widget::countFeatures()
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::atlasScope( 0 )
-  //TODO - use actual map canvas settings
-  << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() )
-  << QgsExpressionContextUtils::layerScope( mLayer );
+  << QgsExpressionContextUtils::atlasScope( 0 );
+  if ( mMapCanvas )
+  {
+    context << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )
+    << new QgsExpressionContextScope( mMapCanvas->expressionContextScope() );
+  }
+  else
+  {
+    context << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+  }
+  context << QgsExpressionContextUtils::layerScope( mLayer );
 
   renderContext.setExpressionContext( context );
 
@@ -637,10 +644,17 @@ void QgsRendererRulePropsDialog::buildExpression()
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::atlasScope( 0 )
-  //TODO - use actual map canvas settings
-  << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() )
-  << QgsExpressionContextUtils::layerScope( mLayer );
+  << QgsExpressionContextUtils::atlasScope( 0 );
+  if ( mMapCanvas )
+  {
+    context << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )
+    << new QgsExpressionContextScope( mMapCanvas->expressionContextScope() );
+  }
+  else
+  {
+    context << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+  }
+  context << QgsExpressionContextUtils::layerScope( mLayer );
 
   QgsExpressionBuilderDialog dlg( mLayer, editFilter->text(), this, "generic", context );
 
@@ -660,10 +674,17 @@ void QgsRendererRulePropsDialog::testFilter()
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::atlasScope( 0 )
-  //TODO - use actual map canvas settings
-  << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() )
-  << QgsExpressionContextUtils::layerScope( mLayer );
+  << QgsExpressionContextUtils::atlasScope( 0 );
+  if ( mMapCanvas )
+  {
+    context << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )
+    << new QgsExpressionContextScope( mMapCanvas->expressionContextScope() );
+  }
+  else
+  {
+    context << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+  }
+  context << QgsExpressionContextUtils::layerScope( mLayer );
 
   if ( !filter.prepare( &context ) )
   {
