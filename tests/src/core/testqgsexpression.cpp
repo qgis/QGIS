@@ -396,6 +396,9 @@ class TestQgsExpression: public QObject
       QTest::newRow( "double to text" ) << "tostring(1.23)" << false << QVariant( "1.23" );
       QTest::newRow( "null to text" ) << "tostring(null)" << false << QVariant();
 
+      // geometry functions
+      QTest::newRow( "num_points" ) << "num_points(geom_from_wkt('GEOMETRYCOLLECTION(LINESTRING(0 0, 1 0),POINT(6 5))'))" << false << QVariant( 3 );
+
       // string functions
       QTest::newRow( "lower" ) << "lower('HeLLo')" << false << QVariant( "hello" );
       QTest::newRow( "upper" ) << "upper('HeLLo')" << false << QVariant( "HELLO" );
@@ -934,6 +937,11 @@ class TestQgsExpression: public QObject
 
       exp9.evaluate( &context );
       QCOMPARE( vYMax.toDouble(), 6.0 );
+
+      QgsExpression exp10( "num_points($geometry)" );
+      QVariant vVertices = exp10.evaluate( &fPolygon );
+      QCOMPARE( vVertices.toInt(), 5 );
+
 
       Q_NOWARN_DEPRECATED_POP
 

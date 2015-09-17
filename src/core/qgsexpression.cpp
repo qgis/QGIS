@@ -1265,6 +1265,11 @@ static QVariant fcnGeomPerimeter( const QVariantList&, const QgsExpressionContex
   QgsDistanceArea* calc = parent->geomCalculator();
   return QVariant( calc->measurePerimeter( f.constGeometry() ) );
 }
+static QVariant fcnGeomNumPoints( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QgsGeometry geom = getGeometry( values.at( 0 ), parent );
+  return QVariant( geom.geometry()->nCoordinates() );
+}
 
 static QVariant fcnBounds( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
@@ -1912,7 +1917,7 @@ const QStringList& QgsExpression::BuiltinFunctions()
     << "color_hsl" << "color_hsla" << "color_hsv" << "color_hsva"
     << "color_cymk" << "color_cymka"
     << "xat" << "yat" << "$area"
-    << "$length" << "$perimeter" << "$x" << "$y"
+    << "$length" << "$perimeter" << "$x" << "$y" << "num_points"
     << "x_at" << "xat" << "y_at" << "yat" << "x_min" << "xmin" << "x_max" << "xmax"
     << "y_min" << "ymin" << "y_max" << "ymax" << "geom_from_wkt" << "geomFromWKT"
     << "geom_from_gml" << "geomFromGML" << "intersects_bbox" << "bbox"
@@ -2038,6 +2043,7 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( "buffer", -1, fcnBuffer, "GeometryGroup" )
     << new StaticFunction( "centroid", 1, fcnCentroid, "GeometryGroup" )
     << new StaticFunction( "bounds", 1, fcnBounds, "GeometryGroup", "", true )
+    << new StaticFunction( "num_points", 1, fcnGeomNumPoints, "GeometryGroup", "", true )
     << new StaticFunction( "bounds_width", 1, fcnBoundsWidth, "GeometryGroup", "", true )
     << new StaticFunction( "bounds_height", 1, fcnBoundsHeight, "GeometryGroup", "", true )
     << new StaticFunction( "convex_hull", 1, fcnConvexHull, "GeometryGroup", QString(), false, QStringList(), false, QStringList() << "convexHull" )
