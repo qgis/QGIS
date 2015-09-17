@@ -29,6 +29,22 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
 {
     Q_OBJECT
   public:
+    enum TopoSymbol
+    {
+      TopoUndefined = 0,
+      TopoPoint,
+      TopoLine,
+      TopoBoundary0,
+      TopoBoundary1,
+      TopoBoundary2,
+      TopoCentroidIn,
+      TopoCentroidOut,
+      TopoCentroidDupl,
+      TopoNode0,
+      TopoNode1,
+      TopoNode2
+    };
+
     QgsGrassVectorMap( const QgsGrassObject & grassObject );
     ~QgsGrassVectorMap();
 
@@ -110,6 +126,11 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
 
     /** Map descripton for debugging */
     QString toString();
+
+    /** Get topology symbol code
+     * @param lid line or area number
+     * @param type geometry type */
+    TopoSymbol topoSymbol( int lid );
 
   signals:
     /** Ask all iterators to cancel iteration when possible. Connected to iterators with

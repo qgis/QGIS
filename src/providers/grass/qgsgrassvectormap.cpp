@@ -683,3 +683,47 @@ QgsGrassVectorMap * QgsGrassVectorMapStore::openMap( const QgsGrassObject & gras
   mMutex.unlock();
   return map;
 }
+
+QgsGrassVectorMap::TopoSymbol QgsGrassVectorMap::topoSymbol( int lid )
+{
+  int type = Vect_read_line( mMap, 0, 0, lid );
+
+  TopoSymbol symbol = TopoUndefined;
+  if ( type == GV_POINT )
+  {
+    symbol = TopoPoint;
+  }
+  else if ( type == GV_CENTROID )
+  {
+    int area = Vect_get_centroid_area( mMap, lid );
+    if ( area == 0 )
+      symbol = TopoCentroidOut;
+    else if ( area > 0 )
+      symbol = TopoCentroidIn;
+    else
+      symbol = TopoCentroidDupl; /* area < 0 */
+  }
+  else if ( type == GV_LINE )
+  {
+    symbol = TopoLine;
+  }
+  else if ( type == GV_BOUNDARY )
+  {
+    int left, right;
+    Vect_get_line_areas( mMap, lid, &left, &right );
+    if ( left != 0 && right != 0 )
+    {
+      symbol = TopoBoundary2;
+    }
+    else if ( left == 0 && right == 0 )
+    {
+      symbol = TopoBoundary0;
+    }
+    else
+    {
+      symbol = TopoBoundary1;
+    }
+  }
+  QgsDebugMsgLevel( QString( "lid = %1 type = %2 symbol = %3" ).arg( lid ).arg( type ).arg( symbol ), 3 );
+  return symbol;
+}

@@ -88,10 +88,10 @@ class QgsGrassFeatureIterator : public QObject, public QgsAbstractFeatureIterato
     static QgsFeatureId makeFeatureId( int grassId, int cat );
 
     // Get GRASS line id from QGIS fid
-    static int lidFormFid( QgsFeatureId fid );
+    static int lidFromFid( QgsFeatureId fid );
 
     // Get GRASS cat from QGIS fid
-    static int catFormFid( QgsFeatureId fid );
+    static int catFromFid( QgsFeatureId fid );
 
   public slots:
     /** Cancel iterator, iterator will be closed on next occasion, probably when next getFeature() gets called.
@@ -115,19 +115,14 @@ class QgsGrassFeatureIterator : public QObject, public QgsAbstractFeatureIterato
      *  @param feature
      *  @param cat category number
      */
-    void setFeatureAttributes( int cat, QgsFeature *feature, QgsGrassProvider::TopoSymbol symbol );
+    void setFeatureAttributes( int cat, QgsFeature *feature, QgsGrassVectorMap::TopoSymbol symbol );
 
     /** Set feature attributes.
      *  @param feature
      *  @param cat category number
      *  @param attlist a list containing the index number of the fields to set
      */
-    void setFeatureAttributes( int cat, QgsFeature *feature, const QgsAttributeList & attlist, QgsGrassProvider::TopoSymbol symbol );
-
-    /** Get topology symbol code
-     * @param lid line or area number
-     * @param type geometry type */
-    QgsGrassProvider::TopoSymbol topoSymbol( int lid, int type );
+    void setFeatureAttributes( int cat, QgsFeature *feature, const QgsAttributeList & attlist, QgsGrassVectorMap::TopoSymbol symbol );
 
     /** Canceled -> close when possible */
     bool mCanceled;

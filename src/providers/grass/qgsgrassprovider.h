@@ -57,21 +57,6 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     Q_OBJECT
 
   public:
-    enum TopoSymbol
-    {
-      TopoUndefined = 0,
-      TopoPoint,
-      TopoLine,
-      TopoBoundary0,
-      TopoBoundary1,
-      TopoBoundary2,
-      TopoCentroidIn,
-      TopoCentroidOut,
-      TopoCentroidDupl,
-      TopoNode0,
-      TopoNode1,
-      TopoNode2
-    };
 
     QgsGrassProvider( QString uri = QString() );
 
@@ -439,7 +424,12 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     };
 
   public slots:
-    void bufferGeometryChanged( QgsFeatureId fid, QgsGeometry &geom );
+    void onFeatureAdded( QgsFeatureId fid );
+    void onFeatureDeleted( QgsFeatureId fid );
+    void onGeometryChanged( QgsFeatureId fid, QgsGeometry &geom );
+    void onAttributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value );
+    void onAttributeAdded( int idx );
+    void onAttributeDeleted( int idx );
     void onBeforeCommitChanges();
     void onEditingStopped();
     void onUndoIndexChanged( int index );
@@ -494,6 +484,8 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     static bool isTopoType( int layerType );
 
     void setTopoFields();
+
+    void setPoints( struct line_pnts *points, const QgsAbstractGeometryV2 * geometry );
 
     /** Fields used for topo layers */
     QgsFields mTopoFields;

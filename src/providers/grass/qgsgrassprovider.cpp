@@ -25,6 +25,9 @@
 #include "qgsdataprovider.h"
 #include "qgsfeature.h"
 #include "qgsfield.h"
+#include "qgslinestringv2.h"
+#include "qgspointv2.h"
+#include "qgspolygonv2.h"
 #include "qgsrectangle.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayereditbuffer.h"
@@ -238,8 +241,7 @@ int QgsGrassProvider::capabilities() const
   // for now, only one map may be edited at time
   if ( mEditBuffer || ( mLayer && mLayer->map() && !mLayer->map()->isEdited() ) )
   {
-    //return AddFeatures | DeleteFeatures | ChangeAttributeValues | AddAttributes | DeleteAttributes | ChangeGeometries;
-    return ChangeGeometries;
+    return AddFeatures | DeleteFeatures | ChangeGeometries ;
   }
   return 0;
 }
@@ -1265,7 +1267,12 @@ void QgsGrassProvider::startEditing( QgsVectorLayer *vectorLayer )
   mLayer->map()->startEdit();
 
   mEditBuffer = vectorLayer->editBuffer();
-  connect( mEditBuffer, SIGNAL( geometryChanged( QgsFeatureId, QgsGeometry & ) ), SLOT( bufferGeometryChanged( QgsFeatureId, QgsGeometry & ) ) );
+  connect( mEditBuffer, SIGNAL( featureAdded( QgsFeatureId ) ), SLOT( onFeatureAdded( QgsFeatureId ) ) );
+  connect( mEditBuffer, SIGNAL( featureDeleted( QgsFeatureId ) ), SLOT( onFeatureDeleted( QgsFeatureId ) ) );
+  connect( mEditBuffer, SIGNAL( geometryChanged( QgsFeatureId, QgsGeometry & ) ), SLOT( onGeometryChanged( QgsFeatureId, QgsGeometry & ) ) );
+  connect( mEditBuffer, SIGNAL( attributeValueChanged( QgsFeatureId, int, const QVariant & ) ), SLOT( onAttributeValueChanged( QgsFeatureId, int, const QVariant & ) ) );
+  connect( mEditBuffer, SIGNAL( attributeAdded( int ) ), SLOT( onAttributeAdded( int ) ) );
+  connect( mEditBuffer, SIGNAL( attributeDeleted( int ) ), SLOT( onAttributeDeleted( int ) ) );
   connect( vectorLayer, SIGNAL( beforeCommitChanges() ), SLOT( onBeforeCommitChanges() ) );
   connect( vectorLayer, SIGNAL( editingStopped() ), SLOT( onEditingStopped() ) );
 
@@ -1274,9 +1281,221 @@ void QgsGrassProvider::startEditing( QgsVectorLayer *vectorLayer )
   QgsDebugMsg( "edit started" );
 }
 
-void QgsGrassProvider::bufferGeometryChanged( QgsFeatureId fid, QgsGeometry &geom )
+void QgsGrassProvider::setPoints( struct line_pnts *points, const QgsAbstractGeometryV2 * geometry )
 {
-  int oldLid = QgsGrassFeatureIterator::lidFormFid( fid );
+  if ( !points )
+  {
+    return;
+  }
+  Vect_reset_line( points );
+  if ( !geometry )
+  {
+    return;
+  }
+  if ( geometry->wkbType() == QgsWKBTypes::Point )
+  {
+    const QgsPointV2* point = dynamic_cast<const QgsPointV2*>( geometry );
+    if ( point )
+    {
+      Vect_append_point( points, point->x(), point->y(), point->z() );
+      QgsDebugMsg( QString( "x = %1 y = %2" ).arg( point->x() ).arg( point->y() ) );
+    }
+  }
+  else if ( geometry->wkbType() == QgsWKBTypes::LineString )
+  {
+    const QgsLineStringV2* lineString = dynamic_cast<const QgsLineStringV2*>( geometry );
+    if ( lineString )
+    {
+      for ( int i = 0; i < lineString->numPoints(); i++ )
+      {
+        QgsPointV2 point = lineString->pointN( i );
+        Vect_append_point( points, point.x(), point.y(), point.z() );
+      }
+    }
+  }
+  else if ( geometry->wkbType() == QgsWKBTypes::Polygon )
+  {
+    const QgsPolygonV2* polygon = dynamic_cast<const QgsPolygonV2*>( geometry );
+    if ( polygon && polygon->exteriorRing() )
+    {
+      QList<QgsPointV2> pointsList;
+      polygon->exteriorRing()->points( pointsList );
+      Q_FOREACH ( QgsPointV2 point, pointsList )
+      {
+        Vect_append_point( points, point.x(), point.y(), point.z() );
+      }
+    }
+  }
+  else
+  {
+    QgsDebugMsg( "unknown type : " + geometry->geometryType() );
+  }
+}
+
+void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
+{
+  // fid is negative for new features
+
+  int lid = QgsGrassFeatureIterator::lidFromFid( fid );
+  int cat = QgsGrassFeatureIterator::catFromFid( fid );
+  QgsDebugMsg( QString( "fid = %1 lid = %2 cat = %3" ).arg( fid ).arg( lid ).arg( cat ) );
+
+  const QgsAbstractGeometryV2 *geometry = 0;
+  if ( FID_IS_NEW( fid ) )
+  {
+    if ( !mEditBuffer->addedFeatures().contains( fid ) )
+    {
+      QgsDebugMsg( "the feature is missing in buffer addedFeatures :" );
+      Q_FOREACH ( QgsFeatureId id, mEditBuffer->addedFeatures().keys() )
+      {
+        QgsDebugMsg( QString( "addedFeatures : id = %1" ).arg( id ) );
+      }
+      return;
+    }
+    QgsFeature feature = mEditBuffer->addedFeatures().value( fid );
+    if ( feature.geometry() )
+    {
+      geometry = feature.geometry()->geometry();
+    }
+  }
+  else // old deleted feature undo
+  {
+    // If it is not new feature, we should have the geometry in oldGeometries
+    if ( mLayer->map()->oldGeometries().contains( lid ) )
+    {
+      geometry = mLayer->map()->oldGeometries().value( lid );
+    }
+    else
+    {
+      QgsDebugMsg( "geometry of old, previously deleted feature not found" );
+    }
+  }
+
+  if ( !geometry )
+  {
+    QgsDebugMsg( "geometry is null" );
+  }
+  else
+  {
+    struct line_pnts *points = Vect_new_line_struct();
+    struct line_cats *cats = Vect_new_cats_struct();
+
+    setPoints( points, geometry );
+    // TODO: get also old type if it is feature previously deleted
+    int type = 0;
+    QgsWKBTypes::Type wkbType = QgsWKBTypes::flatType( geometry->wkbType() );
+    if ( wkbType == QgsWKBTypes::Point )
+    {
+      type = GV_POINT;
+    }
+    else if ( wkbType == QgsWKBTypes::LineString )
+    {
+      type = GV_LINE;
+    }
+    else if ( wkbType == QgsWKBTypes::Polygon )
+    {
+      type = GV_BOUNDARY;
+    }
+    else
+    {
+      QgsDebugMsg( QString( "unknown type %1" ).arg( wkbType ) );
+    }
+
+    if ( cat > 0 )
+    {
+      // TODO: orig field, maybe different
+      int field = mLayerField;
+      Vect_cat_set( cats, field, cat );
+    }
+
+    if ( type > 0 && points->n_points > 0 )
+    {
+      mLayer->map()->lockReadWrite();
+      int newLid = Vect_write_line( map(), type, points, cats );
+      mLayer->map()->unlockReadWrite();
+
+      QgsDebugMsg( QString( "newLine = %1" ).arg( newLid ) );
+
+      // fid may be new (negative) or old, if this is delete undo
+      int oldLid = QgsGrassFeatureIterator::lidFromFid( fid );
+
+      mLayer->map()->oldLids()[newLid] = oldLid;
+      mLayer->map()->newLids()[oldLid] = newLid;
+      QgsDebugMsg( QString( "oldLid = %1 newLine = %2" ).arg( oldLid ).arg( newLid ) );
+
+      QgsDebugMsg( QString( "oldLids : %1 -> %2" ).arg( newLid ).arg( oldLid ) );
+      mLayer->map()->oldLids()[newLid] = oldLid;
+      QgsDebugMsg( QString( "newLids : %1 -> %2" ).arg( oldLid ).arg( newLid ) );
+      mLayer->map()->newLids()[oldLid] = newLid;
+
+      if ( FID_IS_NEW( fid ) )
+      {
+        // Set topo symbol attribute
+        int symbol = mLayer->map()->topoSymbol( newLid );
+        QgsDebugMsg( QString( "symbol = %1" ).arg( symbol ) );
+        // TODO attribute index
+        int idx = mLayer->fields().size() - 1;
+        QgsFeatureMap & addedFeatures = const_cast<QgsFeatureMap&>( mEditBuffer->addedFeatures() );
+        addedFeatures[fid].setAttribute( idx, QVariant( symbol ) );
+      }
+    }
+
+    Vect_destroy_line_struct( points );
+    Vect_destroy_cats_struct( cats );
+  }
+}
+
+void QgsGrassProvider::onFeatureDeleted( QgsFeatureId fid )
+{
+  QgsDebugMsg( QString( "fid = %1" ).arg( fid ) );
+
+  int oldLid = QgsGrassFeatureIterator::lidFromFid( fid );
+  int realLine = oldLid;
+  if ( mLayer->map()->newLids().contains( oldLid ) ) // if it was changed already
+  {
+    realLine = mLayer->map()->newLids().value( oldLid );
+  }
+  QgsDebugMsg( QString( "fid = %1 oldLid = %2 realLine = %3" ).arg( fid ).arg( oldLid ).arg( realLine ) );
+
+  // store only the first original geometry if it is not new feature, changed geometries are stored in the buffer
+  if ( oldLid > 0 && !mLayer->map()->oldGeometries().contains( oldLid ) )
+  {
+    QgsAbstractGeometryV2 *geometry = mLayer->map()->lineGeometry( oldLid );
+    if ( geometry )
+    {
+      QgsDebugMsg( QString( "save old geometry of oldLid = %1" ).arg( oldLid ) );
+      mLayer->map()->oldGeometries().insert( oldLid, geometry );
+    }
+    else
+    {
+      QgsDebugMsg( QString( "cannot read geometry of oldLid = %1" ).arg( oldLid ) );
+    }
+  }
+
+  mLayer->map()->lockReadWrite();
+  G_TRY
+  {
+    Vect_delete_line( map(), realLine );
+    // oldLids are maping to the very first, original version (used by undo)
+    int oldestLid = oldLid;
+    if ( mLayer->map()->oldLids().contains( oldLid ) )
+    {
+      oldestLid = mLayer->map()->oldLids().value( oldLid );
+    }
+    QgsDebugMsg( QString( "oldLid = %1 oldestLid = %2" ).arg( oldLid ).arg( oldestLid ) );
+    QgsDebugMsg( QString( "newLids : %1 -> 0" ).arg( oldestLid ) );
+    mLayer->map()->newLids()[oldestLid] = 0;
+  }
+  G_CATCH( QgsGrass::Exception &e )
+  {
+    QgsDebugMsg( QString( "Cannot delete line : %1" ).arg( e.what() ) );
+  }
+  mLayer->map()->unlockReadWrite();
+}
+
+void QgsGrassProvider::onGeometryChanged( QgsFeatureId fid, QgsGeometry &geom )
+{
+  int oldLid = QgsGrassFeatureIterator::lidFromFid( fid );
   int realLine = oldLid;
   if ( mLayer->map()->newLids().contains( oldLid ) ) // if it was changed already
   {
@@ -1287,52 +1506,81 @@ void QgsGrassProvider::bufferGeometryChanged( QgsFeatureId fid, QgsGeometry &geo
   struct line_pnts *points = Vect_new_line_struct();
   struct line_cats *cats = Vect_new_cats_struct();
 
-  int type = Vect_read_line( map(), points, cats, realLine );
-  QgsDebugMsg( QString( "type = %1 n_points = %2" ).arg( type ).arg( points->n_points ) );
-
-  // store only the first original geometry, changed geometries are stored in the buffer
-  if ( !mLayer->map()->oldGeometries().contains( oldLid ) )
+  int type;
+  G_TRY
   {
-    QgsAbstractGeometryV2 *geometry = mLayer->map()->lineGeometry( oldLid );
-    mLayer->map()->oldGeometries().insert( oldLid, geometry );
+    type = Vect_read_line( map(), points, cats, realLine );
   }
-
-  if ( type == GV_POINT || type == GV_CENTROID )
+  G_CATCH( QgsGrass::Exception &e )
   {
-    QgsPoint point = geom.asPoint();
-    points->x[0] = point.x();
-    points->y[0] = point.y();
-    QgsDebugMsg( QString( "x = %1 y = %2" ).arg( point.x() ).arg( point.y() ) );
-  }
-  else if ( type == GV_LINE || type == GV_BOUNDARY )
-  {
-    QgsPolyline polyline = geom.asPolyline();
-    for ( int i = 0; i < points->n_points; i++ )
-    {
-      points->x[i] = polyline.value( i ).x();
-      points->y[i] = polyline.value( i ).y();
-    }
-  }
-  else
-  {
-    QgsDebugMsg( "unknown type" );
+    QgsDebugMsg( QString( "Cannot read line : %1" ).arg( e.what() ) );
+    Vect_destroy_line_struct( points );
+    Vect_destroy_cats_struct( cats );
     return;
   }
+  QgsDebugMsg( QString( "type = %1 n_points = %2" ).arg( type ).arg( points->n_points ) );
+
+  // store only the first original geometry if it is not new feature, changed geometries are stored in the buffer
+  if ( oldLid > 0 && !mLayer->map()->oldGeometries().contains( oldLid ) )
+  {
+    QgsAbstractGeometryV2 *geometry = mLayer->map()->lineGeometry( oldLid );
+    if ( geometry )
+    {
+      QgsDebugMsg( QString( "save old geometry of oldLid = %1" ).arg( oldLid ) );
+      mLayer->map()->oldGeometries().insert( oldLid, geometry );
+    }
+    else
+    {
+      QgsDebugMsg( QString( "cannot read geometry of oldLid = %1" ).arg( oldLid ) );
+    }
+  }
+
+  setPoints( points, geom.geometry() );
 
   mLayer->map()->lockReadWrite();
   // Vect_rewrite_line may delete/write the line with a new id
   int newLid = Vect_rewrite_line( map(), realLine, type, points, cats );
+  G_TRY
+  {
+    newLid = Vect_rewrite_line( map(), realLine, type, points, cats );
+
+    // oldLids are maping to the very first, original version (used by undo)
+    int oldestLid = oldLid;
+    if ( mLayer->map()->oldLids().contains( oldLid ) )
+    {
+      oldestLid = mLayer->map()->oldLids().value( oldLid );
+    }
+    QgsDebugMsg( QString( "oldLid = %1 oldestLid = %2 newLine = %3" ).arg( oldLid ).arg( oldestLid ).arg( newLid ) );
+    QgsDebugMsg( QString( "oldLids : %1 -> %2" ).arg( newLid ).arg( oldestLid ) );
+    mLayer->map()->oldLids()[newLid] = oldestLid;
+    QgsDebugMsg( QString( "newLids : %1 -> %2" ).arg( oldestLid ).arg( newLid ) );
+    mLayer->map()->newLids()[oldestLid] = newLid;
+  }
+  G_CATCH( QgsGrass::Exception &e )
+  {
+    QgsDebugMsg( QString( "Cannot write line : %1" ).arg( e.what() ) );
+  }
   mLayer->map()->unlockReadWrite();
 
-  QgsDebugMsg( QString( "oldLid = %1 newLine = %2" ).arg( oldLid ).arg( newLid ) );
-  // oldLids are maping to the very first, original version (used by undo)
-  int oldestLid = oldLid;
-  if ( mLayer->map()->oldLids().contains( oldLid ) )
-  {
-    oldestLid = mLayer->map()->oldLids().value( oldLid );
-  }
-  mLayer->map()->oldLids()[newLid] = oldestLid;
-  mLayer->map()->newLids()[oldLid] = newLid;
+  Vect_destroy_line_struct( points );
+  Vect_destroy_cats_struct( cats );
+
+
+}
+
+void QgsGrassProvider::onAttributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value )
+{
+  QgsDebugMsg( QString( "fid = %1 idx = %2 value = %3" ).arg( fid ).arg( idx ).arg( value.toString() ) );
+}
+
+void QgsGrassProvider::onAttributeAdded( int idx )
+{
+  QgsDebugMsg( QString( "idx = %1" ).arg( idx ) );
+}
+
+void QgsGrassProvider::onAttributeDeleted( int idx )
+{
+  QgsDebugMsg( QString( "idx = %1" ).arg( idx ) );
 }
 
 void QgsGrassProvider::onUndoIndexChanged( int index )

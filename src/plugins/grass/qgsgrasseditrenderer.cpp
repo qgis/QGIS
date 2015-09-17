@@ -34,18 +34,18 @@ QgsGrassEditRenderer::QgsGrassEditRenderer()
     , mMarkerRenderer( 0 )
 {
   QHash<int, QColor> colors;
-  colors.insert( QgsGrassProvider::TopoUndefined, QColor( 125, 125, 125 ) );
-  colors.insert( QgsGrassProvider::TopoLine, QColor( Qt::black ) );
-  colors.insert( QgsGrassProvider::TopoBoundary0, QColor( Qt::red ) );
-  colors.insert( QgsGrassProvider::TopoBoundary1, QColor( 255, 125, 0 ) );
-  colors.insert( QgsGrassProvider::TopoBoundary2, QColor( Qt::green ) );
+  colors.insert( QgsGrassVectorMap::TopoUndefined, QColor( 125, 125, 125 ) );
+  colors.insert( QgsGrassVectorMap::TopoLine, QColor( Qt::black ) );
+  colors.insert( QgsGrassVectorMap::TopoBoundary0, QColor( Qt::red ) );
+  colors.insert( QgsGrassVectorMap::TopoBoundary1, QColor( 255, 125, 0 ) );
+  colors.insert( QgsGrassVectorMap::TopoBoundary2, QColor( Qt::green ) );
 
   QHash<int, QString> labels;
-  labels.insert( QgsGrassProvider::TopoUndefined, "Unknown type" );
-  labels.insert( QgsGrassProvider::TopoLine, "Line" );
-  labels.insert( QgsGrassProvider::TopoBoundary0, "Boundary (isolated)" );
-  labels.insert( QgsGrassProvider::TopoBoundary1, "Boundary (area on one side)" );
-  labels.insert( QgsGrassProvider::TopoBoundary2, "Boundary (areas on both sides)" );
+  labels.insert( QgsGrassVectorMap::TopoUndefined, "Unknown type" );
+  labels.insert( QgsGrassVectorMap::TopoLine, "Line" );
+  labels.insert( QgsGrassVectorMap::TopoBoundary0, "Boundary (isolated)" );
+  labels.insert( QgsGrassVectorMap::TopoBoundary1, "Boundary (area on one side)" );
+  labels.insert( QgsGrassVectorMap::TopoBoundary2, "Boundary (areas on both sides)" );
 
   QgsCategoryList categoryList;
 
@@ -61,15 +61,15 @@ QgsGrassEditRenderer::QgsGrassEditRenderer()
   colors.clear();
   labels.clear();
 
-  colors.insert( QgsGrassProvider::TopoPoint, QColor( 0, 0, 0 ) );
-  colors.insert( QgsGrassProvider::TopoCentroidIn, QColor( 0, 255, 0 ) );
-  colors.insert( QgsGrassProvider::TopoCentroidOut, QColor( 255, 0, 0 ) );
-  colors.insert( QgsGrassProvider::TopoCentroidDupl, QColor( 255, 0, 255 ) );
+  colors.insert( QgsGrassVectorMap::TopoPoint, QColor( 0, 0, 0 ) );
+  colors.insert( QgsGrassVectorMap::TopoCentroidIn, QColor( 0, 255, 0 ) );
+  colors.insert( QgsGrassVectorMap::TopoCentroidOut, QColor( 255, 0, 0 ) );
+  colors.insert( QgsGrassVectorMap::TopoCentroidDupl, QColor( 255, 0, 255 ) );
 
-  labels.insert( QgsGrassProvider::TopoPoint, "Point" );
-  labels.insert( QgsGrassProvider::TopoCentroidIn, "Centroid in area" );
-  labels.insert( QgsGrassProvider::TopoCentroidOut, "Centroid outside area" );
-  labels.insert( QgsGrassProvider::TopoCentroidDupl, "Duplicate centroid" );
+  labels.insert( QgsGrassVectorMap::TopoPoint, "Point" );
+  labels.insert( QgsGrassVectorMap::TopoCentroidIn, "Centroid in area" );
+  labels.insert( QgsGrassVectorMap::TopoCentroidOut, "Centroid outside area" );
+  labels.insert( QgsGrassVectorMap::TopoCentroidDupl, "Duplicate centroid" );
 
   categoryList.clear();
 
@@ -104,15 +104,15 @@ QgsSymbolV2* QgsGrassEditRenderer::symbolForFeature( QgsFeature& feature, QgsRen
   QgsDebugMsgLevel( QString( "fid = %1 symbolCode = %2" ).arg( feature.id() ).arg( symbolCode ), 3 );
 
   QgsSymbolV2* symbol = 0;
-  if ( symbolCode == QgsGrassProvider::TopoPoint || symbolCode == QgsGrassProvider::TopoCentroidIn ||
-       symbolCode == QgsGrassProvider::TopoCentroidOut || symbolCode == QgsGrassProvider::TopoCentroidDupl ||
-       symbolCode == QgsGrassProvider::TopoNode0 || symbolCode == QgsGrassProvider::TopoNode1 ||
-       symbolCode == QgsGrassProvider::TopoNode2 )
+  if ( symbolCode == QgsGrassVectorMap::TopoPoint || symbolCode == QgsGrassVectorMap::TopoCentroidIn ||
+       symbolCode == QgsGrassVectorMap::TopoCentroidOut || symbolCode == QgsGrassVectorMap::TopoCentroidDupl ||
+       symbolCode == QgsGrassVectorMap::TopoNode0 || symbolCode == QgsGrassVectorMap::TopoNode1 ||
+       symbolCode == QgsGrassVectorMap::TopoNode2 )
   {
     symbol = mMarkerRenderer->symbolForFeature( feature, context );
   }
-  else if ( symbolCode == QgsGrassProvider::TopoLine || symbolCode == QgsGrassProvider::TopoBoundary0 ||
-            symbolCode == QgsGrassProvider::TopoBoundary1 || symbolCode == QgsGrassProvider::TopoBoundary2 )
+  else if ( symbolCode == QgsGrassVectorMap::TopoLine || symbolCode == QgsGrassVectorMap::TopoBoundary0 ||
+            symbolCode == QgsGrassVectorMap::TopoBoundary1 || symbolCode == QgsGrassVectorMap::TopoBoundary2 )
   {
     symbol = mLineRenderer->symbolForFeature( feature, context );
   }

@@ -248,14 +248,15 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature& feature )
   int type = 0;
   int lid = 0;
   QgsFeatureId featureId = 0;
+  QgsAbstractGeometryV2 *oldGeometry = 0;
 
 #ifdef QGISDEBUG
   if ( mSource->mEditing )
   {
-    QgsDebugMsg( "newLids:" );
+    QgsDebugMsgLevel( "newLids:", 3 );
     foreach ( int oldLid, mSource->mLayer->map()->newLids().keys() )
     {
-      QgsDebugMsg( QString( "%1 -> %2" ).arg( oldLid ).arg( mSource->mLayer->map()->newLids().value( oldLid ) ) );
+      QgsDebugMsgLevel( QString( "%1 -> %2" ).arg( oldLid ).arg( mSource->mLayer->map()->newLids().value( oldLid ) ), 3 );
     }
   }
 #endif
@@ -263,24 +264,45 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature& feature )
   if ( filterById )
   {
     featureId = mRequest.filterFid();
-    lid = lidFormFid( mRequest.filterFid() );
+    lid = lidFromFid( mRequest.filterFid() );
+    QgsDebugMsg( QString( "featureId = %1 lid = %2" ).arg( featureId ).arg( lid ) );
 
-    if ( mSource->mLayer->map()->newLids().contains( lid ) )
+    if ( mSource->mEditing )
     {
-      lid = mSource->mLayer->map()->newLids().value( lid );
-      QgsDebugMsg( QString( "line %1 rewritten -> real lid = %2" ).arg( lidFormFid( mRequest.filterFid() ) ).arg( lid ) );
+      // Undo needs the oldes version of geometry, but we also need topo_symbol, so we must read
+      // topo_symbol from map if the newLine exists  read
+      if ( mSource->mLayer->map()->oldGeometries().contains( lid ) )
+      {
+        QgsDebugMsg( QString( "use old geometry for lid = %1" ).arg( lid ) );
+        oldGeometry = mSource->mLayer->map()->oldGeometries().value( lid );
+        if ( !oldGeometry )
+        {
+          QgsDebugMsg( "oldGeometry is null" );
+        }
+      }
+      if ( mSource->mLayer->map()->newLids().contains( lid ) )
+      {
+        // newLid may be 0 if line was deleted, in such case use only the old geometry, topo_symbol cannot be read
+        int newLid = mSource->mLayer->map()->newLids().value( lid );
+        QgsDebugMsg( QString( "use newLid = %1 -> lid = %2" ).arg( newLid ).arg( lid ) );
+        lid = newLid;
+      }
     }
-    if ( !Vect_line_alive( mSource->map(), lid ) )
-    {
-      close();
-      mSource->mLayer->map()->unlockReadWrite();
-      return false;
-    }
-    type = Vect_read_line( mSource->map(), 0, 0, lid );
 
-    // TODO real cat when line/cat was rewritten?!
-    cat = catFormFid( mRequest.filterFid() );
-    QgsDebugMsg( QString( "lid = %1 cat = %2" ).arg( lid ).arg( cat ) );
+    if ( lid > 0 )
+    {
+      if ( !Vect_line_alive( mSource->map(), lid ) )
+      {
+        close();
+        mSource->mLayer->map()->unlockReadWrite();
+        return false;
+      }
+      type = Vect_read_line( mSource->map(), 0, 0, lid );
+
+      // TODO real cat when line/cat was rewritten?!
+      cat = catFromFid( mRequest.filterFid() );
+      QgsDebugMsg( QString( "lid = %1 cat = %2" ).arg( lid ).arg( cat ) );
+    }
   }
   else
   {
@@ -304,27 +326,35 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature& feature )
           break;
         }
 
-        int realLid = mNextLid;
-        if ( mSource->mLayer->map()->newLids().contains( mNextLid ) )
+        int oldLid = mNextLid;
+        if ( mSource->mLayer->map()->oldLids().contains( mNextLid ) )
         {
-          realLid = mSource->mLayer->map()->newLids().value( mNextLid );
-          QgsDebugMsg( QString( "line %1 rewritten ->  realLid = %2" ).arg( mNextLid ).arg( realLid ) );
+          oldLid = mSource->mLayer->map()->oldLids().value( mNextLid );
+          QgsDebugMsg( QString( "mNextLid = %1 -> oldLid = %2" ).arg( mNextLid ).arg( oldLid ) );
         }
 
-        if ( !Vect_line_alive( mSource->map(), realLid ) ) // should not be necessary for rewritten lines
+        if ( oldLid < 0 )
+        {
+          QgsDebugMsg( QString( "skip new feature oldLid = %1" ).arg( oldLid ) );
+          mNextLid++;
+          continue;
+        }
+
+        if ( !Vect_line_alive( mSource->map(), mNextLid ) ) // should not be necessary for rewritten lines
         {
           mNextLid++;
           continue;
         }
 
         struct line_cats *cats = Vect_new_cats_struct();
-        int tmpType = Vect_read_line( mSource->map(), 0, cats, realLid );
+        int tmpType = Vect_read_line( mSource->map(), 0, cats, mNextLid );
         if ( cats->n_cats == 0 )
         {
-          lid = realLid;
+          lid = mNextLid;
           type = tmpType;
           cat = 0;
-          featureId = makeFeatureId( mNextLid, cat );
+
+          featureId = makeFeatureId( oldLid, cat );
           mNextLid++;
         }
         else
@@ -345,10 +375,10 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature& feature )
             }
             else
             {
-              lid = realLid;
+              lid = mNextLid;
               type = tmpType;
               cat = cats->cat[mNextCidx];
-              featureId = makeFeatureId( mNextLid, cat );
+              featureId = makeFeatureId( oldLid, cat );
               mNextCidx++;
             }
           }
@@ -417,19 +447,22 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature& feature )
       break;
     }
   }
-  if ( lid == 0 || lid > mSource->mLayer->map()->numLines() )
+  if ( !oldGeometry )
   {
-    QgsDebugMsg( QString( "lid = %1 -> close" ).arg( lid ) );
-    close();
-    mSource->mLayer->map()->unlockReadWrite();
-    return false; // No more features
-  }
-  if ( type == 0 ) // should not happen
-  {
-    QgsDebugMsg( "unknown type" );
-    close();
-    mSource->mLayer->map()->unlockReadWrite();
-    return false;
+    if ( lid == 0 || lid > mSource->mLayer->map()->numLines() )
+    {
+      QgsDebugMsg( QString( "lid = %1 -> close" ).arg( lid ) );
+      close();
+      mSource->mLayer->map()->unlockReadWrite();
+      return false; // No more features
+    }
+    if ( type == 0 ) // should not happen
+    {
+      QgsDebugMsg( "unknown type" );
+      close();
+      mSource->mLayer->map()->unlockReadWrite();
+      return false;
+    }
   }
   QgsDebugMsgLevel( QString( "lid = %1 type = %2 cat = %3 fatureId = %4" ).arg( lid ).arg( type ).arg( cat ).arg( featureId ), 3 );
 
@@ -440,36 +473,22 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature& feature )
 
   if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
   {
-    // TODO ???
-#if 0
-    // Changed geometry are always read from cache
-    if ( mSource->mEditing && mSource->mChangedFeatures.contains( mRequest.filterFid() ) )
+    if ( oldGeometry )
     {
-      QgsDebugMsg( QString( "filterById = %1 mRequest.filterFid() = %2 mSource->mChangedFeatures.size() = %3" ).arg( filterById ).arg( mRequest.filterFid() ).arg( mSource->mChangedFeatures.size() ) );
-      QgsFeature f = mSource->mChangedFeatures.value( mRequest.filterFid() );
-      QgsDebugMsg( QString( "return features from mChangedFeatures id = %1" ).arg( f.id() ) );
-      feature.setFeatureId( f.id() );
-      feature.initAttributes( mSource->mFields.count() );
-      feature.setFields( &( mSource->mFields ) ); // allow name-based attribute lookups
-      feature.setAttributes( f.attributes() );
-      feature.setGeometry( new QgsGeometry( *( f.geometry() ) ) );
-      feature.setValid( true );
-      mSource->mLayer->map()->unlockReadWrite();
-      return true;
+      feature.setGeometry( new QgsGeometry( oldGeometry->clone() ) );
     }
     else
     {
+      setFeatureGeometry( feature, lid, type );
     }
-#endif
-    setFeatureGeometry( feature, lid, type );
   }
 
   if ( !QgsGrassProvider::isTopoType( mSource->mLayerType ) )
   {
-    QgsGrassProvider::TopoSymbol symbol = QgsGrassProvider::TopoUndefined;
-    if ( mSource->mEditing )
+    QgsGrassVectorMap::TopoSymbol symbol = QgsGrassVectorMap::TopoUndefined;
+    if ( mSource->mEditing && lid > 0 )
     {
-      symbol = topoSymbol( lid, type );
+      symbol = mSource->mLayer->map()->topoSymbol( lid );
     }
 
     if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
@@ -528,9 +547,6 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature& feature )
   return true;
 }
 
-
-
-
 bool QgsGrassFeatureIterator::rewind()
 {
   if ( mClosed )
@@ -569,27 +585,7 @@ void QgsGrassFeatureIterator::setFeatureGeometry( QgsFeature& feature, int id, i
   QgsAbstractGeometryV2 *geometry = 0;
   if ( type & ( GV_POINTS | GV_LINES | GV_FACE ) )
   {
-    if ( mSource->mEditing )
-    {
-      // Use original geometry because QgsVectorLayerUndoCommandChangeGeometry::undo() needs that
-      if ( mSource->mLayer->map()->oldLids().contains( id ) )
-      {
-        int oldLid = mSource->mLayer->map()->oldLids().value( id );
-        QgsDebugMsg( QString( "oldLid = %1 -> use old geometry" ).arg( oldLid ) );
-        if ( mSource->mLayer->map()->oldGeometries().contains( oldLid ) )
-        {
-          geometry = mSource->mLayer->map()->oldGeometries().value( oldLid )->clone();
-        }
-        else
-        {
-          QgsDebugMsg( "geometry not found in oldGeometries" );
-        }
-      }
-    }
-    if ( !geometry )
-    {
-      geometry = mSource->mLayer->map()->lineGeometry( id );
-    }
+    geometry = mSource->mLayer->map()->lineGeometry( id );
   }
   else if ( mSource->mLayerType == QgsGrassProvider::TOPO_NODE )
   {
@@ -613,59 +609,28 @@ QgsFeatureId QgsGrassFeatureIterator::makeFeatureId( int grassId, int cat )
   return ( QgsFeatureId )grassId * 1000000000 + cat;
 }
 
-int QgsGrassFeatureIterator::lidFormFid( QgsFeatureId fid )
+int QgsGrassFeatureIterator::lidFromFid( QgsFeatureId fid )
 {
+  // New features have negative fid, we take such fid as (still negative) lid
+  // it is only used for mapping from fid to real lid
+  if ( FID_IS_NEW( fid ) )
+  {
+    return fid;
+  }
   return fid / 1000000000;
 }
 
-int QgsGrassFeatureIterator::catFormFid( QgsFeatureId fid )
+int QgsGrassFeatureIterator::catFromFid( QgsFeatureId fid )
 {
+  if ( FID_IS_NEW( fid ) )
+  {
+    // TODO: keep track of cats for new features
+    return 0;
+  }
   return fid % 1000000000;
 }
 
-QgsGrassProvider::TopoSymbol QgsGrassFeatureIterator::topoSymbol( int lid, int type )
-{
-  QgsGrassProvider::TopoSymbol symbol = QgsGrassProvider::TopoUndefined;
-  if ( type == GV_POINT )
-  {
-    symbol = QgsGrassProvider::TopoPoint;
-  }
-  else if ( type == GV_CENTROID )
-  {
-    int area = Vect_get_centroid_area( mSource->map(), lid );
-    if ( area == 0 )
-      symbol = QgsGrassProvider::TopoCentroidOut;
-    else if ( area > 0 )
-      symbol = QgsGrassProvider::TopoCentroidIn;
-    else
-      symbol = QgsGrassProvider::TopoCentroidDupl; /* area < 0 */
-  }
-  else if ( type == GV_LINE )
-  {
-    symbol = QgsGrassProvider::TopoLine;
-  }
-  else if ( type == GV_BOUNDARY )
-  {
-    int left, right;
-    Vect_get_line_areas( mSource->map(), lid, &left, &right );
-    if ( left != 0 && right != 0 )
-    {
-      symbol = QgsGrassProvider::TopoBoundary2;
-    }
-    else if ( left == 0 && right == 0 )
-    {
-      symbol = QgsGrassProvider::TopoBoundary0;
-    }
-    else
-    {
-      symbol = QgsGrassProvider::TopoBoundary1;
-    }
-  }
-  QgsDebugMsgLevel( QString( "lid = %1 type = %2 symbol = %3" ).arg( lid ).arg( type ).arg( symbol ), 3 );
-  return symbol;
-}
-
-void QgsGrassFeatureIterator::setFeatureAttributes( int cat, QgsFeature *feature, QgsGrassProvider::TopoSymbol symbol )
+void QgsGrassFeatureIterator::setFeatureAttributes( int cat, QgsFeature *feature, QgsGrassVectorMap::TopoSymbol symbol )
 {
   QgsDebugMsgLevel( QString( "setFeatureAttributes cat = %1" ).arg( cat ), 3 );
   QgsAttributeList attlist;
@@ -684,7 +649,7 @@ void QgsGrassFeatureIterator::setFeatureAttributes( int cat, QgsFeature *feature
   return setFeatureAttributes( cat, feature, attlist, symbol );
 }
 
-void QgsGrassFeatureIterator::setFeatureAttributes( int cat, QgsFeature *feature, const QgsAttributeList& attlist, QgsGrassProvider::TopoSymbol symbol )
+void QgsGrassFeatureIterator::setFeatureAttributes( int cat, QgsFeature *feature, const QgsAttributeList& attlist, QgsGrassVectorMap::TopoSymbol symbol )
 {
   QgsDebugMsgLevel( QString( "setFeatureAttributes cat = %1 symbol = %2" ).arg( cat ).arg( symbol ), 3 );
   int nFields = mSource->mLayer->fields().size();
