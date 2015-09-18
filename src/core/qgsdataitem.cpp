@@ -388,7 +388,8 @@ QVector<QgsDataItem*> QgsDataItem::runCreateChildren( QgsDataItem* item )
     if ( !child ) // should not happen
       continue;
     QgsDebugMsg( "moveToThread child " + child->path() );
-    child->moveToThread( QApplication::instance()->thread() ); // moves also children
+    if ( qApp )
+      child->moveToThread( qApp->thread() ); // moves also children
   }
   QgsDebugMsg( QString( "finished path %1: %2 children" ).arg( item->path() ).arg( children.size() ) );
   return children;
