@@ -11,23 +11,23 @@ class QgsSnappingUtils : QObject
 
     // main actions
 
-    /** get a point locator for the given layer. If such locator does not exist, it will be created */
+    /** Get a point locator for the given layer. If such locator does not exist, it will be created */
     QgsPointLocator* locatorForLayer( QgsVectorLayer* vl );
 
-    /** snap to map according to the current configuration (mode). Optional filter allows to discard unwanted matches. */
+    /** Snap to map according to the current configuration (mode). Optional filter allows to discard unwanted matches. */
     QgsPointLocator::Match snapToMap( const QPoint& point, QgsPointLocator::MatchFilter* filter = 0 );
     QgsPointLocator::Match snapToMap( const QgsPoint& pointMap, QgsPointLocator::MatchFilter* filter = 0 );
 
-    /** snap to current layer */
+    /** Snap to current layer */
     QgsPointLocator::Match snapToCurrentLayer( const QPoint& point, int type, QgsPointLocator::MatchFilter* filter = 0 );
 
     // environment setup
 
-    /** assign current map settings to the utils - used for conversion between screen coords to map coords */
+    /** Assign current map settings to the utils - used for conversion between screen coords to map coords */
     void setMapSettings( const QgsMapSettings& settings );
     const QgsMapSettings& mapSettings() const;
 
-    /** set current layer so that if mode is SnapCurrentLayer we know which layer to use */
+    /** Set current layer so that if mode is SnapCurrentLayer we know which layer to use */
     void setCurrentLayer( QgsVectorLayer* layer );
     QgsVectorLayer* currentLayer() const;
 
@@ -59,9 +59,9 @@ class QgsSnappingUtils : QObject
     /** Find out which strategy is used for indexing - by default hybrid indexing is used */
     IndexingStrategy indexingStrategy() const;
 
-    /** configure options used when the mode is snap to current layer */
+    /** Configure options used when the mode is snap to current layer */
     void setDefaultSettings( int type, double tolerance, QgsTolerance::UnitType unit );
-    /** query options used when the mode is snap to current layer */
+    /** Query options used when the mode is snap to current layer */
     void defaultSettings( int& type /Out/, double& tolerance /Out/, QgsTolerance::UnitType& unit /Out/ );
 
     struct LayerConfig

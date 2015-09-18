@@ -28,8 +28,9 @@ __revision__ = '$Format:%H$'
 
 import os
 import importlib
+import subprocess
+from PyQt4.QtCore import QCoreApplication
 from PyQt4.QtGui import QIcon
-from processing.gui.Help2Html import getHtmlFromRstFile
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
@@ -73,13 +74,16 @@ class SagaAlgorithm212(GeoAlgorithm):
         if '|' in self.name:
             tokens = self.name.split('|')
             self.name = tokens[0]
+            self.i18n_name = QCoreApplication.translate("SAGAAlgorithm", unicode(self.name))
             self.cmdname = tokens[1]
         else:
             self.cmdname = self.name
+            self.i18n_name = QCoreApplication.translate("SAGAAlgorithm", unicode(self.name))
             self.name = self.name[0].upper() + self.name[1:].lower()
         line = lines.readline().strip('\n').strip()
         self.undecoratedGroup = line
         self.group = SagaGroupNameDecorator.getDecoratedName(self.undecoratedGroup)
+        self.i18n_group = QCoreApplication.translate("SAGAAlgorithm", self.group)
         line = lines.readline().strip('\n').strip()
         while line != '':
             if line.startswith('Hardcoded'):
@@ -98,7 +102,6 @@ class SagaAlgorithm212(GeoAlgorithm):
             line = lines.readline().strip('\n').strip()
         lines.close()
 
-
     def processAlgorithm(self, progress):
         commands = list()
         self.exportedLayers = {}
@@ -111,9 +114,10 @@ class SagaAlgorithm212(GeoAlgorithm):
             if isinstance(param, ParameterRaster):
                 if param.value is None:
                     continue
-                value = param.value
-                if not value.endswith('sgrd'):
-                    exportCommand = self.exportRasterLayer(value)
+                if param.value.endswith('sdat'):
+                    param.value = param.value[:-4] + "sgrd"
+                elif not param.value.endswith('sgrd'):
+                    exportCommand = self.exportRasterLayer(param.value)
                     if exportCommand is not None:
                         commands.append(exportCommand)
             if isinstance(param, ParameterVector):
@@ -143,11 +147,15 @@ class SagaAlgorithm212(GeoAlgorithm):
                 if layers is None or len(layers) == 0:
                     continue
                 if param.datatype == ParameterMultipleInput.TYPE_RASTER:
-                    for layerfile in layers:
-                        if not layerfile.endswith('sgrd'):
+                    for i, layerfile in enumerate(layers):
+                        if layerfile.endswith('sdat'):
+                            layerfile = param.value[:-4] + "sgrd"
+                            layers[i] = layerfile
+                        elif not layerfile.endswith('sgrd'):
                             exportCommand = self.exportRasterLayer(layerfile)
                             if exportCommand is not None:
                                 commands.append(exportCommand)
+                        param.value = ";".join(layers)
                 elif param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
                     for layerfile in layers:
                         layer = dataobjects.getObjectFromUri(layerfile, False)
@@ -190,7 +198,7 @@ class SagaAlgorithm212(GeoAlgorithm):
                 values = param.value.split(',')
                 for i in range(0, len(values), 3):
                     s = values[i] + '\t' + values[i + 1] + '\t' + values[i
-                            + 2] + '\n'
+                                                                         + 2] + '\n'
                     f.write(s)
                 f.close()
                 command += ' -' + param.name + ' "' + tempTableFile + '"'
@@ -202,58 +210,29 @@ class SagaAlgorithm212(GeoAlgorithm):
                 values = param.value.split(',')
                 for i in range(4):
                     command += ' -' + self.extentParamNames[i] + ' ' \
-                        + str(float(values[i]) + offset[i])
+                        + unicode(float(values[i]) + offset[i])
             elif isinstance(param, (ParameterNumber, ParameterSelection)):
-                command += ' -' + param.name + ' ' + str(param.value)
+                command += ' -' + param.name + ' ' + unicode(param.value)
             else:
-                command += ' -' + param.name + ' "' + str(param.value) + '"'
+                command += ' -' + param.name + ' "' + unicode(param.value) + '"'
 
         for out in self.outputs:
-            if isinstance(out, OutputRaster):
-                filename = out.getCompatibleFileName(self)
-                filename += '.sgrd'
-                command += ' -' + out.name + ' "' + filename + '"'
-            if isinstance(out, OutputVector):
-                filename = out.getCompatibleFileName(self)
-                command += ' -' + out.name + ' "' + filename + '"'
-            if isinstance(out, OutputTable):
-                filename = out.getCompatibleFileName(self)
-                command += ' -' + out.name + ' "' + filename + '"'
+            command += ' -' + out.name + ' "' + out.getCompatibleFileName(self) + '"'
 
         commands.append(command)
 
-        # 3: Export resulting raster layers
-        # optim = ProcessingConfig.getSetting(SagaUtils.SAGA_IMPORT_EXPORT_OPTIMIZATION)
+        # special treatment for RGB algorithm
+        #TODO: improve this and put this code somewhere else
         for out in self.outputs:
             if isinstance(out, OutputRaster):
                 filename = out.getCompatibleFileName(self)
                 filename2 = filename + '.sgrd'
-                formatIndex = (4 if isWindows() else 1)
-                sessionExportedLayers[filename] = filename2
-
-                # Do not export is the output is not a final output
-                # of the model
-                #  dontExport = True
-                # if self.model is not None and optim:
-                #     for subalg in self.model.algOutputs:
-                #         if out.name in subalg:
-                #             if subalg[out.name] is not None:
-                #                 dontExport = False
-                #                 break
-                #     if dontExport:
-                #         continue
-
                 if self.cmdname == 'RGB Composite':
                     commands.append('io_grid_image 0 -IS_RGB -GRID:"' + filename2
                                     + '" -FILE:"' + filename
                                     + '"')
-                else:
-                    commands.append('io_gdal 1 -GRIDS "' + filename2
-                                    + '" -FORMAT ' + str(formatIndex)
-                                    + ' -TYPE 0 -FILE "' + filename + '"')
 
-
-        # 4: Run SAGA
+        # 3: Run SAGA
         commands = self.editCommands(commands)
         SagaUtils.createSagaBatchJobFileFromSagaCommands(commands)
         loglines = []
@@ -264,6 +243,13 @@ class SagaAlgorithm212(GeoAlgorithm):
         if ProcessingConfig.getSetting(SagaUtils.SAGA_LOG_COMMANDS):
             ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
         SagaUtils.executeSaga(progress)
+
+        if self.crs is not None:
+            for out in self.outputs:
+                if isinstance(out, (OutputVector, OutputRaster)):
+                    prjFile = os.path.splitext(out.getCompatibleFileName(self))[0] + ".prj"
+                with open(prjFile, "w") as f:
+                    f.write(self.crs.toWkt())
 
     def preProcessInputs(self):
         name = self.commandLineName().replace('.', '_')[len('saga:'):]
@@ -299,7 +285,6 @@ class SagaAlgorithm212(GeoAlgorithm):
                 break
         return cellsize
 
-
     def exportRasterLayer(self, source):
         global sessionExportedLayers
         if source in sessionExportedLayers:
@@ -311,7 +296,7 @@ class SagaAlgorithm212(GeoAlgorithm):
                 del sessionExportedLayers[source]
         layer = dataobjects.getObjectFromUri(source, False)
         if layer:
-            filename = str(layer.name())
+            filename = unicode(layer.name())
         else:
             filename = os.path.basename(source)
         validChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:'
@@ -321,7 +306,7 @@ class SagaAlgorithm212(GeoAlgorithm):
         destFilename = getTempFilenameInTempFolder(filename + '.sgrd')
         self.exportedLayers[source] = destFilename
         sessionExportedLayers[source] = destFilename
-        return 'io_gdal 0 -TRANSFORM -INTERPOL 0 -GRIDS "' + destFilename + '" -FILES "' + source +  '"'
+        return 'io_gdal 0 -TRANSFORM -INTERPOL 0 -GRIDS "' + destFilename + '" -FILES "' + source + '"'
 
     def checkParameterValuesBeforeExecuting(self):
         """
@@ -343,7 +328,7 @@ class SagaAlgorithm212(GeoAlgorithm):
                     continue
                 if layer.bandCount() > 1:
                     return self.tr('Input layer %s has more than one band.\n'
-                                   'Multiband layers are not supported by SAGA' % str(layer.name()))
+                                   'Multiband layers are not supported by SAGA' % unicode(layer.name()))
                 if not self.allowUnmatchingGridExtents:
                     if extent is None:
                         extent = (layer.extent(), layer.height(), layer.width())
@@ -351,5 +336,3 @@ class SagaAlgorithm212(GeoAlgorithm):
                         extent2 = (layer.extent(), layer.height(), layer.width())
                         if extent != extent2:
                             return self.tr("Input layers do not have the same grid extent.")
-
-                        

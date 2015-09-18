@@ -31,6 +31,7 @@ from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterNumber
 
+
 class hugeFileNormalize(LAStoolsAlgorithm):
 
     TILE_SIZE = "TILE_SIZE"
@@ -42,21 +43,21 @@ class hugeFileNormalize(LAStoolsAlgorithm):
     GRANULARITIES = ["coarse", "default", "fine", "extra_fine", "ultra_fine"]
 
     def defineCharacteristics(self):
-        self.name = "hugeFileNormalize"
-        self.group = "LAStools Pipelines"
+        self.name, self.i18n_name = self.trAlgorithm('hugeFileNormalize')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Pipelines')
         self.addParametersPointInputGUI()
         self.addParameter(ParameterNumber(hugeFileNormalize.TILE_SIZE,
-            self.tr("tile size (side length of square tile)"),
-            0, None, 1000.0))
+                                          self.tr("tile size (side length of square tile)"),
+                                          0, None, 1000.0))
         self.addParameter(ParameterNumber(hugeFileNormalize.BUFFER,
-            self.tr("buffer around each tile (avoids edge artifacts)"),
-            0, None, 25.0))
+                                          self.tr("buffer around each tile (avoids edge artifacts)"),
+                                          0, None, 25.0))
         self.addParameter(ParameterBoolean(hugeFileNormalize.AIRBORNE,
-            self.tr("airborne LiDAR"), True))
+                                           self.tr("airborne LiDAR"), True))
         self.addParameter(ParameterSelection(hugeFileNormalize.TERRAIN,
-            self.tr("terrain type"), hugeFileNormalize.TERRAINS, 1))
+                                             self.tr("terrain type"), hugeFileNormalize.TERRAINS, 1))
         self.addParameter(ParameterSelection(hugeFileNormalize.GRANULARITY,
-            self.tr("preprocessing"), hugeFileNormalize.GRANULARITIES, 1))
+                                             self.tr("preprocessing"), hugeFileNormalize.GRANULARITIES, 1))
         self.addParametersTemporaryDirectoryGUI()
         self.addParametersPointOutputGUI()
         self.addParametersCoresGUI()
@@ -70,11 +71,11 @@ class hugeFileNormalize(LAStoolsAlgorithm):
         self.addParametersPointInputCommands(commands)
         tile_size = self.getParameterValue(hugeFileNormalize.TILE_SIZE)
         commands.append("-tile_size")
-        commands.append(str(tile_size))
+        commands.append(unicode(tile_size))
         buffer = self.getParameterValue(hugeFileNormalize.BUFFER)
         if buffer != 0.0:
             commands.append("-buffer")
-            commands.append(str(buffer))
+            commands.append(unicode(buffer))
         commands.append("-reversible")
         self.addParametersTemporaryDirectoryAsOutputDirectoryCommands(commands)
         commands.append("-o")

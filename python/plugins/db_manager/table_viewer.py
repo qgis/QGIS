@@ -28,6 +28,7 @@ from .dlg_db_error import DlgDbError
 
 
 class TableViewer(QTableView):
+
     def __init__(self, parent=None):
         QTableView.__init__(self, parent)
         self.setSelectionBehavior(QAbstractItemView.SelectRows)
@@ -80,7 +81,8 @@ class TableViewer(QTableView):
         # delete the old model
         model = self.model()
         self.setModel(None)
-        if model: model.deleteLater()
+        if model:
+            model.deleteLater()
 
     def _loadTableData(self, table):
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
@@ -88,7 +90,7 @@ class TableViewer(QTableView):
             # set the new model
             self.setModel(table.tableDataModel(self))
 
-        except DbError, e:
+        except DbError as e:
             DlgDbError.showError(e, self)
             return
 
@@ -97,7 +99,6 @@ class TableViewer(QTableView):
 
         finally:
             QApplication.restoreOverrideCursor()
-
 
     def copySelectedResults(self):
         if len(self.selectedIndexes()) <= 0:

@@ -21,9 +21,12 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgstolerance.h"
+#include "qgisapp.h"
+
 #include <QMouseEvent>
 #include <QSettings>
 #include <limits>
+
 QgsMapToolMoveFeature::QgsMapToolMoveFeature( QgsMapCanvas* canvas )
     : QgsMapToolEdit( canvas )
     , mRubberBand( 0 )
@@ -36,7 +39,7 @@ QgsMapToolMoveFeature::~QgsMapToolMoveFeature()
   delete mRubberBand;
 }
 
-void QgsMapToolMoveFeature::canvasMoveEvent( QMouseEvent * e )
+void QgsMapToolMoveFeature::canvasMoveEvent( QgsMapMouseEvent* e )
 {
   if ( mRubberBand )
   {
@@ -49,7 +52,7 @@ void QgsMapToolMoveFeature::canvasMoveEvent( QMouseEvent * e )
   }
 }
 
-void QgsMapToolMoveFeature::canvasPressEvent( QMouseEvent * e )
+void QgsMapToolMoveFeature::canvasPressEvent( QgsMapMouseEvent* e )
 {
   delete mRubberBand;
   mRubberBand = 0;
@@ -137,7 +140,7 @@ void QgsMapToolMoveFeature::canvasPressEvent( QMouseEvent * e )
 
 }
 
-void QgsMapToolMoveFeature::canvasReleaseEvent( QMouseEvent * e )
+void QgsMapToolMoveFeature::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   //QgsDebugMsg("entering.");
   if ( !mRubberBand )
@@ -157,7 +160,7 @@ void QgsMapToolMoveFeature::canvasReleaseEvent( QMouseEvent * e )
   double dx = stopPointLayerCoords.x() - startPointLayerCoords.x();
   double dy = stopPointLayerCoords.y() - startPointLayerCoords.y();
   vlayer->beginEditCommand( tr( "Feature moved" ) );
-  foreach ( QgsFeatureId id, mMovedFeatures )
+  Q_FOREACH ( QgsFeatureId id, mMovedFeatures )
   {
     vlayer->translateFeature( id, dx, dy );
   }

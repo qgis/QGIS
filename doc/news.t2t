@@ -38,6 +38,53 @@ Change history for the QGIS Project
 Last Updated: %%date(%A %B %d, %Y)
 Last Change : %%mtime(%A %B %d, %Y)
 
+= What's new in Version 2.10 'Pisa'? =
+
+This is a minor release increment with the following new features:
+
+- New statistical summary dock widget.
+- Use logarithmic functions in the raster calculator.
+- New zonal statistics features.
+- New browser properties widget.
+- New browser icon.
+- PostGIS: support for Pointcloud layers.
+- PostGIS: provider side expression filters.
+- GRASS plugin/provider improvements.
+- DXF Export Improvements.
+- Virtual fields are now updatable.
+- Line edit with auto-completer for ValueRelation edit widget.
+- Improvements to DB Manager.
+- Filter chaining for relation reference widget.
+- Diagram improvements.
+- Improved geometry rotation tool.
+- New geometry engine.
+- Improved handling of potential project file overwrites.
+- Join parameters can now be edited.
+- Layers with joins can now be filtered.
+- Tweaks to label properties dialog.
+- Support for non-latin scripts for curved labels.
+- "Follow point" alignment for multiline labels.
+- Support overriden layer styles also in the composer legend.
+- Add scalebar sizing mode to fit a desired scalebar width.
+- Plugins can now create their own entries in the browser.
+- More uniform and predictable names for processing outputs.
+- Allow changing vector layer data source.
+- Implicit sharing of classes.
+- New QgsStatisticalSummary class for calculating statistics from a list of numbers.
+- Qt minimum increased to 4.8.
+- GetFeature without geometry.
+- Support for tolerance parameter in WMS GetFeatureInfo requests.
+- Data defined properties for font marker.
+- Size scale and rotation have been removed from the advanced menu.
+- Match categories to existing styles.
+- New option for preventing the automatic clipping of features to the map extent.
+- Size, rotation and stroke-width expressions at the symbollist level.
+- Live layer effects for layers and symbol layers.
+- Visualise and modify the graduated renderer using a histogram.
+- Vary symbol sizes using the graduated renderer.
+- User interface improvements.
+-
+
 = What's new in Version 2.8 'Wien'? =
 
 This is a minor release increment with the following feature:

@@ -54,6 +54,8 @@ class QgsGrassMapsetItem : public QgsDirectoryItem
   public:
     QgsGrassMapsetItem( QgsDataItem* parent, QString dirPath, QString path );
 
+    virtual void setState( State state ) override;
+
     QIcon icon() override { return QgsDataItem::icon(); }
 
     QVector<QgsDataItem*> createChildren() override;
@@ -63,11 +65,17 @@ class QgsGrassMapsetItem : public QgsDirectoryItem
 
   public slots:
     void onImportFinished( QgsGrassImport* import );
+    void openMapset();
+    void onDirectoryChanged();
+    virtual void childrenCreated() override;
 
   private:
+    bool objectInImports( QgsGrassObject grassObject );
     //void showImportError(const QString& error);
     QString mLocation;
     QString mGisdbase;
+    QFileSystemWatcher *mMapsetFileSystemWatcher;
+    bool mRefreshLater;
     // running imports
     static QList<QgsGrassImport*> mImports;
 };
@@ -113,17 +121,22 @@ class QgsGrassVectorItem : public QgsDataCollectionItem, public QgsGrassObjectIt
 {
     Q_OBJECT
   public:
-    QgsGrassVectorItem( QgsDataItem* parent, QgsGrassObject grassObject, QString path );
-    ~QgsGrassVectorItem() {}
+    // labelName - name to be displayed in tree if it should be different from grassObject.name() (e.g. invalid vector)
+    QgsGrassVectorItem( QgsDataItem* parent, QgsGrassObject grassObject, QString path, QString labelName = QString::null, bool valid = true );
+    ~QgsGrassVectorItem();
 
     virtual QList<QAction*> actions() override;
+    virtual bool equal( const QgsDataItem *other ) override;
 
   public slots:
     void renameGrassObject();
     void deleteGrassObject();
+    void onDirectoryChanged();
 
   private:
     QgsGrassObject mVector;
+    bool mValid;
+    QFileSystemWatcher *mWatcher;
 };
 
 class QgsGrassVectorLayerItem : public QgsGrassObjectItem
@@ -180,8 +193,6 @@ class QgsGrassImportItem : public QgsDataItem, public QgsGrassObjectItemBase
     //} // do nothing to keep Populating
     virtual QList<QAction*> actions() override;
     virtual QIcon icon() override;
-    // Init animated icon, to be called from main UI thread
-    static void initIcon();
 
   public slots:
     virtual void refresh() override {}

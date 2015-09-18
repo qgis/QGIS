@@ -203,21 +203,21 @@ class CORE_EXPORT QGis
      */
     enum DataType
     {
-      /*! Unknown or unspecified type */                UnknownDataType = 0,
-      /*! Eight bit unsigned integer (quint8) */        Byte = 1,
-      /*! Sixteen bit unsigned integer (quint16) */     UInt16 = 2,
-      /*! Sixteen bit signed integer (qint16) */        Int16 = 3,
-      /*! Thirty two bit unsigned integer (quint32) */  UInt32 = 4,
-      /*! Thirty two bit signed integer (qint32) */     Int32 = 5,
-      /*! Thirty two bit floating point (float) */      Float32 = 6,
-      /*! Sixty four bit floating point (double) */     Float64 = 7,
-      /*! Complex Int16 */                              CInt16 = 8,
-      /*! Complex Int32 */                              CInt32 = 9,
-      /*! Complex Float32 */                            CFloat32 = 10,
-      /*! Complex Float64 */                            CFloat64 = 11,
-      /*! Color, alpha, red, green, blue, 4 bytes the same as
+      /** Unknown or unspecified type */                UnknownDataType = 0,
+      /** Eight bit unsigned integer (quint8) */        Byte = 1,
+      /** Sixteen bit unsigned integer (quint16) */     UInt16 = 2,
+      /** Sixteen bit signed integer (qint16) */        Int16 = 3,
+      /** Thirty two bit unsigned integer (quint32) */  UInt32 = 4,
+      /** Thirty two bit signed integer (qint32) */     Int32 = 5,
+      /** Thirty two bit floating point (float) */      Float32 = 6,
+      /** Sixty four bit floating point (double) */     Float64 = 7,
+      /** Complex Int16 */                              CInt16 = 8,
+      /** Complex Int32 */                              CInt32 = 9,
+      /** Complex Float32 */                            CFloat32 = 10,
+      /** Complex Float64 */                            CFloat64 = 11,
+      /** Color, alpha, red, green, blue, 4 bytes the same as
           QImage::Format_ARGB32 */                      ARGB32 = 12,
-      /*! Color, alpha, red, green, blue, 4 bytes  the same as
+      /** Color, alpha, red, green, blue, 4 bytes  the same as
           QImage::Format_ARGB32_Premultiplied */        ARGB32_Premultiplied = 13
     };
 
@@ -338,7 +338,10 @@ inline void ( *cast_to_fptr( void *p ) )()
 //
 inline QString qgsDoubleToString( const double &a, const int &precision = 17 )
 {
-  return QString::number( a, 'f', precision ).remove( QRegExp( "\\.?0+$" ) );
+  if ( precision )
+    return QString::number( a, 'f', precision ).remove( QRegExp( "\\.?0+$" ) );
+  else
+    return QString::number( a, 'f', precision );
 }
 
 //
@@ -432,12 +435,12 @@ const double MINIMUM_POINT_SIZE = 0.1;
 const double DEFAULT_POINT_SIZE = 2.0;
 const double DEFAULT_LINE_WIDTH = 0.26;
 
-/** default snapping tolerance for segments */
+/** Default snapping tolerance for segments */
 const double DEFAULT_SEGMENT_EPSILON = 1e-8;
 
 typedef QMap<QString, QString> QgsStringMap;
 
-/** qgssize is used instead of size_t, because size_t is stdlib type, unknown
+/** Qgssize is used instead of size_t, because size_t is stdlib type, unknown
  *  by SIP, and it would be hard to define size_t correctly in SIP.
  *  Currently used "unsigned long long" was introduced in C++11 (2011)
  *  but it was supported already before C++11 on common platforms.
@@ -448,9 +451,9 @@ typedef unsigned long long qgssize;
 #if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) || defined(__clang__)
 #define Q_NOWARN_DEPRECATED_PUSH \
   _Pragma("GCC diagnostic push") \
-  _Pragma("GCC diagnostic ignored \"-Wdeprecated-declarations\"")
+  _Pragma("GCC diagnostic ignored \"-Wdeprecated-declarations\"");
 #define Q_NOWARN_DEPRECATED_POP \
-  _Pragma("GCC diagnostic pop")
+  _Pragma("GCC diagnostic pop");
 #elif defined(_MSC_VER)
 #define Q_NOWARN_DEPRECATED_PUSH \
   __pragma(warning(push)) \
@@ -462,9 +465,8 @@ typedef unsigned long long qgssize;
 #define Q_NOWARN_DEPRECATED_POP
 #endif
 
-// FIXME: also in qgisinterface.h
 #ifndef QGISEXTERN
-#ifdef WIN32
+#ifdef Q_OS_WIN
 #  define QGISEXTERN extern "C" __declspec( dllexport )
 #  ifdef _MSC_VER
 // do not warn about C bindings returing QString

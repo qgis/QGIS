@@ -1,0 +1,8 @@
+{
+  "function": "ln",
+  "description": "Returns the natural logarithm of a value.",
+  "arguments": [ {"arg":"value","description":"numeric value"}],
+  "examples": [ { "expression":"ln(1)", "returns":"0"},
+  { "expression":"ln(2.7182818284590452354)", "returns":"1"}
+  ]
+}

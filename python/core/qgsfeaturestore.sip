@@ -19,7 +19,7 @@ class QgsFeatureStore
     /** Get fields list */
     QgsFields& fields();
 
-    /** Set fields. Resets feauters fields to pointer to new internal fields. */
+    /** Set fields. Resets feature's fields to pointer to new internal fields. */
     void setFields( const QgsFields & fields );
 
     /** Get crs */

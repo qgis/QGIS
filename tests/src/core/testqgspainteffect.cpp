@@ -126,7 +126,7 @@ class TestQgsPaintEffect: public QObject
 
 
 TestQgsPaintEffect::TestQgsPaintEffect()
-   : mPicture( 0 )
+    : mPicture( 0 )
 {
 
 }
@@ -143,12 +143,12 @@ void TestQgsPaintEffect::initTestCase()
   registry->addEffectType( new QgsPaintEffectMetadata( "Dummy", "Dummy effect", DummyPaintEffect::create ) );
 
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
-  mTestDataDir = myDataDir + QDir::separator();
+  mTestDataDir = myDataDir + "/";
 }
 
 void TestQgsPaintEffect::cleanupTestCase()
 {
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -328,7 +328,10 @@ void TestQgsPaintEffect::drawSource()
 
   //test render
   QImage image( 100, 100, QImage::Format_ARGB32 );
+  image.setDotsPerMeterX( 96 / 25.4 * 1000 );
+  image.setDotsPerMeterY( 96 / 25.4 * 1000 );
   image.fill( Qt::transparent );
+
   QPainter painter;
   painter.begin( &image );
   QgsRenderContext context = QgsSymbolLayerV2Utils::createRenderContext( &painter );
@@ -400,6 +403,8 @@ void TestQgsPaintEffect::blur()
   delete effect;
 
   QImage image( 100, 100, QImage::Format_ARGB32 );
+  image.setDotsPerMeterX( 96 / 25.4 * 1000 );
+  image.setDotsPerMeterY( 96 / 25.4 * 1000 );
   image.fill( Qt::transparent );
   QPainter painter;
   painter.begin( &image );
@@ -496,6 +501,8 @@ void TestQgsPaintEffect::dropShadow()
   delete effect;
 
   QImage image( 100, 100, QImage::Format_ARGB32 );
+  image.setDotsPerMeterX( 96 / 25.4 * 1000 );
+  image.setDotsPerMeterY( 96 / 25.4 * 1000 );
   image.fill( Qt::transparent );
   QPainter painter;
   painter.begin( &image );
@@ -597,6 +604,8 @@ void TestQgsPaintEffect::glow()
   delete effect;
 
   QImage image( 100, 100, QImage::Format_ARGB32 );
+  image.setDotsPerMeterX( 96 / 25.4 * 1000 );
+  image.setDotsPerMeterY( 96 / 25.4 * 1000 );
   image.fill( Qt::transparent );
   QPainter painter;
   painter.begin( &image );
@@ -657,6 +666,8 @@ void TestQgsPaintEffect::stack()
   //rendering
 
   QImage image( 100, 100, QImage::Format_ARGB32 );
+  image.setDotsPerMeterX( 96 / 25.4 * 1000 );
+  image.setDotsPerMeterY( 96 / 25.4 * 1000 );
   image.fill( Qt::transparent );
   QPainter painter;
   painter.begin( &image );
@@ -886,6 +897,7 @@ void TestQgsPaintEffect::composer()
   p.end();
 
   bool result = imageCheck( "painteffect_composer", outputImage );
+  delete composition;
   QVERIFY( result );
 }
 
@@ -904,10 +916,11 @@ bool TestQgsPaintEffect::imageCheck( QString testName, QImage &image, int mismat
   painter.end();
 
   mReport += "<h2>" + testName + "</h2>\n";
-  QString tempDir = QDir::tempPath() + QDir::separator();
+  QString tempDir = QDir::tempPath() + "/";
   QString fileName = tempDir + testName + ".png";
   imageWithBackground.save( fileName, "PNG" );
   QgsRenderChecker checker;
+  checker.setControlPathPrefix( "effects" );
   checker.setControlName( "expected_" + testName );
   checker.setRenderedImage( fileName );
   checker.setColorTolerance( 2 );
@@ -919,6 +932,8 @@ bool TestQgsPaintEffect::imageCheck( QString testName, QImage &image, int mismat
 bool TestQgsPaintEffect::mapRenderCheck( QString testName, QgsMapSettings& mapSettings, int mismatchCount )
 {
   QgsMultiRenderChecker checker;
+  checker.setControlPathPrefix( "effects" );
+  mapSettings.setOutputDpi( 96 );
   checker.setControlName( "expected_" + testName );
   checker.setMapSettings( mapSettings );
   checker.setColorTolerance( 20 );

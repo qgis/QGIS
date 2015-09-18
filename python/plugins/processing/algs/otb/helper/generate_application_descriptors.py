@@ -173,7 +173,7 @@ def generate_parameter_Int(appInstance, paramKey):
 
     defaultVal = '0'
     try:
-        defaultVal = str(appInstance.GetParameterInt(paramKey))
+        defaultVal = unicode(appInstance.GetParameterInt(paramKey))
     except:
         pass
     out += defaultVal
@@ -197,7 +197,7 @@ def generate_parameter_Float(appInstance, paramKey):
 
     defaultVal = '0.0'
     try:
-        defaultVal = str(appInstance.GetParameterFloat(paramKey))
+        defaultVal = unicode(appInstance.GetParameterFloat(paramKey))
     except:
         pass
     out += defaultVal
@@ -216,7 +216,7 @@ def generate_parameter_String(appInstance, paramKey):
 
     defaultVal = ''
     try:
-        defaultVal = str(appInstance.GetParameterString(paramKey))
+        defaultVal = unicode(appInstance.GetParameterString(paramKey))
     except:
         pass
     out += defaultVal
@@ -234,7 +234,7 @@ def generate_parameter_InputFilename(appInstance, paramKey):
     out += '|'
 
     try:
-        defaultVal = str(appInstance.GetParameterString(paramKey))
+        defaultVal = unicode(appInstance.GetParameterString(paramKey))
         out += '|' + defaultVal
     except:
         pass
@@ -264,7 +264,7 @@ def generate_parameter_Directory(appInstance, paramKey):
     out += convertendl(appInstance.GetParameterName(paramKey))
 
     try:
-        defaultVal = str(appInstance.GetParameterString(paramKey))
+        defaultVal = unicode(appInstance.GetParameterString(paramKey))
         out += '|' + defaultVal
     except:
         pass
@@ -289,7 +289,7 @@ def generate_parameter_Choice(appInstance, paramKey):
     out += choices[:-1]
 
     out += '|'
-    out += str(appInstance.GetParameterInt(paramKey))
+    out += unicode(appInstance.GetParameterInt(paramKey))
 
     return out
 
@@ -304,7 +304,7 @@ def generate_parameter_InputImage(appInstance, paramKey):
     out += convertendl(appInstance.GetParameterName(paramKey))
     out += '|'
 
-    out += str(not appInstance.IsMandatory(paramKey))
+    out += unicode(not appInstance.IsMandatory(paramKey))
 
     return out
 
@@ -322,7 +322,7 @@ def generate_parameter_InputImageList(appInstance, paramKey):
     out += '3'
     out += '|'
 
-    out += str(not appInstance.IsMandatory(paramKey))
+    out += unicode(not appInstance.IsMandatory(paramKey))
 
     return out
 
@@ -340,7 +340,7 @@ def generate_parameter_InputVectorData(appInstance, paramKey):
     out += '-1'
     out += '|'
 
-    out += str(not appInstance.IsMandatory(paramKey))
+    out += unicode(not appInstance.IsMandatory(paramKey))
 
     return out
 
@@ -358,7 +358,7 @@ def generate_parameter_InputVectorDataList(appInstance, paramKey):
     out += '-1'
     out += '|'
 
-    out += str(not appInstance.IsMandatory(paramKey))
+    out += unicode(not appInstance.IsMandatory(paramKey))
 
     return out
 

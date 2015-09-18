@@ -14,7 +14,7 @@ class QgsHtmlAnnotationItem: QObject, QgsAnnotationItem
 
     QSizeF minimumFrameSize() const;
 
-    /**Reimplemented from QgsAnnotationItem*/
+    /** Reimplemented from QgsAnnotationItem*/
     void setMapPosition( const QgsPoint& pos );
 
     void setHTMLPage( const QString& htmlFile );

@@ -201,9 +201,9 @@ QgsSymbolV2* QgsCategorizedSymbolRendererV2::symbolForValue( QVariant value )
   return *it;
 }
 
-QgsSymbolV2* QgsCategorizedSymbolRendererV2::symbolForFeature( QgsFeature& feature )
+QgsSymbolV2* QgsCategorizedSymbolRendererV2::symbolForFeature( QgsFeature& feature, QgsRenderContext &context )
 {
-  QgsSymbolV2* symbol = originalSymbolForFeature( feature );
+  QgsSymbolV2* symbol = originalSymbolForFeature( feature, context );
   if ( !symbol )
     return 0;
 
@@ -211,8 +211,8 @@ QgsSymbolV2* QgsCategorizedSymbolRendererV2::symbolForFeature( QgsFeature& featu
     return symbol; // no data-defined rotation/scaling - just return the symbol
 
   // find out rotation, size scale
-  const double rotation = mRotation.data() ? mRotation->evaluate( feature ).toDouble() : 0;
-  const double sizeScale = mSizeScale.data() ? mSizeScale->evaluate( feature ).toDouble() : 1.;
+  const double rotation = mRotation.data() ? mRotation->evaluate( &context.expressionContext() ).toDouble() : 0;
+  const double sizeScale = mSizeScale.data() ? mSizeScale->evaluate( &context.expressionContext() ).toDouble() : 1.;
 
   // take a temporary symbol (or create it if doesn't exist)
   QgsSymbolV2* tempSymbol = mTempSymbols[symbol];
@@ -235,14 +235,15 @@ QgsSymbolV2* QgsCategorizedSymbolRendererV2::symbolForFeature( QgsFeature& featu
 }
 
 
-QgsSymbolV2* QgsCategorizedSymbolRendererV2::originalSymbolForFeature( QgsFeature& feature )
+QgsSymbolV2* QgsCategorizedSymbolRendererV2::originalSymbolForFeature( QgsFeature& feature, QgsRenderContext &context )
 {
+  Q_UNUSED( context );
   QgsAttributes attrs = feature.attributes();
   QVariant value;
   if ( mAttrNum == -1 )
   {
     Q_ASSERT( mExpression.data() );
-    value = mExpression->evaluate( &feature );
+    value = mExpression->evaluate( &context.expressionContext() );
   }
   else
   {
@@ -408,7 +409,7 @@ void QgsCategorizedSymbolRendererV2::startRender( QgsRenderContext& context, con
   if ( mAttrNum == -1 )
   {
     mExpression.reset( new QgsExpression( mAttrName ) );
-    mExpression->prepare( fields );
+    mExpression->prepare( &context.expressionContext() );
   }
 
   QgsCategoryList::iterator it = mCategories.begin();
@@ -425,6 +426,7 @@ void QgsCategorizedSymbolRendererV2::startRender( QgsRenderContext& context, con
       mTempSymbols[ it->symbol()] = tempSymbol;
     }
   }
+  return;
 }
 
 void QgsCategorizedSymbolRendererV2::stopRender( QgsRenderContext& context )
@@ -492,9 +494,7 @@ QgsFeatureRendererV2* QgsCategorizedSymbolRendererV2::clone() const
     r->setInvertedColorRamp( mInvertedColorRamp );
   }
   r->setUsingSymbolLevels( usingSymbolLevels() );
-  r->setRotationField( rotationField() );
   r->setSizeScaleField( sizeScaleField() );
-  //r->setScaleMethod( scaleMethod() );
 
   copyPaintEffect( r );
   return r;
@@ -517,8 +517,9 @@ void QgsCategorizedSymbolRendererV2::toSld( QDomDocument &doc, QDomElement &elem
   }
 }
 
-QgsSymbolV2List QgsCategorizedSymbolRendererV2::symbols()
+QgsSymbolV2List QgsCategorizedSymbolRendererV2::symbols( QgsRenderContext &context )
 {
+  Q_UNUSED( context );
   QgsSymbolV2List lst;
   for ( int i = 0; i < mCategories.count(); i++ )
     lst.append( mCategories[i].symbol() );
@@ -626,6 +627,7 @@ QDomElement QgsCategorizedSymbolRendererV2::save( QDomDocument& doc )
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
   rendererElem.setAttribute( "type", "categorizedSymbol" );
   rendererElem.setAttribute( "symbollevels", ( mUsingSymbolLevels ? "1" : "0" ) );
+  rendererElem.setAttribute( "forceraster", ( mForceRaster ? "1" : "0" ) );
   rendererElem.setAttribute( "attr", mAttrName );
 
   // categories
@@ -708,7 +710,7 @@ QgsLegendSymbolList QgsCategorizedSymbolRendererV2::legendSymbolItems( double sc
   Q_UNUSED( scaleDenominator );
   QgsLegendSymbolList lst;
 
-  foreach ( const QgsRendererCategoryV2& cat, mCategories )
+  Q_FOREACH ( const QgsRendererCategoryV2& cat, mCategories )
   {
     if ( rule.isEmpty() || cat.label() == rule )
     {
@@ -725,7 +727,7 @@ QgsLegendSymbolListV2 QgsCategorizedSymbolRendererV2::legendSymbolItemsV2() cons
   {
     // check that all symbols that have the same size expression
     QgsDataDefined ddSize;
-    foreach ( QgsRendererCategoryV2 category, mCategories )
+    Q_FOREACH ( const QgsRendererCategoryV2& category, mCategories )
     {
       const QgsMarkerSymbolV2 * symbol = static_cast<const QgsMarkerSymbolV2 *>( category.symbol() );
       if ( !ddSize.hasDefaultValues() && symbol->dataDefinedSize() != ddSize )
@@ -749,7 +751,7 @@ QgsLegendSymbolListV2 QgsCategorizedSymbolRendererV2::legendSymbolItemsV2() cons
     {
       QgsLegendSymbolItemV2 title( NULL, exp.baseExpression(), "" );
       lst << title;
-      foreach ( double v, QgsSymbolLayerV2Utils::prettyBreaks( exp.minValue(), exp.maxValue(), 4 ) )
+      Q_FOREACH ( double v, QgsSymbolLayerV2Utils::prettyBreaks( exp.minValue(), exp.maxValue(), 4 ) )
       {
         QgsLegendSymbolItemV2 si( mSourceSymbol.data(), QString::number( v ), "" );
         QgsMarkerSymbolV2 * s = static_cast<QgsMarkerSymbolV2 *>( si.symbol() );
@@ -759,7 +761,7 @@ QgsLegendSymbolListV2 QgsCategorizedSymbolRendererV2::legendSymbolItemsV2() cons
       }
       // now list the categorized symbols
       const QgsLegendSymbolListV2 list2 = QgsFeatureRendererV2::legendSymbolItemsV2() ;
-      foreach ( QgsLegendSymbolItemV2 item, list2 )
+      Q_FOREACH ( const QgsLegendSymbolItemV2& item, list2 )
         lst << item;
       return lst;
     }
@@ -802,7 +804,7 @@ void QgsCategorizedSymbolRendererV2::updateColorRamp( QgsVectorColorRampV2* ramp
     randomRamp->setTotalColorCount( mCategories.count() );
   }
 
-  foreach ( const QgsRendererCategoryV2 &cat, mCategories )
+  Q_FOREACH ( const QgsRendererCategoryV2 &cat, mCategories )
   {
     double value = count / num;
     if ( mInvertedColorRamp ) value = 1.0 - value;
@@ -813,12 +815,23 @@ void QgsCategorizedSymbolRendererV2::updateColorRamp( QgsVectorColorRampV2* ramp
 
 void QgsCategorizedSymbolRendererV2::setRotationField( QString fieldOrExpression )
 {
-  mRotation.reset( QgsSymbolLayerV2Utils::fieldOrExpressionToExpression( fieldOrExpression ) );
+  if ( mSourceSymbol && mSourceSymbol->type() == QgsSymbolV2::Marker )
+  {
+    QgsMarkerSymbolV2 * s = static_cast<QgsMarkerSymbolV2 *>( mSourceSymbol.data() );
+    s->setDataDefinedAngle( QgsDataDefined( fieldOrExpression ) );
+  }
 }
 
 QString QgsCategorizedSymbolRendererV2::rotationField() const
 {
-  return mRotation.data() ? QgsSymbolLayerV2Utils::fieldOrExpressionFromExpression( mRotation.data() ) : QString();
+  if ( mSourceSymbol && mSourceSymbol->type() == QgsSymbolV2::Marker )
+  {
+    QgsMarkerSymbolV2 * s = static_cast<QgsMarkerSymbolV2 *>( mSourceSymbol.data() );
+    QgsDataDefined ddAngle = s->dataDefinedAngle();
+    return ddAngle.useExpression() ? ddAngle.expressionString() : ddAngle.field();
+  }
+
+  return QString();
 }
 
 void QgsCategorizedSymbolRendererV2::setSizeScaleField( QString fieldOrExpression )
@@ -834,7 +847,7 @@ QString QgsCategorizedSymbolRendererV2::sizeScaleField() const
 void QgsCategorizedSymbolRendererV2::updateSymbols( QgsSymbolV2 * sym )
 {
   int i = 0;
-  foreach ( QgsRendererCategoryV2 cat, mCategories )
+  Q_FOREACH ( const QgsRendererCategoryV2& cat, mCategories )
   {
     QgsSymbolV2* symbol = sym->clone();
     symbol->setColor( cat.symbol()->color() );
@@ -901,7 +914,8 @@ QgsCategorizedSymbolRendererV2* QgsCategorizedSymbolRendererV2::convertFromRende
   // Could have applied this to specific renderer types (singleSymbol, graduatedSymbo)
 
   QgsCategorizedSymbolRendererV2* r = new QgsCategorizedSymbolRendererV2( "", QgsCategoryList() );
-  QgsSymbolV2List symbols = const_cast<QgsFeatureRendererV2 *>( renderer )->symbols();
+  QgsRenderContext context;
+  QgsSymbolV2List symbols = const_cast<QgsFeatureRendererV2 *>( renderer )->symbols( context );
   if ( symbols.size() > 0 )
   {
     r->setSourceSymbol( symbols.at( 0 )->clone() );

@@ -106,7 +106,7 @@ void QgsLayerTreeGroup::removeChildNode( QgsLayerTreeNode *node )
 
 void QgsLayerTreeGroup::removeLayer( QgsMapLayer* layer )
 {
-  foreach ( QgsLayerTreeNode* child, mChildren )
+  Q_FOREACH ( QgsLayerTreeNode* child, mChildren )
   {
     if ( QgsLayerTree::isLayer( child ) )
     {
@@ -130,7 +130,7 @@ void QgsLayerTreeGroup::removeChildren( int from, int count )
 void QgsLayerTreeGroup::removeChildrenGroupWithoutLayers()
 {
   // clean the layer tree by removing empty group
-  foreach ( QgsLayerTreeNode* treeNode, children() )
+  Q_FOREACH ( QgsLayerTreeNode* treeNode, children() )
   {
     if ( treeNode->nodeType() == QgsLayerTreeNode::NodeGroup )
     {
@@ -150,7 +150,7 @@ void QgsLayerTreeGroup::removeAllChildren()
 
 QgsLayerTreeLayer *QgsLayerTreeGroup::findLayer( const QString& layerId ) const
 {
-  foreach ( QgsLayerTreeNode* child, mChildren )
+  Q_FOREACH ( QgsLayerTreeNode* child, mChildren )
   {
     if ( QgsLayerTree::isLayer( child ) )
     {
@@ -171,7 +171,7 @@ QgsLayerTreeLayer *QgsLayerTreeGroup::findLayer( const QString& layerId ) const
 QList<QgsLayerTreeLayer*> QgsLayerTreeGroup::findLayers() const
 {
   QList<QgsLayerTreeLayer*> list;
-  foreach ( QgsLayerTreeNode* child, mChildren )
+  Q_FOREACH ( QgsLayerTreeNode* child, mChildren )
   {
     if ( QgsLayerTree::isLayer( child ) )
       list << QgsLayerTree::toLayer( child );
@@ -183,7 +183,7 @@ QList<QgsLayerTreeLayer*> QgsLayerTreeGroup::findLayers() const
 
 QgsLayerTreeGroup* QgsLayerTreeGroup::findGroup( const QString& name )
 {
-  foreach ( QgsLayerTreeNode* child, mChildren )
+  Q_FOREACH ( QgsLayerTreeNode* child, mChildren )
   {
     if ( QgsLayerTree::isGroup( child ) )
     {
@@ -230,7 +230,7 @@ void QgsLayerTreeGroup::writeXML( QDomElement& parentElement )
 
   writeCommonXML( elem );
 
-  foreach ( QgsLayerTreeNode* node, mChildren )
+  Q_FOREACH ( QgsLayerTreeNode* node, mChildren )
     node->writeXML( elem );
 
   parentElement.appendChild( elem );
@@ -256,7 +256,7 @@ QString QgsLayerTreeGroup::dump() const
 {
   QString header = QString( "GROUP: %1 visible=%2 expanded=%3\n" ).arg( name() ).arg( mChecked ).arg( mExpanded );
   QStringList childrenDump;
-  foreach ( QgsLayerTreeNode* node, mChildren )
+  Q_FOREACH ( QgsLayerTreeNode* node, mChildren )
     childrenDump << node->dump().split( "\n" );
   for ( int i = 0; i < childrenDump.count(); ++i )
     childrenDump[i].prepend( "  " );
@@ -281,7 +281,7 @@ void QgsLayerTreeGroup::setVisible( Qt::CheckState state )
     mChangingChildVisibility = true; // guard against running again setVisible() triggered from children
 
     // update children to have the correct visibility
-    foreach ( QgsLayerTreeNode* child, mChildren )
+    Q_FOREACH ( QgsLayerTreeNode* child, mChildren )
     {
       if ( QgsLayerTree::isGroup( child ) )
         QgsLayerTree::toGroup( child )->setVisible( mChecked );
@@ -296,7 +296,7 @@ void QgsLayerTreeGroup::setVisible( Qt::CheckState state )
 QStringList QgsLayerTreeGroup::findLayerIds() const
 {
   QStringList lst;
-  foreach ( QgsLayerTreeNode* child, mChildren )
+  Q_FOREACH ( QgsLayerTreeNode* child, mChildren )
   {
     if ( QgsLayerTree::isGroup( child ) )
       lst << QgsLayerTree::toGroup( child )->findLayerIds();
@@ -329,7 +329,7 @@ void QgsLayerTreeGroup::updateVisibilityFromChildren()
 
   bool hasVisible = false, hasHidden = false;
 
-  foreach ( QgsLayerTreeNode* child, mChildren )
+  Q_FOREACH ( QgsLayerTreeNode* child, mChildren )
   {
     if ( QgsLayerTree::isLayer( child ) )
     {

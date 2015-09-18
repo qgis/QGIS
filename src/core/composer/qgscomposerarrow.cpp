@@ -186,6 +186,9 @@ void QgsComposerArrow::drawLine( QPainter *painter )
   QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
   context.setForceVectorOutput( true );
   context.setPainter( painter );
+  QgsExpressionContext* expressionContext = createExpressionContext();
+  context.setExpressionContext( *expressionContext );
+  delete expressionContext;
 
   //line scaled to dots
   QPolygonF line;

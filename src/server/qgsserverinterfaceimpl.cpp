@@ -1,6 +1,6 @@
 /***************************************************************************
                           qgsseerversinterface.h
- Interface class for exposing functions in Qgis Mapserver for use by plugins
+ Interface class for exposing functions in QGIS Server for use by plugins
                              -------------------
   begin                : 2014-09-10
   copyright            : (C) 2014 by Alessandro Pasotti
@@ -38,12 +38,28 @@ QgsServerInterfaceImpl::~QgsServerInterfaceImpl()
 {
 }
 
+
+void QgsServerInterfaceImpl::clearRequestHandler( )
+{
+  mRequestHandler = NULL;
+}
+
 void QgsServerInterfaceImpl::setRequestHandler( QgsRequestHandler * requestHandler )
 {
   mRequestHandler = requestHandler;
 }
 
+void QgsServerInterfaceImpl::setConfigFilePath( QString configFilePath )
+{
+  mConfigFilePath = configFilePath;
+}
+
 void QgsServerInterfaceImpl::registerFilter( QgsServerFilter *filter, int priority )
 {
   mFilters.insert( priority, filter );
+}
+
+void QgsServerInterfaceImpl::setFilters( QgsServerFiltersMap* filters )
+{
+  mFilters = *filters;
 }

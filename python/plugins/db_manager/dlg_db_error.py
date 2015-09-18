@@ -29,6 +29,7 @@ from .db_plugins.plugin import DbError
 
 
 class DlgDbError(QDialog, Ui_Dialog):
+
     def __init__(self, e, parent=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
@@ -49,7 +50,6 @@ class DlgDbError(QDialog, Ui_Dialog):
         self.txtQueryErrorMsg.setHtml(msg)
         self.txtQuery.setHtml(query)
         self.stackedWidget.setCurrentIndex(1)
-
 
     @staticmethod
     def showError(e, parent=None):

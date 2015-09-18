@@ -36,16 +36,16 @@ class QgsMapTool : QObject
     virtual ~QgsMapTool();
 
     //! Mouse move event for overriding. Default implementation does nothing.
-    virtual void canvasMoveEvent( QMouseEvent * e );
+    virtual void canvasMoveEvent( QgsMapMouseEvent* e );
 
     //! Mouse double click event for overriding. Default implementation does nothing.
-    virtual void canvasDoubleClickEvent( QMouseEvent * e );
+    virtual void canvasDoubleClickEvent( QgsMapMouseEvent* e );
 
     //! Mouse press event for overriding. Default implementation does nothing.
-    virtual void canvasPressEvent( QMouseEvent * e );
+    virtual void canvasPressEvent( QgsMapMouseEvent* e );
 
     //! Mouse release event for overriding. Default implementation does nothing.
-    virtual void canvasReleaseEvent( QMouseEvent * e );
+    virtual void canvasReleaseEvent( QgsMapMouseEvent* e );
 
     //! Mouse wheel event for overriding. Default implementation does nothing.
     virtual void wheelEvent( QWheelEvent* e );

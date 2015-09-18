@@ -28,6 +28,7 @@
 #include "qgsrectangle.h"
 #include "qgsproject.h"
 #include "qgssymbollayerv2utils.h"
+#include "qgsfontutils.h"
 #include <QDomDocument>
 #include <QDomElement>
 #include <QFontMetricsF>
@@ -668,7 +669,7 @@ bool QgsComposerScaleBar::writeXML( QDomElement& elem, QDomDocument & doc ) cons
   composerScaleBarElem.setAttribute( "maxBarWidth", mMaxBarWidth );
   composerScaleBarElem.setAttribute( "segmentMillimeters", QString::number( mSegmentMillimeters ) );
   composerScaleBarElem.setAttribute( "numMapUnitsPerScaleBarUnit", QString::number( mNumMapUnitsPerScaleBarUnit ) );
-  composerScaleBarElem.setAttribute( "font", mFont.toString() );
+  composerScaleBarElem.appendChild( QgsFontUtils::toXmlElement( mFont, doc, "scaleBarFont" ) );
   composerScaleBarElem.setAttribute( "outlineWidth", QString::number( mPen.widthF() ) );
   composerScaleBarElem.setAttribute( "unitLabel", mUnitLabeling );
   composerScaleBarElem.setAttribute( "units", mUnits );
@@ -755,10 +756,9 @@ bool QgsComposerScaleBar::readXML( const QDomElement& itemElem, const QDomDocume
   mPen.setJoinStyle( mLineJoinStyle );
   mLineCapStyle = QgsSymbolLayerV2Utils::decodePenCapStyle( itemElem.attribute( "lineCapStyle", "square" ) );
   mPen.setCapStyle( mLineCapStyle );
-  QString fontString = itemElem.attribute( "font", "" );
-  if ( !fontString.isEmpty() )
+  if ( !QgsFontUtils::setFromXmlChildNode( mFont, itemElem, "scaleBarFont" ) )
   {
-    mFont.fromString( fontString );
+    mFont.fromString( itemElem.attribute( "font", "" ) );
   }
 
   //colors

@@ -52,7 +52,7 @@ void QgsClipboard::replaceWithCopyOf( QgsVectorLayer *src )
     return;
 
   // Replace the QGis clipboard.
-  mFeatureFields = src->pendingFields();
+  mFeatureFields = src->fields();
   mFeatureClipboard = src->selectedFeatures();
   mCRS = src->crs();
 
@@ -162,7 +162,7 @@ QgsFeatureList QgsClipboard::copyOf( const QgsFields &fields )
     return mFeatureClipboard;
 
   QgsFeatureList features;
-  foreach ( QString row, values )
+  Q_FOREACH ( const QString& row, values )
   {
     // Assume that it's just WKT for now.
     QgsGeometry* geometry = QgsGeometry::fromWkt( row );

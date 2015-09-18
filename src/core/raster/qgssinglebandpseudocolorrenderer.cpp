@@ -38,6 +38,15 @@ QgsSingleBandPseudoColorRenderer::~QgsSingleBandPseudoColorRenderer()
   delete mShader;
 }
 
+void QgsSingleBandPseudoColorRenderer::setBand( int bandNo )
+{
+  if ( bandNo > mInput->bandCount() || bandNo <= 0 )
+  {
+    return;
+  }
+  mBand = bandNo;
+}
+
 QgsRasterInterface * QgsSingleBandPseudoColorRenderer::clone() const
 {
   QgsRasterShader *shader = 0;

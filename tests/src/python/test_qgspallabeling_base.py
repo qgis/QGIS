@@ -145,8 +145,8 @@ class TestQgsPalLabeling(TestCase):
 
     @classmethod
     def removeAllLayers(cls):
-        cls._MapRegistry.removeAllMapLayers()
         cls._MapSettings.setLayers([])
+        cls._MapRegistry.removeAllMapLayers()
 
     @classmethod
     def removeMapLayer(cls, layer):
@@ -363,7 +363,7 @@ class TestQgsPalLabeling(TestCase):
         res = chk.runTest(self._Test, mismatch)
         if PALREPORT and not res:  # don't report ok checks
             testname = self._TestGroup + ' . ' + self._Test
-            PALREPORTS[testname] = str(chk.report().toLocal8Bit())
+            PALREPORTS[testname] = chk.report()
         msg = '\nRender check failed for "{0}"'.format(self._Test)
         return res, msg
 
@@ -378,6 +378,10 @@ class TestPALConfig(TestQgsPalLabeling):
     def setUpClass(cls):
         TestQgsPalLabeling.setUpClass()
         cls.layer = TestQgsPalLabeling.loadFeatureLayer('point')
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.removeMapLayer(cls.layer)
 
     def setUp(self):
         """Run before each test."""

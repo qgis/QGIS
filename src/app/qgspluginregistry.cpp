@@ -138,8 +138,9 @@ void QgsPluginRegistry::dump()
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
     QgsDebugMsg( "PYTHON PLUGINS IN REGISTRY:" );
-    foreach ( QString pluginName, mPythonUtils->listActivePlugins() )
+    Q_FOREACH ( const QString& pluginName, mPythonUtils->listActivePlugins() )
     {
+      Q_UNUSED( pluginName );
       QgsDebugMsg( pluginName );
     }
   }
@@ -176,7 +177,7 @@ void QgsPluginRegistry::unloadAll()
 
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
-    foreach ( QString pluginName, mPythonUtils->listActivePlugins() )
+    Q_FOREACH ( const QString& pluginName, mPythonUtils->listActivePlugins() )
     {
       mPythonUtils->unloadPlugin( pluginName );
     }
@@ -351,7 +352,7 @@ void QgsPluginRegistry::loadCppPlugin( QString theFullPathName )
             QgsDebugMsg( QString( "plugin object name: %1" ).arg( o->objectName() ) );
             if ( o->objectName().isEmpty() )
             {
-#ifndef WIN32
+#ifndef Q_OS_WIN
               baseName = baseName.mid( 3 );
 #endif
               QgsDebugMsg( QString( "object name to %1" ).arg( baseName ) );
@@ -449,7 +450,7 @@ void QgsPluginRegistry::restoreSessionPlugins( QString thePluginDirString )
 {
   QSettings mySettings;
 
-#if defined(WIN32) || defined(__CYGWIN__)
+#if defined(Q_OS_WIN) || defined(__CYGWIN__)
   QString pluginExt = "*.dll";
 #elif ANDROID
   QString pluginExt = "*plugin.so";
@@ -507,7 +508,7 @@ void QgsPluginRegistry::restoreSessionPlugins( QString thePluginDirString )
       {
         if ( corePlugins.contains( packageName ) )
         {
-          QgsApplication::setPkgDataPath( QString( "" ) );
+          QgsApplication::setPkgDataPath( QString() );
         }
         else
         {

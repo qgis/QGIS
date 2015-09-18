@@ -73,10 +73,10 @@ QgsComposerScaleBarWidget::QgsComposerScaleBarWidget( QgsComposerScaleBar* scale
   mFontColorButton->setAllowAlpha( true );
   mFontColorButton->setContext( "composer" );
 
-  mStrokeColorButton->setColorDialogTitle( tr( "Select stroke color" ) );
+  mStrokeColorButton->setColorDialogTitle( tr( "Select line color" ) );
   mStrokeColorButton->setAllowAlpha( true );
   mStrokeColorButton->setContext( "composer" );
-  mStrokeColorButton->setNoColorString( tr( "Transparent stroke" ) );
+  mStrokeColorButton->setNoColorString( tr( "Transparent line" ) );
   mStrokeColorButton->setShowNoColor( true );
 
   blockMemberSignals( false );
@@ -399,7 +399,7 @@ void QgsComposerScaleBarWidget::on_mStrokeColorButton_colorChanged( const QColor
     return;
   }
 
-  mComposerScaleBar->beginCommand( tr( "Scalebar stroke color changed" ) );
+  mComposerScaleBar->beginCommand( tr( "Scalebar line color changed" ) );
   disconnectUpdateSignal();
   QPen newPen = mComposerScaleBar->pen();
   newPen.setColor( newColor );

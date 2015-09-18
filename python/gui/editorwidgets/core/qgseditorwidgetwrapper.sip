@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 20.4.2013
     Copyright            : (C) 2013 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -88,6 +88,7 @@ class QgsEditorWidgetWrapper : QObject
      */
     void setEnabled( bool enabled );
 
+    virtual bool valid() = 0;
   protected:
     virtual QWidget* createWidget( QWidget* parent ) = 0;
 

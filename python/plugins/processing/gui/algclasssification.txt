@@ -21,6 +21,7 @@ gdalogr:griddatametrics,Raster - vector/Vector -> Raster
 gdalogr:gridinvdist,Raster - vector/Vector -> Raster
 gdalogr:gridaverage,Raster - vector/Vector -> Raster
 gdalogr:contour,Raster - vector/Raster -> Vector
+gdalogr:importvectorintopostgisdatabaseavailableconnections,Vector/General tools
 otb:bandmath,Images/Miscellaneous
 otb:binarymorphologicaloperation,Images/Image Filtering
 otb:bundletoperfectsensor,Images/Geometry
@@ -50,7 +51,7 @@ otb:hyperspectraldataunmixing,Images/Miscellaneous
 otb:imageconversion,Images/Image Manipulation
 otb:imageenvelope,Images/Geometry
 otb:imageresamplingwitharigidtransform,Images/Geometry
-otb:imagescomparaison,Images/Miscellaneous
+otb:imagescomparison,Images/Miscellaneous
 otb:imagesconcatenation,Images/Image Manipulation
 otb:imagesvmclassification,Images/Learning
 otb:imagetokmzexport,Images/Miscellaneous

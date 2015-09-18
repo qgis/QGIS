@@ -72,7 +72,7 @@ class TestQgsAttributeTableModel(TestCase):
 
         f = QgsFeature()
         f.setAttributes(["test", 8])
-        f.setGeometry(QgsGeometry.fromPoint(QgsPoint(100,200)))
+        f.setGeometry(QgsGeometry.fromPoint(QgsPoint(100, 200)))
         self.layer.addFeature(f)
 
         assert self.am.rowCount() == 11, self.am.rowCount()

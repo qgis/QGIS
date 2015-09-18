@@ -48,6 +48,13 @@ class QgsBrowserPropertiesWidget : public QWidget
     QgsBrowserPropertiesWidget( QWidget* parent = 0 );
     static QgsBrowserPropertiesWidget* createWidget( QgsDataItem* item, QWidget* parent = 0 );
     virtual void setItem( QgsDataItem* item ) = 0;
+
+    /** Sets whether the properties widget should display in condensed mode, ie, for display in a dock
+     * widget rather than it's own separate dialog.
+     * @param condensedMode set to true to enable condensed mode
+     * @note added in QGIS 2.10
+     */
+    virtual void setCondensedMode( bool condensedMode ) { Q_UNUSED( condensedMode ); }
 };
 
 class QgsBrowserLayerProperties : public QgsBrowserPropertiesWidget, private Ui::QgsBrowserLayerPropertiesBase
@@ -56,6 +63,8 @@ class QgsBrowserLayerProperties : public QgsBrowserPropertiesWidget, private Ui:
   public:
     QgsBrowserLayerProperties( QWidget* parent = 0 );
     void setItem( QgsDataItem* item ) override;
+
+    virtual void setCondensedMode( bool condensedMode ) override;
 
   private:
     QgsBrowserPropertiesWrapLabel *mUriLabel;

@@ -50,8 +50,8 @@ struct expression_parser_context;
 
 #define B_OP(x) yylval->b_op = QgsExpression::x
 #define U_OP(x) yylval->u_op = QgsExpression::x
-#define TEXT                   yylval->text = new QString(); *yylval->text = QString::fromUtf8(yytext);
-#define TEXT_FILTER(filter_fn) yylval->text = new QString(); *yylval->text = filter_fn( QString::fromUtf8(yytext) );
+#define TEXT                   yylval->text = new QString( QString::fromUtf8(yytext) );
+#define TEXT_FILTER(filter_fn) yylval->text = new QString( filter_fn( QString::fromUtf8(yytext) ) );
 
 static QString stripText(QString text)
 {
@@ -108,6 +108,7 @@ col_next     [A-Za-z0-9_]|{non_ascii}
 column_ref  {col_first}{col_next}*
 
 special_col "$"{column_ref}
+variable "@"{column_ref}
 
 col_str_char  "\"\""|[^\"]
 column_ref_quoted  "\""{col_str_char}*"\""
@@ -115,6 +116,7 @@ column_ref_quoted  "\""{col_str_char}*"\""
 dig         [0-9]
 num_int     {dig}+
 num_float   {dig}*(\.{dig}+([eE][-+]?{dig}+)?|[eE][-+]?{dig}+)
+boolean     "TRUE"|"FALSE"
 
 str_char    ('')|(\\.)|[^'\\]
 string      "'"{str_char}*"'"
@@ -188,9 +190,13 @@ string      "'"{str_char}*"'"
 	return Unknown_CHARACTER;
 }
 
+{boolean} { yylval->boolVal = QString( yytext ).compare( "true", Qt::CaseInsensitive ) == 0; return BOOLEAN; }
+
 {string}  { TEXT_FILTER(stripText); return STRING; }
 
 {special_col}        { TEXT; return SPECIAL_COL; }
+
+{variable}        { TEXT; return VARIABLE; }
 
 {column_ref}         { TEXT; return QgsExpression::isFunctionName(*yylval->text) ? FUNCTION : COLUMN_REF; }
 

@@ -2,5 +2,6 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
 <qgisgrassmodule label="Set the region to match multiple rasters" module="g.region">
-	<file key="rast" label="Type in map names separated by a comma" />
+	<file key="rast" label="Type in map names separated by a comma" version_max="6.4"/>
+	<file key="raster" label="Type in map names separated by a comma" version_min="7.0"/>
 </qgisgrassmodule>

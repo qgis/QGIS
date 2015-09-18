@@ -127,7 +127,7 @@ QString QgsOpenVectorLayerDialog::openDirectory()
   //process path if it is grass
   if ( cmbDirectoryTypes->currentText() == "Grass Vector" )
   {
-#ifdef WIN32
+#ifdef Q_OS_WIN
     //replace backslashes with forward slashes
     path.replace( "\\", "/" );
 #endif
@@ -271,7 +271,12 @@ void QgsOpenVectorLayerDialog::on_buttonSelectSrc_clicked()
 {
   if ( radioSrcFile->isChecked() )
   {
-    inputSrcDataset->setText( openFile().join( ";" ) );
+    QStringList selected = openFile();
+    if ( selected.count() > 0 )
+    {
+      inputSrcDataset->setText( selected.join( ";" ) );
+      buttonBox->button( QDialogButtonBox::Open )->setFocus();
+    }
   }
   else if ( radioSrcDirectory->isChecked() )
   {

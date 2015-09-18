@@ -47,7 +47,7 @@ from utilities_test import getQgisTestApp
 pardir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 sys.path.append(pardir)
 
-sys.path.append( qgis.utils.sys_plugin_path )
+sys.path.append(qgis.utils.sys_plugin_path)
 
 (QGISAPP, CANVAS, IFACE, PARENT) = getQgisTestApp()
 
@@ -60,6 +60,7 @@ class bcolors:
 
 
 class ProcessingPluginTest(unittest.TestCase):
+
     """Test suite for Processing QGis plugin."""
 
     def test_createplugin(self):
@@ -174,7 +175,7 @@ class ProcessingProviderTestCase(unittest.TestCase):
             dlg = AlgorithmDialog(self.alg)
 
         # Hack to handle that hacky code...
-        dlg.setParamValues = lambda : True
+        dlg.setParamValues = lambda: True
         dlg.show()
         dlg.accept()
         while not dlg.executed:
@@ -220,7 +221,7 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='Processing test suite.')
     parser.add_argument('-l', action='store_true',
-            help='Test processing loading only. Ignore further arguments.')
+                        help='Test processing loading only. Ignore further arguments.')
     parser.add_argument('-m', dest='model', help='Test a particular model.',
                         default=None)
     parser.add_argument('-d', dest='dialog', help='Test a particular dialog.',
@@ -253,9 +254,9 @@ if __name__ == '__main__':
             exit(1)
         if args.model:
             unittest.TextTestRunner(verbosity=2).run(modelSuite(args.model
-                    or 'data/model', args.dialog, threaded, unthreaded))
+                                                                or 'data/model', args.dialog, threaded, unthreaded))
             exit(0)
         unittest.TextTestRunner(verbosity=2).run(algSuite(args.dialog,
-                threaded, unthreaded, args.dialog))
+                                                          threaded, unthreaded, args.dialog))
     except KeyboardInterrupt:
         print bcolors.ENDC, 'Test interrupted.'

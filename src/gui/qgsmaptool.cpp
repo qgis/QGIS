@@ -44,6 +44,12 @@ QgsPoint QgsMapTool::toMapCoordinates( const QPoint& point )
   return mCanvas->getCoordinateTransform()->toMapCoordinates( point );
 }
 
+QgsPointV2 QgsMapTool::toMapCoordinates( QgsMapLayer* layer, const QgsPointV2& point )
+{
+  QgsPoint result = mCanvas->mapSettings().layerToMapCoordinates( layer, QgsPoint( point.x(), point.y() ) );
+  return QgsPointV2( result.x(), result.y() );
+}
+
 
 QgsPoint QgsMapTool::toLayerCoordinates( QgsMapLayer* layer, const QPoint& point )
 {
@@ -136,22 +142,22 @@ void QgsMapTool::setCursor( QCursor cursor )
 }
 
 
-void QgsMapTool::canvasMoveEvent( QMouseEvent *e )
+void QgsMapTool::canvasMoveEvent( QgsMapMouseEvent* e )
 {
   Q_UNUSED( e );
 }
 
-void QgsMapTool::canvasDoubleClickEvent( QMouseEvent *e )
+void QgsMapTool::canvasDoubleClickEvent( QgsMapMouseEvent* e )
 {
   Q_UNUSED( e );
 }
 
-void QgsMapTool::canvasPressEvent( QMouseEvent *e )
+void QgsMapTool::canvasPressEvent( QgsMapMouseEvent* e )
 {
   Q_UNUSED( e );
 }
 
-void QgsMapTool::canvasReleaseEvent( QMouseEvent *e )
+void QgsMapTool::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   Q_UNUSED( e );
 }

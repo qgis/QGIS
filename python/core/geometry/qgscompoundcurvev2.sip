@@ -37,15 +37,15 @@ class QgsCompoundCurveV2: public QgsCurveV2
     int nCurves() const;
     const QgsCurveV2* curveAt( int i ) const;
 
-    /**Adds curve (takes ownership)*/
+    /** Adds curve (takes ownership)*/
     void addCurve( QgsCurveV2* c /Transfer/ );
     void removeCurve( int i );
     void addVertex( const QgsPointV2& pt );
-    /**Returns closed ring based on curve (connects to start point if not already done)*/
+    /** Returns closed ring based on curve (connects to start point if not already done)*/
     void close();
 
     void draw( QPainter& p ) const;
-    void transform( const QgsCoordinateTransform& ct );
+    void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform );
     void transform( const QTransform& t );
     void addToPainterPath( QPainterPath& path ) const;
     void drawAsPolygon( QPainter& p ) const;
@@ -60,4 +60,9 @@ class QgsCompoundCurveV2: public QgsCurveV2
     void sumUpArea( double& sum ) const;
 
     bool hasCurvedSegments() const;
+
+    /** Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
+        @param vertex the vertex id
+        @return rotation in radians, clockwise from north*/
+    double vertexAngle( const QgsVertexId& vertex ) const;
 };

@@ -29,6 +29,7 @@
 
 #include "qgsproject.h"
 #include "qgsexpression.h"
+#include "qgsmapcanvas.h"
 
 #include <QKeyEvent>
 #include <QMenu>
@@ -249,7 +250,7 @@ QMimeData *QgsCategorizedSymbolRendererV2Model::mimeData( const QModelIndexList 
   QDataStream stream( &encodedData, QIODevice::WriteOnly );
 
   // Create list of rows
-  foreach ( const QModelIndex &index, indexes )
+  Q_FOREACH ( const QModelIndex &index, indexes )
   {
     if ( !index.isValid() || index.column() != 0 )
       continue;
@@ -370,6 +371,31 @@ QgsRendererV2Widget* QgsCategorizedSymbolRendererV2Widget::create( QgsVectorLaye
   return new QgsCategorizedSymbolRendererV2Widget( layer, style, renderer );
 }
 
+static QgsExpressionContext _getExpressionContext( const void* context )
+{
+  const QgsCategorizedSymbolRendererV2Widget* widget = ( const QgsCategorizedSymbolRendererV2Widget* ) context;
+
+  QgsExpressionContext expContext;
+  expContext << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::atlasScope( 0 );
+
+  if ( widget->mapCanvas() )
+  {
+    expContext << QgsExpressionContextUtils::mapSettingsScope( widget->mapCanvas()->mapSettings() )
+    << new QgsExpressionContextScope( widget->mapCanvas()->expressionContextScope() );
+  }
+  else
+  {
+    expContext << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+  }
+
+  if ( widget->vectorLayer() )
+    expContext << QgsExpressionContextUtils::layerScope( widget->vectorLayer() );
+
+  return expContext;
+}
+
 QgsCategorizedSymbolRendererV2Widget::QgsCategorizedSymbolRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
     : QgsRendererV2Widget( layer, style )
     , mRenderer( 0 )
@@ -440,6 +466,8 @@ QgsCategorizedSymbolRendererV2Widget::QgsCategorizedSymbolRendererV2Widget( QgsV
   connect( btnAddCategory, SIGNAL( clicked() ), this, SLOT( addCategory() ) );
   connect( cbxInvertedColorRamp, SIGNAL( toggled( bool ) ), this, SLOT( applyColorRamp() ) );
   connect( cboCategorizedColorRamp, SIGNAL( currentIndexChanged( int ) ), this, SLOT( applyColorRamp() ) );
+  connect( cboCategorizedColorRamp, SIGNAL( sourceRampEdited() ), this, SLOT( applyColorRamp() ) );
+  connect( mButtonEditRamp, SIGNAL( clicked() ), cboCategorizedColorRamp, SLOT( editSourceRamp() ) );
 
   // menus for data-defined rotation/size
   QMenu* advMenu = new QMenu;
@@ -448,18 +476,16 @@ QgsCategorizedSymbolRendererV2Widget::QgsCategorizedSymbolRendererV2Widget( QgsV
   advMenu->addAction( tr( "Match to symbols from file..." ), this, SLOT( matchToSymbolsFromXml() ) );
   advMenu->addAction( tr( "Symbol levels..." ), this, SLOT( showSymbolLevels() ) );
 
-  mDataDefinedMenus = new QgsRendererV2DataDefinedMenus( advMenu, mLayer,
-      mRenderer->rotationField(), mRenderer->sizeScaleField(), mRenderer->scaleMethod() );
-  connect( mDataDefinedMenus, SIGNAL( rotationFieldChanged( QString ) ), this, SLOT( rotationFieldChanged( QString ) ) );
-  connect( mDataDefinedMenus, SIGNAL( sizeScaleFieldChanged( QString ) ), this, SLOT( sizeScaleFieldChanged( QString ) ) );
-  connect( mDataDefinedMenus, SIGNAL( scaleMethodChanged( QgsSymbolV2::ScaleMethod ) ), this, SLOT( scaleMethodChanged( QgsSymbolV2::ScaleMethod ) ) );
   btnAdvanced->setMenu( advMenu );
+
+  mExpressionWidget->registerGetExpressionContextCallback( &_getExpressionContext, this );
 }
 
 QgsCategorizedSymbolRendererV2Widget::~QgsCategorizedSymbolRendererV2Widget()
 {
   if ( mRenderer ) delete mRenderer;
   if ( mModel ) delete mModel;
+  delete mCategorizedSymbol;
 }
 
 void QgsCategorizedSymbolRendererV2Widget::updateUiFromRenderer()
@@ -506,13 +532,14 @@ void QgsCategorizedSymbolRendererV2Widget::changeSelectedSymbols()
   {
     QgsSymbolV2* newSymbol = mCategorizedSymbol->clone();
     QgsSymbolV2SelectorDialog dlg( newSymbol, mStyle, mLayer, this );
+    dlg.setMapCanvas( mMapCanvas );
     if ( !dlg.exec() )
     {
       delete newSymbol;
       return;
     }
 
-    foreach ( const int idx, selectedCats )
+    Q_FOREACH ( int idx, selectedCats )
     {
       QgsRendererCategoryV2 category = mRenderer->categories().value( idx );
 
@@ -539,12 +566,14 @@ void QgsCategorizedSymbolRendererV2Widget::changeCategorizedSymbol()
   QgsSymbolV2* newSymbol = mCategorizedSymbol->clone();
 
   QgsSymbolV2SelectorDialog dlg( newSymbol, mStyle, mLayer, this );
+  dlg.setMapCanvas( mMapCanvas );
   if ( !dlg.exec() )
   {
     delete newSymbol;
     return;
   }
 
+  delete mCategorizedSymbol;
   mCategorizedSymbol = newSymbol;
   updateCategorizedSymbolIcon();
 
@@ -588,6 +617,7 @@ void QgsCategorizedSymbolRendererV2Widget::changeCategorySymbol()
   }
 
   QgsSymbolV2SelectorDialog dlg( symbol, mStyle, mLayer, this );
+  dlg.setMapCanvas( mMapCanvas );
   if ( !dlg.exec() )
   {
     delete symbol;
@@ -649,12 +679,19 @@ void QgsCategorizedSymbolRendererV2Widget::addCategories()
   {
     // Lets assume it's an expression
     QgsExpression* expression = new QgsExpression( attrName );
-    expression->prepare( mLayer->pendingFields() );
+    QgsExpressionContext context;
+    context << QgsExpressionContextUtils::globalScope()
+    << QgsExpressionContextUtils::projectScope()
+    << QgsExpressionContextUtils::atlasScope( 0 )
+    << QgsExpressionContextUtils::layerScope( mLayer );
+
+    expression->prepare( &context );
     QgsFeatureIterator fit = mLayer->getFeatures();
     QgsFeature feature;
     while ( fit.nextFeature( feature ) )
     {
-      QVariant value = expression->evaluate( feature );
+      context.setFeature( feature );
+      QVariant value = expression->evaluate( &context );
       if ( unique_vals.contains( value ) )
         continue;
       unique_vals << value;
@@ -752,7 +789,6 @@ void QgsCategorizedSymbolRendererV2Widget::addCategories()
   r->setSourceSymbol( mCategorizedSymbol->clone() );
   r->setScaleMethod( mRenderer->scaleMethod() );
   r->setSizeScaleField( mRenderer->sizeScaleField() );
-  r->setRotationField( mRenderer->rotationField() );
   r->setInvertedColorRamp( cbxInvertedColorRamp->isChecked() );
   QgsVectorColorRampV2* ramp = getColorRamp();
   if ( ramp ) r->setSourceColorRamp( ramp->clone() );
@@ -764,6 +800,7 @@ void QgsCategorizedSymbolRendererV2Widget::addCategories()
   delete mRenderer;
   mRenderer = r;
   if ( ! keepExistingColors && ramp ) applyColorRamp();
+  delete ramp;
 }
 
 void QgsCategorizedSymbolRendererV2Widget::applyColorRamp()
@@ -771,7 +808,7 @@ void QgsCategorizedSymbolRendererV2Widget::applyColorRamp()
   QgsVectorColorRampV2* ramp = getColorRamp();
   if ( ramp )
   {
-    mRenderer->updateColorRamp( ramp->clone(), cbxInvertedColorRamp->isChecked() );
+    mRenderer->updateColorRamp( ramp, cbxInvertedColorRamp->isChecked() );
   }
   mModel->updateSymbology();
 }
@@ -789,7 +826,7 @@ QList<int> QgsCategorizedSymbolRendererV2Widget::selectedCategories()
   QList<int> rows;
   QModelIndexList selectedRows = viewCategories->selectionModel()->selectedRows();
 
-  foreach ( QModelIndex r, selectedRows )
+  Q_FOREACH ( const QModelIndex& r, selectedRows )
   {
     if ( r.isValid() )
     {
@@ -816,11 +853,6 @@ void QgsCategorizedSymbolRendererV2Widget::addCategory()
   QgsSymbolV2 *symbol = QgsSymbolV2::defaultSymbol( mLayer->geometryType() );
   QgsRendererCategoryV2 cat( QString(), symbol, QString(), true );
   mModel->addCategory( cat );
-}
-
-void QgsCategorizedSymbolRendererV2Widget::rotationFieldChanged( QString fldName )
-{
-  mRenderer->setRotationField( fldName );
 }
 
 void QgsCategorizedSymbolRendererV2Widget::sizeScaleFieldChanged( QString fldName )

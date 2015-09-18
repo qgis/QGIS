@@ -29,9 +29,11 @@ class QgsTransformSettingsDialog : public QDialog, private Ui::QgsTransformSetti
   public:
     QgsTransformSettingsDialog( const QString &raster, const QString &output,
                                 int countGCPpoints, QWidget *parent = 0 );
+
+    ~QgsTransformSettingsDialog();
     void getTransformSettings( QgsGeorefTransform::TransformParametrisation &tp,
                                QgsImageWarper::ResamplingMethod &rm, QString &comprMethod,
-                               QString &raster, QString &proj, QString& pdfMapFile, QString& pdfReportFile, bool &zt, bool &loadInQgis,
+                               QString &raster, QgsCoordinateReferenceSystem& proj, QString& pdfMapFile, QString& pdfReportFile, bool &zt, bool &loadInQgis,
                                double& resX, double& resY );
     static void resetSettings();
 
@@ -41,10 +43,8 @@ class QgsTransformSettingsDialog : public QDialog, private Ui::QgsTransformSetti
 
   private slots:
     void on_tbnOutputRaster_clicked();
-    void on_tbnTargetSRS_clicked();
     void on_tbnMapFile_clicked();
     void on_tbnReportFile_clicked();
-    void on_leTargetSRS_textChanged( const QString &text );
     void on_cmbTransformType_currentIndexChanged( const QString& text );
     void on_mWorldFileCheckBox_stateChanged( int state );
     QIcon getThemeIcon( const QString &theName );
@@ -53,8 +53,7 @@ class QgsTransformSettingsDialog : public QDialog, private Ui::QgsTransformSetti
     bool checkGCPpoints( int count, int &minGCPpoints );
     QString generateModifiedRasterFileName( const QString &raster );
 
-    QRegExpValidator *mRegExpValidator;
-    QString mModifiedRaster;
+    QString mSourceRasterFile;
 
     int mCountGCPpoints;
 

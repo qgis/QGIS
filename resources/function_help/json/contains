@@ -1,0 +1,11 @@
+{
+  "function": "contains",
+  "description": "Tests whether a geometry contains another. Returns true if and only if no points of geometry b lie in the exterior of geometry a, and at least one point of the interior of b lies in the interior of a.",
+  "arguments": [ {"arg":"geometry a","description":"a geometry"},
+                 {"arg":"geometry b","description":"a geometry"}],
+  "examples": [ { "expression":"geom_to_wkt( combine( geom_from_wkt( 'LINESTRING(3 3, 4 4, 5 5)' ), geom_from_wkt( 'LINESTRING(3 3, 4 4, 2 1)' ) ) )", "returns":"MULTILINESTRING((4 4, 2 1), (3 3, 4 4), (4 4, 5 5))"},
+  { "expression":"contains( geom_from_wkt( 'POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))' ), geom_from_wkt( 'POINT(0.5 0.5 )' ) )", "returns":"true"},
+  { "expression":"contains( geom_from_wkt( 'POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))' ), geom_from_wkt( 'LINESTRING(3 3, 4 4, 5 5)' ) )", "returns":"false"}
+  ]
+}
+

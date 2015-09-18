@@ -92,7 +92,7 @@ class MultipleFileInputDialog(BASE, WIDGET):
             path = ''
 
         files = QFileDialog.getOpenFileNames(self,
-            self.tr('Select file(s)'), path, self.tr('All files (*.*)'))
+                                             self.tr('Select file(s)'), path, self.tr('All files (*.*)'))
 
         if len(files) == 0:
             return
@@ -110,8 +110,7 @@ class MultipleFileInputDialog(BASE, WIDGET):
             self.lstLayers.model().clear()
         else:
             self.lstLayers.setUpdatesEnabled(False)
-            indexes = self.lstLayers.selectionModel().selectedIndexes()
-            indexes.sort()
+            indexes = sorted(self.lstLayers.selectionModel().selectedIndexes())
             for i in reversed(indexes):
                 self.lstLayers.model().removeRow(i.row())
             self.lstLayers.setUpdatesEnabled(True)

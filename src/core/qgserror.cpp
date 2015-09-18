@@ -64,7 +64,7 @@ QString QgsError::message( QgsErrorMessage::Format theFormat ) const
   }
 #endif
 
-  foreach ( QgsErrorMessage m, mMessageList )
+  Q_FOREACH ( const QgsErrorMessage& m, mMessageList )
   {
 #ifdef QGISDEBUG
     QString file;

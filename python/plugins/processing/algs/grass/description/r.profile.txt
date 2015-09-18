@@ -1,5 +1,5 @@
 r.profile
-r.profile - Outputs the raster layer values lying on user-defined line(s).
+Outputs the raster layer values lying on user-defined line(s).
 Raster (r.*)
 ParameterRaster|input|Input raster layer|False
 ParameterString|profile|Profile coordinate pairs|0,0,1,1

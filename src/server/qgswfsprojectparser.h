@@ -20,7 +20,7 @@
 
 #include "qgsserverprojectparser.h"
 
-class QgsWFSProjectParser
+class SERVER_EXPORT QgsWFSProjectParser
 {
   public:
     QgsWFSProjectParser( const QString& filePath );

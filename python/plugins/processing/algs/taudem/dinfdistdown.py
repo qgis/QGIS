@@ -68,27 +68,27 @@ class DinfDistDown(GeoAlgorithm):
         return QIcon(os.path.dirname(__file__) + '/../../images/taudem.png')
 
     def defineCharacteristics(self):
-        self.name = 'D-Infinity Distance Down'
+        self.name, self.i18n_name = self.trAlgorithm('D-Infinity Distance Down')
         self.cmdName = 'dinfdistdown'
-        self.group = 'Specialized Grid Analysis tools'
+        self.group, self.i18n_group = self.trAlgorithm('Specialized Grid Analysis tools')
 
         self.addParameter(ParameterRaster(self.DINF_FLOW_DIR_GRID,
-            self.tr('D-Infinity Flow Direction Grid'), False))
+                                          self.tr('D-Infinity Flow Direction Grid'), False))
         self.addParameter(ParameterRaster(self.PIT_FILLED_GRID,
-            self.tr('Pit Filled Elevation Grid'), False))
+                                          self.tr('Pit Filled Elevation Grid'), False))
         self.addParameter(ParameterRaster(self.STREAM_GRID,
-            self.tr('Stream Raster Grid'), False))
+                                          self.tr('Stream Raster Grid'), False))
         self.addParameter(ParameterRaster(self.WEIGHT_PATH_GRID,
-            self.tr('Weight Path Grid'), True))
+                                          self.tr('Weight Path Grid'), True))
         self.addParameter(ParameterSelection(self.STAT_METHOD,
-            self.tr('Statistical Method'), self.STATISTICS, 2))
+                                             self.tr('Statistical Method'), self.STATISTICS, 2))
         self.addParameter(ParameterSelection(self.DIST_METHOD,
-            self.tr('Distance Method'), self.DISTANCE, 1))
+                                             self.tr('Distance Method'), self.DISTANCE, 1))
         self.addParameter(ParameterBoolean(self.EDGE_CONTAM,
-            self.tr('Check for edge contamination'), True))
+                                           self.tr('Check for edge contamination'), True))
 
         self.addOutput(OutputRaster(self.DIST_DOWN_GRID,
-            self.tr('D-Infinity Drop to Stream Grid')))
+                                    self.tr('D-Infinity Drop to Stream Grid')))
 
     def processAlgorithm(self, progress):
         commands = []
@@ -101,7 +101,7 @@ class DinfDistDown(GeoAlgorithm):
                         'correct number before running TauDEM algorithms.'))
 
         commands.append('-n')
-        commands.append(str(processNum))
+        commands.append(unicode(processNum))
         commands.append(os.path.join(TauDEMUtils.taudemPath(), self.cmdName))
         commands.append('-ang')
         commands.append(self.getParameterValue(self.DINF_FLOW_DIR_GRID))
@@ -114,9 +114,9 @@ class DinfDistDown(GeoAlgorithm):
             commands.append('-wg')
             commands.append(self.getParameterValue(self.WEIGHT_PATH_GRID))
         commands.append('-m')
-        commands.append(str(self.STAT_DICT[self.getParameterValue(
+        commands.append(unicode(self.STAT_DICT[self.getParameterValue(
             self.STAT_METHOD)]))
-        commands.append(str(self.DIST_DICT[self.getParameterValue(
+        commands.append(unicode(self.DIST_DICT[self.getParameterValue(
             self.DIST_METHOD)]))
         if not self.getParameterValue(self.EDGE_CONTAM):
             commands.append('-nc')

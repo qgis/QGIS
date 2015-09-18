@@ -1,5 +1,5 @@
 r.spread
-r.spread - Simulates elliptically anisotropic spread on a graphics window and generates a raster map of the cumulative time of spread, given raster maps containing the rates of spread (ROS), the ROS directions and the spread origins.
+Simulates elliptically anisotropic spread on a graphics window and generates a raster map of the cumulative time of spread, given raster maps containing the rates of spread (ROS), the ROS directions and the spread origins.
 Raster (r.*)
 ParameterRaster|max|Name of raster map containing MAX rate of spread (ROS) (cm/min)|True
 ParameterRaster|dir|Name of raster map containing DIRections of max ROS (degree)|True

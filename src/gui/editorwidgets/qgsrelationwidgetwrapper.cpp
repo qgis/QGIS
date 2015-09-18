@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 14.5.2014
     Copyright            : (C) 2014 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -72,4 +72,9 @@ void QgsRelationWidgetWrapper::initWidget( QWidget* editor )
   while ( ctx );
 
   mWidget = w;
+}
+
+bool QgsRelationWidgetWrapper::valid()
+{
+  return mWidget;
 }

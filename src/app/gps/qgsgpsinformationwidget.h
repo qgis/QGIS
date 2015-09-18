@@ -37,7 +37,7 @@ struct QgsGPSInformation;
 class QFile;
 class QColor;
 
-/**A dock widget that displays information from a GPS device and
+/** A dock widget that displays information from a GPS device and
  * allows the user to capture features using gps readings to
  * specify the geometry.*/
 class QgsGPSInformationWidget: public QWidget, private Ui::QgsGPSInformationWidgetBase

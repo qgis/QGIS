@@ -25,7 +25,7 @@ class Triangulation;
 class TriangleInterpolator;
 class QgsFeature;
 
-/**Interpolation in a triangular irregular network*/
+/** Interpolation in a triangular irregular network*/
 class ANALYSIS_EXPORT QgsTINInterpolator: public QgsInterpolator
 {
   public:
@@ -38,7 +38,7 @@ class ANALYSIS_EXPORT QgsTINInterpolator: public QgsInterpolator
     QgsTINInterpolator( const QList<LayerData>& inputData, TIN_INTERPOLATION interpolation = Linear, bool showProgressDialog = false );
     ~QgsTINInterpolator();
 
-    /**Calculates interpolation value for map coordinates x, y
+    /** Calculates interpolation value for map coordinates x, y
        @param x x-coordinate (in map units)
        @param y y-coordinate (in map units)
        @param result out: interpolation result
@@ -53,16 +53,16 @@ class ANALYSIS_EXPORT QgsTINInterpolator: public QgsInterpolator
     TriangleInterpolator* mTriangleInterpolator;
     bool mIsInitialized;
     bool mShowProgressDialog;
-    /**If true: export triangulation to shapefile after initialisation*/
+    /** If true: export triangulation to shapefile after initialisation*/
     bool mExportTriangulationToFile;
-    /**File path to export the triangulation*/
+    /** File path to export the triangulation*/
     QString mTriangulationFilePath;
-    /**Type of interpolation*/
+    /** Type of interpolation*/
     TIN_INTERPOLATION mInterpolation;
 
-    /**Create dual edge triangulation*/
+    /** Create dual edge triangulation*/
     void initialize();
-    /**Inserts the vertices of a feature into the triangulation
+    /** Inserts the vertices of a feature into the triangulation
       @param f the feature
       @param zCoord true if the z coordinate is the interpolation attribute
       @param attr interpolation attribute index (if zCoord is false)

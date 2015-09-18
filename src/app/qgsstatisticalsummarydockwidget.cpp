@@ -14,6 +14,9 @@
  ***************************************************************************/
 #include "qgsstatisticalsummarydockwidget.h"
 #include "qgsstatisticalsummary.h"
+#include "qgsmaplayerregistry.h"
+#include "qgisapp.h"
+#include "qgsmapcanvas.h"
 #include <QTableWidget>
 #include <QAction>
 #include <QSettings>
@@ -37,26 +40,44 @@ QList< QgsStatisticalSummary::Statistic > QgsStatisticalSummaryDockWidget::mDisp
 
 #define MISSING_VALUES -1
 
+static QgsExpressionContext _getExpressionContext( const void* context )
+{
+  QgsExpressionContext expContext;
+  expContext << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() );
+
+  const QgsStatisticalSummaryDockWidget* widget = ( const QgsStatisticalSummaryDockWidget* ) context;
+  if ( widget )
+  {
+    expContext << QgsExpressionContextUtils::layerScope( widget->layer() );
+  }
+
+  return expContext;
+}
+
 QgsStatisticalSummaryDockWidget::QgsStatisticalSummaryDockWidget( QWidget *parent )
     : QDockWidget( parent )
     , mLayer( 0 )
 {
   setupUi( this );
 
+  mFieldExpressionWidget->registerGetExpressionContextCallback( &_getExpressionContext, this );
+
   mLayerComboBox->setFilters( QgsMapLayerProxyModel::VectorLayer );
   mFieldExpressionWidget->setFilters( QgsFieldProxyModel::Numeric );
+
+  mLayerComboBox->setLayer( mLayerComboBox->layer( 0 ) );
+  mFieldExpressionWidget->setLayer( mLayerComboBox->layer( 0 ) );
+
   connect( mLayerComboBox, SIGNAL( layerChanged( QgsMapLayer* ) ), this, SLOT( layerChanged( QgsMapLayer* ) ) );
   connect( mFieldExpressionWidget, SIGNAL( fieldChanged( QString ) ), this, SLOT( refreshStatistics() ) );
   connect( mSelectedOnlyCheckBox, SIGNAL( toggled( bool ) ), this, SLOT( refreshStatistics() ) );
   connect( mButtonRefresh, SIGNAL( clicked( bool ) ), this, SLOT( refreshStatistics() ) );
-
-  if ( mLayerComboBox->currentLayer() )
-  {
-    mFieldExpressionWidget->setLayer( mLayerComboBox->currentLayer() );
-  }
+  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( layersRemoved( QStringList ) ) );
 
   QSettings settings;
-  foreach ( QgsStatisticalSummary::Statistic stat, mDisplayStats )
+  Q_FOREACH ( QgsStatisticalSummary::Statistic stat, mDisplayStats )
   {
     QAction* action = new QAction( QgsStatisticalSummary::displayName( stat ), mOptionsToolButton );
     action->setCheckable( true );
@@ -105,10 +126,14 @@ void QgsStatisticalSummaryDockWidget::refreshStatistics()
   }
 
   QList< QgsStatisticalSummary::Statistic > statsToDisplay;
-  foreach ( QgsStatisticalSummary::Statistic stat, mDisplayStats )
+  QgsStatisticalSummary::Statistics statsToCalc = 0;
+  Q_FOREACH ( QgsStatisticalSummary::Statistic stat, mDisplayStats )
   {
     if ( mStatsActions.value( stat )->isChecked() )
+    {
       statsToDisplay << stat;
+      statsToCalc |= stat;
+    }
   }
 
   int extraRows = 0;
@@ -116,14 +141,14 @@ void QgsStatisticalSummaryDockWidget::refreshStatistics()
     extraRows++;
 
   QgsStatisticalSummary stats;
-  stats.setStatistics( QgsStatisticalSummary::All );
+  stats.setStatistics( statsToCalc );
   stats.calculate( values );
 
   mStatisticsTable->setRowCount( statsToDisplay.count() + extraRows );
   mStatisticsTable->setColumnCount( 2 );
 
   int row = 0;
-  foreach ( QgsStatisticalSummary::Statistic stat, statsToDisplay )
+  Q_FOREACH ( QgsStatisticalSummary::Statistic stat, statsToDisplay )
   {
     QTableWidgetItem* nameItem = new QTableWidgetItem( QgsStatisticalSummary::displayName( stat ) );
     nameItem->setToolTip( nameItem->text() );
@@ -166,14 +191,14 @@ void QgsStatisticalSummaryDockWidget::layerChanged( QgsMapLayer *layer )
   QgsVectorLayer* newLayer = dynamic_cast< QgsVectorLayer* >( layer );
   if ( mLayer && mLayer != newLayer )
   {
-    disconnect( mLayer, SIGNAL( selectionChanged() ), this, SLOT( refreshStatistics() ) );
+    disconnect( mLayer, SIGNAL( selectionChanged() ), this, SLOT( layerSelectionChanged() ) );
   }
 
   mLayer = newLayer;
 
   if ( mLayer )
   {
-    connect( mLayer, SIGNAL( selectionChanged() ), this, SLOT( refreshStatistics() ) );
+    connect( mLayer, SIGNAL( selectionChanged() ), this, SLOT( layerSelectionChanged() ) );
   }
 
   mFieldExpressionWidget->setLayer( mLayer );
@@ -203,4 +228,19 @@ void QgsStatisticalSummaryDockWidget::statActionTriggered( bool checked )
   {
     settings.setValue( QString( "/StatisticalSummaryDock/checked_missing_values" ).arg( stat ), checked );
   }
+}
+
+void QgsStatisticalSummaryDockWidget::layersRemoved( QStringList layers )
+{
+  if ( mLayer && layers.contains( mLayer->id() ) )
+  {
+    disconnect( mLayer, SIGNAL( selectionChanged() ), this, SLOT( layerSelectionChanged() ) );
+    mLayer = 0;
+  }
+}
+
+void QgsStatisticalSummaryDockWidget::layerSelectionChanged()
+{
+  if ( mSelectedOnlyCheckBox->isChecked() )
+    refreshStatistics();
 }

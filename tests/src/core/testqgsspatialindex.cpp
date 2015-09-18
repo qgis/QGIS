@@ -16,19 +16,12 @@
 #include <QtTest/QtTest>
 #include <QObject>
 #include <QString>
-#include <QObject>
 
 #include <qgsapplication.h>
 #include <qgsgeometry.h>
 #include <qgsspatialindex.h>
 #include <qgsvectordataprovider.h>
 #include <qgsvectorlayer.h>
-
-
-#if QT_VERSION < 0x40701
-// See http://hub.qgis.org/issues/4284
-Q_DECLARE_METATYPE( QVariant )
-#endif
 
 static QgsFeature _pointFeature( QgsFeatureId id, qreal x, qreal y )
 {
@@ -74,7 +67,7 @@ class TestQgsSpatialIndex : public QObject
     void testQuery()
     {
       QgsSpatialIndex index;
-      foreach ( const QgsFeature& f, _pointFeatures() )
+      Q_FOREACH ( const QgsFeature& f, _pointFeatures() )
         index.insertFeature( f );
 
       QList<QgsFeatureId> fids = index.intersects( QgsRectangle( 0, 0, 10, 10 ) );
@@ -90,7 +83,7 @@ class TestQgsSpatialIndex : public QObject
     void testCopy()
     {
       QgsSpatialIndex* index = new QgsSpatialIndex;
-      foreach ( const QgsFeature& f, _pointFeatures() )
+      Q_FOREACH ( const QgsFeature& f, _pointFeatures() )
         index->insertFeature( f );
 
       // create copy of the index

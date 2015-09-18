@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsAtlasCompositionWidgetBase</class>
+ <widget class="QWidget" name="QgsAtlasCompositionWidgetBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>310</width>
+    <height>381</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle">
+   <string>Atlas Generation</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="QFrame" name="verticalFrame">
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <property name="horizontalSpacing">
+       <number>0</number>
+      </property>
+      <property name="verticalSpacing">
+       <number>3</number>
+      </property>
+      <item row="0" column="1">
+       <widget class="QCheckBox" name="mUseAtlasCheckBox">
+        <property name="text">
+         <string>Generate an atlas</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="0" column="0">
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Fixed</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>12</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="1" column="0" colspan="3">
+       <widget class="QScrollArea" name="scrollArea">
+        <property name="focusPolicy">
+         <enum>Qt::WheelFocus</enum>
+        </property>
+        <property name="widgetResizable">
+         <bool>true</bool>
+        </property>
+        <widget class="QWidget" name="scrollAreaWidgetContents">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>306</width>
+           <height>352</height>
+          </rect>
+         </property>
+         <layout class="QVBoxLayout" name="mainLayout">
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QgsCollapsibleGroupBoxBasic" name="mConfigurationGroup">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="focusPolicy">
+             <enum>Qt::StrongFocus</enum>
+            </property>
+            <property name="title">
+             <string>Configuration</string>
+            </property>
+            <property name="checkable">
+             <bool>false</bool>
+            </property>
+            <property name="syncGroup" stdset="0">
+             <string notr="true">composeritem</string>
+            </property>
+            <property name="collapsed" stdset="0">
+             <bool>false</bool>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,0,0">
+             <item row="4" column="2">
+              <widget class="QToolButton" name="mAtlasSortFeatureDirectionButton">
+               <property name="toolTip">
+                <string>Sort direction</string>
+               </property>
+               <property name="text">
+                <string>...</string>
+               </property>
+               <property name="arrowType">
+                <enum>Qt::UpArrow</enum>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="1">
+              <widget class="QgsFieldComboBox" name="mAtlasSortFeatureKeyComboBox"/>
+             </item>
+             <item row="3" column="0">
+              <widget class="QCheckBox" name="mAtlasFeatureFilterCheckBox">
+               <property name="text">
+                <string>Filter with</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="2">
+              <widget class="QToolButton" name="mAtlasFeatureFilterButton">
+               <property name="text">
+                <string>...</string>
+               </property>
+               <property name="icon">
+                <iconset resource="../../../images/images.qrc">
+                 <normaloff>:/images/themes/default/mIconExpression.svg</normaloff>:/images/themes/default/mIconExpression.svg</iconset>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0" colspan="3">
+              <widget class="QCheckBox" name="mAtlasHideCoverageCheckBox">
+               <property name="text">
+                <string>Hidden coverage layer</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0">
+              <widget class="QLabel" name="mHorizontalAlignementLabel">
+               <property name="text">
+                <string>Coverage layer </string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="label">
+               <property name="text">
+                <string>Page name</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="1">
+              <widget class="QLineEdit" name="mAtlasFeatureFilterEdit"/>
+             </item>
+             <item row="0" column="1" colspan="2">
+              <widget class="QgsMapLayerComboBox" name="mAtlasCoverageLayerComboBox">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1" colspan="2">
+              <widget class="QgsFieldExpressionWidget" name="mPageNameWidget" native="true">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>16777215</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="0">
+              <widget class="QCheckBox" name="mAtlasSortFeatureCheckBox">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>Sort by</string>
+               </property>
+              </widget>
+             </item>
+             <item row="5" column="0" colspan="3">
+              <layout class="QHBoxLayout" name="horizontalLayout">
+               <item>
+                <spacer name="horizontalSpacer_3">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QPushButton" name="mApplyConfigButton">
+                 <property name="text">
+                  <string>Apply configuration</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QgsCollapsibleGroupBoxBasic" name="mOutputGroup">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="focusPolicy">
+             <enum>Qt::StrongFocus</enum>
+            </property>
+            <property name="title">
+             <string>Output</string>
+            </property>
+            <property name="checkable">
+             <bool>false</bool>
+            </property>
+            <property name="syncGroup" stdset="0">
+             <string notr="true">composeritem</string>
+            </property>
+            <property name="collapsed" stdset="0">
+             <bool>false</bool>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_3">
+             <item row="0" column="0" colspan="2">
+              <widget class="QLabel" name="label_4">
+               <property name="text">
+                <string>Output filename expression</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="2">
+              <widget class="QToolButton" name="mAtlasFilenameExpressionButton">
+               <property name="text">
+                <string>...</string>
+               </property>
+               <property name="icon">
+                <iconset resource="../../../images/images.qrc">
+                 <normaloff>:/images/themes/default/mIconExpression.svg</normaloff>:/images/themes/default/mIconExpression.svg</iconset>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0" colspan="2">
+              <widget class="QLineEdit" name="mAtlasFilenamePatternEdit"/>
+             </item>
+             <item row="2" column="0" colspan="3">
+              <widget class="QCheckBox" name="mAtlasSingleFileCheckBox">
+               <property name="text">
+                <string>Single file export when possible</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <spacer name="verticalSpacer">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsCollapsibleGroupBoxBasic</class>
+   <extends>QGroupBox</extends>
+   <header location="global">qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsMapLayerComboBox</class>
+   <extends>QComboBox</extends>
+   <header location="global">qgsmaplayercombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsFieldComboBox</class>
+   <extends>QComboBox</extends>
+   <header location="global">qgsfieldcombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsFieldExpressionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfieldexpressionwidget.h</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>mUseAtlasCheckBox</tabstop>
+  <tabstop>scrollArea</tabstop>
+  <tabstop>mConfigurationGroup</tabstop>
+  <tabstop>mAtlasCoverageLayerComboBox</tabstop>
+  <tabstop>mAtlasHideCoverageCheckBox</tabstop>
+  <tabstop>mAtlasFeatureFilterCheckBox</tabstop>
+  <tabstop>mAtlasFeatureFilterEdit</tabstop>
+  <tabstop>mAtlasFeatureFilterButton</tabstop>
+  <tabstop>mAtlasSortFeatureCheckBox</tabstop>
+  <tabstop>mAtlasSortFeatureKeyComboBox</tabstop>
+  <tabstop>mAtlasSortFeatureDirectionButton</tabstop>
+  <tabstop>mApplyConfigButton</tabstop>
+  <tabstop>mOutputGroup</tabstop>
+  <tabstop>mAtlasFilenamePatternEdit</tabstop>
+  <tabstop>mAtlasFilenameExpressionButton</tabstop>
+  <tabstop>mAtlasSingleFileCheckBox</tabstop>
+ </tabstops>
+ <resources>
+  <include location="../../../images/images.qrc"/>
+ </resources>
+ <connections/>
+</ui>

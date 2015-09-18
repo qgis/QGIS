@@ -17,8 +17,7 @@
 
 #include "qgsrastermatrix.h"
 #include <string.h>
-
-#include <cmath>
+#include <qmath.h>
 
 QgsRasterMatrix::QgsRasterMatrix()
     : mColumns( 0 )
@@ -28,7 +27,7 @@ QgsRasterMatrix::QgsRasterMatrix()
 {
 }
 
-QgsRasterMatrix::QgsRasterMatrix( int nCols, int nRows, float* data, double nodataValue )
+QgsRasterMatrix::QgsRasterMatrix( int nCols, int nRows, double* data, double nodataValue )
     : mColumns( nCols )
     , mRows( nRows )
     , mData( data )
@@ -55,13 +54,13 @@ QgsRasterMatrix& QgsRasterMatrix::operator=( const QgsRasterMatrix & m )
   mColumns = m.nColumns();
   mRows = m.nRows();
   int nEntries = mColumns * mRows;
-  mData = new float[nEntries];
-  memcpy( mData, m.mData, sizeof( float ) * nEntries );
+  mData = new double[nEntries];
+  memcpy( mData, m.mData, sizeof( double ) * nEntries );
   mNodataValue = m.nodataValue();
   return *this;
 }
 
-void QgsRasterMatrix::setData( int cols, int rows, float* data, double nodataValue )
+void QgsRasterMatrix::setData( int cols, int rows, double* data, double nodataValue )
 {
   delete[] mData;
   mColumns = cols;
@@ -70,9 +69,9 @@ void QgsRasterMatrix::setData( int cols, int rows, float* data, double nodataVal
   mNodataValue = nodataValue;
 }
 
-float* QgsRasterMatrix::takeData()
+double* QgsRasterMatrix::takeData()
 {
-  float* data = mData;
+  double* data = mData;
   mData = 0; mColumns = 0; mRows = 0;
   return data;
 }
@@ -211,44 +210,106 @@ bool QgsRasterMatrix::oneArgumentOperation( OneArgOperator op )
         case opSQRT:
           if ( value < 0 ) //no complex numbers
           {
-            mData[i] = static_cast<float>( mNodataValue );
+            mData[i] = mNodataValue;
           }
           else
           {
-            mData[i] = static_cast<float>( sqrt( value ) );
+            mData[i] = sqrt( value );
           }
           break;
         case opSIN:
-          mData[i] = static_cast<float>( sin( value ) );
+          mData[i] = sin( value );
           break;
         case opCOS:
-          mData[i] = static_cast<float>( cos( value ) );
+          mData[i] = cos( value );
           break;
         case opTAN:
-          mData[i] = static_cast<float>( tan( value ) );
+          mData[i] = tan( value );
           break;
         case opASIN:
-          mData[i] = static_cast<float>( asin( value ) );
+          mData[i] = asin( value );
           break;
         case opACOS:
-          mData[i] = static_cast<float>( acos( value ) );
+          mData[i] = acos( value );
           break;
         case opATAN:
-          mData[i] = static_cast<float>( atan( value ) );
+          mData[i] = atan( value );
           break;
         case opSIGN:
-          mData[i] = static_cast<float>( -value );
+          mData[i] = -value;
           break;
         case opLOG:
-          mData[i] = static_cast<float>( ::log( value ) );
+          if ( value <= 0 )
+          {
+            mData[i] = mNodataValue;
+          }
+          else
+          {
+            mData[i] = ::log( value );
+          }
           break;
         case opLOG10:
-          mData[i] = static_cast<float>( ::log10( value ) );
+          if ( value <= 0 )
+          {
+            mData[i] = mNodataValue;
+          }
+          else
+          {
+            mData[i] = ::log10( value );
+          }
           break;
       }
     }
   }
   return true;
+}
+
+double QgsRasterMatrix::calculateTwoArgumentOp( TwoArgOperator op, double arg1, double arg2 ) const
+{
+  switch ( op )
+  {
+    case opPLUS:
+      return arg1 + arg2;
+    case opMINUS:
+      return arg1 - arg2;
+    case opMUL:
+      return arg1 * arg2;
+    case opDIV:
+      if ( arg2 == 0 )
+      {
+        return mNodataValue;
+      }
+      else
+      {
+        return arg1 / arg2;
+      }
+    case opPOW:
+      if ( !testPowerValidity( arg1, arg2 ) )
+      {
+        return mNodataValue;
+      }
+      else
+      {
+        return qPow( arg1, arg2 );
+      }
+    case opEQ:
+      return ( arg1 == arg2 ? 1.0 : 0.0 );
+    case opNE:
+      return ( arg1 == arg2 ? 0.0 : 1.0 );
+    case opGT:
+      return ( arg1 > arg2 ? 1.0 : 0.0 );
+    case opLT:
+      return ( arg1 < arg2 ? 1.0 : 0.0 );
+    case opGE:
+      return ( arg1 >= arg2 ? 1.0 : 0.0 );
+    case opLE:
+      return ( arg1 <= arg2 ? 1.0 : 0.0 );
+    case opAND:
+      return ( arg1 && arg2 ? 1.0 : 0.0 );
+    case opOR:
+      return ( arg1 || arg2 ? 1.0 : 0.0 );
+  }
+  return mNodataValue;
 }
 
 bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMatrix& other )
@@ -258,64 +319,11 @@ bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMa
     //operations with nodata values always generate nodata
     if ( mData[0] == mNodataValue || other.number() == other.nodataValue() )
     {
-      mData[0] = static_cast<float>( mNodataValue );
-      return true;
+      mData[0] = mNodataValue;
     }
-    switch ( op )
+    else
     {
-      case opPLUS:
-        mData[0] = static_cast<float>( number() + other.number() );
-        break;
-      case opMINUS:
-        mData[0] = static_cast<float>( number() - other.number() );
-        break;
-      case opMUL:
-        mData[0] = static_cast<float>( number() * other.number() );
-        break;
-      case opDIV:
-        if ( other.number() == 0 )
-        {
-          mData[0] = static_cast<float>( mNodataValue );
-        }
-        else
-        {
-          mData[0] = static_cast<float>( number() / other.number() );
-        }
-        break;
-      case opPOW:
-        if ( !testPowerValidity( mData[0], ( float ) other.number() ) )
-        {
-          mData[0] = static_cast<float>( mNodataValue );
-        }
-        else
-        {
-          mData[0] = pow( mData[0], ( float ) other.number() );
-        }
-        break;
-      case opEQ:
-        mData[0] = mData[0] == other.number() ? 1.0f : 0.0f;
-        break;
-      case opNE:
-        mData[0] = mData[0] == other.number() ? 0.0f : 1.0f;
-        break;
-      case opGT:
-        mData[0] = mData[0] > other.number() ? 1.0f : 0.0f;
-        break;
-      case opLT:
-        mData[0] = mData[0] < other.number() ? 1.0f : 0.0f;
-        break;
-      case opGE:
-        mData[0] = mData[0] >= other.number() ? 1.0f : 0.0f;
-        break;
-      case opLE:
-        mData[0] = mData[0] <= other.number() ? 1.0f : 0.0f;
-        break;
-      case opAND:
-        mData[0] = mData[0] && other.number() ? 1.0f : 0.0f;
-        break;
-      case opOR:
-        mData[0] = mData[0] || other.number() ? 1.0f : 0.0f;
-        break;
+      mData[0] = calculateTwoArgumentOp( op, mData[0], other.number() );
     }
     return true;
   }
@@ -323,7 +331,7 @@ bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMa
   //two matrices
   if ( !isNumber() && !other.isNumber() )
   {
-    float* matrix = other.mData;
+    double* matrix = other.mData;
     int nEntries = mColumns * mRows;
     double value1, value2;
 
@@ -332,66 +340,11 @@ bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMa
       value1 = mData[i]; value2 = matrix[i];
       if ( value1 == mNodataValue || value2 == other.mNodataValue )
       {
-        mData[i] = static_cast<float>( mNodataValue );
+        mData[i] = mNodataValue;
       }
       else
       {
-        switch ( op )
-        {
-          case opPLUS:
-            mData[i] = static_cast<float>( value1 + value2 );
-            break;
-          case opMINUS:
-            mData[i] = static_cast<float>( value1 - value2 );
-            break;
-          case opMUL:
-            mData[i] = static_cast<float>( value1 * value2 );
-            break;
-          case opDIV:
-            if ( value2 == 0 )
-            {
-              mData[i] = static_cast<float>( mNodataValue );
-            }
-            else
-            {
-              mData[i] = static_cast<float>( value1 / value2 );
-            }
-            break;
-          case opPOW:
-            if ( !testPowerValidity( value1, value2 ) )
-            {
-              mData[i] = static_cast<float>( mNodataValue );
-            }
-            else
-            {
-              mData[i] = static_cast<float>( pow( value1, value2 ) );
-            }
-            break;
-          case opEQ:
-            mData[i] = value1 == value2 ? 1.0f : 0.0f;
-            break;
-          case opNE:
-            mData[i] = value1 == value2 ? 0.0f : 1.0f;
-            break;
-          case opGT:
-            mData[i] = value1 > value2 ? 1.0f : 0.0f;
-            break;
-          case opLT:
-            mData[i] = value1 < value2 ? 1.0f : 0.0f;
-            break;
-          case opGE:
-            mData[i] = value1 >= value2 ? 1.0f : 0.0f;
-            break;
-          case opLE:
-            mData[i] = value1 <= value2 ? 1.0f : 0.0f;
-            break;
-          case opAND:
-            mData[i] = value1 && value2 ? 1.0f : 0.0f;
-            break;
-          case opOR:
-            mData[i] = value1 || value2 ? 1.0f : 0.0f;
-            break;
-        }
+        mData[i] = calculateTwoArgumentOp( op, value1, value2 );
       }
     }
     return true;
@@ -400,18 +353,18 @@ bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMa
   //this matrix is a single number and the other one a real matrix
   if ( isNumber() )
   {
-    float* matrix = other.mData;
+    double* matrix = other.mData;
     int nEntries = other.nColumns() * other.nRows();
     double value = mData[0];
     delete[] mData;
-    mData = new float[nEntries]; mColumns = other.nColumns(); mRows = other.nRows();
+    mData = new double[nEntries]; mColumns = other.nColumns(); mRows = other.nRows();
     mNodataValue = other.nodataValue();
 
     if ( value == mNodataValue )
     {
       for ( int i = 0; i < nEntries; ++i )
       {
-        mData[i] = static_cast<float>( mNodataValue );
+        mData[i] = mNodataValue;
       }
       return true;
     }
@@ -420,66 +373,11 @@ bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMa
     {
       if ( matrix[i] == other.mNodataValue )
       {
-        mData[i] = static_cast<float>( mNodataValue );
+        mData[i] = mNodataValue;
         continue;
       }
 
-      switch ( op )
-      {
-        case opPLUS:
-          mData[i] = static_cast<float>( value + matrix[i] );
-          break;
-        case opMINUS:
-          mData[i] = static_cast<float>( value - matrix[i] );
-          break;
-        case opMUL:
-          mData[i] = static_cast<float>( value * matrix[i] );
-          break;
-        case opDIV:
-          if ( matrix[i] == 0 )
-          {
-            mData[i] = static_cast<float>( mNodataValue );
-          }
-          else
-          {
-            mData[i] = static_cast<float>( value / matrix[i] );
-          }
-          break;
-        case opPOW:
-          if ( !testPowerValidity( value, matrix[i] ) )
-          {
-            mData[i] = static_cast<float>( mNodataValue );
-          }
-          else
-          {
-            mData[i] = pow( static_cast<float>( value ), matrix[i] );
-          }
-          break;
-        case opEQ:
-          mData[i] = value == matrix[i] ? 1.0f : 0.0f;
-          break;
-        case opNE:
-          mData[i] = value == matrix[i] ? 0.0f : 1.0f;
-          break;
-        case opGT:
-          mData[i] = value > matrix[i] ? 1.0f : 0.0f;
-          break;
-        case opLT:
-          mData[i] = value < matrix[i] ? 1.0f : 0.0f;
-          break;
-        case opGE:
-          mData[i] = value >= matrix[i] ? 1.0f : 0.0f;
-          break;
-        case opLE:
-          mData[i] = value <= matrix[i] ? 1.0f : 0.0f;
-          break;
-        case opAND:
-          mData[i] = value && matrix[i] ? 1.0f : 0.0f;
-          break;
-        case opOR:
-          mData[i] = value || matrix[i] ? 1.0f : 0.0f;
-          break;
-      }
+      mData[i] = calculateTwoArgumentOp( op, value, matrix[i] );
     }
     return true;
   }
@@ -492,7 +390,7 @@ bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMa
     {
       for ( int i = 0; i < nEntries; ++i )
       {
-        mData[i] = static_cast<float>( mNodataValue );
+        mData[i] = mNodataValue;
       }
       return true;
     }
@@ -504,68 +402,13 @@ bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMa
         continue;
       }
 
-      switch ( op )
-      {
-        case opPLUS:
-          mData[i] = static_cast<float>( mData[i] + value );
-          break;
-        case opMINUS:
-          mData[i] = static_cast<float>( mData[i] - value );
-          break;
-        case opMUL:
-          mData[i] = static_cast<float>( mData[i] * value );
-          break;
-        case opDIV:
-          if ( value == 0 )
-          {
-            mData[i] = static_cast<float>( mNodataValue );
-          }
-          else
-          {
-            mData[i] = static_cast<float>( mData[i] / value );
-          }
-          break;
-        case opPOW:
-          if ( !testPowerValidity( mData[i], value ) )
-          {
-            mData[i] = static_cast<float>( mNodataValue );
-          }
-          else
-          {
-            mData[i] = pow( mData[i], ( float ) value );
-          }
-          break;
-        case opEQ:
-          mData[i] = mData[i] == value ? 1.0f : 0.0f;
-          break;
-        case opNE:
-          mData[i] = mData[i] == value ? 0.0f : 1.0f;
-          break;
-        case opGT:
-          mData[i] = mData[i] > value ? 1.0f : 0.0f;
-          break;
-        case opLT:
-          mData[i] = mData[i] < value ? 1.0f : 0.0f;
-          break;
-        case opGE:
-          mData[i] = mData[i] >= value ? 1.0f : 0.0f;
-          break;
-        case opLE:
-          mData[i] = mData[i] <= value ? 1.0f : 0.0f;
-          break;
-        case opAND:
-          mData[i] = mData[i] && value ? 1.0f : 0.0f;
-          break;
-        case opOR:
-          mData[i] = mData[i] || value ? 1.0f : 0.0f;
-          break;
-      }
+      mData[i] = calculateTwoArgumentOp( op, mData[i], value );
     }
     return true;
   }
 }
 
-bool QgsRasterMatrix::testPowerValidity( double base, double power )
+bool QgsRasterMatrix::testPowerValidity( double base, double power ) const
 {
   if (( base == 0 && power < 0 ) || ( base < 0 && ( power - floor( power ) ) > 0 ) )
   {

@@ -13,6 +13,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core/symbology-ng
   ${CMAKE_SOURCE_DIR}/src/analysis
   ${CMAKE_SOURCE_DIR}/src/analysis/vector
+  ${CMAKE_SOURCE_DIR}/src/analysis/raster
   ${QT_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
   ${PROJ_INCLUDE_DIR}
@@ -62,7 +63,7 @@ MACRO (ADD_QGIS_TEST testname testsrc)
     ${QT_QTCORE_LIBRARY}
     ${QT_QTTEST_LIBRARY}
     qgis_analysis)
-  ADD_TEST(qgis_${testname} ${CMAKE_CURRENT_BINARY_DIR}/../../../output/bin/qgis_${testname})
+  ADD_TEST(qgis_${testname} ${CMAKE_CURRENT_BINARY_DIR}/../../../output/bin/qgis_${testname} -maxwarnings 10000)
   #SET_TARGET_PROPERTIES(qgis_${testname} PROPERTIES
   #  INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${QGIS_LIB_DIR}
   #  INSTALL_RPATH_USE_LINK_PATH true )
@@ -74,3 +75,5 @@ ENDMACRO (ADD_QGIS_TEST)
 ADD_QGIS_TEST(analyzertest testqgsvectoranalyzer.cpp)
 ADD_QGIS_TEST(openstreetmaptest testopenstreetmap.cpp)
 ADD_QGIS_TEST(zonalstatisticstest testqgszonalstatistics.cpp)
+ADD_QGIS_TEST(rastercalculatortest testqgsrastercalculator.cpp)
+ADD_QGIS_TEST(alignrastertest testqgsalignraster.cpp)

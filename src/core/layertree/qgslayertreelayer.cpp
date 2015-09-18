@@ -145,7 +145,7 @@ QgsLayerTreeNode* QgsLayerTreeLayer::clone() const
 
 void QgsLayerTreeLayer::registryLayersAdded( QList<QgsMapLayer*> layers )
 {
-  foreach ( QgsMapLayer* l, layers )
+  Q_FOREACH ( QgsMapLayer* l, layers )
   {
     if ( l->id() == mLayerId )
     {

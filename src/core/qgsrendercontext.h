@@ -24,9 +24,11 @@
 #include "qgsmaptopixel.h"
 #include "qgsrectangle.h"
 #include "qgsvectorsimplifymethod.h"
+#include "qgsexpressioncontext.h"
 
 class QPainter;
 
+class QgsAbstractGeometryV2;
 class QgsLabelingEngineInterface;
 class QgsMapSettings;
 
@@ -65,9 +67,9 @@ class CORE_EXPORT QgsRenderContext
 
     bool forceVectorOutput() const {return mForceVectorOutput;}
 
-    /**Returns true if advanced effects such as blend modes such be used */
+    /** Returns true if advanced effects such as blend modes such be used */
     bool useAdvancedEffects() const {return mUseAdvancedEffects;}
-    /**Used to enable or disable advanced effects such as blend modes */
+    /** Used to enable or disable advanced effects such as blend modes */
     void setUseAdvancedEffects( bool enabled ) { mUseAdvancedEffects = enabled; }
 
     bool drawEditingInformation() const {return mDrawEditingInformation;}
@@ -78,7 +80,7 @@ class CORE_EXPORT QgsRenderContext
 
     QColor selectionColor() const { return mSelectionColor; }
 
-    /**Returns true if vector selections should be shown in the rendered map
+    /** Returns true if vector selections should be shown in the rendered map
      * @returns true if selections should be shown
      * @see setShowSelection
      * @see selectionColor
@@ -88,7 +90,7 @@ class CORE_EXPORT QgsRenderContext
 
     //setters
 
-    /**Sets coordinate transformation. QgsRenderContext does not take ownership*/
+    /** Sets coordinate transformation. QgsRenderContext does not take ownership*/
     void setCoordinateTransform( const QgsCoordinateTransform* t );
     void setMapToPixel( const QgsMapToPixel& mtp ) {mMapToPixel = mtp;}
     void setExtent( const QgsRectangle& extent ) {mExtent = extent;}
@@ -102,7 +104,7 @@ class CORE_EXPORT QgsRenderContext
     void setLabelingEngine( QgsLabelingEngineInterface* iface ) { mLabelingEngine = iface; }
     void setSelectionColor( const QColor& color ) { mSelectionColor = color; }
 
-    /**Sets whether vector selections should be shown in the rendered map
+    /** Sets whether vector selections should be shown in the rendered map
      * @param showSelection set to true if selections should be shown
      * @see showSelection
      * @see setSelectionColor
@@ -110,7 +112,7 @@ class CORE_EXPORT QgsRenderContext
     */
     void setShowSelection( const bool showSelection ) { mShowSelection = showSelection; }
 
-    /**Returns true if the rendering optimization (geometry simplification) can be executed*/
+    /** Returns true if the rendering optimization (geometry simplification) can be executed*/
     bool useRenderingOptimization() const { return mUseRenderingOptimization; }
     void setUseRenderingOptimization( bool enabled ) { mUseRenderingOptimization = enabled; }
 
@@ -118,53 +120,85 @@ class CORE_EXPORT QgsRenderContext
     const QgsVectorSimplifyMethod& vectorSimplifyMethod() const { return mVectorSimplifyMethod; }
     void setVectorSimplifyMethod( const QgsVectorSimplifyMethod& simplifyMethod ) { mVectorSimplifyMethod = simplifyMethod; }
 
+    /** Sets the expression context. This context is used for all expression evaluation
+     * associated with this render context.
+     * @see expressionContext()
+     * @note added in QGIS 2.12
+     */
+    void setExpressionContext( const QgsExpressionContext& context ) { mExpressionContext = context; }
+
+    /** Gets the expression context. This context should be used for all expression evaluation
+     * associated with this render context.
+     * @see setExpressionContext()
+     * @note added in QGIS 2.12
+     */
+    QgsExpressionContext& expressionContext() { return mExpressionContext; }
+
+    /** Gets the expression context (const version). This context should be used for all expression evaluation
+     * associated with this render context.
+     * @see setExpressionContext()
+     * @note added in QGIS 2.12
+     */
+    const QgsExpressionContext& expressionContext() const { return mExpressionContext; }
+
+    /** Returns pointer to the unsegmentized geometry*/
+    const QgsAbstractGeometryV2* geometry() const { return mGeometry; }
+    /** Sets pointer to original (unsegmentized) geometry*/
+    void setGeometry( const QgsAbstractGeometryV2* geometry ) { mGeometry = geometry; }
+
   private:
 
-    /**Painter for rendering operations*/
+    /** Painter for rendering operations*/
     QPainter* mPainter;
 
-    /**For transformation between coordinate systems. Can be 0 if on-the-fly reprojection is not used*/
+    /** For transformation between coordinate systems. Can be 0 if on-the-fly reprojection is not used*/
     const QgsCoordinateTransform* mCoordTransform;
 
-    /**True if vertex markers for editing should be drawn*/
+    /** True if vertex markers for editing should be drawn*/
     bool mDrawEditingInformation;
 
     QgsRectangle mExtent;
 
-    /**If true then no rendered vector elements should be cached as image*/
+    /** If true then no rendered vector elements should be cached as image*/
     bool mForceVectorOutput;
 
-    /**Flag if advanced visual effects such as blend modes should be used. True by default*/
+    /** Flag if advanced visual effects such as blend modes should be used. True by default*/
     bool mUseAdvancedEffects;
 
     QgsMapToPixel mMapToPixel;
 
-    /**True if the rendering has been canceled*/
+    /** True if the rendering has been canceled*/
     bool mRenderingStopped;
 
-    /**Factor to scale line widths and point marker sizes*/
+    /** Factor to scale line widths and point marker sizes*/
     double mScaleFactor;
 
-    /**Factor to scale rasters*/
+    /** Factor to scale rasters*/
     double mRasterScaleFactor;
 
-    /**Map scale*/
+    /** Map scale*/
     double mRendererScale;
 
-    /**Labeling engine (can be NULL)*/
+    /** Labeling engine (can be NULL)*/
     QgsLabelingEngineInterface* mLabelingEngine;
 
-    /**Whether selection should be shown*/
+    /** Whether selection should be shown*/
     bool mShowSelection;
 
-    /**Color used for features that are marked as selected */
+    /** Color used for features that are marked as selected */
     QColor mSelectionColor;
 
-    /**True if the rendering optimization (geometry simplification) can be executed*/
+    /** True if the rendering optimization (geometry simplification) can be executed*/
     bool mUseRenderingOptimization;
 
-    /**Simplification object which holds the information about how to simplify the features for fast rendering */
+    /** Simplification object which holds the information about how to simplify the features for fast rendering */
     QgsVectorSimplifyMethod mVectorSimplifyMethod;
+
+    /** Expression context */
+    QgsExpressionContext mExpressionContext;
+
+    /** Pointer to the (unsegmentized) geometry*/
+    const QgsAbstractGeometryV2* mGeometry;
 };
 
 #endif

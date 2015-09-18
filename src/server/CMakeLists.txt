@@ -10,6 +10,10 @@ IF (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
   ADD_DEFINITIONS(-DQGSMSDEBUG=1)
 ENDIF (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
 
+IF (ENABLE_TESTS)
+   ADD_DEFINITIONS(-DENABLE_MS_TESTS=1)
+ENDIF (ENABLE_TESTS)
+
 ########################################################
 # Files
 
@@ -41,8 +45,10 @@ SET ( qgis_mapserv_SRCS
   qgswmsconfigparser.cpp
   qgswmsprojectparser.cpp
   qgsserverprojectparser.cpp
+  qgsserverstreamingdevice.cpp
   qgssldconfigparser.cpp
   qgsconfigparserutils.cpp
+  qgsserver.cpp
   )
 
 # SET (qgis_mapserv_UIS
@@ -70,12 +76,15 @@ SET (qgis_mapserv_RCCS
 
 SET(qgis_mapserv_MOC_HDRS ${qgis_mapserv_MOC_HDRS})
 
+
+IF (WITH_SERVER_PLUGINS)
 SET(qgis_mapserv_SRCS ${qgis_mapserv_SRCS}
     qgsserverplugins.cpp
     qgsserverinterface.cpp
     qgsserverfilter.cpp
     qgsserverinterfaceimpl.cpp
 )
+ENDIF (WITH_SERVER_PLUGINS)
 
 IF (NOT MSVC)
   ADD_DEFINITIONS("-USERVER_EXPORT")
@@ -102,18 +111,23 @@ TARGET_LINK_LIBRARIES(qgis_server
   qgis_core
   qgis_gui
   qgis_analysis
-  qgispython
   ${PROJ_LIBRARY}
   ${FCGI_LIBRARY}
   ${POSTGRES_LIBRARY}
   ${GDAL_LIBRARY}
 )
 
+IF (WITH_BINDINGS)
+    TARGET_LINK_LIBRARIES(qgis_server
+      qgispython
+    )
+ENDIF(WITH_BINDINGS)
+
 IF (APPLE)
   SET_TARGET_PROPERTIES(qgis_server PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE)
 ENDIF (APPLE)
 
-IF (WITH_SERVER_PLUGINS)
+
 # install
 
 INSTALL(TARGETS qgis_server
@@ -127,7 +141,7 @@ INCLUDE_DIRECTORIES(
     ../python
 )
 
-ENDIF (WITH_SERVER_PLUGINS) # end qgis_server library
+# end qgis_server library
 
 QT4_WRAP_UI (qgis_mapserv_UIS_H  ${qgis_mapserv_UIS})
 
@@ -156,6 +170,7 @@ INCLUDE_DIRECTORIES(
   ${QT_INCLUDE_DIR}
   ${QGIS_INCLUDE_DIR}
   ../core
+  ../core/dxf
   ../core/geometry
   ../core/raster
   ../core/symbology-ng

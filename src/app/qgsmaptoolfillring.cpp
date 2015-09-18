@@ -19,14 +19,14 @@
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayer.h"
 #include "qgsattributedialog.h"
-#include <qgsapplication.h>
+#include "qgisapp.h"
 
 #include <QMouseEvent>
 
 #include <limits>
 
 QgsMapToolFillRing::QgsMapToolFillRing( QgsMapCanvas* canvas )
-    : QgsMapToolCapture( canvas, QgsMapToolCapture::CapturePolygon )
+    : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), QgsMapToolCapture::CapturePolygon )
 {
 }
 
@@ -34,7 +34,7 @@ QgsMapToolFillRing::~QgsMapToolFillRing()
 {
 }
 
-void QgsMapToolFillRing::canvasMapReleaseEvent( QgsMapMouseEvent * e )
+void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
 {
   //check if we operate on a vector layer
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
@@ -153,14 +153,14 @@ void QgsMapToolFillRing::canvasMapReleaseEvent( QgsMapMouseEvent * e )
       while ( fit.nextFeature( f ) )
       {
         //create QgsFeature with wkb representation
-        QgsFeature* ft = new QgsFeature( vlayer->pendingFields(), 0 );
+        QgsFeature* ft = new QgsFeature( vlayer->fields(), 0 );
 
         QgsGeometry *g;
         g = QgsGeometry::fromPolygon( QgsPolygon() << points().toVector() );
         ft->setGeometry( g );
         ft->setAttributes( f.attributes() );
 
-        if ( QgsApplication::keyboardModifiers() == Qt::ControlModifier )
+        if ( QApplication::keyboardModifiers() == Qt::ControlModifier )
         {
           res = vlayer->addFeature( *ft );
         }

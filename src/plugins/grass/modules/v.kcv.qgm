@@ -2,8 +2,10 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
 <qgisgrassmodule label="Randomly partition points into test/train sets" module="v.kcv">
-	<option key="input" />
-	<option key="k" />
-	<option key="column" ansewr="part" />
-	<option key="output" />
+	<option key="input" version_max="6"/>
+	<option key="map" version_min="7"/>
+	<option key="k" version_max="6"/>
+	<option key="npartitions" version_min="7"/>
+	<option key="column" answer="part" hidden="yes"/>
+	<option key="output" version_max="6"/>
 </qgisgrassmodule>

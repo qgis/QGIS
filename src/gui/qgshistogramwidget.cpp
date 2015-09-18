@@ -44,9 +44,10 @@
 
 QgsHistogramWidget::QgsHistogramWidget( QWidget *parent, QgsVectorLayer* layer, const QString& fieldOrExp )
     : QWidget( parent )
-    , mRedrawRequired( true )
     , mVectorLayer( layer )
     , mSourceFieldExp( fieldOrExp )
+    , mXAxisTitle( QObject::tr( "Value" ) )
+    , mYAxisTitle( QObject::tr( "Count" ) )
 {
   setupUi( this );
 
@@ -65,9 +66,10 @@ QgsHistogramWidget::QgsHistogramWidget( QWidget *parent, QgsVectorLayer* layer, 
   mMeanCheckBox->setChecked( settings.value( "/HistogramWidget/showMean", false ).toBool() );
   mStdevCheckBox->setChecked( settings.value( "/HistogramWidget/showStdev", false ).toBool() );
 
-  connect( mBinsSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( refreshAndRedraw() ) );
-  connect( mMeanCheckBox, SIGNAL( toggled( bool ) ), this, SLOT( refreshAndRedraw() ) );
-  connect( mStdevCheckBox, SIGNAL( toggled( bool ) ), this, SLOT( refreshAndRedraw() ) );
+  connect( mBinsSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( refresh() ) );
+  connect( mMeanCheckBox, SIGNAL( toggled( bool ) ), this, SLOT( refresh() ) );
+  connect( mStdevCheckBox, SIGNAL( toggled( bool ) ), this, SLOT( refresh() ) );
+  connect( mLoadValuesButton, SIGNAL( clicked() ), this, SLOT( refreshValues() ) );
 
   mGridPen = QPen( QColor( 0, 0, 0, 40 ) );
   mMeanPen = QPen( QColor( 10, 10, 10, 220 ) );
@@ -77,7 +79,7 @@ QgsHistogramWidget::QgsHistogramWidget( QWidget *parent, QgsVectorLayer* layer, 
 
   if ( layer && !mSourceFieldExp.isEmpty() )
   {
-    refreshHistogram();
+    refresh();
   }
 }
 
@@ -99,25 +101,69 @@ void QgsHistogramWidget::setGraduatedRanges( const QgsRangeList &ranges )
   qSort( mRanges.begin(), mRanges.end(), _rangesByLower );
 }
 
+void QgsHistogramWidget::refreshValues()
+{
+  mValues.clear();
+
+  if ( !mVectorLayer || mSourceFieldExp.isEmpty() )
+    return;
+
+  QApplication::setOverrideCursor( Qt::WaitCursor );
+
+  bool ok;
+  mValues = mVectorLayer->getDoubleValues( mSourceFieldExp, ok );
+
+  if ( ! ok )
+  {
+    QApplication::restoreOverrideCursor();
+    return;
+  }
+
+
+  qSort( mValues.begin(), mValues.end() );
+  mHistogram.setValues( mValues );
+  mBinsSpinBox->blockSignals( true );
+  mBinsSpinBox->setValue( qMax( mHistogram.optimalNumberBins(), 30 ) );
+  mBinsSpinBox->blockSignals( false );
+
+  mStats.setStatistics( QgsStatisticalSummary::StDev );
+  mStats.calculate( mValues );
+
+  mpPlot->setEnabled( true );
+  mMeanCheckBox->setEnabled( true );
+  mStdevCheckBox->setEnabled( true );
+  mBinsSpinBox->setEnabled( true );
+
+  QApplication::restoreOverrideCursor();
+
+  //also force a redraw
+  refresh();
+}
+
+void QgsHistogramWidget::refresh()
+{
+  drawHistogram();
+}
+
 void QgsHistogramWidget::setLayer( QgsVectorLayer *layer )
 {
   if ( layer == mVectorLayer )
     return;
 
   mVectorLayer = layer;
+  clearHistogram();
+}
+
+void QgsHistogramWidget::clearHistogram()
+{
   mValues.clear();
-  mRedrawRequired = true;
-}
+  mHistogram.setValues( mValues );
+  refresh();
 
-void QgsHistogramWidget::refreshHistogram()
-{
-  mRedrawRequired = true;
-}
-
-void QgsHistogramWidget::refreshAndRedraw()
-{
-  refreshHistogram();
-  drawHistogram();
+  mpPlot->setEnabled( false );
+  mMeanCheckBox->setEnabled( false );
+  mStdevCheckBox->setEnabled( false );
+  mBinsSpinBox->setEnabled( false );
 }
 
 void QgsHistogramWidget::setSourceFieldExp( const QString &fieldOrExp )
@@ -126,45 +172,31 @@ void QgsHistogramWidget::setSourceFieldExp( const QString &fieldOrExp )
     return;
 
   mSourceFieldExp = fieldOrExp;
-  mValues.clear();
-  mRedrawRequired = true;
+  clearHistogram();
 }
 
 void QgsHistogramWidget::drawHistogram()
 {
-  if ( !mVectorLayer || mSourceFieldExp.isEmpty() )
-    return;
-
-  QApplication::setOverrideCursor( Qt::WaitCursor );
-
-  if ( mValues.empty() )
-  {
-    bool ok;
-    mValues = mVectorLayer->getDoubleValues( mSourceFieldExp, ok );
-
-    if ( ! ok )
-    {
-      QApplication::restoreOverrideCursor();
-      return;
-    }
-    qSort( mValues.begin(), mValues.end() );
-    mHistogram.setValues( mValues );
-    mBinsSpinBox->blockSignals( true );
-    mBinsSpinBox->setValue( qMax( mHistogram.optimalNumberBins(), 30 ) );
-    mBinsSpinBox->blockSignals( false );
-
-    mStats.setStatistics( QgsStatisticalSummary::StDev );
-    mStats.calculate( mValues );
-  }
-
   // clear plot
   mpPlot->detachItems();
 
   //ensure all children get removed
   mpPlot->setAutoDelete( true );
   // Set axis titles
-  mpPlot->setAxisTitle( QwtPlot::xBottom, QObject::tr( "Value" ) );
-  mpPlot->setAxisTitle( QwtPlot::yLeft, QObject::tr( "Count" ) );
+  if ( !mXAxisTitle.isEmpty() )
+    mpPlot->setAxisTitle( QwtPlot::xBottom, mXAxisTitle );
+  if ( !mYAxisTitle.isEmpty() )
+    mpPlot->setAxisTitle( QwtPlot::yLeft, mYAxisTitle );
+  mpPlot->setAxisFont( QwtPlot::xBottom, this->font() );
+  mpPlot->setAxisFont( QwtPlot::yLeft, this->font() );
+  QFont titleFont = this->font();
+  titleFont.setBold( true );
+  QwtText xAxisText = mpPlot->axisTitle( QwtPlot::xBottom );
+  xAxisText.setFont( titleFont );
+  mpPlot->setAxisTitle( QwtPlot::xBottom, xAxisText );
+  QwtText yAxisText = mpPlot->axisTitle( QwtPlot::yLeft );
+  yAxisText.setFont( titleFont );
+  mpPlot->setAxisTitle( QwtPlot::yLeft, yAxisText );
   mpPlot->setAxisAutoScale( QwtPlot::yLeft );
   mpPlot->setAxisAutoScale( QwtPlot::xBottom );
 
@@ -176,7 +208,7 @@ void QgsHistogramWidget::drawHistogram()
 
   // make colors list
   mHistoColors.clear();
-  foreach ( QgsRendererRangeV2 range, mRanges )
+  Q_FOREACH ( const QgsRendererRangeV2& range, mRanges )
   {
     mHistoColors << ( range.symbol() ? range.symbol()->color() : Qt::black );
   }
@@ -259,7 +291,7 @@ void QgsHistogramWidget::drawHistogram()
 #endif
 
   mRangeMarkers.clear();
-  foreach ( QgsRendererRangeV2 range, mRanges )
+  Q_FOREACH ( const QgsRendererRangeV2& range, mRanges )
   {
     QwtPlotMarker* rangeMarker = new QwtPlotMarker();
     rangeMarker->attach( mpPlot );
@@ -307,19 +339,6 @@ void QgsHistogramWidget::drawHistogram()
 
   mpPlot->setEnabled( true );
   mpPlot->replot();
-
-  QApplication::restoreOverrideCursor();
-
-  mRedrawRequired = false;
-}
-
-void QgsHistogramWidget::paintEvent( QPaintEvent *event )
-{
-  if ( mRedrawRequired )
-  {
-    drawHistogram();
-  }
-  QWidget::paintEvent( event );
 }
 
 #if defined(QWT_VERSION) && QWT_VERSION>=0x060000

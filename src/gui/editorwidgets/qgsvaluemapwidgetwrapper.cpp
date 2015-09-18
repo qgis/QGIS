@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 5.1.2014
     Copyright            : (C) 2014 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -53,6 +53,11 @@ void QgsValueMapWidgetWrapper::initWidget( QWidget* editor )
     }
     connect( mComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( valueChanged() ) );
   }
+}
+
+bool QgsValueMapWidgetWrapper::valid()
+{
+  return mComboBox;
 }
 
 void QgsValueMapWidgetWrapper::setValue( const QVariant& value )

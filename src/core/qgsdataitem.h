@@ -60,7 +60,7 @@ class CORE_EXPORT QgsAnimatedIcon : public QObject
     void onFrameChanged();
 
   signals:
-    /** Emited when icon changed */
+    /** Emitted when icon changed */
     void frameChanged();
 
   private:
@@ -241,7 +241,8 @@ class CORE_EXPORT QgsDataItem : public QObject
     virtual void deleteLater();
 
     // Populate children using children vector created by createChildren()
-    virtual void populate();
+    // @param foreground run createChildren in foreground
+    virtual void populate( bool foreground = false );
 
     /** Remove children recursively and set as not populated. This is used when refreshing collapsed items. */
     virtual void depopulate();

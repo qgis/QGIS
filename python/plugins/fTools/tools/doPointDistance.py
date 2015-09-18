@@ -39,7 +39,9 @@ import cStringIO
 import ftools_utils
 from math import sqrt
 
+
 class UnicodeWriter:
+
     """
     A CSV writer which will write rows to CSV file "f",
     which is encoded in the given encoding.
@@ -73,7 +75,9 @@ class UnicodeWriter:
         for row in rows:
             self.writerow(row)
 
+
 class Dialog(QDialog, Ui_Dialog):
+
     def __init__(self, iface):
         QDialog.__init__(self, iface.mainWindow())
         self.iface = iface
@@ -82,11 +86,11 @@ class Dialog(QDialog, Ui_Dialog):
         QObject.connect(self.btnFile, SIGNAL("clicked()"), self.saveFile)
         QObject.connect(self.inPoint1, SIGNAL("currentIndexChanged(QString)"), self.update1)
         QObject.connect(self.inPoint2, SIGNAL("currentIndexChanged(QString)"), self.update2)
-        self.buttonOk = self.buttonBox_2.button( QDialogButtonBox.Ok )
+        self.buttonOk = self.buttonBox_2.button(QDialogButtonBox.Ok)
         # populate layer list
         self.setWindowTitle(self.tr("Distance matrix"))
         self.progressBar.setValue(0)
-        layers = ftools_utils.getLayerNames( [ QGis.Point ] )
+        layers = ftools_utils.getLayerNames([QGis.Point])
         self.inPoint1.addItems(layers)
         self.inPoint2.addItems(layers)
 
@@ -107,7 +111,7 @@ class Dialog(QDialog, Ui_Dialog):
                 self.inField2.addItem(unicode(f.name()))
 
     def accept(self):
-        self.buttonOk.setEnabled( False )
+        self.buttonOk.setEnabled(False)
         if self.inPoint1.currentText() == "":
             QMessageBox.information(self, self.tr("Create Point Distance Matrix"), self.tr("Please specify input point layer"))
         elif self.outFile.text() == "":
@@ -124,25 +128,31 @@ class Dialog(QDialog, Ui_Dialog):
             field1 = self.inField1.currentText()
             field2 = self.inField2.currentText()
             outPath = self.outFile.text()
-            if self.rdoLinear.isChecked(): matType = "Linear"
-            elif self.rdoStandard.isChecked(): matType = "Standard"
-            else: matType = "Summary"
-            if self.chkNearest.isChecked(): nearest = self.spnNearest.value()
-            else: nearest = 0
+            if self.rdoLinear.isChecked():
+                matType = "Linear"
+            elif self.rdoStandard.isChecked():
+                matType = "Standard"
+            else:
+                matType = "Summary"
+            if self.chkNearest.isChecked():
+                nearest = self.spnNearest.value()
+            else:
+                nearest = 0
             # outName = ftools_utils.getShapefileName(outPath,'.csv')
             self.outFile.clear()
             self.compute(point1, point2, field1, field2, outPath, matType, nearest, self.progressBar)
             self.progressBar.setValue(100)
             # addToTOC = QMessageBox.information(self, "Create Point Distance Matrix", self.tr("Created output matrix:\n") + outPath)
         self.progressBar.setValue(0)
-        self.buttonOk.setEnabled( True )
+        self.buttonOk.setEnabled(True)
 
     def saveFile(self):
         self.outFile.clear()
         fileDialog = QFileDialog()
-        outName = fileDialog.getSaveFileName(self, "Output Distance Matrix",".", "Delimited txt file (*.csv)")
+        outName = fileDialog.getSaveFileName(self, "Output Distance Matrix", ".", "Delimited txt file (*.csv)")
         filePath = QFileInfo(outName).absoluteFilePath()
-        if filePath[-4:] != ".csv": filePath = filePath + ".csv"
+        if filePath[-4:] != ".csv":
+            filePath = filePath + ".csv"
         if outName:
             self.outFile.insert(filePath)
 
@@ -159,8 +169,10 @@ class Dialog(QDialog, Ui_Dialog):
         fit2 = provider2.getFeatures()
         while fit2.nextFeature(inFeat):
             sindex.insertFeature(inFeat)
-        if nearest < 1: nearest = layer2.featureCount()
-        else: nearest = nearest
+        if nearest < 1:
+            nearest = layer2.featureCount()
+        else:
+            nearest = nearest
         index1 = provider1.fieldNameIndex(field1)
         index2 = provider2.fieldNameIndex(field2)
         distArea = QgsDistanceArea()
@@ -197,15 +209,15 @@ class Dialog(QDialog, Ui_Dialog):
                 first = False
                 data = ["ID"]
                 for i in featList:
-                    provider2.getFeatures( QgsFeatureRequest().setFilterFid( int(i) ).setSubsetOfAttributes([index2]) ).nextFeature( outFeat )
+                    provider2.getFeatures(QgsFeatureRequest().setFilterFid(int(i)).setSubsetOfAttributes([index2])).nextFeature(outFeat)
                     data.append(unicode(outFeat.attributes()[index2]))
                 writer.writerow(data)
             data = [unicode(inID)]
             for j in featList:
-                provider2.getFeatures( QgsFeatureRequest().setFilterFid( int(j) ) ).nextFeature( outFeat )
+                provider2.getFeatures(QgsFeatureRequest().setFilterFid(int(j))).nextFeature(outFeat)
                 outGeom = outFeat.geometry()
                 dist = distArea.measureLine(inGeom.asPoint(), outGeom.asPoint())
-                data.append(str(float(dist)))
+                data.append(unicode(float(dist)))
             writer.writerow(data)
             start = start + add
             progressBar.setValue(start)
@@ -226,19 +238,21 @@ class Dialog(QDialog, Ui_Dialog):
             distList = []
             vari = 0.00
             for i in featList:
-                provider2.getFeatures( QgsFeatureRequest().setFilterFid( int(i) ).setSubsetOfAttributes([index2]) ).nextFeature( outFeat )
+                provider2.getFeatures(QgsFeatureRequest().setFilterFid(int(i)).setSubsetOfAttributes([index2])).nextFeature(outFeat)
                 outID = outFeat.attributes()[index2]
                 outGeom = outFeat.geometry()
                 dist = distArea.measureLine(inGeom.asPoint(), outGeom.asPoint())
                 if dist > 0:
-                    if matType == "Linear": writer.writerow([unicode(inID), unicode(outID), str(dist)])
-                    else: distList.append(float(dist))
+                    if matType == "Linear":
+                        writer.writerow([unicode(inID), unicode(outID), unicode(dist)])
+                    else:
+                        distList.append(float(dist))
             if matType == "Summary":
                 mean = sum(distList) / len(distList)
                 for i in distList:
-                    vari = vari + ((i - mean)*(i - mean))
+                    vari = vari + ((i - mean) * (i - mean))
                 vari = sqrt(vari / len(distList))
-                writer.writerow([unicode(inID), str(mean), str(vari), str(min(distList)), str(max(distList))])
+                writer.writerow([unicode(inID), unicode(mean), unicode(vari), unicode(min(distList)), unicode(max(distList))])
             start = start + add
             progressBar.setValue(start)
         del writer

@@ -21,6 +21,7 @@
 #include <gdalwarper.h>
 #include <vector>
 #include "qgspoint.h"
+#include "qgscoordinatereferencesystem.h"
 
 class QgsGeorefTransform;
 class QProgressDialog;
@@ -56,7 +57,7 @@ class QgsImageWarper
                   ResamplingMethod resampling,
                   bool useZeroAsTrans,
                   const QString& compression,
-                  const QString& projection,
+                  const QgsCoordinateReferenceSystem& crs,
                   double destResX = 0.0, double destResY = 0.0 );
   private:
     struct TransformChain
@@ -87,7 +88,7 @@ class QgsImageWarper
                                  GDALWarpOptions *&psWarpOptions );
 
     bool createDestinationDataset( const QString &outputName, GDALDatasetH hSrcDS, GDALDatasetH &hDstDS, uint resX, uint resY,
-                                   double *adfGeoTransform, bool useZeroAsTrans, const QString& compression, const QString &projection );
+                                   double *adfGeoTransform, bool useZeroAsTrans, const QString& compression, const QgsCoordinateReferenceSystem& crs );
 
     QWidget *mParent;
     void      *createWarpProgressArg( QProgressDialog *progressDialog ) const;

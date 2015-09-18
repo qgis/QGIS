@@ -28,6 +28,7 @@ from utilities import (getQgisTestApp,
 
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 
+
 class TestQgsDistanceArea(TestCase):
 
     def testMeasureLine(self):
@@ -35,7 +36,7 @@ class TestQgsDistanceArea(TestCase):
         #   | |
         # +-+ +
         linestring = QgsGeometry.fromPolyline(
-            [ QgsPoint(0,0), QgsPoint(1,0), QgsPoint(1,1), QgsPoint(2,1), QgsPoint(2,0), ]
+            [QgsPoint(0, 0), QgsPoint(1, 0), QgsPoint(1, 1), QgsPoint(2, 1), QgsPoint(2, 0), ]
         )
         da = QgsDistanceArea()
         length = da.measure(linestring)
@@ -49,8 +50,8 @@ class TestQgsDistanceArea(TestCase):
         # +-+ + +   +-+
         linestring = QgsGeometry.fromMultiPolyline(
             [
-                [ QgsPoint(0,0), QgsPoint(1,0), QgsPoint(1,1), QgsPoint(2,1), QgsPoint(2,0), ],
-                [ QgsPoint(3,0), QgsPoint(3,1), QgsPoint(5,1), QgsPoint(5,0), QgsPoint(6,0), ]
+                [QgsPoint(0, 0), QgsPoint(1, 0), QgsPoint(1, 1), QgsPoint(2, 1), QgsPoint(2, 0), ],
+                [QgsPoint(3, 0), QgsPoint(3, 1), QgsPoint(5, 1), QgsPoint(5, 0), QgsPoint(6, 0), ]
             ]
         )
         da = QgsDistanceArea()
@@ -67,7 +68,7 @@ class TestQgsDistanceArea(TestCase):
         # +-+
         polygon = QgsGeometry.fromPolygon(
             [[
-                QgsPoint(0,0), QgsPoint(1,0), QgsPoint(1,1), QgsPoint(2,1), QgsPoint(2,2), QgsPoint(0,2), QgsPoint(0,0),
+                QgsPoint(0, 0), QgsPoint(1, 0), QgsPoint(1, 1), QgsPoint(2, 1), QgsPoint(2, 2), QgsPoint(0, 2), QgsPoint(0, 0),
             ]]
         )
 
@@ -88,16 +89,17 @@ class TestQgsDistanceArea(TestCase):
         # +-+-+-+
         polygon = QgsGeometry.fromPolygon(
             [
-                [ QgsPoint(0,0), QgsPoint(3,0), QgsPoint(3,3), QgsPoint(0,3), QgsPoint(0,0) ],
-                [ QgsPoint(1,1), QgsPoint(2,1), QgsPoint(2,2), QgsPoint(1,2), QgsPoint(1,1) ],
+                [QgsPoint(0, 0), QgsPoint(3, 0), QgsPoint(3, 3), QgsPoint(0, 3), QgsPoint(0, 0)],
+                [QgsPoint(1, 1), QgsPoint(2, 1), QgsPoint(2, 2), QgsPoint(1, 2), QgsPoint(1, 1)],
             ]
         )
         da = QgsDistanceArea()
         area = da.measure(polygon)
         assert area == 8, "Expected:\n%f\nGot:\n%f\n" % (8, area)
 
+#MH150729: Changed behaviour to consider inner rings for perimeter calculation. Therefore, expected result is 16.
         perimeter = da.measurePerimeter(polygon)
-        assert perimeter == 12, "Expected:\n%f\nGot:\n%f\n" % (12, perimeter)
+        assert perimeter == 16, "Expected:\n%f\nGot:\n%f\n" % (16, perimeter)
 
     def testMeasureMultiPolygon(self):
         # +-+-+ +-+-+
@@ -107,8 +109,8 @@ class TestQgsDistanceArea(TestCase):
         # +-+     +-+
         polygon = QgsGeometry.fromMultiPolygon(
             [
-                [ [ QgsPoint(0,0), QgsPoint(1,0), QgsPoint(1,1), QgsPoint(2,1), QgsPoint(2,2), QgsPoint(0,2), QgsPoint(0,0), ] ],
-                [ [ QgsPoint(4,0), QgsPoint(5,0), QgsPoint(5,2), QgsPoint(3,2), QgsPoint(3,1), QgsPoint(4,1), QgsPoint(4,0), ] ]
+                [[QgsPoint(0, 0), QgsPoint(1, 0), QgsPoint(1, 1), QgsPoint(2, 1), QgsPoint(2, 2), QgsPoint(0, 2), QgsPoint(0, 0), ]],
+                [[QgsPoint(4, 0), QgsPoint(5, 0), QgsPoint(5, 2), QgsPoint(3, 2), QgsPoint(3, 1), QgsPoint(4, 1), QgsPoint(4, 0), ]]
             ]
         )
 

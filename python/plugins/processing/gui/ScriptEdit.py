@@ -59,7 +59,7 @@ class ScriptEdit(QsciScintilla):
         font = QFont()
         font.setFamily('Courier')
         font.setFixedPitch(True)
-        font.setPointSize(10)
+        font.setPointSize(20)
         self.setFont(font)
         self.setMarginsFont(font)
 
@@ -105,10 +105,14 @@ class ScriptEdit(QsciScintilla):
         self.setAutoCompletionThreshold(2)
         self.setAutoCompletionSource(QsciScintilla.AcsAPIs)
 
+        self.setFonts(10)
+
+    def setFonts(self, size):
+
         # Load font from Python console settings
         settings = QSettings()
         fontName = settings.value('pythonConsole/fontfamilytext', 'Monospace')
-        fontSize = int(settings.value('pythonConsole/fontsize', 10))
+        fontSize = int(settings.value('pythonConsole/fontsize', size))
 
         self.defaultFont = QFont(fontName)
         self.defaultFont.setFixedPitch(True)
@@ -142,7 +146,7 @@ class ScriptEdit(QsciScintilla):
 
         # Use Ctrl+Space for autocompletion
         self.shortcutAutocomplete = QShortcut(QKeySequence(Qt.CTRL
-                + Qt.Key_Space), self)
+                                                           + Qt.Key_Space), self)
         self.shortcutAutocomplete.setContext(Qt.WidgetShortcut)
         self.shortcutAutocomplete.activated.connect(self.autoComplete)
 
@@ -193,7 +197,7 @@ class ScriptEdit(QsciScintilla):
                 # Load QGIS API shipped with Python console
                 self.api.loadPrepared(
                     os.path.join(QgsApplication.pkgDataPath(),
-                    'python', 'qsci_apis', 'pyqgis.pap'))
+                                 'python', 'qsci_apis', 'pyqgis.pap'))
             else:
                 # Load user-defined API files
                 apiPaths = settings.value('pythonConsole/userAPI', [])

@@ -41,6 +41,7 @@ def classFactory():
 
 
 class PostGisDBConnector(DBConnector):
+
     def __init__(self, uri):
         DBConnector.__init__(self, uri)
 
@@ -52,8 +53,8 @@ class PostGisDBConnector(DBConnector):
 
         try:
             self.connection = psycopg2.connect(self._connectionInfo().encode('utf-8'))
-        except self.connection_error_types(), e:
-            err = str(e)
+        except self.connection_error_types() as e:
+            err = unicode(e)
             uri = self.uri()
             conninfo = uri.connectionInfo()
 
@@ -71,11 +72,11 @@ class PostGisDBConnector(DBConnector):
                 try:
                     self.connection = psycopg2.connect(uri.connectionInfo().encode('utf-8'))
                     QgsCredentials.instance().put(conninfo, username, password)
-                except self.connection_error_types(), e:
+                except self.connection_error_types() as e:
                     if i == 2:
                         raise ConnectionError(e)
 
-                    err = str(e)
+                    err = unicode(e)
 
         self.connection.set_isolation_level(psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
 
@@ -176,7 +177,7 @@ class PostGisDBConnector(DBConnector):
     def hasTableColumnEditingSupport(self):
         return True
 
-    def hasCreateSpatialViewSupport( self ):
+    def hasCreateSpatialViewSupport(self):
         return True
 
     def fieldTypes(self):
@@ -187,7 +188,6 @@ class PostGisDBConnector(DBConnector):
             "varchar", "varchar(255)", "char(20)", "text",  # strings
             "date", "time", "timestamp"  # date/time
         ]
-
 
     def getDatabasePrivileges(self):
         """ db privileges: (can create schemas, can create temp. tables) """
@@ -222,7 +222,6 @@ class PostGisDBConnector(DBConnector):
         res = self._fetchone(c)
         self._close_cursor(c)
         return res
-
 
     def getSchemas(self):
         """ get list of schemas in tuples: (oid, name, owner, perms) """
@@ -289,7 +288,6 @@ class PostGisDBConnector(DBConnector):
 
         return sorted(items, cmp=lambda x, y: cmp((x[2], x[1]), (y[2], y[1])))
 
-
     def getVectorTables(self, schema=None):
         """ get list of table with a geometry column
                 it returns:
@@ -325,7 +323,6 @@ class PostGisDBConnector(DBConnector):
             geometry_fields_select = u"""CASE WHEN geo.f_geometry_column IS NOT NULL THEN geo.f_geometry_column ELSE att.attname END,
                                                 CASE WHEN geo.type IS NOT NULL THEN geo.type ELSE textin(regtypeout(att.atttypid::regtype)) END,
                                                 geo.coord_dimension, geo.srid"""
-
 
         # discovery of all tables and whether they contain a geometry column
         sql = u"""SELECT
@@ -399,7 +396,6 @@ class PostGisDBConnector(DBConnector):
                                                 rast.out_db,
                                                 rast.srid"""
 
-
         # discovery of all tables and whether they contain a raster column
         sql = u"""SELECT
                                                 cla.relname, nsp.nspname, cla.relkind = 'v' OR cla.relkind = 'm',
@@ -431,7 +427,6 @@ class PostGisDBConnector(DBConnector):
         self._close_cursor(c)
 
         return items
-
 
     def getTableRowCount(self, table):
         c = self._execute(None, u"SELECT COUNT(*) FROM %s" % self.quoteId(table))
@@ -485,7 +480,6 @@ class PostGisDBConnector(DBConnector):
         self._close_cursor(c)
         return res
 
-
     def getTableConstraints(self, table):
 
         schema, tablename = self.getSchemaTableName(table)
@@ -502,7 +496,6 @@ class PostGisDBConnector(DBConnector):
         res = self._fetchall(c)
         self._close_cursor(c)
         return res
-
 
     def getTableTriggers(self, table):
 
@@ -536,7 +529,6 @@ class PostGisDBConnector(DBConnector):
         sql = u"DROP TRIGGER %s ON %s" % (self.quoteId(trigger), self.quoteId(table))
         self._execute_and_commit(sql)
 
-
     def getTableRules(self, table):
 
         schema, tablename = self.getSchemaTableName(table)
@@ -555,10 +547,9 @@ class PostGisDBConnector(DBConnector):
         sql = u"DROP RULE %s ON %s" % (self.quoteId(rule), self.quoteId(table))
         self._execute_and_commit(sql)
 
-
     def getTableExtent(self, table, geom):
         """ find out table extent """
-        subquery = u"SELECT st_extent(%s) AS extent FROM %s" % ( self.quoteId(geom), self.quoteId(table) )
+        subquery = u"SELECT st_extent(%s) AS extent FROM %s" % (self.quoteId(geom), self.quoteId(table))
         sql = u"SELECT st_xmin(extent), st_ymin(extent), st_xmax(extent), st_ymax(extent) FROM (%s) AS subquery" % subquery
 
         c = self._execute(None, sql)
@@ -580,12 +571,11 @@ class PostGisDBConnector(DBConnector):
 
         try:
             c = self._execute(None, sql)
-        except DbError, e:  # no statistics for the current table
+        except DbError as e:  # no statistics for the current table
             return
         res = self._fetchone(c)
         self._close_cursor(c)
         return res
-
 
     def getViewDefinition(self, view):
         """ returns definition of the view """
@@ -609,7 +599,7 @@ class PostGisDBConnector(DBConnector):
 
         try:
             c = self._execute(None, "SELECT srtext FROM spatial_ref_sys WHERE srid = '%d'" % srid)
-        except DbError, e:
+        except DbError as e:
             return
         sr = self._fetchone(c)
         self._close_cursor(c)
@@ -622,7 +612,6 @@ class PostGisDBConnector(DBConnector):
         if regex.indexIn(srtext) > -1:
             srtext = regex.cap(1)
         return srtext
-
 
     def isVectorTable(self, table):
         if self.has_geometry_columns and self.has_geometry_columns_access:
@@ -649,7 +638,6 @@ class PostGisDBConnector(DBConnector):
             return res is not None and res[0] > 0
 
         return False
-
 
     def createTable(self, table, field_defs, pkey):
         """ create ordinary table
@@ -680,7 +668,6 @@ class PostGisDBConnector(DBConnector):
         else:
             sql = u"DROP TABLE %s" % self.quoteId(table)
         self._execute_and_commit(sql)
-
 
     def emptyTable(self, table):
         """ delete all rows from table """
@@ -789,7 +776,6 @@ class PostGisDBConnector(DBConnector):
         sql = u"ALTER SCHEMA %s RENAME TO %s" % (self.quoteId(schema), self.quoteId(new_schema))
         self._execute_and_commit(sql)
 
-
     def runVacuum(self):
         """ run vacuum on the db """
         self._execute_and_commit("VACUUM")
@@ -810,7 +796,7 @@ class PostGisDBConnector(DBConnector):
         if self.isGeometryColumn(table, column):
             # use postgis function to delete geometry column correctly
             schema, tablename = self.getSchemaTableName(table)
-            schema_part = u"%s, " % self._quote_str(schema) if schema else ""
+            schema_part = u"%s, " % self._quote_unicode(schema) if schema else ""
             sql = u"SELECT DropGeometryColumn(%s%s, %s)" % (
                 schema_part, self.quoteString(tablename), self.quoteString(column))
         else:
@@ -874,7 +860,6 @@ class PostGisDBConnector(DBConnector):
                 If default=None or an empty string drop default value """
         return self.updateTableColumn(table, column, None, None, None, default)
 
-
     def isGeometryColumn(self, table, column):
 
         schema, tablename = self.getSchemaTableName(table)
@@ -899,7 +884,6 @@ class PostGisDBConnector(DBConnector):
     def deleteGeometryColumn(self, table, geom_column):
         return self.deleteTableColumn(table, geom_column)
 
-
     def addTableUniqueConstraint(self, table, column):
         """ add a unique constraint to a table """
         sql = u"ALTER TABLE %s ADD UNIQUE (%s)" % (self.quoteId(table), self.quoteId(column))
@@ -914,7 +898,6 @@ class PostGisDBConnector(DBConnector):
         """ add a primery key (with one column) to a table """
         sql = u"ALTER TABLE %s ADD PRIMARY KEY (%s)" % (self.quoteId(table), self.quoteId(column))
         self._execute_and_commit(sql)
-
 
     def createTableIndex(self, table, name, column):
         """ create index on one column using default options """
@@ -936,7 +919,6 @@ class PostGisDBConnector(DBConnector):
         schema, tablename = self.getSchemaTableName(table)
         idx_name = self.quoteId(u"sidx_%s_%s" % (tablename, geom_column))
         return self.dropTableIndex(table, idx_name)
-
 
     def execution_error_types(self):
         return psycopg2.Error, psycopg2.ProgrammingError, psycopg2.Warning
@@ -998,4 +980,3 @@ UNION SELECT attname FROM pg_attribute WHERE attnum > 0"""
         from .sql_dictionary import getQueryBuilderDictionary
 
         return getQueryBuilderDictionary()
-

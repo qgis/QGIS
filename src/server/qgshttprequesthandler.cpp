@@ -32,16 +32,17 @@
 #include <QUrl>
 #include <fcgi_stdio.h>
 
-QgsHttpRequestHandler::QgsHttpRequestHandler()
-    : QgsRequestHandler()
+
+QgsHttpRequestHandler::QgsHttpRequestHandler( const bool captureOutput /*= FALSE*/ )
+    : QgsRequestHandler( )
 {
   mException = NULL;
   mHeadersSent = FALSE;
+  mCaptureOutput = captureOutput;
 }
 
 QgsHttpRequestHandler::~QgsHttpRequestHandler()
 {
-
 }
 
 void QgsHttpRequestHandler::setHttpResponse( QByteArray *ba, const QString &format )
@@ -69,6 +70,24 @@ bool QgsHttpRequestHandler::responseReady() const
 bool QgsHttpRequestHandler::exceptionRaised() const
 {
   return mException != NULL;
+}
+
+void QgsHttpRequestHandler::setDefaultHeaders()
+{
+  //format
+  QString format = mInfoFormat;
+  if ( mInfoFormat.startsWith( "text/" ) )
+  {
+    format.append( "; charset=utf-8" );
+  }
+  setHeader( "Content-Type", format );
+
+  //length
+  int contentLength = mBody.size();
+  if ( contentLength > 0 ) // size is not known when streaming
+  {
+    setHeader( "Content-Length", QString::number( contentLength ) );
+  }
 }
 
 void QgsHttpRequestHandler::setHeader( const QString &name, const QString &value )
@@ -103,49 +122,67 @@ void QgsHttpRequestHandler::setInfoFormat( const QString &format )
   mInfoFormat = format;
 }
 
+void QgsHttpRequestHandler::addToResponseHeader( const char * response )
+{
+  if ( mCaptureOutput )
+  {
+    mResponseHeader.append( response );
+  }
+  else
+  {
+    fputs( response, FCGI_stdout );
+  }
+}
+
+void QgsHttpRequestHandler::addToResponseBody( const char * response )
+{
+  if ( mCaptureOutput )
+  {
+    mResponseBody.append( response );
+  }
+  else
+  {
+    fputs( response, FCGI_stdout );
+  }
+}
+
 void QgsHttpRequestHandler::sendHeaders()
 {
   // Send default headers if they've not been set in a previous stage
   if ( mHeaders.empty() )
   {
-    QgsDebugMsg( QString( "Content size: %1" ).arg( mBody.size() ) );
-    QgsDebugMsg( QString( "Content format: %1" ).arg( mInfoFormat ) );
-    printf( "Content-Type: " );
-    printf( mInfoFormat.toLocal8Bit() );
-    if ( mInfoFormat.startsWith( "text/" ) )
-      printf( "; charset=utf-8" );
-    printf( "\n" );
-    // size is not known when streaming
-    if ( mBody.size() > 0 )
-    {
-      printf( "Content-Length: %d\n", mBody.size() );
-    }
+    setDefaultHeaders();
   }
-  else
+
+  QMap<QString, QString>::const_iterator it;
+  for ( it = mHeaders.constBegin(); it != mHeaders.constEnd(); ++it )
   {
-    QMap<QString, QString>::const_iterator it;
-    for ( it = mHeaders.constBegin(); it != mHeaders.constEnd(); ++it )
-    {
-      printf( it.key().toLocal8Bit() );
-      printf( ": " );
-      printf( it.value().toLocal8Bit() );
-      printf( "\n" );
-    }
-    printf( "\n" );
+    addToResponseHeader( it.key().toUtf8() );
+    addToResponseHeader( ": " );
+    addToResponseHeader( it.value().toUtf8() );
+    addToResponseHeader( "\n" );
   }
-  printf( "\n" );
+  addToResponseHeader( "\n" );
   mHeaders.clear();
   mHeadersSent = TRUE;
 }
 
-void QgsHttpRequestHandler::sendBody() const
+void QgsHttpRequestHandler::sendBody()
 {
-  size_t result = fwrite(( void* )mBody.data(), mBody.size(), 1, FCGI_stdout );
+  if ( mCaptureOutput )
+  {
+    mResponseBody.append( mBody );
+  }
+  else
+  {
+    // Cannot use addToResponse because it uses printf
+    size_t result = fwrite(( void* )mBody.data(), mBody.size(), 1, FCGI_stdout );
 #ifdef QGISDEBUG
-  QgsDebugMsg( QString( "Sent %1 blocks of %2 bytes" ).arg( result ).arg( mBody.size() ) );
+    QgsDebugMsg( QString( "Sent %1 blocks of %2 bytes" ).arg( result ).arg( mBody.size() ) );
 #else
-  Q_UNUSED( result );
+    Q_UNUSED( result );
 #endif
+  }
 }
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
@@ -181,6 +218,12 @@ void QgsHttpRequestHandler::sendResponse()
   clearBody();
 }
 
+QPair<QByteArray, QByteArray> QgsHttpRequestHandler::getResponse()
+{
+  // TODO: check that this is not an evil bug!
+  QPair<QByteArray, QByteArray> response( mResponseHeader, mResponseBody );
+  return response;
+}
 
 QString QgsHttpRequestHandler::formatToMimeType( const QString& format ) const
 {
@@ -253,7 +296,7 @@ void QgsHttpRequestHandler::setGetMapResponse( const QString& service, QImage* i
     }
     else
     {
-      img->save( &buffer, mFormat.toLocal8Bit().data(), imageQuality );
+      img->save( &buffer, mFormat.toUtf8().data(), imageQuality );
     }
 
     if ( isBase64 )
@@ -506,7 +549,7 @@ void QgsHttpRequestHandler::requestStringToParameterMap( const QString& request,
 
 
   //insert key and value into the map (parameters are separated by &)
-  foreach ( QString element, request.split( "&" ) )
+  Q_FOREACH ( const QString& element, request.split( "&" ) )
   {
     int sepidx = element.indexOf( "=", 0, Qt::CaseSensitive );
     if ( sepidx == -1 )
@@ -515,11 +558,11 @@ void QgsHttpRequestHandler::requestStringToParameterMap( const QString& request,
     }
 
     QString key = element.left( sepidx );
-    key = QUrl::fromPercentEncoding( key.toLocal8Bit() ); //replace encoded special characters and utf-8 encodings
+    key = QUrl::fromPercentEncoding( key.toUtf8() ); //replace encoded special characters and utf-8 encodings
 
     QString value = element.mid( sepidx + 1 );
     value.replace( "+", " " );
-    value = QUrl::fromPercentEncoding( value.toLocal8Bit() ); //replace encoded special characters and utf-8 encodings
+    value = QUrl::fromPercentEncoding( value.toUtf8() ); //replace encoded special characters and utf-8 encodings
 
     if ( key.compare( "SLD_BODY", Qt::CaseInsensitive ) == 0 )
     {

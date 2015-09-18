@@ -140,4 +140,4 @@ void QgsNewOgrConnection::on_btnConnect_clicked()
   testConnection();
 }
 
-/** end  Autoconnected SLOTS **/
+/** End  Autoconnected SLOTS **/

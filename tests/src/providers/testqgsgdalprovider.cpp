@@ -16,7 +16,6 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QObject>
 #include <QApplication>
 #include <QFileInfo>
 #include <QDir>
@@ -56,7 +55,7 @@ void TestQgsGdalProvider::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  mTestDataDir = QString( TEST_DATA_DIR ) + QDir::separator(); //defined in CmakeLists.txt
+  mTestDataDir = QString( TEST_DATA_DIR ) + "/"; //defined in CmakeLists.txt
   mReport = "<h1>GDAL Provider Tests</h1>\n";
 }
 
@@ -64,7 +63,7 @@ void TestQgsGdalProvider::initTestCase()
 void TestQgsGdalProvider::cleanupTestCase()
 {
   QgsApplication::exitQgis();
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -76,18 +75,19 @@ void TestQgsGdalProvider::cleanupTestCase()
 
 void TestQgsGdalProvider::scaleDataType()
 {
-  QString rasterWithOffset = QString( TEST_DATA_DIR ) + QDir::separator() +  "int_raster_with_scale.tif";
+  QString rasterWithOffset = QString( TEST_DATA_DIR ) + "/int_raster_with_scale.tif";
   QgsDataProvider* provider = QgsProviderRegistry::instance()->provider( "gdal", rasterWithOffset );
   QgsRasterDataProvider* rp = dynamic_cast< QgsRasterDataProvider* >( provider );
   QVERIFY( rp );
   //raster is an integer data type, but has a scale < 1, so data type must be float
   QCOMPARE( rp->dataType( 1 ), QGis::Float32 );
   QCOMPARE( rp->srcDataType( 1 ), QGis::Float32 );
+  delete provider;
 }
 
 void TestQgsGdalProvider::warpedVrt()
 {
-  QString raster = QString( TEST_DATA_DIR ) + QDir::separator() +  "requires_warped_vrt.tif";
+  QString raster = QString( TEST_DATA_DIR ) + "/requires_warped_vrt.tif";
   QgsDataProvider* provider = QgsProviderRegistry::instance()->provider( "gdal", raster );
   QgsRasterDataProvider* rp = dynamic_cast< QgsRasterDataProvider* >( provider );
   QVERIFY( rp );
@@ -101,6 +101,7 @@ void TestQgsGdalProvider::warpedVrt()
   QVERIFY( qgsDoubleNear( rp->extent().xMaximum(), 3118999, 1 ) );
   QVERIFY( qgsDoubleNear( rp->extent().yMinimum(), 2281355, 1 ) );
   QVERIFY( qgsDoubleNear( rp->extent().yMaximum(), 3129683, 1 ) );
+  delete provider;
 }
 
 QTEST_MAIN( TestQgsGdalProvider )

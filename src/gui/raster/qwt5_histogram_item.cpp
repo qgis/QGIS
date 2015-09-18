@@ -258,12 +258,7 @@ void HistogramItem::drawBar( QPainter *painter,
 {
   painter->save();
 
-#if QT_VERSION >= 0x040000
   const QRect r = rect.normalized();
-#else
-  const QRect r = rect.normalize();
-#endif
-
   painter->setBrush( d_data->color );
 
   if ( d_data->flat )
@@ -286,50 +281,26 @@ void HistogramItem::drawBar( QPainter *painter,
     painter->setBrush( Qt::NoBrush );
 
     painter->setPen( QPen( light, 2 ) );
-#if QT_VERSION >= 0x040000
     QwtPainter::drawLine( painter,
                           r.left() + 1, r.top() + 2, r.right() + 1, r.top() + 2 );
-#else
-    QwtPainter::drawLine( painter,
-                          r.left(), r.top() + 2, r.right() + 1, r.top() + 2 );
-#endif
 
     painter->setPen( QPen( dark, 2 ) );
-#if QT_VERSION >= 0x040000
     QwtPainter::drawLine( painter,
                           r.left() + 1, r.bottom(), r.right() + 1, r.bottom() );
-#else
-    QwtPainter::drawLine( painter,
-                          r.left(), r.bottom(), r.right() + 1, r.bottom() );
-#endif
 
     painter->setPen( QPen( light, 1 ) );
 
-#if QT_VERSION >= 0x040000
     QwtPainter::drawLine( painter,
                           r.left(), r.top() + 1, r.left(), r.bottom() );
     QwtPainter::drawLine( painter,
                           r.left() + 1, r.top() + 2, r.left() + 1, r.bottom() - 1 );
-#else
-    QwtPainter::drawLine( painter,
-                          r.left(), r.top() + 1, r.left(), r.bottom() + 1 );
-    QwtPainter::drawLine( painter,
-                          r.left() + 1, r.top() + 2, r.left() + 1, r.bottom() );
-#endif
 
     painter->setPen( QPen( dark, 1 ) );
 
-#if QT_VERSION >= 0x040000
     QwtPainter::drawLine( painter,
                           r.right() + 1, r.top() + 1, r.right() + 1, r.bottom() );
     QwtPainter::drawLine( painter,
                           r.right(), r.top() + 2, r.right(), r.bottom() - 1 );
-#else
-    QwtPainter::drawLine( painter,
-                          r.right() + 1, r.top() + 1, r.right() + 1, r.bottom() + 1 );
-    QwtPainter::drawLine( painter,
-                          r.right(), r.top() + 2, r.right(), r.bottom() );
-#endif
   }
 
   painter->restore();
@@ -350,11 +321,7 @@ void HistogramItem::updateLegend( QwtLegend *legend ) const
 
   QwtLegendItem *legendItem = ( QwtLegendItem * )widget;
 
-#if QT_VERSION < 0x040000
-  const bool doUpdate = legendItem->isUpdatesEnabled();
-#else
   const bool doUpdate = legendItem->updatesEnabled();
-#endif
   legendItem->setUpdatesEnabled( false );
 
   const int policy = legend->displayPolicy();

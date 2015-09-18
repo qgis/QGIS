@@ -16,10 +16,11 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsgeos.h"
 #include "qgsabstractgeometryv2.h"
 #include "qgsgeometrycollectionv2.h"
-#include "qgsgeometryimport.h"
+#include "qgsgeometryfactory.h"
 #include "qgslinestringv2.h"
 #include "qgsmessagelog.h"
 #include "qgsmulticurvev2.h"
+#include "qgsmultilinestringv2.h"
 #include "qgsmultipointv2.h"
 #include "qgsmultipolygonv2.h"
 #include "qgslogger.h"
@@ -35,45 +36,9 @@ email                : marco.hugentobler at sourcepole dot com
     return r; \
   }
 
-class GEOSException
-{
-  public:
-    GEOSException( QString theMsg )
-    {
-      if ( theMsg == "Unknown exception thrown"  && lastMsg.isNull() )
-      {
-        msg = theMsg;
-      }
-      else
-      {
-        msg = theMsg;
-        lastMsg = msg;
-      }
-    }
-
-    // copy constructor
-    GEOSException( const GEOSException &rhs )
-    {
-      *this = rhs;
-    }
-
-    ~GEOSException()
-    {
-      if ( lastMsg == msg )
-        lastMsg = QString::null;
-    }
-
-    QString what()
-    {
-      return msg;
-    }
-
-  private:
-    QString msg;
-    static QString lastMsg;
-};
-
+/// @cond
 QString GEOSException::lastMsg;
+/// @endcond
 
 static void throwGEOSException( const char *fmt, ... )
 {
@@ -821,17 +786,17 @@ QgsAbstractGeometryV2* QgsGeos::fromGeos( const GEOSGeometry* geos )
     }
     case GEOS_MULTILINESTRING:
     {
-      QgsMultiCurveV2* multiCurve = new QgsMultiCurveV2();
+      QgsMultiLineStringV2* multiLineString = new QgsMultiLineStringV2();
       int nParts = GEOSGetNumGeometries_r( geosinit.ctxt, geos );
       for ( int i = 0; i < nParts; ++i )
       {
         QgsLineStringV2* line = sequenceToLinestring( GEOSGetGeometryN_r( geosinit.ctxt, geos, i ), hasZ, hasM );
         if ( line )
         {
-          multiCurve->addGeometry( line );
+          multiLineString->addGeometry( line );
         }
       }
-      return multiCurve;
+      return multiLineString;
     }
     case GEOS_MULTIPOLYGON:
     {
@@ -1184,6 +1149,28 @@ QgsAbstractGeometryV2* QgsGeos::buffer( double distance, int segments ) const
   return fromGeos( geos );
 }
 
+QgsAbstractGeometryV2 *QgsGeos::buffer( double distance, int segments, int endCapStyle, int joinStyle, double mitreLimit ) const
+{
+  if ( !mGeos )
+  {
+    return 0;
+  }
+
+#if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
+ ((GEOS_VERSION_MAJOR>3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR>=3)))
+
+  GEOSGeometry* geos = 0;
+  try
+  {
+    geos = GEOSBufferWithStyle_r( geosinit.ctxt, mGeos, distance, segments, endCapStyle, joinStyle, mitreLimit );
+  }
+  CATCH_GEOS( 0 );
+  return fromGeos( geos );
+#else
+  return 0;
+#endif //0
+}
+
 QgsAbstractGeometryV2* QgsGeos::simplify( double tolerance ) const
 {
   if ( !mGeos )
@@ -1352,7 +1339,7 @@ GEOSCoordSequence* QgsGeos::createCoordinateSequence( const QgsCurveV2* curve )
   }
 
   bool hasZ = line->is3D();
-  bool hasM = line->isMeasure();
+  bool hasM = false; //line->isMeasure(); //disabled until geos supports m-coordinates
   int coordDims = 2;
   if ( hasZ )
   {
@@ -1409,7 +1396,7 @@ GEOSGeometry* QgsGeos::createGeosPoint( const QgsAbstractGeometryV2* point, int 
     {
       GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, 0, 2, pt->z() );
     }
-    if ( pt->isMeasure() )
+    if ( 0 /*pt->isMeasure()*/ ) //disabled until geos supports m-coordinates
     {
       GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, 0, 3, pt->m() );
     }
@@ -1558,7 +1545,7 @@ QgsAbstractGeometryV2* QgsGeos::reshapeGeometry( const QgsLineStringV2& reshapeW
         }
         else
         {
-          newGeoms[i] = GEOSGeom_clone_r( geosinit.ctxt, GEOSGetGeometryN( mGeos, i ) );
+          newGeoms[i] = GEOSGeom_clone_r( geosinit.ctxt, GEOSGetGeometryN_r( geosinit.ctxt, mGeos, i ) );
         }
       }
       GEOSGeom_destroy_r( geosinit.ctxt, reshapeLineGeos );
@@ -1907,7 +1894,7 @@ GEOSGeometry* QgsGeos::reshapePolygon( const GEOSGeometry* polygon, const GEOSGe
   QList<GEOSGeometry*> ringList;
   if ( nRings > 0 )
   {
-    GEOSGeometry* outerRingPoly = GEOSGeom_createPolygon_r( geosinit.ctxt, GEOSGeom_clone( newOuterRing ), 0, 0 );
+    GEOSGeometry* outerRingPoly = GEOSGeom_createPolygon_r( geosinit.ctxt, GEOSGeom_clone_r( geosinit.ctxt, newOuterRing ), 0, 0 );
     if ( outerRingPoly )
     {
       GEOSGeometry* currentRing = 0;
@@ -1947,7 +1934,7 @@ int QgsGeos::lineContainedInLine( const GEOSGeometry* line1, const GEOSGeometry*
     return -1;
   }
 
-  double bufferDistance = pow( 1.0L, geomDigits( line2 ) - 11 );
+  double bufferDistance = pow( 10.0L, geomDigits( line2 ) - 11 );
 
   GEOSGeometry* bufferGeom = GEOSBuffer_r( geosinit.ctxt, line2, bufferDistance, DEFAULT_QUADRANT_SEGMENTS );
   if ( !bufferGeom )
@@ -1977,7 +1964,7 @@ int QgsGeos::pointContainedInLine( const GEOSGeometry* point, const GEOSGeometry
   if ( !point || !line )
     return -1;
 
-  double bufferDistance = pow( 1.0L, geomDigits( line ) - 11 );
+  double bufferDistance = pow( 10.0L, geomDigits( line ) - 11 );
 
   GEOSGeometry* lineBuffer = GEOSBuffer_r( geosinit.ctxt, line, bufferDistance, 8 );
   if ( !lineBuffer )

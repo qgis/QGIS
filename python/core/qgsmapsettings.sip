@@ -118,6 +118,19 @@ class QgsMapSettings
     //! Return the calculated scale of the map
     double scale() const;
 
+    /** Sets the expression context. This context is used for all expression evaluation
+     * associated with this map settings.
+     * @see expressionContext()
+     * @note added in QGIS 2.12
+     */
+    void setExpressionContext( const QgsExpressionContext& context );
+
+    /** Gets the expression context. This context should be used for all expression evaluation
+     * associated with this map settings.
+     * @see setExpressionContext()
+     * @note added in QGIS 2.12
+     */
+    const QgsExpressionContext& expressionContext() const;
 
     // -- utility functions --
 

@@ -61,7 +61,7 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
 
   private:
 
-    /**Registers label and diagram layer
+    /** Registers label and diagram layer
       @param layer diagram layer
       @param attributeNames attributes needed for labeling and diagrams will be added to the list
      */

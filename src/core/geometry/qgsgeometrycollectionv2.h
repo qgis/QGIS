@@ -19,10 +19,11 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsabstractgeometryv2.h"
 #include <QVector>
 
-/**\ingroup core
+/** \ingroup core
  * \class QgsGeometryCollectionV2
  * \brief Geometry collection
  * \note added in QGIS 2.10
+ * \note this API is not considered stable and may change for 2.12
  */
 class CORE_EXPORT QgsGeometryCollectionV2: public QgsAbstractGeometryV2
 {
@@ -53,8 +54,14 @@ class CORE_EXPORT QgsGeometryCollectionV2: public QgsAbstractGeometryV2
     virtual QString geometryType() const override { return "GeometryCollection"; }
     virtual void clear() override;
 
-    /**Adds a geometry and takes ownership. Returns true in case of success.*/
+    /** Adds a geometry and takes ownership. Returns true in case of success.*/
     virtual bool addGeometry( QgsAbstractGeometryV2* g );
+
+    /** Inserts a geometry before a specified index and takes ownership. Returns true in case of success.
+     * @param g geometry to insert. Ownership is transferred to the collection.
+     * @param index position to insert geometry before
+    */
+    virtual bool insertGeometry( QgsAbstractGeometryV2* g, int index );
 
     /** Removes a geometry from the collection.
      * @param nr index of geometry to remove
@@ -62,9 +69,15 @@ class CORE_EXPORT QgsGeometryCollectionV2: public QgsAbstractGeometryV2
      */
     virtual bool removeGeometry( int nr );
 
-    virtual void transform( const QgsCoordinateTransform& ct ) override;
+    /** Transforms the geometry using a coordinate transform
+     * @param ct coordinate transform
+       @param d transformation direction
+     */
+    virtual void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform ) override;
     void transform( const QTransform& t ) override;
+#if 0
     virtual void clip( const QgsRectangle& rect ) override;
+#endif
     virtual void draw( QPainter& p ) const override;
 
     bool fromWkb( const unsigned char * wkb ) override;
@@ -91,6 +104,14 @@ class CORE_EXPORT QgsGeometryCollectionV2: public QgsAbstractGeometryV2
     virtual double area() const override;
 
     bool hasCurvedSegments() const override;
+
+    /** Returns a geometry without curves. Caller takes ownership*/
+    QgsAbstractGeometryV2* segmentize() const override;
+
+    /** Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
+        @param vertex the vertex id
+        @return rotation in radians, clockwise from north*/
+    double vertexAngle( const QgsVertexId& vertex ) const override;
 
   protected:
     QVector< QgsAbstractGeometryV2* > mGeometries;

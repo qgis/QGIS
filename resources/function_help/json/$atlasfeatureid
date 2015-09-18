@@ -1,0 +1,6 @@
+{
+  "function": "$atlasfeatureid",
+  "description": "Returns the feature id of the current row while using atlas. This enables you to use features of atlas in rules and for example show or hide features based on their id.",
+  "examples": [ { "expression":"$atlasfeatureid = $id", "returns":"true"}]
+}
+

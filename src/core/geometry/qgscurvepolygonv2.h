@@ -22,10 +22,11 @@
 
 class QgsPolygonV2;
 
-/**\ingroup core
+/** \ingroup core
  * \class QgsCurvePolygonV2
  * \brief Curve polygon geometry type
  * \note added in QGIS 2.10
+ * \note this API is not considered stable and may change for 2.12
  */
 class CORE_EXPORT QgsCurvePolygonV2: public QgsSurfaceV2
 {
@@ -65,17 +66,21 @@ class CORE_EXPORT QgsCurvePolygonV2: public QgsSurfaceV2
     const QgsCurveV2* interiorRing( int i ) const;
     virtual QgsPolygonV2* toPolygon() const;
 
-    /**Sets exterior ring (takes ownership)*/
+    /** Sets exterior ring (takes ownership)*/
     void setExteriorRing( QgsCurveV2* ring );
-    /**Sets all interior rings (takes ownership)*/
+    /** Sets all interior rings (takes ownership)*/
     void setInteriorRings( QList<QgsCurveV2*> rings );
-    /**Adds an interior ring to the geometry (takes ownership)*/
+    /** Adds an interior ring to the geometry (takes ownership)*/
     void addInteriorRing( QgsCurveV2* ring );
-    /**Removes ring. Exterior ring is 0, first interior ring 1, ...*/
+    /** Removes ring. Exterior ring is 0, first interior ring 1, ...*/
     bool removeInteriorRing( int nr );
 
     virtual void draw( QPainter& p ) const override;
-    void transform( const QgsCoordinateTransform& ct ) override;
+    /** Transforms the geometry using a coordinate transform
+     * @param ct coordinate transform
+       @param d transformation direction
+     */
+    void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform ) override;
     void transform( const QTransform& t ) override;
 
     virtual bool insertVertex( const QgsVertexId& position, const QgsPointV2& vertex ) override;
@@ -88,6 +93,11 @@ class CORE_EXPORT QgsCurvePolygonV2: public QgsSurfaceV2
 
     bool hasCurvedSegments() const override;
     QgsAbstractGeometryV2* segmentize() const override;
+
+    /** Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
+        @param vertex the vertex id
+        @return rotation in radians, clockwise from north*/
+    double vertexAngle( const QgsVertexId& vertex ) const override;
 
   protected:
 

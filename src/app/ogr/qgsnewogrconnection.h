@@ -21,7 +21,7 @@
 #include "qgisgui.h"
 #include "qgscontexthelp.h"
 
-/*! \class QgsNewOgrConnection
+/** \class QgsNewOgrConnection
  * \brief Dialog to allow the user to define, test and save connection
  * information for OGR databases
  */

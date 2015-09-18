@@ -34,6 +34,7 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgis.h" //const vals declared here
+#include "qgslocalec.h"
 
 #include <sqlite3.h>
 #include <proj_api.h>
@@ -621,7 +622,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &theProj4Strin
     // also with parameters containing spaces (e.g. +nadgrids)
     // make sure result is trimmed (#5598)
     QStringList myParams;
-    foreach ( QString param, myProj4String.split( QRegExp( "\\s+(?=\\+)" ), QString::SkipEmptyParts ) )
+    Q_FOREACH ( const QString& param, myProj4String.split( QRegExp( "\\s+(?=\\+)" ), QString::SkipEmptyParts ) )
     {
       QString arg = QString( "' '||parameters||' ' LIKE %1" ).arg( quotedValue( QString( "% %1 %" ).arg( param.trimmed() ) ) );
       if ( param.startsWith( "+datum=" ) )
@@ -651,7 +652,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &theProj4Strin
     {
       // Bugfix 8487 : test param lists are equal, except for +datum
       QStringList foundParams;
-      foreach ( QString param, myRecord["parameters"].split( QRegExp( "\\s+(?=\\+)" ), QString::SkipEmptyParts ) )
+      Q_FOREACH ( const QString& param, myRecord["parameters"].split( QRegExp( "\\s+(?=\\+)" ), QString::SkipEmptyParts ) )
       {
         if ( !param.startsWith( "+datum=" ) )
           foundParams << param.trimmed();
@@ -921,26 +922,18 @@ void QgsCoordinateReferenceSystem::setDescription( QString theDescription )
 void QgsCoordinateReferenceSystem::setProj4String( QString theProj4String )
 {
   mProj4 = theProj4String;
-  char *oldlocale = setlocale( LC_NUMERIC, NULL );
-  /* the next setlocale() invalides the return of previous setlocale() */
-  if ( oldlocale )
-    oldlocale = strdup( oldlocale );
 
-  setlocale( LC_NUMERIC, "C" );
+  QgsLocaleNumC l;
+
   OSRDestroySpatialReference( mCRS );
   mCRS = OSRNewSpatialReference( NULL );
-  mIsValidFlag =
-    OSRImportFromProj4( mCRS, theProj4String.trimmed().toLatin1().constData() )
-    == OGRERR_NONE;
+  mIsValidFlag = OSRImportFromProj4( mCRS, theProj4String.trimmed().toLatin1().constData() ) == OGRERR_NONE;
   mWkt.clear();
   setMapUnits();
 
 #if defined(QGISDEBUG) && QGISDEBUG>=3
   debugPrint();
 #endif
-
-  setlocale( LC_NUMERIC, oldlocale );
-  free( oldlocale );
 }
 void QgsCoordinateReferenceSystem::setGeographicFlag( bool theGeoFlag )
 {
@@ -1630,7 +1623,7 @@ bool QgsCoordinateReferenceSystem::loadIDs( QHash<int, QString> &wkts )
 {
   OGRSpatialReferenceH crs = OSRNewSpatialReference( NULL );
 
-  foreach ( QString csv, QStringList() << "gcs.csv" << "pcs.csv" << "vertcs.csv" << "compdcs.csv" << "geoccs.csv" )
+  Q_FOREACH ( const QString& csv, QStringList() << "gcs.csv" << "pcs.csv" << "vertcs.csv" << "compdcs.csv" << "geoccs.csv" )
   {
     QString filename = CPLFindFile( "gdal", csv.toUtf8() );
 
@@ -1844,7 +1837,7 @@ int QgsCoordinateReferenceSystem::syncDb()
 
   sql = "DELETE FROM tbl_srs WHERE auth_name='EPSG' AND NOT auth_id IN (";
   QString delim;
-  foreach ( int i, wkts.keys() )
+  Q_FOREACH ( int i, wkts.keys() )
   {
     sql += delim + QString::number( i );
     delim = ",";

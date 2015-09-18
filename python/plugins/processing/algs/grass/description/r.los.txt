@@ -1,5 +1,5 @@
 r.los
-r.los - Line-of-sight raster analysis program.
+Line-of-sight raster analysis program.
 Raster (r.*)
 ParameterRaster|input|Elevation|False
 ParameterString|coordinate|Coordinate identifying the viewing position|0,0

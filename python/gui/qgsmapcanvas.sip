@@ -84,6 +84,10 @@ class QgsMapCanvas : QGraphicsView
     //! @note added in 2.4
     void clearCache();
 
+    //! Reload all layers, clear the cache and refresh the canvas
+    //! @note added in 2.9
+    void refreshAllLayers();
+
     //! Set whether the layers are rendered in parallel or sequentially
     //! @note added in 2.4
     void setParallelRenderingEnabled( bool enabled );
@@ -178,7 +182,7 @@ class QgsMapCanvas : QGraphicsView
      */
     void unsetMapTool( QgsMapTool* mapTool );
 
-    /**Returns the currently active tool*/
+    /** Returns the currently active tool*/
     QgsMapTool* mapTool();
 
     /** Write property of QColor bgColor. */
@@ -206,14 +210,14 @@ class QgsMapCanvas : QGraphicsView
     //! return list of layers within map canvas.
     QList<QgsMapLayer*> layers() const;
 
-    /*! Freeze/thaw the map canvas. This is used to prevent the canvas from
+    /** Freeze/thaw the map canvas. This is used to prevent the canvas from
      * responding to events while layers are being added/removed etc.
      * @param frz Boolean specifying if the canvas should be frozen (true) or
      * thawed (false). Default is true.
      */
     void freeze( bool frz = true );
 
-    /*! Accessor for frozen status of canvas */
+    /** Accessor for frozen status of canvas */
     bool isFrozen();
 
     //! Flag the canvas as dirty and needed a refresh
@@ -229,6 +233,14 @@ class QgsMapCanvas : QGraphicsView
     //! Get the current canvas map units
 
     QGis::UnitType mapUnits() const;
+
+    //! Getter for stored overrides of styles for layers.
+    //! @note added in 2.12
+    QMap<QString, QString> layerStyleOverrides() const;
+
+    //! Setter for stored overrides of styles for layers.
+    //! @note added in 2.12
+    void setLayerStyleOverrides( const QMap<QString, QString>& overrides );
 
     //! Get the current coordinate transform
     const QgsMapToPixel* getCoordinateTransform();
@@ -326,9 +338,33 @@ class QgsMapCanvas : QGraphicsView
      */
     void setSnappingUtils( QgsSnappingUtils* utils );
 
+    /** Sets an expression context scope for the map canvas. This scope is injected into the expression
+     * context used for rendering the map, and can be used to apply specific variable overrides for
+     * expression evaluation for the map canvas render. This method will overwrite the existing expression
+     * context scope for the canvas.
+     * @param scope new expression context scope
+     * @note added in QGIS 2.12
+     * @see expressionContextScope()
+     */
+    void setExpressionContextScope( const QgsExpressionContextScope& scope );
+
+    /** Returns a reference to the expression context scope for the map canvas. This scope is injected
+     * into the expression context used for rendering the map, and can be used to apply specific variable
+     * overrides for expression evaluation for the map canvas render.
+     * @note added in QGIS 2.12
+     * @see setExpressionContextScope()
+     */
+    QgsExpressionContextScope& expressionContextScope();
+
+    /** Returns a const reference to the expression context scope for the map canvas.
+     * @note added in QGIS 2.12
+     * @see setExpressionContextScope()
+     */
+    // const QgsExpressionContextScope& expressionContextScope() const;
+
   public slots:
 
-    /**Repaints the canvas map*/
+    /** Repaints the canvas map*/
     void refresh();
 
     //! Receives signal about selection change, and pass it on with layer info
@@ -383,7 +419,7 @@ class QgsMapCanvas : QGraphicsView
     //! @deprecated since 2.4 - already unused in 2.0 anyway
     void setProgress( int, int ) /Deprecated/;
 
-    /** emits current mouse position
+    /** Emits current mouse position
         \note changed in 1.3 */
     void xyCoordinates( const QgsPoint &p );
 
@@ -460,6 +496,10 @@ class QgsMapCanvas : QGraphicsView
     //! Emitted when the current layer is changed
     //! @note added in 2.8
     void currentLayerChanged( QgsMapLayer* layer );
+
+    //! Emitted when the configuration of overridden layer styles changes
+    //! @note added in 2.12
+    void layerStyleOverridesChanged();
 
   protected:
     //! Overridden standard event to be gestures aware

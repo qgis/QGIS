@@ -31,7 +31,7 @@ class QDomElement;
 class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
 {
   public:
-    /**Renderer owns color array*/
+    /** Renderer owns color array*/
     QgsPalettedRasterRenderer( QgsRasterInterface* input, int bandNumber, QColor* colorArray, int nColors, const QVector<QString> labels = QVector<QString>() );
     QgsPalettedRasterRenderer( QgsRasterInterface* input, int bandNumber, QRgb* colorArray, int nColors, const QVector<QString> labels = QVector<QString>() );
     ~QgsPalettedRasterRenderer();
@@ -40,12 +40,12 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
 
     QgsRasterBlock *block( int bandNo, const QgsRectangle & extent, int width, int height ) override;
 
-    /**Returns number of colors*/
+    /** Returns number of colors*/
     int nColors() const { return mNColors; }
-    /**Returns copy of color array (caller takes ownership)*/
+    /** Returns copy of color array (caller takes ownership)*/
     QColor* colors() const;
 
-    /**Returns copy of rgb array (caller takes ownership)
+    /** Returns copy of rgb array (caller takes ownership)
      @note not available in python bindings
      */
     QRgb* rgbArray() const;
@@ -66,9 +66,9 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
 
   private:
     int mBand;
-    /**Color array*/
+    /** Color array*/
     QRgb* mColors;
-    /**Number of colors*/
+    /** Number of colors*/
     int mNColors;
     /** Optional category labels, size of vector may be < mNColors */
     QVector<QString> mLabels;

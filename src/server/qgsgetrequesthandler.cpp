@@ -19,8 +19,8 @@
 #include <QUrl>
 #include <stdlib.h>
 
-QgsGetRequestHandler::QgsGetRequestHandler()
-    : QgsHttpRequestHandler()
+QgsGetRequestHandler::QgsGetRequestHandler( const bool captureOutput /*= FALSE*/ )
+    : QgsHttpRequestHandler( captureOutput )
 {
 }
 

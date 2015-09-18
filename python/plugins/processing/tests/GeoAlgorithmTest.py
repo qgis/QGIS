@@ -46,8 +46,8 @@ class GeoAlgorithmTest(unittest.TestCase):
         fields = layer.pendingFields()
         expectednames = ['ID', 'POLY_NUM_A', 'POLY_ST_A', 'NUMPOINTS']
         expectedtypes = ['Integer', 'Real', 'String', 'Real']
-        names = [str(f.name()) for f in fields]
-        types = [str(f.typeName()) for f in fields]
+        names = [unicode(f.name()) for f in fields]
+        types = [unicode(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
         features = processing.features(layer)
@@ -55,7 +55,7 @@ class GeoAlgorithmTest(unittest.TestCase):
         feature = features.next()
         attrs = feature.attributes()
         expectedvalues = ['1', '1.1', 'string a', '6.0']
-        values = [str(attr) for attr in attrs]
+        values = [unicode(attr) for attr in attrs]
         self.assertEqual(expectedvalues, values)
 
 

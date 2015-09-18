@@ -46,10 +46,16 @@ GEOM_TYPE_MAP = {
 
 
 TYPE_MAP = {
-    str : QVariant.String,
+    str: QVariant.String,
     float: QVariant.Double,
     int: QVariant.Int,
     bool: QVariant.Bool
+}
+
+TYPE_MAP_MEMORY_LAYER = {
+    QVariant.String: "string",
+    QVariant.Double: "double",
+    QVariant.Int: "integer"
 }
 
 
@@ -147,17 +153,17 @@ def values(layer, *attributes):
     return ret
 
 
-def testForUniqueness( fieldList1, fieldList2 ):
+def testForUniqueness(fieldList1, fieldList2):
     '''Returns a modified version of fieldList2, removing naming
     collisions with fieldList1.'''
     changed = True
     while changed:
         changed = False
-        for i in range(0,len(fieldList1)):
-            for j in range(0,len(fieldList2)):
+        for i in range(0, len(fieldList1)):
+            for j in range(0, len(fieldList2)):
                 if fieldList1[i].name() == fieldList2[j].name():
                     field = fieldList2[j]
-                    name = createUniqueFieldName( field.name(), fieldList1 )
+                    name = createUniqueFieldName(field.name(), fieldList1)
                     fieldList2[j] = QgsField(name, field.type(), len=field.length(), prec=field.precision(), comment=field.comment())
                     changed = True
     return fieldList2
@@ -177,7 +183,7 @@ def createUniqueFieldName(fieldName, fieldList):
     def nextname(name):
         num = 1
         while True:
-            returnname ='{name}_{num}'.format(name=name[:8], num=num)
+            returnname = '{name}_{num}'.format(name=name[:8], num=num)
             yield returnname
             num += 1
 
@@ -328,7 +334,7 @@ def duplicateInMemory(layer, newName='', addToRegistry=False):
         raise RuntimeError('Layer is not a VectorLayer')
 
     crs = layer.crs().authid().lower()
-    myUuid = str(uuid.uuid4())
+    myUuid = unicode(uuid.uuid4())
     uri = '%s?crs=%s&index=yes&uuid=%s' % (strType, crs, myUuid)
     memLayer = QgsVectorLayer(uri, newName, 'memory')
     memProvider = memLayer.dataProvider()
@@ -369,12 +375,6 @@ def checkMinDistance(point, index, distance, points):
     return True
 
 
-def _fieldName(f):
-    if isinstance(f, basestring):
-        return f
-    return f.name()
-
-
 def _toQgsField(f):
     if isinstance(f, QgsField):
         return f
@@ -399,13 +399,16 @@ class VectorWriter:
         if self.fileName.startswith(self.MEMORY_LAYER_PREFIX):
             self.isMemory = True
 
-            uri = GEOM_TYPE_MAP[geometryType] + "?uuid=" + str(uuid.uuid4())
+            uri = GEOM_TYPE_MAP[geometryType] + "?uuid=" + unicode(uuid.uuid4())
             if crs.isValid():
                 uri += '&crs=' + crs.authid()
-
-            fieldsdesc = ['field=' + _fieldName(f) for f in fields]
+            fieldsdesc = []
+            for f in fields:
+                qgsfield = _toQgsField(f)
+                fieldsdesc.append('field=%s:%s' % (qgsfield.name(),
+                                                   TYPE_MAP_MEMORY_LAYER.get(qgsfield.type(), "string")))
             if fieldsdesc:
-              uri += '&' + '&'.join(fieldsdesc)
+                uri += '&' + '&'.join(fieldsdesc)
 
             self.memLayer = QgsVectorLayer(uri, self.fileName, 'memory')
             self.writer = self.memLayer.dataProvider()

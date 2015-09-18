@@ -27,10 +27,6 @@
  *
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #ifndef INTERNAL_EXCEPTION_H
 #define INTERNAL_EXCEPTION_H
 

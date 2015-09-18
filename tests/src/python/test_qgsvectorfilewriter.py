@@ -45,8 +45,8 @@ class TestQgsVectorLayer(TestCase):
         assert myProvider is not None
 
         ft = QgsFeature()
-        ft.setGeometry(QgsGeometry.fromPoint(QgsPoint(10,10)))
-        ft.setAttributes([ 'Johny', 20, 0.3 ])
+        ft.setGeometry(QgsGeometry.fromPoint(QgsPoint(10, 10)))
+        ft.setAttributes(['Johny', 20, 0.3])
         myResult, myFeatures = myProvider.addFeatures([ft])
         assert myResult
         assert len(myFeatures) > 0

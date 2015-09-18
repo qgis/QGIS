@@ -56,7 +56,7 @@ QgsMapLayer * QgsMapLayerRegistry::mapLayer( QString theLayerId )
 QList<QgsMapLayer *> QgsMapLayerRegistry::mapLayersByName( QString layerName )
 {
   QList<QgsMapLayer *> myResultList;
-  foreach ( QgsMapLayer* layer, mMapLayers )
+  Q_FOREACH ( QgsMapLayer* layer, mMapLayers )
   {
     if ( layer->name() == layerName )
     {
@@ -118,7 +118,7 @@ void QgsMapLayerRegistry::removeMapLayers( QStringList theLayerIds )
 {
   emit layersWillBeRemoved( theLayerIds );
 
-  foreach ( const QString &myId, theLayerIds )
+  Q_FOREACH ( const QString &myId, theLayerIds )
   {
     QgsMapLayer* lyr = mMapLayers[myId];
     if ( mOwnedLayers.contains( lyr ) )

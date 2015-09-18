@@ -1,5 +1,5 @@
 v.surf.rst
-v.surf.rst - Spatial approximation and topographic analysis using regularized spline with tension.
+Spatial approximation and topographic analysis using regularized spline with tension.
 Vector (v.*)
 ParameterVector|input|Input points layer|0|False
 ParameterString|where|WHERE conditions of SQL statement without 'where' keyword|

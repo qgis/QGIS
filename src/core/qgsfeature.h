@@ -103,7 +103,64 @@ typedef int QgsFeatureId;
 // key = field index, value = field value
 typedef QMap<int, QVariant> QgsAttributeMap;
 
-typedef QVector<QVariant> QgsAttributes;
+/**
+ * A vector of attributes. Mostly equal to QVector<QVariant>.
+ */
+class CORE_EXPORT QgsAttributes : public QVector<QVariant>
+{
+  public:
+    QgsAttributes()
+        : QVector<QVariant>()
+    {}
+    /**
+     * Create a new vector of attributes with the given size
+     *
+     * @param size Number of attributes
+     */
+    QgsAttributes( int size )
+        : QVector<QVariant>( size )
+    {}
+    /**
+     * Constructs a vector with an initial size of size elements. Each element is initialized with value.
+     * @param size Number of elements
+     * @param v    Initial value
+     */
+    QgsAttributes( int size, const QVariant& v )
+        : QVector<QVariant>( size, v )
+    {}
+
+    /**
+     * Copies another vector of attributes
+     * @param v Attributes to copy
+     */
+    QgsAttributes( const QVector<QVariant>& v )
+        : QVector<QVariant>( v )
+    {}
+
+    /**
+     * @brief Compares two vectors of attributes.
+     * They are considered equal if all their members contain the same value and NULL flag.
+     * This was introduced because the default Qt implementation of QVariant comparison does not
+     * handle NULL values for certain types (like int).
+     *
+     * @param v The attributes to compare
+     * @return True if v is equal
+     */
+    bool operator==( const QgsAttributes &v ) const
+    {
+      if ( size() != v.size() )
+        return false;
+      const QVariant* b = constData();
+      const QVariant* i = b + size();
+      const QVariant* j = v.constData() + size();
+      while ( i != b )
+        if ( !( *--i == *--j && i->isNull() == j->isNull() ) )
+          return false;
+      return true;
+    }
+
+    inline bool operator!=( const QgsAttributes &v ) const { return !( *this == v ); }
+};
 
 class QgsField;
 

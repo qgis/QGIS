@@ -19,6 +19,7 @@
 #define QGSDXFPAINTENGINE_H
 
 #include <QPaintEngine>
+#include "qgsgeometryfactory.h"
 
 class QgsDxfExport;
 class QgsDxfPaintDevice;
@@ -38,7 +39,6 @@ class CORE_EXPORT QgsDxfPaintEngine: public QPaintEngine
     void drawPixmap( const QRectF& r, const QPixmap& pm, const QRectF& sr ) override;
 
     void drawPolygon( const QPointF * points, int pointCount, PolygonDrawMode mode ) override;
-    void drawRects( const QRectF * rects, int rectCount ) override;
     void drawPath( const QPainterPath& path ) override;
     void drawLines( const QLineF* lines, int lineCount ) override;
 
@@ -57,6 +57,7 @@ class CORE_EXPORT QgsDxfPaintEngine: public QPaintEngine
     QBrush mBrush;
     QString mLayer;
     QPointF mShift;
+    QgsPolygon mPolygon;
     QPolygonF mCurrentPolygon;
     QList<QPointF> mCurrentCurve;
 
@@ -68,6 +69,8 @@ class CORE_EXPORT QgsDxfPaintEngine: public QPaintEngine
     void curveTo( double dx, double dy );
     void endPolygon();
     void endCurve();
+
+    void setRing( QgsPolyline &polyline, const QPointF * points, int pointCount );
 
     //utils for bezier curve calculation
     static QPointF bezierPoint( const QList<QPointF>& controlPolygon, double t );

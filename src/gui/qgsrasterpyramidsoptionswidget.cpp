@@ -63,7 +63,7 @@ void QgsRasterPyramidsOptionsWidget::updateUi()
   // initialize resampling methods
   cboResamplingMethod->clear();
   QPair<QString, QString> method;
-  foreach ( method, QgsRasterDataProvider::pyramidResamplingMethods( mProvider ) )
+  Q_FOREACH ( method, QgsRasterDataProvider::pyramidResamplingMethods( mProvider ) )
   {
     cboResamplingMethod->addItem( method.second, method.first );
   }
@@ -82,7 +82,7 @@ void QgsRasterPyramidsOptionsWidget::updateUi()
     QList<int> overviewList;
     overviewList << 2 << 4 << 8 << 16 << 32 << 64;
     mOverviewCheckBoxes.clear();
-    foreach ( int i, overviewList )
+    Q_FOREACH ( int i, overviewList )
     {
       mOverviewCheckBoxes[ i ] = new QCheckBox( QString::number( i ), this );
       connect( mOverviewCheckBoxes[ i ], SIGNAL( toggled( bool ) ),
@@ -92,11 +92,11 @@ void QgsRasterPyramidsOptionsWidget::updateUi()
   }
   else
   {
-    foreach ( int i, mOverviewCheckBoxes.keys() )
+    Q_FOREACH ( int i, mOverviewCheckBoxes.keys() )
       mOverviewCheckBoxes[ i ]->setChecked( false );
   }
   tmpStr = mySettings.value( prefix + "overviewList", "" ).toString();
-  foreach ( QString lev, tmpStr.split( " ", QString::SkipEmptyParts ) )
+  Q_FOREACH ( const QString& lev, tmpStr.split( " ", QString::SkipEmptyParts ) )
   {
     if ( mOverviewCheckBoxes.contains( lev.toInt() ) )
       mOverviewCheckBoxes[ lev.toInt()]->setChecked( true );
@@ -137,7 +137,7 @@ void QgsRasterPyramidsOptionsWidget::apply()
 
   // overview list
   tmpStr = "";
-  foreach ( int i, mOverviewCheckBoxes.keys() )
+  Q_FOREACH ( int i, mOverviewCheckBoxes.keys() )
   {
     if ( mOverviewCheckBoxes[ i ]->isChecked() )
       tmpStr += QString::number( i ) + " ";
@@ -149,7 +149,7 @@ void QgsRasterPyramidsOptionsWidget::apply()
 
 void QgsRasterPyramidsOptionsWidget::checkAllLevels( bool checked )
 {
-  foreach ( int i, mOverviewCheckBoxes.keys() )
+  Q_FOREACH ( int i, mOverviewCheckBoxes.keys() )
     mOverviewCheckBoxes[ i ]->setChecked( checked );
 }
 
@@ -157,7 +157,7 @@ void QgsRasterPyramidsOptionsWidget::on_cbxPyramidsLevelsCustom_toggled( bool to
 {
   // if toggled, disable checkboxes and enable line edit
   lePyramidsLevels->setEnabled( toggled );
-  foreach ( int i, mOverviewCheckBoxes.keys() )
+  Q_FOREACH ( int i, mOverviewCheckBoxes.keys() )
     mOverviewCheckBoxes[ i ]->setEnabled( ! toggled );
   setOverviewList();
 }
@@ -178,7 +178,7 @@ void QgsRasterPyramidsOptionsWidget::setOverviewList()
   if ( cbxPyramidsLevelsCustom->isChecked() )
   {
     // should we also validate that numbers are increasing?
-    foreach ( QString lev, lePyramidsLevels->text().trimmed().split( " ", QString::SkipEmptyParts ) )
+    Q_FOREACH ( const QString& lev, lePyramidsLevels->text().trimmed().split( " ", QString::SkipEmptyParts ) )
     {
       QgsDebugMsg( "lev= " + lev );
       int tmpInt = lev.toInt();
@@ -192,7 +192,7 @@ void QgsRasterPyramidsOptionsWidget::setOverviewList()
   }
   else
   {
-    foreach ( int i, mOverviewCheckBoxes.keys() )
+    Q_FOREACH ( int i, mOverviewCheckBoxes.keys() )
     {
       if ( mOverviewCheckBoxes[ i ]->isChecked() )
         mOverviewList << i;

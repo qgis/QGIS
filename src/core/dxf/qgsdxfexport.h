@@ -78,29 +78,38 @@ class CORE_EXPORT QgsDxfExport
 
     int writeHandle( int code = 5, int handle = 0 );
 
-    //! draw dxf primitives
+    //! Draw dxf primitives (LWPOLYLINE)
     void writePolyline( const QgsPolyline &line, const QString &layer, const QString &lineStyleName, QColor color, double width = -1 );
 
+    //! Draw dxf polygon (HATCH)
     void writePolygon( const QgsPolygon &polygon, const QString &layer, const QString &hatchPattern, QColor color );
 
-    void writeSolid( const QString &layer, QColor color, const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, const QgsPoint &pt4 );
+    /** Draw solid
+     * @deprecated see writePolygon
+     */
+    Q_DECL_DEPRECATED void writeSolid( const QString &layer, QColor color, const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, const QgsPoint &pt4 );
 
-    //! write line (as a polyline)
+    //! Write line (as a polyline)
     void writeLine( const QgsPoint &pt1, const QgsPoint &pt2, const QString &layer, const QString &lineStyleName, QColor color, double width = -1 );
 
+    //! Write point
     void writePoint( const QString &layer, QColor color, const QgsPoint &pt );
 
+    //! Write filled circle (as hatch)
     void writeFilledCircle( const QString &layer, QColor color, const QgsPoint &pt, double radius );
 
+    //! Write circle (as polyline)
     void writeCircle( const QString &layer, QColor color, const QgsPoint &pt, double radius, const QString &lineStyleName, double width );
 
+    //! Write text (TEXT)
     void writeText( const QString &layer, const QString &text, const QgsPoint &pt, double size, double angle, QColor color );
 
+    //! Write mtext (MTEXT)
     void writeMText( const QString &layer, const QString &text, const QgsPoint &pt, double width, double angle, QColor color );
 
     static double mapUnitScaleFactor( double scaleDenominator, QgsSymbolV2::OutputUnit symbolUnits, QGis::UnitType mapUnits );
 
-    //! return cleaned layer name for use in DXF
+    //! Return cleaned layer name for use in DXF
     static QString dxfLayerName( const QString &name );
 
     //! return DXF encoding for Qt encoding
@@ -112,9 +121,9 @@ class CORE_EXPORT QgsDxfExport
   private:
     QList< QPair<QgsVectorLayer*, int> > mLayers;
 
-    /**Extent for export, only intersecting features are exported. If the extent is an empty rectangle, all features are exported*/
+    /** Extent for export, only intersecting features are exported. If the extent is an empty rectangle, all features are exported*/
     QgsRectangle mExtent;
-    /**Scale for symbology export (used if symbols units are mm)*/
+    /** Scale for symbology export (used if symbols units are mm)*/
     double mSymbologyScaleDenominator;
     SymbologyExport mSymbologyExport;
     QGis::UnitType mMapUnits;
@@ -163,7 +172,7 @@ class CORE_EXPORT QgsDxfExport
     //helper functions for symbology export
     QgsRenderContext renderContext() const;
 
-    QList< QPair< QgsSymbolLayerV2 *, QgsSymbolV2 * > > symbolLayers();
+    QList< QPair< QgsSymbolLayerV2 *, QgsSymbolV2 * > > symbolLayers( QgsRenderContext& context );
     static int nLineTypes( const QList< QPair< QgsSymbolLayerV2*, QgsSymbolV2*> > &symbolLayers );
     static bool hasDataDefinedProperties( const QgsSymbolLayerV2 *sl, const QgsSymbolV2 *symbol );
     double dashSize() const;
@@ -173,7 +182,8 @@ class CORE_EXPORT QgsDxfExport
     static QString lineNameFromPenStyle( Qt::PenStyle style );
     bool layerIsScaleBasedVisible( const QgsMapLayer *layer ) const;
 
-    int mModelSpaceBR;
+    QHash<QString, int> mBlockHandles;
+    QString mBlockHandle;
 };
 
 #endif // QGSDXFEXPORT_H

@@ -803,7 +803,7 @@ bool QgsStyleV2::tagSymbol( StyleEntity type, QString symbol, QStringList tags )
   }
 
 
-  foreach ( const QString &tag, tags )
+  Q_FOREACH ( const QString &tag, tags )
   {
     // sql: gets the id of the tag if present or insert the tag and get the id of the tag
     char *query = sqlite3_mprintf( "SELECT id FROM tag WHERE name='%q'", tag.toUtf8().constData() );
@@ -861,7 +861,7 @@ bool QgsStyleV2::detagSymbol( StyleEntity type, QString symbol, QStringList tags
 
   sqlite3_finalize( ppStmt );
 
-  foreach ( const QString &tag, tags )
+  Q_FOREACH ( const QString &tag, tags )
   {
     query = sqlite3_mprintf( "SELECT id FROM tag WHERE name='%q'", tag.toUtf8().constData() );
 
@@ -984,10 +984,10 @@ int QgsStyleV2::addSmartgroup( QString name, QString op, QgsSmartConditionMap co
   QStringList constraints;
   constraints << "tag" << "group" << "name" << "!tag" << "!group" << "!name";
 
-  foreach ( const QString &constraint, constraints )
+  Q_FOREACH ( const QString &constraint, constraints )
   {
     QStringList parameters = conditions.values( constraint );
-    foreach ( const QString &param, parameters )
+    Q_FOREACH ( const QString &param, parameters )
     {
       QDomElement condEl = doc.createElement( "condition" );
       condEl.setAttribute( "constraint", constraint );
@@ -1124,7 +1124,7 @@ QStringList QgsStyleV2::symbolsOfSmartgroup( StyleEntity type, int id )
       {
         resultNames = type == SymbolEntity ? symbolNames() : colorRampNames();
         QStringList unwanted = symbolsWithTag( type, tagId( param ) );
-        foreach ( QString name, unwanted )
+        Q_FOREACH ( const QString& name, unwanted )
         {
           resultNames.removeAll( name );
         }
@@ -1133,7 +1133,7 @@ QStringList QgsStyleV2::symbolsOfSmartgroup( StyleEntity type, int id )
       {
         resultNames = type == SymbolEntity ? symbolNames() : colorRampNames();
         QStringList unwanted = symbolsOfGroup( type, groupId( param ) );
-        foreach ( QString name, unwanted )
+        Q_FOREACH ( const QString& name, unwanted )
         {
           resultNames.removeAll( name );
         }
@@ -1141,7 +1141,7 @@ QStringList QgsStyleV2::symbolsOfSmartgroup( StyleEntity type, int id )
       else if ( constraint == "!name" )
       {
         QStringList all = type == SymbolEntity ? symbolNames() : colorRampNames();
-        foreach ( const QString &str, all )
+        Q_FOREACH ( const QString &str, all )
         {
           if ( !str.contains( param, Qt::CaseInsensitive ) )
             resultNames << str;
@@ -1164,7 +1164,7 @@ QStringList QgsStyleV2::symbolsOfSmartgroup( StyleEntity type, int id )
         {
           QStringList dummy = symbols;
           symbols.clear();
-          foreach ( const QString &result, resultNames )
+          Q_FOREACH ( const QString &result, resultNames )
           {
             if ( dummy.contains( result ) )
               symbols << result;

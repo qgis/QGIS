@@ -54,6 +54,7 @@ class GUI_EXPORT QgsDateTimeEditWrapper : public QgsEditorWidgetWrapper
     QVariant value() override;
     QWidget *createWidget( QWidget *parent ) override;
     void initWidget( QWidget *editor ) override;
+    bool valid() override;
 
   public slots:
     void setValue( const QVariant &value ) override;

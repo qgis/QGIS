@@ -39,7 +39,7 @@ QList<QAction*> QgsSLLayerItem::actions()
 {
   QList<QAction*> lst;
 
-  QAction* actionDeleteLayer = new QAction( tr( "Delete layer" ), this );
+  QAction* actionDeleteLayer = new QAction( tr( "Delete Layer" ), this );
   connect( actionDeleteLayer, SIGNAL( triggered() ), this, SLOT( deleteLayer() ) );
   lst.append( actionDeleteLayer );
 
@@ -48,16 +48,21 @@ QList<QAction*> QgsSLLayerItem::actions()
 
 void QgsSLLayerItem::deleteLayer()
 {
+  if ( QMessageBox::question( 0, QObject::tr( "Delete Object" ),
+                              QObject::tr( "Are you sure you want to delete %1?" ).arg( mName ),
+                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+    return;
+
   QgsDataSourceURI uri( mUri );
   QString errCause;
   bool res = ::deleteLayer( uri.database(), uri.table(), errCause );
   if ( !res )
   {
-    QMessageBox::warning( 0, tr( "Delete layer" ), errCause );
+    QMessageBox::warning( 0, tr( "Delete Layer" ), errCause );
   }
   else
   {
-    QMessageBox::information( 0, tr( "Delete layer" ), tr( "Layer deleted successfully." ) );
+    QMessageBox::information( 0, tr( "Delete Layer" ), tr( "Layer deleted successfully." ) );
     mParent->refresh();
   }
 }
@@ -127,7 +132,7 @@ QVector<QgsDataItem*> QgsSLConnectionItem::createChildren()
   QString connectionInfo = QString( "dbname='%1'" ).arg( QString( connection.path() ).replace( "'", "\\'" ) );
   QgsDataSourceURI uri( connectionInfo );
 
-  foreach ( const QgsSpatiaLiteConnection::TableEntry& entry, connection.tables() )
+  Q_FOREACH ( const QgsSpatiaLiteConnection::TableEntry& entry, connection.tables() )
   {
     uri.setDataSource( QString(), entry.tableName, entry.column, QString(), QString() );
     QgsSLLayerItem * layer = new QgsSLLayerItem( this, entry.tableName, mPath + "/" + entry.tableName, uri.uri(), _layerTypeFromDb( entry.type ) );
@@ -167,6 +172,11 @@ void QgsSLConnectionItem::editConnection()
 
 void QgsSLConnectionItem::deleteConnection()
 {
+  if ( QMessageBox::question( 0, QObject::tr( "Delete Connection" ),
+                              QObject::tr( "Are you sure you want to delete the connection to %1?" ).arg( mName ),
+                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+    return;
+
   QgsSpatiaLiteConnection::deleteConnection( mName );
   // the parent should be updated
   mParent->refresh();
@@ -187,7 +197,7 @@ bool QgsSLConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction )
   QStringList importResults;
   bool hasError = false;
   QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
-  foreach ( const QgsMimeDataUtils::Uri& u, lst )
+  Q_FOREACH ( const QgsMimeDataUtils::Uri& u, lst )
   {
     if ( u.layerType != "vector" )
     {
@@ -259,7 +269,7 @@ QgsSLRootItem::~QgsSLRootItem()
 QVector<QgsDataItem*> QgsSLRootItem::createChildren()
 {
   QVector<QgsDataItem*> connections;
-  foreach ( QString connName, QgsSpatiaLiteConnection::connectionList() )
+  Q_FOREACH ( const QString& connName, QgsSpatiaLiteConnection::connectionList() )
   {
     QgsDataItem * conn = new QgsSLConnectionItem( this, connName, mPath + "/" + connName );
     connections.push_back( conn );

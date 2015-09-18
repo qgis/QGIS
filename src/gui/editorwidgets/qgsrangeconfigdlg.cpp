@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 5.1.2014
     Copyright            : (C) 2014 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,19 +17,20 @@
 
 #include "qgsvectorlayer.h"
 
-QgsRangeConfigDlg::QgsRangeConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget *parent ) :
-    QgsEditorConfigWidget( vl, fieldIdx, parent )
+QgsRangeConfigDlg::QgsRangeConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget *parent )
+    : QgsEditorConfigWidget( vl, fieldIdx, parent )
 {
   setupUi( this );
 
   QString text;
 
-  switch ( vl->pendingFields()[fieldIdx].type() )
+  switch ( vl->fields()[fieldIdx].type() )
   {
     case QVariant::Int:
     case QVariant::LongLong:
+    case QVariant::Double:
     {
-      rangeStackedWidget->setCurrentIndex( 0 );
+      rangeStackedWidget->setCurrentIndex( vl->fields()[fieldIdx].type() == QVariant::Double ? 1 : 0 );
 
       rangeWidget->clear();
       rangeWidget->addItem( tr( "Editable" ), "SpinBox" );
@@ -43,26 +44,9 @@ QgsRangeConfigDlg::QgsRangeConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget 
       break;
     }
 
-    case QVariant::Double:
-    {
-      rangeStackedWidget->setCurrentIndex( 1 );
-
-      rangeWidget->clear();
-      rangeWidget->addItem( tr( "Editable" ), "SpinBox" );
-      rangeWidget->addItem( tr( "Slider" ), "Slider" );
-
-      QVariant min = vl->minimumValue( fieldIdx );
-      QVariant max = vl->maximumValue( fieldIdx );
-
-      text = tr( "Current minimum for this value is %1 and current maximum is %2." ).arg( min.toString() ).arg( max.toString() );
-      break;
-    }
-
     default:
-    {
       text = tr( "Attribute has no integer or real type, therefore range is not usable." );
       break;
-    }
   }
 
   valuesLabel->setText( text );
@@ -74,7 +58,7 @@ QgsEditorWidgetConfig QgsRangeConfigDlg::config()
 {
   QgsEditorWidgetConfig cfg;
 
-  switch ( layer()->pendingFields()[field()].type() )
+  switch ( layer()->fields()[field()].type() )
   {
     case QVariant::Int:
     case QVariant::LongLong:

@@ -57,6 +57,7 @@ class TestQgsComposerEffects(TestCase):
         self.mComposerRect2.setBlendMode(QPainter.CompositionMode_Multiply)
 
         checker = QgsCompositionChecker('composereffects_blend', self.mComposition)
+        checker.setControlPathPrefix("composer_effects")
         myTestResult, myMessage = checker.testComposition()
 
         self.mComposerRect2.setBlendMode(QPainter.CompositionMode_SourceOver)
@@ -66,12 +67,13 @@ class TestQgsComposerEffects(TestCase):
     def testTransparency(self):
         """Test that transparency works for composer items."""
 
-        self.mComposerRect2.setTransparency( 50 )
+        self.mComposerRect2.setTransparency(50)
 
         checker = QgsCompositionChecker('composereffects_transparency', self.mComposition)
+        checker.setControlPathPrefix("composer_effects")
         myTestResult, myMessage = checker.testComposition()
 
-        self.mComposerRect2.setTransparency( 100 )
+        self.mComposerRect2.setTransparency(100)
 
         assert myTestResult, myMessage
 

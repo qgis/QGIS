@@ -27,25 +27,20 @@
  *
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #define _CRT_SECURE_NO_DEPRECATE
 
-#include <iostream>
-#include <fstream>
-#include <cmath>
-#include <cstring>
-#include <cfloat>
-
-#include <pal/layer.h>
-#include <pal/pal.h>
-
+#include "layer.h"
+#include "pal.h"
 #include "costcalculator.h"
 #include "feature.h"
 #include "geomfunction.h"
 #include "labelposition.h"
+#include "qgsgeos.h"
+#include "qgsmessagelog.h"
+#include <iostream>
+#include <fstream>
+#include <cmath>
+#include <cfloat>
 
 #ifndef M_PI
 #define M_PI 3.1415926535897931159979634685
@@ -55,8 +50,8 @@
 namespace pal
 {
   LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, double alpha, double cost, FeaturePart *feature, bool isReversed, Quadrant quadrant )
-      : id( id )
-      , cost( cost )
+      : PointSet()
+      , id( id )
       , feature( feature )
       , probFeat( 0 )
       , nbOverlap( 0 )
@@ -68,7 +63,13 @@ namespace pal
       , reversed( isReversed )
       , upsideDown( false )
       , quadrant( quadrant )
+      , mCost( cost )
+      , mHasObstacleConflict( false )
   {
+    type = GEOS_POLYGON;
+    nbPoints = 4;
+    x = new double[nbPoints];
+    y = new double[nbPoints];
 
     // alpha take his value bw 0 and 2*pi rad
     while ( this->alpha > 2*M_PI )
@@ -102,12 +103,12 @@ namespace pal
     y[3] = y1 + dy2;
 
     // upside down ? (curved labels are always correct)
-    if ( feature->getLayer()->getArrangement() != P_CURVED &&
+    if ( feature->layer()->arrangement() != P_CURVED &&
          this->alpha > M_PI / 2 && this->alpha <= 3*M_PI / 2 )
     {
       bool uprightLabel = false;
 
-      switch ( feature->getLayer()->getUpsidedownLabels() )
+      switch ( feature->layer()->upsidedownLabels() )
       {
         case Layer::Upright:
           uprightLabel = true;
@@ -155,18 +156,25 @@ namespace pal
         upsideDown = true;
       }
     }
+
+    for ( int i = 0; i < nbPoints; ++i )
+    {
+      xmin = qMin( xmin, x[i] );
+      xmax = qMax( xmax, x[i] );
+      ymin = qMin( ymin, y[i] );
+      ymax = qMax( ymax, y[i] );
+    }
   }
 
   LabelPosition::LabelPosition( const LabelPosition& other )
+      : PointSet( other )
   {
     id = other.id;
-    cost = other.cost;
+    mCost = other.mCost;
     feature = other.feature;
     probFeat = other.probFeat;
     nbOverlap = other.nbOverlap;
 
-    memcpy( x, other.x, sizeof( double )*4 );
-    memcpy( y, other.y, sizeof( double )*4 );
     alpha = other.alpha;
     w = other.w;
     h = other.h;
@@ -179,6 +187,7 @@ namespace pal
     upsideDown = other.upsideDown;
     reversed = other.reversed;
     quadrant = other.quadrant;
+    mHasObstacleConflict = other.mHasObstacleConflict;
   }
 
   bool LabelPosition::isIn( double *bbox )
@@ -234,8 +243,8 @@ namespace pal
 
   void LabelPosition::print()
   {
-    std::cout << feature->getLayer()->getName() << "/" << feature->getUID() << "/" << id;
-    std::cout << " cost: " << cost;
+    //  std::cout << feature->getLayer()->getName() << "/" << feature->getUID() << "/" << id;
+    std::cout << " cost: " << mCost;
     std::cout << " alpha" << alpha << std::endl;
     std::cout << x[0] << ", " << y[0] << std::endl;
     std::cout << x[1] << ", " << y[1] << std::endl;
@@ -257,39 +266,23 @@ namespace pal
 
   bool LabelPosition::isInConflictSinglePart( LabelPosition* lp )
   {
-    // TODO: add bounding box test to possibly avoid cross product calculation
+    if ( !mGeos )
+      createGeosGeom();
 
-    int i, i2, j;
-    int d1, d2;
-    double cp1, cp2;
+    if ( !lp->mGeos )
+      lp->createGeosGeom();
 
-    for ( i = 0; i < 4; i++ )
+    GEOSContextHandle_t geosctxt = geosContext();
+    try
     {
-      i2 = ( i + 1 ) % 4;
-      d1 = -1;
-      d2 = -1;
-
-      for ( j = 0; j < 4; j++ )
-      {
-        cp1 = cross_product( x[i], y[i], x[i2], y[i2], lp->x[j], lp->y[j] );
-        if ( cp1 > 0 )
-        {
-          d1 = 1;
-        }
-        cp2 = cross_product( lp->x[i], lp->y[i],
-                             lp->x[i2], lp->y[i2],
-                             x[j], y[j] );
-
-        if ( cp2 > 0 )
-        {
-          d2 = 1;
-        }
-      }
-
-      if ( d1 == -1 || d2 == -1 ) // disjoint
-        return false;
+      bool result = ( GEOSPreparedIntersects_r( geosctxt, preparedGeom(), lp->mGeos ) == 1 );
+      return result;
     }
-    return true;
+    catch ( GEOSException &e )
+    {
+      QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
+      return false;
+    }
   }
 
   bool LabelPosition::isInConflictMultiPart( LabelPosition* lp )
@@ -312,6 +305,14 @@ namespace pal
     return false; // no conflict found
   }
 
+  int LabelPosition::partCount() const
+  {
+    if ( nextPart )
+      return nextPart->partCount() + 1;
+    else
+      return 1;
+  }
+
   void LabelPosition::offsetPosition( double xOffset, double yOffset )
   {
     for ( int i = 0; i < 4; i++ )
@@ -322,8 +323,9 @@ namespace pal
 
     if ( nextPart )
       nextPart->offsetPosition( xOffset, yOffset );
-  }
 
+    invalidateGeos();
+  }
 
   int LabelPosition::getId() const
   {
@@ -345,17 +347,12 @@ namespace pal
     return alpha;
   }
 
-  double LabelPosition::getCost() const
-  {
-    return cost;
-  }
-
   void LabelPosition::validateCost()
   {
-    if ( cost >= 1 )
+    if ( mCost >= 1 )
     {
-      std::cout << " Warning: lp->cost == " << cost << " (from feat: " << feature->getUID() << "/" << getLayerName() << ")" << std::endl;
-      cost -= int ( cost ); // label cost up to 1
+      //   std::cout << " Warning: lp->cost == " << cost << " (from feat: " << feature->getUID() << "/" << getLayerName() << ")" << std::endl;
+      mCost -= int ( mCost ); // label cost up to 1
     }
   }
 
@@ -391,33 +388,39 @@ namespace pal
     }
   }
 
-  char* LabelPosition::getLayerName() const
+  QString LabelPosition::getLayerName() const
   {
-    return feature->getLayer()->name;
+    return feature->layer()->name();
+  }
+
+  void LabelPosition::setConflictsWithObstacle( bool conflicts )
+  {
+    mHasObstacleConflict = conflicts;
+    if ( nextPart )
+      nextPart->setConflictsWithObstacle( conflicts );
   }
 
   bool LabelPosition::costShrink( void *l, void *r )
   {
-    return (( LabelPosition* ) l )->cost < (( LabelPosition* ) r )->cost;
+    return (( LabelPosition* ) l )->mCost < (( LabelPosition* ) r )->mCost;
   }
 
   bool LabelPosition::costGrow( void *l, void *r )
   {
-    return (( LabelPosition* ) l )->cost > (( LabelPosition* ) r )->cost;
+    return (( LabelPosition* ) l )->mCost > (( LabelPosition* ) r )->mCost;
   }
 
-
-  bool LabelPosition::polygonObstacleCallback( PointSet *feat, void *ctx )
+  bool LabelPosition::polygonObstacleCallback( FeaturePart *obstacle, void *ctx )
   {
     PolygonCostCalculator *pCost = ( PolygonCostCalculator* ) ctx;
 
     LabelPosition *lp = pCost->getLabel();
-    if (( feat == lp->feature ) || ( feat->getHoleOf() && feat->getHoleOf() != lp->feature ) )
+    if (( obstacle == lp->feature ) || ( obstacle->getHoleOf() && obstacle->getHoleOf() != lp->feature ) )
     {
       return true;
     }
 
-    pCost->update( feat );
+    pCost->update( obstacle );
 
     return true;
   }
@@ -445,7 +448,7 @@ namespace pal
 
   bool LabelPosition::pruneCallback( LabelPosition *lp, void *ctx )
   {
-    PointSet *feat = (( PruneCtx* ) ctx )->obstacle;
+    FeaturePart *feat = (( PruneCtx* ) ctx )->obstacle;
 
     if (( feat == lp->feature ) || ( feat->getHoleOf() && feat->getHoleOf() != lp->feature ) )
     {
@@ -485,7 +488,7 @@ namespace pal
       std::cout <<  "count overlap : " << lp->id << "<->" << lp2->id << std::endl;
 #endif
       ( *nbOv ) ++;
-      *cost += inactiveCost[lp->probFeat] + lp->getCost();
+      *cost += inactiveCost[lp->probFeat] + lp->cost();
 
     }
 
@@ -507,122 +510,130 @@ namespace pal
     return true;
   }
 
-
-
-  double LabelPosition::getDistanceToPoint( double xp, double yp )
+  double LabelPosition::getDistanceToPoint( double xp, double yp ) const
   {
-    int i;
-    int j;
+    //first check if inside, if so then distance is -1
+    double distance = ( containsPoint( xp, yp ) ? -1
+                        : sqrt( minDistanceToPoint( xp, yp ) ) );
 
-    double mx[4];
-    double my[4];
+    if ( nextPart && distance > 0 )
+      return qMin( distance, nextPart->getDistanceToPoint( xp, yp ) );
 
-    double dist_min = DBL_MAX;
-    double dist;
-
-    for ( i = 0; i < 4; i++ )
-    {
-      j = ( i + 1 ) % 4;
-      mx[i] = ( x[i] + x[j] ) / 2.0;
-      my[i] = ( y[i] + y[j] ) / 2.0;
-    }
-
-    if ( vabs( cross_product( mx[0], my[0], mx[2], my[2], xp, yp ) / h ) < w / 2 )
-    {
-      dist = cross_product( x[1], y[1], x[0], y[0], xp, yp ) / w;
-      if ( vabs( dist ) < vabs( dist_min ) )
-        dist_min = dist;
-
-      dist = cross_product( x[3], y[3], x[2], y[2], xp, yp ) / w;
-      if ( vabs( dist ) < vabs( dist_min ) )
-        dist_min = dist;
-    }
-
-    if ( vabs( cross_product( mx[1], my[1], mx[3], my[3], xp, yp ) / w ) < h / 2 )
-    {
-      dist = cross_product( x[2], y[2], x[1], y[1], xp, yp ) / h;
-      if ( vabs( dist ) < vabs( dist_min ) )
-        dist_min = dist;
-
-      dist = cross_product( x[0], y[0], x[3], y[3], xp, yp ) / h;
-      if ( vabs( dist ) < vabs( dist_min ) )
-        dist_min = dist;
-    }
-
-    for ( i = 0; i < 4; i++ )
-    {
-      dist = dist_euc2d( x[i], y[i], xp, yp );
-      if ( vabs( dist ) < vabs( dist_min ) )
-        dist_min = dist;
-    }
-
-    if ( nextPart && dist_min > 0 )
-      return min( dist_min, nextPart->getDistanceToPoint( xp, yp ) );
-
-    return dist_min;
+    return distance;
   }
 
-
-  bool LabelPosition::isBorderCrossingLine( PointSet* feat )
+  bool LabelPosition::crossesLine( PointSet* line ) const
   {
-    double ca, cb;
-    for ( int i = 0; i < 4; i++ )
-    {
-      for ( int j = 0; j < feat->getNumPoints() - 1; j++ )
-      {
-        ca = cross_product( x[i], y[i], x[( i+1 ) %4], y[( i+1 ) %4],
-                            feat->x[j], feat->y[j] );
-        cb = cross_product( x[i], y[i], x[( i+1 ) %4], y[( i+1 ) %4],
-                            feat->x[j+1], feat->y[j+1] );
+    if ( !mGeos )
+      createGeosGeom();
 
-        if (( ca < 0 && cb > 0 ) || ( ca > 0 && cb < 0 ) )
-        {
-          ca = cross_product( feat->x[j], feat->y[j], feat->x[j+1], feat->y[j+1],
-                              x[i], y[i] );
-          cb = cross_product( feat->x[j], feat->y[j], feat->x[j+1], feat->y[j+1],
-                              x[( i+1 ) %4], y[( i+1 ) %4] );
-          if (( ca < 0 && cb > 0 ) || ( ca > 0 && cb < 0 ) )
-            return true;
-        }
+    if ( !line->mGeos )
+      line->createGeosGeom();
+
+    GEOSContextHandle_t geosctxt = geosContext();
+    try
+    {
+      if ( GEOSPreparedIntersects_r( geosctxt, line->preparedGeom(), mGeos ) == 1 )
+      {
+        return true;
+      }
+      else if ( nextPart )
+      {
+        return nextPart->crossesLine( line );
       }
     }
-
-    if ( nextPart )
-      return nextPart->isBorderCrossingLine( feat );
+    catch ( GEOSException &e )
+    {
+      QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
+      return false;
+    }
 
     return false;
   }
 
-  int LabelPosition::getNumPointsInPolygon( int npol, double *xp, double *yp )
+  bool LabelPosition::crossesBoundary( PointSet *polygon ) const
   {
-    int a, k, count = 0;
-    double px, py;
+    if ( !mGeos )
+      createGeosGeom();
 
-    // cheack each corner
-    for ( k = 0; k < 4; k++ )
+    if ( !polygon->mGeos )
+      polygon->createGeosGeom();
+
+    GEOSContextHandle_t geosctxt = geosContext();
+    try
     {
-      px = x[k];
-      py = y[k];
-
-      for ( a = 0; a < 2; a++ ) // and each middle of segment
+      if ( GEOSPreparedOverlaps_r( geosctxt, polygon->preparedGeom(), mGeos ) == 1
+           || GEOSPreparedTouches_r( geosctxt, polygon->preparedGeom(), mGeos ) == 1 )
       {
-        if ( isPointInPolygon( npol, xp, yp, px, py ) )
-          count++;
-        px = ( x[k] + x[( k+1 ) %4] ) / 2.0;
-        py = ( y[k] + y[( k+1 ) %4] ) / 2.0;
+        return true;
+      }
+      else if ( nextPart )
+      {
+        return nextPart->crossesBoundary( polygon );
       }
     }
+    catch ( GEOSException &e )
+    {
+      QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
+      return false;
+    }
 
-    px = ( x[0] + x[2] ) / 2.0;
-    py = ( y[0] + y[2] ) / 2.0;
+    return false;
+  }
 
-    // and the label center
-    if ( isPointInPolygon( npol, xp, yp, px, py ) )
-      count += 4; // virtually 4 points
+  int LabelPosition::polygonIntersectionCost( PointSet *polygon ) const
+  {
+    //effectively take the average polygon intersection cost for all label parts
+    double totalCost = polygonIntersectionCostForParts( polygon );
+    int n = partCount();
+    return ceil( totalCost / n );
+  }
 
-    // TODO: count with nextFeature
+  double LabelPosition::polygonIntersectionCostForParts( PointSet *polygon ) const
+  {
+    if ( !mGeos )
+      createGeosGeom();
 
-    return count;
+    if ( !polygon->mGeos )
+      polygon->createGeosGeom();
+
+    GEOSContextHandle_t geosctxt = geosContext();
+
+    double cost = 0;
+    //check the label center. if covered by polygon, initial cost of 4
+    if ( polygon->containsPoint(( x[0] + x[2] ) / 2.0, ( y[0] + y[2] ) / 2.0 ) )
+      cost += 4;
+
+    try
+    {
+      //calculate proportion of label candidate which is covered by polygon
+      GEOSGeometry* intersectionGeom = GEOSIntersection_r( geosctxt, mGeos, polygon->mGeos );
+      if ( intersectionGeom )
+      {
+        double positionArea = 0;
+        if ( GEOSArea_r( geosctxt, mGeos, &positionArea ) == 1 )
+        {
+          double intersectionArea = 0;
+          if ( GEOSArea_r( geosctxt, intersectionGeom, &intersectionArea ) == 1 )
+          {
+            double portionCovered = intersectionArea / positionArea;
+            cost += portionCovered * 8.0; //cost of 8 if totally covered
+          }
+        }
+        GEOSGeom_destroy_r( geosctxt, intersectionGeom );
+      }
+    }
+    catch ( GEOSException &e )
+    {
+      QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
+    }
+
+    if ( nextPart )
+    {
+      cost += nextPart->polygonIntersectionCostForParts( polygon );
+    }
+
+    return cost;
   }
 
 } // end namespace

@@ -52,7 +52,7 @@ void QgsTileScaleWidget::layerChanged( QgsMapLayer *layer )
   QVariant res = rl->dataProvider()->property( "resolutions" );
 
   mResolutions.clear();
-  foreach ( QVariant r, res.toList() )
+  Q_FOREACH ( const QVariant& r, res.toList() )
   {
     QgsDebugMsg( QString( "found resolution: %1" ).arg( r.toDouble() ) );
     mResolutions << r.toDouble();
@@ -139,7 +139,7 @@ void QgsTileScaleWidget::showTileScale( QMainWindow *mainWindow )
   }
 
   //create the dock widget
-  dock = new QDockWidget( tr( "Tile scale" ), mainWindow );
+  dock = new QDockWidget( tr( "Tile Scale Panel" ), mainWindow );
   dock->setObjectName( "theTileScaleDock" );
   dock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
   mainWindow->addDockWidget( Qt::RightDockWidgetArea, dock );

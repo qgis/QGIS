@@ -44,6 +44,13 @@ class QgsExtentGroupBox : QgsCollapsibleGroupBox
 
     QgsExtentGroupBox::ExtentState extentState() const;
 
+    //! Set base part of title of the group box (will be appended with extent state)
+    //! @note added in 2.12
+    void setTitleBase( const QString& title );
+    //! Set base part of title of the group box (will be appended with extent state)
+    //! @note added in 2.12
+    QString titleBase() const;
+
   public slots:
     //! set output extent to be the same as original extent (may be transformed to output CRS)
     void setOutputExtentFromOriginal();
@@ -64,6 +71,8 @@ class QgsExtentGroupBox : QgsCollapsibleGroupBox
     void on_mXMaxLineEdit_textEdited( const QString & );
     void on_mYMinLineEdit_textEdited( const QString & );
     void on_mYMaxLineEdit_textEdited( const QString & );
+
+    void groupBoxClicked();
 
   protected:
     void setOutputExtent( const QgsRectangle& r, const QgsCoordinateReferenceSystem& srcCrs, QgsExtentGroupBox::ExtentState state );

@@ -125,8 +125,7 @@ void QgsCodeEditor::insertText( const QString theText )
 // Settings for font and fontsize
 bool QgsCodeEditor::isFixedPitch( const QFont& font )
 {
-  const QFontInfo fi( font );
-  return fi.fixedPitch();
+  return font.fixedPitch();
 }
 
 QFont QgsCodeEditor::getMonospaceFont()

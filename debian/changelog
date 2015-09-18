@@ -1,4 +1,18 @@
-qgis (2.9.0) UNRELEASED; urgency=medium
+qgis (2.11.0) UNRELEASED; urgency=medium
+
+  * New development version 2.11 after branch of 2.10
+  * moved grass default.qgc from config to modules
+  * include grass7 plugin
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Tue, 25 Aug 2015 00:14:25 +0200
+
+qgis (2.10.0) unstable; urgency=medium
+
+  * Release of 2.10.0
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Fri, 26 Jun 2015 14:39:38 +0200
+
+qgis (2.9.0) unstable; urgency=medium
 
   * New development version 2.9 after branch of 2.8
   * include dependency to liblwgeom
@@ -6,8 +20,10 @@ qgis (2.9.0) UNRELEASED; urgency=medium
   * merge downstream addition of debug package
   * make build directory configurable
   * include links to qt4 documentation in api docs
+  * include browser icons
+  * include libqt4-sql-sqlite and python-pyspatialite as build dependency
 
- -- Jürgen E. Fischer <jef@norbit.de>  Tue, 02 Jun 2015 22:54:19 +0200
+ -- Jürgen E. Fischer <jef@norbit.de>  Fri, 26 Jun 2015 14:38:57 +0200
 
 qgis (2.8.0) unstable; urgency=medium
 

@@ -3,4 +3,4 @@ v.split.length - Split lines to shorter segments by length.
 Vector (v.*)
 ParameterVector|input|Input lines layer|1|False
 ParameterNumber|length|Maximum segment length|None|None|10.0
-OutputVector|output|Splitted by length
+OutputVector|output|Split by length

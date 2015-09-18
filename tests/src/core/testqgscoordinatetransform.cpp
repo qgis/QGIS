@@ -75,4 +75,3 @@ void TestQgsCoordinateTransform::transformBoundingBox()
 
 QTEST_MAIN( TestQgsCoordinateTransform )
 #include "testqgscoordinatetransform.moc"
-

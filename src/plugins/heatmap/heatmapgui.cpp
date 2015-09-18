@@ -444,7 +444,7 @@ void HeatmapGui::updateBBox()
   double radiusInMapUnits = 0.0;
   if ( mRadiusFieldCheckBox->isChecked() )
   {
-    int idx = inputLayer->pendingFields().indexFromName( mRadiusFieldCombo->currentField() );
+    int idx = inputLayer->fields().indexFromName( mRadiusFieldCombo->currentField() );
     double maxInField = inputLayer->maximumValue( idx ).toDouble();
 
     if ( mRadiusFieldUnitCombo->currentIndex() == HeatmapGui::Meters )
@@ -552,7 +552,7 @@ int HeatmapGui::radiusField() const
   if ( !inputLayer )
     return 0;
 
-  return inputLayer->pendingFields().indexFromName( mRadiusFieldCombo->currentField() );
+  return inputLayer->fields().indexFromName( mRadiusFieldCombo->currentField() );
 }
 
 int HeatmapGui::weightField() const
@@ -561,7 +561,7 @@ int HeatmapGui::weightField() const
   if ( !inputLayer )
     return 0;
 
-  return inputLayer->pendingFields().indexFromName( mWeightFieldCombo->currentField() );
+  return inputLayer->fields().indexFromName( mWeightFieldCombo->currentField() );
 }
 
 bool HeatmapGui::addToCanvas() const

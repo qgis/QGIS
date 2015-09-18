@@ -45,6 +45,8 @@ It is copied on installation in /pythonX/dist-packages/PyQt4/uic/widget-plugins/
 
 
 pluginType = MODULE
+
+
 def moduleInformation():
         try:
                 import qgis.gui

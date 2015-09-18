@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Statistics</string>
+   <string>Statistics Panel</string>
   </property>
   <widget class="QWidget" name="mContents">
    <layout class="QVBoxLayout" name="verticalLayout">

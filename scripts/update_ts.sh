@@ -17,11 +17,11 @@
 set -e
 
 case "$1" in
-pull|push)
+pull|push|update)
 	;;
 
 *)
-	echo "usage: $(basename $0) {push|pull}"
+	echo "usage: $(basename $0) {push|pull|update}"
 	exit 1
 esac
 
@@ -35,6 +35,7 @@ cleanup() {
 	for i in \
 		python/python-i18n.{ts,cpp} \
 		python/plugins/*/python-i18n.{ts,cpp} \
+		python/plugins/processing/processing-i18n.{ts,cpp} \
 		src/plugins/grass/grasslabels-i18n.cpp \
 		i18n/backup.tar \
 		qgis_ts.pro
@@ -79,7 +80,7 @@ tar --remove-files -cf i18n/backup.tar $files
 if [ $1 = push ]; then
 	echo Pulling source from transifex...
 	tx pull -s -l none
-else
+elif [ $1 = pull ]; then
 	rm i18n/qgis_*.ts
 
 	echo Pulling new translations...
@@ -94,7 +95,7 @@ rm python-i18n.ts
 cd ..
 for i in python/plugins/*/CMakeLists.txt; do
 	cd ${i%/*}
-	pylupdate4 $(find . -name "*.py" -o -name "*.ui") -ts python-i18n.ts
+	pylupdate4 -tr-function trAlgorithm $(find . -name "*.py" -o -name "*.ui") -ts python-i18n.ts
 	perl ../../../scripts/ts2cpp.pl python-i18n.ts python-i18n.cpp
 	rm python-i18n.ts
 	cd ../../..
@@ -102,6 +103,9 @@ done
 
 echo Updating GRASS module translations
 perl scripts/qgm2cpp.pl >src/plugins/grass/grasslabels-i18n.cpp
+
+echo Updating processing translations
+perl scripts/processing2cpp.pl python/plugins/processing/processing-i18n.cpp
 
 echo Creating qmake project file
 $QMAKE -project -o qgis_ts.pro -nopwd src python i18n

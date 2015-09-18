@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 
 from PyQt4 import uic
-from PyQt4.QtCore import QCoreApplication, QUrl
+from PyQt4.QtCore import QCoreApplication, QUrl, QSettings, QByteArray
 from PyQt4.QtGui import QApplication, QDialogButtonBox
 
 from qgis.utils import iface
@@ -47,10 +47,12 @@ class AlgorithmDialogBase(BASE, WIDGET):
         def __init__(self, param, widget):
             (self.parameter, self.widget) = (param, widget)
 
-
     def __init__(self, alg):
         super(AlgorithmDialogBase, self).__init__(iface.mainWindow())
         self.setupUi(self)
+
+        self.settings = QSettings()
+        self.restoreGeometry(self.settings.value("/Processing/dialogBase", QByteArray()))
 
         self.executed = False
         self.mainWidget = None
@@ -82,6 +84,9 @@ class AlgorithmDialogBase(BASE, WIDGET):
 
         self.showDebug = ProcessingConfig.getSetting(
             ProcessingConfig.SHOW_DEBUG_IN_DIALOG)
+
+    def closeEvent(self, evt):
+        self.settings.setValue("/Processing/dialogBase", self.saveGeometry())
 
     def setMainWidget(self):
         self.tabWidget.widget(0).layout().addWidget(self.mainWidget)

@@ -34,31 +34,27 @@
 #include <iostream>
 #endif
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
-#include <qglobal.h>
-
 #include "pointset.h"
 #include "util.h"
-
-#include <pal/pal.h>
-
-
+#include "pal.h"
 #include "geomfunction.h"
+#include "qgsgeos.h"
+#include "qgsmessagelog.h"
+#include <qglobal.h>
 
 namespace pal
 {
 
-
   PointSet::PointSet()
-      : holeOf( NULL )
+      : mGeos( 0 )
+      , mOwnsGeom( false )
+      , holeOf( NULL )
       , parent( NULL )
       , xmin( DBL_MAX )
       , xmax( -DBL_MAX )
       , ymin( DBL_MAX )
       , ymax( -DBL_MAX )
+      , mPreparedGeom( 0 )
   {
     nbPoints = cHullSize =  0;
     x = NULL;
@@ -68,13 +64,16 @@ namespace pal
   }
 
   PointSet::PointSet( int nbPoints, double *x, double *y )
-      : cHullSize( 0 )
+      : mGeos( 0 )
+      , mOwnsGeom( false )
+      , cHullSize( 0 )
       , holeOf( NULL )
       , parent( NULL )
       , xmin( DBL_MAX )
       , xmax( -DBL_MAX )
       , ymin( DBL_MAX )
       , ymax( -DBL_MAX )
+      , mPreparedGeom( 0 )
   {
     this->nbPoints = nbPoints;
     this->x = new double[nbPoints];
@@ -91,8 +90,13 @@ namespace pal
   }
 
   PointSet::PointSet( double aX, double aY )
-      : xmin( aX ), xmax( aY )
-      , ymin( aX ), ymax( aY )
+      : mGeos( 0 )
+      , mOwnsGeom( false )
+      , xmin( aX )
+      , xmax( aY )
+      , ymin( aX )
+      , ymax( aY )
+      , mPreparedGeom( 0 )
   {
     nbPoints = cHullSize = 1;
     x = new double[1];
@@ -107,24 +111,23 @@ namespace pal
     type = GEOS_POINT;
   }
 
-  PointSet::PointSet( PointSet &ps )
-      : parent( 0 )
+  PointSet::PointSet( const PointSet &ps )
+      : mGeos( 0 )
+      , mOwnsGeom( false )
+      , parent( 0 )
       , xmin( DBL_MAX )
       , xmax( -DBL_MAX )
       , ymin( DBL_MAX )
       , ymax( -DBL_MAX )
+      , mPreparedGeom( 0 )
   {
     int i;
 
     nbPoints = ps.nbPoints;
     x = new double[nbPoints];
     y = new double[nbPoints];
-
-    for ( i = 0; i < nbPoints; i++ )
-    {
-      x[i] = ps.x[i];
-      y[i] = ps.y[i];
-    }
+    memcpy( x, ps.x, sizeof( double )* nbPoints );
+    memcpy( y, ps.y, sizeof( double )* nbPoints );
 
     if ( ps.cHull )
     {
@@ -144,10 +147,90 @@ namespace pal
     type = ps.type;
 
     holeOf = ps.holeOf;
+
+    if ( ps.mGeos )
+    {
+      mGeos = GEOSGeom_clone_r( geosContext(), ps.mGeos );
+      mOwnsGeom = true;
+    }
+  }
+
+  void PointSet::createGeosGeom() const
+  {
+    GEOSContextHandle_t geosctxt = geosContext();
+
+    bool needClose = false;
+    if ( type == GEOS_POLYGON && ( x[0] != x[ nbPoints - 1] || y[0] != y[ nbPoints - 1 ] ) )
+    {
+      needClose = true;
+    }
+
+    GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geosctxt, nbPoints + ( needClose ? 1 : 0 ), 2 );
+    for ( int i = 0; i < nbPoints; ++i )
+    {
+      GEOSCoordSeq_setX_r( geosctxt, coord, i, x[i] );
+      GEOSCoordSeq_setY_r( geosctxt, coord, i, y[i] );
+    }
+
+    //close ring if needed
+    if ( needClose )
+    {
+      GEOSCoordSeq_setX_r( geosctxt, coord, nbPoints, x[0] );
+      GEOSCoordSeq_setY_r( geosctxt, coord, nbPoints, y[0] );
+    }
+
+    switch ( type )
+    {
+      case GEOS_POLYGON:
+        mGeos = GEOSGeom_createPolygon_r( geosctxt, GEOSGeom_createLinearRing_r( geosctxt, coord ), 0, 0 );
+        break;
+
+      case GEOS_LINESTRING:
+        mGeos = GEOSGeom_createLineString_r( geosctxt, coord );
+        break;
+
+      case GEOS_POINT:
+        mGeos = GEOSGeom_createPoint_r( geosctxt, coord );
+        break;
+    }
+
+    mOwnsGeom = true;
+  }
+
+  const GEOSPreparedGeometry *PointSet::preparedGeom() const
+  {
+    if ( !mGeos )
+      createGeosGeom();
+
+    if ( !mPreparedGeom )
+    {
+      mPreparedGeom = GEOSPrepare_r( geosContext(), mGeos );
+    }
+    return mPreparedGeom;
+  }
+
+  void PointSet::invalidateGeos()
+  {
+    GEOSContextHandle_t geosctxt = geosContext();
+    if ( mOwnsGeom ) // delete old geometry if we own it
+      GEOSGeom_destroy_r( geosctxt, mGeos );
+    GEOSPreparedGeom_destroy_r( geosctxt, mPreparedGeom );
+    mOwnsGeom = false;
+    mGeos = 0;
+    mPreparedGeom = 0;
   }
 
   PointSet::~PointSet()
   {
+    GEOSContextHandle_t geosctxt = geosContext();
+
+    if ( mGeos && mOwnsGeom )
+    {
+      GEOSGeom_destroy_r( geosctxt, mGeos );
+      mGeos = NULL;
+    }
+    GEOSPreparedGeom_destroy_r( geosctxt, mPreparedGeom );
+
     deleteCoords();
 
     if ( cHull )
@@ -156,16 +239,11 @@ namespace pal
 
   void PointSet::deleteCoords()
   {
-    if ( x )
-      delete[] x;
-    if ( y )
-      delete[] y;
+    delete[] x;
+    delete[] y;
     x = NULL;
     y = NULL;
   }
-
-
-
 
   PointSet* PointSet::extractShape( int nbPtSh, int imin, int imax, int fps, int fpe, double fptx, double fpty )
   {
@@ -212,10 +290,79 @@ namespace pal
     return newShape;
   }
 
+  bool PointSet::containsPoint( double x, double y ) const
+  {
+    GEOSContextHandle_t geosctxt = geosContext();
+    try
+    {
+      GEOSCoordSequence* seq = GEOSCoordSeq_create_r( geosctxt, 1, 2 );
+      GEOSCoordSeq_setX_r( geosctxt, seq, 0, x );
+      GEOSCoordSeq_setY_r( geosctxt, seq, 0, y );
+      GEOSGeometry* point = GEOSGeom_createPoint_r( geosctxt, seq );
+      bool result = ( GEOSPreparedContains_r( geosctxt, preparedGeom(), point ) == 1 );
+      GEOSGeom_destroy_r( geosctxt, point );
 
-  void PointSet::splitPolygons( LinkedList<PointSet*> *shapes_toProcess,
-                                LinkedList<PointSet*> *shapes_final,
-                                double xrm, double yrm, char *uid )
+      return result;
+    }
+    catch ( GEOSException &e )
+    {
+      QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
+      return false;
+    }
+
+  }
+
+  bool PointSet::containsLabelCandidate( double x, double y, double width, double height, double alpha ) const
+  {
+    GEOSContextHandle_t geosctxt = geosContext();
+    GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geosctxt, 5, 2 );
+
+    GEOSCoordSeq_setX_r( geosctxt, coord, 0, x );
+    GEOSCoordSeq_setY_r( geosctxt, coord, 0, y );
+    if ( !qgsDoubleNear( alpha, 0.0 ) )
+    {
+      double beta = alpha + ( M_PI / 2 );
+      double dx1 = cos( alpha ) * width;
+      double dy1 = sin( alpha ) * width;
+      double dx2 = cos( beta ) * height;
+      double dy2 = sin( beta ) * height;
+      GEOSCoordSeq_setX_r( geosctxt, coord, 1, x  + dx1 );
+      GEOSCoordSeq_setY_r( geosctxt, coord, 1, y + dy1 );
+      GEOSCoordSeq_setX_r( geosctxt, coord, 2, x + dx1 + dx2 );
+      GEOSCoordSeq_setY_r( geosctxt, coord, 2, y + dy1 + dy2 );
+      GEOSCoordSeq_setX_r( geosctxt, coord, 3, x + dx2 );
+      GEOSCoordSeq_setY_r( geosctxt, coord, 3, y + dy2 );
+    }
+    else
+    {
+      GEOSCoordSeq_setX_r( geosctxt, coord, 1, x + width );
+      GEOSCoordSeq_setY_r( geosctxt, coord, 1, y );
+      GEOSCoordSeq_setX_r( geosctxt, coord, 2, x + width );
+      GEOSCoordSeq_setY_r( geosctxt, coord, 2, y + height );
+      GEOSCoordSeq_setX_r( geosctxt, coord, 3, x );
+      GEOSCoordSeq_setY_r( geosctxt, coord, 3, y + height );
+    }
+    //close ring
+    GEOSCoordSeq_setX_r( geosctxt, coord, 4, x );
+    GEOSCoordSeq_setY_r( geosctxt, coord, 4, y );
+
+    try
+    {
+      GEOSGeometry* bboxGeos = GEOSGeom_createLinearRing_r( geosctxt, coord );
+      bool result = ( GEOSPreparedContains_r( geosctxt, preparedGeom(), bboxGeos ) == 1 );
+      GEOSGeom_destroy_r( geosctxt, bboxGeos );
+      return result;
+    }
+    catch ( GEOSException &e )
+    {
+      QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
+      return false;
+    }
+  }
+
+  void PointSet::splitPolygons( QLinkedList<PointSet*> &shapes_toProcess,
+                                QLinkedList<PointSet*> &shapes_final,
+                                double xrm, double yrm, const QString& uid )
   {
 #ifdef _DEBUG_
     std::cout << "splitPolygons: " << uid << std::endl;
@@ -259,12 +406,12 @@ namespace pal
 
     PointSet *shape;
 
-    while ( shapes_toProcess->size() > 0 )
+    while ( shapes_toProcess.size() > 0 )
     {
 #ifdef _DEBUG_FULL_
       std::cout << "Shape popping()" << std::endl;
 #endif
-      shape = shapes_toProcess->pop_front();
+      shape = shapes_toProcess.takeFirst();
 
       x = shape->x;
       y = shape->y;
@@ -322,7 +469,7 @@ namespace pal
           // lookup for the deepest point in the hole
           for ( i = ips; i != cHull[ihn]; i = ( i + 1 ) % nbp )
           {
-            cp = vabs( cross_product( x[cHull[ihs]], y[cHull[ihs]],
+            cp = qAbs( cross_product( x[cHull[ihs]], y[cHull[ihs]],
                                       x[cHull[ihn]], y[cHull[ihn]],
                                       x[i], y[i] ) );
             if ( cp - bestcp > EPSILON )
@@ -407,7 +554,7 @@ namespace pal
           std::cout << "D: " << dx << " " << dy << std::endl;
           std::cout << "seg_length: " << seg_length << std::endl;
 #endif
-          if ( seg_length < EPSILON || vabs(( b = cross_product( ex, ey, fx, fy, x[retainedPt], y[retainedPt] ) / ( seg_length ) ) ) > ( seg_length / 2 ) )    // retainedPt is not fronting i->j
+          if ( seg_length < EPSILON || qAbs(( b = cross_product( ex, ey, fx, fy, x[retainedPt], y[retainedPt] ) / ( seg_length ) ) ) > ( seg_length / 2 ) )    // retainedPt is not fronting i->j
           {
             if (( ex = dist_euc2d_sq( x[i], y[i], x[retainedPt], y[retainedPt] ) ) < ( ey = dist_euc2d_sq( x[j], y[j], x[retainedPt], y[retainedPt] ) ) )
             {
@@ -490,7 +637,7 @@ namespace pal
 
         // we will cut the shapeu in two new shapes, one from [retainedPoint] to [newPoint] and one form [newPoint] to [retainedPoint]
         int imin = retainedPt;
-        int imax = ((( fps < retainedPt && fpe < retainedPt ) || ( fps > retainedPt && fpe > retainedPt ) ) ? min( fps, fpe ) : max( fps, fpe ) );
+        int imax = ((( fps < retainedPt && fpe < retainedPt ) || ( fps > retainedPt && fpe > retainedPt ) ) ? qMin( fps, fpe ) : qMax( fps, fpe ) );
 
         int nbPtSh1, nbPtSh2; // how many points in new shapes ?
         if ( imax > imin )
@@ -518,7 +665,7 @@ namespace pal
         // check for useless spliting
         else if ( imax == imin || nbPtSh1 <= 2 || nbPtSh2 <= 2 || nbPtSh1 == nbp  || nbPtSh2 == nbp )
         {
-          shapes_final->push_back( shape );
+          shapes_final.append( shape );
         }
         else
         {
@@ -539,7 +686,7 @@ namespace pal
           }
 #endif
 
-          shapes_toProcess->push_back( newShape );
+          shapes_toProcess.append( newShape );
 
           if ( imax == fps )
             imax = fpe;
@@ -560,7 +707,7 @@ namespace pal
             std::cout << newShape->x[i] << ";" << newShape->y[i] << std::endl;
           }
 #endif
-          shapes_toProcess->push_back( newShape );
+          shapes_toProcess.append( newShape );
 
           if ( shape->parent )
             delete shape;
@@ -571,49 +718,11 @@ namespace pal
 #ifdef _DEBUG_FULL_
         std::cout << "Put shape into shapes_final" << std::endl;
 #endif
-        shapes_final->push_back( shape );
+        shapes_final.append( shape );
       }
       delete[] pts;
     }
   }
-
-
-  PointSet* PointSet::createProblemSpecificPointSet( double bbmin[2], double bbmax[2], bool *inside )
-  {
-#ifdef _DEBUG_FULL_
-    std::cout << "CreateProblemSpecific:" << std::endl;
-#endif
-    PointSet *shape = new PointSet();
-    shape->x = new double[nbPoints];
-    shape->y = new double[nbPoints];
-    shape->nbPoints = nbPoints;
-    shape->type = type;
-
-    shape->xmin = xmin;
-    shape->xmax = xmax;
-    shape->ymin = ymin;
-    shape->ymax = ymax;
-
-    *inside = true;
-
-    for ( int i = 0; i < nbPoints; i++ )
-    {
-      shape->x[i] = this->x[i];
-      shape->y[i] = this->y[i];
-
-      // check whether it's not outside
-      if ( x[i] < bbmin[0] || x[i] > bbmax[0] || y[i] < bbmin[1] || y[i] > bbmax[1] )
-        *inside = false;
-    }
-
-    shape->holeOf = NULL;
-    shape->parent = NULL;
-
-    return shape;
-  }
-
-
-
 
   CHullBox * PointSet::compute_chull_bbox()
   {
@@ -782,259 +891,166 @@ namespace pal
     return finalBb;
   }
 
-#if 0
-  double PointSet::getDistInside( double px, double py )
+  double PointSet::minDistanceToPoint( double px, double py, double *rx, double *ry ) const
   {
+    if ( !mGeos )
+      createGeosGeom();
 
-    double dist[8];
-    double rpx[8];
-    double rpy[8];
-    bool ok[8];
+    if ( !mGeos )
+      return 0;
 
-    if ( !isPointInPolygon( nbPoints, x, y, px, py ) )
+    GEOSContextHandle_t geosctxt = geosContext();
+    try
     {
-      double d = getDist( px, py );
-      //std::cout << "Outside : " << d << std::endl;
-      if ( d < 0 )
+      GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geosctxt, 1, 2 );
+      GEOSCoordSeq_setX_r( geosctxt, coord, 0, px );
+      GEOSCoordSeq_setY_r( geosctxt, coord, 0, py );
+      GEOSGeometry* geosPt = GEOSGeom_createPoint_r( geosctxt, coord );
+
+      int type = GEOSGeomTypeId_r( geosctxt, mGeos );
+      const GEOSGeometry* extRing = 0;
+      if ( type != GEOS_POLYGON )
       {
-        d = -( d * d * d * d );
+        extRing = mGeos;
       }
       else
       {
-        d = d * d * d * d;
+        //for polygons, we want distance to exterior ring (not an interior point)
+        extRing = GEOSGetExteriorRing_r( geosctxt, mGeos );
       }
-      return d;
+      GEOSCoordSequence *nearestCoord = GEOSNearestPoints_r( geosctxt, extRing, geosPt );
+      double nx;
+      double ny;
+      ( void )GEOSCoordSeq_getX_r( geosctxt, nearestCoord, 0, &nx );
+      ( void )GEOSCoordSeq_getY_r( geosctxt, nearestCoord, 0, &ny );
+      GEOSGeom_destroy_r( geosctxt, geosPt );
+
+      if ( rx )
+        *rx = nx;
+      if ( ry )
+        *ry = ny;
+
+      return dist_euc2d_sq( px, py, nx, ny );
     }
-
-    int i;
-
-    double width = ( xmax - xmin ) * 2;
-    double height = ( ymax - ymin ) * 2;
-
-    /*
-               1  0   7
-                \ | /
-              2 --x -- 6
-                / | \
-              3   4  5
-    */
-
-    // Compute references points
-    for ( i = 0; i < 8; i++ )
+    catch ( GEOSException &e )
     {
-      dist[i] = DBL_MAX;
-      ok[i] = false;
-      rpx[i] = px;
-      rpy[i] = py;
+      QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
+      return 0;
     }
-
-    rpx[0] += 0;
-    rpy[0] += height;
-
-    rpx[1] -= width;
-    rpy[1] += height;
-
-    rpx[2] -= width;
-    rpy[2] += 0;
-
-    rpx[3] -= width;
-    rpy[3] -= height;
-
-    rpx[4] += 0;
-    rpy[4] -= height;
-
-    rpx[5] += width;
-    rpy[5] -= height;
-
-    rpx[6] += width;
-    rpy[6] += 0;
-
-    rpx[7] += width;
-    rpy[7] += height;
-
-    int j, k;
-    for ( i = 0; i < nbPoints; i++ )
-    {
-      j = ( i + 1 ) % nbPoints;
-
-      for ( k = 0; k < 8; k++ )
-      {
-        double ix, iy;
-        if ( computeSegIntersection( px, py, rpx[k], rpy[k], x[i], y[i], x[j], y[j], &ix, &iy ) )
-        {
-          double d = dist_euc2d_sq( px, py, ix, iy );
-          if ( dist[k] > d )
-          {
-            dist[k] = d;
-            ok[k] = true;
-            //std::cout << "new dist for " << k << ": " << dist[k] << std::endl;
-          }
-        }
-      }
-    }
-
-    double a, b, c, d;
-
-
-    for ( i = 0; i < 8; i++ )
-    {
-      if ( !ok[i] )
-      {
-        std::cout << "ERROR!!!!!!!!!!!!!!!!!" << std::endl;
-        dist[i] = 0;
-      }
-      //std::cout << "dist[" << i << "]: " << dist[i] << std::endl;
-    }
-
-    a = min( dist[0], dist[4] );
-    b = min( dist[1], dist[5] );
-    c = min( dist[2], dist[6] );
-    d = min( dist[3], dist[7] );
-    /*
-        std::cout << "a: " << a << std::endl;
-        std::cout << "b: " << b << std::endl;
-        std::cout << "c: " << c << std::endl;
-        std::cout << "d: " << d << std::endl;
-      */
-    //a = (a+b+c+d)/4.0;
-
-    //a = min(a,b);
-    //c = min(c,d);
-    //return min(a,c);
-
-
-    return ( a*b*c*d );
-  }
-#endif
-
-  double PointSet::getDist( double px, double py, double *rx, double *ry )
-  {
-    if ( nbPoints == 1 || type == GEOS_POINT )
-    {
-      if ( rx && ry )
-      {
-        *rx = x[0];
-        *ry = y[0];
-      }
-      return dist_euc2d_sq( x[0], y[0], px, py );
-    }
-
-    int a, b;
-    int nbP = ( type == GEOS_POLYGON ? nbPoints : nbPoints - 1 );
-
-    double best_dist = DBL_MAX;
-    double d;
-
-    for ( a = 0; a < nbP; a++ )
-    {
-      b = ( a + 1 ) % nbPoints;
-
-      double px2, py2;
-      px2 = px - y[b] + y[a];
-      py2 = py + x[b] - x[a];
-      double ix, iy;
-
-      // (px,py)->(px2,py2) is a line perpendicular to a->b
-      // Check the line p->p2 cross the segment a->b
-      if ( computeLineSegIntersection( px, py, px2, py2,
-                                       x[a], y[a], x[b], y[b],
-                                       &ix, &iy ) )
-      {
-        d = dist_euc2d_sq( px, py, ix, iy );
-      }
-      else
-      {
-        double d1 = dist_euc2d_sq( x[a], y[a], px, py );
-        double d2 = dist_euc2d_sq( x[b], y[b], px, py );
-        if ( d1 < d2 )
-        {
-          d = d1;
-          ix = x[a];
-          iy = y[a];
-        }
-        else
-        {
-          d = d2;
-          ix = x[b];
-          iy = y[b];
-        }
-      }
-
-      if ( d < best_dist )
-      {
-        best_dist = d;
-        if ( rx && ry )
-        {
-          *rx = ix;
-          *ry = iy;
-        }
-      }
-    } // end for (a in nbPoints)
-
-    return best_dist;
   }
 
-
-
-  void PointSet::getCentroid( double &px, double &py, bool forceInside )
+  void PointSet::getCentroid( double &px, double &py, bool forceInside ) const
   {
-    // for explanation see this page:
-    // http://local.wasp.uwa.edu.au/~pbourke/geometry/polyarea/
+    if ( !mGeos )
+      createGeosGeom();
 
-    int i, j;
-    double cx = 0, cy = 0, A = 0, tmp, sumx = 0, sumy = 0;
-    for ( i = 0; i < nbPoints; i++ )
-    {
-      j = i + 1; if ( j == nbPoints ) j = 0;
-      tmp = (( x[i] - x[0] ) * ( y[j] - y[0] ) - ( x[j] - x[0] ) * ( y[i] - y[0] ) );
-      cx += ( x[i] + x[j] - 2 * x[0] ) * tmp;
-      cy += ( y[i] + y[j] - 2 * y[0] ) * tmp;
-      A += tmp;
-      sumx += x[i];
-      sumy += y[i];
-    }
+    if ( !mGeos )
+      return;
 
-    if ( A == 0 )
-    {
-      px = sumx / nbPoints;
-      py = sumy / nbPoints;
-    }
-    else
-    {
-      px = cx / ( 3 * A ) + x[0];
-      py = cy / ( 3 * A ) + y[0];
-    }
-
-    // check if centroid inside in polygon
-    if ( forceInside && !isPointInPolygon( nbPoints, x, y, px, py ) )
+    try
     {
       GEOSContextHandle_t geosctxt = geosContext();
-      GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geosctxt, nbPoints, 2 );
-
-      for ( int i = 0; i < nbPoints; ++i )
+      GEOSGeometry *centroidGeom = GEOSGetCentroid_r( geosctxt, mGeos );
+      if ( centroidGeom )
       {
-        GEOSCoordSeq_setX_r( geosctxt, coord, i, x[i] );
-        GEOSCoordSeq_setY_r( geosctxt, coord, i, y[i] );
+        const GEOSCoordSequence *coordSeq = GEOSGeom_getCoordSeq_r( geosctxt, centroidGeom );
+        GEOSCoordSeq_getX_r( geosctxt, coordSeq, 0, &px );
+        GEOSCoordSeq_getY_r( geosctxt, coordSeq, 0, &py );
       }
 
-      GEOSGeometry *geom = GEOSGeom_createPolygon_r( geosctxt, GEOSGeom_createLinearRing_r( geosctxt, coord ), 0, 0 );
-
-      if ( geom )
+      // check if centroid inside in polygon
+      if ( forceInside && !containsPoint( px, py ) )
       {
-        GEOSGeometry *pointGeom = GEOSPointOnSurface_r( geosctxt, geom );
+        GEOSGeometry *pointGeom = GEOSPointOnSurface_r( geosctxt, mGeos );
 
         if ( pointGeom )
         {
           const GEOSCoordSequence *coordSeq = GEOSGeom_getCoordSeq_r( geosctxt, pointGeom );
           GEOSCoordSeq_getX_r( geosctxt, coordSeq, 0, &px );
           GEOSCoordSeq_getY_r( geosctxt, coordSeq, 0, &py );
-
           GEOSGeom_destroy_r( geosctxt, pointGeom );
         }
-        GEOSGeom_destroy_r( geosctxt, geom );
       }
+
+      GEOSGeom_destroy_r( geosctxt, centroidGeom );
+    }
+    catch ( GEOSException &e )
+    {
+      QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
+      return;
     }
   }
+
+  void PointSet::getPointByDistance( double *d, double *ad, double dl, double *px, double *py )
+  {
+    int i;
+    double dx, dy, di;
+    double distr;
+
+    i = 0;
+    if ( dl >= 0 )
+    {
+      while ( i < nbPoints && ad[i] <= dl ) i++;
+      i--;
+    }
+
+    if ( i < nbPoints - 1 )
+    {
+      if ( dl < 0 )
+      {
+        dx = x[nbPoints-1] - x[0];
+        dy = y[nbPoints-1] - y[0];
+        di = sqrt( dx * dx + dy * dy );
+      }
+      else
+      {
+        dx = x[i+1] - x[i];
+        dy = y[i+1] - y[i];
+        di = d[i];
+      }
+
+      distr = dl - ad[i];
+      *px = x[i] + dx * distr / di;
+      *py = y[i] + dy * distr / di;
+    }
+    else    // just select last point...
+    {
+      *px = x[i];
+      *py = y[i];
+    }
+  }
+
+  const GEOSGeometry *PointSet::geos() const
+  {
+    if ( !mGeos )
+      createGeosGeom();
+
+    return mGeos;
+  }
+
+  double PointSet::length() const
+  {
+    if ( !mGeos )
+      createGeosGeom();
+
+    if ( !mGeos )
+      return -1;
+
+    GEOSContextHandle_t geosctxt = geosContext();
+
+    try
+    {
+      double len = 0;
+      ( void )GEOSLength_r( geosctxt, mGeos, &len );
+      return len;
+    }
+    catch ( GEOSException &e )
+    {
+      QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
+      return -1;
+    }
+  }
+
 
 } // end namespace
 

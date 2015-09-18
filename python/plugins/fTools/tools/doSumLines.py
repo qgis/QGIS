@@ -34,6 +34,7 @@ import ftools_utils
 from qgis.core import QGis, QgsField, QgsFeature, QgsGeometry, QgsDistanceArea, QgsVectorFileWriter, QgsFeatureRequest
 from ui_frmSumLines import Ui_Dialog
 
+
 class Dialog(QDialog, Ui_Dialog):
 
     def __init__(self, iface):
@@ -43,11 +44,11 @@ class Dialog(QDialog, Ui_Dialog):
         self.setupUi(self)
         QObject.connect(self.toolOut, SIGNAL("clicked()"), self.outFile)
         self.setWindowTitle(self.tr("Sum line lengths"))
-        self.buttonOk = self.buttonBox_2.button( QDialogButtonBox.Ok )
+        self.buttonOk = self.buttonBox_2.button(QDialogButtonBox.Ok)
         self.progressBar.setValue(0)
         self.populateLayers()
 
-    def populateLayers( self ):
+    def populateLayers(self):
         layers = ftools_utils.getLayerNames([QGis.Line])
         self.inPoint.clear()
         self.inPoint.addItems(layers)
@@ -56,7 +57,7 @@ class Dialog(QDialog, Ui_Dialog):
         self.inPolygon.addItems(layers)
 
     def accept(self):
-        self.buttonOk.setEnabled( False )
+        self.buttonOk.setEnabled(False)
         if self.inPolygon.currentText() == "":
             QMessageBox.information(self, self.tr("Sum Line Lengths In Polyons"), self.tr("Please specify input polygon vector layer"))
         elif self.outShape.text() == "":
@@ -75,19 +76,19 @@ class Dialog(QDialog, Ui_Dialog):
             if self.addToCanvasCheck.isChecked():
                 addCanvasCheck = ftools_utils.addShapeToCanvas(unicode(outPath))
                 if not addCanvasCheck:
-                    QMessageBox.warning( self, self.tr("Sum line lengths"), self.tr( "Error loading output shapefile:\n%s" ) % ( unicode( outPath ) ))
+                    QMessageBox.warning(self, self.tr("Sum line lengths"), self.tr("Error loading output shapefile:\n%s") % (unicode(outPath)))
                 self.populateLayers()
             else:
-                QMessageBox.information(self, self.tr("Sum line lengths"),self.tr("Created output shapefile:\n%s" ) % ( unicode( outPath )))
+                QMessageBox.information(self, self.tr("Sum line lengths"), self.tr("Created output shapefile:\n%s") % (unicode(outPath)))
         self.progressBar.setValue(0)
-        self.buttonOk.setEnabled( True )
+        self.buttonOk.setEnabled(True)
 
     def outFile(self):
         self.outShape.clear()
-        ( self.shapefileName, self.encoding ) = ftools_utils.saveDialog( self )
+        (self.shapefileName, self.encoding) = ftools_utils.saveDialog(self)
         if self.shapefileName is None or self.encoding is None:
             return
-        self.outShape.setText( self.shapefileName )
+        self.outShape.setText(self.shapefileName)
 
     def compute(self, inPoly, inLns, inField, outPath, progressBar):
         polyLayer = ftools_utils.getVectorLayerByName(inPoly)
@@ -100,7 +101,7 @@ class Dialog(QDialog, Ui_Dialog):
         index = polyProvider.fieldNameIndex(unicode(inField))
         if index == -1:
             index = polyProvider.fields().count()
-            fieldList.append( QgsField(unicode(inField), QVariant.Double, "real", 24, 15, self.tr("length field")) )
+            fieldList.append(QgsField(unicode(inField), QVariant.Double, "real", 24, 15, self.tr("length field")))
         sRs = polyProvider.crs()
         inFeat = QgsFeature()
         inFeatB = QgsFeature()
@@ -115,7 +116,7 @@ class Dialog(QDialog, Ui_Dialog):
             if not QgsVectorFileWriter.deleteShapeFile(self.shapefileName):
                 return
         writer = QgsVectorFileWriter(self.shapefileName, self.encoding, fieldList, polyProvider.geometryType(), sRs)
-        spatialIndex = ftools_utils.createIndex( lineProvider )
+        spatialIndex = ftools_utils.createIndex(lineProvider)
         polyFit = polyProvider.getFeatures()
         while polyFit.nextFeature(inFeat):
             inGeom = QgsGeometry(inFeat.geometry())
@@ -123,12 +124,14 @@ class Dialog(QDialog, Ui_Dialog):
             lineList = []
             length = 0
             lineList = spatialIndex.intersects(inGeom.boundingBox())
-            if len(lineList) > 0: check = 0
-            else: check = 1
+            if len(lineList) > 0:
+                check = 0
+            else:
+                check = 1
             if check == 0:
                 for i in lineList:
-                    lineProvider.getFeatures( QgsFeatureRequest().setFilterFid( int(i) ) ).nextFeature( inFeatB )
-                    tmpGeom = QgsGeometry( inFeatB.geometry() )
+                    lineProvider.getFeatures(QgsFeatureRequest().setFilterFid(int(i))).nextFeature(inFeatB)
+                    tmpGeom = QgsGeometry(inFeatB.geometry())
                     if inGeom.intersects(tmpGeom):
                         outGeom = inGeom.intersection(tmpGeom)
                         length = length + distArea.measure(outGeom)
@@ -137,5 +140,5 @@ class Dialog(QDialog, Ui_Dialog):
             outFeat.setAttributes(atMap)
             writer.addFeature(outFeat)
             start = start + 1
-            progressBar.setValue( start * (add))
+            progressBar.setValue(start * (add))
         del writer

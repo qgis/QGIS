@@ -60,7 +60,7 @@ class TestQgsComposition(TestCase):
 
         # Load the composition with the substitutions
         myComposition = QgsComposition(CANVAS.mapRenderer())
-        mySubstitutionMap = {'replace-me': myText }
+        mySubstitutionMap = {'replace-me': myText}
         myFile = os.path.join(TEST_DATA_DIR, 'template-for-substitution.qpt')
         myTemplateFile = file(myFile, 'rt')
         myTemplateContent = myTemplateFile.read()
@@ -101,7 +101,7 @@ class TestQgsComposition(TestCase):
         )
         #mRasterLayer.setRenderer( rasterRenderer )
         myPipe = myRasterLayer.pipe()
-        assert myPipe.set( myRenderer ), "Cannot set pipe renderer"
+        assert myPipe.set(myRenderer), "Cannot set pipe renderer"
 
         QgsMapLayerRegistry.instance().addMapLayers([myRasterLayer])
 

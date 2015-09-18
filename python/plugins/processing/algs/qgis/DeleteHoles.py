@@ -36,11 +36,11 @@ class DeleteHoles(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def defineCharacteristics(self):
-        self.name = 'Delete holes'
-        self.group = 'Vector geometry tools'
+        self.name, self.i18n_name = self.trAlgorithm('Delete holes')
+        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
 
         self.addParameter(ParameterVector(self.INPUT,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POLYGON]))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POLYGON]))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Cleaned')))
 
     def processAlgorithm(self, progress):

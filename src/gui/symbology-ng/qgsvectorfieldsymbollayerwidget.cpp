@@ -20,11 +20,11 @@ QgsVectorFieldSymbolLayerWidget::QgsVectorFieldSymbolLayerWidget( const QgsVecto
 {
   setupUi( this );
 
-  mDistanceUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit );
+  mDistanceUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit << QgsSymbolV2::Pixel );
 
   if ( mVectorLayer )
   {
-    const QgsFields& fm = mVectorLayer->pendingFields();
+    const QgsFields& fm = mVectorLayer->fields();
     mXAttributeComboBox->addItem( "" );
     mYAttributeComboBox->addItem( "" );
     for ( int idx = 0; idx < fm.count(); ++idx )

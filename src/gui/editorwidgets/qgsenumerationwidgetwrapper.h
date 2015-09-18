@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 5.1.2014
     Copyright            : (C) 2014 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -33,6 +33,7 @@ class GUI_EXPORT QgsEnumerationWidgetWrapper : public QgsEditorWidgetWrapper
   protected:
     QWidget* createWidget( QWidget* parent ) override;
     void initWidget( QWidget* editor ) override;
+    bool valid() override;
 
   public slots:
     void setValue( const QVariant& value ) override;

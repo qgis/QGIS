@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 10.2.2013
     Copyright            : (C) 2013 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -13,13 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSFEATURELIST_H
-#define QGSFEATURELIST_H
+#ifndef QGSDUALVIEW_H
+#define QGSDUALVIEW_H
 
 #include <QStackedWidget>
 
 #include "ui_qgsdualviewbase.h"
 
+#include "qgsfieldconditionalformatwidget.h"
 #include "qgsattributeeditorcontext.h"
 #include "qgsattributetablefiltermodel.h"
 #include "qgscachedfeatureiterator.h"
@@ -162,6 +163,8 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      */
     bool saveEditChanges();
 
+    void openConditionalStyles();
+
   signals:
     /**
      * Is emitted, whenever the display expression is successfully changed
@@ -271,4 +274,4 @@ class GUI_EXPORT QgsAttributeTableMapLayerAction : public QAction
     QModelIndex mFieldIdx;
 };
 
-#endif // QGSFEATURELIST_H
+#endif // QGSDUALVIEW_H

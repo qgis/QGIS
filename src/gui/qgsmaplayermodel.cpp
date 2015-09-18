@@ -50,7 +50,7 @@ void QgsMapLayerModel::setItemsCheckable( bool checkable )
 
 void QgsMapLayerModel::checkAll( Qt::CheckState checkState )
 {
-  foreach ( const QString key, mLayersChecked.keys() )
+  Q_FOREACH ( const QString& key, mLayersChecked.keys() )
   {
     mLayersChecked[key] = checkState;
   }
@@ -60,7 +60,7 @@ void QgsMapLayerModel::checkAll( Qt::CheckState checkState )
 QList<QgsMapLayer *> QgsMapLayerModel::layersChecked( Qt::CheckState checkState )
 {
   QList<QgsMapLayer *> layers;
-  foreach ( QgsMapLayer* layer, mLayers )
+  Q_FOREACH ( QgsMapLayer* layer, mLayers )
   {
     if ( mLayersChecked[layer->id()] == checkState )
     {
@@ -78,7 +78,7 @@ QModelIndex QgsMapLayerModel::indexFromLayer( QgsMapLayer *layer ) const
 
 void QgsMapLayerModel::removeLayers( const QStringList layerIds )
 {
-  foreach ( const QString layerId, layerIds )
+  Q_FOREACH ( const QString& layerId, layerIds )
   {
     QModelIndex startIndex = index( 0, 0 );
     QModelIndexList list = match( startIndex, LayerIdRole, layerId, 1 );
@@ -96,7 +96,7 @@ void QgsMapLayerModel::removeLayers( const QStringList layerIds )
 void QgsMapLayerModel::addLayers( QList<QgsMapLayer *> layers )
 {
   beginInsertRows( QModelIndex(), mLayers.count(), mLayers.count() + layers.count() - 1 );
-  foreach ( QgsMapLayer* layer, layers )
+  Q_FOREACH ( QgsMapLayer* layer, layers )
   {
     mLayers.append( layer );
     mLayersChecked.insert( layer->id(), Qt::Unchecked );

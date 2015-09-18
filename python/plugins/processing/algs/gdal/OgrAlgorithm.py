@@ -61,8 +61,8 @@ class OgrAlgorithm(GdalAlgorithm):
             while not conn:
                 try:
                     conn = psycopg2.connect(dsUri.connectionInfo())
-                except psycopg2.OperationalError, e:
-                    (ok, user, passwd ) = QgsCredentials.instance().get(conninfo, dsUri.username(), dsUri.password())
+                except psycopg2.OperationalError as e:
+                    (ok, user, passwd) = QgsCredentials.instance().get(conninfo, dsUri.username(), dsUri.password())
                     if not ok:
                         break
 
@@ -114,7 +114,7 @@ class OgrAlgorithm(GdalAlgorithm):
         if 'host' in uri:
             regex = re.compile('(table=")(.+?)(\.)(.+?)"')
             r = regex.search(uri)
-            return '"' + r.groups()[1] + '.' + r.groups()[3] +'"'
+            return '"' + r.groups()[1] + '.' + r.groups()[3] + '"'
         elif 'dbname' in uri:
             regex = re.compile('(table=")(.+?)"')
             r = regex.search(uri)

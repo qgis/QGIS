@@ -3,4 +3,4 @@ v.split.vert - Split lines to shorter segments by max number of vertices.
 Vector (v.*)
 ParameterVector|input|Input lines layer|1|False
 ParameterNumber|vertices|Maximum number of vertices in segment|None|None|10
-OutputVector|output|Splitted by vertices
+OutputVector|output|Split by vertices

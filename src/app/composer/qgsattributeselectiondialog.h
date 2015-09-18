@@ -34,10 +34,11 @@ class QgsComposerAttributeTableColumnModelV2;
 class QgsComposerTableSortColumnsProxyModel;
 class QgsComposerTableSortColumnsProxyModelV2;
 class QgsComposerTableAvailableSortProxyModelV2;
+class QgsComposerObject;
 
 // QgsComposerColumnAlignmentDelegate
 
-/**A delegate for showing column alignment as a combo box*/
+/** A delegate for showing column alignment as a combo box*/
 class QgsComposerColumnAlignmentDelegate : public QItemDelegate
 {
     Q_OBJECT
@@ -54,13 +55,13 @@ class QgsComposerColumnAlignmentDelegate : public QItemDelegate
 
 // QgsComposerColumnAlignmentDelegate
 
-/**A delegate for showing column attribute source as a QgsFieldExpressionWidget*/
+/** A delegate for showing column attribute source as a QgsFieldExpressionWidget*/
 class QgsComposerColumnSourceDelegate : public QItemDelegate
 {
     Q_OBJECT
 
   public:
-    QgsComposerColumnSourceDelegate( QgsVectorLayer* vlayer, QObject *parent = 0 );
+    QgsComposerColumnSourceDelegate( QgsVectorLayer* vlayer, QObject *parent = 0, const QgsComposerObject* composerObject = 0 );
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
     void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
     void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
@@ -69,11 +70,12 @@ class QgsComposerColumnSourceDelegate : public QItemDelegate
     void commitAndCloseEditor();
   private:
     QgsVectorLayer* mVectorLayer;
+    const QgsComposerObject* mComposerObject;
 };
 
 // QgsComposerColumnWidthDelegate
 
-/**A delegate for showing column width as a spin box*/
+/** A delegate for showing column width as a spin box*/
 class QgsComposerColumnWidthDelegate : public QItemDelegate
 {
     Q_OBJECT
@@ -90,7 +92,7 @@ class QgsComposerColumnWidthDelegate : public QItemDelegate
 
 // QgsComposerColumnSortOrderDelegate
 
-/**A delegate for showing column sort order as a combo box*/
+/** A delegate for showing column sort order as a combo box*/
 class QgsComposerColumnSortOrderDelegate : public QItemDelegate
 {
     Q_OBJECT
@@ -107,7 +109,7 @@ class QgsComposerColumnSortOrderDelegate : public QItemDelegate
 
 // QgsAttributeSelectionDialog
 
-/**A dialog to select what attributes to display (in the table item), set the column properties and specify a sort order*/
+/** A dialog to select what attributes to display (in the table item), set the column properties and specify a sort order*/
 class QgsAttributeSelectionDialog: public QDialog, private Ui::QgsAttributeSelectionDialogBase
 {
     Q_OBJECT

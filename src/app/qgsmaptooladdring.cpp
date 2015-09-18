@@ -17,13 +17,16 @@
 
 #include "qgsmaptooladdring.h"
 #include "qgsgeometry.h"
+#include "qgslinestringv2.h"
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
+#include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include "qgisapp.h"
 
 
 QgsMapToolAddRing::QgsMapToolAddRing( QgsMapCanvas* canvas )
-    : QgsMapToolCapture( canvas, QgsMapToolCapture::CapturePolygon )
+    : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), QgsMapToolCapture::CapturePolygon )
 {
   mToolName = tr( "Add ring" );
 }
@@ -32,13 +35,13 @@ QgsMapToolAddRing::~QgsMapToolAddRing()
 {
 }
 
-void QgsMapToolAddRing::canvasMapReleaseEvent( QgsMapMouseEvent * e )
+void QgsMapToolAddRing::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
 {
 
   emit messageDiscarded();
 
   //check if we operate on a vector layer
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
+  QgsVectorLayer *vlayer = currentVectorLayer();
 
   if ( !vlayer )
   {
@@ -80,7 +83,23 @@ void QgsMapToolAddRing::canvasMapReleaseEvent( QgsMapMouseEvent * e )
     closePolygon();
 
     vlayer->beginEditCommand( tr( "Ring added" ) );
-    int addRingReturnCode = vlayer->addRing( points() );
+
+    //does compoundcurve contain circular strings?
+    //does provider support circular strings?
+    bool hasCurvedSegments = captureCurve()->hasCurvedSegments();
+    bool providerSupportsCurvedSegments = vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::CircularGeometries;
+
+    QgsCurveV2* curveToAdd = 0;
+    if ( hasCurvedSegments && providerSupportsCurvedSegments )
+    {
+      curveToAdd = dynamic_cast<QgsCurveV2*>( captureCurve()->clone() );
+    }
+    else
+    {
+      curveToAdd = captureCurve()->curveToLine();
+    }
+
+    int addRingReturnCode = vlayer->addRing( curveToAdd );
     if ( addRingReturnCode != 0 )
     {
       QString errorMessage;

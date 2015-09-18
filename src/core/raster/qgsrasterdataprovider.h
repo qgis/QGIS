@@ -343,10 +343,10 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /** Returns the format of the error text for the last error in this provider */
     virtual QString lastErrorFormat();
 
-    /**Returns the dpi of the output device. */
+    /** Returns the dpi of the output device. */
     int dpi() const { return mDpi; }
 
-    /**Sets the output device resolution. */
+    /** Sets the output device resolution. */
     void setDpi( int dpi ) { mDpi = dpi; }
 
     /** Time stamp of data source in the moment when data/metadata were loaded by provider */
@@ -355,7 +355,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /** Current time stamp of data source */
     virtual QDateTime dataTimestamp() const override { return QDateTime(); }
 
-    /**Writes into the provider datasource*/
+    /** Writes into the provider datasource*/
     // TODO: add data type (may be defferent from band type)
     virtual bool write( void* data, int band, int width, int height, int xOffset, int yOffset )
     {

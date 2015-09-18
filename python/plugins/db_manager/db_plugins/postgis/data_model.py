@@ -26,6 +26,7 @@ from ..data_model import TableDataModel, SqlResultModel
 
 
 class PGTableDataModel(TableDataModel):
+
     def __init__(self, table, parent=None):
         self.cursor = None
         TableDataModel.__init__(self, table, parent)

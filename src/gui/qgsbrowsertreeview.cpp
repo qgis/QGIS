@@ -79,7 +79,7 @@ void QgsBrowserTreeView::restoreState()
   if ( !mExpandPaths.isEmpty() )
   {
     QSet<QModelIndex> expandIndexSet;
-    foreach ( QString path, mExpandPaths )
+    Q_FOREACH ( const QString& path, mExpandPaths )
     {
       QModelIndex expandIndex = QgsBrowserModel::findPath( model(), path, Qt::MatchStartsWith );
       if ( expandIndex.isValid() )
@@ -89,7 +89,7 @@ void QgsBrowserTreeView::restoreState()
         QgsDebugMsg( "index for path " + path + " not found" );
       }
     }
-    foreach ( QModelIndex expandIndex, expandIndexSet )
+    Q_FOREACH ( const QModelIndex& expandIndex, expandIndexSet )
     {
       expandTree( expandIndex );
     }
@@ -168,7 +168,7 @@ void QgsBrowserTreeView::rowsInserted( const QModelIndex & parentIndex, int star
   // Remove the subtree from mExpandPaths if user collapsed the item in the meantime
   if ( !treeExpanded( parentIndex ) )
   {
-    foreach ( QString path, mExpandPaths )
+    Q_FOREACH ( const QString& path, mExpandPaths )
     {
       if ( path.startsWith( parentPath + "/" ) )
         mExpandPaths.removeOne( path );

@@ -43,17 +43,17 @@ class MeanCoords(GeoAlgorithm):
     WEIGHT = 'WEIGHT'
 
     def defineCharacteristics(self):
-        self.name = 'Mean coordinate(s)'
-        self.group = 'Vector analysis tools'
+        self.name, self.i18n_name = self.trAlgorithm('Mean coordinate(s)')
+        self.group, self.i18n_group = self.trAlgorithm('Vector analysis tools')
 
         self.addParameter(ParameterVector(self.POINTS,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterTableField(self.WEIGHT,
-            self.tr('Weight field'), MeanCoords.POINTS,
-            ParameterTableField.DATA_TYPE_NUMBER, optional=True))
+                                              self.tr('Weight field'), MeanCoords.POINTS,
+                                              ParameterTableField.DATA_TYPE_NUMBER, optional=True))
         self.addParameter(ParameterTableField(self.UID,
-            self.tr('Unique ID field'), MeanCoords.POINTS,
-            ParameterTableField.DATA_TYPE_NUMBER, optional=True))
+                                              self.tr('Unique ID field'), MeanCoords.POINTS,
+                                              ParameterTableField.DATA_TYPE_NUMBER, optional=True))
 
         self.addOutput(OutputVector(MeanCoords.OUTPUT, self.tr('Mean coordinates')))
 
@@ -91,7 +91,7 @@ class MeanCoords(GeoAlgorithm):
             if uniqueIndex == -1:
                 clazz = "Single class"
             else:
-                clazz = str(feat.attributes()[uniqueIndex]).strip()
+                clazz = unicode(feat.attributes()[uniqueIndex]).strip()
             if weightIndex == -1:
                 weight = 1.00
             else:

@@ -27,6 +27,7 @@ from .plugin import DbError
 
 
 class BaseTableModel(QAbstractTableModel):
+
     def __init__(self, header=None, data=None, parent=None):
         QAbstractTableModel.__init__(self, parent)
         self._header = header if header else []
@@ -90,6 +91,7 @@ class BaseTableModel(QAbstractTableModel):
 
 
 class TableDataModel(BaseTableModel):
+
     def __init__(self, table, parent=None):
         self.db = table.database().connector
         self.table = table
@@ -113,7 +115,8 @@ class TableDataModel(BaseTableModel):
         if row < self.fetchedFrom or row >= self.fetchedFrom + self.fetchedCount:
             margin = self.fetchedCount / 2
             start = self.rowCount() - margin if row + margin >= self.rowCount() else row - margin
-            if start < 0: start = 0
+            if start < 0:
+                start = 0
             self.fetchMoreData(start)
         return self.resdata[row - self.fetchedFrom][col]
 
@@ -126,6 +129,7 @@ class TableDataModel(BaseTableModel):
 
 
 class SqlResultModel(BaseTableModel):
+
     def __init__(self, db, sql, parent=None):
         self.db = db.connector
 
@@ -165,6 +169,7 @@ class SqlResultModel(BaseTableModel):
 
 
 class SimpleTableModel(QStandardItemModel):
+
     def __init__(self, header, editable=False, parent=None):
         self.header = header
         self.editable = editable
@@ -195,6 +200,7 @@ class SimpleTableModel(QStandardItemModel):
 
 
 class TableFieldsModel(SimpleTableModel):
+
     def __init__(self, parent, editable=False):
         SimpleTableModel.__init__(self, ['Name', 'Type', 'Null', 'Default'], editable, parent)
 
@@ -205,9 +211,8 @@ class TableFieldsModel(SimpleTableModel):
 
     def flags(self, index):
         flags = SimpleTableModel.flags(self, index)
-        if index.column() == 2:  # set Null column as checkable
-            flags &= ~Qt.ItemIsEditable
-            flags |= Qt.ItemIsUserCheckable
+        if index.column() == 2 and flags & Qt.ItemIsEditable:  # set Null column as checkable instead of editable
+            flags = flags & ~Qt.ItemIsEditable | Qt.ItemIsUserCheckable
         return flags
 
     def append(self, fld):
@@ -216,6 +221,8 @@ class TableFieldsModel(SimpleTableModel):
         row = self.rowCount() - 1
         self.setData(self.index(row, 0), fld, Qt.UserRole)
         self.setData(self.index(row, 1), fld.primaryKey, Qt.UserRole)
+        self.setData(self.index(row, 2), None, Qt.DisplayRole)
+        self.setData(self.index(row, 2), Qt.Unchecked if fld.notNull else Qt.Checked, Qt.CheckStateRole)
 
     def _getNewObject(self):
         from .plugin import TableField
@@ -249,13 +256,14 @@ class TableFieldsModel(SimpleTableModel):
 
 
 class TableConstraintsModel(SimpleTableModel):
+
     def __init__(self, parent, editable=False):
         SimpleTableModel.__init__(self, [QApplication.translate("DBManagerPlugin", 'Name'),
                                          QApplication.translate("DBManagerPlugin", 'Type'),
                                          QApplication.translate("DBManagerPlugin", 'Column(s)')], editable, parent)
 
     def append(self, constr):
-        field_names = map(lambda (k, v): unicode(v.name), constr.fields().iteritems())
+        field_names = map(lambda k_v: unicode(k_v[1].name), constr.fields().iteritems())
         data = [constr.name, constr.type2String(), u", ".join(field_names)]
         self.appendRow(self.rowFromData(data))
         row = self.rowCount() - 1
@@ -285,12 +293,13 @@ class TableConstraintsModel(SimpleTableModel):
 
 
 class TableIndexesModel(SimpleTableModel):
+
     def __init__(self, parent, editable=False):
         SimpleTableModel.__init__(self, [QApplication.translate("DBManagerPlugin", 'Name'),
                                          QApplication.translate("DBManagerPlugin", 'Column(s)')], editable, parent)
 
     def append(self, idx):
-        field_names = map(lambda (k, v): unicode(v.name), idx.fields().iteritems())
+        field_names = map(lambda k_v1: unicode(k_v1[1].name), idx.fields().iteritems())
         data = [idx.name, u", ".join(field_names)]
         self.appendRow(self.rowFromData(data))
         row = self.rowCount() - 1

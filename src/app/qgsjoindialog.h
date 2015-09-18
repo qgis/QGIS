@@ -43,7 +43,7 @@ class APP_EXPORT QgsJoinDialog: public QDialog, private Ui::QgsJoinDialogBase
     void joinedLayerChanged( QgsMapLayer* layer );
 
   private:
-    /**Target layer*/
+    /** Target layer*/
     QgsVectorLayer* mLayer;
 };
 

@@ -52,15 +52,15 @@ QWidget *QgsMssqlSourceSelectDelegate::createEditor( QWidget *parent, const QSty
   if ( index.column() == QgsMssqlTableModel::dbtmType && index.data( Qt::UserRole + 1 ).toBool() )
   {
     QComboBox *cb = new QComboBox( parent );
-    foreach ( QGis::WkbType type,
-              QList<QGis::WkbType>()
-              << QGis::WKBPoint
-              << QGis::WKBLineString
-              << QGis::WKBPolygon
-              << QGis::WKBMultiPoint
-              << QGis::WKBMultiLineString
-              << QGis::WKBMultiPolygon
-              << QGis::WKBNoGeometry )
+    Q_FOREACH ( QGis::WkbType type,
+                QList<QGis::WkbType>()
+                << QGis::WKBPoint
+                << QGis::WKBLineString
+                << QGis::WKBPolygon
+                << QGis::WKBMultiPoint
+                << QGis::WKBMultiLineString
+                << QGis::WKBMultiPolygon
+                << QGis::WKBNoGeometry )
     {
       cb->addItem( QgsMssqlTableModel::iconForWkbType( type ), QgsMssqlTableModel::displayStringForWkbType( type ), type );
     }
@@ -433,7 +433,7 @@ void QgsMssqlSourceSelect::addTables()
   QgsDebugMsg( QString( "mConnInfo:%1" ).arg( mConnInfo ) );
   mSelectedTables.clear();
 
-  foreach ( QModelIndex idx, mTablesTreeView->selectionModel()->selection().indexes() )
+  Q_FOREACH ( const QModelIndex& idx, mTablesTreeView->selectionModel()->selection().indexes() )
   {
     if ( idx.column() != QgsMssqlTableModel::dbtmTable )
       continue;
@@ -519,6 +519,27 @@ void QgsMssqlSourceSelect::on_btnConnect_clicked()
 
   QString connectionName = db.connectionName();
 
+  // Test for geometry columns table first.  Don't use it if not found.
+  QSqlQuery q = QSqlQuery( db );
+  q.setForwardOnly( true );
+
+  if ( useGeometryColumns )
+  {
+    QString testquery( "SELECT count(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'geometry_columns'" );
+    if ( !q.exec( testquery ) || !q.first() || q.value( 0 ).toInt() == 0 )
+    {
+      QMessageBox::StandardButtons reply;
+      reply = QMessageBox::question( this, "Scan full database?",
+                                     "No geometry_columns table found. \nWould you like to search full database (might be slower)? ",
+                                     QMessageBox::Yes | QMessageBox::No
+                                   );
+      if ( reply == QMessageBox::Yes )
+        useGeometryColumns = false;
+      else
+        return;
+    }
+  }
+
   // Read supported layers from database
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
@@ -539,7 +560,7 @@ void QgsMssqlSourceSelect::on_btnConnect_clicked()
   }
 
   // issue the sql query
-  QSqlQuery q = QSqlQuery( db );
+  q = QSqlQuery( db );
   q.setForwardOnly( true );
   ( void )q.exec( query );
 

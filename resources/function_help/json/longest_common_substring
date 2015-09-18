@@ -1,0 +1,11 @@
+{
+  "function": "longest_common_substring",
+  "description": "Returns the longest common substring between two strings. This substring is the longest string that is a substring of the two input strings. Eg, the longest common substring of \"ABABC\" and \"BABCA\" is \"ABC\". The substring is case sensitive.",
+  "arguments": [ {"arg":"string1","description":"a string"},
+  {"arg":"string2","description":"a string"}
+  ],
+  "examples": [ { "expression":"longest_common_substring('ABABC','BABCA')", "returns":"'ABC'"},
+{ "expression":"longest_common_substring('abcDeF','abcdef')", "returns":"'abc'"},
+{ "expression":"longest_common_substring(upper('abcDeF'),upper('abcdex'))", "returns":"'ABCDE'"}
+  ]
+}

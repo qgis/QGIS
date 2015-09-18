@@ -16,8 +16,10 @@
         <flag key="C" advanced="yes"/>
         <flag key="r" advanced="yes"/>
         <flag key="i" advanced="yes"/>
-        <option key="fs" advanced="yes"/>
-        <option key="nv" advanced="yes"/>
+        <option key="fs" advanced="yes" version_max="6.4"/>
+        <option key="separator" advanced="yes" version_min="7.0"/>
+        <option key="nv" advanced="yes" version_max="6.4"/>
+        <option key="null_value" advanced="yes" version_min="7.0"/>
         <option key="nsteps" advanced="yes"/>
 	<file key="output" type="new" advanced="yes"/>
 </qgisgrassmodule>

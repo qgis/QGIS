@@ -19,16 +19,15 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
 #include <QObject>
-#include <QPen>
-
 
 class QgsGrassTools;
 class QgsGrassNewMapset;
 class QgsGrassRegion;
-class QgsGrassEdit;
 
 class QgsMapCanvas;
+class QgsMapLayer;
 class QgsRubberBand;
+class QgsVectorLayer;
 
 class QAction;
 class QIcon;
@@ -75,18 +74,12 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
     //! Destructor
     virtual ~QgsGrassPlugin();
 
-    //! Get Region Pen
-    QPen & regionPen( void );
-    //! Set Region Pen
-    void setRegionPen( QPen & );
     //! Get an icon from the active theme if possible
     static QIcon getThemeIcon( const QString &theName );
 
   public slots:
     //! init the gui
     virtual void initGui() override;
-    //! Start vector editing
-    void edit();
     //! unload the plugin
     void unload() override;
     //! show the help document
@@ -95,10 +88,6 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
     void displayRegion();
     //! Switch region on/off
     void switchRegion( bool on );
-    //! Change region
-    void changeRegion( void );
-    //! Region dialog closed
-    void regionClosed();
     //! Redraw region
     void redrawRegion( void );
     //! Post render
@@ -107,9 +96,9 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
     void openTools( void );
     //! Create new mapset
     void newMapset();
-    //! Open existing mapset
+    //! Open existing mapset and save it to project
     void openMapset();
-    //! Close mapset
+    //! Close mapset and save it to project
     void closeMapset();
     //! Current mapset changed (opened/closed)
     void mapsetChanged();
@@ -119,18 +108,15 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
     void projectRead();
     //! New project
     void newProject();
-    //! Save mapset to project
-    void saveMapset();
-    //! Set edit action
-    void setEditAction();
-    //! Close the edit if layer is removed
-    void closeEdit( QString layerId );
-    //! Cleanup the Grass Edit
-    void cleanUp();
     //! update plugin icons when the app tells us its theme is changed
     void setCurrentTheme( QString theThemeName );
     void setTransform();
-    void editClosed();
+    //! Called when a new layer was added to map registry
+    void onLayerWasAdded( QgsMapLayer* theMapLayer );
+    //! Called when editing of a layer started
+    void onEditingStarted();
+    void onEditingStopped();
+    void onCurrentLayerChanged( QgsMapLayer* layer );
   private:
     //! Pointer to our toolbar
     QToolBar *mToolBarPointer;
@@ -141,17 +127,13 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
 
     //! Pointer to Display region acction
     QAction *mRegionAction;
-    //! Region width
-    QPen mRegionPen;
-    //! Region dialog
-    QgsGrassRegion *mRegion;
+
     // Region rubber band
     QgsRubberBand *mRegionBand;
     //! GRASS tools
     QgsGrassTools *mTools;
     //! Pointer to QgsGrassNewMapset
     QgsGrassNewMapset *mNewMapset;
-    QgsGrassEdit *mEdit;
 
     QgsCoordinateReferenceSystem mCrs;
     QgsCoordinateTransform mCoordinateTransform;
@@ -161,9 +143,10 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
     QAction *mNewMapsetAction;
     QAction *mCloseMapsetAction;
     QAction *mOpenToolsAction;
-    QAction *mEditRegionAction;
-    QAction *mEditAction;
     QAction *mNewVectorAction;
+
+    // Names of layer styles before editing started
+    QMap<QgsVectorLayer *, QString> mOldStyles;
 };
 
 #endif // QGSGRASSPLUGIN_H

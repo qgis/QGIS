@@ -20,7 +20,7 @@
 
 #include "qgsninecellfilter.h"
 
-/**Calculates the ruggedness index based on a 3x3 moving window.
+/** Calculates the ruggedness index based on a 3x3 moving window.
   Algorithm from Riley et al. 1999: A terrain ruggedness index that quantifies topographic heterogeneity*/
 class ANALYSIS_EXPORT QgsRuggednessFilter: public QgsNineCellFilter
 {
@@ -29,7 +29,7 @@ class ANALYSIS_EXPORT QgsRuggednessFilter: public QgsNineCellFilter
     ~QgsRuggednessFilter();
 
   protected:
-    /**Calculates output value from nine input values. The input values and the output value can be equal to the
+    /** Calculates output value from nine input values. The input values and the output value can be equal to the
       nodata value if not present or outside of the border. Must be implemented by subclasses*/
     float processNineCellWindow( float* x11, float* x21, float* x31,
                                  float* x12, float* x22, float* x32,

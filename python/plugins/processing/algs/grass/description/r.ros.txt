@@ -1,5 +1,5 @@
 r.ros
-r.ros - Generates three, or four raster map layers showing 1) the base (perpendicular) rate of spread (ROS), 2) the maximum (forward) ROS, 3) the direction of the maximum ROS, and optionally 4) the maximum potential spotting distance.
+Generates three, or four raster map layers showing 1) the base (perpendicular) rate of spread (ROS), 2) the maximum (forward) ROS, 3) the direction of the maximum ROS, and optionally 4) the maximum potential spotting distance.
 Raster (r.*)
 ParameterRaster|model|Name of raster map containing fuel MODELs|True
 ParameterRaster|moisture_live|Name of raster map containing LIVE fuel MOISTURE (%)|True

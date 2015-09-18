@@ -34,6 +34,7 @@ import ftools_utils
 from qgis.core import QGis, QgsFeature, QgsGeometry, QgsFeatureRequest
 from ui_frmSelectByLocation import Ui_Dialog
 
+
 class Dialog(QDialog, Ui_Dialog):
     TOUCH = 1
     OVERLAP = 2
@@ -46,7 +47,7 @@ class Dialog(QDialog, Ui_Dialog):
         self.iface = iface
         # Set up the user interface from Designer.
         self.setupUi(self)
-        self.buttonOk = self.buttonBox.button( QDialogButtonBox.Ok )
+        self.buttonOk = self.buttonBox.button(QDialogButtonBox.Ok)
         # populate layer list
         self.progressBar.setValue(0)
         layers = ftools_utils.getLayerNames([QGis.Point, QGis.Line, QGis.Polygon])
@@ -63,9 +64,9 @@ class Dialog(QDialog, Ui_Dialog):
             self.chkSelected.setChecked(False)
 
     def accept(self):
-        self.buttonOk.setEnabled( False )
+        self.buttonOk.setEnabled(False)
         if self.inPolygon.currentText() == "":
-            QMessageBox.information(self, self.tr("Select by location"), self.tr( "Please specify input layer"))
+            QMessageBox.information(self, self.tr("Select by location"), self.tr("Please specify input layer"))
         elif self.inPoint.currentText() == "":
             QMessageBox.information(self, self.tr("Select by location"), self.tr("Please specify select layer"))
         else:
@@ -73,7 +74,7 @@ class Dialog(QDialog, Ui_Dialog):
             selLayer = self.inPoint.currentText()
             self.compute(inLayer, selLayer, self.cmbModify.currentText(), self.chkSelected.isChecked())
         self.progressBar.setValue(0)
-        self.buttonOk.setEnabled( True )
+        self.buttonOk.setEnabled(True)
 
     def compute(self, inLayer, selLayer, modify, selection):
         inputLayer = ftools_utils.getVectorLayerByName(inLayer)
@@ -86,10 +87,10 @@ class Dialog(QDialog, Ui_Dialog):
         selectedSet = []
         index = ftools_utils.createIndex(inputProvider)
 
-        def _points_op(geomA,geomB):
+        def _points_op(geomA, geomB):
             return geomA.intersects(geomB)
 
-        def _poly_lines_op(geomA,geomB):
+        def _poly_lines_op(geomA, geomB):
             if geomA.disjoint(geomB):
                 return False
             intersects = False
@@ -131,11 +132,11 @@ class Dialog(QDialog, Ui_Dialog):
                 geom = QgsGeometry(feat.geometry())
                 intersects = index.intersects(geom.boundingBox())
                 for id in intersects:
-                    inputProvider.getFeatures( QgsFeatureRequest().setFilterFid( int(id) ) ).nextFeature( infeat )
+                    inputProvider.getFeatures(QgsFeatureRequest().setFilterFid(int(id))).nextFeature(infeat)
                     tmpGeom = QgsGeometry(infeat.geometry())
-                    if sp_operator(geom,tmpGeom):
+                    if sp_operator(geom, tmpGeom):
                         selectedSet.append(infeat.id())
-                self.progressBar.setValue(self.progressBar.value()+1)
+                self.progressBar.setValue(self.progressBar.value() + 1)
         else:
             self.progressBar.setMaximum(selectProvider.featureCount())
             selectFit = selectProvider.getFeatures()
@@ -143,11 +144,11 @@ class Dialog(QDialog, Ui_Dialog):
                 geom = QgsGeometry(feat.geometry())
                 intersects = index.intersects(geom.boundingBox())
                 for id in intersects:
-                    inputProvider.getFeatures( QgsFeatureRequest().setFilterFid( int(id) ) ).nextFeature( infeat )
-                    tmpGeom = QgsGeometry( infeat.geometry() )
-                    if sp_operator(geom,tmpGeom):
+                    inputProvider.getFeatures(QgsFeatureRequest().setFilterFid(int(id))).nextFeature(infeat)
+                    tmpGeom = QgsGeometry(infeat.geometry())
+                    if sp_operator(geom, tmpGeom):
                         selectedSet.append(infeat.id())
-                self.progressBar.setValue(self.progressBar.value()+1)
+                self.progressBar.setValue(self.progressBar.value() + 1)
         if modify == self.tr("adding to current selection"):
             selectedSet = list(set(inputLayer.selectedFeaturesIds()).union(selectedSet))
         elif modify == self.tr("removing from current selection"):

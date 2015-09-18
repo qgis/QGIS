@@ -1,5 +1,5 @@
 v.to.points
-v.to.points - Create points along input lines
+Create points along input lines
 Vector (v.*)
 ParameterVector|input|Input lines layer|1|False
 ParameterString|dmax|Maximum distance between points in map units|100

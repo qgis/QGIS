@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 1.3.2013
     Copyright            : (C) 2013 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -105,7 +105,7 @@ class CORE_EXPORT QgsRelationManager : public QObject
     QList<QgsRelation> referencedRelations( QgsVectorLayer *layer = 0 ) const;
 
   signals:
-    /** this signal is emitted when the relations were loaded after reading a project */
+    /** This signal is emitted when the relations were loaded after reading a project */
     void relationsLoaded();
 
     /**

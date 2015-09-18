@@ -216,7 +216,7 @@ void QgsWFSSourceSelect::capabilitiesReplyFinished()
   QgsWFSCapabilities::GetCapabilities caps = mCapabilities->capabilities();
 
   mAvailableCRS.clear();
-  foreach ( QgsWFSCapabilities::FeatureType featureType, caps.featureTypes )
+  Q_FOREACH ( const QgsWFSCapabilities::FeatureType& featureType, caps.featureTypes )
   {
     // insert the typenames, titles and abstracts into the tree view
     QStandardItem* titleItem = new QStandardItem( featureType.title );
@@ -234,7 +234,7 @@ void QgsWFSSourceSelect::capabilitiesReplyFinished()
 
     // insert the available CRS into mAvailableCRS
     std::list<QString> currentCRSList;
-    foreach ( QString crs, featureType.crslist )
+    Q_FOREACH ( const QString& crs, featureType.crslist )
     {
       currentCRSList.push_back( crs );
     }

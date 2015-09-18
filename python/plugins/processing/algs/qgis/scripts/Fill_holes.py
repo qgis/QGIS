@@ -22,8 +22,8 @@ resgeom = QgsGeometry()
 resfeat = QgsFeature()
 
 for feat in processing.features(polyLayer):
-        progress.setPercentage(int(100*l/n))
-        l+=1
+        progress.setPercentage(int(100 * l / n))
+        l += 1
 
         g = loads(feat.geometry().asWkb())
 

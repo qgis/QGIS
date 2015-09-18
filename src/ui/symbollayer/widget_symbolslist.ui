@@ -14,11 +14,20 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_4">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
    <property name="verticalSpacing">
     <number>4</number>
-   </property>
-   <property name="margin">
-    <number>0</number>
    </property>
    <item row="0" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout">
@@ -154,7 +163,7 @@
             <number>5</number>
            </property>
            <property name="maximum">
-            <double>99999.000000000000000</double>
+            <double>99999999.989999994635582</double>
            </property>
            <property name="singleStep">
             <double>0.200000000000000</double>
@@ -208,7 +217,16 @@
        </widget>
        <widget class="QWidget" name="pageFill">
         <layout class="QHBoxLayout" name="horizontalLayout_2">
-         <property name="margin">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
           <number>0</number>
          </property>
         </layout>

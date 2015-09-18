@@ -44,21 +44,8 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
   mTestGeometry = false;
 
   mMode = FileScan;
-  if ( request.filterType() == QgsFeatureRequest::FilterFid )
-  {
-    QgsDebugMsg( "Configuring for returning single id" );
-    mFeatureIds.append( request.filterFid() );
-    mMode = FeatureIds;
-    mTestSubset = false;
-  }
-  // If have geometry and testing geometry then evaluate options...
-  // If we don't have geometry then all records pass geometry filter.
-  // CC: 2013-05-09
-  // Not sure about intended relationship between filtering on geometry and
-  // requesting no geometry? Have preserved current logic of ignoring spatial filter
-  // if not requesting geometry.
 
-  else if ( request.filterType() == QgsFeatureRequest::FilterRect && hasGeometry )
+  if ( !request.filterRect().isNull() && hasGeometry )
   {
     QgsDebugMsg( "Configuring for rectangle select" );
     mTestGeometry = true;
@@ -98,13 +85,32 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
     }
   }
 
-  // If we have a subset index then use it..
-  if ( mMode == FileScan && mSource->mUseSubsetIndex )
+  if ( request.filterType() == QgsFeatureRequest::FilterFid )
   {
-    QgsDebugMsg( QString( "Layer has subset index - use %1 items from subset index" ).arg( mSource->mSubsetIndex.size() ) );
+    QgsDebugMsg( "Configuring for returning single id" );
+    if ( request.filterRect().isNull() || ( !request.filterRect().isNull() && mFeatureIds.contains( request.filterFid() ) ) )
+    {
+      mFeatureIds = QList<QgsFeatureId>() << request.filterFid();
+    }
+    mMode = FeatureIds;
     mTestSubset = false;
-    mMode = SubsetIndex;
   }
+  // If have geometry and testing geometry then evaluate options...
+  // If we don't have geometry then all records pass geometry filter.
+  // CC: 2013-05-09
+  // Not sure about intended relationship between filtering on geometry and
+  // requesting no geometry? Have preserved current logic of ignoring spatial filter
+  // if not requesting geometry.
+
+  else
+
+    // If we have a subset index then use it..
+    if ( mMode == FileScan && mSource->mUseSubsetIndex )
+    {
+      QgsDebugMsg( QString( "Layer has subset index - use %1 items from subset index" ).arg( mSource->mSubsetIndex.size() ) );
+      mTestSubset = false;
+      mMode = SubsetIndex;
+    }
 
   // Otherwise just have to scan the file
   if ( mMode == FileScan )
@@ -288,17 +294,21 @@ bool QgsDelimitedTextFeatureIterator::nextFeatureInternal( QgsFeature& feature )
 
     if ( mLoadGeometry )
     {
+      bool nullGeom = false;
       if ( mSource->mGeomRep == QgsDelimitedTextProvider::GeomAsWkt )
       {
-        geom = loadGeometryWkt( tokens );
+        geom = loadGeometryWkt( tokens, nullGeom );
       }
       else if ( mSource->mGeomRep == QgsDelimitedTextProvider::GeomAsXy )
       {
-        geom = loadGeometryXY( tokens );
+        geom = loadGeometryXY( tokens, nullGeom );
       }
 
-      if ( ! geom )
+      if (( !geom && !nullGeom ) || ( nullGeom && mTestGeometry ) )
       {
+        // if we didn't get a geom and not because it's null, or we got a null
+        // geom and we are testing for intersecting geometries then ignore this
+        // record
         continue;
       }
     }
@@ -335,7 +345,8 @@ bool QgsDelimitedTextFeatureIterator::nextFeatureInternal( QgsFeature& feature )
 
     if ( mTestSubset )
     {
-      QVariant isOk = mSource->mSubsetExpression->evaluate( &feature );
+      mSource->mExpressionContext.setFeature( feature );
+      QVariant isOk = mSource->mSubsetExpression->evaluate( &mSource->mExpressionContext );
       if ( mSource->mSubsetExpression->hasEvalError() ) continue;
       if ( ! isOk.toBool() ) continue;
     }
@@ -355,11 +366,17 @@ bool QgsDelimitedTextFeatureIterator::setNextFeatureId( qint64 fid )
 
 
 
-QgsGeometry* QgsDelimitedTextFeatureIterator::loadGeometryWkt( const QStringList& tokens )
+QgsGeometry* QgsDelimitedTextFeatureIterator::loadGeometryWkt( const QStringList& tokens, bool &isNull )
 {
   QgsGeometry* geom = 0;
   QString sWkt = tokens[mSource->mWktFieldIndex];
+  if ( sWkt.isEmpty() )
+  {
+    isNull = true;
+    return 0;
+  }
 
+  isNull = false;
   geom = QgsDelimitedTextProvider::geomFromWkt( sWkt, mSource->mWktHasPrefix, mSource->mWktHasZM );
 
   if ( geom && geom->type() != mSource->mGeometryType )
@@ -375,10 +392,16 @@ QgsGeometry* QgsDelimitedTextFeatureIterator::loadGeometryWkt( const QStringList
   return geom;
 }
 
-QgsGeometry* QgsDelimitedTextFeatureIterator::loadGeometryXY( const QStringList& tokens )
+QgsGeometry* QgsDelimitedTextFeatureIterator::loadGeometryXY( const QStringList& tokens, bool &isNull )
 {
   QString sX = tokens[mSource->mXFieldIndex];
   QString sY = tokens[mSource->mYFieldIndex];
+  if ( sX.isEmpty() && sY.isEmpty() )
+  {
+    isNull = true;
+    return 0;
+  }
+  isNull = false;
   QgsPoint pt;
   bool ok = QgsDelimitedTextProvider::pointFromXY( sX, sY, pt, mSource->mDecimalPoint, mSource->mXyDms );
 
@@ -468,6 +491,10 @@ QgsDelimitedTextFeatureSource::QgsDelimitedTextFeatureSource( const QgsDelimited
 {
   mFile = new QgsDelimitedTextFile();
   mFile->setFromUrl( p->mFile->url() );
+
+  mExpressionContext << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope();
+  mExpressionContext.setFields( mFields );
 }
 
 QgsDelimitedTextFeatureSource::~QgsDelimitedTextFeatureSource()

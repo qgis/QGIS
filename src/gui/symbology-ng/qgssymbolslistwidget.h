@@ -32,7 +32,45 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
   public:
     QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* style, QMenu* menu, QWidget* parent, const QgsVectorLayer * layer = 0 );
 
+    /** Returns the expression context used for the widget, if set. This expression context is used for
+     * evaluating data defined symbol properties and for populating based expression widgets in
+     * the list widget.
+     * @note added in QGIS 2.12
+     * @see setExpressionContext()
+     */
+    QgsExpressionContext* expressionContext() const { return mPresetExpressionContext; }
+
+    /** Sets the map canvas associated with the widget. This allows the widget to retrieve the current
+     * map scale and other properties from the canvas.
+     * @param canvas map canvas
+     * @see mapCanvas()
+     * @note added in QGIS 2.12
+     */
+    virtual void setMapCanvas( QgsMapCanvas* canvas );
+
+    /** Returns the map canvas associated with the widget.
+     * @see setMapCanvas
+     * @note added in QGIS 2.12
+     */
+    const QgsMapCanvas* mapCanvas() const;
+
+    /** Returns the vector layer associated with the widget.
+     * @note added in QGIS 2.12
+     */
+    const QgsVectorLayer* layer() const { return mLayer; }
+
   public slots:
+
+    /** Sets the optional expression context used for the widget. This expression context is used for
+     * evaluating data defined symbol properties and for populating based expression widgets in
+     * the properties widget.
+     * @param context expression context pointer. Ownership is not transferred and the object must
+     * be kept alive for the lifetime of the properties widget.
+     * @note added in QGIS 2.12
+     * @see expressionContext()
+     */
+    void setExpressionContext( QgsExpressionContext* context );
+
     void setSymbolFromStyle( const QModelIndex & index );
     void setSymbolColor( const QColor& color );
     void setMarkerAngle( double angle );
@@ -62,6 +100,7 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     QMenu* mAdvancedMenu;
     QAction* mClipFeaturesAction;
     const QgsVectorLayer* mLayer;
+    QgsMapCanvas* mMapCanvas;
 
     void populateSymbolView();
     void populateSymbols( QStringList symbols );
@@ -69,10 +108,12 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     void updateSymbolInfo();
 
   private:
-    /**Displays alpha value as transparency in mTransparencyLabel*/
+    /** Displays alpha value as transparency in mTransparencyLabel*/
     void displayTransparency( double alpha );
     /** Recursive function to create the group tree in the widget */
     void populateGroups( QString parent = "", QString prepend = "" );
+
+    QgsExpressionContext* mPresetExpressionContext;
 };
 
 #endif //QGSSYMBOLSLISTWIDGET_H

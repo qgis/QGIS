@@ -56,31 +56,34 @@ class TestQgsComposerUtils : public QObject
     void fontDescentMM(); //test calculating font descent in mm
     void fontHeightMM(); //test calculating font height in mm
     void fontHeightCharacterMM(); //test calculating font character height in mm
-    void textWidthMM(); //test calculting text width in mm
+    void textWidthMM(); //test calculating text width in mm
+    void textHeightMM(); //test calculating text height in mm
     void drawTextPos(); //test drawing text at a pos
     void drawTextRect(); //test drawing text in a rect
 
   private:
     bool renderCheck( QString testName, QImage &image, int mismatchCount = 0 );
     QgsComposition* mComposition;
-    QgsMapSettings mMapSettings;
+    QgsMapSettings *mMapSettings;
     QString mReport;
     QFont mTestFont;
 
 };
 
 TestQgsComposerUtils::TestQgsComposerUtils()
-    : mComposition( NULL )
+    : mComposition( 0 )
+    , mMapSettings( 0 )
 {
-
 }
+
 
 void TestQgsComposerUtils::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis(); //for access to test font
 
-  mComposition = new QgsComposition( mMapSettings );
+  mMapSettings = new QgsMapSettings();
+  mComposition = new QgsComposition( *mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 
   mReport = "<h1>Composer Utils Tests</h1>\n";
@@ -94,10 +97,11 @@ void TestQgsComposerUtils::initTestCase()
 void TestQgsComposerUtils::cleanupTestCase()
 {
   delete mComposition;
+  delete mMapSettings;
 
   QgsApplication::exitQgis();
 
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -459,6 +463,8 @@ void TestQgsComposerUtils::readDataDefinedProperty()
   QVERIFY( !( dataDefinedProperties.value( QgsComposerObject::TestProperty ) )->useExpression() );
   QCOMPARE(( dataDefinedProperties.value( QgsComposerObject::TestProperty ) )->expressionString(), QString() );
   QCOMPARE(( dataDefinedProperties.value( QgsComposerObject::TestProperty ) )->field(), QString() );
+
+  qDeleteAll( dataDefinedProperties );
 }
 
 void TestQgsComposerUtils::readDataDefinedPropertyMap()
@@ -515,6 +521,7 @@ void TestQgsComposerUtils::readDataDefinedPropertyMap()
   QVERIFY( !( dataDefinedProperties.value( QgsComposerObject::TestProperty ) )->useExpression() );
   QCOMPARE(( dataDefinedProperties.value( QgsComposerObject::TestProperty ) )->expressionString(), QString( "test expression 3" ) );
   QCOMPARE(( dataDefinedProperties.value( QgsComposerObject::TestProperty ) )->field(), QString( "test field 3" ) );
+  qDeleteAll( dataDefinedProperties );
 }
 
 void TestQgsComposerUtils::writeDataDefinedPropertyMap()
@@ -565,6 +572,7 @@ void TestQgsComposerUtils::writeDataDefinedPropertyMap()
   QCOMPARE( dd3Elem.attribute( "useExpr", "bad" ), QString( "true" ) );
   QCOMPARE( dd3Elem.attribute( "expr", "bad" ), QString( "expression 3" ) );
   QCOMPARE( dd3Elem.attribute( "field", "bad" ), QString( "field 3" ) );
+  qDeleteAll( dataDefinedProperties );
 }
 
 void TestQgsComposerUtils::scaledFontPixelSize()
@@ -588,7 +596,7 @@ void TestQgsComposerUtils::fontAscentMM()
 void TestQgsComposerUtils::fontDescentMM()
 {
   mTestFont.setPointSize( 12 );
-  QCOMPARE( QgsComposerUtils::fontDescentMM( mTestFont ), 0.9 );
+  QVERIFY( qgsDoubleNear( QgsComposerUtils::fontDescentMM( mTestFont ), 0.9, 0.05 ) );
 }
 
 void TestQgsComposerUtils::fontHeightMM()
@@ -612,6 +620,20 @@ void TestQgsComposerUtils::textWidthMM()
   //platform specific font rendering differences mean this test needs to be very leniant
   mTestFont.setPointSize( 12 );
   QVERIFY( qgsDoubleNear( QgsComposerUtils::textWidthMM( mTestFont, QString( "test string" ) ), 20, 2 ) );
+}
+
+void TestQgsComposerUtils::textHeightMM()
+{
+  //platform specific font rendering differences mean this test needs to be very leniant
+  mTestFont.setPointSize( 12 );
+  QgsDebugMsg( QString( "height: %1" ).arg( QgsComposerUtils::textHeightMM( mTestFont, QString( "test string" ) ) ) );
+  QVERIFY( qgsDoubleNear( QgsComposerUtils::textHeightMM( mTestFont, QString( "test string" ) ), 3.9, 0.2 ) );
+  QgsDebugMsg( QString( "height: %1" ).arg( QgsComposerUtils::textHeightMM( mTestFont, QString( "test\nstring" ) ) ) );
+  QVERIFY( qgsDoubleNear( QgsComposerUtils::textHeightMM( mTestFont, QString( "test\nstring" ) ), 8.7, 0.2 ) );
+  QgsDebugMsg( QString( "height: %1" ).arg( QgsComposerUtils::textHeightMM( mTestFont, QString( "test\nstring" ), 2 ) ) );
+  QVERIFY( qgsDoubleNear( QgsComposerUtils::textHeightMM( mTestFont, QString( "test\nstring" ), 2 ), 13.5, 0.2 ) );
+  QgsDebugMsg( QString( "height: %1" ).arg( QgsComposerUtils::textHeightMM( mTestFont, QString( "test\nstring\nstring" ) ) ) );
+  QVERIFY( qgsDoubleNear( QgsComposerUtils::textHeightMM( mTestFont, QString( "test\nstring\nstring" ) ), 13.5, 0.2 ) );
 }
 
 void TestQgsComposerUtils::drawTextPos()
@@ -681,10 +703,11 @@ void TestQgsComposerUtils::drawTextRect()
 bool TestQgsComposerUtils::renderCheck( QString testName, QImage &image, int mismatchCount )
 {
   mReport += "<h2>" + testName + "</h2>\n";
-  QString myTmpDir = QDir::tempPath() + QDir::separator();
+  QString myTmpDir = QDir::tempPath() + "/";
   QString myFileName = myTmpDir + testName + ".png";
   image.save( myFileName, "PNG" );
   QgsRenderChecker myChecker;
+  myChecker.setControlPathPrefix( "composer_utils" );
   myChecker.setControlName( "expected_" + testName );
   myChecker.setRenderedImage( myFileName );
   bool myResultFlag = myChecker.compareImages( testName, mismatchCount );

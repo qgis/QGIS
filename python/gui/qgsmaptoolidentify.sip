@@ -48,13 +48,13 @@ class QgsMapToolIdentify : QgsMapTool
     virtual ~QgsMapToolIdentify();
 
     //! Overridden mouse move event
-    virtual void canvasMoveEvent( QMouseEvent * e );
+    virtual void canvasMoveEvent( QgsMapMouseEvent * e );
 
     //! Overridden mouse press event
-    virtual void canvasPressEvent( QMouseEvent * e );
+    virtual void canvasPressEvent( QgsMapMouseEvent * e );
 
     //! Overridden mouse release event
-    virtual void canvasReleaseEvent( QMouseEvent * e );
+    virtual void canvasReleaseEvent( QgsMapMouseEvent * e );
 
     virtual void activate();
 
@@ -102,7 +102,7 @@ class QgsMapToolIdentify : QgsMapTool
     @return a list of IdentifyResult*/
     QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, IdentifyMode mode,  QList<QgsMapLayer*> layerList, LayerType layerType = AllLayers );
 
-    /** call the right method depending on layer type */
+    /** Call the right method depending on layer type */
     bool identifyLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsMapLayer *layer, QgsPoint point, QgsRectangle viewExtent, double mapUnitsPerPixel, LayerType layerType = AllLayers );
 
     bool identifyRasterLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsRasterLayer *layer, QgsPoint point, QgsRectangle viewExtent, double mapUnitsPerPixel );

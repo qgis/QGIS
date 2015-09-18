@@ -23,6 +23,8 @@
 #include "ui_qgsunitselectionwidget.h"
 #include "ui_qgsmapunitscaledialog.h"
 
+class QgsMapCanvas;
+
 /** Dialog allowing the user to choose the minimum and maximum scale of an object in map units */
 class GUI_EXPORT QgsMapUnitScaleDialog : public QDialog, private Ui::QgsMapUnitScaleDialog
 {
@@ -36,9 +38,17 @@ class GUI_EXPORT QgsMapUnitScaleDialog : public QDialog, private Ui::QgsMapUnitS
     /** Sets the map unit scale */
     void setMapUnitScale( const QgsMapUnitScale& scale );
 
+    /** Sets the map canvas associated with the dialog. This allows the dialog to retrieve the current
+     * map scale from the canvas.
+     * @param canvas map canvas
+     * @note added in QGIS 2.12
+     */
+    void setMapCanvas( QgsMapCanvas* canvas );
+
   private slots:
     void configureMinComboBox();
     void configureMaxComboBox();
+
 };
 
 /** Widget displaying a combobox allowing the user to choose between millimeter and map units
@@ -91,12 +101,20 @@ class GUI_EXPORT QgsUnitSelectionWidget : public QWidget, private Ui::QgsUnitSel
     /** Sets the map unit scale */
     void setMapUnitScale( const QgsMapUnitScale& scale ) { mUnitScaleDialog->setMapUnitScale( scale ); }
 
+    /** Sets the map canvas associated with the widget. This allows the widget to retrieve the current
+     * map scale from the canvas.
+     * @param canvas map canvas
+     * @note added in QGIS 2.12
+     */
+    void setMapCanvas( QgsMapCanvas* canvas );
+
   signals:
     void changed();
 
   private slots:
     void showDialog();
     void toggleUnitRangeButton();
+
 };
 
 #endif // QGSUNITSELECTIONWIDGET_H

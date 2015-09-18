@@ -164,6 +164,9 @@ void QgsPaperItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* ite
   QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
   context.setPainter( painter );
   context.setForceVectorOutput( true );
+  QgsExpressionContext* expressionContext = createExpressionContext();
+  context.setExpressionContext( *expressionContext );
+  delete expressionContext;
 
   painter->save();
 
@@ -194,18 +197,7 @@ void QgsPaperItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* ite
                                      ( rect().width() - 2 * mPageMargin ) * dotsPerMM, ( rect().height() - 2 * mPageMargin ) * dotsPerMM ) );
   QList<QPolygonF> rings; //empty list
 
-  //need to render using atlas feature properties?
-  if ( mComposition->atlasComposition().enabled() && mComposition->atlasMode() != QgsComposition::AtlasOff )
-  {
-    //using an atlas, so render using current atlas feature
-    //since there may be data defined symbols using atlas feature properties
-    mComposition->pageStyleSymbol()->renderPolygon( pagePolygon, &rings, mComposition->atlasComposition().currentFeature(), context );
-  }
-  else
-  {
-    mComposition->pageStyleSymbol()->renderPolygon( pagePolygon, &rings, 0, context );
-  }
-
+  mComposition->pageStyleSymbol()->renderPolygon( pagePolygon, &rings, 0, context );
   mComposition->pageStyleSymbol()->stopRender( context );
   painter->restore();
 }

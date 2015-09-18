@@ -171,7 +171,7 @@ QString QgsProjectionSelector::ogcWmsCrsFilterAsSqlExpression( QSet<QString> * c
 
   // iterate through all incoming CRSs
 
-  foreach ( QString auth_id, crsFilter->values() )
+  Q_FOREACH ( const QString& auth_id, crsFilter->values() )
   {
     QStringList parts = auth_id.split( ":" );
 
@@ -187,7 +187,7 @@ QString QgsProjectionSelector::ogcWmsCrsFilterAsSqlExpression( QSet<QString> * c
   if ( authParts.size() > 0 )
   {
     QString prefix = " AND (";
-    foreach ( QString auth_name, authParts.keys() )
+    Q_FOREACH ( const QString& auth_name, authParts.keys() )
     {
       sqlExpression += QString( "%1(upper(auth_name)='%2' AND upper(auth_id) IN ('%3'))" )
                        .arg( prefix )
@@ -308,7 +308,7 @@ QString QgsProjectionSelector::selectedProj4String()
   {
     databaseFileName = QgsApplication::qgisUserDbFilePath();
     if ( !QFileInfo( databaseFileName ).exists() ) //its unlikely that this condition will ever be reached
-      return QString( "" );
+      return QString();
   }
   else //must be a system projection then
   {
@@ -938,7 +938,7 @@ QStringList QgsProjectionSelector::authorities()
   return authorities;
 }
 
-/*!linfinity qtcreator qgis
+/** Linfinity qtcreator qgis
 * \brief Make the string safe for use in SQL statements.
 *  This involves escaping single quotes, double quotes, backslashes,
 *  and optionally, percentage symbols.  Percentage symbols are used

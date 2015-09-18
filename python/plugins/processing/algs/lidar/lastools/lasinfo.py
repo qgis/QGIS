@@ -36,6 +36,7 @@ from processing.core.parameters import ParameterBoolean
 from processing.core.outputs import OutputFile
 from processing.core.parameters import ParameterNumber
 
+
 class lasinfo(LAStoolsAlgorithm):
 
     COMPUTE_DENSITY = "COMPUTE_DENSITY"
@@ -51,30 +52,30 @@ class lasinfo(LAStoolsAlgorithm):
     OUTPUT = "OUTPUT"
 
     def defineCharacteristics(self):
-        self.name = "lasinfo"
-        self.group = "LAStools"
+        self.name, self.i18n_name = self.trAlgorithm('lasinfo')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParameter(ParameterBoolean(lasinfo.COMPUTE_DENSITY,
-            self.tr("compute density"), False))
+                                           self.tr("compute density"), False))
         self.addParameter(ParameterBoolean(lasinfo.REPAIR_BB,
-            self.tr("repair bounding box"), False))
+                                           self.tr("repair bounding box"), False))
         self.addParameter(ParameterBoolean(lasinfo.REPAIR_COUNTERS,
-            self.tr("repair counters"), False))
+                                           self.tr("repair counters"), False))
         self.addParameter(ParameterSelection(lasinfo.HISTO1,
-            self.tr("histogram"), lasinfo.HISTOGRAM, 0))
+                                             self.tr("histogram"), lasinfo.HISTOGRAM, 0))
         self.addParameter(ParameterNumber(lasinfo.HISTO1_BIN,
-            self.tr("bin size"), 0, None, 1.0))
+                                          self.tr("bin size"), 0, None, 1.0))
         self.addParameter(ParameterSelection(lasinfo.HISTO2,
-            self.tr("histogram"), lasinfo.HISTOGRAM, 0))
+                                             self.tr("histogram"), lasinfo.HISTOGRAM, 0))
         self.addParameter(ParameterNumber(lasinfo.HISTO2_BIN,
-            self.tr("bin size"), 0, None, 1.0))
+                                          self.tr("bin size"), 0, None, 1.0))
         self.addParameter(ParameterSelection(lasinfo.HISTO3,
-            self.tr("histogram"), lasinfo.HISTOGRAM, 0))
+                                             self.tr("histogram"), lasinfo.HISTOGRAM, 0))
         self.addParameter(ParameterNumber(lasinfo.HISTO3_BIN,
-            self.tr("bin size"), 0, None, 1.0))
+                                          self.tr("bin size"), 0, None, 1.0))
         self.addOutput(OutputFile(lasinfo.OUTPUT,
-            self.tr("Output ASCII file")))
+                                  self.tr("Output ASCII file")))
         self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, progress):
@@ -91,17 +92,17 @@ class lasinfo(LAStoolsAlgorithm):
         if histo != 0:
             commands.append("-histo")
             commands.append(lasinfo.HISTOGRAM[histo])
-            commands.append(str(self.getParameterValue(lasinfo.HISTO1_BIN)))
+            commands.append(unicode(self.getParameterValue(lasinfo.HISTO1_BIN)))
         histo = self.getParameterValue(lasinfo.HISTO2)
         if histo != 0:
             commands.append("-histo")
             commands.append(lasinfo.HISTOGRAM[histo])
-            commands.append(str(self.getParameterValue(lasinfo.HISTO2_BIN)))
+            commands.append(unicode(self.getParameterValue(lasinfo.HISTO2_BIN)))
         histo = self.getParameterValue(lasinfo.HISTO3)
         if histo != 0:
             commands.append("-histo")
             commands.append(lasinfo.HISTOGRAM[histo])
-            commands.append(str(self.getParameterValue(lasinfo.HISTO3_BIN)))
+            commands.append(unicode(self.getParameterValue(lasinfo.HISTO3_BIN)))
         commands.append("-o")
         commands.append(self.getOutputValue(lasinfo.OUTPUT))
         self.addParametersAdditionalCommands(commands)

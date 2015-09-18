@@ -81,10 +81,16 @@ QStringList QgsSublayersDialog::selectionNames()
         count++;
       }
     }
+
     if ( count > 1 )
     {
       name += ":" + layersTable->selectedItems().at( i )->text( 3 );
     }
+    else
+    {
+      name += ":any";
+    }
+
     list << name;
   }
   return list;
@@ -102,9 +108,15 @@ QList<int> QgsSublayersDialog::selectionIndexes()
 
 void QgsSublayersDialog::populateLayerTable( QStringList theList, QString delim )
 {
-  foreach ( QString item, theList )
+  Q_FOREACH ( const QString& item, theList )
   {
-    layersTable->addTopLevelItem( new QTreeWidgetItem( item.split( delim ) ) );
+    QStringList elements = item.split( delim );
+    while ( elements.size() > 4 )
+    {
+      elements[1] += delim + elements[2];
+      elements.removeAt( 2 );
+    }
+    layersTable->addTopLevelItem( new QTreeWidgetItem( elements ) );
   }
 
   // resize columns

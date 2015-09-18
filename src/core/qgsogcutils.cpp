@@ -1075,10 +1075,10 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry* geometry, QDomDocumen
       case QGis::WKBPoint:
       case QGis::WKBMultiPoint25D:
       case QGis::WKBMultiPoint:
-        baseCoordElem = doc.createElement( "gml:pos" );;
+        baseCoordElem = doc.createElement( "gml:pos" );
         break;
       default:
-        baseCoordElem = doc.createElement( "gml:posList" );;
+        baseCoordElem = doc.createElement( "gml:posList" );
         break;
     }
     baseCoordElem.setAttribute( "srsDimension", "2" );
@@ -1086,7 +1086,7 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry* geometry, QDomDocumen
   }
   else
   {
-    baseCoordElem = doc.createElement( "gml:coordinates" );;
+    baseCoordElem = doc.createElement( "gml:coordinates" );
     baseCoordElem.setAttribute( "cs", cs );
     baseCoordElem.setAttribute( "ts", ts );
   }
@@ -2081,7 +2081,7 @@ QDomElement QgsOgcUtils::expressionInOperatorToOgcFilter( const QgsExpression::N
   QDomElement orElem = doc.createElement( "ogc:Or" );
   QDomElement leftNode = expressionNodeToOgcFilter( node->node(), doc, errorMessage );
 
-  foreach ( QgsExpression::Node* n, node->list()->list() )
+  Q_FOREACH ( QgsExpression::Node* n, node->list()->list() )
   {
     QDomElement listNode = expressionNodeToOgcFilter( n, doc, errorMessage );
     if ( !errorMessage.isEmpty() )
@@ -2272,7 +2272,7 @@ QDomElement QgsOgcUtils::expressionFunctionToOgcFilter( const QgsExpression::Nod
   // this is somehow wrong - we are just hoping that the other side supports the same functions as we do...
   QDomElement funcElem = doc.createElement( "ogc:Function" );
   funcElem.setAttribute( "name", fd->name() );
-  foreach ( QgsExpression::Node* n, node->args()->list() )
+  Q_FOREACH ( QgsExpression::Node* n, node->args()->list() )
   {
     QDomElement childElem = expressionNodeToOgcFilter( n, doc, errorMessage );
     if ( !errorMessage.isEmpty() )

@@ -391,7 +391,7 @@ void QgsMssqlGeometryParser::ReadPolygon( int iShape )
 void QgsMssqlGeometryParser::ReadMultiPolygon( int iShape )
 {
   int i;
-  int iCount = nNumShapes - iShape - 1;;
+  int iCount = nNumShapes - iShape - 1;
   if ( iCount <= 0 )
     return;
   // copy byte order
@@ -423,13 +423,13 @@ void QgsMssqlGeometryParser::ReadMultiPolygon( int iShape )
 void QgsMssqlGeometryParser::ReadGeometryCollection( int iShape )
 {
   int i;
-  int iCount = nNumShapes - iShape - 1;;
+  int iCount = nNumShapes - iShape - 1;
   if ( iCount <= 0 )
     return;
   // copy byte order
   CopyBytes( &chByteOrder, 1 );
   // copy type
-  int wkbType = QGis::WKBUnknown;;
+  int wkbType = QGis::WKBUnknown;
   CopyBytes( &wkbType, 4 );
   // copy geom count
   CopyBytes( &iCount, 4 );
@@ -493,9 +493,9 @@ unsigned char* QgsMssqlGeometryParser::ParseSqlGeometry( unsigned char* pszInput
 
   chProps = ReadByte( 5 );
 
-  if ( chProps & SP_HASMVALUES )
+  if ( chProps & SP_HASZVALUES && chProps & SP_HASMVALUES )
     nPointSize = 32;
-  else if ( chProps & SP_HASZVALUES )
+  else if ( chProps & SP_HASZVALUES || chProps & SP_HASMVALUES )
     nPointSize = 24;
   else
     nPointSize = 16;

@@ -1,0 +1,7 @@
+{
+  "function": "sym_difference",
+  "description": "Returns a geometry that represents the portions of two geometries that do not intersect.",
+  "arguments": [ {"arg":"geometry1","description":"a geometry"},
+                 {"arg":"geometry2","description":"a geometry"}],
+  "examples": [ { "expression":"geom_to_wkt( sym_difference( geom_from_wkt( 'LINESTRING(3 3, 4 4, 5 5)' ), geom_from_wkt( 'LINESTRING(3 3, 8 8)' ) ) )", "returns":"LINESTRING(5 5, 8 8)"} ]
+}

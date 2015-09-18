@@ -25,6 +25,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
 #include "qgsprojectionselector.h"
+#include "qgslocalec.h"
 
 #include <QCloseEvent>
 #include <QFileDialog>
@@ -427,10 +428,12 @@ void QgsGrassNewMapset::setGrassProjection()
     OGRSpatialReferenceH hCRS = NULL;
     hCRS = OSRNewSpatialReference( NULL );
     int errcode;
-    const char *oldlocale = setlocale( LC_NUMERIC, NULL );
-    setlocale( LC_NUMERIC, "C" );
-    errcode = OSRImportFromProj4( hCRS, proj4.toUtf8() );
-    setlocale( LC_NUMERIC, oldlocale );
+
+    {
+      QgsLocaleNumC l;
+      errcode = OSRImportFromProj4( hCRS, proj4.toUtf8() );
+    }
+
     if ( errcode != OGRERR_NONE )
     {
       QgsDebugMsg( QString( "OGR can't parse PROJ.4-style parameter string:\n%1\nOGR Error code was %2" ).arg( proj4 ).arg( errcode ) );
@@ -1265,7 +1268,7 @@ void QgsGrassNewMapset::createMapset()
     //       database path
     ( void )QgsGrass::activeMode(); // because it calls private QgsGrass::init()
 
-#if defined(WIN32)
+#ifdef Q_OS_WIN
     G__setenv(( char * ) "GISDBASE", QgsGrass::shortPath( mDatabaseLineEdit->text() ).toUtf8().data() );
 #else
     G__setenv(( char * ) "GISDBASE", mDatabaseLineEdit->text().toUtf8().data() );

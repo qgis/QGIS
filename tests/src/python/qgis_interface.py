@@ -31,6 +31,7 @@ from qgis.core import QgsMapLayerRegistry
 
 
 class QgisInterface(QObject):
+
     """Class to expose qgis objects and functionalities to plugins.
 
     This class is here for enabling us to run unit tests only,

@@ -32,7 +32,7 @@ bool QgsMultiPointV2::fromWkt( const QString& wkt )
 QDomElement QgsMultiPointV2::asGML2( QDomDocument& doc, int precision, const QString& ns ) const
 {
   QDomElement elemMultiPoint = doc.createElementNS( ns, "MultiPoint" );
-  foreach ( const QgsAbstractGeometryV2 *geom, mGeometries )
+  Q_FOREACH ( const QgsAbstractGeometryV2 *geom, mGeometries )
   {
     if ( dynamic_cast<const QgsPointV2*>( geom ) )
     {
@@ -48,7 +48,7 @@ QDomElement QgsMultiPointV2::asGML2( QDomDocument& doc, int precision, const QSt
 QDomElement QgsMultiPointV2::asGML3( QDomDocument& doc, int precision, const QString& ns ) const
 {
   QDomElement elemMultiPoint = doc.createElementNS( ns, "MultiPoint" );
-  foreach ( const QgsAbstractGeometryV2 *geom, mGeometries )
+  Q_FOREACH ( const QgsAbstractGeometryV2 *geom, mGeometries )
   {
     if ( dynamic_cast<const QgsPointV2*>( geom ) )
     {
@@ -64,7 +64,7 @@ QDomElement QgsMultiPointV2::asGML3( QDomDocument& doc, int precision, const QSt
 QString QgsMultiPointV2::asJSON( int precision ) const
 {
   QString json = "{\"type\": \"MultiPoint\", \"coordinates\": [";
-  foreach ( const QgsAbstractGeometryV2 *geom, mGeometries )
+  Q_FOREACH ( const QgsAbstractGeometryV2 *geom, mGeometries )
   {
     if ( dynamic_cast<const QgsPointV2*>( geom ) )
     {

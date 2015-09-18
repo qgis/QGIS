@@ -17,7 +17,9 @@
 #include "qgsvectordataprovider.h"
 #include "qgsgeometrycache.h"
 #include "qgsvectorlayereditbuffer.h"
+#include "qgslinestringv2.h"
 #include "qgslogger.h"
+#include "qgspointv2.h"
 
 #include <limits>
 
@@ -52,6 +54,12 @@ bool QgsVectorLayerEditUtils::insertVertex( double x, double y, QgsFeatureId atF
 
 bool QgsVectorLayerEditUtils::moveVertex( double x, double y, QgsFeatureId atFeatureId, int atVertex )
 {
+  QgsPointV2 p( x, y );
+  return moveVertex( p, atFeatureId, atVertex );
+}
+
+bool QgsVectorLayerEditUtils::moveVertex( const QgsPointV2& p, QgsFeatureId atFeatureId, int atVertex )
+{
   if ( !L->hasGeometryType() )
     return false;
 
@@ -66,7 +74,7 @@ bool QgsVectorLayerEditUtils::moveVertex( double x, double y, QgsFeatureId atFea
     geometry = *f.constGeometry();
   }
 
-  geometry.moveVertex( x, y, atVertex );
+  geometry.moveVertex( p, atVertex );
 
   L->editBuffer()->changeGeometry( atFeatureId, &geometry );
   return true;
@@ -96,32 +104,36 @@ bool QgsVectorLayerEditUtils::deleteVertex( QgsFeatureId atFeatureId, int atVert
   return true;
 }
 
-
 int QgsVectorLayerEditUtils::addRing( const QList<QgsPoint>& ring )
 {
+  QgsLineStringV2* ringLine = new QgsLineStringV2();
+  QList< QgsPointV2 > ringPoints;
+  QList<QgsPoint>::const_iterator ringIt = ring.constBegin();
+  for ( ; ringIt != ring.constEnd(); ++ringIt )
+  {
+    ringPoints.append( QgsPointV2( ringIt->x(), ringIt->y() ) );
+  }
+  ringLine->setPoints( ringPoints );
+  return addRing( ringLine );
+}
+
+int QgsVectorLayerEditUtils::addRing( QgsCurveV2* ring )
+{
   if ( !L->hasGeometryType() )
+  {
+    delete ring;
     return 5;
+  }
 
   int addRingReturnCode = 5; //default: return code for 'ring not inserted'
-  double xMin, yMin, xMax, yMax;
-  QgsRectangle bBox;
-
-  if ( boundingBoxFromPointList( ring, xMin, yMin, xMax, yMax ) == 0 )
-  {
-    bBox.setXMinimum( xMin ); bBox.setYMinimum( yMin );
-    bBox.setXMaximum( xMax ); bBox.setYMaximum( yMax );
-  }
-  else
-  {
-    return 3; //ring not valid
-  }
-
+  QgsRectangle bBox = ring->boundingBox();
   QgsFeatureIterator fit = L->getFeatures( QgsFeatureRequest().setFilterRect( bBox ).setFlags( QgsFeatureRequest::ExactIntersect ) );
 
   QgsFeature f;
   while ( fit.nextFeature( f ) )
   {
-    addRingReturnCode = f.geometry()->addRing( ring );
+    //add ring takes ownership of ring, and deletes it if there's an error
+    addRingReturnCode = f.geometry()->addRing( static_cast< QgsCurveV2* >( ring->clone() ) );
     if ( addRingReturnCode == 0 )
     {
       L->editBuffer()->changeGeometry( f.id(), f.geometry() );
@@ -131,9 +143,9 @@ int QgsVectorLayerEditUtils::addRing( const QList<QgsPoint>& ring )
     }
   }
 
+  delete ring;
   return addRingReturnCode;
 }
-
 
 int QgsVectorLayerEditUtils::addPart( const QList<QgsPoint> &points, QgsFeatureId featureId )
 {
@@ -145,11 +157,13 @@ int QgsVectorLayerEditUtils::addPart( const QList<QgsPoint> &points, QgsFeatureI
   {
     // it's not in cache: let's fetch it from layer
     QgsFeature f;
-    if ( !L->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) || !f.constGeometry() )
+    if ( !L->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) || !f.geometry() )
       return 6; //geometry not found
 
-    geometry = *f.constGeometry();
+    geometry = *f.geometry();
   }
+
+  geometry.convertToMultiType();
 
   int errorCode = geometry.addPart( points, L->geometryType() );
   if ( errorCode == 0 )
@@ -159,6 +173,31 @@ int QgsVectorLayerEditUtils::addPart( const QList<QgsPoint> &points, QgsFeatureI
   return errorCode;
 }
 
+int QgsVectorLayerEditUtils::addPart( QgsCurveV2* ring, QgsFeatureId featureId )
+{
+  if ( !L->hasGeometryType() )
+    return 6;
+
+  QgsGeometry geometry;
+  if ( !cache()->geometry( featureId, geometry ) ) // maybe it's in cache
+  {
+    // it's not in cache: let's fetch it from layer
+    QgsFeature f;
+    if ( !L->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) || !f.geometry() )
+      return 6; //geometry not found
+
+    geometry = *f.geometry();
+  }
+
+  geometry.convertToMultiType();
+
+  int errorCode = geometry.addPart( ring );
+  if ( errorCode == 0 )
+  {
+    L->editBuffer()->changeGeometry( featureId, &geometry );
+  }
+  return errorCode;
+}
 
 
 int QgsVectorLayerEditUtils::translateFeature( QgsFeatureId featureId, double dx, double dy )
@@ -272,7 +311,7 @@ int QgsVectorLayerEditUtils::splitFeatures( const QList<QgsPoint>& splitLine, bo
         //use default value where possible for primary key (e.g. autoincrement),
         //and use the value from the original (split) feature if not primary key
         QgsAttributes newAttributes = feat.attributes();
-        foreach ( int pkIdx, L->dataProvider()->pkAttributeIndexes() )
+        Q_FOREACH ( int pkIdx, L->dataProvider()->pkAttributeIndexes() )
         {
           const QVariant defaultValue = L->dataProvider()->defaultValue( pkIdx );
           if ( !defaultValue.isNull() )

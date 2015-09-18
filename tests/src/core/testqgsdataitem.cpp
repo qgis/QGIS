@@ -107,7 +107,7 @@ void TestQgsDataItem::testDirItemChildren()
   QSettings settings;
   QStringList tmpSettings;
   tmpSettings << "" << "contents" << "extension";
-  foreach ( QString tmpSetting, tmpSettings )
+  Q_FOREACH ( const QString& tmpSetting, tmpSettings )
   {
     settings.setValue( "/qgis/scanItemsInBrowser2", tmpSetting );
     QgsDirectoryItem* dirItem = new QgsDirectoryItem( 0, "Test", TEST_DATA_DIR );

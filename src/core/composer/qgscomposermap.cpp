@@ -33,6 +33,7 @@
 #include "qgsvectorlayer.h"
 #include "qgspallabeling.h"
 #include "qgsexpression.h"
+#include "qgsvisibilitypresetcollection.h"
 
 #include "qgslabel.h"
 #include "qgslabelattributes.h"
@@ -131,6 +132,8 @@ void QgsComposerMap::init()
   mDataDefinedNames.insert( QgsComposerObject::MapXMax, QString( "dataDefinedMapXMax" ) );
   mDataDefinedNames.insert( QgsComposerObject::MapYMax, QString( "dataDefinedMapYMax" ) );
   mDataDefinedNames.insert( QgsComposerObject::MapAtlasMargin, QString( "dataDefinedMapAtlasMargin" ) );
+  mDataDefinedNames.insert( QgsComposerObject::MapLayers, QString( "dataDefinedMapLayers" ) );
+  mDataDefinedNames.insert( QgsComposerObject::MapStylePreset, QString( "dataDefinedMapStylePreset" ) );
 }
 
 void QgsComposerMap::updateToolTip()
@@ -195,6 +198,8 @@ QgsMapSettings QgsComposerMap::mapSettings( const QgsRectangle& extent, const QS
 {
   const QgsMapSettings &ms = mComposition->mapSettings();
 
+  QScopedPointer< QgsExpressionContext > expressionContext( createExpressionContext() );
+
   QgsMapSettings jobMapSettings;
   jobMapSettings.setExtent( extent );
   jobMapSettings.setOutputSize( size.toSize() );
@@ -205,7 +210,7 @@ QgsMapSettings QgsComposerMap::mapSettings( const QgsRectangle& extent, const QS
   jobMapSettings.setRotation( mEvaluatedMapRotation );
 
   //set layers to render
-  QStringList theLayerSet = layersToRender();
+  QStringList theLayerSet = layersToRender( expressionContext.data() );
   if ( -1 != mCurrentExportLayer )
   {
     //exporting with separate layers (eg, to svg layers), so we only want to render a single map layer
@@ -216,7 +221,7 @@ QgsMapSettings QgsComposerMap::mapSettings( const QgsRectangle& extent, const QS
       : QStringList(); //exporting decorations such as map frame/grid/overview, so no map layers required
   }
   jobMapSettings.setLayers( theLayerSet );
-  jobMapSettings.setLayerStyleOverrides( mLayerStyleOverrides );
+  jobMapSettings.setLayerStyleOverrides( layerStyleOverridesToRender( *expressionContext ) );
   jobMapSettings.setDestinationCrs( ms.destinationCrs() );
   jobMapSettings.setCrsTransformEnabled( ms.hasCrsTransformEnabled() );
   jobMapSettings.setFlags( ms.flags() );
@@ -229,8 +234,9 @@ QgsMapSettings QgsComposerMap::mapSettings( const QgsRectangle& extent, const QS
     jobMapSettings.setFlag( QgsMapSettings::UseRenderingOptimization, false );
   }
 
-  //update $map variable. Use QgsComposerItem's id since that is user-definable
-  QgsExpression::setSpecialColumn( "$map", QgsComposerItem::id() );
+  QgsExpressionContext* context = createExpressionContext();
+  jobMapSettings.setExpressionContext( *context );
+  delete context;
 
   // composer-specific overrides of flags
   jobMapSettings.setFlag( QgsMapSettings::ForceVectorOutput ); // force vector output (no caching of marker images etc.)
@@ -519,17 +525,54 @@ const QgsMapRenderer *QgsComposerMap::mapRenderer() const
   Q_NOWARN_DEPRECATED_POP
 }
 
-QStringList QgsComposerMap::layersToRender() const
+QStringList QgsComposerMap::layersToRender( const QgsExpressionContext* context ) const
 {
-  //use stored layer set or read current set from main canvas
-  QStringList renderLayerSet;
-  if ( mKeepLayerSet )
+  const QgsExpressionContext* evalContext = context;
+  QScopedPointer< QgsExpressionContext > scopedContext;
+  if ( !evalContext )
   {
-    renderLayerSet = mLayerSet;
+    scopedContext.reset( createExpressionContext() );
+    evalContext = scopedContext.data();
   }
-  else
+
+  QStringList renderLayerSet;
+
+  QVariant exprVal;
+  if ( dataDefinedEvaluate( QgsComposerObject::MapStylePreset, exprVal, *evalContext ) )
   {
-    renderLayerSet = mComposition->mapSettings().layers();
+    QString presetName = exprVal.toString();
+
+    if ( QgsProject::instance()->visibilityPresetCollection()->hasPreset( presetName ) )
+      renderLayerSet = QgsProject::instance()->visibilityPresetCollection()->presetVisibleLayers( presetName );
+  }
+
+  //use stored layer set or read current set from main canvas
+  if ( renderLayerSet.isEmpty() )
+  {
+    if ( mKeepLayerSet )
+    {
+      renderLayerSet = mLayerSet;
+    }
+    else
+    {
+      renderLayerSet = mComposition->mapSettings().layers();
+    }
+  }
+
+  if ( dataDefinedEvaluate( QgsComposerObject::MapLayers, exprVal, *evalContext ) )
+  {
+    renderLayerSet.clear();
+
+    QStringList layerNames = exprVal.toString().split( "|" );
+    //need to convert layer names to layer ids
+    Q_FOREACH ( const QString& name, layerNames )
+    {
+      QList< QgsMapLayer* > matchingLayers = QgsMapLayerRegistry::instance()->mapLayersByName( name );
+      Q_FOREACH ( QgsMapLayer* layer, matchingLayers )
+      {
+        renderLayerSet << layer->id();
+      }
+    }
   }
 
   //remove atlas coverage layer if required
@@ -548,6 +591,20 @@ QStringList QgsComposerMap::layersToRender() const
   }
 
   return renderLayerSet;
+}
+
+QMap<QString, QString> QgsComposerMap::layerStyleOverridesToRender( const QgsExpressionContext& context ) const
+{
+  QVariant exprVal;
+  if ( dataDefinedEvaluate( QgsComposerObject::MapStylePreset, exprVal, context ) )
+  {
+    QString presetName = exprVal.toString();
+
+    if ( QgsProject::instance()->visibilityPresetCollection()->hasPreset( presetName ) )
+      return QgsProject::instance()->visibilityPresetCollection()->presetStyleOverrides( presetName );
+
+  }
+  return mLayerStyleOverrides;
 }
 
 double QgsComposerMap::scale() const
@@ -899,8 +956,16 @@ double QgsComposerMap::mapRotation( QgsComposerObject::PropertyValueType valueTy
   return valueType == QgsComposerObject::EvaluatedValue ? mEvaluatedMapRotation : mMapRotation;
 }
 
-void QgsComposerMap::refreshMapExtents()
+void QgsComposerMap::refreshMapExtents( const QgsExpressionContext* context )
 {
+  const QgsExpressionContext* evalContext = context;
+  QScopedPointer< QgsExpressionContext > scopedContext;
+  if ( !evalContext )
+  {
+    scopedContext.reset( createExpressionContext() );
+    evalContext = scopedContext.data();
+  }
+
   //data defined map extents set?
   QVariant exprVal;
 
@@ -914,7 +979,7 @@ void QgsComposerMap::refreshMapExtents()
   double maxXD = 0;
   double maxYD = 0;
 
-  if ( dataDefinedEvaluate( QgsComposerObject::MapXMin, exprVal ) )
+  if ( dataDefinedEvaluate( QgsComposerObject::MapXMin, exprVal, *evalContext ) )
   {
     bool ok;
     minXD = exprVal.toDouble( &ok );
@@ -925,7 +990,7 @@ void QgsComposerMap::refreshMapExtents()
       newExtent.setXMinimum( minXD );
     }
   }
-  if ( dataDefinedEvaluate( QgsComposerObject::MapYMin, exprVal ) )
+  if ( dataDefinedEvaluate( QgsComposerObject::MapYMin, exprVal, *evalContext ) )
   {
     bool ok;
     minYD = exprVal.toDouble( &ok );
@@ -936,7 +1001,7 @@ void QgsComposerMap::refreshMapExtents()
       newExtent.setYMinimum( minYD );
     }
   }
-  if ( dataDefinedEvaluate( QgsComposerObject::MapXMax, exprVal ) )
+  if ( dataDefinedEvaluate( QgsComposerObject::MapXMax, exprVal, *evalContext ) )
   {
     bool ok;
     maxXD = exprVal.toDouble( &ok );
@@ -947,7 +1012,7 @@ void QgsComposerMap::refreshMapExtents()
       newExtent.setXMaximum( maxXD );
     }
   }
-  if ( dataDefinedEvaluate( QgsComposerObject::MapYMax, exprVal ) )
+  if ( dataDefinedEvaluate( QgsComposerObject::MapYMax, exprVal, *evalContext ) )
   {
     bool ok;
     maxYD = exprVal.toDouble( &ok );
@@ -991,7 +1056,7 @@ void QgsComposerMap::refreshMapExtents()
   //now refresh scale, as this potentially overrides extents
 
   //data defined map scale set?
-  if ( dataDefinedEvaluate( QgsComposerObject::MapScale, exprVal ) )
+  if ( dataDefinedEvaluate( QgsComposerObject::MapScale, exprVal, *evalContext ) )
   {
     bool ok;
     double scaleD = exprVal.toDouble( &ok );
@@ -1042,7 +1107,7 @@ void QgsComposerMap::refreshMapExtents()
   double mapRotation = mMapRotation;
 
   //data defined map rotation set?
-  if ( dataDefinedEvaluate( QgsComposerObject::MapRotation, exprVal ) )
+  if ( dataDefinedEvaluate( QgsComposerObject::MapRotation, exprVal, *evalContext ) )
   {
     bool ok;
     double rotationD = exprVal.toDouble( &ok );
@@ -1543,7 +1608,7 @@ void QgsComposerMap::setLayerStyleOverrides( const QMap<QString, QString>& overr
 void QgsComposerMap::storeCurrentLayerStyles()
 {
   mLayerStyleOverrides.clear();
-  foreach ( const QString& layerID, mLayerSet )
+  Q_FOREACH ( const QString& layerID, mLayerSet )
   {
     if ( QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerID ) )
     {
@@ -2062,6 +2127,24 @@ void QgsComposerMap::requestedExtent( QgsRectangle& extent ) const
   }
 }
 
+QgsExpressionContext* QgsComposerMap::createExpressionContext() const
+{
+  QgsExpressionContext* context = QgsComposerItem::createExpressionContext();
+
+  //Can't utilise QgsExpressionContextUtils::mapSettingsScope as we don't always
+  //have a QgsMapSettings object available when the context is required, so we manually
+  //add the same variables here
+  QgsExpressionContextScope* scope = new QgsExpressionContextScope( tr( "Map Settings" ) );
+
+  //use QgsComposerItem's id, not map item's ID, since that is user-definable
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( "map_id", QgsComposerItem::id(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( "map_rotation", mMapRotation, true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( "map_scale", scale(), true ) );
+  context->appendScope( scope );
+
+  return context;
+}
+
 double QgsComposerMap::mapUnitsToMM() const
 {
   double extentWidth = currentMapExtent()->width();
@@ -2084,8 +2167,16 @@ int QgsComposerMap::overviewFrameMapId() const
   return o->frameMapId();
 }
 
-void QgsComposerMap::refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property )
+void QgsComposerMap::refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, const QgsExpressionContext* context )
 {
+  const QgsExpressionContext* evalContext = context;
+  QScopedPointer< QgsExpressionContext > scopedContext;
+  if ( !evalContext )
+  {
+    scopedContext.reset( createExpressionContext() );
+    evalContext = scopedContext.data();
+  }
+
   //updates data defined properties and redraws item to match
   if ( property == QgsComposerObject::MapRotation || property == QgsComposerObject::MapScale ||
        property == QgsComposerObject::MapXMin || property == QgsComposerObject::MapYMin ||
@@ -2094,7 +2185,7 @@ void QgsComposerMap::refreshDataDefinedProperty( const QgsComposerObject::DataDe
        property == QgsComposerObject::AllProperties )
   {
     QgsRectangle beforeExtent = *currentMapExtent();
-    refreshMapExtents();
+    refreshMapExtents( evalContext );
     emit itemChanged();
     if ( *currentMapExtent() != beforeExtent )
     {
@@ -2105,7 +2196,7 @@ void QgsComposerMap::refreshDataDefinedProperty( const QgsComposerObject::DataDe
   //force redraw
   mCacheUpdated = false;
 
-  QgsComposerItem::refreshDataDefinedProperty( property );
+  QgsComposerItem::refreshDataDefinedProperty( property, evalContext );
 }
 
 void QgsComposerMap::setOverviewFrameMapSymbol( QgsFillSymbolV2* symbol )
@@ -2391,7 +2482,8 @@ double QgsComposerMap::atlasMargin( const QgsComposerObject::PropertyValueType v
     //start with user specified margin
     double margin = mAtlasMargin;
     QVariant exprVal;
-    if ( dataDefinedEvaluate( QgsComposerObject::MapAtlasMargin, exprVal ) )
+    QScopedPointer< QgsExpressionContext > context( createExpressionContext() );
+    if ( dataDefinedEvaluate( QgsComposerObject::MapAtlasMargin, exprVal, *context.data() ) )
     {
       bool ok;
       double ddMargin = exprVal.toDouble( &ok );

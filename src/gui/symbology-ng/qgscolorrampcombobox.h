@@ -37,7 +37,7 @@ class GUI_EXPORT QgsColorRampComboBox : public QComboBox
     //! return new instance of the current color ramp or NULL if there is no active color ramp
     QgsVectorColorRampV2* currentColorRamp();
 
-    /**Returns true if the current selection in the combo box is the option for creating
+    /** Returns true if the current selection in the combo box is the option for creating
      * a new color ramp
      * @note added in QGIS 2.7
      */
@@ -53,6 +53,21 @@ class GUI_EXPORT QgsColorRampComboBox : public QComboBox
 
   public slots:
     void colorRampChanged( int index );
+
+    /** Triggers a dialog which allows users to edit the current source
+     * ramp for the combo box.
+     * @see sourceRampEdited
+     * @note added in QGIS 2.12
+     */
+    void editSourceRamp();
+
+  signals:
+
+    /** Emitted when the user has edited the current source ramp.
+     * @see editSourceRamp
+     * @note added in QGIS 2.12
+     */
+    void sourceRampEdited();
 
   protected:
     QgsStyleV2* mStyle;

@@ -113,8 +113,8 @@ class OutputSelectionPanel(BASE, WIDGET):
             fileName = unicode(files[0])
             selectedFileFilter = unicode(fileDialog.selectedNameFilter())
             if not fileName.lower().endswith(
-                    tuple(re.findall("\*(\.[a-z]{1,5})", fileFilter))):
-                ext = re.search("\*(\.[a-z]{1,5})", selectedFileFilter)
+                    tuple(re.findall("\*(\.[a-z]{1,10})", fileFilter))):
+                ext = re.search("\*(\.[a-z]{1,10})", selectedFileFilter)
                 if ext:
                     fileName += ext.group(1)
             self.leText.setText(fileName)
@@ -126,7 +126,7 @@ class OutputSelectionPanel(BASE, WIDGET):
         lastDir = ''
 
         dirName = QFileDialog.getExistingDirectory(self,
-            self.tr('Select directory'), lastDir, QFileDialog.ShowDirsOnly)
+                                                   self.tr('Select directory'), lastDir, QFileDialog.ShowDirsOnly)
 
         self.leText.setText(dirName)
 

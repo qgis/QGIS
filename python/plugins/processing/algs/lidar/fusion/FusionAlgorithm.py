@@ -53,6 +53,6 @@ class FusionAlgorithm(GeoAlgorithm):
         self.addParameter(param)
 
     def addAdvancedModifiersToCommand(self, commands):
-        s = str(self.getParameterValue(self.ADVANCED_MODIFIERS)).strip()
+        s = unicode(self.getParameterValue(self.ADVANCED_MODIFIERS)).strip()
         if s != '':
             commands.append(s)

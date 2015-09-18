@@ -20,45 +20,10 @@
 #include "qgseditorwidgetregistry.h"
 #include "qgseditorwidgetwrapper.h"
 
-#include "qgsattributedialog.h"
 #include "qgsattributeeditor.h"
 #include "qgsattributeeditorcontext.h"
-#include "qgscategorizedsymbolrendererv2.h"
-#include "qgscolorbutton.h"
-#include "qgsexpression.h"
-#include "qgsfieldvalidator.h"
-#include "qgsfilterlineedit.h"
-#include "qgslogger.h"
-#include "qgslonglongvalidator.h"
-#include "qgsmaplayerregistry.h"
-#include "qgsnetworkaccessmanager.h"
-#include "qgsrelationeditorwidget.h"
-#include "qgsrelationmanager.h"
-#include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 
-#include <QScrollArea>
-#include <QPushButton>
-#include <QLineEdit>
-#include <QTextEdit>
-#include <QFileDialog>
-#include <QComboBox>
-#include <QListWidget>
-#include <QCheckBox>
-#include <QSpinBox>
-#include <QCompleter>
-#include <QHBoxLayout>
-#include <QPlainTextEdit>
-#include <QDial>
-#include <QCalendarWidget>
-#include <QDialogButtonBox>
-#include <QSettings>
-#include <QDir>
-#include <QUuid>
-#include <QGroupBox>
-#include <QLabel>
-
-#include <QDesktopServices>
 
 QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *editor, QgsVectorLayer *vl, int idx, const QVariant &value )
 {

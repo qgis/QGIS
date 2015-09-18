@@ -67,10 +67,10 @@ class CORE_EXPORT QgsPoint
     QgsPoint() : m_x( 0.0 ), m_y( 0.0 )
     {}
 
-    /*! Create a point from another point */
+    /** Create a point from another point */
     QgsPoint( const QgsPoint& p );
 
-    /*! Create a point from x,y coordinates
+    /** Create a point from x,y coordinates
      * @param x x coordinate
      * @param y y coordinate
      */
@@ -78,7 +78,7 @@ class CORE_EXPORT QgsPoint
         : m_x( x ), m_y( y )
     {}
 
-    /*! Create a point from a QPointF
+    /** Create a point from a QPointF
      * @param point QPointF source
      * @note added in QGIS 2.7
      */
@@ -86,7 +86,7 @@ class CORE_EXPORT QgsPoint
         : m_x( point.x() ), m_y( point.y() )
     {}
 
-    /*! Create a point from a QPoint
+    /** Create a point from a QPoint
      * @param point QPoint source
      * @note added in QGIS 2.7
      */
@@ -97,7 +97,7 @@ class CORE_EXPORT QgsPoint
     ~QgsPoint()
     {}
 
-    /*! Sets the x value of the point
+    /** Sets the x value of the point
      * @param x x coordinate
      */
     void setX( double x )
@@ -105,7 +105,7 @@ class CORE_EXPORT QgsPoint
       m_x = x;
     }
 
-    /*! Sets the y value of the point
+    /** Sets the y value of the point
      * @param y y coordinate
      */
     void setY( double y )
@@ -113,14 +113,14 @@ class CORE_EXPORT QgsPoint
       m_y = y;
     }
 
-    /*! Sets the x and y value of the point */
+    /** Sets the x and y value of the point */
     void set( double x, double y )
     {
       m_x = x;
       m_y = y;
     }
 
-    /*! Get the x value of the point
+    /** Get the x value of the point
      * @return x coordinate
      */
     double x() const
@@ -128,7 +128,7 @@ class CORE_EXPORT QgsPoint
       return m_x;
     }
 
-    /*! Get the y value of the point
+    /** Get the y value of the point
      * @return y coordinate
      */
     double y() const
@@ -171,22 +171,22 @@ class CORE_EXPORT QgsPoint
     QString toDegreesMinutes( int thePrecision, const bool useSuffix = true, const bool padded = false ) const;
 
 
-    /*! Return the well known text representation for the point.
+    /** Return the well known text representation for the point.
      * The wkt is created without an SRID.
      * @return Well known text in the form POINT(x y)
      */
     QString wellKnownText() const;
 
-    /**Returns the squared distance between this point and x,y*/
+    /** Returns the squared distance between this point and x,y*/
     double sqrDist( double x, double y ) const;
 
-    /**Returns the squared distance between this and other point*/
+    /** Returns the squared distance between this and other point*/
     double sqrDist( const QgsPoint& other ) const;
 
-    /**Returns the minimum distance between this point and a segment */
+    /** Returns the minimum distance between this point and a segment */
     double sqrDistToSegment( double x1, double y1, double x2, double y2, QgsPoint& minDistPoint, double epsilon = DEFAULT_SEGMENT_EPSILON ) const;
 
-    /**Calculates azimuth between this point and other one (clockwise in degree, starting from north) */
+    /** Calculates azimuth between this point and other one (clockwise in degree, starting from north) */
     double azimuth( const QgsPoint& other );
 
     /** Compares this point with another point with a fuzzy tolerance

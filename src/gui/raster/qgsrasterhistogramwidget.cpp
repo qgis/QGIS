@@ -46,7 +46,7 @@
 #include "qwt5_histogram_item.h"
 #endif
 
-#ifdef WIN32
+#ifdef Q_OS_WIN
 #include <time.h>
 #endif
 
@@ -892,7 +892,7 @@ void QgsRasterHistogramWidget::histoAction( const QString &actionName, bool acti
     leHistoMax->blockSignals( true );
 
     // process each band
-    foreach ( int theBandNo, myBands )
+    Q_FOREACH ( int theBandNo, myBands )
     {
       ok = false;
 #if 0

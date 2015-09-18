@@ -87,9 +87,9 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
 
     virtual ~QgsGraduatedSymbolRendererV2();
 
-    virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature );
+    virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature, QgsRenderContext& context );
 
-    virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feature );
+    virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feature, QgsRenderContext& context );
 
     virtual void startRender( QgsRenderContext& context, const QgsFields& fields );
 
@@ -106,7 +106,7 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
     //! returns bitwise OR-ed capabilities of the renderer
     virtual int capabilities();
 
-    virtual QgsSymbolV2List symbols();
+    virtual QgsSymbolV2List symbols( QgsRenderContext& context );
 
     QString classAttribute() const;
     void setClassAttribute( QString attr );
@@ -130,6 +130,18 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
 
     //! Moves the category at index position from to index position to.
     void moveClass( int from, int to );
+
+    /** Tests whether classes assigned to the renderer have ranges which overlap.
+     * @returns true if ranges overlap
+     * @note added in QGIS 2.10
+     */
+    bool rangesOverlap() const;
+
+    /** Tests whether classes assigned to the renderer have gaps between the ranges.
+     * @returns true if ranges have gaps
+     * @note added in QGIS 2.10
+     */
+    bool rangesHaveGaps() const;
 
     void sortByValue( Qt::SortOrder order = Qt::AscendingOrder );
     void sortByLabel( Qt::SortOrder order = Qt::AscendingOrder );
@@ -201,13 +213,20 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
     void setSourceSymbol( QgsSymbolV2* sym /Transfer/ );
 
     QgsVectorColorRampV2* sourceColorRamp();
+
+    /** Sets the source color ramp.
+     * @param ramp color ramp. Ownership is transferred to the renderer
+    */
     void setSourceColorRamp( QgsVectorColorRampV2* ramp /Transfer/ );
+
     //! @note added in 2.1
     bool invertedColorRamp();
     void setInvertedColorRamp( bool inverted );
 
     /** Update the color ramp used. Also updates all symbols colors.
       * Doesn't alter current breaks.
+      * @param ramp color ramp. Ownership is transferred to the renderer
+      * @param inverted set to true to invert ramp colors
       */
     void updateColorRamp( QgsVectorColorRampV2* ramp /Transfer/ = 0, bool inverted = false );
 
@@ -237,8 +256,8 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
     //! @note added in 2.10
     void setGraduatedMethod( GraduatedMethod method );
 
-    void setRotationField( QString fieldOrExpression );
-    QString rotationField() const;
+    void setRotationField( QString fieldOrExpression ) /Deprecated/;
+    QString rotationField() const /Deprecated/;
 
     void setSizeScaleField( QString fieldOrExpression );
     QString sizeScaleField() const;

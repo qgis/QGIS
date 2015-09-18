@@ -129,7 +129,7 @@ class QgsOracleConn : public QObject
     /** Gets information about the spatial tables */
     bool tableInfo( bool geometryTablesOnly, bool userTablesOnly, bool allowGeometrylessTables );
 
-    /** get primary key candidates (all int4 columns) */
+    /** Get primary key candidates (all int4 columns) */
     QStringList pkCandidates( QString ownerName, QString viewName );
 
     static QString fieldExpression( const QgsField &fld );

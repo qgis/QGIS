@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 14.5.2014
     Copyright            : (C) 2013 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -110,6 +110,17 @@ class QgsWidgetWrapper : QObject
      * @return The wrapper for the widget or NULL
      */
     static QgsWidgetWrapper* fromWidget( QWidget* widget );
+
+    /**
+     * Return true if the widget has been properly initialized.
+     * This acts as hint for the calling party if this wrapper can be used
+     * after initializing it.
+     * If it cannot be used this is a hint tothe caller that he may try to find
+     * another suitable widget type instead.
+     *
+     * @return Validity status of this widget.
+     */
+    virtual bool valid() = 0;
 
   protected:
     /**

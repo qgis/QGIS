@@ -73,7 +73,7 @@ bool QgsWmsSettings::parseUri( QString uriString )
   if ( uri.hasParam( "tileDimensions" ) )
   {
     mTiled = true;
-    foreach ( QString param, uri.param( "tileDimensions" ).split( ";" ) )
+    Q_FOREACH ( const QString& param, uri.param( "tileDimensions" ).split( ";" ) )
     {
       QStringList kv = param.split( "=" );
       if ( kv.size() == 1 )
@@ -156,7 +156,7 @@ bool QgsWmsCapabilities::parseResponse( const QByteArray& response, const QgsWms
   }
 
   // get identify formats
-  foreach ( QString f, mCapabilities.capability.request.getFeatureInfo.format )
+  Q_FOREACH ( const QString& f, mCapabilities.capability.request.getFeatureInfo.format )
   {
     // Don't use mSupportedGetFeatureFormats, there are too many possibilities
     QgsDebugMsg( "supported format = " + f );
@@ -766,7 +766,7 @@ void QgsWmsCapabilities::parseLayer( QDomElement const & e, QgsWmsLayerProperty&
       {
         // CRS can contain several definitions separated by whitespace
         // though this was deprecated in WMS 1.1.1
-        foreach ( QString srs, e1.text().split( QRegExp( "\\s+" ) ) )
+        Q_FOREACH ( const QString& srs, e1.text().split( QRegExp( "\\s+" ) ) )
         {
           layerProperty.crs.push_back( srs );
         }
@@ -1242,7 +1242,7 @@ void QgsWmsCapabilities::parseTileSetProfile( QDomElement const &e )
   mTileLayersSupported.append( l );
 
   int i = 0;
-  foreach ( QString rS, resolutions )
+  Q_FOREACH ( const QString& rS, resolutions )
   {
     double r = rS.toDouble();
     m.identifier = QString::number( i );
@@ -1565,7 +1565,7 @@ void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
 
           bool isValid = false;
           int matrixWidth = -1, matrixHeight = -1;
-          foreach ( const QgsWmtsTileMatrix &m, tms.tileMatrices )
+          Q_FOREACH ( const QgsWmtsTileMatrix &m, tms.tileMatrices )
           {
             isValid = m.identifier == id;
             if ( isValid )
@@ -1838,23 +1838,67 @@ bool QgsWmsCapabilities::shouldInvertAxisOrientation( const QString& ogcCrs )
   return changeXY;
 }
 
+int QgsWmsCapabilities::identifyCapabilities() const
+{
+  int capability = QgsRasterInterface::NoCapabilities;
+
+  Q_FOREACH ( QgsRaster::IdentifyFormat f, mIdentifyFormats.keys() )
+  {
+    capability |= QgsRasterDataProvider::identifyFormatToCapability( f );
+  }
+
+  return capability;
+}
+
 
 
 // -----------------
 
+QgsWmsCapabilitiesDownload::QgsWmsCapabilitiesDownload( QObject *parent )
+    : QObject( parent )
+    , mCapabilitiesReply( 0 )
+    , mIsAborted( false )
+{
+  connectManager();
+}
 
 QgsWmsCapabilitiesDownload::QgsWmsCapabilitiesDownload( const QString& baseUrl, const QgsWmsAuthorization& auth, QObject *parent )
     : QObject( parent )
     , mBaseUrl( baseUrl )
     , mAuth( auth )
-    , mCapabilitiesReply( NULL )
+    , mCapabilitiesReply( 0 )
+    , mIsAborted( false )
 {
+  connectManager();
 }
 
+void QgsWmsCapabilitiesDownload::connectManager()
+{
+  // The instance of this class may live on a thread different from QgsNetworkAccessManager instance's thread,
+  // so we cannot call QgsNetworkAccessManager::get() directly and we must send a signal instead.
+  connect( this, SIGNAL( sendRequest( const QNetworkRequest & ) ),
+           QgsNetworkAccessManager::instance(), SLOT( sendGet( const QNetworkRequest & ) ) );
+  connect( this, SIGNAL( deleteReply( QNetworkReply * ) ),
+           QgsNetworkAccessManager::instance(), SLOT( deleteReply( QNetworkReply * ) ) );
+}
+
+QgsWmsCapabilitiesDownload::~QgsWmsCapabilitiesDownload()
+{
+  abort();
+}
+
+bool QgsWmsCapabilitiesDownload::downloadCapabilities( const QString& baseUrl, const QgsWmsAuthorization& auth )
+{
+  mBaseUrl = baseUrl;
+  mAuth = auth;
+  return downloadCapabilities();
+}
 
 bool QgsWmsCapabilitiesDownload::downloadCapabilities()
 {
   QgsDebugMsg( "entering." );
+  abort(); // cancel previous
+  mIsAborted = false;
 
   QString url = mBaseUrl;
   QgsDebugMsg( "url = " + url );
@@ -1871,13 +1915,9 @@ bool QgsWmsCapabilitiesDownload::downloadCapabilities()
   request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferNetwork );
   request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
-  QgsDebugMsg( QString( "getcapabilities: %1" ).arg( url ) );
-  // This is causing Qt warning: "Cannot create children for a parent that is in a different thread."
-  // but it only means that the reply will have no parent
-  mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
-
-  connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ), Qt::DirectConnection );
-  connect( mCapabilitiesReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( capabilitiesReplyProgress( qint64, qint64 ) ), Qt::DirectConnection );
+  connect( QgsNetworkAccessManager::instance(), SIGNAL( requestSent( QNetworkReply *, QObject * ) ),
+           SLOT( requestSent( QNetworkReply *, QObject * ) ) );
+  emit sendRequest( request );
 
   QEventLoop loop;
   connect( this, SIGNAL( downloadFinished() ), &loop, SLOT( quit() ) );
@@ -1886,7 +1926,43 @@ bool QgsWmsCapabilitiesDownload::downloadCapabilities()
   return mError.isEmpty();
 }
 
+void QgsWmsCapabilitiesDownload::requestSent( QNetworkReply * reply, QObject *sender )
+{
+  QgsDebugMsg( "Entered" );
+  if ( sender != this ) // it is not our reply
+  {
+    return;
+  }
+  disconnect( QgsNetworkAccessManager::instance(), SIGNAL( requestSent( QNetworkReply *, QObject * ) ),
+              this, SLOT( requestSent( QNetworkReply *, QObject * ) ) );
 
+  if ( !reply )
+  {
+    emit downloadFinished();
+    return;
+  }
+  if ( mIsAborted )
+  {
+    emit deleteReply( reply );
+    emit downloadFinished();
+    return;
+  }
+  // Note: the reply was created on QgsNetworkAccessManager's thread
+  mCapabilitiesReply = reply;
+  connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ), Qt::DirectConnection );
+  connect( mCapabilitiesReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( capabilitiesReplyProgress( qint64, qint64 ) ), Qt::DirectConnection );
+}
+
+void QgsWmsCapabilitiesDownload::abort()
+{
+  QgsDebugMsg( "Entered" );
+  mIsAborted = true;
+  if ( mCapabilitiesReply )
+  {
+    emit deleteReply( mCapabilitiesReply );
+    mCapabilitiesReply = 0;
+  }
+}
 
 void QgsWmsCapabilitiesDownload::capabilitiesReplyProgress( qint64 bytesReceived, qint64 bytesTotal )
 {
@@ -1898,57 +1974,61 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyProgress( qint64 bytesReceived
 void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
 {
   QgsDebugMsg( "entering." );
-  if ( mCapabilitiesReply->error() == QNetworkReply::NoError )
+  if ( !mIsAborted && mCapabilitiesReply )
   {
-    QgsDebugMsg( "reply ok" );
-    QVariant redirect = mCapabilitiesReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
-    if ( !redirect.isNull() )
+    if ( mCapabilitiesReply->error() == QNetworkReply::NoError )
     {
-      emit statusChanged( tr( "Capabilities request redirected." ) );
-
-      const QUrl& toUrl = redirect.toUrl();
-      mCapabilitiesReply->request();
-      if ( toUrl == mCapabilitiesReply->url() )
+      QgsDebugMsg( "reply ok" );
+      QVariant redirect = mCapabilitiesReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
+      if ( !redirect.isNull() )
       {
-        mError = tr( "Redirect loop detected: %1" ).arg( toUrl.toString() );
-        QgsMessageLog::logMessage( mError, tr( "WMS" ) );
-        mHttpCapabilitiesResponse.clear();
+        emit statusChanged( tr( "Capabilities request redirected." ) );
+
+        const QUrl& toUrl = redirect.toUrl();
+        mCapabilitiesReply->request();
+        if ( toUrl == mCapabilitiesReply->url() )
+        {
+          mError = tr( "Redirect loop detected: %1" ).arg( toUrl.toString() );
+          QgsMessageLog::logMessage( mError, tr( "WMS" ) );
+          mHttpCapabilitiesResponse.clear();
+        }
+        else
+        {
+          QNetworkRequest request( toUrl );
+          mAuth.setAuthorization( request );
+          request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferNetwork );
+          request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
+
+          mCapabilitiesReply->deleteLater();
+          QgsDebugMsg( QString( "redirected getcapabilities: %1" ).arg( redirect.toString() ) );
+          //mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
+          emit sendRequest( request );
+          return;
+        }
       }
       else
       {
-        QNetworkRequest request( toUrl );
-        mAuth.setAuthorization( request );
-        request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferNetwork );
-        request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
+        mHttpCapabilitiesResponse = mCapabilitiesReply->readAll();
 
-        mCapabilitiesReply->deleteLater();
-        QgsDebugMsg( QString( "redirected getcapabilities: %1" ).arg( redirect.toString() ) );
-        mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
-
-        connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ) );
-        connect( mCapabilitiesReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( capabilitiesReplyProgress( qint64, qint64 ) ) );
-        return;
+        if ( mHttpCapabilitiesResponse.isEmpty() )
+        {
+          mError = tr( "empty of capabilities: %1" ).arg( mCapabilitiesReply->errorString() );
+        }
       }
     }
     else
     {
-      mHttpCapabilitiesResponse = mCapabilitiesReply->readAll();
-
-      if ( mHttpCapabilitiesResponse.isEmpty() )
-      {
-        mError = tr( "empty of capabilities: %1" ).arg( mCapabilitiesReply->errorString() );
-      }
+      mError = tr( "Download of capabilities failed: %1" ).arg( mCapabilitiesReply->errorString() );
+      QgsMessageLog::logMessage( mError, tr( "WMS" ) );
+      mHttpCapabilitiesResponse.clear();
     }
   }
-  else
-  {
-    mError = tr( "Download of capabilities failed: %1" ).arg( mCapabilitiesReply->errorString() );
-    QgsMessageLog::logMessage( mError, tr( "WMS" ) );
-    mHttpCapabilitiesResponse.clear();
-  }
 
-  mCapabilitiesReply->deleteLater();
-  mCapabilitiesReply = 0;
+  if ( mCapabilitiesReply )
+  {
+    mCapabilitiesReply->deleteLater();
+    mCapabilitiesReply = 0;
+  }
 
   emit downloadFinished();
 }

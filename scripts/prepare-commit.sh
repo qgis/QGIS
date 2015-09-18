@@ -31,7 +31,7 @@ fi
 
 if [ "$1" = "-c" ]; then
 	echo "Cleaning..."
-	find . \( -name "*.prepare" -o -name "*.astyle" -o -name "*.nocopyright" -o -name "astyle.*.diff" -o -name "sha-*.diff" \) -print -delete
+	find . \( -name "*.prepare" -o -name "*.astyle" -o -name "*.nocopyright" -o -name "astyle.*.diff" -o -name "sha-*.diff" -o -name "*.sortinc" \) -print -delete
 fi
 
 set -e
@@ -71,19 +71,7 @@ for f in $MODIFIED; do
 		continue
 		;;
 
-	*.cpp|*.c|*.h|*.cxx|*.hxx|*.c++|*.h++|*.cc|*.hh|*.C|*.H)
-		if [ -x "$f" ]; then
-			chmod a-x "$f"
-		fi
-		;;
-
-	*.py)
-		perl -i.prepare -pe "s/[\t ]+$//;" $f
-		if diff -u $f.prepare $f >>$ASTYLEDIFF; then
-			# no difference found
-			rm $f.prepare
-		fi
-		continue
+	*.cpp|*.c|*.h|*.cxx|*.hxx|*.c++|*.h++|*.cc|*.hh|*.C|*.H|*.sip|*.py)
 		;;
 
 	*)

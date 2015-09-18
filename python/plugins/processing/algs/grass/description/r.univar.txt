@@ -1,5 +1,5 @@
 r.univar
-r.univar - Calculates univariate statistics from the non-null cells of a raster map.
+Calculates univariate statistics from the non-null cells of a raster map.
 Raster (r.*)
 ParameterMultipleInput|map|Name of input raster map(s)|3.0|False
 ParameterRaster|zones|Raster map used for zoning, must be of type CELL|True

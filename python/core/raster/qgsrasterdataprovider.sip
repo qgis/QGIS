@@ -220,10 +220,10 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     /** Returns the format of the error text for the last error in this provider */
     virtual QString lastErrorFormat();
 
-    /**Returns the dpi of the output device. */
+    /** Returns the dpi of the output device. */
     int dpi() const;
 
-    /**Sets the output device resolution. */
+    /** Sets the output device resolution. */
     void setDpi( int dpi );
 
     /** Time stamp of data source in the moment when data/metadata were loaded by provider */
@@ -232,7 +232,7 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     /** Current time stamp of data source */
     virtual QDateTime dataTimestamp() const;
 
-    /**Writes into the provider datasource*/
+    /** Writes into the provider datasource*/
     // TODO: add data type (may be defferent from band type)
     virtual bool write( void* data, int band, int width, int height, int xOffset, int yOffset );
 

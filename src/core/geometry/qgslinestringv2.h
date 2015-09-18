@@ -22,6 +22,12 @@
 #include "qgswkbptr.h"
 #include <QPolygonF>
 
+/** \ingroup core
+ * \class QgsLineStringV2
+ * \brief Line string geometry type.
+ * \note added in QGIS 2.10
+ * \note this API is not considered stable and may change for 2.12
+ */
 class CORE_EXPORT QgsLineStringV2: public QgsCurveV2
 {
   public:
@@ -58,7 +64,12 @@ class CORE_EXPORT QgsLineStringV2: public QgsCurveV2
     void append( const QgsLineStringV2* line );
 
     void draw( QPainter& p ) const override;
-    void transform( const QgsCoordinateTransform& ct ) override;
+
+    /** Transforms the geometry using a coordinate transform
+     * @param ct coordinate transform
+       @param d transformation direction
+     */
+    void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform ) override;
     void transform( const QTransform& t ) override;
 
     void addToPainterPath( QPainterPath& path ) const override;
@@ -76,8 +87,13 @@ class CORE_EXPORT QgsLineStringV2: public QgsCurveV2
 
     void sumUpArea( double& sum ) const override;
 
-    /**Appends first point if not already closed*/
+    /** Appends first point if not already closed*/
     void close();
+
+    /** Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
+        @param vertex the vertex id
+        @return rotation in radians, clockwise from north*/
+    double vertexAngle( const QgsVertexId& vertex ) const override;
 
   private:
     QPolygonF mCoords;

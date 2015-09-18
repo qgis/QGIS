@@ -19,11 +19,21 @@
 #include <QFutureWatcher>
 #include <QObject>
 
+#include "qgsdataitem.h"
 #include "qgslogger.h"
 #include "qgsrasterpipe.h"
 #include "qgsvectordataprovider.h"
 
 #include "qgsgrass.h"
+
+class GRASS_LIB_EXPORT QgsGrassImportIcon : public QgsAnimatedIcon
+{
+    Q_OBJECT
+  public:
+    static QgsGrassImportIcon *instance();
+    QgsGrassImportIcon();
+    virtual ~QgsGrassImportIcon() {};
+};
 
 class GRASS_LIB_EXPORT QgsGrassImport : public QObject
 {
@@ -48,6 +58,7 @@ class GRASS_LIB_EXPORT QgsGrassImport : public QObject
     // and thus recieves the signal.
     // Most probably however, it will work correctly, even if read/write the bool wasn't atomic
     void cancel();
+    void frameChanged() {};
 
   signals:
     // sent when process finished

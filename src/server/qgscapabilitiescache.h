@@ -23,7 +23,7 @@
 #include <QHash>
 #include <QObject>
 
-/**A cache for capabilities xml documents (by configuration file path)*/
+/** A cache for capabilities xml documents (by configuration file path)*/
 class SERVER_EXPORT QgsCapabilitiesCache : public QObject
 {
     Q_OBJECT
@@ -31,9 +31,9 @@ class SERVER_EXPORT QgsCapabilitiesCache : public QObject
     QgsCapabilitiesCache();
     ~QgsCapabilitiesCache();
 
-    /**Returns cached capabilities document (or 0 if document for configuration file not in cache)*/
+    /** Returns cached capabilities document (or 0 if document for configuration file not in cache)*/
     const QDomDocument* searchCapabilitiesDocument( QString configFilePath, QString version );
-    /**Inserts new capabilities document (creates a copy of the document, does not take ownership)*/
+    /** Inserts new capabilities document (creates a copy of the document, does not take ownership)*/
     void insertCapabilitiesDocument( QString configFilePath, QString version, const QDomDocument* doc );
 
   private:
@@ -41,7 +41,7 @@ class SERVER_EXPORT QgsCapabilitiesCache : public QObject
     QFileSystemWatcher mFileSystemWatcher;
 
   private slots:
-    /**Removes changed entry from this cache*/
+    /** Removes changed entry from this cache*/
     void removeChangedEntry( const QString &path );
 };
 

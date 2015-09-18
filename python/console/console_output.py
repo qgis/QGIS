@@ -26,7 +26,9 @@ from qgis.core import QgsApplication
 from qgis.gui import QgsMessageBar
 import sys
 
+
 class writeOut:
+
     def __init__(self, shellOut, out=None, style=None):
         """
         This class allow to write stdout and stderr
@@ -39,13 +41,13 @@ class writeOut:
         if self.style == "_traceback":
             # Show errors in red
             stderrColor = QColor(self.sO.settings.value("pythonConsole/stderrFontColor", QColor(Qt.red)))
-            self.sO.SendScintilla(QsciScintilla.SCI_STYLESETFORE, 001, stderrColor)
-            self.sO.SendScintilla(QsciScintilla.SCI_STYLESETITALIC, 001, True)
-            self.sO.SendScintilla(QsciScintilla.SCI_STYLESETBOLD, 001, True)
+            self.sO.SendScintilla(QsciScintilla.SCI_STYLESETFORE, 0o01, stderrColor)
+            self.sO.SendScintilla(QsciScintilla.SCI_STYLESETITALIC, 0o01, True)
+            self.sO.SendScintilla(QsciScintilla.SCI_STYLESETBOLD, 0o01, True)
             pos = self.sO.SendScintilla(QsciScintilla.SCI_GETCURRENTPOS)
             self.sO.SendScintilla(QsciScintilla.SCI_STARTSTYLING, pos, 31)
             self.sO.append(m)
-            self.sO.SendScintilla(QsciScintilla.SCI_SETSTYLING, len(m), 001)
+            self.sO.SendScintilla(QsciScintilla.SCI_SETSTYLING, len(m), 0o01)
         else:
             self.sO.append(m)
 
@@ -72,9 +74,11 @@ class writeOut:
     def flush(self):
         pass
 
+
 class ShellOutputScintilla(QsciScintilla):
+
     def __init__(self, parent=None):
-        super(ShellOutputScintilla,self).__init__(parent)
+        super(ShellOutputScintilla, self).__init__(parent)
         self.parent = parent
         self.shell = self.parent.shell
 
@@ -205,20 +209,20 @@ class ShellOutputScintilla(QsciScintilla):
         iconHideTool = QgsApplication.getThemeIcon("console/iconHideToolConsole.png")
         iconSettings = QgsApplication.getThemeIcon("console/iconSettingsConsole.png")
         menu.addAction(iconHideTool,
-            QCoreApplication.translate("PythonConsole", "Hide/Show Toolbar"),
-            self.hideToolBar)
+                       QCoreApplication.translate("PythonConsole", "Hide/Show Toolbar"),
+                       self.hideToolBar)
         menu.addSeparator()
         showEditorAction = menu.addAction(
             QCoreApplication.translate("PythonConsole", "Show Editor"),
             self.showEditor)
         menu.addSeparator()
         runAction = menu.addAction(iconRun,
-            QCoreApplication.translate("PythonConsole", "Enter Selected"),
-            self.enteredSelected,
-            QKeySequence(Qt.CTRL + Qt.Key_E))
+                                   QCoreApplication.translate("PythonConsole", "Enter Selected"),
+                                   self.enteredSelected,
+                                   QKeySequence(Qt.CTRL + Qt.Key_E))
         clearAction = menu.addAction(iconClear,
-            QCoreApplication.translate("PythonConsole", "Clear console"),
-            self.clearConsole)
+                                     QCoreApplication.translate("PythonConsole", "Clear console"),
+                                     self.clearConsole)
         menu.addSeparator()
         copyAction = menu.addAction(
             QCoreApplication.translate("PythonConsole", "Copy"),
@@ -229,8 +233,8 @@ class ShellOutputScintilla(QsciScintilla):
             self.selectAll, QKeySequence.SelectAll)
         menu.addSeparator()
         menu.addAction(iconSettings,
-            QCoreApplication.translate("PythonConsole", "Settings"),
-            self.parent.openSettings)
+                       QCoreApplication.translate("PythonConsole", "Settings"),
+                       self.parent.openSettings)
         runAction.setEnabled(False)
         clearAction.setEnabled(False)
         copyAction.setEnabled(False)

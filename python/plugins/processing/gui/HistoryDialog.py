@@ -73,18 +73,18 @@ class HistoryDialog(BASE, WIDGET):
 
     def clearLog(self):
         reply = QMessageBox.question(self,
-            self.tr('Confirmation'),
-            self.tr('Are you sure you want to clear the history?'),
-            QMessageBox.Yes | QMessageBox.No,
-            QMessageBox.No
-        )
+                                     self.tr('Confirmation'),
+                                     self.tr('Are you sure you want to clear the history?'),
+                                     QMessageBox.Yes | QMessageBox.No,
+                                     QMessageBox.No
+                                     )
         if reply == QMessageBox.Yes:
             ProcessingLog.clearLog()
             self.fillTree()
 
     def saveLog(self):
         fileName = QFileDialog.getSaveFileName(self,
-            self.tr('Save file'), '.', self.tr('Log files (*.log *.LOG)'))
+                                               self.tr('Save file'), '.', self.tr('Log files (*.log *.LOG)'))
 
         if fileName == '':
             return
@@ -103,7 +103,7 @@ class HistoryDialog(BASE, WIDGET):
             groupItem.setIcon(0, self.groupIcon)
             for entry in elements[category]:
                 item = TreeLogEntryItem(entry, category
-                        == ProcessingLog.LOG_ALGORITHM)
+                                        == ProcessingLog.LOG_ALGORITHM)
                 item.setIcon(0, self.keyIcon)
                 groupItem.insertChild(0, item)
             self.tree.addTopLevelItem(groupItem)
@@ -114,7 +114,7 @@ class HistoryDialog(BASE, WIDGET):
             if item.isAlg:
                 script = 'import processing\n'
                 script += item.entry.text.replace('runalg(', 'runandload(')
-                exec script
+                exec(script)
 
     def changeText(self):
         item = self.tree.currentItem()

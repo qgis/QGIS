@@ -51,6 +51,7 @@ from PyQt4.QtGui import QGraphicsPathItem, QPen, QGraphicsItem, QPainterPath, QP
 from processing.modeler.ModelerGraphicItem import ModelerGraphicItem
 from processing.modeler.ModelerAlgorithm import Algorithm
 
+
 class ModelerArrowItem(QGraphicsPathItem):
 
     def __init__(self, startItem, startIndex, endItem, endIndex,
@@ -77,31 +78,31 @@ class ModelerArrowItem(QGraphicsPathItem):
             if self.startIndex != -1:
                 controlPoints.append(self.startItem.pos() + startPt)
                 controlPoints.append(self.startItem.pos() + startPt
-                        + QPointF(ModelerGraphicItem.BOX_WIDTH / 3, 0))
+                                     + QPointF(ModelerGraphicItem.BOX_WIDTH / 3, 0))
                 controlPoints.append(self.endItem.pos() + endPt
-                        - QPointF(ModelerGraphicItem.BOX_WIDTH / 3, 0))
+                                     - QPointF(ModelerGraphicItem.BOX_WIDTH / 3, 0))
                 controlPoints.append(self.endItem.pos() + endPt)
                 pt = QPointF(self.startItem.pos() + startPt
-                        + QPointF(-3, -3))
+                             + QPointF(-3, -3))
                 self.endPoints.append(pt)
                 pt = QPointF(self.endItem.pos() + endPt +
-                        QPointF(-3, -3))
+                             QPointF(-3, -3))
                 self.endPoints.append(pt)
             else:
                 # Case where there is a dependency on an algorithm not
                 # on an output
                 controlPoints.append(self.startItem.pos() + startPt)
                 controlPoints.append(self.startItem.pos() + startPt
-                        + QPointF(ModelerGraphicItem.BOX_WIDTH / 3, 0))
+                                     + QPointF(ModelerGraphicItem.BOX_WIDTH / 3, 0))
                 controlPoints.append(self.endItem.pos() + endPt
-                        - QPointF(ModelerGraphicItem.BOX_WIDTH / 3, 0))
+                                     - QPointF(ModelerGraphicItem.BOX_WIDTH / 3, 0))
                 controlPoints.append(self.endItem.pos() + endPt)
         else:
             controlPoints.append(self.startItem.pos())
             controlPoints.append(self.startItem.pos()
-                    + QPointF(ModelerGraphicItem.BOX_WIDTH / 3, 0))
+                                 + QPointF(ModelerGraphicItem.BOX_WIDTH / 3, 0))
             controlPoints.append(self.endItem.pos() + endPt
-                    - QPointF(ModelerGraphicItem.BOX_WIDTH / 3, 0))
+                                 - QPointF(ModelerGraphicItem.BOX_WIDTH / 3, 0))
             controlPoints.append(self.endItem.pos() + endPt)
             pt = QPointF(self.endItem.pos() + endPt + QPointF(-3, -3))
             self.endPoints.append(pt)

@@ -31,6 +31,12 @@ class TestQgsGeometryUtils: public QObject
     void testSegmentMidPoint();
     void testCircleLength_data();
     void testCircleLength();
+    void testLineAngle_data();
+    void testLineAngle();
+    void testLinePerpendicularAngle_data();
+    void testLinePerpendicularAngle();
+    void testAverageAngle_data();
+    void testAverageAngle();
 };
 
 void TestQgsGeometryUtils::testLeftOfLine_data()
@@ -168,6 +174,90 @@ void TestQgsGeometryUtils::testCircleLength()
   QFETCH( double, expected );
 
   QVERIFY( qgsDoubleNear( expected, QgsGeometryUtils::circleLength( x1, y1, x2, y2, x3, y3 ) ) );
+}
+
+void TestQgsGeometryUtils::testLineAngle_data()
+{
+  QTest::addColumn<double>( "x1" );
+  QTest::addColumn<double>( "y1" );
+  QTest::addColumn<double>( "x2" );
+  QTest::addColumn<double>( "y2" );
+  QTest::addColumn<double>( "expected" );
+
+  QTest::newRow( "lineAngle1" ) << 0.0 << 0.0 << 10.0 << 10.0 << 45.0;
+  QTest::newRow( "lineAngle2" ) << 0.0 << 0.0 << 10.0 << 0.0 << 90.0;
+  QTest::newRow( "lineAngle3" ) << 0.0 << 0.0 << 10.0 << -10.0 << 135.0;
+  QTest::newRow( "lineAngle4" ) << 0.0 << 0.0 << 0.0 << -10.0 << 180.0;
+  QTest::newRow( "lineAngle5" ) << 0.0 << 0.0 << -10.0 << -10.0 << 225.0;
+  QTest::newRow( "lineAngle6" ) << 0.0 << 0.0 << -10.0 << 0.0 << 270.0;
+  QTest::newRow( "lineAngle7" ) << 0.0 << 0.0 << -10.0 << 10.0 << 315.0;
+  QTest::newRow( "lineAngle8" ) << 0.0 << 0.0 << 0.0 << 10.0 << 0.0;
+}
+
+void TestQgsGeometryUtils::testLineAngle()
+{
+  QFETCH( double, x1 );
+  QFETCH( double, y1 );
+  QFETCH( double, x2 );
+  QFETCH( double, y2 );
+  QFETCH( double, expected );
+
+  double lineAngle = QgsGeometryUtils::lineAngle( x1, y1, x2, y2 ) * 180 / M_PI;
+  QVERIFY( qgsDoubleNear( lineAngle, expected ) );
+}
+
+void TestQgsGeometryUtils::testLinePerpendicularAngle_data()
+{
+  QTest::addColumn<double>( "x1" );
+  QTest::addColumn<double>( "y1" );
+  QTest::addColumn<double>( "x2" );
+  QTest::addColumn<double>( "y2" );
+  QTest::addColumn<double>( "expected" );
+
+  QTest::newRow( "lineAngle1" ) << 0.0 << 0.0 << 10.0 << 10.0 << 135.0;
+  QTest::newRow( "lineAngle2" ) << 0.0 << 0.0 << 10.0 << 0.0 << 180.0;
+  QTest::newRow( "lineAngle3" ) << 0.0 << 0.0 << 10.0 << -10.0 << 225.0;
+  QTest::newRow( "lineAngle4" ) << 0.0 << 0.0 << 0.0 << -10.0 << 270.0;
+  QTest::newRow( "lineAngle5" ) << 0.0 << 0.0 << -10.0 << -10.0 << 315.0;
+  QTest::newRow( "lineAngle6" ) << 0.0 << 0.0 << -10.0 << 0.0 << 0.0;
+  QTest::newRow( "lineAngle7" ) << 0.0 << 0.0 << -10.0 << 10.0 << 45.0;
+  QTest::newRow( "lineAngle8" ) << 0.0 << 0.0 << 0.0 << 10.0 << 90.0;
+}
+
+void TestQgsGeometryUtils::testLinePerpendicularAngle()
+{
+  QFETCH( double, x1 );
+  QFETCH( double, y1 );
+  QFETCH( double, x2 );
+  QFETCH( double, y2 );
+  QFETCH( double, expected );
+
+  double pAngle = QgsGeometryUtils::linePerpendicularAngle( x1, y1, x2, y2 ) * 180 / M_PI;
+  QVERIFY( qgsDoubleNear( pAngle, expected ) );
+}
+
+void TestQgsGeometryUtils::testAverageAngle_data()
+{
+  QTest::addColumn<double>( "angle1" );
+  QTest::addColumn<double>( "angle2" );
+  QTest::addColumn<double>( "expected" );
+
+  QTest::newRow( "testAverage1" ) << 45.0 << 135.0 << 90.0;
+  QTest::newRow( "testAverage2" ) << 315.0 << 45.0 << 0.0;
+  QTest::newRow( "testAverage3" ) << 45.0 << 315.0 << 0.0;
+  QTest::newRow( "testAverage4" ) << 315.0 << 270.0 << 292.5;
+  QTest::newRow( "testAverage5" ) << 140.0 << 240.0 << 190.0;
+  QTest::newRow( "testAverage6" ) << 240.0 << 140.0 << 190.0;
+}
+
+void TestQgsGeometryUtils::testAverageAngle()
+{
+  QFETCH( double, angle1 );
+  QFETCH( double, angle2 );
+  QFETCH( double, expected );
+
+  double averageAngle = QgsGeometryUtils::averageAngle( angle1 * M_PI / 180.0, angle2 * M_PI / 180.0 ) * 180.0 / M_PI;
+  QVERIFY( qgsDoubleNear( averageAngle, expected, 0.0000000001 ) );
 }
 
 

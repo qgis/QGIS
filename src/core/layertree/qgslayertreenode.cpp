@@ -37,7 +37,7 @@ QgsLayerTreeNode::QgsLayerTreeNode( const QgsLayerTreeNode& other )
     , mProperties( other.mProperties )
 {
   QList<QgsLayerTreeNode*> clonedChildren;
-  foreach ( QgsLayerTreeNode* child, other.mChildren )
+  Q_FOREACH ( QgsLayerTreeNode* child, other.mChildren )
     clonedChildren << child->clone();
   insertChildrenPrivate( -1, clonedChildren );
 }
@@ -113,7 +113,7 @@ void QgsLayerTreeNode::insertChildrenPrivate( int index, QList<QgsLayerTreeNode*
   if ( nodes.count() == 0 )
     return;
 
-  foreach ( QgsLayerTreeNode *node, nodes )
+  Q_FOREACH ( QgsLayerTreeNode *node, nodes )
   {
     Q_ASSERT( node->mParent == 0 );
     node->mParent = this;

@@ -27,32 +27,24 @@
  *
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #ifndef _LAYER_H_
 #define _LAYER_H_
 
+#include "pal.h"
+#include "palgeometry.h"
+#include <QMutex>
+#include <QLinkedList>
+#include <QHash>
 #include <fstream>
-
-#include <pal/pal.h>
-#include <pal/palgeometry.h>
-
 
 namespace pal
 {
-
-  template <class Type> class LinkedList;
-  template <class Type> class Cell;
-  template <typename Data> class HashTable;
 
   template<class DATATYPE, class ELEMTYPE, int NUMDIMS, class ELEMTYPEREAL, int TMAXNODES, int TMINNODES> class RTree;
 
   class Feature;
   class FeaturePart;
   class Pal;
-  class SimpleMutex;
   class LabelInfo;
 
   /**
@@ -71,7 +63,6 @@ namespace pal
 
       friend class LabelPosition;
       friend bool extractFeatCallback( FeaturePart *ft_ptr, void *ctx );
-      friend void toSVGPath( int nbPoints, double *x, double *y, int dpi, Layer *layer, int type, char *uid, std::ostream &out, double scale, int xmin, int ymax, bool exportInfo, char *color );
 
     public:
       enum LabelMode { LabelPerFeature, LabelPerFeaturePart };
@@ -82,225 +73,172 @@ namespace pal
         ShowAll // show upside down for all labels, including dynamic ones
       };
 
-      bool getDisplayAll() const { return displayAll; }
-
-    protected:
-      char *name; /* unique */
-
-      /** list of feature parts */
-      LinkedList<FeaturePart*> *featureParts;
-
-      /** list of features - for deletion */
-      LinkedList<Feature*> *features;
-
-      Pal *pal;
-
-      double defaultPriority;
-
-      bool obstacle;
-      bool active;
-      bool toLabel;
-      bool displayAll;
-      bool centroidInside;
-
-      Units label_unit;
-
-      double min_scale;
-      double max_scale;
-
-      /** optional flags used for some placement methods */
-      Arrangement arrangement;
-      unsigned long arrangementFlags;
-      LabelMode mode;
-      bool mergeLines;
-
-      UpsideDownLabels upsidedownLabels;
-
-      // indexes (spatial and id)
-      RTree<FeaturePart*, double, 2, double, 8, 4> *rtree;
-      HashTable<Feature*> *hashtable;
-
-      HashTable< LinkedList<FeaturePart*>* > * connectedHashtable;
-      LinkedList< char* >* connectedTexts;
-
-      SimpleMutex *modMutex;
-
-      /**
-       * \brief Create a new layer
-       *
-       * @param lyrName layer's name
-       * @param min_scale bellow this scale: no labeling
-       * @param max_scale above this scale: no labeling
-       * @param arrangement Arrangement mode : how to place candidates
-       * @param label_unit Unit for labels sizes
-       * @param defaultPriority layer's prioriry (0 is the best, 1 the worst)
-       * @param obstacle 'true' will discourage other label to be placed above features of this layer
-       * @param active is the layer is active (currently displayed)
-       * @param toLabel the layer will be labeled whether toLablel is true
-       * @param pal pointer to the pal object
-       * @param displayAll if true, all features will be labelled even though overlaps occur
-       *
-       */
-      Layer( const char *lyrName, double min_scale, double max_scale, Arrangement arrangement, Units label_unit, double defaultPriority, bool obstacle, bool active, bool toLabel, Pal *pal, bool displayAll = false );
-
-      /**
-       * \brief Delete the layer
-       */
       virtual ~Layer();
 
-      /**
-       * \brief check if the scal is in the scale range min_scale -> max_scale
-       * @param scale the scale to check
+      bool displayAll() const { return mDisplayAll; }
+
+      /** Returns the number of features in layer.
        */
-      bool isScaleValid( double scale );
+      int featureCount() { return features.size(); }
 
-      /** add newly creted feature part into r tree and to the list */
-      void addFeaturePart( FeaturePart* fpart, const char* labelText = NULL );
-
-    public:
-      /**
-       * \brief get the number of features into layer
+      /** Returns the layer's name.
        */
-      int getNbFeatures();
+      QString name() const { return mName; }
 
-      /**
-       * \brief get layer's name
+      /** Returns the layer's arrangement policy.
+       * @see setArrangement
        */
-      const char * getName();
+      Arrangement arrangement() const { return mArrangement; }
 
-
-      /**
-       *  \brief get arrangement policy
-       */
-      Arrangement getArrangement();
-
-      /**
-       * \brief set arrangement policy
-       *
+      /** Sets the layer's arrangement policy.
        * @param arrangement arrangement policy
+       * @see arrangement
        */
-      void setArrangement( Arrangement arrangement );
+      void setArrangement( Arrangement arrangement ) { mArrangement = arrangement; }
 
-      unsigned long getArrangementFlags() const { return arrangementFlags; }
-      void setArrangementFlags( unsigned long flags ) { arrangementFlags = flags; }
+      /** Returns the layer's arrangement flags.
+       * @see setArrangementFlags
+       */
+      LineArrangementFlags arrangementFlags() const { return mArrangementFlags; }
+
+      /** Sets the layer's arrangement flags.
+       * @param flags arrangement flags
+       * @see arrangementFlags
+       */
+      void setArrangementFlags( LineArrangementFlags flags ) { mArrangementFlags = flags; }
 
       /**
-       * \brief get units for label size
-       */
-      Units getLabelUnit();
-
-      /**
-       * \brief set unit for label size
+       * \brief Sets whether the layer is currently active.
        *
-       */
-      void setLabelUnit( Units label_unit );
-
-      /**
-       * \brief activate or desactivate the layer
+       * Active means "is currently displayed or used as obstacles". When a layer is
+       * deactivated then feature of this layer will not be used for either
+       * labelling or as obstacles.
        *
-       * active means "is currently display". When active is false
-       * feature of this layer will never be used (neither for
-       * labelling nor as obstacles)
-       *
-       * @param active turn the layer active (true) or inactive (false)
+       * @param active set to true to make the layer active, or false to deactivate the layer
+       * @see active
        */
-      void setActive( bool active );
+      void setActive( bool active ) { mActive = active; }
 
-      /**
-       * \brief return the layer's activity status
+      /** Returns whether the layer is currently active.
+       * @see setActive
        */
-      bool isActive();
+      bool active() const { return mActive; }
 
-
-      /**
-       * \brief tell pal whether the layer has to be labelled.
-       *
-       * The layer will be labelled if and only if toLabel and isActive were set to true
-       *
-       * @param toLabel set to false disable lbelling this layer
+      /** Sets whether the layer will be labeled.
+       * @note Layers are labelled if and only if labelLayer and active are true
+       * @param toLabel set to false disable labeling this layer
+       * @see labelLayer
+       * @see setActive
        */
-      void setToLabel( bool toLabel );
+      void setLabelLayer( bool toLabel ) { mLabelLayer = toLabel; }
 
-
-      /**
-       * \brief return if the layer will be labelled or not
+      /** Returns whether the layer will be labeled or not.
+       * @see setLabelLayer
        */
-      bool isToLabel();
+      bool labelLayer() const { return mLabelLayer; }
 
-
-      /**
-       * \brief mark layer's features as obstacles
-       *
-       * Avoid putting labels over obstalces.
-       * isActive must also be true to consider feature as obstacles,
-       * otherwise they will be ignored
+      /** Sets whether features within the layer will act as obstacles for labels.
+       * @note this property is only effective if the layer is active
+       * @param obstacle set to true if features will act as obstacles
+       * @see setActive
+       * @see obstacle
        */
-      void setObstacle( bool obstacle );
+      void setObstacle( bool obstacle ) { mObstacle = obstacle; }
 
-      /**
-       * \brief return the obstacle status
+      /** Returns whether features within the layer act as obstacles for labels.
+       * @see setObstacle
        */
-      bool isObstacle();
+      bool obstacle() const { return mObstacle; }
 
-      /**
-       * \brief set the minimum valid scale, below this scale the layer will not be labelled
-       *
-       * Use -1 to disable
+      /** Returns the obstacle type, which controls how features within the layer
+       * act as obstacles for labels.
+       * @see setObstacleType
        */
-      void setMinScale( double min_scale );
+      ObstacleType obstacleType() const { return mObstacleType; }
 
-      /**
-       * \brief return the minimum valid scale
+      /** Sets the obstacle type, which controls how features within the layer
+       * act as obstacles for labels.
+       * @param obstacleType new obstacle type
+       * @see obstacleType
        */
-      double getMinScale();
+      void setObstacleType( ObstacleType obstacleType ) { mObstacleType = obstacleType; }
 
-
-      /**
-       * \brief set the maximum valid scale, upon this scale the layer will not be labelled
-       *
-       * use -1 to disable
-       */
-      void setMaxScale( double max_scale );
-
-
-      /**
-       * \brief return the maximum valid scale
-       */
-      double getMaxScale();
-
-
-      /**
-       * \ brief set the layer priority
-       *
-       * The best priority is 0, the worst is 1
-       * Should be links with a slider in a nice gui
+      /** Sets the layer's priority.
+       * @param priority layer priority, between 0 and 1. 0 corresponds to highest priority,
+       * 1 to lowest priority.
+       * @see priority
        */
       void setPriority( double priority );
 
-
-      /**
-       * return the layer's priority
+      /** Returns the layer's priority, between 0 and 1. 0 corresponds to highest priority,
+       * 1 to lowest priority.
+       * @see setPriority
        */
-      double getPriority();
+      double priority() const { return mDefaultPriority; }
 
-      void setLabelMode( LabelMode m ) { mode = m; }
-      LabelMode getLabelMode() const { return mode; }
+      /** Sets the layer's labeling mode.
+       * @param mode label mode
+       * @see labelMode
+       */
+      void setLabelMode( LabelMode mode ) { mMode = mode; }
 
-      void setMergeConnectedLines( bool m ) { mergeLines = m; }
-      bool getMergeConnectedLines() const { return mergeLines; }
+      /** Returns the layer's labeling mode.
+       * @see setLabelMode
+       */
+      LabelMode labelMode() const { return mMode; }
 
-      // void setRepeatDistance( double distance ) { repeatDistance = distance; }
-      // double getRepeatDistance() const { return repeatDistance; }
+      /** Sets whether connected lines should be merged before labeling
+       * @param merge set to true to merge connected lines
+       * @see mergeConnectedLines
+       */
+      void setMergeConnectedLines( bool merge ) { mMergeLines = merge; }
 
-      void setUpsidedownLabels( UpsideDownLabels ud ) { upsidedownLabels = ud; }
-      UpsideDownLabels getUpsidedownLabels() const { return upsidedownLabels; }
+      /** Returns whether connected lines will be merged before labeling.
+       * @see setMergeConnectedLines
+       */
+      bool mergeConnectedLines() const { return mMergeLines; }
 
-      void setCentroidInside( bool forceInside ) { centroidInside = forceInside; }
-      bool getCentroidInside() const { return centroidInside; }
+      /** Sets how upside down labels will be handled within the layer.
+       * @param ud upside down label handling mode
+       * @see upsideDownLabels
+       */
+      void setUpsidedownLabels( UpsideDownLabels ud ) { mUpsidedownLabels = ud; }
 
-      /**
-       * \brief register a feature in the layer
-       *
+      /** Returns how upside down labels are handled within the layer.
+       * @see setUpsidedownLabels
+       */
+      UpsideDownLabels upsidedownLabels() const { return mUpsidedownLabels; }
+
+      /** Sets whether labels placed at the centroid of features within the layer
+       * are forced to be placed inside the feature's geometry.
+       * @param forceInside set to true to force centroid labels to be within the
+       * feature. If set to false then the centroid may fall outside the feature.
+       * @see centroidInside
+       */
+      void setCentroidInside( bool forceInside ) { mCentroidInside = forceInside; }
+
+      /** Returns whether labels placed at the centroid of features within the layer
+       * are forced to be placed inside the feature's geometry.
+       * @see setCentroidInside
+       */
+      bool centroidInside() const { return mCentroidInside; }
+
+      /** Sets whether labels which do not fit completely within a polygon feature
+       * are discarded.
+       * @param fitInPolygon set to true to discard labels which do not fit within
+       * polygon features. Set to false to allow labels which partially fall outside
+       * the polygon.
+       * @see fitInPolygonOnly
+       */
+      void setFitInPolygonOnly( bool fitInPolygon ) { mFitInPolygon = fitInPolygon; }
+
+      /** Returns whether labels which do not fit completely within a polygon feature
+       * are discarded.
+       * @see setFitInPolygonOnly
+       */
+      bool fitInPolygonOnly() const { return mFitInPolygon; }
+
+      /** Register a feature in the layer.
        * @param geom_id unique identifier
        * @param userGeom user's geometry that implements the PalGeometry interface
        * @param label_x label width
@@ -322,20 +260,76 @@ namespace pal
        *
        * @return true on success (i.e. valid geometry)
        */
-      bool registerFeature( const char *geom_id, PalGeometry *userGeom, double label_x = -1, double label_y = -1,
-                            const char* labelText = NULL, double labelPosX = 0.0, double labelPosY = 0.0,
+      bool registerFeature( const QString &geom_id, PalGeometry *userGeom, double label_x = -1, double label_y = -1,
+                            const QString& labelText = QString(), double labelPosX = 0.0, double labelPosY = 0.0,
                             bool fixedPos = false, double angle = 0.0, bool fixedAngle = false,
                             int xQuadOffset = 0, int yQuadOffset = 0, double xOffset = 0.0, double yOffset = 0.0,
                             bool alwaysShow = false, double repeatDistance = 0 );
 
-      /** return pointer to feature or NULL if doesn't exist */
-      Feature* getFeature( const char* geom_id );
+      /** Return pointer to feature or NULL if doesn't exist */
+      Feature* getFeature( const QString &geom_id );
 
-      /** join connected features with the same label text */
+      /** Join connected features with the same label text */
       void joinConnectedFeatures();
 
-      /** chop layer features at the repeat distance **/
+      /** Chop layer features at the repeat distance **/
       void chopFeaturesAtRepeatDistance();
+
+    protected:
+      QString mName; /* unique */
+
+      /** List of feature parts */
+      QLinkedList<FeaturePart*> mFeatureParts;
+
+      /** List of features - for deletion */
+      QList<Feature*> features;
+
+      Pal *pal;
+
+      double mDefaultPriority;
+
+      bool mObstacle;
+      ObstacleType mObstacleType;
+      bool mActive;
+      bool mLabelLayer;
+      bool mDisplayAll;
+      bool mCentroidInside;
+      bool mFitInPolygon;
+
+      /** Optional flags used for some placement methods */
+      Arrangement mArrangement;
+      LineArrangementFlags mArrangementFlags;
+      LabelMode mMode;
+      bool mMergeLines;
+
+      UpsideDownLabels mUpsidedownLabels;
+
+      // indexes (spatial and id)
+      RTree<FeaturePart*, double, 2, double, 8, 4> *rtree;
+      QHash< QString, Feature*> mHashtable;
+
+      QHash< QString, QLinkedList<FeaturePart*>* > mConnectedHashtable;
+      QStringList mConnectedTexts;
+
+      QMutex mMutex;
+
+      /**
+       * \brief Create a new layer
+       *
+       * @param lyrName layer's name
+       * @param arrangement Arrangement mode : how to place candidates
+       * @param defaultPriority layer's prioriry (0 is the best, 1 the worst)
+       * @param obstacle 'true' will discourage other label to be placed above features of this layer
+       * @param active is the layer is active (currently displayed)
+       * @param toLabel the layer will be labeled whether toLablel is true
+       * @param pal pointer to the pal object
+       * @param displayAll if true, all features will be labelled even though overlaps occur
+       *
+       */
+      Layer( const QString& lyrName, Arrangement arrangement, double defaultPriority, bool obstacle, bool active, bool toLabel, Pal *pal, bool displayAll = false );
+
+      /** Add newly created feature part into r tree and to the list */
+      void addFeaturePart( FeaturePart* fpart, const QString &labelText = QString() );
 
   };
 

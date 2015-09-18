@@ -47,10 +47,11 @@ QgsFeatureRequest::QgsFeatureRequest( const QgsRectangle& rect )
 {
 }
 
-QgsFeatureRequest::QgsFeatureRequest( const QgsExpression& expr )
+QgsFeatureRequest::QgsFeatureRequest( const QgsExpression& expr, const QgsExpressionContext &context )
     : mFilter( FilterExpression )
     , mFilterFid( -1 )
     , mFilterExpression( new QgsExpression( expr.expression() ) )
+    , mExpressionContext( context )
     , mFlags( 0 )
 {
 }
@@ -75,6 +76,7 @@ QgsFeatureRequest& QgsFeatureRequest::operator=( const QgsFeatureRequest & rh )
   {
     mFilterExpression = 0;
   }
+  mExpressionContext = rh.mExpressionContext;
   mAttrs = rh.mAttrs;
   mSimplifyMethod = rh.mSimplifyMethod;
   return *this;
@@ -87,7 +89,6 @@ QgsFeatureRequest::~QgsFeatureRequest()
 
 QgsFeatureRequest& QgsFeatureRequest::setFilterRect( const QgsRectangle& rect )
 {
-  mFilter = FilterRect;
   mFilterRect = rect;
   return *this;
 }
@@ -111,6 +112,12 @@ QgsFeatureRequest& QgsFeatureRequest::setFilterExpression( const QString& expres
   mFilter = FilterExpression;
   delete mFilterExpression;
   mFilterExpression = new QgsExpression( expression );
+  return *this;
+}
+
+QgsFeatureRequest &QgsFeatureRequest::setExpressionContext( const QgsExpressionContext &context )
+{
+  mExpressionContext = context;
   return *this;
 }
 
@@ -138,7 +145,7 @@ QgsFeatureRequest& QgsFeatureRequest::setSubsetOfAttributes( const QStringList& 
   mFlags |= SubsetOfAttributes;
   mAttrs.clear();
 
-  foreach ( const QString& attrName, attrNames )
+  Q_FOREACH ( const QString& attrName, attrNames )
   {
     int attrNum = fields.fieldNameIndex( attrName );
     if ( attrNum != -1 && !mAttrs.contains( attrNum ) )
@@ -177,7 +184,8 @@ bool QgsFeatureRequest::acceptFeature( const QgsFeature& feature )
       break;
 
     case QgsFeatureRequest::FilterExpression:
-      if ( mFilterExpression->evaluate( feature ).toBool() )
+      mExpressionContext.setFeature( feature );
+      if ( mFilterExpression->evaluate( &mExpressionContext ).toBool() )
         return true;
       else
         return false;

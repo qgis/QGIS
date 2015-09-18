@@ -181,7 +181,12 @@ void QgsAttributeActionDialog::insertExpression()
     selText = selText.mid( 2, selText.size() - 4 );
 
   // display the expression builder
-  QgsExpressionBuilderDialog dlg( mActions->layer(), selText, this );
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::layerScope( mActions->layer() );
+
+  QgsExpressionBuilderDialog dlg( mActions->layer(), selText, this, "generic", context );
   dlg.setWindowTitle( tr( "Insert expression" ) );
 
   QgsDistanceArea myDa;

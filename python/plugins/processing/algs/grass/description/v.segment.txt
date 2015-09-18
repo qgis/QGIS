@@ -1,5 +1,5 @@
 v.segment
-v.segment - Creates points/segments from input vector lines and positions.
+Creates points/segments from input vector lines and positions.
 Vector (v.*)
 ParameterVector|input|Input lines layer|1|False
 ParameterFile|file|File containing segment rules|False

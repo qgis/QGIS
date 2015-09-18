@@ -40,9 +40,12 @@ class QgsStandardItem : public QStandardItem
       setTextAlignment( Qt::AlignCenter );
     }
 
-    QgsStandardItem( double value ) : QStandardItem( QString::number( value, 'f', 2 ) )
+    QgsStandardItem( double value ) : QStandardItem( QString::number( value, 'f', 4 ) )
     {
       setData( QVariant( value ), Qt::UserRole );
+      //show the full precision when editing points
+      setData( QVariant( value ), Qt::EditRole );
+      setData( QVariant( value ), Qt::ToolTipRole );
       setTextAlignment( Qt::AlignRight );
     }
 };
@@ -102,7 +105,15 @@ void QgsGCPListModel::updateModel()
     unitType = tr( "pixels" );
   }
 
-  itemLabels << "on/off" << "id" << "srcX" << "srcY" << "dstX" << "dstY" << QString( "dX[" ) + unitType + "]" << QString( "dY[" ) + unitType + "]" << "residual[" + unitType + "]";
+  itemLabels << tr( "Visible" )
+  << tr( "ID" )
+  << tr( "Source X" )
+  << tr( "Source Y" )
+  << tr( "Dest. X" )
+  << tr( "Dest. Y" )
+  << tr( "dX (%1)" ).arg( unitType )
+  << tr( "dY (%1)" ).arg( unitType )
+  << tr( "Residual (%1)" ).arg( unitType );
 
   setHorizontalHeaderLabels( itemLabels );
   setRowCount( mGCPList->size() );

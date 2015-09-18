@@ -788,14 +788,14 @@ void GlobePlugin::setupProxy()
     if ( !settings.value( "/proxyUser" ).toString().isEmpty() )
     {
       QString auth = settings.value( "/proxyUser" ).toString() + ":" + settings.value( "/proxyPassword" ).toString();
-#ifdef WIN32
+#ifdef Q_OS_WIN
       putenv( QString( "OSGEARTH_CURL_PROXYAUTH=%1" ).arg( auth ).toAscii() );
 #else
       setenv( "OSGEARTH_CURL_PROXYAUTH", auth.toStdString().c_str(), 0 );
 #endif
     }
     //TODO: settings.value("/proxyType")
-    //TODO: URL exlusions
+    //TODO: URL exclusions
     HTTPClient::setProxySettings( proxySettings );
   }
   settings.endGroup();

@@ -47,13 +47,13 @@ class GdalAlgorithm(GeoAlgorithm):
 
     def processAlgorithm(self, progress):
         GdalUtils.runGdal(self.getConsoleCommands(), progress)
-        
+
     def help(self):
         try:
-            return False, "http://www.gdal.org/%s.html" % self.commandName()   
+            return False, "http://www.gdal.org/%s.html" % self.commandName()
         except:
             return False, None
-        
+
     def commandName(self):
         alg = self.getCopy()
         for output in alg.outputs:

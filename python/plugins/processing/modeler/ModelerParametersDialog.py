@@ -73,7 +73,7 @@ class ModelerParametersDialog(QDialog):
         self.buttonBox = QDialogButtonBox()
         self.buttonBox.setOrientation(Qt.Horizontal)
         self.buttonBox.setStandardButtons(QDialogButtonBox.Cancel
-                | QDialogButtonBox.Ok)
+                                          | QDialogButtonBox.Ok)
         tooltips = self._alg.getParameterDescriptions()
         self.setSizePolicy(QSizePolicy.Expanding,
                            QSizePolicy.Expanding)
@@ -245,7 +245,6 @@ class ModelerParametersDialog(QDialog):
             alg = self.model.algs[value.alg]
             return self.tr("'%s' from algorithm '%s'") % (alg.algorithm.getOutputFromName(value.output).description, alg.description)
 
-
     def getWidgetFromParameter(self, param):
         if isinstance(param, ParameterRaster):
             item = QComboBox()
@@ -281,6 +280,7 @@ class ModelerParametersDialog(QDialog):
         elif isinstance(param, ParameterSelection):
             item = QComboBox()
             item.addItems(param.options)
+            item.setCurrentIndex(param.default)
         elif isinstance(param, ParameterFixedTable):
             item = FixedTablePanel(param)
         elif isinstance(param, ParameterRange):
@@ -318,7 +318,7 @@ class ModelerParametersDialog(QDialog):
             numbers = self.getAvailableValuesOfType(ParameterNumber, OutputNumber)
             for n in numbers:
                 item.addItem(self.resolveValueDescription(n), n)
-            item.setEditText(str(param.default))
+            item.setEditText(unicode(param.default))
         elif isinstance(param, ParameterCrs):
             item = CrsSelectionPanel(param.default)
         elif isinstance(param, ParameterExtent):
@@ -330,7 +330,7 @@ class ModelerParametersDialog(QDialog):
             for ex in extents:
                 item.addItem(self.resolveValueDescription(ex), ex)
             if not self.canUseAutoExtent():
-                item.setEditText(str(param.default))
+                item.setEditText(unicode(param.default))
         elif isinstance(param, ParameterFile):
             item = QComboBox()
             item.setEditable(True)
@@ -342,7 +342,7 @@ class ModelerParametersDialog(QDialog):
         else:
             item = QLineEdit()
             try:
-                item.setText(str(param.default))
+                item.setText(unicode(param.default))
             except:
                 pass
         return item
@@ -371,7 +371,7 @@ class ModelerParametersDialog(QDialog):
 
         for i, output in visibleOutputs:
             item = QTableWidgetItem(output.description + '<'
-                    + output.__module__.split('.')[-1] + '>')
+                                    + output.__module__.split('.')[-1] + '>')
             item.setFlags(Qt.ItemIsEnabled)
             self.tableWidget.setItem(i, 0, item)
             item = QLineEdit()
@@ -454,7 +454,7 @@ class ModelerParametersDialog(QDialog):
             selected = []
             dependencies = self.getAvailableDependencies()
             for idx, dependency in enumerate(dependencies):
-                if dependency in alg.dependencies:
+                if dependency.name in alg.dependencies:
                     selected.append(idx)
 
             self.dependenciesPanel.setSelectedItems(selected)
@@ -492,11 +492,10 @@ class ModelerParametersDialog(QDialog):
             alg.params[param.name] = value
             return True
 
-
     def setParamTableFieldValue(self, alg, param, widget):
         idx = widget.findText(widget.currentText())
         if idx < 0:
-            s = str(widget.currentText()).strip()
+            s = unicode(widget.currentText()).strip()
             if s == '':
                 if param.optional:
                     alg.params[param.name] = None
@@ -566,7 +565,7 @@ class ModelerParametersDialog(QDialog):
     def setParamExtentValue(self, alg, param, widget):
         idx = widget.findText(widget.currentText())
         if idx < 0:
-            s = str(widget.currentText())
+            s = unicode(widget.currentText())
             try:
                 tokens = s.split(',')
                 if len(tokens) != 4:

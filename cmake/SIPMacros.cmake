@@ -128,11 +128,10 @@ MACRO(ADD_SIP_PYTHON_MODULE MODULE_NAME MODULE_SIP)
     ENDIF (WIN32)
 
     IF(WIN32)
-      GET_TARGET_PROPERTY(_target_location ${_logical_name} LOCATION)
       GET_TARGET_PROPERTY(_runtime_output ${_logical_name} RUNTIME_OUTPUT_DIRECTORY)
       ADD_CUSTOM_COMMAND(TARGET ${_logical_name} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E echo "Copying extension ${_child_module_name}"
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different "${_target_location}" "${_runtime_output}/${_child_module_name}.pyd"
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different "$<TARGET_FILE:${_logical_name}>" "${_runtime_output}/${_child_module_name}.pyd"
         DEPENDS ${_logical_name}
       )
     ENDIF(WIN32)

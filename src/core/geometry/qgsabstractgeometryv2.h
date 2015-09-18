@@ -16,6 +16,7 @@ email                : marco.hugentobler at sourcepole dot com
 #ifndef QGSABSTRACTGEOMETRYV2
 #define QGSABSTRACTGEOMETRYV2
 
+#include "qgscoordinatetransform.h"
 #include "qgsrectangle.h"
 #include "qgswkbtypes.h"
 #include <QString>
@@ -30,10 +31,11 @@ class QgsConstWkbPtr;
 class QgsWkbPtr;
 class QPainter;
 
-/**\ingroup core
+/** \ingroup core
  * \class QgsVertexId
  * \brief Utility class for identifying a unique vertex within a geometry.
  * \note added in QGIS 2.10
+ * \note this API is not considered stable and may change for 2.12
  */
 struct CORE_EXPORT QgsVertexId
 {
@@ -66,7 +68,7 @@ struct CORE_EXPORT QgsVertexId
   VertexType type;
 };
 
-/**\ingroup core
+/** \ingroup core
  * \class QgsAbstractGeometryV2
  * \brief Abstract base class for all geometries
  * \note added in QGIS 2.10
@@ -215,15 +217,18 @@ class CORE_EXPORT QgsAbstractGeometryV2
 
     /** Transforms the geometry using a coordinate transform
      * @param ct coordinate transform
+       @param d transformation direction
      */
-    virtual void transform( const QgsCoordinateTransform& ct ) = 0;
+    virtual void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform ) = 0;
 
     /** Transforms the geometry using a QTransform object
      * @param t QTransform transformation
      */
     virtual void transform( const QTransform& t ) = 0;
 
+#if 0
     virtual void clip( const QgsRectangle& rect ); //todo
+#endif
 
     /** Draws the geometry using the specified QPainter.
      * @param p destination QPainter
@@ -312,6 +317,11 @@ class CORE_EXPORT QgsAbstractGeometryV2
      */
     virtual QgsAbstractGeometryV2* segmentize() const { return clone(); }
 
+    /** Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
+        @param vertex the vertex id
+        @return rotation in radians, clockwise from north*/
+    virtual double vertexAngle( const QgsVertexId& vertex ) const = 0;
+
   protected:
     QgsWKBTypes::Type mWkbType;
     mutable QgsRectangle mBoundingBox;
@@ -323,7 +333,7 @@ class CORE_EXPORT QgsAbstractGeometryV2
     /** Reads a WKB header and tests its validity.
      * @param wkbPtr
      * @param wkbType destination for WKB type from header
-     * @param endianSwap will be set to true if endian from WKB must be swapped to match QGIS platform endianess
+     * @param endianSwap will be set to true if endian from WKB must be swapped to match QGIS platform endianness
      * @param expectedType expected WKB type
      * @returns true if header is valid and matches expected type
      */

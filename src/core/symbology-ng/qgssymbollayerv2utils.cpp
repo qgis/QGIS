@@ -328,15 +328,31 @@ QPointF QgsSymbolLayerV2Utils::decodePoint( QString str )
 
 QString QgsSymbolLayerV2Utils::encodeMapUnitScale( const QgsMapUnitScale& mapUnitScale )
 {
-  return QString( "%1,%2" ).arg( mapUnitScale.minScale ).arg( mapUnitScale.maxScale );
+  return QString( "%1,%2,%3,%4,%5,%6" ).arg( mapUnitScale.minScale ).arg( mapUnitScale.maxScale )
+         .arg( mapUnitScale.minSizeMMEnabled ? 1 : 0 )
+         .arg( mapUnitScale.minSizeMM )
+         .arg( mapUnitScale.maxSizeMMEnabled ? 1 : 0 )
+         .arg( mapUnitScale.maxSizeMM );
 }
 
 QgsMapUnitScale QgsSymbolLayerV2Utils::decodeMapUnitScale( const QString& str )
 {
   QStringList lst = str.split( ',' );
-  if ( lst.count() != 2 )
+  if ( lst.count() < 2 )
     return QgsMapUnitScale();
-  return QgsMapUnitScale( lst[0].toDouble(), lst[1].toDouble() );
+
+  if ( lst.count() < 6 )
+  {
+    // old format
+    return QgsMapUnitScale( lst[0].toDouble(), lst[1].toDouble() );
+  }
+
+  QgsMapUnitScale s( lst[0].toDouble(), lst[1].toDouble() );
+  s.minSizeMMEnabled = lst[2].toInt();
+  s.minSizeMM = lst[3].toDouble();
+  s.maxSizeMMEnabled = lst[4].toInt();
+  s.maxSizeMM = lst[5].toDouble();
+  return s;
 }
 
 QString QgsSymbolLayerV2Utils::encodeOutputUnit( QgsSymbolV2::OutputUnit unit )
@@ -2722,7 +2738,7 @@ QDomElement QgsSymbolLayerV2Utils::saveSymbols( QgsSymbolV2Map& symbols, QString
 
 void QgsSymbolLayerV2Utils::clearSymbolMap( QgsSymbolV2Map& symbols )
 {
-  foreach ( QString name, symbols.keys() )
+  Q_FOREACH ( const QString& name, symbols.keys() )
   {
     delete symbols.value( name );
   }
@@ -3267,47 +3283,92 @@ QColor QgsSymbolLayerV2Utils::parseColorWithAlpha( const QString colorStr, bool 
 
 double QgsSymbolLayerV2Utils::lineWidthScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u, const QgsMapUnitScale& scale )
 {
-
-  if ( u == QgsSymbolV2::MM )
+  switch ( u )
   {
-    return c.scaleFactor();
-  }
-  else //QgsSymbol::MapUnit
-  {
-    double mup = scale.computeMapUnitsPerPixel( c );
-    if ( mup > 0 )
+    case QgsSymbolV2::MM:
+      return c.scaleFactor();
+    case QgsSymbolV2::MapUnit:
     {
-      return 1.0 / mup;
+      double mup = scale.computeMapUnitsPerPixel( c );
+      if ( mup > 0 )
+      {
+        return 1.0 / mup;
+      }
+      else
+      {
+        return 1.0;
+      }
     }
-    else
-    {
+    case QgsSymbolV2::Pixel:
+      return 1.0 / c.rasterScaleFactor();
+    case QgsSymbolV2::Mixed:
+      //no sensible value
       return 1.0;
-    }
   }
+  return 1.0;
+}
+
+double QgsSymbolLayerV2Utils::convertToPainterUnits( const QgsRenderContext &c, double size, QgsSymbolV2::OutputUnit unit, const QgsMapUnitScale &scale )
+{
+  double conversionFactor = lineWidthScaleFactor( c, unit, scale );
+  double convertedSize = size * conversionFactor;
+
+  if ( unit == QgsSymbolV2::MapUnit )
+  {
+    //check max/min size
+    if ( scale.minSizeMMEnabled )
+      convertedSize = qMax( convertedSize, scale.minSizeMM * c.scaleFactor() );
+    if ( scale.maxSizeMMEnabled )
+      convertedSize = qMin( convertedSize, scale.maxSizeMM * c.scaleFactor() );
+  }
+
+  return convertedSize;
 }
 
 double QgsSymbolLayerV2Utils::pixelSizeScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u, const QgsMapUnitScale& scale )
 {
-  if ( u == QgsSymbolV2::MM )
+  switch ( u )
   {
-    return ( c.scaleFactor() * c.rasterScaleFactor() );
-  }
-  else if ( u == QgsSymbolV2::Pixel )
-  {
-    return 1.0;
-  }
-  else //QgsSymbol::MapUnit
-  {
-    double mup = scale.computeMapUnitsPerPixel( c );
-    if ( mup > 0 )
+    case QgsSymbolV2::MM:
+      return ( c.scaleFactor() * c.rasterScaleFactor() );
+    case QgsSymbolV2::MapUnit:
     {
-      return c.rasterScaleFactor() / mup;
+      double mup = scale.computeMapUnitsPerPixel( c );
+      if ( mup > 0 )
+      {
+        return c.rasterScaleFactor() / mup;
+      }
+      else
+      {
+        return 1.0;
+      }
     }
-    else
+    case QgsSymbolV2::Pixel:
+      return 1.0;
+    case QgsSymbolV2::Mixed:
+      //no sensible value
+      return 1.0;
+  }
+  return 1.0;
+}
+
+double QgsSymbolLayerV2Utils::mapUnitScaleFactor( const QgsRenderContext &c, QgsSymbolV2::OutputUnit u, const QgsMapUnitScale &scale )
+{
+  switch ( u )
+  {
+    case QgsSymbolV2::MM:
+      return scale.computeMapUnitsPerPixel( c ) * c.scaleFactor() * c.rasterScaleFactor();
+    case QgsSymbolV2::MapUnit:
     {
       return 1.0;
     }
+    case QgsSymbolV2::Pixel:
+      return scale.computeMapUnitsPerPixel( c );
+    case QgsSymbolV2::Mixed:
+      //no sensible value
+      return 1.0;
   }
+  return 1.0;
 }
 
 QgsRenderContext QgsSymbolLayerV2Utils::createRenderContext( QPainter* p )
@@ -3520,12 +3581,12 @@ QStringList QgsSymbolLayerV2Utils::listSvgFiles()
   for ( int i = 0; i < svgPaths.size(); i++ )
   {
     QDir dir( svgPaths[i] );
-    foreach ( QString item, dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
+    Q_FOREACH ( const QString& item, dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
     {
       svgPaths.insert( i + 1, dir.path() + "/" + item );
     }
 
-    foreach ( QString item, dir.entryList( QStringList( "*.svg" ), QDir::Files ) )
+    Q_FOREACH ( const QString& item, dir.entryList( QStringList( "*.svg" ), QDir::Files ) )
     {
       // TODO test if it is correct SVG
       list.append( dir.path() + "/" + item );
@@ -3546,12 +3607,12 @@ QStringList QgsSymbolLayerV2Utils::listSvgFilesAt( QString directory )
   for ( int i = 0; i < svgPaths.size(); i++ )
   {
     QDir dir( svgPaths[i] );
-    foreach ( QString item, dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
+    Q_FOREACH ( const QString& item, dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
     {
       svgPaths.insert( i + 1, dir.path() + "/" + item );
     }
 
-    foreach ( QString item, dir.entryList( QStringList( "*.svg" ), QDir::Files ) )
+    Q_FOREACH ( const QString& item, dir.entryList( QStringList( "*.svg" ), QDir::Files ) )
     {
       list.append( dir.path() + "/" + item );
     }

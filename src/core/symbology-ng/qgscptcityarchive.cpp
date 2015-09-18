@@ -50,7 +50,7 @@ QgsCptCityArchive::QgsCptCityArchive( QString archiveName, QString baseDir )
 
   // make Author items
   QgsCptCityDirectoryItem* dirItem = 0;
-  foreach ( QString path, QDir( mBaseDir ).entryList( QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name ) )
+  Q_FOREACH ( const QString& path, QDir( mBaseDir ).entryList( QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name ) )
   {
     if ( path == "selections" )
       continue;
@@ -66,7 +66,7 @@ QgsCptCityArchive::QgsCptCityArchive( QString archiveName, QString baseDir )
   QgsCptCitySelectionItem* selItem = 0;
   QDir seldir( mBaseDir + "/" + "selections" );
   QgsDebugMsg( "populating selection from " + seldir.path() );
-  foreach ( QString selfile, seldir.entryList( QStringList( "*.xml" ), QDir::Files ) )
+  Q_FOREACH ( const QString& selfile, seldir.entryList( QStringList( "*.xml" ), QDir::Files ) )
   {
     QgsDebugMsg( "file= " + seldir.path() + "/" + selfile );
     selItem = new QgsCptCitySelectionItem( NULL, QFileInfo( selfile ).baseName(),
@@ -90,9 +90,9 @@ QgsCptCityArchive::QgsCptCityArchive( QString archiveName, QString baseDir )
 
 QgsCptCityArchive::~QgsCptCityArchive()
 {
-  foreach ( QgsCptCityDataItem* item, mRootItems )
+  Q_FOREACH ( QgsCptCityDataItem* item, mRootItems )
     delete item;
-  foreach ( QgsCptCityDataItem* item, mSelectionItems )
+  Q_FOREACH ( QgsCptCityDataItem* item, mSelectionItems )
     delete item;
   mRootItems.clear();
   mSelectionItems.clear();
@@ -459,7 +459,7 @@ void QgsCptCityArchive::initArchives( bool loadAll )
   if ( loadAll )
   {
     QDir dir( baseDir );
-    foreach ( QString entry, dir.entryList( QStringList( "cpt-city*" ), QDir::Dirs ) )
+    Q_FOREACH ( const QString& entry, dir.entryList( QStringList( "cpt-city*" ), QDir::Dirs ) )
     {
       if ( QFile::exists( baseDir + "/" + entry + "/VERSION.xml" ) )
         archivesMap[ entry ] = baseDir + "/" + entry;
@@ -541,7 +541,7 @@ void QgsCptCityDataItem::populate()
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
   QVector<QgsCptCityDataItem*> children = createChildren();
-  foreach ( QgsCptCityDataItem *child, children )
+  Q_FOREACH ( QgsCptCityDataItem *child, children )
   {
     // initialization, do not refresh! That would result in infinite loop (beginInsertItems->rowCount->populate)
     addChildItem( child );
@@ -564,7 +564,7 @@ int QgsCptCityDataItem::leafCount() const
     return 0;
 
   int count = 0;
-  foreach ( QgsCptCityDataItem *child, mChildren )
+  Q_FOREACH ( QgsCptCityDataItem *child, mChildren )
   {
     if ( child )
       count += child->leafCount();
@@ -671,19 +671,19 @@ void QgsCptCityDataItem::refresh()
 
   // Remove no more present items
   QVector<QgsCptCityDataItem*> remove;
-  foreach ( QgsCptCityDataItem *child, mChildren )
+  Q_FOREACH ( QgsCptCityDataItem *child, mChildren )
   {
     if ( findItem( items, child ) >= 0 )
       continue;
     remove.append( child );
   }
-  foreach ( QgsCptCityDataItem *child, remove )
+  Q_FOREACH ( QgsCptCityDataItem *child, remove )
   {
     deleteChildItem( child );
   }
 
   // Add new items
-  foreach ( QgsCptCityDataItem *item, items )
+  Q_FOREACH ( QgsCptCityDataItem *item, items )
   {
     // Is it present in childs?
     if ( findItem( mChildren, item ) >= 0 )
@@ -811,7 +811,7 @@ QIcon QgsCptCityColorRampItem::icon()
 
 QIcon QgsCptCityColorRampItem::icon( const QSize& size )
 {
-  foreach ( QIcon icon, mIcons )
+  Q_FOREACH ( const QIcon& icon, mIcons )
   {
     if ( icon.availableSizes().contains( size ) )
       return icon;
@@ -848,7 +848,7 @@ QgsCptCityCollectionItem::QgsCptCityCollectionItem( QgsCptCityDataItem* parent,
 QgsCptCityCollectionItem::~QgsCptCityCollectionItem()
 {
   // QgsDebugMsg( "Entered" );
-  foreach ( QgsCptCityDataItem* i, mChildren )
+  Q_FOREACH ( QgsCptCityDataItem* i, mChildren )
   {
     // QgsDebugMsg( QString( "delete child = 0x%0" ).arg(( qlonglong )i, 8, 16, QLatin1Char( '0' ) ) );
     delete i;
@@ -863,7 +863,7 @@ QVector< QgsCptCityDataItem* > QgsCptCityCollectionItem::childrenRamps( bool rec
   populate();
 
   // recursively add children
-  foreach ( QgsCptCityDataItem* childItem, children() )
+  Q_FOREACH ( QgsCptCityDataItem* childItem, children() )
   {
     QgsCptCityCollectionItem* collectionItem = dynamic_cast<QgsCptCityCollectionItem*>( childItem );
     QgsCptCityColorRampItem* rampItem = dynamic_cast<QgsCptCityColorRampItem*>( childItem );
@@ -889,7 +889,7 @@ QVector< QgsCptCityDataItem* > QgsCptCityCollectionItem::childrenRamps( bool rec
   }
 
   // delete invalid items - this is not efficient, but should only happens once
-  foreach ( QgsCptCityDataItem* deleteItem, deleteItems )
+  Q_FOREACH ( QgsCptCityDataItem* deleteItem, deleteItems )
   {
     QgsDebugMsg( QString( "item %1 is invalid, will be deleted" ).arg( deleteItem->path() ) );
     int i = mChildren.indexOf( deleteItem );
@@ -951,7 +951,7 @@ QVector<QgsCptCityDataItem*> QgsCptCityDirectoryItem::createChildren()
   }
 
   // add children dirs
-  foreach ( QString childPath, dirEntries() )
+  Q_FOREACH ( const QString& childPath, dirEntries() )
   {
     QgsCptCityDataItem* childItem =
       QgsCptCityDirectoryItem::dataItem( this, childPath, mPath + "/" + childPath );
@@ -1189,7 +1189,7 @@ QVector<QgsCptCityDataItem*> QgsCptCitySelectionItem::createChildren()
   QgsDebugMsg( "name= " + mName + " path= " + mPath );
 
   // add children archives
-  foreach ( QString childPath, mSelectionsList )
+  Q_FOREACH ( QString childPath, mSelectionsList )
   {
     QgsDebugMsg( "childPath = " + childPath + " name= " + QFileInfo( childPath ).baseName() );
     if ( childPath.endsWith( "/" ) )
@@ -1316,7 +1316,7 @@ QVector<QgsCptCityDataItem*> QgsCptCityAllRampsItem::createChildren()
   QVector<QgsCptCityDataItem*> children;
 
   // add children ramps of each item
-  foreach ( QgsCptCityDataItem* item, mItems )
+  Q_FOREACH ( QgsCptCityDataItem* item, mItems )
   {
     QgsCptCityCollectionItem* colItem = dynamic_cast< QgsCptCityCollectionItem* >( item );
     if ( colItem )
@@ -1360,7 +1360,7 @@ void QgsCptCityBrowserModel::addRootItems()
 void QgsCptCityBrowserModel::removeRootItems()
 {
   // don't remove root items, they belong to the QgsCptCityArchive
-  // foreach ( QgsCptCityDataItem* item, mRootItems )
+  // Q_FOREACH ( QgsCptCityDataItem* item, mRootItems )
   // {
   //   delete item;
   // }
@@ -1538,7 +1538,7 @@ QModelIndex QgsCptCityBrowserModel::findPath( QString path )
         const QgsCptCitySelectionItem* selItem = dynamic_cast<const QgsCptCitySelectionItem *>( item );
         if ( selItem )
         {
-          foreach ( QString childPath, selItem->selectionsList() )
+          Q_FOREACH ( QString childPath, selItem->selectionsList() )
           {
             if ( childPath.endsWith( "/" ) )
               childPath.chop( 1 );
@@ -1720,7 +1720,7 @@ QStringList QgsCptCityBrowserModel::mimeTypes() const
 QMimeData * QgsCptCityBrowserModel::mimeData( const QModelIndexList &indexes ) const
 {
   QgsMimeDataUtils::UriList lst;
-  foreach ( const QModelIndex &index, indexes )
+  Q_FOREACH ( const QModelIndex &index, indexes )
   {
     if ( index.isValid() )
     {

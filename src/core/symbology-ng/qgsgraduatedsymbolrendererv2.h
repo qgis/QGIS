@@ -110,6 +110,7 @@ class CORE_EXPORT QgsRendererRangeV2LabelFormat
 class QgsVectorLayer;
 class QgsVectorColorRampV2;
 
+Q_NOWARN_DEPRECATED_PUSH
 class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
 {
   public:
@@ -119,9 +120,9 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
 
     virtual ~QgsGraduatedSymbolRendererV2();
 
-    virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature ) override;
+    virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature, QgsRenderContext &context ) override;
 
-    virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feature ) override;
+    virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feature, QgsRenderContext &context ) override;
 
     virtual void startRender( QgsRenderContext& context, const QgsFields& fields ) override;
 
@@ -138,7 +139,7 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
     //! returns bitwise OR-ed capabilities of the renderer
     virtual int capabilities() override { return SymbolLevels | RotationField | Filter; }
 
-    virtual QgsSymbolV2List symbols() override;
+    virtual QgsSymbolV2List symbols( QgsRenderContext &context ) override;
 
     QString classAttribute() const { return mAttrName; }
     void setClassAttribute( QString attr ) { mAttrName = attr; }
@@ -172,6 +173,18 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
 
     //! Moves the category at index position from to index position to.
     void moveClass( int from, int to );
+
+    /** Tests whether classes assigned to the renderer have ranges which overlap.
+     * @returns true if ranges overlap
+     * @note added in QGIS 2.10
+     */
+    bool rangesOverlap() const;
+
+    /** Tests whether classes assigned to the renderer have gaps between the ranges.
+     * @returns true if ranges have gaps
+     * @note added in QGIS 2.10
+     */
+    bool rangesHaveGaps() const;
 
     void sortByValue( Qt::SortOrder order = Qt::AscendingOrder );
     void sortByLabel( Qt::SortOrder order = Qt::AscendingOrder );
@@ -247,13 +260,20 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
     void setSourceSymbol( QgsSymbolV2* sym );
 
     QgsVectorColorRampV2* sourceColorRamp();
+
+    /** Sets the source color ramp.
+      * @param ramp color ramp. Ownership is transferred to the renderer
+      */
     void setSourceColorRamp( QgsVectorColorRampV2* ramp );
+
     //! @note added in 2.1
     bool invertedColorRamp() { return mInvertedColorRamp; }
     void setInvertedColorRamp( bool inverted ) { mInvertedColorRamp = inverted; }
 
     /** Update the color ramp used. Also updates all symbols colors.
       * Doesn't alter current breaks.
+      * @param ramp color ramp. Ownership is transferred to the renderer
+      * @param inverted set to true to invert ramp colors
       */
     void updateColorRamp( QgsVectorColorRampV2* ramp = 0, bool inverted = false );
 
@@ -283,8 +303,8 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
     //! @note added in 2.10
     void setGraduatedMethod( GraduatedMethod method ) { mGraduatedMethod = method; }
 
-    void setRotationField( QString fieldOrExpression ) override;
-    QString rotationField() const override;
+    Q_DECL_DEPRECATED void setRotationField( QString fieldOrExpression ) override;
+    Q_DECL_DEPRECATED QString rotationField() const override;
 
     void setSizeScaleField( QString fieldOrExpression );
     QString sizeScaleField() const;
@@ -339,5 +359,6 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
     static const char * graduatedMethodStr( GraduatedMethod method );
 
 };
+Q_NOWARN_DEPRECATED_POP
 
 #endif // QGSGRADUATEDSYMBOLRENDERERV2_H

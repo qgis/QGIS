@@ -54,7 +54,7 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer* rasterLa
   //only one hardcoded format at the moment
   QStringList myFormats;
   myFormats << "GTiff";
-  foreach ( QString myFormat, myFormats )
+  Q_FOREACH ( const QString& myFormat, myFormats )
   {
     mFormatComboBox->addItem( myFormat );
   }
@@ -203,6 +203,11 @@ void QgsRasterLayerSaveAsDialog::on_mBrowseButton_clicked()
 
   if ( !fileName.isEmpty() )
   {
+    // ensure the user never ommited the extension from the file name
+    if ( !fileName.toLower().endsWith( ".tif" ) && !fileName.toLower().endsWith( ".tiff" ) )
+    {
+      fileName += ".tif";
+    }
     mSaveAsLineEdit->setText( fileName );
   }
 }
@@ -505,7 +510,7 @@ void QgsRasterLayerSaveAsDialog::on_mLoadTransparentNoDataToolButton_clicked()
   const QgsRasterTransparency* rasterTransparency = mRasterLayer->renderer()->rasterTransparency();
   if ( !rasterTransparency ) return;
 
-  foreach ( QgsRasterTransparency::TransparentSingleValuePixel transparencyPixel, rasterTransparency->transparentSingleValuePixelList() )
+  Q_FOREACH ( const QgsRasterTransparency::TransparentSingleValuePixel& transparencyPixel, rasterTransparency->transparentSingleValuePixelList() )
   {
     if ( transparencyPixel.percentTransparent == 100 )
     {

@@ -26,6 +26,7 @@
 #include "qgsencodingfiledialog.h"
 #include "qgsgenericprojectionselector.h"
 #include "qgslogger.h"
+#include "qgsconditionalstyle.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsproviderregistry.h"
 #include "qgsvectorlayer.h"
@@ -85,7 +86,7 @@ QgsBrowser::QgsBrowser( QWidget *parent, Qt::WindowFlags flags )
 
   //Change all current icon sizes.
   QList<QToolBar *> toolbars = findChildren<QToolBar *>();
-  foreach ( QToolBar * toolbar, toolbars )
+  Q_FOREACH ( QToolBar * toolbar, toolbars )
   {
     toolbar->setIconSize( QSize( size, size ) );
   }

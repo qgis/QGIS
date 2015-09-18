@@ -43,19 +43,19 @@ class gdal2xyz(GdalAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def defineCharacteristics(self):
-        self.name = 'gdal2xyz'
-        self.group = '[GDAL] Conversion'
+        self.name, self.i18n_name = self.trAlgorithm('gdal2xyz')
+        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Conversion')
         self.addParameter(ParameterRaster(
             self.INPUT, self.tr('Input layer'), False))
         self.addParameter(ParameterNumber(self.BAND,
-            self.tr('Band number'), 1, 9999, 1))
+                                          self.tr('Band number'), 1, 9999, 1))
 
         self.addOutput(OutputTable(self.OUTPUT, self.tr('xyz')))
 
     def getConsoleCommands(self):
         arguments = []
         arguments.append('-band')
-        arguments.append(str(self.getParameterValue(self.BAND)))
+        arguments.append(unicode(self.getParameterValue(self.BAND)))
 
         arguments.append('-csv')
         arguments.append(self.getParameterValue(self.INPUT))

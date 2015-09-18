@@ -1,0 +1,7 @@
+{
+  "function": "union",
+  "description": "Returns a geometry that represents the point set union of the geometries.",
+  "arguments": [ {"arg":"geometry1","description":"a geometry"},
+                 {"arg":"geometry2","description":"a geometry"}],
+  "examples": [ { "expression":"geom_to_wkt( union( geom_from_wkt( 'POINT(4 4)' ), geom_from_wkt( 'POINT(5 5)' ) ) )", "returns":"MULTIPOINT(4 4, 5 5)"} ]
+}

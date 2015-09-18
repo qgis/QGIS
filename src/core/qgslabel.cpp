@@ -39,7 +39,7 @@
 #include "qgslabel.h"
 
 // use M_PI define PI 3.141592654
-#ifdef WIN32
+#ifdef Q_OS_WIN
 #undef M_PI
 #define M_PI 4*atan(1.0)
 #endif

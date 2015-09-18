@@ -122,16 +122,28 @@
    </property>
   </action>
   <action name="actionExpandAll">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionExpandTree.svg</normaloff>:/images/themes/default/mActionExpandTree.svg</iconset>
+   </property>
    <property name="text">
     <string>Expand All</string>
    </property>
   </action>
   <action name="actionCollapseAll">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionCollapseTree.svg</normaloff>:/images/themes/default/mActionCollapseTree.svg</iconset>
+   </property>
    <property name="text">
     <string>Collapse All</string>
    </property>
   </action>
   <action name="actionSelectAll">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSelectAllTree.svg</normaloff>:/images/themes/default/mActionSelectAllTree.svg</iconset>
+   </property>
    <property name="text">
     <string>Select All</string>
    </property>

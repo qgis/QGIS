@@ -24,7 +24,7 @@
 class QgsLineStringV2;
 class QPainterPath;
 
-/**\ingroup core
+/** \ingroup core
  * \class QgsCurveV2
  * \brief Abstract base class for curved geometry type
  * \note added in QGIS 2.10
@@ -62,7 +62,7 @@ class CORE_EXPORT QgsCurveV2: public QgsAbstractGeometryV2
      */
     virtual void addToPainterPath( QPainterPath& path ) const = 0;
 
-    /** Draws the curve as a polygon on the specifed QPainter.
+    /** Draws the curve as a polygon on the specified QPainter.
      * @param p destination QPainter
      */
     virtual void drawAsPolygon( QPainter& p ) const = 0;

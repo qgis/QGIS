@@ -39,11 +39,11 @@ class CORE_EXPORT QgsSymbolLayerV2AbstractMetadata
     QString visibleName() const { return mVisibleName; }
     QgsSymbolV2::SymbolType type() const { return mType; }
 
-    /** create a symbol layer of this type given the map of properties. */
+    /** Create a symbol layer of this type given the map of properties. */
     virtual QgsSymbolLayerV2* createSymbolLayer( const QgsStringMap& map ) = 0;
-    /** create widget for symbol layer of this type. Can return NULL if there's no GUI */
+    /** Create widget for symbol layer of this type. Can return NULL if there's no GUI */
     virtual QgsSymbolLayerV2Widget* createSymbolLayerWidget( const QgsVectorLayer * ) { return NULL; }
-    /** create a symbol layer of this type given the map of properties. */
+    /** Create a symbol layer of this type given the map of properties. */
     virtual QgsSymbolLayerV2* createSymbolLayerFromSld( QDomElement & ) { return NULL; }
 
 

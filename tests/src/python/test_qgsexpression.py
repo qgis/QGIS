@@ -17,7 +17,9 @@ from utilities import unittest, TestCase
 from qgis.utils import qgsfunction
 from qgis.core import QgsExpression
 
+
 class TestQgsExpressionCustomFunctions(TestCase):
+
     @qgsfunction(1, 'testing', register=False)
     def testfun(values, feature, parent):
         """ Function help """
@@ -60,12 +62,12 @@ class TestQgsExpressionCustomFunctions(TestCase):
         function = self.expandargs
         args = function.params()
         self.assertEqual(args, 3)
-        values = [1,2,3]
+        values = [1, 2, 3]
         exp = QgsExpression("")
         result = function.func(values, None, exp)
         # Make sure there is no eval error
         self.assertEqual(exp.evalErrorString(), "")
-        self.assertEqual(result, (1,2,3))
+        self.assertEqual(result, (1, 2, 3))
 
     def testCanUnregisterFunction(self):
         QgsExpression.registerFunction(self.testfun)
@@ -128,7 +130,7 @@ class TestQgsExpressionCustomFunctions(TestCase):
             "  abc   ",
             " /* co */ da ",
         ]:
-            self.assertEqual( txt, QgsExpression(txt).expression() )
+            self.assertEqual(txt, QgsExpression(txt).expression())
 
     def testBlockComment(self):
         expressions = {
@@ -151,7 +153,6 @@ class TestQgsExpressionCustomFunctions(TestCase):
             exp = QgsExpression(e)
             result = exp.evaluate()
             self.assertEqual(exp_res, result)
-
 
     def testComment(self):
         expressions = {

@@ -3602,7 +3602,7 @@ QStringList QOCISpatialDriver::tables( QSql::TableType type ) const
     user = user.toUpper();
 
   if ( sysUsers.contains( user ) )
-    sysUsers.removeAll( user );;
+    sysUsers.removeAll( user );
 
   if ( !isOpen() )
     return tl;

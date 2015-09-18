@@ -16,7 +16,6 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QObject>
 #include <QApplication>
 #include <QFileInfo>
 #include <QDir>
@@ -26,11 +25,11 @@
 #include <QImage>
 #include <QPainter>
 
-#include <iostream>
 //qgis includes...
 #include <qgsapplication.h>
 #include <qgsgeometry.h>
 #include <qgspoint.h>
+#include "qgspointv2.h"
 
 //qgs unit test utility class
 #include "qgsrenderchecker.h"
@@ -50,6 +49,11 @@ class TestQgsGeometry : public QObject
     void cleanupTestCase();// will be called after the last testfunction was executed.
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
+
+    void copy();
+    void assignment();
+    void asVariant(); //test conversion to and from a QVariant
+    void isEmpty();
 
     void fromQgsPoint();
     void fromQPoint();
@@ -75,6 +79,8 @@ class TestQgsGeometry : public QObject
     void differenceCheck2();
     void bufferCheck();
     void smoothCheck();
+
+    void dataStream();
 
   private:
     /** A helper method to do a render check to see if the geometry op is as expected */
@@ -205,7 +211,94 @@ void TestQgsGeometry::cleanup()
   delete mpPolygonGeometryA;
   delete mpPolygonGeometryB;
   delete mpPolygonGeometryC;
+  delete mpPolylineGeometryD;
   delete mpPainter;
+}
+
+void TestQgsGeometry::copy()
+{
+  //create a point geometry
+  QgsGeometry original( new QgsPointV2( 1.0, 2.0 ) );
+  QCOMPARE( original.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 1.0 );
+  QCOMPARE( original.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).y(), 2.0 );
+
+  //implicitly shared copy
+  QgsGeometry copy( original );
+  QCOMPARE( copy.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 1.0 );
+  QCOMPARE( copy.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).y(), 2.0 );
+
+  //trigger a detach
+  copy.setGeometry( new QgsPointV2( 3.0, 4.0 ) );
+  QCOMPARE( copy.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 3.0 );
+  QCOMPARE( copy.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).y(), 4.0 );
+
+  //make sure original was untouched
+  QCOMPARE( original.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 1.0 );
+  QCOMPARE( original.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).y(), 2.0 );
+}
+
+void TestQgsGeometry::assignment()
+{
+  //create a point geometry
+  QgsGeometry original( new QgsPointV2( 1.0, 2.0 ) );
+  QCOMPARE( original.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 1.0 );
+  QCOMPARE( original.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).y(), 2.0 );
+
+  //assign to implicitly shared copy
+  QgsGeometry copy;
+  copy = original;
+  QCOMPARE( copy.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 1.0 );
+  QCOMPARE( copy.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).y(), 2.0 );
+
+  //trigger a detach
+  copy.setGeometry( new QgsPointV2( 3.0, 4.0 ) );
+  QCOMPARE( copy.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 3.0 );
+  QCOMPARE( copy.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).y(), 4.0 );
+
+  //make sure original was untouched
+  QCOMPARE( original.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 1.0 );
+  QCOMPARE( original.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).y(), 2.0 );
+}
+
+void TestQgsGeometry::asVariant()
+{
+  //create a point geometry
+  QgsGeometry original( new QgsPointV2( 1.0, 2.0 ) );
+  QCOMPARE( original.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 1.0 );
+  QCOMPARE( original.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).y(), 2.0 );
+
+  //convert to and from a QVariant
+  QVariant var = QVariant::fromValue( original );
+  QVERIFY( var.isValid() );
+
+  QgsGeometry fromVar = qvariant_cast<QgsGeometry>( var );
+  QCOMPARE( fromVar.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 1.0 );
+  QCOMPARE( fromVar.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).y(), 2.0 );
+
+  //also check copying variant
+  QVariant var2 = var;
+  QVERIFY( var2.isValid() );
+  QgsGeometry fromVar2 = qvariant_cast<QgsGeometry>( var2 );
+  QCOMPARE( fromVar2.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 1.0 );
+  QCOMPARE( fromVar2.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).y(), 2.0 );
+
+  //modify original and check detachment
+  original.setGeometry( new QgsPointV2( 3.0, 4.0 ) );
+  QgsGeometry fromVar3 = qvariant_cast<QgsGeometry>( var );
+  QCOMPARE( fromVar3.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 1.0 );
+  QCOMPARE( fromVar3.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).y(), 2.0 );
+}
+
+void TestQgsGeometry::isEmpty()
+{
+  QgsGeometry geom;
+  QVERIFY( geom.isEmpty() );
+
+  geom.setGeometry( new QgsPointV2( 1.0, 2.0 ) );
+  QVERIFY( !geom.isEmpty() );
+
+  geom.setGeometry( 0 );
+  QVERIFY( geom.isEmpty() );
 }
 
 void TestQgsGeometry::fromQgsPoint()
@@ -364,10 +457,12 @@ void TestQgsGeometry::initTestCase()
 
 void TestQgsGeometry::cleanupTestCase()
 {
+
+
   //
   // Runs once after all tests are run
   //
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -616,11 +711,39 @@ void TestQgsGeometry::smoothCheck()
   QVERIFY( QgsGeometry::compare( multipoly, expectedMultiPoly ) );
 }
 
+void TestQgsGeometry::dataStream()
+{
+  QString wkt = "Point (40 50)";
+  QScopedPointer<QgsGeometry> geom( QgsGeometry::fromWkt( wkt ) );
+
+  QByteArray ba;
+  QDataStream ds( &ba, QIODevice::ReadWrite );
+  ds << *geom;
+
+  QgsGeometry resultGeometry;
+  ds.device()->seek( 0 );
+  ds >> resultGeometry;
+
+  QCOMPARE( geom->geometry()->asWkt(), resultGeometry.geometry()->asWkt( ) );
+
+  //also test with geometry without data
+  QScopedPointer<QgsGeometry> emptyGeom( new QgsGeometry() );
+
+  QByteArray ba2;
+  QDataStream ds2( &ba2, QIODevice::ReadWrite );
+  ds2 << emptyGeom;
+
+  ds2.device()->seek( 0 );
+  ds2 >> resultGeometry;
+
+  QVERIFY( resultGeometry.isEmpty() );
+}
+
 bool TestQgsGeometry::renderCheck( QString theTestName, QString theComment, int mismatchCount )
 {
   mReport += "<h2>" + theTestName + "</h2>\n";
   mReport += "<h3>" + theComment + "</h3>\n";
-  QString myTmpDir = QDir::tempPath() + QDir::separator();
+  QString myTmpDir = QDir::tempPath() + "/";
   QString myFileName = myTmpDir + theTestName + ".png";
   mImage.save( myFileName, "PNG" );
   QgsRenderChecker myChecker;
@@ -683,4 +806,3 @@ void TestQgsGeometry::dumpPolyline( QgsPolyline &thePolyline )
 
 QTEST_MAIN( TestQgsGeometry )
 #include "testqgsgeometry.moc"
-

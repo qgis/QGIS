@@ -175,7 +175,7 @@ void QgsMapRenderer::adjustExtentToSize()
   if ( !myWidth || !myHeight )
   {
     mScale = 1.0;
-    newCoordXForm.setParameters( 1, 0, 0, 0 );
+    newCoordXForm.setParameters( 1, 0, 0, 0, 0, 0 );
     return;
   }
 
@@ -225,7 +225,9 @@ void QgsMapRenderer::adjustExtentToSize()
 
   QgsDebugMsg( QString( "Scale (assuming meters as map units) = 1:%1" ).arg( qgsDoubleToString( mScale ) ) );
 
+  Q_NOWARN_DEPRECATED_PUSH
   newCoordXForm.setParameters( mMapUnitsPerPixel, dxmin, dymin, myHeight );
+  Q_NOWARN_DEPRECATED_POP
   mRenderContext.setMapToPixel( newCoordXForm );
   mRenderContext.setExtent( mExtent );
 }
@@ -485,7 +487,9 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
         bk_mapToPixel = mRenderContext.mapToPixel();
         rasterMapToPixel = mRenderContext.mapToPixel();
         rasterMapToPixel.setMapUnitsPerPixel( mRenderContext.mapToPixel().mapUnitsPerPixel() / rasterScaleFactor );
+        Q_NOWARN_DEPRECATED_PUSH
         rasterMapToPixel.setYMaximum( mSize.height() * rasterScaleFactor );
+        Q_NOWARN_DEPRECATED_POP
         mRenderContext.setMapToPixel( rasterMapToPixel );
         mRenderContext.painter()->save();
         mRenderContext.painter()->scale( 1.0 / rasterScaleFactor, 1.0 / rasterScaleFactor );

@@ -110,6 +110,10 @@ class TestQgsSnappingUtils : public QObject
       QVERIFY( !m2.isValid() );
       QVERIFY( !m2.hasVertex() );
 
+      // do not consider edges in the following test - on 32-bit platforms
+      // result was an edge match very close to (1,0) instead of being exactly (1,0)
+      u.setDefaultSettings( QgsPointLocator::Vertex, 10, QgsTolerance::Pixels );
+
       // test with filtering
       FilterExcludePoint myFilter( QgsPoint( 1, 0 ) );
       QgsPointLocator::Match m3 = u.snapToMap( QPoint( 100, 100 ), &myFilter );
@@ -166,6 +170,52 @@ class TestQgsSnappingUtils : public QObject
       QVERIFY( !m2.isValid() );
     }
 
+    void testSnapOnIntersection()
+    {
+      // testing with a layer with two crossing linestrings
+      // (0,1)  x  x (1,1)
+      //         \/
+      //         /\    .
+      // (0,0)  x  x (1,0)
+      QgsVectorLayer* vl = new QgsVectorLayer( "LineString", "x", "memory" );
+      QgsPolyline polyline1, polyline2;
+      polyline1 << QgsPoint( 0, 0 ) << QgsPoint( 1, 1 );
+      polyline2 << QgsPoint( 1, 0 ) << QgsPoint( 0, 1 );
+      QgsFeature f1;
+      f1.setGeometry( QgsGeometry::fromPolyline( polyline1 ) );
+      QgsFeature f2;
+      f2.setGeometry( QgsGeometry::fromPolyline( polyline2 ) );
+      QgsFeatureList flist;
+      flist << f1 << f2;
+      vl->dataProvider()->addFeatures( flist );
+
+      QVERIFY( vl->dataProvider()->featureCount() == 2 );
+
+      QgsMapSettings mapSettings;
+      mapSettings.setOutputSize( QSize( 100, 100 ) );
+      mapSettings.setExtent( QgsRectangle( 0, 0, 1, 1 ) );
+      QVERIFY( mapSettings.hasValidSettings() );
+
+      QgsSnappingUtils u;
+      u.setMapSettings( mapSettings );
+      u.setSnapToMapMode( QgsSnappingUtils::SnapAdvanced );
+      QList<QgsSnappingUtils::LayerConfig> layers;
+      layers << QgsSnappingUtils::LayerConfig( vl, QgsPointLocator::Vertex, 0.1, QgsTolerance::MapUnits );
+      u.setLayers( layers );
+
+      // no snapping on intersections by default - should find nothing
+      QgsPointLocator::Match m = u.snapToMap( QgsPoint( 0.45, 0.5 ) );
+      QVERIFY( !m.isValid() );
+
+      u.setSnapOnIntersections( true );
+
+      QgsPointLocator::Match m2 = u.snapToMap( QgsPoint( 0.45, 0.5 ) );
+      QVERIFY( m2.isValid() );
+      QCOMPARE( m2.type(), QgsPointLocator::Vertex );
+      QCOMPARE( m2.point(), QgsPoint( 0.5, 0.5 ) );
+
+      delete vl;
+    }
 };
 
 QTEST_MAIN( TestQgsSnappingUtils )

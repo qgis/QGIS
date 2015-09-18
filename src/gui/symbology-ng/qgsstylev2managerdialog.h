@@ -41,6 +41,9 @@ class GUI_EXPORT QgsStyleV2ManagerDialog : public QDialog, private Ui::QgsStyleV
     void addItem();
     void editItem();
     void removeItem();
+    void exportItemsSVG();
+    void exportItemsPNG();
+    void exportSelectedItemsImages( QString dir, QString format, QSize size );
     void exportItems();
     void importItems();
 

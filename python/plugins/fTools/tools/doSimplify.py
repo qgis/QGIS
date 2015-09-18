@@ -37,477 +37,484 @@ import ftools_utils
 
 from ui_frmSimplify import Ui_Dialog
 
-class Dialog( QDialog, Ui_Dialog ):
-  def __init__( self, iface, function ):
-    QDialog.__init__( self, iface.mainWindow() )
-    self.setupUi( self )
-    self.iface = iface
-    self.myFunction = function
 
-    self.workThread = None
+class Dialog(QDialog, Ui_Dialog):
 
-    if self.myFunction == 2:
-      self.setWindowTitle( self.tr( "Densify geometries" ) )
-      self.lblTolerance.setText( self.tr( "Vertices to add" ) )
-      self.spnTolerance.setDecimals( 0 )
-      self.spnTolerance.setMinimum( 1 )
-      self.spnTolerance.setSingleStep( 1 )
-      self.spnTolerance.setValue( 1.0 )
+    def __init__(self, iface, function):
+        QDialog.__init__(self, iface.mainWindow())
+        self.setupUi(self)
+        self.iface = iface
+        self.myFunction = function
 
-    self.btnOk = self.buttonBox.button( QDialogButtonBox.Ok )
-    self.btnClose = self.buttonBox.button( QDialogButtonBox.Close )
+        self.workThread = None
 
-    QObject.connect( self.chkWriteShapefile, SIGNAL( "stateChanged( int )" ), self.updateGui )
-    QObject.connect( self.btnSelectOutputFile, SIGNAL( "clicked()" ), self.selectOutputFile )
+        if self.myFunction == 2:
+            self.setWindowTitle(self.tr("Densify geometries"))
+            self.lblTolerance.setText(self.tr("Vertices to add"))
+            self.spnTolerance.setDecimals(0)
+            self.spnTolerance.setMinimum(1)
+            self.spnTolerance.setSingleStep(1)
+            self.spnTolerance.setValue(1.0)
 
-    self.populateLayers()
+        self.btnOk = self.buttonBox.button(QDialogButtonBox.Ok)
+        self.btnClose = self.buttonBox.button(QDialogButtonBox.Close)
 
-  def populateLayers( self ):
-    layers = ftools_utils.getLayerNames( [ QGis.Polygon, QGis.Line ] )
-    self.cmbInputLayer.clear()
-    self.cmbInputLayer.addItems( layers )
+        QObject.connect(self.chkWriteShapefile, SIGNAL("stateChanged( int )"), self.updateGui)
+        QObject.connect(self.btnSelectOutputFile, SIGNAL("clicked()"), self.selectOutputFile)
 
-  def updateGui( self ):
-    if self.chkWriteShapefile.isChecked():
-      self.edOutputFile.setEnabled( True )
-      self.btnSelectOutputFile.setEnabled( True )
-      self.chkAddToCanvas.setEnabled( True )
+        self.populateLayers()
+
+    def populateLayers(self):
+        layers = ftools_utils.getLayerNames([QGis.Polygon, QGis.Line])
+        self.cmbInputLayer.clear()
+        self.cmbInputLayer.addItems(layers)
+
+    def updateGui(self):
+        if self.chkWriteShapefile.isChecked():
+            self.edOutputFile.setEnabled(True)
+            self.btnSelectOutputFile.setEnabled(True)
+            self.chkAddToCanvas.setEnabled(True)
+        else:
+            self.edOutputFile.setEnabled(False)
+            self.btnSelectOutputFile.setEnabled(False)
+            self.chkAddToCanvas.setEnabled(False)
+
+        self.encoding = None
+
+    def selectOutputFile(self):
+        self.edOutputFile.clear()
+        (self.shapeFileName, self.encoding) = ftools_utils.saveDialog(self)
+        if self.shapeFileName is None or self.encoding is None:
+            return
+        self.edOutputFile.setText(self.shapeFileName)
+
+    def accept(self):
+        if not self.cmbInputLayer.currentText():
+            QMessageBox.warning(self, self.tr("Warning"), self.tr("Please specify an input layer"))
+            return
+        vLayer = ftools_utils.getVectorLayerByName(self.cmbInputLayer.currentText())
+
+        self.btnOk.setEnabled(False)
+
+        if self.chkWriteShapefile.isChecked():
+            outFileName = self.edOutputFile.text()
+            outFile = QFile(outFileName)
+            if outFile.exists():
+                if not QgsVectorFileWriter.deleteShapeFile(outFileName):
+                    QMessageBox.warning(self, self.tr("Delete error"),
+                                        self.tr("Can't delete file %s") % (outFileName))
+                    return
+
+            self.workThread = GeomThread(self.myFunction, vLayer, self.chkUseSelection.isChecked(),
+                                         self.spnTolerance.value(), True, outFileName, self.encoding)
+        else:
+            res = QMessageBox.warning(self, self.tr("Warning"),
+                                      self.tr(
+                "Currently QGIS doesn't allow simultaneous access from "
+                                           "different threads to the same datasource. Make sure your layer's "
+                                           "attribute tables are closed. Continue?"),
+                                      QMessageBox.Yes | QMessageBox.No)
+            if res == QMessageBox.No:
+                return
+
+            self.workThread = GeomThread(self.myFunction, vLayer, self.chkUseSelection.isChecked(),
+                                         self.spnTolerance.value(), False, None, None)
+
+        QObject.connect(self.workThread, SIGNAL("rangeCalculated( PyQt_PyObject )"), self.setProgressRange)
+        QObject.connect(self.workThread, SIGNAL("featureProcessed()"), self.featureProcessed)
+        QObject.connect(self.workThread, SIGNAL("processingFinished( PyQt_PyObject )"), self.processFinished)
+        QObject.connect(self.workThread, SIGNAL("processingInterrupted()"), self.processInterrupted)
+
+        self.btnClose.setText(self.tr("Cancel"))
+        QObject.disconnect(self.buttonBox, SIGNAL("rejected()"), self.reject)
+        QObject.connect(self.btnClose, SIGNAL("clicked()"), self.stopProcessing)
+
+        self.workThread.start()
+
+    def setProgressRange(self, maximum):
+        self.progressBar.setRange(0, maximum)
+
+    def featureProcessed(self):
+        self.progressBar.setValue(self.progressBar.value() + 1)
+
+    def processFinished(self, pointsCount):
+        self.stopProcessing()
+
+        if self.myFunction == 1:
+            QMessageBox.information(self, self.tr("Simplify results"),
+                                    self.tr("There were %d vertices in original dataset which\nwere reduced to %d vertices after simplification") % (pointsCount[0], pointsCount[1]))
+
+        self.restoreGui()
+
+        if self.chkAddToCanvas.isEnabled() and self.chkAddToCanvas.isChecked():
+            if not ftools_utils.addShapeToCanvas(unicode(self.shapeFileName)):
+                QMessageBox.warning(self, self.tr("Error"),
+                                    self.tr("Error loading output shapefile:\n%s") % (unicode(self.shapeFileName)))
+            self.populateLayers()
+
+        QMessageBox.information(self, self.tr("Finished"), self.tr("Processing completed."))
+        self.iface.mapCanvas().refresh()
+
+    def processInterrupted(self):
+        self.restoreGui()
+
+    def stopProcessing(self):
+        if self.workThread is not None:
+            self.workThread.stop()
+            self.workThread = None
+
+    def restoreGui(self):
+        self.progressBar.setValue(0)
+        QObject.connect(self.buttonBox, SIGNAL("rejected()"), self.reject)
+        self.btnClose.setText(self.tr("Close"))
+        self.btnOk.setEnabled(True)
+
+
+def geomVertexCount(geometry):
+    geomType = geometry.type()
+    if geomType == QGis.Line:
+        if geometry.isMultipart():
+            pointsList = geometry.asMultiPolyline()
+            points = sum(pointsList, [])
+        else:
+            points = geometry.asPolyline()
+        return len(points)
+    elif geomType == QGis.Polygon:
+        if geometry.isMultipart():
+            polylinesList = geometry.asMultiPolygon()
+            polylines = sum(polylinesList, [])
+        else:
+            polylines = geometry.asPolygon()
+        points = []
+        for l in polylines:
+            points.extend(l)
+        return len(points)
     else:
-      self.edOutputFile.setEnabled( False )
-      self.btnSelectOutputFile.setEnabled( False )
-      self.chkAddToCanvas.setEnabled( False )
+        return None
 
-    self.encoding = None
 
-  def selectOutputFile( self ):
-    self.edOutputFile.clear()
-    ( self.shapeFileName, self.encoding ) = ftools_utils.saveDialog( self )
-    if self.shapeFileName is None or self.encoding is None:
-      return
-    self.edOutputFile.setText( self.shapeFileName )
-
-  def accept( self ):
-    if not self.cmbInputLayer.currentText():
-      QMessageBox.warning( self, self.tr( "Warning" ), self.tr( "Please specify an input layer" ) )
-      return
-    vLayer = ftools_utils.getVectorLayerByName( self.cmbInputLayer.currentText() )
-
-    self.btnOk.setEnabled( False )
-
-    if self.chkWriteShapefile.isChecked():
-      outFileName = self.edOutputFile.text()
-      outFile = QFile( outFileName )
-      if outFile.exists():
-        if not QgsVectorFileWriter.deleteShapeFile( outFileName ):
-          QMessageBox.warning( self, self.tr( "Delete error" ),
-                               self.tr( "Can't delete file %s" ) % ( outFileName ) )
-          return
-
-      self.workThread = GeomThread( self.myFunction, vLayer, self.chkUseSelection.isChecked(),
-                                    self.spnTolerance.value(), True, outFileName, self.encoding )
+def densify(polyline, pointsNumber):
+    output = []
+    if pointsNumber != 1:
+        multiplier = 1.0 / float(pointsNumber + 1)
     else:
-      res = QMessageBox.warning( self, self.tr( "Warning"),
-                                 self.tr(
-                                     "Currently QGIS doesn't allow simultaneous access from "
-                                     "different threads to the same datasource. Make sure your layer's "
-                                     "attribute tables are closed. Continue?"),
-                                 QMessageBox.Yes | QMessageBox.No )
-      if res == QMessageBox.No:
-        return
+        multiplier = 1
+    for i in xrange(len(polyline) - 1):
+        p1 = polyline[i]
+        p2 = polyline[i + 1]
+        output.append(p1)
+        for j in xrange(pointsNumber):
+            delta = multiplier * (j + 1)
+            x = p1.x() + delta * (p2.x() - p1.x())
+            y = p1.y() + delta * (p2.y() - p1.y())
+            output.append(QgsPoint(x, y))
+            if j + 1 == pointsNumber:
+                break
+    output.append(polyline[len(polyline) - 1])
+    return output
 
-      self.workThread = GeomThread( self.myFunction, vLayer, self.chkUseSelection.isChecked(),
-                                    self.spnTolerance.value(), False, None, None )
 
-    QObject.connect( self.workThread, SIGNAL( "rangeCalculated( PyQt_PyObject )" ), self.setProgressRange )
-    QObject.connect( self.workThread, SIGNAL( "featureProcessed()" ), self.featureProcessed )
-    QObject.connect( self.workThread, SIGNAL( "processingFinished( PyQt_PyObject )" ), self.processFinished )
-    QObject.connect( self.workThread, SIGNAL( "processingInterrupted()" ), self.processInterrupted )
-
-    self.btnClose.setText( self.tr( "Cancel" ) )
-    QObject.disconnect( self.buttonBox, SIGNAL( "rejected()" ), self.reject )
-    QObject.connect( self.btnClose, SIGNAL( "clicked()" ), self.stopProcessing )
-
-    self.workThread.start()
-
-  def setProgressRange( self, maximum ):
-    self.progressBar.setRange( 0, maximum )
-
-  def featureProcessed( self ):
-    self.progressBar.setValue( self.progressBar.value() + 1 )
-
-  def processFinished( self, pointsCount ):
-    self.stopProcessing()
-
-    if self.myFunction == 1:
-      QMessageBox.information( self, self.tr( "Simplify results" ),
-                               self.tr( "There were %d vertices in original dataset which\nwere reduced to %d vertices after simplification" ) % ( pointsCount[ 0 ], pointsCount[ 1 ] ) )
-
-    self.restoreGui()
-
-    if self.chkAddToCanvas.isEnabled() and self.chkAddToCanvas.isChecked():
-      if not ftools_utils.addShapeToCanvas( unicode( self.shapeFileName ) ):
-        QMessageBox.warning( self, self.tr( "Error" ),
-                             self.tr( "Error loading output shapefile:\n%s" ) % ( unicode( self.shapeFileName ) ) )
-      self.populateLayers()
-
-    QMessageBox.information( self, self.tr( "Finished" ), self.tr( "Processing completed." ) )
-    self.iface.mapCanvas().refresh()
-
-  def processInterrupted( self ):
-    self.restoreGui()
-
-  def stopProcessing( self ):
-    if self.workThread is not None:
-      self.workThread.stop()
-      self.workThread = None
-
-  def restoreGui( self ):
-    self.progressBar.setValue( 0 )
-    QObject.connect( self.buttonBox, SIGNAL( "rejected()" ), self.reject )
-    self.btnClose.setText( self.tr( "Close" ) )
-    self.btnOk.setEnabled( True )
-
-def geomVertexCount( geometry ):
-  geomType = geometry.type()
-  if geomType == QGis.Line:
-    if geometry.isMultipart():
-      pointsList = geometry.asMultiPolyline()
-      points = sum( pointsList, [] )
+def densifyGeometry(geometry, pointsNumber, isPolygon):
+    output = []
+    if isPolygon:
+        if geometry.isMultipart():
+            polygons = geometry.asMultiPolygon()
+            for poly in polygons:
+                p = []
+                for ring in poly:
+                    p.append(densify(ring, pointsNumber))
+                output.append(p)
+            return QgsGeometry.fromMultiPolygon(output)
+        else:
+            rings = geometry.asPolygon()
+            for ring in rings:
+                output.append(densify(ring, pointsNumber))
+            return QgsGeometry.fromPolygon(output)
     else:
-      points = geometry.asPolyline()
-    return len( points )
-  elif geomType == QGis.Polygon:
-    if geometry.isMultipart():
-      polylinesList = geometry.asMultiPolygon()
-      polylines = sum( polylinesList, [] )
-    else:
-      polylines = geometry.asPolygon()
-    points = []
-    for l in polylines:
-      points.extend( l )
-    return len( points )
-  else:
-    return None
+        if geometry.isMultipart():
+            lines = geometry.asMultiPolyline()
+            for points in lines:
+                output.append(densify(points, pointsNumber))
+            return QgsGeometry.fromMultiPolyline(output)
+        else:
+            points = geometry.asPolyline()
+            output = densify(points, pointsNumber)
+            return QgsGeometry.fromPolyline(output)
 
-def densify( polyline, pointsNumber ):
-  output = []
-  if pointsNumber != 1:
-    multiplier = 1.0 / float( pointsNumber + 1 )
-  else:
-    multiplier = 1
-  for i in xrange( len( polyline ) - 1 ):
-    p1 = polyline[ i ]
-    p2 = polyline[ i + 1 ]
-    output.append( p1 )
-    for j in xrange( pointsNumber ):
-      delta = multiplier * ( j + 1 )
-      x = p1.x() + delta * ( p2.x() - p1.x() )
-      y = p1.y() + delta * ( p2.y() - p1.y() )
-      output.append( QgsPoint( x, y ) )
-      if j + 1 == pointsNumber:
-        break
-  output.append( polyline[ len( polyline ) - 1 ] )
-  return output
 
-def densifyGeometry( geometry, pointsNumber, isPolygon ):
-  output = []
-  if isPolygon:
-    if geometry.isMultipart():
-      polygons = geometry.asMultiPolygon()
-      for poly in polygons:
-        p = []
-        for ring in poly:
-          p.append( densify( ring, pointsNumber ) )
-        output.append( p )
-      return QgsGeometry.fromMultiPolygon( output )
-    else:
-      rings = geometry.asPolygon()
-      for ring in rings:
-        output.append( densify( ring, pointsNumber ) )
-      return QgsGeometry.fromPolygon( output )
-  else:
-    if geometry.isMultipart():
-      lines = geometry.asMultiPolyline()
-      for points in lines:
-        output.append( densify( points, pointsNumber ) )
-      return QgsGeometry.fromMultiPolyline( output )
-    else:
-      points = geometry.asPolyline()
-      output = densify( points, pointsNumber )
-      return QgsGeometry.fromPolyline( output )
+class GeomThread(QThread):
 
-class GeomThread( QThread ):
-  def __init__( self, function, inputLayer, useSelection, tolerance, writeShape, shapePath, shapeEncoding ):
-    QThread.__init__( self, QThread.currentThread() )
-    self.inputLayer = inputLayer
-    self.useSelection = useSelection
-    self.tolerance = tolerance
-    self.writeShape = writeShape
-    self.outputFileName = shapePath
-    self.outputEncoding = shapeEncoding
-    self.myFunction = function
+    def __init__(self, function, inputLayer, useSelection, tolerance, writeShape, shapePath, shapeEncoding):
+        QThread.__init__(self, QThread.currentThread())
+        self.inputLayer = inputLayer
+        self.useSelection = useSelection
+        self.tolerance = tolerance
+        self.writeShape = writeShape
+        self.outputFileName = shapePath
+        self.outputEncoding = shapeEncoding
+        self.myFunction = function
 
-    self.mutex = QMutex()
-    self.stopMe = 0
+        self.mutex = QMutex()
+        self.stopMe = 0
 
-  def run( self ):
-    if self.myFunction == 1:
-      self.runSimplify()
-    else:
-      self.runDensify()
+    def run(self):
+        if self.myFunction == 1:
+            self.runSimplify()
+        else:
+            self.runDensify()
 
-  def runSimplify( self ):
-    self.mutex.lock()
-    self.stopMe = 0
-    self.mutex.unlock()
+    def runSimplify(self):
+        self.mutex.lock()
+        self.stopMe = 0
+        self.mutex.unlock()
 
-    interrupted = False
+        interrupted = False
 
-    shapeFileWriter = None
+        shapeFileWriter = None
 
-    pointsBefore = 0
-    pointsAfter = 0
+        pointsBefore = 0
+        pointsAfter = 0
 
-    if self.writeShape:
-      vProvider = self.inputLayer.dataProvider()
-      shapeFields = vProvider.fields()
-      crs = vProvider.crs()
-      wkbType = self.inputLayer.wkbType()
-      if not crs.isValid():
-        crs = None
-      shapeFileWriter = QgsVectorFileWriter( self.outputFileName, self.outputEncoding, shapeFields, wkbType, crs )
-      featureId = 0
-      if self.useSelection:
-        selection = self.inputLayer.selectedFeatures()
-        self.emit( SIGNAL( "rangeCalculated( PyQt_PyObject )" ), len( selection ) )
-        for f in selection:
-          featGeometry = QgsGeometry( f.geometry() )
-          attrMap = f.attributes()
+        if self.writeShape:
+            vProvider = self.inputLayer.dataProvider()
+            shapeFields = vProvider.fields()
+            crs = vProvider.crs()
+            wkbType = self.inputLayer.wkbType()
+            if not crs.isValid():
+                crs = None
+            shapeFileWriter = QgsVectorFileWriter(self.outputFileName, self.outputEncoding, shapeFields, wkbType, crs)
+            featureId = 0
+            if self.useSelection:
+                selection = self.inputLayer.selectedFeatures()
+                self.emit(SIGNAL("rangeCalculated( PyQt_PyObject )"), len(selection))
+                for f in selection:
+                    featGeometry = QgsGeometry(f.geometry())
+                    attrMap = f.attributes()
 
-          pointsBefore += geomVertexCount( featGeometry )
-          newGeometry = featGeometry.simplify( self.tolerance )
-          pointsAfter += geomVertexCount( newGeometry )
+                    pointsBefore += geomVertexCount(featGeometry)
+                    newGeometry = featGeometry.simplify(self.tolerance)
+                    pointsAfter += geomVertexCount(newGeometry)
 
-          feature = QgsFeature()
-          feature.setGeometry( newGeometry )
-          feature.setAttributes( attrMap )
-          shapeFileWriter.addFeature( feature )
-          featureId += 1
-          self.emit( SIGNAL( "featureProcessed()" ) )
+                    feature = QgsFeature()
+                    feature.setGeometry(newGeometry)
+                    feature.setAttributes(attrMap)
+                    shapeFileWriter.addFeature(feature)
+                    featureId += 1
+                    self.emit(SIGNAL("featureProcessed()"))
 
-          self.mutex.lock()
-          s = self.stopMe
-          self.mutex.unlock()
-          if s == 1:
-            interrupted = True
-            break
-      else:
-        self.emit( SIGNAL( "rangeCalculated( PyQt_PyObject )" ), vProvider.featureCount() )
-        f = QgsFeature()
-        fit = vProvider.getFeatures()
-        while fit.nextFeature( f ):
-          featGeometry = QgsGeometry( f.geometry() )
-          attrMap = f.attributes()
+                    self.mutex.lock()
+                    s = self.stopMe
+                    self.mutex.unlock()
+                    if s == 1:
+                        interrupted = True
+                        break
+            else:
+                self.emit(SIGNAL("rangeCalculated( PyQt_PyObject )"), vProvider.featureCount())
+                f = QgsFeature()
+                fit = vProvider.getFeatures()
+                while fit.nextFeature(f):
+                    featGeometry = QgsGeometry(f.geometry())
+                    attrMap = f.attributes()
 
-          pointsBefore += geomVertexCount( featGeometry )
-          newGeometry = featGeometry.simplify( self.tolerance )
-          pointsAfter += geomVertexCount( newGeometry )
+                    pointsBefore += geomVertexCount(featGeometry)
+                    newGeometry = featGeometry.simplify(self.tolerance)
+                    pointsAfter += geomVertexCount(newGeometry)
 
-          feature = QgsFeature()
-          feature.setGeometry( newGeometry )
-          feature.setAttributes( attrMap )
-          shapeFileWriter.addFeature( feature )
-          featureId += 1
-          self.emit( SIGNAL( "featureProcessed()" ) )
+                    feature = QgsFeature()
+                    feature.setGeometry(newGeometry)
+                    feature.setAttributes(attrMap)
+                    shapeFileWriter.addFeature(feature)
+                    featureId += 1
+                    self.emit(SIGNAL("featureProcessed()"))
 
-          self.mutex.lock()
-          s = self.stopMe
-          self.mutex.unlock()
-          if s == 1:
-            interrupted = True
-            break
-    else: # modify existing shapefile
-      if not self.inputLayer.isEditable():
-        self.inputLayer.startEditing()
-      self.inputLayer.beginEditCommand( "Simplify line(s)" )
-      if self.useSelection:
-        selection = self.inputLayer.selectedFeatures()
-        self.emit( SIGNAL( "rangeCalculated( PyQt_PyObject )" ), len( selection ) )
-        for f in selection:
-          featureId = f.id()
-          featGeometry = QgsGeometry( f.geometry() )
+                    self.mutex.lock()
+                    s = self.stopMe
+                    self.mutex.unlock()
+                    if s == 1:
+                        interrupted = True
+                        break
+        else: # modify existing shapefile
+            if not self.inputLayer.isEditable():
+                self.inputLayer.startEditing()
+            self.inputLayer.beginEditCommand("Simplify line(s)")
+            if self.useSelection:
+                selection = self.inputLayer.selectedFeatures()
+                self.emit(SIGNAL("rangeCalculated( PyQt_PyObject )"), len(selection))
+                for f in selection:
+                    featureId = f.id()
+                    featGeometry = QgsGeometry(f.geometry())
 
-          pointsBefore += geomVertexCount( featGeometry )
-          newGeometry = featGeometry.simplify( self.tolerance )
-          pointsAfter += geomVertexCount( newGeometry )
+                    pointsBefore += geomVertexCount(featGeometry)
+                    newGeometry = featGeometry.simplify(self.tolerance)
+                    pointsAfter += geomVertexCount(newGeometry)
 
-          self.inputLayer.changeGeometry( featureId, newGeometry )
-          self.emit( SIGNAL( "featureProcessed()" ) )
+                    self.inputLayer.changeGeometry(featureId, newGeometry)
+                    self.emit(SIGNAL("featureProcessed()"))
 
-          self.mutex.lock()
-          s = self.stopMe
-          self.mutex.unlock()
-          if s == 1:
-            interrupted = True
-            break
-      else:
-        vProvider = self.inputLayer.dataProvider()
-        self.emit( SIGNAL( "rangeCalculated( PyQt_PyObject )" ), vProvider.featureCount() )
-        f = QgsFeature()
-        fit = vProvider.getFeatures()
-        while fit.nextFeature( f ):
-          featureId = f.id()
-          featGeometry = QgsGeometry( f.geometry() )
+                    self.mutex.lock()
+                    s = self.stopMe
+                    self.mutex.unlock()
+                    if s == 1:
+                        interrupted = True
+                        break
+            else:
+                vProvider = self.inputLayer.dataProvider()
+                self.emit(SIGNAL("rangeCalculated( PyQt_PyObject )"), vProvider.featureCount())
+                f = QgsFeature()
+                fit = vProvider.getFeatures()
+                while fit.nextFeature(f):
+                    featureId = f.id()
+                    featGeometry = QgsGeometry(f.geometry())
 
-          pointsBefore += geomVertexCount( featGeometry )
-          newGeometry = featGeometry.simplify( self.tolerance )
-          pointsAfter += geomVertexCount( newGeometry )
+                    pointsBefore += geomVertexCount(featGeometry)
+                    newGeometry = featGeometry.simplify(self.tolerance)
+                    pointsAfter += geomVertexCount(newGeometry)
 
-          self.inputLayer.changeGeometry( featureId, newGeometry )
-          self.emit( SIGNAL( "featureProcessed()" ) )
+                    self.inputLayer.changeGeometry(featureId, newGeometry)
+                    self.emit(SIGNAL("featureProcessed()"))
 
-          self.mutex.lock()
-          s = self.stopMe
-          self.mutex.unlock()
-          if s == 1:
-            interrupted = True
-            break
+                    self.mutex.lock()
+                    s = self.stopMe
+                    self.mutex.unlock()
+                    if s == 1:
+                        interrupted = True
+                        break
 
-    # cleanup
-    if self.inputLayer.isEditable():
-      self.inputLayer.endEditCommand()
+        # cleanup
+        if self.inputLayer.isEditable():
+            self.inputLayer.endEditCommand()
 
-    if shapeFileWriter is not None:
-      del shapeFileWriter
+        if shapeFileWriter is not None:
+            del shapeFileWriter
 
-    if not interrupted:
-      self.emit( SIGNAL( "processingFinished( PyQt_PyObject )" ), ( pointsBefore, pointsAfter ) )
-    else:
-      self.emit( SIGNAL( "processingInterrupted()" ) )
+        if not interrupted:
+            self.emit(SIGNAL("processingFinished( PyQt_PyObject )"), (pointsBefore, pointsAfter))
+        else:
+            self.emit(SIGNAL("processingInterrupted()"))
 
-  def runDensify( self ):
-    self.mutex.lock()
-    self.stopMe = 0
-    self.mutex.unlock()
+    def runDensify(self):
+        self.mutex.lock()
+        self.stopMe = 0
+        self.mutex.unlock()
 
-    interrupted = False
+        interrupted = False
 
-    shapeFileWriter = None
+        shapeFileWriter = None
 
-    isPolygon = self.inputLayer.geometryType() == QGis.Polygon
+        isPolygon = self.inputLayer.geometryType() == QGis.Polygon
 
-    if self.writeShape:
-      # prepare writer
-      vProvider = self.inputLayer.dataProvider()
-      shapeFields = vProvider.fields()
-      crs = vProvider.crs()
-      wkbType = self.inputLayer.wkbType()
-      if not crs.isValid():
-        crs = None
-      shapeFileWriter = QgsVectorFileWriter( self.outputFileName, self.outputEncoding, shapeFields, wkbType, crs )
-      featureId = 0
+        if self.writeShape:
+            # prepare writer
+            vProvider = self.inputLayer.dataProvider()
+            shapeFields = vProvider.fields()
+            crs = vProvider.crs()
+            wkbType = self.inputLayer.wkbType()
+            if not crs.isValid():
+                crs = None
+            shapeFileWriter = QgsVectorFileWriter(self.outputFileName, self.outputEncoding, shapeFields, wkbType, crs)
+            featureId = 0
 
-      if self.useSelection:
-        selection = self.inputLayer.selectedFeatures()
-        self.emit( SIGNAL( "rangeCalculated( PyQt_PyObject )" ), len( selection ) )
-        for f in selection:
-          featGeometry = QgsGeometry( f.geometry() )
-          attrMap = f.attributes()
-          newGeometry = densifyGeometry( featGeometry, int( self.tolerance ), isPolygon )
+            if self.useSelection:
+                selection = self.inputLayer.selectedFeatures()
+                self.emit(SIGNAL("rangeCalculated( PyQt_PyObject )"), len(selection))
+                for f in selection:
+                    featGeometry = QgsGeometry(f.geometry())
+                    attrMap = f.attributes()
+                    newGeometry = densifyGeometry(featGeometry, int(self.tolerance), isPolygon)
 
-          feature = QgsFeature()
-          feature.setGeometry( newGeometry )
-          feature.setAttributes( attrMap )
-          shapeFileWriter.addFeature( feature )
-          featureId += 1
-          self.emit( SIGNAL( "featureProcessed()" ) )
+                    feature = QgsFeature()
+                    feature.setGeometry(newGeometry)
+                    feature.setAttributes(attrMap)
+                    shapeFileWriter.addFeature(feature)
+                    featureId += 1
+                    self.emit(SIGNAL("featureProcessed()"))
 
-          self.mutex.lock()
-          s = self.stopMe
-          self.mutex.unlock()
-          if s == 1:
-            interrupted = True
-            break
-      else:
-        self.emit( SIGNAL( "rangeCalculated( PyQt_PyObject )" ), vProvider.featureCount() )
-        f = QgsFeature()
-        fit = vProvider.getFeatures()
-        while fit.nextFeature( f ):
-          featGeometry = QgsGeometry( f.geometry() )
-          attrMap = f.attributes()
-          newGeometry = densifyGeometry( featGeometry, int( self.tolerance ), isPolygon )
+                    self.mutex.lock()
+                    s = self.stopMe
+                    self.mutex.unlock()
+                    if s == 1:
+                        interrupted = True
+                        break
+            else:
+                self.emit(SIGNAL("rangeCalculated( PyQt_PyObject )"), vProvider.featureCount())
+                f = QgsFeature()
+                fit = vProvider.getFeatures()
+                while fit.nextFeature(f):
+                    featGeometry = QgsGeometry(f.geometry())
+                    attrMap = f.attributes()
+                    newGeometry = densifyGeometry(featGeometry, int(self.tolerance), isPolygon)
 
-          feature = QgsFeature()
-          feature.setGeometry( newGeometry )
-          feature.setAttributes( attrMap )
-          shapeFileWriter.addFeature( feature )
-          featureId += 1
-          self.emit( SIGNAL( "featureProcessed()" ) )
+                    feature = QgsFeature()
+                    feature.setGeometry(newGeometry)
+                    feature.setAttributes(attrMap)
+                    shapeFileWriter.addFeature(feature)
+                    featureId += 1
+                    self.emit(SIGNAL("featureProcessed()"))
 
-          self.mutex.lock()
-          s = self.stopMe
-          self.mutex.unlock()
-          if s == 1:
-            interrupted = True
-            break
-    else: # modify existing shapefile
-      if not self.inputLayer.isEditable():
-        self.inputLayer.startEditing()
+                    self.mutex.lock()
+                    s = self.stopMe
+                    self.mutex.unlock()
+                    if s == 1:
+                        interrupted = True
+                        break
+        else: # modify existing shapefile
+            if not self.inputLayer.isEditable():
+                self.inputLayer.startEditing()
 
-      self.inputLayer.beginEditCommand( "Densify line(s)" )
+            self.inputLayer.beginEditCommand("Densify line(s)")
 
-      if self.useSelection:
-        selection = self.inputLayer.selectedFeatures()
-        self.emit( SIGNAL( "rangeCalculated( PyQt_PyObject )" ), len( selection ) )
-        for f in selection:
-          featureId = f.id()
-          featGeometry = QgsGeometry( f.geometry() )
-          newGeometry = densifyGeometry( featGeometry, int( self.tolerance ), isPolygon )
+            if self.useSelection:
+                selection = self.inputLayer.selectedFeatures()
+                self.emit(SIGNAL("rangeCalculated( PyQt_PyObject )"), len(selection))
+                for f in selection:
+                    featureId = f.id()
+                    featGeometry = QgsGeometry(f.geometry())
+                    newGeometry = densifyGeometry(featGeometry, int(self.tolerance), isPolygon)
 
-          self.inputLayer.changeGeometry( featureId, newGeometry )
-          self.emit( SIGNAL( "featureProcessed()" ) )
+                    self.inputLayer.changeGeometry(featureId, newGeometry)
+                    self.emit(SIGNAL("featureProcessed()"))
 
-          self.mutex.lock()
-          s = self.stopMe
-          self.mutex.unlock()
-          if s == 1:
-            interrupted = True
-            break
-      else:
-        vProvider = self.inputLayer.dataProvider()
-        self.emit( SIGNAL( "rangeCalculated( PyQt_PyObject )" ), vProvider.featureCount() )
-        f = QgsFeature()
-        fit = vProvider.getFeatures()
-        while fit.nextFeature( f ):
-          featureId = f.id()
-          featGeometry = QgsGeometry( f.geometry() )
-          newGeometry = densifyGeometry( featGeometry, int( self.tolerance ), isPolygon )
+                    self.mutex.lock()
+                    s = self.stopMe
+                    self.mutex.unlock()
+                    if s == 1:
+                        interrupted = True
+                        break
+            else:
+                vProvider = self.inputLayer.dataProvider()
+                self.emit(SIGNAL("rangeCalculated( PyQt_PyObject )"), vProvider.featureCount())
+                f = QgsFeature()
+                fit = vProvider.getFeatures()
+                while fit.nextFeature(f):
+                    featureId = f.id()
+                    featGeometry = QgsGeometry(f.geometry())
+                    newGeometry = densifyGeometry(featGeometry, int(self.tolerance), isPolygon)
 
-          self.inputLayer.changeGeometry( featureId, newGeometry )
-          self.emit( SIGNAL( "featureProcessed()" ) )
+                    self.inputLayer.changeGeometry(featureId, newGeometry)
+                    self.emit(SIGNAL("featureProcessed()"))
 
-          self.mutex.lock()
-          s = self.stopMe
-          self.mutex.unlock()
-          if s == 1:
-            interrupted = True
-            break
+                    self.mutex.lock()
+                    s = self.stopMe
+                    self.mutex.unlock()
+                    if s == 1:
+                        interrupted = True
+                        break
 
-    # cleanup
-    if self.inputLayer.isEditable():
-      self.inputLayer.endEditCommand()
+        # cleanup
+        if self.inputLayer.isEditable():
+            self.inputLayer.endEditCommand()
 
-    if shapeFileWriter is not None:
-      del shapeFileWriter
+        if shapeFileWriter is not None:
+            del shapeFileWriter
 
-    if not interrupted:
-      self.emit( SIGNAL( "processingFinished( PyQt_PyObject )" ), None )
-    else:
-      self.emit( SIGNAL( "processingInterrupted()" ) )
+        if not interrupted:
+            self.emit(SIGNAL("processingFinished( PyQt_PyObject )"), None)
+        else:
+            self.emit(SIGNAL("processingInterrupted()"))
 
-  def stop( self ):
-    self.mutex.lock()
-    self.stopMe = 1
-    self.mutex.unlock()
+    def stop(self):
+        self.mutex.lock()
+        self.stopMe = 1
+        self.mutex.unlock()
 
-    QThread.wait( self )
+        QThread.wait(self)

@@ -23,6 +23,13 @@ email                : marco.hugentobler at sourcepole dot com
 
 class QgsAbstractGeometryV2;
 
+
+/** \ingroup core
+ * \class QgsGeometryEngine
+ * \brief Contains geometry relation and modification algorithms.
+ * \note added in QGIS 2.10
+ * \note this API is not considered stable and may change for 2.12
+ */
 class CORE_EXPORT QgsGeometryEngine
 {
   public:
@@ -38,6 +45,7 @@ class CORE_EXPORT QgsGeometryEngine
     virtual QgsAbstractGeometryV2* combine( const QList< const QgsAbstractGeometryV2* > ) const = 0;
     virtual QgsAbstractGeometryV2* symDifference( const QgsAbstractGeometryV2& geom ) const = 0;
     virtual QgsAbstractGeometryV2* buffer( double distance, int segments ) const = 0;
+    virtual QgsAbstractGeometryV2* buffer( double distance, int segments, int endCapStyle, int joinStyle, double mitreLimit ) const = 0;
     virtual QgsAbstractGeometryV2* simplify( double tolerance ) const = 0;
     virtual QgsAbstractGeometryV2* interpolate( double distance ) const = 0;
     virtual bool centroid( QgsPointV2& pt ) const = 0;

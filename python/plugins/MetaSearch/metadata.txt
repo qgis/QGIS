@@ -8,8 +8,8 @@ icon=images/MetaSearch.png
 author=Tom Kralidis
 email=tomkralidis@gmail.com
 tags=web,catalogue,service,metadata,csw
-homepage=https://hub.qgis.org/projects/MetaSearch
-tracker=https://hub.qgis.org/projects/MetaSearch/issues
+homepage=https://hub.qgis.org/wiki/quantum-gis/MetaSearch
+tracker=https://hub.qgis.org/projects/quantum-gis/issues?category_id=107&set_filter=1&status_id=o
 repository=https://github.com/qgis/QGIS/tree/master/python/plugins/MetaSearch
 experimental=False
 deprecated=False

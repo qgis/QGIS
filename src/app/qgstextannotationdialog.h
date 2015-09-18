@@ -32,7 +32,7 @@ class APP_EXPORT QgsTextAnnotationDialog: public QDialog, private Ui::QgsTextAnn
 
   private:
     QgsTextAnnotationItem* mItem;
-    /**Text document (a clone of the annotation items document)*/
+    /** Text document (a clone of the annotation items document)*/
     QTextDocument* mTextDocument;
     QgsAnnotationWidget* mEmbeddedWidget;
 

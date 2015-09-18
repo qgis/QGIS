@@ -81,7 +81,9 @@ void QgsAttributeAction::doAction( int index, const QgsFeature &feat, const QMap
     return;
 
   // search for expressions while expanding actions
-  QString expandedAction = QgsExpression::replaceExpressionText( action.action(), &feat, mLayer, substitutionMap );
+  QgsExpressionContext context = createExpressionContext();
+  context.setFeature( feat );
+  QString expandedAction = QgsExpression::replaceExpressionText( action.action(), &context, substitutionMap );
   if ( expandedAction.isEmpty() )
     return;
 
@@ -125,6 +127,17 @@ void QgsAttributeAction::runAction( const QgsAction &action, void ( *executePyth
   }
 }
 
+QgsExpressionContext QgsAttributeAction::createExpressionContext() const
+{
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope();
+  if ( mLayer )
+    context << QgsExpressionContextUtils::layerScope( mLayer );
+
+  return context;
+}
+
 QString QgsAttributeAction::expandAction( QString action, const QgsAttributeMap &attributes,
     uint clickedOnValue )
 {
@@ -149,7 +162,7 @@ QString QgsAttributeAction::expandAction( QString action, const QgsAttributeMap 
   else
     expanded_action = action;
 
-  const QgsFields &fields = mLayer->pendingFields();
+  const QgsFields &fields = mLayer->fields();
 
   for ( int i = 0; i < 4; i++ )
   {
@@ -215,7 +228,10 @@ QString QgsAttributeAction::expandAction( QString action, QgsFeature &feat, cons
       continue;
     }
 
-    QVariant result = exp.evaluate( &feat, mLayer->pendingFields() );
+    QgsExpressionContext context = createExpressionContext();
+    context.setFeature( feat );
+
+    QVariant result = exp.evaluate( &context );
     if ( exp.hasEvalError() )
     {
       QgsDebugMsg( "Expression parser eval error: " + exp.evalErrorString() );

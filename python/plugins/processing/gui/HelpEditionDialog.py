@@ -62,9 +62,9 @@ class HelpEditionDialog(BASE, WIDGET):
                     try:
                         with open(helpfile) as f:
                             self.descriptions = json.load(f)
-                    except Exception, e:
+                    except Exception as e:
                         ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
-                            self.tr('Cannot open help file: %s') % helpfile)
+                                               self.tr('Cannot open help file: %s') % helpfile)
 
         self.currentName = self.ALG_DESC
         if self.ALG_DESC in self.descriptions:

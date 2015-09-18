@@ -105,12 +105,12 @@ class Polygonize(GeoAlgorithm):
         del writer
 
     def defineCharacteristics(self):
-        self.name = 'Polygonize'
-        self.group = 'Vector geometry tools'
+        self.name, self.i18n_name = self.trAlgorithm('Polygonize')
+        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
         self.addParameter(ParameterVector(self.INPUT,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_LINE]))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_LINE]))
         self.addParameter(ParameterBoolean(self.FIELDS,
-            self.tr('Keep table structure of line layer'), False))
+                                           self.tr('Keep table structure of line layer'), False))
         self.addParameter(ParameterBoolean(self.GEOMETRY,
-            self.tr('Create geometry columns'), True))
+                                           self.tr('Create geometry columns'), True))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Polygons from lines')))

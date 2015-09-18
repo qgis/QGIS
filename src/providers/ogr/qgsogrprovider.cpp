@@ -19,6 +19,7 @@ email                : sherman at mrcc.com
 #include "qgsogrfeatureiterator.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
+#include "qgslocalec.h"
 
 #define CPL_SUPRESS_CPLUSPLUS
 #include <gdal.h>         // to collect version information
@@ -45,6 +46,7 @@ email                : sherman at mrcc.com
 #include "qgsgeometry.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectorlayerimport.h"
+#include "qgslocalec.h"
 
 static const QString TEXT_PROVIDER_KEY = "ogr";
 static const QString TEXT_PROVIDER_DESCRIPTION =
@@ -82,6 +84,8 @@ bool QgsOgrProvider::convertField( QgsField &field, const QTextCodec &encoding )
   OGRFieldType ogrType = OFTString; //default to string
   int ogrWidth = field.length();
   int ogrPrecision = field.precision();
+  if ( ogrPrecision > 0 )
+    ogrWidth += 1;
   switch ( field.type() )
   {
     case QVariant::LongLong:
@@ -446,6 +450,8 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
     mNativeTypes
     << QgsVectorDataProvider::NativeType( tr( "Date & Time" ), "datetime", QVariant::DateTime );
   }
+
+  QgsOgrConnPool::refS( mFilePath );
 }
 
 QgsOgrProvider::~QgsOgrProvider()
@@ -466,6 +472,8 @@ QgsOgrProvider::~QgsOgrProvider()
     free( extent_ );
     extent_ = 0;
   }
+
+  QgsOgrConnPool::unrefS( mFilePath );
 }
 
 QgsAbstractFeatureSource* QgsOgrProvider::featureSource() const
@@ -559,7 +567,7 @@ QString QgsOgrProvider::subsetString()
 QString QgsOgrProvider::ogrWkbGeometryTypeName( OGRwkbGeometryType type ) const
 {
   QString geom;
-  switch (( int )type )
+  switch (( long )type )
   {
     case wkbUnknown:            geom = "Unknown"; break;
     case wkbPoint:              geom = "Point"; break;
@@ -668,7 +676,7 @@ QStringList QgsOgrProvider::subLayers() const
         fCount[wkbUnknown] = 0;
       }
       bool bIs25D = (( layerGeomType & wkb25DBit ) != 0 );
-      foreach ( OGRwkbGeometryType gType, fCount.keys() )
+      Q_FOREACH ( OGRwkbGeometryType gType, fCount.keys() )
       {
         QString geom = ogrWkbGeometryTypeName(( bIs25D ) ? ( OGRwkbGeometryType )( gType | wkb25DBit ) : gType );
 
@@ -789,6 +797,11 @@ void QgsOgrProvider::loadFields()
         }
       }
 
+      int width = OGR_Fld_GetWidth( fldDef );
+      int prec = OGR_Fld_GetPrecision( fldDef );
+      if ( prec > 0 )
+        width -= 1;
+
       mAttributeFields.append(
         QgsField(
           name,
@@ -798,8 +811,9 @@ void QgsOgrProvider::loadFields()
 #else
           mEncoding->toUnicode( OGR_GetFieldTypeName( ogrType ) ),
 #endif
-          OGR_Fld_GetWidth( fldDef ),
-          OGR_Fld_GetPrecision( fldDef ) ) );
+          width, prec
+        )
+      );
     }
   }
 }
@@ -993,11 +1007,7 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
 
   QgsAttributes attrs = f.attributes();
 
-  char *oldlocale = setlocale( LC_NUMERIC, NULL );
-  if ( oldlocale )
-    oldlocale = strdup( oldlocale );
-
-  setlocale( LC_NUMERIC, "C" );
+  QgsLocaleNumC l;
 
   //add possible attribute information
   for ( int targetAttributeId = 0; targetAttributeId < attrs.count(); ++targetAttributeId )
@@ -1076,10 +1086,6 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
   }
   OGR_F_Destroy( feature );
 
-  setlocale( LC_NUMERIC, oldlocale );
-  if ( oldlocale )
-    free( oldlocale );
-
   return returnValue;
 }
 
@@ -1142,7 +1148,10 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
     }
 
     OGRFieldDefnH fielddefn = OGR_Fld_Create( mEncoding->fromUnicode( iter->name() ).constData(), type );
-    OGR_Fld_SetWidth( fielddefn, iter->length() );
+    int width = iter->length();
+    if ( iter->precision() )
+      width += 1;
+    OGR_Fld_SetWidth( fielddefn, width );
     OGR_Fld_SetPrecision( fielddefn, iter->precision() );
 
     if ( OGR_L_CreateField( ogrLayer, fielddefn, true ) != OGRERR_NONE )
@@ -1163,7 +1172,7 @@ bool QgsOgrProvider::deleteAttributes( const QgsAttributeIds &attributes )
   QList<int> attrsLst = attributes.toList();
   // sort in descending order
   qSort( attrsLst.begin(), attrsLst.end(), qGreater<int>() );
-  foreach ( int attr, attrsLst )
+  Q_FOREACH ( int attr, attrsLst )
   {
     if ( OGR_L_DeleteField( ogrLayer, attr ) != OGRERR_NONE )
     {
@@ -1211,10 +1220,7 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
       continue;
     }
 
-    char *oldlocale = setlocale( LC_NUMERIC, NULL );
-    if ( oldlocale )
-      oldlocale = strdup( oldlocale );
-    setlocale( LC_NUMERIC, "C" );
+    QgsLocaleNumC l;
 
     for ( QgsAttributeMap::const_iterator it2 = attr.begin(); it2 != attr.end(); ++it2 )
     {
@@ -1276,16 +1282,13 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
     {
       pushError( tr( "OGR error setting feature %1: %2" ).arg( fid ).arg( CPLGetLastErrorMsg() ) );
     }
-
-    setlocale( LC_NUMERIC, oldlocale );
-    if ( oldlocale )
-      free( oldlocale );
   }
 
   if ( OGR_L_SyncToDisk( ogrLayer ) != OGRERR_NONE )
   {
     pushError( tr( "OGR error syncing to disk: %1" ).arg( CPLGetLastErrorMsg() ) );
   }
+  QgsOgrConnPool::instance()->invalidateConnections( filePath() );
   return true;
 }
 
@@ -1350,6 +1353,7 @@ bool QgsOgrProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
 
     OGR_F_Destroy( theOGRFeature );
   }
+  QgsOgrConnPool::instance()->invalidateConnections( filePath() );
   return syncToDisc();
 }
 
@@ -1609,17 +1613,17 @@ static QString createFileFilter_( QString const &longName, QString const &glob )
 
 QString createFilters( QString type )
 {
-  /**Database drivers available*/
+  /** Database drivers available*/
   static QString myDatabaseDrivers;
-  /**Protocol drivers available*/
+  /** Protocol drivers available*/
   static QString myProtocolDrivers;
-  /**File filters*/
+  /** File filters*/
   static QString myFileFilters;
-  /**Directory drivers*/
+  /** Directory drivers*/
   static QString myDirectoryDrivers;
-  /**Extensions*/
+  /** Extensions*/
   static QStringList myExtensions;
-  /**Wildcards*/
+  /** Wildcards*/
   static QStringList myWildcards;
 
   // if we've already built the supported vector string, just return what
@@ -1686,7 +1690,7 @@ QString createFilters( QString type )
       else if ( driverName.startsWith( "PGeo" ) )
       {
         myDatabaseDrivers += QObject::tr( "ESRI Personal GeoDatabase" ) + ",PGeo;";
-#ifdef WIN32
+#ifdef Q_OS_WIN
         myFileFilters += createFileFilter_( QObject::tr( "ESRI Personal GeoDatabase" ), "*.mdb" );
         myExtensions << "mdb";
 #endif
@@ -2016,7 +2020,7 @@ QGISEXTERN bool isProvider()
   return true;
 }
 
-/**Creates an empty data source
+/** Creates an empty data source
 @param uri location to store the file(s)
 @param format data format (e.g. "ESRI Shapefile"
 @param vectortype point/line/polygon or multitypes
@@ -2171,6 +2175,8 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
 
     int width = fields.size() > 1 ? fields[1].toInt() : -1;
     int precision = fields.size() > 2 ? fields[2].toInt() : -1;
+    if ( precision > 0 )
+      width += 1;
 
     OGRFieldDefnH field;
     if ( fields[0] == "Real" )
@@ -2433,6 +2439,11 @@ QByteArray QgsOgrProvider::quotedIdentifier( QByteArray field )
   return QgsOgrUtils::quotedIdentifier( field, ogrDriverName );
 }
 
+void QgsOgrProvider::forceReload()
+{
+  QgsOgrConnPool::instance()->invalidateConnections( filePath() );
+}
+
 QByteArray QgsOgrUtils::quotedIdentifier( QByteArray field, const QString& ogrDriverName )
 {
   if ( ogrDriverName == "MySQL" )
@@ -2528,6 +2539,12 @@ void QgsOgrProvider::recalculateFeatureCount()
   }
 
   QgsOgrConnPool::instance()->invalidateConnections( filePath() );
+}
+
+bool QgsOgrProvider::doesStrictFeatureTypeCheck() const
+{
+  // FIXME probably other drivers too...
+  return ogrDriverName != "ESRI Shapefile" || geomType == wkbPoint;
 }
 
 OGRwkbGeometryType QgsOgrProvider::ogrWkbSingleFlatten( OGRwkbGeometryType type )

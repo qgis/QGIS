@@ -20,6 +20,12 @@
 
 #include "qgsabstractgeometryv2.h"
 
+/** \ingroup core
+ * \class QgsPointV2
+ * \brief Point geometry type.
+ * \note added in QGIS 2.10
+ * \note this API is not considered stable and may change for 2.12
+ */
 class CORE_EXPORT QgsPointV2: public QgsAbstractGeometryV2
 {
   public:
@@ -61,7 +67,12 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometryV2
     virtual QgsRectangle calculateBoundingBox() const override { return QgsRectangle( mX, mY, mX, mY );}
 
     void draw( QPainter& p ) const override;
-    void transform( const QgsCoordinateTransform& ct ) override;
+
+    /** Transforms the geometry using a coordinate transform
+     * @param ct coordinate transform
+       @param d transformation direction
+     */
+    void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform ) override;
     void transform( const QTransform& t ) override;
 
     virtual void coordinateSequence( QList< QList< QList< QgsPointV2 > > >& coord ) const override;
@@ -73,6 +84,11 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometryV2
 
     double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const override;
     bool nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const override;
+
+    /** Angle undefined. Always returns 0.0
+        @param vertex the vertex id
+        @return 0.0*/
+    double vertexAngle( const QgsVertexId& vertex ) const override { Q_UNUSED( vertex ); return 0.0; }
 
   private:
     double mX;

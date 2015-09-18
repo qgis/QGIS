@@ -16,10 +16,11 @@
 #include "qgsogrconnpool.h"
 
 QgsOgrConnPool QgsOgrConnPool::sInstance;
+bool QgsOgrConnPool::sInstanceDestroyed = false;
 
 QgsOgrConnPool* QgsOgrConnPool::instance()
 {
-  return &sInstance;
+  return sInstanceDestroyed ? 0 : &sInstance;
 }
 
 QgsOgrConnPool::QgsOgrConnPool() : QgsConnectionPool<QgsOgrConn*, QgsOgrConnPoolGroup>()
@@ -30,4 +31,5 @@ QgsOgrConnPool::QgsOgrConnPool() : QgsConnectionPool<QgsOgrConn*, QgsOgrConnPool
 QgsOgrConnPool::~QgsOgrConnPool()
 {
   QgsDebugCall;
+  sInstanceDestroyed = true;
 }

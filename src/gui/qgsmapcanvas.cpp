@@ -65,7 +65,7 @@ email                : sherman at mrcc.com
 #include <math.h>
 
 
-/**  @deprecated to be deleted, stuff from here should be moved elsewhere */
+/** @deprecated to be deleted, stuff from here should be moved elsewhere */
 class QgsMapCanvas::CanvasProperties
 {
   public:
@@ -554,6 +554,12 @@ void QgsMapCanvas::setCachingEnabled( bool enabled )
   if ( enabled == isCachingEnabled() )
     return;
 
+  if ( mJob && mJob->isActive() )
+  {
+    // wait for the current rendering to finish, before touching the cache
+    mJob->waitForFinished();
+  }
+
   if ( enabled )
   {
     mCache = new QgsMapRendererCache;
@@ -652,8 +658,14 @@ void QgsMapCanvas::refreshMap()
   // from now on we can accept refresh requests again
   mRefreshScheduled = false;
 
-  //update $map variable to canvas
-  QgsExpression::setSpecialColumn( "$map", tr( "canvas" ) );
+  //build the expression context
+  QgsExpressionContext expressionContext;
+  expressionContext << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::mapSettingsScope( mSettings )
+  << new QgsExpressionContextScope( mExpressionContextScope );
+
+  mSettings.setExpressionContext( expressionContext );
 
   // create the renderer job
   Q_ASSERT( mJob == 0 );
@@ -666,7 +678,7 @@ void QgsMapCanvas::refreshMap()
   mJob->setCache( mCache );
 
   QStringList layersForGeometryCache;
-  foreach ( QString id, mSettings.layers() )
+  Q_FOREACH ( const QString& id, mSettings.layers() )
   {
     if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( id ) ) )
     {
@@ -691,7 +703,7 @@ void QgsMapCanvas::rendererJobFinished()
   mMapUpdateTimer.stop();
 
   // TODO: would be better to show the errors in message bar
-  foreach ( const QgsMapRendererJob::Error& error, mJob->errors() )
+  Q_FOREACH ( const QgsMapRendererJob::Error& error, mJob->errors() )
   {
     QgsMessageLog::logMessage( error.layerID + " :: " + error.message, tr( "Rendering" ) );
   }
@@ -1227,17 +1239,18 @@ void QgsMapCanvas::keyReleaseEvent( QKeyEvent * e )
 } //keyReleaseEvent()
 
 
-void QgsMapCanvas::mouseDoubleClickEvent( QMouseEvent * e )
+void QgsMapCanvas::mouseDoubleClickEvent( QMouseEvent* e )
 {
   // call handler of current map tool
   if ( mMapTool )
   {
-    mMapTool->canvasDoubleClickEvent( e );
+    QScopedPointer<QgsMapMouseEvent> me( new QgsMapMouseEvent( this, e ) );
+    mMapTool->canvasDoubleClickEvent( me.data() );
   }
 }// mouseDoubleClickEvent
 
 
-void QgsMapCanvas::mousePressEvent( QMouseEvent * e )
+void QgsMapCanvas::mousePressEvent( QMouseEvent* e )
 {
   //use middle mouse button for panning, map tools won't receive any events in that case
   if ( e->button() == Qt::MidButton )
@@ -1251,7 +1264,8 @@ void QgsMapCanvas::mousePressEvent( QMouseEvent * e )
     // call handler of current map tool
     if ( mMapTool )
     {
-      mMapTool->canvasPressEvent( e );
+      QScopedPointer<QgsMapMouseEvent> me( new QgsMapMouseEvent( this, e ) );
+      mMapTool->canvasPressEvent( me.data() );
     }
   }
 
@@ -1266,7 +1280,7 @@ void QgsMapCanvas::mousePressEvent( QMouseEvent * e )
 } // mousePressEvent
 
 
-void QgsMapCanvas::mouseReleaseEvent( QMouseEvent * e )
+void QgsMapCanvas::mouseReleaseEvent( QMouseEvent* e )
 {
   //use middle mouse button for panning, map tools won't receive any events in that case
   if ( e->button() == Qt::MidButton )
@@ -1297,7 +1311,8 @@ void QgsMapCanvas::mouseReleaseEvent( QMouseEvent * e )
         }
         return;
       }
-      mMapTool->canvasReleaseEvent( e );
+      QScopedPointer<QgsMapMouseEvent> me( new QgsMapMouseEvent( this, e ) );
+      mMapTool->canvasReleaseEvent( me.data() );
     }
   }
 
@@ -1457,7 +1472,8 @@ void QgsMapCanvas::mouseMoveEvent( QMouseEvent * e )
     // call handler of current map tool
     if ( mMapTool )
     {
-      mMapTool->canvasMoveEvent( e );
+      QScopedPointer<QgsMapMouseEvent> me( new QgsMapMouseEvent( this, e ) );
+      mMapTool->canvasMoveEvent( me.data() );
     }
   }
 
@@ -1562,7 +1578,7 @@ int QgsMapCanvas::layerCount() const
 QList<QgsMapLayer*> QgsMapCanvas::layers() const
 {
   QList<QgsMapLayer*> lst;
-  foreach ( QString layerID, mapSettings().layers() )
+  Q_FOREACH ( const QString& layerID, mapSettings().layers() )
   {
     QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerID );
     if ( layer )
@@ -1636,6 +1652,20 @@ QGis::UnitType QgsMapCanvas::mapUnits() const
   return mapSettings().mapUnits();
 }
 
+QMap<QString, QString> QgsMapCanvas::layerStyleOverrides() const
+{
+  return mSettings.layerStyleOverrides();
+}
+
+void QgsMapCanvas::setLayerStyleOverrides( const QMap<QString, QString>& overrides )
+{
+  if ( overrides == mSettings.layerStyleOverrides() )
+    return;
+
+  mSettings.setLayerStyleOverrides( overrides );
+  emit layerStyleOverridesChanged();
+}
+
 
 void QgsMapCanvas::setRenderFlag( bool theFlag )
 {
@@ -1663,7 +1693,7 @@ void QgsMapCanvas::updateDatumTransformEntries()
     return;
 
   QString destAuthId = mSettings.destinationCrs().authid();
-  foreach ( QString layerID, mSettings.layers() )
+  Q_FOREACH ( const QString& layerID, mSettings.layers() )
   {
     QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerID );
     if ( !layer )
@@ -1831,7 +1861,7 @@ void QgsMapCanvas::writeProject( QDomDocument & doc )
   // TODO: store only units, extent, projections, dest CRS
 }
 
-/**Ask user which datum transform to use*/
+/** Ask user which datum transform to use*/
 void QgsMapCanvas::getDatumTransformInfo( const QgsMapLayer* ml, const QString& srcAuthId, const QString& destAuthId )
 {
   if ( !ml )
@@ -1959,4 +1989,21 @@ bool QgsMapCanvas::rotationEnabled()
 void QgsMapCanvas::enableRotation( bool enable )
 {
   QSettings().setValue( "/qgis/canvasRotation", enable );
+}
+
+void QgsMapCanvas::refreshAllLayers()
+{
+  // reload all layers in canvas
+  for ( int i = 0; i < layerCount(); i++ )
+  {
+    QgsMapLayer *l = layer( i );
+    if ( l )
+      l->reload();
+  }
+
+  // clear the cache
+  clearCache();
+
+  // and then refresh
+  refresh();
 }

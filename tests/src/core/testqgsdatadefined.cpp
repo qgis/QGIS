@@ -19,7 +19,8 @@
 #include <QSettings>
 #include <QSharedPointer>
 
-#include <qgsdatadefined.h>
+#include "qgsdatadefined.h"
+#include "qgsapplication.h"
 
 /** \ingroup UnitTests
  * Unit tests for QgsDataDefined
@@ -42,18 +43,20 @@ class TestQgsDataDefined: public QObject
     void xmlMethods(); //test saving and reading from xml
     void mapMethods(); //test saving and reading from a string map
     void referencedColumns(); //test referenced columns method
+    void expressionOrString();
 
   private:
 };
 
 void TestQgsDataDefined::initTestCase()
 {
-
+  QgsApplication::init();
+  QgsApplication::initQgis();
 }
 
 void TestQgsDataDefined::cleanupTestCase()
 {
-
+  QgsApplication::exitQgis();
 }
 
 void TestQgsDataDefined::init()
@@ -87,14 +90,14 @@ void TestQgsDataDefined::create()
   QCOMPARE( stringConstructorExp->expressionString(), QString( "1 + 2" ) );
   QVERIFY( stringConstructorExp->field().isEmpty() );
 
-  QScopedPointer<QgsDataDefined> stringConstructorEmpty( new QgsDataDefined( QString( "" ) ) );
+  QScopedPointer<QgsDataDefined> stringConstructorEmpty( new QgsDataDefined( QString() ) );
   QVERIFY( ! stringConstructorEmpty->isActive() );
 }
 
 void TestQgsDataDefined::copy()
 {
   QgsDataDefined original( true, true, QString( "sqrt(2)" ), QString( "field" ) );
-  original.prepareExpression( NULL );
+  original.prepareExpression();
   QgsDataDefined copy( original );
   QVERIFY( copy == original );
 
@@ -305,6 +308,19 @@ void TestQgsDataDefined::referencedColumns()
   QVERIFY( cols.contains( QString( "col1" ) ) );
   QVERIFY( cols.contains( QString( "col2" ) ) );
   QVERIFY( cols.contains( QString( "col3" ) ) );
+}
+
+void TestQgsDataDefined::expressionOrString()
+{
+  QgsDataDefined dd;
+  dd.setActive( true );
+  dd.setField( "field" );
+  dd.setExpressionString( "1+col1+col2" );
+  dd.setUseExpression( true );
+  QCOMPARE( dd.expressionOrField(), QString( "1+col1+col2" ) );
+
+  dd.setUseExpression( false );
+  QCOMPARE( dd.expressionOrField(), QString( "\"field\"" ) );
 }
 
 QTEST_MAIN( TestQgsDataDefined )

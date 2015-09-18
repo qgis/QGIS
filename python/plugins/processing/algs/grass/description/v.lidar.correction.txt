@@ -1,5 +1,5 @@
 v.lidar.correction
-v.lidar.correction - Correction of the v.lidar.growing output. It is the last of the three algorithms for LIDAR filtering.
+Correction of the v.lidar.growing output. It is the last of the three algorithms for LIDAR filtering.
 Vector (v.*)
 ParameterVector|input|Input vector layer (v.lidar.growing output)|-1|False
 ParameterString|sce|Interpolation spline step value in east direction|25

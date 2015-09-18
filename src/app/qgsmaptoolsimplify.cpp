@@ -20,6 +20,7 @@
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
 #include "qgstolerance.h"
+#include "qgisapp.h"
 
 #include <QMouseEvent>
 
@@ -107,7 +108,7 @@ void QgsMapToolSimplify::updateSimplificationPreview()
   mReducedHasErrors = false;
   mReducedVertexCount = 0;
   int i = 0;
-  foreach ( const QgsFeature& fSel, mSelectedFeatures )
+  Q_FOREACH ( const QgsFeature& fSel, mSelectedFeatures )
   {
     if ( QgsGeometry* g = fSel.constGeometry()->simplify( layerTolerance ) )
     {
@@ -134,7 +135,7 @@ int QgsMapToolSimplify::vertexCount( const QgsGeometry* g ) const
       int count = 0;
       if ( g->isMultipart() )
       {
-        foreach ( const QgsPolyline& polyline, g->asMultiPolyline() )
+        Q_FOREACH ( const QgsPolyline& polyline, g->asMultiPolyline() )
           count += polyline.count();
       }
       else
@@ -146,13 +147,13 @@ int QgsMapToolSimplify::vertexCount( const QgsGeometry* g ) const
       int count = 0;
       if ( g->isMultipart() )
       {
-        foreach ( const QgsPolygon& polygon, g->asMultiPolygon() )
-          foreach ( const QgsPolyline& ring, polygon )
+        Q_FOREACH ( const QgsPolygon& polygon, g->asMultiPolygon() )
+          Q_FOREACH ( const QgsPolyline& ring, polygon )
             count += ring.count();
       }
       else
       {
-        foreach ( const QgsPolyline& ring, g->asPolygon() )
+        Q_FOREACH ( const QgsPolyline& ring, g->asPolygon() )
           count += ring.count();
       }
       return count;
@@ -169,7 +170,7 @@ void QgsMapToolSimplify::storeSimplified()
   double layerTolerance = QgsTolerance::toleranceInMapUnits( mTolerance, vlayer, mCanvas->mapSettings(), mToleranceUnits );
 
   vlayer->beginEditCommand( tr( "Geometry simplified" ) );
-  foreach ( const QgsFeature& feat, mSelectedFeatures )
+  Q_FOREACH ( const QgsFeature& feat, mSelectedFeatures )
   {
     if ( QgsGeometry* g = feat.constGeometry()->simplify( layerTolerance ) )
     {
@@ -186,7 +187,7 @@ void QgsMapToolSimplify::storeSimplified()
 
 
 
-void QgsMapToolSimplify::canvasPressEvent( QMouseEvent * e )
+void QgsMapToolSimplify::canvasPressEvent( QgsMapMouseEvent* e )
 {
   if ( e->button() != Qt::LeftButton )
     return;
@@ -204,7 +205,7 @@ void QgsMapToolSimplify::canvasPressEvent( QMouseEvent * e )
 }
 
 
-void QgsMapToolSimplify::canvasMoveEvent( QMouseEvent * e )
+void QgsMapToolSimplify::canvasMoveEvent( QgsMapMouseEvent* e )
 {
   if ( !( e->buttons() & Qt::LeftButton ) )
     return;
@@ -228,7 +229,7 @@ void QgsMapToolSimplify::canvasMoveEvent( QMouseEvent * e )
 }
 
 
-void QgsMapToolSimplify::canvasReleaseEvent( QMouseEvent * e )
+void QgsMapToolSimplify::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   if ( e->button() != Qt::LeftButton )
     return;
@@ -258,7 +259,7 @@ void QgsMapToolSimplify::canvasReleaseEvent( QMouseEvent * e )
 
   // count vertices, prepare rubber bands
   mOriginalVertexCount = 0;
-  foreach ( const QgsFeature& f, mSelectedFeatures )
+  Q_FOREACH ( const QgsFeature& f, mSelectedFeatures )
   {
     mOriginalVertexCount += vertexCount( f.constGeometry() );
 

@@ -45,7 +45,7 @@ QgsMapToolZoom::~QgsMapToolZoom()
 }
 
 
-void QgsMapToolZoom::canvasMoveEvent( QMouseEvent * e )
+void QgsMapToolZoom::canvasMoveEvent( QgsMapMouseEvent* e )
 {
   if ( !( e->buttons() & Qt::LeftButton ) )
     return;
@@ -69,7 +69,7 @@ void QgsMapToolZoom::canvasMoveEvent( QMouseEvent * e )
 }
 
 
-void QgsMapToolZoom::canvasPressEvent( QMouseEvent * e )
+void QgsMapToolZoom::canvasPressEvent( QgsMapMouseEvent* e )
 {
   if ( e->button() != Qt::LeftButton )
     return;
@@ -78,7 +78,7 @@ void QgsMapToolZoom::canvasPressEvent( QMouseEvent * e )
 }
 
 
-void QgsMapToolZoom::canvasReleaseEvent( QMouseEvent * e )
+void QgsMapToolZoom::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   if ( e->button() != Qt::LeftButton )
     return;
@@ -117,8 +117,7 @@ void QgsMapToolZoom::canvasReleaseEvent( QMouseEvent * e )
     const QgsMapToPixel* m2p = mCanvas->getCoordinateTransform();
     QgsPoint c = m2p->toMapCoordinates( mZoomRect.center() );
 
-    mCanvas->setCenter( c );
-    mCanvas->zoomByFactor( mZoomOut ? 1.0 / sf : sf );
+    mCanvas->zoomByFactor( mZoomOut ? 1.0 / sf : sf, &c );
 
     mCanvas->refresh();
   }

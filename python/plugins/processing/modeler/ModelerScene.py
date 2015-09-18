@@ -31,6 +31,7 @@ from processing.modeler.ModelerGraphicItem import ModelerGraphicItem
 from processing.modeler.ModelerArrowItem import ModelerArrowItem
 from processing.modeler.ModelerAlgorithm import ValueFromInput, ValueFromOutput
 
+
 class ModelerScene(QtGui.QGraphicsScene):
 
     def __init__(self, parent=None):
@@ -41,10 +42,10 @@ class ModelerScene(QtGui.QGraphicsScene):
         self.setItemIndexMethod(QtGui.QGraphicsScene.NoIndex)
 
     def getParameterPositions(self):
-        return {key : item.pos() for key,item in self.paramItems.iteritems()}
+        return {key: item.pos() for key, item in self.paramItems.iteritems()}
 
     def getAlgorithmPositions(self):
-        return {key : item.pos() for key,item in self.algItems.iteritems()}
+        return {key: item.pos() for key, item in self.algItems.iteritems()}
 
     def getOutputPositions(self):
         pos = {}
@@ -112,7 +113,7 @@ class ModelerScene(QtGui.QGraphicsScene):
                     idx += 1
             for depend in alg.dependencies:
                 arrow = ModelerArrowItem(self.algItems[depend], -1,
-                        self.algItems[alg.name], -1)
+                                         self.algItems[alg.name], -1)
                 self.algItems[depend].addArrow(arrow)
                 self.algItems[alg.name].addArrow(arrow)
                 arrow.updatePath()
@@ -133,11 +134,11 @@ class ModelerScene(QtGui.QGraphicsScene):
                     pos = alg.outputs[key].pos
                     if pos is None:
                         pos = (alg.pos + QtCore.QPointF(ModelerGraphicItem.BOX_WIDTH, 0)
-                            + self.algItems[alg.name].getLinkPointForOutput(idx))
+                               + self.algItems[alg.name].getLinkPointForOutput(idx))
                     item.setPos(pos)
                     outputItems[key] = item
                     arrow = ModelerArrowItem(self.algItems[alg.name], idx, item,
-                            -1)
+                                             -1)
                     self.algItems[alg.name].addArrow(arrow)
                     item.addArrow(arrow)
                     arrow.updatePath()

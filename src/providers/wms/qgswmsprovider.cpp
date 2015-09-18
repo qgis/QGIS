@@ -277,7 +277,7 @@ bool QgsWmsProvider::addLayers()
   }
 
   // Set the visibility of these new layers on by default
-  foreach ( const QString &layer, mSettings.mActiveSubLayers )
+  Q_FOREACH ( const QString &layer, mSettings.mActiveSubLayers )
   {
     mActiveSubLayerVisibility[ layer ] = true;
     QgsDebugMsg( "set visibility of layer '" + layer + "' to true." );
@@ -409,7 +409,7 @@ bool QgsWmsProvider::setImageCrs( QString const & crs )
       mTileMatrixSet = &mCaps.mTileMatrixSets[ mSettings.mTileMatrixSetId ];
       QList<double> keys = mTileMatrixSet->tileMatrices.keys();
       qSort( keys );
-      foreach ( double key, keys )
+      Q_FOREACH ( double key, keys )
       {
         resolutions << key;
       }
@@ -929,7 +929,7 @@ static const QgsWmsLayerProperty* _findNestedLayerProperty( const QString& layer
   if ( prop->name == layerName )
     return prop;
 
-  foreach ( const QgsWmsLayerProperty& child, prop->layer )
+  Q_FOREACH ( const QgsWmsLayerProperty& child, prop->layer )
   {
     if ( const QgsWmsLayerProperty* res = _findNestedLayerProperty( layerName, &child ) )
       return res;
@@ -1323,24 +1323,11 @@ int QgsWmsProvider::capabilities() const
 
   if ( canIdentify )
   {
-    capability = identifyCapabilities();
+    capability = mCaps.identifyCapabilities();
     if ( capability )
     {
       capability |= Identify;
     }
-  }
-
-  QgsDebugMsg( QString( "capability = %1" ).arg( capability ) );
-  return capability;
-}
-
-int QgsWmsProvider::identifyCapabilities() const
-{
-  int capability = NoCapabilities;
-
-  foreach ( QgsRaster::IdentifyFormat f, mCaps.mIdentifyFormats.keys() )
-  {
-    capability |= identifyFormatToCapability( f );
   }
 
   QgsDebugMsg( QString( "capability = %1" ).arg( capability ) );
@@ -1799,7 +1786,7 @@ QString QgsWmsProvider::metadata()
 
     metadata += "<table width=\"100%\">";
 
-    foreach ( const QgsWmtsTileLayer &l, mCaps.mTileLayersSupported )
+    Q_FOREACH ( const QgsWmtsTileLayer &l, mCaps.mTileLayersSupported )
     {
       metadata += "<tr><th class=\"glossy\">";
       metadata += tr( "Identifier" );
@@ -1848,7 +1835,7 @@ QString QgsWmsProvider::metadata()
         metadata += "</td>";
         metadata += "<td class=\"glossy\">";
         QStringList styles;
-        foreach ( const QgsWmtsStyle &style, l.styles )
+        Q_FOREACH ( const QgsWmtsStyle &style, l.styles )
         {
           styles << style.identifier;
         }
@@ -1881,7 +1868,7 @@ QString QgsWmsProvider::metadata()
       metadata += tr( "Available Tilesets" );
       metadata += "</td><td class=\"glossy\">";
 
-      foreach ( const QgsWmtsTileMatrixSetLink &setLink, l.setLinks )
+      Q_FOREACH ( const QgsWmtsTileMatrixSetLink &setLink, l.setLinks )
       {
         metadata += setLink.tileMatrixSet + "<br>";
       }
@@ -1925,7 +1912,7 @@ QString QgsWmsProvider::metadata()
                   .arg( tr( "Top" ) ).arg( tr( "Left" ) )
                   .arg( tr( "Bottom" ) ).arg( tr( "Right" ) );
 
-      foreach ( QVariant res, property( "resolutions" ).toList() )
+      Q_FOREACH ( const QVariant& res, property( "resolutions" ).toList() )
       {
         double key = res.toDouble();
 
@@ -2391,7 +2378,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
       bool isGml = false;
 
       const QgsNetworkReplyParser::RawHeaderMap &headers = mIdentifyResultHeaders.value( 0 );
-      foreach ( const QByteArray &v, headers.keys() )
+      Q_FOREACH ( const QByteArray &v, headers.keys() )
       {
         if ( QString( v ).compare( "Content-Type", Qt::CaseInsensitive ) == 0 )
         {
@@ -2574,7 +2561,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
         // GetMap and GetFeatureInfo will return data for the group of the same name.
         // https://github.com/mapserver/mapserver/issues/318#issuecomment-4923208
         QgsFeatureStoreList featureStoreList;
-        foreach ( QString featureTypeName, featureTypeNames )
+        Q_FOREACH ( const QString& featureTypeName, featureTypeNames )
         {
           QgsDebugMsg( QString( "featureTypeName = %1" ).arg( featureTypeName ) );
 
@@ -2611,7 +2598,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
           params.insert( "featureType", featureTypeName );
           params.insert( "getFeatureInfoUrl", requestUrl.toString() );
           featureStore.setParams( params );
-          foreach ( QgsFeatureId id, features.keys() )
+          Q_FOREACH ( QgsFeatureId id, features.keys() )
           {
             QgsFeature * feature = features.value( id );
 
@@ -3054,6 +3041,7 @@ QImage QgsWmsProvider::getLegendGraphic( double scale, bool forceRefresh, const 
   mLegendGraphicFetcher.reset( new QgsWmsLegendDownloadHandler( *QgsNetworkAccessManager::instance(), mSettings, url ) );
   if ( ! mLegendGraphicFetcher ) return QImage();
   connect( mLegendGraphicFetcher.data(), SIGNAL( finish( const QImage& ) ), this, SLOT( getLegendGraphicReplyFinished( const QImage& ) ) );
+  connect( mLegendGraphicFetcher.data(), SIGNAL( error( const QString& ) ), this, SLOT( getLegendGraphicReplyErrored( const QString& ) ) );
   connect( mLegendGraphicFetcher.data(), SIGNAL( progress( qint64, qint64 ) ), this, SLOT( getLegendGraphicReplyProgress( qint64, qint64 ) ) );
   mLegendGraphicFetcher->start( );
 
@@ -3122,6 +3110,22 @@ void QgsWmsProvider::getLegendGraphicReplyFinished( const QImage& img )
     QgsDebugMsg( "saved GetLegendGraphic result in debug file: " + filename );
 #endif
   }
+
+  if ( reply == mLegendGraphicFetcher.data() )
+  {
+    QEventLoop *loop = qobject_cast< QEventLoop *>( reply->property( "eventLoop" ).value< QObject *>() );
+    if ( loop )
+      QMetaObject::invokeMethod( loop, "quit", Qt::QueuedConnection );
+    mLegendGraphicFetcher.reset();
+  }
+}
+
+void QgsWmsProvider::getLegendGraphicReplyErrored( const QString& message )
+{
+  Q_UNUSED( message );
+  QgsDebugMsg( QString( "get legend failed: %1" ).arg( message ) );
+
+  QObject* reply = sender();
 
   if ( reply == mLegendGraphicFetcher.data() )
   {
@@ -3326,7 +3330,7 @@ QgsWmsTiledImageDownloadHandler::QgsWmsTiledImageDownloadHandler( const QString&
 {
   mNAM->setupDefaultProxyAndCache();
 
-  foreach ( const TileRequest& r, requests )
+  Q_FOREACH ( const TileRequest& r, requests )
   {
     QNetworkRequest request( r.url );
     auth.setAuthorization( request );
@@ -3372,7 +3376,7 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
 #endif
 #if defined(QGISDEBUG)
   QgsDebugMsgLevel( "raw headers:", 3 );
-  foreach ( const QNetworkReply::RawHeaderPair &pair, reply->rawHeaderPairs() )
+  Q_FOREACH ( const QNetworkReply::RawHeaderPair &pair, reply->rawHeaderPairs() )
   {
     QgsDebugMsgLevel( QString( " %1:%2" )
                       .arg( QString::fromUtf8( pair.first ) )
@@ -3385,7 +3389,7 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
     QNetworkCacheMetaData cmd = mNAM->cache()->metaData( reply->request().url() );
 
     QNetworkCacheMetaData::RawHeaderList hl;
-    foreach ( const QNetworkCacheMetaData::RawHeader &h, cmd.rawHeaders() )
+    Q_FOREACH ( const QNetworkCacheMetaData::RawHeader &h, cmd.rawHeaders() )
     {
       if ( h.first != "Cache-Control" )
         hl.append( h );

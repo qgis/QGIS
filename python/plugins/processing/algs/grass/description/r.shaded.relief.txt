@@ -1,5 +1,5 @@
 r.shaded.relief
-r.shaded.relief - Creates shaded relief from an elevation layer (DEM).
+Creates shaded relief from an elevation layer (DEM).
 Raster (r.*)
 ParameterRaster|map|Input elevation layer|False
 ParameterNumber|altitude|Altitude of the sun in degrees above the horizon|None|None|30.0

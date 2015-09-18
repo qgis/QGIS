@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 29.5.2013
     Copyright            : (C) 2013 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -92,4 +92,11 @@ void QgsRelationReferenceFactory::writeConfig( const QgsEditorWidgetConfig& conf
 
     filterFields.setAttribute( "ChainFilters", config["ChainFilters"].toBool() );
   }
+}
+
+QMap<const char*, int> QgsRelationReferenceFactory::supportedWidgetTypes()
+{
+  QMap<const char*, int> map = QMap<const char*, int>();
+  map.insert( QgsRelationReferenceWidget::staticMetaObject.className(), 10 );
+  return map;
 }

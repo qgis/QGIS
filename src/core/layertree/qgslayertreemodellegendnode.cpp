@@ -159,31 +159,28 @@ Qt::ItemFlags QgsSymbolV2LegendNode::flags() const
 
 QSize QgsSymbolV2LegendNode::minimumIconSize() const
 {
-  QSize minSz;
+  QSize minSz( 16, 16 );
   if ( mItem.symbol() && mItem.symbol()->type() == QgsSymbolV2::Marker )
   {
     QScopedPointer<QgsRenderContext> context( createTemporaryRenderContext() );
     minSz = QgsImageOperation::nonTransparentImageRect(
-              QgsSymbolLayerV2Utils::symbolPreviewPixmap( mItem.symbol(), QSize( 512, 512 ), context.data() ).toImage(),
-              mIconSize,
+              QgsSymbolLayerV2Utils::symbolPreviewPixmap( mItem.symbol(), QSize( 512, 512 ),
+                  context.data() ).toImage(),
+              minSz,
               true ).size();
   }
   else if ( mItem.symbol() && mItem.symbol()->type() == QgsSymbolV2::Line )
   {
     QScopedPointer<QgsRenderContext> context( createTemporaryRenderContext() );
     minSz = QgsImageOperation::nonTransparentImageRect(
-              QgsSymbolLayerV2Utils::symbolPreviewPixmap( mItem.symbol(), QSize( mIconSize.width(), 512 ),
+              QgsSymbolLayerV2Utils::symbolPreviewPixmap( mItem.symbol(), QSize( minSz.width(), 512 ),
                   context.data() ).toImage(),
-              mIconSize,
+              minSz,
               true ).size();
-  }
-  else
-  {
-    minSz = mIconSize;
   }
 
   if ( mItem.level() != 0 && !( model() && model()->testFlag( QgsLayerTreeModel::ShowLegendAsTree ) ) )
-    minSz.setWidth( indentSize + minSz.width() );
+    minSz.setWidth( mItem.level() * indentSize + minSz.width() );
 
   return minSz;
 }
@@ -202,7 +199,7 @@ QgsRenderContext * QgsSymbolV2LegendNode::createTemporaryRenderContext() const
   QScopedPointer<QgsRenderContext> context( new QgsRenderContext );
   context->setScaleFactor( dpi / 25.4 );
   context->setRendererScale( scale );
-  context->setMapToPixel( QgsMapToPixel( mupp ) ); // hope it's ok to leave out other params
+  context->setMapToPixel( QgsMapToPixel( mupp ) );
   return validData ? context.take() : 0;
 }
 
@@ -309,7 +306,7 @@ QSizeF QgsSymbolV2LegendNode::drawSymbol( const QgsLegendSettings& settings, Ite
   QgsRenderContext context;
   context.setScaleFactor( settings.dpi() / 25.4 );
   context.setRendererScale( settings.mapScale() );
-  context.setMapToPixel( QgsMapToPixel( 1 / ( settings.mmPerMapUnit() * context.scaleFactor() ) ) ); // hope it's ok to leave out other params
+  context.setMapToPixel( QgsMapToPixel( 1 / ( settings.mmPerMapUnit() * context.scaleFactor() ) ) );
   context.setForceVectorOutput( true );
   context.setPainter( ctx ? ctx->painter : 0 );
 
@@ -324,7 +321,7 @@ QSizeF QgsSymbolV2LegendNode::drawSymbol( const QgsLegendSettings& settings, Ite
   if ( QgsMarkerSymbolV2* markerSymbol = dynamic_cast<QgsMarkerSymbolV2*>( s ) )
   {
     // allow marker symbol to occupy bigger area if necessary
-    size = markerSymbol->size() * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context, s->outputUnit(), s->mapUnitScale() ) / context.scaleFactor();
+    size = QgsSymbolLayerV2Utils::convertToPainterUnits( context, markerSymbol->size(), s->outputUnit(), s->mapUnitScale() ) / context.scaleFactor();
     height = size;
     width = size;
     if ( width < settings.symbolSize().width() )
@@ -413,8 +410,8 @@ void QgsSymbolV2LegendNode::updateLabel()
       layerName = mLayerNode->customProperty( "legend/title-label" ).toString();
 
     mLabel = mUserLabel.isEmpty() ? layerName : mUserLabel;
-    if ( showFeatureCount && vl && vl->pendingFeatureCount() >= 0 )
-      mLabel += QString( " [%1]" ).arg( vl->pendingFeatureCount() );
+    if ( showFeatureCount && vl && vl->featureCount() >= 0 )
+      mLabel += QString( " [%1]" ).arg( vl->featureCount() );
   }
   else
   {

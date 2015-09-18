@@ -44,7 +44,7 @@ QgsMapToolRotateLabel::~QgsMapToolRotateLabel()
   delete mRotationPreviewBox;
 }
 
-void QgsMapToolRotateLabel::canvasPressEvent( QMouseEvent *e )
+void QgsMapToolRotateLabel::canvasPressEvent( QgsMapMouseEvent* e )
 {
   deleteRubberBands();
 
@@ -102,7 +102,7 @@ void QgsMapToolRotateLabel::canvasPressEvent( QMouseEvent *e )
   }
 }
 
-void QgsMapToolRotateLabel::canvasMoveEvent( QMouseEvent *e )
+void QgsMapToolRotateLabel::canvasMoveEvent( QgsMapMouseEvent* e )
 {
   if ( mLabelRubberBand )
   {
@@ -139,7 +139,7 @@ void QgsMapToolRotateLabel::canvasMoveEvent( QMouseEvent *e )
   }
 }
 
-void QgsMapToolRotateLabel::canvasReleaseEvent( QMouseEvent *e )
+void QgsMapToolRotateLabel::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   Q_UNUSED( e );
 

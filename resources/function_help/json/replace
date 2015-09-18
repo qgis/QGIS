@@ -1,0 +1,9 @@
+{
+  "function": "replace",
+  "description": "Returns a string with the the supplied string replaced.",
+  "arguments": [ {"arg":"string","description":"the input string"},
+                 {"arg":"before","description":"the string to replace"},
+                 {"arg":"after","description":"the string to use as a replacement"}],
+  "examples": [ { "expression":"replace('QGIS SHOULD ROCK','SHOULD','DOES')", "returns":"'QGIS DOES ROCK'"}
+  ]
+}

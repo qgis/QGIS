@@ -45,9 +45,9 @@ class QgsCategorizedSymbolRendererV2 : QgsFeatureRendererV2
 
     virtual ~QgsCategorizedSymbolRendererV2();
 
-    virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature );
+    virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature, QgsRenderContext& context );
 
-    virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feature );
+    virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feature, QgsRenderContext& context );
 
     virtual void startRender( QgsRenderContext& context, const QgsFields& fields );
 
@@ -64,7 +64,7 @@ class QgsCategorizedSymbolRendererV2 : QgsFeatureRendererV2
     //! returns bitwise OR-ed capabilities of the renderer
     virtual int capabilities();
 
-    virtual QgsSymbolV2List symbols();
+    virtual QgsSymbolV2List symbols( QgsRenderContext& context );
     void updateSymbols( QgsSymbolV2 * sym );
 
     const QgsCategoryList& categories() const;
@@ -113,18 +113,25 @@ class QgsCategorizedSymbolRendererV2 : QgsFeatureRendererV2
     void setSourceSymbol( QgsSymbolV2* sym /Transfer/ );
 
     QgsVectorColorRampV2* sourceColorRamp();
+
+    /** Sets the source color ramp.
+      * @param ramp color ramp. Ownership is transferred to the renderer
+      */
     void setSourceColorRamp( QgsVectorColorRampV2* ramp /Transfer/ );
 
     //! @note added in 2.1
     bool invertedColorRamp();
     void setInvertedColorRamp( bool inverted );
 
-    // Update the color ramp used and all symbols colors.
-    //! @note added in 2.5
-    void updateColorRamp( QgsVectorColorRampV2* ramp, bool inverted = false );
+    /** Update the color ramp used and all symbols colors.
+      * @param ramp color ramp. Ownership is transferred to the renderer
+      * @param inverted set to true to invert ramp colors
+      * @note added in 2.5
+      */
+    void updateColorRamp( QgsVectorColorRampV2* ramp /Transfer/, bool inverted = false );
 
-    void setRotationField( QString fieldOrExpression );
-    QString rotationField() const;
+    void setRotationField( QString fieldOrExpression ) /Deprecated/;
+    QString rotationField() const /Deprecated/;
 
     void setSizeScaleField( QString fieldOrExpression );
     QString sizeScaleField() const;

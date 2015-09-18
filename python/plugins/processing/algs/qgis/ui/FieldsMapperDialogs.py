@@ -89,6 +89,7 @@ class FieldsMapperParametersPanel(ParametersPanel):
 
 
 class FieldsMapperParametersDialog(AlgorithmDialog):
+
     def __init__(self, alg):
         AlgorithmDialogBase.__init__(self, alg)
 

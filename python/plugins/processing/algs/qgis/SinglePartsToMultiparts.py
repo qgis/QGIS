@@ -41,12 +41,12 @@ class SinglePartsToMultiparts(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def defineCharacteristics(self):
-        self.name = 'Singleparts to multipart'
-        self.group = 'Vector geometry tools'
+        self.name, self.i18n_name = self.trAlgorithm('Singleparts to multipart')
+        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
 
         self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.FIELD,
-            self.tr('Unique ID field'), self.INPUT))
+                                              self.tr('Unique ID field'), self.INPUT))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Multipart')))
 
@@ -117,7 +117,7 @@ class SinglePartsToMultiparts(GeoAlgorithm):
                 return QGis.WKBMultiPolygon
             else:
                 return QGis.WKBUnknown
-        except Exception, err:
+        except Exception as err:
             pass
 
     def extractAsMulti(self, geom):

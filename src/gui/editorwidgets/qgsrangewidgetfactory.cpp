@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 5.1.2014
     Copyright            : (C) 2014 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -41,9 +41,9 @@ QgsEditorWidgetConfig QgsRangeWidgetFactory::readConfig( const QDomElement& conf
   QMap<QString, QVariant> cfg;
 
   cfg.insert( "Style", configElement.attribute( "Style" ) );
-  cfg.insert( "Min", configElement.attribute( "Min" ).toInt() );
-  cfg.insert( "Max", configElement.attribute( "Max" ).toInt() );
-  cfg.insert( "Step", configElement.attribute( "Step" ).toInt() );
+  cfg.insert( "Min", configElement.attribute( "Min" ) );
+  cfg.insert( "Max", configElement.attribute( "Max" ) );
+  cfg.insert( "Step", configElement.attribute( "Step" ) );
   cfg.insert( "AllowNull", configElement.attribute( "AllowNull" ) == "1" );
 
   if ( configElement.hasAttribute( "Suffix" ) )
@@ -61,9 +61,9 @@ void QgsRangeWidgetFactory::writeConfig( const QgsEditorWidgetConfig& config, QD
   Q_UNUSED( fieldIdx );
 
   configElement.setAttribute( "Style", config["Style"].toString() );
-  configElement.setAttribute( "Min", config["Min"].toInt() );
-  configElement.setAttribute( "Max", config["Max"].toInt() );
-  configElement.setAttribute( "Step", config["Step"].toInt() );
+  configElement.setAttribute( "Min", config["Min"].toString() );
+  configElement.setAttribute( "Max", config["Max"].toString() );
+  configElement.setAttribute( "Step", config["Step"].toString() );
   configElement.setAttribute( "AllowNull", config["AllowNull"].toBool() );
   if ( config.contains( "Suffix" ) )
   {
@@ -73,7 +73,7 @@ void QgsRangeWidgetFactory::writeConfig( const QgsEditorWidgetConfig& config, QD
 
 bool QgsRangeWidgetFactory::isFieldSupported( QgsVectorLayer* vl, int fieldIdx )
 {
-  switch ( vl->pendingFields()[fieldIdx].type() )
+  switch ( vl->fields()[fieldIdx].type() )
   {
     case QVariant::LongLong:
     case QVariant::Double:
@@ -83,4 +83,14 @@ bool QgsRangeWidgetFactory::isFieldSupported( QgsVectorLayer* vl, int fieldIdx )
     default:
       return false;
   }
+}
+
+QMap<const char*, int> QgsRangeWidgetFactory::supportedWidgetTypes()
+{
+  QMap<const char*, int> map = QMap<const char*, int>();
+  map.insert( QSlider::staticMetaObject.className(), 10 );
+  map.insert( QDial::staticMetaObject.className(), 10 );
+  map.insert( QSpinBox::staticMetaObject.className(), 10 );
+  map.insert( QDoubleSpinBox::staticMetaObject.className(), 10 );
+  return map;
 }

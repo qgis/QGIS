@@ -47,22 +47,22 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
     Z_SCORE = 'Z_SCORE'
 
     def defineCharacteristics(self):
-        self.name = 'Nearest neighbour analysis'
-        self.group = 'Vector analysis tools'
+        self.name, self.i18n_name = self.trAlgorithm('Nearest neighbour analysis')
+        self.group, self.i18n_group = self.trAlgorithm('Vector analysis tools')
 
         self.addParameter(ParameterVector(self.POINTS,
-            self.tr('Points'), [ParameterVector.VECTOR_TYPE_POINT]))
+                                          self.tr('Points'), [ParameterVector.VECTOR_TYPE_POINT]))
 
         self.addOutput(OutputHTML(self.OUTPUT, self.tr('Nearest neighbour')))
 
         self.addOutput(OutputNumber(self.OBSERVED_MD,
-            self.tr('Observed mean distance')))
+                                    self.tr('Observed mean distance')))
         self.addOutput(OutputNumber(self.EXPECTED_MD,
-            self.tr('Expected mean distance')))
+                                    self.tr('Expected mean distance')))
         self.addOutput(OutputNumber(self.NN_INDEX,
-            self.tr('Nearest neighbour index')))
+                                    self.tr('Nearest neighbour index')))
         self.addOutput(OutputNumber(self.POINT_COUNT,
-            self.tr('Number of points')))
+                                    self.tr('Number of points')))
         self.addOutput(OutputNumber(self.Z_SCORE, self.tr('Z-Score')))
 
     def processAlgorithm(self, progress):
@@ -88,7 +88,7 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
             request = QgsFeatureRequest().setFilterFid(neighbourID)
             neighbour = layer.getFeatures(request).next()
             sumDist += distance.measureLine(neighbour.geometry().asPoint(),
-                    feat.geometry().asPoint())
+                                            feat.geometry().asPoint())
 
             current += 1
             progress.setPercentage(int(current * total))
@@ -117,5 +117,5 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
     def createHTML(self, outputFile, algData):
         f = open(outputFile, 'w')
         for s in algData:
-            f.write('<p>' + str(s) + '</p>')
+            f.write('<p>' + unicode(s) + '</p>')
         f.close()

@@ -42,7 +42,7 @@ class GUI_EXPORT QgsDatumTransformDialog: public QDialog, private Ui::QgsDatumTr
     QgsDatumTransformDialog();
     void updateTitle();
     bool gridShiftTransformation( const QString& itemText ) const;
-    /**Returns false if the location of the grid shift files is known (PROJ_LIB) and the shift file is not there*/
+    /** Returns false if the location of the grid shift files is known (PROJ_LIB) and the shift file is not there*/
     bool testGridShiftFileAvailability( QTreeWidgetItem* item, int col ) const;
     void load();
 

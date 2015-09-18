@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 5.1.2014
     Copyright            : (C) 2014 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -54,16 +54,23 @@ class GUI_EXPORT QgsValueRelationWidgetWrapper : public QgsEditorWidgetWrapper
 
   public:
     explicit QgsValueRelationWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor = 0, QWidget* parent = 0 );
+    static bool orderByKeyLessThan( const QgsValueRelationWidgetWrapper::ValueRelationItem& p1 ,
+                                    const QgsValueRelationWidgetWrapper::ValueRelationItem& p2 );
+    static bool orderByValueLessThan( const QgsValueRelationWidgetWrapper::ValueRelationItem& p1 ,
+                                      const QgsValueRelationWidgetWrapper::ValueRelationItem& p2 );
+
 
 
     // QgsEditorWidgetWrapper interface
   public:
     QVariant value() override;
+    // TODO or have friend class :)
+    static ValueRelationCache createCache( const QgsEditorWidgetConfig& config );
 
   protected:
     QWidget* createWidget( QWidget* parent ) override;
     void initWidget( QWidget* editor ) override;
-    static ValueRelationCache createCache( const QgsEditorWidgetConfig& config );
+    bool valid() override;
 
   public slots:
     void setValue( const QVariant& value ) override;

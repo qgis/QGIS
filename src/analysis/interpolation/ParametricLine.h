@@ -22,22 +22,22 @@
 #include <QVector>
 
 class ANALYSIS_EXPORT ParametricLine
-      /**ParametricLine is an Interface for parametric lines. It is possible, that a parametric line is composed of several parametric lines (see the composite pattern in Gamma et al. 'Design Patterns'). Do not build instances of it since it is an abstract class.*/
+      /** ParametricLine is an Interface for parametric lines. It is possible, that a parametric line is composed of several parametric lines (see the composite pattern in Gamma et al. 'Design Patterns'). Do not build instances of it since it is an abstract class.*/
 {
   protected:
-    /**Degree of the parametric Line*/
+    /** Degree of the parametric Line*/
     int mDegree;
-    /**Pointer to the parent object. If there isn't one, mParent is 0*/
+    /** Pointer to the parent object. If there isn't one, mParent is 0*/
     ParametricLine* mParent;
-    /**mControlPoly stores the points of the control polygon*/
+    /** MControlPoly stores the points of the control polygon*/
     QVector<Point3D*>* mControlPoly;
   public:
-    /**Default constructor*/
+    /** Default constructor*/
     ParametricLine();
-    /**Constructor, par is a pointer to the parent object, controlpoly the controlpolygon
+    /** Constructor, par is a pointer to the parent object, controlpoly the controlpolygon
       @note not available in python binding */
     ParametricLine( ParametricLine* par, QVector<Point3D*>* controlpoly );
-    /**Destructor*/
+    /** Destructor*/
     virtual ~ParametricLine();
     virtual void add( ParametricLine* pl ) = 0;
     virtual void calcFirstDer( float t, Vector3D* v ) = 0;

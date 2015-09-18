@@ -1,0 +1,11 @@
+{
+  "function": "levenshtein",
+  "description": "Returns the Levenshtein edit distance between two strings. This equates to the minimum number of character edits (insertions, deletions or substitutions) required to change one string to another.<br />The Levenshtein distance is a measure of the similarity between two strings. Smaller distances mean the strings are more similar, and larger distances indicate more different strings. The distance is case sensitive.",
+  "arguments": [ {"arg":"string1","description":"a string"},
+  {"arg":"string2","description":"a string"}
+  ],
+  "examples": [ { "expression":"levenshtein('kittens','mitten')", "returns":"2"},
+{ "expression":"levenshtein('Kitten','kitten')", "returns":"1"},
+{ "expression":"levenshtein(upper('Kitten'),upper('kitten'))", "returns":"0"}
+  ]
+}

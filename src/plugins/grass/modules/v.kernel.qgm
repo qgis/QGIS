@@ -3,6 +3,10 @@
 
 <qgisgrassmodule label="Gaussian kernel density" module="v.kernel"  manual="v.kernel">
 	<option key="input" />
-	<option key="stddeviation" />
-	<option key="output" />
+	<option key="stddeviation" version_max="6"/>
+	<option key="radius" version_min="7"/>
+	<option key="mult" answer="1" advanced="yes" version_max="6"/>
+	<option key="multiplier" answer="1" advanced="yes" version_min="7"/>
+	<option key="kernel" answer="gaussian" advanced="yes"/>
+	<option key="output" outputType="raster"/>
 </qgisgrassmodule>

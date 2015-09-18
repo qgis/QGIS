@@ -3,6 +3,7 @@ SET(QGIS_APP_SRCS
   qgisappinterface.cpp
   qgisappstylesheet.cpp
   qgsabout.cpp
+  qgsalignrasterdialog.cpp
   qgsapplayertreeviewmenuprovider.cpp
   qgssponsors.cpp
   qgsaddattrdialog.cpp
@@ -14,8 +15,6 @@ SET(QGIS_APP_SRCS
   qgsattributetabledialog.cpp
   qgsbookmarks.cpp
   qgsbrowserdockwidget.cpp
-  qgsadvanceddigitizingdockwidget.cpp
-  qgsadvanceddigitizingcanvasitem.cpp
   qgsclipboard.cpp
   qgsconfigureshortcutsdialog.cpp
   qgscustomization.cpp
@@ -46,20 +45,20 @@ SET(QGIS_APP_SRCS
   qgslabelpreview.cpp
   qgsloadstylefromdbdialog.cpp
   qgsmaplayerstyleguiutils.cpp
-  qgsmapmouseevent.cpp
   qgssavestyletodbdialog.cpp
   qgsguivectorlayertools.cpp
+  qgswelcomepageitemsmodel.cpp
+  qgswelcomepage.cpp
+  qgsversioninfo.cpp
 
   qgsmaptooladdfeature.cpp
   qgsmaptooladdpart.cpp
   qgsmaptooladdring.cpp
   qgsmaptoolfillring.cpp
   qgsmaptoolannotation.cpp
-  qgsmaptoolcapture.cpp
   qgsmaptoolchangelabelproperties.cpp
   qgsmaptooldeletering.cpp
   qgsmaptooldeletepart.cpp
-  qgsmaptooledit.cpp
   qgsmaptoolfeatureaction.cpp
   qgsmaptoolformannotation.cpp
   qgsmaptoolhtmlannotation.cpp
@@ -67,7 +66,6 @@ SET(QGIS_APP_SRCS
   qgsmaptoolshowhidelabels.cpp
   qgsmaptoolidentifyaction.cpp
   qgsmaptoollabel.cpp
-  qgsmaptooladvanceddigitizing.cpp
   qgsmaptoolmeasureangle.cpp
   qgsmaptoolmovefeature.cpp
   qgsmaptoolmovelabel.cpp
@@ -91,6 +89,7 @@ SET(QGIS_APP_SRCS
   nodetool/qgsmaptoolnodetool.cpp
   nodetool/qgsselectedfeature.cpp
   nodetool/qgsvertexentry.cpp
+  nodetool/qgsnodeeditor.cpp
 
   qgsmeasuredialog.cpp
   qgsmeasuretool.cpp
@@ -106,7 +105,6 @@ SET(QGIS_APP_SRCS
   qgsstatisticalsummarydockwidget.cpp
   qgstextannotationdialog.cpp
   qgsshortcutsmanager.cpp
-  qgsguivectorlayertools.h
   qgssnappingdialog.cpp
   qgssvgannotationdialog.cpp
   qgsundowidget.cpp
@@ -115,6 +113,9 @@ SET(QGIS_APP_SRCS
   qgsvectorlayerproperties.cpp
   qgsvisibilitypresets.cpp
   qgshandlebadlayers.cpp
+  qgsmaptooladdcircularstring.cpp
+  qgsmaptoolcircularstringcurvepoint.cpp
+  qgsmaptoolcircularstringradius.cpp
 
   composer/qgsattributeselectiondialog.cpp
   composer/qgscomposer.cpp
@@ -129,6 +130,7 @@ SET(QGIS_APP_SRCS
   composer/qgscomposerscalebarwidget.cpp
   composer/qgscomposershapewidget.cpp
   composer/qgscomposertablewidget.cpp
+  composer/qgscomposertablebackgroundcolorsdialog.cpp
   composer/qgscomposerlegenditemdialog.cpp
   composer/qgscomposerlegendlayersdialog.cpp
   composer/qgscomposerlegendwidget.cpp
@@ -164,6 +166,7 @@ SET (QGIS_APP_MOC_HDRS
   qgisappstylesheet.h
   qgsabout.h
   qgsaddattrdialog.h
+  qgsalignrasterdialog.h
   qgsjoindialog.h
   qgsaddtaborgroup.h
   qgsannotationwidget.h
@@ -172,7 +175,6 @@ SET (QGIS_APP_MOC_HDRS
   qgsattributetabledialog.h
   qgsbookmarks.h
   qgsbrowserdockwidget.h
-  qgsadvanceddigitizingdockwidget.h
   qgsclipboard.h
   qgsconfigureshortcutsdialog.h
   qgscustomization.h
@@ -205,9 +207,13 @@ SET (QGIS_APP_MOC_HDRS
   qgssavestyletodbdialog.h
   qgsshortcutsmanager.h
   qgsapplayertreeviewmenuprovider.h
+  qgsguivectorlayertools.h
+  qgswelcomepageitemsmodel.h
+  qgswelcomepage.h
+  qgsversioninfo.h
 
   qgsmaptooladdfeature.h
-  qgsmaptoolcapture.h
+  qgsmaptoolcircularstringradius.h
   qgsmaptooladdpart.h
   qgsmaptooladdring.h
   qgsmaptoolfillring.h
@@ -218,7 +224,6 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptoolpinlabels.h
   qgsmaptoolshowhidelabels.h
   qgsmaptoolidentifyaction.h
-  qgsmaptooladvanceddigitizing.h
   qgsmaptoolmeasureangle.h
   qgsmaptoolmovefeature.h
   qgsmaptoolmovelabel.h
@@ -235,9 +240,11 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptoolsimplify.h
   qgsmaptoolsplitfeatures.h
   qgsmaptoolsplitparts.h
+  qgsmaptooladdcircularstring.h
 
   nodetool/qgsmaptoolnodetool.h
   nodetool/qgsselectedfeature.h
+  nodetool/qgsnodeeditor.h
 
   qgsmeasuredialog.h
   qgsmeasuretool.h
@@ -272,6 +279,7 @@ SET (QGIS_APP_MOC_HDRS
   composer/qgscomposerpicturewidget.h
   composer/qgscomposerscalebarwidget.h
   composer/qgscomposertablewidget.h
+  composer/qgscomposertablebackgroundcolorsdialog.h
   composer/qgscomposershapewidget.h
   composer/qgscompositionwidget.h
   composer/qgsatlascompositionwidget.h

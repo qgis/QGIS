@@ -46,6 +46,7 @@ QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( 
 
   QgsDebugMsg( "defaultPalette = " + defaultPalette );
   mColorRampComboBox->setCurrentIndex( mColorRampComboBox->findText( defaultPalette ) );
+  connect( mButtonEditRamp, SIGNAL( clicked() ), mColorRampComboBox, SLOT( editSourceRamp() ) );
 
   if ( !mRasterLayer )
   {
@@ -350,6 +351,17 @@ void QgsSingleBandPseudoColorRendererWidget::on_mColorRampComboBox_currentIndexC
   Q_UNUSED( index );
   QSettings settings;
   settings.setValue( "/Raster/defaultPalette", mColorRampComboBox->currentText() );
+
+  QgsVectorColorRampV2* ramp = mColorRampComboBox->currentColorRamp();
+  if ( !ramp )
+    return;
+
+  bool enableContinuous = ( ramp->count() > 0 );
+  mClassificationModeComboBox->setEnabled( enableContinuous );
+  if ( !enableContinuous )
+  {
+    mClassificationModeComboBox->setCurrentIndex( mClassificationModeComboBox->findData( EqualInterval ) );
+  }
 }
 
 void QgsSingleBandPseudoColorRendererWidget::populateColormapTreeWidget( const QList<QgsColorRampShader::ColorRampItem>& colorRampItems )

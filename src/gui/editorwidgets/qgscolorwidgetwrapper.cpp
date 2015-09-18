@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 5.1.2014
     Copyright            : (C) 2014 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -44,6 +44,11 @@ void QgsColorWidgetWrapper::initWidget( QWidget* editor )
   mColorButton = qobject_cast<QgsColorButtonV2*>( editor );
 
   connect( mColorButton, SIGNAL( colorChanged( QColor ) ), this, SLOT( valueChanged() ) );
+}
+
+bool QgsColorWidgetWrapper::valid()
+{
+  return mColorButton;
 }
 
 void QgsColorWidgetWrapper::setValue( const QVariant& value )

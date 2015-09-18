@@ -29,13 +29,24 @@ QgsRasterCalcDialog::QgsRasterCalcDialog( QWidget * parent, Qt::WindowFlags f ):
 {
   setupUi( this );
 
+  QSettings settings;
+  restoreGeometry( settings.value( "/Windows/RasterCalc/geometry" ).toByteArray() );
+
   //add supported output formats
   insertAvailableOutputFormats();
   insertAvailableRasterBands();
+
+  if ( !mAvailableRasterBands.isEmpty() )
+  {
+    //grab default crs from first raster
+    mCrsSelector->setCrs( mAvailableRasterBands.at( 0 ).raster->crs() );
+  }
 }
 
 QgsRasterCalcDialog::~QgsRasterCalcDialog()
 {
+  QSettings settings;
+  settings.setValue( "/Windows/RasterCalc/geometry", saveGeometry() );
 }
 
 QString QgsRasterCalcDialog::formulaString() const
@@ -78,6 +89,11 @@ QString QgsRasterCalcDialog::outputFormat() const
     return "";
   }
   return mOutputFormatComboBox->itemData( index ).toString();
+}
+
+QgsCoordinateReferenceSystem QgsRasterCalcDialog::outputCrs() const
+{
+  return mCrsSelector->crs();
 }
 
 bool QgsRasterCalcDialog::addLayerToProject() const
@@ -243,6 +259,7 @@ void QgsRasterCalcDialog::on_mCurrentLayerExtentButton_clicked()
     mYMaxSpinBox->setValue( layerExtent.yMaximum() );
     mNColumnsSpinBox->setValue( rlayer->width() );
     mNRowsSpinBox->setValue( rlayer->height() );
+    mCrsSelector->setCrs( rlayer->crs() );
   }
 }
 
@@ -367,6 +384,21 @@ void QgsRasterCalcDialog::on_mACosButton_clicked()
 void QgsRasterCalcDialog::on_mATanButton_clicked()
 {
   mExpressionTextEdit->insertPlainText( " atan ( " );
+}
+
+void QgsRasterCalcDialog::on_mLnButton_clicked()
+{
+  mExpressionTextEdit->insertPlainText( " ln ( " );
+}
+
+void QgsRasterCalcDialog::on_mLogButton_clicked()
+{
+  mExpressionTextEdit->insertPlainText( " log10 ( " );
+}
+
+void QgsRasterCalcDialog::on_mNotEqualButton_clicked()
+{
+  mExpressionTextEdit->insertPlainText( " != " );
 }
 
 void QgsRasterCalcDialog::on_mOpenBracketPushButton_clicked()

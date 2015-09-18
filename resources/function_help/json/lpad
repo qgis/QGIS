@@ -1,0 +1,10 @@
+{
+  "function": "lpad",
+  "description": "Returns a string padded to supplied width using a fill character.",
+  "arguments": [ {"arg":"string","description":"string to pad"},
+  {"arg":"width","description":"length of new string"},
+  {"arg":"fill","description":"character to pad the remaining space with"}
+  ],
+  "examples": [ { "expression":"lpad('Hello', 10, 'x')", "returns":"'Helloxxxxx'"}
+  ]
+}

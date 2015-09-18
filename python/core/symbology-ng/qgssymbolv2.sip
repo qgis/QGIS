@@ -1,6 +1,39 @@
 
 typedef QList<QgsSymbolLayerV2*> QgsSymbolLayerV2List;
 
+/** \ingroup core
+ * \class QgsRenderResult
+ * \brief A simple container for the results of a rendering operation
+ * \note Added in version 2.12
+ */
+
+class QgsRenderResult
+{
+%TypeHeaderCode
+#include <qgssymbolv2.h>
+%End
+  public:
+
+    /** Constructor for QgsRenderResult
+     * @param symbolRendered initial value for symbolRendered member
+     */
+    QgsRenderResult( bool symbolRendered );
+
+    /** Bounds of rendered symbol shape.
+     * @note only implemented for marker symbol types
+     */
+    QRectF symbolBounds;
+
+    //! True if a symbol was rendered during the render operation
+    bool symbolRendered;
+
+    /** Unites the render result with another QgsRenderResult object
+     * @param other other render result
+     */
+    void unite( const QgsRenderResult& other );
+};
+
+
 class QgsSymbolV2
 {
 %TypeHeaderCode
@@ -55,7 +88,7 @@ class QgsSymbolV2
 
     // symbol layers handling
 
-    /**Returns list of symbol layers contained in the symbol.
+    /** Returns list of symbol layers contained in the symbol.
      * @returns symbol layers list
      * @note added in QGIS 2.7
      * @see symbolLayer
@@ -63,7 +96,7 @@ class QgsSymbolV2
      */
     QgsSymbolLayerV2List symbolLayers();
 
-    /**Returns a specific symbol layers contained in the symbol.
+    /** Returns a specific symbol layers contained in the symbol.
      * @param layer layer number
      * @returns corresponding symbol layer
      * @note added in QGIS 2.7
@@ -72,7 +105,7 @@ class QgsSymbolV2
      */
     QgsSymbolLayerV2* symbolLayer( int layer );
 
-    /**Returns total number of symbol layers contained in the symbol.
+    /** Returns total number of symbol layers contained in the symbol.
      * @returns count of symbol layers
      * @note added in QGIS 2.7
      * @see symbolLayers
@@ -106,9 +139,17 @@ class QgsSymbolV2
     //! @note customContext parameter added in 2.6
     void drawPreviewIcon( QPainter* painter, QSize size, QgsRenderContext* customContext = 0 );
 
+    //! export symbol as image format. PNG and SVG supported
+    void exportImage( QString path, QString format, QSize size );
+
+    //! Generate symbol as image
     QImage asImage( QSize size, QgsRenderContext* customContext = 0 );
 
-    QImage bigSymbolPreviewImage();
+    /** Returns a large (roughly 100x100 pixel) preview image for the symbol.
+     * @param expressionContext optional expression context, for evaluation of
+     * data defined symbol properties
+     */
+    QImage bigSymbolPreviewImage( QgsExpressionContext* expressionContext = 0 );
 
     QString dump() const;
 
@@ -130,7 +171,7 @@ class QgsSymbolV2
     void setRenderHints( int hints );
     int renderHints() const;
 
-    /**Sets whether features drawn by the symbol should be clipped to the render context's
+    /** Sets whether features drawn by the symbol should be clipped to the render context's
      * extent. If this option is enabled then features which are partially outside the extent
      * will be clipped. This speeds up rendering of the feature, but may have undesirable
      * side effects for certain symbol types.
@@ -140,7 +181,7 @@ class QgsSymbolV2
      */
     void setClipFeaturesToExtent( bool clipFeaturesToExtent );
 
-    /**Returns whether features drawn by the symbol will be clipped to the render context's
+    /** Returns whether features drawn by the symbol will be clipped to the render context's
      * extent. If this option is enabled then features which are partially outside the extent
      * will be clipped. This speeds up rendering of the feature, but may have undesirable
      * side effects for certain symbol types.
@@ -154,6 +195,15 @@ class QgsSymbolV2
 
     void setLayer( const QgsVectorLayer* layer );
     const QgsVectorLayer* layer() const;
+
+     /** Returns the result of the symbol rendering operation. This should only be
+     * called immediately after a rendering operation (eg calling renderPoint).
+     * @note added in QGIS 2.12
+     * @note this is a temporary method until QGIS 3.0. For QGIS 3.0 the render methods
+     * will return a QgsRenderResult object
+     */
+    // TODO - QGIS 3.0. Remove and make renderPoint, etc return a QgsRenderResult
+    const QgsRenderResult& renderResult() const;
 
   protected:
     QgsSymbolV2( SymbolType type, QgsSymbolLayerV2List layers /Transfer/ ); // can't be instantiated
@@ -235,18 +285,48 @@ class QgsMarkerSymbolV2 : QgsSymbolV2
     QgsMarkerSymbolV2( QgsSymbolLayerV2List layers /Transfer/ = QgsSymbolLayerV2List() );
 
     void setAngle( double angle );
-    double angle();
+    double angle() const;
+
+    /** Set data defined angle for whole symbol (including all symbol layers).
+     * @param dd data defined angle
+     * @note added in QGIS 2.9
+     * @see dataDefinedAngle
+     */
+    void setDataDefinedAngle( const QgsDataDefined& dd );
+
+    /** Returns data defined angle for whole symbol (including all symbol layers).
+     * @returns data defined angle, or empty data defined if angle is not set
+     * at the marker level
+     * @note added in QGIS 2.9
+     * @see setDataDefinedAngle
+     */
+    QgsDataDefined dataDefinedAngle() const;
 
     /** Sets the line angle modification for the symbol's angle. This angle is added to
      * the marker's rotation and data defined rotation before rendering the symbol, and
      * is usually used for orienting symbols to match a line's angle.
-     * @param lineangle Angle in degrees, valid values are between 0 and 360
+     * @param lineAngle Angle in degrees, valid values are between 0 and 360
      * @note added in QGIS 2.9
     */
     void setLineAngle( double lineAngle );
 
     void setSize( double size );
-    double size();
+    double size() const;
+
+    /** Set data defined size for whole symbol (including all symbol layers).
+     * @param dd data defined size
+     * @note added in QGIS 2.9
+     * @see dataDefinedSize
+     */
+    void setDataDefinedSize( const QgsDataDefined& dd );
+
+    /** Returns data defined size for whole symbol (including all symbol layers).
+     * @returns data defined size, or empty data defined if size is not set
+     * at the marker level
+     * @note added in QGIS 2.9
+     * @see setDataDefinedSize
+     */
+    QgsDataDefined dataDefinedSize() const;
 
     void setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod );
     ScaleMethod scaleMethod();
@@ -273,7 +353,22 @@ class QgsLineSymbolV2 : QgsSymbolV2
     QgsLineSymbolV2( QgsSymbolLayerV2List layers /Transfer/ = QgsSymbolLayerV2List() );
 
     void setWidth( double width );
-    double width();
+    double width() const;
+
+    /** Set data defined width for whole symbol (including all symbol layers).
+     * @param dd data defined width
+     * @note added in QGIS 2.9
+     * @see dataDefinedWidth
+     */
+    void setDataDefinedWidth( const QgsDataDefined& dd );
+
+    /** Returns data defined size for whole symbol (including all symbol layers).
+     * @returns data defined size, or empty data defined if size is not set
+     * at the line level
+     * @note added in QGIS 2.9
+     * @see setDataDefinedWidth
+     */
+    QgsDataDefined dataDefinedWidth() const;
 
     void renderPolyline( const QPolygonF& points, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
 
@@ -295,7 +390,6 @@ class QgsFillSymbolV2 : QgsSymbolV2
     static QgsFillSymbolV2* createSimple( const QgsStringMap& properties ) /Factory/;
 
     QgsFillSymbolV2( QgsSymbolLayerV2List layers /Transfer/ = QgsSymbolLayerV2List() );
-
     void setAngle( double angle );
     void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
 

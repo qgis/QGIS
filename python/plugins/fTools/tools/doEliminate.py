@@ -34,7 +34,9 @@ from qgis.core import QGis, QgsVectorFileWriter, QgsVectorLayer, QgsFeature, Qgs
 import ftools_utils
 from ui_frmEliminate import Ui_Dialog
 
+
 class Dialog(QDialog, Ui_Dialog):
+
     def __init__(self, iface):
         QDialog.__init__(self)
         self.iface = iface
@@ -56,7 +58,7 @@ class Dialog(QDialog, Ui_Dialog):
     def update(self, inputLayer):
         changedLayer = ftools_utils.getVectorLayerByName(inputLayer)
         selFeatures = changedLayer.selectedFeatureCount()
-        self.selected.setText( self.tr("Selected features: %s") % (selFeatures))
+        self.selected.setText(self.tr("Selected features: %s") % (selFeatures))
 
     def accept(self):
         self.buttonOk.setEnabled(False)
@@ -162,10 +164,10 @@ class Dialog(QDialog, Ui_Dialog):
             for fid2Eliminate in inLayer.selectedFeaturesIds():
                 feat = QgsFeature()
 
-                if inLayer.getFeatures( QgsFeatureRequest().setFilterFid( fid2Eliminate ).setSubsetOfAttributes([]) ).nextFeature( feat ):
+                if inLayer.getFeatures(QgsFeatureRequest().setFilterFid(fid2Eliminate).setSubsetOfAttributes([])).nextFeature(feat):
                     geom2Eliminate = feat.geometry()
                     bbox = geom2Eliminate.boundingBox()
-                    fit = outLayer.getFeatures( QgsFeatureRequest().setFilterRect( bbox ) )
+                    fit = outLayer.getFeatures(QgsFeatureRequest().setFilterRect(bbox))
                     mergeWithFid = None
                     mergeWithGeom = None
                     max = 0
@@ -229,7 +231,7 @@ class Dialog(QDialog, Ui_Dialog):
                     if not fidList == "":
                         fidList += ", "
 
-                    fidList += str(fid)
+                    fidList += unicode(fid)
 
                 QMessageBox.information(
                     self,

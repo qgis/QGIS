@@ -48,6 +48,7 @@
 #include "qgscolorschemeregistry.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgscolordialog.h"
+#include "qgsexpressioncontext.h"
 
 //qt includes
 #include <QInputDialog>
@@ -310,7 +311,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
     if ( grpWMSList->isChecked() )
     {
       QStringList list;
-      foreach ( QString value, values )
+      Q_FOREACH ( const QString& value, values )
       {
         list << QString( "EPSG:%1" ).arg( value );
       }
@@ -504,7 +505,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   mTabRelations->layout()->addWidget( mRelationManagerDlg );
 
   QList<QgsVectorLayer*> vectorLayers;
-  foreach ( QgsMapLayer* mapLayer, mapLayers.values() )
+  Q_FOREACH ( QgsMapLayer* mapLayer, mapLayers.values() )
   {
     if ( QgsMapLayer::VectorLayer == mapLayer->type() )
     {
@@ -523,6 +524,11 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
     // ensure selector is updated if cbxProjectionEnabled->toggled signal not sent
     on_cbxProjectionEnabled_toggled( myProjectionEnabled );
   }
+
+  mVariableEditor->context()->appendScope( QgsExpressionContextUtils::globalScope() );
+  mVariableEditor->context()->appendScope( QgsExpressionContextUtils::projectScope() );
+  mVariableEditor->reloadContext();
+  mVariableEditor->setEditableScopeIndex( 1 );
 
   projectionSelectorInitialized();
   restoreOptionsBaseUi();
@@ -564,7 +570,7 @@ QString QgsProjectProperties::title() const
 void QgsProjectProperties::title( QString const & title )
 {
   titleEdit->setText( title );
-  QgsProject::instance()->title( title );
+  QgsProject::instance()->setTitle( title );
 } // QgsProjectProperties::title( QString const & title )
 
 //when user clicks apply button
@@ -627,7 +633,7 @@ void QgsProjectProperties::apply()
   }
 
   // Set the project title
-  QgsProject::instance()->title( title() );
+  QgsProject::instance()->setTitle( title() );
 
   // set the mouse display precision method and the
   // number of decimal places for the manual option
@@ -919,6 +925,9 @@ void QgsProjectProperties::apply()
 
   QgsProject::instance()->relationManager()->setRelations( mRelationManagerDlg->relations() );
 
+  //save variables
+  QgsExpressionContextUtils::setProjectVariables( mVariableEditor->variablesInActiveScope() );
+
   emit refresh();
 }
 
@@ -1106,7 +1115,7 @@ void QgsProjectProperties::on_pbnWMSAddSRS_clicked()
 
 void QgsProjectProperties::on_pbnWMSRemoveSRS_clicked()
 {
-  foreach ( QListWidgetItem *item, mWMSList->selectedItems() )
+  Q_FOREACH ( QListWidgetItem *item, mWMSList->selectedItems() )
   {
     delete item;
   }
@@ -1490,7 +1499,7 @@ void QgsProjectProperties::populateEllipsoidList()
   const char   *myTail;
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
-  EllipsoidDefs myItem, i;
+  EllipsoidDefs myItem;
 
   myItem.acronym = GEO_NONE;
   myItem.description =  tr( GEO_NONE_DESC );
@@ -1558,7 +1567,7 @@ void QgsProjectProperties::populateEllipsoidList()
 
   // Add all items to selector
 
-  foreach ( i, mEllipsoidList )
+  Q_FOREACH ( const EllipsoidDefs& i, mEllipsoidList )
   {
     cmbEllipsoid->addItem( i.description );
   }

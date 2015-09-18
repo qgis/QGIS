@@ -83,7 +83,7 @@ void QgsMssqlConnectionItem::refresh()
   QVector<QgsDataItem*> items = createChildren();
 
   // Add new items
-  foreach ( QgsDataItem *item, items )
+  Q_FOREACH ( QgsDataItem *item, items )
   {
     // Is it present in childs?
     int index = findItem( mChildren, item );
@@ -154,11 +154,11 @@ QVector<QgsDataItem*> QgsMssqlConnectionItem::createChildren()
 
       // skip layers which are added already
       bool skip = false;
-      foreach ( QgsDataItem *child, mChildren )
+      Q_FOREACH ( QgsDataItem *child, mChildren )
       {
         if ( child->name() == layer.schemaName )
         {
-          foreach ( QgsDataItem *child2, child->children() )
+          Q_FOREACH ( QgsDataItem *child2, child->children() )
           {
             if ( child2->name() == layer.tableName )
             {
@@ -177,7 +177,7 @@ QVector<QgsDataItem*> QgsMssqlConnectionItem::createChildren()
       QString srid = layer.srid;
 
       QgsMssqlSchemaItem* schemaItem = NULL;
-      foreach ( QgsDataItem *child, children )
+      Q_FOREACH ( QgsDataItem *child, children )
       {
         if ( child->name() == layer.schemaName )
         {
@@ -218,9 +218,9 @@ QVector<QgsDataItem*> QgsMssqlConnectionItem::createChildren()
     }
 
     // Remove no more present items
-    foreach ( QgsDataItem *child, mChildren )
+    Q_FOREACH ( QgsDataItem *child, mChildren )
     {
-      foreach ( QgsDataItem *child2, child->children() )
+      Q_FOREACH ( QgsDataItem *child2, child->children() )
       {
         if ( findItem( newLayers, child2 ) < 0 )
           child->deleteChildItem( child2 );
@@ -239,7 +239,7 @@ void QgsMssqlConnectionItem::setLayerType( QgsMssqlLayerProperty layerProperty )
 {
   QgsMssqlSchemaItem *schemaItem = NULL;
 
-  foreach ( QgsDataItem *child, mChildren )
+  Q_FOREACH ( QgsDataItem *child, mChildren )
   {
     if ( child->name() == layerProperty.schemaName )
     {
@@ -254,7 +254,7 @@ void QgsMssqlConnectionItem::setLayerType( QgsMssqlLayerProperty layerProperty )
     return;
   }
 
-  foreach ( QgsDataItem *layerItem, schemaItem->children() )
+  Q_FOREACH ( QgsDataItem *layerItem, schemaItem->children() )
   {
     if ( layerItem->name() == layerProperty.tableName )
       return; // already added
@@ -349,7 +349,7 @@ bool QgsMssqlConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction 
   QStringList importResults;
   bool hasError = false;
   QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
-  foreach ( const QgsMimeDataUtils::Uri& u, lst )
+  Q_FOREACH ( const QgsMimeDataUtils::Uri& u, lst )
   {
     if ( u.layerType != "vector" )
     {
@@ -462,7 +462,7 @@ QgsMssqlSchemaItem::~QgsMssqlSchemaItem()
 void QgsMssqlSchemaItem::addLayers( QgsDataItem* newLayers )
 {
   // Add new items
-  foreach ( QgsDataItem *child, newLayers->children() )
+  Q_FOREACH ( QgsDataItem *child, newLayers->children() )
   {
     // Is it present in childs?
     if ( findItem( mChildren, child ) >= 0 )
@@ -539,7 +539,7 @@ QVector<QgsDataItem*> QgsMssqlRootItem::createChildren()
   QVector<QgsDataItem*> connections;
   QSettings settings;
   settings.beginGroup( "/MSSQL/connections" );
-  foreach ( QString connName, settings.childGroups() )
+  Q_FOREACH ( const QString& connName, settings.childGroups() )
   {
     connections << new QgsMssqlConnectionItem( this, connName, mPath + "/" + connName );
   }

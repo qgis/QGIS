@@ -31,6 +31,7 @@ from ....plugin import BaseError, Table
 
 
 class DlgVersioning(QDialog, Ui_DlgVersioning):
+
     def __init__(self, item, parent=None):
         QDialog.__init__(self, parent)
         self.item = item
@@ -62,7 +63,6 @@ class DlgVersioning(QDialog, Ui_DlgVersioning):
         self.connect(self.editEnd, SIGNAL("textChanged(const QString &)"), self.updateSql)
 
         self.updateSql()
-
 
     def populateSchemas(self):
         self.cboSchema.clear()
@@ -97,7 +97,6 @@ class DlgVersioning(QDialog, Ui_DlgVersioning):
                 self.tables.append(table)
                 self.cboTable.addItem(table.name)
 
-
     def get_escaped_name(self, schema, table, suffix):
         name = self.db.connector.quoteId(u"%s%s" % (table, suffix))
         schema_name = self.db.connector.quoteId(schema) if schema else None
@@ -122,7 +121,7 @@ class DlgVersioning(QDialog, Ui_DlgVersioning):
         for constr in self.table.constraints():
             if constr.type == constr.TypePrimaryKey:
                 self.origPkeyName = self.db.connector.quoteId(constr.name)
-                self.colOrigPkey = map(lambda (x, y): self.db.connector.quoteId(y.name), constr.fields().iteritems())
+                self.colOrigPkey = map(lambda x_y: self.db.connector.quoteId(x_y[1].name), constr.fields().iteritems())
                 break
 
         if self.colOrigPkey is None:
@@ -173,7 +172,6 @@ class DlgVersioning(QDialog, Ui_DlgVersioning):
         helpText = u"""In this dialog you can set up versioning support for a table. The table will be modified so that all changes will be recorded: there will be a column with start time and end time. Every row will have its start time, end time is assigned when the feature gets deleted. When a row is modified, the original data is marked with end time and new row is created. With this system, it's possible to get back to state of the table any time in history. When selecting rows from the table, you will always have to specify at what time do you want the rows."""
         QMessageBox.information(self, "Help", helpText)
 
-
     def sql_alterTable(self):
         return u"ALTER TABLE %s ADD %s serial, ADD %s timestamp, ADD %s timestamp;" % (
             self.schematable, self.colPkey, self.colStart, self.colEnd)
@@ -187,7 +185,6 @@ class DlgVersioning(QDialog, Ui_DlgVersioning):
 
         return u"CREATE VIEW %(view)s AS SELECT %(cols)s FROM %(schematable)s WHERE %(end)s IS NULL;" % \
                {'view': self.view, 'cols': cols, 'schematable': self.schematable, 'end': self.colEnd}
-
 
     def sql_functions(self):
         cols = ",".join(self.columns)
@@ -265,7 +262,6 @@ CREATE OR REPLACE RULE "_UPDATE" AS ON UPDATE TO %(view)s DO INSTEAD
                                                                                      'assign': assign_cols,
                                                                                      'origpkey': self.colOrigPkey}
 
-
     def onOK(self):
         # execute and commit the code
         QApplication.setOverrideCursor(Qt.WaitCursor)
@@ -273,7 +269,7 @@ CREATE OR REPLACE RULE "_UPDATE" AS ON UPDATE TO %(view)s DO INSTEAD
             sql = u"\n".join(self.updateSql())
             self.db.connector._execute_and_commit(sql)
 
-        except BaseError, e:
+        except BaseError as e:
             DlgDbError.showError(e, self)
             return
 

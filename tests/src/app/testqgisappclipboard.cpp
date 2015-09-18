@@ -12,10 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <iostream>
-
 #include <QApplication>
-#include <QObject>
 #include <QObject>
 #include <QSplashScreen>
 #include <QString>
@@ -66,7 +63,7 @@ void TestQgisAppClipboard::initTestCase()
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
   QgsApplication::initQgis();
-  mTestDataDir = QString( TEST_DATA_DIR ) + QDir::separator(); //defined in CmakeLists.txt
+  mTestDataDir = QString( TEST_DATA_DIR ) + "/"; //defined in CmakeLists.txt
   mQgisApp = new QgisApp();
 }
 
@@ -85,7 +82,7 @@ void TestQgisAppClipboard::copyPaste()
   filesCounts.insert( "lines.shp", 6 );
   filesCounts.insert( "polys.shp", 10 );
 
-  foreach ( QString fileName, filesCounts.keys() )
+  Q_FOREACH ( const QString& fileName, filesCounts.keys() )
   {
     // add vector layer
     QString filePath = mTestDataDir + fileName;

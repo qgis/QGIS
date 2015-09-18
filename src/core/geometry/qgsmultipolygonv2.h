@@ -16,9 +16,15 @@ email                : marco.hugentobler at sourcepole dot com
 #ifndef QGSMULTIPOLYGONV2_H
 #define QGSMULTIPOLYGONV2_H
 
-#include "qgsgeometrycollectionv2.h"
+#include "qgsmultisurfacev2.h"
 
-class CORE_EXPORT QgsMultiPolygonV2: public QgsGeometryCollectionV2
+/** \ingroup core
+ * \class QgsMultiPolygonV2
+ * \brief Multi polygon geometry collection.
+ * \note added in QGIS 2.10
+ * \note this API is not considered stable and may change for 2.12
+ */
+class CORE_EXPORT QgsMultiPolygonV2: public QgsMultiSurfaceV2
 {
   public:
     virtual QString geometryType() const override { return "MultiPolygon"; }
@@ -34,7 +40,7 @@ class CORE_EXPORT QgsMultiPolygonV2: public QgsGeometryCollectionV2
     QString asJSON( int precision = 17 ) const override;
 
 
-    /**Adds a geometry and takes ownership. Returns true in case of success*/
+    /** Adds a geometry and takes ownership. Returns true in case of success*/
     virtual bool addGeometry( QgsAbstractGeometryV2* g ) override;
 };
 

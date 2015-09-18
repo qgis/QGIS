@@ -48,11 +48,11 @@ bool QgsAttributeTableFilterModel::lessThan( const QModelIndex &left, const QMod
 
     if ( leftSelected && !rightSelected )
     {
-      return true;
+      return sortOrder() == Qt::AscendingOrder;
     }
     else if ( rightSelected && !leftSelected )
     {
-      return false;
+      return sortOrder() == Qt::DescendingOrder;
     }
   }
 
@@ -230,6 +230,9 @@ void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
   bool filter = false;
   QgsRectangle rect = mCanvas->mapSettings().mapToLayerCoordinates( layer(), mCanvas->extent() );
   QgsRenderContext renderContext;
+  renderContext.expressionContext() << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::layerScope( layer() );
   QgsFeatureRendererV2* renderer = layer()->rendererV2();
 
   mFilteredFeatures.clear();
@@ -263,10 +266,10 @@ void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
     filter = renderer && renderer->capabilities() & QgsFeatureRendererV2::Filter;
   }
 
-  renderer->startRender( renderContext, layer()->pendingFields() );
+  renderer->startRender( renderContext, layer()->fields() );
 
   QgsFeatureRequest r( masterModel()->request() );
-  if ( r.filterType() == QgsFeatureRequest::FilterRect )
+  if ( !r.filterRect().isNull() )
   {
     r.setFilterRect( r.filterRect().intersect( &rect ) );
   }
@@ -280,7 +283,8 @@ void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
 
   while ( features.nextFeature( f ) )
   {
-    if ( !filter || renderer->willRenderFeature( f ) )
+    renderContext.expressionContext().setFeature( f );
+    if ( !filter || renderer->willRenderFeature( f, renderContext ) )
     {
       mFilteredFeatures << f.id();
     }
@@ -318,7 +322,7 @@ QModelIndex QgsAttributeTableFilterModel::fidToIndex( QgsFeatureId fid )
 QModelIndexList QgsAttributeTableFilterModel::fidToIndexList( QgsFeatureId fid )
 {
   QModelIndexList indexes;
-  foreach ( QModelIndex idx, masterModel()->idToIndexList( fid ) )
+  Q_FOREACH ( const QModelIndex& idx, masterModel()->idToIndexList( fid ) )
   {
     indexes.append( mapFromMaster( idx ) );
   }

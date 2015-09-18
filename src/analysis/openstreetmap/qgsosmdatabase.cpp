@@ -476,7 +476,7 @@ void QgsOSMDatabase::exportSpatiaLiteWays( bool closed, const QString& tableName
     {
       // make sure tags that indicate areas are taken into consideration when deciding on a closed way is or isn't an area
       // and allow for a closed way to be exported both as a polygon and a line in case both area and non-area tags are present
-      if ( ( t.value( "area" ) != "yes" && !t.contains( "amenity" ) && !t.contains( "landuse" ) && !t.contains( "building" ) && !t.contains( "natural" ) ) || !closed )
+      if (( t.value( "area" ) != "yes" && !t.contains( "amenity" ) && !t.contains( "landuse" ) && !t.contains( "building" ) && !t.contains( "natural" ) && !t.contains( "leisure" ) && !t.contains( "aeroway" ) ) || !closed )
         isArea = false;
     }
 

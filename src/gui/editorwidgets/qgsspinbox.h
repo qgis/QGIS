@@ -44,13 +44,13 @@ class GUI_EXPORT QgsSpinBox : public QSpinBox
     void setShowClearButton( const bool showClearButton );
     bool showClearButton() const {return mShowClearButton;}
 
-    /**Sets if the widget will allow entry of simple expressions, which are
+    /** Sets if the widget will allow entry of simple expressions, which are
      * evaluated and then discarded.
      * @param enabled set to true to allow expression entry
      * @note added in QGIS 2.7
      */
     void setExpressionsEnabled( const bool enabled );
-    /**Returns whether the widget will allow entry of simple expressions, which are
+    /** Returns whether the widget will allow entry of simple expressions, which are
      * evaluated and then discarded.
      * @returns true if spin box allows expression entry
      * @note added in QGIS 2.7

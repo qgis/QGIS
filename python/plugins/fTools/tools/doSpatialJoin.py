@@ -35,6 +35,7 @@ from qgis.core import QGis, QgsVectorFileWriter, QgsVectorLayer, QgsMapLayerRegi
 import ftools_utils
 from ui_frmSpatialJoin import Ui_Dialog
 
+
 def myself(L):
     #median computation
     nVal = len(L)
@@ -44,17 +45,19 @@ def myself(L):
     #test for list length
     medianVal = 0
     if nVal > 1:
-        if ( nVal % 2 ) == 0:
+        if (nVal % 2) == 0:
             #index begin at 0
             #remove 1 to index in standard median computation
-            medianVal = 0.5 * ( (L[ (nVal) / 2  - 1]) + (L[ (nVal) / 2 ] ))
+            medianVal = 0.5 * ((L[(nVal) / 2 - 1]) + (L[(nVal) / 2]))
         else:
-            medianVal = L[ (nVal + 1) / 2 - 1]
+            medianVal = L[(nVal + 1) / 2 - 1]
     return medianVal
+
 
 def filter_null(vals):
     """Takes an iterator of values and returns a new iterator returning the same values but skipping any NULL values"""
     return (v for v in vals if v is not None)
+
 
 class Dialog(QDialog, Ui_Dialog):
 
@@ -64,8 +67,8 @@ class Dialog(QDialog, Ui_Dialog):
         # Set up the user interface from Designer.
         self.setupUi(self)
         QObject.connect(self.toolOut, SIGNAL("clicked()"), self.outFile)
-        self.setWindowTitle( self.tr("Join attributes by location") )
-        self.buttonOk = self.buttonBox_2.button( QDialogButtonBox.Ok )
+        self.setWindowTitle(self.tr("Join attributes by location"))
+        self.buttonOk = self.buttonBox_2.button(QDialogButtonBox.Ok)
         # populate layer list
         self.progressBar.setValue(0)
         layers = ftools_utils.getLayerNames([QGis.Point, QGis.Line, QGis.Polygon])
@@ -73,15 +76,15 @@ class Dialog(QDialog, Ui_Dialog):
         self.joinShape.addItems(layers)
 
     def accept(self):
-        self.buttonOk.setEnabled( False )
+        self.buttonOk.setEnabled(False)
         if self.inShape.currentText() == "":
-            QMessageBox.information(self, self.tr("Spatial Join"), self.tr("Please specify target vector layer") )
+            QMessageBox.information(self, self.tr("Spatial Join"), self.tr("Please specify target vector layer"))
         elif self.outShape.text() == "":
-            QMessageBox.information(self, self.tr("Spatial Join"), self.tr("Please specify output shapefile") )
+            QMessageBox.information(self, self.tr("Spatial Join"), self.tr("Please specify output shapefile"))
         elif self.joinShape.currentText() == "":
-            QMessageBox.information(self, self.tr("Spatial Join"), self.tr("Please specify join vector layer") )
+            QMessageBox.information(self, self.tr("Spatial Join"), self.tr("Please specify join vector layer"))
         elif self.rdoSummary.isChecked() and not (self.chkMean.isChecked() or self.chkSum.isChecked() or self.chkMin.isChecked() or self.chkMax.isChecked() or self.chkMean.isChecked() or self.chkMedian.isChecked()):
-            QMessageBox.information(self, self.tr("Spatial Join"), self.tr("Please specify at least one summary statistic") )
+            QMessageBox.information(self, self.tr("Spatial Join"), self.tr("Please specify at least one summary statistic"))
         else:
             inName = self.inShape.currentText()
             joinName = self.joinShape.currentText()
@@ -89,36 +92,43 @@ class Dialog(QDialog, Ui_Dialog):
             if self.rdoSummary.isChecked():
                 summary = True
                 sumList = []
-                if self.chkSum.isChecked(): sumList.append("SUM")
-                if self.chkMean.isChecked(): sumList.append("MEAN")
-                if self.chkMin.isChecked(): sumList.append("MIN")
-                if self.chkMax.isChecked(): sumList.append("MAX")
-                if self.chkMedian.isChecked(): sumList.append("MED")
+                if self.chkSum.isChecked():
+                    sumList.append("SUM")
+                if self.chkMean.isChecked():
+                    sumList.append("MEAN")
+                if self.chkMin.isChecked():
+                    sumList.append("MIN")
+                if self.chkMax.isChecked():
+                    sumList.append("MAX")
+                if self.chkMedian.isChecked():
+                    sumList.append("MED")
             else:
                 summary = False
                 sumList = ["all"]
-            if self.rdoKeep.isChecked(): keep = True
-            else: keep = False
-            outName = ftools_utils.getShapefileName( outPath )
+            if self.rdoKeep.isChecked():
+                keep = True
+            else:
+                keep = False
+            outName = ftools_utils.getShapefileName(outPath)
             res = self.compute(inName, joinName, outPath, summary, sumList, keep, self.progressBar)
             self.outShape.clear()
             if res:
-              addToTOC = QMessageBox.question(
-                  self, self.tr("Spatial Join"),
-                  self.tr("Created output shapefile:\n%s\n\nWould you like to add the new layer to the TOC?") % (unicode(outPath)),
-                  QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
-              if addToTOC == QMessageBox.Yes:
-                self.vlayer = QgsVectorLayer(outPath, unicode(outName), "ogr")
-                QgsMapLayerRegistry.instance().addMapLayers([self.vlayer])
+                addToTOC = QMessageBox.question(
+                    self, self.tr("Spatial Join"),
+                    self.tr("Created output shapefile:\n%s\n\nWould you like to add the new layer to the TOC?") % (unicode(outPath)),
+                    QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
+                if addToTOC == QMessageBox.Yes:
+                    self.vlayer = QgsVectorLayer(outPath, unicode(outName), "ogr")
+                    QgsMapLayerRegistry.instance().addMapLayers([self.vlayer])
         self.progressBar.setValue(0)
-        self.buttonOk.setEnabled( True )
+        self.buttonOk.setEnabled(True)
 
     def outFile(self):
         self.outShape.clear()
-        ( self.shapefileName, self.encoding ) = ftools_utils.saveDialog( self )
+        (self.shapefileName, self.encoding) = ftools_utils.saveDialog(self)
         if self.shapefileName is None or self.encoding is None:
             return
-        self.outShape.setText( self.shapefileName )
+        self.outShape.setText(self.shapefileName)
 
     def compute(self, inName, joinName, outName, summary, sumList, keep, progressBar):
         layer1 = ftools_utils.getVectorLayerByName(inName)
@@ -143,9 +153,9 @@ class Dialog(QDialog, Ui_Dialog):
                 if fieldList2[j].type() == QVariant.Int or fieldList2[j].type() == QVariant.Double:
                     numFields[j] = []
                     for i in sumList:
-                        field = QgsField(i + unicode(fieldList2[j].name()), QVariant.Double, "real", 24, 16, self.tr("Summary field") )
+                        field = QgsField(i + unicode(fieldList2[j].name()), QVariant.Double, "real", 24, 16, self.tr("Summary field"))
                         fieldList.append(field)
-            field = QgsField("COUNT", QVariant.Double, "real", 24, 16, self.tr("Summary field") )
+            field = QgsField("COUNT", QVariant.Double, "real", 24, 16, self.tr("Summary field"))
             fieldList.append(field)
             fieldList2 = ftools_utils.testForUniqueness(fieldList1, fieldList)
             fieldList1.extend(fieldList)
@@ -158,12 +168,12 @@ class Dialog(QDialog, Ui_Dialog):
         if check.exists():
             if not QgsVectorFileWriter.deleteShapeFile(self.shapefileName):
                 QMessageBox.warning(
-                    self, self.tr( 'Error deleting shapefile' ),
-                    self.tr( "Can't delete existing shapefile\n%s" ) % ( self.shapefileName ) )
+                    self, self.tr('Error deleting shapefile'),
+                    self.tr("Can't delete existing shapefile\n%s") % (self.shapefileName))
                 return False
         fields = QgsFields()
         for f in fieldList1.values():
-          fields.append(f)
+            fields.append(f)
         writer = QgsVectorFileWriter(self.shapefileName, self.encoding, fields, provider1.geometryType(), sRs)
         #writer = QgsVectorFileWriter(outName, "UTF-8", fieldList1, provider1.geometryType(), sRs)
         inFeat = QgsFeature()
@@ -192,16 +202,20 @@ class Dialog(QDialog, Ui_Dialog):
                 #(check, joinList) = layer2.featuresInRectangle(inGeom.buffer(10,2).boundingBox(), True, True)
                 #layer2.select(inGeom.buffer(10,2).boundingBox(), False)
                 #joinList = layer2.selectedFeatures()
-                joinList = index.intersects( inGeom.buffer(10,2).boundingBox() )
-                if len(joinList) > 0: check = 0
-                else: check = 1
+                joinList = index.intersects(inGeom.buffer(10, 2).boundingBox())
+                if len(joinList) > 0:
+                    check = 0
+                else:
+                    check = 1
             else:
                 #(check, joinList) = layer2.featuresInRectangle(inGeom.boundingBox(), True, True)
                 #layer2.select(inGeom.boundingBox(), False)
                 #joinList = layer2.selectedFeatures()
-                joinList = index.intersects( inGeom.boundingBox() )
-                if len(joinList) > 0: check = 0
-                else: check = 1
+                joinList = index.intersects(inGeom.boundingBox())
+                if len(joinList) > 0:
+                    check = 0
+                else:
+                    check = 1
             if check == 0:
                 count = 0
                 for i in joinList:
@@ -227,7 +241,7 @@ class Dialog(QDialog, Ui_Dialog):
                                 atMap.append(sum(filter_null(numFields[j])))
                             elif k == "MEAN":
                                 try:
-                                    nn_count = sum( 1 for _ in filter_null(numFields[j]) )
+                                    nn_count = sum(1 for _ in filter_null(numFields[j]))
                                     atMap.append(sum(filter_null(numFields[j])) / nn_count)
                                 except ZeroDivisionError:
                                     atMap.append(NULL)

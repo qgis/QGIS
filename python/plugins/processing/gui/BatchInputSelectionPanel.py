@@ -53,6 +53,7 @@ class BatchInputSelectionPanel(QWidget):
         self.horizontalLayout.setSpacing(0)
         self.horizontalLayout.setMargin(0)
         self.text = QLineEdit()
+        self.text.setMinimumWidth(300)
         self.text.setText('')
         self.text.setSizePolicy(QSizePolicy.Expanding,
                                 QSizePolicy.Expanding)
@@ -109,7 +110,7 @@ class BatchInputSelectionPanel(QWidget):
                         self.panel.addRow()
                     for i, layeridx in enumerate(selected):
                         self.table.cellWidget(i + self.row,
-                                self.col).setText(layers[layeridx].name())
+                                              self.col).setText(layers[layeridx].name())
 
     def showFileSelectionDialog(self):
         settings = QSettings()
@@ -124,7 +125,7 @@ class BatchInputSelectionPanel(QWidget):
             path = ''
 
         ret = QFileDialog.getOpenFileNames(self, self.tr('Open file'), path,
-                self.tr('All files(*.*);;') + self.param.getFileFilter())
+                                           self.tr('All files(*.*);;') + self.param.getFileFilter())
         if ret:
             files = list(ret)
             settings.setValue('/Processing/LastInputPath',
@@ -142,7 +143,7 @@ class BatchInputSelectionPanel(QWidget):
                         self.panel.addRow()
                     for i, f in enumerate(files):
                         self.table.cellWidget(i + self.row,
-                                self.col).setText(f)
+                                              self.col).setText(f)
 
     def setText(self, text):
         return self.text.setText(text)

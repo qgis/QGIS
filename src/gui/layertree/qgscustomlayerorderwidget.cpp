@@ -105,7 +105,7 @@ class CustomLayerOrderModel : public QAbstractListModel
     QMimeData* mimeData( const QModelIndexList& indexes ) const override
     {
       QStringList lst;
-      foreach ( QModelIndex index, indexes )
+      Q_FOREACH ( const QModelIndex& index, indexes )
         lst << data( index, Qt::UserRole + 1 ).toString();
 
       QMimeData* mimeData = new QMimeData();

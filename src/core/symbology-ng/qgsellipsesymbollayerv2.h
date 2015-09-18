@@ -20,7 +20,7 @@
 
 class QgsExpression;
 
-/**A symbol layer for rendering objects with major and minor axis (e.g. ellipse, rectangle )*/
+/** A symbol layer for rendering objects with major and minor axis (e.g. ellipse, rectangle )*/
 class CORE_EXPORT QgsEllipseSymbolLayerV2: public QgsMarkerSymbolLayerV2
 {
   public:
@@ -107,7 +107,7 @@ class CORE_EXPORT QgsEllipseSymbolLayerV2: public QgsMarkerSymbolLayerV2
     QPen mPen;
     QBrush mBrush;
 
-    /**Setup mPainterPath
+    /** Setup mPainterPath
       @param symbolName name of symbol
       @param context render context
       @param scaledWidth optional width

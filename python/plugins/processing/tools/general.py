@@ -50,7 +50,7 @@ def algoptions(name):
                 s += param.name + '(' + param.description + ')\n'
                 i = 0
                 for option in param.options:
-                    s += '\t' + str(i) + ' - ' + str(option) + '\n'
+                    s += '\t' + unicode(i) + ' - ' + unicode(option) + '\n'
                     i += 1
         print s
     else:
@@ -61,7 +61,7 @@ def alghelp(name):
     alg = Processing.getAlgorithm(name)
     if alg is not None:
         alg = alg.getCopy()
-        print str(alg)
+        print unicode(alg)
         algoptions(name)
     else:
         print 'Algorithm not found'

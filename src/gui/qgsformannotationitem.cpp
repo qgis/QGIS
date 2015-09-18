@@ -93,7 +93,7 @@ QWidget* QgsFormAnnotationItem::createDesignerWidget( const QString& filePath )
     QgsFeature f;
     if ( mVectorLayer->getFeatures( QgsFeatureRequest().setFilterFid( mFeature ).setFlags( QgsFeatureRequest::NoGeometry ) ).nextFeature( f ) )
     {
-      const QgsFields& fields = mVectorLayer->pendingFields();
+      const QgsFields& fields = mVectorLayer->fields();
       QgsAttributes attrs = f.attributes();
       for ( int i = 0; i < attrs.count(); ++i )
       {

@@ -2,10 +2,12 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
 <qgisgrassmodule label="Calculate optimal index factor table for LANDSAT-TM raster" module="i.oif">
-	<option key="image1" />
-	<option key="image2" />
-	<option key="image3" />
-	<option key="image4" />
-	<option key="image5" />
-	<option key="image7" />
+	<option key="image1" version_max="6"/>
+	<option key="image2" version_max="6"/>
+	<option key="image3" version_max="6"/>
+	<option key="image4" version_max="6"/>
+	<option key="image5" version_max="6"/>
+	<option key="image7" version_max="6"/>
+	<option key="input" version_min="7"/>
+	<option key="output" version_min="7"/>
 </qgisgrassmodule>

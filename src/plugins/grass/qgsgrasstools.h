@@ -20,22 +20,22 @@
 
 #include "ui_qgsgrasstoolsbase.h"
 
+class QDomElement;
+class QSortFilterProxyModel;
+class QStandardItem;
+class QStandardItemModel;
+
 class QgisInterface;
 class QgsMapCanvas;
 
-class QDomElement;
+class QgsGrassRegion;
+class QgsGrassToolsTreeFilterProxyModel;
 
-//
-// For experimental filterable list model by Tim
-//
-class QSortFilterProxyModel;
-class QStandardItemModel;
-
-/*! \class QgsGrassTools
+/** \class QgsGrassTools
  *  \brief Interface to GRASS modules.
  *
  */
-class QgsGrassTools: public QDockWidget, private Ui::QgsGrassToolsBase
+class QgsGrassTools: public QDockWidget, public Ui::QgsGrassToolsBase
 {
     Q_OBJECT
 
@@ -47,16 +47,23 @@ class QgsGrassTools: public QDockWidget, private Ui::QgsGrassToolsBase
     //! Destructor
     ~QgsGrassTools();
 
+    //! Append item to model or parent
+    void appendItem( QStandardItemModel *treeModel, QStandardItem *parent, QStandardItem *item );
+
     //! Recursively add sections and modules to the list view
     //  If parent is 0, the modules are added to mModulesListView root
-    void addModules( QTreeWidgetItem *parent, QDomElement &element, QTreeWidget *modulesTreeWidget, QStandardItemModel * modulesListModel, bool direct );
+    void addModules( QStandardItem *parent, QDomElement &element, QStandardItemModel *treeModel, QStandardItemModel * modulesListModel, bool direct );
 
     //! Returns application directory
     QString appDir();
 
   public slots:
+    bool loadConfig();
+
     //! Load configuration from file
-    bool loadConfig( QString filePath, QTreeWidget *modulesTreeWidget, QStandardItemModel * modulesListModel, bool direct );
+    bool loadConfig( QString filePath, QStandardItemModel *treeModel, QStandardItemModel * modulesListModel, bool direct );
+
+    void debugChanged();
 
     //! Close
     void close( void );
@@ -70,9 +77,8 @@ class QgsGrassTools: public QDockWidget, private Ui::QgsGrassToolsBase
     //! Save window position
     void saveWindowLocation();
 
-    //! Module in list clicked
-    void moduleClicked( QTreeWidgetItem * item, int column );
-    void directModuleClicked( QTreeWidgetItem * item, int column );
+    //! Close mapset and save it to project
+    void closeMapset();
 
     //! Current mapset changed
     void mapsetChanged();
@@ -85,32 +91,48 @@ class QgsGrassTools: public QDockWidget, private Ui::QgsGrassToolsBase
 
     //! Update the regex used to filter the modules list (autoconnect to ui)
     void on_mFilterInput_textChanged( QString theText );
-    void on_mDirectFilterInput_textChanged( QString theText );
     //! Run a module when its entry is clicked in the list view
-    void listItemClicked( const QModelIndex &theIndex );
-    void directListItemClicked( const QModelIndex &theIndex );
+    void itemClicked( const QModelIndex &theIndex );
     //! Run a module given its module name e.g. r.in.gdal
     void runModule( QString name, bool direct );
+    void on_mDebugButton_clicked();
+    void on_mCloseDebugButton_clicked();
+    void on_mViewModeButton_clicked();
+
   signals:
     void regionChanged();
 
   private:
+    // data offset to Qt::UserRole for items data
+    enum DataOffset
+    {
+      Label, // original label
+      Name, // module name
+      Search // search text
+    };
+
+    // debug item recursively, return number of errors
+    int debug( QStandardItem *item );
+
     //! Pointer to the QGIS interface object
     QgisInterface *mIface;
 
     //! Pointer to canvas
     QgsMapCanvas *mCanvas;
 
+    QStandardItemModel * mTreeModel;
+    QgsGrassToolsTreeFilterProxyModel * mTreeModelProxy;
+
     // For model & filtered model by Tim
     QStandardItemModel * mModulesListModel;
     QSortFilterProxyModel * mModelProxy;
 
-    // Direct modules model list
-    QStandardItemModel * mDirectModulesListModel;
-    QSortFilterProxyModel * mDirectModelProxy;
+    // Region widget
+    QgsGrassRegion *mRegion;
 
-    void removeEmptyItems( QTreeWidget *tree );
-    void removeEmptyItems( QTreeWidgetItem *item );
+    // this was used for direct
+    void removeEmptyItems( QStandardItemModel *treeModel );
+    void removeEmptyItems( QStandardItem *item );
 
     // Show (fill) / hide tabs according to direct/indirect mode
     void showTabs();

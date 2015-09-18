@@ -112,6 +112,7 @@ void QgsScaleComboBox::showPopup()
   blockSignals( true );
   view()->setCurrentIndex( model()->index( idx, 0 ) );
   blockSignals( false );
+  view()->setMinimumWidth( view()->sizeHintForColumn( 0 ) );
 }
 
 //! Function to read the selected scale as text

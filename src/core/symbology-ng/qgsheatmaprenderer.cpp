@@ -76,10 +76,11 @@ void QgsHeatmapRenderer::startRender( QgsRenderContext& context, const QgsFields
   if ( mWeightAttrNum == -1 )
   {
     mWeightExpression.reset( new QgsExpression( mWeightExpressionString ) );
-    mWeightExpression->prepare( fields );
+    mWeightExpression->prepare( &context.expressionContext() );
   }
 
   initializeValues( context );
+  return;
 }
 
 QgsMultiPoint QgsHeatmapRenderer::convertToMultipoint( const QgsGeometry* geom )
@@ -121,7 +122,7 @@ bool QgsHeatmapRenderer::renderFeature( QgsFeature& feature, QgsRenderContext& c
     if ( mWeightAttrNum == -1 )
     {
       Q_ASSERT( mWeightExpression.data() );
-      value = mWeightExpression->evaluate( &feature );
+      value = mWeightExpression->evaluate( &context.expressionContext() );
     }
     else
     {
@@ -366,13 +367,13 @@ QDomElement QgsHeatmapRenderer::save( QDomDocument& doc )
   return rendererElem;
 }
 
-QgsSymbolV2* QgsHeatmapRenderer::symbolForFeature( QgsFeature& feature )
+QgsSymbolV2* QgsHeatmapRenderer::symbolForFeature( QgsFeature& feature, QgsRenderContext& )
 {
   Q_UNUSED( feature );
   return 0;
 }
 
-QgsSymbolV2List QgsHeatmapRenderer::symbols()
+QgsSymbolV2List QgsHeatmapRenderer::symbols( QgsRenderContext& )
 {
   return QgsSymbolV2List();
 }

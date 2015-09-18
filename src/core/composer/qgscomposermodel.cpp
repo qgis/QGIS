@@ -300,7 +300,7 @@ QMimeData* QgsComposerModel::mimeData( const QModelIndexList &indexes ) const
 
   QDataStream stream( &encodedData, QIODevice::WriteOnly );
 
-  foreach ( const QModelIndex &index, indexes )
+  Q_FOREACH ( const QModelIndex &index, indexes )
   {
     if ( index.isValid() && index.column() == ItemId )
     {
@@ -915,7 +915,7 @@ Qt::ItemFlags QgsComposerModel::flags( const QModelIndex & index ) const
 
   if ( ! index.isValid() )
   {
-    return flags | Qt::ItemIsDropEnabled;;
+    return flags | Qt::ItemIsDropEnabled;
   }
 
   switch ( index.column() )

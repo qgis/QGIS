@@ -21,7 +21,7 @@ email                : brush.tyler@gmail.com
 """
 
 from PyQt4.QtCore import Qt, QObject, SIGNAL, qDebug, QByteArray, QMimeData, QDataStream, QIODevice, QFileInfo, \
-    QAbstractItemModel, QModelIndex
+    QAbstractItemModel, QModelIndex, QSettings
 from PyQt4.QtGui import QApplication, QIcon, QMessageBox
 
 from .db_plugins import supportedDbTypes, createDbPlugin
@@ -37,6 +37,7 @@ except ImportError:
 
 
 class TreeItem(QObject):
+
     def __init__(self, data, parent=None):
         QObject.__init__(self, parent)
         self.populated = False
@@ -102,6 +103,7 @@ class TreeItem(QObject):
 
 
 class PluginItem(TreeItem):
+
     def __init__(self, dbplugin, parent=None):
         TreeItem.__init__(self, dbplugin, parent)
 
@@ -116,7 +118,6 @@ class PluginItem(TreeItem):
         self.populated = True
         return True
 
-
     def data(self, column):
         if column == 0:
             return self.getItemData().typeNameString()
@@ -130,8 +131,11 @@ class PluginItem(TreeItem):
 
 
 class ConnectionItem(TreeItem):
+
     def __init__(self, connection, parent=None):
         TreeItem.__init__(self, connection, parent)
+        self.connect(connection, SIGNAL("changed"), self.itemChanged)
+        self.connect(connection, SIGNAL("deleted"), self.itemRemoved)
 
         # load (shared) icon with first instance of table item
         if not hasattr(ConnectionItem, 'connectedIcon'):
@@ -154,7 +158,7 @@ class ConnectionItem(TreeItem):
                 if not connection.connect():
                     return False
 
-            except BaseError, e:
+            except BaseError as e:
                 DlgDbError.showError(e, None)
                 return False
 
@@ -182,6 +186,7 @@ class ConnectionItem(TreeItem):
 
 
 class SchemaItem(TreeItem):
+
     def __init__(self, schema, parent):
         TreeItem.__init__(self, schema, parent)
         self.connect(schema, SIGNAL("changed"), self.itemChanged)
@@ -211,6 +216,7 @@ class SchemaItem(TreeItem):
 
 
 class TableItem(TreeItem):
+
     def __init__(self, table, parent):
         TreeItem.__init__(self, table, parent)
         self.connect(table, SIGNAL("changed"), self.itemChanged)
@@ -260,7 +266,7 @@ class TableItem(TreeItem):
             pathList.extend(self.parent().path())
 
         if self.getItemData().type == Table.VectorType:
-            pathList.append("%s::%s" % ( self.data(0), self.getItemData().geomColumn ))
+            pathList.append("%s::%s" % (self.data(0), self.getItemData().geomColumn))
         else:
             pathList.append(self.data(0))
 
@@ -268,6 +274,7 @@ class TableItem(TreeItem):
 
 
 class DBModel(QAbstractItemModel):
+
     def __init__(self, parent=None):
         QAbstractItemModel.__init__(self, parent)
         self.treeView = parent
@@ -277,11 +284,13 @@ class DBModel(QAbstractItemModel):
         if self.isImportVectorAvail:
             self.connect(self, SIGNAL("importVector"), self.importVector)
 
+        self.hasSpatialiteSupport = "spatialite" in supportedDbTypes()
+
         self.rootItem = TreeItem(None, None)
         for dbtype in supportedDbTypes():
             dbpluginclass = createDbPlugin(dbtype)
-            PluginItem(dbpluginclass, self.rootItem)
-
+            item = PluginItem(dbpluginclass, self.rootItem)
+            self.connect(item, SIGNAL("itemChanged"), self.refreshItem)
 
     def refreshItem(self, item):
         if isinstance(item, TreeItem):
@@ -333,7 +342,6 @@ class DBModel(QAbstractItemModel):
             return None
         return index.internalPointer().path()
 
-
     def columnCount(self, parent):
         return 1
 
@@ -343,7 +351,8 @@ class DBModel(QAbstractItemModel):
 
         if role == Qt.DecorationRole and index.column() == 0:
             icon = index.internalPointer().icon()
-            if icon: return icon
+            if icon:
+                return icon
 
         if role != Qt.DisplayRole and role != Qt.EditRole:
             return None
@@ -359,18 +368,24 @@ class DBModel(QAbstractItemModel):
 
         if index.column() == 0:
             item = index.internalPointer()
+
             if isinstance(item, SchemaItem) or isinstance(item, TableItem):
                 flags |= Qt.ItemIsEditable
 
             if isinstance(item, TableItem):
                 flags |= Qt.ItemIsDragEnabled
 
-            if self.isImportVectorAvail:  # allow to import a vector layer
+            # vectors/tables can be dropped on connected databases to be imported
+            if self.isImportVectorAvail:
                 if isinstance(item, ConnectionItem) and item.populated:
                     flags |= Qt.ItemIsDropEnabled
 
-                if isinstance(item, SchemaItem) or isinstance(item, TableItem):
+                if isinstance(item, (SchemaItem, TableItem)):
                     flags |= Qt.ItemIsDropEnabled
+
+            # SL/Geopackage db files can be dropped everywhere in the tree
+            if self.hasSpatialiteSupport:
+                flags |= Qt.ItemIsDropEnabled
 
         return flags
 
@@ -401,7 +416,6 @@ class DBModel(QAbstractItemModel):
 
         return self.createIndex(parentItem.row(), 0, parentItem)
 
-
     def rowCount(self, parent):
         parentItem = parent.internalPointer() if parent.isValid() else self.rootItem
         if not parentItem.populated:
@@ -411,7 +425,6 @@ class DBModel(QAbstractItemModel):
     def hasChildren(self, parent):
         parentItem = parent.internalPointer() if parent.isValid() else self.rootItem
         return parentItem.childCount() > 0 or not parentItem.populated
-
 
     def setData(self, index, value, role):
         if role != Qt.EditRole or index.column() != 0:
@@ -431,7 +444,7 @@ class DBModel(QAbstractItemModel):
             try:
                 obj.rename(new_value)
                 self._onDataChanged(index)
-            except BaseError, e:
+            except BaseError as e:
                 DlgDbError.showError(e, self.treeView)
                 return False
             finally:
@@ -464,7 +477,7 @@ class DBModel(QAbstractItemModel):
                 else:
                     self.emit(SIGNAL("notPopulated"), index)
 
-        except BaseError, e:
+        except BaseError as e:
             item.populated = False
             return
 
@@ -472,9 +485,9 @@ class DBModel(QAbstractItemModel):
             QApplication.restoreOverrideCursor()
 
     def _onDataChanged(self, indexFrom, indexTo=None):
-        if indexTo is None: indexTo = indexFrom
+        if indexTo is None:
+            indexTo = indexFrom
         self.emit(SIGNAL('dataChanged(const QModelIndex &, const QModelIndex &)'), indexFrom, indexTo)
-
 
     QGIS_URI_MIME = "application/x-vnd.qgis.qgis.uri"
 
@@ -498,13 +511,14 @@ class DBModel(QAbstractItemModel):
         mimeData.setData(self.QGIS_URI_MIME, encodedData)
         return mimeData
 
-
     def dropMimeData(self, data, action, row, column, parent):
         if action == Qt.IgnoreAction:
             return True
 
-        if not self.isImportVectorAvail:
-            return False
+        # vectors/tables to be imported must be dropped on connected db, schema or table
+        canImportLayer = self.isImportVectorAvail and parent.isValid() and \
+            (isinstance(parent.internalPointer(), (SchemaItem, TableItem)) or
+             (isinstance(parent.internalPointer(), ConnectionItem) and parent.internalPointer().populated))
 
         added = 0
 
@@ -514,25 +528,43 @@ class DBModel(QAbstractItemModel):
                 if filename == "":
                     continue
 
-                if qgis.core.QgsRasterLayer.isValidRasterFileName(filename):
-                    layerType = 'raster'
-                    providerKey = 'gdal'
-                else:
-                    layerType = 'vector'
-                    providerKey = 'ogr'
+                if self.hasSpatialiteSupport:
+                    from .db_plugins.spatialite.connector import SpatiaLiteDBConnector
 
-                layerName = QFileInfo(filename).completeBaseName()
+                    if SpatiaLiteDBConnector.isValidDatabase(filename):
+                        # retrieve the SL plugin tree item using its path
+                        index = self._rPath2Index(["spatialite"])
+                        if not index.isValid():
+                            continue
+                        item = index.internalPointer()
 
-                if self.importLayer(layerType, providerKey, layerName, filename, parent):
-                    added += 1
+                        conn_name = QFileInfo(filename).fileName()
+                        uri = qgis.core.QgsDataSourceURI()
+                        uri.setDatabase(filename)
+                        item.getItemData().addConnection(conn_name, uri)
+                        item.emit(SIGNAL('itemChanged'), item)
+                        added += 1
+                        continue
+
+                if canImportLayer:
+                    if qgis.core.QgsRasterLayer.isValidRasterFileName(filename):
+                        layerType = 'raster'
+                        providerKey = 'gdal'
+                    else:
+                        layerType = 'vector'
+                        providerKey = 'ogr'
+
+                    layerName = QFileInfo(filename).completeBaseName()
+                    if self.importLayer(layerType, providerKey, layerName, filename, parent):
+                        added += 1
 
         if data.hasFormat(self.QGIS_URI_MIME):
             for uri in qgis.core.QgsMimeDataUtils.decodeUriList(data):
-                if self.importLayer(uri.layerType, uri.providerKey, uri.name, uri.uri, parent):
-                    added += 1
+                if canImportLayer:
+                    if self.importLayer(uri.layerType, uri.providerKey, uri.name, uri.uri, parent):
+                        added += 1
 
         return added > 0
-
 
     def importLayer(self, layerType, providerKey, layerName, uriString, parent):
         if not self.isImportVectorAvail:

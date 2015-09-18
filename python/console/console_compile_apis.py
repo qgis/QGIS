@@ -27,12 +27,14 @@ from PyQt4.QtCore import QCoreApplication
 
 from ui_console_compile_apis import Ui_APIsDialogPythonConsole
 
+
 class PrepareAPIDialog(QDialog):
+
     def __init__(self, api_lexer, api_files, pap_file, parent=None):
         QDialog.__init__(self, parent)
         self.ui = Ui_APIsDialogPythonConsole()
         self.ui.setupUi(self)
-        self.setWindowTitle(QCoreApplication.translate("PythonConsole","Compile APIs"))
+        self.setWindowTitle(QCoreApplication.translate("PythonConsole", "Compile APIs"))
         self.ui.plainTextEdit.setVisible(False)
         self.ui.textEdit_Qsci.setVisible(False)
         self.adjustSize()
@@ -57,21 +59,21 @@ class PrepareAPIDialog(QDialog):
         self._clearLexer()
         if os.path.exists(self._pap_file):
             os.remove(self._pap_file)
-        self.ui.label.setText(QCoreApplication.translate("PythonConsole","Saving prepared file..."))
+        self.ui.label.setText(QCoreApplication.translate("PythonConsole", "Saving prepared file..."))
         prepd = self._api.savePrepared(unicode(self._pap_file))
         rslt = self.trUtf8("Error")
         if prepd:
-            rslt = QCoreApplication.translate("PythonConsole","Saved")
+            rslt = QCoreApplication.translate("PythonConsole", "Saved")
         self.ui.label.setText(u'{0} {1}'.format(self.ui.label.text(), rslt))
         self._api = None
         self.ui.progressBar.setVisible(False)
         self.ui.buttonBox.button(QDialogButtonBox.Cancel).setText(
-            QCoreApplication.translate("PythonConsole","Done"))
+            QCoreApplication.translate("PythonConsole", "Done"))
         self.adjustSize()
 
     def prepareAPI(self):
         # self.ui.textEdit_Qsci.setLexer(0)
-        exec u'self.qlexer = {0}(self.ui.textEdit_Qsci)'.format(self._api_lexer)
+        exec(u'self.qlexer = {0}(self.ui.textEdit_Qsci)'.format(self._api_lexer))
         # self.ui.textEdit_Qsci.setLexer(self.qlexer)
         self._api = QsciAPIs(self.qlexer)
         self._api.apiPreparationFinished.connect(self._preparationFinished)
@@ -79,10 +81,10 @@ class PrepareAPIDialog(QDialog):
             self._api.load(unicode(api_file))
         try:
             self._api.prepare()
-        except Exception, err:
+        except Exception as err:
             self._api = None
             self._clearLexer()
-            self.ui.label.setText(QCoreApplication.translate("PythonConsole","Error preparing file..."))
+            self.ui.label.setText(QCoreApplication.translate("PythonConsole", "Error preparing file..."))
             self.ui.progressBar.setVisible(False)
             self.ui.plainTextEdit.setVisible(True)
             self.ui.plainTextEdit.insertPlainText(err)

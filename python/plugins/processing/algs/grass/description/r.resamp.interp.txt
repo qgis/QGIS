@@ -1,5 +1,5 @@
 r.resamp.interp
-r.resamp.interp - Resamples a raster map layer to a finer grid using interpolation.
+Resamples a raster map layer to a finer grid using interpolation.
 Raster (r.*)
 ParameterRaster|input|Input raster layer|False
 ParameterSelection|method|Interpolation method|nearest;bilinear;bicubic

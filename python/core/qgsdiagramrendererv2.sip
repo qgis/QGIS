@@ -118,13 +118,13 @@ class QgsDiagramInterpolationSettings
     QSizeF upperSize;
     double lowerValue;
     double upperValue;
-    /**Index of the classification attribute*/
+    /** Index of the classification attribute*/
     int classificationAttribute;
     QString classificationAttributeExpression;
     bool classificationAttributeIsExpression;
 };
 
-/**Returns diagram settings for a feature*/
+/** Returns diagram settings for a feature*/
 class QgsDiagramRendererV2
 {
 %TypeHeaderCode
@@ -139,12 +139,12 @@ class QgsDiagramRendererV2
      * @note added in 2.4 */
     virtual QgsDiagramRendererV2* clone() const = 0;
 
-    /**Returns size of the diagram for a feature in map units. Returns an invalid QSizeF in case of error*/
+    /** Returns size of the diagram for a feature in map units. Returns an invalid QSizeF in case of error*/
     virtual QSizeF sizeMapUnits( const QgsFeature& feature, const QgsRenderContext& c );
 
     virtual QString rendererName() const = 0;
 
-    /**Returns attribute indices needed for diagram rendering*/
+    /** Returns attribute indices needed for diagram rendering*/
     virtual QList<QString> diagramAttributes() const = 0;
 
     void renderDiagram( const QgsFeature& feature, QgsRenderContext& c, const QPointF& pos );
@@ -152,7 +152,7 @@ class QgsDiagramRendererV2
     void setDiagram( QgsDiagram* d /Transfer/ );
     QgsDiagram* diagram() const;
 
-    /**Returns list with all diagram settings in the renderer*/
+    /** Returns list with all diagram settings in the renderer*/
     virtual QList<QgsDiagramSettings> diagramSettings() const = 0;
 
     virtual void readXML( const QDomElement& elem, const QgsVectorLayer* layer ) = 0;
@@ -166,20 +166,20 @@ class QgsDiagramRendererV2
 
   protected:
 
-    /**Returns diagram settings for a feature (or false if the diagram for the feature is not to be rendered). Used internally within renderDiagram()
+    /** Returns diagram settings for a feature (or false if the diagram for the feature is not to be rendered). Used internally within renderDiagram()
      * @param feature the feature
      * @param c render context
      * @param s out: diagram settings for the feature
      */
     virtual bool diagramSettings( const QgsFeature &feature, const QgsRenderContext& c, QgsDiagramSettings& s ) = 0;
 
-    /**Returns size of the diagram (in painter units) or an invalid size in case of error*/
+    /** Returns size of the diagram (in painter units) or an invalid size in case of error*/
     virtual QSizeF diagramSize( const QgsFeature& features, const QgsRenderContext& c ) = 0;
 
-    /**Converts size from mm to map units*/
+    /** Converts size from mm to map units*/
     void convertSizeToMapUnits( QSizeF& size, const QgsRenderContext& context ) const;
 
-    /**Returns the paint device dpi (or -1 in case of error*/
+    /** Returns the paint device dpi (or -1 in case of error*/
     static int dpiPaintDevice( const QPainter* );
 
     //read / write diagram
@@ -187,7 +187,7 @@ class QgsDiagramRendererV2
     void _writeXML( QDomElement& rendererElem, QDomDocument& doc, const QgsVectorLayer* layer ) const;
 };
 
-/**Renders the diagrams for all features with the same settings*/
+/** Renders the diagrams for all features with the same settings*/
 class QgsSingleCategoryDiagramRenderer : QgsDiagramRendererV2
 {
 %TypeHeaderCode
@@ -231,7 +231,7 @@ class QgsLinearlyInterpolatedDiagramRenderer : QgsDiagramRendererV2
 
     QgsDiagramRendererV2* clone() const;
 
-    /**Returns list with all diagram settings in the renderer*/
+    /** Returns list with all diagram settings in the renderer*/
     QList<QgsDiagramSettings> diagramSettings() const;
 
     void setDiagramSettings( const QgsDiagramSettings& s );

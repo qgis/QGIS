@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 6.11.2014
     Copyright            : (C) 2014 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -87,7 +87,7 @@ class QgsMultiRenderChecker
      */
     const QString controlImagePath() const;
 
-    /**Draws a checkboard pattern for image backgrounds, so that transparency is visible
+    /** Draws a checkboard pattern for image backgrounds, so that transparency is visible
      * without requiring a transparent background for the image
      */
     static void drawBackground( QImage* image );

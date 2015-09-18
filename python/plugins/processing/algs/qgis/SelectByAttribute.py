@@ -55,15 +55,15 @@ class SelectByAttribute(GeoAlgorithm):
                  ]
 
     def defineCharacteristics(self):
-        self.name = 'Select by attribute'
-        self.group = 'Vector selection tools'
+        self.name, self.i18n_name = self.trAlgorithm('Select by attribute')
+        self.group, self.i18n_group = self.trAlgorithm('Vector selection tools')
 
         self.addParameter(ParameterVector(self.INPUT,
-            self.tr('Input Layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input Layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterTableField(self.FIELD,
-            self.tr('Selection attribute'), self.INPUT))
+                                              self.tr('Selection attribute'), self.INPUT))
         self.addParameter(ParameterSelection(self.OPERATOR,
-            self.tr('Operator'), self.OPERATORS))
+                                             self.tr('Operator'), self.OPERATORS))
         self.addParameter(ParameterString(self.VALUE, self.tr('Value')))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Selected (attribute)'), True))

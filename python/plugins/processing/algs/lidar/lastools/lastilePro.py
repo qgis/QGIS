@@ -31,6 +31,7 @@ from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterString
 
+
 class lastilePro(LAStoolsAlgorithm):
 
     TILE_SIZE = "TILE_SIZE"
@@ -39,22 +40,22 @@ class lastilePro(LAStoolsAlgorithm):
     BASE_NAME = "BASE_NAME"
 
     def defineCharacteristics(self):
-        self.name = "lastilePro"
-        self.group = "LAStools Production"
+        self.name, self.i18n_name = self.trAlgorithm('lastilePro')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParametersFilesAreFlightlinesGUI()
         self.addParametersApplyFileSourceIdGUI()
         self.addParameter(ParameterNumber(lastilePro.TILE_SIZE,
-            self.tr("tile size (side length of square tile)"),
-            None, None, 1000.0))
+                                          self.tr("tile size (side length of square tile)"),
+                                          None, None, 1000.0))
         self.addParameter(ParameterNumber(lastilePro.BUFFER,
-            self.tr("buffer around each tile (avoids edge artifacts)"),
-            None, None, 25.0))
+                                          self.tr("buffer around each tile (avoids edge artifacts)"),
+                                          None, None, 25.0))
         self.addParameter(ParameterBoolean(lastilePro.EXTRA_PASS,
-            self.tr("more than 2000 tiles"), False))
+                                           self.tr("more than 2000 tiles"), False))
         self.addParametersOutputDirectoryGUI()
         self.addParameter(ParameterString(lastilePro.BASE_NAME,
-            self.tr("tile base name (using sydney.laz creates sydney_274000_4714000.laz)")))
+                                          self.tr("tile base name (using sydney.laz creates sydney_274000_4714000.laz)")))
         self.addParametersPointOutputFormatGUI()
         self.addParametersAdditionalGUI()
         self.addParametersVerboseGUI()
@@ -67,11 +68,11 @@ class lastilePro(LAStoolsAlgorithm):
         self.addParametersApplyFileSourceIdCommands(commands)
         tile_size = self.getParameterValue(lastilePro.TILE_SIZE)
         commands.append("-tile_size")
-        commands.append(str(tile_size))
+        commands.append(unicode(tile_size))
         buffer = self.getParameterValue(lastilePro.BUFFER)
         if buffer != 0.0:
             commands.append("-buffer")
-            commands.append(str(buffer))
+            commands.append(unicode(buffer))
         if self.getParameterValue(lastilePro.EXTRA_PASS):
             commands.append("-extra_pass")
         self.addParametersOutputDirectoryCommands(commands)

@@ -106,7 +106,7 @@ bool QgsGmlSchema::parseXSD( const QByteArray &xml )
 
   //QgsDebugMsg( QString( "%1 elemets read" ).arg( elementElements.size() ) );
 
-  foreach ( QDomElement elementElement, elementElements )
+  Q_FOREACH ( const QDomElement& elementElement, elementElements )
   {
     QString name = elementElement.attribute( "name" );
     QString type = elementElement.attribute( "type" );
@@ -160,7 +160,7 @@ bool QgsGmlSchema::xsdFeatureClass( const QDomElement &element, const QString & 
 
   // Supported geometry types
   QStringList geometryPropertyTypes;
-  foreach ( QString geom, mGeometryTypes )
+  Q_FOREACH ( const QString& geom, mGeometryTypes )
   {
     geometryPropertyTypes << geom + "PropertyType";
   }
@@ -173,7 +173,7 @@ bool QgsGmlSchema::xsdFeatureClass( const QDomElement &element, const QString & 
 
   // Add attributes from current comple type
   QList<QDomElement> sequenceElements = domElements( extrest, "sequence.element" );
-  foreach ( QDomElement sequenceElement, sequenceElements )
+  Q_FOREACH ( const QDomElement& sequenceElement, sequenceElements )
   {
     QString fieldName = sequenceElement.attribute( "name" );
     QString fieldTypeName = stripNS( sequenceElement.attribute( "type" ) );
@@ -316,7 +316,7 @@ QDomElement QgsGmlSchema::domElement( const QDomElement &element, const QString 
 QList<QDomElement> QgsGmlSchema::domElements( QList<QDomElement> &elements, const QString & attr, const QString & attrVal )
 {
   QList<QDomElement> list;
-  foreach ( QDomElement el, elements )
+  Q_FOREACH ( const QDomElement& el, elements )
   {
     if ( el.attribute( attr ) == attrVal )
     {

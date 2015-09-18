@@ -1,0 +1,7 @@
+{
+  "function": "to_datetime",
+  "description": "Convert a string into a datetime object.",
+  "arguments": [ {"arg":"string","description":"string representing a datetime value"}],
+  "examples": [ { "expression":"to_datetime('2012-05-04 12:50:00')", "returns":"2012-05-04T12:50:00"}
+  ]
+}

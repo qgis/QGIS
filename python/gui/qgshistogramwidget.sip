@@ -66,28 +66,55 @@ class QgsHistogramWidget : QWidget
      */
     QBrush brush() const;
 
-    /** Sets the graduated ranges associated with the histogram. If set, the ranges will be used to colour the histogram
+    /** Sets the graduated ranges associated with the histogram. If set, the ranges will be used to color the histogram
      * bars and for showing vertical dividers at the histogram breaks.
      * @param ranges graduated range list
      */
     void setGraduatedRanges( const QgsRangeList& ranges );
 
-    /** Returns the graduated ranges associated with the histogram. If set, the ranges will be used to colour the histogram
+    /** Returns the graduated ranges associated with the histogram. If set, the ranges will be used to color the histogram
      * bars and for showing vertical dividers at the histogram breaks.
      * @returns graduated range list
      * @see setGraduatedRanges
      */
     QgsRangeList graduatedRanges() const;
 
+    /** Returns the title for the histogram's x-axis.
+     * @see setXAxisTitle
+     * @see yAxisTitle
+     */
+    QString xAxisTitle() const;
+
+    /** Sets the title for the histogram's x-axis.
+     * @param title x-axis title, or empty string to remove title
+     * @see xAxisTitle
+     * @see setYAxisTitle
+     */
+    void setXAxisTitle( const QString& title );
+
+    /** Returns the title for the histogram's y-axis.
+     * @see setYAxisTitle
+     * @see xAxisTitle
+     */
+    QString yAxisTitle() const;
+
+    /** Sets the title for the histogram's y-axis.
+     * @param title y-axis title, or empty string to remove title
+     * @see yAxisTitle
+     * @see setXAxisTitle
+     */
+    void setYAxisTitle( const QString& title );
+
   public slots:
 
-    /** Triggers a refresh of the histogram when the widget is next repainted.
+    /** Refreshes the values for the histogram by fetching them from the layer.
      */
-    void refreshHistogram();
+    void refreshValues();
 
-    /** Triggers a refresh and immediate redraw of the histogram.
+    /** Redraws the histogram. Calling this slot does not update the values
+     * for the histogram, use @link refreshValues @endlink to do this.
      */
-    void refreshAndRedraw();
+    void refresh();
 
     /** Sets the vector layer associated with the histogram.
      * @param layer source vector layer

@@ -41,17 +41,17 @@ class StatisticsByCategories(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def defineCharacteristics(self):
-        self.name = 'Statistics by categories'
-        self.group = 'Vector table tools'
+        self.name, self.i18n_name = self.trAlgorithm('Statistics by categories')
+        self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
-            self.tr('Input vector layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
+                                          self.tr('Input vector layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
         self.addParameter(ParameterTableField(self.VALUES_FIELD_NAME,
-            self.tr('Field to calculate statistics on'),
-            self.INPUT_LAYER, ParameterTableField.DATA_TYPE_NUMBER))
+                                              self.tr('Field to calculate statistics on'),
+                                              self.INPUT_LAYER, ParameterTableField.DATA_TYPE_NUMBER))
         self.addParameter(ParameterTableField(self.CATEGORIES_FIELD_NAME,
-            self.tr('Field with categories'),
-            self.INPUT_LAYER, ParameterTableField.DATA_TYPE_ANY))
+                                              self.tr('Field with categories'),
+                                              self.INPUT_LAYER, ParameterTableField.DATA_TYPE_ANY))
 
         self.addOutput(OutputTable(self.OUTPUT, self.tr('Statistics by category')))
 
@@ -81,11 +81,11 @@ class StatisticsByCategories(GeoAlgorithm):
             except:
                 pass
 
-        fields = ['category', 'min', 'max', 'mean', 'stddev', 'count']
+        fields = ['category', 'min', 'max', 'mean', 'stddev', 'sum', 'count']
         writer = output.getTableWriter(fields)
         for (cat, v) in values.items():
-            (min, max, mean, stddev) = calculateStats(v)
-            record = [cat, min, max, mean, stddev, len(v)]
+            (min, max, mean, stddev, sum) = calculateStats(v)
+            record = [cat, min, max, mean, stddev, sum, len(v)]
             writer.addRecord(record)
 
 
@@ -115,4 +115,4 @@ def calculateStats(values):
     else:
         variance = 0
     stddev = math.sqrt(variance)
-    return (minvalue, maxvalue, mean, stddev)
+    return (minvalue, maxvalue, mean, stddev, sum)

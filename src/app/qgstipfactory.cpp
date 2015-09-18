@@ -57,7 +57,7 @@ QgsTipFactory::QgsTipFactory() : QObject()
   myTip.setTitle( tr( "QGIS Mailing lists" ) );
   myTip.setContent( tr( "If you need help using QGIS"
                         " we have a 'users' mailing list where users help each other with issues"
-                        " related to using our sofware. We also have a 'developers' mailing list."
+                        " related to using our software. We also have a 'developers' mailing list."
                         " for those wanting help and to discuss things relating to the QGIS code base."
                         " Details on how to subscribe are in the <a href=\"http://qgis.org/en/site/forusers/support.html#mailing-lists\">community section</a> of"
                         " the QGIS home page."
@@ -196,7 +196,7 @@ QgsTipFactory::QgsTipFactory() : QObject()
   myTip.setTitle( tr( "Add an action to layer" ) );
   myTip.setContent( tr( "Action in a layer allow user to trigger action when clicking on a geometry"
                         " with 'Run Feature Action' tools."
-                        "For example, you can open an html page using the field value of the geometry "
+                        "For example, you can open a HTML page using the field value of the geometry "
                         "as a parameter. Look at the <a href=\"http://docs.qgis.org/latest/en/docs/user_manual/working_with_vector/vector_properties.html?#actions-menu\">documentation</a>."
                       ) );
   addGuiTip( myTip );

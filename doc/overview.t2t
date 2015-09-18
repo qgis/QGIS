@@ -15,7 +15,7 @@ Required build tools:
 
 Required build dependencies:
 
-- Qt >= 4.7.0
+- Qt >= 4.8.0
 - Proj >= 4.4.x
 - GEOS >= 3.0
 - Sqlite3 >= 3.0.0
@@ -27,7 +27,10 @@ Required build dependencies:
 
 Optional dependencies:
 
-- for GRASS plugin - GRASS >= 6.0.0 (libraries compiled with exceptions support on Linux 32bit)
+- for GRASS providers and plugin - GRASS >= 6.0.0. QGIS may be compiled with GRASS 6 or GRASS 7.
+  It can also be compiled with both GRASS versions in a single build but only if QGIS
+  is not installed with rpath. The desired GRASS version is chosen on runtime by setting
+  LD_LIBRARY_PATH or PATH.
 - for georeferencer - GSL >= 1.8
 - for postgis support and SPIT plugin - PostgreSQL >= 8.0.x
 - for gps plugin - gpsbabel

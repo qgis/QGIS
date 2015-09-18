@@ -16,13 +16,11 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QObject>
 #include <QApplication>
 #include <QFileInfo>
 #include <QDir>
 #include <QDesktopServices>
 
-#include <iostream>
 //qgis includes...
 #include <qgsmaprenderer.h>
 #include <qgsmaplayer.h>
@@ -95,7 +93,7 @@ void TestQgsGradients::initTestCase()
 
   //create some objects that will be used in all tests...
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
-  mTestDataDir = myDataDir + QDir::separator();
+  mTestDataDir = myDataDir + "/";
 
   //
   //create a poly layer that will be used in all tests...
@@ -130,7 +128,7 @@ void TestQgsGradients::initTestCase()
 }
 void TestQgsGradients::cleanupTestCase()
 {
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -291,6 +289,7 @@ bool TestQgsGradients::imageCheck( QString theTestType )
   //ensure the rendered output matches our control image
   mMapSettings.setExtent( mpPolysLayer->extent() );
   QgsRenderChecker myChecker;
+  myChecker.setControlPathPrefix( "symbol_gradient" );
   myChecker.setControlName( "expected_" + theTestType );
   myChecker.setMapSettings( mMapSettings );
   bool myResultFlag = myChecker.runTest( theTestType );

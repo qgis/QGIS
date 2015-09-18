@@ -39,6 +39,7 @@
         <file>flags/zh_TW.png</file>
         <file>icons/qgis-icon-16x16.png</file>
         <file>icons/qgis-icon-60x60.png</file>
+        <file>icons/qbrowser-icon-60x60.png</file>
         <file>north_arrows/default.png</file>
         <file>north_arrows/gpsarrow.svg</file>
         <file>north_arrows/gpsarrow2.svg</file>
@@ -102,11 +103,13 @@
         <file>themes/default/mAction.svg</file>
         <file>themes/default/mActionAdd.png</file>
         <file>themes/default/mActionAdd.svg</file>
+        <file>themes/default/mActionAddLayer.svg</file>
         <file>themes/default/mActionAddAllToOverview.svg</file>
         <file>themes/default/mActionAddArrow.png</file>
         <file>themes/default/mActionAddBasicShape.png</file>
         <file>themes/default/mActionAddGPSLayer.png</file>
         <file>themes/default/mActionAddGroup.png</file>
+        <file>themes/default/mActionAddGroup.svg</file>
         <file>themes/default/mActionAddHtml.png</file>
         <file>themes/default/mActionAddImage.png</file>
         <file>themes/default/mActionAddLegend.png</file>
@@ -270,7 +273,11 @@
         <file>themes/default/mActionSelectPolygon.svg</file>
         <file>themes/default/mActionSelectRadius.svg</file>
         <file>themes/default/mActionSelectRectangle.svg</file>
+        <file>themes/default/mActionSelectAllTree.svg</file>
         <file>themes/default/mActionSetProjection.svg</file>
+        <file>themes/default/mActionSharing.svg</file>
+        <file>themes/default/mActionSharingExport.svg</file>
+        <file>themes/default/mActionSharingImport.svg</file>
         <file>themes/default/mActionShowAllLayers.png</file>
         <file>themes/default/mActionShowAllLayers.svg</file>
         <file>themes/default/mActionShowBookmarks.png</file>
@@ -307,6 +314,7 @@
         <file>themes/default/mIconClear.svg</file>
         <file>themes/default/mIconClose.png</file>
         <file>themes/default/mIconCollapse.png</file>
+        <file>themes/default/mIconCollapseSmall.svg</file>
         <file>themes/default/mIconColorBox.svg</file>
         <file>themes/default/mIconColorPicker.svg</file>
         <file>themes/default/mIconColorSwatches.svg</file>
@@ -326,6 +334,7 @@
         <file>themes/default/mIconEditable.png</file>
         <file>themes/default/mIconEditableEdits.png</file>
         <file>themes/default/mIconExpand.png</file>
+        <file>themes/default/mIconExpandSmall.svg</file>
         <file>themes/default/mIconExpression.svg</file>
         <file>themes/default/mIconExpressionEditorOpen.svg</file>
         <file>themes/default/mIconExpressionFilter.svg</file>
@@ -341,6 +350,7 @@
         <file>themes/default/mIconLast.png</file>
         <file>themes/default/mIconLayer.png</file>
         <file>themes/default/mIconLineLayer.svg</file>
+        <file>themes/default/mIconListView.png</file>
         <file>themes/default/mIconLock.png</file>
         <file>themes/default/mIconLoading.gif</file>
         <file>themes/default/mIconMssql.svg</file>
@@ -374,6 +384,7 @@
         <file>themes/default/mIconTableLayer.png</file>
         <file>themes/default/mIconTimerContinue.png</file>
         <file>themes/default/mIconTimerPause.png</file>
+        <file>themes/default/mIconTreeView.png</file>
         <file>themes/default/mIconUnknownLayerType.png</file>
         <file>themes/default/mIconWaitingForLayerType.png</file>
         <file>themes/default/mIconWarn.png</file>
@@ -383,6 +394,8 @@
         <file>themes/default/mIconZip.png</file>
         <file>themes/default/mIconZoom.svg</file>
         <file>themes/default/mMapserverExport.png</file>
+        <file>themes/default/mMessageLog.svg</file>
+        <file>themes/default/mMessageLogRead.svg</file>
         <file>themes/default/north_arrow.png</file>
         <file>themes/default/pie-chart.png</file>
         <file>themes/default/plugin.png</file>
@@ -396,7 +409,7 @@
         <file>themes/default/propertyicons/diagram.png</file>
         <file>themes/default/propertyicons/digitising.png</file>
         <file>themes/default/propertyicons/display.svg</file>
-        <file>themes/default/propertyicons/gdal.png</file>
+        <file>themes/default/propertyicons/gdal.svg</file>
         <file>themes/default/propertyicons/general.svg</file>
         <file>themes/default/propertyicons/histogram.png</file>
         <file>themes/default/propertyicons/join.png</file>
@@ -441,10 +454,14 @@
         <file>themes/default/styleicons/style-point.png</file>
         <file>themes/default/styleicons/style-polygon.png</file>
         <file>themes/default/symbologyAdd.png</file>
+        <file>themes/default/symbologyAdd.svg</file>
         <file>themes/default/symbologyDown.png</file>
+        <file>themes/default/symbologyDown.svg</file>
         <file>themes/default/symbologyEdit.png</file>
         <file>themes/default/symbologyRemove.png</file>
+        <file>themes/default/symbologyRemove.svg</file>
         <file>themes/default/symbologyUp.png</file>
+        <file>themes/default/symbologyUp.svg</file>
         <file>themes/default/text.png</file>
         <file>themes/default/tracking.png</file>
         <file>themes/default/transformed.png</file>
@@ -489,10 +506,11 @@
         <file>themes/default/cadtools/parallel.png</file>
         <file>themes/default/cadtools/perpendicular.png</file>
         <file>themes/default/mIconSuccess.png</file>
-        <file>themes/default/bubble.svg</file>
         <file>themes/default/mIconClear.png</file>
         <file>flags/zh.png</file>
         <file>themes/default/mIconPaintEffects.svg</file>
+	<file>themes/default/mActionCircularStringCurvePoint.png</file>
+	<file>themes/default/mActionCircularStringRadius.png</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

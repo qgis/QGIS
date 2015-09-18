@@ -20,7 +20,7 @@
 #include "qgisgui.h"
 #include "qgscontexthelp.h"
 
-/*! \class QgsPgNewConnection
+/** \class QgsPgNewConnection
  * \brief Dialog to allow the user to configure and save connection
  * information for a PostgreSQL database
  */

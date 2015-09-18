@@ -168,6 +168,13 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     /** Return a pointer to the map canvas used by qgisapp */
     QgsMapCanvas * mapCanvas() override;
 
+    /**
+     * Returns a pointer to the layer tree canvas bridge
+     *
+     * @note added in 2.12
+     */
+    QgsLayerTreeMapCanvasBridge* layerTreeCanvasBridge() override;
+
     /** Gives access to main QgisApp object
 
         Plugins don't need to know about QgisApp, as we pass it as QWidget,
@@ -189,7 +196,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
      * @return pointer to composer's view
      * @note new composer window will be shown and activated
      */
-    QgsComposerView* createNewComposer( QString title = QString( "" ) ) override;
+    QgsComposerView* createNewComposer( QString title = QString() ) override;
 
     // ### QGIS 3: return QgsComposer*, not QgsComposerView*
     /** Duplicate an existing parent composer from composer view
@@ -198,7 +205,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
      * @return pointer to duplicate composer's view
      * @note dupicate composer window will be hidden until loaded, then shown and activated
      */
-    QgsComposerView* duplicateComposer( QgsComposerView* composerView, QString title = QString( "" ) ) override;
+    QgsComposerView* duplicateComposer( QgsComposerView* composerView, QString title = QString() ) override;
 
     /** Deletes parent composer of composer view, after closing composer window */
     void deleteComposer( QgsComposerView* composerView ) override;
@@ -243,7 +250,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
 
     /** Add "add layer" action to the layer menu */
     void insertAddLayerAction( QAction *action ) override;
-    /** remove "add layer" action from the layer menu */
+    /** Remove "add layer" action from the layer menu */
     void removeAddLayerAction( QAction *action ) override;
 
     /** Add a dock widget to the main window */
@@ -252,12 +259,12 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     /** Remove specified dock widget from main window (doesn't delete it). */
     void removeDockWidget( QDockWidget * dockwidget ) override;
 
-    /** show layer properties dialog for layer
+    /** Show layer properties dialog for layer
      * @param l layer to show properties table for
      */
     virtual void showLayerProperties( QgsMapLayer *l ) override;
 
-    /** show layer attribute dialog for layer
+    /** Show layer attribute dialog for layer
      * @param l layer to show attribute table for
      */
     virtual void showAttributeTable( QgsVectorLayer *l ) override;

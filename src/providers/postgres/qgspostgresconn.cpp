@@ -496,6 +496,8 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       layerProperty.types = QList<QGis::WkbType>() << ( QgsPostgresConn::wkbTypeFromPostgis( type ) );
       layerProperty.srids = QList<int>() << srid;
       layerProperty.sql = "";
+      layerProperty.relKind = relkind;
+      layerProperty.isView = isView;
       /*
        * force2d may get a false negative value
        * (dim == 2 but is not really constrained)
@@ -599,6 +601,8 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       layerProperty.schemaName = schemaName;
       layerProperty.tableName = tableName;
       layerProperty.geometryColName = column;
+      layerProperty.relKind = relkind;
+      layerProperty.isView = isView;
       if ( coltype == "geometry" )
       {
         layerProperty.geometryColType = sctGeometry;
@@ -682,10 +686,12 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       layerProperty.tableName = table;
       layerProperty.geometryColName = QString::null;
       layerProperty.geometryColType = sctNone;
+      layerProperty.relKind = relkind;
+      layerProperty.isView = isView;
 
       //check if we've already added this layer in some form
       bool alreadyFound = false;
-      foreach ( QgsPostgresLayerProperty foundLayer, mLayersSupported )
+      Q_FOREACH ( const QgsPostgresLayerProperty& foundLayer, mLayersSupported )
       {
         if ( foundLayer.schemaName == schema && foundLayer.tableName == table )
         {
@@ -900,6 +906,9 @@ QString QgsPostgresConn::quotedValue( QVariant value )
     case QVariant::LongLong:
     case QVariant::Double:
       return value.toString();
+
+    case QVariant::Bool:
+      return value.toBool() ? "TRUE" : "FALSE";
 
     default:
     case QVariant::String:
@@ -1514,28 +1523,13 @@ QGis::WkbType QgsPostgresConn::wkbTypeFromPostgis( QString type )
   return ( QGis::WkbType )QgsWKBTypes::parseType( type );
 }
 
-QGis::WkbType QgsPostgresConn::wkbTypeFromOgcWkbType( unsigned int wkbType )
+QgsWKBTypes::Type QgsPostgresConn::wkbTypeFromOgcWkbType( unsigned int wkbType )
 {
   // polyhedralsurface / TIN / triangle => MultiPolygon
   if ( wkbType % 100 >= 15 )
     wkbType = wkbType / 1000 * 1000 + QGis::WKBMultiPolygon;
 
-  switch ( wkbType / 1000 )
-  {
-    case 0:
-      break;
-    case 1: // Z
-      wkbType = 0x80000000 + wkbType % 100;
-      break;
-    case 2: // M => Z
-      wkbType = 0x80000000 + wkbType % 100;
-      break;
-    case 3: // ZM
-      wkbType = 0xc0000000 + wkbType % 100;
-      break;
-  }
-
-  return ( QGis::WkbType ) wkbType;
+  return ( QgsWKBTypes::Type ) wkbType;
 }
 
 QString QgsPostgresConn::displayStringForWkbType( QGis::WkbType type )

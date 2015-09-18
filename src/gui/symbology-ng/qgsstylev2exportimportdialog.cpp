@@ -67,7 +67,7 @@ QgsStyleV2ExportImportDialog::QgsStyleV2ExportImportDialog( QgsStyleV2* style, Q
 
     QStringList groups = mQgisStyle->groupNames();
     groupCombo->addItem( "imported", QVariant( "new" ) );
-    foreach ( QString gName, groups )
+    Q_FOREACH ( const QString& gName, groups )
     {
       groupCombo->addItem( gName );
     }

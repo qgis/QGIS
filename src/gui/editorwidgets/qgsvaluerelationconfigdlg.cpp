@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 5.1.2014
     Copyright            : (C) 2014 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -63,7 +63,12 @@ void QgsValueRelationConfigDlg::editExpression()
   if ( !vl )
     return;
 
-  QgsExpressionBuilderDialog dlg( vl, mFilterExpression->toPlainText(), this );
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::layerScope( vl );
+
+  QgsExpressionBuilderDialog dlg( vl, mFilterExpression->toPlainText(), this, "generic", context );
   dlg.setWindowTitle( tr( "Edit filter expression" ) );
 
   if ( dlg.exec() == QDialog::Accepted )

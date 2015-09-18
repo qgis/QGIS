@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 29.5.2013
     Copyright            : (C) 2013 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -74,6 +74,8 @@ class GUI_EXPORT QgsRelationReferenceFactory : public QgsEditorWidgetFactory
      * @param fieldIdx      The field on the layer for which this configuration applies
      */
     virtual void writeConfig( const QgsEditorWidgetConfig& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx ) override;
+
+    virtual QMap<const char*, int> supportedWidgetTypes() override;
 
   private:
     QgsAttributeEditorContext mEditorContext;

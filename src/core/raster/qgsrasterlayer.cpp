@@ -882,7 +882,7 @@ void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnh
     myBands << myMultiBandRenderer->redBand() << myMultiBandRenderer->greenBand() << myMultiBandRenderer->blueBand();
   }
 
-  foreach ( int myBand, myBands )
+  Q_FOREACH ( int myBand, myBands )
   {
     if ( myBand != -1 )
     {
@@ -928,14 +928,17 @@ void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnh
 
   if ( rendererType == "singlebandgray" )
   {
-    if ( myEnhancements.value( 0 ) ) myGrayRenderer->setContrastEnhancement( myEnhancements.value( 0 ) );
+    if ( myEnhancements.first() ) myGrayRenderer->setContrastEnhancement( myEnhancements.takeFirst( ) );
   }
   else if ( rendererType == "multibandcolor" )
   {
-    if ( myEnhancements.value( 0 ) ) myMultiBandRenderer->setRedContrastEnhancement( myEnhancements.value( 0 ) );
-    if ( myEnhancements.value( 1 ) ) myMultiBandRenderer->setGreenContrastEnhancement( myEnhancements.value( 1 ) );
-    if ( myEnhancements.value( 2 ) ) myMultiBandRenderer->setBlueContrastEnhancement( myEnhancements.value( 2 ) );
+    if ( myEnhancements.first() ) myMultiBandRenderer->setRedContrastEnhancement( myEnhancements.takeFirst() );
+    if ( myEnhancements.first() ) myMultiBandRenderer->setGreenContrastEnhancement( myEnhancements.takeFirst() );
+    if ( myEnhancements.first() ) myMultiBandRenderer->setBlueContrastEnhancement( myEnhancements.takeFirst() );
   }
+
+  //delete all remaining unused enhancements
+  qDeleteAll( myEnhancements );
 
   emit repaintRequested();
 }
@@ -1520,7 +1523,7 @@ bool QgsRasterLayer::writeXml( QDomNode & layer_node,
     noDataRangeList.setAttribute( "bandNo", bandNo );
     noDataRangeList.setAttribute( "useSrcNoData", mDataProvider->useSrcNoDataValue( bandNo ) );
 
-    foreach ( QgsRasterRange range, mDataProvider->userNoDataValues( bandNo ) )
+    Q_FOREACH ( const QgsRasterRange& range, mDataProvider->userNoDataValues( bandNo ) )
     {
       QDomElement noDataRange =  document.createElement( "noDataRange" );
 

@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 5.1.2014
     Copyright            : (C) 2014 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -38,6 +38,11 @@ QWidget* QgsHiddenWidgetWrapper::createWidget( QWidget* parent )
 void QgsHiddenWidgetWrapper::initWidget( QWidget* editor )
 {
   editor->setVisible( false );
+}
+
+bool QgsHiddenWidgetWrapper::valid()
+{
+  return true;
 }
 
 void QgsHiddenWidgetWrapper::setValue( const QVariant& value )

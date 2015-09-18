@@ -24,7 +24,7 @@ class QgsPalGeometry : public PalGeometry
         , mWordSpacing( wordSpacing )
         , mCurvedLabeling( curvedLabeling )
     {
-      mStrId = FID_TO_STRING( mId ).toAscii();
+      mStrId = FID_TO_STRING( mId );
       mDefinedFont = QFont();
     }
 
@@ -47,7 +47,7 @@ class QgsPalGeometry : public PalGeometry
       // nothing here - we'll delete the geometry in destructor
     }
 
-    const char* strId() { return mStrId.data(); }
+    QString strId() { return mStrId; }
     QString text() { return mText; }
 
     /** Returns the text component corresponding to a specified label part
@@ -110,11 +110,15 @@ class QgsPalGeometry : public PalGeometry
             int nxt = i + 1;
             wordSpaceFix = ( nxt < mClusters.count() && mClusters[nxt] != QString( " " ) ) ? mWordSpacing : qreal( 0.0 );
           }
-          if ( fm->width( QString( mClusters[i] ) ) - fm->width( mClusters[i] ) - mLetterSpacing != qreal( 0.0 ) )
+          // this workaround only works for clusters with a single character. Not sure how it should be handled
+          // with multi-character clusters.
+          if ( mClusters[i].length() == 1 &&
+               !qgsDoubleNear( fm->width( QString( mClusters[i].at( 0 ) ) ), fm->width( mClusters[i].at( 0 ) ) + mLetterSpacing ) )
           {
             // word spacing applied when it shouldn't be
             wordSpaceFix -= mWordSpacing;
           }
+
           charWidth = fm->width( QString( mClusters[i] ) ) + wordSpaceFix;
         }
 
@@ -155,7 +159,7 @@ class QgsPalGeometry : public PalGeometry
     GEOSGeometry* mG;
     QString mText;
     QStringList mClusters;
-    QByteArray mStrId;
+    QString mStrId;
     QgsFeatureId mId;
     LabelInfo* mInfo;
     bool mIsDiagram;
@@ -165,10 +169,10 @@ class QgsPalGeometry : public PalGeometry
     qreal mLetterSpacing; // for use with curved labels
     qreal mWordSpacing; // for use with curved labels
     bool mCurvedLabeling; // whether the geometry is to be used for curved labeling placement
-    /**Stores attribute values for data defined properties*/
+    /** Stores attribute values for data defined properties*/
     QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant > mDataDefinedValues;
 
-    /**Stores attribute values for diagram rendering*/
+    /** Stores attribute values for diagram rendering*/
     QgsAttributes mDiagramAttributes;
 
     QString mDxfLayer;

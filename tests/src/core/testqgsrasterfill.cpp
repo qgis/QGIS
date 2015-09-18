@@ -16,13 +16,11 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QObject>
 #include <QApplication>
 #include <QFileInfo>
 #include <QDir>
 #include <QDesktopServices>
 
-#include <iostream>
 //qgis includes...
 #include <qgsmapsettings.h>
 #include <qgsmaplayer.h>
@@ -88,7 +86,7 @@ void TestQgsRasterFill::initTestCase()
 
   //create some objects that will be used in all tests...
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
-  mTestDataDir = myDataDir + QDir::separator();
+  mTestDataDir = myDataDir + "/";
 
   //
   //create a poly layer that will be used in all tests...
@@ -123,7 +121,7 @@ void TestQgsRasterFill::initTestCase()
 }
 void TestQgsRasterFill::cleanupTestCase()
 {
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -176,7 +174,7 @@ void TestQgsRasterFill::alpha()
 void TestQgsRasterFill::offset()
 {
   mReport += "<h2>Raster fill offset</h2>\n";
-  mRasterFill->setOffset( QPointF( 5, 10 ) );;
+  mRasterFill->setOffset( QPointF( 5, 10 ) );
   bool result = imageCheck( "rasterfill_offset" );
   QVERIFY( result );
 }
@@ -214,7 +212,9 @@ bool TestQgsRasterFill::imageCheck( QString theTestType )
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image
   mMapSettings.setExtent( mpPolysLayer->extent() );
+  mMapSettings.setOutputDpi( 96 );
   QgsMultiRenderChecker myChecker;
+  myChecker.setControlPathPrefix( "symbol_rasterfill" );
   myChecker.setControlName( "expected_" + theTestType );
   myChecker.setMapSettings( mMapSettings );
   myChecker.setColorTolerance( 20 );

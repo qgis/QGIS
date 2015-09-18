@@ -23,7 +23,6 @@
 #include <QDataStream>
 #include <QTextStream>
 #include <QStringList>
-#include <QMessageBox>
 #include <QSettings>
 #include <QRegExp>
 #include <QUrl>
@@ -436,7 +435,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
       if ( mWktFieldIndex >= parts.size() || parts[mWktFieldIndex].isEmpty() )
       {
         nEmptyGeometry++;
-        geomValid = false;
+        mNumberFeatures++;
       }
       else
       {
@@ -504,12 +503,12 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
       // Get the x and y values, first checking to make sure they
       // aren't null.
 
-      QString sX = mXFieldIndex < parts.size() ? parts[mXFieldIndex] : "";
-      QString sY = mYFieldIndex < parts.size() ? parts[mYFieldIndex] : "";
+      QString sX = mXFieldIndex < parts.size() ? parts[mXFieldIndex] : QString();
+      QString sY = mYFieldIndex < parts.size() ? parts[mYFieldIndex] : QString();
       if ( sX.isEmpty() && sY.isEmpty() )
       {
-        geomValid = false;
         nEmptyGeometry++;
+        mNumberFeatures++;
       }
       else
       {
@@ -682,7 +681,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
   if ( nBadFormatRecords > 0 )
     warnings.append( tr( "%1 records discarded due to invalid format" ).arg( nBadFormatRecords ) );
   if ( nEmptyGeometry > 0 )
-    warnings.append( tr( "%1 records discarded due to missing geometry definitions" ).arg( nEmptyGeometry ) );
+    warnings.append( tr( "%1 records have missing geometry definitions" ).arg( nEmptyGeometry ) );
   if ( nInvalidGeometry > 0 )
     warnings.append( tr( "%1 records discarded due to invalid geometry definitions" ).arg( nInvalidGeometry ) );
   if ( nIncompatibleGeometry > 0 )
@@ -758,7 +757,7 @@ void QgsDelimitedTextProvider::rescanFile()
   }
   if ( messages.size() > 0 )
   {
-    reportErrors( messages, false );
+    reportErrors( messages );
     QgsDebugMsg( "Delimited text source invalid on rescan - missing geometry fields" );
     mValid = false;
     return;
@@ -920,7 +919,7 @@ void QgsDelimitedTextProvider::clearInvalidLines()
 
 bool QgsDelimitedTextProvider::recordIsEmpty( QStringList &record )
 {
-  foreach ( QString s, record )
+  Q_FOREACH ( const QString& s, record )
   {
     if ( ! s.isEmpty() ) return false;
   }
@@ -945,7 +944,7 @@ void QgsDelimitedTextProvider::reportErrors( QStringList messages, bool showDial
   {
     QString tag( "DelimitedText" );
     QgsMessageLog::logMessage( tr( "Errors in file %1" ).arg( mFile->fileName() ), tag );
-    foreach ( QString message, messages )
+    Q_FOREACH ( const QString& message, messages )
     {
       QgsMessageLog::logMessage( message, tag );
     }
@@ -964,7 +963,7 @@ void QgsDelimitedTextProvider::reportErrors( QStringList messages, bool showDial
       QgsMessageOutput* output = QgsMessageOutput::createMessageOutput();
       output->setTitle( tr( "Delimited text file errors" ) );
       output->setMessage( tr( "Errors in file %1" ).arg( mFile->fileName() ), QgsMessageOutput::MessageText );
-      foreach ( QString message, messages )
+      Q_FOREACH ( const QString& message, messages )
       {
         output->appendMessage( message );
       }
@@ -1007,7 +1006,8 @@ bool QgsDelimitedTextProvider::setSubsetString( QString subset, bool updateFeatu
     }
     else
     {
-      expression->prepare( fields() );
+      QgsExpressionContext context = QgsExpressionContextUtils::createFeatureBasedContext( QgsFeature(), fields() );
+      expression->prepare( &context );
       if ( expression->hasEvalError() )
       {
         error = expression->evalErrorString();
@@ -1098,7 +1098,7 @@ void QgsDelimitedTextProvider::onFileUpdated()
   {
     QStringList messages;
     messages.append( tr( "The file has been updated by another application - reloading" ) );
-    reportErrors( messages, false );
+    reportErrors( messages );
     mRescanRequired = true;
   }
 }

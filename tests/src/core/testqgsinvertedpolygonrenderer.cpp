@@ -16,13 +16,11 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QObject>
 #include <QApplication>
 #include <QFileInfo>
 #include <QDir>
 #include <QDesktopServices>
 
-#include <iostream>
 //qgis includes...
 #include <qgsmaprenderer.h>
 #include <qgsmaplayer.h>
@@ -81,7 +79,7 @@ void TestQgsInvertedPolygon::initTestCase()
   QgsApplication::showSettings();
 
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
-  mTestDataDir = myDataDir + QDir::separator();
+  mTestDataDir = myDataDir + "/";
 
   //
   //create a poly layer that will be used in all tests...
@@ -104,7 +102,7 @@ void TestQgsInvertedPolygon::initTestCase()
 
 void TestQgsInvertedPolygon::cleanupTestCase()
 {
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -183,7 +181,9 @@ bool TestQgsInvertedPolygon::imageCheck( QString theTestType, const QgsRectangle
   {
     mMapSettings.setExtent( *extent );
   }
+  mMapSettings.setOutputDpi( 96 );
   QgsMultiRenderChecker myChecker;
+  myChecker.setControlPathPrefix( "symbol_invertedpolygon" );
   myChecker.setControlName( "expected_" + theTestType );
   myChecker.setMapSettings( mMapSettings );
   myChecker.setColorTolerance( 20 );

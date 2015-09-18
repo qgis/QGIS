@@ -194,7 +194,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
     case pktFidMap:
     {
       QString delim;
-      foreach ( int idx, mPrimaryKeyAttrs )
+      Q_FOREACH ( int idx, mPrimaryKeyAttrs )
       {
         key += delim + mAttributeFields[ idx ].name();
         delim = ",";
@@ -540,12 +540,22 @@ QString QgsPostgresUtils::whereClause( QgsFeatureId featureId, const QgsFields& 
 QString QgsPostgresUtils::whereClause( QgsFeatureIds featureIds, const QgsFields& fields, QgsPostgresConn* conn, QgsPostgresPrimaryKeyType pkType, const QList<int>& pkAttrs, QSharedPointer<QgsPostgresSharedData> sharedData )
 {
   QStringList whereClauses;
-  foreach ( const QgsFeatureId featureId, featureIds )
+  Q_FOREACH ( const QgsFeatureId featureId, featureIds )
   {
     whereClauses << whereClause( featureId, fields, conn, pkType, pkAttrs, sharedData );
   }
 
   return whereClauses.isEmpty() ? "" : whereClauses.join( " OR " ).prepend( "(" ).append( ")" );
+}
+
+QString QgsPostgresUtils::andWhereClauses( const QString& c1, const QString& c2 )
+{
+  if ( c1.isEmpty() )
+    return c2;
+  if ( c2.isEmpty() )
+    return c1;
+
+  return QString( "(%1) AND (%2)" ).arg( c1 ).arg( c2 );
 }
 
 QString QgsPostgresProvider::filterWhereClause() const
@@ -696,30 +706,34 @@ bool QgsPostgresProvider::loadFields()
         tableoids.insert( tableoid );
       }
     }
-    QStringList tableoidsList;
-    foreach ( int tableoid, tableoids )
-    {
-      tableoidsList.append( QString::number( tableoid ) );
-    }
 
-    QString tableoidsFilter = "(" + tableoidsList.join( "," ) + ")";
-
-    // Collect formatted field types
-    sql = "SELECT attrelid, attnum, pg_catalog.format_type(atttypid,atttypmod), pg_catalog.col_description(attrelid,attnum), pg_catalog.pg_get_expr(adbin,adrelid)"
-          " FROM pg_attribute"
-          " LEFT OUTER JOIN pg_attrdef ON attrelid=adrelid AND attnum=adnum"
-          " WHERE attrelid IN " + tableoidsFilter;
-    QgsPostgresResult fmtFieldTypeResult = connectionRO()->PQexec( sql );
-    for ( int i = 0; i < fmtFieldTypeResult.PQntuples(); ++i )
+    if ( !tableoids.isEmpty() )
     {
-      int attrelid = fmtFieldTypeResult.PQgetvalue( i, 0 ).toInt();
-      int attnum = fmtFieldTypeResult.PQgetvalue( i, 1 ).toInt();
-      QString formatType = fmtFieldTypeResult.PQgetvalue( i, 2 );
-      QString descr = fmtFieldTypeResult.PQgetvalue( i, 3 );
-      QString defVal = fmtFieldTypeResult.PQgetvalue( i, 4 );
-      fmtFieldTypeMap[attrelid][attnum] = formatType;
-      descrMap[attrelid][attnum] = descr;
-      defValMap[attrelid][attnum] = defVal;
+      QStringList tableoidsList;
+      Q_FOREACH ( int tableoid, tableoids )
+      {
+        tableoidsList.append( QString::number( tableoid ) );
+      }
+
+      QString tableoidsFilter = "(" + tableoidsList.join( "," ) + ")";
+
+      // Collect formatted field types
+      sql = "SELECT attrelid, attnum, pg_catalog.format_type(atttypid,atttypmod), pg_catalog.col_description(attrelid,attnum), pg_catalog.pg_get_expr(adbin,adrelid)"
+            " FROM pg_attribute"
+            " LEFT OUTER JOIN pg_attrdef ON attrelid=adrelid AND attnum=adnum"
+            " WHERE attrelid IN " + tableoidsFilter;
+      QgsPostgresResult fmtFieldTypeResult = connectionRO()->PQexec( sql );
+      for ( int i = 0; i < fmtFieldTypeResult.PQntuples(); ++i )
+      {
+        int attrelid = fmtFieldTypeResult.PQgetvalue( i, 0 ).toInt();
+        int attnum = fmtFieldTypeResult.PQgetvalue( i, 1 ).toInt();
+        QString formatType = fmtFieldTypeResult.PQgetvalue( i, 2 );
+        QString descr = fmtFieldTypeResult.PQgetvalue( i, 3 );
+        QString defVal = fmtFieldTypeResult.PQgetvalue( i, 4 );
+        fmtFieldTypeMap[attrelid][attnum] = formatType;
+        descrMap[attrelid][attnum] = descr;
+        defValMap[attrelid][attnum] = defVal;
+      }
     }
   }
 
@@ -905,8 +919,8 @@ bool QgsPostgresProvider::loadFields()
     fields << fieldName;
 
     mAttrPalIndexName.insert( i, fieldName );
+    mDefaultValues.insert( mAttributeFields.size(), defValMap[tableoid][attnum] );
     mAttributeFields.append( QgsField( fieldName, fieldType, fieldTypeName, fieldSize, fieldPrec, fieldComment ) );
-    mDefaultValues.insert( i, defValMap[tableoid][attnum] );
   }
 
   return true;
@@ -1081,6 +1095,9 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
 
   //supports transactions
   mEnabledCapabilities |= QgsVectorDataProvider::TransactionSupport;
+
+  // supports circular geometries
+  mEnabledCapabilities |= QgsVectorDataProvider::CircularGeometries;
   return true;
 }
 
@@ -1163,14 +1180,69 @@ bool QgsPostgresProvider::determinePrimaryKey()
 
         if ( !primaryKey.isEmpty() )
         {
-          int idx = fieldNameIndex( primaryKey );
+          QStringList cols;
 
-          if ( idx >= 0 )
+          // remove quotes from key list
+          if ( primaryKey.startsWith( '"' ) && primaryKey.endsWith( '"' ) )
+          {
+            int i = 1;
+            QString col;
+            while ( i < primaryKey.size() )
+            {
+              if ( primaryKey[i] == '"' )
+              {
+                if ( i + 1 < primaryKey.size() && primaryKey[i+1] == '"' )
+                {
+                  i++;
+                }
+                else
+                {
+                  cols << col;
+                  col = "";
+
+                  if ( ++i == primaryKey.size() )
+                    break;
+
+                  Q_ASSERT( primaryKey[i] == ',' );
+                  i++;
+                  Q_ASSERT( primaryKey[i] == '"' );
+                  i++;
+                  col = "";
+                  continue;
+                }
+              }
+
+              col += primaryKey[i++];
+            }
+          }
+          else if ( primaryKey.contains( "," ) )
+          {
+            cols = primaryKey.split( "," );
+          }
+          else
+          {
+            cols << primaryKey;
+            primaryKey = quotedIdentifier( primaryKey );
+          }
+
+          Q_FOREACH ( const QString& col, cols )
+          {
+            int idx = fieldNameIndex( col );
+            if ( idx < 0 )
+            {
+              QgsMessageLog::logMessage( tr( "Key field '%1' for view not found." ).arg( col ), tr( "PostGIS" ) );
+              mPrimaryKeyAttrs.clear();
+              break;
+            }
+
+            mPrimaryKeyAttrs << idx;
+          }
+
+          if ( mPrimaryKeyAttrs.size() > 0 )
           {
             if ( mUseEstimatedMetadata || uniqueData( mQuery, primaryKey ) )
             {
-              mPrimaryKeyType = ( mAttributeFields[idx].type() == QVariant::Int || mAttributeFields[idx].type() == QVariant::LongLong ) ? pktInt : pktFidMap;
-              mPrimaryKeyAttrs << idx;
+              mPrimaryKeyType = ( mPrimaryKeyAttrs.size() == 1 && ( mAttributeFields[ mPrimaryKeyAttrs[0] ].type() == QVariant::Int || mAttributeFields[ mPrimaryKeyAttrs[0] ].type() == QVariant::LongLong ) ) ? pktInt : pktFidMap;
             }
             else
             {
@@ -1179,7 +1251,7 @@ bool QgsPostgresProvider::determinePrimaryKey()
           }
           else
           {
-            QgsMessageLog::logMessage( tr( "Key field '%1' for view not found." ).arg( primaryKey ), tr( "PostGIS" ) );
+            QgsMessageLog::logMessage( tr( "Keys for view undefined." ).arg( primaryKey ), tr( "PostGIS" ) );
           }
         }
         else
@@ -1252,12 +1324,12 @@ bool QgsPostgresProvider::determinePrimaryKey()
   return mValid;
 }
 
-bool QgsPostgresProvider::uniqueData( QString query, QString colName )
+bool QgsPostgresProvider::uniqueData( QString query, QString quotedColName )
 {
   Q_UNUSED( query );
   // Check to see if the given column contains unique data
   QString sql = QString( "SELECT count(distinct %1)=count(%1) FROM %2%3" )
-                .arg( quotedIdentifier( colName ) )
+                .arg( quotedColName )
                 .arg( mQuery )
                 .arg( filterWhereClause() );
 
@@ -1654,7 +1726,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
 
     if ( mPrimaryKeyType == pktInt || mPrimaryKeyType == pktFidMap )
     {
-      foreach ( int idx, mPrimaryKeyAttrs )
+      Q_FOREACH ( int idx, mPrimaryKeyAttrs )
       {
         insert += delim + quotedIdentifier( field( idx ).name() );
         values += delim + QString( "$%1" ).arg( defaultValues.size() + offset );
@@ -1778,23 +1850,24 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
 
       for ( int i = 0; i < fieldId.size(); i++ )
       {
-        QVariant value = attrs[ fieldId[i] ];
+        int attrIdx = fieldId[i];
+        QVariant value = attrs[ attrIdx ];
 
         QString v;
         if ( value.isNull() )
         {
-          const QgsField &fld = field( fieldId[i] );
-          v = paramValue( defaultValues[i], defaultValues[i] );
-          features->setAttribute( fieldId[i], convertValue( fld.type(), v ) );
+          const QgsField &fld = field( attrIdx );
+          v = paramValue( defaultValues[ i ], defaultValues[ i ] );
+          features->setAttribute( attrIdx, convertValue( fld.type(), v ) );
         }
         else
         {
-          v = paramValue( value.toString(), defaultValues[i] );
+          v = paramValue( value.toString(), defaultValues[ i ] );
 
           if ( v != value.toString() )
           {
-            const QgsField &fld = field( fieldId[i] );
-            features->setAttribute( fieldId[i], convertValue( fld.type(), v ) );
+            const QgsField &fld = field( attrIdx );
+            features->setAttribute( attrIdx, convertValue( fld.type(), v ) );
           }
         }
 
@@ -1827,7 +1900,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
         {
           QList<QVariant> primaryKeyVals;
 
-          foreach ( int idx, mPrimaryKeyAttrs )
+          Q_FOREACH ( int idx, mPrimaryKeyAttrs )
           {
             primaryKeyVals << attrs[ idx ];
           }
@@ -1900,7 +1973,7 @@ bool QgsPostgresProvider::deleteFeatures( const QgsFeatureIds & id )
       dropOrphanedTopoGeoms();
     }
 
-    mShared->addFeaturesCounted( id.size() );
+    mShared->addFeaturesCounted( -id.size() );
   }
   catch ( PGException &e )
   {
@@ -1919,6 +1992,9 @@ bool QgsPostgresProvider::addAttributes( const QList<QgsField> &attributes )
 
   if ( mIsQuery )
     return false;
+
+  if ( attributes.count() == 0 )
+    return true;
 
   QgsPostgresConn* conn = connectionRW();
   if ( !conn )
@@ -2659,8 +2735,6 @@ bool QgsPostgresProvider::getGeometryDetails()
     {
       detectedType = result.PQgetvalue( 0, 0 );
       detectedSrid = result.PQgetvalue( 0, 1 );
-      if ( result.PQgetvalue( 0, 2 ).toInt() == 4 )
-        mForce2d = true;
       mSpatialColType = sctGeometry;
     }
     else
@@ -2877,7 +2951,7 @@ bool QgsPostgresProvider::getGeometryDetails()
     // explicitly disable adding new features and editing of geometries
     // as this would lead to corruption of measures
     QgsMessageLog::logMessage( tr( "Editing and adding disabled for 2D+ layer (%1; %2)" ).arg( mGeometryColumn ).arg( mQuery ) );
-    mEnabledCapabilities &= ~( QgsVectorDataProvider::ChangeGeometries | QgsVectorDataProvider::AddFeatures );
+    mEnabledCapabilities &= ~( QgsVectorDataProvider::AddFeatures );
   }
 
   QgsDebugMsg( QString( "Feature type name is %1" ).arg( QGis::featureType( geometryType() ) ) );
@@ -2920,14 +2994,7 @@ bool QgsPostgresProvider::convertField( QgsField &field, const QMap<QString, QVa
       break;
 
     case QVariant::Int:
-      if ( fieldPrec < 10 )
-      {
-        fieldType = "int4";
-      }
-      else
-      {
-        fieldType = "numeric";
-      }
+      fieldType = "int4";
       fieldPrec = 0;
       break;
 
@@ -3035,7 +3102,8 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer(
     }
   }
 
-  // if the field doesn't not exist yet, create it as a serial field
+  // if the pk field doesn't exist yet, create a serial pk field
+  // as it's autoincremental
   if ( primaryKeyType.isEmpty() )
   {
     primaryKeyType = "serial";
@@ -3046,6 +3114,19 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer(
       primaryKeyType = "serial8";
     }
 #endif
+  }
+  else
+  {
+    // if the pk field's type is one of the postgres integer types,
+    // use the equivalent autoincremental type (serialN)
+    if ( primaryKeyType == "int2" || primaryKeyType == "int4" )
+    {
+      primaryKeyType = "serial";
+    }
+    else if ( primaryKeyType == "int8" )
+    {
+      primaryKeyType = "serial8";
+    }
   }
 
   try
@@ -3413,6 +3494,40 @@ QGISEXTERN bool deleteLayer( const QString& uri, QString& errCause )
   {
     errCause = QObject::tr( "Unable to delete layer %1: \n%2" )
                .arg( schemaTableName )
+               .arg( result.PQresultErrorMessage() );
+    conn->unref();
+    return false;
+  }
+
+  conn->unref();
+  return true;
+}
+
+QGISEXTERN bool deleteSchema( const QString& schema, const QgsDataSourceURI& uri, QString& errCause, bool cascade = false )
+{
+  QgsDebugMsg( "deleting schema " + schema );
+
+  if ( schema.isEmpty() )
+    return false;
+
+  QString schemaName = QgsPostgresConn::quotedIdentifier( schema );
+
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri.connectionInfo(), false );
+  if ( !conn )
+  {
+    errCause = QObject::tr( "Connection to database failed" );
+    return false;
+  }
+
+  // drop the schema
+  QString sql = QString( "DROP SCHEMA %1 %2" )
+                .arg( schemaName ).arg( cascade ? QString( "CASCADE" ) : QString() );
+
+  QgsPostgresResult result = conn->PQexec( sql );
+  if ( result.PQresultStatus() != PGRES_COMMAND_OK )
+  {
+    errCause = QObject::tr( "Unable to delete schema %1: \n%2" )
+               .arg( schemaName )
                .arg( result.PQresultErrorMessage() );
     conn->unref();
     return false;

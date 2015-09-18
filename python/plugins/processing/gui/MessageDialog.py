@@ -55,7 +55,7 @@ class MessageDialog(BASE, WIDGET):
     def openLink(self, url):
         if url.toString() == "log":
             self.close()
-            logDock =  iface.mainWindow().findChild(QDockWidget, 'MessageLog')
+            logDock = iface.mainWindow().findChild(QDockWidget, 'MessageLog')
             logDock.show()
         else:
             QDesktopServices.openUrl(url)

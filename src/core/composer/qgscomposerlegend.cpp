@@ -540,7 +540,7 @@ void QgsComposerLegend::mapLayerStyleOverridesChanged()
 
   mLegendModel2->setLayerStyleOverrides( mComposerMap->layerStyleOverrides() );
 
-  foreach ( QgsLayerTreeLayer* nodeLayer, mLegendModel2->rootGroup()->findLayers() )
+  Q_FOREACH ( QgsLayerTreeLayer* nodeLayer, mLegendModel2->rootGroup()->findLayers() )
     mLegendModel2->refreshLayerLegend( nodeLayer );
 
   adjustBoxSize();
@@ -602,8 +602,8 @@ QVariant QgsLegendModelV2::data( const QModelIndex& index, int role ) const
       if ( nodeLayer->customProperty( "showFeatureCount", 0 ).toInt() && role == Qt::DisplayRole )
       {
         QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( nodeLayer->layer() );
-        if ( vlayer && vlayer->pendingFeatureCount() >= 0 )
-          name += QString( " [%1]" ).arg( vlayer->pendingFeatureCount() );
+        if ( vlayer && vlayer->featureCount() >= 0 )
+          name += QString( " [%1]" ).arg( vlayer->featureCount() );
       }
       return name;
     }

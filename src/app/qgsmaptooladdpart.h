@@ -16,12 +16,19 @@
 #include "qgsmaptoolcapture.h"
 #include "qgsmapmouseevent.h"
 
-/**A map tool that adds new parts to multipart features*/
+/** A map tool that adds new parts to multipart features*/
 class APP_EXPORT QgsMapToolAddPart : public QgsMapToolCapture
 {
     Q_OBJECT
   public:
     QgsMapToolAddPart( QgsMapCanvas* canvas );
     virtual ~QgsMapToolAddPart();
-    void canvasMapReleaseEvent( QgsMapMouseEvent * e ) override;
+    void canvasReleaseEvent( QgsMapMouseEvent * e ) override;
+    void cadCanvasReleaseEvent( QgsMapMouseEvent * e ) override;
+
+    void activate() override;
+
+  private:
+    /** Check if there is any feature selected */
+    bool checkSelection();
 };

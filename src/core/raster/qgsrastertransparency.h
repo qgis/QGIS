@@ -77,7 +77,7 @@ class CORE_EXPORT QgsRasterTransparency
     /** \brief Return the transparency value for a RGB Pixel */
     int alphaValue( double, double, double, int theGlobalTransparency = 255 ) const;
 
-    /**True if there are no entries in the pixel lists except the nodata value*/
+    /** True if there are no entries in the pixel lists except the nodata value*/
     bool isEmpty() const;
 
     void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;

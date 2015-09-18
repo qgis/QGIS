@@ -1,0 +1,8 @@
+{
+  "function": "color_hsl",
+  "description": "Returns a string representation of a color based on its hue, saturation, and lightness attributes.",
+  "arguments": [ {"arg":"hue","description":"hue of the color, as an integer value from 0 to 360"},
+                 {"arg":"saturation","description":"saturation percentage of the color as an integer value from 0 to 100"},
+                 {"arg":"lightness","description":"lightness percentage of the color as an integer value from 0 to 100"}],
+  "examples": [ { "expression":"color_hsl(100,50,70)", "returns":"166,217,140"}]
+}

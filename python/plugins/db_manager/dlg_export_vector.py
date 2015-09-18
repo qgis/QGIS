@@ -31,6 +31,7 @@ from .ui.ui_DlgExportVector import Ui_DbManagerDlgExportVector as Ui_Dialog
 
 
 class DlgExportVector(QDialog, Ui_Dialog):
+
     def __init__(self, inLayer, inDb, parent=None):
         QDialog.__init__(self, parent)
         self.inLayer = inLayer
@@ -58,7 +59,6 @@ class DlgExportVector(QDialog, Ui_Dialog):
         self.chkSourceSrid.setEnabled(allowSpatial and hasGeomType)
         self.chkTargetSrid.setEnabled(allowSpatial and hasGeomType)
         # self.chkSpatialIndex.setEnabled(allowSpatial and hasGeomType)
-
 
     def chooseOutputFile(self):
         # get last used dir and format

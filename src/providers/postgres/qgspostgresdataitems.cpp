@@ -22,12 +22,16 @@
 #include "qgsdatasourceuri.h"
 #include "qgsapplication.h"
 #include "qgsmessageoutput.h"
+#include "qgsnewnamedialog.h"
 
 #include <QMessageBox>
+#include <QInputDialog>
 #include <QProgressDialog>
 #include <climits>
 
 QGISEXTERN bool deleteLayer( const QString& uri, QString& errCause );
+QGISEXTERN bool deleteSchema( const QString& schema, const QgsDataSourceURI& uri, QString& errCause, bool cascade = false );
+
 
 // ---------------------------------------------------------------------------
 QgsPGConnectionItem::QgsPGConnectionItem( QgsDataItem* parent, QString name, QString path )
@@ -67,7 +71,7 @@ QVector<QgsDataItem*> QgsPGConnectionItem::createChildren()
     return items;
   }
 
-  foreach ( QgsPostgresSchemaProperty schema, schemas )
+  Q_FOREACH ( const QgsPostgresSchemaProperty& schema, schemas )
   {
     QgsPGSchemaItem * schemaItem = new QgsPGSchemaItem( this, mName, schema.name, mPath + "/" + schema.name );
     if ( !schema.description.isEmpty() )
@@ -95,17 +99,29 @@ QList<QAction*> QgsPGConnectionItem::actions()
 {
   QList<QAction*> lst;
 
-  QAction* actionEdit = new QAction( tr( "Edit..." ), this );
-  connect( actionEdit, SIGNAL( triggered() ), this, SLOT( editConnection() ) );
-  lst.append( actionEdit );
-
-  QAction* actionDelete = new QAction( tr( "Delete" ), this );
-  connect( actionDelete, SIGNAL( triggered() ), this, SLOT( deleteConnection() ) );
-  lst.append( actionDelete );
-
   QAction* actionRefresh = new QAction( tr( "Refresh" ), this );
   connect( actionRefresh, SIGNAL( triggered() ), this, SLOT( refreshConnection() ) );
   lst.append( actionRefresh );
+
+  QAction* separator = new QAction( this );
+  separator->setSeparator( true );
+  lst.append( separator );
+
+  QAction* actionEdit = new QAction( tr( "Edit Connection..." ), this );
+  connect( actionEdit, SIGNAL( triggered() ), this, SLOT( editConnection() ) );
+  lst.append( actionEdit );
+
+  QAction* actionDelete = new QAction( tr( "Delete Connection" ), this );
+  connect( actionDelete, SIGNAL( triggered() ), this, SLOT( deleteConnection() ) );
+  lst.append( actionDelete );
+
+  QAction* separator2 = new QAction( this );
+  separator2->setSeparator( true );
+  lst.append( separator2 );
+
+  QAction* actionCreateSchema = new QAction( tr( "Create Schema..." ), this );
+  connect( actionCreateSchema, SIGNAL( triggered() ), this, SLOT( createSchema() ) );
+  lst.append( actionCreateSchema );
 
   return lst;
 }
@@ -123,6 +139,11 @@ void QgsPGConnectionItem::editConnection()
 
 void QgsPGConnectionItem::deleteConnection()
 {
+  if ( QMessageBox::question( 0, QObject::tr( "Delete Connection" ),
+                              QObject::tr( "Are you sure you want to delete the connection to %1?" ).arg( mName ),
+                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+    return;
+
   QgsPostgresConn::deleteConnection( mName );
   // the parent should be updated
   if ( mParent )
@@ -135,7 +156,42 @@ void QgsPGConnectionItem::refreshConnection()
   refresh();
 }
 
+void QgsPGConnectionItem::createSchema()
+{
+  QString schemaName = QInputDialog::getText( 0, tr( "Create Schema" ), tr( "Schema name:" ) );
+  if ( schemaName.isEmpty() )
+    return;
+
+  QgsDataSourceURI uri = QgsPostgresConn::connUri( mName );
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri.connectionInfo(), false );
+  if ( !conn )
+  {
+    QMessageBox::warning( 0, tr( "Create Schema" ), tr( "Unable to create schema." ) );
+    return;
+  }
+
+  //create the schema
+  QString sql = QString( "CREATE SCHEMA %1" ).arg( QgsPostgresConn::quotedIdentifier( schemaName ) );
+
+  QgsPostgresResult result = conn->PQexec( sql );
+  if ( result.PQresultStatus() != PGRES_COMMAND_OK )
+  {
+    QMessageBox::warning( 0, tr( "Create Schema" ), tr( "Unable to create schema %1\n%2" ).arg( schemaName )
+                          .arg( result.PQresultErrorMessage() ) );
+    conn->unref();
+    return;
+  }
+
+  conn->unref();
+  refresh();
+}
+
 bool QgsPGConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction )
+{
+  return handleDrop( data, QString::null );
+}
+
+bool QgsPGConnectionItem::handleDrop( const QMimeData * data, QString toSchema )
 {
   if ( !QgsMimeDataUtils::isUriList( data ) )
     return false;
@@ -153,7 +209,7 @@ bool QgsPGConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction )
   QStringList importResults;
   bool hasError = false;
   QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
-  foreach ( const QgsMimeDataUtils::Uri& u, lst )
+  Q_FOREACH ( const QgsMimeDataUtils::Uri& u, lst )
   {
     if ( u.layerType != "vector" )
     {
@@ -169,6 +225,12 @@ bool QgsPGConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction )
     {
       uri.setDataSource( QString(), u.name, "geom" );
       QgsDebugMsg( "URI " + uri.uri() );
+
+      if ( !toSchema.isNull() )
+      {
+        uri.setSchema( toSchema );
+      }
+
       QgsVectorLayerImport::ImportError err;
       QString importError;
       err = QgsVectorLayerImport::importLayer( srcLayer, uri.uri(), "postgres", &srcLayer->crs(), false, &importError, false, 0, progress );
@@ -227,27 +289,138 @@ QList<QAction*> QgsPGLayerItem::actions()
 {
   QList<QAction*> lst;
 
-  QAction* actionDeleteLayer = new QAction( tr( "Delete layer" ), this );
+  QString typeName = mLayerProperty.isView ? tr( "View" ) : tr( "Table" );
+
+  QAction* actionRenameLayer = new QAction( tr( "Rename %1..." ).arg( typeName ), this );
+  connect( actionRenameLayer, SIGNAL( triggered() ), this, SLOT( renameLayer() ) );
+  lst.append( actionRenameLayer );
+
+  QAction* actionDeleteLayer = new QAction( tr( "Delete %1" ).arg( typeName ), this );
   connect( actionDeleteLayer, SIGNAL( triggered() ), this, SLOT( deleteLayer() ) );
   lst.append( actionDeleteLayer );
+
+  if ( !mLayerProperty.isView )
+  {
+    QAction* actionTruncateLayer = new QAction( tr( "Truncate %1" ).arg( typeName ), this );
+    connect( actionTruncateLayer, SIGNAL( triggered() ), this, SLOT( truncateTable() ) );
+    lst.append( actionTruncateLayer );
+  }
 
   return lst;
 }
 
 void QgsPGLayerItem::deleteLayer()
 {
+  if ( QMessageBox::question( 0, QObject::tr( "Delete Table" ),
+                              QObject::tr( "Are you sure you want to delete %1.%2?" ).arg( mLayerProperty.schemaName ).arg( mLayerProperty.tableName ),
+                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+    return;
+
   QString errCause;
   bool res = ::deleteLayer( mUri, errCause );
   if ( !res )
   {
-    QMessageBox::warning( 0, tr( "Delete layer" ), errCause );
+    QMessageBox::warning( 0, tr( "Delete Table" ), errCause );
   }
   else
   {
-    QMessageBox::information( 0, tr( "Delete layer" ), tr( "Layer deleted successfully." ) );
+    QMessageBox::information( 0, tr( "Delete Table" ), tr( "Table deleted successfully." ) );
     if ( mParent )
       mParent->refresh();
   }
+}
+
+void QgsPGLayerItem::renameLayer()
+{
+  QString typeName = mLayerProperty.isView ? tr( "View" ) : tr( "Table" );
+  QString lowerTypeName = mLayerProperty.isView ? tr( "view" ) : tr( "table" );
+
+  QgsNewNameDialog dlg( tr( "%1 %2.%3" ).arg( lowerTypeName ).arg( mLayerProperty.schemaName ).arg( mLayerProperty.tableName ), mLayerProperty.tableName );
+  dlg.setWindowTitle( tr( "Rename %1" ).arg( typeName ) );
+  if ( dlg.exec() != QDialog::Accepted || dlg.name() == mLayerProperty.tableName )
+    return;
+
+  QString schemaName = mLayerProperty.schemaName;
+  QString tableName = mLayerProperty.tableName;
+  QString schemaTableName;
+  if ( !schemaName.isEmpty() )
+  {
+    schemaTableName = QgsPostgresConn::quotedIdentifier( schemaName ) + ".";
+  }
+  QString oldName = schemaTableName + QgsPostgresConn::quotedIdentifier( tableName );
+  QString newName = QgsPostgresConn::quotedIdentifier( dlg.name() );
+
+  QgsDataSourceURI dsUri( mUri );
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo(), false );
+  if ( !conn )
+  {
+    QMessageBox::warning( 0, tr( "Rename %1" ).arg( typeName ), tr( "Unable to rename %1." ).arg( lowerTypeName ) );
+    return;
+  }
+
+  //rename the layer
+  QString sql;
+  if ( mLayerProperty.isView )
+  {
+    sql = QString( "ALTER %1 VIEW %2 RENAME TO %3" ).arg( mLayerProperty.relKind == "m" ? QString( "MATERIALIZED" ) : QString() )
+          .arg( oldName ).arg( newName );
+  }
+  else
+  {
+    sql = QString( "ALTER TABLE %1 RENAME TO %2" ).arg( oldName ).arg( newName );
+  }
+
+  QgsPostgresResult result = conn->PQexec( sql );
+  if ( result.PQresultStatus() != PGRES_COMMAND_OK )
+  {
+    QMessageBox::warning( 0, tr( "Rename %1" ).arg( typeName ), tr( "Unable to rename %1 %2\n%3" ).arg( lowerTypeName ).arg( mName )
+                          .arg( result.PQresultErrorMessage() ) );
+    conn->unref();
+    return;
+  }
+
+  conn->unref();
+  if ( mParent )
+    mParent->refresh();
+}
+
+void QgsPGLayerItem::truncateTable()
+{
+  if ( QMessageBox::question( 0, QObject::tr( "Truncate Table" ),
+                              QObject::tr( "Are you sure you want to truncate %1.%2?\n\nThis will delete all data within the table." ).arg( mLayerProperty.schemaName ).arg( mLayerProperty.tableName ),
+                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+    return;
+
+  QgsDataSourceURI dsUri( mUri );
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo(), false );
+  if ( !conn )
+  {
+    QMessageBox::warning( 0, tr( "Truncate Table" ), tr( "Unable to truncate table." ) );
+    return;
+  }
+
+  QString schemaName = mLayerProperty.schemaName;
+  QString tableName = mLayerProperty.tableName;
+  QString schemaTableName;
+  if ( !schemaName.isEmpty() )
+  {
+    schemaTableName = QgsPostgresConn::quotedIdentifier( schemaName ) + ".";
+  }
+  QString tableRef = schemaTableName + QgsPostgresConn::quotedIdentifier( tableName );
+
+  QString sql = QString( "TRUNCATE TABLE %1" ).arg( tableRef );
+
+  QgsPostgresResult result = conn->PQexec( sql );
+  if ( result.PQresultStatus() != PGRES_COMMAND_OK )
+  {
+    QMessageBox::warning( 0, tr( "Truncate Table" ), tr( "Unable to truncate %1\n%2" ).arg( mName )
+                          .arg( result.PQresultErrorMessage() ) );
+    conn->unref();
+    return;
+  }
+
+  conn->unref();
+  QMessageBox::information( 0, tr( "Truncate Table" ), tr( "Table truncated successfully." ) );
 }
 
 QString QgsPGLayerItem::createUri()
@@ -311,7 +484,7 @@ QVector<QgsDataItem*> QgsPGSchemaItem::createChildren()
   }
 
   bool dontResolveType = QgsPostgresConn::dontResolveType( mConnectionName );
-  foreach ( QgsPostgresLayerProperty layerProperty, layerProperties )
+  Q_FOREACH ( QgsPostgresLayerProperty layerProperty, layerProperties )
   {
     if ( layerProperty.schemaName != mName )
       continue;
@@ -349,7 +522,122 @@ QList<QAction *> QgsPGSchemaItem::actions()
   connect( actionRefresh, SIGNAL( triggered() ), this, SLOT( refresh() ) );
   lst.append( actionRefresh );
 
+  QAction* separator = new QAction( this );
+  separator->setSeparator( true );
+  lst.append( separator );
+
+  QAction* actionRename = new QAction( tr( "Rename Schema..." ), this );
+  connect( actionRename, SIGNAL( triggered() ), this, SLOT( renameSchema() ) );
+  lst.append( actionRename );
+
+  QAction* actionDelete = new QAction( tr( "Delete Schema" ), this );
+  connect( actionDelete, SIGNAL( triggered() ), this, SLOT( deleteSchema() ) );
+  lst.append( actionDelete );
+
   return lst;
+}
+
+void QgsPGSchemaItem::deleteSchema()
+{
+  // check if schema contains tables/views
+  QgsDataSourceURI uri = QgsPostgresConn::connUri( mConnectionName );
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri.connectionInfo(), false );
+  if ( !conn )
+  {
+    QMessageBox::warning( 0, tr( "Delete Schema" ), tr( "Unable to delete schema." ) );
+    return;
+  }
+
+  QString sql = QString( "SELECT table_name FROM information_schema.tables WHERE table_schema='%1'" ).arg( mName );
+  QgsPostgresResult result = conn->PQexec( sql );
+  if ( result.PQresultStatus() != PGRES_TUPLES_OK )
+  {
+    QMessageBox::warning( 0, tr( "Delete Schema" ), tr( "Unable to delete schema." ) );
+    conn->unref();
+    return;
+  }
+
+  QStringList childObjects;
+  int maxListed = 10;
+  for ( int idx = 0; idx < result.PQntuples(); idx++ )
+  {
+    childObjects << result.PQgetvalue( idx, 0 );
+    QgsPostgresSchemaProperty schema;
+    if ( idx == maxListed - 1 )
+      break;
+  }
+
+  int count = result.PQntuples();
+  if ( count > 0 )
+  {
+    QString objects = childObjects.join( "\n" );
+    if ( count > maxListed )
+    {
+      objects += QString( "\n[%1 additional objects not listed]" ).arg( count - maxListed );
+    }
+    if ( QMessageBox::question( 0, QObject::tr( "Delete Schema" ),
+                                QObject::tr( "Schema '%1' contains objects:\n\n%2\n\nAre you sure you want to delete the schema and all these objects?" ).arg( mName ).arg( objects ),
+                                QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+    {
+      conn->unref();
+      return;
+    }
+  }
+  else
+  {
+    if ( QMessageBox::question( 0, QObject::tr( "Delete Schema" ),
+                                QObject::tr( "Are you sure you want to delete the schema '%1'?" ).arg( mName ),
+                                QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+      return;
+  }
+
+  QString errCause;
+  bool res = ::deleteSchema( mName, uri, errCause, count > 0 );
+  if ( !res )
+  {
+    QMessageBox::warning( 0, tr( "Delete Schema" ), errCause );
+  }
+  else
+  {
+    QMessageBox::information( 0, tr( "Delete Schema" ), tr( "Schema deleted successfully." ) );
+    if ( mParent )
+      mParent->refresh();
+  }
+}
+
+void QgsPGSchemaItem::renameSchema()
+{
+  QgsNewNameDialog dlg( tr( "schema '%1'" ).arg( mName ), mName );
+  dlg.setWindowTitle( tr( "Rename Schema" ) );
+  if ( dlg.exec() != QDialog::Accepted || dlg.name() == mName )
+    return;
+
+  QString schemaName = QgsPostgresConn::quotedIdentifier( mName );
+  QgsDataSourceURI uri = QgsPostgresConn::connUri( mConnectionName );
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri.connectionInfo(), false );
+  if ( !conn )
+  {
+    QMessageBox::warning( 0, tr( "Rename Schema" ), tr( "Unable to rename schema." ) );
+    return;
+  }
+
+  //rename the schema
+  QString sql = QString( "ALTER SCHEMA %1 RENAME TO %2" )
+                .arg( schemaName ).arg( QgsPostgresConn::quotedIdentifier( dlg.name() ) );
+
+  QgsPostgresResult result = conn->PQexec( sql );
+  if ( result.PQresultStatus() != PGRES_COMMAND_OK )
+  {
+    QMessageBox::warning( 0, tr( "Rename Schema" ), tr( "Unable to rename schema %1\n%2" ).arg( schemaName )
+                          .arg( result.PQresultErrorMessage() ) );
+    conn->unref();
+    return;
+  }
+
+  conn->unref();
+  QMessageBox::information( 0, tr( "Rename Schema" ), tr( "Schema renamed successfully." ) );
+  if ( mParent )
+    mParent->refresh();
 }
 
 QgsPGLayerItem *QgsPGSchemaItem::createLayer( QgsPostgresLayerProperty layerProperty )
@@ -384,6 +672,15 @@ QgsPGLayerItem *QgsPGSchemaItem::createLayer( QgsPostgresLayerProperty layerProp
   return layerItem;
 }
 
+bool QgsPGSchemaItem::handleDrop( const QMimeData * data, Qt::DropAction )
+{
+  QgsPGConnectionItem *conn = qobject_cast<QgsPGConnectionItem *>( parent() );
+  if ( !conn )
+    return 0;
+
+  return conn->handleDrop( data, mName );
+}
+
 // ---------------------------------------------------------------------------
 QgsPGRootItem::QgsPGRootItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
@@ -400,7 +697,7 @@ QgsPGRootItem::~QgsPGRootItem()
 QVector<QgsDataItem*> QgsPGRootItem::createChildren()
 {
   QVector<QgsDataItem*> connections;
-  foreach ( QString connName, QgsPostgresConn::connectionList() )
+  Q_FOREACH ( const QString& connName, QgsPostgresConn::connectionList() )
   {
     connections << new QgsPGConnectionItem( this, connName, mPath + "/" + connName );
   }

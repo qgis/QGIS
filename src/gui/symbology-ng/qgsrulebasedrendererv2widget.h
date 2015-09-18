@@ -43,6 +43,8 @@ Tree model for the rules:
 */
 class GUI_EXPORT QgsRuleBasedRendererV2Model : public QAbstractItemModel
 {
+    Q_OBJECT
+
   public:
     QgsRuleBasedRendererV2Model( QgsRuleBasedRendererV2* r );
 
@@ -165,7 +167,7 @@ class GUI_EXPORT QgsRendererRulePropsDialog : public QDialog, private Ui::QgsRen
     Q_OBJECT
 
   public:
-    QgsRendererRulePropsDialog( QgsRuleBasedRendererV2::Rule* rule, QgsVectorLayer* layer, QgsStyleV2* style, QWidget* parent = 0 );
+    QgsRendererRulePropsDialog( QgsRuleBasedRendererV2::Rule* rule, QgsVectorLayer* layer, QgsStyleV2* style, QWidget* parent = 0, QgsMapCanvas* mapCanvas = 0 );
     ~QgsRendererRulePropsDialog();
 
     QgsRuleBasedRendererV2::Rule* rule() { return mRule; }
@@ -181,6 +183,8 @@ class GUI_EXPORT QgsRendererRulePropsDialog : public QDialog, private Ui::QgsRen
 
     QgsSymbolV2SelectorDialog* mSymbolSelector;
     QgsSymbolV2* mSymbol; // a clone of original symbol
+
+    QgsMapCanvas* mMapCanvas;
 };
 
 

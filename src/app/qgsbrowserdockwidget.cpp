@@ -135,7 +135,7 @@ class QgsBrowserTreeFilterProxyModel : public QSortFilterProxyModel
       mREList.clear();
       if ( mPatternSyntax == "normal" )
       {
-        foreach ( QString f, mFilter.split( "|" ) )
+        Q_FOREACH ( const QString& f, mFilter.split( "|" ) )
         {
           QRegExp rx( QString( "*%1*" ).arg( f.trimmed() ) );
           rx.setPatternSyntax( QRegExp::Wildcard );
@@ -145,7 +145,7 @@ class QgsBrowserTreeFilterProxyModel : public QSortFilterProxyModel
       }
       else if ( mPatternSyntax == "wildcard" )
       {
-        foreach ( QString f, mFilter.split( "|" ) )
+        Q_FOREACH ( const QString& f, mFilter.split( "|" ) )
         {
           QRegExp rx( f.trimmed() );
           rx.setPatternSyntax( QRegExp::Wildcard );
@@ -175,7 +175,7 @@ class QgsBrowserTreeFilterProxyModel : public QSortFilterProxyModel
     {
       if ( mPatternSyntax == "normal" || mPatternSyntax == "wildcard" )
       {
-        foreach ( QRegExp rx, mREList )
+        Q_FOREACH ( const QRegExp& rx, mREList )
         {
           QgsDebugMsg( QString( "value: [%1] rx: [%2] match: %3" ).arg( value ).arg( rx.pattern() ).arg( rx.exactMatch( value ) ) );
           if ( rx.exactMatch( value ) )
@@ -184,7 +184,7 @@ class QgsBrowserTreeFilterProxyModel : public QSortFilterProxyModel
       }
       else
       {
-        foreach ( QRegExp rx, mREList )
+        Q_FOREACH ( const QRegExp& rx, mREList )
         {
           QgsDebugMsg( QString( "value: [%1] rx: [%2] match: %3" ).arg( value ).arg( rx.pattern() ).arg( rx.indexIn( value ) ) );
           if ( rx.indexIn( value ) != -1 )
@@ -383,6 +383,22 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem* item )
   if ( mNoticeLabel->text().isEmpty() )
   {
     mNoticeLabel->hide();
+  }
+}
+
+void QgsBrowserLayerProperties::setCondensedMode( bool condensedMode )
+{
+  if ( condensedMode )
+  {
+    mUriLabel->setLineWrapMode( QTextEdit::NoWrap );
+    mUriLabel->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+    mUriLabel->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+  }
+  else
+  {
+    mUriLabel->setLineWrapMode( QTextEdit::WidgetWidth );
+    mUriLabel->setHorizontalScrollBarPolicy( Qt::ScrollBarAsNeeded );
+    mUriLabel->setVerticalScrollBarPolicy( Qt::ScrollBarAsNeeded );
   }
 }
 
@@ -863,7 +879,11 @@ void QgsBrowserDockWidget::setPropertiesWidget()
       QModelIndex index = mProxyModel->mapToSource( indexes.value( 0 ) );
       QgsDataItem* item = mModel->dataItem( index );
       QgsBrowserPropertiesWidget* propertiesWidget = QgsBrowserPropertiesWidget::createWidget( item, mPropertiesWidget );
-      mPropertiesLayout->addWidget( propertiesWidget );
+      if ( propertiesWidget )
+      {
+        propertiesWidget->setCondensedMode( true );
+        mPropertiesLayout->addWidget( propertiesWidget );
+      }
     }
   }
   mPropertiesWidget->setVisible( mPropertiesLayout->count() > 0 );

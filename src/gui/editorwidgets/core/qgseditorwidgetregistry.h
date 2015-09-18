@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 24.4.2013
     Copyright            : (C) 2013 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -83,7 +83,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
                                     QWidget* parent,
                                     const QgsAttributeEditorContext& context = QgsAttributeEditorContext() );
 
-    QgsEditorWidgetWrapper* createSearchWidget( const QString& widgetId,
+    QgsSearchWidgetWrapper* createSearchWidget( const QString& widgetId,
         QgsVectorLayer* vl,
         int fieldIdx,
         const QgsEditorWidgetConfig& config,
@@ -193,7 +193,10 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
     void writeSymbology( QDomElement& element, QDomDocument& doc, QString& errorMessage );
 
   private:
+    QString findSuitableWrapper( QWidget* editor , const QString& defaultWidget );
+
     QMap<QString, QgsEditorWidgetFactory*> mWidgetFactories;
+    QMap<const char*, QPair<int, QString> > mFactoriesByType;
 };
 
 #endif // QGSEDITORWIDGETREGISTRY_H

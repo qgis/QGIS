@@ -96,7 +96,7 @@ class CORE_EXPORT QWebSettings : public QObject
  * @brief The QWebPage class is a collection of stubs to mimic the API of a QWebPage on systems
  * where QtWebkit is not available.
  */
-class QWebPage : public QObject
+class CORE_EXPORT QWebPage : public QObject
 {
 /// @cond
     Q_OBJECT

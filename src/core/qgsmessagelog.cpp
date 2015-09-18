@@ -50,6 +50,10 @@ void QgsMessageLog::logMessage( QString message, QString tag, QgsMessageLog::Mes
 void QgsMessageLog::emitMessage( QString message, QString tag, QgsMessageLog::MessageLevel level )
 {
   emit messageReceived( message, tag, level );
+  if ( level != QgsMessageLog::INFO )
+  {
+    emit messageReceived( true );
+  }
 }
 
 QgsMessageLogConsole::QgsMessageLogConsole()

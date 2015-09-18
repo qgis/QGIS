@@ -76,7 +76,7 @@ bool QgsColorSchemeList::saveColorsToScheme()
 void QgsColorSchemeList::removeSelection()
 {
   QList<int> rows;
-  foreach ( const QModelIndex &index, selectedIndexes() )
+  Q_FOREACH ( const QModelIndex &index, selectedIndexes() )
   {
     rows << index.row();
   }
@@ -85,7 +85,7 @@ void QgsColorSchemeList::removeSelection()
 
   //remove rows in descending order
   qSort( rowsToRemove.begin(), rowsToRemove.end(), qGreater<int>() );
-  foreach ( const int row, rowsToRemove )
+  Q_FOREACH ( int row, rowsToRemove )
   {
     mModel->removeRow( row );
   }
@@ -117,7 +117,7 @@ void QgsColorSchemeList::pasteColors()
 void QgsColorSchemeList::copyColors()
 {
   QList<int> rows;
-  foreach ( const QModelIndex &index, selectedIndexes() )
+  Q_FOREACH ( const QModelIndex &index, selectedIndexes() )
   {
     rows << index.row();
   }
@@ -125,7 +125,7 @@ void QgsColorSchemeList::copyColors()
   QList<int> rowsToCopy =  QList<int>::fromSet( rows.toSet() );
 
   QgsNamedColorList colorsToCopy;
-  foreach ( const int row, rowsToCopy )
+  Q_FOREACH ( int row, rowsToCopy )
   {
     colorsToCopy << mModel->colors().at( row );
   }
@@ -141,7 +141,7 @@ void QgsColorSchemeList::keyPressEvent( QKeyEvent *event )
   if (( event->key() == Qt::Key_Backspace || event->key() == Qt::Key_Delete ) )
   {
     QList<int> rows;
-    foreach ( const QModelIndex &index, selectedIndexes() )
+    Q_FOREACH ( const QModelIndex &index, selectedIndexes() )
     {
       rows << index.row();
     }
@@ -150,7 +150,7 @@ void QgsColorSchemeList::keyPressEvent( QKeyEvent *event )
 
     //remove rows in descending order
     qSort( rowsToRemove.begin(), rowsToRemove.end(), qGreater<int>() );
-    foreach ( const int row, rowsToRemove )
+    Q_FOREACH ( int row, rowsToRemove )
     {
       mModel->removeRow( row );
     }

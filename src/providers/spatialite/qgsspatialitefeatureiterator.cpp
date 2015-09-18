@@ -35,7 +35,7 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
   mRowNumber = 0;
 
   QString whereClause;
-  if ( request.filterType() == QgsFeatureRequest::FilterRect && !mSource->mGeometryColumn.isNull() )
+  if ( !request.filterRect().isNull() && !mSource->mGeometryColumn.isNull() )
   {
     // some kind of MBR spatial filtering is required
     whereClause += whereClauseRect();
@@ -45,8 +45,7 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
   {
     whereClause += whereClauseFid();
   }
-
-  if ( request.filterType() == QgsFeatureRequest::FilterFids )
+  else if ( request.filterType() == QgsFeatureRequest::FilterFids )
   {
     whereClause += whereClauseFids();
   }
@@ -209,12 +208,17 @@ QString QgsSpatiaLiteFeatureIterator::whereClauseFid()
 
 QString QgsSpatiaLiteFeatureIterator::whereClauseFids()
 {
-  QStringList whereClauses;
-  foreach ( const QgsFeatureId featureId, mRequest.filterFids() )
+  if ( mRequest.filterFids().isEmpty() )
+    return "";
+
+  QString expr = QString( "%1 IN (" ).arg( quotedPrimaryKey() ), delim;
+  Q_FOREACH ( const QgsFeatureId featureId, mRequest.filterFids() )
   {
-    whereClauses << QString( "%1=%2" ).arg( quotedPrimaryKey() ).arg( featureId );
+    expr += delim + QString::number( featureId );
+    delim = ",";
   }
-  return whereClauses.isEmpty() ? "" : whereClauses.join( " OR " ).prepend( "(" ).append( ")" );
+  expr += ")";
+  return expr;
 }
 
 QString QgsSpatiaLiteFeatureIterator::whereClauseRect()
@@ -369,8 +373,16 @@ QVariant QgsSpatiaLiteFeatureIterator::getFeatureAttribute( sqlite3_stmt* stmt, 
 {
   if ( sqlite3_column_type( stmt, ic ) == SQLITE_INTEGER )
   {
-    // INTEGER value
-    return sqlite3_column_int( stmt, ic );
+    if ( type == QVariant::Int )
+    {
+      // INTEGER value
+      return sqlite3_column_int( stmt, ic );
+    }
+    else
+    {
+      // INTEGER value
+      return ( qint64 ) sqlite3_column_int64( stmt, ic );
+    }
   }
 
   if ( sqlite3_column_type( stmt, ic ) == SQLITE_FLOAT )

@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 5.1.2014
     Copyright            : (C) 2014 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -24,8 +24,8 @@
 #include <QStringListModel>
 #include <QCompleter>
 
-bool orderByKeyLessThan( const QgsValueRelationWidgetWrapper::ValueRelationItem& p1
-                         , const QgsValueRelationWidgetWrapper::ValueRelationItem& p2 )
+bool QgsValueRelationWidgetWrapper::orderByKeyLessThan( const QgsValueRelationWidgetWrapper::ValueRelationItem& p1
+    , const QgsValueRelationWidgetWrapper::ValueRelationItem& p2 )
 {
   switch ( p1.first.type() )
   {
@@ -43,8 +43,8 @@ bool orderByKeyLessThan( const QgsValueRelationWidgetWrapper::ValueRelationItem&
   }
 }
 
-bool orderByValueLessThan( const QgsValueRelationWidgetWrapper::ValueRelationItem& p1
-                           , const QgsValueRelationWidgetWrapper::ValueRelationItem& p2 )
+bool QgsValueRelationWidgetWrapper::orderByValueLessThan( const QgsValueRelationWidgetWrapper::ValueRelationItem& p1
+    , const QgsValueRelationWidgetWrapper::ValueRelationItem& p2 )
 {
   return p1.second < p2.second;
 }
@@ -164,6 +164,11 @@ void QgsValueRelationWidgetWrapper::initWidget( QWidget* editor )
   }
 }
 
+bool QgsValueRelationWidgetWrapper::valid()
+{
+  return mListWidget || mLineEdit || mComboBox;
+}
+
 void QgsValueRelationWidgetWrapper::setValue( const QVariant& value )
 {
   if ( mListWidget )
@@ -212,11 +217,16 @@ QgsValueRelationWidgetWrapper::ValueRelationCache QgsValueRelationWidgetWrapper:
     int ki = layer->fieldNameIndex( config.value( "Key" ).toString() );
     int vi = layer->fieldNameIndex( config.value( "Value" ).toString() );
 
+    QgsExpressionContext context;
+    context << QgsExpressionContextUtils::globalScope()
+    << QgsExpressionContextUtils::projectScope()
+    << QgsExpressionContextUtils::layerScope( layer );
+
     QgsExpression *e = 0;
     if ( !config.value( "FilterExpression" ).toString().isEmpty() )
     {
       e = new QgsExpression( config.value( "FilterExpression" ).toString() );
-      if ( e->hasParserError() || !e->prepare( layer->pendingFields() ) )
+      if ( e->hasParserError() || !e->prepare( &context ) )
         ki = -1;
     }
 
@@ -258,7 +268,8 @@ QgsValueRelationWidgetWrapper::ValueRelationCache QgsValueRelationWidgetWrapper:
       QgsFeature f;
       while ( fit.nextFeature( f ) )
       {
-        if ( e && !e->evaluate( &f ).toBool() )
+        context.setFeature( f );
+        if ( e && !e->evaluate( &context ).toBool() )
           continue;
 
         cache.append( ValueRelationItem( f.attribute( ki ), f.attribute( vi ).toString() ) );

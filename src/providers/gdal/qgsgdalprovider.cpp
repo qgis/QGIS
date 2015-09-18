@@ -913,7 +913,7 @@ QString QgsGdalProvider::generateBandName( int theBandNumber ) const
         val = values.at( 1 );
         if ( values.at( 0 ) == "NETCDF_DIM_EXTRA" )
         {
-          dimExtraValues = val.replace( QString( "{" ), QString( "" ) ).replace( QString( "}" ), QString( "" ) ).split( "," );
+          dimExtraValues = val.replace( QString( "{" ), QString() ).replace( QString( "}" ), QString() ).split( "," );
           //http://qt-project.org/doc/qt-4.8/qregexp.html#capturedTexts
         }
         else
@@ -1333,7 +1333,7 @@ QgsRasterHistogram QgsGdalProvider::histogram( int theBandNo,
   initHistogram( myHistogram, theBandNo, theBinCount, theMinimum, theMaximum, theExtent, theSampleSize, theIncludeOutOfRange );
 
   // Find cached
-  foreach ( QgsRasterHistogram histogram, mHistograms )
+  Q_FOREACH ( const QgsRasterHistogram& histogram, mHistograms )
   {
     if ( histogram == myHistogram )
     {
@@ -1566,7 +1566,7 @@ QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> & theRaste
   // add any driver-specific configuration options, save values to be restored later
   if ( theFormat != QgsRaster::PyramidsErdas && ! theConfigOptions.isEmpty() )
   {
-    foreach ( QString option, theConfigOptions )
+    Q_FOREACH ( const QString& option, theConfigOptions )
     {
       QStringList opt = option.split( "=" );
       QByteArray key = opt[0].toLocal8Bit();
@@ -1805,7 +1805,7 @@ QList<QgsRasterPyramid> QgsGdalProvider::buildPyramidList( QList<int> overviewLi
   }
 
   // loop over pyramid list
-  foreach ( int myDivisor, overviewList )
+  Q_FOREACH ( int myDivisor, overviewList )
   {
     //
     // First we build up a list of potential pyramid layers
@@ -2309,7 +2309,7 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int theBandNo, int theStats,
   QgsRasterBandStats myRasterBandStats;
   initStatistics( myRasterBandStats, theBandNo, theStats, theExtent, theSampleSize );
 
-  foreach ( QgsRasterBandStats stats, mStatistics )
+  Q_FOREACH ( const QgsRasterBandStats& stats, mStatistics )
   {
     if ( stats.contains( myRasterBandStats ) )
     {
@@ -2687,7 +2687,7 @@ void QgsGdalProvider::initBaseDataset()
 char** papszFromStringList( const QStringList& list )
 {
   char **papszRetList = NULL;
-  foreach ( QString elem, list )
+  Q_FOREACH ( const QString& elem, list )
   {
     papszRetList = CSLAddString( papszRetList, elem.toLocal8Bit().constData() );
   }
@@ -2882,7 +2882,7 @@ QString QgsGdalProvider::validateCreationOptions( const QStringList& createOptio
 
   // prepare a map for easier lookup
   QMap< QString, QString > optionsMap;
-  foreach ( QString option, createOptions )
+  Q_FOREACH ( const QString& option, createOptions )
   {
     QStringList opt = option.split( "=" );
     optionsMap[ opt[0].toUpper()] = opt[1];

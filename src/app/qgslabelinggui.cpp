@@ -38,6 +38,20 @@
 #include <QCheckBox>
 #include <QSettings>
 
+static QgsExpressionContext _getExpressionContext( const void* context )
+{
+  QgsExpressionContext expContext;
+  expContext << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::atlasScope( 0 )
+  << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() );
+
+  const QgsVectorLayer* layer = ( const QgsVectorLayer* ) context;
+  if ( layer )
+    expContext << QgsExpressionContextUtils::layerScope( layer );
+
+  return expContext;
+}
 
 QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, QWidget* parent )
     : QWidget( parent )
@@ -58,6 +72,13 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, 
     return;
 
   setupUi( this );
+
+  mFieldExpressionWidget->registerGetExpressionContextCallback( &_getExpressionContext, mLayer );
+
+  Q_FOREACH ( QgsUnitSelectionWidget* unitWidget, findChildren<QgsUnitSelectionWidget*>() )
+  {
+    unitWidget->setMapCanvas( mMapCanvas );
+  }
   mFontSizeUnitWidget->setUnits( QStringList() << tr( "Points" ) << tr( "Map unit" ), 1 );
   mBufferUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit );
   mShapeSizeUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit );
@@ -80,13 +101,12 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, 
   mFontLetterSpacingSpinBox->setClearValue( 0.0 );
   mFontWordSpacingSpinBox->setClearValue( 0.0 );
 
+  mObstacleTypeComboBox->addItem( tr( "Over the feature's interior" ), QgsPalLayerSettings::PolygonInterior );
+  mObstacleTypeComboBox->addItem( tr( "Over the feature's boundary" ), QgsPalLayerSettings::PolygonBoundary );
+
   mCharDlg = new QgsCharacterSelectorDialog( this );
 
   mRefFont = lblFontPreview->font();
-
-  // main layer label-enabling connections
-  connect( chkEnableLabeling, SIGNAL( toggled( bool ) ), mFieldExpressionWidget, SLOT( setEnabled( bool ) ) );
-  connect( chkEnableLabeling, SIGNAL( toggled( bool ) ), mLabelingFrame, SLOT( setEnabled( bool ) ) );
 
   // connections for groupboxes with separate activation checkboxes (that need to honor data defined setting)
   connect( mBufferDrawChkBx, SIGNAL( toggled( bool ) ), this, SLOT( updateUi() ) );
@@ -121,6 +141,11 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, 
   connect( mShadowTranspSpnBx, SIGNAL( valueChanged( int ) ), mShadowTranspSlider, SLOT( setValue( int ) ) );
   connect( mLimitLabelChkBox, SIGNAL( toggled( bool ) ), mLimitLabelSpinBox, SLOT( setEnabled( bool ) ) );
 
+  //connections to prevent users removing all line placement positions
+  connect( chkLineAbove, SIGNAL( toggled( bool ) ), this, SLOT( updateLinePlacementOptions() ) );
+  connect( chkLineBelow, SIGNAL( toggled( bool ) ), this, SLOT( updateLinePlacementOptions() ) );
+  connect( chkLineOn, SIGNAL( toggled( bool ) ), this, SLOT( updateLinePlacementOptions() ) );
+
   connect( btnEngineSettings, SIGNAL( clicked() ), this, SLOT( showEngineConfigDialog() ) );
 
   // set placement methods page based on geometry type
@@ -151,6 +176,8 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, 
   chkMergeLines->setVisible( layer->geometryType() == QGis::Line );
   mDirectSymbolsFrame->setVisible( layer->geometryType() == QGis::Line );
   mMinSizeFrame->setVisible( layer->geometryType() != QGis::Point );
+  mPolygonObstacleTypeFrame->setVisible( layer->geometryType() == QGis::Polygon );
+  mPolygonFeatureOptionsFrame->setVisible( layer->geometryType() == QGis::Polygon );
 
   // field combo and expression button
   mFieldExpressionWidget->setLayer( mLayer );
@@ -242,7 +269,7 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, 
 
   // Global settings group for groupboxes' saved/retored collapsed state
   // maintains state across different dialogs
-  foreach ( QgsCollapsibleGroupBox *grpbox, findChildren<QgsCollapsibleGroupBox*>() )
+  Q_FOREACH ( QgsCollapsibleGroupBox *grpbox, findChildren<QgsCollapsibleGroupBox*>() )
   {
     grpbox->setSettingGroup( QString( "mAdvLabelingDlg" ) );
   }
@@ -288,9 +315,16 @@ void QgsLabelingGui::init()
   blockInitSignals( true );
 
   // enable/disable main options based upon whether layer is being labeled
-  chkEnableLabeling->setChecked( lyr.enabled );
-  mFieldExpressionWidget->setEnabled( chkEnableLabeling->isChecked() );
-  mLabelingFrame->setEnabled( chkEnableLabeling->isChecked() );
+  if ( !lyr.enabled )
+  {
+    mLabelModeComboBox->setCurrentIndex( 0 );
+  }
+  else
+  {
+    mLabelModeComboBox->setCurrentIndex( lyr.drawLabels ? 1 : 2 );
+  }
+  mFieldExpressionWidget->setEnabled( mLabelModeComboBox->currentIndex() == 1 );
+  mLabelingFrame->setEnabled( mLabelModeComboBox->currentIndex() == 1 );
 
   // set the current field or add the current expression to the bottom of the list
   mFieldExpressionWidget->setField( lyr.fieldName );
@@ -298,27 +332,32 @@ void QgsLabelingGui::init()
   // populate placement options
   mCentroidRadioWhole->setChecked( lyr.centroidWhole );
   mCentroidInsideCheckBox->setChecked( lyr.centroidInside );
+  mFitInsidePolygonCheckBox->setChecked( lyr.fitInPolygonOnly );
+  mLineDistanceSpnBx->setValue( lyr.dist );
+  mLineDistanceUnitWidget->setUnit( lyr.distInMapUnits ? QgsSymbolV2::MapUnit : QgsSymbolV2::MM );
+  mLineDistanceUnitWidget->setMapUnitScale( lyr.distMapUnitScale );
+  mQuadrantBtnGrp->button(( int )lyr.quadOffset )->setChecked( true );
+  mPointOffsetXSpinBox->setValue( lyr.xOffset );
+  mPointOffsetYSpinBox->setValue( lyr.yOffset );
+  mPointOffsetUnitWidget->setUnit( lyr.labelOffsetInMapUnits ? QgsSymbolV2::MapUnit : QgsSymbolV2::MM );
+  mPointOffsetUnitWidget->setMapUnitScale( lyr.labelOffsetMapUnitScale );
+  mPointAngleSpinBox->setValue( lyr.angleOffset );
+  chkLineAbove->setChecked( lyr.placementFlags & QgsPalLayerSettings::AboveLine );
+  chkLineBelow->setChecked( lyr.placementFlags & QgsPalLayerSettings::BelowLine );
+  chkLineOn->setChecked( lyr.placementFlags & QgsPalLayerSettings::OnLine );
+  if ( !( lyr.placementFlags & QgsPalLayerSettings::MapOrientation ) )
+    chkLineOrientationDependent->setChecked( true );
+
   switch ( lyr.placement )
   {
     case QgsPalLayerSettings::AroundPoint:
       radAroundPoint->setChecked( true );
       radAroundCentroid->setChecked( true );
-
-      mLineDistanceSpnBx->setValue( lyr.dist );
-      mLineDistanceUnitWidget->setUnit( lyr.distInMapUnits ? QgsSymbolV2::MapUnit : QgsSymbolV2::MM );
-      mLineDistanceUnitWidget->setMapUnitScale( lyr.distMapUnitScale );
       //spinAngle->setValue( lyr.angle ); // TODO: uncomment when supported
       break;
     case QgsPalLayerSettings::OverPoint:
       radOverPoint->setChecked( true );
       radOverCentroid->setChecked( true );
-
-      mQuadrantBtnGrp->button(( int )lyr.quadOffset )->setChecked( true );
-      mPointOffsetXSpinBox->setValue( lyr.xOffset );
-      mPointOffsetYSpinBox->setValue( lyr.yOffset );
-      mPointOffsetUnitWidget->setUnit( lyr.labelOffsetInMapUnits ? QgsSymbolV2::MapUnit : QgsSymbolV2::MM );
-      mPointOffsetUnitWidget->setMapUnitScale( lyr.labelOffsetMapUnitScale );
-      mPointAngleSpinBox->setValue( lyr.angleOffset );
       break;
     case QgsPalLayerSettings::Line:
       radLineParallel->setChecked( true );
@@ -336,25 +375,17 @@ void QgsLabelingGui::init()
       break;
   }
 
-  if ( lyr.placement == QgsPalLayerSettings::Line || lyr.placement == QgsPalLayerSettings::Curved )
-  {
-    mLineDistanceSpnBx->setValue( lyr.dist );
-    mLineDistanceUnitWidget->setUnit( lyr.distInMapUnits ? QgsSymbolV2::MapUnit : QgsSymbolV2::MM );
-    mLineDistanceUnitWidget->setMapUnitScale( lyr.distMapUnitScale );
-    chkLineAbove->setChecked( lyr.placementFlags & QgsPalLayerSettings::AboveLine );
-    chkLineBelow->setChecked( lyr.placementFlags & QgsPalLayerSettings::BelowLine );
-    chkLineOn->setChecked( lyr.placementFlags & QgsPalLayerSettings::OnLine );
-    if ( !( lyr.placementFlags & QgsPalLayerSettings::MapOrientation ) )
-      chkLineOrientationDependent->setChecked( true );
-  }
-
   // Label repeat distance
   mRepeatDistanceSpinBox->setValue( lyr.repeatDistance );
   mRepeatDistanceUnitWidget->setUnit( lyr.repeatDistanceUnit == QgsPalLayerSettings::MapUnits ? QgsSymbolV2::MapUnit : QgsSymbolV2::MM );
   mRepeatDistanceUnitWidget->setMapUnitScale( lyr.repeatDistanceMapUnitScale );
 
   mPrioritySlider->setValue( lyr.priority );
-  chkNoObstacle->setChecked( lyr.obstacle );
+  mChkNoObstacle->setChecked( lyr.obstacle );
+  mObstacleFactorSlider->setValue( lyr.obstacleFactor * 50 );
+  mObstacleTypeComboBox->setCurrentIndex( mObstacleTypeComboBox->findData( lyr.obstacleType ) );
+  mPolygonObstacleTypeFrame->setEnabled( lyr.obstacle );
+  mObstaclePriorityFrame->setEnabled( lyr.obstacle );
   chkLabelPerFeaturePart->setChecked( lyr.labelPerPart );
   mPalShowAllLabelsForLayerChkBx->setChecked( lyr.displayAll );
   chkMergeLines->setChecked( lyr.mergeLines );
@@ -499,6 +530,7 @@ void QgsLabelingGui::init()
   mShadowBlendCmbBx->setBlendMode( lyr.shadowBlendMode );
 
   updatePlacementWidgets();
+  updateLinePlacementOptions();
 
   // needs to come before data defined setup, so connections work
   blockInitSignals( false );
@@ -574,7 +606,8 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
 {
   QgsPalLayerSettings lyr;
 
-  lyr.enabled = chkEnableLabeling->isChecked();
+  lyr.enabled = mLabelModeComboBox->currentIndex() > 0;
+  lyr.drawLabels = mLabelModeComboBox->currentIndex() == 1;
 
   bool isExpression;
   lyr.fieldName = mFieldExpressionWidget->currentField( &isExpression );
@@ -586,24 +619,33 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   QWidget* curPlacementWdgt = stackedPlacement->currentWidget();
   lyr.centroidWhole = mCentroidRadioWhole->isChecked();
   lyr.centroidInside = mCentroidInsideCheckBox->isChecked();
+  lyr.fitInPolygonOnly = mFitInsidePolygonCheckBox->isChecked();
+  lyr.dist = mLineDistanceSpnBx->value();
+  lyr.distInMapUnits = ( mLineDistanceUnitWidget->unit() == QgsSymbolV2::MapUnit );
+  lyr.distMapUnitScale = mLineDistanceUnitWidget->getMapUnitScale();
+  lyr.quadOffset = ( QgsPalLayerSettings::QuadrantPosition )mQuadrantBtnGrp->checkedId();
+  lyr.xOffset = mPointOffsetXSpinBox->value();
+  lyr.yOffset = mPointOffsetYSpinBox->value();
+  lyr.labelOffsetInMapUnits = ( mPointOffsetUnitWidget->unit() == QgsSymbolV2::MapUnit );
+  lyr.labelOffsetMapUnitScale = mPointOffsetUnitWidget->getMapUnitScale();
+  lyr.angleOffset = mPointAngleSpinBox->value();
+  if ( chkLineAbove->isChecked() )
+    lyr.placementFlags |= QgsPalLayerSettings::AboveLine;
+  if ( chkLineBelow->isChecked() )
+    lyr.placementFlags |= QgsPalLayerSettings::BelowLine;
+  if ( chkLineOn->isChecked() )
+    lyr.placementFlags |= QgsPalLayerSettings::OnLine;
+  if ( ! chkLineOrientationDependent->isChecked() )
+    lyr.placementFlags |= QgsPalLayerSettings::MapOrientation;
   if (( curPlacementWdgt == pagePoint && radAroundPoint->isChecked() )
       || ( curPlacementWdgt == pagePolygon && radAroundCentroid->isChecked() ) )
   {
     lyr.placement = QgsPalLayerSettings::AroundPoint;
-    lyr.dist = mLineDistanceSpnBx->value();
-    lyr.distInMapUnits = ( mLineDistanceUnitWidget->unit() == QgsSymbolV2::MapUnit );
-    lyr.distMapUnitScale = mLineDistanceUnitWidget->getMapUnitScale();
   }
   else if (( curPlacementWdgt == pagePoint && radOverPoint->isChecked() )
            || ( curPlacementWdgt == pagePolygon && radOverCentroid->isChecked() ) )
   {
     lyr.placement = QgsPalLayerSettings::OverPoint;
-    lyr.quadOffset = ( QgsPalLayerSettings::QuadrantPosition )mQuadrantBtnGrp->checkedId();
-    lyr.xOffset = mPointOffsetXSpinBox->value();
-    lyr.yOffset = mPointOffsetYSpinBox->value();
-    lyr.labelOffsetInMapUnits = ( mPointOffsetUnitWidget->unit() == QgsSymbolV2::MapUnit );
-    lyr.labelOffsetMapUnitScale = mPointOffsetUnitWidget->getMapUnitScale();
-    lyr.angleOffset = mPointAngleSpinBox->value();
   }
   else if (( curPlacementWdgt == pageLine && radLineParallel->isChecked() )
            || ( curPlacementWdgt == pagePolygon && radPolygonPerimeter->isChecked() )
@@ -611,18 +653,6 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   {
     bool curved = ( curPlacementWdgt == pageLine && radLineCurved->isChecked() );
     lyr.placement = ( curved ? QgsPalLayerSettings::Curved : QgsPalLayerSettings::Line );
-    lyr.dist = mLineDistanceSpnBx->value();
-    lyr.distInMapUnits = ( mLineDistanceUnitWidget->unit() == QgsSymbolV2::MapUnit );
-    lyr.distMapUnitScale = mLineDistanceUnitWidget->getMapUnitScale();
-    if ( chkLineAbove->isChecked() )
-      lyr.placementFlags |= QgsPalLayerSettings::AboveLine;
-    if ( chkLineBelow->isChecked() )
-      lyr.placementFlags |= QgsPalLayerSettings::BelowLine;
-    if ( chkLineOn->isChecked() )
-      lyr.placementFlags |= QgsPalLayerSettings::OnLine;
-
-    if ( ! chkLineOrientationDependent->isChecked() )
-      lyr.placementFlags |= QgsPalLayerSettings::MapOrientation;
   }
   else if (( curPlacementWdgt == pageLine && radLineHorizontal->isChecked() )
            || ( curPlacementWdgt == pagePolygon && radPolygonHorizontal->isChecked() ) )
@@ -650,7 +680,9 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.previewBkgrdColor = mPreviewBackgroundBtn->color();
 
   lyr.priority = mPrioritySlider->value();
-  lyr.obstacle = chkNoObstacle->isChecked();
+  lyr.obstacle = mChkNoObstacle->isChecked() || mLabelModeComboBox->currentIndex() == 2;
+  lyr.obstacleFactor = mObstacleFactorSlider->value() / 50.0;
+  lyr.obstacleType = ( QgsPalLayerSettings::ObstacleType )mObstacleTypeComboBox->itemData( mObstacleTypeComboBox->currentIndex() ).toInt();
   lyr.labelPerPart = chkLabelPerFeaturePart->isChecked();
   lyr.displayAll = mPalShowAllLabelsForLayerChkBx->isChecked();
   lyr.mergeLines = chkMergeLines->isChecked();
@@ -831,6 +863,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   setDataDefinedProperty( mMaxCharAngleDDBtn, QgsPalLayerSettings::CurvedCharAngleInOut, lyr );
   setDataDefinedProperty( mRepeatDistanceDDBtn, QgsPalLayerSettings::RepeatDistance, lyr );
   setDataDefinedProperty( mRepeatDistanceUnitDDBtn, QgsPalLayerSettings::RepeatDistanceUnit, lyr );
+  setDataDefinedProperty( mPriorityDDBtn, QgsPalLayerSettings::Priority, lyr );
 
   // data defined-only
   setDataDefinedProperty( mCoordXDDBtn, QgsPalLayerSettings::PositionX, lyr );
@@ -848,6 +881,8 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   setDataDefinedProperty( mFontMaxPixelDDBtn, QgsPalLayerSettings::FontMaxPixel, lyr );
   setDataDefinedProperty( mShowLabelDDBtn, QgsPalLayerSettings::Show, lyr );
   setDataDefinedProperty( mAlwaysShowDDBtn, QgsPalLayerSettings::AlwaysShow, lyr );
+  setDataDefinedProperty( mIsObstacleDDBtn, QgsPalLayerSettings::IsObstacle, lyr );
+  setDataDefinedProperty( mObstacleFactorDDBtn, QgsPalLayerSettings::ObstacleFactor, lyr );
 
   return lyr;
 }
@@ -860,12 +895,18 @@ void QgsLabelingGui::setDataDefinedProperty( const QgsDataDefinedButton* ddBtn, 
 
 void QgsLabelingGui::populateDataDefinedButtons( QgsPalLayerSettings& s )
 {
+  Q_FOREACH ( QgsDataDefinedButton* button, findChildren< QgsDataDefinedButton* >() )
+  {
+    button->registerGetExpressionContextCallback( &_getExpressionContext, mLayer );
+  }
+
   // don't register enable/disable siblings, since visual feedback from data defined buttons should be enough,
   // and ability to edit layer-level setting should remain enabled regardless
 
   QString trString = tr( "string " );
 
   // text style
+
   mFontDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::Family ),
                     QgsDataDefinedButton::String,
                     trString + tr( "[<b>family</b>|<b>family[foundry]</b>],<br>"
@@ -1051,6 +1092,9 @@ void QgsLabelingGui::populateDataDefinedButtons( QgsPalLayerSettings& s )
                             QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doublePosDesc() );
   mLineDistanceUnitDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::DistanceUnits ),
                                 QgsDataDefinedButton::String, QgsDataDefinedButton::unitsMmMuDesc() );
+  mPriorityDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::Priority ),
+                        QgsDataDefinedButton::AnyType, tr( "double [0.0-10.0]" ) );
+
   // TODO: is this necessary? maybe just use the data defined-only rotation?
   //mPointAngleDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::OffsetRotation ),
   //                        QgsDataDefinedButton::AnyType, QgsDataDefinedButton::double180RotDesc() );
@@ -1110,6 +1154,11 @@ void QgsLabelingGui::populateDataDefinedButtons( QgsPalLayerSettings& s )
 
   mAlwaysShowDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::AlwaysShow ),
                           QgsDataDefinedButton::AnyType, QgsDataDefinedButton::boolDesc() );
+
+  mIsObstacleDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::IsObstacle ),
+                          QgsDataDefinedButton::AnyType, QgsDataDefinedButton::boolDesc() );
+  mObstacleFactorDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::ObstacleFactor ),
+                              QgsDataDefinedButton::AnyType, tr( "double [0.0-10.0]" ) );
 }
 
 void QgsLabelingGui::changeTextColor( const QColor &color )
@@ -1289,6 +1338,7 @@ void QgsLabelingGui::updatePlacementWidgets()
   bool showLineFrame = false;
   bool showCentroidFrame = false;
   bool showQuadrantFrame = false;
+  bool showFixedQuadrantFrame = false;
   bool showOffsetFrame = false;
   bool showDistanceFrame = false;
   bool showRotationFrame = false;
@@ -1302,12 +1352,17 @@ void QgsLabelingGui::updatePlacementWidgets()
     showCentroidFrame = ( curWdgt == pagePolygon && radAroundCentroid->isChecked() );
     showDistanceFrame = true;
     //showRotationFrame = true; // TODO: uncomment when supported
+    if ( curWdgt == pagePoint )
+    {
+      showQuadrantFrame = true;
+    }
   }
   else if (( curWdgt == pagePoint && radOverPoint->isChecked() )
            || ( curWdgt == pagePolygon && radOverCentroid->isChecked() ) )
   {
     showCentroidFrame = ( curWdgt == pagePolygon && radOverCentroid->isChecked() );
     showQuadrantFrame = true;
+    showFixedQuadrantFrame = true;
     showOffsetFrame = true;
     showRotationFrame = true;
   }
@@ -1331,6 +1386,7 @@ void QgsLabelingGui::updatePlacementWidgets()
   mPlacementLineFrame->setVisible( showLineFrame );
   mPlacementCentroidFrame->setVisible( showCentroidFrame );
   mPlacementQuadrantFrame->setVisible( showQuadrantFrame );
+  mPlacementFixedQuadrantFrame->setVisible( showFixedQuadrantFrame );
   mPlacementOffsetFrame->setVisible( showOffsetFrame );
   mPlacementDistanceFrame->setVisible( showDistanceFrame );
   mPlacementRotationFrame->setVisible( showRotationFrame );
@@ -1354,7 +1410,7 @@ void QgsLabelingGui::populateFontCapitalsComboBox()
 void QgsLabelingGui::populateFontStyleComboBox()
 {
   mFontStyleComboBox->clear();
-  foreach ( const QString &style, mFontDB.styles( mRefFont.family() ) )
+  Q_FOREACH ( const QString &style, mFontDB.styles( mRefFont.family() ) )
   {
     mFontStyleComboBox->addItem( style );
   }
@@ -1542,6 +1598,27 @@ void QgsLabelingGui::on_mShapeSVGPathLineEdit_textChanged( const QString& text )
   updateSvgWidgets( text );
 }
 
+void QgsLabelingGui::updateLinePlacementOptions()
+{
+  int numOptionsChecked = ( chkLineAbove->isChecked() ? 1 : 0 ) +
+                          ( chkLineBelow->isChecked() ? 1 : 0 ) +
+                          ( chkLineOn->isChecked() ? 1 : 0 );
+
+  if ( numOptionsChecked == 1 )
+  {
+    //prevent unchecking last option
+    chkLineAbove->setEnabled( !chkLineAbove->isChecked() );
+    chkLineBelow->setEnabled( !chkLineBelow->isChecked() );
+    chkLineOn->setEnabled( !chkLineOn->isChecked() );
+  }
+  else
+  {
+    chkLineAbove->setEnabled( true );
+    chkLineBelow->setEnabled( true );
+    chkLineOn->setEnabled( true );
+  }
+}
+
 void QgsLabelingGui::updateSvgWidgets( const QString& svgPath )
 {
   if ( mShapeSVGPathLineEdit->text() != svgPath )
@@ -1589,6 +1666,13 @@ void QgsLabelingGui::updateSvgWidgets( const QString& svgPath )
   //mShapeBorderWidthUnitWidget->setEnabled( validSVG && outlineWidthParam );
   //mShapeBorderUnitsDDBtn->setEnabled( validSVG && outlineWidthParam );
   mShapeSVGUnitsLabel->setEnabled( validSVG && outlineWidthParam );
+}
+
+void QgsLabelingGui::on_mLabelModeComboBox_currentIndexChanged( int index )
+{
+  bool labelsEnabled = ( index == 1 );
+  mFieldExpressionWidget->setEnabled( labelsEnabled );
+  mLabelingFrame->setEnabled( labelsEnabled );
 }
 
 void QgsLabelingGui::on_mShapeSVGSelectorBtn_clicked()
@@ -1659,6 +1743,12 @@ void QgsLabelingGui::on_mDirectSymbRightToolBtn_clicked()
 
   if ( !dirSymb.isNull() )
     mDirectSymbRightLineEdit->setText( QString( dirSymb ) );
+}
+
+void QgsLabelingGui::on_mChkNoObstacle_toggled( bool active )
+{
+  mPolygonObstacleTypeFrame->setEnabled( active );
+  mObstaclePriorityFrame->setEnabled( active );
 }
 
 void QgsLabelingGui::showBackgroundRadius( bool show )

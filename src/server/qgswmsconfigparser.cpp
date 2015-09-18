@@ -60,7 +60,7 @@ QgsComposition* QgsWMSConfigParser::createPrintComposition( const QString& compo
   }
 
   //replace composer map parameters
-  foreach ( QgsComposerMap* currentMap, composerMaps )
+  Q_FOREACH ( QgsComposerMap* currentMap, composerMaps )
   {
     if ( !currentMap )
     {
@@ -148,7 +148,7 @@ QgsComposition* QgsWMSConfigParser::createPrintComposition( const QString& compo
           styleName = wmsStyleList.at( i );
         }
 
-        foreach ( QgsMapLayer *layer, mapLayerFromStyle( wmsLayerList.at( i ), styleName ) )
+        Q_FOREACH ( QgsMapLayer *layer, mapLayerFromStyle( wmsLayerList.at( i ), styleName ) )
         {
           if ( layer )
           {
@@ -167,7 +167,7 @@ QgsComposition* QgsWMSConfigParser::createPrintComposition( const QString& compo
   }
   //update legend
   // if it has an auto-update model
-  foreach ( QgsComposerLegend* currentLegend, composerLegends )
+  Q_FOREACH ( QgsComposerLegend* currentLegend, composerLegends )
   {
     if ( !currentLegend )
     {
@@ -198,9 +198,9 @@ QgsComposition* QgsWMSConfigParser::createPrintComposition( const QString& compo
       // get map scale
       double scale = map->scale();
 
-      // foreach layer find in the layer tree
+      // Q_FOREACH layer find in the layer tree
       // remove it if the layer id is not in map layerIds
-      foreach ( QString layerId, layerIds )
+      Q_FOREACH ( const QString& layerId, layerIds )
       {
         QgsLayerTreeLayer* nodeLayer = root->findLayer( layerId );
         if ( !nodeLayer )
@@ -228,7 +228,7 @@ QgsComposition* QgsWMSConfigParser::createPrintComposition( const QString& compo
   }
 
   //replace label text
-  foreach ( QgsComposerLabel *currentLabel, composerLabels )
+  Q_FOREACH ( QgsComposerLabel *currentLabel, composerLabels )
   {
     QString title = parameterMap.value( currentLabel->id().toUpper() );
 
@@ -248,7 +248,7 @@ QgsComposition* QgsWMSConfigParser::createPrintComposition( const QString& compo
   }
 
   //replace html url
-  foreach ( const QgsComposerHtml *currentHtml, composerHtmls )
+  Q_FOREACH ( const QgsComposerHtml *currentHtml, composerHtmls )
   {
     QgsComposerHtml * html = const_cast<QgsComposerHtml *>( currentHtml );
     QgsComposerFrame *htmlFrame = html->frame( 0 );

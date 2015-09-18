@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 
 from PyQt4 import uic
-from PyQt4.QtGui import QWidget, QIcon, QTableWidgetItem, QComboBox, QLineEdit
+from PyQt4.QtGui import QWidget, QIcon, QTableWidgetItem, QComboBox, QLineEdit, QHeaderView
 
 from qgis.core import QgsApplication
 
@@ -56,6 +56,7 @@ pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
     os.path.join(pluginPath, 'ui', 'widgetBatchPanel.ui'))
 
+
 class BatchPanel(BASE, WIDGET):
 
     def __init__(self, parent, alg):
@@ -65,8 +66,8 @@ class BatchPanel(BASE, WIDGET):
         self.btnAdvanced.hide()
 
         # Set icons
-        self.btnAdd.setIcon(QgsApplication.getThemeIcon('/mActionSignPlus.png'))
-        self.btnRemove.setIcon(QgsApplication.getThemeIcon('/symbologyRemove.png'))
+        self.btnAdd.setIcon(QgsApplication.getThemeIcon('/symbologyAdd.svg'))
+        self.btnRemove.setIcon(QgsApplication.getThemeIcon('/symbologyRemove.svg'))
         self.btnAdvanced.setIcon(QIcon(os.path.join(pluginPath, 'images', 'alg.png')))
 
         self.alg = alg
@@ -119,6 +120,13 @@ class BatchPanel(BASE, WIDGET):
         for i in xrange(3):
             self.addRow()
 
+        self.tblParameters.horizontalHeader().setResizeMode(QHeaderView.Interactive)
+        self.tblParameters.horizontalHeader().setDefaultSectionSize(250)
+        self.tblParameters.horizontalHeader().setMinimumSectionSize(150)
+        self.tblParameters.horizontalHeader().setResizeMode(QHeaderView.ResizeToContents)
+        self.tblParameters.verticalHeader().setResizeMode(QHeaderView.ResizeToContents)
+        self.tblParameters.horizontalHeader().setStretchLastSection(True)
+
     def getWidgetFromParameter(self, param, row, col):
         if isinstance(param, (ParameterRaster, ParameterVector, ParameterTable,
                               ParameterMultipleInput)):
@@ -150,7 +158,7 @@ class BatchPanel(BASE, WIDGET):
         else:
             item = QLineEdit()
             try:
-                item.setText(str(param.default))
+                item.setText(unicode(param.default))
             except:
                 pass
 

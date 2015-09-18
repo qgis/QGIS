@@ -79,9 +79,9 @@ class TauDEMMultifileAlgorithm(GeoAlgorithm):
                 else:
                     self.addOutput(getOutputFromString(line))
                 line = lines.readline().strip('\n').strip()
-            except Exception, e:
+            except Exception as e:
                 ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                    self.tr('Could not load TauDEM algorithm: %s\n%s' % (self.descriptionFile, line)))
+                                       self.tr('Could not load TauDEM algorithm: %s\n%s' % (self.descriptionFile, line)))
                 raise e
         lines.close()
 
@@ -96,7 +96,7 @@ class TauDEMMultifileAlgorithm(GeoAlgorithm):
                         'correct number before running TauDEM algorithms.'))
 
         commands.append('-n')
-        commands.append(str(processNum))
+        commands.append(unicode(processNum))
         commands.append(os.path.join(TauDEMUtils.taudemMultifilePath(), self.cmdName))
 
         for param in self.parameters:
@@ -104,16 +104,16 @@ class TauDEMMultifileAlgorithm(GeoAlgorithm):
                 continue
             if isinstance(param, ParameterNumber):
                 commands.append(param.name)
-                commands.append(str(param.value))
+                commands.append(unicode(param.value))
             if isinstance(param, (ParameterFile, ParameterVector)):
                 commands.append(param.name)
                 commands.append(param.value)
             elif isinstance(param, ParameterBoolean):
-                if param.value and str(param.value).lower() == 'false':
+                if param.value and unicode(param.value).lower() == 'false':
                     commands.append(param.name)
             elif isinstance(param, ParameterString):
                 commands.append(param.name)
-                commands.append(str(param.value))
+                commands.append(unicode(param.value))
 
         for out in self.outputs:
             commands.append(out.name)

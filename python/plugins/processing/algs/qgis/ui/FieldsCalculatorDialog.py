@@ -45,6 +45,7 @@ WIDGET, BASE = uic.loadUiType(
 
 
 class FieldsCalculatorDialog(BASE, WIDGET):
+
     def __init__(self, alg):
         super(FieldsCalculatorDialog, self).__init__(None)
         self.setupUi(self)
@@ -142,8 +143,8 @@ class FieldsCalculatorDialog(BASE, WIDGET):
             filename = unicode(files[0])
             selectedFileFilter = unicode(fileDialog.selectedNameFilter())
             if not filename.lower().endswith(
-                    tuple(re.findall("\*(\.[a-z]{1,5})", fileFilter))):
-                ext = re.search("\*(\.[a-z]{1,5})", selectedFileFilter)
+                    tuple(re.findall("\*(\.[a-z]{1,10})", fileFilter))):
+                ext = re.search("\*(\.[a-z]{1,10})", selectedFileFilter)
                 if ext:
                     filename = filename + ext.group(1)
             self.leOutputFile.setText(filename)
@@ -176,16 +177,15 @@ class FieldsCalculatorDialog(BASE, WIDGET):
         self.alg.setParameterValue('INPUT_LAYER', layer)
         self.alg.setParameterValue('FIELD_NAME', fieldName)
         self.alg.setParameterValue('FIELD_TYPE',
-                self.mOutputFieldTypeComboBox.currentIndex())
+                                   self.mOutputFieldTypeComboBox.currentIndex())
         self.alg.setParameterValue('FIELD_LENGTH',
-                self.mOutputFieldWidthSpinBox.value())
+                                   self.mOutputFieldWidthSpinBox.value())
         self.alg.setParameterValue('FIELD_PRECISION',
-                self.mOutputFieldPrecisionSpinBox.value())
+                                   self.mOutputFieldPrecisionSpinBox.value())
         self.alg.setParameterValue('NEW_FIELD',
-                self.mNewFieldGroupBox.isChecked())
+                                   self.mNewFieldGroupBox.isChecked())
         self.alg.setParameterValue('FORMULA', self.builder.expressionText())
-        self.alg.setOutputValue('OUTPUT_LAYER',
-                self.leOutputFile.text())
+        self.alg.setOutputValue('OUTPUT_LAYER', self.leOutputFile.text().strip() or None)
 
         msg = self.alg.checkParameterValuesBeforeExecuting()
         if msg:
@@ -200,9 +200,9 @@ class FieldsCalculatorDialog(BASE, WIDGET):
             if self.setParamValues():
                 QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
                 ProcessingLog.addToLog(ProcessingLog.LOG_ALGORITHM,
-                                     self.alg.getAsCommand())
+                                       self.alg.getAsCommand())
 
-                self.executed =  runalg(self.alg, self)
+                self.executed = runalg(self.alg, self)
                 if self.executed:
                     handleAlgorithmResults(self.alg,
                                            self,

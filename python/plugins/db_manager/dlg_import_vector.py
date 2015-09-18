@@ -58,7 +58,6 @@ class DlgImportVector(QDialog, Ui_Dialog):
         self.setupWorkingMode(self.mode)
         self.connect(self.cboSchema, SIGNAL("currentIndexChanged(int)"), self.populateTables)
 
-
     def setupWorkingMode(self, mode):
         """ hide the widget to select a layer/file if the input layer is already set """
         self.wdgInput.setVisible(mode == self.ASK_FOR_INPUT_MODE)
@@ -70,34 +69,40 @@ class DlgImportVector(QDialog, Ui_Dialog):
             QObject.connect(self.btnChooseInputFile, SIGNAL("clicked()"), self.chooseInputFile)
             # QObject.connect( self.cboInputLayer.lineEdit(), SIGNAL("editingFinished()"), self.updateInputLayer )
             QObject.connect(self.cboInputLayer, SIGNAL("editTextChanged(const QString &)"), self.inputPathChanged)
-            #QObject.connect( self.cboInputLayer, SIGNAL("currentIndexChanged(int)"), self.updateInputLayer )
+            # QObject.connect( self.cboInputLayer, SIGNAL("currentIndexChanged(int)"), self.updateInputLayer )
             QObject.connect(self.btnUpdateInputLayer, SIGNAL("clicked()"), self.updateInputLayer)
+
+            self.editPrimaryKey.setText(self.default_pk)
+            self.editGeomColumn.setText(self.default_geom)
         else:
             # set default values
-            pk = self.outUri.keyColumn()
-            self.editPrimaryKey.setText(pk if pk != "" else self.default_pk)
-            if self.inLayer.hasGeometryType():
-                geom = self.outUri.geometryColumn()
-                self.editGeomColumn.setText(geom if geom != "" else self.default_geom)
-
-            inCrs = self.inLayer.crs()
-            srid = inCrs.postgisSrid() if inCrs.isValid() else 4236
-            self.editSourceSrid.setText("%s" % srid)
-            self.editTargetSrid.setText("%s" % srid)
-
             self.checkSupports()
+            self.updateInputLayer()
 
     def checkSupports(self):
         """ update options available for the current input layer """
         allowSpatial = self.db.connector.hasSpatialSupport()
         hasGeomType = self.inLayer and self.inLayer.hasGeometryType()
         isShapefile = self.inLayer and self.inLayer.providerType() == "ogr" and self.inLayer.storageType() == "ESRI Shapefile"
-        self.chkGeomColumn.setEnabled(allowSpatial and hasGeomType)
-        self.chkSourceSrid.setEnabled(allowSpatial and hasGeomType)
-        self.chkTargetSrid.setEnabled(allowSpatial and hasGeomType)
-        self.chkSinglePart.setEnabled(allowSpatial and hasGeomType and isShapefile)
-        self.chkSpatialIndex.setEnabled(allowSpatial and hasGeomType)
 
+        self.chkGeomColumn.setEnabled(allowSpatial and hasGeomType)
+        if not self.chkGeomColumn.isEnabled():
+            self.chkGeomColumn.setChecked(False)
+
+        self.chkSourceSrid.setEnabled(allowSpatial and hasGeomType)
+        if not self.chkSourceSrid.isEnabled():
+            self.chkSourceSrid.setChecked(False)
+        self.chkTargetSrid.setEnabled(allowSpatial and hasGeomType)
+        if not self.chkTargetSrid.isEnabled():
+            self.chkTargetSrid.setChecked(False)
+
+        self.chkSinglePart.setEnabled(allowSpatial and hasGeomType and isShapefile)
+        if not self.chkSinglePart.isEnabled():
+            self.chkSinglePart.setChecked(False)
+
+        self.chkSpatialIndex.setEnabled(allowSpatial and hasGeomType)
+        if not self.chkSpatialIndex.isEnabled():
+            self.chkSpatialIndex.setChecked(False)
 
     def populateLayers(self):
         self.cboInputLayer.clear()
@@ -141,10 +146,10 @@ class DlgImportVector(QDialog, Ui_Dialog):
         self.cboInputLayer.setEditText(path)
         self.cboInputLayer.blockSignals(False)
 
-    def updateInputLayer(self):
+    def reloadInputLayer(self):
         """ create the input layer and update available options """
         if self.mode != self.ASK_FOR_INPUT_MODE:
-            return
+            return True
 
         self.deleteInputLayer()
 
@@ -168,12 +173,28 @@ class DlgImportVector(QDialog, Ui_Dialog):
             self.inLayer = iface.legendInterface().layers()[legendIndex]
             self.inLayerMustBeDestroyed = False
 
-        # update the output table name
-        self.cboTable.setEditText(self.inLayer.name())
-
         self.checkSupports()
         return True
 
+    def updateInputLayer(self):
+        if not self.reloadInputLayer() or not self.inLayer:
+            return False
+
+        # update the output table name, pk and geom column
+        self.cboTable.setEditText(self.inLayer.name())
+
+        srcUri = qgis.core.QgsDataSourceURI(self.inLayer.source())
+        pk = srcUri.keyColumn() if srcUri.keyColumn() else self.default_pk
+        self.editPrimaryKey.setText(pk)
+        geom = srcUri.geometryColumn() if srcUri.geometryColumn() else self.default_geom
+        self.editGeomColumn.setText(geom)
+
+        srcCrs = self.inLayer.crs()
+        srid = srcCrs.postgisSrid() if srcCrs.isValid() else 4326
+        self.editSourceSrid.setText("%s" % srid)
+        self.editTargetSrid.setText("%s" % srid)
+
+        return True
 
     def populateSchemas(self):
         if not self.db:
@@ -224,12 +245,8 @@ class DlgImportVector(QDialog, Ui_Dialog):
     def accept(self):
         if self.mode == self.ASK_FOR_INPUT_MODE:
             # create the input layer (if not already done) and
-            # update available options w/o changing the tablename!
-            self.cboTable.blockSignals(True)
-            table = self.cboTable.currentText()
-            self.updateInputLayer()
-            self.cboTable.setEditText(table)
-            self.cboTable.blockSignals(False)
+            # update available options
+            self.reloadInputLayer()
 
         # sanity checks
         if self.inLayer is None:
@@ -268,11 +285,16 @@ class DlgImportVector(QDialog, Ui_Dialog):
 
             # get pk and geom field names from the source layer or use the
             # ones defined by the user
-            pk = self.outUri.keyColumn() if not self.chkPrimaryKey.isChecked() else self.editPrimaryKey.text()
+            srcUri = qgis.core.QgsDataSourceURI(self.inLayer.source())
+
+            pk = srcUri.keyColumn() if not self.chkPrimaryKey.isChecked() else self.editPrimaryKey.text()
+            if not pk:
+                pk = self.default_pk
 
             if self.inLayer.hasGeometryType() and self.chkGeomColumn.isEnabled():
-                geom = self.outUri.geometryColumn() if not self.chkGeomColumn.isChecked() else self.editGeomColumn.text()
-                geom = geom if geom != "" else self.default_geom
+                geom = srcUri.geometryColumn() if not self.chkGeomColumn.isChecked() else self.editGeomColumn.text()
+                if not geom:
+                    geom = self.default_geom
             else:
                 geom = None
 
@@ -304,9 +326,10 @@ class DlgImportVector(QDialog, Ui_Dialog):
                 enc = self.cboEncoding.currentText()
                 self.inLayer.setProviderEncoding(enc)
 
+            onlySelected = self.chkSelectedFeatures.isChecked()
+
             # do the import!
-            ret, errMsg = qgis.core.QgsVectorLayerImport.importLayer(self.inLayer, uri, providerName, outCrs, False,
-                                                                     False, options)
+            ret, errMsg = qgis.core.QgsVectorLayerImport.importLayer(self.inLayer, uri, providerName, outCrs, onlySelected, False, options)
         except Exception as e:
             ret = -1
             errMsg = unicode(e)
@@ -331,7 +354,6 @@ class DlgImportVector(QDialog, Ui_Dialog):
 
         QMessageBox.information(self, self.tr("Import to database"), self.tr("Import was successful."))
         return QDialog.accept(self)
-
 
     def closeEvent(self, event):
         # destroy the input layer instance but only if it was created

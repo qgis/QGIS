@@ -61,6 +61,23 @@ class QgsAttributeTableDock : public QDockWidget
     }
 };
 
+static QgsExpressionContext _getExpressionContext( const void* context )
+{
+  QgsExpressionContext expContext;
+  expContext << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope();
+
+  const QgsVectorLayer* layer = ( const QgsVectorLayer* ) context;
+  if ( layer )
+    expContext << QgsExpressionContextUtils::layerScope( layer );
+
+  expContext.lastScope()->setVariable( "row_number", 1 );
+
+  expContext.setHighlightedVariables( QStringList() << "row_number" );
+
+  return expContext;
+}
+
 QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWidget *parent, Qt::WindowFlags flags )
     : QDialog( parent, flags )
     , mDock( 0 )
@@ -133,6 +150,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   connect( mFilterActionMapper, SIGNAL( mapped( QObject* ) ), SLOT( filterColumnChanged( QObject* ) ) );
   connect( mFilterQuery, SIGNAL( returnPressed() ), SLOT( filterQueryAccepted() ) );
   connect( mActionApplyFilter, SIGNAL( triggered() ), SLOT( filterQueryAccepted() ) );
+  connect( mSetStyles, SIGNAL( pressed() ), SLOT( openConditionalStyles() ) );
 
   // info from layer to table
   connect( mLayer, SIGNAL( editingStarted() ), this, SLOT( editingToggled() ) );
@@ -221,6 +239,8 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
       break;
   }
 
+  mUpdateExpressionText->registerGetExpressionContextCallback( &_getExpressionContext, mLayer );
+
   mFieldModel = new QgsFieldModel();
   mFieldModel->setLayer( mLayer );
   mFieldCombo->setModel( mFieldModel );
@@ -289,7 +309,7 @@ void QgsAttributeTableDialog::keyPressEvent( QKeyEvent* event )
 
 void QgsAttributeTableDialog::columnBoxInit()
 {
-  foreach ( QAction* a, mFilterColumnsMenu->actions() )
+  Q_FOREACH ( QAction* a, mFilterColumnsMenu->actions() )
   {
     mFilterColumnsMenu->removeAction( a );
     mFilterActionMapper->removeMappings( a );
@@ -307,9 +327,9 @@ void QgsAttributeTableDialog::columnBoxInit()
   mFilterButton->addAction( mActionFilterColumnsMenu );
   mFilterButton->addAction( mActionAdvancedFilter );
 
-  QList<QgsField> fields = mLayer->pendingFields().toList();
+  QList<QgsField> fields = mLayer->fields().toList();
 
-  foreach ( const QgsField field, fields )
+  Q_FOREACH ( const QgsField field, fields )
   {
     int idx = mLayer->fieldNameIndex( field.name() );
     if ( idx < 0 )
@@ -359,12 +379,17 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer* layer, QStrin
   bool useGeometry = exp.needsGeometry();
 
   QgsFeatureRequest request( mMainView->masterModel()->request() );
-  useGeometry |= request.filterType() == QgsFeatureRequest::FilterRect;
+  useGeometry |= !request.filterRect().isNull();
   request.setFlags( useGeometry ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry );
 
   int rownum = 1;
 
-  const QgsField &fld = layer->pendingFields()[ fieldindex ];
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::layerScope( layer );
+
+  QgsField fld = layer->fields()[ fieldindex ];
 
   //go through all the features and change the new attributes
   QgsFeatureIterator fit = layer->getFeatures( request );
@@ -376,8 +401,10 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer* layer, QStrin
       continue;
     }
 
-    exp.setCurrentRowNumber( rownum );
-    QVariant value = exp.evaluate( &feature );
+    context.setFeature( feature );
+    context.lastScope()->setVariable( QString( "row_number" ), rownum );
+
+    QVariant value = exp.evaluate( &context );
     fld.convertCompatible( value );
     // Bail if we have a update error
     if ( exp.hasEvalError() )
@@ -419,11 +446,11 @@ void QgsAttributeTableDialog::filterColumnChanged( QObject* filterAction )
 {
   mFilterButton->setDefaultAction( qobject_cast<QAction *>( filterAction ) );
   mFilterButton->setPopupMode( QToolButton::InstantPopup );
-  mCbxCaseSensitive->setVisible( true );
   // replace the search line edit with a search widget that is suited to the selected field
   // delete previous widget
   if ( mCurrentSearchWidgetWrapper != 0 )
   {
+    mCurrentSearchWidgetWrapper->widget()->setVisible( false );
     delete mCurrentSearchWidgetWrapper;
   }
   QString fieldName = mFilterButton->defaultAction()->text();
@@ -435,16 +462,30 @@ void QgsAttributeTableDialog::filterColumnChanged( QObject* filterAction )
   const QgsEditorWidgetConfig widgetConfig = mLayer->editorWidgetV2Config( fldIdx );
   mCurrentSearchWidgetWrapper = QgsEditorWidgetRegistry::instance()->
                                 createSearchWidget( widgetType, mLayer, fldIdx, widgetConfig, mFilterContainer );
+  if ( mCurrentSearchWidgetWrapper->applyDirectly() )
+  {
+    connect( mCurrentSearchWidgetWrapper, SIGNAL( expressionChanged( QString ) ), SLOT( filterQueryChanged( QString ) ) );
+    mApplyFilterButton->setVisible( false );
+  }
+  else
+  {
+    connect( mCurrentSearchWidgetWrapper, SIGNAL( expressionChanged( QString ) ), SLOT( filterQueryAccepted() ) );
+    mApplyFilterButton->setVisible( true );
+  }
 
   replaceSearchWidget( mFilterQuery, mCurrentSearchWidgetWrapper->widget() );
 
-  mApplyFilterButton->setVisible( true );
 }
 
 void QgsAttributeTableDialog::filterExpressionBuilder()
 {
   // Show expression builder
-  QgsExpressionBuilderDialog dlg( mLayer, mFilterQuery->text(), this );
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::layerScope( mLayer );
+
+  QgsExpressionBuilderDialog dlg( mLayer, mFilterQuery->text(), this, "generic", context );
   dlg.setWindowTitle( tr( "Expression based filter" ) );
 
   QgsDistanceArea myDa;
@@ -463,18 +504,19 @@ void QgsAttributeTableDialog::filterShowAll()
 {
   mFilterButton->setDefaultAction( mActionShowAllFilter );
   mFilterButton->setPopupMode( QToolButton::InstantPopup );
-  mCbxCaseSensitive->setVisible( false );
   mFilterQuery->setVisible( false );
+  if ( mCurrentSearchWidgetWrapper != 0 )
+  {
+    mCurrentSearchWidgetWrapper->widget()->setVisible( false );
+  }
   mApplyFilterButton->setVisible( false );
   mMainView->setFilterMode( QgsAttributeTableFilterModel::ShowAll );
-  updateTitle();
 }
 
 void QgsAttributeTableDialog::filterSelected()
 {
   mFilterButton->setDefaultAction( mActionSelectedFilter );
   mFilterButton->setPopupMode( QToolButton::InstantPopup );
-  mCbxCaseSensitive->setVisible( false );
   mFilterQuery->setVisible( false );
   mApplyFilterButton->setVisible( false );
   mMainView->setFilterMode( QgsAttributeTableFilterModel::ShowSelected );
@@ -490,7 +532,6 @@ void QgsAttributeTableDialog::filterVisible()
 
   mFilterButton->setDefaultAction( mActionVisibleFilter );
   mFilterButton->setPopupMode( QToolButton::InstantPopup );
-  mCbxCaseSensitive->setVisible( false );
   mFilterQuery->setVisible( false );
   mApplyFilterButton->setVisible( false );
   mMainView->setFilterMode( QgsAttributeTableFilterModel::ShowVisible );
@@ -500,7 +541,6 @@ void QgsAttributeTableDialog::filterEdited()
 {
   mFilterButton->setDefaultAction( mActionEditedFilter );
   mFilterButton->setPopupMode( QToolButton::InstantPopup );
-  mCbxCaseSensitive->setVisible( false );
   mFilterQuery->setVisible( false );
   mApplyFilterButton->setVisible( false );
   mMainView->setFilterMode( QgsAttributeTableFilterModel::ShowEdited );
@@ -706,50 +746,17 @@ void QgsAttributeTableDialog::filterQueryChanged( const QString& query )
   }
   else
   {
-    QString fieldName = mFilterButton->defaultAction()->text();
-    const QgsFields& flds = mLayer->pendingFields();
-    int fldIndex = mLayer->fieldNameIndex( fieldName );
-    if ( fldIndex < 0 )
-      return;
-
-    QVariant::Type fldType = flds[fldIndex].type();
-    bool numeric = ( fldType == QVariant::Int || fldType == QVariant::Double || fldType == QVariant::LongLong );
-
-    QString sensString = "ILIKE";
-    if ( mCbxCaseSensitive->isChecked() )
-    {
-      sensString = "LIKE";
-    }
-
-    QSettings settings;
-    QString nullValue = settings.value( "qgis/nullValue", "NULL" ).toString();
-    QString value = mCurrentSearchWidgetWrapper->value().toString();
-
-    if ( value == nullValue )
-    {
-      str = QString( "%1 IS NULL" ).arg( QgsExpression::quotedColumnRef( fieldName ) );
-    }
-    else
-    {
-      str = QString( "%1 %2 '%3'" )
-            .arg( QgsExpression::quotedColumnRef( fieldName ) )
-            .arg( numeric ? "=" : sensString )
-            .arg( numeric
-                  ? value.replace( "'", "''" )
-                  :
-                  "%" + value.replace( "'", "''" ) + "%" ); // escape quotes
-    }
+    str = mCurrentSearchWidgetWrapper->expression();
   }
 
   setFilterExpression( str );
-  updateTitle();
 }
 
 void QgsAttributeTableDialog::filterQueryAccepted()
 {
   if (( mFilterQuery->isVisible() && mFilterQuery->text().isEmpty() ) ||
       ( mCurrentSearchWidgetWrapper != 0 && mCurrentSearchWidgetWrapper->widget()->isVisible()
-        && mCurrentSearchWidgetWrapper->value().toString().isEmpty() ) )
+        && mCurrentSearchWidgetWrapper->expression().isEmpty() ) )
   {
     filterShowAll();
     return;
@@ -757,20 +764,26 @@ void QgsAttributeTableDialog::filterQueryAccepted()
   filterQueryChanged( mFilterQuery->text() );
 }
 
+void QgsAttributeTableDialog::openConditionalStyles()
+{
+  mMainView->openConditionalStyles();
+}
+
 void QgsAttributeTableDialog::setFilterExpression( QString filterString )
 {
-  mFilterQuery->setText( filterString );
-  mFilterButton->setDefaultAction( mActionAdvancedFilter );
-  mFilterButton->setPopupMode( QToolButton::MenuButtonPopup );
-  mCbxCaseSensitive->setVisible( false );
-
-  mFilterQuery->setVisible( true );
-  if ( mCurrentSearchWidgetWrapper != 0 )
+  if ( mCurrentSearchWidgetWrapper == 0 || !mCurrentSearchWidgetWrapper->applyDirectly() )
   {
-    replaceSearchWidget( mCurrentSearchWidgetWrapper->widget(), mFilterQuery );
+    mFilterQuery->setText( filterString );
+    mFilterButton->setDefaultAction( mActionAdvancedFilter );
+    mFilterButton->setPopupMode( QToolButton::MenuButtonPopup );
+    mFilterQuery->setVisible( true );
+    mApplyFilterButton->setVisible( true );
+    if ( mCurrentSearchWidgetWrapper != 0 )
+    {
+      // replace search widget widget with the normal filter query line edit
+      replaceSearchWidget( mCurrentSearchWidgetWrapper->widget(), mFilterQuery );
+    }
   }
-  mApplyFilterButton->setVisible( true );
-  mMainView->setFilterMode( QgsAttributeTableFilterModel::ShowFilteredList );
 
   QgsFeatureIds filteredFeatures;
   QgsDistanceArea myDa;
@@ -787,7 +800,12 @@ void QgsAttributeTableDialog::setFilterExpression( QString filterString )
     return;
   }
 
-  if ( ! filterExpression.prepare( mLayer->pendingFields() ) )
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::layerScope( mLayer );
+
+  if ( !filterExpression.prepare( &context ) )
   {
     QgisApp::instance()->messageBar()->pushMessage( tr( "Evaluation error" ), filterExpression.evalErrorString(), QgsMessageBar::WARNING, QgisApp::instance()->messageTimeout() );
   }
@@ -798,7 +816,7 @@ void QgsAttributeTableDialog::setFilterExpression( QString filterString )
 
   filterExpression.setGeomCalculator( myDa );
   QgsFeatureRequest request( mMainView->masterModel()->request() );
-  request.setSubsetOfAttributes( filterExpression.referencedColumns(), mLayer->pendingFields() );
+  request.setSubsetOfAttributes( filterExpression.referencedColumns(), mLayer->fields() );
   if ( !fetchGeom )
   {
     request.setFlags( QgsFeatureRequest::NoGeometry );
@@ -809,7 +827,8 @@ void QgsAttributeTableDialog::setFilterExpression( QString filterString )
 
   while ( featIt.nextFeature( f ) )
   {
-    if ( filterExpression.evaluate( &f ).toInt() != 0 )
+    context.setFeature( f );
+    if ( filterExpression.evaluate( &context ).toInt() != 0 )
       filteredFeatures << f.id();
 
     // check if there were errors during evaluating
@@ -828,4 +847,5 @@ void QgsAttributeTableDialog::setFilterExpression( QString filterString )
     QgisApp::instance()->messageBar()->pushMessage( tr( "Error filtering" ), filterExpression.evalErrorString(), QgsMessageBar::WARNING, QgisApp::instance()->messageTimeout() );
     return;
   }
+  mMainView->setFilterMode( QgsAttributeTableFilterModel::ShowFilteredList );
 }

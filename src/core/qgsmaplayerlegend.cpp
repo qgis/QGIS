@@ -52,7 +52,7 @@ QgsMapLayerLegend* QgsMapLayerLegend::defaultPluginLegend( QgsPluginLayer* pl )
 void QgsMapLayerLegendUtils::setLegendNodeOrder( QgsLayerTreeLayer* nodeLayer, const QList<int>& order )
 {
   QStringList orderStr;
-  foreach ( int id, order )
+  Q_FOREACH ( int id, order )
     orderStr << QString::number( id );
   QString str = orderStr.isEmpty() ? "empty" : orderStr.join( "," );
 
@@ -97,7 +97,7 @@ QList<int> QgsMapLayerLegendUtils::legendNodeOrder( QgsLayerTreeLayer* nodeLayer
   int numNodes = _originalLegendNodeCount( nodeLayer );
 
   QList<int> lst;
-  foreach ( QString item, orderStr.split( "," ) )
+  Q_FOREACH ( const QString& item, orderStr.split( "," ) )
   {
     bool ok;
     int id = item.toInt( &ok );
@@ -135,7 +135,7 @@ void QgsMapLayerLegendUtils::applyLayerNodeProperties( QgsLayerTreeLayer* nodeLa
 {
   // handle user labels
   int i = 0;
-  foreach ( QgsLayerTreeModelLegendNode* legendNode, nodes )
+  Q_FOREACH ( QgsLayerTreeModelLegendNode* legendNode, nodes )
   {
     QString userLabel = QgsMapLayerLegendUtils::legendNodeUserLabel( nodeLayer, i++ );
     if ( !userLabel.isNull() )
@@ -149,7 +149,7 @@ void QgsMapLayerLegendUtils::applyLayerNodeProperties( QgsLayerTreeLayer* nodeLa
 
     QList<QgsLayerTreeModelLegendNode*> newOrder;
     QSet<int> usedIndices;
-    foreach ( int idx, order )
+    Q_FOREACH ( int idx, order )
     {
       if ( usedIndices.contains( idx ) )
       {
@@ -199,33 +199,10 @@ QList<QgsLayerTreeModelLegendNode*> QgsDefaultVectorLayerLegend::createLayerTree
     nodes.append( new QgsSimpleLegendNode( nodeLayer, r->legendClassificationAttribute() ) );
   }
 
-  // we have varying icon sizes, and we want icon to be centered and
-  // text to be left aligned, so we have to compute the max width of icons
-  //
-  // we do that for nodes who share a common parent
-
-  QList<QgsSymbolV2LegendNode*> symbolNodes;
-  QMap<QString, int> widthMax;
-  foreach ( const QgsLegendSymbolItemV2& i, r->legendSymbolItemsV2() )
+  Q_FOREACH ( const QgsLegendSymbolItemV2& i, r->legendSymbolItemsV2() )
   {
     QgsSymbolV2LegendNode * n = new QgsSymbolV2LegendNode( nodeLayer, i );
     nodes.append( n );
-    if ( i.symbol() )
-    {
-      const QSize sz( n->minimumIconSize() );
-      const QString parentKey( n->data( QgsLayerTreeModelLegendNode::ParentRuleKeyRole ).toString() );
-      widthMax[parentKey] = qMax( sz.width(), widthMax.contains( parentKey ) ? widthMax[parentKey] : 0 );
-      n->setIconSize( sz );
-      symbolNodes.append( n );
-    }
-  }
-
-  foreach ( QgsSymbolV2LegendNode* n, symbolNodes )
-  {
-    const QString parentKey( n->data( QgsLayerTreeModelLegendNode::ParentRuleKeyRole ).toString() );
-    Q_ASSERT( widthMax[parentKey] > 0 );
-    const int twiceMarginWidth = 2; // a one pixel margin avoids hugly rendering of icon
-    n->setIconSize( QSize( widthMax[parentKey] + twiceMarginWidth, n->iconSize().rheight() + twiceMarginWidth ) );
   }
 
   if ( nodes.count() == 1 && nodes[0]->data( Qt::EditRole ).toString().isEmpty() )
@@ -234,7 +211,7 @@ QList<QgsLayerTreeModelLegendNode*> QgsDefaultVectorLayerLegend::createLayerTree
 
   if ( mLayer->diagramsEnabled() )
   {
-    foreach ( QgsLayerTreeModelLegendNode * i, mLayer->diagramRenderer()->legendItems( nodeLayer ) )
+    Q_FOREACH ( QgsLayerTreeModelLegendNode * i, mLayer->diagramRenderer()->legendItems( nodeLayer ) )
     {
       nodes.append( i );
     }
@@ -310,7 +287,7 @@ QList<QgsLayerTreeModelLegendNode*> QgsDefaultPluginLayerLegend::createLayerTree
     return nodes;
 
   typedef QPair<QString, QPixmap> XY;
-  foreach ( XY item, symbologyList )
+  Q_FOREACH ( XY item, symbologyList )
   {
     nodes << new QgsSimpleLegendNode( nodeLayer, item.first, QIcon( item.second ) );
   }

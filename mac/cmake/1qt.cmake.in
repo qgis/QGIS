@@ -15,19 +15,13 @@ SET (QT_FWVER @QT_VERSION_MAJOR@)
 # build list of Qt frameworks to bundle
 
 # core list, includes dependencies and used by extra plugins
-SET (QTLISTQG QtCore QtGui phonon QtXml QtNetwork QtScript QtSvg QtSql QtWebKit QtXmlPatterns QtDBus QtMultimedia QtOpenGL)
-SET (PYQTLIST Qt QtCore QtGui phonon QtXml QtNetwork QtScript QtSvg QtSql QtWebKit QtXmlPatterns QtDBus QtMultimedia QtOpenGL)
+SET (QTLISTQG QtCore QtGui phonon QtXml QtNetwork QtScript QtSvg QtSql QtWebKit QtXmlPatterns QtDBus QtMultimedia QtOpenGL QtTest)
+SET (PYQTLIST Qt QtCore QtGui phonon QtXml QtNetwork QtScript QtSvg QtSql QtWebKit QtXmlPatterns QtDBus QtMultimedia QtOpenGL QtTest)
 
 # add Qsci.so, if available
 IF (@QSCI_FOUND@)
     SET (PYQTLIST ${PYQTLIST} Qsci)
 ENDIF (@QSCI_FOUND@)
-
-# for tests
-IF (@ENABLE_TESTS@)
-    SET (QTLISTQG ${QTLISTQG} QtTest)
-    SET (PYQTLIST ${PYQTLIST} QtTest)
-ENDIF ()
 
 MYMESSAGE ("Qt list: ${QTLISTQG}")
 

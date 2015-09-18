@@ -63,7 +63,7 @@ class CORE_EXPORT QgsTextDiagram: public QgsDiagram
     QBrush mBrush; //transparent brush
     QPen mPen;
 
-    /**Calculates intersection points between a line and an ellipse
+    /** Calculates intersection points between a line and an ellipse
       @return intersection points*/
     void lineEllipseIntersection( const QPointF& lineStart, const QPointF& lineEnd, const QPointF& ellipseMid, double r1, double r2, QList<QPointF>& result ) const;
 };

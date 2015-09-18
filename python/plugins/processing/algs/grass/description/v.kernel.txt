@@ -1,5 +1,5 @@
 v.kernel
-v.kernel - Generates a raster density map from vector point data using a moving kernel or optionally generates a vector density map on a vector network.
+Generates a raster density map from vector point data using a moving kernel or optionally generates a vector density map on a vector network.
 Vector (v.*)
 ParameterVector|input|Input vector with training points|0|False
 ParameterNumber|stddeviation|Standard deviation in map units|None|None|0

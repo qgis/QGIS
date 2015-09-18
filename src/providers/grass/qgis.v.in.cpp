@@ -46,6 +46,7 @@ extern "C"
 #include "qgsrasterblock.h"
 #include "qgsspatialindex.h"
 #include "qgsgrass.h"
+#include "qgsgrassdatafile.h"
 
 static struct line_pnts *line = Vect_new_line_struct();
 
@@ -66,31 +67,60 @@ void writePolyline( struct Map_info* map, int type, QgsPolyline polyline, struct
   Vect_write_line( map, type, line, cats );
 }
 
-void exitIfCanceled( QDataStream& stdinStream, bool isPolygon,
-                     const QString & tmpName, struct Map_info * tmpMap,
-                     const QString & finalName, struct Map_info * finalMap )
+static struct Map_info *finalMap = 0;
+static struct Map_info *tmpMap = 0;
+static QString finalName;
+static QString tmpName;
+dbDriver *driver = 0;
+
+void closeMaps()
 {
-  bool isCanceled;
-  stdinStream >> isCanceled;
-  if ( !isCanceled )
-  {
-    return;
-  }
-  if ( isPolygon )
+  if ( tmpMap )
   {
     Vect_close( tmpMap );
     Vect_delete( tmpName.toUtf8().data() );
   }
-  Vect_close( finalMap );
-  Vect_delete( finalName.toUtf8().data() );
+  if ( finalMap )
+  {
+    Vect_close( finalMap );
+    Vect_delete( finalName.toUtf8().data() );
+  }
+  if ( driver )
+  {
+    // we should rollback transaction but there is not db_rollback_transaction()
+    // With SQLite it takes very long time with large datasets to close db
+    db_close_database_shutdown_driver( driver );
+  }
   G_warning( "import canceled -> maps deleted" );
+}
+
+// check stream status or exit
+void checkStream( QDataStream& stdinStream )
+{
+  if ( stdinStream.status() != QDataStream::Ok )
+  {
+    closeMaps();
+    G_fatal_error( "Cannot read data stream" );
+  }
+}
+
+void exitIfCanceled( QDataStream& stdinStream )
+{
+  bool isCanceled;
+  stdinStream >> isCanceled;
+  checkStream( stdinStream );
+  if ( !isCanceled )
+  {
+    return;
+  }
+  closeMaps();
   exit( EXIT_SUCCESS );
 }
 
 // G_set_percent_routine only works in GRASS >= 7
 //int percent_routine (int)
 //{
-// TODO: use it to interrupt cleaning functions
+// TODO: use it to interrupt cleaning funct  //stdinFile.open( stdin, QIODevice::ReadOnly | QIODevice::Unbuffered );ions
 //}
 
 int main( int argc, char **argv )
@@ -104,34 +134,45 @@ int main( int argc, char **argv )
   if ( G_parser( argc, argv ) )
     exit( EXIT_FAILURE );
 
-  QFile stdinFile;
-  stdinFile.open( stdin, QIODevice::ReadOnly );
+#ifdef Q_OS_WIN
+  _setmode( _fileno( stdin ), _O_BINARY );
+  _setmode( _fileno( stdout ), _O_BINARY );
+#endif
+  QgsGrassDataFile stdinFile;
+  stdinFile.open( stdin );
   QDataStream stdinStream( &stdinFile );
 
   QFile stdoutFile;
-  stdoutFile.open( stdout, QIODevice::WriteOnly );
+  stdoutFile.open( stdout, QIODevice::WriteOnly | QIODevice::Unbuffered );
   QDataStream stdoutStream( &stdoutFile );
+
+  // global finalName, tmpName are used by checkStream()
+  finalName = QString( mapOption->answer );
+  QDateTime now = QDateTime::currentDateTime();
+  tmpName = QString( "qgis_import_tmp_%1_%2" ).arg( mapOption->answer ).arg( now.toString( "yyyyMMddhhmmss" ) );
 
   qint32 typeQint32;
   stdinStream >> typeQint32;
+  checkStream( stdinStream );
   QGis::WkbType wkbType = ( QGis::WkbType )typeQint32;
   QGis::WkbType wkbFlatType = QGis::flatType( wkbType );
   bool isPolygon = QGis::singleType( wkbFlatType ) == QGis::WKBPolygon;
 
-  QString finalName = QString( mapOption->answer );
-  struct Map_info finalMap, tmpMap;
-  Vect_open_new( &finalMap, mapOption->answer, 0 );
-  struct Map_info * map = &finalMap;
-  QDateTime now = QDateTime::currentDateTime();
-  QString tmpName = QString( "%1_tmp_%2" ).arg( mapOption->answer ).arg( now.toString( "yyyyMMddhhmmss" ) );
+  finalMap = QgsGrass::vectNewMapStruct();
+  Vect_open_new( finalMap, mapOption->answer, 0 );
+  struct Map_info * map = finalMap;
+  // keep tmp name in sync with QgsGrassMapsetItem::createChildren
   if ( isPolygon )
   {
-    Vect_open_new( &tmpMap, tmpName.toUtf8().data(), 0 );
-    map = &tmpMap;
+    tmpMap = QgsGrass::vectNewMapStruct();
+    // TODO: use Vect_open_tmp_new with GRASS 7
+    Vect_open_new( tmpMap, tmpName.toUtf8().data(), 0 );
+    map = tmpMap;
   }
 
   QgsFields srcFields;
   stdinStream >> srcFields;
+  checkStream( stdinStream );
   // TODO: find (in QgsGrassVectorImport) if there is unique 'id' or 'cat' field and use it as cat
   int keyNum = 1;
   QString key;
@@ -149,14 +190,14 @@ int main( int argc, char **argv )
   fields.append( QgsField( key, QVariant::Int ) );
   fields.extend( srcFields );
 
-  struct field_info *fieldInfo = Vect_default_field_info( &finalMap, 1, NULL, GV_1TABLE );
-  if ( Vect_map_add_dblink( &finalMap, 1, NULL, fieldInfo->table, key.toLatin1().data(),
+  struct field_info *fieldInfo = Vect_default_field_info( finalMap, 1, NULL, GV_1TABLE );
+  if ( Vect_map_add_dblink( finalMap, 1, NULL, fieldInfo->table, key.toLatin1().data(),
                             fieldInfo->database, fieldInfo->driver ) != 0 )
   {
     G_fatal_error( "Cannot add link" );
   }
 
-  dbDriver *driver = db_start_driver_open_database( fieldInfo->driver, fieldInfo->database );
+  driver = db_start_driver_open_database( fieldInfo->driver, fieldInfo->database );
   if ( !driver )
   {
     G_fatal_error( "Cannot open database %s by driver %s", fieldInfo->database, fieldInfo->driver );
@@ -170,16 +211,27 @@ int main( int argc, char **argv )
     G_fatal_error( "Cannot create table: %s", e.what() );
   }
 
+  if ( db_grant_on_table( driver, fieldInfo->table, DB_PRIV_SELECT, DB_GROUP | DB_PUBLIC ) != DB_OK )
+  {
+    // TODO: fatal?
+    //G_fatal_error(("Unable to grant privileges on table <%s>"), fieldInfo->table);
+  }
+  db_begin_transaction( driver );
+
   QgsFeature feature;
   struct line_cats *cats = Vect_new_cats_struct();
 
   qint32 featureCount = 0;
   while ( true )
   {
-    exitIfCanceled( stdinStream, isPolygon, tmpName, &tmpMap, finalName, &finalMap );
+    exitIfCanceled( stdinStream );
     stdinStream >> feature;
-    stdoutStream << ( bool )true; // feature received
+    checkStream( stdinStream );
+#ifndef Q_OS_WIN
+    // cannot be used on Windows, see notes in qgis.r.in
+    stdoutStream << true; // feature received
     stdoutFile.flush();
+#endif
     if ( !feature.isValid() )
     {
       break;
@@ -250,6 +302,7 @@ int main( int argc, char **argv )
       attributes.insert( 0, QVariant( feature.id() ) );
       try
       {
+        // TODO: inserting row is extremely slow on Windows (at least with SQLite), v.in.ogr is fast
         QgsGrass::insertRow( driver, QString( fieldInfo->table ), attributes );
       }
       catch ( QgsGrass::Exception &e )
@@ -259,6 +312,8 @@ int main( int argc, char **argv )
     }
     featureCount++;
   }
+  db_commit_transaction( driver );
+  db_close_database_shutdown_driver( driver );
 
   if ( isPolygon )
   {
@@ -333,10 +388,13 @@ int main( int argc, char **argv )
     // read once more to assign centroids to polygons
     while ( true )
     {
-      exitIfCanceled( stdinStream, isPolygon, tmpName, &tmpMap, finalName, &finalMap );
+      exitIfCanceled( stdinStream );
       stdinStream >> feature;
-      stdoutStream << ( bool )true; // feature received
+      checkStream( stdinStream );
+#ifndef Q_OS_WIN
+      stdoutStream << true; // feature received
       stdoutFile.flush();
+#endif
       if ( !feature.isValid() )
       {
         break;
@@ -359,8 +417,8 @@ int main( int argc, char **argv )
       }
     }
 
-    Vect_copy_map_lines( &tmpMap, &finalMap );
-    Vect_close( &tmpMap );
+    Vect_copy_map_lines( tmpMap, finalMap );
+    Vect_close( tmpMap );
     Vect_delete( tmpName.toUtf8().data() );
 
     foreach ( QgsFeature centroid, centroids.values() )
@@ -374,16 +432,15 @@ int main( int argc, char **argv )
         {
           Vect_cat_set( cats, 1, attribute.toInt() );
         }
-        writePoint( &finalMap, GV_CENTROID, point, cats );
+        writePoint( finalMap, GV_CENTROID, point, cats );
       }
     }
   }
 
-  db_close_database_shutdown_driver( driver );
-  Vect_build( &finalMap );
-  Vect_close( &finalMap );
+  Vect_build( finalMap );
+  Vect_close( finalMap );
 
-  stdoutStream << ( bool )true; // to keep caller waiting until finished
+  stdoutStream << true; // to keep caller waiting until finished
   stdoutFile.flush();
   // TODO history
 

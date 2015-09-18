@@ -300,7 +300,7 @@ void QgsMapRendererJob::cleanupJobs( LayerRenderJobs& jobs )
 
     if ( job.renderer )
     {
-      foreach ( QString message, job.renderer->errors() )
+      Q_FOREACH ( const QString& message, job.renderer->errors() )
         mErrors.append( Error( job.renderer->layerID(), message ) );
 
       delete job.renderer;

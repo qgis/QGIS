@@ -1,0 +1,7 @@
+{
+  "function": "geom_to_wkt",
+  "description": "Returns the Well-Known Text (WKT) representation of the geometry without SRID metadata.",
+  "arguments": [ {"arg":"geometry","description":"a geometry"}],
+  "examples": [ { "expression":"geom_to_wkt( $geometry )", "returns":"POINT(6 50)"}
+  ]
+}

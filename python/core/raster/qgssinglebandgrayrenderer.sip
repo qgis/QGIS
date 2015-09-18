@@ -21,7 +21,7 @@ class QgsSingleBandGrayRenderer: QgsRasterRenderer
     int grayBand() const;
     void setGrayBand( int band );
     const QgsContrastEnhancement* contrastEnhancement() const;
-    /**Takes ownership*/
+    /** Takes ownership*/
     void setContrastEnhancement( QgsContrastEnhancement* ce /Transfer/ );
 
     void setGradient( Gradient theGradient );

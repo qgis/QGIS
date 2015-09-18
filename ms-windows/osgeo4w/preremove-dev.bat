@@ -10,7 +10,7 @@ for %%g in (@grassversions@) do (
 del "%OSGEO4W_STARTMENU%\Qt Designer with QGIS @version@ custom widgets (Nightly).lnk"
 del "%ALLUSERSPROFILE%\Desktop\Qt Designer with QGIS @version@ custom widgets (Nightly).lnk"
 
-del "%OSGEO4W_ROOT%"\bin\designer-@package@.bat
+del "%OSGEO4W_ROOT%"\bin\@package@-designer.bat
 del "%OSGEO4W_ROOT%"\bin\python-@package@.bat
 del "%OSGEO4W_ROOT%"\apps\@package@\python\qgis\qgisconfig.py
 del "%OSGEO4W_ROOT%"\apps\@package@\bin\qgis.reg

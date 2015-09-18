@@ -106,6 +106,7 @@ void QgsDateTimeEdit::setDateTime( const QDateTime& dateTime )
   else
   {
     QDateTimeEdit::setDateTime( dateTime );
+    mIsNull = false;
   }
 }
 

@@ -8,7 +8,7 @@
  *
  */
 
-/*! \file */
+/** \file */
 
 #ifndef __NMEA_SENTENCE_H__
 #define __NMEA_SENTENCE_H__

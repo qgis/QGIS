@@ -95,7 +95,7 @@ class CORE_EXPORT QgsSymbolLayerV2
     void setLocked( bool locked ) { mLocked = locked; }
     bool isLocked() const { return mLocked; }
 
-    /**Returns the estimated maximum distance which the layer style will bleed outside
+    /** Returns the estimated maximum distance which the layer style will bleed outside
       the drawn shape. Eg, polygons drawn with an outline will draw half the width
       of the outline outside of the polygon. This amount is estimated, since it may
       be affected by data defined symbology rules.*/
@@ -199,7 +199,22 @@ class CORE_EXPORT QgsSymbolLayerV2
      * @see getDataDefinedProperty
      * @note added in QGIS 2.9
      */
-    virtual QVariant evaluateDataDefinedProperty( const QString& property, const QgsFeature* feature, const QVariant& defaultVal = QVariant(), bool *ok = 0 ) const;
+    Q_DECL_DEPRECATED virtual QVariant evaluateDataDefinedProperty( const QString& property, const QgsFeature* feature, const QVariant& defaultVal = QVariant(), bool *ok = 0 ) const;
+
+    /** Evaluates the matching data defined property and returns the calculated
+     * value. Prior to evaluation the data defined property must be prepared
+     * by calling @link prepareExpressions @endlink.
+     * @param property property key
+     * @param context symbol render context
+     * @param defaultVal default value to return if evaluation was not successful
+     * @param ok if specified, will be set to true if evaluation was successful
+     * @returns calculated value for data defined property, or default value
+     * if property does not exist or is deactived.
+     * @see hasDataDefinedProperty
+     * @see getDataDefinedProperty
+     * @note added in QGIS 2.12
+     */
+    virtual QVariant evaluateDataDefinedProperty( const QString& property, const QgsSymbolV2RenderContext& context, const QVariant& defaultVal = QVariant(), bool *ok = 0 ) const;
 
     virtual bool writeDxf( QgsDxfExport& e,
                            double mmMapUnitScaleFactor,
@@ -232,6 +247,15 @@ class CORE_EXPORT QgsSymbolLayerV2
      */
     void setPaintEffect( QgsPaintEffect* effect );
 
+    /** Returns the result of the symbol rendering operation. This should only be
+     * called immediately after a rendering operation (eg calling renderPoint).
+     * @note added in QGIS 2.12
+     * @note this is a temporary method until QGIS 3.0. For QGIS 3.0 the render methods
+     * will return a QgsRenderResult object
+     */
+    // TODO - QGIS 3.0. Remove and make renderPoint, etc return a QgsRenderResult
+    const QgsRenderResult& renderResult() const { return mRenderResult; }
+
   protected:
     QgsSymbolLayerV2( QgsSymbolV2::SymbolType type, bool locked = false );
 
@@ -254,7 +278,14 @@ class CORE_EXPORT QgsSymbolLayerV2
      * @param fields associated layer fields
      * @param scale map scale
      */
-    virtual void prepareExpressions( const QgsFields* fields, double scale = -1.0 );
+    Q_DECL_DEPRECATED virtual void prepareExpressions( const QgsFields* fields, double scale = -1.0 );
+
+    /** Prepares all data defined property expressions for evaluation. This should
+     * be called prior to evaluating data defined properties.
+     * @param context symbol render context
+     * @note added in QGIS 2.12
+     */
+    virtual void prepareExpressions( const QgsSymbolV2RenderContext& context );
 
     /** Returns the data defined expression associated with a property
      * @deprecated use getDataDefinedProperty or evaluateDataDefinedProperty instead
@@ -279,11 +310,21 @@ class CORE_EXPORT QgsSymbolLayerV2
     */
     void copyDataDefinedProperties( QgsSymbolLayerV2* destLayer ) const;
 
-    /**Copies paint effect of this layer to another symbol layer
+    /** Copies paint effect of this layer to another symbol layer
      * @param destLayer destination layer
      * @note added in QGIS 2.9
      */
     void copyPaintEffect( QgsSymbolLayerV2* destLayer ) const;
+
+    /** Sets the result of the symbol rendering operation. Subclasses should call
+     * this method after rendering a symbol and update the render result to reflect
+     * to actual result of the symbol render.
+     * @note added in QGIS 2.12
+     * @note this is a temporary method until QGIS 3.0. For QGIS 3.0 the render methods
+     * will return a QgsRenderResult object
+     */
+    // TODO - QGIS 3.0. Remove and make renderPoint, etc return a QgsRenderResult
+    void setRenderResult( const QgsRenderResult& result );
 
     static const QString EXPR_SIZE;
     static const QString EXPR_ANGLE;
@@ -343,6 +384,10 @@ class CORE_EXPORT QgsSymbolLayerV2
     static const QString EXPR_OFFSET_ALONG_LINE;
     static const QString EXPR_HORIZONTAL_ANCHOR_POINT;
     static const QString EXPR_VERTICAL_ANCHOR_POINT;
+
+  private:
+
+    QgsRenderResult mRenderResult;
 };
 
 //////////////////////
@@ -511,7 +556,7 @@ class CORE_EXPORT QgsFillSymbolLayerV2 : public QgsSymbolLayerV2
 
   protected:
     QgsFillSymbolLayerV2( bool locked = false );
-    /**Default method to render polygon*/
+    /** Default method to render polygon*/
     void _renderPolygon( QPainter* p, const QPolygonF& points, const QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context );
 
     double mAngle;

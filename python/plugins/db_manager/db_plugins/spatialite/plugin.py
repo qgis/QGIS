@@ -23,8 +23,9 @@ email                : brush.tyler@gmail.com
 # this will disable the dbplugin if the connector raise an ImportError
 from .connector import SpatiaLiteDBConnector
 
-from PyQt4.QtCore import Qt, QSettings
-from PyQt4.QtGui import QIcon, QApplication, QAction
+from PyQt4.QtCore import Qt, SIGNAL, QSettings, QFileInfo
+from PyQt4.QtGui import QIcon, QApplication, QAction, QFileDialog
+from qgis.core import QgsDataSourceURI
 from qgis.gui import QgsMessageBar
 
 from ..plugin import DBPlugin, Database, Table, VectorTable, RasterTable, TableField, TableIndex, TableTrigger, \
@@ -41,6 +42,7 @@ def classFactory():
 
 
 class SpatiaLiteDBPlugin(DBPlugin):
+
     @classmethod
     def icon(self):
         return QIcon(":/db_manager/spatialite/icon")
@@ -51,7 +53,7 @@ class SpatiaLiteDBPlugin(DBPlugin):
 
     @classmethod
     def typeNameString(self):
-        return 'SpatiaLite'
+        return 'SpatiaLite/Geopackage'
 
     @classmethod
     def providerName(self):
@@ -74,20 +76,41 @@ class SpatiaLiteDBPlugin(DBPlugin):
 
         database = settings.value("sqlitepath")
 
-        import qgis.core
-
-        uri = qgis.core.QgsDataSourceURI()
+        uri = QgsDataSourceURI()
         uri.setDatabase(database)
         return self.connectToUri(uri)
 
+    @classmethod
+    def addConnection(self, conn_name, uri):
+        settings = QSettings()
+        settings.beginGroup(u"/%s/%s" % (self.connectionSettingsKey(), conn_name))
+        settings.setValue("sqlitepath", uri.database())
+        return True
+
+    @classmethod
+    def addConnectionActionSlot(self, item, action, parent, index):
+        QApplication.restoreOverrideCursor()
+        try:
+            filename = QFileDialog.getOpenFileName(parent, "Choose Sqlite/Spatialite/Geopackage file")
+            if not filename:
+                return
+        finally:
+            QApplication.setOverrideCursor(Qt.WaitCursor)
+
+        conn_name = QFileInfo(filename).fileName()
+        uri = QgsDataSourceURI()
+        uri.setDatabase(filename)
+        self.addConnection(conn_name, uri)
+        index.internalPointer().emit(SIGNAL('itemChanged'), index.internalPointer())
+
 
 class SLDatabase(Database):
+
     def __init__(self, connection, uri):
         Database.__init__(self, connection, uri)
 
     def connectorsFactory(self, uri):
         return SpatiaLiteDBConnector(uri)
-
 
     def dataTablesFactory(self, row, db, schema=None):
         return SLTable(row, db, schema)
@@ -97,7 +120,6 @@ class SLDatabase(Database):
 
     def rasterTablesFactory(self, row, db, schema=None):
         return SLRasterTable(row, db, schema)
-
 
     def info(self):
         from .info_model import SLDatabaseInfo
@@ -132,7 +154,6 @@ class SLDatabase(Database):
         self.database().connector.runVacuum()
         self.database().refresh()
 
-
     def runAction(self, action):
         action = unicode(action)
 
@@ -146,17 +167,41 @@ class SLDatabase(Database):
     def uniqueIdFunction(self):
         return None
 
-    def explicitSpatialIndex( self ):
+    def explicitSpatialIndex(self):
         return True
 
-    def spatialIndexClause( self, src_table, src_column, dest_table, dest_column ):
-        return """"%s".ROWID IN (\nSELECT ROWID FROM SpatialIndex WHERE f_table_name='%s' AND search_frame="%s"."%s") """ % (src_table,src_table,dest_table, dest_column)
+    def spatialIndexClause(self, src_table, src_column, dest_table, dest_column):
+        return u""" "%s".ROWID IN (\nSELECT ROWID FROM SpatialIndex WHERE f_table_name='%s' AND search_frame="%s"."%s") """ % (src_table, src_table, dest_table, dest_column)
+
 
 class SLTable(Table):
+
     def __init__(self, row, db, schema=None):
         Table.__init__(self, db, None)
         self.name, self.isView, self.isSysTable = row
 
+    def ogrUri(self):
+        ogrUri = u"%s|layername=%s" % (self.uri().database(), self.name)
+        return ogrUri
+
+    def mimeUri(self):
+        if self.database().connector.isGpkg():
+            # QGIS has no provider to load Geopackage vectors, let's use OGR
+            return u"vector:ogr:%s:%s" % (self.name, self.ogrUri())
+        return VectorTable.mimeUri(self)
+
+    def toMapLayer(self):
+        from qgis.core import QgsVectorLayer
+
+        if self.database().connector.isGpkg():
+            # QGIS has no provider to load Geopackage vectors, let's use OGR
+            provider = "ogr"
+            uri = self.ogrUri()
+        else:
+            provider = self.database().dbplugin().providerName()
+            uri = self.uri().uri()
+
+        return QgsVectorLayer(uri, self.name, provider)
 
     def tableFieldsFactory(self, row, table):
         return SLTableField(row, table)
@@ -167,7 +212,6 @@ class SLTable(Table):
     def tableTriggersFactory(self, row, table):
         return SLTableTrigger(row, table)
 
-
     def tableDataModel(self, parent):
         from .data_model import SLTableDataModel
 
@@ -175,6 +219,7 @@ class SLTable(Table):
 
 
 class SLVectorTable(SLTable, VectorTable):
+
     def __init__(self, row, db, schema=None):
         SLTable.__init__(self, row[:-5], db, schema)
         VectorTable.__init__(self, db, schema)
@@ -209,7 +254,6 @@ class SLVectorTable(SLTable, VectorTable):
     def refreshTableEstimatedExtent(self):
         return
 
-
     def runAction(self, action):
         if SLTable.runAction(self, action):
             return True
@@ -217,6 +261,7 @@ class SLVectorTable(SLTable, VectorTable):
 
 
 class SLRasterTable(SLTable, RasterTable):
+
     def __init__(self, row, db, schema=None):
         SLTable.__init__(self, row[:-3], db, schema)
         RasterTable.__init__(self, db, schema)
@@ -227,25 +272,37 @@ class SLRasterTable(SLTable, RasterTable):
         #from .info_model import SLRasterTableInfo
         #return SLRasterTableInfo(self)
 
-    def gdalUri(self):
-        uri = self.database().uri()
-        gdalUri = u'RASTERLITE:%s,table=%s' % (uri.database(), self.prefixName)
+    def rasterliteGdalUri(self):
+        gdalUri = u'RASTERLITE:%s,table=%s' % (self.uri().database(), self.prefixName)
         return gdalUri
 
     def mimeUri(self):
-        uri = u"raster:gdal:%s:%s" % (self.name, self.gdalUri())
+        if self.database().connector.isGpkg():
+            # QGIS has no provider to load Geopackage rasters, let's use GDAL
+            uri = u"raster:gdal:%s:%s" % (self.name, self.uri().database())
+        else:
+            # QGIS has no provider to load Rasterlite rasters, let's use GDAL
+            uri = u"raster:gdal:%s:%s" % (self.name, self.rasterliteGdalUri())
         return uri
 
     def toMapLayer(self):
         from qgis.core import QgsRasterLayer, QgsContrastEnhancement
 
-        rl = QgsRasterLayer(self.gdalUri(), self.name)
+        if self.database().connector.isGpkg():
+            # QGIS has no provider to load Geopackage rasters, let's use GDAL
+            uri = self.ogrUri()
+        else:
+            # QGIS has no provider to load Rasterlite rasters, let's use GDAL
+            uri = self.rasterliteGdalUri()
+
+        rl = QgsRasterLayer(uri, self.name)
         if rl.isValid():
             rl.setContrastEnhancement(QgsContrastEnhancement.StretchToMinimumMaximum)
         return rl
 
 
 class SLTableField(TableField):
+
     def __init__(self, row, table):
         TableField.__init__(self, table)
         self.num, self.name, self.dataType, self.notNull, self.default, self.primaryKey = row
@@ -253,12 +310,14 @@ class SLTableField(TableField):
 
 
 class SLTableIndex(TableIndex):
+
     def __init__(self, row, table):
         TableIndex.__init__(self, table)
         self.num, self.name, self.isUnique, self.columns = row
 
 
 class SLTableTrigger(TableTrigger):
+
     def __init__(self, row, table):
         TableTrigger.__init__(self, table)
         self.name, self.function = row

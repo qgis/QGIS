@@ -23,19 +23,20 @@ import SocketServer
 import threading
 import SimpleHTTPServer
 
-PORT = 8080
 
 class TestQgsNetworkContentFetcher(TestCase):
+
     @classmethod
     def setUpClass(cls):
         # Bring up a simple HTTP server
-        os.chdir( unitTestDataPath() + '' )
+        os.chdir(unitTestDataPath() + '')
         handler = SimpleHTTPServer.SimpleHTTPRequestHandler
 
-        cls.httpd = SocketServer.TCPServer(('localhost', PORT), handler)
+        cls.httpd = SocketServer.TCPServer(('localhost', 0), handler)
+        cls.port = cls.httpd.server_address[1]
 
-        cls.httpd_thread = threading.Thread( target=cls.httpd.serve_forever )
-        cls.httpd_thread.setDaemon( True )
+        cls.httpd_thread = threading.Thread(target=cls.httpd.serve_forever)
+        cls.httpd_thread.setDaemon(True)
         cls.httpd_thread.start()
 
     def __init__(self, methodName):
@@ -46,15 +47,14 @@ class TestQgsNetworkContentFetcher(TestCase):
 
         self.app = QCoreApplication([])
 
-
     def contentLoaded(self):
         self.loaded = True
 
     def testFetchEmptyUrl(self):
         fetcher = QgsNetworkContentFetcher()
         self.loaded = False
-        fetcher.fetchContent( QUrl() )
-        fetcher.finished.connect( self.contentLoaded )
+        fetcher.fetchContent(QUrl())
+        fetcher.finished.connect(self.contentLoaded)
         while not self.loaded:
             self.app.processEvents()
 
@@ -64,8 +64,8 @@ class TestQgsNetworkContentFetcher(TestCase):
     def testFetchBadUrl(self):
         fetcher = QgsNetworkContentFetcher()
         self.loaded = False
-        fetcher.fetchContent( QUrl( 'http://x' ) )
-        fetcher.finished.connect( self.contentLoaded )
+        fetcher.fetchContent(QUrl('http://x'))
+        fetcher.finished.connect(self.contentLoaded)
         while not self.loaded:
             self.app.processEvents()
 
@@ -75,8 +75,8 @@ class TestQgsNetworkContentFetcher(TestCase):
     def testFetchUrlContent(self):
         fetcher = QgsNetworkContentFetcher()
         self.loaded = False
-        fetcher.fetchContent( QUrl( 'http://localhost:' + str( PORT ) + '/qgis_local_server/index.html' ) )
-        fetcher.finished.connect( self.contentLoaded )
+        fetcher.fetchContent(QUrl('http://localhost:' + str(TestQgsNetworkContentFetcher.port) + '/qgis_local_server/index.html'))
+        fetcher.finished.connect(self.contentLoaded)
         while not self.loaded:
             self.app.processEvents()
 
@@ -89,10 +89,10 @@ class TestQgsNetworkContentFetcher(TestCase):
     def testDoubleFetch(self):
         fetcher = QgsNetworkContentFetcher()
         self.loaded = False
-        fetcher.fetchContent( QUrl( 'http://www.qgis.org/' ) )
+        fetcher.fetchContent(QUrl('http://www.qgis.org/'))
         # double fetch - this should happen before previous request finishes
-        fetcher.fetchContent( QUrl( 'http://localhost:' + str( PORT ) + '/qgis_local_server/index.html' ) )
-        fetcher.finished.connect( self.contentLoaded )
+        fetcher.fetchContent(QUrl('http://localhost:' + str(TestQgsNetworkContentFetcher.port) + '/qgis_local_server/index.html'))
+        fetcher.finished.connect(self.contentLoaded)
         while not self.loaded:
             self.app.processEvents()
 
@@ -105,8 +105,8 @@ class TestQgsNetworkContentFetcher(TestCase):
     def testFetchEncodedContent(self):
         fetcher = QgsNetworkContentFetcher()
         self.loaded = False
-        fetcher.fetchContent( QUrl( 'http://localhost:' + str( PORT ) + '/encoded_html.html' ) )
-        fetcher.finished.connect( self.contentLoaded )
+        fetcher.fetchContent(QUrl('http://localhost:' + str(TestQgsNetworkContentFetcher.port) + '/encoded_html.html'))
+        fetcher.finished.connect(self.contentLoaded)
         while not self.loaded:
             self.app.processEvents()
 

@@ -32,7 +32,7 @@ bool QgsVectorLayerEditPassthrough::addFeatures( QgsFeatureList& features )
 {
   if ( L->dataProvider()->addFeatures( features ) )
   {
-    foreach ( const QgsFeature& f, features )
+    Q_FOREACH ( const QgsFeature& f, features )
     {
       emit featureAdded( f.id() );
     }

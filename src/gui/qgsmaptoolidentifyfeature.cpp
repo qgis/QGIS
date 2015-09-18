@@ -35,7 +35,7 @@ QgsMapToolIdentifyFeature::~QgsMapToolIdentifyFeature()
 {
 }
 
-void QgsMapToolIdentifyFeature::canvasReleaseEvent( QMouseEvent* e )
+void QgsMapToolIdentifyFeature::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
 
   QgsPoint point = mCanvas->getCoordinateTransform()->toMapCoordinates( e->x(), e->y() );

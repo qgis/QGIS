@@ -85,9 +85,9 @@ QgsRuleBasedRendererV2Widget::QgsRuleBasedRendererV2Widget( QgsVectorLayer* laye
   btnRefineRule->setMenu( mRefineMenu );
   contextMenu->addMenu( mRefineMenu );
 
-  btnAddRule->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.png" ) ) );
+  btnAddRule->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.svg" ) ) );
   btnEditRule->setIcon( QIcon( QgsApplication::iconPath( "symbologyEdit.png" ) ) );
-  btnRemoveRule->setIcon( QIcon( QgsApplication::iconPath( "symbologyRemove.png" ) ) );
+  btnRemoveRule->setIcon( QIcon( QgsApplication::iconPath( "symbologyRemove.svg" ) ) );
 
   connect( viewRules, SIGNAL( doubleClicked( const QModelIndex & ) ), this, SLOT( editRule( const QModelIndex & ) ) );
 
@@ -129,7 +129,7 @@ void QgsRuleBasedRendererV2Widget::addRule()
   QgsSymbolV2* s = QgsSymbolV2::defaultSymbol( mLayer->geometryType() );
   QgsRuleBasedRendererV2::Rule* newrule = new QgsRuleBasedRendererV2::Rule( s );
 
-  QgsRendererRulePropsDialog dlg( newrule, mLayer, mStyle, this );
+  QgsRendererRulePropsDialog dlg( newrule, mLayer, mStyle, this, mMapCanvas );
   if ( dlg.exec() )
   {
     QgsRuleBasedRendererV2::Rule* current = currentRule();
@@ -173,7 +173,7 @@ void QgsRuleBasedRendererV2Widget::editRule( const QModelIndex& index )
     return;
   QgsRuleBasedRendererV2::Rule* rule = mModel->ruleForIndex( index );
 
-  QgsRendererRulePropsDialog dlg( rule, mLayer, mStyle, this );
+  QgsRendererRulePropsDialog dlg( rule, mLayer, mStyle, this, mMapCanvas );
   if ( dlg.exec() )
   {
     // model should know about the change and emit dataChanged signal for the view
@@ -186,7 +186,7 @@ void QgsRuleBasedRendererV2Widget::removeRule()
 {
   QItemSelection sel = viewRules->selectionModel()->selection();
   QgsDebugMsg( QString( "REMOVE RULES!!! ranges: %1" ).arg( sel.count() ) );
-  foreach ( QItemSelectionRange range, sel )
+  Q_FOREACH ( const QItemSelectionRange& range, sel )
   {
     QgsDebugMsg( QString( "RANGE: r %1 - %2" ).arg( range.top() ).arg( range.bottom() ) );
     if ( range.isValid() )
@@ -231,7 +231,7 @@ void QgsRuleBasedRendererV2Widget::refineRule( int type )
   // TODO: set initial rule's symbol to NULL (?)
 
   // show the newly added rules
-  foreach ( QModelIndex index, indexlist )
+  Q_FOREACH ( const QModelIndex& index, indexlist )
     viewRules->expand( index );
 }
 
@@ -256,6 +256,7 @@ void QgsRuleBasedRendererV2Widget::refineRuleCategoriesGui( const QModelIndexLis
   dlg.setWindowTitle( tr( "Refine a rule to categories" ) );
   QVBoxLayout* l = new QVBoxLayout();
   QgsCategorizedSymbolRendererV2Widget* w = new QgsCategorizedSymbolRendererV2Widget( mLayer, mStyle, NULL );
+  w->setMapCanvas( mMapCanvas );
   l->addWidget( w );
   QDialogButtonBox* bb = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
   l->addWidget( bb );
@@ -268,7 +269,7 @@ void QgsRuleBasedRendererV2Widget::refineRuleCategoriesGui( const QModelIndexLis
 
   // create new rules
   QgsCategorizedSymbolRendererV2* r = static_cast<QgsCategorizedSymbolRendererV2*>( w->renderer() );
-  foreach ( QModelIndex index, indexList )
+  Q_FOREACH ( const QModelIndex& index, indexList )
   {
     QgsRuleBasedRendererV2::Rule* initialRule = mModel->ruleForIndex( index );
     mModel->willAddRules( index, r->categories().count() );
@@ -286,6 +287,7 @@ void QgsRuleBasedRendererV2Widget::refineRuleRangesGui( const QModelIndexList& i
   dlg.setWindowTitle( tr( "Refine a rule to ranges" ) );
   QVBoxLayout* l = new QVBoxLayout();
   QgsGraduatedSymbolRendererV2Widget* w = new QgsGraduatedSymbolRendererV2Widget( mLayer, mStyle, NULL );
+  w->setMapCanvas( mMapCanvas );
   l->addWidget( w );
   QDialogButtonBox* bb = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
   l->addWidget( bb );
@@ -298,7 +300,7 @@ void QgsRuleBasedRendererV2Widget::refineRuleRangesGui( const QModelIndexList& i
 
   // create new rules
   QgsGraduatedSymbolRendererV2* r = static_cast<QgsGraduatedSymbolRendererV2*>( w->renderer() );
-  foreach ( QModelIndex index, indexList )
+  Q_FOREACH ( const QModelIndex& index, indexList )
   {
     QgsRuleBasedRendererV2::Rule* initialRule = mModel->ruleForIndex( index );
     mModel->willAddRules( index, r->ranges().count() );
@@ -309,7 +311,7 @@ void QgsRuleBasedRendererV2Widget::refineRuleRangesGui( const QModelIndexList& i
 
 void QgsRuleBasedRendererV2Widget::refineRuleScalesGui( const QModelIndexList& indexList )
 {
-  foreach ( QModelIndex index, indexList )
+  Q_FOREACH ( const QModelIndex& index, indexList )
   {
     QgsRuleBasedRendererV2::Rule* initialRule = mModel->ruleForIndex( index );
 
@@ -329,7 +331,7 @@ void QgsRuleBasedRendererV2Widget::refineRuleScalesGui( const QModelIndexList& i
 
   QList<int> scales;
   bool ok;
-  foreach ( QString item, txt.split( ',' ) )
+  Q_FOREACH ( const QString& item, txt.split( ',' ) )
   {
     int scale = item.toInt( &ok );
     if ( ok )
@@ -338,7 +340,7 @@ void QgsRuleBasedRendererV2Widget::refineRuleScalesGui( const QModelIndexList& i
       QMessageBox::information( this, tr( "Error" ), QString( tr( "\"%1\" is not valid scale denominator, ignoring it." ) ).arg( item ) );
   }
 
-  foreach ( QModelIndex index, indexList )
+  Q_FOREACH ( const QModelIndex& index, indexList )
   {
     QgsRuleBasedRendererV2::Rule* initialRule = mModel->ruleForIndex( index );
     mModel->willAddRules( index, scales.count() + 1 );
@@ -357,7 +359,7 @@ QList<QgsSymbolV2*> QgsRuleBasedRendererV2Widget::selectedSymbols()
   }
 
   QItemSelection sel = viewRules->selectionModel()->selection();
-  foreach ( QItemSelectionRange range, sel )
+  Q_FOREACH ( const QItemSelectionRange& range, sel )
   {
     QModelIndex parent = range.parent();
     QgsRuleBasedRendererV2::Rule* parentRule = mModel->ruleForIndex( parent );
@@ -375,7 +377,7 @@ QgsRuleBasedRendererV2::RuleList QgsRuleBasedRendererV2Widget::selectedRules()
 {
   QgsRuleBasedRendererV2::RuleList rl;
   QItemSelection sel = viewRules->selectionModel()->selection();
-  foreach ( QItemSelectionRange range, sel )
+  Q_FOREACH ( const QItemSelectionRange& range, sel )
   {
     QModelIndex parent = range.parent();
     QgsRuleBasedRendererV2::Rule* parentRule = mModel->ruleForIndex( parent );
@@ -494,7 +496,7 @@ void QgsRuleBasedRendererV2Widget::countFeatures()
 
   QgsRuleBasedRendererV2::RuleList ruleList = mRenderer->rootRule()->descendants();
   // insert all so that we have counts 0
-  foreach ( QgsRuleBasedRendererV2::Rule* rule, ruleList )
+  Q_FOREACH ( QgsRuleBasedRendererV2::Rule* rule, ruleList )
   {
     countMap[rule].count = 0;
     countMap[rule].duplicateCount = 0;
@@ -504,9 +506,27 @@ void QgsRuleBasedRendererV2Widget::countFeatures()
 
   QgsRenderContext renderContext;
   renderContext.setRendererScale( 0 ); // ignore scale
-  mRenderer->startRender( renderContext, mLayer->pendingFields() );
 
-  int nFeatures = mLayer->pendingFeatureCount();
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::atlasScope( 0 );
+  if ( mMapCanvas )
+  {
+    context << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )
+    << new QgsExpressionContextScope( mMapCanvas->expressionContextScope() );
+  }
+  else
+  {
+    context << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+  }
+  context << QgsExpressionContextUtils::layerScope( mLayer );
+
+  renderContext.setExpressionContext( context );
+
+  mRenderer->startRender( renderContext, mLayer->fields() );
+
+  int nFeatures = mLayer->featureCount();
   QProgressDialog p( tr( "Calculating feature count." ), tr( "Abort" ), 0, nFeatures );
   p.setWindowModality( Qt::WindowModal );
   int featuresCounted = 0;
@@ -514,16 +534,17 @@ void QgsRuleBasedRendererV2Widget::countFeatures()
   QgsFeature f;
   while ( fit.nextFeature( f ) )
   {
-    QgsRuleBasedRendererV2::RuleList featureRuleList = mRenderer->rootRule()->rulesForFeature( f );
+    renderContext.expressionContext().setFeature( f );
+    QgsRuleBasedRendererV2::RuleList featureRuleList = mRenderer->rootRule()->rulesForFeature( f, &renderContext );
 
-    foreach ( QgsRuleBasedRendererV2::Rule* rule, featureRuleList )
+    Q_FOREACH ( QgsRuleBasedRendererV2::Rule* rule, featureRuleList )
     {
       countMap[rule].count++;
       if ( featureRuleList.size() > 1 )
       {
         countMap[rule].duplicateCount++;
       }
-      foreach ( QgsRuleBasedRendererV2::Rule* duplicateRule, featureRuleList )
+      Q_FOREACH ( QgsRuleBasedRendererV2::Rule* duplicateRule, featureRuleList )
       {
         if ( duplicateRule == rule ) continue;
         countMap[rule].duplicateCountMap[duplicateRule] += 1;
@@ -548,7 +569,7 @@ void QgsRuleBasedRendererV2Widget::countFeatures()
   mRenderer->stopRender( renderContext );
 
 #ifdef QGISDEBUG
-  foreach ( QgsRuleBasedRendererV2::Rule *rule, countMap.keys() )
+  Q_FOREACH ( QgsRuleBasedRendererV2::Rule *rule, countMap.keys() )
   {
     QgsDebugMsg( QString( "rule: %1 count %2" ).arg( rule->label() ).arg( countMap[rule].count ) );
   }
@@ -559,8 +580,8 @@ void QgsRuleBasedRendererV2Widget::countFeatures()
 
 ///////////
 
-QgsRendererRulePropsDialog::QgsRendererRulePropsDialog( QgsRuleBasedRendererV2::Rule* rule, QgsVectorLayer* layer, QgsStyleV2* style, QWidget* parent )
-    : QDialog( parent ), mRule( rule ), mLayer( layer ), mSymbolSelector( NULL ), mSymbol( NULL )
+QgsRendererRulePropsDialog::QgsRendererRulePropsDialog( QgsRuleBasedRendererV2::Rule* rule, QgsVectorLayer* layer, QgsStyleV2* style, QWidget* parent , QgsMapCanvas* mapCanvas )
+    : QDialog( parent ), mRule( rule ), mLayer( layer ), mSymbolSelector( NULL ), mSymbol( NULL ), mMapCanvas( mapCanvas )
 {
   setupUi( this );
 #ifdef Q_OS_MAC
@@ -585,6 +606,7 @@ QgsRendererRulePropsDialog::QgsRendererRulePropsDialog( QgsRuleBasedRendererV2::
     if ( rule->scaleMaxDenom() > 0 )
       mScaleRangeWidget->setMinimumScale( 1.0 / rule->scaleMaxDenom() );
   }
+  mScaleRangeWidget->setMapCanvas( mMapCanvas );
 
   if ( mRule->symbol() )
   {
@@ -598,6 +620,7 @@ QgsRendererRulePropsDialog::QgsRendererRulePropsDialog( QgsRuleBasedRendererV2::
   }
 
   mSymbolSelector = new QgsSymbolV2SelectorDialog( mSymbol, style, mLayer, this, true );
+  mSymbolSelector->setMapCanvas( mMapCanvas );
   QVBoxLayout* l = new QVBoxLayout;
   l->addWidget( mSymbolSelector );
   groupSymbol->setLayout( l );
@@ -618,7 +641,22 @@ QgsRendererRulePropsDialog::~QgsRendererRulePropsDialog()
 
 void QgsRendererRulePropsDialog::buildExpression()
 {
-  QgsExpressionBuilderDialog dlg( mLayer, editFilter->text(), this );
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::atlasScope( 0 );
+  if ( mMapCanvas )
+  {
+    context << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )
+    << new QgsExpressionContextScope( mMapCanvas->expressionContextScope() );
+  }
+  else
+  {
+    context << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+  }
+  context << QgsExpressionContextUtils::layerScope( mLayer );
+
+  QgsExpressionBuilderDialog dlg( mLayer, editFilter->text(), this, "generic", context );
 
   if ( dlg.exec() )
     editFilter->setText( dlg.expressionText() );
@@ -633,9 +671,22 @@ void QgsRendererRulePropsDialog::testFilter()
     return;
   }
 
-  const QgsFields& fields = mLayer->pendingFields();
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::atlasScope( 0 );
+  if ( mMapCanvas )
+  {
+    context << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )
+    << new QgsExpressionContextScope( mMapCanvas->expressionContextScope() );
+  }
+  else
+  {
+    context << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+  }
+  context << QgsExpressionContextUtils::layerScope( mLayer );
 
-  if ( !filter.prepare( fields ) )
+  if ( !filter.prepare( &context ) )
   {
     QMessageBox::critical( this, tr( "Evaluation error" ), filter.evalErrorString() );
     return;
@@ -649,7 +700,9 @@ void QgsRendererRulePropsDialog::testFilter()
   QgsFeature f;
   while ( fit.nextFeature( f ) )
   {
-    QVariant value = filter.evaluate( &f );
+    context.setFeature( f );
+
+    QVariant value = filter.evaluate( &context );
     if ( value.toInt() != 0 )
       count++;
     if ( filter.hasEvalError() )
@@ -757,7 +810,7 @@ QVariant QgsRuleBasedRendererV2Model::data( const QModelIndex &index, int role )
             if ( mFeatureCountMap[rule].duplicateCount > 0 )
             {
               QString tip = "<p style='margin:0px;'><ul>";
-              foreach ( QgsRuleBasedRendererV2::Rule* duplicateRule, mFeatureCountMap[rule].duplicateCountMap.keys() )
+              Q_FOREACH ( QgsRuleBasedRendererV2::Rule* duplicateRule, mFeatureCountMap[rule].duplicateCountMap.keys() )
               {
                 QString label = duplicateRule->label().replace( "&", "&amp;" ).replace( ">", "&gt;" ).replace( "<", "&lt;" );
                 tip += tr( "<li><nobr>%1 features also in rule %2</nobr></li>" ).arg( mFeatureCountMap[rule].duplicateCountMap[duplicateRule] ).arg( label );
@@ -937,7 +990,7 @@ QMimeData *QgsRuleBasedRendererV2Model::mimeData( const QModelIndexList &indexes
 
   QDataStream stream( &encodedData, QIODevice::WriteOnly );
 
-  foreach ( const QModelIndex &index, indexes )
+  Q_FOREACH ( const QModelIndex &index, indexes )
   {
     // each item consists of several columns - let's add it with just first one
     if ( !index.isValid() || index.column() != 0 )

@@ -54,12 +54,17 @@ void QgsAbout::init()
   // check internet connection in order to hide/show the developers map widget
   int DEVELOPERS_MAP_INDEX = 5;
   QTcpSocket socket;
-  socket.connectToHost( "qgis.org", 80 );
+  socket.connectToHost( QgsApplication::QGIS_ORGANIZATION_DOMAIN, 80 );
   if ( socket.waitForConnected( 1000 ) )
+  {
     setDevelopersMap();
+  }
   else
+  {
     mOptionsListWidget->item( DEVELOPERS_MAP_INDEX )->setHidden( true );
-
+    QModelIndex firstItem = mOptionsListWidget->model()->index( 0, 0, QModelIndex() );
+    mOptionsListWidget->setCurrentIndex( firstItem );
+  }
   developersMapView->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
   developersMapView->setContextMenuPolicy( Qt::NoContextMenu );
 

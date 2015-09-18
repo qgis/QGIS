@@ -23,6 +23,8 @@ SET(QGIS_ANALYSIS_SRCS
   interpolation/Triangulation.cc
   interpolation/TriDecorator.cc
   interpolation/Vector3D.cc
+
+  raster/qgsalignraster.cpp
   raster/qgsninecellfilter.cpp
   raster/qgsruggednessfilter.cpp
   raster/qgsderivativefilter.cpp
@@ -71,20 +73,21 @@ IF (PEDANTIC AND MSVC)
   )
 ENDIF (PEDANTIC AND MSVC)
 
-IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+IF (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   SET_SOURCE_FILES_PROPERTIES(
     interpolation/qgstininterpolator.cpp
     interpolation/NormVecDecorator.cc
     interpolation/CloughTocherInterpolator.cc
     PROPERTIES COMPILE_FLAGS "-Wno-overloaded-virtual"
   )
-ENDIF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+ENDIF (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 
 QT4_WRAP_CPP(QGIS_ANALYSIS_MOC_SRCS ${QGIS_ANALYSIS_MOC_HDRS})
 
 # install headers
 
 SET(QGIS_ANALYSIS_HDRS
+  raster/qgsalignraster.h
   raster/qgsaspectfilter.h
   raster/qgsderivativefilter.h
   raster/qgshillshadefilter.h

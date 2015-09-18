@@ -34,7 +34,7 @@ bool QgsMultiLineStringV2::fromWkt( const QString& wkt )
 QDomElement QgsMultiLineStringV2::asGML2( QDomDocument& doc, int precision, const QString& ns ) const
 {
   QDomElement elemMultiLineString = doc.createElementNS( ns, "MultiLineString" );
-  foreach ( const QgsAbstractGeometryV2 *geom, mGeometries )
+  Q_FOREACH ( const QgsAbstractGeometryV2 *geom, mGeometries )
   {
     if ( dynamic_cast<const QgsLineStringV2*>( geom ) )
     {
@@ -54,7 +54,7 @@ QDomElement QgsMultiLineStringV2::asGML2( QDomDocument& doc, int precision, cons
 QDomElement QgsMultiLineStringV2::asGML3( QDomDocument& doc, int precision, const QString& ns ) const
 {
   QDomElement elemMultiCurve = doc.createElementNS( ns, "MultiLineString" );
-  foreach ( const QgsAbstractGeometryV2 *geom, mGeometries )
+  Q_FOREACH ( const QgsAbstractGeometryV2 *geom, mGeometries )
   {
     if ( dynamic_cast<const QgsLineStringV2*>( geom ) )
     {
@@ -72,7 +72,7 @@ QDomElement QgsMultiLineStringV2::asGML3( QDomDocument& doc, int precision, cons
 QString QgsMultiLineStringV2::asJSON( int precision ) const
 {
   QString json = "{\"type\": \"MultiLineString\", \"coordinates\": [";
-  foreach ( const QgsAbstractGeometryV2 *geom, mGeometries )
+  Q_FOREACH ( const QgsAbstractGeometryV2 *geom, mGeometries )
   {
     if ( dynamic_cast<const QgsCurveV2*>( geom ) )
     {

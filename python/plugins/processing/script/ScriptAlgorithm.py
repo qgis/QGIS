@@ -111,8 +111,8 @@ class ScriptAlgorithm(GeoAlgorithm):
     def defineCharacteristicsFromScript(self):
         lines = self.script.split('\n')
         self.silentOutputs = []
-        self.name = self.tr('[Unnamed algorithm]', 'ScriptAlgorithm')
-        self.group = self.tr('User scripts', 'ScriptAlgorithm')
+        self.name, self.i18n_name = self.trAlgorithm('[Unnamed algorithm]', 'ScriptAlgorithm')
+        self.group, self.i18n_group = self.trAlgorithm('User scripts', 'ScriptAlgorithm')
         for line in lines:
             if line.startswith('##'):
                 try:
@@ -140,10 +140,10 @@ class ScriptAlgorithm(GeoAlgorithm):
         tokens = line.split('=', 1)
         desc = self.createDescriptiveName(tokens[0])
         if tokens[1].lower().strip() == 'group':
-            self.group = tokens[0]
+            self.group = self.i18n_group = tokens[0]
             return
         if tokens[1].lower().strip() == 'name':
-            self.name = tokens[0]
+            self.name = self.i18n_name = tokens[0]
             return
         if tokens[1].lower().strip() == 'raster':
             param = ParameterRaster(tokens[0], desc, False)
@@ -163,11 +163,11 @@ class ScriptAlgorithm(GeoAlgorithm):
             param = ParameterTable(tokens[0], desc, False)
         elif tokens[1].lower().strip() == 'multiple raster':
             param = ParameterMultipleInput(tokens[0], desc,
-                    ParameterMultipleInput.TYPE_RASTER)
+                                           ParameterMultipleInput.TYPE_RASTER)
             param.optional = False
         elif tokens[1].lower().strip() == 'multiple vector':
             param = ParameterMultipleInput(tokens[0], desc,
-                    ParameterMultipleInput.TYPE_VECTOR_ANY)
+                                           ParameterMultipleInput.TYPE_VECTOR_ANY)
             param.optional = False
         elif tokens[1].lower().strip().startswith('selectionfromfile'):
             options = tokens[1].strip()[len('selectionfromfile '):].split(';')
@@ -268,7 +268,7 @@ class ScriptAlgorithm(GeoAlgorithm):
             ns[out.name] = out.value
 
         script += self.script
-        exec(script) in ns
+        exec((script), ns)
         for out in self.outputs:
             out.setValue(ns[out.name])
 

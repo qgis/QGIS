@@ -43,7 +43,7 @@ class QgsNetworkProxyFactory : public QNetworkProxyFactory
       QgsNetworkAccessManager *nam = QgsNetworkAccessManager::instance();
 
       // iterate proxies factories and take first non empty list
-      foreach ( QNetworkProxyFactory *f, nam->proxyFactories() )
+      Q_FOREACH ( QNetworkProxyFactory *f, nam->proxyFactories() )
       {
         QList<QNetworkProxy> systemproxies = f->systemProxyForQuery( query );
         if ( systemproxies.size() > 0 )
@@ -60,7 +60,7 @@ class QgsNetworkProxyFactory : public QNetworkProxyFactory
 
       QString url = query.url().toString();
 
-      foreach ( QString exclude, nam->excludeList() )
+      Q_FOREACH ( const QString& exclude, nam->excludeList() )
       {
         if ( url.startsWith( exclude ) )
         {
@@ -322,7 +322,6 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache()
     }
   }
 
-#if QT_VERSION >= 0x40500
   setFallbackProxyAndExcludes( proxy, excludes );
 
   QNetworkDiskCache *newcache = qobject_cast<QNetworkDiskCache*>( cache() );
@@ -340,8 +339,22 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache()
 
   if ( cache() != newcache )
     setCache( newcache );
-#else
-  setProxy( proxy );
-#endif
 }
 
+void QgsNetworkAccessManager::sendGet( const QNetworkRequest & request )
+{
+  QgsDebugMsg( "Entered" );
+  QNetworkReply * reply = get( request );
+  emit requestSent( reply, QObject::sender() );
+}
+
+void QgsNetworkAccessManager::deleteReply( QNetworkReply * reply )
+{
+  QgsDebugMsg( "Entered" );
+  if ( !reply )
+  {
+    return;
+  }
+  reply->abort();
+  reply->deleteLater();
+}

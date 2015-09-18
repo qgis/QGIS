@@ -40,6 +40,7 @@ SAGA_LOG_CONSOLE = 'SAGA_LOG_CONSOLE'
 SAGA_FOLDER = 'SAGA_FOLDER'
 SAGA_IMPORT_EXPORT_OPTIMIZATION = 'SAGA_IMPORT_EXPORT_OPTIMIZATION'
 
+
 def sagaBatchJobFilename():
     if isWindows():
         filename = 'saga_batch_job.bat'
@@ -67,6 +68,7 @@ def findSagaFolder():
             folder = testfolder
     return folder
 
+
 def sagaPath():
     folder = ProcessingConfig.getSetting(SAGA_FOLDER)
     if folder is None or folder == '':
@@ -74,6 +76,7 @@ def sagaPath():
         if folder is not None:
             ProcessingConfig.setSettingValue(SAGA_FOLDER, folder)
     return folder or ''
+
 
 def sagaDescriptionPath():
     return os.path.join(os.path.dirname(__file__), 'description')
@@ -102,17 +105,26 @@ def createSagaBatchJobFileFromSagaCommands(commands):
 _installedVersion = None
 _installedVersionFound = False
 
+
 def getSagaInstalledVersion(runSaga=False):
     global _installedVersion
     global _installedVersionFound
 
-    if not _installedVersionFound or runSaga:
-        if isWindows():
-            commands = [os.path.join(sagaPath(), "saga_cmd.exe"), "-v"]
-        elif isMac():
-            commands = [os.path.join(sagaPath(), "saga_cmd"), "-v"]
-        else:
-            commands = ["saga_cmd", "-v"]
+    maxRetries = 5
+    retries = 0
+    if _installedVersionFound and not runSaga:
+        return _installedVersion
+
+    if isWindows():
+        commands = [os.path.join(sagaPath(), "saga_cmd.exe"), "-v"]
+    elif isMac():
+        commands = [os.path.join(sagaPath(), "saga_cmd -v")]
+    else:
+        # for Linux use just one string instead of separated parameters as the list
+        # does not work well together with shell=True option
+        # (python docs advices to use subprocess32 instead of python2.7's subprocess)
+        commands = ["saga_cmd -v"]
+    while retries < maxRetries:
         proc = subprocess.Popen(
             commands,
             shell=True,
@@ -123,13 +135,19 @@ def getSagaInstalledVersion(runSaga=False):
         ).stdout
         try:
             lines = proc.readlines()
+            for line in lines:
+                if line.startswith("SAGA Version:"):
+                    _installedVersion = line[len("SAGA Version:"):].strip().split(" ")[0]
+                    _installedVersionFound = True
+                    return _installedVersion
+            return None
+        except IOError:
+            retries += 1
         except:
             return None
-        for line in lines:
-            if line.startswith("SAGA Version:"):
-                _installedVersion = line[len("SAGA Version:"):].strip().split(" ")[0]
-        _installedVersionFound = True
+
     return _installedVersion
+
 
 def executeSaga(progress):
     if isWindows():

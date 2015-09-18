@@ -51,8 +51,9 @@ class CORE_EXPORT QgsScaleExpression : public QgsExpression
      * @param maxValue maximum value, corresponds to specified maximum size
      * @param minSize minimum size
      * @param maxSize maximum size
+     * @param nullSize size in case expression evaluates to NULL
      */
-    QgsScaleExpression( Type type, const QString& baseExpression, double minValue, double maxValue, double minSize, double maxSize );
+    QgsScaleExpression( Type type, const QString& baseExpression, double minValue, double maxValue, double minSize, double maxSize, double nullSize = 0 );
 
     operator bool() const { return ! mExpression.isEmpty(); }
 
@@ -84,6 +85,11 @@ class CORE_EXPORT QgsScaleExpression : public QgsExpression
      */
     double maxValue() const { return mMaxValue; }
 
+    /** Returns the size value when expression evaluates to NULL.
+     * @see nullSize
+     */
+    double nullSize() const { return mNullSize; }
+
     /** Returns the base expression string (or field reference) used for
      * calculating the values to be mapped to a size.
      */
@@ -101,9 +107,10 @@ class CORE_EXPORT QgsScaleExpression : public QgsExpression
     double mMaxSize;
     double mMinValue;
     double mMaxValue;
+    double mNullSize;
 
     void init();
-    static QString createExpression( Type type, const QString& baseExpr, double minValue, double maxValue, double minSize, double maxSize );
+    static QString createExpression( Type type, const QString& baseExpr, double minValue, double maxValue, double minSize, double maxSize, double nullSize );
 
 };
 

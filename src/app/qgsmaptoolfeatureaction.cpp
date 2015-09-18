@@ -44,17 +44,17 @@ QgsMapToolFeatureAction::~QgsMapToolFeatureAction()
 {
 }
 
-void QgsMapToolFeatureAction::canvasMoveEvent( QMouseEvent *e )
+void QgsMapToolFeatureAction::canvasMoveEvent( QgsMapMouseEvent* e )
 {
   Q_UNUSED( e );
 }
 
-void QgsMapToolFeatureAction::canvasPressEvent( QMouseEvent *e )
+void QgsMapToolFeatureAction::canvasPressEvent( QgsMapMouseEvent* e )
 {
   Q_UNUSED( e );
 }
 
-void QgsMapToolFeatureAction::canvasReleaseEvent( QMouseEvent *e )
+void QgsMapToolFeatureAction::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   QgsMapLayer *layer = mCanvas->currentLayer();
 
@@ -131,7 +131,7 @@ bool QgsMapToolFeatureAction::doAction( QgsVectorLayer *layer, int x, int y )
   if ( featList.size() == 0 )
     return false;
 
-  foreach ( QgsFeature feat, featList )
+  Q_FOREACH ( const QgsFeature& feat, featList )
   {
     if ( layer->actions()->defaultAction() >= 0 )
     {

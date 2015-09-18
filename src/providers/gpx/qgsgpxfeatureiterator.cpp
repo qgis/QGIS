@@ -176,7 +176,7 @@ bool QgsGPXFeatureIterator::readFid( QgsFeature& feature )
 
 bool QgsGPXFeatureIterator::readWaypoint( const QgsWaypoint& wpt, QgsFeature& feature )
 {
-  if ( mRequest.filterType() == QgsFeatureRequest::FilterRect )
+  if ( !mRequest.filterRect().isNull() )
   {
     const QgsRectangle& rect = mRequest.filterRect();
     if ( ! rect.contains( QgsPoint( wpt.lon, wpt.lat ) ) )
@@ -206,7 +206,7 @@ bool QgsGPXFeatureIterator::readRoute( const QgsRoute& rte, QgsFeature& feature 
 
   QgsGeometry* theGeometry = readRouteGeometry( rte );
 
-  if ( mRequest.filterType() == QgsFeatureRequest::FilterRect )
+  if ( !mRequest.filterRect().isNull() )
   {
     const QgsRectangle& rect = mRequest.filterRect();
     if (( rte.xMax < rect.xMinimum() ) || ( rte.xMin > rect.xMaximum() ) ||
@@ -248,7 +248,7 @@ bool QgsGPXFeatureIterator::readTrack( const QgsTrack& trk, QgsFeature& feature 
 
   QgsGeometry* theGeometry = readTrackGeometry( trk );
 
-  if ( mRequest.filterType() == QgsFeatureRequest::FilterRect )
+  if ( !mRequest.filterRect().isNull() )
   {
     const QgsRectangle& rect = mRequest.filterRect();
     if (( trk.xMax < rect.xMinimum() ) || ( trk.xMin > rect.xMaximum() ) ||
@@ -434,7 +434,7 @@ QgsGeometry* QgsGPXFeatureIterator::readTrackGeometry( const QgsTrack& trk )
     return 0;
 
   // A track consists of several segments. Add all those segments into one.
-  int totalPoints = 0;;
+  int totalPoints = 0;
   for ( int i = 0; i < trk.segments.size(); i ++ )
   {
     totalPoints += trk.segments[i].points.size();

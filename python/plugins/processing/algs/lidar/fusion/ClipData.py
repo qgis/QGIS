@@ -43,22 +43,22 @@ class ClipData(FusionAlgorithm):
     SHAPE = 'SHAPE'
 
     def defineCharacteristics(self):
-        self.name = 'Clip Data'
-        self.group = 'Points'
+        self.name, self.i18n_name = self.trAlgorithm('Clip Data')
+        self.group, self.i18n_group = self.trAlgorithm('Points')
         self.addParameter(ParameterFile(
-            self.INPUT, self.tr('Input las layer')))
+            self.INPUT, self.tr('Input LAS layer')))
         self.addParameter(ParameterExtent(self.EXTENT, self.tr('Extent')))
         self.addParameter(ParameterSelection(
             self.SHAPE, self.tr('Shape'), ['Rectangle', 'Circle']))
         self.addOutput(OutputFile(
-            self.OUTPUT, self.tr('Output clipped las file')))
+            self.OUTPUT, self.tr('Output clipped LAS file')))
         self.addAdvancedModifiers()
 
     def processAlgorithm(self, progress):
         commands = [os.path.join(FusionUtils.FusionPath(), 'FilterData.exe')]
         commands.append('/verbose')
         self.addAdvancedModifiersToCommand(commands)
-        commands.append('/shape:' + str(self.getParameterValue(self.SHAPE)))
+        commands.append('/shape:' + unicode(self.getParameterValue(self.SHAPE)))
         files = self.getParameterValue(self.INPUT).split(';')
         if len(files) == 1:
             commands.append(self.getParameterValue(self.INPUT))
@@ -67,7 +67,7 @@ class ClipData(FusionAlgorithm):
             commands.append(FusionUtils.tempFileListFilepath())
         outFile = self.getOutputValue(self.OUTPUT) + '.lda'
         commands.append(outFile)
-        extent = str(self.getParameterValue(self.EXTENT)).split(',')
+        extent = unicode(self.getParameterValue(self.EXTENT)).split(',')
         commands.append(extent[0])
         commands.append(extent[2])
         commands.append(extent[1])

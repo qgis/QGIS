@@ -11,7 +11,24 @@ class QgsDataDefinedAssistant: QDialog
 #include <qgsdatadefinedbutton.h>
 %End
   public:
+    QgsDataDefinedAssistant();
+
     virtual QgsDataDefined dataDefined() const = 0;
+
+    /** Sets the map canvas associated with the widget. This allows the widget to retrieve the current
+     * map scale and other properties from the canvas.
+     * @param canvas map canvas
+     * @see mapCanvas()
+     * @note added in QGIS 2.12
+     */
+    virtual void setMapCanvas( QgsMapCanvas* canvas );
+
+    /** Returns the map canvas associated with the widget.
+     * @see setMapCanvas
+     * @note added in QGIS 2.12
+     */
+    const QgsMapCanvas* mapCanvas() const;
+
 };
 
 /** \ingroup gui
@@ -46,7 +63,7 @@ class QgsDataDefinedButton : QToolButton
                           const QgsVectorLayer* vl = 0,
                           const QgsDataDefined* datadefined = 0,
                           DataTypes datatypes = AnyType,
-                          QString description = "" );
+                          QString description = QString() );
     ~QgsDataDefinedButton();
 
     /**
@@ -60,7 +77,7 @@ class QgsDataDefinedButton : QToolButton
     void init( const QgsVectorLayer* vl,
                const QgsDataDefined* datadefined = 0,
                DataTypes datatypes = AnyType,
-               QString description = QString( "" ) );
+               QString description = QString() );
 
     QMap< QString, QString > definedProperty() const;
 
@@ -168,14 +185,34 @@ class QgsDataDefinedButton : QToolButton
      */
     void clearCheckedWidgets();
 
+    //! Callback function for retrieving the expression context for the button
+    //typedef QgsExpressionContext( *ExpressionContextCallback )( const void* context );
+
+    /** Register callback function for retrieving the expression context for the button
+     * @param fnGetExpressionContext call back function, will be called when the data defined
+     * button requires the current expression context
+     * @param context context for callback function
+     * @note added in QGIS 2.12
+     * @note not available in Python bindings
+     */
+    //void registerGetExpressionContextCallback( ExpressionContextCallback fnGetExpressionContext, const void* context );
+
     /**
      * Sets an assistant used to define the data defined object properties.
      * Ownership of the assistant is transferred to the widget.
+     * @param title menu title for the assistant
      * @param assistant data defined assistant. Set to null to remove the assistant
      * option from the button.
      * @note added in 2.10
+     * @see assistant()
      */
-    void setAssistant( QgsDataDefinedAssistant * assistant /Transfer/ );
+    void setAssistant( const QString& title, QgsDataDefinedAssistant * assistant /Transfer/ );
+
+    /** Returns the assistant used to defined the data defined object properties, if set.
+     * @see setAssistant()
+     * @note added in QGIS 2.12
+     */
+    QgsDataDefinedAssistant* assistant();
 
     /**
      * Common descriptions for expected input values

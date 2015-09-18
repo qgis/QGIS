@@ -30,7 +30,6 @@
 #include <QPushButton>
 #include <QNetworkRequest>
 
-class QgisApp;
 class QgsDataProvider;
 class QButtonGroup;
 class QgsNumericSortTreeWidgetItem;
@@ -77,7 +76,7 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
     //! Loads connections from the file
     void on_mLoadButton_clicked();
 
-    /*! Connects to the database using the stored connection parameters.
+    /** Connects to the database using the stored connection parameters.
     * Once connected, available layers are displayed.
     */
     void on_mConnectButton_clicked();

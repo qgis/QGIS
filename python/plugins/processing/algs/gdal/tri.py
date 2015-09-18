@@ -42,13 +42,13 @@ class tri(GdalAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def defineCharacteristics(self):
-        self.name = 'TRI (Terrain Ruggedness Index)'
-        self.group = '[GDAL] Analysis'
+        self.name, self.i18n_name = self.trAlgorithm('TRI (Terrain Ruggedness Index)')
+        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Analysis')
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterNumber(self.BAND,
-            self.tr('Band number'), 1, 99, 1))
+                                          self.tr('Band number'), 1, 99, 1))
         self.addParameter(ParameterBoolean(self.COMPUTE_EDGES,
-            self.tr('Compute edges'), False))
+                                           self.tr('Compute edges'), False))
 
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Terrain Ruggedness Index')))
 
@@ -58,7 +58,7 @@ class tri(GdalAlgorithm):
         arguments.append(unicode(self.getOutputValue(self.OUTPUT)))
 
         arguments.append('-b')
-        arguments.append(str(self.getParameterValue(self.BAND)))
+        arguments.append(unicode(self.getParameterValue(self.BAND)))
 
         if self.getParameterValue(self.COMPUTE_EDGES):
             arguments.append('-compute_edges')

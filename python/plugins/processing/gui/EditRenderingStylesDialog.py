@@ -69,15 +69,15 @@ class EditRenderingStylesDialog(BASE, WIDGET):
             if isinstance(output, (OutputVector, OutputRaster)):
                 if not output.hidden:
                     item = QTableWidgetItem(output.description + '<'
-                            + output.__class__.__name__ + '>')
+                                            + output.__class__.__name__ + '>')
                     item.setFlags(Qt.ItemIsEnabled)
                     self.tblStyles.setItem(i, 0, item)
                     item = RenderingStyleFilePanel()
                     style = \
                         RenderingStyles.getStyle(self.alg.commandLineName(),
-                            output.name)
+                                                 output.name)
                     if style:
-                        item.setText(str(style))
+                        item.setText(unicode(style))
                     self.valueItems[output.name] = item
                     self.tblStyles.setCellWidget(i, 1, item)
                     self.tblStyles.setRowHeight(i, 22)
@@ -86,7 +86,7 @@ class EditRenderingStylesDialog(BASE, WIDGET):
     def accept(self):
         styles = {}
         for key in self.valueItems.keys():
-            styles[key] = str(self.valueItems[key].getValue())
+            styles[key] = unicode(self.valueItems[key].getValue())
         RenderingStyles.addAlgStylesAndSave(self.alg.commandLineName(), styles)
 
         QDialog.accept(self)

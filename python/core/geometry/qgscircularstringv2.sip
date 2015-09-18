@@ -38,9 +38,9 @@ class QgsCircularStringV2: public QgsCurveV2
     virtual QgsLineStringV2* curveToLine() const;
 
     void draw( QPainter& p ) const;
-    void transform( const QgsCoordinateTransform& ct );
+    void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform );
     void transform( const QTransform& t );
-    void clip( const QgsRectangle& rect );
+    //void clip( const QgsRectangle& rect );
     void addToPainterPath( QPainterPath& path ) const;
     void drawAsPolygon( QPainter& p ) const;
 
@@ -54,6 +54,11 @@ class QgsCircularStringV2: public QgsCurveV2
     void sumUpArea( double& sum ) const;
 
     bool hasCurvedSegments() const;
+
+    /** Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
+        @param vertex the vertex id
+        @return rotation in radians, clockwise from north*/
+    double vertexAngle( const QgsVertexId& vertex ) const;
 
   private:
     void segmentize( const QgsPointV2& p1, const QgsPointV2& p2, const QgsPointV2& p3, QList<QgsPointV2>& points ) const;

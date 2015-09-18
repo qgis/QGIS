@@ -23,7 +23,7 @@
 
 class QgsGPSConnection;
 
-/**A singleton class to register / unregister existing GPS connections such that the information
+/** A singleton class to register / unregister existing GPS connections such that the information
   is available to all classes and plugins*/
 class CORE_EXPORT QgsGPSConnectionRegistry
 {
@@ -31,9 +31,9 @@ class CORE_EXPORT QgsGPSConnectionRegistry
     static QgsGPSConnectionRegistry* instance();
     ~QgsGPSConnectionRegistry();
 
-    /**Inserts a connection into the registry. The connection is owned by the registry class until it is unregistered again*/
+    /** Inserts a connection into the registry. The connection is owned by the registry class until it is unregistered again*/
     void registerConnection( QgsGPSConnection* c );
-    /**Unregisters connection. The registry does no longer own the connection*/
+    /** Unregisters connection. The registry does no longer own the connection*/
     void unregisterConnection( QgsGPSConnection* c );
 
     QList< QgsGPSConnection *> connectionList() const;

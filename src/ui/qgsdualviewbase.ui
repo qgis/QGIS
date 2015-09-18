@@ -28,10 +28,26 @@
      <number>0</number>
     </property>
     <item row="0" column="0">
-     <widget class="QgsAttributeTableView" name="mTableView">
-      <property name="alternatingRowColors">
-       <bool>true</bool>
+     <widget class="QSplitter" name="splitter">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
       </property>
+      <property name="childrenCollapsible">
+       <bool>false</bool>
+      </property>
+      <widget class="QgsAttributeTableView" name="mTableView">
+       <property name="alternatingRowColors">
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QgsFieldConditionalFormatWidget" name="mConditionalFormatWidget" native="true">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
      </widget>
     </item>
    </layout>
@@ -142,7 +158,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>229</width>
+             <width>230</width>
              <height>503</height>
             </rect>
            </property>
@@ -181,6 +197,12 @@
    <class>QgsFeatureListView</class>
    <extends>QListView</extends>
    <header>attributetable/qgsfeaturelistview.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsFieldConditionalFormatWidget</class>
+   <extends>QWidget</extends>
+   <header>attributetable/qgsfieldconditionalformatwidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>

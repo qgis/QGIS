@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 5.1.2014
     Copyright            : (C) 2014 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -50,15 +50,21 @@ class GUI_EXPORT QgsRangeWidgetWrapper : public QgsEditorWidgetWrapper
   protected:
     virtual QWidget* createWidget( QWidget* parent ) override;
     virtual void initWidget( QWidget* editor ) override;
+    bool valid() override;
 
   public slots:
     virtual void setValue( const QVariant& value ) override;
+
+  public slots:
+    void valueChanged( QVariant );
 
   private:
     QSpinBox* mIntSpinBox;
     QDoubleSpinBox* mDoubleSpinBox;
     QSlider* mSlider;
     QDial* mDial;
+    QgsSlider* mQgsSlider;
+    QgsDial* mQgsDial;
 };
 
 #endif // QGSRANGEWIDGETWRAPPER_H

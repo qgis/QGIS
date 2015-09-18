@@ -16,6 +16,9 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QTableWidget" name="mRelationsTable">
+     <attribute name="horizontalHeaderStretchLastSection">
+      <bool>true</bool>
+     </attribute>
      <column>
       <property name="text">
        <string>Name</string>
@@ -70,7 +73,7 @@
        </property>
        <property name="icon">
         <iconset resource="../../images/images.qrc">
-         <normaloff>:/images/themes/default/mActionSignPlus.png</normaloff>:/images/themes/default/mActionSignPlus.png</iconset>
+         <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
        </property>
       </widget>
      </item>
@@ -81,7 +84,7 @@
        </property>
        <property name="icon">
         <iconset resource="../../images/images.qrc">
-         <normaloff>:/images/themes/default/symbologyRemove.png</normaloff>:/images/themes/default/symbologyRemove.png</iconset>
+         <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
        </property>
       </widget>
      </item>

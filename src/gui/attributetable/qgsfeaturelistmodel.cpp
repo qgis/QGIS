@@ -73,9 +73,12 @@ QVariant QgsFeatureListModel::data( const QModelIndex &index, int role ) const
 
     mFilterModel->layerCache()->featureAtId( idxToFid( index ), feat );
 
-    const QgsFields fields = mFilterModel->layer()->pendingFields();
-
-    return mExpression->evaluate( &feat, fields );
+    QgsExpressionContext context;
+    context << QgsExpressionContextUtils::globalScope()
+    << QgsExpressionContextUtils::projectScope()
+    << QgsExpressionContextUtils::layerScope( mFilterModel->layer() );
+    context.setFeature( feat );
+    return mExpression->evaluate( &context );
   }
 
   if ( role == FeatureInfoRole )
@@ -144,11 +147,14 @@ QgsAttributeTableModel* QgsFeatureListModel::masterModel()
 
 bool QgsFeatureListModel::setDisplayExpression( const QString expression )
 {
-  const QgsFields fields = mFilterModel->layer()->dataProvider()->fields();
-
   QgsExpression* exp = new QgsExpression( expression );
 
-  exp->prepare( fields );
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::layerScope( mFilterModel->layer() );
+
+  exp->prepare( &context );
 
   if ( exp->hasParserError() )
   {

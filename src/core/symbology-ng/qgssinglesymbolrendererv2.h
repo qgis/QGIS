@@ -21,6 +21,7 @@
 #include "qgsexpression.h"
 #include <QScopedPointer>
 
+Q_NOWARN_DEPRECATED_PUSH
 class CORE_EXPORT QgsSingleSymbolRendererV2 : public QgsFeatureRendererV2
 {
   public:
@@ -29,9 +30,9 @@ class CORE_EXPORT QgsSingleSymbolRendererV2 : public QgsFeatureRendererV2
 
     virtual ~QgsSingleSymbolRendererV2();
 
-    virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature ) override;
+    virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
 
-    virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feature ) override;
+    virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
 
     virtual void startRender( QgsRenderContext& context, const QgsFields& fields ) override;
 
@@ -42,8 +43,8 @@ class CORE_EXPORT QgsSingleSymbolRendererV2 : public QgsFeatureRendererV2
     QgsSymbolV2* symbol() const;
     void setSymbol( QgsSymbolV2* s );
 
-    void setRotationField( QString fieldOrExpression ) override;
-    QString rotationField() const override;
+    Q_DECL_DEPRECATED void setRotationField( QString fieldOrExpression ) override;
+    Q_DECL_DEPRECATED QString rotationField() const override;
 
     void setSizeScaleField( QString fieldOrExpression );
     QString sizeScaleField() const;
@@ -61,7 +62,7 @@ class CORE_EXPORT QgsSingleSymbolRendererV2 : public QgsFeatureRendererV2
     //! returns bitwise OR-ed capabilities of the renderer
     virtual int capabilities() override { return SymbolLevels | RotationField; }
 
-    virtual QgsSymbolV2List symbols() override;
+    virtual QgsSymbolV2List symbols( QgsRenderContext& context ) override;
 
     //! create renderer from XML element
     static QgsFeatureRendererV2* create( QDomElement& element );
@@ -95,6 +96,7 @@ class CORE_EXPORT QgsSingleSymbolRendererV2 : public QgsFeatureRendererV2
     QScopedPointer<QgsSymbolV2> mTempSymbol;
     double mOrigSize;
 };
+Q_NOWARN_DEPRECATED_POP
 
 
 #endif // QGSSINGLESYMBOLRENDERERV2_H

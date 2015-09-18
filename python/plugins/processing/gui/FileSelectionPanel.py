@@ -64,14 +64,14 @@ class FileSelectionPanel(BASE, WIDGET):
 
         if self.isFolder:
             folder = QFileDialog.getExistingDirectory(self,
-                self.tr('Select folder'), path)
+                                                      self.tr('Select folder'), path)
             if folder:
                 self.leText.setText(folder)
                 settings.setValue('/Processing/LastInputPath',
                                   os.path.dirname(folder))
         else:
             filenames = QFileDialog.getOpenFileNames(self,
-                self.tr('Select file'), path, '*.' + self.ext)
+                                                     self.tr('Select file'), path, '*.' + self.ext)
             if filenames:
                 self.leText.setText(u';'.join(filenames))
                 settings.setValue('/Processing/LastInputPath',

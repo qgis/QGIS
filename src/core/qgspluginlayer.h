@@ -34,7 +34,7 @@ class CORE_EXPORT QgsPluginLayer : public QgsMapLayer
   public:
     QgsPluginLayer( QString layerType, QString layerName = QString() );
 
-    /** return plugin layer type (the same as used in QgsPluginLayerRegistry) */
+    /** Return plugin layer type (the same as used in QgsPluginLayerRegistry) */
     QString pluginLayerType();
 
     void setExtent( const QgsRectangle &extent ) override;

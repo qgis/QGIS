@@ -35,34 +35,34 @@ class QPoint;
  * */
 struct CORE_EXPORT QgsSnappingResult
 {
-  /**The coordinates of the snapping result*/
+  /** The coordinates of the snapping result*/
   QgsPoint snappedVertex;
-  /**The vertex index of snappedVertex
+  /** The vertex index of snappedVertex
    or -1 if no such vertex number (e.g. snap to segment)*/
   int snappedVertexNr;
-  /**The layer coordinates of the vertex before snappedVertex*/
+  /** The layer coordinates of the vertex before snappedVertex*/
   QgsPoint beforeVertex;
-  /**The index of the vertex before snappedVertex
+  /** The index of the vertex before snappedVertex
    or -1 if no such vertex*/
   int beforeVertexNr;
-  /**The layer coordinates of the vertex after snappedVertex*/
+  /** The layer coordinates of the vertex after snappedVertex*/
   QgsPoint afterVertex;
-  /**The index of the vertex after snappedVertex
+  /** The index of the vertex after snappedVertex
    or -1 if no such vertex*/
   int afterVertexNr;
-  /**Index of the snapped geometry*/
+  /** Index of the snapped geometry*/
   QgsFeatureId snappedAtGeometry;
-  /**Layer where the snap occured*/
+  /** Layer where the snap occured*/
   const QgsVectorLayer* layer;
 };
 
 
 
-/**A class that allows advanced snapping operations on a set of vector layers*/
+/** A class that allows advanced snapping operations on a set of vector layers*/
 class CORE_EXPORT QgsSnapper
 {
   public:
-    /**Snap to vertex, to segment or both*/
+    /** Snap to vertex, to segment or both*/
     enum SnappingType
     {
       SnapToVertex,
@@ -73,24 +73,24 @@ class CORE_EXPORT QgsSnapper
 
     enum SnappingMode
     {
-      /**Only one snapping result is returned*/
+      /** Only one snapping result is returned*/
       SnapWithOneResult,
-      /**Several snapping results which have the same position are returned.
+      /** Several snapping results which have the same position are returned.
          This is useful for topological editing*/
       SnapWithResultsForSamePosition,
-      /**All results within the given layer tolerances are returned*/
+      /** All results within the given layer tolerances are returned*/
       SnapWithResultsWithinTolerances
     };
 
     struct SnapLayer
     {
-      /**The layer to which snapping is applied*/
+      /** The layer to which snapping is applied*/
       QgsVectorLayer* mLayer;
-      /**The snapping tolerances for the layers, always in source coordinate systems of the layer*/
+      /** The snapping tolerances for the layers, always in source coordinate systems of the layer*/
       double mTolerance;
-      /**What snapping type to use (snap to segment or to vertex)*/
+      /** What snapping type to use (snap to segment or to vertex)*/
       QgsSnapper::SnappingType mSnapTo;
-      /**What unit is used for tolerance*/
+      /** What unit is used for tolerance*/
       QgsTolerance::UnitType mUnitType;
     };
 
@@ -124,15 +124,15 @@ class CORE_EXPORT QgsSnapper
 
   private:
 
-    /**Removes the snapping results that contains points in exclude list*/
+    /** Removes the snapping results that contains points in exclude list*/
     void cleanResultList( QMultiMap<double, QgsSnappingResult>& list, const QList<QgsPoint>& excludeList ) const;
 
-    /**The map settings object contains information about the output coordinate system
+    /** The map settings object contains information about the output coordinate system
      of the map and about the relationship between pixel space and map space*/
     const QgsMapSettings& mMapSettings;
-    /**Snap mode to apply*/
+    /** Snap mode to apply*/
     QgsSnapper::SnappingMode mSnapMode;
-    /**List of layers to which snapping is applied*/
+    /** List of layers to which snapping is applied*/
     QList<QgsSnapper::SnapLayer> mSnapLayers;
 };
 

@@ -58,17 +58,22 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
   mCursorName = mConn->uniqueCursorName();
   QString whereClause;
 
-  if ( request.filterType() == QgsFeatureRequest::FilterRect && !mSource->mGeometryColumn.isNull() )
+  if ( !request.filterRect().isNull() && !mSource->mGeometryColumn.isNull() )
   {
     whereClause = whereClauseRect();
   }
-  else if ( request.filterType() == QgsFeatureRequest::FilterFid )
+
+  if ( request.filterType() == QgsFeatureRequest::FilterFid )
   {
-    whereClause = QgsPostgresUtils::whereClause( mRequest.filterFid(), mSource->mFields, mConn, mSource->mPrimaryKeyType, mSource->mPrimaryKeyAttrs, mSource->mShared );
+    QString fidWhereClause = QgsPostgresUtils::whereClause( mRequest.filterFid(), mSource->mFields, mConn, mSource->mPrimaryKeyType, mSource->mPrimaryKeyAttrs, mSource->mShared );
+
+    whereClause = QgsPostgresUtils::andWhereClauses( whereClause, fidWhereClause );
   }
   else if ( request.filterType() == QgsFeatureRequest::FilterFids )
   {
-    whereClause = QgsPostgresUtils::whereClause( mRequest.filterFids(), mSource->mFields, mConn, mSource->mPrimaryKeyType, mSource->mPrimaryKeyAttrs, mSource->mShared );
+    QString fidsWhereClause = QgsPostgresUtils::whereClause( mRequest.filterFids(), mSource->mFields, mConn, mSource->mPrimaryKeyType, mSource->mPrimaryKeyAttrs, mSource->mShared );
+
+    whereClause = QgsPostgresUtils::andWhereClauses( whereClause, fidsWhereClause );
   }
   else if ( request.filterType() == QgsFeatureRequest::FilterExpression
             && QSettings().value( "/qgis/postgres/compileExpressions", false ).toBool() )
@@ -77,7 +82,7 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
 
     if ( compiler.compile( request.filterExpression() ) == QgsPostgresExpressionCompiler::Complete )
     {
-      whereClause = compiler.result();
+      whereClause = QgsPostgresUtils::andWhereClauses( whereClause, compiler.result() );
       mExpressionCompiled = true;
     }
   }
@@ -158,19 +163,7 @@ bool QgsPostgresFeatureIterator::fetchFeature( QgsFeature& feature )
     return false;
   }
 
-  // Now return the next feature from the queue
-  if ( !mFetchGeometry )
-  {
-    feature.setGeometryAndOwnership( 0, 0 );
-  }
-  else
-  {
-    feature.setGeometry( mFeatureQueue.front().geometryAndOwnership() );
-  }
-  feature.setFeatureId( mFeatureQueue.front().id() );
-  feature.setAttributes( mFeatureQueue.front().attributes() );
-
-  mFeatureQueue.dequeue();
+  feature = mFeatureQueue.dequeue();
   mFetched++;
 
   feature.setValid( true );
@@ -287,13 +280,13 @@ QString QgsPostgresFeatureIterator::whereClauseRect()
            .arg( mSource->mRequestedSrid.isEmpty() ? mSource->mDetectedSrid : mSource->mRequestedSrid );
   }
 
-  QString whereClause = QString( "%1%2 && %3" )
-                        .arg( QgsPostgresConn::quotedIdentifier( mSource->mGeometryColumn ) )
-                        .arg( mSource->mSpatialColType == sctPcPatch ? "::geometry" : "" )
-                        .arg( qBox );
-
   bool castToGeometry = mSource->mSpatialColType == sctGeography ||
                         mSource->mSpatialColType == sctPcPatch;
+
+  QString whereClause = QString( "%1%2 && %3" )
+                        .arg( QgsPostgresConn::quotedIdentifier( mSource->mGeometryColumn ) )
+                        .arg( castToGeometry ? "::geometry" : "" )
+                        .arg( qBox );
 
   if ( mRequest.flags() & QgsFeatureRequest::ExactIntersect )
   {
@@ -403,7 +396,7 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause )
       break;
 
     case pktFidMap:
-      foreach ( int idx, mSource->mPrimaryKeyAttrs )
+      Q_FOREACH ( int idx, mSource->mPrimaryKeyAttrs )
       {
         query += delim + mConn->fieldExpression( mSource->mFields[idx] );
         delim = ",";
@@ -417,7 +410,7 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause )
   }
 
   bool subsetOfAttributes = mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes;
-  foreach ( int idx, subsetOfAttributes ? mRequest.subsetOfAttributes() : mSource->mFields.allAttributesList() )
+  Q_FOREACH ( int idx, subsetOfAttributes ? mRequest.subsetOfAttributes() : mSource->mFields.allAttributesList() )
   {
     if ( mSource->mPrimaryKeyAttrs.contains( idx ) )
       continue;
@@ -543,7 +536,7 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
     {
       QList<QVariant> primaryKeyVals;
 
-      foreach ( int idx, mSource->mPrimaryKeyAttrs )
+      Q_FOREACH ( int idx, mSource->mPrimaryKeyAttrs )
       {
         const QgsField &fld = mSource->mFields[idx];
 
@@ -572,7 +565,7 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
   // iterate attributes
   if ( subsetOfAttributes )
   {
-    foreach ( int idx, fetchAttributes )
+    Q_FOREACH ( int idx, fetchAttributes )
       getFeatureAttribute( idx, queryResult, row, col, feature );
   }
   else

@@ -35,6 +35,7 @@ from processing.tests.TestData import points, polygons
 
 
 class ProcessingToolsTest(unittest.TestCase):
+
     '''Tests the method imported when doing an "import processing", and
     also in processing.tools. They are mostly convenience tools.
     '''

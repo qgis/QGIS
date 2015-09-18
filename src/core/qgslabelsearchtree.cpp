@@ -86,17 +86,15 @@ bool QgsLabelSearchTree::insertLabel( LabelPosition* labelPos, int featureId, co
   QgsLabelPosition* newEntry = new QgsLabelPosition( featureId, labelPos->getAlpha(), cornerPoints, QgsRectangle( c_min[0], c_min[1], c_max[0], c_max[1] ),
       labelPos->getWidth(), labelPos->getHeight(), layerName, labeltext, labelfont, labelPos->getUpsideDown(), diagram, pinned );
   mSpatialIndex.Insert( c_min, c_max, newEntry );
+  mOwnedPositions << newEntry;
   return true;
 }
 
 void QgsLabelSearchTree::clear()
 {
-  RTree<QgsLabelPosition*, double, 2, double>::Iterator indexIt;
-  mSpatialIndex.GetFirst( indexIt );
-  while ( !mSpatialIndex.IsNull( indexIt ) )
-  {
-    delete mSpatialIndex.GetAt( indexIt );
-    mSpatialIndex.GetNext( indexIt );
-  }
   mSpatialIndex.RemoveAll();
+
+  //PAL rtree iterator is buggy and doesn't iterate over all items, so we can't iterate through the tree to delete positions
+  qDeleteAll( mOwnedPositions );
+  mOwnedPositions.clear();
 }
