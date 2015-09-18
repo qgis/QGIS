@@ -281,6 +281,11 @@ QgsPGLayerItem::QgsPGLayerItem( QgsDataItem* parent, QString name, QString path,
   Q_ASSERT( mLayerProperty.size() == 1 );
 }
 
+QString QgsPGLayerItem::comments() const
+{
+  return mLayerProperty.tableComment;
+}
+
 QgsPGLayerItem::~QgsPGLayerItem()
 {
 }
@@ -645,6 +650,10 @@ QgsPGLayerItem *QgsPGSchemaItem::createLayer( QgsPostgresLayerProperty layerProp
   //QgsDebugMsg( "schemaName = " + layerProperty.schemaName + " tableName = " + layerProperty.tableName + " geometryColName = " + layerProperty.geometryColName );
   QGis::WkbType wkbType = layerProperty.types[0];
   QString tip = tr( "%1 as %2 in %3" ).arg( layerProperty.geometryColName ).arg( QgsPostgresConn::displayStringForWkbType( wkbType ) ).arg( layerProperty.srids[0] );
+  if ( !layerProperty.tableComment.isEmpty() )
+  {
+    tip = layerProperty.tableComment + "\n" + tip;
+  }
 
   QgsLayerItem::LayerType layerType;
   QgsWKBTypes::GeometryType geomType = QgsWKBTypes::geometryType(( QgsWKBTypes::Type )wkbType );

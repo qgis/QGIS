@@ -79,6 +79,7 @@ struct QgsPostgresLayerProperty
   bool                          force2d;
   QString                       relKind;
   bool                          isView;
+  QString                       tableComment;
 
 
   // TODO: rename this !
@@ -109,6 +110,7 @@ struct QgsPostgresLayerProperty
     property.force2d         = force2d;
     property.relKind         = relKind;
     property.isView          = isView;
+    property.tableComment    = tableComment;
 
     return property;
   }

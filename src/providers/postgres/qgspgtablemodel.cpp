@@ -28,6 +28,7 @@ QgsPgTableModel::QgsPgTableModel()
   QStringList headerLabels;
   headerLabels << tr( "Schema" );
   headerLabels << tr( "Table" );
+  headerLabels << tr( "Comment" );
   headerLabels << tr( "Column" );
   headerLabels << tr( "Data Type" );
   headerLabels << tr( "Spatial Type" );
@@ -83,6 +84,7 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty& layerProper
     QStandardItem *geomTypeItem = new QStandardItem( QgsPostgresConn::displayStringForGeomType( layerProperty.geometryColType ) );
 
     QStandardItem *tableItem = new QStandardItem( layerProperty.tableName );
+    QStandardItem *commentItem = new QStandardItem( layerProperty.tableComment );
     QStandardItem *geomItem  = new QStandardItem( layerProperty.geometryColName );
     QStandardItem *sridItem  = new QStandardItem( wkbType != QGis::WKBNoGeometry ? QString::number( srid ) : "" );
     sridItem->setEditable( wkbType != QGis::WKBNoGeometry && srid == INT_MIN );
@@ -115,6 +117,7 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty& layerProper
 
     childItemList << schemaNameItem;
     childItemList << tableItem;
+    childItemList << commentItem;
     childItemList << geomItem;
     childItemList << geomTypeItem;
     childItemList << typeItem;

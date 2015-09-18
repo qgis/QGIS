@@ -305,13 +305,13 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
 
     // --- New virtual methods for layer item derived classes ---
 
-    // Returns QgsMapLayer::LayerType
+    /** Returns QgsMapLayer::LayerType */
     QgsMapLayer::LayerType mapLayerType();
 
-    // Returns layer uri or empty string if layer cannot be created
+    /** Returns layer uri or empty string if layer cannot be created */
     QString uri() { return mUri; }
 
-    // Returns provider key
+    /** Returns provider key */
     QString providerKey() { return mProviderKey; }
 
     /** Returns the supported CRS
@@ -324,12 +324,22 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
      */
     QStringList supportedFormats() { return mSupportFormats; }
 
+    /** Returns comments of the layer
+     * @note added in 2.12
+     */
+    virtual QString comments() const { return ""; }
+
   protected:
 
+    /** the provider key */
     QString mProviderKey;
+    /** the URI */
     QString mUri;
+    /** the layer type */
     LayerType mLayerType;
+    /** the list of supported CRS */
     QStringList mSupportedCRS;
+    /** the list of supported formats */
     QStringList mSupportFormats;
 
   public:
@@ -340,6 +350,7 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
     static const QIcon &iconRaster();
     static const QIcon &iconDefault();
 
+    /** returns the layer name */
     virtual QString layerName() const { return name(); }
 };
 
