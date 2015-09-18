@@ -1685,8 +1685,17 @@ bool QgsProject::createEmbeddedLayer( const QString &layerId, const QString &pro
         else
         {
           QDomElement dsElem = mapLayerElem.firstChildElement( "datasource" );
-          QString debug( QFileInfo( projectFilePath ).absolutePath() + "/" + dsElem.text() );
-          QFileInfo absoluteDs( QFileInfo( projectFilePath ).absolutePath() + "/" + dsElem.text() );
+          //QString debug( QFileInfo( projectFilePath ).absolutePath() + "/" + dsElem.text() );
+          QFileInfo absoluteDs;
+          if ( dsElem.text().contains( '|', Qt::CaseSensitive ) )
+          {
+            QStringList dsElemParts = dsElem.text().split( "|" );
+            absoluteDs = QFileInfo( projectFilePath ).absolutePath() + "/" + dsElemParts.at( 0 );
+          }
+          else
+          {
+            absoluteDs = QFileInfo( projectFilePath ).absolutePath() + "/" + dsElem.text();
+          }
           if ( absoluteDs.exists() )
           {
             dsElem.removeChild( dsElem.childNodes().at( 0 ) );
