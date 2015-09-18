@@ -117,7 +117,6 @@ MACRO(ADD_GRASSLIB GRASS_BUILD_VERSION)
       ../qgsgrassprovidermodule.cpp
     )
     QT4_WRAP_CPP(GRASS_VECTOR_PROVIDER_MOC_SRCS
-      ../qgsgrassfeatureiterator.h
       ../qgsgrassprovidermodule.h
     )
     ADD_LIBRARY(grassprovider${GRASS_BUILD_VERSION} MODULE ${GRASS_VECTOR_PROVIDER_SRCS} ${GRASS_VECTOR_PROVIDER_MOC_SRCS})

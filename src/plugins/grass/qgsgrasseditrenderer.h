@@ -75,7 +75,7 @@ class QgsGrassEditRenderer : public QgsFeatureRendererV2
     QgsFeatureRendererV2 *mMarkerRenderer;
 };
 
-class GUI_EXPORT QgsGrassEditRendererWidget : public QgsRendererV2Widget
+class QgsGrassEditRendererWidget : public QgsRendererV2Widget
 {
     Q_OBJECT
   public:
