@@ -202,7 +202,16 @@ QVariant QgsBrowserModel::data( const QModelIndex &index, int role ) const
   }
   else if ( role == Qt::DisplayRole )
   {
-    return item->name();
+    if ( index.column() == 0 )
+    {
+      return item->name();
+    }
+    if ( item->type() == QgsDataItem::Layer )
+    {
+      QgsLayerItem* lyrItem = qobject_cast<QgsLayerItem*>(item);
+      return lyrItem->comments();
+    }
+    return "";
   }
   else if ( role == Qt::ToolTipRole )
   {
