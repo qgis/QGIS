@@ -200,7 +200,10 @@ class QgsBrowserTreeFilterProxyModel : public QSortFilterProxyModel
       if ( mFilter == "" || !mModel ) return true;
 
       QModelIndex sourceIndex = mModel->index( sourceRow, 0, sourceParent );
-      return filterAcceptsItem( sourceIndex ) || filterAcceptsAncestor( sourceIndex ) || filterAcceptsDescendant( sourceIndex );
+      // also look into the comment column
+      QModelIndex commentIndex = mModel->index( sourceRow, 1, sourceParent );
+      return filterAcceptsItem( sourceIndex ) || filterAcceptsAncestor( sourceIndex ) || filterAcceptsDescendant( sourceIndex ) ||
+        filterAcceptsItem( commentIndex ) || filterAcceptsAncestor( commentIndex ) || filterAcceptsDescendant( commentIndex );
     }
 
     // returns true if at least one ancestor is accepted by filter
@@ -228,6 +231,11 @@ class QgsBrowserTreeFilterProxyModel : public QSortFilterProxyModel
       {
         QgsDebugMsg( QString( "i = %1" ).arg( i ) );
         QModelIndex sourceChildIndex = mModel->index( i, 0, sourceIndex );
+        if ( filterAcceptsItem( sourceChildIndex ) )
+          return true;
+        if ( filterAcceptsDescendant( sourceChildIndex ) )
+          return true;
+        sourceChildIndex = mModel->index( i, 1, sourceIndex );
         if ( filterAcceptsItem( sourceChildIndex ) )
           return true;
         if ( filterAcceptsDescendant( sourceChildIndex ) )
@@ -532,6 +540,7 @@ void QgsBrowserDockWidget::showEvent( QShowEvent * e )
     // provide a horizontal scroll bar instead of using ellipse (...) for longer items
     mBrowserView->setTextElideMode( Qt::ElideNone );
     mBrowserView->header()->setResizeMode( 0, QHeaderView::ResizeToContents );
+    mBrowserView->header()->setResizeMode( 1, QHeaderView::ResizeToContents );
     mBrowserView->header()->setStretchLastSection( false );
 
     // selectionModel is created when model is set on tree
