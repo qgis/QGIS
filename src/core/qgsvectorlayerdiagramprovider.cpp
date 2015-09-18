@@ -63,6 +63,7 @@ void QgsVectorLayerDiagramProvider::init()
   mPriority = 1 - mSettings.priority / 10.0; // convert 0..10 --> 1..0
   mPlacement = QgsPalLayerSettings::Placement( mSettings.placement );
   mLinePlacementFlags = mSettings.placementFlags;
+  mFlags |= DrawAllLabels;
   if ( mSettings.obstacle ) mFlags |= GeometriesAreObstacles;
 }
 

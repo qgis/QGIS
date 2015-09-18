@@ -203,7 +203,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsPalLabelin
     if ( mCache && ml->type() == QgsMapLayer::VectorLayer )
     {
       QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>( ml );
-      if ( vl->isEditable() || ( labelingEngine && labelingEngine->willUseLayer( vl ) ) )
+      if ( vl->isEditable() || (( labelingEngine || labelingEngine2 ) && QgsPalLabeling::staticWillUseLayer( vl ) ) )
         mCache->clearCacheImage( ml->id() );
     }
 

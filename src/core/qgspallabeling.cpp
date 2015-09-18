@@ -2361,7 +2361,10 @@ void QgsPalLayerSettings::registerObstacleFeature( QgsFeature& f, const QgsRende
   try
   {
     if ( obstacleFeature )
+    {
       *obstacleFeature = new QgsLabelFeature( lbl->strId(), lbl, QSizeF( 0, 0 ) );
+      ( *obstacleFeature )->setIsObstacle( true );
+    }
     else
       if ( !palLayer->registerFeature( lbl->strId(), lbl, 0, 0 ) )
         return;
