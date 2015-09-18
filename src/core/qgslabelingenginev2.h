@@ -104,6 +104,11 @@ class CORE_EXPORT QgsLabelFeature
     double obstacleFactor() const { return mObstacleFactor; }
     void setObstacleFactor( double factor ) { mObstacleFactor = factor; }
 
+    //! Text of the label - used if "merge connected lines to avoid duplicate labels" is enabled
+    //! to identify which features may be merged
+    QString labelText() const { return mLabelText; }
+    void setLabelText( const QString& text ) { mLabelText = text; }
+
   protected:
 
     //! Associated ID unique within the parent label provider
@@ -125,6 +130,7 @@ class CORE_EXPORT QgsLabelFeature
     bool mAlwaysShow;
     bool mIsObstacle;
     double mObstacleFactor;
+    QString mLabelText;
 };
 
 
@@ -150,13 +156,12 @@ class CORE_EXPORT QgsAbstractLabelProvider
 
     enum Flag
     {
-      GeometriesAreObstacles  = 1 << 1,  //!< whether the geometries of labels by default act as obstacles (may be overriden on feature level)
-      DrawLabels              = 1 << 2,  //!< whether the labels should be rendered
-      DrawAllLabels           = 1 << 3,  //!< whether all features will be labelled even though overlaps occur
-      MergeConnectedLines     = 1 << 4,  //!< whether adjacent lines (with the same label text) should be merged
-      CentroidMustBeInside    = 1 << 5,  //!< whether location of centroid must be inside of polygons
-      FitInPolygonOnly        = 1 << 6,  //!< whether labels must fall completely within the polygon
-      LabelPerFeaturePart     = 1 << 7,  //!< whether to label each part of multi-part features separately
+      DrawLabels              = 1 << 1,  //!< whether the labels should be rendered
+      DrawAllLabels           = 1 << 2,  //!< whether all features will be labelled even though overlaps occur
+      MergeConnectedLines     = 1 << 3,  //!< whether adjacent lines (with the same label text) should be merged
+      CentroidMustBeInside    = 1 << 4,  //!< whether location of centroid must be inside of polygons
+      FitInPolygonOnly        = 1 << 5,  //!< whether labels must fall completely within the polygon
+      LabelPerFeaturePart     = 1 << 6,  //!< whether to label each part of multi-part features separately
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 

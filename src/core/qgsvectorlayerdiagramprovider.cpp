@@ -64,7 +64,6 @@ void QgsVectorLayerDiagramProvider::init()
   mPlacement = QgsPalLayerSettings::Placement( mSettings.placement );
   mLinePlacementFlags = mSettings.placementFlags;
   mFlags |= DrawAllLabels;
-  if ( mSettings.obstacle ) mFlags |= GeometriesAreObstacles;
 }
 
 
@@ -349,6 +348,7 @@ QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& fea
   lf->setHasFixedAngle( true );
   lf->setFixedAngle( 0 );
   lf->setAlwaysShow( alwaysShow );
+  lf->setIsObstacle( mSettings.obstacle );
 
   QgsPoint ptZero = mSettings.xform->toMapCoordinates( 0, 0 );
   QgsPoint ptOne = mSettings.xform->toMapCoordinates( 1, 0 );

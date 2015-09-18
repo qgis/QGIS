@@ -130,7 +130,6 @@ namespace pal
        * @param layerName layer's name
        * @param arrangement Howto place candidates
        * @param defaultPriority layer's prioriry (0 is the best, 1 the worst)
-       * @param obstacle 'true' will discourage other label to be placed above features of this layer
        * @param active is the layer is active (currently displayed)
        * @param toLabel the layer will be labeled only if toLablel is true
        * @param displayAll if true, all features will be labelled even though overlaps occur
@@ -139,7 +138,7 @@ namespace pal
        *
        * @todo add symbolUnit
        */
-      Layer* addLayer( const QString& layerName, Arrangement arrangement, double defaultPriority, bool obstacle, bool active, bool toLabel, bool displayAll = false );
+      Layer* addLayer( const QString& layerName, Arrangement arrangement, double defaultPriority, bool active, bool toLabel, bool displayAll = false );
 
       /**
        * \brief Look for a layer

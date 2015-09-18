@@ -138,7 +138,7 @@ namespace pal
     //finishGEOS();
   }
 
-  Layer* Pal::addLayer( const QString &layerName, Arrangement arrangement, double defaultPriority, bool obstacle, bool active, bool toLabel, bool displayAll )
+  Layer* Pal::addLayer( const QString &layerName, Arrangement arrangement, double defaultPriority, bool active, bool toLabel, bool displayAll )
   {
     mMutex.lock();
 
@@ -151,7 +151,7 @@ namespace pal
       return mLayers.value( layerName );
     }
 
-    Layer* layer = new Layer( layerName, arrangement, defaultPriority, obstacle, active, toLabel, this, displayAll );
+    Layer* layer = new Layer( layerName, arrangement, defaultPriority, active, toLabel, this, displayAll );
     mLayers.insert( layerName, layer );
     mMutex.unlock();
 

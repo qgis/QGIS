@@ -112,7 +112,6 @@ void QgsLabelingEngineV2::run( QgsRenderContext& context )
     pal::Layer* l = p.addLayer( provider->id(),
                                 arrangement,
                                 provider->priority(),
-                                flags.testFlag( QgsAbstractLabelProvider::GeometriesAreObstacles ),
                                 true,
                                 flags.testFlag( QgsAbstractLabelProvider::DrawLabels ),
                                 flags.testFlag( QgsAbstractLabelProvider::DrawAllLabels ) );

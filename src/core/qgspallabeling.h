@@ -555,8 +555,6 @@ class CORE_EXPORT QgsPalLayerSettings
     QMap<QgsPalLayerSettings::DataDefinedProperties, QPair<QString, int> > dataDefinedNames() const { return mDataDefinedNames; }
 
     // temporary stuff: set when layer gets prepared or labeled
-    // NOTE: not in Python binding
-    pal::Layer* palLayer;
     QgsFeature* mCurFeat;
     QgsFields mCurFields;
     int fieldIndex;

@@ -80,7 +80,6 @@ using namespace pal;
 
 QgsPalLayerSettings::QgsPalLayerSettings()
     : upsidedownLabels( Upright )
-    , palLayer( NULL )
     , mCurFeat( 0 )
     , xform( NULL )
     , ct( NULL )
@@ -322,8 +321,7 @@ QgsPalLayerSettings::QgsPalLayerSettings()
 }
 
 QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
-    : palLayer( NULL )
-    , mCurFeat( NULL )
+    : mCurFeat( NULL )
     , fieldIndex( 0 )
     , xform( NULL )
     , ct( NULL )
@@ -1471,7 +1469,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString t
 void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext& context, QString dxfLayer, QgsLabelFeature** labelFeature )
 {
   // either used in QgsPalLabeling (palLayer is set) or in QgsLabelingEngineV2 (labelFeature is set)
-  Q_ASSERT(( palLayer || labelFeature ) && !( palLayer && labelFeature ) );
+  Q_ASSERT( labelFeature );
 
   if ( !drawLabels )
   {
@@ -1835,7 +1833,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
     {
       return;
     }
-    mFeatsRegPal = palLayer->featureCount();
+    mFeatsRegPal = geometries.count();
     if ( mFeatsRegPal >= maxNumLabels )
     {
       return;
@@ -2185,30 +2183,22 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
   }
 
   //  feature to the layer
-  try
-  {
-    if ( !palLayer )
-      *labelFeature = new QgsLabelFeature( lbl->strId(), lbl, QSizeF( labelX, labelY ) );
-    else
-      if ( !palLayer->registerFeature( lbl->strId(), lbl, labelX, labelY, labelText,
-                                       xPos, yPos, dataDefinedPosition, angle, dataDefinedRotation,
-                                       quadOffsetX, quadOffsetY, offsetX, offsetY, alwaysShow, repeatDist ) )
-        return;
-  }
-  catch ( std::exception &e )
-  {
-    Q_UNUSED( e );
-    QgsDebugMsgLevel( QString( "Ignoring feature %1 due PAL exception:" ).arg( f.id() ) + QString::fromLatin1( e.what() ), 4 );
-    return;
-  }
+  *labelFeature = new QgsLabelFeature( lbl->strId(), lbl, QSizeF( labelX, labelY ) );
+
+  ( *labelFeature )->setHasFixedPosition( dataDefinedPosition );
+  ( *labelFeature )->setFixedPosition( QgsPoint( xPos, yPos ) );
+  ( *labelFeature )->setHasFixedAngle( dataDefinedRotation );
+  ( *labelFeature )->setFixedAngle( angle );
+  ( *labelFeature )->setQuadOffset( QPointF( quadOffsetX, quadOffsetY ) );
+  ( *labelFeature )->setPositionOffset( QgsPoint( offsetX, offsetY ) );
+  ( *labelFeature )->setAlwaysShow( alwaysShow );
+  ( *labelFeature )->setRepeatDistance( repeatDist );
+  ( *labelFeature )->setLabelText( labelText );
 
   // TODO: only for placement which needs character info
-  pal::Feature* feat = palLayer ? palLayer->getFeature( lbl->strId() ) : 0;
   // account for any data defined font metrics adjustments
   lbl->calculateInfo( labelFontMetrics, xform, rasterCompressFactor, maxcharanglein, maxcharangleout );
   // for labelFeature the LabelInfo is passed to feat when it is registered
-  if ( feat )
-    feat->setLabelInfo( lbl->info() );
   delete labelFontMetrics;
 
   // TODO: allow layer-wide feature dist in PAL...?
@@ -2248,18 +2238,12 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
       distance *= vectorScaleFactor;
     }
     double d = qAbs( ptOne.x() - ptZero.x() ) * distance;
-    if ( feat )
-      feat->setDistLabel( d );
-    else
-      ( *labelFeature )->setDistLabel( d );
+    ( *labelFeature )->setDistLabel( d );
   }
 
   if ( ddFixedQuad )
   {
-    if ( feat )
-      feat->setFixedQuadrant( true );
-    else
-      ( *labelFeature )->setHasFixedQuadrant( true );
+    ( *labelFeature )->setHasFixedQuadrant( true );
   }
 
   // data defined priority?
@@ -2271,10 +2255,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
     {
       priorityD = qBound( 0.0, priorityD, 10.0 );
       priorityD = 1 - priorityD / 10.0; // convert 0..10 --> 1..0
-      if ( feat )
-        feat->setPriority( priorityD );
-      else
-        ( *labelFeature )->setPriority( priorityD );
+      ( *labelFeature )->setPriority( priorityD );
     }
   }
 
@@ -2285,10 +2266,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
     isObstacle = exprVal.toBool();
   }
 
-  if ( feat )
-    feat->setIsObstacle( isObstacle );
-  else
-    ( *labelFeature )->setIsObstacle( isObstacle );
+  ( *labelFeature )->setIsObstacle( isObstacle );
 
   double featObstacleFactor = obstacleFactor;
   if ( dataDefinedEvaluate( QgsPalLayerSettings::ObstacleFactor, exprVal, &context.expressionContext() ) )
@@ -2302,10 +2280,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
       featObstacleFactor = factorD;
     }
   }
-  if ( feat )
-    feat->setObstacleFactor( featObstacleFactor );
-  else
-    ( *labelFeature )->setObstacleFactor( featObstacleFactor );
+  ( *labelFeature )->setObstacleFactor( featObstacleFactor );
 
   //add parameters for data defined labeling to QgsPalGeometry
   QMap< DataDefinedProperties, QVariant >::const_iterator dIt = dataDefinedValues.constBegin();
@@ -2358,23 +2333,8 @@ void QgsPalLayerSettings::registerObstacleFeature( QgsFeature& f, const QgsRende
   geometries.append( lbl );
 
   //  feature to the layer
-  try
-  {
-    if ( obstacleFeature )
-    {
-      *obstacleFeature = new QgsLabelFeature( lbl->strId(), lbl, QSizeF( 0, 0 ) );
-      ( *obstacleFeature )->setIsObstacle( true );
-    }
-    else
-      if ( !palLayer->registerFeature( lbl->strId(), lbl, 0, 0 ) )
-        return;
-  }
-  catch ( std::exception &e )
-  {
-    Q_UNUSED( e );
-    QgsDebugMsgLevel( QString( "Ignoring feature %1 due PAL exception:" ).arg( f.id() ) + QString::fromLatin1( e.what() ), 4 );
-    return;
-  }
+  *obstacleFeature = new QgsLabelFeature( lbl->strId(), lbl, QSizeF( 0, 0 ) );
+  ( *obstacleFeature )->setIsObstacle( true );
 }
 
 bool QgsPalLayerSettings::dataDefinedValEval( DataDefinedValueType valType,

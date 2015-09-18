@@ -91,7 +91,6 @@ void QgsVectorLayerLabelProvider::init()
   mPlacement = mSettings.placement;
   mLinePlacementFlags = mSettings.placementFlags;
   mFlags = Flags();
-  if ( mSettings.obstacle ) mFlags |= GeometriesAreObstacles;
   if ( mSettings.drawLabels ) mFlags |= DrawLabels;
   if ( mSettings.displayAll ) mFlags |= DrawAllLabels;
   if ( mSettings.mergeLines ) mFlags |= MergeConnectedLines;

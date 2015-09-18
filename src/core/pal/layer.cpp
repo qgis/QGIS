@@ -46,7 +46,7 @@
 namespace pal
 {
 
-  Layer::Layer( const QString &lyrName, Arrangement arrangement, double defaultPriority, bool obstacle, bool active, bool toLabel, Pal *pal, bool displayAll )
+  Layer::Layer( const QString &lyrName, Arrangement arrangement, double defaultPriority, bool active, bool toLabel, Pal *pal, bool displayAll )
       : mName( lyrName )
       , pal( pal )
       , mObstacleType( PolygonInterior )
@@ -263,7 +263,12 @@ namespace pal
   bool Layer::registerFeature( QgsLabelFeature* label )
   {
     QgsPalGeometry* g = label->geometry();
-    if ( !registerFeature( g->strId(), g, label->size().width(), label->size().height() ) )
+    if ( !registerFeature( g->strId(), g, label->size().width(), label->size().height(), label->labelText(),
+                           label->fixedPosition().x(), label->fixedPosition().y(), label->hasFixedPosition(),
+                           label->fixedAngle(), label->hasFixedAngle(),
+                           label->quadOffset().x(), label->quadOffset().y(),
+                           label->positionOffset().x(), label->positionOffset().y(),
+                           label->alwaysShow(), label->repeatDistance() ) )
       return false;
 
     pal::Feature* pf = getFeature( g->strId() );

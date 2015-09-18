@@ -309,14 +309,13 @@ namespace pal
        * @param lyrName layer's name
        * @param arrangement Arrangement mode : how to place candidates
        * @param defaultPriority layer's prioriry (0 is the best, 1 the worst)
-       * @param obstacle 'true' will discourage other label to be placed above features of this layer
        * @param active is the layer is active (currently displayed)
        * @param toLabel the layer will be labeled whether toLablel is true
        * @param pal pointer to the pal object
        * @param displayAll if true, all features will be labelled even though overlaps occur
        *
        */
-      Layer( const QString& lyrName, Arrangement arrangement, double defaultPriority, bool obstacle, bool active, bool toLabel, Pal *pal, bool displayAll = false );
+      Layer( const QString& lyrName, Arrangement arrangement, double defaultPriority, bool active, bool toLabel, Pal *pal, bool displayAll = false );
 
       /** Add newly created feature part into r tree and to the list */
       void addFeaturePart( FeaturePart* fpart, const QString &labelText = QString() );

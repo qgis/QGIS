@@ -73,7 +73,6 @@ class CORE_EXPORT QgsDiagramLayerSettings
     QgsDiagramRendererV2* renderer; // if any renderer is assigned, it is owned by this class
 
     //assigned when layer gets prepared
-    pal::Layer* palLayer;
     const QgsCoordinateTransform* ct;
     const QgsMapToPixel* xform;
     QList<QgsPalGeometry*> geometries;
