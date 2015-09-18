@@ -1353,11 +1353,14 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
   {
     if ( !mEditBuffer->addedFeatures().contains( fid ) )
     {
+#ifdef QGISDEBUG
       QgsDebugMsg( "the feature is missing in buffer addedFeatures :" );
+
       Q_FOREACH ( QgsFeatureId id, mEditBuffer->addedFeatures().keys() )
       {
         QgsDebugMsg( QString( "addedFeatures : id = %1" ).arg( id ) );
       }
+#endif
       return;
     }
     QgsFeature feature = mEditBuffer->addedFeatures().value( fid );
@@ -1602,16 +1605,21 @@ void QgsGrassProvider::onGeometryChanged( QgsFeatureId fid, QgsGeometry &geom )
 
 void QgsGrassProvider::onAttributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value )
 {
+  Q_UNUSED( fid )
+  Q_UNUSED( idx )
+  Q_UNUSED( value )
   QgsDebugMsg( QString( "fid = %1 idx = %2 value = %3" ).arg( fid ).arg( idx ).arg( value.toString() ) );
 }
 
 void QgsGrassProvider::onAttributeAdded( int idx )
 {
+  Q_UNUSED( idx )
   QgsDebugMsg( QString( "idx = %1" ).arg( idx ) );
 }
 
 void QgsGrassProvider::onAttributeDeleted( int idx )
 {
+  Q_UNUSED( idx )
   QgsDebugMsg( QString( "idx = %1" ).arg( idx ) );
 }
 
