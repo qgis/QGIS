@@ -77,7 +77,8 @@ void TestQgsLabelingEngineV2::testBasic()
   vl->setCustomProperty( "labeling/enabled", true );
   vl->setCustomProperty( "labeling/fieldName", "Class" );
 
-  QgsLabelingEngineV2 engine( mapSettings );
+  QgsLabelingEngineV2 engine;
+  engine.setMapSettings( mapSettings );
   engine.addProvider( new QgsVectorLayerLabelProvider( vl ) );
   //engine.setFlags( QgsLabelingEngineV2::RenderOutlineLabels | QgsLabelingEngineV2::DrawLabelRectOnly );
   engine.run( context );
@@ -86,6 +87,12 @@ void TestQgsLabelingEngineV2::testBasic()
 
   // TODO: replace with render checker
   img.save( "/tmp/tstlabels.png" );
+
+  // now let's test the variant when integrated into rendering loop
+  job.start();
+  job.waitForFinished();
+  QImage img2 = job.renderedImage();
+  img2.save( "/tmp/tstlabels2.png" );
 
   vl->setCustomProperty( "labeling/enabled", false );
 }
@@ -112,7 +119,8 @@ void TestQgsLabelingEngineV2::testDiagrams()
   vl->loadNamedStyle( QString( TEST_DATA_DIR ) + "/points_diagrams.qml", res );
   Q_ASSERT( res );
 
-  QgsLabelingEngineV2 engine( mapSettings );
+  QgsLabelingEngineV2 engine;
+  engine.setMapSettings( mapSettings );
   engine.addProvider( new QgsVectorLayerDiagramProvider( vl ) );
   engine.run( context );
 
@@ -120,6 +128,12 @@ void TestQgsLabelingEngineV2::testDiagrams()
 
   // TODO: replace with render checker
   img.save( "/tmp/tstdiagrams.png" );
+
+  // now let's test the variant when integrated into rendering loop
+  job.start();
+  job.waitForFinished();
+  QImage img2 = job.renderedImage();
+  img2.save( "/tmp/tstdiagrams2.png" );
 }
 
 QTEST_MAIN( TestQgsLabelingEngineV2 )

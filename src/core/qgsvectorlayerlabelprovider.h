@@ -32,7 +32,7 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
   public:
 
     //! Convenience constructor to initialize the provider from given vector layer
-    explicit QgsVectorLayerLabelProvider( QgsVectorLayer* layer );
+    explicit QgsVectorLayerLabelProvider( QgsVectorLayer* layer, bool withFeatureLoop = true );
 
     QgsVectorLayerLabelProvider( const QgsPalLayerSettings& settings,
                                  const QString& layerId,
@@ -45,10 +45,28 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
 
     virtual QString id() const override;
 
-    virtual QList<QgsLabelFeature*> labelFeatures( const QgsMapSettings& mapSettings, const QgsRenderContext& context ) override;
+    virtual QList<QgsLabelFeature*> labelFeatures( const QgsRenderContext& context ) override;
 
     virtual void drawLabel( QgsRenderContext& context, pal::LabelPosition* label ) const override;
 
+    // new virtual methods
+
+    /**
+     * Prepare for registration of features. Must be called after provider has been added to engine (uses its map settings)
+     * @param context render context.
+     * @param attributeNames list of attribute names to which additional required attributes shall be added
+     * @return List of attributes necessary for labeling
+     */
+    virtual bool prepare( const QgsRenderContext& context, QStringList& attributeNames );
+
+    /**
+     * Register a feature for labeling as one or more QgsLabelFeature objects stored into mLabels
+     *
+     * @param feature feature to label
+     * @param context render context. The QgsExpressionContext contained within the render context
+     * must have already had the feature and fields sets prior to calling this method.
+     */
+    virtual void registerFeature( QgsFeature& feature, const QgsRenderContext& context );
 
   protected:
     void init();
@@ -57,10 +75,13 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
   protected:
     QgsPalLayerSettings mSettings;
     QString mLayerId;
+    // these are needed only if using own renderer loop
     QgsFields mFields;
     QgsCoordinateReferenceSystem mCrs;
     QgsAbstractFeatureSource* mSource;
     bool mOwnsSource;
+
+    QList<QgsLabelFeature*> mLabels;
 };
 
 

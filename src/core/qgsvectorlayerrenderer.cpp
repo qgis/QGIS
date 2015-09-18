@@ -47,6 +47,8 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer* layer, QgsRender
     , mCache( 0 )
     , mLabeling( false )
     , mDiagrams( false )
+    , mLabelProvider( 0 )
+    , mDiagramProvider( 0 )
     , mLayerTransparency( 0 )
 {
   mSource = new QgsVectorLayerFeatureSource( layer );
@@ -312,6 +314,18 @@ void QgsVectorLayerRenderer::drawRendererV2( QgsFeatureIterator& fit )
           mContext.labelingEngine()->registerDiagramFeature( mLayerID, fet, mContext );
         }
       }
+      // new labeling engine
+      if ( rendered && mContext.labelingEngineV2() )
+      {
+        if ( mLabelProvider )
+        {
+          mLabelProvider->registerFeature( fet, mContext );
+        }
+        if ( mDiagramProvider )
+        {
+          mDiagramProvider->registerFeature( fet, mContext );
+        }
+      }
     }
     catch ( const QgsCsException &cse )
     {
@@ -469,9 +483,15 @@ void QgsVectorLayerRenderer::prepareLabeling( QgsVectorLayer* layer, QStringList
     if ( QgsLabelingEngineV2* engine2 = mContext.labelingEngineV2() )
     {
       if ( layer->labelsEnabled() )
-        engine2->addProvider( new QgsVectorLayerLabelProvider( layer ) );
-      if ( layer->diagramsEnabled() )
-        engine2->addProvider( new QgsVectorLayerDiagramProvider( layer ) );
+      {
+        mLabelProvider = new QgsVectorLayerLabelProvider( layer, false );
+        engine2->addProvider( mLabelProvider );
+        if ( !mLabelProvider->prepare( mContext, attributeNames ) )
+        {
+          engine2->removeProvider( mLabelProvider );
+          mLabelProvider = 0; // deleted by engine
+        }
+      }
     }
     return;
   }
@@ -480,10 +500,9 @@ void QgsVectorLayerRenderer::prepareLabeling( QgsVectorLayer* layer, QStringList
   {
     mLabeling = true;
 
-    QgsPalLayerSettings& palyr = mContext.labelingEngine()->layer( mLayerID );
-    Q_UNUSED( palyr );
-
 #if 0 // TODO: limit of labels, font not found
+    QgsPalLayerSettings& palyr = mContext.labelingEngine()->layer( mLayerID );
+
     // see if feature count limit is set for labeling
     if ( palyr.limitNumLabels && palyr.maxNumLabels > 0 )
     {
@@ -514,58 +533,29 @@ void QgsVectorLayerRenderer::prepareLabeling( QgsVectorLayer* layer, QStringList
 void QgsVectorLayerRenderer::prepareDiagrams( QgsVectorLayer* layer, QStringList& attributeNames )
 {
   if ( !mContext.labelingEngine() )
+  {
+    if ( QgsLabelingEngineV2* engine2 = mContext.labelingEngineV2() )
+    {
+      if ( layer->diagramsEnabled() )
+      {
+        mDiagramProvider = new QgsVectorLayerDiagramProvider( layer );
+        // need to be added before calling prepare() - uses map settings from engine
+        engine2->addProvider( mDiagramProvider );
+        if ( !mDiagramProvider->prepare( mContext, attributeNames ) )
+        {
+          engine2->removeProvider( mDiagramProvider );
+          mDiagramProvider = 0;  // deleted by engine
+        }
+      }
+    }
     return;
+  }
 
   if ( !layer->diagramsEnabled() )
     return;
 
   mDiagrams = true;
 
-  const QgsDiagramRendererV2* diagRenderer = layer->diagramRenderer();
-  const QgsDiagramLayerSettings* diagSettings = layer->diagramLayerSettings();
+  mContext.labelingEngine()->prepareDiagramLayer( layer, attributeNames, mContext ); // will make internal copy of diagSettings + initialize it
 
-  mContext.labelingEngine()->addDiagramLayer( layer, diagSettings ); // will make internal copy of diagSettings + initialize it
-
-  //add attributes needed by the diagram renderer
-  QList<QString> att = diagRenderer->diagramAttributes();
-  QList<QString>::const_iterator attIt = att.constBegin();
-  for ( ; attIt != att.constEnd(); ++attIt )
-  {
-    QgsExpression* expression = diagRenderer->diagram()->getExpression( *attIt, mContext.expressionContext() );
-    QStringList columns = expression->referencedColumns();
-    QStringList::const_iterator columnsIterator = columns.constBegin();
-    for ( ; columnsIterator != columns.constEnd(); ++columnsIterator )
-    {
-      if ( !attributeNames.contains( *columnsIterator ) )
-        attributeNames << *columnsIterator;
-    }
-  }
-
-  const QgsLinearlyInterpolatedDiagramRenderer* linearlyInterpolatedDiagramRenderer = dynamic_cast<const QgsLinearlyInterpolatedDiagramRenderer*>( layer->diagramRenderer() );
-  if ( linearlyInterpolatedDiagramRenderer != NULL )
-  {
-    if ( linearlyInterpolatedDiagramRenderer->classificationAttributeIsExpression() )
-    {
-      QgsExpression* expression = diagRenderer->diagram()->getExpression( linearlyInterpolatedDiagramRenderer->classificationAttributeExpression(), mContext.expressionContext() );
-      QStringList columns = expression->referencedColumns();
-      QStringList::const_iterator columnsIterator = columns.constBegin();
-      for ( ; columnsIterator != columns.constEnd(); ++columnsIterator )
-      {
-        if ( !attributeNames.contains( *columnsIterator ) )
-          attributeNames << *columnsIterator;
-      }
-    }
-    else
-    {
-      QString name = mFields.at( linearlyInterpolatedDiagramRenderer->classificationAttribute() ).name();
-      if ( !attributeNames.contains( name ) )
-        attributeNames << name;
-    }
-  }
-
-  //and the ones needed for data defined diagram positions
-  if ( diagSettings->xPosColumn != -1 )
-    attributeNames << mFields.at( diagSettings->xPosColumn ).name();
-  if ( diagSettings->yPosColumn != -1 )
-    attributeNames << mFields.at( diagSettings->yPosColumn ).name();
 }

@@ -699,7 +699,8 @@ class QgsPalLabeling : QgsLabelingEngineInterface
 
     bool isShowingCandidates() const;
     void setShowingCandidates( bool showing );
-    const QList<QgsLabelCandidate>& candidates();
+    //! @deprecated since 2.12
+    const QList<QgsLabelCandidate>& candidates() /Deprecated/;
 
     bool isShowingShadowRectangles() const;
     void setShowingShadowRectangles( bool showing );

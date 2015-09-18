@@ -17,6 +17,7 @@
 
 #include "qgslogger.h"
 #include "qgspalgeometry.h"
+#include "qgsproject.h"
 
 #include "feature.h"
 #include "labelposition.h"
@@ -33,9 +34,8 @@ static bool _palIsCancelled( void* ctx )
 }
 
 
-QgsLabelingEngineV2::QgsLabelingEngineV2( const QgsMapSettings& mapSettings )
-    : mMapSettings( mapSettings )
-    , mFlags( RenderOutlineLabels | UsePartialCandidates )
+QgsLabelingEngineV2::QgsLabelingEngineV2()
+    : mFlags( RenderOutlineLabels | UsePartialCandidates )
     , mSearchMethod( QgsPalLabeling::Chain )
     , mCandPoint( 8 )
     , mCandLine( 8 )
@@ -55,6 +55,15 @@ void QgsLabelingEngineV2::addProvider( QgsAbstractLabelProvider* provider )
 {
   provider->setEngine( this );
   mProviders << provider;
+}
+
+void QgsLabelingEngineV2::removeProvider( QgsAbstractLabelProvider* provider )
+{
+  int idx = mProviders.indexOf( provider );
+  if ( idx >= 0 )
+  {
+    delete mProviders.takeAt( idx );
+  }
 }
 
 void QgsLabelingEngineV2::run( QgsRenderContext& context )
@@ -146,7 +155,7 @@ void QgsLabelingEngineV2::run( QgsRenderContext& context )
     l->setUpsidedownLabels( upsdnlabels );
 
 
-    QList<QgsLabelFeature*> features = provider->labelFeatures( mMapSettings, context );
+    QList<QgsLabelFeature*> features = provider->labelFeatures( context );
 
     foreach ( QgsLabelFeature* feature, features )
     {
@@ -284,6 +293,40 @@ QgsLabelingResults* QgsLabelingEngineV2::takeResults()
   QgsLabelingResults* res = mResults;
   mResults = 0;
   return res;
+}
+
+
+void QgsLabelingEngineV2::readSettingsFromProject()
+{
+  bool saved = false;
+  QgsProject* prj = QgsProject::instance();
+  mSearchMethod = ( QgsPalLabeling::Search )( prj->readNumEntry( "PAL", "/SearchMethod", ( int ) QgsPalLabeling::Chain, &saved ) );
+  mCandPoint = prj->readNumEntry( "PAL", "/CandidatesPoint", 8, &saved );
+  mCandLine = prj->readNumEntry( "PAL", "/CandidatesLine", 8, &saved );
+  mCandPolygon = prj->readNumEntry( "PAL", "/CandidatesPolygon", 8, &saved );
+
+  mFlags = 0;
+  if ( prj->readBoolEntry( "PAL", "/ShowingCandidates", false, &saved ) ) mFlags |= DrawCandidates;
+  if ( prj->readBoolEntry( "PAL", "/DrawRectOnly", false, &saved ) ) mFlags |= DrawLabelRectOnly;
+  if ( prj->readBoolEntry( "PAL", "/ShowingShadowRects", false, &saved ) ) mFlags |= DrawShadowRects;
+  if ( prj->readBoolEntry( "PAL", "/ShowingAllLabels", false, &saved ) ) mFlags |= UseAllLabels;
+  if ( prj->readBoolEntry( "PAL", "/ShowingPartialsLabels", true, &saved ) ) mFlags |= UsePartialCandidates;
+  if ( prj->readBoolEntry( "PAL", "/DrawOutlineLabels", true, &saved ) ) mFlags |= RenderOutlineLabels;
+}
+
+void QgsLabelingEngineV2::writeSettingsToProject()
+{
+  QgsProject::instance()->writeEntry( "PAL", "/SearchMethod", ( int )mSearchMethod );
+  QgsProject::instance()->writeEntry( "PAL", "/CandidatesPoint", mCandPoint );
+  QgsProject::instance()->writeEntry( "PAL", "/CandidatesLine", mCandLine );
+  QgsProject::instance()->writeEntry( "PAL", "/CandidatesPolygon", mCandPolygon );
+
+  QgsProject::instance()->writeEntry( "PAL", "/ShowingCandidates", mFlags.testFlag( DrawCandidates ) );
+  QgsProject::instance()->writeEntry( "PAL", "/DrawRectOnly", mFlags.testFlag( DrawLabelRectOnly ) );
+  QgsProject::instance()->writeEntry( "PAL", "/ShowingShadowRects", mFlags.testFlag( DrawShadowRects ) );
+  QgsProject::instance()->writeEntry( "PAL", "/ShowingAllLabels", mFlags.testFlag( UseAllLabels ) );
+  QgsProject::instance()->writeEntry( "PAL", "/ShowingPartialsLabels", mFlags.testFlag( UsePartialCandidates ) );
+  QgsProject::instance()->writeEntry( "PAL", "/DrawOutlineLabels", mFlags.testFlag( RenderOutlineLabels ) );
 }
 
 QgsAbstractLabelProvider* QgsLabelingEngineV2::providerById( const QString& id )

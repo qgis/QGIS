@@ -56,6 +56,9 @@ class QgsCoordinateTransform;
 class QgsLabelSearchTree;
 class QgsMapSettings;
 class QgsLabelFeature;
+class QgsLabelingEngineV2;
+class QgsVectorLayerLabelProvider;
+class QgsVectorLayerDiagramProvider;
 
 class CORE_EXPORT QgsPalLayerSettings
 {
@@ -781,7 +784,8 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     QgsPalLabeling();
     ~QgsPalLabeling();
 
-    QgsPalLayerSettings& layer( const QString& layerName ) override;
+    //! @deprecated since 2.12 - if direct access to QgsPalLayerSettings is necessary, use QgsPalLayerSettings::fromLayer()
+    Q_DECL_DEPRECATED QgsPalLayerSettings& layer( const QString& layerName ) override;
 
     void numCandidatePositions( int& candPoint, int& candLine, int& candPolygon );
     void setNumCandidatePositions( int candPoint, int candLine, int candPolygon );
@@ -791,29 +795,30 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     void setSearchMethod( Search s );
     Search searchMethod() const;
 
-    bool isShowingCandidates() const { return mShowingCandidates; }
-    void setShowingCandidates( bool showing ) { mShowingCandidates = showing; }
-    const QList<QgsLabelCandidate>& candidates() { return mCandidates; }
+    bool isShowingCandidates() const;
+    void setShowingCandidates( bool showing );
+    //! @deprecated since 2.12
+    Q_DECL_DEPRECATED const QList<QgsLabelCandidate>& candidates() { return mCandidates; }
 
-    bool isShowingShadowRectangles() const { return mShowingShadowRects; }
-    void setShowingShadowRectangles( bool showing ) { mShowingShadowRects = showing; }
+    bool isShowingShadowRectangles() const;
+    void setShowingShadowRectangles( bool showing );
 
-    bool isShowingAllLabels() const { return mShowingAllLabels; }
-    void setShowingAllLabels( bool showing ) { mShowingAllLabels = showing; }
+    bool isShowingAllLabels() const;
+    void setShowingAllLabels( bool showing );
 
-    bool isShowingPartialsLabels() const { return mShowingPartialsLabels; }
-    void setShowingPartialsLabels( bool showing ) { mShowingPartialsLabels = showing; }
+    bool isShowingPartialsLabels() const;
+    void setShowingPartialsLabels( bool showing );
 
     //! @note added in 2.4
-    bool isDrawingOutlineLabels() const { return mDrawOutlineLabels; }
-    void setDrawingOutlineLabels( bool outline ) { mDrawOutlineLabels = outline; }
+    bool isDrawingOutlineLabels() const;
+    void setDrawingOutlineLabels( bool outline );
 
     /** Returns whether the engine will only draw the outline rectangles of labels,
      * not the label contents themselves. Used for debugging and testing purposes.
      * @see setDrawLabelRectOnly
      * @note added in QGIS 2.12
      */
-    bool drawLabelRectOnly() const { return mDrawLabelRectOnly; }
+    bool drawLabelRectOnly() const;
 
     /** Sets whether the engine should only draw the outline rectangles of labels,
      * not the label contents themselves. Used for debugging and testing purposes.
@@ -821,7 +826,7 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
      * @see drawLabelRectOnly
      * @note added in QGIS 2.12
      */
-    void setDrawLabelRectOnly( bool drawRect ) { mDrawLabelRectOnly = drawRect; }
+    void setDrawLabelRectOnly( bool drawRect );
 
     // implemented methods from labeling engine interface
 
@@ -845,7 +850,11 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     //! hook called when drawing layer before issuing select()
     virtual int prepareLayer( QgsVectorLayer* layer, QStringList &attrNames, QgsRenderContext& ctx ) override;
     //! adds a diagram layer to the labeling engine
-    virtual int addDiagramLayer( QgsVectorLayer* layer, const QgsDiagramLayerSettings *s ) override;
+    //! @note added in QGIS 2.12
+    virtual int prepareDiagramLayer( QgsVectorLayer* layer, QStringList& attrNames, QgsRenderContext& ctx ) override;
+    //! adds a diagram layer to the labeling engine
+    //! @deprecated since 2.12 - use prepareDiagramLayer()
+    Q_DECL_DEPRECATED virtual int addDiagramLayer( QgsVectorLayer* layer, const QgsDiagramLayerSettings *s ) override;
 
     /** Register a feature for labelling.
      * @param layerID string identifying layer associated with label
@@ -976,30 +985,17 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
      */
     static bool checkMinimumSizeMM( const QgsRenderContext &context, const QgsGeometry *geom, double minSize );
 
-    // hashtable of layer settings, being filled during labeling (key = layer ID)
-    QHash<QString, QgsPalLayerSettings> mActiveLayers;
-    // hashtable of active diagram layers (key = layer ID)
-    QHash<QString, QgsDiagramLayerSettings> mActiveDiagramLayers;
+    //! hashtable of label providers, being filled during labeling (key = layer ID)
+    QHash<QString, QgsVectorLayerLabelProvider*> mLabelProviders;
+    //! hashtable of diagram providers (key = layer ID)
+    QHash<QString, QgsVectorLayerDiagramProvider*> mDiagramProviders;
     QgsPalLayerSettings mInvalidLayerSettings;
 
-    const QgsMapSettings* mMapSettings;
-    int mCandPoint, mCandLine, mCandPolygon;
-    Search mSearch;
-
-    pal::Pal* mPal;
+    //! New labeling engine to interface with PAL
+    QgsLabelingEngineV2* mEngine;
 
     // list of candidates from last labeling
     QList<QgsLabelCandidate> mCandidates;
-
-    //! Whether to only draw the label rect and not the actual label text (used for unit tests)
-    bool mDrawLabelRectOnly;
-    bool mShowingCandidates;
-    bool mShowingAllLabels; // whether to avoid collisions or not
-    bool mShowingShadowRects; // whether to show debugging rectangles for drop shadows
-    bool mShowingPartialsLabels; // whether to avoid partials labels or not
-    bool mDrawOutlineLabels; // whether to draw labels as text or outlines
-
-    QgsLabelingResults* mResults;
 
     friend class QgsPalLayerSettings;
 };

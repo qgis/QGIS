@@ -45,7 +45,7 @@ static void _fixQPictureDPI( QPainter* p )
 
 typedef QgsPalLayerSettings QgsVectorLayerLabelSettings;
 
-QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( QgsVectorLayer* layer )
+QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( QgsVectorLayer* layer, bool withFeatureLoop )
 {
   if ( layer->customProperty( "labeling" ).toString() != QString( "pal" ) || !layer->labelsEnabled() )
     return;
@@ -54,7 +54,16 @@ QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( QgsVectorLayer* layer 
   mLayerId = layer->id();
   mFields = layer->fields();
   mCrs = layer->crs();
-  mSource = new QgsVectorLayerFeatureSource( layer );
+  if ( withFeatureLoop )
+  {
+    mSource = new QgsVectorLayerFeatureSource( layer );
+    mOwnsSource = true;
+  }
+  else
+  {
+    mSource = 0;
+    mOwnsSource = false;
+  }
 
   init();
 }
@@ -97,7 +106,19 @@ void QgsVectorLayerLabelProvider::init()
 
 QgsVectorLayerLabelProvider::~QgsVectorLayerLabelProvider()
 {
+  // delete all QgsDataDefined objects (which also deletes their QgsExpression object)
+  QMap< QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* >::iterator it = mSettings.dataDefinedProperties.begin();
+  for ( ; it != mSettings.dataDefinedProperties.constEnd(); ++it )
+  {
+    delete( it.value() );
+    it.value() = 0;
+  }
+  mSettings.dataDefinedProperties.clear();
+
   qDeleteAll( mSettings.geometries );
+
+  if ( mOwnsSource )
+    delete mSource;
 }
 
 QString QgsVectorLayerLabelProvider::id() const
@@ -105,10 +126,10 @@ QString QgsVectorLayerLabelProvider::id() const
   return mLayerId;
 }
 
-
-QList<QgsLabelFeature*> QgsVectorLayerLabelProvider::labelFeatures( const QgsMapSettings& mapSettings, const QgsRenderContext& ctx )
+bool QgsVectorLayerLabelProvider::prepare( const QgsRenderContext& context, QStringList& attributeNames )
 {
   QgsVectorLayerLabelSettings& lyr = mSettings;
+  const QgsMapSettings& mapSettings = mEngine->mapSettings();
 
   QgsDebugMsgLevel( "PREPARE LAYER " + mLayerId, 4 );
 
@@ -116,7 +137,7 @@ QList<QgsLabelFeature*> QgsVectorLayerLabelProvider::labelFeatures( const QgsMap
   {
     if ( lyr.fieldName.isEmpty() )
     {
-      return QList<QgsLabelFeature*>();
+      return false;
     }
 
     if ( lyr.isExpression )
@@ -125,7 +146,7 @@ QList<QgsLabelFeature*> QgsVectorLayerLabelProvider::labelFeatures( const QgsMap
       if ( exp.hasEvalError() )
       {
         QgsDebugMsgLevel( "Prepare error:" + exp.evalErrorString(), 4 );
-        return QList<QgsLabelFeature*>();
+        return false;
       }
     }
     else
@@ -133,12 +154,10 @@ QList<QgsLabelFeature*> QgsVectorLayerLabelProvider::labelFeatures( const QgsMap
       // If we aren't an expression, we check to see if we can find the column.
       if ( mFields.fieldNameIndex( lyr.fieldName ) == -1 )
       {
-        return QList<QgsLabelFeature*>();
+        return false;
       }
     }
   }
-
-  QStringList attrNames;
 
   lyr.mCurFields = mFields;
 
@@ -149,7 +168,7 @@ QList<QgsLabelFeature*> QgsVectorLayerLabelProvider::labelFeatures( const QgsMap
     {
       // prepare expression for use in QgsPalLayerSettings::registerFeature()
       QgsExpression* exp = lyr.getLabelExpression();
-      exp->prepare( &ctx.expressionContext() );
+      exp->prepare( &context.expressionContext() );
       if ( exp->hasEvalError() )
       {
         QgsDebugMsgLevel( "Prepare error:" + exp->evalErrorString(), 4 );
@@ -157,12 +176,12 @@ QList<QgsLabelFeature*> QgsVectorLayerLabelProvider::labelFeatures( const QgsMap
       Q_FOREACH ( const QString& name, exp->referencedColumns() )
       {
         QgsDebugMsgLevel( "REFERENCED COLUMN = " + name, 4 );
-        attrNames.append( name );
+        attributeNames.append( name );
       }
     }
     else
     {
-      attrNames.append( lyr.fieldName );
+      attributeNames.append( lyr.fieldName );
     }
 
     // add field indices of data defined expression or field
@@ -179,26 +198,29 @@ QList<QgsLabelFeature*> QgsVectorLayerLabelProvider::labelFeatures( const QgsMap
 
       // store parameters for data defined expressions
       QMap<QString, QVariant> exprParams;
-      exprParams.insert( "scale", ctx.rendererScale() );
+      exprParams.insert( "scale", context.rendererScale() );
 
       dd->setExpressionParams( exprParams );
 
       // this will return columns for expressions or field name, depending upon what is set to be used
-      QStringList cols = dd->referencedColumns( ctx.expressionContext() ); // <-- prepares any expressions, too
+      QStringList cols = dd->referencedColumns( context.expressionContext() ); // <-- prepares any expressions, too
 
       //QgsDebugMsgLevel( QString( "Data defined referenced columns:" ) + cols.join( "," ), 4 );
       Q_FOREACH ( const QString& name, cols )
       {
-        attrNames.append( name );
+        attributeNames.append( name );
       }
     }
   }
 
   // NOW INITIALIZE QgsPalLayerSettings
 
+  // TODO: ideally these (non-configuration) members should get out of QgsPalLayerSettings to here
+  // (together with registerFeature() & related methods) and QgsPalLayerSettings just stores config
+
   //raster and vector scale factors
-  lyr.vectorScaleFactor = ctx.scaleFactor();
-  lyr.rasterCompressFactor = ctx.rasterScaleFactor();
+  lyr.vectorScaleFactor = context.scaleFactor();
+  lyr.rasterCompressFactor = context.rasterScaleFactor();
 
   // save the pal layer to our layer context (with some additional info)
   lyr.fieldIndex = mFields.fieldNameIndex( lyr.fieldName );
@@ -206,7 +228,14 @@ QList<QgsLabelFeature*> QgsVectorLayerLabelProvider::labelFeatures( const QgsMap
   lyr.xform = &mapSettings.mapToPixel();
   lyr.ct = 0;
   if ( mapSettings.hasCrsTransformEnabled() )
-    lyr.ct = new QgsCoordinateTransform( mCrs, mapSettings.destinationCrs() );
+  {
+    if ( context.coordinateTransform() )
+      // this is context for layer rendering - use its CT as it includes correct datum transform
+      lyr.ct = context.coordinateTransform()->clone();
+    else
+      // otherwise fall back to creating our own CT - this one may not have the correct datum transform!
+      lyr.ct = new QgsCoordinateTransform( mCrs, mapSettings.destinationCrs() );
+  }
   lyr.ptZero = lyr.xform->toMapCoordinates( 0, 0 );
   lyr.ptOne = lyr.xform->toMapCoordinates( 1, 0 );
 
@@ -220,28 +249,51 @@ QList<QgsLabelFeature*> QgsVectorLayerLabelProvider::labelFeatures( const QgsMap
 
   lyr.mFeatsSendingToPal = 0;
 
+  return true;
+}
+
+
+
+QList<QgsLabelFeature*> QgsVectorLayerLabelProvider::labelFeatures( const QgsRenderContext& ctx )
+{
+  if ( !mSource )
+  {
+    // we have created the provider with "own feature loop" == false
+    // so it is assumed that prepare() has been already called followed by registerFeature() calls
+    return mLabels;
+  }
+
+  QStringList attrNames;
+  if ( !prepare( ctx, attrNames ) )
+    return QList<QgsLabelFeature*>();
+
   QgsRectangle layerExtent = ctx.extent();
-  if ( lyr.ct )
-    layerExtent = lyr.ct->transformBoundingBox( ctx.extent(), QgsCoordinateTransform::ReverseTransform );
+  if ( mSettings.ct )
+    layerExtent = mSettings.ct->transformBoundingBox( ctx.extent(), QgsCoordinateTransform::ReverseTransform );
 
   QgsFeatureRequest request;
   request.setFilterRect( layerExtent );
   request.setSubsetOfAttributes( attrNames, mFields );
   QgsFeatureIterator fit = mSource->getFeatures( request );
 
-  QList<QgsLabelFeature*> labels;
-
   QgsFeature fet;
   while ( fit.nextFeature( fet ) )
   {
-    QgsLabelFeature* label = 0;
-    lyr.registerFeature( fet, ctx, QString(), &label );
-    if ( label )
-      labels << label;
+    registerFeature( fet, ctx );
   }
 
-  return labels;
+  return mLabels;
 }
+
+
+void QgsVectorLayerLabelProvider::registerFeature( QgsFeature& feature, const QgsRenderContext& context )
+{
+  QgsLabelFeature* label = 0;
+  mSettings.registerFeature( feature, context, QString(), &label );
+  if ( label )
+    mLabels << label;
+}
+
 
 
 void QgsVectorLayerLabelProvider::drawLabel( QgsRenderContext& context, pal::LabelPosition* label ) const
@@ -303,7 +355,7 @@ void QgsVectorLayerLabelProvider::drawLabel( QgsRenderContext& context, pal::Lab
   // update tmpLyr with any data defined drop shadow values
   QgsPalLabeling::dataDefinedDropShadow( tmpLyr, ddValues );
 
-  tmpLyr.showingShadowRects = mEngine->flags().testFlag( QgsLabelingEngineV2::DrawShadowRects );
+  tmpLyr.showingShadowRects = mEngine->testFlag( QgsLabelingEngineV2::DrawShadowRects );
 
   // Render the components of a label in reverse order
   //   (backgrounds -> text)
@@ -367,7 +419,7 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition* label, Q
   component.setOrigin( outPt );
   component.setRotation( label->getAlpha() );
 
-  if ( mEngine->flags().testFlag( QgsLabelingEngineV2::DrawLabelRectOnly ) )  // TODO: this should get directly to labeling engine
+  if ( mEngine->testFlag( QgsLabelingEngineV2::DrawLabelRectOnly ) )  // TODO: this should get directly to labeling engine
   {
     //debugging rect
     if ( drawType != QgsPalLabeling::LabelText )
@@ -602,7 +654,7 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition* label, Q
         // scale for any print output or image saving @ specific dpi
         painter->scale( component.dpiRatio(), component.dpiRatio() );
 
-        if ( mEngine->flags().testFlag( QgsLabelingEngineV2::RenderOutlineLabels ) )
+        if ( mEngine->testFlag( QgsLabelingEngineV2::RenderOutlineLabels ) )
         {
           // draw outlined text
           _fixQPictureDPI( painter );

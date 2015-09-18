@@ -164,7 +164,7 @@ class CORE_EXPORT QgsAbstractLabelProvider
     virtual QString id() const = 0;
 
     //! Return list of labels
-    virtual QList<QgsLabelFeature*> labelFeatures( const QgsMapSettings& mapSettings, const QgsRenderContext& context ) = 0;
+    virtual QList<QgsLabelFeature*> labelFeatures( const QgsRenderContext& context ) = 0;
 
     //! draw this label at the position determined by the labeling engine
     virtual void drawLabel( QgsRenderContext& context, pal::LabelPosition* label ) const = 0;
@@ -210,7 +210,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( QgsAbstractLabelProvider::Flags )
 class CORE_EXPORT QgsLabelingEngineV2
 {
   public:
-    QgsLabelingEngineV2( const QgsMapSettings& mapSettings );
+    QgsLabelingEngineV2();
     ~QgsLabelingEngineV2();
 
     enum Flag
@@ -224,8 +224,17 @@ class CORE_EXPORT QgsLabelingEngineV2
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
+    void setMapSettings( const QgsMapSettings& mapSettings ) { mMapSettings = mapSettings; }
+    const QgsMapSettings& mapSettings() const { return mMapSettings; }
+
     //! Add provider of label features. Takes ownership of the provider
     void addProvider( QgsAbstractLabelProvider* provider );
+
+    //! Remove provider if the provider's initialization failed. Provider instance is deleted.
+    void removeProvider( QgsAbstractLabelProvider* provider );
+
+    //! Lookup provider by its ID
+    QgsAbstractLabelProvider* providerById( const QString& id );
 
     //! compute the labeling with given map settings and providers
     void run( QgsRenderContext& context );
@@ -238,6 +247,8 @@ class CORE_EXPORT QgsLabelingEngineV2
 
     void setFlags( Flags flags ) { mFlags = flags; }
     Flags flags() const { return mFlags; }
+    bool testFlag( Flag f ) const { return mFlags.testFlag( f ); }
+    void setFlag( Flag f, bool enabled ) { if ( enabled ) mFlags |= f; else mFlags &= ~f; }
 
     void numCandidatePositions( int& candPoint, int& candLine, int& candPolygon ) { candPoint = mCandPoint; candLine = mCandLine; candPolygon = mCandPolygon; }
     void setNumCandidatePositions( int candPoint, int candLine, int candPolygon ) { mCandPoint = candPoint; mCandLine = candLine; mCandPolygon = candPolygon; }
@@ -245,8 +256,8 @@ class CORE_EXPORT QgsLabelingEngineV2
     void setSearchMethod( QgsPalLabeling::Search s ) { mSearchMethod = s; }
     QgsPalLabeling::Search searchMethod() const { return mSearchMethod; }
 
-  protected:
-    QgsAbstractLabelProvider* providerById( const QString& id );
+    void readSettingsFromProject();
+    void writeSettingsToProject();
 
   protected:
     QgsMapSettings mMapSettings;

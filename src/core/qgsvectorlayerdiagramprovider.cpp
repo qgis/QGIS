@@ -45,14 +45,14 @@ QgsVectorLayerDiagramProvider::QgsVectorLayerDiagramProvider(
 }
 
 
-QgsVectorLayerDiagramProvider::QgsVectorLayerDiagramProvider( QgsVectorLayer* layer )
+QgsVectorLayerDiagramProvider::QgsVectorLayerDiagramProvider( QgsVectorLayer* layer, bool ownFeatureLoop )
     : mSettings( *layer->diagramLayerSettings() )
     , mDiagRenderer( layer->diagramRenderer()->clone() )
     , mLayerId( layer->id() )
     , mFields( layer->fields() )
     , mLayerCrs( layer->crs() )
-    , mSource( new QgsVectorLayerFeatureSource( layer ) )
-    , mOwnsSource( true )
+    , mSource( ownFeatureLoop ? new QgsVectorLayerFeatureSource( layer ) : 0 )
+    , mOwnsSource( ownFeatureLoop )
 {
   init();
 }
@@ -81,67 +81,18 @@ QString QgsVectorLayerDiagramProvider::id() const
   return mLayerId + "d";
 }
 
-QList<QgsLabelFeature*> QgsVectorLayerDiagramProvider::labelFeatures( const QgsMapSettings& mapSettings, const QgsRenderContext& context )
+QList<QgsLabelFeature*> QgsVectorLayerDiagramProvider::labelFeatures( const QgsRenderContext& context )
 {
-
-  QgsDiagramLayerSettings& s2 = mSettings;
-
-  s2.ct = 0;
-  if ( mapSettings.hasCrsTransformEnabled() )
-    s2.ct = new QgsCoordinateTransform( mLayerCrs, mapSettings.destinationCrs() );
-
-  s2.xform = &mapSettings.mapToPixel();
-
-  s2.fields = mFields;
-
-  s2.renderer = mDiagRenderer;
-
-  const QgsDiagramRendererV2* diagRenderer = s2.renderer;
+  if ( !mSource )
+  {
+    // we have created the provider with "own feature loop" == false
+    // so it is assumed that prepare() has been already called followed by registerFeature() calls
+    return mFeatures;
+  }
 
   QStringList attributeNames;
-
-  //add attributes needed by the diagram renderer
-  QList<QString> att = diagRenderer->diagramAttributes();
-  QList<QString>::const_iterator attIt = att.constBegin();
-  for ( ; attIt != att.constEnd(); ++attIt )
-  {
-    QgsExpression* expression = diagRenderer->diagram()->getExpression( *attIt, context.expressionContext() );
-    QStringList columns = expression->referencedColumns();
-    QStringList::const_iterator columnsIterator = columns.constBegin();
-    for ( ; columnsIterator != columns.constEnd(); ++columnsIterator )
-    {
-      if ( !attributeNames.contains( *columnsIterator ) )
-        attributeNames << *columnsIterator;
-    }
-  }
-
-  const QgsLinearlyInterpolatedDiagramRenderer* linearlyInterpolatedDiagramRenderer = dynamic_cast<const QgsLinearlyInterpolatedDiagramRenderer*>( diagRenderer );
-  if ( linearlyInterpolatedDiagramRenderer != NULL )
-  {
-    if ( linearlyInterpolatedDiagramRenderer->classificationAttributeIsExpression() )
-    {
-      QgsExpression* expression = diagRenderer->diagram()->getExpression( linearlyInterpolatedDiagramRenderer->classificationAttributeExpression(), context.expressionContext() );
-      QStringList columns = expression->referencedColumns();
-      QStringList::const_iterator columnsIterator = columns.constBegin();
-      for ( ; columnsIterator != columns.constEnd(); ++columnsIterator )
-      {
-        if ( !attributeNames.contains( *columnsIterator ) )
-          attributeNames << *columnsIterator;
-      }
-    }
-    else
-    {
-      QString name = mFields.at( linearlyInterpolatedDiagramRenderer->classificationAttribute() ).name();
-      if ( !attributeNames.contains( name ) )
-        attributeNames << name;
-    }
-  }
-
-  //and the ones needed for data defined diagram positions
-  if ( mSettings.xPosColumn != -1 )
-    attributeNames << mFields.at( mSettings.xPosColumn ).name();
-  if ( mSettings.yPosColumn != -1 )
-    attributeNames << mFields.at( mSettings.yPosColumn ).name();
+  if ( !prepare( context, attributeNames ) )
+    return QList<QgsLabelFeature*>();
 
   QgsRectangle layerExtent = context.extent();
   if ( mSettings.ct )
@@ -152,18 +103,16 @@ QList<QgsLabelFeature*> QgsVectorLayerDiagramProvider::labelFeatures( const QgsM
   request.setSubsetOfAttributes( attributeNames, mFields );
   QgsFeatureIterator fit = mSource->getFeatures( request );
 
-  QList<QgsLabelFeature*> features;
 
   QgsFeature fet;
   while ( fit.nextFeature( fet ) )
   {
-    QgsLabelFeature* label = registerDiagram( fet, mapSettings, context );
-    if ( label )
-      features << label;
+    registerFeature( fet, context );
   }
 
-  return features;
+  return mFeatures;
 }
+
 
 void QgsVectorLayerDiagramProvider::drawLabel( QgsRenderContext& context, pal::LabelPosition* label ) const
 {
@@ -210,8 +159,88 @@ void QgsVectorLayerDiagramProvider::drawLabel( QgsRenderContext& context, pal::L
 }
 
 
-QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& feat, const QgsMapSettings& mapSettings, const QgsRenderContext& context )
+bool QgsVectorLayerDiagramProvider::prepare( const QgsRenderContext& context, QStringList& attributeNames )
 {
+  QgsDiagramLayerSettings& s2 = mSettings;
+  const QgsMapSettings& mapSettings = mEngine->mapSettings();
+
+  s2.ct = 0;
+  if ( mapSettings.hasCrsTransformEnabled() )
+  {
+    if ( context.coordinateTransform() )
+      // this is context for layer rendering - use its CT as it includes correct datum transform
+      s2.ct = context.coordinateTransform()->clone();
+    else
+      // otherwise fall back to creating our own CT - this one may not have the correct datum transform!
+      s2.ct = new QgsCoordinateTransform( mLayerCrs, mapSettings.destinationCrs() );
+  }
+
+  s2.xform = &mapSettings.mapToPixel();
+
+  s2.fields = mFields;
+
+  s2.renderer = mDiagRenderer;
+
+  const QgsDiagramRendererV2* diagRenderer = s2.renderer;
+
+  //add attributes needed by the diagram renderer
+  QList<QString> att = diagRenderer->diagramAttributes();
+  QList<QString>::const_iterator attIt = att.constBegin();
+  for ( ; attIt != att.constEnd(); ++attIt )
+  {
+    QgsExpression* expression = diagRenderer->diagram()->getExpression( *attIt, context.expressionContext() );
+    QStringList columns = expression->referencedColumns();
+    QStringList::const_iterator columnsIterator = columns.constBegin();
+    for ( ; columnsIterator != columns.constEnd(); ++columnsIterator )
+    {
+      if ( !attributeNames.contains( *columnsIterator ) )
+        attributeNames << *columnsIterator;
+    }
+  }
+
+  const QgsLinearlyInterpolatedDiagramRenderer* linearlyInterpolatedDiagramRenderer = dynamic_cast<const QgsLinearlyInterpolatedDiagramRenderer*>( diagRenderer );
+  if ( linearlyInterpolatedDiagramRenderer != NULL )
+  {
+    if ( linearlyInterpolatedDiagramRenderer->classificationAttributeIsExpression() )
+    {
+      QgsExpression* expression = diagRenderer->diagram()->getExpression( linearlyInterpolatedDiagramRenderer->classificationAttributeExpression(), context.expressionContext() );
+      QStringList columns = expression->referencedColumns();
+      QStringList::const_iterator columnsIterator = columns.constBegin();
+      for ( ; columnsIterator != columns.constEnd(); ++columnsIterator )
+      {
+        if ( !attributeNames.contains( *columnsIterator ) )
+          attributeNames << *columnsIterator;
+      }
+    }
+    else
+    {
+      QString name = mFields.at( linearlyInterpolatedDiagramRenderer->classificationAttribute() ).name();
+      if ( !attributeNames.contains( name ) )
+        attributeNames << name;
+    }
+  }
+
+  //and the ones needed for data defined diagram positions
+  if ( mSettings.xPosColumn != -1 )
+    attributeNames << mFields.at( mSettings.xPosColumn ).name();
+  if ( mSettings.yPosColumn != -1 )
+    attributeNames << mFields.at( mSettings.yPosColumn ).name();
+
+  return true;
+}
+
+
+void QgsVectorLayerDiagramProvider::registerFeature( QgsFeature& feature, const QgsRenderContext& context )
+{
+  QgsLabelFeature* label = registerDiagram( feature, context );
+  if ( label )
+    mFeatures << label;
+}
+
+
+QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& feat, const QgsRenderContext& context )
+{
+  const QgsMapSettings& mapSettings = mEngine->mapSettings();
 
   QgsDiagramRendererV2* dr = mSettings.renderer;
   if ( dr )

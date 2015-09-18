@@ -33,7 +33,7 @@ class CORE_EXPORT QgsVectorLayerDiagramProvider : public QgsAbstractLabelProvide
   public:
 
     //! Convenience constructor to initialize the provider from given vector layer
-    explicit QgsVectorLayerDiagramProvider( QgsVectorLayer* layer );
+    explicit QgsVectorLayerDiagramProvider( QgsVectorLayer* layer, bool ownFeatureLoop = true );
 
     QgsVectorLayerDiagramProvider( const QgsDiagramLayerSettings* diagSettings,
                                    const QgsDiagramRendererV2* diagRenderer,
@@ -47,13 +47,19 @@ class CORE_EXPORT QgsVectorLayerDiagramProvider : public QgsAbstractLabelProvide
 
     virtual QString id() const override;
 
-    virtual QList<QgsLabelFeature*> labelFeatures( const QgsMapSettings& mapSettings, const QgsRenderContext& context ) override;
+    virtual QList<QgsLabelFeature*> labelFeatures( const QgsRenderContext& context ) override;
 
     virtual void drawLabel( QgsRenderContext& context, pal::LabelPosition* label ) const override;
 
+    // new virtual methods
+
+    virtual bool prepare( const QgsRenderContext& context, QStringList& attributeNames );
+
+    virtual void registerFeature( QgsFeature& feature, const QgsRenderContext& context );
+
   protected:
     void init();
-    QgsLabelFeature* registerDiagram( QgsFeature& feat, const QgsMapSettings& mapSettings, const QgsRenderContext& context );
+    QgsLabelFeature* registerDiagram( QgsFeature& feat, const QgsRenderContext& context );
 
   protected:
 
@@ -66,6 +72,7 @@ class CORE_EXPORT QgsVectorLayerDiagramProvider : public QgsAbstractLabelProvide
     QgsAbstractFeatureSource* mSource;
     bool mOwnsSource;
 
+    QList<QgsLabelFeature*> mFeatures;
 };
 
 #endif // QGSVECTORLAYERDIAGRAMPROVIDER_H
