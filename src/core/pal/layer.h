@@ -139,19 +139,6 @@ namespace pal
        */
       bool labelLayer() const { return mLabelLayer; }
 
-      /** Sets whether features within the layer will act as obstacles for labels.
-       * @note this property is only effective if the layer is active
-       * @param obstacle set to true if features will act as obstacles
-       * @see setActive
-       * @see obstacle
-       */
-      void setObstacle( bool obstacle ) { mObstacle = obstacle; }
-
-      /** Returns whether features within the layer act as obstacles for labels.
-       * @see setObstacle
-       */
-      bool obstacle() const { return mObstacle; }
-
       /** Returns the obstacle type, which controls how features within the layer
        * act as obstacles for labels.
        * @see setObstacleType
@@ -292,7 +279,6 @@ namespace pal
 
       double mDefaultPriority;
 
-      bool mObstacle;
       ObstacleType mObstacleType;
       bool mActive;
       bool mLabelLayer;

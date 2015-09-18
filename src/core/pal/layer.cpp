@@ -49,7 +49,6 @@ namespace pal
   Layer::Layer( const QString &lyrName, Arrangement arrangement, double defaultPriority, bool obstacle, bool active, bool toLabel, Pal *pal, bool displayAll )
       : mName( lyrName )
       , pal( pal )
-      , mObstacle( obstacle )
       , mObstacleType( PolygonInterior )
       , mActive( active )
       , mLabelLayer( toLabel )
@@ -156,9 +155,6 @@ namespace pal
     f->setRepeatDistance( repeatDistance );
 
     f->setAlwaysShow( alwaysShow );
-
-    // feature inherits layer setting for acting as an obstacle
-    f->setIsObstacle( mObstacle );
 
     bool addedFeature = false;
 
