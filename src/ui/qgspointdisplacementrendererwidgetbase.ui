@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>381</width>
-    <height>530</height>
+    <height>492</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,46 +17,14 @@
    <property name="margin">
     <number>0</number>
    </property>
-   <item row="0" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout_9">
-     <item>
-      <widget class="QLabel" name="mCenterSymbolLabel">
-       <property name="text">
-        <string>Center symbol:</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="mCenterSymbolPushButton">
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="1" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout_4">
-     <item>
-      <widget class="QLabel" name="mRendererLabel">
-       <property name="text">
-        <string>Renderer:</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QComboBox" name="mRendererComboBox"/>
-     </item>
-    </layout>
-   </item>
-   <item row="2" column="0">
+   <item row="4" column="0" colspan="2">
     <widget class="QPushButton" name="mRendererSettingsButton">
      <property name="text">
       <string>Renderer settings...</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="0">
+   <item row="9" column="0" colspan="2">
     <widget class="QgsCollapsibleGroupBoxBasic" name="mLabellingGroupBox">
      <property name="title">
       <string>Labels</string>
@@ -65,7 +33,7 @@
       <item row="0" column="0">
        <widget class="QLabel" name="mLabelAttributeLabel">
         <property name="text">
-         <string>Label attribute:</string>
+         <string>Label attribute</string>
         </property>
        </widget>
       </item>
@@ -75,7 +43,7 @@
       <item row="1" column="0">
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>Label font:</string>
+         <string>Label font</string>
         </property>
        </widget>
       </item>
@@ -89,7 +57,7 @@
       <item row="2" column="0">
        <widget class="QLabel" name="mLabelColorLabel">
         <property name="text">
-         <string>Label color:</string>
+         <string>Label color</string>
         </property>
        </widget>
       </item>
@@ -122,7 +90,7 @@
       <item row="4" column="0">
        <widget class="QLabel" name="mMaxScaleLabel">
         <property name="text">
-         <string>Max scale denominator:</string>
+         <string>Max scale denominator</string>
         </property>
        </widget>
       </item>
@@ -132,10 +100,20 @@
      </layout>
     </widget>
    </item>
-   <item row="3" column="0">
+   <item row="0" column="0">
+    <widget class="QLabel" name="mCenterSymbolLabel">
+     <property name="text">
+      <string>Center symbol</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QComboBox" name="mRendererComboBox"/>
+   </item>
+   <item row="8" column="0" colspan="2">
     <widget class="QgsCollapsibleGroupBoxBasic" name="mDisplacementCirclesGroupBox">
      <property name="title">
-      <string>Displacement circles</string>
+      <string>Displacement rings</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="2" column="1">
@@ -160,63 +138,119 @@
       <item row="3" column="0">
        <widget class="QLabel" name="mCircleRadiusLabel">
         <property name="text">
-         <string>Circle radius modification:</string>
+         <string>Ring size adjustment</string>
         </property>
        </widget>
       </item>
       <item row="0" column="0">
        <widget class="QLabel" name="mCircleWidthLabel">
         <property name="text">
-         <string>Circle pen width:</string>
+         <string>Outline width</string>
         </property>
        </widget>
       </item>
       <item row="2" column="0">
        <widget class="QLabel" name="mCircleColorLabel">
         <property name="text">
-         <string>Circle color:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="0">
-       <widget class="QLabel" name="mDistanceToleranceLabel">
-        <property name="text">
-         <string>Point distance tolerance:</string>
+         <string>Outline color</string>
         </property>
        </widget>
       </item>
       <item row="3" column="1">
        <widget class="QgsDoubleSpinBox" name="mCircleModificationSpinBox">
+        <property name="suffix">
+         <string> mm</string>
+        </property>
         <property name="minimum">
-         <double>-99.000000000000000</double>
+         <double>-9999.000000000000000</double>
+        </property>
+        <property name="maximum">
+         <double>9999.000000000000000</double>
+        </property>
+        <property name="singleStep">
+         <double>0.100000000000000</double>
         </property>
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QgsDoubleSpinBox" name="mCircleWidthSpinBox"/>
-      </item>
-      <item row="6" column="1">
-       <layout class="QHBoxLayout" name="horizontalLayout">
-        <item>
-         <widget class="QgsDoubleSpinBox" name="mDistanceSpinBox">
-          <property name="decimals">
-           <number>7</number>
-          </property>
-          <property name="maximum">
-           <double>999999999.000000000000000</double>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QgsUnitSelectionWidget" name="mDistanceUnitWidget" native="true">
-          <property name="focusPolicy">
-           <enum>Qt::StrongFocus</enum>
-          </property>
-         </widget>
-        </item>
-       </layout>
+       <widget class="QgsDoubleSpinBox" name="mCircleWidthSpinBox">
+        <property name="suffix">
+         <string> mm</string>
+        </property>
+        <property name="maximum">
+         <double>9999.000000000000000</double>
+        </property>
+        <property name="singleStep">
+         <double>0.100000000000000</double>
+        </property>
+       </widget>
       </item>
      </layout>
+    </widget>
+   </item>
+   <item row="10" column="0">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="0" column="1">
+    <widget class="QPushButton" name="mCenterSymbolPushButton">
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="mRendererLabel">
+     <property name="text">
+      <string>Renderer</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0">
+    <widget class="QLabel" name="mDistanceToleranceLabel">
+     <property name="text">
+      <string>Point distance tolerance</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QgsDoubleSpinBox" name="mDistanceSpinBox">
+       <property name="decimals">
+        <number>7</number>
+       </property>
+       <property name="maximum">
+        <double>999999999.000000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QgsUnitSelectionWidget" name="mDistanceUnitWidget" native="true">
+       <property name="focusPolicy">
+        <enum>Qt::StrongFocus</enum>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="7" column="1">
+    <widget class="QComboBox" name="mPlacementComboBox"/>
+   </item>
+   <item row="7" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Placement method</string>
+     </property>
     </widget>
    </item>
   </layout>
@@ -250,11 +284,12 @@
   <tabstop>mCenterSymbolPushButton</tabstop>
   <tabstop>mRendererComboBox</tabstop>
   <tabstop>mRendererSettingsButton</tabstop>
+  <tabstop>mDistanceSpinBox</tabstop>
+  <tabstop>mDistanceUnitWidget</tabstop>
+  <tabstop>mPlacementComboBox</tabstop>
   <tabstop>mCircleWidthSpinBox</tabstop>
   <tabstop>mCircleColorButton</tabstop>
   <tabstop>mCircleModificationSpinBox</tabstop>
-  <tabstop>mDistanceSpinBox</tabstop>
-  <tabstop>mDistanceUnitWidget</tabstop>
   <tabstop>mLabelFieldComboBox</tabstop>
   <tabstop>mLabelFontButton</tabstop>
   <tabstop>mLabelColorButton</tabstop>

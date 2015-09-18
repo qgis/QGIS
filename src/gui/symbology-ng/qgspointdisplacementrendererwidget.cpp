@@ -62,6 +62,9 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
 
   blockAllSignals( true );
 
+  mPlacementComboBox->addItem( tr( "Ring" ), QgsPointDisplacementRenderer::Ring );
+  mPlacementComboBox->addItem( tr( "Concentric rings" ), QgsPointDisplacementRenderer::ConcentricRings );
+
   //insert attributes into combo box
   if ( layer )
   {
@@ -98,6 +101,8 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
   mCircleColorButton->setColorDialogTitle( tr( "Select color" ) );
   mCircleColorButton->setContext( "symbology" );
   mCircleColorButton->setAllowAlpha( true );
+  mCircleColorButton->setShowNoColor( true );
+  mCircleColorButton->setNoColorString( tr( "No outline" ) );
   mLabelColorButton->setContext( "symbology" );
   mLabelColorButton->setColorDialogTitle( tr( "Select color" ) );
   mLabelColorButton->setAllowAlpha( true );
@@ -105,10 +110,13 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
   mCircleWidthSpinBox->setValue( mRenderer->circleWidth() );
   mCircleColorButton->setColor( mRenderer->circleColor() );
   mLabelColorButton->setColor( mRenderer->labelColor() );
+  mCircleModificationSpinBox->setClearValue( 0.0 );
   mCircleModificationSpinBox->setValue( mRenderer->circleRadiusAddition() );
   mDistanceSpinBox->setValue( mRenderer->tolerance() );
   mDistanceUnitWidget->setUnit( mRenderer->toleranceUnit() );
   mDistanceUnitWidget->setMapUnitScale( mRenderer->toleranceMapUnitScale() );
+
+  mPlacementComboBox->setCurrentIndex( mPlacementComboBox->findData( mRenderer->placement() ) );
 
   //scale dependent labelling
   mMaxScaleDenominatorEdit->setText( QString::number( mRenderer->maxLabelScaleDenominator() ) );
@@ -192,6 +200,14 @@ void QgsPointDisplacementRendererWidget::on_mRendererComboBox_currentIndexChange
     mEmbeddedRendererWidget = m->createRendererWidget( mLayer, mStyle, mRenderer->embeddedRenderer()->clone() );
     mEmbeddedRendererWidget->setMapCanvas( mMapCanvas );
   }
+}
+
+void QgsPointDisplacementRendererWidget::on_mPlacementComboBox_currentIndexChanged( int index )
+{
+  if ( !mRenderer )
+    return;
+
+  mRenderer->setPlacement(( QgsPointDisplacementRenderer::Placement )mPlacementComboBox->itemData( index ).toInt() );
 }
 
 void QgsPointDisplacementRendererWidget::on_mRendererSettingsButton_clicked()
@@ -330,6 +346,7 @@ void QgsPointDisplacementRendererWidget::blockAllSignals( bool block )
   mCenterSymbolPushButton->blockSignals( block );
   mDistanceSpinBox->blockSignals( block );
   mDistanceUnitWidget->blockSignals( block );
+  mPlacementComboBox->blockSignals( block );
 }
 
 void QgsPointDisplacementRendererWidget::on_mCenterSymbolPushButton_clicked()

@@ -4,6 +4,15 @@ class QgsPointDisplacementRenderer : QgsFeatureRendererV2
 #include <qgspointdisplacementrenderer.h>
 %End
   public:
+
+    /** Placement methods for dispersing points
+     */
+    enum Placement
+    {
+      Ring, /*!< Place points in a single ring around group*/
+      ConcentricRings /*!< Place points in concentric rings around group*/
+    };
+
     QgsPointDisplacementRenderer( const QString& labelAttributeName = "" );
     ~QgsPointDisplacementRenderer();
 
@@ -72,6 +81,19 @@ class QgsPointDisplacementRenderer : QgsFeatureRendererV2
 
     void setMaxLabelScaleDenominator( double d );
     double maxLabelScaleDenominator() const;
+
+    /** Returns the placement method used for dispersing the points.
+     * @see setPlacement()
+     * @note added in QGIS 2.12
+     */
+    Placement placement() const;
+
+    /** Sets the placement method used for dispersing the points.
+     * @param placement placement method
+     * @see placement()
+     * @note added in QGIS 2.12
+     */
+    void setPlacement( Placement placement );
 
     /** Returns the symbol for the center of a displacement group (but _not_ ownership of the symbol)*/
     QgsMarkerSymbolV2* centerSymbol();

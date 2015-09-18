@@ -31,6 +31,15 @@ class QgsSpatialIndex;
 class CORE_EXPORT QgsPointDisplacementRenderer: public QgsFeatureRendererV2
 {
   public:
+
+    /** Placement methods for dispersing points
+     */
+    enum Placement
+    {
+      Ring, /*!< Place points in a single ring around group*/
+      ConcentricRings /*!< Place points in concentric rings around group*/
+    };
+
     QgsPointDisplacementRenderer( const QString& labelAttributeName = "" );
     ~QgsPointDisplacementRenderer();
 
@@ -99,6 +108,19 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsFeatureRendererV2
 
     void setMaxLabelScaleDenominator( double d ) { mMaxLabelScaleDenominator = d; }
     double maxLabelScaleDenominator() const { return mMaxLabelScaleDenominator; }
+
+    /** Returns the placement method used for dispersing the points.
+     * @see setPlacement()
+     * @note added in QGIS 2.12
+     */
+    Placement placement() const { return mPlacement; }
+
+    /** Sets the placement method used for dispersing the points.
+     * @param placement placement method
+     * @see placement()
+     * @note added in QGIS 2.12
+     */
+    void setPlacement( Placement placement ) { mPlacement = placement; }
 
     /** Returns the symbol for the center of a displacement group (but _not_ ownership of the symbol)*/
     QgsMarkerSymbolV2* centerSymbol() { return mCenterSymbol;}
@@ -173,6 +195,8 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsFeatureRendererV2
     QgsSymbolV2::OutputUnit mToleranceUnit;
     QgsMapUnitScale mToleranceMapUnitScale;
 
+    Placement mPlacement;
+
     /** Font that is passed to the renderer*/
     QFont mLabelFont;
     QColor mLabelColor;
@@ -210,7 +234,7 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsFeatureRendererV2
                       const QStringList& labels );
 
     //helper functions
-    void calculateSymbolAndLabelPositions( const QPointF& centerPoint, int nPosition, double radius, double symbolDiagonal, QList<QPointF>& symbolPositions, QList<QPointF>& labelShifts ) const;
+    void calculateSymbolAndLabelPositions( QgsSymbolV2RenderContext &symbolContext, const QPointF& centerPoint, int nPosition, double symbolDiagonal, QList<QPointF>& symbolPositions, QList<QPointF>& labelShifts , double &circleRadius ) const;
     void drawGroup( const DisplacementGroup& group, QgsRenderContext& context );
     void drawCircle( double radiusPainterUnits, QgsSymbolV2RenderContext& context, const QPointF& centerPoint, int nSymbols );
     void drawSymbols( const QgsFeature& f, QgsRenderContext& context, const QList<QgsMarkerSymbolV2*>& symbolList, const QList<QPointF>& symbolPositions, bool selected = false );

@@ -43,6 +43,7 @@ QgsPointDisplacementRenderer::QgsPointDisplacementRenderer( const QString& label
     , mLabelIndex( -1 )
     , mTolerance( 3 )
     , mToleranceUnit( QgsSymbolV2::MM )
+    , mPlacement( Ring )
     , mCircleWidth( 0.4 )
     , mCircleColor( QColor( 125, 125, 125 ) )
     , mCircleRadiusAddition( 0 )
@@ -68,6 +69,7 @@ QgsFeatureRendererV2* QgsPointDisplacementRenderer::clone() const
   r->setCircleColor( mCircleColor );
   r->setLabelFont( mLabelFont );
   r->setLabelColor( mLabelColor );
+  r->setPlacement( mPlacement );
   r->setCircleRadiusAddition( mCircleRadiusAddition );
   r->setMaxLabelScaleDenominator( mMaxLabelScaleDenominator );
   r->setTolerance( mTolerance );
@@ -181,16 +183,15 @@ void QgsPointDisplacementRenderer::drawGroup( const DisplacementGroup& group, Qg
   }
 
   QgsSymbolV2RenderContext symbolContext( context, QgsSymbolV2::MM, 1.0, selected );
-  double circleAdditionPainterUnits = symbolContext.outputLineWidth( mCircleRadiusAddition );
-  double minDiameterToFitSymbols = symbolList.size() * diagonal / ( 2.0 * M_PI );
-  double radius = qMax( diagonal / 2, minDiameterToFitSymbols ) + circleAdditionPainterUnits;
-
-  //draw Circle
-  drawCircle( radius, symbolContext, pt, symbolList.size() );
 
   QList<QPointF> symbolPositions;
   QList<QPointF> labelPositions;
-  calculateSymbolAndLabelPositions( pt, labelAttributeList.size(), radius, diagonal, symbolPositions, labelPositions );
+  double circleRadius = -1.0;
+  calculateSymbolAndLabelPositions( symbolContext, pt, symbolList.size(), diagonal, symbolPositions, labelPositions, circleRadius );
+
+  //draw Circle
+  if ( circleRadius > 0 )
+    drawCircle( circleRadius, symbolContext, pt, symbolList.size() );
 
   //draw mid point
   if ( labelAttributeList.size() > 1 )
@@ -357,6 +358,7 @@ QgsFeatureRendererV2* QgsPointDisplacementRenderer::create( QDomElement& symbolo
     labelFont.fromString( symbologyElem.attribute( "labelFont", "" ) );
   }
   r->setLabelFont( labelFont );
+  r->setPlacement(( Placement )symbologyElem.attribute( "placement", "0" ).toInt() );
   r->setCircleWidth( symbologyElem.attribute( "circleWidth", "0.4" ).toDouble() );
   r->setCircleColor( QgsSymbolLayerV2Utils::decodeColor( symbologyElem.attribute( "circleColor", "" ) ) );
   r->setLabelColor( QgsSymbolLayerV2Utils::decodeColor( symbologyElem.attribute( "labelColor", "" ) ) );
@@ -393,6 +395,7 @@ QDomElement QgsPointDisplacementRenderer::save( QDomDocument& doc )
   rendererElement.setAttribute( "circleColor", QgsSymbolLayerV2Utils::encodeColor( mCircleColor ) );
   rendererElement.setAttribute( "labelColor", QgsSymbolLayerV2Utils::encodeColor( mLabelColor ) );
   rendererElement.setAttribute( "circleRadiusAddition", QString::number( mCircleRadiusAddition ) );
+  rendererElement.setAttribute( "placement", ( int )mPlacement );
   rendererElement.setAttribute( "maxLabelScaleDenominator", QString::number( mMaxLabelScaleDenominator ) );
   rendererElement.setAttribute( "tolerance", QString::number( mTolerance ) );
   rendererElement.setAttribute( "toleranceUnit", QgsSymbolLayerV2Utils::encodeOutputUnit( mToleranceUnit ) );
@@ -473,8 +476,8 @@ void QgsPointDisplacementRenderer::setCenterSymbol( QgsMarkerSymbolV2* symbol )
 
 
 
-void QgsPointDisplacementRenderer::calculateSymbolAndLabelPositions( const QPointF& centerPoint, int nPosition, double radius,
-    double symbolDiagonal, QList<QPointF>& symbolPositions, QList<QPointF>& labelShifts ) const
+void QgsPointDisplacementRenderer::calculateSymbolAndLabelPositions( QgsSymbolV2RenderContext& symbolContext, const QPointF& centerPoint, int nPosition,
+    double symbolDiagonal, QList<QPointF>& symbolPositions, QList<QPointF>& labelShifts, double& circleRadius ) const
 {
   symbolPositions.clear();
   labelShifts.clear();
@@ -490,18 +493,64 @@ void QgsPointDisplacementRenderer::calculateSymbolAndLabelPositions( const QPoin
     return;
   }
 
-  double fullPerimeter = 2 * M_PI;
-  double angleStep = fullPerimeter / nPosition;
-  double currentAngle;
+  double circleAdditionPainterUnits = symbolContext.outputLineWidth( mCircleRadiusAddition );
 
-  for ( currentAngle = 0.0; currentAngle < fullPerimeter; currentAngle += angleStep )
+  switch ( mPlacement )
   {
-    double sinusCurrentAngle = sin( currentAngle );
-    double cosinusCurrentAngle = cos( currentAngle );
-    QPointF positionShift( radius * sinusCurrentAngle, radius * cosinusCurrentAngle );
-    QPointF labelShift(( radius + symbolDiagonal / 2 ) * sinusCurrentAngle, ( radius + symbolDiagonal / 2 ) * cosinusCurrentAngle );
-    symbolPositions.append( centerPoint + positionShift );
-    labelShifts.append( labelShift );
+    case Ring:
+    {
+      double minDiameterToFitSymbols = nPosition * symbolDiagonal / ( 2.0 * M_PI );
+      double radius = qMax( symbolDiagonal / 2, minDiameterToFitSymbols ) + circleAdditionPainterUnits;
+
+      double fullPerimeter = 2 * M_PI;
+      double angleStep = fullPerimeter / nPosition;
+      for ( double currentAngle = 0.0; currentAngle < fullPerimeter; currentAngle += angleStep )
+      {
+        double sinusCurrentAngle = sin( currentAngle );
+        double cosinusCurrentAngle = cos( currentAngle );
+        QPointF positionShift( radius * sinusCurrentAngle, radius * cosinusCurrentAngle );
+        QPointF labelShift(( radius + symbolDiagonal / 2 ) * sinusCurrentAngle, ( radius + symbolDiagonal / 2 ) * cosinusCurrentAngle );
+        symbolPositions.append( centerPoint + positionShift );
+        labelShifts.append( labelShift );
+      }
+
+      circleRadius = radius;
+      break;
+    }
+    case ConcentricRings:
+    {
+      double centerDiagonal = QgsSymbolLayerV2Utils::convertToPainterUnits( symbolContext.renderContext(),
+                              M_SQRT2 * mCenterSymbol->size(),
+                              mCenterSymbol->outputUnit(), mCenterSymbol->mapUnitScale() );
+
+      int pointsRemaining = nPosition;
+      int ringNumber = 1;
+      double firstRingRadius = centerDiagonal / 2.0 + symbolDiagonal / 2.0;
+      while ( pointsRemaining > 0 )
+      {
+        double radiusCurrentRing = qMax( firstRingRadius + ( ringNumber - 1 ) * symbolDiagonal + ringNumber * circleAdditionPainterUnits, 0.0 );
+        int maxPointsCurrentRing = qMax( floor( 2 * M_PI * radiusCurrentRing / symbolDiagonal ), 1.0 );
+        int actualPointsCurrentRing = qMin( maxPointsCurrentRing, pointsRemaining );
+
+        double angleStep = 2 * M_PI / actualPointsCurrentRing;
+        double currentAngle = 0.0;
+        for ( int i = 0; i < actualPointsCurrentRing; ++i )
+        {
+          double sinusCurrentAngle = sin( currentAngle );
+          double cosinusCurrentAngle = cos( currentAngle );
+          QPointF positionShift( radiusCurrentRing * sinusCurrentAngle, radiusCurrentRing * cosinusCurrentAngle );
+          QPointF labelShift(( radiusCurrentRing + symbolDiagonal / 2 ) * sinusCurrentAngle, ( radiusCurrentRing + symbolDiagonal / 2 ) * cosinusCurrentAngle );
+          symbolPositions.append( centerPoint + positionShift );
+          labelShifts.append( labelShift );
+          currentAngle += angleStep;
+        }
+
+        pointsRemaining -= actualPointsCurrentRing;
+        ringNumber++;
+        circleRadius = radiusCurrentRing;
+      }
+      break;
+    }
   }
 }
 
