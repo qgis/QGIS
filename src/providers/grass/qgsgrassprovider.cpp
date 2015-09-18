@@ -554,7 +554,12 @@ bool QgsGrassProvider::closeEdit( bool newMap )
   }
 
   mEditBuffer = 0;
-  return mLayer->map()->closeEdit( newMap );
+  if ( mLayer->map()->closeEdit( newMap ) )
+  {
+    loadMapInfo();
+    return true;
+  }
+  return false;
 }
 
 void QgsGrassProvider::ensureUpdated()
@@ -1318,11 +1323,14 @@ void QgsGrassProvider::setPoints( struct line_pnts *points, const QgsAbstractGeo
     const QgsPolygonV2* polygon = dynamic_cast<const QgsPolygonV2*>( geometry );
     if ( polygon && polygon->exteriorRing() )
     {
-      QList<QgsPointV2> pointsList;
-      polygon->exteriorRing()->points( pointsList );
-      Q_FOREACH ( QgsPointV2 point, pointsList )
+      QgsLineStringV2* lineString = polygon->exteriorRing()->curveToLine();
+      if ( lineString )
       {
-        Vect_append_point( points, point.x(), point.y(), point.z() );
+        for ( int i = 0; i < lineString->numPoints(); i++ )
+        {
+          QgsPointV2 point = lineString->pointN( i );
+          Vect_append_point( points, point.x(), point.y(), point.z() );
+        }
       }
     }
   }
@@ -1401,6 +1409,18 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
       QgsDebugMsg( QString( "unknown type %1" ).arg( wkbType ) );
     }
 
+    if ( FID_IS_NEW( fid ) )
+    {
+      // add new category
+      if ( wkbType != QgsWKBTypes::Polygon )
+      {
+        // TODO: redo of deleted new features - save new cats somewhere,
+        // resetting fid probably is not possible because it is stored in undo commands and used in buffer maps
+        int newCat = cidxGetMaxCat( mCidxFieldIndex ) + 1;
+        QgsDebugMsg( QString( "newCat = %1" ).arg( newCat ) );
+        Vect_cat_set( cats, mLayerField, newCat );
+      }
+    }
     if ( cat > 0 )
     {
       // TODO: orig field, maybe different
@@ -1437,6 +1457,18 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
         int idx = mLayer->fields().size() - 1;
         QgsFeatureMap & addedFeatures = const_cast<QgsFeatureMap&>( mEditBuffer->addedFeatures() );
         addedFeatures[fid].setAttribute( idx, QVariant( symbol ) );
+
+        if ( wkbType == QgsWKBTypes::Polygon )
+        {
+          // change polygon to linestring
+          const QgsPolygonV2* polygon = dynamic_cast<const QgsPolygonV2*>( addedFeatures[fid].geometry()->geometry() );
+          if ( polygon )
+          {
+            QgsLineStringV2* lineString = polygon->exteriorRing()->curveToLine();
+            addedFeatures[fid].setGeometry( new QgsGeometry( lineString ) );
+          }
+          // TODO: create also centroid and add it to undo
+        }
       }
     }
 

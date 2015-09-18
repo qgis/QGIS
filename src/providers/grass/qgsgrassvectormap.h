@@ -97,6 +97,9 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     /** Close GRASS map, no open/close locking */
     void closeMap();
 
+    /** Reload layers from (reopened) map. The layers keep field/type. */
+    void reloadLayers();
+
     bool startEdit();
     bool closeEdit( bool newMap );
 

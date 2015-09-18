@@ -341,6 +341,7 @@ bool QgsGrassVectorMap::closeEdit( bool newMap )
 
   closeMap();
   openMap();
+  reloadLayers();
   mVersion++;
   unlockOpenClose();
 
@@ -380,6 +381,15 @@ QgsGrassVectorMapLayer * QgsGrassVectorMap::openLayer( int field )
   unlockOpenClose();
   unlockOpenCloseLayer();
   return layer;
+}
+
+void QgsGrassVectorMap::reloadLayers()
+{
+  QgsDebugMsg( "entered" );
+  foreach ( QgsGrassVectorMapLayer *l, mLayers )
+  {
+    l->load();
+  }
 }
 
 void QgsGrassVectorMap::closeLayer( QgsGrassVectorMapLayer * layer )
@@ -447,6 +457,7 @@ void QgsGrassVectorMap::update()
   closeAllIterators(); // blocking
   closeMap();
   openMap();
+  reloadLayers();
   unlockOpenClose();
 }
 

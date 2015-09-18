@@ -313,7 +313,9 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature& feature )
       cat = 0;
       type = 0;
       lid = 0;
-      QgsDebugMsgLevel( QString( "mNextLid = %1 mNextCidx = %2 numLines() = %3" ).arg( mNextLid ).arg( mNextCidx ).arg( mSource->mLayer->map()->numLines() ), 3 );
+      QgsDebugMsgLevel( QString( "mNextLid = %1 mNextCidx = %2 numLines() = %3 mCidxFieldNumCats = %4" )
+                        .arg( mNextLid ).arg( mNextCidx ).arg( mSource->mLayer->map()->numLines() )
+                        .arg( mSource->mCidxFieldNumCats ), 3 );
       if ( mSource->mEditing )
       {
         // TODO should be numLines before editing started (?), but another layer
