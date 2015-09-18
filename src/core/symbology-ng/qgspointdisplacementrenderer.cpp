@@ -25,11 +25,17 @@
 #include "qgssinglesymbolrendererv2.h"
 #include "qgspainteffect.h"
 #include "qgsfontutils.h"
+#include "qgsmultipointv2.h"
+#include "qgspointv2.h"
 
 #include <QDomElement>
 #include <QPainter>
 
 #include <cmath>
+
+#ifndef M_SQRT2
+#define M_SQRT2 1.41421356237309504880
+#endif
 
 QgsPointDisplacementRenderer::QgsPointDisplacementRenderer( const QString& labelAttributeName )
     : QgsFeatureRendererV2( "pointDisplacement" )
@@ -141,41 +147,43 @@ void QgsPointDisplacementRenderer::drawGroup( const DisplacementGroup& group, Qg
   const QgsFeature& feature = group.begin().value().first;
   bool selected = mSelectedFeatures.contains( feature.id() ); // maybe we should highlight individual features instead of the whole group?
 
-  QPointF pt;
-  _getPoint( pt, context, feature.constGeometry()->asWkb() );
+
 
   //get list of labels and symbols
   QStringList labelAttributeList;
   QList<QgsMarkerSymbolV2*> symbolList;
 
+  QgsMultiPointV2* groupMultiPoint = new QgsMultiPointV2();
   for ( DisplacementGroup::const_iterator attIt = group.constBegin(); attIt != group.constEnd(); ++attIt )
   {
     labelAttributeList << ( mDrawLabels ? getLabel( attIt.value().first ) : QString() );
     symbolList << dynamic_cast<QgsMarkerSymbolV2*>( attIt.value().second );
+    groupMultiPoint->addGeometry( attIt.value().first.constGeometry()->geometry()->clone() );
   }
 
-  //draw symbol
-  double diagonal = 0;
+  //calculate centroid of all points, this will be center of group
+  QgsGeometry groupGeom( groupMultiPoint );
+  QgsGeometry* centroid = groupGeom.centroid();
+  QPointF pt;
+  _getPoint( pt, context, centroid->asWkb() );
+  delete centroid;
 
-  QList<QgsMarkerSymbolV2*>::const_iterator it = symbolList.constBegin();
-  for ( ; it != symbolList.constEnd(); ++it )
+  //calculate max diagonal size from all symbols in group
+  double diagonal = 0;
+  Q_FOREACH ( QgsMarkerSymbolV2* symbol, symbolList )
   {
-    if ( *it )
+    if ( symbol )
     {
-      double currentDiagonal = QgsSymbolLayerV2Utils::convertToPainterUnits( context,
-                               sqrt( 2 * (( *it )->size() * ( *it )->size() ) ),
-                               ( *it )->outputUnit(), ( *it )->mapUnitScale() );
-      if ( currentDiagonal > diagonal )
-      {
-        diagonal = currentDiagonal;
-      }
+      diagonal = qMax( diagonal, QgsSymbolLayerV2Utils::convertToPainterUnits( context,
+                       M_SQRT2 * symbol->size(),
+                       symbol->outputUnit(), symbol->mapUnitScale() ) );
     }
   }
 
-
   QgsSymbolV2RenderContext symbolContext( context, QgsSymbolV2::MM, 1.0, selected );
   double circleAdditionPainterUnits = symbolContext.outputLineWidth( mCircleRadiusAddition );
-  double radius = qMax(( diagonal / 2 ), labelAttributeList.size() * diagonal / 2 / M_PI ) + circleAdditionPainterUnits;
+  double minDiameterToFitSymbols = symbolList.size() * diagonal / ( 2.0 * M_PI );
+  double radius = qMax( diagonal / 2, minDiameterToFitSymbols ) + circleAdditionPainterUnits;
 
   //draw Circle
   drawCircle( radius, symbolContext, pt, symbolList.size() );
