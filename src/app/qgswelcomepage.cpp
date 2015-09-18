@@ -18,6 +18,7 @@
 #include "qgisapp.h"
 #include "qgsversioninfo.h"
 #include "qgsapplication.h"
+#include "qgsnetworkaccessmanager.h"
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -56,7 +57,9 @@ QgsWelcomePage::QgsWelcomePage( QWidget* parent )
   QLabel* whatsNewTitle = new QLabel( QString( "<h1>%1</h1>" ).arg( tr( "QGIS News" ) ) );
   whatsNewContainer->layout()->addWidget( whatsNewTitle );
 
-  QgsWebView* whatsNewPage = new QgsWebView();
+  QgsWebView *whatsNewPage = new QgsWebView();
+  whatsNewPage->page()->setNetworkAccessManager( QgsNetworkAccessManager::instance() );
+
   whatsNewPage->setUrl( QUrl::fromLocalFile( QgsApplication::whatsNewFilePath() ) );
   whatsNewPage->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
   whatsNewPage->setContextMenuPolicy( Qt::NoContextMenu );
