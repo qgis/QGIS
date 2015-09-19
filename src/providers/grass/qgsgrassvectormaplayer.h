@@ -36,10 +36,10 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapLayer : public QObject
     bool isValid() const { return mValid; }
     QgsGrassVectorMap *map() { return mMap; }
     QgsFields & fields() { return mFields; }
-    QMap<int, QList<QVariant>> & attributes() { return mAttributes; }
+    QMap<int, QList<QVariant> > & attributes() { return mAttributes; }
     bool hasTable() { return mHasTable; }
     int keyColumn() { return mKeyColumn; }
-    QList<QPair<double, double>> minMax() { return mMinMax; }
+    QList< QPair<double, double> > minMax() { return mMinMax; }
     int userCount() { return mUsers; }
     void addUser();
     void removeUser();
@@ -64,9 +64,9 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapLayer : public QObject
     int mKeyColumn;
     QgsFields mFields;
     // Map of attributes with cat as key
-    QMap<int, QList<QVariant>> mAttributes;
+    QMap<int, QList<QVariant> > mAttributes;
     // minimum and maximum values of attributes
-    QList<QPair<double, double>> mMinMax;
+    QList<QPair<double, double> > mMinMax;
     // timestamp when attributes were loaded
     QDateTime mLastLoaded;
     // number of instances using this layer
