@@ -663,12 +663,16 @@ ENDIF (UNIX AND NOT APPLE)
 
 
 #############################################################
+# Python build dependency
+
+FIND_PACKAGE(PythonInterp REQUIRED)
+
+#############################################################
 # Python bindings
 
 IF (WITH_BINDINGS)
 
   # python support: check for interpreter, sip, pyqt4
-  FIND_PACKAGE(PythonInterp REQUIRED)
   FIND_PACKAGE(PythonLibrary REQUIRED)
   FIND_PACKAGE(SIP REQUIRED)
   FIND_PACKAGE(PyQt4 REQUIRED)
