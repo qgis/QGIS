@@ -44,6 +44,7 @@
 #include <QObject>
 #include <QTextStream>
 #include <QDir>
+#include <QUrl>
 
 // canonical project instance
 QgsProject *QgsProject::theProject_ = 0;
@@ -1665,34 +1666,72 @@ bool QgsProject::createEmbeddedLayer( const QString &layerId, const QString &pro
       mEmbeddedLayers.insert( layerId, qMakePair( projectFilePath, saveFlag ) );
 
       // change datasource path from relative to absolute if necessary
+      // see also QgsMapLayer::readLayerXML
       if ( !useAbsolutePathes )
       {
-        QDomElement provider = mapLayerElem.firstChildElement( "provider" );
-        if ( provider.text() == "spatialite" )
+        QString provider( mapLayerElem.firstChildElement( "provider" ).text() );
+        QDomElement dsElem( mapLayerElem.firstChildElement( "datasource" ) );
+        QString datasource( dsElem.text() );
+        if ( provider == "spatialite" )
         {
-          QDomElement dsElem = mapLayerElem.firstChildElement( "datasource" );
-
-          QgsDataSourceURI uri( dsElem.text() );
-
+          QgsDataSourceURI uri( datasource );
           QFileInfo absoluteDs( QFileInfo( projectFilePath ).absolutePath() + "/" + uri.database() );
           if ( absoluteDs.exists() )
           {
             uri.setDatabase( absoluteDs.absoluteFilePath() );
-            dsElem.removeChild( dsElem.childNodes().at( 0 ) );
-            dsElem.appendChild( projectDocument.createTextNode( uri.uri() ) );
+            datasource = uri.uri();
+          }
+        }
+        else if ( provider == "ogr" )
+        {
+          QStringList theURIParts( datasource.split( "|" ) );
+          QFileInfo absoluteDs( QFileInfo( projectFilePath ).absolutePath() + "/" + theURIParts[0] );
+          if ( absoluteDs.exists() )
+          {
+            theURIParts[0] = absoluteDs.absoluteFilePath();
+            datasource = theURIParts.join( "|" );
+          }
+        }
+        else if ( provider == "gpx" )
+        {
+          QStringList theURIParts( datasource.split( "?" ) );
+          QFileInfo absoluteDs( QFileInfo( projectFilePath ).absolutePath() + "/" + theURIParts[0] );
+          if ( absoluteDs.exists() )
+          {
+            theURIParts[0] = absoluteDs.absoluteFilePath();
+            datasource = theURIParts.join( "?" );
+          }
+        }
+        else if ( provider == "delimitedtext" )
+        {
+          QUrl urlSource( QUrl::fromEncoded( datasource.toAscii() ) );
+
+          if ( !datasource.startsWith( "file:" ) )
+          {
+            QUrl file( QUrl::fromLocalFile( datasource.left( datasource.indexOf( "?" ) ) ) );
+            urlSource.setScheme( "file" );
+            urlSource.setPath( file.path() );
+          }
+
+          QFileInfo absoluteDs( QFileInfo( projectFilePath ).absolutePath() + "/" + urlSource.toLocalFile() );
+          if ( absoluteDs.exists() )
+          {
+            QUrl urlDest = QUrl::fromLocalFile( absoluteDs.absoluteFilePath() );
+            urlDest.setQueryItems( urlSource.queryItems() );
+            datasource = QString::fromAscii( urlDest.toEncoded() );
           }
         }
         else
         {
-          QDomElement dsElem = mapLayerElem.firstChildElement( "datasource" );
-          QString debug( QFileInfo( projectFilePath ).absolutePath() + "/" + dsElem.text() );
-          QFileInfo absoluteDs( QFileInfo( projectFilePath ).absolutePath() + "/" + dsElem.text() );
+          QFileInfo absoluteDs( QFileInfo( projectFilePath ).absolutePath() + "/" + datasource );
           if ( absoluteDs.exists() )
           {
-            dsElem.removeChild( dsElem.childNodes().at( 0 ) );
-            dsElem.appendChild( projectDocument.createTextNode( absoluteDs.absoluteFilePath() ) );
+            datasource = absoluteDs.absoluteFilePath();
           }
         }
+
+        dsElem.removeChild( dsElem.childNodes().at( 0 ) );
+        dsElem.appendChild( projectDocument.createTextNode( datasource ) );
       }
 
       if ( addLayer( mapLayerElem, brokenNodes, vectorLayerList ) )

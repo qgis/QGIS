@@ -183,6 +183,7 @@ bool QgsMapLayer::readLayerXML( const QDomElement& layerElement )
   mDataSource = mne.text();
 
   // TODO: this should go to providers
+  // see also QgsProject::createEmbeddedLayer
   if ( provider == "spatialite" )
   {
     QgsDataSourceURI uri( mDataSource );
