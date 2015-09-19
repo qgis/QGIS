@@ -228,7 +228,7 @@ namespace pal
       bool fitInPolygonOnly() const { return mFitInPolygon; }
 
       /** Register a feature in the layer.
-       * @param geom_id unique identifier
+       * @param fid unique identifier
        * @param userGeom user's geometry that implements the PalGeometry interface
        * @param label_x label width
        * @param label_y label height
@@ -249,7 +249,7 @@ namespace pal
        *
        * @return true on success (i.e. valid geometry)
        */
-      bool registerFeature( const QString &geom_id, PalGeometry *userGeom, double label_x = -1, double label_y = -1,
+      bool registerFeature( QgsFeatureId fid, PalGeometry *userGeom, double label_x = -1, double label_y = -1,
                             const QString& labelText = QString(), double labelPosX = 0.0, double labelPosY = 0.0,
                             bool fixedPos = false, double angle = 0.0, bool fixedAngle = false,
                             int xQuadOffset = 0, int yQuadOffset = 0, double xOffset = 0.0, double yOffset = 0.0,
@@ -258,7 +258,7 @@ namespace pal
       bool registerFeature( QgsLabelFeature* label );
 
       /** Return pointer to feature or NULL if doesn't exist */
-      Feature* getFeature( const QString &geom_id );
+      Feature* getFeature( QgsFeatureId fid );
 
       /** Join connected features with the same label text */
       void joinConnectedFeatures();
@@ -296,7 +296,7 @@ namespace pal
 
       // indexes (spatial and id)
       RTree<FeaturePart*, double, 2, double, 8, 4> *rtree;
-      QHash< QString, Feature*> mHashtable;
+      QHash< QgsFeatureId, Feature*> mHashtable;
 
       QHash< QString, QLinkedList<FeaturePart*>* > mConnectedHashtable;
       QStringList mConnectedTexts;

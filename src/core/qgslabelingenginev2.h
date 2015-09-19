@@ -39,10 +39,10 @@ class QgsGeometry;
 class CORE_EXPORT QgsLabelFeature
 {
   public:
-    QgsLabelFeature( QString id, QgsPalGeometry* geometry, const QSizeF& size );
+    QgsLabelFeature( QgsFeatureId id, QgsPalGeometry* geometry, const QSizeF& size );
 
     //! Identifier of the label (unique within the parent label provider)
-    QString id() const { return mId; }
+    QgsFeatureId id() const { return mId; }
 
     //! Get access to the associated geometry
     QgsPalGeometry* geometry() const { return mGeometry; }
@@ -112,7 +112,7 @@ class CORE_EXPORT QgsLabelFeature
   protected:
 
     //! Associated ID unique within the parent label provider
-    QString mId;
+    QgsFeatureId mId;
     //! Geometry wrapper for the feature
     QgsPalGeometry* mGeometry;
     //! Width and height of the label

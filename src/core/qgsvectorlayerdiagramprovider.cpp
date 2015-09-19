@@ -154,7 +154,7 @@ void QgsVectorLayerDiagramProvider::drawLabel( QgsRenderContext& context, pal::L
   //for diagrams, remove the additional 'd' at the end of the layer id
   QString layerId = id();
   layerId.chop( 1 );
-  mEngine->results()->mLabelSearchTree->insertLabel( label, QString( palGeometry->strId() ).toInt(), layerId, QString(), QFont(), true, false );
+  mEngine->results()->mLabelSearchTree->insertLabel( label, palGeometry->featureId(), layerId, QString(), QFont(), true, false );
 
 }
 
@@ -342,7 +342,7 @@ QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& fea
     }
   }
 
-  QgsLabelFeature* lf = new QgsLabelFeature( lbl->strId(), lbl, QSizeF( diagramWidth, diagramHeight ) );
+  QgsLabelFeature* lf = new QgsLabelFeature( lbl->featureId(), lbl, QSizeF( diagramWidth, diagramHeight ) );
   lf->setHasFixedPosition( ddPos );
   lf->setFixedPosition( QgsPoint( ddPosX, ddPosY ) );
   lf->setHasFixedAngle( true );

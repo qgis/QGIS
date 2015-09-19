@@ -96,7 +96,7 @@ namespace pal
        */
       static void splitPolygons( QLinkedList<PointSet *> &shapes_toProcess,
                                  QLinkedList<PointSet *> &shapes_final,
-                                 double xrm, double yrm, const QString &uid );
+                                 double xrm, double yrm, const QgsFeatureId &uid );
 
       /** Returns the squared minimum distance between the point set geometry and the point (px,py)
        * Optionally, the nearest point is stored in (rx,ry).

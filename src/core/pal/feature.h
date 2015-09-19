@@ -78,7 +78,7 @@ namespace pal
       friend class FeaturePart;
 
     public:
-      Feature( Layer* l, const QString& geom_id, PalGeometry* userG, double lx, double ly );
+      Feature( Layer* l, QgsFeatureId fid, PalGeometry* userG, double lx, double ly );
       ~Feature();
 
       void setLabelInfo( LabelInfo* info ) { labelInfo = info; }
@@ -167,7 +167,7 @@ namespace pal
       double distlabel;
       LabelInfo* labelInfo; // optional
 
-      QString uid;
+      QgsFeatureId uid;
 
       bool fixedPos; //true in case of fixed position (only 1 candidate position with cost 0)
       double fixedPosX;
@@ -280,7 +280,7 @@ namespace pal
 
       /** Returns the unique ID of the feature.
        */
-      QString getUID() const;
+      QgsFeatureId featureId() const;
 
 
 #if 0

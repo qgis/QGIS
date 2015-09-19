@@ -389,7 +389,7 @@ void QgsVectorLayerLabelProvider::drawLabel( QgsRenderContext& context, pal::Lab
 
   // add to the results
   QString labeltext = (( QgsPalGeometry* )label->getFeaturePart()->getUserGeometry() )->text();
-  mEngine->results()->mLabelSearchTree->insertLabel( label, QString( palGeometry->strId() ).toInt(), id(), labeltext, dFont, false, palGeometry->isPinned() );
+  mEngine->results()->mLabelSearchTree->insertLabel( label, palGeometry->featureId(), id(), labeltext, dFont, false, palGeometry->isPinned() );
 }
 
 

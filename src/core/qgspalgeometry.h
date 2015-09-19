@@ -24,7 +24,6 @@ class QgsPalGeometry : public PalGeometry
         , mWordSpacing( wordSpacing )
         , mCurvedLabeling( curvedLabeling )
     {
-      mStrId = FID_TO_STRING( mId );
       mDefinedFont = QFont();
     }
 
@@ -47,7 +46,7 @@ class QgsPalGeometry : public PalGeometry
       // nothing here - we'll delete the geometry in destructor
     }
 
-    QString strId() { return mStrId; }
+    QgsFeatureId featureId() const { return mId; }
     QString text() { return mText; }
 
     /** Returns the text component corresponding to a specified label part
@@ -157,7 +156,6 @@ class QgsPalGeometry : public PalGeometry
     GEOSGeometry* mG;
     QString mText;
     QStringList mClusters;
-    QString mStrId;
     QgsFeatureId mId;
     LabelInfo* mInfo;
     bool mIsDiagram;

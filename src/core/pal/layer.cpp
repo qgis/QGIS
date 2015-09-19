@@ -91,9 +91,9 @@ namespace pal
     mMutex.unlock();
   }
 
-  Feature* Layer::getFeature( const QString& geom_id )
+  Feature* Layer::getFeature( QgsFeatureId fid )
   {
-    QHash< QString, Feature*>::const_iterator i = mHashtable.find( geom_id );
+    QHash< QgsFeatureId, Feature*>::const_iterator i = mHashtable.find( fid );
     if ( i != mHashtable.constEnd() )
       return *i;
     else
@@ -110,16 +110,16 @@ namespace pal
       mDefaultPriority = priority;
   }
 
-  bool Layer::registerFeature( const QString& geom_id, PalGeometry *userGeom, double label_x, double label_y, const QString &labelText,
+  bool Layer::registerFeature( QgsFeatureId fid, PalGeometry *userGeom, double label_x, double label_y, const QString &labelText,
                                double labelPosX, double labelPosY, bool fixedPos, double angle, bool fixedAngle,
                                int xQuadOffset, int yQuadOffset, double xOffset, double yOffset, bool alwaysShow, double repeatDistance )
   {
-    if ( geom_id.isEmpty() || label_x < 0 || label_y < 0 )
+    if ( label_x < 0 || label_y < 0 )
       return false;
 
     mMutex.lock();
 
-    if ( mHashtable.contains( geom_id ) )
+    if ( mHashtable.contains( fid ) )
     {
       mMutex.unlock();
       //A feature with this id already exists. Don't throw an exception as sometimes,
@@ -130,7 +130,7 @@ namespace pal
     // Split MULTI GEOM and Collection in simple geometries
     const GEOSGeometry *the_geom = userGeom->getGeosGeometry();
 
-    Feature* f = new Feature( this, geom_id, userGeom, label_x, label_y );
+    Feature* f = new Feature( this, fid, userGeom, label_x, label_y );
     if ( fixedPos )
     {
       f->setFixedPosition( labelPosX, labelPosY );
@@ -250,7 +250,7 @@ namespace pal
     if ( addedFeature )
     {
       features << f;
-      mHashtable.insert( geom_id, f );
+      mHashtable.insert( fid, f );
     }
     else
     {
@@ -263,7 +263,7 @@ namespace pal
   bool Layer::registerFeature( QgsLabelFeature* label )
   {
     QgsPalGeometry* g = label->geometry();
-    if ( !registerFeature( g->strId(), g, label->size().width(), label->size().height(), label->labelText(),
+    if ( !registerFeature( g->featureId(), g, label->size().width(), label->size().height(), label->labelText(),
                            label->fixedPosition().x(), label->fixedPosition().y(), label->hasFixedPosition(),
                            label->fixedAngle(), label->hasFixedAngle(),
                            label->quadOffset().x(), label->quadOffset().y(),
@@ -271,7 +271,7 @@ namespace pal
                            label->alwaysShow(), label->repeatDistance() ) )
       return false;
 
-    pal::Feature* pf = getFeature( g->strId() );
+    pal::Feature* pf = getFeature( g->featureId() );
     pf->setLabelInfo( g->info() );
     pf->setPriority( label->priority() );
     pf->setDistLabel( label->distLabel() );

@@ -2183,7 +2183,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
   }
 
   //  feature to the layer
-  *labelFeature = new QgsLabelFeature( lbl->strId(), lbl, QSizeF( labelX, labelY ) );
+  *labelFeature = new QgsLabelFeature( lbl->featureId(), lbl, QSizeF( labelX, labelY ) );
 
   ( *labelFeature )->setHasFixedPosition( dataDefinedPosition );
   ( *labelFeature )->setFixedPosition( QgsPoint( xPos, yPos ) );
@@ -2333,7 +2333,7 @@ void QgsPalLayerSettings::registerObstacleFeature( QgsFeature& f, const QgsRende
   geometries.append( lbl );
 
   //  feature to the layer
-  *obstacleFeature = new QgsLabelFeature( lbl->strId(), lbl, QSizeF( 0, 0 ) );
+  *obstacleFeature = new QgsLabelFeature( lbl->featureId(), lbl, QSizeF( 0, 0 ) );
   ( *obstacleFeature )->setIsObstacle( true );
 }
 

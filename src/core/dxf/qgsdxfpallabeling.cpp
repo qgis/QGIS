@@ -50,7 +50,7 @@ void QgsDxfLabelProvider::drawLabel( QgsRenderContext& context, pal::LabelPositi
     //angle
     double angle = label->getAlpha() * 180 / M_PI;
 
-    QgsFeatureId fid = STRING_TO_FID( label->getFeaturePart()->getUID() );
+    QgsFeatureId fid = label->getFeaturePart()->featureId();
     QString dxfLayer = mDxfLayerNames[fid];
 
     //debug: show label rectangle

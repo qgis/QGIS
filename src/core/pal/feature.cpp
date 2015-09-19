@@ -56,14 +56,14 @@
 
 namespace pal
 {
-  Feature::Feature( Layer* l, const QString &geom_id, PalGeometry* userG, double lx, double ly )
+  Feature::Feature( Layer* l, QgsFeatureId fid, PalGeometry* userG, double lx, double ly )
       : layer( l )
       , userGeom( userG )
       , label_x( lx )
       , label_y( ly )
       , distlabel( 0 )
       , labelInfo( NULL )
-      , uid( geom_id )
+      , uid( fid )
       , fixedPos( false )
       , fixedPosX( 0.0 )
       , fixedPosY( 0.0 )
@@ -197,7 +197,7 @@ namespace pal
     return mFeature->layer;
   }
 
-  QString FeaturePart::getUID() const
+  QgsFeatureId FeaturePart::featureId() const
   {
     return mFeature->uid;
   }
