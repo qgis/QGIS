@@ -1471,11 +1471,13 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
   // either used in QgsPalLabeling (palLayer is set) or in QgsLabelingEngineV2 (labelFeature is set)
   Q_ASSERT( labelFeature );
 
+  Q_UNUSED( dxfLayer ); // now handled in QgsDxfLabelProvider
+
   if ( !drawLabels )
   {
     if ( obstacle )
     {
-      registerObstacleFeature( f, context, dxfLayer, labelFeature );
+      registerObstacleFeature( f, context, QString(), labelFeature );
     }
     return;
   }
@@ -2140,8 +2142,6 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
     labelFont.wordSpacing(),
     placement == QgsPalLayerSettings::Curved );
 
-  lbl->setDxfLayer( dxfLayer );
-
   // record the created geometry - it will be deleted at the end.
   geometries.append( lbl );
 
@@ -2296,6 +2296,8 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
 
 void QgsPalLayerSettings::registerObstacleFeature( QgsFeature& f, const QgsRenderContext& context, QString dxfLayer , QgsLabelFeature** obstacleFeature )
 {
+  Q_UNUSED( dxfLayer ); // now handled in QgsDxfLabelProvider
+
   mCurFeat = &f;
 
   const QgsGeometry* geom = f.constGeometry();
@@ -2326,8 +2328,6 @@ void QgsPalLayerSettings::registerObstacleFeature( QgsFeature& f, const QgsRende
   geos_geom_clone = GEOSGeom_clone_r( QgsGeometry::getGEOSHandler(), geos_geom );
 
   QgsPalGeometry* lbl = new QgsPalGeometry( f.id(), QString(), geos_geom_clone );
-
-  lbl->setDxfLayer( dxfLayer );
 
   // record the created geometry - it will be deleted at the end.
   geometries.append( lbl );
@@ -3278,6 +3278,7 @@ int QgsPalLabeling::addDiagramLayer( QgsVectorLayer* layer, const QgsDiagramLaye
 
 void QgsPalLabeling::registerFeature( const QString& layerID, QgsFeature& f, const QgsRenderContext& context, QString dxfLayer )
 {
+  Q_UNUSED( dxfLayer ); // now handled by QgsDxfLabelProvider
   if ( QgsVectorLayerLabelProvider* provider = mLabelProviders.value( layerID, 0 ) )
     provider->registerFeature( f, context );
 }
@@ -3967,9 +3968,6 @@ void QgsPalLabeling::drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* p
     drawLabelCandidateRect( lp->getNextPart(), painter, xform, candidates );
 }
 
-void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& context, QgsPalLayerSettings& tmpLyr, DrawLabelType drawType, double dpiRatio )
-{
-}
 
 void QgsPalLabeling::drawLabelBuffer( QgsRenderContext& context,
                                       const QgsLabelComponent& component,

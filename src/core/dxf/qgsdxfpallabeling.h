@@ -18,29 +18,34 @@
 #ifndef QGSDXFPALLABELING_H
 #define QGSDXFPALLABELING_H
 
-#include "qgspallabeling.h"
 #include "qgsmaprenderer.h"
 #include "qgsrendercontext.h"
+#include "qgsvectorlayerlabelprovider.h"
 
 class QgsDxfExport;
 
-class CORE_EXPORT QgsDxfPalLabeling : public QgsPalLabeling
+
+/** Implements a derived label provider internally used for DXF export
+ *
+ * Internal class, not in public API. Added in QGIS 2.12
+ */
+class QgsDxfLabelProvider : public QgsVectorLayerLabelProvider
 {
   public:
-    QgsDxfPalLabeling( QgsDxfExport* dxf, const QgsRectangle& bbox, double scale, QGis::UnitType mapUnits );
-    ~QgsDxfPalLabeling();
+    //! construct the provider
+    explicit QgsDxfLabelProvider( QgsVectorLayer* layer, QgsDxfExport* dxf );
 
-    QgsRenderContext& renderContext() { return mRenderContext; }
-    void drawLabel( pal::LabelPosition* label, QgsRenderContext& context, QgsPalLayerSettings& tmpLyr, DrawLabelType drawType, double dpiRatio = 1.0 ) override;
+    //! re-implementation that writes to DXF file instead of drawing with QPainter
+    virtual void drawLabel( QgsRenderContext& context, pal::LabelPosition* label ) const override;
 
-  private:
+    //! registration method that keeps track of DXF layer names of individual features
+    void registerDxfFeature( QgsFeature& feature, const QgsRenderContext& context, const QString& dxfLayerName );
+
+  protected:
+    //! pointer to parent DXF export where this instance is used
     QgsDxfExport* mDxfExport;
-    QgsRenderContext mRenderContext;
-
-    //only used for render context
-    QImage* mImage;
-    QPainter* mPainter;
-    QgsMapSettings* mSettings;
+    //! DXF layer name for each label feature
+    QMap<QgsFeatureId, QString> mDxfLayerNames;
 };
 
 #endif // QGSDXFPALLABELING_H

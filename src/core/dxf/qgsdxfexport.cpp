@@ -876,6 +876,7 @@ void QgsDxfExport::writeBlocks()
   endSection();
 }
 
+
 void QgsDxfExport::writeEntities()
 {
   startSection();
@@ -883,9 +884,34 @@ void QgsDxfExport::writeEntities()
 
   mBlockHandle = QString( "%1" ).arg( mBlockHandles[ "*Model_Space" ], 0, 16 );
 
+  QgsRectangle bbox = mExtent.isEmpty() ? dxfExtent() : mExtent;
+
+  QgsMapSettings mapSettings;
+  mapSettings.setMapUnits( mMapUnits );
+  mapSettings.setExtent( bbox );
+
+  int dpi = 96;
+  double factor = 1000 * dpi / mSymbologyScaleDenominator / 25.4 * QGis::fromUnitToUnitFactor( mMapUnits, QGis::Meters );
+  mapSettings.setOutputSize( QSize( bbox.width() * factor, bbox.height() * factor ) );
+  mapSettings.setOutputDpi( dpi );
+  mapSettings.setCrsTransformEnabled( false );
+
+  QImage image( 10, 10, QImage::Format_ARGB32_Premultiplied );
+  image.setDotsPerMeterX( 96 / 25.4 * 1000 );
+  image.setDotsPerMeterY( 96 / 25.4 * 1000 );
+  QPainter painter( &image );
+  QgsRenderContext ctx;
+  ctx.setPainter( &painter );
+  ctx.setRendererScale( mSymbologyScaleDenominator );
+  ctx.setExtent( bbox );
+  ctx.setScaleFactor( 96.0 / 25.4 );
+  Q_NOWARN_DEPRECATED_PUSH
+  ctx.setMapToPixel( QgsMapToPixel( 1.0 / factor, bbox.xMinimum(), bbox.yMinimum(), bbox.height() * factor ) );
+  Q_NOWARN_DEPRECATED_POP
+
   // label engine
-  QgsDxfPalLabeling labelEngine( this, mExtent.isEmpty() ? dxfExtent() : mExtent, mSymbologyScaleDenominator, mMapUnits );
-  QgsRenderContext& ctx = labelEngine.renderContext();
+  QgsLabelingEngineV2 engine;
+  engine.setMapSettings( mapSettings );
 
   // iterate through the maplayers
   QList< QPair< QgsVectorLayer*, int > >::iterator layerIt = mLayers.begin();
@@ -913,7 +939,13 @@ void QgsDxfExport::writeEntities()
         attributes << layerAttr;
     }
 
-    bool labelLayer = labelEngine.prepareLayer( vl, attributes, ctx ) != 0;
+    QgsDxfLabelProvider* lp = new QgsDxfLabelProvider( vl, this );
+    engine.addProvider( lp );
+    if ( !lp->prepare( ctx, attributes ) )
+    {
+      engine.removeProvider( lp );
+      lp = 0;
+    }
 
     if ( mSymbologyExport == QgsDxfExport::SymbolLayerSymbology &&
          ( renderer->capabilities() & QgsFeatureRendererV2::SymbolLevels ) &&
@@ -973,9 +1005,9 @@ void QgsDxfExport::writeEntities()
           addFeature( sctx, layerName, s->symbolLayer( 0 ), s );
         }
 
-        if ( labelLayer )
+        if ( lp )
         {
-          labelEngine.registerFeature( vl->id(), fet, ctx, layerName );
+          lp->registerDxfFeature( fet, ctx, layerName );
         }
       }
     }
@@ -983,7 +1015,8 @@ void QgsDxfExport::writeEntities()
     renderer->stopRender( ctx );
   }
 
-  labelEngine.drawLabeling( ctx );
+  engine.run( ctx );
+
   endSection();
 }
 
