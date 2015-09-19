@@ -56,9 +56,9 @@
 
 namespace pal
 {
-  Feature::Feature( Layer* l, QgsFeatureId fid, PalGeometry* userG, double lx, double ly )
+  Feature::Feature( Layer* l, QgsFeatureId fid, QgsLabelFeature* userFeat, double lx, double ly )
       : layer( l )
-      , userGeom( userG )
+      , userFeature( userFeat )
       , label_x( lx )
       , label_y( ly )
       , distlabel( 0 )

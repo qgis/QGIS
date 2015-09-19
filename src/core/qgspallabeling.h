@@ -43,7 +43,7 @@ namespace pal
 class QgsRectangle;
 class QgsMapToPixel;
 class QgsFeature;
-class QgsPalGeometry;
+class QgsTextLabelFeature;
 class QgsVectorLayer;
 class QgsDataDefined;
 class QgsExpression;
@@ -561,7 +561,6 @@ class CORE_EXPORT QgsPalLayerSettings
     const QgsMapToPixel* xform;
     const QgsCoordinateTransform* ct;
     QgsPoint ptZero, ptOne;
-    QList<QgsPalGeometry*> geometries;
     QgsGeometry* extentGeom;
     int mFeaturesToLabel; // total features that will probably be labeled, may be less (figured before PAL)
     int mFeatsSendingToPal; // total features tested for sending into PAL (relative to maxNumLabels)

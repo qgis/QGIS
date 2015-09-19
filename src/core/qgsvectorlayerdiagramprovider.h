@@ -18,9 +18,30 @@
 
 #include "qgslabelingenginev2.h"
 
-//#include "qgsdiagramrendererv2.h"
+
+/**
+ * Class that adds extra information to QgsLabelFeature for labeling of diagrams
+ *
+ * @note not part of public API
+ */
+class QgsDiagramLabelFeature : public QgsLabelFeature
+{
+  public:
+    //! Create label feature, takes ownership of the geometry instance
+    QgsDiagramLabelFeature( QgsFeatureId id, GEOSGeometry* geometry, const QSizeF& size )
+        : QgsLabelFeature( id, geometry, size ) {}
+
+    void setDiagramAttributes( const QgsAttributes& attrs ) { mDiagramAttributes = attrs; }
+    const QgsAttributes& diagramAttributes() { return mDiagramAttributes; }
+
+  protected:
+    /** Stores attribute values for diagram rendering*/
+    QgsAttributes mDiagramAttributes;
+};
+
 
 class QgsAbstractFeatureSource;
+
 
 /**
  * @brief The QgsVectorLayerDiagramProvider class implements support for diagrams within

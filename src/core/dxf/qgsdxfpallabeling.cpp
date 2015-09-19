@@ -38,14 +38,14 @@ void QgsDxfLabelProvider::drawLabel( QgsRenderContext& context, pal::LabelPositi
   //debug: print label infos
   if ( mDxfExport )
   {
-    QgsPalGeometry *g = dynamic_cast< QgsPalGeometry* >( label->getFeaturePart()->getUserGeometry() );
-    if ( !g )
+    QgsTextLabelFeature* lf = dynamic_cast<QgsTextLabelFeature*>( label->getFeaturePart()->userFeature() );
+    if ( !lf )
       return;
 
     const QgsPalLayerSettings& tmpLyr = mSettings;
 
     //label text
-    QString txt = g->text( label->getPartId() );
+    QString txt = lf->text( label->getPartId() );
 
     //angle
     double angle = label->getAlpha() * 180 / M_PI;

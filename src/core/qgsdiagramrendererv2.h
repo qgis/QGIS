@@ -29,7 +29,6 @@ class QgsDiagramRendererV2;
 class QgsFeature;
 class QgsRenderContext;
 class QDomElement;
-class QgsPalGeometry;
 class QgsCoordinateTransform;
 class QgsMapToPixel;
 class QgsVectorLayer;
@@ -75,7 +74,6 @@ class CORE_EXPORT QgsDiagramLayerSettings
     //assigned when layer gets prepared
     const QgsCoordinateTransform* ct;
     const QgsMapToPixel* xform;
-    QList<QgsPalGeometry*> geometries;
     QgsFields fields;
 
     int xPosColumn; //attribute index for x coordinate (or -1 if position not data defined)

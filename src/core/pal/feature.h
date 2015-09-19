@@ -31,7 +31,6 @@
 #define _FEATURE_H
 
 #include "qgsgeometry.h"
-#include "palgeometry.h"
 #include "pointset.h"
 #include "util.h"
 #include "labelposition.h"
@@ -39,6 +38,8 @@
 #include <fstream>
 #include <cmath>
 #include <QString>
+
+class QgsLabelFeature;
 
 namespace pal
 {
@@ -48,7 +49,6 @@ namespace pal
     public:
       typedef struct
       {
-        unsigned short chr;
         double width;
       } CharacterInfo;
 
@@ -78,7 +78,7 @@ namespace pal
       friend class FeaturePart;
 
     public:
-      Feature( Layer* l, QgsFeatureId fid, PalGeometry* userG, double lx, double ly );
+      Feature( Layer* l, QgsFeatureId fid, QgsLabelFeature* userFeat, double lx, double ly );
       ~Feature();
 
       void setLabelInfo( LabelInfo* info ) { labelInfo = info; }
@@ -161,7 +161,7 @@ namespace pal
 
     protected:
       Layer *layer;
-      PalGeometry *userGeom;
+      QgsLabelFeature* userFeature;
       double label_x;
       double label_y;
       double distlabel;
@@ -291,7 +291,7 @@ namespace pal
       void print();
 #endif
 
-      PalGeometry* getUserGeometry() { return mFeature->userGeom; }
+      QgsLabelFeature* userFeature() { return mFeature->userFeature; }
 
       void setLabelSize( double lx, double ly ) { mFeature->label_x = lx; mFeature->label_y = ly; }
       double getLabelWidth() const { return mFeature->label_x; }

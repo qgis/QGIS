@@ -16,6 +16,8 @@
 #ifndef QGSLABELINGENGINEV2_H
 #define QGSLABELINGENGINEV2_H
 
+#include "qgsgeometry.h"
+
 #include "qgsmapsettings.h"
 
 #include "qgspallabeling.h"
@@ -24,6 +26,11 @@
 
 class QgsRenderContext;
 class QgsGeometry;
+
+namespace pal
+{
+  class LabelInfo;
+}
 
 /**
  * @brief The QgsLabelFeature class describes a feature that
@@ -34,18 +41,23 @@ class QgsGeometry;
  * Instances only contain data relevant to the labeling engine (geometry, label size etc.)
  * necessary for the layout. Rendering of labels is done by label providers.
  *
+ * Individual label providers may create subclasses of QgsLabelFeature in order to add
+ * more data to the instances that will be later used for drawing of labels.
+ *
  * @note added in QGIS 2.12
  */
 class CORE_EXPORT QgsLabelFeature
 {
   public:
-    QgsLabelFeature( QgsFeatureId id, QgsPalGeometry* geometry, const QSizeF& size );
+    //! Create label feature, takes ownership of the geometry instance
+    QgsLabelFeature( QgsFeatureId id, GEOSGeometry* geometry, const QSizeF& size );
+    virtual ~QgsLabelFeature();
 
     //! Identifier of the label (unique within the parent label provider)
     QgsFeatureId id() const { return mId; }
 
     //! Get access to the associated geometry
-    QgsPalGeometry* geometry() const { return mGeometry; }
+    GEOSGeometry* geometry() const { return mGeometry; }
 
     //! Size of the label (in map units)
     QSizeF size() const { return mSize; }
@@ -109,12 +121,17 @@ class CORE_EXPORT QgsLabelFeature
     QString labelText() const { return mLabelText; }
     void setLabelText( const QString& text ) { mLabelText = text; }
 
+    //! Get additional infor required for curved label placement. Returns null if not set
+    pal::LabelInfo* curvedLabelInfo() const { return mInfo; }
+    //! takes ownership of the instance
+    void setCurvedLabelInfo( pal::LabelInfo* info ) { mInfo = info; }
+
   protected:
 
     //! Associated ID unique within the parent label provider
     QgsFeatureId mId;
-    //! Geometry wrapper for the feature
-    QgsPalGeometry* mGeometry;
+    //! Geometry of the feature to be labelled
+    GEOSGeometry* mGeometry;
     //! Width and height of the label
     QSizeF mSize;
     double mPriority;
@@ -131,6 +148,7 @@ class CORE_EXPORT QgsLabelFeature
     bool mIsObstacle;
     double mObstacleFactor;
     QString mLabelText;
+    pal::LabelInfo* mInfo;
 };
 
 

@@ -35,32 +35,6 @@
 namespace pal
 {
 
-  /**
-   * \brief Interface that allows Pal to access user's geometries
-   */
-  class CORE_EXPORT PalGeometry
-  {
-    public:
-
-      /**
-       * \brief get the GEOSGeometry of the feature
-       * This method is called by Pal each time it needs a geom's coordinates
-       *
-       * @return GEOSGeometry * a pointer the geos geom
-       */
-      virtual const GEOSGeometry* getGeosGeometry() = 0;
-
-
-      /**
-       * \brief Called by Pal when it doesn't need the coordinates anymore
-       * @param the_geom is the geoms geom  from PalGeometry::getfeomGeometry()
-       */
-      virtual void releaseGeosGeometry( const GEOSGeometry *the_geom ) = 0;
-
-
-      virtual ~PalGeometry() {}
-  };
-
 } // end namespace pal
 
 #endif

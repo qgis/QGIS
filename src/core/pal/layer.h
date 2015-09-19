@@ -31,7 +31,6 @@
 #define _LAYER_H_
 
 #include "pal.h"
-#include "palgeometry.h"
 #include <QMutex>
 #include <QLinkedList>
 #include <QHash>
@@ -229,7 +228,7 @@ namespace pal
 
       /** Register a feature in the layer.
        * @param fid unique identifier
-       * @param userGeom user's geometry that implements the PalGeometry interface
+       * @param userGeom user's geometry (does not take ownership)
        * @param label_x label width
        * @param label_y label height
        * @param labelText label text
@@ -249,7 +248,7 @@ namespace pal
        *
        * @return true on success (i.e. valid geometry)
        */
-      bool registerFeature( QgsFeatureId fid, PalGeometry *userGeom, double label_x = -1, double label_y = -1,
+      bool registerFeature( QgsLabelFeature* label, QgsFeatureId fid, const GEOSGeometry *userGeom, double label_x = -1, double label_y = -1,
                             const QString& labelText = QString(), double labelPosX = 0.0, double labelPosY = 0.0,
                             bool fixedPos = false, double angle = 0.0, bool fixedAngle = false,
                             int xQuadOffset = 0, int yQuadOffset = 0, double xOffset = 0.0, double yOffset = 0.0,

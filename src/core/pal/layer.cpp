@@ -41,7 +41,6 @@
 #include <vector>
 
 #include "qgslabelingenginev2.h"
-#include "qgspalgeometry.h"
 
 namespace pal
 {
@@ -110,7 +109,7 @@ namespace pal
       mDefaultPriority = priority;
   }
 
-  bool Layer::registerFeature( QgsFeatureId fid, PalGeometry *userGeom, double label_x, double label_y, const QString &labelText,
+  bool Layer::registerFeature( QgsLabelFeature* label, QgsFeatureId fid, const GEOSGeometry* userGeom, double label_x, double label_y, const QString &labelText,
                                double labelPosX, double labelPosY, bool fixedPos, double angle, bool fixedAngle,
                                int xQuadOffset, int yQuadOffset, double xOffset, double yOffset, bool alwaysShow, double repeatDistance )
   {
@@ -128,9 +127,8 @@ namespace pal
     }
 
     // Split MULTI GEOM and Collection in simple geometries
-    const GEOSGeometry *the_geom = userGeom->getGeosGeometry();
 
-    Feature* f = new Feature( this, fid, userGeom, label_x, label_y );
+    Feature* f = new Feature( this, fid, label, label_x, label_y );
     if ( fixedPos )
     {
       f->setFixedPosition( labelPosX, labelPosY );
@@ -162,7 +160,7 @@ namespace pal
     FeaturePart* biggest_part = NULL;
 
     // break the (possibly multi-part) geometry into simple geometries
-    QLinkedList<const GEOSGeometry*>* simpleGeometries = unmulti( the_geom );
+    QLinkedList<const GEOSGeometry*>* simpleGeometries = unmulti( userGeom );
     if ( simpleGeometries == NULL ) // unmulti() failed?
     {
       delete f;
@@ -235,8 +233,6 @@ namespace pal
     }
     delete simpleGeometries;
 
-    userGeom->releaseGeosGeometry( the_geom );
-
     mMutex.unlock();
 
     // if using only biggest parts...
@@ -262,8 +258,7 @@ namespace pal
 
   bool Layer::registerFeature( QgsLabelFeature* label )
   {
-    QgsPalGeometry* g = label->geometry();
-    if ( !registerFeature( g->featureId(), g, label->size().width(), label->size().height(), label->labelText(),
+    if ( !registerFeature( label, label->id(), label->geometry(), label->size().width(), label->size().height(), label->labelText(),
                            label->fixedPosition().x(), label->fixedPosition().y(), label->hasFixedPosition(),
                            label->fixedAngle(), label->hasFixedAngle(),
                            label->quadOffset().x(), label->quadOffset().y(),
@@ -271,8 +266,8 @@ namespace pal
                            label->alwaysShow(), label->repeatDistance() ) )
       return false;
 
-    pal::Feature* pf = getFeature( g->featureId() );
-    pf->setLabelInfo( g->info() );
+    pal::Feature* pf = getFeature( label->id() );
+    pf->setLabelInfo( label->curvedLabelInfo() );
     pf->setPriority( label->priority() );
     pf->setDistLabel( label->distLabel() );
     pf->setFixedQuadrant( label->hasFixedQuadrant() );

@@ -23,7 +23,6 @@
 #include <pal/pal.h>
 #include <pal/feature.h>
 #include <pal/layer.h>
-#include <pal/palgeometry.h>
 #include <pal/palexception.h>
 #include <pal/problem.h>
 #include <pal/labelposition.h>
@@ -1486,7 +1485,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
   mCurFeat = &f;
 //  mCurFields = &layer->pendingFields();
 
-  // store data defined-derived values for later adding to QgsPalGeometry for use during rendering
+  // store data defined-derived values for later adding to label feature for use during rendering
   dataDefinedValues.clear();
 
   // data defined show label? defaults to show label if not 0
@@ -1561,7 +1560,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
   }
 
   QFont labelFont = textFont;
-  // labelFont will be added to label's QgsPalGeometry for use during label painting
+  // labelFont will be added to label feature for use during label painting
 
   // data defined font units?
   SizeUnit fontunits = fontSizeInMapUnits ? QgsPalLayerSettings::MapUnits : QgsPalLayerSettings::Points;
@@ -1835,7 +1834,6 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
     {
       return;
     }
-    mFeatsRegPal = geometries.count();
     if ( mFeatsRegPal >= maxNumLabels )
     {
       return;
@@ -2134,21 +2132,6 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
     alwaysShow = exprVal.toBool();
   }
 
-  QgsPalGeometry* lbl = new QgsPalGeometry(
-    f.id(),
-    labelText,
-    geos_geom_clone,
-    labelFont.letterSpacing(),
-    labelFont.wordSpacing(),
-    placement == QgsPalLayerSettings::Curved );
-
-  // record the created geometry - it will be deleted at the end.
-  geometries.append( lbl );
-
-  // store the label's calculated font for later use during painting
-  QgsDebugMsgLevel( QString( "PAL font stored definedFont: %1, Style: %2" ).arg( labelFont.toString() ).arg( labelFont.styleName() ), 4 );
-  lbl->setDefinedFont( labelFont );
-
   // set repeat distance
   // data defined repeat distance?
   double repeatDist = repeatDistance;
@@ -2183,8 +2166,10 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
   }
 
   //  feature to the layer
-  *labelFeature = new QgsLabelFeature( lbl->featureId(), lbl, QSizeF( labelX, labelY ) );
+  QgsTextLabelFeature* lf = new QgsTextLabelFeature( f.id(), geos_geom_clone, QSizeF( labelX, labelY ) );
+  mFeatsRegPal++;
 
+  *labelFeature = lf;
   ( *labelFeature )->setHasFixedPosition( dataDefinedPosition );
   ( *labelFeature )->setFixedPosition( QgsPoint( xPos, yPos ) );
   ( *labelFeature )->setHasFixedAngle( dataDefinedRotation );
@@ -2195,9 +2180,13 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
   ( *labelFeature )->setRepeatDistance( repeatDist );
   ( *labelFeature )->setLabelText( labelText );
 
+  // store the label's calculated font for later use during painting
+  QgsDebugMsgLevel( QString( "PAL font stored definedFont: %1, Style: %2" ).arg( labelFont.toString() ).arg( labelFont.styleName() ), 4 );
+  lf->setDefinedFont( labelFont );
+
   // TODO: only for placement which needs character info
   // account for any data defined font metrics adjustments
-  lbl->calculateInfo( labelFontMetrics, xform, rasterCompressFactor, maxcharanglein, maxcharangleout );
+  lf->calculateInfo( placement == QgsPalLayerSettings::Curved, labelFontMetrics, xform, rasterCompressFactor, maxcharanglein, maxcharangleout );
   // for labelFeature the LabelInfo is passed to feat when it is registered
   delete labelFontMetrics;
 
@@ -2282,15 +2271,15 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
   }
   ( *labelFeature )->setObstacleFactor( featObstacleFactor );
 
-  //add parameters for data defined labeling to QgsPalGeometry
+  //add parameters for data defined labeling to label feature
   QMap< DataDefinedProperties, QVariant >::const_iterator dIt = dataDefinedValues.constBegin();
   for ( ; dIt != dataDefinedValues.constEnd(); ++dIt )
   {
-    lbl->addDataDefinedValue( dIt.key(), dIt.value() );
+    lf->addDataDefinedValue( dIt.key(), dIt.value() );
   }
 
   // set geometry's pinned property
-  lbl->setIsPinned( labelIsPinned );
+  lf->setIsPinned( labelIsPinned );
 }
 
 
@@ -2327,14 +2316,10 @@ void QgsPalLayerSettings::registerObstacleFeature( QgsFeature& f, const QgsRende
   GEOSGeometry* geos_geom_clone;
   geos_geom_clone = GEOSGeom_clone_r( QgsGeometry::getGEOSHandler(), geos_geom );
 
-  QgsPalGeometry* lbl = new QgsPalGeometry( f.id(), QString(), geos_geom_clone );
-
-  // record the created geometry - it will be deleted at the end.
-  geometries.append( lbl );
-
   //  feature to the layer
-  *obstacleFeature = new QgsLabelFeature( lbl->featureId(), lbl, QSizeF( 0, 0 ) );
+  *obstacleFeature = new QgsLabelFeature( f.id(), geos_geom_clone, QSizeF( 0, 0 ) );
   ( *obstacleFeature )->setIsObstacle( true );
+  mFeatsRegPal++;
 }
 
 bool QgsPalLayerSettings::dataDefinedValEval( DataDefinedValueType valType,

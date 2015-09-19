@@ -16,7 +16,6 @@
 #include "qgslabelingenginev2.h"
 
 #include "qgslogger.h"
-#include "qgspalgeometry.h"
 #include "qgsproject.h"
 
 #include "feature.h"
@@ -70,15 +69,15 @@ void QgsLabelingEngineV2::run( QgsRenderContext& context )
 {
   pal::Pal p;
 
-  SearchMethod s;
+  pal::SearchMethod s;
   switch ( mSearchMethod )
   {
     default:
-    case QgsPalLabeling::Chain: s = CHAIN; break;
-    case QgsPalLabeling::Popmusic_Tabu: s = POPMUSIC_TABU; break;
-    case QgsPalLabeling::Popmusic_Chain: s = POPMUSIC_CHAIN; break;
-    case QgsPalLabeling::Popmusic_Tabu_Chain: s = POPMUSIC_TABU_CHAIN; break;
-    case QgsPalLabeling::Falp: s = FALP; break;
+    case QgsPalLabeling::Chain: s = pal::CHAIN; break;
+    case QgsPalLabeling::Popmusic_Tabu: s = pal::POPMUSIC_TABU; break;
+    case QgsPalLabeling::Popmusic_Chain: s = pal::POPMUSIC_CHAIN; break;
+    case QgsPalLabeling::Popmusic_Tabu_Chain: s = pal::POPMUSIC_TABU_CHAIN; break;
+    case QgsPalLabeling::Falp: s = pal::FALP; break;
   }
   p.setSearch( s );
 
@@ -117,7 +116,7 @@ void QgsLabelingEngineV2::run( QgsRenderContext& context )
                                 flags.testFlag( QgsAbstractLabelProvider::DrawAllLabels ) );
 
     // extra flags for placement of labels for linestrings
-    l->setArrangementFlags(( LineArrangementFlags ) provider->linePlacementFlags() );
+    l->setArrangementFlags(( pal::LineArrangementFlags ) provider->linePlacementFlags() );
 
     // set label mode (label per feature is the default)
     l->setLabelMode( flags.testFlag( QgsAbstractLabelProvider::LabelPerFeaturePart ) ? pal::Layer::LabelPerFeaturePart : pal::Layer::LabelPerFeature );
@@ -264,8 +263,8 @@ void QgsLabelingEngineV2::run( QgsRenderContext& context )
     if ( context.renderingStopped() )
       break;
 
-    QgsPalGeometry* palGeometry = dynamic_cast< QgsPalGeometry* >(( *it )->getFeaturePart()->getUserGeometry() );
-    if ( !palGeometry )
+    QgsLabelFeature* lf = ( *it )->getFeaturePart()->userFeature();
+    if ( !lf )
     {
       continue;
     }
@@ -344,7 +343,7 @@ QgsAbstractLabelProvider* QgsLabelingEngineV2::providerById( const QString& id )
 
 
 
-QgsLabelFeature::QgsLabelFeature( QgsFeatureId id, QgsPalGeometry* geometry, const QSizeF& size )
+QgsLabelFeature::QgsLabelFeature( QgsFeatureId id, GEOSGeometry* geometry, const QSizeF& size )
     : mId( id )
     , mGeometry( geometry )
     , mSize( size )
@@ -357,7 +356,16 @@ QgsLabelFeature::QgsLabelFeature( QgsFeatureId id, QgsPalGeometry* geometry, con
     , mAlwaysShow( false )
     , mIsObstacle( false )
     , mObstacleFactor( 1 )
+    , mInfo( 0 )
 {
+}
+
+QgsLabelFeature::~QgsLabelFeature()
+{
+  if ( mGeometry )
+    GEOSGeom_destroy_r( QgsGeometry::getGEOSHandler(), mGeometry );
+
+  delete mInfo;
 }
 
 QgsAbstractLabelProvider::QgsAbstractLabelProvider()

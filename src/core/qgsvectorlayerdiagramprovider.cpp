@@ -16,7 +16,6 @@
 #include "qgsvectorlayerdiagramprovider.h"
 
 #include "qgslabelsearchtree.h"
-#include "qgspalgeometry.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerfeatureiterator.h"
 #include "diagram/qgsdiagram.h"
@@ -69,8 +68,6 @@ void QgsVectorLayerDiagramProvider::init()
 
 QgsVectorLayerDiagramProvider::~QgsVectorLayerDiagramProvider()
 {
-  qDeleteAll( mSettings.geometries );
-
   if ( mOwnsSource )
     delete mSource;
 }
@@ -127,11 +124,13 @@ void QgsVectorLayerDiagramProvider::drawLabel( QgsRenderContext& context, pal::L
   const QgsMapToPixel& xform = context.mapToPixel();
 #endif
 
-  QgsPalGeometry* palGeometry = dynamic_cast<QgsPalGeometry*>( label->getFeaturePart()->getUserGeometry() );
+  QgsDiagramLabelFeature* dlf = dynamic_cast<QgsDiagramLabelFeature*>( label->getFeaturePart()->userFeature() );
 
   QgsFeature feature;
   feature.setFields( mSettings.fields );
-  palGeometry->feature( feature );
+  feature.setValid( true );
+  feature.setFeatureId( label->getFeaturePart()->featureId() );
+  feature.setAttributes( dlf->diagramAttributes() );
 
   //calculate top-left point for diagram
   //first, calculate the centroid of the label (accounts for PAL creating
@@ -154,7 +153,7 @@ void QgsVectorLayerDiagramProvider::drawLabel( QgsRenderContext& context, pal::L
   //for diagrams, remove the additional 'd' at the end of the layer id
   QString layerId = id();
   layerId.chop( 1 );
-  mEngine->results()->mLabelSearchTree->insertLabel( label, palGeometry->featureId(), layerId, QString(), QFont(), true, false );
+  mEngine->results()->mLabelSearchTree->insertLabel( label, label->getFeaturePart()->featureId(), layerId, QString(), QFont(), true, false );
 
 }
 
@@ -290,12 +289,7 @@ QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& fea
     return 0; // invalid geometry
   }
 
-  //create PALGeometry with diagram = true
-  QgsPalGeometry* lbl = new QgsPalGeometry( feat.id(), QString(), GEOSGeom_clone_r( QgsGeometry::getGEOSHandler(), geos_geom ) );
-  lbl->setIsDiagram( true );
-
-  // record the created geometry - it will be deleted at the end.
-  mSettings.geometries.append( lbl );
+  GEOSGeometry* geomCopy = GEOSGeom_clone_r( QgsGeometry::getGEOSHandler(), geos_geom );
 
   double diagramWidth = 0;
   double diagramHeight = 0;
@@ -307,9 +301,6 @@ QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& fea
       diagramWidth = diagSize.width();
       diagramHeight = diagSize.height();
     }
-
-    //append the diagram attributes to lbl
-    lbl->setDiagramAttributes( feat.attributes() );
   }
 
   //  feature to the layer
@@ -342,13 +333,19 @@ QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& fea
     }
   }
 
-  QgsLabelFeature* lf = new QgsLabelFeature( lbl->featureId(), lbl, QSizeF( diagramWidth, diagramHeight ) );
+  QgsDiagramLabelFeature* lf = new QgsDiagramLabelFeature( feat.id(), geomCopy, QSizeF( diagramWidth, diagramHeight ) );
   lf->setHasFixedPosition( ddPos );
   lf->setFixedPosition( QgsPoint( ddPosX, ddPosY ) );
   lf->setHasFixedAngle( true );
   lf->setFixedAngle( 0 );
   lf->setAlwaysShow( alwaysShow );
   lf->setIsObstacle( mSettings.obstacle );
+
+  if ( dr )
+  {
+    //append the diagram attributes to lbl
+    lf->setDiagramAttributes( feat.attributes() );
+  }
 
   QgsPoint ptZero = mSettings.xform->toMapCoordinates( 0, 0 );
   QgsPoint ptOne = mSettings.xform->toMapCoordinates( 1, 0 );
