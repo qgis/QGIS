@@ -21,6 +21,7 @@
 #include <QStringList>
 #include <QRegExp>
 #include <QUrl>
+#include <QObject>
 
 class QgsFeature;
 class QgsField;

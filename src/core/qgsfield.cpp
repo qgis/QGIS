@@ -18,6 +18,7 @@
 #include "qgsfield_p.h"
 
 #include <QSettings>
+#include <QDataStream>
 #include <QtCore/qmath.h>
 
 

@@ -22,6 +22,8 @@
 #include "qgsgpsdevice.h"
 #include "qgisplugin.h"
 
+#include <QObject>
+
 class QgisInterface;
 class QgsVectorLayer;
 class QAction;

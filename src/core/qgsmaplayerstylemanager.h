@@ -22,6 +22,7 @@ class QgsMapLayer;
 #include <QByteArray>
 #include <QMap>
 #include <QStringList>
+#include <QObject>
 
 class QDomElement;
 
