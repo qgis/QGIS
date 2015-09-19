@@ -259,7 +259,7 @@ void QgsWMSProjectParser::addLayersFromGroup( const QDomElement& legendGroupElem
     QMap< int, QDomElement > layerOrderList;
     QDomNodeList groupElemChildren = legendGroupElem.childNodes();
     // for rendering layers has to be add from bottom (end) to top (start)
-    for ( int i = groupElemChildren.size()-1; i >= 0 ; --i )
+    for ( int i = groupElemChildren.size() - 1; i >= 0 ; --i )
     {
       QDomElement elem = groupElemChildren.at( i ).toElement();
       if ( elem.tagName() == "legendgroup" )

@@ -61,7 +61,7 @@ class OrientedMinimumBoundingBox(GeoAlgorithm):
 
         if byFeature and layer.geometryType() == QGis.Point and layer.featureCount() <= 2:
             raise GeoAlgorithmExecutionException(self.tr("Can't calculate an OMBB for each point, it's a point. The number of points must be greater than 2"))
-            
+
         fields = [
             QgsField('AREA', QVariant.Double),
             QgsField('PERIMETER', QVariant.Double),
