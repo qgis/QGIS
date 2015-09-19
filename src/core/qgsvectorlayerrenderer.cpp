@@ -396,6 +396,18 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
         mContext.labelingEngine()->registerDiagramFeature( mLayerID, fet, mContext );
       }
     }
+    // new labeling engine
+    if ( mContext.labelingEngineV2() )
+    {
+      if ( mLabelProvider )
+      {
+        mLabelProvider->registerFeature( fet, mContext );
+      }
+      if ( mDiagramProvider )
+      {
+        mDiagramProvider->registerFeature( fet, mContext );
+      }
+    }
   }
 
   // find out the order
