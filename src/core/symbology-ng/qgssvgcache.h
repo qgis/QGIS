@@ -24,6 +24,7 @@
 #include <QMutex>
 #include <QString>
 #include <QUrl>
+#include <QObject>
 
 class QDomElement;
 class QImage;

@@ -21,6 +21,8 @@ email                : sherman at mrcc.com
 
 #include "qgsmessagelog.h"
 
+#include <QDataStream>
+
 QgsFeature::QgsFeature( QgsFeatureId id )
 {
   d = new QgsFeaturePrivate( id );
