@@ -11,4 +11,5 @@ None
 <h4>Examples</h4>
 <pre> 'Here ' || 'and ' || 'there' &rarr; 'Here and there' </pre>
 <pre> 'Nothing' || NULL &rarr; NULL </pre>
+<pre> 'Dia: ' || "Diameter" &rarr; 'Dia: 25' </pre>
 <pre> 1 || 2 &rarr; '12' </pre>
