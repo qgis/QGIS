@@ -186,7 +186,7 @@ namespace pal
 #endif
 
     // all feature which are obstacle will be inserted into obstacles
-    if ( ft_ptr->getFeature()->isObstacle() )
+    if ( ft_ptr->isObstacle() )
     {
       ft_ptr->getBoundingBox( amin, amax );
       context->obstacles->Insert( amin, amax, ft_ptr );
@@ -225,7 +225,7 @@ namespace pal
       ft->feature = ft_ptr;
       ft->shape = NULL;
       ft->lPos = lPos;
-      ft->priority = ft_ptr->getFeature()->calculatePriority();
+      ft->priority = ft_ptr->calculatePriority();
       context->fFeats->append( ft );
     }
     else

@@ -40,7 +40,6 @@ namespace pal
 {
 
   class Pal;
-  class Feature;
   class Projection;
   class LabelPosition;
 

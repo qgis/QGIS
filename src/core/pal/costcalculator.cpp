@@ -86,7 +86,7 @@ namespace pal
       lp->setConflictsWithObstacle( true );
 
     //scale cost by obstacle's factor
-    double obstacleCost = obstacle->getFeature()->obstacleFactor() * double( n );
+    double obstacleCost = obstacle->obstacleFactor() * double( n );
 
     // label cost is penalized
     lp->setCost( lp->cost() + obstacleCost );

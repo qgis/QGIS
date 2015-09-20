@@ -62,8 +62,18 @@ class CORE_EXPORT QgsLabelFeature
     //! Size of the label (in map units)
     QSizeF size() const { return mSize; }
 
-    //! Priority of the label - between 0 (highest) to 1 (lowest). Value -1 means to use layer default priority
+    /** Returns the feature's labeling priority.
+     * @returns feature's priority, as a value between 0 (highest priority)
+     * and 1 (lowest priority). Returns -1.0 if feature will use the layer's default priority.
+     * @see setPriority
+     */
     double priority() const { return mPriority; }
+    /** Sets the priority for labeling the feature.
+     * @param priority feature's priority, as a value between 0 (highest priority)
+     * and 1 (lowest priority). Set to -1.0 to use the layer's default priority
+     * for this feature.
+     * @see priority
+     */
     void setPriority( double priority ) { mPriority = priority; }
 
     //! Whether the label should use a fixed position instead of being automatically placed
@@ -80,9 +90,17 @@ class CORE_EXPORT QgsLabelFeature
     double fixedAngle() const { return mFixedAngle; }
     void setFixedAngle( double angle ) { mFixedAngle = angle; }
 
-    //! Applies to "around point" placement strategy.
-    //! Determines whether a fixed quadrant (quadOffset()) should be used instead of using automatically chosen one.
+    /** Returns whether the quadrant for the label is fixed.
+     * Applies to "around point" placement strategy.
+     * @see setFixedQuadrant
+     * @see quadOffset
+     */
     bool hasFixedQuadrant() const { return mHasFixedQuadrant; }
+    /** Sets whether the quadrant for the label must be respected. This can be used
+     * to fix the quadrant for specific features when using an "around point" placement.
+     * @see fixedQuadrant
+     * @see quadOffset
+     */
     void setHasFixedQuadrant( bool enabled ) { mHasFixedQuadrant = enabled; }
     //! Applies to "offset from point" placement strategy and "around point" (in case hasFixedQuadrant() returns true).
     //! Determines which side of the point to use.
@@ -107,16 +125,33 @@ class CORE_EXPORT QgsLabelFeature
     bool alwaysShow() const { return mAlwaysShow; }
     void setAlwaysShow( bool enabled ) { mAlwaysShow = enabled; }
 
-    //! Determine whether the feature geometry acts as an obstacle for other labels
+    /** Returns whether the feature will act as an obstacle for labels.
+     * @returns true if feature is an obstacle
+     * @see setIsObstacle
+     */
     bool isObstacle() const { return mIsObstacle; }
+    /** Sets whether the feature will act as an obstacle for labels.
+     * @param obstacle whether feature will act as an obstacle
+     * @see isObstacle
+     */
     void setIsObstacle( bool enabled ) { mIsObstacle = enabled; }
-    //! Only applies if isObstacle() returns true: How strong is the obstacle.
-    //! Larger factors ( > 1.0 ) will result in labels which are less likely to cover this feature,
-    //! smaller factors ( < 1.0 ) mean labels are more likely to cover this feature (where required)
+    /** Returns the obstacle factor for the feature. The factor controls the penalty
+     * for labels overlapping this feature.
+     * @see setObstacleFactor
+     */
     double obstacleFactor() const { return mObstacleFactor; }
+    /** Sets the obstacle factor for the feature. The factor controls the penalty
+     * for labels overlapping this feature.
+     * @param factor larger factors ( > 1.0 ) will result in labels
+     * which are less likely to cover this feature, smaller factors ( < 1.0 ) mean labels
+     * are more likely to cover this feature (where required)
+     * @see obstacleFactor
+     */
     void setObstacleFactor( double factor ) { mObstacleFactor = factor; }
 
-    //! Text of the label - used if "merge connected lines to avoid duplicate labels" is enabled
+    //! Text of the label
+    //!
+    //! Used if "merge connected lines to avoid duplicate labels" is enabled
     //! to identify which features may be merged
     QString labelText() const { return mLabelText; }
     void setLabelText( const QString& text ) { mLabelText = text; }
@@ -126,7 +161,13 @@ class CORE_EXPORT QgsLabelFeature
     //! takes ownership of the instance
     void setCurvedLabelInfo( pal::LabelInfo* info ) { mInfo = info; }
 
+    //! Get PAL layer of the label feature. Should be only used internally in PAL
+    pal::Layer* layer() const { return mLayer; }
+    //! Assign PAL layer to the label feature. Should be only used internally in PAL
+    void setLayer(pal::Layer* layer) { mLayer = layer; }
+
   protected:
+    pal::Layer* mLayer;
 
     //! Associated ID unique within the parent label provider
     QgsFeatureId mId;

@@ -56,57 +56,9 @@
 
 namespace pal
 {
-  Feature::Feature( Layer* l, QgsFeatureId fid, QgsLabelFeature* userFeat, double lx, double ly )
-      : layer( l )
-      , userFeature( userFeat )
-      , label_x( lx )
-      , label_y( ly )
-      , distlabel( 0 )
-      , labelInfo( NULL )
-      , uid( fid )
-      , fixedPos( false )
-      , fixedPosX( 0.0 )
-      , fixedPosY( 0.0 )
-      , quadOffset( false )
-      , quadOffsetX( 0.0 )
-      , quadOffsetY( 0.0 )
-      , offsetPos( false )
-      , offsetPosX( 0.0 )
-      , offsetPosY( 0.0 )
-      , fixedRotation( false )
-      , fixedAngle( 0.0 )
-      , repeatDist( 0.0 )
-      , alwaysShow( false )
-      , mFixedQuadrant( false )
-      , mIsObstacle( true )
-      , mObstacleFactor( 1.0 )
-      , mPriority( -1.0 )
-  {
-    assert( qIsFinite( lx ) && qIsFinite( ly ) );
-  }
 
-  Feature::~Feature()
-  {
-
-  }
-
-  double Feature::calculatePriority() const
-  {
-    if ( alwaysShow )
-    {
-      //if feature is set to always show, bump the priority up by orders of magnitude
-      //so that other feature's labels are unlikely to be placed over the label for this feature
-      //(negative numbers due to how pal::extract calculates inactive cost)
-      return 0.2;
-    }
-
-    return mPriority >= 0 ? mPriority : layer->priority();
-  }
-
-  ////////////
-
-  FeaturePart::FeaturePart( Feature *feat, const GEOSGeometry* geom )
-      : mFeature( feat )
+  FeaturePart::FeaturePart( QgsLabelFeature* feat, const GEOSGeometry* geom )
+      : mLF( feat )
   {
     // we'll remove const, but we won't modify that geometry
     mGeos = const_cast<GEOSGeometry*>( geom );
@@ -147,7 +99,7 @@ namespace pal
         for ( int i = 0; i < numHoles; ++i )
         {
           const GEOSGeometry* interior =  GEOSGetInteriorRingN_r( geosctxt, geom, i );
-          FeaturePart* hole = new FeaturePart( mFeature, interior );
+          FeaturePart* hole = new FeaturePart( mLF, interior );
           hole->holeOf = NULL;
           // possibly not needed. it's not done for the exterior ring, so I'm not sure
           // why it's just done here...
@@ -194,23 +146,26 @@ namespace pal
 
   Layer* FeaturePart::layer()
   {
-    return mFeature->layer;
+    return mLF->layer();
   }
 
   QgsFeatureId FeaturePart::featureId() const
   {
-    return mFeature->uid;
+    return mLF->id();
   }
 
   LabelPosition::Quadrant FeaturePart::quadrantFromOffset() const
   {
-    if ( mFeature->quadOffsetX < 0 )
+    QPointF quadOffset = mLF->quadOffset();
+    qreal quadOffsetX = quadOffset.x(), quadOffsetY = quadOffset.y();
+
+    if ( quadOffsetX < 0 )
     {
-      if ( mFeature->quadOffsetY < 0 )
+      if ( quadOffsetY < 0 )
       {
         return LabelPosition::QuadrantAboveLeft;
       }
-      else if ( mFeature->quadOffsetY > 0 )
+      else if ( quadOffsetY > 0 )
       {
         return LabelPosition::QuadrantBelowLeft;
       }
@@ -219,13 +174,13 @@ namespace pal
         return LabelPosition::QuadrantLeft;
       }
     }
-    else  if ( mFeature->quadOffsetX > 0 )
+    else  if ( quadOffsetX > 0 )
     {
-      if ( mFeature->quadOffsetY < 0 )
+      if ( quadOffsetY < 0 )
       {
         return LabelPosition::QuadrantAboveRight;
       }
-      else if ( mFeature->quadOffsetY > 0 )
+      else if ( quadOffsetY > 0 )
       {
         return LabelPosition::QuadrantBelowRight;
       }
@@ -236,11 +191,11 @@ namespace pal
     }
     else
     {
-      if ( mFeature->quadOffsetY < 0 )
+      if ( quadOffsetY < 0 )
       {
         return LabelPosition::QuadrantAbove;
       }
-      else if ( mFeature->quadOffsetY > 0 )
+      else if ( quadOffsetY > 0 )
       {
         return LabelPosition::QuadrantBelow;
       }
@@ -256,8 +211,8 @@ namespace pal
     int nbp = 1;
 
     // get from feature
-    double labelW = mFeature->label_x;
-    double labelH = mFeature->label_y;
+    double labelW = getLabelWidth();
+    double labelH = getLabelHeight();
 
     double cost = 0.0001;
     int id = 0;
@@ -265,19 +220,16 @@ namespace pal
     double xdiff = -labelW / 2.0;
     double ydiff = -labelH / 2.0;
 
-    if ( mFeature->quadOffset )
+    if ( mLF->quadOffset().x() != 0 )
     {
-      if ( mFeature->quadOffsetX != 0 )
-      {
-        xdiff += labelW / 2.0 * mFeature->quadOffsetX;
-      }
-      if ( mFeature->quadOffsetY != 0 )
-      {
-        ydiff += labelH / 2.0 * mFeature->quadOffsetY;
-      }
+      xdiff += labelW / 2.0 * mLF->quadOffset().x();
+    }
+    if ( mLF->quadOffset().y() != 0 )
+    {
+      ydiff += labelH / 2.0 * mLF->quadOffset().y();
     }
 
-    if ( ! mFeature->fixedPosition() )
+    if ( ! mLF->hasFixedPosition() )
     {
       if ( angle != 0 )
       {
@@ -288,40 +240,40 @@ namespace pal
       }
     }
 
-    if ( mFeature->layer->arrangement() == P_POINT )
+    if ( mLF->layer()->arrangement() == P_POINT )
     {
       //if in "around point" placement mode, then we use the label distance to determine
       //the label's offset
-      if ( qgsDoubleNear( mFeature->quadOffsetX , 0.0 ) )
+      if ( qgsDoubleNear( mLF->quadOffset().x(), 0.0 ) )
       {
-        ydiff += mFeature->quadOffsetY * mFeature->distlabel;
+        ydiff += mLF->quadOffset().y() * mLF->distLabel();
       }
-      else if ( qgsDoubleNear( mFeature->quadOffsetY, 0.0 ) )
+      else if ( qgsDoubleNear( mLF->quadOffset().y(), 0.0 ) )
       {
-        xdiff += mFeature->quadOffsetX * mFeature->distlabel;
+        xdiff += mLF->quadOffset().x() * mLF->distLabel();
       }
       else
       {
-        xdiff += mFeature->quadOffsetX * M_SQRT1_2 * mFeature->distlabel;
-        ydiff += mFeature->quadOffsetY * M_SQRT1_2 * mFeature->distlabel;
+        xdiff += mLF->quadOffset().x() * M_SQRT1_2 * mLF->distLabel();
+        ydiff += mLF->quadOffset().y() * M_SQRT1_2 * mLF->distLabel();
       }
     }
-    else if ( mFeature->offsetPos )
+    else
     {
-      if ( mFeature->offsetPosX != 0 )
+      if ( mLF->positionOffset().x() != 0 )
       {
-        xdiff += mFeature->offsetPosX;
+        xdiff += mLF->positionOffset().x();
       }
-      if ( mFeature->offsetPosY != 0 )
+      if ( mLF->positionOffset().y() != 0 )
       {
-        ydiff += mFeature->offsetPosY;
+        ydiff += mLF->positionOffset().y();
       }
     }
 
     double lx = x + xdiff;
     double ly = y + ydiff;
 
-    if ( mapShape && type == GEOS_POLYGON && mFeature->layer->fitInPolygonOnly() )
+    if ( mapShape && type == GEOS_POLYGON && mLF->layer()->fitInPolygonOnly() )
     {
       if ( !mapShape->containsLabelCandidate( lx, ly, labelW, labelH, angle ) )
       {
@@ -340,11 +292,11 @@ namespace pal
     std::cout << "SetPosition (point) : " << layer->name << "/" << uid << std::endl;
 #endif
 
-    double labelWidth = mFeature->label_x;
-    double labelHeight = mFeature->label_y;
-    double distanceToLabel = mFeature->distlabel;
+    double labelWidth = getLabelWidth();
+    double labelHeight = getLabelHeight();
+    double distanceToLabel = getLabelDistance();
 
-    int numberCandidates = mFeature->layer->pal->point_p;
+    int numberCandidates = mLF->layer()->pal->point_p;
 
     //std::cout << "Nbp : " << nbp << std::endl;
     int icost = 0;
@@ -462,7 +414,7 @@ namespace pal
         cost = 0.0001 + 0.0020 * double( icost ) / double( numberCandidates - 1 );
 
 
-      if ( mapShape && type == GEOS_POLYGON && mFeature->layer->fitInPolygonOnly() )
+      if ( mapShape && type == GEOS_POLYGON && mLF->layer()->fitInPolygonOnly() )
       {
         if ( !mapShape->containsLabelCandidate( labelX, labelY, labelWidth, labelHeight, angle ) )
         {
@@ -505,10 +457,10 @@ namespace pal
     std::cout << "SetPosition (line) : " << layer->name << "/" << uid << std::endl;
 #endif
     int i;
-    double distlabel = mFeature->distlabel;
+    double distlabel = getLabelDistance();
 
-    double xrm = mFeature->label_x;
-    double yrm = mFeature->label_y;
+    double xrm = getLabelWidth();
+    double yrm = getLabelHeight();
 
     double *d; // segments lengths distance bw pt[i] && pt[i+1]
     double *ad;  // absolute distance bw pt[0] and pt[i] along the line
@@ -519,7 +471,7 @@ namespace pal
     double alpha;
     double cost;
 
-    LineArrangementFlags flags = mFeature->layer->arrangementFlags();
+    LineArrangementFlags flags = mLF->layer()->arrangementFlags();
     if ( flags == 0 )
       flags = FLAG_ON_LINE; // default flag
 
@@ -625,7 +577,7 @@ namespace pal
 #ifdef _DEBUG_FULL_
       std::cout << "  Create new label" << std::endl;
 #endif
-      if ( mFeature->layer->arrangement() == P_LINE )
+      if ( mLF->layer()->arrangement() == P_LINE )
       {
         // find out whether the line direction for this candidate is from right to left
         bool isRightToLeft = ( alpha > M_PI / 2 || alpha <= -M_PI / 2 );
@@ -637,21 +589,21 @@ namespace pal
 
         if ( aboveLine )
         {
-          if ( !mFeature->layer->fitInPolygonOnly() || mapShape->containsLabelCandidate( bx + cos( beta ) *distlabel, by + sin( beta ) *distlabel, xrm, yrm, alpha ) )
+          if ( !mLF->layer()->fitInPolygonOnly() || mapShape->containsLabelCandidate( bx + cos( beta ) *distlabel, by + sin( beta ) *distlabel, xrm, yrm, alpha ) )
             positions.append( new LabelPosition( i, bx + cos( beta ) *distlabel, by + sin( beta ) *distlabel, xrm, yrm, alpha, cost, this, isRightToLeft ) ); // Line
         }
         if ( belowLine )
         {
-          if ( !mFeature->layer->fitInPolygonOnly() || mapShape->containsLabelCandidate( bx - cos( beta ) *( distlabel + yrm ), by - sin( beta ) *( distlabel + yrm ), xrm, yrm, alpha ) )
+          if ( !mLF->layer()->fitInPolygonOnly() || mapShape->containsLabelCandidate( bx - cos( beta ) *( distlabel + yrm ), by - sin( beta ) *( distlabel + yrm ), xrm, yrm, alpha ) )
             positions.append( new LabelPosition( i, bx - cos( beta ) *( distlabel + yrm ), by - sin( beta ) *( distlabel + yrm ), xrm, yrm, alpha, cost, this, isRightToLeft ) );   // Line
         }
         if ( flags & FLAG_ON_LINE )
         {
-          if ( !mFeature->layer->fitInPolygonOnly() || mapShape->containsLabelCandidate( bx - yrm*cos( beta ) / 2, by - yrm*sin( beta ) / 2, xrm, yrm, alpha ) )
+          if ( !mLF->layer()->fitInPolygonOnly() || mapShape->containsLabelCandidate( bx - yrm*cos( beta ) / 2, by - yrm*sin( beta ) / 2, xrm, yrm, alpha ) )
             positions.append( new LabelPosition( i, bx - yrm*cos( beta ) / 2, by - yrm*sin( beta ) / 2, xrm, yrm, alpha, cost, this, isRightToLeft ) ); // Line
         }
       }
-      else if ( mFeature->layer->arrangement() == P_HORIZ )
+      else if ( mLF->layer()->arrangement() == P_HORIZ )
       {
         positions.append( new LabelPosition( i, bx - xrm / 2, by - yrm / 2, xrm, yrm, 0, cost, this ) ); // Line
       }
@@ -708,11 +660,13 @@ namespace pal
       return NULL;
     }
 
+    LabelInfo* li = mLF->curvedLabelInfo();
+
     // Keep track of the initial index,distance incase we need to re-call get_placement_offset
     int initial_index = index;
     double initial_distance = distance;
 
-    double string_height = mFeature->labelInfo->label_height;
+    double string_height = li->label_height;
     double old_x = path_positions->x[index-1];
     double old_y = path_positions->y[index-1];
 
@@ -740,12 +694,12 @@ namespace pal
 
     int upside_down_char_count = 0; // Count of characters that are placed upside down.
 
-    for ( int i = 0; i < mFeature->labelInfo->char_num; i++ )
+    for ( int i = 0; i < li->char_num; i++ )
     {
       double last_character_angle = angle;
 
       // grab the next character according to the orientation
-      LabelInfo::CharacterInfo& ci = ( orientation > 0 ? mFeature->labelInfo->char_info[i] : mFeature->labelInfo->char_info[mFeature->labelInfo->char_num-i-1] );
+      LabelInfo::CharacterInfo& ci = ( orientation > 0 ? li->char_info[i] : li->char_info[li->char_num-i-1] );
 
       // Coordinates this character will start at
       if ( segment_length == 0 )
@@ -812,10 +766,10 @@ namespace pal
       // normalise between -180 and 180
       while ( angle_delta > M_PI ) angle_delta -= 2 * M_PI;
       while ( angle_delta < -M_PI ) angle_delta += 2 * M_PI;
-      if (( mFeature->labelInfo->max_char_angle_inside > 0 && angle_delta > 0
-            && angle_delta > mFeature->labelInfo->max_char_angle_inside*( M_PI / 180 ) )
-          || ( mFeature->labelInfo->max_char_angle_outside < 0 && angle_delta < 0
-               && angle_delta < mFeature->labelInfo->max_char_angle_outside*( M_PI / 180 ) ) )
+      if (( li->max_char_angle_inside > 0 && angle_delta > 0
+            && angle_delta > li->max_char_angle_inside*( M_PI / 180 ) )
+          || ( li->max_char_angle_outside < 0 && angle_delta < 0
+               && angle_delta < li->max_char_angle_outside*( M_PI / 180 ) ) )
       {
         delete slp;
         return NULL;
@@ -840,7 +794,7 @@ namespace pal
 
       //std::cerr << "adding part: " << render_x << "  " << render_y << std::endl;
       LabelPosition* tmp = new LabelPosition( 0, render_x /*- xBase*/, render_y /*- yBase*/, ci.width, string_height, -render_angle, 0.0001, this );
-      tmp->setPartId( orientation > 0 ? i : mFeature->labelInfo->char_num - i - 1 );
+      tmp->setPartId( orientation > 0 ? i : li->char_num - i - 1 );
       if ( slp == NULL )
         slp = tmp;
       else
@@ -860,7 +814,7 @@ namespace pal
     // END FOR
 
     // If we placed too many characters upside down
-    if ( upside_down_char_count >= mFeature->labelInfo->char_num / 2.0 )
+    if ( upside_down_char_count >= li->char_num / 2.0 )
     {
       // if we auto-detected the orientation then retry with the opposite orientation
       if ( !orientation_forced )
@@ -889,8 +843,10 @@ namespace pal
 
   int FeaturePart::setPositionForLineCurved( QList< LabelPosition* >& lPos, PointSet* mapShape )
   {
+    LabelInfo* li = mLF->curvedLabelInfo();
+
     // label info must be present
-    if ( mFeature->labelInfo == NULL || mFeature->labelInfo->char_num == 0 )
+    if ( li == NULL || li->char_num == 0 )
       return 0;
 
     // distance calculation
@@ -916,9 +872,9 @@ namespace pal
     }
 
     QLinkedList<LabelPosition*> positions;
-    double delta = qMax( mFeature->labelInfo->label_height, total_distance / 10.0 );
+    double delta = qMax( li->label_height, total_distance / 10.0 );
 
-    unsigned long flags = mFeature->layer->arrangementFlags();
+    unsigned long flags = mLF->layer()->arrangementFlags();
     if ( flags == 0 )
       flags = FLAG_ON_LINE; // default flag
 
@@ -949,12 +905,12 @@ namespace pal
           tmp = tmp->getNextPart();
         }
 
-        double angle_diff_avg = mFeature->labelInfo->char_num > 1 ? ( angle_diff / ( mFeature->labelInfo->char_num - 1 ) ) : 0; // <0, pi> but pi/8 is much already
+        double angle_diff_avg = li->char_num > 1 ? ( angle_diff / ( li->char_num - 1 ) ) : 0; // <0, pi> but pi/8 is much already
         double cost = angle_diff_avg / 100; // <0, 0.031 > but usually <0, 0.003 >
         if ( cost < 0.0001 ) cost = 0.0001;
 
         // penalize positions which are further from the line's midpoint
-        double labelCenter = ( i * delta ) + mFeature->label_x / 2;
+        double labelCenter = ( i * delta ) + getLabelWidth() / 2;
         double costCenter = qAbs( total_distance / 2 - labelCenter ) / total_distance; // <0, 0.5>
         cost += costCenter / 1000;  // < 0, 0.0005 >
         //std::cerr << "cost " << angle_diff << " vs " << costCenter << std::endl;
@@ -962,14 +918,14 @@ namespace pal
 
 
         // average angle is calculated with respect to periodicity of angles
-        double angle_avg = atan2( sin_avg / mFeature->labelInfo->char_num, cos_avg / mFeature->labelInfo->char_num );
+        double angle_avg = atan2( sin_avg / li->char_num, cos_avg / li->char_num );
         // displacement
         if ( flags & FLAG_ABOVE_LINE )
-          positions.append( _createCurvedCandidate( slp, angle_avg, mFeature->distlabel ) );
+          positions.append( _createCurvedCandidate( slp, angle_avg, mLF->distLabel() ) );
         if ( flags & FLAG_ON_LINE )
-          positions.append( _createCurvedCandidate( slp, angle_avg, -mFeature->labelInfo->label_height / 2 ) );
+          positions.append( _createCurvedCandidate( slp, angle_avg, -li->label_height / 2 ) );
         if ( flags & FLAG_BELOW_LINE )
-          positions.append( _createCurvedCandidate( slp, angle_avg, -mFeature->labelInfo->label_height - mFeature->distlabel ) );
+          positions.append( _createCurvedCandidate( slp, angle_avg, -li->label_height - mLF->distLabel() ) );
 
         // delete original candidate
         delete slp;
@@ -1013,8 +969,8 @@ namespace pal
     int i;
     int j;
 
-    double labelWidth = mFeature->label_x;
-    double labelHeight = mFeature->label_y;
+    double labelWidth = getLabelWidth();
+    double labelHeight = getLabelHeight();
 
     //print();
 
@@ -1025,7 +981,7 @@ namespace pal
 
     shapes_toProcess.append( mapShape );
 
-    splitPolygons( shapes_toProcess, shapes_final, labelWidth, labelHeight, mFeature->uid );
+    splitPolygons( shapes_toProcess, shapes_final, labelWidth, labelHeight, mLF->id() );
 
     int nbp;
 
@@ -1067,7 +1023,7 @@ namespace pal
 
       //fit in polygon only mode slows down calculation a lot, so if it's enabled
       //then use a smaller limit for number of iterations
-      int maxTry = mFeature->layer->fitInPolygonOnly() ? 7 : 10;
+      int maxTry = mLF->layer()->fitInPolygonOnly() ? 7 : 10;
 
       do
       {
@@ -1082,11 +1038,11 @@ namespace pal
             std::cout << "   Alpha:     " << alpha << "   " << alpha * 180 / M_PI << std::endl;
             std::cout << "   Dx;Dy:     " << dx << "   " << dy  << std::endl;
             std::cout << "   LabelSizerm: " << labelWidth << "   " << labelHeight  << std::endl;
-            std::cout << "   LabelSizeUn: " << mFeature->label_x << "   " << mFeature->label_y << std::endl;
+            std::cout << "   LabelSizeUn: " << getLabelWidth() << "   " << getLabelHeight() << std::endl;
             continue;
           }
 
-          if ( mFeature->layer->arrangement() == P_HORIZ && mFeature->layer->fitInPolygonOnly() )
+          if ( mLF->layer()->arrangement() == P_HORIZ && mLF->layer()->fitInPolygonOnly() )
           {
             //check width/height of bbox is sufficient for label
             if ( box->length < labelWidth || box->width < labelHeight )
@@ -1105,7 +1061,7 @@ namespace pal
 #endif
 
           bool enoughPlace = false;
-          if ( mFeature->layer->arrangement() == P_FREE )
+          if ( mLF->layer()->arrangement() == P_FREE )
           {
             enoughPlace = true;
             px = ( box->x[0] + box->x[2] ) / 2 - labelWidth;
@@ -1133,7 +1089,7 @@ namespace pal
 
           } // arrangement== FREE ?
 
-          if ( mFeature->layer->arrangement() == P_HORIZ || enoughPlace )
+          if ( mLF->layer()->arrangement() == P_HORIZ || enoughPlace )
           {
             alpha = 0.0; // HORIZ
           }
@@ -1185,7 +1141,7 @@ namespace pal
               rx += box->x[0];
               ry += box->y[0];
 
-              bool candidateAcceptable = ( mFeature->layer->fitInPolygonOnly()
+              bool candidateAcceptable = ( mLF->layer()->fitInPolygonOnly()
                                            ? mapShape->containsLabelCandidate( rx - dlx, ry - dly, labelWidth, labelHeight, alpha )
                                            : mapShape->containsPoint( rx, ry ) );
               if ( candidateAcceptable )
@@ -1268,37 +1224,37 @@ namespace pal
     bbox[2] = bbox_max[0];
     bbox[3] = bbox_max[1];
 
-    double angle = mFeature->fixedRotation ? mFeature->fixedAngle : 0.0;
+    double angle = mLF->hasFixedAngle() ? mLF->fixedAngle() : 0.0;
 
-    if ( mFeature->fixedPosition() )
+    if ( mLF->hasFixedPosition() )
     {
-      lPos << new LabelPosition( 0, mFeature->fixedPosX, mFeature->fixedPosY, mFeature->label_x, mFeature->label_y, angle, 0.0, this );
+      lPos << new LabelPosition( 0, mLF->fixedPosition().x(), mLF->fixedPosition().y(), getLabelWidth(), getLabelHeight(), angle, 0.0, this );
     }
     else
     {
       switch ( type )
       {
         case GEOS_POINT:
-          if ( mFeature->layer->arrangement() == P_POINT_OVER || mFeature->fixedQuadrant() )
+          if ( mLF->layer()->arrangement() == P_POINT_OVER || mLF->hasFixedQuadrant() )
             setPositionOverPoint( x[0], y[0], lPos, angle );
           else
             setPositionForPoint( x[0], y[0], lPos, angle );
           break;
         case GEOS_LINESTRING:
-          if ( mFeature->layer->arrangement() == P_CURVED )
+          if ( mLF->layer()->arrangement() == P_CURVED )
             setPositionForLineCurved( lPos, mapShape );
           else
             setPositionForLine( lPos, mapShape );
           break;
 
         case GEOS_POLYGON:
-          switch ( mFeature->layer->arrangement() )
+          switch ( mLF->layer()->arrangement() )
           {
             case P_POINT:
             case P_POINT_OVER:
               double cx, cy;
-              mapShape->getCentroid( cx, cy, mFeature->layer->centroidInside() );
-              if ( mFeature->layer->arrangement() == P_POINT_OVER )
+              mapShape->getCentroid( cx, cy, mLF->layer()->centroidInside() );
+              if ( mLF->layer()->arrangement() == P_POINT_OVER )
                 setPositionOverPoint( cx, cy, lPos, angle, mapShape );
               else
                 setPositionForPoint( cx, cy, lPos, angle, mapShape );
@@ -1320,7 +1276,7 @@ namespace pal
     {
       LabelPosition* pos = i.next();
       bool outside = false;
-      if ( mFeature->layer->pal->getShowPartial() )
+      if ( mLF->layer()->pal->getShowPartial() )
         outside = !pos->isIntersect( bbox );
       else
         outside = !pos->isInside( bbox );
@@ -1455,5 +1411,19 @@ namespace pal
       return false;
     }
   }
+
+  double FeaturePart::calculatePriority() const
+  {
+    if ( mLF->alwaysShow() )
+    {
+      //if feature is set to always show, bump the priority up by orders of magnitude
+      //so that other feature's labels are unlikely to be placed over the label for this feature
+      //(negative numbers due to how pal::extract calculates inactive cost)
+      return 0.2;
+    }
+
+    return mLF->priority() >= 0 ? mLF->priority() : mLF->layer()->priority();
+  }
+
 
 } // end namespace pal

@@ -43,7 +43,6 @@ namespace pal
 
   template<class DATATYPE, class ELEMTYPE, int NUMDIMS, class ELEMTYPEREAL, int TMAXNODES, int TMINNODES> class RTree;
 
-  class Feature;
   class FeaturePart;
   class Pal;
   class LabelInfo;
@@ -80,7 +79,7 @@ namespace pal
 
       /** Returns the number of features in layer.
        */
-      int featureCount() { return features.size(); }
+      int featureCount() { return mHashtable.size(); }
 
       /** Returns the layer's name.
        */
@@ -256,9 +255,6 @@ namespace pal
 
       bool registerFeature( QgsLabelFeature* label );
 
-      /** Return pointer to feature or NULL if doesn't exist */
-      Feature* getFeature( QgsFeatureId fid );
-
       /** Join connected features with the same label text */
       void joinConnectedFeatures();
 
@@ -270,9 +266,6 @@ namespace pal
 
       /** List of feature parts */
       QLinkedList<FeaturePart*> mFeatureParts;
-
-      /** List of features - for deletion */
-      QList<Feature*> features;
 
       Pal *pal;
 
@@ -295,7 +288,8 @@ namespace pal
 
       // indexes (spatial and id)
       RTree<FeaturePart*, double, 2, double, 8, 4> *rtree;
-      QHash< QgsFeatureId, Feature*> mHashtable;
+      //! Lookup table of label features (owned by the label feature provider that created them)
+      QHash< QgsFeatureId, QgsLabelFeature*> mHashtable;
 
       QHash< QString, QLinkedList<FeaturePart*>* > mConnectedHashtable;
       QStringList mConnectedTexts;

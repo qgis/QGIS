@@ -344,7 +344,8 @@ QgsAbstractLabelProvider* QgsLabelingEngineV2::providerById( const QString& id )
 
 
 QgsLabelFeature::QgsLabelFeature( QgsFeatureId id, GEOSGeometry* geometry, const QSizeF& size )
-    : mId( id )
+    : mLayer( 0 )
+    , mId( id )
     , mGeometry( geometry )
     , mSize( size )
     , mPriority( -1 )
