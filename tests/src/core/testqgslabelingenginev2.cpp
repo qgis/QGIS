@@ -63,6 +63,8 @@ void TestQgsLabelingEngineV2::testBasic()
   mapSettings.setExtent( vl->extent() );
   mapSettings.setLayers( QStringList() << vl->id() );
 
+  // first render the map and labeling separately
+
   QgsMapRendererSequentialJob job( mapSettings );
   job.start();
   job.waitForFinished();
@@ -85,16 +87,15 @@ void TestQgsLabelingEngineV2::testBasic()
 
   p.end();
 
-  // TODO: replace with render checker
-  img.save( "/tmp/tstlabels.png" );
-
   // now let's test the variant when integrated into rendering loop
+
   job.start();
   job.waitForFinished();
   QImage img2 = job.renderedImage();
-  img2.save( "/tmp/tstlabels2.png" );
 
   vl->setCustomProperty( "labeling/enabled", false );
+
+  QCOMPARE( img, img2 );
 }
 
 void TestQgsLabelingEngineV2::testDiagrams()
@@ -104,6 +105,8 @@ void TestQgsLabelingEngineV2::testDiagrams()
   mapSettings.setOutputSize( size );
   mapSettings.setExtent( vl->extent() );
   mapSettings.setLayers( QStringList() << vl->id() );
+
+  // first render the map and diagrams separately
 
   QgsMapRendererSequentialJob job( mapSettings );
   job.start();
@@ -126,14 +129,12 @@ void TestQgsLabelingEngineV2::testDiagrams()
 
   p.end();
 
-  // TODO: replace with render checker
-  img.save( "/tmp/tstdiagrams.png" );
-
   // now let's test the variant when integrated into rendering loop
   job.start();
   job.waitForFinished();
   QImage img2 = job.renderedImage();
-  img2.save( "/tmp/tstdiagrams2.png" );
+
+  QCOMPARE( img, img2 );
 }
 
 QTEST_MAIN( TestQgsLabelingEngineV2 )
