@@ -437,7 +437,7 @@ void QgsExpressionBuilderWidget::updateFunctionTree()
   registerItem( "Operators", "=", " = ", tr( "Equal operator" ) );
   registerItem( "Operators", ">", " > " );
   registerItem( "Operators", "<", " < " );
-  registerItem( "Operators", "<>", " <> ", tr( "Unequal operator" ) );
+  registerItem( "Operators", "<>", " <> " );
   registerItem( "Operators", "<=", " <= " );
   registerItem( "Operators", ">=", " >= " );
   registerItem( "Operators", "||", " || " );
