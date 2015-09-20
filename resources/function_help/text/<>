@@ -1,0 +1,14 @@
+<h3>&lt;&gt; Unequal operator</h3>
+<p>Compares two values and evaluates to 1 if they are not equal.</p>
+
+<h4>Syntax</h4>
+<pre> value1 &lt;&gt; value2 </pre>
+
+<h4>Arguments</h4>
+None
+
+<h4>Examples</h4>
+<pre> 5 &lt;&gt; 4 &rarr; 1 </pre>
+<pre> 4 &lt;&gt; 4 &rarr; 0 </pre>
+<pre> 5 &lt;&gt; NULL &rarr; NULL </pre>
+<pre> NULL &lt;&gt; NULL &rarr; NULL </pre>

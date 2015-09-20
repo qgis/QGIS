@@ -428,18 +428,18 @@ void QgsExpressionBuilderWidget::updateFunctionTree()
   mModel->clear();
   mExpressionGroups.clear();
   // TODO Can we move this stuff to QgsExpression, like the functions?
-  registerItem( "Operators", "+", " + ", tr( "Addition operator" ) );
-  registerItem( "Operators", "-", " - ", tr( "Subtraction operator" ) );
-  registerItem( "Operators", "*", " * ", tr( "Multiplication operator" ) );
+  registerItem( "Operators", "+", " + " );
+  registerItem( "Operators", "-", " - " );
+  registerItem( "Operators", "*", " * " );
   registerItem( "Operators", "/", " / ", tr( "Division operator" ) );
   registerItem( "Operators", "%", " % ", tr( "Modulo operator" ) );
   registerItem( "Operators", "^", " ^ ", tr( "Power operator" ) );
   registerItem( "Operators", "=", " = ", tr( "Equal operator" ) );
-  registerItem( "Operators", ">", " > ", tr( "Greater as operator" ) );
-  registerItem( "Operators", "<", " < ", tr( "Less than operator" ) );
+  registerItem( "Operators", ">", " > " );
+  registerItem( "Operators", "<", " < " );
   registerItem( "Operators", "<>", " <> ", tr( "Unequal operator" ) );
-  registerItem( "Operators", "<=", " <= ", tr( "Less or equal operator" ) );
-  registerItem( "Operators", ">=", " >= ", tr( "Greater or equal operator" ) );
+  registerItem( "Operators", "<=", " <= " );
+  registerItem( "Operators", ">=", " >= " );
   registerItem( "Operators", "||", " || " );
   registerItem( "Operators", "IN", " IN " );
   registerItem( "Operators", "LIKE", " LIKE " );
