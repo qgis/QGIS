@@ -362,6 +362,7 @@ void QgsExpressionBuilderWidget::registerItem( QString group,
     newgroupNode->setData( group, Qt::UserRole );
     newgroupNode->setData( group == "Recent (Selection)" ? 2 : 1, QgsExpressionItem::CustomSortRole );
     newgroupNode->appendRow( item );
+    newgroupNode->setBackground( QBrush( QColor( "#eee" ) ) );
     mModel->appendRow( newgroupNode );
     mExpressionGroups.insert( group, newgroupNode );
   }
@@ -439,12 +440,7 @@ void QgsExpressionBuilderWidget::updateFunctionTree()
   registerItem( "Operators", "<>", " <> ", tr( "Unequal operator" ) );
   registerItem( "Operators", "<=", " <= ", tr( "Less or equal operator" ) );
   registerItem( "Operators", ">=", " >= ", tr( "Greater or equal operator" ) );
-  registerItem( "Operators", "||", " || ",
-                QString( "<b>|| %1</b><br><i>%2</i><br><i>%3:</i>%4" )
-                .arg( tr( "(String Concatenation)" ) )
-                .arg( tr( "Joins two values together into a string" ) )
-                .arg( tr( "Usage" ) )
-                .arg( tr( "'Dia' || Diameter" ) ) );
+  registerItem( "Operators", "||", " || " );
   registerItem( "Operators", "IN", " IN " );
   registerItem( "Operators", "LIKE", " LIKE " );
   registerItem( "Operators", "ILIKE", " ILIKE " );

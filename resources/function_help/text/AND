@@ -7,7 +7,9 @@ Returns 1 when condition a and b are true.
 <h4>Arguments</h4>
 None
 
-<h4>Example</h4>
-<pre> 4 = 2+2 AND 1 = 1  &rarr; returns 1 </pre>
-<pre> 4 = 2+2 AND 1 = 2  &rarr; returns 0 </pre>
+<h4>Examples</h4>
+<pre> TRUE AND TRUE  &rarr; 1 </pre>
+<pre> TRUE AND FALSE  &rarr; 0 </pre>
+<pre> 4 = 2+2 AND 1 = 1  &rarr; 1 </pre>
+<pre> 4 = 2+2 AND 1 = 2  &rarr; 0 </pre>
 
