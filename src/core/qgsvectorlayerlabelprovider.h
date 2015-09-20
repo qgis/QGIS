@@ -34,6 +34,7 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
     //! Convenience constructor to initialize the provider from given vector layer
     explicit QgsVectorLayerLabelProvider( QgsVectorLayer* layer, bool withFeatureLoop = true );
 
+    //! Construct diagram provider with all the necessary configuration parameters
     QgsVectorLayerLabelProvider( const QgsPalLayerSettings& settings,
                                  const QString& layerId,
                                  const QgsFields& fields,
@@ -55,7 +56,7 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
      * Prepare for registration of features. Must be called after provider has been added to engine (uses its map settings)
      * @param context render context.
      * @param attributeNames list of attribute names to which additional required attributes shall be added
-     * @return List of attributes necessary for labeling
+     * @return Whether the preparation was successful - if not, the provider shall not be used
      */
     virtual bool prepare( const QgsRenderContext& context, QStringList& attributeNames );
 
@@ -69,18 +70,29 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
     virtual void registerFeature( QgsFeature& feature, const QgsRenderContext& context );
 
   protected:
+    //! initialization method - called from constructors
     void init();
+    //! Internal label drawing method
     void drawLabelPrivate( pal::LabelPosition* label, QgsRenderContext& context, QgsPalLayerSettings& tmpLyr, QgsPalLabeling::DrawLabelType drawType, double dpiRatio = 1.0 ) const;
 
   protected:
+    //! Layer's labeling configuration
     QgsPalLayerSettings mSettings;
+    //! Layer's ID
     QString mLayerId;
+
     // these are needed only if using own renderer loop
+
+    //! Layer's fields
     QgsFields mFields;
+    //! Layer's CRS
     QgsCoordinateReferenceSystem mCrs;
+    //! Layer's feature source
     QgsAbstractFeatureSource* mSource;
+    //! Whether layer's feature source is owned
     bool mOwnsSource;
 
+    //! List of generated
     QList<QgsLabelFeature*> mLabels;
 };
 

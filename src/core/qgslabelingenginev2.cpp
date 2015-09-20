@@ -263,7 +263,7 @@ void QgsLabelingEngineV2::run( QgsRenderContext& context )
     if ( context.renderingStopped() )
       break;
 
-    QgsLabelFeature* lf = ( *it )->getFeaturePart()->userFeature();
+    QgsLabelFeature* lf = ( *it )->getFeaturePart()->feature();
     if ( !lf )
     {
       continue;

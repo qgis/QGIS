@@ -51,6 +51,7 @@ class CORE_EXPORT QgsLabelFeature
   public:
     //! Create label feature, takes ownership of the geometry instance
     QgsLabelFeature( QgsFeatureId id, GEOSGeometry* geometry, const QSizeF& size );
+    //! Clean up geometry and curved label info (if present)
     virtual ~QgsLabelFeature();
 
     //! Identifier of the label (unique within the parent label provider)
@@ -78,16 +79,20 @@ class CORE_EXPORT QgsLabelFeature
 
     //! Whether the label should use a fixed position instead of being automatically placed
     bool hasFixedPosition() const { return mHasFixedPosition; }
+    //! Set whether the label should use a fixed position instead of being automatically placed
     void setHasFixedPosition( bool enabled ) { mHasFixedPosition = enabled; }
     //! Coordinates of the fixed position (relevant only if hasFixedPosition() returns true)
     QgsPoint fixedPosition() const { return mFixedPosition; }
+    //! Set coordinates of the fixed position (relevant only if hasFixedPosition() returns true)
     void setFixedPosition( const QgsPoint& point ) { mFixedPosition = point; }
 
     //! Whether the label should use a fixed angle instead of using angle from automatic placement
     bool hasFixedAngle() const { return mHasFixedAngle; }
+    //! Set whether the label should use a fixed angle instead of using angle from automatic placement
     void setHasFixedAngle( bool enabled ) { mHasFixedAngle = enabled; }
     //! Angle in degrees of the fixed angle (relevant only if hasFixedAngle() returns true)
     double fixedAngle() const { return mFixedAngle; }
+    //! Set angle in degrees of the fixed angle (relevant only if hasFixedAngle() returns true)
     void setFixedAngle( double angle ) { mFixedAngle = angle; }
 
     /** Returns whether the quadrant for the label is fixed.
@@ -107,22 +112,32 @@ class CORE_EXPORT QgsLabelFeature
     //! For X coordinate, values -1, 0, 1 mean left, center, right.
     //! For Y coordinate, values -1, 0, 1 mean above, center, below.
     QPointF quadOffset() const { return mQuadOffset; }
+    //! Set which side of the point to use
+    //! @see quadOffset
     void setQuadOffset( const QPointF& quadOffset ) { mQuadOffset = quadOffset; }
-    //! Applies only to "offset from point" placement strategy - what offset to use from the point
+    //! Applies only to "offset from point" placement strategy.
+    //! What offset (in map units) to use from the point
     QgsPoint positionOffset() const { return mPositionOffset; }
+    //! Applies only to "offset from point" placement strategy.
+    //! Set what offset (in map units) to use from the point
     void setPositionOffset( const QgsPoint& offset ) { mPositionOffset = offset; }
     //! Applies to "around point" placement strategy or linestring features.
     //! Distance of the label from the feature (in map units)
     double distLabel() const { return mDistLabel; }
+    //! Applies to "around point" placement strategy or linestring features.
+    //! Set distance of the label from the feature (in map units)
     void setDistLabel( double dist ) { mDistLabel = dist; }
 
     //! Applies only to linestring features - after what distance (in map units)
     //! the labels should be repeated (0 = no repetitions)
     double repeatDistance() const { return mRepeatDistance; }
+    //! Applies only to linestring features - set after what distance (in map units)
+    //! the labels should be repeated (0 = no repetitions)
     void setRepeatDistance( double dist ) { mRepeatDistance = dist; }
 
     //! Whether label should be always shown (sets very high label priority)
     bool alwaysShow() const { return mAlwaysShow; }
+    //! Set whether label should be always shown (sets very high label priority)
     void setAlwaysShow( bool enabled ) { mAlwaysShow = enabled; }
 
     /** Returns whether the feature will act as an obstacle for labels.
@@ -131,7 +146,7 @@ class CORE_EXPORT QgsLabelFeature
      */
     bool isObstacle() const { return mIsObstacle; }
     /** Sets whether the feature will act as an obstacle for labels.
-     * @param obstacle whether feature will act as an obstacle
+     * @param enabled whether feature will act as an obstacle
      * @see isObstacle
      */
     void setIsObstacle( bool enabled ) { mIsObstacle = enabled; }
@@ -149,11 +164,13 @@ class CORE_EXPORT QgsLabelFeature
      */
     void setObstacleFactor( double factor ) { mObstacleFactor = factor; }
 
-    //! Text of the label
-    //!
-    //! Used if "merge connected lines to avoid duplicate labels" is enabled
-    //! to identify which features may be merged
+    /** Text of the label
+     *
+     * Used also if "merge connected lines to avoid duplicate labels" is enabled
+     * to identify which features may be merged.
+     */
     QString labelText() const { return mLabelText; }
+    //! Set text of the label
     void setLabelText( const QString& text ) { mLabelText = text; }
 
     //! Get additional infor required for curved label placement. Returns null if not set
@@ -164,9 +181,10 @@ class CORE_EXPORT QgsLabelFeature
     //! Get PAL layer of the label feature. Should be only used internally in PAL
     pal::Layer* layer() const { return mLayer; }
     //! Assign PAL layer to the label feature. Should be only used internally in PAL
-    void setLayer(pal::Layer* layer) { mLayer = layer; }
+    void setLayer( pal::Layer* layer ) { mLayer = layer; }
 
   protected:
+    //! Pointer to PAL layer (assigned when registered to PAL)
     pal::Layer* mLayer;
 
     //! Associated ID unique within the parent label provider
@@ -175,20 +193,35 @@ class CORE_EXPORT QgsLabelFeature
     GEOSGeometry* mGeometry;
     //! Width and height of the label
     QSizeF mSize;
+    //! Priority of the label
     double mPriority;
+    //! whether mFixedPosition should be respected
     bool mHasFixedPosition;
+    //! fixed position for the label (instead of automatic placement)
     QgsPoint mFixedPosition;
+    //! whether mFixedAngle should be respected
     bool mHasFixedAngle;
+    //! fixed rotation for the label (instead of automatic choice)
     double mFixedAngle;
+    //! whether mQuadOffset should be respected (only for "around point" placement)
     bool mHasFixedQuadrant;
+    //! whether the side of the label is fixed (only for "around point" placement)
     QPointF mQuadOffset;
+    //! offset of label from the feature (only for "offset from point" placement)
     QgsPoint mPositionOffset;
+    //! distance of label from the feature (only for "around point" placement or linestrings)
     double mDistLabel;
+    //! distance after which label should be repeated (only for linestrings)
     double mRepeatDistance;
+    //! whether to always show label - even in case of collisions
     bool mAlwaysShow;
+    //! whether the feature geometry acts as an obstacle for labels
     bool mIsObstacle;
+    //! how strong is the geometry acting as obstacle
     double mObstacleFactor;
+    //! text of the label
     QString mLabelText;
+    //! extra information for curved labels (may be null)
     pal::LabelInfo* mInfo;
 };
 
@@ -202,15 +235,20 @@ class QgsLabelingEngineV2;
  * return list of labels and their associated geometries - these are used by
  * QgsLabelingEngineV2 to compute the final layout of labels.
  *
+ * Implementations also take care of drawing the returned final label positions.
+ *
  * @note added in QGIS 2.12
  */
 class CORE_EXPORT QgsAbstractLabelProvider
 {
 
   public:
+    //! Construct the provider with default values
     QgsAbstractLabelProvider();
+    //! Vritual destructor
     virtual ~QgsAbstractLabelProvider() {}
 
+    //! Associate provider with a labeling engine (should be only called internally from QgsLabelingEngineV2)
     void setEngine( const QgsLabelingEngineV2* engine ) { mEngine = engine; }
 
     enum Flag
@@ -227,35 +265,47 @@ class CORE_EXPORT QgsAbstractLabelProvider
     //! Return unique identifier of the provider
     virtual QString id() const = 0;
 
-    //! Return list of labels
+    //! Return list of label features (they are owned by the provider and thus deleted on its destruction)
     virtual QList<QgsLabelFeature*> labelFeatures( const QgsRenderContext& context ) = 0;
 
     //! draw this label at the position determined by the labeling engine
     virtual void drawLabel( QgsRenderContext& context, pal::LabelPosition* label ) const = 0;
 
+    //! Flags associated with the provider
     Flags flags() const { return mFlags; }
 
     //! What placement strategy to use for the labels
     QgsPalLayerSettings::Placement placement() const { return mPlacement; }
 
+    //! For layers with linestring geometries - extra placement flags (or-ed combination of QgsPalLayerSettings::LinePlacementFlags)
     unsigned int linePlacementFlags() const { return mLinePlacementFlags; }
 
+    //! Default priority of labels (may be overridden by individual labels)
     double priority() const { return mPriority; }
 
+    //! How the feature geometries will work as obstacles
     QgsPalLayerSettings::ObstacleType obstacleType() const { return mObstacleType; }
 
-    unsigned int upsidedownLabels() const { return mUpsidedownLabels; }
+    //! How to handle labels that would be upside down
+    QgsPalLayerSettings::UpsideDownLabels upsidedownLabels() const { return mUpsidedownLabels; }
 
 
   protected:
+    //! Associated labeling engine
     const QgsLabelingEngineV2* mEngine;
 
+    //! Flags altering drawing and registration of features
     Flags mFlags;
+    //! Placement strategy
     QgsPalLayerSettings::Placement mPlacement;
+    //! Extra placement flags for linestring geometries
     unsigned int mLinePlacementFlags;
+    //! Default priority of labels
     double mPriority;
+    //! Type of the obstacle of feature geometries
     QgsPalLayerSettings::ObstacleType mObstacleType;
-    unsigned int mUpsidedownLabels;
+    //! How to handle labels that would be upside down
+    QgsPalLayerSettings::UpsideDownLabels mUpsidedownLabels;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsAbstractLabelProvider::Flags )
@@ -269,12 +319,29 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( QgsAbstractLabelProvider::Flags )
  * with no collisions between the labels. Drawing of resulting labels is done
  * again by label providers.
  *
+ * The labeling engine is used for the map rendering in QgsMapRendererJob instances,
+ * individual map layer renderers may add label providers - for example,
+ * QgsVectorLayerRenderer may add text label provider and diagram provider
+ * (if labeling / diagrams were configured for such vector layer).
+ *
+ * The labeling engine may also be used independently from map rendering loop:
+ * \code
+ *   QgsLabelingEngineV2 engine;
+ *   engine.setMapSettings( mapSettings );
+ *   // add one or more providers
+ *   engine.addProvider( ... );
+ *   // compute the labeling and draw labels (using painter from the context)
+ *   engine.run( context );
+ * \endcode
+ *
  * @note added in QGIS 2.12
  */
 class CORE_EXPORT QgsLabelingEngineV2
 {
   public:
+    //! Construct the labeling engine with default settings
     QgsLabelingEngineV2();
+    //! Clean up everything (especially the registered providers)
     ~QgsLabelingEngineV2();
 
     enum Flag
@@ -288,7 +355,9 @@ class CORE_EXPORT QgsLabelingEngineV2
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
+    //! Associate map settings instance
     void setMapSettings( const QgsMapSettings& mapSettings ) { mMapSettings = mapSettings; }
+    //! Get associated map settings
     const QgsMapSettings& mapSettings() const { return mMapSettings; }
 
     //! Add provider of label features. Takes ownership of the provider
@@ -309,27 +378,43 @@ class CORE_EXPORT QgsLabelingEngineV2
     //! For internal use by the providers
     QgsLabelingResults* results() const { return mResults; }
 
+    //! Set flags of the labeling engine
     void setFlags( Flags flags ) { mFlags = flags; }
+    //! Get flags of the labeling engine
     Flags flags() const { return mFlags; }
+    //! Test whether a particular flag is enabled
     bool testFlag( Flag f ) const { return mFlags.testFlag( f ); }
-    void setFlag( Flag f, bool enabled ) { if ( enabled ) mFlags |= f; else mFlags &= ~f; }
+    //! Set whether a particual flag is enabled
+    void setFlag( Flag f, bool enabled = true ) { if ( enabled ) mFlags |= f; else mFlags &= ~f; }
 
+    //! Get number of candidate positions that will be generated for each label feature (default to 8)
     void numCandidatePositions( int& candPoint, int& candLine, int& candPolygon ) { candPoint = mCandPoint; candLine = mCandLine; candPolygon = mCandPolygon; }
+    //! Set number of candidate positions that will be generated for each label feature
     void setNumCandidatePositions( int candPoint, int candLine, int candPolygon ) { mCandPoint = candPoint; mCandLine = candLine; mCandPolygon = candPolygon; }
 
+    //! Set which search method to use for removal collisions between labels
     void setSearchMethod( QgsPalLabeling::Search s ) { mSearchMethod = s; }
+    //! Which search method to use for removal collisions between labels
     QgsPalLabeling::Search searchMethod() const { return mSearchMethod; }
 
+    //! Read configuration of the labeling engine from the current project file
     void readSettingsFromProject();
+    //! Write configuration of the labeling engine to the current project file
     void writeSettingsToProject();
 
   protected:
+    //! Associated map settings instance
     QgsMapSettings mMapSettings;
+    //! List of providers (the are owned by the labeling engine)
     QList<QgsAbstractLabelProvider*> mProviders;
+    //! Flags
     Flags mFlags;
+    //! search method to use for removal collisions between labels
     QgsPalLabeling::Search mSearchMethod;
+    //! Number of candedate positions that will be generated for features
     int mCandPoint, mCandLine, mCandPolygon;
 
+    //! Resulting labeling layout
     QgsLabelingResults* mResults;
 };
 

@@ -31,12 +31,14 @@ class QgsDiagramLabelFeature : public QgsLabelFeature
     QgsDiagramLabelFeature( QgsFeatureId id, GEOSGeometry* geometry, const QSizeF& size )
         : QgsLabelFeature( id, geometry, size ) {}
 
-    void setDiagramAttributes( const QgsAttributes& attrs ) { mDiagramAttributes = attrs; }
-    const QgsAttributes& diagramAttributes() { return mDiagramAttributes; }
+    //! Store feature's attributes - used for rendering of diagrams
+    void setAttributes( const QgsAttributes& attrs ) { mAttributes = attrs; }
+    //! Get feature's attributes - used for rendering of diagrams
+    const QgsAttributes& attributes() { return mAttributes; }
 
   protected:
     /** Stores attribute values for diagram rendering*/
-    QgsAttributes mDiagramAttributes;
+    QgsAttributes mAttributes;
 };
 
 
@@ -56,6 +58,7 @@ class CORE_EXPORT QgsVectorLayerDiagramProvider : public QgsAbstractLabelProvide
     //! Convenience constructor to initialize the provider from given vector layer
     explicit QgsVectorLayerDiagramProvider( QgsVectorLayer* layer, bool ownFeatureLoop = true );
 
+    //! Construct diagram provider with all the necessary configuration parameters
     QgsVectorLayerDiagramProvider( const QgsDiagramLayerSettings* diagSettings,
                                    const QgsDiagramRendererV2* diagRenderer,
                                    const QString& layerId,
@@ -64,6 +67,7 @@ class CORE_EXPORT QgsVectorLayerDiagramProvider : public QgsAbstractLabelProvide
                                    QgsAbstractFeatureSource* source,
                                    bool ownsSource );
 
+    //! Clean up
     ~QgsVectorLayerDiagramProvider();
 
     virtual QString id() const override;
@@ -74,25 +78,50 @@ class CORE_EXPORT QgsVectorLayerDiagramProvider : public QgsAbstractLabelProvide
 
     // new virtual methods
 
+    /**
+     * Prepare for registration of features. Must be called after provider has been added to engine (uses its map settings)
+     * @param context render context.
+     * @param attributeNames list of attribute names to which additional required attributes shall be added
+     * @return Whether the preparation was successful - if not, the provider shall not be used
+     */
     virtual bool prepare( const QgsRenderContext& context, QStringList& attributeNames );
 
+    /**
+     * Register a feature for labeling as one or more QgsLabelFeature objects stored into mFeatures
+     *
+     * @param feature feature for diagram
+     * @param context render context. The QgsExpressionContext contained within the render context
+     * must have already had the feature and fields sets prior to calling this method.
+     */
     virtual void registerFeature( QgsFeature& feature, const QgsRenderContext& context );
 
   protected:
+    //! initialization method - called from constructors
     void init();
+    //! helper method to register one diagram feautre
     QgsLabelFeature* registerDiagram( QgsFeature& feat, const QgsRenderContext& context );
 
   protected:
 
+    //! Diagram layer settings
     QgsDiagramLayerSettings mSettings;
+    //! Diagram renderer instance (owned by mSettings)
     QgsDiagramRendererV2* mDiagRenderer;
-
+    //! ID of the layer
     QString mLayerId;
+
+    // these are needed only if using own renderer loop
+
+    //! Layer's fields
     QgsFields mFields;
+    //! Layer's CRS
     QgsCoordinateReferenceSystem mLayerCrs;
+    //! Layer's feature source
     QgsAbstractFeatureSource* mSource;
+    //! Whether layer's feature source is owned
     bool mOwnsSource;
 
+    //! List of generated label features (owned by the provider)
     QList<QgsLabelFeature*> mFeatures;
 };
 

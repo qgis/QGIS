@@ -70,6 +70,10 @@ QgsVectorLayerDiagramProvider::~QgsVectorLayerDiagramProvider()
 {
   if ( mOwnsSource )
     delete mSource;
+
+  qDeleteAll( mFeatures );
+
+  // renderer is owned by mSettings
 }
 
 
@@ -124,13 +128,13 @@ void QgsVectorLayerDiagramProvider::drawLabel( QgsRenderContext& context, pal::L
   const QgsMapToPixel& xform = context.mapToPixel();
 #endif
 
-  QgsDiagramLabelFeature* dlf = dynamic_cast<QgsDiagramLabelFeature*>( label->getFeaturePart()->userFeature() );
+  QgsDiagramLabelFeature* dlf = dynamic_cast<QgsDiagramLabelFeature*>( label->getFeaturePart()->feature() );
 
   QgsFeature feature;
   feature.setFields( mSettings.fields );
   feature.setValid( true );
   feature.setFeatureId( label->getFeaturePart()->featureId() );
-  feature.setAttributes( dlf->diagramAttributes() );
+  feature.setAttributes( dlf->attributes() );
 
   //calculate top-left point for diagram
   //first, calculate the centroid of the label (accounts for PAL creating
@@ -344,7 +348,7 @@ QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& fea
   if ( dr )
   {
     //append the diagram attributes to lbl
-    lf->setDiagramAttributes( feat.attributes() );
+    lf->setAttributes( feat.attributes() );
   }
 
   QgsPoint ptZero = mSettings.xform->toMapCoordinates( 0, 0 );

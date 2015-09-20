@@ -1862,7 +1862,6 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
 
   //data defined position / alignment / rotation?
   bool dataDefinedPosition = false;
-  bool labelIsPinned = false;
   bool layerDefinedRotation = false;
   bool dataDefinedRotation = false;
   double xPos = 0.0, yPos = 0.0, angle = 0.0;
@@ -2014,7 +2013,6 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
       if ( ddXPos && ddYPos )
       {
         dataDefinedPosition = true;
-        labelIsPinned = true;
         // layer rotation set, but don't rotate pinned labels unless data defined
         if ( layerDefinedRotation && !dataDefinedRotation )
         {
@@ -2271,15 +2269,8 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
   }
   ( *labelFeature )->setObstacleFactor( featObstacleFactor );
 
-  //add parameters for data defined labeling to label feature
-  QMap< DataDefinedProperties, QVariant >::const_iterator dIt = dataDefinedValues.constBegin();
-  for ( ; dIt != dataDefinedValues.constEnd(); ++dIt )
-  {
-    lf->addDataDefinedValue( dIt.key(), dIt.value() );
-  }
-
-  // set geometry's pinned property
-  lf->setIsPinned( labelIsPinned );
+  // add parameters for data defined labeling to label feature
+  lf->setDataDefinedValues( dataDefinedValues );
 }
 
 

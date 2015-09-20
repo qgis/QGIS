@@ -17,14 +17,15 @@ using namespace pal;
 class QgsTextLabelFeature : public QgsLabelFeature
 {
   public:
+    //! Construct text label feature
     QgsTextLabelFeature( QgsFeatureId id, GEOSGeometry* geometry, const QSizeF& size )
         : QgsLabelFeature( id, geometry, size )
-        , mIsPinned( false )
         , mFontMetrics( NULL )
     {
       mDefinedFont = QFont();
     }
 
+    //! Clean up
     ~QgsTextLabelFeature()
     {
       delete mFontMetrics;
@@ -108,21 +109,25 @@ class QgsTextLabelFeature : public QgsLabelFeature
       }
     }
 
+    //! Get data-defined values
     const QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant >& dataDefinedValues() const { return mDataDefinedValues; }
-    void addDataDefinedValue( QgsPalLayerSettings::DataDefinedProperties p, QVariant v ) { mDataDefinedValues.insert( p, v ); }
+    //! Set data-defined values
+    void setDataDefinedValues( const QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant >& values ) { mDataDefinedValues = values; }
 
-    void setIsPinned( bool f ) { mIsPinned = f; }
-    bool isPinned() const { return mIsPinned; }
-
+    //! Set font to be used for rendering
     void setDefinedFont( QFont f ) { mDefinedFont = QFont( f ); }
+    //! Font to be used for rendering
     QFont definedFont() { return mDefinedFont; }
 
-    QFontMetricsF* getLabelFontMetrics() { return mFontMetrics; }
+    //! Metrics of the font for rendering
+    QFontMetricsF* labelFontMetrics() { return mFontMetrics; }
 
   protected:
+    //! List of graphemes (used for curved labels)
     QStringList mClusters;
-    bool mIsPinned;
+    //! Font for rendering
     QFont mDefinedFont;
+    //! Metrics of the font for rendering
     QFontMetricsF* mFontMetrics;
     /** Stores attribute values for data defined properties*/
     QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant > mDataDefinedValues;

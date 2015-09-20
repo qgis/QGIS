@@ -114,6 +114,8 @@ QgsVectorLayerLabelProvider::~QgsVectorLayerLabelProvider()
   }
   mSettings.dataDefinedProperties.clear();
 
+  qDeleteAll( mLabels );
+
   if ( mOwnsSource )
     delete mSource;
 }
@@ -298,7 +300,7 @@ void QgsVectorLayerLabelProvider::drawLabel( QgsRenderContext& context, pal::Lab
   if ( !mSettings.drawLabels )
     return;
 
-  QgsTextLabelFeature* lf = dynamic_cast<QgsTextLabelFeature*>( label->getFeaturePart()->userFeature() );
+  QgsTextLabelFeature* lf = dynamic_cast<QgsTextLabelFeature*>( label->getFeaturePart()->feature() );
 
   // Copy to temp, editable layer settings
   // these settings will be changed by any data defined values, then used for rendering label components
@@ -386,8 +388,8 @@ void QgsVectorLayerLabelProvider::drawLabel( QgsRenderContext& context, pal::Lab
   drawLabelPrivate( label, context, tmpLyr, QgsPalLabeling::LabelText );
 
   // add to the results
-  QString labeltext = label->getFeaturePart()->userFeature()->labelText();
-  mEngine->results()->mLabelSearchTree->insertLabel( label, label->getFeaturePart()->featureId(), id(), labeltext, dFont, false, lf->isPinned() );
+  QString labeltext = label->getFeaturePart()->feature()->labelText();
+  mEngine->results()->mLabelSearchTree->insertLabel( label, label->getFeaturePart()->featureId(), id(), labeltext, dFont, false, lf->hasFixedPosition() );
 }
 
 
@@ -477,9 +479,9 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition* label, Q
   {
 
     // TODO: optimize access :)
-    QgsTextLabelFeature* lf = dynamic_cast<QgsTextLabelFeature*>( label->getFeaturePart()->userFeature() );
+    QgsTextLabelFeature* lf = dynamic_cast<QgsTextLabelFeature*>( label->getFeaturePart()->feature() );
     QString txt = lf->text( label->getPartId() );
-    QFontMetricsF* labelfm = lf->getLabelFontMetrics();
+    QFontMetricsF* labelfm = lf->labelFontMetrics();
 
     //add the direction symbol if needed
     if ( !txt.isEmpty() && tmpLyr.placement == QgsPalLayerSettings::Line &&

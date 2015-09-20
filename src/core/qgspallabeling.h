@@ -439,7 +439,7 @@ class CORE_EXPORT QgsPalLayerSettings
     int fontMaxPixelSize; // maximum pixel size for showing rendered map unit labels (1 - 10000)
 
     bool displayAll;  // if true, all features will be labelled even though overlaps occur
-    unsigned int upsidedownLabels; // whether, or how, to show upsidedown labels
+    UpsideDownLabels upsidedownLabels; // whether, or how, to show upsidedown labels
 
     bool labelPerPart; // whether to label every feature's part or only the biggest one
     bool mergeLines;

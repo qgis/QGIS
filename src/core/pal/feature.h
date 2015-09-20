@@ -82,7 +82,7 @@ namespace pal
     public:
 
       /** Creates a new generic feature.
-        * @param feat a pointer for a feature which contains the spatial entites
+        * @param lf a pointer for a feature which contains the spatial entites
         * @param geom a pointer to a GEOS geometry
         */
       FeaturePart( QgsLabelFeature* lf, const GEOSGeometry* geom );
@@ -167,8 +167,6 @@ namespace pal
       void print();
 #endif
 
-      QgsLabelFeature* userFeature() { return mLF; }
-
       double getLabelWidth() const { return mLF->size().width(); }
       double getLabelHeight() const { return mLF->size().height(); }
       double getLabelDistance() const { return mLF->distLabel(); }
@@ -181,7 +179,9 @@ namespace pal
       double obstacleFactor() { return mLF->obstacleFactor(); }
       double repeatDistance() { return mLF->repeatDistance(); }
 
+      //! Get number of holes (inner rings) - they are considered as obstacles
       int getNumSelfObstacles() const { return mHoles.count(); }
+      //! Get hole (inner ring) - considered as obstacle
       FeaturePart* getSelfObstacle( int i ) { return mHoles.at( i ); }
 
       /** Check whether this part is connected with some other part */

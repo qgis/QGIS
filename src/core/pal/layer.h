@@ -226,33 +226,13 @@ namespace pal
       bool fitInPolygonOnly() const { return mFitInPolygon; }
 
       /** Register a feature in the layer.
-       * @param fid unique identifier
-       * @param userGeom user's geometry (does not take ownership)
-       * @param label_x label width
-       * @param label_y label height
-       * @param labelText label text
-       * @param labelPosX x position of the label (in case of fixed label position)
-       * @param labelPosY y position of the label (in case of fixed label position)
-       * @param fixedPos true if a single fixed position for this label is needed
-       * @param angle fixed angle (in radians) to rotate the label
-       * @param fixedAngle whether to use provided fixed angle
-       * @param xQuadOffset move label to quadrant: left, don't move, right (-1, 0, 1)
-       * @param yQuadOffset move label to quadrant: down, don't move, up (-1, 0, 1)
-       * @param xOffset map unit (+/-) to x-offset the label
-       * @param yOffset map unit (+/-) to y-offset the label
-       * @param alwaysShow whether to skip priority and always show the label (causes overlapping)
-       * @param repeatDistance distance for repeating the label
+       *
+       * Does not take ownership of the label feature (it is owned by its provider).
        *
        * @throws PalException::FeatureExists
        *
        * @return true on success (i.e. valid geometry)
        */
-      bool registerFeature( QgsLabelFeature* label, QgsFeatureId fid, const GEOSGeometry *userGeom, double label_x = -1, double label_y = -1,
-                            const QString& labelText = QString(), double labelPosX = 0.0, double labelPosY = 0.0,
-                            bool fixedPos = false, double angle = 0.0, bool fixedAngle = false,
-                            int xQuadOffset = 0, int yQuadOffset = 0, double xOffset = 0.0, double yOffset = 0.0,
-                            bool alwaysShow = false, double repeatDistance = 0 );
-
       bool registerFeature( QgsLabelFeature* label );
 
       /** Join connected features with the same label text */

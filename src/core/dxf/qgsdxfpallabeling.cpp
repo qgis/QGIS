@@ -38,7 +38,7 @@ void QgsDxfLabelProvider::drawLabel( QgsRenderContext& context, pal::LabelPositi
   //debug: print label infos
   if ( mDxfExport )
   {
-    QgsTextLabelFeature* lf = dynamic_cast<QgsTextLabelFeature*>( label->getFeaturePart()->userFeature() );
+    QgsTextLabelFeature* lf = dynamic_cast<QgsTextLabelFeature*>( label->getFeaturePart()->feature() );
     if ( !lf )
       return;
 
