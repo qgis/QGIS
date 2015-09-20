@@ -21,6 +21,8 @@
 #include <QVariant>
 #include <QList>
 #include <QDomDocument>
+#include <QCoreApplication>
+
 #include "qgis.h"
 
 class QgsFeature;
@@ -89,6 +91,7 @@ division and modulo operators: 1.0/2 returns 0.5 while 1/2 returns 0. */
 Q_NOWARN_DEPRECATED_PUSH
 class CORE_EXPORT QgsExpression
 {
+    Q_DECLARE_TR_FUNCTIONS( QgsExpression )
   public:
     QgsExpression( const QString& expr );
     ~QgsExpression();
@@ -937,7 +940,75 @@ class CORE_EXPORT QgsExpression
     static QMap<QString, QVariant> gmSpecialColumns;
     static QMap<QString, QString> gmSpecialColumnGroups;
 
-    static QHash<QString, QString> gFunctionHelpTexts;
+    struct HelpArg
+    {
+      HelpArg( QString arg, QString desc, bool descOnly = false, bool syntaxOnly = false )
+          : mArg( arg )
+          , mDescription( desc )
+          , mDescOnly( descOnly )
+          , mSyntaxOnly( syntaxOnly )
+      {}
+
+      QString mArg;
+      QString mDescription;
+      bool mDescOnly;
+      bool mSyntaxOnly;
+    };
+
+    struct HelpExample
+    {
+      HelpExample( QString expression, QString returns, QString note = QString::null )
+          : mExpression( expression )
+          , mReturns( returns )
+          , mNote( note )
+      {}
+
+      QString mExpression;
+      QString mReturns;
+      QString mNote;
+    };
+
+    struct HelpVariant
+    {
+      HelpVariant( QString name, QString description,
+                   QList<HelpArg> arguments = QList<HelpArg>(),
+                   bool variableLenArguments = false,
+                   QList<HelpExample> examples = QList<HelpExample>(),
+                   QString notes = QString::null )
+          : mName( name )
+          , mDescription( description )
+          , mArguments( arguments )
+          , mVariableLenArguments( variableLenArguments )
+          , mExamples( examples )
+          , mNotes( notes )
+      {}
+
+      QString mName;
+      QString mDescription;
+      QList<HelpArg> mArguments;
+      bool mVariableLenArguments;
+      QList<HelpExample> mExamples;
+      QString mNotes;
+    };
+
+    struct Help
+    {
+      Help() {}
+
+      Help( QString name, QString type, QString description, QList<HelpVariant> variants )
+          : mName( name )
+          , mType( type )
+          , mDescription( description )
+          , mVariants( variants )
+      {}
+
+      QString mName;
+      QString mType;
+      QString mDescription;
+      QList<HelpVariant> mVariants;
+    };
+
+    static QHash<QString, Help> gFunctionHelpTexts;
     static QHash<QString, QString> gVariableHelpTexts;
     static QHash<QString, QString> gGroups;
 

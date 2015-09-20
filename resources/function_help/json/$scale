@@ -1,0 +1,8 @@
+{
+  "name": "$scale",
+  "type": "function",
+  "description": "Returns the current scale of the map canvas.\\n\\nNote: This function is only available in some contexts and will be 0 otherwise.",
+  "examples": [
+	{ "expression":"$scale", "returns":"10000"}
+  ]
+}

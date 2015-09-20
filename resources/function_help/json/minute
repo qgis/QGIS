@@ -1,5 +1,6 @@
 {
-  "function": "minute",
+  "name": "minute",
+  "type": "function",
   "description": "Extract the minutes part from a datetime or time, or the number of minutes from an interval.",
   "variants": [
   { "variant": "Time variant",

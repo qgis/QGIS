@@ -1,5 +1,6 @@
 {
-  "function": "color_hsla",
+  "name": "color_hsla",
+  "type": "function",
   "description": "Returns a string representation of a color based on its hue, saturation, lightness and alpha (transparency) attributes",
   "arguments": [ {"arg":"hue","description":"hue of the color, as an integer value from 0 to 360"},
                  {"arg":"saturation","description":"saturation percentage of the color as an integer value from 0 to 100"},

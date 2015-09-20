@@ -1,5 +1,6 @@
 {
-  "function": "soundex",
+  "name": "soundex",
+  "type": "function",
   "description": "Returns the Soundex representation of a string. Soundex is a phonetic matching algorithm, so strings with similar sounds should be represented by the same Soundex code.",
   "arguments": [ {"arg":"string","description":"a string"}
   ],

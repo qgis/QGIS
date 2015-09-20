@@ -1,5 +1,6 @@
 {
-  "function": "intersects",
+  "name": "disjoint",
+  "type": "function",
   "description": "Tests whether geometries do not spatially intersect. Returns true if the geometries do not share any space together.",
   "arguments": [ {"arg":"geometry a","description":"a geometry"},
                  {"arg":"geometry b","description":"a geometry"}],

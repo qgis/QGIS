@@ -41,6 +41,10 @@
 #include "qgsgeometrycollectionv2.h"
 #include "qgspointv2.h"
 
+#if QT_VERSION < 0x050000
+#include <qtextdocument.h>
+#endif
+
 // from parser
 extern QgsExpression::Node* parseExpression( const QString& str, QString& parserErrorMsg );
 
@@ -67,13 +71,13 @@ QgsExpression::Interval QgsExpression::Interval::fromString( QString string )
   }
 
   QMap<int, QStringList> map;
-  map.insert( 1, QStringList() << "second" << "seconds" << QObject::tr( "second|seconds", "list of words separated by | which reference years" ).split( "|" ) );
-  map.insert( 0 + MINUTE, QStringList() << "minute" << "minutes" << QObject::tr( "minute|minutes", "list of words separated by | which reference minutes" ).split( "|" ) );
-  map.insert( 0 + HOUR, QStringList() << "hour" << "hours" << QObject::tr( "hour|hours", "list of words separated by | which reference minutes hours" ).split( "|" ) );
-  map.insert( 0 + DAY, QStringList() << "day" << "days" << QObject::tr( "day|days", "list of words separated by | which reference days" ).split( "|" ) );
-  map.insert( 0 + WEEKS, QStringList() << "week" << "weeks" << QObject::tr( "week|weeks", "wordlist separated by | which reference weeks" ).split( "|" ) );
-  map.insert( 0 + MONTHS, QStringList() << "month" << "months" << QObject::tr( "month|months", "list of words separated by | which reference months" ).split( "|" ) );
-  map.insert( 0 + YEARS, QStringList() << "year" << "years" << QObject::tr( "year|years", "list of words separated by | which reference years" ).split( "|" ) );
+  map.insert( 1, QStringList() << "second" << "seconds" << tr( "second|seconds", "list of words separated by | which reference years" ).split( "|" ) );
+  map.insert( 0 + MINUTE, QStringList() << "minute" << "minutes" << tr( "minute|minutes", "list of words separated by | which reference minutes" ).split( "|" ) );
+  map.insert( 0 + HOUR, QStringList() << "hour" << "hours" << tr( "hour|hours", "list of words separated by | which reference minutes hours" ).split( "|" ) );
+  map.insert( 0 + DAY, QStringList() << "day" << "days" << tr( "day|days", "list of words separated by | which reference days" ).split( "|" ) );
+  map.insert( 0 + WEEKS, QStringList() << "week" << "weeks" << tr( "week|weeks", "wordlist separated by | which reference weeks" ).split( "|" ) );
+  map.insert( 0 + MONTHS, QStringList() << "month" << "months" << tr( "month|months", "list of words separated by | which reference months" ).split( "|" ) );
+  map.insert( 0 + YEARS, QStringList() << "year" << "years" << tr( "year|years", "list of words separated by | which reference years" ).split( "|" ) );
 
   Q_FOREACH ( const QString& match, list )
   {
@@ -2438,7 +2442,7 @@ bool QgsExpression::prepare( const QgsExpressionContext *context )
 
   if ( !mRootNode )
   {
-    mEvalErrorString = QObject::tr( "No root node! Parsing failed?" );
+    mEvalErrorString = tr( "No root node! Parsing failed?" );
     return false;
   }
 
@@ -2450,7 +2454,7 @@ QVariant QgsExpression::evaluate( const QgsFeature* f )
   mEvalErrorString = QString();
   if ( !mRootNode )
   {
-    mEvalErrorString = QObject::tr( "No root node! Parsing failed?" );
+    mEvalErrorString = tr( "No root node! Parsing failed?" );
     return QVariant();
   }
 
@@ -2489,7 +2493,7 @@ QVariant QgsExpression::evaluate()
   mEvalErrorString = QString();
   if ( !mRootNode )
   {
-    mEvalErrorString = QObject::tr( "No root node! Parsing failed?" );
+    mEvalErrorString = tr( "No root node! Parsing failed?" );
     return QVariant();
   }
 
@@ -2501,7 +2505,7 @@ QVariant QgsExpression::evaluate( const QgsExpressionContext *context )
   mEvalErrorString = QString();
   if ( !mRootNode )
   {
-    mEvalErrorString = QObject::tr( "No root node! Parsing failed?" );
+    mEvalErrorString = tr( "No root node! Parsing failed?" );
     return QVariant();
   }
 
@@ -2511,7 +2515,7 @@ QVariant QgsExpression::evaluate( const QgsExpressionContext *context )
 QString QgsExpression::dump() const
 {
   if ( !mRootNode )
-    return QObject::tr( "(no root)" );
+    return tr( "(no root)" );
 
   return mRootNode->dump();
 }
@@ -2669,7 +2673,7 @@ QVariant QgsExpression::NodeUnaryOperator::eval( QgsExpression *parent, const Qg
       else if ( isDoubleSafe( val ) )
         return QVariant( - getDoubleValue( val, parent ) );
       else
-        SET_EVAL_ERROR( QObject::tr( "Unary minus only for numeric values." ) );
+        SET_EVAL_ERROR( tr( "Unary minus only for numeric values." ) );
       break;
     default:
       Q_ASSERT( 0 && "unknown unary operation" );
@@ -2730,7 +2734,7 @@ QVariant QgsExpression::NodeBinaryOperator::eval( QgsExpression *parent, const Q
         QgsExpression::Interval iL = getInterval( vR, parent ); ENSURE_NO_EVAL_ERROR;
         if ( mOp == boDiv || mOp == boMul || mOp == boMod )
         {
-          parent->setEvalErrorString( QObject::tr( "Can't preform /, *, or % on DateTime and Interval" ) );
+          parent->setEvalErrorString( tr( "Can't preform /, *, or % on DateTime and Interval" ) );
           return QVariant();
         }
         return QVariant( computeDateTimeFromInterval( dL, &iL ) );
@@ -3213,7 +3217,7 @@ QString QgsExpression::NodeLiteral::dump() const
     case QVariant::Double: return QString::number( mValue.toDouble() );
     case QVariant::String: return quotedString( mValue.toString() );
     case QVariant::Bool: return mValue.toBool() ? "TRUE" : "FALSE";
-    default: return QObject::tr( "[unsupported type;%1; value:%2]" ).arg( mValue.typeName() ).arg( mValue.toString() );
+    default: return tr( "[unsupported type;%1; value:%2]" ).arg( mValue.typeName() ).arg( mValue.toString() );
   }
 }
 
@@ -3248,7 +3252,7 @@ bool QgsExpression::NodeColumnRef::prepare( QgsExpression *parent, const QgsExpr
       return true;
     }
   }
-  parent->mEvalErrorString = QObject::tr( "Column '%1' not found" ).arg( mName );
+  parent->mEvalErrorString = tr( "Column '%1' not found" ).arg( mName );
   mIndex = -1;
   return false;
 }
@@ -3344,10 +3348,120 @@ bool QgsExpression::NodeCondition::needsGeometry() const
   return false;
 }
 
+
 QString QgsExpression::helptext( QString name )
 {
   QgsExpression::initFunctionHelp();
-  return gFunctionHelpTexts.value( name, QObject::tr( "function help for %1 missing" ).arg( name ) );
+
+  if ( !gFunctionHelpTexts.contains( name ) )
+    return tr( "function help for %1 missing" ).arg( name );
+
+  const Help &f = gFunctionHelpTexts[ name ];
+
+  name = f.mName;
+  if ( f.mType == tr( "group" ) )
+    name = group( name );
+
+#if QT_VERSION < 0x050000
+  name = Qt::escape( name );
+#else
+  name = QString::toHtmlEscaped( name );
+#endif
+
+  QString helpContents( QString( "<h3>%1</h3>\n<div class=\"description\"><p>%2</p></div>" )
+                        .arg( tr( "%1 %2" ).arg( f.mType ).arg( name ) )
+                        .arg( f.mDescription ) );
+
+  Q_FOREACH ( const HelpVariant &v, f.mVariants )
+  {
+    if ( f.mVariants.size() > 1 )
+    {
+      helpContents += QString( "<h3>%1</h3>\n<div class=\"description\">%2</p></div>" ).arg( v.mName ).arg( v.mDescription );
+    }
+
+    if ( f.mType != tr( "group" ) )
+      helpContents += QString( "<h4>%1</h4>\n<div class=\"syntax\">\n" ).arg( tr( "Syntax" ) );
+
+    if ( f.mType == tr( "operator" ) )
+    {
+      if ( v.mArguments.size() == 1 )
+      {
+        helpContents += QString( "<code><span class=\"functionname\">%1</span> <span class=\"argument\">%2</span></code>" )
+                        .arg( name ).arg( v.mArguments[0].mArg );
+      }
+      else if ( v.mArguments.size() == 2 )
+      {
+        helpContents += QString( "<code><span class=\"argument\">%1</span> <span class=\"functionname\">%2</span> <span class=\"argument\">%3</span></code>" )
+                        .arg( v.mArguments[0].mArg ).arg( name ).arg( v.mArguments[1].mArg );
+      }
+    }
+    else if ( f.mType != tr( "group" ) )
+    {
+      helpContents += QString( "<code><span class=\"functionname\">%1</span>" ).arg( name );
+
+      if ( f.mType == tr( "function" ) && ( f.mName[0] != '$' || v.mArguments.size() > 0 || v.mVariableLenArguments ) )
+      {
+        helpContents += "(";
+
+        QString delim;
+        Q_FOREACH ( const HelpArg &a, v.mArguments )
+        {
+          helpContents += delim;
+          delim = ", ";
+          if ( !a.mDescOnly )
+            helpContents += QString( "<span class=\"argument\">%1</span>" ).arg( a.mArg );
+        }
+
+        if ( v.mVariableLenArguments )
+        {
+          helpContents += "...";
+        }
+
+        helpContents += ")";
+      }
+
+      helpContents += "</code>";
+    }
+
+    if ( v.mArguments.size() > 0 )
+    {
+      helpContents += QString( "<h4>%1</h4>\n<div class=\"arguments\">\n<table>" ).arg( tr( "Arguments" ) );
+
+      Q_FOREACH ( const HelpArg &a, v.mArguments )
+      {
+        if ( a.mSyntaxOnly )
+          continue;
+
+        helpContents += QString( "<tr><td class=\"argument\">%1</td><td>%2</td></tr>" ).arg( a.mArg ).arg( a.mDescription );
+      }
+
+      helpContents += "</table>\n</div>\n";
+    }
+
+    if ( v.mExamples.size() > 0 )
+    {
+      helpContents += QString( "<h4>%1</h4>\n<div class=\"examples\">\n<ul>\n" ).arg( tr( "Examples" ) );
+
+      Q_FOREACH ( const HelpExample &e, v.mExamples )
+      {
+        helpContents += "<li><code>" + e.mExpression + "</code> &rarr; <code>" + e.mReturns + "</code>";
+
+        if ( !e.mNote.isEmpty() )
+          helpContents += QString( " (%1)" ).arg( e.mNote );
+
+        helpContents += "</li>\n";
+      }
+
+      helpContents += "</ul>\n</div>\n";
+    }
+
+    if ( !v.mNotes.isEmpty() )
+    {
+      helpContents += QString( "<h4>%1</h4>\n<div class=\"notes\"><p>%2</p></div>\n" ).arg( tr( "Notes" ) ).arg( v.mNotes );
+    }
+  }
+
+  return helpContents;
 }
 
 QHash<QString, QString> QgsExpression::gVariableHelpTexts;
@@ -3435,18 +3549,20 @@ QString QgsExpression::group( QString name )
 {
   if ( gGroups.isEmpty() )
   {
-    gGroups.insert( "General", QObject::tr( "General" ) );
-    gGroups.insert( "Operators", QObject::tr( "Operators" ) );
-    gGroups.insert( "Conditionals", QObject::tr( "Conditionals" ) );
-    gGroups.insert( "Fields and Values", QObject::tr( "Fields and Values" ) );
-    gGroups.insert( "Math", QObject::tr( "Math" ) );
-    gGroups.insert( "Conversions", QObject::tr( "Conversions" ) );
-    gGroups.insert( "Date and Time", QObject::tr( "Date and Time" ) );
-    gGroups.insert( "String", QObject::tr( "String" ) );
-    gGroups.insert( "Color", QObject::tr( "Color" ) );
-    gGroups.insert( "GeometryGroup", QObject::tr( "Geometry" ) );
-    gGroups.insert( "Record", QObject::tr( "Record" ) );
-    gGroups.insert( "Variables", QObject::tr( "Variables" ) );
+    gGroups.insert( "General", tr( "General" ) );
+    gGroups.insert( "Operators", tr( "Operators" ) );
+    gGroups.insert( "Conditionals", tr( "Conditionals" ) );
+    gGroups.insert( "Fields and Values", tr( "Fields and Values" ) );
+    gGroups.insert( "Math", tr( "Math" ) );
+    gGroups.insert( "Conversions", tr( "Conversions" ) );
+    gGroups.insert( "Date and Time", tr( "Date and Time" ) );
+    gGroups.insert( "String", tr( "String" ) );
+    gGroups.insert( "Color", tr( "Color" ) );
+    gGroups.insert( "GeometryGroup", tr( "Geometry" ) );
+    gGroups.insert( "Record", tr( "Record" ) );
+    gGroups.insert( "Variables", tr( "Variables" ) );
+    gGroups.insert( "Fuzzy Matching", tr( "Fuzzy Matching" ) );
+    gGroups.insert( "Recent (%1)", tr( "Recent (%1)" ) );
   }
 
   //return the translated name for this group. If group does not

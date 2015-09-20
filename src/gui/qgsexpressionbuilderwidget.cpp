@@ -431,10 +431,10 @@ void QgsExpressionBuilderWidget::updateFunctionTree()
   registerItem( "Operators", "+", " + " );
   registerItem( "Operators", "-", " - " );
   registerItem( "Operators", "*", " * " );
-  registerItem( "Operators", "/", " / ", tr( "Division operator" ) );
-  registerItem( "Operators", "%", " % ", tr( "Modulo operator" ) );
-  registerItem( "Operators", "^", " ^ ", tr( "Power operator" ) );
-  registerItem( "Operators", "=", " = ", tr( "Equal operator" ) );
+  registerItem( "Operators", "/", " / " );
+  registerItem( "Operators", "%", " % " );
+  registerItem( "Operators", "^", " ^ " );
+  registerItem( "Operators", "=", " = " );
   registerItem( "Operators", ">", " > " );
   registerItem( "Operators", "<", " < " );
   registerItem( "Operators", "<>", " <> " );
@@ -450,9 +450,7 @@ void QgsExpressionBuilderWidget::updateFunctionTree()
   registerItem( "Operators", "NOT", " NOT " );
 
   QString casestring = "CASE WHEN condition THEN result END";
-  QString caseelsestring = "CASE WHEN condition THEN result ELSE result END";
   registerItem( "Conditionals", "CASE", casestring );
-  registerItem( "Conditionals", "CASE ELSE", caseelsestring );
 
   registerItem( "Fields and Values", "NULL", "NULL" );
 

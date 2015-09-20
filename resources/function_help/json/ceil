@@ -1,5 +1,6 @@
 {
-  "function": "ceil",
+  "name": "ceil",
+  "type": "function",
   "description": "Rounds a number upwards.",
   "arguments": [ {"arg":"value","description":"a number"}],
   "examples": [ { "expression":"ceil(4.9)", "returns":"5"},

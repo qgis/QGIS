@@ -1,5 +1,6 @@
 {
-  "function": "year",
+  "name": "year",
+  "type": "function",
   "description": "Extract the year part from a date, or the number of years from an interval.",
   "variants": [
   { "variant": "Date variant",

@@ -316,6 +316,16 @@ SET(QGIS_CORE_SRCS
   geometry/qgswkbtypes.cpp
 )
 
+FILE(GLOB JSON_HELP_FILES "${CMAKE_SOURCE_DIR}/resources/function_help/json/*")
+STRING(REPLACE "$" "$$" JSON_HELP_FILES "${JSON_HELP_FILES}")
+STRING(REPLACE "\(" "\\(" JSON_HELP_FILES "${JSON_HELP_FILES}")
+STRING(REPLACE "\)" "\\)" JSON_HELP_FILES "${JSON_HELP_FILES}")
+ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/qgsexpression_texts.cpp
+        COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/resources/process_function_template.py
+	DEPENDS ${JSON_HELP_FILES}
+	WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+)
+
 IF(ENABLE_MODELTEST)
   SET(MODELTEST_SRCS
     ../../tests/qt_modeltest/modeltest.cpp

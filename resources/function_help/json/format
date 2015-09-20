@@ -1,5 +1,6 @@
 {
-  "function": "format",
+  "name": "format",
+  "type": "function",
   "description": "Format a string using supplied arguments.",
   "variableLenArguments": true,
   "arguments": [ {"arg":"string", "description":"A string with place holders for the arguments. Use %1, %2, etc for placeholders. Placeholders can be repeated."},

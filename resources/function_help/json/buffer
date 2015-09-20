@@ -1,5 +1,6 @@
 {
-  "function": "buffer",
+  "name": "buffer",
+  "type": "function",
   "description": "Returns a geometry that represents all points whose distance from this geometry is less than or equal to distance. Calculations are in the Spatial Reference System of this geometry.",
   "arguments": [ {"arg":"geom","description":"a geometry"},
                  {"arg":"distance","description":"buffer distance in layer units"}],

@@ -1,0 +1,5 @@
+{
+  "name": "Conversions",
+  "type": "group",
+  "description": "This group contains functions to convert on data type to another e.g string to integer, integer to string."
+}

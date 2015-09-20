@@ -1,66 +1,116 @@
 import sys
 import os
 import json
+import glob
 
-ext_libs_path=os.path.join(os.path.dirname(os.path.realpath(__file__)),'../python/ext-libs')
-sys.path.append(ext_libs_path)
-import jinja2
-
-with open(sys.argv[1]) as function_file:
-  json_params = json.load(function_file)
-
-if not 'variants' in json_params:
-  #convert single variant shortcut to a expanded variant
-  v = {}
-  for i in json_params:
-     v[i] = json_params[i]
-  json_params['variants'] = [v]
-
-template = jinja2.Template('''
-<h3>{{f.function}}</h3>
-<div class="description">
-<p>{{f.description}}</p>
-</div>
-{% for v in f.variants %}
-{% if f.variants|length > 1 %}
-<h3>{{v.variant}}</h3>
-<div class="description">
-<p>{{v.variant_description}}</p>
-</div>
-{% endif %}
-<h4>Syntax</h4>
-<div class="syntax">
-<code><span class="functionname">{{f.function}}</span>{% if not f.function[0] =='$' %}({% for a in v.arguments if not a.descOnly %}<span class="argument">{{ a.arg }}</span>{% if not loop.last or v.variableLenArguments%}, {% endif %}{% endfor %}{% if v.variableLenArguments %}...{% endif %}){% endif %}</code>
-</div>
-
-{% if v.arguments %}<h4>Arguments</h4>
-<div class="arguments">
-<table>
-{% for a in v.arguments if not a.syntaxOnly %}<tr><td class="argument">{{ a.arg }}</td><td>{{ a.description }}</td></tr>
-{% endfor %}
-</table>
-</div>
-{% endif %}
-
-{% if v.examples %}
-<h4>Examples</h4>
-<div class="examples">
-<ul>
-{% for e in v.examples %}<li><code>{{e.expression}}</code> &rarr; <code>{{e.returns}}</code>{% if e.note %} ({{ e.note }}){% endif %}</li>
-{% endfor %}
-</ul>
-</div>
-{% endif %}
-
-{% if v.notes %}<h4>Notes</h4>
-<div class="notes">
-<p>{{v.notes}}</p></div>
-{% endif %}
-
-{% endfor %}
-
-''')
-print template.render(f=json_params)
+cpp = open("src/core/qgsexpression_texts.cpp", "w")
+cpp.write(
+    "#include \"qgsexpression.h\"\n"
+    "\n"
+    "QHash<QString, QgsExpression::Help> QgsExpression::gFunctionHelpTexts;\n"
+    "\n"
+    "void QgsExpression::initFunctionHelp()\n"
+    "{\n"
+    "  if( !gFunctionHelpTexts.isEmpty() )\n"
+    "    return;"
+)
 
 
+def quote(v):
+    if isinstance(v, dict):
+        for k in v:
+            v[k] = quote(v[k])
+        return v
+    elif isinstance(v, list):
+        return map(quote, v)
 
+    elif isinstance(v, str) or isinstance(v, unicode):
+        return v.replace('"', '\\"').replace('\n', '\\n')
+
+    elif isinstance(v, bool):
+        return v
+
+    else:
+        raise BaseException("unexpected type " + repr(v))
+
+for f in sorted(glob.glob('resources/function_help/json/*')):
+    with open(f) as function_file:
+        try:
+            json_params = json.load(function_file)
+        except:
+            print f
+            raise
+
+    json_params = quote(json_params)
+
+    for field in ['name', 'type']:
+        if not field in json_params:
+            raise BaseException("%s: %s missing" % (f, field))
+
+    if not json_params['type'] in ['function', 'operator', 'value', 'expression', 'group']:
+        raise BaseException("%s: invalid type %s " % (f, json_params['type']))
+
+    if not 'variants' in json_params:
+        # convert single variant shortcut to a expanded variant
+        v = {}
+        for i in json_params:
+            v[i] = json_params[i]
+
+        v['variant'] = json_params['name']
+        v['variant_description'] = json_params['description']
+        json_params['variants'] = [v]
+
+    name = "\"{0}\"".format(json_params['name'])
+
+    if json_params['type'] == 'operator':
+        for v in json_params['variants']:
+            if not 'arguments' in v:
+                raise BaseException("%s: arguments expected for operator")
+            if len(v['arguments']) < 1 or len(v['arguments']) > 2:
+                raise BaseException("%s: 1 or 2 arguments expected for operator")
+
+    cpp.write("\n\n  gFunctionHelpTexts.insert( {0},\n    Help( {0}, tr( \"{1}\" ), tr( \"{2}\" ),\n      QList<HelpVariant>()".format(
+        name, json_params['type'], json_params['description'])
+    )
+
+    for v in json_params['variants']:
+        cpp.write(
+            "\n        << HelpVariant( tr( \"{0}\" ), tr( \"{1}\" ),\n          QList<HelpArg>()".format(v['variant'], v['variant_description']))
+
+        if 'arguments' in v:
+            for a in v['arguments']:
+                cpp.write("\n              << HelpArg( tr( \"{0}\" ), tr( \"{1}\" ), {2}, {3} )".format(
+                    a['arg'],
+                    a.get('description', ''),
+                    "true" if a.get('descOnly', False) else "false",
+                    "true" if a.get('syntaxOnly', False) else "false")
+                )
+
+        cpp.write(",\n          /* variableLenArguments */ {0}".format(
+            "true" if v.get('variableLenArguments', False) else "false"))
+        cpp.write(",\n          QList<HelpExample>()")
+
+        if 'examples' in v:
+            for e in v['examples']:
+                cpp.write("\n            << HelpExample( tr( \"{0}\" ), tr( \"{1}\" ), tr( \"{2}\") )".format(
+                    e['expression'],
+                    e['returns'],
+                    e.get('note', ''))
+                )
+
+        if 'notes' in v:
+            cpp.write(",\n      tr( \"{0}\" )".format(v['notes']))
+
+        cpp.write("\n       )")
+
+    cpp.write("\n      )")
+    cpp.write("\n    );")
+
+for f in sorted(glob.glob('resources/function_help/text/*')):
+    n = os.path.basename(f)
+
+    with open(f) as content:
+        cpp.write("\n\n  gFunctionHelpTexts.insert( \"{0}\",\n    Help( tr( \"{0}\" ), tr( \"group\" ), tr( \"{1}\" ), QList<HelpVariant>() ) );\n".format(
+            n, content.read().replace("\\", "&#92;").replace('\\', '\\\\').replace('"', '\\"').replace('\n', '\\n')))
+
+cpp.write("\n}")

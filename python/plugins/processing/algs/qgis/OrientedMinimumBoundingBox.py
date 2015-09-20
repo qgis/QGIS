@@ -129,7 +129,7 @@ class OrientedMinimumBoundingBox(GeoAlgorithm):
                                        height])
                 writer.addFeature(outFeat)
             else:
-                progress.setInfo(self.tr("Can't calculate an OMBB for features n°") + str(inFeat.id()) + ".")
+                progress.setInfo(self.tr("Can't calculate an OMBB for feature {0}.").format(inFeat.id()))
             current += 1
             progress.setPercentage(int(current * total))
 

@@ -1,0 +1,7 @@
+{
+  "name": "$geometry",
+  "type": "function",
+  "description": "Returns the geometry of the current feature. Can be used for processing with other functions.",
+  "examples": [ { "expression":"geomToWKT( $geometry )", "returns":"POINT(6 50)"}
+  ]
+}

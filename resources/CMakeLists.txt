@@ -4,4 +4,3 @@ INSTALL(DIRECTORY cpt-city-qgis-min DESTINATION ${QGIS_DATA_DIR}/resources)
 INSTALL(DIRECTORY themes DESTINATION ${QGIS_DATA_DIR}/resources)
 
 ADD_SUBDIRECTORY(context_help)
-ADD_SUBDIRECTORY(function_help)

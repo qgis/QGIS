@@ -1,5 +1,6 @@
 {
-  "function": "concat",
+  "name": "concat",
+  "type": "function",
   "description": "Concatenates several strings to one. NULL values are converted to empty strings. Other values (like numbers) are converted to strings.",
   "variableLenArguments": true,
   "arguments": [ {"arg":"string1", "syntaxOnly": true},

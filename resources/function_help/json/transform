@@ -1,5 +1,6 @@
 {
-  "function": "transform",
+  "name": "transform",
+  "type": "function",
   "description": "Returns the geometry transformed from a source CRS to a destination CRS.",
   "arguments": [ {"arg":"geom","description":"a geometry"},
   {"arg":"source_auth_id","description":"the source auth CRS ID"},

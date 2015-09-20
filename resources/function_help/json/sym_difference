@@ -1,5 +1,6 @@
 {
-  "function": "sym_difference",
+  "name": "sym_difference",
+  "type": "function",
   "description": "Returns a geometry that represents the portions of two geometries that do not intersect.",
   "arguments": [ {"arg":"geometry1","description":"a geometry"},
                  {"arg":"geometry2","description":"a geometry"}],

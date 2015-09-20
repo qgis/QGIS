@@ -1,7 +1,9 @@
 {
-  "function": "make_point",
+  "name": "make_point",
+  "type": "function",
   "description": "Creates a point geometry from an x and y value.",
-  "arguments": [ {"arg":"x","description":"x coordinate of point"},
-                 {"arg":"y","description":"y coordinate of point"} ],
+  "arguments": [
+	{"arg":"x","description":"x coordinate of point"},
+	{"arg":"y","description":"y coordinate of point"} ],
   "examples": [ { "expression":"geom_to_wkt(make_point(2,4))", "returns":"'Point (2 4)'"}]
 }

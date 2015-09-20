@@ -1,5 +1,6 @@
 {
-  "function": "num_points",
+  "name": "num_points",
+  "type": "function",
   "description": "Returns the number of vertices in a geometry.",
   "arguments": [ {"arg":"geom","description":"a geometry"}],
   "examples": [ { "expression":"num_points($geometry)", "returns":"number of vertices in $geometry"}]

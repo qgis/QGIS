@@ -1,5 +1,6 @@
 {
-  "function": "rpad",
+  "name": "rpad",
+  "type": "function",
   "description": "Returns a string padded to supplied width using a fill character.",
   "arguments": [ {"arg":"string","description":"string to pad"},
   {"arg":"width","description":"length of new string"},

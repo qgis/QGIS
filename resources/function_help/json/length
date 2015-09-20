@@ -1,5 +1,6 @@
 {
-  "function": "length",
+  "name": "length",
+  "type": "function",
   "description": "Returns the number of characters in a string or the length of a geometry linestring.",
   "variants": [
   { "variant": "String variant",
