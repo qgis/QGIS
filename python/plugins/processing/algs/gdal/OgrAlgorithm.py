@@ -42,7 +42,7 @@ class OgrAlgorithm(GdalAlgorithm):
 
         layer = dataobjects.getObjectFromUri(uri, False)
         if layer is None:
-            return uri
+            return '"' + uri + '"'
         provider = layer.dataProvider().name()
         if provider == 'spatialite':
             # dbname='/geodata/osm_ch.sqlite' table="places" (Geometry) sql=
