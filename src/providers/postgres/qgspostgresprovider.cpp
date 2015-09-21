@@ -210,7 +210,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
   if ( mValid )
   {
     mUri.setKeyColumn( key );
-    setDataSourceUri( mUri.uri() );
+    setDataSourceUri( mUri.uri( false ) );
   }
   else
   {
@@ -2479,7 +2479,7 @@ bool QgsPostgresProvider::setSubsetString( QString theSQL, bool updateFeatureCou
   mUri.setSql( theSQL );
   // Update yet another copy of the uri. Why are there 3 copies of the
   // uri? Perhaps this needs some rationalisation.....
-  setDataSourceUri( mUri.uri() );
+  setDataSourceUri( mUri.uri( false ) );
 
   if ( updateFeatureCount )
   {

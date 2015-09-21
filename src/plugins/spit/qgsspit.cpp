@@ -149,6 +149,7 @@ void QgsSpit::removeConnection()
   settings.remove( key + "/publicOnly" );
   settings.remove( key + "/geometryColumnsOnly" );
   settings.remove( key + "/save" );
+  settings.remove( key + "/authcfg" );
   settings.remove( key );
 
   populateConnectionList();
@@ -391,10 +392,11 @@ void QgsSpit::dbConnect()
   QString database = settings.value( key + "/database" ).toString();
   QString username = settings.value( key + "/username" ).toString();
   QString password = settings.value( key + "/password" ).toString();
+  QString authcfg = settings.value( key + "/authcfg" ).toString();
 
   bool makeConnection = true;
 
-  if ( password.isEmpty() )
+  if ( authcfg.isEmpty() && password.isEmpty() )
   {
     // get password from user
     password = QInputDialog::getText( this, tr( "Password for %1" ).arg( username ),
@@ -411,7 +413,8 @@ void QgsSpit::dbConnect()
                        database,
                        settings.value( key + "/username" ).toString(),
                        password,
-                       ( QgsDataSourceURI::SSLmode ) settings.value( key + "/sslmode", QgsDataSourceURI::SSLprefer ).toInt() );
+                       ( QgsDataSourceURI::SSLmode ) settings.value( key + "/sslmode", QgsDataSourceURI::SSLprefer ).toInt(),
+                       authcfg );
 
     conn = PQconnectdb( uri.connectionInfo().toUtf8() );
   }

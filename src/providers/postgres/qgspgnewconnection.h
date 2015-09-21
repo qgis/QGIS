@@ -19,6 +19,7 @@
 #include "ui_qgspgnewconnectionbase.h"
 #include "qgisgui.h"
 #include "qgscontexthelp.h"
+#include "qgsauthconfigselect.h"
 
 /** \class QgsPgNewConnection
  * \brief Dialog to allow the user to configure and save connection
@@ -41,6 +42,7 @@ class QgsPgNewConnection : public QDialog, private Ui::QgsPgNewConnectionBase
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
   private:
     QString mOriginalConnName; //store initial name to delete entry in case of rename
+    QgsAuthConfigSelect * mAuthConfigSelect;
 };
 
 #endif //  QGSPGNEWCONNECTIONBASE_H

@@ -19,6 +19,7 @@
 
 #include "ui_qgsdbsourceselectbase.h"
 #include "qgisgui.h"
+#include "qgsdatasourceuri.h"
 #include "qgsdbfilterproxymodel.h"
 #include "qgspgtablemodel.h"
 #include "qgscontexthelp.h"
@@ -70,7 +71,9 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     //! String list containing the selected tables
     QStringList selectedTables();
     //! Connection info (database, host, user, password)
-    QString connectionInfo();
+    QString connectionInfo( bool expandAuthCfg = true );
+    //! Data source URI
+    QgsDataSourceURI dataSourceUri();
 
   signals:
     void addDatabaseLayers( QStringList const & layerPathList, QString const & providerKey );
@@ -139,7 +142,7 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     QStringList mColumnLabels;
     // Our thread for doing long running queries
     QgsGeomColumnTypeThread* mColumnTypeThread;
-    QString mConnInfo;
+    QgsDataSourceURI mDataSrcUri;
     QStringList mSelectedTables;
     bool mUseEstimatedMetadata;
     // Storage for the range of layer type icons
