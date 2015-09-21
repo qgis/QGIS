@@ -1044,35 +1044,34 @@ void QgsGrassModuleInput::onLayerChanged()
   }
 
   QgsGrassVectorLayer * layer = currentLayer();
-  if ( multiple() )
-    if ( layer )
+  if ( layer )
+  {
+    // number of types  in the layer matching mGeometryTypeMask
+    int typeCount = 0;
+    foreach ( int type, layer->types() )
     {
-      // number of types  in the layer matching mGeometryTypeMask
-      int typeCount = 0;
-      foreach ( int type, layer->types() )
+      if ( type & mGeometryTypeMask )
       {
-        if ( type & mGeometryTypeMask )
-        {
-          typeCount++;
-        }
+        typeCount++;
       }
-      QgsDebugMsg( QString( "typeCount = %1" ).arg( typeCount ) );
+    }
+    QgsDebugMsg( QString( "typeCount = %1" ).arg( typeCount ) );
 
-      int layerType = layer->type(); // may be multiple
-      foreach ( int checkBoxType, mTypeCheckBoxes.keys() )
+    int layerType = layer->type(); // may be multiple
+    foreach ( int checkBoxType, mTypeCheckBoxes.keys() )
+    {
+      QCheckBox *checkBox = mTypeCheckBoxes.value( checkBoxType );
+      checkBox->hide();
+      if ( checkBoxType & layerType )
       {
-        QCheckBox *checkBox = mTypeCheckBoxes.value( checkBoxType );
-        checkBox->hide();
-        if ( checkBoxType & layerType )
+        checkBox->setChecked( true );
+        if ( typeCount > 1 )
         {
-          checkBox->setChecked( true );
-          if ( typeCount > 1 )
-          {
-            checkBox->show();
-          }
+          checkBox->show();
         }
       }
     }
+  }
 
   emit valueChanged();
 }
