@@ -49,35 +49,35 @@ class QgsVariantDelegate : public QItemDelegate
     Q_OBJECT
 
   public:
-    QgsVariantDelegate( QObject *parent = 0 );
+    QgsVariantDelegate( QObject* parent = 0 );
 
-    void paint( QPainter *painter, const QStyleOptionViewItem &option,
-                const QModelIndex &index ) const;
-    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option,
+    void paint( QPainter* painter, const QStyleOptionViewItem& option,
+                const QModelIndex& index ) const;
+    QWidget* createEditor( QWidget* parent, const QStyleOptionViewItem& option,
                            const QModelIndex &index ) const;
-    void setEditorData( QWidget *editor, const QModelIndex &index ) const;
-    void setModelData( QWidget *editor, QAbstractItemModel *model,
+    void setEditorData( QWidget* editor, const QModelIndex& index ) const;
+    void setModelData( QWidget* editor, QAbstractItemModel* model,
                        const QModelIndex &index ) const;
 
     static bool isSupportedType( QVariant::Type type );
-    static QString displayText( const QVariant &value );
+    static QString displayText( const QVariant& value );
 
-    static QVariant::Type type( const QVariant &value );
+    static QVariant::Type type( const QVariant& value );
 
   private:
-    mutable QRegExp boolExp;
-    mutable QRegExp byteArrayExp;
-    mutable QRegExp charExp;
-    mutable QRegExp colorExp;
-    mutable QRegExp dateExp;
-    mutable QRegExp dateTimeExp;
-    mutable QRegExp doubleExp;
-    mutable QRegExp pointExp;
-    mutable QRegExp rectExp;
-    mutable QRegExp signedIntegerExp;
-    mutable QRegExp sizeExp;
-    mutable QRegExp timeExp;
-    mutable QRegExp unsignedIntegerExp;
+    QRegExp mBoolExp;
+    QRegExp mByteArrayExp;
+    QRegExp mCharExp;
+    QRegExp mColorExp;
+    QRegExp mDateExp;
+    QRegExp mDateTimeExp;
+    QRegExp mDoubleExp;
+    QRegExp mPointExp;
+    QRegExp mRectExp;
+    QRegExp mSignedIntegerExp;
+    QRegExp mSizeExp;
+    QRegExp mTimeExp;
+    QRegExp mUnsignedIntegerExp;
 };
 
 #endif
