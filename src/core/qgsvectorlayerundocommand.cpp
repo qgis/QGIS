@@ -323,8 +323,8 @@ void QgsVectorLayerUndoCommandAddAttribute::undo()
   int index = layer()->fields().fieldOriginIndex( mFieldIndex );
 
   mBuffer->mAddedAttributes.removeAt( index );
-  mBuffer->updateLayerFields();
   mBuffer->handleAttributeDeleted( mFieldIndex );
+  mBuffer->updateLayerFields();
 
   emit mBuffer->attributeDeleted( mFieldIndex );
 }
@@ -417,7 +417,7 @@ void QgsVectorLayerUndoCommandDeleteAttribute::redo()
     mBuffer->mAddedAttributes.removeAt( mOriginIndex ); // removing temporary attribute
   }
 
-  mBuffer->updateLayerFields();
   mBuffer->handleAttributeDeleted( mFieldIndex ); // update changed attributes + new features
+  mBuffer->updateLayerFields();
   emit mBuffer->attributeDeleted( mFieldIndex );
 }
