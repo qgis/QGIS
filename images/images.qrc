@@ -311,6 +311,10 @@
         <file>themes/default/mActionZoomToSelected.svg</file>
         <file>themes/default/mIconAtlas.svg</file>
         <file>themes/default/mIconAutoPlacementSettings.svg</file>
+        <file>themes/default/mIconCertificate.svg</file>
+        <file>themes/default/mIconCertificateMissing.svg</file>
+        <file>themes/default/mIconCertificateTrusted.svg</file>
+        <file>themes/default/mIconCertificateUntrusted.svg</file>
         <file>themes/default/mIconClear.svg</file>
         <file>themes/default/mIconClose.png</file>
         <file>themes/default/mIconCollapse.png</file>

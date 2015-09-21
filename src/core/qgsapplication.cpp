@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsapplication.h"
+#include "qgsauthmanager.h"
 #include "qgscrscache.h"
 #include "qgsdataitemproviderregistry.h"
 #include "qgsexception.h"
@@ -26,6 +27,7 @@
 
 #include <QDir>
 #include <QFile>
+#include <QFileInfo>
 #include <QFileOpenEvent>
 #include <QMessageBox>
 #include <QPalette>
@@ -68,6 +70,7 @@ QString ABISYM( QgsApplication::mCfgIntDir );
 QString ABISYM( QgsApplication::mBuildOutputPath );
 QStringList ABISYM( QgsApplication::mGdalSkipList );
 int ABISYM( QgsApplication::mMaxThreads );
+QString ABISYM( QgsApplication::mAuthDbDirPath );
 
 const char* QgsApplication::QGIS_ORGANIZATION_NAME = "QGIS";
 const char* QgsApplication::QGIS_ORGANIZATION_DOMAIN = "qgis.org";
@@ -183,6 +186,13 @@ void QgsApplication::init( QString customConfigPath )
   }
 
   ABISYM( mDefaultSvgPaths ) << qgisSettingsDirPath() + QString( "svg/" );
+
+  ABISYM( mAuthDbDirPath ) = qgisSettingsDirPath();
+  if ( getenv( "QGIS_AUTH_DB_DIR_PATH" ) )
+  {
+    setAuthDbDirPath( getenv( "QGIS_AUTH_DB_DIR_PATH" ) );
+  }
+
 
   // store system environment variables passed to application, before they are adjusted
   QMap<QString, QString> systemEnvVarMap;
@@ -328,6 +338,15 @@ void QgsApplication::setPkgDataPath( const QString &thePkgDataPath )
 void QgsApplication::setDefaultSvgPaths( const QStringList& pathList )
 {
   ABISYM( mDefaultSvgPaths ) = pathList;
+}
+
+void QgsApplication::setAuthDbDirPath( const QString& theAuthDbDirPath )
+{
+  QFileInfo fi( theAuthDbDirPath );
+  if ( fi.exists() && fi.isDir() && fi.isWritable() )
+  {
+    ABISYM( mAuthDbDirPath ) = fi.canonicalFilePath() + QDir::separator();
+  }
 }
 
 QString QgsApplication::prefixPath()
@@ -604,6 +623,14 @@ QString QgsApplication::qgisUserDbFilePath()
 }
 
 /*!
+  Returns the path to the user authentication database file: qgis-auth.db.
+*/
+QString QgsApplication::qgisAuthDbFilePath()
+{
+  return ABISYM( mAuthDbDirPath ) + QString( "qgis-auth.db" );
+}
+
+/*!
   Returns the path to the splash screen image directory.
 */
 QString QgsApplication::splashPath()
@@ -705,11 +732,16 @@ void QgsApplication::initQgis()
 
   // create map layer registry if doesn't exist
   QgsMapLayerRegistry::instance();
+
+  // initialize authentication manager and connect to database
+  QgsAuthManager::instance()->init( pluginPath() );
 }
 
 void QgsApplication::exitQgis()
 {
   delete QgsProviderRegistry::instance();
+
+  delete QgsAuthManager::instance();
 
   //Ensure that all remaining deleteLater QObjects are actually deleted before we exit.
   //This isn't strictly necessary (since we're exiting anyway) but doing so prevents a lot of
@@ -732,7 +764,8 @@ QString QgsApplication::showSettings()
                         "Active Theme Path:\t%6\n"
                         "Default Theme Path:\t%7\n"
                         "SVG Search Paths:\t%8\n"
-                        "User DB Path:\t%9\n" )
+                        "User DB Path:\t%9\n"
+                        "Auth DB Path:\t%10\n" )
                     .arg( myEnvironmentVar )
                     .arg( prefixPath() )
                     .arg( pluginPath() )
@@ -741,7 +774,8 @@ QString QgsApplication::showSettings()
                     .arg( activeThemePath() )
                     .arg( defaultThemePath() )
                     .arg( svgPaths().join( tr( "\n\t\t", "match indentation of application state" ) ) )
-                    .arg( qgisMasterDbFilePath() );
+                    .arg( qgisMasterDbFilePath() )
+                    .arg( qgisAuthDbFilePath() );
   return myState;
 }
 

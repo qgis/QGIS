@@ -76,8 +76,10 @@ INCLUDE_DIRECTORIES(
   ${QWT_INCLUDE_DIR}
   ${QEXTSERIALPORT_INCLUDE_DIR}
   ${QSCINTILLA_INCLUDE_DIR}
+  ${QCA_INCLUDE_DIR}
 
   ../src/core
+  ../src/core/auth
   ../src/core/pal
   ../src/core/composer
   ../src/core/diagram
@@ -91,6 +93,7 @@ INCLUDE_DIRECTORIES(
 
   ../src/gui/raster
   ../src/gui/attributetable
+  ../src/gui/auth
   ../src/gui/editorwidgets
   ../src/gui/editorwidgets/core
   ../src/gui/effects

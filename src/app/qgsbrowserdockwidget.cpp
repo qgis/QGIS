@@ -24,13 +24,13 @@
 #include <QPlainTextDocumentLayout>
 #include <QSortFilterProxyModel>
 
+#include "qgisapp.h"
 #include "qgsbrowsermodel.h"
 #include "qgsbrowsertreeview.h"
 #include "qgslogger.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
-#include "qgisapp.h"
 #include "qgsproject.h"
 
 // browser layer properties dialog

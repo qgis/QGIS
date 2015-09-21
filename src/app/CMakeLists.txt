@@ -465,6 +465,7 @@ INCLUDE_DIRECTORIES(
   ../analysis/raster
   ../analysis/openstreetmap
   ../core
+  ../core/auth
   ../core/gps
   ../core/composer
   ../core/dxf
@@ -475,6 +476,7 @@ INCLUDE_DIRECTORIES(
   ../gui
   ../gui/symbology-ng
   ../gui/attributetable
+  ../gui/auth
   ../gui/raster
   ../gui/editorwidgets
   ../gui/editorwidgets/core
@@ -489,6 +491,7 @@ INCLUDE_DIRECTORIES(
   ${GEOS_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
   ${QWTPOLAR_INCLUDE_DIR}
+  ${QCA_INCLUDE_DIR}
   )
 
 IF(ENABLE_MODELTEST)

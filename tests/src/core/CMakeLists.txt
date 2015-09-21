@@ -8,6 +8,7 @@ SET (util_SRCS qgscompositionchecker.cpp)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/src/core/auth
   ${CMAKE_SOURCE_DIR}/src/core/composer
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/effects
@@ -18,6 +19,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${GDAL_INCLUDE_DIR}
   ${PROJ_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
+  ${QCA_INCLUDE_DIR}
   )
 
 #############################################################
@@ -79,6 +81,7 @@ ENDMACRO (ADD_QGIS_TEST)
 
 ADD_QGIS_TEST(applicationtest testqgsapplication.cpp)
 ADD_QGIS_TEST(atlascompositiontest testqgsatlascomposition.cpp)
+ADD_QGIS_TEST(authcrypto testqgsauthcrypto.cpp)
 ADD_QGIS_TEST(blendmodestest testqgsblendmodes.cpp)
 ADD_QGIS_TEST(clippertest testqgsclipper.cpp)
 ADD_QGIS_TEST(colorscheme testqgscolorscheme.cpp)
