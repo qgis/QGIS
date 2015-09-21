@@ -741,11 +741,12 @@ void QgsAuthCertInfo::populateInfoDetailsSection()
     {
       usage.append( tr( "Encrypt" ) );
     }
+#if QCA_VERSION >= 0x020100
     if ( pubakey.canDecrypt() )
     {
       usage.append( tr( "Decrypt" ) );
     }
-
+#endif
     if ( pubakey.canKeyAgree() )
     {
       usage.append( tr( "Key agreement" ) );

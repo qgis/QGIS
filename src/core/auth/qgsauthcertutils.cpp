@@ -481,6 +481,7 @@ const QString QgsAuthCertUtils::qcaSignatureAlgorithm( QCA::SignatureAlgorithm a
       return QObject::tr( "RIPEMD160, with EMSA3" );
     case QCA::EMSA3_Raw:
       return QObject::tr( "EMSA3, without digest" );
+#if QCA_VERSION >= 0x020100
     case QCA::EMSA3_SHA224:
       return QObject::tr( "SHA224, with EMSA3" );
     case QCA::EMSA3_SHA256:
@@ -489,6 +490,7 @@ const QString QgsAuthCertUtils::qcaSignatureAlgorithm( QCA::SignatureAlgorithm a
       return QObject::tr( "SHA384, with EMSA3" );
     case QCA::EMSA3_SHA512:
       return QObject::tr( "SHA512, with EMSA3" );
+#endif
     default:
       return QObject::tr( "Unknown (possibly Elliptic Curve)" );
   }

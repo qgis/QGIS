@@ -2721,7 +2721,7 @@ QgsAuthManager::QgsAuthManager()
     , mScheduledDbEraseRequestEmitted( false )
     , mScheduledDbEraseRequestCount( 0 )
     , mMutex( 0 )
-    , mIgnoredSslErrorsCache( QHash<QString, QSet<QSslError::SslError>>() )
+    , mIgnoredSslErrorsCache( QHash<QString, QSet<QSslError::SslError> >() )
 {
   mMutex = new QMutex( QMutex::Recursive );
   connect( this, SIGNAL( messageOut( const QString&, const QString&, QgsAuthManager::MessageLevel ) ),

@@ -378,7 +378,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
 
     /** Get ignored SSL error cache, keyed with cert/connection's sha:host:port */
-    QHash<QString, QSet<QSslError::SslError>> getIgnoredSslErrorCache() { return mIgnoredSslErrorsCache; }
+    QHash<QString, QSet<QSslError::SslError> > getIgnoredSslErrorCache() { return mIgnoredSslErrorsCache; }
 
     void dumpIgnoredSslErrorsCache_();
 
@@ -613,7 +613,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     // cache of certs ready to be utilized in network connections
     QList<QSslCertificate> mTrustedCaCertsCache;
     // cache of SSL errors to be ignored in network connections, per sha-hostport
-    QHash<QString, QSet<QSslError::SslError>> mIgnoredSslErrorsCache;
+    QHash<QString, QSet<QSslError::SslError> > mIgnoredSslErrorsCache;
 #endif
 };
 
