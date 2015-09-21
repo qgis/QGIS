@@ -1068,6 +1068,20 @@ static QVariant fcnAge( const QVariantList& values, const QgsExpressionContext*,
   return QVariant::fromValue( QgsExpression::Interval( seconds ) );
 }
 
+static QVariant fcnDayOfWeek( const QVariantList& values, const QgsExpressionContext*, QgsExpression *parent )
+{
+  if ( !values.at( 0 ).canConvert<QDate>() )
+    return QVariant();
+
+  QDate date = getDateValue( values.at( 0 ), parent );
+  if ( !date.isValid() )
+    return QVariant();
+
+  // return dayOfWeek() % 7 so that values range from 0 (sun) to 6 (sat)
+  // (to match PostgreSQL behaviour)
+  return date.dayOfWeek() % 7;
+}
+
 static QVariant fcnDay( const QVariantList& values, const QgsExpressionContext*, QgsExpression *parent )
 {
   QVariant value = values.at( 0 );
@@ -1835,6 +1849,96 @@ static QVariant fncColorCmyka( const QVariantList &values, const QgsExpressionCo
   return QgsSymbolLayerV2Utils::encodeColor( color );
 }
 
+static QVariant fncColorPart( const QVariantList &values, const QgsExpressionContext*, QgsExpression *parent )
+{
+  QColor color = QgsSymbolLayerV2Utils::decodeColor( values.at( 0 ).toString() );
+  if ( ! color.isValid() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to color" ).arg( values.at( 0 ).toString() ) );
+    return QVariant();
+  }
+
+  QString part = getStringValue( values.at( 1 ), parent );
+  if ( part.compare( QLatin1String( "red" ), Qt::CaseInsensitive ) == 0 )
+    return color.red();
+  else if ( part.compare( QLatin1String( "green" ), Qt::CaseInsensitive ) == 0 )
+    return color.green();
+  else if ( part.compare( QLatin1String( "blue" ), Qt::CaseInsensitive ) == 0 )
+    return color.blue();
+  else if ( part.compare( QLatin1String( "alpha" ), Qt::CaseInsensitive ) == 0 )
+    return color.alpha();
+  else if ( part.compare( QLatin1String( "hue" ), Qt::CaseInsensitive ) == 0 )
+    return color.hsvHueF() * 360;
+  else if ( part.compare( QLatin1String( "saturation" ), Qt::CaseInsensitive ) == 0 )
+    return color.hsvSaturationF() * 100;
+  else if ( part.compare( QLatin1String( "value" ), Qt::CaseInsensitive ) == 0 )
+    return color.valueF() * 100;
+  else if ( part.compare( QLatin1String( "hsl_hue" ), Qt::CaseInsensitive ) == 0 )
+    return color.hslHueF() * 360;
+  else if ( part.compare( QLatin1String( "hsl_saturation" ), Qt::CaseInsensitive ) == 0 )
+    return color.hslSaturationF() * 100;
+  else if ( part.compare( QLatin1String( "lightness" ), Qt::CaseInsensitive ) == 0 )
+    return color.lightnessF() * 100;
+  else if ( part.compare( QLatin1String( "cyan" ), Qt::CaseInsensitive ) == 0 )
+    return color.cyanF() * 100;
+  else if ( part.compare( QLatin1String( "magenta" ), Qt::CaseInsensitive ) == 0 )
+    return color.magentaF() * 100;
+  else if ( part.compare( QLatin1String( "yellow" ), Qt::CaseInsensitive ) == 0 )
+    return color.yellowF() * 100;
+  else if ( part.compare( QLatin1String( "black" ), Qt::CaseInsensitive ) == 0 )
+    return color.blackF() * 100;
+
+  parent->setEvalErrorString( QObject::tr( "Unknown color component '%1'" ).arg( part ) );
+  return QVariant();
+}
+
+static QVariant fncSetColorPart( const QVariantList &values, const QgsExpressionContext*, QgsExpression *parent )
+{
+  QColor color = QgsSymbolLayerV2Utils::decodeColor( values.at( 0 ).toString() );
+  if ( ! color.isValid() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to color" ).arg( values.at( 0 ).toString() ) );
+    return QVariant();
+  }
+
+  QString part = getStringValue( values.at( 1 ), parent );
+  int value = getIntValue( values.at( 2 ), parent );
+  if ( part.compare( QLatin1String( "red" ), Qt::CaseInsensitive ) == 0 )
+    color.setRed( value );
+  else if ( part.compare( QLatin1String( "green" ), Qt::CaseInsensitive ) == 0 )
+    color.setGreen( value );
+  else if ( part.compare( QLatin1String( "blue" ), Qt::CaseInsensitive ) == 0 )
+    color.setBlue( value );
+  else if ( part.compare( QLatin1String( "alpha" ), Qt::CaseInsensitive ) == 0 )
+    color.setAlpha( value );
+  else if ( part.compare( QLatin1String( "hue" ), Qt::CaseInsensitive ) == 0 )
+    color.setHsv( value, color.hsvSaturation(), color.value(), color.alpha() );
+  else if ( part.compare( QLatin1String( "saturation" ), Qt::CaseInsensitive ) == 0 )
+    color.setHsvF( color.hsvHueF(), value / 100.0, color.valueF(), color.alphaF() );
+  else if ( part.compare( QLatin1String( "value" ), Qt::CaseInsensitive ) == 0 )
+    color.setHsvF( color.hsvHueF(), color.hsvSaturationF(), value / 100.0, color.alphaF() );
+  else if ( part.compare( QLatin1String( "hsl_hue" ), Qt::CaseInsensitive ) == 0 )
+    color.setHsl( value, color.hslSaturation(), color.lightness(), color.alpha() );
+  else if ( part.compare( QLatin1String( "hsl_saturation" ), Qt::CaseInsensitive ) == 0 )
+    color.setHslF( color.hslHueF(), value / 100.0, color.lightnessF(), color.alphaF() );
+  else if ( part.compare( QLatin1String( "lightness" ), Qt::CaseInsensitive ) == 0 )
+    color.setHslF( color.hslHueF(), color.hslSaturationF(), value / 100.0, color.alphaF() );
+  else if ( part.compare( QLatin1String( "cyan" ), Qt::CaseInsensitive ) == 0 )
+    color.setCmykF( value / 100.0, color.magentaF(), color.yellowF(), color.blackF(), color.alphaF() );
+  else if ( part.compare( QLatin1String( "magenta" ), Qt::CaseInsensitive ) == 0 )
+    color.setCmykF( color.cyanF(), value / 100.0, color.yellowF(), color.blackF(), color.alphaF() );
+  else if ( part.compare( QLatin1String( "yellow" ), Qt::CaseInsensitive ) == 0 )
+    color.setCmykF( color.cyanF(), color.magentaF(), value / 100.0, color.blackF(), color.alphaF() );
+  else if ( part.compare( QLatin1String( "black" ), Qt::CaseInsensitive ) == 0 )
+    color.setCmykF( color.cyanF(), color.magentaF(), color.yellowF(), value / 100.0, color.alphaF() );
+  else
+  {
+    parent->setEvalErrorString( QObject::tr( "Unknown color component '%1'" ).arg( part ) );
+    return QVariant();
+  }
+  return QgsSymbolLayerV2Utils::encodeColor( color );
+}
+
 static QVariant fcnSpecialColumn( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   QString varName = getStringValue( values.at( 0 ), parent );
@@ -2050,7 +2154,7 @@ const QStringList& QgsExpression::BuiltinFunctions()
     << "todatetime" << "to_datetime" << "todate" << "to_date"
     << "totime" << "to_time" << "tointerval" << "to_interval"
     << "coalesce" << "if" << "regexp_match" << "age" << "year"
-    << "month" << "week" << "day" << "hour"
+    << "month" << "week" << "day" << "hour" << "day_of_week"
     << "minute" << "second" << "lower" << "upper"
     << "title" << "length" << "replace" << "trim" << "wordwrap"
     << "regexp_replace" << "regexp_substr"
@@ -2059,7 +2163,7 @@ const QStringList& QgsExpression::BuiltinFunctions()
     << "format_number" << "format_date"
     << "color_rgb" << "color_rgba" << "ramp_color"
     << "color_hsl" << "color_hsla" << "color_hsv" << "color_hsva"
-    << "color_cymk" << "color_cymka"
+    << "color_cmyk" << "color_cmyka" << "color_part" << "set_color_part"
     << "xat" << "yat" << "$area" << "area" << "perimeter"
     << "$length" << "$perimeter" << "x" << "y" << "$x" << "$y" << "num_points"
     << "point_n" << "start_point" << "end_point" << "make_point"
@@ -2131,6 +2235,7 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( "hour", 1, fcnHour, "Date and Time" )
     << new StaticFunction( "minute", 1, fcnMinute, "Date and Time" )
     << new StaticFunction( "second", 1, fcnSeconds, "Date and Time" )
+    << new StaticFunction( "day_of_week", 1, fcnDayOfWeek, "Date and Time" )
     << new StaticFunction( "lower", 1, fcnLower, "String" )
     << new StaticFunction( "upper", 1, fcnUpper, "String" )
     << new StaticFunction( "title", 1, fcnTitle, "String" )
@@ -2163,6 +2268,8 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( "color_hsva", 4, fncColorHsva, "Color" )
     << new StaticFunction( "color_cmyk", 4, fcnColorCmyk, "Color" )
     << new StaticFunction( "color_cmyka", 5, fncColorCmyka, "Color" )
+    << new StaticFunction( "color_part", 2, fncColorPart, "Color" )
+    << new StaticFunction( "set_color_part", 3, fncSetColorPart, "Color" )
     << new StaticFunction( "$geometry", 0, fcnGeometry, "GeometryGroup", QString(), true )
     << new StaticFunction( "$area", 0, fcnGeomArea, "GeometryGroup", QString(), true )
     << new StaticFunction( "area", 1, fcnArea, "GeometryGroup" )
