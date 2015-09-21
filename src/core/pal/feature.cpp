@@ -1419,7 +1419,7 @@ namespace pal
       //if feature is set to always show, bump the priority up by orders of magnitude
       //so that other feature's labels are unlikely to be placed over the label for this feature
       //(negative numbers due to how pal::extract calculates inactive cost)
-      return 0.2;
+      return -0.2;
     }
 
     return mLF->priority() >= 0 ? mLF->priority() : mLF->layer()->priority();
