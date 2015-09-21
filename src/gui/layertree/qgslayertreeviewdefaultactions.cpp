@@ -110,6 +110,19 @@ QAction* QgsLayerTreeViewDefaultActions::actionGroupSelected( QObject* parent )
   return a;
 }
 
+QAction* QgsLayerTreeViewDefaultActions::actionMutuallyExclusiveGroup( QObject* parent )
+{
+  QgsLayerTreeNode* node = mView->currentNode();
+  if ( !node || !QgsLayerTree::isGroup( node ) )
+    return 0;
+
+  QAction* a = new QAction( tr( "Mutually Exclusive Group" ), parent );
+  a->setCheckable( true );
+  a->setChecked( QgsLayerTree::toGroup( node )->isMutuallyExclusive() );
+  connect( a, SIGNAL( triggered() ), this, SLOT( mutuallyExclusiveGroup() ) );
+  return a;
+}
+
 void QgsLayerTreeViewDefaultActions::addGroup()
 {
   QgsLayerTreeGroup* group = mView->currentGroupNode();
@@ -288,4 +301,13 @@ void QgsLayerTreeViewDefaultActions::groupSelected()
   }
 
   mView->setCurrentIndex( mView->layerTreeModel()->node2index( newGroup ) );
+}
+
+void QgsLayerTreeViewDefaultActions::mutuallyExclusiveGroup()
+{
+  QgsLayerTreeNode* node = mView->currentNode();
+  if ( !node || !QgsLayerTree::isGroup( node ) )
+    return;
+
+  QgsLayerTree::toGroup( node )->setIsMutuallyExclusive( !QgsLayerTree::toGroup( node )->isMutuallyExclusive() );
 }
