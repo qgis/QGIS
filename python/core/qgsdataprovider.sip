@@ -50,9 +50,10 @@ class QgsDataProvider : QObject
     /**
      * Get the data source specification. This may be a path or database
      * connection string
+     * @param expandAuthConfig Whether to expand any assigned authentication configuration
      * @return data source specification
      */
-    virtual QString dataSourceUri() const;
+    virtual QString dataSourceUri( bool expandAuthConfig = true ) const;
 
 
     /**

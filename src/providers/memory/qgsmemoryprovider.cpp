@@ -175,8 +175,10 @@ QgsAbstractFeatureSource* QgsMemoryProvider::featureSource() const
   return new QgsMemoryFeatureSource( this );
 }
 
-QString QgsMemoryProvider::dataSourceUri() const
+QString QgsMemoryProvider::dataSourceUri( bool expandAuthConfig ) const
 {
+  Q_UNUSED( expandAuthConfig )
+
   QUrl uri( "memory" );
   QString geometry;
   switch ( mWkbType )

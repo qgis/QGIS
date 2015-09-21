@@ -21,10 +21,10 @@ class QgsDataSourceURI
     QgsDataSourceURI( QString uri );
 
     //! return connection part of URI
-    QString connectionInfo() const;
+    QString connectionInfo( bool expandAuthConfig = true ) const;
 
     //! return complete uri
-    QString uri() const;
+    QString uri( bool expandAuthConfig = true ) const;
 
     //! return complete encoded uri (generic mode)
     QByteArray encodedUri() const;
@@ -59,14 +59,16 @@ class QgsDataSourceURI
                         const QString& aDatabase,
                         const QString& aUsername,
                         const QString& aPassword,
-                        SSLmode sslmode = SSLprefer );
+                        SSLmode sslmode = SSLprefer,
+                        const QString& authConfigId = QString() );
 
     //! Set all connection related members at once (for the service case)
     void setConnection( const QString& aService,
                         const QString& aDatabase,
                         const QString& aUsername,
                         const QString& aPassword,
-                        SSLmode sslmode = SSLprefer );
+                        SSLmode sslmode = SSLprefer,
+                        const QString& authConfigId = QString() );
 
     //! Set database
     void setDatabase( const QString &database );
@@ -78,6 +80,9 @@ class QgsDataSourceURI
                         const QString& aSql = QString(),
                         const QString& aKeyColumn = QString() );
 
+    //! set authentication configuration ID
+    void setAuthConfigId( const QString& authcfg );
+
     //! set username
     void setUsername( QString username );
 
@@ -87,6 +92,7 @@ class QgsDataSourceURI
     //! Removes password element from uris
     static QString removePassword( const QString& aUri );
 
+    QString authConfigId() const;
     QString username() const;
     QString schema() const;
     QString table() const;

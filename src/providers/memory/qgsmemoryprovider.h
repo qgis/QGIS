@@ -40,7 +40,7 @@ class QgsMemoryProvider : public QgsVectorDataProvider
      * Returns the permanent storage type for this layer as a friendly name.
      */
 
-    virtual QString dataSourceUri() const override;
+    virtual QString dataSourceUri( bool expandAuthConfig = true ) const override;
 
     /**
      * Returns the permanent storage type for this layer as a friendly name.

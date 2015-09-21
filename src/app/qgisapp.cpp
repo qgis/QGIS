@@ -8204,10 +8204,22 @@ QgsVectorLayer* QgisApp::addVectorLayer( QString vectorLayerPath, QString baseNa
                + " with baseName of " + baseName
                + " and providerKey of " + providerKey );
 
+  // if the layer needs authentication, ensure the master password is set
+  bool authok = true;
+  QRegExp rx( "authcfg=([a-z]|[0-9]){7}" );
+  if ( rx.indexIn( vectorLayerPath ) != -1 )
+  {
+    authok = false;
+    if ( !QgsAuthGuiUtils::isDisabled( messageBar(), messageTimeout() ) )
+    {
+      authok = QgsAuthManager::instance()->setMasterPassword( true );
+    }
+  }
+
   // create the layer
   QgsVectorLayer *layer = new QgsVectorLayer( vectorLayerPath, baseName, providerKey, false );
 
-  if ( layer && layer->isValid() )
+  if ( authok && layer && layer->isValid() )
   {
     QStringList sublayers = layer->dataProvider()->subLayers();
     QgsDebugMsg( QString( "got valid layer with %1 sublayers" ).arg( sublayers.count() ) );

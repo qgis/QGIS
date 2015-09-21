@@ -17,6 +17,7 @@
  ***************************************************************************/
 
 #include "qgsdatasourceuri.h"
+#include "qgsauthmanager.h"
 #include "qgslogger.h"
 #include "qgswkbtypes.h"
 
@@ -148,6 +149,10 @@ QgsDataSourceURI::QgsDataSourceURI( QString uri )
       {
         mService = pval;
       }
+      else if ( pname == "authcfg" )
+      {
+        mAuthConfigId = pval;
+      }
       else if ( pname == "user" )
       {
         mUsername = pval;
@@ -251,6 +256,11 @@ QString QgsDataSourceURI::removePassword( const QString& aUri )
     safeName = strlist[0] + "," + strlist[1] + "," + strlist[2] + "," + strlist[3];
   }
   return safeName;
+}
+
+QString QgsDataSourceURI::authConfigId() const
+{
+  return mAuthConfigId;
 }
 
 QString QgsDataSourceURI::username() const
@@ -448,7 +458,7 @@ QString QgsDataSourceURI::getValue( const QString &uri, int &i )
   return pval;
 }
 
-QString QgsDataSourceURI::connectionInfo() const
+QString QgsDataSourceURI::connectionInfo( bool expandAuthConfig ) const
 {
   QStringList connectionItems;
 
@@ -493,12 +503,27 @@ QString QgsDataSourceURI::connectionInfo() const
     connectionItems << "sslmode=prefer";
 #endif
 
+  if ( !mAuthConfigId.isEmpty() )
+  {
+    if ( expandAuthConfig )
+    {
+      if ( !QgsAuthManager::instance()->updateDataSourceUriItems( connectionItems, mAuthConfigId ) )
+      {
+        QgsDebugMsg( QString( "Data source URI FAILED to update via loading configuration ID '%1'" ).arg( mAuthConfigId ) );
+      }
+    }
+    else
+    {
+      connectionItems << "authcfg=" + mAuthConfigId;
+    }
+  }
+
   return connectionItems.join( " " );
 }
 
-QString QgsDataSourceURI::uri() const
+QString QgsDataSourceURI::uri( bool expandAuthConfig ) const
 {
-  QString theUri = connectionInfo();
+  QString theUri = connectionInfo( expandAuthConfig );
 
   if ( !mKeyColumn.isEmpty() )
   {
@@ -595,7 +620,8 @@ void QgsDataSourceURI::setConnection( const QString &host,
                                       const QString &database,
                                       const QString &username,
                                       const QString &password,
-                                      SSLmode sslmode )
+                                      SSLmode sslmode,
+                                      const QString &authConfigId )
 {
   mHost = host;
   mDatabase = database;
@@ -603,19 +629,22 @@ void QgsDataSourceURI::setConnection( const QString &host,
   mUsername = username;
   mPassword = password;
   mSSLmode = sslmode;
+  mAuthConfigId = authConfigId;
 }
 
 void QgsDataSourceURI::setConnection( const QString &service,
                                       const QString &database,
                                       const QString &username,
                                       const QString &password,
-                                      SSLmode sslmode )
+                                      SSLmode sslmode,
+                                      const QString &authConfigId )
 {
   mService = service;
   mDatabase = database;
   mUsername = username;
   mPassword = password;
   mSSLmode = sslmode;
+  mAuthConfigId = authConfigId;
 }
 
 void QgsDataSourceURI::setDataSource( const QString &schema,
@@ -629,6 +658,11 @@ void QgsDataSourceURI::setDataSource( const QString &schema,
   mGeometryColumn = geometryColumn;
   mSql = sql;
   mKeyColumn = keyColumn;
+}
+
+void QgsDataSourceURI::setAuthConfigId( const QString &authcfg )
+{
+  mAuthConfigId = authcfg;
 }
 
 void QgsDataSourceURI::setDatabase( const QString &database )
