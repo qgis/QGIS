@@ -94,4 +94,4 @@ def getDisplayNameEn(alg):
 
 
 def getDisplayName(alg):
-    return alg.i18n_name if alg.i18n_name else "[" + alg.name + "]"
+    return alg.i18n_name or alg.name
