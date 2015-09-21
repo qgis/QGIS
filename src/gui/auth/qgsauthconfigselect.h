@@ -34,6 +34,7 @@ class GUI_EXPORT QgsAuthConfigSelect : public QWidget, private Ui::QgsAuthConfig
     /**
      * Create a dialog for setting an associated authentication config, either
      * from existing configs, or creating/removing them from auth database
+     * @param parent Parent widget
      * @param dataprovider The key of the calling layer provider, if applicable
      */
     explicit QgsAuthConfigSelect( QWidget *parent = 0, const QString &dataprovider = QString() );

@@ -102,6 +102,8 @@ class CORE_EXPORT QgsAuthCertUtils
     static const QList<QSslCertificate> certsFromString( const QString &pemtext );
 
     /** Return list of certificate, private key and algorithm (as PEM text) from file path components
+     * @param certpath File path to certificate
+     * @param keypath File path to private key
      * @param keypass Passphrase for private key
      * @param reencrypt Whether to re-encrypt the private key with the passphrase
      * @return certificate, private key, key's algorithm type
@@ -112,7 +114,8 @@ class CORE_EXPORT QgsAuthCertUtils
         bool reencrypt = true );
 
     /** Return list of certificate, private key and algorithm (as PEM text) for a PKCS#12 bundle
-     * @param keypass Passphrase for private key
+     * @param bundlepath File path to the PKCS bundle
+     * @param bundlepass Passphrase for bundle
      * @param reencrypt Whether to re-encrypt the private key with the passphrase
      * @return certificate, private key, key's algorithm type
      */
@@ -121,6 +124,7 @@ class CORE_EXPORT QgsAuthCertUtils
         bool reencrypt = true );
 
     /** Get the general name for CA source enum type
+     * @param source The enum source type for the CA
      * @param single Whether to return singular or plural description
      */
     static const QString getCaSourceName( QgsAuthCertUtils::CaCertSource source , bool single = false );
@@ -129,6 +133,8 @@ class CORE_EXPORT QgsAuthCertUtils
     static const QString resolvedCertName( const QSslCertificate& cert, bool issuer = false );
 
     /** Get combined distinguished name for certificate
+     * @param qcert Qt SSL cert object
+     * @param acert QCA SSL cert object to add more info to the output
      * @param issuer Whether to return cert's subject or issuer combined name
      */
     static const QString getCertDistinguishedName( const QSslCertificate& qcert,
@@ -142,6 +148,7 @@ class CORE_EXPORT QgsAuthCertUtils
     static const QString getColonDelimited( const QString& txt );
 
     /** Get the sha1 hash for certificate
+     * @param cert Qt SSL certificate to generate hash from
      * @param formatted Whether to colon-delimit the hash
      */
     static const QString shaHexForCert( const QSslCertificate &cert , bool formatted = false );

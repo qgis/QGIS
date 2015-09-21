@@ -572,6 +572,7 @@ WARN_LOGFILE           =
 
 INPUT                  = @CMAKE_SOURCE_DIR@/doc \
                          @CMAKE_SOURCE_DIR@/src/core \
+                         @CMAKE_SOURCE_DIR@/src/core/auth \
                          @CMAKE_SOURCE_DIR@/src/core/composer \
                          @CMAKE_SOURCE_DIR@/src/core/diagram \
                          @CMAKE_SOURCE_DIR@/src/core/dxf \
@@ -583,6 +584,7 @@ INPUT                  = @CMAKE_SOURCE_DIR@/doc \
                          @CMAKE_SOURCE_DIR@/src/core/raster \
                          @CMAKE_SOURCE_DIR@/src/core/symbology-ng \
                          @CMAKE_SOURCE_DIR@/src/gui \
+                         @CMAKE_SOURCE_DIR@/src/gui/auth \
                          @CMAKE_SOURCE_DIR@/src/gui/attributetable \
                          @CMAKE_SOURCE_DIR@/src/gui/editorwidgets \
                          @CMAKE_SOURCE_DIR@/src/gui/editorwidgets/core \

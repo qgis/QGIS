@@ -135,6 +135,9 @@ class GUI_EXPORT QgsAuthSslConfigWidget : public QWidget, private Ui::QgsAuthSsl
 
 //////////////// Embed in dialog ///////////////////
 
+/** \ingroup gui
+ * Dialog wrapper of widget for editing an SSL server configuration
+ */
 class GUI_EXPORT QgsAuthSslConfigDialog : public QDialog
 {
     Q_OBJECT

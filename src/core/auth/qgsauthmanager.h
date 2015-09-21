@@ -90,7 +90,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     /** Standard message for when QCA's qca-ossl plugin is missing and system is disabled */
     const QString disabledMessage() const;
 
-    /** The standard authentication database file in <user>/.qgis2/ or defined location
+    /** The standard authentication database file in ~/.qgis2/ or defined location
      * @see QgsApplication::qgisAuthDbFilePath
      */
     const QString authenticationDbPath() const { return mAuthDbPath; }
@@ -207,6 +207,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     /**
      * Get authentication method edit widget via its key
      * @param authMethodKey Authentication method key
+     * @param parent Parent widget
      */
     QWidget *authMethodEditWidget( const QString &authMethodKey , QWidget *parent );
 
@@ -230,7 +231,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
     /**
      * Store an authentication config in the database
-     * @param config Associated authentication config id
+     * @param mconfig Associated authentication config id
      * @return Whether operation succeeded
      */
     bool storeAuthenticationConfig( QgsAuthMethodConfig &mconfig );
@@ -245,7 +246,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     /**
      * Load an authentication config from the database into subclass
      * @param authcfg Associated authentication config id
-     * @param config Subclassed config to load into
+     * @param mconfig Subclassed config to load into
      * @param full Whether to decrypt and populate all sensitive data in subclass
      * @return Whether operation succeeded
      */
@@ -253,7 +254,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
     /**
      * Remove an authentication config in the database
-     * @param config Associated authentication config id
+     * @param authcfg Associated authentication config id
      * @return Whether operation succeeded
      */
     bool removeAuthenticationConfig( const QString& authcfg );
@@ -285,6 +286,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * Provider call to update a QNetworkRequest with an authentication config
      * @param request The QNetworkRequest
      * @param authcfg Associated authentication config id
+     * @param dataprovider Provider key filter, offering logic branching in authentication method
      * @return Whether operation succeeded
      */
     bool updateNetworkRequest( QNetworkRequest &request, const QString& authcfg,
@@ -294,6 +296,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * Provider call to update a QNetworkReply with an authentication config (used to skip known SSL errors, etc.)
      * @param reply The QNetworkReply
      * @param authcfg Associated authentication config id
+     * @param dataprovider Provider key filter, offering logic branching in authentication method
      * @return Whether operation succeeded
      */
     bool updateNetworkReply( QNetworkReply *reply, const QString& authcfg,
@@ -301,8 +304,9 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
     /**
      * Provider call to update a QgsDataSourceURI with an authentication config
-     * @param uri The QgsDataSourceURI
+     * @param connectionItems The connection items, e.g. username=myname, of QgsDataSourceURI
      * @param authcfg Associated authentication config id
+     * @param dataprovider Provider key filter, offering logic branching in authentication method
      * @return Whether operation succeeded
      */
     bool updateDataSourceUriItems( QStringList &connectionItems, const QString& authcfg,

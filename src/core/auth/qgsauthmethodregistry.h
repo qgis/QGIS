@@ -72,7 +72,8 @@ class CORE_EXPORT QgsAuthMethodRegistry
 //    int authMethodCapabilities( const QString& authMethodKey ) const;
 
     /** Return the GUI edit widget associated with the auth method
-        @param authMethodKey identificator of the auth method
+     * @param parent Parent widget
+     * @param authMethodKey identificator of the auth method
     */
     QWidget *editWidget( const QString & authMethodKey, QWidget * parent = 0 );
 

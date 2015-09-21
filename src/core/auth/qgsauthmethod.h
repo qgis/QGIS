@@ -83,6 +83,8 @@ class CORE_EXPORT QgsAuthMethod : public QObject
     QStringList supportedDataProviders() const { return mDataProviders; }
 
     /** Update a network request with authentication components
+     * @param request The network request to update
+     * @param authcfg Authentication configuration ID
      * @param dataprovider Textual key for a data provider, e.g. 'postgres', that allows
      * for custom updater code specific to the provider
      * @return Whether the update succeeded
@@ -97,6 +99,8 @@ class CORE_EXPORT QgsAuthMethod : public QObject
     }
 
     /** Update a network reply with authentication components
+     * @param reply The network reply object to update
+     * @param authcfg Authentication configuration ID
      * @param dataprovider Textual key for a data provider, e.g. 'postgres', that allows
      * for custom updater code specific to the provider
      * @return Whether the update succeeded
@@ -112,6 +116,7 @@ class CORE_EXPORT QgsAuthMethod : public QObject
 
     /** Update data source connection items with authentication components
      * @param connectionItems QStringlist of 'key=value' pairs, as utilized in QgsDataSourceURI::connectionInfo()
+     * @param authcfg Authentication configuration ID
      * @param dataprovider Textual key for a data provider, e.g. 'postgres', that allows
      * for custom updater code specific to the provider
      * @return Whether the update succeeded
