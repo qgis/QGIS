@@ -38,7 +38,8 @@
 **
 ****************************************************************************/
 
-#include <QtGui>
+#include <QLineEdit>
+#include <QDateTime>
 
 #include "qgsvariantdelegate.h"
 

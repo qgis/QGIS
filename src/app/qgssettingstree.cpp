@@ -38,7 +38,9 @@
 **
 ****************************************************************************/
 
-#include <QtGui>
+#include <QHeaderView>
+#include <QSettings>
+#include <QEvent>
 
 #include "qgssettingstree.h"
 #include "qgsvariantdelegate.h"
