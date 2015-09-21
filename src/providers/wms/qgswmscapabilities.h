@@ -7,6 +7,7 @@
 #include <QStringList>
 #include <QVector>
 
+#include "qgsauthmanager.h"
 #include "qgsraster.h"
 #include "qgsrectangle.h"
 
@@ -434,12 +435,16 @@ struct QgsWmsParserSettings
 
 struct QgsWmsAuthorization
 {
-  QgsWmsAuthorization( const QString& userName = QString(), const QString& password = QString(), const QString& referer = QString() )
-      : mUserName( userName ), mPassword( password ), mReferer( referer ) {}
+  QgsWmsAuthorization( const QString& userName = QString(), const QString& password = QString(), const QString& referer = QString(), const QString& authcfg = QString() )
+      : mUserName( userName ), mPassword( password ), mReferer( referer ), mAuthCfg( authcfg ) {}
 
-  void setAuthorization( QNetworkRequest &request ) const
+  bool setAuthorization( QNetworkRequest &request ) const
   {
-    if ( !mUserName.isNull() || !mPassword.isNull() )
+    if ( !mAuthCfg.isEmpty() )
+    {
+      return QgsAuthManager::instance()->updateNetworkRequest( request, mAuthCfg );
+    }
+    else if ( !mUserName.isNull() || !mPassword.isNull() )
     {
       request.setRawHeader( "Authorization", "Basic " + QString( "%1:%2" ).arg( mUserName ).arg( mPassword ).toAscii().toBase64() );
     }
@@ -448,6 +453,7 @@ struct QgsWmsAuthorization
     {
       request.setRawHeader( "Referer", QString( "%1" ).arg( mReferer ).toAscii() );
     }
+    return true;
   }
 
   //! Username for basic http authentication
@@ -459,7 +465,8 @@ struct QgsWmsAuthorization
   //! Referer for http requests
   QString mReferer;
 
-
+  //! Authentication configuration ID
+  QString mAuthCfg;
 };
 
 

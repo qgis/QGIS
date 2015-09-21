@@ -44,6 +44,12 @@ bool QgsWmsSettings::parseUri( QString uriString )
   mAuth.mPassword = uri.param( "password" );
   QgsDebugMsg( "set password to " + mAuth.mPassword );
 
+  if ( uri.hasParam( "authcfg" ) )
+  {
+    mAuth.mAuthCfg = uri.param( "authcfg" );
+  }
+  QgsDebugMsg( "set authcfg to " + mAuth.mAuthCfg );
+
   mAuth.mReferer = uri.param( "referer" );
   QgsDebugMsg( "set referer to " + mAuth.mReferer );
 
@@ -1911,7 +1917,12 @@ bool QgsWmsCapabilitiesDownload::downloadCapabilities()
   mError.clear();
 
   QNetworkRequest request( url );
-  mAuth.setAuthorization( request );
+  if ( !mAuth.setAuthorization( request ) )
+  {
+    mError = tr( "Download of capabilities failed: network request update failed for authentication config" );
+    QgsMessageLog::logMessage( mError, tr( "WMS" ) );
+    return false;
+  }
   request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferNetwork );
   request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
@@ -1995,7 +2006,14 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
         else
         {
           QNetworkRequest request( toUrl );
-          mAuth.setAuthorization( request );
+          if ( !mAuth.setAuthorization( request ) )
+          {
+            mHttpCapabilitiesResponse.clear();
+            mError = tr( "Download of capabilities failed: network request update failed for authentication config" );
+            QgsMessageLog::logMessage( mError, tr( "WMS" ) );
+            emit downloadFinished();
+            return;
+          }
           request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferNetwork );
           request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 

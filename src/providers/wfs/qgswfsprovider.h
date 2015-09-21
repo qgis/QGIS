@@ -20,6 +20,7 @@
 
 #include <QDomElement>
 #include "qgis.h"
+#include "qgsauthmanager.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectordataprovider.h"
@@ -35,15 +36,24 @@ class QgsSpatialIndex;
 // TODO: merge with QgsWmsAuthorization?
 struct QgsWFSAuthorization
 {
-  QgsWFSAuthorization( const QString& userName = QString(), const QString& password = QString() ) : mUserName( userName ), mPassword( password ) {}
+  QgsWFSAuthorization( const QString& userName = QString(), const QString& password = QString(), const QString& authcfg = QString() )
+      : mUserName( userName )
+      , mPassword( password )
+      , mAuthCfg( authcfg )
+  {}
 
   //! set authorization header
-  void setAuthorization( QNetworkRequest &request ) const
+  bool setAuthorization( QNetworkRequest &request ) const
   {
-    if ( !mUserName.isNull() || !mPassword.isNull() )
+    if ( !mAuthCfg.isEmpty() )
+    {
+      return QgsAuthManager::instance()->updateNetworkRequest( request, mAuthCfg );
+    }
+    else if ( !mUserName.isNull() || !mPassword.isNull() )
     {
       request.setRawHeader( "Authorization", "Basic " + QString( "%1:%2" ).arg( mUserName ).arg( mPassword ).toAscii().toBase64() );
     }
+    return true;
   }
 
   //! Username for basic http authentication
@@ -51,6 +61,9 @@ struct QgsWFSAuthorization
 
   //! Password for basic http authentication
   QString mPassword;
+
+  //! Authentication configuration ID
+  QString mAuthCfg;
 };
 
 /** A provider reading features from a WFS server*/

@@ -19,9 +19,10 @@ class QgsGml: QObject
      *  @param extent retrieved extents
      *  @param userName username for authentication
      *  @param password password for authentication
+     *  @param authcfg authentication configuration id
      *  @return 0 in case of success
      */
-    int getFeatures( const QString& uri, QGis::WkbType* wkbType, QgsRectangle* extent = 0, const QString& userName = QString(), const QString& password = QString() ) /PyName=getFeaturesUri/;
+    int getFeatures( const QString& uri, QGis::WkbType* wkbType, QgsRectangle* extent = 0, const QString& userName = QString(), const QString& password = QString(), const QString& authcfg = QString() ) /PyName=getFeaturesUri/;
 
     /** Read from GML data. Constructor uri param is ignored
      *  Supports only UTF-8, UTF-16, ISO-8859-1, ISO-8859-1 XML encodings.

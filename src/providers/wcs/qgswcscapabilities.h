@@ -153,7 +153,7 @@ class QgsWcsCapabilities : public QObject
     bool parseDescribeCoverageDom11( QByteArray const &xml, QgsWcsCoverageSummary *coverage );
 
     //! set authorization header
-    void setAuthorization( QNetworkRequest &request ) const;
+    bool setAuthorization( QNetworkRequest &request ) const;
 
     QString version() const { return mCapabilities.version; }
 
