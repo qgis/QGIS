@@ -299,7 +299,7 @@
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="currentIndex">
-          <number>14</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="mOptionsPageGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -1359,8 +1359,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>626</width>
-                <height>545</height>
+                <width>539</width>
+                <height>510</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -2405,8 +2405,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>626</width>
-                <height>545</height>
+                <width>168</width>
+                <height>282</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_46">
@@ -2510,8 +2510,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>626</width>
-                <height>545</height>
+                <width>521</width>
+                <height>361</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -3343,8 +3343,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>626</width>
-                <height>545</height>
+                <width>537</width>
+                <height>325</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_39">
@@ -3548,7 +3548,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>613</width>
+                <width>516</width>
                 <height>689</height>
                </rect>
               </property>
@@ -4048,8 +4048,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>626</width>
-                <height>545</height>
+                <width>462</width>
+                <height>386</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -4187,7 +4187,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>613</width>
+                <width>561</width>
                 <height>690</height>
                </rect>
               </property>
@@ -4433,8 +4433,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>626</width>
-                <height>545</height>
+                <width>303</width>
+                <height>240</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -4532,7 +4532,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>613</width>
+                <width>552</width>
                 <height>766</height>
                </rect>
               </property>
@@ -4901,9 +4901,36 @@
              <property name="title">
               <string>Advanced Settings Editor</string>
              </property>
-             <layout class="QGridLayout" name="gridLayout_19">
-              <item row="0" column="0">
-               <widget class="QgsSettingsTree" name="mAdvancedSettingsEditor" native="true"/>
+             <layout class="QVBoxLayout" name="verticalLayout_42">
+              <item>
+               <widget class="QWidget" name="mAdvancedSettingsWarning" native="true">
+                <layout class="QVBoxLayout" name="verticalLayout_44">
+                 <item>
+                  <widget class="QLabel" name="label_44">
+                   <property name="text">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Changes on this page are dangerous and can break your QGIS installation in various ways. Any change you make is applied immediately, without clicking the &lt;span style=&quot; font-style:italic;&quot;&gt;ok&lt;/span&gt; button.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <property name="wordWrap">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="mAdvancedSettingsEnableButton">
+                   <property name="text">
+                    <string>I will be careful, I promise!</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="QgsSettingsTree" name="mAdvancedSettingsEditor" native="true">
+                <property name="visible">
+                 <bool>false</bool>
+                </property>
+               </widget>
               </item>
              </layout>
             </widget>
@@ -5243,6 +5270,38 @@
     <hint type="destinationlabel">
      <x>367</x>
      <y>315</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mAdvancedSettingsEnableButton</sender>
+   <signal>clicked()</signal>
+   <receiver>mAdvancedSettingsEditor</receiver>
+   <slot>show()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>481</x>
+     <y>261</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>481</x>
+     <y>412</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mAdvancedSettingsEnableButton</sender>
+   <signal>clicked()</signal>
+   <receiver>mAdvancedSettingsWarning</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>481</x>
+     <y>261</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>481</x>
+     <y>164</y>
     </hint>
    </hints>
   </connection>
