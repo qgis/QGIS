@@ -3472,7 +3472,7 @@ QString QgsExpression::helptext( QString name )
 #if QT_VERSION < 0x050000
   name = Qt::escape( name );
 #else
-  name = QString::toHtmlEscaped( name );
+  name = name.toHtmlEscaped();
 #endif
 
   QString helpContents( QString( "<h3>%1</h3>\n<div class=\"description\"><p>%2</p></div>" )
