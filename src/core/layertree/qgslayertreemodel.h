@@ -19,6 +19,7 @@
 #include <QAbstractItemModel>
 #include <QFont>
 #include <QIcon>
+#include <QTimer>
 
 class QgsLayerTreeNode;
 class QgsLayerTreeGroup;
@@ -27,7 +28,6 @@ class QgsLayerTreeModelLegendNode;
 class QgsMapHitTest;
 class QgsMapLayer;
 class QgsMapSettings;
-
 
 /**
  * The QgsLayerTreeModel class is model implementation for Qt item views framework.
@@ -72,17 +72,18 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     enum Flag
     {
       // display flags
-      ShowLegend                = 0x0001,  //!< Add legend nodes for layer nodes
-      ShowSymbology             = 0x0001,  //!< deprecated - use ShowLegend
-      ShowRasterPreviewIcon     = 0x0002,  //!< Will use real preview of raster layer as icon (may be slow)
-      ShowLegendAsTree          = 0x0004,  //!< For legends that support it, will show them in a tree instead of a list (needs also ShowLegend). Added in 2.8
+      ShowLegend                 = 0x0001,  //!< Add legend nodes for layer nodes
+      ShowSymbology              = 0x0001,  //!< deprecated - use ShowLegend
+      ShowRasterPreviewIcon      = 0x0002,  //!< Will use real preview of raster layer as icon (may be slow)
+      ShowLegendAsTree           = 0x0004,  //!< For legends that support it, will show them in a tree instead of a list (needs also ShowLegend). Added in 2.8
+      DeferredLegendInvalidation = 0x0008,  //!< defer legend model invalidation
 
       // behavioral flags
-      AllowNodeReorder          = 0x1000,  //!< Allow reordering with drag'n'drop
-      AllowNodeRename           = 0x2000,  //!< Allow renaming of groups and layers
-      AllowNodeChangeVisibility = 0x4000,  //!< Allow user to set node visibility with a check box
-      AllowLegendChangeState    = 0x8000,  //!< Allow check boxes for legend nodes (if supported by layer's legend)
-      AllowSymbologyChangeState = 0x8000,  //!< deprecated - use AllowLegendChangeState
+      AllowNodeReorder           = 0x1000,  //!< Allow reordering with drag'n'drop
+      AllowNodeRename            = 0x2000,  //!< Allow renaming of groups and layers
+      AllowNodeChangeVisibility  = 0x4000,  //!< Allow user to set node visibility with a check box
+      AllowLegendChangeState     = 0x8000,  //!< Allow check boxes for legend nodes (if supported by layer's legend)
+      AllowSymbologyChangeState  = 0x8000,  //!< deprecated - use AllowLegendChangeState
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -204,6 +205,8 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 
     void legendNodeDataChanged();
 
+    void invalidateLegendMapBasedData();
+
   protected:
     void removeLegendFromLayer( QgsLayerTreeLayer* nodeLayer );
     void addLegendToLayer( QgsLayerTreeLayer* nodeL );
@@ -295,6 +298,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     double mLegendMapViewMupp;
     int mLegendMapViewDpi;
     double mLegendMapViewScale;
+    QTimer mDeferLegendInvalidationTimer;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsLayerTreeModel::Flags )

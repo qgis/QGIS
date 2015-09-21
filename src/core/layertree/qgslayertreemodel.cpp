@@ -35,7 +35,7 @@
 QgsLayerTreeModel::QgsLayerTreeModel( QgsLayerTreeGroup* rootNode, QObject *parent )
     : QAbstractItemModel( parent )
     , mRootNode( rootNode )
-    , mFlags( ShowLegend | AllowLegendChangeState )
+    , mFlags( ShowLegend | AllowLegendChangeState | DeferredLegendInvalidation )
     , mAutoCollapseLegendNodesCount( -1 )
     , mLegendFilterByScale( 0 )
     , mLegendMapViewMupp( 0 )
@@ -45,6 +45,9 @@ QgsLayerTreeModel::QgsLayerTreeModel( QgsLayerTreeGroup* rootNode, QObject *pare
   connectToRootNode();
 
   mFontLayer.setBold( true );
+
+  connect( &mDeferLegendInvalidationTimer, SIGNAL( timeout() ), this, SLOT( invalidateLegendMapBasedData() ) );
+  mDeferLegendInvalidationTimer.setSingleShot( true );
 }
 
 QgsLayerTreeModel::~QgsLayerTreeModel()
@@ -682,7 +685,7 @@ void QgsLayerTreeModel::nodeLayerLoaded()
   if ( !nodeLayer )
     return;
 
-  // deffered connection to the layer
+  // deferred connection to the layer
   connectToLayer( nodeLayer );
 }
 
@@ -1303,6 +1306,16 @@ QList<QgsLayerTreeModelLegendNode*> QgsLayerTreeModel::layerLegendNodes( QgsLaye
 
 void QgsLayerTreeModel::legendInvalidateMapBasedData()
 {
+  if ( !testFlag( DeferredLegendInvalidation ) )
+    invalidateLegendMapBasedData();
+  else
+    mDeferLegendInvalidationTimer.start( 1000 );
+}
+
+void QgsLayerTreeModel::invalidateLegendMapBasedData()
+{
+  QgsDebugCall;
+
   // we have varying icon sizes, and we want icon to be centered and
   // text to be left aligned, so we have to compute the max width of icons
   //
