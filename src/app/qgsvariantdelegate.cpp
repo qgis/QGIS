@@ -42,30 +42,30 @@
 
 #include "qgsvariantdelegate.h"
 
-QgsVariantDelegate::QgsVariantDelegate( QObject *parent )
+QgsVariantDelegate::QgsVariantDelegate( QObject* parent )
     : QItemDelegate( parent )
 {
-  boolExp.setPattern( "true|false" );
-  boolExp.setCaseSensitivity( Qt::CaseInsensitive );
+  mBoolExp.setPattern( "true|false" );
+  mBoolExp.setCaseSensitivity( Qt::CaseInsensitive );
 
-  byteArrayExp.setPattern( "[\\x00-\\xff]*" );
-  charExp.setPattern( "." );
-  colorExp.setPattern( "\\(([0-9]*),([0-9]*),([0-9]*),([0-9]*)\\)" );
-  doubleExp.setPattern( "" );
-  pointExp.setPattern( "\\((-?[0-9]*),(-?[0-9]*)\\)" );
-  rectExp.setPattern( "\\((-?[0-9]*),(-?[0-9]*),(-?[0-9]*),(-?[0-9]*)\\)" );
-  signedIntegerExp.setPattern( "-?[0-9]*" );
-  sizeExp = pointExp;
-  unsignedIntegerExp.setPattern( "[0-9]*" );
+  mByteArrayExp.setPattern( "[\\x00-\\xff]*" );
+  mCharExp.setPattern( "." );
+  mColorExp.setPattern( "\\(([0-9]*),([0-9]*),([0-9]*),([0-9]*)\\)" );
+  mDoubleExp.setPattern( "" );
+  mPointExp.setPattern( "\\((-?[0-9]*),(-?[0-9]*)\\)" );
+  mRectExp.setPattern( "\\((-?[0-9]*),(-?[0-9]*),(-?[0-9]*),(-?[0-9]*)\\)" );
+  mSignedIntegerExp.setPattern( "-?[0-9]*" );
+  mSizeExp = mPointExp;
+  mUnsignedIntegerExp.setPattern( "[0-9]*" );
 
-  dateExp.setPattern( "([0-9]{,4})-([0-9]{,2})-([0-9]{,2})" );
-  timeExp.setPattern( "([0-9]{,2}):([0-9]{,2}):([0-9]{,2})" );
-  dateTimeExp.setPattern( dateExp.pattern() + "T" + timeExp.pattern() );
+  mDateExp.setPattern( "([0-9]{,4})-([0-9]{,2})-([0-9]{,2})" );
+  mTimeExp.setPattern( "([0-9]{,2}):([0-9]{,2}):([0-9]{,2})" );
+  mDateTimeExp.setPattern( mDateExp.pattern() + "T" + mTimeExp.pattern() );
 }
 
-void QgsVariantDelegate::paint( QPainter *painter,
-                                const QStyleOptionViewItem &option,
-                                const QModelIndex &index ) const
+void QgsVariantDelegate::paint( QPainter* painter,
+                                const QStyleOptionViewItem& option,
+                                const QModelIndex& index ) const
 {
   if ( index.column() == 2 )
   {
@@ -82,10 +82,11 @@ void QgsVariantDelegate::paint( QPainter *painter,
   QItemDelegate::paint( painter, option, index );
 }
 
-QWidget *QgsVariantDelegate::createEditor( QWidget *parent,
-    const QStyleOptionViewItem & /* option */,
-    const QModelIndex &index ) const
+QWidget* QgsVariantDelegate::createEditor( QWidget* parent,
+    const QStyleOptionViewItem& option,
+    const QModelIndex& index ) const
 {
+  Q_UNUSED( option )
   if ( index.column() != 2 )
     return 0;
 
@@ -93,7 +94,7 @@ QWidget *QgsVariantDelegate::createEditor( QWidget *parent,
   if ( !isSupportedType( QgsVariantDelegate::type( originalValue ) ) )
     return 0;
 
-  QLineEdit *lineEdit = new QLineEdit( parent );
+  QLineEdit* lineEdit = new QLineEdit( parent );
   lineEdit->setFrame( false );
 
   QRegExp regExp;
@@ -101,45 +102,45 @@ QWidget *QgsVariantDelegate::createEditor( QWidget *parent,
   switch ( QgsVariantDelegate::type( originalValue ) )
   {
     case QVariant::Bool:
-      regExp = boolExp;
+      regExp = mBoolExp;
       break;
     case QVariant::ByteArray:
-      regExp = byteArrayExp;
+      regExp = mByteArrayExp;
       break;
     case QVariant::Char:
-      regExp = charExp;
+      regExp = mCharExp;
       break;
     case QVariant::Color:
-      regExp = colorExp;
+      regExp = mColorExp;
       break;
     case QVariant::Date:
-      regExp = dateExp;
+      regExp = mDateExp;
       break;
     case QVariant::DateTime:
-      regExp = dateTimeExp;
+      regExp = mDateTimeExp;
       break;
     case QVariant::Double:
-      regExp = doubleExp;
+      regExp = mDoubleExp;
       break;
     case QVariant::Int:
     case QVariant::LongLong:
-      regExp = signedIntegerExp;
+      regExp = mSignedIntegerExp;
       break;
     case QVariant::Point:
-      regExp = pointExp;
+      regExp = mPointExp;
       break;
     case QVariant::Rect:
-      regExp = rectExp;
+      regExp = mRectExp;
       break;
     case QVariant::Size:
-      regExp = sizeExp;
+      regExp = mSizeExp;
       break;
     case QVariant::Time:
-      regExp = timeExp;
+      regExp = mTimeExp;
       break;
     case QVariant::UInt:
     case QVariant::ULongLong:
-      regExp = unsignedIntegerExp;
+      regExp = mUnsignedIntegerExp;
       break;
     default:
       ;
@@ -147,30 +148,30 @@ QWidget *QgsVariantDelegate::createEditor( QWidget *parent,
 
   if ( !regExp.isEmpty() )
   {
-    QValidator *validator = new QRegExpValidator( regExp, lineEdit );
+    QValidator* validator = new QRegExpValidator( regExp, lineEdit );
     lineEdit->setValidator( validator );
   }
 
   return lineEdit;
 }
 
-void QgsVariantDelegate::setEditorData( QWidget *editor,
-                                        const QModelIndex &index ) const
+void QgsVariantDelegate::setEditorData( QWidget* editor,
+                                        const QModelIndex& index ) const
 {
   QVariant value = index.model()->data( index, Qt::UserRole );
-  if ( QLineEdit *lineEdit = qobject_cast<QLineEdit *>( editor ) )
+  if ( QLineEdit* lineEdit = qobject_cast<QLineEdit* >( editor ) )
     lineEdit->setText( displayText( value ) );
 }
 
-void QgsVariantDelegate::setModelData( QWidget *editor, QAbstractItemModel *model,
-                                       const QModelIndex &index ) const
+void QgsVariantDelegate::setModelData( QWidget* editor, QAbstractItemModel* model,
+                                       const QModelIndex& index ) const
 {
-  QLineEdit *lineEdit = qobject_cast<QLineEdit *>( editor );
+  QLineEdit* lineEdit = qobject_cast<QLineEdit* >( editor );
   if ( !lineEdit->isModified() )
     return;
 
   QString text = lineEdit->text();
-  const QValidator *validator = lineEdit->validator();
+  const QValidator* validator = lineEdit->validator();
   if ( validator )
   {
     int pos;
@@ -187,11 +188,11 @@ void QgsVariantDelegate::setModelData( QWidget *editor, QAbstractItemModel *mode
       value = text.at( 0 );
       break;
     case QVariant::Color:
-      colorExp.exactMatch( text );
-      value = QColor( qMin( colorExp.cap( 1 ).toInt(), 255 ),
-                      qMin( colorExp.cap( 2 ).toInt(), 255 ),
-                      qMin( colorExp.cap( 3 ).toInt(), 255 ),
-                      qMin( colorExp.cap( 4 ).toInt(), 255 ) );
+      mColorExp.exactMatch( text );
+      value = QColor( qMin( mColorExp.cap( 1 ).toInt(), 255 ),
+                      qMin( mColorExp.cap( 2 ).toInt(), 255 ),
+                      qMin( mColorExp.cap( 3 ).toInt(), 255 ),
+                      qMin( mColorExp.cap( 4 ).toInt(), 255 ) );
       break;
     case QVariant::Date:
     {
@@ -210,17 +211,17 @@ void QgsVariantDelegate::setModelData( QWidget *editor, QAbstractItemModel *mode
     }
     break;
     case QVariant::Point:
-      pointExp.exactMatch( text );
-      value = QPoint( pointExp.cap( 1 ).toInt(), pointExp.cap( 2 ).toInt() );
+      mPointExp.exactMatch( text );
+      value = QPoint( mPointExp.cap( 1 ).toInt(), mPointExp.cap( 2 ).toInt() );
       break;
     case QVariant::Rect:
-      rectExp.exactMatch( text );
-      value = QRect( rectExp.cap( 1 ).toInt(), rectExp.cap( 2 ).toInt(),
-                     rectExp.cap( 3 ).toInt(), rectExp.cap( 4 ).toInt() );
+      mRectExp.exactMatch( text );
+      value = QRect( mRectExp.cap( 1 ).toInt(), mRectExp.cap( 2 ).toInt(),
+                     mRectExp.cap( 3 ).toInt(), mRectExp.cap( 4 ).toInt() );
       break;
     case QVariant::Size:
-      sizeExp.exactMatch( text );
-      value = QSize( sizeExp.cap( 1 ).toInt(), sizeExp.cap( 2 ).toInt() );
+      mSizeExp.exactMatch( text );
+      value = QSize( mSizeExp.cap( 1 ).toInt(), mSizeExp.cap( 2 ).toInt() );
       break;
     case QVariant::StringList:
       value = text.split( "," );
@@ -269,7 +270,7 @@ bool QgsVariantDelegate::isSupportedType( QVariant::Type type )
   }
 }
 
-QString QgsVariantDelegate::displayText( const QVariant &value )
+QString QgsVariantDelegate::displayText( const QVariant& value )
 {
   switch ( QgsVariantDelegate::type( value ) )
   {
@@ -325,7 +326,7 @@ QString QgsVariantDelegate::displayText( const QVariant &value )
 }
 
 /* hack to get "real" type of a variant, because QVariant::type() almost always returns QString */
-QVariant::Type QgsVariantDelegate::type( const QVariant &value )
+QVariant::Type QgsVariantDelegate::type( const QVariant& value )
 {
   if ( value.type() == QVariant::String )
   {

@@ -848,6 +848,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   mVariableEditor->reloadContext();
   mVariableEditor->setEditableScopeIndex( 0 );
 
+  mAdvancedSettingsEditor->setSettingsObject( &settings );
+
   // restore window and widget geometry/state
   restoreOptionsBaseUi();
 }
@@ -862,7 +864,7 @@ void QgsOptions::setCurrentPage( QString pageWidgetName )
   //find the page with a matching widget name
   for ( int idx = 0; idx < mOptionsStackedWidget->count(); ++idx )
   {
-    QWidget * currentPage = mOptionsStackedWidget->widget( idx );
+    QWidget* currentPage = mOptionsStackedWidget->widget( idx );
     if ( currentPage->objectName() == pageWidgetName )
     {
       //found the page, set it as current
