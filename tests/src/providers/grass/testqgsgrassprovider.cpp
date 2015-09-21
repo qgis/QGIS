@@ -75,6 +75,7 @@ class TestQgsGrassProvider: public QObject
     // compare with tolerance
     bool compare( double expected, double got, bool& ok );
     bool copyRecursively( const QString &srcFilePath, const QString &tgtFilePath, QString *error );
+    bool removeRecursively( const QString &filePath, QString *error = 0 );
     bool copyLocation( QString& tmpGisdbase );
     bool createTmpLocation( QString& tmpGisdbase, QString& tmpLocation, QString& tmpMapset );
     QString mGisdbase;
@@ -296,6 +297,7 @@ void TestQgsGrassProvider::mapsets()
       }
     }
   }
+  removeRecursively( tmpGisdbase );
   GVERIFY( ok );
 }
 
@@ -455,7 +457,7 @@ void TestQgsGrassProvider::info()
       ok = false;
     }
   }
-
+  removeRecursively( tmpGisdbase );
   GVERIFY( ok );
 }
 
@@ -498,6 +500,49 @@ bool TestQgsGrassProvider::copyRecursively( const QString &srcFilePath, const QS
         *error = QCoreApplication::translate( "Utils::FileUtils", "Could not copy file '%1' to '%2'." )
                  .arg( QDir::toNativeSeparators( srcFilePath ),
                        QDir::toNativeSeparators( tgtFilePath ) );
+      }
+      return false;
+    }
+  }
+  return true;
+}
+
+// From Qt creator
+bool TestQgsGrassProvider::removeRecursively( const QString &filePath, QString *error )
+{
+  QFileInfo fileInfo( filePath );
+  if ( !fileInfo.exists() )
+    return true;
+  QFile::setPermissions( filePath, fileInfo.permissions() | QFile::WriteUser );
+  if ( fileInfo.isDir() )
+  {
+    QDir dir( filePath );
+    QStringList fileNames = dir.entryList( QDir::Files | QDir::Hidden
+                                           | QDir::System | QDir::Dirs | QDir::NoDotAndDotDot );
+    foreach ( const QString &fileName, fileNames )
+    {
+      if ( !removeRecursively( filePath + QLatin1Char( '/' ) + fileName, error ) )
+        return false;
+    }
+    dir.cdUp();
+    if ( !dir.rmdir( fileInfo.fileName() ) )
+    {
+      if ( error )
+      {
+        *error = QCoreApplication::translate( "Utils::FileUtils", "Failed to remove directory '%1'." )
+                 .arg( QDir::toNativeSeparators( filePath ) );
+      }
+      return false;
+    }
+  }
+  else
+  {
+    if ( !QFile::remove( filePath ) )
+    {
+      if ( error )
+      {
+        *error = QCoreApplication::translate( "Utils::FileUtils", "Failed to remove file '%1'." )
+                 .arg( QDir::toNativeSeparators( filePath ) );
       }
       return false;
     }
@@ -627,7 +672,7 @@ void TestQgsGrassProvider::rasterImport()
     }
     delete import;
   }
-
+  removeRecursively( tmpGisdbase );
   GVERIFY( ok );
 }
 
@@ -683,6 +728,7 @@ void TestQgsGrassProvider::vectorImport()
     QStringList layers = QgsGrass::vectorLayers( tmpGisdbase, tmpLocation, tmpMapset, name );
     reportRow( "created layers: " + layers.join( "," ) );
   }
+  removeRecursively( tmpGisdbase );
   GVERIFY( ok );
 }
 
