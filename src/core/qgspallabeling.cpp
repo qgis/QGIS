@@ -3459,6 +3459,8 @@ void QgsPalLabeling::init( const QgsMapSettings& mapSettings )
 
 void QgsPalLabeling::exit()
 {
+  delete mEngine;
+  mEngine = new QgsLabelingEngineV2();
 }
 
 QgsPalLayerSettings& QgsPalLabeling::layer( const QString& layerName )
