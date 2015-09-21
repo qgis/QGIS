@@ -52,8 +52,9 @@
 
 extern "C"
 {
-#ifndef _MSC_VER
+#ifndef Q_OS_WIN
 #include <unistd.h>
+#include <sys/types.h>
 #endif
 #include <grass/version.h>
 #include <grass/gprojects.h>
@@ -707,6 +708,8 @@ QString QgsGrass::mTmp;
 
 QMutex QgsGrass::sMutex;
 
+bool QgsGrass::mMute = false;
+
 int QgsGrass::error_routine( char *msg, int fatal )
 {
   return error_routine(( const char* ) msg, fatal );
@@ -758,6 +761,22 @@ int QgsGrass::error( void )
 QString QgsGrass::errorMessage( void )
 {
   return error_message;
+}
+
+bool QgsGrass::isOwner( const QString& gisdbase, const QString& location, const QString& mapset )
+{
+  QString mapsetPath = gisdbase + "/" + location + "/" + mapset;
+
+  // G_mapset_permissions() (check_owner() in GRASS 7) on Windows consider all mapsets to be owned by user
+  // There is more complex G_owner() but that is not used in G_gisinit() (7.1.svn).
+  // On Windows and on systems where files do not have owners ownerId() returns ((uint) -2).
+#ifndef Q_OS_WIN
+  bool owner = QFileInfo( mapsetPath ).ownerId() == getuid();
+#else
+  bool owner = true;
+#endif
+  QgsDebugMsg( QString( "%1 : owner = %2" ).arg( mapsetPath ).arg( owner ) );
+  return owner;
 }
 
 QString QgsGrass::openMapset( const QString& gisdbase,
@@ -1726,8 +1745,7 @@ bool QgsGrass::mapRegion( QgsGrassObject::Type type, QString gisdbase,
                         map.toUtf8().data(),
                         mapset.toUtf8().data() ) != NULL )
     {
-      QMessageBox::warning( 0, QObject::tr( "Warning" ),
-                            QObject::tr( "Cannot read region" ) );
+      warning( tr( "Cannot read region" ) );
       return false;
     }
 #else
@@ -1768,15 +1786,34 @@ QProcess *QgsGrass::startModule( const QString& gisdbase, const QString&  locati
     throw QgsGrass::Exception( QObject::tr( "Cannot open GISRC file" ) );
   }
 
+  QString error = tr( "Cannot start module" ) + "\n" + tr( "command: %1 %2" ).arg( module ).arg( arguments.join( " " ) );
+
+  // Modules must be run in a mapset owned by user, because each module calls G_gisinit()
+  // which checks if G_mapset() is owned by user.
+  QString ownedMapset = mapset;
+  if ( ownedMapset.isEmpty() )
+  {
+    Q_FOREACH ( QString ms, mapsets( gisdbase, location ) )
+    {
+      if ( isOwner( gisdbase, location, ms ) )
+      {
+        ownedMapset = ms;
+      }
+    }
+  }
+  if ( ownedMapset.isEmpty() )
+  {
+    throw QgsGrass::Exception( error + "\n" + tr( "Cannot find a mapset owned by current user" ) );
+  }
+
   QTextStream out( &gisrcFile );
   out << "GISDBASE: " << gisdbase << "\n";
   out << "LOCATION_NAME: " << location << "\n";
   //out << "MAPSET: PERMANENT\n";
-  out << "MAPSET: " << mapset << "\n";
+  out << "MAPSET: " << ownedMapset << "\n";
   out.flush();
   QgsDebugMsg( gisrcFile.fileName() );
   gisrcFile.close();
-
   QStringList environment = QProcess::systemEnvironment();
   environment.append( "GISRC=" + gisrcFile.fileName() );
 
@@ -1787,9 +1824,7 @@ QProcess *QgsGrass::startModule( const QString& gisdbase, const QString&  locati
   process->start( module, arguments );
   if ( !process->waitForStarted() )
   {
-    throw QgsGrass::Exception( QObject::tr( "Cannot start module" ) + "\n"
-                               + QObject::tr( "command: %1 %2" )
-                               .arg( module ).arg( arguments.join( " " ) ) );
+    throw QgsGrass::Exception( error );
   }
   return process;
 }
@@ -1801,7 +1836,7 @@ QByteArray QgsGrass::runModule( const QString& gisdbase, const QString&  locatio
   QgsDebugMsg( QString( "gisdbase = %1 location = %2 timeOut = %3" ).arg( gisdbase ).arg( location ).arg( timeOut ) );
 
   QTemporaryFile gisrcFile;
-  QProcess *process = QgsGrass::startModule( gisdbase, location, mapset, moduleName, arguments, gisrcFile, qgisModule );
+  QProcess *process = startModule( gisdbase, location, mapset, moduleName, arguments, gisrcFile, qgisModule );
 
   if ( !process->waitForFinished( timeOut )
        || ( process->exitCode() != 0 && process->exitCode() != 255 ) )
@@ -1864,7 +1899,9 @@ QString QgsGrass::getInfo( const QString&  info, const QString&  gisdbase,
     arguments.append( QString( "cols=%1" ).arg( sampleCols ) );
   }
 
-  QByteArray data =  QgsGrass::runModule( gisdbase, location, mapset, cmd, arguments, timeOut );
+  //QByteArray data =  runModule( gisdbase, location, mapset, cmd, arguments, timeOut );
+  // Run module with empty mapset so that it tries to find a mapset owned by user
+  QByteArray data = runModule( gisdbase, location, "", cmd, arguments, timeOut );
   QgsDebugMsg( data );
   return QString( data );
 }
@@ -1876,7 +1913,7 @@ QgsCoordinateReferenceSystem QgsGrass::crs( const QString& gisdbase, const QStri
   QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem();
   try
   {
-    QString wkt = QgsGrass::getInfo( "proj", gisdbase, location );
+    QString wkt = getInfo( "proj", gisdbase, location );
     QgsDebugMsg( "wkt: " + wkt );
     crs.createFromWkt( wkt );
     QgsDebugMsg( "crs.toWkt: " + crs.toWkt() );
@@ -1885,8 +1922,7 @@ QgsCoordinateReferenceSystem QgsGrass::crs( const QString& gisdbase, const QStri
   {
     if ( interactive )
     {
-      QMessageBox::warning( 0, QObject::tr( "Warning" ),
-                            QObject::tr( "Cannot get projection " ) + "\n" + e.what() );
+      warning( tr( "Cannot get projection " ) + "\n" + e.what() );
     }
   }
 
@@ -1940,7 +1976,7 @@ QgsRectangle QgsGrass::extent( const QString& gisdbase, const QString& location,
 
   try
   {
-    QString str = QgsGrass::getInfo( "window", gisdbase, location, mapset, map, type );
+    QString str = getInfo( "window", gisdbase, location, mapset, map, type );
     QStringList list = str.split( "," );
     if ( list.size() != 4 )
     {
@@ -1952,8 +1988,7 @@ QgsRectangle QgsGrass::extent( const QString& gisdbase, const QString& location,
   {
     if ( interactive )
     {
-      QMessageBox::warning( 0, QObject::tr( "Warning" ),
-                            QObject::tr( "Cannot get raster extent" ) + "\n" + e.what() );
+      warning( tr( "Cannot get raster extent" ) + "\n" + e.what() );
     }
   }
   return QgsRectangle( 0, 0, 0, 0 );
@@ -1968,7 +2003,7 @@ void QgsGrass::size( const QString& gisdbase, const QString& location,
   *rows = 0;
   try
   {
-    QString str = QgsGrass::getInfo( "size", gisdbase, location, mapset, map, QgsGrassObject::Raster );
+    QString str = getInfo( "size", gisdbase, location, mapset, map, QgsGrassObject::Raster );
     QStringList list = str.split( "," );
     if ( list.size() != 2 )
     {
@@ -1979,8 +2014,7 @@ void QgsGrass::size( const QString& gisdbase, const QString& location,
   }
   catch ( QgsGrass::Exception &e )
   {
-    QMessageBox::warning( 0, QObject::tr( "Warning" ),
-                          QObject::tr( "Cannot get raster extent" ) + "\n" + e.what() );
+    warning( tr( "Cannot get raster extent" ) + "\n" + e.what() );
   }
 
   QgsDebugMsg( QString( "raster size = %1 %2" ).arg( *cols ).arg( *rows ) );
@@ -1999,7 +2033,7 @@ QHash<QString, QString> QgsGrass::info( const QString& gisdbase, const QString& 
 
   try
   {
-    QString str = QgsGrass::getInfo( info, gisdbase, location, mapset, map, type, 0, 0, extent, sampleRows, sampleCols, timeOut );
+    QString str = getInfo( info, gisdbase, location, mapset, map, type, 0, 0, extent, sampleRows, sampleCols, timeOut );
     QgsDebugMsg( str );
     QStringList list = str.split( "\n" );
     for ( int i = 0; i < list.size(); i++ )
@@ -2018,8 +2052,7 @@ QHash<QString, QString> QgsGrass::info( const QString& gisdbase, const QString& 
   {
     if ( interactive )
     {
-      QMessageBox::warning( 0, QObject::tr( "Warning" ),
-                            QObject::tr( "Cannot get map info" ) + "\n" + e.what() );
+      warning( tr( "Cannot get map info" ) + "\n" + e.what() );
     }
   }
   return inf;
@@ -2032,7 +2065,7 @@ QList<QgsGrass::Color> QgsGrass::colors( QString gisdbase, QString location, QSt
 
   try
   {
-    QString str = QgsGrass::getInfo( "colors", gisdbase, location, mapset, map, QgsGrassObject::Raster );
+    QString str = getInfo( "colors", gisdbase, location, mapset, map, QgsGrassObject::Raster );
     QgsDebugMsg( str );
     QStringList list = str.split( "\n" );
     for ( int i = 0; i < list.size(); i++ )
@@ -2049,8 +2082,7 @@ QList<QgsGrass::Color> QgsGrass::colors( QString gisdbase, QString location, QSt
   }
   catch ( QgsGrass::Exception &e )
   {
-    QMessageBox::warning( 0, QObject::tr( "Warning" ),
-                          QObject::tr( "Cannot get colors" ) + "\n" + e.what() );
+    warning( tr( "Cannot get colors" ) + "\n" + e.what() );
   }
   return ct;
 }
@@ -2063,7 +2095,7 @@ QMap<QString, QString> QgsGrass::query( QString gisdbase, QString location, QStr
   // TODO: multiple values (more rows)
   try
   {
-    QString str = QgsGrass::getInfo( "query", gisdbase, location, mapset, map, type, x, y );
+    QString str = getInfo( "query", gisdbase, location, mapset, map, type, x, y );
     QStringList list = str.trimmed().split( ":" );
     if ( list.size() == 2 )
     {
@@ -2072,8 +2104,7 @@ QMap<QString, QString> QgsGrass::query( QString gisdbase, QString location, QStr
   }
   catch ( QgsGrass::Exception &e )
   {
-    QMessageBox::warning( 0, QObject::tr( "Warning" ),
-                          QObject::tr( "Cannot query raster " ) + "\n" + e.what() );
+    warning( tr( "Cannot query raster " ) + "\n" + e.what() );
   }
   return result;
 }
@@ -2088,7 +2119,7 @@ void QgsGrass::renameObject( const QgsGrassObject & object, const QString& newNa
 
   int timeout = -1; // What timeout to use? It can take long time on network or database
   // throws QgsGrass::Exception
-  QgsGrass::runModule( object.gisdbase(), object.location(), object.mapset(), cmd, arguments, timeout, false );
+  runModule( object.gisdbase(), object.location(), object.mapset(), cmd, arguments, timeout, false );
 }
 
 void QgsGrass::copyObject( const QgsGrassObject & srcObject, const QgsGrassObject & destObject )
@@ -2109,7 +2140,7 @@ void QgsGrass::copyObject( const QgsGrassObject & srcObject, const QgsGrassObjec
   int timeout = -1; // What timeout to use? It can take long time on network or database
   // throws QgsGrass::Exception
   // TODO: g.copy does not seem to return error code if fails (6.4.3RC1)
-  QgsGrass::runModule( destObject.gisdbase(), destObject.location(), destObject.mapset(), cmd, arguments, timeout, false );
+  runModule( destObject.gisdbase(), destObject.location(), destObject.mapset(), cmd, arguments, timeout, false );
 }
 
 bool QgsGrass::deleteObject( const QgsGrassObject & object )
@@ -2138,13 +2169,11 @@ bool QgsGrass::deleteObject( const QgsGrassObject & object )
 
   try
   {
-    QgsGrass::runModule( object.gisdbase(), object.location(), object.mapset(), cmd, arguments, 5000, false );
+    runModule( object.gisdbase(), object.location(), object.mapset(), cmd, arguments, 5000, false );
   }
   catch ( QgsGrass::Exception &e )
   {
-    QMessageBox::warning( 0, QObject::tr( "Warning" ),
-                          QObject::tr( "Cannot delete" ) + " " + object.elementName()
-                          + " " + object.name() + ": " + e.what() );
+    warning( tr( "Cannot delete" ) + " " + object.elementName() + " " + object.name() + ": " + e.what() );
     return false;
   }
   return true;
@@ -2523,12 +2552,20 @@ void QgsGrass::setModulesDebug( bool debug )
 
 void QgsGrass::warning( const QString &message )
 {
-  QMessageBox::warning( 0, QObject::tr( "Warning" ), message );
+  if ( !mMute )
+  {
+    QMessageBox::warning( 0, QObject::tr( "Warning" ), message );
+  }
+  else
+  {
+    error_message = message;
+    QgsDebugMsg( message );
+  }
 }
 
 void QgsGrass::warning( QgsGrass::Exception &e )
 {
-  QMessageBox::warning( 0, QObject::tr( "Warning" ), e.what() );
+  warning( e.what() );
 }
 
 struct Map_info *QgsGrass::vectNewMapStruct()

@@ -222,6 +222,9 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     //! Get last error message
     static QString errorMessage( void );
 
+    /** Test is current user is owner of mapset */
+    static bool isOwner( const QString& gisdbase, const QString& location, const QString& mapset );
+
     /** Open existing GRASS mapset.
      * Emits signal mapsetChanged().
      * \return Empty string or error message
@@ -355,8 +358,11 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     // ! Get current gisrc path
     static QString gisrcFilePath();
 
-    // ! Start a GRASS module in any gisdbase/location/mapset
-    // @param qgisModule append GRASS major version (for modules built in qgis)
+    /** Start a GRASS module in any gisdbase/location/mapset.
+     * @param mapset if empty a first mapset owned by user will be used, if no mapset is owned
+     *               by user, exception is thrown.
+     * @param qgisModule append GRASS major version (for modules built in qgis)
+     * @throws QgsGrass::Exception */
     static QProcess *startModule( const QString& gisdbase, const QString&  location,
                                   const QString& mapset, const QString&  moduleName,
                                   const QStringList& arguments, QTemporaryFile &gisrcFile,
@@ -528,6 +534,10 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     /** Show warning dialog with exception message */
     static void warning( QgsGrass::Exception &e );
 
+    /** Set mute mode, if set, warning() does not open dialog but prints only
+     * debug message and sets the error which returns errorMessage() */
+    static void setMute() { mMute = true; }
+
     /** Allocate struct Map_info. Call to this function may result in G_fatal_error
      * and must be surrounded by G_TRY/G_CATCH. */
     static struct Map_info * vectNewMapStruct();
@@ -588,6 +598,8 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     static QString mTmp;
     // Mutex for common locking when calling GRASS functions which are mostly non thread safe
     static QMutex sMutex;
+    // Mute mode, do not show warning dialogs.
+    static bool mMute;
 };
 
 #endif // QGSGRASS_H

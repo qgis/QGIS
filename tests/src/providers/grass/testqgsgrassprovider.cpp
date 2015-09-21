@@ -74,6 +74,8 @@ class TestQgsGrassProvider: public QObject
     bool compare( QStringList expected, QStringList got, bool& ok );
     // compare with tolerance
     bool compare( double expected, double got, bool& ok );
+    bool copyRecursively( const QString &srcFilePath, const QString &tgtFilePath, QString *error );
+    bool copyLocation( QString& tmpGisdbase );
     bool createTmpLocation( QString& tmpGisdbase, QString& tmpLocation, QString& tmpMapset );
     QString mGisdbase;
     QString mLocation;
@@ -115,6 +117,7 @@ void TestQgsGrassProvider::initTestCase()
   reportRow( "PATH: " + QString( getenv( "PATH" ) ) );
 #endif
 
+  QgsGrass::setMute();
   QgsGrass::init();
 
   //create some objects that will be used in all tests...
@@ -224,13 +227,24 @@ void TestQgsGrassProvider::mapsets()
 {
   reportHeader( "TestQgsGrassProvider::mapsets" );
   bool ok = true;
+
+  // User must be owner of mapset if it has to be opened (locked)
+  // -> make copy because the source may have different user
+  QString tmpGisdbase;
+  if ( !copyLocation( tmpGisdbase ) )
+  {
+    reportRow( "cannot copy location" );
+    GVERIFY( false );
+    return;
+  }
+
   QStringList expectedMapsets;
   expectedMapsets << "PERMANENT" << "test" << "test6" << "test7";
-  QStringList mapsets = QgsGrass::mapsets( mGisdbase,  mLocation );
+  QStringList mapsets = QgsGrass::mapsets( tmpGisdbase,  mLocation );
   reportRow( "expectedMapsets: " + expectedMapsets.join( ", " ) );
   reportRow( "mapsets: " + mapsets.join( ", " ) );
   compare( expectedMapsets, mapsets, ok );
-  QgsGrass::setLocation( mGisdbase,  mLocation ); // for G_is_mapset_in_search_path
+  QgsGrass::setLocation( tmpGisdbase,  mLocation ); // for G_is_mapset_in_search_path
   // Disabled because adding of all mapsets to search path was disabled in setLocation()
 #if 0
   foreach ( QString expectedMapset, expectedMapsets )
@@ -248,7 +262,7 @@ void TestQgsGrassProvider::mapsets()
   {
     reportRow( "" );
     reportRow( "Open/close mapset " + mBuildMapset + " for the " + QString::number( i ) + ". time" );
-    QString error = QgsGrass::openMapset( mGisdbase, mLocation, mBuildMapset );
+    QString error = QgsGrass::openMapset( tmpGisdbase, mLocation, mBuildMapset );
     if ( !error.isEmpty() )
     {
       reportRow( "QgsGrass::openMapset() failed: " + error );
@@ -375,6 +389,16 @@ void TestQgsGrassProvider::info()
   // info() -> getInfo() -> runModule() -> startModule()
   reportHeader( "TestQgsGrassProvider::info" );
   bool ok = true;
+
+  // GRASS modules must be run in a mapset owned by user, the source code may have different user.
+  QString tmpGisdbase;
+  if ( !copyLocation( tmpGisdbase ) )
+  {
+    reportRow( "cannot copy location" );
+    GVERIFY( false );
+    return;
+  }
+
   QgsRectangle expectedExtent( -5, -5, 5, 5 );
   QMap<QString, QgsRasterBandStats> expectedStats;
   QgsRasterBandStats es;
@@ -391,7 +415,7 @@ void TestQgsGrassProvider::info()
   {
     es = expectedStats.value( map );
     // TODO: QgsGrass::info() may open dialog window on error which blocks tests
-    QHash<QString, QString> info = QgsGrass::info( mGisdbase, mLocation, "test", map, QgsGrassObject::Raster, "stats",
+    QHash<QString, QString> info = QgsGrass::info( tmpGisdbase, mLocation, "test", map, QgsGrassObject::Raster, "stats",
                                    expectedExtent, 10, 10, 5000, false );
     reportRow( "map: " + map );
     QgsRasterBandStats s;
@@ -403,7 +427,7 @@ void TestQgsGrassProvider::info()
     compare( es.minimumValue, s.minimumValue, ok );
     compare( es.maximumValue, s.maximumValue, ok );
 
-    QgsRectangle extent = QgsGrass::extent( mGisdbase, mLocation, "test", map, QgsGrassObject::Raster, false );
+    QgsRectangle extent = QgsGrass::extent( tmpGisdbase, mLocation, "test", map, QgsGrassObject::Raster, false );
     reportRow( "expectedExtent: " + expectedExtent.toString() );
     reportRow( "extent: " + extent.toString() );
     if ( extent != expectedExtent )
@@ -415,15 +439,89 @@ void TestQgsGrassProvider::info()
   reportRow( "" );
   QgsCoordinateReferenceSystem expectedCrs;
   expectedCrs.createFromOgcWmsCrs( "EPSG:4326" );
-  QgsCoordinateReferenceSystem crs = QgsGrass::crs( mGisdbase, mLocation );
+
   reportRow( "expectedCrs: " + expectedCrs.toWkt() );
-  reportRow( "crs: " + crs.toWkt() );
-  if ( crs != expectedCrs )
+  QgsCoordinateReferenceSystem crs = QgsGrass::crs( tmpGisdbase, mLocation );
+  if ( !crs.isValid() )
   {
+    reportRow( "crs: cannot read crs: " + QgsGrass::errorMessage() );
     ok = false;
+  }
+  else
+  {
+    reportRow( "crs: " + crs.toWkt() );
+    if ( crs != expectedCrs )
+    {
+      ok = false;
+    }
   }
 
   GVERIFY( ok );
+}
+
+
+// From Qt creator
+bool TestQgsGrassProvider::copyRecursively( const QString &srcFilePath, const QString &tgtFilePath, QString *error )
+{
+  QFileInfo srcFileInfo( srcFilePath );
+  if ( srcFileInfo.isDir() )
+  {
+    QDir targetDir( tgtFilePath );
+    targetDir.cdUp();
+    if ( !targetDir.mkdir( QFileInfo( tgtFilePath ).fileName() ) )
+    {
+      if ( error )
+      {
+        *error = QCoreApplication::translate( "Utils::FileUtils", "Failed to create directory '%1'." )
+                 .arg( QDir::toNativeSeparators( tgtFilePath ) );
+        return false;
+      }
+    }
+    QDir sourceDir( srcFilePath );
+    QStringList fileNames = sourceDir.entryList( QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot | QDir::Hidden | QDir::System );
+    foreach ( const QString &fileName, fileNames )
+    {
+      const QString newSrcFilePath
+      = srcFilePath + QLatin1Char( '/' ) + fileName;
+      const QString newTgtFilePath
+      = tgtFilePath + QLatin1Char( '/' ) + fileName;
+      if ( !copyRecursively( newSrcFilePath, newTgtFilePath, error ) )
+        return false;
+    }
+  }
+  else
+  {
+    if ( !QFile::copy( srcFilePath, tgtFilePath ) )
+    {
+      if ( error )
+      {
+        *error = QCoreApplication::translate( "Utils::FileUtils", "Could not copy file '%1' to '%2'." )
+                 .arg( QDir::toNativeSeparators( srcFilePath ),
+                       QDir::toNativeSeparators( tgtFilePath ) );
+      }
+      return false;
+    }
+  }
+  return true;
+}
+
+// copy test location to temporary
+bool TestQgsGrassProvider::copyLocation( QString& tmpGisdbase )
+{
+  // use QTemporaryFile to generate name (QTemporaryDir since 5.0)
+  QTemporaryFile* tmpFile = new QTemporaryFile( QDir::tempPath() + "/qgis-grass-test" );
+  tmpFile->open();
+  tmpGisdbase = tmpFile->fileName();
+  delete tmpFile;
+  reportRow( "tmpGisdbase: " + tmpGisdbase );
+
+  QString error;
+  if ( !copyRecursively( mGisdbase, tmpGisdbase, &error ) )
+  {
+    reportRow( "cannot copy location " + mGisdbase + " to " + tmpGisdbase + " : " + error );
+    return false;
+  }
+  return true;
 }
 
 // create temporary output location
