@@ -57,7 +57,7 @@ ctest_build (BUILD "${CTEST_BINARY_DIRECTORY}" RETURN_VALUE BUILDRES NUMBER_WARN
 SET(ENV{TZ} "UTC-6")
 EXECUTE_PROCESS(COMMAND date +%Y-%m-%d OUTPUT_VARIABLE CDASH_DATE)
 SET(RESULT_LINK "http://dash.orfeo-toolbox.org/index.php?project=QGIS&filtercount=1&showfilters=1&field1=buildname/string&compare1=63&value1=$ENV{TRAVIS_COMMIT}&date=${CDASH_DATE}")
-EXECUTE_PROCESS(COMMAND curl -s http://tinyurl.com/api-create.php?url=${RESULT_LINK}
+EXECUTE_PROCESS(COMMAND curl --data-urlencode "url=${RESULT_LINK}" -s http://tinyurl.com/api-create.php
                 OUTPUT_VARIABLE SHORTURL)
 
 IF(NOT ${BUILDRES} EQUAL 0 OR NOT ${NUMERR} EQUAL 0)
