@@ -167,7 +167,6 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
         tsrs = unicode(self.getParameterValue(self.T_SRS))
         asrs = unicode(self.getParameterValue(self.A_SRS))
         schema = unicode(self.getParameterValue(self.SCHEMA))
-        schemastring = "-lco SCHEMA=" + schema
         table = unicode(self.getParameterValue(self.TABLE))
         pk = unicode(self.getParameterValue(self.PK))
         pkstring = "-lco FID=" + pk
@@ -179,7 +178,6 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
         simplify = unicode(self.getParameterValue(self.SIMPLIFY))
         segmentize = unicode(self.getParameterValue(self.SEGMENTIZE))
         spat = self.getParameterValue(self.SPAT)
-        ogrspat = self.ogrConnectionString(spat)
         clip = self.getParameterValue(self.CLIP)
         where = unicode(self.getParameterValue(self.WHERE))
         wherestring = '-where "' + where + '"'
@@ -207,6 +205,10 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
             arguments.append('dbname=' + dbname)
         if len(password) > 0:
             arguments.append('password=' + password)
+        if len(schema) > 0:
+            arguments.append('active_schema=' + schema)
+        else:
+            arguments.append('active_schema=public')
         arguments.append('user=' + user + '"')
         arguments.append(dimstring)
         arguments.append(ogrLayer)
@@ -224,8 +226,6 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
         if len(self.GEOMTYPE[self.getParameterValue(self.GTYPE)]) > 0:
             arguments.append('-nlt')
             arguments.append(self.GEOMTYPE[self.getParameterValue(self.GTYPE)])
-        if len(schema) > 0:
-            arguments.append(schemastring)
         if len(geocolumn) > 0:
             arguments.append(geocolumnstring)
         if len(pk) > 0:
@@ -245,7 +245,7 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
             arguments.append('-a_srs')
             arguments.append(asrs)
         if len(spat) > 0:
-            regionCoords = ogrspat.split(',')
+            regionCoords = spat.split(',')
             arguments.append('-spat')
             arguments.append(regionCoords[0])
             arguments.append(regionCoords[2])
