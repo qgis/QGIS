@@ -71,7 +71,7 @@ Depends:
  qgis-providers (= ${binary:Version}),
  qgis-common (= ${source:Version})
 Recommends:
-#grass6# qgis-plugin-grass,
+ qgis-plugin-grass,
  qgis-provider-grass,
  qgis-plugin-globe,
  python-qgis
@@ -273,46 +273,43 @@ Depends:
  qgis (= ${binary:Version}),
  ${shlibs:Depends},
  ${misc:Depends}
-#grass7#Breaks: qgis-plugin-grass
-#grass7#Replaces: qgis-plugin-grass
-#grass6#Breaks: qgis-plugin-grass (<< 1:2.11.0+git20150906)
 Description: GRASS plugin for QGIS
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
  .
  This provider enables GRASS data access in QGIS.
 
-#grass6#Package: qgis-plugin-grass
-#grass6#Architecture: any
-#grass6#Depends:
-#grass6# qgis (= ${binary:Version}),
-#grass6# qgis-plugin-grass-common (= ${source:Version}),
-#grass6# qgis-provider-grass (= ${source:Version}),
-#grass6# ${shlibs:Depends},
-#grass6# ${misc:Depends},
-#grass6##!precise# grass-core (<< 7)
-#grass6##precise# grass (<< 7)
-#grass6#Description: GRASS plugin for QGIS
-#grass6# QGIS is a Geographic Information System (GIS) which manages, analyzes and
-#grass6# display databases of geographic information.
-#grass6# .
-#grass6# This plugin enables GRASS data access in QGIS.
-#grass6#
-#grass6#Package: qgis-plugin-grass-common
-#grass6#Architecture: all
-#grass6#Depends:
-#grass6##saucy trusty# python2.7,
-#grass6##precise# python,
-#grass6# ${misc:Depends}
-#grass6#Breaks: qgis-common (<< 1.5)
-#grass6#Replaces: qgis-common (<< 1.5)
-#grass6#Description: GRASS plugin for QGIS - architecture-independent data
-#grass6# QGIS is a Geographic Information System (GIS) which manages, analyzes and
-#grass6# display databases of geographic information.
-#grass6# .
-#grass6# This package contains architecture-independent supporting data files for use
-#grass6# with the QGIS GRASS plugin.
-#grass6#
+Package: qgis-plugin-grass
+Architecture: any
+Depends:
+ qgis (= ${binary:Version}),
+ qgis-plugin-grass-common (= ${source:Version}),
+ qgis-provider-grass (= ${source:Version}),
+ ${shlibs:Depends},
+ ${misc:Depends},
+#!precise# grass-core (<< 7)
+#precise# grass (<< 7)
+Description: GRASS plugin for QGIS
+ QGIS is a Geographic Information System (GIS) which manages, analyzes and
+ display databases of geographic information.
+ .
+ This plugin enables GRASS data access in QGIS.
+
+Package: qgis-plugin-grass-common
+Architecture: all
+Depends:
+#saucy trusty# python2.7,
+#precise# python,
+ ${misc:Depends}
+Breaks: qgis-common (<< 1.5)
+Replaces: qgis-common (<< 1.5)
+Description: GRASS plugin for QGIS - architecture-independent data
+ QGIS is a Geographic Information System (GIS) which manages, analyzes and
+ display databases of geographic information.
+ .
+ This package contains architecture-independent supporting data files for use
+ with the QGIS GRASS plugin.
+
 Package: qgis-plugin-globe
 Architecture: any
 Depends:

@@ -115,9 +115,6 @@ endif
 
 ifneq (,$(findstring debug,$(DEB_BUILD_OPTIONS)))
 	CMAKE_OPTS += -DCMAKE_BUILD_TYPE=Debug
-ifneq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
-	CMAKE_OPTS += -DENABLE_COVERAGE=TRUE
-endif
 endif
 
 ifneq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
