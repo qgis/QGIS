@@ -1368,6 +1368,7 @@ void QgsGrassProvider::onAttributeAdded( int idx )
 
 void QgsGrassProvider::onAttributeDeleted( int idx )
 {
+  Q_UNUSED( idx );
   QgsDebugMsg( QString( "idx = %1" ).arg( idx ) );
   // The index of deleted field is useless because the field was already removed from mEditLayer->fields().
   // Find deleted field.
