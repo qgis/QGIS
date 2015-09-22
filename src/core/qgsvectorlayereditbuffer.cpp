@@ -572,9 +572,9 @@ QString QgsVectorLayerEditBuffer::dumpEditBuffer()
 void QgsVectorLayerEditBuffer::handleAttributeAdded( int index )
 {
   // go through the changed attributes map and adapt indices
-  for ( int i = 0; i < mChangedAttributeValues.size(); ++i )
+  Q_FOREACH ( QgsFeatureId fid, mChangedAttributeValues.keys() )
   {
-    updateAttributeMapIndex( mChangedAttributeValues[i], index, + 1 );
+    updateAttributeMapIndex( mChangedAttributeValues[fid], index, + 1 );
   }
 
   // go through added features and adapt attributes
@@ -590,9 +590,9 @@ void QgsVectorLayerEditBuffer::handleAttributeAdded( int index )
 void QgsVectorLayerEditBuffer::handleAttributeDeleted( int index )
 {
   // go through the changed attributes map and adapt indices
-  for ( int i = 0; i < mChangedAttributeValues.size(); ++i )
+  Q_FOREACH ( QgsFeatureId fid, mChangedAttributeValues.keys() )
   {
-    QgsAttributeMap& attrMap = mChangedAttributeValues[i];
+    QgsAttributeMap& attrMap = mChangedAttributeValues[fid];
     // remove the attribute
     if ( attrMap.contains( index ) )
       attrMap.remove( index );
