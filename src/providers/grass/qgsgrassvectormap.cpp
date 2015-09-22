@@ -120,7 +120,7 @@ bool QgsGrassVectorMap::openMap()
   {
     QgsDebugMsg( "Cannot find GRASS vector" );
     QgsGrass::unlock();
-    return -1;
+    return false;
   }
 
   // Read the time of vector dir before Vect_open_old, because it may take long time (when the vector
@@ -150,7 +150,7 @@ bool QgsGrassVectorMap::openMap()
   {
     QgsDebugMsg( "Cannot open GRASS vector head" );
     QgsGrass::unlock();
-    return -1;
+    return false;
   }
   else if ( level == 1 )
   {
@@ -161,7 +161,7 @@ bool QgsGrassVectorMap::openMap()
     if ( ret == QMessageBox::Cancel )
     {
       QgsGrass::unlock();
-      return -1;
+      return false;
     }
   }
 
@@ -175,7 +175,7 @@ bool QgsGrassVectorMap::openMap()
   {
     QgsGrass::warning( QString( "Cannot open GRASS vector: %1" ).arg( e.what() ) );
     QgsGrass::unlock();
-    return -1;
+    return false;
   }
 
   if ( level == 1 )
@@ -193,7 +193,7 @@ bool QgsGrassVectorMap::openMap()
     {
       QgsGrass::warning( QString( "Cannot build topology: %1" ).arg( e.what() ) );
       QgsGrass::unlock();
-      return -1;
+      return false;
     }
   }
   QgsDebugMsg( "GRASS map successfully opened" );
