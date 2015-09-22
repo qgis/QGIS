@@ -133,7 +133,7 @@ void QgsAuthImportCertDialog::validateCertificates()
 
   int certssize = certs.size();
 
-  Q_FOREACH ( QSslCertificate cert, certs )
+  Q_FOREACH ( const QSslCertificate &cert, certs )
   {
     if ( cert.isValid() )
       ++validcerts;
@@ -157,7 +157,7 @@ void QgsAuthImportCertDialog::validateCertificates()
 
   if ( nixcerts.size() > 0 )
   {
-    Q_FOREACH ( QSslCertificate nixcert, nixcerts )
+    Q_FOREACH ( const QSslCertificate &nixcert, nixcerts )
     {
       certs.removeOne( nixcert );
     }

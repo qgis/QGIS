@@ -100,7 +100,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      */
     virtual QString dataSourceUri( bool expandAuthConfig = false ) const
     {
-      if ( expandAuthConfig )
+      if ( expandAuthConfig && mDataSourceURI.contains( "authcfg" ) )
       {
         QgsDataSourceURI uri( mDataSourceURI );
         return uri.uri( expandAuthConfig );

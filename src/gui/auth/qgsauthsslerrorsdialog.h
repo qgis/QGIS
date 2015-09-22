@@ -32,6 +32,14 @@ class GUI_EXPORT QgsAuthSslErrorsDialog : public QDialog, private Ui::QgsAuthSsl
 {
     Q_OBJECT
   public:
+    /**
+     * Construct a dialog to handle SSL errors and saving SSL server certificate exceptions
+     * @param reply Network reply that hand error(s)
+     * @param sslErrors SSL errors that occurred
+     * @param parent Parent widget
+     * @param digest SHA digest of server certificate
+     * @param hostport Unique host:port to associate with the server certificate
+     */
     QgsAuthSslErrorsDialog( QNetworkReply *reply,
                             const QList<QSslError>& sslErrors,
                             QWidget *parent = 0 ,

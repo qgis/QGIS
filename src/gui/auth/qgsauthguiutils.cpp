@@ -27,32 +27,32 @@
 #include "qgsmessagebar.h"
 
 
-const QColor QgsAuthGuiUtils::greenColor()
+QColor QgsAuthGuiUtils::greenColor()
 {
   return QColor( 0, 170, 0 );
 }
 
-const QColor QgsAuthGuiUtils::orangeColor()
+QColor QgsAuthGuiUtils::orangeColor()
 {
   return QColor( 255, 128, 0 );
 }
 
-const QColor QgsAuthGuiUtils::redColor()
+QColor QgsAuthGuiUtils::redColor()
 {
   return QColor( 200, 0, 0 );
 }
 
-const QString QgsAuthGuiUtils::greenTextStyleSheet( const QString &selector )
+QString QgsAuthGuiUtils::greenTextStyleSheet( const QString &selector )
 {
   return QString( "%1{color: %2;}" ).arg( selector ).arg( QgsAuthGuiUtils::greenColor().name() );
 }
 
-const QString QgsAuthGuiUtils::orangeTextStyleSheet( const QString &selector )
+QString QgsAuthGuiUtils::orangeTextStyleSheet( const QString &selector )
 {
   return QString( "%1{color: %2;}" ).arg( selector ).arg( QgsAuthGuiUtils::orangeColor().name() );
 }
 
-const QString QgsAuthGuiUtils::redTextStyleSheet( const QString &selector )
+QString QgsAuthGuiUtils::redTextStyleSheet( const QString &selector )
 {
   return QString( "%1{color: %2;}" ).arg( selector ).arg( QgsAuthGuiUtils::redColor().name() );
 }

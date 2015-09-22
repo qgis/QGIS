@@ -30,6 +30,7 @@
 class CORE_EXPORT QgsAuthCertUtils
 {
   public:
+    /** Type of CA certificate source */
     enum CaCertSource
     {
       SystemRoot = 0,
@@ -38,6 +39,7 @@ class CORE_EXPORT QgsAuthCertUtils
       Connection = 3
     };
 
+    /** Type of certificate trust policy */
     enum CertTrustPolicy
     {
       DefaultTrust = 0,
@@ -46,6 +48,7 @@ class CORE_EXPORT QgsAuthCertUtils
       NoPolicy = 3
     };
 
+    /** Type of certificate usage */
     enum CertUsageType
     {
       UndeterminedUsage = 0,
@@ -61,6 +64,7 @@ class CORE_EXPORT QgsAuthCertUtils
       CRLSigningUsage
     };
 
+    /** Type of certificate key group */
     enum ConstraintGroup
     {
       KeyUsage = 0,
@@ -69,37 +73,37 @@ class CORE_EXPORT QgsAuthCertUtils
 
 
     /** SSL Protocol name strings per enum */
-    static const QString getSslProtocolName( QSsl::SslProtocol protocol );
+    static QString getSslProtocolName( QSsl::SslProtocol protocol );
 
     /** Map certificate sha1 to certificate as simple cache */
-    static const QMap< QString, QSslCertificate> mapDigestToCerts( QList<QSslCertificate> certs );
+    static QMap<QString, QSslCertificate> mapDigestToCerts( QList<QSslCertificate> certs );
 
     /** Map certificates to their oraganization */
-    static const QMap< QString, QList<QSslCertificate> > certsGroupedByOrg( QList<QSslCertificate> certs );
+    static QMap< QString, QList<QSslCertificate> > certsGroupedByOrg( QList<QSslCertificate> certs );
 
     /** Map SSL custom configs' certificate sha1 to custom config as simple cache */
-    static const QMap< QString, QgsAuthConfigSslServer> mapDigestToSslConfigs( QList<QgsAuthConfigSslServer> configs );
+    static QMap<QString, QgsAuthConfigSslServer> mapDigestToSslConfigs( QList<QgsAuthConfigSslServer> configs );
 
     /** Map SSL custom configs' certificates to their oraganization */
-    static const QMap< QString, QList<QgsAuthConfigSslServer> > sslConfigsGroupedByOrg( QList<QgsAuthConfigSslServer> configs );
+    static QMap< QString, QList<QgsAuthConfigSslServer> > sslConfigsGroupedByOrg( QList<QgsAuthConfigSslServer> configs );
 
     /** Return list of concatenated certs from a PEM or DER formatted file */
-    static const QList<QSslCertificate> certsFromFile( const QString &certspath );
+    static QList<QSslCertificate> certsFromFile( const QString &certspath );
 
     /** Return first cert from a PEM or DER formatted file */
-    static const QSslCertificate certFromFile( const QString &certpath );
+    static QSslCertificate certFromFile( const QString &certpath );
 
     /** Return non-encrypted key from a PEM or DER formatted file
      * @param keypath File path to private key
      * @param keypass Passphrase for private key
      * @param algtype QString to set with resolved algorithm type
      */
-    static const QSslKey keyFromFile( const QString &keypath,
-                                      const QString &keypass = QString(),
-                                      QString *algtype = 0 );
+    static QSslKey keyFromFile( const QString &keypath,
+                                const QString &keypass = QString(),
+                                QString *algtype = 0 );
 
     /** Return list of concatenated certs from a PEM Base64 text block */
-    static const QList<QSslCertificate> certsFromString( const QString &pemtext );
+    static QList<QSslCertificate> certsFromString( const QString &pemtext );
 
     /** Return list of certificate, private key and algorithm (as PEM text) from file path components
      * @param certpath File path to certificate
@@ -108,10 +112,10 @@ class CORE_EXPORT QgsAuthCertUtils
      * @param reencrypt Whether to re-encrypt the private key with the passphrase
      * @return certificate, private key, key's algorithm type
      */
-    static const QStringList certKeyBundleToPem( const QString &certpath,
-        const QString &keypath,
-        const QString &keypass = QString(),
-        bool reencrypt = true );
+    static QStringList certKeyBundleToPem( const QString &certpath,
+                                           const QString &keypath,
+                                           const QString &keypass = QString(),
+                                           bool reencrypt = true );
 
     /** Return list of certificate, private key and algorithm (as PEM text) for a PKCS#12 bundle
      * @param bundlepath File path to the PKCS bundle
@@ -119,60 +123,60 @@ class CORE_EXPORT QgsAuthCertUtils
      * @param reencrypt Whether to re-encrypt the private key with the passphrase
      * @return certificate, private key, key's algorithm type
      */
-    static const QStringList pkcs12BundleToPem( const QString &bundlepath,
-        const QString &bundlepass = QString(),
-        bool reencrypt = true );
+    static QStringList pkcs12BundleToPem( const QString &bundlepath,
+                                          const QString &bundlepass = QString(),
+                                          bool reencrypt = true );
 
     /** Get the general name for CA source enum type
      * @param source The enum source type for the CA
      * @param single Whether to return singular or plural description
      */
-    static const QString getCaSourceName( QgsAuthCertUtils::CaCertSource source , bool single = false );
+    static QString getCaSourceName( QgsAuthCertUtils::CaCertSource source , bool single = false );
 
     /** Get the general name via RFC 5280 resolution */
-    static const QString resolvedCertName( const QSslCertificate& cert, bool issuer = false );
+    static QString resolvedCertName( const QSslCertificate& cert, bool issuer = false );
 
     /** Get combined distinguished name for certificate
      * @param qcert Qt SSL cert object
      * @param acert QCA SSL cert object to add more info to the output
      * @param issuer Whether to return cert's subject or issuer combined name
      */
-    static const QString getCertDistinguishedName( const QSslCertificate& qcert,
+    static QString getCertDistinguishedName( const QSslCertificate& qcert,
         const QCA::Certificate& acert = QCA::Certificate(),
         bool issuer = false );
 
     /** Get the general name for certificate trust */
-    static const QString getCertTrustName( QgsAuthCertUtils::CertTrustPolicy trust );
+    static QString getCertTrustName( QgsAuthCertUtils::CertTrustPolicy trust );
 
     /** Get string with colon delimeters every 2 characters */
-    static const QString getColonDelimited( const QString& txt );
+    static QString getColonDelimited( const QString& txt );
 
     /** Get the sha1 hash for certificate
      * @param cert Qt SSL certificate to generate hash from
      * @param formatted Whether to colon-delimit the hash
      */
-    static const QString shaHexForCert( const QSslCertificate &cert , bool formatted = false );
+    static QString shaHexForCert( const QSslCertificate &cert , bool formatted = false );
 
     /** Convert a QSslCertificate to a QCA::Certificate */
-    static const QCA::Certificate qtCertToQcaCert( const QSslCertificate& cert );
+    static QCA::Certificate qtCertToQcaCert( const QSslCertificate& cert );
 
     /** Convert a QList of QSslCertificate to a QCA::CertificateCollection */
-    static const QCA::CertificateCollection qtCertsToQcaCollection( const QList<QSslCertificate>& certs );
+    static QCA::CertificateCollection qtCertsToQcaCollection( const QList<QSslCertificate>& certs );
 
     /** PKI key/cert bundle from file path, e.g. from .p12 or pfx files */
-    static const QCA::KeyBundle qcaKeyBundle( const QString &path, const QString &pass );
+    static QCA::KeyBundle qcaKeyBundle( const QString &path, const QString &pass );
 
     /** Certificate validity check messages per enum */
-    static const QString qcaValidityMessage( QCA::Validity validity );
+    static QString qcaValidityMessage( QCA::Validity validity );
 
     /** Certificate signature algorithm strings per enum */
-    static const QString qcaSignatureAlgorithm( QCA::SignatureAlgorithm algorithm );
+    static QString qcaSignatureAlgorithm( QCA::SignatureAlgorithm algorithm );
 
     /** Certificate well-known constraint strings per enum */
-    static const QString qcaKnownConstraint( QCA::ConstraintTypeKnown constraint );
+    static QString qcaKnownConstraint( QCA::ConstraintTypeKnown constraint );
 
     /** Certificate usage type strings per enum */
-    static const QString certificateUsageTypeString( QgsAuthCertUtils::CertUsageType usagetype );
+    static QString certificateUsageTypeString( QgsAuthCertUtils::CertUsageType usagetype );
 
     /** Try to determine the certificates usage types */
     static QList<QgsAuthCertUtils::CertUsageType> certificateUsageTypes( const QSslCertificate& cert );
@@ -193,10 +197,10 @@ class CORE_EXPORT QgsAuthCertUtils
     static bool certificateIsSslClient( const QSslCertificate& cert );
 
     /** Get short strings describing an SSL error */
-    static const QString sslErrorEnumString( QSslError::SslError errenum );
+    static QString sslErrorEnumString( QSslError::SslError errenum );
 
     /** Get short strings describing SSL errors */
-    static const QList<QPair<QSslError::SslError, QString> > sslErrorEnumStrings();
+    static QList<QPair<QSslError::SslError, QString> > sslErrorEnumStrings();
 
   private:
     static void appendDirSegment_( QStringList &dirname, const QString &segment, QString value );

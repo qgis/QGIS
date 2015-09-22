@@ -161,6 +161,7 @@ void QgsAuthConfigSelect::on_btnConfigAdd_clicked()
   {
     setConfigId( ace->configId() );
   }
+  ace->deleteLater();
 }
 
 void QgsAuthConfigSelect::on_btnConfigEdit_clicked()
@@ -174,6 +175,7 @@ void QgsAuthConfigSelect::on_btnConfigEdit_clicked()
   {
     setConfigId( mAuthCfg );
   }
+  ace->deleteLater();
 }
 
 void QgsAuthConfigSelect::on_btnConfigRemove_clicked()

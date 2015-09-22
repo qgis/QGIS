@@ -705,13 +705,13 @@ void QgsAuthAuthoritiesEditor::on_btnCaFile_clicked()
       QgsAuthManager::instance()->rebuildCertTrustCache();
       updateCertTrustPolicyCache();
     }
-    dlg->deleteLater();
 
     QgsAuthManager::instance()->rebuildTrustedCaCertsCache();
 
     populateFileCaCerts();
     mFileCaSecItem->setExpanded( true );
   }
+  dlg->deleteLater();
 }
 
 void QgsAuthAuthoritiesEditor::on_btnCaFileClear_clicked()

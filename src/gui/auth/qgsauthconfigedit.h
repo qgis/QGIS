@@ -34,6 +34,7 @@ class GUI_EXPORT QgsAuthConfigEdit : public QDialog, private Ui::QgsAuthConfigEd
     Q_OBJECT
 
   public:
+    /** Type of configuration validity */
     enum Validity
     {
       Valid,

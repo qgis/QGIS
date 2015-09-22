@@ -25,7 +25,7 @@
 #include "qgslogger.h"
 
 
-const QString QgsAuthCertUtils::getSslProtocolName( QSsl::SslProtocol protocol )
+QString QgsAuthCertUtils::getSslProtocolName( QSsl::SslProtocol protocol )
 {
   switch ( protocol )
   {
@@ -46,7 +46,7 @@ const QString QgsAuthCertUtils::getSslProtocolName( QSsl::SslProtocol protocol )
   }
 }
 
-const QMap<QString, QSslCertificate> QgsAuthCertUtils::mapDigestToCerts( QList<QSslCertificate> certs )
+QMap<QString, QSslCertificate> QgsAuthCertUtils::mapDigestToCerts( QList<QSslCertificate> certs )
 {
   QMap<QString, QSslCertificate> digestmap;
   Q_FOREACH ( QSslCertificate cert, certs )
@@ -56,7 +56,7 @@ const QMap<QString, QSslCertificate> QgsAuthCertUtils::mapDigestToCerts( QList<Q
   return digestmap;
 }
 
-const QMap<QString, QList<QSslCertificate> > QgsAuthCertUtils::certsGroupedByOrg( QList<QSslCertificate> certs )
+QMap<QString, QList<QSslCertificate> > QgsAuthCertUtils::certsGroupedByOrg( QList<QSslCertificate> certs )
 {
   QMap< QString, QList<QSslCertificate> > orgcerts;
   Q_FOREACH ( QSslCertificate cert, certs )
@@ -70,7 +70,7 @@ const QMap<QString, QList<QSslCertificate> > QgsAuthCertUtils::certsGroupedByOrg
   return orgcerts;
 }
 
-const QMap<QString, QgsAuthConfigSslServer> QgsAuthCertUtils::mapDigestToSslConfigs( QList<QgsAuthConfigSslServer> configs )
+QMap<QString, QgsAuthConfigSslServer> QgsAuthCertUtils::mapDigestToSslConfigs( QList<QgsAuthConfigSslServer> configs )
 {
   QMap<QString, QgsAuthConfigSslServer> digestmap;
   Q_FOREACH ( QgsAuthConfigSslServer config, configs )
@@ -80,7 +80,7 @@ const QMap<QString, QgsAuthConfigSslServer> QgsAuthCertUtils::mapDigestToSslConf
   return digestmap;
 }
 
-const QMap<QString, QList<QgsAuthConfigSslServer> > QgsAuthCertUtils::sslConfigsGroupedByOrg( QList<QgsAuthConfigSslServer> configs )
+QMap<QString, QList<QgsAuthConfigSslServer> > QgsAuthCertUtils::sslConfigsGroupedByOrg( QList<QgsAuthConfigSslServer> configs )
 {
   QMap< QString, QList<QgsAuthConfigSslServer> > orgconfigs;
   Q_FOREACH ( QgsAuthConfigSslServer config, configs )
@@ -113,7 +113,7 @@ static QByteArray fileData_( const QString& path, bool astext = false )
   return data;
 }
 
-const QList<QSslCertificate> QgsAuthCertUtils::certsFromFile( const QString &certspath )
+QList<QSslCertificate> QgsAuthCertUtils::certsFromFile( const QString &certspath )
 {
   QList<QSslCertificate> certs;
   bool pem = certspath.endsWith( ".pem", Qt::CaseInsensitive );
@@ -125,7 +125,7 @@ const QList<QSslCertificate> QgsAuthCertUtils::certsFromFile( const QString &cer
   return certs;
 }
 
-const QSslCertificate QgsAuthCertUtils::certFromFile( const QString &certpath )
+QSslCertificate QgsAuthCertUtils::certFromFile( const QString &certpath )
 {
   QSslCertificate cert;
   QList<QSslCertificate> certs( QgsAuthCertUtils::certsFromFile( certpath ) );
@@ -140,9 +140,9 @@ const QSslCertificate QgsAuthCertUtils::certFromFile( const QString &certpath )
   return cert;
 }
 
-const QSslKey QgsAuthCertUtils::keyFromFile( const QString &keypath,
-    const QString &keypass,
-    QString *algtype )
+QSslKey QgsAuthCertUtils::keyFromFile( const QString &keypath,
+                                       const QString &keypass,
+                                       QString *algtype )
 {
   bool pem = keypath.endsWith( ".pem", Qt::CaseInsensitive );
   QByteArray keydata( fileData_( keypath, pem ) );
@@ -177,7 +177,7 @@ const QSslKey QgsAuthCertUtils::keyFromFile( const QString &keypath,
   return clientkey;
 }
 
-const QList<QSslCertificate> QgsAuthCertUtils::certsFromString( const QString &pemtext )
+QList<QSslCertificate> QgsAuthCertUtils::certsFromString( const QString &pemtext )
 {
   QList<QSslCertificate> certs;
   certs = QSslCertificate::fromData( pemtext.toAscii(), QSsl::Pem );
@@ -188,7 +188,7 @@ const QList<QSslCertificate> QgsAuthCertUtils::certsFromString( const QString &p
   return certs;
 }
 
-const QStringList QgsAuthCertUtils::certKeyBundleToPem( const QString &certpath,
+QStringList QgsAuthCertUtils::certKeyBundleToPem( const QString &certpath,
     const QString &keypath,
     const QString &keypass,
     bool reencrypt )
@@ -213,7 +213,7 @@ const QStringList QgsAuthCertUtils::certKeyBundleToPem( const QString &certpath,
   return QStringList() << certpem << keypem << algtype;
 }
 
-const QStringList QgsAuthCertUtils::pkcs12BundleToPem( const QString &bundlepath,
+QStringList QgsAuthCertUtils::pkcs12BundleToPem( const QString &bundlepath,
     const QString &bundlepass,
     bool reencrypt )
 {
@@ -246,7 +246,7 @@ const QStringList QgsAuthCertUtils::pkcs12BundleToPem( const QString &bundlepath
   return QStringList() << bundle.certificateChain().primary().toPEM() << bundle.privateKey().toPEM( passarray ) << algtype;
 }
 
-const QString QgsAuthCertUtils::getCaSourceName( QgsAuthCertUtils::CaCertSource source, bool single )
+QString QgsAuthCertUtils::getCaSourceName( QgsAuthCertUtils::CaCertSource source, bool single )
 {
   switch ( source )
   {
@@ -263,7 +263,7 @@ const QString QgsAuthCertUtils::getCaSourceName( QgsAuthCertUtils::CaCertSource 
   }
 }
 
-const QString QgsAuthCertUtils::resolvedCertName( const QSslCertificate &cert, bool issuer )
+QString QgsAuthCertUtils::resolvedCertName( const QSslCertificate &cert, bool issuer )
 {
   QString name( issuer ? cert.issuerInfo( QSslCertificate::CommonName )
                 : cert.subjectInfo( QSslCertificate::CommonName ) );
@@ -301,7 +301,7 @@ void QgsAuthCertUtils::appendDirSegment_( QStringList &dirname,
   }
 }
 
-const QString QgsAuthCertUtils::getCertDistinguishedName( const QSslCertificate &qcert ,
+QString QgsAuthCertUtils::getCertDistinguishedName( const QSslCertificate &qcert ,
     const QCA::Certificate &acert ,
     bool issuer )
 {
@@ -351,7 +351,7 @@ const QString QgsAuthCertUtils::getCertDistinguishedName( const QSslCertificate 
   return dirname.join( "," );
 }
 
-const QString QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::CertTrustPolicy trust )
+QString QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::CertTrustPolicy trust )
 {
   switch ( trust )
   {
@@ -366,7 +366,7 @@ const QString QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::CertTrustPol
   }
 }
 
-const QString QgsAuthCertUtils::getColonDelimited( const QString &txt )
+QString QgsAuthCertUtils::getColonDelimited( const QString &txt )
 {
   // 64321c05b0ebab8e2b67ec0d7d9e2b6d4bc3c303
   //   -> 64:32:1c:05:b0:eb:ab:8e:2b:67:ec:0d:7d:9e:2b:6d:4b:c3:c3:03
@@ -378,7 +378,7 @@ const QString QgsAuthCertUtils::getColonDelimited( const QString &txt )
   return sl.join( ":" );
 }
 
-const QString QgsAuthCertUtils::shaHexForCert( const QSslCertificate& cert, bool formatted )
+QString QgsAuthCertUtils::shaHexForCert( const QSslCertificate& cert, bool formatted )
 {
   QString sha( cert.digest( QCryptographicHash::Sha1 ).toHex() );
   if ( formatted )
@@ -388,7 +388,7 @@ const QString QgsAuthCertUtils::shaHexForCert( const QSslCertificate& cert, bool
   return sha;
 }
 
-const QCA::Certificate QgsAuthCertUtils::qtCertToQcaCert( const QSslCertificate &cert )
+QCA::Certificate QgsAuthCertUtils::qtCertToQcaCert( const QSslCertificate &cert )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
     return QCA::Certificate();
@@ -403,7 +403,7 @@ const QCA::Certificate QgsAuthCertUtils::qtCertToQcaCert( const QSslCertificate 
   return qcacert;
 }
 
-const QCA::CertificateCollection QgsAuthCertUtils::qtCertsToQcaCollection( const QList<QSslCertificate> &certs )
+QCA::CertificateCollection QgsAuthCertUtils::qtCertsToQcaCollection( const QList<QSslCertificate> &certs )
 {
   QCA::CertificateCollection qcacoll;
   if ( QgsAuthManager::instance()->isDisabled() )
@@ -420,7 +420,7 @@ const QCA::CertificateCollection QgsAuthCertUtils::qtCertsToQcaCollection( const
   return qcacoll;
 }
 
-const QCA::KeyBundle QgsAuthCertUtils::qcaKeyBundle( const QString &path, const QString &pass )
+QCA::KeyBundle QgsAuthCertUtils::qcaKeyBundle( const QString &path, const QString &pass )
 {
   QCA::SecureArray passarray;
   if ( !pass.isEmpty() )
@@ -432,7 +432,7 @@ const QCA::KeyBundle QgsAuthCertUtils::qcaKeyBundle( const QString &path, const 
   return ( res == QCA::ConvertGood ? bundle : QCA::KeyBundle() );
 }
 
-const QString QgsAuthCertUtils::qcaValidityMessage( QCA::Validity validity )
+QString QgsAuthCertUtils::qcaValidityMessage( QCA::Validity validity )
 {
   switch ( validity )
   {
@@ -465,7 +465,7 @@ const QString QgsAuthCertUtils::qcaValidityMessage( QCA::Validity validity )
   }
 }
 
-const QString QgsAuthCertUtils::qcaSignatureAlgorithm( QCA::SignatureAlgorithm algorithm )
+QString QgsAuthCertUtils::qcaSignatureAlgorithm( QCA::SignatureAlgorithm algorithm )
 {
   switch ( algorithm )
   {
@@ -496,7 +496,7 @@ const QString QgsAuthCertUtils::qcaSignatureAlgorithm( QCA::SignatureAlgorithm a
   }
 }
 
-const QString QgsAuthCertUtils::qcaKnownConstraint( QCA::ConstraintTypeKnown constraint )
+QString QgsAuthCertUtils::qcaKnownConstraint( QCA::ConstraintTypeKnown constraint )
 {
   switch ( constraint )
   {
@@ -541,7 +541,7 @@ const QString QgsAuthCertUtils::qcaKnownConstraint( QCA::ConstraintTypeKnown con
   }
 }
 
-const QString QgsAuthCertUtils::certificateUsageTypeString( QgsAuthCertUtils::CertUsageType usagetype )
+QString QgsAuthCertUtils::certificateUsageTypeString( QgsAuthCertUtils::CertUsageType usagetype )
 {
   switch ( usagetype )
   {
@@ -788,7 +788,7 @@ bool QgsAuthCertUtils::certificateIsSslClient( const QSslCertificate &cert )
   return QgsAuthCertUtils::certificateUsageTypes( cert ).contains( QgsAuthCertUtils::TlsClientUsage );
 }
 
-const QString QgsAuthCertUtils::sslErrorEnumString( QSslError::SslError errenum )
+QString QgsAuthCertUtils::sslErrorEnumString( QSslError::SslError errenum )
 {
   switch ( errenum )
   {
@@ -849,7 +849,7 @@ const QString QgsAuthCertUtils::sslErrorEnumString( QSslError::SslError errenum 
   }
 }
 
-const QList<QPair<QSslError::SslError, QString> > QgsAuthCertUtils::sslErrorEnumStrings()
+QList<QPair<QSslError::SslError, QString> > QgsAuthCertUtils::sslErrorEnumStrings()
 {
   QList<QPair<QSslError::SslError, QString> > errenums;
   errenums << qMakePair( QSslError::UnableToGetIssuerCertificate,

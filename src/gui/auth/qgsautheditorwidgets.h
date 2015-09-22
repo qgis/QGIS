@@ -30,6 +30,10 @@ class GUI_EXPORT QgsAuthEditorWidgets : public QWidget, private Ui::QgsAuthEdito
     Q_OBJECT
 
   public:
+    /**
+     * Construct a widget to contain various authentication editors
+     * @param parent Parent widget
+     */
     explicit QgsAuthEditorWidgets( QWidget *parent = 0 ) :
         QWidget( parent )
     {
@@ -38,6 +42,7 @@ class GUI_EXPORT QgsAuthEditorWidgets : public QWidget, private Ui::QgsAuthEdito
 
     ~QgsAuthEditorWidgets() {}
 
+    /** Get access to embedded tabbed widget */
     QTabWidget * tabbedWidget() { return tabWidget; }
 };
 

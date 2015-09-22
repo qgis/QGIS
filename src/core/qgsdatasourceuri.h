@@ -110,7 +110,7 @@ class CORE_EXPORT QgsDataSourceURI
                         const QString& aSql = QString(),
                         const QString& aKeyColumn = QString() );
 
-    //! set authentication configuration ID
+    //! Set authentication configuration ID
     void setAuthConfigId( const QString& authcfg );
 
     //! set username
@@ -122,6 +122,7 @@ class CORE_EXPORT QgsDataSourceURI
     //! Removes password element from uris
     static QString removePassword( const QString& aUri );
 
+    //! Any associated authentication configuration ID
     QString authConfigId() const;
     QString username() const;
     QString schema() const;

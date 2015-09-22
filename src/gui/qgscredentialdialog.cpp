@@ -122,7 +122,7 @@ void QgsCredentialDialog::requestCredentialsMasterPassword( QString * password, 
   QString titletxt( stored ? tr( "Enter CURRENT master authentication password" ) : tr( "Set NEW master authentication password" ) );
   lblPasswordTitle->setText( titletxt );
 
-  frameMasterPassVerify->setVisible( !stored );
+  leMasterPassVerify->setVisible( !stored );
   lblDontForget->setVisible( !stored );
 
   QApplication::setOverrideCursor( Qt::ArrowCursor );
@@ -180,7 +180,7 @@ void QgsCredentialDialog::requestCredentialsMasterPassword( QString * password, 
           ++passfailed;
 
         leMasterPass->setStyleSheet( invalidStyle_() );
-        if ( frameMasterPassVerify->isVisible() )
+        if ( leMasterPassVerify->isVisible() )
         {
           leMasterPassVerify->setStyleSheet( invalidStyle_() );
         }
@@ -196,7 +196,6 @@ void QgsCredentialDialog::requestCredentialsMasterPassword( QString * password, 
   leMasterPass->clear();
   chkMasterPassShow->setChecked( false );
   leMasterPassVerify->clear();
-  chkMasterPassVerifyShow->setChecked( false );
 
   chkbxEraseAuthDb->setChecked( false );
   lblSavedForSession->setVisible( true );
@@ -211,10 +210,6 @@ void QgsCredentialDialog::requestCredentialsMasterPassword( QString * password, 
 void QgsCredentialDialog::on_chkMasterPassShow_stateChanged( int state )
 {
   leMasterPass->setEchoMode(( state > 0 ) ? QLineEdit::Normal : QLineEdit::Password );
-}
-
-void QgsCredentialDialog::on_chkMasterPassVerifyShow_stateChanged( int state )
-{
   leMasterPassVerify->setEchoMode(( state > 0 ) ? QLineEdit::Normal : QLineEdit::Password );
 }
 
@@ -222,14 +217,14 @@ void QgsCredentialDialog::on_leMasterPass_textChanged( const QString &pass )
 {
   leMasterPass->setStyleSheet( "" );
   bool passok = !pass.isEmpty(); // regardless of new or comparing existing, empty password disallowed
-  if ( frameMasterPassVerify->isVisible() )
+  if ( leMasterPassVerify->isVisible() )
   {
     leMasterPassVerify->setStyleSheet( "" );
     passok = passok && ( leMasterPass->text() == leMasterPassVerify->text() );
   }
   mOkButton->setEnabled( passok );
 
-  if ( frameMasterPassVerify->isVisible() && !passok )
+  if ( leMasterPassVerify->isVisible() && !passok )
   {
     leMasterPass->setStyleSheet( invalidStyle_() );
     leMasterPassVerify->setStyleSheet( invalidStyle_() );
@@ -238,7 +233,7 @@ void QgsCredentialDialog::on_leMasterPass_textChanged( const QString &pass )
 
 void QgsCredentialDialog::on_leMasterPassVerify_textChanged( const QString &pass )
 {
-  if ( frameMasterPassVerify->isVisible() )
+  if ( leMasterPassVerify->isVisible() )
   {
     leMasterPass->setStyleSheet( "" );
     leMasterPassVerify->setStyleSheet( "" );

@@ -79,7 +79,7 @@ class CORE_EXPORT QgsAuthMethod : public QObject
 
     /** The data providers that the method supports, allowing for filtering out authcfgs that are not
      * applicable to a given provider, or where the updating code is not currently implemented.
-*/
+    */
     QStringList supportedDataProviders() const { return mDataProviders; }
 
     /** Update a network request with authentication components
@@ -144,7 +144,8 @@ class CORE_EXPORT QgsAuthMethod : public QObject
 
   protected:
     /**
-     *
+     * Construct a default authentication method
+     * @note Non-public since this is an abstract base class
      */
     explicit QgsAuthMethod()
         : mExpansions( QgsAuthMethod::Expansions( 0 ) )
@@ -152,11 +153,15 @@ class CORE_EXPORT QgsAuthMethod : public QObject
         , mVersion( 0 )
     {}
 
+    /** Tag signifying that this is an authentcation method (e.g. for use as title in message log panel output) */
     static QString authMethodTag() { return QObject::tr( "Authentication method" ); }
 
+    /** Set the version of the auth method (useful for future upgrading) */
     void setVersion( int version ) { mVersion = version; }
 
+    /** Set the support expansions (points in providers where the authentication is injected) of the auth method */
     void setExpansions( QgsAuthMethod::Expansions expansions ) { mExpansions = expansions; }
+    /** Set list of data providers this auth method supports */
     void setDataProviders( QStringList dataproviders ) { mDataProviders = dataproviders; }
 
     QgsAuthMethod::Expansions mExpansions;

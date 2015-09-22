@@ -35,6 +35,7 @@ class GUI_EXPORT QgsAuthIdentitiesEditor : public QWidget, private Ui::QgsAuthId
   public:
     /**
      * Widget for editing authentication configurations directly in database
+     * @param parent Parent widget
      */
     explicit QgsAuthIdentitiesEditor( QWidget *parent = 0 );
     ~QgsAuthIdentitiesEditor();
@@ -66,7 +67,8 @@ class GUI_EXPORT QgsAuthIdentitiesEditor : public QWidget, private Ui::QgsAuthId
     void authMessageOut( const QString& message, const QString& authtag, QgsAuthManager::MessageLevel level );
 
   protected:
-    void showEvent( QShowEvent *e );
+    /** Overridden show event of base widget */
+    void showEvent( QShowEvent *e ) override;
 
   private:
     enum IdentityType

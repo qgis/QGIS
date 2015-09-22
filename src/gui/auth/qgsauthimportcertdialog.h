@@ -33,12 +33,14 @@ class GUI_EXPORT QgsAuthImportCertDialog : public QDialog, private Ui::QgsAuthIm
     Q_OBJECT
 
   public:
+    /** Type of filter to apply to dialog */
     enum CertFilter
     {
       NoFilter = 1,
       CaFilter = 2,
     };
 
+    /** Type of inputs for certificates */
     enum CertInput
     {
       AllInputs = 1,
@@ -46,19 +48,30 @@ class GUI_EXPORT QgsAuthImportCertDialog : public QDialog, private Ui::QgsAuthIm
       TextInput = 3,
     };
 
+    /**
+     * Construct a dialog for importing certificates
+     * @param parent Parent widget
+     * @param filter Certificate type filter to apply to dialog
+     * @param input Type of input(s) for certificates
+     */
     explicit QgsAuthImportCertDialog( QWidget *parent = 0,
                                       QgsAuthImportCertDialog::CertFilter filter = NoFilter,
                                       QgsAuthImportCertDialog::CertInput input = AllInputs );
     ~QgsAuthImportCertDialog();
 
+    /** Get list of certificate objects to import */
     const QList<QSslCertificate> certificatesToImport() { return mCerts; }
 
+    /** Get the file path to a certificate to import */
     const QString certFileToImport();
 
+    /** Get certificate text to import */
     const QString certTextToImport();
 
+    /** Whether to allow importation of invalid certificates (so trust policy can be overridden) */
     bool allowInvalidCerts();
 
+    /** Defined trust policy for imported certificates */
     QgsAuthCertUtils::CertTrustPolicy certTrustPolicy();
 
   private slots:

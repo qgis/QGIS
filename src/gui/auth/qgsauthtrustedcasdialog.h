@@ -34,6 +34,11 @@ class GUI_EXPORT QgsAuthTrustedCAsDialog : public QDialog, private Ui::QgsAuthTr
     Q_OBJECT
 
   public:
+    /**
+     * Construct a dialog that will list the trusted Certificate Authorities
+     * @param parent Parent widget
+     * @param trustedCAs List of trusted Certificate Authorities objects
+     */
     explicit QgsAuthTrustedCAsDialog( QWidget *parent = 0,
                                       QList<QSslCertificate> trustedCAs = QList<QSslCertificate>() );
     ~QgsAuthTrustedCAsDialog();
@@ -59,7 +64,8 @@ class GUI_EXPORT QgsAuthTrustedCAsDialog : public QDialog, private Ui::QgsAuthTr
     void authMessageOut( const QString& message, const QString& authtag, QgsAuthManager::MessageLevel level );
 
   protected:
-    void showEvent( QShowEvent *e );
+    /** Overridden widget show event */
+    void showEvent( QShowEvent *e ) override;
 
   private:
     enum CaType

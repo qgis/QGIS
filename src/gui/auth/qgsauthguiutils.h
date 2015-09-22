@@ -31,22 +31,22 @@ class GUI_EXPORT QgsAuthGuiUtils
   public:
 
     /** Green color representing valid, trusted, etc. certificate */
-    static const QColor greenColor();
+    static QColor greenColor();
 
     /** Orange color representing loaded component, but not stored in database */
-    static const QColor orangeColor();
+    static QColor orangeColor();
 
     /** Red color representing invalid, untrusted, etc. certificate */
-    static const QColor redColor();
+    static QColor redColor();
 
     /** Green text stylesheet representing valid, trusted, etc. certificate */
-    static const QString greenTextStyleSheet( const QString& selector = "*" );
+    static QString greenTextStyleSheet( const QString& selector = "*" );
 
     /** Orange text stylesheet representing loaded component, but not stored in database */
-    static const QString orangeTextStyleSheet( const QString& selector = "*" );
+    static QString orangeTextStyleSheet( const QString& selector = "*" );
 
     /** Red text stylesheet representing invalid, untrusted, etc. certificate */
-    static const QString redTextStyleSheet( const QString& selector = "*" );
+    static QString redTextStyleSheet( const QString& selector = "*" );
 
 
     /** Verify the authentication system is active, else notify user */

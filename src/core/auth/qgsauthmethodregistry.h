@@ -95,6 +95,7 @@ class CORE_EXPORT QgsAuthMethodRegistry
                     const QString & functionName );
 #endif
 
+    /** Return the library object associated with an auth method key */
     QLibrary *authMethodLibrary( const QString & authMethodKey ) const;
 
     /** Return list of available auth methods by their keys */

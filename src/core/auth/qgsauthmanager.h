@@ -58,6 +58,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
   public:
 
+    /** Message log level (mirrors that of QgsMessageLog, so it can also output there) */
     enum MessageLevel
     {
       INFO = 0,
@@ -380,6 +381,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     /** Get ignored SSL error cache, keyed with cert/connection's sha:host:port */
     QHash<QString, QSet<QSslError::SslError> > getIgnoredSslErrorCache() { return mIgnoredSslErrorsCache; }
 
+    /** Utility function to dump the cache for debug purposes */
     void dumpIgnoredSslErrorsCache_();
 
     /** Update ignored SSL error cache with possible ignored SSL errors, using server config */

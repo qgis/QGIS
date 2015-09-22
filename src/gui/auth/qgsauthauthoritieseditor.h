@@ -37,6 +37,7 @@ class GUI_EXPORT QgsAuthAuthoritiesEditor : public QWidget, private Ui::QgsAuthA
   public:
     /**
      * Widget for viewing and editing certificate authorities directly in database
+     * @param parent Parent widget
      */
     explicit QgsAuthAuthoritiesEditor( QWidget *parent = 0 );
     ~QgsAuthAuthoritiesEditor();
@@ -78,7 +79,8 @@ class GUI_EXPORT QgsAuthAuthoritiesEditor : public QWidget, private Ui::QgsAuthA
     void authMessageOut( const QString& message, const QString& authtag, QgsAuthManager::MessageLevel level );
 
   protected:
-    void showEvent( QShowEvent *e );
+    /** Overridden show event of base widget */
+    void showEvent( QShowEvent *e ) override;
 
   private:
     enum CaType

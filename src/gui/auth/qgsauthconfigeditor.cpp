@@ -195,6 +195,7 @@ void QgsAuthConfigEditor::on_btnAddConfig_clicked()
   {
     mConfigModel->select();
   }
+  ace->deleteLater();
 }
 
 void QgsAuthConfigEditor::on_btnEditConfig_clicked()
@@ -213,6 +214,7 @@ void QgsAuthConfigEditor::on_btnEditConfig_clicked()
   {
     mConfigModel->select();
   }
+  ace->deleteLater();
 }
 
 void QgsAuthConfigEditor::on_btnRemoveConfig_clicked()

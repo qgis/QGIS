@@ -160,6 +160,8 @@ QgsAuthMethodRegistry::~QgsAuthMethodRegistry()
       if ( cleanupFunc )
         cleanupFunc();
     }
+    // clear cached QgsAuthMethodMetadata *
+    delete it->second;
     ++it;
   }
 }
