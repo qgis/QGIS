@@ -24,6 +24,20 @@
 
 #include "qgsfield.h"
 
+extern "C"
+{
+#include <grass/version.h>
+#include <grass/gprojects.h>
+#include <grass/gis.h>
+#include <grass/dbmi.h>
+#if GRASS_VERSION_MAJOR < 7
+#include <grass/Vect.h>
+#else
+#include <grass/vector.h>
+#define BOUND_BOX bound_box
+#endif
+}
+
 class QgsGrassVectorMap;
 
 class GRASS_LIB_EXPORT QgsGrassVectorMapLayer : public QObject
@@ -35,8 +49,20 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapLayer : public QObject
     int field() const { return mField; }
     bool isValid() const { return mValid; }
     QgsGrassVectorMap *map() { return mMap; }
+
+    /** Original fields before editing started + topo field if edited.
+     * Does not reflect add/delete column.
+     * Original fields must be returned by provider fields() */
     QgsFields & fields() { return mFields; }
+
+    static QStringList fieldNames( QgsFields & fields );
+
     QMap<int, QList<QVariant> > & attributes() { return mAttributes; }
+
+    /** Get attribute for index corresponding to current fields(),
+     * if there is no table, returns cat */
+    QVariant attribute( int cat, int index );
+
     bool hasTable() { return mHasTable; }
     int keyColumn() { return mKeyColumn; }
     QList< QPair<double, double> > minMax() { return mMinMax; }
@@ -53,18 +79,85 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapLayer : public QObject
     /** Decrease number of users and clear if no more users */
     void close();
 
-  private:
+    void startEdit();
+    void closeEdit();
 
+    //------------------------------- Database utils ---------------------------------
+    void setMapset();
+
+    /** Execute SQL statement
+     *   @param sql */
+    void executeSql( const QString &sql, QString &error );
+
+    /** Update attributes
+     *   @param cat
+     *   @param index ields  index */
+    void changeAttributeValue( int cat, QgsField field, QVariant value, QString &error );
+
+    /** Insert new attributes to the table (it does not check if attributes already exists)
+     *   @param cat */
+    void insertAttributes( int cat, QString &error );
+
+    /** Delete attributes from the table
+     *   @param cat
+     */
+    void deleteAttribute( int cat, QString &error );
+
+    /** Check if a database row exists and it is orphan (no more lines with
+     *  that category)
+     *   @param cat
+     *   @param orphan set to true if a record exits and it is orphan
+     *   @return empty string or error message
+     */
+    void isOrphan( int cat, int &orphan, QString &error );
+
+    /** Create table and link vector to this table
+     *   @param columns SQL definition for columns, e.g. cat integer, label varchar(10)
+     *   @return empty string or error message
+     */
+    void createTable( const QString &key, const QString &columns, QString &error );
+
+    /** Add column to table
+     *   @param field
+     */
+    void addColumn( const QgsField &field, QString &error );
+
+    void deleteColumn( const QgsField &field, QString &error );
+
+    // update fields to real state
+    void updateFields();
+
+  private:
+    QString quotedValue( QVariant value );
+    dbDriver * openDriver( QString &error );
+    void addTopoField( QgsFields &fields );
     int mField;
     bool mValid;
     QgsGrassVectorMap *mMap;
     struct field_info *mFieldInfo;
+    dbDriver *mDriver;
+
     bool mHasTable;
     // index of key column
     int mKeyColumn;
+
+    // table fields, updated if a field is added/deleted, if there is no table, it contains
+    // cat field
+    QgsFields mTableFields;
+
+    // original fields + topo symbol when editing, does not reflect add/column
     QgsFields mFields;
+
+    // list of fields in mAttributes, these fields may only grow when a field is added,
+    // but do not shrink until editing is closed
+    QgsFields mAttributeFields;
+
     // Map of attributes with cat as key
     QMap<int, QList<QVariant> > mAttributes;
+
+    // Map of current original fields() indexes to mAttributes, skipping topo symbol
+    //QMap<int, int> mAttributeIndexes;
+
     // minimum and maximum values of attributes
     QList<QPair<double, double> > mMinMax;
     // timestamp when attributes were loaded

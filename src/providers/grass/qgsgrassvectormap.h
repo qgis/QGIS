@@ -135,6 +135,8 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
      * @param type geometry type */
     TopoSymbol topoSymbol( int lid );
 
+    static QString topoSymbolFieldName() { return "topo_symbol" ; }
+
   signals:
     /** Ask all iterators to cancel iteration when possible. Connected to iterators with
      * Qt::DirectConnection (non blocking) */
@@ -142,6 +144,9 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
 
     /** Close all iterators. Connected to iterators in different threads with Qt::BlockingQueuedConnection */
     void closeIterators();
+
+    /** Emited when data were reloaded */
+    void dataChanged();
 
   private:
     /** Close iterators, blocking */

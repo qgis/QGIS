@@ -282,9 +282,16 @@ bool QgsGrassVectorMap::startEdit()
   QgsDebugMsg( QString( "Vector successfully reopened for update mOldNumLines = %1" ).arg( mOldNumLines ) );
 
   mIsEdited = true;
+
+  Q_FOREACH ( QgsGrassVectorMapLayer *l, mLayers )
+  {
+    l->startEdit();
+  }
+
   mValid = true;
   QgsGrass::unlock();
   unlockOpenClose();
+  emit dataChanged();
   return true;
 }
 
@@ -303,6 +310,11 @@ bool QgsGrassVectorMap::closeEdit( bool newMap )
   closeAllIterators(); // blocking
 
   QgsGrass::lock();
+  Q_FOREACH ( QgsGrassVectorMapLayer *l, mLayers )
+  {
+    l->closeEdit();
+  }
+
   mOldLids.clear();
   mNewLids.clear();
   mOldGeometries.clear();
@@ -345,6 +357,7 @@ bool QgsGrassVectorMap::closeEdit( bool newMap )
   mVersion++;
   unlockOpenClose();
 
+  emit dataChanged();
   QgsDebugMsg( "edit closed" );
   return mValid;
 }
@@ -459,6 +472,7 @@ void QgsGrassVectorMap::update()
   openMap();
   reloadLayers();
   unlockOpenClose();
+  emit dataChanged();
 }
 
 bool QgsGrassVectorMap::mapOutdated()

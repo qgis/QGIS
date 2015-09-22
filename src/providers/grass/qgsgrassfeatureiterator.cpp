@@ -654,46 +654,27 @@ void QgsGrassFeatureIterator::setFeatureAttributes( int cat, QgsFeature *feature
 void QgsGrassFeatureIterator::setFeatureAttributes( int cat, QgsFeature *feature, const QgsAttributeList& attlist, QgsGrassVectorMap::TopoSymbol symbol )
 {
   QgsDebugMsgLevel( QString( "setFeatureAttributes cat = %1 symbol = %2" ).arg( cat ).arg( symbol ), 3 );
-  int nFields = mSource->mLayer->fields().size();
-  int nAttributes = nFields;
-  if ( mSource->mEditing )
+  feature->initAttributes( mSource->mLayer->fields().size() );
+
+  for ( QgsAttributeList::const_iterator iter = attlist.begin(); iter != attlist.end(); ++iter )
   {
-    //nAttributes += 1;
-  }
-  feature->initAttributes( nAttributes );
-  if ( mSource->mLayer->hasTable() )
-  {
-    for ( QgsAttributeList::const_iterator iter = attlist.begin(); iter != attlist.end(); ++iter )
+    if ( *iter == mSource->mSymbolAttributeIndex )
     {
-      if ( !mSource->mLayer->attributes().contains( cat ) )
-      {
-        QgsDebugMsgLevel( QString( "cat %1 not found in attributes" ).arg( cat ), 3 );
-      }
-      QVariant value = mSource->mLayer->attributes().value( cat ).value( *iter );
-      if ( value.type() == QVariant::ByteArray )
-      {
-        value = QVariant( mSource->mEncoding->toUnicode( value.toByteArray() ) );
-      }
-      QgsDebugMsgLevel( QString( "iter = %1 value = %2" ).arg( *iter ).arg( value.toString() ), 3 );
-      feature->setAttribute( *iter, value );
+      continue;
     }
+    QVariant value =  mSource->mLayer->attribute( cat, *iter );
+    if ( value.type() == QVariant::ByteArray )
+    {
+      value = QVariant( mSource->mEncoding->toUnicode( value.toByteArray() ) );
+    }
+    QgsDebugMsgLevel( QString( "iter = %1 value = %2" ).arg( *iter ).arg( value.toString() ), 3 );
+    feature->setAttribute( *iter, value );
   }
-  else if ( attlist.contains( 0 ) ) // no table and first attribute requested -> add cat
+
+  if ( mSource->mEditing && attlist.contains( mSource->mSymbolAttributeIndex ) )
   {
-    QgsDebugMsgLevel( QString( "no table, set attribute 0 to cat %1" ).arg( cat ), 3 );
-    feature->setAttribute( 0, QVariant( cat ) );
-  }
-  else
-  {
-    QgsDebugMsgLevel( "no table, cat not requested", 3 );
-  }
-  if ( mSource->mEditing )
-  {
-    // append topo_symbol
-    int idx = nAttributes - 1;
-    QgsDebugMsgLevel( QString( "set attribute %1 to symbol %2" ).arg( idx ).arg( symbol ), 3 );
-    //feature->setAttribute( 0, QVariant( symbol ) ); // debug
-    feature->setAttribute( idx, QVariant( symbol ) );
+    QgsDebugMsgLevel( QString( "set attribute %1 to symbol %2" ).arg( mSource->mSymbolAttributeIndex ).arg( symbol ), 3 );
+    feature->setAttribute( mSource->mSymbolAttributeIndex, QVariant( symbol ) );
   }
 }
 
@@ -709,15 +690,9 @@ QgsGrassFeatureSource::QgsGrassFeatureSource( const QgsGrassProvider* p )
     , mEncoding( p->mEncoding )
     , mEditing( p->mEditBuffer )
 {
-
   Q_ASSERT( mLayer );
-#if 0
-  if ( mEditing )
-  {
-    mFields.clear();
-    mFields.append( QgsField( "topo_symbol", QVariant::Int, "int" ) );
-  }
-#endif
+
+  mSymbolAttributeIndex = mFields.indexFromName( QgsGrassVectorMap::topoSymbolFieldName() );
 }
 
 QgsGrassFeatureSource::~QgsGrassFeatureSource()

@@ -63,6 +63,9 @@ class QgsGrassFeatureSource : public QgsAbstractFeatureSource
     QTextCodec* mEncoding;
 
     bool mEditing; // Standard QGIS editing mode
+
+    int mSymbolAttributeIndex;
+
     friend class QgsGrassFeatureIterator;
 };
 
