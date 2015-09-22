@@ -76,6 +76,12 @@ QgsServerProjectParser::QgsServerProjectParser( QDomDocument* xmlDoc, const QStr
       }
     }
   }
+  // Setting the QgsProject instance fileName
+  // to help converting relative pathes to absolute
+  if ( mProjectPath != "" )
+  {
+    QgsProject::instance()->setFileName( mProjectPath );
+  }
 }
 
 QgsServerProjectParser::QgsServerProjectParser()
@@ -169,6 +175,8 @@ QgsMapLayer* QgsServerProjectParser::createLayerFromElement( const QDomElement& 
   QDomElement dataSourceElem = elem.firstChildElement( "datasource" );
   QString uri = dataSourceElem.text();
   QString absoluteUri;
+  // If QgsProject instance fileName is set,
+  // Is converting relative pathes to absolute still relevant ?
   if ( !dataSourceElem.isNull() )
   {
     //convert relative pathes to absolute ones if necessary
