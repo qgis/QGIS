@@ -293,6 +293,8 @@ QString QgsGrass::shortPath( const QString &path )
 
 bool QgsGrass::init( void )
 {
+  // Do not show warning dialog in this function, it may cause problems in non interactive tests etc.
+
   // Warning!!!
   // G_set_error_routine() once called from plugin
   // is not valid in provider -> call it always
@@ -347,7 +349,8 @@ bool QgsGrass::init( void )
   }
   G_CATCH( QgsGrass::Exception &e )
   {
-    warning( tr( "Problem in GRASS initialization, GRASS provider and plugin will not work" ) + " : " + e.what() );
+    error_message = tr( "Problem in GRASS initialization, GRASS provider and plugin will not work" ) + " : " + e.what();
+    QgsDebugMsg( error_message );
     nonInitializable = true;
     unlock();
     return false;
@@ -549,9 +552,9 @@ bool QgsGrass::init( void )
         putEnv( "GRASS_PAGER", pager );
       }
     }
+    initialized = 1;
   }
 
-  initialized = 1;
   unlock();
   return valid;
 }
