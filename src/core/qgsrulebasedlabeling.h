@@ -51,6 +51,9 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          */
         bool isElse() const { return mElseRule; }
 
+        //! set new settings (or NULL). Deletes old settings if any.
+        void setSettings( QgsPalLayerSettings* settings );
+
         void setLabel( QString label ) { mLabel = label; }
         /**
          * Set the minimum denominator for which this rule shall apply.
@@ -95,14 +98,32 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          */
         const RuleList& children() const { return mChildren; }
         /**
+         * Return all children rules of this rule
+         *
+         * @return A list of rules
+         */
+        RuleList& children() { return mChildren; }
+        /**
          * The parent rule
          *
          * @return Parent rule
          */
         const Rule* parent() const { return mParent; }
+        /**
+         * The parent rule
+         *
+         * @return Parent rule
+         */
+        Rule* parent() { return mParent; }
 
         //! add child rule, take ownership, sets this as parent
         void appendChild( Rule* rule );
+
+        //! add child rule, take ownership, sets this as parent
+        void insertChild( int i, Rule* rule );
+
+        //! delete child rule
+        void removeChildAt( int i );
 
         //! clone this rule, return new instance
         Rule* clone() const;
@@ -114,7 +135,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          * @param ruleElem  The XML rule element
          * @return A new rule
          */
-        static Rule* create( QDomElement& ruleElem );
+        static Rule* create( const QDomElement& ruleElem );
 
         //! store labeling info to XML element
         QDomElement save( QDomDocument& doc ) const;
@@ -165,7 +186,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
     const Rule* rootRule() const { return mRootRule; }
 
     //! Create the instance from a DOM element with saved configuration
-    static QgsRuleBasedLabeling* create( QDomElement& element );
+    static QgsRuleBasedLabeling* create( const QDomElement& element );
 
     // implementation of parent interface
 

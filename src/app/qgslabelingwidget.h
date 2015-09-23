@@ -19,23 +19,20 @@ class QgsLabelingWidget : public QWidget, private Ui::QgsLabelingWidget
   public:
     QgsLabelingWidget( QgsVectorLayer* layer, QgsMapCanvas* canvas, QWidget* parent = 0 );
 
-    //! load config from layer
-    void init();
     //! save config to layer
     void writeSettingsToLayer();
 
   signals:
 
   protected slots:
-    void on_mLabelModeComboBox_currentIndexChanged( int index );
+    void labelModeChanged( int index );
     void showEngineConfigDialog();
 
   protected:
     QgsVectorLayer* mLayer;
     QgsMapCanvas* mCanvas;
 
-    QgsLabelingGui* mWidgetSimple;
-    QgsRuleBasedLabelingWidget* mWidgetRules;
+    QWidget* mWidget;
 };
 
 #endif // QGSLABELINGWIDGET_H

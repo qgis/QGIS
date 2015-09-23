@@ -27,6 +27,11 @@ class CORE_EXPORT QgsAbstractVectorLayerLabeling
 
     //! Return labeling configuration as XML element
     virtual QDomElement save( QDomDocument& doc ) const = 0;
+
+    // static stuff
+
+    //! Try to create instance of an implementation based on the XML data
+    static QgsAbstractVectorLayerLabeling* create( const QDomElement& element );
 };
 
 /**

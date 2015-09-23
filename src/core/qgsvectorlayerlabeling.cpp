@@ -9,6 +9,19 @@ QgsAbstractVectorLayerLabeling::~QgsAbstractVectorLayerLabeling()
 {
 }
 
+QgsAbstractVectorLayerLabeling* QgsAbstractVectorLayerLabeling::create( const QDomElement& element )
+{
+  if ( element.attribute( "type" ) == "rule-based" )
+  {
+    return QgsRuleBasedLabeling::create( element );
+  }
+  else
+  {
+    // default
+    return new QgsVectorLayerSimpleLabeling;
+  }
+}
+
 QgsVectorLayerLabelProvider* QgsVectorLayerSimpleLabeling::provider( QgsVectorLayer* layer ) const
 {
   if ( layer->customProperty( "labeling" ).toString() == QString( "pal" ) && layer->labelsEnabled() )

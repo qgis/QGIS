@@ -61,6 +61,15 @@ QgsRuleBasedLabeling::Rule::~Rule()
   // do NOT delete parent
 }
 
+void QgsRuleBasedLabeling::Rule::setSettings( QgsPalLayerSettings* settings )
+{
+  if ( mSettings == settings )
+    return;
+
+  delete mSettings;
+  mSettings = settings;
+}
+
 void QgsRuleBasedLabeling::Rule::initFilter()
 {
   if ( mElseRule || mFilterExp.compare( "ELSE", Qt::CaseInsensitive ) == 0 )
@@ -87,6 +96,21 @@ void QgsRuleBasedLabeling::Rule::appendChild( QgsRuleBasedLabeling::Rule* rule )
   // TODO updateElseRules();
 }
 
+void QgsRuleBasedLabeling::Rule::insertChild( int i, QgsRuleBasedLabeling::Rule* rule )
+{
+  mChildren.insert( i, rule );
+  rule->mParent = this;
+  // TODO updateElseRules();
+}
+
+void QgsRuleBasedLabeling::Rule::removeChildAt( int i )
+{
+  Rule* rule = mChildren[i];
+  mChildren.removeAt( i );
+  delete rule;
+  // TODO updateElseRules();
+}
+
 QgsRuleBasedLabeling::Rule*QgsRuleBasedLabeling::Rule::clone() const
 {
   QgsPalLayerSettings* s = mSettings ? new QgsPalLayerSettings( *mSettings ) : 0;
@@ -98,7 +122,7 @@ QgsRuleBasedLabeling::Rule*QgsRuleBasedLabeling::Rule::clone() const
   return newrule;
 }
 
-QgsRuleBasedLabeling::Rule*QgsRuleBasedLabeling::Rule::create( QDomElement& ruleElem )
+QgsRuleBasedLabeling::Rule*QgsRuleBasedLabeling::Rule::create( const QDomElement& ruleElem )
 {
   QgsPalLayerSettings* settings = 0;
   QDomElement settingsElem = ruleElem.firstChildElement( "settings" );
@@ -253,7 +277,7 @@ QgsRuleBasedLabeling::~QgsRuleBasedLabeling()
   delete mRootRule;
 }
 
-QgsRuleBasedLabeling*QgsRuleBasedLabeling::create( QDomElement& element )
+QgsRuleBasedLabeling*QgsRuleBasedLabeling::create( const QDomElement& element )
 {
   QDomElement rulesElem = element.firstChildElement( "rules" );
 

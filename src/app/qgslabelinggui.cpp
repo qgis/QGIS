@@ -33,6 +33,7 @@
 #include "qgssymbollayerv2utils.h"
 #include "qgscharacterselectdialog.h"
 #include "qgssvgselectorwidget.h"
+#include "qgsvectorlayerlabeling.h"
 
 #include <QCheckBox>
 #include <QSettings>
@@ -52,10 +53,11 @@ static QgsExpressionContext _getExpressionContext( const void* context )
   return expContext;
 }
 
-QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, QWidget* parent )
+QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, const QgsPalLayerSettings* settings, QWidget* parent )
     : QWidget( parent )
     , mLayer( layer )
     , mMapCanvas( mapCanvas )
+    , mSettings( settings )
     , mMode( NoLabels )
     , mCharDlg( 0 )
     , mQuadrantBtnGrp( 0 )
@@ -308,7 +310,10 @@ void QgsLabelingGui::init()
 {
   // load labeling settings from layer
   QgsPalLayerSettings lyr;
-  lyr.readFromLayer( mLayer );
+  if ( mSettings )
+    lyr = *mSettings;
+  else
+    lyr.readFromLayer( mLayer );
 
   blockInitSignals( true );
 
@@ -587,6 +592,9 @@ void QgsLabelingGui::apply()
 
 void QgsLabelingGui::writeSettingsToLayer()
 {
+  mLayer->setLabeling( new QgsVectorLayerSimpleLabeling );
+
+  // all configuration is still in layer's custom properties
   QgsPalLayerSettings settings = layerSettings();
   settings.writeToLayer( mLayer );
 }

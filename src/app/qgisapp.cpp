@@ -5178,7 +5178,7 @@ void QgisApp::labeling()
 
   QDialog *dlg = new QDialog( this );
   dlg->setWindowTitle( tr( "Layer labeling settings" ) );
-  QgsLabelingGui *labelingGui = new QgsLabelingGui( vlayer, mMapCanvas, dlg );
+  QgsLabelingGui *labelingGui = new QgsLabelingGui( vlayer, mMapCanvas, 0, dlg );
   labelingGui->init(); // load QgsPalLayerSettings for layer
   labelingGui->layout()->setContentsMargins( 0, 0, 0, 0 );
   QVBoxLayout *layout = new QVBoxLayout( dlg );

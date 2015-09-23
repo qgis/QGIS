@@ -3597,6 +3597,8 @@ bool QgsPalLabeling::staticWillUseLayer( QgsVectorLayer* layer )
   bool enabled = false;
   if ( layer->customProperty( "labeling" ).toString() == "pal" )
     enabled = layer->labelsEnabled() || layer->diagramsEnabled();
+  else if ( layer->labeling()->type() == "rule-based" )
+    return true;
 
   return enabled;
 }

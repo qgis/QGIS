@@ -1614,6 +1614,13 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
       setRendererV2( r );
     }
 
+    QDomElement labelingElement = node.firstChildElement( "labeling" );
+    if ( !labelingElement.isNull() )
+    {
+      QgsAbstractVectorLayerLabeling* l = QgsAbstractVectorLayerLabeling::create( labelingElement );
+      setLabeling( l ? l : new QgsVectorLayerSimpleLabeling );
+    }
+
     // get and set the display field if it exists.
     QDomNode displayFieldNode = node.namedItem( "displayfield" );
     if ( !displayFieldNode.isNull() )
@@ -1886,6 +1893,12 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
   {
     QDomElement rendererElement = mRendererV2->save( doc );
     node.appendChild( rendererElement );
+
+    if ( mLabeling )
+    {
+      QDomElement labelingElement = mLabeling->save( doc );
+      node.appendChild( labelingElement );
+    }
 
     // use scale dependent visibility flag
     if ( mLabel )

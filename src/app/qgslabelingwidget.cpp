@@ -9,25 +9,23 @@ QgsLabelingWidget::QgsLabelingWidget( QgsVectorLayer* layer, QgsMapCanvas* canva
     : QWidget( parent )
     , mLayer( layer )
     , mCanvas( canvas )
+    , mWidget( 0 )
 {
   setupUi( this );
 
   connect( mEngineSettingsButton, SIGNAL( clicked() ), this, SLOT( showEngineConfigDialog() ) );
 
-  mWidgetSimple = new QgsLabelingGui( layer, canvas, this );
-  mWidgetRules = new QgsRuleBasedLabelingWidget( layer, canvas, this );
-  mStackedWidget->addWidget( mWidgetSimple );
-  mStackedWidget->addWidget( mWidgetRules );
+  mLabelModeComboBox->setCurrentIndex( -1 );
 
-  mStackedWidget->setCurrentIndex( 0 );
-}
+  connect( mLabelModeComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( labelModeChanged( int ) ) );
 
-void QgsLabelingWidget::init()
-{
-  if ( !mLayer->labeling() || mLayer->labeling()->type() == "simple" )
+  // pick the right mode of the layer
+  if ( mLayer->labeling() && mLayer->labeling()->type() == "rule-based" )
   {
-    mStackedWidget->setCurrentIndex( 0 );
-
+    mLabelModeComboBox->setCurrentIndex( 3 );
+  }
+  else
+  {
     // load labeling settings from layer
     QgsPalLayerSettings lyr;
     lyr.readFromLayer( mLayer );
@@ -41,41 +39,56 @@ void QgsLabelingWidget::init()
     {
       mLabelModeComboBox->setCurrentIndex( lyr.drawLabels ? 1 : 2 );
     }
-
-    mWidgetSimple->init();
-  }
-  else if ( mLayer->labeling() && mLayer->labeling()->type() == "rule-based" )
-  {
-    mStackedWidget->setCurrentIndex( 1 );
-    mWidgetRules->init();
   }
 }
 
 void QgsLabelingWidget::writeSettingsToLayer()
 {
-  if ( mLabelModeComboBox->currentIndex() < 3 )
+  if ( mLabelModeComboBox->currentIndex() == 3 )
   {
-    mWidgetSimple->writeSettingsToLayer();
+    qobject_cast<QgsRuleBasedLabelingWidget*>( mWidget )->writeSettingsToLayer();
   }
   else
   {
-    mWidgetRules->writeSettingsToLayer();
+    qobject_cast<QgsLabelingGui*>( mWidget )->writeSettingsToLayer();
   }
 }
 
 
-void QgsLabelingWidget::on_mLabelModeComboBox_currentIndexChanged( int index )
+void QgsLabelingWidget::labelModeChanged( int index )
 {
   if ( index < 3 )
   {
-    mStackedWidget->setCurrentIndex( 0 );
-    mWidgetSimple->setLabelMode( ( QgsLabelingGui::LabelMode ) index );
+    if ( QgsLabelingGui* widgetSimple = qobject_cast<QgsLabelingGui*>( mWidget ) )
+    {
+      // lighter variant - just change the mode of existing widget
+      widgetSimple->setLabelMode(( QgsLabelingGui::LabelMode ) index );
+      return;
+    }
+  }
+
+  // in general case we need to recreate the widget
+
+  if ( mWidget )
+    mStackedWidget->removeWidget( mWidget );
+
+  delete mWidget;
+  mWidget = 0;
+
+  if ( index == 3 )
+  {
+    mWidget = new QgsRuleBasedLabelingWidget( mLayer, mCanvas, this );
   }
   else
   {
-    // rule-based labeling
-    mStackedWidget->setCurrentIndex( 1 );
+    QgsLabelingGui* w = new QgsLabelingGui( mLayer, mCanvas, 0, this );
+    w->setLabelMode(( QgsLabelingGui::LabelMode ) index );
+    w->init();
+    mWidget = w;
   }
+
+  mStackedWidget->addWidget( mWidget );
+  mStackedWidget->setCurrentWidget( mWidget );
 }
 
 void QgsLabelingWidget::showEngineConfigDialog()

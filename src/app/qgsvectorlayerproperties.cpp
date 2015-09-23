@@ -463,11 +463,6 @@ void QgsVectorLayerProperties::syncToLayer( void )
   // reset fields in label dialog
   layer->label()->setFields( layer->fields() );
 
-  if ( layer->hasGeometryType() )
-  {
-    labelingDialog->init();
-  }
-
   Q_NOWARN_DEPRECATED_PUSH
   if ( mOptsPage_LabelsOld )
   {

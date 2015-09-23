@@ -33,13 +33,14 @@ class APP_EXPORT QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     Q_OBJECT
 
   public:
-    QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, QWidget* parent );
+    QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, const QgsPalLayerSettings* settings, QWidget* parent );
     ~QgsLabelingGui();
 
     QgsPalLayerSettings layerSettings();
     void writeSettingsToLayer();
 
-    enum LabelMode {
+    enum LabelMode
+    {
       NoLabels,
       Labels,
       ObstaclesOnly,
@@ -105,6 +106,7 @@ class APP_EXPORT QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
   private:
     QgsVectorLayer* mLayer;
     QgsMapCanvas* mMapCanvas;
+    const QgsPalLayerSettings* mSettings;
     LabelMode mMode;
     QFontDatabase mFontDB;
     QgsCharacterSelectorDialog* mCharDlg;
