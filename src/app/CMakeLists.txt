@@ -505,9 +505,9 @@ ENDIF (POSTGRES_FOUND)
 
 #############
 IF (ANDROID)
-  ADD_LIBRARY(${QGIS_APP_NAME} SHARED main.cpp)
+  ADD_LIBRARY(${QGIS_APP_NAME} SHARED main.cpp ${IMAGE_RCC_SRCS} ${TEST_RCC_SRCS})
 ELSE (ANDROID)
-  ADD_EXECUTABLE(${QGIS_APP_NAME} MACOSX_BUNDLE WIN32 main.cpp)
+  ADD_EXECUTABLE(${QGIS_APP_NAME} MACOSX_BUNDLE WIN32 main.cpp ${IMAGE_RCC_SRCS} ${TEST_RCC_SRCS})
 ENDIF (ANDROID)
 
 IF (NOT MSVC)
@@ -518,8 +518,8 @@ IF (NOT MSVC)
 ENDIF (NOT MSVC)
 ADD_DEFINITIONS("\"-DAPP_EXPORT=${DLLEXPORT}\"")
 
-# shared library used by tests - TODO: use it also for qgis executable?
-ADD_LIBRARY(qgis_app SHARED ${QGIS_APP_SRCS} ${QGIS_APP_MOC_SRCS} ${QGIS_APP_HDRS} ${QGIS_APP_MOC_HDRS} ${IMAGE_RCC_SRCS} ${TEST_RCC_SRCS})
+# Putting IMAGE_RCC_SRCS into qgis_app lib is cousing problems when the lib is loaded (by plugin for example) in test unit (qgis_composerpicturetest).
+ADD_LIBRARY(qgis_app SHARED ${QGIS_APP_SRCS} ${QGIS_APP_MOC_SRCS} ${QGIS_APP_HDRS} ${QGIS_APP_MOC_HDRS})
 
 TARGET_LINK_LIBRARIES(qgis_app
   ${QWT_LIBRARY}
