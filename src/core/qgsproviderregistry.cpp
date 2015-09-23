@@ -237,6 +237,7 @@ QgsProviderRegistry::~QgsProviderRegistry()
       if ( cleanupFunc )
         cleanupFunc();
     }
+    delete it->second;
     ++it;
   }
 }

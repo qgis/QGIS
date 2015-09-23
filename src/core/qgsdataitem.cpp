@@ -239,6 +239,8 @@ QgsDataItem::~QgsDataItem()
     mDeferredDelete = true;
     mFutureWatcher->waitForFinished();
   }
+
+  delete mFutureWatcher;
 }
 
 QString QgsDataItem::pathComponent( const QString &string )

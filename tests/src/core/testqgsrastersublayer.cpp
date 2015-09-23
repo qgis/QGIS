@@ -103,8 +103,6 @@ void TestQgsRasterSubLayer::initTestCase()
                                         myRasterFileInfo.completeBaseName() );
     qDebug() << "raster metadata: " << mpRasterLayer->dataProvider()->metadata();
     mReport += "raster metadata: " + mpRasterLayer->dataProvider()->metadata();
-
-    QgsMapLayerRegistry::instance()->addMapLayer( mpRasterLayer );
   }
   else
   {
@@ -115,6 +113,7 @@ void TestQgsRasterSubLayer::initTestCase()
 //runs after all tests
 void TestQgsRasterSubLayer::cleanupTestCase()
 {
+  delete mpRasterLayer;
   QgsApplication::exitQgis();
   QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );

@@ -172,6 +172,7 @@ void TestQgsDataItem::testDirItemChildren()
       }
 
     }
+    qDeleteAll( children );
 
     delete dirItem;
   }
