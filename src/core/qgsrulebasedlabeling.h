@@ -3,6 +3,8 @@
 
 #include <QStringList>
 
+#include "qgsvectorlayerlabeling.h"
+
 class QDomDocument;
 class QDomElement;
 
@@ -10,11 +12,9 @@ class QgsExpression;
 class QgsFeature;
 class QgsPalLayerSettings;
 class QgsRenderContext;
-class QgsVectorLayer;
-class QgsVectorLayerLabelProvider;
 
 
-class CORE_EXPORT QgsRuleBasedLabeling
+class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
 {
   public:
     class Rule;
@@ -49,7 +49,7 @@ class CORE_EXPORT QgsRuleBasedLabeling
          *
          * @return True if this rule is an else rule
          */
-        bool isElse() { return mElseRule; }
+        bool isElse() const { return mElseRule; }
 
         void setLabel( QString label ) { mLabel = label; }
         /**
@@ -93,13 +93,13 @@ class CORE_EXPORT QgsRuleBasedLabeling
          *
          * @return A list of rules
          */
-        RuleList& children() { return mChildren; }
+        const RuleList& children() const { return mChildren; }
         /**
          * The parent rule
          *
          * @return Parent rule
          */
-        Rule* parent() { return mParent; }
+        const Rule* parent() const { return mParent; }
 
         //! add child rule, take ownership, sets this as parent
         void appendChild( Rule* rule );
@@ -117,7 +117,7 @@ class CORE_EXPORT QgsRuleBasedLabeling
         static Rule* create( QDomElement& ruleElem );
 
         //! store labeling info to XML element
-        QDomElement save( QDomDocument& doc );
+        QDomElement save( QDomDocument& doc ) const;
 
         // evaluation
 
@@ -162,13 +162,16 @@ class CORE_EXPORT QgsRuleBasedLabeling
     ~QgsRuleBasedLabeling();
 
     Rule* rootRule() { return mRootRule; }
+    const Rule* rootRule() const { return mRootRule; }
 
     //! Create the instance from a DOM element with saved configuration
     static QgsRuleBasedLabeling* create( QDomElement& element );
 
-    //! Save configuration into a DOM element
-    QDomElement save( QDomDocument& doc );
+    // implementation of parent interface
 
+    virtual QString type() const override;
+    virtual QDomElement save( QDomDocument& doc ) const override;
+    virtual QgsVectorLayerLabelProvider* provider( QgsVectorLayer* layer ) const override;
 
   protected:
     Rule* mRootRule;

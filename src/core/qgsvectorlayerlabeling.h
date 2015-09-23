@@ -1,49 +1,48 @@
 #ifndef QGSVECTORLAYERLABELING_H
 #define QGSVECTORLAYERLABELING_H
 
+class QDomDocument;
+class QDomElement;
+class QString;
 
-class QgsPalLayerSettings;
-class QgsRuleBasedLabeling;
 class QgsVectorLayer;
 class QgsVectorLayerLabelProvider;
 
-class CORE_EXPORT QgsVectorLayerLabeling
+/**
+ * Abstract base class - its implementations define different approaches to the labeling of a vector layer.
+ *
+ * @note added in 2.12
+ */
+class CORE_EXPORT QgsAbstractVectorLayerLabeling
 {
   public:
-    enum Mode
-    {
-      //NoLabels,         //!< the layer does not participate in labeling
-      //Obstacles,        //!< no labels are shown, but layer's features act as obstacles for other labels
-      SimpleLabels,     //!< the layer is labelled with one style
-      RuleBasedLabels   //!< the layer is labelled with multiple styles defined with rules
-    };
 
-    //! Defaults to no labels
-    QgsVectorLayerLabeling();
-    ~QgsVectorLayerLabeling();
+    virtual ~QgsAbstractVectorLayerLabeling();
 
-    Mode mode() const { return mMode; }
-    void setMode( Mode m ) { mMode = m; }
+    //! Unique type string of the labeling configuration implementation
+    virtual QString type() const = 0;
 
-    //QgsPalLayerSettings simpleLabeling();
+    //! Factory for label provider implementation
+    virtual QgsVectorLayerLabelProvider* provider( QgsVectorLayer* layer ) const = 0;
 
-    //QgsPalLayerSettings* simpleLabeling() const { return mSimpleLabeling; }
-    //! Assign simple labeling configuration (takes ownership)
-    //void setSimpleLabeling( QgsPalLayerSettings* settings );
-
-    QgsRuleBasedLabeling* ruleBasedLabeling() const { return mRuleBasedLabeling; }
-    //! Assign rule-based labeling configuration (takes ownership)
-    void setRuleBasedLabeling( QgsRuleBasedLabeling* settings );
-
-    //! Factory for label provider implementation - according to the current mode
-    QgsVectorLayerLabelProvider* provider( QgsVectorLayer* layer );
-
-  protected:
-    Mode mMode;
-    //QgsPalLayerSettings* mSimpleLabeling;
-    QgsRuleBasedLabeling* mRuleBasedLabeling;
-
+    //! Return labeling configuration as XML element
+    virtual QDomElement save( QDomDocument& doc ) const = 0;
 };
 
+/**
+ * Basic implementation of the labeling interface.
+ *
+ * The configuration is kept in layer's custom properties for backward compatibility.
+ *
+ * @note added in 2.12
+ */
+class CORE_EXPORT QgsVectorLayerSimpleLabeling : public QgsAbstractVectorLayerLabeling
+{
+  public:
+
+    virtual QString type() const override;
+    virtual QgsVectorLayerLabelProvider* provider( QgsVectorLayer* layer ) const override;
+    virtual QDomElement save( QDomDocument& doc ) const override;
+};
 
 #endif // QGSVECTORLAYERLABELING_H

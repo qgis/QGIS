@@ -43,6 +43,7 @@
 #include "qgsexpression.h"
 #include "qgsdatadefined.h"
 #include "qgslabelingenginev2.h"
+#include "qgsvectorlayerlabeling.h"
 
 #include <qgslogger.h>
 #include <qgsvectorlayer.h>
@@ -3610,7 +3611,6 @@ void QgsPalLabeling::clearActiveLayer( const QString &layerID )
   Q_UNUSED( layerID );
 }
 
-#include "qgsvectorlayerlabeling.h"
 
 int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QStringList& attrNames, QgsRenderContext& ctx )
 {
@@ -3619,7 +3619,10 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QStringList& attrNames,
     return 0;
   }
 
-  QgsVectorLayerLabelProvider* lp = layer->labeling().provider( layer );
+  if ( !layer->labeling() )
+    return 0;
+
+  QgsVectorLayerLabelProvider* lp = layer->labeling()->provider( layer );
   if ( !lp )
     return 0;
 

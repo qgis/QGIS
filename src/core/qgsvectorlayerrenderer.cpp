@@ -495,28 +495,19 @@ void QgsVectorLayerRenderer::prepareLabeling( QgsVectorLayer* layer, QStringList
   {
     if ( QgsLabelingEngineV2* engine2 = mContext.labelingEngineV2() )
     {
-      mLabelProvider = layer->labeling().provider( layer );
-      if ( mLabelProvider )
+      if ( layer->labeling() )
       {
-        engine2->addProvider( mLabelProvider );
-        if ( !mLabelProvider->prepare( mContext, attributeNames ) )
+        mLabelProvider = layer->labeling()->provider( layer );
+        if ( mLabelProvider )
         {
-          engine2->removeProvider( mLabelProvider );
-          mLabelProvider = 0; // deleted by engine
+          engine2->addProvider( mLabelProvider );
+          if ( !mLabelProvider->prepare( mContext, attributeNames ) )
+          {
+            engine2->removeProvider( mLabelProvider );
+            mLabelProvider = 0; // deleted by engine
+          }
         }
       }
-
-      //mLabelProvider = layer->labeling().addProviderToEngine( layer, engine2, mContext );
-      /*if ( layer->labelsEnabled() )
-      {
-        mLabelProvider = new QgsVectorLayerLabelProvider( layer, false );
-        engine2->addProvider( mLabelProvider );
-        if ( !mLabelProvider->prepare( mContext, attributeNames ) )
-        {
-          engine2->removeProvider( mLabelProvider );
-          mLabelProvider = 0; // deleted by engine
-        }
-      }*/
     }
     return;
   }

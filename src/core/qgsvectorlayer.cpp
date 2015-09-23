@@ -132,7 +132,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     , mRendererV2( NULL )
     , mLabel( 0 )
     , mLabelOn( false )
-    , mLabeling( new QgsVectorLayerLabeling )
+    , mLabeling( new QgsVectorLayerSimpleLabeling )
     , mLabelFontNotFoundNotified( false )
     , mFeatureBlendMode( QPainter::CompositionMode_SourceOver ) // Default to normal feature blending
     , mLayerTransparency( 0 )
@@ -1232,6 +1232,15 @@ void QgsVectorLayer::enableLabels( bool on )
 bool QgsVectorLayer::hasLabelsEnabled( void ) const
 {
   return mLabelOn;
+}
+
+void QgsVectorLayer::setLabeling( QgsAbstractVectorLayerLabeling* labeling )
+{
+  if ( mLabeling == labeling )
+    return;
+
+  delete mLabeling;
+  mLabeling = labeling;
 }
 
 bool QgsVectorLayer::startEditing()

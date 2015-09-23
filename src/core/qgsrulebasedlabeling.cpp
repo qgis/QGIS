@@ -139,7 +139,7 @@ QgsRuleBasedLabeling::Rule*QgsRuleBasedLabeling::Rule::create( QDomElement& rule
   return rule;
 }
 
-QDomElement QgsRuleBasedLabeling::Rule::save( QDomDocument& doc )
+QDomElement QgsRuleBasedLabeling::Rule::save( QDomDocument& doc ) const
 {
   QDomElement ruleElem = doc.createElement( "rule" );
 
@@ -161,7 +161,7 @@ QDomElement QgsRuleBasedLabeling::Rule::save( QDomDocument& doc )
   //  ruleElem.setAttribute( "checkstate", 0 );
   //ruleElem.setAttribute( "key", mRuleKey );
 
-  for ( RuleList::iterator it = mChildren.begin(); it != mChildren.end(); ++it )
+  for ( RuleList::const_iterator it = mChildren.constBegin(); it != mChildren.constEnd(); ++it )
   {
     Rule* rule = *it;
     ruleElem.appendChild( rule->save( doc ) );
@@ -265,7 +265,12 @@ QgsRuleBasedLabeling*QgsRuleBasedLabeling::create( QDomElement& element )
   return rl;
 }
 
-QDomElement QgsRuleBasedLabeling::save( QDomDocument& doc )
+QString QgsRuleBasedLabeling::type() const
+{
+  return "rule-based";
+}
+
+QDomElement QgsRuleBasedLabeling::save( QDomDocument& doc ) const
 {
   QDomElement elem = doc.createElement( "labeling" );
   elem.setAttribute( "type", "rule-based" );
@@ -275,4 +280,9 @@ QDomElement QgsRuleBasedLabeling::save( QDomDocument& doc )
   elem.appendChild( rulesElem );
 
   return elem;
+}
+
+QgsVectorLayerLabelProvider* QgsRuleBasedLabeling::provider( QgsVectorLayer* layer ) const
+{
+  return new QgsRuleBasedLabelProvider( *this, layer, false );
 }

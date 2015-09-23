@@ -19,8 +19,10 @@
 #include <qgslabelingenginev2.h>
 #include <qgsmaplayerregistry.h>
 #include <qgsmaprenderersequentialjob.h>
+#include <qgsrulebasedlabeling.h>
 #include <qgsvectorlayer.h>
 #include <qgsvectorlayerdiagramprovider.h>
+#include <qgsvectorlayerlabeling.h>
 #include <qgsvectorlayerlabelprovider.h>
 
 class TestQgsLabelingEngineV2 : public QObject
@@ -140,8 +142,6 @@ void TestQgsLabelingEngineV2::testDiagrams()
   vl->loadDefaultStyle( res );
 }
 
-#include "qgsvectorlayerlabeling.h"
-#include "qgsrulebasedlabeling.h"
 
 void TestQgsLabelingEngineV2::testRuleBased()
 {
@@ -170,8 +170,7 @@ void TestQgsLabelingEngineV2::testRuleBased()
   s2.textColor = Qt::red;
   root->appendChild( new QgsRuleBasedLabeling::Rule( new QgsPalLayerSettings( s2 ), 0, 0, "Class = 'Jet'" ) );
 
-  vl->labeling().setMode( QgsVectorLayerLabeling::RuleBasedLabels );
-  vl->labeling().setRuleBasedLabeling( new QgsRuleBasedLabeling( root ) );
+  vl->setLabeling( new QgsRuleBasedLabeling( root ) );
 
   QgsMapRendererSequentialJob job( mapSettings );
   job.start();
@@ -182,7 +181,7 @@ void TestQgsLabelingEngineV2::testRuleBased()
 
   // test read/write rules
   QDomDocument doc, doc2, doc3;
-  QDomElement e = vl->labeling().ruleBasedLabeling()->save( doc );
+  QDomElement e = vl->labeling()->save( doc );
   doc.appendChild( e );
   // read saved rules
   doc2.setContent( doc.toString() );
@@ -194,7 +193,7 @@ void TestQgsLabelingEngineV2::testRuleBased()
   doc3.appendChild( e3 );
   QCOMPARE( doc.toString(), doc3.toString() );
 
-  vl->labeling().setMode( QgsVectorLayerLabeling::SimpleLabels );
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling );
 
   /*
   QPainter p( &img );

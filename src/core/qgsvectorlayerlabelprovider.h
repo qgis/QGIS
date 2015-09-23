@@ -23,7 +23,7 @@ class QgsAbstractFeatureSource;
 /**
  * @brief The QgsVectorLayerLabelProvider class implements a label provider
  * for vector layers. Parameters for the labeling are taken from the layer's
- * custom properties.
+ * custom properties or from the given settings.
  *
  * @note added in QGIS 2.12
  */
