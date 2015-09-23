@@ -37,22 +37,26 @@ void QgsWelcomePageItemDelegate::paint( QPainter* painter, const QStyleOptionVie
 
   QTextDocument doc;
   QAbstractTextDocumentLayout::PaintContext ctx;
+  QStyleOptionViewItemV4 optionV4 = option;
 
   QColor color;
   if ( option.state & QStyle::State_Selected )
   {
     color = QColor( 255, 255, 255, 60 );
+    ctx.palette.setColor( QPalette::Text, optionV4.palette.color( QPalette::Active, QPalette::HighlightedText ) );
+
     QStyle *style = QApplication::style();
     style->drawPrimitive( QStyle::PE_PanelItemViewItem, &option, painter, NULL );
   }
   else if ( option.state & QStyle::State_Enabled )
   {
     color = QColor( 100, 100, 100, 30 );
+    ctx.palette.setColor( QPalette::Text, optionV4.palette.color( QPalette::Active, QPalette::Text ) );
   }
   else
   {
     color = QColor( 100, 100, 100, 30 );
-    ctx.palette.setColor( QPalette::Text, QColor( 150, 150, 150, 255 ) );
+    ctx.palette.setColor( QPalette::Text, optionV4.palette.color( QPalette::Disabled, QPalette::Text ) );
   }
 
   painter->setRenderHint( QPainter::Antialiasing );
