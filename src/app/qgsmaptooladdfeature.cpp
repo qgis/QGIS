@@ -35,8 +35,9 @@
 #include <QMouseEvent>
 #include <QSettings>
 
-QgsMapToolAddFeature::QgsMapToolAddFeature( QgsMapCanvas* canvas )
-    : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget() )
+QgsMapToolAddFeature::QgsMapToolAddFeature( QgsMapCanvas* canvas, CaptureMode mode )
+    : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), mode )
+    , mCheckGeometryType( true )
 {
   mToolName = tr( "Add feature" );
 }
@@ -100,7 +101,7 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
       return;
 
     //check we only use this tool for point/multipoint layers
-    if ( vlayer->geometryType() != QGis::Point )
+    if ( vlayer->geometryType() != QGis::Point && mCheckGeometryType )
     {
       emit messageEmitted( tr( "Wrong editing tool, cannot apply the 'capture point' tool on this vector layer" ), QgsMessageBar::WARNING );
       return;
@@ -137,6 +138,11 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
       {
         g = QgsGeometry::fromMultiPoint( QgsMultiPoint() << savePoint );
       }
+      else
+      {
+        // if layer supports more types (mCheckGeometryType is false)
+        g = QgsGeometry::fromPoint( savePoint );
+      }
 
       f.setGeometry( g );
       f.setValid( true );
@@ -151,14 +157,14 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
   else if ( mode() == CaptureLine || mode() == CapturePolygon )
   {
     //check we only use the line tool for line/multiline layers
-    if ( mode() == CaptureLine && vlayer->geometryType() != QGis::Line )
+    if ( mode() == CaptureLine && vlayer->geometryType() != QGis::Line && mCheckGeometryType )
     {
       emit messageEmitted( tr( "Wrong editing tool, cannot apply the 'capture line' tool on this vector layer" ), QgsMessageBar::WARNING );
       return;
     }
 
     //check we only use the polygon tool for polygon/multipolygon layers
-    if ( mode() == CapturePolygon && vlayer->geometryType() != QGis::Polygon )
+    if ( mode() == CapturePolygon && vlayer->geometryType() != QGis::Polygon && mCheckGeometryType )
     {
       emit messageEmitted( tr( "Wrong editing tool, cannot apply the 'capture polygon' tool on this vector layer" ), QgsMessageBar::WARNING );
       return;
