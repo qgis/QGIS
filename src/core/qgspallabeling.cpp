@@ -534,10 +534,10 @@ static Qt::PenJoinStyle _decodePenJoinStyle( const QString& str )
   return Qt::BevelJoin; // "Bevel"
 }
 
-void QgsPalLayerSettings::readDataDefinedPropertyMap( QgsVectorLayer* layer,
+void QgsPalLayerSettings::readDataDefinedPropertyMap( QgsVectorLayer* layer, QDomElement* parentElem,
     QMap < QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* > & propertyMap )
 {
-  if ( !layer )
+  if ( !layer && !parentElem )
   {
     return;
   }
@@ -546,14 +546,31 @@ void QgsPalLayerSettings::readDataDefinedPropertyMap( QgsVectorLayer* layer,
   while ( i.hasNext() )
   {
     i.next();
-    readDataDefinedProperty( layer, i.key(), propertyMap );
+    if ( layer )
+    {
+      // reading from layer's custom properties (old way)
+      readDataDefinedProperty( layer, i.key(), propertyMap );
+    }
+    else if ( parentElem )
+    {
+      // reading from XML (new way)
+      QDomElement e = parentElem->firstChildElement( i.value().first );
+      if ( !e.isNull() )
+      {
+        QgsDataDefined* dd = new QgsDataDefined();
+        if ( dd->setFromXmlElement( e ) )
+          propertyMap.insert( i.key(), dd );
+        else
+          delete dd;
+      }
+    }
   }
 }
 
-void QgsPalLayerSettings::writeDataDefinedPropertyMap( QgsVectorLayer* layer,
+void QgsPalLayerSettings::writeDataDefinedPropertyMap( QgsVectorLayer* layer, QDomElement* parentElem,
     const QMap < QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* > & propertyMap )
 {
-  if ( !layer )
+  if ( !layer && !parentElem )
   {
     return;
   }
@@ -594,20 +611,36 @@ void QgsPalLayerSettings::writeDataDefinedPropertyMap( QgsVectorLayer* layer,
       }
     }
 
-    if ( propertyValue.isValid() )
+    if ( layer )
     {
-      layer->setCustomProperty( newPropertyName, propertyValue );
-    }
-    else
-    {
-      // remove unused properties
-      layer->removeCustomProperty( newPropertyName );
-    }
+      // writing to layer's custom properties (old method)
 
-    if ( layer->customProperty( newPropertyName, QVariant() ).isValid() && i.value().second > -1 )
+      if ( propertyValue.isValid() )
+      {
+        layer->setCustomProperty( newPropertyName, propertyValue );
+      }
+      else
+      {
+        // remove unused properties
+        layer->removeCustomProperty( newPropertyName );
+      }
+
+      if ( layer->customProperty( newPropertyName, QVariant() ).isValid() && i.value().second > -1 )
+      {
+        // remove old-style field index-based property, if still present
+        layer->removeCustomProperty( QString( "labeling/dataDefinedProperty" ) + QString::number( i.value().second ) );
+      }
+    }
+    else if ( parentElem )
     {
-      // remove old-style field index-based property, if still present
-      layer->removeCustomProperty( QString( "labeling/dataDefinedProperty" ) + QString::number( i.value().second ) );
+      // writing to XML document
+      QgsDataDefined* dd = it.value();
+      if ( dd )
+      {
+        QDomDocument doc = parentElem->ownerDocument();
+        QDomElement e = dd->toXmlElement( doc, i.value().first );
+        parentElem->appendChild( e );
+      }
     }
   }
 }
@@ -927,7 +960,7 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   obstacleFactor = layer->customProperty( "labeling/obstacleFactor", QVariant( 1.0 ) ).toDouble();
   obstacleType = ( ObstacleType )layer->customProperty( "labeling/obstacleType", QVariant( PolygonInterior ) ).toUInt();
 
-  readDataDefinedPropertyMap( layer, dataDefinedProperties );
+  readDataDefinedPropertyMap( layer, 0, dataDefinedProperties );
 }
 
 void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
@@ -949,7 +982,6 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling/fontSizeMapUnitMaxScale", fontSizeMapUnitScale.maxScale );
   layer->setCustomProperty( "labeling/fontWeight", textFont.weight() );
   layer->setCustomProperty( "labeling/fontItalic", textFont.italic() );
-  layer->setCustomProperty( "labeling/fontBold", textFont.bold() );
   layer->setCustomProperty( "labeling/fontStrikeout", textFont.strikeOut() );
   layer->setCustomProperty( "labeling/fontUnderline", textFont.underline() );
   _writeColor( layer, "labeling/textColor", textColor );
@@ -1081,7 +1113,378 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling/obstacleFactor", obstacleFactor );
   layer->setCustomProperty( "labeling/obstacleType", ( unsigned int )obstacleType );
 
-  writeDataDefinedPropertyMap( layer, dataDefinedProperties );
+  writeDataDefinedPropertyMap( layer, 0, dataDefinedProperties );
+}
+
+
+
+void QgsPalLayerSettings::readXml( QDomElement& elem )
+{
+  enabled = true;
+  drawLabels = true;
+
+  // text style
+  QDomElement textStyleElem = elem.firstChildElement( "text-style" );
+  fieldName = textStyleElem.attribute( "fieldName" );
+  isExpression = textStyleElem.attribute( "isExpression" ).toInt();
+  QFont appFont = QApplication::font();
+  mTextFontFamily = textStyleElem.attribute( "fontFamily", appFont.family() );
+  QString fontFamily = mTextFontFamily;
+  if ( mTextFontFamily != appFont.family() && !QgsFontUtils::fontFamilyMatchOnSystem( mTextFontFamily ) )
+  {
+    // trigger to notify user about font family substitution (signal emitted in QgsVectorLayer::prepareLabelingAndDiagrams)
+    mTextFontFound = false;
+
+    // TODO: update when pref for how to resolve missing family (use matching algorithm or just default font) is implemented
+    // currently only defaults to matching algorithm for resolving [foundry], if a font of similar family is found (default for QFont)
+
+    // for now, do not use matching algorithm for substitution if family not found, substitute default instead
+    fontFamily = appFont.family();
+  }
+
+  double fontSize = textStyleElem.attribute( "fontSize" ).toDouble();
+  fontSizeInMapUnits = textStyleElem.attribute( "fontSizeInMapUnits" ).toInt();
+  fontSizeMapUnitScale.minScale = textStyleElem.attribute( "fontSizeMapUnitMinScale", "0" ).toDouble();
+  fontSizeMapUnitScale.maxScale = textStyleElem.attribute( "fontSizeMapUnitMaxScale", "0" ).toDouble();
+  int fontWeight = textStyleElem.attribute( "fontWeight" ).toInt();
+  bool fontItalic = textStyleElem.attribute( "fontItalic" ).toInt();
+  textFont = QFont( fontFamily, fontSize, fontWeight, fontItalic );
+  textFont.setPointSizeF( fontSize ); //double precision needed because of map units
+  textNamedStyle = QgsFontUtils::translateNamedStyle( textStyleElem.attribute( "namedStyle" ) );
+  QgsFontUtils::updateFontViaStyle( textFont, textNamedStyle ); // must come after textFont.setPointSizeF()
+  textFont.setCapitalization(( QFont::Capitalization )textStyleElem.attribute( "fontCapitals", "0" ).toUInt() );
+  textFont.setUnderline( textStyleElem.attribute( "fontUnderline" ).toInt() );
+  textFont.setStrikeOut( textStyleElem.attribute( "fontStrikeout" ).toInt() );
+  textFont.setLetterSpacing( QFont::AbsoluteSpacing, textStyleElem.attribute( "fontLetterSpacing", "0" ).toDouble() );
+  textFont.setWordSpacing( textStyleElem.attribute( "fontWordSpacing", "0" ).toDouble() );
+  textColor = QgsSymbolLayerV2Utils::decodeColor( textStyleElem.attribute( "textColor", QgsSymbolLayerV2Utils::encodeColor( Qt::black ) ) );
+  textTransp = textStyleElem.attribute( "textTransp" ).toInt();
+  blendMode = QgsMapRenderer::getCompositionMode(
+                ( QgsMapRenderer::BlendMode )textStyleElem.attribute( "blendMode", QString::number( QgsMapRenderer::BlendNormal ) ).toUInt() );
+  previewBkgrdColor = QColor( textStyleElem.attribute( "previewBkgrdColor", "#ffffff" ) );
+
+
+  // text formatting
+  QDomElement textFormatElem = elem.firstChildElement( "text-format" );
+  wrapChar = textFormatElem.attribute( "wrapChar" );
+  multilineHeight = textFormatElem.attribute( "multilineHeight", "1" ).toDouble();
+  multilineAlign = ( MultiLineAlign )textFormatElem.attribute( "multilineAlign", QString::number( MultiLeft ) ).toUInt();
+  addDirectionSymbol = textFormatElem.attribute( "addDirectionSymbol" ).toInt();
+  leftDirectionSymbol = textFormatElem.attribute( "leftDirectionSymbol", "<" );
+  rightDirectionSymbol = textFormatElem.attribute( "rightDirectionSymbol", ">" );
+  reverseDirectionSymbol = textFormatElem.attribute( "reverseDirectionSymbol" ).toInt();
+  placeDirectionSymbol = ( DirectionSymbols )textFormatElem.attribute( "placeDirectionSymbol", QString::number( SymbolLeftRight ) ).toUInt();
+  formatNumbers = textFormatElem.attribute( "formatNumbers" ).toInt();
+  decimals = textFormatElem.attribute( "decimals" ).toInt();
+  plusSign = textFormatElem.attribute( "plussign" ).toInt();
+
+  // text buffer
+  QDomElement textBufferElem = elem.firstChildElement( "text-buffer" );
+  double bufSize = textBufferElem.attribute( "bufferSize", "0" ).toDouble();
+
+  // fix for buffer being keyed off of just its size in the past (<2.0)
+  QVariant drawBuffer = textBufferElem.attribute( "bufferDraw" );
+  if ( drawBuffer.isValid() )
+  {
+    bufferDraw = drawBuffer.toBool();
+    bufferSize = bufSize;
+  }
+  else if ( bufSize != 0.0 )
+  {
+    bufferDraw = true;
+    bufferSize = bufSize;
+  }
+  else
+  {
+    // keep bufferSize at new 1.0 default
+    bufferDraw = false;
+  }
+
+  bufferSizeInMapUnits = textBufferElem.attribute( "bufferSizeInMapUnits" ).toInt();
+  bufferSizeMapUnitScale.minScale = textBufferElem.attribute( "bufferSizeMapUnitMinScale", "0" ).toDouble();
+  bufferSizeMapUnitScale.maxScale = textBufferElem.attribute( "bufferSizeMapUnitMaxScale", "0" ).toDouble();
+  bufferColor = QgsSymbolLayerV2Utils::decodeColor( textBufferElem.attribute( "bufferColor", QgsSymbolLayerV2Utils::encodeColor( Qt::white ) ) );
+  bufferTransp = textBufferElem.attribute( "bufferTransp" ).toInt();
+  bufferBlendMode = QgsMapRenderer::getCompositionMode(
+                      ( QgsMapRenderer::BlendMode )textBufferElem.attribute( "bufferBlendMode", QString::number( QgsMapRenderer::BlendNormal ) ).toUInt() );
+  bufferJoinStyle = ( Qt::PenJoinStyle )textBufferElem.attribute( "bufferJoinStyle", QString::number( Qt::BevelJoin ) ).toUInt();
+  bufferNoFill = textBufferElem.attribute( "bufferNoFill", "0" ).toInt();
+
+  // background
+  QDomElement backgroundElem = elem.firstChildElement( "background" );
+  shapeDraw = backgroundElem.attribute( "shapeDraw", "0" ).toInt();
+  shapeType = ( ShapeType )backgroundElem.attribute( "shapeType", QString::number( ShapeRectangle ) ).toUInt();
+  shapeSVGFile = backgroundElem.attribute( "shapeSVGFile" );
+  shapeSizeType = ( SizeType )backgroundElem.attribute( "shapeSizeType", QString::number( SizeBuffer ) ).toUInt();
+  shapeSize = QPointF( backgroundElem.attribute( "shapeSizeX", "0" ).toDouble(),
+                       backgroundElem.attribute( "shapeSizeY", "0" ).toDouble() );
+  shapeSizeUnits = ( SizeUnit )backgroundElem.attribute( "shapeSizeUnits", QString::number( MM ) ).toUInt();
+  shapeSizeMapUnitScale.minScale = backgroundElem.attribute( "shapeSizeMapUnitMinScale", "0" ).toDouble();
+  shapeSizeMapUnitScale.maxScale = backgroundElem.attribute( "shapeSizeMapUnitMaxScale", "0" ).toDouble();
+  shapeRotationType = ( RotationType )backgroundElem.attribute( "shapeRotationType", QString::number( RotationSync ) ).toUInt();
+  shapeRotation = backgroundElem.attribute( "shapeRotation", "0" ).toDouble();
+  shapeOffset = QPointF( backgroundElem.attribute( "shapeOffsetX", "0" ).toDouble(),
+                         backgroundElem.attribute( "shapeOffsetY", "0" ).toDouble() );
+  shapeOffsetUnits = ( SizeUnit )backgroundElem.attribute( "shapeOffsetUnits", QString::number( MM ) ).toUInt();
+  shapeOffsetMapUnitScale.minScale = backgroundElem.attribute( "shapeOffsetMapUnitMinScale", "0" ).toDouble();
+  shapeOffsetMapUnitScale.maxScale = backgroundElem.attribute( "shapeOffsetMapUnitMaxScale", "0" ).toDouble();
+  shapeRadii = QPointF( backgroundElem.attribute( "shapeRadiiX", "0" ).toDouble(),
+                        backgroundElem.attribute( "shapeRadiiY", "0" ).toDouble() );
+  shapeRadiiUnits = ( SizeUnit )backgroundElem.attribute( "shapeRadiiUnits", QString::number( MM ) ).toUInt();
+  shapeRadiiMapUnitScale.minScale = backgroundElem.attribute( "shapeRaddiMapUnitMinScale", "0" ).toDouble();
+  shapeRadiiMapUnitScale.maxScale = backgroundElem.attribute( "shapeRaddiMapUnitMaxScale", "0" ).toDouble();
+  shapeFillColor = QgsSymbolLayerV2Utils::decodeColor( backgroundElem.attribute( "shapeFillColor", QgsSymbolLayerV2Utils::encodeColor( Qt::white ) ) );
+  shapeBorderColor = QgsSymbolLayerV2Utils::decodeColor( backgroundElem.attribute( "shapeBorderColor", QgsSymbolLayerV2Utils::encodeColor( Qt::darkGray ) ) );
+  shapeBorderWidth = backgroundElem.attribute( "shapeBorderWidth", "0" ).toDouble();
+  shapeBorderWidthUnits = ( SizeUnit )backgroundElem.attribute( "shapeBorderWidthUnits", QString::number( MM ) ).toUInt();
+  shapeBorderWidthMapUnitScale.minScale = backgroundElem.attribute( "shapeBorderWidthMapUnitMinScale", "0" ).toDouble();
+  shapeBorderWidthMapUnitScale.maxScale = backgroundElem.attribute( "shapeBorderWidthMapUnitMaxScale", "0" ).toDouble();
+  shapeJoinStyle = ( Qt::PenJoinStyle )backgroundElem.attribute( "shapeJoinStyle", QString::number( Qt::BevelJoin ) ).toUInt();
+  shapeTransparency = backgroundElem.attribute( "shapeTransparency", "0" ).toInt();
+  shapeBlendMode = QgsMapRenderer::getCompositionMode(
+                     ( QgsMapRenderer::BlendMode )backgroundElem.attribute( "shapeBlendMode", QString::number( QgsMapRenderer::BlendNormal ) ).toUInt() );
+
+  // drop shadow
+  QDomElement shadowElem = elem.firstChildElement( "shadow" );
+  shadowDraw = shadowElem.attribute( "shadowDraw", "0" ).toInt();
+  shadowUnder = ( ShadowType )shadowElem.attribute( "shadowUnder", QString::number( ShadowLowest ) ).toUInt();//ShadowLowest;
+  shadowOffsetAngle = shadowElem.attribute( "shadowOffsetAngle", "135" ).toInt();
+  shadowOffsetDist = shadowElem.attribute( "shadowOffsetDist", "1" ).toDouble();
+  shadowOffsetUnits = ( SizeUnit )shadowElem.attribute( "shadowOffsetUnits", QString::number( MM ) ).toUInt();
+  shadowOffsetMapUnitScale.minScale = shadowElem.attribute( "shadowOffsetMapUnitMinScale", "0" ).toDouble();
+  shadowOffsetMapUnitScale.maxScale = shadowElem.attribute( "shadowOffsetMapUnitMaxScale", "0" ).toDouble();
+  shadowOffsetGlobal = shadowElem.attribute( "shadowOffsetGlobal", "1" ).toInt();
+  shadowRadius = shadowElem.attribute( "shadowRadius", "1.5" ).toDouble();
+  shadowRadiusUnits = ( SizeUnit )shadowElem.attribute( "shadowRadiusUnits", QString::number( MM ) ).toUInt();
+  shadowRadiusMapUnitScale.minScale = shadowElem.attribute( "shadowRadiusMapUnitMinScale", "0" ).toDouble();
+  shadowRadiusMapUnitScale.maxScale = shadowElem.attribute( "shadowRadiusMapUnitMaxScale", "0" ).toDouble();
+  shadowRadiusAlphaOnly = shadowElem.attribute( "shadowRadiusAlphaOnly", "0" ).toInt();
+  shadowTransparency = shadowElem.attribute( "shadowTransparency", "30" ).toInt();
+  shadowScale = shadowElem.attribute( "shadowScale", "100" ).toInt();
+  shadowColor = QgsSymbolLayerV2Utils::decodeColor( shadowElem.attribute( "shadowColor", QgsSymbolLayerV2Utils::encodeColor( Qt::black ) ) );
+  shadowBlendMode = QgsMapRenderer::getCompositionMode(
+                      ( QgsMapRenderer::BlendMode )shadowElem.attribute( "shadowBlendMode", QString::number( QgsMapRenderer::BlendMultiply ) ).toUInt() );
+
+  // placement
+  QDomElement placementElem = elem.firstChildElement( "placement" );
+  placement = ( Placement )placementElem.attribute( "placement" ).toInt();
+  placementFlags = placementElem.attribute( "placementFlags" ).toUInt();
+  centroidWhole = placementElem.attribute( "centroidWhole", "0" ).toInt();
+  centroidInside = placementElem.attribute( "centroidInside", "0" ).toInt();
+  fitInPolygonOnly = placementElem.attribute( "fitInPolygonOnly", "0" ).toInt();
+  dist = placementElem.attribute( "dist" ).toDouble();
+  distInMapUnits = placementElem.attribute( "distInMapUnits" ).toInt();
+  distMapUnitScale.minScale = placementElem.attribute( "distMapUnitMinScale", "0" ).toDouble();
+  distMapUnitScale.maxScale = placementElem.attribute( "distMapUnitMaxScale", "0" ).toDouble();
+  quadOffset = ( QuadrantPosition )placementElem.attribute( "quadOffset", QString::number( QuadrantOver ) ).toUInt();
+  xOffset = placementElem.attribute( "xOffset", "0" ).toDouble();
+  yOffset = placementElem.attribute( "yOffset", "0" ).toDouble();
+  labelOffsetInMapUnits = placementElem.attribute( "labelOffsetInMapUnits", "1" ).toInt();
+  labelOffsetMapUnitScale.minScale = placementElem.attribute( "labelOffsetMapUnitMinScale", "0" ).toDouble();
+  labelOffsetMapUnitScale.maxScale = placementElem.attribute( "labelOffsetMapUnitMaxScale", "0" ).toDouble();
+  angleOffset = placementElem.attribute( "angleOffset", "0" ).toDouble();
+  preserveRotation = placementElem.attribute( "preserveRotation", "1" ).toInt();
+  maxCurvedCharAngleIn = placementElem.attribute( "maxCurvedCharAngleIn", "20" ).toDouble();
+  maxCurvedCharAngleOut = placementElem.attribute( "maxCurvedCharAngleOut", "-20" ).toDouble();
+  priority = placementElem.attribute( "priority" ).toInt();
+  repeatDistance = placementElem.attribute( "repeatDistance", "0" ).toDouble();
+  repeatDistanceUnit = ( SizeUnit ) placementElem.attribute( "repeatDistanceUnit", QString::number( MM ) ).toUInt();
+  repeatDistanceMapUnitScale.minScale = placementElem.attribute( "repeatDistanceMapUnitMinScale", "0" ).toDouble();
+  repeatDistanceMapUnitScale.maxScale = placementElem.attribute( "repeatDistanceMapUnitMaxScale", "0" ).toDouble();
+
+  // rendering
+  QDomElement renderingElem = elem.firstChildElement( "rendering" );
+  scaleMin = renderingElem.attribute( "scaleMin", "0" ).toInt();
+  scaleMax = renderingElem.attribute( "scaleMax", "0" ).toInt();
+  scaleVisibility = renderingElem.attribute( "scaleVisibility" ).toInt();
+
+  fontLimitPixelSize = renderingElem.attribute( "fontLimitPixelSize", "0" ).toInt();
+  fontMinPixelSize = renderingElem.attribute( "fontMinPixelSize", "0" ).toInt();
+  fontMaxPixelSize = renderingElem.attribute( "fontMaxPixelSize", "10000" ).toInt();
+  displayAll = renderingElem.attribute( "displayAll", "0" ).toInt();
+  upsidedownLabels = ( UpsideDownLabels )renderingElem.attribute( "upsidedownLabels", QString::number( Upright ) ).toUInt();
+
+  labelPerPart = renderingElem.attribute( "labelPerPart" ).toInt();
+  mergeLines = renderingElem.attribute( "mergeLines" ).toInt();
+  minFeatureSize = renderingElem.attribute( "minFeatureSize" ).toDouble();
+  limitNumLabels = renderingElem.attribute( "limitNumLabels", "0" ).toInt();
+  maxNumLabels = renderingElem.attribute( "maxNumLabels", "2000" ).toInt();
+  obstacle = renderingElem.attribute( "obstacle", "1" ).toInt();
+  obstacleFactor = renderingElem.attribute( "obstacleFactor", "1" ).toDouble();
+  obstacleType = ( ObstacleType )renderingElem.attribute( "obstacleType", QString::number( PolygonInterior ) ).toUInt();
+
+  QDomElement ddElem = elem.firstChildElement( "data-defined" );
+  readDataDefinedPropertyMap( 0, &ddElem, dataDefinedProperties );
+}
+
+
+
+QDomElement QgsPalLayerSettings::writeXml( QDomDocument& doc )
+{
+  // we assume (enabled == true && drawLabels == true) so those are not saved
+
+  // text style
+  QDomElement textStyleElem = doc.createElement( "text-style" );
+  textStyleElem.setAttribute( "fieldName", fieldName );
+  textStyleElem.setAttribute( "isExpression", isExpression );
+  textStyleElem.setAttribute( "fontFamily", textFont.family() );
+  textStyleElem.setAttribute( "namedStyle", QgsFontUtils::untranslateNamedStyle( textNamedStyle ) );
+  textStyleElem.setAttribute( "fontSize", textFont.pointSizeF() );
+  textStyleElem.setAttribute( "fontSizeInMapUnits", fontSizeInMapUnits );
+  textStyleElem.setAttribute( "fontSizeMapUnitMinScale", fontSizeMapUnitScale.minScale );
+  textStyleElem.setAttribute( "fontSizeMapUnitMaxScale", fontSizeMapUnitScale.maxScale );
+  textStyleElem.setAttribute( "fontWeight", textFont.weight() );
+  textStyleElem.setAttribute( "fontItalic", textFont.italic() );
+  textStyleElem.setAttribute( "fontStrikeout", textFont.strikeOut() );
+  textStyleElem.setAttribute( "fontUnderline", textFont.underline() );
+  textStyleElem.setAttribute( "textColor", QgsSymbolLayerV2Utils::encodeColor( textColor ) );
+  textStyleElem.setAttribute( "fontCapitals", ( unsigned int )textFont.capitalization() );
+  textStyleElem.setAttribute( "fontLetterSpacing", textFont.letterSpacing() );
+  textStyleElem.setAttribute( "fontWordSpacing", textFont.wordSpacing() );
+  textStyleElem.setAttribute( "textTransp", textTransp );
+  textStyleElem.setAttribute( "blendMode", QgsMapRenderer::getBlendModeEnum( blendMode ) );
+  textStyleElem.setAttribute( "previewBkgrdColor", previewBkgrdColor.name() );
+
+  // text formatting
+  QDomElement textFormatElem = doc.createElement( "text-format" );
+  textFormatElem.setAttribute( "wrapChar", wrapChar );
+  textFormatElem.setAttribute( "multilineHeight", multilineHeight );
+  textFormatElem.setAttribute( "multilineAlign", ( unsigned int )multilineAlign );
+  textFormatElem.setAttribute( "addDirectionSymbol", addDirectionSymbol );
+  textFormatElem.setAttribute( "leftDirectionSymbol", leftDirectionSymbol );
+  textFormatElem.setAttribute( "rightDirectionSymbol", rightDirectionSymbol );
+  textFormatElem.setAttribute( "reverseDirectionSymbol", reverseDirectionSymbol );
+  textFormatElem.setAttribute( "placeDirectionSymbol", ( unsigned int )placeDirectionSymbol );
+  textFormatElem.setAttribute( "formatNumbers", formatNumbers );
+  textFormatElem.setAttribute( "decimals", decimals );
+  textFormatElem.setAttribute( "plussign", plusSign );
+
+  // text buffer
+  QDomElement textBufferElem = doc.createElement( "text-buffer" );
+  textBufferElem.setAttribute( "bufferDraw", bufferDraw );
+  textBufferElem.setAttribute( "bufferSize", bufferSize );
+  textBufferElem.setAttribute( "bufferSizeInMapUnits", bufferSizeInMapUnits );
+  textBufferElem.setAttribute( "bufferSizeMapUnitMinScale", bufferSizeMapUnitScale.minScale );
+  textBufferElem.setAttribute( "bufferSizeMapUnitMaxScale", bufferSizeMapUnitScale.maxScale );
+  textBufferElem.setAttribute( "bufferColor", QgsSymbolLayerV2Utils::encodeColor( bufferColor ) );
+  textBufferElem.setAttribute( "bufferNoFill", bufferNoFill );
+  textBufferElem.setAttribute( "bufferTransp", bufferTransp );
+  textBufferElem.setAttribute( "bufferJoinStyle", ( unsigned int )bufferJoinStyle );
+  textBufferElem.setAttribute( "bufferBlendMode", QgsMapRenderer::getBlendModeEnum( bufferBlendMode ) );
+
+  // background
+  QDomElement backgroundElem = doc.createElement( "background" );
+  backgroundElem.setAttribute( "shapeDraw", shapeDraw );
+  backgroundElem.setAttribute( "shapeType", ( unsigned int )shapeType );
+  backgroundElem.setAttribute( "shapeSVGFile", shapeSVGFile );
+  backgroundElem.setAttribute( "shapeSizeType", ( unsigned int )shapeSizeType );
+  backgroundElem.setAttribute( "shapeSizeX", shapeSize.x() );
+  backgroundElem.setAttribute( "shapeSizeY", shapeSize.y() );
+  backgroundElem.setAttribute( "shapeSizeUnits", ( unsigned int )shapeSizeUnits );
+  backgroundElem.setAttribute( "shapeSizeMapUnitMinScale", shapeSizeMapUnitScale.minScale );
+  backgroundElem.setAttribute( "shapeSizeMapUnitMaxScale", shapeSizeMapUnitScale.maxScale );
+  backgroundElem.setAttribute( "shapeRotationType", ( unsigned int )shapeRotationType );
+  backgroundElem.setAttribute( "shapeRotation", shapeRotation );
+  backgroundElem.setAttribute( "shapeOffsetX", shapeOffset.x() );
+  backgroundElem.setAttribute( "shapeOffsetY", shapeOffset.y() );
+  backgroundElem.setAttribute( "shapeOffsetUnits", ( unsigned int )shapeOffsetUnits );
+  backgroundElem.setAttribute( "shapeOffsetMapUnitMinScale", shapeOffsetMapUnitScale.minScale );
+  backgroundElem.setAttribute( "shapeOffsetMapUnitMaxScale", shapeOffsetMapUnitScale.maxScale );
+  backgroundElem.setAttribute( "shapeRadiiX", shapeRadii.x() );
+  backgroundElem.setAttribute( "shapeRadiiY", shapeRadii.y() );
+  backgroundElem.setAttribute( "shapeRadiiUnits", ( unsigned int )shapeRadiiUnits );
+  backgroundElem.setAttribute( "shapeRadiiMapUnitMinScale", shapeRadiiMapUnitScale.minScale );
+  backgroundElem.setAttribute( "shapeRadiiMapUnitMaxScale", shapeRadiiMapUnitScale.maxScale );
+  backgroundElem.setAttribute( "shapeFillColor", QgsSymbolLayerV2Utils::encodeColor( shapeFillColor ) );
+  backgroundElem.setAttribute( "shapeBorderColor", QgsSymbolLayerV2Utils::encodeColor( shapeBorderColor ) );
+  backgroundElem.setAttribute( "shapeBorderWidth", shapeBorderWidth );
+  backgroundElem.setAttribute( "shapeBorderWidthUnits", ( unsigned int )shapeBorderWidthUnits );
+  backgroundElem.setAttribute( "shapeBorderWidthMapUnitMinScale", shapeBorderWidthMapUnitScale.minScale );
+  backgroundElem.setAttribute( "shapeBorderWidthMapUnitMaxScale", shapeBorderWidthMapUnitScale.maxScale );
+  backgroundElem.setAttribute( "shapeJoinStyle", ( unsigned int )shapeJoinStyle );
+  backgroundElem.setAttribute( "shapeTransparency", shapeTransparency );
+  backgroundElem.setAttribute( "shapeBlendMode", QgsMapRenderer::getBlendModeEnum( shapeBlendMode ) );
+
+  // drop shadow
+  QDomElement shadowElem = doc.createElement( "shadow" );
+  shadowElem.setAttribute( "shadowDraw", shadowDraw );
+  shadowElem.setAttribute( "shadowUnder", ( unsigned int )shadowUnder );
+  shadowElem.setAttribute( "shadowOffsetAngle", shadowOffsetAngle );
+  shadowElem.setAttribute( "shadowOffsetDist", shadowOffsetDist );
+  shadowElem.setAttribute( "shadowOffsetUnits", ( unsigned int )shadowOffsetUnits );
+  shadowElem.setAttribute( "shadowOffsetMapUnitMinScale", shadowOffsetMapUnitScale.minScale );
+  shadowElem.setAttribute( "shadowOffsetMapUnitMaxScale", shadowOffsetMapUnitScale.maxScale );
+  shadowElem.setAttribute( "shadowOffsetGlobal", shadowOffsetGlobal );
+  shadowElem.setAttribute( "shadowRadius", shadowRadius );
+  shadowElem.setAttribute( "shadowRadiusUnits", ( unsigned int )shadowRadiusUnits );
+  shadowElem.setAttribute( "shadowRadiusMapUnitMinScale", shadowRadiusMapUnitScale.minScale );
+  shadowElem.setAttribute( "shadowRadiusMapUnitMaxScale", shadowRadiusMapUnitScale.maxScale );
+  shadowElem.setAttribute( "shadowRadiusAlphaOnly", shadowRadiusAlphaOnly );
+  shadowElem.setAttribute( "shadowTransparency", shadowTransparency );
+  shadowElem.setAttribute( "shadowScale", shadowScale );
+  shadowElem.setAttribute( "shadowColor", QgsSymbolLayerV2Utils::encodeColor( shadowColor ) );
+  shadowElem.setAttribute( "shadowBlendMode", QgsMapRenderer::getBlendModeEnum( shadowBlendMode ) );
+
+  // placement
+  QDomElement placementElem = doc.createElement( "placement" );
+  placementElem.setAttribute( "placement", placement );
+  placementElem.setAttribute( "placementFlags", ( unsigned int )placementFlags );
+  placementElem.setAttribute( "centroidWhole", centroidWhole );
+  placementElem.setAttribute( "centroidInside", centroidInside );
+  placementElem.setAttribute( "fitInPolygonOnly", fitInPolygonOnly );
+  placementElem.setAttribute( "dist", dist );
+  placementElem.setAttribute( "distInMapUnits", distInMapUnits );
+  placementElem.setAttribute( "distMapUnitMinScale", distMapUnitScale.minScale );
+  placementElem.setAttribute( "distMapUnitMaxScale", distMapUnitScale.maxScale );
+  placementElem.setAttribute( "quadOffset", ( unsigned int )quadOffset );
+  placementElem.setAttribute( "xOffset", xOffset );
+  placementElem.setAttribute( "yOffset", yOffset );
+  placementElem.setAttribute( "labelOffsetInMapUnits", labelOffsetInMapUnits );
+  placementElem.setAttribute( "labelOffsetMapUnitMinScale", labelOffsetMapUnitScale.minScale );
+  placementElem.setAttribute( "labelOffsetMapUnitMaxScale", labelOffsetMapUnitScale.maxScale );
+  placementElem.setAttribute( "angleOffset", angleOffset );
+  placementElem.setAttribute( "preserveRotation", preserveRotation );
+  placementElem.setAttribute( "maxCurvedCharAngleIn", maxCurvedCharAngleIn );
+  placementElem.setAttribute( "maxCurvedCharAngleOut", maxCurvedCharAngleOut );
+  placementElem.setAttribute( "priority", priority );
+  placementElem.setAttribute( "repeatDistance", repeatDistance );
+  placementElem.setAttribute( "repeatDistanceUnit", repeatDistanceUnit );
+  placementElem.setAttribute( "repeatDistanceMapUnitMinScale", repeatDistanceMapUnitScale.minScale );
+  placementElem.setAttribute( "repeatDistanceMapUnitMaxScale", repeatDistanceMapUnitScale.maxScale );
+
+  // rendering
+  QDomElement renderingElem = doc.createElement( "rendering" );
+  renderingElem.setAttribute( "scaleVisibility", scaleVisibility );
+  renderingElem.setAttribute( "scaleMin", scaleMin );
+  renderingElem.setAttribute( "scaleMax", scaleMax );
+  renderingElem.setAttribute( "fontLimitPixelSize", fontLimitPixelSize );
+  renderingElem.setAttribute( "fontMinPixelSize", fontMinPixelSize );
+  renderingElem.setAttribute( "fontMaxPixelSize", fontMaxPixelSize );
+  renderingElem.setAttribute( "displayAll", displayAll );
+  renderingElem.setAttribute( "upsidedownLabels", ( unsigned int )upsidedownLabels );
+
+  renderingElem.setAttribute( "labelPerPart", labelPerPart );
+  renderingElem.setAttribute( "mergeLines", mergeLines );
+  renderingElem.setAttribute( "minFeatureSize", minFeatureSize );
+  renderingElem.setAttribute( "limitNumLabels", limitNumLabels );
+  renderingElem.setAttribute( "maxNumLabels", maxNumLabels );
+  renderingElem.setAttribute( "obstacle", obstacle );
+  renderingElem.setAttribute( "obstacleFactor", obstacleFactor );
+  renderingElem.setAttribute( "obstacleType", ( unsigned int )obstacleType );
+
+  QDomElement ddElem = doc.createElement( "data-defined" );
+  writeDataDefinedPropertyMap( 0, &ddElem, dataDefinedProperties );
+
+  QDomElement elem = doc.createElement( "settings" );
+  elem.appendChild( textStyleElem );
+  elem.appendChild( textFormatElem );
+  elem.appendChild( textBufferElem );
+  elem.appendChild( backgroundElem );
+  elem.appendChild( shadowElem );
+  elem.appendChild( placementElem );
+  elem.appendChild( renderingElem );
+  elem.appendChild( ddElem );
+  return elem;
 }
 
 void QgsPalLayerSettings::setDataDefinedProperty( QgsPalLayerSettings::DataDefinedProperties p,

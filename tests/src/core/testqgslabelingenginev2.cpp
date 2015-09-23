@@ -180,6 +180,20 @@ void TestQgsLabelingEngineV2::testRuleBased()
 
   img.save( "/tmp/rules.png" );
 
+  // test read/write rules
+  QDomDocument doc, doc2, doc3;
+  QDomElement e = vl->labeling().ruleBasedLabeling()->save( doc );
+  doc.appendChild( e );
+  // read saved rules
+  doc2.setContent( doc.toString() );
+  QDomElement e2 = doc2.documentElement();
+  QgsRuleBasedLabeling* rl2 = QgsRuleBasedLabeling::create( e2 );
+  QVERIFY( rl2 );
+  // check that another save will keep the data the same
+  QDomElement e3 = rl2->save( doc3 );
+  doc3.appendChild( e3 );
+  QCOMPARE( doc.toString(), doc3.toString() );
+
   vl->labeling().setMode( QgsVectorLayerLabeling::SimpleLabels );
 
   /*

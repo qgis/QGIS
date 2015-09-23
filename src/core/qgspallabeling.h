@@ -478,6 +478,16 @@ class CORE_EXPORT QgsPalLayerSettings
     void readFromLayer( QgsVectorLayer* layer );
     void writeToLayer( QgsVectorLayer* layer );
 
+    /** Read settings from a DOM element
+     * @note added in 2.12
+     */
+    void readXml( QDomElement& elem );
+
+    /** Write settings into a DOM element
+     * @note added in 2.12
+     */
+    QDomElement writeXml( QDomDocument& doc );
+
     /** Get a data defined property pointer
      * @note helpful for Python access
      */
@@ -573,10 +583,10 @@ class CORE_EXPORT QgsPalLayerSettings
 
   private:
 
-    void readDataDefinedPropertyMap( QgsVectorLayer* layer,
+    void readDataDefinedPropertyMap( QgsVectorLayer* layer, QDomElement* parentElem,
                                      QMap < QgsPalLayerSettings::DataDefinedProperties,
                                      QgsDataDefined* > & propertyMap );
-    void writeDataDefinedPropertyMap( QgsVectorLayer* layer,
+    void writeDataDefinedPropertyMap( QgsVectorLayer* layer, QDomElement* parentElem,
                                       const QMap < QgsPalLayerSettings::DataDefinedProperties,
                                       QgsDataDefined* > & propertyMap );
     void readDataDefinedProperty( QgsVectorLayer* layer,

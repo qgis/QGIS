@@ -98,6 +98,77 @@ QgsRuleBasedLabeling::Rule*QgsRuleBasedLabeling::Rule::clone() const
   return newrule;
 }
 
+QgsRuleBasedLabeling::Rule*QgsRuleBasedLabeling::Rule::create( QDomElement& ruleElem )
+{
+  QgsPalLayerSettings* settings = 0;
+  QDomElement settingsElem = ruleElem.firstChildElement( "settings" );
+  if ( !settingsElem.isNull() )
+  {
+    settings = new QgsPalLayerSettings;
+    settings->readXml( settingsElem );
+  }
+
+  QString filterExp = ruleElem.attribute( "filter" );
+  QString label = ruleElem.attribute( "label" );
+  QString description = ruleElem.attribute( "description" );
+  int scaleMinDenom = ruleElem.attribute( "scalemindenom", "0" ).toInt();
+  int scaleMaxDenom = ruleElem.attribute( "scalemaxdenom", "0" ).toInt();
+  //QString ruleKey = ruleElem.attribute( "key" );
+  Rule* rule = new Rule( settings, scaleMinDenom, scaleMaxDenom, filterExp, label, description );
+
+  //if ( !ruleKey.isEmpty() )
+  //  rule->mRuleKey = ruleKey;
+
+  //rule->setCheckState( ruleElem.attribute( "checkstate", "1" ).toInt() );
+
+  QDomElement childRuleElem = ruleElem.firstChildElement( "rule" );
+  while ( !childRuleElem.isNull() )
+  {
+    Rule* childRule = create( childRuleElem );
+    if ( childRule )
+    {
+      rule->appendChild( childRule );
+    }
+    else
+    {
+      //QgsDebugMsg( "failed to init a child rule!" );
+    }
+    childRuleElem = childRuleElem.nextSiblingElement( "rule" );
+  }
+
+  return rule;
+}
+
+QDomElement QgsRuleBasedLabeling::Rule::save( QDomDocument& doc )
+{
+  QDomElement ruleElem = doc.createElement( "rule" );
+
+  if ( mSettings )
+  {
+    ruleElem.appendChild( mSettings->writeXml( doc ) );
+  }
+  if ( !mFilterExp.isEmpty() )
+    ruleElem.setAttribute( "filter", mFilterExp );
+  if ( mScaleMinDenom != 0 )
+    ruleElem.setAttribute( "scalemindenom", mScaleMinDenom );
+  if ( mScaleMaxDenom != 0 )
+    ruleElem.setAttribute( "scalemaxdenom", mScaleMaxDenom );
+  if ( !mLabel.isEmpty() )
+    ruleElem.setAttribute( "label", mLabel );
+  if ( !mDescription.isEmpty() )
+    ruleElem.setAttribute( "description", mDescription );
+  //if ( !mIsActive )
+  //  ruleElem.setAttribute( "checkstate", 0 );
+  //ruleElem.setAttribute( "key", mRuleKey );
+
+  for ( RuleList::iterator it = mChildren.begin(); it != mChildren.end(); ++it )
+  {
+    Rule* rule = *it;
+    ruleElem.appendChild( rule->save( doc ) );
+  }
+  return ruleElem;
+}
+
 void QgsRuleBasedLabeling::Rule::createSubProviders( QgsVectorLayer* layer, QgsRuleBasedLabeling::RuleToProviderMap& subProviders )
 {
   if ( mSettings )
@@ -180,4 +251,28 @@ QgsRuleBasedLabeling::QgsRuleBasedLabeling( const QgsRuleBasedLabeling& other )
 QgsRuleBasedLabeling::~QgsRuleBasedLabeling()
 {
   delete mRootRule;
+}
+
+QgsRuleBasedLabeling*QgsRuleBasedLabeling::create( QDomElement& element )
+{
+  QDomElement rulesElem = element.firstChildElement( "rules" );
+
+  Rule* root = Rule::create( rulesElem );
+  if ( !root )
+    return 0;
+
+  QgsRuleBasedLabeling* rl = new QgsRuleBasedLabeling( root );
+  return rl;
+}
+
+QDomElement QgsRuleBasedLabeling::save( QDomDocument& doc )
+{
+  QDomElement elem = doc.createElement( "labeling" );
+  elem.setAttribute( "type", "rule-based" );
+
+  QDomElement rulesElem = mRootRule->save( doc );
+  rulesElem.setTagName( "rules" ); // instead of just "rule"
+  elem.appendChild( rulesElem );
+
+  return elem;
 }

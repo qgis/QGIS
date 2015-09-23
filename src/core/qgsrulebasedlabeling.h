@@ -3,6 +3,9 @@
 
 #include <QStringList>
 
+class QDomDocument;
+class QDomElement;
+
 class QgsExpression;
 class QgsFeature;
 class QgsPalLayerSettings;
@@ -104,7 +107,17 @@ class CORE_EXPORT QgsRuleBasedLabeling
         //! clone this rule, return new instance
         Rule* clone() const;
 
-        // TODO: load / save
+        // load / save
+
+        /**
+         * Create a rule from an XML definition
+         * @param ruleElem  The XML rule element
+         * @return A new rule
+         */
+        static Rule* create( QDomElement& ruleElem );
+
+        //! store labeling info to XML element
+        QDomElement save( QDomDocument& doc );
 
         // evaluation
 
@@ -150,8 +163,11 @@ class CORE_EXPORT QgsRuleBasedLabeling
 
     Rule* rootRule() { return mRootRule; }
 
-    // TODO: static create() from DOM
+    //! Create the instance from a DOM element with saved configuration
+    static QgsRuleBasedLabeling* create( QDomElement& element );
 
+    //! Save configuration into a DOM element
+    QDomElement save( QDomDocument& doc );
 
 
   protected:
