@@ -15,6 +15,8 @@
         <file alias="grass_set_region.png">themes/default/grass_set_region.png</file>
         <file alias="grass_shell.png">themes/default/grass_shell.png</file>
         <file alias="grass_tools.png">themes/default/grass_tools.png</file>
+        <file alias="mActionCaptureBoundary.png">themes/default/mActionCaptureBoundary.png</file>
+        <file alias="mActionCaptureCentroid.png">themes/default/mActionCaptureCentroid.png</file>
         <file alias="mapcalc_add_connection.png">themes/default/mapcalc_add_connection.png</file>
         <file alias="mapcalc_add_constant.png">themes/default/mapcalc_add_constant.png</file>
         <file alias="mapcalc_add_function.png">themes/default/mapcalc_add_function.png</file>

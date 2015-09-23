@@ -379,6 +379,9 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
       TOPO_NODE    // topology nodes
     };
 
+    // Set type for next digitized feature (GV_POINT,GV_LINE, GV_BOUNDARY, GV_CENTROID, GV_AREA)
+    void setNewFeatureType( int type ) { mNewFeatureType = type; }
+
   public slots:
     void onFeatureAdded( QgsFeatureId fid );
     void onFeatureDeleted( QgsFeatureId fid );
@@ -453,6 +456,9 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
 
     QgsVectorLayerEditBuffer* mEditBuffer;
     QgsVectorLayer* mEditLayer;
+
+    //  next digitized feature GRASS type
+    int mNewFeatureType;
 
     friend class QgsGrassFeatureSource;
     friend class QgsGrassFeatureIterator;

@@ -19,6 +19,7 @@
 #include "qgsgrass.h"
 #include "qgsgrassprovider.h"
 
+#include "qgsgrassaddfeature.h"
 #include "qgsgrasseditrenderer.h"
 #include "qgsgrassnewmapset.h"
 #include "qgsgrassregion.h"
@@ -81,6 +82,17 @@ QgsGrassPlugin::QgsGrassPlugin( QgisInterface * theQgisInterFace )
     , mCloseMapsetAction( 0 )
     , mOpenToolsAction( 0 )
     , mNewVectorAction( 0 )
+    , mAddFeatureAction( 0 )
+    , mAddPointAction( 0 )
+    , mAddLineAction( 0 )
+    , mAddBoundaryAction( 0 )
+    , mAddCentroidAction( 0 )
+    , mAddAreaAction( 0 )
+    , mAddPoint( 0 )
+    , mAddLine( 0 )
+    , mAddBoundary( 0 )
+    , mAddCentroid( 0 )
+    , mAddArea()
 {
 }
 
@@ -164,7 +176,7 @@ void QgsGrassPlugin::initGui()
   mCloseMapsetAction->setObjectName( "mCloseMapsetAction" );
 
   mOpenToolsAction = new QAction( QIcon(), tr( "Open GRASS Tools" ), this );
-  mOpenToolsAction->setObjectName( "mOpenToolsAction" );
+  mOpenToolsAction->setObjectName( "mAddPolygonActionmOpenToolsAction" );
   mOpenToolsAction->setWhatsThis( tr( "Open GRASS tools" ) );
 
   mRegionAction = new QAction( QIcon(), tr( "Display Current Grass Region" ), this );
@@ -203,6 +215,60 @@ void QgsGrassPlugin::initGui()
   mToolBarPointer->addAction( mNewVectorAction );
   mToolBarPointer->addAction( mOpenToolsAction );
   mToolBarPointer->addAction( mRegionAction );
+
+  // Editing
+  mAddPointAction = new QAction( QgsApplication::getThemeIcon( "/mActionCapturePoint.png" ), tr( "Add Point" ), this );
+  mAddPointAction->setObjectName( "mAddPointAction" );
+  mAddPointAction->setCheckable( true );
+
+  mAddLineAction = new QAction( QgsApplication::getThemeIcon( "/mActionCaptureLine.png" ), tr( "Add Line" ), this );
+  mAddLineAction->setObjectName( "mAddLineAction" );
+  mAddLineAction->setCheckable( true );
+
+  mAddBoundaryAction = new QAction( getThemeIcon( "mActionCaptureBoundary.png" ), tr( "Add Boundary" ), this );
+  mAddBoundaryAction->setObjectName( "mAddBoundaryAction" );
+  mAddBoundaryAction->setCheckable( true );
+
+  mAddCentroidAction = new QAction( getThemeIcon( "mActionCaptureCentroid.png" ), tr( "Add Centroid" ), this );
+  mAddCentroidAction->setObjectName( "mAddCentroidAction" );
+  mAddCentroidAction->setCheckable( true );
+
+  mAddAreaAction = new QAction( QgsApplication::getThemeIcon( "/mActionCapturePolygon.png" ), tr( "Add Area" ), this );
+  mAddAreaAction->setObjectName( "mAddAreaAction" );
+  mAddAreaAction->setCheckable( true );
+
+  connect( mAddPointAction, SIGNAL( triggered() ), SLOT( addFeature() ) );
+  connect( mAddLineAction, SIGNAL( triggered() ), SLOT( addFeature() ) );
+  connect( mAddBoundaryAction, SIGNAL( triggered() ), SLOT( addFeature() ) );
+  connect( mAddCentroidAction, SIGNAL( triggered() ), SLOT( addFeature() ) );
+  connect( mAddAreaAction, SIGNAL( triggered() ), SLOT( addFeature() ) );
+
+  mAddFeatureAction = qGisInterface->actionAddFeature();
+
+  mAddFeatureAction->actionGroup()->addAction( mAddPointAction );
+  mAddFeatureAction->actionGroup()->addAction( mAddLineAction );
+  mAddFeatureAction->actionGroup()->addAction( mAddBoundaryAction );
+  mAddFeatureAction->actionGroup()->addAction( mAddCentroidAction );
+  mAddFeatureAction->actionGroup()->addAction( mAddAreaAction );
+
+  qGisInterface->digitizeToolBar()->insertAction( mAddFeatureAction, mAddPointAction );
+  qGisInterface->digitizeToolBar()->insertAction( mAddFeatureAction, mAddLineAction );
+  qGisInterface->digitizeToolBar()->insertAction( mAddFeatureAction, mAddBoundaryAction );
+  qGisInterface->digitizeToolBar()->insertAction( mAddFeatureAction, mAddCentroidAction );
+  qGisInterface->digitizeToolBar()->insertAction( mAddFeatureAction, mAddAreaAction );
+
+  resetEditActions();
+
+  mAddPoint = new QgsGrassAddFeature( qGisInterface->mapCanvas(), QgsMapToolAdvancedDigitizing::CapturePoint );
+  mAddPoint->setAction( mAddPointAction );
+  mAddLine = new QgsGrassAddFeature( qGisInterface->mapCanvas(), QgsMapToolAdvancedDigitizing::CaptureLine );
+  mAddLine->setAction( mAddLineAction );
+  mAddBoundary = new QgsGrassAddFeature( qGisInterface->mapCanvas(), QgsMapToolAdvancedDigitizing::CaptureLine );
+  mAddBoundary->setAction( mAddBoundaryAction );
+  mAddCentroid = new QgsGrassAddFeature( qGisInterface->mapCanvas(), QgsMapToolAdvancedDigitizing::CapturePoint );
+  mAddCentroid->setAction( mAddCentroidAction );
+  mAddArea = new QgsGrassAddFeature( qGisInterface->mapCanvas(), QgsMapToolAdvancedDigitizing::CapturePolygon );
+  mAddArea->setAction( mAddAreaAction );
 
   // Set icons to current theme
   setCurrentTheme( "" );
@@ -249,6 +315,37 @@ void QgsGrassPlugin::onCurrentLayerChanged( QgsMapLayer* layer )
 {
   Q_UNUSED( layer );
   QgsDebugMsg( "Entered" );
+  resetEditActions();
+}
+
+void QgsGrassPlugin::resetEditActions()
+{
+  QgsDebugMsg( "Entered" );
+
+  QgsGrassProvider* grassProvider = 0;
+  QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( qGisInterface->activeLayer() );
+  if ( vectorLayer )
+  {
+    grassProvider = dynamic_cast<QgsGrassProvider*>( vectorLayer->dataProvider() );
+  }
+  if ( grassProvider && vectorLayer->editBuffer() )
+  {
+    mAddFeatureAction->setVisible( false );
+    mAddPointAction->setVisible( true );
+    mAddLineAction->setVisible( true );
+    mAddBoundaryAction->setVisible( true );
+    mAddCentroidAction->setVisible( true );
+    mAddAreaAction->setVisible( true );
+  }
+  else
+  {
+    mAddFeatureAction->setVisible( true );
+    mAddPointAction->setVisible( false );
+    mAddLineAction->setVisible( false );
+    mAddBoundaryAction->setVisible( false );
+    mAddCentroidAction->setVisible( false );
+    mAddAreaAction->setVisible( false );
+  }
 }
 
 void QgsGrassPlugin::onEditingStarted()
@@ -298,6 +395,8 @@ void QgsGrassPlugin::onEditingStarted()
   vectorLayer->updateFields();
 
   connect( vectorLayer, SIGNAL( editingStopped() ), SLOT( onEditingStopped() ) );
+
+  resetEditActions();
 }
 
 void QgsGrassPlugin::onEditingStopped()
@@ -312,6 +411,48 @@ void QgsGrassPlugin::onEditingStopped()
       QgsDebugMsg( "reset style to " + style );
       vectorLayer->styleManager()->setCurrentStyle( style );
     }
+  }
+  resetEditActions();
+}
+
+void QgsGrassPlugin::addFeature()
+{
+  QgsDebugMsg( "entered" );
+  QgsGrassProvider* grassProvider = 0;
+  QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( qGisInterface->activeLayer() );
+  if ( vectorLayer )
+  {
+    grassProvider = dynamic_cast<QgsGrassProvider*>( vectorLayer->dataProvider() );
+  }
+  if ( !grassProvider )
+  {
+    QgsDebugMsg( "grassProvider is null" );
+    return;
+  }
+  if ( sender() == mAddPointAction )
+  {
+    qGisInterface->mapCanvas()->setMapTool( mAddPoint );
+    grassProvider->setNewFeatureType( GV_POINT );
+  }
+  else if ( sender() == mAddLineAction )
+  {
+    qGisInterface->mapCanvas()->setMapTool( mAddLine );
+    grassProvider->setNewFeatureType( GV_LINE );
+  }
+  else if ( sender() == mAddBoundaryAction )
+  {
+    qGisInterface->mapCanvas()->setMapTool( mAddBoundary );
+    grassProvider->setNewFeatureType( GV_BOUNDARY );
+  }
+  else if ( sender() == mAddCentroidAction )
+  {
+    qGisInterface->mapCanvas()->setMapTool( mAddCentroid );
+    grassProvider->setNewFeatureType( GV_CENTROID );
+  }
+  else if ( sender() == mAddAreaAction )
+  {
+    qGisInterface->mapCanvas()->setMapTool( mAddArea );
+    grassProvider->setNewFeatureType( GV_AREA );
   }
 }
 
@@ -593,6 +734,8 @@ void QgsGrassPlugin::newProject()
 // Unload the plugin by cleaning up the GUI
 void QgsGrassPlugin::unload()
 {
+  mAddFeatureAction->setVisible( true ); // restore QGIS add feature action
+
   // Close mapset
   QgsGrass::instance()->closeMapsetWarn();
 
@@ -610,6 +753,19 @@ void QgsGrassPlugin::unload()
   delete mOpenToolsAction;
   delete mRegionAction;
   delete mNewVectorAction;
+
+  delete mAddFeatureAction;
+  delete mAddPointAction;
+  delete mAddLineAction;
+  delete mAddBoundaryAction;
+  delete mAddCentroidAction;
+  delete mAddAreaAction;
+
+  delete mAddPoint;
+  delete mAddLine;
+  delete mAddBoundary;
+  delete mAddCentroid;
+  delete mAddArea;
 
   delete mToolBarPointer;
   mToolBarPointer = 0;

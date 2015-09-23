@@ -20,6 +20,7 @@ ENDIF (WIN32)
 # Files
 
 SET (GRASS_PLUGIN_SRCS
+   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassaddfeature.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrasseditrenderer.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassplugin.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassselect.cpp
@@ -46,6 +47,7 @@ SET (GRASS_PLUGIN_UIS
 )
 
 SET (GRASS_PLUGIN_MOC_HDRS
+   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassaddfeature.h
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrasseditrenderer.h
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassplugin.h
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassselect.h
@@ -149,6 +151,7 @@ SET (GRASS_BROWSER_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/qgis.g.browser.cpp)
 INCLUDE_DIRECTORIES(
   ..
   ${CMAKE_CURRENT_BINARY_DIR}
+  ../../app
   ../../core
   ../../core/geometry
   ../../core/layertree
@@ -189,6 +192,7 @@ MACRO(ADD_GRASSPLUGIN GRASS_BUILD_VERSION)
 
     TARGET_LINK_LIBRARIES(grassplugin${GRASS_BUILD_VERSION}
       qgisgrass${GRASS_BUILD_VERSION}
+      qgis_app
       qgis_gui
       ${OPENPTY_LIBRARY}
     )

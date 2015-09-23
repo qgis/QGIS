@@ -86,6 +86,7 @@ QgsGrassProvider::QgsGrassProvider( QString uri )
     , mNumberFeatures( 0 )
     , mEditBuffer( 0 )
     , mEditLayer( 0 )
+    , mNewFeatureType( 0 )
 {
   QgsDebugMsg( "uri = " + uri );
 
@@ -1080,6 +1081,10 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
     {
       geometry = feature.geometry()->geometry();
     }
+    else
+    {
+      QgsDebugMsg( "feature does not have geometry" );
+    }
   }
   else // old deleted feature undo
   {
@@ -1105,29 +1110,12 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
 
     setPoints( points, geometry );
     // TODO: get also old type if it is feature previously deleted
-    int type = 0;
-    QgsWKBTypes::Type wkbType = QgsWKBTypes::flatType( geometry->wkbType() );
-    if ( wkbType == QgsWKBTypes::Point )
-    {
-      type = GV_POINT;
-    }
-    else if ( wkbType == QgsWKBTypes::LineString )
-    {
-      type = GV_LINE;
-    }
-    else if ( wkbType == QgsWKBTypes::Polygon )
-    {
-      type = GV_BOUNDARY;
-    }
-    else
-    {
-      QgsDebugMsg( QString( "unknown type %1" ).arg( wkbType ) );
-    }
+    int type = mNewFeatureType == GV_AREA ? GV_BOUNDARY : mNewFeatureType;
 
     if ( FID_IS_NEW( fid ) )
     {
       // add new category
-      if ( wkbType != QgsWKBTypes::Polygon )
+      if ( type != GV_BOUNDARY )
       {
         // TODO: redo of deleted new features - save new cats somewhere,
         // resetting fid probably is not possible because it is stored in undo commands and used in buffer maps
@@ -1173,6 +1161,7 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
         QgsFeatureMap & addedFeatures = const_cast<QgsFeatureMap&>( mEditBuffer->addedFeatures() );
         addedFeatures[fid].setAttribute( idx, QVariant( symbol ) );
 
+        QgsWKBTypes::Type wkbType = QgsWKBTypes::flatType( geometry->wkbType() );
         if ( wkbType == QgsWKBTypes::Polygon )
         {
           // change polygon to linestring

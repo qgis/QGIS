@@ -445,7 +445,10 @@ void QgsGrassVectorMapLayer::startEdit()
   mDriver = openDriver( error );
   if ( !error.isEmpty() )
   {
-    QgsGrass::warning( error );
+    // TODO: warning here is causing dead lock, QGIS starts renderer which is hanging on openLayer()
+    // waiting for lock
+    //QgsGrass::warning( error );
+    QgsDebugMsg( error );
   }
 }
 
