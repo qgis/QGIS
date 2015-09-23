@@ -59,6 +59,7 @@ QgsVectorLayerDiagramProvider::QgsVectorLayerDiagramProvider( QgsVectorLayer* la
 
 void QgsVectorLayerDiagramProvider::init()
 {
+  mName = mLayerId;
   mPriority = 1 - mSettings.priority / 10.0; // convert 0..10 --> 1..0
   mPlacement = QgsPalLayerSettings::Placement( mSettings.placement );
   mLinePlacementFlags = mSettings.placementFlags;
@@ -76,11 +77,6 @@ QgsVectorLayerDiagramProvider::~QgsVectorLayerDiagramProvider()
   // renderer is owned by mSettings
 }
 
-
-QString QgsVectorLayerDiagramProvider::id() const
-{
-  return mLayerId + "d";
-}
 
 QList<QgsLabelFeature*> QgsVectorLayerDiagramProvider::labelFeatures( const QgsRenderContext& context )
 {
@@ -154,10 +150,7 @@ void QgsVectorLayerDiagramProvider::drawLabel( QgsRenderContext& context, pal::L
   mSettings.renderer->renderDiagram( feature, context, centerPt.toQPointF() );
 
   //insert into label search tree to manipulate position interactively
-  //for diagrams, remove the additional 'd' at the end of the layer id
-  QString layerId = id();
-  layerId.chop( 1 );
-  mEngine->results()->mLabelSearchTree->insertLabel( label, label->getFeaturePart()->featureId(), layerId, QString(), QFont(), true, false );
+  mEngine->results()->mLabelSearchTree->insertLabel( label, label->getFeaturePart()->featureId(), mLayerId, QString(), QFont(), true, false );
 
 }
 

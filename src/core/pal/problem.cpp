@@ -2674,7 +2674,7 @@ namespace pal
     int k;
     for ( i = 0; i < nbft; i++ )
     {
-      lyrName = mLabelPositions.at( featStartId[i] )->getLayerName();
+      lyrName = mLabelPositions.at( featStartId[i] )->getFeaturePart()->feature()->provider()->name();
       k = -1;
       for ( j = 0; j < stats->nbLayers; j++ )
       {

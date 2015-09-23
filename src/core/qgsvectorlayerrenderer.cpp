@@ -29,6 +29,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerdiagramprovider.h"
 #include "qgsvectorlayerfeatureiterator.h"
+#include "qgsvectorlayerlabeling.h"
 #include "qgsvectorlayerlabelprovider.h"
 #include "qgspainteffect.h"
 
@@ -494,7 +495,19 @@ void QgsVectorLayerRenderer::prepareLabeling( QgsVectorLayer* layer, QStringList
   {
     if ( QgsLabelingEngineV2* engine2 = mContext.labelingEngineV2() )
     {
-      if ( layer->labelsEnabled() )
+      mLabelProvider = layer->labeling().provider( layer );
+      if ( mLabelProvider )
+      {
+        engine2->addProvider( mLabelProvider );
+        if ( !mLabelProvider->prepare( mContext, attributeNames ) )
+        {
+          engine2->removeProvider( mLabelProvider );
+          mLabelProvider = 0; // deleted by engine
+        }
+      }
+
+      //mLabelProvider = layer->labeling().addProviderToEngine( layer, engine2, mContext );
+      /*if ( layer->labelsEnabled() )
       {
         mLabelProvider = new QgsVectorLayerLabelProvider( layer, false );
         engine2->addProvider( mLabelProvider );
@@ -503,7 +516,7 @@ void QgsVectorLayerRenderer::prepareLabeling( QgsVectorLayer* layer, QStringList
           engine2->removeProvider( mLabelProvider );
           mLabelProvider = 0; // deleted by engine
         }
-      }
+      }*/
     }
     return;
   }

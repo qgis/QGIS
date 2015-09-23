@@ -48,6 +48,7 @@ QgsLabelingEngineV2::~QgsLabelingEngineV2()
 {
   delete mResults;
   qDeleteAll( mProviders );
+  qDeleteAll( mSubProviders );
 }
 
 void QgsLabelingEngineV2::addProvider( QgsAbstractLabelProvider* provider )
@@ -64,6 +65,95 @@ void QgsLabelingEngineV2::removeProvider( QgsAbstractLabelProvider* provider )
     delete mProviders.takeAt( idx );
   }
 }
+
+void QgsLabelingEngineV2::processProvider( QgsAbstractLabelProvider* provider, QgsRenderContext& context, pal::Pal& p )
+{
+  // how to place the labels
+  pal::Arrangement arrangement;
+  switch ( provider->placement() )
+  {
+    case QgsPalLayerSettings::AroundPoint: arrangement = pal::P_POINT; break;
+    case QgsPalLayerSettings::OverPoint:   arrangement = pal::P_POINT_OVER; break;
+    case QgsPalLayerSettings::Line:        arrangement = pal::P_LINE; break;
+    case QgsPalLayerSettings::Curved:      arrangement = pal::P_CURVED; break;
+    case QgsPalLayerSettings::Horizontal:  arrangement = pal::P_HORIZ; break;
+    case QgsPalLayerSettings::Free:        arrangement = pal::P_FREE; break;
+    default: Q_ASSERT( "unsupported placement" && 0 ); return;
+  }
+
+  QgsAbstractLabelProvider::Flags flags = provider->flags();
+
+  // create the pal layer
+  pal::Layer* l = p.addLayer( provider,
+                              provider->name(),
+                              arrangement,
+                              provider->priority(),
+                              true,
+                              flags.testFlag( QgsAbstractLabelProvider::DrawLabels ),
+                              flags.testFlag( QgsAbstractLabelProvider::DrawAllLabels ) );
+
+  // extra flags for placement of labels for linestrings
+  l->setArrangementFlags(( pal::LineArrangementFlags ) provider->linePlacementFlags() );
+
+  // set label mode (label per feature is the default)
+  l->setLabelMode( flags.testFlag( QgsAbstractLabelProvider::LabelPerFeaturePart ) ? pal::Layer::LabelPerFeaturePart : pal::Layer::LabelPerFeature );
+
+  // set whether adjacent lines should be merged
+  l->setMergeConnectedLines( flags.testFlag( QgsAbstractLabelProvider::MergeConnectedLines ) );
+
+  // set obstacle type
+  switch ( provider->obstacleType() )
+  {
+    case QgsPalLayerSettings::PolygonInterior:
+      l->setObstacleType( pal::PolygonInterior );
+      break;
+    case QgsPalLayerSettings::PolygonBoundary:
+      l->setObstacleType( pal::PolygonBoundary );
+      break;
+  }
+
+  // set whether location of centroid must be inside of polygons
+  l->setCentroidInside( flags.testFlag( QgsAbstractLabelProvider::CentroidMustBeInside ) );
+
+  // set whether labels must fall completely within the polygon
+  l->setFitInPolygonOnly( flags.testFlag( QgsAbstractLabelProvider::FitInPolygonOnly ) );
+
+  // set how to show upside-down labels
+  pal::Layer::UpsideDownLabels upsdnlabels;
+  switch ( provider->upsidedownLabels() )
+  {
+    case QgsPalLayerSettings::Upright:     upsdnlabels = pal::Layer::Upright; break;
+    case QgsPalLayerSettings::ShowDefined: upsdnlabels = pal::Layer::ShowDefined; break;
+    case QgsPalLayerSettings::ShowAll:     upsdnlabels = pal::Layer::ShowAll; break;
+    default: Q_ASSERT( "unsupported upside-down label setting" && 0 ); return;
+  }
+  l->setUpsidedownLabels( upsdnlabels );
+
+
+  QList<QgsLabelFeature*> features = provider->labelFeatures( context );
+
+  foreach ( QgsLabelFeature* feature, features )
+  {
+    try
+    {
+      l->registerFeature( feature );
+    }
+    catch ( std::exception &e )
+    {
+      Q_UNUSED( e );
+      QgsDebugMsgLevel( QString( "Ignoring feature %1 due PAL exception:" ).arg( feature->id() ) + QString::fromLatin1( e.what() ), 4 );
+      continue;
+    }
+  }
+
+  // any sub-providers?
+  Q_FOREACH ( QgsAbstractLabelProvider* subProvider, provider->subProviders() )
+  {
+    mSubProviders << subProvider;
+    processProvider( subProvider, context, p );
+  }
+}
+
 
 void QgsLabelingEngineV2::run( QgsRenderContext& context )
 {
@@ -92,82 +182,7 @@ void QgsLabelingEngineV2::run( QgsRenderContext& context )
   // for each provider: get labels and register them in PAL
   foreach ( QgsAbstractLabelProvider* provider, mProviders )
   {
-    // how to place the labels
-    pal::Arrangement arrangement;
-    switch ( provider->placement() )
-    {
-      case QgsPalLayerSettings::AroundPoint: arrangement = pal::P_POINT; break;
-      case QgsPalLayerSettings::OverPoint:   arrangement = pal::P_POINT_OVER; break;
-      case QgsPalLayerSettings::Line:        arrangement = pal::P_LINE; break;
-      case QgsPalLayerSettings::Curved:      arrangement = pal::P_CURVED; break;
-      case QgsPalLayerSettings::Horizontal:  arrangement = pal::P_HORIZ; break;
-      case QgsPalLayerSettings::Free:        arrangement = pal::P_FREE; break;
-      default: Q_ASSERT( "unsupported placement" && 0 ); return;
-    }
-
-    QgsAbstractLabelProvider::Flags flags = provider->flags();
-
-    // create the pal layer
-    pal::Layer* l = p.addLayer( provider->id(),
-                                arrangement,
-                                provider->priority(),
-                                true,
-                                flags.testFlag( QgsAbstractLabelProvider::DrawLabels ),
-                                flags.testFlag( QgsAbstractLabelProvider::DrawAllLabels ) );
-
-    // extra flags for placement of labels for linestrings
-    l->setArrangementFlags(( pal::LineArrangementFlags ) provider->linePlacementFlags() );
-
-    // set label mode (label per feature is the default)
-    l->setLabelMode( flags.testFlag( QgsAbstractLabelProvider::LabelPerFeaturePart ) ? pal::Layer::LabelPerFeaturePart : pal::Layer::LabelPerFeature );
-
-    // set whether adjacent lines should be merged
-    l->setMergeConnectedLines( flags.testFlag( QgsAbstractLabelProvider::MergeConnectedLines ) );
-
-    // set obstacle type
-    switch ( provider->obstacleType() )
-    {
-      case QgsPalLayerSettings::PolygonInterior:
-        l->setObstacleType( pal::PolygonInterior );
-        break;
-      case QgsPalLayerSettings::PolygonBoundary:
-        l->setObstacleType( pal::PolygonBoundary );
-        break;
-    }
-
-    // set whether location of centroid must be inside of polygons
-    l->setCentroidInside( flags.testFlag( QgsAbstractLabelProvider::CentroidMustBeInside ) );
-
-    // set whether labels must fall completely within the polygon
-    l->setFitInPolygonOnly( flags.testFlag( QgsAbstractLabelProvider::FitInPolygonOnly ) );
-
-    // set how to show upside-down labels
-    pal::Layer::UpsideDownLabels upsdnlabels;
-    switch ( provider->upsidedownLabels() )
-    {
-      case QgsPalLayerSettings::Upright:     upsdnlabels = pal::Layer::Upright; break;
-      case QgsPalLayerSettings::ShowDefined: upsdnlabels = pal::Layer::ShowDefined; break;
-      case QgsPalLayerSettings::ShowAll:     upsdnlabels = pal::Layer::ShowAll; break;
-      default: Q_ASSERT( "unsupported upside-down label setting" && 0 ); return;
-    }
-    l->setUpsidedownLabels( upsdnlabels );
-
-
-    QList<QgsLabelFeature*> features = provider->labelFeatures( context );
-
-    foreach ( QgsLabelFeature* feature, features )
-    {
-      try
-      {
-        l->registerFeature( feature );
-      }
-      catch ( std::exception &e )
-      {
-        Q_UNUSED( e );
-        QgsDebugMsgLevel( QString( "Ignoring feature %1 due PAL exception:" ).arg( feature->id() ) + QString::fromLatin1( e.what() ), 4 );
-        continue;
-      }
-    }
+    processProvider( provider, context, p );
   }
 
 
@@ -269,10 +284,7 @@ void QgsLabelingEngineV2::run( QgsRenderContext& context )
       continue;
     }
 
-    //layer names
-    QString layerName = ( *it )->getLayerName();
-
-    providerById( layerName )->drawLabel( context, *it );
+    lf->provider()->drawLabel( context, *it );
   }
 
   // Reset composition mode for further drawing operations
@@ -327,16 +339,6 @@ void QgsLabelingEngineV2::writeSettingsToProject()
   QgsProject::instance()->writeEntry( "PAL", "/DrawOutlineLabels", mFlags.testFlag( RenderOutlineLabels ) );
 }
 
-QgsAbstractLabelProvider* QgsLabelingEngineV2::providerById( const QString& id )
-{
-  Q_FOREACH ( QgsAbstractLabelProvider* provider, mProviders )
-  {
-    if ( provider->id() == id )
-      return provider;
-  }
-  return 0;
-}
-
 
 
 ////
@@ -367,6 +369,12 @@ QgsLabelFeature::~QgsLabelFeature()
     GEOSGeom_destroy_r( QgsGeometry::getGEOSHandler(), mGeometry );
 
   delete mInfo;
+}
+
+QgsAbstractLabelProvider*QgsLabelFeature::provider() const
+{
+  return mLayer ? mLayer->provider() : 0;
+
 }
 
 QgsAbstractLabelProvider::QgsAbstractLabelProvider()

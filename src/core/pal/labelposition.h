@@ -164,9 +164,6 @@ namespace pal
         if ( nextPart ) nextPart->setProblemIds( probFid, lpId );
       }
 
-      /** Return pointer to layer's name. used for stats */
-      QString getLayerName() const;
-
       /** Returns the candidate label position's geographical cost.
        * @see setCost
        */

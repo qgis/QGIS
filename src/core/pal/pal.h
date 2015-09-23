@@ -39,6 +39,8 @@
 
 // TODO ${MAJOR} ${MINOR} etc instead of 0.2
 
+class QgsAbstractLabelProvider;
+
 /**
  *
  * \section intro_sec Introduction
@@ -127,6 +129,7 @@ namespace pal
       /**
        * \brief add a new layer
        *
+       * @param provider Provider associated with the layer
        * @param layerName layer's name
        * @param arrangement Howto place candidates
        * @param defaultPriority layer's prioriry (0 is the best, 1 the worst)
@@ -138,25 +141,7 @@ namespace pal
        *
        * @todo add symbolUnit
        */
-      Layer* addLayer( const QString& layerName, Arrangement arrangement, double defaultPriority, bool active, bool toLabel, bool displayAll = false );
-
-      /**
-       * \brief Look for a layer
-       *
-       * @param layerName name of layer to search
-       *
-       * @throws PalException::UnkownLayer
-       *
-       * @return a pointer on layer or NULL if layer not exist
-       */
-      Layer *getLayer( const QString &layerName );
-
-      /**
-       * \brief get all layers
-       *
-       * @return a list of all layers
-       */
-      QList<Layer*> getLayers();
+      Layer* addLayer( QgsAbstractLabelProvider* provider, const QString& layerName, Arrangement arrangement, double defaultPriority, bool active, bool toLabel, bool displayAll = false );
 
       /**
        * \brief remove a layer
@@ -176,24 +161,6 @@ namespace pal
        * @return A list of label to display on map
        */
       std::list<LabelPosition*> *labeller( double bbox[4], PalStat **stats, bool displayAll );
-
-      /**
-       * \brief the labeling machine
-       * Active layers are specifiend through layersName array
-       * @todo add obstacles and tolabel arrays
-       * @param layerNames names of layers to label
-       * @param bbox map extent
-       * @param stat will be filled with labelling process statistics, can be NULL
-       * @param displayAll if true, all feature will be labelled even though overlaps occur
-       *
-       * @todo UnknownLayer will be ignored ? should throw exception or not ???
-       *
-       * @return A list of label to display on map
-       */
-      std::list<LabelPosition*> *labeller( const QStringList& layerNames,
-                                           double bbox[4],
-                                           PalStat **stat,
-                                           bool displayAll );
 
       typedef bool ( *FnIsCancelled )( void* ctx );
 
@@ -279,7 +246,7 @@ namespace pal
 
     private:
 
-      QHash< QString, Layer* > mLayers;
+      QHash< QgsAbstractLabelProvider*, Layer* > mLayers;
 
       QMutex mMutex;
 
@@ -326,14 +293,12 @@ namespace pal
        * \brief Problem factory
        * Extract features to label and generates candidates for them,
        * respects to a bounding box
-       * @param layersName layers name to be extracted
        * @param lambda_min xMin bounding-box
        * @param phi_min yMin bounding-box
        * @param lambda_max xMax bounding-box
        * @param phi_max yMax bounding-box
        */
-      Problem* extract( const QStringList& layersName,
-                        double lambda_min, double phi_min,
+      Problem* extract( double lambda_min, double phi_min,
                         double lambda_max, double phi_max );
 
 

@@ -3207,14 +3207,20 @@ void QgsPalLabeling::clearActiveLayer( const QString &layerID )
   Q_UNUSED( layerID );
 }
 
+#include "qgsvectorlayerlabeling.h"
+
 int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QStringList& attrNames, QgsRenderContext& ctx )
 {
-  if ( !willUseLayer( layer ) || !layer->labelsEnabled() )
+  if ( !willUseLayer( layer ) )
   {
     return 0;
   }
 
-  QgsVectorLayerLabelProvider* lp = new QgsVectorLayerLabelProvider( layer, false );
+  QgsVectorLayerLabelProvider* lp = layer->labeling().provider( layer );
+  if ( !lp )
+    return 0;
+
+  //QgsVectorLayerLabelProvider* lp = new QgsVectorLayerLabelProvider( layer, false );
   // need to be added before calling prepare() - uses map settings from engine
   mEngine->addProvider( lp );
   mLabelProviders[layer->id()] = lp; // fast lookup table by layer ID

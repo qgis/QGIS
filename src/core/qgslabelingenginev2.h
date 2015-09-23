@@ -24,6 +24,7 @@
 
 #include <QFlags>
 
+class QgsAbstractLabelProvider;
 class QgsRenderContext;
 class QgsGeometry;
 
@@ -183,6 +184,9 @@ class CORE_EXPORT QgsLabelFeature
     //! Assign PAL layer to the label feature. Should be only used internally in PAL
     void setLayer( pal::Layer* layer ) { mLayer = layer; }
 
+    //! Return provider of this instance
+    QgsAbstractLabelProvider* provider() const;
+
   protected:
     //! Pointer to PAL layer (assigned when registered to PAL)
     pal::Layer* mLayer;
@@ -262,14 +266,17 @@ class CORE_EXPORT QgsAbstractLabelProvider
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
-    //! Return unique identifier of the provider
-    virtual QString id() const = 0;
-
     //! Return list of label features (they are owned by the provider and thus deleted on its destruction)
     virtual QList<QgsLabelFeature*> labelFeatures( const QgsRenderContext& context ) = 0;
 
     //! draw this label at the position determined by the labeling engine
     virtual void drawLabel( QgsRenderContext& context, pal::LabelPosition* label ) const = 0;
+
+    //! Return list of child providers - useful if the provider needs to put labels into more layers with different configuration
+    virtual QList<QgsAbstractLabelProvider*> subProviders() { return QList<QgsAbstractLabelProvider*>(); }
+
+    //! Name of the layer (for statistics, debugging etc.) - does not need to be unique
+    QString name() const { return mName; }
 
     //! Flags associated with the provider
     Flags flags() const { return mFlags; }
@@ -289,11 +296,12 @@ class CORE_EXPORT QgsAbstractLabelProvider
     //! How to handle labels that would be upside down
     QgsPalLayerSettings::UpsideDownLabels upsidedownLabels() const { return mUpsidedownLabels; }
 
-
   protected:
     //! Associated labeling engine
     const QgsLabelingEngineV2* mEngine;
 
+    //! Name of the layer
+    QString mName;
     //! Flags altering drawing and registration of features
     Flags mFlags;
     //! Placement strategy
@@ -366,9 +374,6 @@ class CORE_EXPORT QgsLabelingEngineV2
     //! Remove provider if the provider's initialization failed. Provider instance is deleted.
     void removeProvider( QgsAbstractLabelProvider* provider );
 
-    //! Lookup provider by its ID
-    QgsAbstractLabelProvider* providerById( const QString& id );
-
     //! compute the labeling with given map settings and providers
     void run( QgsRenderContext& context );
 
@@ -403,10 +408,14 @@ class CORE_EXPORT QgsLabelingEngineV2
     void writeSettingsToProject();
 
   protected:
+    void processProvider( QgsAbstractLabelProvider* provider, QgsRenderContext& context, pal::Pal& p );
+
+  protected:
     //! Associated map settings instance
     QgsMapSettings mMapSettings;
     //! List of providers (the are owned by the labeling engine)
     QList<QgsAbstractLabelProvider*> mProviders;
+    QList<QgsAbstractLabelProvider*> mSubProviders;
     //! Flags
     Flags mFlags;
     //! search method to use for removal collisions between labels

@@ -63,6 +63,7 @@ class QgsSymbolV2;
 class QgsVectorDataProvider;
 class QgsVectorLayerEditBuffer;
 class QgsVectorLayerJoinBuffer;
+class QgsVectorLayerLabeling;
 class QgsPointV2;
 
 typedef QList<int> QgsAttributeList;
@@ -1261,6 +1262,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     */
     Q_DECL_DEPRECATED bool hasLabelsEnabled() const;
 
+    /** Access to labeling configuration
+     * @note added in 2.12
+     */
+    QgsVectorLayerLabeling& labeling() { return *mLabeling; }
+
     /** Returns true if the provider is in editing mode */
     virtual bool isEditable() const override;
 
@@ -2079,11 +2085,14 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Simplification object which holds the information about how to simplify the features for fast rendering */
     QgsVectorSimplifyMethod mSimplifyMethod;
 
-    /** Label */
+    /** Label [old deprecated implementation] */
     QgsLabel *mLabel;
 
-    /** Display labels */
+    /** Display labels [old deprecated implementation] */
     bool mLabelOn;
+
+    /** Labeling configuration */
+    QgsVectorLayerLabeling* mLabeling;
 
     /** Whether 'labeling font not found' has be shown for this layer (only show once in QgsMessageBar, on first rendering) */
     bool mLabelFontNotFoundNotified;

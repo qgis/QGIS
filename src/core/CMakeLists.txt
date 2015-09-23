@@ -163,6 +163,7 @@ SET(QGIS_CORE_SRCS
   qgsrenderchecker.cpp
   qgsrendercontext.cpp
   qgsrectangle.cpp
+  qgsrulebasedlabeling.cpp
   qgsrunprocess.cpp
   qgsscalecalculator.cpp
   qgsscaleexpression.cpp
@@ -186,6 +187,7 @@ SET(QGIS_CORE_SRCS
   qgsvectorlayerfeatureiterator.cpp
   qgsvectorlayerimport.cpp
   qgsvectorlayerjoinbuffer.cpp
+  qgsvectorlayerlabeling.cpp
   qgsvectorlayerlabelprovider.cpp
   qgsvectorlayerrenderer.cpp
   qgsvectorlayerundocommand.cpp

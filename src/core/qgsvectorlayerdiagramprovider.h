@@ -70,8 +70,6 @@ class CORE_EXPORT QgsVectorLayerDiagramProvider : public QgsAbstractLabelProvide
     //! Clean up
     ~QgsVectorLayerDiagramProvider();
 
-    virtual QString id() const override;
-
     virtual QList<QgsLabelFeature*> labelFeatures( const QgsRenderContext& context ) override;
 
     virtual void drawLabel( QgsRenderContext& context, pal::LabelPosition* label ) const override;

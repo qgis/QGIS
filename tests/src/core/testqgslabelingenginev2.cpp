@@ -31,6 +31,7 @@ class TestQgsLabelingEngineV2 : public QObject
     void cleanupTestCase();
     void testBasic();
     void testDiagrams();
+    void testRuleBased();
 
   private:
     QgsVectorLayer* vl;
@@ -135,6 +136,62 @@ void TestQgsLabelingEngineV2::testDiagrams()
   QImage img2 = job.renderedImage();
 
   QCOMPARE( img, img2 );
+
+  vl->loadDefaultStyle( res );
+}
+
+#include "qgsvectorlayerlabeling.h"
+#include "qgsrulebasedlabeling.h"
+
+void TestQgsLabelingEngineV2::testRuleBased()
+{
+  QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( vl->extent() );
+  mapSettings.setLayers( QStringList() << vl->id() );
+
+  // set up most basic rule-based labeling for layer
+  QgsRuleBasedLabeling::Rule* root = new QgsRuleBasedLabeling::Rule( 0 );
+
+  QgsPalLayerSettings s1;
+  s1.enabled = true;
+  s1.fieldName = "Class";
+  s1.obstacle = false;
+  s1.dist = 2;
+  s1.distInMapUnits = false;
+  root->appendChild( new QgsRuleBasedLabeling::Rule( new QgsPalLayerSettings( s1 ) ) );
+
+  QgsPalLayerSettings s2;
+  s2.enabled = true;
+  s2.fieldName = "Class";
+  s2.obstacle = false;
+  s2.dist = 2;
+  s2.textColor = Qt::red;
+  root->appendChild( new QgsRuleBasedLabeling::Rule( new QgsPalLayerSettings( s2 ), 0, 0, "Class = 'Jet'" ) );
+
+  vl->labeling().setMode( QgsVectorLayerLabeling::RuleBasedLabels );
+  vl->labeling().setRuleBasedLabeling( new QgsRuleBasedLabeling( root ) );
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+  QImage img = job.renderedImage();
+
+  img.save( "/tmp/rules.png" );
+
+  vl->labeling().setMode( QgsVectorLayerLabeling::SimpleLabels );
+
+  /*
+  QPainter p( &img );
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
+  context.setPainter( &p );
+
+  QgsLabelingEngineV2 engine;
+  engine.setMapSettings( mapSettings );
+  engine.addProvider( new QgsRuleBasedLabelProvider( , vl ) );
+  engine.run( context );*/
+
 }
 
 QTEST_MAIN( TestQgsLabelingEngineV2 )

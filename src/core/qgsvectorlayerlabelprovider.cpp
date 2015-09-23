@@ -43,14 +43,11 @@ static void _fixQPictureDPI( QPainter* p )
 }
 
 
-typedef QgsPalLayerSettings QgsVectorLayerLabelSettings;
 
-QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( QgsVectorLayer* layer, bool withFeatureLoop )
+QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( QgsVectorLayer* layer, bool withFeatureLoop, const QgsPalLayerSettings* settings, const QString& layerName )
 {
-  if ( layer->customProperty( "labeling" ).toString() != QString( "pal" ) || !layer->labelsEnabled() )
-    return;
-
-  mSettings = QgsVectorLayerLabelSettings::fromLayer( layer );
+  mSettings = settings ? *settings : QgsPalLayerSettings::fromLayer( layer );
+  mName = layerName.isEmpty() ? layer->id() : layerName;
   mLayerId = layer->id();
   mFields = layer->fields();
   mCrs = layer->crs();
@@ -120,14 +117,10 @@ QgsVectorLayerLabelProvider::~QgsVectorLayerLabelProvider()
     delete mSource;
 }
 
-QString QgsVectorLayerLabelProvider::id() const
-{
-  return mLayerId;
-}
 
 bool QgsVectorLayerLabelProvider::prepare( const QgsRenderContext& context, QStringList& attributeNames )
 {
-  QgsVectorLayerLabelSettings& lyr = mSettings;
+  QgsPalLayerSettings& lyr = mSettings;
   const QgsMapSettings& mapSettings = mEngine->mapSettings();
 
   QgsDebugMsgLevel( "PREPARE LAYER " + mLayerId, 4 );
@@ -389,7 +382,7 @@ void QgsVectorLayerLabelProvider::drawLabel( QgsRenderContext& context, pal::Lab
 
   // add to the results
   QString labeltext = label->getFeaturePart()->feature()->labelText();
-  mEngine->results()->mLabelSearchTree->insertLabel( label, label->getFeaturePart()->featureId(), id(), labeltext, dFont, false, lf->hasFixedPosition() );
+  mEngine->results()->mLabelSearchTree->insertLabel( label, label->getFeaturePart()->featureId(), mLayerId, labeltext, dFont, false, lf->hasFixedPosition() );
 }
 
 

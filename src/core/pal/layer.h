@@ -81,6 +81,9 @@ namespace pal
        */
       int featureCount() { return mHashtable.size(); }
 
+      /** Returns pointer to the associated provider */
+      QgsAbstractLabelProvider* provider() const { return mProvider; }
+
       /** Returns the layer's name.
        */
       QString name() const { return mName; }
@@ -242,7 +245,8 @@ namespace pal
       void chopFeaturesAtRepeatDistance();
 
     protected:
-      QString mName; /* unique */
+      QgsAbstractLabelProvider* mProvider; // not owned
+      QString mName;
 
       /** List of feature parts */
       QLinkedList<FeaturePart*> mFeatureParts;
@@ -279,7 +283,8 @@ namespace pal
       /**
        * \brief Create a new layer
        *
-       * @param lyrName layer's name
+       * @param provider Associated provider
+       * @param name Name of the layer (for stats, debugging - does not need to be unique)
        * @param arrangement Arrangement mode : how to place candidates
        * @param defaultPriority layer's prioriry (0 is the best, 1 the worst)
        * @param active is the layer is active (currently displayed)
@@ -288,7 +293,7 @@ namespace pal
        * @param displayAll if true, all features will be labelled even though overlaps occur
        *
        */
-      Layer( const QString& lyrName, Arrangement arrangement, double defaultPriority, bool active, bool toLabel, Pal *pal, bool displayAll = false );
+      Layer( QgsAbstractLabelProvider* provider, const QString& name, Arrangement arrangement, double defaultPriority, bool active, bool toLabel, Pal *pal, bool displayAll = false );
 
       /** Add newly created feature part into r tree and to the list */
       void addFeaturePart( FeaturePart* fpart, const QString &labelText = QString() );

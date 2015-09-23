@@ -388,11 +388,6 @@ namespace pal
     }
   }
 
-  QString LabelPosition::getLayerName() const
-  {
-    return feature->layer()->name();
-  }
-
   void LabelPosition::setConflictsWithObstacle( bool conflicts )
   {
     mHasObstacleConflict = conflicts;

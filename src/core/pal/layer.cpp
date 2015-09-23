@@ -45,8 +45,9 @@
 namespace pal
 {
 
-  Layer::Layer( const QString &lyrName, Arrangement arrangement, double defaultPriority, bool active, bool toLabel, Pal *pal, bool displayAll )
-      : mName( lyrName )
+  Layer::Layer( QgsAbstractLabelProvider* provider, const QString& name, Arrangement arrangement, double defaultPriority, bool active, bool toLabel, Pal *pal, bool displayAll )
+      : mProvider( provider )
+      , mName( name )
       , pal( pal )
       , mObstacleType( PolygonInterior )
       , mActive( active )
