@@ -42,9 +42,11 @@ SET(QGIS_APP_SRCS
   qgslabelpropertydialog.cpp
   qgslabelengineconfigdialog.cpp
   qgslabelinggui.cpp
+  qgslabelingwidget.cpp
   qgslabelpreview.cpp
   qgsloadstylefromdbdialog.cpp
   qgsmaplayerstyleguiutils.cpp
+  qgsrulebasedlabelingwidget.cpp
   qgssavestyletodbdialog.cpp
   qgsguivectorlayertools.cpp
   qgswelcomepageitemsmodel.cpp
@@ -204,9 +206,11 @@ SET (QGIS_APP_MOC_HDRS
   qgslabeldialog.h
   qgslabelengineconfigdialog.h
   qgslabelinggui.h
+  qgslabelingwidget.h
   qgslabelpropertydialog.h
   qgsloadstylefromdbdialog.h
   qgsmaplayerstyleguiutils.h
+  qgsrulebasedlabelingwidget.h
   qgssavestyletodbdialog.h
   qgsshortcutsmanager.h
   qgsapplayertreeviewmenuprovider.h

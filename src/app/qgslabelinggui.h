@@ -39,12 +39,19 @@ class APP_EXPORT QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     QgsPalLayerSettings layerSettings();
     void writeSettingsToLayer();
 
+    enum LabelMode {
+      NoLabels,
+      Labels,
+      ObstaclesOnly,
+    };
+
+    void setLabelMode( LabelMode mode );
+
   public slots:
     void init();
     void collapseSample( bool collapse );
     void apply();
     void changeTextColor( const QColor &color );
-    void showEngineConfigDialog();
     void changeBufferColor( const QColor &color );
 
     void updateUi();
@@ -53,7 +60,6 @@ class APP_EXPORT QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     void updatePlacementWidgets();
     void updateSvgWidgets( const QString& svgPath );
 
-    void on_mLabelModeComboBox_currentIndexChanged( int index );
     void on_mPreviewSizeSlider_valueChanged( int i );
     void on_mFontSizeSpinBox_valueChanged( double d );
     void on_mFontCapitalsComboBox_currentIndexChanged( int index );
@@ -99,6 +105,7 @@ class APP_EXPORT QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
   private:
     QgsVectorLayer* mLayer;
     QgsMapCanvas* mMapCanvas;
+    LabelMode mMode;
     QFontDatabase mFontDB;
     QgsCharacterSelectorDialog* mCharDlg;
 
