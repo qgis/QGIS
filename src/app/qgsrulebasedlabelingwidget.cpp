@@ -255,13 +255,12 @@ QVariant QgsRuleBasedLabelingModel::data( const QModelIndex& index, int role ) c
       default: return QVariant();
     }
   }
-  /* TODO
   else if ( role == Qt::CheckStateRole )
   {
     if ( index.column() != 0 )
       return QVariant();
-    return rule->checkState() ? Qt::Checked : Qt::Unchecked;
-  }*/
+    return rule->active() ? Qt::Checked : Qt::Unchecked;
+  }
   else
     return QVariant();
 }
@@ -339,13 +338,12 @@ bool QgsRuleBasedLabelingModel::setData( const QModelIndex& index, const QVarian
 
   QgsRuleBasedLabeling::Rule* rule = ruleForIndex( index );
 
-  /* TODO
   if ( role == Qt::CheckStateRole )
   {
-    rule->setCheckState( value.toInt() == Qt::Checked );
+    rule->setActive( value.toInt() == Qt::Checked );
     emit dataChanged( index, index );
     return true;
-  }*/
+  }
 
   if ( role != Qt::EditRole )
     return false;

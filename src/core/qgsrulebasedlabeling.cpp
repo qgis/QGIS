@@ -47,7 +47,7 @@ QgsRuleBasedLabeling::Rule::Rule( QgsPalLayerSettings* settings, int scaleMinDen
     , mScaleMinDenom( scaleMinDenom ), mScaleMaxDenom( scaleMaxDenom )
     , mFilterExp( filterExp ), mLabel( label ), mDescription( description )
     , mElseRule( elseRule )
-    //, mIsActive( true )
+    , mIsActive( true )
     , mFilter( 0 )
 {
   initFilter();
@@ -88,19 +88,29 @@ void QgsRuleBasedLabeling::Rule::initFilter()
   }
 }
 
+void QgsRuleBasedLabeling::Rule::updateElseRules()
+{
+  mElseRules.clear();
+  Q_FOREACH ( Rule* rule, mChildren )
+  {
+    if ( rule->isElse() )
+      mElseRules << rule;
+  }
+}
+
 
 void QgsRuleBasedLabeling::Rule::appendChild( QgsRuleBasedLabeling::Rule* rule )
 {
   mChildren.append( rule );
   rule->mParent = this;
-  // TODO updateElseRules();
+  updateElseRules();
 }
 
 void QgsRuleBasedLabeling::Rule::insertChild( int i, QgsRuleBasedLabeling::Rule* rule )
 {
   mChildren.insert( i, rule );
   rule->mParent = this;
-  // TODO updateElseRules();
+  updateElseRules();
 }
 
 void QgsRuleBasedLabeling::Rule::removeChildAt( int i )
@@ -108,14 +118,14 @@ void QgsRuleBasedLabeling::Rule::removeChildAt( int i )
   Rule* rule = mChildren[i];
   mChildren.removeAt( i );
   delete rule;
-  // TODO updateElseRules();
+  updateElseRules();
 }
 
 QgsRuleBasedLabeling::Rule*QgsRuleBasedLabeling::Rule::clone() const
 {
   QgsPalLayerSettings* s = mSettings ? new QgsPalLayerSettings( *mSettings ) : 0;
   Rule* newrule = new Rule( s, mScaleMinDenom, mScaleMaxDenom, mFilterExp, mLabel, mDescription );
-  // TODO newrule->setCheckState( mIsActive );
+  newrule->setActive( mIsActive );
   // clone children
   Q_FOREACH ( Rule* rule, mChildren )
     newrule->appendChild( rule->clone() );
@@ -143,7 +153,7 @@ QgsRuleBasedLabeling::Rule*QgsRuleBasedLabeling::Rule::create( const QDomElement
   //if ( !ruleKey.isEmpty() )
   //  rule->mRuleKey = ruleKey;
 
-  //rule->setCheckState( ruleElem.attribute( "checkstate", "1" ).toInt() );
+  rule->setActive( ruleElem.attribute( "active", "1" ).toInt() );
 
   QDomElement childRuleElem = ruleElem.firstChildElement( "rule" );
   while ( !childRuleElem.isNull() )
@@ -181,8 +191,8 @@ QDomElement QgsRuleBasedLabeling::Rule::save( QDomDocument& doc ) const
     ruleElem.setAttribute( "label", mLabel );
   if ( !mDescription.isEmpty() )
     ruleElem.setAttribute( "description", mDescription );
-  //if ( !mIsActive )
-  //  ruleElem.setAttribute( "checkstate", 0 );
+  if ( !mIsActive )
+    ruleElem.setAttribute( "active", 0 );
   //ruleElem.setAttribute( "key", mRuleKey );
 
   for ( RuleList::const_iterator it = mChildren.constBegin(); it != mChildren.constEnd(); ++it )
@@ -231,22 +241,51 @@ void QgsRuleBasedLabeling::Rule::prepare( const QgsRenderContext& context, QStri
   }
 }
 
-void QgsRuleBasedLabeling::Rule::registerFeature( QgsFeature& feature, const QgsRenderContext& context, QgsRuleBasedLabeling::RuleToProviderMap& subProviders )
+QgsRuleBasedLabeling::Rule::RegisterResult QgsRuleBasedLabeling::Rule::registerFeature( QgsFeature& feature, const QgsRenderContext& context, QgsRuleBasedLabeling::RuleToProviderMap& subProviders )
 {
-  bool isOK = isFilterOK( feature, const_cast<QgsRenderContext&>( context ) );  // TODO: remove const_cast
+  if ( !isFilterOK( feature, const_cast<QgsRenderContext&>( context ) )
+       || !isScaleOK( context.rendererScale() ) )
+    return Filtered;
 
-  if ( !isOK )
-    return;
+  bool registered = false;
 
   // do we have active subprovider for the rule?
-  if ( subProviders.contains( this ) )
+  if ( subProviders.contains( this ) && mIsActive )
+  {
     subProviders[this]->registerFeature( feature, context );
+    registered = true;
+  }
+
+  bool willRegisterSomething = false;
 
   // call recursively
   Q_FOREACH ( Rule* rule, mChildren )
   {
-    rule->registerFeature( feature, context, subProviders );
+    // Don't process else rules yet
+    if ( !rule->isElse() )
+    {
+      RegisterResult res = rule->registerFeature( feature, context, subProviders );
+      // consider inactive items as "registered" so the else rule will ignore them
+      willRegisterSomething |= ( res == Registered || res == Inactive );
+      registered |= willRegisterSomething;
+    }
   }
+
+  // If none of the rules passed then we jump into the else rules and process them.
+  if ( !willRegisterSomething )
+  {
+    Q_FOREACH ( Rule* rule, mElseRules )
+    {
+      registered |= rule->registerFeature( feature, context, subProviders ) != Filtered;
+    }
+  }
+
+  if ( !mIsActive )
+    return Inactive;
+  else if ( registered )
+    return Registered;
+  else
+    return Filtered;
 }
 
 bool QgsRuleBasedLabeling::Rule::isFilterOK( QgsFeature& f, QgsRenderContext& context ) const
@@ -257,6 +296,19 @@ bool QgsRuleBasedLabeling::Rule::isFilterOK( QgsFeature& f, QgsRenderContext& co
   context.expressionContext().setFeature( f );
   QVariant res = mFilter->evaluate( &context.expressionContext() );
   return res.toInt() != 0;
+}
+
+bool QgsRuleBasedLabeling::Rule::isScaleOK( double scale ) const
+{
+  if ( scale == 0 ) // so that we can count features in classes without scale context
+    return true;
+  if ( mScaleMinDenom == 0 && mScaleMaxDenom == 0 )
+    return true;
+  if ( mScaleMinDenom != 0 && mScaleMinDenom > scale )
+    return false;
+  if ( mScaleMaxDenom != 0 && mScaleMaxDenom < scale )
+    return false;
+  return true;
 }
 
 ////////////////////

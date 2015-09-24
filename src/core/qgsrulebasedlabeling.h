@@ -28,6 +28,14 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         Rule( QgsPalLayerSettings* settings, int scaleMinDenom = 0, int scaleMaxDenom = 0, const QString& filterExp = QString(), const QString& label = QString(), const QString& description = QString(), bool elseRule = false );
         ~Rule();
 
+        //! The result of registering a rule
+        enum RegisterResult
+        {
+          Filtered = 0, //!< The rule does not apply
+          Inactive,     //!< The rule is inactive
+          Registered    //!< Something was registered
+        };
+
         QgsPalLayerSettings* settings() const { return mSettings; }
         QString label() const { return mLabel; }
         bool dependsOnScale() const { return mScaleMinDenom != 0 || mScaleMaxDenom != 0; }
@@ -44,6 +52,12 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          * @return Description
          */
         QString description() const { return mDescription; }
+        /**
+         * Returns if this rule is active
+         *
+         * @return True if the rule is active
+         */
+        bool active() const { return mIsActive; }
         /**
          * Check if this rule is an ELSE rule
          *
@@ -81,6 +95,11 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          * @param description Description
          */
         void setDescription( QString description ) { mDescription = description; }
+        /**
+         * Sets if this rule is active
+         * @param state Determines if the rule should be activated or deactivated
+         */
+        void setActive( bool state ) { mIsActive = state; }
         /**
          * Sets if this rule is an ELSE rule
          *
@@ -149,7 +168,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         void prepare( const QgsRenderContext& context, QStringList& attributeNames, RuleToProviderMap& subProviders );
 
         //! register individual features
-        void registerFeature( QgsFeature& feature, const QgsRenderContext& context, RuleToProviderMap& subProviders );
+        RegisterResult registerFeature( QgsFeature& feature, const QgsRenderContext& context, RuleToProviderMap& subProviders );
 
       protected:
         /**
@@ -160,8 +179,20 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          * @return          True if the feature shall be rendered
          */
         bool isFilterOK( QgsFeature& f, QgsRenderContext& context ) const;
+        /**
+         * Check if this rule applies for a given scale
+         * @param scale The scale to check. If set to 0, it will always return true.
+         *
+         * @return If the rule will be evaluated at this scale
+         */
+        bool isScaleOK( double scale ) const;
 
         void initFilter();
+
+        /**
+         * Check which child rules are else rules and update the internal list of else rules
+         */
+        void updateElseRules();
 
       protected:
         Rule* mParent; // parent rule (NULL only for root rule)
@@ -170,6 +201,8 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         QString mFilterExp, mLabel, mDescription;
         bool mElseRule;
         RuleList mChildren;
+        RuleList mElseRules;
+        bool mIsActive; // whether it is enabled or not
 
         // temporary
         QgsExpression* mFilter;
