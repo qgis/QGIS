@@ -5186,7 +5186,6 @@ void QgisApp::labeling()
 
   QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Apply, Qt::Horizontal, &dlg );
   layout->addWidget( buttonBox );
-  layout->setContentsMargins( 0, 0, 0, 0 );
 
   dlg.setLayout( layout );
 
@@ -5195,7 +5194,7 @@ void QgisApp::labeling()
 
   connect( buttonBox->button( QDialogButtonBox::Ok ), SIGNAL( clicked() ), &dlg, SLOT( accept() ) );
   connect( buttonBox->button( QDialogButtonBox::Cancel ), SIGNAL( clicked() ), &dlg, SLOT( reject() ) );
-  connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), labelingGui, SLOT( apply() ) );
+  connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), labelingGui, SLOT( writeSettingsToLayer() ) );
 
   if ( dlg.exec() )
   {

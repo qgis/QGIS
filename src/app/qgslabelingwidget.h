@@ -19,10 +19,9 @@ class QgsLabelingWidget : public QWidget, private Ui::QgsLabelingWidget
   public:
     QgsLabelingWidget( QgsVectorLayer* layer, QgsMapCanvas* canvas, QWidget* parent = 0 );
 
+  public slots:
     //! save config to layer
     void writeSettingsToLayer();
-
-  signals:
 
   protected slots:
     void labelModeChanged( int index );
