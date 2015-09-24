@@ -36,7 +36,6 @@ class QgsGrassItemActions : public QObject
     QList<QAction*> actions();
 
   public slots:
-    void openOptions();
     void openMapset();
     void renameGrassObject();
     void deleteGrassObject();

@@ -168,9 +168,6 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     static void lock();
     static void unlock();
 
-    /** Path to where GRASS is installed (GISBASE) */
-    static QString gisbase() { return mGisbase; }
-
     //! Get info about the mode
     /** QgsGrass may be running in active or passive mode.
      *  Active mode means that GISRC is set up and GISRC file is available,
@@ -248,7 +245,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     static void saveMapset();
 
     //! Check if given directory contains a GRASS installation
-    static bool isValidGrassBaseDir( const QString& gisBase );
+    static bool isValidGrassBaseDir( const QString& gisbase );
 
     //! Returns list of locations in given gisbase
     static QStringList locations( const QString& gisdbase );
@@ -513,6 +510,15 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     // Get PYTHONPATH with paths to GRASS Python modules
     static QString getPythonPath();
 
+    // path to GRASS installation
+    static QString defaultGisbase();
+
+    // current path to GRASS installation dir (default or custom)
+    static QString gisbase();
+
+    // set custom path to GRASS installation, emits gisbaseChanged
+    void setGisbase( bool custom, const QString &customDir );
+
     // path to default modules interface config dir
     static QString modulesConfigDefaultDirPath();
 
@@ -557,7 +563,12 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     /** Close mapset and show warning if closing failed */
     bool closeMapsetWarn();
 
+    void openOptions();
+
   signals:
+    /** Signal emitted  when user changed GISBASE */
+    void gisbaseChanged();
+
     /** Signal emitted after mapset was opened */
     void mapsetChanged();
 
@@ -581,9 +592,9 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     void newLayer( QString uri, QString name );
 
   private:
+    static bool mNonInitializable;
     static int initialized; // Set to 1 after initialization
     static bool active; // is active mode
-    static QString mGisbase;
     static QStringList mGrassModulesPaths;
     static QString defaultGisdbase;
     static QString defaultLocation;

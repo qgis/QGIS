@@ -85,6 +85,8 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
     void unload() override;
     //! show the help document
     void help();
+    //! Gisbase changed by user
+    void onGisbaseChanged();
     //! Display current region
     void displayRegion();
     //! Switch region on/off
@@ -154,8 +156,9 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
     QAction *mCloseMapsetAction;
     QAction *mOpenToolsAction;
     QAction *mNewVectorAction;
+    QAction *mOptionsAction;
 
-    // Editing
+    // Editing    static bool mNonInitializable;
     QAction *mAddFeatureAction;
     QAction *mAddPointAction;
     QAction *mAddLineAction;

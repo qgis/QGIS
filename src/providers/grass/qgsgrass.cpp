@@ -29,6 +29,7 @@
 #endif
 
 #include "qgsgrass.h"
+#include "qgsgrassoptions.h"
 #include "qgsgrassvector.h"
 
 #include "qgsapplication.h"
@@ -299,10 +300,7 @@ bool QgsGrass::init( void )
   // G_set_error_routine() once called from plugin
   // is not valid in provider -> call it always
 
-  // nonInitializable is set to tru if G_no_gisinit() fails to avoid other attempts
-  static bool nonInitializable = false;
-
-  if ( nonInitializable )
+  if ( mNonInitializable )
   {
     return false;
   }
@@ -316,9 +314,7 @@ bool QgsGrass::init( void )
   G_set_error_routine( &error_routine );
 
   lock();
-
   QgsDebugMsg( "do init" );
-  QSettings settings;
 
   // Is it active mode ?
   active = false;
@@ -351,7 +347,7 @@ bool QgsGrass::init( void )
   {
     error_message = tr( "Problem in GRASS initialization, GRASS provider and plugin will not work" ) + " : " + e.what();
     QgsDebugMsg( error_message );
-    nonInitializable = true;
+    mNonInitializable = true;
     unlock();
     return false;
   }
@@ -369,113 +365,24 @@ bool QgsGrass::init( void )
   // Require GISBASE to be set. This should point to the location of
   // the GRASS installation. The GRASS libraries use it to know
   // where to look for things.
-
-  // Look first to see if GISBASE env var is already set.
-  // This is set when QGIS is run from within GRASS
-  // or when set explicitly by the user.
-  // This value should always take precedence.
-#ifdef Q_OS_WIN
-  QString gisBase = getenv( "WINGISBASE" ) ? getenv( "WINGISBASE" ) : getenv( "GISBASE" );
-  gisBase = shortPath( gisBase );
-#else
-  QString gisBase = getenv( "GISBASE" );
-#endif
-  QgsDebugMsg( QString( "GRASS gisBase from GISBASE/WINGISBASE env var is: %1" ).arg( gisBase ) );
-  if ( !isValidGrassBaseDir( gisBase ) )
+  if ( !isValidGrassBaseDir( gisbase() ) )
   {
-    // Look for gisbase in QSettings
-    gisBase = settings.value( "/GRASS/gisbase", "" ).toString();
-    QgsDebugMsg( QString( "GRASS gisBase from QSettings is: %1" ).arg( gisBase ) );
-  }
-
-  if ( !isValidGrassBaseDir( gisBase ) )
-  {
-    // Erase gisbase from settings because it does not exists
-    settings.setValue( "/GRASS/gisbase", "" );
-
-#ifdef Q_OS_WIN
-    // Use the applicationDirPath()/grass
-#ifdef _MSC_VER
-    gisBase = shortPath( QCoreApplication::applicationDirPath() + ( QgsApplication::isRunningFromBuildDir() ?  + "/../.." : "" ) + "/grass" );
-#else
-    gisBase = shortPath( QCoreApplication::applicationDirPath() + ( QgsApplication::isRunningFromBuildDir() ?  + "/.." : "" ) + "/grass" );
-#endif
-    QgsDebugMsg( QString( "GRASS gisBase = %1" ).arg( gisBase ) );
-#elif defined(Q_OS_MACX)
-    // check for bundled GRASS, fall back to configured path
-    gisBase = QCoreApplication::applicationDirPath().append( "/grass" );
-    if ( !isValidGrassBaseDir( gisBase ) )
-    {
-      gisBase = GRASS_BASE;
-    }
-    QgsDebugMsg( QString( "GRASS gisBase = %1" ).arg( gisBase ) );
-#else
-    // Use the location specified --with-grass during configure
-    gisBase = GRASS_BASE;
-    QgsDebugMsg( QString( "GRASS gisBase from configure is: %1" ).arg( gisBase ) );
-#endif
-  }
-
-  bool userGisbase = false;
-  bool valid = isValidGrassBaseDir( gisBase );
-  // TODO add GISBASE selection to options dialog
-#if 0
-  while ( !( valid = isValidGrassBaseDir( gisBase ) ) )
-  {
-
-    // ask user if he wants to specify GISBASE
-    QMessageBox::StandardButton res = QMessageBox::warning( 0, QObject::tr( "GRASS plugin" ),
-                                      QObject::tr( "QGIS couldn't find your GRASS installation.\n"
-                                                   "Would you like to specify path (GISBASE) to your GRASS installation?" ),
-                                      QMessageBox::Ok | QMessageBox::Cancel );
-
-    if ( res != QMessageBox::Ok )
-    {
-      userGisbase = false;
-      break;
-    }
-
-    // XXX Need to subclass this and add explantory message aboveSencha to left side
-    userGisbase = true;
-    // For Mac, GISBASE folder may be inside GRASS bundle. Use Qt file dialog
-    // since Mac native dialog doesn't allow user to browse inside bundles.
-    gisBase = QFileDialog::getExistingDirectory(
-                0, QObject::tr( "Choose GRASS installation path (GISBASE)" ), gisBase,
-                QFileDialog::DontUseNativeDialog );
-    if ( gisBase == QString::null )
-    {
-      // User pressed cancel. No GRASS for you!
-      userGisbase = false;
-      break;
-    }
-#ifdef Q_OS_WIN
-    gisBase = shortPath( gisBase );
-#endif
-  }
-#endif
-
-  if ( !valid )
-  {
-    nonInitializable = true;
-    error_message = tr( "GRASS was not found in '%1'(GISBASE), provider and plugin will not work." ).arg( gisBase );
+    mNonInitializable = true;
+    error_message = tr( "GRASS was not found in '%1'(GISBASE), provider and plugin will not work." ).arg( gisbase() );
     QgsDebugMsg( error_message );
 #if 0
     // TODO: how to emit message from provider (which does not know about QgisApp)
     QgisApp::instance()->messageBar()->pushMessage( tr( "GRASS error" ),
       error_message, QgsMessageBar: WARNING );
 #endif
+    unlock();
+    return false;
   }
   else
   {
-    if ( userGisbase )
-    {
-      settings.setValue( "/GRASS/gisbase", gisBase );
-    }
-
-    QgsDebugMsg( QString( "Valid GRASS gisBase is: %1" ).arg( gisBase ) );
+    QgsDebugMsg( "Valid GRASS gisbase is: " + gisbase() );
     // GISBASE environment variable must be set because is required by directly called GRASS functions
-    putEnv( "GISBASE", gisBase );
-    mGisbase = gisBase;
+    putEnv( "GISBASE", gisbase() );
 
     // Create list of paths to GRASS modules
     // PATH environment variable is not used to search for modules (since 2.12) because it could
@@ -556,17 +463,17 @@ bool QgsGrass::init( void )
   }
 
   unlock();
-  return valid;
+  return true;
 }
 
 /*
  * Check if given directory contains a GRASS installation
  */
-bool QgsGrass::isValidGrassBaseDir( const QString& gisBase )
+bool QgsGrass::isValidGrassBaseDir( const QString& gisbase )
 {
   QgsDebugMsg( "isValidGrassBaseDir()" );
   // GRASS currently doesn't handle paths with blanks
-  if ( gisBase.isEmpty() || gisBase.contains( " " ) )
+  if ( gisbase.isEmpty() || gisbase.contains( " " ) )
   {
     return false;
   }
@@ -576,13 +483,13 @@ bool QgsGrass::isValidGrassBaseDir( const QString& gisBase )
 #if 0
   if ( QgsGrass::versionMajor() > 6 || QgsGrass::versionMinor() > 0 )
   {
-    if ( G_is_gisbase( gisBase.toUtf8().constData() ) )
+    if ( G_is_gisbase( gisbase.toUtf8().constData() ) )
       return true;
   }
   else
   {
 #endif
-    QFileInfo gbi( gisBase + "/etc/element_list" );
+    QFileInfo gbi( gisbase + "/etc/element_list" );
     if ( gbi.exists() )
       return true;
 #if 0
@@ -696,6 +603,7 @@ void QgsGrass::setMapset( QgsGrassObject grassObject )
 
 jmp_buf QgsGrass::jumper;
 
+bool QgsGrass::mNonInitializable = false;
 int QgsGrass::initialized = 0;
 
 bool QgsGrass::active = 0;
@@ -704,7 +612,6 @@ QgsGrass::GERROR QgsGrass::lastError = QgsGrass::OK;
 
 QString QgsGrass::error_message;
 
-QString QgsGrass::mGisbase;
 QStringList QgsGrass::mGrassModulesPaths;
 QString QgsGrass::defaultGisdbase;
 QString QgsGrass::defaultLocation;
@@ -2483,6 +2390,94 @@ QString QgsGrass::getPythonPath()
   return pythonpath;
 }
 
+QString QgsGrass::defaultGisbase()
+{
+  // Look first to see if GISBASE env var is already set.
+  // This is set when QGIS is run from within GRASS
+  // or when set explicitly by the user.
+  // This value should always take precedence.
+  QString gisbase;
+#ifdef Q_OS_WIN
+  gisbase = getenv( "WINGISBASE" ) ? getenv( "WINGISBASE" ) : getenv( "GISBASE" );
+  gisbase = shortPath( gisbase );
+#else
+  gisbase = getenv( "GISBASE" );
+#endif
+  QgsDebugMsg( "gisbase from envar = " + gisbase );
+
+  if ( !gisbase.isEmpty() )
+  {
+    return gisbase;
+  }
+
+#ifdef Q_OS_WIN
+  // Use the applicationDirPath()/grass
+#ifdef _MSC_VER
+  gisbase = shortPath( QCoreApplication::applicationDirPath() + ( QgsApplication::isRunningFromBuildDir() ?  + "/../.." : "" ) + "/grass" );
+#else
+  gisbase = shortPath( QCoreApplication::applicationDirPath() + ( QgsApplication::isRunningFromBuildDir() ?  + "/.." : "" ) + "/grass" );
+#endif
+  // Use the location specified by WITH_GRASS during configure
+#elif defined(Q_OS_MACX)
+  // check for bundled GRASS, fall back to configured path
+  gisbase = QCoreApplication::applicationDirPath().append( "/grass" );
+  if ( !isValidGrassBaseDir( gisbase ) )
+  {
+    gisbase = GRASS_BASE;
+  }
+#else
+  gisbase = GRASS_BASE;
+#endif
+
+  QgsDebugMsg( "gisbase = " + gisbase );
+  return gisbase;
+}
+
+
+QString QgsGrass::gisbase()
+{
+  QSettings settings;
+  bool customGisbase = settings.value( "/GRASS/gidbase/custom", false ).toBool();
+  QString customGisdbaseDir = settings.value( "/GRASS/gidbase/customDir" ).toString();
+
+  QString gisbase;
+  if ( customGisbase && !customGisdbaseDir.isEmpty() )
+  {
+    gisbase = customGisdbaseDir;
+  }
+  else
+  {
+    gisbase = defaultGisbase();
+  }
+#ifdef Q_OS_WIN
+  gisbase = shortPath( gisbase );
+#endif
+  return gisbase;
+}
+
+void QgsGrass::setGisbase( bool custom, const QString &customDir )
+{
+  QgsDebugMsg( QString( "custom = %1 customDir = %2" ).arg( custom ).arg( customDir ) );
+  QSettings settings;
+
+  bool previousCustom = settings.value( "/GRASS/gidbase/custom", false ).toBool();
+  QString previousCustomDir = settings.value( "/GRASS/gidbase/customDir" ).toString();
+  settings.setValue( "/GRASS/gidbase/custom", custom );
+  settings.setValue( "/GRASS/gidbase/customDir", customDir );
+
+  if ( custom != previousCustom || ( custom && customDir != previousCustomDir ) )
+  {
+    mNonInitializable = false;
+    initialized = false;
+    if ( !QgsGrass::init() )
+    {
+      QgsDebugMsg( "cannot init : " + QgsGrass::errorMessage() );
+    }
+    emit gisbaseChanged();
+  }
+}
+
+
 QString QgsGrass::modulesConfigDefaultDirPath()
 {
   if ( QgsApplication::isRunningFromBuildDir() )
@@ -2556,6 +2551,13 @@ void QgsGrass::setModulesDebug( bool debug )
   {
     emit modulesDebugChanged();
   }
+}
+
+void QgsGrass::openOptions()
+{
+  QgsDebugMsg( "entered" );
+  QgsGrassOptions dialog;
+  dialog.exec();
 }
 
 void QgsGrass::warning( const QString &message )

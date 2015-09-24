@@ -45,7 +45,7 @@ QList<QAction*> QgsGrassItemActions::actions()
   QList<QAction*> list;
 
   QAction* optionsAction = new QAction( tr( "GRASS Options" ), this );
-  connect( optionsAction, SIGNAL( triggered() ), SLOT( openOptions() ) );
+  connect( optionsAction, SIGNAL( triggered() ), QgsGrass::instance(), SLOT( openOptions() ) );
   list << optionsAction;
 
   // TODO: add icons to provider
@@ -86,13 +86,6 @@ QList<QAction*> QgsGrassItemActions::actions()
   }
 
   return list;
-}
-
-void QgsGrassItemActions::openOptions()
-{
-  QgsDebugMsg( "entered" );
-  QgsGrassOptions dialog;
-  dialog.exec();
 }
 
 void QgsGrassItemActions::openMapset()
