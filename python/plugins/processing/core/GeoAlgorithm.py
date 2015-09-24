@@ -435,7 +435,7 @@ class GeoAlgorithm:
                             if layer.name() == inputlayer:
                                 inputlayers[i] = layer.source()
                                 break
-                    param.setValue(",".join(inputlayers))
+                    param.setValue(";".join(inputlayers))
 
     def checkInputCRS(self):
         """It checks that all input layers use the same CRS. If so,
