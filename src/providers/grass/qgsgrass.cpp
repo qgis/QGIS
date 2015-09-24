@@ -1174,7 +1174,7 @@ QStringList QgsGrass::vectorLayers( const QString& gisdbase, const QString& loca
 
   // TODO: add option in GUI to set listTopoLayers
   QSettings settings;
-  bool listTopoLayers =  settings.value( "/GRASS/listTopoLayers", false ).toBool();
+  bool listTopoLayers =  settings.value( "/GRASS/showTopoLayers", false ).toBool();
   if ( listTopoLayers )
   {
     // add topology layers

@@ -149,7 +149,7 @@
           <number>0</number>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>2</number>
          </property>
          <widget class="QWidget" name="mGeneralPage">
           <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -246,8 +246,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>408</width>
-                <height>311</height>
+                <width>247</width>
+                <height>141</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout">
@@ -351,7 +351,7 @@
                 <height>329</height>
                </rect>
               </property>
-              <layout class="QVBoxLayout" name="verticalLayout_28">
+              <layout class="QVBoxLayout" name="verticalLayout_13">
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="mImportGroupBox">
                  <property name="title">
@@ -396,6 +396,28 @@
                     </property>
                     <property name="text">
                      <string>Create link to external data if possible</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
+                <widget class="QgsCollapsibleGroupBox" name="mLayersBox">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="title">
+                  <string>Layers</string>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_12">
+                  <item>
+                   <widget class="QCheckBox" name="mTopoLayersCheckBox">
+                    <property name="text">
+                     <string>Show virtual topological layers</string>
                     </property>
                    </widget>
                   </item>

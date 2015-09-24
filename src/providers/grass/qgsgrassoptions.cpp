@@ -76,6 +76,8 @@ QgsGrassOptions::QgsGrassOptions( QWidget *parent )
 
   mImportExternalCheckBox->setChecked( settings.value( mImportSettingsPath + "/external", true ).toBool() );
 
+  mTopoLayersCheckBox->setChecked( settings.value( "/GRASS/showTopoLayers", false ).toBool() );
+
   // Region
   QPen regionPen = QgsGrass::regionPen();
   mRegionColorButton->setContext( "gui" );
@@ -159,6 +161,8 @@ void QgsGrassOptions::saveOptions()
                      mCrsTransformationComboBox->itemData( mCrsTransformationComboBox->currentIndex() ).toInt() );
 
   settings.setValue( mImportSettingsPath + "/external", mImportExternalCheckBox->isChecked() );
+
+  settings.setValue( "/GRASS/showTopoLayers", mTopoLayersCheckBox->isChecked() );
 
   // Region
   QPen regionPen = QgsGrass::regionPen();

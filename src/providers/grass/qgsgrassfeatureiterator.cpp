@@ -465,7 +465,7 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature& feature )
       mSource->mLayer->map()->unlockReadWrite();
       return false; // No more features
     }
-    if ( type == 0 ) // should not happen
+    if ( type == 0 && mSource->mLayerType != QgsGrassProvider::TOPO_NODE )
     {
       QgsDebugMsg( "unknown type" );
       close();
@@ -507,6 +507,7 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature& feature )
   }
   else
   {
+    feature.initAttributes( mSource->mFields.size() );
     feature.setAttribute( 0, lid );
 #if GRASS_VERSION_MAJOR < 7
     if ( mSource->mLayerType == QgsGrassProvider::TOPO_POINT || mSource->mLayerType == QgsGrassProvider::TOPO_LINE )
@@ -518,7 +519,6 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature& feature )
       feature.setAttribute( 1, QgsGrass::vectorTypeName( type ) );
 
       int node1, node2;;
-      close();
       Vect_get_line_nodes( mSource->map(), lid, &node1, &node2 );
       feature.setAttribute( 2, node1 );
       if ( mSource->mLayerType == QgsGrassProvider::TOPO_LINE )

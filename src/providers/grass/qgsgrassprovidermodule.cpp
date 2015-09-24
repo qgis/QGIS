@@ -484,7 +484,7 @@ QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
       QString typeName = layerName.split( "_" ).value( 1 );
       QString baseLayerName = layerName.split( "_" ).value( 0 );
 
-      if ( typeName == "point" )
+      if ( typeName == "point" || typeName == "node" )
         layerType = QgsLayerItem::Point;
       else if ( typeName == "line" )
         layerType = QgsLayerItem::Line;
