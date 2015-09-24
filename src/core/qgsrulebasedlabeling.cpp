@@ -229,7 +229,10 @@ void QgsRuleBasedLabeling::Rule::prepare( const QgsRenderContext& context, QStri
   }
 
   if ( mFilter )
+  {
+    attributeNames << mFilter->referencedColumns();
     mFilter->prepare( &context.expressionContext() );
+  }
 
   // call recursively
   Q_FOREACH ( Rule* rule, mChildren )
