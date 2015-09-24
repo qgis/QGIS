@@ -122,6 +122,7 @@
 #include "qgscustomprojectiondialog.h"
 #include "qgsdatasourceuri.h"
 #include "qgsdatumtransformdialog.h"
+#include "qgsdoublespinbox.h"
 #include "qgsdxfexport.h"
 #include "qgsdxfexportdialog.h"
 #include "qgsdecorationcopyright.h"
@@ -140,7 +141,7 @@
 #include "qgsgenericprojectionselector.h"
 #include "qgsgpsinformationwidget.h"
 #include "qgsguivectorlayertools.h"
-#include "qgslabelinggui.h"
+#include "qgslabelingwidget.h"
 #include "qgslayerdefinition.h"
 #include "qgslayertree.h"
 #include "qgslayertreemapcanvasbridge.h"
@@ -5176,34 +5177,31 @@ void QgisApp::labeling()
   }
 
 
-  QDialog *dlg = new QDialog( this );
-  dlg->setWindowTitle( tr( "Layer labeling settings" ) );
-  QgsLabelingGui *labelingGui = new QgsLabelingGui( vlayer, mMapCanvas, 0, dlg );
-  labelingGui->init(); // load QgsPalLayerSettings for layer
+  QDialog dlg;
+  dlg.setWindowTitle( tr( "Layer labeling settings" ) );
+  QgsLabelingWidget *labelingGui = new QgsLabelingWidget( vlayer, mMapCanvas, &dlg );
   labelingGui->layout()->setContentsMargins( 0, 0, 0, 0 );
-  QVBoxLayout *layout = new QVBoxLayout( dlg );
+  QVBoxLayout *layout = new QVBoxLayout( &dlg );
   layout->addWidget( labelingGui );
 
-  QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Apply, Qt::Horizontal, dlg );
+  QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Apply, Qt::Horizontal, &dlg );
   layout->addWidget( buttonBox );
+  layout->setContentsMargins( 0, 0, 0, 0 );
 
-  dlg->setLayout( layout );
+  dlg.setLayout( layout );
 
   QSettings settings;
-  dlg->restoreGeometry( settings.value( "/Windows/Labeling/geometry" ).toByteArray() );
+  dlg.restoreGeometry( settings.value( "/Windows/Labeling/geometry" ).toByteArray() );
 
-  connect( buttonBox->button( QDialogButtonBox::Ok ), SIGNAL( clicked() ), dlg, SLOT( accept() ) );
-  connect( buttonBox->button( QDialogButtonBox::Cancel ), SIGNAL( clicked() ), dlg, SLOT( reject() ) );
+  connect( buttonBox->button( QDialogButtonBox::Ok ), SIGNAL( clicked() ), &dlg, SLOT( accept() ) );
+  connect( buttonBox->button( QDialogButtonBox::Cancel ), SIGNAL( clicked() ), &dlg, SLOT( reject() ) );
   connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), labelingGui, SLOT( apply() ) );
 
-  if ( dlg->exec() )
+  if ( dlg.exec() )
   {
-    labelingGui->apply();
+    labelingGui->writeSettingsToLayer();
 
-    settings.setValue( "/Windows/Labeling/geometry", dlg->saveGeometry() );
-
-    // alter labeling - save the changes
-    labelingGui->layerSettings().writeToLayer( vlayer );
+    settings.setValue( "/Windows/Labeling/geometry", dlg.saveGeometry() );
 
     // trigger refresh
     if ( mMapCanvas )
@@ -5211,8 +5209,6 @@ void QgisApp::labeling()
       mMapCanvas->refresh();
     }
   }
-
-  delete dlg;
 
   activateDeactivateLayerRelatedActions( vlayer );
 }
