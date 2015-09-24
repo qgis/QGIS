@@ -53,11 +53,11 @@ static QgsExpressionContext _getExpressionContext( const void* context )
   return expContext;
 }
 
-QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, const QgsPalLayerSettings* settings, QWidget* parent )
+QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, const QgsPalLayerSettings* layerSettings, QWidget* parent )
     : QWidget( parent )
     , mLayer( layer )
     , mMapCanvas( mapCanvas )
-    , mSettings( settings )
+    , mSettings( layerSettings )
     , mMode( NoLabels )
     , mCharDlg( 0 )
     , mQuadrantBtnGrp( 0 )
