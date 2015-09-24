@@ -80,7 +80,7 @@ class GRASS_LIB_EXPORT QgsGrassObject
 {
   public:
     //! Element type
-    enum Type { None, Raster, Group, Vector, Region };
+    enum Type { None, Location, Mapset, Raster, Group, Vector, Region };
 
     QgsGrassObject() : mType( None ) {}
     QgsGrassObject( const QString& gisdbase, const QString& location = QString::null,
@@ -204,6 +204,10 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
                may influence behaviour of some functions (e.g. search path etc.)
     */
     static void setMapset( QString gisdbase, QString location, QString mapset );
+
+    /** Set mapset according to object gisdbase, location and mapset
+     * @param grassObject */
+    static void setMapset( QgsGrassObject grassObject );
 
     //! Error codes returned by error()
     enum GERROR
@@ -547,6 +551,8 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     // Sleep miliseconds (for debugging)
     static void sleep( int ms );
 
+    void emitNewLayer( QString uri, QString name ) { emit newLayer( uri, name ); }
+
   public slots:
     /** Close mapset and show warning if closing failed */
     bool closeMapsetWarn();
@@ -569,6 +575,10 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
 
     /** Emitted when region pen changed */
     void regionPenChanged();
+
+    /** Request from browser to open a new layer for editing, the plugin should connect
+     * to this signal and add the layer to canvas and start editing. */
+    void newLayer( QString uri, QString name );
 
   private:
     static int initialized; // Set to 1 after initialization

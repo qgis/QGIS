@@ -1119,16 +1119,31 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
       {
         // TODO: redo of deleted new features - save new cats somewhere,
         // resetting fid probably is not possible because it is stored in undo commands and used in buffer maps
-        int newCat = cidxGetMaxCat( mCidxFieldIndex ) + 1;
+
+        QgsDebugMsg( QString( "get new cat for mCidxFieldIndex = %1" ).arg( mCidxFieldIndex ) );
+        int newCat = 0;
+        if ( mCidxFieldIndex == -1 )
+        {
+          // No features with this field yet in map
+          newCat = 1;
+        }
+        else
+        {
+          newCat = cidxGetMaxCat( mCidxFieldIndex ) + 1;
+        }
         QgsDebugMsg( QString( "newCat = %1" ).arg( newCat ) );
         Vect_cat_set( cats, mLayerField, newCat );
       }
     }
-    if ( cat > 0 )
+    else
     {
-      // TODO: orig field, maybe different
-      int field = mLayerField;
-      Vect_cat_set( cats, field, cat );
+      // Old feature delete undo
+      if ( cat > 0 )
+      {
+        // TODO: orig field, maybe different
+        int field = mLayerField;
+        Vect_cat_set( cats, field, cat );
+      }
     }
 
     if ( type > 0 && points->n_points > 0 )
@@ -1138,6 +1153,13 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
       mLayer->map()->unlockReadWrite();
 
       QgsDebugMsg( QString( "newLine = %1" ).arg( newLid ) );
+
+      if ( mCidxFieldIndex == -1 && type != GV_BOUNDARY )
+      {
+        // first feature in this layer
+        mCidxFieldIndex = Vect_cidx_get_field_index( map(), mLayerField );
+        QgsDebugMsg( QString( "new mCidxFieldIndex = %1" ).arg( mCidxFieldIndex ) );
+      }
 
       // fid may be new (negative) or old, if this is delete undo
       int oldLid = QgsGrassFeatureIterator::lidFromFid( fid );
@@ -1428,17 +1450,28 @@ int QgsGrassProvider::cidxGetNumFields()
 
 int QgsGrassProvider::cidxGetFieldNumber( int idx )
 {
+  if ( idx < 0 || idx >= cidxGetNumFields() )
+  {
+    QgsDebugMsg( QString( "idx %1 out of range (0,%2)" ).arg( idx ).arg( cidxGetNumFields() - 1 ) );
+    return 0;
+  }
   return ( Vect_cidx_get_field_number( map(), idx ) );
 }
 
 int QgsGrassProvider::cidxGetMaxCat( int idx )
 {
+  if ( idx < 0 || idx >= cidxGetNumFields() )
+  {
+    QgsDebugMsg( QString( "idx %1 out of range (0,%2)" ).arg( idx ).arg( cidxGetNumFields() - 1 ) );
+    return 0;
+  }
+
   int ncats = Vect_cidx_get_num_cats_by_index( map(), idx );
 
   int cat, type, id;
   Vect_cidx_get_cat_by_index( map(), idx, ncats - 1, &cat, &type, &id );
 
-  return ( cat );
+  return cat;
 }
 
 QgsGrassVectorMapLayer * QgsGrassProvider::openLayer() const

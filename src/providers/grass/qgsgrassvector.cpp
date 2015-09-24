@@ -346,3 +346,13 @@ int QgsGrassVector::typeCount( int type ) const
   }
   return count;
 }
+
+int QgsGrassVector::maxLayerNumber() const
+{
+  int max = 0;
+  foreach ( QgsGrassVectorLayer *layer, mLayers )
+  {
+    max = qMax( max, layer->number() );
+  }
+  return max;
+}

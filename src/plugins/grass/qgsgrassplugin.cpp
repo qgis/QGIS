@@ -281,6 +281,7 @@ void QgsGrassPlugin::initGui()
   connect( QgsGrass::instance(), SIGNAL( mapsetChanged() ), SLOT( mapsetChanged() ) );
   connect( QgsGrass::instance(), SIGNAL( regionChanged() ), SLOT( displayRegion() ) );
   connect( QgsGrass::instance(), SIGNAL( regionPenChanged() ), SLOT( displayRegion() ) );
+  connect( QgsGrass::instance(), SIGNAL( newLayer( QString, QString ) ), SLOT( onNewLayer( QString, QString ) ) );
 
   // Connect start/stop editing
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWasAdded( QgsMapLayer* ) ), this, SLOT( onLayerWasAdded( QgsMapLayer* ) ) );
@@ -293,8 +294,6 @@ void QgsGrassPlugin::initGui()
   // open tools when plugin is loaded so that main app restores tools dock widget state
   mTools = new QgsGrassTools( qGisInterface, qGisInterface->mainWindow() );
   qGisInterface->addDockWidget( Qt::RightDockWidgetArea, mTools );
-
-
 }
 
 void QgsGrassPlugin::onLayerWasAdded( QgsMapLayer* theMapLayer )
@@ -571,6 +570,14 @@ void QgsGrassPlugin::newVector()
   }
 
   // TODO: start editing?
+}
+
+void QgsGrassPlugin::onNewLayer( QString uri, QString name )
+{
+  QgsDebugMsg( "uri = " + uri + " name = " + name );
+  QgsVectorLayer* vectorLayer = qGisInterface->addVectorLayer( uri, name, "grass" );
+  vectorLayer->startEditing();
+  qGisInterface->setActiveLayer( vectorLayer );
 }
 
 void QgsGrassPlugin::postRender( QPainter *painter )

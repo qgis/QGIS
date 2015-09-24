@@ -689,6 +689,11 @@ void QgsGrass::setMapset( QString gisdbase, QString location, QString mapset )
 #endif
 }
 
+void QgsGrass::setMapset( QgsGrassObject grassObject )
+{
+  setMapset( grassObject.gisdbase(), grassObject.location(), grassObject.mapset() );
+}
+
 jmp_buf QgsGrass::jumper;
 
 int QgsGrass::initialized = 0;
@@ -2603,6 +2608,7 @@ void QgsGrass::vectDestroyMapStruct( struct Map_info *map )
   // TODO: replace by Vect_destroy_map_struct once it appears in GRASS
   // TODO: until switch to hypothetical Vect_destroy_map_struct verify that Vect_destroy_map_struct cannot
   // call G_fatal_error, otherwise check and remove use of vectDestroyMapStruct from G_CATCH blocks
+  QgsDebugMsg( QString( "free map = %1" ).arg(( long )map ) );
   qgsFree( map );
   map = 0;
 }

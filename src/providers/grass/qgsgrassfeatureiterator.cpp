@@ -419,6 +419,13 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature& feature )
           break;
         }
         int tmpLid, tmpType, tmpCat;
+
+        int numFields = Vect_cidx_get_num_fields( mSource->map() );
+        if ( mSource->mCidxFieldIndex < 0 || mSource->mCidxFieldIndex >= numFields )
+        {
+          QgsDebugMsg( QString( "mCidxFieldIndex %1 out of range (0,%2)" ).arg( mSource->mCidxFieldIndex ).arg( numFields - 1 ) );
+          break;
+        }
         Vect_cidx_get_cat_by_index( mSource->map(), mSource->mCidxFieldIndex, mNextCidx++, &tmpCat, &tmpType, &tmpLid );
         // Warning: selection array is only of type line/area of current layer -> check type first
         if ( !( tmpType & mSource->mGrassType ) )
