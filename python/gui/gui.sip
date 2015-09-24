@@ -143,6 +143,7 @@
 
 %Include auth/qgsauthauthoritieseditor.sip
 %Include auth/qgsauthcertificateinfo.sip
+%Include auth/qgsauthcertificatemanager.sip
 %Include auth/qgsauthcerttrustpolicycombobox.sip
 %Include auth/qgsauthconfigeditor.sip
 %Include auth/qgsauthconfigselect.sip

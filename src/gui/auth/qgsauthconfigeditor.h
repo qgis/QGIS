@@ -35,12 +35,21 @@ class GUI_EXPORT QgsAuthConfigEditor : public QWidget, private Ui::QgsAuthConfig
   public:
     /**
      * Widget for editing authentication configurations directly in database
+     * @param showUtilities Whether to show the widget's utilities button
+     * @param msgbar Substitute internal message bar for another
      */
-    explicit QgsAuthConfigEditor( QWidget *parent = 0 );
+    explicit QgsAuthConfigEditor( QWidget *parent = 0, bool showUtilities = true, QgsMessageBar *msgbar = 0 );
     ~QgsAuthConfigEditor();
 
     /** Hide the widget's title, e.g. when embedding */
     void toggleTitleVisibility( bool visible );
+
+  public slots:
+    /** Whether to show the widget's utilities button, e.g. when embedding */
+    void showUtilitiesButton( bool show = true );
+
+    /** Substitute internal message bar for another, e.g. when embedding */
+    void setMessageBar( QgsMessageBar *msgbar = 0 );
 
   private slots:
     /** Repopulate the view with table contents */

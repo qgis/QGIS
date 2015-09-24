@@ -1,3 +1,16 @@
+class QgsAuthMethodPlugins : QDialog
+{
+%TypeHeaderCode
+#include <qgsautheditorwidgets.h>
+%End
+
+  public:
+    explicit QgsAuthMethodPlugins( QWidget *parent /TransferThis/ = 0 );
+
+    ~QgsAuthMethodPlugins();
+};
+
+
 class QgsAuthEditorWidgets : QWidget
 {
 %TypeHeaderCode
@@ -8,6 +21,4 @@ class QgsAuthEditorWidgets : QWidget
     explicit QgsAuthEditorWidgets( QWidget *parent /TransferThis/ = 0 );
 
     ~QgsAuthEditorWidgets();
-
-    QTabWidget * tabbedWidget();
 };

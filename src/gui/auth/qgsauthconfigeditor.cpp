@@ -26,7 +26,7 @@
 #include "qgsauthconfigedit.h"
 #include "qgsauthguiutils.h"
 
-QgsAuthConfigEditor::QgsAuthConfigEditor( QWidget *parent )
+QgsAuthConfigEditor::QgsAuthConfigEditor( QWidget *parent, bool showUtilities, QgsMessageBar *msgbar )
     : QWidget( parent )
     , mConfigModel( 0 )
     , mAuthUtilitiesMenu( 0 )
@@ -49,6 +49,10 @@ QgsAuthConfigEditor::QgsAuthConfigEditor( QWidget *parent )
   else
   {
     setupUi( this );
+
+    setMessageBar( msgbar );
+    showUtilitiesButton( showUtilities );
+
     mConfigModel = new QSqlTableModel( this, QgsAuthManager::instance()->authDbConnection() );
     mConfigModel->setTable( QgsAuthManager::instance()->authDbConfigTable() );
     mConfigModel->select();
@@ -113,6 +117,7 @@ QgsAuthConfigEditor::QgsAuthConfigEditor( QWidget *parent )
     mAuthUtilitiesMenu->addAction( mActionEraseAuthDatabase );
 
     btnAuthUtilities->setMenu( mAuthUtilitiesMenu );
+    lblAuthConfigDb->setVisible( false );
   }
 }
 
@@ -161,6 +166,20 @@ void QgsAuthConfigEditor::toggleTitleVisibility( bool visible )
   if ( !QgsAuthManager::instance()->isDisabled() )
   {
     lblAuthConfigDb->setVisible( visible );
+  }
+}
+
+void QgsAuthConfigEditor::showUtilitiesButton( bool show )
+{
+  btnAuthUtilities->setVisible( show );
+}
+
+void QgsAuthConfigEditor::setMessageBar( QgsMessageBar *msgbar )
+{
+  if ( msgbar )
+  {
+    delete mMsgBar;
+    mMsgBar = msgbar;
   }
 }
 
