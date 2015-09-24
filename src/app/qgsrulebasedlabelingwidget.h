@@ -11,7 +11,7 @@ class QgsMapCanvas;
 class QgsVectorLayer;
 
 
-class GUI_EXPORT QgsRuleBasedLabelingModel : public QAbstractItemModel
+class APP_EXPORT QgsRuleBasedLabelingModel : public QAbstractItemModel
 {
     Q_OBJECT
 
@@ -101,7 +101,7 @@ class QgsLabelingGui;
 
 #include "ui_qgslabelingrulepropsdialog.h"
 
-class GUI_EXPORT QgsLabelingRulePropsDialog : public QDialog, private Ui::QgsLabelingRulePropsDialog
+class APP_EXPORT QgsLabelingRulePropsDialog : public QDialog, private Ui::QgsLabelingRulePropsDialog
 {
     Q_OBJECT
 

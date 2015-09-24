@@ -21,7 +21,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
     typedef QList<Rule*> RuleList;
     typedef QMap<Rule*, QgsVectorLayerLabelProvider*> RuleToProviderMap;
 
-    class Rule
+    class CORE_EXPORT Rule
     {
       public:
         //! takes ownership of settings
