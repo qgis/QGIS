@@ -2574,7 +2574,8 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
   *labelFeature = lf;
   ( *labelFeature )->setHasFixedPosition( dataDefinedPosition );
   ( *labelFeature )->setFixedPosition( QgsPoint( xPos, yPos ) );
-  ( *labelFeature )->setHasFixedAngle( dataDefinedRotation );
+  // use layer-level defined rotation, but not if position fixed
+  ( *labelFeature )->setHasFixedAngle( dataDefinedRotation || ( !dataDefinedPosition && angle != 0 ) );
   ( *labelFeature )->setFixedAngle( angle );
   ( *labelFeature )->setQuadOffset( QPointF( quadOffsetX, quadOffsetY ) );
   ( *labelFeature )->setPositionOffset( QgsPoint( offsetX, offsetY ) );
