@@ -53,11 +53,6 @@ QString QgsAuthBasicMethod::description() const
   return AUTH_METHOD_DESCRIPTION;
 }
 
-QString QgsAuthBasicMethod::displayName() const
-{
-  return tr( "Basic" );
-}
-
 QString QgsAuthBasicMethod::displayDescription() const
 {
   return tr( "Basic authentication" );

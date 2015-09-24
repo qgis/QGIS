@@ -62,9 +62,6 @@ class CORE_EXPORT QgsAuthMethod : public QObject
     /** A non-translated short description representing the auth method for use in debug output and About dialog */
     virtual QString description() const = 0;
 
-    /** Translatable display version of the 'key()' */
-    virtual QString displayName() const = 0;
-
     /** Translatable display version of the 'description()' */
     virtual QString displayDescription() const = 0;
 

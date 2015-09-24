@@ -62,11 +62,6 @@ QString QgsAuthPkcs12Method::description() const
   return AUTH_METHOD_DESCRIPTION;
 }
 
-QString QgsAuthPkcs12Method::displayName() const
-{
-  return tr( "PKI-PKCS#12" );
-}
-
 QString QgsAuthPkcs12Method::displayDescription() const
 {
   return tr( "PKI PKCS#12 authentication" );

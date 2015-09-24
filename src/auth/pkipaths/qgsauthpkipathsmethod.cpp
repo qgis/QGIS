@@ -62,11 +62,6 @@ QString QgsAuthPkiPathsMethod::description() const
   return AUTH_METHOD_DESCRIPTION;
 }
 
-QString QgsAuthPkiPathsMethod::displayName() const
-{
-  return tr( "PKI-Paths" );
-}
-
 QString QgsAuthPkiPathsMethod::displayDescription() const
 {
   return tr( "PKI paths authentication" );

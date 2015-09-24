@@ -62,11 +62,6 @@ QString QgsAuthIdentCertMethod::description() const
   return AUTH_METHOD_DESCRIPTION;
 }
 
-QString QgsAuthIdentCertMethod::displayName() const
-{
-  return tr( "Identity-Cert" );
-}
-
 QString QgsAuthIdentCertMethod::displayDescription() const
 {
   return tr( "PKI stored identity certificate" );

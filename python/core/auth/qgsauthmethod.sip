@@ -22,8 +22,6 @@ class QgsAuthMethod : QObject
 
     virtual QString description() const = 0;
 
-    virtual QString displayName() const = 0;
-
     virtual QString displayDescription() const = 0;
 
     int version() const;

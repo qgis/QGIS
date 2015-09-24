@@ -36,8 +36,6 @@ class QgsAuthBasicMethod : public QgsAuthMethod
 
     QString description() const override;
 
-    QString displayName() const override;
-
     QString displayDescription() const override;
 
     bool updateNetworkRequest( QNetworkRequest &request, const QString &authcfg,
