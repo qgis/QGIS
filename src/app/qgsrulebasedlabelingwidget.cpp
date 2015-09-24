@@ -90,7 +90,6 @@ void QgsRuleBasedLabelingWidget::addRule()
       int rows = mModel->rowCount();
       mModel->insertRule( QModelIndex(), rows, newrule );
     }
-    // TODO mModel->clearFeatureCounts();
   }
   else
   {
@@ -114,7 +113,6 @@ void QgsRuleBasedLabelingWidget::editRule( const QModelIndex& index )
   {
     // model should know about the change and emit dataChanged signal for the view
     mModel->updateRule( index.parent(), index.row() );
-    // TODO mModel->clearFeatureCounts();
   }
 }
 
@@ -130,7 +128,6 @@ void QgsRuleBasedLabelingWidget::removeRule()
   }
   // make sure that the selection is gone
   viewRules->selectionModel()->clear();
-  // TODO mModel->clearFeatureCounts();
 }
 
 void QgsRuleBasedLabelingWidget::copy()
@@ -227,41 +224,6 @@ QVariant QgsRuleBasedLabelingModel::data( const QModelIndex& index, int role ) c
       case 2: return rule->dependsOnScale() ? _formatScale( rule->scaleMaxDenom() ) : QVariant();
       case 3: return rule->dependsOnScale() ? _formatScale( rule->scaleMinDenom() ) : QVariant();
       case 4: return rule->settings() ? rule->settings()->fieldName : QVariant();
-#if 0 // TODO: feature counts?
-      case 4:
-        if ( mFeatureCountMap.count( rule ) == 1 )
-        {
-          return QVariant( mFeatureCountMap[rule].count );
-        }
-        return QVariant();
-      case 5:
-        if ( mFeatureCountMap.count( rule ) == 1 )
-        {
-          if ( role == Qt::DisplayRole )
-          {
-            return QVariant( mFeatureCountMap[rule].duplicateCount );
-          }
-          else // tooltip - detailed info about duplicates
-          {
-            if ( mFeatureCountMap[rule].duplicateCount > 0 )
-            {
-              QString tip = "<p style='margin:0px;'><ul>";
-              Q_FOREACH ( QgsRuleBasedRendererV2::Rule* duplicateRule, mFeatureCountMap[rule].duplicateCountMap.keys() )
-              {
-                QString label = duplicateRule->label().replace( "&", "&amp;" ).replace( ">", "&gt;" ).replace( "<", "&lt;" );
-                tip += tr( "<li><nobr>%1 features also in rule %2</nobr></li>" ).arg( mFeatureCountMap[rule].duplicateCountMap[duplicateRule] ).arg( label );
-              }
-              tip += "</ul>";
-              return tip;
-            }
-            else
-            {
-              return 0;
-            }
-          }
-        }
-        return QVariant();
-#endif
       default: return QVariant();
     }
   }
@@ -312,18 +274,6 @@ QVariant QgsRuleBasedLabelingModel::headerData( int section, Qt::Orientation ori
   {
     QStringList lst; lst << tr( "Label" ) << tr( "Rule" ) << tr( "Min. scale" ) << tr( "Max. scale" ) << tr( "Text" ); // << tr( "Count" ) << tr( "Duplicate count" );
     return lst[section];
-  }
-  else if ( orientation == Qt::Horizontal && role == Qt::ToolTipRole )
-  {
-    /* TODO
-    if ( section == 4 ) // Count
-    {
-      return tr( "Number of features in this rule." );
-    }
-    else if ( section == 5 )  // Duplicate count
-    {
-      return tr( "Number of features in this rule which are also present in other rule(s)." );
-    }*/
   }
 
   return QVariant();
@@ -530,8 +480,6 @@ bool QgsRuleBasedLabelingModel::removeRows( int row, int count, const QModelInde
   if ( row < 0 || row >= parentRule->children().count() )
     return false;
 
-  // TODO QgsDebugMsg( QString( "Called: row %1 count %2 parent ~~%3~~" ).arg( row ).arg( count ).arg( parentRule->dump() ) );
-
   beginRemoveRows( parent, row, row + count - 1 );
 
   for ( int i = 0; i < count; i++ )
@@ -561,8 +509,6 @@ QgsRuleBasedLabeling::Rule*QgsRuleBasedLabelingModel::ruleForIndex( const QModel
 void QgsRuleBasedLabelingModel::insertRule( const QModelIndex& parent, int before, QgsRuleBasedLabeling::Rule* newrule )
 {
   beginInsertRows( parent, before, before );
-
-  // TODO QgsDebugMsg( QString( "insert before %1 rule: %2" ).arg( before ).arg( newrule->dump() ) );
 
   QgsRuleBasedLabeling::Rule* parentRule = ruleForIndex( parent );
   parentRule->insertChild( before, newrule );

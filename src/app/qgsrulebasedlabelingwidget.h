@@ -53,14 +53,8 @@ class GUI_EXPORT QgsRuleBasedLabelingModel : public QAbstractItemModel
     void willAddRules( const QModelIndex& parent, int count ); // call beginInsertRows
     void finishedAddingRules(); // call endInsertRows
 
-    //! @note not available in python bindungs
-    // TODO
-    //void setFeatureCounts( QMap<QgsRuleBasedRendererV2::Rule*, QgsRuleBasedRendererV2Count> theCountMap );
-    //void clearFeatureCounts();
-
   protected:
     QgsRuleBasedLabeling::Rule* mRootRule;
-    // TODO QMap<QgsRuleBasedRendererV2::Rule*, QgsRuleBasedRendererV2Count> mFeatureCountMap;
 };
 
 
