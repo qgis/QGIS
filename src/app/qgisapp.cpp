@@ -563,7 +563,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   QgsAuthManager::instance()->init( QgsApplication::pluginPath() );
   if ( QgsAuthManager::instance()->isDisabled() )
   {
-    mActionAuthentication->setEnabled( false );
     QMessageBox::warning( this, tr( "Authentication System" ),
                           QgsAuthManager::instance()->disabledMessage() + "\n\n" +
                           tr( "Resources authenticating via the system can not be accessed." ) );
@@ -1251,8 +1250,6 @@ void QgisApp::createActions()
   connect( mActionShowComposerManager, SIGNAL( triggered() ), this, SLOT( showComposerManager() ) );
   connect( mActionExit, SIGNAL( triggered() ), this, SLOT( fileExit() ) );
   connect( mActionDxfExport, SIGNAL( triggered() ), this, SLOT( dxfExport() ) );
-
-  connect( mActionAuthentication, SIGNAL( triggered() ), this, SLOT( editAuthenticationConfigs() ) );
 
   // Edit Menu Items
 
@@ -10644,11 +10641,6 @@ void QgisApp::masterPasswordSetup()
            this, SLOT( authMessageOut( const QString&, const QString&, QgsAuthManager::MessageLevel ) ) );
   connect( QgsAuthManager::instance(), SIGNAL( authDatabaseEraseRequested() ),
            this, SLOT( eraseAuthenticationDatabase() ) );
-}
-
-void QgisApp::editAuthenticationConfigs()
-{
-  showOptionsDialog( this, QString( "mOptionsPageAuth" ) );
 }
 
 void QgisApp::eraseAuthenticationDatabase()

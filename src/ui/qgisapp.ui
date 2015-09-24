@@ -218,7 +218,6 @@
     <addaction name="mActionConfigureShortcuts"/>
     <addaction name="mActionCustomization"/>
     <addaction name="mActionOptions"/>
-    <addaction name="mActionAuthentication"/>
     <addaction name="mActionSnappingOptions"/>
    </widget>
    <widget class="QMenu" name="mRasterMenu">
@@ -2375,15 +2374,6 @@ Acts on currently active editable layer</string>
    </property>
    <property name="text">
     <string>Add circular string by radius</string>
-   </property>
-  </action>
-  <action name="mActionAuthentication">
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/locked.svg</normaloff>:/images/themes/default/locked.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Authentication...</string>
    </property>
   </action>
  </widget>

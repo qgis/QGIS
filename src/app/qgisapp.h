@@ -620,9 +620,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 #endif
     void namRequestTimedOut( QNetworkReply *reply );
 
-    //! Open authentication configs editor (in Options)
-    void editAuthenticationConfigs();
-
     //! Schedule and erase of the authentication database upon confirmation
     void eraseAuthenticationDatabase();
 
