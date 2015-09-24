@@ -56,6 +56,21 @@ QgsAuthMethodConfig::QgsAuthMethodConfig( const QgsAuthMethodConfig &methodconfi
 {
 }
 
+bool QgsAuthMethodConfig::operator==( const QgsAuthMethodConfig &other ) const
+{
+  return ( other.id() == id()
+           && other.name() == name()
+           && other.uri() == uri()
+           && other.method() == method()
+           && other.version() == version()
+           && other.configMap() == configMap() );
+}
+
+bool QgsAuthMethodConfig::operator!=( const QgsAuthMethodConfig &other ) const
+{
+  return  !( *this == other );
+}
+
 bool QgsAuthMethodConfig::isValid( bool validateid ) const
 {
   bool idvalid = validateid ? !mId.isEmpty() : true;

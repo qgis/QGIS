@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsauthimportidentitydialog.h
+    qgsauthimportidentitydialog.cpp
     ---------------------
     begin                : May 9, 2015
     copyright            : (C) 2015 by Boundless Spatial, Inc. USA

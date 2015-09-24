@@ -195,6 +195,7 @@ class TestQgsAuthManager(TestCase):
     def test_050_trust_policy(self):
         pass
 
+    # noinspection PyArgumentList
     def test_060_identities(self):
         client_cert_path = os.path.join(PKIDATA, 'fra_cert.pem')
         client_key_path = os.path.join(PKIDATA, 'fra_key_w-pass.pem')
@@ -203,6 +204,7 @@ class TestQgsAuthManager(TestCase):
         client_p12_pass = 'password'
 
         # store regular PEM cert/key and generate config
+        # noinspection PyTypeChecker
         bundle1 = QgsPkiBundle.fromPemPaths(client_cert_path, client_key_path,
                                             client_key_pass)
         bundle1_cert = bundle1.clientCert()
@@ -234,9 +236,10 @@ class TestQgsAuthManager(TestCase):
         msg = "Identity PEM not found in database"
         self.assertTrue(self.authm.existsCertIdentity(bundle1_cert_sha), msg)
 
-        config1 = QgsAuthConfigIdentityCert()
+        config1 = QgsAuthMethodConfig()
         config1.setName('IdentityCert - PEM')
-        config1.setCertId(bundle1_cert_sha)
+        config1.setMethod('Identity-Cert')
+        config1.setConfig('certid', bundle1_cert_sha)
 
         msg = 'Could not store PEM identity config'
         self.assertTrue(self.authm.storeAuthenticationConfig(config1), msg)
@@ -245,7 +248,7 @@ class TestQgsAuthManager(TestCase):
         msg = 'Could not retrieve PEM identity config id from store op'
         self.assertIsNotNone(configid1, msg)
 
-        config2 = QgsAuthConfigIdentityCert()
+        config2 = QgsAuthMethodConfig()
         msg = 'Could not load PEM identity config'
         self.assertTrue(
             self.authm.loadAuthenticationConfig(configid1, config2, True),
@@ -253,6 +256,7 @@ class TestQgsAuthManager(TestCase):
 
         # store PKCS#12 bundled cert/key and generate config
         # bundle = QgsPkcsBundle(client_p12_path, client_p12_pass)
+        # noinspection PyTypeChecker
         bundle = QgsPkiBundle.fromPkcs12Paths(client_p12_path, client_p12_pass)
         bundle_cert = bundle.clientCert()
         bundle_key = bundle.clientKey()
@@ -275,9 +279,10 @@ class TestQgsAuthManager(TestCase):
         msg = "Identity bundle not found in database"
         self.assertTrue(self.authm.existsCertIdentity(bundle_cert_sha), msg)
 
-        bundle_config = QgsAuthConfigIdentityCert()
+        bundle_config = QgsAuthMethodConfig()
         bundle_config.setName('IdentityCert - Bundle')
-        bundle_config.setCertId(bundle_cert_sha)
+        bundle_config.setMethod('Identity-Cert')
+        bundle_config.setConfig('certid', bundle_cert_sha)
 
         msg = 'Could not store bundle identity config'
         self.assertTrue(
@@ -287,7 +292,7 @@ class TestQgsAuthManager(TestCase):
         msg = 'Could not retrieve bundle identity config id from store op'
         self.assertIsNotNone(bundle_configid, msg)
 
-        bundle_config2 = QgsAuthConfigIdentityCert()
+        bundle_config2 = QgsAuthMethodConfig()
         msg = 'Could not load bundle identity config'
         self.assertTrue(
             self.authm.loadAuthenticationConfig(bundle_configid,
@@ -392,64 +397,55 @@ class TestQgsAuthManager(TestCase):
         return ['Basic', 'PKI-Paths', 'PKI-PKCS#12']
 
     def config_obj(self, kind, base=True):
-        if kind == 'Basic':
-            config = QgsAuthConfigBasic()
-            if base:
-                return config
-            config.setName(kind)
-            config.setUri('http://example.com')
-            config.setUsername('username')
-            config.setPassword('password')
-            config.setRealm('Realm')
-            return config
-        elif kind == 'PKI-Paths':
-            config = QgsAuthConfigPkiPaths()
-            if base:
-                return config
-            config.setName(kind)
-            config.setUri('http://example.com')
-            config.setCertId(os.path.join(PKIDATA, 'gerardus_cert.pem'))
-            config.setKeyId(os.path.join(PKIDATA, 'gerardus_key_w-pass.pem'))
-            config.setKeyPassphrase('password')
-            return config
-        elif kind == 'PKI-PKCS#12':
-            config = QgsAuthConfigPkiPkcs12()
-            if base:
-                return config
-            config.setName(kind)
-            config.setUri('http://example.com')
-            config.setBundlePath(os.path.join(PKIDATA, 'gerardus.p12'))
-            config.setBundlePassphrase('password')
+        config = QgsAuthMethodConfig()
+        config.setName(kind)
+        config.setMethod(kind)
+        config.setUri('http://example.com')
+        if base:
             return config
 
-    def config_values_valid(self, kind, config):
         if kind == 'Basic':
-            """:type config: QgsAuthConfigBasic"""
+            config.setConfig('username', 'username')
+            config.setConfig('password', 'password')
+            config.setConfig('realm', 'Realm')
+        elif kind == 'PKI-Paths':
+            config.setConfig('certpath',
+                             os.path.join(PKIDATA, 'gerardus_cert.pem'))
+            config.setConfig('keypath',
+                             os.path.join(PKIDATA, 'gerardus_key_w-pass.pem'))
+            config.setConfig('keypass', 'password')
+        elif kind == 'PKI-PKCS#12':
+            config.setConfig('bundlepath',
+                             os.path.join(PKIDATA, 'gerardus.p12'))
+            config.setConfig('bundlepass', 'password')
+
+        return config
+
+    def config_values_valid(self, kind, config):
+        """:type config: QgsAuthMethodConfig"""
+        if (config.name() != kind or
+                config.method() != kind or
+                config.uri() != 'http://example.com'):
+            return False
+        if kind == 'Basic':
             return (
-                config.name() == kind
-                and config.uri() == 'http://example.com'
-                and config.username() == 'username'
-                and config.password() == 'password'
-                and config.realm() == 'Realm'
+                config.config('username') == 'username' and
+                config.config('password') == 'password' and
+                config.config('realm') == 'Realm'
             )
         elif kind == 'PKI-Paths':
-            """:type config: QgsAuthConfigPkiPaths"""
             return (
-                config.name() == kind
-                and config.uri() == 'http://example.com'
-                and config.certId() == os.path.join(PKIDATA,
-                                                    'gerardus_cert.pem')
-                and config.keyId() == os.path.join(PKIDATA,
-                                                   'gerardus_key_w-pass.pem')
-                and config.keyPassphrase() == 'password'
+                config.config('certpath') ==
+                os.path.join(PKIDATA, 'gerardus_cert.pem') and
+                config.config('keypath') ==
+                os.path.join(PKIDATA, 'gerardus_key_w-pass.pem') and
+                config.config('keypass') == 'password'
             )
         elif kind == 'PKI-PKCS#12':
-            """:type config: QgsAuthConfigPkiPkcs12"""
             return (
-                config.name() == kind
-                and config.uri() == 'http://example.com'
-                and config.bundlePath() == os.path.join(PKIDATA, 'gerardus.p12')
-                and config.bundlePassphrase() == 'password'
+                config.config('bundlepath') ==
+                os.path.join(PKIDATA, 'gerardus.p12') and
+                config.config('bundlepass') == 'password'
             )
 
     def test_090_auth_configs(self):
@@ -472,14 +468,14 @@ class TestQgsAuthManager(TestCase):
             msg = 'Could not retrieve {0} config id from db'.format(kind)
             self.assertTrue(configid in self.authm.configIds(), msg)
 
-            msg = 'Could not retrieve provider type for {0} config'.format(kind)
-            self.assertTrue(QgsAuthType.typeToString(
-                self.authm.configProviderType(configid)) == kind, msg)
-
-            msg = 'Could not retrieve provider ptr for {0} config'.format(kind)
+            msg = 'Could not retrieve method key for {0} config'.format(kind)
             self.assertTrue(
-                isinstance(self.authm.configProvider(configid),
-                           QgsAuthProvider), msg)
+                self.authm.configAuthMethodKey(configid) == kind, msg)
+
+            msg = 'Could not retrieve method ptr for {0} config'.format(kind)
+            self.assertTrue(
+                isinstance(self.authm.configAuthMethod(configid),
+                           QgsAuthMethod), msg)
 
             config2 = self.config_obj(kind, base=True)
             msg = 'Could not load {0} config'.format(kind)
@@ -522,7 +518,7 @@ class TestQgsAuthManager(TestCase):
             (len(self.authm.configIds()) == len(self.config_list())), msg)
 
         msg = 'Could not retrieve available configs from auth db'
-        self.assertTrue(len(self.authm.availableConfigs()) > 0, msg)
+        self.assertTrue(len(self.authm.availableAuthMethodConfigs()) > 0, msg)
 
         backup = None
         resetpass, backup = self.authm.resetMasterPassword(

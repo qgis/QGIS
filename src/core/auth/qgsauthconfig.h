@@ -47,6 +47,12 @@ class CORE_EXPORT QgsAuthMethodConfig
     /** Full clone of config */
     QgsAuthMethodConfig( const QgsAuthMethodConfig& methodconfig );
 
+    /** Operator used to compare configs' equality */
+    bool operator==( const QgsAuthMethodConfig& other ) const;
+
+    /** Operator used to compare configs' inequality */
+    bool operator!=( const QgsAuthMethodConfig& other ) const;
+
     ~QgsAuthMethodConfig() {}
 
     /**

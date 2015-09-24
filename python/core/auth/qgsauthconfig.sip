@@ -9,6 +9,10 @@ class QgsAuthMethodConfig
 
     QgsAuthMethodConfig( const QgsAuthMethodConfig& methodconfig );
 
+    bool operator==( const QgsAuthMethodConfig& other ) const;
+
+    bool operator!=( const QgsAuthMethodConfig& other ) const;
+
     ~QgsAuthMethodConfig();
 
     const QString id() const;
