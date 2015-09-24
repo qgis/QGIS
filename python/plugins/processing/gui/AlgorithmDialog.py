@@ -26,11 +26,13 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import Qt
-from PyQt4.QtGui import QMessageBox, QApplication, QCursor, QColor, QPalette
+from PyQt4.QtGui import QMessageBox, QApplication, QCursor, QColor, QPalette, QPushButton, QWidget,\
+    QVBoxLayout
 
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
 
+from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
 from processing.gui.ParametersPanel import ParametersPanel
 from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
 from processing.gui.AlgorithmExecutor import runalg, runalgIterating
@@ -68,6 +70,21 @@ class AlgorithmDialog(AlgorithmDialogBase):
 
         self.mainWidget = ParametersPanel(self, alg)
         self.setMainWidget()
+
+        cornerWidget = QWidget()
+        layout = QVBoxLayout();
+        layout.setContentsMargins(0,0,0,5);
+        self.tabWidget.setStyleSheet("QTabBar::tab { height: 30px; }");
+        runAsBatchButton = QPushButton("Run as batch process...")
+        runAsBatchButton.clicked.connect(self.runAsBatch)
+        layout.addWidget(runAsBatchButton)
+        cornerWidget.setLayout(layout)
+        self.tabWidget.setCornerWidget(cornerWidget)
+
+    def runAsBatch(self):
+        dlg = BatchAlgorithmDialog(self.alg)
+        dlg.show()
+        dlg.exec_()
 
     def setParamValues(self):
         params = self.alg.parameters
