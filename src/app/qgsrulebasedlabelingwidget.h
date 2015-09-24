@@ -82,6 +82,8 @@ class QgsRuleBasedLabelingWidget : public QWidget, private Ui::QgsRuleBasedLabel
     void editRule();
     void editRule( const QModelIndex& index );
     void removeRule();
+    void copy();
+    void paste();
 
   protected:
     QgsRuleBasedLabeling::Rule* currentRule();
@@ -92,6 +94,10 @@ class QgsRuleBasedLabelingWidget : public QWidget, private Ui::QgsRuleBasedLabel
 
     QgsRuleBasedLabeling::Rule* mRootRule;
     QgsRuleBasedLabelingModel* mModel;
+
+    QAction* mCopyAction;
+    QAction* mPasteAction;
+    QAction* mDeleteAction;
 };
 
 

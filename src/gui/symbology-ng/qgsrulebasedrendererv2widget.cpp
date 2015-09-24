@@ -1003,6 +1003,7 @@ QMimeData *QgsRuleBasedRendererV2Model::mimeData( const QModelIndexList &indexes
     QgsSymbolV2Map symbols;
 
     QDomElement rootElem = doc.createElement( "rule_mime" );
+    rootElem.setAttribute( "type", "renderer" ); // for determining whether rules are from renderer or labeling
     QDomElement rulesElem = rule->save( doc, symbols );
     rootElem.appendChild( rulesElem );
     QDomElement symbolsElem = QgsSymbolLayerV2Utils::saveSymbols( symbols, "symbols", doc );
@@ -1017,6 +1018,24 @@ QMimeData *QgsRuleBasedRendererV2Model::mimeData( const QModelIndexList &indexes
   mimeData->setData( "application/vnd.text.list", encodedData );
   return mimeData;
 }
+
+
+// manipulate DOM before dropping it so that rules are more useful
+void _labeling2rendererRules( QDomElement& ruleElem )
+{
+  // labeling rules recognize only "description"
+  if ( ruleElem.hasAttribute( "description" ) )
+    ruleElem.setAttribute( "label", ruleElem.attribute( "description" ) );
+
+  // run recursively
+  QDomElement childRuleElem = ruleElem.firstChildElement( "rule" );
+  while ( !childRuleElem.isNull() )
+  {
+    _labeling2rendererRules( childRuleElem );
+    childRuleElem = childRuleElem.nextSiblingElement( "rule" );
+  }
+}
+
 
 bool QgsRuleBasedRendererV2Model::dropMimeData( const QMimeData *data,
     Qt::DropAction action, int row, int column, const QModelIndex &parent )
@@ -1053,11 +1072,15 @@ bool QgsRuleBasedRendererV2Model::dropMimeData( const QMimeData *data,
     QDomElement rootElem = doc.documentElement();
     if ( rootElem.tagName() != "rule_mime" )
       continue;
+    if ( rootElem.attribute( "type" ) == "labeling" )
+      rootElem.appendChild( doc.createElement( "symbols" ) );
     QDomElement symbolsElem = rootElem.firstChildElement( "symbols" );
     if ( symbolsElem.isNull() )
       continue;
     QgsSymbolV2Map symbolMap = QgsSymbolLayerV2Utils::loadSymbols( symbolsElem );
     QDomElement ruleElem = rootElem.firstChildElement( "rule" );
+    if ( rootElem.attribute( "type" ) == "labeling" )
+      _labeling2rendererRules( ruleElem );
     QgsRuleBasedRendererV2::Rule* rule = QgsRuleBasedRendererV2::Rule::create( ruleElem, symbolMap );
 
     insertRule( parent, row + rows, rule );

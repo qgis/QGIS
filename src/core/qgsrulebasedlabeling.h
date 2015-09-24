@@ -25,7 +25,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
     {
       public:
         //! takes ownership of settings
-        Rule( QgsPalLayerSettings* settings, int scaleMinDenom = 0, int scaleMaxDenom = 0, const QString& filterExp = QString(), const QString& label = QString(), const QString& description = QString(), bool elseRule = false );
+        Rule( QgsPalLayerSettings* settings, int scaleMinDenom = 0, int scaleMaxDenom = 0, const QString& filterExp = QString(), const QString& description = QString(), bool elseRule = false );
         ~Rule();
 
         //! The result of registering a rule
@@ -37,7 +37,6 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         };
 
         QgsPalLayerSettings* settings() const { return mSettings; }
-        QString label() const { return mLabel; }
         bool dependsOnScale() const { return mScaleMinDenom != 0 || mScaleMaxDenom != 0; }
         int scaleMinDenom() const { return mScaleMinDenom; }
         int scaleMaxDenom() const { return mScaleMaxDenom; }
@@ -68,7 +67,6 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         //! set new settings (or NULL). Deletes old settings if any.
         void setSettings( QgsPalLayerSettings* settings );
 
-        void setLabel( QString label ) { mLabel = label; }
         /**
          * Set the minimum denominator for which this rule shall apply.
          * E.g. 1000 if it shall be evaluated between 1:1000 and 1:100'000
@@ -198,7 +196,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         Rule* mParent; // parent rule (NULL only for root rule)
         QgsPalLayerSettings* mSettings;
         int mScaleMinDenom, mScaleMaxDenom;
-        QString mFilterExp, mLabel, mDescription;
+        QString mFilterExp, mDescription;
         bool mElseRule;
         RuleList mChildren;
         RuleList mElseRules;

@@ -7,6 +7,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerlabeling.h"
 
+#include <QClipboard>
 #include <QMessageBox>
 
 QgsRuleBasedLabelingWidget::QgsRuleBasedLabelingWidget( QgsVectorLayer* layer, QgsMapCanvas* canvas, QWidget* parent )
@@ -22,11 +23,25 @@ QgsRuleBasedLabelingWidget::QgsRuleBasedLabelingWidget( QgsVectorLayer* layer, Q
   btnEditRule->setIcon( QIcon( QgsApplication::iconPath( "symbologyEdit.png" ) ) );
   btnRemoveRule->setIcon( QIcon( QgsApplication::iconPath( "symbologyRemove.svg" ) ) );
 
+  mCopyAction = new QAction( tr( "Copy" ), this );
+  mCopyAction->setShortcut( QKeySequence( QKeySequence::Copy ) );
+  mPasteAction = new QAction( tr( "Paste" ), this );
+  mPasteAction->setShortcut( QKeySequence( QKeySequence::Paste ) );
+  mDeleteAction = new QAction( tr( "Remove Rule" ), this );
+  mDeleteAction->setShortcut( QKeySequence( QKeySequence::Delete ) );
+
+  viewRules->addAction( mDeleteAction );
+  viewRules->addAction( mCopyAction );
+  viewRules->addAction( mPasteAction );
+
   connect( viewRules, SIGNAL( doubleClicked( const QModelIndex & ) ), this, SLOT( editRule( const QModelIndex & ) ) );
 
   connect( btnAddRule, SIGNAL( clicked() ), this, SLOT( addRule() ) );
   connect( btnEditRule, SIGNAL( clicked() ), this, SLOT( editRule() ) );
   connect( btnRemoveRule, SIGNAL( clicked() ), this, SLOT( removeRule() ) );
+  connect( mCopyAction, SIGNAL( triggered( bool ) ), this, SLOT( copy() ) );
+  connect( mPasteAction, SIGNAL( triggered( bool ) ), this, SLOT( paste() ) );
+  connect( mDeleteAction, SIGNAL( triggered( bool ) ), this, SLOT( removeRule() ) );
 
   if ( mLayer->labeling() && mLayer->labeling()->type() == "rule-based" )
   {
@@ -118,6 +133,30 @@ void QgsRuleBasedLabelingWidget::removeRule()
   // TODO mModel->clearFeatureCounts();
 }
 
+void QgsRuleBasedLabelingWidget::copy()
+{
+  QModelIndexList indexlist = viewRules->selectionModel()->selectedRows();
+  QgsDebugMsg( QString( "%1" ).arg( indexlist.count() ) );
+
+  if ( indexlist.isEmpty() )
+    return;
+
+  QMimeData* mime = mModel->mimeData( indexlist );
+  QApplication::clipboard()->setMimeData( mime );
+}
+
+void QgsRuleBasedLabelingWidget::paste()
+{
+  const QMimeData* mime = QApplication::clipboard()->mimeData();
+  QModelIndexList indexlist = viewRules->selectionModel()->selectedRows();
+  QModelIndex index;
+  if ( indexlist.isEmpty() )
+    index = mModel->index( mModel->rowCount(), 0 );
+  else
+    index = indexlist.first();
+  mModel->dropMimeData( mime, Qt::CopyAction, index.row(), index.column(), index.parent() );
+}
+
 QgsRuleBasedLabeling::Rule* QgsRuleBasedLabelingWidget::currentRule()
 {
   QItemSelectionModel* sel = viewRules->selectionModel();
@@ -175,7 +214,7 @@ QVariant QgsRuleBasedLabelingModel::data( const QModelIndex& index, int role ) c
   {
     switch ( index.column() )
     {
-      case 0: return rule->label();
+      case 0: return rule->description();
       case 1:
         if ( rule->isElse() )
         {
@@ -187,6 +226,7 @@ QVariant QgsRuleBasedLabelingModel::data( const QModelIndex& index, int role ) c
         }
       case 2: return rule->dependsOnScale() ? _formatScale( rule->scaleMaxDenom() ) : QVariant();
       case 3: return rule->dependsOnScale() ? _formatScale( rule->scaleMinDenom() ) : QVariant();
+      case 4: return rule->settings() ? rule->settings()->fieldName : QVariant();
 #if 0 // TODO: feature counts?
       case 4:
         if ( mFeatureCountMap.count( rule ) == 1 )
@@ -248,10 +288,11 @@ QVariant QgsRuleBasedLabelingModel::data( const QModelIndex& index, int role ) c
   {
     switch ( index.column() )
     {
-      case 0: return rule->label();
+      case 0: return rule->description();
       case 1: return rule->filterExpression();
       case 2: return rule->scaleMaxDenom();
       case 3: return rule->scaleMinDenom();
+      case 4: return rule->settings() ? rule->settings()->fieldName : QVariant();
       default: return QVariant();
     }
   }
@@ -269,7 +310,7 @@ QVariant QgsRuleBasedLabelingModel::headerData( int section, Qt::Orientation ori
 {
   if ( orientation == Qt::Horizontal && role == Qt::DisplayRole && section >= 0 && section < 5 )
   {
-    QStringList lst; lst << tr( "Label" ) << tr( "Rule" ) << tr( "Min. scale" ) << tr( "Max. scale" ); // << tr( "Count" ) << tr( "Duplicate count" );
+    QStringList lst; lst << tr( "Label" ) << tr( "Rule" ) << tr( "Min. scale" ) << tr( "Max. scale" ) << tr( "Text" ); // << tr( "Count" ) << tr( "Duplicate count" );
     return lst[section];
   }
   else if ( orientation == Qt::Horizontal && role == Qt::ToolTipRole )
@@ -300,7 +341,7 @@ int QgsRuleBasedLabelingModel::rowCount( const QModelIndex& parent ) const
 
 int QgsRuleBasedLabelingModel::columnCount( const QModelIndex& ) const
 {
-  return 4;
+  return 5;
 }
 
 QModelIndex QgsRuleBasedLabelingModel::index( int row, int column, const QModelIndex& parent ) const
@@ -350,8 +391,8 @@ bool QgsRuleBasedLabelingModel::setData( const QModelIndex& index, const QVarian
 
   switch ( index.column() )
   {
-    case 0: // label
-      rule->setLabel( value.toString() );
+    case 0: // description
+      rule->setDescription( value.toString() );
       break;
     case 1: // filter
       rule->setFilterExpression( value.toString() );
@@ -361,6 +402,11 @@ bool QgsRuleBasedLabelingModel::setData( const QModelIndex& index, const QVarian
       break;
     case 3: // scale max
       rule->setScaleMinDenom( value.toInt() );
+      break;
+    case 4: // label text
+      if ( !rule->settings() )
+        return false;
+      rule->settings()->fieldName = value.toString();
       break;
     default:
       return false;
@@ -382,6 +428,22 @@ QStringList QgsRuleBasedLabelingModel::mimeTypes() const
   return types;
 }
 
+// manipulate DOM before dropping it so that rules are more useful
+void _renderer2labelingRules( QDomElement& ruleElem )
+{
+  // labeling rules recognize only "description"
+  if ( ruleElem.hasAttribute( "label" ) )
+    ruleElem.setAttribute( "description", ruleElem.attribute( "label" ) );
+
+  // run recursively
+  QDomElement childRuleElem = ruleElem.firstChildElement( "rule" );
+  while ( !childRuleElem.isNull() )
+  {
+    _renderer2labelingRules( childRuleElem );
+    childRuleElem = childRuleElem.nextSiblingElement( "rule" );
+  }
+}
+
 QMimeData*QgsRuleBasedLabelingModel::mimeData( const QModelIndexList& indexes ) const
 {
   QMimeData *mimeData = new QMimeData();
@@ -401,6 +463,7 @@ QMimeData*QgsRuleBasedLabelingModel::mimeData( const QModelIndexList& indexes ) 
     QDomDocument doc;
 
     QDomElement rootElem = doc.createElement( "rule_mime" );
+    rootElem.setAttribute( "type", "labeling" ); // for determining whether rules are from renderer or labeling
     QDomElement rulesElem = rule->save( doc );
     rootElem.appendChild( rulesElem );
     doc.appendChild( rootElem );
@@ -449,6 +512,8 @@ bool QgsRuleBasedLabelingModel::dropMimeData( const QMimeData* data, Qt::DropAct
     if ( rootElem.tagName() != "rule_mime" )
       continue;
     QDomElement ruleElem = rootElem.firstChildElement( "rule" );
+    if ( rootElem.attribute( "type" ) == "renderer" )
+      _renderer2labelingRules( ruleElem ); // do some modifications so that we load the rules more nicely
     QgsRuleBasedLabeling::Rule* rule = QgsRuleBasedLabeling::Rule::create( ruleElem );
 
     insertRule( parent, row + rows, rule );
@@ -526,7 +591,6 @@ QgsLabelingRulePropsDialog::QgsLabelingRulePropsDialog( QgsRuleBasedLabeling::Ru
 
   editFilter->setText( mRule->filterExpression() );
   editFilter->setToolTip( mRule->filterExpression() );
-  editLabel->setText( mRule->label() );
   editDescription->setText( mRule->description() );
   editDescription->setToolTip( mRule->description() );
 
@@ -653,7 +717,6 @@ void QgsLabelingRulePropsDialog::buildExpression()
 void QgsLabelingRulePropsDialog::accept()
 {
   mRule->setFilterExpression( editFilter->text() );
-  mRule->setLabel( editLabel->text() );
   mRule->setDescription( editDescription->text() );
   // caution: rule uses scale denom, scale widget uses true scales
   mRule->setScaleMinDenom( groupScale->isChecked() ? mScaleRangeWidget->minimumScaleDenom() : 0 );

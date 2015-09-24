@@ -22,12 +22,12 @@
      <item row="0" column="0">
       <widget class="QLabel" name="label_1">
        <property name="text">
-        <string>Label</string>
+        <string>Description</string>
        </property>
       </widget>
      </item>
      <item row="0" column="1">
-      <widget class="QLineEdit" name="editLabel"/>
+      <widget class="QLineEdit" name="editDescription"/>
      </item>
      <item row="1" column="0">
       <widget class="QLabel" name="label_5">
@@ -62,16 +62,6 @@
         </widget>
        </item>
       </layout>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="label_4">
-       <property name="text">
-        <string>Description</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QLineEdit" name="editDescription"/>
      </item>
     </layout>
    </item>
@@ -136,11 +126,10 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>editLabel</tabstop>
+  <tabstop>editDescription</tabstop>
   <tabstop>editFilter</tabstop>
   <tabstop>btnExpressionBuilder</tabstop>
   <tabstop>btnTestFilter</tabstop>
-  <tabstop>editDescription</tabstop>
   <tabstop>groupScale</tabstop>
   <tabstop>groupSettings</tabstop>
   <tabstop>buttonBox</tabstop>

@@ -16,6 +16,9 @@
    </property>
    <item>
     <widget class="QTreeView" name="viewRules">
+     <property name="contextMenuPolicy">
+      <enum>Qt::ActionsContextMenu</enum>
+     </property>
      <property name="acceptDrops">
       <bool>true</bool>
      </property>

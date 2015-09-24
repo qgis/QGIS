@@ -42,10 +42,10 @@ QList<QgsAbstractLabelProvider*> QgsRuleBasedLabelProvider::subProviders()
 
 ////////////////////
 
-QgsRuleBasedLabeling::Rule::Rule( QgsPalLayerSettings* settings, int scaleMinDenom, int scaleMaxDenom, const QString& filterExp, const QString& label, const QString& description, bool elseRule )
+QgsRuleBasedLabeling::Rule::Rule( QgsPalLayerSettings* settings, int scaleMinDenom, int scaleMaxDenom, const QString& filterExp, const QString& description, bool elseRule )
     : mParent( 0 ), mSettings( settings )
     , mScaleMinDenom( scaleMinDenom ), mScaleMaxDenom( scaleMaxDenom )
-    , mFilterExp( filterExp ), mLabel( label ), mDescription( description )
+    , mFilterExp( filterExp ), mDescription( description )
     , mElseRule( elseRule )
     , mIsActive( true )
     , mFilter( 0 )
@@ -124,7 +124,7 @@ void QgsRuleBasedLabeling::Rule::removeChildAt( int i )
 QgsRuleBasedLabeling::Rule*QgsRuleBasedLabeling::Rule::clone() const
 {
   QgsPalLayerSettings* s = mSettings ? new QgsPalLayerSettings( *mSettings ) : 0;
-  Rule* newrule = new Rule( s, mScaleMinDenom, mScaleMaxDenom, mFilterExp, mLabel, mDescription );
+  Rule* newrule = new Rule( s, mScaleMinDenom, mScaleMaxDenom, mFilterExp, mDescription );
   newrule->setActive( mIsActive );
   // clone children
   Q_FOREACH ( Rule* rule, mChildren )
@@ -143,12 +143,11 @@ QgsRuleBasedLabeling::Rule*QgsRuleBasedLabeling::Rule::create( const QDomElement
   }
 
   QString filterExp = ruleElem.attribute( "filter" );
-  QString label = ruleElem.attribute( "label" );
   QString description = ruleElem.attribute( "description" );
   int scaleMinDenom = ruleElem.attribute( "scalemindenom", "0" ).toInt();
   int scaleMaxDenom = ruleElem.attribute( "scalemaxdenom", "0" ).toInt();
   //QString ruleKey = ruleElem.attribute( "key" );
-  Rule* rule = new Rule( settings, scaleMinDenom, scaleMaxDenom, filterExp, label, description );
+  Rule* rule = new Rule( settings, scaleMinDenom, scaleMaxDenom, filterExp, description );
 
   //if ( !ruleKey.isEmpty() )
   //  rule->mRuleKey = ruleKey;
@@ -187,8 +186,6 @@ QDomElement QgsRuleBasedLabeling::Rule::save( QDomDocument& doc ) const
     ruleElem.setAttribute( "scalemindenom", mScaleMinDenom );
   if ( mScaleMaxDenom != 0 )
     ruleElem.setAttribute( "scalemaxdenom", mScaleMaxDenom );
-  if ( !mLabel.isEmpty() )
-    ruleElem.setAttribute( "label", mLabel );
   if ( !mDescription.isEmpty() )
     ruleElem.setAttribute( "description", mDescription );
   if ( !mIsActive )
