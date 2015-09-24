@@ -65,7 +65,6 @@ class QgsPkiBundle
   public:
     QgsPkiBundle( const QSslCertificate &clientCert = QSslCertificate(),
                   const QSslKey &clientKey = QSslKey(),
-                  const QString &keyPassphrase = QString::null ,
                   const QList<QSslCertificate> &caChain = QList<QSslCertificate>() );
     ~QgsPkiBundle();
 
@@ -85,11 +84,8 @@ class QgsPkiBundle
     const QSslCertificate clientCert() const;
     void setClientCert( const QSslCertificate &cert );
 
-    const QSslKey clientKey( bool reencrypt = true ) const;
+    const QSslKey clientKey() const;
     void setClientKey( const QSslKey &certkey );
-
-    const QString keyPassphrase() const;
-    void setKeyPassphrase( const QString &pass );
 
     const QList<QSslCertificate> caChain() const;
     void setCaChain( const QList<QSslCertificate> &cachain );

@@ -312,7 +312,6 @@ bool QgsAuthImportIdentityDialog::validatePkiPaths()
     mCertBundle = qMakePair( clientcert, clientkey );
     mPkiBundle = QgsPkiBundle( clientcert,
                                clientkey,
-                               !keypass.isEmpty() ? keypass : QString::null,
                                ca_certs );
   }
 
@@ -425,7 +424,7 @@ bool QgsAuthImportIdentityDialog::validatePkiPkcs12()
     }
 
     mCertBundle = qMakePair( clientcert, clientkey );
-    mPkiBundle = QgsPkiBundle( clientcert, clientkey, keypass, ca_certs );
+    mPkiBundle = QgsPkiBundle( clientcert, clientkey, ca_certs );
   }
 
   return bundlevalid;

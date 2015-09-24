@@ -60,14 +60,14 @@ void TestQgsAuthConfig::cleanupTestCase()
 void TestQgsAuthConfig::testMethodConfig()
 {
   QgsAuthMethodConfig mconfig;
-  Q_ASSERT( !mconfig.isValid() );
+  QVERIFY( !mconfig.isValid() );
 
   mconfig.setName( "Some Name" );
   mconfig.setMethod( "MethodKey" );
-  Q_ASSERT( mconfig.isValid() );
+  QVERIFY( mconfig.isValid() );
 
   mconfig.setId( "0000000" );
-  Q_ASSERT( mconfig.isValid( true ) );
+  QVERIFY( mconfig.isValid( true ) );
 
   mconfig.setVersion( 1 );
   mconfig.setUri( "http://example.com" );
@@ -89,7 +89,7 @@ void TestQgsAuthConfig::testMethodConfig()
   QCOMPARE( mconfig.configString(), confstr );
 
   mconfig.clearConfigMap();
-  Q_ASSERT( mconfig.configMap().isEmpty() );
+  QVERIFY( mconfig.configMap().isEmpty() );
 
   mconfig.setConfig( "key1", "value1" );
   mconfig.setConfig( "key2", "value2" );
@@ -102,65 +102,62 @@ void TestQgsAuthConfig::testMethodConfig()
   QCOMPARE( mconfig.config( "key1" ), QString( "value1" ) );
   QCOMPARE( mconfig.configList( "key3" ), key3list );
 
-  Q_ASSERT( mconfig.hasConfig( "key2" ) );
+  QVERIFY( mconfig.hasConfig( "key2" ) );
   mconfig.removeConfig( "key2" );
-  Q_ASSERT( !mconfig.hasConfig( "key2" ) );
+  QVERIFY( !mconfig.hasConfig( "key2" ) );
 
   mconfig.loadConfigString( confstr );
   QCOMPARE( mconfig.configMap(), confmap );
   QCOMPARE( mconfig.configString(), confstr );
 
   QgsAuthMethodConfig mconfig2( mconfig );
-  Q_ASSERT( mconfig2 == mconfig );
+  QVERIFY( mconfig2 == mconfig );
 
   mconfig.setMethod( "MethodKey2" );
-  Q_ASSERT( mconfig2 != mconfig );
+  QVERIFY( mconfig2 != mconfig );
 }
 
 void TestQgsAuthConfig::testPkiBundle()
 {
   QgsPkiBundle bundle;
-  Q_ASSERT( bundle.isNull() );
-  Q_ASSERT( !bundle.isValid() );
+  QVERIFY( bundle.isNull() );
+  QVERIFY( !bundle.isValid() );
 
   QList<QSslCertificate> cacerts( QSslCertificate::fromPath( smPkiData + "/chain_subissuer-issuer-root.pem" ) );
-  Q_ASSERT( !cacerts.isEmpty() );
+  QVERIFY( !cacerts.isEmpty() );
   QCOMPARE( cacerts.size(), 3 );
   QgsPkiBundle bundle2( QgsPkiBundle::fromPemPaths( smPkiData + "/fra_cert.pem",
                         smPkiData + "/fra_key_w-pass.pem",
                         "password",
                         cacerts ) );
-  Q_ASSERT( !bundle2.isNull() );
-  Q_ASSERT( bundle2.isValid() );
+  QVERIFY( !bundle2.isNull() );
+  QVERIFY( bundle2.isValid() );
   QCOMPARE( bundle2.certId(), QString( "c3633c428d441853973e5081ba9be39f667f5af6" ) );
 
   QSslCertificate clientcert( bundle2.clientCert() );
-  Q_ASSERT( !clientcert.isNull() );
-  QSslKey clientkey( bundle2.clientKey( true ) );
-  Q_ASSERT( !clientkey.isNull() );
-  QString keypass( bundle2.keyPassphrase() );
-  Q_ASSERT( !keypass.isEmpty() );
+  QVERIFY( !clientcert.isNull() );
+  QSslKey clientkey( bundle2.clientKey() );
+  QVERIFY( !clientkey.isNull() );
   QList<QSslCertificate> cachain( bundle2.caChain() );
-  Q_ASSERT( !cachain.isEmpty() );
+  QVERIFY( !cachain.isEmpty() );
   QCOMPARE( cachain.size(), 3 );
 
-  QgsPkiBundle bundle3( clientcert, clientkey, keypass, cachain );
-  Q_ASSERT( !bundle3.isNull() );
-  Q_ASSERT( bundle3.isValid() );
+  QgsPkiBundle bundle3( clientcert, clientkey, cachain );
+  QVERIFY( !bundle3.isNull() );
+  QVERIFY( bundle3.isValid() );
 
   bundle.setClientCert( clientcert );
   bundle.setClientKey( clientkey );
-  bundle.setKeyPassphrase( keypass );
   bundle.setCaChain( cachain );
-  Q_ASSERT( !bundle.isNull() );
-  Q_ASSERT( bundle.isValid() );
+  QVERIFY( !bundle.isNull() );
+  QVERIFY( bundle.isValid() );
 
   QgsPkiBundle bundle4( QgsPkiBundle::fromPkcs12Paths( smPkiData + "/fra_w-chain.p12",
                         "password" ) );
-  Q_ASSERT( !bundle4.isNull() );
-  Q_ASSERT( bundle4.isValid() );
+  QVERIFY( !bundle4.isNull() );
+  QVERIFY( bundle4.isValid() );
   QList<QSslCertificate> cachain4( bundle2.caChain() );
-  Q_ASSERT( !cachain4.isEmpty() );
+  QVERIFY( !cachain4.isEmpty() );
   QCOMPARE( cachain4.size(), 3 );
 }
 
@@ -172,7 +169,7 @@ void TestQgsAuthConfig::testPkiConfigBundle()
   mconfig.setId( "0000000" );
   mconfig.setVersion( 1 );
   mconfig.setUri( "http://example.com" );
-  Q_ASSERT( mconfig.isValid( true ) );
+  QVERIFY( mconfig.isValid( true ) );
 
   QSslCertificate clientcert( QSslCertificate::fromPath( smPkiData + "/gerardus_cert.pem" ).first() );
   QByteArray keydata;
@@ -183,7 +180,7 @@ void TestQgsAuthConfig::testPkiConfigBundle()
   QSslKey clientkey( keydata, QSsl::Rsa );
 
   QgsPkiConfigBundle bundle( mconfig, clientcert, clientkey );
-  Q_ASSERT( bundle.isValid() );
+  QVERIFY( bundle.isValid() );
   QCOMPARE( bundle.config(), mconfig );
 
   QCOMPARE( bundle.clientCert(), clientcert );
@@ -191,7 +188,7 @@ void TestQgsAuthConfig::testPkiConfigBundle()
   bundle.setConfig( mconfig );
   bundle.setClientCert( clientcert );
   bundle.setClientCertKey( clientkey );
-  Q_ASSERT( bundle.isValid() );
+  QVERIFY( bundle.isValid() );
   QCOMPARE( bundle.config(), mconfig );
   QCOMPARE( bundle.clientCert(), clientcert );
   QCOMPARE( bundle.clientCertKey(), clientkey );
@@ -204,8 +201,12 @@ void TestQgsAuthConfig::testConfigSslServer()
   QSslCertificate sslcert( QSslCertificate::fromPath( smPkiData + "/localhost_ssl_cert.pem" ).first() );
 
   QgsAuthConfigSslServer sslconfig;
-  Q_ASSERT( sslconfig.isNull() );
+  QVERIFY( sslconfig.isNull() );
+#if QT_VERSION >= 0x040800
   QCOMPARE( sslconfig.qtVersion(), 480 );
+#else
+  QCOMPARE( sslconfig.qtVersion(), 470 );
+#endif
   QCOMPARE( sslconfig.version(), 1 );
   QCOMPARE( sslconfig.sslPeerVerifyMode(), QSslSocket::VerifyPeer );
 
@@ -219,7 +220,7 @@ void TestQgsAuthConfig::testConfigSslServer()
   QList<QSslError::SslError> sslerrenums;
   sslerrenums << QSslError::SelfSignedCertificateInChain << QSslError::SubjectIssuerMismatch;
   sslconfig.setSslIgnoredErrorEnums( sslerrenums );
-  Q_ASSERT( !sslconfig.isNull() );
+  QVERIFY( !sslconfig.isNull() );
 
   QCOMPARE( sslconfig.configString(), confstr );
   QCOMPARE( sslconfig.sslHostPort(), hostport );

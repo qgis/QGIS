@@ -192,12 +192,10 @@ class CORE_EXPORT QgsPkiBundle
      * Construct a bundle from existing PKI components
      * @param clientCert Certificate to store in bundle
      * @param clientKey Private key to store in bundle
-     * @param keyPassphrase Private key passphrase
      * @param caChain Chain of Certificate Authorities for client certificate
      */
     QgsPkiBundle( const QSslCertificate &clientCert = QSslCertificate(),
                   const QSslKey &clientKey = QSslKey(),
-                  const QString &keyPassphrase = QString::null ,
                   const QList<QSslCertificate> &caChain = QList<QSslCertificate>() );
     ~QgsPkiBundle();
 
@@ -236,14 +234,9 @@ class CORE_EXPORT QgsPkiBundle
     void setClientCert( const QSslCertificate &cert );
 
     /** Private key object */
-    const QSslKey clientKey( bool reencrypt = true ) const;
+    const QSslKey clientKey() const { return mCertKey; }
     /** Set private key object */
     void setClientKey( const QSslKey &certkey );
-
-    /** Private key passphrase */
-    const QString keyPassphrase() const { return mKeyPassphrase; }
-    /** Set private key passphrase */
-    void setKeyPassphrase( const QString &pass ) { mKeyPassphrase = pass; }
 
     /** Chain of Certificate Authorities for client certificate */
     const QList<QSslCertificate> caChain() const { return mCaChain; }
@@ -253,7 +246,6 @@ class CORE_EXPORT QgsPkiBundle
   private:
     QSslCertificate mCert;
     QSslKey mCertKey;
-    QString mKeyPassphrase;
     QList<QSslCertificate> mCaChain;
 };
 

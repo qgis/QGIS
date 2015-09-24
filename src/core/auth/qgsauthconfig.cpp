@@ -174,11 +174,9 @@ bool QgsAuthMethodConfig::uriToResource( const QString &accessurl, QString *reso
 
 QgsPkiBundle::QgsPkiBundle( const QSslCertificate &clientCert,
                             const QSslKey &clientKey,
-                            const QString &keyPassphrase,
                             const QList<QSslCertificate> &caChain )
     : mCert( QSslCertificate() )
     , mCertKey( QSslKey() )
-    , mKeyPassphrase( keyPassphrase )
     , mCaChain( caChain )
 {
   setClientCert( clientCert );
@@ -328,17 +326,6 @@ void QgsPkiBundle::setClientCert( const QSslCertificate &cert )
   {
     mCert = cert;
   }
-}
-
-const QSslKey QgsPkiBundle::clientKey( bool reencrypt ) const
-{
-  if ( reencrypt )
-  {
-    QSslKey cert_key( mCertKey.toPem( QByteArray() ),
-                      QSsl::Rsa, QSsl::Pem, QSsl::PrivateKey, mKeyPassphrase.toUtf8() );
-    return cert_key;
-  }
-  return mCertKey;
 }
 
 void QgsPkiBundle::setClientKey( const QSslKey &certkey )
