@@ -173,8 +173,9 @@ class QgsExpressionBuilderWidget : QWidget
     void on_expressionTree_doubleClicked( const QModelIndex &index );
     void on_txtExpressionString_textChanged();
     void on_txtSearchEdit_textChanged();
+    void on_txtSearchEditValues_textChanged();
     void on_lblPreview_linkActivated( QString link );
-    void on_mValueListWidget_itemDoubleClicked( QListWidgetItem* item );
+    void on_mValuesListView_doubleClicked( const QModelIndex &index );
     void operatorButtonClicked();
     void showContextMenu( const QPoint & );
     void loadSampleValues();
