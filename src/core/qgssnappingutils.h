@@ -172,6 +172,9 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     LocatorsMap mTemporaryLocators;
     //! list of layer IDs that are too large to be indexed (hybrid strategy will use temporary locators for those)
     QSet<QString> mHybridNonindexableLayers;
+
+    //! internal flag that an indexing process is going on. Prevents starting two processes in parallel.
+    bool mIsIndexing;
 };
 
 
