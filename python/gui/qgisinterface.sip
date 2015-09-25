@@ -252,7 +252,7 @@ class QgisInterface : QObject
     virtual void showLayerProperties( QgsMapLayer *l ) = 0;
 
     /** Open attribute table dialog */
-    virtual void showAttributeTable( QgsVectorLayer *l ) = 0;
+    virtual QDialog* showAttributeTable( QgsVectorLayer *l, const QString& filterExpression = QString() ) = 0;
 
     /** Add window to Window menu. The action title is the window title
      * and the action should raise, unminimize and activate the window. */

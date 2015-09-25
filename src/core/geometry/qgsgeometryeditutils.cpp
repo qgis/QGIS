@@ -134,7 +134,7 @@ int QgsGeometryEditUtils::addPart( QgsAbstractGeometryV2* geom, QgsAbstractGeome
 
       int i;
       int n = geomCollection->numGeometries();
-      for ( i = 0; i < parts->numGeometries() && geomCollection->addGeometry( parts->geometryN( i ) ); i++ )
+      for ( i = 0; i < parts->numGeometries() && geomCollection->addGeometry( parts->geometryN( i )->clone() ); i++ )
         ;
 
       added = i == parts->numGeometries();
@@ -143,11 +143,6 @@ int QgsGeometryEditUtils::addPart( QgsAbstractGeometryV2* geom, QgsAbstractGeome
         while ( geomCollection->numGeometries() > n )
           geomCollection->removeGeometry( n );
         delete part; return 2;
-      }
-
-      while ( parts->numGeometries() > 0 )
-      {
-        parts->removeGeometry( 0 );
       }
 
       delete part;

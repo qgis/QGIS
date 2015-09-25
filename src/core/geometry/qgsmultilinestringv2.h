@@ -28,7 +28,7 @@ class CORE_EXPORT QgsMultiLineStringV2: public QgsMultiCurveV2
 {
   public:
     virtual QString geometryType() const override { return "MultiLineString"; }
-    QgsAbstractGeometryV2* clone() const override;
+    QgsMultiLineStringV2* clone() const override;
 
     bool fromWkt( const QString& wkt ) override;
 

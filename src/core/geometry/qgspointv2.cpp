@@ -29,6 +29,11 @@ QgsPointV2::QgsPointV2( double x, double y ): QgsAbstractGeometryV2(), mX( x ), 
   mWkbType = QgsWKBTypes::Point;
 }
 
+QgsPointV2::QgsPointV2( const QgsPoint& p ): QgsAbstractGeometryV2(), mX( p.x() ), mY( p.y() ), mZ( 0.0 ), mM( 0.0 )
+{
+  mWkbType = QgsWKBTypes::Point;
+}
+
 QgsPointV2::QgsPointV2( QgsWKBTypes::Type type, double x, double y, double z, double m ): mX( x ), mY( y ), mZ( z ), mM( m )
 {
   mWkbType = type;
@@ -48,7 +53,7 @@ bool QgsPointV2::operator!=( const QgsPointV2& pt ) const
   return !operator==( pt );
 }
 
-QgsAbstractGeometryV2* QgsPointV2::clone() const
+QgsPointV2 *QgsPointV2::clone() const
 {
   return new QgsPointV2( *this );
 }

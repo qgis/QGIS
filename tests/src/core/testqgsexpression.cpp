@@ -1328,8 +1328,6 @@ class TestQgsExpression: public QObject
       geom = QgsGeometry::fromPolygon( polygon );
       QTest::newRow( "centroid polygon" ) << "centroid( $geometry )" << ( void* ) geom << false << true << ( void* ) geom->centroid();
       geom = QgsGeometry::fromPolygon( polygon );
-      QTest::newRow( "centroid self intersecting polygon" ) << "centroid( geomFromWKT('POLYGON((0 0, 0 2, 2 -0.1, 2 2.1, 0 0))') )" << ( void* ) geom << false << false << ( void* ) QgsGeometry::fromWkt( "POINT (8.0 1.0)" );
-      geom = QgsGeometry::fromPolygon( polygon );
       QTest::newRow( "centroid multi polygon" ) << "centroid( geomFromWKT('MULTIPOLYGON(((0 0,0 1,1 1,1 0,0 0)),((2 0,2 1,3 1,3 0,2 0)))') )" << ( void* ) geom << false << false << ( void* ) QgsGeometry::fromWkt( "POINT (1.5 0.5)" );
       geom = QgsGeometry::fromPolygon( polygon );
       QTest::newRow( "convexHull simple" ) << "convexHull( $geometry )" << ( void* ) geom << false << true << ( void* ) geom->convexHull();

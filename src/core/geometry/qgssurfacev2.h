@@ -26,7 +26,6 @@ class QgsPolygonV2;
 class CORE_EXPORT QgsSurfaceV2: public QgsAbstractGeometryV2
 {
   public:
-    virtual QgsPointV2 centroid() const = 0;
     virtual QgsPointV2 pointOnSurface() const = 0;
     virtual QgsPolygonV2* surfaceToPolygon() const = 0;
 };

@@ -126,6 +126,26 @@ void QgsRectangle::scale( double scaleFactor, double centerX, double centerY )
   ymax = centerY + newHeight / 2.0;
 }
 
+void QgsRectangle::grow( double delta )
+{
+  xmin -= delta;
+  xmax += delta;
+  ymin -= delta;
+  ymax += delta;
+}
+
+void QgsRectangle::include( const QgsPoint &p )
+{
+  if ( p.x() < xMinimum() )
+    setXMinimum( p.x() );
+  else if ( p.x() > xMaximum() )
+    setXMaximum( p.x() );
+  if ( p.y() < yMinimum() )
+    setYMinimum( p.y() );
+  if ( p.y() > yMaximum() )
+    setYMaximum( p.y() );
+}
+
 QgsRectangle QgsRectangle::buffer( double width )
 {
   return QgsRectangle( xmin - width, ymin - width, xmax + width, ymax + width );

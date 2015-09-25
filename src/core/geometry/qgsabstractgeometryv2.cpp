@@ -129,28 +129,6 @@ QgsRectangle QgsAbstractGeometryV2::calculateBoundingBox() const
   return QgsRectangle( xmin, ymin, xmax, ymax );
 }
 
-QgsPointV2 QgsAbstractGeometryV2::vertexAt( const QgsVertexId& id ) const
-{
-  QList< QList< QList< QgsPointV2 > > > coordinates;
-  coordinateSequence( coordinates );
-
-  if ( id.part >= coordinates.size() )
-  {
-    return QgsPointV2();
-  }
-  const QList< QList< QgsPointV2 > >& part = coordinates.at( id.part );
-  if ( id.ring >= part.size() )
-  {
-    return QgsPointV2();
-  }
-  const QList< QgsPointV2 >& ring = part.at( id.ring );
-  if ( id.vertex >= ring.size() )
-  {
-    return QgsPointV2();
-  }
-  return ring.at( id.vertex );
-}
-
 int QgsAbstractGeometryV2::nCoordinates() const
 {
   QList< QList< QList< QgsPointV2 > > > coordinates;
@@ -202,6 +180,55 @@ bool QgsAbstractGeometryV2::readWkbHeader( QgsConstWkbPtr& wkbPtr, QgsWKBTypes::
     return false;
   }
   return true;
+}
+
+QgsPointV2 QgsAbstractGeometryV2::centroid() const
+{
+  // http://en.wikipedia.org/wiki/Centroid#Centroid_of_polygon
+  // Pick the first ring of first part for the moment
+
+  int n = vertexCount( 0, 0 );
+  if ( n == 1 )
+  {
+    return vertexAt( QgsVertexId( 0, 0, 0 ) );
+  }
+
+  double A = 0.;
+  double Cx = 0.;
+  double Cy = 0.;
+  int i = 0, j = 1;
+  if ( vertexAt( QgsVertexId( 0, 0, 0 ) ) != vertexAt( QgsVertexId( 0, 0, n - 1 ) ) )
+  {
+    i = n - 1;
+    j = 0;
+  }
+  for ( ; j < n; i = j++ )
+  {
+    QgsPointV2 vi = vertexAt( QgsVertexId( 0, 0, i ) );
+    QgsPointV2 vj = vertexAt( QgsVertexId( 0, 0, j ) );
+    double d = vi.x() * vj.y() - vj.x() * vi.y();
+    A += d;
+    Cx += ( vi.x() + vj.x() ) * d;
+    Cy += ( vi.y() + vj.y() ) * d;
+  }
+
+  if ( A < 1E-12 )
+  {
+    Cx = Cy = 0.;
+    for ( int i = 0; i < n - 1; ++i )
+    {
+      QgsPointV2 vi = vertexAt( QgsVertexId( 0, 0, i ) );
+      Cx += vi.x();
+      Cy += vi.y();
+    }
+    return QgsPointV2( Cx / ( n - 1 ), Cy / ( n - 1 ) );
+  }
+  else
+  {
+    return QgsPointV2( Cx / ( 3. * A ), Cy / ( 3. * A ) );
+  }
+
+  return QgsPointV2();
 }
 
 bool QgsAbstractGeometryV2::isEmpty() const

@@ -8,7 +8,7 @@ sudo apt-get update -qq
 sudo apt-get install --force-yes --no-install-recommends --no-install-suggests \
                          bison cmake cmake-data doxygen flex git graphviz \
                          grass-dev grass7-dev libexpat1-dev libfcgi-dev \
-                         libgdal1-dev libgeos-dev libgsl0-dev libpq-dev \
+                         libgdal1-dev libgeos-dev libgeos++-dev libgsl0-dev libpq-dev \
                          libproj-dev libqscintilla2-dev libqt4-dev \
                          libqt4-opengl-dev libqt4-sql-sqlite libqtwebkit-dev \
                          libqwt-dev libspatialindex-dev libspatialite-dev \

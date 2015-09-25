@@ -38,7 +38,7 @@ class CORE_EXPORT QgsCurvePolygonV2: public QgsSurfaceV2
 
     virtual QString geometryType() const override { return "CurvePolygon"; }
     virtual int dimension() const override { return 2; }
-    virtual QgsAbstractGeometryV2* clone() const override;
+    virtual QgsCurvePolygonV2* clone() const override;
     void clear() override;
 
 
@@ -56,14 +56,13 @@ class CORE_EXPORT QgsCurvePolygonV2: public QgsSurfaceV2
     //surface interface
     virtual double area() const override;
     virtual double length() const override;
-    QgsPointV2 centroid() const override;
     QgsPointV2 pointOnSurface() const override;
     QgsPolygonV2* surfaceToPolygon() const override;
 
     //curve polygon interface
     int numInteriorRings() const;
-    const QgsCurveV2* exteriorRing() const;
-    const QgsCurveV2* interiorRing( int i ) const;
+    QgsCurveV2* exteriorRing() const;
+    QgsCurveV2* interiorRing( int i ) const;
     virtual QgsPolygonV2* toPolygon() const;
 
     /** Sets exterior ring (takes ownership)*/
@@ -98,6 +97,11 @@ class CORE_EXPORT QgsCurvePolygonV2: public QgsSurfaceV2
         @param vertex the vertex id
         @return rotation in radians, clockwise from north*/
     double vertexAngle( const QgsVertexId& vertex ) const override;
+
+    virtual int vertexCount( int /*part*/ = 0, int ring = 0 ) const override;
+    virtual int ringCount( int /*part*/ = 0 ) const override { return ( mExteriorRing != 0 ) + mInteriorRings.size(); }
+    virtual int partCount() const override { return ringCount() > 0; }
+    virtual QgsPointV2 vertexAt( const QgsVertexId& id ) const override;
 
   protected:
 

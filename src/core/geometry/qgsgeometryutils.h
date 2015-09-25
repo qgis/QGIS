@@ -45,6 +45,62 @@ class CORE_EXPORT QgsGeometryUtils
      */
     static double sqrDistToLine( double ptX, double ptY, double x1, double y1, double x2, double y2, double& minDistX, double& minDistY, double epsilon );
 
+    /**
+     * @brief Compute the intersection between two lines
+     * @param p1 Point on the first line
+     * @param v Direction vector of the first line
+     * @param q1 Point on the second line
+     * @param w Direction vector of the second line
+     * @param inter Output parameter, the intersection point
+     * @return Whether the lines intersect
+     */
+    static bool lineIntersection( const QgsPointV2& p1, const QgsVector& v, const QgsPointV2& q1, const QgsVector& w, QgsPointV2& inter );
+
+    /**
+     * @brief Compute the intersection between two segments
+     * @param p1 First segment start point
+     * @param p2 First segment end point
+     * @param q1 Second segment start point
+     * @param q2 Second segment end point
+     * @param inter Output parameter, the intersection point
+     * @param tolerance The tolerance to use
+     * @return  Whether the segments intersect
+     */
+    static bool segmentIntersection( const QgsPointV2 &p1, const QgsPointV2 &p2, const QgsPointV2 &q1, const QgsPointV2 &q2, QgsPointV2& inter, double tolerance );
+
+    /**
+     * @brief Project the point on a segment
+     * @param p The point
+     * @param s1 The segment start point
+     * @param s2 The segment end point
+     * @return The projection of the point on the segment
+     */
+    static QgsPointV2 projPointOnSegment( const QgsPointV2& p, const QgsPointV2& s1, const QgsPointV2& s2 )
+    {
+      double nx = s2.y() - s1.y();
+      double ny = -( s2.x() - s1.x() );
+      double t = ( p.x() * ny - p.y() * nx - s1.x() * ny + s1.y() * nx ) / (( s2.x() - s1.x() ) * ny - ( s2.y() - s1.y() ) * nx );
+      return t < 0. ? s1 : t > 1. ? s2 : QgsPointV2( s1.x() + ( s2.x() - s1.x() ) * t, s1.y() + ( s2.y() - s1.y() ) * t );
+    }
+
+    struct SelfIntersection
+    {
+      int segment1;
+      int segment2;
+      QgsPointV2 point;
+    };
+
+    /**
+     * @brief Find self intersections in a polyline
+     * @param geom The geometry to check
+     * @param part The part of the geometry to check
+     * @param ring The ring of the geometry part to check
+     * @param tolerance The tolerance to use
+     * @return The list of self intersections
+     * @note added in QGIS 2.12
+     */
+    static QList<SelfIntersection> getSelfIntersections( const QgsAbstractGeometryV2* geom, int part, int ring, double tolerance );
+
     /** Returns < 0 if point(x/y) is left of the line x1,y1 -> x2,y2*/
     static double leftOfLine( double x, double y, double x1, double y1, double x2, double y2 );
 

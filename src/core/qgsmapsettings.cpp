@@ -343,6 +343,19 @@ const QgsCoordinateTransform* QgsMapSettings::layerTransform( QgsMapLayer *layer
 }
 
 
+double QgsMapSettings::layerToMapUnits( QgsMapLayer *theLayer, const QgsRectangle& referenceExtent ) const
+{
+  QgsRectangle extent = referenceExtent.isEmpty() ? theLayer->extent() : referenceExtent;
+  QgsPoint l1( extent.xMinimum(), extent.yMinimum() );
+  QgsPoint l2( extent.xMaximum(), extent.yMaximum() );
+  double distLayerUnits = std::sqrt( l1.sqrDist( l2 ) );
+  QgsPoint m1 = layerToMapCoordinates( theLayer, l1 );
+  QgsPoint m2 = layerToMapCoordinates( theLayer, l2 );
+  double distMapUnits = std::sqrt( m1.sqrDist( m2 ) );
+  return distMapUnits / distLayerUnits;
+}
+
+
 QgsRectangle QgsMapSettings::layerExtentToOutputExtent( QgsMapLayer* theLayer, QgsRectangle extent ) const
 {
   if ( hasCrsTransformEnabled() )

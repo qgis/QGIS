@@ -186,6 +186,13 @@ class CORE_EXPORT QgsMapSettings
 
     const QgsMapToPixel& mapToPixel() const { return mMapToPixel; }
 
+    /** Computes an *estimated* conversion factor between layer and map units: layerUnits * layerToMapUnits = mapUnits
+     * @param theLayer The layer
+     * @param referenceExtent A reference extent based on which to perform the computation. If not specified, the layer extent is used
+     * @note added in QGIS 2.12
+     */
+    double layerToMapUnits( QgsMapLayer* theLayer, const QgsRectangle& referenceExtent = QgsRectangle() ) const;
+
     /**
      * @brief transform bounding box from layer's CRS to output CRS
      * @see layerToMapCoordinates( QgsMapLayer* theLayer, QgsRectangle rect ) if you want to transform a rectangle

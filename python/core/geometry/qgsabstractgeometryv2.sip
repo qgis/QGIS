@@ -11,9 +11,16 @@ struct QgsVertexId
     };
 
   QgsVertexId();
-  QgsVertexId( int _part, int _ring, int _vertex, VertexType _type );
+  QgsVertexId( int _part, int _ring, int _vertex, VertexType _type);
 
   bool isValid() const;
+  bool operator==( const QgsVertexId& other ) const;
+  bool operator!=( const QgsVertexId& other ) const;
+  bool partEqual( const QgsVertexId& o ) const;
+  bool ringEqual( const QgsVertexId& o ) const;
+  bool vertexEqual( const QgsVertexId& o ) const;
+  bool isValid(const QgsAbstractGeometryV2* geom) const;
+
   int part;
   int ring;
   int vertex;
@@ -101,7 +108,7 @@ class QgsAbstractGeometryV2
 
     virtual void coordinateSequence( QList< QList< QList< QgsPointV2 > > >& coord /Out/ ) const = 0;
     int nCoordinates() const;
-    QgsPointV2 vertexAt( const QgsVertexId& id ) const;
+    virtual QgsPointV2 vertexAt( const QgsVertexId& id ) const = 0;
     virtual double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const = 0;
 
     //low-level editing
@@ -113,6 +120,9 @@ class QgsAbstractGeometryV2
     virtual double length() const;
     virtual double area() const;
 
+    /** Returns the centroid of the geometry*/
+    virtual QgsPointV2 centroid() const;
+
     virtual bool hasCurvedSegments() const;
     /** Returns a geometry without curves. Caller takes ownership*/
     virtual QgsAbstractGeometryV2* segmentize() const /Factory/;
@@ -120,4 +130,8 @@ class QgsAbstractGeometryV2
     /** Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
         @return rotation in radians, clockwise from north*/
     virtual double vertexAngle( const QgsVertexId& vertex ) const = 0;
+
+    virtual int vertexCount(int part = 0, int ring = 0) const = 0;
+    virtual int ringCount(int part = 0) const = 0;
+    virtual int partCount() const = 0;
 };

@@ -6,7 +6,7 @@ class QgsMultiLineStringV2: public QgsMultiCurveV2
 
   public:
     virtual QString geometryType() const;
-    QgsAbstractGeometryV2* clone() const;
+    virtual QgsMultiLineStringV2* clone() const;
 
     bool fromWkt( const QString& wkt );
 

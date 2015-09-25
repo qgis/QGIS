@@ -26,4 +26,9 @@ class QgsCurveV2: public QgsAbstractGeometryV2
 
     /** Returns a geometry without curves. Caller takes ownership*/
     QgsAbstractGeometryV2* segmentize() const /Factory/;
+
+    virtual int vertexCount(int part = 0, int ring = 0) const;
+    virtual int ringCount(int part = 0) const;
+    virtual int partCount() const;
+    virtual QgsPointV2 vertexAt( const QgsVertexId& id ) const;
 };

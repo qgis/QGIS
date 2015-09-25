@@ -35,7 +35,7 @@ class CORE_EXPORT QgsCircularStringV2: public QgsCurveV2
 
     virtual QString geometryType() const override { return "CircularString"; }
     virtual int dimension() const override { return 1; }
-    virtual QgsAbstractGeometryV2* clone() const override;
+    virtual QgsCircularStringV2* clone() const override;
     virtual void clear() override;
 
     virtual QgsRectangle calculateBoundingBox() const override;

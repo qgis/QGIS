@@ -134,7 +134,7 @@ void QgsGeometry::removeWkbGeos()
   }
 }
 
-const QgsAbstractGeometryV2* QgsGeometry::geometry() const
+QgsAbstractGeometryV2* QgsGeometry::geometry() const
 {
   if ( !d )
   {

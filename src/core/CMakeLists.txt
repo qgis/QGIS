@@ -3,6 +3,8 @@
 
 SET(QGIS_CORE_SRCS
 
+  geosextra/geos_c_extra.cpp
+
   gps/qgsgpsconnection.cpp
   gps/qgsgpsconnectionregistry.cpp
   gps/qgsnmeaconnection.cpp
@@ -735,6 +737,12 @@ SET(QGIS_CORE_HDRS
   geometry/qgspointv2.h
 )
 
+IF(GEOS_CPP_LIBRARY)
+  SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS} geosextra/geos_c_extra.cpp)
+  SET(QGIS_CORE_HDRS ${QGIS_CORE_HDRS} geosextra/geos_c_extra.h)
+  ADD_DEFINITIONS("-DHAVE_GEOS_CPP")
+ENDIF(GEOS_CPP_LIBRARY)
+
 IF (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)
   SET(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
     gps/qgsqtlocationconnection.h
@@ -847,6 +855,7 @@ TARGET_LINK_LIBRARIES(qgis_core
 
   ${PROJ_LIBRARY}
   ${GEOS_LIBRARY}
+  ${GEOS_CPP_LIBRARY}
   ${GDAL_LIBRARY}
   ${SPATIALINDEX_LIBRARY}
   ${EXPAT_LIBRARY}

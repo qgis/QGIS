@@ -23,6 +23,7 @@ email                : morb at ozemail dot com dot au
 #include "qgis.h"
 
 #include <geos_c.h>
+#include <climits>
 
 #if defined(GEOS_VERSION_MAJOR) && (GEOS_VERSION_MAJOR<3)
 #define GEOSGeometry struct GEOSGeom_t
@@ -99,7 +100,7 @@ class CORE_EXPORT QgsGeometry
      * @note added in QGIS 2.10
      * @see setGeometry
      */
-    const QgsAbstractGeometryV2* geometry() const;
+    QgsAbstractGeometryV2* geometry() const;
 
     /** Sets the underlying geometry store. Ownership of geometry is transferred.
      * @note added in QGIS 2.10
@@ -684,7 +685,7 @@ class CORE_EXPORT QgsGeometry
      * points are equal within the specified tolerance
      * @note added in QGIS 2.9
      */
-    static bool compare( const QgsPolyline& p1, const QgsPolyline& p2, double epsilon = 4 * DBL_EPSILON );
+    static bool compare( const QgsPolyline& p1, const QgsPolyline& p2, double epsilon = 4 * std::numeric_limits<double>::epsilon() );
 
     /** Compares two polygons for equality within a specified tolerance.
      * @param p1 first polygon
@@ -694,7 +695,7 @@ class CORE_EXPORT QgsGeometry
      * number of points and all points are equal within the specified tolerance
      * @note added in QGIS 2.9
      */
-    static bool compare( const QgsPolygon& p1, const QgsPolygon& p2, double epsilon = 4 * DBL_EPSILON );
+    static bool compare( const QgsPolygon& p1, const QgsPolygon& p2, double epsilon = 4 * std::numeric_limits<double>::epsilon() );
 
     /** Compares two multipolygons for equality within a specified tolerance.
      * @param p1 first multipolygon
@@ -705,7 +706,7 @@ class CORE_EXPORT QgsGeometry
      * tolerance
      * @note added in QGIS 2.9
      */
-    static bool compare( const QgsMultiPolygon& p1, const QgsMultiPolygon& p2, double epsilon = 4 * DBL_EPSILON );
+    static bool compare( const QgsMultiPolygon& p1, const QgsMultiPolygon& p2, double epsilon = 4 * std::numeric_limits<double>::epsilon() );
 
     /** Smooths a geometry by rounding off corners using the Chaikin algorithm. This operation
     * roughly doubles the number of vertices in a geometry.

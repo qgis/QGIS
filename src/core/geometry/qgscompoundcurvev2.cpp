@@ -56,7 +56,7 @@ QgsCompoundCurveV2& QgsCompoundCurveV2::operator=( const QgsCompoundCurveV2 & cu
   return *this;
 }
 
-QgsAbstractGeometryV2 *QgsCompoundCurveV2::clone() const
+QgsCompoundCurveV2 *QgsCompoundCurveV2::clone() const
 {
   return new QgsCompoundCurveV2( *this );
 }

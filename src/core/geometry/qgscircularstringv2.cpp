@@ -36,7 +36,7 @@ QgsCircularStringV2::~QgsCircularStringV2()
 
 }
 
-QgsAbstractGeometryV2 *QgsCircularStringV2::clone() const
+QgsCircularStringV2 *QgsCircularStringV2::clone() const
 {
   return new QgsCircularStringV2( *this );
 }

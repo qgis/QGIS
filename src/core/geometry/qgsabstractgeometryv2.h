@@ -28,45 +28,10 @@ class QgsMultiCurveV2;
 class QgsMultiPointV2;
 class QgsPointV2;
 class QgsConstWkbPtr;
+struct QgsVertexId;
 class QgsWkbPtr;
 class QPainter;
 
-/** \ingroup core
- * \class QgsVertexId
- * \brief Utility class for identifying a unique vertex within a geometry.
- * \note added in QGIS 2.10
- * \note this API is not considered stable and may change for 2.12
- */
-struct CORE_EXPORT QgsVertexId
-{
-  enum VertexType
-  {
-    SegmentVertex = 1, //start / endpoint of a segment
-    CurveVertex
-  };
-
-  QgsVertexId(): part( - 1 ), ring( -1 ), vertex( -1 ), type( SegmentVertex ) {}
-  QgsVertexId( int _part, int _ring, int _vertex, VertexType _type = SegmentVertex )
-      : part( _part ), ring( _ring ), vertex( _vertex ), type( _type ) {}
-
-  /** Returns true if the vertex id is valid
-   */
-  bool isValid() const { return part >= 0 && ring >= 0 && vertex >= 0; }
-
-  bool operator==( const QgsVertexId& other )
-  {
-    return part == other.part && ring == other.ring && vertex == other.vertex;
-  }
-  bool operator!=( const QgsVertexId& other )
-  {
-    return part != other.part || ring != other.ring || vertex != other.vertex;
-  }
-
-  int part;
-  int ring;
-  int vertex;
-  VertexType type;
-};
 
 /** \ingroup core
  * \class QgsAbstractGeometryV2
@@ -254,7 +219,7 @@ class CORE_EXPORT QgsAbstractGeometryV2
 
     /** Returns the point corresponding to a specified vertex id
      */
-    QgsPointV2 vertexAt( const QgsVertexId& id ) const;
+    virtual QgsPointV2 vertexAt( const QgsVertexId& id ) const = 0;
 
     /** Searches for the closest segment of the geometry to a given point.
      * @param pt Specifies the point for search
@@ -304,6 +269,9 @@ class CORE_EXPORT QgsAbstractGeometryV2
      */
     virtual double area() const { return 0.0; }
 
+    /** Returns the centroid of the geometry */
+    virtual QgsPointV2 centroid() const;
+
     /** Returns true if the geometry is empty
      */
     bool isEmpty() const;
@@ -322,6 +290,10 @@ class CORE_EXPORT QgsAbstractGeometryV2
         @return rotation in radians, clockwise from north*/
     virtual double vertexAngle( const QgsVertexId& vertex ) const = 0;
 
+    virtual int vertexCount( int part = 0, int ring = 0 ) const = 0;
+    virtual int ringCount( int part = 0 ) const = 0;
+    virtual int partCount() const = 0;
+
   protected:
     QgsWKBTypes::Type mWkbType;
     mutable QgsRectangle mBoundingBox;
@@ -339,6 +311,60 @@ class CORE_EXPORT QgsAbstractGeometryV2
      */
     static bool readWkbHeader( QgsConstWkbPtr& wkbPtr, QgsWKBTypes::Type& wkbType, bool& endianSwap, QgsWKBTypes::Type expectedType );
 
+};
+
+
+/** \ingroup core
+ * \class QgsVertexId
+ * \brief Utility class for identifying a unique vertex within a geometry.
+ * \note added in QGIS 2.10
+ */
+struct CORE_EXPORT QgsVertexId
+{
+  enum VertexType
+  {
+    SegmentVertex = 1, //start / endpoint of a segment
+    CurveVertex
+  };
+
+  QgsVertexId( int _part = -1, int _ring = -1, int _vertex = -1, VertexType _type = SegmentVertex )
+      : part( _part ), ring( _ring ), vertex( _vertex ), type( _type ) {}
+
+  /** Returns true if the vertex id is valid
+   */
+  bool isValid() const { return part >= 0 && ring >= 0 && vertex >= 0; }
+
+  bool operator==( const QgsVertexId& other ) const
+  {
+    return part == other.part && ring == other.ring && vertex == other.vertex;
+  }
+  bool operator!=( const QgsVertexId& other ) const
+  {
+    return part != other.part || ring != other.ring || vertex != other.vertex;
+  }
+  bool partEqual( const QgsVertexId& o ) const
+  {
+    return part >= 0 && o.part == part;
+  }
+  bool ringEqual( const QgsVertexId& o ) const
+  {
+    return partEqual( o ) && ( ring >= 0 && o.ring == ring );
+  }
+  bool vertexEqual( const QgsVertexId& o ) const
+  {
+    return ringEqual( o ) && ( vertex >= 0 && o.ring == ring );
+  }
+  bool isValid( const QgsAbstractGeometryV2* geom ) const
+  {
+    return ( part >= 0 && part < geom->partCount() ) &&
+           ( ring < geom->ringCount( part ) ) &&
+           ( vertex < 0 || vertex < geom->vertexCount( part, ring ) );
+  }
+
+  int part;
+  int ring;
+  int vertex;
+  VertexType type;
 };
 
 #endif //QGSABSTRACTGEOMETRYV2

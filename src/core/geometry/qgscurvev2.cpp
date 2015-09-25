@@ -85,3 +85,11 @@ QgsAbstractGeometryV2* QgsCurveV2::segmentize() const
 {
   return curveToLine();
 }
+
+QgsPointV2 QgsCurveV2::vertexAt( const QgsVertexId& id ) const
+{
+  QgsPointV2 v;
+  QgsVertexId::VertexType type;
+  pointAt( id.vertex, v, type );
+  return v;
+}
