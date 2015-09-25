@@ -235,6 +235,7 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool 
   mSearchColumnComboBox->addItem( tr( "All" ) );
   mSearchColumnComboBox->addItem( tr( "Schema" ) );
   mSearchColumnComboBox->addItem( tr( "Table" ) );
+  mSearchColumnComboBox->addItem( tr( "Comment" ) );
   mSearchColumnComboBox->addItem( tr( "Type" ) );
   mSearchColumnComboBox->addItem( tr( "Geometry column" ) );
   mSearchColumnComboBox->addItem( tr( "Feature id" ) );
@@ -410,6 +411,10 @@ void QgsPgSourceSelect::on_mSearchColumnComboBox_currentIndexChanged( const QStr
   else if ( text == tr( "Table" ) )
   {
     mProxyModel.setFilterKeyColumn( QgsPgTableModel::dbtmTable );
+  }
+  else if ( text == tr( "Comment" ) )
+  {
+    mProxyModel.setFilterKeyColumn( QgsPgTableModel::dbtmComment );
   }
   else if ( text == tr( "Type" ) )
   {

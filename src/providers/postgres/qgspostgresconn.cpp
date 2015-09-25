@@ -435,7 +435,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
 
     // The following query returns only tables that exist and the user has SELECT privilege on.
     // Can't use regclass here because table must exist, else error occurs.
-    sql = QString( "SELECT %1,%2,%3,%4,%5,%6,c.relkind"
+    sql = QString( "SELECT %1,%2,%3,%4,%5,%6,c.relkind,obj_description(c.oid)"
                    " FROM %7 l,pg_class c,pg_namespace n"
                    " WHERE c.relname=%1"
                    " AND %2=n.nspname"
@@ -471,6 +471,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       int dim = result.PQgetvalue( idx, 5 ).toInt();
       QString relkind = result.PQgetvalue( idx, 6 );
       bool isView = relkind == "v" || relkind == "m";
+      QString comment = result.PQgetvalue( idx, 7 );
 
       int srid = ssrid.isEmpty() ? INT_MIN : ssrid.toInt();
       if ( majorVersion() >= 2 && srid == 0 )
@@ -498,6 +499,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       layerProperty.sql = "";
       layerProperty.relKind = relkind;
       layerProperty.isView = isView;
+      layerProperty.tableComment = comment;
       /*
        * force2d may get a false negative value
        * (dim == 2 but is not really constrained)
@@ -529,6 +531,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
                   ",a.attname"
                   ",c.relkind"
                   ",CASE WHEN t.typname IN ('geometry','geography','topogeometry') THEN t.typname ELSE b.typname END AS coltype"
+                  ",obj_description(c.oid)"
                   " FROM pg_attribute a"
                   " JOIN pg_class c ON c.oid=a.attrelid"
                   " JOIN pg_namespace n ON n.oid=c.relnamespace"
@@ -593,6 +596,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       QString relkind    = result.PQgetvalue( i, 3 ); // relation kind
       QString coltype    = result.PQgetvalue( i, 4 ); // column type
       bool isView = relkind == "v" || relkind == "m";
+      QString comment    = result.PQgetvalue( i, 5 ); // table comment
 
       //QgsDebugMsg( QString( "%1.%2.%3: %4" ).arg( schemaName ).arg( tableName ).arg( column ).arg( relkind ) );
 
@@ -603,6 +607,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       layerProperty.geometryColName = column;
       layerProperty.relKind = relkind;
       layerProperty.isView = isView;
+      layerProperty.tableComment = comment;
       if ( coltype == "geometry" )
       {
         layerProperty.geometryColType = sctGeometry;
@@ -644,6 +649,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
                   "pg_class.relname"
                   ",pg_namespace.nspname"
                   ",pg_class.relkind"
+                  ",obj_description(pg_class.oid)"
                   " FROM "
                   " pg_class"
                   ",pg_namespace"
@@ -677,6 +683,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       QString schema  = result.PQgetvalue( i, 1 ); // nspname
       QString relkind = result.PQgetvalue( i, 2 ); // relation kind
       bool isView = relkind == "v" || relkind == "m";
+      QString comment = result.PQgetvalue( i, 3 ); // table comment
 
       //QgsDebugMsg( QString( "%1.%2: %3" ).arg( schema ).arg( table ).arg( relkind ) );
 
@@ -688,6 +695,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       layerProperty.geometryColType = sctNone;
       layerProperty.relKind = relkind;
       layerProperty.isView = isView;
+      layerProperty.tableComment = comment;
 
       //check if we've already added this layer in some form
       bool alreadyFound = false;

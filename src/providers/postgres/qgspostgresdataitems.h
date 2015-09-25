@@ -111,6 +111,9 @@ class QgsPGLayerItem : public QgsLayerItem
 
     virtual QList<QAction*> actions() override;
 
+    /** Returns comments of the layer */
+    virtual QString comments() const override;
+
   public slots:
     void deleteLayer();
     void renameLayer();
