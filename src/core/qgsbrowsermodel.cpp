@@ -208,7 +208,7 @@ QVariant QgsBrowserModel::data( const QModelIndex &index, int role ) const
     }
     if ( item->type() == QgsDataItem::Layer )
     {
-      QgsLayerItem* lyrItem = qobject_cast<QgsLayerItem*>(item);
+      QgsLayerItem* lyrItem = qobject_cast<QgsLayerItem*>( item );
       return lyrItem->comments();
     }
     return "";
