@@ -20,6 +20,9 @@
 #include "qgsgrass.h"
 #include "qgsgrassimport.h"
 
+class QTextEdit;
+class QProgressBar;
+
 class QgsGrassImportItem;
 
 /* Qt does not allow inheritance from multiple QObjects, that is why we have QgsGrassItemActions
@@ -186,6 +189,20 @@ class QgsGrassGroupItem : public QgsGrassObjectItem
 
 };
 
+class QgsGrassImportItemWidget : public QWidget
+{
+    Q_OBJECT
+  public:
+    QgsGrassImportItemWidget( QWidget* parent  = 0 );
+
+  public slots:
+    void onProgressChanged( QString html, int min, int max, int value );
+
+  private:
+    QTextEdit *mTextEdit;
+    QProgressBar *mProgressBar;
+};
+
 // item representing a layer being imported
 class QgsGrassImportItem : public QgsDataItem, public QgsGrassObjectItemBase
 {
@@ -198,6 +215,7 @@ class QgsGrassImportItem : public QgsDataItem, public QgsGrassObjectItemBase
     //} // do nothing to keep Populating
     virtual QList<QAction*> actions() override;
     virtual QIcon icon() override;
+    virtual QWidget *paramWidget() override;
 
   public slots:
     virtual void refresh() override {}

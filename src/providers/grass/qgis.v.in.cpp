@@ -318,18 +318,24 @@ int main( int argc, char **argv )
   if ( isPolygon )
   {
     double snapTreshold = 0;
+    G_message( "Building partial topology" );
     Vect_build_partial( map, GV_BUILD_BASE );
 
     if ( snapTreshold > 0 )
     {
       Vect_snap_lines( map, GV_BOUNDARY, snapTreshold, NULL );
     }
+    G_message( "Breaking polygons" );
     Vect_break_polygons( map, GV_BOUNDARY, NULL );
+    G_message( "Removing duplicates" );
     Vect_remove_duplicates( map, GV_BOUNDARY | GV_CENTROID, NULL );
     while ( true )
     {
+      G_message( "Breaking lines" );
       Vect_break_lines( map, GV_BOUNDARY, NULL );
+      G_message( "Removing duplicates" );
       Vect_remove_duplicates( map, GV_BOUNDARY, NULL );
+      G_message( "Cleaning small dangles at nodes" );
       if ( Vect_clean_small_angles_at_nodes( map, GV_BOUNDARY, NULL ) == 0 )
       {
         break;
@@ -358,15 +364,19 @@ int main( int argc, char **argv )
       }
     }
 
+    G_message( "Merging lines" );
     Vect_merge_lines( map, GV_BOUNDARY, NULL, NULL );
+    G_message( "Removing bridges" );
 #if GRASS_VERSION_MAJOR < 7
     Vect_remove_bridges( map, NULL );
 #else
     int linesRemoved, bridgesRemoved;
     Vect_remove_bridges( map, NULL, &linesRemoved, &bridgesRemoved );
 #endif
+    G_message( "Attaching islands" );
     Vect_build_partial( map, GV_BUILD_ATTACH_ISLES );
 
+    G_message( "Creating centroids" );
     QMap<QgsFeatureId, QgsFeature> centroids;
     QgsSpatialIndex spatialIndex;
     int nAreas = Vect_get_num_areas( map );
@@ -385,6 +395,7 @@ int main( int argc, char **argv )
       centroids.insert( area, feature );
       spatialIndex.insertFeature( feature );
     }
+    G_message( "Attaching input polygons to cleaned areas" );
     // read once more to assign centroids to polygons
     while ( true )
     {

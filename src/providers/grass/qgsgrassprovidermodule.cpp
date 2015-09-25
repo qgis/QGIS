@@ -32,6 +32,9 @@
 #include <QDir>
 #include <QLabel>
 #include <QObject>
+#include <QProgressBar>
+#include <QScrollBar>
+#include <QTextEdit>
 
 //----------------------- QgsGrassItemActions ------------------------------
 QgsGrassItemActions::QgsGrassItemActions( QgsGrassObject grassObject, QObject *parent )
@@ -1071,6 +1074,29 @@ QIcon QgsGrassGroupItem::icon()
   return linkIcon;
 }
 
+//----------------------- QgsGrassImportItemWidget ------------------------------
+QgsGrassImportItemWidget::QgsGrassImportItemWidget( QWidget* parent )
+    : QWidget( parent )
+{
+  QVBoxLayout *layout = new QVBoxLayout( this );
+
+  mTextEdit = new QTextEdit( this );
+  mTextEdit->setReadOnly( true );
+  layout->addWidget( mTextEdit );
+
+  mProgressBar = new QProgressBar( this );
+  layout->addWidget( mProgressBar );
+}
+
+void QgsGrassImportItemWidget::onProgressChanged( QString html, int min, int max, int value )
+{
+  mTextEdit->setHtml( html );
+  mTextEdit->verticalScrollBar()->setValue( mTextEdit->verticalScrollBar()->maximum() );
+  mProgressBar->setRange( min, max );
+  mProgressBar->setValue( value );
+}
+
+
 //----------------------- QgsGrassImportItem ------------------------------
 
 QgsAnimatedIcon *QgsGrassImportItem::mImportIcon = 0;
@@ -1100,6 +1126,16 @@ QList<QAction*> QgsGrassImportItem::actions()
   lst.append( actionRename );
 
   return lst;
+}
+
+QWidget * QgsGrassImportItem::paramWidget()
+{
+  QgsDebugMsg( "entered" );
+  QgsGrassImportItemWidget *widget = new QgsGrassImportItemWidget();
+  connect( mImport, SIGNAL( progressChanged( QString, int, int, int ) ),
+           widget, SLOT( onProgressChanged( QString, int, int, int ) ) );
+  mImport->emitProgressChanged();
+  return widget;
 }
 
 void QgsGrassImportItem::cancel()

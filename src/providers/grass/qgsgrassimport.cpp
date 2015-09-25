@@ -53,7 +53,11 @@ QgsGrassImport::QgsGrassImport( QgsGrassObject grassObject )
     : QObject()
     , mGrassObject( grassObject )
     , mCanceled( false )
+    , mProcess( 0 )
     , mFutureWatcher( 0 )
+    , mProgressMin( 0 )
+    , mProgressMax( 0 )
+    , mProgressValue( 0 )
 {
   // QMovie used by QgsAnimatedIcon is using QTimer which cannot be start from another thread
   // (it works on Linux however) so we cannot start it connecting from QgsGrassImportItem and
@@ -121,6 +125,28 @@ void QgsGrassImport::cancel()
   mCanceled = true;
 }
 
+void QgsGrassImport::emitProgressChanged()
+{
+  emit progressChanged( mProgressHtml + mProgressTmpHtml, mProgressMin, mProgressMax, mProgressValue );
+
+}
+
+void QgsGrassImport::onReadyReadStandardError()
+{
+  if ( mProcess )
+  {
+    // TODO: should be locked? Lock does not help anyway.
+    // TODO: parse better progress output
+    mProgressHtml += QString( mProcess->readAllStandardError() ).replace( "\n", "<br>" );
+    emitProgressChanged();
+  }
+}
+
+void QgsGrassImport::addProgressRow( QString html )
+{
+  mProgressHtml += html + "<br>";
+}
+
 //------------------------------ QgsGrassRasterImport ------------------------------------
 QgsGrassRasterImport::QgsGrassRasterImport( QgsRasterPipe* pipe, const QgsGrassObject& grassObject,
     const QgsRectangle &extent, int xSize, int ySize )
@@ -170,6 +196,8 @@ bool QgsGrassRasterImport::import()
   for ( int band = 1; band <= provider->bandCount(); band++ )
   {
     QgsDebugMsg( QString( "band = %1" ).arg( band ) );
+    addProgressRow( tr( "Writing band %1/%2" ).arg( band ).arg( provider->bandCount() ) );
+    emitProgressChanged();
     int colorInterpretation = provider->colorInterpretation( band );
     if ( colorInterpretation ==  QgsRaster::RedBand )
     {
@@ -228,10 +256,9 @@ bool QgsGrassRasterImport::import()
     }
     arguments.append( "output=" + name );    // get list of all output names
     QTemporaryFile gisrcFile;
-    QProcess* process = 0;
     try
     {
-      process = QgsGrass::startModule( mGrassObject.gisdbase(), mGrassObject.location(), mGrassObject.mapset(), module, arguments, gisrcFile );
+      mProcess = QgsGrass::startModule( mGrassObject.gisdbase(), mGrassObject.location(), mGrassObject.mapset(), module, arguments, gisrcFile );
     }
     catch ( QgsGrass::Exception &e )
     {
@@ -239,7 +266,7 @@ bool QgsGrassRasterImport::import()
       return false;
     }
 
-    QDataStream outStream( process );
+    QDataStream outStream( mProcess );
 
     outStream << mExtent << ( qint32 )mXSize << ( qint32 )mYSize;
     outStream << ( qint32 )qgis_out_type;
@@ -264,11 +291,14 @@ bool QgsGrassRasterImport::import()
     int iterCols = 0;
     int iterRows = 0;
     QgsRasterBlock* block = 0;
-    process->setReadChannel( QProcess::StandardOutput );
+    mProcess->setReadChannel( QProcess::StandardOutput );
+    mProgressMax = mYSize;
     while ( iter.readNextRasterPart( band, iterCols, iterRows, &block, iterLeft, iterTop ) )
     {
       for ( int row = 0; row < iterRows; row++ )
       {
+        mProgressValue = iterTop + row;
+        emitProgressChanged();
         if ( !block->convert( qgis_out_type ) )
         {
           setError( tr( "Cannot convert block (%1) to data type %2" ).arg( block->toString() ).arg( qgis_out_type ) );
@@ -320,11 +350,11 @@ bool QgsGrassRasterImport::import()
         outStream << byteArray;
 
         // Without waitForBytesWritten() it does not finish ok on Windows (process timeout)
-        process->waitForBytesWritten( -1 );
+        mProcess->waitForBytesWritten( -1 );
 
 #ifndef Q_OS_WIN
         // wait until the row is written to allow quick cancel (don't send data to buffer)
-        process->waitForReadyRead();
+        mProcess->waitForReadyRead();
         bool result;
         outStream >> result;
 #endif
@@ -339,34 +369,37 @@ bool QgsGrassRasterImport::import()
 
     // TODO: send something back from module and read it here to close map correctly in module
 
-    process->closeWriteChannel();
+    mProcess->closeWriteChannel();
     // TODO: best timeout?
-    process->waitForFinished( 30000 );
+    mProcess->waitForFinished( 30000 );
 
-    QString stdoutString = process->readAllStandardOutput().data();
-    QString stderrString = process->readAllStandardError().data();
+    QString stdoutString = mProcess->readAllStandardOutput().data();
+    QString stderrString = mProcess->readAllStandardError().data();
 
     QString processResult = QString( "exitStatus=%1, exitCode=%2, error=%3, errorString=%4 stdout=%5, stderr=%6" )
-                            .arg( process->exitStatus() ).arg( process->exitCode() )
-                            .arg( process->error() ).arg( process->errorString() )
+                            .arg( mProcess->exitStatus() ).arg( mProcess->exitCode() )
+                            .arg( mProcess->error() ).arg( mProcess->errorString() )
                             .arg( stdoutString.replace( "\n", ", " ) ).arg( stderrString.replace( "\n", ", " ) );
     QgsDebugMsg( "processResult: " + processResult );
 
-    if ( process->exitStatus() != QProcess::NormalExit )
+    if ( mProcess->exitStatus() != QProcess::NormalExit )
     {
-      setError( process->errorString() );
-      delete process;
+      setError( mProcess->errorString() );
+      delete mProcess;
+      mProcess = 0;
       return false;
     }
 
-    if ( process->exitCode() != 0 )
+    if ( mProcess->exitCode() != 0 )
     {
       setError( stderrString );
-      delete process;
+      delete mProcess;
+      mProcess = 0;
       return false;
     }
 
-    delete process;
+    delete mProcess;
+    mProcess = 0;
   }
   QgsDebugMsg( QString( "redBand = %1 greenBand = %2 blueBand = %3" ).arg( redBand ).arg( greenBand ).arg( blueBand ) );
   if ( redBand > 0 && greenBand > 0 && blueBand > 0 )
@@ -486,19 +519,20 @@ bool QgsGrassVectorImport::import()
   QString name = mGrassObject.name();
   arguments.append( "output=" + name );
   QTemporaryFile gisrcFile;
-  QProcess* process = 0;
   try
   {
-    process = QgsGrass::startModule( mGrassObject.gisdbase(), mGrassObject.location(), mGrassObject.mapset(), module, arguments, gisrcFile );
+    mProcess = QgsGrass::startModule( mGrassObject.gisdbase(), mGrassObject.location(), mGrassObject.mapset(), module, arguments, gisrcFile );
   }
   catch ( QgsGrass::Exception &e )
   {
     setError( e.what() );
     return false;
   }
+  // TODO: connecting readyReadStandardError() is causing hangs or crashes
+  //connect(mProcess, SIGNAL(readyReadStandardError()), this, SLOT(onReadyReadStandardError()));
 
-  QDataStream outStream( process );
-  process->setReadChannel( QProcess::StandardOutput );
+  QDataStream outStream( mProcess );
+  mProcess->setReadChannel( QProcess::StandardOutput );
 
   QGis::WkbType wkbType = mProvider->geometryType();
   bool isPolygon = QGis::singleType( QGis::flatType( wkbType ) ) == QGis::WKBPolygon;
@@ -508,9 +542,11 @@ bool QgsGrassVectorImport::import()
 
   QgsFeatureIterator iterator = mProvider->getFeatures();
   QgsFeature feature;
+  mProgressMax = mProvider->featureCount();
   for ( int i = 0; i < ( isPolygon ? 2 : 1 ); i++ ) // two cycles with polygons
   {
-    if ( i > 0 )
+    addProgressRow( tr( "Writing features" ) );
+    if ( i > 0 ) // second run for polygons
     {
       //iterator.rewind(); // rewind does not work
       iterator = mProvider->getFeatures();
@@ -519,6 +555,9 @@ bool QgsGrassVectorImport::import()
     int count = 0;
     while ( iterator.nextFeature( feature ) )
     {
+      mProgressTmpHtml = tr( "Feature %1/%2" ).arg( count + 1 ).arg( mProgressMax );
+      mProgressValue = count + 1;
+      emitProgressChanged();
       if ( !feature.isValid() )
       {
         continue;
@@ -536,11 +575,11 @@ bool QgsGrassVectorImport::import()
       outStream << feature;
 
       // Without waitForBytesWritten() it does not finish ok on Windows (data lost)
-      process->waitForBytesWritten( -1 );
+      mProcess->waitForBytesWritten( -1 );
 
 #ifndef Q_OS_WIN
       // wait until the feature is written to allow quick cancel (don't send data to buffer)
-      process->waitForReadyRead();
+      mProcess->waitForReadyRead();
       bool result;
       outStream >> result;
 #endif
@@ -551,56 +590,61 @@ bool QgsGrassVectorImport::import()
         QgsDebugMsg( QString( "%1 features written" ).arg( count ) );
       }
     }
+
     feature = QgsFeature(); // indicate end by invalid feature
     outStream << false; // not canceled
     outStream << feature;
 
-    process->waitForBytesWritten( -1 );
+    mProcess->waitForBytesWritten( -1 );
     QgsDebugMsg( "features sent" );
 #ifndef Q_OS_WIN
-    process->waitForReadyRead();
+    mProcess->waitForReadyRead();
     bool result;
     outStream >> result;
 #endif
   }
+
   iterator.close();
 
   // Close write channel before waiting for response to avoid stdin buffer problem on Windows
-  process->closeWriteChannel();
+  mProcess->closeWriteChannel();
 
   QgsDebugMsg( "waitForReadyRead" );
   bool result;
-  process->waitForReadyRead();
+  mProcess->waitForReadyRead();
   outStream >> result;
   QgsDebugMsg( QString( "result = %1" ).arg( result ) );
 
   QgsDebugMsg( "waitForFinished" );
-  process->waitForFinished( 30000 );
+  mProcess->waitForFinished( 30000 );
 
-  QString stdoutString = process->readAllStandardOutput().data();
-  QString stderrString = process->readAllStandardError().data();
+  QString stdoutString = mProcess->readAllStandardOutput().data();
+  QString stderrString = mProcess->readAllStandardError().data();
 
   QString processResult = QString( "exitStatus=%1, exitCode=%2, error=%3, errorString=%4 stdout=%5, stderr=%6" )
-                          .arg( process->exitStatus() ).arg( process->exitCode() )
-                          .arg( process->error() ).arg( process->errorString() )
+                          .arg( mProcess->exitStatus() ).arg( mProcess->exitCode() )
+                          .arg( mProcess->error() ).arg( mProcess->errorString() )
                           .arg( stdoutString.replace( "\n", ", " ) ).arg( stderrString.replace( "\n", ", " ) );
   QgsDebugMsg( "processResult: " + processResult );
 
-  if ( process->exitStatus() != QProcess::NormalExit )
+  if ( mProcess->exitStatus() != QProcess::NormalExit )
   {
-    setError( process->errorString() );
-    delete process;
+    setError( mProcess->errorString() );
+    delete mProcess;
+    mProcess = 0;
     return false;
   }
 
-  if ( process->exitCode() != 0 )
+  if ( mProcess->exitCode() != 0 )
   {
     setError( stderrString );
-    delete process;
+    delete mProcess;
+    mProcess = 0;
     return false;
   }
 
-  delete process;
+  delete mProcess;
+  mProcess = 0;
   return true;
 }
 

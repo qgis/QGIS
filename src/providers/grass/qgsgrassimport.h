@@ -50,6 +50,7 @@ class GRASS_LIB_EXPORT QgsGrassImport : public QObject
     QString error();
     virtual QStringList names() const;
     bool isCanceled() const;
+    void emitProgressChanged();
   public slots:
     void onFinished();
     // TODO: this is not completely kosher, because QgsGrassImport exist on the main thread
@@ -58,19 +59,31 @@ class GRASS_LIB_EXPORT QgsGrassImport : public QObject
     // and thus recieves the signal.
     // Most probably however, it will work correctly, even if read/write the bool wasn't atomic
     void cancel();
-    void frameChanged() {};
+    void frameChanged() {}
+
+    void onReadyReadStandardError();
 
   signals:
     // sent when process finished
     void finished( QgsGrassImport *import );
 
+    void progressChanged( QString html, int min, int max, int value );
+
   protected:
     static bool run( QgsGrassImport *imp );
     void setError( QString error );
+    void addProgressRow( QString html );
     QgsGrassObject mGrassObject;
     QString mError;
     bool mCanceled;
+    QProcess* mProcess;
     QFutureWatcher<bool>* mFutureWatcher;
+    QString mProgressHtml;
+    // temporary part of progress, e.g. number of features written.
+    QString mProgressTmpHtml;
+    int mProgressMin;
+    int mProgressMax;
+    int mProgressValue;
 };
 
 class GRASS_LIB_EXPORT QgsGrassRasterImport : public QgsGrassImport
