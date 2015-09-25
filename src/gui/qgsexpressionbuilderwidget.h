@@ -25,6 +25,7 @@
 #include "QStandardItemModel"
 #include "QStandardItem"
 #include "QSortFilterProxyModel"
+#include "QStringListModel"
 
 /** An expression item that can be used in the QgsExpressionBuilderWidget tree.
   */
@@ -136,6 +137,7 @@ class QgsExpressionItemSearchProxy : public QSortFilterProxyModel
     }
 };
 
+
 /** A reusable widget that can be used to build a expression string.
   * See QgsExpressionBuilderDialog for exmaple of usage.
   */
@@ -238,8 +240,9 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void on_expressionTree_doubleClicked( const QModelIndex &index );
     void on_txtExpressionString_textChanged();
     void on_txtSearchEdit_textChanged();
+    void on_txtSearchEditValues_textChanged();
     void on_lblPreview_linkActivated( QString link );
-    void on_mValueListWidget_itemDoubleClicked( QListWidgetItem* item );
+    void on_mValuesListView_doubleClicked( const QModelIndex &index );
     void operatorButtonClicked();
     void showContextMenu( const QPoint & );
     void loadSampleValues();
@@ -274,6 +277,8 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     QString mFunctionsPath;
     QgsVectorLayer *mLayer;
     QStandardItemModel *mModel;
+    QStringListModel *mValuesModel;
+    QSortFilterProxyModel *mProxyValues;
     QgsExpressionItemSearchProxy *mProxyModel;
     QMap<QString, QgsExpressionItem*> mExpressionGroups;
     QgsFeature mFeature;

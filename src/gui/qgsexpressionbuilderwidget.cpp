@@ -58,12 +58,18 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   connect( btnLoadAll, SIGNAL( pressed() ), this, SLOT( loadAllValues() ) );
   connect( btnLoadSample, SIGNAL( pressed() ), this, SLOT( loadSampleValues() ) );
 
-  Q_FOREACH ( QPushButton* button, mOperatorsGroupBox->findChildren<QPushButton *>() )
+  Q_FOREACH( QPushButton* button, mOperatorsGroupBox->findChildren<QPushButton *>() )
   {
     connect( button, SIGNAL( pressed() ), this, SLOT( operatorButtonClicked() ) );
   }
 
   txtSearchEdit->setPlaceholderText( tr( "Search" ) );
+
+  mValuesModel = new QStringListModel();
+  mProxyValues = new QSortFilterProxyModel();
+  mProxyValues->setSourceModel( mValuesModel );
+  mValuesListView->setModel( mProxyValues );
+  txtSearchEditValues->setPlaceholderText( tr( "Search" ) );
 
   QSettings settings;
   splitter->restoreState( settings.value( "/windows/QgsExpressionBuilderWidget/splitter" ).toByteArray() );
@@ -101,6 +107,8 @@ QgsExpressionBuilderWidget::~QgsExpressionBuilderWidget()
 
   delete mModel;
   delete mProxyModel;
+  delete mValuesModel;
+  delete mProxyValues;
 }
 
 void QgsExpressionBuilderWidget::setLayer( QgsVectorLayer *layer )
@@ -115,25 +123,22 @@ void QgsExpressionBuilderWidget::setLayer( QgsVectorLayer *layer )
 
 void QgsExpressionBuilderWidget::currentChanged( const QModelIndex &index, const QModelIndex & )
 {
+  txtSearchEditValues->setText( QString( "" ) );
+
   // Get the item
   QModelIndex idx = mProxyModel->mapToSource( index );
   QgsExpressionItem* item = dynamic_cast<QgsExpressionItem*>( mModel->itemFromIndex( idx ) );
   if ( !item )
     return;
 
-  mValueListWidget->clear();
   if ( item->getItemType() == QgsExpressionItem::Field && mFieldValues.contains( item->text() ) )
   {
     const QStringList& values = mFieldValues[item->text()];
-    mValueListWidget->setUpdatesEnabled( false );
-    mValueListWidget->blockSignals( true );
-    mValueListWidget->addItems( values );
-    mValueListWidget->setUpdatesEnabled( true );
-    mValueListWidget->blockSignals( false );
+    mValuesModel->setStringList( values );
   }
 
   mLoadGroupBox->setVisible( item->getItemType() == QgsExpressionItem::Field && mLayer );
-  mValueGroupBox->setVisible(( item->getItemType() == QgsExpressionItem::Field && mLayer ) || mValueListWidget->count() > 0 );
+  mValueGroupBox->setVisible( ( item->getItemType() == QgsExpressionItem::Field && mLayer ) || mValuesListView->model()->rowCount() > 0 );
 
   // Show the help for the current item.
   QString help = loadFunctionHelp( item );
@@ -188,7 +193,7 @@ void QgsExpressionBuilderWidget::updateFunctionFileList( QString path )
   dir.setNameFilters( QStringList() << "*.py" );
   QStringList files = dir.entryList( QDir::Files );
   cmbFileNames->clear();
-  Q_FOREACH ( const QString& name, files )
+  Q_FOREACH( const QString& name, files )
   {
     QFileInfo info( mFunctionsPath + QDir::separator() + name );
     if ( info.baseName() == "__init__" ) continue;
@@ -292,7 +297,7 @@ void QgsExpressionBuilderWidget::loadFieldNames( const QgsFields& fields )
 void QgsExpressionBuilderWidget::loadFieldsAndValues( const QMap<QString, QStringList> &fieldValues )
 {
   QgsFields fields;
-  Q_FOREACH ( const QString& fieldName, fieldValues.keys() )
+  Q_FOREACH( const QString& fieldName, fieldValues.keys() )
   {
     fields.append( QgsField( fieldName ) );
   }
@@ -308,20 +313,16 @@ void QgsExpressionBuilderWidget::fillFieldValues( const QString& fieldName, int 
     return;
 
   // TODO We should thread this so that we don't hold the user up if the layer is massive.
-  mValueListWidget->clear();
 
   int fieldIndex = mLayer->fieldNameIndex( fieldName );
 
   if ( fieldIndex < 0 )
     return;
 
-  mValueListWidget->setUpdatesEnabled( false );
-  mValueListWidget->blockSignals( true );
-
   QList<QVariant> values;
   QStringList strValues;
   mLayer->uniqueValues( fieldIndex, values, countLimit );
-  Q_FOREACH ( const QVariant& value, values )
+  Q_FOREACH( const QVariant& value, values )
   {
     QString strValue;
     if ( value.isNull() )
@@ -330,13 +331,10 @@ void QgsExpressionBuilderWidget::fillFieldValues( const QString& fieldName, int 
       strValue = value.toString();
     else
       strValue = "'" + value.toString().replace( "'", "''" ) + "'";
-    mValueListWidget->addItem( strValue );
     strValues.append( strValue );
   }
+  mValuesModel->setStringList( strValues );
   mFieldValues[fieldName] = strValues;
-
-  mValueListWidget->setUpdatesEnabled( true );
-  mValueListWidget->blockSignals( false );
 }
 
 void QgsExpressionBuilderWidget::registerItem( QString group,
@@ -417,7 +415,7 @@ void QgsExpressionBuilderWidget::loadRecent( QString key )
   QSettings settings;
   QString location = QString( "/expressions/recent/%1" ).arg( key );
   QStringList expressions = settings.value( location ).toStringList();
-  Q_FOREACH ( const QString& expression, expressions )
+  Q_FOREACH( const QString& expression, expressions )
   {
     this->registerItem( name, expression, expression, expression );
   }
@@ -598,7 +596,7 @@ QString QgsExpressionBuilderWidget::formatPreviewString( const QString& previewS
 void QgsExpressionBuilderWidget::loadExpressionContext()
 {
   QStringList variableNames = mExpressionContext.filteredVariableNames();
-  Q_FOREACH ( const QString& variable, variableNames )
+  Q_FOREACH( const QString& variable, variableNames )
   {
     registerItem( "Variables", variable, " @" + variable + " ",
                   QgsExpression::variableHelpText( variable, true, mExpressionContext.variable( variable ) ),
@@ -608,7 +606,7 @@ void QgsExpressionBuilderWidget::loadExpressionContext()
 
   // Load the functions from the expression context
   QStringList contextFunctions = mExpressionContext.functionNames();
-  Q_FOREACH ( const QString& functionName, contextFunctions )
+  Q_FOREACH( const QString& functionName, contextFunctions )
   {
     QgsExpression::Function* func = mExpressionContext.function( functionName );
     QString name = func->name();
@@ -629,6 +627,12 @@ void QgsExpressionBuilderWidget::on_txtSearchEdit_textChanged()
     expressionTree->expandAll();
 }
 
+void QgsExpressionBuilderWidget::on_txtSearchEditValues_textChanged()
+{
+  mProxyValues->setFilterCaseSensitivity( Qt::CaseInsensitive );
+  mProxyValues->setFilterWildcard( txtSearchEditValues->text() );
+}
+
 void QgsExpressionBuilderWidget::on_lblPreview_linkActivated( QString link )
 {
   Q_UNUSED( link );
@@ -638,10 +642,10 @@ void QgsExpressionBuilderWidget::on_lblPreview_linkActivated( QString link )
   mv->exec();
 }
 
-void QgsExpressionBuilderWidget::on_mValueListWidget_itemDoubleClicked( QListWidgetItem *item )
+void QgsExpressionBuilderWidget::on_mValuesListView_doubleClicked( const QModelIndex &index )
 {
   // Insert the item text or replace selected text
-  txtExpressionString->insertText( " " + item->text() + " " );
+  txtExpressionString->insertText( " " + index.data( Qt::DisplayRole ).toString() + " " );
   txtExpressionString->setFocus();
 }
 
