@@ -155,7 +155,6 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
     QAction *mNewMapsetAction;
     QAction *mCloseMapsetAction;
     QAction *mOpenToolsAction;
-    QAction *mNewVectorAction;
     QAction *mOptionsAction;
 
     // Editing    static bool mNonInitializable;

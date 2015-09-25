@@ -81,7 +81,6 @@ QgsGrassPlugin::QgsGrassPlugin( QgisInterface * theQgisInterFace )
     , mNewMapsetAction( 0 )
     , mCloseMapsetAction( 0 )
     , mOpenToolsAction( 0 )
-    , mNewVectorAction( 0 )
     , mAddFeatureAction( 0 )
     , mAddPointAction( 0 )
     , mAddLineAction( 0 )
@@ -177,15 +176,11 @@ void QgsGrassPlugin::initGui()
   mRegionAction->setWhatsThis( tr( "Displays the current GRASS region as a rectangle on the map canvas" ) );
   mRegionAction->setCheckable( true );
 
-  mNewVectorAction = new QAction( QIcon(), tr( "Create New GRASS Vector" ), this );
-  mNewVectorAction->setObjectName( "mNewVectorAction" );
-
   mOptionsAction = new QAction( QIcon(), tr( "GRASS Options" ), this );
   mOptionsAction->setObjectName( "mOptionsAction" );
 
   // Connect the action
   connect( mOpenToolsAction, SIGNAL( triggered() ), this, SLOT( openTools() ) );
-  connect( mNewVectorAction, SIGNAL( triggered() ), this, SLOT( newVector() ) );
   connect( mRegionAction, SIGNAL( toggled( bool ) ), this, SLOT( switchRegion( bool ) ) );
   connect( mOpenMapsetAction, SIGNAL( triggered() ), this, SLOT( openMapset() ) );
   connect( mNewMapsetAction, SIGNAL( triggered() ), this, SLOT( newMapset() ) );
@@ -197,7 +192,6 @@ void QgsGrassPlugin::initGui()
   qGisInterface->addPluginToMenu( menu, mOpenMapsetAction );
   qGisInterface->addPluginToMenu( menu, mNewMapsetAction );
   qGisInterface->addPluginToMenu( menu, mCloseMapsetAction );
-  qGisInterface->addPluginToMenu( menu, mNewVectorAction );
   qGisInterface->addPluginToMenu( menu, mOpenToolsAction );
   qGisInterface->addPluginToMenu( menu, mRegionAction );
   qGisInterface->addPluginToMenu( menu, mOptionsAction );
@@ -211,7 +205,6 @@ void QgsGrassPlugin::initGui()
   mToolBarPointer->addAction( mNewMapsetAction );
   mToolBarPointer->addAction( mCloseMapsetAction );
   mToolBarPointer->addSeparator();
-  mToolBarPointer->addAction( mNewVectorAction );
   mToolBarPointer->addAction( mOpenToolsAction );
   mToolBarPointer->addAction( mRegionAction );
 
@@ -307,10 +300,8 @@ void QgsGrassPlugin::onGisbaseChanged()
     qGisInterface->messageBar()->pushMessage( tr( "GRASS error" ), QgsGrass::errorMessage(), QgsMessageBar::WARNING );
 
     mOpenToolsAction->setDisabled( false ); // allow to open to see that tools are disabled
-    mNewVectorAction->setDisabled( true );
     mRegionAction->setDisabled( true );
     mOpenMapsetAction->setDisabled( true );
-    mNewMapsetAction->setDisabled( true );
     mCloseMapsetAction->setDisabled( true );
 
     mTools->setDisabled( true );
@@ -318,7 +309,6 @@ void QgsGrassPlugin::onGisbaseChanged()
   else
   {
     mOpenToolsAction->setDisabled( false );
-    mNewVectorAction->setDisabled( false );
     mRegionAction->setDisabled( !QgsGrass::activeMode() );
     mOpenMapsetAction->setDisabled( false );
     mNewMapsetAction->setDisabled( false );
@@ -495,13 +485,11 @@ void QgsGrassPlugin::mapsetChanged()
     mRegionAction->setEnabled( false );
     mRegionBand->reset();
     mCloseMapsetAction->setEnabled( false );
-    mNewVectorAction->setEnabled( false );
   }
   else
   {
     mRegionAction->setEnabled( true );
     mCloseMapsetAction->setEnabled( true );
-    mNewVectorAction->setEnabled( true );
 
     QSettings settings;
     bool on = settings.value( "/GRASS/region/on", true ).toBool();
@@ -784,7 +772,6 @@ void QgsGrassPlugin::unload()
   qGisInterface->removePluginMenu( tr( "&GRASS" ), mCloseMapsetAction );
   qGisInterface->removePluginMenu( tr( "&GRASS" ), mOpenToolsAction );
   qGisInterface->removePluginMenu( tr( "&GRASS" ), mRegionAction );
-  qGisInterface->removePluginMenu( tr( "&GRASS" ), mNewVectorAction );
   qGisInterface->removePluginMenu( tr( "&GRASS" ), mOptionsAction );
 
   delete mOpenMapsetAction;
@@ -792,7 +779,6 @@ void QgsGrassPlugin::unload()
   delete mCloseMapsetAction;
   delete mOpenToolsAction;
   delete mRegionAction;
-  delete mNewVectorAction;
   delete mOptionsAction;
 
   delete mAddFeatureAction;
@@ -831,13 +817,8 @@ void QgsGrassPlugin::setCurrentTheme( QString theThemeName )
     mOpenMapsetAction->setIcon( getThemeIcon( "grass_open_mapset.png" ) );
     mNewMapsetAction->setIcon( getThemeIcon( "grass_new_mapset.png" ) );
     mCloseMapsetAction->setIcon( getThemeIcon( "grass_close_mapset.png" ) );
-
     mOpenToolsAction->setIcon( getThemeIcon( "grass_tools.png" ) );
-
     mRegionAction->setIcon( getThemeIcon( "grass_region.png" ) );
-
-    mNewVectorAction->setIcon( getThemeIcon( "grass_new_vector_layer.png" ) );
-
     mOptionsAction->setIcon( QgsApplication::getThemeIcon( "propertyicons/general.svg" ) );
   }
 }
