@@ -112,10 +112,9 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapLayer : public QObject
     void isOrphan( int cat, int &orphan, QString &error );
 
     /** Create table and link vector to this table
-     *   @param columns SQL definition for columns, e.g. cat integer, label varchar(10)
-     *   @return empty string or error message
+     * @param fields fields to be created without cat (id) field
      */
-    void createTable( const QString &key, const QString &columns, QString &error );
+    void createTable( const QgsFields &fields, QString &error );
 
     /** Add column to table
      *   @param field
@@ -123,6 +122,9 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapLayer : public QObject
     void addColumn( const QgsField &field, QString &error );
 
     void deleteColumn( const QgsField &field, QString &error );
+
+    /** Insert records for all existing categories to the table */
+    void insertCats( QString &error );
 
     // update fields to real state
     void updateFields();
