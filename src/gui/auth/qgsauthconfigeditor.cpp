@@ -26,8 +26,9 @@
 #include "qgsauthconfigedit.h"
 #include "qgsauthguiutils.h"
 
-QgsAuthConfigEditor::QgsAuthConfigEditor( QWidget *parent, bool showUtilities, QgsMessageBar *msgbar )
+QgsAuthConfigEditor::QgsAuthConfigEditor( QWidget *parent, bool showUtilities, bool relayMessages )
     : QWidget( parent )
+    , mRelayMessages( relayMessages )
     , mConfigModel( 0 )
     , mAuthUtilitiesMenu( 0 )
     , mActionSetMasterPassword( 0 )
@@ -50,8 +51,7 @@ QgsAuthConfigEditor::QgsAuthConfigEditor( QWidget *parent, bool showUtilities, Q
   {
     setupUi( this );
 
-    setMessageBar( msgbar );
-    showUtilitiesButton( showUtilities );
+    setShowUtilitiesButton( showUtilities );
 
     mConfigModel = new QSqlTableModel( this, QgsAuthManager::instance()->authDbConnection() );
     mConfigModel->setTable( QgsAuthManager::instance()->authDbConfigTable() );
@@ -83,8 +83,11 @@ QgsAuthConfigEditor::QgsAuthConfigEditor( QWidget *parent, bool showUtilities, Q
     connect( tableViewConfigs, SIGNAL( doubleClicked( QModelIndex ) ),
              this, SLOT( on_btnEditConfig_clicked() ) );
 
-    connect( QgsAuthManager::instance(), SIGNAL( messageOut( const QString&, const QString&, QgsAuthManager::MessageLevel ) ),
-             this, SLOT( authMessageOut( const QString&, const QString&, QgsAuthManager::MessageLevel ) ) );
+    if ( mRelayMessages )
+    {
+      connect( QgsAuthManager::instance(), SIGNAL( messageOut( const QString&, const QString&, QgsAuthManager::MessageLevel ) ),
+               this, SLOT( authMessageOut( const QString&, const QString&, QgsAuthManager::MessageLevel ) ) );
+    }
 
     connect( QgsAuthManager::instance(), SIGNAL( authDatabaseChanged() ),
              this, SLOT( refreshTableView() ) );
@@ -169,18 +172,29 @@ void QgsAuthConfigEditor::toggleTitleVisibility( bool visible )
   }
 }
 
-void QgsAuthConfigEditor::showUtilitiesButton( bool show )
+void QgsAuthConfigEditor::setShowUtilitiesButton( bool show )
 {
   btnAuthUtilities->setVisible( show );
 }
 
-void QgsAuthConfigEditor::setMessageBar( QgsMessageBar *msgbar )
+void QgsAuthConfigEditor::setRelayMessages( bool relay )
 {
-  if ( msgbar )
+  if ( relay == mRelayMessages )
   {
-    delete mMsgBar;
-    mMsgBar = msgbar;
+    return;
   }
+
+  if ( mRelayMessages )
+  {
+    disconnect( QgsAuthManager::instance(), SIGNAL( messageOut( const QString&, const QString&, QgsAuthManager::MessageLevel ) ),
+                this, SLOT( authMessageOut( const QString&, const QString&, QgsAuthManager::MessageLevel ) ) );
+    mRelayMessages = relay;
+    return;
+  }
+
+  connect( QgsAuthManager::instance(), SIGNAL( messageOut( const QString&, const QString&, QgsAuthManager::MessageLevel ) ),
+           this, SLOT( authMessageOut( const QString&, const QString&, QgsAuthManager::MessageLevel ) ) );
+  mRelayMessages = relay;
 }
 
 void QgsAuthConfigEditor::refreshTableView()

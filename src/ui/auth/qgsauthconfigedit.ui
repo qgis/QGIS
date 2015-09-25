@@ -79,32 +79,14 @@
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="leAuthCfg">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>80</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>110</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="readOnly">
-        <bool>true</bool>
-       </property>
-       <property name="placeholderText">
-        <string>Read-only ID</string>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Id</string>
        </property>
       </widget>
+     </item>
+     <item>
+      <widget class="QgsAuthConfigIdEdit" name="authCfgEdit" native="true"/>
      </item>
     </layout>
    </item>
@@ -131,6 +113,14 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsAuthConfigIdEdit</class>
+   <extends>QWidget</extends>
+   <header>qgsauthconfigidedit.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>leResource</tabstop>
   <tabstop>cmbAuthMethods</tabstop>

@@ -915,10 +915,24 @@ bool QgsAuthManager::storeAuthenticationConfig( QgsAuthMethodConfig &mconfig )
     return false;
   }
 
+  QString uid = mconfig.id();
+  bool passedinID = !uid.isEmpty();
+  if ( uid.isEmpty() )
+  {
+    uid = uniqueConfigId();
+  }
+  else if ( configIds().contains( uid ) )
+  {
+    const char* err = QT_TR_NOOP( "Store config: FAILED because pre-defined config ID is not unique" );
+    QgsDebugMsg( err );
+    emit messageOut( tr( err ), authManTag(), WARNING );
+    return false;
+  }
+
   QString configstring = mconfig.configString();
   if ( configstring.isEmpty() )
   {
-    const char* err = QT_TR_NOOP( "Store config: FAILED because config is empty" );
+    const char* err = QT_TR_NOOP( "Store config: FAILED because config string is empty" );
     QgsDebugMsg( err );
     emit messageOut( tr( err ), authManTag(), WARNING );
     return false;
@@ -935,8 +949,6 @@ bool QgsAuthManager::storeAuthenticationConfig( QgsAuthMethodConfig &mconfig )
   QSqlQuery query( authDbConnection() );
   query.prepare( QString( "INSERT INTO %1 (id, name, uri, type, version, config) "
                           "VALUES (:id, :name, :uri, :type, :version, :config)" ).arg( authDbConfigTable() ) );
-
-  QString uid = uniqueConfigId();
 
   query.bindValue( ":id", uid );
   query.bindValue( ":name", mconfig.name() );
@@ -955,7 +967,8 @@ bool QgsAuthManager::storeAuthenticationConfig( QgsAuthMethodConfig &mconfig )
     return false;
 
   // passed-in config should now be like as if it was just loaded from db
-  mconfig.setId( uid );
+  if ( !passedinID )
+    mconfig.setId( uid );
 
   updateConfigAuthMethods();
 

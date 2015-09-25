@@ -42,6 +42,11 @@ QColor QgsAuthGuiUtils::redColor()
   return QColor( 200, 0, 0 );
 }
 
+QColor QgsAuthGuiUtils::yellowColor()
+{
+  return QColor( 255, 255, 125 );
+}
+
 QString QgsAuthGuiUtils::greenTextStyleSheet( const QString &selector )
 {
   return QString( "%1{color: %2;}" ).arg( selector ).arg( QgsAuthGuiUtils::greenColor().name() );

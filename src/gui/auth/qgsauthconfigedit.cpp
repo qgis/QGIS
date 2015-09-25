@@ -19,6 +19,7 @@
 #include <QPushButton>
 
 #include "qgsauthconfig.h"
+#include "qgsauthconfigidedit.h"
 #include "qgsauthmanager.h"
 #include "qgsauthmethodedit.h"
 #include "qgslogger.h"
@@ -53,6 +54,7 @@ QgsAuthConfigEdit::QgsAuthConfigEdit( QWidget *parent , const QString& authcfg ,
     mAuthNotifyLayout->addWidget( mAuthNotify );
 
     mAuthCfg.clear(); // otherwise will contiue to try authenticate (and fail) after save
+    buttonBox->button( QDialogButtonBox::Save )->setEnabled( false );
   }
   else
   {
@@ -67,6 +69,8 @@ QgsAuthConfigEdit::QgsAuthConfigEdit( QWidget *parent , const QString& authcfg ,
              stkwAuthMethods, SLOT( setCurrentIndex( int ) ) );
     connect( cmbAuthMethods, SIGNAL( currentIndexChanged( int ) ),
              this, SLOT( validateAuth() ) );
+
+    connect( authCfgEdit, SIGNAL( validityChanged( bool ) ), this, SLOT( validateAuth() ) );
 
     // needed (if only combobox is ever changed)?
     // connect( stkwAuthMethods, SIGNAL( currentChanged( int ) ),
@@ -128,7 +132,9 @@ void QgsAuthConfigEdit::populateAuthMethods()
 
 void QgsAuthConfigEdit::loadConfig()
 {
-  if ( mAuthCfg.isEmpty() )
+  bool emptyAuthCfg = mAuthCfg.isEmpty();
+  authCfgEdit->setAllowEmptyId( emptyAuthCfg );
+  if ( emptyAuthCfg )
   {
     return;
   }
@@ -156,7 +162,7 @@ void QgsAuthConfigEdit::loadConfig()
   // load basic info
   leName->setText( mconfig.name() );
   leResource->setText( mconfig.uri() );
-  leAuthCfg->setText( mconfig.id() );
+  authCfgEdit->setAuthConfigId( mconfig.id() );
 
   QString authMethodKey = QgsAuthManager::instance()->configAuthMethodKey( mAuthCfg );
 
@@ -243,28 +249,65 @@ void QgsAuthConfigEdit::saveConfig()
     return;
   }
 
-  if ( !mAuthCfg.isEmpty() ) // update
+  QString authCfgId( authCfgEdit->configId() );
+  if ( !mAuthCfg.isEmpty() )
   {
-    mconfig.setId( mAuthCfg );
-    if ( QgsAuthManager::instance()->updateAuthenticationConfig( mconfig ) )
+    if ( authCfgId == mAuthCfg ) // update
     {
-      emit authenticationConfigUpdated( mAuthCfg );
+      mconfig.setId( mAuthCfg );
+      if ( QgsAuthManager::instance()->updateAuthenticationConfig( mconfig ) )
+      {
+        emit authenticationConfigUpdated( mAuthCfg );
+      }
+      else
+      {
+        QgsDebugMsg( QString( "Updating auth config FAILED for authcfg: %1" ).arg( mAuthCfg ) );
+      }
     }
-    else
+    else // store new with unique ID, then delete previous
     {
-      QgsDebugMsg( QString( "Updating auth config FAILED for authcfg: %1" ).arg( mAuthCfg ) );
+      mconfig.setId( authCfgId );
+      if ( QgsAuthManager::instance()->storeAuthenticationConfig( mconfig ) )
+      {
+        emit authenticationConfigStored( authCfgId );
+        if ( !QgsAuthManager::instance()->removeAuthenticationConfig( mAuthCfg ) )
+        {
+          QgsDebugMsg( QString( "Removal of older auth config FAILED" ) );
+        }
+        mAuthCfg = authCfgId;
+      }
+      else
+      {
+        QgsDebugMsg( QString( "Storing new auth config with user-created unique ID FAILED" ) );
+      }
     }
   }
-  else // create new
+  else if ( mAuthCfg.isEmpty() )
   {
-    if ( QgsAuthManager::instance()->storeAuthenticationConfig( mconfig ) )
+    if ( authCfgId.isEmpty() ) // create new with generated ID
     {
-      mAuthCfg = mconfig.id();
-      emit authenticationConfigStored( mAuthCfg );
+      if ( QgsAuthManager::instance()->storeAuthenticationConfig( mconfig ) )
+      {
+        mAuthCfg = mconfig.id();
+        emit authenticationConfigStored( mAuthCfg );
+      }
+      else
+      {
+        QgsDebugMsg( QString( "Storing new auth config FAILED" ) );
+      }
     }
-    else
+    else // create new with user-created unique ID
     {
-      QgsDebugMsg( QString( "Storing new auth config FAILED" ) );
+      mconfig.setId( authCfgId );
+      if ( QgsAuthManager::instance()->storeAuthenticationConfig( mconfig ) )
+      {
+        mAuthCfg = authCfgId;
+        emit authenticationConfigStored( mAuthCfg );
+      }
+      else
+      {
+        QgsDebugMsg( QString( "Storing new auth config with user-created unique ID FAILED" ) );
+      }
     }
   }
 
@@ -289,7 +332,7 @@ void QgsAuthConfigEdit::clearAll()
 {
   leName->clear();
   leResource->clear();
-  leAuthCfg->clear();
+  authCfgEdit->clear();
 
   for ( int i = 0; i < stkwAuthMethods->count(); i++ )
   {
@@ -314,6 +357,8 @@ void QgsAuthConfigEdit::validateAuth()
   }
 
   authok = authok && editWidget->validateConfig();
+
+  authok = authok && authCfgEdit->validate();
 
   buttonBox->button( QDialogButtonBox::Save )->setEnabled( authok );
 }

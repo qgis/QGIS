@@ -94,8 +94,8 @@ QgsAuthEditorWidgets::QgsAuthEditorWidgets( QWidget *parent )
     : QWidget( parent )
 {
   setupUi( this );
-  wdgtConfigEditor->setMessageBar( messageBar() );
-  wdgtConfigEditor->showUtilitiesButton( false );
+  wdgtConfigEditor->setRelayMessages( false );
+  wdgtConfigEditor->setShowUtilitiesButton( false );
   setupUtilitiesMenu();
 }
 

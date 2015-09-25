@@ -39,6 +39,9 @@ class GUI_EXPORT QgsAuthGuiUtils
     /** Red color representing invalid, untrusted, etc. certificate */
     static QColor redColor();
 
+    /** Yellow color representing caution regarding action */
+    static QColor yellowColor();
+
     /** Green text stylesheet representing valid, trusted, etc. certificate */
     static QString greenTextStyleSheet( const QString& selector = "*" );
 

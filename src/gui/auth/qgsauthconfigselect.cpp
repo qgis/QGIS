@@ -173,7 +173,8 @@ void QgsAuthConfigSelect::on_btnConfigEdit_clicked()
   ace->setWindowModality( Qt::WindowModal );
   if ( ace->exec() )
   {
-    setConfigId( mAuthCfg );
+    qDebug( "Edit returned config Id: %s", ace->configId().toAscii().constData() );
+    setConfigId( ace->configId() );
   }
   ace->deleteLater();
 }

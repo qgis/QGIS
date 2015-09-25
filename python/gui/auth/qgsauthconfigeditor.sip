@@ -5,14 +5,14 @@ class QgsAuthConfigEditor : QWidget
 %End
 
   public:
-    explicit QgsAuthConfigEditor( QWidget *parent /TransferThis/ = 0, bool showUtilities = true, QgsMessageBar *msgbar /TransferThis/ = 0 );
+    explicit QgsAuthConfigEditor( QWidget *parent /TransferThis/ = 0, bool showUtilities = true, bool relayMessages = true );
     ~QgsAuthConfigEditor();
 
     void toggleTitleVisibility( bool visible );
 
   public slots:
 
-    void showUtilitiesButton( bool show = true );
+    void setShowUtilitiesButton( bool show = true );
 
-    void setMessageBar( QgsMessageBar *msgbar /TransferThis/ = 0 );
+    void setRelayMessages( bool relay = true );
 };

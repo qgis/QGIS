@@ -65,6 +65,7 @@ SET(QGIS_GUI_SRCS
   auth/qgsauthcerttrustpolicycombobox.cpp
   auth/qgsauthconfigedit.cpp
   auth/qgsauthconfigeditor.cpp
+  auth/qgsauthconfigidedit.cpp
   auth/qgsauthconfigselect.cpp
   auth/qgsautheditorwidgets.cpp
   auth/qgsauthguiutils.cpp
@@ -450,6 +451,7 @@ SET(QGIS_GUI_MOC_HDRS
   auth/qgsauthcerttrustpolicycombobox.h
   auth/qgsauthconfigedit.h
   auth/qgsauthconfigeditor.h
+  auth/qgsauthconfigidedit.h
   auth/qgsauthconfigselect.h
   auth/qgsautheditorwidgets.h
   auth/qgsauthidentitieseditor.h
@@ -567,6 +569,7 @@ SET(QGIS_GUI_HDRS
   auth/qgsauthcerttrustpolicycombobox.h
   auth/qgsauthconfigedit.h
   auth/qgsauthconfigeditor.h
+  auth/qgsauthconfigidedit.h
   auth/qgsauthconfigselect.h
   auth/qgsautheditorwidgets.h
   auth/qgsauthguiutils.h
