@@ -311,15 +311,6 @@ class CORE_EXPORT QgsFeatureRendererV2
      */
     void setForceRasterRender( bool forceRaster ) { mForceRaster = forceRaster; }
 
-    /** Returns the result of the feature rendering operation. This should only be
-     * called immediately after a rendering operation (eg calling renderFeature).
-     * @note added in QGIS 2.12
-     * @note this is a temporary method until QGIS 3.0. For QGIS 3.0 renderFeature
-     * will return a QgsRenderResult object
-     */
-    // TODO - QGIS 3.0. Remove and make renderFeature return a QgsRenderResult
-    const QgsRenderResult& renderResult() const { return mRenderResult; }
-
   protected:
     QgsFeatureRendererV2( QString type );
 
@@ -370,20 +361,8 @@ class CORE_EXPORT QgsFeatureRendererV2
      */
     static void convertSymbolRotation( QgsSymbolV2 * symbol, const QString & field );
 
-    /** Sets the result of the symbol rendering operation. Subclasses should call
-     * this method after rendering a feature and update the render result to reflect
-     * to actual result of the feature render.
-     * @note added in QGIS 2.12
-     * @note this is a temporary method until QGIS 3.0. For QGIS 3.0 the renderFeature method
-     * will return a QgsRenderResult object
-     */
-    // TODO - QGIS 3.0. Remove and make renderPoint, etc return a QgsRenderResult
-    void setRenderResult( const QgsRenderResult& result );
-
   private:
     Q_DISABLE_COPY( QgsFeatureRendererV2 )
-
-    QgsRenderResult mRenderResult;
 };
 
 // for some reason SIP compilation fails if these lines are not included:
