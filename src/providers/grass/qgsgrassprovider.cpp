@@ -213,12 +213,12 @@ QgsGrassProvider::QgsGrassProvider( QString uri )
   QgsGrassVectorMap *vectorMap = QgsGrassVectorMapStore::instance()->openMap( mGrassObject );
   if ( !vectorMap ) // should not happen
   {
-    QgsDebugMsg( QString( "Cannot open map : %1" ).arg( myURI ) );
+    QgsDebugMsg( "Cannot open map" );
     return;
   }
-  if ( !mLayer->map() || !mLayer->map()->isValid() ) // may happen
+  if ( !vectorMap->isValid() ) // may happen
   {
-    QgsDebugMsg( QString( "GRASS map is not valid : %1" ).arg( myURI ) );
+    QgsDebugMsg( "vectorMap is not valid" );
     return;
   }
 
@@ -226,13 +226,12 @@ QgsGrassProvider::QgsGrassProvider( QString uri )
 
   if ( !mLayer ) // should not happen
   {
-    QgsDebugMsg( QString( "Cannot open GRASS layer : %1" ).arg( myURI ) );
+    QgsDebugMsg( "Cannot open layer" );
     return;
   }
-
-  if ( !mLayer->map()->map() ) // should not happen
+  if ( !mLayer->map() || !mLayer->map()->map() ) // should not happen
   {
-    QgsDebugMsg( QString( "GRASS map is null : %1" ).arg( myURI ) );
+    QgsDebugMsg( "map is null" );
     return;
   }
 
