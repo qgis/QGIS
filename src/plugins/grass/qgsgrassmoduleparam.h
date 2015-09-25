@@ -25,6 +25,7 @@
 #include <QVBoxLayout>
 
 #include "qgis.h"
+#include "qgsfeature.h"
 #include "qgsfield.h"
 #include "qgscoordinatereferencesystem.h"
 
@@ -469,6 +470,14 @@ class QgsGrassModuleSelection : public QgsGrassModuleGroupBoxItem
     Q_OBJECT
 
   public:
+    enum Mode
+    {
+      Manual, // manual entry
+      Layer, // current selection of select
+      AddLayer, // add current layer to canvas
+      Expression // expression builder - possible?
+    };
+
     /** \brief Constructor
      * \param qdesc option element in QGIS module description XML file
      * \param gdesc GRASS module XML description file
@@ -487,10 +496,22 @@ class QgsGrassModuleSelection : public QgsGrassModuleGroupBoxItem
     virtual QStringList options() override;
 
   public slots:
+    // selected input layer changed
+    void onLayerChanged();
+
+    void onModeChanged();
+
     //! Set selection list to currently selected features
-    void updateSelection();
+    void onLayerSelectionChanged();
+
 
   private:
+    // currently selected map canvas layer id or empty string
+    QString currentSelectionLayerId();
+
+    // currently selected map canvas layer or null
+    QgsVectorLayer * currentSelectionLayer();
+
     // Module options
     QgsGrassModuleStandardOptions *mModuleStandardOptions;
 
@@ -508,6 +529,9 @@ class QgsGrassModuleSelection : public QgsGrassModuleGroupBoxItem
 
     //! Line
     QLineEdit *mLineEdit;
+
+    // selection mode
+    QComboBox *mModeComboBox;
 };
 
 /*********************** QgsGrassModuleFile **********************/

@@ -967,6 +967,21 @@ QStringList QgsGrassModuleInput::currentGeometryTypeNames()
   return typeNames;
 }
 
+QStringList QgsGrassModuleInput::currentLayerCodes()
+{
+  QStringList list;
+
+  if ( currentLayer() )
+  {
+    Q_FOREACH ( QString type, currentGeometryTypeNames() )
+    {
+      list << QString( "%1_%2" ).arg( currentLayer()->number() ).arg( type );
+    }
+  }
+  QgsDebugMsg( "list = " + list.join( "," ) );
+  return list;
+}
+
 void QgsGrassModuleInput::onChanged( const QString & text )
 {
   Q_UNUSED( text ) // silence warning

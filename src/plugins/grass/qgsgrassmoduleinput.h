@@ -265,6 +265,9 @@ class QgsGrassModuleInput : public QgsGrassModuleGroupBoxItem
     void setGeometryTypeOption( const QString & optionName ) { mGeometryTypeOption = optionName; }
     QString geometryTypeOption() const { return mGeometryTypeOption; }
 
+    // list of selected layers in <field>_<type> form, used by QgsGrassModuleSelection
+    QStringList currentLayerCodes();
+
   public slots:
     void onActivated( const QString & text );
 

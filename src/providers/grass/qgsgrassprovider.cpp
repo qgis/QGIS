@@ -216,6 +216,11 @@ QgsGrassProvider::QgsGrassProvider( QString uri )
     QgsDebugMsg( QString( "Cannot open map : %1" ).arg( myURI ) );
     return;
   }
+  if ( !mLayer->map() || !mLayer->map()->isValid() ) // may happen
+  {
+    QgsDebugMsg( QString( "GRASS map is not valid : %1" ).arg( myURI ) );
+    return;
+  }
 
   mLayer = vectorMap->openLayer( mLayerField );
 
@@ -225,9 +230,14 @@ QgsGrassProvider::QgsGrassProvider( QString uri )
     return;
   }
 
+  if ( !mLayer->map()->map() ) // should not happen
+  {
+    QgsDebugMsg( QString( "GRASS map is null : %1" ).arg( myURI ) );
+    return;
+  }
+
   loadMapInfo();
   setTopoFields();
-
 
   mLayer->map()->version();
 
