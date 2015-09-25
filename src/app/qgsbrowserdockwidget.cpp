@@ -281,18 +281,37 @@ QgsBrowserPropertiesWidget::QgsBrowserPropertiesWidget( QWidget* parent ) :
 {
 }
 
+void QgsBrowserPropertiesWidget::setWidget( QWidget* paramWidget )
+{
+  QVBoxLayout *layout = new QVBoxLayout( this );
+  paramWidget->setParent( this );
+  layout->addWidget( paramWidget );
+}
+
 QgsBrowserPropertiesWidget* QgsBrowserPropertiesWidget::createWidget( QgsDataItem* item, QWidget* parent )
 {
   QgsBrowserPropertiesWidget* propertiesWidget = 0;
-  if ( item->type() == QgsDataItem::Layer )
-  {
-    propertiesWidget = new QgsBrowserLayerProperties( parent );
-    propertiesWidget->setItem( item );
-  }
-  else if ( item->type() == QgsDataItem::Directory )
+  // In general, we would like to show all items' paramWidget, but top level items like
+  // WMS etc. have currently too large widgets which do not fit well to browser properties widget
+  if ( item->type() == QgsDataItem::Directory )
   {
     propertiesWidget = new QgsBrowserDirectoryProperties( parent );
     propertiesWidget->setItem( item );
+  }
+  else if ( item->type() == QgsDataItem::Layer )
+  {
+    // prefer item's widget over standard layer widget
+    QWidget *paramWidget = item->paramWidget();
+    if ( paramWidget )
+    {
+      propertiesWidget = new QgsBrowserPropertiesWidget( parent );
+      propertiesWidget->setWidget( paramWidget );
+    }
+    else
+    {
+      propertiesWidget = new QgsBrowserLayerProperties( parent );
+      propertiesWidget->setItem( item );
+    }
   }
   return propertiesWidget;
 }
