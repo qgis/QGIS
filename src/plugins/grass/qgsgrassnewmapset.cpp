@@ -1298,42 +1298,13 @@ void QgsGrassNewMapset::createMapset()
 
   if ( mapset != "PERMANENT" )
   {
-    QString locationPath = gisdbase() + "/" + location;
-    QDir locationDir( locationPath );
-
-    if ( !locationDir.mkdir( mapset ) )
+    QString error;
+    QgsGrass::createMapset( gisdbase(), location, mapset, error );
+    if ( !error.isEmpty() )
     {
-      QgsGrass::warning( tr( "Cannot create new mapset directory" ) );
-      return;
+      QgsGrass::warning( tr( "Cannot create new mapset: %1" ).arg( error ) );
     }
-
-    // Copy WIND Better way to copy file in Qt?
-    QStringList lines;
-    QFile in( locationPath + "/PERMANENT/DEFAULT_WIND" );
-    if ( !in.open( QIODevice::ReadOnly ) )
-    {
-      QgsGrass::warning( tr( "Cannot open DEFAULT_WIND" ) );
-      return;
-    }
-
-    QFile out( locationPath + "/" + mapset + "/WIND" );
-    if ( !out.open( QIODevice::WriteOnly ) )
-    {
-      QgsGrass::warning( tr( "Cannot open WIND" ) );
-      return;
-    }
-    QTextStream stream( &out );
-
-    //QTextStream stream( &file );
-    QString line;
-    char buf[100];
-    while ( in.readLine( buf, 100 ) != -1 )
-    {
-      stream << buf;
-    }
-
-    in.close();
-    out.close();
+    return;
   }
 
   if ( mOpenNewMapsetCheckBox->isChecked() )

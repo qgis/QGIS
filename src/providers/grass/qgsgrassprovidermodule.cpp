@@ -49,7 +49,14 @@ QList<QAction*> QgsGrassItemActions::actions()
   list << optionsAction;
 
   // TODO: add icons to provider
-  // TODO: check mapset ownership
+  // TODO: check ownership
+  if ( mGrassObject.type() == QgsGrassObject::Location )
+  {
+    QAction* newMapsetAction = new QAction( QgsApplication::getThemeIcon( "grass_new_mapset.png" ), tr( "New mapset" ), this );
+    connect( newMapsetAction, SIGNAL( triggered() ), SLOT( newMapset() ) );
+    list << newMapsetAction;
+  }
+
   if ( mGrassObject.type() == QgsGrassObject::Mapset )
   {
     QAction* openMapsetAction = new QAction( QgsApplication::getThemeIcon( "grass_open_mapset.png" ), tr( "Open mapset" ), this );
@@ -86,6 +93,30 @@ QList<QAction*> QgsGrassItemActions::actions()
   }
 
   return list;
+}
+
+void QgsGrassItemActions::newMapset()
+{
+  QgsDebugMsg( "entered" );
+
+  QStringList existingNames = QgsGrass::mapsets( mGrassObject.gisdbase(), mGrassObject.mapsetPath() );
+  QgsDebugMsg( "existingNames = " + existingNames.join( "," ) );
+  QRegExp regExp = QgsGrassObject::newNameRegExp( QgsGrassObject::Mapset );
+  Qt::CaseSensitivity caseSensitivity = QgsGrass::caseSensitivity();
+  QgsNewNameDialog dialog( "", "", QStringList(), existingNames, regExp, caseSensitivity );
+
+  if ( dialog.exec() != QDialog::Accepted )
+  {
+    return;
+  }
+  QString name = dialog.name();
+  QgsDebugMsg( "name = " + name );
+  QString error;
+  QgsGrass::createMapset( mGrassObject.gisdbase(), mGrassObject.location(), name, error );
+  if ( !error.isEmpty() )
+  {
+    QgsGrass::warning( tr( "Cannot create new mapset: %1" ).arg( error ) );
+  }
 }
 
 void QgsGrassItemActions::openMapset()

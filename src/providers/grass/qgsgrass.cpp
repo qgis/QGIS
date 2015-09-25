@@ -249,9 +249,9 @@ QRegExp QgsGrassObject::newNameRegExp( Type type )
   {
     rx.setPattern( "[A-Za-z_][A-Za-z0-9_]+" );
   }
-  else
+  else // location, raster, see G_legal_filename
   {
-    rx.setPattern( "[A-Za-z0-9_\\-][A-Za-z0-9_\\-.]+" );
+    rx.setPattern( "[\\w_\\-][\\w_\\-.]+" );
   }
   return rx;
 }
@@ -967,6 +967,27 @@ void QgsGrass::saveMapset()
 
   QgsProject::instance()->writeEntry( "GRASS", "/WorkingMapset",
                                       getDefaultMapset() );
+}
+
+void QgsGrass::createMapset( const QString& gisdbase, const QString& location,
+                             const QString& mapset, QString& error )
+{
+  QgsDebugMsg( "entered." );
+  QString locationPath = gisdbase + "/" + location;
+  QDir locationDir( locationPath );
+
+  if ( !locationDir.mkdir( mapset ) )
+  {
+    error = tr( "Cannot create new mapset directory" );
+    return;
+  }
+
+  QString src = locationPath + "/PERMANENT/DEFAULT_WIND";
+  QString dest = locationPath + "/" + mapset + "/WIND";
+  if ( !QFile::copy( src, dest ) )
+  {
+    error = tr( "Cannot copy %1 to %2" ).arg( src ).arg( dest );
+  }
 }
 
 QStringList QgsGrass::locations( const QString& gisdbase )

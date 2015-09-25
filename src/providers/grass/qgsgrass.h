@@ -244,6 +244,10 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     /** \brief Save current mapset to project file. */
     static void saveMapset();
 
+    /** Create new mapset in existing location */
+    static void createMapset( const QString& gisdbase, const QString& location,
+                              const QString& mapset, QString& error );
+
     //! Check if given directory contains a GRASS installation
     static bool isValidGrassBaseDir( const QString& gisbase );
 
