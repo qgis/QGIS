@@ -494,7 +494,7 @@ void QgsPgSourceSelect::addTables()
     if ( idx.column() != QgsPgTableModel::dbtmTable )
       continue;
 
-    QString uri = mTableModel.layerURI( mProxyModel.mapToSource( idx ), mConnInfo, mUseEstimatedMetadata );
+    QString uri = mTableModel.layerURI( mProxyModel.mapToSource( idx ), connectionInfo( false ), mUseEstimatedMetadata );
     if ( uri.isNull() )
       continue;
 
@@ -533,7 +533,7 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
 
   QgsDebugMsg( "Connection info: " + uri.connectionInfo() );
 
-  mConnInfo = uri.connectionInfo();
+  mDataSrcUri = uri;
   mUseEstimatedMetadata = uri.useEstimatedMetadata();
 
   QApplication::setOverrideCursor( Qt::BusyCursor );
@@ -583,9 +583,14 @@ QStringList QgsPgSourceSelect::selectedTables()
   return mSelectedTables;
 }
 
-QString QgsPgSourceSelect::connectionInfo()
+QString QgsPgSourceSelect::connectionInfo( bool expandAuthCfg )
 {
-  return mConnInfo;
+  return mDataSrcUri.connectionInfo( expandAuthCfg );
+}
+
+QgsDataSourceURI QgsPgSourceSelect::dataSourceUri()
+{
+  return mDataSrcUri;
 }
 
 void QgsPgSourceSelect::setSql( const QModelIndex &index )
@@ -599,7 +604,7 @@ void QgsPgSourceSelect::setSql( const QModelIndex &index )
   QModelIndex idx = mProxyModel.mapToSource( index );
   QString tableName = mTableModel.itemFromIndex( idx.sibling( idx.row(), QgsPgTableModel::dbtmTable ) )->text();
 
-  QString uri = mTableModel.layerURI( idx, mConnInfo, mUseEstimatedMetadata );
+  QString uri = mTableModel.layerURI( idx, connectionInfo(), mUseEstimatedMetadata );
   if ( uri.isNull() )
   {
     QgsDebugMsg( "no uri" );

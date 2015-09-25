@@ -56,6 +56,9 @@
 #include <QSettings>
 #include <QSpinBox>
 #include <QSplashScreen>
+#ifndef QT_NO_OPENSSL
+#include <QSslConfiguration>
+#endif
 #include <QStatusBar>
 #include <QStringList>
 #include <QTcpSocket>
@@ -106,6 +109,12 @@
 #include "qgsapplication.h"
 #include "qgsattributeaction.h"
 #include "qgsattributetabledialog.h"
+#include "qgsauthmanager.h"
+#include "qgsauthguiutils.h"
+#ifndef QT_NO_OPENSSL
+#include "qgsauthcertutils.h"
+#include "qgsauthsslerrorsdialog.h"
+#endif
 #include "qgsbookmarks.h"
 #include "qgsbrowserdockwidget.h"
 #include "qgsadvanceddigitizingdockwidget.h"
@@ -548,6 +557,20 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   if ( !QgsApplication::createDB( &dbError ) )
   {
     QMessageBox::critical( this, tr( "Private qgis.db" ), dbError );
+  }
+
+  mSplash->showMessage( tr( "Initializing authentication" ), Qt::AlignHCenter | Qt::AlignBottom );
+  qApp->processEvents();
+  QgsAuthManager::instance()->init( QgsApplication::pluginPath() );
+  if ( QgsAuthManager::instance()->isDisabled() )
+  {
+    QMessageBox::warning( this, tr( "Authentication System" ),
+                          QgsAuthManager::instance()->disabledMessage() + "\n\n" +
+                          tr( "Resources authenticating via the system can not be accessed." ) );
+  }
+  else
+  {
+    masterPasswordSetup();
   }
 
   // Create the themes folder for the user
@@ -3574,7 +3597,7 @@ void QgisApp::addDatabaseLayers( QStringList const & layerPathList, QString cons
     // create the layer
     QgsDataSourceURI uri( layerPath );
 
-    QgsVectorLayer *layer = new QgsVectorLayer( uri.uri(), uri.table(), providerKey, false );
+    QgsVectorLayer *layer = new QgsVectorLayer( uri.uri( false ), uri.table(), providerKey, false );
     Q_CHECK_PTR( layer );
 
     if ( ! layer )
@@ -8173,10 +8196,22 @@ QgsVectorLayer* QgisApp::addVectorLayer( QString vectorLayerPath, QString baseNa
                + " with baseName of " + baseName
                + " and providerKey of " + providerKey );
 
+  // if the layer needs authentication, ensure the master password is set
+  bool authok = true;
+  QRegExp rx( "authcfg=([a-z]|[0-9]){7}" );
+  if ( rx.indexIn( vectorLayerPath ) != -1 )
+  {
+    authok = false;
+    if ( !QgsAuthGuiUtils::isDisabled( messageBar(), messageTimeout() ) )
+    {
+      authok = QgsAuthManager::instance()->setMasterPassword( true );
+    }
+  }
+
   // create the layer
   QgsVectorLayer *layer = new QgsVectorLayer( vectorLayerPath, baseName, providerKey, false );
 
-  if ( layer && layer->isValid() )
+  if ( authok && layer && layer->isValid() )
   {
     QStringList sublayers = layer->dataProvider()->subLayers();
     QgsDebugMsg( QString( "got valid layer with %1 sublayers" ).arg( sublayers.count() ) );
@@ -10499,35 +10534,83 @@ void QgisApp::namProxyAuthenticationRequired( const QNetworkProxy &proxy, QAuthe
 #ifndef QT_NO_OPENSSL
 void QgisApp::namSslErrors( QNetworkReply *reply, const QList<QSslError> &errors )
 {
-  QString msg = tr( "SSL errors occured accessing URL %1:" ).arg( reply->request().url().toString() );
-  bool otherError = false;
-  static QSet<QSslError::SslError> ignoreErrors;
-
-  Q_FOREACH ( const QSslError& error, errors )
+  // stop the timeout timer, or app crashes if the user (or slot) takes longer than
+  // singleshot timeout and tries to update the closed QNetworkReply
+  QTimer *timer = reply->findChild<QTimer *>( "timeoutTimer" );
+  if ( timer )
   {
-    if ( error.error() == QSslError::NoError )
-      continue;
-
-    QgsDebugMsg( QString( "SSL error %1: %2" ).arg( error.error() ).arg( error.errorString() ) );
-
-    otherError = otherError || !ignoreErrors.contains( error.error() );
-
-    msg += "\n" + error.errorString();
+    QgsDebugMsg( "Stopping network reply timeout" );
+    timer->stop();
   }
 
-  msg += tr( "\n\nAlways ignore these errors?" );
+  QString requesturl = reply->request().url().toString();
+  QgsDebugMsg( QString( "SSL errors occurred accessing URL:\n%1" ).arg( requesturl ) );
 
-  if ( !otherError ||
-       QMessageBox::warning( this,
-                             tr( "%n SSL errors occured", "number of errors", errors.size() ),
-                             msg,
-                             QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Ok )
+  QString hostport( QString( "%1:%2" )
+                    .arg( reply->url().host() )
+                    .arg( reply->url().port() != -1 ? reply->url().port() : 443 )
+                    .trimmed() );
+  QString digest( QgsAuthCertUtils::shaHexForCert( reply->sslConfiguration().peerCertificate() ) );
+  QString dgsthostport( QString( "%1:%2" ).arg( digest ).arg( hostport ) );
+
+  const QHash<QString, QSet<QSslError::SslError> > &errscache( QgsAuthManager::instance()->getIgnoredSslErrorCache() );
+
+  if ( errscache.contains( dgsthostport ) )
   {
-    Q_FOREACH ( const QSslError& error, errors )
+    QgsDebugMsg( QString( "Ignored SSL errors cahced item found, ignoring errors if they match for %1" ).arg( hostport ) );
+    const QSet<QSslError::SslError>& errenums( errscache.value( dgsthostport ) );
+    bool ignore = !errenums.isEmpty();
+    int errmatched = 0;
+    if ( ignore )
     {
-      ignoreErrors << error.error();
+      Q_FOREACH ( const QSslError& error, errors )
+      {
+        if ( error.error() == QSslError::NoError )
+          continue;
+
+        bool errmatch = errenums.contains( error.error() );
+        ignore = ignore && errmatch;
+        errmatched += errmatch ? 1 : 0;
+      }
     }
-    reply->ignoreSslErrors();
+
+    if ( ignore && errenums.size() == errmatched )
+    {
+      QgsDebugMsg( QString( "Errors matched cached item's, ignoring all for %1" ).arg( hostport ) );
+      reply->ignoreSslErrors();
+      return;
+    }
+
+    QgsDebugMsg( QString( "Errors %1 for cached item for %2" )
+                 .arg( errenums.isEmpty() ? "not found" : "did not match" )
+                 .arg( hostport ) );
+  }
+
+
+  QgsAuthSslErrorsDialog *dlg = new QgsAuthSslErrorsDialog( reply, errors, this, digest, hostport );
+  dlg->setWindowModality( Qt::ApplicationModal );
+  dlg->resize( 580, 512 );
+  if ( dlg->exec() )
+  {
+    if ( reply )
+    {
+      QgsDebugMsg( QString( "All SSL errors ignored for %1" ).arg( hostport ) );
+      reply->ignoreSslErrors();
+    }
+  }
+  dlg->deleteLater();
+
+  // restart network request timeout timer
+  if ( reply )
+  {
+    QSettings s;
+    QTimer *timer = reply->findChild<QTimer *>( "timeoutTimer" );
+    if ( timer )
+    {
+      QgsDebugMsg( "Restarting network reply timeout" );
+      timer->setSingleShot( true );
+      timer->start( s.value( "/qgis/networkAndProxy/networkTimeout", "20000" ).toInt() );
+    }
   }
 }
 #endif
@@ -10545,6 +10628,53 @@ void QgisApp::namRequestTimedOut( QNetworkReply *reply )
 void QgisApp::namUpdate()
 {
   QgsNetworkAccessManager::instance()->setupDefaultProxyAndCache();
+}
+
+void QgisApp::masterPasswordSetup()
+{
+  connect( QgsAuthManager::instance(), SIGNAL( messageOut( const QString&, const QString&, QgsAuthManager::MessageLevel ) ),
+           this, SLOT( authMessageOut( const QString&, const QString&, QgsAuthManager::MessageLevel ) ) );
+  connect( QgsAuthManager::instance(), SIGNAL( authDatabaseEraseRequested() ),
+           this, SLOT( eraseAuthenticationDatabase() ) );
+}
+
+void QgisApp::eraseAuthenticationDatabase()
+{
+  // First check if now is a good time to interact with the user, e.g. project is done loading.
+  // If not, ask QgsAuthManager to re-emit authDatabaseEraseRequested from the schedule timer.
+  // No way to know if user interaction will interfere with plugins loading layers.
+
+  if ( !QgsProject::instance()->fileName().isNull() ) // a non-blank project is loaded
+  {
+    // Apparently, as of QGIS 2.9, the only way to query that the project is in a
+    // layer-loading state is via a custom property of the project's layer tree.
+    QgsLayerTreeGroup *layertree( QgsProject::instance()->layerTreeRoot() );
+    if ( layertree && layertree->customProperty( "loading" ).toBool() )
+    {
+      QgsDebugMsg( "Project loading, skipping auth db erase" );
+      QgsAuthManager::instance()->setScheduledAuthDbEraseRequestEmitted( false );
+      return;
+    }
+  }
+
+  // TODO: Check is Browser panel is also still loading?
+  //       It has auto-connections in parallel (if tree item is expanded), though
+  //       such connections with possible master password requests *should* be ignored
+  //       when there is an authentication db erase scheduled.
+
+  // This funtion should tell QgsAuthManager to stop any erase db schedule timer,
+  // *after* interacting with the user
+  QgsAuthGuiUtils::eraseAuthenticationDatabase( messageBar(), messageTimeout(), this );
+}
+
+void QgisApp::authMessageOut( const QString& message, const QString& authtag, QgsAuthManager::MessageLevel level )
+{
+  // only if main window is active window
+  if ( qApp->activeWindow() != this )
+    return;
+
+  int levelint = ( int )level;
+  messageBar()->pushMessage( authtag, message, ( QgsMessageBar::MessageLevel )levelint, 7 );
 }
 
 void QgisApp::completeInitialization()

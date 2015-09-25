@@ -47,10 +47,10 @@ class CORE_EXPORT QgsDataSourceURI
     QgsDataSourceURI( const QByteArray & uri );
 
     //! return connection part of URI
-    QString connectionInfo() const;
+    QString connectionInfo( bool expandAuthConfig = true ) const;
 
     //! return complete uri
-    QString uri() const;
+    QString uri( bool expandAuthConfig = true ) const;
 
     //! return complete encoded uri (generic mode)
     QByteArray encodedUri() const;
@@ -89,14 +89,16 @@ class CORE_EXPORT QgsDataSourceURI
                         const QString& aDatabase,
                         const QString& aUsername,
                         const QString& aPassword,
-                        SSLmode sslmode = SSLprefer );
+                        SSLmode sslmode = SSLprefer,
+                        const QString& authConfigId = QString() );
 
     //! Set all connection related members at once (for the service case)
     void setConnection( const QString& aService,
                         const QString& aDatabase,
                         const QString& aUsername,
                         const QString& aPassword,
-                        SSLmode sslmode = SSLprefer );
+                        SSLmode sslmode = SSLprefer,
+                        const QString& authConfigId = QString() );
 
     //! Set database
     void setDatabase( const QString &database );
@@ -108,6 +110,9 @@ class CORE_EXPORT QgsDataSourceURI
                         const QString& aSql = QString(),
                         const QString& aKeyColumn = QString() );
 
+    //! Set authentication configuration ID
+    void setAuthConfigId( const QString& authcfg );
+
     //! set username
     void setUsername( QString username );
 
@@ -117,6 +122,8 @@ class CORE_EXPORT QgsDataSourceURI
     //! Removes password element from uris
     static QString removePassword( const QString& aUri );
 
+    //! Any associated authentication configuration ID
+    QString authConfigId() const;
     QString username() const;
     QString schema() const;
     QString table() const;
@@ -178,6 +185,8 @@ class CORE_EXPORT QgsDataSourceURI
     QString mGeometryColumn;
     //! SQL query or where clause used to limit features returned from the layer
     QString mSql;
+    //! authentication configuration ID
+    QString mAuthConfigId;
     //! username
     QString mUsername;
     //! password

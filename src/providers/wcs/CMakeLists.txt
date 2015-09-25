@@ -16,10 +16,17 @@ SET (WCS_MOC_HDRS
 
 QT4_WRAP_CPP (WCS_MOC_SRCS ${WCS_MOC_HDRS})
 
-INCLUDE_DIRECTORIES( . ../../core ../../core/raster ../../gui
+INCLUDE_DIRECTORIES(
+  .
+  ../../core
+  ../../core/auth
+  ../../core/raster
+  ../../gui
+  ../../gui/auth
   ../gdal
   ${CMAKE_CURRENT_BINARY_DIR}/../../ui
   ${GDAL_INCLUDE_DIR}
+  ${QCA_INCLUDE_DIR}
 )
 
 ADD_LIBRARY(wcsprovider MODULE ${WCS_SRCS} ${WCS_MOC_SRCS})

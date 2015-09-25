@@ -55,14 +55,16 @@ ADD_LIBRARY (spitplugin MODULE ${SPIT_PLUGIN_SRCS} ${SPIT_PLUGIN_MOC_SRCS} ${SPI
 
 INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_BINARY_DIR}
-     ../../core ../../core/geometry ../../core/raster
-     ../../gui
+     ../../core ../../core/auth ../../core/geometry ../../core/raster
+     ../../gui ../../gui/auth
      ../../ui
+     ${CMAKE_CURRENT_BINARY_DIR}/../../ui
      ../../app
      ../../providers/postgres
      ..
      ${POSTGRES_INCLUDE_DIR}
      ${GDAL_INCLUDE_DIR}
+     ${QCA_INCLUDE_DIR}
 )
 
 TARGET_LINK_LIBRARIES(spitplugin

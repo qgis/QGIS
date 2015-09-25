@@ -32,6 +32,13 @@
 #include <QNetworkReply>
 #include <QNetworkDiskCache>
 
+#ifndef QT_NO_OPENSSL
+#include <QSslConfiguration>
+#endif
+
+#include "qgsauthmanager.h"
+
+
 class QgsNetworkProxyFactory : public QNetworkProxyFactory
 {
   public:
@@ -162,6 +169,31 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
   userAgent += QString( "QGIS/%1" ).arg( QGis::QGIS_VERSION );
   pReq->setRawHeader( "User-Agent", userAgent.toUtf8() );
 
+#ifndef QT_NO_OPENSSL
+  bool ishttps = pReq->url().scheme().toLower() == "https";
+  QgsAuthConfigSslServer servconfig;
+  if ( ishttps )
+  {
+    // check for SSL cert custom config
+    QString hostport( QString( "%1:%2" )
+                      .arg( pReq->url().host().trimmed() )
+                      .arg( pReq->url().port() != -1 ? pReq->url().port() : 443 ) );
+    servconfig = QgsAuthManager::instance()->getSslCertCustomConfigByHost( hostport.trimmed() );
+
+    QgsDebugMsg( "Adding trusted CA certs to request" );
+    QSslConfiguration sslconfig( pReq->sslConfiguration() );
+    sslconfig.setCaCertificates( QgsAuthManager::instance()->getTrustedCaCertsCache() );
+    if ( !servconfig.isNull() )
+    {
+      QgsDebugMsg( QString( "Adding SSL custom config to request for %1" ).arg( hostport ) );
+      sslconfig.setProtocol( servconfig.sslProtocol() );
+      sslconfig.setPeerVerifyMode( servconfig.sslPeerVerifyMode() );
+      sslconfig.setPeerVerifyDepth( servconfig.sslPeerVerifyDepth() );
+    }
+    pReq->setSslConfiguration( sslconfig );
+  }
+#endif
+
   emit requestAboutToBeCreated( op, req, outgoingData );
   QNetworkReply *reply = QNetworkAccessManager::createRequest( op, req, outgoingData );
 
@@ -169,6 +201,7 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
 
   // abort request, when network timeout happens
   QTimer *timer = new QTimer( reply );
+  timer->setObjectName( "timeoutTimer" );
   connect( timer, SIGNAL( timeout() ), this, SLOT( abortRequest() ) );
   timer->setSingleShot( true );
   timer->start( s.value( "/qgis/networkAndProxy/networkTimeout", "20000" ).toInt() );

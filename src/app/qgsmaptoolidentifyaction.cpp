@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsapplication.h"
+#include "qgisapp.h"
 #include "qgsattributetabledialog.h"
 #include "qgscursors.h"
 #include "qgsdistancearea.h"
@@ -33,7 +34,6 @@
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
 #include "qgsmaplayerregistry.h"
-#include "qgisapp.h"
 #include "qgsrendererv2.h"
 
 #include <QSettings>

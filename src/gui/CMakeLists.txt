@@ -59,6 +59,26 @@ SET(QGIS_GUI_SRCS
   attributetable/qgsgenericfeatureselectionmanager.cpp
   attributetable/qgsvectorlayerselectionmanager.cpp
 
+  auth/qgsauthauthoritieseditor.cpp
+  auth/qgsauthcertificateinfo.cpp
+  auth/qgsauthcertificatemanager.cpp
+  auth/qgsauthcerttrustpolicycombobox.cpp
+  auth/qgsauthconfigedit.cpp
+  auth/qgsauthconfigeditor.cpp
+  auth/qgsauthconfigidedit.cpp
+  auth/qgsauthconfigselect.cpp
+  auth/qgsautheditorwidgets.cpp
+  auth/qgsauthguiutils.cpp
+  auth/qgsauthidentitieseditor.cpp
+  auth/qgsauthimportcertdialog.cpp
+  auth/qgsauthimportidentitydialog.cpp
+  auth/qgsauthmasterpassresetdialog.cpp
+  auth/qgsauthserverseditor.cpp
+  auth/qgsauthsslconfigwidget.cpp
+  auth/qgsauthsslerrorsdialog.cpp
+  auth/qgsauthsslimportdialog.cpp
+  auth/qgsauthtrustedcasdialog.cpp
+
   editorwidgets/core/qgseditorconfigwidget.cpp
   editorwidgets/core/qgseditorwidgetfactory.cpp
   editorwidgets/core/qgseditorwidgetregistry.cpp
@@ -425,6 +445,26 @@ SET(QGIS_GUI_MOC_HDRS
   attributetable/qgsifeatureselectionmanager.h
   attributetable/qgsvectorlayerselectionmanager.h
 
+  auth/qgsauthauthoritieseditor.h
+  auth/qgsauthcertificateinfo.h
+  auth/qgsauthcertificatemanager.h
+  auth/qgsauthcerttrustpolicycombobox.h
+  auth/qgsauthconfigedit.h
+  auth/qgsauthconfigeditor.h
+  auth/qgsauthconfigidedit.h
+  auth/qgsauthconfigselect.h
+  auth/qgsautheditorwidgets.h
+  auth/qgsauthidentitieseditor.h
+  auth/qgsauthimportcertdialog.h
+  auth/qgsauthimportidentitydialog.h
+  auth/qgsauthmasterpassresetdialog.h
+  auth/qgsauthmethodedit.h
+  auth/qgsauthserverseditor.h
+  auth/qgsauthsslconfigwidget.h
+  auth/qgsauthsslerrorsdialog.h
+  auth/qgsauthsslimportdialog.h
+  auth/qgsauthtrustedcasdialog.h
+
   effects/qgseffectdrawmodecombobox.h
   effects/qgspainteffectpropertieswidget.h
   effects/qgspainteffectwidget.h
@@ -523,6 +563,27 @@ SET(QGIS_GUI_HDRS
 
   attributetable/qgsfeaturemodel.h
 
+  auth/qgsauthauthoritieseditor.h
+  auth/qgsauthcertificateinfo.h
+  auth/qgsauthcertificatemanager.h
+  auth/qgsauthcerttrustpolicycombobox.h
+  auth/qgsauthconfigedit.h
+  auth/qgsauthconfigeditor.h
+  auth/qgsauthconfigidedit.h
+  auth/qgsauthconfigselect.h
+  auth/qgsautheditorwidgets.h
+  auth/qgsauthguiutils.h
+  auth/qgsauthmethodedit.h
+  auth/qgsauthidentitieseditor.h
+  auth/qgsauthimportcertdialog.h
+  auth/qgsauthimportidentitydialog.h
+  auth/qgsauthmasterpassresetdialog.h
+  auth/qgsauthserverseditor.h
+  auth/qgsauthsslconfigwidget.h
+  auth/qgsauthsslerrorsdialog.h
+  auth/qgsauthsslimportdialog.h
+  auth/qgsauthtrustedcasdialog.h
+
   editorwidgets/core/qgseditorwidgetfactory.h
 
   editorwidgets/qgscheckboxwidgetfactory.h
@@ -582,11 +643,13 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/symbology-ng
   ${CMAKE_CURRENT_SOURCE_DIR}/attributetable
+  ${CMAKE_CURRENT_SOURCE_DIR}/auth
   ${CMAKE_CURRENT_SOURCE_DIR}/editorwidgets
   ${CMAKE_CURRENT_SOURCE_DIR}/editorwidgets/core
   ${CMAKE_CURRENT_SOURCE_DIR}/layertree
   ${CMAKE_CURRENT_SOURCE_DIR}/effects
   ../core
+  ../core/auth
   ../core/composer
   ../core/geometry
   ../core/layertree
@@ -595,6 +658,7 @@ INCLUDE_DIRECTORIES(
   ../core/effects
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}/../ui
+  ${QCA_INCLUDE_DIR}
   ${QWT_INCLUDE_DIR}
   ${SQLITE3_INCLUDE_DIR}
 )

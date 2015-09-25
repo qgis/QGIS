@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsgml.h"
+#include "qgsauthmanager.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsgeometry.h"
@@ -69,7 +70,7 @@ QgsGml::~QgsGml()
 {
 }
 
-int QgsGml::getFeatures( const QString& uri, QGis::WkbType* wkbType, QgsRectangle* extent, const QString& userName, const QString& password )
+int QgsGml::getFeatures( const QString& uri, QGis::WkbType* wkbType, QgsRectangle* extent, const QString& userName, const QString& password , const QString& authcfg )
 {
   mUri = uri;
   mWkbType = wkbType;
@@ -83,7 +84,19 @@ int QgsGml::getFeatures( const QString& uri, QGis::WkbType* wkbType, QgsRectangl
   mExtent.setMinimal();
 
   QNetworkRequest request( mUri );
-  if ( !userName.isNull() || !password.isNull() )
+  if ( !authcfg.isEmpty() )
+  {
+    if ( !QgsAuthManager::instance()->updateNetworkRequest( request, authcfg ) )
+    {
+      QgsMessageLog::logMessage(
+        tr( "GML Getfeature network request update failed for authcfg %1" ).arg( authcfg ),
+        tr( "Network" ),
+        QgsMessageLog::CRITICAL
+      );
+      return 1;
+    }
+  }
+  else if ( !userName.isNull() || !password.isNull() )
   {
     request.setRawHeader( "Authorization", "Basic " + QString( "%1:%2" ).arg( userName ).arg( password ).toAscii().toBase64() );
   }

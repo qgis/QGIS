@@ -59,6 +59,12 @@ QgsWMSConnection::QgsWMSConnection( QString theConnName ) :
     mUri.setParam( "password", password );
   }
 
+  QString authcfg = settings.value( credentialsKey + "/authcfg" ).toString();
+  if ( !authcfg.isEmpty() )
+  {
+    mUri.setParam( "authcfg", authcfg );
+  }
+
   QString referer = settings.value( key + "/referer" ).toString();
   if ( !referer.isEmpty() )
   {

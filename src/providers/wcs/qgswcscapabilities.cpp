@@ -26,6 +26,7 @@
 
 #include <cmath>
 
+#include "qgsauthmanager.h"
 #include "qgscoordinatetransform.h"
 #include "qgsdatasourceuri.h"
 #include "qgsrasterlayer.h"
@@ -159,7 +160,12 @@ bool QgsWcsCapabilities::sendRequest( QString const & url )
   QgsDebugMsg( "url = " + url );
   mError = "";
   QNetworkRequest request( url );
-  setAuthorization( request );
+  if ( !setAuthorization( request ) )
+  {
+    mError = tr( "Download of capabilities failed: network request update failed for authentication config" );
+    QgsMessageLog::logMessage( mError, tr( "WCS" ) );
+    return false;
+  }
   request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
   request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, mCacheLoadControl );
   QgsDebugMsg( QString( "mCacheLoadControl = %1" ).arg( mCacheLoadControl ) );
@@ -359,7 +365,13 @@ void QgsWcsCapabilities::capabilitiesReplyFinished()
       emit statusChanged( tr( "Capabilities request redirected." ) );
 
       QNetworkRequest request( redirect.toUrl() );
-      setAuthorization( request );
+      if ( !setAuthorization( request ) )
+      {
+        mCapabilitiesResponse.clear();
+        mError = tr( "Download of capabilities failed: network request update failed for authentication config" );
+        QgsMessageLog::logMessage( mError, tr( "WCS" ) );
+        return;
+      }
       request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferNetwork );
       request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
@@ -1162,14 +1174,19 @@ QString QgsWcsCapabilities::lastErrorFormat()
   return mErrorFormat;
 }
 
-void QgsWcsCapabilities::setAuthorization( QNetworkRequest &request ) const
+bool QgsWcsCapabilities::setAuthorization( QNetworkRequest &request ) const
 {
   QgsDebugMsg( "entered" );
-  if ( mUri.hasParam( "username" ) && mUri.hasParam( "password" ) )
+  if ( mUri.hasParam( "authcfg" ) && !mUri.param( "authcfg" ).isEmpty() )
+  {
+    return QgsAuthManager::instance()->updateNetworkRequest( request, mUri.param( "authcfg" ) );
+  }
+  else if ( mUri.hasParam( "username" ) && mUri.hasParam( "password" ) )
   {
     QgsDebugMsg( "setAuthorization " + mUri.param( "username" ) );
     request.setRawHeader( "Authorization", "Basic " + QString( "%1:%2" ).arg( mUri.param( "username" ) ).arg( mUri.param( "password" ) ).toAscii().toBase64() );
   }
+  return true;
 }
 
 void QgsWcsCapabilities::showMessageBox( const QString& title, const QString& text )

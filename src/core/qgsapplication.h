@@ -142,6 +142,9 @@ class CORE_EXPORT QgsApplication : public QApplication
     //! Returns the path to the user qgis.db file.
     static QString qgisUserDbFilePath();
 
+    //! Returns the path to the user authentication database file: qgis-auth.db.
+    static QString qgisAuthDbFilePath();
+
     //! Returns the path to the splash screen image directory.
     static QString splashPath();
 
@@ -213,6 +216,9 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     //! Alters default svg paths - used by 3rd party apps.
     static void setDefaultSvgPaths( const QStringList& pathList );
+
+    //! Alters authentication data base directory path - used by 3rd party apps
+    static void setAuthDbDirPath( const QString& theAuthDbDirPath );
 
     //! loads providers
     static void initQgis();
@@ -362,6 +368,9 @@ class CORE_EXPORT QgsApplication : public QApplication
     /**
      * @note added in 2.4 */
     static int ABISYM( mMaxThreads );
+    /**
+     * @note added in 2.12 */
+    static QString ABISYM( mAuthDbDirPath );
 };
 
 #endif

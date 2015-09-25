@@ -16,19 +16,33 @@
  ***************************************************************************/
 
 #include "qgscredentialdialog.h"
+
+#include "qgsauthmanager.h"
 #include "qgslogger.h"
 
+#include <QPushButton>
 #include <QSettings>
 #include <QThread>
 
+static QString invalidStyle_( const QString& selector = "QLineEdit" )
+{
+  return QString( "%1{color: rgb(200, 0, 0);}" ).arg( selector );
+}
+
 QgsCredentialDialog::QgsCredentialDialog( QWidget *parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )
+    , mOkButton( 0 )
 {
   setupUi( this );
   setInstance( this );
   connect( this, SIGNAL( credentialsRequested( QString, QString *, QString *, QString, bool * ) ),
            this, SLOT( requestCredentials( QString, QString *, QString *, QString, bool * ) ),
            Qt::BlockingQueuedConnection );
+  connect( this, SIGNAL( credentialsRequestedMasterPassword( QString *, bool, bool * ) ),
+           this, SLOT( requestCredentialsMasterPassword( QString *, bool, bool * ) ),
+           Qt::BlockingQueuedConnection );
+  mOkButton = buttonBox->button( QDialogButtonBox::Ok );
+  leMasterPass->setPlaceholderText( tr( "Required" ) );
 }
 
 QgsCredentialDialog::~QgsCredentialDialog()
@@ -54,6 +68,8 @@ bool QgsCredentialDialog::request( QString realm, QString &username, QString &pa
 void QgsCredentialDialog::requestCredentials( QString realm, QString *username, QString *password, QString message, bool *ok )
 {
   QgsDebugMsg( "Entering." );
+  stackedWidget->setCurrentIndex( 0 );
+
   labelRealm->setText( realm );
   leUsername->setText( *username );
   lePassword->setText( *password );
@@ -82,3 +98,160 @@ void QgsCredentialDialog::requestCredentials( QString realm, QString *username, 
     *password = lePassword->text();
   }
 }
+
+bool QgsCredentialDialog::requestMasterPassword( QString &password , bool stored )
+{
+  bool ok;
+  if ( qApp->thread() != QThread::currentThread() )
+  {
+    QgsDebugMsg( "emitting signal" );
+    emit credentialsRequestedMasterPassword( &password, stored, &ok );
+  }
+  else
+  {
+    requestCredentialsMasterPassword( &password, stored, &ok );
+  }
+  return ok;
+}
+
+void QgsCredentialDialog::requestCredentialsMasterPassword( QString * password, bool stored , bool *ok )
+{
+  QgsDebugMsg( "Entering." );
+  stackedWidget->setCurrentIndex( 1 );
+
+  QString titletxt( stored ? tr( "Enter CURRENT master authentication password" ) : tr( "Set NEW master authentication password" ) );
+  lblPasswordTitle->setText( titletxt );
+
+  leMasterPassVerify->setVisible( !stored );
+  lblDontForget->setVisible( !stored );
+
+  QApplication::setOverrideCursor( Qt::ArrowCursor );
+
+  grpbxPassAttempts->setVisible( false );
+  int passfailed = 0;
+  while ( true )
+  {
+    mOkButton->setEnabled( false );
+    // TODO: have the number of attempted passwords configurable in auth settings?
+    if ( passfailed >= 3 )
+    {
+      lblSavedForSession->setVisible( false );
+      grpbxPassAttempts->setTitle( tr( "Password attempts: %1" ).arg( passfailed ) );
+      grpbxPassAttempts->setVisible( true );
+    }
+
+    // resize vertically to fit contents
+    QSize s = sizeHint();
+    s.setWidth( width() );
+    resize( s );
+
+    QgsDebugMsg( "exec()" );
+    *ok = exec() == QDialog::Accepted;
+    QgsDebugMsg( QString( "exec(): %1" ).arg( *ok ? "true" : "false" ) );
+
+    if ( *ok )
+    {
+      bool passok = !leMasterPass->text().isEmpty();
+      if ( passok && stored && !chkbxEraseAuthDb->isChecked() )
+      {
+        passok = QgsAuthManager::instance()->verifyMasterPassword( leMasterPass->text() );
+      }
+
+      if ( passok && !stored )
+      {
+        passok = ( leMasterPass->text() == leMasterPassVerify->text() );
+      }
+
+      if ( passok || chkbxEraseAuthDb->isChecked() )
+      {
+        if ( stored && chkbxEraseAuthDb->isChecked() )
+        {
+          QgsAuthManager::instance()->setScheduledAuthDbErase( true );
+        }
+        else
+        {
+          *password = leMasterPass->text();
+        }
+        break;
+      }
+      else
+      {
+        if ( stored )
+          ++passfailed;
+
+        leMasterPass->setStyleSheet( invalidStyle_() );
+        if ( leMasterPassVerify->isVisible() )
+        {
+          leMasterPassVerify->setStyleSheet( invalidStyle_() );
+        }
+      }
+    }
+    else
+    {
+      break;
+    }
+  }
+
+  // don't leave master password in singleton's text field, or the ability to show it
+  leMasterPass->clear();
+  chkMasterPassShow->setChecked( false );
+  leMasterPassVerify->clear();
+
+  chkbxEraseAuthDb->setChecked( false );
+  lblSavedForSession->setVisible( true );
+
+  // reenable OK button or non-master-password requests will be blocked
+  // needs to come after leMasterPass->clear() or textChanged auto-slot with disable it again
+  mOkButton->setEnabled( true );
+
+  QApplication::restoreOverrideCursor();
+}
+
+void QgsCredentialDialog::on_chkMasterPassShow_stateChanged( int state )
+{
+  leMasterPass->setEchoMode(( state > 0 ) ? QLineEdit::Normal : QLineEdit::Password );
+  leMasterPassVerify->setEchoMode(( state > 0 ) ? QLineEdit::Normal : QLineEdit::Password );
+}
+
+void QgsCredentialDialog::on_leMasterPass_textChanged( const QString &pass )
+{
+  leMasterPass->setStyleSheet( "" );
+  bool passok = !pass.isEmpty(); // regardless of new or comparing existing, empty password disallowed
+  if ( leMasterPassVerify->isVisible() )
+  {
+    leMasterPassVerify->setStyleSheet( "" );
+    passok = passok && ( leMasterPass->text() == leMasterPassVerify->text() );
+  }
+  mOkButton->setEnabled( passok );
+
+  if ( leMasterPassVerify->isVisible() && !passok )
+  {
+    leMasterPass->setStyleSheet( invalidStyle_() );
+    leMasterPassVerify->setStyleSheet( invalidStyle_() );
+  }
+}
+
+void QgsCredentialDialog::on_leMasterPassVerify_textChanged( const QString &pass )
+{
+  if ( leMasterPassVerify->isVisible() )
+  {
+    leMasterPass->setStyleSheet( "" );
+    leMasterPassVerify->setStyleSheet( "" );
+
+    // empty password disallowed
+    bool passok = !pass.isEmpty() && ( leMasterPass->text() == leMasterPassVerify->text() );
+    mOkButton->setEnabled( passok );
+    if ( !passok )
+    {
+      leMasterPass->setStyleSheet( invalidStyle_() );
+      leMasterPassVerify->setStyleSheet( invalidStyle_() );
+    }
+  }
+}
+
+void QgsCredentialDialog::on_chkbxEraseAuthDb_toggled( bool checked )
+{
+  if ( checked )
+    mOkButton->setEnabled( true );
+}
+

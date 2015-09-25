@@ -11,6 +11,7 @@ sudo apt-get install --force-yes --no-install-recommends --no-install-suggests \
                          libgdal1-dev libgeos-dev libgeos++-dev libgsl0-dev libpq-dev \
                          libproj-dev libqscintilla2-dev libqt4-dev \
                          libqt4-opengl-dev libqt4-sql-sqlite libqtwebkit-dev \
+                         libqca2-dev libqca2-plugin-ossl \
                          libqwt-dev libspatialindex-dev libspatialite-dev \
                          libsqlite3-dev lighttpd pkg-config poppler-utils \
                          pyqt4-dev-tools python python-dev python-qt4 \

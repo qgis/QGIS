@@ -20,12 +20,14 @@
 #include <QInputDialog>
 
 #include "qgspgnewconnection.h"
+#include "qgsauthmanager.h"
 #include "qgscontexthelp.h"
 #include "qgsdatasourceuri.h"
 #include "qgspostgresconn.h"
 
 QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString& connName, Qt::WindowFlags fl )
     : QDialog( parent, fl ), mOriginalConnName( connName )
+    , mAuthConfigSelect( 0 )
 {
   setupUi( this );
 
@@ -33,6 +35,9 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString& connName
   cbxSSLmode->addItem( tr( "allow" ), QgsDataSourceURI::SSLallow );
   cbxSSLmode->addItem( tr( "prefer" ), QgsDataSourceURI::SSLprefer );
   cbxSSLmode->addItem( tr( "require" ), QgsDataSourceURI::SSLrequire );
+
+  mAuthConfigSelect = new QgsAuthConfigSelect( this, "postgres" );
+  tabAuthentication->insertTab( 1, mAuthConfigSelect, tr( "Configurations" ) );
 
   if ( !connName.isEmpty() )
   {
@@ -85,6 +90,14 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString& connName
       chkStorePassword->setChecked( true );
     }
 
+    QString authcfg = settings.value( key + "/authcfg" ).toString();
+    mAuthConfigSelect->setConfigId( authcfg );
+    if ( !authcfg.isEmpty() )
+    {
+      tabAuthentication->setCurrentIndex( tabAuthentication->indexOf( mAuthConfigSelect ) );
+    }
+
+
     txtName->setText( connName );
   }
 }
@@ -94,8 +107,9 @@ void QgsPgNewConnection::accept()
   QSettings settings;
   QString baseKey = "/PostgreSQL/connections/";
   settings.setValue( baseKey + "selected", txtName->text() );
+  bool hasAuthConfigID = !mAuthConfigSelect->configId().isEmpty();
 
-  if ( chkStorePassword->isChecked() &&
+  if ( !hasAuthConfigID && chkStorePassword->isChecked() &&
        QMessageBox::question( this,
                               tr( "Saving passwords" ),
                               tr( "WARNING: You have opted to save your password. It will be stored in plain text in your project files and in your home directory on Unix-like systems, or in your user profile on Windows. If you do not want this to happen, please press the Cancel button.\n" ),
@@ -128,15 +142,16 @@ void QgsPgNewConnection::accept()
   settings.setValue( baseKey + "/host", txtHost->text() );
   settings.setValue( baseKey + "/port", txtPort->text() );
   settings.setValue( baseKey + "/database", txtDatabase->text() );
-  settings.setValue( baseKey + "/username", chkStoreUsername->isChecked() ? txtUsername->text() : "" );
-  settings.setValue( baseKey + "/password", chkStorePassword->isChecked() ? txtPassword->text() : "" );
+  settings.setValue( baseKey + "/username", chkStoreUsername->isChecked() && !hasAuthConfigID ? txtUsername->text() : "" );
+  settings.setValue( baseKey + "/password", chkStorePassword->isChecked() && !hasAuthConfigID ? txtPassword->text() : "" );
+  settings.setValue( baseKey + "/authcfg", mAuthConfigSelect->configId() );
   settings.setValue( baseKey + "/publicOnly", cb_publicSchemaOnly->isChecked() );
   settings.setValue( baseKey + "/geometryColumnsOnly", cb_geometryColumnsOnly->isChecked() );
   settings.setValue( baseKey + "/dontResolveType", cb_dontResolveType->isChecked() );
   settings.setValue( baseKey + "/allowGeometrylessTables", cb_allowGeometrylessTables->isChecked() );
   settings.setValue( baseKey + "/sslmode", cbxSSLmode->itemData( cbxSSLmode->currentIndex() ).toInt() );
-  settings.setValue( baseKey + "/saveUsername", chkStoreUsername->isChecked() ? "true" : "false" );
-  settings.setValue( baseKey + "/savePassword", chkStorePassword->isChecked() ? "true" : "false" );
+  settings.setValue( baseKey + "/saveUsername", chkStoreUsername->isChecked() && !hasAuthConfigID ? "true" : "false" );
+  settings.setValue( baseKey + "/savePassword", chkStorePassword->isChecked() && !hasAuthConfigID ? "true" : "false" );
   settings.setValue( baseKey + "/estimatedMetadata", cb_useEstimatedMetadata->isChecked() );
 
   // remove old save setting
@@ -171,14 +186,17 @@ void QgsPgNewConnection::testConnection()
   {
     uri.setConnection( txtService->text(), txtDatabase->text(),
                        txtUsername->text(), txtPassword->text(),
-                       ( QgsDataSourceURI::SSLmode ) cbxSSLmode->itemData( cbxSSLmode->currentIndex() ).toInt() );
+                       ( QgsDataSourceURI::SSLmode ) cbxSSLmode->itemData( cbxSSLmode->currentIndex() ).toInt(),
+                       mAuthConfigSelect->configId() );
   }
   else
   {
     uri.setConnection( txtHost->text(), txtPort->text(), txtDatabase->text(),
                        txtUsername->text(), txtPassword->text(),
-                       ( QgsDataSourceURI::SSLmode ) cbxSSLmode->itemData( cbxSSLmode->currentIndex() ).toInt() );
+                       ( QgsDataSourceURI::SSLmode ) cbxSSLmode->itemData( cbxSSLmode->currentIndex() ).toInt(),
+                       mAuthConfigSelect->configId() );
   }
+
   QString conninfo = uri.connectionInfo();
 
   QgsPostgresConn *conn = QgsPostgresConn::connectDb( conninfo, true );

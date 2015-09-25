@@ -408,6 +408,12 @@ bool QgsWcsProvider::parseUri( QString uriString )
   mAuth.mPassword = uri.param( "password" );
   QgsDebugMsg( "set password to " + mAuth.mPassword );
 
+  if ( uri.hasParam( "authcfg" ) )
+  {
+    mAuth.mAuthCfg = uri.param( "authcfg" );
+  }
+  QgsDebugMsg( "set authcfg to " + mAuth.mAuthCfg );
+
   mIdentifier = uri.param( "identifier" );
 
   mTime = uri.param( "time" );
@@ -1667,6 +1673,7 @@ int QgsWcsDownloadHandler::sErrors = 0;
 
 QgsWcsDownloadHandler::QgsWcsDownloadHandler( const QUrl& url, QgsWcsAuthorization& auth, QNetworkRequest::CacheLoadControl cacheLoadControl, QByteArray& cachedData, const QString& wcsVersion, QgsError& cachedError )
     : mNAM( new QgsNetworkAccessManager )
+    , mAuth( auth )
     , mEventLoop( new QEventLoop )
     , mCachedData( cachedData )
     , mWcsVersion( wcsVersion )
@@ -1675,7 +1682,12 @@ QgsWcsDownloadHandler::QgsWcsDownloadHandler( const QUrl& url, QgsWcsAuthorizati
   mNAM->setupDefaultProxyAndCache();
 
   QNetworkRequest request( url );
-  auth.setAuthorization( request );
+  if ( !mAuth.setAuthorization( request ) )
+  {
+    QgsMessageLog::logMessage( tr( "Network request update failed for authentication config" ),
+                               tr( "WCS" ) );
+    return;
+  }
   request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
   request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, cacheLoadControl );
 
@@ -1708,7 +1720,14 @@ void QgsWcsDownloadHandler::cacheReplyFinished()
       mCacheReply->deleteLater();
 
       QgsDebugMsg( QString( "redirected getmap: %1" ).arg( redirect.toString() ) );
-      mCacheReply = mNAM->get( QNetworkRequest( redirect.toUrl() ) );
+      QNetworkRequest request( redirect.toUrl() );
+      if ( !mAuth.setAuthorization( request ) )
+      {
+        QgsMessageLog::logMessage( tr( "Network request update failed for authentication config" ),
+                                   tr( "WCS" ) );
+        return;
+      }
+      mCacheReply = mNAM->get( request );
       connect( mCacheReply, SIGNAL( finished() ), this, SLOT( cacheReplyFinished() ) );
       connect( mCacheReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( cacheReplyProgress( qint64, qint64 ) ) );
 

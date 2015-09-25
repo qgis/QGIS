@@ -1,6 +1,7 @@
 brew tap osgeo/osgeo4mac
 brew update
-brew install osgeo/osgeo4mac/qgis-28 --without-postgis --without-postgresql --without-grass --without-gpsbabel --only-dependencies 
+brew install osgeo/osgeo4mac/qgis-28 --without-postgis --without-postgresql --without-grass --without-gpsbabel --only-dependencies
+brew install qca
 brew install spawn-fcgi
 brew install lighttpd
 brew install poppler

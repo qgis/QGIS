@@ -386,6 +386,6 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString& conn
   uri.setSrid( srid );
   uri.disableSelectAtId( !selectAtId );
 
-  QgsDebugMsg( QString( "returning uri %1" ).arg( uri.uri() ) );
-  return uri.uri();
+  QgsDebugMsg( QString( "returning uri %1" ).arg( uri.uri( false ) ) );
+  return uri.uri( false );
 }

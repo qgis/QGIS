@@ -238,6 +238,15 @@
          </item>
          <item>
           <property name="text">
+           <string>Authentication</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/locked.svg</normaloff>:/images/themes/default/locked.svg</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
            <string>Network</string>
           </property>
           <property name="toolTip">
@@ -4505,6 +4514,16 @@
            </item>
           </layout>
          </widget>
+         <widget class="QWidget" name="mOptionsPageAuth">
+          <layout class="QVBoxLayout" name="verticalLayout_45">
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QgsAuthEditorWidgets" name="mAuthConfigsGrpBx"/>
+           </item>
+          </layout>
+         </widget>
          <widget class="QWidget" name="mOptionsPageNetwork">
           <layout class="QVBoxLayout" name="verticalLayout_20">
            <property name="leftMargin">
@@ -5032,6 +5051,12 @@
    <class>QgsSettingsTree</class>
    <extends>QWidget</extends>
    <header>qgssettingstree.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsAuthEditorWidgets</class>
+   <extends>QTabWidget</extends>
+   <header>qgsautheditorwidgets.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

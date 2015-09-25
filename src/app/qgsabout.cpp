@@ -17,6 +17,7 @@
 
 #include "qgsabout.h"
 #include "qgsapplication.h"
+#include "qgsauthmethodregistry.h"
 #include "qgsproviderregistry.h"
 #include "qgslogger.h"
 #include <QDesktopServices>
@@ -245,6 +246,8 @@ void QgsAbout::setPluginInfo()
   //provide info about the plugins available
   myString += "<b>" + tr( "Available QGIS Data Provider Plugins" ) + "</b><br>";
   myString += QgsProviderRegistry::instance()->pluginList( true );
+  myString += "<b>" + tr( "Available QGIS Authentication Method Plugins" ) + "</b><br>";
+  myString += QgsAuthMethodRegistry::instance()->pluginList( true );
   //qt database plugins
   myString += "<b>" + tr( "Available Qt Database Plugins" ) + "</b><br>";
   myString += "<ol>\n<li>\n";

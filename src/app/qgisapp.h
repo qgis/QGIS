@@ -97,6 +97,7 @@ class QgsTileScaleWidget;
 #include <QSslError>
 #include <QDateTime>
 
+#include "qgsauthmanager.h"
 #include "qgsconfig.h"
 #include "qgsfeature.h"
 #include "qgsfeaturestore.h"
@@ -223,6 +224,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! update proxy settings
     void namUpdate();
+
+    //! set up master password
+    void masterPasswordSetup();
 
     /** Add a dock widget to the main window. Overloaded from QMainWindow.
      * After adding the dock widget to the ui (by delegating to the QMainWindow
@@ -615,6 +619,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void namSslErrors( QNetworkReply *reply, const QList<QSslError> &errors );
 #endif
     void namRequestTimedOut( QNetworkReply *reply );
+
+    //! Schedule and erase of the authentication database upon confirmation
+    void eraseAuthenticationDatabase();
+
+    //! Push authentication manager output to messagebar
+    void authMessageOut( const QString& message, const QString& authtag, QgsAuthManager::MessageLevel level );
 
     //! update default action of toolbutton
     void toolButtonActionTriggered( QAction * );

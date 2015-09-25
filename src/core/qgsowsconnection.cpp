@@ -61,6 +61,13 @@ QgsOWSConnection::QgsOWSConnection( const QString & theService, const QString & 
     mUri.setParam( "password", password );
   }
 
+  QString authcfg = settings.value( credentialsKey + "/authcfg" ).toString();
+  if ( !authcfg.isEmpty() )
+  {
+    mUri.setParam( "authcfg", authcfg );
+  }
+  mConnectionInfo.append( ",authcfg=" + authcfg );
+
   bool ignoreGetMap = settings.value( key + "/ignoreGetMapURI", false ).toBool();
   bool ignoreGetFeatureInfo = settings.value( key + "/ignoreGetFeatureInfoURI", false ).toBool();
   bool ignoreAxisOrientation = settings.value( key + "/ignoreAxisOrientation", false ).toBool();

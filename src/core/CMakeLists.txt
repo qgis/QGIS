@@ -67,6 +67,13 @@ SET(QGIS_CORE_SRCS
   layertree/qgslayertreeregistrybridge.cpp
   layertree/qgslayertreeutils.cpp
 
+  auth/qgsauthcertutils.cpp
+  auth/qgsauthconfig.cpp
+  auth/qgsauthcrypto.cpp
+  auth/qgsauthmanager.cpp
+  auth/qgsauthmethodmetadata.cpp
+  auth/qgsauthmethodregistry.cpp
+
   qgis.cpp
   qgsapplication.cpp
   qgsattributeaction.cpp
@@ -432,6 +439,9 @@ SET(QGIS_CORE_MOC_HDRS
   qgsgeometryvalidator.h
   qgswebview.h
 
+  auth/qgsauthmanager.h
+  auth/qgsauthmethod.h
+
   composer/qgsaddremoveitemcommand.h
   composer/qgsatlascomposition.h
   composer/qgscomposerattributetable.h
@@ -635,6 +645,14 @@ SET(QGIS_CORE_HDRS
   qgswebview.h
   qgslocalec.h
 
+  auth/qgsauthcertutils.h
+  auth/qgsauthconfig.h
+  auth/qgsauthcrypto.h
+  auth/qgsauthmanager.h
+  auth/qgsauthmethod.h
+  auth/qgsauthmethodmetadata.h
+  auth/qgsauthmethodregistry.h
+
   diagram/qgsdiagram.h
   diagram/qgspiediagram.h
   diagram/qgstextdiagram.h
@@ -752,6 +770,7 @@ ENDIF (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)
 
 INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}
+  auth
   composer
   dxf
   effects
@@ -769,6 +788,7 @@ INCLUDE_DIRECTORIES(
   ${EXPAT_INCLUDE_DIR}
   ${SQLITE3_INCLUDE_DIR}
   ${SPATIALITE_INCLUDE_DIR}
+  ${QCA_INCLUDE_DIR}
 )
 
 IF (NOT MSVC)
@@ -852,6 +872,8 @@ TARGET_LINK_LIBRARIES(qgis_core
   ${QT_QTNETWORK_LIBRARY}
   ${QT_QTSVG_LIBRARY}
   ${QT_QTWEBKIT_LIBRARY}
+  ${QT_QTSQL_LIBRARY}
+  ${QCA_LIBRARY}
 
   ${PROJ_LIBRARY}
   ${GEOS_LIBRARY}

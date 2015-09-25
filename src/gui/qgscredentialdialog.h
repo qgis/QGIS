@@ -23,6 +23,7 @@
 
 #include <QString>
 
+class QPushButton;
 
 /** \ingroup gui
  * A generic dialog for requesting credentials
@@ -37,11 +38,25 @@ class GUI_EXPORT QgsCredentialDialog : public QDialog, public QgsCredentials, pr
   signals:
     void credentialsRequested( QString, QString *, QString *, QString, bool * );
 
+    void credentialsRequestedMasterPassword( QString *, bool, bool * );
+
   private slots:
     void requestCredentials( QString, QString *, QString *, QString, bool * );
 
+    void requestCredentialsMasterPassword( QString *password, bool stored, bool *ok );
+
+    void on_chkMasterPassShow_stateChanged( int state );
+    void on_leMasterPass_textChanged( const QString& pass );
+    void on_leMasterPassVerify_textChanged( const QString& pass );
+    void on_chkbxEraseAuthDb_toggled( bool checked );
+
   protected:
     virtual bool request( QString realm, QString &username, QString &password, QString message = QString::null ) override;
+
+    virtual bool requestMasterPassword( QString &password, bool stored = false ) override;
+
+  private:
+    QPushButton *mOkButton;
 };
 
 #endif

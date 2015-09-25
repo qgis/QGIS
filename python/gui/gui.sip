@@ -141,6 +141,23 @@
 %Include attributetable/qgsfieldconditionalformatwidget.sip
 %Include attributetable/qgsifeatureselectionmanager.sip
 
+%Include auth/qgsauthauthoritieseditor.sip
+%Include auth/qgsauthcertificateinfo.sip
+%Include auth/qgsauthcertificatemanager.sip
+%Include auth/qgsauthcerttrustpolicycombobox.sip
+%Include auth/qgsauthconfigeditor.sip
+%Include auth/qgsauthconfigselect.sip
+%Include auth/qgsautheditorwidgets.sip
+%Include auth/qgsauthidentitieseditor.sip
+%Include auth/qgsauthimportcertdialog.sip
+%Include auth/qgsauthimportidentitydialog.sip
+%Include auth/qgsauthmethodedit.sip
+%Include auth/qgsauthserverseditor.sip
+%Include auth/qgsauthsslconfigwidget.sip
+%Include auth/qgsauthsslerrorsdialog.sip
+%Include auth/qgsauthsslimportdialog.sip
+%Include auth/qgsauthtrustedcasdialog.sip
+
 %Include layertree/qgscustomlayerorderwidget.sip
 %Include layertree/qgslayertreemapcanvasbridge.sip
 %Include layertree/qgslayertreeview.sip
