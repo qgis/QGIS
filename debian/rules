@@ -98,7 +98,8 @@ ifneq (,$(findstring $(DISTRIBUTION),"sid stretch"))
 endif
 
 ifneq (,$(findstring $(DISTRIBUTION),"sid"))
-	CMAKE_OPTS += -DGEOS_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libgeos_c.so
+	CMAKE_OPTS += -DGEOS_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libgeos_c.so \
+		      -DGEOS_CPP_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libgeos.so
 endif
 
 ifneq (,$(findstring $(DISTRIBUTION),"jessie stretch trusty utopic vivid sid"))
