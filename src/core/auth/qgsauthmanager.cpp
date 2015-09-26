@@ -55,6 +55,8 @@ const QString QgsAuthManager::smAuthServersTable = "auth_servers";
 const QString QgsAuthManager::smAuthAuthoritiesTable = "auth_authorities";
 const QString QgsAuthManager::smAuthTrustTable = "auth_trust";
 const QString QgsAuthManager::smAuthManTag = QObject::tr( "Authentication Manager" );
+const QString QgsAuthManager::smAuthCfgRegex = "authcfg=([a-z]|[A-Z]|[0-9]){7}";
+
 
 QgsAuthManager *QgsAuthManager::instance()
 {
@@ -750,12 +752,18 @@ bool QgsAuthManager::configIdUnique( const QString& id ) const
   return !configids.contains( id );
 }
 
+bool QgsAuthManager::hasConfigId( const QString &txt ) const
+{
+  QRegExp rx( smAuthCfgRegex );
+  return rx.indexIn( txt ) != -1;
+}
+
 QgsAuthMethodConfigsMap QgsAuthManager::availableAuthMethodConfigs( const QString &dataprovider )
 {
   QStringList providerAuthMethodsKeys;
   if ( !dataprovider.isEmpty() )
   {
-    providerAuthMethodsKeys = authMethodsKeys( dataprovider );
+    providerAuthMethodsKeys = authMethodsKeys( dataprovider.toLower() );
   }
 
   QgsAuthMethodConfigsMap baseConfigs;
@@ -847,7 +855,7 @@ QString QgsAuthManager::configAuthMethodKey( const QString &authcfg ) const
 
 QStringList QgsAuthManager::authMethodsKeys( const QString &dataprovider )
 {
-  return authMethodsMap( dataprovider ).uniqueKeys();
+  return authMethodsMap( dataprovider.toLower() ).uniqueKeys();
 }
 
 QgsAuthMethod *QgsAuthManager::authMethod( const QString &authMethodKey )
@@ -1294,7 +1302,7 @@ bool QgsAuthManager::updateNetworkRequest( QNetworkRequest &request, const QStri
       return false;
     }
 
-    if ( !authmethod->updateNetworkRequest( request, authcfg, dataprovider ) )
+    if ( !authmethod->updateNetworkRequest( request, authcfg, dataprovider.toLower() ) )
     {
       authmethod->clearCachedConfig( authcfg );
       return false;
@@ -1320,7 +1328,7 @@ bool QgsAuthManager::updateNetworkReply( QNetworkReply *reply, const QString& au
       return false;
     }
 
-    if ( !authmethod->updateNetworkReply( reply, authcfg, dataprovider ) )
+    if ( !authmethod->updateNetworkReply( reply, authcfg, dataprovider.toLower() ) )
     {
       authmethod->clearCachedConfig( authcfg );
       return false;
@@ -1346,7 +1354,7 @@ bool QgsAuthManager::updateDataSourceUriItems( QStringList &connectionItems, con
       return false;
     }
 
-    if ( !authmethod->updateDataSourceUriItems( connectionItems, authcfg, dataprovider ) )
+    if ( !authmethod->updateDataSourceUriItems( connectionItems, authcfg, dataprovider.toLower() ) )
     {
       authmethod->clearCachedConfig( authcfg );
       return false;

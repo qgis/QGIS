@@ -227,6 +227,15 @@ class CORE_EXPORT QgsAuthManager : public QObject
      */
     bool configIdUnique( const QString &id ) const;
 
+    /**
+     * Return whether a string includes an authcfg ID token
+     * @param txt String to check
+     */
+    bool hasConfigId( const QString &txt ) const;
+
+    /** Return regular expression for authcfg=.{7} key/value token for authentication ids */
+    QString configIdRegex() const { return smAuthCfgRegex;}
+
     /** Get list of authentication ids from database */
     QStringList configIds() const;
 
@@ -587,6 +596,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     static const QString smAuthAuthoritiesTable;
     static const QString smAuthTrustTable;
     static const QString smAuthManTag;
+    static const QString smAuthCfgRegex;
 
     bool mAuthInit;
     QString mAuthDbPath;

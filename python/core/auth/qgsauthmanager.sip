@@ -77,6 +77,10 @@ class QgsAuthManager : QObject
 
     bool configIdUnique( const QString &id ) const;
 
+    bool hasConfigId( const QString &txt ) const;
+
+    QString configIdRegex() const;
+
     QStringList configIds() const;
 
 

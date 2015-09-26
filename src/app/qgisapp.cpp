@@ -8198,7 +8198,7 @@ QgsVectorLayer* QgisApp::addVectorLayer( QString vectorLayerPath, QString baseNa
 
   // if the layer needs authentication, ensure the master password is set
   bool authok = true;
-  QRegExp rx( "authcfg=([a-z]|[0-9]){7}" );
+  QRegExp rx( "authcfg=([a-z]|[A-Z]|[0-9]){7}" );
   if ( rx.indexIn( vectorLayerPath ) != -1 )
   {
     authok = false;

@@ -184,7 +184,7 @@ bool QgsMapLayer::readLayerXML( const QDomElement& layerElement )
   mDataSource = mne.text();
 
   // if the layer needs authentication, ensure the master password is set
-  QRegExp rx( "authcfg=([a-z]|[0-9]){7}" );
+  QRegExp rx( "authcfg=([a-z]|[A-Z]|[0-9]){7}" );
   if (( rx.indexIn( mDataSource ) != -1 )
       && !QgsAuthManager::instance()->setMasterPassword( true ) )
   {
