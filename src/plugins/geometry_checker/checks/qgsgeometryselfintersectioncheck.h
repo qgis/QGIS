@@ -42,11 +42,11 @@ class QgsGeometrySelfIntersectionCheck : public QgsGeometryCheck
   public:
     QgsGeometrySelfIntersectionCheck( QgsFeaturePool* featurePool )
         : QgsGeometryCheck( FeatureNodeCheck, featurePool ) {}
-    void collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList &messages, QAtomicInt* progressCounter = 0, const QgsFeatureIds& ids = QgsFeatureIds() ) const;
-    void fixError( QgsGeometryCheckError* error, int method, int mergeAttributeIndex, Changes& changes ) const;
-    const QStringList& getResolutionMethods() const;
-    QString errorDescription() const { return tr( "Self intersection" ); }
-    QString errorName() const { return "QgsGeometrySelfIntersectionCheck"; }
+    void collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList &messages, QAtomicInt* progressCounter = 0, const QgsFeatureIds& ids = QgsFeatureIds() ) const override;
+    void fixError( QgsGeometryCheckError* error, int method, int mergeAttributeIndex, Changes& changes ) const override;
+    const QStringList& getResolutionMethods() const override;
+    QString errorDescription() const override { return tr( "Self intersection" ); }
+    QString errorName() const override { return "QgsGeometrySelfIntersectionCheck"; }
   private:
     enum ResolutionMethod { ToMultiObject, ToSingleObjects, NoChange };
 };

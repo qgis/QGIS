@@ -41,11 +41,11 @@ class QgsGeometryTypeCheck : public QgsGeometryCheck
   public:
     QgsGeometryTypeCheck( QgsFeaturePool* featurePool, int allowedTypes )
         : QgsGeometryCheck( FeatureCheck, featurePool ), mAllowedTypes( allowedTypes ) {}
-    void collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList &messages, QAtomicInt* progressCounter = 0, const QgsFeatureIds& ids = QgsFeatureIds() ) const;
-    void fixError( QgsGeometryCheckError* error, int method, int mergeAttributeIndex, Changes& changes ) const;
-    const QStringList& getResolutionMethods() const;
-    QString errorDescription() const { return tr( "Geometry type" ); }
-    QString errorName() const { return "QgsGeometryTypeCheck"; }
+    void collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList &messages, QAtomicInt* progressCounter = 0, const QgsFeatureIds& ids = QgsFeatureIds() ) const override;
+    void fixError( QgsGeometryCheckError* error, int method, int mergeAttributeIndex, Changes& changes ) const override;
+    const QStringList& getResolutionMethods() const override;
+    QString errorDescription() const override { return tr( "Geometry type" ); }
+    QString errorName() const override { return "QgsGeometryTypeCheck"; }
   private:
     enum ResolutionMethod { Convert, Delete, NoChange };
     int mAllowedTypes;

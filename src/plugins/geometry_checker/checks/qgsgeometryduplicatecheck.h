@@ -49,11 +49,11 @@ class QgsGeometryDuplicateCheck : public QgsGeometryCheck
   public:
     QgsGeometryDuplicateCheck( QgsFeaturePool* featurePool )
         : QgsGeometryCheck( FeatureCheck, featurePool ) {}
-    void collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList &messages, QAtomicInt* progressCounter = 0, const QgsFeatureIds& ids = QgsFeatureIds() ) const;
-    void fixError( QgsGeometryCheckError* error, int method, int mergeAttributeIndex, Changes& changes ) const;
-    const QStringList& getResolutionMethods() const;
-    QString errorDescription() const { return tr( "Duplicate" ); }
-    QString errorName() const { return "QgsGeometryDuplicateCheck"; }
+    void collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList &messages, QAtomicInt* progressCounter = 0, const QgsFeatureIds& ids = QgsFeatureIds() ) const override;
+    void fixError( QgsGeometryCheckError* error, int method, int mergeAttributeIndex, Changes& changes ) const override;
+    const QStringList& getResolutionMethods() const override;
+    QString errorDescription() const override { return tr( "Duplicate" ); }
+    QString errorName() const override { return "QgsGeometryDuplicateCheck"; }
 
   private:
     enum ResolutionMethod { NoChange, RemoveDuplicates };

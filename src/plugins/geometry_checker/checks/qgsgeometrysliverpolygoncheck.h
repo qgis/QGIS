@@ -18,8 +18,8 @@ class QgsGeometrySliverPolygonCheck : public QgsGeometryAreaCheck
   public:
     QgsGeometrySliverPolygonCheck( QgsFeaturePool* featurePool, double threshold, double maxArea = 0. )
         : QgsGeometryAreaCheck( featurePool, threshold ), mMaxArea( maxArea ) {}
-    QString errorDescription() const { return tr( "Sliver polygon" ); }
-    QString errorName() const { return "QgsGeometrySliverPolygonCheck"; }
+    QString errorDescription() const override { return tr( "Sliver polygon" ); }
+    QString errorName() const override { return "QgsGeometrySliverPolygonCheck"; }
 
   private:
     double mMaxArea;

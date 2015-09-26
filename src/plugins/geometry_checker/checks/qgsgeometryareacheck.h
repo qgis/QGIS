@@ -19,11 +19,11 @@ class QgsGeometryAreaCheck : public QgsGeometryCheck
   public:
     QgsGeometryAreaCheck( QgsFeaturePool* featurePool, double threshold )
         : QgsGeometryCheck( FeatureCheck, featurePool ), mThreshold( threshold ) {}
-    void collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList& messages, QAtomicInt* progressCounter = 0, const QgsFeatureIds& ids = QgsFeatureIds() ) const;
-    void fixError( QgsGeometryCheckError* error, int method, int mergeAttributeIndex, Changes& changes ) const;
-    const QStringList& getResolutionMethods() const;
-    QString errorDescription() const { return tr( "Minimal area" ); }
-    QString errorName() const { return "QgsGeometryAreaCheck"; }
+    void collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList& messages, QAtomicInt* progressCounter = 0, const QgsFeatureIds& ids = QgsFeatureIds() ) const override;
+    void fixError( QgsGeometryCheckError* error, int method, int mergeAttributeIndex, Changes& changes ) const override;
+    const QStringList& getResolutionMethods() const override;
+    QString errorDescription() const override { return tr( "Minimal area" ); }
+    QString errorName() const override { return "QgsGeometryAreaCheck"; }
   private:
     enum ResolutionMethod { MergeLongestEdge, MergeLargestArea, MergeIdenticalAttribute, Delete, NoChange };
 
