@@ -14,6 +14,7 @@ usr/lib/qgis/plugins/libzonalstatisticsplugin.so
 usr/lib/qgis/plugins/libheatmapplugin.so
 usr/lib/qgis/plugins/libtopolplugin.so
 usr/lib/qgis/qgis_help
+usr/lib/libqgis_app.so
 usr/share/pixmaps/
 usr/share/applications/
 usr/share/mime/packages/
