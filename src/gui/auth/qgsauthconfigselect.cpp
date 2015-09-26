@@ -19,10 +19,13 @@
 
 #include <QHash>
 #include <QMessageBox>
+#include <QTimer>
 
 #include "qgsauthconfig.h"
+#include "qgsauthguiutils.h"
 #include "qgsauthmanager.h"
 #include "qgsauthconfigedit.h"
+#include "qgslogger.h"
 
 
 QgsAuthConfigSelect::QgsAuthConfigSelect( QWidget *parent, const QString &dataprovider )
@@ -44,7 +47,11 @@ QgsAuthConfigSelect::QgsAuthConfigSelect( QWidget *parent, const QString &datapr
   {
     setupUi( this );
 
+    leConfigMsg->setStyleSheet( QString( "QLineEdit{background-color: %1}" )
+                                .arg( QgsAuthGuiUtils::yellowColor().name() ) );
+
     clearConfig();
+    clearMessage();
     populateConfigSelector();
   }
 }
@@ -63,10 +70,18 @@ void QgsAuthConfigSelect::setConfigId( const QString& authcfg )
   else
   {
     if ( mAuthCfg != authcfg )
+    {
       mAuthCfg = authcfg;
+    }
     populateConfigSelector();
     loadConfig();
   }
+}
+
+void QgsAuthConfigSelect::setDataProviderKey( const QString &key )
+{
+  mDataProvider = key;
+  populateConfigSelector();
 }
 
 void QgsAuthConfigSelect::loadConfig()
@@ -87,6 +102,7 @@ void QgsAuthConfigSelect::loadConfig()
     btnConfigEdit->setEnabled( true );
     btnConfigRemove->setEnabled( true );
   }
+  emit selectedConfigIdChanged( mAuthCfg );
 }
 
 void QgsAuthConfigSelect::clearConfig()
@@ -101,6 +117,7 @@ void QgsAuthConfigSelect::validateConfig()
 {
   if ( !mAuthCfg.isEmpty() && !mConfigs.contains( mAuthCfg ) )
   {
+    showMessage( tr( "Configuration '%1' not in database" ).arg( mAuthCfg ) );
     mAuthCfg.clear();
   }
 }
@@ -135,6 +152,18 @@ void QgsAuthConfigSelect::populateConfigSelector()
     indx = cmbConfigSelect->findData( mAuthCfg );
   }
   cmbConfigSelect->setCurrentIndex( indx > 0 ? indx : 0 );
+}
+
+void QgsAuthConfigSelect::showMessage( const QString &msg )
+{
+  leConfigMsg->setText( msg );
+  frConfigMsg->setVisible( true );
+}
+
+void QgsAuthConfigSelect::clearMessage()
+{
+  leConfigMsg->clear();
+  frConfigMsg->setVisible( false );
 }
 
 void QgsAuthConfigSelect::loadAvailableConfigs()
@@ -173,7 +202,7 @@ void QgsAuthConfigSelect::on_btnConfigEdit_clicked()
   ace->setWindowModality( Qt::WindowModal );
   if ( ace->exec() )
   {
-    qDebug( "Edit returned config Id: %s", ace->configId().toAscii().constData() );
+    //qDebug( "Edit returned config Id: %s", ace->configId().toAscii().constData() );
     setConfigId( ace->configId() );
   }
   ace->deleteLater();
@@ -192,6 +221,188 @@ void QgsAuthConfigSelect::on_btnConfigRemove_clicked()
 
   if ( QgsAuthManager::instance()->removeAuthenticationConfig( mAuthCfg ) )
   {
+    emit selectedConfigIdRemoved( mAuthCfg );
     setConfigId( QString() );
   }
 }
+
+void QgsAuthConfigSelect::on_btnConfigMsgClear_clicked()
+{
+  clearMessage();
+}
+
+
+//////////////// Embed in dialog ///////////////////
+
+#include <QPushButton>
+
+QgsAuthConfigUriEdit::QgsAuthConfigUriEdit( QWidget *parent, const QString &datauri, const QString &dataprovider )
+    : QDialog( parent )
+    , mAuthCfg( QString() )
+    , mDataUri( QString() )
+    , mDataUriOrig( QString() )
+{
+  setupUi( this );
+
+  setWindowTitle( tr( "Authentication Config ID String Editor" ) );
+
+  buttonBox->button( QDialogButtonBox::Close )->setDefault( true );
+  connect( buttonBox, SIGNAL( rejected() ), this, SLOT( close() ) );
+  connect( buttonBox, SIGNAL( accepted() ), this, SLOT( saveChanges() ) );
+
+  connect( buttonBox->button( QDialogButtonBox::Reset ), SIGNAL( clicked() ), this, SLOT( resetChanges() ) );
+
+  connect( wdgtAuthSelect, SIGNAL( selectedConfigIdChanged( QString ) ), this , SLOT( authCfgUpdated( QString ) ) );
+  connect( wdgtAuthSelect, SIGNAL( selectedConfigIdRemoved( QString ) ), this , SLOT( authCfgRemoved( QString ) ) );
+
+  wdgtAuthSelect->setDataProviderKey( dataprovider );
+  setDataSourceUri( datauri );
+}
+
+QgsAuthConfigUriEdit::~QgsAuthConfigUriEdit()
+{
+}
+
+void QgsAuthConfigUriEdit::setDataSourceUri( const QString &datauri )
+{
+  if ( datauri.isEmpty() )
+    return;
+
+  mDataUri = mDataUriOrig = datauri;
+
+  teDataUri->setPlainText( mDataUri );
+
+  if ( authCfgIndex() == -1 )
+  {
+    wdgtAuthSelect->showMessage( tr( "No authcfg in Data Source URI" ) );
+    return;
+  }
+
+  selectAuthCfgInUri();
+
+  mAuthCfg = authCfgFromUri();
+
+  QgsDebugMsg( QString( "Parsed authcfg ID: %1" ).arg( mAuthCfg ) );
+
+  wdgtAuthSelect->blockSignals( true );
+  wdgtAuthSelect->setConfigId( mAuthCfg );
+  wdgtAuthSelect->blockSignals( false );
+}
+
+QString QgsAuthConfigUriEdit::dataSourceUri()
+{
+  return mDataUri;
+}
+
+bool QgsAuthConfigUriEdit::hasConfigID( const QString &txt )
+{
+  return QgsAuthManager::instance()->hasConfigId( txt );
+}
+
+void QgsAuthConfigUriEdit::saveChanges()
+{
+  this->accept();
+}
+
+void QgsAuthConfigUriEdit::resetChanges()
+{
+  wdgtAuthSelect->clearMessage();
+  setDataSourceUri( mDataUriOrig );
+}
+
+void QgsAuthConfigUriEdit::authCfgUpdated( const QString &authcfg )
+{
+  mAuthCfg = authcfg;
+
+  if ( mAuthCfg.size() != 7 )
+  {
+    mAuthCfg.clear();
+    removeAuthCfgFromUri();
+  }
+  else
+  {
+    updateUriWithAuthCfg();
+  }
+  teDataUri->clear();
+  teDataUri->setPlainText( mDataUri );
+  selectAuthCfgInUri();
+}
+
+void QgsAuthConfigUriEdit::authCfgRemoved( const QString &authcfg )
+{
+  if ( authCfgFromUri() == authcfg )
+  {
+    removeAuthCfgFromUri();
+  }
+}
+
+int QgsAuthConfigUriEdit::authCfgIndex()
+{
+  QRegExp rx( QgsAuthManager::instance()->configIdRegex() );
+  return rx.indexIn( mDataUri );
+}
+
+QString QgsAuthConfigUriEdit::authCfgFromUri()
+{
+  int startindex = authCfgIndex();
+  if ( startindex == -1 )
+    return QString();
+
+  return mDataUri.mid( startindex + 8, 7 );
+}
+
+void QgsAuthConfigUriEdit::selectAuthCfgInUri()
+{
+  int startindex = authCfgIndex();
+  if ( startindex == -1 )
+    return;
+
+  // authcfg=.{7} will always be 15 chars
+  QTextCursor tc = teDataUri->textCursor();
+  tc.setPosition( startindex );
+  tc.setPosition( startindex + 15, QTextCursor::KeepAnchor );
+  teDataUri->setTextCursor( tc );
+  teDataUri->setFocus();
+}
+
+void QgsAuthConfigUriEdit::updateUriWithAuthCfg()
+{
+  int startindex = authCfgIndex();
+  if ( startindex == -1 )
+  {
+    if ( mAuthCfg.size() == 7 )
+    {
+      wdgtAuthSelect->showMessage( tr( "Adding authcfg to URI not supported" ) );
+    }
+    return;
+  }
+
+  mDataUri = mDataUri.replace( startindex + 8, 7, mAuthCfg );
+}
+
+void QgsAuthConfigUriEdit::removeAuthCfgFromUri()
+{
+  int startindex = authCfgIndex();
+  if ( startindex == -1 )
+    return;
+
+  // add any preceding space so two spaces will not result after removal
+  int rmvlen = 15;
+  if ( startindex - 1 >= 0
+       && ( mDataUri.at( startindex - 1 ).isSpace()
+            || mDataUri.at( startindex - 1 ) == QChar( '&' ) ) )
+  {
+    startindex -= 1;
+    rmvlen += 1;
+  }
+
+  // trim any leftover spaces or & from ends
+  mDataUri = mDataUri.remove( startindex, rmvlen ).trimmed();
+  if ( mDataUri.at( 0 ) == QChar( '&' ) )
+    mDataUri = mDataUri.remove( 0, 1 );
+
+  // trim any & from
+
+  mAuthCfg.clear();
+}
+
