@@ -17,6 +17,7 @@
 
 #include "qgshandlebadlayers.h"
 #include "qgisapp.h"
+#include "qgsauthconfigselect.h"
 #include "qgisgui.h"
 #include "qgsdatasourceuri.h"
 #include "qgslogger.h"
@@ -78,12 +79,14 @@ QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode> &layers, const QDo
   mLayerList->clear();
   mLayerList->setSortingEnabled( true );
   mLayerList->setSelectionBehavior( QAbstractItemView::SelectRows );
-  mLayerList->setColumnCount( 4 );
+  mLayerList->setColumnCount( 5 );
+  mLayerList->setColumnWidth( 3, 75 );
 
   mLayerList->setHorizontalHeaderLabels( QStringList()
                                          << tr( "Layer name" )
                                          << tr( "Type" )
                                          << tr( "Provider" )
+                                         << tr( "Auth config" )
                                          << tr( "Datasource" )
                                        );
 
@@ -123,8 +126,24 @@ QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode> &layers, const QDo
     item->setFlags( item->flags() & ~Qt::ItemIsEditable );
     mLayerList->setItem( j, 2, item );
 
+    if ( QgsAuthConfigUriEdit::hasConfigID( datasource ) )
+    {
+      QToolButton *btn = new QToolButton( this );
+      btn->setMaximumWidth( 75 );
+      btn->setMinimumHeight( 24 );
+      btn->setText( tr( "Edit" ) );
+      btn->setProperty( "row", j );
+      connect( btn, SIGNAL( clicked() ), this, SLOT( editAuthCfg() ) );
+      mLayerList->setCellWidget( j, 3, btn );
+    }
+    else
+    {
+      item = new QTableWidgetItem( "" );
+      mLayerList->setItem( j, 3, item );
+    }
+
     item = new QTableWidgetItem( datasource );
-    mLayerList->setItem( j, 3, item );
+    mLayerList->setItem( j, 4, item );
 
     j++;
   }
@@ -161,7 +180,7 @@ QString QgsHandleBadLayers::filename( int row )
 {
   QString type = mLayerList->item( row, 1 )->text();
   QString provider = mLayerList->item( row, 2 )->text();
-  QString datasource = mLayerList->item( row, 3 )->text();
+  QString datasource = mLayerList->item( row, 4 )->text();
 
   if ( type == "vector" )
   {
@@ -195,7 +214,7 @@ void QgsHandleBadLayers::setFilename( int row, QString filename )
 
   QString type = mLayerList->item( row, 1 )->text();
   QString provider = mLayerList->item( row, 2 )->text();
-  QTableWidgetItem *item = mLayerList->item( row, 3 );
+  QTableWidgetItem *item = mLayerList->item( row, 4 );
 
   QString datasource = item->text();
 
@@ -305,6 +324,42 @@ void QgsHandleBadLayers::browseClicked()
   }
 }
 
+void QgsHandleBadLayers::editAuthCfg()
+{
+  QToolButton *btn = qobject_cast<QToolButton*>( sender() );
+  int row = -1;
+  for ( int i = 0; i < mLayerList->rowCount(); i++ )
+  {
+    if ( mLayerList->cellWidget( i, 3 ) == btn )
+    {
+      row = i;
+      break;
+    }
+  }
+
+  if ( row == -1 )
+    return;
+
+  QString provider = mLayerList->item( row, 2 )->text();
+  if ( provider == "none" )
+    provider.clear();
+
+  QString prevuri = mLayerList->item( row, 4 )->text();
+
+  QgsAuthConfigUriEdit *dlg = new QgsAuthConfigUriEdit( this, prevuri, provider );
+  dlg->setWindowModality( Qt::WindowModal );
+  dlg->resize( 500, 500 );
+  if ( dlg->exec() )
+  {
+    QString newuri( dlg->dataSourceUri() );
+    if ( newuri != prevuri )
+    {
+      mLayerList->item( row, 4 )->setText( newuri );
+    }
+  }
+  dlg->deleteLater();
+}
+
 void QgsHandleBadLayers::apply()
 {
   QgsDebugMsg( "entered." );
@@ -315,7 +370,7 @@ void QgsHandleBadLayers::apply()
 
     QString type = mLayerList->item( i, 1 )->text();
     QString provider = mLayerList->item( i, 2 )->text();
-    QTableWidgetItem *item = mLayerList->item( i, 3 );
+    QTableWidgetItem *item = mLayerList->item( i, 4 );
     QString datasource = item->text();
 
     node.namedItem( "datasource" ).toElement().firstChild().toText().setData( datasource );

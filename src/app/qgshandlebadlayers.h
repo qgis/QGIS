@@ -51,6 +51,7 @@ class APP_EXPORT QgsHandleBadLayers
   private slots:
     void selectionChanged();
     void browseClicked();
+    void editAuthCfg();
     void apply();
     void accept() override;
     void rejected();
