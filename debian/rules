@@ -80,7 +80,7 @@ ifeq ($(GRASSVER),7)
 else
 	CMAKE_OPTS += \
 		-DWITH_GRASS=TRUE \
-		-DWITH_GRASS7=FALSE \
+		-DWITH_GRASS6=TRUE \
 		-DGRASS_PREFIX=/usr/lib/$(GRASS)
 endif
 

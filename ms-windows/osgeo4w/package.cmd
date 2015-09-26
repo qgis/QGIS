@@ -66,6 +66,7 @@ set CMAKE_OPT=^
 	-D SIP_BINARY_PATH=%O4W_ROOT%/apps/Python27/sip.exe ^
 	-D QWT_LIBRARY=%O4W_ROOT%/lib/qwt.lib ^
 	-D WITH_GRASS=TRUE ^
+	-D WITH_GRASS6=TRUE ^
 	-D WITH_GRASS7=TRUE ^
 	-D GRASS_PREFIX=%O4W_ROOT%/apps/grass/grass-6.4.4 ^
 	-D GRASS_PREFIX7=%O4W_ROOT%/apps/grass/grass-7.0.1
@@ -85,7 +86,7 @@ set CMAKE_OPT=^
 	-G "Visual Studio 10 Win64" ^
 	-D SPATIALINDEX_LIBRARY=%O4W_ROOT%/lib/spatialindex-64.lib ^
 	-D WITH_GRASS=TRUE ^
-	-D WITH_GRASS7=FALSE ^
+	-D WITH_GRASS6=TRUE ^
 	-D GRASS_PREFIX=%O4W_ROOT%/apps/grass/grass-6.4.3 ^
 	-D SIP_BINARY_PATH=%O4W_ROOT%/bin/sip.exe ^
 	-D QWT_LIBRARY=%O4W_ROOT%/lib/qwt5.lib ^
