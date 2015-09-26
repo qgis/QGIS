@@ -455,9 +455,11 @@ void QgsSnappingUtils::readConfigFromProject()
     if ( !vlayer || !vlayer->hasGeometryType() )
       continue;
 
-    int t = ( *snapIt == "to_vertex" ? QgsPointLocator::Vertex :
-              ( *snapIt == "to_segment" ? QgsPointLocator::Edge :
-                QgsPointLocator::Vertex | QgsPointLocator::Edge ) );
+    QgsPointLocator::Types t( *snapIt == "to_vertex" ? QgsPointLocator::Vertex :
+                              ( *snapIt == "to_segment" ? QgsPointLocator::Edge :
+                                QgsPointLocator::Vertex | QgsPointLocator::Edge
+                              )
+                            );
     mLayers.append( LayerConfig( vlayer, t, tolIt->toDouble(), ( QgsTolerance::UnitType ) tolUnitIt->toInt() ) );
   }
 

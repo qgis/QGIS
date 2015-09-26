@@ -16,6 +16,8 @@ class QgsPointLocator : QObject
 
     enum Type { Invalid, Vertex, Edge, Area, All };
 
+    typedef QFlags<QgsPointLocator::Type> Types;
+
     /** Prepare the index for queries. Does nothing if the index already exists.
      * If the number of features is greater than the value of maxFeaturesToIndex, creation of index is stopped
      * to make sure we do not run out of memory. If maxFeaturesToIndex is -1, no limits are used. Returns

@@ -66,10 +66,10 @@ class QgsSnappingUtils : QObject
 
     struct LayerConfig
     {
-      LayerConfig( QgsVectorLayer* l, int t, double tol, QgsTolerance::UnitType u );
+      LayerConfig( QgsVectorLayer* l, QgsPointLocator::Types t, double tol, QgsTolerance::UnitType u );
 
       QgsVectorLayer* layer;
-      int type;
+      QgsPointLocator::Types type;
       double tolerance;
       QgsTolerance::UnitType unit;
     };
