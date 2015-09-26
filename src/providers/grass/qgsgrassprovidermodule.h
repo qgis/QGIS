@@ -195,8 +195,10 @@ class QgsGrassImportItemWidget : public QWidget
   public:
     QgsGrassImportItemWidget( QWidget* parent  = 0 );
 
+    void setHtml( const QString & html );
+
   public slots:
-    void onProgressChanged( QString html, int min, int max, int value );
+    void onProgressChanged( const QString &recentHtml, const QString &allHtml, int min, int max, int value );
 
   private:
     QTextEdit *mTextEdit;

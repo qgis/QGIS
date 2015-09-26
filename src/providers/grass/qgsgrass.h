@@ -140,6 +140,16 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
   public:
     static jmp_buf jumper; // used to get back from fatal error
 
+    // Parsed module output
+    enum ModuleOutput
+    {
+      OutputNone,
+      OutputPercent,
+      OutputMessage,
+      OutputWarning,
+      OutputError
+    };
+
     // This does not work (gcc/Linux), such exception cannot be caught
     // so I have enabled the old version, if you are able to fix it, please
     // check first if it realy works, i.e. can be caught!
@@ -558,10 +568,17 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     // Free struct Map_info
     static void vectDestroyMapStruct( struct Map_info *map );
 
-    // Sleep miliseconds (for debugging)
+    // Sleep miliseconds (for debugging), does not work on threads(?)
     static void sleep( int ms );
 
     void emitNewLayer( QString uri, QString name ) { emit newLayer( uri, name ); }
+
+    /** Parse single line of output from GRASS modules run with GRASS_MESSAGE_FORMAT=gui
+     * @param input input string read from module stderr
+     * @param text parsed text
+     * @param html html formated parsed text, e.g. + icons
+     * @param percent progress 0-100 */
+    static ModuleOutput parseModuleOutput( const QString & input, QString &text, QString &html, int &percent );
 
   public slots:
     /** Close mapset and show warning if closing failed */

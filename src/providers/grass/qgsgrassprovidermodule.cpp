@@ -1088,14 +1088,26 @@ QgsGrassImportItemWidget::QgsGrassImportItemWidget( QWidget* parent )
   layout->addWidget( mProgressBar );
 }
 
-void QgsGrassImportItemWidget::onProgressChanged( QString html, int min, int max, int value )
+void QgsGrassImportItemWidget::setHtml( const QString & html )
 {
-  mTextEdit->setHtml( html );
+  if ( mTextEdit )
+  {
+    mTextEdit->setText( html );
+  }
+}
+
+void QgsGrassImportItemWidget::onProgressChanged( const QString &recentHtml, const QString &allHtml, int min, int max, int value )
+{
+  Q_UNUSED( allHtml );
+  if ( !recentHtml.isEmpty() )
+  {
+    mTextEdit->append( recentHtml );
+  }
+  // TODO: scroll to bottom
   mTextEdit->verticalScrollBar()->setValue( mTextEdit->verticalScrollBar()->maximum() );
   mProgressBar->setRange( min, max );
   mProgressBar->setValue( value );
 }
-
 
 //----------------------- QgsGrassImportItem ------------------------------
 
@@ -1132,9 +1144,14 @@ QWidget * QgsGrassImportItem::paramWidget()
 {
   QgsDebugMsg( "entered" );
   QgsGrassImportItemWidget *widget = new QgsGrassImportItemWidget();
-  connect( mImport, SIGNAL( progressChanged( QString, int, int, int ) ),
-           widget, SLOT( onProgressChanged( QString, int, int, int ) ) );
-  mImport->emitProgressChanged();
+
+  if ( mImport && mImport->progress() )
+  {
+    connect( mImport->progress(), SIGNAL( progressChanged( const QString &, const QString &, int, int, int ) ),
+             widget, SLOT( onProgressChanged( const QString &, const QString &, int, int, int ) ) );
+
+    widget->setHtml( mImport->progress()->progressHtml() );
+  }
   return widget;
 }
 

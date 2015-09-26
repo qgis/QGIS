@@ -1752,6 +1752,7 @@ QProcess *QgsGrass::startModule( const QString& gisdbase, const QString&  locati
   gisrcFile.close();
   QStringList environment = QProcess::systemEnvironment();
   environment.append( "GISRC=" + gisrcFile.fileName() );
+  environment.append( "GRASS_MESSAGE_FORMAT=gui" );
 
   process->setEnvironment( environment );
 
@@ -2645,4 +2646,54 @@ void QgsGrass::sleep( int ms )
   struct timespec ts = { ms / 1000, ( ms % 1000 ) * 1000 * 1000 };
   nanosleep( &ts, NULL );
 #endif
+}
+
+QgsGrass::ModuleOutput QgsGrass::parseModuleOutput( const QString & input, QString &text, QString &html, int &percent )
+{
+  QRegExp rxpercent( "GRASS_INFO_PERCENT: (\\d+)" );
+  QRegExp rxmessage( "GRASS_INFO_MESSAGE\\(\\d+,\\d+\\): (.*)" );
+  QRegExp rxwarning( "GRASS_INFO_WARNING\\(\\d+,\\d+\\): (.*)" );
+  QRegExp rxerror( "GRASS_INFO_ERROR\\(\\d+,\\d+\\): (.*)" );
+  QRegExp rxend( "GRASS_INFO_END\\(\\d+,\\d+\\)" );
+
+
+  if ( input.trimmed().isEmpty() )
+  {
+    return OutputNone;
+  }
+  else if ( rxpercent.indexIn( input ) != -1 )
+  {
+    percent = rxpercent.cap( 1 ).toInt();
+    return OutputPercent;
+  }
+  else if ( rxmessage.indexIn( input ) != -1 )
+  {
+    text = rxmessage.cap( 1 );
+    html = "<pre>" + text + "</pre>"  ;
+    return OutputMessage;
+  }
+  else if ( rxwarning.indexIn( input ) != -1 )
+  {
+    text = rxwarning.cap( 1 );
+    QString img = QgsApplication::pkgDataPath() + "/themes/default/grass/grass_module_warning.png";
+    html = "<img src=\"" + img + "\">" + text;
+    return OutputWarning;
+  }
+  else if ( rxerror.indexIn( input ) != -1 )
+  {
+    text = rxerror.cap( 1 );
+    QString img = QgsApplication::pkgDataPath() + "/themes/default/grass/grass_module_error.png";
+    html =  "<img src=\"" + img + "\">" + text;
+    return OutputError;
+  }
+  else if ( rxend.indexIn( input ) != -1 )
+  {
+    return OutputNone;
+  }
+  else // some plain text which cannot be parsed
+  {
+    text = input;
+    html = "<pre>" + text + "</pre>";
+    return OutputMessage;
+  }
 }

@@ -897,34 +897,16 @@ void QgsGrassModule::readStderr()
     line = QString::fromLocal8Bit( ba ).replace( '\n', "" );
     //QgsDebugMsg(QString("line: '%1'").arg(line));
 
-    if ( rxpercent.indexIn( line ) != -1 )
+    QString text, html;
+    int percent;
+    QgsGrass::ModuleOutput type =  QgsGrass::parseModuleOutput( line, text, html, percent );
+    if ( type == QgsGrass::OutputPercent )
     {
-      int progress = rxpercent.cap( 1 ).toInt();
-      mProgressBar->setValue( progress );
+      mProgressBar->setValue( percent );
     }
-    else if ( rxmessage.indexIn( line ) != -1 )
+    else if ( type == QgsGrass::OutputMessage || type == QgsGrass::OutputWarning || type == QgsGrass::OutputError )
     {
-      mOutputTextBrowser->append( "<pre>" + rxmessage.cap( 1 ) + "</pre>" );
-    }
-    else if ( rxwarning.indexIn( line ) != -1 )
-    {
-      QString warn = rxwarning.cap( 1 );
-      QString img = QgsApplication::pkgDataPath() + "/themes/default/grass/grass_module_warning.png";
-      mOutputTextBrowser->append( "<img src=\"" + img + "\">" + warn );
-    }
-    else if ( rxerror.indexIn( line ) != -1 )
-    {
-      QString error = rxerror.cap( 1 );
-      QString img = QgsApplication::pkgDataPath() + "/themes/default/grass/grass_module_error.png";
-      mOutputTextBrowser->append( "<img src=\"" + img + "\">" + error );
-    }
-    else if ( rxend.indexIn( line ) != -1 )
-    {
-      // Do nothing
-    }
-    else
-    {
-      mOutputTextBrowser->append( "<pre>" + line + "</pre>" );
+      mOutputTextBrowser->append( html );
     }
   }
 }

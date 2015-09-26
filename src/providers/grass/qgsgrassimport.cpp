@@ -48,16 +48,81 @@ QgsGrassImportIcon::QgsGrassImportIcon()
 {
 }
 
+//------------------------------ QgsGrassImportProcess ------------------------------------
+QgsGrassImportProgress::QgsGrassImportProgress( QProcess *process, QObject *parent )
+    : QObject( parent )
+    , mProcess( process )
+    , mProgressMin( 0 )
+    , mProgressMax( 0 )
+    , mProgressValue( 0 )
+{
+  connect( mProcess, SIGNAL( readyReadStandardError() ), SLOT( onReadyReadStandardError() ) );
+}
+
+void QgsGrassImportProgress::setProcess( QProcess *process )
+{
+  mProcess = process;
+  connect( mProcess, SIGNAL( readyReadStandardError() ), SLOT( onReadyReadStandardError() ) );
+}
+
+void QgsGrassImportProgress::onReadyReadStandardError()
+{
+  QgsDebugMsg( "entered" );
+  if ( mProcess )
+  {
+    // TODO: parse better progress output
+    QString output = QString::fromLocal8Bit( mProcess->readAllStandardError() );
+    Q_FOREACH ( QString line, output.split( "\n" ) )
+    {
+      QgsDebugMsg( "line = '" + line + "'" );
+      QString text, html;
+      int percent;
+      QgsGrass::ModuleOutput type =  QgsGrass::parseModuleOutput( line, text, html, percent );
+      if ( type == QgsGrass::OutputPercent )
+      {
+        mProgressMin = 0;
+        mProgressMax = 100;
+        mProgressValue = percent;
+        emit progressChanged( html, mProgressHtml, mProgressMin, mProgressMax, mProgressValue );
+      }
+      else if ( type == QgsGrass::OutputMessage || type == QgsGrass::OutputWarning || type == QgsGrass::OutputError )
+      {
+        mProgressHtml += html;
+        QgsDebugMsg( "text = " + text );
+        emit progressChanged( html, mProgressHtml, mProgressMin, mProgressMax, mProgressValue );
+      }
+    }
+  }
+}
+
+void QgsGrassImportProgress::append( const QString & html )
+{
+  mProgressHtml += html;
+  emit progressChanged( html, mProgressHtml, mProgressMin, mProgressMax, mProgressValue );
+}
+
+void QgsGrassImportProgress::setRange( int min, int max )
+{
+  mProgressMin = min;
+  mProgressMax = max;
+  mProgressValue = min;
+  emit progressChanged( "", mProgressHtml, mProgressMin, mProgressMax, mProgressValue );
+}
+
+void QgsGrassImportProgress::setValue( int value )
+{
+  mProgressValue = value;
+  emit progressChanged( "", mProgressHtml, mProgressMin, mProgressMax, mProgressValue );
+}
+
 //------------------------------ QgsGrassImport ------------------------------------
 QgsGrassImport::QgsGrassImport( QgsGrassObject grassObject )
     : QObject()
     , mGrassObject( grassObject )
     , mCanceled( false )
     , mProcess( 0 )
+    , mProgress( 0 )
     , mFutureWatcher( 0 )
-    , mProgressMin( 0 )
-    , mProgressMax( 0 )
-    , mProgressValue( 0 )
 {
   // QMovie used by QgsAnimatedIcon is using QTimer which cannot be start from another thread
   // (it works on Linux however) so we cannot start it connecting from QgsGrassImportItem and
@@ -125,28 +190,6 @@ void QgsGrassImport::cancel()
   mCanceled = true;
 }
 
-void QgsGrassImport::emitProgressChanged()
-{
-  emit progressChanged( mProgressHtml + mProgressTmpHtml, mProgressMin, mProgressMax, mProgressValue );
-
-}
-
-void QgsGrassImport::onReadyReadStandardError()
-{
-  if ( mProcess )
-  {
-    // TODO: should be locked? Lock does not help anyway.
-    // TODO: parse better progress output
-    mProgressHtml += QString( mProcess->readAllStandardError() ).replace( "\n", "<br>" );
-    emitProgressChanged();
-  }
-}
-
-void QgsGrassImport::addProgressRow( QString html )
-{
-  mProgressHtml += html + "<br>";
-}
-
 //------------------------------ QgsGrassRasterImport ------------------------------------
 QgsGrassRasterImport::QgsGrassRasterImport( QgsRasterPipe* pipe, const QgsGrassObject& grassObject,
     const QgsRectangle &extent, int xSize, int ySize )
@@ -196,8 +239,6 @@ bool QgsGrassRasterImport::import()
   for ( int band = 1; band <= provider->bandCount(); band++ )
   {
     QgsDebugMsg( QString( "band = %1" ).arg( band ) );
-    addProgressRow( tr( "Writing band %1/%2" ).arg( band ).arg( provider->bandCount() ) );
-    emitProgressChanged();
     int colorInterpretation = provider->colorInterpretation( band );
     if ( colorInterpretation ==  QgsRaster::RedBand )
     {
@@ -265,6 +306,15 @@ bool QgsGrassRasterImport::import()
       setError( e.what() );
       return false;
     }
+    if ( !mProgress )
+    {
+      mProgress = new QgsGrassImportProgress( mProcess, this );
+    }
+    else
+    {
+      mProgress->setProcess( mProcess );
+    }
+    mProgress->append( tr( "Writing band %1/%2" ).arg( band ).arg( provider->bandCount() ) );
 
     QDataStream outStream( mProcess );
 
@@ -292,13 +342,13 @@ bool QgsGrassRasterImport::import()
     int iterRows = 0;
     QgsRasterBlock* block = 0;
     mProcess->setReadChannel( QProcess::StandardOutput );
-    mProgressMax = mYSize;
+    mProgress->setRange( 0, mYSize - 1 );
     while ( iter.readNextRasterPart( band, iterCols, iterRows, &block, iterLeft, iterTop ) )
     {
       for ( int row = 0; row < iterRows; row++ )
       {
-        mProgressValue = iterTop + row;
-        emitProgressChanged();
+        mProgress->setValue( iterTop + row );
+
         if ( !block->convert( qgis_out_type ) )
         {
           setError( tr( "Cannot convert block (%1) to data type %2" ).arg( block->toString() ).arg( qgis_out_type ) );
@@ -385,7 +435,6 @@ bool QgsGrassRasterImport::import()
     if ( mProcess->exitStatus() != QProcess::NormalExit )
     {
       setError( mProcess->errorString() );
-      delete mProcess;
       mProcess = 0;
       return false;
     }
@@ -528,8 +577,7 @@ bool QgsGrassVectorImport::import()
     setError( e.what() );
     return false;
   }
-  // TODO: connecting readyReadStandardError() is causing hangs or crashes
-  //connect(mProcess, SIGNAL(readyReadStandardError()), this, SLOT(onReadyReadStandardError()));
+  mProgress = new QgsGrassImportProgress( mProcess, this );
 
   QDataStream outStream( mProcess );
   mProcess->setReadChannel( QProcess::StandardOutput );
@@ -542,10 +590,10 @@ bool QgsGrassVectorImport::import()
 
   QgsFeatureIterator iterator = mProvider->getFeatures();
   QgsFeature feature;
-  mProgressMax = mProvider->featureCount();
+  mProgress->setRange( 1, mProvider->featureCount() );
+  mProgress->append( tr( "Writing features" ) );
   for ( int i = 0; i < ( isPolygon ? 2 : 1 ); i++ ) // two cycles with polygons
   {
-    addProgressRow( tr( "Writing features" ) );
     if ( i > 0 ) // second run for polygons
     {
       //iterator.rewind(); // rewind does not work
@@ -555,9 +603,7 @@ bool QgsGrassVectorImport::import()
     int count = 0;
     while ( iterator.nextFeature( feature ) )
     {
-      mProgressTmpHtml = tr( "Feature %1/%2" ).arg( count + 1 ).arg( mProgressMax );
-      mProgressValue = count + 1;
-      emitProgressChanged();
+      mProgress->setValue( count + 1 );
       if ( !feature.isValid() )
       {
         continue;
@@ -603,7 +649,6 @@ bool QgsGrassVectorImport::import()
     outStream >> result;
 #endif
   }
-
   iterator.close();
 
   // Close write channel before waiting for response to avoid stdin buffer problem on Windows
