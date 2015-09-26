@@ -975,6 +975,7 @@ QStringList QgsGrassModuleInput::currentLayerCodes()
   {
     Q_FOREACH ( QString type, currentGeometryTypeNames() )
     {
+      type.replace( "area", "polygon" );
       list << QString( "%1_%2" ).arg( currentLayer()->number() ).arg( type );
     }
   }
@@ -1015,7 +1016,8 @@ void QgsGrassModuleInput::onChanged( const QString & text )
         foreach ( QgsGrassVectorLayer *layer, mVector->layers() )
         {
           QgsDebugMsg( QString( "layer->number() = %1 layer.type() = %2 mGeometryTypeMask = %3" ).arg( layer->number() ).arg( layer->type() ).arg( mGeometryTypeMask ) );
-          if ( layer->type() & mGeometryTypeMask )
+          // TODO: does it make sense to add layer 0, i.e. no layer?
+          if ( layer->number() > 0 && layer->type() & mGeometryTypeMask )
           {
             mLayers.append( layer );
           }

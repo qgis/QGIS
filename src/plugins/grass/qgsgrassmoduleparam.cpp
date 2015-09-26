@@ -1197,7 +1197,6 @@ QgsGrassModuleSelection::QgsGrassModuleSelection(
 
   QDomNode promptNode = gnode.namedItem( "gisprompt" );
   QDomElement promptElem = promptNode.toElement();
-  QString element = promptElem.attribute( "element" );
 
   mLayerId = qdesc.attribute( "layerid" );
 
@@ -1213,11 +1212,9 @@ QgsGrassModuleSelection::QgsGrassModuleSelection(
 
   QHBoxLayout *l = new QHBoxLayout( this );
   mLineEdit = new QLineEdit( this );
-//mLineEdit->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
   l->addWidget( mLineEdit );
 
   mModeComboBox = new QComboBox( this );
-  //mComboBox->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
   mModeComboBox->setSizeAdjustPolicy( QComboBox::AdjustToContents );
   mModeComboBox->addItem( tr( "Manual entry" ), Manual );
   connect( mModeComboBox, SIGNAL( currentIndexChanged( int ) ), SLOT( onModeChanged() ) );
