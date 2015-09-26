@@ -84,7 +84,7 @@ class GUI_EXPORT QgsAuthCertInfo : public QWidget, private Ui::QgsAuthCertInfo
 
     bool populateCertChain();
 
-    void setCertHeirarchy();
+    void setCertHierarchy();
 
     void updateCurrentCertInfo( int chainindx );
 

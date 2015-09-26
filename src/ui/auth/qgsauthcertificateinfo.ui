@@ -36,7 +36,7 @@
     <number>6</number>
    </property>
    <item>
-    <widget class="QGroupBox" name="grpbxHeirarchy">
+    <widget class="QGroupBox" name="grpbxHierarchy">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
        <horstretch>0</horstretch>
@@ -44,7 +44,7 @@
       </sizepolicy>
      </property>
      <property name="title">
-      <string>Certificate Heirarchy</string>
+      <string>Certificate Hierarchy</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_4">
       <property name="leftMargin">
@@ -60,7 +60,7 @@
        <number>3</number>
       </property>
       <item>
-       <widget class="QTreeWidget" name="treeHeirarchy">
+       <widget class="QTreeWidget" name="treeHierarchy">
         <property name="minimumSize">
          <size>
           <width>600</width>

@@ -69,9 +69,9 @@ QgsAuthCertInfo::QgsAuthCertInfo( QSslCertificate cert,
 
   lblError->setHidden( true );
 
-  treeHeirarchy->setRootIsDecorated( false );
+  treeHierarchy->setRootIsDecorated( false );
 
-  connect( treeHeirarchy, SIGNAL( currentItemChanged( QTreeWidgetItem *, QTreeWidgetItem * ) ),
+  connect( treeHierarchy, SIGNAL( currentItemChanged( QTreeWidgetItem *, QTreeWidgetItem * ) ),
            this, SLOT( currentCertItemChanged( QTreeWidgetItem*, QTreeWidgetItem* ) ) );
 
   mCaCertsCache = QgsAuthManager::instance()->getCaCertsCache();
@@ -91,7 +91,7 @@ QgsAuthCertInfo::QgsAuthCertInfo( QSslCertificate cert,
   if ( res )
     res = populateCertChain();
   if ( res )
-    setCertHeirarchy();
+    setCertHierarchy();
 
   connect( cmbbxTrust, SIGNAL( currentIndexChanged( int ) ),
            this, SLOT( currentPolicyIndexChanged( int ) ) );
@@ -119,7 +119,7 @@ void QgsAuthCertInfo::currentCertItemChanged( QTreeWidgetItem *current, QTreeWid
 void QgsAuthCertInfo::updateCurrentCert( QTreeWidgetItem *item )
 {
   if ( !item )
-    item = treeHeirarchy->currentItem();
+    item = treeHierarchy->currentItem();
   if ( !item )
     return;
 
@@ -210,7 +210,7 @@ bool QgsAuthCertInfo::populateCertChain()
   return true;
 }
 
-void QgsAuthCertInfo::setCertHeirarchy()
+void QgsAuthCertInfo::setCertHierarchy()
 {
   QListIterator<QSslCertificate> it( mQCertChain );
   it.toBack();
@@ -245,7 +245,7 @@ void QgsAuthCertInfo::setCertHeirarchy()
 
     if ( !previtem )
     {
-      item = new QTreeWidgetItem( treeHeirarchy, QStringList() << cert_source );
+      item = new QTreeWidgetItem( treeHierarchy, QStringList() << cert_source );
     }
     else
     {
@@ -267,11 +267,11 @@ void QgsAuthCertInfo::setCertHeirarchy()
 
     item->setFirstColumnSpanned( true );
     if ( !previtem )
-      treeHeirarchy->addTopLevelItem( item );
+      treeHierarchy->addTopLevelItem( item );
     previtem = item;
   }
-  treeHeirarchy->setCurrentItem( item, 0, QItemSelectionModel::ClearAndSelect );
-  treeHeirarchy->expandAll();
+  treeHierarchy->setCurrentItem( item, 0, QItemSelectionModel::ClearAndSelect );
+  treeHierarchy->expandAll();
 }
 
 void QgsAuthCertInfo::updateCurrentCertInfo( int chainindx )
@@ -857,7 +857,7 @@ void QgsAuthCertInfo::decorateCertTreeItem( const QSslCertificate &cert,
 {
   if ( !item )
   {
-    item = treeHeirarchy->currentItem();
+    item = treeHierarchy->currentItem();
   }
   if ( !item )
   {

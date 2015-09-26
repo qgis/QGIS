@@ -1625,7 +1625,7 @@ const QPair<QSslCertificate, QSslKey> QgsAuthManager::getCertIdentityBundle( con
                       QSsl::Rsa, QSsl::Pem, QSsl::PrivateKey );
       if ( key.isNull() )
       {
-        const char* err = QT_TR_NOOP( "Retieve certificate identity bundle: FAILED to create private key" );
+        const char* err = QT_TR_NOOP( "Retrieve certificate identity bundle: FAILED to create private key" );
         QgsDebugMsg( err );
         emit messageOut( tr( err ), authManTag(), WARNING );
         return bundle;
@@ -1633,7 +1633,7 @@ const QPair<QSslCertificate, QSslKey> QgsAuthManager::getCertIdentityBundle( con
       cert = QSslCertificate( query.value( 1 ).toByteArray(), QSsl::Pem );
       if ( cert.isNull() )
       {
-        const char* err = QT_TR_NOOP( "Retieve certificate identity bundle: FAILED to create certificate" );
+        const char* err = QT_TR_NOOP( "Retrieve certificate identity bundle: FAILED to create certificate" );
         QgsDebugMsg( err );
         emit messageOut( tr( err ), authManTag(), WARNING );
         return bundle;

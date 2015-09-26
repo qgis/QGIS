@@ -98,7 +98,7 @@
            <string notr="true">color: rgb(128, 128, 128);</string>
           </property>
           <property name="text">
-           <string>Import(s) can contain mutiple certificates</string>
+           <string>Import(s) can contain multiple certificates</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
