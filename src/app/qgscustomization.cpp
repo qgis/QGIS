@@ -576,7 +576,7 @@ void QgsCustomization::createTreeItemDocks()
   {
     if ( obj->inherits( "QDockWidget" ) )
     {
-      QDockWidget* dw = qobject_cast<QDockWidget*> ( obj );
+      QDockWidget* dw = qobject_cast<QDockWidget*>( obj );
       QStringList dwstrs;
       dwstrs << dw->objectName() << dw->windowTitle();
       QTreeWidgetItem* dwItem = new QTreeWidgetItem( topItem, dwstrs );

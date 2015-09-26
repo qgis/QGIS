@@ -58,7 +58,7 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   connect( btnLoadAll, SIGNAL( pressed() ), this, SLOT( loadAllValues() ) );
   connect( btnLoadSample, SIGNAL( pressed() ), this, SLOT( loadSampleValues() ) );
 
-  Q_FOREACH( QPushButton* button, mOperatorsGroupBox->findChildren<QPushButton *>() )
+  Q_FOREACH ( QPushButton* button, mOperatorsGroupBox->findChildren<QPushButton *>() )
   {
     connect( button, SIGNAL( pressed() ), this, SLOT( operatorButtonClicked() ) );
   }
@@ -138,7 +138,7 @@ void QgsExpressionBuilderWidget::currentChanged( const QModelIndex &index, const
   }
 
   mLoadGroupBox->setVisible( item->getItemType() == QgsExpressionItem::Field && mLayer );
-  mValueGroupBox->setVisible( ( item->getItemType() == QgsExpressionItem::Field && mLayer ) || mValuesListView->model()->rowCount() > 0 );
+  mValueGroupBox->setVisible(( item->getItemType() == QgsExpressionItem::Field && mLayer ) || mValuesListView->model()->rowCount() > 0 );
 
   // Show the help for the current item.
   QString help = loadFunctionHelp( item );
@@ -193,7 +193,7 @@ void QgsExpressionBuilderWidget::updateFunctionFileList( QString path )
   dir.setNameFilters( QStringList() << "*.py" );
   QStringList files = dir.entryList( QDir::Files );
   cmbFileNames->clear();
-  Q_FOREACH( const QString& name, files )
+  Q_FOREACH ( const QString& name, files )
   {
     QFileInfo info( mFunctionsPath + QDir::separator() + name );
     if ( info.baseName() == "__init__" ) continue;
@@ -297,7 +297,7 @@ void QgsExpressionBuilderWidget::loadFieldNames( const QgsFields& fields )
 void QgsExpressionBuilderWidget::loadFieldsAndValues( const QMap<QString, QStringList> &fieldValues )
 {
   QgsFields fields;
-  Q_FOREACH( const QString& fieldName, fieldValues.keys() )
+  Q_FOREACH ( const QString& fieldName, fieldValues.keys() )
   {
     fields.append( QgsField( fieldName ) );
   }
@@ -322,7 +322,7 @@ void QgsExpressionBuilderWidget::fillFieldValues( const QString& fieldName, int 
   QList<QVariant> values;
   QStringList strValues;
   mLayer->uniqueValues( fieldIndex, values, countLimit );
-  Q_FOREACH( const QVariant& value, values )
+  Q_FOREACH ( const QVariant& value, values )
   {
     QString strValue;
     if ( value.isNull() )
@@ -415,7 +415,7 @@ void QgsExpressionBuilderWidget::loadRecent( QString key )
   QSettings settings;
   QString location = QString( "/expressions/recent/%1" ).arg( key );
   QStringList expressions = settings.value( location ).toStringList();
-  Q_FOREACH( const QString& expression, expressions )
+  Q_FOREACH ( const QString& expression, expressions )
   {
     this->registerItem( name, expression, expression, expression );
   }
@@ -596,7 +596,7 @@ QString QgsExpressionBuilderWidget::formatPreviewString( const QString& previewS
 void QgsExpressionBuilderWidget::loadExpressionContext()
 {
   QStringList variableNames = mExpressionContext.filteredVariableNames();
-  Q_FOREACH( const QString& variable, variableNames )
+  Q_FOREACH ( const QString& variable, variableNames )
   {
     registerItem( "Variables", variable, " @" + variable + " ",
                   QgsExpression::variableHelpText( variable, true, mExpressionContext.variable( variable ) ),
@@ -606,7 +606,7 @@ void QgsExpressionBuilderWidget::loadExpressionContext()
 
   // Load the functions from the expression context
   QStringList contextFunctions = mExpressionContext.functionNames();
-  Q_FOREACH( const QString& functionName, contextFunctions )
+  Q_FOREACH ( const QString& functionName, contextFunctions )
   {
     QgsExpression::Function* func = mExpressionContext.function( functionName );
     QString name = func->name();

@@ -25,7 +25,7 @@ QgsComposerImageExportOptionsDialog::QgsComposerImageExportOptionsDialog( QWidge
 {
   setupUi( this );
 
-  connect( mClipToContentGroupBox, SIGNAL(toggled(bool)), this, SLOT(clipToContentsToggled(bool)));
+  connect( mClipToContentGroupBox, SIGNAL( toggled( bool ) ), this, SLOT( clipToContentsToggled( bool ) ) );
 
   QSettings settings;
   restoreGeometry( settings.value( "/Windows/ComposerImageExportOptionsDialog/geometry" ).toByteArray() );
@@ -37,7 +37,7 @@ QgsComposerImageExportOptionsDialog::~QgsComposerImageExportOptionsDialog()
   settings.setValue( "/Windows/ComposerImageExportOptionsDialog/geometry", saveGeometry() );
 }
 
-void QgsComposerImageExportOptionsDialog::setResolution(int resolution)
+void QgsComposerImageExportOptionsDialog::setResolution( int resolution )
 {
   mResolutionSpinBox->setValue( resolution );
 
@@ -78,7 +78,7 @@ int QgsComposerImageExportOptionsDialog::height() const
   return mHeightSpinBox->value();
 }
 
-void QgsComposerImageExportOptionsDialog::setCropToContents(bool crop)
+void QgsComposerImageExportOptionsDialog::setCropToContents( bool crop )
 {
   mClipToContentGroupBox->setChecked( crop );
 }
@@ -88,7 +88,7 @@ bool QgsComposerImageExportOptionsDialog::cropToContents() const
   return mClipToContentGroupBox->isChecked();
 }
 
-void QgsComposerImageExportOptionsDialog::getCropMargins(int& topMargin, int& rightMargin, int& bottomMargin, int& leftMargin) const
+void QgsComposerImageExportOptionsDialog::getCropMargins( int& topMargin, int& rightMargin, int& bottomMargin, int& leftMargin ) const
 {
   topMargin = mTopMarginSpinBox->value();
   rightMargin = mRightMarginSpinBox->value();
@@ -96,7 +96,7 @@ void QgsComposerImageExportOptionsDialog::getCropMargins(int& topMargin, int& ri
   leftMargin = mLeftMarginSpinBox->value();
 }
 
-void QgsComposerImageExportOptionsDialog::setCropMargins(int topMargin, int rightMargin, int bottomMargin, int leftMargin)
+void QgsComposerImageExportOptionsDialog::setCropMargins( int topMargin, int rightMargin, int bottomMargin, int leftMargin )
 {
   mTopMarginSpinBox->setValue( topMargin );
   mRightMarginSpinBox->setValue( rightMargin );
@@ -104,37 +104,37 @@ void QgsComposerImageExportOptionsDialog::setCropMargins(int topMargin, int righ
   mLeftMarginSpinBox->setValue( leftMargin );
 }
 
-void QgsComposerImageExportOptionsDialog::on_mWidthSpinBox_valueChanged(int value)
+void QgsComposerImageExportOptionsDialog::on_mWidthSpinBox_valueChanged( int value )
 {
   mHeightSpinBox->blockSignals( true );
   mResolutionSpinBox->blockSignals( true );
   mHeightSpinBox->setValue( mImageSize.height() * value / mImageSize.width() );
   mResolutionSpinBox->setValue( value * 25.4 / mImageSize.width() );
   mHeightSpinBox->blockSignals( false );
-  mResolutionSpinBox->blockSignals( false);
+  mResolutionSpinBox->blockSignals( false );
 }
 
-void QgsComposerImageExportOptionsDialog::on_mHeightSpinBox_valueChanged(int value)
+void QgsComposerImageExportOptionsDialog::on_mHeightSpinBox_valueChanged( int value )
 {
   mWidthSpinBox->blockSignals( true );
   mResolutionSpinBox->blockSignals( true );
   mWidthSpinBox->setValue( mImageSize.width() * value / mImageSize.height() );
   mResolutionSpinBox->setValue( value * 25.4 / mImageSize.height() );
   mWidthSpinBox->blockSignals( false );
-  mResolutionSpinBox->blockSignals( false);
+  mResolutionSpinBox->blockSignals( false );
 }
 
-void QgsComposerImageExportOptionsDialog::on_mResolutionSpinBox_valueChanged(int value)
+void QgsComposerImageExportOptionsDialog::on_mResolutionSpinBox_valueChanged( int value )
 {
   mWidthSpinBox->blockSignals( true );
   mHeightSpinBox->blockSignals( true );
   mWidthSpinBox->setValue( mImageSize.width() * value / 25.4 );
   mHeightSpinBox->setValue( mImageSize.height() * value / 25.4 );
   mWidthSpinBox->blockSignals( false );
-  mHeightSpinBox->blockSignals( false);
+  mHeightSpinBox->blockSignals( false );
 }
 
-void QgsComposerImageExportOptionsDialog::clipToContentsToggled(bool state)
+void QgsComposerImageExportOptionsDialog::clipToContentsToggled( bool state )
 {
   mWidthSpinBox->setEnabled( !state );
   mHeightSpinBox->setEnabled( !state );

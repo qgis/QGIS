@@ -1,4 +1,4 @@
-from qgis.utils import  iface
+from qgis.utils import iface
 from PyQt4 import QtGui
 from processing.core.Processing import Processing
 from processing.gui.MessageDialog import MessageDialog
@@ -6,7 +6,8 @@ from processing.gui.AlgorithmDialog import AlgorithmDialog
 
 algorithmsToolbar = None
 
-def addAlgorithmEntry(algname, menuName, submenuName, actionText = None, icon = None, addButton = False):
+
+def addAlgorithmEntry(algname, menuName, submenuName, actionText=None, icon=None, addButton=False):
     alg = Processing.getAlgorithm(algname)
     if alg is None:
         return
@@ -30,7 +31,7 @@ def _executeAlgorithm(alg):
         dlg.setTitle(tr('Missing dependency'))
         dlg.setMessage(
             tr('<h3>Missing dependency. This algorithm cannot '
-                    'be run :-( </h3>\n%s') % message)
+               'be run :-( </h3>\n%s') % message)
         dlg.exec_()
         return
     alg = alg.getCopy()
@@ -51,11 +52,10 @@ def _executeAlgorithm(alg):
 
 def getMenu(name, parent):
     menus = [c for c in parent.children() if isinstance(c, QtGui.QMenu)]
-    menusDict = {m.title():m for m in menus}
+    menusDict = {m.title(): m for m in menus}
     if name in menusDict:
         return menusDict[name]
     else:
         menu = QtGui.QMenu(name, parent)
         parent.addMenu(menu)
         return menu
-

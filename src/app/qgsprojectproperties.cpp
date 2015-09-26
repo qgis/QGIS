@@ -509,7 +509,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   {
     if ( QgsMapLayer::VectorLayer == mapLayer->type() )
     {
-      vectorLayers.append( qobject_cast<QgsVectorLayer*> ( mapLayer ) );
+      vectorLayers.append( qobject_cast<QgsVectorLayer*>( mapLayer ) );
     }
   }
   mRelationManagerDlg->setLayers( vectorLayers );

@@ -16,9 +16,9 @@ class GdalAlgorithmDialog(AlgorithmDialog):
         self.setMainWidget()
 
         cornerWidget = QWidget()
-        layout = QVBoxLayout();
-        layout.setContentsMargins(0,0,0,5);
-        self.tabWidget.setStyleSheet("QTabBar::tab { height: 30px; }");
+        layout = QVBoxLayout()
+        layout.setContentsMargins(0, 0, 0, 5)
+        self.tabWidget.setStyleSheet("QTabBar::tab { height: 30px; }")
         runAsBatchButton = QPushButton("Run as batch process...")
         runAsBatchButton.clicked.connect(self.runAsBatch)
         layout.addWidget(runAsBatchButton)

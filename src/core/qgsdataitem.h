@@ -331,15 +331,15 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
 
   protected:
 
-    /** the provider key */
+    /** The provider key */
     QString mProviderKey;
-    /** the URI */
+    /** The URI */
     QString mUri;
-    /** the layer type */
+    /** The layer type */
     LayerType mLayerType;
-    /** the list of supported CRS */
+    /** The list of supported CRS */
     QStringList mSupportedCRS;
-    /** the list of supported formats */
+    /** The list of supported formats */
     QStringList mSupportFormats;
 
   public:
@@ -350,7 +350,7 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
     static const QIcon &iconRaster();
     static const QIcon &iconDefault();
 
-    /** returns the layer name */
+    /** Returns the layer name */
     virtual QString layerName() const { return name(); }
 };
 

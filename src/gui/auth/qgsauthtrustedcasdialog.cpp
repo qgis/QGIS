@@ -28,7 +28,7 @@
 
 
 QgsAuthTrustedCAsDialog::QgsAuthTrustedCAsDialog( QWidget *parent,
-                                                  QList<QSslCertificate> trustedCAs )
+    QList<QSslCertificate> trustedCAs )
     : QDialog( parent )
     , mTrustedCAs( trustedCAs )
     , mAuthNotifyLayout( 0 )

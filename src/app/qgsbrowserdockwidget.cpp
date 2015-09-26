@@ -203,7 +203,7 @@ class QgsBrowserTreeFilterProxyModel : public QSortFilterProxyModel
       // also look into the comment column
       QModelIndex commentIndex = mModel->index( sourceRow, 1, sourceParent );
       return filterAcceptsItem( sourceIndex ) || filterAcceptsAncestor( sourceIndex ) || filterAcceptsDescendant( sourceIndex ) ||
-        filterAcceptsItem( commentIndex ) || filterAcceptsAncestor( commentIndex ) || filterAcceptsDescendant( commentIndex );
+             filterAcceptsItem( commentIndex ) || filterAcceptsAncestor( commentIndex ) || filterAcceptsDescendant( commentIndex );
     }
 
     // returns true if at least one ancestor is accepted by filter

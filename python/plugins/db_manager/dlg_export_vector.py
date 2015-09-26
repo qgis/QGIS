@@ -68,7 +68,7 @@ class DlgExportVector(QDialog, Ui_Dialog):
     def chooseOutputFile(self):
         # get last used dir
         settings = QSettings()
-        lastUsedDir = settings.value( self.lastUsedVectorDirSettingsKey, "." );
+        lastUsedDir = settings.value(self.lastUsedVectorDirSettingsKey, ".")
 
         # get selected filter
         selectedFilter = self.cboFileFormat.itemData(self.cboFileFormat.currentIndex())
@@ -80,7 +80,7 @@ class DlgExportVector(QDialog, Ui_Dialog):
             return
 
         # store the last used dir
-        settings.setValue( self.lastUsedVectorDirSettingsKey, QFileInfo(filename).filePath() )
+        settings.setValue(self.lastUsedVectorDirSettingsKey, QFileInfo(filename).filePath())
 
         self.editOutputFile.setText(filename)
 
@@ -103,13 +103,12 @@ class DlgExportVector(QDialog, Ui_Dialog):
 
         # set the last used filter
         settings = QSettings()
-        filt = settings.value( self.lastUsedVectorFilterSettingsKey, "ESRI Shapefile" );
+        filt = settings.value(self.lastUsedVectorFilterSettingsKey, "ESRI Shapefile")
 
         idx = self.cboFileFormat.findText(filt)
         if idx < 0:
             idx = 0
         self.cboFileFormat.setCurrentIndex(idx)
-
 
     def accept(self):
         # sanity checks
