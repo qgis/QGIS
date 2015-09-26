@@ -28,11 +28,6 @@ QgsUserInputDockWidget::QgsUserInputDockWidget( QWidget *parent )
   w->setLayout( mLayout );
   setWidget( w );
 
-  QPalette pal = palette();
-  pal.setColor( QPalette::Background, QColor( 231, 245, 254 ) );
-  setPalette( pal );
-  setAutoFillBackground( true );
-
   connect( this, SIGNAL( dockLocationChanged( Qt::DockWidgetArea ) ), this, SLOT( areaChanged( Qt::DockWidgetArea ) ) );
   connect( this, SIGNAL( topLevelChanged( bool ) ), this, SLOT( floatingChanged( bool ) ) );
   hide();
