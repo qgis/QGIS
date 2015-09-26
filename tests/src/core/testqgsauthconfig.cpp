@@ -19,6 +19,7 @@
 #include <QStringList>
 
 #include "qgsapplication.h"
+#include "qgsauthcrypto.h"
 #include "qgsauthconfig.h"
 
 /** \ingroup UnitTests
@@ -50,6 +51,8 @@ void TestQgsAuthConfig::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
+  if ( QgsAuthCrypto::isDisabled() )
+    QSKIP( "QCA's qca-ossl plugin is missing, skipping test case", SkipAll );
 }
 
 void TestQgsAuthConfig::cleanupTestCase()

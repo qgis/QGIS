@@ -82,7 +82,8 @@ void TestQgsAuthCrypto::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
-  QVERIFY2( !QgsAuthCrypto::isDisabled(), "QCA's qca-ossl plugin is missing, skipping test" );
+  if ( QgsAuthCrypto::isDisabled() )
+    QSKIP( "QCA's qca-ossl plugin is missing, skipping test case", SkipAll );
 }
 
 void TestQgsAuthCrypto::cleanupTestCase()
