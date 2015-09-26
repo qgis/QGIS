@@ -588,9 +588,11 @@ bool QgsGrassVectorImport::import()
 
   outStream << mProvider->fields();
 
+  qint32 featureCount = mProvider->featureCount();
+  outStream << featureCount;
+
   QgsFeatureIterator iterator = mProvider->getFeatures();
   QgsFeature feature;
-  mProgress->setRange( 1, mProvider->featureCount() );
   mProgress->append( tr( "Writing features" ) );
   for ( int i = 0; i < ( isPolygon ? 2 : 1 ); i++ ) // two cycles with polygons
   {
@@ -600,10 +602,13 @@ bool QgsGrassVectorImport::import()
       iterator = mProvider->getFeatures();
     }
     QgsDebugMsg( "send features" );
+    // Better to get real progress from module (without buffer)
+#if 0
+    mProgress->setRange( 1, featureCount );
+#endif
     int count = 0;
     while ( iterator.nextFeature( feature ) )
     {
-      mProgress->setValue( count + 1 );
       if ( !feature.isValid() )
       {
         continue;
@@ -625,11 +630,26 @@ bool QgsGrassVectorImport::import()
 
 #ifndef Q_OS_WIN
       // wait until the feature is written to allow quick cancel (don't send data to buffer)
+
+      // Feedback disabled because it was sometimes hanging on Linux, for example, when importing polygons
+      // the features were written ok in the first run, but after cleaning of polygons, which takes some time
+      // it was hanging here for few seconds after each feature, but data did not arrive to the modulee anyway,
+      // QFSFileEnginePrivate::nativeRead() was hanging on fgetc()
+
+      // TODO: inspect what is happening in QProcess, if there is some buffer and how to disable it
+#if 0
       mProcess->waitForReadyRead();
       bool result;
       outStream >> result;
 #endif
+#endif
       count++;
+#if 0
+      if ( count % 100 == 0 )
+      {
+        mProgress->setValue( count );
+      }
+#endif
       // get some feedback for large datasets
       if ( count % 10000 == 0 )
       {
@@ -644,9 +664,12 @@ bool QgsGrassVectorImport::import()
     mProcess->waitForBytesWritten( -1 );
     QgsDebugMsg( "features sent" );
 #ifndef Q_OS_WIN
+#if 0
     mProcess->waitForReadyRead();
     bool result;
     outStream >> result;
+    QgsDebugMsg( "got feedback" );
+#endif
 #endif
   }
   iterator.close();
