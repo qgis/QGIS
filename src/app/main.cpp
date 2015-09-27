@@ -15,6 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifdef _MSC_VER
+#undef APP_EXPORT
+#define APP_EXPORT __declspec(dllimport)
+#endif
+
 //qt includes
 #include <QBitmap>
 #include <QDir>
@@ -382,7 +387,7 @@ void myMessageOutput( QtMsgType type, const char *msg )
   }
 }
 
-APP_EXPORT int main( int argc, char *argv[] )
+int main( int argc, char *argv[] )
 {
 #ifdef Q_OS_MACX
   // Increase file resource limits (i.e., number of allowed open files)

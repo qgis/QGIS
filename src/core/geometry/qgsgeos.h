@@ -19,7 +19,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsgeometryengine.h"
 #include "qgspointv2.h"
 #include <geos_c.h>
-#ifdef HAVE_GEOS_CPP
+#if defined(HAVE_GEOS_CPP) && !defined(HAVE_GEOS_CAPI_PRECISION_MODEL)
 #include "geosextra/geos_c_extra.h"
 #endif
 
@@ -92,7 +92,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
   private:
     mutable GEOSGeometry* mGeos;
     const GEOSPreparedGeometry* mGeosPrepared;
-#ifdef HAVE_GEOS_CPP
+#if defined(HAVE_GEOS_CPP) || defined(HAVE_GEOS_CAPI_PRECISION_MODEL)
     //precision reducer
     GEOSPrecisionModel* mPrecisionModel;
     GEOSGeometryPrecisionReducer* mPrecisionReducer;

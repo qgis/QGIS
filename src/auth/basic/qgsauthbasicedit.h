@@ -24,7 +24,7 @@
 #include "qgsauthconfig.h"
 
 
-class GUI_EXPORT QgsAuthBasicEdit : public QgsAuthMethodEdit, private Ui::QgsAuthBasicEdit
+class QgsAuthBasicEdit : public QgsAuthMethodEdit, private Ui::QgsAuthBasicEdit
 {
     Q_OBJECT
 

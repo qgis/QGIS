@@ -24,7 +24,7 @@
 //class QgsGrassProvider;
 class QgsGrassVectorMapLayer;
 
-class QgsGrassFeatureSource : public QgsAbstractFeatureSource
+class GRASS_LIB_EXPORT QgsGrassFeatureSource : public QgsAbstractFeatureSource
 {
   public:
     QgsGrassFeatureSource( const QgsGrassProvider* provider );
@@ -70,7 +70,7 @@ class QgsGrassFeatureSource : public QgsAbstractFeatureSource
 };
 
 
-class QgsGrassFeatureIterator : public QObject, public QgsAbstractFeatureIteratorFromSource<QgsGrassFeatureSource>
+class GRASS_LIB_EXPORT QgsGrassFeatureIterator : public QObject, public QgsAbstractFeatureIteratorFromSource<QgsGrassFeatureSource>
 {
     Q_OBJECT
   public:

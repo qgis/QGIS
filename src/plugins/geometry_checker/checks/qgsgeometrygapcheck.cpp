@@ -154,7 +154,7 @@ bool QgsGeometryGapCheck::mergeWithNeighbor( QgsGeometryGapCheckError* err, Chan
 {
   double maxVal = 0.;
   QgsFeature mergeFeature;
-  int mergePartIdx;
+  int mergePartIdx = -1;
 
   QgsAbstractGeometryV2* errGeometry = QgsGeomUtils::getGeomPart( err->geometry(), 0 );
 

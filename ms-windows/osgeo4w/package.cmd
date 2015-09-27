@@ -311,6 +311,10 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%-common/%PACKAGENAME
 	"apps/%PACKAGENAME%/plugins/wcsprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/wfsprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/wmsprovider.dll" ^
+	"apps/%PACKAGENAME%/plugins/basicauthmethod.dll" ^
+	"apps/%PACKAGENAME%/plugins/identcertauthmethod.dll" ^
+	"apps/%PACKAGENAME%/plugins/pkcs12authmethod.dll" ^
+	"apps/%PACKAGENAME%/plugins/pkipathsauthmethod.dll" ^
 	"apps/%PACKAGENAME%/resources/qgis.db" ^
 	"apps/%PACKAGENAME%/resources/spatialite.db" ^
 	"apps/%PACKAGENAME%/resources/srs.db" ^
@@ -366,6 +370,7 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%/%PACKAGENAME%-%VERS
 	"bin/%PACKAGENAME%-browser-bin.exe" ^
 	"bin/%PACKAGENAME%-bin.exe" ^
 	"bin/python-%PACKAGENAME%.bat.tmpl" ^
+	"apps/%PACKAGENAME%/bin/qgis_app.dll" ^
 	"apps/%PACKAGENAME%/bin/qgis.reg.tmpl" ^
 	"apps/%PACKAGENAME%/i18n/" ^
 	"apps/%PACKAGENAME%/icons/" ^
@@ -385,6 +390,8 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%/%PACKAGENAME%-%VERS
 	"apps/%PACKAGENAME%/plugins/spitplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/topolplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/zonalstatisticsplugin.dll" ^
+	"apps/%PACKAGENAME%/plugins/geometrycheckerplugin.dll" ^
+	"apps/%PACKAGENAME%/plugins/geometrysnapperplugin.dll" ^
 	"apps/%PACKAGENAME%/qgis_help.exe" ^
 	"apps/%PACKAGENAME%/qtplugins/sqldrivers/qsqlspatialite.dll" ^
 	"apps/%PACKAGENAME%/qtplugins/designer/" ^

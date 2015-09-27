@@ -24,7 +24,7 @@
 #include "qgsauthconfig.h"
 
 
-class GUI_EXPORT QgsAuthPkcs12Edit : public QgsAuthMethodEdit, private Ui::QgsAuthPkcs12Edit
+class QgsAuthPkcs12Edit : public QgsAuthMethodEdit, private Ui::QgsAuthPkcs12Edit
 {
     Q_OBJECT
 

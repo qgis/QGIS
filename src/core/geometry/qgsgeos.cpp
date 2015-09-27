@@ -116,7 +116,7 @@ class GEOSGeomScopedPtr
 
 QgsGeos::QgsGeos( const QgsAbstractGeometryV2* geometry, int precision ): QgsGeometryEngine( geometry ), mGeos( 0 ), mGeosPrepared( 0 )
 {
-#ifdef HAVE_GEOS_CPP
+#if defined(HAVE_GEOS_CPP) || defined(HAVE_GEOS_CAPI_PRECISION_MODEL)
   double prec = qPow( 10, -precision );
   mPrecisionModel = GEOSPrecisionModel_createFixed( 1.f / prec );
   mPrecisionReducer = GEOSGeometryPrecisionReducer_create( mPrecisionModel );
@@ -128,7 +128,7 @@ QgsGeos::QgsGeos( const QgsAbstractGeometryV2* geometry, int precision ): QgsGeo
 
 QgsGeos::~QgsGeos()
 {
-#ifdef HAVE_GEOS_CPP
+#if defined(HAVE_GEOS_CPP) || defined(HAVE_GEOS_CAPI_PRECISION_MODEL)
   GEOSGeom_destroy_r( geosinit.ctxt, mGeos );
   GEOSPreparedGeom_destroy_r( geosinit.ctxt, mGeosPrepared );
   GEOSGeometryPrecisionReducer_destroy( mPrecisionReducer );
@@ -138,7 +138,7 @@ QgsGeos::~QgsGeos()
 
 inline GEOSGeometry* QgsGeos::getReducedGeometry( GEOSGeometry* geom ) const
 {
-#ifdef HAVE_GEOS_CPP
+#if defined(HAVE_GEOS_CPP) || defined(HAVE_GEOS_CAPI_PRECISION_MODEL)
   //reduce precision
   GEOSGeometry* reduced = GEOSGeometryPrecisionReducer_reduce( mPrecisionReducer, geom );
   GEOSGeom_destroy_r( geosinit.ctxt, geom );
@@ -175,7 +175,7 @@ void QgsGeos::cacheGeos() const
   }
 
   GEOSGeometry* g = asGeos( mGeometry );
-#ifdef HAVE_GEOS_CPP
+#if defined(HAVE_GEOS_CPP) || defined(HAVE_GEOS_CAPI_PRECISION_MODEL)
   if ( g )
   {
     mGeos = GEOSGeometryPrecisionReducer_reduce( mPrecisionReducer, g );

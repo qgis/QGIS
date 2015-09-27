@@ -41,6 +41,7 @@ Build-Depends:
 #sid stretch jessie wheezy precise saucy trusty utopic vivid# python-qt4 (>= 4.1.0), python-qt4-dev,
 #sid stretch jessie# pyqt4.qsci-dev,
 #sid stretch jessie trusty utopic vivid# python-pyspatialite,
+#sid stretch# dh-python,
  python-sip (>= 4.5.0),
  python-sip-dev (>= 4.5.0),
  libosgearth-dev,

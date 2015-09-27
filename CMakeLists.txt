@@ -312,8 +312,10 @@ FIND_PACKAGE(QScintilla REQUIRED)
 FIND_PACKAGE(QCA REQUIRED)
 # Check for runtime dependency of qca-ossl plugin
 # REQUIRED if unit tests are to be run from build directory
+IF(NOT MSVC)
 include(QCAMacros)
 FIND_QCAOSSL_PLUGIN_CPP(ENABLE_TESTS)
+ENDIF(NOT MSVC)
 
 # ModelTest
 SET(ENABLE_MODELTEST FALSE CACHE BOOL "Enable QT ModelTest (not for production)")
