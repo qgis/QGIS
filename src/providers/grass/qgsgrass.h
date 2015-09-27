@@ -145,6 +145,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     {
       OutputNone,
       OutputPercent,
+      OutputProgress, // number of items processed if total number is unknown
       OutputMessage,
       OutputWarning,
       OutputError
@@ -577,8 +578,8 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
      * @param input input string read from module stderr
      * @param text parsed text
      * @param html html formated parsed text, e.g. + icons
-     * @param percent progress 0-100 */
-    static ModuleOutput parseModuleOutput( const QString & input, QString &text, QString &html, int &percent );
+     * @param value percent 0-100 or progress as absolut number if total is unknown*/
+    static ModuleOutput parseModuleOutput( const QString & input, QString &text, QString &html, int &value );
 
   public slots:
     /** Close mapset and show warning if closing failed */

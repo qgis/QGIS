@@ -76,20 +76,23 @@ void QgsGrassImportProgress::onReadyReadStandardError()
     {
       QgsDebugMsg( "line = '" + line + "'" );
       QString text, html;
-      int percent;
-      QgsGrass::ModuleOutput type =  QgsGrass::parseModuleOutput( line, text, html, percent );
+      int value;
+      QgsGrass::ModuleOutput type =  QgsGrass::parseModuleOutput( line, text, html, value );
       if ( type == QgsGrass::OutputPercent )
       {
         mProgressMin = 0;
         mProgressMax = 100;
-        mProgressValue = percent;
+        mProgressValue = value;
         emit progressChanged( html, mProgressHtml, mProgressMin, mProgressMax, mProgressValue );
+      }
+      else if ( type == QgsGrass::OutputProgress )
+      {
+        html = tr( "Progress: %1" ).arg( value );
+        append( html );
       }
       else if ( type == QgsGrass::OutputMessage || type == QgsGrass::OutputWarning || type == QgsGrass::OutputError )
       {
-        mProgressHtml += html;
-        QgsDebugMsg( "text = " + text );
-        emit progressChanged( html, mProgressHtml, mProgressMin, mProgressMax, mProgressValue );
+        append( html );
       }
     }
   }
@@ -97,6 +100,11 @@ void QgsGrassImportProgress::onReadyReadStandardError()
 
 void QgsGrassImportProgress::append( const QString & html )
 {
+  QgsDebugMsg( "html = " + html );
+  if ( !mProgressHtml.isEmpty() )
+  {
+    mProgressHtml += "<br>";
+  }
   mProgressHtml += html;
   emit progressChanged( html, mProgressHtml, mProgressMin, mProgressMax, mProgressValue );
 }

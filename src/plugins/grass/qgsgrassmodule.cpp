@@ -883,11 +883,6 @@ void QgsGrassModule::readStderr()
   QgsDebugMsg( "called." );
 
   QString line;
-  QRegExp rxpercent( "GRASS_INFO_PERCENT: (\\d+)" );
-  QRegExp rxmessage( "GRASS_INFO_MESSAGE\\(\\d+,\\d+\\): (.*)" );
-  QRegExp rxwarning( "GRASS_INFO_WARNING\\(\\d+,\\d+\\): (.*)" );
-  QRegExp rxerror( "GRASS_INFO_ERROR\\(\\d+,\\d+\\): (.*)" );
-  QRegExp rxend( "GRASS_INFO_END\\(\\d+,\\d+\\)" );
 
   mProcess.setReadChannel( QProcess::StandardError );
   while ( mProcess.canReadLine() )

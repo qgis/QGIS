@@ -2648,28 +2648,44 @@ void QgsGrass::sleep( int ms )
 #endif
 }
 
-QgsGrass::ModuleOutput QgsGrass::parseModuleOutput( const QString & input, QString &text, QString &html, int &percent )
+QgsGrass::ModuleOutput QgsGrass::parseModuleOutput( const QString & input, QString &text, QString &html, int &value )
 {
+  QgsDebugMsg( "input = " + input );
+#ifdef QGISDEBUG
+  QString ascii;
+  for ( int i = 0; i < input.size(); i++ )
+  {
+    int c = input.at( i ).toAscii();
+    ascii += QString().sprintf( "%2x ", c );
+  }
+  QgsDebugMsg( "ascii = " + ascii );
+#endif
+
   QRegExp rxpercent( "GRASS_INFO_PERCENT: (\\d+)" );
   QRegExp rxmessage( "GRASS_INFO_MESSAGE\\(\\d+,\\d+\\): (.*)" );
   QRegExp rxwarning( "GRASS_INFO_WARNING\\(\\d+,\\d+\\): (.*)" );
   QRegExp rxerror( "GRASS_INFO_ERROR\\(\\d+,\\d+\\): (.*)" );
   QRegExp rxend( "GRASS_INFO_END\\(\\d+,\\d+\\)" );
+  // GRASS added G_progress() which does not suport GRASS_MESSAGE_FORMAT=gui
+  // and it is printing fprintf(stderr, "%10ld\b\b\b\b\b\b\b\b\b\b", n);
+  // Ticket created https://trac.osgeo.org/grass/ticket/2751
+  QRegExp rxprogress( " +(\\d+)\\b\\b\\b\\b\\b\\b\\b\\b\\b\\b" );
 
-
+  // We return simple messages in html non formated, monospace text should be set on widget
+  // where it is used because output may be formated assuming fixed width font
   if ( input.trimmed().isEmpty() )
   {
     return OutputNone;
   }
   else if ( rxpercent.indexIn( input ) != -1 )
   {
-    percent = rxpercent.cap( 1 ).toInt();
+    value = rxpercent.cap( 1 ).toInt();
     return OutputPercent;
   }
   else if ( rxmessage.indexIn( input ) != -1 )
   {
     text = rxmessage.cap( 1 );
-    html = "<pre>" + text + "</pre>"  ;
+    html = text;
     return OutputMessage;
   }
   else if ( rxwarning.indexIn( input ) != -1 )
@@ -2690,10 +2706,15 @@ QgsGrass::ModuleOutput QgsGrass::parseModuleOutput( const QString & input, QStri
   {
     return OutputNone;
   }
+  else if ( rxprogress.indexIn( input ) != -1 )
+  {
+    value = rxprogress.cap( 1 ).toInt();
+    return OutputProgress;
+  }
   else // some plain text which cannot be parsed
   {
     text = input;
-    html = "<pre>" + text + "</pre>";
+    html = text;
     return OutputMessage;
   }
 }
