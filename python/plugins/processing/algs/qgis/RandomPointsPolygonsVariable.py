@@ -48,17 +48,17 @@ class RandomPointsPolygonsVariable(GeoAlgorithm):
     STRATEGY = 'STRATEGY'
     OUTPUT = 'OUTPUT'
 
-    STRATEGIES = ['Points count',
-                  'Points density'
-                  ]
-
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Random points inside polygons (variable)')
         self.group, self.i18n_group = self.trAlgorithm('Vector creation tools')
+
+        self.strategies = [self.tr('Points count'),
+                           self.tr('Points density')]
+
         self.addParameter(ParameterVector(self.VECTOR,
                                           self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POLYGON]))
         self.addParameter(ParameterSelection(self.STRATEGY,
-                                             self.tr('Sampling strategy'), self.STRATEGIES, 0))
+                                             self.tr('Sampling strategy'), self.strategies, 0))
         self.addParameter(ParameterTableField(self.FIELD,
                                               self.tr('Number field'),
                                               self.VECTOR, ParameterTableField.DATA_TYPE_NUMBER))

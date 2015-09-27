@@ -43,19 +43,21 @@ class ConvexHull(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
     FIELD = 'FIELD'
     METHOD = 'METHOD'
-    METHODS = ['Create single minimum convex hull',
-               'Create convex hulls based on field']
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Convex hull')
         self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
+
+        self.methods = [self.tr('Create single minimum convex hull'),
+                        self.tr('Create convex hulls based on field')]
+
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterTableField(self.FIELD,
                                               self.tr('Field (optional, only used if creating convex hulls by classes)'),
                                               self.INPUT, optional=True))
         self.addParameter(ParameterSelection(self.METHOD,
-                                             self.tr('Method'), self.METHODS))
+                                             self.tr('Method'), self.methods))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Convex hull')))
 
     def processAlgorithm(self, progress):

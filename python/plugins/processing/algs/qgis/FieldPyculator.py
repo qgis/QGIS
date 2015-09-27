@@ -51,18 +51,22 @@ class FieldsPyculator(GeoAlgorithm):
     OUTPUT_LAYER = 'OUTPUT_LAYER'
     RESULT_VAR_NAME = 'value'
 
-    TYPE_NAMES = ['Integer', 'Float', 'String']
     TYPES = [QVariant.Int, QVariant.Double, QVariant.String]
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Advanced Python field calculator')
         self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
+
+        self.type_names = [self.tr('Integer'),
+                           self.tr('Float'),
+                           self.tr('String')]
+
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
         self.addParameter(ParameterString(self.FIELD_NAME,
                                           self.tr('Result field name'), 'NewField'))
         self.addParameter(ParameterSelection(self.FIELD_TYPE,
-                                             self.tr('Field type'), self.TYPE_NAMES))
+                                             self.tr('Field type'), self.type_names))
         self.addParameter(ParameterNumber(self.FIELD_LENGTH,
                                           self.tr('Field length'), 1, 255, 10))
         self.addParameter(ParameterNumber(self.FIELD_PRECISION,

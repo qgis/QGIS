@@ -46,18 +46,17 @@ class Grid(GeoAlgorithm):
     CRS = 'CRS'
     OUTPUT = 'OUTPUT'
 
-    TYPES = ['Rectangle (line)',
-             'Rectangle (polygon)',
-             'Diamond (polygon)',
-             'Hexagon (polygon)'
-             ]
-
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Create grid')
         self.group, self.i18n_group = self.trAlgorithm('Vector creation tools')
 
+        self.types = [self.tr('Rectangle (line)'),
+                      self.tr('Rectangle (polygon)'),
+                      self.tr('Diamond (polygon)'),
+                      self.tr('Hexagon (polygon)')]
+
         self.addParameter(ParameterSelection(self.TYPE,
-                                             self.tr('Grid type'), self.TYPES))
+                                             self.tr('Grid type'), self.types))
         self.addParameter(ParameterExtent(self.EXTENT,
                                           self.tr('Grid extent')))
         self.addParameter(ParameterNumber(self.HSPACING,
