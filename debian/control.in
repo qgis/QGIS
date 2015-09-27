@@ -23,7 +23,7 @@ Build-Depends:
  libproj-dev,
  libqt4-dev (>= 4.7.0),
  libqt4-opengl-dev,
- libqca2-dev,
+ libqca2-dev, libqca2-plugin-ossl,
  libqtwebkit-dev,
 #stretch jessie wheezy# libqwt-dev,
 #precise saucy trusty utopic vivid stretch sid# libqwt5-qt4-dev,
