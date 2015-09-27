@@ -572,7 +572,7 @@ class ParameterString(Parameter):
         Parameter.__init__(self, name, description)
         self.default = default
         self.value = None
-        self.multiline = multiline
+        self.multiline = parseBool(multiline)
         self.optional = parseBool(optional)
 
     def setValue(self, obj):
