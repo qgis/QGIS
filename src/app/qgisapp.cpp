@@ -4275,6 +4275,7 @@ void QgisApp::fileSaveAs()
     statusBar()->showMessage( tr( "Saved project to: %1" ).arg( QgsProject::instance()->fileName() ), 5000 );
     // add this to the list of recently used project files
     saveRecentProjectPath( fullPath.filePath(), settings );
+    mProjectLastModified = fullPath.lastModified();
   }
   else
   {
