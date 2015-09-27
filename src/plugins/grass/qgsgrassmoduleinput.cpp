@@ -164,11 +164,10 @@ void QgsGrassModuleInputModel::addMapset( const QString & mapset )
 {
   QgsDebugMsg( "mapset = " + mapset );
 
-
   QStandardItem *mapsetItem = new QStandardItem( mapset );
   mapsetItem->setData( mapset, MapsetRole );
   mapsetItem->setData( mapset, Qt::EditRole );
-  mapsetItem->setData( QgsGrassObject::None, TypeRole );
+  mapsetItem->setData( QgsGrassObject::Mapset, TypeRole );
   mapsetItem->setSelectable( false );
 
   refreshMapset( mapsetItem, mapset );
@@ -183,7 +182,7 @@ void QgsGrassModuleInputModel::refreshMapset( QStandardItem *mapsetItem, const Q
   {
     return;
   }
-  bool currentMapset = mapset == QgsGrass::getDefaultMapset();
+
   QList<QgsGrassObject::Type> types;
   types << QgsGrassObject::Raster << QgsGrassObject::Vector;
   foreach ( QgsGrassObject::Type type, types )
@@ -197,12 +196,6 @@ void QgsGrassModuleInputModel::refreshMapset( QStandardItem *mapsetItem, const Q
         continue;
       }
       QString mapName = map;
-      // For now, for completer popup simplicity
-      // TODO: implement tree view in popup
-      if ( !currentMapset )
-      {
-        mapName += "@" + mapset;
-      }
 
       bool found = false;
       for ( int i = 0; i < mapsetItem->rowCount(); i++ )
@@ -218,7 +211,7 @@ void QgsGrassModuleInputModel::refreshMapset( QStandardItem *mapsetItem, const Q
       {
         QgsDebugMsg( "add map : " + mapName );
         QStandardItem *mapItem = new QStandardItem( mapName );
-        mapItem->setData( mapName, Qt::EditRole );
+        mapItem->setData( mapName , Qt::EditRole );
         mapItem->setData( map, MapRole );
         mapItem->setData( mapset, MapsetRole );
         mapItem->setData( type, TypeRole );
@@ -251,10 +244,6 @@ void QgsGrassModuleInputModel::reload()
 {
   clear();
   QStringList mapsets = QgsGrass::mapsets( QgsGrass::getDefaultGisdbase(), QgsGrass::getDefaultLocation() );
-  // Put current mapset on top
-  mapsets.removeOne( QgsGrass::getDefaultMapset() );
-  mapsets.prepend( QgsGrass::getDefaultMapset() );
-
   foreach ( QString mapset, mapsets )
   {
     addMapset( mapset );
@@ -272,11 +261,32 @@ QgsGrassModuleInputModel *QgsGrassModuleInputModel::instance()
   return &sInstance;
 }
 
+QVariant QgsGrassModuleInputModel::data( const QModelIndex & index, int role ) const
+{
+  QgsDebugMsg( "entered" );
+  QVariant data = QStandardItemModel::data( index, role );
+  if ( role == Qt::DisplayRole  || role == Qt::EditRole ) // EditRole for combo
+  {
+    int type =  QStandardItemModel::data( index, QgsGrassModuleInputModel::TypeRole ).toInt();
+    if ( type == QgsGrassObject::Raster || type == QgsGrassObject::Vector )
+    {
+      QString mapset = QStandardItemModel::data( index, QgsGrassModuleInputModel::MapsetRole ).toString();
+      if ( mapset != QgsGrass::getDefaultMapset() )
+      {
+        data = data.toString() + "@" + mapset;
+      }
+    }
+  }
+  return data;
+}
+
 /**************************** QgsGrassModuleInputProxy ****************************/
-QgsGrassModuleInputProxy::QgsGrassModuleInputProxy( QgsGrassObject::Type type, QObject *parent )
+QgsGrassModuleInputProxy::QgsGrassModuleInputProxy( QgsGrassModuleInputModel *sourceModel, QgsGrassObject::Type type, QObject *parent )
     : QSortFilterProxyModel( parent )
+    , mSourceModel( sourceModel )
     , mType( type )
 {
+  setSourceModel( mSourceModel );
   setDynamicSortFilter( true );
 }
 
@@ -289,10 +299,30 @@ bool QgsGrassModuleInputProxy::filterAcceptsRow( int sourceRow, const QModelInde
   QModelIndex sourceIndex = sourceModel()->index( sourceRow, 0, sourceParent );
 
   QgsDebugMsg( QString( "mType = %1 item type = %2" ).arg( mType ).arg( sourceModel()->data( sourceIndex, QgsGrassModuleInputModel::TypeRole ).toInt() ) );
-  //return true;
   QgsGrassObject::Type itemType = ( QgsGrassObject::Type )( sourceModel()->data( sourceIndex, QgsGrassModuleInputModel::TypeRole ).toInt() );
   // TODO: filter out mapsets without given type? May be confusing.
-  return itemType == QgsGrassObject::None || mType == itemType; // None for mapsets
+  return itemType == QgsGrassObject::Mapset || mType == itemType;
+}
+
+bool QgsGrassModuleInputProxy::lessThan( const QModelIndex & left, const QModelIndex & right ) const
+{
+  Q_UNUSED( right )
+  if ( mSourceModel )
+  {
+    // keep current mapset on top
+    if ( mSourceModel->data( left, QgsGrassModuleInputModel::TypeRole ).toInt() == QgsGrassObject::Mapset )
+    {
+      if ( mSourceModel->data( left ).toString() == QgsGrass::getDefaultMapset() )
+      {
+        return true;
+      }
+      else if ( mSourceModel->data( right ).toString() == QgsGrass::getDefaultMapset() )
+      {
+        return false;
+      }
+    }
+  }
+  return QSortFilterProxyModel::lessThan( left, right );
 }
 
 /**************************** QgsGrassModuleInputTreeView ****************************/
@@ -404,6 +434,8 @@ void QgsGrassModuleInputCompleterProxy::map( const QModelIndex & parent, int lev
 }
 
 /**************************** QgsGrassModuleInputCompleter ****************************/
+// TODO: implement tree view in popup
+
 QgsGrassModuleInputCompleter::QgsGrassModuleInputCompleter( QAbstractItemModel * model, QWidget * parent )
     : QCompleter( model, parent )
 {
@@ -439,11 +471,12 @@ QgsGrassModuleInputComboBox::QgsGrassModuleInputComboBox( QgsGrassObject::Type t
   setInsertPolicy( QComboBox::NoInsert );
 
   mModel = QgsGrassModuleInputModel::instance();
-  mProxy = new QgsGrassModuleInputProxy( mType, this );
-  mProxy->setSourceModel( mModel );
+  mProxy = new QgsGrassModuleInputProxy( mModel, mType, this );
   setModel( mProxy );
 
   mTreeView = new QgsGrassModuleInputTreeView( this );
+  mTreeView->setSortingEnabled( true );
+  mTreeView->sortByColumn( 0, Qt::AscendingOrder );
   mTreeView->setSelectionMode( QAbstractItemView::SingleSelection );
   //mTreeView->setSelectionMode(QAbstractItemView::MultiSelection); // does not work
   mTreeView->viewport()->installEventFilter( this );

@@ -67,13 +67,14 @@ class QgsGrassModuleInputModel : public QStandardItemModel
     /** Get singleton instance of this class. */
     static QgsGrassModuleInputModel* instance();
 
+    QVariant data( const QModelIndex & index, int role = Qt::DisplayRole ) const override;
+
+
   public slots:
     /** Reload current mapset */
     void reload();
 
     void onDirectoryChanged( const QString & path );
-
-  signals:
 
   private:
     void addMapset( const QString & mapset );
@@ -85,7 +86,6 @@ class QgsGrassModuleInputModel : public QStandardItemModel
     // names of
     QStringList locationDirNames();
     QFileSystemWatcher *mWatcher;
-
 };
 
 // Filter maps by type
@@ -94,21 +94,17 @@ class QgsGrassModuleInputProxy : public QSortFilterProxyModel
     Q_OBJECT
 
   public:
-    explicit QgsGrassModuleInputProxy( QgsGrassObject::Type type, QObject *parent = 0 );
+    explicit QgsGrassModuleInputProxy( QgsGrassModuleInputModel *sourceModel, QgsGrassObject::Type type, QObject *parent = 0 );
     ~QgsGrassModuleInputProxy() {}
-
-  public slots:
-
-  signals:
 
   protected:
     bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
+    bool lessThan( const QModelIndex & left, const QModelIndex & right ) const override;
 
   private:
+    QgsGrassModuleInputModel *mSourceModel;
     QgsGrassObject::Type mType;
-
 };
-
 
 class QgsGrassModuleInputTreeView : public QTreeView
 {

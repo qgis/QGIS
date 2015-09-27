@@ -549,6 +549,7 @@ void QgsGrassTools::mapsetChanged()
 {
   QgsDebugMsg( "entered." );
 
+  mTabWidget->setCurrentIndex( 0 );
   closeTools();
   mRegion->mapsetChanged();
   showTabs();
