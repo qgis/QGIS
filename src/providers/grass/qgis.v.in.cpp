@@ -335,7 +335,7 @@ int main( int argc, char **argv )
     Vect_break_polygons( map, GV_BOUNDARY, NULL );
     G_message( "Removing duplicates" );
     Vect_remove_duplicates( map, GV_BOUNDARY | GV_CENTROID, NULL );
-    while ( true )
+    for ( int i = 0; i < 3; i++ )
     {
       G_message( "Breaking lines" );
       Vect_break_lines( map, GV_BOUNDARY, NULL );
