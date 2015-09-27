@@ -626,6 +626,8 @@ void QgsGrassVectorMapLayer::createTable( const QgsFields &fields, QString &erro
     {
       QgsDebugMsg( error );
     }
+    mHasTable = true;
+    mKeyColumn = 0;
   }
   QgsDebugMsg( "Table successfully created" );
 }
@@ -784,16 +786,19 @@ void QgsGrassVectorMapLayer::insertAttributes( int cat, QString &error )
 {
   QgsDebugMsg( QString( "mField = %1 cat = %2" ).arg( mField ).arg( cat ) );
 
-  QString query = QString( "INSERT INTO %1 ( %2 ) VALUES ( %3 )" ).arg( mFieldInfo->table ).arg( mFieldInfo->key ).arg( cat );
-  executeSql( query, error );
-  if ( error.isEmpty() )
+  if ( mHasTable )
   {
-    QList<QVariant> values;
-    for ( int i = 0; i < mAttributeFields.size(); i++ )
+    QString query = QString( "INSERT INTO %1 ( %2 ) VALUES ( %3 )" ).arg( mFieldInfo->table ).arg( mFieldInfo->key ).arg( cat );
+    executeSql( query, error );
+    if ( error.isEmpty() )
     {
-      values << QVariant();
+      QList<QVariant> values;
+      for ( int i = 0; i < mAttributeFields.size(); i++ )
+      {
+        values << QVariant();
+      }
+      mAttributes[cat] = values;
     }
-    mAttributes[cat] = values;
   }
 }
 

@@ -1116,6 +1116,7 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
   {
     struct line_pnts *points = Vect_new_line_struct();
     struct line_cats *cats = Vect_new_cats_struct();
+    int newCat = 0;
 
     setPoints( points, geometry );
     // TODO: get also old type if it is feature previously deleted
@@ -1130,7 +1131,6 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
         // resetting fid probably is not possible because it is stored in undo commands and used in buffer maps
 
         QgsDebugMsg( QString( "get new cat for mCidxFieldIndex = %1" ).arg( mCidxFieldIndex ) );
-        int newCat = 0;
         if ( mCidxFieldIndex == -1 )
         {
           // No features with this field yet in map
@@ -1142,6 +1142,12 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
         }
         QgsDebugMsg( QString( "newCat = %1" ).arg( newCat ) );
         Vect_cat_set( cats, mLayerField, newCat );
+        QString error;
+        mLayer->insertAttributes( newCat, error );
+        if ( !error.isEmpty() )
+        {
+          QgsGrass::warning( error );
+        }
       }
     }
     else
@@ -1203,6 +1209,18 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
             addedFeatures[fid].setGeometry( new QgsGeometry( lineString ) );
           }
           // TODO: create also centroid and add it to undo
+        }
+
+        if ( newCat > 0 )
+        {
+          if ( mLayer->hasTable() )
+          {
+            addedFeatures[fid].setAttribute( mLayer->keyColumn(), newCat );
+          }
+          else
+          {
+            addedFeatures[fid].setAttribute( 0, newCat );
+          }
         }
       }
     }
