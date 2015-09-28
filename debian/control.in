@@ -6,13 +6,13 @@ Priority: optional
 Build-Depends:
  bison,
  cmake (>= 2.8),
-#sid jessie wheezy saucy sid-oracle trusty utopic vivid# debhelper (>= 9),
+#sid stretch jessie wheezy saucy trusty utopic vivid wily# debhelper (>= 9),
 #precise# debhelper (>= 7),
  flex,
  grass-dev,
  libexpat1-dev,
  libfcgi-dev,
-#sid jessie sid-oracle trusty utopic vivid# libgdal-dev (>= 1.10.1-0~),
+#sid stretch jessie trusty utopic vivid wily# libgdal-dev (>= 1.10.1-0~),
 #precise# libgdal-dev (>= 1.9.0) | libgdal1-dev (<< 1.9.0),
 #saucy# libgdal-dev (>= 1.9.0),
 #wheezy# libgdal1-dev,
@@ -23,21 +23,23 @@ Build-Depends:
  libqt4-dev (>= 4.7.0),
  libqt4-opengl-dev,
  libqtwebkit-dev,
-#jessie wheezy# libqwt-dev,
-#sid sid-oracle precise saucy trusty utopic vivid# libqwt5-qt4-dev,
+#stretch jessie wheezy# libqwt-dev,
+#precise saucy trusty utopic vivid wily stretch sid# libqwt5-qt4-dev,
  libspatialite-dev,
  libsqlite3-dev,
  libspatialindex-dev,
  pkg-config,
  pyqt4-dev-tools,
  python-qscintilla2,
+ python-qt4 (>= 4.1.0),
+ python-qt4-dev,
 #precise saucy wheezy# python,
 #precise saucy# python-central (>= 0.5),
 #saucy wheezy# python-dev,
 #saucy# libpython2.7-dev,
-#sid jessie sid-oracle trusty utopic vivid# python-all (>= 2.6.6-3~), python-all-dev (>= 2.6.6-3~),
-#sid jessie wheezy precise saucy sid-oracle trusty utopic vivid# python-qt4 (>= 4.1.0), python-qt4-dev,
-#sid# pyqt4.qsci-dev,
+#sid stretch jessie trusty utopic vivid wily# python-all (>= 2.6.6-3~), python-all-dev (>= 2.6.6-3~),
+#sid stretch jessie# pyqt4.qsci-dev,
+#sid stretch jessie trusty utopic vivid wily# python-pyspatialite,
  python-sip (>= 4.5.0),
  python-sip-dev (>= 4.5.0),
  libosgearth-dev,
@@ -49,14 +51,14 @@ Build-Depends:
  txt2tags,
  xvfb, xauth,
  xfonts-base, xfonts-100dpi, xfonts-75dpi, xfonts-scalable,
-#sid-oracle# oracle-instantclient11.2-devel,
+#oracle# oracle-instantclient11.2-devel,
  spawn-fcgi, lighttpd, poppler-utils, locales
 Build-Conflicts: libqgis-dev, qgis-dev
-#sid jessie sid-oracle vivid#Standards-Version: 3.9.6
+#sid stretch jessie vivid wily#Standards-Version: 3.9.6
 #wheezy#Standards-Version: 3.9.3
 #precise saucy trusty utopic#Standards-Version: 3.8.4
-#sid jessie sid-oracle#X-Python-Version: >= 2.7, << 2.8
-#wheezy precise saucy trusty utopic vivid#XS-Python-Version: current
+#sid stretch jessie#X-Python-Version: >= 2.7, << 2.8
+#wheezy precise saucy trusty utopic vivid wily#XS-Python-Version: current
 Vcs-Browser: https://github.com/qgis/QGIS/
 Vcs-Git: https://github.com/qgis/QGIS.git
 Homepage: http://qgis.org/
@@ -69,7 +71,7 @@ Depends:
  qgis-providers (= ${binary:Version}),
  qgis-common (= ${source:Version})
 Recommends:
-#!sid# qgis-plugin-grass,
+#grass6# qgis-plugin-grass,
  qgis-provider-grass,
  qgis-plugin-globe,
  python-qgis
@@ -213,7 +215,7 @@ Section: libdevel
 Depends:
  grass-dev,
  libexpat1-dev,
-#sid jessie sid-oracle trusty utopic vivid# libgdal-dev (>= 1.10.1-0~),
+#sid stretch jessie trusty utopic vivid wily# libgdal-dev (>= 1.10.1-0~),
 #precise# libgdal-dev (>= 1.9.0) | libgdal1-dev (<< 1.9.0),
 #saucy# libgdal-dev (>= 1.9.0),
 #wheezy# libgdal1-dev,
@@ -251,45 +253,45 @@ Depends:
  qgis (= ${binary:Version}),
  ${shlibs:Depends},
  ${misc:Depends}
-#sid#Breaks: qgis-plugin-grass
-#sid#Replaces: qgis-plugin-grass
+#grass7#Breaks: qgis-plugin-grass
+#grass7#Replaces: qgis-plugin-grass
 Description: GRASS plugin for QGIS
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
  .
  This provider enables GRASS data access in QGIS.
 
-#!sid#Package: qgis-plugin-grass
-#!sid#Architecture: any
-#!sid#Depends:
-#!sid# qgis (= ${binary:Version}),
-#!sid# qgis-plugin-grass-common (= ${source:Version}),
-#!sid# qgis-provider-grass (= ${source:Version}),
-#!sid# ${shlibs:Depends},
-#!sid# ${misc:Depends},
-#!sid !precise# grass-core
-#precise# grass
-#!sid#Description: GRASS plugin for QGIS
-#!sid# QGIS is a Geographic Information System (GIS) which manages, analyzes and
-#!sid# display databases of geographic information.
-#!sid# .
-#!sid# This plugin enables GRASS data access in QGIS.
-#!sid#
-#!sid#Package: qgis-plugin-grass-common
-#!sid#Architecture: all
-#!sid#Depends:
-#jessie saucy trusty# python2.7,
-#wheezy precise# python,
-#!sid# ${misc:Depends}
-#!sid#Breaks: qgis-common (<< 1.5)
-#!sid#Replaces: qgis-common (<< 1.5)
-#!sid#Description: GRASS plugin for QGIS - architecture-independent data
-#!sid# QGIS is a Geographic Information System (GIS) which manages, analyzes and
-#!sid# display databases of geographic information.
-#!sid# .
-#!sid# This package contains architecture-independent supporting data files for use
-#!sid# with the QGIS GRASS plugin.
-#!sid#
+#grass6#Package: qgis-plugin-grass
+#grass6#Architecture: any
+#grass6#Depends:
+#grass6# qgis (= ${binary:Version}),
+#grass6# qgis-plugin-grass-common (= ${source:Version}),
+#grass6# qgis-provider-grass (= ${source:Version}),
+#grass6# ${shlibs:Depends},
+#grass6# ${misc:Depends},
+#grass6##!precise# grass-core (<< 7)
+#grass6##precise# grass (<< 7)
+#grass6#Description: GRASS plugin for QGIS
+#grass6# QGIS is a Geographic Information System (GIS) which manages, analyzes and
+#grass6# display databases of geographic information.
+#grass6# .
+#grass6# This plugin enables GRASS data access in QGIS.
+#grass6#
+#grass6#Package: qgis-plugin-grass-common
+#grass6#Architecture: all
+#grass6#Depends:
+#grass6##saucy trusty# python2.7,
+#grass6##precise# python,
+#grass6# ${misc:Depends}
+#grass6#Breaks: qgis-common (<< 1.5)
+#grass6#Replaces: qgis-common (<< 1.5)
+#grass6#Description: GRASS plugin for QGIS - architecture-independent data
+#grass6# QGIS is a Geographic Information System (GIS) which manages, analyzes and
+#grass6# display databases of geographic information.
+#grass6# .
+#grass6# This package contains architecture-independent supporting data files for use
+#grass6# with the QGIS GRASS plugin.
+#grass6#
 Package: qgis-plugin-globe
 Architecture: any
 Depends:
@@ -331,7 +333,7 @@ Depends:
  python-dateutil,
  python-tz,
  python-six,
-#sid jessie trusty utopic vivid sid-oracle# python-pyspatialite,
+#sid stretch jessie trusty utopic vivid wily# python-pyspatialite,
  libqgispython{QGIS_ABI},
  ${shlibs:Depends},
  ${python:Depends},
@@ -417,13 +419,13 @@ Description: QGIS API documentation
  .
  This package contains the QGIS API documentation.
 
-#sid-oracle#Package: qgis-oracle-provider
-#sid-oracle#Architecture: any
-#sid-oracle#Depends: ${shlibs:Depends}, ${misc:Depends}
-#sid-oracle#Section: contrib/database
-#sid-oracle#Description: QGIS oracle provider
-#sid-oracle# QGIS is a Geographic Information System (GIS) which manages, analyzes and
-#sid-oracle# display databases of geographic information.
-#sid-oracle# .
-#sid-oracle# This package contains the QGIS oracle provider.
-#sid-oracle#
+#oracle#Package: qgis-oracle-provider
+#oracle#Architecture: any
+#oracle#Depends: ${shlibs:Depends}, ${misc:Depends}
+#oracle#Section: contrib/database
+#oracle#Description: QGIS oracle provider
+#oracle# QGIS is a Geographic Information System (GIS) which manages, analyzes and
+#oracle# display databases of geographic information.
+#oracle# .
+#oracle# This package contains the QGIS oracle provider.
+#oracle#

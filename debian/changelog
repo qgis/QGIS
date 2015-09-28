@@ -2,8 +2,9 @@ qgis (2.8.3-1) UNRELEASED; urgency=medium
 
   * split grass provider off into a separate package.
   * disable grass plugin on sid (because of GRASS7)
+  * add ubuntu wily
 
- -- Jürgen E. Fischer <jef@norbit.de>  Tue, 25 Aug 2015 21:47:32 +0200
+ -- Jürgen E. Fischer <jef@norbit.de>  Thu, 01 Oct 2015 14:11:17 +0200
 
 qgis (2.8.3) UNRELEASED; urgency=medium
 

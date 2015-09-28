@@ -16,6 +16,7 @@ DEB_BUILD_MULTIARCH ?= $(shell dpkg-architecture -qDEB_BUILD_MULTIARCH)
 QT_PLUGIN_DIR = usr/lib/$(DEB_BUILD_MULTIARCH)/qt4/plugins
 
 DEB_TEST_TARGET ?= Experimental
+BUILDDIR ?= debian/build
 
 QGIS_VERSION=$(shell dpkg-parsechangelog | sed -ne 's/^Version: \(.*\)-.*/\1/p')
 
@@ -23,7 +24,12 @@ ifeq (,$(DISTRIBUTION))
 	DISTRIBUTION := $(shell dpkg-parsechangelog --format rfc822 | sed -ne "s/^Distribution: //p")
 endif
 
-ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"wheezy jessie precise trusty utopic vivid sid-oracle"))
+ifneq (,$(findstring -oracle,$(DISTRIBUTION)))
+	DISTRIBUTION := $(subst -oracle,,$(DISTRIBUTION))
+	WITH_ORACLE=1
+endif
+
+ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"wheezy jessie stretch precise trusty utopic vivid wily"))
 	DISTRIBUTION := sid
 endif
 
@@ -40,12 +46,12 @@ QGIS_MINOR=$(shell sed -ne 's/SET(CPACK_PACKAGE_VERSION_MINOR "\([0-9]*\)")/\1/p
 QGIS_PATCH=$(shell sed -ne 's/SET(CPACK_PACKAGE_VERSION_PATCH "\([0-9]*\)")/\1/p' CMakeLists.txt)
 QGIS_ABI=$(QGIS_MAJOR).$(QGIS_MINOR).$(QGIS_PATCH)
 GRASS=grass$(subst .,,$(shell pkg-config --modversion grass|cut -d. -f1,2))
+GRASSVER=$(subst .,,$(shell pkg-config --modversion grass|cut -d. -f1))
 
 CMAKE_OPTS := \
 	-DBUILDNAME=$(DEB_BUILD_NAME) \
 	-DCMAKE_VERBOSE_MAKEFILE=1 \
 	-DCMAKE_INSTALL_PREFIX=/usr \
-	-DGRASS_PREFIX=/usr/lib/$(GRASS) \
 	-DBINDINGS_GLOBAL_INSTALL=TRUE \
 	-DPEDANTIC=TRUE \
 	-DWITH_QSPATIALITE=TRUE \
@@ -62,7 +68,9 @@ CMAKE_OPTS := \
 	-DWITH_INTERNAL_PYGMENTS=FALSE \
 	-DWITH_INTERNAL_DATEUTIL=FALSE \
 	-DWITH_INTERNAL_PYTZ=FALSE \
-	-DWITH_INTERNAL_SIX=FALSE
+	-DWITH_INTERNAL_SIX=FALSE \
+	-DWITH_GRASS=TRUE \
+	-DGRASS_PREFIX=/usr/lib/$(GRASS)
 
 ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
 	NUMJOBS = $(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
@@ -73,11 +81,15 @@ ifneq (,$(findstring $(DISTRIBUTION),"wheezy jessie sid precise"))
 	CMAKE_OPTS += -DWITH_PYSPATIALITE=TRUE
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"sid sid-oracle"))
+ifneq (,$(findstring $(DISTRIBUTION),"sid stretch"))
 	CMAKE_OPTS += -DPOSTGRES_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libpq.so
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"jessie trusty utopic vivid sid sid-oracle"))
+ifneq (,$(findstring $(DISTRIBUTION),"sid"))
+	CMAKE_OPTS += -DGEOS_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libgeos_c.so
+endif
+
+ifneq (,$(findstring $(DISTRIBUTION),"jessie stretch trusty utopic vivid wily sid"))
 	CMAKE_OPTS += -DPYTHON_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libpython2.7.so
 endif
 
@@ -85,7 +97,7 @@ ifneq (,$(findstring -oracle,$(DISTRIBUTION)))
 	CMAKE_OPTS += -DWITH_ORACLE=TRUE
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"sid"))
+ifneq (,$(findstring $(DISTRIBUTION),"sid stretch jessie"))
 	CMAKE_OPTS += -DSPATIALINDEX_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libspatialindex.so
 endif
 
@@ -102,7 +114,7 @@ else
 	CMAKE_OPTS += -DENABLE_TESTS=TRUE
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"wheezy jessie trusty sid sid-oracle"))
+ifneq (,$(findstring $(DISTRIBUTION),"wheezy jessie stretch trusty sid"))
 CPPFLAGS := $(shell dpkg-buildflags --get CPPFLAGS)
 CFLAGS   := $(shell dpkg-buildflags --get CFLAGS) $(CPPFLAGS)
 CXXFLAGS := $(shell dpkg-buildflags --get CXXFLAGS) $(CPPFLAGS)
@@ -128,22 +140,29 @@ ifneq (,$(findstring profile,$(DEB_BUILD_OPTIONS)))
 endif
 
 # multi distribution support:
-# - remove prefixes for current distribution
-# - remove lines that exclude current distribution
-# - remove prefixes that exclude other distributions
+# - remove lines with applicable excludes
+# - remove prefixes with applicable includes
+# - remove prefixes with not applicable excludes
 # - remove remaining comments
+
+CONTROL_EXPRESSIONS = $(DISTRIBUTION) grass$(GRASSVER)
+
+ifneq (,$(WITH_ORACLE))
+	CONTROL_EXPRESSIONS += oracle
+endif
 
 define gentemplate
 $(2): $(1)
 	sed -r \
-		-e 's/^#(.* |)$(DISTRIBUTION)( .*|)#//' \
-		-e '/^#(.* |)!$(DISTRIBUTION)( .*|)#/d' \
-		-e 's/^#(.* |)![^ ]*( .*|)#//' \
+		-e '/#(.+ |)!($(subst $(eval) ,|,$(CONTROL_EXPRESSIONS)))( .+|)#/d' \
+		-e 's/#([^#]+ |)($(subst $(eval) ,|,$(CONTROL_EXPRESSIONS)))( [^#]+|)#//g' \
+		-e 's/#([^#]+ |)![^#]+( [^#]*|)#//g' \
 		-e '/^#/d' \
 		-e "s/\{DEB_BUILD_GNU_TYPE\}/$(DEB_BUILD_GNU_TYPE)/g" \
 		-e "s#\{QT_PLUGIN_DIR\}#$(QT_PLUGIN_DIR)#g" \
 		-e "s/\{QGIS_ABI\}/$(QGIS_ABI)/g" \
 		-e "s/\{GRASS\}/$(GRASS)/g" \
+		-e "s/\{GRASSVER\}/$(GRASSVER)/g" \
 		$$^ >$$@
 
 templates:: $(2)
@@ -160,7 +179,7 @@ cleantemplates:
 	$(MAKE) -f debian/rules debian/control debian/compat
 
 binary binary-arch binary-indep build build-arch build-indep clean install install-arch install-indep:
-	dh $@ --with python2 --parallel --builddirectory=debian/build
+	dh $@ --with python2 --parallel --builddirectory=$(BUILDDIR)
 
 override_dh_clean: cleantemplates
 	dh_clean
@@ -169,7 +188,7 @@ override_dh_clean: cleantemplates
 	-$(RM) $(CURDIR)/src/core/qgscontexthelp_texts.cpp
 	-$(RM) $(CURDIR)/src/core/qgsexpression_texts.cpp
 
-	-$(RM) -r $(CURDIR)/debian/build/
+	-$(RM) -r $(CURDIR)/$(BUILDDIR)/
 
 override_dh_auto_configure: templates
 	dh_auto_configure -- $(CMAKE_OPTS)
@@ -181,9 +200,9 @@ override_dh_auto_test:
 	localedef -f UTF-8 -i en_US ./debian/tmp/locale/en_US.UTF-8/
 	-LOCPATH=$(CURDIR)/debian/tmp/locale/ \
 	LC_ALL=en_US.UTF-8 \
-	LD_LIBRARY_PATH=$(CURDIR)/debian/build/output/lib:$(LD_LIBRARY_PATH) \
+	LD_LIBRARY_PATH=$(CURDIR)/$(BUILDDIR)/output/lib:$(LD_LIBRARY_PATH) \
 	PATH=/usr/sbin:$(PATH) \
-	$(TESTMAKE) -C debian/build $(DEB_TEST_TARGET)
+	$(TESTMAKE) -C $(BUILDDIR) $(DEB_TEST_TARGET)
 else
 override_dh_auto_test:
 	@echo Skipping tests.
