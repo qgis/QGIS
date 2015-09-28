@@ -205,6 +205,16 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>leConfigMsg</tabstop>
+  <tabstop>btnConfigMsgClear</tabstop>
+  <tabstop>cmbConfigSelect</tabstop>
+  <tabstop>btnConfigAdd</tabstop>
+  <tabstop>leConfigMethodDesc</tabstop>
+  <tabstop>leConfigId</tabstop>
+  <tabstop>btnConfigEdit</tabstop>
+  <tabstop>btnConfigRemove</tabstop>
+ </tabstops>
  <resources>
   <include location="../../../images/images.qrc"/>
  </resources>

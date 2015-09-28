@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>340</height>
+    <height>350</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -394,6 +394,20 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>cmbIdentityTypes</tabstop>
+  <tabstop>lePkiPkcs12Bundle</tabstop>
+  <tabstop>btnPkiPkcs12Bundle</tabstop>
+  <tabstop>lePkiPkcs12KeyPass</tabstop>
+  <tabstop>chkPkiPkcs12PassShow</tabstop>
+  <tabstop>teValidation</tabstop>
+  <tabstop>btnPkiPathsCert</tabstop>
+  <tabstop>lePkiPathsCert</tabstop>
+  <tabstop>lePkiPathsKey</tabstop>
+  <tabstop>chkPkiPathsPassShow</tabstop>
+  <tabstop>btnPkiPathsKey</tabstop>
+  <tabstop>lePkiPathsKeyPass</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

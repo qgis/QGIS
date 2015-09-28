@@ -189,6 +189,13 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>leCommonName</tabstop>
+  <tabstop>btnCertInfo</tabstop>
+  <tabstop>leHost</tabstop>
+  <tabstop>grpbxSslConfig</tabstop>
+  <tabstop>treeSslConfig</tabstop>
+ </tabstops>
  <resources>
   <include location="../../../images/images.qrc"/>
  </resources>

@@ -297,6 +297,16 @@
    <header>qgsauthcerttrustpolicycombobox.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>radioImportFile</tabstop>
+  <tabstop>leImportFile</tabstop>
+  <tabstop>btnImportFile</tabstop>
+  <tabstop>radioImportText</tabstop>
+  <tabstop>teCertText</tabstop>
+  <tabstop>cmbbxTrust</tabstop>
+  <tabstop>teValidation</tabstop>
+  <tabstop>chkAllowInvalid</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
  <buttongroups>

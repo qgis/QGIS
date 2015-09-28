@@ -261,10 +261,9 @@
    <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsUnitSelectionWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsunitselectionwidget.h</header>
-   <container>1</container>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsBlendModeComboBox</class>
@@ -272,21 +271,37 @@
    <header>qgsblendmodecombobox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>qgsspinbox.h</header>
+   <class>QgsEffectDrawModeComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgseffectdrawmodecombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsUnitSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsunitselectionwidget.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsColorRampComboBox</class>
    <extends>QComboBox</extends>
    <header>qgscolorrampcombobox.h</header>
   </customwidget>
-  <customwidget>
-   <class>QgsEffectDrawModeComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgseffectdrawmodecombobox.h</header>
-  </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mSpreadSpnBx</tabstop>
+  <tabstop>mSpreadUnitWidget</tabstop>
+  <tabstop>mBlurRadiusSpnBx</tabstop>
+  <tabstop>mTranspSlider</tabstop>
+  <tabstop>mTranspSpnBx</tabstop>
+  <tabstop>radioSingleColor</tabstop>
+  <tabstop>mColorBtn</tabstop>
+  <tabstop>radioColorRamp</tabstop>
+  <tabstop>mRampComboBox</tabstop>
+  <tabstop>mButtonEditRamp</tabstop>
+  <tabstop>mInvertCheckBox</tabstop>
+  <tabstop>mBlendCmbBx</tabstop>
+  <tabstop>mDrawModeComboBox</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

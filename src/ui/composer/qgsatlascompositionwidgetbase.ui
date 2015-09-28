@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>435</width>
-    <height>596</height>
+    <height>359</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -112,7 +112,7 @@
            <x>0</x>
            <y>0</y>
            <width>431</width>
-           <height>567</height>
+           <height>330</height>
           </rect>
          </property>
          <layout class="QVBoxLayout" name="mainLayout">
@@ -345,10 +345,14 @@
   <tabstop>mAtlasFeatureFilterCheckBox</tabstop>
   <tabstop>mAtlasFeatureFilterEdit</tabstop>
   <tabstop>mAtlasFeatureFilterButton</tabstop>
+  <tabstop>mAtlasSortFeatureCheckBox</tabstop>
+  <tabstop>mAtlasSortFeatureKeyComboBox</tabstop>
+  <tabstop>mAtlasSortFeatureDirectionButton</tabstop>
   <tabstop>mOutputGroup</tabstop>
   <tabstop>mAtlasFilenamePatternEdit</tabstop>
   <tabstop>mAtlasFilenameExpressionButton</tabstop>
   <tabstop>mAtlasSingleFileCheckBox</tabstop>
+  <tabstop>scrollArea</tabstop>
  </tabstops>
  <resources>
   <include location="../../../images/images.qrc"/>

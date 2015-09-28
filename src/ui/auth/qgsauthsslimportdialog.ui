@@ -289,6 +289,17 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>radioServerImport</tabstop>
+  <tabstop>leServer</tabstop>
+  <tabstop>spinbxPort</tabstop>
+  <tabstop>btnConnect</tabstop>
+  <tabstop>spinbxTimeout</tabstop>
+  <tabstop>radioFileImport</tabstop>
+  <tabstop>leCertPath</tabstop>
+  <tabstop>btnCertPath</tabstop>
+  <tabstop>pteSessionStatus</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
  <buttongroups>

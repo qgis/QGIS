@@ -274,6 +274,13 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>leUrl</tabstop>
+  <tabstop>listSslErrors</tabstop>
+  <tabstop>btnChainInfo</tabstop>
+  <tabstop>btnChainCAs</tabstop>
+  <tabstop>grpbxSslConfig</tabstop>
+ </tabstops>
  <resources>
   <include location="../../../images/images.qrc"/>
  </resources>

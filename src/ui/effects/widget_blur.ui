@@ -166,14 +166,14 @@
    <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsBlendModeComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgsblendmodecombobox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsSpinBox</class>
    <extends>QSpinBox</extends>
    <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsBlendModeComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsblendmodecombobox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsEffectDrawModeComboBox</class>
@@ -181,6 +181,14 @@
    <header>qgseffectdrawmodecombobox.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mBlurTypeCombo</tabstop>
+  <tabstop>mBlurStrengthSpnBx</tabstop>
+  <tabstop>mTransparencySlider</tabstop>
+  <tabstop>mTransparencySpnBx</tabstop>
+  <tabstop>mBlendCmbBx</tabstop>
+  <tabstop>mDrawModeComboBox</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

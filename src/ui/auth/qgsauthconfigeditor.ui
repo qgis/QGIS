@@ -220,6 +220,13 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>tableViewConfigs</tabstop>
+  <tabstop>btnAddConfig</tabstop>
+  <tabstop>btnRemoveConfig</tabstop>
+  <tabstop>btnEditConfig</tabstop>
+  <tabstop>btnAuthUtilities</tabstop>
+ </tabstops>
  <resources>
   <include location="../../../images/images.qrc"/>
  </resources>

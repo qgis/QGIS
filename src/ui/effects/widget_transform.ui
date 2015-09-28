@@ -310,6 +310,18 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mReflectXCheckBox</tabstop>
+  <tabstop>mReflectYCheckBox</tabstop>
+  <tabstop>mSpinShearX</tabstop>
+  <tabstop>mSpinShearY</tabstop>
+  <tabstop>mSpinScaleX</tabstop>
+  <tabstop>mSpinScaleY</tabstop>
+  <tabstop>mRotationSpinBox</tabstop>
+  <tabstop>mSpinTranslateX</tabstop>
+  <tabstop>mSpinTranslateY</tabstop>
+  <tabstop>mDrawModeComboBox</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

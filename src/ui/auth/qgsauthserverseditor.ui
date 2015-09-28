@@ -239,6 +239,14 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>treeServerConfigs</tabstop>
+  <tabstop>btnAddServer</tabstop>
+  <tabstop>btnRemoveServer</tabstop>
+  <tabstop>btnEditServer</tabstop>
+  <tabstop>btnGroupByOrg</tabstop>
+  <tabstop>btnViewRefresh</tabstop>
+ </tabstops>
  <resources>
   <include location="../../../images/images.qrc"/>
  </resources>

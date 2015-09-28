@@ -159,6 +159,11 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>treeTrustedCAs</tabstop>
+  <tabstop>btnInfoCa</tabstop>
+  <tabstop>btnGroupByOrg</tabstop>
+ </tabstops>
  <resources>
   <include location="../../../images/images.qrc"/>
  </resources>

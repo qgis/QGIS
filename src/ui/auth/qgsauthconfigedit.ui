@@ -122,6 +122,7 @@
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>leName</tabstop>
   <tabstop>leResource</tabstop>
   <tabstop>cmbAuthMethods</tabstop>
   <tabstop>btnClear</tabstop>

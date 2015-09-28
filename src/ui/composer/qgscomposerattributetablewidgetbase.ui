@@ -54,7 +54,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-373</y>
+        <y>-499</y>
         <width>392</width>
         <height>1291</height>
        </rect>
@@ -764,6 +764,17 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsCollapsibleGroupBoxBasic</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsMapLayerComboBox</class>
+   <extends>QComboBox</extends>
+   <header location="global">qgsmaplayercombobox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsColorButtonV2</class>
    <extends>QToolButton</extends>
    <header>qgscolorbuttonv2.h</header>
@@ -778,17 +789,6 @@
    <class>QgsSpinBox</class>
    <extends>QSpinBox</extends>
    <header>qgsspinbox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsCollapsibleGroupBoxBasic</class>
-   <extends>QGroupBox</extends>
-   <header location="global">qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsMapLayerComboBox</class>
-   <extends>QComboBox</extends>
-   <header location="global">qgsmaplayercombobox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -815,6 +815,7 @@
   <tabstop>mEmptyModeComboBox</tabstop>
   <tabstop>mEmptyMessageLineEdit</tabstop>
   <tabstop>mBackgroundColorButton</tabstop>
+  <tabstop>mAdvancedCustomisationButton</tabstop>
   <tabstop>mWrapStringLineEdit</tabstop>
   <tabstop>mWrapBehaviourComboBox</tabstop>
   <tabstop>mShowGridGroupCheckBox</tabstop>
