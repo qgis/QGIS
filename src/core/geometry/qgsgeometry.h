@@ -34,7 +34,7 @@ email                : morb at ozemail dot com dot au
 #include "qgspoint.h"
 #include "qgscoordinatetransform.h"
 #include "qgsfeature.h"
-
+#include <limits>
 #include <QSet>
 
 class QgsGeometryEngine;
