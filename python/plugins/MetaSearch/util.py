@@ -24,6 +24,10 @@
 #
 ###############################################################################
 
+#avoid PendingDeprecationWarning from PyQt4.uic
+import warnings
+warnings.filterwarnings("ignore", category=PendingDeprecationWarning)
+
 import ConfigParser
 from gettext import gettext, ngettext
 import logging
