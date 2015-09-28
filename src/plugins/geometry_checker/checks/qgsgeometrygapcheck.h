@@ -30,22 +30,22 @@ class QgsGeometryGapCheckError : public QgsGeometryCheckError
       delete mGeometry;
     }
 
-    QgsAbstractGeometryV2* geometry() { return mGeometry->clone(); }
+    QgsAbstractGeometryV2* geometry() override { return mGeometry->clone(); }
     const QgsFeatureIds& neighbors() const { return mNeighbors; }
 
-    bool isEqual( QgsGeometryCheckError* other ) const
+    bool isEqual( QgsGeometryCheckError* other ) const override
     {
       QgsGeometryGapCheckError* err = dynamic_cast<QgsGeometryGapCheckError*>( other );
       return err && QgsGeomUtils::pointsFuzzyEqual( err->location(), location(), QgsGeometryCheckPrecision::reducedTolerance() ) && err->neighbors() == neighbors();
-    }
+  }
 
-    bool closeMatch( QgsGeometryCheckError *other ) const
+    bool closeMatch( QgsGeometryCheckError *other ) const override
     {
       QgsGeometryGapCheckError* err = dynamic_cast<QgsGeometryGapCheckError*>( other );
       return err && err->neighbors() == neighbors();
-    }
+  }
 
-    void update( const QgsGeometryCheckError* other )
+    void update( const QgsGeometryCheckError* other ) override
     {
       QgsGeometryCheckError::update( other );
       // Static cast since this should only get called if isEqual == true
@@ -56,12 +56,12 @@ class QgsGeometryGapCheckError : public QgsGeometryCheckError
       mGapAreaBBox = err->mGapAreaBBox;
     }
 
-    bool handleChanges( const QgsGeometryCheck::Changes& /*changes*/ )
+    bool handleChanges( const QgsGeometryCheck::Changes& /*changes*/ ) override
     {
       return true;
     }
 
-    QgsRectangle affectedAreaBBox() const
+    QgsRectangle affectedAreaBBox() override
     {
       return mGapAreaBBox;
     }

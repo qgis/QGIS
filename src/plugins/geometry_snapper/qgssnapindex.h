@@ -51,7 +51,7 @@ class QgsSnapIndex
     {
       public:
         PointSnapItem( const CoordIdx* _idx );
-        QgsPointV2 getSnapPoint( const QgsPointV2 &/*p*/ ) const;
+        QgsPointV2 getSnapPoint( const QgsPointV2 &/*p*/ ) const override;
         const CoordIdx* idx;
     };
 
@@ -59,7 +59,7 @@ class QgsSnapIndex
     {
       public:
         SegmentSnapItem( const CoordIdx* _idxFrom, const CoordIdx* _idxTo );
-        QgsPointV2 getSnapPoint( const QgsPointV2 &p ) const;
+        QgsPointV2 getSnapPoint( const QgsPointV2 &p ) const override;
         bool getIntersection( const QgsPointV2& p1, const QgsPointV2& p2, QgsPointV2& inter ) const;
         bool getProjection( const QgsPointV2 &p, QgsPointV2 &pProj );
         const CoordIdx* idxFrom;

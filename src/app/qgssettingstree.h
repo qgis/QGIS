@@ -55,7 +55,7 @@ class QgsSettingsTree : public QTreeWidget
     QgsSettingsTree( QWidget *parent = 0 );
 
     void setSettingsObject( QSettings *settings );
-    QSize sizeHint() const;
+    QSize sizeHint() const override;
 
     void setSettingsMap( QMap< QString, QStringList > & map ) { settingsMap = map; }
     QString itemKey( QTreeWidgetItem *item );
@@ -67,7 +67,7 @@ class QgsSettingsTree : public QTreeWidget
     void refresh();
 
   protected:
-    bool event( QEvent *event );
+    bool event( QEvent *event ) override;
 
   private slots:
     void updateSetting( QTreeWidgetItem *item );

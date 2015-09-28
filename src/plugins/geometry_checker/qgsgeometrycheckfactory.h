@@ -30,9 +30,9 @@ class QgsGeometryCheckFactory
 template<class T>
 class QgsGeometryCheckFactoryT : public QgsGeometryCheckFactory
 {
-    void restorePrevious( Ui::QgsGeometryCheckerSetupTab& /*ui*/ ) const;
-    bool checkApplicability( Ui::QgsGeometryCheckerSetupTab& ui, QGis::GeometryType geomType ) const;
-    QgsGeometryCheck* createInstance( QgsFeaturePool* featurePool, const Ui::QgsGeometryCheckerSetupTab& ui, double mapToLayerUnits ) const;
+    void restorePrevious( Ui::QgsGeometryCheckerSetupTab& /*ui*/ ) const override;
+    bool checkApplicability( Ui::QgsGeometryCheckerSetupTab& ui, QGis::GeometryType geomType ) const override;
+    QgsGeometryCheck* createInstance( QgsFeaturePool* featurePool, const Ui::QgsGeometryCheckerSetupTab& ui, double mapToLayerUnits ) const override;
 };
 
 class QgsGeometryCheckFactoryRegistry

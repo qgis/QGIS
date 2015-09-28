@@ -22,13 +22,13 @@ class QgsGeometryTypeCheckError : public QgsGeometryCheckError
       mTypeName = QgsWKBTypes::displayString( flatType );
     }
 
-    bool isEqual( QgsGeometryCheckError* other ) const
+    bool isEqual( QgsGeometryCheckError* other ) const override
     {
       return QgsGeometryCheckError::isEqual( other ) &&
              mTypeName == static_cast<QgsGeometryTypeCheckError*>( other )->mTypeName;
-    }
+  }
 
-    virtual QString description() const { return QString( "%1 (%2)" ).arg( mCheck->errorDescription(), mTypeName ); }
+    virtual QString description() const override { return QString( "%1 (%2)" ).arg( mCheck->errorDescription(), mTypeName ); }
 
   private:
     QString mTypeName;

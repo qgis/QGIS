@@ -20,13 +20,13 @@ class QgsGeometryDuplicateCheckError : public QgsGeometryCheckError
         : QgsGeometryCheckError( check, featureId, errorLocation, QgsVertexId(), duplicatesString( duplicates ) ), mDuplicates( duplicates ) { }
     const QList<QgsFeatureId>& duplicates() const { return mDuplicates; }
 
-    bool isEqual( QgsGeometryCheckError* other ) const
+    bool isEqual( QgsGeometryCheckError* other ) const override
     {
       return other->check() == check() &&
              other->featureId() == featureId() &&
              // static_cast: since other->checker() == checker is only true if the types are actually the same
              static_cast<QgsGeometryDuplicateCheckError*>( other )->duplicates() == duplicates();
-    }
+  }
 
   private:
     QList<QgsFeatureId> mDuplicates;

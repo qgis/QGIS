@@ -29,8 +29,8 @@ class QgsGeometryCheckerPlugin : public QObject, public QgisPlugin
 {
   public:
     QgsGeometryCheckerPlugin( QgisInterface* iface );
-    void initGui();
-    void unload();
+    void initGui() override;
+    void unload() override;
 
   private:
     QgisInterface* mIface;

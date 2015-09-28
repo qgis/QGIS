@@ -37,8 +37,8 @@ class QgsGeometryCheckerDialog : public QDialog
     QDialogButtonBox* mButtonBox;
     QTabWidget* mTabWidget;
 
-    void done( int r );
-    void closeEvent( QCloseEvent *ev );
+    void done( int r ) override;
+    void closeEvent( QCloseEvent *ev ) override;
 
   private slots:
     void onCheckerStarted( QgsGeometryChecker* checker, QgsFeaturePool* featurePool );

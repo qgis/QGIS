@@ -50,7 +50,7 @@ class QgsGeometryCheckerFixDialog : public QDialog
     QPushButton* mFixBtn;
     QPushButton* mSkipBtn;
 
-    void showEvent( QShowEvent * );
+    void showEvent( QShowEvent * ) override;
 
   private slots:
     void setupNextError();

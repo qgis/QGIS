@@ -552,7 +552,9 @@ bool QgsAuthManager::resetMasterPassword( const QString& newpass, const QString 
     emit messageOut( tr( err ), authManTag(), WARNING );
   }
   if ( ok )
+  {
     QgsDebugMsg( "Master password reset: cleared current password from database" );
+  }
 
   // mMasterPass empty, set new password (don't verify, since not stored yet)
   setMasterPassword( newpass, false );
@@ -566,7 +568,9 @@ bool QgsAuthManager::resetMasterPassword( const QString& newpass, const QString 
     emit messageOut( tr( err ), authManTag(), WARNING );
   }
   if ( ok )
+  {
     QgsDebugMsg( "Master password reset: stored new password in database" );
+  }
 
   // verify it stored password properly
   if ( ok && !verifyMasterPassword() )
@@ -586,7 +590,9 @@ bool QgsAuthManager::resetMasterPassword( const QString& newpass, const QString 
     emit messageOut( tr( err ), authManTag(), WARNING );
   }
   if ( ok )
+  {
     QgsDebugMsg( "Master password reset: re-encrypted configs in database" );
+  }
 
   // verify it all worked
   if ( ok && !verifyPasswordCanDecryptConfigs() )
@@ -1296,7 +1302,7 @@ bool QgsAuthManager::updateNetworkRequest( QNetworkRequest &request, const QStri
   QgsAuthMethod* authmethod = configAuthMethod( authcfg );
   if ( authmethod )
   {
-    if ( !authmethod->supportedExpansions() & QgsAuthMethod::NetworkRequest )
+    if ( !( authmethod->supportedExpansions() & QgsAuthMethod::NetworkRequest ) )
     {
       QgsDebugMsg( QString( "Data source URI updating not supported by authcfg: %1" ).arg( authcfg ) );
       return false;
@@ -1322,7 +1328,7 @@ bool QgsAuthManager::updateNetworkReply( QNetworkReply *reply, const QString& au
   QgsAuthMethod* authmethod = configAuthMethod( authcfg );
   if ( authmethod )
   {
-    if ( !authmethod->supportedExpansions() & QgsAuthMethod::NetworkReply )
+    if ( !( authmethod->supportedExpansions() & QgsAuthMethod::NetworkReply ) )
     {
       QgsDebugMsg( QString( "Network reply updating not supported by authcfg: %1" ).arg( authcfg ) );
       return false;
@@ -1348,7 +1354,7 @@ bool QgsAuthManager::updateDataSourceUriItems( QStringList &connectionItems, con
   QgsAuthMethod* authmethod = configAuthMethod( authcfg );
   if ( authmethod )
   {
-    if ( !authmethod->supportedExpansions() & QgsAuthMethod::DataSourceURI )
+    if ( !( authmethod->supportedExpansions() & QgsAuthMethod::DataSourceURI ) )
     {
       QgsDebugMsg( QString( "Data source URI updating not supported by authcfg: %1" ).arg( authcfg ) );
       return false;

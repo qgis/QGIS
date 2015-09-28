@@ -21,8 +21,8 @@ class QgsGeometrySelfIntersectionCheckError : public QgsGeometryCheckError
                                            const QgsGeometryUtils::SelfIntersection& inter )
         : QgsGeometryCheckError( check, featureId, errorLocation, vidx ), mInter( inter ) { }
     const QgsGeometryUtils::SelfIntersection& intersection() const { return mInter; }
-    bool isEqual( QgsGeometryCheckError* other ) const;
-    bool handleChanges( const QgsGeometryCheck::Changes& changes );
+    bool isEqual( QgsGeometryCheckError* other ) const override;
+    bool handleChanges( const QgsGeometryCheck::Changes& changes ) override;
     void update( const QgsGeometrySelfIntersectionCheckError* other )
     {
       QgsGeometryCheckError::update( other );

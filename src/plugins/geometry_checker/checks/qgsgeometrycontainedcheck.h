@@ -21,14 +21,14 @@ class QgsGeometryContainedCheckError : public QgsGeometryCheckError
         : QgsGeometryCheckError( check, featureId, errorLocation, QgsVertexId(), otherId, ValueOther ), mOtherId( otherId ) { }
     const QgsFeatureId& otherId() const { return mOtherId; }
 
-    bool isEqual( QgsGeometryCheckError* other ) const
+    bool isEqual( QgsGeometryCheckError* other ) const override
     {
       return other->check() == check() &&
              other->featureId() == featureId() &&
              static_cast<QgsGeometryContainedCheckError*>( other )->otherId() == otherId();
-    }
+  }
 
-    virtual QString description() const { return QApplication::translate( "QgsGeometryContainedCheckError", "Within %1" ).arg( otherId() ); }
+    virtual QString description() const override { return QApplication::translate( "QgsGeometryContainedCheckError", "Within %1" ).arg( otherId() ); }
 
   private:
     QgsFeatureId mOtherId;

@@ -35,8 +35,8 @@ class QgsGeometrySnapperPlugin : public QObject, public QgisPlugin
 {
   public:
     QgsGeometrySnapperPlugin( QgisInterface* iface );
-    void initGui();
-    void unload();
+    void initGui() override;
+    void unload() override;
 
   private:
     QgisInterface* mIface;
