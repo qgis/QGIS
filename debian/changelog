@@ -3,8 +3,10 @@ qgis (2.11.0) UNRELEASED; urgency=medium
   * New development version 2.11 after branch of 2.10
   * moved grass default.qgc from config to modules
   * include grass7 plugin
+  * move grass provider to separate package
+  * add ubuntu wily
 
- -- Jürgen E. Fischer <jef@norbit.de>  Tue, 25 Aug 2015 00:14:25 +0200
+ -- Jürgen E. Fischer <jef@norbit.de>  Wed, 30 Sep 2015 14:06:10 +0200
 
 qgis (2.10.0) unstable; urgency=medium
 
