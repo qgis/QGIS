@@ -51,11 +51,20 @@
    <item>
     <widget class="QStackedWidget" name="pages">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="page">
       <layout class="QGridLayout" name="gridLayout">
-       <property name="margin">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
         <number>0</number>
        </property>
        <item row="1" column="0" colspan="2">
@@ -591,21 +600,27 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsFieldComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgsfieldcombobox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsColorButtonV2</class>
    <extends>QToolButton</extends>
    <header>qgscolorbuttonv2.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsFieldComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsfieldcombobox.h</header>
+  </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>fieldRadio</tabstop>
+  <tabstop>mFieldCombo</tabstop>
+  <tabstop>rowRadio</tabstop>
+  <tabstop>mNewButton</tabstop>
   <tabstop>listView</tabstop>
+  <tabstop>mNameEdit</tabstop>
   <tabstop>mRuleEdit</tabstop>
   <tabstop>btnBuildExpression</tabstop>
+  <tabstop>mPresetsList</tabstop>
   <tabstop>btnBackgroundColor</tabstop>
   <tabstop>btnTextColor</tabstop>
   <tabstop>checkIcon</tabstop>

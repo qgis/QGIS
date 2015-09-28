@@ -122,7 +122,16 @@
       <property name="spacing">
        <number>6</number>
       </property>
-      <property name="margin">
+      <property name="leftMargin">
+       <number>9</number>
+      </property>
+      <property name="topMargin">
+       <number>9</number>
+      </property>
+      <property name="rightMargin">
+       <number>9</number>
+      </property>
+      <property name="bottomMargin">
        <number>9</number>
       </property>
       <item>
@@ -237,8 +246,8 @@
   <tabstop>lineFilter</tabstop>
   <tabstop>treeView</tabstop>
   <tabstop>cbxUseTitleLayerName</tabstop>
+  <tabstop>cbxFeatureCurrentViewExtent</tabstop>
   <tabstop>btnChangeSpatialRefSys</tabstop>
-  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
  <connections/>

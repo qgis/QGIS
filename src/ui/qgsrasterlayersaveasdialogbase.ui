@@ -188,9 +188,9 @@ datasets with maximum width and height specified below.</string>
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
+        <y>-207</y>
         <width>541</width>
-        <height>577</height>
+        <height>583</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -653,21 +653,21 @@ datasets with maximum width and height specified below.</string>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsProjectionSelectionWidget</class>
    <extends>QWidget</extends>
-   <header location="global">qgsprojectionselectionwidget.h</header>
+   <header>qgsprojectionselectionwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsExtentGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgsextentgroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -691,6 +691,7 @@ datasets with maximum width and height specified below.</string>
   <tabstop>mSaveAsLineEdit</tabstop>
   <tabstop>mBrowseButton</tabstop>
   <tabstop>mCrsSelector</tabstop>
+  <tabstop>mAddToCanvas</tabstop>
   <tabstop>mScrollArea</tabstop>
   <tabstop>mResolutionRadioButton</tabstop>
   <tabstop>mXResolutionLineEdit</tabstop>
@@ -712,7 +713,6 @@ datasets with maximum width and height specified below.</string>
   <tabstop>mRemoveSelectedNoDataToolButton</tabstop>
   <tabstop>mLoadTransparentNoDataToolButton</tabstop>
   <tabstop>mRemoveAllNoDataToolButton</tabstop>
-  <tabstop>mButtonBox</tabstop>
  </tabstops>
  <resources/>
  <connections>

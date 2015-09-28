@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>431</width>
+    <width>447</width>
     <height>599</height>
    </rect>
   </property>
@@ -322,12 +322,17 @@
   <tabstop>txtPort</tabstop>
   <tabstop>txtDatabase</tabstop>
   <tabstop>cbxSSLmode</tabstop>
+  <tabstop>tabAuthentication</tabstop>
+  <tabstop>txtUsername</tabstop>
+  <tabstop>chkStoreUsername</tabstop>
+  <tabstop>txtPassword</tabstop>
+  <tabstop>chkStorePassword</tabstop>
+  <tabstop>btnConnect</tabstop>
   <tabstop>cb_geometryColumnsOnly</tabstop>
   <tabstop>cb_dontResolveType</tabstop>
   <tabstop>cb_publicSchemaOnly</tabstop>
   <tabstop>cb_allowGeometrylessTables</tabstop>
   <tabstop>cb_useEstimatedMetadata</tabstop>
-  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
  <connections>

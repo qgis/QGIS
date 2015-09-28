@@ -218,7 +218,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>7</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="mProjOpts_01">
           <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -247,8 +247,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>656</width>
-                <height>657</height>
+                <width>683</width>
+                <height>779</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -852,8 +852,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>326</width>
-                <height>46</height>
+                <width>683</width>
+                <height>779</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -911,8 +911,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>133</width>
-                <height>100</height>
+                <width>683</width>
+                <height>779</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -992,8 +992,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>379</width>
-                <height>562</height>
+                <width>683</width>
+                <height>779</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1416,8 +1416,8 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>0</y>
-                <width>542</width>
+                <y>-854</y>
+                <width>667</width>
                 <height>1633</height>
                </rect>
               </property>
@@ -2177,8 +2177,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>168</width>
-                <height>46</height>
+                <width>683</width>
+                <height>779</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -2316,9 +2316,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsVariableEditorWidget</class>
+   <class>QgsCodeEditorPython</class>
    <extends>QWidget</extends>
-   <header location="global">qgsvariableeditorwidget.h</header>
+   <header>qgscodeeditorpython.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -2328,15 +2328,15 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsCodeEditorPython</class>
+   <class>QgsVariableEditorWidget</class>
    <extends>QWidget</extends>
-   <header>qgscodeeditorpython.h</header>
+   <header location="global">qgsvariableeditorwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>scrollArea_2</tabstop>
   <tabstop>mOptionsListWidget</tabstop>
+  <tabstop>scrollArea_2</tabstop>
   <tabstop>titleEdit</tabstop>
   <tabstop>pbnSelectionColor</tabstop>
   <tabstop>pbnCanvasColor</tabstop>
@@ -2360,7 +2360,6 @@
   <tabstop>pbnRemoveScale</tabstop>
   <tabstop>pbnImportScales</tabstop>
   <tabstop>pbnExportScales</tabstop>
-  <tabstop>mWMSFees</tabstop>
   <tabstop>scrollArea</tabstop>
   <tabstop>cbxProjectionEnabled</tabstop>
   <tabstop>scrollArea_3</tabstop>
@@ -2378,7 +2377,6 @@
   <tabstop>mTransparencySpinBox</tabstop>
   <tabstop>cbxStyleRandomColors</tabstop>
   <tabstop>pbtnStyleManager</tabstop>
-  <tabstop>mTreeProjectColors</tabstop>
   <tabstop>mButtonAddColor</tabstop>
   <tabstop>mButtonRemoveColor</tabstop>
   <tabstop>mButtonCopyColors</tabstop>
@@ -2386,41 +2384,6 @@
   <tabstop>mButtonImportColors</tabstop>
   <tabstop>mButtonExportColors</tabstop>
   <tabstop>scrollArea_5</tabstop>
-  <tabstop>buttonBox</tabstop>
-  <tabstop>mWMSAccessConstraints</tabstop>
-  <tabstop>mWMSKeywordList</tabstop>
-  <tabstop>mWMSComposerGroupBox</tabstop>
-  <tabstop>mComposerListWidget</tabstop>
-  <tabstop>mAddWMSComposerButton</tabstop>
-  <tabstop>mRemoveWMSComposerButton</tabstop>
-  <tabstop>mLayerRestrictionsListWidget</tabstop>
-  <tabstop>mAddLayerRestrictionButton</tabstop>
-  <tabstop>mRemoveLayerRestrictionButton</tabstop>
-  <tabstop>mWMSUrlLineEdit</tabstop>
-  <tabstop>mMaxHeightLineEdit</tabstop>
-  <tabstop>mMaxWidthLineEdit</tabstop>
-  <tabstop>mWMSImageQualitySpinBox</tabstop>
-  <tabstop>grpWMSExt</tabstop>
-  <tabstop>mWMSExtMinX</tabstop>
-  <tabstop>mWMSExtMinY</tabstop>
-  <tabstop>mWMSExtMaxX</tabstop>
-  <tabstop>mWMSExtMaxY</tabstop>
-  <tabstop>pbnWMSExtCanvas</tabstop>
-  <tabstop>grpWMSList</tabstop>
-  <tabstop>pbnWMSAddSRS</tabstop>
-  <tabstop>mWMSList</tabstop>
-  <tabstop>pbnWMSSetUsedSRS</tabstop>
-  <tabstop>pbnWMSRemoveSRS</tabstop>
-  <tabstop>twWFSLayers</tabstop>
-  <tabstop>pbnWFSLayersUnselectAll</tabstop>
-  <tabstop>pbnWFSLayersSelectAll</tabstop>
-  <tabstop>mWFSUrlLineEdit</tabstop>
-  <tabstop>twWCSLayers</tabstop>
-  <tabstop>pbnWCSLayersUnselectAll</tabstop>
-  <tabstop>pbnWCSLayersSelectAll</tabstop>
-  <tabstop>mWCSUrlLineEdit</tabstop>
-  <tabstop>scrollArea_6</tabstop>
-  <tabstop>grpPythonMacros</tabstop>
   <tabstop>grpOWSServiceCapabilities</tabstop>
   <tabstop>mWMSTitle</tabstop>
   <tabstop>mWMSContactOrganization</tabstop>
@@ -2429,6 +2392,45 @@
   <tabstop>mWMSContactMail</tabstop>
   <tabstop>mWMSContactPhone</tabstop>
   <tabstop>mWMSAbstract</tabstop>
+  <tabstop>mWMSFees</tabstop>
+  <tabstop>mWMSAccessConstraints</tabstop>
+  <tabstop>mWMSKeywordList</tabstop>
+  <tabstop>grpWMSExt</tabstop>
+  <tabstop>mWMSExtMinX</tabstop>
+  <tabstop>mWMSExtMinY</tabstop>
+  <tabstop>mWMSExtMaxX</tabstop>
+  <tabstop>mWMSExtMaxY</tabstop>
+  <tabstop>pbnWMSExtCanvas</tabstop>
+  <tabstop>grpWMSList</tabstop>
+  <tabstop>mWMSList</tabstop>
+  <tabstop>pbnWMSAddSRS</tabstop>
+  <tabstop>pbnWMSRemoveSRS</tabstop>
+  <tabstop>pbnWMSSetUsedSRS</tabstop>
+  <tabstop>mWMSComposerGroupBox</tabstop>
+  <tabstop>mComposerListWidget</tabstop>
+  <tabstop>mAddWMSComposerButton</tabstop>
+  <tabstop>mRemoveWMSComposerButton</tabstop>
+  <tabstop>mLayerRestrictionsGroupBox</tabstop>
+  <tabstop>mLayerRestrictionsListWidget</tabstop>
+  <tabstop>mAddLayerRestrictionButton</tabstop>
+  <tabstop>mRemoveLayerRestrictionButton</tabstop>
+  <tabstop>mWmsUseLayerIDs</tabstop>
+  <tabstop>mAddWktGeometryCheckBox</tabstop>
+  <tabstop>mWMSPrecisionSpinBox</tabstop>
+  <tabstop>mWMSUrlLineEdit</tabstop>
+  <tabstop>mMaxWidthLineEdit</tabstop>
+  <tabstop>mMaxHeightLineEdit</tabstop>
+  <tabstop>mWMSImageQualitySpinBox</tabstop>
+  <tabstop>twWFSLayers</tabstop>
+  <tabstop>pbnWFSLayersSelectAll</tabstop>
+  <tabstop>pbnWFSLayersUnselectAll</tabstop>
+  <tabstop>mWFSUrlLineEdit</tabstop>
+  <tabstop>twWCSLayers</tabstop>
+  <tabstop>pbnWCSLayersSelectAll</tabstop>
+  <tabstop>pbnWCSLayersUnselectAll</tabstop>
+  <tabstop>mWCSUrlLineEdit</tabstop>
+  <tabstop>grpPythonMacros</tabstop>
+  <tabstop>scrollArea_6</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
