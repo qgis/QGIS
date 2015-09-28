@@ -45,9 +45,9 @@ class SagaAlgorithmProvider(AlgorithmProvider):
 
     supportedVersions = {"2.1.2": ("2.1.2", SagaAlgorithm212),
                          "2.1.3": ("2.1.3", SagaAlgorithm213),
-                         "2.1.4": ("2.1.3", SagaAlgorithm214),
-                         # to allow testing upcoming release
-                         "2.2.0": ("2.1.3", SagaAlgorithm214)}
+                         "2.1.4": ("2.1.4", SagaAlgorithm214),
+                         "2.2.0": ("2.2.0", SagaAlgorithm214)}
+
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
@@ -87,9 +87,12 @@ class SagaAlgorithmProvider(AlgorithmProvider):
                                    self.tr('Problem with SAGA installation: SAGA was not found or is not correctly installed'))
             return
         if version not in self.supportedVersions:
-            ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
+            if version > self.supportedVersions.keys()[-1]:
+                version = self.supportedVersions.keys()[-1]
+            else:
+                ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
                                    self.tr('Problem with SAGA installation: installed SAGA version (%s) is not supported' % version))
-            return
+                return
 
         folder = SagaUtils.sagaDescriptionPath()
         folder = os.path.join(folder, self.supportedVersions[version][0])
