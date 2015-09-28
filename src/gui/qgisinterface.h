@@ -219,6 +219,9 @@ class GUI_EXPORT QgisInterface : public QObject
     /** Return the message bar of the main app */
     virtual QgsMessageBar * messageBar() = 0;
 
+    /** Open the message log dock widget **/
+    virtual void openMessageLog() = 0;
+
     /** Adds a widget to the user input tool bar.*/
     virtual void addUserInputWidget( QWidget* widget ) = 0;
 

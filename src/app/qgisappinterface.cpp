@@ -326,6 +326,12 @@ QgsMessageBar * QgisAppInterface::messageBar()
   return qgis->messageBar();
 }
 
+void QgisAppInterface::openMessageLog()
+{
+  qgis->openMessageLog();
+}
+
+
 void QgisAppInterface::addUserInputWidget( QWidget *widget )
 {
   qgis->addUserInputWidget( widget );

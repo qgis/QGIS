@@ -29,7 +29,9 @@ QGIS utilities module
 """
 
 from PyQt4.QtCore import QCoreApplication, QLocale
+from PyQt4.QtGui import QPushButton
 from qgis.core import QGis, QgsExpression, QgsMessageLog, qgsfunction
+from qgis.gui import QgsMessageBar
 
 import sys
 import traceback
@@ -60,7 +62,7 @@ def showWarning(message, category, filename, lineno, file=None, line=None):
 warnings.showwarning = showWarning
 
 
-def showException(type, value, tb, msg):
+def showException(type, value, tb, msg, messagebar=False):
     lst = traceback.format_exception(type, value, tb)
     if msg is None:
         msg = QCoreApplication.translate('Python', 'An error has occured while executing Python code:')
@@ -77,14 +79,27 @@ def showException(type, value, tb, msg):
 
     from qgis.core import QgsMessageOutput
 
-    msg = QgsMessageOutput.createMessageOutput()
-    msg.setTitle(QCoreApplication.translate('Python', 'Python error'))
-    msg.setMessage(txt, QgsMessageOutput.MessageHtml)
-    msg.showMessage()
+    title = QCoreApplication.translate('Python', 'Python error')
+    logmessage = ''
+    for s in lst:
+        logmessage += s.decode('utf-8', 'replace')
+
+    QgsMessageLog.logMessage(logmessage, title)
+
+    if messagebar and iface:
+        widget = iface.messageBar().createMessage(title, msg + " See message log (Python Error) for more details.")
+        button = QPushButton("View message log", pressed=iface.openMessageLog)
+        widget.layout().addWidget(button)
+        iface.messageBar().pushWidget(widget, QgsMessageBar.WARNING)
+    else:
+        msg = QgsMessageOutput.createMessageOutput()
+        msg.setTitle()
+        msg.setMessage(txt, QgsMessageOutput.MessageHtml)
+        msg.showMessage()
 
 
 def qgis_excepthook(type, value, tb):
-    showException(type, value, tb, None)
+    showException(type, value, tb, None, messagebar=True)
 
 
 def installErrorHook():
@@ -197,9 +212,9 @@ def loadPlugin(packageName):
         __import__(packageName)
         return True
     except:
-        msgTemplate = QCoreApplication.translate("Python", "Couldn't load plugin '%s' from ['%s']")
-        msg = msgTemplate % (packageName, "', '".join(sys.path))
-        showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg)
+        msgTemplate = QCoreApplication.translate("Python", "Couldn't load plugin '%s'")
+        msg = msgTemplate % packageName
+        showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg, messagebar=True)
         return False
 
 
@@ -223,7 +238,7 @@ def startPlugin(packageName):
     except:
         _unloadPluginModules(packageName)
         msg = QCoreApplication.translate("Python", "%s due to an error when calling its classFactory() method") % errMsg
-        showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg)
+        showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg, messagebar=True)
         return False
 
     # initGui
@@ -233,7 +248,7 @@ def startPlugin(packageName):
         del plugins[packageName]
         _unloadPluginModules(packageName)
         msg = QCoreApplication.translate("Python", "%s due to an error when calling its initGui() method") % errMsg
-        showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg)
+        showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg, messagebar=True)
         return False
 
     # add to active plugins
@@ -260,7 +275,7 @@ def canUninstallPlugin(packageName):
         return bool(metadata.canBeUninstalled())
     except:
         msg = "Error calling " + packageName + ".canBeUninstalled"
-        showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg)
+        showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg, messagebar=True)
         return True
 
 
@@ -281,7 +296,7 @@ def unloadPlugin(packageName):
         return True
     except Exception as e:
         msg = QCoreApplication.translate("Python", "Error while unloading plugin %s") % packageName
-        showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg)
+        showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg, messagebar=True)
         return False
 
 

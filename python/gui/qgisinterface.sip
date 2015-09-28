@@ -168,6 +168,8 @@ class QgisInterface : QObject
     /** Return the message bar of the main app */
     virtual QgsMessageBar * messageBar() = 0;
 
+    virtual void openMessageLog() = 0;
+
     /** Adds a widget to the user input tool bar.*/
     virtual void addUserInputWidget( QWidget* widget ) = 0;
 

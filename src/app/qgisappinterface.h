@@ -184,6 +184,9 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
 
     QgsMessageBar * messageBar() override;
 
+    /** Open the message log dock widget **/
+    void openMessageLog() override;
+
     /** Adds a widget to the user input tool bar.*/
     void addUserInputWidget( QWidget* widget ) override;
 

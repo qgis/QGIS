@@ -2577,6 +2577,11 @@ void QgisApp::toggleLogMessageIcon( bool hasLogMessage )
   }
 }
 
+void QgisApp::openMessageLog()
+{
+  mMessageButton->toggle();
+}
+
 void QgisApp::addUserInputWidget( QWidget *widget )
 {
   mUserInputDockWidget->addUserInputWidget( widget );
@@ -8420,9 +8425,6 @@ void QgisApp::closeProject()
   {
     QgsPythonRunner::run( "qgis.utils.unloadProjectMacros();" );
   }
-
-  // remove any message widgets from the message bar
-  mInfoBar->clearWidgets();
 
   mTrustedMacros = false;
 
