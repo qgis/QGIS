@@ -3006,6 +3006,13 @@ bool QgsAuthManager::reencryptAuthenticationConfig( const QString &authcfg, cons
   {
     QString configstring( QgsAuthCrypto::decrypt( prevpass, prevciv, query.value( 0 ).toString() ) );
 
+    if ( query.next() )
+    {
+      QgsDebugMsg( QString( "Select contains more than one for authcfg: %1" ).arg( authcfg ) );
+      emit messageOut( tr( "Authentication database contains duplicate configuration IDs" ), authManTag(), WARNING );
+      return false;
+    }
+
     query.clear();
 
     query.prepare( QString( "UPDATE %1 "
@@ -3032,14 +3039,6 @@ bool QgsAuthManager::reencryptAuthenticationConfig( const QString &authcfg, cons
     QgsDebugMsg( QString( "Reencrypt FAILED, could not find in db authcfg: %2" ).arg( authcfg ) );
     return false;
   }
-
-  if ( query.next() )
-  {
-    QgsDebugMsg( QString( "Select contains more than one for authcfg: %1" ).arg( authcfg ) );
-    emit messageOut( tr( "Authentication database contains duplicate configuration IDs" ), authManTag(), WARNING );
-  }
-
-  return false;
 }
 
 bool QgsAuthManager::reencryptAllAuthenticationSettings( const QString &prevpass, const QString &prevciv )
@@ -3169,6 +3168,13 @@ bool QgsAuthManager::reencryptAuthenticationIdentity(
   {
     QString keystring( QgsAuthCrypto::decrypt( prevpass, prevciv, query.value( 0 ).toString() ) );
 
+    if ( query.next() )
+    {
+      QgsDebugMsg( QString( "Select contains more than one for identity id: %1" ).arg( identid ) );
+      emit messageOut( tr( "Authentication database contains duplicate identity IDs" ), authManTag(), WARNING );
+      return false;
+    }
+
     query.clear();
 
     query.prepare( QString( "UPDATE %1 "
@@ -3195,15 +3201,6 @@ bool QgsAuthManager::reencryptAuthenticationIdentity(
     QgsDebugMsg( QString( "Reencrypt FAILED, could not find in db identity id: %2" ).arg( identid ) );
     return false;
   }
-
-  if ( query.next() )
-  {
-    QgsDebugMsg( QString( "Select contains more than one for identity id: %1" ).arg( identid ) );
-    emit messageOut( tr( "Authentication database contains duplicate identity IDs" ), authManTag(), WARNING );
-  }
-
-  return false;
-
 }
 
 bool QgsAuthManager::authDbOpen() const
