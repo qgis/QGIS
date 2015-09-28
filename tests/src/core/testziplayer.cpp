@@ -127,6 +127,7 @@ QgsMapLayer *TestZipLayer::getZipLayer( QString myPath, QString myName )
     if ( layerItem )
       myLayer = getLayer( layerItem->path(), layerItem->name(), layerItem->providerKey() );
   }
+  delete myItem;
   delete dirItem;
   return myLayer;
 }
@@ -157,7 +158,7 @@ bool TestZipLayer::testZipItem( QString myFileName, QString myChildName, QString
   }
   QgsDebugMsg( QString( "time.elapsed() = %1 ms" ).arg( time.elapsed() ) );
   bool ok = false;
-  QString driverName;
+
   QVector<QgsDataItem*> myChildren = myZipItem->children();
 
   QgsDebugMsg( QString( "has %1 items" ).arg( myChildren.size() ) );

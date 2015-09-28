@@ -195,6 +195,8 @@ void TestQgsLabelingEngineV2::testRuleBased()
 
   vl->setLabeling( new QgsVectorLayerSimpleLabeling );
 
+  delete rl2;
+
   /*
   QPainter p( &img );
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
