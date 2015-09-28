@@ -87,7 +87,13 @@ def showException(type, value, tb, msg, messagebar=False):
     QgsMessageLog.logMessage(logmessage, title)
 
     if messagebar and iface:
+        item = iface.messageBar().currentItem()
+        if item and item.property("Error") == msg:
+            # Return of we already have a message with the same error message
+            return
+
         widget = iface.messageBar().createMessage(title, msg + " See message log (Python Error) for more details.")
+        widget.setProperty("Error", msg)
         button = QPushButton("View message log", pressed=iface.openMessageLog)
         widget.layout().addWidget(button)
         iface.messageBar().pushWidget(widget, QgsMessageBar.WARNING)
