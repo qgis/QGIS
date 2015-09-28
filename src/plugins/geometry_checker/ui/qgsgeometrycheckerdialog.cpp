@@ -20,6 +20,7 @@
 
 #include <QCloseEvent>
 #include <QVBoxLayout>
+#include <QSettings>
 
 QgsGeometryCheckerDialog::QgsGeometryCheckerDialog( QgisInterface *iface, QWidget *parent )
     : QDialog( parent )
@@ -27,6 +28,9 @@ QgsGeometryCheckerDialog::QgsGeometryCheckerDialog( QgisInterface *iface, QWidge
   mIface = iface;
 
   setWindowTitle( tr( "Check Geometries" ) );
+
+  QSettings s;
+  restoreGeometry( s.value( "/Plugin-GeometryChecker/Window/geometry" ).toByteArray() );
 
   mTabWidget = new QTabWidget();
   mButtonBox = new QDialogButtonBox( QDialogButtonBox::Close, Qt::Horizontal );
@@ -42,6 +46,12 @@ QgsGeometryCheckerDialog::QgsGeometryCheckerDialog( QgisInterface *iface, QWidge
   connect( mButtonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
   connect( mTabWidget->widget( 0 ), SIGNAL( checkerStarted( QgsGeometryChecker*, QgsFeaturePool* ) ), this, SLOT( onCheckerStarted( QgsGeometryChecker*, QgsFeaturePool* ) ) );
   connect( mTabWidget->widget( 0 ), SIGNAL( checkerFinished( bool ) ), this, SLOT( onCheckerFinished( bool ) ) );
+}
+
+QgsGeometryCheckerDialog::~QgsGeometryCheckerDialog()
+{
+  QSettings s;
+  s.setValue( "/Plugin-GeometryChecker/Window/geometry", saveGeometry() );
 }
 
 void QgsGeometryCheckerDialog::onCheckerStarted( QgsGeometryChecker *checker, QgsFeaturePool *featurePool )
