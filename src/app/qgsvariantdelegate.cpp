@@ -189,7 +189,7 @@ void QgsVariantDelegate::setModelData( QWidget* editor, QAbstractItemModel* mode
       value = text.at( 0 );
       break;
     case QVariant::Color:
-      mColorExp.exactMatch( text );
+      ( void )mColorExp.exactMatch( text );
       value = QColor( qMin( mColorExp.cap( 1 ).toInt(), 255 ),
                       qMin( mColorExp.cap( 2 ).toInt(), 255 ),
                       qMin( mColorExp.cap( 3 ).toInt(), 255 ),
@@ -212,16 +212,16 @@ void QgsVariantDelegate::setModelData( QWidget* editor, QAbstractItemModel* mode
     }
     break;
     case QVariant::Point:
-      mPointExp.exactMatch( text );
+      ( void )mPointExp.exactMatch( text );
       value = QPoint( mPointExp.cap( 1 ).toInt(), mPointExp.cap( 2 ).toInt() );
       break;
     case QVariant::Rect:
-      mRectExp.exactMatch( text );
+      ( void )mRectExp.exactMatch( text );
       value = QRect( mRectExp.cap( 1 ).toInt(), mRectExp.cap( 2 ).toInt(),
                      mRectExp.cap( 3 ).toInt(), mRectExp.cap( 4 ).toInt() );
       break;
     case QVariant::Size:
-      mSizeExp.exactMatch( text );
+      ( void )mSizeExp.exactMatch( text );
       value = QSize( mSizeExp.cap( 1 ).toInt(), mSizeExp.cap( 2 ).toInt() );
       break;
     case QVariant::StringList:

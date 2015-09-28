@@ -19,7 +19,10 @@
 #include "ui/qgsgeometrycheckerdialog.h"
 
 QgsGeometryCheckerPlugin::QgsGeometryCheckerPlugin( QgisInterface* iface )
-    : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType ), mIface( iface )
+    : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
+    , mIface( iface )
+    , mDialog( 0 )
+    , mMenuAction( 0 )
 {
 }
 

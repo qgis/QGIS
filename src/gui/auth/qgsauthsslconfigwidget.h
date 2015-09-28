@@ -163,7 +163,6 @@ class GUI_EXPORT QgsAuthSslConfigWidget : public QWidget, private Ui::QgsAuthSsl
     QSslCertificate mCert;
     QList<QSslCertificate> mConnectionCAs;
 
-    QTreeWidgetItem *mRootItem;
     QTreeWidgetItem *mProtocolItem;
     QComboBox *mProtocolCmbBx;
     QTreeWidgetItem *mIgnoreErrorsItem;

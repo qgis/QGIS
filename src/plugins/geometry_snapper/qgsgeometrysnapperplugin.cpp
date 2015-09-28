@@ -18,8 +18,10 @@
 #include "qgisinterface.h"
 
 QgsGeometrySnapperPlugin::QgsGeometrySnapperPlugin( QgisInterface* iface )
-    : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType ),
-    mIface( iface )
+    : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
+    , mIface( iface )
+    , mDialog( 0 )
+    , mMenuAction( 0 )
 {
 }
 

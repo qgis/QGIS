@@ -472,7 +472,7 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition* label, Q
   {
 
     // TODO: optimize access :)
-    QgsTextLabelFeature* lf = dynamic_cast<QgsTextLabelFeature*>( label->getFeaturePart()->feature() );
+    QgsTextLabelFeature* lf = static_cast<QgsTextLabelFeature*>( label->getFeaturePart()->feature() );
     QString txt = lf->text( label->getPartId() );
     QFontMetricsF* labelfm = lf->labelFontMetrics();
 

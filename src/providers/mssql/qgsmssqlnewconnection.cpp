@@ -212,7 +212,7 @@ void QgsMssqlNewConnection::listDatabases()
   {
     QSqlQuery query = QSqlQuery( db );
     query.setForwardOnly( true );
-    query.exec( queryStr );
+    ( void )query.exec( queryStr );
 
     if ( !txtService->text().isEmpty() )
     {

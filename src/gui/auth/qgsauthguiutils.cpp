@@ -86,7 +86,7 @@ void QgsAuthGuiUtils::setMasterPassword( QgsMessageBar *msgbar, int timeout )
                          QgsMessageBar::INFO, timeout );
     return;
   }
-  QgsAuthManager::instance()->setMasterPassword( true );
+  ( void )QgsAuthManager::instance()->setMasterPassword( true );
 }
 
 void QgsAuthGuiUtils::clearCachedMasterPassword( QgsMessageBar *msgbar, int timeout )

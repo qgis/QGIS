@@ -333,6 +333,7 @@ void QgsGeometryCheckerResultTab::highlightErrors( bool current )
     {
       // QgsGeometry above takes ownership of geometry and deletes it when it goes out of scope
       delete geometry;
+      geometry = 0;
     }
 
     if ( ui.radioButtonError->isChecked() || current || error->status() == QgsGeometryCheckError::StatusFixed )
@@ -345,7 +346,7 @@ void QgsGeometryCheckerResultTab::highlightErrors( bool current )
       mCurrentRubberBands.append( pointRubberBand );
       errorPositions.append( pos );
     }
-    else if ( ui.radioButtonFeature->isChecked() )
+    else if ( ui.radioButtonFeature->isChecked() && geometry )
     {
       QgsRectangle geomextent = mIface->mapCanvas()->mapSettings().layerExtentToOutputExtent( mFeaturePool->getLayer(), geometry->boundingBox() );
       if ( totextent.isEmpty() )

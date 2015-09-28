@@ -1675,6 +1675,7 @@ QgsWcsDownloadHandler::QgsWcsDownloadHandler( const QUrl& url, QgsWcsAuthorizati
     : mNAM( new QgsNetworkAccessManager )
     , mAuth( auth )
     , mEventLoop( new QEventLoop )
+    , mCacheReply( 0 )
     , mCachedData( cachedData )
     , mWcsVersion( wcsVersion )
     , mCachedError( cachedError )

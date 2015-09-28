@@ -355,9 +355,10 @@ void QgsAuthConfigEdit::validateAuth()
   {
     QgsDebugMsg( QString( "Cast to edit widget FAILED" ) );
   }
-
-  authok = authok && editWidget->validateConfig();
-
+  else
+  {
+    authok = authok && editWidget->validateConfig();
+  }
   authok = authok && authCfgEdit->validate();
 
   buttonBox->button( QDialogButtonBox::Save )->setEnabled( authok );

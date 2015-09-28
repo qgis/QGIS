@@ -42,8 +42,6 @@ class GUI_EXPORT QgsAuthMethodPlugins : public QDialog, private Ui::QgsAuthMetho
 
   private:
     void setupTable();
-    QVBoxLayout *mAuthNotifyLayout;
-    QLabel *mAuthNotify;
 };
 
 

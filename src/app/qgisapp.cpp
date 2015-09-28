@@ -9555,7 +9555,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionCopyFeatures->setEnabled( layerHasSelection );
     mActionFeatureAction->setEnabled( layerHasActions );
 
-    if ( !isEditable && mMapCanvas->mapTool()
+    if ( !isEditable && mMapCanvas && mMapCanvas->mapTool()
          && mMapCanvas->mapTool()->isEditTool() && !mSaveRollbackInProgress )
     {
       mMapCanvas->setMapTool( mNonEditMapTool );

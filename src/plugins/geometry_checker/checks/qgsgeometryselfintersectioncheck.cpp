@@ -297,6 +297,11 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError* error, i
         changes[newFeature.id()].append( Change( ChangeFeature, ChangeAdded ) );
       }
     }
+    else
+    {
+      delete ringGeom1;
+      delete ringGeom2;
+    }
     error->setFixed( method );
   }
   else

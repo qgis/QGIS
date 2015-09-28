@@ -353,6 +353,7 @@ QgsLabelFeature::QgsLabelFeature( QgsFeatureId id, GEOSGeometry* geometry, const
     , mPriority( -1 )
     , mHasFixedPosition( false )
     , mHasFixedAngle( false )
+    , mFixedAngle( 0 )
     , mHasFixedQuadrant( false )
     , mDistLabel( 0 )
     , mRepeatDistance( 0 )

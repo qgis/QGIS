@@ -744,7 +744,7 @@ void QgsAttributeTableDialog::filterQueryChanged( const QString& query )
   {
     str = query;
   }
-  else
+  else if ( mCurrentSearchWidgetWrapper )
   {
     str = mCurrentSearchWidgetWrapper->expression();
   }

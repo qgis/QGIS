@@ -43,6 +43,7 @@
 #include "labelposition.h"
 #include "problem.h"
 #include "pointset.h"
+#include "internalexception.h"
 #include "util.h"
 #include <QTime>
 #include <cstdarg>
@@ -586,12 +587,19 @@ namespace pal
 
     prob->reduce();
 
-    if ( searchMethod == FALP )
-      prob->init_sol_falp();
-    else if ( searchMethod == CHAIN )
-      prob->chain_search();
-    else
-      prob->popmusic();
+    try
+    {
+      if ( searchMethod == FALP )
+        prob->init_sol_falp();
+      else if ( searchMethod == CHAIN )
+        prob->chain_search();
+      else
+        prob->popmusic();
+    }
+    catch ( InternalException::Empty )
+    {
+      return new std::list<LabelPosition*>();
+    }
 
     return prob->getSolution( displayAll );
   }

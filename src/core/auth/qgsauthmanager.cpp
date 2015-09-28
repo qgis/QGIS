@@ -84,7 +84,7 @@ QSqlDatabase QgsAuthManager::authDbConnection() const
     authdb = QSqlDatabase::database( connectionname );
   }
   if ( !authdb.isOpen() )
-    authdb.open();
+    ( void )authdb.open();
 
   return authdb;
 }
@@ -3230,7 +3230,7 @@ bool QgsAuthManager::authDbQuery( QSqlQuery *query ) const
     return false;
 
   query->setForwardOnly( true );
-  query->exec();
+  ( void )query->exec();
 
   if ( query->lastError().isValid() )
   {
