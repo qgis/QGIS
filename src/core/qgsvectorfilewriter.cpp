@@ -1731,16 +1731,32 @@ OGRFeatureH QgsVectorFileWriter::createFeature( QgsFeature& feature )
 
     if ( geom && geom->wkbType() != mWkbType )
     {
-      // there's a problem when layer type is set as wkbtype Polygon
-      // although there are also features of type MultiPolygon
-      // (at least in OGR provider)
-      // If the feature's wkbtype is different from the layer's wkbtype,
-      // try to export it too.
-      //
-      // Btw. OGRGeometry must be exactly of the type of the geometry which it will receive
-      // i.e. Polygons can't be imported to OGRMultiPolygon
+      OGRGeometryH mGeom2 = NULL;
 
-      OGRGeometryH mGeom2 = createEmptyGeometry( geom->wkbType() );
+      // If requested WKB type is 25D and geometry WKB type is 3D,
+      // we must force the use of 25D.
+      if ( mWkbType >= QGis::WKBPoint25D && mWkbType <= QGis::WKBMultiPolygon25D )
+      {
+        QgsWKBTypes::Type wkbType = (QgsWKBTypes::Type)geom->wkbType();
+        if ( wkbType >= QgsWKBTypes::PointZ && wkbType <= QgsWKBTypes::MultiPolygonZ )
+        {
+          QGis::WkbType wkbType25d = (QGis::WkbType)(geom->wkbType() - QgsWKBTypes::PointZ + QgsWKBTypes::Point25D);
+          mGeom2 = createEmptyGeometry( wkbType25d );
+        }
+      }
+
+      if ( !mGeom2 )
+      {
+        // there's a problem when layer type is set as wkbtype Polygon
+        // although there are also features of type MultiPolygon
+        // (at least in OGR provider)
+        // If the feature's wkbtype is different from the layer's wkbtype,
+        // try to export it too.
+        //
+        // Btw. OGRGeometry must be exactly of the type of the geometry which it will receive
+        // i.e. Polygons can't be imported to OGRMultiPolygon
+        mGeom2 = createEmptyGeometry( geom->wkbType() );
+      }
 
       if ( !mGeom2 )
       {
