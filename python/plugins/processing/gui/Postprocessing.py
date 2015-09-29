@@ -77,18 +77,16 @@ def handleAlgorithmResults(alg, progress=None, showResults=True):
             ProcessingResults.addResult(out.description, out.value)
             htmlResults = True
         i += 1
+
+    QApplication.restoreOverrideCursor()
     if wrongLayers:
-        QApplication.restoreOverrideCursor()
-        dlg = MessageDialog()
-        dlg.setTitle(QCoreApplication.translate('Postprocessing', 'Problem loading output layers'))
         msg = "The following layers were not correctly generated.<ul>"
         msg += "".join(["<li>%s</li>" % lay for lay in wrongLayers]) + "</ul>"
-        msg += "You can check the <a href='log'>log messages</a> to find more information about the execution of the algorithm"
-        dlg.setMessage(msg)
-        dlg.exec_()
+        msg += "You can check the log messages to find more information about the execution of the algorithm"
+        progress.error(msg)
+
 
     if showResults and htmlResults and not wrongLayers:
-        QApplication.restoreOverrideCursor()
         dlg = ResultsDialog()
         dlg.exec_()
 

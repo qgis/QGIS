@@ -85,6 +85,7 @@ class AlgorithmDialogBase(BASE, WIDGET):
         self.showDebug = ProcessingConfig.getSetting(
             ProcessingConfig.SHOW_DEBUG_IN_DIALOG)
 
+
     def closeEvent(self, evt):
         self.settings.setValue("/Processing/dialogBase", self.saveGeometry())
 
@@ -107,7 +108,7 @@ class AlgorithmDialogBase(BASE, WIDGET):
 
     def setInfo(self, msg, error=False):
         if error:
-            self.txtLog.append('<span style="color:red">%s</span>' % msg)
+            self.txtLog.append('<span style="color:red"><br>%s<br></span>' % msg)
         else:
             self.txtLog.append(msg)
         QCoreApplication.processEvents()
