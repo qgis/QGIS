@@ -52,8 +52,13 @@ QgsAttributeForm::QgsAttributeForm( QgsVectorLayer* vl, const QgsFeature &featur
   initPython();
   setFeature( feature );
 
+  // Using attributeAdded() attributeDeleted() are not emited on all fields changes (e.g. layer fields changed,
+  // joined fields changed) -> use updatedFields() instead
+#if 0
   connect( vl, SIGNAL( attributeAdded( int ) ), this, SLOT( onAttributeAdded( int ) ) );
   connect( vl, SIGNAL( attributeDeleted( int ) ), this, SLOT( onAttributeDeleted( int ) ) );
+#endif
+  connect( vl, SIGNAL( updatedFields() ), this, SLOT( onUpdatedFields() ) );
   connect( vl, SIGNAL( beforeAddingExpressionField( QString ) ), this, SLOT( preventFeatureRefresh() ) );
   connect( vl, SIGNAL( beforeRemovingExpressionField( int ) ), this, SLOT( preventFeatureRefresh() ) );
 }
@@ -296,6 +301,35 @@ void QgsAttributeForm::onAttributeDeleted( int idx )
   {
     QgsAttributes attrs = mFeature.attributes();
     attrs.remove( idx );
+    mFeature.setFields( layer()->fields() );
+    mFeature.setAttributes( attrs );
+  }
+  init();
+  setFeature( mFeature );
+}
+
+void QgsAttributeForm::onUpdatedFields()
+{
+  mPreventFeatureRefresh = false;
+  if ( mFeature.isValid() )
+  {
+    QgsAttributes attrs( layer()->fields().size() );
+    for ( int i = 0; i < layer()->fields().size(); i++ )
+    {
+      int idx = mFeature.fields()->indexFromName( layer()->fields()[i].name() );
+      if ( idx != -1 )
+      {
+        attrs[i] = mFeature.attributes()[idx];
+        if ( mFeature.attributes()[idx].type() != layer()->fields()[i].type() )
+        {
+          attrs[i].convert( layer()->fields()[i].type() );
+        }
+      }
+      else
+      {
+        attrs[i] = QVariant( layer()->fields()[i].type() );
+      }
+    }
     mFeature.setFields( layer()->fields() );
     mFeature.setAttributes( attrs );
   }

@@ -173,6 +173,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     void onAttributeChanged( const QVariant& value );
     void onAttributeAdded( int idx );
     void onAttributeDeleted( int idx );
+    void onUpdatedFields();
 
     void preventFeatureRefresh();
     void synchronizeEnabledState();
