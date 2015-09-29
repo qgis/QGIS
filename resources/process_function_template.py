@@ -114,3 +114,4 @@ for f in sorted(glob.glob('resources/function_help/text/*')):
             n, content.read().replace("\\", "&#92;").replace('\\', '\\\\').replace('"', '\\"').replace('\n', '\\n')))
 
 cpp.write("\n}")
+cpp.close()
