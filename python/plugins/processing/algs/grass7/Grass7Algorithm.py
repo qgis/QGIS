@@ -390,20 +390,21 @@ class Grass7Algorithm(GeoAlgorithm):
 
             if isinstance(out, OutputVector):
                 filename = out.value
-                # FIXME: check if needed: -c   Also export features without category (not labeled). Otherwise only features with category are exported.
                 typeidx = self.getParameterValue(self.GRASS_OUTPUT_TYPE_PARAMETER)
                 outtype = ('auto' if typeidx
                            is None else self.OUTPUT_TYPES[typeidx])
                 if self.grass7Name == 'r.flow':
-                    command = 'v.out.ogr type=line layer=0 -c -e input=' + out.name + uniqueSufix
+                    command = 'v.out.ogr type=line layer=0 -c -s -e input=' + out.name + uniqueSufix
                 elif self.grass7Name == 'v.voronoi':
                     if '-l' in command:
-                        command = 'v.out.ogr type=line layer=0 -c -e input=' + out.name + uniqueSufix
+                        command = 'v.out.ogr type=line layer=0 -c -s -e input=' + out.name + uniqueSufix
                     else:
-                        command = 'v.out.ogr -s -e input=' + out.name + uniqueSufix
+                        command = 'v.out.ogr -c -s -e input=' + out.name + uniqueSufix
                         command += ' type=' + outtype
+                elif self.grass7Name == 'v.sample':
+                    command = 'v.out.ogr type=point -c -s -e input=' + out.name + uniqueSufix
                 else:
-                    command = 'v.out.ogr -s -e input=' + out.name + uniqueSufix
+                    command = 'v.out.ogr -c -s -e input=' + out.name + uniqueSufix
                     command += ' type=' + outtype
                 command += ' output="' + os.path.dirname(out.value) + '"'
                 command += ' format=ESRI_Shapefile'
