@@ -332,6 +332,14 @@ QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
     , showingShadowRects( false )
     , expression( NULL )
 {
+  *this = s;
+}
+
+QgsPalLayerSettings& QgsPalLayerSettings::operator=( const QgsPalLayerSettings & s )
+{
+  if ( this == &s )
+    return *this;
+
   // copy only permanent stuff
 
   enabled = s.enabled;
@@ -461,12 +469,17 @@ QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
   shadowBlendMode = s.shadowBlendMode;
 
   // data defined
-  dataDefinedProperties = s.dataDefinedProperties;
+  QMap< QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* >::const_iterator it = s.dataDefinedProperties.constBegin();
+  for ( ; it != s.dataDefinedProperties.constEnd(); ++it )
+  {
+    dataDefinedProperties.insert( it.key(), it.value() ? new QgsDataDefined( *it.value() ) : 0 );
+  }
   mDataDefinedNames = s.mDataDefinedNames;
 
   // scale factors
   vectorScaleFactor = s.vectorScaleFactor;
   rasterCompressFactor = s.rasterCompressFactor;
+  return *this;
 }
 
 
@@ -478,7 +491,13 @@ QgsPalLayerSettings::~QgsPalLayerSettings()
   delete expression;
   delete extentGeom;
 
-  // clear pointers to QgsDataDefined objects
+  // delete all QgsDataDefined objects (which also deletes their QgsExpression object)
+  QMap< QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* >::iterator it = dataDefinedProperties.begin();
+  for ( ; it != dataDefinedProperties.constEnd(); ++it )
+  {
+    delete( it.value() );
+    it.value() = 0;
+  }
   dataDefinedProperties.clear();
 }
 

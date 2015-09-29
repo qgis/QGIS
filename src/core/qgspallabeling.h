@@ -67,6 +67,9 @@ class CORE_EXPORT QgsPalLayerSettings
     QgsPalLayerSettings( const QgsPalLayerSettings& s );
     ~QgsPalLayerSettings();
 
+    //! copy operator - only copies the permanent members
+    QgsPalLayerSettings &operator=( const QgsPalLayerSettings & s );
+
     //! @note added in 2.4
     static QgsPalLayerSettings fromLayer( QgsVectorLayer* layer );
 
@@ -534,6 +537,8 @@ class CORE_EXPORT QgsPalLayerSettings
     bool dataDefinedUseExpression( QgsPalLayerSettings::DataDefinedProperties p ) const;
 
     /** Map of current data defined properties
+     *
+     * Pointers to QgsDataDefined should never be null, the pointers are owned by this class
      */
     QMap< QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* > dataDefinedProperties;
 

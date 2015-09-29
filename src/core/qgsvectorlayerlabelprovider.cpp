@@ -102,15 +102,6 @@ void QgsVectorLayerLabelProvider::init()
 
 QgsVectorLayerLabelProvider::~QgsVectorLayerLabelProvider()
 {
-  // delete all QgsDataDefined objects (which also deletes their QgsExpression object)
-  QMap< QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* >::iterator it = mSettings.dataDefinedProperties.begin();
-  for ( ; it != mSettings.dataDefinedProperties.constEnd(); ++it )
-  {
-    delete( it.value() );
-    it.value() = 0;
-  }
-  mSettings.dataDefinedProperties.clear();
-
   qDeleteAll( mLabels );
 
   if ( mOwnsSource )
