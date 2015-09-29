@@ -59,29 +59,15 @@ QgsGrassModuleInputModel::QgsGrassModuleInputModel( QObject *parent )
     : QStandardItemModel( parent )
     , mWatcher( 0 )
 {
+  QgsDebugMsg( "entered" );
   setColumnCount( 1 );
-  reload();
 
-  QString locationPath = QgsGrass::getDefaultLocationPath();
   mWatcher = new QFileSystemWatcher( this );
-  mWatcher->addPath( locationPath );
-
-  // Watching all dirs in loacation because a dir may become a mapset later, when WIND is created
-
-  //QStringList mapsets = QgsGrass::mapsets( QgsGrass::getDefaultGisdbase(), QgsGrass::getDefaultLocation() );
-  QStringList dirNames = locationDirNames();
-  foreach ( QString dirName, dirNames )
-  {
-    QString dirPath = locationPath + "/" + dirName;
-    // Watch the dir in any case, WIND mabe created later
-    mWatcher->addPath( dirPath );
-
-    foreach ( QString watchedDir, watchedDirs() )
-    {
-      watch( dirPath + "/" + watchedDir );
-    }
-  }
   connect( mWatcher, SIGNAL( directoryChanged( const QString & ) ), SLOT( onDirectoryChanged( const QString & ) ) );
+
+  connect( QgsGrass::instance(), SIGNAL( mapsetChanged() ), SLOT( onMapsetChanged() ) );
+
+  reload();
 }
 
 void QgsGrassModuleInputModel::onDirectoryChanged( const QString & path )
@@ -242,11 +228,43 @@ void QgsGrassModuleInputModel::refreshMapset( QStandardItem *mapsetItem, const Q
 
 void QgsGrassModuleInputModel::reload()
 {
+  QgsDebugMsg( "entered" );
+  mWatcher->removePaths( mWatcher->files() );
+  mWatcher->removePaths( mWatcher->directories() );
+
   clear();
+
+  mLocationPath = QgsGrass::getDefaultLocationPath();
+
   QStringList mapsets = QgsGrass::mapsets( QgsGrass::getDefaultGisdbase(), QgsGrass::getDefaultLocation() );
   foreach ( QString mapset, mapsets )
   {
     addMapset( mapset );
+  }
+
+  mWatcher->addPath( mLocationPath );
+
+  // Watching all dirs in location because a dir may become a mapset later, when WIND is created
+  QStringList dirNames = locationDirNames();
+  foreach ( QString dirName, dirNames )
+  {
+    QString dirPath = mLocationPath + "/" + dirName;
+    // Watch the dir in any case, WIND mabe created later
+    mWatcher->addPath( dirPath );
+
+    foreach ( QString watchedDir, watchedDirs() )
+    {
+      watch( dirPath + "/" + watchedDir );
+    }
+  }
+}
+
+void QgsGrassModuleInputModel::onMapsetChanged()
+{
+  QgsDebugMsg( "entered" );
+  if ( mLocationPath != QgsGrass::getDefaultLocationPath() )
+  {
+    reload();
   }
 }
 
@@ -263,7 +281,6 @@ QgsGrassModuleInputModel *QgsGrassModuleInputModel::instance()
 
 QVariant QgsGrassModuleInputModel::data( const QModelIndex & index, int role ) const
 {
-  QgsDebugMsg( "entered" );
   QVariant data = QStandardItemModel::data( index, role );
   if ( role == Qt::DisplayRole  || role == Qt::EditRole ) // EditRole for combo
   {
@@ -306,7 +323,6 @@ bool QgsGrassModuleInputProxy::filterAcceptsRow( int sourceRow, const QModelInde
 
 bool QgsGrassModuleInputProxy::lessThan( const QModelIndex & left, const QModelIndex & right ) const
 {
-  Q_UNUSED( right )
   if ( mSourceModel )
   {
     // keep current mapset on top
