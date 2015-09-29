@@ -93,8 +93,7 @@ QStringList QgsVisibilityPresetCollection::presets() const
 
 QStringList QgsVisibilityPresetCollection::presetVisibleLayers( const QString& name ) const
 {
-  QSet<QString> visibleIds = mPresets.value( name ).mVisibleLayerIDs;
-  return visibleIds.toList();
+  return mPresets.value( name ).mVisibleLayerIDs;
 }
 
 
@@ -275,7 +274,7 @@ void QgsVisibilityPresetCollection::registryLayersRemoved( QStringList layerIDs 
     Q_FOREACH ( const QString& presetName, mPresets.keys() )
     {
       PresetRecord& rec = mPresets[presetName];
-      rec.mVisibleLayerIDs.remove( layerID );
+      rec.mVisibleLayerIDs.removeAll( layerID );
       rec.mPerLayerCheckedLegendSymbols.remove( layerID );
       rec.mPerLayerCurrentStyle.remove( layerID );
     }

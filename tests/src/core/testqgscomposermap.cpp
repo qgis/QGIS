@@ -350,8 +350,8 @@ void TestQgsComposerMap::dataDefinedStyles()
   mComposition->addComposerMap( mComposerMap );
 
   QgsVisibilityPresetCollection::PresetRecord rec;
-  rec.mVisibleLayerIDs.insert( mPointsLayer->id() );
-  rec.mVisibleLayerIDs.insert( mLinesLayer->id() );
+  rec.mVisibleLayerIDs << mPointsLayer->id();
+  rec.mVisibleLayerIDs << mLinesLayer->id();
 
   QgsProject::instance()->visibilityPresetCollection()->insert( "test preset", rec );
 

@@ -22,8 +22,8 @@ class QgsVisibilityPresetCollection : QObject
         bool operator==( const QgsVisibilityPresetCollection::PresetRecord& other ) const;
         bool operator!=( const QgsVisibilityPresetCollection::PresetRecord& other ) const;
 
-      //! List of layers that are visible
-      QSet<QString> mVisibleLayerIDs;
+      //! Ordered list of layers that are visible
+      QStringList mVisibleLayerIDs;
       /** For layers that have checkable legend symbols and not all symbols are checked - list which ones are
        * @note not available in Python bindings
        */

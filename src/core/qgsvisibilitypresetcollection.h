@@ -47,7 +47,7 @@ class CORE_EXPORT QgsVisibilityPresetCollection : public QObject
 
         bool operator==( const PresetRecord& other ) const
         {
-          return mVisibleLayerIDs == other.mVisibleLayerIDs
+          return mVisibleLayerIDs.toSet() == other.mVisibleLayerIDs.toSet()
                  && mPerLayerCheckedLegendSymbols == other.mPerLayerCheckedLegendSymbols
                  && mPerLayerCurrentStyle == other.mPerLayerCurrentStyle;
         }
@@ -56,8 +56,8 @@ class CORE_EXPORT QgsVisibilityPresetCollection : public QObject
           return !( *this == other );
         }
 
-        //! List of layers that are visible
-        QSet<QString> mVisibleLayerIDs;
+        //! Ordered list of layers that are visible
+        QStringList mVisibleLayerIDs;
         /** For layers that have checkable legend symbols and not all symbols are checked - list which ones are
          * @note not available in Python bindings
          */
