@@ -38,6 +38,7 @@
 #include "qgsgenericprojectionselector.h"
 #include "qgsproject.h"
 #include "qgsvisibilitypresetcollection.h"
+#include "qgsvisibilitypresets.h"
 #include "qgisgui.h"
 
 #include <QMessageBox>
@@ -302,7 +303,7 @@ void QgsComposerMapWidget::aboutToShowVisibilityPresetsMenu()
   {
     QAction* a = menu->addAction( presetName, this, SLOT( visibilityPresetSelected() ) );
     a->setCheckable( true );
-    QStringList layers = QgsProject::instance()->visibilityPresetCollection()->presetVisibleLayers( presetName );
+    QStringList layers = QgsVisibilityPresets::instance()->orderedPresetVisibleLayers( presetName );
     QMap<QString, QString> styles = QgsProject::instance()->visibilityPresetCollection()->presetStyleOverrides( presetName );
     if ( layers == mComposerMap->layerSet() && styles == mComposerMap->layerStyleOverrides() )
       a->setChecked( true );
@@ -319,7 +320,7 @@ void QgsComposerMapWidget::visibilityPresetSelected()
     return;
 
   QString presetName = action->text();
-  QStringList lst = QgsProject::instance()->visibilityPresetCollection()->presetVisibleLayers( presetName );
+  QStringList lst = QgsVisibilityPresets::instance()->orderedPresetVisibleLayers( presetName );
   if ( mComposerMap )
   {
     mKeepLayerListCheckBox->setChecked( true );
