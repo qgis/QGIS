@@ -32,7 +32,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-276</y>
+        <y>0</y>
         <width>625</width>
         <height>767</height>
        </rect>
@@ -72,7 +72,7 @@
               <number>2</number>
              </property>
              <item>
-              <widget class="QComboBox" name="comboBoxInputLayer"/>
+              <widget class="QgsMapLayerComboBox" name="comboBoxInputLayer"/>
              </item>
              <item>
               <widget class="QCheckBox" name="checkBoxInputSelectedOnly">
@@ -616,6 +616,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsMapLayerComboBox</class>
+   <extends>QComboBox</extends>
+   <header location="global">qgsmaplayercombobox.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="../pluginres.qrc"/>
  </resources>

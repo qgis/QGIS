@@ -45,6 +45,7 @@ QgsGeometryCheckerSetupTab::QgsGeometryCheckerSetupTab( QgisInterface* iface , Q
   ui.setupUi( this );
   ui.progressBar->hide();
   ui.labelStatus->hide();
+  ui.comboBoxInputLayer->setFilters( QgsMapLayerProxyModel::HasGeometry );
   mRunButton = ui.buttonBox->addButton( tr( "Run" ), QDialogButtonBox::ActionRole );
   mAbortButton = new QPushButton( tr( "Abort" ) );
   mRunButton->setEnabled( false );
@@ -107,8 +108,8 @@ QgsVectorLayer* QgsGeometryCheckerSetupTab::getSelectedLayer()
   {
     return 0;
   }
-  QString inputLayerId = ui.comboBoxInputLayer->itemData( inputIdx ).toString();
-  return static_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( inputLayerId ) );
+  QgsVectorLayer *layer = dynamic_cast<QgsVectorLayer*>( ui.comboBoxInputLayer->currentLayer() );
+  return layer;
 }
 
 void QgsGeometryCheckerSetupTab::validateInput()
