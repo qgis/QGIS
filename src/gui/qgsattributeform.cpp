@@ -45,6 +45,7 @@ QgsAttributeForm::QgsAttributeForm( QgsVectorLayer* vl, const QgsFeature &featur
     , mFormNr( sFormCounter++ )
     , mIsSaving( false )
     , mIsAddDialog( false )
+    , mPreventFeatureRefresh( false )
     , mEditCommandMessage( tr( "Attributes changed" ) )
 {
   init();
@@ -53,6 +54,8 @@ QgsAttributeForm::QgsAttributeForm( QgsVectorLayer* vl, const QgsFeature &featur
 
   connect( vl, SIGNAL( attributeAdded( int ) ), this, SLOT( onAttributeAdded( int ) ) );
   connect( vl, SIGNAL( attributeDeleted( int ) ), this, SLOT( onAttributeDeleted( int ) ) );
+  connect( vl, SIGNAL( beforeAddingExpressionField( QString ) ), this, SLOT( preventFeatureRefresh() ) );
+  connect( vl, SIGNAL( beforeRemovingExpressionField( int ) ), this, SLOT( preventFeatureRefresh() ) );
 }
 
 QgsAttributeForm::~QgsAttributeForm()
@@ -274,7 +277,7 @@ void QgsAttributeForm::onAttributeChanged( const QVariant& value )
 
 void QgsAttributeForm::onAttributeAdded( int idx )
 {
-  Q_UNUSED( idx ) // only used for Q_ASSERT
+  mPreventFeatureRefresh = false;
   if ( mFeature.isValid() )
   {
     QgsAttributes attrs = mFeature.attributes();
@@ -288,6 +291,7 @@ void QgsAttributeForm::onAttributeAdded( int idx )
 
 void QgsAttributeForm::onAttributeDeleted( int idx )
 {
+  mPreventFeatureRefresh = false;
   if ( mFeature.isValid() )
   {
     QgsAttributes attrs = mFeature.attributes();
@@ -299,9 +303,14 @@ void QgsAttributeForm::onAttributeDeleted( int idx )
   setFeature( mFeature );
 }
 
+void QgsAttributeForm::preventFeatureRefresh()
+{
+  mPreventFeatureRefresh = true;
+}
+
 void QgsAttributeForm::refreshFeature()
 {
-  if ( mLayer->isEditable() || !mFeature.isValid() )
+  if ( mPreventFeatureRefresh || mLayer->isEditable() || !mFeature.isValid() )
     return;
 
   // reload feature if layer changed although not editable

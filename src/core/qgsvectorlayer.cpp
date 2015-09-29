@@ -2954,6 +2954,7 @@ const QList< QgsVectorJoinInfo > QgsVectorLayer::vectorJoins() const
 
 int QgsVectorLayer::addExpressionField( const QString& exp, const QgsField& fld )
 {
+  emit beforeAddingExpressionField( fld.name() );
   mExpressionFieldBuffer->addExpression( exp, fld );
   updateFields();
   int idx = mUpdatedFields.indexFromName( fld.name() );
@@ -2963,6 +2964,7 @@ int QgsVectorLayer::addExpressionField( const QString& exp, const QgsField& fld 
 
 void QgsVectorLayer::removeExpressionField( int index )
 {
+  emit beforeRemovingExpressionField( index );
   int oi = mUpdatedFields.fieldOriginIndex( index );
   mExpressionFieldBuffer->removeExpression( oi );
   updateFields();
