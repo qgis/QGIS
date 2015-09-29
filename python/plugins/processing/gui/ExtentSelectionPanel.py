@@ -109,7 +109,7 @@ class ExtentSelectionPanel(BASE, WIDGET):
                                   QgsVectorLayer)):
                         layer = param.value
                     else:
-                        layer = dataobjects.getObjectFromUri(param.value)
+                        layer = dataobjects.getObject(param.value)
                     if layer:
                         found = True
                         self.addToRegion(layer, first)
@@ -117,7 +117,7 @@ class ExtentSelectionPanel(BASE, WIDGET):
                 elif isinstance(param, ParameterMultipleInput):
                     layers = param.value.split(';')
                     for layername in layers:
-                        layer = dataobjects.getObjectFromUri(layername, first)
+                        layer = dataobjects.getObject(layername, first)
                         if layer:
                             found = True
                             self.addToRegion(layer, first)
