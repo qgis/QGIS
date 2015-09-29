@@ -561,7 +561,7 @@ void QgsGrassProvider::thaw()
 #endif
 }
 
-bool QgsGrassProvider::closeEdit( bool newMap )
+bool QgsGrassProvider::closeEdit( bool newMap, QgsVectorLayer *vectorLayer )
 {
   QgsDebugMsg( "entered" );
 
@@ -576,6 +576,10 @@ bool QgsGrassProvider::closeEdit( bool newMap )
   if ( mLayer->map()->closeEdit( newMap ) )
   {
     loadMapInfo();
+    if ( vectorLayer )
+    {
+      vectorLayer->updateFields();
+    }
     return true;
   }
   return false;
@@ -1004,6 +1008,9 @@ void QgsGrassProvider::startEditing( QgsVectorLayer *vectorLayer )
   connect( vectorLayer, SIGNAL( editingStopped() ), SLOT( onEditingStopped() ) );
 
   connect( vectorLayer->undoStack(), SIGNAL( indexChanged( int ) ), this, SLOT( onUndoIndexChanged( int ) ) );
+
+  // let qgis know (attribute table etc.) that we added topo symbol field
+  vectorLayer->updateFields();
 
   QgsDebugMsg( "edit started" );
 }
@@ -1465,7 +1472,8 @@ void QgsGrassProvider::onBeforeRollBack()
 void QgsGrassProvider::onEditingStopped()
 {
   QgsDebugMsg( "entered" );
-  closeEdit( false );
+  QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( sender() );
+  closeEdit( false, vectorLayer );
 }
 
 // -------------------------------------------------------------------------------

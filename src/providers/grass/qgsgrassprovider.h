@@ -178,7 +178,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
      *   @return true success
      *   @return false failed to close vector or vector was not in update mode
      */
-    bool closeEdit( bool newMap = false );
+    bool closeEdit( bool newMap = false, QgsVectorLayer *vectorLayer = 0 );
 
     /** Get current number of lines.
      *   @return number of lines
