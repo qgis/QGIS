@@ -148,7 +148,6 @@ class GUI_EXPORT QgsAuthConfigUriEdit : public QDialog, private Ui::QgsAuthConfi
     QString mAuthCfg;
     QString mDataUri;
     QString mDataUriOrig;
-    QPushButton *mResetButton;
 };
 
 #endif // QGSAUTHCONFIGSELECT_H
