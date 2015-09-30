@@ -2157,9 +2157,9 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
 
 
   // NOTE: this should come AFTER any option that affects font metrics
-  QFontMetricsF* labelFontMetrics = new QFontMetricsF( labelFont );
+  QScopedPointer<QFontMetricsF> labelFontMetrics( new QFontMetricsF( labelFont ) );
   double labelX, labelY; // will receive label size
-  calculateLabelSize( labelFontMetrics, labelText, labelX, labelY, mCurFeat, &context );
+  calculateLabelSize( labelFontMetrics.data(), labelText, labelX, labelY, mCurFeat, &context );
 
 
   // maximum angle between curved label characters (hardcoded defaults used in QGIS <2.0)
@@ -2611,9 +2611,8 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
 
   // TODO: only for placement which needs character info
   // account for any data defined font metrics adjustments
-  lf->calculateInfo( placement == QgsPalLayerSettings::Curved, labelFontMetrics, xform, rasterCompressFactor, maxcharanglein, maxcharangleout );
+  lf->calculateInfo( placement == QgsPalLayerSettings::Curved, labelFontMetrics.data(), xform, rasterCompressFactor, maxcharanglein, maxcharangleout );
   // for labelFeature the LabelInfo is passed to feat when it is registered
-  delete labelFontMetrics;
 
   // TODO: allow layer-wide feature dist in PAL...?
 
