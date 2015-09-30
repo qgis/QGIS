@@ -48,7 +48,6 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
             #( self.recurseCheck, SIGNAL( "stateChanged( int )" ),
             (self.outSelector, SIGNAL("filenameChanged()")),
             (self.indexFieldEdit, SIGNAL("textChanged( const QString & )"), self.indexFieldCheck),
-            (self.absolutePathCheck, SIGNAL("stateChanged( int )"), None, 1500),
             (self.skipDifferentProjCheck, SIGNAL("stateChanged( int )"), None, 1500)
         ])
 
@@ -77,8 +76,6 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         if self.indexFieldCheck.isChecked() and self.indexFieldEdit.text():
             arguments.append("-tileindex")
             arguments.append(self.indexFieldEdit.text())
-        if self.absolutePathCheck.isChecked():
-            arguments.append("-write_absolute_path")
         if self.skipDifferentProjCheck.isChecked():
             arguments.append("-skip_different_projection")
         arguments.append(self.getOutputFileName())
