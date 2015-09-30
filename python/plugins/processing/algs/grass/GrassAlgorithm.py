@@ -300,21 +300,22 @@ class GrassAlgorithm(GeoAlgorithm):
         for param in self.parameters:
             if param.value is None or param.value == '':
                 continue
-            if param.name in [self.GRASS_REGION_CELLSIZE_PARAMETER, self.GRASS_REGION_EXTENT_PARAMETER, self.GRASS_MIN_AREA_PARAMETER, self.GRASS_SNAP_TOLERANCE_PARAMETER, self.GRASS_OUTPUT_TYPE_PARAMETER, self.GRASS_REGION_ALIGN_TO_RESOLUTION]:
+            if param.name in [self.GRASS_REGION_CELLSIZE_PARAMETER, self.GRASS_REGION_EXTENT_PARAMETER,
+                              self.GRASS_MIN_AREA_PARAMETER, self.GRASS_SNAP_TOLERANCE_PARAMETER,
+                              self.GRASS_OUTPUT_TYPE_PARAMETER, self.GRASS_REGION_ALIGN_TO_RESOLUTION]:
                 continue
             if isinstance(param, (ParameterRaster, ParameterVector)):
                 value = param.value
                 if value in self.exportedLayers.keys():
-                    command += ' ' + param.name + '=' \
-                        + self.exportedLayers[value]
+                    command += ' %s="%s"' %(param.name, self.exportedLayers[value])
                 else:
-                    command += ' ' + param.name + '=' + value
+                    command += ' %s="%s"' % (param.name, value)
             elif isinstance(param, ParameterMultipleInput):
                 s = param.value
                 for layer in self.exportedLayers.keys():
                     s = s.replace(layer, self.exportedLayers[layer])
                 s = s.replace(';', ',')
-                command += ' ' + param.name + '=' + s
+                command += ' %s="%s"' % (param.name, s)
             elif isinstance(param, ParameterBoolean):
                 if param.value:
                     command += ' ' + param.name
@@ -378,7 +379,7 @@ class GrassAlgorithm(GeoAlgorithm):
                 command = 'v.out.ogr -s -c -e -z input=' + out.name + uniqueSufix
                 command += ' dsn="' + os.path.dirname(filename) + '"'
                 command += ' format=ESRI_Shapefile'
-                command += ' olayer=' + os.path.splitext(os.path.basename(filename))[0]
+                command += ' olayer="%s"' % os.path.splitext(os.path.basename(filename))[0]
                 typeidx = \
                     self.getParameterValue(self.GRASS_OUTPUT_TYPE_PARAMETER)
                 outtype = ('auto' if typeidx
@@ -439,8 +440,8 @@ class GrassAlgorithm(GeoAlgorithm):
         command += ' min_area=' + unicode(min_area)
         snap = self.getParameterValue(self.GRASS_SNAP_TOLERANCE_PARAMETER)
         command += ' snap=' + unicode(snap)
-        command += ' dsn="' + os.path.dirname(filename) + '"'
-        command += ' layer=' + os.path.basename(filename)[:-4]
+        command += ' dsn="%s"' % os.path.dirname(filename)
+        command += ' layer="%s"' % os.path.splitext(os.path.basename(filename)[:-4])[0]
         command += ' output=' + destFilename
         command += ' --overwrite -o'
         return command
