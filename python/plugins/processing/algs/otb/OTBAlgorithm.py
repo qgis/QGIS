@@ -166,15 +166,17 @@ class OTBAlgorithm(GeoAlgorithm):
                                        self.tr('Could not open OTB algorithm: %s\n%s' % (self.descriptionFile, line)))
                 raise e
 
+    def checkBeforeOpeningParametersDialog(self):
+        return OTBUtils.checkOtbConfiguration()
+
     def processAlgorithm(self, progress):
         currentOs = os.name
 
+        msg = OTBUtils.checkOtbConfiguration()
+        if msg:
+            raise GeoAlgorithmExecutionException(msg)
+
         path = OTBUtils.otbPath()
-        libpath = OTBUtils.otbLibPath()
-        if path == "" or libpath == "":
-            raise GeoAlgorithmExecutionException(
-                self.tr('OTB folder is not configured. Please configure it '
-                        'before running OTB algorithms.'))
 
         commands = []
         commands.append(path + os.sep + self.cliName)

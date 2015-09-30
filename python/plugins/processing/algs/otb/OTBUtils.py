@@ -144,6 +144,16 @@ class OTBUtils:
 
         ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
 
+
+    @staticmethod
+    def checkOtbConfiguration():
+        path = OTBUtils.otbPath()
+        libpath = OTBUtils.otbLibPath()
+        configurationOk = bool(path) and bool(libpath)
+        if not configurationOk:
+            return OTBUtils.tr('OTB folder is not configured. Please configure it '
+                        'before running OTB algorithms.')
+
     @staticmethod
     def tr(string, context=''):
         if context == '':
