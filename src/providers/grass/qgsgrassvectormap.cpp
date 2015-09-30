@@ -318,6 +318,7 @@ bool QgsGrassVectorMap::closeEdit( bool newMap )
   mOldLids.clear();
   mNewLids.clear();
   mOldGeometries.clear();
+  mNewCats.clear();
 
   // Mapset must be set before Vect_close()
   QgsGrass::setMapset( mGrassObject.gisdbase(), mGrassObject.location(), mGrassObject.mapset() );

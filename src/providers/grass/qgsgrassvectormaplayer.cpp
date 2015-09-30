@@ -772,7 +772,8 @@ void QgsGrassVectorMapLayer::insertCats( QString &error )
     {
       int cat;
       Vect_cidx_get_cat_by_index( map()->map(), cidxIndex, i, &cat, 0, 0 );
-      insertAttributes( cat, error );
+      QgsFeature feature;
+      insertAttributes( cat, feature, error );
       if ( !error.isEmpty() )
       {
         QgsDebugMsg( error );
@@ -782,13 +783,38 @@ void QgsGrassVectorMapLayer::insertCats( QString &error )
   }
 }
 
-void QgsGrassVectorMapLayer::insertAttributes( int cat, QString &error )
+void QgsGrassVectorMapLayer::insertAttributes( int cat, const QgsFeature &feature, QString &error )
 {
   QgsDebugMsg( QString( "mField = %1 cat = %2" ).arg( mField ).arg( cat ) );
 
   if ( mHasTable )
   {
-    QString query = QString( "INSERT INTO %1 ( %2 ) VALUES ( %3 )" ).arg( mFieldInfo->table ).arg( mFieldInfo->key ).arg( cat );
+    QStringList names;
+    QStringList values;
+
+    names << mFieldInfo->key;
+    values << QString::number( cat );
+
+    if ( feature.isValid() && feature.fields() )
+    {
+      // append feature attributes if not null
+      for ( int i = 0; i < feature.fields()->size(); i++ )
+      {
+        QString name = feature.fields()->at( i ).name();
+        if ( name == mFieldInfo->key )
+        {
+          continue;
+        }
+        QVariant valueVariant = feature.attributes().value( i );
+        if ( !valueVariant.isNull() )
+        {
+          names << name;
+          values << quotedValue( valueVariant );
+        }
+      }
+    }
+
+    QString query = QString( "INSERT INTO %1 ( %2 ) VALUES ( %3 )" ).arg( mFieldInfo->table ).arg( names.join( ", " ) ).arg( values.join( "," ) );
     executeSql( query, error );
     if ( error.isEmpty() )
     {
@@ -798,6 +824,77 @@ void QgsGrassVectorMapLayer::insertAttributes( int cat, QString &error )
         values << QVariant();
       }
       mAttributes[cat] = values;
+    }
+  }
+}
+
+void QgsGrassVectorMapLayer::updateAttributes( int cat, const QgsFeature &feature, QString &error, bool nullValues )
+{
+  QgsDebugMsg( QString( "mField = %1 cat = %2" ).arg( mField ).arg( cat ) );
+
+  if ( !mHasTable )
+  {
+    error = tr( "Table does not exit" );
+    return;
+  }
+  if ( !feature.isValid() || !feature.fields() )
+  {
+    error = tr( "Feature invalid" );
+    return;
+  }
+
+  QStringList updates;
+  QMap<int, QVariant> cacheUpdates;
+  // append feature attributes if not null
+  for ( int i = 0; i < feature.fields()->size(); i++ )
+  {
+    QString name = feature.fields()->at( i ).name();
+    if ( name == mFieldInfo->key )
+    {
+      continue;
+    }
+    QVariant valueVariant = feature.attributes().value( i );
+
+    int cacheIndex = mAttributeFields.indexFromName( name );
+
+    if ( valueVariant.isNull() && !nullValues )
+    {
+      // update feature null values by existing values
+      if ( cacheIndex != -1 )
+      {
+        feature.attributes()[i] = mAttributes[cat][cacheIndex];
+      }
+      continue;
+    }
+
+    updates << name + " = " + quotedValue( valueVariant );
+
+
+    if ( cacheIndex == -1 )
+    {
+      QgsDebugMsg( "cannot find cache index for attribute " + name );
+    }
+    else
+    {
+      cacheUpdates[cacheIndex] = valueVariant;
+    }
+  }
+
+  if ( updates.isEmpty() )
+  {
+    QgsDebugMsg( "nothing to update" );
+    return;
+  }
+
+  QString query = QString( "UPDATE %1 SET %2 WHERE %3 = %4" ).arg( mFieldInfo->table )
+                  .arg( updates.join( ", " ) ).arg( mFieldInfo->key ).arg( cat );
+
+  executeSql( query, error );
+  if ( error.isEmpty() )
+  {
+    Q_FOREACH ( int index, cacheUpdates.keys() )
+    {
+      mAttributes[cat][index] = cacheUpdates[index];
     }
   }
 }
@@ -912,6 +1009,8 @@ void QgsGrassVectorMapLayer::changeAttributeValue( int cat, QgsField field, QVar
     QgsDebugMsg( error );
   }
   db_free_string( &dbstr );
+
+  // TODO: update cached attributes because another feature may share the same cat
 
   return;
 }

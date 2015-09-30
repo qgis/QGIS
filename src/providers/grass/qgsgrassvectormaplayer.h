@@ -23,6 +23,7 @@
 #include <QPair>
 
 #include "qgsfield.h"
+#include "qgsfeature.h"
 
 extern "C"
 {
@@ -65,6 +66,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapLayer : public QObject
 
     bool hasTable() { return mHasTable; }
     int keyColumn() { return mKeyColumn; }
+    QString keyColumnName() { return mFieldInfo ? mFieldInfo->key : QString(); }
     QList< QPair<double, double> > minMax() { return mMinMax; }
     int userCount() { return mUsers; }
     void addUser();
@@ -96,7 +98,13 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapLayer : public QObject
 
     /** Insert new attributes to the table (it does not check if attributes already exists)
      *   @param cat */
-    void insertAttributes( int cat, QString &error );
+    void insertAttributes( int cat, const QgsFeature &feature, QString &error );
+
+    /** Update existing record by values from feature.
+     *  @param cat
+     *  @param nullValues override all values, if false, only non empty values are used for update
+     */
+    void updateAttributes( int cat, const QgsFeature &feature, QString &error, bool nullValues = false );
 
     /** Delete attributes from the table
      *   @param cat

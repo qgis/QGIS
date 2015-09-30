@@ -1132,28 +1132,111 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
     if ( FID_IS_NEW( fid ) )
     {
       // add new category
+      // TODO: add category also to boundary if user defined at least one attribute?
       if ( type != GV_BOUNDARY )
       {
         // TODO: redo of deleted new features - save new cats somewhere,
         // resetting fid probably is not possible because it is stored in undo commands and used in buffer maps
 
-        QgsDebugMsg( QString( "get new cat for mCidxFieldIndex = %1" ).arg( mCidxFieldIndex ) );
-        if ( mCidxFieldIndex == -1 )
+        // It may be that user manualy entered cat value
+        const QgsFeature &feature = mEditBuffer->addedFeatures()[fid];
+        int catIndex = feature.fields()->indexFromName( mLayer->keyColumnName() );
+        if ( catIndex != -1 )
         {
-          // No features with this field yet in map
-          newCat = 1;
+          QVariant userCatVariant = feature.attributes().value( catIndex );
+          if ( !userCatVariant.isNull() )
+          {
+            newCat = userCatVariant.toInt();
+            QgsDebugMsg( QString( "user defined newCat = %1" ).arg( newCat ) );
+          }
         }
-        else
+        if ( newCat == 0 )
         {
-          newCat = cidxGetMaxCat( mCidxFieldIndex ) + 1;
+          QgsDebugMsg( QString( "get new cat for mCidxFieldIndex = %1" ).arg( mCidxFieldIndex ) );
+          if ( mCidxFieldIndex == -1 )
+          {
+            // No features with this field yet in map
+            newCat = 1;
+          }
+          else
+          {
+            newCat = cidxGetMaxCat( mCidxFieldIndex ) + 1;
+          }
         }
         QgsDebugMsg( QString( "newCat = %1" ).arg( newCat ) );
         Vect_cat_set( cats, mLayerField, newCat );
         QString error;
-        mLayer->insertAttributes( newCat, error );
-        if ( !error.isEmpty() )
+
+        // if the cat is user defined, the record may alredy exist
+        if ( mLayer->attributes().contains( newCat ) )
         {
-          QgsGrass::warning( error );
+          QgsDebugMsg( "record exists" );
+          // TODO: open warning dialog?
+          // For now we are expecting that user knows what he is doing.
+          // We update existing record by non null values and set feature null values to existing values
+          mLayer->updateAttributes( newCat, feature, error ); // also updates feature by existing non null attributes
+
+          // There may be other new features with the same cat which we have to update
+          QgsFeatureMap& addedFeatures = const_cast<QgsFeatureMap&>( mEditBuffer->addedFeatures() );
+          Q_FOREACH ( QgsFeatureId addedFid, addedFeatures.keys() )
+          {
+            if ( addedFid == fid )
+            {
+              continue;
+            }
+            int addedCat = mLayer->map()->newCats().value( addedFid ); // it should always exist
+            QgsDebugMsg( QString( "addedFid = %1 addedCat = %2" ).arg( addedFid ).arg( addedCat ) );
+            if ( addedCat == newCat )
+            {
+              QgsFeature addedFeature = addedFeatures[addedFid];
+              // TODO: better to update form mLayer->attributes() ?
+              for ( int i = 0; i < feature.fields()->size(); i++ )
+              {
+                if ( feature.fields()->field( i ).name() == QgsGrassVectorMap::topoSymbolFieldName() )
+                {
+                  continue;
+                }
+                if ( feature.attributes()[i].isNull() )
+                {
+                  continue;
+                }
+                addedFeature.setAttribute( i, feature.attributes()[i] );
+              }
+              addedFeatures[addedFid] = addedFeature;
+            }
+          }
+
+          // Update all changed attributes
+          // TODO: table does not get refreshed immediately
+          QgsChangedAttributesMap &changedAttributes = const_cast<QgsChangedAttributesMap &>( mEditBuffer->changedAttributeValues() );
+          Q_FOREACH ( QgsFeatureId changedFid, changedAttributes.keys() )
+          {
+            int changedCat = QgsGrassFeatureIterator::catFromFid( changedFid );
+            int realChangedCat = changedCat;
+            if ( mLayer->map()->newCats().contains( changedFid ) )
+            {
+              realChangedCat = mLayer->map()->newCats().value( changedFid );
+            }
+            QgsDebugMsg( QString( "changedFid = %1 changedCat = %2 realChangedCat = %3" )
+                         .arg( changedFid ).arg( changedCat ).arg( realChangedCat ) );
+            if ( realChangedCat == newCat )
+            {
+              QgsAttributeMap attributeMap = changedAttributes[changedFid];
+              Q_FOREACH ( int index, attributeMap.keys() )
+              {
+                attributeMap[index] = feature.attributes().value( index );
+              }
+              changedAttributes[changedFid] = attributeMap;
+            }
+          }
+        }
+        else
+        {
+          mLayer->insertAttributes( newCat, feature, error );
+          if ( !error.isEmpty() )
+          {
+            QgsGrass::warning( error );
+          }
         }
       }
     }
@@ -1228,6 +1311,8 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
           {
             addedFeatures[fid].setAttribute( 0, newCat );
           }
+          mLayer->map()->newCats()[fid] = newCat;
+          QgsDebugMsg( QString( "newCats[%1] = %2" ).arg( fid ).arg( newCat ) );
         }
       }
     }
@@ -1365,11 +1450,17 @@ void QgsGrassProvider::onAttributeValueChanged( QgsFeatureId fid, int idx, const
   int oldLid = QgsGrassFeatureIterator::lidFromFid( fid );
   int cat = QgsGrassFeatureIterator::catFromFid( fid );
   int realLine = oldLid;
+  int realCat = cat;
   if ( mLayer->map()->newLids().contains( oldLid ) ) // if it was changed already
   {
     realLine = mLayer->map()->newLids().value( oldLid );
   }
-  QgsDebugMsg( QString( "fid = %1 oldLid = %2 realLine = %3 cat = %4" ).arg( fid ).arg( oldLid ).arg( realLine ).arg( cat ) );
+  if ( mLayer->map()->newCats().contains( fid ) )
+  {
+    realCat = mLayer->map()->newCats().value( fid );
+  }
+  QgsDebugMsg( QString( "fid = %1 oldLid = %2 realLine = %3 cat = %4 realCat = %5" )
+               .arg( fid ).arg( oldLid ).arg( realLine ).arg( cat ).arg( realCat ) );
 
   // index is for current fields
   if ( idx < 0 || idx > mEditLayer->fields().size() )
@@ -1379,10 +1470,10 @@ void QgsGrassProvider::onAttributeValueChanged( QgsFeatureId fid, int idx, const
   }
   QgsField field = mEditLayer->fields()[idx];
 
-  if ( cat > 0 )
+  if ( realCat > 0 )
   {
     QString error;
-    mLayer->changeAttributeValue( cat, field, value, error );
+    mLayer->changeAttributeValue( realCat, field, value, error );
     if ( !error.isEmpty() )
     {
       QgsGrass::warning( error );

@@ -78,6 +78,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     QHash<int, int> & oldLids() { return mOldLids; }
     QHash<int, int> & newLids() { return mNewLids; }
     QHash<int, QgsAbstractGeometryV2*> & oldGeometries() { return mOldGeometries; }
+    QHash<int, int> & newCats() { return mNewCats; }
 
     /** Get geometry of line.
      * @return geometry (point,line or polygon(GV_FACE)) or 0 */
@@ -183,6 +184,9 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     QHash<int, int> mNewLids;
     // Hash of original lines' geometries of lines which were changed, keys are GRASS lid
     QHash<int, QgsAbstractGeometryV2*> mOldGeometries;
+    // New categories attached to new features or old features without category
+    // fid -> cat, the fid may be old fid without category or new (negative) feature id
+    QHash<int, int> mNewCats;
 
     // Mutex used to avoid concurrent read/write, used only in editing mode
     QMutex mReadWriteMutex;
