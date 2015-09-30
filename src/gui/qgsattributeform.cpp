@@ -526,6 +526,12 @@ void QgsAttributeForm::init()
       gridLayout->addWidget( rww->widget(), row++, 0, 1, 2 );
       mWidgets.append( rww );
     }
+
+    if ( QgsProject::instance()->relationManager()->referencedRelations( mLayer ).size() == 0 )
+    {
+      QSpacerItem *spacerItem = new QSpacerItem( 20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding );
+      gridLayout->addItem( spacerItem, row++, 0 );
+    }
   }
 
   if ( !mButtonBox )
