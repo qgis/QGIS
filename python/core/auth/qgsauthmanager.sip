@@ -1,5 +1,3 @@
-class QSqlDatabase;
-
 class QgsAuthManager : QObject
 {
 %TypeHeaderCode

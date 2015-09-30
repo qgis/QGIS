@@ -6,6 +6,7 @@
 %Import QtGui/QtGuimod.sip
 %Import QtXml/QtXmlmod.sip
 %Import QtNetwork/QtNetworkmod.sip
+%Import QtSql/QtSqlmod.sip
 
 %Include conversions.sip
 %Include qgsexception.sip
