@@ -75,11 +75,8 @@ class BaseTableModel(QAbstractTableModel):
             return None
         elif isinstance(val, (str, unicode)) and len(val) > 300:
             # too much data to display, elide the string
-            return u"%s..." % val[:300]
-        try:
-            return unicode(val)  # convert to unicode
-        except UnicodeDecodeError:
-            return unicode(val, 'utf-8', 'replace') # convert from utf8 and replace errors (if any)
+            val = val[:300]
+        return unicode(val, 'utf-8', 'replace') # convert from utf8 and replace errors (if any)
 
 
     def headerData(self, section, orientation, role):
