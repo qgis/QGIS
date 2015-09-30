@@ -182,6 +182,8 @@ QgsGrassModule::QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisIn
   QgsDebugMsg( "called" );
 
   setupUi( this );
+  // use fixed width font because module's output may be formated
+  mOutputTextBrowser->setStyleSheet( "font-family: Monospace; font-size: 9pt;" );
   lblModuleName->setText( tr( "Module: %1" ).arg( moduleName ) );
   mTools = tools;
   mIface = iface;
@@ -860,9 +862,7 @@ void QgsGrassModule::readStdout()
   while ( mProcess.canReadLine() )
   {
     QByteArray ba = mProcess.readLine();
-    //line = QString::fromUtf8( ba ).replace( '\n', "" );
     line = QString::fromLocal8Bit( ba ).replace( '\n', "" );
-    //QgsDebugMsg(QString("line: '%1'").arg(line));
 
     // GRASS_INFO_PERCENT is catched here only because of bugs in GRASS,
     // normaly it should be printed to stderr
@@ -873,7 +873,7 @@ void QgsGrassModule::readStdout()
     }
     else
     {
-      mOutputTextBrowser->append( "<pre>" + line + "</pre>" );
+      mOutputTextBrowser->append( line );
     }
   }
 }
@@ -888,9 +888,7 @@ void QgsGrassModule::readStderr()
   while ( mProcess.canReadLine() )
   {
     QByteArray ba = mProcess.readLine();
-    //line = QString::fromUtf8( ba ).replace( '\n', "" );
     line = QString::fromLocal8Bit( ba ).replace( '\n', "" );
-    //QgsDebugMsg(QString("line: '%1'").arg(line));
 
     QString text, html;
     int percent;
