@@ -15,7 +15,7 @@ sudo apt-get install --force-yes --no-install-recommends --no-install-suggests \
                          libqwt-dev libspatialindex-dev libspatialite-dev \
                          libsqlite3-dev lighttpd pkg-config poppler-utils \
                          pyqt4-dev-tools python python-dev python-qt4 \
-                         python-qt4-dev python-sip python-sip-dev spawn-fcgi \
+                         python-qt4-dev python-sip python-sip-dev python-qt4-sql spawn-fcgi \
                          txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base \
                          xfonts-scalable xvfb \
                          postgresql-9.1-postgis-2.1/precise # postgis one from ubuntugis-unstable, not pgdg
