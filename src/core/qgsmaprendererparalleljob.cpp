@@ -163,7 +163,12 @@ bool QgsMapRendererParallelJob::isActive() const
 
 QgsLabelingResults* QgsMapRendererParallelJob::takeLabelingResults()
 {
-  return mLabelingEngine ? mLabelingEngine->takeResults() : 0;
+  if ( mLabelingEngine )
+    return mLabelingEngine->takeResults();
+  else if ( mLabelingEngineV2 )
+    return mLabelingEngineV2->takeResults();
+  else
+    return 0;
 }
 
 QImage QgsMapRendererParallelJob::renderedImage()

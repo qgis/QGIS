@@ -9401,7 +9401,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
   {
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( it.value() );
     if ( !vlayer || !vlayer->isEditable() ||
-         ( !vlayer->diagramsEnabled() && vlayer->customProperty( "labeling" ).toString() != QString( "pal" ) ) )
+         ( !vlayer->diagramsEnabled() && !vlayer->labelsEnabled() ) )
       continue;
 
     int colX, colY, colShow, colAng;

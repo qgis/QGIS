@@ -668,7 +668,16 @@ QgsRectangle QgsVectorLayer::boundingBoxOfSelected()
 
 bool QgsVectorLayer::labelsEnabled() const
 {
-  return customProperty( "labeling/enabled", QVariant( false ) ).toBool();
+  if ( !mLabeling )
+    return false;
+
+  // for simple labeling the mode can be "no labels" - so we need to check
+  // in properties whether we are really enabled or not
+  if ( mLabeling->type() == "simple" )
+    return customProperty( "labeling/enabled", QVariant( false ) ).toBool();
+
+  // for other labeling implementations we always assume that labeling is enabled
+  return true;
 }
 
 bool QgsVectorLayer::diagramsEnabled() const
