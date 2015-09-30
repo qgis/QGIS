@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from operator import attrgetter
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -208,6 +209,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                     modelOutput.name = self.getSafeNameForOutput(alg.name, out)
                     modelOutput.description = alg.outputs[out].description
                     self.outputs.append(modelOutput)
+        self.outputs.sort(key=attrgetter("description"))
 
     def addParameter(self, param):
         self.inputs[param.param.name] = param
