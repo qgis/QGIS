@@ -489,13 +489,7 @@ class GrassAlgorithm(GeoAlgorithm):
     def checkBeforeOpeningParametersDialog(self):
         msg = GrassUtils.checkGrassIsInstalled()
         if msg is not None:
-            html = self.tr(
-                '<p>This algorithm requires GRASS to be run. Unfortunately, '
-                'it seems that GRASS is not installed in your system, or it '
-                'is not correctly configured to be used from QGIS</p>'
-                '<p><a href="http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html">Click here</a> '
-                'to know more about how to install and configure GRASS to be used with QGIS</p>')
-            return html
+            return msg
 
     def checkParameterValuesBeforeExecuting(self):
         name = self.commandLineName().replace('.', '_')[len('grass:'):]
