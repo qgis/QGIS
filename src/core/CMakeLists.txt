@@ -332,7 +332,8 @@ STRING(REPLACE "$" "$$" JSON_HELP_FILES "${JSON_HELP_FILES}")
 STRING(REPLACE "\(" "\\(" JSON_HELP_FILES "${JSON_HELP_FILES}")
 STRING(REPLACE "\)" "\\)" JSON_HELP_FILES "${JSON_HELP_FILES}")
 ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/qgsexpression_texts.cpp
-        COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/resources/process_function_template.py
+        COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/scripts/process_function_template.py ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp.temp
+        COMMAND ${CMAKE_COMMAND} -DSRC=${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp.temp -DDST=${CMAKE_CURRENT_SOURCE_DIR}/qgsexpression_texts.cpp -P ${CMAKE_SOURCE_DIR}/cmake/CopyIfChanged.cmake
 	DEPENDS ${JSON_HELP_FILES}
 	WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 )

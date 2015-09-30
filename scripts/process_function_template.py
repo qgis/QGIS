@@ -3,7 +3,7 @@ import os
 import json
 import glob
 
-cpp = open("src/core/qgsexpression_texts.cpp", "w")
+cpp = open(sys.argv[1], "w")
 cpp.write(
     "#include \"qgsexpression.h\"\n"
     "\n"
