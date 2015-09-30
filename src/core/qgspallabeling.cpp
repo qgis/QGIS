@@ -469,6 +469,7 @@ QgsPalLayerSettings& QgsPalLayerSettings::operator=( const QgsPalLayerSettings &
   shadowBlendMode = s.shadowBlendMode;
 
   // data defined
+  removeAllDataDefinedProperties();
   QMap< QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* >::const_iterator it = s.dataDefinedProperties.constBegin();
   for ( ; it != s.dataDefinedProperties.constEnd(); ++it )
   {
@@ -492,13 +493,7 @@ QgsPalLayerSettings::~QgsPalLayerSettings()
   delete extentGeom;
 
   // delete all QgsDataDefined objects (which also deletes their QgsExpression object)
-  QMap< QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* >::iterator it = dataDefinedProperties.begin();
-  for ( ; it != dataDefinedProperties.constEnd(); ++it )
-  {
-    delete( it.value() );
-    it.value() = 0;
-  }
-  dataDefinedProperties.clear();
+  removeAllDataDefinedProperties();
 }
 
 
@@ -628,6 +623,14 @@ void QgsPalLayerSettings::writeDataDefinedPropertyMap( QgsVectorLayer* layer, QD
             propertyValue = QVariant( values.join( "~~" ) );
           }
         }
+
+        if ( parentElem )
+        {
+          // writing to XML document (instead of writing to layer)
+          QDomDocument doc = parentElem->ownerDocument();
+          QDomElement e = dd->toXmlElement( doc, i.value().first );
+          parentElem->appendChild( e );
+        }
       }
     }
 
@@ -649,17 +652,6 @@ void QgsPalLayerSettings::writeDataDefinedPropertyMap( QgsVectorLayer* layer, QD
       {
         // remove old-style field index-based property, if still present
         layer->removeCustomProperty( QString( "labeling/dataDefinedProperty" ) + QString::number( i.value().second ) );
-      }
-    }
-    else if ( parentElem )
-    {
-      // writing to XML document
-      QgsDataDefined* dd = it.value();
-      if ( dd )
-      {
-        QDomDocument doc = parentElem->ownerDocument();
-        QDomElement e = dd->toXmlElement( doc, i.value().first );
-        parentElem->appendChild( e );
       }
     }
   }
@@ -1539,6 +1531,17 @@ void QgsPalLayerSettings::removeDataDefinedProperty( DataDefinedProperties p )
     delete( it.value() );
     dataDefinedProperties.erase( it );
   }
+}
+
+void QgsPalLayerSettings::removeAllDataDefinedProperties()
+{
+  QMap< QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* >::iterator it = dataDefinedProperties.begin();
+  for ( ; it != dataDefinedProperties.constEnd(); ++it )
+  {
+    delete( it.value() );
+    it.value() = 0;
+  }
+  dataDefinedProperties.clear();
 }
 
 QString QgsPalLayerSettings::updateDataDefinedString( const QString& value )

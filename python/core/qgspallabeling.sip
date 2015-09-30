@@ -512,6 +512,11 @@ class QgsPalLayerSettings
     /** Set a property to static instead data defined */
     void removeDataDefinedProperty( QgsPalLayerSettings::DataDefinedProperties p );
 
+    /** Clear all data-defined properties
+     * @note added in QGIS 2.12
+     */
+    void removeAllDataDefinedProperties();
+
     /** Convert old property value to new one as delimited values
      * @note not available in python bindings; as temporary solution until refactoring of project settings
      */

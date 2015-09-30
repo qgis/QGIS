@@ -168,6 +168,8 @@ void TestQgsLabelingEngineV2::testRuleBased()
   s2.obstacle = false;
   s2.dist = 2;
   s2.textColor = Qt::red;
+  s2.setDataDefinedProperty( QgsPalLayerSettings::Size, true, true, "18", QString() );
+
   root->appendChild( new QgsRuleBasedLabeling::Rule( new QgsPalLayerSettings( s2 ), 0, 0, "Class = 'Jet'" ) );
 
   vl->setLabeling( new QgsRuleBasedLabeling( root ) );
