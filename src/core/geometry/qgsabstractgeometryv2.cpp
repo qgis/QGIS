@@ -227,8 +227,6 @@ QgsPointV2 QgsAbstractGeometryV2::centroid() const
   {
     return QgsPointV2( Cx / ( 3. * A ), Cy / ( 3. * A ) );
   }
-
-  return QgsPointV2();
 }
 
 bool QgsAbstractGeometryV2::isEmpty() const

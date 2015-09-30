@@ -3049,6 +3049,7 @@ bool QgsAuthManager::reencryptAllAuthenticationSettings( const QString &prevpass
   return true;
   // end remove
 
+#if 0
   if ( isDisabled() )
     return false;
 
@@ -3123,6 +3124,7 @@ bool QgsAuthManager::reencryptAllAuthenticationSettings( const QString &prevpass
   }
 
   return true;
+#endif
 }
 
 bool QgsAuthManager::reencryptAllAuthenticationIdentities( const QString &prevpass, const QString &prevciv )

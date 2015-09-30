@@ -332,7 +332,6 @@ double QgsDistanceArea::measure( const QgsAbstractGeometryV2* geomV2 ) const
       return area;
     }
   }
-  return 0.0;
 }
 
 double QgsDistanceArea::measure( const QgsGeometry *geometry ) const

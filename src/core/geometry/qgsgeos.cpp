@@ -1652,7 +1652,6 @@ QgsAbstractGeometryV2* QgsGeos::reshapeGeometry( const QgsLineStringV2& reshapeW
     }
     CATCH_GEOS_WITH_ERRMSG( 0 )
   }
-  return 0;
 }
 
 GEOSGeometry* QgsGeos::reshapeLine( const GEOSGeometry* line, const GEOSGeometry* reshapeLineGeos )
