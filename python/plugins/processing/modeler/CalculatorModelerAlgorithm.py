@@ -71,8 +71,8 @@ class CalculatorModelerAlgorithm(GeoAlgorithm):
             raise GeoAlgorithmExecutionException(
                 self.tr('Wrong formula: %s', 'CalculatorModelerAlgorithm') % formula)
 
-    def getCustomModelerParametersDialog(self, modelAlg, algIndex=None):
-        return CalculatorModelerParametersDialog(self, modelAlg, algIndex)
+    def getCustomModelerParametersDialog(self, modelAlg, algName=None):
+        return CalculatorModelerParametersDialog(self, modelAlg, algName)
 
 
 class CalculatorModelerParametersDialog(ModelerParametersDialog):
@@ -101,6 +101,8 @@ class CalculatorModelerParametersDialog(ModelerParametersDialog):
         self.formulaText = QLineEdit()
         if hasattr(self.formulaText, 'setPlaceholderText'):
             self.formulaText.setPlaceholderText(self.tr('[Enter your formula here]', 'CalculatorModelerParametersDialog'))
+        alg = self.model.algs[self._algName]
+        self.formulaText.setText(alg.params[FORMULA])
         self.setWindowTitle(self.tr('Calculator', 'CalculatorModelerParametersDialog'))
         self.verticalLayout = QVBoxLayout()
         self.verticalLayout.setSpacing(2)
