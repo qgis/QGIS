@@ -24,6 +24,7 @@
 #include "qgssymbollayerv2.h"
 #include "qgsogcutils.h"
 #include "qgspainteffect.h"
+#include "qgspainteffectregistry.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -375,7 +376,7 @@ QDomElement QgsInvertedPolygonRenderer::save( QDomDocument& doc )
     rendererElem.appendChild( embeddedRendererElem );
   }
 
-  if ( mPaintEffect )
+  if ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect ) )
     mPaintEffect->saveProperties( doc, rendererElem );
 
   return rendererElem;

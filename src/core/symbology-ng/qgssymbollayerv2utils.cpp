@@ -1019,7 +1019,8 @@ QDomElement QgsSymbolLayerV2Utils::saveSymbol( QString name, QgsSymbolV2* symbol
     layerEl.setAttribute( "locked", layer->isLocked() );
     layerEl.setAttribute( "pass", layer->renderingPass() );
     saveProperties( layer->properties(), doc, layerEl );
-    layer->paintEffect()->saveProperties( doc, layerEl );
+    if ( !QgsPaintEffectRegistry::isDefaultStack( layer->paintEffect() ) )
+      layer->paintEffect()->saveProperties( doc, layerEl );
 
     if ( layer->subSymbol() != NULL )
     {

@@ -24,6 +24,7 @@
 #include "qgsvectorlayer.h"
 #include "qgssinglesymbolrendererv2.h"
 #include "qgspainteffect.h"
+#include "qgspainteffectregistry.h"
 #include "qgsfontutils.h"
 #include "qgsmultipointv2.h"
 #include "qgspointv2.h"
@@ -412,7 +413,7 @@ QDomElement QgsPointDisplacementRenderer::save( QDomDocument& doc )
     rendererElement.appendChild( centerSymbolElem );
   }
 
-  if ( mPaintEffect )
+  if ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect ) )
     mPaintEffect->saveProperties( doc, rendererElement );
 
   return rendererElement;
