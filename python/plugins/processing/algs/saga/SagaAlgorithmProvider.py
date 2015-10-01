@@ -87,8 +87,9 @@ class SagaAlgorithmProvider(AlgorithmProvider):
                                    self.tr('Problem with SAGA installation: SAGA was not found or is not correctly installed'))
             return
         if version not in self.supportedVersions:
-            if version > self.supportedVersions.keys()[-1]:
-                version = self.supportedVersions.keys()[-1]
+            lastVersion = sorted(self.supportedVersions.keys())[-1]
+            if version > lastVersion:
+                version = lastVersion
             else:
                 ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
                                    self.tr('Problem with SAGA installation: installed SAGA version (%s) is not supported' % version))
@@ -99,12 +100,12 @@ class SagaAlgorithmProvider(AlgorithmProvider):
         for descriptionFile in os.listdir(folder):
             if descriptionFile.endswith('txt'):
                 f = os.path.join(folder, descriptionFile)
-                self._loadAlgorithm(f)
+                self._loadAlgorithm(f, version)
         self.algs.append(SplitRGBBands())
 
-    def _loadAlgorithm(self, descriptionFile):
+    def _loadAlgorithm(self, descriptionFile, version):
         try:
-            alg = self.supportedVersions[SagaUtils.getSagaInstalledVersion()][1](descriptionFile)
+            alg = self.supportedVersions[version][1](descriptionFile)
             if alg.name.strip() != '':
                 self.algs.append(alg)
             else:
