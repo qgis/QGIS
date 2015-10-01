@@ -39,7 +39,7 @@ class QgsDxfLabelProvider : public QgsVectorLayerLabelProvider
     virtual void drawLabel( QgsRenderContext& context, pal::LabelPosition* label ) const override;
 
     //! registration method that keeps track of DXF layer names of individual features
-    void registerDxfFeature( QgsFeature& feature, const QgsRenderContext& context, const QString& dxfLayerName );
+    void registerDxfFeature( QgsFeature& feature, QgsRenderContext &context, const QString& dxfLayerName );
 
   protected:
     //! pointer to parent DXF export where this instance is used

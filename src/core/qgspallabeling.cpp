@@ -1719,7 +1719,7 @@ bool QgsPalLayerSettings::checkMinimumSizeMM( const QgsRenderContext& ct, const 
   return QgsPalLabeling::checkMinimumSizeMM( ct, geom, minSize );
 }
 
-void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString text, double& labelX, double& labelY, QgsFeature* f, const QgsRenderContext *context )
+void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString text, double& labelX, double& labelY, QgsFeature* f, QgsRenderContext *context )
 {
   if ( !fm || !f )
   {
@@ -1891,7 +1891,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString t
 }
 
 
-void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext& context, QString dxfLayer, QgsLabelFeature** labelFeature )
+void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &context, QString dxfLayer, QgsLabelFeature** labelFeature )
 {
   // either used in QgsPalLabeling (palLayer is set) or in QgsLabelingEngineV2 (labelFeature is set)
   Q_ASSERT( labelFeature );
@@ -2700,7 +2700,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
 }
 
 
-void QgsPalLayerSettings::registerObstacleFeature( QgsFeature& f, const QgsRenderContext& context, QString dxfLayer , QgsLabelFeature** obstacleFeature )
+void QgsPalLayerSettings::registerObstacleFeature( QgsFeature& f, QgsRenderContext &context, QString dxfLayer , QgsLabelFeature** obstacleFeature )
 {
   Q_UNUSED( dxfLayer ); // now handled in QgsDxfLabelProvider
 
@@ -2919,7 +2919,7 @@ bool QgsPalLayerSettings::dataDefinedValEval( DataDefinedValueType valType,
 
 void QgsPalLayerSettings::parseTextStyle( QFont& labelFont,
     QgsPalLayerSettings::SizeUnit fontunits,
-    const QgsRenderContext& context )
+    QgsRenderContext &context )
 {
   // NOTE: labelFont already has pixelSize set, so pointSize or pointSizeF might return -1
 
@@ -3127,7 +3127,7 @@ void QgsPalLayerSettings::parseTextStyle( QFont& labelFont,
 
 }
 
-void QgsPalLayerSettings::parseTextBuffer( const QgsRenderContext &context )
+void QgsPalLayerSettings::parseTextBuffer( QgsRenderContext &context )
 {
   QVariant exprVal; // value() is repeatedly nulled on data defined evaluation and replaced when successful
 
@@ -3180,7 +3180,7 @@ void QgsPalLayerSettings::parseTextBuffer( const QgsRenderContext &context )
   dataDefinedValEval( DDBlendMode, QgsPalLayerSettings::BufferBlendMode, exprVal, context.expressionContext() );
 }
 
-void QgsPalLayerSettings::parseTextFormatting( const QgsRenderContext &context )
+void QgsPalLayerSettings::parseTextFormatting( QgsRenderContext &context )
 {
   QVariant exprVal; // value() is repeatedly nulled on data defined evaluation and replaced when successful
 
@@ -3266,7 +3266,7 @@ void QgsPalLayerSettings::parseTextFormatting( const QgsRenderContext &context )
   // formatting for numbers is inline with generation of base label text and not passed to label painting
 }
 
-void QgsPalLayerSettings::parseShapeBackground( const QgsRenderContext &context )
+void QgsPalLayerSettings::parseShapeBackground( QgsRenderContext &context )
 {
   QVariant exprVal; // value() is repeatedly nulled on data defined evaluation and replaced when successful
 
@@ -3467,7 +3467,7 @@ void QgsPalLayerSettings::parseShapeBackground( const QgsRenderContext &context 
 
 }
 
-void QgsPalLayerSettings::parseDropShadow( const QgsRenderContext &context )
+void QgsPalLayerSettings::parseDropShadow( QgsRenderContext &context )
 {
   QVariant exprVal; // value() is repeatedly nulled on data defined evaluation and replaced when successful
 
@@ -3688,14 +3688,14 @@ int QgsPalLabeling::addDiagramLayer( QgsVectorLayer* layer, const QgsDiagramLaye
   return 0;
 }
 
-void QgsPalLabeling::registerFeature( const QString& layerID, QgsFeature& f, const QgsRenderContext& context, QString dxfLayer )
+void QgsPalLabeling::registerFeature( const QString& layerID, QgsFeature& f, QgsRenderContext &context, QString dxfLayer )
 {
   Q_UNUSED( dxfLayer ); // now handled by QgsDxfLabelProvider
   if ( QgsVectorLayerLabelProvider* provider = mLabelProviders.value( layerID, 0 ) )
     provider->registerFeature( f, context );
 }
 
-bool QgsPalLabeling::geometryRequiresPreparation( const QgsGeometry* geometry, const QgsRenderContext& context, const QgsCoordinateTransform* ct, QgsGeometry* clipGeometry )
+bool QgsPalLabeling::geometryRequiresPreparation( const QgsGeometry* geometry, QgsRenderContext &context, const QgsCoordinateTransform* ct, QgsGeometry* clipGeometry )
 {
   if ( !geometry )
   {
@@ -3755,7 +3755,7 @@ QStringList QgsPalLabeling::splitToGraphemes( const QString &text )
   return graphemes;
 }
 
-QgsGeometry* QgsPalLabeling::prepareGeometry( const QgsGeometry* geometry, const QgsRenderContext& context, const QgsCoordinateTransform* ct, QgsGeometry* clipGeometry )
+QgsGeometry* QgsPalLabeling::prepareGeometry( const QgsGeometry* geometry, QgsRenderContext &context, const QgsCoordinateTransform* ct, QgsGeometry* clipGeometry )
 {
   if ( !geometry )
   {
@@ -3875,7 +3875,7 @@ bool QgsPalLabeling::checkMinimumSizeMM( const QgsRenderContext& context, const 
   return true; //should never be reached. Return true in this case to label such geometries anyway.
 }
 
-void QgsPalLabeling::registerDiagramFeature( const QString& layerID, QgsFeature& feat, const QgsRenderContext& context )
+void QgsPalLabeling::registerDiagramFeature( const QString& layerID, QgsFeature& feat, QgsRenderContext &context )
 {
   if ( QgsVectorLayerDiagramProvider* provider = mDiagramProviders.value( layerID, 0 ) )
     provider->registerFeature( feat, context );

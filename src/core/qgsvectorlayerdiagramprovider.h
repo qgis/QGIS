@@ -70,7 +70,7 @@ class CORE_EXPORT QgsVectorLayerDiagramProvider : public QgsAbstractLabelProvide
     //! Clean up
     ~QgsVectorLayerDiagramProvider();
 
-    virtual QList<QgsLabelFeature*> labelFeatures( const QgsRenderContext& context ) override;
+    virtual QList<QgsLabelFeature*> labelFeatures( QgsRenderContext& context ) override;
 
     virtual void drawLabel( QgsRenderContext& context, pal::LabelPosition* label ) const override;
 
@@ -91,13 +91,13 @@ class CORE_EXPORT QgsVectorLayerDiagramProvider : public QgsAbstractLabelProvide
      * @param context render context. The QgsExpressionContext contained within the render context
      * must have already had the feature and fields sets prior to calling this method.
      */
-    virtual void registerFeature( QgsFeature& feature, const QgsRenderContext& context );
+    virtual void registerFeature( QgsFeature& feature, QgsRenderContext &context );
 
   protected:
     //! initialization method - called from constructors
     void init();
     //! helper method to register one diagram feautre
-    QgsLabelFeature* registerDiagram( QgsFeature& feat, const QgsRenderContext& context );
+    QgsLabelFeature* registerDiagram( QgsFeature& feat, QgsRenderContext& context );
 
   protected:
 

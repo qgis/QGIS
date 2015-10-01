@@ -139,7 +139,7 @@ void QgsDxfLabelProvider::drawLabel( QgsRenderContext& context, pal::LabelPositi
   }
 }
 
-void QgsDxfLabelProvider::registerDxfFeature( QgsFeature& feature, const QgsRenderContext& context, const QString& dxfLayerName )
+void QgsDxfLabelProvider::registerDxfFeature( QgsFeature& feature, QgsRenderContext& context, const QString& dxfLayerName )
 {
   registerFeature( feature, context );
   mDxfLayerNames[feature.id()] = dxfLayerName;

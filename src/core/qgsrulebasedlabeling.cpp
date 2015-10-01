@@ -25,7 +25,7 @@ bool QgsRuleBasedLabelProvider::prepare( const QgsRenderContext& context, QStrin
   return true;
 }
 
-void QgsRuleBasedLabelProvider::registerFeature( QgsFeature& feature, const QgsRenderContext& context )
+void QgsRuleBasedLabelProvider::registerFeature( QgsFeature& feature, QgsRenderContext &context )
 {
   // will register the feature to relevant sub-providers
   mRules.rootRule()->registerFeature( feature, context, mSubProviders );
@@ -241,9 +241,9 @@ void QgsRuleBasedLabeling::Rule::prepare( const QgsRenderContext& context, QStri
   }
 }
 
-QgsRuleBasedLabeling::Rule::RegisterResult QgsRuleBasedLabeling::Rule::registerFeature( QgsFeature& feature, const QgsRenderContext& context, QgsRuleBasedLabeling::RuleToProviderMap& subProviders )
+QgsRuleBasedLabeling::Rule::RegisterResult QgsRuleBasedLabeling::Rule::registerFeature( QgsFeature& feature, QgsRenderContext &context, QgsRuleBasedLabeling::RuleToProviderMap& subProviders )
 {
-  if ( !isFilterOK( feature, const_cast<QgsRenderContext&>( context ) )
+  if ( !isFilterOK( feature, context )
        || !isScaleOK( context.rendererScale() ) )
     return Filtered;
 

@@ -166,7 +166,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         void prepare( const QgsRenderContext& context, QStringList& attributeNames, RuleToProviderMap& subProviders );
 
         //! register individual features
-        RegisterResult registerFeature( QgsFeature& feature, const QgsRenderContext& context, RuleToProviderMap& subProviders );
+        RegisterResult registerFeature( QgsFeature& feature, QgsRenderContext& context, RuleToProviderMap& subProviders );
 
       protected:
         /**
@@ -243,7 +243,7 @@ class CORE_EXPORT QgsRuleBasedLabelProvider : public QgsVectorLayerLabelProvider
 
     virtual bool prepare( const QgsRenderContext& context, QStringList& attributeNames ) override;
 
-    virtual void registerFeature( QgsFeature& feature, const QgsRenderContext& context ) override;
+    virtual void registerFeature( QgsFeature& feature, QgsRenderContext& context ) override;
 
     // new methods
 

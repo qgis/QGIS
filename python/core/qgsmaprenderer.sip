@@ -56,9 +56,9 @@ class QgsLabelingEngineInterface
     //! @deprecated since 2.12 - use prepareDiagramLayer()
     virtual int addDiagramLayer( QgsVectorLayer* layer, const QgsDiagramLayerSettings* s ) /Deprecated/;
     //! called for every feature
-    virtual void registerFeature( const QString& layerID, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext(), QString dxfLayer = QString::null ) = 0;
+    virtual void registerFeature( const QString& layerID, QgsFeature& feat, QgsRenderContext& context, QString dxfLayer = QString::null ) = 0;
     //! called for every diagram feature
-    virtual void registerDiagramFeature( const QString& layerID, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext() );
+    virtual void registerDiagramFeature( const QString& layerID, QgsFeature& feat, QgsRenderContext& context );
     //! called when the map is drawn and labels should be placed
     virtual void drawLabeling( QgsRenderContext& context ) = 0;
     //! called when we're done with rendering
