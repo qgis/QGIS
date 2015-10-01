@@ -29,7 +29,7 @@ __revision__ = '$Format:%H$'
 import os
 
 from PyQt4 import uic
-from PyQt4.QtCore import Qt, QEvent
+from PyQt4.QtCore import Qt, QEvent, QPyNullVariant
 from PyQt4.QtGui import (QFileDialog, QDialog, QIcon, QStyle,
                          QStandardItemModel, QStandardItem, QMessageBox, QStyledItemDelegate,
                          QLineEdit, QSpinBox, QDoubleSpinBox, QWidget, QToolButton, QHBoxLayout)
@@ -234,7 +234,7 @@ class SettingDelegate(QStyledItemDelegate):
         return QStyledItemDelegate.eventFilter(self, editor, event)
 
     def convertValue(self, value):
-        if value is None:
+        if value is None or isinstance(value, QPyNullVariant):
             return ""
         try:
             return int(value)
