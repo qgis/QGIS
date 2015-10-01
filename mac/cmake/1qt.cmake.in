@@ -217,49 +217,52 @@ IF (@QSCINTILLA_LIBRARY@ MATCHES ".*libqscintilla2.dylib")
     ENDIF (QSCI_CHG)
 ENDIF ()
 
-# PyQt
+# Tell user what Python paths are being searched for modules and packages
+# see: PYTHON_MODULE_PATHS in 0vars.cmake.in for why not all PyQt-related modules
+#      can be assumed to exist in symlinked-resolved PyQt or sip module directories
+MESSAGE (STATUS "PYTHON_MODULE_PATHS to be searched:")
+FOREACH (PYPATH ${PYTHON_MODULE_PATHS})
+    MESSAGE (STATUS "  ${PYPATH}")
+ENDFOREACH (PYPATH)
+
+# sip and PyQt
+
+MESSAGE (STATUS "Copying sip...")
+PYTHONMODULEDIR("sip.so" SIPMODDIR)
+IF (SIPMODDIR)
+    IF (NOT EXISTS "${QGISPYDIR}/sip.so")
+        # MYMESSAGE ("ditto ${QARCHS} \"${SIPMODDIR}/sip.so\" \"${QGISPYDIR}/\"")
+        EXECUTE_PROCESS (COMMAND ditto ${QARCHS} "${SIPMODDIR}/sip.so" "${QGISPYDIR}/")
+        EXECUTE_PROCESS (COMMAND cp -fp "${SIPMODDIR}/sipconfig.py" "${QGISPYDIR}/")
+    ENDIF ()
+ELSE ()
+    MESSAGE (STATUS "  sip module not found")
+ENDIF ()
 
 MESSAGE (STATUS "Copying PyQt...")
-IF (NOT EXISTS "${QGISPYDIR}/sip.so")
-    MYMESSAGE ("ditto ${QARCHS} \"@SIP_MOD_DIR@/sip.so\" \"${QGISPYDIR}/\"")
-    EXECUTE_PROCESS (COMMAND ditto ${QARCHS} "@SIP_MOD_DIR@/sip.so" "${QGISPYDIR}/")
-    EXECUTE_PROCESS (COMMAND cp -fp "@SIP_MOD_DIR@/sipconfig.py" "${QGISPYDIR}/")
-ENDIF ()
-
-# if PYQT4_MOD_DIR not defined, assume "PyQt4" next to SIP
-SET(PYQT4MODDIR "@SIP_MOD_DIR@/PyQt${QT_FWVER}")
-IF (EXISTS "@PYQT4_MOD_DIR@")
-    SET(PYQT4MODDIR "@PYQT4_MOD_DIR@")
-    # MESSAGE (STATUS "Defined PYQT4_MOD_DIR: @PYQT4_MOD_DIR@")
-ENDIF ()
-# also search python site-packages/PyQt4, in case module packages installed elsewhere and symlinked
-# (common with binary installers like homebrew)
-SET(PYQT4MODALT "@PYTHON_SITE_PACKAGES_SYS@/PyQt4")
-#MESSAGE (STATUS "Defined PYQT4MODALT: ${PYQT4MODALT}")
-
 EXECUTE_PROCESS (COMMAND mkdir -p "${QGISPYDIR}/PyQt${QT_FWVER}")
 FOREACH (PQ ${PYQTLIST})
-    SET(MODNAME "${PQ}.so")
-    IF(EXISTS "${PYQT4MODDIR}/${MODNAME}")
-        SET(PYQT4MOD "${PYQT4MODDIR}/${MODNAME}")
-    ELSEIF(EXISTS "${PYQT4MODALT}/${MODNAME}")
-        SET(PYQT4MOD "${PYQT4MODALT}/${MODNAME}")
-    ENDIF()
-    IF (EXISTS "${PYQT4MOD}")
-        IF (NOT EXISTS "${QGISPYDIR}/PyQt${QT_FWVER}/${MODNAME}")
-            # MESSAGE (STATUS "ditto ${QARCHS} \"${PYQT4MOD}\" \"${QGISPYDIR}/PyQt${QT_FWVER}/${MODNAME}\"")
-            EXECUTE_PROCESS (COMMAND ditto ${QARCHS} "${PYQT4MOD}" "${QGISPYDIR}/PyQt${QT_FWVER}/${MODNAME}")
+    SET (MODNAME "${PQ}.so")
+    SET (MODSUBPATH "PyQt${QT_FWVER}/${MODNAME}")
+    # search for each module separately, instead of only in first found PyQt directory, since PyQt may
+    #  be installed to its a specific prefix, like with Homebrew, then symlinked into common 'site-packages'
+    PYTHONMODULEDIR("${MODSUBPATH}" MODDIR)
+    IF (MODDIR)
+        IF (NOT EXISTS "${QGISPYDIR}/${MODSUBPATH}")
+            # MESSAGE (STATUS "ditto ${QARCHS} \"${PYQT4MOD}\" \"${QGISPYDIR}/${MODSUBPATH}\"")
+            EXECUTE_PROCESS (COMMAND ditto ${QARCHS} "${MODDIR}/${MODSUBPATH}" "${QGISPYDIR}/${MODSUBPATH}")
         ENDIF ()
-    ELSE (EXISTS "${PYQT4MOD}")
-        MESSAGE (STATUS "PyQt4 module ${MODNAME} not found")
-    ENDIF (EXISTS "${PYQT4MOD}")
+    ELSE (MODDIR)
+        MESSAGE (STATUS "  PyQt4 module ${MODNAME} not found")
+    ENDIF (MODDIR)
     UNSET(PYQT4MOD)
 ENDFOREACH (PQ)
-FILE (GLOB PQPYLIST "${PYQT4MODDIR}/*.py")
+PYTHONMODULEDIR("PyQt${QT_FWVER}" PYQTMODDIR)
+FILE (GLOB PQPYLIST "${PYQTMODDIR}/PyQt${QT_FWVER}/*.py")
 FOREACH (PQPY ${PQPYLIST})
     EXECUTE_PROCESS (COMMAND cp -fp "${PQPY}" "${QGISPYDIR}/PyQt${QT_FWVER}/")
 ENDFOREACH (PQPY)
-EXECUTE_PROCESS (COMMAND cp -Rfp "${PYQT4MODDIR}/uic" "${QGISPYDIR}/PyQt${QT_FWVER}")
+EXECUTE_PROCESS (COMMAND cp -Rfp "${PYQTMODDIR}/PyQt${QT_FWVER}/uic" "${QGISPYDIR}/PyQt${QT_FWVER}")
 
 # PyQt utilities
 
@@ -277,17 +280,17 @@ ENDIF ()
 
 # PyQwt
 # only if it's available, not compatible with newer PyQt
-
-IF (EXISTS "${PYQT4MODDIR}/Qwt5/_iqt.so")
+PYTHONMODULEDIR("Qwt5/_iqt.so" QWT4MODDIR)
+IF (QWT4MODDIR)
     MESSAGE (STATUS "Copying PyQwt and updating library paths...")
     EXECUTE_PROCESS (COMMAND mkdir -p "${QGISPYDIR}/PyQt${QT_FWVER}/Qwt5")
     IF (NOT EXISTS "${QGISPYDIR}/PyQt${QT_FWVER}/Qwt5/_iqt.so")
-        EXECUTE_PROCESS (COMMAND ditto ${QARCHS} "${PYQT4MODDIR}/Qwt5/_iqt.so" "${QGISPYDIR}/PyQt${QT_FWVER}/Qwt5/")
+        EXECUTE_PROCESS (COMMAND ditto ${QARCHS} "${QWT4MODDIR}/Qwt5/_iqt.so" "${QGISPYDIR}/PyQt${QT_FWVER}/Qwt5/")
     ENDIF ()
     IF (NOT EXISTS "${QGISPYDIR}/PyQt${QT_FWVER}/Qwt5/Qwt.so")
-        EXECUTE_PROCESS (COMMAND ditto ${QARCHS} "${PYQT4MODDIR}/Qwt5/Qwt.so" "${QGISPYDIR}/PyQt${QT_FWVER}/Qwt5/")
+        EXECUTE_PROCESS (COMMAND ditto ${QARCHS} "${QWT4MODDIR}/Qwt5/Qwt.so" "${QGISPYDIR}/PyQt${QT_FWVER}/Qwt5/")
     ENDIF ()
-    FILE (GLOB PQWPYLIST "${PYQT4MODDIR}/Qwt5/*.py")
+    FILE (GLOB PQWPYLIST "${QWT4MODDIR}/Qwt5/*.py")
     FOREACH (PQWPY ${PQWPYLIST})
         EXECUTE_PROCESS (COMMAND cp -fp "${PQWPY}" "${QGISPYDIR}/PyQt${QT_FWVER}/Qwt5/")
     ENDFOREACH (PQWPY)

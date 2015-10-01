@@ -44,3 +44,24 @@ SET (WITH_QSPATIALITE "@WITH_QSPATIALITE@")
 
 # tests
 SET (ENABLE_TESTS "@ENABLE_TESTS@")
+
+# Python module search paths
+# Allows overriding build variables with PYTHONPATH
+# Handles case where resolved symlinked modules may not be where other resolved modules exist, e.g.
+#   a site-packages directory where all packages/modules are symlinked in (like Homebrew),
+#   and their respective install prefixes are completely different
+# This also handles migration to next-gen sip/PyQt setup where sipconfig and pyqtconfig don't exist
+#   and the sys.paths used to import the modules dictates how the modules are found
+#   see: https://github.com/qgis/QGIS/pull/1508
+SET (PYTHON_MODULE_PATHS)
+STRING(REPLACE ":" ";" _pythonpath "$ENV{PYTHONPATH}")
+LIST(APPEND PYTHON_MODULE_PATHS ${_pythonpath})
+IF (EXISTS "@PYQT4_MOD_DIR@")
+  LIST(APPEND PYTHON_MODULE_PATHS "@PYQT4_MOD_DIR@")
+ENDIF ()
+IF (EXISTS "@SIP_MOD_DIR@")
+  LIST(APPEND PYTHON_MODULE_PATHS "@SIP_MOD_DIR@")
+ENDIF ()
+IF (EXISTS "@PYTHON_SITE_PACKAGES_SYS@")
+  LIST(APPEND PYTHON_MODULE_PATHS "@PYTHON_SITE_PACKAGES_SYS@")
+ENDIF ()
