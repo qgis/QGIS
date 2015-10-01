@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-import re
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -27,6 +26,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+import re
 
 from PyQt4.QtGui import QWidget, QPushButton, QLineEdit, QHBoxLayout, QSizePolicy, QFileDialog
 from PyQt4.QtCore import QSettings
