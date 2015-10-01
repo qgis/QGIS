@@ -44,7 +44,7 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
 
     ~QgsVectorLayerLabelProvider();
 
-    virtual QList<QgsLabelFeature*> labelFeatures( const QgsRenderContext& context ) override;
+    virtual QList<QgsLabelFeature*> labelFeatures( QgsRenderContext& context ) override;
 
     virtual void drawLabel( QgsRenderContext& context, pal::LabelPosition* label ) const override;
 
@@ -65,7 +65,7 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
      * @param context render context. The QgsExpressionContext contained within the render context
      * must have already had the feature and fields sets prior to calling this method.
      */
-    virtual void registerFeature( QgsFeature& feature, const QgsRenderContext& context );
+    virtual void registerFeature( QgsFeature& feature, QgsRenderContext &context );
 
   protected:
     //! initialization method - called from constructors

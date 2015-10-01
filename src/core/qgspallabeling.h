@@ -467,7 +467,7 @@ class CORE_EXPORT QgsPalLayerSettings
     double rasterCompressFactor; //pixel resolution scale factor
 
     // called from register feature hook
-    void calculateLabelSize( const QFontMetricsF* fm, QString text, double& labelX, double& labelY, QgsFeature* f = 0, const QgsRenderContext* context = 0 );
+    void calculateLabelSize( const QFontMetricsF* fm, QString text, double& labelX, double& labelY, QgsFeature* f = 0, QgsRenderContext* context = 0 );
 
     /** Register a feature for labelling.
      * @param f feature to label
@@ -476,7 +476,7 @@ class CORE_EXPORT QgsPalLayerSettings
      * @param dxfLayer dxfLayer name
      * @param labelFeature if using QgsLabelingEngineV2, this will receive the label feature
      */
-    void registerFeature( QgsFeature& f, const QgsRenderContext& context, QString dxfLayer, QgsLabelFeature** labelFeature = 0 );
+    void registerFeature( QgsFeature& f, QgsRenderContext& context, QString dxfLayer, QgsLabelFeature** labelFeature = 0 );
 
     void readFromLayer( QgsVectorLayer* layer );
     void writeToLayer( QgsVectorLayer* layer );
@@ -628,15 +628,15 @@ class CORE_EXPORT QgsPalLayerSettings
 
     void parseTextStyle( QFont& labelFont,
                          QgsPalLayerSettings::SizeUnit fontunits,
-                         const QgsRenderContext& context );
+                         QgsRenderContext& context );
 
-    void parseTextBuffer( const QgsRenderContext& context );
+    void parseTextBuffer( QgsRenderContext& context );
 
-    void parseTextFormatting( const QgsRenderContext& context );
+    void parseTextFormatting( QgsRenderContext& context );
 
-    void parseShapeBackground( const QgsRenderContext& context );
+    void parseShapeBackground( QgsRenderContext& context );
 
-    void parseDropShadow( const QgsRenderContext& context );
+    void parseDropShadow( QgsRenderContext& context );
 
     /** Checks if a feature is larger than a minimum size (in mm)
     @return true if above size, false if below*/
@@ -644,7 +644,7 @@ class CORE_EXPORT QgsPalLayerSettings
 
     /** Registers a feature as an obstacle only (no label rendered)
      */
-    void registerObstacleFeature( QgsFeature &f, const QgsRenderContext &context, QString dxfLayer, QgsLabelFeature** obstacleFeature );
+    void registerObstacleFeature( QgsFeature &f, QgsRenderContext &context, QString dxfLayer, QgsLabelFeature** obstacleFeature );
 
     QMap<DataDefinedProperties, QVariant> dataDefinedValues;
     QgsExpression* expression;
@@ -880,9 +880,9 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
      * must have already had the feature and fields sets prior to calling this method.
      * @param dxfLayer dxfLayer name
      */
-    virtual void registerFeature( const QString& layerID, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext(), QString dxfLayer = QString::null ) override;
+    virtual void registerFeature( const QString& layerID, QgsFeature& feat, QgsRenderContext& context, QString dxfLayer = QString::null ) override;
 
-    virtual void registerDiagramFeature( const QString& layerID, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext() ) override;
+    virtual void registerDiagramFeature( const QString& layerID, QgsFeature& feat, QgsRenderContext& context ) override;
     //! called when the map is drawn and labels should be placed
     virtual void drawLabeling( QgsRenderContext& context ) override;
     //! called when we're done with rendering
@@ -934,7 +934,7 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
      * @returns prepared geometry, the caller takes ownership
      * @note added in QGIS 2.9
      */
-    static QgsGeometry* prepareGeometry( const QgsGeometry *geometry, const QgsRenderContext &context, const QgsCoordinateTransform *ct, QgsGeometry *clipGeometry = 0 );
+    static QgsGeometry* prepareGeometry( const QgsGeometry *geometry, QgsRenderContext &context, const QgsCoordinateTransform *ct, QgsGeometry *clipGeometry = 0 );
 
     /** Checks whether a geometry requires preparation before registration with PAL
      * @param geometry geometry to prepare
@@ -944,7 +944,7 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
      * @returns true if geometry requires preparation
      * @note added in QGIS 2.9
      */
-    static bool geometryRequiresPreparation( const QgsGeometry *geometry, const QgsRenderContext &context, const QgsCoordinateTransform *ct, QgsGeometry *clipGeometry = 0 );
+    static bool geometryRequiresPreparation( const QgsGeometry *geometry, QgsRenderContext &context, const QgsCoordinateTransform *ct, QgsGeometry *clipGeometry = 0 );
 
     /** Splits a text string to a list of separate lines, using a specified wrap character.
      * The text string will be split on either newline characters or the wrap character.

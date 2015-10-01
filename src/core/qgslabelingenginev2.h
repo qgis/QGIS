@@ -267,7 +267,7 @@ class CORE_EXPORT QgsAbstractLabelProvider
     Q_DECLARE_FLAGS( Flags, Flag )
 
     //! Return list of label features (they are owned by the provider and thus deleted on its destruction)
-    virtual QList<QgsLabelFeature*> labelFeatures( const QgsRenderContext& context ) = 0;
+    virtual QList<QgsLabelFeature*> labelFeatures( QgsRenderContext& context ) = 0;
 
     //! draw this label at the position determined by the labeling engine
     virtual void drawLabel( QgsRenderContext& context, pal::LabelPosition* label ) const = 0;

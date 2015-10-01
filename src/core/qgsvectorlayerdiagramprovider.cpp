@@ -78,7 +78,7 @@ QgsVectorLayerDiagramProvider::~QgsVectorLayerDiagramProvider()
 }
 
 
-QList<QgsLabelFeature*> QgsVectorLayerDiagramProvider::labelFeatures( const QgsRenderContext& context )
+QList<QgsLabelFeature*> QgsVectorLayerDiagramProvider::labelFeatures( QgsRenderContext &context )
 {
   if ( !mSource )
   {
@@ -226,7 +226,7 @@ bool QgsVectorLayerDiagramProvider::prepare( const QgsRenderContext& context, QS
 }
 
 
-void QgsVectorLayerDiagramProvider::registerFeature( QgsFeature& feature, const QgsRenderContext& context )
+void QgsVectorLayerDiagramProvider::registerFeature( QgsFeature& feature, QgsRenderContext& context )
 {
   QgsLabelFeature* label = registerDiagram( feature, context );
   if ( label )
@@ -234,7 +234,7 @@ void QgsVectorLayerDiagramProvider::registerFeature( QgsFeature& feature, const 
 }
 
 
-QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& feat, const QgsRenderContext& context )
+QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& feat, QgsRenderContext &context )
 {
   const QgsMapSettings& mapSettings = mEngine->mapSettings();
 

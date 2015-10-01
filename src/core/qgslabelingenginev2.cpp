@@ -188,7 +188,7 @@ void QgsLabelingEngineV2::run( QgsRenderContext& context )
 
   // NOW DO THE LAYOUT (from QgsPalLabeling::drawLabeling)
 
-  QPainter* painter = const_cast<QgsRenderContext&>( context ).painter();
+  QPainter* painter = context.painter();
 
   QgsGeometry* extentGeom( QgsGeometry::fromRect( mMapSettings.visibleExtent() ) );
   if ( !qgsDoubleNear( mMapSettings.rotation(), 0.0 ) )

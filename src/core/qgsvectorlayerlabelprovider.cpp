@@ -237,7 +237,7 @@ bool QgsVectorLayerLabelProvider::prepare( const QgsRenderContext& context, QStr
 
 
 
-QList<QgsLabelFeature*> QgsVectorLayerLabelProvider::labelFeatures( const QgsRenderContext& ctx )
+QList<QgsLabelFeature*> QgsVectorLayerLabelProvider::labelFeatures( QgsRenderContext &ctx )
 {
   if ( !mSource )
   {
@@ -269,7 +269,7 @@ QList<QgsLabelFeature*> QgsVectorLayerLabelProvider::labelFeatures( const QgsRen
 }
 
 
-void QgsVectorLayerLabelProvider::registerFeature( QgsFeature& feature, const QgsRenderContext& context )
+void QgsVectorLayerLabelProvider::registerFeature( QgsFeature& feature, QgsRenderContext& context )
 {
   QgsLabelFeature* label = 0;
   mSettings.registerFeature( feature, context, QString(), &label );
