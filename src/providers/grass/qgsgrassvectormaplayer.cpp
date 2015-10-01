@@ -847,7 +847,7 @@ void QgsGrassVectorMapLayer::updateAttributes( int cat, const QgsFeature &featur
 
   if ( !mHasTable )
   {
-    error = tr( "Table does not exit" );
+    error = tr( "Table does not exist" );
     return;
   }
   if ( !feature.isValid() || !feature.fields() )
