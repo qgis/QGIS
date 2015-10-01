@@ -251,7 +251,8 @@ class GrassUtils:
             env['GISRC'] = gisrc
             env['GRASS_MESSAGE_FORMAT'] = 'gui'
             env['GRASS_BATCH_JOB'] = GrassUtils.grassBatchJobFilename()
-            del env['GISBASE']
+            if 'GISBASE' in env:
+                del env['GISBASE']
             GrassUtils.createGrassBatchJobFileFromGrassCommands(commands)
             os.chmod(GrassUtils.grassBatchJobFilename(), stat.S_IEXEC
                      | stat.S_IREAD | stat.S_IWRITE)
