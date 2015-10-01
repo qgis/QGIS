@@ -21,6 +21,9 @@
 
 # message only if verbose makefiles
 
+CMAKE_POLICY (SET CMP0053 OLD)
+
+
 FUNCTION (MYMESSAGE MSG)
     IF (@CMAKE_VERBOSE_MAKEFILE@)
         MESSAGE (STATUS "${MSG}")
@@ -53,6 +56,11 @@ FUNCTION (INSTALLNAMETOOL_CHANGE CHANGE CHANGETO CHANGEBIN)
         # ensure CHANGEBIN is writable by user, e.g. Homebrew binaries are installed non-writable
         EXECUTE_PROCESS (COMMAND chmod u+w "${CHANGEBIN}")
         EXECUTE_PROCESS (COMMAND install_name_tool -change ${CHANGE} ${CHANGETO} "${CHANGEBIN}")
+        # if that didn't work, try a symlink-resolved id
+        # (some package systems, like Homebrew, heavily use symlinks; and, inter-package builds, like plugins,
+        #  may point to the resolved location instead of the 'public' symlink installed to prefixes like /usr/local)
+        get_filename_component(_chgreal ${CHANGE} REALPATH)
+        EXECUTE_PROCESS (COMMAND install_name_tool -change ${_chgreal} ${CHANGETO} "${CHANGEBIN}")
     ENDIF ()
 ENDFUNCTION (INSTALLNAMETOOL_CHANGE)
 
@@ -177,6 +185,20 @@ FUNCTION (UPDATEQGISPATHS LIBFROM LIBTO)
         #ENDFOREACH (PB)
     ENDIF (LIBFROM)
 ENDFUNCTION (UPDATEQGISPATHS)
+
+
+# Find directory path for a known Python module (or package) directory or file name
+# see: PYTHON_MODULE_PATHS in 0vars.cmake.in
+FUNCTION (PYTHONMODULEDIR MOD_NAME OUTVAR)
+    FOREACH (MOD_PATH ${PYTHON_MODULE_PATHS})
+        IF (EXISTS "${MOD_PATH}/${MOD_NAME}")
+            SET (${OUTVAR} "${MOD_PATH}" PARENT_SCOPE)
+            RETURN()
+        ENDIF()
+    ENDFOREACH (MOD_PATH)
+    SET (${OUTVAR} "" PARENT_SCOPE)
+ENDFUNCTION (PYTHONMODULEDIR)
+
 
 SET (ATEXECUTABLE "@executable_path")
 SET (ATLOADER "@loader_path")
