@@ -224,13 +224,13 @@ void QgsEllipseSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Rend
   {
     QString colorString = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_FILL_COLOR, context, QVariant(), &ok ).toString();
     if ( ok )
-      mBrush.setColor( QColor( QgsSymbolLayerV2Utils::decodeColor( colorString ) ) );
+      mBrush.setColor( QgsSymbolLayerV2Utils::decodeColor( colorString ) );
   }
   if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_OUTLINE_COLOR ) )
   {
     QString colorString = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_OUTLINE_COLOR, context, QVariant(), &ok ).toString();
     if ( ok )
-      mPen.setColor( QColor( QgsSymbolLayerV2Utils::decodeColor( colorString ) ) );
+      mPen.setColor( QgsSymbolLayerV2Utils::decodeColor( colorString ) );
   }
   double scaledWidth = mSymbolWidth;
   double scaledHeight = mSymbolHeight;
@@ -558,7 +558,7 @@ QgsMapUnitScale QgsEllipseSymbolLayerV2::mapUnitScale() const
   return QgsMapUnitScale();
 }
 
-bool QgsEllipseSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName, const QgsSymbolV2RenderContext* context, const QgsFeature*, const QPointF& shift ) const
+bool QgsEllipseSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName, QgsSymbolV2RenderContext *context, const QgsFeature*, const QPointF& shift ) const
 {
   //width
   double symbolWidth = mSymbolWidth;
@@ -610,7 +610,7 @@ bool QgsEllipseSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFa
   {
     QString colorString = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_FILL_COLOR, *context, QVariant(), &ok ).toString();
     if ( ok )
-      fc = QColor( colorString );
+      fc = QgsSymbolLayerV2Utils::decodeColor( colorString );
   }
 
   //outline color
@@ -619,7 +619,7 @@ bool QgsEllipseSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFa
   {
     QString colorString = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_OUTLINE_COLOR, *context, QVariant(), &ok ).toString();
     if ( ok )
-      oc = QColor( colorString );
+      oc = QgsSymbolLayerV2Utils::decodeColor( colorString );
   }
 
   //symbol name

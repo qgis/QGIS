@@ -88,10 +88,10 @@ class QgsSimpleFillSymbolLayerV2 : QgsFillSymbolLayerV2
 
     double estimateMaxBleed() const;
 
-    double dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const;
-    QColor dxfColor( const QgsSymbolV2RenderContext& context ) const;
+    double dxfWidth( const QgsDxfExport& e, QgsSymbolV2RenderContext& context ) const;
+    QColor dxfColor( QgsSymbolV2RenderContext& context ) const;
     Qt::PenStyle dxfPenStyle() const;
-    QColor dxfBrushColor( const QgsSymbolV2RenderContext& context ) const;
+    QColor dxfBrushColor( QgsSymbolV2RenderContext& context ) const;
     Qt::BrushStyle dxfBrushStyle() const;
 };
 
@@ -454,8 +454,8 @@ class QgsImageFillSymbolLayer: QgsFillSymbolLayerV2
 
     virtual double estimateMaxBleed() const;
 
-    virtual double dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const;
-    virtual QColor dxfColor( const QgsSymbolV2RenderContext& context ) const;
+    virtual double dxfWidth( const QgsDxfExport& e, QgsSymbolV2RenderContext& context ) const;
+    virtual QColor dxfColor( QgsSymbolV2RenderContext& context ) const;
     virtual Qt::PenStyle dxfPenStyle() const;
 };
 
@@ -624,7 +624,7 @@ class QgsRasterFillSymbolLayer: QgsImageFillSymbolLayer
 
   protected:
 
-    void applyDataDefinedSettings( const QgsSymbolV2RenderContext& context );
+    void applyDataDefinedSettings( QgsSymbolV2RenderContext& context );
 
 };
 
@@ -689,7 +689,7 @@ class QgsSVGFillSymbolLayer: QgsImageFillSymbolLayer
     QgsMapUnitScale mapUnitScale() const;
 
   protected:
-    void applyDataDefinedSettings( const QgsSymbolV2RenderContext& context );
+    void applyDataDefinedSettings( QgsSymbolV2RenderContext& context );
 };
 
 class QgsLinePatternFillSymbolLayer: QgsImageFillSymbolLayer
@@ -838,7 +838,7 @@ class QgsPointPatternFillSymbolLayer : QgsImageFillSymbolLayer
     virtual QSet<QString> usedAttributes() const;
 
   protected:
-    void applyDataDefinedSettings( const QgsSymbolV2RenderContext& context );
+    void applyDataDefinedSettings( QgsSymbolV2RenderContext& context );
 };
 
 class QgsCentroidFillSymbolLayerV2 : QgsFillSymbolLayerV2

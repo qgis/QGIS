@@ -102,9 +102,9 @@ class CORE_EXPORT QgsSimpleLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     QVector<qreal> dxfCustomDashPattern( QgsSymbolV2::OutputUnit& unit ) const override;
     Qt::PenStyle dxfPenStyle() const override;
 
-    double dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const override;
-    double dxfOffset( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const override;
-    QColor dxfColor( const QgsSymbolV2RenderContext& context ) const override;
+    double dxfWidth( const QgsDxfExport& e, QgsSymbolV2RenderContext &context ) const override;
+    double dxfOffset( const QgsDxfExport& e, QgsSymbolV2RenderContext& context ) const override;
+    QColor dxfColor( QgsSymbolV2RenderContext &context ) const override;
 
   protected:
     Qt::PenStyle mPenStyle;

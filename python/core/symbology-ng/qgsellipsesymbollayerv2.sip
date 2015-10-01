@@ -21,7 +21,7 @@ class QgsEllipseSymbolLayerV2 : QgsMarkerSymbolLayerV2
     void toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props ) const;
     void writeSldMarker( QDomDocument& doc, QDomElement &element, QgsStringMap props ) const;
 
-    bool writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName, const QgsSymbolV2RenderContext* context, const QgsFeature* f, const QPointF& shift = QPointF( 0.0, 0.0 ) ) const;
+    bool writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName, QgsSymbolV2RenderContext* context, const QgsFeature* f, const QPointF& shift = QPointF( 0.0, 0.0 ) ) const;
 
     void setSymbolName( const QString& name );
     QString symbolName() const;

@@ -116,10 +116,10 @@ class CORE_EXPORT QgsSimpleFillSymbolLayerV2 : public QgsFillSymbolLayerV2
 
     double estimateMaxBleed() const override;
 
-    double dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const override;
-    QColor dxfColor( const QgsSymbolV2RenderContext& context ) const override;
+    double dxfWidth( const QgsDxfExport& e, QgsSymbolV2RenderContext& context ) const override;
+    QColor dxfColor( QgsSymbolV2RenderContext& context ) const override;
     Qt::PenStyle dxfPenStyle() const override;
-    QColor dxfBrushColor( const QgsSymbolV2RenderContext& context ) const override;
+    QColor dxfBrushColor( QgsSymbolV2RenderContext &context ) const override;
     Qt::BrushStyle dxfBrushStyle() const override;
 
   protected:
@@ -567,8 +567,8 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayerV2
 
     virtual double estimateMaxBleed() const override;
 
-    virtual double dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const override;
-    virtual QColor dxfColor( const QgsSymbolV2RenderContext& context ) const override;
+    virtual double dxfWidth( const QgsDxfExport& e, QgsSymbolV2RenderContext& context ) const override;
+    virtual QColor dxfColor( QgsSymbolV2RenderContext& context ) const override;
     virtual Qt::PenStyle dxfPenStyle() const override;
 
   protected:
@@ -583,7 +583,7 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayerV2
     /** Custom outline*/
     QgsLineSymbolV2* mOutline;
 
-    virtual void applyDataDefinedSettings( const QgsSymbolV2RenderContext& context ) { Q_UNUSED( context ); }
+    virtual void applyDataDefinedSettings( QgsSymbolV2RenderContext& context ) { Q_UNUSED( context ); }
 };
 
 /** \ingroup core
@@ -761,7 +761,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
     QgsSymbolV2::OutputUnit mWidthUnit;
     QgsMapUnitScale mWidthMapUnitScale;
 
-    void applyDataDefinedSettings( const QgsSymbolV2RenderContext& context ) override;
+    void applyDataDefinedSettings( QgsSymbolV2RenderContext& context ) override;
 
   private:
 
@@ -849,7 +849,7 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
     QgsSymbolV2::OutputUnit mSvgOutlineWidthUnit;
     QgsMapUnitScale mSvgOutlineWidthMapUnitScale;
 
-    void applyDataDefinedSettings( const QgsSymbolV2RenderContext& context ) override;
+    void applyDataDefinedSettings( QgsSymbolV2RenderContext& context ) override;
 
   private:
     /** Helper function that gets the view box from the byte array*/
@@ -944,7 +944,7 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
     QgsSymbolV2::OutputUnit mOffsetUnit;
     QgsMapUnitScale mOffsetMapUnitScale;
 
-    void applyDataDefinedSettings( const QgsSymbolV2RenderContext& context ) override;
+    void applyDataDefinedSettings( QgsSymbolV2RenderContext& context ) override;
 
   private:
     /** Applies the svg pattern to the brush*/
@@ -1040,7 +1040,7 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     QgsSymbolV2::OutputUnit mDisplacementYUnit;
     QgsMapUnitScale mDisplacementYMapUnitScale;
 
-    void applyDataDefinedSettings( const QgsSymbolV2RenderContext& context ) override;
+    void applyDataDefinedSettings( QgsSymbolV2RenderContext& context ) override;
 
   private:
     void applyPattern( const QgsSymbolV2RenderContext& context, QBrush& brush, double distanceX, double distanceY,

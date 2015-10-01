@@ -159,10 +159,10 @@ class CORE_EXPORT QgsDxfExport
 
     QgsRectangle dxfExtent() const;
 
-    void addFeature( const QgsSymbolV2RenderContext &ctx, const QString &layer, const QgsSymbolLayerV2 *symbolLayer, const QgsSymbolV2 *symbol );
+    void addFeature( QgsSymbolV2RenderContext &ctx, const QString &layer, const QgsSymbolLayerV2 *symbolLayer, const QgsSymbolV2 *symbol );
 
     //returns dxf palette index from symbol layer color
-    static QColor colorFromSymbolLayer( const QgsSymbolLayerV2 *symbolLayer, const QgsSymbolV2RenderContext &ctx );
+    static QColor colorFromSymbolLayer( const QgsSymbolLayerV2 *symbolLayer, QgsSymbolV2RenderContext &ctx );
     QString lineStyleFromSymbolLayer( const QgsSymbolLayerV2 *symbolLayer );
 
     //functions for dxf palette

@@ -391,7 +391,7 @@ double QgsSimpleFillSymbolLayerV2::estimateMaxBleed() const
   return penBleed + offsetBleed;
 }
 
-double QgsSimpleFillSymbolLayerV2::dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const
+double QgsSimpleFillSymbolLayerV2::dxfWidth( const QgsDxfExport& e, QgsSymbolV2RenderContext &context ) const
 {
   double width = mBorderWidth;
   if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_WIDTH_BORDER ) )
@@ -401,7 +401,7 @@ double QgsSimpleFillSymbolLayerV2::dxfWidth( const QgsDxfExport& e, const QgsSym
   return width * e.mapUnitScaleFactor( e.symbologyScaleDenominator(), mBorderWidthUnit, e.mapUnits() );
 }
 
-QColor QgsSimpleFillSymbolLayerV2::dxfColor( const QgsSymbolV2RenderContext& context ) const
+QColor QgsSimpleFillSymbolLayerV2::dxfColor( QgsSymbolV2RenderContext &context ) const
 {
   if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_BORDER_COLOR ) )
   {
@@ -418,7 +418,7 @@ Qt::PenStyle QgsSimpleFillSymbolLayerV2::dxfPenStyle() const
   return mBorderStyle;
 }
 
-QColor QgsSimpleFillSymbolLayerV2::dxfBrushColor( const QgsSymbolV2RenderContext& context ) const
+QColor QgsSimpleFillSymbolLayerV2::dxfBrushColor( QgsSymbolV2RenderContext& context ) const
 {
   if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR ) )
   {
@@ -563,7 +563,6 @@ void QgsGradientFillSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderC
   QColor color = mColor;
   if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR ) )
   {
-
     QString colorString = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR, context, QVariant(), &ok ).toString();
     if ( ok )
       color = QgsSymbolLayerV2Utils::decodeColor( colorString );
@@ -1642,7 +1641,7 @@ double QgsImageFillSymbolLayer::estimateMaxBleed() const
   return 0;
 }
 
-double QgsImageFillSymbolLayer::dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const
+double QgsImageFillSymbolLayer::dxfWidth( const QgsDxfExport& e, QgsSymbolV2RenderContext &context ) const
 {
   double width = mOutlineWidth;
   if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_WIDTH ) )
@@ -1652,7 +1651,7 @@ double QgsImageFillSymbolLayer::dxfWidth( const QgsDxfExport& e, const QgsSymbol
   return width * e.mapUnitScaleFactor( e.symbologyScaleDenominator(), mOutlineWidthUnit, e.mapUnits() );
 }
 
-QColor QgsImageFillSymbolLayer::dxfColor( const QgsSymbolV2RenderContext& context ) const
+QColor QgsImageFillSymbolLayer::dxfColor( QgsSymbolV2RenderContext &context ) const
 {
   Q_UNUSED( context );
   if ( !mOutline )
@@ -2124,7 +2123,7 @@ QgsSymbolLayerV2* QgsSVGFillSymbolLayer::createFromSld( QDomElement &element )
   return sl;
 }
 
-void QgsSVGFillSymbolLayer::applyDataDefinedSettings( const QgsSymbolV2RenderContext& context )
+void QgsSVGFillSymbolLayer::applyDataDefinedSettings( QgsSymbolV2RenderContext &context )
 {
   if ( !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_WIDTH ) && !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_SVG_FILE )
        && !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_SVG_FILL_COLOR ) && !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_SVG_OUTLINE_COLOR )
@@ -2838,7 +2837,7 @@ QString QgsLinePatternFillSymbolLayer::ogrFeatureStyleWidth( double widthScaleFa
   return featureStyle;
 }
 
-void QgsLinePatternFillSymbolLayer::applyDataDefinedSettings( const QgsSymbolV2RenderContext& context )
+void QgsLinePatternFillSymbolLayer::applyDataDefinedSettings( QgsSymbolV2RenderContext &context )
 {
   if ( !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_LINEANGLE ) && !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_DISTANCE )
        && !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_LINEWIDTH ) && !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR ) )
@@ -3247,7 +3246,7 @@ bool QgsPointPatternFillSymbolLayer::setSubSymbol( QgsSymbolV2* symbol )
   return true;
 }
 
-void QgsPointPatternFillSymbolLayer::applyDataDefinedSettings( const QgsSymbolV2RenderContext& context )
+void QgsPointPatternFillSymbolLayer::applyDataDefinedSettings( QgsSymbolV2RenderContext &context )
 {
 #if 0
   // TODO: enable but check also if mMarkerSymbol has data defined properties
@@ -3645,7 +3644,7 @@ void QgsRasterFillSymbolLayer::setAlpha( const double alpha )
   mAlpha = alpha;
 }
 
-void QgsRasterFillSymbolLayer::applyDataDefinedSettings( const QgsSymbolV2RenderContext &context )
+void QgsRasterFillSymbolLayer::applyDataDefinedSettings( QgsSymbolV2RenderContext &context )
 {
   if ( !hasDataDefinedProperties() )
     return; // shortcut

@@ -263,7 +263,7 @@ QVariant QgsSymbolLayerV2::evaluateDataDefinedProperty( const QString& property,
 bool QgsSymbolLayerV2::writeDxf( QgsDxfExport& e,
                                  double mmMapUnitScaleFactor,
                                  const QString& layerName,
-                                 const QgsSymbolV2RenderContext* context,
+                                 QgsSymbolV2RenderContext *context,
                                  const QgsFeature* f,
                                  const QPointF& shift ) const
 {
@@ -276,21 +276,21 @@ bool QgsSymbolLayerV2::writeDxf( QgsDxfExport& e,
   return false;
 }
 
-double QgsSymbolLayerV2::dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const
+double QgsSymbolLayerV2::dxfWidth( const QgsDxfExport& e, QgsSymbolV2RenderContext& context ) const
 {
   Q_UNUSED( e );
   Q_UNUSED( context );
   return 1.0;
 }
 
-double QgsSymbolLayerV2::dxfOffset( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const
+double QgsSymbolLayerV2::dxfOffset( const QgsDxfExport& e, QgsSymbolV2RenderContext &context ) const
 {
   Q_UNUSED( e );
   Q_UNUSED( context );
   return 0.0;
 }
 
-QColor QgsSymbolLayerV2::dxfColor( const QgsSymbolV2RenderContext& context ) const
+QColor QgsSymbolLayerV2::dxfColor( QgsSymbolV2RenderContext &context ) const
 {
   Q_UNUSED( context );
   return color();
@@ -307,7 +307,7 @@ Qt::PenStyle QgsSymbolLayerV2::dxfPenStyle() const
   return Qt::SolidLine;
 }
 
-QColor QgsSymbolLayerV2::dxfBrushColor( const QgsSymbolV2RenderContext& context ) const
+QColor QgsSymbolLayerV2::dxfBrushColor( QgsSymbolV2RenderContext &context ) const
 {
   Q_UNUSED( context );
   return color();
@@ -523,17 +523,17 @@ void QgsMarkerSymbolLayerV2::drawPreviewIcon( QgsSymbolV2RenderContext& context,
   stopRender( context );
 }
 
-void QgsMarkerSymbolLayerV2::markerOffset( const QgsSymbolV2RenderContext& context, double& offsetX, double& offsetY ) const
+void QgsMarkerSymbolLayerV2::markerOffset( QgsSymbolV2RenderContext& context, double& offsetX, double& offsetY ) const
 {
   markerOffset( context, mSize, mSize, mSizeUnit, mSizeUnit, offsetX, offsetY, mSizeMapUnitScale, mSizeMapUnitScale );
 }
 
-void QgsMarkerSymbolLayerV2::markerOffset( const QgsSymbolV2RenderContext& context, double width, double height, double& offsetX, double& offsetY ) const
+void QgsMarkerSymbolLayerV2::markerOffset( QgsSymbolV2RenderContext& context, double width, double height, double& offsetX, double& offsetY ) const
 {
   markerOffset( context, width, height, mSizeUnit, mSizeUnit, offsetX, offsetY, mSizeMapUnitScale, mSizeMapUnitScale );
 }
 
-void QgsMarkerSymbolLayerV2::markerOffset( const QgsSymbolV2RenderContext& context, double width, double height,
+void QgsMarkerSymbolLayerV2::markerOffset( QgsSymbolV2RenderContext& context, double width, double height,
     QgsSymbolV2::OutputUnit widthUnit, QgsSymbolV2::OutputUnit heightUnit,
     double& offsetX, double& offsetY, const QgsMapUnitScale& widthMapUnitScale, const QgsMapUnitScale& heightMapUnitScale ) const
 {
@@ -701,7 +701,7 @@ void QgsLineSymbolLayerV2::renderPolygonOutline( const QPolygonF& points, QList<
   }
 }
 
-double QgsLineSymbolLayerV2::dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const
+double QgsLineSymbolLayerV2::dxfWidth( const QgsDxfExport& e, QgsSymbolV2RenderContext &context ) const
 {
   Q_UNUSED( context );
   return width() * e.mapUnitScaleFactor( e.symbologyScaleDenominator(), widthUnit(), e.mapUnits() );

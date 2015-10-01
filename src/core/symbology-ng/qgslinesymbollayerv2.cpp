@@ -577,7 +577,7 @@ Qt::PenStyle QgsSimpleLineSymbolLayerV2::dxfPenStyle() const
   return mPenStyle;
 }
 
-double QgsSimpleLineSymbolLayerV2::dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const
+double QgsSimpleLineSymbolLayerV2::dxfWidth( const QgsDxfExport& e, QgsSymbolV2RenderContext& context ) const
 {
   double width = mWidth;
 
@@ -593,7 +593,7 @@ double QgsSimpleLineSymbolLayerV2::dxfWidth( const QgsDxfExport& e, const QgsSym
   return width * e.mapUnitScaleFactor( e.symbologyScaleDenominator(), widthUnit(), e.mapUnits() );
 }
 
-QColor QgsSimpleLineSymbolLayerV2::dxfColor( const QgsSymbolV2RenderContext& context ) const
+QColor QgsSimpleLineSymbolLayerV2::dxfColor( QgsSymbolV2RenderContext& context ) const
 {
   if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR ) )
   {
@@ -605,7 +605,7 @@ QColor QgsSimpleLineSymbolLayerV2::dxfColor( const QgsSymbolV2RenderContext& con
   return mColor;
 }
 
-double QgsSimpleLineSymbolLayerV2::dxfOffset( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const
+double QgsSimpleLineSymbolLayerV2::dxfOffset( const QgsDxfExport& e, QgsSymbolV2RenderContext &context ) const
 {
   Q_UNUSED( e );
   double offset = mOffset;

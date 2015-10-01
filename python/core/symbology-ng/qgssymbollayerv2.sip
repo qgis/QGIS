@@ -232,18 +232,18 @@ class QgsSymbolLayerV2
     virtual bool writeDxf( QgsDxfExport& e,
                            double mmMapUnitScaleFactor,
                            const QString& layerName,
-                           const QgsSymbolV2RenderContext* context,
+                           QgsSymbolV2RenderContext* context,
                            const QgsFeature* f,
                            const QPointF& shift = QPointF( 0.0, 0.0 ) ) const;
 
-    virtual double dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const;
-    virtual double dxfOffset( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const;
+    virtual double dxfWidth( const QgsDxfExport& e, QgsSymbolV2RenderContext& context ) const;
+    virtual double dxfOffset( const QgsDxfExport& e, QgsSymbolV2RenderContext& context ) const;
 
-    virtual QColor dxfColor( const QgsSymbolV2RenderContext& context ) const;
+    virtual QColor dxfColor( QgsSymbolV2RenderContext& context ) const;
 
     virtual QVector<qreal> dxfCustomDashPattern( QgsSymbolV2::OutputUnit& unit ) const;
     virtual Qt::PenStyle dxfPenStyle() const;
-    virtual QColor dxfBrushColor( const QgsSymbolV2RenderContext& context ) const;
+    virtual QColor dxfBrushColor( QgsSymbolV2RenderContext& context ) const;
     virtual Qt::BrushStyle dxfBrushStyle() const;
 
     /** Returns the current paint effect for the layer.
@@ -389,12 +389,12 @@ class QgsMarkerSymbolLayerV2 : QgsSymbolLayerV2
     QgsMarkerSymbolLayerV2( bool locked = false );
 
     //handles marker offset and anchor point shift together
-    void markerOffset( const QgsSymbolV2RenderContext& context, double& offsetX, double& offsetY ) const;
+    void markerOffset( QgsSymbolV2RenderContext& context, double& offsetX, double& offsetY ) const;
 
-    void markerOffset( const QgsSymbolV2RenderContext& context, double width, double height, double& offsetX, double& offsetY ) const /PyName=markerOffsetWithWidthAndHeight/;
+    void markerOffset( QgsSymbolV2RenderContext& context, double width, double height, double& offsetX, double& offsetY ) const /PyName=markerOffsetWithWidthAndHeight/;
 
     //! @note available in python bindings as markerOffset2
-    void markerOffset( const QgsSymbolV2RenderContext& context, double width, double height,
+    void markerOffset( QgsSymbolV2RenderContext& context, double width, double height,
                        QgsSymbolV2::OutputUnit widthUnit, QgsSymbolV2::OutputUnit heightUnit,
                        double& offsetX, double& offsetY,
                        const QgsMapUnitScale &widthMapUnitScale, const QgsMapUnitScale &heightMapUnitScale ) const /PyName=markerOffset2/;
@@ -439,8 +439,8 @@ class QgsLineSymbolLayerV2 : QgsSymbolLayerV2
 
     void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size );
 
-    virtual double dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const;
-    virtual double dxfOffset( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const;
+    virtual double dxfWidth( const QgsDxfExport& e, QgsSymbolV2RenderContext& context ) const;
+    virtual double dxfOffset( const QgsDxfExport& e, QgsSymbolV2RenderContext& context ) const;
 
   protected:
     QgsLineSymbolLayerV2( bool locked = false );
