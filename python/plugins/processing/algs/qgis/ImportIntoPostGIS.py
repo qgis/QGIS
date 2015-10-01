@@ -77,8 +77,8 @@ class ImportIntoPostGIS(GeoAlgorithm):
 
         table = self.getParameterValue(self.TABLENAME).strip()
         if table == '':
-            table = layer.name().lower()
-        table.replace(' ', '')
+            table = layer.name()
+        table = table.replace(' ', '').lower()
         providerName = 'postgres'
 
         try:
