@@ -82,7 +82,6 @@ QgsGrassProvider::QgsGrassProvider( QString uri )
     , mLayer( 0 )
     , mMapVersion( 0 )
     , mCidxFieldIndex( -1 )
-    , mCidxFieldNumCats( 0 )
     , mNumberFeatures( 0 )
     , mEditBuffer( 0 )
     , mEditLayer( 0 )
@@ -209,39 +208,16 @@ QgsGrassProvider::QgsGrassProvider( QString uri )
       break;
   }
 
-  // the map may be invalid (e.g. wrong uri or open failed)
-  QgsGrassVectorMap *vectorMap = QgsGrassVectorMapStore::instance()->openMap( mGrassObject );
-  if ( !vectorMap ) // should not happen
-  {
-    QgsDebugMsg( "Cannot open map" );
-    return;
-  }
-  if ( !vectorMap->isValid() ) // may happen
-  {
-    QgsDebugMsg( "vectorMap is not valid" );
-    return;
-  }
-
-  mLayer = vectorMap->openLayer( mLayerField );
-
-  if ( !mLayer ) // should not happen
+  if ( !openLayer() )
   {
     QgsDebugMsg( "Cannot open layer" );
-    return;
-  }
-  if ( !mLayer->map() || !mLayer->map()->map() ) // should not happen
-  {
-    QgsDebugMsg( "map is null" );
     return;
   }
 
   loadMapInfo();
   setTopoFields();
 
-  mLayer->map()->version();
-
   connect( mLayer->map(), SIGNAL( dataChanged() ), SLOT( onDataChanged() ) );
-
 
   // TODO: types according to database
   mNativeTypes
@@ -264,6 +240,38 @@ int QgsGrassProvider::capabilities() const
     return AddFeatures | DeleteFeatures | ChangeGeometries | AddAttributes | DeleteAttributes | ChangeAttributeValues;
   }
   return 0;
+}
+
+bool QgsGrassProvider::openLayer()
+{
+  QgsDebugMsg( "entered" );
+  // the map may be invalid (e.g. wrong uri or open failed)
+  QgsGrassVectorMap *vectorMap = QgsGrassVectorMapStore::instance()->openMap( mGrassObject );
+  if ( !vectorMap ) // should not happen
+  {
+    QgsDebugMsg( "Cannot open map" );
+    return false;
+  }
+  if ( !vectorMap->isValid() ) // may happen
+  {
+    QgsDebugMsg( "vectorMap is not valid" );
+    return false;
+  }
+
+  mLayer = vectorMap->openLayer( mLayerField );
+
+  if ( !mLayer ) // should not happen
+  {
+    QgsDebugMsg( "Cannot open layer" );
+    return false;
+  }
+  if ( !mLayer->map() || !mLayer->map()->map() ) // should not happen
+  {
+    QgsDebugMsg( "map is null" );
+    return false;
+  }
+  mMapVersion = mLayer->map()->version();
+  return true;
 }
 
 void QgsGrassProvider::loadMapInfo()
@@ -291,38 +299,38 @@ void QgsGrassProvider::loadMapInfo()
       if ( mCidxFieldIndex >= 0 )
       {
         mNumberFeatures = Vect_cidx_get_type_count( map(), mLayerField, mGrassType );
-        mCidxFieldNumCats = Vect_cidx_get_num_cats_by_index( map(), mCidxFieldIndex );
       }
     }
     else
     {
       // TODO nofield layers
       mNumberFeatures = 0;
-      mCidxFieldNumCats = 0;
     }
   }
-  QgsDebugMsg( QString( "mNumberFeatures = %1 mCidxFieldIndex = %2 mCidxFieldNumCats = %3" ).arg( mNumberFeatures ).arg( mCidxFieldIndex ).arg( mCidxFieldNumCats ) );
-
+  QgsDebugMsg( QString( "mNumberFeatures = %1 mCidxFieldIndex = %2" ).arg( mNumberFeatures ).arg( mCidxFieldIndex ) );
 }
 
-void QgsGrassProvider::update( void )
+void QgsGrassProvider::update()
 {
   QgsDebugMsg( "entered" );
-  // TODO
-#if 0
+
   mValid = false;
 
-  if ( !map()s[mLayers[mLayerId].mapId].valid )
-    return;
+  if ( mLayer )
+  {
+    mLayer->close();
+    mLayer = 0;
+  }
 
-  // Getting the total number of features in the layer
-  // It may happen that the field disappeares from the map (deleted features, new map without that field)
+  if ( !openLayer() )
+  {
+    QgsDebugMsg( "Cannot open layer" );
+    return;
+  }
+
   loadMapInfo();
 
-  map()Version = map()s[mLayers[mLayerId].mapId].version;
-
   mValid = true;
-#endif
 }
 
 QgsGrassProvider::~QgsGrassProvider()
@@ -486,6 +494,7 @@ int QgsGrassProvider::grassLayerType( QString name )
 void QgsGrassProvider::onDataChanged()
 {
   QgsDebugMsg( "entered" );
+  update();
   emit dataChanged();
 }
 

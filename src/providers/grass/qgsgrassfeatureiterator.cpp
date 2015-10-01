@@ -313,9 +313,9 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature& feature )
       cat = 0;
       type = 0;
       lid = 0;
-      QgsDebugMsgLevel( QString( "mNextLid = %1 mNextCidx = %2 numLines() = %3 mCidxFieldNumCats = %4" )
+      QgsDebugMsgLevel( QString( "mNextLid = %1 mNextCidx = %2 numLines() = %3 mCidxFieldIndex = %4 cidxFieldNumCats() = %5" )
                         .arg( mNextLid ).arg( mNextCidx ).arg( mSource->mLayer->map()->numLines() )
-                        .arg( mSource->mCidxFieldNumCats ), 3 );
+                        .arg( mSource->mCidxFieldIndex ).arg( mSource->mLayer->cidxFieldNumCats() ), 3 );
       if ( mSource->mEditing )
       {
         // TODO should be numLines before editing started (?), but another layer
@@ -414,7 +414,7 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature& feature )
       }
       else // standard layer
       {
-        if ( mNextCidx >= mSource->mCidxFieldNumCats )
+        if ( mNextCidx >= mSource->mLayer->cidxFieldNumCats() )
         {
           break;
         }
@@ -692,7 +692,6 @@ QgsGrassFeatureSource::QgsGrassFeatureSource( const QgsGrassProvider* p )
     , mGrassType( p->mGrassType )
     , mQgisType( p->mQgisType )
     , mCidxFieldIndex( p->mCidxFieldIndex )
-    , mCidxFieldNumCats( p->mCidxFieldNumCats )
     , mFields( p->fields() )
     , mEncoding( p->mEncoding )
     , mEditing( p->mEditBuffer )

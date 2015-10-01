@@ -51,6 +51,9 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapLayer : public QObject
     bool isValid() const { return mValid; }
     QgsGrassVectorMap *map() { return mMap; }
 
+    /** Current number of cats in cat index, changing during editing */
+    int cidxFieldNumCats();
+
     /** Original fields before editing started + topo field if edited.
      * Does not reflect add/delete column.
      * Original fields must be returned by provider fields() */
@@ -68,6 +71,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapLayer : public QObject
     int keyColumn() { return mKeyColumn; }
     QString keyColumnName() { return mFieldInfo ? mFieldInfo->key : QString(); }
     QList< QPair<double, double> > minMax() { return mMinMax; }
+
     int userCount() { return mUsers; }
     void addUser();
     void removeUser();
@@ -144,6 +148,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapLayer : public QObject
     int mField;
     bool mValid;
     QgsGrassVectorMap *mMap;
+    int mCidxFieldIndex;
     struct field_info *mFieldInfo;
     dbDriver *mDriver;
 

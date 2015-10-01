@@ -403,6 +403,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
   private:
     struct Map_info * map();
     void setMapset();
+    bool openLayer();
 
     QgsGrassObject mGrassObject;
     // field part of layer or -1 if no field specified
@@ -420,8 +421,6 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
 
     // Index for layerField in category index or -1 if no such field
     int mCidxFieldIndex;
-    // Number of records in field index
-    int mCidxFieldNumCats;
 
     bool mValid;
     long mNumberFeatures;

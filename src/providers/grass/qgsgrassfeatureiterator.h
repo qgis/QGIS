@@ -57,7 +57,6 @@ class GRASS_LIB_EXPORT QgsGrassFeatureSource : public QgsAbstractFeatureSource
     QGis::WkbType mQgisType; // WKBPoint, WKBLineString, ...
 
     int mCidxFieldIndex;    // !UPDATE! Index for layerField in category index or -1 if no such field
-    int mCidxFieldNumCats;  // !UPDATE! Number of records in field index
 
     QgsFields mFields;
     QTextCodec* mEncoding;

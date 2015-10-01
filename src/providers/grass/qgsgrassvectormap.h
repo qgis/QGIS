@@ -138,6 +138,8 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
 
     static QString topoSymbolFieldName() { return "topo_symbol" ; }
 
+    void printDebug();
+
   signals:
     /** Ask all iterators to cancel iteration when possible. Connected to iterators with
      * Qt::DirectConnection (non blocking) */
