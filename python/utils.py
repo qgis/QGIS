@@ -30,7 +30,7 @@ QGIS utilities module
 
 from PyQt4.QtCore import QCoreApplication, QLocale
 from PyQt4.QtGui import QPushButton
-from qgis.core import QGis, QgsExpression, QgsMessageLog, qgsfunction
+from qgis.core import QGis, QgsExpression, QgsMessageLog, qgsfunction, QgsMessageOutput
 from qgis.gui import QgsMessageBar
 
 import sys
@@ -41,6 +41,7 @@ import ConfigParser
 import warnings
 import codecs
 import time
+import functools
 
 # ######################
 # ERROR HANDLING
@@ -63,27 +64,14 @@ warnings.showwarning = showWarning
 
 
 def showException(type, value, tb, msg, messagebar=False):
-    lst = traceback.format_exception(type, value, tb)
     if msg is None:
         msg = QCoreApplication.translate('Python', 'An error has occured while executing Python code:')
-    txt = '<font color="red">%s</font><br><br><pre>' % msg
-    for s in lst:
-        txt += s.decode('utf-8', 'replace')
-    txt += '</pre><br>%s<br>%s<br><br>' % (QCoreApplication.translate('Python', 'Python version:'), sys.version)
-    txt += '<br>%s<br>%s %s, %s<br><br>' % (
-        QCoreApplication.translate('Python', 'QGIS version:'), QGis.QGIS_VERSION, QGis.QGIS_RELEASE_NAME,
-        QGis.QGIS_DEV_VERSION)
-    txt += '%s %s' % (QCoreApplication.translate('Python', 'Python path:'), str(sys.path))
-    txt = txt.replace('\n', '<br>')
-    txt = txt.replace('  ', '&nbsp; ')  # preserve whitespaces for nicer output
 
-    from qgis.core import QgsMessageOutput
-
-    title = QCoreApplication.translate('Python', 'Python error')
     logmessage = ''
-    for s in lst:
+    for s in traceback.format_exception(type, value, tb):
         logmessage += s.decode('utf-8', 'replace')
 
+    title = QCoreApplication.translate('Python', 'Python error')
     QgsMessageLog.logMessage(logmessage, title)
 
     if messagebar and iface:
@@ -94,14 +82,75 @@ def showException(type, value, tb, msg, messagebar=False):
 
         widget = iface.messageBar().createMessage(title, msg + " See message log (Python Error) for more details.")
         widget.setProperty("Error", msg)
-        button = QPushButton("View message log", pressed=iface.openMessageLog)
+        stackbutton = QPushButton("Stack trace", pressed=functools.partial(open_stack_dialog, type, value, tb, msg))
+        button = QPushButton("View message log", pressed=show_message_log)
+        widget.layout().addWidget(stackbutton)
         widget.layout().addWidget(button)
         iface.messageBar().pushWidget(widget, QgsMessageBar.WARNING)
     else:
-        msg = QgsMessageOutput.createMessageOutput()
-        msg.setTitle()
-        msg.setMessage(txt, QgsMessageOutput.MessageHtml)
-        msg.showMessage()
+        open_stack_dialog(type, value, tb, msg)
+
+def show_message_log(pop_error=True):
+    if pop_error:
+        iface.messageBar().popWidget()
+
+    iface.openMessageLog()
+
+
+def open_stack_dialog(type, value, tb, msg, pop_error=True):
+    if pop_error:
+        iface.messageBar().popWidget()
+
+    if msg is None:
+        msg = QCoreApplication.translate('Python', 'An error has occured while executing Python code:')
+
+    # TODO Move this to a template HTML file
+    txt = '''<font color="red"><b>{msg}</b></font>
+<br>
+<h3>{main_error}</h3>
+<pre>
+{error}
+</pre>
+<br>
+<b>{version_label}</b> {num}
+<br>
+<b>{qgis_label}</b> {qversion} {qgisrelease}, {devversion}
+<br>
+<h4>{pypath_label}</h4>
+<ul>
+{pypath}
+</ul>'''
+
+    error = ''
+    lst = traceback.format_exception(type, value, tb)
+    for s in lst:
+        error += s.decode('utf-8', 'replace')
+    error = error.replace('\n', '<br>')
+
+    main_error = lst[-1].decode('utf-8', 'replace')
+
+    version_label = QCoreApplication.translate('Python', 'Python version:')
+    qgis_label = QCoreApplication.translate('Python', 'QGIS version:')
+    pypath_label = QCoreApplication.translate('Python', 'Python Path:')
+    txt = txt.format(msg=msg,
+               main_error=main_error,
+               error=error,
+               version_label=version_label,
+               num=sys.version,
+               qgis_label=qgis_label,
+               qversion=QGis.QGIS_VERSION,
+               qgisrelease=QGis.QGIS_RELEASE_NAME,
+               devversion=QGis.QGIS_DEV_VERSION,
+               pypath_label=pypath_label,
+               pypath="".join("<li>{}</li>".format(path) for path in sys.path))
+
+    txt = txt.replace('  ', '&nbsp; ')  # preserve whitespaces for nicer output
+
+    dlg = QgsMessageOutput.createMessageOutput()
+    dlg.setTitle(msg)
+    dlg.setMessage(txt, QgsMessageOutput.MessageHtml)
+    dlg.showMessage()
+
 
 
 def qgis_excepthook(type, value, tb):
