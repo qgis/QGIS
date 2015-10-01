@@ -2710,7 +2710,7 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolV2RenderContext
 #endif
 
   // Use antialiasing because without antialiasing lines are rendered to the
-  // right and below the mathematically defined points (not symetrical)
+  // right and below the mathematically defined points (not symmetrical)
   // and such tiles become useless for are filling
   p.setRenderHint( QPainter::Antialiasing, true );
 

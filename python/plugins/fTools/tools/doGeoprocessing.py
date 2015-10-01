@@ -316,7 +316,7 @@ class geoprocessingThread(QThread):
             elif self.myFunction == 6:
                 geos, feature, match, error = self.union()
             elif self.myFunction == 7:
-                geos, feature, match, error = self.symetrical_difference()
+                geos, feature, match, error = self.symmetrical_difference()
             elif self.myFunction == 8:
                 geos, feature, match, error = self.clip()
         self.emit(SIGNAL("runFinished(PyQt_PyObject)"), (geos, feature, match, error))
@@ -1258,7 +1258,7 @@ class geoprocessingThread(QThread):
         del writer
         return GEOS_EXCEPT, FEATURE_EXCEPT, crs_match, None
 
-    def symetrical_difference(self):
+    def symmetrical_difference(self):
         GEOS_EXCEPT = True
         FEATURE_EXCEPT = True
         vproviderA = self.vlayerA.dataProvider()
