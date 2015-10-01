@@ -539,6 +539,7 @@ void QgsGrassVectorMap::printDebug()
   }
   G_TRY
   {
+#ifdef QGISDEBUG
     int ncidx = Vect_cidx_get_num_fields( mMap );
     QgsDebugMsg( QString( "ncidx = %1" ).arg( ncidx ) );
 
@@ -548,9 +549,11 @@ void QgsGrassVectorMap::printDebug()
       int ncats = Vect_cidx_get_num_cats_by_index( mMap, i );
       QgsDebugMsg( QString( "i = %1 layer = %2 ncats = %3" ).arg( i ).arg( layer ).arg( ncats ) );
     }
+#endif
   }
   G_CATCH( QgsGrass::Exception &e )
   {
+    Q_UNUSED( e )
     QgsDebugMsg( "Cannot read info from map: " + QString( e.what() ) );
   }
 }
