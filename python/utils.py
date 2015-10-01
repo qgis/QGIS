@@ -29,7 +29,7 @@ QGIS utilities module
 """
 
 from PyQt4.QtCore import QCoreApplication, QLocale
-from PyQt4.QtGui import QPushButton
+from PyQt4.QtGui import QPushButton, QApplication
 from qgis.core import QGis, QgsExpression, QgsMessageLog, qgsfunction, QgsMessageOutput
 from qgis.gui import QgsMessageBar
 
@@ -74,7 +74,9 @@ def showException(type, value, tb, msg, messagebar=False):
     title = QCoreApplication.translate('Python', 'Python error')
     QgsMessageLog.logMessage(logmessage, title)
 
-    if messagebar and iface:
+    blockingdialog = QApplication.instance().activeModalWidget()
+
+    if messagebar and iface and not blockingdialog:
         item = iface.messageBar().currentItem()
         if item and item.property("Error") == msg:
             # Return of we already have a message with the same error message
