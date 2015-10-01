@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+import re
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -77,10 +78,15 @@ class BatchOutputSelectionPanel(QWidget):
             path = unicode(settings.value('/Processing/LastBatchOutputPath'))
         else:
             path = ''
-        filename = QFileDialog.getSaveFileName(self, self.tr('Save file'), path,
-                                               filefilter)
+        filename, selectedFileFilter  = QFileDialog.getSaveFileNameAndFilter(self,
+                                    self.tr('Save file'), path, filefilter)
+        print filename, selectedFileFilter
         if filename:
-            filename = unicode(filename)
+            if not filename.lower().endswith(
+                    tuple(re.findall("\*(\.[a-z]{1,10})", filefilter))):
+                ext = re.search("\*(\.[a-z]{1,10})", selectedFileFilter)
+                if ext:
+                    filename += ext.group(1)
             settings.setValue('/Processing/LastBatchOutputPath', os.path.dirname(filename))
             dlg = AutofillDialog(self.alg)
             dlg.exec_()
