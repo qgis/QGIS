@@ -31,6 +31,7 @@
 
 const QString QgsExpressionContext::EXPR_FIELDS( "_fields_" );
 const QString QgsExpressionContext::EXPR_FEATURE( "_feature_" );
+const QString QgsExpressionContext::EXPR_ORIGINAL_VALUE( "value" );
 
 //
 // QgsExpressionContextScope
@@ -411,6 +412,14 @@ void QgsExpressionContext::setFields( const QgsFields &fields )
 QgsFields QgsExpressionContext::fields() const
 {
   return qvariant_cast<QgsFields>( variable( QgsExpressionContext::EXPR_FIELDS ) );
+}
+
+void QgsExpressionContext::setOriginalValueVariable( const QVariant &value )
+{
+  if ( mStack.isEmpty() )
+    mStack.append( new QgsExpressionContextScope() );
+
+  mStack.last()->setVariable( QgsExpressionContext::EXPR_ORIGINAL_VALUE, value );
 }
 
 

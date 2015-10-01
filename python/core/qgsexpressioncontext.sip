@@ -376,6 +376,13 @@ class QgsExpressionContext
      */
     QgsFields fields() const;
 
+    /** Sets the original value variable value for the context.
+     * @param value value for original value variable. This usually represents the an original widget
+     * value before any data defined overrides have been applied.
+     * @note added in QGIS 2.12
+     */
+    void setOriginalValueVariable( const QVariant& value );
+
 };
 
 /** \ingroup core

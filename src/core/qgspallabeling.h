@@ -531,7 +531,7 @@ class CORE_EXPORT QgsPalLayerSettings
      * @returns true/false whether result is null or invalid
      * @note not available in python bindings
      */
-    bool dataDefinedEvaluate( QgsPalLayerSettings::DataDefinedProperties p, QVariant& exprVal, const QgsExpressionContext* context = 0 ) const;
+    bool dataDefinedEvaluate( QgsPalLayerSettings::DataDefinedProperties p, QVariant& exprVal, QgsExpressionContext* context = 0, QVariant originalValue = QVariant() ) const;
 
     /** Whether data definition is active
      */
@@ -624,7 +624,7 @@ class CORE_EXPORT QgsPalLayerSettings
     // convenience data defined evaluation function
     bool dataDefinedValEval( DataDefinedValueType valType,
                              QgsPalLayerSettings::DataDefinedProperties p,
-                             QVariant& exprVal, const QgsExpressionContext& context );
+                             QVariant& exprVal, QgsExpressionContext &context, QVariant originalValue = QVariant() );
 
     void parseTextStyle( QFont& labelFont,
                          QgsPalLayerSettings::SizeUnit fontunits,

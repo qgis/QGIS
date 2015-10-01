@@ -504,6 +504,10 @@ QgsSymbolV2RenderContext::~QgsSymbolV2RenderContext()
 
 }
 
+void QgsSymbolV2RenderContext::setOriginalValueVariable( const QVariant& value )
+{
+  mRenderContext.expressionContext().setOriginalValueVariable( value );
+}
 
 double QgsSymbolV2RenderContext::outputLineWidth( double width ) const
 {

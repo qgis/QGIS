@@ -50,6 +50,10 @@ static QgsExpressionContext _getExpressionContext( const void* context )
   if ( layer )
     expContext << QgsExpressionContextUtils::layerScope( layer );
 
+  //TODO - show actual value
+  expContext.setOriginalValueVariable( QVariant() );
+  expContext.setHighlightedVariables( QStringList() << QgsExpressionContext::EXPR_ORIGINAL_VALUE );
+
   return expContext;
 }
 
