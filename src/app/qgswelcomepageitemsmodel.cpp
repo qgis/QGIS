@@ -71,7 +71,7 @@ void QgsWelcomePageItemDelegate::paint( QPainter* painter, const QStyleOptionVie
   int textSize = titleSize * 0.85;
 
   doc.setHtml( QString( "<div style='font-size:%1px;'><span style='font-size:%2px;font-weight:bold;'>%3</span><br>%4<br>%5</div>" ).arg( textSize ).arg( titleSize ).arg( index.data( QgsWelcomePageItemsModel::TitleRole ).toString() ).arg( index.data( QgsWelcomePageItemsModel::PathRole ).toString() ).arg( index.data( QgsWelcomePageItemsModel::CrsRole ).toString() ) );
-  doc.setTextWidth( 800 );
+  doc.setTextWidth( 2800 );
 
   QPixmap icon = qvariant_cast<QPixmap>( index.data( Qt::DecorationRole ) );
   if ( !icon.isNull() )
@@ -94,7 +94,7 @@ QSize QgsWelcomePageItemDelegate::sizeHint( const QStyleOptionViewItem & option,
   int textSize = titleSize * 0.85;
 
   doc.setHtml( QString( "<div style='font-size:%1px;'><span style='font-size:%2px;font-weight:bold;'>%3</span><br>%4<br>%5</div>" ).arg( textSize ).arg( titleSize ).arg( index.data( QgsWelcomePageItemsModel::TitleRole ).toString() ).arg( index.data( QgsWelcomePageItemsModel::PathRole ).toString() ).arg( index.data( QgsWelcomePageItemsModel::CrsRole ).toString() ) );
-  doc.setTextWidth( 800 );
+  doc.setTextWidth( 2800 );
 
   QPixmap icon = qvariant_cast<QPixmap>( index.data( Qt::DecorationRole ) );
 
