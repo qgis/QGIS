@@ -1,745 +1,735 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML>
-<HEAD>
-<META NAME="generator" CONTENT="http://txt2tags.org">
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
-<TITLE>QGIS</TITLE>
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.12: http://docutils.sourceforge.net/" />
+<title>Developers guide for QGIS</title>
+<style type="text/css">
 
-<!-- Included /home/fischer/src/qgis/doc/style.css -->
-<STYLE TYPE="text/css">
-body{  background: white;
-  color: black;
-  font-family: arial,sans-serif;
+/*
+:Author: David Goodger (goodger@python.org)
+:Id: $Id: html4css1.css 7614 2013-02-21 15:55:51Z milde $
+:Copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+
+See http://docutils.sf.net/docs/howto/html-stylesheets.html for how to
+customize this style sheet.
+*/
+
+/* used to remove borders from tables and images */
+.borderless, table.borderless td, table.borderless th {
+  border: 0 }
+
+table.borderless td, table.borderless th {
+  /* Override padding for "table.docutils td" with "! important".
+     The right padding separates the table cells. */
+  padding: 0 0.5em 0 0 ! important }
+
+.first {
+  /* Override more specific margin styles with "! important". */
+  margin-top: 0 ! important }
+
+.last, .with-subtitle {
+  margin-bottom: 0 ! important }
+
+.hidden {
+  display: none }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+blockquote.epigraph {
+  margin: 2em 5em ; }
+
+dl.docutils dd {
+  margin-bottom: 0.5em }
+
+object[type="image/svg+xml"], object[type="application/x-shockwave-flash"] {
+  overflow: hidden;
 }
-pre { margin-left: 2em;
-      border: 1;
-      padding: 4px;
-      background: #ececec; }
-pre, code { font-family: monospace } 
 
+/* Uncomment (and remove this text!) to get bold-faced definition list terms
+dl.docutils dt {
+  font-weight: bold }
+*/
 
-.overview{ font: 1.82em; font-weight: bold;}
+div.abstract {
+  margin: 2em 5em }
 
-h1{  background-color: #F6F6F6;
-  color: #8FB171; 
-  font-size: large;  
-  font-weight: bold;
-  font-family: luxi serif, georgia, times new roman, times, serif;
-  background: none;
-  padding: 0.75em 0 0;
-  margin: 0;
-  line-height: 1.1em;
-  border-bottom: 5px solid #DCEB5C;
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.admonition, div.attention, div.caution, div.danger, div.error,
+div.hint, div.important, div.note, div.tip, div.warning {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.admonition p.admonition-title, div.hint p.admonition-title,
+div.important p.admonition-title, div.note p.admonition-title,
+div.tip p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title, .code .error {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+/* Uncomment (and remove this text!) to get reduced vertical space in
+   compound paragraphs.
+div.compound .compound-first, div.compound .compound-middle {
+  margin-bottom: 0.5em }
+
+div.compound .compound-last, div.compound .compound-middle {
+  margin-top: 0.5em }
+*/
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+div.footer, div.header {
+  clear: both;
+  font-size: smaller }
+
+div.line-block {
+  display: block ;
+  margin-top: 1em ;
+  margin-bottom: 1em }
+
+div.line-block div.line-block {
+  margin-top: 0 ;
+  margin-bottom: 0 ;
+  margin-left: 1.5em }
+
+div.sidebar {
+  margin: 0 0 0.5em 1em ;
+  border: medium outset ;
+  padding: 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.section-subtitle, h2.section-subtitle, h3.section-subtitle,
+h4.section-subtitle, h5.section-subtitle, h6.section-subtitle {
+  margin-top: 0.4em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+hr.docutils {
+  width: 75% }
+
+img.align-left, .figure.align-left, object.align-left {
+  clear: left ;
+  float: left ;
+  margin-right: 1em }
+
+img.align-right, .figure.align-right, object.align-right {
+  clear: right ;
+  float: right ;
+  margin-left: 1em }
+
+img.align-center, .figure.align-center, object.align-center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
-h2{  background-color: #F6F6F6;
-  color: #8FB171; 
-  font-size: large;  
-  font-weight: normal;
-  font-family: luxi serif, georgia, times new roman, times, serif;
-  background: none;
-  padding: 0.75em 0 0;
-  margin: 0;
-  line-height: 1.1em;
+
+.align-left {
+  text-align: left }
+
+.align-center {
+  clear: both ;
+  text-align: center }
+
+.align-right {
+  text-align: right }
+
+/* reset inner alignment in figures */
+div.align-right {
+  text-align: inherit }
+
+/* div.align-center * { */
+/*   text-align: left } */
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font: inherit }
+
+pre.literal-block, pre.doctest-block, pre.math, pre.code {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+pre.code .ln { color: grey; } /* line numbers */
+pre.code, code { background-color: #eeeeee }
+pre.code .comment, code .comment { color: #5C6576 }
+pre.code .keyword, code .keyword { color: #3B0D06; font-weight: bold }
+pre.code .literal.string, code .literal.string { color: #0C5404 }
+pre.code .name.builtin, code .name.builtin { color: #352B84 }
+pre.code .deleted, code .deleted { background-color: #DEB0A1}
+pre.code .inserted, code .inserted { background-color: #A3D289}
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+span.section-subtitle {
+  /* font-size relative to parent (h1..h6 element) */
+  font-size: 80% }
+
+table.citation {
+  border-left: solid 1px gray;
+  margin-left: 1px }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.docutils {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.footnote {
+  border-left: solid 1px black;
+  margin-left: 1px }
+
+table.docutils td, table.docutils th,
+table.docinfo td, table.docinfo th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+table.docutils th.field-name, table.docinfo th.docinfo-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap ;
+  padding-left: 0 }
+
+/* "booktabs" style (no vertical lines) */
+table.docutils.booktabs {
+  border: 0px;
+  border-top: 2px solid;
+  border-bottom: 2px solid;
+  border-collapse: collapse;
 }
-h3{  background-color: #F6F6F6;
-  color: #729FCF;
-  font-family: luxi serif, georgia, times new roman, times, serif;
-  font-weight: bold;
-  font-size: medium;
+table.docutils.booktabs * {
+  border: 0px;
 }
-h4{  background-color: #F6F6F6;
-  color: #729FCF;
-  font-family: luxi serif, georgia, times new roman, times, serif;
-  font-weight: normal;
-  font-size: medium;
+table.docutils.booktabs th {
+  border-bottom: thin solid;
+  text-align: left;
 }
-h5{    background-color: #F6F6F6;
-   color: #729FCF;
-   font-family: luxi serif, georgia, times new roman, times, serif;
-   font-weight: bold;
-   font-size: small;
-}
-a{  color: #729FCF;
-  font-family: arial,sans-serif;
-  font-size: small;
-}
-label{  background-color: #FFFFCC;
-  border: 1px solid black;
-  margin: 1px;
-  padding: 0px 3px; 
-  font-size: small;
-}
-</STYLE>
 
-</HEAD>
-<BODY>
+h1 tt.docutils, h2 tt.docutils, h3 tt.docutils,
+h4 tt.docutils, h5 tt.docutils, h6 tt.docutils {
+  font-size: 100% }
 
-<DIV CLASS="header" ID="header">
-<H1>QGIS</H1>
-<H3>Developers guide for QGIS</H3>
-</DIV>
+ul.auto-toc {
+  list-style-type: none }
 
-<DIV CLASS="toc">
+</style>
+</head>
+<body>
+<div class="document" id="developers-guide-for-qgis">
+<h1 class="title">Developers guide for QGIS</h1>
 
-  <OL>
-  <LI><A HREF="#toc1">QGIS Coding Standards</A>
-    <UL>
-    <LI><A HREF="#toc2">1.1. Classes</A>
-      <UL>
-      <LI><A HREF="#toc3">1.1.1. Names</A>
-      <LI><A HREF="#toc4">1.1.2. Members</A>
-      <LI><A HREF="#toc5">1.1.3. Accessor Functions</A>
-      <LI><A HREF="#toc6">1.1.4. Functions</A>
-      </UL>
-    <LI><A HREF="#toc7">1.2. Qt Designer</A>
-      <UL>
-      <LI><A HREF="#toc8">1.2.1. Generated Classes</A>
-      <LI><A HREF="#toc9">1.2.2. Dialogs</A>
-      </UL>
-    <LI><A HREF="#toc10">1.3. C++ Files</A>
-      <UL>
-      <LI><A HREF="#toc11">1.3.1. Names</A>
-      <LI><A HREF="#toc12">1.3.2. Standard Header and License</A>
-      <LI><A HREF="#toc13">1.3.3. Keyword Substitution</A>
-      </UL>
-    <LI><A HREF="#toc14">1.4. Variable Names</A>
-    <LI><A HREF="#toc15">1.5. Enumerated Types</A>
-    <LI><A HREF="#toc16">1.6. Global Constants &amp; Macros</A>
-    <LI><A HREF="#toc17">1.7. Editing</A>
-      <UL>
-      <LI><A HREF="#toc18">1.7.1. Tabs</A>
-      <LI><A HREF="#toc19">1.7.2. Indentation</A>
-      <LI><A HREF="#toc20">1.7.3. Braces</A>
-      </UL>
-    <LI><A HREF="#toc21">1.8. API Compatibility</A>
-    <LI><A HREF="#toc22">1.9. Coding Style</A>
-      <UL>
-      <LI><A HREF="#toc23">1.9.1. Where-ever Possible Generalize Code</A>
-      <LI><A HREF="#toc24">1.9.2. Prefer Having Constants First in Predicates</A>
-      <LI><A HREF="#toc25">1.9.3. Whitespace Can Be Your Friend</A>
-      <LI><A HREF="#toc26">1.9.4. Use Braces Even for Single Line Statements</A>
-      <LI><A HREF="#toc27">1.9.5. Book recommendations</A>
-      </UL>
-    </UL>
-  <LI><A HREF="#toc28">GIT Access</A>
-    <UL>
-    <LI><A HREF="#toc29">2.1. Installation</A>
-      <UL>
-      <LI><A HREF="#toc30">2.1.1. Install git for GNU/Linux</A>
-      <LI><A HREF="#toc31">2.1.2. Install git for Windows</A>
-      <LI><A HREF="#toc32">2.1.3. Install git for OSX</A>
-      </UL>
-    <LI><A HREF="#toc33">2.2. Accessing the Repository</A>
-    <LI><A HREF="#toc34">2.3. Check out a branch</A>
-    <LI><A HREF="#toc35">2.4. QGIS documentation sources</A>
-    <LI><A HREF="#toc36">2.5. GIT Documentation</A>
-    <LI><A HREF="#toc37">2.6. Development in branches</A>
-      <UL>
-      <LI><A HREF="#toc38">2.6.1. Purpose</A>
-      <LI><A HREF="#toc39">2.6.2. Procedure</A>
-      </UL>
-    <LI><A HREF="#toc40">2.7. Submitting Patches and Pull Requests</A>
-      <UL>
-      <LI><A HREF="#toc41">2.7.1. Pull Requests</A>
-      <LI><A HREF="#toc42">2.7.2. Patch file naming</A>
-      <LI><A HREF="#toc43">2.7.3. Create your patch in the top level QGIS source dir</A>
-      <LI><A HREF="#toc44">2.7.4. Getting your patch noticed</A>
-      <LI><A HREF="#toc45">2.7.5. Due Diligence</A>
-      </UL>
-    <LI><A HREF="#toc46">2.8. Obtaining GIT Write Access</A>
-    </UL>
-  <LI><A HREF="#toc47">Unit Testing</A>
-    <UL>
-    <LI><A HREF="#toc48">3.1. The QGIS testing framework  - an overview</A>
-    <LI><A HREF="#toc49">3.2. Creating a unit test</A>
-    <LI><A HREF="#toc50">3.3. Adding your unit test to CMakeLists.txt</A>
-    <LI><A HREF="#toc51">3.4. The ADD_QGIS_TEST macro explained</A>
-    <LI><A HREF="#toc52">3.5. Building your unit test</A>
-    <LI><A HREF="#toc53">3.6. Run your tests</A>
-    </UL>
-  <LI><A HREF="#toc54">Getting up and running with QtCreator and QGIS</A>
-    <UL>
-    <LI><A HREF="#toc55">4.1. Installing QtCreator</A>
-    <LI><A HREF="#toc56">4.2. Setting up your project</A>
-    <LI><A HREF="#toc57">4.3. Setting up your build environment</A>
-    <LI><A HREF="#toc58">4.4. Setting your run environment</A>
-    <LI><A HREF="#toc59">4.5. Running and debugging</A>
-    </UL>
-  <LI><A HREF="#toc60">HIG (Human Interface Guidelines)</A>
-  <LI><A HREF="#toc61">Authors</A>
-  </OL>
-
-</DIV>
-<DIV CLASS="body" ID="body">
-
-<A NAME="toc1"></A>
-<H1>1. QGIS Coding Standards</H1>
-
-<P>
-These standards should be followed by all QGIS developers.
-</P>
-
-<A NAME="toc2"></A>
-<H2>1.1. Classes</H2>
-
-<A NAME="toc3"></A>
-<H3>1.1.1. Names</H3>
-
-<P>
-Class in QGIS begin with Qgs and are formed using mixed case. 
-</P>
-
-<div class="code"><PRE>
-Examples:
-  QgsPoint
-  QgsMapCanvas
-  QgsRasterLayer
-</PRE></div>
-
-<A NAME="toc4"></A>
-<H3>1.1.2. Members</H3>
-
-<P>
-Class member names begin with a lower case <I>m</I> and are formed using mixed
-case.
-</P>
-
-<div class="code"><PRE>
-  mMapCanvas  
-  mCurrentExtent
-</PRE></div>
-
-<P>
-All class members should be private.
-<B>Public class members are STRONGLY discouraged</B>
-</P>
-
-<A NAME="toc5"></A>
-<H3>1.1.3. Accessor Functions</H3>
-
-<P>
-Class member values should be obtained through accesssor functions. The
-function should be named without a <I>get</I> prefix. Accessor functions for the
-two private members above would be: 
-</P>
-
-<div class="code"><PRE>
-  mapCanvas()
-  currentExtent()
-</PRE></div>
-
-<A NAME="toc6"></A>
-<H3>1.1.4. Functions</H3>
-
-<P>
-Function names begin with a lowercase letter and are formed using mixed case.
-The function name should convey something about the purpose of the function.
-</P>
-
-<div class="code"><PRE>
-  updateMapExtent()
-  setUserOptions()
-</PRE></div>
-
-<A NAME="toc7"></A>
-<H2>1.2. Qt Designer</H2>
-
-<A NAME="toc8"></A>
-<H3>1.2.1. Generated Classes</H3>
-
-<P>
-QGIS classes that are generated from Qt Designer (ui) files should have a
-<I>Base</I> suffix. This identifies the class as a generated base class.
-</P>
-
-<div class="code"><PRE>
-Examples:
-  QgsPluginManagerBase
-  QgsUserOptionsBase
-</PRE></div>
-
-<A NAME="toc9"></A>
-<H3>1.2.2. Dialogs</H3>
-
-<P>
-All dialogs should implement the following:
- * Tooltip help for all toolbar icons and other relevant widgets
- * WhatsThis help for <B>all</B> widgets on the dialog
- * An optional (though highly recommended) context sensitive <I>Help</I> button
-   that directs the user to the appropriate help page by launching their web
-   browser
-</P>
-
-<A NAME="toc10"></A>
-<H2>1.3. C++ Files</H2>
-
-<A NAME="toc11"></A>
-<H3>1.3.1. Names</H3>
-
-<P>
-C++ implementation and header files should be have a .cpp and .h extension
-respectively.  Filename should be all lowercase and, in the case of classes,
-match the class name.
-</P>
-
-<div class="code"><PRE>
-Example:
-  Class QgsFeatureAttribute source files are 
-    qgsfeatureattribute.cpp and qgsfeatureattribute.h
-</PRE></div>
-
-<P>
-/!\ <B>Note:</B> in case it is not clear from the statement above, for a filename 
-to match a class name it implicitly means that each class should be declared 
-and implemented in its own file. This makes it much easier for newcomers to 
-identify where the code is relating to specific class.
-</P>
-
-<A NAME="toc12"></A>
-<H3>1.3.2. Standard Header and License</H3>
-
-<P>
-Each source file should contain a header section patterned after the following
-example:
-</P>
-
-<div class="code"><PRE>
+<div class="section" id="qgis-coding-standards">
+<h1>QGIS Coding Standards</h1>
+<p>These standards should be followed by all QGIS developers.</p>
+<div class="section" id="classes">
+<h2>Classes</h2>
+<div class="section" id="names">
+<h3>Names</h3>
+<p>Class in QGIS begin with Qgs and are formed using camel case.</p>
+<p>Examples:</p>
+<ul class="simple">
+<li><code>QgsPoint</code></li>
+<li><code>QgsMapCanvas</code></li>
+<li><code>QgsRasterLayer</code></li>
+</ul>
+</div>
+<div class="section" id="members">
+<h3>Members</h3>
+<p>Class member names begin with a lower case m and are formed using mixed
+case.</p>
+<ul class="simple">
+<li><code>mMapCanvas</code></li>
+<li><code>mCurrentExtent</code></li>
+</ul>
+<p>All class members should be private.
+Public class members are STRONGLY discouraged</p>
+</div>
+<div class="section" id="accessor-functions">
+<h3>Accessor Functions</h3>
+<p>Class member values should be obtained through accesssor functions. The
+function should be named without a get prefix. Accessor functions for the
+two private members above would be:</p>
+<ul class="simple">
+<li><code>mapCanvas()</code></li>
+<li><code>currentExtent()</code></li>
+</ul>
+</div>
+<div class="section" id="functions">
+<h3>Functions</h3>
+<p>Function names begin with a lowercase letter and are formed using mixed case.
+The function name should convey something about the purpose of the function.</p>
+<ul class="simple">
+<li><code>updateMapExtent()</code></li>
+<li><code>setUserOptions()</code></li>
+</ul>
+</div>
+</div>
+<div class="section" id="qt-designer">
+<h2>Qt Designer</h2>
+<div class="section" id="generated-classes">
+<h3>Generated Classes</h3>
+<p>QGIS classes that are generated from Qt Designer (ui) files should have a
+Base suffix. This identifies the class as a generated base class.</p>
+<p>Examples:</p>
+<ul class="simple">
+<li><code>QgsPluginManagerBase</code></li>
+<li><code>QgsUserOptionsBase</code></li>
+</ul>
+</div>
+<div class="section" id="dialogs">
+<h3>Dialogs</h3>
+<dl class="docutils">
+<dt>All dialogs should implement the following:</dt>
+<dd><ul class="first last simple">
+<li>Tooltip help for all toolbar icons and other relevant widgets</li>
+<li>WhatsThis help for all widgets on the dialog</li>
+<li>An optional (though highly recommended) context sensitive Help button
+that directs the user to the appropriate help page by launching their web
+browser</li>
+</ul>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="c-files">
+<h2>C++ Files</h2>
+<div class="section" id="id1">
+<h3>Names</h3>
+<p>C++ implementation and header files should be have a .cpp and .h extension
+respectively.Filename should be all lowercase and, in the case of classes,
+match the class name.</p>
+<p>Example:
+Class <code>QgsFeatureAttribute</code> source files are
+<code>qgsfeatureattribute.cpp</code> and <code>qgsfeatureattribute.h</code></p>
+<p>/!Note: in case it is not clear from the statement above, for a filename
+to match a class name it implicitly means that each class should be declared
+and implemented in its own file. This makes it much easier for newcomers to
+identify where the code is relating to specific class.</p>
+</div>
+<div class="section" id="standard-header-and-license">
+<h3>Standard Header and License</h3>
+<p>Each source file should contain a header section patterned after the following
+example:</p>
+<pre class="code cpp literal-block">
+<span class="comment multiline">/***************************************************************************
+  qgsfield.cpp - Describes a field in a layer or table
+  --------------------------------------
+  Date : 01-Jan-2004
+  Copyright: (C) 2004 by Gary E.Sherman
+  Email: sherman at mrcc.com
 /***************************************************************************
-    qgsfield.cpp - Describes a field in a layer or table
-     --------------------------------------
-    Date                 : 01-Jan-2004
-    Copyright            : (C) 2004 by Gary E.Sherman
-    Email                : sherman at mrcc.com
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
-</PRE></div>
-
-<A NAME="toc13"></A>
-<H3>1.3.3. Keyword Substitution</H3>
-
-<P>
-In the days of SVN we used to require that each source file should contain the
-$Id$ keyword. Keyword substitution is not supported by GIT and so should no
-longer be used.
-</P>
-
-<A NAME="toc14"></A>
-<H2>1.4. Variable Names</H2>
-
-<P>
-Variable names begin with a lower case letter and are formed using mixed case.
-</P>
-
-<div class="code"><PRE>
-Examples:
-  mapCanvas
-  currentExtent
-</PRE></div>
-
-<A NAME="toc15"></A>
-<H2>1.5. Enumerated Types</H2>
-
-<P>
-Enumerated types should be named in CamelCase with a leading capital e.g.:
-</P>
-
-<div class="code"><PRE>
-    enum UnitType
-    {
-      Meters,
-      Feet,
-      Degrees,
-      UnknownUnit
-    };
-</PRE></div>
-
-<P>
-Do not use generic type names that will conflict with other types. e.g. use
-"UnkownUnit" rather than "Unknown"
-</P>
-
-<A NAME="toc16"></A>
-<H2>1.6. Global Constants &amp; Macros</H2>
-
-<P>
-Global constants and macros should be written in upper case underscore separated e.g.:
-</P>
-
-<div class="code"><PRE>
-const long GEOCRS_ID = 3344;
-</PRE></div>
-
-<A NAME="toc17"></A>
-<H2>1.7. Editing</H2>
-
-<P>
-Any text editor/IDE can be used to edit QGIS code, providing the following
-requirements are met.
-</P>
-
-<A NAME="toc18"></A>
-<H3>1.7.1. Tabs</H3>
-
-<P>
-Set your editor to emulate tabs with spaces. Tab spacing should be set to 2
-spaces.
-</P>
-<P>
-<B>Note:</B> In vim this is done with set expandtab ts=2
-</P>
-
-<A NAME="toc19"></A>
-<H3>1.7.2. Indentation</H3>
-
-<P>
-Source code should be indented to improve readability.  There is a
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ ***************************************************************************/</span>
+</pre>
+</div>
+<div class="section" id="keyword-substitution">
+<h3>Keyword Substitution</h3>
+<p>In the days of SVN we used to require that each source file should contain the
+<code>$Id$</code> keyword. Keyword substitution is not supported by GIT and so should no
+longer be used.</p>
+</div>
+</div>
+<div class="section" id="variable-names">
+<h2>Variable Names</h2>
+<p>Variable names begin with a lower case letter and are formed using mixed case.</p>
+<p>Examples:</p>
+<ul class="simple">
+<li><code>mapCanvas</code></li>
+<li><code>currentExtent</code></li>
+</ul>
+</div>
+<div class="section" id="enumerated-types">
+<h2>Enumerated Types</h2>
+<p>Enumerated types should be named in CamelCase with a leading capital e.g.:</p>
+<pre class="code cpp literal-block">
+<span class="keyword">enum</span> <span class="name">UnitType</span>
+<span class="punctuation">{</span>
+  <span class="name">Meters</span><span class="punctuation">,</span>
+  <span class="name">Feet</span><span class="punctuation">,</span>
+  <span class="name">Degrees</span><span class="punctuation">,</span>
+  <span class="name">UnknownUnit</span>
+<span class="punctuation">};</span>
+</pre>
+<p>Do not use generic type names that will conflict with other types. e.g. use
+<code>UnkownUnit</code> rather than <code>Unknown</code></p>
+</div>
+<div class="section" id="global-constants-macros">
+<h2>Global Constants &amp; Macros</h2>
+<p>Global constants and macros should be written in upper case underscore separated e.g.:</p>
+<pre class="code cpp literal-block">
+<span class="keyword">const</span> <span class="keyword type">long</span> <span class="name">GEOCRS_ID</span> <span class="operator">=</span> <span class="literal number integer">3344</span><span class="punctuation">;</span>
+</pre>
+</div>
+<div class="section" id="editing">
+<h2>Editing</h2>
+<p>Any text editor/IDE can be used to edit QGIS code, providing the following
+requirements are met.</p>
+<div class="section" id="tabs">
+<h3>Tabs</h3>
+<p>Set your editor to emulate tabs with spaces. Tab spacing should be set to 2
+spaces.</p>
+<p>Note: In vim this is done with <code>set expandtab ts=2</code></p>
+</div>
+<div class="section" id="indentation">
+<h3>Indentation</h3>
+<p>Source code should be indented to improve readability.There is a
 scripts/prepare-commit.sh that looks up the changed files and reindents them
-using astyle.  This should be run before committing.  You can also use
-<CODE>scripts/astyle.sh</CODE> to indent individual files.
-</P>
-<P>
-As newer versions of astyle indent differently than the version used to do a
+using astyle.This should be run before committing.You can also use
+scripts/astyle.sh to indent individual files.</p>
+<p>As newer versions of astyle indent differently than the version used to do a
 complete reindentation of the source, the script uses an old astyle version,
 that we include in our repository (enable WITH_ASTYLE in cmake to include it in
-the build).
-</P>
+the build).</p>
+</div>
+<div class="section" id="braces">
+<h3>Braces</h3>
+<p>Braces should start on the line following the expression:</p>
+<pre class="code cpp literal-block">
+<span class="keyword">if</span><span class="punctuation">(</span><span class="name">foo</span> <span class="operator">==</span> <span class="literal number integer">1</span><span class="punctuation">)</span>
+<span class="punctuation">{</span>
+  <span class="comment single">// do stuff
+</span>  <span class="punctuation">...</span>
+<span class="punctuation">}</span>
+<span class="keyword">else</span>
+<span class="punctuation">{</span>
+  <span class="comment single">// do something else
+</span>  <span class="punctuation">...</span>
+<span class="punctuation">}</span>
+</pre>
+</div>
+</div>
+<div class="section" id="api-compatibility">
+<h2>API Compatibility</h2>
+<p>We try to keep the API stable and backwards compatible. Cleanups to the API
+should be done in a manner similar to the Trolltech developers e.g.</p>
+<pre class="code cpp literal-block">
+<span class="keyword">class</span> <span class="name class">Foo</span>
+<span class="punctuation">{</span>
+  <span class="name label">public:</span>
+    <span class="comment multiline">/** This method will be deprecated, you are encouraged to use
+     *  doSomethingBetter() rather.
+     *  &#64;deprecated doSomethingBetter()
+     */</span>
+    <span class="name">Q_DECL_DEPRECATED</span> <span class="keyword type">bool</span> <span class="name">doSomething</span><span class="punctuation">();</span>
 
-<A NAME="toc20"></A>
-<H3>1.7.3. Braces</H3>
+    <span class="comment multiline">/** Does something a better way.
+     *  &#64;note added in 1.1
+     */</span>
+    <span class="keyword type">bool</span> <span class="name function">doSomethingBetter</span><span class="punctuation">();</span>
 
-<P>
-Braces should start on the line following the expression:
-</P>
+  <span class="name label">signals:</span>
+    <span class="comment multiline">/** This signal will be deprecated, you are encouraged to
+     *  connect to somethingHappenedBetter() rather.
+     * &#64;deprecated use somethingHappenedBetter()
+     */</span>
+<span class="comment preproc">#ifndef Q_MOC_RUN
+</span>    <span class="name">Q_DECL_DEPRECATED</span>
+<span class="comment preproc">#endif
+</span>    <span class="keyword type">bool</span> <span class="name">somethingHappened</span><span class="punctuation">();</span>
 
-<div class="code"><PRE>
-  if(foo == 1)
-  {
-    // do stuff
-    ...
-  }
-  else
-  {
-    // do something else
-    ...
-  }
-</PRE></div>
-
-<A NAME="toc21"></A>
-<H2>1.8. API Compatibility</H2>
-
-<P>
-We try to keep the API stable and backwards compatible. Cleanups to the API
-should be done in a manner similar to the Trolltech developers e.g.
-</P>
-
-<div class="code"><PRE>
-class Foo 
-{
-  public:
-    /** This method will be deprecated, you are encouraged to use 
-      doSomethingBetter() rather.
-      @deprecated doSomethingBetter()
-     */
-    Q_DECL_DEPRECATED bool doSomething();
-
-    /** Does something a better way.
-      @note added in 1.1
-     */
-    bool doSomethingBetter();
-
-  signal:
-    /** This signal will be deprecated, you are encouraged to
-      connect to somethingHappenedBetter() rather.
-      @deprecated use somethingHappenedBetter()
-     */
-#ifndef Q_MOC_RUN
-    Q_DECL_DEPRECATED
-#endif
-    bool somethingHappened();
-
-    /** Something happened
-      @note added in 1.1
-    bool somethingHappenedBetter();
-}
-</PRE></div>
-
-<A NAME="toc22"></A>
-<H2>1.9. Coding Style</H2>
-
-<P>
-Here are described some programming hints and tips that will hopefully reduce
-errors, development time, and maintenance.
-</P>
-
-<A NAME="toc23"></A>
-<H3>1.9.1. Where-ever Possible Generalize Code</H3>
-
-<div class="code"><PRE>
-If you are cut-n-pasting code, or otherwise writing the same thing more than
-once, consider consolidating the code into a single function.
-</PRE></div>
-
-<P>
-This will:
-</P>
-
-<UL>
-<LI>allow changes to be made in one location instead of in multiple places
-<LI>help prevent code bloat
-<LI>make it more difficult for multiple copies to evolve differences over time,
-  thus making it harder to understand and maintain for others
-</UL>
-
-<A NAME="toc24"></A>
-<H3>1.9.2. Prefer Having Constants First in Predicates</H3>
-
-<P>
-Prefer to put constants first in predicates. 
-</P>
-
-<div class="code"><PRE>
-"0 == value" instead of "value == 0"
-</PRE></div>
-
-<P>
-This will help prevent programmers from accidentally using "=" when they meant
-to use "==", which can introduce very subtle logic bugs.  The compiler will
-generate an error if you accidentally use "=" instead of "==" for comparisons
-since constants inherently cannot be assigned values.
-</P>
-
-<A NAME="toc25"></A>
-<H3>1.9.3. Whitespace Can Be Your Friend</H3>
-
-<P>
-Adding spaces between operators, statements, and functions makes it easier for
-humans to parse code.
-</P>
-<P>
-Which is easier to read, this:
-</P>
-
-<div class="code"><PRE>
-if (!a&amp;&amp;b)
-</PRE></div>
-
-<P>
-or this:
-</P>
-
-<div class="code"><PRE>
-if ( ! a &amp;&amp; b )
-</PRE></div>
-
-<P>
-<B>Note:</B> prepare-commit.sh will take care of this.
-</P>
-
-<A NAME="toc26"></A>
-<H3>1.9.4. Use Braces Even for Single Line Statements</H3>
-
-<P>
-Using braces for code in if/then blocks or similar code structures even for
+    <span class="comment multiline">/** Something happened
+     *  &#64;note added in 1.1
+     */</span>
+    <span class="keyword type">bool</span> <span class="name function">somethingHappenedBetter</span><span class="punctuation">();</span>
+<span class="punctuation">}</span>
+</pre>
+</div>
+<div class="section" id="coding-style">
+<h2>Coding Style</h2>
+<p>Here are described some programming hints and tips that will hopefully reduce
+errors, development time, and maintenance.</p>
+<div class="section" id="where-ever-possible-generalize-code">
+<h3>Where-ever Possible Generalize Code</h3>
+<p>If you are cut-n-pasting code, or otherwise writing the same thing more than
+once, consider consolidating the code into a single function.</p>
+<p>This will:</p>
+<ul class="simple">
+<li>allow changes to be made in one location instead of in multiple places</li>
+<li>help prevent code bloat</li>
+<li>make it more difficult for multiple copies to evolve differences over time,
+thus making it harder to understand and maintain for others</li>
+</ul>
+</div>
+<div class="section" id="prefer-having-constants-first-in-predicates">
+<h3>Prefer Having Constants First in Predicates</h3>
+<p>Prefer to put constants first in predicates.</p>
+<p><code>0 == value</code> instead of <code>value == 0</code></p>
+<p>This will help prevent programmers from accidentally using <code>=</code> when they meant
+to use <code>==</code>, which can introduce very subtle logic bugs.The compiler will
+generate an error if you accidentally use <code>=</code> instead of <code>==</code> for comparisons
+since constants inherently cannot be assigned values.</p>
+</div>
+<div class="section" id="whitespace-can-be-your-friend">
+<h3>Whitespace Can Be Your Friend</h3>
+<p>Adding spaces between operators, statements, and functions makes it easier for
+humans to parse code.</p>
+<p>Which is easier to read, this:</p>
+<pre class="code cpp literal-block">
+<span class="keyword">if</span> <span class="punctuation">(</span><span class="operator">!</span><span class="name">a</span><span class="operator">&amp;&amp;</span><span class="name">b</span><span class="punctuation">)</span>
+</pre>
+<p>or this:</p>
+<pre class="code cpp literal-block">
+<span class="keyword">if</span> <span class="punctuation">(</span> <span class="operator">!</span> <span class="name">a</span> <span class="operator">&amp;&amp;</span> <span class="name">b</span> <span class="punctuation">)</span>
+</pre>
+<p>Note: <cite>scripts/prepare-commit.sh</cite> will take care of this.</p>
+</div>
+<div class="section" id="use-braces-even-for-single-line-statements">
+<h3>Use Braces Even for Single Line Statements</h3>
+<p>Using braces for code in if/then blocks or similar code structures even for
 single line statements means that adding another statement is less likely to
-generate broken code.
-</P>
-<P>
-Consider:
-</P>
-
-<div class="code"><PRE>
-  if (foo)
-    bar();
-  else
-    baz();
-</PRE></div>
-
-<P>
-Adding code after bar() or baz() without adding enclosing braces would create
-broken code.  Though most programmers would naturally do that, some may forget
-to do so in haste.
-</P>
-<P>
-So, prefer this:
-</P>
-
-<div class="code"><PRE>
- if (foo)
- {
-   bar();
- }
- else
- { 
-   baz();
- } 
-</PRE></div>
-
-<A NAME="toc27"></A>
-<H3>1.9.5. Book recommendations</H3>
-
-<UL>
-<LI><A HREF="http://www.awprofessional.com/title/0321334876">Effective C++</A>, Scott Meyers
-<LI><A HREF="http://www.awprofessional.com/bookstore/product.asp?isbn=020163371X&amp;rl=1">More Effective C++</A>, Scott Meyers
-<LI><A HREF="http://www.awprofessional.com/title/0201749629">Effective STL</A>, Scott Meyers
-<LI><A HREF="http://www.awprofessional.com/title/0201634988">Design Patterns</A>, GoF
-</UL>
-
-<P>
-You should also really read this article from Qt Quarterly on 
-<A HREF="APIs">http://doc.trolltech.com/qq/qq13-apis.html designing Qt style</A>
-</P>
-
-<A NAME="toc28"></A>
-<H1>2. GIT Access</H1>
-
-<P>
-This section describes how to get started using the QGIS GIT repository. Before you can do this, you need to first have a git client installed on your system.
-</P>
-
-<A NAME="toc29"></A>
-<H2>2.1. Installation</H2>
-
-<A NAME="toc30"></A>
-<H3>2.1.1. Install git for GNU/Linux</H3>
-
-<P>
-Debian based distro users can do:
-</P>
-
-<div class="code"><PRE>
+generate broken code.</p>
+<p>Consider:</p>
+<pre class="code cpp literal-block">
+<span class="keyword">if</span> <span class="punctuation">(</span><span class="name">foo</span><span class="punctuation">)</span>
+  <span class="name">bar</span><span class="punctuation">();</span>
+<span class="keyword">else</span>
+  <span class="name function">baz</span><span class="punctuation">();</span>
+</pre>
+<p>Adding code after bar() or baz() without adding enclosing braces would create
+broken code.Though most programmers would naturally do that, some may forget
+to do so in haste.</p>
+<p>So, prefer this:</p>
+<pre class="code cpp literal-block">
+<span class="keyword">if</span> <span class="punctuation">(</span><span class="name">foo</span><span class="punctuation">)</span>
+<span class="punctuation">{</span>
+  <span class="name">bar</span><span class="punctuation">();</span>
+<span class="punctuation">}</span>
+<span class="keyword">else</span>
+<span class="punctuation">{</span>
+  <span class="name">baz</span><span class="punctuation">();</span>
+<span class="punctuation">}</span>
+</pre>
+</div>
+<div class="section" id="book-recommendations">
+<h3>Book recommendations</h3>
+<ul class="simple">
+<li>Effective C++ (<a class="reference external" href="http://www.awprofessional.com/title/0321334876">http://www.awprofessional.com/title/0321334876</a>), Scott Meyers</li>
+<li>More Effective C++ (<a class="reference external" href="http://www.awprofessional.com/bookstore/product.asp?isbn=020163371X&amp;rl=1">http://www.awprofessional.com/bookstore/product.asp?isbn=020163371X&amp;rl=1</a>), Scott Meyers</li>
+<li>Effective STL (<a class="reference external" href="http://www.awprofessional.com/title/0201749629">http://www.awprofessional.com/title/0201749629</a>), Scott Meyers</li>
+<li>Design Patterns (<a class="reference external" href="http://www.awprofessional.com/title/0201634988">http://www.awprofessional.com/title/0201634988</a>), GoF</li>
+</ul>
+<p>You should also really read this article from Qt Quarterly on
+[designing Qt style (APIs)](<a class="reference external" href="http://doc.trolltech.com/qq/qq13-apis.html">http://doc.trolltech.com/qq/qq13-apis.html</a>)</p>
+</div>
+</div>
+</div>
+<div class="section" id="git-access">
+<h1>GIT Access</h1>
+<p>This section describes how to get started using the QGIS GIT repository. Before you can do this, you need to first have a git client installed on your system.</p>
+<div class="section" id="installation">
+<h2>Installation</h2>
+<div class="section" id="install-git-for-gnu-linux">
+<h3>Install git for GNU/Linux</h3>
+<p>Debian based distro users can do:</p>
+<pre class="code bash literal-block">
 sudo apt-get install git
-</PRE></div>
-
-<A NAME="toc31"></A>
-<H3>2.1.2. Install git for Windows</H3>
-
-<P>
-Windows users can obtain <A HREF="http://code.google.com/p/msysgit/">msys git</A> or use git distributed with <A HREF="http://cygwin.com">cygwin</A>.
-</P>
-
-<A NAME="toc32"></A>
-<H3>2.1.3. Install git for OSX</H3>
-
-<P>
-The <A HREF="http://git-scm.com/">git</A> project has a downloadable build of git.
-Make sure to get the package matching your processor (x86_64 most likely, only the first Intel Macs need the i386 package).
-</P>
-<P>
-Once downloaded open the disk image and run the installer.
-</P>
-<P>
-<U>PPC/source note</U>
-</P>
-<P>
-The git site does not offer PPC builds.  If you need a PPC build, or you just want
-a little more control over the installation, you need to compile it yourself.
-</P>
-<P>
-Download the source from <A HREF="http://git-scm.com/">http://git-scm.com/</A>.  Unzip it, and in a Terminal cd to the source folder, then:
-</P>
-
-<div class="code"><PRE>
-make prefix=/usr/local
-sudo make prefix=/usr/local install
-</PRE></div>
-
-<P>
-If you don't need any of the extras, Perl, Python or TclTk (GUI), you can disable them before running make with:
-</P>
-
-<div class="code"><PRE>
-export NO_PERL=
-export NO_TCLTK=
-export NO_PYTHON=
-</PRE></div>
-
-<A NAME="toc33"></A>
-<H2>2.2. Accessing the Repository</H2>
-
-<P>
-To clone QGIS master:
-</P>
-
-<div class="code"><PRE>
-git://github.com/qgis/QGIS.git
-</PRE></div>
-
-<A NAME="toc34"></A>
-<H2>2.3. Check out a branch</H2>
-
-<P>
-To check out a branch, for example the release 1.7.0 branch do:
-</P>
-
-<div class="code"><PRE>
-  cd QGIS
-  git fetch
-  git branch --track origin release-1_7_0
-  git checkout release-1_7_0
-  
-</PRE></div>
-
-<P>
-To check out the master branch:
-</P>
-
-<div class="code"><PRE>
-  cd QGIS
-  git checkout master
-</PRE></div>
-
-<P>
-/!\ <B>Note:</B> In QGIS we keep our most stable code in the current release branch.
+</pre>
+</div>
+<div class="section" id="install-git-for-windows">
+<h3>Install git for Windows</h3>
+<p>Windows users can obtain [msys git](<a class="reference external" href="http://code.google.com/p/msysgit/">http://code.google.com/p/msysgit/</a>) or use git distributed with [cygwin](<a class="reference external" href="http://cygwin.com">http://cygwin.com</a>).</p>
+</div>
+<div class="section" id="install-git-for-osx">
+<h3>Install git for OSX</h3>
+<p>The [git project](<a class="reference external" href="http://git-scm.com/">http://git-scm.com/</a>) has a downloadable build of git.
+Make sure to get the package matching your processor (x86_64 most likely, only the first Intel Macs need the i386 package).</p>
+<p>Once downloaded open the disk image and run the installer.</p>
+<p>PPC/source note</p>
+<p>The git site does not offer PPC builds.If you need a PPC build, or you just want
+a little more control over the installation, you need to compile it yourself.</p>
+<p>Download the source from <a class="reference external" href="http://git-scm.com/.Unzip">http://git-scm.com/.Unzip</a> it, and in a Terminal cd to the source folder, then:</p>
+<pre class="code bash literal-block">
+make <span class="name variable">prefix</span><span class="operator">=</span>/usr/local
+sudo make <span class="name variable">prefix</span><span class="operator">=</span>/usr/local install
+</pre>
+<p>If you don't need any of the extras, Perl, Python or TclTk (GUI), you can disable them before running make with:</p>
+<pre class="code bash literal-block">
+<span class="name builtin">export </span><span class="name variable">NO_PERL</span><span class="operator">=</span>
+<span class="name builtin">export </span><span class="name variable">NO_TCLTK</span><span class="operator">=</span>
+<span class="name builtin">export </span><span class="name variable">NO_PYTHON</span><span class="operator">=</span>
+</pre>
+</div>
+</div>
+<div class="section" id="accessing-the-repository">
+<h2>Accessing the Repository</h2>
+<p>To clone QGIS master:</p>
+<pre class="code bash literal-block">
+git clone git://github.com/qgis/QGIS.git
+</pre>
+</div>
+<div class="section" id="check-out-a-branch">
+<h2>Check out a branch</h2>
+<p>To check out a branch, for example the release 2.6.1 branch do:</p>
+<pre class="code bash literal-block">
+<span class="name builtin">cd </span>QGIS
+git fetch
+git branch --track origin release-2_6_1
+git checkout release-2_6_1
+</pre>
+<p>To check out the master branch:</p>
+<pre class="code bash literal-block">
+<span class="name builtin">cd </span>QGIS
+git checkout master
+</pre>
+<p>/!Note: In QGIS we keep our most stable code in the current release branch.
 Master contains code for the so called 'unstable' release series. Periodically
 we will branch a release off master, and then continue stabilisation and selective
-incorporation of new features into master.
-</P>
-<P>
-See the INSTALL file in the source tree for specific instructions on building
-development versions. 
-</P>
-
-<A NAME="toc35"></A>
-<H2>2.4. QGIS documentation sources</H2>
-
-<P>
-If you're interested in checking out QGIS documentation sources:
-</P>
-
-<div class="code"><PRE>
-  git clone git@github.com:qgis/QGIS-Documentation.git
-</PRE></div>
-
-<P>
-You can also take a look at the readme included with the documentation repo for more information.
-</P>
-
-<A NAME="toc36"></A>
-<H2>2.5. GIT Documentation</H2>
-
-<P>
-See the following sites for information on becoming a GIT master.
-</P>
-<P>
-<A HREF="http://gitref.org">http://gitref.org</A>
-<A HREF="http://progit.org">http://progit.org</A>
-<A HREF="http://gitready.com">http://gitready.com</A>
-</P>
-
-<A NAME="toc37"></A>
-<H2>2.6. Development in branches</H2>
-
-<A NAME="toc38"></A>
-<H3>2.6.1. Purpose</H3>
-
-<P>
-The complexity of the QGIS source code has increased considerably during the
+incorporation of new features into master.</p>
+<p>See the INSTALL file in the source tree for specific instructions on building
+development versions.</p>
+</div>
+<div class="section" id="qgis-documentation-sources">
+<h2>QGIS documentation sources</h2>
+<p>If you're interested in checking out QGIS documentation sources:</p>
+<pre class="code bash literal-block">
+git clone git&#64;github.com:qgis/QGIS-Documentation.git
+</pre>
+<p>You can also take a look at the readme included with the documentation repo for more information.</p>
+</div>
+<div class="section" id="git-documentation">
+<h2>GIT Documentation</h2>
+<p>See the following sites for information on becoming a GIT master.</p>
+<blockquote>
+<ul class="simple">
+<li><a class="reference external" href="http://gitref.org">http://gitref.org</a></li>
+<li><a class="reference external" href="http://progit.org">http://progit.org</a></li>
+<li><a class="reference external" href="http://gitready.com">http://gitready.com</a></li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="development-in-branches">
+<h2>Development in branches</h2>
+<div class="section" id="purpose">
+<h3>Purpose</h3>
+<p>The complexity of the QGIS source code has increased considerably during the
 last years. Therefore it is hard to anticipate the side effects that the
 addition of a feature will have. In the past, the QGIS project had very long
 release cycles because it was a lot of work to reetablish the stability of the
@@ -747,452 +737,344 @@ software system after new features were added. To overcome these problems, QGIS
 switched to a development model where new features are coded in GIT branches
 first and merged to master (the main branch) when they are finished and stable.
 This section describes the procedure for branching and merging in the QGIS
-project.
-</P>
-
-<A NAME="toc39"></A>
-<H3>2.6.2. Procedure</H3>
-
-<UL>
-<LI><B>Initial announcement on mailing list:</B>
-Before starting, make an announcement on the developer mailing list to see if
+project.</p>
+</div>
+<div class="section" id="procedure">
+<h3>Procedure</h3>
+<ul>
+<li><dl class="first docutils">
+<dt>Initial announcement on mailing list:</dt>
+<dd><p class="first last">Before starting, make an announcement on the developer mailing list to see if
 another developer is already working on the same feature. Also contact the
 technical advisor of the project steering committee (PSC). If the new feature
 requires any changes to the QGIS architecture, a request for comment (RFC) is
-needed. 
-<P></P>
-<B>Create a branch:</B> 
-Create a new GIT branch for the development of the new feature. 
-<P></P>
-<div class="code"><PRE>
-git branch newfeature
-git checkout newfeature
-</PRE></div>
-
-<P></P>
-Now you can start developing. If you plan to do extensive on that branch, would
+needed.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>Create a branch:
+Create a new GIT branch for the development of the new feature.</p>
+<pre class="code bash literal-block">
+git checkout -b newfeature
+</pre>
+<p>Now you can start developing. If you plan to do extensive on that branch, would
 like to share the work with other developers, and have write access to the
-upstream repo, you can push your repo up to the QGIS official repo by doing:
-<P></P>
-<div class="code"><PRE>
+upstream repo, you can push your repo up to the QGIS official repo by doing:</p>
+<pre class="code bash literal-block">
 git push origin newfeature
-</PRE></div>
-
-<P></P>
-<B>Note:</B> if the branch already exists your changes will be pushed into it.
-<P></P>
-<B>Merge from master regularly:</B>
+</pre>
+<p>Note: if the branch already exists your changes will be pushed into it.</p>
+<p>Merge from master regularly:
 It is recommended to merge the changes in master to the branch on a regular
-basis. This makes it easier to merge the branch back to master later.
-<P></P>
-<div class="code"><PRE>
+basis. This makes it easier to merge the branch back to master later.</p>
+<pre class="code bash literal-block">
 git merge master
-</PRE></div>
-
-<P></P>
-<B>Documentation on wiki:</B> 
-It is also recommended to document the intended changes and the current status
-of the work on a wiki page.
-<P></P>
-<B>Testing before merging back to master:</B> 
-When you are finished with the new feature and happy with the stability, make
-an announcement on the developer list.  Before merging back, the changes will
-be tested by developers and users.
-</UL>
-
-<A NAME="toc40"></A>
-<H2>2.7. Submitting Patches and Pull Requests</H2>
-
-<P>
-There are a few guidelines that will help you to get your patches and pull
+</pre>
+</div>
+<div class="section" id="documentation-on-wiki">
+<h3>Documentation on wiki</h3>
+<p>It is also recommended to document the intended changes and the current status
+of the work on a wiki page.</p>
+</div>
+<div class="section" id="testing-before-merging-back-to-master">
+<h3>Testing before merging back to master</h3>
+<p>When you are finished with the new feature and happy with the stability, make
+an announcement on the developer list.Before merging back, the changes will
+be tested by developers and users.</p>
+</div>
+</div>
+<div class="section" id="submitting-patches-and-pull-requests">
+<h2>Submitting Patches and Pull Requests</h2>
+<p>There are a few guidelines that will help you to get your patches and pull
 requests into QGIS easily, and help us deal with the patches that are sent to
-use easily. 
-</P>
-
-<A NAME="toc41"></A>
-<H3>2.7.1. Pull Requests</H3>
-
-<P>
-In general it is easier for developers if you submit GitHub pull
+use easily.</p>
+<div class="section" id="pull-requests">
+<h3>Pull Requests</h3>
+<p>In general it is easier for developers if you submit GitHub pull
 requests. We do not describe Pull Requests here, but rather refer you to the
-GitHub pull request documentation here:
-</P>
-<P>
-<A HREF="https://help.github.com/articles/using-pull-requests">https://help.github.com/articles/using-pull-requests</A>
-</P>
-<P>
-If you make a pull request we ask that you please merge master to your PR
+[GitHub pull request documentation](<a class="reference external" href="https://help.github.com/articles/using-pull-requests">https://help.github.com/articles/using-pull-requests</a>).</p>
+<p>If you make a pull request we ask that you please merge master to your PR
 branch regularly so that your PR is always mergable to the upstream master
-branch.
-</P>
-<P>
-If you are a developer and wish to evaluate the pull request queue, there is a
-very nice tool that lets you do this from the command line described here:
-</P>
-<P>
-<A HREF="http://thechangelog.com/git-pulls-command-line-tool-for-github-pull-requests/">http://thechangelog.com/git-pulls-command-line-tool-for-github-pull-requests/</A>
-</P>
-<P>
-Please see the section below on 'getting your patch noticed'. In general when
+branch.</p>
+<p>If you are a developer and wish to evaluate the pull request queue, there is a
+very nice [tool that lets you do this from the command line](<a class="reference external" href="http://thechangelog.com/git-pulls-command-line-tool-for-github-pull-requests/">http://thechangelog.com/git-pulls-command-line-tool-for-github-pull-requests/</a>)</p>
+<p>Please see the section below on 'getting your patch noticed'. In general when
 you submit a PR you should take the responsibility to follow it through to
 completion - respond to queries posted by other developers, seek out a
 'champion' for your feature and give them a gentle reminder occasionally if you
 see that your PR is not being acted on. Please bear in mind that the QGIS
 project is driven by volunteer effort and people may not be able to attend to
 your PR instantaneously. If you feel the PR is not receiving the attention it
-deserves your options to accelerate it should be (in order of priority):
-</P>
-<P>
-* Send a message to the mailing list 'marketing' your PR and how wonderful it
-  will be to have it included in the code base.
-* Send a message to the person your PR has been assigned to in the PR queue.
-* Send a message to Marco Hugentobler (who manages the PR queue).
-* Send a message to the project steering committee asking them to help see your
-  PR incorporated into the code base.
-</P>
-
-<H4>2.7.1.1. Best practice for creating a pull request</H4>
-
-<P>
-* Always start a feature branch from current master.
-* If you are coding a feature branch, don't "merge" anything in to that branch,
-  rather rebase as described in the next point to keep your history clean.
-* Before you create a pull request do "git fetch origin" and "git rebase
-  origin/master" (given origin is the remote for upstream and not your own
-  remote, check your .git/config or do "git remote -v | grep github.com/qgis").
-* You may do a "git rebase" like in the last line repeatedly without doing any
-  damage (as long as the only purpose of your branch is to get merged into
-  master).
-* Attention: After a rebase you need to "git push -f" to your <B>forked repo</B>. 
-  <B>CORE DEVS</B>: DO NOT DO THIS ON THE QGIS PUBLIC REPOSITORY!
-</P>
-
-<H4>2.7.1.2. For merging a pull request</H4>
-
-<P>
-Option A
-</P>
-<P>
-* click the merge button (Creates a non-fast-forward merge)
-</P>
-<P>
-Option B
-</P>
-<P>
-* Checkout the pull request (See <A HREF="https://gist.github.com/piscisaureus/3342247">https://gist.github.com/piscisaureus/3342247</A>)
-* Test (Also required for option A, obviously)
-* checkout master, <CODE>git merge pr/1234</CODE>
-* Optional: <CODE>git pull --rebase</CODE>: Creates a fast-forward, no "merge commit" is 
-  made. Cleaner history, but it is harder to revert the merge.
-* <CODE>git push</CODE>
-</P>
-
-<A NAME="toc42"></A>
-<H3>2.7.2. Patch file naming</H3>
-
-<P>
-If the patch is a fix for a specific bug, please name the file with the bug
-number in it e.g.  <B>bug777fix.patch</B>, and attach it to the original bug report
-in trac (<A HREF="http://hub.qgis.org/projects/quantum-gis">http://hub.qgis.org/projects/quantum-gis</A>).
-</P>
-<P>
-If the bug is an enhancement or new feature, its usually a good idea to create
-a ticket in trac (<A HREF="http://hub.qgis.org/projects/quantum-gis">http://hub.qgis.org/projects/quantum-gis</A>) first and then attach you 
-</P>
-
-<A NAME="toc43"></A>
-<H3>2.7.3. Create your patch in the top level QGIS source dir</H3>
-
-<P>
-This makes it easier for us to apply the patches since we don't need to
+deserves your options to accelerate it should be (in order of priority):</p>
+<ul class="simple">
+<li>Send a message to the mailing list 'marketing' your PR and how wonderful it
+will be to have it included in the code base.</li>
+<li>Send a message to the person your PR has been assigned to in the PR queue.</li>
+<li>Send a message to Marco Hugentobler (who manages the PR queue).</li>
+<li>Send a message to the project steering committee asking them to help see your
+PR incorporated into the code base.</li>
+</ul>
+<div class="section" id="best-practice-for-creating-a-pull-request">
+<h4>Best practice for creating a pull request</h4>
+<ul class="simple">
+<li>Always start a feature branch from current master.</li>
+<li>If you are coding a feature branch, don't &quot;merge&quot; anything in to that branch,
+rather rebase as described in the next point to keep your history clean.</li>
+<li>Before you create a pull request do <cite>git fetch origin</cite> and <cite>git rebase origin/master</cite>
+(given origin is the remote for upstream and not your own
+remote, check your .git/config or do <cite>git remote -v | grep github.com/qgis</cite>).</li>
+<li>You may do a <cite>git rebase</cite> like in the last line repeatedly without doing any
+damage (as long as the only purpose of your branch is to get merged into
+master).</li>
+<li>Attention: After a rebase you need to <cite>git push -f</cite> to your forked repo.
+CORE DEVS: DO NOT DO THIS ON THE QGIS PUBLIC REPOSITORY!</li>
+</ul>
+</div>
+<div class="section" id="for-merging-a-pull-request">
+<h4>For merging a pull request</h4>
+<p>Option A:</p>
+<ul class="simple">
+<li>click the merge button (Creates a non-fast-forward merge)</li>
+</ul>
+<p>Option B:</p>
+<ul class="simple">
+<li>[Checkout the pull request](<a class="reference external" href="https://gist.github.com/piscisaureus/3342247">https://gist.github.com/piscisaureus/3342247</a>)</li>
+<li>Test (Also required for option A, obviously)</li>
+<li>checkout master, git merge pr/1234</li>
+<li>Optional: <cite>git pull --rebase</cite>: Creates a fast-forward, no &quot;merge commit&quot; is
+made. Cleaner history, but it is harder to revert the merge.</li>
+<li><cite>git push</cite> (NEVER EVER use the -f option here)</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="section" id="patch-file-naming">
+<h2>Patch file naming</h2>
+<p>If the patch is a fix for a specific bug, please name the file with the bug
+number in it e.g.bug777fix.patch, and attach it to the [original bug report in trac](<a class="reference external" href="http://hub.qgis.org/projects/quantum-gis">http://hub.qgis.org/projects/quantum-gis</a>).</p>
+<p>If the bug is an enhancement or new feature, its usually a good idea to create
+a [ticket in trac](<a class="reference external" href="http://hub.qgis.org/projects/quantum-gis">http://hub.qgis.org/projects/quantum-gis</a>) first and then attach you</p>
+</div>
+<div class="section" id="create-your-patch-in-the-top-level-qgis-source-dir">
+<h2>Create your patch in the top level QGIS source dir</h2>
+<p>This makes it easier for us to apply the patches since we don't need to
 navigate to a specific place in the source tree to apply the patch. Also when I
 receive patches I usually evaluate them using merge, and having the patch
 from the top level dir makes this much easier. Below is an example of how you
 can include multiple changed files into your patch from the top level
-directory:
-</P>
-
-<div class="code"><PRE>
-cd QGIS
+directory:</p>
+<pre class="code bash literal-block">
+<span class="name builtin">cd </span>QGIS
 git checkout master
 git pull origin master
 git checkout newfeature
 git format-patch master --stdout &gt; bug777fix.patch
-</PRE></div>
-
-<P>
-This will make sure your master branch is in sync with the upstream repository,
+</pre>
+<p>This will make sure your master branch is in sync with the upstream repository,
 and then generate a patch which contains the delta between your feature branch
-and what is in the master branch.
-</P>
-
-<A NAME="toc44"></A>
-<H3>2.7.4. Getting your patch noticed</H3>
-
-<P>
-QGIS developers are busy folk. We do scan the incoming patches on bug reports
-but sometimes we miss things.  Don't be offended or alarmed. Try to identify a
-developer to help you - using the <A HREF="http://qgis.org/en/site/getinvolved/governance/organisation/governance.html#community-resources">Technical Resources</A> and contact them
+and what is in the master branch.</p>
+<div class="section" id="getting-your-patch-noticed">
+<h3>Getting your patch noticed</h3>
+<p>QGIS developers are busy folk. We do scan the incoming patches on bug reports
+but sometimes we miss things.Don't be offended or alarmed. Try to identify a
+developer to help you - using the [Technical Resources](<a class="reference external" href="http://qgis.org/en/site/getinvolved/governance/organisation/governance.html#community-resources">http://qgis.org/en/site/getinvolved/governance/organisation/governance.html#community-resources</a>) and contact them
 asking them if they can look at your patch. If you don't get any response, you
 can escalate your query to one of the Project Steering Committee members
-(contact details also available in the Technical Resources).
-</P>
-
-<A NAME="toc45"></A>
-<H3>2.7.5. Due Diligence</H3>
-
-<P>
-QGIS is licensed under the GPL. You should make every effort to ensure you only
+(contact details also available in the Technical Resources).</p>
+</div>
+<div class="section" id="due-diligence">
+<h3>Due Diligence</h3>
+<p>QGIS is licensed under the GPL. You should make every effort to ensure you only
 submit patches which are unencumbered by conflicting intellectual property
 rights. Also do not submit code that you are not happy to have made available
-under the GPL.
-</P>
-
-<A NAME="toc46"></A>
-<H2>2.8. Obtaining GIT Write Access</H2>
-
-<P>
-Write access to QGIS source tree is by invitation. Typically when a person
+under the GPL.</p>
+</div>
+</div>
+<div class="section" id="obtaining-git-write-access">
+<h2>Obtaining GIT Write Access</h2>
+<p>Write access to QGIS source tree is by invitation. Typically when a person
 submits several (there is no fixed number here) substantial patches that
 demonstrate basic competence and understanding of C++ and QGIS coding
 conventions, one of the PSC members or other existing developers can nominate
 that person to the PSC for granting of write access. The nominator should give
 a basic promotional paragraph of why they think that person should gain write
 access. In some cases we will grant write access to non C++ developers e.g. for
-translators and documentors.  In these cases, the person should still have
+translators and documentors.In these cases, the person should still have
 demonstrated ability to submit patches and should ideally have submitted several
 substantial patches that demonstrate their understanding of modifying the code
-base without breaking things, etc.
-</P>
-<P>
-<B>Note:</B> Since moving to GIT, we are less likely to grant write access to new
+base without breaking things, etc.</p>
+<p>Note: Since moving to GIT, we are less likely to grant write access to new
 developers since it is trivial to share code within github by forking QGIS and
-then issuing pull requests.
-</P>
-<P>
-Always check that everything compiles before making any commits / pull
-requests.  Try to be aware of possible breakages your commits may cause for
+then issuing pull requests.</p>
+<p>Always check that everything compiles before making any commits / pull
+requests.Try to be aware of possible breakages your commits may cause for
 people building on other platforms and with older / newer versions of
-libraries.
-</P>
-<P>
-When making a commit, your editor (as defined in $EDITOR environment variable)
+libraries.</p>
+<p>When making a commit, your editor (as defined in $EDITOR environment variable)
 will appear and you should make a comment at the top of the file (above the
 area that says 'don't change this'. Put a descriptive comment and rather do
 several small commits if the changes across a number of files are unrelated.
-Conversely we prefer you to group related changes into a single commit.
-</P>
-
-<A NAME="toc47"></A>
-<H1>3. Unit Testing</H1>
-
-<P>
-As of November 2007 we require all new features going into master to be
+Conversely we prefer you to group related changes into a single commit.</p>
+</div>
+</div>
+<div class="section" id="unit-testing">
+<h1>Unit Testing</h1>
+<p>As of November 2007 we require all new features going into master to be
 accompanied with a unit test. Initially we have limited this requirement to
-<B>qgis_core</B>, and we will extend this requirement to other parts of the code base
+qgis_core, and we will extend this requirement to other parts of the code base
 once people are familiar with the procedures for unit testing explained in the
-sections that follow.
-</P>
-
-<A NAME="toc48"></A>
-<H2>3.1. The QGIS testing framework  - an overview</H2>
-
-<P>
-Unit testing is carried out using a combination of QTestLib (the Qt testing
+sections that follow.</p>
+<div class="section" id="the-qgis-testing-framework-an-overview">
+<h2>The QGIS testing framework - an overview</h2>
+<p>Unit testing is carried out using a combination of QTestLib (the Qt testing
 library) and CTest (a framework for compiling and running tests as part of the
-CMake build process).  Lets take an overview of the process before I delve into
-the details:
-</P>
-
-<UL>
-<LI><B>There is some code you want to test</B>, e.g. a class or function. Extreme
-   programming advocates suggest that the code should not even be written yet 
-   when you start building your tests, and then as you implement your code you can
-   immediately validate each new functional part you add with your test. In
-   practive you will probably need to write tests for pre-existing code in QGIS
-   since we are starting with a testing framework well after much application
-   logic has already been implemented.
-<P></P>
-<LI><B>You create a unit test.</B> This happens under &lt;QGIS Source Dir&gt;/tests/src/core 
-   in the case of the core lib. The test is basically a client that creates an
-   instance of a class and calls some methods on that class. It will check the
-   return from each method to make sure it matches the expected value. If any
-   one of the calls fails, the unit will fail.
-<P></P>
-<LI><B>You include QtTestLib macros in your test class.</B> This macro is processed by 
-   the Qt meta object compiler (moc) and expands your test class into a
-   runnable application. 
-<P></P>
-<LI><B>You add a section to the CMakeLists.txt</B> in your tests directory that will
-   build your test.
-<P></P>
-<LI><B>You ensure you have ENABLE_TESTING enabled in ccmake / cmakesetup.</B> This 
-   will ensure your tests actually get compiled when you type make.
-<P></P>
-<LI><B>You optionally add test data to &lt;QGIS Source Dir&gt;/tests/testdata</B> if your 
-   test is data driven (e.g. needs to load a shapefile). These test data should
-   be as small as possible and wherever possible you should use the existing
-   datasets already there. Your tests should never modify this data in situ,
-   but rather may a temporary copy somewhere if needed.
-<P></P>
-<LI><B>You compile your sources and install.</B> Do this using normal make &amp;&amp; (sudo) 
-   make install procedure.
-<P></P>
-<LI><B>You run your tests.</B> This is normally done simply by doing <B>make test</B> 
- after the make install step, though I will explain other aproaches that offer
- more fine grained control over running tests.
-<P></P>
-</UL>
-
-<P>
-Right with that overview in mind, I will delve into a bit of detail. I've
+CMake build process).Lets take an overview of the process before I delve into
+the details:</p>
+<ul class="simple">
+<li>There is some code you want to test, e.g. a class or function. Extreme
+programming advocates suggest that the code should not even be written yet
+when you start building your tests, and then as you implement your code you can
+immediately validate each new functional part you add with your test. In
+practive you will probably need to write tests for pre-existing code in QGIS
+since we are starting with a testing framework well after much application
+logic has already been implemented.</li>
+<li>You create a unit test. This happens under &lt;QGIS Source Dir&gt;/tests/src/core
+in the case of the core lib. The test is basically a client that creates an
+instance of a class and calls some methods on that class. It will check the
+return from each method to make sure it matches the expected value. If any
+one of the calls fails, the unit will fail.</li>
+<li>You include QtTestLib macros in your test class. This macro is processed by
+the Qt meta object compiler (moc) and expands your test class into a
+runnable application.</li>
+<li>You add a section to the CMakeLists.txt in your tests directory that will
+build your test.</li>
+<li>You ensure you have ENABLE_TESTING enabled in ccmake / cmakesetup. This
+will ensure your tests actually get compiled when you type make.</li>
+<li>You optionally add test data to &lt;QGIS Source Dir&gt;/tests/testdata if your
+test is data driven (e.g. needs to load a shapefile). These test data should
+be as small as possible and wherever possible you should use the existing
+datasets already there. Your tests should never modify this data in situ,
+but rather may a temporary copy somewhere if needed.</li>
+<li>You compile your sources and install. Do this using normal
+<code>make &amp;&amp; (sudo)  make install</code> procedure.</li>
+<li>You run your tests. This is normally done simply by doing <code>make test</code>
+after the <code>make install</code> step, though I will explain other aproaches that offer
+more fine grained control over running tests.</li>
+</ul>
+<p>Right with that overview in mind, I will delve into a bit of detail. I've
 already done much of the configuration for you in CMake and other places in the
-source tree so all you need to do are the easy bits - writing unit tests!
-</P>
-
-<A NAME="toc49"></A>
-<H2>3.2. Creating a unit test</H2>
-
-<P>
-Creating a unit test is easy - typically you will do this by just creating a
+source tree so all you need to do are the easy bits - writing unit tests!</p>
+</div>
+<div class="section" id="creating-a-unit-test">
+<h2>Creating a unit test</h2>
+<p>Creating a unit test is easy - typically you will do this by just creating a
 single .cpp file (not .h file is used) and implement all your test methods as
 public methods that return void. I'll use a simple test class for
 QgsRasterLayer throughout the section that follows to illustrate. By convention
 we will name our test with the same name as the class they are testing but
-prefixed with 'Test'.  So our test implementation goes in a file called
+prefixed with 'Test'.So our test implementation goes in a file called
 testqgsrasterlayer.cpp and the class itself will be TestQgsRasterLayer. First
-we add our standard copyright banner:
-</P>
-
-<div class="code"><PRE>
-/***************************************************************************
-     testqgsvectorfilewriter.cpp
-     --------------------------------------
-    Date                 : Frida  Nov 23  2007
-    Copyright            : (C) 2007 by Tim Sutton
-    Email                : tim@linfiniti.com
+we add our standard copyright banner:</p>
+<pre class="code cpp literal-block">
+<span class="comment multiline">/***************************************************************************
+ testqgsvectorfilewriter.cpp
+ --------------------------------------
+  Date : Friday, Jan 27, 2015
+  Copyright: (C) 2015 by Tim Sutton
+  Email: tim&#64;kartoza.com
  ***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
-</PRE></div>
-
-<P>
-Next we use start our includes needed for the tests we plan to run. There is 
-one special include all tests should have:
-</P>
-
-<div class="code"><PRE>
-#include &lt;QtTest&gt;
-</PRE></div>
-
-<P>
-<B>Note</B> that we use the new style Qt4 includes - i.e. QtTest is included not
-qttest.h
-</P>
-<P>
-Beyond that you just continue implementing your class as per normal, pulling 
-in whatever headers you may need:
-</P>
-
-<div class="code"><PRE>
-//Qt includes...
-#include &lt;QObject&gt;
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ ***************************************************************************/</span>
+</pre>
+<p>Next we use start our includes needed for the tests we plan to run. There is
+one special include all tests should have:</p>
+<pre class="code cpp literal-block">
+<span class="comment preproc">#include &lt;QtTest/QtTest&gt;
+</span>
+</pre>
+<p>Beyond that you just continue implementing your class as per normal, pulling
+in whatever headers you may need:</p>
+<pre class="code cpp literal-block">
+<span class="comment single">//Qt includes...
+</span><span class="comment preproc">#include &lt;QObject&gt;
 #include &lt;QString&gt;
 #include &lt;QObject&gt;
 #include &lt;QApplication&gt;
 #include &lt;QFileInfo&gt;
 #include &lt;QDir&gt;
-
-//qgis includes...
-#include &lt;qgsrasterlayer.h&gt; 
-#include &lt;qgsrasterbandstats.h&gt; 
+</span>
+<span class="comment single">//qgis includes...
+</span><span class="comment preproc">#include &lt;qgsrasterlayer.h&gt;
+#include &lt;qgsrasterbandstats.h&gt;
 #include &lt;qgsapplication.h&gt;
-</PRE></div>
-
-<P>
-Since we are combining both class declaration and implementation in a single
+</span>
+</pre>
+<p>Since we are combining both class declaration and implementation in a single
 file the class declaration comes next. We start with our doxygen documentation.
-Every test case should be properly documented. We use the doxygen <B>ingroup</B>
+Every test case should be properly documented. We use the doxygen ingroup
 directive so that all the UnitTests appear as a module in the generated Doxygen
-documentation. After that comes a short description of the unit test:
-</P>
-
-<div class="code"><PRE>
-/** \ingroup UnitTests
+documentation. After that comes a short description of the unit test and
+the class must inherit from QObject and include the Q_OBJECT macro.</p>
+<pre class="code cpp literal-block">
+<span class="comment multiline">/** \ingroup UnitTests
  * This is a unit test for the QgsRasterLayer class.
- */
-</PRE></div>
+ */</span>
 
-<P>
-The class <B>must</B> inherit from QObject and include the Q_OBJECT macro.
-</P>
-
-<div class="code"><PRE>
-class TestQgsRasterLayer: public QObject
-{
-  Q_OBJECT;
-</PRE></div>
-
-<P>
-All our test methods are implemented as <B>private slots</B>. The QtTest framework
+<span class="keyword">class</span> <span class="name class">TestQgsRasterLayer</span><span class="operator">:</span> <span class="keyword">public</span> <span class="name">QObject</span>
+<span class="punctuation">{</span>
+    <span class="name">Q_OBJECT</span>
+</pre>
+<p>All our test methods are implemented as private slots. The QtTest framework
 will sequentially call each private slot method in the test class. There are
 four 'special' methods which if implemented will be called at the start of the
-unit test (<B>initTestCase</B>), at the end of the unit test
-(<B>cleanupTestCase</B>).  Before each test method is called, the <B>init()</B>
-method will be called and after each test method is called the <B>cleanup()</B>
+unit test (initTestCase), at the end of the unit test
+(cleanupTestCase).Before each test method is called, the init()
+method will be called and after each test method is called the cleanup()
 method is called. These methods are handy in that they allow you to allocate
-and cleanup resources prior to running each test, and the test unit as a whole.
-</P>
-
-<div class="code"><PRE>
-private slots:
-  // will be called before the first testfunction is executed.
-  void initTestCase();
-  // will be called after the last testfunction was executed.
-  void cleanupTestCase(){};
-  // will be called before each testfunction is executed.
-  void init(){};
-  // will be called after every testfunction.
-  void cleanup();
-</PRE></div>
-
-<P>
-Then come your test methods, all of which should take <B>no parameters</B> and
-should <B>return void</B>. The methods will be called in order of declaration.  I
+and cleanup resources prior to running each test, and the test unit as a whole.</p>
+<pre class="code cpp literal-block">
+<span class="keyword">private</span> <span class="name">slots</span><span class="operator">:</span>
+  <span class="comment single">// will be called before the first testfunction is executed.
+</span>  <span class="keyword type">void</span> <span class="name">initTestCase</span><span class="punctuation">();</span>
+  <span class="comment single">// will be called after the last testfunction was executed.
+</span>  <span class="keyword type">void</span> <span class="name function">cleanupTestCase</span><span class="punctuation">(){}</span><span class="punctuation">;</span>
+  <span class="comment single">// will be called before each testfunction is executed.
+</span>  <span class="keyword type">void</span> <span class="name function">init</span><span class="punctuation">(){}</span><span class="punctuation">;</span>
+  <span class="comment single">// will be called after every testfunction.
+</span>  <span class="keyword type">void</span> <span class="name function">cleanup</span><span class="punctuation">();</span>
+</pre>
+<p>Then come your test methods, all of which should take no parameters and
+should return void. The methods will be called in order of declaration.I
 am implementing two methods here which illustrates to types of testing. In the
 first case I want to generally test the various parts of the class are working,
-I can use a <B>functional testing</B> approach. Once again, extreme programmers
-would advocate writing these tests <B>before</B> implementing the class. Then as
+I can use a functional testing approach. Once again, extreme programmers
+would advocate writing these tests before implementing the class. Then as
 you work your way through your class implementation you iteratively run your
 unit tests. More and more test functions should complete sucessfully as your
 class implementation work progresses, and when the whole unit test passes, your
-new class is done and is now complete with a repeatable way to validate it.
-</P>
-<P>
-Typically your unit tests would only cover the <B>public</B> API of your class,
-and normally you do not need to write tests for accessors and mutators.  If it
+new class is done and is now complete with a repeatable way to validate it.</p>
+<p>Typically your unit tests would only cover the public API of your class,
+and normally you do not need to write tests for accessors and mutators.If it
 should happen that an acccessor or mutator is not working as expected you would
-normally implement a <B>regression</B> test to check for this (see lower down).
-</P>
+normally implement a regression test to check for this (see lower down).</p>
+<pre class="code cpp literal-block">
+<span class="comment single">//
+// Functional Testing
+//
+</span>
+<span class="comment multiline">/** Check if a raster is valid. */</span>
+<span class="keyword type">void</span> <span class="name function">isValid</span><span class="punctuation">();</span>
 
-<div class="code"><PRE>
-  //
-  // Functional Testing
-  //
-  
-  /** Check if a raster is valid. */
-  void isValid();
-
-  // more functional tests here ...
-</PRE></div>
-
-<P>
-Next we implement our <B>regression tests</B>. Regression tests should be
+<span class="comment single">// more functional tests here ...
+</span>
+</pre>
+<p>Next we implement our regression tests. Regression tests should be
 implemented to replicate the conditions of a particular bug. For example I
 recently received a report by email that the cell count by rasters was off by
 1, throwing off all the statistics for the raster bands. I opened a bug (ticket
@@ -1204,714 +1086,515 @@ regression test along with the bug fix. Now if anybody breakes this in the
 source code again in the future, we can immediatly identify that the code has
 regressed. Better yet before committing any changes in the future, running our
 tests will ensure our changes don't have unexpected side effects - like breaking
-existing functionality.
-</P>
-<P>
-There is one more benifit to regression tests - they can save you time.  If you
+existing functionality.</p>
+<p>There is one more benifit to regression tests - they can save you time.If you
 ever fixed a bug that involved making changes to the source, and then running
 the application and performing a series of convoluted steps to replicate the
 issue, it will be immediately apparent that simply implementing your regression
-test <B>before</B> fixing the bug will let you automate the testing for bug
-resolution in an efficient manner.
-</P>
-<P>
-To implement your regression test, you should follow the naming convention of
+test before fixing the bug will let you automate the testing for bug
+resolution in an efficient manner.</p>
+<p>To implement your regression test, you should follow the naming convention of
 regression&lt;TicketID&gt; for your test functions. If no redmine ticket exists for the
-regression, you should create one first.  Using this approach allows the person
-running a failed regression test easily go and find out more information.
-</P>
+regression, you should create one first.Using this approach allows the person
+running a failed regression test easily go and find out more information.</p>
+<pre class="code cpp literal-block">
+<span class="comment single">//
+// Regression Testing
+//
+</span>
+<span class="comment multiline">/** This is our second test case...to check if a raster
+ *  reports its dimensions properly. It is a regression test
+ *  for ticket #832 which was fixed with change r7650.
+ */</span>
+<span class="keyword type">void</span> <span class="name function">regression832</span><span class="punctuation">();</span>
 
-<div class="code"><PRE>
-  //
-  // Regression Testing
-  //
-  
-  /** This is our second test case...to check if a raster
-   reports its dimensions properly. It is a regression test 
-   for ticket #832 which was fixed with change r7650. 
-   */
-  void regression832(); 
-  
-  // more regression tests go here ...
-</PRE></div>
-
-<P>
-Finally in our test class declaration you can declare privately any data
+<span class="comment single">// more regression tests go here ...
+</span>
+</pre>
+<p>Finally in our test class declaration you can declare privately any data
 members and helper methods your unit test may need. In our case I will declare
 a QgsRasterLayer * which can be used by any of our test methods. The raster
 layer will be created in the initTestCase() function which is run before any
 other tests, and then destroyed using cleanupTestCase() which is run after all
 tests. By declaring helper methods (which may be called by various test
 functions) privately, you can ensure that they wont be automatically run by the
-QTest executeable that is created when we compile our test.
-</P>
+QTest executeable that is created when we compile our test.</p>
+<pre class="code cpp literal-block">
+  <span class="name label">private:</span>
+    <span class="comment single">// Here we have any data structures that may need to
+</span>    <span class="comment single">// be used in many test cases.
+</span>    <span class="name">QgsRasterLayer</span> <span class="operator">*</span> <span class="name">mpLayer</span><span class="punctuation">;</span>
+<span class="punctuation">};</span>
+</pre>
+<p>That ends our class declaration. The implementation is simply inlined in the
+same file lower down. First our init and cleanup functions:</p>
+<pre class="code cpp literal-block">
+<span class="keyword type">void</span> <span class="name">TestQgsRasterLayer</span><span class="operator">::</span><span class="name">initTestCase</span><span class="punctuation">()</span>
+<span class="punctuation">{</span>
+  <span class="comment single">// init QGIS's paths - true means that all path will be inited from prefix
+</span>  <span class="name">QString</span> <span class="name">qgisPath</span> <span class="operator">=</span> <span class="name">QCoreApplication</span><span class="operator">::</span><span class="name">applicationDirPath</span> <span class="punctuation">();</span>
+  <span class="name">QgsApplication</span><span class="operator">::</span><span class="name">setPrefixPath</span><span class="punctuation">(</span><span class="name">qgisPath</span><span class="punctuation">,</span> <span class="name">TRUE</span><span class="punctuation">);</span>
+<span class="comment preproc">#ifdef Q_OS_LINUX
+</span>  <span class="name">QgsApplication</span><span class="operator">::</span><span class="name">setPkgDataPath</span><span class="punctuation">(</span><span class="name">qgisPath</span> <span class="operator">+</span> <span class="literal string">&quot;/../share/qgis&quot;</span><span class="punctuation">);</span>
+<span class="comment preproc">#endif
+</span>  <span class="comment single">//create some objects that will be used in all tests...
+</span>
+  <span class="name">std</span><span class="operator">::</span><span class="name">cout</span> <span class="operator">&lt;&lt;</span> <span class="literal string">&quot;PrefixPATH: &quot;</span> <span class="operator">&lt;&lt;</span> <span class="name">QgsApplication</span><span class="operator">::</span><span class="name">prefixPath</span><span class="punctuation">().</span><span class="name">toLocal8Bit</span><span class="punctuation">().</span><span class="name">data</span><span class="punctuation">()</span> <span class="operator">&lt;&lt;</span> <span class="name">std</span><span class="operator">::</span><span class="name">endl</span><span class="punctuation">;</span>
+  <span class="name">std</span><span class="operator">::</span><span class="name">cout</span> <span class="operator">&lt;&lt;</span> <span class="literal string">&quot;PluginPATH: &quot;</span> <span class="operator">&lt;&lt;</span> <span class="name">QgsApplication</span><span class="operator">::</span><span class="name">pluginPath</span><span class="punctuation">().</span><span class="name">toLocal8Bit</span><span class="punctuation">().</span><span class="name">data</span><span class="punctuation">()</span> <span class="operator">&lt;&lt;</span> <span class="name">std</span><span class="operator">::</span><span class="name">endl</span><span class="punctuation">;</span>
+  <span class="name">std</span><span class="operator">::</span><span class="name">cout</span> <span class="operator">&lt;&lt;</span> <span class="literal string">&quot;PkgData PATH: &quot;</span> <span class="operator">&lt;&lt;</span> <span class="name">QgsApplication</span><span class="operator">::</span><span class="name">pkgDataPath</span><span class="punctuation">().</span><span class="name">toLocal8Bit</span><span class="punctuation">().</span><span class="name">data</span><span class="punctuation">()</span> <span class="operator">&lt;&lt;</span> <span class="name">std</span><span class="operator">::</span><span class="name">endl</span><span class="punctuation">;</span>
+  <span class="name">std</span><span class="operator">::</span><span class="name">cout</span> <span class="operator">&lt;&lt;</span> <span class="literal string">&quot;User DB PATH: &quot;</span> <span class="operator">&lt;&lt;</span> <span class="name">QgsApplication</span><span class="operator">::</span><span class="name">qgisUserDbFilePath</span><span class="punctuation">().</span><span class="name">toLocal8Bit</span><span class="punctuation">().</span><span class="name">data</span><span class="punctuation">()</span> <span class="operator">&lt;&lt;</span> <span class="name">std</span><span class="operator">::</span><span class="name">endl</span><span class="punctuation">;</span>
 
-<div class="code"><PRE>
-  private:
-    // Here we have any data structures that may need to 
-    // be used in many test cases.
-    QgsRasterLayer * mpLayer;
-};
+  <span class="comment single">//create a raster layer that will be used in all tests...
+</span>  <span class="name">QString</span> <span class="name function">myFileName</span> <span class="punctuation">(</span><span class="name">TEST_DATA_DIR</span><span class="punctuation">);</span> <span class="comment single">//defined in CmakeLists.txt
+</span>  <span class="name">myFileName</span> <span class="operator">=</span> <span class="name">myFileName</span> <span class="operator">+</span> <span class="name">QDir</span><span class="operator">::</span><span class="name">separator</span><span class="punctuation">()</span> <span class="operator">+</span> <span class="literal string">&quot;tenbytenraster.asc&quot;</span><span class="punctuation">;</span>
+  <span class="name">QFileInfo</span> <span class="name function">myRasterFileInfo</span> <span class="punctuation">(</span> <span class="name">myFileName</span> <span class="punctuation">);</span>
+  <span class="name">mpLayer</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="name">QgsRasterLayer</span> <span class="punctuation">(</span> <span class="name">myRasterFileInfo</span><span class="punctuation">.</span><span class="name">filePath</span><span class="punctuation">(),</span>
+  <span class="name">myRasterFileInfo</span><span class="punctuation">.</span><span class="name">completeBaseName</span><span class="punctuation">()</span> <span class="punctuation">);</span>
+<span class="punctuation">}</span>
 
-</PRE></div>
-
-<P>
-That ends our class declaration. The implementation is simply inlined in the
-same file lower down. First our init and cleanup functions:
-</P>
-
-<div class="code"><PRE>
-void TestQgsRasterLayer::initTestCase()
-{
-  // init QGIS's paths - true means that all path will be inited from prefix
-  QString qgisPath = QCoreApplication::applicationDirPath ();
-  QgsApplication::setPrefixPath(qgisPath, TRUE);
-#ifdef Q_OS_LINUX
-  QgsApplication::setPkgDataPath(qgisPath + "/../share/qgis");
-#endif
-  //create some objects that will be used in all tests...
-
-  std::cout &lt;&lt; "Prefix  PATH: " &lt;&lt; QgsApplication::prefixPath().toLocal8Bit().data() &lt;&lt; std::endl;
-  std::cout &lt;&lt; "Plugin  PATH: " &lt;&lt; QgsApplication::pluginPath().toLocal8Bit().data() &lt;&lt; std::endl;
-  std::cout &lt;&lt; "PkgData PATH: " &lt;&lt; QgsApplication::pkgDataPath().toLocal8Bit().data() &lt;&lt; std::endl;
-  std::cout &lt;&lt; "User DB PATH: " &lt;&lt; QgsApplication::qgisUserDbFilePath().toLocal8Bit().data() &lt;&lt; std::endl;
-
-  //create a raster layer that will be used in all tests...
-  QString myFileName (TEST_DATA_DIR); //defined in CmakeLists.txt
-  myFileName = myFileName + QDir::separator() + "tenbytenraster.asc";
-  QFileInfo myRasterFileInfo ( myFileName );
-  mpLayer = new QgsRasterLayer ( myRasterFileInfo.filePath(),
-            myRasterFileInfo.completeBaseName() );
-}
-
-void TestQgsRasterLayer::cleanupTestCase()
-{
-  delete mpLayer;
-}
-
-</PRE></div>
-
-<P>
-The above init function illustrates a couple of interesting things.
-</P>
-<P>
- 1. I needed to manually set the QGIS application data path so that
-   resources such as srs.db can be found properly.
- 2. Secondly, this is a data driven test so we needed to provide a 
-   way to generically locate the 'tenbytenraster.asc file. This was 
-   achieved by using the compiler define <B>TEST_DATA_PATH</B>. The 
-   define is created in the CMakeLists.txt configuration file under 
-   &lt;QGIS Source Root&gt;/tests/CMakeLists.txt and is available to all 
-   QGIS unit tests. If you need test data for your test, commit it 
-   under &lt;QGIS Source Root&gt;/tests/testdata. You should only commit 
-   very small datasets here. If your test needs to modify the test 
-   data, it should make a copy of if first.
-</P>
-<P>
-Qt also provides some other interesting mechanisms for data driven 
-testing, so if you are interested to know more on the topic, consult 
-the Qt documentation.
-</P>
-<P>
-Next lets look at our functional test. The isValid() test simply checks the
-raster layer was correctly loaded in the initTestCase.  QVERIFY is a Qt macro
-that you can use to evaluate a test condition.  There are a few other use
-macros Qt provide for use in your tests including:
-</P>
-
-<div class="code"><PRE>
-QCOMPARE ( actual, expected )
-QEXPECT_FAIL ( dataIndex, comment, mode )
-QFAIL ( message )
-QFETCH ( type, name )
-QSKIP ( description, mode )
-QTEST ( actual, testElement )
-QTEST_APPLESS_MAIN ( TestClass )
-QTEST_MAIN ( TestClass )
-QTEST_NOOP_MAIN ()
-QVERIFY2 ( condition, message )
-QVERIFY ( condition )
-QWARN ( message ) 
-</PRE></div>
-
-<P>
-Some of these macros are useful only when using the Qt framework for data
-driven testing (see the Qt docs for more detail).
-</P>
-
-<div class="code"><PRE>
-void TestQgsRasterLayer::isValid()
-{
-  QVERIFY ( mpLayer-&gt;isValid() );
-}
-</PRE></div>
-
-<P>
-Normally your functional tests would cover all the range of functionality of
+<span class="keyword type">void</span> <span class="name">TestQgsRasterLayer</span><span class="operator">::</span><span class="name">cleanupTestCase</span><span class="punctuation">()</span>
+<span class="punctuation">{</span>
+  <span class="keyword">delete</span> <span class="name">mpLayer</span><span class="punctuation">;</span>
+<span class="punctuation">}</span>
+</pre>
+<p>The above init function illustrates a couple of interesting things.</p>
+<blockquote>
+1. I needed to manually set the QGIS application data path so that
+resources such as srs.db can be found properly.
+2. Secondly, this is a data driven test so we needed to provide a
+way to generically locate the 'tenbytenraster.asc file. This was
+achieved by using the compiler define TEST_DATA_PATH. The
+define is created in the CMakeLists.txt configuration file under
+&lt;QGIS Source Root&gt;/tests/CMakeLists.txt and is available to all
+QGIS unit tests. If you need test data for your test, commit it
+under &lt;QGIS Source Root&gt;/tests/testdata. You should only commit
+very small datasets here. If your test needs to modify the test
+data, it should make a copy of if first.</blockquote>
+<p>Qt also provides some other interesting mechanisms for data driven
+testing, so if you are interested to know more on the topic, consult
+the Qt documentation.</p>
+<p>Next lets look at our functional test. The isValid() test simply checks the
+raster layer was correctly loaded in the initTestCase.QVERIFY is a Qt macro
+that you can use to evaluate a test condition.There are a few other use
+macros Qt provide for use in your tests including:</p>
+<ul class="simple">
+<li><cite>QCOMPARE ( actual, expected )</cite></li>
+<li><cite>QEXPECT_FAIL ( dataIndex, comment, mode )</cite></li>
+<li><cite>QFAIL ( message )</cite></li>
+<li><cite>QFETCH ( type, name )</cite></li>
+<li><cite>QSKIP ( description, mode )</cite></li>
+<li><cite>QTEST ( actual, testElement )</cite></li>
+<li><cite>QTEST_APPLESS_MAIN ( TestClass )</cite></li>
+<li><cite>QTEST_MAIN ( TestClass )</cite></li>
+<li><cite>QTEST_NOOP_MAIN ()</cite></li>
+<li><cite>QVERIFY2 ( condition, message )</cite></li>
+<li><cite>QVERIFY ( condition )</cite></li>
+<li><cite>QWARN ( message )</cite></li>
+</ul>
+<p>Some of these macros are useful only when using the Qt framework for data
+driven testing (see the Qt docs for more detail).</p>
+<pre class="code bash literal-block">
+void TestQgsRasterLayer::isValid<span class="operator">()</span>
+<span class="operator">{</span>
+  QVERIFY <span class="operator">(</span> mpLayer-&gt;isValid<span class="operator">()</span> <span class="operator">)</span>;
+<span class="operator">}</span>
+</pre>
+<p>Normally your functional tests would cover all the range of functionality of
 your classes public API where feasible. With our functional tests out the way,
-we can look at our regression test example.
-</P>
-<P>
-Since the issue in bug #832 is a misreported cell count, writing our test if
+we can look at our regression test example.</p>
+<p>Since the issue in bug #832 is a misreported cell count, writing our test if
 simply a matter of using QVERIFY to check that the cell count meets the
-expected value:
-</P>
-
-<div class="code"><PRE>
-void TestQgsRasterLayer::regression832()
-{
-   QVERIFY ( mpLayer-&gt;getRasterXDim() == 10 );
-   QVERIFY ( mpLayer-&gt;getRasterYDim() == 10 );
-   // regression check for ticket #832
-   // note getRasterBandStats call is base 1
-   QVERIFY ( mpLayer-&gt;getRasterBandStats(1).elementCountInt == 100 );
-}
-</PRE></div>
-
-<P>
-With all the unit test functions implemented, there one final thing we need to
-add to our test class:
-</P>
-
-<div class="code"><PRE>
-QTEST_MAIN(TestQgsRasterLayer)
-#include "testqgsrasterlayer.moc"
-</PRE></div>
-
-<P>
-The purpose of these two lines is to signal to Qt's moc that his is a QtTest
-(it will generate a main method that in turn calls each test funtion.  The last
+expected value:</p>
+<pre class="code bash literal-block">
+void TestQgsRasterLayer::regression832<span class="operator">()</span>
+<span class="operator">{</span>
+  QVERIFY <span class="operator">(</span> mpLayer-&gt;getRasterXDim<span class="operator">()</span> <span class="operator">==</span> 10 <span class="operator">)</span>;
+  QVERIFY <span class="operator">(</span> mpLayer-&gt;getRasterYDim<span class="operator">()</span> <span class="operator">==</span> 10 <span class="operator">)</span>;
+  // regression check <span class="keyword">for </span>ticket <span class="comment">#832
+</span>  // note getRasterBandStats call is base 1
+  QVERIFY <span class="operator">(</span> mpLayer-&gt;getRasterBandStats<span class="operator">(</span>1<span class="operator">)</span>.elementCountInt <span class="operator">==</span> 100 <span class="operator">)</span>;
+<span class="operator">}</span>
+</pre>
+<p>With all the unit test functions implemented, there one final thing we need to
+add to our test class:</p>
+<pre class="code bash literal-block">
+QTEST_MAIN<span class="operator">(</span>TestQgsRasterLayer<span class="operator">)</span>
+<span class="comment">#include &quot;testqgsrasterlayer.moc&quot;</span>
+</pre>
+<p>The purpose of these two lines is to signal to Qt's moc that his is a QtTest
+(it will generate a main method that in turn calls each test funtion.The last
 line is the include for the MOC generated sources. You should replace
-'testqgsrasterlayer' with the name of your class in lower case.
-</P>
-
-<A NAME="toc50"></A>
-<H2>3.3. Adding your unit test to CMakeLists.txt</H2>
-
-<P>
-Adding your unit test to the build system is simply a matter of editing the
+'testqgsrasterlayer' with the name of your class in lower case.</p>
+</div>
+<div class="section" id="adding-your-unit-test-to-cmakelists-txt">
+<h2>Adding your unit test to CMakeLists.txt</h2>
+<p>Adding your unit test to the build system is simply a matter of editing the
 CMakeLists.txt in the test directory, cloning one of the existing test blocks,
-and then replacing your test class name into it.  For example:
-</P>
-
-<div class="code"><PRE>
-# QgsRasterLayer test
-ADD_QGIS_TEST(rasterlayertest testqgsrasterlayer.cpp)
-</PRE></div>
-
-<A NAME="toc51"></A>
-<H2>3.4. The ADD_QGIS_TEST macro explained</H2>
-
-<P>
-I'll run through these lines briefly to explain what they do, but if you are
-not interested, just do the step explained in the above section and section.
-</P>
-
-<div class="code"><PRE>
-MACRO (ADD_QGIS_TEST testname testsrc)
-  SET(qgis_${testname}_SRCS ${testsrc} ${util_SRCS})
-  SET(qgis_${testname}_MOC_CPPS ${testsrc})
-  QT4_WRAP_CPP(qgis_${testname}_MOC_SRCS ${qgis_${testname}_MOC_CPPS})
-  ADD_CUSTOM_TARGET(qgis_${testname}moc ALL DEPENDS ${qgis_${testname}_MOC_SRCS})
-  ADD_EXECUTABLE(qgis_${testname} ${qgis_${testname}_SRCS})
-  ADD_DEPENDENCIES(qgis_${testname} qgis_${testname}moc)
-  TARGET_LINK_LIBRARIES(qgis_${testname} ${QT_LIBRARIES} qgis_core)
-  SET_TARGET_PROPERTIES(qgis_${testname}
-    PROPERTIES
-    # skip the full RPATH for the build tree
-    SKIP_BUILD_RPATH  TRUE
-    # when building, use the install RPATH already
-    # (so it doesn't need to relink when installing)
-    BUILD_WITH_INSTALL_RPATH TRUE
-    # the RPATH to be used when installing
-    INSTALL_RPATH ${QGIS_LIB_DIR}
-    # add the automatically determined parts of the RPATH
-    # which point to directories outside the build tree to the install RPATH
-    INSTALL_RPATH_USE_LINK_PATH true)
-  IF (APPLE)
-    # For Mac OS X, the executable must be at the root of the bundle's executable folder
-    INSTALL(TARGETS qgis_${testname} RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX})
-    ADD_TEST(qgis_${testname} ${CMAKE_INSTALL_PREFIX}/qgis_${testname})
-  ELSE (APPLE)
-    INSTALL(TARGETS qgis_${testname} RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
-    ADD_TEST(qgis_${testname} ${CMAKE_INSTALL_PREFIX}/bin/qgis_${testname})
-  ENDIF (APPLE)
-ENDMACRO (ADD_QGIS_TEST)
-</PRE></div>
-
-<P>
-Lets look a little more in detail at the individual lines. First we define the
+and then replacing your test class name into it.For example:</p>
+<p># QgsRasterLayer test
+ADD_QGIS_TEST(rasterlayertest testqgsrasterlayer.cpp)</p>
+</div>
+<div class="section" id="the-add-qgis-test-macro-explained">
+<h2>The ADD_QGIS_TEST macro explained</h2>
+<p>I'll run through these lines briefly to explain what they do, but if you are
+not interested, just do the step explained in the above section and section.</p>
+<pre class="code bash literal-block">
+MACRO <span class="operator">(</span>ADD_QGIS_TEST testname testsrc<span class="operator">)</span>
+SET<span class="operator">(</span>qgis_<span class="keyword">${</span><span class="name variable">testname</span><span class="keyword">}</span>_SRCS <span class="keyword">${</span><span class="name variable">testsrc</span><span class="keyword">}</span> <span class="keyword">${</span><span class="name variable">util_SRCS</span><span class="keyword">}</span><span class="operator">)</span>
+SET<span class="operator">(</span>qgis_<span class="keyword">${</span><span class="name variable">testname</span><span class="keyword">}</span>_MOC_CPPS <span class="keyword">${</span><span class="name variable">testsrc</span><span class="keyword">}</span><span class="operator">)</span>
+QT4_WRAP_CPP<span class="operator">(</span>qgis_<span class="keyword">${</span><span class="name variable">testname</span><span class="keyword">}</span>_MOC_SRCS <span class="keyword">${</span><span class="name variable">qgis_</span><span class="keyword">${</span><span class="name variable">testname</span><span class="keyword">}</span><span class="name variable">_MOC_CPPS</span><span class="keyword">}</span><span class="operator">)</span>
+ADD_CUSTOM_TARGET<span class="operator">(</span>qgis_<span class="keyword">${</span><span class="name variable">testname</span><span class="keyword">}</span>moc ALL DEPENDS <span class="keyword">${</span><span class="name variable">qgis_</span><span class="keyword">${</span><span class="name variable">testname</span><span class="keyword">}</span><span class="name variable">_MOC_SRCS</span><span class="keyword">}</span><span class="operator">)</span>
+ADD_EXECUTABLE<span class="operator">(</span>qgis_<span class="keyword">${</span><span class="name variable">testname</span><span class="keyword">}</span> <span class="keyword">${</span><span class="name variable">qgis_</span><span class="keyword">${</span><span class="name variable">testname</span><span class="keyword">}</span><span class="name variable">_SRCS</span><span class="keyword">}</span><span class="operator">)</span>
+ADD_DEPENDENCIES<span class="operator">(</span>qgis_<span class="keyword">${</span><span class="name variable">testname</span><span class="keyword">}</span> qgis_<span class="keyword">${</span><span class="name variable">testname</span><span class="keyword">}</span>moc<span class="operator">)</span>
+TARGET_LINK_LIBRARIES<span class="operator">(</span>qgis_<span class="keyword">${</span><span class="name variable">testname</span><span class="keyword">}</span> <span class="keyword">${</span><span class="name variable">QT_LIBRARIES</span><span class="keyword">}</span> qgis_core<span class="operator">)</span>
+SET_TARGET_PROPERTIES<span class="operator">(</span>qgis_<span class="keyword">${</span><span class="name variable">testname</span><span class="keyword">}</span>
+PROPERTIES
+<span class="comment"># skip the full RPATH for the build tree
+</span>SKIP_BUILD_RPATHTRUE
+<span class="comment"># when building, use the install RPATH already
+# (so it doesn't need to relink when installing)
+</span>BUILD_WITH_INSTALL_RPATH TRUE
+<span class="comment"># the RPATH to be used when installing
+</span>INSTALL_RPATH <span class="keyword">${</span><span class="name variable">QGIS_LIB_DIR</span><span class="keyword">}</span>
+<span class="comment"># add the automatically determined parts of the RPATH
+# which point to directories outside the build tree to the install RPATH
+</span>INSTALL_RPATH_USE_LINK_PATH <span class="name builtin">true</span><span class="operator">)</span>
+IF <span class="operator">(</span>APPLE<span class="operator">)</span>
+<span class="comment"># For Mac OS X, the executable must be at the root of the bundle's executable folder
+</span>INSTALL<span class="operator">(</span>TARGETS qgis_<span class="keyword">${</span><span class="name variable">testname</span><span class="keyword">}</span> RUNTIME DESTINATION <span class="keyword">${</span><span class="name variable">CMAKE_INSTALL_PREFIX</span><span class="keyword">}</span><span class="operator">)</span>
+ADD_TEST<span class="operator">(</span>qgis_<span class="keyword">${</span><span class="name variable">testname</span><span class="keyword">}</span> <span class="keyword">${</span><span class="name variable">CMAKE_INSTALL_PREFIX</span><span class="keyword">}</span>/qgis_<span class="keyword">${</span><span class="name variable">testname</span><span class="keyword">}</span><span class="operator">)</span>
+ELSE <span class="operator">(</span>APPLE<span class="operator">)</span>
+INSTALL<span class="operator">(</span>TARGETS qgis_<span class="keyword">${</span><span class="name variable">testname</span><span class="keyword">}</span> RUNTIME DESTINATION <span class="keyword">${</span><span class="name variable">CMAKE_INSTALL_PREFIX</span><span class="keyword">}</span>/bin<span class="operator">)</span>
+ADD_TEST<span class="operator">(</span>qgis_<span class="keyword">${</span><span class="name variable">testname</span><span class="keyword">}</span> <span class="keyword">${</span><span class="name variable">CMAKE_INSTALL_PREFIX</span><span class="keyword">}</span>/bin/qgis_<span class="keyword">${</span><span class="name variable">testname</span><span class="keyword">}</span><span class="operator">)</span>
+ENDIF <span class="operator">(</span>APPLE<span class="operator">)</span>
+ENDMACRO <span class="operator">(</span>ADD_QGIS_TEST<span class="operator">)</span>
+</pre>
+<p>Lets look a little more in detail at the individual lines. First we define the
 list of sources for our test. Since we have only one source file (following the
 methodology I described above where class declaration and definition are in the
-same file) its a simple statement:
-</P>
-
-<div class="code"><PRE>
-SET(qgis_${testname}_SRCS ${testsrc} ${util_SRCS})
-</PRE></div>
-
-<P>
-Since our test class needs to be run through the Qt meta object compiler (moc)
-we need to provide a couple of lines to make that happen too:
-</P>
-
-<div class="code"><PRE>
-SET(qgis_${testname}_MOC_CPPS ${testsrc})
-QT4_WRAP_CPP(qgis_${testname}_MOC_SRCS ${qgis_${testname}_MOC_CPPS})
-ADD_CUSTOM_TARGET(qgis_${testname}moc ALL DEPENDS ${qgis_${testname}_MOC_SRCS})
-</PRE></div>
-
-<P>
-Next we tell cmake that it must make an executeable from the test class.
+same file) its a simple statement:</p>
+<pre class="code bash literal-block">
+SET<span class="operator">(</span>qgis_<span class="keyword">${</span><span class="name variable">testname</span><span class="keyword">}</span>_SRCS <span class="keyword">${</span><span class="name variable">testsrc</span><span class="keyword">}</span> <span class="keyword">${</span><span class="name variable">util_SRCS</span><span class="keyword">}</span><span class="operator">)</span>
+</pre>
+<p>Since our test class needs to be run through the Qt meta object compiler (moc)
+we need to provide a couple of lines to make that happen too:</p>
+<pre class="code bash literal-block">
+SET<span class="operator">(</span>qgis_<span class="keyword">${</span><span class="name variable">testname</span><span class="keyword">}</span>_MOC_CPPS <span class="keyword">${</span><span class="name variable">testsrc</span><span class="keyword">}</span><span class="operator">)</span>
+QT4_WRAP_CPP<span class="operator">(</span>qgis_<span class="keyword">${</span><span class="name variable">testname</span><span class="keyword">}</span>_MOC_SRCS <span class="keyword">${</span><span class="name variable">qgis_</span><span class="keyword">${</span><span class="name variable">testname</span><span class="keyword">}</span><span class="name variable">_MOC_CPPS</span><span class="keyword">}</span><span class="operator">)</span>
+ADD_CUSTOM_TARGET<span class="operator">(</span>qgis_<span class="keyword">${</span><span class="name variable">testname</span><span class="keyword">}</span>moc ALL DEPENDS <span class="keyword">${</span><span class="name variable">qgis_</span><span class="keyword">${</span><span class="name variable">testname</span><span class="keyword">}</span><span class="name variable">_MOC_SRCS</span><span class="keyword">}</span><span class="operator">)</span>
+</pre>
+<p>Next we tell cmake that it must make an executeable from the test class.
 Remember in the previous section on the last line of the class implementation I
 included the moc outputs directly into our test class, so that will give it
 (among other things) a main method so the class can be compiled as an
-executeable:
-</P>
-
-<div class="code"><PRE>
-ADD_EXECUTABLE(qgis_${testname} ${qgis_${testname}_SRCS})
-ADD_DEPENDENCIES(qgis_${testname} qgis_${testname}moc)
-</PRE></div>
-
-<P>
-Next we need to specify any library dependencies. At the moment classes have
+executeable:</p>
+<pre class="code bash literal-block">
+ADD_EXECUTABLE<span class="operator">(</span>qgis_<span class="keyword">${</span><span class="name variable">testname</span><span class="keyword">}</span> <span class="keyword">${</span><span class="name variable">qgis_</span><span class="keyword">${</span><span class="name variable">testname</span><span class="keyword">}</span><span class="name variable">_SRCS</span><span class="keyword">}</span><span class="operator">)</span>
+ADD_DEPENDENCIES<span class="operator">(</span>qgis_<span class="keyword">${</span><span class="name variable">testname</span><span class="keyword">}</span> qgis_<span class="keyword">${</span><span class="name variable">testname</span><span class="keyword">}</span>moc<span class="operator">)</span>
+</pre>
+<p>Next we need to specify any library dependencies. At the moment classes have
 been implemented with a catch-all QT_LIBRARIES dependency, but I will be
 working to replace that with the specific Qt libraries that each class needs
 only. Of course you also need to link to the relevant qgis libraries as
-required by your unit test.
-</P>
-
-<div class="code"><PRE>
-TARGET_LINK_LIBRARIES(qgis_${testname} ${QT_LIBRARIES} qgis_core)
-</PRE></div>
-
-<P>
-Next I tell cmake to install the tests to the same place as the qgis binaries
+required by your unit test.</p>
+<pre class="code bash literal-block">
+TARGET_LINK_LIBRARIES<span class="operator">(</span>qgis_<span class="keyword">${</span><span class="name variable">testname</span><span class="keyword">}</span> <span class="keyword">${</span><span class="name variable">QT_LIBRARIES</span><span class="keyword">}</span> qgis_core<span class="operator">)</span>
+</pre>
+<p>Next I tell cmake to install the tests to the same place as the qgis binaries
 itself. This is something I plan to remove in the future so that the tests can
-run directly from inside the source tree.
-</P>
-
-<div class="code"><PRE>
-SET_TARGET_PROPERTIES(qgis_${testname}
-  PROPERTIES
-  # skip the full RPATH for the build tree
-  SKIP_BUILD_RPATH  TRUE
-  # when building, use the install RPATH already
-  # (so it doesn't need to relink when installing)
-  BUILD_WITH_INSTALL_RPATH TRUE
-  # the RPATH to be used when installing
-  INSTALL_RPATH ${QGIS_LIB_DIR}
-  # add the automatically determined parts of the RPATH
-  # which point to directories outside the build tree to the install RPATH
-  INSTALL_RPATH_USE_LINK_PATH true)
-IF (APPLE)
-  # For Mac OS X, the executable must be at the root of the bundle's executable folder
-  INSTALL(TARGETS qgis_${testname} RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX})
-  ADD_TEST(qgis_${testname} ${CMAKE_INSTALL_PREFIX}/qgis_${testname})
-ELSE (APPLE)
-  INSTALL(TARGETS qgis_${testname} RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
-  ADD_TEST(qgis_${testname} ${CMAKE_INSTALL_PREFIX}/bin/qgis_${testname})
-ENDIF (APPLE)
-</PRE></div>
-
-<P>
-Finally the above uses ADD_TEST to register the test with cmake / ctest . Here
-is where the best magic happens - we register the class with ctest. If you
+run directly from inside the source tree.</p>
+<pre class="code bash literal-block">
+SET_TARGET_PROPERTIES<span class="operator">(</span>qgis_<span class="keyword">${</span><span class="name variable">testname</span><span class="keyword">}</span>
+PROPERTIES
+<span class="comment"># skip the full RPATH for the build tree
+</span>SKIP_BUILD_RPATHTRUE
+<span class="comment"># when building, use the install RPATH already
+# (so it doesn't need to relink when installing)
+</span>BUILD_WITH_INSTALL_RPATH TRUE
+<span class="comment"># the RPATH to be used when installing
+</span>INSTALL_RPATH <span class="keyword">${</span><span class="name variable">QGIS_LIB_DIR</span><span class="keyword">}</span>
+<span class="comment"># add the automatically determined parts of the RPATH
+# which point to directories outside the build tree to the install RPATH
+</span>INSTALL_RPATH_USE_LINK_PATH <span class="name builtin">true</span><span class="operator">)</span>
+IF <span class="operator">(</span>APPLE<span class="operator">)</span>
+<span class="comment"># For Mac OS X, the executable must be at the root of the bundle's executable folder
+</span>INSTALL<span class="operator">(</span>TARGETS qgis_<span class="keyword">${</span><span class="name variable">testname</span><span class="keyword">}</span> RUNTIME DESTINATION <span class="keyword">${</span><span class="name variable">CMAKE_INSTALL_PREFIX</span><span class="keyword">}</span><span class="operator">)</span>
+ADD_TEST<span class="operator">(</span>qgis_<span class="keyword">${</span><span class="name variable">testname</span><span class="keyword">}</span> <span class="keyword">${</span><span class="name variable">CMAKE_INSTALL_PREFIX</span><span class="keyword">}</span>/qgis_<span class="keyword">${</span><span class="name variable">testname</span><span class="keyword">}</span><span class="operator">)</span>
+ELSE <span class="operator">(</span>APPLE<span class="operator">)</span>
+INSTALL<span class="operator">(</span>TARGETS qgis_<span class="keyword">${</span><span class="name variable">testname</span><span class="keyword">}</span> RUNTIME DESTINATION <span class="keyword">${</span><span class="name variable">CMAKE_INSTALL_PREFIX</span><span class="keyword">}</span>/bin<span class="operator">)</span>
+ADD_TEST<span class="operator">(</span>qgis_<span class="keyword">${</span><span class="name variable">testname</span><span class="keyword">}</span> <span class="keyword">${</span><span class="name variable">CMAKE_INSTALL_PREFIX</span><span class="keyword">}</span>/bin/qgis_<span class="keyword">${</span><span class="name variable">testname</span><span class="keyword">}</span><span class="operator">)</span>
+ENDIF <span class="operator">(</span>APPLE<span class="operator">)</span>
+</pre>
+<p>Finally the above uses <code>ADD_TEST</code> to register the test with cmake / ctest.
+Here is where the best magic happens - we register the class with ctest. If you
 recall in the overview I gave in the beginning of this section we are using
-both QtTest and CTest together. To recap, <B>QtTest</B> adds a main method to your
+both QtTest and CTest together. To recap, QtTest adds a main method to your
 test unit and handles calling your test methods within the class. It also
-provides some macros like QVERIFY that you can use as to test for failure of
-the tests using conditions. The output from a QtTest unit test is an
-executeable which you can run from the command line.  However when you have a
+provides some macros like <code>QVERIFY</code> that you can use as to test for
+failure of the tests using conditions. The output from a QtTest unit test is an
+executeable which you can run from the command line. However when you have a
 suite of tests and you want to run each executeable in turn, and better yet
-integrate running tests into the build process, the <B>CTest</B> is what we use. 
-</P>
-
-<A NAME="toc52"></A>
-<H2>3.5. Building your unit test</H2>
-
-<P>
-To build the unit test you need only to make sure that ENABLE_TESTS=true in the
-cmake configuration. There are two ways to do this:
-</P>
-<P>
- 1. Run ccmake .. (cmakesetup .. under windows) and interactively set 
- the ENABLE_TESTS flag to ON.
- 1. Add a command line flag to cmake e.g. cmake -DENABLE_TESTS=true ..
-</P>
-<P>
-Other than that, just build QGIS as per normal and the tests should build too.
-</P>
-
-<A NAME="toc53"></A>
-<H2>3.6. Run your tests</H2>
-
-<P>
-The simplest way to run the tests is as part of your normal build process:
-</P>
-
-<div class="code"><PRE>
-make &amp;&amp; make install &amp;&amp; make test
-</PRE></div>
-
-<P>
-The make test command will invoke CTest which will run each test that was
+integrate running tests into the build process, the CTest is what we use.</p>
+</div>
+<div class="section" id="building-your-unit-test">
+<h2>Building your unit test</h2>
+<p>To build the unit test you need only to make sure that <code>ENABLE_TESTS=true</code>
+in the cmake configuration. There are two ways to do this:</p>
+<ol class="arabic simple">
+<li>Run <code>ccmake ..</code> (<code>cmakesetup ..</code> under windows) and interactively set
+the <code>ENABLE_TESTS</code> flag to <code>ON</code>.</li>
+<li>Add a command line flag to cmake e.g. <code>cmake -DENABLE_TESTS=true ..</code></li>
+</ol>
+<p>Other than that, just build QGIS as per normal and the tests should build too.</p>
+</div>
+<div class="section" id="run-your-tests">
+<h2>Run your tests</h2>
+<p>The simplest way to run the tests is as part of your normal build process:</p>
+<pre class="code bash literal-block">
+make <span class="operator">&amp;&amp;</span> make install <span class="operator">&amp;&amp;</span> make <span class="name builtin">test</span>
+</pre>
+<p>The make test command will invoke CTest which will run each test that was
 registered using the ADD_TEST CMake directive described above. Typical output
-from make test will look like this:
-</P>
-
-<div class="code"><PRE>
-Running tests...
+from make test will look like this:</p>
+<pre class="literal-block">
+.. code-block:: bash
+</pre>
+<blockquote>
+<p>Running tests...
 Start processing tests
 Test project /Users/tim/dev/cpp/qgis/build
-1/  3 Testing qgis_applicationtest          ***Exception: Other
-2/  3 Testing qgis_filewritertest           *** Passed
-3/  3 Testing qgis_rasterlayertest          *** Passed
+## 13 Testing qgis_applicationtest***Exception: Other
+## 23 Testing qgis_filewritertest <strong>* Passed
+## 33 Testing qgis_rasterlayertest*</strong> Passed</p>
+<p>## 0 tests passed, 3 tests failed out of 3</p>
+<p>The following tests FAILED:
+## 1- qgis_applicationtest (OTHER_FAULT)
+Errors while running CTest
+make: <a href="#id2"><span class="problematic" id="id3">**</span></a>* [test] Error 8</p>
+<div class="system-message" id="id2">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">CODING.rst</tt>, line 1221); <em><a href="#id3">backlink</a></em></p>
+Inline strong start-string without end-string.</div>
+</blockquote>
+<p>If a test fails, you can use the ctest command to examine more closely why it
+failed. Use the <code>-R</code> option to specify a regex for which tests you want to run
+and <code>-V</code> to get verbose output:</p>
+<pre class="code bash literal-block">
+<span class="name variable">$ </span>ctest -R appl -V
 
-0% tests passed, 3 tests failed out of 3
-
-  The following tests FAILED:
-  1 - qgis_applicationtest (OTHER_FAULT)
-  Errors while running CTest
-  make: *** [test] Error 8
-</PRE></div>
-
-<P>
-If a test fails, you can use the ctest command to examine more closely why it
-failed. User the -R option to specify a regex for which tests you want to run
-and -V to get verbose output:
-</P>
-
-<div class="code"><PRE>
-[build] ctest -R appl -V
 Start processing tests
 Test project /Users/tim/dev/cpp/qgis/build
 Constructing a list of tests
 Done constructing a list of tests
 Changing directory into /Users/tim/dev/cpp/qgis/build/tests/src/core
-1/  3 Testing qgis_applicationtest          
-Test command: /Users/tim/dev/cpp/qgis/build/tests/src/core/qgis_applicationtest
+<span class="comment">## 13 Testing qgis_applicationtest
+</span>Test <span class="name builtin">command</span>: /Users/tim/dev/cpp/qgis/build/tests/src/core/qgis_applicationtest
 ********* Start testing of TestQgsApplication *********
-  Config: Using QTest library 4.3.0, Qt 4.3.0
-PASS   : TestQgsApplication::initTestCase()
-  Prefix  PATH: /Users/tim/dev/cpp/qgis/build/tests/src/core/../
-  Plugin  PATH: /Users/tim/dev/cpp/qgis/build/tests/src/core/..//lib/qgis
-  PkgData PATH: /Users/tim/dev/cpp/qgis/build/tests/src/core/..//share/qgis
-  User DB PATH: /Users/tim/.qgis/qgis.db
-PASS   : TestQgsApplication::getPaths()
-  Prefix  PATH: /Users/tim/dev/cpp/qgis/build/tests/src/core/../
-  Plugin  PATH: /Users/tim/dev/cpp/qgis/build/tests/src/core/..//lib/qgis
-  PkgData PATH: /Users/tim/dev/cpp/qgis/build/tests/src/core/..//share/qgis
-  User DB PATH: /Users/tim/.qgis/qgis.db
-  QDEBUG : TestQgsApplication::checkTheme() Checking if a theme icon exists:
-  QDEBUG : TestQgsApplication::checkTheme() 
-  /Users/tim/dev/cpp/qgis/build/tests/src/core/..//share/qgis/themes/default//mIconProjectionDisabled.png
-  FAIL!  : TestQgsApplication::checkTheme() '!myPixmap.isNull()' returned FALSE. ()
-  Loc: [/Users/tim/dev/cpp/qgis/tests/src/core/testqgsapplication.cpp(59)]
-PASS   : TestQgsApplication::cleanupTestCase()
-  Totals: 3 passed, 1 failed, 0 skipped
-  ********* Finished testing of TestQgsApplication *********
-  -- Process completed
-  ***Failed
+Config: Using QTest library 4.3.0, Qt 4.3.0
+PASS : TestQgsApplication::initTestCase<span class="operator">()</span>
+PrefixPATH: /Users/tim/dev/cpp/qgis/build/tests/src/core/../
+PluginPATH: /Users/tim/dev/cpp/qgis/build/tests/src/core/..//lib/qgis
+PkgData PATH: /Users/tim/dev/cpp/qgis/build/tests/src/core/..//share/qgis
+User DB PATH: /Users/tim/.qgis/qgis.db
+PASS : TestQgsApplication::getPaths<span class="operator">()</span>
+PrefixPATH: /Users/tim/dev/cpp/qgis/build/tests/src/core/../
+PluginPATH: /Users/tim/dev/cpp/qgis/build/tests/src/core/..//lib/qgis
+PkgData PATH: /Users/tim/dev/cpp/qgis/build/tests/src/core/..//share/qgis
+User DB PATH: /Users/tim/.qgis/qgis.db
+QDEBUG : TestQgsApplication::checkTheme<span class="operator">()</span> Checking <span class="keyword">if </span>a theme icon exists:
+QDEBUG : TestQgsApplication::checkTheme<span class="operator">()</span>
+/Users/tim/dev/cpp/qgis/build/tests/src/core/..//share/qgis/themes/default//mIconProjectionDisabled.png
+FAIL!: TestQgsApplication::checkTheme<span class="operator">()</span> <span class="literal string single">'!myPixmap.isNull()'</span> returned FALSE. <span class="operator">()</span>
+Loc: <span class="operator">[</span>/Users/tim/dev/cpp/qgis/tests/src/core/testqgsapplication.cpp<span class="operator">(</span>59<span class="operator">)]</span>
+PASS : TestQgsApplication::cleanupTestCase<span class="operator">()</span>
+Totals: 3 passed, 1 failed, 0 skipped
+********* Finished testing of TestQgsApplication *********
+-- Process completed
+***Failed
 
-  0% tests passed, 1 tests failed out of 1
-
-  The following tests FAILED:
-1 - qgis_applicationtest (Failed)
-  Errors while running CTest
-
-</PRE></div>
-
-<P>
-Well that concludes this section on writing unit tests in QGIS. We hope you
+<span class="comment">## 0 tests passed, 1 tests failed out of 1
+</span>
+The following tests FAILED:
+<span class="comment">## 1- qgis_applicationtest (Failed)
+</span>Errors <span class="keyword">while </span>running CTest
+</pre>
+<p>Well that concludes this section on writing unit tests in QGIS. We hope you
 will get into the habit of writing test to test new functionality and to check
 for regressions. Some aspects of the test system (in particular the
 CMakeLists.txt parts) are still being worked on so that the testing framework
 works in a truly platform way. I will update this document as things
-progress.
-</P>
-
-<A NAME="toc54"></A>
-<H1>4. Getting up and running with QtCreator and QGIS</H1>
-
-<P>
-QtCreator is a newish IDE from the makers of the Qt library. With QtCreator you
+progress.</p>
+</div>
+</div>
+<div class="section" id="getting-up-and-running-with-qtcreator-and-qgis">
+<h1>Getting up and running with QtCreator and QGIS</h1>
+<p>QtCreator is a newish IDE from the makers of the Qt library. With QtCreator you
 can build any C++ project, but it's really optimised for people working on
 Qt(4) based applications (including mobile apps). Everything I describe below
-assumes you are running Ubuntu 11.04 'Natty'.
-</P>
-
-<A NAME="toc55"></A>
-<H2>4.1. Installing QtCreator</H2>
-
-<P>
-This part is easy:
-</P>
-
-<div class="code"><PRE>
+assumes you are running Ubuntu 11.04 'Natty'.</p>
+<div class="section" id="installing-qtcreator">
+<h2>Installing QtCreator</h2>
+<p>This part is easy:</p>
+<pre class="code bash literal-block">
 sudo apt-get install qtcreator qtcreator-doc
-</PRE></div>
-
-<P>
-After installing you should find it in your gnome menu.
-</P>
-
-<A NAME="toc56"></A>
-<H2>4.2. Setting up your project</H2>
-
-<P>
-I'm assuming you have already got a local QGIS clone containing the
+</pre>
+<p>After installing you should find it in your gnome menu.</p>
+</div>
+<div class="section" id="setting-up-your-project">
+<h2>Setting up your project</h2>
+<p>I'm assuming you have already got a local QGIS clone containing the
 source code, and have installed all needed build dependencies etc. There are
-detailed in instructions on doing that here:
-</P>
-<P>
-<A HREF="http://github.com/qgis/QGIS/blob/master/CODING">http://github.com/qgis/QGIS/blob/master/CODING</A>
-</P>
-<P>
-On my system I have checked out the code into $HOME/dev/cpp/QGIS and the
+[detailed instructions](<a class="reference external" href="http://github.com/qgis/QGIS/blob/master/CODING.md">http://github.com/qgis/QGIS/blob/master/CODING.md</a>).</p>
+<p>On my system I have checked out the code into $HOME/dev/cpp/QGIS and the
 rest of the article is written assuming that, you should update these paths as
-appropriate for your local system.
-</P>
-<P>
-On launching QtCreator do:
-</P>
-
-<div class="code"><PRE>
-File-&gt;Open File or Project
-</PRE></div>
-
-<P>
-Then use the resulting file selection dialog to browse to and open this file:
-</P>
-
-<div class="code"><PRE>
-$HOME/dev/cpp/QGIS/CMakeLists.txt
-</PRE></div>
-
-<P>
-<IMG ALIGN="middle" SRC="images/image01.jpeg" BORDER="0" ALT="">
-</P>
-<P>
-Next you will be prompted for a build location. I create a specific build dir
-for QtCreator to work in under:
-</P>
-
-<div class="code"><PRE>
-$HOME/dev/cpp/QGIS/build-master-qtcreator
-</PRE></div>
-
-<P>
-Its probably a good idea to create separate build directories for different
-branches if you can afford the disk space.
-</P>
-<P>
-<IMG ALIGN="middle" SRC="images/image02.jpeg" BORDER="0" ALT="">
-</P>
-<P>
-Next you will be asked if you have any CMake build options to pass to CMake. We
-will tell CMake that we want a debug build by adding this option:
-</P>
-
-<div class="code"><PRE>
--DCMAKE_BUILD_TYPE=Debug
-</PRE></div>
-
-<P>
-<IMG ALIGN="middle" SRC="images/image03.jpeg" BORDER="0" ALT="">
-</P>
-<P>
-Thats the basics of it. When you complete the Wizard, QtCreator will start
+appropriate for your local system.</p>
+<p>On launching QtCreator do:</p>
+<p><em>File</em> -&gt; <em>Open File or Project</em></p>
+<p>Then use the resulting file selection dialog to browse to and open this file:</p>
+<pre class="code bash literal-block">
+<span class="name variable">$HOME</span>/dev/cpp/QGIS/CMakeLists.txt
+</pre>
+<img alt="images/image01.jpeg" src="images/image01.jpeg" />
+<p>Next you will be prompted for a build location. I create a specific build dir
+for QtCreator to work in under:</p>
+<pre class="code bash literal-block">
+<span class="name variable">$HOME</span>/dev/cpp/QGIS/build-master-qtcreator
+</pre>
+<p>Its probably a good idea to create separate build directories for different
+branches if you can afford the disk space.</p>
+<img alt="images/image02.jpeg" src="images/image02.jpeg" />
+<p>Next you will be asked if you have any CMake build options to pass to CMake. We
+will tell CMake that we want a debug build by adding this option:</p>
+<pre class="code bash literal-block">
+-DCMAKE_BUILD_TYPE<span class="operator">=</span>Debug
+</pre>
+<img alt="images/image03.jpeg" src="images/image03.jpeg" />
+<p>Thats the basics of it. When you complete the Wizard, QtCreator will start
 scanning the source tree for autocompletion support and do some other
 housekeeping stuff in the background. We want to tweak a few things before we
-start to build though.
-</P>
-
-<A NAME="toc57"></A>
-<H2>4.3. Setting up your build environment</H2>
-
-<P>
-Click on the 'Projects' icon on the left of the QtCreator window.
-</P>
-<P>
-<IMG ALIGN="middle" SRC="images/image04.jpeg" BORDER="0" ALT="">
-</P>
-<P>
-Select the build settings tab (normally active by default).
-</P>
-<P>
-<IMG ALIGN="middle" SRC="images/image05.jpeg" BORDER="0" ALT="">
-</P>
-<P>
-We now want to add a custom process step. Why? Because QGIS can currently only
+start to build though.</p>
+</div>
+<div class="section" id="setting-up-your-build-environment">
+<h2>Setting up your build environment</h2>
+<p>Click on the 'Projects' icon on the left of the QtCreator window.</p>
+<img alt="images/image04.jpeg" src="images/image04.jpeg" />
+<p>Select the build settings tab (normally active by default).</p>
+<img alt="images/image05.jpeg" src="images/image05.jpeg" />
+<p>We now want to add a custom process step. Why? Because QGIS can currently only
 run from an install directory, not its build directory, so we need to ensure
-that it is installed whenever we build it.  Under 'Build Steps', click on the
-'Add Build  Step' combo button and choose 'Custom Process Step'.
-</P>
-<P>
-<IMG ALIGN="middle" SRC="images/image06.jpeg" BORDER="0" ALT="">
-</P>
-<P>
-Now we set the following details:
-</P>
-
-<div class="code"><PRE>
-Enable custom process step [yes]
-Command: make
-Working directory: $HOME/dev/cpp/QGIS/build-master-qtcreator
-Command arguments: install
-</PRE></div>
-
-<P>
-<IMG ALIGN="middle" SRC="images/image07.jpeg" BORDER="0" ALT="">
-</P>
-<P>
-You are almost ready to build. Just one note: QtCreator will need write
-permissions on the install prefix.  By default (which I am using here) QGIS is
+that it is installed whenever we build it.Under 'Build Steps', click on the
+'Add BuildStep' combo button and choose 'Custom Process Step'.</p>
+<img alt="images/image06.jpeg" src="images/image06.jpeg" />
+<p>Now we set the following details:</p>
+<blockquote>
+<p>Enable custom process step: [yes]</p>
+<p>Command: make</p>
+<p>Working directory: $HOME/dev/cpp/QGIS/build-master-qtcreator</p>
+<p>Command arguments: install</p>
+</blockquote>
+<img alt="images/image07.jpeg" src="images/image07.jpeg" />
+<p>You are almost ready to build. Just one note: QtCreator will need write
+permissions on the install prefix.By default (which I am using here) QGIS is
 going to get installed to /usr/local. For my purposes on my development
-machine, I just gave myself write permissions to the /usr/local directory.
-</P>
-<P>
-To start the build, click that big hammer icon on the bottom left of the
-window.
-</P>
-<P>
-<IMG ALIGN="middle" SRC="images/image08.jpeg" BORDER="0" ALT="">
-</P>
-
-<A NAME="toc58"></A>
-<H2>4.4. Setting your run environment</H2>
-
-<P>
-As mentioned above, we cannot run QGIS from directly in the build directly, so
+machine, I just gave myself write permissions to the /usr/local directory.</p>
+<p>To start the build, click that big hammer icon on the bottom left of the
+window.</p>
+<img alt="images/image08.jpeg" src="images/image08.jpeg" />
+</div>
+<div class="section" id="setting-your-run-environment">
+<h2>Setting your run environment</h2>
+<p>As mentioned above, we cannot run QGIS from directly in the build directly, so
 we need to create a custom run target to tell QtCreator to run QGIS from the
-install dir (in my case /usr/local/). To do that, return to the projects
-configuration screen.
-</P>
-<P>
-<IMG ALIGN="middle" SRC="images/image04.jpeg" BORDER="0" ALT="">
-</P>
-<P>
-Now select the 'Run Settings' tab
-</P>
-<P>
-<IMG ALIGN="middle" SRC="images/image09.jpeg" BORDER="0" ALT="">
-</P>
-<P>
-We need to update the default run settings from using the 'qgis' run
-configuration to using a custom one.
-</P>
-<P>
-<IMG ALIGN="middle" SRC="images/image10.jpeg" BORDER="0" ALT="">
-</P>
-<P>
-Do do that, click the 'Add v' combo button next to the <B>Run</B> configuration
-combo and choose 'Custom Executable' from the top of the list.
-</P>
-<P>
-<IMG ALIGN="middle" SRC="images/image11.jpeg" BORDER="0" ALT="">
-</P>
-<P>
-Now in the properties area set the following details:
-</P>
-
-<div class="code"><PRE>
-Executable: /usr/local/bin/qgis
-Arguments :
-Working directory: $HOME
-Run in terminal: [no]
-Debugger: C++ [yes]
-          Qml [no]
-</PRE></div>
-
-<P>
-Then click the 'Rename' button and give your custom executable a meaning full
-name e.g. 'Installed QGIS'
-</P>
-<P>
-<IMG ALIGN="left" SRC="images/image12.jpeg" BORDER="0" ALT="">          
-</P>
-
-<A NAME="toc59"></A>
-<H2>4.5. Running and debugging</H2>
-
-<P>
-Now you are ready to run and debug QGIS. To set a break point, simply open a
-source file and click in the left column.
-</P>
-<P>
-<IMG ALIGN="middle" SRC="images/image14.jpeg" BORDER="0" ALT="">
-</P>
-<P>
-Now launch QGIS under the debugger by clicking the icon with a bug on it in the
-bottom left of the window.
-</P>
-<P>
-<IMG ALIGN="left" SRC="images/image13.jpeg" BORDER="0" ALT="">          
-</P>
-
-<A NAME="toc60"></A>
-<H1>5. HIG (Human Interface Guidelines)</H1>
-
-<P>
-In order for all graphical user interface elements to appear consistant and to
+install dir (in my case <code>/usr/local/</code>). To do that, return to the projects
+configuration screen.</p>
+<img alt="images/image04.jpeg" src="images/image04.jpeg" />
+<p>Now select the 'Run Settings' tab</p>
+<img alt="images/image09.jpeg" src="images/image09.jpeg" />
+<p>We need to update the default run settings from using the 'qgis' run
+configuration to using a custom one.</p>
+<img alt="images/image10.jpeg" src="images/image10.jpeg" />
+<p>Do do that, click the 'Add v' combo button next to the Run configuration
+combo and choose 'Custom Executable' from the top of the list.</p>
+<img alt="images/image11.jpeg" src="images/image11.jpeg" />
+<p>Now in the properties area set the following details:</p>
+<blockquote>
+<p>Executable: /usr/local/bin/qgis</p>
+<p>Arguments :</p>
+<p>Working directory: $HOME</p>
+<p>Run in terminal: [no]</p>
+<p>Debugger: C++ [yes]</p>
+<p>Qml [no]</p>
+</blockquote>
+<p>Then click the 'Rename' button and give your custom executable a meaning full
+name e.g. 'Installed QGIS'</p>
+<img alt="images/image12.jpeg" src="images/image12.jpeg" />
+</div>
+<div class="section" id="running-and-debugging">
+<h2>Running and debugging</h2>
+<p>Now you are ready to run and debug QGIS. To set a break point, simply open a
+source file and click in the left column.</p>
+<img alt="images/image14.jpeg" src="images/image14.jpeg" />
+<p>Now launch QGIS under the debugger by clicking the icon with a bug on it in the
+bottom left of the window.</p>
+<img alt="images/image13.jpeg" src="images/image13.jpeg" />
+</div>
+</div>
+<div class="section" id="hig-human-interface-guidelines">
+<h1>HIG (Human Interface Guidelines)</h1>
+<p>In order for all graphical user interface elements to appear consistant and to
 all the user to instinctively use dialogs, it is important that the following
-guidelines are followed in layout and design of GUIs.
-</P>
-
- <OL>
- <LI>Group related elements using group boxes:
-   Try to identify elements that can be grouped together and then use group
-   boxes with a label to identify the topic of that group.  Avoid using group
-   boxes with only a single widget / item inside.
- <LI>Capitalise first letter only in labels:
-   Labels (and group box labels) should be written as a phrase with leading
-   capital letter, and all remaining words written with lower case first letters 
- <LI>Do not end labels for widgets or group boxes with a colon:
-   Adding a colon causes visual noise and does not impart additional meaning,
-   so don't use them. An exception to this rule is when you have two labels next
-   to each other e.g.: Label1 <A HREF="Path:">Plugin</A> Label2 [/path/to/plugins]
- <LI>Keep harmful actions away from harmless ones:
-   If you have actions for 'delete', 'remove' etc, try to impose adequate space
-   between the harmful action and innocuous actions so that the users is less
-   likely to inadvertantly click on the harmful action.
- <LI>Always use a QButtonBox for 'OK', 'Cancel' etc buttons:
-   Using a button box will ensure that the order of 'OK' and 'Cancel' etc,
-   buttons is consistent with the operating system / locale / desktop
-   environment that the user is using.
- <LI>Tabs should not be nested. If you use tabs, follow the style of the
-   tabs used in QgsVectorLayerProperties / QgsProjectProperties etc.
-   i.e. tabs at top with icons at 22x22.
- <LI>Widget stacks should be avoided if at all possible. They cause problems with 
-   layouts and inexplicable (to the user) resizing of dialogs to accommodate 
-   widgets that are not visible.
- <LI>Try to avoid technical terms and rather use a laymans equivalent e.g. use
-   the word 'Transparency' rather than 'Alpha Channel' (contrived example),
-   'Text' instead of 'String' and so on.
- <LI>Use consistent iconography. If you need an icon or icon elements, please
-   contact Robert Szczepanek on the mailing list for assistance.
- <LI>Place long lists of widgets into scroll boxes. No dialog should exceed 580
-   pixels in height and 1000 pixels in width.
- <LI>Separate advanced options from basic ones. Novice users should be able to
-   quickly access the items needed for basic activities without needing to
-   concern themselves with complexity of advanced features. Advanced features
-   should either be located below a dividing line, or placed onto a separate tab.
- <LI>Don't add options for the sake of having lots of options. Strive to keep the
-   user interface minimalistic and use sensible defaults.
- <LI>If clicking a button will spawn a new dialog, an ellipsis (...) should be
-   suffixed to the button text.
- </OL>
-
-<A NAME="toc61"></A>
-<H1>6. Authors</H1>
-
-<UL>
-<LI>Tim Sutton (author and editor)
-<LI>Gary Sherman
-<LI>Marco Hugentobler
-</UL>
-
-</DIV>
-<!-- html code generated by txt2tags 2.6 (http://txt2tags.org) -->
-<!-- cmdline: txt2tags -o/home/fischer/src/qgis/debian/build/doc/CODING.html -t html /home/fischer/src/qgis/doc/CODING.t2t -->
-</BODY></HTML>
+guidelines are followed in layout and design of GUIs.</p>
+<ol class="arabic simple">
+<li>Group related elements using group boxes:
+Try to identify elements that can be grouped together and then use group
+boxes with a label to identify the topic of that group.Avoid using group
+boxes with only a single widget / item inside.</li>
+<li>Capitalise first letter only in labels:
+Labels (and group box labels) should be written as a phrase with leading
+capital letter, and all remaining words written with lower case first letters</li>
+<li>Do not end labels for widgets or group boxes with a colon:
+Adding a colon causes visual noise and does not impart additional meaning,
+so don't use them. An exception to this rule is when you have two labels next
+to each other e.g.: Label1 Plugin (Path:) Label2 [/path/to/plugins]</li>
+<li>Keep harmful actions away from harmless ones:
+If you have actions for 'delete', 'remove' etc, try to impose adequate space
+between the harmful action and innocuous actions so that the users is less
+likely to inadvertantly click on the harmful action.</li>
+<li>Always use a QButtonBox for 'OK', 'Cancel' etc buttons:
+Using a button box will ensure that the order of 'OK' and 'Cancel' etc,
+buttons is consistent with the operating system / locale / desktop
+environment that the user is using.</li>
+<li>Tabs should not be nested. If you use tabs, follow the style of the
+tabs used in QgsVectorLayerProperties / QgsProjectProperties etc.
+i.e. tabs at top with icons at 22x22.</li>
+<li>Widget stacks should be avoided if at all possible. They cause problems with
+layouts and inexplicable (to the user) resizing of dialogs to accommodate
+widgets that are not visible.</li>
+<li>Try to avoid technical terms and rather use a laymans equivalent e.g. use
+the word 'Transparency' rather than 'Alpha Channel' (contrived example),
+'Text' instead of 'String' and so on.</li>
+<li>Use consistent iconography. If you need an icon or icon elements, please
+contact Robert Szczepanek on the mailing list for assistance.</li>
+<li>Place long lists of widgets into scroll boxes. No dialog should exceed 580
+pixels in height and 1000 pixels in width.</li>
+<li>Separate advanced options from basic ones. Novice users should be able to
+quickly access the items needed for basic activities without needing to
+concern themselves with complexity of advanced features. Advanced features
+should either be located below a dividing line, or placed onto a separate tab.</li>
+<li>Don't add options for the sake of having lots of options. Strive to keep the
+user interface minimalistic and use sensible defaults.</li>
+<li>If clicking a button will spawn a new dialog, an ellipsis (...) should be
+suffixed to the button text.</li>
+</ol>
+</div>
+<div class="section" id="authors">
+<h1>Authors</h1>
+<ul class="simple">
+<li>Tim Sutton (author and editor)</li>
+<li>Gary Sherman</li>
+<li>Marco Hugentobler</li>
+<li>Matthias Kuhn</li>
+</ul>
+</div>
+</div>
+</body>
+</html>
