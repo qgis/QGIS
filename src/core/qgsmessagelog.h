@@ -30,7 +30,7 @@
 */
 class CORE_EXPORT QgsMessageLog : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
 
   public:
     static QgsMessageLog *instance();
@@ -67,7 +67,7 @@ be the right choice for apps without GUI.
 */
 class CORE_EXPORT QgsMessageLogConsole : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
 
   public:
     QgsMessageLogConsole();

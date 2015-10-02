@@ -88,7 +88,7 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
   if ( request.filterType() == QgsFeatureRequest::FilterFid )
   {
     QgsDebugMsg( "Configuring for returning single id" );
-    if ( request.filterRect().isNull() || ( !request.filterRect().isNull() && mFeatureIds.contains( request.filterFid() ) ) )
+    if ( request.filterRect().isNull() || mFeatureIds.contains( request.filterFid() ) )
     {
       mFeatureIds = QList<QgsFeatureId>() << request.filterFid();
     }

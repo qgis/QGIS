@@ -64,7 +64,7 @@ class GUI_EXPORT QgsCategorizedSymbolRendererV2Model : public QAbstractItemModel
 class QgsCategorizedSymbolRendererV2ViewStyle: public QProxyStyle
 {
   public:
-    QgsCategorizedSymbolRendererV2ViewStyle( QStyle* style = 0 );
+    explicit QgsCategorizedSymbolRendererV2ViewStyle( QStyle* style = 0 );
 
     void drawPrimitive( PrimitiveElement element, const QStyleOption * option, QPainter * painter, const QWidget * widget = 0 ) const override;
 };

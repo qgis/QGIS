@@ -115,12 +115,12 @@ void DataDefinedRestorer::restore()
 class SymbolLayerItem : public QStandardItem
 {
   public:
-    SymbolLayerItem( QgsSymbolLayerV2* layer )
+    explicit SymbolLayerItem( QgsSymbolLayerV2* layer )
     {
       setLayer( layer );
     }
 
-    SymbolLayerItem( QgsSymbolV2* symbol )
+    explicit SymbolLayerItem( QgsSymbolV2* symbol )
     {
       setSymbol( symbol );
     }

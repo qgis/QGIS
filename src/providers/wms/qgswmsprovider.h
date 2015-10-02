@@ -82,9 +82,9 @@ class QgsWmsLegendDownloadHandler : public QgsImageFetcher
 
 class QgsCachedImageFetcher: public QgsImageFetcher
 {
-    Q_OBJECT;
+    Q_OBJECT
   public:
-    QgsCachedImageFetcher( const QImage& img );
+    explicit QgsCachedImageFetcher( const QImage& img );
     virtual ~QgsCachedImageFetcher();
     virtual void start() override;
   private:

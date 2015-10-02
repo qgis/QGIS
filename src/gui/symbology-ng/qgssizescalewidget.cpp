@@ -36,7 +36,7 @@
 class ItemDelegate : public QItemDelegate
 {
   public:
-    ItemDelegate( QStandardItemModel* model ): mModel( model ) {}
+    explicit ItemDelegate( QStandardItemModel* model ) : mModel( model ) {}
 
     QSize sizeHint( const QStyleOptionViewItem& /*option*/, const QModelIndex & index ) const override
     {

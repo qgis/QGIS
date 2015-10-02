@@ -27,7 +27,7 @@
 class SpinBoxDelegate : public QItemDelegate
 {
   public:
-    SpinBoxDelegate( QObject *parent = 0 ) : QItemDelegate( parent ) {}
+    explicit SpinBoxDelegate( QObject *parent = 0 ) : QItemDelegate( parent ) {}
 
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem & /*option*/, const QModelIndex &/*index*/ ) const override
     {

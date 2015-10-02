@@ -216,7 +216,7 @@ private:
 
 struct HomeControlHandler : public NavigationControlHandler
 {
-  HomeControlHandler( osgEarth::Util::EarthManipulator* manip ) : _manip( manip ) { }
+  explicit HomeControlHandler( osgEarth::Util::EarthManipulator* manip ) : _manip( manip ) { }
   virtual void onClick( Control* /*control*/, int /*mouseButtonMask*/, const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa ) override
   {
     _manip->home( ea, aa );
@@ -227,7 +227,7 @@ private:
 
 struct RefreshControlHandler : public ControlEventHandler
 {
-  RefreshControlHandler( GlobePlugin* globe ) : mGlobe( globe ) { }
+  explicit RefreshControlHandler( GlobePlugin* globe ) : mGlobe( globe ) { }
   virtual void onClick( Control* /*control*/, int /*mouseButtonMask*/ ) override
   {
     mGlobe->imageLayersChanged();
@@ -238,7 +238,7 @@ private:
 
 struct SyncExtentControlHandler : public ControlEventHandler
 {
-  SyncExtentControlHandler( GlobePlugin* globe ) : mGlobe( globe ) { }
+  explicit SyncExtentControlHandler( GlobePlugin* globe ) : mGlobe( globe ) { }
   virtual void onClick( Control* /*control*/, int /*mouseButtonMask*/ ) override
   {
     mGlobe->syncExtent();

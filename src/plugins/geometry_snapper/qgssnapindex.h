@@ -44,13 +44,13 @@ class QgsSnapIndex
         virtual QgsPointV2 getSnapPoint( const QgsPointV2& p ) const = 0;
 
       protected:
-        SnapItem( SnapType _type ) : type( _type ) {}
+        explicit SnapItem( SnapType _type ) : type( _type ) {}
     };
 
     class PointSnapItem : public QgsSnapIndex::SnapItem
     {
       public:
-        PointSnapItem( const CoordIdx* _idx );
+        explicit PointSnapItem( const CoordIdx* _idx );
         QgsPointV2 getSnapPoint( const QgsPointV2 &/*p*/ ) const override;
         const CoordIdx* idx;
     };

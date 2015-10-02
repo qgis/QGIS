@@ -27,7 +27,7 @@ class QgsWFSFeatureSource : public QObject, public QgsAbstractFeatureSource
     Q_OBJECT
 
   public:
-    QgsWFSFeatureSource( const QgsWFSProvider* p );
+    explicit QgsWFSFeatureSource( const QgsWFSProvider* p );
     ~QgsWFSFeatureSource();
 
     QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;

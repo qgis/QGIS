@@ -154,7 +154,7 @@ QString QgsNewSpatialiteLayerDialog::selectedType() const
     return "MULTIPOLYGON";
   }
 
-  Q_ASSERT( "no type selected" == 0 );
+  Q_ASSERT( !"no type selected" );
   return "";
 }
 

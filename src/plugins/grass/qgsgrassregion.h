@@ -133,7 +133,7 @@ class QgsGrassRegionEdit : public QgsMapTool
     Q_OBJECT
 
   public:
-    QgsGrassRegionEdit( QgsMapCanvas* );
+    explicit QgsGrassRegionEdit( QgsMapCanvas* );
 
     ~QgsGrassRegionEdit();
 

@@ -69,7 +69,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * Constructor of the vector provider
      * @param uri  uniform resource locator (URI) for a dataset
      */
-    QgsSpatiaLiteProvider( QString const &uri = "" );
+    explicit QgsSpatiaLiteProvider( QString const &uri = "" );
 
     //! Destructor
     virtual ~ QgsSpatiaLiteProvider();
@@ -467,7 +467,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 
     struct SLException
     {
-      SLException( char *msg ) : errMsg( msg )
+      explicit SLException( char *msg ) : errMsg( msg )
       {
       }
 

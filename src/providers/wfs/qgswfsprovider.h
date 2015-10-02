@@ -78,7 +78,7 @@ class QgsWFSProvider : public QgsVectorDataProvider
       FILE  //reads from a file on disk
     };
 
-    QgsWFSProvider( const QString& uri );
+    explicit QgsWFSProvider( const QString& uri );
     ~QgsWFSProvider();
 
     /* Inherited from QgsVectorDataProvider */

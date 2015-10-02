@@ -118,7 +118,7 @@ void QgsMapToolShowHideLabels::showHideLabels( QMouseEvent * e )
     return;
   }
 
-  bool doHide = e->modifiers() & Qt::ShiftModifier ? true : false;
+  bool doHide = e->modifiers() & Qt::ShiftModifier;
 
   QgsFeatureIds selectedFeatIds;
 

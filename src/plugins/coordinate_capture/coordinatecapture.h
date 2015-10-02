@@ -79,7 +79,7 @@ class CoordinateCapture: public QObject, public QgisPlugin
     * QGIS when it attempts to instantiate the plugin.
     * @param theInterface Pointer to the QgisInterface object.
      */
-    CoordinateCapture( QgisInterface * theInterface );
+    explicit CoordinateCapture( QgisInterface * theInterface );
     //! Destructor
     virtual ~CoordinateCapture();
 

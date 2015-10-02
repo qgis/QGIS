@@ -1925,7 +1925,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
   if ( dataDefinedIsActive( QgsPalLayerSettings::Show ) )
   {
     bool showLabel = dataDefinedEvaluate( QgsPalLayerSettings::Show, exprVal, &context.expressionContext(), true );
-    showLabel = exprVal.toBool();
+    showLabel &= exprVal.toBool();
     QgsDebugMsgLevel( QString( "exprVal Show:%1" ).arg( showLabel ? "true" : "false" ), 4 );
     if ( !showLabel )
     {
@@ -2230,7 +2230,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
   // CLIP the geometry if it is bigger than the extent
   // don't clip if centroid is requested for whole feature
   bool doClip = false;
-  if ( !centroidPoly || ( centroidPoly && !wholeCentroid ) )
+  if ( !centroidPoly || !wholeCentroid )
   {
     doClip = true;
   }

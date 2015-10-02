@@ -47,7 +47,7 @@ class dxf2shpConverter: public QObject, public QgisPlugin
      * QGIS when it attempts to instantiate the plugin.
      * @param theInterface Pointer to the QgisInterface object.
      */
-    dxf2shpConverter( QgisInterface *theInterface );
+    explicit dxf2shpConverter( QgisInterface *theInterface );
     //! Destructor
     virtual ~dxf2shpConverter();
 

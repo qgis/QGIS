@@ -88,7 +88,7 @@ class TestQgsExpressionContext : public QObject
     class ModifiableFunction : public QgsScopedExpressionFunction
     {
       public:
-        ModifiableFunction( int* v )
+        explicit ModifiableFunction( int* v )
             : QgsScopedExpressionFunction( "test_function", 1, "test" )
             , mVal( v )
         {}
@@ -529,7 +529,6 @@ void TestQgsExpressionContext::projectScope()
   projectScope = QgsExpressionContextUtils::projectScope();
   QCOMPARE( projectScope->variable( "project_title" ).toString(), QString( "test project" ) );
   delete projectScope;
-  projectScope = 0;
 
   //test setProjectVariables
   QgsStringMap vars;

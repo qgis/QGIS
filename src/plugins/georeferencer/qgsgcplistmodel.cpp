@@ -26,7 +26,7 @@ using namespace std;
 class QgsStandardItem : public QStandardItem
 {
   public:
-    QgsStandardItem( QString text ) : QStandardItem( text )
+    explicit QgsStandardItem( QString text ) : QStandardItem( text )
     {
       // In addition to the DisplayRole, also set the user role, which is used for sorting.
       // This is needed for numerical sorting to work correctly (otherwise sorting is lexicographic).
@@ -34,13 +34,13 @@ class QgsStandardItem : public QStandardItem
       setTextAlignment( Qt::AlignRight );
     }
 
-    QgsStandardItem( int value ) : QStandardItem( QString::number( value ) )
+    explicit QgsStandardItem( int value ) : QStandardItem( QString::number( value ) )
     {
       setData( QVariant( value ), Qt::UserRole );
       setTextAlignment( Qt::AlignCenter );
     }
 
-    QgsStandardItem( double value ) : QStandardItem( QString::number( value, 'f', 4 ) )
+    explicit QgsStandardItem( double value ) : QStandardItem( QString::number( value, 'f', 4 ) )
     {
       setData( QVariant( value ), Qt::UserRole );
       //show the full precision when editing points

@@ -52,7 +52,7 @@ class QgsSettingsTree : public QTreeWidget
     Q_OBJECT
 
   public:
-    QgsSettingsTree( QWidget *parent = 0 );
+    explicit QgsSettingsTree( QWidget *parent = 0 );
 
     void setSettingsObject( QSettings *settings );
     QSize sizeHint() const override;

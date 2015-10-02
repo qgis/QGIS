@@ -28,7 +28,7 @@ class QgsGeometryCheckerDialog;
 class QgsGeometryCheckerPlugin : public QObject, public QgisPlugin
 {
   public:
-    QgsGeometryCheckerPlugin( QgisInterface* iface );
+    explicit QgsGeometryCheckerPlugin( QgisInterface* iface );
     void initGui() override;
     void unload() override;
 

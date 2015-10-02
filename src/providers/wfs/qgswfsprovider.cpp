@@ -995,7 +995,6 @@ int QgsWFSProvider::guessAttributesFromFile( const QString& uri, QString& geomet
     return 2; //xml file not readable or not valid
   }
 
-
   //find gmlCollection element
   QDomElement featureCollectionElement = gmlDoc.documentElement();
 
@@ -1015,7 +1014,6 @@ int QgsWFSProvider::guessAttributesFromFile( const QString& uri, QString& geomet
   QString attributeText;
   QDomElement attributeChildElement;
   QString attributeChildLocalName;
-  bool foundGeometryAttribute = false;
 
   while ( !attributeNode.isNull() )//loop over attributes
   {
@@ -1043,10 +1041,7 @@ int QgsWFSProvider::guessAttributesFromFile( const QString& uri, QString& geomet
     attributeNode = attributeNode.nextSibling();
   }
 
-  if ( !foundGeometryAttribute )
-  {
-    geomType = QGis::WKBNoGeometry;
-  }
+  geomType = QGis::WKBNoGeometry;
 
   return 0;
 }

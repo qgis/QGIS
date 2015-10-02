@@ -1583,7 +1583,7 @@ bool QgsGraduatedSymbolRendererV2::rangesOverlap() const
     return true;
 
   double prevMax = ( *it ).upperValue();
-  it++;
+  ++it;
 
   for ( ; it != sortedRanges.constEnd(); ++it )
   {
@@ -1608,7 +1608,7 @@ bool QgsGraduatedSymbolRendererV2::rangesHaveGaps() const
     return false;
 
   double prevMax = ( *it ).upperValue();
-  it++;
+  ++it;
 
   for ( ; it != sortedRanges.constEnd(); ++it )
   {

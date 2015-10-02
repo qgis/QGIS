@@ -30,7 +30,7 @@ class QgsComposerNameDelegate : public QItemDelegate
     Q_OBJECT
 
   public:
-    QgsComposerNameDelegate( QObject *parent = 0 );
+    explicit QgsComposerNameDelegate( QObject *parent = 0 );
 
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option,
                            const QModelIndex &index ) const override;

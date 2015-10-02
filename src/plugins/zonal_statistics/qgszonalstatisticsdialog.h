@@ -29,7 +29,7 @@ class QgsZonalStatisticsDialog: public QDialog, private Ui::QgsZonalStatisticsDi
 {
     Q_OBJECT
   public:
-    QgsZonalStatisticsDialog( QgisInterface* iface );
+    explicit QgsZonalStatisticsDialog( QgisInterface* iface );
     ~QgsZonalStatisticsDialog();
 
     QString rasterFilePath() const;

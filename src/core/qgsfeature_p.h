@@ -35,7 +35,7 @@ class QgsFeaturePrivate : public QSharedData
 {
   public:
 
-    QgsFeaturePrivate( QgsFeatureId id )
+    explicit QgsFeaturePrivate( QgsFeatureId id )
         : fid( id )
         , geometry( 0 )
         , ownsGeometry( false )

@@ -32,7 +32,7 @@ class CoordinateCaptureMapTool : public QgsMapTool
     Q_OBJECT
 
   public:
-    CoordinateCaptureMapTool( QgsMapCanvas* thepCanvas );
+    explicit CoordinateCaptureMapTool( QgsMapCanvas* thepCanvas );
 
     ~CoordinateCaptureMapTool();
 

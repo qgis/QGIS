@@ -146,7 +146,7 @@ double QgsComposerUtils::snappedAngle( const double angle )
   }
 }
 
-QRectF QgsComposerUtils::largestRotatedRectWithinBounds( const QRectF originalRect, const QRectF boundsRect, const double rotation )
+QRectF QgsComposerUtils::largestRotatedRectWithinBounds( const QRectF &originalRect, const QRectF &boundsRect, const double rotation )
 {
   double originalWidth = originalRect.width();
   double originalHeight = originalRect.height();

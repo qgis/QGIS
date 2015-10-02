@@ -15,7 +15,7 @@ class QgsGeometryHoleCheck : public QgsGeometryCheck
     Q_OBJECT
 
   public:
-    QgsGeometryHoleCheck( QgsFeaturePool* featurePool )
+    explicit QgsGeometryHoleCheck( QgsFeaturePool* featurePool )
         : QgsGeometryCheck( FeatureCheck, featurePool ) {}
     void collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList &messages, QAtomicInt* progressCounter = 0, const QgsFeatureIds& ids = QgsFeatureIds() ) const override;
     void fixError( QgsGeometryCheckError* error, int method, int mergeAttributeIndex, Changes& changes ) const override;

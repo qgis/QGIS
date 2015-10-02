@@ -150,7 +150,7 @@ struct QgsPostgresLayerProperty
 class QgsPostgresResult
 {
   public:
-    QgsPostgresResult( PGresult *theRes = 0 ) : mRes( theRes ) {}
+    explicit QgsPostgresResult( PGresult *theRes = 0 ) : mRes( theRes ) {}
     ~QgsPostgresResult();
 
     QgsPostgresResult &operator=( PGresult *theRes );

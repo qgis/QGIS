@@ -92,7 +92,10 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeRaster( const QgsRast
     QgsDebugMsg( "iface->srcInput() == 0" );
     return SourceProviderError;
   }
-  QgsDebugMsg( QString( "srcInput = %1" ).arg( typeid( *( iface->srcInput() ) ).name() ) );
+#ifdef QGISDEBUG
+  const QgsRasterInterface &srcInput = *iface->srcInput();
+  QgsDebugMsg( QString( "srcInput = %1" ).arg( typeid( srcInput ).name() ) );
+#endif
 
   mProgressDialog = progressDialog;
 

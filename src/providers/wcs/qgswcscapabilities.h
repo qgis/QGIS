@@ -89,7 +89,7 @@ class QgsWcsCapabilities : public QObject
     *                otherwise we contact the host directly.
     *
     */
-    QgsWcsCapabilities( QgsDataSourceURI const & theUri );
+    explicit QgsWcsCapabilities( QgsDataSourceURI const & theUri );
     QgsWcsCapabilities();
 
     //! Destructor

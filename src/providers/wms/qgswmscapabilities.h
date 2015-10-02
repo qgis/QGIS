@@ -696,7 +696,7 @@ class QgsWmsCapabilitiesDownload : public QObject
     Q_OBJECT
 
   public:
-    QgsWmsCapabilitiesDownload( QObject* parent = 0 );
+    explicit QgsWmsCapabilitiesDownload( QObject* parent = 0 );
 
     QgsWmsCapabilitiesDownload( const QString& baseUrl, const QgsWmsAuthorization& auth, QObject* parent = 0 );
 

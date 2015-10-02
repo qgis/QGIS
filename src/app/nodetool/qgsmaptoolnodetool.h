@@ -31,7 +31,7 @@ class QgsMapToolNodeTool: public QgsMapToolEdit
 {
     Q_OBJECT
   public:
-    QgsMapToolNodeTool( QgsMapCanvas* canvas );
+    explicit QgsMapToolNodeTool( QgsMapCanvas* canvas );
     virtual ~QgsMapToolNodeTool();
 
     void canvasMoveEvent( QgsMapMouseEvent* e ) override;

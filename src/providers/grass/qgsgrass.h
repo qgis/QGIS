@@ -163,7 +163,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     struct Exception : public std::runtime_error
     {
       //Exception( const std::string &msg ) : std::runtime_error( msg ) {}
-      Exception( const QString &msg ) : std::runtime_error( msg.toUtf8().constData() ) {}
+      explicit Exception( const QString &msg ) : std::runtime_error( msg.toUtf8().constData() ) {}
     };
 
     struct Color

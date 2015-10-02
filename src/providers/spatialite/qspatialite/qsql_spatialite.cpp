@@ -113,7 +113,7 @@ public:
 class QSpatiaLiteResultPrivate
 {
 public:
-    QSpatiaLiteResultPrivate(QSpatiaLiteResult *res);
+    explicit QSpatiaLiteResultPrivate(QSpatiaLiteResult *res);
     void cleanup();
     bool fetchNext(QSqlCachedResult::ValueCache &values, int idx, bool initialFetch);
     // initializes the recordInfo and the cache

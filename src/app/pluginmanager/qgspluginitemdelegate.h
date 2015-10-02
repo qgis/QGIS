@@ -26,7 +26,7 @@ class QgsPluginItemDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
   public:
-    QgsPluginItemDelegate( QObject * parent = 0 );
+    explicit QgsPluginItemDelegate( QObject * parent = 0 );
     QSize sizeHint( const QStyleOptionViewItem & theOption, const QModelIndex & theIndex ) const override;
     void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 };

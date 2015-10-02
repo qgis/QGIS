@@ -27,7 +27,7 @@ class QgsOgrAbstractGeometrySimplifier;
 class QgsOgrFeatureSource : public QgsAbstractFeatureSource
 {
   public:
-    QgsOgrFeatureSource( const QgsOgrProvider* p );
+    explicit QgsOgrFeatureSource( const QgsOgrProvider* p );
     ~QgsOgrFeatureSource();
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;

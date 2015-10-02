@@ -152,8 +152,8 @@ void QgsAuthImportCertDialog::validateCertificates()
   }
 
   valid = ( certssize > 0
-            && ( allowinvalid || ( !allowinvalid && certssize == validcerts ) )
-            && ( !filterCAs || ( filterCAs && nixcerts.size() < certssize ) ) );
+            && ( allowinvalid || certssize == validcerts )
+            && ( !filterCAs || nixcerts.size() < certssize ) );
 
   if ( nixcerts.size() > 0 )
   {

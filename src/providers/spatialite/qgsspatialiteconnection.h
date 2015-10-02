@@ -27,10 +27,10 @@ extern "C"
 
 class QgsSpatiaLiteConnection : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
   public:
     /** Construct a connection. Name can be either stored connection name or a path to the database file */
-    QgsSpatiaLiteConnection( QString name );
+    explicit QgsSpatiaLiteConnection( QString name );
 
     QString path() { return mPath; }
 

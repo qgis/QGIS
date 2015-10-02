@@ -1401,6 +1401,7 @@ QgsVectorLayer* QgsSLDConfigParser::contourLayerFromRaster( const QDomElement& u
   hSrcDS = GDALOpen( TO8( rasterLayer->source() ), GA_ReadOnly );
   if ( hSrcDS == NULL )
   {
+    delete [] adfFixedLevels;
     throw QgsMapServiceException( "LayerNotDefined", "Operation request is for a file not available on the server." );
   }
 
@@ -1437,12 +1438,14 @@ QgsVectorLayer* QgsSLDConfigParser::contourLayerFromRaster( const QDomElement& u
   if ( hDriver == NULL )
   {
     //fprintf( FCGI_stderr, "Unable to find format driver named 'ESRI Shapefile'.\n" );
+    delete [] adfFixedLevels;
     throw QgsMapServiceException( "LayerNotDefined", "Operation request is for a file not available on the server." );
   }
 
   hDS = OGR_Dr_CreateDataSource( hDriver, TO8( tmpFileName ), NULL );
   if ( hDS == NULL )
   {
+    delete [] adfFixedLevels;
     throw QgsMapServiceException( "LayerNotDefined", "Operation request cannot create data source." );
   }
 
@@ -1451,6 +1454,7 @@ QgsVectorLayer* QgsSLDConfigParser::contourLayerFromRaster( const QDomElement& u
                                NULL );
   if ( hLayer == NULL )
   {
+    delete [] adfFixedLevels;
     throw QgsMapServiceException( "LayerNotDefined", "Operation request could not create contour file." );
   }
 

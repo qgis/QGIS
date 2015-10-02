@@ -30,7 +30,7 @@ class QgsRasterTerrainAnalysisPlugin: public QObject, public QgisPlugin
 {
     Q_OBJECT
   public:
-    QgsRasterTerrainAnalysisPlugin( QgisInterface* iface );
+    explicit QgsRasterTerrainAnalysisPlugin( QgisInterface* iface );
     ~QgsRasterTerrainAnalysisPlugin();
 
     /** Initialize connection to GUI*/

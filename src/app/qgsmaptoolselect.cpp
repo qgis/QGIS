@@ -51,7 +51,7 @@ void QgsMapToolSelect::canvasReleaseEvent( QgsMapMouseEvent* e )
   QgsMapToolSelectUtils::expandSelectRectangle( selectRect, vlayer, e->pos() );
   QgsMapToolSelectUtils::setRubberBand( mCanvas, selectRect, &rubberBand );
   QgsGeometry* selectGeom = rubberBand.asGeometry();
-  bool doDifference = e->modifiers() & Qt::ControlModifier ? true : false;
+  bool doDifference = e->modifiers() & Qt::ControlModifier;
   QgsMapToolSelectUtils::setSelectFeatures( mCanvas, selectGeom, false, doDifference, true );
   delete selectGeom;
   rubberBand.reset( QGis::Polygon );

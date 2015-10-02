@@ -75,7 +75,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
      * @param uri String containing the required parameters to connect to the database
      * and query the table.
      */
-    QgsOracleProvider( QString const &uri = "" );
+    explicit QgsOracleProvider( QString const &uri = "" );
 
     //! Destructor
     virtual ~QgsOracleProvider();

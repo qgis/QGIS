@@ -36,10 +36,10 @@ class QgisApp;
 
 class QgsMssqlSourceSelectDelegate : public QItemDelegate
 {
-    Q_OBJECT;
+    Q_OBJECT
 
   public:
-    QgsMssqlSourceSelectDelegate( QObject *parent = NULL )
+    explicit QgsMssqlSourceSelectDelegate( QObject *parent = NULL )
         : QItemDelegate( parent )
     {}
 

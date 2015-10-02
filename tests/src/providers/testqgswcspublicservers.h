@@ -30,7 +30,7 @@
  */
 class TestQgsWcsPublicServers: public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
   public:
     // Known problem
     struct Issue

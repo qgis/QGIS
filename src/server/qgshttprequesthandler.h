@@ -32,7 +32,7 @@ It provides a method to set data to the client*/
 class QgsHttpRequestHandler: public QgsRequestHandler
 {
   public:
-    QgsHttpRequestHandler( const bool captureOutput /*= FALSE*/ );
+    explicit QgsHttpRequestHandler( const bool captureOutput /*= FALSE*/ );
     ~QgsHttpRequestHandler();
 
     virtual void setGetMapResponse( const QString& service, QImage* img, int imageQuality ) override;

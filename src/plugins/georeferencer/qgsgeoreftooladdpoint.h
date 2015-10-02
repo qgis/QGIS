@@ -28,7 +28,7 @@ class QgsGeorefToolAddPoint : public QgsMapToolEmitPoint
     Q_OBJECT
 
   public:
-    QgsGeorefToolAddPoint( QgsMapCanvas* canvas );
+    explicit QgsGeorefToolAddPoint( QgsMapCanvas* canvas );
 
     // Mouse events for overriding
     void canvasPressEvent( QgsMapMouseEvent* e ) override;

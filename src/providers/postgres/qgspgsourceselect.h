@@ -37,10 +37,10 @@ class QgsPgSourceSelect;
 
 class QgsPgSourceSelectDelegate : public QItemDelegate
 {
-    Q_OBJECT;
+    Q_OBJECT
 
   public:
-    QgsPgSourceSelectDelegate( QObject *parent = NULL )
+    explicit QgsPgSourceSelectDelegate( QObject *parent = NULL )
         : QItemDelegate( parent )
     {}
 

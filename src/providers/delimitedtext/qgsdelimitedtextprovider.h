@@ -75,7 +75,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
       GeomAsWkt
     };
 
-    QgsDelimitedTextProvider( QString uri = QString() );
+    explicit QgsDelimitedTextProvider( QString uri = QString() );
 
     virtual ~QgsDelimitedTextProvider();
 

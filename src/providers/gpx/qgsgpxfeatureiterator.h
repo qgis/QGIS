@@ -26,7 +26,7 @@ class QgsGPXProvider;
 class QgsGPXFeatureSource : public QgsAbstractFeatureSource
 {
   public:
-    QgsGPXFeatureSource( const QgsGPXProvider* p );
+    explicit QgsGPXFeatureSource( const QgsGPXProvider* p );
     ~QgsGPXFeatureSource();
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;

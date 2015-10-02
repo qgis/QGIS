@@ -49,7 +49,7 @@ items on the tree view although the drop is actually managed by qgis app.
 class QgsDockBrowserTreeView : public QgsBrowserTreeView
 {
   public:
-    QgsDockBrowserTreeView( QWidget* parent ) : QgsBrowserTreeView( parent )
+    explicit QgsDockBrowserTreeView( QWidget* parent ) : QgsBrowserTreeView( parent )
     {
       setDragDropMode( QTreeView::DragDrop ); // sets also acceptDrops + dragEnabled
       setSelectionMode( QAbstractItemView::ExtendedSelection );
@@ -91,8 +91,7 @@ Utility class for filtering browser items
 class QgsBrowserTreeFilterProxyModel : public QSortFilterProxyModel
 {
   public:
-
-    QgsBrowserTreeFilterProxyModel( QObject *parent )
+    explicit QgsBrowserTreeFilterProxyModel( QObject *parent )
         : QSortFilterProxyModel( parent ), mModel( 0 )
         , mFilter( "" ), mPatternSyntax( "normal" ), mCaseSensitivity( Qt::CaseInsensitive )
     {

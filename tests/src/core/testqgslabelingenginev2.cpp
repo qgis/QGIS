@@ -28,6 +28,8 @@
 class TestQgsLabelingEngineV2 : public QObject
 {
     Q_OBJECT
+  public:
+    TestQgsLabelingEngineV2() : vl( 0 ) {}
   private slots:
     void initTestCase();
     void cleanupTestCase();

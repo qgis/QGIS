@@ -49,8 +49,7 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     Q_OBJECT
 
   public:
-
-    QgsMssqlProvider( QString uri = QString() );
+    explicit QgsMssqlProvider( QString uri = QString() );
 
     virtual ~QgsMssqlProvider();
 

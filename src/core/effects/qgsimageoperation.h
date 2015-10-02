@@ -210,7 +210,7 @@ class CORE_EXPORT QgsImageOperation
     template <class PixelOperation>
     struct ProcessBlockUsingPixelOperation
     {
-      ProcessBlockUsingPixelOperation( PixelOperation& operation )
+      explicit ProcessBlockUsingPixelOperation( PixelOperation& operation )
           : mOperation( operation ) { }
 
       typedef void result_type;
@@ -236,7 +236,7 @@ class CORE_EXPORT QgsImageOperation
     template <class LineOperation>
     struct ProcessBlockUsingLineOperation
     {
-      ProcessBlockUsingLineOperation( LineOperation& operation )
+      explicit ProcessBlockUsingLineOperation( LineOperation& operation )
           : mOperation( operation ) { }
 
       typedef void result_type;
@@ -273,7 +273,7 @@ class CORE_EXPORT QgsImageOperation
     class GrayscalePixelOperation
     {
       public:
-        GrayscalePixelOperation( const GrayscaleMode mode )
+        explicit GrayscalePixelOperation( const GrayscaleMode mode )
             : mMode( mode )
         {  }
 
@@ -331,7 +331,7 @@ class CORE_EXPORT QgsImageOperation
     class MultiplyOpacityPixelOperation
     {
       public:
-        MultiplyOpacityPixelOperation( const double factor )
+        explicit MultiplyOpacityPixelOperation( const double factor )
             : mFactor( factor )
         { }
 
@@ -445,7 +445,7 @@ class CORE_EXPORT QgsImageOperation
     class FlipLineOperation
     {
       public:
-        FlipLineOperation( LineOperationDirection direction )
+        explicit FlipLineOperation( LineOperationDirection direction )
             : mDirection( direction )
         { }
 

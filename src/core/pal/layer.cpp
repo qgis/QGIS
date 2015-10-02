@@ -256,7 +256,7 @@ namespace pal
         // stop checking for other connected parts
         return *p;
       }
-      p++;
+      ++p;
     }
 
     return NULL; // no connected part found...

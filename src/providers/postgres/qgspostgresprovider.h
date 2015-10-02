@@ -71,7 +71,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      * @param uri String containing the required parameters to connect to the database
      * and query the table.
      */
-    QgsPostgresProvider( QString const &uri = "" );
+    explicit QgsPostgresProvider( QString const &uri = "" );
 
     //! Destructor
     virtual ~QgsPostgresProvider();
@@ -432,7 +432,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     struct PGException
     {
-      PGException( QgsPostgresResult &r )
+      explicit PGException( QgsPostgresResult &r )
           : mWhat( r.PQresultErrorMessage() )
       {}
 

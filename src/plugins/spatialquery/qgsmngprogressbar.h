@@ -31,7 +31,7 @@ class MngProgressBar
     * \brief Constructor for a MngProgressBar.
     * \param pb Pointer to the MngProgressBar object.
     */
-    MngProgressBar( QProgressBar *pb );
+    explicit MngProgressBar( QProgressBar *pb );
     /**
     * \brief Destructor
     */

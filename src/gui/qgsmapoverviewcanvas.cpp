@@ -36,7 +36,7 @@ class QgsPanningWidget : public QWidget
     QPolygon mPoly;
 
   public:
-    QgsPanningWidget( QWidget* parent )
+    explicit QgsPanningWidget( QWidget* parent )
         : QWidget( parent )
     {
       setObjectName( "panningWidget" );

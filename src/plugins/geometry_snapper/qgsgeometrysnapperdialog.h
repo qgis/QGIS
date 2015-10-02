@@ -31,7 +31,7 @@ class QgsGeometrySnapperDialog: public QDialog
 {
     Q_OBJECT
   public:
-    QgsGeometrySnapperDialog( QgisInterface * iface );
+    explicit QgsGeometrySnapperDialog( QgisInterface * iface );
 
   private:
     QgisInterface* mIface;

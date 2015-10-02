@@ -55,7 +55,7 @@ class CORE_EXPORT QgsLegendModelV2 : public QgsLayerTreeModel
  */
 class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
 {
-    Q_OBJECT;
+    Q_OBJECT
 
   public:
     QgsComposerLegend( QgsComposition* composition );

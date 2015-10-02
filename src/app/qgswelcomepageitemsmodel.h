@@ -25,7 +25,7 @@ class QgsWelcomePageItemDelegate : public QStyledItemDelegate
     Q_OBJECT
 
   public:
-    QgsWelcomePageItemDelegate( QObject * parent = 0 );
+    explicit QgsWelcomePageItemDelegate( QObject * parent = 0 );
     void paint( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const override;
     QSize sizeHint( const QStyleOptionViewItem & option, const QModelIndex & index ) const override;
 };
@@ -51,7 +51,7 @@ class QgsWelcomePageItemsModel : public QAbstractListModel
       QString crs;
     };
 
-    QgsWelcomePageItemsModel( QObject* parent = 0 );
+    explicit QgsWelcomePageItemsModel( QObject* parent = 0 );
 
     void setRecentProjects( const QList<RecentProjectData>& recentProjects );
 

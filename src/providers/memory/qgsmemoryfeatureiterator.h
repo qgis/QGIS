@@ -28,7 +28,7 @@ class QgsSpatialIndex;
 class QgsMemoryFeatureSource : public QgsAbstractFeatureSource
 {
   public:
-    QgsMemoryFeatureSource( const QgsMemoryProvider* p );
+    explicit QgsMemoryFeatureSource( const QgsMemoryProvider* p );
     ~QgsMemoryFeatureSource();
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;

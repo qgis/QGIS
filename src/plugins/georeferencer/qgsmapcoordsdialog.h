@@ -23,10 +23,10 @@ class QPushButton;
 
 class QgsGeorefMapToolEmitPoint : public QgsMapToolEmitPoint
 {
-    Q_OBJECT;
+    Q_OBJECT
 
   public:
-    QgsGeorefMapToolEmitPoint( QgsMapCanvas *canvas )
+    explicit QgsGeorefMapToolEmitPoint( QgsMapCanvas *canvas )
         : QgsMapToolEmitPoint( canvas )
     {
     }

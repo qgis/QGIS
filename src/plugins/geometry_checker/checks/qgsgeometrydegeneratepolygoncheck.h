@@ -15,7 +15,7 @@ class QgsGeometryDegeneratePolygonCheck : public QgsGeometryCheck
     Q_OBJECT
 
   public:
-    QgsGeometryDegeneratePolygonCheck( QgsFeaturePool* featurePool )
+    explicit QgsGeometryDegeneratePolygonCheck( QgsFeaturePool* featurePool )
         : QgsGeometryCheck( FeatureNodeCheck, featurePool ) {}
     void collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList &messages, QAtomicInt* progressCounter = 0, const QgsFeatureIds& ids = QgsFeatureIds() ) const override;
     void fixError( QgsGeometryCheckError* error, int method, int mergeAttributeIndex, Changes& changes ) const override;

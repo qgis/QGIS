@@ -25,6 +25,8 @@
 class TestQgsLayerTree : public QObject
 {
     Q_OBJECT
+  public:
+    TestQgsLayerTree() : mRoot( 0 ) {}
   private slots:
     void initTestCase();
     void cleanupTestCase();
@@ -36,7 +38,6 @@ class TestQgsLayerTree : public QObject
   private:
 
     QgsLayerTreeGroup* mRoot;
-    //QgsVectorLayer* vl;
 
     Qt::CheckState childState( int childIndex )
     {

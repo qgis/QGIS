@@ -66,7 +66,7 @@ class Heatmap: public QObject, public QgisPlugin
     * QGIS when it attempts to instantiate the plugin.
     * @param theInterface Pointer to the QgisInterface object.
      */
-    Heatmap( QgisInterface * theInterface );
+    explicit Heatmap( QgisInterface * theInterface );
     //! Destructor
     virtual ~Heatmap();
 

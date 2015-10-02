@@ -39,7 +39,7 @@ class QgsGeometrySnapper : public QObject
     struct ProcessFeatureWrapper
     {
       QgsGeometrySnapper* instance;
-      ProcessFeatureWrapper( QgsGeometrySnapper* _instance ) : instance( _instance ) {}
+      explicit ProcessFeatureWrapper( QgsGeometrySnapper* _instance ) : instance( _instance ) {}
       void operator()( const QgsFeatureId& id ) { instance->processFeature( id ); }
     };
 

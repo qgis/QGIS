@@ -173,7 +173,7 @@ void QgsPGConnectionItem::createSchema()
   //create the schema
   QString sql = QString( "CREATE SCHEMA %1" ).arg( QgsPostgresConn::quotedIdentifier( schemaName ) );
 
-  QgsPostgresResult result = conn->PQexec( sql );
+  QgsPostgresResult result( conn->PQexec( sql ) );
   if ( result.PQresultStatus() != PGRES_COMMAND_OK )
   {
     QMessageBox::warning( 0, tr( "Create Schema" ), tr( "Unable to create schema %1\n%2" ).arg( schemaName )
@@ -375,7 +375,7 @@ void QgsPGLayerItem::renameLayer()
     sql = QString( "ALTER TABLE %1 RENAME TO %2" ).arg( oldName ).arg( newName );
   }
 
-  QgsPostgresResult result = conn->PQexec( sql );
+  QgsPostgresResult result( conn->PQexec( sql ) );
   if ( result.PQresultStatus() != PGRES_COMMAND_OK )
   {
     QMessageBox::warning( 0, tr( "Rename %1" ).arg( typeName ), tr( "Unable to rename %1 %2\n%3" ).arg( lowerTypeName ).arg( mName )
@@ -415,7 +415,7 @@ void QgsPGLayerItem::truncateTable()
 
   QString sql = QString( "TRUNCATE TABLE %1" ).arg( tableRef );
 
-  QgsPostgresResult result = conn->PQexec( sql );
+  QgsPostgresResult result( conn->PQexec( sql ) );
   if ( result.PQresultStatus() != PGRES_COMMAND_OK )
   {
     QMessageBox::warning( 0, tr( "Truncate Table" ), tr( "Unable to truncate %1\n%2" ).arg( mName )
@@ -554,7 +554,7 @@ void QgsPGSchemaItem::deleteSchema()
   }
 
   QString sql = QString( "SELECT table_name FROM information_schema.tables WHERE table_schema='%1'" ).arg( mName );
-  QgsPostgresResult result = conn->PQexec( sql );
+  QgsPostgresResult result( conn->PQexec( sql ) );
   if ( result.PQresultStatus() != PGRES_TUPLES_OK )
   {
     QMessageBox::warning( 0, tr( "Delete Schema" ), tr( "Unable to delete schema." ) );
@@ -630,7 +630,7 @@ void QgsPGSchemaItem::renameSchema()
   QString sql = QString( "ALTER SCHEMA %1 RENAME TO %2" )
                 .arg( schemaName ).arg( QgsPostgresConn::quotedIdentifier( dlg.name() ) );
 
-  QgsPostgresResult result = conn->PQexec( sql );
+  QgsPostgresResult result( conn->PQexec( sql ) );
   if ( result.PQresultStatus() != PGRES_COMMAND_OK )
   {
     QMessageBox::warning( 0, tr( "Rename Schema" ), tr( "Unable to rename schema %1\n%2" ).arg( schemaName )

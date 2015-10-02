@@ -80,7 +80,7 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
     class DragList : public QTableWidget
     {
       public:
-        DragList( QWidget* parent = 0 )
+        explicit DragList( QWidget* parent = 0 )
             : QTableWidget( parent )
         {}
 
@@ -98,7 +98,7 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
     class DesignerTree : public QTreeWidget
     {
       public:
-        DesignerTree( QWidget* parent = 0 )
+        explicit DesignerTree( QWidget* parent = 0 )
             : QTreeWidget( parent )
         {}
         QTreeWidgetItem* addItem( QTreeWidgetItem* parent, DesignerTreeItemData data );

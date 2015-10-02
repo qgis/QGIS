@@ -50,7 +50,7 @@ class QgsSpatialQueryPlugin: public QObject, public QgisPlugin
     * QGIS when it attempts to instantiate the plugin.
     * \param iface Pointer to the QgisInterface object.
     */
-    QgsSpatialQueryPlugin( QgisInterface* iface );
+    explicit QgsSpatialQueryPlugin( QgisInterface* iface );
     //! Destructor
     ~QgsSpatialQueryPlugin();
 

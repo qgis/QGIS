@@ -59,13 +59,13 @@ class TopologyRule
      * Constructor
      * initializes the test to use both layers and not to use the tolerance
      */
-    TopologyRule( testFunction f0 = 0,
-                  bool useSecondLayer0 = true,
-                  bool useTolerance0 = false,
-                  bool useSpatialIndex0 = false,
-                  QList<QGis::GeometryType> layer1SupportedTypes0 = QList<QGis::GeometryType>(),
-                  QList<QGis::GeometryType> layer2SupportedTypes0 = QList<QGis::GeometryType>()
-                )
+    explicit TopologyRule( testFunction f0 = 0,
+                           bool useSecondLayer0 = true,
+                           bool useTolerance0 = false,
+                           bool useSpatialIndex0 = false,
+                           QList<QGis::GeometryType> layer1SupportedTypes0 = QList<QGis::GeometryType>(),
+                           QList<QGis::GeometryType> layer2SupportedTypes0 = QList<QGis::GeometryType>()
+                         )
         : f( f0 )
         , useSecondLayer( useSecondLayer0 )
         , useTolerance( useTolerance0 )
@@ -103,7 +103,7 @@ class topolTest: public QObject
     Q_OBJECT
 
   public:
-    topolTest( QgisInterface* qgsIface );
+    explicit topolTest( QgisInterface* qgsIface );
     ~topolTest();
 
     /**

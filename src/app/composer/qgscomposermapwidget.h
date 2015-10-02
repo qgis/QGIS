@@ -33,8 +33,7 @@ class QgsComposerMapWidget: public QgsComposerItemBaseWidget, private Ui::QgsCom
     Q_OBJECT
 
   public:
-
-    QgsComposerMapWidget( QgsComposerMap* composerMap );
+    explicit QgsComposerMapWidget( QgsComposerMap* composerMap );
     virtual ~QgsComposerMapWidget();
 
   public slots:

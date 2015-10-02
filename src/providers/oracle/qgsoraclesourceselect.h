@@ -36,10 +36,10 @@ class QgsOracleSourceSelect;
 
 class QgsOracleSourceSelectDelegate : public QItemDelegate
 {
-    Q_OBJECT;
+    Q_OBJECT
 
   public:
-    QgsOracleSourceSelectDelegate( QObject *parent = NULL )
+    explicit QgsOracleSourceSelectDelegate( QObject *parent = NULL )
         : QItemDelegate( parent )
         , mConn( 0 )
     {}

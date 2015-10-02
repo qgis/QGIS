@@ -31,7 +31,7 @@ using namespace SpatialIndex;
 class QgisVisitor : public SpatialIndex::IVisitor
 {
   public:
-    QgisVisitor( QList<QgsFeatureId> & list )
+    explicit QgisVisitor( QList<QgsFeatureId> & list )
         : mList( list ) {}
 
     void visitNode( const INode& n ) override
@@ -52,7 +52,7 @@ class QgisVisitor : public SpatialIndex::IVisitor
 class QgsSpatialIndexCopyVisitor : public SpatialIndex::IVisitor
 {
   public:
-    QgsSpatialIndexCopyVisitor( SpatialIndex::ISpatialIndex* newIndex )
+    explicit QgsSpatialIndexCopyVisitor( SpatialIndex::ISpatialIndex* newIndex )
         : mNewIndex( newIndex ) {}
 
     void visitNode( const INode& n ) override
@@ -79,7 +79,9 @@ class QgsFeatureIteratorDataStream : public IDataStream
 {
   public:
     //! constructor - needs to load all data to a vector for later access when bulk loading
-    QgsFeatureIteratorDataStream( const QgsFeatureIterator& fi ) : mFi( fi ), mNextData( 0 )
+    explicit QgsFeatureIteratorDataStream( const QgsFeatureIterator& fi )
+        : mFi( fi )
+        , mNextData( 0 )
     {
       readNextEntry();
     }

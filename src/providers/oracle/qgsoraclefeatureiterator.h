@@ -31,7 +31,7 @@ class QgsOracleProvider;
 class QgsOracleFeatureSource : public QgsAbstractFeatureSource
 {
   public:
-    QgsOracleFeatureSource( const QgsOracleProvider* p );
+    explicit QgsOracleFeatureSource( const QgsOracleProvider* p );
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
 

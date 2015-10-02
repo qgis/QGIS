@@ -490,7 +490,7 @@ void QgsVectorLayerProperties::syncToLayer( void )
   // NOTE: this is not ideal, but a quick fix for QGIS 2.0 release
   bool ok;
   bool dl = QgsProject::instance()->readBoolEntry( "DeprecatedLabels", "/Enabled", false, &ok );
-  if ( !ok || ( ok && !dl ) ) // project not flagged or set to use deprecated labels
+  if ( !ok || !dl ) // project not flagged or set to use deprecated labels
   {
     if ( mOptsPage_LabelsOld )
     {

@@ -106,7 +106,7 @@ void QgsMapToolSelectFeatures::canvasReleaseEvent( QgsMapMouseEvent* e )
     QgsGeometry* selectGeom = mRubberBand->asGeometry();
     if ( !mDragging )
     {
-      bool doDifference = e->modifiers() & Qt::ControlModifier ? true : false;
+      bool doDifference = e->modifiers() & Qt::ControlModifier;
       QgsMapToolSelectUtils::setSelectFeatures( mCanvas, selectGeom, false, doDifference, true );
     }
     else

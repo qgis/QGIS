@@ -28,7 +28,7 @@ class QgsComposerShapeWidget: public QgsComposerItemBaseWidget, private Ui::QgsC
 {
     Q_OBJECT
   public:
-    QgsComposerShapeWidget( QgsComposerShape* composerShape );
+    explicit QgsComposerShapeWidget( QgsComposerShape* composerShape );
     ~QgsComposerShapeWidget();
 
   private:

@@ -74,7 +74,7 @@ class QgsGeorefPlugin: public QObject, public QgisPlugin
     * @param Pointer to the QgisApp object
     * @param Pointer to the QgisIface object.
      */
-    QgsGeorefPlugin( QgisInterface * );
+    explicit QgsGeorefPlugin( QgisInterface * );
     //! Destructor
     virtual ~ QgsGeorefPlugin();
 

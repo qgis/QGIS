@@ -45,7 +45,7 @@ class QgsBrowserPropertiesWidget : public QWidget
 {
     Q_OBJECT
   public:
-    QgsBrowserPropertiesWidget( QWidget* parent = 0 );
+    explicit QgsBrowserPropertiesWidget( QWidget* parent = 0 );
     static QgsBrowserPropertiesWidget* createWidget( QgsDataItem* item, QWidget* parent = 0 );
     virtual void setItem( QgsDataItem* item ) { Q_UNUSED( item ) }
     /** Set content widget, usually item paramWidget. Takes ownership. */
@@ -63,7 +63,7 @@ class QgsBrowserLayerProperties : public QgsBrowserPropertiesWidget, private Ui:
 {
     Q_OBJECT
   public:
-    QgsBrowserLayerProperties( QWidget* parent = 0 );
+    explicit QgsBrowserLayerProperties( QWidget* parent = 0 );
     void setItem( QgsDataItem* item ) override;
 
     virtual void setCondensedMode( bool condensedMode ) override;
@@ -76,7 +76,7 @@ class QgsBrowserDirectoryProperties : public QgsBrowserPropertiesWidget , privat
 {
     Q_OBJECT
   public:
-    QgsBrowserDirectoryProperties( QWidget* parent = 0 );
+    explicit QgsBrowserDirectoryProperties( QWidget* parent = 0 );
 
     void setItem( QgsDataItem* item ) override;
   private:

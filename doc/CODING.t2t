@@ -831,7 +831,7 @@ The class **must** inherit from QObject and include the Q_OBJECT macro.
 ```
 class TestQgsRasterLayer: public QObject
 {
-  Q_OBJECT;
+  Q_OBJECT
 ```
 
 All our test methods are implemented as **private slots**. The QtTest framework

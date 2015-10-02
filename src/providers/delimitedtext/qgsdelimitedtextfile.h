@@ -94,7 +94,7 @@ class QgsDelimitedTextFile : public QObject
       DelimTypeRegexp
     };
 
-    QgsDelimitedTextFile( QString url = QString() );
+    explicit QgsDelimitedTextFile( QString url = QString() );
 
     virtual ~QgsDelimitedTextFile();
 

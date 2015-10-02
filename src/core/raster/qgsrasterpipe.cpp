@@ -62,7 +62,11 @@ bool QgsRasterPipe::connect( QVector<QgsRasterInterface*> theInterfaces )
   {
     if ( ! theInterfaces[i]->setInput( theInterfaces[i-1] ) )
     {
-      QgsDebugMsg( QString( "cannot connect %1 to %2" ).arg( typeid( *( theInterfaces[i] ) ).name() ).arg( typeid( *( theInterfaces[i-1] ) ).name() ) );
+#ifdef QGISDEBUG
+      const QgsRasterInterface &a = *theInterfaces[i];
+      const QgsRasterInterface &b = *theInterfaces[i-1];
+      QgsDebugMsg( QString( "cannot connect %1 to %2" ).arg( typeid( a ).name() ).arg( typeid( b ).name() ) );
+#endif
       return false;
     }
   }

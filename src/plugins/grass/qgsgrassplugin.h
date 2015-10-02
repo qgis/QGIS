@@ -50,7 +50,7 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
      * QGIS when it attempts to instantiate the plugin.
      * @param qI Pointer to the QgisInterface object.
      */
-    QgsGrassPlugin( QgisInterface * qI );
+    explicit QgsGrassPlugin( QgisInterface * qI );
     /**
      * Virtual function to return the name of the plugin. The name will be used when presenting a list
      * of installable plugins to the user

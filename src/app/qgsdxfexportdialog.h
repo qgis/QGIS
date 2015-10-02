@@ -34,7 +34,7 @@ class FieldSelectorDelegate : public QItemDelegate
 {
     Q_OBJECT
   public:
-    FieldSelectorDelegate( QObject *parent = 0 );
+    explicit FieldSelectorDelegate( QObject *parent = 0 );
 
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
     void setEditorData( QWidget *editor, const QModelIndex &index ) const override;

@@ -30,7 +30,7 @@ class QgsComposerScaleBarWidget: public QgsComposerItemBaseWidget, private Ui::Q
     Q_OBJECT
 
   public:
-    QgsComposerScaleBarWidget( QgsComposerScaleBar* scaleBar );
+    explicit QgsComposerScaleBarWidget( QgsComposerScaleBar* scaleBar );
     ~QgsComposerScaleBarWidget();
 
   public slots:

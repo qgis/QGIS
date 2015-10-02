@@ -60,7 +60,7 @@ static const double POINT_LOC_EPSILON = 1e-12;
 class QgsPointLocator_Stream : public IDataStream
 {
   public:
-    QgsPointLocator_Stream( const QLinkedList<RTree::Data*>& dataList ) : mDataList( dataList ), mIt( mDataList ) { }
+    explicit QgsPointLocator_Stream( const QLinkedList<RTree::Data*>& dataList ) : mDataList( dataList ), mIt( mDataList ) { }
     ~QgsPointLocator_Stream() { }
 
     virtual IData* getNext() override { return mIt.next(); }
@@ -192,7 +192,7 @@ class QgsPointLocator_VisitorArea : public IVisitor
 // http://en.wikipedia.org/wiki/Cohen%E2%80%93Sutherland_algorithm
 struct _CohenSutherland
 {
-  _CohenSutherland( const QgsRectangle& rect ) : mRect( rect ) {}
+  explicit _CohenSutherland( const QgsRectangle& rect ) : mRect( rect ) {}
 
   typedef int OutCode;
 

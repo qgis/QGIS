@@ -110,7 +110,7 @@ class CORE_EXPORT QgsVectorFileWriter
     class HiddenOption : public Option
     {
       public:
-        HiddenOption( const QString& value )
+        explicit HiddenOption( const QString& value )
             : Option( "", Hidden )
             , mValue( value )
         {}

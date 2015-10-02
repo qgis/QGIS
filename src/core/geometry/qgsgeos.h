@@ -154,9 +154,9 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
 class GEOSException
 {
   public:
-    GEOSException( QString theMsg )
+    explicit GEOSException( QString theMsg )
     {
-      if ( theMsg == "Unknown exception thrown"  && lastMsg().isNull() )
+      if ( theMsg == "Unknown exception thrown" && lastMsg().isNull() )
       {
         msg = theMsg;
       }

@@ -102,7 +102,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     *                otherwise we contact the host directly.
     *
     */
-    QgsWcsProvider( QString const & uri = 0 );
+    explicit QgsWcsProvider( QString const & uri = 0 );
 
     //! Destructor
     virtual ~QgsWcsProvider();

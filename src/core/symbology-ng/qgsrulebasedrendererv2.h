@@ -61,7 +61,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
     // (jobs are owned by this class)
     struct RenderLevel
     {
-      RenderLevel( int z ): zIndex( z ) {}
+      explicit RenderLevel( int z ): zIndex( z ) {}
       ~RenderLevel() { Q_FOREACH ( RenderJob* j, jobs ) delete j; }
       int zIndex;
       QList<RenderJob*> jobs;

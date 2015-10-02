@@ -29,7 +29,7 @@ class QgsMssqlProvider;
 class QgsMssqlFeatureSource : public QgsAbstractFeatureSource
 {
   public:
-    QgsMssqlFeatureSource( const QgsMssqlProvider* p );
+    explicit QgsMssqlFeatureSource( const QgsMssqlProvider* p );
     ~QgsMssqlFeatureSource();
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;

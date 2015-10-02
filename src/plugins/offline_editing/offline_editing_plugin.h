@@ -32,7 +32,7 @@ class QgsOfflineEditingPlugin : public QObject, public QgisPlugin
     Q_OBJECT
 
   public:
-    QgsOfflineEditingPlugin( QgisInterface* theQgisInterface );
+    explicit QgsOfflineEditingPlugin( QgisInterface* theQgisInterface );
     virtual ~QgsOfflineEditingPlugin();
 
   public slots:

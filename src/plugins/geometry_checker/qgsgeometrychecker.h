@@ -53,7 +53,7 @@ class QgsGeometryChecker : public QObject
     class RunCheckWrapper
     {
       public:
-        RunCheckWrapper( QgsGeometryChecker* instance ) : mInstance( instance ) {}
+        explicit RunCheckWrapper( QgsGeometryChecker* instance ) : mInstance( instance ) {}
         void operator()( const QgsGeometryCheck* check ) { mInstance->runCheck( check ); }
       private:
         QgsGeometryChecker* mInstance;

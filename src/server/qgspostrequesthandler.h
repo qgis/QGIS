@@ -24,7 +24,7 @@
 class QgsPostRequestHandler: public QgsHttpRequestHandler
 {
   public:
-    QgsPostRequestHandler( const bool captureOutput = FALSE );
+    explicit QgsPostRequestHandler( const bool captureOutput = FALSE );
     ~QgsPostRequestHandler();
 
     /** Parses the input and creates a request neutral Parameter/Value map*/

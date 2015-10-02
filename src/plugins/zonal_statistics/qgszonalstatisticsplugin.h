@@ -28,7 +28,7 @@ class QgsZonalStatisticsPlugin: public QObject, public QgisPlugin
 {
     Q_OBJECT
   public:
-    QgsZonalStatisticsPlugin( QgisInterface* iface );
+    explicit QgsZonalStatisticsPlugin( QgisInterface* iface );
     ~QgsZonalStatisticsPlugin();
 
     /** Initialize connection to GUI*/

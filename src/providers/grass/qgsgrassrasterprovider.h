@@ -89,7 +89,7 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
     *                otherwise we contact the host directly.
     *
     */
-    QgsGrassRasterProvider( QString const & uri = 0 );
+    explicit QgsGrassRasterProvider( QString const & uri = 0 );
 
     //! Destructor
     ~QgsGrassRasterProvider();

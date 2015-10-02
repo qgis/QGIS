@@ -26,7 +26,7 @@ class QgsVectorLayer;
 class QgsInterpolationLayerBuilder: public QgsMSLayerBuilder
 {
   public:
-    QgsInterpolationLayerBuilder( QgsVectorLayer* vl );
+    explicit QgsInterpolationLayerBuilder( QgsVectorLayer* vl );
     ~QgsInterpolationLayerBuilder();
 
     /** Creates a maplayer from xml tag

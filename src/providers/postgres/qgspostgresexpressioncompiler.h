@@ -30,7 +30,7 @@ class QgsPostgresExpressionCompiler
       Fail
     };
 
-    QgsPostgresExpressionCompiler( QgsPostgresFeatureSource* source );
+    explicit QgsPostgresExpressionCompiler( QgsPostgresFeatureSource* source );
     ~QgsPostgresExpressionCompiler();
 
     Result compile( const QgsExpression* exp );

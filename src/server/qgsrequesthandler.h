@@ -137,8 +137,8 @@ class QgsRequestHandler
     // TODO: if HAVE_SERVER_PYTHON
     /** Response output buffers, used by Python bindings to return
      * output instead of printing with fcgi printf */
-    QByteArray mResponseHeader;
-    QByteArray mResponseBody;
+    // QByteArray mResponseHeader;
+    // QByteArray mResponseBody;
 };
 
 #endif

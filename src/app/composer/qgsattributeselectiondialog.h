@@ -44,7 +44,7 @@ class QgsComposerColumnAlignmentDelegate : public QItemDelegate
     Q_OBJECT
 
   public:
-    QgsComposerColumnAlignmentDelegate( QObject *parent = 0 );
+    explicit QgsComposerColumnAlignmentDelegate( QObject *parent = 0 );
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
     void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
     void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
@@ -81,7 +81,7 @@ class QgsComposerColumnWidthDelegate : public QItemDelegate
     Q_OBJECT
 
   public:
-    QgsComposerColumnWidthDelegate( QObject *parent = 0 );
+    explicit QgsComposerColumnWidthDelegate( QObject *parent = 0 );
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
     void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
     void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
@@ -98,7 +98,7 @@ class QgsComposerColumnSortOrderDelegate : public QItemDelegate
     Q_OBJECT
 
   public:
-    QgsComposerColumnSortOrderDelegate( QObject *parent = 0 );
+    explicit QgsComposerColumnSortOrderDelegate( QObject *parent = 0 );
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
     void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
     void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;

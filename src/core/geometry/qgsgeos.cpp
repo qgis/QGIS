@@ -100,7 +100,7 @@ static GEOSInit geosinit;
 class GEOSGeomScopedPtr
 {
   public:
-    GEOSGeomScopedPtr( GEOSGeometry* geom = 0 ) : mGeom( geom ) {}
+    explicit GEOSGeomScopedPtr( GEOSGeometry* geom = 0 ) : mGeom( geom ) {}
     ~GEOSGeomScopedPtr() { GEOSGeom_destroy_r( geosinit.ctxt, mGeom ); }
     GEOSGeometry* get() const { return mGeom; }
     operator bool() const { return mGeom != 0; }
@@ -114,7 +114,7 @@ class GEOSGeomScopedPtr
     GEOSGeometry* mGeom;
 };
 
-QgsGeos::QgsGeos( const QgsAbstractGeometryV2* geometry, int precision ): QgsGeometryEngine( geometry ), mGeos( 0 ), mGeosPrepared( 0 )
+QgsGeos::QgsGeos( const QgsAbstractGeometryV2* geometry, int precision ) : QgsGeometryEngine( geometry ), mGeos( 0 ), mGeosPrepared( 0 )
 {
 #if defined(HAVE_GEOS_CPP) || defined(HAVE_GEOS_CAPI_PRECISION_MODEL)
   double prec = qPow( 10, -precision );
@@ -1063,7 +1063,7 @@ QgsAbstractGeometryV2* QgsGeos::overlay( const QgsAbstractGeometryV2& geom, Over
     return 0;
   }
 
-  GEOSGeomScopedPtr geosGeom = getReducedGeometry( asGeos( &geom ) );
+  GEOSGeomScopedPtr geosGeom( getReducedGeometry( asGeos( &geom ) ) );
   if ( !geosGeom )
   {
     return 0;
@@ -1109,7 +1109,7 @@ bool QgsGeos::relation( const QgsAbstractGeometryV2& geom, Relation r, QString* 
     return false;
   }
 
-  GEOSGeomScopedPtr geosGeom = getReducedGeometry( asGeos( &geom ) );
+  GEOSGeomScopedPtr geosGeom( getReducedGeometry( asGeos( &geom ) ) );
   if ( !geosGeom )
   {
     return false;
@@ -1366,7 +1366,7 @@ bool QgsGeos::isEqual( const QgsAbstractGeometryV2& geom, QString* errorMsg ) co
 
   try
   {
-    GEOSGeomScopedPtr geosGeom = getReducedGeometry( asGeos( &geom ) );
+    GEOSGeomScopedPtr geosGeom( getReducedGeometry( asGeos( &geom ) ) );
     if ( !geosGeom )
     {
       return false;

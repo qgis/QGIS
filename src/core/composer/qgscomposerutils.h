@@ -75,7 +75,7 @@ class CORE_EXPORT QgsComposerUtils
      * @param rotation the rotation in degrees to be applied to the rectangle
      * @returns largest scaled version of the rectangle possible
     */
-    static QRectF largestRotatedRectWithinBounds( const QRectF originalRect, const QRectF boundsRect, const double rotation );
+    static QRectF largestRotatedRectWithinBounds( const QRectF &originalRect, const QRectF &boundsRect, const double rotation );
 
     /** Returns the size in mm corresponding to a font point size
      * @param pointSize font size in points

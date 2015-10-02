@@ -58,7 +58,7 @@ class QgsGrassObjectItemBase
 {
   public:
     // actionsParent so that actions are moved to thread with item
-    QgsGrassObjectItemBase( QgsGrassObject grassObject );
+    explicit QgsGrassObjectItemBase( QgsGrassObject grassObject );
 
     bool equal( const QgsDataItem *other );
 
@@ -193,7 +193,7 @@ class QgsGrassImportItemWidget : public QWidget
 {
     Q_OBJECT
   public:
-    QgsGrassImportItemWidget( QWidget* parent  = 0 );
+    explicit QgsGrassImportItemWidget( QWidget* parent = 0 );
 
     void setHtml( const QString & html );
 

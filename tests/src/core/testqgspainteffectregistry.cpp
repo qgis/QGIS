@@ -147,7 +147,6 @@ void TestQgsPaintEffectRegistry::createEffect()
   DummyPaintEffect* dummyEffect = dynamic_cast<DummyPaintEffect*>( effect );
   QVERIFY( dummyEffect );
   delete effect;
-  effect = 0;
 
   //try creating a bad effect
   effect = registry->createEffect( QString( "bad effect" ) );

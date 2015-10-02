@@ -39,7 +39,7 @@ class QgsServerInterfaceImpl : public QgsServerInterface
   public:
 
     /** Constructor */
-    QgsServerInterfaceImpl( QgsCapabilitiesCache *capCache );
+    explicit QgsServerInterfaceImpl( QgsCapabilitiesCache *capCache );
 
     /** Destructor */
     ~QgsServerInterfaceImpl();

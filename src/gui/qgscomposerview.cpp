@@ -1380,7 +1380,7 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
     {
       //both control and space pressed
       //set cursor to zoom in/out depending on shift key status
-      QPixmap myZoomQPixmap = QPixmap(( const char ** )( e->modifiers() & Qt::ShiftModifier ? zoom_out : zoom_in ) );
+      QPixmap myZoomQPixmap = QPixmap(( const char ** )(( e->modifiers() & Qt::ShiftModifier ) ? zoom_out : zoom_in ) );
       QCursor zoomCursor = QCursor( myZoomQPixmap, 7, 7 );
       viewport()->setCursor( zoomCursor );
     }
@@ -1415,7 +1415,7 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
       mPreviousTool = mCurrentTool;
       setCurrentTool( Zoom );
       //set cursor to zoom in/out depending on shift key status
-      QPixmap myZoomQPixmap = QPixmap(( const char ** )( e->modifiers() & Qt::ShiftModifier ? zoom_out : zoom_in ) );
+      QPixmap myZoomQPixmap = QPixmap(( const char ** )(( e->modifiers() & Qt::ShiftModifier ) ? zoom_out : zoom_in ) );
       QCursor zoomCursor = QCursor( myZoomQPixmap, 7, 7 );
       viewport()->setCursor( zoomCursor );
       return;
@@ -1427,7 +1427,7 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
     //using the zoom tool, respond to changes in shift key status and update mouse cursor accordingly
     if ( ! e->isAutoRepeat() )
     {
-      QPixmap myZoomQPixmap = QPixmap(( const char ** )( e->modifiers() & Qt::ShiftModifier ? zoom_out : zoom_in ) );
+      QPixmap myZoomQPixmap = QPixmap(( const char ** )(( e->modifiers() & Qt::ShiftModifier ) ? zoom_out : zoom_in ) );
       QCursor zoomCursor = QCursor( myZoomQPixmap, 7, 7 );
       viewport()->setCursor( zoomCursor );
     }
@@ -1532,7 +1532,7 @@ void QgsComposerView::keyReleaseEvent( QKeyEvent * e )
     //if zoom tool is active, respond to changes in the shift key status and update cursor accordingly
     if ( ! e->isAutoRepeat() )
     {
-      QPixmap myZoomQPixmap = QPixmap(( const char ** )( e->modifiers() & Qt::ShiftModifier ? zoom_out : zoom_in ) );
+      QPixmap myZoomQPixmap = QPixmap(( const char ** )(( e->modifiers() & Qt::ShiftModifier ) ? zoom_out : zoom_in ) );
       QCursor zoomCursor = QCursor( myZoomQPixmap, 7, 7 );
       viewport()->setCursor( zoomCursor );
     }

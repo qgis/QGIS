@@ -7176,7 +7176,7 @@ QList<QgsMapLayer *> QgisApp::editableLayers( bool modified ) const
     if ( !vl )
       continue;
 
-    if ( vl->isEditable() && ( !modified || ( modified && vl->isModified() ) ) )
+    if ( vl->isEditable() && ( !modified || vl->isModified() ) )
       editLayers << vl;
   }
   return editLayers;
@@ -7760,7 +7760,7 @@ void QgisApp::showPluginManager()
 class QgsPythonRunnerImpl : public QgsPythonRunner
 {
   public:
-    QgsPythonRunnerImpl( QgsPythonUtils* pythonUtils ) : mPythonUtils( pythonUtils ) {}
+    explicit QgsPythonRunnerImpl( QgsPythonUtils* pythonUtils ) : mPythonUtils( pythonUtils ) {}
 
     virtual bool runCommand( QString command, QString messageOnError = QString() ) override
     {

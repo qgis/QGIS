@@ -333,19 +333,19 @@ QString QgsAuthCertUtils::getCertDistinguishedName( const QSslCertificate &qcert
     dirname, "CN", issuer ? qcert.issuerInfo( QSslCertificate::CommonName )
     : qcert.subjectInfo( QSslCertificate::CommonName ) );
   QgsAuthCertUtils::appendDirSegment_(
-    dirname, "OU", issuer ? qcert.subjectInfo( QSslCertificate::OrganizationalUnitName )
+    dirname, "OU", issuer ? qcert.issuerInfo( QSslCertificate::OrganizationalUnitName )
     : qcert.subjectInfo( QSslCertificate::OrganizationalUnitName ) );
   QgsAuthCertUtils::appendDirSegment_(
-    dirname, "O", issuer ? qcert.subjectInfo( QSslCertificate::Organization )
+    dirname, "O", issuer ? qcert.issuerInfo( QSslCertificate::Organization )
     : qcert.subjectInfo( QSslCertificate::Organization ) );
   QgsAuthCertUtils::appendDirSegment_(
-    dirname, "L", issuer ? qcert.subjectInfo( QSslCertificate::LocalityName )
+    dirname, "L", issuer ? qcert.issuerInfo( QSslCertificate::LocalityName )
     : qcert.subjectInfo( QSslCertificate::LocalityName ) );
   QgsAuthCertUtils::appendDirSegment_(
-    dirname, "ST", issuer ? qcert.subjectInfo( QSslCertificate::StateOrProvinceName )
+    dirname, "ST", issuer ? qcert.issuerInfo( QSslCertificate::StateOrProvinceName )
     : qcert.subjectInfo( QSslCertificate::StateOrProvinceName ) );
   QgsAuthCertUtils::appendDirSegment_(
-    dirname, "C", issuer ? qcert.subjectInfo( QSslCertificate::CountryName )
+    dirname, "C", issuer ? qcert.issuerInfo( QSslCertificate::CountryName )
     : qcert.subjectInfo( QSslCertificate::CountryName ) );
 
   return dirname.join( "," );

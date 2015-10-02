@@ -29,7 +29,7 @@ class QgsPostgresTransaction;
 class QgsPostgresFeatureSource : public QgsAbstractFeatureSource
 {
   public:
-    QgsPostgresFeatureSource( const QgsPostgresProvider* p );
+    explicit QgsPostgresFeatureSource( const QgsPostgresProvider* p );
     ~QgsPostgresFeatureSource();
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;

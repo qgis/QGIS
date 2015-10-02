@@ -105,7 +105,7 @@ struct QgsOracleLayerProperty
 
 class QgsOracleConn : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
   public:
     static QgsOracleConn *connectDb( QgsDataSourceURI uri );
     void disconnect();
@@ -164,7 +164,7 @@ class QgsOracleConn : public QObject
     operator QSqlDatabase() { return mDatabase; }
 
   private:
-    QgsOracleConn( QgsDataSourceURI uri );
+    explicit QgsOracleConn( QgsDataSourceURI uri );
     ~QgsOracleConn();
 
     bool exec( QSqlQuery &qry, QString sql );

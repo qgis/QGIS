@@ -328,7 +328,7 @@ void QgsPostgresConn::addColumnInfo( QgsPostgresLayerProperty& layerProperty, co
                 .arg( quotedIdentifier( schemaName ) )
                 .arg( quotedIdentifier( viewName ) );
   //QgsDebugMsg( sql );
-  QgsPostgresResult colRes = PQexec( sql );
+  QgsPostgresResult colRes( PQexec( sql ) );
 
   layerProperty.pkCols.clear();
   layerProperty.nSpCols = 0;
@@ -807,7 +807,7 @@ QString QgsPostgresConn::postgisVersion()
 
   mPostgresqlVersion = PQserverVersion( mConn );
 
-  QgsPostgresResult result = PQexec( "SELECT postgis_version()" );
+  QgsPostgresResult result( PQexec( "SELECT postgis_version()" ) );
   if ( result.PQntuples() != 1 )
   {
     QgsMessageLog::logMessage( tr( "Retrieval of postgis version failed" ), tr( "PostGIS" ) );
@@ -874,7 +874,7 @@ QString QgsPostgresConn::postgisVersion()
   mTopologyAvailable = false;
   if ( mPostgisVersionMajor > 1 )
   {
-    QgsPostgresResult result = PQexec( "SELECT EXISTS ( SELECT c.oid FROM pg_class AS c JOIN pg_namespace AS n ON c.relnamespace=n.oid WHERE n.nspname='topology' AND c.relname='topology' )" );
+    QgsPostgresResult result( PQexec( "SELECT EXISTS ( SELECT c.oid FROM pg_class AS c JOIN pg_namespace AS n ON c.relnamespace=n.oid WHERE n.nspname='topology' AND c.relname='topology' )" ) );
     if ( result.PQntuples() >= 1 && result.PQgetvalue( 0, 0 ) == "t" )
     {
       mTopologyAvailable = true;
@@ -1018,7 +1018,7 @@ QString QgsPostgresConn::uniqueCursorName()
 
 bool QgsPostgresConn::PQexecNR( QString query, bool retry )
 {
-  QgsPostgresResult res = PQexec( query, false );
+  QgsPostgresResult res( PQexec( query, false ) );
 
   ExecStatusType errorStatus = res.PQresultStatus();
   if ( errorStatus == PGRES_COMMAND_OK )
@@ -1282,7 +1282,7 @@ void QgsPostgresConn::deduceEndian()
   // version 7.4, binary cursors return data in XDR whereas previous versions
   // return data in the endian of the server
 
-  QgsPostgresResult res = PQexec( "select regclass('pg_class')::oid" );
+  QgsPostgresResult res( PQexec( "select regclass('pg_class')::oid" ) );
   QString oidValue = res.PQgetvalue( 0, 0 );
 
   QgsDebugMsg( "Creating binary cursor" );
@@ -1387,7 +1387,7 @@ void QgsPostgresConn::retrieveLayerTypes( QgsPostgresLayerProperty &layerPropert
 
     //QgsDebugMsg( "Retrieving geometry types,srids and dims: " + query );
 
-    QgsPostgresResult gresult = PQexec( query );
+    QgsPostgresResult gresult( PQexec( query ) );
 
     if ( gresult.PQresultStatus() == PGRES_TUPLES_OK )
     {

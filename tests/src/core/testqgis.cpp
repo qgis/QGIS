@@ -82,7 +82,7 @@ void TestQGis::permissiveToDouble()
 
   //bad input
   ok = false;
-  result = QGis::permissiveToDouble( QString( "a" ), ok );
+  ( void ) QGis::permissiveToDouble( QString( "a" ), ok );
   QVERIFY( !ok );
 
   //messy input (invalid thousand separator position), should still be converted
@@ -110,7 +110,7 @@ void TestQGis::permissiveToInt()
 
   //bad input
   ok = false;
-  result = QGis::permissiveToInt( QString( "a" ), ok );
+  ( void ) QGis::permissiveToInt( QString( "a" ), ok );
   QVERIFY( !ok );
 
   //messy input (invalid thousand separator position), should still be converted

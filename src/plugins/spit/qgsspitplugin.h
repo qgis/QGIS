@@ -41,7 +41,7 @@ class QgsSpitPlugin: public QObject, public QgisPlugin
     * QGIS when it attempts to instantiate the plugin.
     * @param qI Pointer to the QgisInterface object.
     */
-    QgsSpitPlugin( QgisInterface * qI );
+    explicit QgsSpitPlugin( QgisInterface * qI );
 
     //! Destructor
     virtual ~ QgsSpitPlugin();
