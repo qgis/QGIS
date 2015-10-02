@@ -1324,6 +1324,11 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
           QgsDebugMsg( QString( "newCats[%1] = %2" ).arg( fid ).arg( newCat ) );
         }
       }
+
+      if ( type == GV_BOUNDARY )
+      {
+        setAddedFeaturesSymbol();
+      }
     }
 
     Vect_destroy_line_struct( points );
@@ -1358,9 +1363,12 @@ void QgsGrassProvider::onFeatureDeleted( QgsFeatureId fid )
     }
   }
 
+  int type = 0;
   mLayer->map()->lockReadWrite();
   G_TRY
   {
+    type = Vect_read_line( map(), 0, 0, realLine ); // to know if symbols have to be updated
+
     Vect_delete_line( map(), realLine );
     // oldLids are maping to the very first, original version (used by undo)
     int oldestLid = oldLid;
@@ -1377,6 +1385,11 @@ void QgsGrassProvider::onFeatureDeleted( QgsFeatureId fid )
     QgsDebugMsg( QString( "Cannot delete line : %1" ).arg( e.what() ) );
   }
   mLayer->map()->unlockReadWrite();
+
+  if ( type == GV_BOUNDARY )
+  {
+    setAddedFeaturesSymbol();
+  }
 }
 
 void QgsGrassProvider::onGeometryChanged( QgsFeatureId fid, QgsGeometry &geom )
@@ -1392,7 +1405,7 @@ void QgsGrassProvider::onGeometryChanged( QgsFeatureId fid, QgsGeometry &geom )
   struct line_pnts *points = Vect_new_line_struct();
   struct line_cats *cats = Vect_new_cats_struct();
 
-  int type;
+  int type = 0;
   G_TRY
   {
     type = Vect_read_line( map(), points, cats, realLine );
@@ -1450,6 +1463,11 @@ void QgsGrassProvider::onGeometryChanged( QgsFeatureId fid, QgsGeometry &geom )
 
   Vect_destroy_line_struct( points );
   Vect_destroy_cats_struct( cats );
+
+  if ( type == GV_BOUNDARY )
+  {
+    setAddedFeaturesSymbol();
+  }
 }
 
 void QgsGrassProvider::onAttributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value )
@@ -1533,6 +1551,35 @@ void QgsGrassProvider::onAttributeDeleted( int idx )
   {
     QgsGrass::warning( error );
     // TODO: get back the column somehow to the layer/buffer - undo?
+  }
+}
+
+void QgsGrassProvider::setAddedFeaturesSymbol()
+{
+  QgsDebugMsg( "entered" );
+  if ( !mEditBuffer )
+  {
+    return;
+  }
+  QgsFeatureMap& features = const_cast<QgsFeatureMap&>( mEditBuffer->addedFeatures() );
+  Q_FOREACH ( QgsFeatureId fid, features.keys() )
+  {
+    QgsFeature feature = features[fid];
+    if ( !feature.geometry() || !feature.geometry()->geometry() ||
+         feature.geometry()->geometry()->wkbType() != QgsWKBTypes::LineString )
+    {
+      continue;
+    }
+    int lid = QgsGrassFeatureIterator::lidFromFid( fid );
+    int realLid = lid;
+    if ( mLayer->map()->newLids().contains( lid ) )
+    {
+      realLid = mLayer->map()->newLids().value( lid );
+    }
+    QgsDebugMsg( QString( "fid = %1 lid = %2 realLid = %3" ).arg( fid ).arg( lid ).arg( realLid ) );
+    QgsGrassVectorMap::TopoSymbol symbol = mLayer->map()->topoSymbol( realLid );
+    feature.setAttribute( QgsGrassVectorMap::topoSymbolFieldName(), symbol );
+    features[fid] = feature;
   }
 }
 

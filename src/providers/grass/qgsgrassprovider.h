@@ -404,6 +404,8 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     struct Map_info * map();
     void setMapset();
     bool openLayer();
+    // update topo symbol of new features
+    void setAddedFeaturesSymbol();
 
     QgsGrassObject mGrassObject;
     // field part of layer or -1 if no field specified
