@@ -76,6 +76,9 @@ FOREACH (QSL ${QTLISTSQL})
         EXECUTE_PROCESS (COMMAND ditto ${QARCHS} "@QT_PLUGINS_DIR@/sqldrivers/libqsql${QSL}.dylib" "${QPLUGDIR}/../sqldrivers/libqsql${QSL}.dylib")
     ENDIF ()
 ENDFOREACH (QSL)
+IF (NOT @WITH_QSPATIALITE@ AND EXISTS "${QPLUGDIR}/../sqldrivers/libqsqlspatialite.dylib")
+    EXECUTE_PROCESS (COMMAND ${CMAKE_COMMAND} -E remove "${QPLUGDIR}/../sqldrivers/libqsqlspatialite.dylib")
+ENDIF ()
 EXECUTE_PROCESS (COMMAND mkdir -p "${QPLUGDIR}/../iconengines")
 IF (NOT EXISTS "${QPLUGDIR}/../iconengines/libqsvgicon.dylib")
     EXECUTE_PROCESS (COMMAND ditto ${QARCHS} "@QT_PLUGINS_DIR@/iconengines/libqsvgicon.dylib" "${QPLUGDIR}/../iconengines/libqsvgicon.dylib")
@@ -205,6 +208,17 @@ FOREACH (qca_plugin ${QCA_PLUGINS})
       INSTALLNAMETOOL_CHANGE ("${QCA_CHG}" "${QCA_CHG_TO}" "${QPLUGDIR}/../crypto/libqca-${qca_plugin}.dylib")
    ENDIF ()
 ENDFOREACH ()
+
+# QSpatialite Qt plugin
+# linked to qca and qgis_core frameworks (see also 2lib.cmake.in)
+IF (@WITH_QSPATIALITE@ AND EXISTS "${QPLUGDIR}/../sqldrivers/libqsqlspatialite.dylib")
+    # qca.framework
+    INSTALLNAMETOOL_CHANGE ("${QCA_CHG}" "${QCA_CHG_TO}" "${QPLUGDIR}/../sqldrivers/libqsqlspatialite.dylib")
+    # qgis_core.framework
+    GET_INSTALL_NAME ("@QGIS_OUTPUT_DIRECTORY@/lib/qgis_core.framework/qgis_core" qgis_core.framework QGCORE)
+    SET (QGCORE_CHG_TO "${ATLOADER}/@QGIS_PLUGIN_SUBDIR_REV@/${QGIS_FW_SUBDIR}/qgis_core.framework/qgis_core")
+    INSTALLNAMETOOL_CHANGE ("${QGCORE}" "${QGCORE_CHG_TO}" "${QPLUGDIR}/../sqldrivers/libqsqlspatialite.dylib")
+ENDIF ()
 
 # QScintilla2
 
