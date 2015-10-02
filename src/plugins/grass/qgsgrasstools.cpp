@@ -56,6 +56,8 @@ class QgsGrassToolsTreeFilterProxyModel : public QSortFilterProxyModel
         : QSortFilterProxyModel( parent ), mModel( 0 )
     {
       setDynamicSortFilter( true );
+      mRegExp.setPatternSyntax( QRegExp::Wildcard );
+      mRegExp.setCaseSensitivity( Qt::CaseInsensitive );
     }
 
     void setSourceModel( QAbstractItemModel * sourceModel ) override
@@ -68,19 +70,24 @@ class QgsGrassToolsTreeFilterProxyModel : public QSortFilterProxyModel
     {
       QgsDebugMsg( QString( "filter = %1" ).arg( filter ) );
       if ( mFilter == filter )
+      {
         return;
+      }
       mFilter = filter;
+      mRegExp.setPattern( mFilter );
+
       invalidateFilter();
     }
 
   protected:
 
     QAbstractItemModel* mModel;
-    QString mFilter; //filter string provided
+    QString mFilter; // filter string provided
+    QRegExp mRegExp; // regular expression constructed from filter string
 
     bool filterAcceptsString( const QString & value ) const
     {
-      return value.contains( mFilter, Qt::CaseInsensitive );
+      return value.contains( mRegExp );
     }
 
     // It would be better to apply the filer only to expanded (visible) items, but using mapFromSource() + view here was causing strange errors
@@ -628,7 +635,9 @@ void QgsGrassTools::on_mFilterInput_textChanged( QString theText )
     mTreeView->expandAll();
   }
 
-  QRegExp::PatternSyntax mySyntax = QRegExp::PatternSyntax( QRegExp::RegExp );
+  // using simple wildcard filter which is probably what users is expecting, at least until
+  // there is a filter type switch in UI
+  QRegExp::PatternSyntax mySyntax = QRegExp::PatternSyntax( QRegExp::Wildcard );
   Qt::CaseSensitivity myCaseSensitivity = Qt::CaseInsensitive;
   QRegExp myRegExp( theText, myCaseSensitivity, mySyntax );
   mModelProxy->setFilterRegExp( myRegExp );
