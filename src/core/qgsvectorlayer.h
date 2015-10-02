@@ -1453,7 +1453,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     const QgsEditorWidgetConfig editorWidgetV2Config( int fieldIdx ) const;
 
     /**
-     * Get the configuration for the editor widget used to represent the field at the given index
+     * Get the configuration for the editor widget used to represent the field with the given name
      *
      * @param fieldName The name of the field
      *
