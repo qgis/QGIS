@@ -29,13 +29,13 @@ class QgsGeometryOverlapCheckError : public QgsGeometryCheckError
              err->otherId() == otherId() &&
              QgsGeomUtils::pointsFuzzyEqual( location(), other->location(), QgsGeometryCheckPrecision::reducedTolerance() ) &&
              qAbs( value().toDouble() - other->value().toDouble() ) < QgsGeometryCheckPrecision::reducedTolerance();
-  }
+    }
 
     bool closeMatch( QgsGeometryCheckError *other ) const override
     {
       QgsGeometryOverlapCheckError* err = dynamic_cast<QgsGeometryOverlapCheckError*>( other );
       return err && other->featureId() == featureId() && err->otherId() == otherId();
-  }
+    }
 
     virtual QString description() const override { return QApplication::translate( "QgsGeometryTypeCheckError", "Overlap with %1" ).arg( otherId() ); }
 

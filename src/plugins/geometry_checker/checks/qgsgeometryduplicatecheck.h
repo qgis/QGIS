@@ -26,7 +26,7 @@ class QgsGeometryDuplicateCheckError : public QgsGeometryCheckError
              other->featureId() == featureId() &&
              // static_cast: since other->checker() == checker is only true if the types are actually the same
              static_cast<QgsGeometryDuplicateCheckError*>( other )->duplicates() == duplicates();
-  }
+    }
 
   private:
     QList<QgsFeatureId> mDuplicates;

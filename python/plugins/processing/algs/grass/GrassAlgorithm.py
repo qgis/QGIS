@@ -307,7 +307,7 @@ class GrassAlgorithm(GeoAlgorithm):
             if isinstance(param, (ParameterRaster, ParameterVector)):
                 value = param.value
                 if value in self.exportedLayers.keys():
-                    command += ' %s="%s"' %(param.name, self.exportedLayers[value])
+                    command += ' %s="%s"' % (param.name, self.exportedLayers[value])
                 else:
                     command += ' %s="%s"' % (param.name, value)
             elif isinstance(param, ParameterMultipleInput):

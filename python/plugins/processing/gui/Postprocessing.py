@@ -85,7 +85,6 @@ def handleAlgorithmResults(alg, progress=None, showResults=True):
         msg += "You can check the log messages to find more information about the execution of the algorithm"
         progress.error(msg)
 
-
     if showResults and htmlResults and not wrongLayers:
         dlg = ResultsDialog()
         dlg.exec_()

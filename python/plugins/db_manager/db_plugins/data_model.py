@@ -78,7 +78,6 @@ class BaseTableModel(QAbstractTableModel):
             val = val[:300]
         return unicode(val, 'utf-8', 'replace') # convert from utf8 and replace errors (if any)
 
-
     def headerData(self, section, orientation, role):
         if role != Qt.DisplayRole:
             return None

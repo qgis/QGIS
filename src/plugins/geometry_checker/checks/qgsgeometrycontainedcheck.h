@@ -26,7 +26,7 @@ class QgsGeometryContainedCheckError : public QgsGeometryCheckError
       return other->check() == check() &&
              other->featureId() == featureId() &&
              static_cast<QgsGeometryContainedCheckError*>( other )->otherId() == otherId();
-  }
+    }
 
     virtual QString description() const override { return QApplication::translate( "QgsGeometryContainedCheckError", "Within %1" ).arg( otherId() ); }
 

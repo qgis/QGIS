@@ -85,7 +85,6 @@ class AlgorithmDialogBase(BASE, WIDGET):
         self.showDebug = ProcessingConfig.getSetting(
             ProcessingConfig.SHOW_DEBUG_IN_DIALOG)
 
-
     def closeEvent(self, evt):
         self.settings.setValue("/Processing/dialogBase", self.saveGeometry())
 

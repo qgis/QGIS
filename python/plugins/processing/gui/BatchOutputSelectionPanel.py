@@ -78,8 +78,8 @@ class BatchOutputSelectionPanel(QWidget):
             path = unicode(settings.value('/Processing/LastBatchOutputPath'))
         else:
             path = ''
-        filename, selectedFileFilter  = QFileDialog.getSaveFileNameAndFilter(self,
-                                    self.tr('Save file'), path, filefilter)
+        filename, selectedFileFilter = QFileDialog.getSaveFileNameAndFilter(self,
+                                                                            self.tr('Save file'), path, filefilter)
         print filename, selectedFileFilter
         if filename:
             if not filename.lower().endswith(

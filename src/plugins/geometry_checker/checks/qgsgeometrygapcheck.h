@@ -37,13 +37,13 @@ class QgsGeometryGapCheckError : public QgsGeometryCheckError
     {
       QgsGeometryGapCheckError* err = dynamic_cast<QgsGeometryGapCheckError*>( other );
       return err && QgsGeomUtils::pointsFuzzyEqual( err->location(), location(), QgsGeometryCheckPrecision::reducedTolerance() ) && err->neighbors() == neighbors();
-  }
+    }
 
     bool closeMatch( QgsGeometryCheckError *other ) const override
     {
       QgsGeometryGapCheckError* err = dynamic_cast<QgsGeometryGapCheckError*>( other );
       return err && err->neighbors() == neighbors();
-  }
+    }
 
     void update( const QgsGeometryCheckError* other ) override
     {

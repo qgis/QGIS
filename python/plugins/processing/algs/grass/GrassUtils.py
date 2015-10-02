@@ -238,7 +238,6 @@ class GrassUtils:
             out.write('n-s resol3: 1\n')
             out.write('t-b resol:  1\n')
 
-
     @staticmethod
     def prepareGrassExecution(commands):
         env = os.environ.copy()

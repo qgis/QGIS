@@ -26,7 +26,7 @@ class QgsGeometryTypeCheckError : public QgsGeometryCheckError
     {
       return QgsGeometryCheckError::isEqual( other ) &&
              mTypeName == static_cast<QgsGeometryTypeCheckError*>( other )->mTypeName;
-  }
+    }
 
     virtual QString description() const override { return QString( "%1 (%2)" ).arg( mCheck->errorDescription(), mTypeName ); }
 

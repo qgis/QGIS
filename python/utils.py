@@ -92,6 +92,7 @@ def showException(type, value, tb, msg, messagebar=False):
     else:
         open_stack_dialog(type, value, tb, msg)
 
+
 def show_message_log(pop_error=True):
     if pop_error:
         iface.messageBar().popWidget()
@@ -135,16 +136,16 @@ def open_stack_dialog(type, value, tb, msg, pop_error=True):
     qgis_label = QCoreApplication.translate('Python', 'QGIS version:')
     pypath_label = QCoreApplication.translate('Python', 'Python Path:')
     txt = txt.format(msg=msg,
-               main_error=main_error,
-               error=error,
-               version_label=version_label,
-               num=sys.version,
-               qgis_label=qgis_label,
-               qversion=QGis.QGIS_VERSION,
-               qgisrelease=QGis.QGIS_RELEASE_NAME,
-               devversion=QGis.QGIS_DEV_VERSION,
-               pypath_label=pypath_label,
-               pypath="".join("<li>{}</li>".format(path) for path in sys.path))
+                     main_error=main_error,
+                     error=error,
+                     version_label=version_label,
+                     num=sys.version,
+                     qgis_label=qgis_label,
+                     qversion=QGis.QGIS_VERSION,
+                     qgisrelease=QGis.QGIS_RELEASE_NAME,
+                     devversion=QGis.QGIS_DEV_VERSION,
+                     pypath_label=pypath_label,
+                     pypath="".join("<li>{}</li>".format(path) for path in sys.path))
 
     txt = txt.replace('  ', '&nbsp; ')  # preserve whitespaces for nicer output
 
@@ -152,7 +153,6 @@ def open_stack_dialog(type, value, tb, msg, pop_error=True):
     dlg.setTitle(msg)
     dlg.setMessage(txt, QgsMessageOutput.MessageHtml)
     dlg.showMessage()
-
 
 
 def qgis_excepthook(type, value, tb):

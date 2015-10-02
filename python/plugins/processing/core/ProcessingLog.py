@@ -70,7 +70,7 @@ class ProcessingLog:
             # to miss some log info that breaking the algorithm.
             if msgtype == ProcessingLog.LOG_ALGORITHM:
                 line = msgtype + '|' + datetime.datetime.now().strftime(
-                    ProcessingLog.DATE_FORMAT)+ '|' \
+                    ProcessingLog.DATE_FORMAT) + '|' \
                     + msg + '\n'
                 logfile = codecs.open(ProcessingLog.logFilename(), 'a',
                                       encoding='utf-8')

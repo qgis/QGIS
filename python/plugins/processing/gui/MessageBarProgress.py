@@ -33,6 +33,7 @@ from qgis.gui import QgsMessageBar
 from processing.core.ProcessingLog import ProcessingLog
 from processing.gui.MessageDialog import MessageDialog
 
+
 class MessageBarProgress:
 
     def __init__(self, algname=None):
@@ -48,7 +49,6 @@ class MessageBarProgress:
 
     def error(self, msg):
         self.msg.append(msg)
-
 
     def setText(self, text):
         pass
