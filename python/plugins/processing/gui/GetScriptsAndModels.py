@@ -175,7 +175,7 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
         resources = readUrl(self.urlBase + 'list.txt').splitlines()
         resources = [r.split(',') for r in resources]
         self.resources = {f: (v, n) for f, v, n in resources}
-        for filename, version, name in resources:
+        for filename, version, name in sorted(resources, key=lambda kv: kv[2].lower()):
             treeBranch = self.getTreeBranchForState(filename, float(version))
             item = TreeItem(filename, name, self.icon)
             treeBranch.addChild(item)
