@@ -165,7 +165,7 @@ int QgsVectorLayerEditUtils::addPart( const QList<QgsPoint> &points, QgsFeatureI
 
   geometry.convertToMultiType();
 
-  int errorCode = geometry.addPart( points, L->geometryType() );
+  int errorCode = geometry.addPart( points, L->geometryType(), ( QgsWKBTypes::Type )L->wkbType() );
   if ( errorCode == 0 )
   {
     L->editBuffer()->changeGeometry( featureId, &geometry );
@@ -189,9 +189,7 @@ int QgsVectorLayerEditUtils::addPart( QgsCurveV2* ring, QgsFeatureId featureId )
     geometry = *f.geometry();
   }
 
-  geometry.convertToMultiType();
-
-  int errorCode = geometry.addPart( ring );
+  int errorCode = geometry.addPart( ring, ( QgsWKBTypes::Type )L->wkbType() );
   if ( errorCode == 0 )
   {
     L->editBuffer()->changeGeometry( featureId, &geometry );
@@ -311,7 +309,7 @@ int QgsVectorLayerEditUtils::splitFeatures( const QList<QgsPoint>& splitLine, bo
         //use default value where possible for primary key (e.g. autoincrement),
         //and use the value from the original (split) feature if not primary key
         QgsAttributes newAttributes = feat.attributes();
-        Q_FOREACH ( int pkIdx, L->dataProvider()->pkAttributeIndexes() )
+        Q_FOREACH( int pkIdx, L->dataProvider()->pkAttributeIndexes() )
         {
           const QVariant defaultValue = L->dataProvider()->defaultValue( pkIdx );
           if ( !defaultValue.isNull() )

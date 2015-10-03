@@ -35,6 +35,8 @@ email                : morb at ozemail dot com dot au
 #include "qgsproject.h"
 #include "qgsgeometryvalidator.h"
 
+#include "qgscurvev2.h"
+#include "qgscurvepolygonv2.h"
 #include "qgsmulticurvev2.h"
 #include "qgsmultilinestringv2.h"
 #include "qgsmultipointv2.h"
@@ -589,29 +591,46 @@ int QgsGeometry::addRing( QgsCurveV2* ring )
   return QgsGeometryEditUtils::addRing( d->geometry, ring );
 }
 
-int QgsGeometry::addPart( const QList<QgsPoint> &points, QGis::GeometryType geomType )
+int QgsGeometry::addPart( const QList<QgsPoint> &points, QGis::GeometryType geomType, QgsWKBTypes::Type wkbType )
 {
-  if ( !d )
+  if ( !d || points.size() < 1 )
   {
     return 1;
   }
 
+  //compatibility code to add geometry to null geom with addPart tool
   if ( !d->geometry )
   {
     detach( false );
-    switch ( geomType )
+    d->geometry = QgsGeometryFactory::geomFromWkbType( wkbType );
+    if ( !d->geometry )
     {
-      case QGis::Point:
-        d->geometry = new QgsMultiPointV2();
-        break;
-      case QGis::Line:
-        d->geometry = new QgsMultiLineStringV2();
-        break;
-      case QGis::Polygon:
-        d->geometry = new QgsMultiPolygonV2();
-        break;
-      default:
-        return 1;
+      return 1;
+    }
+
+    //legacy method is only used for points/multipoints
+    QgsWKBTypes::Type ft = QgsWKBTypes::flatType( wkbType );
+    if ( ft == QgsWKBTypes::Point )
+    {
+      QgsPointV2* pt = dynamic_cast<QgsPointV2*>( d->geometry );
+      if ( pt )
+      {
+        pt->setX( points[0].x() ); pt->setY( points[0].y() );
+        return 0;
+      }
+    }
+    else if ( ft == QgsWKBTypes::MultiPoint )
+    {
+      QgsMultiPointV2* multiPt = dynamic_cast<QgsMultiPointV2*>( d->geometry );
+      if ( multiPt )
+      {
+        multiPt->addGeometry( new QgsPointV2( points[0].x(), points[0].y() ) );
+        return 0;
+      }
+    }
+    else
+    {
+      return 1;
     }
   }
 
@@ -633,8 +652,79 @@ int QgsGeometry::addPart( const QList<QgsPoint> &points, QGis::GeometryType geom
   return addPart( partGeom );
 }
 
-int QgsGeometry::addPart( QgsAbstractGeometryV2* part )
+int QgsGeometry::addPart( QgsAbstractGeometryV2* part, QgsWKBTypes::Type wkbType )
 {
+  //compatibility code to set geometry of null geom with the addPart tool
+  if ( !d->geometry )
+  {
+    QgsCurveV2* curve = dynamic_cast<QgsCurveV2*>( part );
+    if ( !curve )
+    {
+      return 1;
+    }
+
+    detach( false );
+    d->geometry = QgsGeometryFactory::geomFromWkbType( wkbType );
+    if ( !d->geometry )
+    {
+      delete part;
+      return false;
+    }
+    QgsWKBTypes::Type ft = QgsWKBTypes::flatType( wkbType );
+    if ( ft == QgsWKBTypes::LineString )
+    {
+      QgsLineStringV2* ls = dynamic_cast<QgsLineStringV2*>( d->geometry );
+      if ( ls )
+      {
+        QList<QgsPointV2> points;
+        curve->points( points );
+        ls->setPoints( points );
+        delete part;
+        return 0;
+      }
+    }
+    else if ( ft == QgsWKBTypes::Polygon || ft == QgsWKBTypes::CurvePolygon )
+    {
+      QgsCurvePolygonV2* cp = dynamic_cast<QgsCurvePolygonV2*>( d->geometry );
+      if ( cp )
+      {
+        cp->setExteriorRing( curve );
+        return 0;
+      }
+    }
+    else if ( ft == QgsWKBTypes::MultiCurve || ft == QgsWKBTypes::MultiLineString )
+    {
+      QgsMultiCurveV2* mc = dynamic_cast<QgsMultiCurveV2*>( d->geometry );
+      if ( mc )
+      {
+        mc->addGeometry( curve );
+        return 0;
+      }
+    }
+    else if ( ft == QgsWKBTypes::MultiPolygon )
+    {
+      QgsMultiPolygonV2* mp = dynamic_cast<QgsMultiPolygonV2*>( d->geometry );
+      if ( mp )
+      {
+        QgsPolygonV2* poly = new QgsPolygonV2();
+        poly->setExteriorRing( curve );
+        mp->addGeometry( poly );
+        return 0;
+      }
+    }
+    else if ( ft == QgsWKBTypes::MultiSurface )
+    {
+      QgsMultiSurfaceV2* ms = dynamic_cast<QgsMultiSurfaceV2*>( d->geometry );
+      if ( ms )
+      {
+        QgsCurvePolygonV2* poly = new QgsCurvePolygonV2();
+        poly->setExteriorRing( curve );
+        ms->addGeometry( poly );
+        return 0;
+      }
+    }
+  }
+
   detach( true );
   removeWkbGeos();
   return QgsGeometryEditUtils::addPart( d->geometry, part );

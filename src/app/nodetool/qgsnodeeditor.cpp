@@ -109,7 +109,7 @@ void QgsNodeEditor::rebuildTable()
   mTableWidget->setRowCount( 0 );
   int row = 0;
   bool hasR = false;
-  Q_FOREACH ( const QgsVertexEntry* entry, mSelectedFeature->vertexMap() )
+  Q_FOREACH( const QgsVertexEntry* entry, mSelectedFeature->vertexMap() )
   {
     mTableWidget->insertRow( row );
 
@@ -167,8 +167,12 @@ void QgsNodeEditor::rebuildTable()
 
     ++row;
   }
-  mTableWidget->setColumnHidden( 3, !mSelectedFeature->vertexMap()[0]->point().is3D() );
-  mTableWidget->setColumnHidden( 4, !mSelectedFeature->vertexMap()[0]->point().isMeasure() );
+
+  if ( mSelectedFeature->vertexMap().size() > 0 )
+  {
+    mTableWidget->setColumnHidden( 3, !mSelectedFeature->vertexMap()[0]->point().is3D() );
+    mTableWidget->setColumnHidden( 4, !mSelectedFeature->vertexMap()[0]->point().isMeasure() );
+  }
   mTableWidget->setColumnHidden( 5, !hasR );
   mTableWidget->resizeColumnToContents( 0 );
   mTableWidget->blockSignals( false );
@@ -227,7 +231,7 @@ void QgsNodeEditor::updateNodeSelection()
 {
   mSelectedFeature->blockSignals( true );
   mSelectedFeature->deselectAllVertexes();
-  Q_FOREACH ( const QModelIndex& index, mTableWidget->selectionModel()->selectedRows() )
+  Q_FOREACH( const QModelIndex& index, mTableWidget->selectionModel()->selectedRows() )
   {
     int nodeIdx = mTableWidget->item( index.row(), 0 )->data( Qt::DisplayRole ).toInt();
     mSelectedFeature->selectVertex( nodeIdx );
