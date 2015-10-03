@@ -48,7 +48,7 @@ QgsWelcomePage::QgsWelcomePage( QWidget* parent )
 
   recentProjctsContainer->layout()->addWidget( recentProjectsListView );
 
-  addTab( recentProjctsContainer, "Recent Projects" );
+  layout->addWidget( recentProjctsContainer );
 
   mVersionInformation = new QLabel;
   mainLayout->addWidget( mVersionInformation );
