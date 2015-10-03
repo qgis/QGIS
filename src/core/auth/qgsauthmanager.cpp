@@ -2603,6 +2603,12 @@ const QList<QSslCertificate> QgsAuthManager::getTrustedCaCerts( bool includeinva
       trustedcerts.append( cert );
     }
   }
+
+  // update application default SSL config for new requests
+  QSslConfiguration sslconfig( QSslConfiguration::defaultConfiguration() );
+  sslconfig.setCaCertificates( trustedcerts );
+  QSslConfiguration::setDefaultConfiguration( sslconfig );
+
   return trustedcerts;
 }
 
