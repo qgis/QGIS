@@ -18,16 +18,14 @@
 #include "qgisapp.h"
 #include "qgsversioninfo.h"
 #include "qgsapplication.h"
-#include "qgsnetworkaccessmanager.h"
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QListView>
 #include <QSettings>
-#include <QDesktopServices>
 
 QgsWelcomePage::QgsWelcomePage( QWidget* parent )
-    : QTabWidget( parent )
+    : QWidget( parent )
 {
   QVBoxLayout* mainLayout = new QVBoxLayout;
   mainLayout->setMargin( 0 );
@@ -51,28 +49,6 @@ QgsWelcomePage::QgsWelcomePage( QWidget* parent )
   recentProjctsContainer->layout()->addWidget( recentProjectsListView );
 
   addTab( recentProjctsContainer, "Recent Projects" );
-
-  QWidget* whatsNewContainer = new QWidget;
-  whatsNewContainer->setLayout( new QVBoxLayout );
-  QLabel* whatsNewTitle = new QLabel( QString( "<h1>%1</h1>" ).arg( tr( "QGIS News" ) ) );
-  whatsNewContainer->layout()->addWidget( whatsNewTitle );
-
-  QgsWebView *whatsNewPage = new QgsWebView();
-  whatsNewPage->page()->setNetworkAccessManager( QgsNetworkAccessManager::instance() );
-
-  whatsNewPage->setUrl( QUrl::fromLocalFile( QgsApplication::whatsNewFilePath() ) );
-  whatsNewPage->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
-  whatsNewPage->setContextMenuPolicy( Qt::NoContextMenu );
-  whatsNewPage->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
-  whatsNewPage->setStyleSheet( "background:transparent" );
-  whatsNewPage->setAttribute( Qt::WA_TranslucentBackground );
-
-  whatsNewContainer->layout()->addWidget( whatsNewPage );
-//  whatsNewContainer->setMaximumWidth( 250 );
-//  whatsNewContainer->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Preferred );
-  addTab( whatsNewContainer, "News" );
-
-  connect( whatsNewPage, SIGNAL( linkClicked( QUrl ) ), this, SLOT( whatsNewLinkClicked( QUrl ) ) );
 
   mVersionInformation = new QLabel;
   mainLayout->addWidget( mVersionInformation );
@@ -116,9 +92,4 @@ void QgsWelcomePage::versionInfoReceived()
                                         "  padding: 5px;"
                                         "}" );
   }
-}
-
-void QgsWelcomePage::whatsNewLinkClicked( const QUrl& url )
-{
-  QDesktopServices::openUrl( url );
 }

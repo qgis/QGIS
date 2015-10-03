@@ -16,7 +16,6 @@
 #ifndef QGSWELCOMEDIALOG_H
 #define QGSWELCOMEDIALOG_H
 
-#include <QTabWidget>
 #include <QWidget>
 #include <QLabel>
 
@@ -24,7 +23,7 @@
 
 class QgsVersionInfo;
 
-class QgsWelcomePage : public QTabWidget
+class QgsWelcomePage : public QWidget
 {
     Q_OBJECT
 
@@ -38,7 +37,6 @@ class QgsWelcomePage : public QTabWidget
   private slots:
     void itemActivated( const QModelIndex& index );
     void versionInfoReceived();
-    void whatsNewLinkClicked( const QUrl& url );
 
   private:
     QgsWelcomePageItemsModel* mModel;
