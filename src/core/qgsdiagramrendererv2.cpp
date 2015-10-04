@@ -164,7 +164,7 @@ void QgsDiagramSettings::readXML( const QDomElement& elem, const QgsVectorLayer*
 
   if ( attributes.length() > 0 )
   {
-    for ( uint i = 0; i < attributes.length(); i++ )
+    for ( int i = 0; i < attributes.size(); i++ )
     {
       QDomElement attrElem = attributes.at( i ).toElement();
       QColor newColor( attrElem.attribute( "color" ) );
