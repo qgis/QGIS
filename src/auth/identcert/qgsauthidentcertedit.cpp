@@ -86,7 +86,7 @@ void QgsAuthIdentCertEdit::populateIdentityComboBox()
     QgsStringMap idents;
     Q_FOREACH ( const QSslCertificate& cert, certs )
     {
-      QString org( cert.subjectInfo( QSslCertificate::Organization ) );
+      QString org( SSL_SUBJECT_INFO( cert, QSslCertificate::Organization ) );
       if ( org.isEmpty() )
         org = tr( "Organization not defined" );
       idents.insert( QString( "%1 (%2)" ).arg( QgsAuthCertUtils::resolvedCertName( cert ) ).arg( org ),
