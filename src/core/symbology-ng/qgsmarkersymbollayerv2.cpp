@@ -862,14 +862,14 @@ bool QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitSc
   //color
   QColor pc = mPen.color();
   QColor bc = mBrush.color();
-  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR ) )
+  if ( context && hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR ) )
   {
     context->setOriginalValueVariable( QgsSymbolLayerV2Utils::encodeColor( bc ) );
     QString colorString = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR, *context, QVariant(), &ok ).toString();
     if ( ok )
       bc = QgsSymbolLayerV2Utils::decodeColor( colorString );
   }
-  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR_BORDER ) )
+  if ( context && hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR_BORDER ) )
   {
     context->setOriginalValueVariable( QgsSymbolLayerV2Utils::encodeColor( pc ) );
     QString colorString = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR_BORDER, *context, QVariant(), &ok ).toString();
@@ -895,7 +895,7 @@ bool QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitSc
   }
 
   QString name( mName );
-  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_NAME ) )
+  if ( context && hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_NAME ) )
   {
     context->setOriginalValueVariable( mName );
     name = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_NAME, *context, QVariant(), &ok ).toString();
