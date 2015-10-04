@@ -1948,7 +1948,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
   // Image size
   int width = ( int )( mComposition->printResolution() * mComposition->paperWidth() / 25.4 );
   int height = ( int )( mComposition-> printResolution() * mComposition->paperHeight() / 25.4 );
-  int dpi = ( int )( mComposition->printResolution() );
+  int dpi = mComposition->printResolution();
 
   int memuse = width * height * 3 / 1000000;  // pixmap + image
   QgsDebugMsg( QString( "Image %1x%2" ).arg( width ).arg( height ) );
@@ -2047,11 +2047,11 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
                                   -marginTop * pixelToMm,
                                   marginRight * pixelToMm,
                                   marginBottom * pixelToMm );
-        image = mComposition->renderRectAsRaster( bounds );
+        image = mComposition->renderRectAsRaster( bounds, QSize(), imageDlg.resolution() );
       }
       else
       {
-        image = mComposition->printPageAsRaster( i );
+        image = mComposition->printPageAsRaster( i, QSize( imageDlg.imageWidth(), imageDlg.imageHeight() ) );
       }
 
       if ( image.isNull() )
@@ -2279,11 +2279,13 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
                                     -marginTop * pixelToMm,
                                     marginRight * pixelToMm,
                                     marginBottom * pixelToMm );
-          image = mComposition->renderRectAsRaster( bounds );
+          image = mComposition->renderRectAsRaster( bounds, QSize(), imageDlg.resolution() );
         }
         else
         {
-          image = mComposition->printPageAsRaster( i );
+          //note - we can't safely use the preset width/height set in imageDlg here,
+          //as the atlas may have differing page size. So use resolution instead.
+          image = mComposition->printPageAsRaster( i, QSize(), imageDlg.resolution() );
         }
 
         QString imageFilename = filename;

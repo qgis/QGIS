@@ -59,14 +59,14 @@ class QgsComposerImageExportOptionsDialog: public QDialog, private Ui::QgsCompos
     void setImageSize( const QSizeF& size );
 
     /** Returns the user-set image width in pixels.
-     * @see height
+     * @see imageHeight
      */
-    int width() const;
+    int imageWidth() const;
 
     /** Returns the user-set image height in pixels.
-     * @see width
+     * @see imageWidth
      */
-    int height() const;
+    int imageHeight() const;
 
     /** Sets whether the crop to contents option should be checked in the dialog
      * @param crop set to true to check crop to contents

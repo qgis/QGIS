@@ -602,22 +602,32 @@ class QgsComposition : QGraphicsScene
     bool exportAsPDF( const QString& file );
 
     /** Renders a composer page to an image.
-    * @param page page number, 0 based such that the first page is page 0
-    * @returns rendered image, or null image if image does not fit into available memory
-    * @see renderRectAsRaster()
-    * @see renderPage()
+     * @param page page number, 0 based such that the first page is page 0
+     * @param imageSize optional target image size, in pixels. It is the caller's responsibility
+     * to ensure that the ratio of the target image size matches the ratio of the composition
+     * page size.
+     * @param dpi optional dpi override, or 0 to use default composition print resolution. This
+     * parameter has no effect if imageSize is specified.
+     * @returns rendered image, or null image if image does not fit into available memory
+     * @see renderRectAsRaster()
+     * @see renderPage()
     */
-    QImage printPageAsRaster( int page );
+    QImage printPageAsRaster( int page, const QSize& imageSize = QSize(), int dpi = 0 );
 
     /** Renders a portion of the composition to an image. This method can be used to render
      * sections of pages rather than full pages.
      * @param rect region of composition to render
+     * @param imageSize optional target image size, in pixels. It is the caller's responsibility
+     * to ensure that the ratio of the target image size matches the ratio of the specified
+     * region of the composition.
+     * @param dpi optional dpi override, or 0 to use default composition print resolution. This
+     * parameter has no effect if imageSize is specified.
      * @returns rendered image, or null image if image does not fit into available memory
      * @note added in QGIS 2.12
      * @see printPageAsRaster()
      * @see renderRect()
      */
-    QImage renderRectAsRaster( const QRectF& rect );
+    QImage renderRectAsRaster( const QRectF& rect, const QSize& imageSize = QSize(), int dpi = 0 );
 
     /** Renders a full page to a paint device.
      * @param p destination painter

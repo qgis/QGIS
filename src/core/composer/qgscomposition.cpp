@@ -2887,16 +2887,32 @@ bool QgsComposition::print( QPrinter &printer, const bool evaluateDDPageSize )
   return true;
 }
 
-QImage QgsComposition::printPageAsRaster( int page )
+QImage QgsComposition::printPageAsRaster( int page, const QSize& imageSize, int dpi )
 {
-  //print out via QImage, code copied from on_mActionExportAsImage_activated
-  int width = ( int )( printResolution() * paperWidth() / 25.4 );
-  int height = ( int )( printResolution() * paperHeight() / 25.4 );
+  int resolution = mPrintResolution;
+  if ( imageSize.isValid() )
+  {
+    //output size in pixels specified, calculate resolution using average of
+    //derived x/y dpi
+    resolution = ( imageSize.width() / mPageWidth
+                   + imageSize.height() / mPageHeight ) / 2.0 * 25.4;
+  }
+  else if ( dpi > 0 )
+  {
+    //dpi overridden by function parameters
+    resolution = dpi;
+  }
+
+  int width = imageSize.isValid() ? imageSize.width()
+              : ( int )( resolution * mPageWidth / 25.4 );
+  int height = imageSize.isValid() ? imageSize.height()
+               : ( int )( resolution * mPageHeight / 25.4 );
+
   QImage image( QSize( width, height ), QImage::Format_ARGB32 );
   if ( !image.isNull() )
   {
-    image.setDotsPerMeterX( printResolution() / 25.4 * 1000 );
-    image.setDotsPerMeterY( printResolution() / 25.4 * 1000 );
+    image.setDotsPerMeterX( resolution / 25.4 * 1000 );
+    image.setDotsPerMeterY( resolution / 25.4 * 1000 );
     image.fill( 0 );
     QPainter imagePainter( &image );
     renderPage( &imagePainter, page );
@@ -2905,15 +2921,32 @@ QImage QgsComposition::printPageAsRaster( int page )
   return image;
 }
 
-QImage QgsComposition::renderRectAsRaster( const QRectF& rect )
+QImage QgsComposition::renderRectAsRaster( const QRectF& rect, const QSize& imageSize, int dpi )
 {
-  int width = ( int )( printResolution() * rect.width() / 25.4 );
-  int height = ( int )( printResolution() * rect.height() / 25.4 );
+  int resolution = mPrintResolution;
+  if ( imageSize.isValid() )
+  {
+    //output size in pixels specified, calculate resolution using average of
+    //derived x/y dpi
+    resolution = ( imageSize.width() / rect.width()
+                   + imageSize.height() / rect.height() ) / 2.0 * 25.4;
+  }
+  else if ( dpi > 0 )
+  {
+    //dpi overridden by function parameters
+    resolution = dpi;
+  }
+
+  int width = imageSize.isValid() ? imageSize.width()
+              : ( int )( resolution * rect.width() / 25.4 );
+  int height = imageSize.isValid() ? imageSize.height()
+               : ( int )( resolution * rect.height() / 25.4 );
+
   QImage image( QSize( width, height ), QImage::Format_ARGB32 );
   if ( !image.isNull() )
   {
-    image.setDotsPerMeterX( printResolution() / 25.4 * 1000 );
-    image.setDotsPerMeterY( printResolution() / 25.4 * 1000 );
+    image.setDotsPerMeterX( resolution / 25.4 * 1000 );
+    image.setDotsPerMeterY( resolution / 25.4 * 1000 );
     image.fill( Qt::transparent );
     QPainter imagePainter( &image );
     renderRect( &imagePainter, rect );

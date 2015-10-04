@@ -45,8 +45,16 @@ void QgsComposerImageExportOptionsDialog::setResolution( int resolution )
   {
     mWidthSpinBox->blockSignals( true );
     mHeightSpinBox->blockSignals( true );
-    mWidthSpinBox->setValue( mImageSize.width() * resolution / 25.4 );
-    mHeightSpinBox->setValue( mImageSize.height() * resolution / 25.4 );
+    if ( mClipToContentGroupBox->isChecked() )
+    {
+      mWidthSpinBox->setValue( 0 );
+      mHeightSpinBox->setValue( 0 );
+    }
+    else
+    {
+      mWidthSpinBox->setValue( mImageSize.width() * resolution / 25.4 );
+      mHeightSpinBox->setValue( mImageSize.height() * resolution / 25.4 );
+    }
     mWidthSpinBox->blockSignals( false );
     mHeightSpinBox->blockSignals( false );
   }
@@ -68,12 +76,12 @@ void QgsComposerImageExportOptionsDialog::setImageSize( const QSizeF& size )
   mHeightSpinBox->blockSignals( false );
 }
 
-int QgsComposerImageExportOptionsDialog::width() const
+int QgsComposerImageExportOptionsDialog::imageWidth() const
 {
   return mWidthSpinBox->value();
 }
 
-int QgsComposerImageExportOptionsDialog::height() const
+int QgsComposerImageExportOptionsDialog::imageHeight() const
 {
   return mHeightSpinBox->value();
 }
@@ -128,8 +136,16 @@ void QgsComposerImageExportOptionsDialog::on_mResolutionSpinBox_valueChanged( in
 {
   mWidthSpinBox->blockSignals( true );
   mHeightSpinBox->blockSignals( true );
-  mWidthSpinBox->setValue( mImageSize.width() * value / 25.4 );
-  mHeightSpinBox->setValue( mImageSize.height() * value / 25.4 );
+  if ( mClipToContentGroupBox->isChecked() )
+  {
+    mWidthSpinBox->setValue( 0 );
+    mHeightSpinBox->setValue( 0 );
+  }
+  else
+  {
+    mWidthSpinBox->setValue( mImageSize.width() * value / 25.4 );
+    mHeightSpinBox->setValue( mImageSize.height() * value / 25.4 );
+  }
   mWidthSpinBox->blockSignals( false );
   mHeightSpinBox->blockSignals( false );
 }
