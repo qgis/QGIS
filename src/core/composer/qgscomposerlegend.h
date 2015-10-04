@@ -174,7 +174,7 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
        */
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc ) override;
 
-    //Overriden to show legend title
+    //Overridden to show legend title
     virtual QString displayName() const override;
 
   public slots:

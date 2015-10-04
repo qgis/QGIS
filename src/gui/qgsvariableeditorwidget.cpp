@@ -407,7 +407,7 @@ void QgsVariableEditorTree::refreshScopeVariables( QgsExpressionContextScope* sc
     {
       //overridden
       font.setStrikeOut( true );
-      QString toolTip = tr( "Overriden by value from %1" ).arg( activeScope->name() );
+      QString toolTip = tr( "Overridden by value from %1" ).arg( activeScope->name() );
       item->setToolTip( 0, toolTip );
       item->setToolTip( 1, toolTip );
     }

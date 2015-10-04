@@ -124,7 +124,7 @@ class QgsComposerLabel : QgsComposerItem
        */
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
 
-    //Overriden to contain part of label's text
+    //Overridden to contain part of label's text
     virtual QString displayName() const;
 
     /** In case of negative margins, the bounding rect may be larger than the

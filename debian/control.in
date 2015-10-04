@@ -94,13 +94,29 @@ Description: Geographic Information System (GIS)
 
 Package: qgis-common
 Architecture: all
-Depends: ${misc:Depends}
+Depends:
+  libjs-jquery,
+  libjs-leaflet,
+  ${misc:Depends}
 Description: QGIS - architecture-independent data
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
  .
  This package contains architecture-independent supporting data files for use
  with QGIS.
+
+Package: libqgis-app{QGIS_ABI}
+Architecture: any
+Section: libs
+Depends:
+ ${shlibs:Depends},
+ ${misc:Depends}
+Replaces: libqgis{QGIS_ABI}
+Description: QGIS - shared app library
+ QGIS is a Geographic Information System (GIS) which manages, analyzes and
+ display databases of geographic information.
+ .
+ This package contains the shared app library.
 
 Package: libqgis-core{QGIS_ABI}
 Architecture: any
@@ -154,13 +170,13 @@ Description: QGIS - shared network analysis library
  .
  This package contains the shared network analysis library.
 
-Package: libqgisgrass{QGIS_ABI}
+Package: libqgisgrass{GRASSVER}-{QGIS_ABI}
 Architecture: any
 Section: libs
 Depends:
  ${shlibs:Depends},
  ${misc:Depends}
-Replaces: libqgis{QGIS_ABI}
+Replaces: libqgis{QGIS_ABI}, libqgisgrass{QGIS_ABI}
 Description: QGIS - shared grass library
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
@@ -229,12 +245,13 @@ Depends:
  libgsl0-dev,
  libpq-dev,
  libproj-dev,
+ libqgis-app{QGIS_ABI} (= ${binary:Version}),
  libqgis-core{QGIS_ABI} (= ${binary:Version}),
  libqgis-gui{QGIS_ABI} (= ${binary:Version}),
  libqgis-analysis{QGIS_ABI} (= ${binary:Version}),
  libqgis-networkanalysis{QGIS_ABI} (= ${binary:Version}),
  libqgis-server{QGIS_ABI} (= ${binary:Version}),
- libqgisgrass{QGIS_ABI} (= ${binary:Version}),
+ libqgisgrass{GRASSVER}-{QGIS_ABI} (= ${binary:Version}),
  libqgispython{QGIS_ABI} (= ${binary:Version}),
  libqt4-dev (>= 4.7.0),
  libsqlite3-dev,
@@ -259,12 +276,13 @@ Architecture: any
 Section: debug
 Priority: extra
 Depends:
+ libqgis-app{QGIS_ABI} (= ${binary:Version}),
  libqgis-core{QGIS_ABI} (= ${binary:Version}),
  libqgis-gui{QGIS_ABI} (= ${binary:Version}),
  libqgis-analysis{QGIS_ABI} (= ${binary:Version}),
  libqgis-networkanalysis{QGIS_ABI} (= ${binary:Version}),
  libqgis-server{QGIS_ABI} (= ${binary:Version}),
- libqgisgrass{QGIS_ABI} (= ${binary:Version}),
+ libqgisgrass{GRASSVER}-{QGIS_ABI} (= ${binary:Version}),
  libqgispython{QGIS_ABI} (= ${binary:Version}),
  ${misc:Depends}
 Suggests: gdb
@@ -306,8 +324,7 @@ Description: GRASS plugin for QGIS
 Package: qgis-plugin-grass-common
 Architecture: all
 Depends:
-#saucy trusty# python2.7,
-#precise# python,
+ ${python:Depends},
  ${misc:Depends}
 Breaks: qgis-common (<< 1.5)
 Replaces: qgis-common (<< 1.5)

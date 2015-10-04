@@ -1,0 +1,1 @@
+qgis-plugin-globe-common: package-contains-broken-symlink usr/share/qgis/globe/world.tif ../../osgearth/data/world.tif

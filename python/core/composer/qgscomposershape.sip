@@ -65,7 +65,7 @@ class QgsComposerShape: QgsComposerItem
     */
     void setSceneRect( const QRectF& rectangle );
 
-    //Overriden to return shape type
+    //Overridden to return shape type
     virtual QString displayName() const;
 
   protected:

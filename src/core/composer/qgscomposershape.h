@@ -89,7 +89,7 @@ class CORE_EXPORT QgsComposerShape: public QgsComposerItem
     */
     void setSceneRect( const QRectF& rectangle ) override;
 
-    //Overriden to return shape type
+    //Overridden to return shape type
     virtual QString displayName() const override;
 
   protected:

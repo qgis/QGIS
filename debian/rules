@@ -173,6 +173,7 @@ $(2): $(1)
 		-e "s/\{QGIS_ABI\}/$(QGIS_ABI)/g" \
 		-e "s/\{GRASS\}/$(GRASS)/g" \
 		-e "s/\{GRASSVER\}/$(GRASSVER)/g" \
+		-e "s/\{GRASSVER_QGISABI\}/$(GRASSVER)-$(QGIS_ABI)/g" \
 		$$^ >$$@
 
 templates:: $(2)
@@ -182,13 +183,14 @@ templateclean::
 endef
 
 $(foreach t,$(wildcard debian/*.in),$(eval $(call gentemplate,$(t),$(basename $(t)))))
+$(foreach t,$(wildcard debian/*{GRASSVER_QGIS_ABI}*),$(eval $(call gentemplate,$(t),$(subst {GRASSVER_QGIS_ABI},$(GRASSVER)-$(QGIS_ABI),$(t)))))
 $(foreach t,$(wildcard debian/*{QGIS_ABI}*),$(eval $(call gentemplate,$(t),$(subst {QGIS_ABI},$(QGIS_ABI),$(t)))))
 
 cleantemplates:
 	$(MAKE) -f debian/rules templateclean
 	$(MAKE) -f debian/rules debian/control debian/compat
 
-binary binary-arch binary-indep build build-arch build-indep clean install install-arch install-indep:
+clean binary install:
 	dh $@ --with python2 --parallel --builddirectory=$(BUILDDIR)
 
 override_dh_clean: cleantemplates
@@ -264,6 +266,7 @@ override_dh_auto_install:
 
 	# qgis binary wrappers
 	install -o root -g root -m 755 -d $(CURDIR)/debian/qgis-plugin-grass/usr/bin
+	sed -r -e "s/\{GRASS\}/$(GRASS)/g" $(CURDIR)/debian/qgis.sh.in >$(CURDIR)/debian/qgis.sh
 	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis-plugin-grass/usr/bin/qgis
 	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis-plugin-grass/usr/bin/qbrowser
 
@@ -276,6 +279,12 @@ override_dh_install:
 	# remove unwanted files
 	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/doc/api/installdox
 	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/doc/api/html/jquery.js
+	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/doc/api/jquery.js
+
+	# replace leaflet and jquery urls
+	perl -i -p \
+		-e 's#http://.*/leaflet.css#leaflet/leaflet.css#;s#http://.*/leaflet.js#leaflet/leaflet.js#;s#http://.*/jquery-.*.min.js#jquery-min.js#' \
+		$(CURDIR)/debian/tmp/usr/share/qgis/doc/developersmap.html
 
 	# Don't include a copy of the world.tif also included in osgearth-data
 	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/globe/world.tif
@@ -303,6 +312,7 @@ override_dh_installmime:
 
 override_dh_python2:
 	dh_python2 --no-guessing-versions
+	dh_python2 --no-guessing-versions usr/share/qgis/grass/scripts
 	dh_sip -ppython-qgis
 
 override_dh_compress:
