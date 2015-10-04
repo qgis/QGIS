@@ -201,7 +201,7 @@ void QgsRendererV2PropertiesDialog::rendererChanged()
     mActiveWidget = w;
     stackedWidget->addWidget( mActiveWidget );
     stackedWidget->setCurrentWidget( mActiveWidget );
-    if ( mMapCanvas )
+    if ( mMapCanvas && mActiveWidget->renderer() )
       mActiveWidget->setMapCanvas( mMapCanvas );
   }
   else
