@@ -913,7 +913,7 @@ int QgsWFSProvider::readAttributesFromSchema( QDomDocument& schemaDoc, QString& 
 
     //find <complexType name=complexTypeType
     QDomNodeList complexTypeNodeList = schemaElement.elementsByTagNameNS( "http://www.w3.org/2001/XMLSchema", "complexType" );
-    for ( uint i = 0; i < complexTypeNodeList.length(); ++i )
+    for ( int i = 0; i < complexTypeNodeList.size(); ++i )
     {
       if ( complexTypeNodeList.at( i ).toElement().attribute( "name" ) == complexTypeType )
       {
@@ -937,7 +937,7 @@ int QgsWFSProvider::readAttributesFromSchema( QDomDocument& schemaDoc, QString& 
 
   bool foundGeometryAttribute = false;
 
-  for ( uint i = 0; i < attributeNodeList.length(); ++i )
+  for ( int i = 0; i < attributeNodeList.size(); ++i )
   {
     QDomElement attributeElement = attributeNodeList.at( i ).toElement();
     //attribute name

@@ -2,6 +2,7 @@
 #define QGSRULEBASEDLABELING_H
 
 #include <QStringList>
+#include <QMap>
 
 #include "qgsvectorlayerlabeling.h"
 
