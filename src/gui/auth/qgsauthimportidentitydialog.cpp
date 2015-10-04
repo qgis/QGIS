@@ -71,7 +71,7 @@ void QgsAuthImportIdentityDialog::populateIdentityType()
 {
   if ( mIdentityType == CertIdentity )
   {
-    stkwBundleType->setShown( true );
+    stkwBundleType->setVisible( true );
 
     cmbIdentityTypes->addItem( tr( "PKI PEM/DER Certificate Paths" ),
                                QVariant( QgsAuthImportIdentityDialog::PkiPaths ) );
