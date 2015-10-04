@@ -126,10 +126,6 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
      * @note this function was added in version 2.7 */
     static QString developersMapFilePath();
 
-    /** Returns the path to the whats new html page
-     * @note this function was added in version 2.11 */
-    static QString whatsNewFilePath();
-
     /** Returns the path to the sponsors file. */
     static QString sponsorsFilePath();
 
