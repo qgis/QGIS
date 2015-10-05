@@ -329,7 +329,10 @@ void QgsGrassVectorMapLayer::close()
 {
   QgsDebugMsg( "close" );
   //removeUser(); // removed by map
-  mMap->closeLayer( this );
+  if ( mMap )
+  {
+    mMap->closeLayer( this );
+  }
 }
 
 QStringList QgsGrassVectorMapLayer::fieldNames( QgsFields & fields )

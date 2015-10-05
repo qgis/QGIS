@@ -588,8 +588,11 @@ void QgsGrassPlugin::onNewLayer( QString uri, QString name )
 {
   QgsDebugMsg( "uri = " + uri + " name = " + name );
   QgsVectorLayer* vectorLayer = qGisInterface->addVectorLayer( uri, name, "grass" );
-  vectorLayer->startEditing();
-  qGisInterface->setActiveLayer( vectorLayer );
+  if ( vectorLayer )
+  {
+    vectorLayer->startEditing();
+    qGisInterface->setActiveLayer( vectorLayer );
+  }
 }
 
 void QgsGrassPlugin::postRender( QPainter *painter )

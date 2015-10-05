@@ -37,9 +37,10 @@
 #include <QTextEdit>
 
 //----------------------- QgsGrassItemActions ------------------------------
-QgsGrassItemActions::QgsGrassItemActions( QgsGrassObject grassObject, QObject *parent )
+QgsGrassItemActions::QgsGrassItemActions( QgsGrassObject grassObject, bool valid, QObject *parent )
     : QObject( parent )
     , mGrassObject( grassObject )
+    , mValid( valid )
 {
 }
 
@@ -79,7 +80,8 @@ QList<QAction*> QgsGrassItemActions::actions()
     list << deleteAction;
   }
 
-  if ( mGrassObject.type() == QgsGrassObject::Mapset || mGrassObject.type() == QgsGrassObject::Vector )
+  if (( mGrassObject.type() == QgsGrassObject::Mapset || mGrassObject.type() == QgsGrassObject::Vector )
+      && mValid )
   {
     // TODO: disable new layer actions on maps currently being edited
     QAction* newPointAction = new QAction( tr( "New Point Layer" ), this );
@@ -313,7 +315,7 @@ QgsGrassLocationItem::QgsGrassLocationItem( QgsDataItem* parent, QString dirPath
   QString gisdbase = dir.path();
 
   mGrassObject = QgsGrassObject( gisdbase, mName, "", "", QgsGrassObject::Location );
-  mActions = new QgsGrassItemActions( mGrassObject, this );
+  mActions = new QgsGrassItemActions( mGrassObject, true, this );
 
   mIconName = "grass_location.png";
 
@@ -360,7 +362,7 @@ QgsGrassMapsetItem::QgsGrassMapsetItem( QgsDataItem* parent, QString dirPath, QS
   QString gisdbase = dir.path();
 
   mGrassObject = QgsGrassObject( gisdbase, location, mName, "", QgsGrassObject::Mapset );
-  mActions = new QgsGrassItemActions( mGrassObject, this );
+  mActions = new QgsGrassItemActions( mGrassObject, true, this );
 
   mIconName = "grass_mapset.png";
 }
@@ -920,7 +922,7 @@ QgsGrassObjectItem::QgsGrassObjectItem( QgsDataItem* parent, QgsGrassObject gras
     , mActions( 0 )
 {
   setState( Populated ); // no children, to show non expandable in browser
-  mActions = new QgsGrassItemActions( mGrassObject, this );
+  mActions = new QgsGrassItemActions( mGrassObject, true, this );
 }
 
 bool QgsGrassObjectItem::equal( const QgsDataItem *other )
@@ -946,7 +948,7 @@ QgsGrassVectorItem::QgsGrassVectorItem( QgsDataItem* parent, QgsGrassObject gras
     setState( Populated );
     setIconName( "/mIconDelete.png" );
   }
-  mActions = new QgsGrassItemActions( mGrassObject, this );
+  mActions = new QgsGrassItemActions( mGrassObject, mValid, this );
 
   QString watchPath = mGrassObject.mapsetPath() + "/vector/" + mGrassObject.name();
   QgsDebugMsg( "add watcher on " + watchPath );

@@ -34,7 +34,7 @@ class QgsGrassItemActions : public QObject
 {
     Q_OBJECT
   public:
-    QgsGrassItemActions( QgsGrassObject grassObject, QObject *parent );
+    QgsGrassItemActions( QgsGrassObject grassObject, bool valid, QObject *parent );
 
     QList<QAction*> actions();
 
@@ -52,6 +52,8 @@ class QgsGrassItemActions : public QObject
     QString newVectorMap();
     void newLayer( QString type );
     QgsGrassObject mGrassObject;
+    // Grass object is valid
+    bool mValid;
 };
 
 class QgsGrassObjectItemBase

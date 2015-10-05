@@ -336,7 +336,10 @@ void QgsGrassProvider::update()
 QgsGrassProvider::~QgsGrassProvider()
 {
   QgsDebugMsg( "entered" );
-  mLayer->close();
+  if ( mLayer )
+  {
+    mLayer->close();
+  }
 }
 
 
