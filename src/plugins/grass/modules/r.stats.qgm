@@ -21,5 +21,5 @@
         <option key="nv" advanced="yes" version_max="6.4"/>
         <option key="null_value" advanced="yes" version_min="7.0"/>
         <option key="nsteps" advanced="yes"/>
-	<file key="output" type="new" advanced="yes"/>
+	<file key="output" type="new"/>
 </qgisgrassmodule>
