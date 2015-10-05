@@ -296,6 +296,11 @@
                 <grass name="r.distance"/>
             </section>
         </section>
+        <section label="Query raster maps">
+                <grass name="r.what" version_max="6.4"/>
+                <grass name="r.what.coordinates" version_min="7.0"/>
+                <grass name="r.what.vectorpoints" version_min="7.0"/>
+        </section>
     </section>
 
     <section label="Vector">
