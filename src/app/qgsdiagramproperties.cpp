@@ -255,6 +255,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
       QSizeF size = settingList.at( 0 ).size;
       mBackgroundColorButton->setColor( settingList.at( 0 ).backgroundColor );
       mTransparencySpinBox->setValue( settingList.at( 0 ).transparency * 100.0 / 255.0 );
+      mTransparencySlider->setValue( mTransparencySpinBox->value() );
       mDiagramPenColorButton->setColor( settingList.at( 0 ).penColor );
       mPenWidthSpinBox->setValue( settingList.at( 0 ).penWidth );
       mDiagramSizeSpinBox->setValue(( size.width() + size.height() ) / 2.0 );
