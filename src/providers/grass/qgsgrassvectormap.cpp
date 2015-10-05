@@ -283,11 +283,6 @@ bool QgsGrassVectorMap::startEdit()
 
   mIsEdited = true;
 
-  Q_FOREACH ( QgsGrassVectorMapLayer *l, mLayers )
-  {
-    l->startEdit();
-  }
-
   mValid = true;
   printDebug();
 
@@ -312,10 +307,6 @@ bool QgsGrassVectorMap::closeEdit( bool newMap )
   closeAllIterators(); // blocking
 
   QgsGrass::lock();
-  Q_FOREACH ( QgsGrassVectorMapLayer *l, mLayers )
-  {
-    l->closeEdit();
-  }
 
   mOldLids.clear();
   mNewLids.clear();
@@ -383,6 +374,10 @@ QgsGrassVectorMapLayer * QgsGrassVectorMap::openLayer( int field )
     {
       QgsDebugMsg( "Layer exists" );
       layer = l;
+      if ( layer->userCount() == 0 )
+      {
+        layer->load();
+      }
     }
   }
 

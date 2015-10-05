@@ -475,6 +475,7 @@ void QgsGrassVectorMapLayer::closeEdit()
   if ( mDriver )
   {
     db_close_database_shutdown_driver( mDriver );
+    mDriver = 0;
   }
 }
 

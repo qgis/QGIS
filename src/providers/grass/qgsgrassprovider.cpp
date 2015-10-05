@@ -585,6 +585,7 @@ bool QgsGrassProvider::closeEdit( bool newMap, QgsVectorLayer *vectorLayer )
 
   mEditBuffer = 0;
   mEditLayer = 0;
+  mLayer->closeEdit();
   if ( mLayer->map()->closeEdit( newMap ) )
   {
     loadMapInfo();
@@ -592,6 +593,7 @@ bool QgsGrassProvider::closeEdit( bool newMap, QgsVectorLayer *vectorLayer )
     {
       vectorLayer->updateFields();
     }
+    connect( mLayer->map(), SIGNAL( dataChanged() ), SLOT( onDataChanged() ) );
     return true;
   }
   return false;
@@ -1006,7 +1008,10 @@ void QgsGrassProvider::startEditing( QgsVectorLayer *vectorLayer )
     return;
   }
 
+  // disconnect dataChanged() because the changes are done here and we know about them
+  disconnect( mLayer->map(), SIGNAL( dataChanged() ), this, SLOT( onDataChanged() ) );
   mLayer->map()->startEdit();
+  mLayer->startEdit();
 
   mEditBuffer = vectorLayer->editBuffer();
   connect( mEditBuffer, SIGNAL( featureAdded( QgsFeatureId ) ), SLOT( onFeatureAdded( QgsFeatureId ) ) );
