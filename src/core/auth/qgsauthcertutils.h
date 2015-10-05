@@ -24,6 +24,18 @@
 
 #include "qgsauthconfig.h"
 
+#if QT_VERSION >= 0x050000
+#define SSL_ISSUER_INFO( var, prop ) var.issuerInfo( prop ).first()
+#else
+#define SSL_ISSUER_INFO( var, prop ) var.issuerInfo( prop )
+#endif
+
+#if QT_VERSION >= 0x050000
+#define SSL_SUBJECT_INFO( var, prop ) var.subjectInfo( prop ).first()
+#else
+#define SSL_SUBJECT_INFO( var, prop ) var.subjectInfo( prop )
+#endif
+
 /** \ingroup core
  * \brief Utilities for working with certificates and keys
  */

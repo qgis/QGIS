@@ -62,7 +62,7 @@ QgsAuthSslConfigWidget::QgsAuthSslConfigWidget( QWidget *parent,
 
   setUpSslConfigTree();
 
-  lblLoadedConfig->setShown( false );
+  lblLoadedConfig->setVisible( false );
   lblLoadedConfig->setText( "" );
 
   connect( leHost, SIGNAL( textChanged( QString ) ),
@@ -207,7 +207,7 @@ void QgsAuthSslConfigWidget::setSslCertificate( const QSslCertificate &cert, con
 
   emit certFoundInAuthDatabase( !config.isNull() );
 
-  lblLoadedConfig->setShown( true );
+  lblLoadedConfig->setVisible( true );
   if ( !config.isNull() )
   {
     loadSslCustomConfig( config );
@@ -246,7 +246,7 @@ void QgsAuthSslConfigWidget::loadSslCustomConfig( const QgsAuthConfigSslServer &
   setSslProtocol( config.sslProtocol() );
   setSslPeerVerify( config.sslPeerVerifyMode(), config.sslPeerVerifyDepth() );
 
-  lblLoadedConfig->setShown( true );
+  lblLoadedConfig->setVisible( true );
   lblLoadedConfig->setText( configFoundText_() );
 }
 
@@ -266,7 +266,7 @@ void QgsAuthSslConfigWidget::resetSslCertConfig()
   leCommonName->setStyleSheet( "" );
   leHost->clear();
 
-  lblLoadedConfig->setShown( false );
+  lblLoadedConfig->setVisible( false );
   lblLoadedConfig->setText( "" );
   resetSslProtocol();
   resetSslIgnoreErrors();

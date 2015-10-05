@@ -276,7 +276,7 @@ bool QgsAttributeAction::readXML( const QDomNode& layer_node )
   if ( !aaNode.isNull() )
   {
     QDomNodeList actionsettings = aaNode.childNodes();
-    for ( unsigned int i = 0; i < actionsettings.length(); ++i )
+    for ( int i = 0; i < actionsettings.size(); ++i )
     {
       QDomElement setting = actionsettings.item( i ).toElement();
       addAction(( QgsAction::ActionType ) setting.attributeNode( "type" ).value().toInt(),

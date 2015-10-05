@@ -78,7 +78,7 @@ QgsAuthCertInfo::QgsAuthCertInfo( QSslCertificate cert,
 
   setUpCertDetailsTree();
 
-  grpbxTrust->setShown( mManageTrust );
+  grpbxTrust->setVisible( mManageTrust );
 
   // trust policy is still queried, even if not managing the policy, so public getter will work
   mDefaultTrustPolicy = QgsAuthManager::instance()->defaultCertTrustPolicy();
@@ -103,7 +103,7 @@ QgsAuthCertInfo::~QgsAuthCertInfo()
 
 void QgsAuthCertInfo::setupError( const QString &msg )
 {
-  lblError->setShown( true );
+  lblError->setVisible( true );
   QString out = tr( "<b>Setup ERROR:</b>\n\n" );
   out += msg;
   lblError->setText( out );
@@ -526,22 +526,22 @@ void QgsAuthCertInfo::populateInfoDetailsSection()
 
   // Subject Info
   addFieldItem( mGrpSubj, tr( "Country (C)" ),
-                mCurrentQCert.subjectInfo( QSslCertificate::CountryName ),
+                SSL_SUBJECT_INFO( mCurrentQCert, QSslCertificate::CountryName ),
                 LineEdit );
   addFieldItem( mGrpSubj, tr( "State/Province (ST)" ),
-                mCurrentQCert.subjectInfo( QSslCertificate::StateOrProvinceName ),
+                SSL_SUBJECT_INFO( mCurrentQCert, QSslCertificate::StateOrProvinceName ),
                 LineEdit );
   addFieldItem( mGrpSubj, tr( "Locality (L)" ),
-                mCurrentQCert.subjectInfo( QSslCertificate::LocalityName ),
+                SSL_SUBJECT_INFO( mCurrentQCert, QSslCertificate::LocalityName ),
                 LineEdit );
   addFieldItem( mGrpSubj, tr( "Organization (O)" ),
-                mCurrentQCert.subjectInfo( QSslCertificate::Organization ),
+                SSL_SUBJECT_INFO( mCurrentQCert, QSslCertificate::Organization ),
                 LineEdit );
   addFieldItem( mGrpSubj, tr( "Organizational unit (OU)" ),
-                mCurrentQCert.subjectInfo( QSslCertificate::OrganizationalUnitName ),
+                SSL_SUBJECT_INFO( mCurrentQCert, QSslCertificate::OrganizationalUnitName ),
                 LineEdit );
   addFieldItem( mGrpSubj, tr( "Common name (CN)" ),
-                mCurrentQCert.subjectInfo( QSslCertificate::CommonName ),
+                SSL_SUBJECT_INFO( mCurrentQCert, QSslCertificate::CommonName ),
                 LineEdit );
   addFieldItem( mGrpSubj, tr( "Email address (E)" ),
                 mCurrentACert.subjectInfo().value( QCA::Email ),
@@ -594,22 +594,22 @@ void QgsAuthCertInfo::populateInfoDetailsSection()
 
   // Issuer Info
   addFieldItem( mGrpIssu, tr( "Country (C)" ),
-                mCurrentQCert.issuerInfo( QSslCertificate::CountryName ),
+                SSL_ISSUER_INFO( mCurrentQCert, QSslCertificate::CountryName ),
                 LineEdit );
   addFieldItem( mGrpIssu, tr( "State/Province (ST)" ),
-                mCurrentQCert.issuerInfo( QSslCertificate::StateOrProvinceName ),
+                SSL_ISSUER_INFO( mCurrentQCert, QSslCertificate::StateOrProvinceName ),
                 LineEdit );
   addFieldItem( mGrpIssu, tr( "Locality (L)" ),
-                mCurrentQCert.issuerInfo( QSslCertificate::LocalityName ),
+                SSL_ISSUER_INFO( mCurrentQCert, QSslCertificate::LocalityName ),
                 LineEdit );
   addFieldItem( mGrpIssu, tr( "Organization (O)" ),
-                mCurrentQCert.issuerInfo( QSslCertificate::Organization ),
+                SSL_ISSUER_INFO( mCurrentQCert, QSslCertificate::Organization ),
                 LineEdit );
   addFieldItem( mGrpIssu, tr( "Organizational unit (OU)" ),
-                mCurrentQCert.issuerInfo( QSslCertificate::OrganizationalUnitName ),
+                SSL_ISSUER_INFO( mCurrentQCert, QSslCertificate::OrganizationalUnitName ),
                 LineEdit );
   addFieldItem( mGrpIssu, tr( "Common name (CN)" ),
-                mCurrentQCert.issuerInfo( QSslCertificate::CommonName ),
+                SSL_ISSUER_INFO( mCurrentQCert, QSslCertificate::CommonName ),
                 LineEdit );
   addFieldItem( mGrpIssu, tr( "Email address (E)" ),
                 mCurrentACert.issuerInfo().value( QCA::Email ),
