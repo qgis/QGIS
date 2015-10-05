@@ -269,7 +269,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
      *   @return line number
      *   @return -1 error
      */
-    int rewriteLine( int line, int type, struct line_pnts *Points, struct line_cats *Cats );
+    int rewriteLine( int lid, int type, struct line_pnts *Points, struct line_cats *Cats );
 
     /** Delete line
      *   @return 0 OK
@@ -460,6 +460,10 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
 
     //  next digitized feature GRASS type
     int mNewFeatureType;
+
+    // points and cats used only for editing
+    struct line_pnts *mPoints;
+    struct line_cats *mCats;
 
     friend class QgsGrassFeatureSource;
     friend class QgsGrassFeatureIterator;
