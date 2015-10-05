@@ -263,15 +263,20 @@ void QgsEllipseSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Rend
 
   //priority for rotation: 1. data defined symbol level, 2. symbol layer rotation (mAngle)
   double rotation = 0.0;
+
   if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_ROTATION ) )
   {
     context.setOriginalValueVariable( mAngle );
     rotation = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_ROTATION, context, mAngle ).toDouble() + mLineAngle;
+
+    const QgsMapToPixel& m2p = context.renderContext().mapToPixel();
+    rotation += m2p.mapRotation();
   }
   else if ( !qgsDoubleNear( mAngle + mLineAngle, 0.0 ) )
   {
     rotation = mAngle + mLineAngle;
   }
+
   if ( rotation )
     off = _rotatedOffset( off, rotation );
 
