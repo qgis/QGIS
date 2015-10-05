@@ -1083,8 +1083,22 @@ QgsAbstractGeometryV2* QgsGeos::overlay( const QgsAbstractGeometryV2& geom, Over
         opGeom.reset( GEOSDifference_r( geosinit.ctxt, mGeos, geosGeom.get() ) );
         break;
       case UNION:
-        opGeom.reset( GEOSUnion_r( geosinit.ctxt, mGeos, geosGeom.get() ) );
-        break;
+      {
+        GEOSGeometry *unionGeometry = GEOSUnion_r( geosinit.ctxt, mGeos, geosGeom.get() );
+
+        if ( unionGeometry && GEOSGeomTypeId_r( geosinit.ctxt, unionGeometry ) == GEOS_MULTILINESTRING )
+        {
+          GEOSGeometry *mergedLines = GEOSLineMerge_r( geosinit.ctxt, unionGeometry );
+          if ( mergedLines )
+          {
+            GEOSGeom_destroy_r( geosinit.ctxt, unionGeometry );
+            unionGeometry = mergedLines;
+          }
+        }
+
+        opGeom.reset( unionGeometry );
+      }
+      break;
       case SYMDIFFERENCE:
         opGeom.reset( GEOSSymDifference_r( geosinit.ctxt, mGeos, geosGeom.get() ) );
         break;

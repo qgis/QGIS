@@ -1377,5 +1377,17 @@ class TestQgsGeometry(TestCase):
         wkt = p.exportToWkt()
         assert compareWkt(expWkt, wkt), "testRegression13055 failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
 
+    def testRegression13274(self):
+        """ See http://hub.qgis.org/issues/13274
+            Testing that two combined linestrings produce another line string if possible
+        """
+        a = QgsGeometry.fromWkt('LineString (0 0, 1 0)')
+        b = QgsGeometry.fromWkt('LineString (1 0, 2 0)')
+        c = a.combine(b)
+
+        expWkt = 'LineString (0 0, 1 0, 2 0)'
+        wkt = c.exportToWkt()
+        assert compareWkt(expWkt, wkt), "testRegression13274 failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
+
 if __name__ == '__main__':
     unittest.main()

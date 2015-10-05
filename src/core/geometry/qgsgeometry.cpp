@@ -2297,6 +2297,3 @@ QDataStream& operator>>( QDataStream& in, QgsGeometry& geometry )
   geometry.fromWkb(( unsigned char* )data, byteArray.size() );
   return in;
 }
-
-
-
