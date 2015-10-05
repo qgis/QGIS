@@ -75,6 +75,7 @@ void QgsConfigureShortcutsDialog::populateActions()
   QList<QAction*> actions = QgsShortcutsManager::instance()->listActions();
 
   QList<QTreeWidgetItem *> items;
+  items.reserve( actions.count() );
   for ( int i = 0; i < actions.count(); ++i )
   {
     QString actionText = actions[i]->text();

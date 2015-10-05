@@ -359,8 +359,7 @@ void QgsCptCityColorRampV2Dialog::on_pbtnLicenseDetails_pressed()
   QString path, title, copyFile, descFile;
 
   // get basic information, depending on if is color ramp or directory
-  QgsCptCityDataItem *item =
-    dynamic_cast< QgsCptCityDataItem* >( mModel->dataItem( mTreeFilter->mapToSource( mTreeView->currentIndex() ) ) );
+  QgsCptCityDataItem *item = mModel->dataItem( mTreeFilter->mapToSource( mTreeView->currentIndex() ) );
   if ( ! item )
     return;
 

@@ -970,7 +970,7 @@ namespace pal
   {
     ASSERT( a_node );
 
-    int firstTime = true;
+    bool firstTime = true;
     Rect rect;
     InitRect( &rect );
 

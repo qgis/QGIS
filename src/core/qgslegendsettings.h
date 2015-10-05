@@ -70,10 +70,10 @@ class CORE_EXPORT QgsLegendSettings
     int columnCount() const { return mColumnCount; }
     void setColumnCount( int c ) { mColumnCount = c;}
 
-    int splitLayer() const { return mSplitLayer; }
+    bool splitLayer() const { return mSplitLayer; }
     void setSplitLayer( bool s ) { mSplitLayer = s;}
 
-    int equalColumnWidth() const { return mEqualColumnWidth; }
+    bool equalColumnWidth() const { return mEqualColumnWidth; }
     void setEqualColumnWidth( bool s ) { mEqualColumnWidth = s;}
 
     QColor fontColor() const {return mFontColor;}

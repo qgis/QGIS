@@ -285,7 +285,7 @@ const QgsPkiBundle QgsPkiBundle::fromPkcs12Paths( const QString &bundlepath,
       if ( cert_chain.size() > 1 )
       {
         QList<QSslCertificate> ca_chain;
-        Q_FOREACH ( QCA::Certificate ca_cert, cert_chain )
+        Q_FOREACH ( const QCA::Certificate& ca_cert, cert_chain )
         {
           if ( ca_cert != cert_chain.primary() )
           {

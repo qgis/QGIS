@@ -79,6 +79,7 @@ bool QgsLabelSearchTree::insertLabel( LabelPosition* labelPos, int featureId, co
   labelPos->getBoundingBox( c_min, c_max );
 
   QVector<QgsPoint> cornerPoints;
+  cornerPoints.reserve( 4 );
   for ( int i = 0; i < 4; ++i )
   {
     cornerPoints.push_back( QgsPoint( labelPos->getX( i ), labelPos->getY( i ) ) );

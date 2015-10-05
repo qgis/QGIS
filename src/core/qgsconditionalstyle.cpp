@@ -88,6 +88,7 @@ bool QgsConditionalLayerStyles::readXml( const QDomNode &node )
     QDomElement fieldel = nodelist.at( i ).toElement();
     QString fieldName = fieldel.attribute( "fieldname" );
     QDomNodeList stylenodelist = fieldel.toElement().elementsByTagName( "style" );
+    styles.reserve( stylenodelist.count() );
     for ( int i = 0;i < stylenodelist.count(); i++ )
     {
       QDomElement styleElm = stylenodelist.at( i ).toElement();

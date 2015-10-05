@@ -72,7 +72,8 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRendererV2
      * @see setInvertRamp
      * @see colorRamp
     */
-    double invertRamp() const { return mInvertRamp; }
+    bool invertRamp() const { return mInvertRamp; }
+
     /** Sets whether the ramp is inverted
      * @param invert set to true to invert color ramp
      * @see invertRamp

@@ -686,6 +686,7 @@ void QgsProjectProperties::apply()
 
   //save project scales
   QStringList myScales;
+  myScales.reserve( lstScales->count() );
   for ( int i = 0; i < lstScales->count(); ++i )
   {
     myScales.append( lstScales->item( i )->text() );

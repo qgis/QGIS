@@ -1847,6 +1847,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
         appendGeomParam( features->constGeometry(), params );
       }
 
+      params.reserve( fieldId.size() );
       for ( int i = 0; i < fieldId.size(); i++ )
       {
         int attrIdx = fieldId[i];
@@ -2432,6 +2433,7 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
 QgsAttributeList QgsPostgresProvider::attributeIndexes()
 {
   QgsAttributeList lst;
+  lst.reserve( mAttributeFields.count() );
   for ( int i = 0; i < mAttributeFields.count(); ++i )
     lst.append( i );
   return lst;

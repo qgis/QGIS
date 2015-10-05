@@ -274,7 +274,7 @@ class QgsFeatureRendererV2
                                   bool drawVertexMarker );
 
     //! render editing vertex marker at specified point
-    void renderVertexMarker( QPointF& pt, QgsRenderContext& context );
+    void renderVertexMarker( const QPointF& pt, QgsRenderContext& context );
     //! render editing vertex marker for a polyline
     void renderVertexMarkerPolyline( QPolygonF& pts, QgsRenderContext& context );
     //! render editing vertex marker for a polygon

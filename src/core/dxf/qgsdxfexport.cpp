@@ -4127,7 +4127,7 @@ QString QgsDxfExport::layerName( const QString &id, const QgsFeature &f ) const
 
 QString QgsDxfExport::dxfEncoding( const QString &name )
 {
-  Q_FOREACH ( QByteArray codec, QTextCodec::availableCodecs() )
+  Q_FOREACH ( const QByteArray& codec, QTextCodec::availableCodecs() )
   {
     if ( name != codec )
       continue;

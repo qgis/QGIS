@@ -683,6 +683,7 @@ bool QgsEllipseSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFa
     else
     {
       QgsPolyline line;
+      line.reserve( 40 );
       double stepsize = 2 * M_PI / 40;
       for ( int i = 0; i < 39; ++i )
       {

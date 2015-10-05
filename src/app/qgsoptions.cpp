@@ -1911,6 +1911,7 @@ void QgsOptions::on_pbnExportScales_clicked()
   }
 
   QStringList myScales;
+  myScales.reserve( mListGlobalScales->count() );
   for ( int i = 0; i < mListGlobalScales->count(); ++i )
   {
     myScales.append( mListGlobalScales->item( i )->text() );

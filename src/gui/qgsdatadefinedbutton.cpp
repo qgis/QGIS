@@ -643,6 +643,7 @@ void QgsDataDefinedButton::registerEnabledWidget( QWidget* wdgt )
 QList<QWidget*> QgsDataDefinedButton::registeredEnabledWidgets()
 {
   QList<QWidget*> wdgtList;
+  wdgtList.reserve( mEnabledWidgets.size() );
   for ( int i = 0; i < mEnabledWidgets.size(); ++i )
   {
     wdgtList << mEnabledWidgets.at( i );
@@ -678,6 +679,7 @@ void QgsDataDefinedButton::registerCheckedWidget( QWidget* wdgt )
 QList<QWidget*> QgsDataDefinedButton::registeredCheckedWidgets()
 {
   QList<QWidget*> wdgtList;
+  wdgtList.reserve( mCheckedWidgets.size() );
   for ( int i = 0; i < mCheckedWidgets.size(); ++i )
   {
     wdgtList << mCheckedWidgets.at( i );

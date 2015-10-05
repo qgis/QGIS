@@ -575,7 +575,7 @@ class CORE_EXPORT QgsGeometry
       public:
         Error() : message( "none" ), hasLocation( false ) {}
         explicit Error( QString m ) : message( m ), hasLocation( false ) {}
-        Error( QString m, QgsPoint p ) : message( m ), location( p ), hasLocation( true ) {}
+        Error( QString m, const QgsPoint& p ) : message( m ), location( p ), hasLocation( true ) {}
 
         QString what() { return message; }
         QgsPoint where() { return location; }

@@ -328,7 +328,7 @@ QVector<QgsDataItem*>QgsGrassLocationItem::createChildren()
   QDir dir( mDirPath );
 
   QStringList entries = dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name );
-  foreach ( QString name, entries )
+  foreach ( const QString& name, entries )
   {
     QString path = dir.absoluteFilePath( name );
 
@@ -420,7 +420,7 @@ QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
   QVector<QgsDataItem*> items;
 
   QStringList vectorNames = QgsGrass::vectors( mDirPath );
-  Q_FOREACH ( QString name, vectorNames )
+  Q_FOREACH ( const QString& name, vectorNames )
   {
     if ( mRefreshLater )
     {
@@ -509,7 +509,7 @@ QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
       //map->setCapabilities( QgsDataItem::NoCapabilities ); // disable fertility
       map = new QgsGrassVectorItem( this, vectorObject, mapPath );
     }
-    foreach ( QString layerName, layerNames )
+    foreach ( const QString& layerName, layerNames )
     {
       // don't use QDir::separator(), windows work with '/' and backslash may be lost if
       // somewhere not properly escaped (there was bug in QgsMimeDataUtils for example)
@@ -548,7 +548,7 @@ QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
 
   QStringList rasterNames = QgsGrass::rasters( mDirPath );
 
-  foreach ( QString name, rasterNames )
+  foreach ( const QString& name, rasterNames )
   {
     if ( mRefreshLater )
     {
@@ -571,7 +571,7 @@ QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
   }
 
   QStringList groupNames = QgsGrass::groups( mDirPath );
-  foreach ( QString name, groupNames )
+  foreach ( const QString& name, groupNames )
   {
     if ( mRefreshLater )
     {
@@ -819,7 +819,7 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData * data, Qt::DropAction )
 
     // delete existing files (confirmed before in dialog)
     bool deleteOk = true;
-    foreach ( QString name, import->names() )
+    foreach ( const QString& name, import->names() )
     {
       QgsGrassObject obj( import->grassObject() );
       obj.setName( name );

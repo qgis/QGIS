@@ -329,7 +329,7 @@ void QgsAttributeTableDialog::columnBoxInit()
 
   QList<QgsField> fields = mLayer->fields().toList();
 
-  Q_FOREACH ( const QgsField field, fields )
+  Q_FOREACH ( const QgsField& field, fields )
   {
     int idx = mLayer->fieldNameIndex( field.name() );
     if ( idx < 0 )

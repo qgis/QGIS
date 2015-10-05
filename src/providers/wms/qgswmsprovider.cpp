@@ -3101,7 +3101,7 @@ void QgsWmsProvider::getLegendGraphicReplyFinished( const QImage& img )
   if ( ! img.isNull() )
   {
     mGetLegendGraphicImage = img;
-    mGetLegendGraphicExtent = QgsRectangle( reply->property( "legendExtent" ).value<QRectF>() );
+    mGetLegendGraphicExtent = QgsRectangle( reply->property( "legendExtent" ).toRectF() );
     mGetLegendGraphicScale = reply->property( "legendScale" ).value<double>();
 
 #ifdef QGISDEBUG

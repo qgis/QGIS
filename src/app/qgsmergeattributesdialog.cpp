@@ -449,6 +449,7 @@ QVariant QgsMergeAttributesDialog::sumAttribute( int col )
 QVariant QgsMergeAttributesDialog::concatenationAttribute( int col )
 {
   QStringList concatString;
+  concatString.reserve( mFeatureList.size() );
   for ( int i = 0; i < mFeatureList.size(); ++i )
   {
     concatString << mTableWidget->item( i + 1, col )->text();

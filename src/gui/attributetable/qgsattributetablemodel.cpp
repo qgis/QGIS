@@ -450,7 +450,9 @@ QModelIndexList QgsAttributeTableModel::idToIndexList( QgsFeatureId id ) const
   QModelIndexList indexes;
 
   int row = idToRow( id );
-  for ( int column = 0; column < columnCount(); ++column )
+  int columns = columnCount();
+  indexes.reserve( columns );
+  for ( int column = 0; column < columns; ++column )
   {
     indexes.append( index( row, column ) );
   }

@@ -156,7 +156,7 @@ class QgsSymbolV2
      * @note added in QGIS 2.9
      * @see setClipFeaturesToExtent
      */
-    double clipFeaturesToExtent() const;
+    bool clipFeaturesToExtent() const;
 
     QSet<QString> usedAttributes() const;
 

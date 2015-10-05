@@ -1425,6 +1425,7 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
   {
     QDomElement layerSetElem = layerSetNodeList.at( 0 ).toElement();
     QDomNodeList layerIdNodeList = layerSetElem.elementsByTagName( "Layer" );
+    layerSet.reserve( layerIdNodeList.size() );
     for ( int i = 0; i < layerIdNodeList.size(); ++i )
     {
       const QDomElement& layerIdElement = layerIdNodeList.at( i ).toElement();

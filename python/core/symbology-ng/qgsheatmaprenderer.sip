@@ -43,7 +43,8 @@ class QgsHeatmapRenderer : QgsFeatureRendererV2
      * @see setInvertRamp
      * @see colorRamp
     */
-    double invertRamp() const;
+    bool invertRamp() const;
+
     /** Sets whether the ramp is inverted
      * @param invert set to true to invert color ramp
      * @see invertRamp

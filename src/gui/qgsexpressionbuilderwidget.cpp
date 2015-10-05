@@ -285,6 +285,7 @@ void QgsExpressionBuilderWidget::loadFieldNames( const QgsFields& fields )
 
   QStringList fieldNames;
   //Q_FOREACH ( const QgsField& field, fields )
+  fieldNames.reserve( fields.count() );
   for ( int i = 0; i < fields.count(); ++i )
   {
     QString fieldName = fields[i].name();

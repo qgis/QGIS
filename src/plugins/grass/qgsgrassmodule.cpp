@@ -105,7 +105,7 @@ QString QgsGrassModule::findExec( QString file )
 #endif
 
   // Search for module
-  foreach ( QString path, QgsGrass::grassModulesPaths() )
+  foreach ( const QString& path, QgsGrass::grassModulesPaths() )
   {
     QString full = path + "/" + file;
     if ( QFile::exists( full ) )
@@ -712,7 +712,7 @@ void QgsGrassModule::run()
 
       // Print some important variables
       variables << "QGIS_PREFIX_PATH" << "QGIS_GRASS_CRS" << "GRASS_REGION";
-      foreach ( QString v, variables )
+      foreach ( const QString& v, variables )
       {
         mOutputTextBrowser->append( v + "=" + environment.value( v ) + "<BR>" );
       }

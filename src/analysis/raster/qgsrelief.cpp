@@ -674,6 +674,7 @@ QList< QgsRelief::ReliefColor > QgsRelief::calculateOptimizedReliefClasses()
   colorList.push_back( QColor( 255, 133, 92 ) );
   colorList.push_back( QColor( 204, 204, 204 ) );
 
+  resultList.reserve( classBreaks.size() );
   for ( int i = 1; i < classBreaks.size(); ++i )
   {
     double minElevation = minMax[0] + classBreaks[i - 1] * frequencyClassRange;

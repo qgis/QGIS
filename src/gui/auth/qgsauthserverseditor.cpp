@@ -195,7 +195,7 @@ void QgsAuthServersEditor::appendSslConfigsToItem( QList<QgsAuthConfigSslServer>
   QBrush redb( QgsAuthGuiUtils::redColor() );
 
   // Columns: Common Name, Host, Expiry Date
-  Q_FOREACH ( QgsAuthConfigSslServer config, configs )
+  Q_FOREACH ( const QgsAuthConfigSslServer& config, configs )
   {
     QSslCertificate cert( config.sslCertificate() );
     QString id( QgsAuthCertUtils::shaHexForCert( cert ) );

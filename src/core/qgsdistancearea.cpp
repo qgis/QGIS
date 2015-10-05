@@ -369,6 +369,7 @@ double QgsDistanceArea::measurePerimeter( const QgsGeometry* geometry ) const
   const QgsMultiSurfaceV2* multiSurf = dynamic_cast<const QgsMultiSurfaceV2*>( geomV2 );
   if ( multiSurf )
   {
+    surfaces.reserve(( surf ? 1 : 0 ) + multiSurf->numGeometries() );
     for ( int i = 0; i  < multiSurf->numGeometries(); ++i )
     {
       surfaces.append( static_cast<const QgsSurfaceV2*>( multiSurf->geometryN( i ) ) );
@@ -376,7 +377,6 @@ double QgsDistanceArea::measurePerimeter( const QgsGeometry* geometry ) const
   }
 
   double length = 0;
-  QList<QgsPointV2> pointList;
   QList<const QgsSurfaceV2*>::const_iterator surfaceIt = surfaces.constBegin();
   for ( ; surfaceIt != surfaces.constEnd(); ++surfaceIt )
   {

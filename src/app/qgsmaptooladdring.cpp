@@ -92,7 +92,7 @@ void QgsMapToolAddRing::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
     QgsCurveV2* curveToAdd = 0;
     if ( hasCurvedSegments && providerSupportsCurvedSegments )
     {
-      curveToAdd = dynamic_cast<QgsCurveV2*>( captureCurve()->clone() );
+      curveToAdd = captureCurve()->clone();
     }
     else
     {

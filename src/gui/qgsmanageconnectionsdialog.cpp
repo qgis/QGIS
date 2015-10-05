@@ -83,6 +83,7 @@ void QgsManageConnectionsDialog::doExportImport()
   }
 
   QStringList items;
+  items.reserve( selection.size() );
   for ( int i = 0; i < selection.size(); ++i )
   {
     items.append( selection.at( i )->text() );

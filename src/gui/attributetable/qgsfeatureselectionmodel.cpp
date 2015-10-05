@@ -171,7 +171,9 @@ QModelIndexList QgsFeatureSelectionModel::expandIndexToRow( const QModelIndex& i
   if ( !model )
     return indexes;
 
-  for ( int column = 0; column < model->columnCount(); ++column )
+  int columns = model->columnCount();
+  indexes.reserve( columns );
+  for ( int column = 0; column < columns; ++column )
   {
     indexes.append( model->index( row, column ) );
   }

@@ -274,7 +274,7 @@ void QgsCollapsibleGroupBoxBasic::toggleCollapsed()
       {
         if ( grpbox->syncGroup() == syncGroup() && grpbox->isEnabled() )
         {
-          if ( mShiftDown && grpbox == dynamic_cast<QgsCollapsibleGroupBoxBasic *>( this ) )
+          if ( mShiftDown && grpbox == this )
           {
             // expand current group box on shift-click
             setCollapsed( false );

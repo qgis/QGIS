@@ -1087,6 +1087,7 @@ PGresult *QgsPostgresConn::PQexecPrepared( QString stmtName, const QStringList &
   const char **param = new const char *[ params.size()];
   QList<QByteArray> qparam;
 
+  qparam.reserve( params.size() );
   for ( int i = 0; i < params.size(); i++ )
   {
     qparam << params[i].toUtf8();

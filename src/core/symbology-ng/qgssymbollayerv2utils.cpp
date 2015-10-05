@@ -733,6 +733,7 @@ static QPolygonF makeOffsetGeometry( const QgsPolyline& polyline )
 static QList<QPolygonF> makeOffsetGeometry( const QgsPolygon& polygon )
 {
   QList<QPolygonF> resultGeom;
+  resultGeom.reserve( polygon.size() );
   for ( int ring = 0; ring < polygon.size(); ++ring )
     resultGeom.append( makeOffsetGeometry( polygon[ ring ] ) );
   return resultGeom;
@@ -793,7 +794,7 @@ QList<QPolygonF> offsetLine( QPolygonF polyline, double dist, QGis::GeometryType
       else if ( QGis::flatType( tempGeometry->wkbType() ) == QGis::WKBMultiLineString )
       {
         QgsMultiPolyline tempMPolyline = tempGeometry->asMultiPolyline();
-
+        resultLine.reserve( tempMPolyline.count() );
         for ( int part = 0; part < tempMPolyline.count(); ++part )
         {
           resultLine.append( makeOffsetGeometry( tempMPolyline[ part ] ) );
@@ -804,7 +805,7 @@ QList<QPolygonF> offsetLine( QPolygonF polyline, double dist, QGis::GeometryType
       else if ( QGis::flatType( tempGeometry->wkbType() ) == QGis::WKBMultiPolygon )
       {
         QgsMultiPolygon tempMPolygon = tempGeometry->asMultiPolygon();
-
+        resultLine.reserve( tempMPolygon.count() );
         for ( int part = 0; part < tempMPolygon.count(); ++part )
         {
           resultLine.append( makeOffsetGeometry( tempMPolygon[ part ] ) );
@@ -2316,7 +2317,7 @@ bool QgsSymbolLayerV2Utils::displacementFromSldElement( QDomElement &element, QP
 }
 
 void QgsSymbolLayerV2Utils::labelTextToSld( QDomDocument &doc, QDomElement &element,
-    QString label, QFont font,
+    QString label, const QFont& font,
     QColor color, double size )
 {
   QDomElement labelElem = doc.createElement( "se:Label" );
@@ -3967,6 +3968,7 @@ QList<double> QgsSymbolLayerV2Utils::prettyBreaks( double minimum, double maximu
   //double maximumBreak = end * unit;
   int count = end - start;
 
+  breaks.reserve( count );
   for ( int i = 1; i < count + 1; i++ )
   {
     breaks.append( minimumBreak + i * unit );

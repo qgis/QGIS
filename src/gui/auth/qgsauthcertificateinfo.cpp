@@ -774,7 +774,7 @@ void QgsAuthCertInfo::populateInfoDetailsSection()
   QStringList keyusage;
   QStringList extkeyusage;
   QList<QCA::ConstraintType> certconsts = mCurrentACert.constraints();
-  Q_FOREACH ( QCA::ConstraintType certconst, certconsts )
+  Q_FOREACH ( const QCA::ConstraintType& certconst, certconsts )
   {
     if ( certconst.section() == QCA::ConstraintType::KeyUsage )
     {

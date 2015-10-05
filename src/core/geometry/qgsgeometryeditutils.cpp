@@ -42,6 +42,7 @@ int QgsGeometryEditUtils::addRing( QgsAbstractGeometryV2* geom, QgsCurveV2* ring
   }
   else if ( multiGeom )
   {
+    polygonList.reserve( multiGeom->numGeometries() );
     for ( int i = 0; i < multiGeom->numGeometries(); ++i )
     {
       polygonList.append( dynamic_cast< QgsCurvePolygonV2* >( multiGeom->geometryN( i ) ) );

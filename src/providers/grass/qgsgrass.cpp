@@ -1094,7 +1094,8 @@ QStringList QgsGrass::vectors( const QString& mapsetPath )
   QDir d = QDir( mapsetPath + "/vector" );
   d.setFilter( QDir::NoDotAndDotDot | QDir::Dirs );
 
-  for ( unsigned int i = 0; i < d.count(); i++ )
+  list.reserve( d.count() );
+  for ( unsigned int i = 0; i < d.count(); ++i )
   {
     /*
     if ( QFile::exists ( mapsetPath + "/vector/" + d[i] + "/head" ) )
@@ -1268,7 +1269,8 @@ QStringList QgsGrass::rasters( const QString& mapsetPath )
   QDir d = QDir( mapsetPath + "/cellhd" );
   d.setFilter( QDir::Files );
 
-  for ( unsigned int i = 0; i < d.count(); i++ )
+  list.reserve( d.count() );
+  for ( unsigned int i = 0; i < d.count(); ++i )
   {
     list.append( d[i] );
   }
@@ -1316,7 +1318,8 @@ QStringList QgsGrass::elements( const QString&  mapsetPath, const QString&  elem
     d.setFilter( QDir::Files );
   }
 
-  for ( unsigned int i = 0; i < d.count(); i++ )
+  list.reserve( d.count() );
+  for ( unsigned int i = 0; i < d.count(); ++i )
   {
     list.append( d[i] );
   }
@@ -1729,7 +1732,7 @@ QProcess *QgsGrass::startModule( const QString& gisdbase, const QString&  locati
   QString ownedMapset = mapset;
   if ( ownedMapset.isEmpty() )
   {
-    Q_FOREACH ( QString ms, mapsets( gisdbase, location ) )
+    Q_FOREACH ( const QString& ms, mapsets( gisdbase, location ) )
     {
       if ( isOwner( gisdbase, location, ms ) )
       {
@@ -2193,7 +2196,7 @@ void QgsGrass::insertRow( dbDriver *driver, const QString tableName,
   }
 
   QStringList valuesStringList;
-  foreach ( QVariant attribute, attributes )
+  foreach ( const QVariant& attribute, attributes )
   {
     QString valueString;
 

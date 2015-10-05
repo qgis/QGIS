@@ -61,6 +61,7 @@ void QgsLabelDialog::init()
   const QgsFields& myFields = mLabel->fields();
   QStringList myFieldStringList;
   myFieldStringList.append( "" );
+  myFieldStringList.reserve( 1 + myFields.count() );
   for ( int i = 0; i < myFields.count(); ++i )
   {
     myFieldStringList.append( myFields[i].name() );

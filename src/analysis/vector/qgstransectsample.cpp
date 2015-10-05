@@ -614,6 +614,7 @@ QgsGeometry* QgsTransectSample::clipBufferLine( const QgsGeometry* stratumGeom, 
       }
 
       int size = bufferPolygon.size();
+      mpl.reserve( size );
       for ( int j = 0; j < size; ++j )
       {
         mpl.append( bufferPolygon[j] );

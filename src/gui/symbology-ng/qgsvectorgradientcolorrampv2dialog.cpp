@@ -204,6 +204,7 @@ void QgsVectorGradientColorRampV2Dialog::updatePreview()
   if ( groupStops->isChecked() )
   {
     int count = treeStops->topLevelItemCount();
+    stops.reserve( count );
     for ( int i = 0; i < count; i++ )
     {
       QTreeWidgetItem* item = treeStops->topLevelItem( i );

@@ -190,7 +190,7 @@ class QgsVectorLayer : QgsMapLayer
     struct RangeData
     {
       RangeData();
-      RangeData( QVariant theMin, QVariant theMax, QVariant theStep );
+      RangeData( const QVariant& theMin, const QVariant& theMax, const QVariant& theStep );
 
       QVariant mMin;
       QVariant mMax;

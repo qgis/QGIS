@@ -746,7 +746,7 @@ void QgsGrassVectorMapLayer::deleteColumn( const QgsField &field, QString &error
     queries << QString( "CREATE UNIQUE INDEX %1_%2 ON %1 (%2)" ).arg( mFieldInfo->table ).arg( mFieldInfo->key );
     queries << "COMMIT";
     // Execute one after another to get possible error
-    Q_FOREACH ( QString query, queries )
+    Q_FOREACH ( const QString& query, queries )
     {
       QgsDebugMsg( "query = " + query );
       executeSql( query, error );
@@ -832,7 +832,8 @@ void QgsGrassVectorMapLayer::insertAttributes( int cat, const QgsFeature &featur
     if ( error.isEmpty() )
     {
       QList<QVariant> values;
-      for ( int i = 0; i < mAttributeFields.size(); i++ )
+      values.reserve( mAttributeFields.size() );
+      for ( int i = 0; i < mAttributeFields.size(); ++i )
       {
         values << QVariant();
       }

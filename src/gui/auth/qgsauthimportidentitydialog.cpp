@@ -414,7 +414,7 @@ bool QgsAuthImportIdentityDialog::validatePkiPkcs12()
     QList<QSslCertificate> ca_certs;
     if ( cert_chain.size() > 1 )
     {
-      Q_FOREACH ( QCA::Certificate ca_cert, cert_chain )
+      Q_FOREACH ( const QCA::Certificate& ca_cert, cert_chain )
       {
         if ( ca_cert != cert_chain.primary() )
         {

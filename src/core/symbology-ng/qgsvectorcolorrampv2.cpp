@@ -340,7 +340,8 @@ QList<QColor> QgsVectorRandomColorRampV2::randomColors( int count,
   //start hue at random angle
   double currentHueAngle = 360.0 * ( double )qrand() / RAND_MAX;
 
-  for ( int i = 0; i < count; i++ )
+  colors.reserve( count );
+  for ( int i = 0; i < count; ++i )
   {
     //increment hue by golden ratio (approx 137.507 degrees)
     //as this minimises hue nearness as count increases

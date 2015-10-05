@@ -126,7 +126,9 @@ QList< QgsRelation > QgsRelationManagerDialog::relations()
 {
   QList< QgsRelation > relations;
 
-  for ( int i = 0; i < mRelationsTable->rowCount(); ++i )
+  int rows = mRelationsTable->rowCount();
+  relations.reserve( rows );
+  for ( int i = 0; i < rows; ++i )
   {
     QgsRelation relation = mRelationsTable->item( i, 0 )->data( Qt::UserRole ).value<QgsRelation>();
     // The name can be editted in the table, so apply this one

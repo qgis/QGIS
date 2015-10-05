@@ -613,6 +613,7 @@ QgsAbstractGeometryV2 * QgsGrassVectorMap::lineGeometry( int id )
 
   int type = Vect_read_line( mMap, points, 0, id );
   QList<QgsPointV2> pointList;
+  pointList.reserve( points->n_points );
   for ( int i = 0; i < points->n_points; i++ )
   {
     pointList << QgsPointV2( is3d() ? QgsWKBTypes::PointZ : QgsWKBTypes::Point, points->x[i], points->y[i], points->z[i] );
@@ -664,6 +665,7 @@ QgsAbstractGeometryV2 * QgsGrassVectorMap::areaGeometry( int id )
   Vect_get_area_points( mMap, id, points );
 
   QList<QgsPointV2> pointList;
+  pointList.reserve( points->n_points );
   for ( int i = 0; i < points->n_points; i++ )
   {
     pointList << QgsPointV2( is3d() ? QgsWKBTypes::PointZ : QgsWKBTypes::Point, points->x[i], points->y[i], points->z[i] );
@@ -680,6 +682,7 @@ QgsAbstractGeometryV2 * QgsGrassVectorMap::areaGeometry( int id )
     int isle = Vect_get_area_isle( mMap, id, i );
     Vect_get_isle_points( mMap, isle, points );
 
+    pointList.reserve( points->n_points );
     for ( int i = 0; i < points->n_points; i++ )
     {
       pointList <<  QgsPointV2( is3d() ? QgsWKBTypes::PointZ : QgsWKBTypes::Point, points->x[i], points->y[i], points->z[i] );

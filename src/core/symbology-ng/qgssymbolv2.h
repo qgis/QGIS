@@ -213,7 +213,7 @@ class CORE_EXPORT QgsSymbolV2
      * @note added in QGIS 2.9
      * @see setClipFeaturesToExtent
      */
-    double clipFeaturesToExtent() const { return mClipFeaturesToExtent; }
+    bool clipFeaturesToExtent() const { return mClipFeaturesToExtent; }
 
     QSet<QString> usedAttributes() const;
 

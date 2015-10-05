@@ -2328,7 +2328,7 @@ const QList<QSslCertificate> QgsAuthManager::getExtraFileCAs()
     filecerts = QgsAuthCertUtils::certsFromFile( cafile );
   }
   // only CAs or certs capable of signing other certs are allowed
-  Q_FOREACH ( QSslCertificate cert, filecerts )
+  Q_FOREACH ( const QSslCertificate& cert, filecerts )
   {
     if ( !allowinvalid.toBool() && !cert.isValid() )
     {

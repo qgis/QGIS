@@ -718,7 +718,9 @@ QgsRasterRangeList QgsRasterLayerSaveAsDialog::noData() const
   if ( ! mNoDataGroupBox->isChecked() )
     return noDataList;
 
-  for ( int r = 0 ; r < mNoDataTableWidget->rowCount(); r++ )
+  int rows = mNoDataTableWidget->rowCount();
+  noDataList.reserve( rows );
+  for ( int r = 0 ; r < rows; r++ )
   {
     QgsRasterRange noData( noDataCellValue( r, 0 ), noDataCellValue( r, 1 ) );
     noDataList.append( noData );

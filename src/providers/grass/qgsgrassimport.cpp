@@ -72,7 +72,7 @@ void QgsGrassImportProgress::onReadyReadStandardError()
   {
     // TODO: parse better progress output
     QString output = QString::fromLocal8Bit( mProcess->readAllStandardError() );
-    Q_FOREACH ( QString line, output.split( "\n" ) )
+    Q_FOREACH ( const QString& line, output.split( "\n" ) )
     {
       QgsDebugMsg( "line = '" + line + "'" );
       QString text, html;
@@ -500,7 +500,9 @@ QStringList QgsGrassRasterImport::extensions( QgsRasterDataProvider* provider )
   QStringList list;
   if ( provider && provider->bandCount() > 1 )
   {
-    for ( int band = 1; band <= provider->bandCount(); band++ )
+    int bands = provider->bandCount();
+    list.reserve( bands );
+    for ( int band = 1; band <= bands; ++band )
     {
       list << QString( ".%1" ).arg( band );
     }
@@ -513,7 +515,7 @@ QStringList QgsGrassRasterImport::names() const
   QStringList list;
   if ( mPipe && mPipe->provider() )
   {
-    foreach ( QString ext, extensions( mPipe->provider() ) )
+    foreach ( const QString& ext, extensions( mPipe->provider() ) )
     {
       list << mGrassObject.name() + ext;
     }

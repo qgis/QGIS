@@ -47,10 +47,10 @@ class QgsLegendSettings
     int columnCount() const;
     void setColumnCount( int c );
 
-    int splitLayer() const;
+    bool splitLayer() const;
     void setSplitLayer( bool s );
 
-    int equalColumnWidth() const;
+    bool equalColumnWidth() const;
     void setEqualColumnWidth( bool s );
 
     QColor fontColor() const;

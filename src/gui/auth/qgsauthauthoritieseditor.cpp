@@ -276,7 +276,7 @@ void QgsAuthAuthoritiesEditor::appendCertsToItem( QList<QSslCertificate> certs,
   QStringList untrustedids = mCertTrustCache.value( QgsAuthCertUtils::Untrusted );
 
   // Columns: Common Name, Serial #, Expiry Date
-  Q_FOREACH ( QSslCertificate cert, certs )
+  Q_FOREACH ( const QSslCertificate& cert, certs )
   {
     QString id( QgsAuthCertUtils::shaHexForCert( cert ) );
 
@@ -694,7 +694,7 @@ void QgsAuthAuthoritiesEditor::on_btnCaFile_clicked()
     if ( dlg->certTrustPolicy() != QgsAuthCertUtils::DefaultTrust )
     {
       QList<QSslCertificate> certs( QgsAuthManager::instance()->getExtraFileCAs() );
-      Q_FOREACH ( QSslCertificate cert, certs )
+      Q_FOREACH ( const QSslCertificate& cert, certs )
       {
         if ( !QgsAuthManager::instance()->storeCertTrustPolicy( cert, dlg->certTrustPolicy() ) )
         {

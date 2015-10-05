@@ -1438,6 +1438,7 @@ bool QgsRasterLayer::readXml( const QDomNode& layer_node )
 
       QDomNodeList rangeList = bandElement.elementsByTagName( "noDataRange" );
 
+      myNoDataRangeList.reserve( rangeList.size() );
       for ( int j = 0; j < rangeList.size(); ++j )
       {
         QDomElement rangeElement = rangeList.at( j ).toElement();

@@ -107,5 +107,5 @@ unsigned char* QgsPolygonV2::asWkb( int& binarySize ) const
 
 QgsPolygonV2* QgsPolygonV2::surfaceToPolygon() const
 {
-  return dynamic_cast<QgsPolygonV2*>( clone() );
+  return clone();
 }

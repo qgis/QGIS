@@ -532,7 +532,7 @@ class QgsGeometry
       public:
         Error();
         Error( QString m );
-        Error( QString m, QgsPoint p );
+        Error( QString m, const QgsPoint& p );
 
         QString what();
         QgsPoint where();

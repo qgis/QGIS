@@ -561,6 +561,7 @@ int QgsGeos::splitLinearGeometry( GEOSGeometry* splitLine, QList<QgsAbstractGeom
   if ( splitType == GEOS_MULTILINESTRING )
   {
     int nGeoms = GEOSGetNumGeometries_r( geosinit.ctxt, splitGeom );
+    lineGeoms.reserve( nGeoms );
     for ( int i = 0; i < nGeoms; ++i )
       lineGeoms << GEOSGeom_clone_r( geosinit.ctxt, GEOSGetGeometryN_r( geosinit.ctxt, splitGeom, i ) );
 
@@ -930,6 +931,7 @@ QgsLineStringV2* QgsGeos::sequenceToLinestring( const GEOSGeometry* geos, bool h
   const GEOSCoordSequence* cs = GEOSGeom_getCoordSeq_r( geosinit.ctxt, geos );
   unsigned int nPoints;
   GEOSCoordSeq_getSize_r( geosinit.ctxt, cs, &nPoints );
+  pts.reserve( nPoints );
   for ( unsigned int i = 0; i < nPoints; ++i )
   {
     pts.push_back( coordSeqPoint( cs, i, hasZ, hasM ) );

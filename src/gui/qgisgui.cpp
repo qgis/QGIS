@@ -87,7 +87,7 @@ namespace QgisGui
   {
     // get a list of supported output image types
     QMap<QString, QString> filterMap;
-    Q_FOREACH ( QByteArray format, QImageWriter::supportedImageFormats() )
+    Q_FOREACH ( const QByteArray& format, QImageWriter::supportedImageFormats() )
     {
       //svg doesnt work so skip it
       if ( format ==  "svg" )

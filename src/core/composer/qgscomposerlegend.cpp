@@ -235,10 +235,10 @@ QString QgsComposerLegend::wrapChar() const {return mSettings.wrapChar(); }
 int QgsComposerLegend::columnCount() const { return mSettings.columnCount(); }
 void QgsComposerLegend::setColumnCount( int c ) { mSettings.setColumnCount( c ); }
 
-int QgsComposerLegend::splitLayer() const { return mSettings.splitLayer(); }
+bool QgsComposerLegend::splitLayer() const { return mSettings.splitLayer(); }
 void QgsComposerLegend::setSplitLayer( bool s ) { mSettings.setSplitLayer( s ); }
 
-int QgsComposerLegend::equalColumnWidth() const { return mSettings.equalColumnWidth(); }
+bool QgsComposerLegend::equalColumnWidth() const { return mSettings.equalColumnWidth(); }
 void QgsComposerLegend::setEqualColumnWidth( bool s ) { mSettings.setEqualColumnWidth( s ); }
 
 

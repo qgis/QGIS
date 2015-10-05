@@ -548,6 +548,7 @@ void QgsLinearlyInterpolatedDiagramRenderer::writeXML( QDomElement& layerElem, Q
 QList< QgsLayerTreeModelLegendNode* > QgsDiagramSettings::legendItems( QgsLayerTreeLayer* nodeLayer ) const
 {
   QList< QgsLayerTreeModelLegendNode * > list;
+  list.reserve( categoryLabels.size() );
   for ( int i = 0 ; i < categoryLabels.size(); ++i )
   {
     QPixmap pix( 16, 16 );

@@ -335,6 +335,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster(
   int iterRows = 0;
 
   QList<QgsRasterBlock*> blockList;
+  blockList.reserve( nBands );
   for ( int i = 1; i <= nBands; ++i )
   {
     iter->startRasterRead( i, nCols, nRows, outputExtent );

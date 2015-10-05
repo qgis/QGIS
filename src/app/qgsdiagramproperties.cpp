@@ -683,6 +683,9 @@ void QgsDiagramProperties::apply()
   QList<QColor> categoryColors;
   QList<QString> categoryAttributes;
   QList<QString> categoryLabels;
+  categoryColors.reserve( mDiagramAttributesTreeWidget->topLevelItemCount() );
+  categoryAttributes.reserve( mDiagramAttributesTreeWidget->topLevelItemCount() );
+  categoryLabels.reserve( mDiagramAttributesTreeWidget->topLevelItemCount() );
   for ( int i = 0; i < mDiagramAttributesTreeWidget->topLevelItemCount(); ++i )
   {
     QColor color = mDiagramAttributesTreeWidget->topLevelItem( i )->background( 1 ).color();

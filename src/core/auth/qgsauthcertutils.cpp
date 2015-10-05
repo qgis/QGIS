@@ -49,7 +49,7 @@ QString QgsAuthCertUtils::getSslProtocolName( QSsl::SslProtocol protocol )
 QMap<QString, QSslCertificate> QgsAuthCertUtils::mapDigestToCerts( QList<QSslCertificate> certs )
 {
   QMap<QString, QSslCertificate> digestmap;
-  Q_FOREACH ( QSslCertificate cert, certs )
+  Q_FOREACH ( const QSslCertificate& cert, certs )
   {
     digestmap.insert( shaHexForCert( cert ), cert );
   }
@@ -59,7 +59,7 @@ QMap<QString, QSslCertificate> QgsAuthCertUtils::mapDigestToCerts( QList<QSslCer
 QMap<QString, QList<QSslCertificate> > QgsAuthCertUtils::certsGroupedByOrg( QList<QSslCertificate> certs )
 {
   QMap< QString, QList<QSslCertificate> > orgcerts;
-  Q_FOREACH ( QSslCertificate cert, certs )
+  Q_FOREACH ( const QSslCertificate& cert, certs )
   {
     QString org( cert.subjectInfo( QSslCertificate::Organization ) );
     if ( org.isEmpty() )
@@ -73,7 +73,7 @@ QMap<QString, QList<QSslCertificate> > QgsAuthCertUtils::certsGroupedByOrg( QLis
 QMap<QString, QgsAuthConfigSslServer> QgsAuthCertUtils::mapDigestToSslConfigs( QList<QgsAuthConfigSslServer> configs )
 {
   QMap<QString, QgsAuthConfigSslServer> digestmap;
-  Q_FOREACH ( QgsAuthConfigSslServer config, configs )
+  Q_FOREACH ( const QgsAuthConfigSslServer& config, configs )
   {
     digestmap.insert( shaHexForCert( config.sslCertificate() ), config );
   }
@@ -83,7 +83,7 @@ QMap<QString, QgsAuthConfigSslServer> QgsAuthCertUtils::mapDigestToSslConfigs( Q
 QMap<QString, QList<QgsAuthConfigSslServer> > QgsAuthCertUtils::sslConfigsGroupedByOrg( QList<QgsAuthConfigSslServer> configs )
 {
   QMap< QString, QList<QgsAuthConfigSslServer> > orgconfigs;
-  Q_FOREACH ( QgsAuthConfigSslServer config, configs )
+  Q_FOREACH ( const QgsAuthConfigSslServer& config, configs )
   {
     QString org( config.sslCertificate().subjectInfo( QSslCertificate::Organization ) );
     if ( org.isEmpty() )
@@ -371,6 +371,7 @@ QString QgsAuthCertUtils::getColonDelimited( const QString &txt )
   // 64321c05b0ebab8e2b67ec0d7d9e2b6d4bc3c303
   //   -> 64:32:1c:05:b0:eb:ab:8e:2b:67:ec:0d:7d:9e:2b:6d:4b:c3:c3:03
   QStringList sl;
+  sl.reserve( txt.size() );
   for ( int i = 0; i < txt.size(); i += 2 )
   {
     sl << txt.mid( i, ( i + 2 > txt.size() ) ? -1 : 2 );
@@ -593,7 +594,7 @@ QList<QgsAuthCertUtils::CertUsageType> QgsAuthCertUtils::certificateUsageTypes( 
   }
 
   QList<QCA::ConstraintType> certconsts = qcacert.constraints();
-  Q_FOREACH ( QCA::ConstraintType certconst, certconsts )
+  Q_FOREACH ( const QCA::ConstraintType& certconst, certconsts )
   {
     if ( certconst.known() == QCA::KeyCertificateSign )
     {

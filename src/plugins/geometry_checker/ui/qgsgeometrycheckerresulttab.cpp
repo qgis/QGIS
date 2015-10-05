@@ -366,7 +366,7 @@ void QgsGeometryCheckerResultTab::highlightErrors( bool current )
   {
     double cx = 0., cy = 0.;
     QgsRectangle pointExtent( errorPositions.first(), errorPositions.first() );
-    foreach ( QgsPoint p, errorPositions )
+    foreach ( const QgsPoint& p, errorPositions )
     {
       cx += p.x();
       cy += p.y();

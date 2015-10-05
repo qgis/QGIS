@@ -522,6 +522,7 @@ QgsSymbolV2List QgsCategorizedSymbolRendererV2::symbols( QgsRenderContext &conte
 {
   Q_UNUSED( context );
   QgsSymbolV2List lst;
+  lst.reserve( mCategories.count() );
   for ( int i = 0; i < mCategories.count(); i++ )
     lst.append( mCategories[i].symbol() );
   return lst;
@@ -697,6 +698,7 @@ QgsLegendSymbologyList QgsCategorizedSymbolRendererV2::legendSymbologyItems( QSi
 {
   QgsLegendSymbologyList lst;
   int count = categories().count();
+  lst.reserve( count );
   for ( int i = 0; i < count; i++ )
   {
     const QgsRendererCategoryV2& cat = categories()[i];

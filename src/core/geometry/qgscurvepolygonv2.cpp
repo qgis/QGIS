@@ -358,7 +358,9 @@ QgsPolygonV2* QgsCurvePolygonV2::surfaceToPolygon() const
   QgsPolygonV2* polygon = new QgsPolygonV2();
   polygon->setExteriorRing( exteriorRing()->curveToLine() );
   QList<QgsCurveV2*> interiors;
-  for ( int i = 0, n = numInteriorRings(); i < n; ++i )
+  int n = numInteriorRings();
+  interiors.reserve( n );
+  for ( int i = 0; i < n; ++i )
   {
     interiors.append( interiorRing( i )->curveToLine() );
   }
@@ -681,6 +683,7 @@ double QgsCurvePolygonV2::vertexAngle( const QgsVertexId& vertex ) const
 {
   if ( !mExteriorRing || vertex.ring < 0 || vertex.ring >= 1 + mInteriorRings.size() )
   {
+    //makes no sense - conversion of false to double!
     return false;
   }
 

@@ -549,6 +549,7 @@ QgsSymbolV2List QgsGraduatedSymbolRendererV2::symbols( QgsRenderContext &context
 {
   Q_UNUSED( context );
   QgsSymbolV2List lst;
+  lst.reserve( mRanges.count() );
   for ( int i = 0; i < mRanges.count(); i++ )
     lst.append( mRanges[i].symbol() );
   return lst;
@@ -566,6 +567,7 @@ static QList<double> _calcEqualIntervalBreaks( double minimum, double maximum, i
 
   QList<double> breaks;
   double value = minimum;
+  breaks.reserve( classes );
   for ( int i = 0; i < classes; i++ )
   {
     value += step;
@@ -601,6 +603,7 @@ static QList<double> _calcQuantileBreaks( QList<double> values, int classes )
   int n = values.count();
   double Xq = n > 0 ? values[0] : 0.0;
 
+  breaks.reserve( classes );
   for ( int i = 1; i < classes; i++ )
   {
     if ( n > 1 )
@@ -1167,6 +1170,7 @@ QgsLegendSymbologyList QgsGraduatedSymbolRendererV2::legendSymbologyItems( QSize
 {
   QgsLegendSymbologyList lst;
   int count = ranges().count();
+  lst.reserve( count );
   for ( int i = 0; i < count; i++ )
   {
     const QgsRendererRangeV2& range = ranges()[i];

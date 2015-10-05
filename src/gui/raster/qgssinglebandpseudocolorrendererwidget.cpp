@@ -252,6 +252,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mClassifyButton_clicked()
     if ( colorRamp )
     {
       numberOfEntries = colorRamp->count();
+      entryValues.reserve( colorRamp->count() );
       for ( int i = 0; i < colorRamp->count(); ++i )
       {
         double value = colorRamp->value( i );
@@ -278,6 +279,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mClassifyButton_clicked()
       intervalDiff = max - min;
     }
 
+    entryValues.reserve( numberOfEntries );
     for ( int i = 0; i < numberOfEntries; ++i )
     {
       entryValues.push_back( currentValue );
@@ -309,6 +311,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mClassifyButton_clicked()
       colorDiff = ( int )( 255 / numberOfEntries );
     }
 
+    entryColors.reserve( numberOfEntries );
     for ( int i = 0; i < numberOfEntries; ++i )
     {
       QColor currentColor;
@@ -319,6 +322,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mClassifyButton_clicked()
   }
   else
   {
+    entryColors.reserve( numberOfEntries );
     for ( int i = 0; i < numberOfEntries; ++i )
     {
       int idx = mInvertCheckBox->isChecked() ? numberOfEntries - i - 1 : i;

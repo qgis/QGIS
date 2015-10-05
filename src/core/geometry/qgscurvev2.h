@@ -92,8 +92,8 @@ class CORE_EXPORT QgsCurveV2: public QgsAbstractGeometryV2
     QgsAbstractGeometryV2* segmentize() const override;
 
     virtual int vertexCount( int /*part*/ = 0, int /*ring*/ = 0 ) const override { return numPoints(); }
-    virtual int ringCount( int /*part*/ = 0 ) const override { return numPoints() > 0; }
-    virtual int partCount() const override { return numPoints() > 0; }
+    virtual int ringCount( int /*part*/ = 0 ) const override { return numPoints() > 0 ? 1 : 0; }
+    virtual int partCount() const override { return numPoints() > 0 ? 1 : 0; }
     virtual QgsPointV2 vertexAt( const QgsVertexId& id ) const override;
 };
 

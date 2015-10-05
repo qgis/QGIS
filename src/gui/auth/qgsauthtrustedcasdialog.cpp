@@ -188,7 +188,7 @@ void QgsAuthTrustedCAsDialog::appendCertsToItem( QList<QSslCertificate> certs,
   QBrush redb( QgsAuthGuiUtils::redColor() );
 
   // Columns: Common Name, Serial #, Expiry Date
-  Q_FOREACH ( QSslCertificate cert, certs )
+  Q_FOREACH ( const QSslCertificate& cert, certs )
   {
     QString id( QgsAuthCertUtils::shaHexForCert( cert ) );
 

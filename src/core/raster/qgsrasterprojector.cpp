@@ -692,7 +692,9 @@ void QgsRasterProjector::insertRows( const QgsCoordinateTransform* ct )
   {
     QList<QgsPoint> myRow;
     QList<bool> myLegalRow;
-    for ( int c = 0; c < mCPCols; c++ )
+    myRow.reserve( mCPCols );
+    myLegalRow.reserve( mCPCols );
+    for ( int c = 0; c < mCPCols; ++c )
     {
       myRow.append( QgsPoint() );
       myLegalRow.append( false );

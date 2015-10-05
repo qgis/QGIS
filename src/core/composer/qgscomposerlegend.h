@@ -150,10 +150,10 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     int columnCount() const;
     void setColumnCount( int c );
 
-    int splitLayer() const;
+    bool splitLayer() const;
     void setSplitLayer( bool s );
 
-    int equalColumnWidth() const;
+    bool equalColumnWidth() const;
     void setEqualColumnWidth( bool s );
 
     void setComposerMap( const QgsComposerMap* map );

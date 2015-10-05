@@ -215,7 +215,7 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
 {
   const QgsCoordinateReferenceSystem* outputCRS;
   QgsCoordinateTransform* ct = 0;
-  int shallTransform = false;
+  bool shallTransform = false;
 
   if ( layer == NULL )
   {

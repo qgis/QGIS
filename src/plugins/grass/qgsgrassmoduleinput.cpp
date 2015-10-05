@@ -95,7 +95,7 @@ void QgsGrassModuleInputModel::onDirectoryChanged( const QString & path )
       }
     }
 
-    foreach ( QString dirName, dirNames )
+    foreach ( const QString& dirName, dirNames )
     {
       // Add to watcher in any case, either for WIND, cellhd or vector
       QString dirPath = locationPath + "/" + dirName;
@@ -175,7 +175,7 @@ void QgsGrassModuleInputModel::refreshMapset( QStandardItem *mapsetItem, const Q
   {
     QStringList maps = QgsGrass::grassObjects( QgsGrass::getDefaultGisdbase() + "/" + QgsGrass::getDefaultLocation() + "/" + mapset, type );
     QStringList mapNames;
-    foreach ( QString map, maps )
+    foreach ( const QString& map, maps )
     {
       if ( map.startsWith( "qgis_import_tmp_" ) )
       {
@@ -237,7 +237,7 @@ void QgsGrassModuleInputModel::reload()
   mLocationPath = QgsGrass::getDefaultLocationPath();
 
   QStringList mapsets = QgsGrass::mapsets( QgsGrass::getDefaultGisdbase(), QgsGrass::getDefaultLocation() );
-  foreach ( QString mapset, mapsets )
+  foreach ( const QString& mapset, mapsets )
   {
     addMapset( mapset );
   }
@@ -246,7 +246,7 @@ void QgsGrassModuleInputModel::reload()
 
   // Watching all dirs in location because a dir may become a mapset later, when WIND is created
   QStringList dirNames = locationDirNames();
-  foreach ( QString dirName, dirNames )
+  foreach ( const QString& dirName, dirNames )
   {
     QString dirPath = mLocationPath + "/" + dirName;
     // Watch the dir in any case, WIND mabe created later
@@ -769,7 +769,7 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
     {
       int mask = 0;
 
-      foreach ( QString typeName, opt.split( "," ) )
+      foreach ( const QString& typeName, opt.split( "," ) )
       {
         mask |= QgsGrass::vectorType( typeName );
       }

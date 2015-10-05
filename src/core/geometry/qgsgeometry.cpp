@@ -1415,6 +1415,7 @@ QList<QgsGeometry*> QgsGeometry::asGeometryCollection() const
   if ( gc )
   {
     int numGeom = gc->numGeometries();
+    geometryList.reserve( numGeom );
     for ( int i = 0; i < numGeom; ++i )
     {
       geometryList.append( new QgsGeometry( gc->geometryN( i )->clone() ) );
@@ -1683,7 +1684,7 @@ int QgsGeometry::vertexNrFromVertexId( const QgsVertexId& id ) const
 {
   if ( !d || !d->geometry )
   {
-    return false;
+    return -1;
   }
 
   QList< QList< QList< QgsPointV2 > > > coords;
@@ -1911,6 +1912,7 @@ QgsPolyline QgsGeometry::smoothLine( const QgsPolyline& polyline, const unsigned
   for ( unsigned int iteration = 0; iteration < iterations; ++iteration )
   {
     QgsPolyline outputLine = QgsPolyline();
+    outputLine.reserve( 2 * ( result.count() - 1 ) );
     for ( int i = 0; i < result.count() - 1; i++ )
     {
       const QgsPoint& p1 = result.at( i );
@@ -1933,6 +1935,7 @@ QgsPolygon QgsGeometry::smoothPolygon( const QgsPolygon& polygon, const unsigned
     for ( unsigned int iteration = 0; iteration < iterations; ++iteration )
     {
       QgsPolyline outputRing = QgsPolyline();
+      outputRing.reserve( 2 * ( resultRing.count() - 1 ) + 1 );
       for ( int i = 0; i < resultRing.count() - 1; ++i )
       {
         const QgsPoint& p1 = resultRing.at( i );
