@@ -443,7 +443,8 @@ bool QgsGrassProvider::isValid()
 
 QgsCoordinateReferenceSystem QgsGrassProvider::crs()
 {
-  return QgsGrass::crs( mGrassObject.gisdbase(), mGrassObject.location() );
+  QString error;
+  return QgsGrass::crs( mGrassObject.gisdbase(), mGrassObject.location(), error );
 }
 
 int QgsGrassProvider::grassLayer()

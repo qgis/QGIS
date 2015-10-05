@@ -208,7 +208,10 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
 
     virtual QDateTime dataTimestamp() const override;
   private:
-
+    void setLastError( QString error );
+    void clearLastError();
+    // append error if it is not empty
+    void appendIfError( QString error );
     /**
     * Flag indicating if the layer data source is a valid layer
     */
@@ -232,6 +235,9 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
     QgsGrassRasterValue mRasterValue;
 
     double mNoDataValue;
+
+    QString mLastErrorTitle;
+    QString mLastError;
 };
 
 #endif

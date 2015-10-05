@@ -44,6 +44,8 @@
 static QString PROVIDER_KEY = "grassraster";
 static QString PROVIDER_DESCRIPTION = QString( "GRASS %1 raster provider" ).arg( GRASS_VERSION_MAJOR );
 
+// Do not use warning dialogs, providers are also created on threads (rendering) where dialogs connot be used (constructing QPixmap icon)
+
 QgsGrassRasterProvider::QgsGrassRasterProvider( QString const & uri )
     : QgsRasterDataProvider( uri )
     , mValid( false )
@@ -94,14 +96,21 @@ QgsGrassRasterProvider::QgsGrassRasterProvider( QString const & uri )
   mRasterValue.start( mGisdbase, mLocation, mMapset, mMapName );
   //mValidNoDataValue = true;
 
-  mCrs = QgsGrass::crs( mGisdbase, mLocation );
+  QString error;
+  mCrs = QgsGrass::crs( mGisdbase, mLocation, error );
+  appendIfError( error );
   QgsDebugMsg( "mCrs: " + mCrs.toWkt() );
 
   // the block size can change of course when the raster is overridden
   // ibut it is only called once when statistics are calculated
-  QgsGrass::size( mGisdbase, mLocation, mMapset, mMapName, &mCols, &mRows );
+  error.clear();
+  QgsGrass::size( mGisdbase, mLocation, mMapset, mMapName, &mCols, &mRows, error );
+  appendIfError( error );
 
-  mInfo = QgsGrass::info( mGisdbase, mLocation, mMapset, mMapName, QgsGrassObject::Raster );
+  error.clear();
+  mInfo = QgsGrass::info( mGisdbase, mLocation, mMapset, mMapName, QgsGrassObject::Raster,
+                          "info", QgsRectangle(), 0, 0, 3000, error );
+  appendIfError( error );
 
   mGrassDataType = mInfo["TYPE"].toInt();
   QgsDebugMsg( "mGrassDataType = " + QString::number( mGrassDataType ) );
@@ -177,6 +186,7 @@ QImage* QgsGrassRasterProvider::draw( QgsRectangle  const & viewExtent, int pixe
   QgsDebugMsg( "pixelWidth = "  + QString::number( pixelWidth ) );
   QgsDebugMsg( "pixelHeight = "  + QString::number( pixelHeight ) );
   QgsDebugMsg( "viewExtent: " + viewExtent.toString() );
+  clearLastError();
 
   QImage *image = new QImage( pixelWidth, pixelHeight, QImage::Format_ARGB32 );
   image->fill( QColor( Qt::gray ).rgb() );
@@ -198,9 +208,9 @@ QImage* QgsGrassRasterProvider::draw( QgsRectangle  const & viewExtent, int pixe
   }
   catch ( QgsGrass::Exception &e )
   {
-    QMessageBox::warning( 0, QObject::tr( "Warning" ), QObject::tr( "Cannot draw raster" ) + "\n"
-                          + e.what() );
-
+    QString error = tr( "Cannot draw raster" ) + " : " + e.what();
+    QgsDebugMsg( error );
+    appendError( error );
     // We don't set mValid to false, because the raster can be recreated and work next time
     return image;
   }
@@ -219,6 +229,7 @@ void QgsGrassRasterProvider::readBlock( int bandNo, int xBlock, int yBlock, void
 {
   Q_UNUSED( xBlock );
   QgsDebugMsg( "Entered" );
+  clearLastError();
   // TODO: optimize, see extent()
 
   QgsDebugMsg( "yBlock = "  + QString::number( yBlock ) );
@@ -251,9 +262,9 @@ void QgsGrassRasterProvider::readBlock( int bandNo, int xBlock, int yBlock, void
   }
   catch ( QgsGrass::Exception &e )
   {
-    QMessageBox::warning( 0, QObject::tr( "Warning" ), QObject::tr( "Cannot draw raster" ) + "\n"
-                          + e.what() );
-
+    QString error = tr( "Cannot read raster" ) + " : " + e.what();
+    QgsDebugMsg( error );
+    appendError( error );
     // We don't set mValid to false, because the raster can be recreated and work next time
   }
   QgsDebugMsg( QString( "%1 bytes read from modules stdout" ).arg( data.size() ) );
@@ -263,8 +274,9 @@ void QgsGrassRasterProvider::readBlock( int bandNo, int xBlock, int yBlock, void
   QgsDebugMsg( QString( "mCols = %1 mYBlockSize = %2 dataTypeSize = %3" ).arg( mCols ).arg( mYBlockSize ).arg( dataTypeSize( bandNo ) ) );
   if ( size != data.size() )
   {
-    QMessageBox::warning( 0, QObject::tr( "Warning" ),
-                          QString( "%1 bytes expected but %2 byte were read from qgis.d.rast" ).arg( size ).arg( data.size() ) );
+    QString error = tr( "%1 bytes expected but %2 byte were read from qgis.d.rast" ).arg( size ).arg( data.size() );
+    QgsDebugMsg( error );
+    appendError( error );
     size = size < data.size() ? size : data.size();
   }
   memcpy( block, data.data(), size );
@@ -276,6 +288,7 @@ void QgsGrassRasterProvider::readBlock( int bandNo, QgsRectangle  const & viewEx
   QgsDebugMsg( "pixelWidth = "  + QString::number( pixelWidth ) );
   QgsDebugMsg( "pixelHeight = "  + QString::number( pixelHeight ) );
   QgsDebugMsg( "viewExtent: " + viewExtent.toString() );
+  clearLastError();
 
   if ( pixelWidth <= 0 || pixelHeight <= 0 )
     return;
@@ -298,8 +311,9 @@ void QgsGrassRasterProvider::readBlock( int bandNo, QgsRectangle  const & viewEx
   }
   catch ( QgsGrass::Exception &e )
   {
-    QMessageBox::warning( 0, QObject::tr( "Warning" ), QObject::tr( "Cannot draw raster" ) + "\n"
-                          + e.what() );
+    QString error = tr( "Cannot read raster" ) + " : " + e.what();
+    QgsDebugMsg( error );
+    appendError( error );
 
     // We don't set mValid to false, because the raster can be recreated and work next time
     return;
@@ -310,8 +324,9 @@ void QgsGrassRasterProvider::readBlock( int bandNo, QgsRectangle  const & viewEx
   int size = pixelWidth * pixelHeight * dataTypeSize( bandNo );
   if ( size != data.size() )
   {
-    QMessageBox::warning( 0, QObject::tr( "Warning" ),
-                          QString( "%1 bytes expected but %2 byte were read from qgis.d.rast" ).arg( size ).arg( data.size() ) );
+    QString error = tr( "%1 bytes expected but %2 byte were read from qgis.d.rast" ).arg( size ).arg( data.size() );
+    QgsDebugMsg( error );
+    appendError( error );
     size = size < data.size() ? size : data.size();
   }
   memcpy( block, data.data(), size );
@@ -341,9 +356,11 @@ QgsRasterBandStats QgsGrassRasterProvider::bandStatistics( int theBandNo, int th
   // 0.001 / cell should be sufficient using 0.005 to be sure + constant (ms)
   int timeout = 30000 + 0.005 * xSize() * ySize();
 
-  QHash<QString, QString> info = QgsGrass::info( mGisdbase, mLocation, mMapset, mMapName, QgsGrassObject::Raster, "stats", extent, sampleRows, sampleCols, timeout );
+  QString error;
+  QHash<QString, QString> info = QgsGrass::info( mGisdbase, mLocation, mMapset, mMapName, QgsGrassObject::Raster,
+                                 "stats", extent, sampleRows, sampleCols, timeout, error );
 
-  if ( info.isEmpty() )
+  if ( info.isEmpty() || !error.isEmpty() )
   {
     return myRasterBandStats;
   }
@@ -381,7 +398,12 @@ QList<QgsColorRampShader::ColorRampItem> QgsGrassRasterProvider::colorTable( int
   // for now we just believe that they are continuous, i.e. end and beginning
   // of the ramp with the same value has the same color
   // we are also expecting ordered CT records in the list
-  QList<QgsGrass::Color> colors = QgsGrass::colors( mGisdbase, mLocation, mMapset, mMapName );
+  QString error;
+  QList<QgsGrass::Color> colors = QgsGrass::colors( mGisdbase, mLocation, mMapset, mMapName, error );
+  if ( !error.isEmpty() )
+  {
+    return ct;
+  }
   QList<QgsGrass::Color>::iterator i;
 
   double v = 0.0, r = 0.0, g = 0.0, b = 0.0;
@@ -419,7 +441,8 @@ QgsRectangle QgsGrassRasterProvider::extent()
   // The extend can change of course so we get always fresh, to avoid running always the module
   // we should save mExtent and mLastModified and check if the map was modified
 
-  mExtent = QgsGrass::extent( mGisdbase, mLocation, mMapset, mMapName, QgsGrassObject::Raster );
+  QString error;
+  mExtent = QgsGrass::extent( mGisdbase, mLocation, mMapset, mMapName, QgsGrassObject::Raster, error );
 
   QgsDebugMsg( "Extent got" );
   return mExtent;
@@ -561,14 +584,34 @@ bool QgsGrassRasterProvider::isValid()
   return mValid;
 }
 
+void QgsGrassRasterProvider::setLastError( QString error )
+{
+  mLastErrorTitle = tr( "GRASS raster provider" );
+  mLastError = error;
+}
+
+void QgsGrassRasterProvider::clearLastError()
+{
+  mLastErrorTitle.clear();
+  mLastError.clear();
+}
+
+void QgsGrassRasterProvider::appendIfError( QString error )
+{
+  if ( !error.isEmpty() )
+  {
+    appendError( ERR( error ) );
+  }
+}
+
 QString QgsGrassRasterProvider::lastErrorTitle()
 {
-  return  QString( "Not implemented" );
+  return mLastErrorTitle;
 }
 
 QString QgsGrassRasterProvider::lastError()
 {
-  return  QString( "Not implemented" );
+  return mLastError;
 }
 
 QString  QgsGrassRasterProvider::name() const
@@ -647,7 +690,16 @@ void QgsGrassRasterValue::start( QString gisdbase, QString location,
 
   arguments.append( "info=query" );
   arguments.append( "rast=" +  mMapName + "@" + mMapset );
-  mProcess = QgsGrass::startModule( mGisdbase, mLocation, mMapset, module, arguments, mGisrcFile );
+  try
+  {
+    mProcess = QgsGrass::startModule( mGisdbase, mLocation, mMapset, module, arguments, mGisrcFile );
+  }
+  catch ( QgsGrass::Exception &e )
+  {
+    QString error = e.what();
+    Q_UNUSED( error )
+    QgsDebugMsg( error );
+  }
 }
 QgsGrassRasterValue::~QgsGrassRasterValue()
 {

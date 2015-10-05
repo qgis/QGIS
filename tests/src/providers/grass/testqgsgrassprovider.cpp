@@ -417,8 +417,16 @@ void TestQgsGrassProvider::info()
   {
     es = expectedStats.value( map );
     // TODO: QgsGrass::info() may open dialog window on error which blocks tests
+    QString error;
     QHash<QString, QString> info = QgsGrass::info( tmpGisdbase, mLocation, "test", map, QgsGrassObject::Raster, "stats",
-                                   expectedExtent, 10, 10, 5000, false );
+                                   expectedExtent, 10, 10, 5000, error );
+    if ( !error.isEmpty() )
+    {
+      ok = false;
+      reportRow( "error: " + error );
+      continue;
+    }
+
     reportRow( "map: " + map );
     QgsRasterBandStats s;
     s.minimumValue = info["MIN"].toDouble();
@@ -429,9 +437,14 @@ void TestQgsGrassProvider::info()
     compare( es.minimumValue, s.minimumValue, ok );
     compare( es.maximumValue, s.maximumValue, ok );
 
-    QgsRectangle extent = QgsGrass::extent( tmpGisdbase, mLocation, "test", map, QgsGrassObject::Raster, false );
+    QgsRectangle extent = QgsGrass::extent( tmpGisdbase, mLocation, "test", map, QgsGrassObject::Raster, error );
     reportRow( "expectedExtent: " + expectedExtent.toString() );
     reportRow( "extent: " + extent.toString() );
+    if ( !error.isEmpty() )
+    {
+      ok = false;
+      reportRow( "error: " + error );
+    }
     if ( extent != expectedExtent )
     {
       ok = false;
@@ -443,18 +456,27 @@ void TestQgsGrassProvider::info()
   expectedCrs.createFromOgcWmsCrs( "EPSG:4326" );
 
   reportRow( "expectedCrs: " + expectedCrs.toWkt() );
-  QgsCoordinateReferenceSystem crs = QgsGrass::crs( tmpGisdbase, mLocation );
-  if ( !crs.isValid() )
+  QString error;
+  QgsCoordinateReferenceSystem crs = QgsGrass::crs( tmpGisdbase, mLocation, error );
+  if ( !error.isEmpty() )
   {
-    reportRow( "crs: cannot read crs: " + QgsGrass::errorMessage() );
     ok = false;
+    reportRow( "crs: cannot read crs: " + error );
   }
   else
   {
-    reportRow( "crs: " + crs.toWkt() );
-    if ( crs != expectedCrs )
+    if ( !crs.isValid() )
     {
+      reportRow( "crs: cannot read crs: " + QgsGrass::errorMessage() );
       ok = false;
+    }
+    else
+    {
+      reportRow( "crs: " + crs.toWkt() );
+      if ( crs != expectedCrs )
+      {
+        ok = false;
+      }
     }
   }
   removeRecursively( tmpGisdbase );

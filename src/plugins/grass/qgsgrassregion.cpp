@@ -41,7 +41,8 @@ QgsGrassRegionEdit::QgsGrassRegionEdit( QgsMapCanvas* canvas )
   mDraw = false;
   mRubberBand = new QgsRubberBand( mCanvas, QGis::Polygon );
   mSrcRubberBand = new QgsRubberBand( mCanvas, QGis::Polygon );
-  mCrs = QgsGrass::crs( QgsGrass::getDefaultGisdbase(), QgsGrass::getDefaultLocation() );
+  QString error;
+  mCrs = QgsGrass::crs( QgsGrass::getDefaultGisdbase(), QgsGrass::getDefaultLocation(), error );
   QgsDebugMsg( "mCrs: " + mCrs.toWkt() );
   setTransform();
   connect( canvas, SIGNAL( destinationCrsChanged() ), this, SLOT( setTransform() ) );
@@ -312,7 +313,8 @@ void QgsGrassRegion::mapsetChanged()
     mRegionEdit = new QgsGrassRegionEdit( mCanvas );
     connect( mRegionEdit, SIGNAL( captureEnded() ), this, SLOT( onCaptureFinished() ) );
 
-    mCrs = QgsGrass::crs( QgsGrass::getDefaultGisdbase(), QgsGrass::getDefaultLocation() );
+    QString error;
+    mCrs = QgsGrass::crs( QgsGrass::getDefaultGisdbase(), QgsGrass::getDefaultLocation(), error );
     reloadRegion();
   }
 }

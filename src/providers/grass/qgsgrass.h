@@ -411,35 +411,35 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
                             int sampleCols = 0, int timeOut = 30000 );
 
     // ! Get location projection
-    static QgsCoordinateReferenceSystem crs( const QString& gisdbase, const QString& location, bool interactive = true );
+    static QgsCoordinateReferenceSystem crs( const QString& gisdbase, const QString& location, QString &error );
 
     // ! Get location projection calling directly GRASS library
     static QgsCoordinateReferenceSystem crsDirect( const QString& gisdbase, const QString& location );
 
     // ! Get map extent
-    // @param interactive - show warning dialog on error
+    // @param error set to error if happens
     static QgsRectangle extent( const QString& gisdbase, const QString& location,
                                 const QString& mapset, const QString& map,
-                                QgsGrassObject::Type type = QgsGrassObject::None, bool interactive = true );
+                                QgsGrassObject::Type type, QString &error );
 
     // ! Get raster map size
-    static void size( const QString& gisdbase, const QString& location,
-                      const QString& mapset, const QString& map, int *cols, int *rows );
+    static void size( const QString& gisdbase, const QString& location, const QString& mapset,
+                      const QString& map, int *cols, int *rows, QString &error );
 
     // ! Get raster info, info is either 'info' or 'stats'
     //   extent and sampleSize are stats options
-    // @param interactive - show warning dialog on error
+    // @param error set to error if happens
     static QHash<QString, QString> info( const QString& gisdbase, const QString& location,
                                          const QString& mapset, const QString& map,
                                          QgsGrassObject::Type type,
-                                         const QString& info = "info",
-                                         const QgsRectangle& extent = QgsRectangle(),
-                                         int sampleRows = 0, int sampleCols = 0,
-                                         int timeOut = 30000, bool interactive = true );
+                                         const QString& info,
+                                         const QgsRectangle& extent,
+                                         int sampleRows, int sampleCols,
+                                         int timeOut, QString &error );
 
     // ! List of Color
-    static QList<QgsGrass::Color> colors( QString gisdbase, QString location,
-                                          QString mapset, QString map );
+    static QList<QgsGrass::Color> colors( QString gisdbase, QString location, QString mapset,
+                                          QString map, QString& error );
 
     // ! Get map value / feature info
     static QMap<QString, QString> query( QString gisdbase, QString location,
