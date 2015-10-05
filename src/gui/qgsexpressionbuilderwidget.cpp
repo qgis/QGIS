@@ -416,9 +416,11 @@ void QgsExpressionBuilderWidget::loadRecent( QString key )
   QSettings settings;
   QString location = QString( "/expressions/recent/%1" ).arg( key );
   QStringList expressions = settings.value( location ).toStringList();
+  int i = 0;
   Q_FOREACH ( const QString& expression, expressions )
   {
-    this->registerItem( name, expression, expression, expression );
+    this->registerItem( name, expression, expression, expression, QgsExpressionItem::ExpressionNode, false, i );
+    i++;
   }
 }
 
