@@ -132,13 +132,16 @@ class GeoAlgorithm:
         groupName = groupName.replace('[', '').replace(']', '').replace(' - ', '_')
         groupName = groupName.replace(' ', '_')
         cmdLineName = self.commandLineName()
-        algName = cmdLineName[cmdLineName.find(':') + 1:].lower()
         validChars = \
             'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'
         safeGroupName = ''.join(c for c in groupName if c in validChars)
-        safeAlgName = ''.join(c for c in algName if c in validChars)
 
-        helpUrl = 'http://docs.qgis.org/{}/en/docs/user_manual/processing_algs/{}/{}/{}.html'.format(qgsVersion, providerName, safeGroupName, safeAlgName)
+        safeAlgName = self.name.lower().replace(' ', '-')
+        validChars = \
+            'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-'
+        safeAlgName = ''.join(c for c in safeAlgName if c in validChars)
+
+        helpUrl = 'http://docs.qgis.org/{}/en/docs/user_manual/processing_algs/{}/{}.html#{}'.format(qgsVersion, providerName, safeGroupName, safeAlgName)
         return False, helpUrl
 
     def processAlgorithm(self, progress):
