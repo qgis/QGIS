@@ -16,7 +16,6 @@ class GUI_EXPORT QgsFeatureListViewDelegate : public QItemDelegate
     Q_OBJECT
 
   public:
-    static int const sIconSize = 24;
 
     enum Element
     {
@@ -47,6 +46,7 @@ class GUI_EXPORT QgsFeatureListViewDelegate : public QItemDelegate
     QgsFeatureListModel* mListModel;
     //! Set to true if the current edit selection has been edited
     bool mCurrentFeatureEdited;
+    int mIconSize;
 };
 
 #endif // QGSATTRIBUTELISTVIEWDELEGATE_H
