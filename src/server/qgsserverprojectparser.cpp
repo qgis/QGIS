@@ -62,8 +62,8 @@ QgsServerProjectParser::QgsServerProjectParser( QDomDocument* xmlDoc, const QStr
       }
     }
 
-    mRestrictedLayers = findRestrictedLayers();
     mUseLayerIDs = findUseLayerIDs();
+    mRestrictedLayers = findRestrictedLayers();
 
     mCustomLayerOrder.clear();
 
@@ -1068,6 +1068,28 @@ QSet<QString> QgsServerProjectParser::findRestrictedLayers() const
         for ( int k = 0; k < sublayerList.size(); ++k )
         {
           restrictedLayerSet.insert( sublayerList.at( k ).toElement().attribute( "name" ) );
+        }
+      }
+    }
+  }
+  
+  // wmsLayerRestrictionValues contains LayerIDs
+  if ( mUseLayerIDs )
+  {
+    QDomNodeList legendLayerList = legendElem.elementsByTagName( "legendlayer" );
+    for ( int i = 0; i < legendLayerList.size(); ++i )
+    {
+      //get name
+      QDomElement layerElem = legendLayerList.at( i ).toElement();
+      QString layerName = layerElem.attribute( "name" );
+      if ( restrictedLayerSet.contains( layerName ) ) //match: add layer id
+      {
+        // get legend layer file element
+        QDomNodeList layerfileList = layerElem.elementsByTagName( "legendlayerfile" );
+        if ( layerfileList.size() > 0 )
+        {
+          // add layer id
+          restrictedLayerSet.insert( layerfileList.at( 0 ).toElement().attribute( "layerid" ) );
         }
       }
     }
