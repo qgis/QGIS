@@ -172,7 +172,7 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
 #ifndef QT_NO_OPENSSL
   bool ishttps = pReq->url().scheme().toLower() == "https";
   QgsAuthConfigSslServer servconfig;
-  if ( ishttps )
+  if ( ishttps && !QgsAuthManager::instance()->isDisabled() )
   {
     // check for SSL cert custom config
     QString hostport( QString( "%1:%2" )

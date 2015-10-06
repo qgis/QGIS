@@ -64,20 +64,31 @@ QgsAuthSslErrorsDialog::QgsAuthSslErrorsDialog( QNetworkReply *reply,
 
   ignoreButton()->setDefault( false );
   abortButton()->setDefault( true );
-  saveButton()->setEnabled( false );
 
-  saveButton()->setText( QString( "%1 && %2" ).arg( saveButton()->text() )
-                         .arg( ignoreButton()->text() ) );
+  if ( !QgsAuthManager::instance()->isDisabled() )
+  {
+    saveButton()->setEnabled( false );
 
-  grpbxSslConfig->setChecked( false );
-  grpbxSslConfig->setCollapsed( true );
-  connect( grpbxSslConfig, SIGNAL( toggled( bool ) ),
-           this, SLOT( loadUnloadCertificate( bool ) ) );
+    saveButton()->setText( QString( "%1 && %2" ).arg( saveButton()->text() )
+                           .arg( ignoreButton()->text() ) );
 
-  connect( wdgtSslConfig, SIGNAL( readyToSaveChanged( bool ) ),
-           this, SLOT( widgetReadyToSaveChanged( bool ) ) );
-  wdgtSslConfig->setConfigCheckable( false );
-  wdgtSslConfig->certificateGroupBox()->setFlat( true );
+    grpbxSslConfig->setChecked( false );
+    grpbxSslConfig->setCollapsed( true );
+    connect( grpbxSslConfig, SIGNAL( toggled( bool ) ),
+             this, SLOT( loadUnloadCertificate( bool ) ) );
+
+    connect( wdgtSslConfig, SIGNAL( readyToSaveChanged( bool ) ),
+             this, SLOT( widgetReadyToSaveChanged( bool ) ) );
+    wdgtSslConfig->setConfigCheckable( false );
+    wdgtSslConfig->certificateGroupBox()->setFlat( true );
+  }
+  else
+  {
+    btnChainInfo->setVisible( false );
+    btnChainCAs->setVisible( false );
+    grpbxSslConfig->setVisible( false );
+    saveButton()->setVisible( false );
+  }
 
   populateErrorsList();
 }
@@ -176,12 +187,15 @@ void QgsAuthSslErrorsDialog::on_buttonBox_clicked( QAbstractButton *button )
 
 void QgsAuthSslErrorsDialog::populateErrorsList()
 {
+  QStringList errs;
+  errs.reserve( mSslErrors.size() );
   Q_FOREACH ( const QSslError &err, mSslErrors )
   {
-    listSslErrors->addItem( QString( "%1: %2" )
-                            .arg( QgsAuthCertUtils::sslErrorEnumString( err.error() ) )
-                            .arg( err.errorString() ) );
+    errs <<  QString( "* %1: %2" )
+    .arg( QgsAuthCertUtils::sslErrorEnumString( err.error() ) )
+    .arg( err.errorString() );
   }
+  teSslErrors->setPlainText( errs.join( "\n" ) );
 }
 
 QPushButton *QgsAuthSslErrorsDialog::ignoreButton()
@@ -207,4 +221,13 @@ void QgsAuthSslErrorsDialog::on_btnChainInfo_clicked()
 void QgsAuthSslErrorsDialog::on_btnChainCAs_clicked()
 {
   showCertificateChainCAsInfo();
+}
+
+void QgsAuthSslErrorsDialog::on_grpbxSslErrors_collapsedStateChanged( bool collapsed )
+{
+  if ( !collapsed && QgsAuthManager::instance()->isDisabled() )
+  {
+    btnChainInfo->setVisible( false );
+    btnChainCAs->setVisible( false );
+  }
 }

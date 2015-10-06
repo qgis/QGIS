@@ -60,7 +60,7 @@ class GUI_EXPORT QgsAuthImportCertDialog : public QDialog, private Ui::QgsAuthIm
     ~QgsAuthImportCertDialog();
 
     /** Get list of certificate objects to import */
-    const QList<QSslCertificate> certificatesToImport() { return mCerts; }
+    const QList<QSslCertificate> certificatesToImport();
 
     /** Get the file path to a certificate to import */
     const QString certFileToImport();
@@ -91,6 +91,10 @@ class GUI_EXPORT QgsAuthImportCertDialog : public QDialog, private Ui::QgsAuthIm
     QList<QSslCertificate> mCerts;
     QgsAuthImportCertDialog::CertFilter mFilter;
     QgsAuthImportCertDialog::CertInput mInput;
+
+    bool mDisabled;
+    QVBoxLayout *mAuthNotifyLayout;
+    QLabel *mAuthNotify;
 };
 
 #endif // QGSAUTHIMPORTCERTDIALOG_H

@@ -35,48 +35,75 @@ QgsAuthImportCertDialog::QgsAuthImportCertDialog( QWidget *parent ,
     : QDialog( parent )
     , mFilter( filter )
     , mInput( input )
+    , mDisabled( false )
+    , mAuthNotifyLayout( 0 )
+    , mAuthNotify( 0 )
 {
-  setupUi( this );
-
-  connect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
-  connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
-
-  connect( teCertText, SIGNAL( textChanged() ), this, SLOT( validateCertificates() ) );
-
-  connect( radioImportFile, SIGNAL( toggled( bool ) ), this, SLOT( updateGui() ) );
-  connect( radioImportText, SIGNAL( toggled( bool ) ), this, SLOT( updateGui() ) );
-
-  // hide unused widgets
-  if ( mInput == FileInput )
+  if ( QgsAuthManager::instance()->isDisabled() )
   {
-    radioImportText->setHidden( true );
-    teCertText->setHidden( true );
+    mDisabled = true;
+    mAuthNotifyLayout = new QVBoxLayout;
+    this->setLayout( mAuthNotifyLayout );
+    mAuthNotify = new QLabel( QgsAuthManager::instance()->disabledMessage(), this );
+    mAuthNotifyLayout->addWidget( mAuthNotify );
   }
-  else if ( mInput == TextInput )
+  else
   {
-    radioImportFile->setHidden( true );
-    frameImportFile->setHidden( true );
+    setupUi( this );
+
+    connect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
+    connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
+
+    connect( teCertText, SIGNAL( textChanged() ), this, SLOT( validateCertificates() ) );
+
+    connect( radioImportFile, SIGNAL( toggled( bool ) ), this, SLOT( updateGui() ) );
+    connect( radioImportText, SIGNAL( toggled( bool ) ), this, SLOT( updateGui() ) );
+
+    // hide unused widgets
+    if ( mInput == FileInput )
+    {
+      radioImportText->setHidden( true );
+      teCertText->setHidden( true );
+    }
+    else if ( mInput == TextInput )
+    {
+      radioImportFile->setHidden( true );
+      frameImportFile->setHidden( true );
+    }
+
+    radioImportFile->setChecked( true );
+    updateGui();
+
+    if ( mFilter == CaFilter )
+    {
+      grpbxImportCert->setTitle( tr( "Import Certificate Authorities" ) );
+    }
+
+    okButton()->setText( tr( "Import" ) );
+    okButton()->setEnabled( false );
+    teValidation->setFocus();
   }
-
-  radioImportFile->setChecked( true );
-  updateGui();
-
-  if ( mFilter == CaFilter )
-  {
-    grpbxImportCert->setTitle( tr( "Import Certificate Authorities" ) );
-  }
-
-  okButton()->setText( tr( "Import" ) );
-  okButton()->setEnabled( false );
-  teValidation->setFocus();
 }
 
 QgsAuthImportCertDialog::~QgsAuthImportCertDialog()
 {
 }
 
+const QList<QSslCertificate> QgsAuthImportCertDialog::certificatesToImport()
+{
+  if ( mDisabled )
+  {
+    return QList<QSslCertificate>();
+  }
+  return mCerts;
+}
+
 const QString QgsAuthImportCertDialog::certFileToImport()
 {
+  if ( mDisabled )
+  {
+    return QString();
+  }
   if ( !radioImportFile->isChecked() )
     return QString();
 
@@ -85,6 +112,10 @@ const QString QgsAuthImportCertDialog::certFileToImport()
 
 const QString QgsAuthImportCertDialog::certTextToImport()
 {
+  if ( mDisabled )
+  {
+    return QString();
+  }
   if ( !radioImportText->isChecked() )
     return QString();
 
@@ -93,11 +124,19 @@ const QString QgsAuthImportCertDialog::certTextToImport()
 
 bool QgsAuthImportCertDialog::allowInvalidCerts()
 {
+  if ( mDisabled )
+  {
+    return false;
+  }
   return chkAllowInvalid->isChecked();
 }
 
 QgsAuthCertUtils::CertTrustPolicy QgsAuthImportCertDialog::certTrustPolicy()
 {
+  if ( mDisabled )
+  {
+    return QgsAuthCertUtils::DefaultTrust;
+  }
   return cmbbxTrust->trustPolicy();
 }
 

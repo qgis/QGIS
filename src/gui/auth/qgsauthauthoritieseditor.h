@@ -129,6 +129,7 @@ class GUI_EXPORT QgsAuthAuthoritiesEditor : public QWidget, private Ui::QgsAuthA
     QMap<QgsAuthCertUtils::CertTrustPolicy, QStringList > mCertTrustCache;
 
     QMenu * mUtilitiesMenu;
+    bool mDisabled;
     QAction * mActionDefaultTrustPolicy;
     QAction * mActionShowTrustedCAs;
 };

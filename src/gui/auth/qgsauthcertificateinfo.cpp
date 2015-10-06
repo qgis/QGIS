@@ -64,37 +64,49 @@ QgsAuthCertInfo::QgsAuthCertInfo( QSslCertificate cert,
     , mGrpCert( 0 )
     , mGrpPkey( 0 )
     , mGrpExts( 0 )
+    , mAuthNotifyLayout( 0 )
+    , mAuthNotify( 0 )
 {
-  setupUi( this );
+  if ( QgsAuthManager::instance()->isDisabled() )
+  {
+    mAuthNotifyLayout = new QVBoxLayout;
+    this->setLayout( mAuthNotifyLayout );
+    mAuthNotify = new QLabel( QgsAuthManager::instance()->disabledMessage(), this );
+    mAuthNotifyLayout->addWidget( mAuthNotify );
+  }
+  else
+  {
+    setupUi( this );
 
-  lblError->setHidden( true );
+    lblError->setHidden( true );
 
-  treeHierarchy->setRootIsDecorated( false );
+    treeHierarchy->setRootIsDecorated( false );
 
-  connect( treeHierarchy, SIGNAL( currentItemChanged( QTreeWidgetItem *, QTreeWidgetItem * ) ),
-           this, SLOT( currentCertItemChanged( QTreeWidgetItem*, QTreeWidgetItem* ) ) );
+    connect( treeHierarchy, SIGNAL( currentItemChanged( QTreeWidgetItem *, QTreeWidgetItem * ) ),
+             this, SLOT( currentCertItemChanged( QTreeWidgetItem*, QTreeWidgetItem* ) ) );
 
-  mCaCertsCache = QgsAuthManager::instance()->getCaCertsCache();
+    mCaCertsCache = QgsAuthManager::instance()->getCaCertsCache();
 
-  setUpCertDetailsTree();
+    setUpCertDetailsTree();
 
-  grpbxTrust->setVisible( mManageTrust );
+    grpbxTrust->setVisible( mManageTrust );
 
-  // trust policy is still queried, even if not managing the policy, so public getter will work
-  mDefaultTrustPolicy = QgsAuthManager::instance()->defaultCertTrustPolicy();
-  mCurrentTrustPolicy = QgsAuthCertUtils::DefaultTrust;
+    // trust policy is still queried, even if not managing the policy, so public getter will work
+    mDefaultTrustPolicy = QgsAuthManager::instance()->defaultCertTrustPolicy();
+    mCurrentTrustPolicy = QgsAuthCertUtils::DefaultTrust;
 
-  bool res;
-  res = populateQcaCertCollection();
-  if ( res )
-    res = setQcaCertificate( cert );
-  if ( res )
-    res = populateCertChain();
-  if ( res )
-    setCertHierarchy();
+    bool res;
+    res = populateQcaCertCollection();
+    if ( res )
+      res = setQcaCertificate( cert );
+    if ( res )
+      res = populateCertChain();
+    if ( res )
+      setCertHierarchy();
 
-  connect( cmbbxTrust, SIGNAL( currentIndexChanged( int ) ),
-           this, SLOT( currentPolicyIndexChanged( int ) ) );
+    connect( cmbbxTrust, SIGNAL( currentIndexChanged( int ) ),
+             this, SLOT( currentPolicyIndexChanged( int ) ) );
+  }
 }
 
 QgsAuthCertInfo::~QgsAuthCertInfo()

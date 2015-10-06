@@ -66,6 +66,8 @@ class GUI_EXPORT QgsAuthSslErrorsDialog : public QDialog, private Ui::QgsAuthSsl
 
     void on_btnChainCAs_clicked();
 
+    void on_grpbxSslErrors_collapsedStateChanged( bool collapsed );
+
   private:
     void populateErrorsList();
 

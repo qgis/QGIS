@@ -564,7 +564,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   QgsAuthManager::instance()->init( QgsApplication::pluginPath() );
   if ( QgsAuthManager::instance()->isDisabled() )
   {
-    QMessageBox::warning( this, tr( "Authentication System" ),
+    // Don't pass 'this' as parent, or menubar doesn't complete loading of submenus (at least on Mac)
+    QMessageBox::warning( 0, tr( "Authentication System" ),
                           QgsAuthManager::instance()->disabledMessage() + "\n\n" +
                           tr( "Resources authenticating via the system can not be accessed." ) );
   }

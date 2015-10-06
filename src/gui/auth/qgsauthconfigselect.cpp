@@ -33,11 +33,13 @@ QgsAuthConfigSelect::QgsAuthConfigSelect( QWidget *parent, const QString &datapr
     , mAuthCfg( QString() )
     , mDataProvider( dataprovider )
     , mConfigs( QgsAuthMethodConfigsMap() )
+    , mDisabled( false )
     , mAuthNotifyLayout( 0 )
     , mAuthNotify( 0 )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {
+    mDisabled = true;
     mAuthNotifyLayout = new QVBoxLayout;
     this->setLayout( mAuthNotifyLayout );
     mAuthNotify = new QLabel( QgsAuthManager::instance()->disabledMessage(), this );
@@ -62,7 +64,7 @@ QgsAuthConfigSelect::~QgsAuthConfigSelect()
 
 void QgsAuthConfigSelect::setConfigId( const QString& authcfg )
 {
-  if ( QgsAuthManager::instance()->isDisabled() && mAuthNotify )
+  if ( mDisabled && mAuthNotify )
   {
     mAuthNotify->setText( QgsAuthManager::instance()->disabledMessage() + "\n\n" +
                           tr( "Authentication config id not loaded: %1" ).arg( authcfg ) );
@@ -80,6 +82,11 @@ void QgsAuthConfigSelect::setConfigId( const QString& authcfg )
 
 void QgsAuthConfigSelect::setDataProviderKey( const QString &key )
 {
+  if ( mDisabled )
+  {
+    return;
+  }
+
   mDataProvider = key;
   populateConfigSelector();
 }
@@ -156,12 +163,20 @@ void QgsAuthConfigSelect::populateConfigSelector()
 
 void QgsAuthConfigSelect::showMessage( const QString &msg )
 {
+  if ( mDisabled )
+  {
+    return;
+  }
   leConfigMsg->setText( msg );
   frConfigMsg->setVisible( true );
 }
 
 void QgsAuthConfigSelect::clearMessage()
 {
+  if ( mDisabled )
+  {
+    return;
+  }
   leConfigMsg->clear();
   frConfigMsg->setVisible( false );
 }
@@ -241,22 +256,36 @@ QgsAuthConfigUriEdit::QgsAuthConfigUriEdit( QWidget *parent, const QString &data
     , mAuthCfg( QString() )
     , mDataUri( QString() )
     , mDataUriOrig( QString() )
+    , mDisabled( false )
+    , mAuthNotifyLayout( 0 )
+    , mAuthNotify( 0 )
 {
-  setupUi( this );
+  if ( QgsAuthManager::instance()->isDisabled() )
+  {
+    mDisabled = true;
+    mAuthNotifyLayout = new QVBoxLayout;
+    this->setLayout( mAuthNotifyLayout );
+    mAuthNotify = new QLabel( QgsAuthManager::instance()->disabledMessage(), this );
+    mAuthNotifyLayout->addWidget( mAuthNotify );
+  }
+  else
+  {
+    setupUi( this );
 
-  setWindowTitle( tr( "Authentication Config ID String Editor" ) );
+    setWindowTitle( tr( "Authentication Config ID String Editor" ) );
 
-  buttonBox->button( QDialogButtonBox::Close )->setDefault( true );
-  connect( buttonBox, SIGNAL( rejected() ), this, SLOT( close() ) );
-  connect( buttonBox, SIGNAL( accepted() ), this, SLOT( saveChanges() ) );
+    buttonBox->button( QDialogButtonBox::Close )->setDefault( true );
+    connect( buttonBox, SIGNAL( rejected() ), this, SLOT( close() ) );
+    connect( buttonBox, SIGNAL( accepted() ), this, SLOT( saveChanges() ) );
 
-  connect( buttonBox->button( QDialogButtonBox::Reset ), SIGNAL( clicked() ), this, SLOT( resetChanges() ) );
+    connect( buttonBox->button( QDialogButtonBox::Reset ), SIGNAL( clicked() ), this, SLOT( resetChanges() ) );
 
-  connect( wdgtAuthSelect, SIGNAL( selectedConfigIdChanged( QString ) ), this , SLOT( authCfgUpdated( QString ) ) );
-  connect( wdgtAuthSelect, SIGNAL( selectedConfigIdRemoved( QString ) ), this , SLOT( authCfgRemoved( QString ) ) );
+    connect( wdgtAuthSelect, SIGNAL( selectedConfigIdChanged( QString ) ), this , SLOT( authCfgUpdated( QString ) ) );
+    connect( wdgtAuthSelect, SIGNAL( selectedConfigIdRemoved( QString ) ), this , SLOT( authCfgRemoved( QString ) ) );
 
-  wdgtAuthSelect->setDataProviderKey( dataprovider );
-  setDataSourceUri( datauri );
+    wdgtAuthSelect->setDataProviderKey( dataprovider );
+    setDataSourceUri( datauri );
+  }
 }
 
 QgsAuthConfigUriEdit::~QgsAuthConfigUriEdit()
@@ -265,6 +294,10 @@ QgsAuthConfigUriEdit::~QgsAuthConfigUriEdit()
 
 void QgsAuthConfigUriEdit::setDataSourceUri( const QString &datauri )
 {
+  if ( mDisabled )
+  {
+    return;
+  }
   if ( datauri.isEmpty() )
     return;
 
@@ -291,11 +324,19 @@ void QgsAuthConfigUriEdit::setDataSourceUri( const QString &datauri )
 
 QString QgsAuthConfigUriEdit::dataSourceUri()
 {
+  if ( mDisabled )
+  {
+    return QString();
+  }
   return mDataUri;
 }
 
 bool QgsAuthConfigUriEdit::hasConfigID( const QString &txt )
 {
+  if ( QgsAuthManager::instance()->isDisabled() )
+  {
+    return false;
+  }
   return QgsAuthManager::instance()->hasConfigId( txt );
 }
 

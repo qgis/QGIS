@@ -31,12 +31,14 @@ QgsAuthTrustedCAsDialog::QgsAuthTrustedCAsDialog( QWidget *parent,
     QList<QSslCertificate> trustedCAs )
     : QDialog( parent )
     , mTrustedCAs( trustedCAs )
+    , mDisabled( false )
     , mAuthNotifyLayout( 0 )
     , mAuthNotify( 0 )
     , mRootCaSecItem( 0 )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {
+    mDisabled = true;
     mAuthNotifyLayout = new QVBoxLayout;
     this->setLayout( mAuthNotifyLayout );
     mAuthNotify = new QLabel( QgsAuthManager::instance()->disabledMessage(), this );
@@ -315,7 +317,10 @@ void QgsAuthTrustedCAsDialog::authMessageOut( const QString& message, const QStr
 
 void QgsAuthTrustedCAsDialog::showEvent( QShowEvent * e )
 {
-  treeTrustedCAs->setFocus();
+  if ( !mDisabled )
+  {
+    treeTrustedCAs->setFocus();
+  }
   QWidget::showEvent( e );
 }
 

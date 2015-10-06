@@ -126,6 +126,8 @@ class GUI_EXPORT QgsAuthCertInfo : public QWidget, private Ui::QgsAuthCertInfo
     QTreeWidgetItem *mGrpPkey;
     QTreeWidgetItem *mGrpExts;
 
+    QVBoxLayout *mAuthNotifyLayout;
+    QLabel *mAuthNotify;
 };
 
 //////////////// Embed in dialog ///////////////////

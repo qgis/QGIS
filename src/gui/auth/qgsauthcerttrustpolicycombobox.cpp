@@ -113,7 +113,14 @@ const QString QgsAuthCertTrustPolicyComboBox::defaultTrustText( QgsAuthCertUtils
 {
   if ( defaultpolicy == QgsAuthCertUtils::DefaultTrust )
   {
-    defaultpolicy = QgsAuthManager::instance()->defaultCertTrustPolicy();
+    if ( !QgsAuthManager::instance()->isDisabled() )
+    {
+      defaultpolicy = QgsAuthManager::instance()->defaultCertTrustPolicy();
+    }
+    else
+    {
+      defaultpolicy = QgsAuthCertUtils::Trusted;
+    }
   }
   return QString( "%1 (%2)" )
          .arg( QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::DefaultTrust ) )

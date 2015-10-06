@@ -128,6 +128,9 @@ class GUI_EXPORT QgsAuthSslImportDialog : public QDialog, private Ui::QgsAuthSsl
     QTimer *mTimer;
     QList<QSslError> mSslErrors;
     QList<QSslCertificate> mTrustedCAs;
+
+    QVBoxLayout *mAuthNotifyLayout;
+    QLabel *mAuthNotify;
 };
 
 #endif // QGSAUTHSSLIMPORTDIALOG_H

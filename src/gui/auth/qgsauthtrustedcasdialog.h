@@ -92,6 +92,7 @@ class GUI_EXPORT QgsAuthTrustedCAsDialog : public QDialog, private Ui::QgsAuthTr
     int messageTimeout();
 
     QList<QSslCertificate> mTrustedCAs;
+    bool mDisabled;
     QVBoxLayout *mAuthNotifyLayout;
     QLabel *mAuthNotify;
 

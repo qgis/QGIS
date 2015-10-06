@@ -94,6 +94,7 @@ class GUI_EXPORT QgsAuthIdentitiesEditor : public QWidget, private Ui::QgsAuthId
     QgsMessageBar * messageBar();
     int messageTimeout();
 
+    bool mDisabled;
     QVBoxLayout *mAuthNotifyLayout;
     QLabel *mAuthNotify;
 

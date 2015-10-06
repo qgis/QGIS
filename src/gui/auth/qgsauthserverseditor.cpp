@@ -30,12 +30,14 @@
 
 QgsAuthServersEditor::QgsAuthServersEditor( QWidget *parent )
     : QWidget( parent )
+    , mDisabled( false )
     , mAuthNotifyLayout( 0 )
     , mAuthNotify( 0 )
     , mRootSslConfigItem( 0 )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {
+    mDisabled = true;
     mAuthNotifyLayout = new QVBoxLayout;
     this->setLayout( mAuthNotifyLayout );
     mAuthNotify = new QLabel( QgsAuthManager::instance()->disabledMessage(), this );
@@ -404,7 +406,10 @@ void QgsAuthServersEditor::authMessageOut( const QString& message, const QString
 
 void QgsAuthServersEditor::showEvent( QShowEvent *e )
 {
-  treeServerConfigs->setFocus();
+  if ( !mDisabled )
+  {
+    treeServerConfigs->setFocus();
+  }
   QWidget::showEvent( e );
 }
 

@@ -64,10 +64,10 @@ class GUI_EXPORT QgsAuthImportIdentityDialog : public QDialog, private Ui::QgsAu
     ~QgsAuthImportIdentityDialog();
 
     /** Get identity type */
-    QgsAuthImportIdentityDialog::IdentityType identityType() { return mIdentityType; }
+    QgsAuthImportIdentityDialog::IdentityType identityType();
 
     /** Get certificate/key bundle to be imported */
-    const QPair<QSslCertificate, QSslKey> certBundleToImport() { return mCertBundle; }
+    const QPair<QSslCertificate, QSslKey> certBundleToImport();
 
     /** Get certificate/key bundle to be imported as a PKI bundle object */
     const QgsPkiBundle pkiBundleToImport() { return mPkiBundle; }
@@ -110,6 +110,10 @@ class GUI_EXPORT QgsAuthImportIdentityDialog : public QDialog, private Ui::QgsAu
     QgsAuthImportIdentityDialog::IdentityType  mIdentityType;
     QPair<QSslCertificate, QSslKey> mCertBundle;
     QgsPkiBundle mPkiBundle;
+
+    bool mDisabled;
+    QVBoxLayout *mAuthNotifyLayout;
+    QLabel *mAuthNotify;
 };
 
 #endif // QGSAUTHIMPORTIDENTITYDIALOG_H

@@ -102,14 +102,8 @@
         <number>6</number>
        </property>
        <item>
-        <widget class="QListWidget" name="listSslErrors">
-         <property name="editTriggers">
-          <set>QAbstractItemView::NoEditTriggers</set>
-         </property>
-         <property name="alternatingRowColors">
-          <bool>true</bool>
-         </property>
-         <property name="wordWrap">
+        <widget class="QPlainTextEdit" name="teSslErrors">
+         <property name="readOnly">
           <bool>true</bool>
          </property>
         </widget>
@@ -276,7 +270,7 @@
  </customwidgets>
  <tabstops>
   <tabstop>leUrl</tabstop>
-  <tabstop>listSslErrors</tabstop>
+  <tabstop>teSslErrors</tabstop>
   <tabstop>btnChainInfo</tabstop>
   <tabstop>btnChainCAs</tabstop>
   <tabstop>grpbxSslConfig</tabstop>

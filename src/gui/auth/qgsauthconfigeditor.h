@@ -105,6 +105,7 @@ class GUI_EXPORT QgsAuthConfigEditor : public QWidget, private Ui::QgsAuthConfig
     QAction *mActionRemoveAuthConfigs;
     QAction *mActionEraseAuthDatabase;
 
+    bool mDisabled;
     QVBoxLayout *mAuthNotifyLayout;
     QLabel *mAuthNotify;
 };

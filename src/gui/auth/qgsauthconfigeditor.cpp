@@ -37,11 +37,13 @@ QgsAuthConfigEditor::QgsAuthConfigEditor( QWidget *parent, bool showUtilities, b
     , mActionClearCachedAuthConfigs( 0 )
     , mActionRemoveAuthConfigs( 0 )
     , mActionEraseAuthDatabase( 0 )
+    , mDisabled( false )
     , mAuthNotifyLayout( 0 )
     , mAuthNotify( 0 )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {
+    mDisabled = true;
     mAuthNotifyLayout = new QVBoxLayout;
     this->setLayout( mAuthNotifyLayout );
     mAuthNotify = new QLabel( QgsAuthManager::instance()->disabledMessage(), this );
@@ -166,7 +168,7 @@ void QgsAuthConfigEditor::authMessageOut( const QString& message, const QString&
 
 void QgsAuthConfigEditor::toggleTitleVisibility( bool visible )
 {
-  if ( !QgsAuthManager::instance()->isDisabled() )
+  if ( !mDisabled )
   {
     lblAuthConfigDb->setVisible( visible );
   }
@@ -174,11 +176,18 @@ void QgsAuthConfigEditor::toggleTitleVisibility( bool visible )
 
 void QgsAuthConfigEditor::setShowUtilitiesButton( bool show )
 {
-  btnAuthUtilities->setVisible( show );
+  if ( !mDisabled )
+  {
+    btnAuthUtilities->setVisible( show );
+  }
 }
 
 void QgsAuthConfigEditor::setRelayMessages( bool relay )
 {
+  if ( mDisabled )
+  {
+    return;
+  }
   if ( relay == mRelayMessages )
   {
     return;

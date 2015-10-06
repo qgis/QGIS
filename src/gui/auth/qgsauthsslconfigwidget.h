@@ -52,18 +52,18 @@ class GUI_EXPORT QgsAuthSslConfigWidget : public QWidget, private Ui::QgsAuthSsl
     ~QgsAuthSslConfigWidget();
 
     /** Access to the certificate's group box widget */
-    QGroupBox *certificateGroupBox() { return grpbxCert; }
+    QGroupBox *certificateGroupBox();
     /** Access to the SSL configuration's group box widget */
-    QGroupBox *sslConfigGroupBox() { return grpbxSslConfig; }
+    QGroupBox *sslConfigGroupBox();
 
     /** Get the SSL configuration */
     const QgsAuthConfigSslServer sslCustomConfig();
 
     /** Get the SSL server certificate */
-    const QSslCertificate sslCertificate() { return mCert; }
+    const QSslCertificate sslCertificate();
 
     /** Get the host:port to associate with the server certificate */
-    const QString sslHost() { return leHost->text(); }
+    const QString sslHost();
 
     /** Get the SSL protocl used for connections */
     QSsl::SslProtocol sslProtocol();
@@ -172,6 +172,10 @@ class GUI_EXPORT QgsAuthSslConfigWidget : public QWidget, private Ui::QgsAuthSsl
     QSpinBox *mVerifyDepthSpnBx;
 
     bool mCanSave;
+
+    bool mDisabled;
+    QVBoxLayout *mAuthNotifyLayout;
+    QLabel *mAuthNotify;
 };
 
 //////////////// Embed in dialog ///////////////////

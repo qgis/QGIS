@@ -86,6 +86,7 @@ class GUI_EXPORT QgsAuthConfigSelect : public QWidget, private Ui::QgsAuthConfig
     QString mDataProvider;
     QgsAuthMethodConfigsMap mConfigs;
 
+    bool mDisabled;
     QVBoxLayout *mAuthNotifyLayout;
     QLabel *mAuthNotify;
 };
@@ -122,7 +123,7 @@ class GUI_EXPORT QgsAuthConfigUriEdit : public QDialog, private Ui::QgsAuthConfi
     /** The returned, possibly edited data source URI */
     QString dataSourceUri();
 
-    /** Whether a string conatins an authcfg ID */
+    /** Whether a string contains an authcfg ID */
     static bool hasConfigID( const QString &txt );
 
   private slots:
@@ -148,6 +149,10 @@ class GUI_EXPORT QgsAuthConfigUriEdit : public QDialog, private Ui::QgsAuthConfi
     QString mAuthCfg;
     QString mDataUri;
     QString mDataUriOrig;
+
+    bool mDisabled;
+    QVBoxLayout *mAuthNotifyLayout;
+    QLabel *mAuthNotify;
 };
 
 #endif // QGSAUTHCONFIGSELECT_H
