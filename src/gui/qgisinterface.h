@@ -443,7 +443,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionZoomLast() = 0;
     //! Get access to the native zoom next action. Call trigger() on it to zoom to next.
     virtual QAction *actionZoomNext() = 0;
-    //! Get access to the native zoom actual size action. Call trigger() on it to zoom to actual size.
+    //! Get access to the native zoom resolution (100%) action. Call trigger() on it to zoom to actual size.
     virtual QAction *actionZoomActualSize() = 0;
     //! Get access to the native map tips action. Call trigger() on it to toggle map tips.
     virtual QAction *actionMapTips() = 0;
