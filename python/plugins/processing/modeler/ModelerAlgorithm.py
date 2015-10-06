@@ -230,6 +230,8 @@ class ModelerAlgorithm(GeoAlgorithm):
 
     def updateAlgorithm(self, alg):
         alg.pos = self.algs[alg.name].pos
+        alg.paramsFolded = self.algs[alg.name].paramsFolded
+        alg.outputsFolded = self.algs[alg.name].outputsFolded
         self.algs[alg.name] = alg
 
         from processing.modeler.ModelerGraphicItem import ModelerGraphicItem
