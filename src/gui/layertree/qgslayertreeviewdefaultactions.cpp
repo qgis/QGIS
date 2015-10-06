@@ -51,7 +51,7 @@ QAction* QgsLayerTreeViewDefaultActions::actionShowInOverview( QObject* parent )
   if ( !node )
     return 0;
 
-  QAction* a = new QAction( tr( "&Show in overview" ), parent );
+  QAction* a = new QAction( tr( "&Show in Overview" ), parent );
   connect( a, SIGNAL( triggered() ), this, SLOT( showInOverview() ) );
   a->setCheckable( true );
   a->setChecked( node->customProperty( "overview", 0 ).toInt() );
