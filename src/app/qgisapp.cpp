@@ -562,14 +562,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   mSplash->showMessage( tr( "Initializing authentication" ), Qt::AlignHCenter | Qt::AlignBottom );
   qApp->processEvents();
   QgsAuthManager::instance()->init( QgsApplication::pluginPath() );
-  if ( QgsAuthManager::instance()->isDisabled() )
-  {
-    // Don't pass 'this' as parent, or menubar doesn't complete loading of submenus (at least on Mac)
-    QMessageBox::warning( 0, tr( "Authentication System" ),
-                          QgsAuthManager::instance()->disabledMessage() + "\n\n" +
-                          tr( "Resources authenticating via the system can not be accessed." ) );
-  }
-  else
+  if ( !QgsAuthManager::instance()->isDisabled() )
   {
     masterPasswordSetup();
   }
@@ -906,6 +899,9 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
 
   // update windows
   qApp->processEvents();
+
+  // notify user if authentication system is disabled
+  ( void )QgsAuthGuiUtils::isDisabled( messageBar() );
 
   fileNewBlank(); // prepare empty project, also skips any default templates from loading
 

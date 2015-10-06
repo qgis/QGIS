@@ -66,9 +66,9 @@ bool QgsAuthGuiUtils::isDisabled( QgsMessageBar *msgbar, int timeout )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {
-    msgbar->pushMessage( QgsAuthManager::instance()->authManTag(),
-                         QObject::tr( "DISABLED: QCA's OpenSSL plugin missing" ),
-                         QgsMessageBar::WARNING, timeout );
+    msgbar->pushMessage( QObject::tr( "Authentication System" ),
+                         QObject::tr( "DISABLED. Resources authenticating via the system can not be accessed" ),
+                         QgsMessageBar::CRITICAL, timeout );
     return true;
   }
   return false;
