@@ -144,7 +144,6 @@ class ProcessingPlugin:
         dlg = ModelerDialog()
         dlg.exec_()
         if dlg.update:
-            Processing.updateAlgsList()
             self.toolbox.updateProvider('model')
 
     def openResults(self):
