@@ -46,6 +46,7 @@ class ClipByMask(GdalAlgorithm):
     NO_DATA = 'NO_DATA'
     MASK = 'MASK'
     ALPHA_BAND = 'ALPHA_BAND'
+    CROP_TO_CUTLINE = 'CROP_TO_CUTLINE'
     KEEP_RESOLUTION = 'KEEP_RESOLUTION'
     EXTRA = 'EXTRA'
 
@@ -60,6 +61,8 @@ class ClipByMask(GdalAlgorithm):
                                           '-9999'))
         self.addParameter(ParameterBoolean(self.ALPHA_BAND,
                                            self.tr('Create and output alpha band'), False))
+        self.addParameter(ParameterBoolean(self.CROP_TO_CUTLINE,
+                                           self.tr('Crop the extent of the target dataset to the extent of the cutline'), False))
         self.addParameter(ParameterBoolean(self.KEEP_RESOLUTION,
                                            self.tr('Keep resolution of output raster'), False))
         self.addParameter(ParameterString(self.EXTRA,
@@ -71,6 +74,7 @@ class ClipByMask(GdalAlgorithm):
         mask = self.getParameterValue(self.MASK)
         noData = unicode(self.getParameterValue(self.NO_DATA))
         addAlphaBand = self.getParameterValue(self.ALPHA_BAND)
+        cropToCutline = self.getParameterValue(self.CROP_TO_CUTLINE)
         keepResolution = self.getParameterValue(self.KEEP_RESOLUTION)
         extra = unicode(self.getParameterValue(self.EXTRA))
 
@@ -93,10 +97,12 @@ class ClipByMask(GdalAlgorithm):
 
         arguments.append('-cutline')
         arguments.append(mask)
-        arguments.append('-crop_to_cutline')
 
         if addAlphaBand:
             arguments.append('-dstalpha')
+		
+        if cropToCutline:
+            arguments.append('-crop_to_cutline')
 
         if len(extra) > 0:
             arguments.append(extra)

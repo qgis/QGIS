@@ -46,12 +46,18 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         self.extentSelector.setCanvas(self.canvas)
         self.outputFormat = Utils.fillRasterOutputFormat()
 
+        # set the default QDoubleSpinBoxes
+        self.xRes.setValue(12.5)
+        self.yRes.setValue(12.5)
+
         self.setParamsStatus([
             (self.inSelector, SIGNAL("filenameChanged()")),
             (self.outSelector, SIGNAL("filenameChanged()")),
             (self.noDataSpin, SIGNAL("valueChanged(int)"), self.noDataCheck, 1700),
             (self.maskSelector, SIGNAL("filenameChanged()"), self.maskModeRadio, 1600),
-            (self.alphaBandCheck, SIGNAL("stateChanged( int )")),
+            (self.alphaBandCheck, SIGNAL("stateChanged(int)")),
+            (self.cropToCutlineCheck, SIGNAL("stateChanged(int)")),
+            ([self.xRes, self.yRes], SIGNAL("valueChanged(double)"), self.resolutionGroupBox),
             (self.extentSelector, [SIGNAL("selectionStarted()"), SIGNAL("newExtentDefined()")], self.extentModeRadio),
             (self.modeStackedWidget, SIGNAL("currentIndexChanged(int)"))
         ])
@@ -167,9 +173,14 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
                 arguments.append("-cutline")
                 arguments.append(mask)
                 if Utils.GdalConfig.versionNum() >= 1800:
-                    arguments.append("-crop_to_cutline")
+                    if self.cropToCutlineCheck.isChecked():
+                        arguments.append("-crop_to_cutline")
                 if self.alphaBandCheck.isChecked():
                     arguments.append("-dstalpha")
+                if self.resolutionGroupBox.isChecked():
+                    arguments.append("-tr")
+                    arguments.append(unicode(self.xRes.value()))
+                    arguments.append(unicode(self.yRes.value()))
 
         outputFn = self.getOutputFileName()
         if not outputFn == '':
