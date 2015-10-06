@@ -473,7 +473,7 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature& feature )
       return false;
     }
   }
-  QgsDebugMsgLevel( QString( "lid = %1 type = %2 cat = %3 fatureId = %4" ).arg( lid ).arg( type ).arg( cat ).arg( featureId ), 3 );
+  QgsDebugMsgLevel( QString( "lid = %1 type = %2 cat = %3 featureId = %4" ).arg( lid ).arg( type ).arg( cat ).arg( featureId ), 3 );
 
   feature.setFeatureId( featureId );
   //feature.initAttributes( mSource->mFields.count() );

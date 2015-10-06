@@ -104,6 +104,11 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapLayer : public QObject
      *   @param cat */
     void insertAttributes( int cat, const QgsFeature &feature, QString &error );
 
+    /** Restore previously deleted table record using data from mAttributes, if exists.
+     *  If there the cat is not in mAttributes, nothing is inserted (to keep previous state).
+     *   @param cat */
+    void reinsertAttributes( int cat, QString &error );
+
     /** Update existing record by values from feature.
      *  @param cat
      *  @param nullValues override all values, if false, only non empty values are used for update
@@ -115,13 +120,19 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapLayer : public QObject
      */
     void deleteAttribute( int cat, QString &error );
 
-    /** Check if a database row exists and it is orphan (no more lines with
-     *  that category)
+    /** Check if a database row exists
      *   @param cat
-     *   @param orphan set to true if a record exits and it is orphan
-     *   @return empty string or error message
+     *   @param error set to error if happens
+     *   @return true if cat is orphan
      */
-    void isOrphan( int cat, int &orphan, QString &error );
+    bool recordExists( int cat, QString &error );
+
+    /** Check if a database row exists and it is orphan (no more lines with that category)
+     *   @param cat
+     *   @param error set to error if happens
+     *   @return true if cat is orphan
+     */
+    bool isOrphan( int cat, QString &error );
 
     /** Create table and link vector to this table
      * @param fields fields to be created without cat (id) field

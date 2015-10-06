@@ -481,17 +481,16 @@ void QgsGrassVectorMapLayer::closeEdit()
 
 QVariant QgsGrassVectorMapLayer::attribute( int cat, int index )
 {
+  // It may happen that the table exists but record for the cat is missing
+  if (( !hasTable() && index == 0 ) || ( hasTable() && index == keyColumn() ) )
+  {
+    QgsDebugMsgLevel( QString( "set attribute %1 to cat %2" ).arg( index ).arg( cat ), 3 );
+    return QVariant( cat );
+  }
+
   if ( !hasTable() )
   {
-    if ( index == 0 )
-    {
-      QgsDebugMsgLevel( QString( "no table, set attribute 0 to cat %1" ).arg( cat ), 3 );
-      return QVariant( cat );
-    }
-    else
-    {
-      return QVariant();
-    }
+    return QVariant();
   }
   else
   {
@@ -804,7 +803,61 @@ void QgsGrassVectorMapLayer::insertAttributes( int cat, const QgsFeature &featur
 {
   QgsDebugMsg( QString( "mField = %1 cat = %2" ).arg( mField ).arg( cat ) );
 
-  if ( mHasTable )
+  if ( !mHasTable )
+  {
+    error = tr( "no table" );
+    return;
+  }
+  QStringList names;
+  QStringList values;
+
+  names << mFieldInfo->key;
+  values << QString::number( cat );
+
+  if ( feature.isValid() && feature.fields() )
+  {
+    // append feature attributes if not null
+    for ( int i = 0; i < feature.fields()->size(); i++ )
+    {
+      QString name = feature.fields()->at( i ).name();
+      if ( name == mFieldInfo->key )
+      {
+        continue;
+      }
+      QVariant valueVariant = feature.attributes().value( i );
+      if ( !valueVariant.isNull() )
+      {
+        names << name;
+        values << quotedValue( valueVariant );
+      }
+    }
+  }
+
+  QString query = QString( "INSERT INTO %1 ( %2 ) VALUES ( %3 )" ).arg( mFieldInfo->table ).arg( names.join( ", " ) ).arg( values.join( "," ) );
+  executeSql( query, error );
+  if ( error.isEmpty() )
+  {
+    QList<QVariant> values;
+    values.reserve( mAttributeFields.size() );
+    for ( int i = 0; i < mAttributeFields.size(); ++i )
+    {
+      values << QVariant();
+    }
+    mAttributes[cat] = values;
+  }
+}
+
+void QgsGrassVectorMapLayer::reinsertAttributes( int cat, QString &error )
+{
+  QgsDebugMsg( QString( "mField = %1 cat = %2" ).arg( mField ).arg( cat ) );
+
+  if ( !mHasTable )
+  {
+    error = tr( "no table" );
+    return;
+  }
+
+  if ( mAttributes.contains( cat ) )
   {
     QStringList names;
     QStringList values;
@@ -812,17 +865,17 @@ void QgsGrassVectorMapLayer::insertAttributes( int cat, const QgsFeature &featur
     names << mFieldInfo->key;
     values << QString::number( cat );
 
-    if ( feature.isValid() && feature.fields() )
+    if ( mAttributes.contains( cat ) )
     {
-      // append feature attributes if not null
-      for ( int i = 0; i < feature.fields()->size(); i++ )
+      for ( int i = 0; i < mTableFields.size(); i++ )
       {
-        QString name = feature.fields()->at( i ).name();
+        QString name = mTableFields.at( i ).name();
         if ( name == mFieldInfo->key )
         {
           continue;
         }
-        QVariant valueVariant = feature.attributes().value( i );
+        int index = mAttributeFields.indexFromName( name );
+        QVariant valueVariant = mAttributes.value( cat ).value( index );
         if ( !valueVariant.isNull() )
         {
           names << name;
@@ -833,16 +886,10 @@ void QgsGrassVectorMapLayer::insertAttributes( int cat, const QgsFeature &featur
 
     QString query = QString( "INSERT INTO %1 ( %2 ) VALUES ( %3 )" ).arg( mFieldInfo->table ).arg( names.join( ", " ) ).arg( values.join( "," ) );
     executeSql( query, error );
-    if ( error.isEmpty() )
-    {
-      QList<QVariant> values;
-      values.reserve( mAttributeFields.size() );
-      for ( int i = 0; i < mAttributeFields.size(); ++i )
-      {
-        values << QVariant();
-      }
-      mAttributes[cat] = values;
-    }
+  }
+  else
+  {
+    QgsDebugMsg( "cat not found in mAttributes -> don't restore" );
   }
 }
 
@@ -925,32 +972,15 @@ void QgsGrassVectorMapLayer::deleteAttribute( int cat, QString &error )
   executeSql( query, error );
 }
 
-void QgsGrassVectorMapLayer::isOrphan( int cat, int &orphan, QString &error )
+bool QgsGrassVectorMapLayer::recordExists( int cat, QString &error )
 {
   QgsDebugMsg( QString( "mField = %1 cat = %2" ).arg( mField ).arg( cat ) );
-  orphan = false;
-
-  // Check first if anothe    return "Cannot open database";r line with such cat exists
-  int fieldIndex = Vect_cidx_get_field_index( mMap->map(), mField );
-  if ( fieldIndex >= 0 )
-  {
-    int t, id;
-    int ret = Vect_cidx_find_next( mMap->map(), fieldIndex, cat,
-                                   GV_POINTS | GV_LINES | GV_FACE, 0, &t, &id );
-
-    if ( ret >= 0 )
-    {
-      // Category exists
-      orphan = false;
-      return;
-    }
-  }
-
+  bool exists = false;
   if ( !mDriver )
   {
     error = tr( "Driver is not open" );
     QgsDebugMsg( error );
-    return;
+    return false;
   }
 
   QgsDebugMsg( "Database opened -> select record" );
@@ -968,21 +998,49 @@ void QgsGrassVectorMapLayer::isOrphan( int cat, int &orphan, QString &error )
   {
     error = tr( "Cannot query database: %1" ).arg( query );
   }
-
-  int more;
-  if ( db_fetch( &cursor, DB_NEXT, &more ) != DB_OK )
-  {
-    error = tr( "Cannot fetch DB record" );
-  }
   else
   {
-    dbValue *value = db_get_column_value( 0 );
-    int count = db_get_value_int( value );
-    QgsDebugMsg( QString( "count = %1" ).arg( count ) );
-    orphan = count == 0;
+    int more;
+    if ( db_fetch( &cursor, DB_NEXT, &more ) != DB_OK )
+    {
+      error = tr( "Cannot fetch DB record" );
+    }
+    else
+    {
+      dbTable *table = db_get_cursor_table( &cursor );
+      dbColumn *column = db_get_table_column( table, 0 );
+      dbValue *value = db_get_column_value( column );
+      int count = db_get_value_int( value );
+      QgsDebugMsg( QString( "count = %1" ).arg( count ) );
+      exists = count > 0;
+    }
+    db_close_cursor( &cursor );
   }
-  db_close_cursor( &cursor );
   db_free_string( &dbstr );
+  return exists;
+}
+
+bool QgsGrassVectorMapLayer::isOrphan( int cat, QString &error )
+{
+  QgsDebugMsg( QString( "mField = %1 cat = %2" ).arg( mField ).arg( cat ) );
+
+
+  // Check first if anothe    return "Cannot open database";r line with such cat exists
+  int fieldIndex = Vect_cidx_get_field_index( mMap->map(), mField );
+  if ( fieldIndex >= 0 )
+  {
+    int t, id;
+    int ret = Vect_cidx_find_next( mMap->map(), fieldIndex, cat,
+                                   GV_POINTS | GV_LINES | GV_FACE, 0, &t, &id );
+
+    if ( ret >= 0 )
+    {
+      QgsDebugMsg( "category exists" );
+      return false;
+    }
+  }
+
+  return recordExists( cat, error );
 }
 
 void QgsGrassVectorMapLayer::changeAttributeValue( int cat, QgsField field, QVariant value, QString &error )
