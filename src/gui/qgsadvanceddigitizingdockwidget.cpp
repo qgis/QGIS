@@ -453,7 +453,7 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent* e )
   QgsDebugMsg( QString( "X:        %1 %2 %3" ).arg( mXConstraint->isLocked() ).arg( mXConstraint->relative() ).arg( mXConstraint->value() ) );
   QgsDebugMsg( QString( "Y:        %1 %2 %3" ).arg( mYConstraint->isLocked() ).arg( mYConstraint->relative() ).arg( mYConstraint->value() ) );
 
-  QgsPoint point = e->mapPoint();
+  QgsPoint point = e->snapPoint( mSnappingMode );
 
   mSnappedSegment = e->snapSegment( mSnappingMode );
 
