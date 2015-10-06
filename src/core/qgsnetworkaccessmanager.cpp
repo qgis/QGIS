@@ -171,18 +171,17 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
 
 #ifndef QT_NO_OPENSSL
   bool ishttps = pReq->url().scheme().toLower() == "https";
-  QgsAuthConfigSslServer servconfig;
   if ( ishttps && !QgsAuthManager::instance()->isDisabled() )
   {
+    QgsDebugMsg( "Adding trusted CA certs to request" );
+    QSslConfiguration sslconfig( pReq->sslConfiguration() );
+    sslconfig.setCaCertificates( QgsAuthManager::instance()->getTrustedCaCertsCache() );
+
     // check for SSL cert custom config
     QString hostport( QString( "%1:%2" )
                       .arg( pReq->url().host().trimmed() )
                       .arg( pReq->url().port() != -1 ? pReq->url().port() : 443 ) );
-    servconfig = QgsAuthManager::instance()->getSslCertCustomConfigByHost( hostport.trimmed() );
-
-    QgsDebugMsg( "Adding trusted CA certs to request" );
-    QSslConfiguration sslconfig( pReq->sslConfiguration() );
-    sslconfig.setCaCertificates( QgsAuthManager::instance()->getTrustedCaCertsCache() );
+    QgsAuthConfigSslServer servconfig = QgsAuthManager::instance()->getSslCertCustomConfigByHost( hostport.trimmed() );
     if ( !servconfig.isNull() )
     {
       QgsDebugMsg( QString( "Adding SSL custom config to request for %1" ).arg( hostport ) );
@@ -190,6 +189,7 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
       sslconfig.setPeerVerifyMode( servconfig.sslPeerVerifyMode() );
       sslconfig.setPeerVerifyDepth( servconfig.sslPeerVerifyDepth() );
     }
+
     pReq->setSslConfiguration( sslconfig );
   }
 #endif
