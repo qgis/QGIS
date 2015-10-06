@@ -51,8 +51,10 @@ void QgsFeatureListViewDelegate::setEditSelectionModel( QItemSelectionModel* edi
 
 QSize QgsFeatureListViewDelegate::sizeHint( const QStyleOptionViewItem& option, const QModelIndex& index ) const
 {
-  Q_UNUSED( index )
-  return QSize( option.rect.width(), sIconSize );
+  Q_UNUSED( index );
+  QSize size = QItemDelegate::sizeHint(option, index);
+  size.setHeight( option.fontMetrics.height() );
+  return size;
 }
 
 void QgsFeatureListViewDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
@@ -78,6 +80,8 @@ void QgsFeatureListViewDelegate::paint( QPainter *painter, const QStyleOptionVie
   {
     icon = QgsApplication::getThemePixmap( "/mIconDeselected.svg" );
   }
+
+  icon = icon.scaledToWidth( option.rect.height() );
 
   // Text layout options
   QRect textLayoutBounds( iconLayoutBounds.x() + iconLayoutBounds.width(), option.rect.y(), option.rect.width() - ( iconLayoutBounds.x() + iconLayoutBounds.width() ), option.rect.height() );
