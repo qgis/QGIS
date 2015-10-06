@@ -298,6 +298,13 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
     confDomNode = confDomNode.nextSibling();
   }
 
+  if ( mParams.size() == 0 )
+  {
+    QLabel *label = new QLabel(this);
+    label->setText( tr("This module has no options") );
+    mypSimpleLayout->addWidget( label );
+  }
+
   if ( mypAdvancedLayout->count() == 0 )
   {
     mypAdvancedPushButtonFrame->hide();
