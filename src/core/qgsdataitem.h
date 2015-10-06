@@ -327,7 +327,7 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
     /** Returns comments of the layer
      * @note added in 2.12
      */
-    virtual QString comments() const { return ""; }
+    virtual QString comments() const { return QString(); }
 
   protected:
 
@@ -350,7 +350,7 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
     static const QIcon &iconRaster();
     static const QIcon &iconDefault();
 
-    /** Returns the layer name */
+    /** @return the layer name */
     virtual QString layerName() const { return name(); }
 };
 
