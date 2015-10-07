@@ -67,7 +67,7 @@ QgsNodeEditor::QgsNodeEditor(
   QgsSelectedFeature *selectedFeature,
   QgsMapCanvas *canvas )
 {
-  setWindowTitle( tr( "Vertex editor" ) );
+  setWindowTitle( tr( "Vertex Editor" ) );
   setFeatures( features() ^ QDockWidget::DockWidgetClosable );
 
   mLayer = layer;
@@ -96,6 +96,7 @@ QgsNodeEditor::QgsNodeEditor(
   connect( mSelectedFeature, SIGNAL( vertexMapChanged() ), this, SLOT( rebuildTable() ) );
   connect( mTableWidget, SIGNAL( itemSelectionChanged() ), this, SLOT( updateNodeSelection() ) );
   connect( mTableWidget, SIGNAL( cellChanged( int, int ) ), this, SLOT( tableValueChanged( int, int ) ) );
+  connect( mTableWidget, SIGNAL( itemClicked( QTableWidgetItem* ) ), this, SLOT( zoomToNode( QTableWidgetItem* ) ) );
 
   rebuildTable();
 }
@@ -109,7 +110,7 @@ void QgsNodeEditor::rebuildTable()
   mTableWidget->setRowCount( 0 );
   int row = 0;
   bool hasR = false;
-  Q_FOREACH ( const QgsVertexEntry* entry, mSelectedFeature->vertexMap() )
+  Q_FOREACH( const QgsVertexEntry* entry, mSelectedFeature->vertexMap() )
   {
     mTableWidget->insertRow( row );
 
@@ -227,10 +228,28 @@ void QgsNodeEditor::updateNodeSelection()
 {
   mSelectedFeature->blockSignals( true );
   mSelectedFeature->deselectAllVertexes();
-  Q_FOREACH ( const QModelIndex& index, mTableWidget->selectionModel()->selectedRows() )
+  Q_FOREACH( const QModelIndex& index, mTableWidget->selectionModel()->selectedRows() )
   {
     int nodeIdx = mTableWidget->item( index.row(), 0 )->data( Qt::DisplayRole ).toInt();
     mSelectedFeature->selectVertex( nodeIdx );
   }
   mSelectedFeature->blockSignals( false );
+}
+
+void QgsNodeEditor::zoomToNode( QTableWidgetItem *item )
+{
+  double x, y;
+  x = mTableWidget->item( item->row(), 1 )->data( Qt::DisplayRole ).toDouble();
+  y = mTableWidget->item( item->row(), 2 )->data( Qt::DisplayRole ).toDouble();
+
+  QgsRectangle ext = mCanvas->extent();
+  QgsPoint center = ext.center();
+
+  QgsPoint newCenter( x, y );
+
+  QgsCoordinateTransform t( mLayer->crs(), mCanvas->mapSettings().destinationCrs() );
+  QgsPoint tCenter = t.transform( newCenter );
+
+  mCanvas->setCenter( tCenter );
+  mCanvas->refresh();
 }
