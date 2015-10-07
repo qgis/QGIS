@@ -171,8 +171,10 @@ QgsFeatureRendererV2* QgsPointDisplacementRendererWidget::renderer()
 void QgsPointDisplacementRendererWidget::setMapCanvas( QgsMapCanvas* canvas )
 {
   QgsRendererV2Widget::setMapCanvas( canvas );
-  mDistanceUnitWidget->setMapCanvas( canvas );
-  mEmbeddedRendererWidget->setMapCanvas( canvas );
+  if ( mDistanceUnitWidget )
+    mDistanceUnitWidget->setMapCanvas( canvas );
+  if ( mEmbeddedRendererWidget )
+    mEmbeddedRendererWidget->setMapCanvas( canvas );
 }
 
 void QgsPointDisplacementRendererWidget::on_mLabelFieldComboBox_currentIndexChanged( const QString& text )

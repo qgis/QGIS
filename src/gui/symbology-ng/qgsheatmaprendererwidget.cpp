@@ -133,7 +133,8 @@ QgsFeatureRendererV2* QgsHeatmapRendererWidget::renderer()
 void QgsHeatmapRendererWidget::setMapCanvas( QgsMapCanvas* canvas )
 {
   QgsRendererV2Widget::setMapCanvas( canvas );
-  mRadiusUnitWidget->setMapCanvas( canvas );
+  if ( mRadiusUnitWidget )
+    mRadiusUnitWidget->setMapCanvas( canvas );
 }
 
 void QgsHeatmapRendererWidget::applyColorRamp()

@@ -114,7 +114,8 @@ QgsFeatureRendererV2* QgsInvertedPolygonRendererWidget::renderer()
 void QgsInvertedPolygonRendererWidget::setMapCanvas( QgsMapCanvas* canvas )
 {
   QgsRendererV2Widget::setMapCanvas( canvas );
-  mEmbeddedRendererWidget->setMapCanvas( canvas );
+  if ( mEmbeddedRendererWidget )
+    mEmbeddedRendererWidget->setMapCanvas( canvas );
 }
 
 void QgsInvertedPolygonRendererWidget::on_mRendererComboBox_currentIndexChanged( int index )
