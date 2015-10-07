@@ -59,9 +59,9 @@ class RandomPointsPolygonsFixed(GeoAlgorithm):
         self.addParameter(ParameterSelection(self.STRATEGY,
                                              self.tr('Sampling strategy'), self.strategies, 0))
         self.addParameter(ParameterNumber(self.VALUE,
-                                          self.tr('Number or density of points'), 0.0001, 9999999.0, 1.0))
+                                          self.tr('Number or density of points'), 0.0001, None, 1.0))
         self.addParameter(ParameterNumber(self.MIN_DISTANCE,
-                                          self.tr('Minimum distance'), 0.0, 9999999, 0.0))
+                                          self.tr('Minimum distance'), 0.0, None, 0.0))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Random points')))
 

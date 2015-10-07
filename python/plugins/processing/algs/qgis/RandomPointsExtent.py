@@ -52,9 +52,9 @@ class RandomPointsExtent(GeoAlgorithm):
         self.addParameter(ParameterExtent(self.EXTENT,
                                           self.tr('Input extent')))
         self.addParameter(ParameterNumber(self.POINT_NUMBER,
-                                          self.tr('Points number'), 1, 9999999, 1))
+                                          self.tr('Points number'), 1, None, 1))
         self.addParameter(ParameterNumber(self.MIN_DISTANCE,
-                                          self.tr('Minimum distance'), 0.0, 9999999, 0.0))
+                                          self.tr('Minimum distance'), 0.0, None, 0.0))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Random points')))
 
