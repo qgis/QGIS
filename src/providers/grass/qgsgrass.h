@@ -459,6 +459,11 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
      */
     static bool deleteObjectDialog( const QgsGrassObject & object );
 
+    /** Create new vector map
+     * @param object GRASS object specifying location/mapset/map
+     * @param error */
+    static void createVectorMap( const QgsGrassObject & object, QString &error );
+
     /** Create new table. Throws  QgsGrass::Exception */
     static void createTable( dbDriver *driver, const QString tableName, const QgsFields &fields );
 

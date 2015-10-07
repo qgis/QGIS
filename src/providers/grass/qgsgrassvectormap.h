@@ -211,6 +211,10 @@ class QgsGrassVectorMapStore
 
     static QgsGrassVectorMapStore *instance();
 
+    // Default instance may be overriden explicitely to avoid (temporarily) to share maps by providers
+    // This is only used for editing test to have an independent map
+    static void setStore( QgsGrassVectorMapStore * store ) { mStore = store; }
+
     /** Open map.
      *  @param grassObject
      *  @return map, the map may be invalide  */
@@ -222,6 +226,8 @@ class QgsGrassVectorMapStore
 
     // Lock open/close map
     QMutex mMutex;
+
+    static QgsGrassVectorMapStore * mStore;
 };
 
 #endif // QGSGRASSVECTORMAP_H

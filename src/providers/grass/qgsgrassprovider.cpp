@@ -418,7 +418,14 @@ const QgsFields & QgsGrassProvider::fields() const
   else
   {
     // Original fields must be returned during editing because edit buffer updates fields by indices
-    return mLayer->fields();
+    if ( mEditBuffer )
+    {
+      return mLayer->fields();
+    }
+    else
+    {
+      return mLayer->tableFields();
+    }
   }
 }
 
@@ -1454,6 +1461,8 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
 
     setAddedFeaturesSymbol();
   }
+  QgsDebugMsg( QString( "mCidxFieldIndex = %1 cidxFieldNumCats() = %2" )
+               .arg( mCidxFieldIndex ).arg( mLayer->cidxFieldNumCats() ) );
 }
 
 void QgsGrassProvider::onFeatureDeleted( QgsFeatureId fid )

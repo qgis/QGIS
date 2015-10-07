@@ -24,12 +24,19 @@
 
 #include <qgsapplication.h>
 #include <qgscoordinatereferencesystem.h>
-#include <qgsgrass.h>
-#include <qgsgrassimport.h>
+#include <qgsgeometry.h>
+#include <qgslinestringv2.h>
+#include <qgspointv2.h>
+#include <qgspolygonv2.h>
 #include <qgsproviderregistry.h>
 #include <qgsrasterbandstats.h>
 #include <qgsrasterlayer.h>
 #include <qgsvectordataprovider.h>
+#include <qgsvectorlayer.h>
+
+#include <qgsgrass.h>
+#include <qgsgrassimport.h>
+#include <qgsgrassprovider.h>
 
 extern "C"
 {
@@ -62,6 +69,7 @@ class TestQgsGrassProvider: public QObject
     void info();
     void rasterImport();
     void vectorImport();
+    void edit();
   private:
     void reportRow( const QString& message );
     void reportHeader( const QString& message );
@@ -78,6 +86,10 @@ class TestQgsGrassProvider: public QObject
     bool removeRecursively( const QString &filePath, QString *error = 0 );
     bool copyLocation( QString& tmpGisdbase );
     bool createTmpLocation( QString& tmpGisdbase, QString& tmpLocation, QString& tmpMapset );
+    bool equal( QgsFeature feature, QgsFeature expectedFeatures );
+    bool compare( QList<QgsFeature> features, QList<QgsFeature> expectedFeatures, bool& ok );
+    bool compare( QString uri, QgsGrassObject mapObject, QgsVectorLayer *expectedLayer, bool& ok );
+    QList<QgsFeature> getFeatures( QgsVectorLayer *layer );
     QString mGisdbase;
     QString mLocation;
     QString mReport;
@@ -105,7 +117,7 @@ void TestQgsGrassProvider::initTestCase()
   // in version different form which we are testing here and it would also load GRASS libs in different version
   // and result in segfault when __do_global_dtors_aux() is called.
   // => we must set QGIS_PROVIDER_FILE before QgsApplication::initQgis() to avoid loading GRASS provider in different version
-  QgsGrass::putEnv( "QGIS_PROVIDER_FILE", "gdal|ogr" );
+  QgsGrass::putEnv( "QGIS_PROVIDER_FILE", QString( "gdal|ogr|memoryprovider|grassprovider%1" ).arg( GRASS_BUILD_VERSION ) );
   QgsApplication::initQgis();
   QString mySettings = QgsApplication::showSettings();
   mySettings = mySettings.replace( "\n", "<br />\n" );
@@ -599,6 +611,7 @@ bool TestQgsGrassProvider::createTmpLocation( QString& tmpGisdbase, QString& tmp
   tmpFile->open();
   tmpGisdbase = tmpFile->fileName();
   delete tmpFile;
+  //tmpGisdbase = QDir::tempPath() + "/qgis-grass-test/test"; // debug
   reportRow( "tmpGisdbase: " + tmpGisdbase );
   tmpLocation = "test";
   tmpMapset = "PERMANENT";
@@ -752,6 +765,310 @@ void TestQgsGrassProvider::vectorImport()
   }
   removeRecursively( tmpGisdbase );
   GVERIFY( ok );
+}
+
+class TestQgsGrassCommand
+{
+  public:
+    enum Command
+    {
+      AddFeature
+    };
+
+    TestQgsGrassCommand( Command c, QgsFeature f, int t ) : command( c ), feature( f ), type( t )  {}
+
+    QString toString();
+    Command command;
+    QgsFeature feature;
+    int type; // GRASS type
+};
+
+QString TestQgsGrassCommand::toString()
+{
+  QString string;
+  if ( command == AddFeature )
+  {
+    string += "AddFeature ";
+    string += feature.geometry()->exportToWkt( 1 );
+  }
+  return string;
+}
+
+void TestQgsGrassProvider::edit()
+{
+  reportHeader( "TestQgsGrassProvider::edit" );
+  bool ok = true;
+
+  QString tmpGisdbase;
+  QString tmpLocation;
+  QString tmpMapset;
+
+  if ( !createTmpLocation( tmpGisdbase, tmpLocation, tmpMapset ) )
+  {
+    reportRow( "cannot create temporary location" );
+    GVERIFY( false );
+    return;
+  }
+
+  QList<QList<TestQgsGrassCommand>> commandGroups;
+
+  QList<TestQgsGrassCommand> commands;
+  QgsFeature feature;
+  feature.setGeometry( new QgsGeometry( new QgsPointV2( QgsWKBTypes::Point, 10, 10, 0 ) ) );
+  commands << TestQgsGrassCommand( TestQgsGrassCommand::AddFeature, feature, GV_POINT );
+  commandGroups << commands;
+
+  for ( int i = 0; i < commandGroups.size(); i++ )
+  {
+    commands = commandGroups[i];
+
+    // Create GRASS vector
+    QString name = QString( "edit_%1" ).arg( i );
+    QgsGrassObject mapObject = QgsGrassObject( tmpGisdbase, tmpLocation, tmpMapset, name, QgsGrassObject::Vector );
+    reportRow( "create new map: " + mapObject.toString() );
+    QString error;
+    QgsGrass::createVectorMap( mapObject, error );
+    if ( !error.isEmpty() )
+    {
+      reportRow( error );
+      ok = false;
+      break;
+    }
+
+    QString uri = mapObject.mapsetPath() + "/" + name + "/1_point";
+    reportRow( "uri: " + uri );
+    QgsVectorLayer *layer = new QgsVectorLayer( uri, name, "grass" );
+    if ( !layer->isValid() )
+    {
+      reportRow( "layer is not valid" );
+      ok = false;
+      break;
+    }
+    QgsGrassProvider *provider = qobject_cast<QgsGrassProvider *>( layer->dataProvider() );
+    if ( !provider )
+    {
+      reportRow( "cannot get provider" );
+      ok = false;
+      break;
+    }
+
+    // Create memory vector for verification, it has no fields until added
+    QgsVectorLayer *expectedLayer = new QgsVectorLayer( "Point", "test", "memory" );
+    if ( !expectedLayer->isValid() )
+    {
+      reportRow( "verification layer is not valid" );
+      ok = false;
+      break;
+    }
+
+    layer->startEditing();
+    provider->startEditing( layer );
+
+    expectedLayer->startEditing();
+
+    for ( int j = 0; j < commands.size(); j++ )
+    {
+      TestQgsGrassCommand command = commands[j];
+      if ( command.command == TestQgsGrassCommand::AddFeature )
+      {
+        reportRow( "command: " + command.toString() );
+        provider->setNewFeatureType( command.type );
+
+        QgsFeature feature = command.feature;
+        feature.initAttributes( layer->fields().size() ); // attributes must match layer fields
+        layer->addFeature( feature );
+
+        QgsFeature expectedFeature = command.feature;
+        expectedFeature.initAttributes( expectedLayer->fields().size() );
+        //expectedFeature.setGeometry( new QgsGeometry( new QgsPointV2( QgsWKBTypes::Point, 10, 20, 0 ) ) ); // debug
+        expectedLayer->addFeature( expectedFeature );
+      }
+      if ( !compare( uri, mapObject, expectedLayer, ok ) )
+      {
+        reportRow( "command failed" );
+        break;
+      }
+      else
+      {
+        reportRow( "command ok" );
+      }
+    }
+
+    layer->commitChanges();
+    delete layer;
+    delete expectedLayer;
+  }
+
+  removeRecursively( tmpGisdbase );
+  GVERIFY( ok );
+}
+
+QList<QgsFeature> TestQgsGrassProvider::getFeatures( QgsVectorLayer *layer )
+{
+  QgsFeatureIterator iterator = layer->getFeatures( QgsFeatureRequest() );
+  QgsFeature feature;
+  QList<QgsFeature> features;
+  while ( iterator.nextFeature( feature ) )
+  {
+    features << feature;
+  }
+  iterator.close();
+  return features;
+}
+
+bool TestQgsGrassProvider::equal( QgsFeature feature, QgsFeature expectedFeature )
+{
+  if ( !feature.geometry()->equals( expectedFeature.geometry() ) )
+  {
+    return false;
+  }
+  // GRASS feature has always additional cat field
+  QSet<int> indexes;
+  for ( int i = 0; i < feature.fields()->size(); i++ )
+  {
+    QString name = feature.fields()->at( i ).name();
+    if ( name == "cat" ) // skip cat
+    {
+      continue;
+    }
+    indexes << i;
+  }
+  for ( int i = 0; i < expectedFeature.fields()->size(); i++ )
+  {
+    QString name = expectedFeature.fields()->at( i ).name();
+    int index = feature.fields()->indexFromName( name );
+    if ( index < 0 )
+    {
+      // not found
+      return false;
+    }
+    indexes.remove( index );
+    if ( feature.attribute( index ) != expectedFeature.attribute( i ) )
+    {
+      return false;
+    }
+  }
+  if ( indexes.size() > 0 )
+  {
+    // unexpected attribute in feature
+    QStringList names;
+    Q_FOREACH ( int i, indexes )
+    {
+      names << feature.fields()->at( i ).name();
+    }
+    reportRow( QString( "feature has %1 unexpected attributes: %2" ).arg( indexes.size() ).arg( names.join( "," ) ) );
+    return false;
+  }
+  return true;
+}
+
+bool TestQgsGrassProvider::compare( QList<QgsFeature> features, QList<QgsFeature> expectedFeatures, bool& ok )
+{
+  bool localOk = true;
+  if ( features.size() != expectedFeatures.size() )
+  {
+    reportRow( QString( "different number of features (%1) and expected features (%2)" ).arg( features.size() ).arg( expectedFeatures.size() ) );
+    ok = false;
+    return false;
+  }
+  // Check if each expected feature exists in features
+  Q_FOREACH ( const QgsFeature& expectedFeature,  expectedFeatures )
+  {
+    bool found = false;
+    Q_FOREACH ( const QgsFeature& feature, features )
+    {
+      if ( equal( feature, expectedFeature ) )
+      {
+        found = true;
+        break;
+      }
+    }
+    if ( !found )
+    {
+      reportRow( QString( "expected feature fid = %1 not found in features" ).arg( expectedFeature.id() ) );
+      ok = false;
+      localOk = false;
+    }
+  }
+  return localOk;
+}
+
+bool TestQgsGrassProvider::compare( QString uri, QgsGrassObject mapObject, QgsVectorLayer *expectedLayer, bool& ok )
+{
+  QList<QgsFeature> expectedFeatures = getFeatures( expectedLayer );
+
+  // read the map using another layer/provider
+  QgsVectorLayer *layer = new QgsVectorLayer( uri, "test", "grass" );
+  if ( !layer->isValid() )
+  {
+    reportRow( "shared layer is not valid" );
+    ok = false;
+    return false;
+  }
+  QList<QgsFeature> features = getFeatures( layer );
+  delete layer;
+  layer = 0;
+
+  bool sharedOk = compare( features, expectedFeatures, ok );
+  if ( sharedOk )
+  {
+    reportRow( "comparison with shared layer ok" );
+  }
+  else
+  {
+    reportRow( "comparison with shared layer failed" );
+  }
+
+  // Open an independent layer which does not share data with edited one
+  // build topology
+  G_TRY
+  {
+    struct Map_info *map = QgsGrass::vectNewMapStruct();
+    QgsGrass::setMapset( mapObject );
+    Vect_open_old( map, mapObject.name().toUtf8().data(), mapObject.mapset().toUtf8().data() );
+
+#if ( GRASS_VERSION_MAJOR == 6 && GRASS_VERSION_MINOR >= 4 ) || GRASS_VERSION_MAJOR > 6
+    Vect_build( map );
+#else
+    Vect_build( map, stderr );
+#endif
+    Vect_set_release_support( map );
+    Vect_close( map );
+    QgsGrass::vectDestroyMapStruct( map );
+  }
+  G_CATCH( QgsGrass::Exception &e )
+  {
+    reportRow( "Cannot build topology: " + QString( e.what() ) );
+    ok = false;
+    return false;
+  }
+
+  QgsGrassVectorMapStore * mapStore = new QgsGrassVectorMapStore();
+  QgsGrassVectorMapStore::setStore( mapStore );
+
+  layer = new QgsVectorLayer( uri, "test", "grass" );
+  if ( !layer->isValid() )
+  {
+    reportRow( "independent layer is not valid" );
+    ok = false;
+    return false;
+  }
+  features = getFeatures( layer );
+  delete layer;
+  QgsGrassVectorMapStore::setStore( 0 );
+  delete mapStore;
+
+  bool independentOk = compare( features, expectedFeatures, ok );
+  if ( independentOk )
+  {
+    reportRow( "comparison with independent layer ok" );
+  }
+  else
+  {
+    reportRow( "comparison with independent layer failed" );
+  }
+
+  return sharedOk && independentOk;
 }
 
 QTEST_MAIN( TestQgsGrassProvider )

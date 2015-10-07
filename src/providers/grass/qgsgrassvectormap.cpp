@@ -702,6 +702,8 @@ void QgsGrassVectorMap::closeAllIterators()
 }
 
 //------------------------------------ QgsGrassVectorMapStore ------------------------------------
+QgsGrassVectorMapStore * QgsGrassVectorMapStore::mStore = 0;
+
 QgsGrassVectorMapStore::QgsGrassVectorMapStore()
 {
 }
@@ -714,6 +716,10 @@ QgsGrassVectorMapStore::~QgsGrassVectorMapStore()
 QgsGrassVectorMapStore *QgsGrassVectorMapStore::instance()
 {
   static QgsGrassVectorMapStore instance;
+  if ( mStore )
+  {
+    return mStore;
+  }
   return &instance;
 }
 

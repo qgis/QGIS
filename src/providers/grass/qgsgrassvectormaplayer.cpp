@@ -40,7 +40,6 @@ QgsGrassVectorMapLayer::QgsGrassVectorMapLayer( QgsGrassVectorMap *map, int fiel
     : mField( field )
     , mValid( false )
     , mMap( map )
-    , mCidxFieldIndex( -1 )
     , mFieldInfo( 0 )
     , mDriver( 0 )
     , mHasTable( false )
@@ -52,7 +51,6 @@ QgsGrassVectorMapLayer::QgsGrassVectorMapLayer( QgsGrassVectorMap *map, int fiel
 void QgsGrassVectorMapLayer::clear()
 {
   QgsDebugMsg( "entered" );
-  mCidxFieldIndex = -1;
   mTableFields.clear();
   mFields.clear();
   mAttributeFields.clear();
@@ -64,13 +62,22 @@ void QgsGrassVectorMapLayer::clear()
   mFieldInfo = 0;
 }
 
+int QgsGrassVectorMapLayer::cidxFieldIndex()
+{
+  if ( !mMap->map() )
+  {
+    return -1;
+  }
+  return Vect_cidx_get_field_index( mMap->map(), mField );
+}
+
 int QgsGrassVectorMapLayer::cidxFieldNumCats()
 {
-  if ( !mMap->map() || mCidxFieldIndex < 0 )
+  if ( !mMap->map() || cidxFieldIndex() < 0 )
   {
     return 0;
   }
-  return Vect_cidx_get_num_cats_by_index( mMap->map(), mCidxFieldIndex );
+  return Vect_cidx_get_num_cats_by_index( mMap->map(), cidxFieldIndex() );
 }
 
 void QgsGrassVectorMapLayer::load()
@@ -89,8 +96,7 @@ void QgsGrassVectorMapLayer::load()
     return;
   }
 
-  mCidxFieldIndex = Vect_cidx_get_field_index( mMap->map(), mField );
-  QgsDebugMsg( QString( "mCidxFieldIndex = %1 cidxFieldNumCats() = %2" ).arg( cidxFieldNumCats() ) );
+  QgsDebugMsg( QString( "cidxFieldIndex() = %1 cidxFieldNumCats() = %2" ).arg( cidxFieldIndex() ).arg( cidxFieldNumCats() ) );
 
   mFieldInfo = Vect_get_field( mMap->map(), mField ); // should work also with field = 0
 
@@ -289,18 +295,18 @@ void QgsGrassVectorMapLayer::load()
     mTableFields.append( QgsField( "cat", QVariant::Int, "integer" ) );
     QPair<double, double> minMax( 0, 0 );
 
-    if ( mCidxFieldIndex >= 0 )
+    if ( cidxFieldIndex() >= 0 )
     {
       int ncats, cat, type, id;
 
-      ncats = Vect_cidx_get_num_cats_by_index( mMap->map(), mCidxFieldIndex );
+      ncats = Vect_cidx_get_num_cats_by_index( mMap->map(), cidxFieldIndex() );
 
       if ( ncats > 0 )
       {
-        Vect_cidx_get_cat_by_index( mMap->map(), mCidxFieldIndex, 0, &cat, &type, &id );
+        Vect_cidx_get_cat_by_index( mMap->map(), cidxFieldIndex(), 0, &cat, &type, &id );
         minMax.first = cat;
 
-        Vect_cidx_get_cat_by_index( mMap->map(), mCidxFieldIndex, ncats - 1, &cat, &type, &id );
+        Vect_cidx_get_cat_by_index( mMap->map(), cidxFieldIndex(), ncats - 1, &cat, &type, &id );
         minMax.second = cat;
       }
     }

@@ -2124,6 +2124,35 @@ bool QgsGrass::deleteObjectDialog( const QgsGrassObject & object )
                                 QMessageBox::Yes | QMessageBox::No ) == QMessageBox::Yes;
 }
 
+void QgsGrass::createVectorMap( const QgsGrassObject & object, QString &error )
+{
+  QgsDebugMsg( "entered" );
+
+  QgsGrass::setMapset( object );
+
+  struct Map_info *Map = 0;
+  QgsGrass::lock();
+  G_TRY
+  {
+    Map = vectNewMapStruct();
+    Vect_open_new( Map, object.name().toUtf8().data(), 0 );
+
+#if ( GRASS_VERSION_MAJOR == 6 && GRASS_VERSION_MINOR >= 4 ) || GRASS_VERSION_MAJOR > 6
+    Vect_build( Map );
+#else
+    Vect_build( Map, stderr );
+#endif
+    Vect_set_release_support( Map );
+    Vect_close( Map );
+  }
+  G_CATCH( QgsGrass::Exception &e )
+  {
+    error = tr( "Cannot create new vector: %1" ).arg( e.what() );
+  }
+  QgsGrass::vectDestroyMapStruct( Map );
+  QgsGrass::unlock();
+}
+
 void QgsGrass::createTable( dbDriver *driver, const QString tableName, const QgsFields &fields )
 {
   if ( !driver ) // should not happen

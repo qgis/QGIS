@@ -211,31 +211,18 @@ QString QgsGrassItemActions::newVectorMap()
   QString name = dialog.name();
   QgsDebugMsg( "name = " + name );
 
-  QgsGrass::setMapset( mGrassObject );
+  QgsGrassObject mapObject = mGrassObject;
+  mapObject.setName( name );
+  mapObject.setType( QgsGrassObject::Vector );
 
-  struct Map_info *Map = 0;
-  QgsGrass::lock();
-  G_TRY
-  {
-    Map = QgsGrass::vectNewMapStruct();
-    Vect_open_new( Map, dialog.name().toUtf8().data(), 0 );
+  QString error;
 
-#if ( GRASS_VERSION_MAJOR == 6 && GRASS_VERSION_MINOR >= 4 ) || GRASS_VERSION_MAJOR > 6
-    Vect_build( Map );
-#else
-    Vect_build( Map, stderr );
-#endif
-    Vect_set_release_support( Map );
-    Vect_close( Map );
-    QgsGrass::vectDestroyMapStruct( Map );
-  }
-  G_CATCH( QgsGrass::Exception &e )
+  QgsGrass::createVectorMap( mapObject, error );
+  if ( !error.isEmpty() )
   {
-    QgsGrass::warning( tr( "Cannot create new vector: %1" ).arg( e.what() ) );
+    QgsGrass::warning( error );
     name = "";
-    QgsGrass::vectDestroyMapStruct( Map );
   }
-  QgsGrass::unlock();
   return name;
 }
 
