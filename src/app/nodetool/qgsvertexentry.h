@@ -38,7 +38,7 @@ class QgsVertexEntry
                     QgsMapLayer *layer,
                     const QgsPointV2& p,
                     const QgsVertexId& vertexId,
-                    QString tooltip = QString::null,
+                    const QString& tooltip = QString::null,
                     QgsVertexMarker::IconType type = QgsVertexMarker::ICON_BOX,
                     int penWidth = 2 );
     ~QgsVertexEntry();

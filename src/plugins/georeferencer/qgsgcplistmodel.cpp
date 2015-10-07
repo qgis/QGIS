@@ -26,7 +26,7 @@ using namespace std;
 class QgsStandardItem : public QStandardItem
 {
   public:
-    explicit QgsStandardItem( QString text ) : QStandardItem( text )
+    explicit QgsStandardItem( const QString& text ) : QStandardItem( text )
     {
       // In addition to the DisplayRole, also set the user role, which is used for sorting.
       // This is needed for numerical sorting to work correctly (otherwise sorting is lexicographic).

@@ -120,7 +120,7 @@ class HeatmapGui : public QDialog, private Ui::HeatmapGuiBase
     void updateSize();
 
     /** Convert Maters value to the corresponding map units based on Layer projection */
-    double mapUnitsOf( double meters, QgsCoordinateReferenceSystem layerCrs ) const;
+    double mapUnitsOf( double meters, const QgsCoordinateReferenceSystem& layerCrs ) const;
 
     /** Estimate a reasonable starting value for the radius field */
     double estimateRadius();

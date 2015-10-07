@@ -59,6 +59,6 @@ class eVisEventIdTool : public QgsMapTool
     eVisGenericEventBrowserGui* mBrowser;
 
     /** \brief Selection routine called by the mouse release event */
-    void select( QgsPoint );
+    void select( const QgsPoint& );
 };
 #endif

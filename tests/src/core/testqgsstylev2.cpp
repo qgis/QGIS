@@ -55,7 +55,7 @@ class TestStyleV2 : public QObject
     QgsVectorLayer * mpLinesLayer;
     QgsVectorLayer * mpPolysLayer;
 
-    bool testValidColor( QgsVectorColorRampV2 *ramp, double value, QColor expected );
+    bool testValidColor( QgsVectorColorRampV2 *ramp, double value, const QColor& expected );
     bool imageCheck( QgsMapSettings &ms, const QString &testName );
 
   private slots:
@@ -235,7 +235,7 @@ void TestStyleV2::testCanvasClip()
   QVERIFY( result );
 }
 
-bool TestStyleV2::testValidColor( QgsVectorColorRampV2 *ramp, double value, QColor expected )
+bool TestStyleV2::testValidColor( QgsVectorColorRampV2 *ramp, double value, const QColor& expected )
 {
   QColor result = ramp->color( value );
   if ( result != expected )

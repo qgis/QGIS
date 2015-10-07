@@ -24,7 +24,7 @@
 #include <QTreeWidgetItem>
 #include <QComboBox>
 
-QgsAddTabOrGroup::QgsAddTabOrGroup( QgsVectorLayer *lyr, QList < TabPair > tabList, QWidget * parent )
+QgsAddTabOrGroup::QgsAddTabOrGroup( QgsVectorLayer *lyr, const QList < TabPair >& tabList, QWidget * parent )
     : QDialog( parent )
     , mLayer( lyr )
     , mTabs( tabList )

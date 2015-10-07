@@ -52,7 +52,7 @@ class QgsSpitPlugin: public QObject, public QgisPlugin
     //! unload the plugin
     void unload() override;
     //! update the plugins theme when the app tells us its theme is changed
-    void setCurrentTheme( QString theThemeName );
+    void setCurrentTheme( const QString& theThemeName );
   private:
 //! Name of the plugin
     QString pName;

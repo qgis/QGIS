@@ -325,7 +325,7 @@ void QgsSnapIndex::addGeometry( const QgsAbstractGeometryV2* geom )
 }
 
 
-QgsPointV2 QgsSnapIndex::getClosestSnapToPoint( const QgsPointV2& p, const QgsPointV2 q )
+QgsPointV2 QgsSnapIndex::getClosestSnapToPoint( const QgsPointV2& p, const QgsPointV2& q )
 {
   // Look for intersections on segment from the target point to the point opposite to the point reference point
   // p2 =  p1 + 2 * (q - p1)

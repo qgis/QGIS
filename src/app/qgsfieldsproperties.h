@@ -102,7 +102,7 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
             : QTreeWidget( parent )
         {}
         QTreeWidgetItem* addItem( QTreeWidgetItem* parent, DesignerTreeItemData data );
-        QTreeWidgetItem* addContainer( QTreeWidgetItem* parent, QString title );
+        QTreeWidgetItem* addContainer( QTreeWidgetItem* parent, const QString& title );
 
       protected:
         virtual void dragMoveEvent( QDragMoveEvent *event ) override;
@@ -192,7 +192,7 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
     void updateButtons();
 
     FieldConfig configForRow( int row );
-    void setConfigForRow( int row, FieldConfig cfg );
+    void setConfigForRow( int row, const FieldConfig& cfg );
 
     QgsVectorLayer* mLayer;
     DesignerTree* mDesignerTree;

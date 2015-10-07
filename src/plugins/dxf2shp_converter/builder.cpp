@@ -27,7 +27,7 @@
 
 #include "qgslogger.h"
 
-Builder::Builder( QString theFname,
+Builder::Builder( const QString& theFname,
                   int theShapefileType,
                   bool theConvertText,
                   bool theConvertInserts )

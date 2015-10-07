@@ -239,7 +239,7 @@ void QgsVectorGradientColorRampV2Dialog::setColor2( const QColor& color )
   updatePreview();
 }
 
-void QgsVectorGradientColorRampV2Dialog::setStopColor( QTreeWidgetItem* item, QColor color )
+void QgsVectorGradientColorRampV2Dialog::setStopColor( QTreeWidgetItem* item, const QColor& color )
 {
   QSize iconSize( 16, 16 );
   QPixmap pixmap( iconSize );

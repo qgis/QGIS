@@ -104,13 +104,13 @@ class CORE_EXPORT QgsConditionalStyle
      * @brief Set the background color for the style
      * @param value QColor for background color
      */
-    void setBackgroundColor( QColor value ) { mBackColor = value; mValid = true; }
+    void setBackgroundColor( const QColor& value ) { mBackColor = value; mValid = true; }
 
     /**
      * @brief Set the text color for the style
      * @param value QColor for text color
      */
-    void setTextColor( QColor value ) { mTextColor = value; mValid = true; }
+    void setTextColor( const QColor& value ) { mTextColor = value; mValid = true; }
 
     /**
      * @brief Set the font for the the style

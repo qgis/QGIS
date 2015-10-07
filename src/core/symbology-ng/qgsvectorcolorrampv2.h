@@ -82,8 +82,8 @@ class CORE_EXPORT QgsVectorGradientColorRampV2 : public QgsVectorColorRampV2
 
     QColor color1() const { return mColor1; }
     QColor color2() const { return mColor2; }
-    void setColor1( QColor color ) { mColor1 = color; }
-    void setColor2( QColor color ) { mColor2 = color; }
+    void setColor1( const QColor& color ) { mColor1 = color; }
+    void setColor2( const QColor& color ) { mColor2 = color; }
 
     bool isDiscrete() const { return mDiscrete; }
     void setDiscrete( bool discrete ) { mDiscrete = discrete; }

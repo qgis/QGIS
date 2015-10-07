@@ -1576,7 +1576,7 @@ ErrorList topolTest::checkMultipart( double tolerance, QgsVectorLayer *layer1, Q
   return errorList;
 }
 
-void topolTest::fillFeatureMap( QgsVectorLayer* layer, QgsRectangle extent )
+void topolTest::fillFeatureMap( QgsVectorLayer* layer, const QgsRectangle& extent )
 {
   QgsFeatureIterator fit;
   if ( extent.isEmpty() )
@@ -1602,7 +1602,7 @@ void topolTest::fillFeatureMap( QgsVectorLayer* layer, QgsRectangle extent )
   }
 }
 
-void topolTest::fillFeatureList( QgsVectorLayer* layer, QgsRectangle extent )
+void topolTest::fillFeatureList( QgsVectorLayer* layer, const QgsRectangle& extent )
 {
   QgsFeatureIterator fit;
   if ( extent.isEmpty() )
@@ -1629,7 +1629,7 @@ void topolTest::fillFeatureList( QgsVectorLayer* layer, QgsRectangle extent )
 
 }
 
-QgsSpatialIndex* topolTest::createIndex( QgsVectorLayer* layer, QgsRectangle extent )
+QgsSpatialIndex* topolTest::createIndex( QgsVectorLayer* layer, const QgsRectangle& extent )
 {
   QgsSpatialIndex* index = new QgsSpatialIndex();
 
@@ -1670,7 +1670,7 @@ QgsSpatialIndex* topolTest::createIndex( QgsVectorLayer* layer, QgsRectangle ext
   return index;
 }
 
-ErrorList topolTest::runTest( QString testName, QgsVectorLayer* layer1, QgsVectorLayer* layer2, ValidateType type, double tolerance )
+ErrorList topolTest::runTest( const QString& testName, QgsVectorLayer* layer1, QgsVectorLayer* layer2, ValidateType type, double tolerance )
 {
   QgsDebugMsg( QString( "Running test %1" ).arg( testName ) );
   ErrorList errors;

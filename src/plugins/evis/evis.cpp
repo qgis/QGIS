@@ -193,7 +193,7 @@ void eVis::unload()
   }
 }
 
-void eVis::drawVectorLayer( QString thePathNameQString, QString theBaseNameQString, QString theProviderQString )
+void eVis::drawVectorLayer( const QString& thePathNameQString, const QString& theBaseNameQString, const QString& theProviderQString )
 {
   mQGisIface->addVectorLayer( thePathNameQString, theBaseNameQString, theProviderQString );
 }

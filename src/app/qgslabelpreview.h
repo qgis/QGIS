@@ -26,11 +26,11 @@ class APP_EXPORT QgsLabelPreview : public QLabel
   public:
     QgsLabelPreview( QWidget* parent = NULL );
 
-    void setTextColor( QColor color );
+    void setTextColor( const QColor& color );
 
-    void setBuffer( double size, QColor color, Qt::PenJoinStyle joinStyle, bool noFill = false );
+    void setBuffer( double size, const QColor& color, Qt::PenJoinStyle joinStyle, bool noFill = false );
 
-    void setFont( QFont f ) { mFont = f; }
+    void setFont( const QFont& f ) { mFont = f; }
     QFont font() { return mFont; }
 
     void paintEvent( QPaintEvent* e ) override;

@@ -49,7 +49,7 @@ class ANALYSIS_EXPORT QgsZonalStatistics
     Q_DECLARE_FLAGS( Statistics, Statistic )
 
     QgsZonalStatistics( QgsVectorLayer* polygonLayer, const QString& rasterFile, const QString& attributePrefix = "", int rasterBand = 1,
-                        const QgsZonalStatistics::Statistics& stats = Statistics( Count | Sum | Mean ) );
+                        const Statistics& stats = Statistics( Count | Sum | Mean ) );
     ~QgsZonalStatistics();
 
     /** Starts the calculation

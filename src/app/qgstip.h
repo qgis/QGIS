@@ -38,7 +38,7 @@ class APP_EXPORT QgsTip
     // Accessors
     //
     /** Get the tip title */
-    QString title() {return mTitle;};
+    QString title() {return mTitle;}
     /** Get the tip content */
     QString content() {return mContent;}
 
@@ -46,9 +46,9 @@ class APP_EXPORT QgsTip
     // Mutators
     //
     /** Set the tip title */
-    void setTitle( QString theTitle ) {mTitle = theTitle;};
+    void setTitle( const QString& theTitle ) {mTitle = theTitle;}
     /** Set the tip content*/
-    void setContent( QString theContent ) {mContent = theContent;};
+    void setContent( const QString& theContent ) {mContent = theContent;}
   private:
     QString mTitle;
     QString mContent;

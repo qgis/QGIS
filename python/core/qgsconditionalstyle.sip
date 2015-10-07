@@ -90,13 +90,13 @@ class QgsConditionalStyle
      * @brief Set the background color for the style
      * @param value QColor for background color
      */
-    void setBackgroundColor( QColor value );
+    void setBackgroundColor( const QColor& value );
 
     /**
      * @brief Set the text color for the style
      * @param value QColor for text color
      */
-    void setTextColor( QColor value );
+    void setTextColor( const QColor& value );
 
     /**
      * @brief Set the font for the the style

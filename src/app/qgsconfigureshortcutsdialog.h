@@ -37,7 +37,7 @@ class APP_EXPORT QgsConfigureShortcutsDialog : public QDialog, private Ui::QgsCo
     QAction* currentAction();
 
     void setGettingShortcut( bool getting );
-    void setCurrentActionShortcut( QKeySequence s );
+    void setCurrentActionShortcut( const QKeySequence& s );
     void updateShortcutText();
 
   public slots:

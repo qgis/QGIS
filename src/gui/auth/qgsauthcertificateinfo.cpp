@@ -397,7 +397,7 @@ QTreeWidgetItem * QgsAuthCertInfo::addGroupItem( QTreeWidgetItem *parent, const 
 }
 
 void QgsAuthCertInfo::addFieldItem( QTreeWidgetItem *parent, const QString &field, const QString &value,
-                                    QgsAuthCertInfo::FieldWidget wdgt, QColor color )
+                                    QgsAuthCertInfo::FieldWidget wdgt, const QColor& color )
 {
   if ( value.isEmpty() )
     return;

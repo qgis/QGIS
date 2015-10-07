@@ -20,7 +20,7 @@
 #include "qgslogger.h"
 #include <QRegExp>
 
-QString createDatabaseURI( QString connectionType, QString host, QString database, QString port, QString user, QString password )
+QString createDatabaseURI( const QString& connectionType, const QString& host, const QString& database, QString port, const QString& user, const QString& password )
 {
   QString uri = "";
 
@@ -190,7 +190,7 @@ QString createDatabaseURI( QString connectionType, QString host, QString databas
 }
 
 
-QString createProtocolURI( QString type, QString url )
+QString createProtocolURI( const QString& type, const QString& url )
 {
   QString uri = "";
   if ( type == "GeoJSON" )

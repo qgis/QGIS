@@ -122,13 +122,13 @@ void dxf2shpConverter::unload()
   mQActionPointer = 0;
 }
 
-void dxf2shpConverter::addMyLayer( QString myfname, QString mytitle )
+void dxf2shpConverter::addMyLayer( const QString& myfname, const QString& mytitle )
 {
   mQGisIface->addVectorLayer( myfname, mytitle, "ogr" );
 }
 
 //! Set icons to the current theme
-void dxf2shpConverter::setCurrentTheme( QString theThemeName )
+void dxf2shpConverter::setCurrentTheme( const QString& theThemeName )
 {
   Q_UNUSED( theThemeName );
   QString myCurThemePath = QgsApplication::activeThemePath() + "/plugins/dxf2shp_converter.png";

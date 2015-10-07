@@ -39,7 +39,7 @@
 #include <QRegExp>
 #include <QPicture>
 
-QString QgsSymbolLayerV2Utils::encodeColor( QColor color )
+QString QgsSymbolLayerV2Utils::encodeColor( const QColor& color )
 {
   return QString( "%1,%2,%3,%4" ).arg( color.red() ).arg( color.green() ).arg( color.blue() ).arg( color.alpha() );
 }
@@ -1698,7 +1698,7 @@ bool QgsSymbolLayerV2Utils::convertPolygonSymbolizerToPointMarker( QDomElement &
   return true;
 }
 
-void QgsSymbolLayerV2Utils::fillToSld( QDomDocument &doc, QDomElement &element, Qt::BrushStyle brushStyle, QColor color )
+void QgsSymbolLayerV2Utils::fillToSld( QDomDocument &doc, QDomElement &element, Qt::BrushStyle brushStyle, const QColor& color )
 {
   QString patternName;
   switch ( brushStyle )
@@ -1804,7 +1804,7 @@ bool QgsSymbolLayerV2Utils::fillFromSld( QDomElement &element, Qt::BrushStyle &b
 }
 
 void QgsSymbolLayerV2Utils::lineToSld( QDomDocument &doc, QDomElement &element,
-                                       Qt::PenStyle penStyle, QColor color, double width,
+                                       Qt::PenStyle penStyle, const QColor& color, double width,
                                        const Qt::PenJoinStyle *penJoinStyle, const Qt::PenCapStyle *penCapStyle,
                                        const QVector<qreal> *customDashPattern, double dashOffset )
 {

@@ -75,8 +75,8 @@ class QgsVectorGradientColorRampV2 : QgsVectorColorRampV2
 
     QColor color1() const;
     QColor color2() const;
-    void setColor1( QColor color );
-    void setColor2( QColor color );
+    void setColor1( const QColor& color );
+    void setColor2( const QColor& color );
 
     bool isDiscrete() const;
     void setDiscrete( bool discrete );

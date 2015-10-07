@@ -834,7 +834,7 @@ void QgsGeorefPluginGui::extentsChanged()
 }
 
 // Registry layer QGis
-void QgsGeorefPluginGui::layerWillBeRemoved( QString theLayerId )
+void QgsGeorefPluginGui::layerWillBeRemoved( const QString& theLayerId )
 {
   mAgainAddRaster = mLayer && mLayer->id().compare( theLayerId ) == 0;
 }
@@ -1125,7 +1125,7 @@ void QgsGeorefPluginGui::removeOldLayer()
   mCanvas->refresh();
 }
 
-void QgsGeorefPluginGui::updateIconTheme( QString theme )
+void QgsGeorefPluginGui::updateIconTheme( const QString& theme )
 {
   Q_UNUSED( theme );
   // File actions
@@ -1159,7 +1159,7 @@ void QgsGeorefPluginGui::updateIconTheme( QString theme )
 }
 
 // Mapcanvas Plugin
-void QgsGeorefPluginGui::addRaster( QString file )
+void QgsGeorefPluginGui::addRaster( const QString& file )
 {
   mLayer = new QgsRasterLayer( file, "Raster" );
 
@@ -1419,7 +1419,7 @@ bool QgsGeorefPluginGui::georeference()
   return false;
 }
 
-bool QgsGeorefPluginGui::writeWorldFile( QgsPoint origin, double pixelXSize, double pixelYSize, double rotation )
+bool QgsGeorefPluginGui::writeWorldFile( const QgsPoint& origin, double pixelXSize, double pixelYSize, double rotation )
 {
   // write the world file
   QFile file( mWorldFileName );
@@ -1874,7 +1874,7 @@ QString QgsGeorefPluginGui::generateGDALtranslateCommand( bool generateTFW )
   return gdalCommand.join( " " );
 }
 
-QString QgsGeorefPluginGui::generateGDALwarpCommand( QString resampling, QString compress,
+QString QgsGeorefPluginGui::generateGDALwarpCommand( const QString& resampling, const QString& compress,
     bool useZeroForTrans, int order, double targetResX, double targetResY )
 {
   QStringList gdalCommand;
@@ -2120,7 +2120,7 @@ QIcon QgsGeorefPluginGui::getThemeIcon( const QString &theName )
   }
 }
 
-bool QgsGeorefPluginGui::checkFileExisting( QString fileName, QString title, QString question )
+bool QgsGeorefPluginGui::checkFileExisting( const QString& fileName, const QString& title, const QString& question )
 {
   if ( !fileName.isEmpty() )
   {

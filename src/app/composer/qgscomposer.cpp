@@ -937,12 +937,12 @@ void QgsComposer::statusZoomCombo_zoomEntered()
   mView->setZoomLevel( zoom.toDouble() / 100 );
 }
 
-void QgsComposer::updateStatusCompositionMsg( QString message )
+void QgsComposer::updateStatusCompositionMsg( const QString& message )
 {
   mStatusCompositionLabel->setText( message );
 }
 
-void QgsComposer::updateStatusAtlasMsg( QString message )
+void QgsComposer::updateStatusAtlasMsg( const QString& message )
 {
   mStatusAtlasLabel->setText( message );
 }
@@ -3994,7 +3994,7 @@ void QgsComposer::createComposerView()
   connect( tab, SIGNAL( activated() ), mActionHidePanels, SLOT( trigger() ) );
 }
 
-void QgsComposer::writeWorldFile( QString worldFileName, double a, double b, double c, double d, double e, double f ) const
+void QgsComposer::writeWorldFile( const QString& worldFileName, double a, double b, double c, double d, double e, double f ) const
 {
   QFile worldFile( worldFileName );
   if ( !worldFile.open( QIODevice::WriteOnly | QIODevice::Text ) )
@@ -4066,7 +4066,7 @@ void QgsComposer::updateAtlasMapLayerAction( QgsVectorLayer *coverageLayer )
   }
 }
 
-void QgsComposer::setPrinterPageOrientation( QString orientation )
+void QgsComposer::setPrinterPageOrientation( const QString& orientation )
 {
   if ( orientation == tr( "Landscape" ) )
   {

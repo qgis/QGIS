@@ -972,7 +972,7 @@ void eVisGenericEventBrowserGui::on_dsboxCompassOffset_valueChanged( double theV
  * Slot called the text in leBasePath is set or changed
  * @param theText - The new base path
  */
-void eVisGenericEventBrowserGui::on_leBasePath_textChanged( QString theText )
+void eVisGenericEventBrowserGui::on_leBasePath_textChanged( const QString& theText )
 {
   mConfiguration.setBasePath( theText );
 }

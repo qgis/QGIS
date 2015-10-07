@@ -112,7 +112,7 @@ class QgsColorButtonV2 : QToolButton
      * option.
      * @see defaultColor
      */
-    void setDefaultColor( const QColor color );
+    void setDefaultColor( const QColor& color );
 
     /** Returns the default color for the button, which is shown in the button's drop down menu for the
      * "default color" option.

@@ -207,7 +207,7 @@ QString QgsHandleBadLayers::filename( int row )
   return QString::null;
 }
 
-void QgsHandleBadLayers::setFilename( int row, QString filename )
+void QgsHandleBadLayers::setFilename( int row, const QString& filename )
 {
   if ( !QFileInfo( filename ).exists() )
     return;

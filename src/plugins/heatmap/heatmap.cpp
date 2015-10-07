@@ -364,7 +364,7 @@ void Heatmap::run()
  *
  */
 
-double Heatmap::mapUnitsOf( double meters, QgsCoordinateReferenceSystem layerCrs )
+double Heatmap::mapUnitsOf( double meters, const QgsCoordinateReferenceSystem& layerCrs )
 {
   // Worker to transform metres input to mapunits
   QgsDistanceArea da;

@@ -142,7 +142,7 @@ void QgsCustomProjectionDialog::populateList()
   }
 }
 
-bool  QgsCustomProjectionDialog::deleteCRS( QString id )
+bool  QgsCustomProjectionDialog::deleteCRS( const QString& id )
 {
   sqlite3      *myDatabase;
   const char   *myTail;
@@ -173,7 +173,7 @@ bool  QgsCustomProjectionDialog::deleteCRS( QString id )
   return myResult == SQLITE_OK;
 }
 
-void  QgsCustomProjectionDialog::insertProjection( QString myProjectionAcronym )
+void  QgsCustomProjectionDialog::insertProjection( const QString& myProjectionAcronym )
 {
   sqlite3      *myDatabase;
   sqlite3_stmt *myPreparedStatement;
@@ -238,7 +238,7 @@ void  QgsCustomProjectionDialog::insertProjection( QString myProjectionAcronym )
   sqlite3_close( myDatabase );
 }
 
-bool QgsCustomProjectionDialog::saveCRS( QgsCoordinateReferenceSystem myCRS, QString myName, QString myId, bool newEntry )
+bool QgsCustomProjectionDialog::saveCRS( QgsCoordinateReferenceSystem myCRS, const QString& myName, QString myId, bool newEntry )
 {
   QString mySql;
   int return_id;

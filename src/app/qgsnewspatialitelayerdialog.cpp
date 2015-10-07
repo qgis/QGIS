@@ -158,7 +158,7 @@ QString QgsNewSpatialiteLayerDialog::selectedType() const
   return "";
 }
 
-void QgsNewSpatialiteLayerDialog::on_leLayerName_textChanged( QString text )
+void QgsNewSpatialiteLayerDialog::on_leLayerName_textChanged( const QString& text )
 {
   Q_UNUSED( text );
   bool created  = leLayerName->text().length() > 0 && mAttributeView->topLevelItemCount() > 0 && createDb();
@@ -256,7 +256,7 @@ void QgsNewSpatialiteLayerDialog::on_pbnFindSRID_clicked()
   delete mySelector;
 }
 
-void QgsNewSpatialiteLayerDialog::nameChanged( QString name )
+void QgsNewSpatialiteLayerDialog::nameChanged( const QString& name )
 {
   mAddAttributeButton->setDisabled( name.isEmpty() || mAttributeView->findItems( name, Qt::MatchExactly ).size() > 0 );
 }

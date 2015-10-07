@@ -136,7 +136,7 @@ void QgsGeorefPlugin::unload()
 }
 
 //! Set icons to the current theme
-void QgsGeorefPlugin::setCurrentTheme( QString )
+void QgsGeorefPlugin::setCurrentTheme( const QString& )
 {
   if ( mActionRunGeoref )
     mActionRunGeoref->setIcon( getThemeIcon( "/mGeorefRun.png" ) );

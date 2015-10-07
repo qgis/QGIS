@@ -1103,7 +1103,7 @@ QStringList QgsRasterLayer::subLayers() const
   return mDataProvider->subLayers();
 }
 
-QPixmap QgsRasterLayer::previewAsPixmap( QSize size, QColor bgColor )
+QPixmap QgsRasterLayer::previewAsPixmap( const QSize& size, const QColor& bgColor )
 {
   QPixmap myQPixmap( size );
 
@@ -1154,7 +1154,7 @@ QPixmap QgsRasterLayer::previewAsPixmap( QSize size, QColor bgColor )
 
 // this function should be used when rendering with the MTR engine introduced in 2.3, as QPixmap is not thread safe (see bug #9626)
 // note: previewAsImage and previewAsPixmap should use a common low-level fct QgsRasterLayer::previewOnPaintDevice( QSize size, QColor bgColor, QPaintDevice &device )
-QImage QgsRasterLayer::previewAsImage( QSize size, QColor bgColor, QImage::Format format )
+QImage QgsRasterLayer::previewAsImage( const QSize& size, const QColor& bgColor, QImage::Format format )
 {
   QImage myQImage( size, format );
 

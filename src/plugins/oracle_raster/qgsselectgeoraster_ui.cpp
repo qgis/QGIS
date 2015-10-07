@@ -296,7 +296,7 @@ void QgsOracleSelectGeoraster::showSelection( const QString & line )
   GDALClose( hDS );
 }
 
-void QgsOracleSelectGeoraster::on_listWidget_clicked( QModelIndex Index )
+void QgsOracleSelectGeoraster::on_listWidget_clicked( const QModelIndex& Index )
 {
   Q_UNUSED( Index );
   if ( lineEdit->text() == listWidget->currentItem()->text() )

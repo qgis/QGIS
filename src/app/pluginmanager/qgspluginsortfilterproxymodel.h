@@ -45,10 +45,10 @@ class QgsPluginSortFilterProxyModel : public QSortFilterProxyModel
     explicit QgsPluginSortFilterProxyModel( QObject *parent = 0 );
 
     //! (Re)configire the status filter
-    void setAcceptedStatuses( QStringList statuses );
+    void setAcceptedStatuses( const QStringList& statuses );
 
     //! (Re)configire the spacer filter
-    void setAcceptedSpacers( QString spacers = "" );
+    void setAcceptedSpacers( const QString& spacers = "" );
 
     //! Return number of item with status filter matching (no other filters are considered)
     int countWithCurrentStatus();

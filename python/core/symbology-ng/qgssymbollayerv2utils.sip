@@ -6,7 +6,7 @@ class QgsSymbolLayerV2Utils
 
   public:
 
-    static QString encodeColor( QColor color );
+    static QString encodeColor( const QColor& color );
     static QColor decodeColor( const QString& str );
 
     static QString encodeSldAlpha( int alpha );
@@ -122,14 +122,14 @@ class QgsSymbolLayerV2Utils
     static bool needSvgFill( QDomElement &element );
 
     static void fillToSld( QDomDocument &doc, QDomElement &element,
-                           Qt::BrushStyle brushStyle, QColor color = QColor() );
+                           Qt::BrushStyle brushStyle, const QColor& color = QColor() );
     static bool fillFromSld( QDomElement &element,
                              Qt::BrushStyle &brushStyle, QColor &color );
 
     //! @note not available in python bindings
 /*
     static void lineToSld( QDomDocument &doc, QDomElement &element,
-                           Qt::PenStyle penStyle, QColor color, double width = -1,
+                           Qt::PenStyle penStyle, const QColor& color, double width = -1,
                            const Qt::PenJoinStyle *penJoinStyle = 0, const Qt::PenCapStyle *penCapStyle = 0,
                            const QVector<qreal> *customDashPattern = 0, double dashOffset = 0.0 );
 */

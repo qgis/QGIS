@@ -63,8 +63,8 @@ class TopologyRule
                            bool useSecondLayer0 = true,
                            bool useTolerance0 = false,
                            bool useSpatialIndex0 = false,
-                           QList<QGis::GeometryType> layer1SupportedTypes0 = QList<QGis::GeometryType>(),
-                           QList<QGis::GeometryType> layer2SupportedTypes0 = QList<QGis::GeometryType>()
+                           const QList<QGis::GeometryType>& layer1SupportedTypes0 = QList<QGis::GeometryType>(),
+                           const QList<QGis::GeometryType>& layer2SupportedTypes0 = QList<QGis::GeometryType>()
                          )
         : f( f0 )
         , useSecondLayer( useSecondLayer0 )
@@ -81,7 +81,7 @@ class TopologyRule
 class PointComparer
 {
   public:
-    bool operator()( QgsPoint p1, QgsPoint p2 )const
+    bool operator()( const QgsPoint& p1, const QgsPoint& p2 )const
     {
       if ( p1.x() < p2.x() )
       {
@@ -118,7 +118,7 @@ class topolTest: public QObject
      * @param type type what features to validate
      * @param tolerance possible tolerance
      */
-    ErrorList runTest( QString testName, QgsVectorLayer* layer1, QgsVectorLayer* layer2, ValidateType type, double tolerance );
+    ErrorList runTest( const QString& testName, QgsVectorLayer* layer1, QgsVectorLayer* layer2, ValidateType type, double tolerance );
 
     /**
      * Checks for intersections of the two layers
@@ -270,21 +270,21 @@ class topolTest: public QObject
      * Builds spatial index for the layer
      * @param layer pointer to the layer
      */
-    QgsSpatialIndex* createIndex( QgsVectorLayer* layer, QgsRectangle extent );
+    QgsSpatialIndex* createIndex( QgsVectorLayer* layer, const QgsRectangle& extent );
 
     /**
      * Fills the feature list with features from the layer
      * @param layer pointer to the layer
      * @param extent of the layer to add features
      */
-    void fillFeatureList( QgsVectorLayer* layer, QgsRectangle extent );
+    void fillFeatureList( QgsVectorLayer* layer, const QgsRectangle& extent );
 
     /**
      * Fills the feature map with features from the layer
      * @param layer pointer to the layer
      * @param extent of the layer to create index
      */
-    void fillFeatureMap( QgsVectorLayer* layer, QgsRectangle extent );
+    void fillFeatureMap( QgsVectorLayer* layer, const QgsRectangle& extent );
 
     /**
      * Returns true if the test was cancelled

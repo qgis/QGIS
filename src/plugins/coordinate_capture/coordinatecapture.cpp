@@ -201,14 +201,14 @@ void CoordinateCapture::setSourceCrs()
   mCanvasDisplayPrecision = ( mQGisIface->mapCanvas()->mapSettings().destinationCrs().mapUnits() == QGis::Degrees ) ? 5 : 3; // for the map canvas coordinate display
 }
 
-void CoordinateCapture::mouseClicked( QgsPoint thePoint )
+void CoordinateCapture::mouseClicked( const QgsPoint& thePoint )
 {
   //clicking on the canvas will update the widgets and then disable
   //tracking so the user can copy the click point coords
   mpTrackMouseButton->setChecked( false );
   update( thePoint );
 }
-void CoordinateCapture::mouseMoved( QgsPoint thePoint )
+void CoordinateCapture::mouseMoved( const QgsPoint& thePoint )
 {
   //mouse movements will only update the widgets if the
   //tracking button is checked
@@ -217,7 +217,7 @@ void CoordinateCapture::mouseMoved( QgsPoint thePoint )
     update( thePoint );
   }
 }
-void CoordinateCapture::update( QgsPoint thePoint )
+void CoordinateCapture::update( const QgsPoint& thePoint )
 {
   //this is the coordinate resolved back to lat / lon
   QgsPoint myUserCrsPoint = mTransform.transform( thePoint );
@@ -280,7 +280,7 @@ void CoordinateCapture::unload()
 }
 
 // Set icons to the current theme
-void CoordinateCapture::setCurrentTheme( QString theThemeName )
+void CoordinateCapture::setCurrentTheme( const QString& theThemeName )
 {
   Q_UNUSED( theThemeName );
   if ( mQActionPointer )
@@ -295,7 +295,7 @@ void CoordinateCapture::setCurrentTheme( QString theThemeName )
 }
 
 // Get path to the best available icon file
-QString CoordinateCapture::getIconPath( const QString theName )
+QString CoordinateCapture::getIconPath( const QString& theName )
 {
   QString myCurThemePath = QgsApplication::activeThemePath() + "/plugins/coordinate_capture/" + theName;
   QString myDefThemePath = QgsApplication::defaultThemePath() + "/plugins/coordinate_capture/" + theName;

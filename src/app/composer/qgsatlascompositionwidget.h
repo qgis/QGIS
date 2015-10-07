@@ -43,12 +43,12 @@ class QgsAtlasCompositionWidget:
     void on_mAtlasSingleFileCheckBox_stateChanged( int state );
 
     void on_mAtlasSortFeatureCheckBox_stateChanged( int state );
-    void changesSortFeatureField( QString fieldName );
+    void changesSortFeatureField( const QString& fieldName );
     void on_mAtlasSortFeatureDirectionButton_clicked();
     void on_mAtlasFeatureFilterEdit_editingFinished();
     void on_mAtlasFeatureFilterButton_clicked();
     void on_mAtlasFeatureFilterCheckBox_stateChanged( int state );
-    void pageNameExpressionChanged( QString expression, bool valid );
+    void pageNameExpressionChanged( const QString& expression, bool valid );
 
   private slots:
     void updateGuiElements();

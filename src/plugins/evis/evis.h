@@ -113,7 +113,7 @@ class eVis: public QObject, public QgisPlugin
     void help();
 
     //! Add a vector layer given vectorLayerPath, baseName, providerKey ( "ogr" or "postgres" );
-    void drawVectorLayer( QString, QString, QString );
+    void drawVectorLayer( const QString&, const QString&, const QString& );
 
   private:
 

@@ -39,7 +39,7 @@ class QgsSimpleMarkerSymbolLayerV2 : QgsMarkerSymbolLayerV2
     void setName( const QString& name );
 
     QColor borderColor() const;
-    void setBorderColor( QColor color );
+    void setBorderColor( const QColor& color );
 
     Qt::PenStyle outlineStyle() const;
     void setOutlineStyle( Qt::PenStyle outlineStyle );
@@ -157,7 +157,7 @@ class QgsFontMarkerSymbolLayerV2 : QgsMarkerSymbolLayerV2
     QgsFontMarkerSymbolLayerV2( const QString& fontFamily = DEFAULT_FONTMARKER_FONT,
                                 QChar chr = DEFAULT_FONTMARKER_CHR,
                                 double pointSize = DEFAULT_FONTMARKER_SIZE,
-                                QColor color = DEFAULT_FONTMARKER_COLOR,
+                                const QColor& color = DEFAULT_FONTMARKER_COLOR,
                                 double angle = DEFAULT_FONTMARKER_ANGLE );
 
     ~QgsFontMarkerSymbolLayerV2();

@@ -68,7 +68,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
     void setName( const QString& name ) { mName = name; }
 
     QColor borderColor() const { return mBorderColor; }
-    void setBorderColor( QColor color ) { mBorderColor = color; }
+    void setBorderColor( const QColor& color ) { mBorderColor = color; }
 
     Qt::PenStyle outlineStyle() const { return mOutlineStyle; }
     void setOutlineStyle( Qt::PenStyle outlineStyle ) { mOutlineStyle = outlineStyle; }
@@ -226,7 +226,7 @@ class CORE_EXPORT QgsFontMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
     QgsFontMarkerSymbolLayerV2( const QString& fontFamily = DEFAULT_FONTMARKER_FONT,
                                 QChar chr = DEFAULT_FONTMARKER_CHR,
                                 double pointSize = DEFAULT_FONTMARKER_SIZE,
-                                QColor color = DEFAULT_FONTMARKER_COLOR,
+                                const QColor& color = DEFAULT_FONTMARKER_COLOR,
                                 double angle = DEFAULT_FONTMARKER_ANGLE );
 
     ~QgsFontMarkerSymbolLayerV2();

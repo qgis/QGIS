@@ -26,7 +26,7 @@ class QgsDataDefinedButton;
  */
 struct QgsCompositionPaper
 {
-  QgsCompositionPaper( QString name, double width, double height ) {mName = name; mWidth = width; mHeight = height;}
+  QgsCompositionPaper( const QString& name, double width, double height ) {mName = name; mWidth = width; mHeight = height;}
   QString mName;
   double mWidth;
   double mHeight;

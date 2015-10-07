@@ -37,7 +37,7 @@
 * @param password - The password associate with the username needed to access the database or database server
 * @param type - The type of database being connected to
 */
-eVisDatabaseConnection::eVisDatabaseConnection( QString hostname, int port, QString databasename, QString username, QString password, DATABASE_TYPE type )
+eVisDatabaseConnection::eVisDatabaseConnection( const QString& hostname, int port, const QString& databasename, const QString& username, const QString& password, DATABASE_TYPE type )
 {
   mHostName = hostname;
   mPort = port;
@@ -160,7 +160,7 @@ bool eVisDatabaseConnection::connect()
 * Executes a query on the current active database connection
 * @param sqlStatement - QString containing the sql statement to execute
 */
-QSqlQuery* eVisDatabaseConnection::query( QString sqlStatement )
+QSqlQuery* eVisDatabaseConnection::query( const QString& sqlStatement )
 {
   if ( mDatabase.isOpen() )
   {
@@ -194,7 +194,7 @@ QSqlQuery* eVisDatabaseConnection::query( QString sqlStatement )
 * @param password - The password associate with the username needed to access the database or database server
 * @param type - The type of database being connected to
 */
-void eVisDatabaseConnection::resetConnectionParameters( QString hostname, int port, QString databasename, QString username, QString password, DATABASE_TYPE type )
+void eVisDatabaseConnection::resetConnectionParameters( const QString& hostname, int port, const QString& databasename, const QString& username, const QString& password, DATABASE_TYPE type )
 {
   mHostName = hostname;
   mPort = port;

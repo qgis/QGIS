@@ -105,7 +105,7 @@ eVisDatabaseConnectionGui::~eVisDatabaseConnectionGui()
 * @param xCoordinate - Name of the field containing the x coordinate
 * @param yCoordinate - Name of the field containing the y coordinate
 */
-void eVisDatabaseConnectionGui::drawNewVectorLayer( QString layerName, QString xCoordinate, QString yCoordinate )
+void eVisDatabaseConnectionGui::drawNewVectorLayer( const QString& layerName, const QString& xCoordinate, const QString& yCoordinate )
 {
   //if coorindate fields are defined, load as a delimited text layer
   if ( !xCoordinate.isEmpty() && !yCoordinate.isEmpty() && mTempOutputFileList->size() > 0 )

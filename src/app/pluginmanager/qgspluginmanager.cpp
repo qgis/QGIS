@@ -205,7 +205,7 @@ void QgsPluginManager::setPythonUtils( QgsPythonUtils* pythonUtils )
 
 
 
-void QgsPluginManager::loadPlugin( QString id )
+void QgsPluginManager::loadPlugin( const QString& id )
 {
   const QMap<QString, QString>* plugin = pluginMetadata( id );
 
@@ -236,7 +236,7 @@ void QgsPluginManager::loadPlugin( QString id )
 
 
 
-void QgsPluginManager::unloadPlugin( QString id )
+void QgsPluginManager::unloadPlugin( const QString& id )
 {
   const QMap<QString, QString>* plugin = pluginMetadata( id );
 
@@ -450,7 +450,7 @@ void QgsPluginManager::getCppPluginsMetadata()
 
 
 
-QStandardItem * QgsPluginManager::createSpacerItem( QString text, QString value )
+QStandardItem * QgsPluginManager::createSpacerItem( const QString& text, const QString& value )
 {
   QStandardItem * mySpacerltem = new QStandardItem( text );
   mySpacerltem->setData( value, PLUGIN_STATUS_ROLE );
@@ -898,14 +898,14 @@ void QgsPluginManager::clearPythonPluginMetadata()
 
 
 
-void QgsPluginManager::addPluginMetadata( QString key, QMap<QString, QString> metadata )
+void QgsPluginManager::addPluginMetadata( const QString& key, const QMap<QString, QString>& metadata )
 {
   mPlugins.insert( key, metadata );
 }
 
 
 
-const QMap<QString, QString> * QgsPluginManager::pluginMetadata( QString key ) const
+const QMap<QString, QString> * QgsPluginManager::pluginMetadata( const QString& key ) const
 {
   QMap<QString, QMap<QString, QString> >::const_iterator it = mPlugins.find( key );
   if ( it != mPlugins.end() )
@@ -933,7 +933,7 @@ void QgsPluginManager::clearRepositoryList()
 
 
 //! Add repository to the repository listWidget
-void QgsPluginManager::addToRepositoryList( QMap<QString, QString> repository )
+void QgsPluginManager::addToRepositoryList( const QMap<QString, QString>& repository )
 {
   // If it's the second item on the tree, change the button text to plural form and add the filter context menu
   if ( buttonRefreshRepos->isEnabled() && treeRepositories->actions().count() < 1 )
@@ -1231,7 +1231,7 @@ void QgsPluginManager::on_treeRepositories_itemSelectionChanged()
 
 
 
-void QgsPluginManager::on_treeRepositories_doubleClicked( QModelIndex )
+void QgsPluginManager::on_treeRepositories_doubleClicked( const QModelIndex& )
 {
   on_buttonEditRep_clicked();
 }

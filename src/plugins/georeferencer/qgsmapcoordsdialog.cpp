@@ -144,7 +144,7 @@ void QgsMapCoordsDialog::setToolEmitPoint( bool isEnable )
   }
 }
 
-double QgsMapCoordsDialog::dmsToDD( QString dms )
+double QgsMapCoordsDialog::dmsToDD( const QString& dms )
 {
   QStringList list = dms.split( ' ' );
   QString tmpStr = list.at( 0 );

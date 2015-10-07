@@ -40,7 +40,7 @@ bool QgsPluginSortFilterProxyModel::filterAcceptsRow( int sourceRow, const QMode
 
 
 
-void QgsPluginSortFilterProxyModel::setAcceptedStatuses( QStringList statuses )
+void QgsPluginSortFilterProxyModel::setAcceptedStatuses( const QStringList& statuses )
 {
   mAcceptedStatuses = statuses;
   invalidateFilter();
@@ -48,7 +48,7 @@ void QgsPluginSortFilterProxyModel::setAcceptedStatuses( QStringList statuses )
 
 
 
-void QgsPluginSortFilterProxyModel::setAcceptedSpacers( QString spacers )
+void QgsPluginSortFilterProxyModel::setAcceptedSpacers( const QString& spacers )
 {
   mAcceptedSpacers = spacers;
   invalidateFilter();

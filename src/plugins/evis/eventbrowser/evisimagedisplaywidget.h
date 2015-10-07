@@ -59,10 +59,10 @@ class eVisImageDisplayWidget : public QWidget
     ~eVisImageDisplayWidget();
 
     /** \brief Load an image from disk and display */
-    void displayImage( QString );
+    void displayImage( const QString& );
 
     /** \brief Load an image from a remote location using http and display */
-    void displayUrlImage( QString );
+    void displayUrlImage( const QString& );
 
     /*
      * There needs to be more logic around setting the zoom steps as you could change it mid display

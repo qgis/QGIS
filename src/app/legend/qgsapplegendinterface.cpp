@@ -37,7 +37,7 @@ QgsAppLegendInterface::~QgsAppLegendInterface()
 {
 }
 
-int QgsAppLegendInterface::addGroup( QString name, bool expand, QTreeWidgetItem* parent )
+int QgsAppLegendInterface::addGroup( const QString& name, bool expand, QTreeWidgetItem* parent )
 {
   if ( parent )
     return -1;
@@ -54,7 +54,7 @@ void QgsAppLegendInterface::setExpanded( QgsLayerTreeNode *node, bool expand )
     mLayerTreeView->collapse( idx );
 }
 
-int QgsAppLegendInterface::addGroup( QString name, bool expand, int parentIndex )
+int QgsAppLegendInterface::addGroup( const QString& name, bool expand, int parentIndex )
 {
   QgsLayerTreeGroup* parentGroup = parentIndex == -1 ? mLayerTreeView->layerTreeModel()->rootGroup() : groupIndexToNode( parentIndex );
   if ( !parentGroup )

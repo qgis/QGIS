@@ -252,7 +252,7 @@ void QgsSpatialQueryDialog::showResultQuery( QDateTime *datetimeStart, QDateTime
   }
 } // void QgsSpatialQueryDialog::showResultQuery(QDateTime *datetimeStart, QDateTime *datetimeEnd)
 
-QString QgsSpatialQueryDialog::getSubsetFIDs( const QgsFeatureIds *fids, QString fieldFID )
+QString QgsSpatialQueryDialog::getSubsetFIDs( const QgsFeatureIds *fids, const QString& fieldFID )
 {
   if ( fids->size() == 0 )
   {
@@ -290,7 +290,7 @@ QgsSpatialQueryDialog::TypeVerifyCreateSubset QgsSpatialQueryDialog::verifyCreat
   return verifyImpossible;
 } // TypeVerifyCreateSubset QgsSpatialQueryDialog::verifyCreateSubset(QString &msg, QString &fieldFID)
 
-bool QgsSpatialQueryDialog::addLayerSubset( QString name, QString subset )
+bool QgsSpatialQueryDialog::addLayerSubset( const QString& name, const QString& subset )
 {
   QgsVectorLayer *addLyr = new QgsVectorLayer( mLayerTarget->source(), name, mLayerTarget->providerType() );
   if ( ! addLyr->setSubsetString( subset ) )
@@ -1020,7 +1020,7 @@ void QgsSpatialQueryDialog::signal_qgis_layerWasAdded( QgsMapLayer* mapLayer )
   mMapIdVectorLayers.insert( lyr->id(), lyr );
 } // QgsSpatialQueryDialog::signal_qgis_layerWasAdded(QgsMapLayer* mapLayer)
 
-void QgsSpatialQueryDialog::signal_qgis_layerWillBeRemoved( QString idLayer )
+void QgsSpatialQueryDialog::signal_qgis_layerWillBeRemoved( const QString& idLayer )
 {
   // If Frozen: the QGis can be: Exit, Add Project, New Project
   if ( mIface->mapCanvas()->isFrozen() )

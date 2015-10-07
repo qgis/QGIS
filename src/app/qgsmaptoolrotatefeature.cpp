@@ -38,7 +38,7 @@
 
 #define PI 3.14159265
 
-QgsAngleMagnetWidget::QgsAngleMagnetWidget( QString label , QWidget *parent )
+QgsAngleMagnetWidget::QgsAngleMagnetWidget( const QString& label , QWidget *parent )
     : QWidget( parent )
 {
   mLayout = new QHBoxLayout( this );

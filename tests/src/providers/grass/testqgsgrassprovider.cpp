@@ -63,15 +63,15 @@ class TestQgsGrassProvider: public QObject
     void rasterImport();
     void vectorImport();
   private:
-    void reportRow( QString message );
-    void reportHeader( QString message );
+    void reportRow( const QString& message );
+    void reportHeader( const QString& message );
     // verify result and report result
     bool verify( bool ok );
     // compare expected and got string and set ok to false if not equal
-    bool compare( QString expected, QString got, bool& ok );
+    bool compare( const QString& expected, const QString& got, bool& ok );
     // lists are considered equal if contains the same values regardless order
     // set ok to false if not equal
-    bool compare( QStringList expected, QStringList got, bool& ok );
+    bool compare( const QStringList& expected, const QStringList& got, bool& ok );
     // compare with tolerance
     bool compare( double expected, double got, bool& ok );
     bool copyRecursively( const QString &srcFilePath, const QString &tgtFilePath, QString *error );
@@ -86,11 +86,11 @@ class TestQgsGrassProvider: public QObject
 
 #define GVERIFY(x) QVERIFY( verify(x) )
 
-void TestQgsGrassProvider::reportRow( QString message )
+void TestQgsGrassProvider::reportRow( const QString& message )
 {
   mReport += message + "<br>\n";
 }
-void TestQgsGrassProvider::reportHeader( QString message )
+void TestQgsGrassProvider::reportHeader( const QString& message )
 {
   mReport += "<h2>" + message + "</h2>\n";
 }
@@ -154,7 +154,7 @@ bool TestQgsGrassProvider::verify( bool ok )
   return ok;
 }
 
-bool TestQgsGrassProvider::compare( QString expected, QString got, bool &ok )
+bool TestQgsGrassProvider::compare( const QString& expected, const QString& got, bool &ok )
 {
   if ( expected != got )
   {
@@ -164,7 +164,7 @@ bool TestQgsGrassProvider::compare( QString expected, QString got, bool &ok )
   return true;
 }
 
-bool TestQgsGrassProvider::compare( QStringList expected, QStringList got, bool &ok )
+bool TestQgsGrassProvider::compare( const QStringList& expected, const QStringList& got, bool &ok )
 {
   QStringList e = expected;
   QStringList g = got;

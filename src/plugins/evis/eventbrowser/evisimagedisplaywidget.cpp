@@ -138,7 +138,7 @@ void eVisImageDisplayWidget::resizeEvent( QResizeEvent *event )
 * Public method called to display an image loaded locally from disk
 * @param path - The path and filename of the image to load from disk
 */
-void eVisImageDisplayWidget::displayImage( QString path )
+void eVisImageDisplayWidget::displayImage( const QString& path )
 {
   mImageLoaded = mImage->load( path, 0, Qt::AutoColor );
   setToolTip( path );
@@ -195,7 +195,7 @@ void eVisImageDisplayWidget::displayImage()
 * Public method called to display an image loaded from a url
 * @param url - The url from which to load an image
 */
-void eVisImageDisplayWidget::displayUrlImage( QString url )
+void eVisImageDisplayWidget::displayUrlImage( const QString& url )
 {
   QUrl myUrl( url );
 #if QT_VERSION < 0x050000

@@ -226,7 +226,7 @@ void QgsAbout::setLicence()
   }
 }
 
-void QgsAbout::setVersion( QString v )
+void QgsAbout::setVersion( const QString& v )
 {
   txtVersion->setBackgroundRole( QPalette::NoRole );
   txtVersion->setAutoFillBackground( true );
@@ -297,7 +297,7 @@ void QgsAbout::openUrl( const QUrl &url )
  * Step 2: Replace all bytes of the UTF-8 above 0x7f with the hexcode in lower case.
  * Step 2: Replace all non [a-z][a-Z][0-9] with underscore (backward compatibility)
  */
-QString QgsAbout::fileSystemSafe( QString fileName )
+QString QgsAbout::fileSystemSafe( const QString& fileName )
 {
   QString result;
   QByteArray utf8 = fileName.toUtf8();

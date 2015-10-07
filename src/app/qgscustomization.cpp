@@ -70,7 +70,7 @@ QgsCustomizationDialog::~QgsCustomizationDialog()
   settings.setValue( "/Windows/Customization/geometry", saveGeometry() );
 }
 
-QTreeWidgetItem * QgsCustomizationDialog::item( QString thePath, QTreeWidgetItem *theItem )
+QTreeWidgetItem * QgsCustomizationDialog::item( const QString& thePath, QTreeWidgetItem *theItem )
 {
   QString path = thePath;
   if ( path.startsWith( "/" ) )
@@ -113,7 +113,7 @@ QTreeWidgetItem * QgsCustomizationDialog::item( QString thePath, QTreeWidgetItem
   return 0;
 }
 
-bool QgsCustomizationDialog::itemChecked( QString thePath )
+bool QgsCustomizationDialog::itemChecked( const QString& thePath )
 {
   QgsDebugMsg( QString( "thePath = %1" ).arg( thePath ) );
   QTreeWidgetItem *myItem = item( thePath );
@@ -122,7 +122,7 @@ bool QgsCustomizationDialog::itemChecked( QString thePath )
   return myItem->checkState( 0 ) == Qt::Checked ? true : false;
 }
 
-void QgsCustomizationDialog::setItemChecked( QString thePath, bool on )
+void QgsCustomizationDialog::setItemChecked( const QString& thePath, bool on )
 {
   QgsDebugMsg( QString( "thePath = %1 on = %2" ).arg( thePath ).arg( on ) );
   QTreeWidgetItem *myItem = item( thePath );
@@ -131,7 +131,7 @@ void QgsCustomizationDialog::setItemChecked( QString thePath, bool on )
   myItem->setCheckState( 0, on ? Qt::Checked : Qt::Unchecked );
 }
 
-void QgsCustomizationDialog::settingsToItem( QString thePath, QTreeWidgetItem *theItem, QSettings *theSettings )
+void QgsCustomizationDialog::settingsToItem( const QString& thePath, QTreeWidgetItem *theItem, QSettings *theSettings )
 {
   QString objectName = theItem->text( 0 );
   if ( objectName.isEmpty() )
@@ -149,7 +149,7 @@ void QgsCustomizationDialog::settingsToItem( QString thePath, QTreeWidgetItem *t
   }
 }
 
-void QgsCustomizationDialog::itemToSettings( QString thePath, QTreeWidgetItem *theItem, QSettings *theSettings )
+void QgsCustomizationDialog::itemToSettings( const QString& thePath, QTreeWidgetItem *theItem, QSettings *theSettings )
 {
 
   QString objectName = theItem->text( 0 );
@@ -335,7 +335,7 @@ QTreeWidgetItem * QgsCustomizationDialog::createTreeItemWidgets()
   return myItem;
 }
 
-QTreeWidgetItem * QgsCustomizationDialog::readWidgetsXmlNode( QDomNode theNode )
+QTreeWidgetItem * QgsCustomizationDialog::readWidgetsXmlNode( const QDomNode& theNode )
 {
   QgsDebugMsg( "Entered" );
   QDomElement myElement = theNode.toElement();
@@ -442,7 +442,7 @@ bool QgsCustomizationDialog::switchWidget( QWidget *widget, QMouseEvent *e )
   return true;
 }
 
-QString QgsCustomizationDialog::widgetPath( QWidget * theWidget, QString thePath )
+QString QgsCustomizationDialog::widgetPath( QWidget * theWidget, const QString& thePath )
 {
   // go up until QDialog is reached
   QString name = theWidget->objectName();
@@ -814,7 +814,7 @@ void QgsCustomization::customizeWidget( QWidget * widget, QEvent * event, QSetti
   QgsCustomization::customizeWidget( path, widget, settings );
 }
 
-void QgsCustomization::customizeWidget( QString thePath, QWidget * theWidget, QSettings* settings )
+void QgsCustomization::customizeWidget( const QString& thePath, QWidget * theWidget, QSettings* settings )
 {
   QString name = theWidget->objectName();
   QString myPath = thePath;

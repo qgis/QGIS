@@ -35,7 +35,7 @@ class QgsHueSaturationFilter : QgsRasterInterface
 
     void setColorizeOn( bool colorizeOn );
     bool colorizeOn() const;
-    void setColorizeColor( QColor colorizeColor );
+    void setColorizeColor( const QColor& colorizeColor );
     QColor colorizeColor() const;
     void setColorizeStrength( int colorizeStrength );
     int colorizeStrength() const;

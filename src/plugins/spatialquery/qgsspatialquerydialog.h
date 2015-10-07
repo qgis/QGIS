@@ -63,7 +63,7 @@ class QgsSpatialQueryDialog : public QDialog, private Ui::QgsSpatialQueryDialogB
 
     //! Slots for signs of QGIS
     void signal_qgis_layerWasAdded( QgsMapLayer* mapLayer );
-    void signal_qgis_layerWillBeRemoved( QString idLayer );
+    void signal_qgis_layerWillBeRemoved( const QString& idLayer );
 
     //! Slots for signs of Layers (Target or Reference)
     void signal_layerTarget_selectionFeaturesChanged();
@@ -92,11 +92,11 @@ class QgsSpatialQueryDialog : public QDialog, private Ui::QgsSpatialQueryDialogB
     //! Show result of query
     void showResultQuery( QDateTime *datetimeStart, QDateTime *datetimeEnd );
     //! Get string subset with selected FID
-    QString getSubsetFIDs( const QgsFeatureIds *fids, QString fieldFID );
+    QString getSubsetFIDs( const QgsFeatureIds *fids, const QString& fieldFID );
     //! Verify can create layer subset
     TypeVerifyCreateSubset verifyCreateSubset( QString &msg, QString &fieldFID );
     //! Add layer target with subset
-    bool addLayerSubset( QString name, QString subset );
+    bool addLayerSubset( const QString& name, const QString& subset );
     //! Get Description Layer to show result
     QString getDescriptionLayerShow( bool isTarget );
     //! Get Description Layer to show result

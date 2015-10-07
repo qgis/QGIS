@@ -681,7 +681,7 @@ void QgsColorButtonV2::setBehaviour( const QgsColorButtonV2::Behaviour behaviour
   mBehaviour = behaviour;
 }
 
-void QgsColorButtonV2::setDefaultColor( const QColor color )
+void QgsColorButtonV2::setDefaultColor( const QColor& color )
 {
   mDefaultColor = color;
 }

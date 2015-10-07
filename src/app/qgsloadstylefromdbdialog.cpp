@@ -55,7 +55,7 @@ QgsLoadStyleFromDBDialog::~QgsLoadStyleFromDBDialog()
   settings.setValue( "/Windows/loadStyleFromDb/geometry", saveGeometry() );
 }
 
-void QgsLoadStyleFromDBDialog::initializeLists( QStringList ids, QStringList names, QStringList descriptions, int sectionLimit )
+void QgsLoadStyleFromDBDialog::initializeLists( const QStringList& ids, const QStringList& names, const QStringList& descriptions, int sectionLimit )
 {
   mSectionLimit = sectionLimit;
   int relatedTableNOfCols = sectionLimit > 0 ? 2 : 1;

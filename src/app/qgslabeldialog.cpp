@@ -319,7 +319,7 @@ void QgsLabelDialog::changeBufferColor( void )
 }
 
 
-int QgsLabelDialog::itemNoForField( QString theFieldName, QStringList theFieldList )
+int QgsLabelDialog::itemNoForField( const QString& theFieldName, const QStringList& theFieldList )
 {
   //if no matches assume first item in list is blank and return that
   return qMax( 0, theFieldList.indexOf( theFieldName ) );
@@ -397,7 +397,7 @@ void QgsLabelDialog::apply()
   mLabel->setMaxScale( leMaximumScale->text().toFloat() );
 }
 
-int QgsLabelDialog::fieldIndexFromName( QString name )
+int QgsLabelDialog::fieldIndexFromName( const QString& name )
 {
   const QgsFields& fields = mLabel->fields();
   for ( int i = 0; i < fields.count(); ++i )

@@ -437,10 +437,10 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     void statusZoomCombo_zoomEntered();
 
     //! Updates status bar composition message
-    void updateStatusCompositionMsg( QString message );
+    void updateStatusCompositionMsg( const QString& message );
 
     //! Updates status bar atlas message
-    void updateStatusAtlasMsg( QString message );
+    void updateStatusAtlasMsg( const QString& message );
 
   private:
 
@@ -488,7 +488,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     void createComposerView();
 
     //! Write a world file
-    void writeWorldFile( QString fileName, double a, double b, double c, double d, double e, double f ) const;
+    void writeWorldFile( const QString& fileName, double a, double b, double c, double d, double e, double f ) const;
 
     //! Updates the grid/guide action status based on compositions grid/guide settings
     void restoreGridSettings();
@@ -644,7 +644,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     void updateAtlasMapLayerAction( QgsVectorLayer* coverageLayer );
 
     //! Sets the printer page orientation when the page orientation changes
-    void setPrinterPageOrientation( QString orientation );
+    void setPrinterPageOrientation( const QString& orientation );
 
     void disablePreviewMode();
     void activateGrayscalePreview();

@@ -32,7 +32,7 @@ QgsGuiVectorLayerTools::QgsGuiVectorLayerTools()
     : QObject( NULL )
 {}
 
-bool QgsGuiVectorLayerTools::addFeature( QgsVectorLayer* layer, QgsAttributeMap defaultValues, const QgsGeometry& defaultGeometry ) const
+bool QgsGuiVectorLayerTools::addFeature( QgsVectorLayer* layer, const QgsAttributeMap& defaultValues, const QgsGeometry& defaultGeometry ) const
 {
   QgsFeature f;
   f.setGeometry( defaultGeometry );

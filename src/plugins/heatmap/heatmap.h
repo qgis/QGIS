@@ -103,7 +103,7 @@ class Heatmap: public QObject, public QgisPlugin
     double mDecay;
 
     //! Worker to convert meters to map units
-    double mapUnitsOf( double meters, QgsCoordinateReferenceSystem layerCrs );
+    double mapUnitsOf( double meters, const QgsCoordinateReferenceSystem& layerCrs );
     //! Worker to calculate buffer size in pixels
     int bufferSize( double radius, double cellsize );
     //! Calculate the value given to a point width a given distance for a specified kernel shape

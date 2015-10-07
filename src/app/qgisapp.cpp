@@ -2082,7 +2082,7 @@ void QgisApp::setIconSizes( int size )
   }
 }
 
-void QgisApp::setTheme( QString theThemeName )
+void QgisApp::setTheme( const QString& theThemeName )
 {
   /*****************************************************************
   // Init the toolbar icons by setting the icon for each action.
@@ -2523,7 +2523,7 @@ void QgisApp::removeDockWidget( QDockWidget * thepDockWidget )
   mPanelMenu->removeAction( thepDockWidget->toggleViewAction() );
 }
 
-QToolBar *QgisApp::addToolBar( QString name )
+QToolBar *QgisApp::addToolBar( const QString& name )
 {
   QToolBar *toolBar = QMainWindow::addToolBar( name );
   // add to the Toolbar submenu
@@ -2812,7 +2812,7 @@ void QgisApp::updateRecentProjectPaths()
 } // QgisApp::updateRecentProjectPaths
 
 // add this file to the recently opened/saved projects list
-void QgisApp::saveRecentProjectPath( QString projectPath, bool savePreviewImage )
+void QgisApp::saveRecentProjectPath( const QString& projectPath, bool savePreviewImage )
 {
   QSettings settings;
 
@@ -3418,7 +3418,7 @@ bool QgisApp::shouldAskUserForGDALSublayers( QgsRasterLayer *layer )
 
 // This method will load with GDAL the layers in parameter.
 // It is normally triggered by the sublayer selection dialog.
-void QgisApp::loadGDALSublayers( QString uri, QStringList list )
+void QgisApp::loadGDALSublayers( const QString& uri, const QStringList& list )
 {
   QString path, name;
   QgsRasterLayer *subLayer = NULL;
@@ -3484,7 +3484,7 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
 // format of the ogrprovider so as to give precisions about which
 // sublayer to load into QGIS. It is normally triggered by the
 // sublayer selection dialog.
-void QgisApp::loadOGRSublayers( QString layertype, QString uri, QStringList list )
+void QgisApp::loadOGRSublayers( const QString& layertype, const QString& uri, const QStringList& list )
 {
   // The uri must contain the actual uri of the vectorLayer from which we are
   // going to load the sublayers.
@@ -3677,7 +3677,7 @@ void QgisApp::addDelimitedTextLayer()
   delete dts;
 } // QgisApp::addDelimitedTextLayer()
 
-void QgisApp::addSelectedVectorLayer( QString uri, QString layerName, QString provider )
+void QgisApp::addSelectedVectorLayer( const QString& uri, const QString& layerName, const QString& provider )
 {
   addVectorLayer( uri, layerName, provider );
 } // QgisApp:addSelectedVectorLayer
@@ -3788,7 +3788,7 @@ void QgisApp::addWfsLayer()
   delete wfss;
 }
 
-void QgisApp::addWfsLayer( QString uri, QString typeName )
+void QgisApp::addWfsLayer( const QString& uri, const QString& typeName )
 {
   // TODO: this should be eventually moved to a more reasonable place
   addVectorLayer( uri, typeName, "WFS" );
@@ -3929,7 +3929,7 @@ void QgisApp::fileNew( bool thePromptToSaveFlag, bool forceBlank )
 
 } // QgisApp::fileNew(bool thePromptToSaveFlag)
 
-bool QgisApp::fileNewFromTemplate( QString fileName )
+bool QgisApp::fileNewFromTemplate( const QString& fileName )
 {
   if ( !saveDirty() )
   {
@@ -4217,7 +4217,7 @@ void QgisApp::enableProjectMacros()
   adds a saved project to qgis, usually called on startup by specifying a
   project file on the command line
   */
-bool QgisApp::addProject( QString projectFile )
+bool QgisApp::addProject( const QString& projectFile )
 {
   QFileInfo pfi( projectFile );
   statusBar()->showMessage( tr( "Loading project: %1" ).arg( pfi.fileName() ) );
@@ -4733,7 +4733,7 @@ void QgisApp::saveMapAsImage()
 } // saveMapAsImage
 
 //overloaded version of the above function
-void QgisApp::saveMapAsImage( QString theImageFileNameQString, QPixmap * theQPixmap )
+void QgisApp::saveMapAsImage( const QString& theImageFileNameQString, QPixmap * theQPixmap )
 {
   if ( theImageFileNameQString == "" )
   {
@@ -7352,7 +7352,7 @@ void QgisApp::isInOverview()
   mLayerTreeView->defaultActions()->showInOverview();
 }
 
-void QgisApp::removingLayers( QStringList theLayers )
+void QgisApp::removingLayers( const QStringList& theLayers )
 {
   Q_FOREACH ( const QString &layerId, theLayers )
   {
@@ -7414,7 +7414,7 @@ void QgisApp::removeLayer()
   mMapCanvas->refresh();
 }
 
-void QgisApp::duplicateLayers( QList<QgsMapLayer *> lyrList )
+void QgisApp::duplicateLayers( const QList<QgsMapLayer *>& lyrList )
 {
   if ( !mLayerTreeView )
   {
@@ -7899,7 +7899,7 @@ void QgisApp::options()
   showOptionsDialog( this );
 }
 
-void QgisApp::showOptionsDialog( QWidget *parent, QString currentPage )
+void QgisApp::showOptionsDialog( QWidget *parent, const QString& currentPage )
 {
   QSettings mySettings;
   QString oldScales = mySettings.value( "Map/scales", PROJECT_SCALES ).toString();
@@ -8182,7 +8182,7 @@ bool QgisApp::setActiveLayer( QgsMapLayer *layer )
   parameter is used in the Map Legend so it should be formed in a meaningful
   way.
   */
-QgsVectorLayer* QgisApp::addVectorLayer( QString vectorLayerPath, QString baseName, QString providerKey )
+QgsVectorLayer* QgisApp::addVectorLayer( const QString& vectorLayerPath, const QString& baseName, const QString& providerKey )
 {
   bool wasfrozen = mMapCanvas->isFrozen();
 
@@ -8337,7 +8337,7 @@ void QgisApp::embedLayers()
   }
 }
 
-void QgisApp::setExtent( QgsRectangle theRect )
+void QgisApp::setExtent( const QgsRectangle& theRect )
 {
   mMapCanvas->setExtent( theRect );
 }
@@ -8481,7 +8481,7 @@ void QgisApp::whatsThis()
   QWhatsThis::enterWhatsThisMode();
 } // QgisApp::whatsThis()
 
-QMenu* QgisApp::getPluginMenu( QString menuName )
+QMenu* QgisApp::getPluginMenu( const QString& menuName )
 {
   /* Plugin menu items are below the plugin separator (which may not exist yet
    * if no plugins are loaded) and above the python separator. If python is not
@@ -8489,9 +8489,10 @@ QMenu* QgisApp::getPluginMenu( QString menuName )
    * of the menu.
    */
 
+  QString cleanedMenuName = menuName;
 #ifdef Q_OS_MAC
   // Mac doesn't have '&' keyboard shortcuts.
-  menuName.remove( QChar( '&' ) );
+  cleanedMenuName.remove( QChar( '&' ) );
 #endif
   QAction *before = mActionPluginSeparator2;  // python separator or end of list
   if ( !mActionPluginSeparator1 )
@@ -8501,7 +8502,7 @@ QMenu* QgisApp::getPluginMenu( QString menuName )
   }
   else
   {
-    QString dst = menuName;
+    QString dst = cleanedMenuName;
     dst.remove( QChar( '&' ) );
 
     // Plugins exist - search between plugin separator and python separator or end of list
@@ -8527,21 +8528,21 @@ QMenu* QgisApp::getPluginMenu( QString menuName )
     }
   }
   // It doesn't exist, so create
-  QMenu *menu = new QMenu( menuName, this );
-  menu->setObjectName( normalizedMenuName( menuName ) );
+  QMenu *menu = new QMenu( cleanedMenuName, this );
+  menu->setObjectName( normalizedMenuName( cleanedMenuName ) );
   // Where to put it? - we worked that out above...
   mPluginMenu->insertMenu( before, menu );
 
   return menu;
 }
 
-void QgisApp::addPluginToMenu( QString name, QAction* action )
+void QgisApp::addPluginToMenu( const QString& name, QAction* action )
 {
   QMenu* menu = getPluginMenu( name );
   menu->addAction( action );
 }
 
-void QgisApp::removePluginMenu( QString name, QAction* action )
+void QgisApp::removePluginMenu( const QString& name, QAction* action )
 {
   QMenu* menu = getPluginMenu( name );
   menu->removeAction( action );
@@ -8559,13 +8560,14 @@ void QgisApp::removePluginMenu( QString name, QAction* action )
   }
 }
 
-QMenu* QgisApp::getDatabaseMenu( QString menuName )
+QMenu* QgisApp::getDatabaseMenu( const QString& menuName )
 {
+  QString cleanedMenuName = menuName;
 #ifdef Q_OS_MAC
   // Mac doesn't have '&' keyboard shortcuts.
-  menuName.remove( QChar( '&' ) );
+  cleanedMenuName.remove( QChar( '&' ) );
 #endif
-  QString dst = menuName;
+  QString dst = cleanedMenuName;
   dst.remove( QChar( '&' ) );
 
   QAction *before = NULL;
@@ -8589,8 +8591,8 @@ QMenu* QgisApp::getDatabaseMenu( QString menuName )
     }
   }
   // It doesn't exist, so create
-  QMenu *menu = new QMenu( menuName, this );
-  menu->setObjectName( normalizedMenuName( menuName ) );
+  QMenu *menu = new QMenu( cleanedMenuName, this );
+  menu->setObjectName( normalizedMenuName( cleanedMenuName ) );
   if ( before )
     mDatabaseMenu->insertMenu( before, menu );
   else
@@ -8599,11 +8601,12 @@ QMenu* QgisApp::getDatabaseMenu( QString menuName )
   return menu;
 }
 
-QMenu* QgisApp::getRasterMenu( QString menuName )
+QMenu* QgisApp::getRasterMenu( const QString& menuName )
 {
+  QString cleanedMenuName = menuName;
 #ifdef Q_OS_MAC
   // Mac doesn't have '&' keyboard shortcuts.
-  menuName.remove( QChar( '&' ) );
+  cleanedMenuName.remove( QChar( '&' ) );
 #endif
 
   QAction *before = NULL;
@@ -8614,7 +8617,7 @@ QMenu* QgisApp::getRasterMenu( QString menuName )
   }
   else
   {
-    QString dst = menuName;
+    QString dst = cleanedMenuName;
     dst.remove( QChar( '&' ) );
     // Plugins exist - search between plugin separator and python separator or end of list
     QList<QAction*> actions = mRasterMenu->actions();
@@ -8639,8 +8642,8 @@ QMenu* QgisApp::getRasterMenu( QString menuName )
   }
 
   // It doesn't exist, so create
-  QMenu *menu = new QMenu( menuName, this );
-  menu->setObjectName( normalizedMenuName( menuName ) );
+  QMenu *menu = new QMenu( cleanedMenuName, this );
+  menu->setObjectName( normalizedMenuName( cleanedMenuName ) );
   if ( before )
     mRasterMenu->insertMenu( before, menu );
   else
@@ -8649,13 +8652,14 @@ QMenu* QgisApp::getRasterMenu( QString menuName )
   return menu;
 }
 
-QMenu* QgisApp::getVectorMenu( QString menuName )
+QMenu* QgisApp::getVectorMenu( const QString& menuName )
 {
+  QString cleanedMenuName = menuName;
 #ifdef Q_OS_MAC
   // Mac doesn't have '&' keyboard shortcuts.
-  menuName.remove( QChar( '&' ) );
+  cleanedMenuName.remove( QChar( '&' ) );
 #endif
-  QString dst = menuName;
+  QString dst = cleanedMenuName;
   dst.remove( QChar( '&' ) );
 
   QAction *before = NULL;
@@ -8679,8 +8683,8 @@ QMenu* QgisApp::getVectorMenu( QString menuName )
     }
   }
   // It doesn't exist, so create
-  QMenu *menu = new QMenu( menuName, this );
-  menu->setObjectName( normalizedMenuName( menuName ) );
+  QMenu *menu = new QMenu( cleanedMenuName, this );
+  menu->setObjectName( normalizedMenuName( cleanedMenuName ) );
   if ( before )
     mVectorMenu->insertMenu( before, menu );
   else
@@ -8689,13 +8693,14 @@ QMenu* QgisApp::getVectorMenu( QString menuName )
   return menu;
 }
 
-QMenu* QgisApp::getWebMenu( QString menuName )
+QMenu* QgisApp::getWebMenu( const QString& menuName )
 {
+  QString cleanedMenuName = menuName;
 #ifdef Q_OS_MAC
   // Mac doesn't have '&' keyboard shortcuts.
-  menuName.remove( QChar( '&' ) );
+  cleanedMenuName.remove( QChar( '&' ) );
 #endif
-  QString dst = menuName;
+  QString dst = cleanedMenuName;
   dst.remove( QChar( '&' ) );
 
   QAction *before = NULL;
@@ -8719,8 +8724,8 @@ QMenu* QgisApp::getWebMenu( QString menuName )
     }
   }
   // It doesn't exist, so create
-  QMenu *menu = new QMenu( menuName, this );
-  menu->setObjectName( normalizedMenuName( menuName ) );
+  QMenu *menu = new QMenu( cleanedMenuName, this );
+  menu->setObjectName( normalizedMenuName( cleanedMenuName ) );
   if ( before )
     mWebMenu->insertMenu( before, menu );
   else
@@ -8739,7 +8744,7 @@ void QgisApp::removeAddLayerAction( QAction *action )
   mAddLayerMenu->removeAction( action );
 }
 
-void QgisApp::addPluginToDatabaseMenu( QString name, QAction* action )
+void QgisApp::addPluginToDatabaseMenu( const QString& name, QAction* action )
 {
   QMenu* menu = getDatabaseMenu( name );
   menu->addAction( action );
@@ -8781,19 +8786,19 @@ void QgisApp::addPluginToDatabaseMenu( QString name, QAction* action )
     menuBar()->insertMenu( firstRightStandardMenu()->menuAction(), mDatabaseMenu );
 }
 
-void QgisApp::addPluginToRasterMenu( QString name, QAction* action )
+void QgisApp::addPluginToRasterMenu( const QString& name, QAction* action )
 {
   QMenu* menu = getRasterMenu( name );
   menu->addAction( action );
 }
 
-void QgisApp::addPluginToVectorMenu( QString name, QAction* action )
+void QgisApp::addPluginToVectorMenu( const QString& name, QAction* action )
 {
   QMenu* menu = getVectorMenu( name );
   menu->addAction( action );
 }
 
-void QgisApp::addPluginToWebMenu( QString name, QAction* action )
+void QgisApp::addPluginToWebMenu( const QString& name, QAction* action )
 {
   QMenu* menu = getWebMenu( name );
   menu->addAction( action );
@@ -8836,7 +8841,7 @@ void QgisApp::addPluginToWebMenu( QString name, QAction* action )
     menuBar()->insertMenu( firstRightStandardMenu()->menuAction(), mWebMenu );
 }
 
-void QgisApp::removePluginDatabaseMenu( QString name, QAction* action )
+void QgisApp::removePluginDatabaseMenu( const QString& name, QAction* action )
 {
   QMenu* menu = getDatabaseMenu( name );
   menu->removeAction( action );
@@ -8860,7 +8865,7 @@ void QgisApp::removePluginDatabaseMenu( QString name, QAction* action )
   }
 }
 
-void QgisApp::removePluginRasterMenu( QString name, QAction* action )
+void QgisApp::removePluginRasterMenu( const QString& name, QAction* action )
 {
   QMenu* menu = getRasterMenu( name );
   menu->removeAction( action );
@@ -8878,7 +8883,7 @@ void QgisApp::removePluginRasterMenu( QString name, QAction* action )
   }
 }
 
-void QgisApp::removePluginVectorMenu( QString name, QAction* action )
+void QgisApp::removePluginVectorMenu( const QString& name, QAction* action )
 {
   QMenu* menu = getVectorMenu( name );
   menu->removeAction( action );
@@ -8902,7 +8907,7 @@ void QgisApp::removePluginVectorMenu( QString name, QAction* action )
   }
 }
 
-void QgisApp::removePluginWebMenu( QString name, QAction* action )
+void QgisApp::removePluginWebMenu( const QString& name, QAction* action )
 {
   QMenu* menu = getWebMenu( name );
   menu->removeAction( action );
@@ -9129,7 +9134,7 @@ void QgisApp::markDirty()
   QgsProject::instance()->dirty( true );
 }
 
-void QgisApp::layersWereAdded( QList<QgsMapLayer *> theLayers )
+void QgisApp::layersWereAdded( const QList<QgsMapLayer *>& theLayers )
 {
   for ( int i = 0; i < theLayers.size(); ++i )
   {
@@ -9230,12 +9235,12 @@ void QgisApp::updateMouseCoordinatePrecision()
   mMousePrecisionDecimalPlaces = dp;
 }
 
-void QgisApp::showStatusMessage( QString theMessage )
+void QgisApp::showStatusMessage( const QString& theMessage )
 {
   statusBar()->showMessage( theMessage );
 }
 
-void QgisApp::displayMapToolMessage( QString message, QgsMessageBar::MessageLevel level )
+void QgisApp::displayMapToolMessage( const QString& message, QgsMessageBar::MessageLevel level )
 {
   // remove previous message
   messageBar()->popWidget( mLastMapToolMessage );
@@ -10191,7 +10196,7 @@ void QgisApp::showBookmarks()
 // Slot that gets called when the project file was saved with an older
 // version of QGIS
 
-void QgisApp::oldProjectVersionWarning( QString oldVersion )
+void QgisApp::oldProjectVersionWarning( const QString& oldVersion )
 {
   QSettings settings;
 

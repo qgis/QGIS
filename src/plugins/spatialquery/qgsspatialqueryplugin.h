@@ -62,7 +62,7 @@ class QgsSpatialQueryPlugin: public QObject, public QgisPlugin
     //! Show the dialog box
     void run();
     //! update the plugins theme when the app tells us its theme is changed
-    void setCurrentTheme( QString theThemeName );
+    void setCurrentTheme( const QString& theThemeName );
     QIcon getThemeIcon( const QString &theThemeName );
 
   private:

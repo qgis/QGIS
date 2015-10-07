@@ -481,7 +481,7 @@ void HeatmapGui::updateBBox()
   updateSize();
 }
 
-double HeatmapGui::mapUnitsOf( double meters, QgsCoordinateReferenceSystem layerCrs ) const
+double HeatmapGui::mapUnitsOf( double meters, const QgsCoordinateReferenceSystem& layerCrs ) const
 {
   // converter function to transform metres input to mapunits
   // so that bounding box can be updated

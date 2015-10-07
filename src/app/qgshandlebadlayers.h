@@ -64,7 +64,7 @@ class APP_EXPORT QgsHandleBadLayers
     QString mRasterFileFilter;
 
     QString filename( int row );
-    void setFilename( int row, QString filename );
+    void setFilename( int row, const QString& filename );
 };
 
 #endif

@@ -237,7 +237,7 @@ void QgsAtlasCompositionWidget::updateAtlasFeatures()
   }
 }
 
-void QgsAtlasCompositionWidget::changesSortFeatureField( QString fieldName )
+void QgsAtlasCompositionWidget::changesSortFeatureField( const QString& fieldName )
 {
   QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
   if ( !atlasMap )
@@ -270,7 +270,7 @@ void QgsAtlasCompositionWidget::on_mAtlasFeatureFilterCheckBox_stateChanged( int
   updateAtlasFeatures();
 }
 
-void QgsAtlasCompositionWidget::pageNameExpressionChanged( QString expression, bool valid )
+void QgsAtlasCompositionWidget::pageNameExpressionChanged( const QString& expression, bool valid )
 {
   QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
   if ( !atlasMap || ( !valid && !expression.isEmpty() ) )

@@ -230,7 +230,7 @@ void QgsStatisticalSummaryDockWidget::statActionTriggered( bool checked )
   }
 }
 
-void QgsStatisticalSummaryDockWidget::layersRemoved( QStringList layers )
+void QgsStatisticalSummaryDockWidget::layersRemoved( const QStringList& layers )
 {
   if ( mLayer && layers.contains( mLayer->id() ) )
   {

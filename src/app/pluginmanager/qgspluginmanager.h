@@ -56,10 +56,10 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     void setPythonUtils( QgsPythonUtils* pythonUtils );
 
     //! Load selected plugin
-    void loadPlugin( QString id );
+    void loadPlugin( const QString& id );
 
     //! Unload unselected plugin
-    void unloadPlugin( QString id );
+    void unloadPlugin( const QString& id );
 
     //! Save plugin enabled/disabled state to QSettings
     void savePluginState( QString id, bool state );
@@ -68,7 +68,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     void getCppPluginsMetadata();
 
     //! Create new spacer item for sorting by status in the plugin list view
-    QStandardItem * createSpacerItem( QString text, QString value );
+    QStandardItem * createSpacerItem( const QString& text, const QString& value );
 
     //! Repopulate the plugin list model
     void reloadModelData();
@@ -80,10 +80,10 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     void clearPythonPluginMetadata();
 
     //! Add a single plugin to the metadata registry
-    void addPluginMetadata( QString key, QMap<QString, QString> metadata );
+    void addPluginMetadata( const QString& key, const QMap<QString, QString>& metadata );
 
     //! Return metadata of given plugin
-    const QMap<QString, QString> * pluginMetadata( QString key ) const;
+    const QMap<QString, QString> * pluginMetadata( const QString& key ) const;
 
     //! Select one of the vertical tabs programatically
     void selectTabItem( int idx );
@@ -92,7 +92,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     void clearRepositoryList();
 
     //! Add repository to the repository listWidget
-    void addToRepositoryList( QMap<QString, QString> repository );
+    void addToRepositoryList( const QMap<QString, QString>& repository );
 
   public slots:
     //! Close the dialog window (called when the "Close" button clicked)
@@ -135,7 +135,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     void on_treeRepositories_itemSelectionChanged();
 
     //! Edit selected repository
-    void on_treeRepositories_doubleClicked( QModelIndex );
+    void on_treeRepositories_doubleClicked( const QModelIndex& );
 
     //! Define new repository connection
     void on_buttonAddRep_clicked();

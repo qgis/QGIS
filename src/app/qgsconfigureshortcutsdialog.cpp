@@ -387,7 +387,7 @@ void QgsConfigureShortcutsDialog::setGettingShortcut( bool getting )
   }
 }
 
-void QgsConfigureShortcutsDialog::setCurrentActionShortcut( QKeySequence s )
+void QgsConfigureShortcutsDialog::setCurrentActionShortcut( const QKeySequence& s )
 {
   QAction* action = currentAction();
   if ( !action )

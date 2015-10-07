@@ -92,7 +92,7 @@ class APP_EXPORT QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
   protected:
     void blockInitSignals( bool block );
     void blockFontChangeSignals( bool blk );
-    void setPreviewBackground( QColor color );
+    void setPreviewBackground( const QColor& color );
     void syncDefinedCheckboxFrame( QgsDataDefinedButton* ddBtn, QCheckBox* chkBx, QFrame* f );
     void populateFontCapitalsComboBox();
     void populateFontStyleComboBox();
@@ -101,7 +101,7 @@ class APP_EXPORT QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     void populateDataDefinedButtons( QgsPalLayerSettings& s );
     /** Sets data defined property attribute to map */
     void setDataDefinedProperty( const QgsDataDefinedButton* ddBtn, QgsPalLayerSettings::DataDefinedProperties p, QgsPalLayerSettings& lyr );
-    void updateFont( QFont font );
+    void updateFont( const QFont& font );
 
   private:
     QgsVectorLayer* mLayer;

@@ -47,7 +47,7 @@ class GUI_EXPORT QgsVectorLayerTools
      * @param defaultGeometry A default geometry to add to the feature
      * @return                True in case of success, False if the operation failed/was aborted
      */
-    virtual bool addFeature( QgsVectorLayer* layer, QgsAttributeMap defaultValues = QgsAttributeMap(), const QgsGeometry& defaultGeometry = QgsGeometry() ) const = 0;
+    virtual bool addFeature( QgsVectorLayer* layer, const QgsAttributeMap& defaultValues = QgsAttributeMap(), const QgsGeometry& defaultGeometry = QgsGeometry() ) const = 0;
 
 
     /**

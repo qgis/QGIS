@@ -41,7 +41,7 @@
 #define TO8F(x) QFile::encodeName( x ).constData()
 #endif
 
-QgsShapeFile::QgsShapeFile( QString name, QString encoding )
+QgsShapeFile::QgsShapeFile( const QString& name, const QString& encoding )
     : ogrLayer( 0 )
     , import_canceled( false )
     , valid( false )
@@ -262,8 +262,8 @@ void QgsShapeFile::setColumnNames( QStringList columns )
   }
 }
 
-bool QgsShapeFile::insertLayer( QString dbname, QString schema, QString primary_key, QString geom_col,
-                                QString srid, PGconn * conn, QProgressDialog& pro, bool &fin,
+bool QgsShapeFile::insertLayer( const QString& dbname, const QString& schema, const QString& primary_key, const QString& geom_col,
+                                const QString& srid, PGconn * conn, QProgressDialog& pro, bool &fin,
                                 QString& errorText )
 {
   Q_UNUSED( dbname );
