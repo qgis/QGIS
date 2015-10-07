@@ -15,9 +15,6 @@
 #include "geometry/qgsgeometry.h"
 #include "../utils/qgsgeomutils.h"
 #include "geos_c.h"
-#if defined(HAVE_GEOS_CPP) || !defined(HAVE_GEOS_CAPI_PRECISION_MODEL)
-#include <geosextra/geos_c_extra.h>
-#endif
 #include <QApplication>
 
 class QgsGeometryCheckError;
