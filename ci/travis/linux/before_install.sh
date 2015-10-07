@@ -5,9 +5,7 @@ sudo add-apt-repository ppa:grass/grass-stable -y
 sudo add-apt-repository ppa:smspillaz/cmake-3.0.2 -y
 sudo add-apt-repository ppa:kedazo/doxygen-updates-precise -y # For doxygen 1.8.8
 sudo apt-get update -qq
-sudo \
-apt-get \
-install --force-yes --no-install-recommends --no-install-suggests \
+sudo apt-get install --force-yes --no-install-recommends --no-install-suggests \
         bison \
         cmake \
         cmake-data \
