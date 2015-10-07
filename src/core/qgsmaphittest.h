@@ -22,13 +22,24 @@ class CORE_EXPORT QgsMapHitTest
 
     void run();
 
-    QSet<QgsSymbolV2*> symbolsForLayer( QgsVectorLayer* layer ) const { return mHitTest[layer]; }
+    /** Tests whether a symbol is visible for a specified layer.
+     * @param symbol symbol to find
+     * @param layer vector layer
+     * @note added in QGIS 2.12
+     */
+    bool symbolVisible( QgsSymbolV2* symbol, QgsVectorLayer* layer ) const;
 
   protected:
 
-    typedef QSet<QgsSymbolV2*> SymbolV2Set;
+    typedef QSet<QString> SymbolV2Set;
     typedef QMap<QgsVectorLayer*, SymbolV2Set> HitTest;
 
+    /** Runs test for visible symbols within a layer
+     * @param vl vector layer
+     * @param usedSymbols set for storage of visible symbols
+     * @param context render context
+     * @note added in QGIS 2.12
+     */
     void runHitTestLayer( QgsVectorLayer* vl, SymbolV2Set& usedSymbols, QgsRenderContext& context );
 
     QgsMapSettings mSettings;

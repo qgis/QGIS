@@ -2,10 +2,11 @@
 
 #include "qgsmaplayerregistry.h"
 #include "qgsrendercontext.h"
+#include "qgsmaplayerstylemanager.h"
 #include "qgsrendererv2.h"
 #include "qgspointdisplacementrenderer.h"
 #include "qgsvectorlayer.h"
-
+#include "qgssymbollayerv2utils.h"
 
 QgsMapHitTest::QgsMapHitTest( const QgsMapSettings& settings )
     : mSettings( settings )
@@ -50,9 +51,20 @@ void QgsMapHitTest::run()
   painter.end();
 }
 
+bool QgsMapHitTest::symbolVisible( QgsSymbolV2* symbol, QgsVectorLayer* layer ) const
+{
+  if ( !symbol || !layer || !mHitTest.contains( layer ) )
+    return false;
+
+  return mHitTest.value( layer ).contains( QgsSymbolLayerV2Utils::symbolProperties( symbol ) );
+}
 
 void QgsMapHitTest::runHitTestLayer( QgsVectorLayer* vl, SymbolV2Set& usedSymbols, QgsRenderContext& context )
 {
+  bool hasStyleOverride = mSettings.layerStyleOverrides().contains( vl->id() );
+  if ( hasStyleOverride )
+    vl->styleManager()->setOverrideStyle( mSettings.layerStyleOverrides().value( vl->id() ) );
+
   QgsFeatureRendererV2* r = vl->rendererV2();
   bool moreSymbolsPerFeature = r->capabilities() & QgsFeatureRendererV2::MoreSymbolsPerFeature;
   r->startRender( context, vl->fields() );
@@ -63,13 +75,25 @@ void QgsMapHitTest::runHitTestLayer( QgsVectorLayer* vl, SymbolV2Set& usedSymbol
   while ( fi.nextFeature( f ) )
   {
     context.expressionContext().setFeature( f );
+
+    //make sure we store string representation of symbol, not pointer
+    //otherwise layer style override changes will delete original symbols and leave hanging pointers
     if ( moreSymbolsPerFeature )
     {
       Q_FOREACH ( QgsSymbolV2* s, r->originalSymbolsForFeature( f, context ) )
-        usedSymbols.insert( s );
+      {
+        usedSymbols.insert( QgsSymbolLayerV2Utils::symbolProperties( s ) );
+      }
     }
     else
-      usedSymbols.insert( r->originalSymbolForFeature( f, context ) );
+    {
+      QgsSymbolV2* s = r->originalSymbolForFeature( f, context );
+      usedSymbols.insert( QgsSymbolLayerV2Utils::symbolProperties( s ) );
+    }
   }
   r->stopRender( context );
+
+  if ( hasStyleOverride )
+    vl->styleManager()->restoreOverrideStyle();
 }
+

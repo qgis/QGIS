@@ -1035,6 +1035,15 @@ QDomElement QgsSymbolLayerV2Utils::saveSymbol( const QString& name, QgsSymbolV2*
   return symEl;
 }
 
+QString QgsSymbolLayerV2Utils::symbolProperties( QgsSymbolV2* symbol )
+{
+  QDomDocument doc( "qgis-symbol-definition" );
+  QDomElement symbolElem = saveSymbol( "symbol", symbol, doc );
+  QString props;
+  QTextStream stream( &props );
+  symbolElem.save( stream, -1 );
+  return props;
+}
 
 bool QgsSymbolLayerV2Utils::createSymbolLayerV2ListFromSld( QDomElement& element,
     QGis::GeometryType geomType,

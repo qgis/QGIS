@@ -537,14 +537,22 @@ void QgsComposerLegend::mapLayerStyleOverridesChanged()
     return;
 
   // map's style has been changed, so make sure to update the legend here
+  if ( mLegendFilterByMap )
+  {
+    // legend is being filtered by map, so we need to re run the hit test too
+    // as the style overrides may also have affected the visible symbols
+    updateFilterByMap();
+  }
+  else
+  {
+    mLegendModel2->setLayerStyleOverrides( mComposerMap->layerStyleOverrides() );
 
-  mLegendModel2->setLayerStyleOverrides( mComposerMap->layerStyleOverrides() );
+    Q_FOREACH ( QgsLayerTreeLayer* nodeLayer, mLegendModel2->rootGroup()->findLayers() )
+      mLegendModel2->refreshLayerLegend( nodeLayer );
 
-  Q_FOREACH ( QgsLayerTreeLayer* nodeLayer, mLegendModel2->rootGroup()->findLayers() )
-    mLegendModel2->refreshLayerLegend( nodeLayer );
-
-  adjustBoxSize();
-  update();
+    adjustBoxSize();
+    update();
+  }
 }
 
 void QgsComposerLegend::updateFilterByMap()

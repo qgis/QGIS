@@ -562,6 +562,7 @@ void QgsLayerTreeModel::setLegendFilterByMap( const QgsMapSettings* settings )
   if ( settings && settings->hasValidSettings() )
   {
     mLegendFilterByMapSettings.reset( new QgsMapSettings( *settings ) );
+    mLegendFilterByMapSettings->setLayerStyleOverrides( mLayerStyleOverrides );
     mLegendFilterByMapHitTest.reset( new QgsMapHitTest( *mLegendFilterByMapSettings ) );
     mLegendFilterByMapHitTest->run();
   }
@@ -1030,7 +1031,7 @@ QList<QgsLayerTreeModelLegendNode*> QgsLayerTreeModel::filterLegendNodes( const 
       {
         if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( node->layerNode()->layer() ) )
         {
-          if ( mLegendFilterByMapHitTest->symbolsForLayer( vl ).contains( ruleKey ) )
+          if ( mLegendFilterByMapHitTest->symbolVisible( ruleKey, vl ) )
             filtered << node;
         }
       }

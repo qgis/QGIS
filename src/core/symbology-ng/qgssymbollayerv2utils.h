@@ -157,6 +157,12 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
     static QgsSymbolLayerV2* loadSymbolLayer( QDomElement& element );
     static QDomElement saveSymbol( const QString& symbolName, QgsSymbolV2* symbol, QDomDocument& doc );
 
+    /** Returns a string representing the symbol. Can be used to test for equality
+     * between symbols.
+     * @note added in QGIS 2.12
+     */
+    static QString symbolProperties( QgsSymbolV2* symbol );
+
     static bool createSymbolLayerV2ListFromSld( QDomElement& element, QGis::GeometryType geomType, QgsSymbolLayerV2List &layers );
 
     static QgsSymbolLayerV2* createFillLayerFromSld( QDomElement &element );
