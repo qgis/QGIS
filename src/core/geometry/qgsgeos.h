@@ -29,7 +29,7 @@ class QgsPolygonV2;
 class CORE_EXPORT QgsGeos: public QgsGeometryEngine
 {
   public:
-    QgsGeos( const QgsAbstractGeometryV2* geometry, int precision = 7 );
+    QgsGeos( const QgsAbstractGeometryV2* geometry, double precision = 1E-8 );
     ~QgsGeos();
 
     /** Removes caches*/
@@ -81,7 +81,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
 
     static QgsAbstractGeometryV2* fromGeos( const GEOSGeometry* geos );
     static QgsPolygonV2* fromGeosPolygon( const GEOSGeometry* geos );
-    static GEOSGeometry* asGeos( const QgsAbstractGeometryV2* geom );
+    static GEOSGeometry* asGeos( const QgsAbstractGeometryV2* geom , double precision = 1E-8 );
     static QgsPointV2 coordSeqPoint( const GEOSCoordSequence* cs, int i, bool hasZ, bool hasM );
 
     static GEOSContextHandle_t getGEOSHandler();
@@ -89,6 +89,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
   private:
     mutable GEOSGeometry* mGeos;
     const GEOSPreparedGeometry* mGeosPrepared;
+    double mPrecision;
 
     enum Overlay
     {
@@ -113,16 +114,16 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     void cacheGeos() const;
     QgsAbstractGeometryV2* overlay( const QgsAbstractGeometryV2& geom, Overlay op, QString* errorMsg = 0 ) const;
     bool relation( const QgsAbstractGeometryV2& geom, Relation r, QString* errorMsg = 0 ) const;
-    static GEOSCoordSequence* createCoordinateSequence( const QgsCurveV2* curve );
+    static GEOSCoordSequence* createCoordinateSequence( const QgsCurveV2* curve , double precision );
     static QgsLineStringV2* sequenceToLinestring( const GEOSGeometry* geos, bool hasZ, bool hasM );
     static int numberOfGeometries( GEOSGeometry* g );
     static GEOSGeometry* nodeGeometries( const GEOSGeometry *splitLine, const GEOSGeometry *geom );
     int mergeGeometriesMultiTypeSplit( QVector<GEOSGeometry*>& splitResult ) const;
     static GEOSGeometry* createGeosCollection( int typeId, const QVector<GEOSGeometry*>& geoms );
 
-    static GEOSGeometry* createGeosPoint( const QgsAbstractGeometryV2* point, int coordDims );
-    static GEOSGeometry* createGeosLinestring( const QgsAbstractGeometryV2* curve );
-    static GEOSGeometry* createGeosPolygon( const QgsAbstractGeometryV2* poly );
+    static GEOSGeometry* createGeosPoint( const QgsAbstractGeometryV2* point, int coordDims , double precision );
+    static GEOSGeometry* createGeosLinestring( const QgsAbstractGeometryV2* curve, double precision );
+    static GEOSGeometry* createGeosPolygon( const QgsAbstractGeometryV2* poly, double precision );
 
     //utils for geometry split
     int topologicalTestPointsSplit( const GEOSGeometry* splitLine, QList<QgsPointV2>& testPoints, QString* errorMsg = 0 ) const;
@@ -131,8 +132,8 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     int splitPolygonGeometry( GEOSGeometry* splitLine, QList<QgsAbstractGeometryV2*>& newGeometries ) const;
 
     //utils for reshape
-    static GEOSGeometry* reshapeLine( const GEOSGeometry* line, const GEOSGeometry* reshapeLineGeos );
-    static GEOSGeometry* reshapePolygon( const GEOSGeometry* polygon, const GEOSGeometry* reshapeLineGeos );
+    static GEOSGeometry* reshapeLine( const GEOSGeometry* line, const GEOSGeometry* reshapeLineGeos, double precision );
+    static GEOSGeometry* reshapePolygon( const GEOSGeometry* polygon, const GEOSGeometry* reshapeLineGeos , double precision );
     static int lineContainedInLine( const GEOSGeometry* line1, const GEOSGeometry* line2 );
     static int pointContainedInLine( const GEOSGeometry* point, const GEOSGeometry* line );
     static int geomDigits( const GEOSGeometry* geom );

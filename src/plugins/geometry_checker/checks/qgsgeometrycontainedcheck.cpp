@@ -21,7 +21,7 @@ void QgsGeometryContainedCheck::collectErrors( QList<QgsGeometryCheckError*>& er
       continue;
     }
 
-    QgsGeometryEngine* geomEngine = QgsGeomUtils::createGeomEngine( feature.geometry()->geometry(), QgsGeometryCheckPrecision::precision() );
+    QgsGeometryEngine* geomEngine = QgsGeomUtils::createGeomEngine( feature.geometry()->geometry(), QgsGeometryCheckPrecision::tolerance() );
 
     QgsFeatureIds ids = mFeaturePool->getIntersects( feature.geometry()->geometry()->boundingBox() );
     foreach ( const QgsFeatureId& otherid, ids )
@@ -64,7 +64,7 @@ void QgsGeometryContainedCheck::fixError( QgsGeometryCheckError* error, int meth
   }
 
   // Check if error still applies
-  QgsGeometryEngine* geomEngine = QgsGeomUtils::createGeomEngine( feature.geometry()->geometry(), QgsGeometryCheckPrecision::precision() );
+  QgsGeometryEngine* geomEngine = QgsGeomUtils::createGeomEngine( feature.geometry()->geometry(), QgsGeometryCheckPrecision::tolerance() );
 
   if ( !geomEngine->within( *otherFeature.geometry()->geometry() ) )
   {

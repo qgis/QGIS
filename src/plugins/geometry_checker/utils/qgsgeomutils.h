@@ -26,7 +26,7 @@ class QgsGeometryEngine;
 namespace QgsGeomUtils
 {
 
-  QgsGeometryEngine *createGeomEngine( QgsAbstractGeometryV2* geometry, int precision );
+  QgsGeometryEngine *createGeomEngine( QgsAbstractGeometryV2* geometry, double tolerance );
 
   QgsAbstractGeometryV2* getGeomPart( QgsAbstractGeometryV2* geom, int partIdx );
 

@@ -21,7 +21,7 @@ void QgsGeometryOverlapCheck::collectErrors( QList<QgsGeometryCheckError*>& erro
       continue;
     }
     QgsAbstractGeometryV2* geom = feature.geometry()->geometry();
-    QgsGeometryEngine* geomEngine = QgsGeomUtils::createGeomEngine( geom, QgsGeometryCheckPrecision::precision() );
+    QgsGeometryEngine* geomEngine = QgsGeomUtils::createGeomEngine( geom, QgsGeometryCheckPrecision::tolerance() );
 
     QgsFeatureIds ids = mFeaturePool->getIntersects( feature.geometry()->boundingBox() );
     foreach ( const QgsFeatureId& otherid, ids )
@@ -79,7 +79,7 @@ void QgsGeometryOverlapCheck::fixError( QgsGeometryCheckError* error, int method
     return;
   }
   QgsAbstractGeometryV2* geom = feature.geometry()->geometry();
-  QgsGeometryEngine* geomEngine = QgsGeomUtils::createGeomEngine( geom, QgsGeometryCheckPrecision::precision() );
+  QgsGeometryEngine* geomEngine = QgsGeomUtils::createGeomEngine( geom, QgsGeometryCheckPrecision::tolerance() );
 
   // Check if error still applies
   if ( !geomEngine->overlaps( *otherFeature.geometry()->geometry() ) )
@@ -122,7 +122,7 @@ void QgsGeometryOverlapCheck::fixError( QgsGeometryCheckError* error, int method
   }
   else if ( method == Subtract )
   {
-    geomEngine = QgsGeomUtils::createGeomEngine( geom, QgsGeometryCheckPrecision::reducedPrecision() );
+    geomEngine = QgsGeomUtils::createGeomEngine( geom, QgsGeometryCheckPrecision::reducedTolerance() );
     QgsAbstractGeometryV2* diff1 = geomEngine->difference( *interPart, &errMsg );
     delete geomEngine;
     if ( !diff1 || diff1->isEmpty() )
@@ -134,7 +134,7 @@ void QgsGeometryOverlapCheck::fixError( QgsGeometryCheckError* error, int method
     {
       QgsGeomUtils::filter1DTypes( diff1 );
     }
-    QgsGeometryEngine* otherGeomEngine = QgsGeomUtils::createGeomEngine( otherFeature.geometry()->geometry(), QgsGeometryCheckPrecision::reducedPrecision() );
+    QgsGeometryEngine* otherGeomEngine = QgsGeomUtils::createGeomEngine( otherFeature.geometry()->geometry(), QgsGeometryCheckPrecision::reducedTolerance() );
     QgsAbstractGeometryV2* diff2 = otherGeomEngine->difference( *interPart, &errMsg );
     delete otherGeomEngine;
     if ( !diff2 || diff2->isEmpty() )

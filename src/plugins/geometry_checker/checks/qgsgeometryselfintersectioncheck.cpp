@@ -197,8 +197,8 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError* error, i
         poly2->setExteriorRing( ringGeom2 );
 
         // Reassing interiors as necessary
-        QgsGeometryEngine* geomEnginePoly1 = QgsGeomUtils::createGeomEngine( poly, QgsGeometryCheckPrecision::precision() );
-        QgsGeometryEngine* geomEnginePoly2 = QgsGeomUtils::createGeomEngine( poly2, QgsGeometryCheckPrecision::precision() );
+        QgsGeometryEngine* geomEnginePoly1 = QgsGeomUtils::createGeomEngine( poly, QgsGeometryCheckPrecision::tolerance() );
+        QgsGeometryEngine* geomEnginePoly2 = QgsGeomUtils::createGeomEngine( poly2, QgsGeometryCheckPrecision::tolerance() );
         for ( int n = poly->numInteriorRings(), i = n - 1; i >= 0; --i )
         {
           if ( !geomEnginePoly1->contains( *poly->interiorRing( i ) ) )
