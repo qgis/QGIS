@@ -52,7 +52,7 @@ void QgsFeatureListViewDelegate::setEditSelectionModel( QItemSelectionModel* edi
 QSize QgsFeatureListViewDelegate::sizeHint( const QStyleOptionViewItem& option, const QModelIndex& index ) const
 {
   Q_UNUSED( index );
-  QSize size = QItemDelegate::sizeHint(option, index);
+  QSize size = QItemDelegate::sizeHint( option, index );
   size.setHeight( option.fontMetrics.height() );
   return size;
 }
