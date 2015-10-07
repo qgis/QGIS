@@ -81,7 +81,7 @@ void QgsFeatureListViewDelegate::paint( QPainter *painter, const QStyleOptionVie
     icon = QgsApplication::getThemePixmap( "/mIconDeselected.svg" );
   }
 
-  icon = icon.scaledToWidth( option.rect.height() );
+  icon = icon.scaledToWidth( option.rect.height() - 1 );
 
   // Text layout options
   QRect textLayoutBounds( iconLayoutBounds.x() + iconLayoutBounds.width(), option.rect.y(), option.rect.width() - ( iconLayoutBounds.x() + iconLayoutBounds.width() ), option.rect.height() );
