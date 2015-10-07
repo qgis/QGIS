@@ -274,9 +274,9 @@ class CORE_EXPORT QgsApplication : public QApplication
     static void registerOgrDrivers();
 
     /** Converts absolute path to path relative to target */
-    static QString absolutePathToRelativePath( const QString& apath, const QString& targetPath );
+    static QString absolutePathToRelativePath( QString apath, QString targetPath );
     /** Converts path relative to target to an absolute path */
-    static QString relativePathToAbsolutePath( const QString& rpath, const QString& targetPath );
+    static QString relativePathToAbsolutePath( QString rpath, QString targetPath );
 
     /** Indicates whether running from build directory (not installed) */
     static bool isRunningFromBuildDir() { return ABISYM( mRunningFromBuildDir ); }

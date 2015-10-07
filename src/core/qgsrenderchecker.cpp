@@ -244,7 +244,7 @@ bool QgsRenderChecker::runTest( const QString& theTestName,
 
 bool QgsRenderChecker::compareImages( const QString& theTestName,
                                       unsigned int theMismatchCount,
-                                      const QString& theRenderedImageFile )
+                                      QString theRenderedImageFile )
 {
   if ( mExpectedImageFile.isEmpty() )
   {

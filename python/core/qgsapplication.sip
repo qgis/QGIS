@@ -102,11 +102,18 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
      */
     static QString themeName();
 
+    /**
+     * @brief Set the current UI theme used to style the interface.  Use uiThemes() to
+     * find valid themes to use. Variabels found in variables.qss will be added to the stylesheet
+     * on load.
+     * @param themeName The name of the theme.
+     * @note using an invalid theme name will reset to default
+     */
     static void setUITheme( const QString &themeName );
 
     /**
-     * @brief All themes found in the application resources folder
-     * and ~/.qgis2/themes folder. The path is to the root folder for the theme
+     * @brief All themes found in ~/.qgis2/themes folder.
+     * The path is to the root folder for the theme
      * @note Valid theme folders must contain a style.qss file.
      * @return A hash of theme name and theme path. Valid theme folders contain style.qss
      */
@@ -202,12 +209,17 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     //! default theme if the active theme does not have the required icon.
     static QPixmap getThemePixmap( const QString &theName );
 
-
     //! Returns the path to user's style.
     static QString userStyleV2Path();
 
+    //! Returns the path to user's themes folder
+    static QString userThemesFolder();
+
     //! Returns the path to default style (works as a starting point).
     static QString defaultStyleV2Path();
+
+    //! Returns the path to default themes folder from install (works as a starting point).
+    static QString defaultThemesFolder();
 
     //! Returns the path containing qgis_core, qgis_gui, qgispython (and other) libraries
     static QString libraryPath();
@@ -227,11 +239,17 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     //! Alters default svg paths - used by 3rd party apps.
     static void setDefaultSvgPaths( const QStringList& pathList );
 
+    //! Alters authentication data base directory path - used by 3rd party apps
+    static void setAuthDbDirPath( const QString& theAuthDbDirPath );
+
     //! loads providers
     static void initQgis();
 
     //! initialise qgis.db
     static bool createDB( QString* errorMessage = 0 );
+
+    //! Create the users theme folder
+    static bool createThemeFolder( );
 
     //! deletes provider registry and map layer registry
     static void exitQgis();
@@ -269,9 +287,9 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     static void registerOgrDrivers();
 
     /** Converts absolute path to path relative to target */
-    static QString absolutePathToRelativePath( const QString& apath, const QString& targetPath );
+    static QString absolutePathToRelativePath( QString apath, QString targetPath );
     /** Converts path relative to target to an absolute path */
-    static QString relativePathToAbsolutePath( const QString& rpath, const QString& targetPath );
+    static QString relativePathToAbsolutePath( QString rpath, QString targetPath );
 
     /** Indicates whether running from build directory (not installed) */
     static bool isRunningFromBuildDir();

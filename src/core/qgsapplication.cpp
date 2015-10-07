@@ -892,7 +892,7 @@ void QgsApplication::registerOgrDrivers()
   }
 }
 
-QString QgsApplication::absolutePathToRelativePath( const QString& aPath, const QString& targetPath )
+QString QgsApplication::absolutePathToRelativePath( QString aPath, QString targetPath )
 {
 #if defined( Q_OS_WIN )
   const Qt::CaseSensitivity cs = Qt::CaseInsensitive;
@@ -955,7 +955,7 @@ QString QgsApplication::absolutePathToRelativePath( const QString& aPath, const 
   return aPathElems.join( "/" );
 }
 
-QString QgsApplication::relativePathToAbsolutePath( const QString& rpath, const QString& targetPath )
+QString QgsApplication::relativePathToAbsolutePath( QString rpath, QString targetPath )
 {
   // relative path should always start with ./ or ../
   if ( !rpath.startsWith( "./" ) && !rpath.startsWith( "../" ) )
