@@ -19,7 +19,7 @@
 #include "qgsvectorlayer.h"
 
 
-QgsRangeWidgetFactory::QgsRangeWidgetFactory( QString name )
+QgsRangeWidgetFactory::QgsRangeWidgetFactory( const QString& name )
     : QgsEditorWidgetFactory( name )
 {
 }

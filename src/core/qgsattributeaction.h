@@ -51,10 +51,10 @@ class CORE_EXPORT QgsAction
       OpenUrl,
     };
 
-    QgsAction( ActionType type, QString name, QString action, bool capture ) :
+    QgsAction( ActionType type, const QString& name, const QString& action, bool capture ) :
         mType( type ), mName( name ), mAction( action ), mCaptureOutput( capture ) {}
 
-    QgsAction( ActionType type, QString name, QString action, const QString& icon, bool capture ) :
+    QgsAction( ActionType type, const QString& name, const QString& action, const QString& icon, bool capture ) :
         mType( type ), mName( name ), mIcon( icon ), mAction( action ), mCaptureOutput( capture ) {}
 
     //! The name of the action
@@ -119,7 +119,7 @@ class  CORE_EXPORT QgsAttributeAction
      * any stdout from the process will be captured and displayed in a
      * dialog box.
      */
-    void addAction( QgsAction::ActionType type, QString name, QString action, bool capture = false );
+    void addAction( QgsAction::ActionType type, const QString& name, const QString& action, bool capture = false );
 
     /** Add an action with the given name and action details.
      * Will happily have duplicate names and actions. If
@@ -127,7 +127,7 @@ class  CORE_EXPORT QgsAttributeAction
      * any stdout from the process will be captured and displayed in a
      * dialog box.
      */
-    void addAction( QgsAction::ActionType type, QString name, QString action, const QString& icon, bool capture = false );
+    void addAction( QgsAction::ActionType type, const QString& name, const QString& action, const QString& icon, bool capture = false );
 
     //! Remove an action at given index
     void removeAction( int index );
@@ -172,7 +172,7 @@ class  CORE_EXPORT QgsAttributeAction
      *  Additional substitutions can be passed through the substitutionMap
      *  parameter
      */
-    QString expandAction( QString action,
+    QString expandAction( const QString& action,
                           QgsFeature &feat,
                           const QMap<QString, QVariant> *substitutionMap = 0 );
 

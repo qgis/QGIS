@@ -420,7 +420,7 @@ QSizeF QgsLegendRenderer::drawTitle( QPainter* painter, QPointF point, Qt::Align
 }
 
 
-double QgsLegendRenderer::spaceAboveAtom( Atom atom )
+double QgsLegendRenderer::spaceAboveAtom( const Atom& atom )
 {
   if ( atom.nucleons.size() == 0 ) return 0;
 
@@ -445,7 +445,7 @@ double QgsLegendRenderer::spaceAboveAtom( Atom atom )
 
 
 // Draw atom and expand its size (using actual nucleons labelXOffset)
-QSizeF QgsLegendRenderer::drawAtom( Atom atom, QPainter* painter, QPointF point )
+QSizeF QgsLegendRenderer::drawAtom( const Atom& atom, QPainter* painter, QPointF point )
 {
   bool first = true;
   QSizeF size = QSizeF( atom.size );

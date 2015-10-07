@@ -42,7 +42,7 @@ class CORE_EXPORT QgsAuthMethodConfig
      * @param method Textual key of the authentication method
      * @param version Version of the configuration (for updating previously saved configs later on)
      */
-    QgsAuthMethodConfig( QString method = QString(), int version = 0 );
+    QgsAuthMethodConfig( const QString& method = QString(), int version = 0 );
 
     /** Full clone of config */
     QgsAuthMethodConfig( const QgsAuthMethodConfig& methodconfig );
@@ -74,7 +74,7 @@ class CORE_EXPORT QgsAuthMethodConfig
 
     /** Textual key of the associated authentication method */
     QString method() const { return mMethod; }
-    void setMethod( QString method ) { mMethod = method; }
+    void setMethod( const QString& method ) { mMethod = method; }
 
     /** Get version of the configuration */
     int version() const { return mVersion; }
@@ -104,7 +104,7 @@ class CORE_EXPORT QgsAuthMethodConfig
      * Set extended configuration map
      * @param map Map to set
      */
-    void setConfigMap( QgsStringMap map ) { mConfigMap = map; }
+    void setConfigMap( const QgsStringMap& map ) { mConfigMap = map; }
 
     /**
      * Set a single config value per key in the map
@@ -133,7 +133,7 @@ class CORE_EXPORT QgsAuthMethodConfig
      * @param key Confgi key
      * @param defaultvalue Default value, if key not found
      */
-    QString config( const QString &key , const QString defaultvalue = QString() ) const;
+    QString config( const QString &key, const QString& defaultvalue = QString() ) const;
 
     /**
      * Return a config's list of values

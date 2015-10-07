@@ -476,7 +476,7 @@ class CORE_EXPORT QgsPalLayerSettings
      * @param dxfLayer dxfLayer name
      * @param labelFeature if using QgsLabelingEngineV2, this will receive the label feature
      */
-    void registerFeature( QgsFeature& f, QgsRenderContext& context, QString dxfLayer, QgsLabelFeature** labelFeature = 0 );
+    void registerFeature( QgsFeature& f, QgsRenderContext& context, const QString& dxfLayer, QgsLabelFeature** labelFeature = 0 );
 
     void readFromLayer( QgsVectorLayer* layer );
     void writeToLayer( QgsVectorLayer* layer );
@@ -531,7 +531,7 @@ class CORE_EXPORT QgsPalLayerSettings
      * @returns true/false whether result is null or invalid
      * @note not available in python bindings
      */
-    bool dataDefinedEvaluate( QgsPalLayerSettings::DataDefinedProperties p, QVariant& exprVal, QgsExpressionContext* context = 0, QVariant originalValue = QVariant() ) const;
+    bool dataDefinedEvaluate( QgsPalLayerSettings::DataDefinedProperties p, QVariant& exprVal, QgsExpressionContext* context = 0, const QVariant& originalValue = QVariant() ) const;
 
     /** Whether data definition is active
      */
@@ -624,7 +624,7 @@ class CORE_EXPORT QgsPalLayerSettings
     // convenience data defined evaluation function
     bool dataDefinedValEval( DataDefinedValueType valType,
                              QgsPalLayerSettings::DataDefinedProperties p,
-                             QVariant& exprVal, QgsExpressionContext &context, QVariant originalValue = QVariant() );
+                             QVariant& exprVal, QgsExpressionContext &context, const QVariant& originalValue = QVariant() );
 
     void parseTextStyle( QFont& labelFont,
                          QgsPalLayerSettings::SizeUnit fontunits,
@@ -644,7 +644,7 @@ class CORE_EXPORT QgsPalLayerSettings
 
     /** Registers a feature as an obstacle only (no label rendered)
      */
-    void registerObstacleFeature( QgsFeature &f, QgsRenderContext &context, QString dxfLayer, QgsLabelFeature** obstacleFeature );
+    void registerObstacleFeature( QgsFeature &f, QgsRenderContext &context, const QString& dxfLayer, QgsLabelFeature** obstacleFeature );
 
     QMap<DataDefinedProperties, QVariant> dataDefinedValues;
     QgsExpression* expression;
@@ -656,7 +656,7 @@ class CORE_EXPORT QgsPalLayerSettings
 class CORE_EXPORT QgsLabelCandidate
 {
   public:
-    QgsLabelCandidate( QRectF r, double c ): rect( r ), cost( c ) {}
+    QgsLabelCandidate( const QRectF& r, double c ): rect( r ), cost( c ) {}
 
     QRectF rect;
     double cost;
@@ -880,7 +880,7 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
      * must have already had the feature and fields sets prior to calling this method.
      * @param dxfLayer dxfLayer name
      */
-    virtual void registerFeature( const QString& layerID, QgsFeature& feat, QgsRenderContext& context, QString dxfLayer = QString::null ) override;
+    virtual void registerFeature( const QString& layerID, QgsFeature& feat, QgsRenderContext& context, const QString& dxfLayer = QString::null ) override;
 
     virtual void registerDiagramFeature( const QString& layerID, QgsFeature& feat, QgsRenderContext& context ) override;
     //! called when the map is drawn and labels should be placed

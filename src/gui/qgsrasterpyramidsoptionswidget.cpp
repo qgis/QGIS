@@ -28,7 +28,7 @@
 #include <QCheckBox>
 
 
-QgsRasterPyramidsOptionsWidget::QgsRasterPyramidsOptionsWidget( QWidget* parent, QString provider )
+QgsRasterPyramidsOptionsWidget::QgsRasterPyramidsOptionsWidget( QWidget* parent, const QString& provider )
     : QWidget( parent ), mProvider( provider )
 {
   setupUi( this );

@@ -35,7 +35,7 @@ class GUI_EXPORT QgsMessageLogViewer: public QDialog, private Ui::QgsMessageLogV
 {
     Q_OBJECT
   public:
-    QgsMessageLogViewer( QStatusBar *statusBar = 0, QWidget *parent = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsMessageLogViewer( QStatusBar *statusBar = 0, QWidget *parent = 0, const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags );
     ~QgsMessageLogViewer();
 
   public slots:

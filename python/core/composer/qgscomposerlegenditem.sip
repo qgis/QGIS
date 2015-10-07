@@ -111,7 +111,7 @@ class QgsComposerLayerItem : QgsComposerLegendItem
     void setShowFeatureCount( bool show );
     bool showFeatureCount() const;
 
-    void setDefaultStyle();
+    void setDefaultStyle( double scaleDenominator = -1, const QString& rule = "" );
 };
 
 class QgsComposerGroupItem : QgsComposerLegendItem

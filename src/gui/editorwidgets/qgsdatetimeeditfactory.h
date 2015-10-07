@@ -25,7 +25,7 @@
 class GUI_EXPORT QgsDateTimeEditFactory : public QgsEditorWidgetFactory
 {
   public:
-    QgsDateTimeEditFactory( QString name );
+    QgsDateTimeEditFactory( const QString& name );
 
     // QgsEditorWidgetFactory interface
   public:

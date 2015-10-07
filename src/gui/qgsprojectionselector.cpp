@@ -26,7 +26,7 @@
 #include <QMessageBox>
 #include <QSettings>
 
-QgsProjectionSelector::QgsProjectionSelector( QWidget* parent, const char *name, Qt::WindowFlags fl )
+QgsProjectionSelector::QgsProjectionSelector( QWidget* parent, const char *name, const Qt::WindowFlags& fl )
     : QWidget( parent, fl )
     , mUserProjList( NULL )
     , mGeoList( NULL )
@@ -203,7 +203,7 @@ QString QgsProjectionSelector::ogcWmsCrsFilterAsSqlExpression( QSet<QString> * c
   return sqlExpression;
 }
 
-void QgsProjectionSelector::setSelectedCrsName( QString theCRSName )
+void QgsProjectionSelector::setSelectedCrsName( const QString& theCRSName )
 {
   applySelection( NAME_COLUMN, theCRSName );
 }
@@ -213,7 +213,7 @@ void QgsProjectionSelector::setSelectedCrsId( long theCRSID )
   applySelection( QGIS_CRS_ID_COLUMN, QString::number( theCRSID ) );
 }
 
-void QgsProjectionSelector::setSelectedAuthId( QString id )
+void QgsProjectionSelector::setSelectedAuthId( const QString& id )
 {
   applySelection( AUTHID_COLUMN, id );
 }
@@ -350,7 +350,7 @@ QString QgsProjectionSelector::selectedProj4String()
   return projString;
 }
 
-QString QgsProjectionSelector::getSelectedExpression( QString expression )
+QString QgsProjectionSelector::getSelectedExpression( const QString& expression )
 {
   // Only return the attribute if there is a node in the tree
   // selected that has an srs_id.  This prevents error if the user
@@ -447,7 +447,7 @@ long QgsProjectionSelector::selectedCrsId()
 }
 
 
-void QgsProjectionSelector::setOgcWmsCrsFilter( QSet<QString> crsFilter )
+void QgsProjectionSelector::setOgcWmsCrsFilter( const QSet<QString>& crsFilter )
 {
   mCrsFilter = crsFilter;
   mProjListDone = false;
@@ -835,7 +835,7 @@ void QgsProjectionSelector::pushProjectionToFront()
 }
 
 
-long QgsProjectionSelector::getLargestCRSIDMatch( QString theSql )
+long QgsProjectionSelector::getLargestCRSIDMatch( const QString& theSql )
 {
   long srsId = 0;
 
@@ -947,7 +947,7 @@ QStringList QgsProjectionSelector::authorities()
 * \arg const QString in The input string to make safe.
 * \return The string made safe for SQL statements.
 */
-const QString QgsProjectionSelector::sqlSafeString( const QString theSQL )
+const QString QgsProjectionSelector::sqlSafeString( const QString& theSQL )
 {
   QString retval = theSQL;
   retval.replace( "\\", "\\\\" );
@@ -957,7 +957,7 @@ const QString QgsProjectionSelector::sqlSafeString( const QString theSQL )
   return retval;
 }
 
-void QgsProjectionSelector::showDBMissingWarning( const QString theFileName )
+void QgsProjectionSelector::showDBMissingWarning( const QString& theFileName )
 {
 
   QMessageBox::critical( this, tr( "Resource Location Error" ),

@@ -91,7 +91,7 @@ class QgsSymbolLayerV2
 
     virtual QgsSymbolLayerV2* clone() const = 0 /Factory/;
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const;
 
     virtual QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const;
 
@@ -357,9 +357,9 @@ class QgsMarkerSymbolLayerV2 : QgsSymbolLayerV2
     void setOffset( QPointF offset );
     QPointF offset();
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const;
 
-    virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
+    virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const;
 
     void setOffsetUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit offsetUnit() const;

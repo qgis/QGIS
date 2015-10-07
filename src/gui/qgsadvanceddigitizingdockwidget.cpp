@@ -1101,7 +1101,7 @@ void QgsAdvancedDigitizingDockWidget::disable()
   setCadEnabled( false );
 }
 
-void QgsAdvancedDigitizingDockWidget::addPoint( QgsPoint point )
+void QgsAdvancedDigitizingDockWidget::addPoint( const QgsPoint& point )
 {
   if ( !pointsCount() )
   {
@@ -1134,7 +1134,7 @@ void QgsAdvancedDigitizingDockWidget::clearPoints()
   updateCapacity();
 }
 
-void QgsAdvancedDigitizingDockWidget::updateCurrentPoint( QgsPoint point )
+void QgsAdvancedDigitizingDockWidget::updateCurrentPoint( const QgsPoint& point )
 {
   if ( !pointsCount() )
   {

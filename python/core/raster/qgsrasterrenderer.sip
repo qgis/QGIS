@@ -43,7 +43,7 @@ class QgsRasterRenderer : QgsRasterInterface
 
     static QString minMaxOriginName( int theOrigin );
     static QString minMaxOriginLabel( int theOrigin );
-    static int minMaxOriginFromName( QString theName );
+    static int minMaxOriginFromName( const QString& theName );
 
   protected:
 

@@ -164,7 +164,7 @@ class CORE_EXPORT QgsSymbolV2
     void drawPreviewIcon( QPainter* painter, QSize size, QgsRenderContext* customContext = 0 );
 
     //! export symbol as image format. PNG and SVG supported
-    void exportImage( QString path, QString format, QSize size );
+    void exportImage( const QString& path, const QString& format, const QSize& size );
 
     //! Generate symbol as image
     QImage asImage( QSize size, QgsRenderContext* customContext = 0 );
@@ -222,7 +222,7 @@ class CORE_EXPORT QgsSymbolV2
     const QgsVectorLayer* layer() const { return mLayer; }
 
   protected:
-    QgsSymbolV2( SymbolType type, QgsSymbolLayerV2List layers ); // can't be instantiated
+    QgsSymbolV2( SymbolType type, const QgsSymbolLayerV2List& layers ); // can't be instantiated
 
     QgsSymbolLayerV2List cloneLayers() const;
 
@@ -319,7 +319,7 @@ class CORE_EXPORT QgsMarkerSymbolV2 : public QgsSymbolV2
     */
     static QgsMarkerSymbolV2* createSimple( const QgsStringMap& properties );
 
-    QgsMarkerSymbolV2( QgsSymbolLayerV2List layers = QgsSymbolLayerV2List() );
+    QgsMarkerSymbolV2( const QgsSymbolLayerV2List& layers = QgsSymbolLayerV2List() );
 
     void setAngle( double angle );
     double angle() const;
@@ -388,7 +388,7 @@ class CORE_EXPORT QgsLineSymbolV2 : public QgsSymbolV2
     */
     static QgsLineSymbolV2* createSimple( const QgsStringMap& properties );
 
-    QgsLineSymbolV2( QgsSymbolLayerV2List layers = QgsSymbolLayerV2List() );
+    QgsLineSymbolV2( const QgsSymbolLayerV2List& layers = QgsSymbolLayerV2List() );
 
     void setWidth( double width );
     double width() const;
@@ -428,7 +428,7 @@ class CORE_EXPORT QgsFillSymbolV2 : public QgsSymbolV2
     */
     static QgsFillSymbolV2* createSimple( const QgsStringMap& properties );
 
-    QgsFillSymbolV2( QgsSymbolLayerV2List layers = QgsSymbolLayerV2List() );
+    QgsFillSymbolV2( const QgsSymbolLayerV2List& layers = QgsSymbolLayerV2List() );
     void setAngle( double angle );
     void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
 

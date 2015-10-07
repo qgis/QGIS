@@ -6,6 +6,6 @@ class QgsAuthTrustedCAsDialog : QDialog
 
   public:
     explicit QgsAuthTrustedCAsDialog( QWidget *parent /TransferThis/ = 0,
-                                      QList<QSslCertificate> trustedCAs = QList<QSslCertificate>() );
+                                      const QList<QSslCertificate>& trustedCAs = QList<QSslCertificate>() );
     ~QgsAuthTrustedCAsDialog();
 };

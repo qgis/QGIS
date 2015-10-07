@@ -693,7 +693,7 @@ void QgsComposerPicture::setUsePictureExpression( bool useExpression )
   refreshPicture();
 }
 
-void QgsComposerPicture::setPictureExpression( QString expression )
+void QgsComposerPicture::setPictureExpression( const QString& expression )
 {
   dataDefinedProperty( QgsComposerObject::PictureSource )->setExpressionString( expression );
   refreshPicture();

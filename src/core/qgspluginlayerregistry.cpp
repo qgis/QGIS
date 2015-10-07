@@ -21,7 +21,7 @@
 #include "qgspluginlayer.h"
 #include "qgsmaplayerregistry.h"
 
-QgsPluginLayerType::QgsPluginLayerType( QString name )
+QgsPluginLayerType::QgsPluginLayerType( const QString& name )
     : mName( name )
 {
 }
@@ -97,7 +97,7 @@ bool QgsPluginLayerRegistry::addPluginLayerType( QgsPluginLayerType* type )
 }
 
 
-bool QgsPluginLayerRegistry::removePluginLayerType( QString typeName )
+bool QgsPluginLayerRegistry::removePluginLayerType( const QString& typeName )
 {
   if ( !mPluginLayerTypes.contains( typeName ) )
     return false;
@@ -121,13 +121,13 @@ bool QgsPluginLayerRegistry::removePluginLayerType( QString typeName )
   return true;
 }
 
-QgsPluginLayerType* QgsPluginLayerRegistry::pluginLayerType( QString typeName )
+QgsPluginLayerType* QgsPluginLayerRegistry::pluginLayerType( const QString& typeName )
 {
   return mPluginLayerTypes.value( typeName, NULL );
 }
 
 
-QgsPluginLayer* QgsPluginLayerRegistry::createLayer( QString typeName, const QString& uri )
+QgsPluginLayer* QgsPluginLayerRegistry::createLayer( const QString& typeName, const QString& uri )
 {
   QgsPluginLayerType* type = pluginLayerType( typeName );
   if ( !type )

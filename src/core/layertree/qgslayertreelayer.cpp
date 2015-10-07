@@ -30,7 +30,7 @@ QgsLayerTreeLayer::QgsLayerTreeLayer( QgsMapLayer *layer )
   attachToLayer();
 }
 
-QgsLayerTreeLayer::QgsLayerTreeLayer( QString layerId, QString name )
+QgsLayerTreeLayer::QgsLayerTreeLayer( const QString& layerId, const QString& name )
     : QgsLayerTreeNode( NodeLayer )
     , mLayerId( layerId )
     , mLayerName( name )
@@ -143,7 +143,7 @@ QgsLayerTreeNode* QgsLayerTreeLayer::clone() const
   return new QgsLayerTreeLayer( *this );
 }
 
-void QgsLayerTreeLayer::registryLayersAdded( QList<QgsMapLayer*> layers )
+void QgsLayerTreeLayer::registryLayersAdded( const QList<QgsMapLayer*>& layers )
 {
   Q_FOREACH ( QgsMapLayer* l, layers )
   {

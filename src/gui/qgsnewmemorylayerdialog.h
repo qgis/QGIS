@@ -35,7 +35,7 @@ class GUI_EXPORT QgsNewMemoryLayerDialog: public QDialog, private Ui::QgsNewMemo
      */
     static QgsVectorLayer* runAndCreateLayer( QWidget* parent = 0 );
 
-    QgsNewMemoryLayerDialog( QWidget *parent = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsNewMemoryLayerDialog( QWidget *parent = 0, const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags );
     ~QgsNewMemoryLayerDialog();
 
     /** Returns the selected geometry type*/

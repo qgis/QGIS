@@ -19,5 +19,5 @@ class QgsGeometryValidator : QThread
     void errorFound( QgsGeometry::Error );
 
   public slots:
-    void addError( QgsGeometry::Error );
+    void addError( const QgsGeometry::Error& );
 };

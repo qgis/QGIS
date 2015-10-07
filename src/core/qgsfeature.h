@@ -365,7 +365,7 @@ class CORE_EXPORT QgsFeature
      *  @note For Python: raises a KeyError exception instead of returning false
      *  @see setFields
      */
-    bool setAttribute( const QString& name, QVariant value );
+    bool setAttribute( const QString& name, const QVariant& value );
 
     /** Removes an attribute value by field name. Field map must be associated using @link setFields @endlink
      *  before this method can be used.

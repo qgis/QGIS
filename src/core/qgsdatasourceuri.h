@@ -114,10 +114,10 @@ class CORE_EXPORT QgsDataSourceURI
     void setAuthConfigId( const QString& authcfg );
 
     //! set username
-    void setUsername( QString username );
+    void setUsername( const QString& username );
 
     //! set password
-    void setPassword( QString password );
+    void setPassword( const QString& password );
 
     //! Removes password element from uris
     static QString removePassword( const QString& aUri );
@@ -141,9 +141,9 @@ class CORE_EXPORT QgsDataSourceURI
 
     //! set the table schema
     // @note added in 2.11
-    void setSchema( QString schema );
+    void setSchema( const QString& schema );
 
-    void setSql( QString sql );
+    void setSql( const QString& sql );
 
     QString host() const;
     QString database() const;
@@ -154,13 +154,13 @@ class CORE_EXPORT QgsDataSourceURI
     QString service() const;
 
     QString keyColumn() const;
-    void setKeyColumn( QString column );
+    void setKeyColumn( const QString& column );
 
     QGis::WkbType wkbType() const;
     void setWkbType( QGis::WkbType type );
 
     QString srid() const;
-    void setSrid( QString srid );
+    void setSrid( const QString& srid );
 
   private:
     void skipBlanks( const QString &uri, int &i );

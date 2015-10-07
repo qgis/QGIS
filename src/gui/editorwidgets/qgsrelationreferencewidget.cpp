@@ -186,7 +186,7 @@ QgsRelationReferenceWidget::~QgsRelationReferenceWidget()
     delete mMapTool;
 }
 
-void QgsRelationReferenceWidget::setRelation( QgsRelation relation, bool allowNullValue )
+void QgsRelationReferenceWidget::setRelation( const QgsRelation& relation, bool allowNullValue )
 {
   mAllowNull = allowNullValue;
   mRemoveFKButton->setVisible( allowNullValue && mReadOnlySelector );
@@ -400,7 +400,7 @@ void QgsRelationReferenceWidget::setOrderByValue( bool orderByValue )
   mOrderByValue = orderByValue;
 }
 
-void QgsRelationReferenceWidget::setFilterFields( QStringList filterFields )
+void QgsRelationReferenceWidget::setFilterFields( const QStringList& filterFields )
 {
   mFilterFields = filterFields;
 }
@@ -676,7 +676,7 @@ void QgsRelationReferenceWidget::comboReferenceChanged( int index )
   emit foreignKeyChanged( mFeature.attribute( mFkeyFieldIdx ) );
 }
 
-void QgsRelationReferenceWidget::updateAttributeEditorFrame( const QgsFeature feature )
+void QgsRelationReferenceWidget::updateAttributeEditorFrame( const QgsFeature& feature )
 {
   // Check if we're running with an embedded frame we need to update
   if ( mAttributeEditorFrame )

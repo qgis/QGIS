@@ -44,9 +44,9 @@ class GUI_EXPORT QgsMessageBarItem : public QWidget
 
     ~QgsMessageBarItem();
 
-    QgsMessageBarItem *setText( QString text );
+    QgsMessageBarItem *setText( const QString& text );
 
-    QgsMessageBarItem *setTitle( QString title );
+    QgsMessageBarItem *setTitle( const QString& title );
 
     QgsMessageBarItem *setLevel( QgsMessageBar::MessageLevel level );
 

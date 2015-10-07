@@ -183,7 +183,7 @@ void QgsComposerAttributeTableV2::setVectorLayer( QgsVectorLayer* layer )
   emit changed();
 }
 
-void QgsComposerAttributeTableV2::setRelationId( const QString relationId )
+void QgsComposerAttributeTableV2::setRelationId( const QString& relationId )
 {
   if ( relationId == mRelationId )
   {
@@ -623,7 +623,7 @@ QgsVectorLayer *QgsComposerAttributeTableV2::sourceLayer()
   return 0;
 }
 
-void QgsComposerAttributeTableV2::removeLayer( QString layerId )
+void QgsComposerAttributeTableV2::removeLayer( const QString& layerId )
 {
   if ( mVectorLayer && mSource == QgsComposerAttributeTableV2::LayerAttributes )
   {

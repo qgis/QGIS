@@ -83,7 +83,7 @@ namespace QgisGui
    * @return QPair<QString, QString> where first is the file name and second is
    * the file type
    */
-  QPair<QString, QString> GUI_EXPORT getSaveAsImageName( QWidget * theParent, QString theMessage, QString defaultFilename = QString::null );
+  QPair<QString, QString> GUI_EXPORT getSaveAsImageName( QWidget * theParent, const QString& theMessage, const QString& defaultFilename = QString::null );
 
   /**
     Convenience function for readily creating file filters.

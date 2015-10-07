@@ -147,7 +147,7 @@ QMap<QString, QVariant> QgsDataDefined::expressionParams() const
   return d->expressionParams;
 }
 
-void QgsDataDefined::setExpressionParams( QMap<QString, QVariant> params )
+void QgsDataDefined::setExpressionParams( const QMap<QString, QVariant>& params )
 {
   d.detach();
   d->expressionParams = params;
@@ -286,7 +286,7 @@ void QgsDataDefined::setField( const QString &field )
   d->exprRefColumns.clear();
 }
 
-void QgsDataDefined::insertExpressionParam( QString key, QVariant param )
+void QgsDataDefined::insertExpressionParam( const QString& key, const QVariant& param )
 {
   d.detach();
   d->expressionParams.insert( key, param );

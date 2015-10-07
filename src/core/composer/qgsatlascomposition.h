@@ -167,7 +167,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     QString featureFilterErrorString() const { return mFilterParserError; }
 
     QString sortKeyAttributeName() const { return mSortKeyAttributeName; }
-    void setSortKeyAttributeName( QString fieldName ) { mSortKeyAttributeName = fieldName; }
+    void setSortKeyAttributeName( const QString& fieldName ) { mSortKeyAttributeName = fieldName; }
 
     /** Returns the current list of predefined scales for the atlas. This is used
      * for maps which are set to the predefined atlas scaling mode.
@@ -363,7 +363,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     typedef QMap< QgsFeatureId, QVariant > SorterKeys;
 
   private slots:
-    void removeLayers( QStringList layers );
+    void removeLayers( const QStringList& layers );
 
   private:
     // value of field that is used for ordering of features

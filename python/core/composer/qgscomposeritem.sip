@@ -724,7 +724,7 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
       * @param rotation the rotation in degrees to be applied to the rectangle
       * @deprecated use QgsComposerUtils::largestRotatedRectWithinBounds instead
       */
-    QRectF largestRotatedRectWithinBounds( QRectF originalRect, QRectF boundsRect, double rotation ) const /Deprecated/;
+    QRectF largestRotatedRectWithinBounds( const QRectF& originalRect, const QRectF& boundsRect, double rotation ) const /Deprecated/;
 
     /** Calculates corner point after rotation and scaling
      * @deprecated will be removed in QGIS 3.0

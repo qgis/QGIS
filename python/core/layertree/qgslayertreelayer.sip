@@ -25,7 +25,7 @@ class QgsLayerTreeLayer : QgsLayerTreeNode
   public:
     explicit QgsLayerTreeLayer( QgsMapLayer* layer );
 
-    explicit QgsLayerTreeLayer( QString layerId, QString name = QString() );
+    explicit QgsLayerTreeLayer( const QString& layerId, const QString& name = QString() );
 
     QString layerId() const;
 

@@ -62,8 +62,8 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
         };
 
         //! Constructor takes ownership of the symbol
-        Rule( QgsSymbolV2* symbol /Transfer/, int scaleMinDenom = 0, int scaleMaxDenom = 0, QString filterExp = QString(),
-              QString label = QString(), QString description = QString(), bool elseRule = false );
+        Rule( QgsSymbolV2* symbol /Transfer/, int scaleMinDenom = 0, int scaleMaxDenom = 0, const QString& filterExp = QString(),
+              const QString& label = QString(), const QString& description = QString(), bool elseRule = false );
         ~Rule();
         QString dump( int offset = 0 ) const;
         QSet<QString> usedAttributes();
@@ -95,11 +95,11 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
 
         //! set a new symbol (or NULL). Deletes old symbol.
         void setSymbol( QgsSymbolV2* sym /Transfer/ );
-        void setLabel( QString label );
+        void setLabel( const QString& label );
         void setScaleMinDenom( int scaleMinDenom );
         void setScaleMaxDenom( int scaleMaxDenom );
-        void setFilterExpression( QString filterExp );
-        void setDescription( QString description );
+        void setFilterExpression( const QString& filterExp );
+        void setDescription( const QString& description );
         //! @note added in 2.6
         //! @deprecated use setActive instead
         void setCheckState( bool state );
@@ -161,7 +161,7 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
 
         //! Try to find a rule given its unique key
         //! @note added in 2.6
-        QgsRuleBasedRendererV2::Rule* findRuleByKey( QString key );
+        QgsRuleBasedRendererV2::Rule* findRuleByKey( const QString& key );
 
         void updateElseRules();
 
@@ -216,11 +216,11 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
 
     //! items of symbology items in legend is checked
     //! @note added in 2.5
-    virtual bool legendSymbolItemChecked( QString key );
+    virtual bool legendSymbolItemChecked( const QString& key );
 
     //! item in symbology was checked
     //! @note added in 2.5
-    virtual void checkLegendSymbolItem( QString key, bool state = true );
+    virtual void checkLegendSymbolItem( const QString& key, bool state = true );
 
     //! return a list of item text / symbol
     //! @note not available in python bindings
@@ -267,7 +267,7 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
     static QgsRuleBasedRendererV2* convertFromRenderer( const QgsFeatureRendererV2 *renderer ) /Factory/;
 
     //! helper function to convert the size scale and rotation fields present in some other renderers to data defined symbology
-    static void convertToDataDefinedSymbology( QgsSymbolV2* symbol, QString sizeScaleField, QString rotationField = QString() );
+    static void convertToDataDefinedSymbology( QgsSymbolV2* symbol, const QString& sizeScaleField, const QString& rotationField = QString() );
 
   private:
     QgsRuleBasedRendererV2( const QgsRuleBasedRendererV2 & );

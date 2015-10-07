@@ -45,7 +45,7 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
     explicit QgsLayerTreeLayer( QgsMapLayer* layer );
     QgsLayerTreeLayer( const QgsLayerTreeLayer& other );
 
-    explicit QgsLayerTreeLayer( QString layerId, QString name = QString() );
+    explicit QgsLayerTreeLayer( const QString& layerId, const QString& name = QString() );
 
     QString layerId() const { return mLayerId; }
 
@@ -65,7 +65,7 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
     virtual QgsLayerTreeNode* clone() const override;
 
   protected slots:
-    void registryLayersAdded( QList<QgsMapLayer*> layers );
+    void registryLayersAdded( const QList<QgsMapLayer*>& layers );
     void registryLayersWillBeRemoved( const QStringList& layerIds );
 
   signals:

@@ -71,7 +71,7 @@ class QgsFeatureSelectionModel : QItemSelectionModel
      * @param selection  The QItemSelection which will be selected
      * @param command    The command to apply. Select, Deselect and ClearAndSelect are processed.
      */
-    virtual void selectFeatures( const QItemSelection &selection, SelectionFlags command );
+    virtual void selectFeatures( const QItemSelection &selection, const SelectionFlags& command );
 
     virtual void setFeatureSelectionManager( QgsIFeatureSelectionManager* featureSelectionManager );
 };

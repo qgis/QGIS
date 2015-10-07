@@ -590,7 +590,7 @@ void QgsCategorizedSymbolRendererV2Widget::populateCategories()
 {
 }
 
-void QgsCategorizedSymbolRendererV2Widget::categoryColumnChanged( QString field )
+void QgsCategorizedSymbolRendererV2Widget::categoryColumnChanged( const QString& field )
 {
   mRenderer->setClassAttribute( field );
 }
@@ -855,7 +855,7 @@ void QgsCategorizedSymbolRendererV2Widget::addCategory()
   mModel->addCategory( cat );
 }
 
-void QgsCategorizedSymbolRendererV2Widget::sizeScaleFieldChanged( QString fldName )
+void QgsCategorizedSymbolRendererV2Widget::sizeScaleFieldChanged( const QString& fldName )
 {
   mRenderer->setSizeScaleField( fldName );
 }

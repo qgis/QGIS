@@ -23,7 +23,7 @@
 class CORE_EXPORT QgsColorBrewerPalette
 {
   public:
-    static QList<QColor> listSchemeColors( QString schemeName, int colors )
+    static QList<QColor> listSchemeColors( const QString& schemeName, int colors )
     {
       QList<QColor> pal;
       QString palette( brewerString );
@@ -59,7 +59,7 @@ class CORE_EXPORT QgsColorBrewerPalette
       return schemes;
     }
 
-    static QList<int> listSchemeVariants( QString schemeName )
+    static QList<int> listSchemeVariants( const QString& schemeName )
     {
       QList<int> variants;
 

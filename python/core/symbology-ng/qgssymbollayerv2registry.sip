@@ -6,7 +6,7 @@ class QgsSymbolLayerV2AbstractMetadata
 #include <qgssymbollayerv2registry.h>
 %End
   public:
-    QgsSymbolLayerV2AbstractMetadata( QString name, QString visibleName, QgsSymbolV2::SymbolType type );
+    QgsSymbolLayerV2AbstractMetadata( const QString& name, const QString& visibleName, QgsSymbolV2::SymbolType type );
 
     virtual ~QgsSymbolLayerV2AbstractMetadata();
 
@@ -58,16 +58,16 @@ class QgsSymbolLayerV2Registry
     static QgsSymbolLayerV2Registry* instance();
 
     //! return metadata for specified symbol layer. Returns NULL if not found
-    QgsSymbolLayerV2AbstractMetadata* symbolLayerMetadata( QString name ) const;
+    QgsSymbolLayerV2AbstractMetadata* symbolLayerMetadata( const QString& name ) const;
 
     //! register a new symbol layer type. Takes ownership of the metadata instance.
     bool addSymbolLayerType( QgsSymbolLayerV2AbstractMetadata* metadata /Transfer/ );
 
     //! create a new instance of symbol layer given symbol layer name and properties
-    QgsSymbolLayerV2* createSymbolLayer( QString name, const QgsStringMap& properties = QgsStringMap() ) const /Factory/;
+    QgsSymbolLayerV2* createSymbolLayer( const QString& name, const QgsStringMap& properties = QgsStringMap() ) const /Factory/;
 
     //! create a new instance of symbol layer given symbol layer name and SLD
-    QgsSymbolLayerV2* createSymbolLayerFromSld( QString name, QDomElement &element ) const;
+    QgsSymbolLayerV2* createSymbolLayerFromSld( const QString& name, QDomElement &element ) const;
 
     //! return a list of available symbol layers for a specified symbol type
     QStringList symbolLayersForType( QgsSymbolV2::SymbolType type );

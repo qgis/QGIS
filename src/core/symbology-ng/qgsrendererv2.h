@@ -212,15 +212,15 @@ class CORE_EXPORT QgsFeatureRendererV2
 
     //! items of symbology items in legend is checked
     //! @note added in 2.5
-    virtual bool legendSymbolItemChecked( QString key );
+    virtual bool legendSymbolItemChecked( const QString& key );
 
     //! item in symbology was checked
     //! @note added in 2.5
-    virtual void checkLegendSymbolItem( QString key, bool state = true );
+    virtual void checkLegendSymbolItem( const QString& key, bool state = true );
 
     //! return a list of item text / symbol
     //! @note not available in python bindings
-    virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, QString rule = "" );
+    virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString& rule = "" );
 
     //! Return a list of symbology items for the legend. Better choice than legendSymbolItems().
     //! Default fallback implementation just uses legendSymbolItems() implementation
@@ -240,7 +240,7 @@ class CORE_EXPORT QgsFeatureRendererV2
 
     //! sets rotation field of renderer (if supported by the renderer)
     //! @deprecated use the symbol's methods instead
-    Q_DECL_DEPRECATED virtual void setRotationField( QString fieldName ) { Q_UNUSED( fieldName ); }
+    Q_DECL_DEPRECATED virtual void setRotationField( const QString& fieldName ) { Q_UNUSED( fieldName ); }
 
     //! return whether the renderer will render a feature or not.
     //! Must be called between startRender() and stopRender() calls.
@@ -312,7 +312,7 @@ class CORE_EXPORT QgsFeatureRendererV2
     void setForceRasterRender( bool forceRaster ) { mForceRaster = forceRaster; }
 
   protected:
-    QgsFeatureRendererV2( QString type );
+    QgsFeatureRendererV2( const QString& type );
 
     void renderFeatureWithSymbol( QgsFeature& feature,
                                   QgsSymbolV2* symbol,

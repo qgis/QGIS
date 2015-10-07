@@ -41,7 +41,7 @@ class CORE_EXPORT QgsGeometryEngine
     virtual QgsAbstractGeometryV2* intersection( const QgsAbstractGeometryV2& geom, QString* errorMsg = 0 ) const = 0;
     virtual QgsAbstractGeometryV2* difference( const QgsAbstractGeometryV2& geom, QString* errorMsg = 0 ) const = 0;
     virtual QgsAbstractGeometryV2* combine( const QgsAbstractGeometryV2& geom, QString* errorMsg = 0 ) const = 0;
-    virtual QgsAbstractGeometryV2* combine( const QList< const QgsAbstractGeometryV2* >, QString* errorMsg = 0 ) const = 0;
+    virtual QgsAbstractGeometryV2* combine( const QList< const QgsAbstractGeometryV2* >&, QString* errorMsg = 0 ) const = 0;
     virtual QgsAbstractGeometryV2* symDifference( const QgsAbstractGeometryV2& geom, QString* errorMsg = 0 ) const = 0;
     virtual QgsAbstractGeometryV2* buffer( double distance, int segments, QString* errorMsg = 0 ) const = 0;
     virtual QgsAbstractGeometryV2* buffer( double distance, int segments, int endCapStyle, int joinStyle, double mitreLimit, QString* errorMsg = 0 ) const = 0;

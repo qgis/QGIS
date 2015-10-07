@@ -82,7 +82,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      *
      * @param ids  The list of feature ids which will be accepted by the filter
      */
-    virtual void setFilteredFeatures( QgsFeatureIds ids );
+    virtual void setFilteredFeatures( const QgsFeatureIds& ids );
 
     /**
      * Get a list of currently filtered feature ids

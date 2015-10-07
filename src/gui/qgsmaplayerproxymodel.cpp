@@ -31,14 +31,14 @@ QgsMapLayerProxyModel::QgsMapLayerProxyModel( QObject *parent )
   sort( 0 );
 }
 
-QgsMapLayerProxyModel *QgsMapLayerProxyModel::setFilters( Filters filters )
+QgsMapLayerProxyModel *QgsMapLayerProxyModel::setFilters( const Filters& filters )
 {
   mFilters = filters;
   invalidateFilter();
   return this;
 }
 
-void QgsMapLayerProxyModel::setExceptedLayerList( QList<QgsMapLayer*> exceptList )
+void QgsMapLayerProxyModel::setExceptedLayerList( const QList<QgsMapLayer*>& exceptList )
 {
   mExceptList = exceptList;
   invalidateFilter();

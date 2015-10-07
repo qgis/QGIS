@@ -136,7 +136,7 @@ QAbstractButton* QgsMapTool::button()
   return mButton;
 }
 
-void QgsMapTool::setCursor( QCursor cursor )
+void QgsMapTool::setCursor( const QCursor& cursor )
 {
   mCursor = cursor;
 }

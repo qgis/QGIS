@@ -88,7 +88,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     };
 
     /** Create new data item. */
-    QgsDataItem( QgsDataItem::Type type, QgsDataItem* parent, QString name, QString path );
+    QgsDataItem( QgsDataItem::Type type, QgsDataItem* parent, const QString& name, const QString& path );
     virtual ~QgsDataItem();
 
     bool hasChildren();
@@ -160,7 +160,7 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     virtual Capabilities capabilities2() const { return mCapabilities; }
 
-    virtual void setCapabilities( Capabilities capabilities ) { mCapabilities = capabilities; }
+    virtual void setCapabilities( const Capabilities& capabilities ) { mCapabilities = capabilities; }
 
     // static methods
 
@@ -189,10 +189,10 @@ class CORE_EXPORT QgsDataItem : public QObject
     // Because QIcon (QPixmap) must not be used in outside the GUI thread, it is
     // not possible to set mIcon in constructor. Either use mIconName/setIconName()
     // or implement icon().
-    void setIcon( QIcon icon ) { mIcon = icon; }
+    void setIcon( const QIcon& icon ) { mIcon = icon; }
     void setIconName( const QString & iconName ) { mIconName = iconName; }
 
-    void setToolTip( QString msg ) { mToolTip = msg; }
+    void setToolTip( const QString& msg ) { mToolTip = msg; }
     QString toolTip() const { return mToolTip; }
 
     // deleteLater() items anc clear the vector
@@ -202,7 +202,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     void moveToThread( QThread * targetThread );
 
   protected:
-    virtual void populate( QVector<QgsDataItem*> children );
+    virtual void populate( const QVector<QgsDataItem*>& children );
     virtual void refresh( QVector<QgsDataItem*> children );
     /** The item is scheduled to be deleted. E.g. if deleteLater() is called when
      * item is in Populating state (createChildren() running in another thread),
@@ -297,7 +297,7 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
       Plugin     //!< added in 2.10
     };
 
-    QgsLayerItem( QgsDataItem* parent, QString name, QString path, QString uri, LayerType layerType, QString providerKey );
+    QgsLayerItem( QgsDataItem* parent, const QString& name, const QString& path, const QString& uri, LayerType layerType, const QString& providerKey );
 
     // --- reimplemented from QgsDataItem ---
 
@@ -360,7 +360,7 @@ class CORE_EXPORT QgsDataCollectionItem : public QgsDataItem
 {
     Q_OBJECT
   public:
-    QgsDataCollectionItem( QgsDataItem* parent, QString name, QString path = QString::null );
+    QgsDataCollectionItem( QgsDataItem* parent, const QString& name, const QString& path = QString::null );
     ~QgsDataCollectionItem();
 
     void addChild( QgsDataItem *item ) { mChildren.append( item ); }
@@ -385,14 +385,14 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
       Type
     };
 
-    QgsDirectoryItem( QgsDataItem* parent, QString name, QString path );
+    QgsDirectoryItem( QgsDataItem* parent, const QString& name, const QString& path );
 
     /** Constructor.
      * @param parent
      * @param name directory name
      * @param dirPath path to directory in file system
      * @param path item path in the tree, it may be dirPath or dirPath with some prefix, e.g. favourites: */
-    QgsDirectoryItem( QgsDataItem* parent, QString name, QString dirPath, QString path );
+    QgsDirectoryItem( QgsDataItem* parent, const QString& name, const QString& dirPath, const QString& path );
     ~QgsDirectoryItem();
 
     virtual void setState( State state ) override;
@@ -430,7 +430,7 @@ class CORE_EXPORT QgsErrorItem : public QgsDataItem
     Q_OBJECT
   public:
 
-    QgsErrorItem( QgsDataItem* parent, QString error, QString path );
+    QgsErrorItem( QgsDataItem* parent, const QString& error, const QString& path );
     ~QgsErrorItem();
 
 };
@@ -443,7 +443,7 @@ class CORE_EXPORT QgsDirectoryParamWidget : public QTreeWidget
     Q_OBJECT
 
   public:
-    QgsDirectoryParamWidget( QString path, QWidget* parent = NULL );
+    QgsDirectoryParamWidget( const QString& path, QWidget* parent = NULL );
 
   protected:
     void mousePressEvent( QMouseEvent* event ) override;
@@ -457,12 +457,12 @@ class CORE_EXPORT QgsFavouritesItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsFavouritesItem( QgsDataItem* parent, QString name, QString path = QString() );
+    QgsFavouritesItem( QgsDataItem* parent, const QString& name, const QString& path = QString() );
     ~QgsFavouritesItem();
 
     QVector<QgsDataItem*> createChildren() override;
 
-    void addDirectory( QString favIcon );
+    void addDirectory( const QString& favIcon );
     void removeDirectory( QgsDirectoryItem *item );
 
     static const QIcon &iconFavourites();
@@ -479,8 +479,8 @@ class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
     QStringList mZipFileList;
 
   public:
-    QgsZipItem( QgsDataItem* parent, QString name, QString path );
-    QgsZipItem( QgsDataItem* parent, QString name, QString filePath, QString path );
+    QgsZipItem( QgsDataItem* parent, const QString& name, const QString& path );
+    QgsZipItem( QgsDataItem* parent, const QString& name, const QString& filePath, const QString& path );
     ~QgsZipItem();
 
     QVector<QgsDataItem*> createChildren() override;
@@ -490,10 +490,10 @@ class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
     static QVector<dataItem_t *> mDataItemPtr;
     static QStringList mProviderNames;
 
-    static QString vsiPrefix( QString uri ) { return qgsVsiPrefix( uri ); }
+    static QString vsiPrefix( const QString& uri ) { return qgsVsiPrefix( uri ); }
 
     static QgsDataItem* itemFromPath( QgsDataItem* parent, QString path, QString name );
-    static QgsDataItem* itemFromPath( QgsDataItem* parent, QString filePath, QString name, QString path );
+    static QgsDataItem* itemFromPath( QgsDataItem* parent, const QString& filePath, const QString& name, const QString& path );
 
     static const QIcon &iconZip();
 

@@ -218,7 +218,7 @@ QString QgsFontUtils::standardTestFontFamily()
   return "QGIS Vera Sans";
 }
 
-bool QgsFontUtils::loadStandardTestFonts( QStringList loadstyles )
+bool QgsFontUtils::loadStandardTestFonts( const QStringList& loadstyles )
 {
   // load standard test font from filesystem or testdata.qrc (for unit tests and general testing)
   bool fontsLoaded = false;

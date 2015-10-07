@@ -275,7 +275,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * Launched when eatures have been deleted
      * @param fids feature ids
      */
-    virtual void featuresDeleted( QgsFeatureIds fids );
+    virtual void featuresDeleted( const QgsFeatureIds& fids );
     /**
      * Launched when a feature has been added
      * @param fid feature id

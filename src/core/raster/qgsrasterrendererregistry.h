@@ -54,7 +54,7 @@ class CORE_EXPORT QgsRasterRendererRegistry
     static QgsRasterRendererRegistry* instance();
     ~QgsRasterRendererRegistry();
 
-    void insert( QgsRasterRendererRegistryEntry entry );
+    void insert( const QgsRasterRendererRegistryEntry& entry );
     void insertWidgetFunction( const QString& rendererName, QgsRasterRendererWidgetCreateFunc func );
     bool rendererData( const QString& rendererName, QgsRasterRendererRegistryEntry& data ) const;
     QStringList renderersList() const;

@@ -64,7 +64,7 @@ QString QgsColorButton::fullPath( const QString &path )
   by Qt Designer to do the same thing.
 */
 
-QgsColorButton::QgsColorButton( QWidget *parent, QString cdt, QColorDialog::ColorDialogOptions cdo )
+QgsColorButton::QgsColorButton( QWidget *parent, const QString& cdt, const QColorDialog::ColorDialogOptions& cdo )
     : QPushButton( parent )
     , mColorDialogTitle( cdt.isEmpty() ? tr( "Select Color" ) : cdt )
     , mColor( Qt::black )
@@ -578,7 +578,7 @@ QColor QgsColorButton::color() const
   return mColor;
 }
 
-void QgsColorButton::setColorDialogOptions( QColorDialog::ColorDialogOptions cdo )
+void QgsColorButton::setColorDialogOptions( const QColorDialog::ColorDialogOptions& cdo )
 {
   mColorDialogOptions = cdo;
 }
@@ -588,7 +588,7 @@ QColorDialog::ColorDialogOptions QgsColorButton::colorDialogOptions()
   return mColorDialogOptions;
 }
 
-void QgsColorButton::setColorDialogTitle( QString cdt )
+void QgsColorButton::setColorDialogTitle( const QString& cdt )
 {
   mColorDialogTitle = cdt;
 }

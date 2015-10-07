@@ -77,7 +77,7 @@ bool QgsSymbolLayerV2Registry::addSymbolLayerType( QgsSymbolLayerV2AbstractMetad
 }
 
 
-QgsSymbolLayerV2AbstractMetadata* QgsSymbolLayerV2Registry::symbolLayerMetadata( QString name ) const
+QgsSymbolLayerV2AbstractMetadata* QgsSymbolLayerV2Registry::symbolLayerMetadata( const QString& name ) const
 {
   if ( mMetadata.contains( name ) )
     return mMetadata.value( name );
@@ -108,7 +108,7 @@ QgsSymbolLayerV2* QgsSymbolLayerV2Registry::defaultSymbolLayer( QgsSymbolV2::Sym
 }
 
 
-QgsSymbolLayerV2* QgsSymbolLayerV2Registry::createSymbolLayer( QString name, const QgsStringMap& properties ) const
+QgsSymbolLayerV2* QgsSymbolLayerV2Registry::createSymbolLayer( const QString& name, const QgsStringMap& properties ) const
 {
   if ( !mMetadata.contains( name ) )
     return NULL;
@@ -116,7 +116,7 @@ QgsSymbolLayerV2* QgsSymbolLayerV2Registry::createSymbolLayer( QString name, con
   return mMetadata[name]->createSymbolLayer( properties );
 }
 
-QgsSymbolLayerV2* QgsSymbolLayerV2Registry::createSymbolLayerFromSld( QString name, QDomElement& element ) const
+QgsSymbolLayerV2* QgsSymbolLayerV2Registry::createSymbolLayerFromSld( const QString& name, QDomElement& element ) const
 {
   if ( !mMetadata.contains( name ) )
     return NULL;

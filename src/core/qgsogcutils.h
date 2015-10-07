@@ -49,7 +49,7 @@ class CORE_EXPORT QgsOgcUtils
     /** Exports the geometry to GML2 or GML3
         @return QDomElement
      */
-    static QDomElement geometryToGML( const QgsGeometry* geometry, QDomDocument& doc, QString format, const int &precision = 17 );
+    static QDomElement geometryToGML( const QgsGeometry* geometry, QDomDocument& doc, const QString& format, const int &precision = 17 );
 
     /** Exports the geometry to GML2
         @return QDomElement

@@ -33,10 +33,10 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
       Vsifile
     };
 
-    QgsSublayersDialog( ProviderType providerType, QString name, QWidget* parent = 0, Qt::WindowFlags fl = 0 );
+    QgsSublayersDialog( ProviderType providerType, const QString& name, QWidget* parent = 0, const Qt::WindowFlags& fl = 0 );
     ~QgsSublayersDialog();
 
-    void populateLayerTable( QStringList theList, QString delim = ":" );
+    void populateLayerTable( const QStringList& theList, const QString& delim = ":" );
     // Returns list of selected layers, if there are more layers with the same name,
     // geometry type is appended separated by semicolon, example: <layer>:<geometryType>
     QStringList selectionNames();

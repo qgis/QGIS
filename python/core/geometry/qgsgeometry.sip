@@ -72,7 +72,7 @@ class QgsGeometry
     bool isEmpty() const;
 
     /** Creates a new geometry from a WKT string */
-    static QgsGeometry* fromWkt( QString wkt ) /Factory/;
+    static QgsGeometry* fromWkt( const QString& wkt ) /Factory/;
     /** Creates a new geometry from a QgsPoint object*/
     static QgsGeometry* fromPoint( const QgsPoint& point ) /Factory/;
     /** Creates a new geometry from a QgsMultiPoint object */
@@ -531,8 +531,8 @@ class QgsGeometry
     {
       public:
         Error();
-        Error( QString m );
-        Error( QString m, const QgsPoint& p );
+        Error( const QString& m );
+        Error( const QString& m, const QgsPoint& p );
 
         QString what();
         QgsPoint where();

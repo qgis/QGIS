@@ -31,8 +31,8 @@
 
 QMap< QString, QStringList > QgsRasterFormatSaveOptionsWidget::mBuiltinProfiles;
 
-QgsRasterFormatSaveOptionsWidget::QgsRasterFormatSaveOptionsWidget( QWidget* parent, QString format,
-    QgsRasterFormatSaveOptionsWidget::Type type, QString provider )
+QgsRasterFormatSaveOptionsWidget::QgsRasterFormatSaveOptionsWidget( QWidget* parent, const QString& format,
+    QgsRasterFormatSaveOptionsWidget::Type type, const QString& provider )
     : QWidget( parent ), mFormat( format ), mProvider( provider ), mRasterLayer( 0 )
     , mRasterFileName( QString() ), mPyramids( false )
     , mPyramidsFormat( QgsRaster::PyramidsGTiff )
@@ -101,14 +101,14 @@ QgsRasterFormatSaveOptionsWidget::~QgsRasterFormatSaveOptionsWidget()
 {
 }
 
-void QgsRasterFormatSaveOptionsWidget::setFormat( QString format )
+void QgsRasterFormatSaveOptionsWidget::setFormat( const QString& format )
 {
   mFormat = format;
   updateControls();
   updateProfiles();
 }
 
-void QgsRasterFormatSaveOptionsWidget::setProvider( QString provider )
+void QgsRasterFormatSaveOptionsWidget::setProvider( const QString& provider )
 {
   mProvider = provider;
   updateControls();
@@ -496,13 +496,13 @@ QStringList QgsRasterFormatSaveOptionsWidget::options() const
   return mOptionsMap.value( currentProfileKey() ).trimmed().split( " ", QString::SkipEmptyParts );
 }
 
-QString QgsRasterFormatSaveOptionsWidget::createOptions( QString profileName ) const
+QString QgsRasterFormatSaveOptionsWidget::createOptions( const QString& profileName ) const
 {
   QSettings mySettings;
   return mySettings.value( settingsKey( profileName ), "" ).toString();
 }
 
-void QgsRasterFormatSaveOptionsWidget::deleteCreateOptions( QString profileName )
+void QgsRasterFormatSaveOptionsWidget::deleteCreateOptions( const QString& profileName )
 {
   QSettings mySettings;
   mySettings.remove( settingsKey( profileName ) );
@@ -525,13 +525,13 @@ void QgsRasterFormatSaveOptionsWidget::setCreateOptions()
                        currentProfileKey().trimmed() );
 }
 
-void QgsRasterFormatSaveOptionsWidget::setCreateOptions( QString profileName, QString options )
+void QgsRasterFormatSaveOptionsWidget::setCreateOptions( const QString& profileName, const QString& options )
 {
   QSettings mySettings;
   mySettings.setValue( settingsKey( profileName ), options.trimmed() );
 }
 
-void QgsRasterFormatSaveOptionsWidget::setCreateOptions( QString profileName, QStringList list )
+void QgsRasterFormatSaveOptionsWidget::setCreateOptions( const QString& profileName, const QStringList& list )
 {
   setCreateOptions( profileName, list.join( " " ) );
 }

@@ -84,10 +84,10 @@ class QgsDataSourceURI
     void setAuthConfigId( const QString& authcfg );
 
     //! set username
-    void setUsername( QString username );
+    void setUsername( const QString& username );
 
     //! set password
-    void setPassword( QString password );
+    void setPassword( const QString& password );
 
     //! Removes password element from uris
     static QString removePassword( const QString& aUri );
@@ -107,7 +107,7 @@ class QgsDataSourceURI
     bool selectAtIdDisabled() const;
 
     void clearSchema();
-    void setSql( QString sql );
+    void setSql( const QString& sql );
 
     QString host() const;
     QString database() const;
@@ -118,11 +118,11 @@ class QgsDataSourceURI
     QString service() const;
 
     QString keyColumn() const;
-    void setKeyColumn( QString column );
+    void setKeyColumn( const QString& column );
 
     QGis::WkbType wkbType() const;
     void setWkbType( QGis::WkbType type );
 
     QString srid() const;
-    void setSrid( QString srid );
+    void setSrid( const QString& srid );
 };

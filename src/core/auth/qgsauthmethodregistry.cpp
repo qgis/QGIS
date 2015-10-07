@@ -35,13 +35,13 @@ typedef QString description_t();
 typedef bool    isauthmethod_t();
 
 
-QgsAuthMethodRegistry *QgsAuthMethodRegistry::instance( QString pluginPath )
+QgsAuthMethodRegistry *QgsAuthMethodRegistry::instance( const QString& pluginPath )
 {
   static QgsAuthMethodRegistry* sInstance( new QgsAuthMethodRegistry( pluginPath ) );
   return sInstance;
 }
 
-QgsAuthMethodRegistry::QgsAuthMethodRegistry( QString pluginPath )
+QgsAuthMethodRegistry::QgsAuthMethodRegistry( const QString& pluginPath )
 {
   // At startup, examine the libs in the qgis/lib dir and store those that
   // are an auth method shared lib

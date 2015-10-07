@@ -354,9 +354,9 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QDockWidget, private U
     bool alignToSegment( QgsMapMouseEvent* e, CadConstraint::LockMode lockMode = CadConstraint::HardLock );
 
     //! add point to the CAD point list
-    void addPoint( QgsPoint point );
+    void addPoint( const QgsPoint& point );
     //! update the current point in the CAD point list
-    void updateCurrentPoint( QgsPoint point );
+    void updateCurrentPoint( const QgsPoint& point );
     //! remove previous point in the CAD point list
     void removePreviousPoint();
     //! remove all points from the CAD point list

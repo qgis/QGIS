@@ -6,7 +6,7 @@ class QgsRendererRangeV2
 
   public:
     QgsRendererRangeV2();
-    QgsRendererRangeV2( double lowerValue, double upperValue, QgsSymbolV2* symbol /Transfer/, QString label, bool render = true );
+    QgsRendererRangeV2( double lowerValue, double upperValue, QgsSymbolV2* symbol /Transfer/, const QString& label, bool render = true );
     QgsRendererRangeV2( const QgsRendererRangeV2& range );
 
     // default dtor is ok
@@ -19,7 +19,7 @@ class QgsRendererRangeV2
     QString label() const;
 
     void setSymbol( QgsSymbolV2* s /Transfer/ );
-    void setLabel( QString label );
+    void setLabel( const QString& label );
     void setLowerValue( double lowerValue );
     void setUpperValue( double upperValue );
 
@@ -48,13 +48,13 @@ class QgsRendererRangeV2LabelFormat
 %End
   public:
     QgsRendererRangeV2LabelFormat();
-    QgsRendererRangeV2LabelFormat( QString format, int precision = 4, bool trimTrailingZeroes = false );
+    QgsRendererRangeV2LabelFormat( const QString& format, int precision = 4, bool trimTrailingZeroes = false );
 
     bool operator==( const QgsRendererRangeV2LabelFormat & other ) const;
     bool operator!=( const QgsRendererRangeV2LabelFormat & other ) const;
 
     QString format() const;
-    void setFormat( QString format );
+    void setFormat( const QString& format );
 
     int precision();
     void setPrecision( int precision );
@@ -83,7 +83,7 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
 %End
   public:
 
-    QgsGraduatedSymbolRendererV2( QString attrName = QString(), QgsRangeList ranges = QgsRangeList() );
+    QgsGraduatedSymbolRendererV2( const QString& attrName = QString(), const QgsRangeList& ranges = QgsRangeList() );
 
     virtual ~QgsGraduatedSymbolRendererV2();
 
@@ -109,12 +109,12 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
     virtual QgsSymbolV2List symbols( QgsRenderContext& context );
 
     QString classAttribute() const;
-    void setClassAttribute( QString attr );
+    void setClassAttribute( const QString& attr );
 
     const QgsRangeList& ranges();
 
     bool updateRangeSymbol( int rangeIndex, QgsSymbolV2* symbol /Transfer/ );
-    bool updateRangeLabel( int rangeIndex, QString label );
+    bool updateRangeLabel( int rangeIndex, const QString& label );
     bool updateRangeUpperValue( int rangeIndex, double value );
     bool updateRangeLowerValue( int rangeIndex, double value );
     //! @note added in 2.5
@@ -122,7 +122,7 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
 
     void addClass( QgsSymbolV2* symbol );
     //! @note available in python bindings as addClassRange
-    void addClass( QgsRendererRangeV2 range ) /PyName=addClassRange/;
+    void addClass( const QgsRendererRangeV2& range ) /PyName=addClassRange/;
     //! @note available in python bindings as addClassLowerUpper
     void addClass( double lower, double upper ) /PyName=addClassLowerUpper/;
     void deleteClass( int idx );
@@ -187,13 +187,13 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
 
     static QgsGraduatedSymbolRendererV2* createRenderer(
       QgsVectorLayer* vlayer,
-      QString attrName,
+      const QString& attrName,
       int classes,
       Mode mode,
       QgsSymbolV2* symbol /Transfer/,
       QgsVectorColorRampV2* ramp /Transfer/,
       bool inverted = false,
-      QgsRendererRangeV2LabelFormat legendFormat = QgsRendererRangeV2LabelFormat()
+      const QgsRendererRangeV2LabelFormat& legendFormat = QgsRendererRangeV2LabelFormat()
     );
 
     //! create renderer from XML element
@@ -207,7 +207,7 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
 
     //! return a list of item text / symbol
     //! @note not available in python bindings
-    // virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, QString rule = QString() );
+    // virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString& rule = QString() );
 
     QgsSymbolV2* sourceSymbol();
     void setSourceSymbol( QgsSymbolV2* sym /Transfer/ );
@@ -256,10 +256,10 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
     //! @note added in 2.10
     void setGraduatedMethod( GraduatedMethod method );
 
-    void setRotationField( QString fieldOrExpression ) /Deprecated/;
+    void setRotationField( const QString& fieldOrExpression ) /Deprecated/;
     QString rotationField() const /Deprecated/;
 
-    void setSizeScaleField( QString fieldOrExpression );
+    void setSizeScaleField( const QString& fieldOrExpression );
     QString sizeScaleField() const;
 
     void setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod );
@@ -271,11 +271,11 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
 
     //! item in symbology was checked
     //! @note added in 2.6
-    virtual bool legendSymbolItemChecked( QString key );
+    virtual bool legendSymbolItemChecked( const QString& key );
 
     //! item in symbology was checked
     //! @note added in 2.6
-    virtual void checkLegendSymbolItem( QString key, bool state = true );
+    virtual void checkLegendSymbolItem( const QString& key, bool state = true );
 
     //! If supported by the renderer, return classification attribute for the use in legend
     //! @note added in 2.6

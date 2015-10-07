@@ -342,7 +342,7 @@ void QgsGeometryValidator::run()
 #endif
 }
 
-void QgsGeometryValidator::addError( QgsGeometry::Error e )
+void QgsGeometryValidator::addError( const QgsGeometry::Error& e )
 {
   if ( mErrors )
     *mErrors << e;
@@ -361,7 +361,7 @@ void QgsGeometryValidator::validateGeometry( const QgsGeometry *g, QList<QgsGeom
 // return >0  => q lies left of the line
 //        <0  => q lies right of the line
 //
-double QgsGeometryValidator::distLine2Point( QgsPoint p, QgsVector v, QgsPoint q )
+double QgsGeometryValidator::distLine2Point( const QgsPoint& p, const QgsVector& v, const QgsPoint& q )
 {
   if ( v.length() == 0 )
   {
@@ -371,7 +371,7 @@ double QgsGeometryValidator::distLine2Point( QgsPoint p, QgsVector v, QgsPoint q
   return ( v.x()*( q.y() - p.y() ) - v.y()*( q.x() - p.x() ) ) / v.length();
 }
 
-bool QgsGeometryValidator::intersectLines( QgsPoint p, QgsVector v, QgsPoint q, QgsVector w, QgsPoint &s )
+bool QgsGeometryValidator::intersectLines( const QgsPoint& p, const QgsVector& v, const QgsPoint& q, const QgsVector& w, QgsPoint &s )
 {
   double d = v.y() * w.x() - v.x() * w.y();
 

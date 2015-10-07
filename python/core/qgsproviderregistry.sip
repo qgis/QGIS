@@ -14,7 +14,7 @@ class QgsProviderRegistry
   public:
 
     /** Means of accessing canonical single instance  */
-    static QgsProviderRegistry* instance( QString pluginPath = QString::null );
+    static QgsProviderRegistry* instance( const QString& pluginPath = QString::null );
 
     /** Virtual dectructor */
     virtual ~QgsProviderRegistry();
@@ -46,7 +46,7 @@ class QgsProviderRegistry
     int providerCapabilities( const QString& providerKey ) const;
 
     QWidget *selectWidget( const QString & providerKey,
-                           QWidget * parent = 0, Qt::WindowFlags fl = 0 );
+                           QWidget * parent = 0, const Qt::WindowFlags& fl = 0 );
 
     /** Get pointer to provider function
         @param providerKey identificator of the provider

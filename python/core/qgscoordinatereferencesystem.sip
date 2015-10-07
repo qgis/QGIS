@@ -29,7 +29,7 @@ class QgsCoordinateReferenceSystem
      * member function (by default a WKT definition).
      * @param theDefinition A String containing a coordinate reference system definition.
      */
-    explicit QgsCoordinateReferenceSystem( QString theDefinition );
+    explicit QgsCoordinateReferenceSystem( const QString& theDefinition );
 
     /** Use this constructor when you want to create a CRS object using
      *  a postgis SRID, an EpsgCrsId id or a QGIS CRS_ID.
@@ -285,7 +285,7 @@ class QgsCoordinateReferenceSystem
     // Mutators -----------------------------------
     /** Set user hint for validation
      */
-    void setValidationHint( QString html );
+    void setValidationHint( const QString& html );
 
     /** Get user hint for validation
      */
@@ -300,7 +300,7 @@ class QgsCoordinateReferenceSystem
     /** Save the proj4-string as a custom CRS
      * @returns bool true if success else false
      */
-    bool saveAsUserCRS( QString name );
+    bool saveAsUserCRS( const QString& name );
 
     /** Returns auth id of related geographic CRS*/
     QString geographicCRSAuthId() const;

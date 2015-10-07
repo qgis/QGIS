@@ -43,7 +43,7 @@ class CORE_EXPORT QgsAuthMethodRegistry
 
   public:
     /** Means of accessing canonical single instance  */
-    static QgsAuthMethodRegistry* instance( QString pluginPath = QString::null );
+    static QgsAuthMethodRegistry* instance( const QString& pluginPath = QString::null );
 
     /** Virtual dectructor */
     virtual ~QgsAuthMethodRegistry();
@@ -111,7 +111,7 @@ class CORE_EXPORT QgsAuthMethodRegistry
 
   private:
     /** Ctor private since instance() creates it */
-    QgsAuthMethodRegistry( QString pluginPath );
+    QgsAuthMethodRegistry( const QString& pluginPath );
 
     /** Associative container of auth method metadata handles */
     AuthMethods mAuthMethods;

@@ -87,13 +87,13 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          *
          * @param filterExp An expression
          */
-        void setFilterExpression( QString filterExp ) { mFilterExp = filterExp; initFilter(); }
+        void setFilterExpression( const QString& filterExp ) { mFilterExp = filterExp; initFilter(); }
         /**
          * Set a human readable description for this rule
          *
          * @param description Description
          */
-        void setDescription( QString description ) { mDescription = description; }
+        void setDescription( const QString& description ) { mDescription = description; }
         /**
          * Sets if this rule is active
          * @param state Determines if the rule should be activated or deactivated

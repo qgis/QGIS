@@ -514,7 +514,7 @@ QgsExpression* QgsPalLayerSettings::getLabelExpression()
   return expression;
 }
 
-static QColor _readColor( QgsVectorLayer* layer, QString property, QColor defaultColor = Qt::black, bool withAlpha = true )
+static QColor _readColor( QgsVectorLayer* layer, const QString& property, const QColor& defaultColor = Qt::black, bool withAlpha = true )
 {
   int r = layer->customProperty( property + "R", QVariant( defaultColor.red() ) ).toInt();
   int g = layer->customProperty( property + "G", QVariant( defaultColor.green() ) ).toInt();
@@ -523,7 +523,7 @@ static QColor _readColor( QgsVectorLayer* layer, QString property, QColor defaul
   return QColor( r, g, b, a );
 }
 
-static void _writeColor( QgsVectorLayer* layer, QString property, QColor color, bool withAlpha = true )
+static void _writeColor( QgsVectorLayer* layer, const QString& property, const QColor& color, bool withAlpha = true )
 {
   layer->setCustomProperty( property + "R", color.red() );
   layer->setCustomProperty( property + "G", color.green() );
@@ -1652,7 +1652,7 @@ QVariant QgsPalLayerSettings::dataDefinedValue( DataDefinedProperties p, QgsFeat
   return result;
 }
 
-bool QgsPalLayerSettings::dataDefinedEvaluate( DataDefinedProperties p, QVariant& exprVal, QgsExpressionContext *context, QVariant originalValue ) const
+bool QgsPalLayerSettings::dataDefinedEvaluate( DataDefinedProperties p, QVariant& exprVal, QgsExpressionContext *context, const QVariant& originalValue ) const
 {
   // null passed-around QVariant
   exprVal.clear();
@@ -1898,7 +1898,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString t
 }
 
 
-void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &context, QString dxfLayer, QgsLabelFeature** labelFeature )
+void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &context, const QString& dxfLayer, QgsLabelFeature** labelFeature )
 {
   // either used in QgsPalLabeling (palLayer is set) or in QgsLabelingEngineV2 (labelFeature is set)
   Q_ASSERT( labelFeature );
@@ -2707,7 +2707,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
 }
 
 
-void QgsPalLayerSettings::registerObstacleFeature( QgsFeature& f, QgsRenderContext &context, QString dxfLayer , QgsLabelFeature** obstacleFeature )
+void QgsPalLayerSettings::registerObstacleFeature( QgsFeature& f, QgsRenderContext &context, const QString& dxfLayer, QgsLabelFeature** obstacleFeature )
 {
   Q_UNUSED( dxfLayer ); // now handled in QgsDxfLabelProvider
 
@@ -2748,7 +2748,7 @@ void QgsPalLayerSettings::registerObstacleFeature( QgsFeature& f, QgsRenderConte
 
 bool QgsPalLayerSettings::dataDefinedValEval( DataDefinedValueType valType,
     QgsPalLayerSettings::DataDefinedProperties p,
-    QVariant& exprVal, QgsExpressionContext& context, QVariant originalValue )
+    QVariant& exprVal, QgsExpressionContext& context, const QVariant& originalValue )
 {
   if ( dataDefinedEvaluate( p, exprVal, &context, originalValue ) )
   {
@@ -3695,7 +3695,7 @@ int QgsPalLabeling::addDiagramLayer( QgsVectorLayer* layer, const QgsDiagramLaye
   return 0;
 }
 
-void QgsPalLabeling::registerFeature( const QString& layerID, QgsFeature& f, QgsRenderContext &context, QString dxfLayer )
+void QgsPalLabeling::registerFeature( const QString& layerID, QgsFeature& f, QgsRenderContext &context, const QString& dxfLayer )
 {
   Q_UNUSED( dxfLayer ); // now handled by QgsDxfLabelProvider
   if ( QgsVectorLayerLabelProvider* provider = mLabelProviders.value( layerID, 0 ) )

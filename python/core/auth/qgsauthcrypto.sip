@@ -7,9 +7,9 @@ class QgsAuthCrypto
   public:
     static bool isDisabled();
 
-    static const QString encrypt( QString pass, QString cipheriv, QString text );
+    static const QString encrypt( const QString& pass, const QString& cipheriv, const QString& text );
 
-    static const QString decrypt( QString pass, QString cipheriv, QString text );
+    static const QString decrypt( const QString& pass, const QString& cipheriv, const QString& text );
 
     static void passwordKeyHash( const QString &pass,
                                  QString *salt,

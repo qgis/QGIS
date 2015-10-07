@@ -193,14 +193,14 @@ void QgsMessageBarItem::writeContent()
   mStyleSheet += "QLabel#mItemCount { font-style: italic; }";
 }
 
-QgsMessageBarItem* QgsMessageBarItem::setText( QString text )
+QgsMessageBarItem* QgsMessageBarItem::setText( const QString& text )
 {
   mText = text;
   writeContent();
   return this;
 }
 
-QgsMessageBarItem *QgsMessageBarItem::setTitle( QString title )
+QgsMessageBarItem *QgsMessageBarItem::setTitle( const QString& title )
 {
   mTitle = title;
   writeContent();

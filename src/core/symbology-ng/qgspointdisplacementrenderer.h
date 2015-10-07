@@ -78,7 +78,7 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsFeatureRendererV2
     QgsLegendSymbologyList legendSymbologyItems( QSize iconSize ) override;
 
     //! @note not available in python bindings
-    QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, QString rule = "" ) override;
+    QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString& rule = "" ) override;
 
     void setLabelAttributeName( const QString& name ) { mLabelAttributeName = name; }
     QString labelAttributeName() const { return mLabelAttributeName; }

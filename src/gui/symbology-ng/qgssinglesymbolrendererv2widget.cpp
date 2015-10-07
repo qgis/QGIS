@@ -92,7 +92,7 @@ void QgsSingleSymbolRendererV2Widget::changeSingleSymbol()
   mRenderer->setSymbol( mSingleSymbol->clone() );
 }
 
-void QgsSingleSymbolRendererV2Widget::sizeScaleFieldChanged( QString fldName )
+void QgsSingleSymbolRendererV2Widget::sizeScaleFieldChanged( const QString& fldName )
 {
   mRenderer->setSizeScaleField( fldName );
 }

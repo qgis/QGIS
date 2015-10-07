@@ -434,7 +434,7 @@ void QgsStyleV2ExportImportDialog::browse()
   }
 }
 
-void QgsStyleV2ExportImportDialog::downloadStyleXML( QUrl url )
+void QgsStyleV2ExportImportDialog::downloadStyleXML( const QUrl& url )
 {
   // XXX Try to move this code to some core Network interface,
   // HTTP downloading is a generic functionality that might be used elsewhere

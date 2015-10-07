@@ -36,7 +36,7 @@ const QString QgsAuthMethodConfig::mConfigListSep = "```";
 const int QgsAuthMethodConfig::mConfigVersion = 1;
 
 // get uniqueConfigId only on save
-QgsAuthMethodConfig::QgsAuthMethodConfig( QString method, int version )
+QgsAuthMethodConfig::QgsAuthMethodConfig( const QString& method, int version )
     : mId( QString() )
     , mName( QString() )
     , mUri( QString() )
@@ -134,7 +134,7 @@ int QgsAuthMethodConfig::removeConfig( const QString &key )
   return mConfigMap.remove( key );
 }
 
-QString QgsAuthMethodConfig::config( const QString &key, const QString defaultvalue ) const
+QString QgsAuthMethodConfig::config( const QString &key, const QString& defaultvalue ) const
 {
   return mConfigMap.value( key, defaultvalue );
 }

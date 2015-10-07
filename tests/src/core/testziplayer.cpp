@@ -43,15 +43,15 @@ class TestZipLayer: public QObject
     QString mSettingsKey;
 
     // get map layer using Passthru
-    QgsMapLayer * getLayer( QString myPath, QString myName, QString myProviderKey );
-    bool testZipItemPassthru( QString myFileName, QString myProviderKey );
+    QgsMapLayer * getLayer( const QString& myPath, const QString& myName, const QString& myProviderKey );
+    bool testZipItemPassthru( const QString& myFileName, const QString& myProviderKey );
     // get map layer using QgsZipItem (only 1 child)
-    QgsMapLayer * getZipLayer( QString myPath, QString myName );
+    QgsMapLayer * getZipLayer( const QString& myPath, const QString& myName );
     // test item(s) in zip item (supply name or test all)
-    bool testZipItem( QString myFileName, QString myChildName = "", QString myDriverName = "" );
+    bool testZipItem( const QString& myFileName, const QString& myChildName = "", const QString& myDriverName = "" );
     // get layer transparency to test for .qml loading
-    int getLayerTransparency( QString myFileName, QString myProviderKey, QString myScanZipSetting = "basic" );
-    bool testZipItemTransparency( QString myFileName, QString myProviderKey, int myTarget );
+    int getLayerTransparency( const QString& myFileName, const QString& myProviderKey, const QString& myScanZipSetting = "basic" );
+    bool testZipItemTransparency( const QString& myFileName, const QString& myProviderKey, int myTarget );
 
   private slots:
 
@@ -94,29 +94,30 @@ class TestZipLayer: public QObject
 };
 
 
-QgsMapLayer *TestZipLayer::getLayer( QString myPath, QString myName, QString myProviderKey )
+QgsMapLayer *TestZipLayer::getLayer( const QString& myPath, const QString& myName, const QString& myProviderKey )
 {
-  if ( myName == "" )
+  QString fullName = myName;
+  if ( fullName == "" )
   {
     QFileInfo myFileInfo( myPath );
-    myName = myFileInfo.completeBaseName();
+    fullName = myFileInfo.completeBaseName();
   }
   QgsMapLayer *myLayer = NULL;
 
   if ( myProviderKey == "ogr" )
   {
-    myLayer = new QgsVectorLayer( myPath, myName, "ogr" );
+    myLayer = new QgsVectorLayer( myPath, fullName, "ogr" );
   }
   else if ( myProviderKey == "gdal" )
   {
-    myLayer = new QgsRasterLayer( myPath, myName, QString( "gdal" ) );
+    myLayer = new QgsRasterLayer( myPath, fullName, QString( "gdal" ) );
   }
   // item should not have other provider key, but if it does will return NULL
 
   return myLayer;
 }
 
-QgsMapLayer *TestZipLayer::getZipLayer( QString myPath, QString myName )
+QgsMapLayer *TestZipLayer::getZipLayer( const QString& myPath, const QString& myName )
 {
   QgsMapLayer *myLayer = NULL;
   QgsDirectoryItem *dirItem = new QgsDirectoryItem( NULL, "/", "" );
@@ -132,7 +133,7 @@ QgsMapLayer *TestZipLayer::getZipLayer( QString myPath, QString myName )
   return myLayer;
 }
 
-bool TestZipLayer::testZipItemPassthru( QString myFileName, QString myProviderKey )
+bool TestZipLayer::testZipItemPassthru( const QString& myFileName, const QString& myProviderKey )
 {
   QgsMapLayer * myLayer = getLayer( myFileName, "", myProviderKey );
   bool ok = myLayer && myLayer->isValid();
@@ -141,7 +142,7 @@ bool TestZipLayer::testZipItemPassthru( QString myFileName, QString myProviderKe
   return ok;
 }
 
-bool TestZipLayer::testZipItem( QString myFileName, QString myChildName, QString myProviderName )
+bool TestZipLayer::testZipItem( const QString& myFileName, const QString& myChildName, const QString& myProviderName )
 {
   QgsDebugMsg( QString( "\n=======================================\nfile = %1 name = %2 provider = %3"
                       ).arg( myFileName ).arg( myChildName ).arg( myProviderName ) );
@@ -223,7 +224,7 @@ bool TestZipLayer::testZipItem( QString myFileName, QString myChildName, QString
   return ok;
 }
 
-int TestZipLayer::getLayerTransparency( QString myFileName, QString myProviderKey, QString myScanZipSetting )
+int TestZipLayer::getLayerTransparency( const QString& myFileName, const QString& myProviderKey, const QString& myScanZipSetting )
 {
   int myTransparency = -1;
   QSettings settings;
@@ -255,7 +256,7 @@ int TestZipLayer::getLayerTransparency( QString myFileName, QString myProviderKe
   return myTransparency;
 }
 
-bool TestZipLayer::testZipItemTransparency( QString myFileName, QString myProviderKey, int myTarget )
+bool TestZipLayer::testZipItemTransparency( const QString& myFileName, const QString& myProviderKey, int myTarget )
 {
   int myTransparency;
   Q_FOREACH ( const QString& s, mScanZipSettings )

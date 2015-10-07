@@ -83,7 +83,7 @@ class ANALYSIS_EXPORT QgsOSMWay : public QgsOSMElement
 {
   public:
     QgsOSMWay() {}
-    QgsOSMWay( QgsOSMId id, const QList<QgsOSMId> nodes ) : QgsOSMElement( QgsOSMElementID::Way, id ), mNodes( nodes ) {}
+    QgsOSMWay( QgsOSMId id, const QList<QgsOSMId>& nodes ) : QgsOSMElement( QgsOSMElementID::Way, id ), mNodes( nodes ) {}
 
     QList<QgsOSMId> nodes() const { return mNodes; }
 

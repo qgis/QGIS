@@ -42,7 +42,7 @@ QMap< QString, QgsCptCityArchive* > QgsCptCityArchive::mArchiveRegistry;
 QMap< QString, QgsCptCityArchive* > QgsCptCityArchive::archiveRegistry() { return mArchiveRegistry; }
 QMap< QString, QMap< QString, QString > > QgsCptCityArchive::mCopyingInfoMap;
 
-QgsCptCityArchive::QgsCptCityArchive( QString archiveName, QString baseDir )
+QgsCptCityArchive::QgsCptCityArchive( const QString& archiveName, const QString& baseDir )
     : mArchiveName( archiveName )
     , mBaseDir( baseDir )
 {
@@ -421,7 +421,7 @@ QgsCptCityArchive* QgsCptCityArchive::defaultArchive()
     return NULL;
 }
 
-void QgsCptCityArchive::initArchive( QString archiveName, QString archiveBaseDir )
+void QgsCptCityArchive::initArchive( const QString& archiveName, const QString& archiveBaseDir )
 {
   QgsDebugMsg( "archiveName = " + archiveName + " archiveBaseDir = " + archiveBaseDir );
   QgsCptCityArchive *archive = new QgsCptCityArchive( archiveName, archiveBaseDir );
@@ -495,7 +495,7 @@ void QgsCptCityArchive::clearArchives()
 // --------
 
 QgsCptCityDataItem::QgsCptCityDataItem( QgsCptCityDataItem::Type type, QgsCptCityDataItem* parent,
-                                        QString name, QString path )
+                                        const QString& name, const QString& path )
 // Do not pass parent to QObject, Qt would delete this when parent is deleted
     : QObject()
     , mType( type ), mParent( parent ), mPopulated( false )
@@ -710,7 +710,7 @@ bool QgsCptCityDataItem::equal( const QgsCptCityDataItem *other )
 // ---------------------------------------------------------------------
 
 QgsCptCityColorRampItem::QgsCptCityColorRampItem( QgsCptCityDataItem* parent,
-    QString name, QString path, QString variantName, bool initialize )
+    const QString& name, const QString& path, const QString& variantName, bool initialize )
     : QgsCptCityDataItem( ColorRamp, parent, name, path )
     , mInitialised( false )
     , mRamp( path, variantName, false )
@@ -722,7 +722,7 @@ QgsCptCityColorRampItem::QgsCptCityColorRampItem( QgsCptCityDataItem* parent,
 }
 
 QgsCptCityColorRampItem::QgsCptCityColorRampItem( QgsCptCityDataItem* parent,
-    QString name, QString path, QStringList variantList, bool initialize )
+    const QString& name, const QString& path, const QStringList& variantList, bool initialize )
     : QgsCptCityDataItem( ColorRamp, parent, name, path )
     , mInitialised( false )
     , mRamp( path, variantList, QString(), false )
@@ -839,7 +839,7 @@ QIcon QgsCptCityColorRampItem::icon( const QSize& size )
 
 // ---------------------------------------------------------------------
 QgsCptCityCollectionItem::QgsCptCityCollectionItem( QgsCptCityDataItem* parent,
-    QString name, QString path )
+    const QString& name, const QString& path )
     : QgsCptCityDataItem( Collection, parent, name, path )
     , mPopulatedRamps( false )
 {
@@ -903,7 +903,7 @@ QVector< QgsCptCityDataItem* > QgsCptCityCollectionItem::childrenRamps( bool rec
 
 //-----------------------------------------------------------------------
 QgsCptCityDirectoryItem::QgsCptCityDirectoryItem( QgsCptCityDataItem* parent,
-    QString name, QString path )
+    const QString& name, const QString& path )
     : QgsCptCityCollectionItem( parent, name, path )
 {
   mType = Directory;
@@ -1114,7 +1114,7 @@ bool QgsCptCityDirectoryItem::equal( const QgsCptCityDataItem *other )
 }
 
 QgsCptCityDataItem* QgsCptCityDirectoryItem::dataItem( QgsCptCityDataItem* parent,
-    QString name, QString path )
+    const QString& name, const QString& path )
 {
   QgsDebugMsg( "name= " + name + " path= " + path );
 
@@ -1165,7 +1165,7 @@ QgsCptCityDataItem* QgsCptCityDirectoryItem::dataItem( QgsCptCityDataItem* paren
 
 //-----------------------------------------------------------------------
 QgsCptCitySelectionItem::QgsCptCitySelectionItem( QgsCptCityDataItem* parent,
-    QString name, QString path )
+    const QString& name, const QString& path )
     : QgsCptCityCollectionItem( parent, name, path )
 {
   mType = Selection;
@@ -1296,7 +1296,7 @@ bool QgsCptCitySelectionItem::equal( const QgsCptCityDataItem *other )
 
 //-----------------------------------------------------------------------
 QgsCptCityAllRampsItem::QgsCptCityAllRampsItem( QgsCptCityDataItem* parent,
-    QString name,  QVector<QgsCptCityDataItem*> items )
+    const QString& name, const QVector<QgsCptCityDataItem*>& items )
     : QgsCptCityCollectionItem( parent, name, QString() ), mItems( items )
 {
   mType = AllRamps;
@@ -1474,7 +1474,7 @@ int QgsCptCityBrowserModel::columnCount( const QModelIndex &parent ) const
   return 2;
 }
 
-QModelIndex QgsCptCityBrowserModel::findPath( QString path )
+QModelIndex QgsCptCityBrowserModel::findPath( const QString& path )
 {
   QModelIndex theIndex; // starting from root
   bool foundParent = false, foundChild = true;
@@ -1582,7 +1582,7 @@ void QgsCptCityBrowserModel::reload()
 }
 
 /* Refresh dir path */
-void QgsCptCityBrowserModel::refresh( QString path )
+void QgsCptCityBrowserModel::refresh( const QString& path )
 {
   QModelIndex idx = findPath( path );
   if ( idx.isValid() )

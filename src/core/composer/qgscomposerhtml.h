@@ -88,7 +88,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
      * @see loadHtml
      * @note added in 2.5
      */
-    void setHtml( const QString html );
+    void setHtml( const QString& html );
 
     /** Returns the HTML source displayed in the item if the item is using
      * the QgsComposerHtml::ManualHtml mode.
@@ -169,7 +169,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
      * @see loadHtml
      * @note added in 2.5
      */
-    void setUserStylesheet( const QString stylesheet );
+    void setUserStylesheet( const QString& stylesheet );
 
     /** Returns the user stylesheet CSS rules used while rendering the HTML content. These
      * overriding the styles specified within the HTML source.
@@ -256,7 +256,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
     void renderCachedImage();
 
     //fetches html content from a url and returns it as a string
-    QString fetchHtml( QUrl url );
+    QString fetchHtml( const QUrl& url );
 
     /** Sets the current feature, the current layer and a list of local variable substitutions for evaluating expressions */
     void setExpressionContext( const QgsFeature& feature, QgsVectorLayer* layer );

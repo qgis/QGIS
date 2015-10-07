@@ -28,7 +28,7 @@ QgsRasterIdentifyResult::QgsRasterIdentifyResult()
 {
 }
 
-QgsRasterIdentifyResult::QgsRasterIdentifyResult( QgsRaster::IdentifyFormat theFormat, QMap<int, QVariant> theResults )
+QgsRasterIdentifyResult::QgsRasterIdentifyResult( QgsRaster::IdentifyFormat theFormat, const QMap<int, QVariant>& theResults )
     : mValid( true )
     , mFormat( theFormat )
     , mResults( theResults )

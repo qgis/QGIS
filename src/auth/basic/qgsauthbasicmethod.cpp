@@ -171,7 +171,7 @@ QgsAuthMethodConfig QgsAuthBasicMethod::getMethodConfig( const QString &authcfg,
   return mconfig;
 }
 
-void QgsAuthBasicMethod::putMethodConfig( const QString &authcfg, QgsAuthMethodConfig mconfig )
+void QgsAuthBasicMethod::putMethodConfig( const QString &authcfg, const QgsAuthMethodConfig& mconfig )
 {
   QgsDebugMsg( QString( "Putting basic config for authcfg: %1" ).arg( authcfg ) );
   mAuthConfigCache.insert( authcfg, mconfig );

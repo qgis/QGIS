@@ -26,7 +26,7 @@
 QgsNewNameDialog::QgsNewNameDialog( const QString& source, const QString& initial,
                                     const QStringList& extensions, const QStringList& existing,
                                     const QRegExp& regexp, Qt::CaseSensitivity cs,
-                                    QWidget *parent, Qt::WindowFlags flags )
+                                    QWidget *parent, const Qt::WindowFlags& flags )
     : QgsDialog( parent, flags, QDialogButtonBox::Ok | QDialogButtonBox::Cancel )
     , mExiting( existing )
     , mExtensions( extensions )

@@ -95,7 +95,7 @@ QList< QPair<QString, QString> > QgsGPSDetector::availablePorts()
   return devs;
 }
 
-QgsGPSDetector::QgsGPSDetector( QString portName )
+QgsGPSDetector::QgsGPSDetector( const QString& portName )
 {
   mConn = 0;
   mBaudList << BAUD4800 << BAUD9600 << BAUD38400 << BAUD57600 << BAUD115200;  //add 57600 for SXBlueII GPS unit

@@ -180,7 +180,7 @@ void QgsAttributeTableView::keyPressEvent( QKeyEvent *event )
   }
 }
 
-void QgsAttributeTableView::repaintRequested( QModelIndexList indexes )
+void QgsAttributeTableView::repaintRequested( const QModelIndexList& indexes )
 {
   Q_FOREACH ( const QModelIndex& index, indexes )
   {

@@ -176,7 +176,7 @@ class CORE_EXPORT QgsExpression
     /** Assign a special column
      * @deprecated use global or project QgsExpressionContext variables instead
      */
-    Q_DECL_DEPRECATED static void setSpecialColumn( const QString& name, QVariant value );
+    Q_DECL_DEPRECATED static void setSpecialColumn( const QString& name, const QVariant& value );
     /** Unset a special column
      * @deprecated use global or project QgsExpressionContext variables instead
      */
@@ -354,10 +354,10 @@ class CORE_EXPORT QgsExpression
       public:
         Function( const QString& fnname,
                   int params,
-                  QString group,
-                  QString helpText = QString(),
+                  const QString& group,
+                  const QString& helpText = QString(),
                   bool usesGeometry = false,
-                  QStringList referencedColumns = QStringList(),
+                  const QStringList& referencedColumns = QStringList(),
                   bool lazyEval = false,
                   bool handlesNull = false,
                   bool isContextual = false )
@@ -442,13 +442,13 @@ class CORE_EXPORT QgsExpression
     class StaticFunction : public Function
     {
       public:
-        Q_DECL_DEPRECATED StaticFunction( QString fnname,
+        Q_DECL_DEPRECATED StaticFunction( const QString& fnname,
                                           int params,
                                           FcnEval fcn,
-                                          QString group,
-                                          QString helpText = QString(),
+                                          const QString& group,
+                                          const QString& helpText = QString(),
                                           bool usesGeometry = false,
-                                          QStringList referencedColumns = QStringList(),
+                                          const QStringList& referencedColumns = QStringList(),
                                           bool lazyEval = false,
                                           const QStringList& aliases = QStringList(),
                                           bool handlesNull = false )
@@ -462,13 +462,13 @@ class CORE_EXPORT QgsExpression
 
         /** Static function for evaluation against a QgsExpressionContext
          */
-        StaticFunction( QString fnname,
+        StaticFunction( const QString& fnname,
                         int params,
                         FcnEvalContext fcn,
-                        QString group,
-                        QString helpText = QString(),
+                        const QString& group,
+                        const QString& helpText = QString(),
                         bool usesGeometry = false,
-                        QStringList referencedColumns = QStringList(),
+                        const QStringList& referencedColumns = QStringList(),
                         bool lazyEval = false,
                         const QStringList& aliases = QStringList(),
                         bool handlesNull = false )
@@ -517,7 +517,7 @@ class CORE_EXPORT QgsExpression
      * @param name function name
      * @see registerFunction
      */
-    static bool unregisterFunction( QString name );
+    static bool unregisterFunction( const QString& name );
 
     //! List of functions owned by the expression engine
     static QList<Function*> gmOwnedFunctions;
@@ -688,7 +688,7 @@ class CORE_EXPORT QgsExpression
         void setValid( bool valid ) { mValid = valid; }
         bool operator==( const QgsExpression::Interval& other ) const;
         static QgsExpression::Interval invalidInterVal();
-        static QgsExpression::Interval fromString( QString string );
+        static QgsExpression::Interval fromString( const QString& string );
       private:
         double mSeconds;
         bool mValid;
@@ -743,7 +743,7 @@ class CORE_EXPORT QgsExpression
         bool compare( double diff );
         int computeInt( int x, int y );
         double computeDouble( double x, double y );
-        QDateTime computeDateTimeFromInterval( QDateTime d, QgsExpression::Interval *i );
+        QDateTime computeDateTimeFromInterval( const QDateTime& d, QgsExpression::Interval *i );
 
         BinaryOperator mOp;
         Node* mOpLeft;
@@ -916,7 +916,7 @@ class CORE_EXPORT QgsExpression
     /** Returns the translated name for a function group.
      * @param group untranslated group name
      */
-    static QString group( QString group );
+    static QString group( const QString& group );
 
   protected:
     /**
@@ -942,7 +942,7 @@ class CORE_EXPORT QgsExpression
 
     struct HelpArg
     {
-      HelpArg( QString arg, QString desc, bool descOnly = false, bool syntaxOnly = false )
+      HelpArg( const QString& arg, const QString& desc, bool descOnly = false, bool syntaxOnly = false )
           : mArg( arg )
           , mDescription( desc )
           , mDescOnly( descOnly )
@@ -957,7 +957,7 @@ class CORE_EXPORT QgsExpression
 
     struct HelpExample
     {
-      HelpExample( QString expression, QString returns, QString note = QString::null )
+      HelpExample( const QString& expression, const QString& returns, const QString& note = QString::null )
           : mExpression( expression )
           , mReturns( returns )
           , mNote( note )
@@ -970,11 +970,11 @@ class CORE_EXPORT QgsExpression
 
     struct HelpVariant
     {
-      HelpVariant( QString name, QString description,
-                   QList<HelpArg> arguments = QList<HelpArg>(),
+      HelpVariant( const QString& name, const QString& description,
+                   const QList<HelpArg>& arguments = QList<HelpArg>(),
                    bool variableLenArguments = false,
-                   QList<HelpExample> examples = QList<HelpExample>(),
-                   QString notes = QString::null )
+                   const QList<HelpExample>& examples = QList<HelpExample>(),
+                   const QString& notes = QString::null )
           : mName( name )
           , mDescription( description )
           , mArguments( arguments )
@@ -995,7 +995,7 @@ class CORE_EXPORT QgsExpression
     {
       Help() {}
 
-      Help( QString name, QString type, QString description, QList<HelpVariant> variants )
+      Help( const QString& name, const QString& type, const QString& description, const QList<HelpVariant>& variants )
           : mName( name )
           , mType( type )
           , mDescription( description )

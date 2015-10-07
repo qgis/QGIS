@@ -9,7 +9,7 @@ QgsRelationAddDlg::QgsRelationAddDlg( QWidget *parent ) :
   mTxtRelationId->setPlaceholderText( tr( "[Generated automatically]" ) );
 }
 
-void QgsRelationAddDlg::addLayers( QList< QgsVectorLayer* > layers )
+void QgsRelationAddDlg::addLayers( const QList< QgsVectorLayer* >& layers )
 {
   mCbxReferencingLayer->addItem( "", "" );
   mCbxReferencedLayer->addItem( "", "" );

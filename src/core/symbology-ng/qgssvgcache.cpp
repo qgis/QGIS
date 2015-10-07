@@ -689,7 +689,7 @@ void QgsSvgCache::containsElemParams( const QDomElement& elem, bool& hasFillPara
   }
 }
 
-void QgsSvgCache::removeCacheEntry( QString s, QgsSvgCacheEntry* entry )
+void QgsSvgCache::removeCacheEntry( const QString& s, QgsSvgCacheEntry* entry )
 {
   delete entry;
   mEntryLookup.remove( s, entry );

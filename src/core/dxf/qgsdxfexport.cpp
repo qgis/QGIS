@@ -465,7 +465,7 @@ void QgsDxfExport::writeString( const QString& s )
   mTextStream << s << "\n";
 }
 
-int QgsDxfExport::writeToFile( QIODevice* d, QString encoding )
+int QgsDxfExport::writeToFile( QIODevice* d, const QString& encoding )
 {
   if ( !d )
   {
@@ -489,7 +489,7 @@ int QgsDxfExport::writeToFile( QIODevice* d, QString encoding )
   return 0;
 }
 
-void QgsDxfExport::writeHeader( QString codepage )
+void QgsDxfExport::writeHeader( const QString& codepage )
 {
   writeGroup( 999, "DXF created from QGIS" );
 

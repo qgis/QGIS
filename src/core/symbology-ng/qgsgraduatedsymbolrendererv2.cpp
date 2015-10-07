@@ -45,7 +45,7 @@ QgsRendererRangeV2::QgsRendererRangeV2()
 {
 }
 
-QgsRendererRangeV2::QgsRendererRangeV2( double lowerValue, double upperValue, QgsSymbolV2* symbol, QString label, bool render )
+QgsRendererRangeV2::QgsRendererRangeV2( double lowerValue, double upperValue, QgsSymbolV2* symbol, const QString& label, bool render )
     : mLowerValue( lowerValue )
     , mUpperValue( upperValue )
     , mSymbol( symbol )
@@ -111,7 +111,7 @@ void QgsRendererRangeV2::setSymbol( QgsSymbolV2* s )
   if ( mSymbol.data() != s ) mSymbol.reset( s );
 }
 
-void QgsRendererRangeV2::setLabel( QString label )
+void QgsRendererRangeV2::setLabel( const QString& label )
 {
   mLabel = label;
 }
@@ -187,7 +187,7 @@ QgsRendererRangeV2LabelFormat::QgsRendererRangeV2LabelFormat():
 {
 }
 
-QgsRendererRangeV2LabelFormat::QgsRendererRangeV2LabelFormat( QString format, int precision, bool trimTrailingZeroes ):
+QgsRendererRangeV2LabelFormat::QgsRendererRangeV2LabelFormat( const QString& format, int precision, bool trimTrailingZeroes ):
     mReTrailingZeroes( "[.,]?0*$" ),
     mReNegativeZero( "^\\-0(?:[.,]0*)?$" )
 {
@@ -281,7 +281,7 @@ void QgsRendererRangeV2LabelFormat::saveToDomElement( QDomElement &element )
 
 ///////////
 
-QgsGraduatedSymbolRendererV2::QgsGraduatedSymbolRendererV2( QString attrName, QgsRangeList ranges )
+QgsGraduatedSymbolRendererV2::QgsGraduatedSymbolRendererV2( const QString& attrName, const QgsRangeList& ranges )
     : QgsFeatureRendererV2( "graduatedSymbol" )
     , mAttrName( attrName )
     , mRanges( ranges )
@@ -462,7 +462,7 @@ bool QgsGraduatedSymbolRendererV2::updateRangeSymbol( int rangeIndex, QgsSymbolV
   return true;
 }
 
-bool QgsGraduatedSymbolRendererV2::updateRangeLabel( int rangeIndex, QString label )
+bool QgsGraduatedSymbolRendererV2::updateRangeLabel( int rangeIndex, const QString& label )
 {
   if ( rangeIndex < 0 || rangeIndex >= mRanges.size() )
     return false;
@@ -802,13 +802,13 @@ static QList<double> _calcJenksBreaks( QList<double> values, int classes,
 
 QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::createRenderer(
   QgsVectorLayer* vlayer,
-  QString attrName,
+  const QString& attrName,
   int classes,
   Mode mode,
   QgsSymbolV2* symbol,
   QgsVectorColorRampV2* ramp,
   bool inverted,
-  QgsRendererRangeV2LabelFormat labelFormat
+  const QgsRendererRangeV2LabelFormat& labelFormat
 )
 {
   QgsRangeList ranges;
@@ -1230,7 +1230,7 @@ QgsLegendSymbolListV2 QgsGraduatedSymbolRendererV2::legendSymbolItemsV2() const
   return QgsFeatureRendererV2::legendSymbolItemsV2();
 }
 
-QgsLegendSymbolList QgsGraduatedSymbolRendererV2::legendSymbolItems( double scaleDenominator, QString rule )
+QgsLegendSymbolList QgsGraduatedSymbolRendererV2::legendSymbolItems( double scaleDenominator, const QString& rule )
 {
   Q_UNUSED( scaleDenominator );
   QgsLegendSymbolList lst;
@@ -1368,7 +1368,7 @@ void QgsGraduatedSymbolRendererV2::updateSymbols( QgsSymbolV2 *sym )
   setSourceSymbol( sym->clone() );
 }
 
-void QgsGraduatedSymbolRendererV2::setRotationField( QString fieldOrExpression )
+void QgsGraduatedSymbolRendererV2::setRotationField( const QString& fieldOrExpression )
 {
   if ( mSourceSymbol->type() == QgsSymbolV2::Marker )
   {
@@ -1390,7 +1390,7 @@ QString QgsGraduatedSymbolRendererV2::rotationField() const
   return QString();
 }
 
-void QgsGraduatedSymbolRendererV2::setSizeScaleField( QString fieldOrExpression )
+void QgsGraduatedSymbolRendererV2::setSizeScaleField( const QString& fieldOrExpression )
 {
   mSizeScale.reset( QgsSymbolLayerV2Utils::fieldOrExpressionToExpression( fieldOrExpression ) );
 }
@@ -1415,7 +1415,7 @@ bool QgsGraduatedSymbolRendererV2::legendSymbolItemsCheckable() const
   return true;
 }
 
-bool QgsGraduatedSymbolRendererV2::legendSymbolItemChecked( QString key )
+bool QgsGraduatedSymbolRendererV2::legendSymbolItemChecked( const QString& key )
 {
   bool ok;
   int index = key.toInt( &ok );
@@ -1425,7 +1425,7 @@ bool QgsGraduatedSymbolRendererV2::legendSymbolItemChecked( QString key )
     return true;
 }
 
-void QgsGraduatedSymbolRendererV2::checkLegendSymbolItem( QString key, bool state )
+void QgsGraduatedSymbolRendererV2::checkLegendSymbolItem( const QString& key, bool state )
 {
   bool ok;
   int index = key.toInt( &ok );
@@ -1487,7 +1487,7 @@ void QgsGraduatedSymbolRendererV2::addBreak( double breakValue, bool updateSymbo
   }
 }
 
-void QgsGraduatedSymbolRendererV2::addClass( QgsRendererRangeV2 range )
+void QgsGraduatedSymbolRendererV2::addClass( const QgsRendererRangeV2& range )
 {
   mRanges.append( range );
 }

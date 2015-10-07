@@ -61,10 +61,10 @@ typedef QList<QgsGradientStop> QgsGradientStopsList;
 class CORE_EXPORT QgsVectorGradientColorRampV2 : public QgsVectorColorRampV2
 {
   public:
-    QgsVectorGradientColorRampV2( QColor color1 = DEFAULT_GRADIENT_COLOR1,
-                                  QColor color2 = DEFAULT_GRADIENT_COLOR2,
+    QgsVectorGradientColorRampV2( const QColor& color1 = DEFAULT_GRADIENT_COLOR1,
+                                  const QColor& color2 = DEFAULT_GRADIENT_COLOR2,
                                   bool discrete = false,
-                                  QgsGradientStopsList stops = QgsGradientStopsList() );
+                                  const QgsGradientStopsList& stops = QgsGradientStopsList() );
 
     static QgsVectorColorRampV2* create( const QgsStringMap& properties = QgsStringMap() );
 
@@ -204,7 +204,7 @@ class CORE_EXPORT QgsRandomColorsV2: public QgsVectorColorRampV2
 class CORE_EXPORT QgsVectorColorBrewerColorRampV2 : public QgsVectorColorRampV2
 {
   public:
-    QgsVectorColorBrewerColorRampV2( QString schemeName = DEFAULT_COLORBREWER_SCHEMENAME,
+    QgsVectorColorBrewerColorRampV2( const QString& schemeName = DEFAULT_COLORBREWER_SCHEMENAME,
                                      int colors = DEFAULT_COLORBREWER_COLORS );
 
     static QgsVectorColorRampV2* create( const QgsStringMap& properties = QgsStringMap() );
@@ -223,11 +223,11 @@ class CORE_EXPORT QgsVectorColorBrewerColorRampV2 : public QgsVectorColorRampV2
     virtual int count() const override { return mColors; }
     int colors() const { return mColors; }
 
-    void setSchemeName( QString schemeName ) { mSchemeName = schemeName; loadPalette(); }
+    void setSchemeName( const QString& schemeName ) { mSchemeName = schemeName; loadPalette(); }
     void setColors( int colors ) { mColors = colors; loadPalette(); }
 
     static QStringList listSchemeNames();
-    static QList<int> listSchemeVariants( QString schemeName );
+    static QList<int> listSchemeVariants( const QString& schemeName );
 
   protected:
 
@@ -245,11 +245,11 @@ class CORE_EXPORT QgsVectorColorBrewerColorRampV2 : public QgsVectorColorRampV2
 class CORE_EXPORT QgsCptCityColorRampV2 : public QgsVectorGradientColorRampV2
 {
   public:
-    QgsCptCityColorRampV2( QString schemeName = DEFAULT_CPTCITY_SCHEMENAME,
-                           QString variantName = DEFAULT_CPTCITY_VARIANTNAME,
+    QgsCptCityColorRampV2( const QString& schemeName = DEFAULT_CPTCITY_SCHEMENAME,
+                           const QString& variantName = DEFAULT_CPTCITY_VARIANTNAME,
                            bool doLoadFile = true );
-    QgsCptCityColorRampV2( QString schemeName, QStringList variantList,
-                           QString variantName = QString(), bool doLoadFile = true );
+    QgsCptCityColorRampV2( const QString& schemeName, const QStringList& variantList,
+                           const QString& variantName = QString(), bool doLoadFile = true );
 
     static QgsVectorColorRampV2* create( const QgsStringMap& properties = QgsStringMap() );
 
@@ -266,10 +266,10 @@ class CORE_EXPORT QgsCptCityColorRampV2 : public QgsVectorGradientColorRampV2
     QStringList variantList() const { return mVariantList; }
 
     /* lazy loading - have to call loadPalette() explicitly */
-    void setSchemeName( QString schemeName ) { mSchemeName = schemeName; mFileLoaded = false; }
-    void setVariantName( QString variantName ) { mVariantName = variantName; mFileLoaded = false; }
-    void setVariantList( QStringList variantList ) { mVariantList = variantList; }
-    void setName( QString schemeName, QString variantName = "", QStringList variantList = QStringList() )
+    void setSchemeName( const QString& schemeName ) { mSchemeName = schemeName; mFileLoaded = false; }
+    void setVariantName( const QString& variantName ) { mVariantName = variantName; mFileLoaded = false; }
+    void setVariantList( const QStringList& variantList ) { mVariantList = variantList; }
+    void setName( const QString& schemeName, const QString& variantName = "", const QStringList& variantList = QStringList() )
     { mSchemeName = schemeName; mVariantName = variantName; mVariantList = variantList; mFileLoaded = false; }
 
     void loadPalette() { loadFile(); }

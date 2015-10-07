@@ -77,7 +77,7 @@ class CORE_EXPORT QgsSymbolLayerV2
 
     virtual QgsSymbolLayerV2* clone() const = 0;
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const
     { Q_UNUSED( props ); element.appendChild( doc.createComment( QString( "SymbolLayerV2 %1 not implemented yet" ).arg( layerType() ) ) ); }
 
     virtual QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const { Q_UNUSED( mmScaleFactor ); Q_UNUSED( mapUnitScaleFactor ); return QString(); }
@@ -413,9 +413,9 @@ class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayerV2
     void setOffset( QPointF offset ) { mOffset = offset; }
     QPointF offset() const { return mOffset; }
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const override;
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const override;
 
-    virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const
+    virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const
     { Q_UNUSED( props ); element.appendChild( doc.createComment( QString( "QgsMarkerSymbolLayerV2 %1 not implemented yet" ).arg( layerType() ) ) ); }
 
     void setOffsetUnit( QgsSymbolV2::OutputUnit unit ) { mOffsetUnit = unit; }

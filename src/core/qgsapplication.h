@@ -38,7 +38,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     static const char* QGIS_ORGANIZATION_NAME;
     static const char* QGIS_ORGANIZATION_DOMAIN;
     static const char* QGIS_APPLICATION_NAME;
-    QgsApplication( int & argc, char ** argv, bool GUIenabled, QString customConfigPath = QString() );
+    QgsApplication( int & argc, char ** argv, bool GUIenabled, const QString& customConfigPath = QString() );
     virtual ~QgsApplication();
 
     /** This method initialises paths etc for QGIS. Called by the ctor or call it manually
@@ -173,7 +173,7 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     //! Returns path to the desired icon file.
     //! First it tries to use the active theme path, then default theme path
-    static QString iconPath( QString iconFile );
+    static QString iconPath( const QString& iconFile );
 
     //! Helper to get a theme icon. It will fall back to the
     //! default theme if the active theme does not have the required icon.
@@ -274,9 +274,9 @@ class CORE_EXPORT QgsApplication : public QApplication
     static void registerOgrDrivers();
 
     /** Converts absolute path to path relative to target */
-    static QString absolutePathToRelativePath( QString apath, QString targetPath );
+    static QString absolutePathToRelativePath( const QString& apath, const QString& targetPath );
     /** Converts path relative to target to an absolute path */
-    static QString relativePathToAbsolutePath( QString rpath, QString targetPath );
+    static QString relativePathToAbsolutePath( const QString& rpath, const QString& targetPath );
 
     /** Indicates whether running from build directory (not installed) */
     static bool isRunningFromBuildDir() { return ABISYM( mRunningFromBuildDir ); }
@@ -292,13 +292,13 @@ class CORE_EXPORT QgsApplication : public QApplication
      * and then calls GDALDriverManager::AutoSkipDrivers() to unregister it. The
      * driver name should be the short format of the Gdal driver name e.g. GTIFF.
      */
-    static void skipGdalDriver( QString theDriver );
+    static void skipGdalDriver( const QString& theDriver );
 
     /** Sets the GDAL_SKIP environment variable to exclude the specified driver
      * and then calls GDALDriverManager::AutoSkipDrivers() to unregister it. The
      * driver name should be the short format of the Gdal driver name e.g. GTIFF.
      */
-    static void restoreGdalDriver( QString theDriver );
+    static void restoreGdalDriver( const QString& theDriver );
 
     /** Returns the list of gdal drivers that should be skipped (based on
      * GDAL_SKIP environment variable)
@@ -332,7 +332,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     void preNotify( QObject * receiver, QEvent * event, bool * done );
 
   private:
-    static void copyPath( QString src, QString dst );
+    static void copyPath( const QString& src, const QString& dst );
     static QObject* ABISYM( mFileOpenEventReceiver );
     static QStringList ABISYM( mFileOpenEventList );
 

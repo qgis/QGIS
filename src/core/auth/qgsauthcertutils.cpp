@@ -45,7 +45,7 @@ QString QgsAuthCertUtils::getSslProtocolName( QSsl::SslProtocol protocol )
   }
 }
 
-QMap<QString, QSslCertificate> QgsAuthCertUtils::mapDigestToCerts( QList<QSslCertificate> certs )
+QMap<QString, QSslCertificate> QgsAuthCertUtils::mapDigestToCerts( const QList<QSslCertificate>& certs )
 {
   QMap<QString, QSslCertificate> digestmap;
   Q_FOREACH ( const QSslCertificate& cert, certs )
@@ -55,7 +55,7 @@ QMap<QString, QSslCertificate> QgsAuthCertUtils::mapDigestToCerts( QList<QSslCer
   return digestmap;
 }
 
-QMap<QString, QList<QSslCertificate> > QgsAuthCertUtils::certsGroupedByOrg( QList<QSslCertificate> certs )
+QMap<QString, QList<QSslCertificate> > QgsAuthCertUtils::certsGroupedByOrg( const QList<QSslCertificate>& certs )
 {
   QMap< QString, QList<QSslCertificate> > orgcerts;
   Q_FOREACH ( const QSslCertificate& cert, certs )
@@ -69,7 +69,7 @@ QMap<QString, QList<QSslCertificate> > QgsAuthCertUtils::certsGroupedByOrg( QLis
   return orgcerts;
 }
 
-QMap<QString, QgsAuthConfigSslServer> QgsAuthCertUtils::mapDigestToSslConfigs( QList<QgsAuthConfigSslServer> configs )
+QMap<QString, QgsAuthConfigSslServer> QgsAuthCertUtils::mapDigestToSslConfigs( const QList<QgsAuthConfigSslServer>& configs )
 {
   QMap<QString, QgsAuthConfigSslServer> digestmap;
   Q_FOREACH ( const QgsAuthConfigSslServer& config, configs )
@@ -79,7 +79,7 @@ QMap<QString, QgsAuthConfigSslServer> QgsAuthCertUtils::mapDigestToSslConfigs( Q
   return digestmap;
 }
 
-QMap<QString, QList<QgsAuthConfigSslServer> > QgsAuthCertUtils::sslConfigsGroupedByOrg( QList<QgsAuthConfigSslServer> configs )
+QMap<QString, QList<QgsAuthConfigSslServer> > QgsAuthCertUtils::sslConfigsGroupedByOrg( const QList<QgsAuthConfigSslServer>& configs )
 {
   QMap< QString, QList<QgsAuthConfigSslServer> > orgconfigs;
   Q_FOREACH ( const QgsAuthConfigSslServer& config, configs )

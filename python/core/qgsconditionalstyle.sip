@@ -20,20 +20,20 @@ class QgsConditionalLayerStyles
      * @param styles The styles to assign to all the rows
      * @note added in QGIS 2.12
      */
-    void setRowStyles( QList<QgsConditionalStyle> styles );
+    void setRowStyles( const QList<QgsConditionalStyle>& styles );
 
     /**
      * @brief Set the conditional styles for the field UI properties.
      * @param fieldName name of field
      * @param styles
      */
-    void setFieldStyles( QString fieldName, QList<QgsConditionalStyle> styles );
+    void setFieldStyles( const QString& fieldName, const QList<QgsConditionalStyle>& styles );
 
     /**
      * @brief Returns the conditional styles set for the field UI properties
      * @return A list of conditional styles that have been set.
      */
-    QList<QgsConditionalStyle> fieldStyles( QString fieldName );
+    QList<QgsConditionalStyle> fieldStyles( const QString& fieldName );
 
     /** Reads field ui properties specific state from Dom node.
      */
@@ -56,7 +56,7 @@ class QgsConditionalStyle
   public:
     QgsConditionalStyle();
     QgsConditionalStyle( const QgsConditionalStyle& other );
-    QgsConditionalStyle( QString rule );
+    QgsConditionalStyle( const QString& rule );
     ~QgsConditionalStyle();
 
     /**
@@ -65,7 +65,7 @@ class QgsConditionalStyle
      * @param context Expression context for evaluating rule expression
      * @return True of the rule matches against the given feature
      */
-    bool matches( QVariant value, QgsExpressionContext& context ) const;
+    bool matches( const QVariant& value, QgsExpressionContext& context ) const;
 
     /**
      * @brief Render a preview icon of the rule.
@@ -77,14 +77,14 @@ class QgsConditionalStyle
      * @brief Set the name of the style.  Names are optional but handy for display
      * @param value The name given to the style
      */
-    void setName( QString value );
+    void setName( const QString& value );
 
     /**
      * @brief Set the rule for the style.  Rules should be of QgsExpression syntax.
      * Special value of \@value is replaced at run time with the check value
      * @param value The QgsExpression style rule to use for this style
      */
-    void setRule( QString value );
+    void setRule( const QString& value );
 
     /**
      * @brief Set the background color for the style
@@ -102,7 +102,7 @@ class QgsConditionalStyle
      * @brief Set the font for the the style
      * @param value QFont to be used for text
      */
-    void setFont( QFont value );
+    void setFont( const QFont& value );
 
     /**
      * @brief Set the icon for the style. Icons are generated from symbols
@@ -186,7 +186,7 @@ class QgsConditionalStyle
      * @return A condtional style that matches the value and feature.
      * Check with QgsCondtionalStyle::isValid()
      */
-    static QList<QgsConditionalStyle> matchingConditionalStyles( QList<QgsConditionalStyle> styles, QVariant value, QgsExpressionContext& context );
+    static QList<QgsConditionalStyle> matchingConditionalStyles( const QList<QgsConditionalStyle>& styles, const QVariant& value, QgsExpressionContext& context );
 
     /**
      * @brief Find and return the matching style for the value and feature.
@@ -195,7 +195,7 @@ class QgsConditionalStyle
      * @return A condtional style that matches the value and feature.
      * Check with QgsCondtionalStyle::isValid()
      */
-    static QgsConditionalStyle matchingConditionalStyle( QList<QgsConditionalStyle> styles, QVariant value, QgsExpressionContext& context );
+    static QgsConditionalStyle matchingConditionalStyle( const QList<QgsConditionalStyle>& styles, const QVariant& value, QgsExpressionContext& context );
 
     /**
      * @brief Compress a list of styles into a single style.  This can be used to stack the elements of the
@@ -203,7 +203,7 @@ class QgsConditionalStyle
      * @param styles The list of styles to compress down
      * @return A single style generated from joining each style property.
      */
-    static QgsConditionalStyle compressStyles( QList<QgsConditionalStyle> styles );
+    static QgsConditionalStyle compressStyles( const QList<QgsConditionalStyle>& styles );
 
     /** Reads vector conditional style specific state from layer Dom node.
      */

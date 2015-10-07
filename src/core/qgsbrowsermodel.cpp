@@ -276,12 +276,12 @@ int QgsBrowserModel::columnCount( const QModelIndex &parent ) const
   return 1;
 }
 
-QModelIndex QgsBrowserModel::findPath( QString path, Qt::MatchFlag matchFlag )
+QModelIndex QgsBrowserModel::findPath( const QString& path, Qt::MatchFlag matchFlag )
 {
   return findPath( this, path, matchFlag );
 }
 
-QModelIndex QgsBrowserModel::findPath( QAbstractItemModel *model, QString path, Qt::MatchFlag matchFlag )
+QModelIndex QgsBrowserModel::findPath( QAbstractItemModel *model, const QString& path, Qt::MatchFlag matchFlag )
 {
   if ( !model )
     return QModelIndex();
@@ -497,7 +497,7 @@ void QgsBrowserModel::fetchMore( const QModelIndex & parent )
 }
 
 /* Refresh dir path */
-void QgsBrowserModel::refresh( QString path )
+void QgsBrowserModel::refresh( const QString& path )
 {
   QModelIndex index = findPath( path );
   refresh( index );
@@ -515,7 +515,7 @@ void QgsBrowserModel::refresh( const QModelIndex& theIndex )
   item->refresh();
 }
 
-void QgsBrowserModel::addFavouriteDirectory( QString favDir )
+void QgsBrowserModel::addFavouriteDirectory( const QString& favDir )
 {
   Q_ASSERT( mFavourites );
   mFavourites->addDirectory( favDir );

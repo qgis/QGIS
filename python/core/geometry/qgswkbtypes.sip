@@ -73,7 +73,7 @@ class QgsWKBTypes
 
     /*struct wkbEntry
     {
-      wkbEntry( QString name, bool isMultiType, Type multiType, Type singleType, Type flatType, GeometryType geometryType );
+      wkbEntry( const QString& name, bool isMultiType, Type multiType, Type singleType, Type flatType, GeometryType geometryType );
       QString mName;
       bool mIsMultiType;
       Type mMultiType;

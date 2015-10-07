@@ -28,7 +28,7 @@
 QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer* rasterLayer,
     QgsRasterDataProvider* sourceProvider, const QgsRectangle& currentExtent,
     const QgsCoordinateReferenceSystem& layerCrs, const QgsCoordinateReferenceSystem& currentCrs,
-    QWidget* parent, Qt::WindowFlags f ) :
+    QWidget* parent, const Qt::WindowFlags& f ) :
     QDialog( parent, f )
     , mRasterLayer( rasterLayer ), mDataProvider( sourceProvider )
     , mCurrentExtent( currentExtent ), mLayerCrs( layerCrs )

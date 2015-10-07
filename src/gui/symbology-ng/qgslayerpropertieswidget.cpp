@@ -32,7 +32,7 @@
 #include "qgsvectorfieldsymbollayerwidget.h"
 #include "qgssymbolv2.h" //for the unit
 
-static bool _initWidgetFunction( QString name, QgsSymbolLayerV2WidgetFunc f )
+static bool _initWidgetFunction( const QString& name, QgsSymbolLayerV2WidgetFunc f )
 {
   QgsSymbolLayerV2Registry* reg = QgsSymbolLayerV2Registry::instance();
 

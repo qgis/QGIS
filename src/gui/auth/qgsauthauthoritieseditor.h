@@ -100,14 +100,14 @@ class GUI_EXPORT QgsAuthAuthoritiesEditor : public QWidget, private Ui::QgsAuthA
 
     void populateRootCaCerts();
 
-    void populateCaCertsSection( QTreeWidgetItem *item, QList<QSslCertificate> certs,
+    void populateCaCertsSection( QTreeWidgetItem *item, const QList<QSslCertificate>& certs,
                                  QgsAuthAuthoritiesEditor::CaType catype );
 
-    void appendCertsToGroup( QList<QSslCertificate> certs,
+    void appendCertsToGroup( const QList<QSslCertificate>& certs,
                              QgsAuthAuthoritiesEditor::CaType catype,
                              QTreeWidgetItem *parent = 0 );
 
-    void appendCertsToItem( QList<QSslCertificate> certs,
+    void appendCertsToItem( const QList<QSslCertificate>& certs,
                             QgsAuthAuthoritiesEditor::CaType catype,
                             QTreeWidgetItem *parent = 0 );
 

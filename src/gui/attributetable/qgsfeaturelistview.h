@@ -82,7 +82,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
      *
      * @see QgsExpression
      */
-    bool setDisplayExpression( const QString displayExpression );
+    bool setDisplayExpression( const QString& displayExpression );
 
     /**
      * Returns the expression which is currently used to render the features.
@@ -151,14 +151,14 @@ class GUI_EXPORT QgsFeatureListView : public QListView
      * @param index The selection to set
      * @param command selection update mode
      */
-    void setEditSelection( const QModelIndex& index, QItemSelectionModel::SelectionFlags command );
+    void setEditSelection( const QModelIndex& index, const QItemSelectionModel::SelectionFlags& command );
 
     /**
      * Select all currently visible features
      */
     virtual void selectAll() override;
 
-    void repaintRequested( QModelIndexList indexes );
+    void repaintRequested( const QModelIndexList& indexes );
     void repaintRequested();
 
   private slots:

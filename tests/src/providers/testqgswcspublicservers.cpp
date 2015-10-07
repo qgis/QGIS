@@ -553,7 +553,7 @@ void TestQgsWcsPublicServers::test()
   }
 }
 
-void TestQgsWcsPublicServers::writeReport( QString theReport )
+void TestQgsWcsPublicServers::writeReport( const QString& theReport )
 {
   QString myReportFile = mCacheDir.absolutePath() + "/index.html";
   QFile myFile( myReportFile );
@@ -793,7 +793,7 @@ void TestQgsWcsPublicServers::report()
   writeReport( myRep );
 }
 
-QMap<QString, QString> TestQgsWcsPublicServers::readLog( QString theFileName )
+QMap<QString, QString> TestQgsWcsPublicServers::readLog( const QString& theFileName )
 {
   QMap<QString, QString> myMap;
 
@@ -811,7 +811,7 @@ QMap<QString, QString> TestQgsWcsPublicServers::readLog( QString theFileName )
   return myMap;
 }
 
-QString TestQgsWcsPublicServers::error( QString theMessage )
+QString TestQgsWcsPublicServers::error( const QString& theMessage )
 {
   QString myRow = "<font class='errmsg'>Error: ";
   myRow += theMessage;
@@ -819,7 +819,7 @@ QString TestQgsWcsPublicServers::error( QString theMessage )
   return myRow;
 }
 
-QString TestQgsWcsPublicServers::cells( QStringList theValues, QString theClass, int colspan, int rowspan )
+QString TestQgsWcsPublicServers::cells( const QStringList& theValues, const QString& theClass, int colspan, int rowspan )
 {
   QString myRow;
   for ( int i = 0; i < theValues.size(); i++ )
@@ -839,7 +839,7 @@ QString TestQgsWcsPublicServers::cells( QStringList theValues, QString theClass,
   return myRow;
 }
 
-QString TestQgsWcsPublicServers::row( QStringList theValues, QString theClass )
+QString TestQgsWcsPublicServers::row( const QStringList& theValues, const QString& theClass )
 {
   QString myRow = "<tr>";
   for ( int i = 0; i < theValues.size(); i++ )

@@ -23,7 +23,7 @@ class QgsScaleWidget : QWidget
     //! Function to read the selected scale as text
     QString scaleString();
     //! Function to set the selected scale from text
-    bool setScaleString( QString scaleTxt );
+    bool setScaleString( const QString& scaleTxt );
     //! Function to read the selected scale as double
     double scale();
     //! Function to set the selected scale from double
@@ -34,7 +34,7 @@ class QgsScaleWidget : QWidget
     // be expected.
     static QString toString( double scale );
     //! Helper function to convert a scale string to double
-    static double toDouble( QString scaleString, bool *ok = 0 );
+    static double toDouble( const QString& scaleString, bool *ok = 0 );
 
   public slots:
     void updateScales( const QStringList &scales = QStringList() );

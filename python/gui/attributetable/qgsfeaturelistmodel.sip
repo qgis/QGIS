@@ -29,7 +29,7 @@ class QgsFeatureListModel : QAbstractProxyModel, QgsFeatureModel
      *          If it fails, the old expression will still be applied. Call {@link parserErrorString()}
      *          for a meaningful error message.
      */
-    bool setDisplayExpression( const QString expression );
+    bool setDisplayExpression( const QString& expression );
 
     /**
      * @brief Returns a detailed message about errors while parsing a QgsExpression.

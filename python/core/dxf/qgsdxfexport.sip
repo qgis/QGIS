@@ -32,7 +32,7 @@ class QgsDxfExport
     ~QgsDxfExport();
 
     void addLayers( const QList< QPair<QgsVectorLayer *, int > > &layers );
-    int writeToFile( QIODevice *d, QString codec );  //maybe add progress dialog? other parameters (e.g. scale, dpi)?
+    int writeToFile( QIODevice *d, const QString& codec );  //maybe add progress dialog? other parameters (e.g. scale, dpi)?
 
     void setSymbologyScaleDenominator( double d );
     double symbologyScaleDenominator() const;

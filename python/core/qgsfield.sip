@@ -26,12 +26,12 @@ public:
      * @param comment Comment for the field
      */
 
-    QgsField( QString name = QString(),
+    QgsField( const QString& name = QString(),
               QVariant::Type type = QVariant::Invalid,
-              QString typeName = QString(),
+              const QString& typeName = QString(),
               int len = 0,
               int prec = 0,
-              QString comment = QString() );
+              const QString& comment = QString() );
 
     /** Copy constructor
      */

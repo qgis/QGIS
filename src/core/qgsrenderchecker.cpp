@@ -57,7 +57,7 @@ void QgsRenderChecker::setControlName( const QString &theName )
   mExpectedImageFile = controlImagePath() + theName + "/" + mControlPathSuffix + theName + ".png";
 }
 
-QString QgsRenderChecker::imageToHash( QString theImageFile )
+QString QgsRenderChecker::imageToHash( const QString& theImageFile )
 {
   QImage myImage;
   myImage.load( theImageFile );
@@ -101,7 +101,7 @@ void QgsRenderChecker::drawBackground( QImage* image )
   p.end();
 }
 
-bool QgsRenderChecker::isKnownAnomaly( QString theDiffImageFile )
+bool QgsRenderChecker::isKnownAnomaly( const QString& theDiffImageFile )
 {
   QString myControlImageDir = controlImagePath() + mControlName + "/";
   QDir myDirectory = QDir( myControlImageDir );
@@ -161,7 +161,7 @@ void QgsRenderChecker::emitDashMessage( const QString& name, QgsDartMeasurement:
   emitDashMessage( QgsDartMeasurement( name, type, value ) );
 }
 
-bool QgsRenderChecker::runTest( QString theTestName,
+bool QgsRenderChecker::runTest( const QString& theTestName,
                                 unsigned int theMismatchCount )
 {
   if ( mExpectedImageFile.isEmpty() )
@@ -242,9 +242,9 @@ bool QgsRenderChecker::runTest( QString theTestName,
 }
 
 
-bool QgsRenderChecker::compareImages( QString theTestName,
+bool QgsRenderChecker::compareImages( const QString& theTestName,
                                       unsigned int theMismatchCount,
-                                      QString theRenderedImageFile )
+                                      const QString& theRenderedImageFile )
 {
   if ( mExpectedImageFile.isEmpty() )
   {

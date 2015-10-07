@@ -48,7 +48,7 @@
 class DummyPaintEffect : public QgsPaintEffect
 {
   public:
-    DummyPaintEffect( QString prop1, QString prop2 ) : mProp1( prop1 ), mProp2( prop2 ) {}
+    DummyPaintEffect( const QString& prop1, const QString& prop2 ) : mProp1( prop1 ), mProp2( prop2 ) {}
     virtual ~DummyPaintEffect() {}
     virtual QString type() const override { return "Dummy"; }
     virtual QgsPaintEffect* clone() const override { return new DummyPaintEffect( mProp1, mProp2 ); }
@@ -115,8 +115,8 @@ class TestQgsPaintEffect: public QObject
     void composer();
 
   private:
-    bool imageCheck( QString testName , QImage &image, int mismatchCount = 0 );
-    bool mapRenderCheck( QString testName, QgsMapSettings &mapSettings, int mismatchCount = 0 );
+    bool imageCheck( const QString& testName , QImage &image, int mismatchCount = 0 );
+    bool mapRenderCheck( const QString& testName, QgsMapSettings &mapSettings, int mismatchCount = 0 );
 
     QString mReport;
     QString mTestDataDir;
@@ -906,7 +906,7 @@ void TestQgsPaintEffect::composer()
 // Private helper functions not called directly by CTest
 //
 
-bool TestQgsPaintEffect::imageCheck( QString testName, QImage &image, int mismatchCount )
+bool TestQgsPaintEffect::imageCheck( const QString& testName, QImage &image, int mismatchCount )
 {
   //draw background
   QImage imageWithBackground( image.width(), image.height(), QImage::Format_RGB32 );
@@ -929,7 +929,7 @@ bool TestQgsPaintEffect::imageCheck( QString testName, QImage &image, int mismat
   return resultFlag;
 }
 
-bool TestQgsPaintEffect::mapRenderCheck( QString testName, QgsMapSettings& mapSettings, int mismatchCount )
+bool TestQgsPaintEffect::mapRenderCheck( const QString& testName, QgsMapSettings& mapSettings, int mismatchCount )
 {
   QgsMultiRenderChecker checker;
   checker.setControlPathPrefix( "effects" );

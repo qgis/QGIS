@@ -36,10 +36,10 @@ class GUI_EXPORT QgsAuthCertInfo : public QWidget, private Ui::QgsAuthCertInfo
     Q_OBJECT
 
   public:
-    explicit QgsAuthCertInfo( QSslCertificate cert,
+    explicit QgsAuthCertInfo( const QSslCertificate& cert,
                               bool manageCertTrust = false,
                               QWidget *parent = 0,
-                              QList<QSslCertificate> connectionCAs = QList<QSslCertificate>() );
+                              const QList<QSslCertificate>& connectionCAs = QList<QSslCertificate>() );
     ~QgsAuthCertInfo();
 
     bool trustCacheRebuilt() { return mTrustCacheRebuilt; }
@@ -80,7 +80,7 @@ class GUI_EXPORT QgsAuthCertInfo : public QWidget, private Ui::QgsAuthCertInfo
 
     bool populateQcaCertCollection();
 
-    bool setQcaCertificate( QSslCertificate cert );
+    bool setQcaCertificate( const QSslCertificate& cert );
 
     bool populateCertChain();
 
@@ -150,7 +150,7 @@ class GUI_EXPORT QgsAuthCertInfoDialog : public QDialog
     explicit QgsAuthCertInfoDialog( const QSslCertificate& cert,
                                     bool manageCertTrust,
                                     QWidget *parent = 0,
-                                    QList<QSslCertificate> connectionCAs = QList<QSslCertificate>() );
+                                    const QList<QSslCertificate>& connectionCAs = QList<QSslCertificate>() );
     ~QgsAuthCertInfoDialog();
 
     /** Get access to embedded info widget */

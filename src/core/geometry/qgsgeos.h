@@ -42,7 +42,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     QgsAbstractGeometryV2* intersection( const QgsAbstractGeometryV2& geom, QString* errorMsg = 0 ) const override;
     QgsAbstractGeometryV2* difference( const QgsAbstractGeometryV2& geom, QString* errorMsg = 0 ) const override;
     QgsAbstractGeometryV2* combine( const QgsAbstractGeometryV2& geom, QString* errorMsg = 0 ) const override;
-    QgsAbstractGeometryV2* combine( const QList< const QgsAbstractGeometryV2* >, QString* errorMsg = 0 ) const override;
+    QgsAbstractGeometryV2* combine( const QList<const QgsAbstractGeometryV2*>&, QString* errorMsg = 0 ) const override;
     QgsAbstractGeometryV2* symDifference( const QgsAbstractGeometryV2& geom, QString* errorMsg = 0 ) const override;
     QgsAbstractGeometryV2* buffer( double distance, int segments, QString* errorMsg = 0 ) const override;
     QgsAbstractGeometryV2* buffer( double distance, int segments, int endCapStyle, int joinStyle, double mitreLimit, QString* errorMsg = 0 ) const override;
@@ -154,7 +154,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
 class GEOSException
 {
   public:
-    explicit GEOSException( QString theMsg )
+    explicit GEOSException( const QString& theMsg )
     {
       if ( theMsg == "Unknown exception thrown" && lastMsg().isNull() )
       {

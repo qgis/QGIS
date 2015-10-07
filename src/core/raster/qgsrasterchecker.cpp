@@ -38,8 +38,8 @@ QgsRasterChecker::QgsRasterChecker()
   mErrMsgStyle = "color: #ff0000;";
 }
 
-bool QgsRasterChecker::runTest( QString theVerifiedKey, QString theVerifiedUri,
-                                QString theExpectedKey, QString theExpectedUri )
+bool QgsRasterChecker::runTest( const QString& theVerifiedKey, QString theVerifiedUri,
+                                const QString& theExpectedKey, QString theExpectedUri )
 {
   bool ok = true;
   mReport += "\n\n";
@@ -187,7 +187,7 @@ bool QgsRasterChecker::runTest( QString theVerifiedKey, QString theVerifiedUri,
   return allOk;
 }
 
-void QgsRasterChecker::error( QString theMessage, QString &theReport )
+void QgsRasterChecker::error( const QString& theMessage, QString &theReport )
 {
   theReport += QString( "<font style='%1'>Error: " ).arg( mErrMsgStyle );
   theReport += theMessage;
@@ -208,7 +208,7 @@ QString QgsRasterChecker::compareHead()
   return html;
 }
 
-void QgsRasterChecker::compare( QString theParamName, int verifiedVal, int expectedVal, QString &theReport, bool &theOk )
+void QgsRasterChecker::compare( const QString& theParamName, int verifiedVal, int expectedVal, QString &theReport, bool &theOk )
 {
   bool ok = verifiedVal == expectedVal;
   compareRow( theParamName, QString::number( verifiedVal ), QString::number( expectedVal ), theReport, ok, QString::number( verifiedVal - expectedVal ) );
@@ -221,14 +221,14 @@ bool QgsRasterChecker::compare( double verifiedVal, double expectedVal, double t
   return ( qIsNaN( verifiedVal ) && qIsNaN( expectedVal ) ) || ( qAbs( verifiedVal - expectedVal ) <= theTolerance );
 }
 
-void QgsRasterChecker::compare( QString theParamName, double verifiedVal, double expectedVal, QString &theReport, bool &theOk, double theTolerance )
+void QgsRasterChecker::compare( const QString& theParamName, double verifiedVal, double expectedVal, QString &theReport, bool &theOk, double theTolerance )
 {
   bool ok = compare( verifiedVal, expectedVal, theTolerance );
   compareRow( theParamName, QString::number( verifiedVal ), QString::number( expectedVal ), theReport, ok, QString::number( verifiedVal - expectedVal ), QString::number( theTolerance ) );
   if ( !ok ) theOk = false;
 }
 
-void QgsRasterChecker::compareRow( QString theParamName, QString verifiedVal, QString expectedVal, QString &theReport, bool theOk, QString theDifference, QString theTolerance )
+void QgsRasterChecker::compareRow( const QString& theParamName, const QString& verifiedVal, const QString& expectedVal, QString &theReport, bool theOk, const QString& theDifference, const QString& theTolerance )
 {
   theReport += "<tr>\n";
   theReport += QString( "<td style='%1'>%2</td><td style='%1 %3'>%4</td><td style='%1'>%5</td>\n" ).arg( mCellStyle ).arg( theParamName ).arg( theOk ? mOkStyle : mErrStyle ).arg( verifiedVal ).arg( expectedVal );

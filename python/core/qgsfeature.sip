@@ -427,7 +427,7 @@ class QgsFeature
      *  @note For Python: raises a KeyError exception instead of returning false
      *  @see setFields
      */
-    void setAttribute( const QString& name, QVariant value /GetWrapper/ );
+    void setAttribute( const QString& name, const QVariant& value /GetWrapper/ );
 %MethodCode
   int fieldIdx = sipCpp->fieldNameIndex(*a0);
   if (fieldIdx == -1)

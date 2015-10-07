@@ -190,7 +190,7 @@ QString QgsLayerTreeUtils::checkStateToXml( Qt::CheckState state )
   }
 }
 
-Qt::CheckState QgsLayerTreeUtils::checkStateFromXml( QString txt )
+Qt::CheckState QgsLayerTreeUtils::checkStateFromXml( const QString& txt )
 {
   if ( txt == "Qt::Unchecked" )
     return Qt::Unchecked;

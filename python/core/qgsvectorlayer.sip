@@ -35,7 +35,7 @@ class QgsAttributeEditorElement : QObject
       AeTypeInvalid
     };
 
-    QgsAttributeEditorElement( AttributeEditorType type, QString name, QObject *parent /TransferThis/ = NULL );
+    QgsAttributeEditorElement( AttributeEditorType type, const QString& name, QObject *parent /TransferThis/ = NULL );
 
     virtual ~QgsAttributeEditorElement();
 
@@ -52,7 +52,7 @@ class QgsAttributeEditorContainer : QgsAttributeEditorElement
 %End
 
   public:
-    QgsAttributeEditorContainer( QString name, QObject *parent  /TransferThis/ );
+    QgsAttributeEditorContainer( const QString& name, QObject *parent  /TransferThis/ );
 
     ~QgsAttributeEditorContainer();
 
@@ -70,7 +70,7 @@ class QgsAttributeEditorField : QgsAttributeEditorElement
 #include "qgsvectorlayer.h"
 %End
   public:
-    QgsAttributeEditorField( QString name, int idx, QObject *parent /TransferThis/ );
+    QgsAttributeEditorField( const QString& name, int idx, QObject *parent /TransferThis/ );
 
     ~QgsAttributeEditorField();
 
@@ -82,9 +82,9 @@ class QgsAttributeEditorField : QgsAttributeEditorElement
 class QgsAttributeEditorRelation : QgsAttributeEditorElement
 {
   public:
-    QgsAttributeEditorRelation( QString name, const QString &relationId, QObject *parent /TransferThis/ );
+    QgsAttributeEditorRelation( const QString& name, const QString &relationId, QObject *parent /TransferThis/ );
 
-    QgsAttributeEditorRelation( QString name, const QgsRelation& relation, QObject *parent /TransferThis/);
+    QgsAttributeEditorRelation( const QString& name, const QgsRelation& relation, QObject *parent /TransferThis/);
 
     ~QgsAttributeEditorRelation();
 
@@ -200,9 +200,9 @@ class QgsVectorLayer : QgsMapLayer
     struct ValueRelationData
     {
       ValueRelationData();
-      ValueRelationData( QString layer, QString key, QString value, bool allowNull, bool orderByValue,
+      ValueRelationData( const QString& layer, const QString& key, const QString& value, bool allowNull, bool orderByValue,
                          bool allowMulti = false,
-                         QString filterExpression = QString::null );
+                         const QString& filterExpression = QString::null );
 
       QString mLayer;
       QString mKey;
@@ -216,7 +216,7 @@ class QgsVectorLayer : QgsMapLayer
     struct GroupData
     {
       GroupData();
-      GroupData( QString name, QList<QString> fields );
+      GroupData( const QString& name, const QList<QString>& fields );
       QString mName;
       QList<QString> mFields;
     };
@@ -224,7 +224,7 @@ class QgsVectorLayer : QgsMapLayer
     struct TabData
     {
       TabData();
-      TabData( QString name, QList<QString> fields, QList<QgsVectorLayer::GroupData> groups );
+      TabData( const QString& name, const QList<QString>& fields, const QList<QgsVectorLayer::GroupData>& groups );
       QString mName;
       QList<QString> mFields;
       QList<QgsVectorLayer::GroupData> mGroups;
@@ -243,8 +243,8 @@ class QgsVectorLayer : QgsMapLayer
      * @param  loadDefaultStyleFlag whether to load the default style
      *
      */
-    QgsVectorLayer( QString path = QString::null, QString baseName = QString::null,
-                    QString providerLib = QString::null, bool loadDefaultStyleFlag = true );
+    QgsVectorLayer( const QString& path = QString::null, const QString& baseName = QString::null,
+                    const QString& providerLib = QString::null, bool loadDefaultStyleFlag = true );
 
     /** Destructor */
     virtual ~QgsVectorLayer();
@@ -259,7 +259,7 @@ class QgsVectorLayer : QgsMapLayer
     QString dataComment() const;
 
     /** Set the primary display field to be used in the identify results dialog */
-    void setDisplayField( QString fldName = "" );
+    void setDisplayField( const QString& fldName = "" );
 
     /** Returns the primary display field name used in the identify results dialog */
     const QString displayField() const;
@@ -499,8 +499,8 @@ class QgsVectorLayer : QgsMapLayer
      * @param uiFileContent
      * @param msgError
      */
-    virtual void saveStyleToDatabase( QString name, QString description,
-                                      bool useAsDefault, QString uiFileContent,
+    virtual void saveStyleToDatabase( const QString& name, const QString& description,
+                                      bool useAsDefault, const QString& uiFileContent,
                                       QString &msgError );
 
     /**
@@ -517,7 +517,7 @@ class QgsVectorLayer : QgsMapLayer
     /**
      * Will return the named style corresponding to style id provided
      */
-    virtual QString getStyleFromDatabase( QString styleId, QString &msgError );
+    virtual QString getStyleFromDatabase( const QString& styleId, QString &msgError );
 
     /**
      * Load a named style from file/local db/datasource db
@@ -543,7 +543,7 @@ class QgsVectorLayer : QgsMapLayer
      *
      * @deprecated Will be removed for QGIS 3 in favor of importNamedStyle
      */
-    virtual bool applyNamedStyle( QString namedStyle, QString &errorMsg /Out/ );
+    virtual bool applyNamedStyle( const QString& namedStyle, QString &errorMsg /Out/ );
 
     /** Convert a saved attribute editor element into a AttributeEditor structure as it's used internally.
      * @param elem the DOM element
@@ -579,7 +579,7 @@ class QgsVectorLayer : QgsMapLayer
      * data source
      * @note added in QGIS 2.10
      */
-    void setDataSource( QString dataSource, QString baseName, QString provider, bool loadDefaultStyleFlag = false );
+    void setDataSource( const QString& dataSource, const QString& baseName, const QString& provider, bool loadDefaultStyleFlag = false );
 
     /**
      * Number of features rendered with specified symbol. Features must be first
@@ -603,7 +603,7 @@ class QgsVectorLayer : QgsMapLayer
      *               and data store.
      * @return true, when setting the subset string was successful, false otherwise
      */
-    virtual bool setSubsetString( QString subset );
+    virtual bool setSubsetString( const QString& subset );
 
     /**
      * Get the string (typically sql) used to define a subset of the layer
@@ -708,7 +708,7 @@ class QgsVectorLayer : QgsMapLayer
      *
      *  @deprecated since 2.2 - not being used for "avoid intersections" functionality anymore
      */
-    int removePolygonIntersections( QgsGeometry* geom, QgsFeatureIds ignoreFeatures = QgsFeatureIds() ) /Deprecated/;
+    int removePolygonIntersections( QgsGeometry* geom, const QgsFeatureIds& ignoreFeatures = QgsFeatureIds() ) /Deprecated/;
 
     /** Adds topological points for every vertex of the geometry.
      * @param geom the geometry where each vertex is added to segments of other features
@@ -860,7 +860,7 @@ class QgsVectorLayer : QgsMapLayer
      * @deprecated The emitSignal parameter is obsolete and not considered at the moment. It will
      *             be removed in future releases. Remove it to be prepared for the future. (Since 2.1)
      */
-    bool changeAttributeValue( QgsFeatureId fid, int field, QVariant value, bool emitSignal ) /Deprecated/;
+    bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant& value, bool emitSignal ) /Deprecated/;
 
     /**
      * Changes an attribute value (but does not commit it)
@@ -879,7 +879,7 @@ class QgsVectorLayer : QgsMapLayer
     bool addAttribute( const QgsField &field );
 
     /** Sets an alias (a display name) for attributes to display in dialogs */
-    void addAttributeAlias( int attIndex, QString aliasString );
+    void addAttributeAlias( int attIndex, const QString& aliasString );
 
     /** Removes an alias (a display name) for attributes to display in dialogs */
     void remAttributeAlias( int attIndex );
@@ -1065,13 +1065,13 @@ class QgsVectorLayer : QgsMapLayer
      *
      * @deprecated Use setEditorWidgetV2Config() instead
      */
-    void setCheckedState( int idx, QString checked, QString notChecked ) /Deprecated/;
+    void setCheckedState( int idx, const QString& checked, const QString& notChecked ) /Deprecated/;
 
     /** Get edit form */
     QString editForm();
 
     /** Set edit form */
-    void setEditForm( QString ui );
+    void setEditForm( const QString& ui );
 
     /** Type of feature form pop-up suppression after feature creation (overrides app setting)
      * @note added in 2.1 */
@@ -1091,7 +1091,7 @@ class QgsVectorLayer : QgsMapLayer
     QString editFormInit();
 
     /** Set python function for edit form initialization */
-    void setEditFormInit( QString function );
+    void setEditFormInit( const QString& function );
 
     /**
      * Access value map
@@ -1150,7 +1150,7 @@ class QgsVectorLayer : QgsMapLayer
      * Create edit command for undo/redo operations
      * @param text text which is to be displayed in undo window
      */
-    void beginEditCommand( QString text );
+    void beginEditCommand( const QString& text );
 
     /** Finish edit command and add it to undo/redo stack */
     void endEditCommand();
@@ -1301,7 +1301,7 @@ class QgsVectorLayer : QgsMapLayer
     virtual void updateExtents();
 
     /** Check if there is a join with a layer that will be removed */
-    void checkJoinLayerRemove( QString theLayerId );
+    void checkJoinLayerRemove( const QString& theLayerId );
 
   protected slots:
     void invalidateSymbolCountedFlag();

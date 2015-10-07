@@ -67,7 +67,7 @@ void QgsIdentifyMenu::setMaxFeatureDisplay( int maxFeatureDisplay )
 }
 
 
-QList<QgsMapToolIdentify::IdentifyResult> QgsIdentifyMenu::exec( const QList<QgsMapToolIdentify::IdentifyResult> idResults, QPoint pos )
+QList<QgsMapToolIdentify::IdentifyResult> QgsIdentifyMenu::exec( const QList<QgsMapToolIdentify::IdentifyResult>& idResults, QPoint pos )
 {
   clear();
   mLayerIdResults.clear();
@@ -221,7 +221,7 @@ void QgsIdentifyMenu::addRasterLayer( QgsMapLayer* layer )
   }
 }
 
-void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer* layer, const QList<QgsMapToolIdentify::IdentifyResult> results, bool singleLayer )
+void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer* layer, const QList<QgsMapToolIdentify::IdentifyResult>& results, bool singleLayer )
 {
   QAction* layerAction = 0;
   QMenu* layerMenu = 0;

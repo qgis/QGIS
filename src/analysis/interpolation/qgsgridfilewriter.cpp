@@ -22,7 +22,7 @@
 #include <QFileInfo>
 #include <QProgressDialog>
 
-QgsGridFileWriter::QgsGridFileWriter( QgsInterpolator* i, QString outputPath, QgsRectangle extent, int nCols, int nRows, double cellSizeX, double cellSizeY )
+QgsGridFileWriter::QgsGridFileWriter( QgsInterpolator* i, const QString& outputPath, const QgsRectangle& extent, int nCols, int nRows, double cellSizeX, double cellSizeY )
     : mInterpolator( i )
     , mOutputFilePath( outputPath )
     , mInterpolationExtent( extent )

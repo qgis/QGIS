@@ -41,14 +41,14 @@ class TestQgsRasterFileWriter: public QObject
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {};// will be called before each testfunction is executed.
-    void cleanup() {};// will be called after every testfunction.
+    void init() {} // will be called before each testfunction is executed.
+    void cleanup() {} // will be called after every testfunction.
 
     void writeTest();
   private:
-    bool writeTest( QString rasterName );
-    void log( QString msg );
-    void logError( QString msg );
+    bool writeTest( const QString& rasterName );
+    void log( const QString& msg );
+    void logError( const QString& msg );
     QString mTestDataDir;
     QString mReport;
 };
@@ -100,7 +100,7 @@ void TestQgsRasterFileWriter::writeTest()
   QVERIFY( allOK );
 }
 
-bool TestQgsRasterFileWriter::writeTest( QString theRasterName )
+bool TestQgsRasterFileWriter::writeTest( const QString& theRasterName )
 {
   mReport += "<h2>" + theRasterName + "</h2>\n";
 
@@ -176,12 +176,12 @@ bool TestQgsRasterFileWriter::writeTest( QString theRasterName )
   return ok;
 }
 
-void TestQgsRasterFileWriter::log( QString msg )
+void TestQgsRasterFileWriter::log( const QString& msg )
 {
   mReport += msg + "<br>";
 }
 
-void TestQgsRasterFileWriter::logError( QString msg )
+void TestQgsRasterFileWriter::logError( const QString& msg )
 {
   mReport += "Error:<font color='red'>" + msg + "</font><br>";
   qDebug() << msg;

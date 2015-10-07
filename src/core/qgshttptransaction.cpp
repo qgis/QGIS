@@ -35,14 +35,14 @@ static int HTTP_PORT_DEFAULT = 80;
 //XXX in qgswmsprovider. When creating a QgsHttpTransaction, pass
 //XXX the user/pass combination to the constructor. Then set the
 //XXX username and password using QHttp::setUser.
-QgsHttpTransaction::QgsHttpTransaction( QString uri,
-                                        QString proxyHost,
+QgsHttpTransaction::QgsHttpTransaction( const QString& uri,
+                                        const QString& proxyHost,
                                         int     proxyPort,
-                                        QString proxyUser,
-                                        QString proxyPass,
+                                        const QString& proxyUser,
+                                        const QString& proxyPass,
                                         QNetworkProxy::ProxyType proxyType,
-                                        QString userName,
-                                        QString password )
+                                        const QString& userName,
+                                        const QString& password )
     : http( NULL )
     , httpid( 0 )
     , httpactive( false )

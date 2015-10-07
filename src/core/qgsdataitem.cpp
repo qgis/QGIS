@@ -206,7 +206,7 @@ QMap<QString, QIcon> QgsDataItem::mIconMap = QMap<QString, QIcon>();
 
 QgsAnimatedIcon * QgsDataItem::mPopulatingIcon = 0;
 
-QgsDataItem::QgsDataItem( QgsDataItem::Type type, QgsDataItem* parent, QString name, QString path )
+QgsDataItem::QgsDataItem( QgsDataItem::Type type, QgsDataItem* parent, const QString& name, const QString& path )
 // Do not pass parent to QObject, Qt would delete this when parent is deleted
     : QObject()
     , mType( type )
@@ -420,7 +420,7 @@ void QgsDataItem::childrenCreated()
   emit dataChanged( this ); // to replace loading icon by normal icon
 }
 
-void QgsDataItem::populate( QVector<QgsDataItem*> children )
+void QgsDataItem::populate( const QVector<QgsDataItem*>& children )
 {
   QgsDebugMsg( "mPath = " + mPath );
 
@@ -667,7 +667,7 @@ void QgsDataItem::setState( State state )
 
 // ---------------------------------------------------------------------
 
-QgsLayerItem::QgsLayerItem( QgsDataItem* parent, QString name, QString path, QString uri, LayerType layerType, QString providerKey )
+QgsLayerItem::QgsLayerItem( QgsDataItem* parent, const QString& name, const QString& path, const QString& uri, LayerType layerType, const QString& providerKey )
     : QgsDataItem( Layer, parent, name, path )
     , mProviderKey( providerKey )
     , mUri( uri )
@@ -711,7 +711,7 @@ bool QgsLayerItem::equal( const QgsDataItem *other )
 }
 
 // ---------------------------------------------------------------------
-QgsDataCollectionItem::QgsDataCollectionItem( QgsDataItem* parent, QString name, QString path )
+QgsDataCollectionItem::QgsDataCollectionItem( QgsDataItem* parent, const QString& name, const QString& path )
     : QgsDataItem( Collection, parent, name, path )
 {
   mCapabilities = Fertile;
@@ -738,7 +738,7 @@ Q_NOWARN_DEPRECATED_PUSH
 QVector<QLibrary*> QgsDirectoryItem::mLibraries = QVector<QLibrary*>();
 Q_NOWARN_DEPRECATED_POP
 
-QgsDirectoryItem::QgsDirectoryItem( QgsDataItem* parent, QString name, QString path )
+QgsDirectoryItem::QgsDirectoryItem( QgsDataItem* parent, const QString& name, const QString& path )
     : QgsDataCollectionItem( parent, name, path )
     , mDirPath( path )
     , mFileSystemWatcher( 0 )
@@ -748,7 +748,7 @@ QgsDirectoryItem::QgsDirectoryItem( QgsDataItem* parent, QString name, QString p
   init();
 }
 
-QgsDirectoryItem::QgsDirectoryItem( QgsDataItem* parent, QString name, QString dirPath, QString path )
+QgsDirectoryItem::QgsDirectoryItem( QgsDataItem* parent, const QString& name, const QString& dirPath, const QString& path )
     : QgsDataCollectionItem( parent, name, path )
     , mDirPath( dirPath )
     , mFileSystemWatcher( 0 )
@@ -912,7 +912,7 @@ QWidget * QgsDirectoryItem::paramWidget()
   return new QgsDirectoryParamWidget( mPath );
 }
 
-QgsDirectoryParamWidget::QgsDirectoryParamWidget( QString path, QWidget* parent )
+QgsDirectoryParamWidget::QgsDirectoryParamWidget( const QString& path, QWidget* parent )
     : QTreeWidget( parent )
 {
   setRootIsDecorated( false );
@@ -1052,7 +1052,7 @@ void QgsDirectoryParamWidget::showHideColumn()
 }
 
 
-QgsErrorItem::QgsErrorItem( QgsDataItem* parent, QString error, QString path )
+QgsErrorItem::QgsErrorItem( QgsDataItem* parent, const QString& error, const QString& path )
     : QgsDataItem( QgsDataItem::Error, parent, error, path )
 {
   mIconName = "/mIconDelete.png";
@@ -1064,7 +1064,7 @@ QgsErrorItem::~QgsErrorItem()
 {
 }
 
-QgsFavouritesItem::QgsFavouritesItem( QgsDataItem* parent, QString name, QString path )
+QgsFavouritesItem::QgsFavouritesItem( QgsDataItem* parent, const QString& name, const QString& path )
     : QgsDataCollectionItem( parent, name, "favourites:" )
 {
   Q_UNUSED( path );
@@ -1098,7 +1098,7 @@ QVector<QgsDataItem*> QgsFavouritesItem::createChildren()
   return children;
 }
 
-void QgsFavouritesItem::addDirectory( QString favDir )
+void QgsFavouritesItem::addDirectory( const QString& favDir )
 {
   QSettings settings;
   QStringList favDirs = settings.value( "/browser/favourites" ).toStringList();
@@ -1138,14 +1138,14 @@ QStringList QgsZipItem::mProviderNames = QStringList();
 QVector<dataItem_t *> QgsZipItem::mDataItemPtr = QVector<dataItem_t*>();
 
 
-QgsZipItem::QgsZipItem( QgsDataItem* parent, QString name, QString path )
+QgsZipItem::QgsZipItem( QgsDataItem* parent, const QString& name, const QString& path )
     : QgsDataCollectionItem( parent, name, path )
 {
   mFilePath = path;
   init();
 }
 
-QgsZipItem::QgsZipItem( QgsDataItem* parent, QString name, QString filePath, QString path )
+QgsZipItem::QgsZipItem( QgsDataItem* parent, const QString& name, const QString& filePath, const QString& path )
     : QgsDataCollectionItem( parent, name, path )
     , mFilePath( filePath )
 {
@@ -1359,7 +1359,7 @@ QgsDataItem* QgsZipItem::itemFromPath( QgsDataItem* parent, QString path, QStrin
   return itemFromPath( parent, path, name, path );
 }
 
-QgsDataItem* QgsZipItem::itemFromPath( QgsDataItem* parent, QString filePath, QString name, QString path )
+QgsDataItem* QgsZipItem::itemFromPath( QgsDataItem* parent, const QString& filePath, const QString& name, const QString& path )
 {
   QSettings settings;
   QString scanZipSetting = settings.value( "/qgis/scanZipInBrowser2", "basic" ).toString();

@@ -384,7 +384,7 @@ class CORE_EXPORT QgsLabelingEngineV2
     QgsLabelingResults* results() const { return mResults; }
 
     //! Set flags of the labeling engine
-    void setFlags( Flags flags ) { mFlags = flags; }
+    void setFlags( const Flags& flags ) { mFlags = flags; }
     //! Get flags of the labeling engine
     Flags flags() const { return mFlags; }
     //! Test whether a particular flag is enabled

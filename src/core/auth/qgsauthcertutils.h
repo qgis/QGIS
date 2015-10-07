@@ -88,16 +88,16 @@ class CORE_EXPORT QgsAuthCertUtils
     static QString getSslProtocolName( QSsl::SslProtocol protocol );
 
     /** Map certificate sha1 to certificate as simple cache */
-    static QMap<QString, QSslCertificate> mapDigestToCerts( QList<QSslCertificate> certs );
+    static QMap<QString, QSslCertificate> mapDigestToCerts( const QList<QSslCertificate>& certs );
 
     /** Map certificates to their oraganization */
-    static QMap< QString, QList<QSslCertificate> > certsGroupedByOrg( QList<QSslCertificate> certs );
+    static QMap< QString, QList<QSslCertificate> > certsGroupedByOrg( const QList<QSslCertificate>& certs );
 
     /** Map SSL custom configs' certificate sha1 to custom config as simple cache */
-    static QMap<QString, QgsAuthConfigSslServer> mapDigestToSslConfigs( QList<QgsAuthConfigSslServer> configs );
+    static QMap<QString, QgsAuthConfigSslServer> mapDigestToSslConfigs( const QList<QgsAuthConfigSslServer>& configs );
 
     /** Map SSL custom configs' certificates to their oraganization */
-    static QMap< QString, QList<QgsAuthConfigSslServer> > sslConfigsGroupedByOrg( QList<QgsAuthConfigSslServer> configs );
+    static QMap< QString, QList<QgsAuthConfigSslServer> > sslConfigsGroupedByOrg( const QList<QgsAuthConfigSslServer>& configs );
 
     /** Return list of concatenated certs from a PEM or DER formatted file */
     static QList<QSslCertificate> certsFromFile( const QString &certspath );

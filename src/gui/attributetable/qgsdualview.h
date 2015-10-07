@@ -126,7 +126,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      * @param filteredFeatures  A list of feature ids
      *
      */
-    void setFilteredFeatures( QgsFeatureIds filteredFeatures );
+    void setFilteredFeatures( const QgsFeatureIds& filteredFeatures );
 
     QgsFeatureIds filteredFeatures() { return mFilterModel->filteredFeatures(); }
 
@@ -192,9 +192,9 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
 
     void previewColumnChanged( QObject* previewAction );
 
-    void viewWillShowContextMenu( QMenu* menu, QModelIndex atIndex );
+    void viewWillShowContextMenu( QMenu* menu, const QModelIndex& atIndex );
 
-    void previewExpressionChanged( const QString expression );
+    void previewExpressionChanged( const QString& expression );
 
     /**
      * Will be called whenever the currently shown feature form changes.

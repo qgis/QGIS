@@ -43,7 +43,7 @@ QgsNetworkContentFetcher::~QgsNetworkContentFetcher()
   }
 }
 
-void QgsNetworkContentFetcher::fetchContent( const QUrl url )
+void QgsNetworkContentFetcher::fetchContent( const QUrl& url )
 {
   QUrl nextUrlToFetch = url;
   mContentLoaded = false;

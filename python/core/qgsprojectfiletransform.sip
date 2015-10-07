@@ -12,8 +12,8 @@ class QgsProjectFileTransform
      * @param version Version number
      */
     QgsProjectFileTransform( QDomDocument & domDocument,
-                             QgsProjectVersion version );
-    bool updateRevision( QgsProjectVersion version );
+                             const QgsProjectVersion& version );
+    bool updateRevision( const QgsProjectVersion& version );
 
     /** Prints the contents via QgsDebugMsg()
      */

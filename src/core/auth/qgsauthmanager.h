@@ -83,7 +83,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     const QString authDbServersTable() const { return smAuthServersTable; }
 
     /** Initialize QCA, prioritize qca-ossl plugin and optionally set up the authentication database */
-    bool init( QString pluginPath = QString::null );
+    bool init( const QString& pluginPath = QString::null );
 
     /** Whether QCA has the qca-ossl plugin, which a base run-time requirement */
     bool isDisabled() const;
@@ -325,10 +325,10 @@ class CORE_EXPORT QgsAuthManager : public QObject
     ////////////////// Generic settings ///////////////////////
 
     /** Store an authentication setting (stored as string via QVariant( value ).toString() ) */
-    bool storeAuthSetting( const QString& key, QVariant value, bool encrypt = false );
+    bool storeAuthSetting( const QString& key, const QVariant& value, bool encrypt = false );
 
     /** Get an authentication setting (retrieved as string and returned as QVariant( QString )) */
-    QVariant getAuthSetting( const QString& key, QVariant defaultValue = QVariant(), bool decrypt = false );
+    QVariant getAuthSetting( const QString& key, const QVariant& defaultValue = QVariant(), bool decrypt = false );
 
     /** Check if an authentication setting exists */
     bool existsAuthSetting( const QString& key );

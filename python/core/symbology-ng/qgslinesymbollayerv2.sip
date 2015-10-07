@@ -31,7 +31,7 @@ class QgsSimpleLineSymbolLayerV2 : QgsLineSymbolLayerV2
 
     QgsSymbolLayerV2* clone() const /Factory/;
 
-    void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
+    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const;
 
     QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const;
 
@@ -123,7 +123,7 @@ class QgsMarkerLineSymbolLayerV2 : QgsLineSymbolLayerV2
 
     QgsSymbolLayerV2* clone() const;
 
-    void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
+    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const;
 
     void setColor( const QColor& color );
 

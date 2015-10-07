@@ -61,7 +61,7 @@ class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayerV2
     QgsSymbolLayerV2* clone() const override;
     QgsStringMap properties() const override;
 
-    void toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props ) const override;
+    void toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props ) const override;
 
     void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size ) override;
 

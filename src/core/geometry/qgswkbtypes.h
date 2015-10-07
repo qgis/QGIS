@@ -97,7 +97,7 @@ class CORE_EXPORT QgsWKBTypes
 
     struct wkbEntry
     {
-      wkbEntry( QString name, bool isMultiType, Type multiType, Type singleType, Type flatType, GeometryType geometryType,
+      wkbEntry( const QString& name, bool isMultiType, Type multiType, Type singleType, Type flatType, GeometryType geometryType,
                 bool hasZ, bool hasM ):
           mName( name ), mIsMultiType( isMultiType ), mMultiType( multiType ), mSingleType( singleType ), mFlatType( flatType ), mGeometryType( geometryType ),
           mHasZ( hasZ ), mHasM( hasM ) {}

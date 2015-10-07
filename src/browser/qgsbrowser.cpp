@@ -42,7 +42,7 @@
 #define QGIS_ICON_SIZE 24
 #endif
 
-QgsBrowser::QgsBrowser( QWidget *parent, Qt::WindowFlags flags )
+QgsBrowser::QgsBrowser( QWidget *parent, const Qt::WindowFlags& flags )
     : QMainWindow( parent, flags )
     , mDirtyMetadata( true )
     , mDirtyPreview( true )
@@ -100,7 +100,7 @@ QgsBrowser::~QgsBrowser()
 
 }
 
-void QgsBrowser::expandPath( QString path )
+void QgsBrowser::expandPath( const QString& path )
 {
   QModelIndex idx = mModel->findPath( path );
   if ( idx.isValid() )

@@ -142,7 +142,7 @@ void QgsSymbolsListWidget::setExpressionContext( QgsExpressionContext *context )
   mPresetExpressionContext = context;
 }
 
-void QgsSymbolsListWidget::populateGroups( QString parent, QString prepend )
+void QgsSymbolsListWidget::populateGroups( const QString& parent, const QString& prepend )
 {
   QgsSymbolGroupMap groups = mStyle->childGroupNames( parent );
   QgsSymbolGroupMap::const_iterator i = groups.constBegin();
@@ -168,7 +168,7 @@ void QgsSymbolsListWidget::populateSymbolView()
   populateSymbols( mStyle->symbolNames() );
 }
 
-void QgsSymbolsListWidget::populateSymbols( QStringList names )
+void QgsSymbolsListWidget::populateSymbols( const QStringList& names )
 {
   QSize previewSize = viewSymbols->iconSize();
   QPixmap p( previewSize );
@@ -314,7 +314,7 @@ void QgsSymbolsListWidget::updateDataDefinedLineWidth()
   }
 }
 
-void QgsSymbolsListWidget::symbolAddedToStyle( QString name, QgsSymbolV2* symbol )
+void QgsSymbolsListWidget::symbolAddedToStyle( const QString& name, QgsSymbolV2* symbol )
 {
   Q_UNUSED( name );
   Q_UNUSED( symbol );

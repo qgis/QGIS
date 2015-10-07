@@ -31,7 +31,7 @@ class QgsDataItem : QObject
     };
 
     /** Create new data item. */
-    QgsDataItem( QgsDataItem::Type type, QgsDataItem* parent /TransferThis/, QString name, QString path );
+    QgsDataItem( QgsDataItem::Type type, QgsDataItem* parent /TransferThis/, const QString& name, const QString& path );
     virtual ~QgsDataItem();
 
     bool hasChildren();
@@ -102,7 +102,7 @@ class QgsDataItem : QObject
 
     virtual Capabilities capabilities2() const;
 
-    virtual void setCapabilities( Capabilities capabilities );
+    virtual void setCapabilities( const Capabilities& capabilities );
 
     // static methods
 
@@ -131,10 +131,10 @@ class QgsDataItem : QObject
     // Because QIcon (QPixmap) must not be used in outside the GUI thread, it is
     // not possible to set mIcon in constructor. Either use mIconName/setIconName()
     // or implement icon().
-    void setIcon( QIcon icon );
+    void setIcon( const QIcon& icon );
     void setIconName( const QString & iconName );
 
-    void setToolTip( QString msg );
+    void setToolTip( const QString& msg );
     QString toolTip() const;
 
     // deleteLater() items anc clear the vector
@@ -193,7 +193,7 @@ class QgsLayerItem : QgsDataItem
       Plugin     //!< added in 2.10
     };
 
-    QgsLayerItem( QgsDataItem* parent, QString name, QString path, QString uri, LayerType layerType, QString providerKey );
+    QgsLayerItem( QgsDataItem* parent, const QString& name, const QString& path, const QString& uri, LayerType layerType, const QString& providerKey );
 
     // --- reimplemented from QgsDataItem ---
 
@@ -238,7 +238,7 @@ class QgsDataCollectionItem : QgsDataItem
 #include <qgsdataitem.h>
 %End
   public:
-    QgsDataCollectionItem( QgsDataItem* parent, QString name, QString path = QString::null );
+    QgsDataCollectionItem( QgsDataItem* parent, const QString& name, const QString& path = QString::null );
     ~QgsDataCollectionItem();
 
     void addChild( QgsDataItem *item /Transfer/ );
@@ -265,7 +265,7 @@ class QgsDirectoryItem : QgsDataCollectionItem
       Type
     };
 
-    QgsDirectoryItem( QgsDataItem* parent, QString name, QString path );
+    QgsDirectoryItem( QgsDataItem* parent, const QString& name, const QString& path );
     ~QgsDirectoryItem();
 
     virtual void setState( State state );
@@ -292,7 +292,7 @@ class QgsErrorItem : QgsDataItem
 %End
   public:
 
-    QgsErrorItem( QgsDataItem* parent, QString error, QString path );
+    QgsErrorItem( QgsDataItem* parent, const QString& error, const QString& path );
     ~QgsErrorItem();
 
 };
@@ -306,7 +306,7 @@ class QgsDirectoryParamWidget : QTreeWidget
 #include <qgsdataitem.h>
 %End
   public:
-    QgsDirectoryParamWidget( QString path, QWidget* parent /TransferThis/ = NULL );
+    QgsDirectoryParamWidget( const QString& path, QWidget* parent /TransferThis/ = NULL );
 
   protected:
     void mousePressEvent( QMouseEvent* event );
@@ -322,12 +322,12 @@ class QgsFavouritesItem : QgsDataCollectionItem
 #include <qgsdataitem.h>
 %End
   public:
-    QgsFavouritesItem( QgsDataItem* parent, QString name, QString path = QString() );
+    QgsFavouritesItem( QgsDataItem* parent, const QString& name, const QString& path = QString() );
     ~QgsFavouritesItem();
 
     QVector<QgsDataItem*> createChildren();
 
-    void addDirectory( QString favIcon );
+    void addDirectory( const QString& favIcon );
     void removeDirectory( QgsDirectoryItem *item );
 
     static const QIcon &iconFavourites();
@@ -341,7 +341,7 @@ class QgsZipItem : QgsDataCollectionItem
 %End
 
   public:
-    QgsZipItem( QgsDataItem* parent, QString name, QString path );
+    QgsZipItem( QgsDataItem* parent, const QString& name, const QString& path );
     ~QgsZipItem();
 
     QVector<QgsDataItem*> createChildren();
@@ -351,10 +351,10 @@ class QgsZipItem : QgsDataCollectionItem
     // static QVector<dataItem_t *> mDataItemPtr;
     static QStringList mProviderNames;
 
-    static QString vsiPrefix( QString uri );
+    static QString vsiPrefix( const QString& uri );
 
     static QgsDataItem* itemFromPath( QgsDataItem* parent, QString path, QString name ) /Factory/;
-    static QgsDataItem* itemFromPath( QgsDataItem* parent, QString filePath, QString name, QString path ) /Factory,PyName=itemFromFilePath/;
+    static QgsDataItem* itemFromPath( QgsDataItem* parent, const QString& filePath, const QString& name, const QString& path ) /Factory,PyName=itemFromFilePath/;
 
     static const QIcon &iconZip();
 

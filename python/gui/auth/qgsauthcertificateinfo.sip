@@ -4,10 +4,10 @@ class QgsAuthCertInfo : QWidget
 #include <qgsauthcertificateinfo.h>
 %End
   public:
-    explicit QgsAuthCertInfo( QSslCertificate cert,
+    explicit QgsAuthCertInfo( const QSslCertificate& cert,
                               bool manageCertTrust = false,
                               QWidget *parent /TransferThis/ = 0,
-                              QList<QSslCertificate> connectionCAs = QList<QSslCertificate>() );
+                              const QList<QSslCertificate>& connectionCAs = QList<QSslCertificate>() );
     ~QgsAuthCertInfo();
 
     bool trustCacheRebuilt();
@@ -25,7 +25,7 @@ class QgsAuthCertInfoDialog : QDialog
     explicit QgsAuthCertInfoDialog( const QSslCertificate& cert,
                                     bool manageCertTrust,
                                     QWidget *parent /TransferThis/ = 0,
-                                    QList<QSslCertificate> connectionCAs = QList<QSslCertificate>() );
+                                    const QList<QSslCertificate>& connectionCAs = QList<QSslCertificate>() );
     ~QgsAuthCertInfoDialog();
 
     QgsAuthCertInfo *certInfoWidget();

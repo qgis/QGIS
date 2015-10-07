@@ -36,7 +36,7 @@ class QgsVectorFileWriter
     class SetOption : QgsVectorFileWriter::Option
     {
       public:
-        SetOption( const QString& docString, QStringList values, const QString& defaultValue, bool allowNone = false );
+        SetOption( const QString& docString, const QStringList& values, const QString& defaultValue, bool allowNone = false );
 
         QSet<QString> values;
         QString defaultValue;
@@ -77,7 +77,7 @@ class QgsVectorFileWriter
     {
       MetaData();
 
-      MetaData( QString longName, QString trLongName, QString glob, QString ext, QMap<QString, QgsVectorFileWriter::Option*> driverOptions, QMap<QString, QgsVectorFileWriter::Option*> layerOptions );
+      MetaData( const QString& longName, const QString& trLongName, const QString& glob, const QString& ext, const QMap<QString, QgsVectorFileWriter::Option*>& driverOptions, const QMap<QString, QgsVectorFileWriter::Option*>& layerOptions );
 
       QString longName;
       QString trLongName;
@@ -206,7 +206,7 @@ class QgsVectorFileWriter
      * @param theFileName /path/to/file.shp
      * @return bool true if the file was deleted successfully
      */
-    static bool deleteShapeFile( QString theFileName );
+    static bool deleteShapeFile( const QString& theFileName );
 
     SymbologyExport symbologyExport() const;
     void setSymbologyExport( SymbologyExport symExport );

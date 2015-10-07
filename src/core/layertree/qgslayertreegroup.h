@@ -50,7 +50,7 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
     QgsLayerTreeLayer* addLayer( QgsMapLayer* layer );
 
     //! Insert existing nodes at specified position. The nodes must not have a parent yet. The nodes will be owned by this group.
-    void insertChildNodes( int index, QList<QgsLayerTreeNode*> nodes );
+    void insertChildNodes( int index, const QList<QgsLayerTreeNode*>& nodes );
     //! Insert existing node at specified position. The node must not have a parent yet. The node will be owned by this group.
     void insertChildNode( int index, QgsLayerTreeNode* node );
     //! Append an existing node. The node must not have a parent yet. The node will be owned by this group.

@@ -80,7 +80,7 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
      * @note added in 2.3
      * @see heading
      */
-    void setHeading( QString heading ) { mHeading = heading; }
+    void setHeading( const QString& heading ) { mHeading = heading; }
 
     /** Returns the horizontal alignment for a column, which controls the alignment
      * used for drawing column values within cells.
@@ -134,7 +134,7 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
      * @note only applicable when used in a QgsComposerAttributeTable
      * @see attribute
      */
-    void setAttribute( QString attribute ) { mAttribute = attribute; }
+    void setAttribute( const QString& attribute ) { mAttribute = attribute; }
 
     /** Returns the sort order for the column. This property is only used when the column
      * is part of a QgsComposerAttributeTable and when sortByRank is > 0.

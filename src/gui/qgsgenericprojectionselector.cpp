@@ -26,7 +26,7 @@
  * \brief A generic dialog to prompt the user for a Coordinate Reference System
  */
 QgsGenericProjectionSelector::QgsGenericProjectionSelector( QWidget *parent,
-    Qt::WindowFlags fl )
+    const Qt::WindowFlags& fl )
     : QDialog( parent, fl )
 {
   setupUi( this );
@@ -65,7 +65,7 @@ QgsGenericProjectionSelector::~QgsGenericProjectionSelector()
   settings.setValue( "/Windows/ProjectionSelector/geometry", saveGeometry() );
 }
 
-void QgsGenericProjectionSelector::setSelectedCrsName( QString theName )
+void QgsGenericProjectionSelector::setSelectedCrsName( const QString& theName )
 {
   projectionSelector->setSelectedCrsName( theName );
 }
@@ -75,7 +75,7 @@ void QgsGenericProjectionSelector::setSelectedCrsId( long theID )
   projectionSelector->setSelectedCrsId( theID );
 }
 
-void QgsGenericProjectionSelector::setSelectedAuthId( QString theID )
+void QgsGenericProjectionSelector::setSelectedAuthId( const QString& theID )
 {
   projectionSelector->setSelectedAuthId( theID );
 }
@@ -91,7 +91,7 @@ QString QgsGenericProjectionSelector::selectedAuthId()
   return projectionSelector->selectedAuthId();
 }
 
-void QgsGenericProjectionSelector::setOgcWmsCrsFilter( QSet<QString> crsFilter )
+void QgsGenericProjectionSelector::setOgcWmsCrsFilter( const QSet<QString>& crsFilter )
 {
   projectionSelector->setOgcWmsCrsFilter( crsFilter );
 }

@@ -45,14 +45,14 @@ class CORE_EXPORT QgsProjectFileTransform
      * @param version Version number
      */
     QgsProjectFileTransform( QDomDocument & domDocument,
-                             QgsProjectVersion version )
+                             const QgsProjectVersion& version )
     {
       mDom = domDocument;
       mCurrentVersion = version;
     }
 
 
-    bool updateRevision( QgsProjectVersion version );
+    bool updateRevision( const QgsProjectVersion& version );
 
     /** Prints the contents via QgsDebugMsg()
      */

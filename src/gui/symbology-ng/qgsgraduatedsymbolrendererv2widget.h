@@ -45,7 +45,7 @@ class GUI_EXPORT QgsGraduatedSymbolRendererV2Model : public QAbstractItemModel
 
     QgsRendererRangeV2 rendererRange( const QModelIndex &index );
     void addClass( QgsSymbolV2* symbol );
-    void addClass( QgsRendererRangeV2 range );
+    void addClass( const QgsRendererRangeV2& range );
     void deleteRows( QList<int> rows );
     void removeAllRows();
     void sort( int column, Qt::SortOrder order = Qt::AscendingOrder ) override;
@@ -83,7 +83,7 @@ class GUI_EXPORT QgsGraduatedSymbolRendererV2Widget : public QgsRendererV2Widget
 
   public slots:
     void changeGraduatedSymbol();
-    void graduatedColumnChanged( QString field );
+    void graduatedColumnChanged( const QString& field );
     void classifyGraduated();
     void reapplyColorRamp();
     void reapplySizes();
@@ -100,7 +100,7 @@ class GUI_EXPORT QgsGraduatedSymbolRendererV2Widget : public QgsRendererV2Widget
     /** Toggle the link between classes boundaries */
     void toggleBoundariesLink( bool linked );
 
-    void sizeScaleFieldChanged( QString fldName );
+    void sizeScaleFieldChanged( const QString& fldName );
     void scaleMethodChanged( QgsSymbolV2::ScaleMethod scaleMethod );
     void labelFormatChanged();
 

@@ -64,7 +64,7 @@ class TestQgsBlendModes : public QObject
     void vectorLayerTransparency();
     void rasterBlending();
   private:
-    bool imageCheck( QString theType ); //as above
+    bool imageCheck( const QString& theType ); //as above
     QgsMapSettings *mMapSettings;
     QgsMapLayer * mpPointsLayer;
     QgsVectorLayer * mpPolysLayer;
@@ -229,7 +229,7 @@ void TestQgsBlendModes::rasterBlending()
 // Private helper functions not called directly by CTest
 //
 
-bool TestQgsBlendModes::imageCheck( QString theTestType )
+bool TestQgsBlendModes::imageCheck( const QString& theTestType )
 {
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image

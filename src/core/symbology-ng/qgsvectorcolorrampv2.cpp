@@ -41,8 +41,8 @@ static QColor _interpolate( const QColor& c1, const QColor& c2, const double val
 
 //////////////
 
-QgsVectorGradientColorRampV2::QgsVectorGradientColorRampV2( QColor color1, QColor color2,
-    bool discrete, QgsGradientStopsList stops )
+QgsVectorGradientColorRampV2::QgsVectorGradientColorRampV2( const QColor& color1, const QColor& color2,
+    bool discrete, const QgsGradientStopsList& stops )
     : mColor1( color1 ), mColor2( color2 ), mDiscrete( discrete ), mStops( stops )
 {
 }
@@ -453,7 +453,7 @@ QgsStringMap QgsRandomColorsV2::properties() const
 
 ////////////
 
-QgsVectorColorBrewerColorRampV2::QgsVectorColorBrewerColorRampV2( QString schemeName, int colors )
+QgsVectorColorBrewerColorRampV2::QgsVectorColorBrewerColorRampV2( const QString& schemeName, int colors )
     : mSchemeName( schemeName ), mColors( colors )
 {
   loadPalette();
@@ -482,7 +482,7 @@ QStringList QgsVectorColorBrewerColorRampV2::listSchemeNames()
   return QgsColorBrewerPalette::listSchemes();
 }
 
-QList<int> QgsVectorColorBrewerColorRampV2::listSchemeVariants( QString schemeName )
+QList<int> QgsVectorColorBrewerColorRampV2::listSchemeVariants( const QString& schemeName )
 {
   return QgsColorBrewerPalette::listSchemeVariants( schemeName );
 }
@@ -521,7 +521,7 @@ QgsStringMap QgsVectorColorBrewerColorRampV2::properties() const
 ////////////
 
 
-QgsCptCityColorRampV2::QgsCptCityColorRampV2( QString schemeName, QString variantName,
+QgsCptCityColorRampV2::QgsCptCityColorRampV2( const QString& schemeName, const QString& variantName,
     bool doLoadFile )
     : QgsVectorGradientColorRampV2()
     , mSchemeName( schemeName ), mVariantName( variantName )
@@ -533,8 +533,8 @@ QgsCptCityColorRampV2::QgsCptCityColorRampV2( QString schemeName, QString varian
     loadFile();
 }
 
-QgsCptCityColorRampV2::QgsCptCityColorRampV2( QString schemeName,  QStringList variantList,
-    QString variantName, bool doLoadFile )
+QgsCptCityColorRampV2::QgsCptCityColorRampV2( const QString& schemeName, const QStringList& variantList,
+    const QString& variantName, bool doLoadFile )
     : QgsVectorGradientColorRampV2()
     , mSchemeName( schemeName ), mVariantName( variantName )
     , mVariantList( variantList ), mFileLoaded( false ), mMultiStops( false )

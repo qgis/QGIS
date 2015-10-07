@@ -476,7 +476,7 @@ bool QgsComposerAttributeTable::getFeatureAttributes( QList<QgsAttributeMap> &at
   return true;
 }
 
-void QgsComposerAttributeTable::removeLayer( QString layerId )
+void QgsComposerAttributeTable::removeLayer( const QString& layerId )
 {
   if ( mVectorLayer )
   {
@@ -501,7 +501,7 @@ void QgsComposerAttributeTable::setSceneRect( const QRectF& rectangle )
   refreshAttributes();
 }
 
-void QgsComposerAttributeTable::setSortAttributes( const QList<QPair<int, bool> > att )
+void QgsComposerAttributeTable::setSortAttributes( const QList<QPair<int, bool> >& att )
 {
   //first, clear existing sort by ranks
   QList<QgsComposerTableColumn*>::iterator columnIt = mColumns.begin();

@@ -61,7 +61,7 @@ QgsCoordinateReferenceSystem::QgsCoordinateReferenceSystem()
   mCRS = OSRNewSpatialReference( NULL );
 }
 
-QgsCoordinateReferenceSystem::QgsCoordinateReferenceSystem( QString theDefinition )
+QgsCoordinateReferenceSystem::QgsCoordinateReferenceSystem( const QString& theDefinition )
     : mSrsId( 0 )
     , mGeoFlag( false )
     , mMapUnits( QGis::UnknownUnit )
@@ -318,7 +318,7 @@ bool QgsCoordinateReferenceSystem::createFromSrsId( long id )
                      "srs_id", QString::number( id ) );
 }
 
-bool QgsCoordinateReferenceSystem::loadFromDb( QString db, QString expression, QString value )
+bool QgsCoordinateReferenceSystem::loadFromDb( const QString& db, const QString& expression, const QString& value )
 {
   QgsDebugMsgLevel( "load CRS from " + db + " where " + expression + " is " + value, 3 );
   mIsValidFlag = false;
@@ -706,7 +706,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &theProj4Strin
 }
 
 //private method meant for internal use by this class only
-QgsCoordinateReferenceSystem::RecordMap QgsCoordinateReferenceSystem::getRecord( QString theSql )
+QgsCoordinateReferenceSystem::RecordMap QgsCoordinateReferenceSystem::getRecord( const QString& theSql )
 {
   QString myDatabaseFileName;
   QgsCoordinateReferenceSystem::RecordMap myMap;
@@ -907,7 +907,7 @@ void QgsCoordinateReferenceSystem::setInternalId( long theSrsId )
 {
   mSrsId = theSrsId;
 }
-void QgsCoordinateReferenceSystem::setAuthId( QString authId )
+void QgsCoordinateReferenceSystem::setAuthId( const QString& authId )
 {
   mAuthId = authId;
 }
@@ -915,11 +915,11 @@ void QgsCoordinateReferenceSystem::setSrid( long theSrid )
 {
   mSRID = theSrid;
 }
-void QgsCoordinateReferenceSystem::setDescription( QString theDescription )
+void QgsCoordinateReferenceSystem::setDescription( const QString& theDescription )
 {
   mDescription = theDescription;
 }
-void QgsCoordinateReferenceSystem::setProj4String( QString theProj4String )
+void QgsCoordinateReferenceSystem::setProj4String( const QString& theProj4String )
 {
   mProj4 = theProj4String;
 
@@ -943,11 +943,11 @@ void QgsCoordinateReferenceSystem::setEpsg( long theEpsg )
 {
   mAuthId = QString( "EPSG:%1" ).arg( theEpsg );
 }
-void  QgsCoordinateReferenceSystem::setProjectionAcronym( QString theProjectionAcronym )
+void  QgsCoordinateReferenceSystem::setProjectionAcronym( const QString& theProjectionAcronym )
 {
   mProjectionAcronym = theProjectionAcronym;
 }
-void  QgsCoordinateReferenceSystem::setEllipsoidAcronym( QString theEllipsoidAcronym )
+void  QgsCoordinateReferenceSystem::setEllipsoidAcronym( const QString& theEllipsoidAcronym )
 {
   mEllipsoidAcronym = theEllipsoidAcronym;
 }
@@ -1385,7 +1385,7 @@ QString QgsCoordinateReferenceSystem::proj4FromSrsId( const int theSrsId )
   return myProjString;
 }
 
-int QgsCoordinateReferenceSystem::openDb( QString path, sqlite3 **db, bool readonly )
+int QgsCoordinateReferenceSystem::openDb( const QString& path, sqlite3 **db, bool readonly )
 {
   QgsDebugMsgLevel( "path = " + path, 3 );
   int myResult = readonly
@@ -1438,7 +1438,7 @@ void QgsCoordinateReferenceSystem::debugPrint()
   }
 }
 
-void QgsCoordinateReferenceSystem::setValidationHint( QString html )
+void QgsCoordinateReferenceSystem::setValidationHint( const QString& html )
 {
   mValidationHint = html;
 }
@@ -1451,7 +1451,7 @@ QString QgsCoordinateReferenceSystem::validationHint()
 /// Copied from QgsCustomProjectionDialog ///
 /// Please refactor into SQL handler !!!  ///
 
-bool QgsCoordinateReferenceSystem::saveAsUserCRS( QString name )
+bool QgsCoordinateReferenceSystem::saveAsUserCRS( const QString& name )
 {
   if ( ! mIsValidFlag )
   {

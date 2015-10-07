@@ -87,7 +87,7 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
      *
      * @return the value assigned to this configuration option
      */
-    QVariant config( QString key, QVariant defaultVal = QVariant() );
+    QVariant config( const QString& key, const QVariant& defaultVal = QVariant() );
 
     /**
      * Returns the whole config

@@ -80,7 +80,7 @@ void QgsStyleV2::clear()
     sqlite3_close( mCurrentDB );
 }
 
-bool QgsStyleV2::addSymbol( QString name, QgsSymbolV2* symbol, bool update )
+bool QgsStyleV2::addSymbol( const QString& name, QgsSymbolV2* symbol, bool update )
 {
   if ( !symbol || name.isEmpty() )
     return false;
@@ -104,7 +104,7 @@ bool QgsStyleV2::addSymbol( QString name, QgsSymbolV2* symbol, bool update )
   return true;
 }
 
-bool QgsStyleV2::saveSymbol( QString name, QgsSymbolV2* symbol, int groupid, QStringList tags )
+bool QgsStyleV2::saveSymbol( const QString& name, QgsSymbolV2* symbol, int groupid, const QStringList& tags )
 {
   // TODO add support for tags and groups
   Q_UNUSED( tags );
@@ -135,7 +135,7 @@ bool QgsStyleV2::saveSymbol( QString name, QgsSymbolV2* symbol, int groupid, QSt
   return true;
 }
 
-bool QgsStyleV2::removeSymbol( QString name )
+bool QgsStyleV2::removeSymbol( const QString& name )
 {
   QgsSymbolV2 *symbol = mSymbols.take( name );
   if ( !symbol )
@@ -163,13 +163,13 @@ bool QgsStyleV2::removeSymbol( QString name )
   return true;
 }
 
-QgsSymbolV2* QgsStyleV2::symbol( QString name )
+QgsSymbolV2* QgsStyleV2::symbol( const QString& name )
 {
   const QgsSymbolV2 *symbol = symbolRef( name );
   return symbol ? symbol->clone() : 0;
 }
 
-const QgsSymbolV2 *QgsStyleV2::symbolRef( QString name ) const
+const QgsSymbolV2 *QgsStyleV2::symbolRef( const QString& name ) const
 {
   return mSymbols.value( name );
 }
@@ -185,7 +185,7 @@ QStringList QgsStyleV2::symbolNames()
 }
 
 
-bool QgsStyleV2::addColorRamp( QString name, QgsVectorColorRampV2* colorRamp, bool update )
+bool QgsStyleV2::addColorRamp( const QString& name, QgsVectorColorRampV2* colorRamp, bool update )
 {
   if ( !colorRamp || name.isEmpty() )
     return false;
@@ -209,7 +209,7 @@ bool QgsStyleV2::addColorRamp( QString name, QgsVectorColorRampV2* colorRamp, bo
   return true;
 }
 
-bool QgsStyleV2::saveColorRamp( QString name, QgsVectorColorRampV2* ramp, int groupid, QStringList tags )
+bool QgsStyleV2::saveColorRamp( const QString& name, QgsVectorColorRampV2* ramp, int groupid, const QStringList& tags )
 {
   // TODO add support for groups and tags
   Q_UNUSED( tags );
@@ -239,7 +239,7 @@ bool QgsStyleV2::saveColorRamp( QString name, QgsVectorColorRampV2* ramp, int gr
   return true;
 }
 
-bool QgsStyleV2::removeColorRamp( QString name )
+bool QgsStyleV2::removeColorRamp( const QString& name )
 {
   QgsVectorColorRampV2 *ramp = mColorRamps.take( name );
   if ( !ramp )
@@ -257,13 +257,13 @@ bool QgsStyleV2::removeColorRamp( QString name )
   return true;
 }
 
-QgsVectorColorRampV2* QgsStyleV2::colorRamp( QString name )
+QgsVectorColorRampV2* QgsStyleV2::colorRamp( const QString& name )
 {
   const QgsVectorColorRampV2 *ramp = colorRampRef( name );
   return ramp ? ramp->clone() : 0;
 }
 
-const QgsVectorColorRampV2* QgsStyleV2::colorRampRef( QString name ) const
+const QgsVectorColorRampV2* QgsStyleV2::colorRampRef( const QString& name ) const
 {
   return mColorRamps.value( name );
 }
@@ -278,7 +278,7 @@ QStringList QgsStyleV2::colorRampNames()
   return mColorRamps.keys();
 }
 
-bool QgsStyleV2::openDB( QString filename )
+bool QgsStyleV2::openDB( const QString& filename )
 {
   int rc = sqlite3_open( filename.toUtf8(), &mCurrentDB );
   if ( rc )
@@ -291,7 +291,7 @@ bool QgsStyleV2::openDB( QString filename )
   return true;
 }
 
-bool QgsStyleV2::load( QString filename )
+bool QgsStyleV2::load( const QString& filename )
 {
   mErrorString.clear();
 
@@ -403,7 +403,7 @@ bool QgsStyleV2::save( QString filename )
   return true;
 }
 
-bool QgsStyleV2::renameSymbol( QString oldName, QString newName )
+bool QgsStyleV2::renameSymbol( const QString& oldName, const QString& newName )
 {
   if ( mSymbols.contains( newName ) )
   {
@@ -435,7 +435,7 @@ bool QgsStyleV2::renameSymbol( QString oldName, QString newName )
   return true;
 }
 
-bool QgsStyleV2::renameColorRamp( QString oldName, QString newName )
+bool QgsStyleV2::renameColorRamp( const QString& oldName, const QString& newName )
 {
   if ( mColorRamps.contains( newName ) )
   {
@@ -477,7 +477,7 @@ QStringList QgsStyleV2::groupNames()
   return groupNames;
 }
 
-QgsSymbolGroupMap QgsStyleV2::childGroupNames( QString parent )
+QgsSymbolGroupMap QgsStyleV2::childGroupNames( const QString& parent )
 {
   // get the name list from the sqlite database and return as a QStringList
   if ( !mCurrentDB )
@@ -610,7 +610,7 @@ QStringList QgsStyleV2::symbolsWithTag( StyleEntity type, int tagid )
   return symbols;
 }
 
-int QgsStyleV2::addGroup( QString groupName, int parentid )
+int QgsStyleV2::addGroup( const QString& groupName, int parentid )
 {
   if ( !mCurrentDB )
     return 0;
@@ -627,7 +627,7 @@ int QgsStyleV2::addGroup( QString groupName, int parentid )
   return ( int )sqlite3_last_insert_rowid( mCurrentDB );
 }
 
-int QgsStyleV2::addTag( QString tagname )
+int QgsStyleV2::addTag( const QString& tagname )
 {
   if ( !mCurrentDB )
     return 0;
@@ -642,7 +642,7 @@ int QgsStyleV2::addTag( QString tagname )
   return ( int )sqlite3_last_insert_rowid( mCurrentDB );
 }
 
-void QgsStyleV2::rename( StyleEntity type, int id, QString newName )
+void QgsStyleV2::rename( StyleEntity type, int id, const QString& newName )
 {
   char *query;
   switch ( type )
@@ -740,7 +740,7 @@ bool QgsStyleV2::runEmptyQuery( char *query, bool freeQuery )
   return zErr == SQLITE_OK;
 }
 
-bool QgsStyleV2::group( StyleEntity type, QString name, int groupid )
+bool QgsStyleV2::group( StyleEntity type, const QString& name, int groupid )
 {
   char *query;
 
@@ -761,7 +761,7 @@ bool QgsStyleV2::group( StyleEntity type, QString name, int groupid )
   return runEmptyQuery( query );
 }
 
-QStringList QgsStyleV2::findSymbols( StyleEntity type, QString qword )
+QStringList QgsStyleV2::findSymbols( StyleEntity type, const QString& qword )
 {
   if ( !mCurrentDB )
   {
@@ -787,7 +787,7 @@ QStringList QgsStyleV2::findSymbols( StyleEntity type, QString qword )
   return symbols;
 }
 
-bool QgsStyleV2::tagSymbol( StyleEntity type, QString symbol, QStringList tags )
+bool QgsStyleV2::tagSymbol( StyleEntity type, const QString& symbol, const QStringList& tags )
 {
   if ( !mCurrentDB )
   {
@@ -839,7 +839,7 @@ bool QgsStyleV2::tagSymbol( StyleEntity type, QString symbol, QStringList tags )
   return true;
 }
 
-bool QgsStyleV2::detagSymbol( StyleEntity type, QString symbol, QStringList tags )
+bool QgsStyleV2::detagSymbol( StyleEntity type, const QString& symbol, const QStringList& tags )
 {
   if ( !mCurrentDB )
   {
@@ -892,7 +892,7 @@ bool QgsStyleV2::detagSymbol( StyleEntity type, QString symbol, QStringList tags
   return true;
 }
 
-QStringList QgsStyleV2::tagsOfSymbol( StyleEntity type, QString symbol )
+QStringList QgsStyleV2::tagsOfSymbol( StyleEntity type, const QString& symbol )
 {
   if ( !mCurrentDB )
   {
@@ -931,7 +931,7 @@ QStringList QgsStyleV2::tagsOfSymbol( StyleEntity type, QString symbol )
   return tagList;
 }
 
-int QgsStyleV2::getId( QString table, QString name )
+int QgsStyleV2::getId( const QString& table, const QString& name )
 {
   char *query = sqlite3_mprintf( "SELECT id FROM %q WHERE name='%q'", table.toUtf8().constData(), name.toUtf8().constData() );
 
@@ -949,32 +949,32 @@ int QgsStyleV2::getId( QString table, QString name )
   return id;
 }
 
-int QgsStyleV2::symbolId( QString name )
+int QgsStyleV2::symbolId( const QString& name )
 {
   return getId( "symbol", name );
 }
 
-int QgsStyleV2::colorrampId( QString name )
+int QgsStyleV2::colorrampId( const QString& name )
 {
   return getId( "colorramp", name );
 }
 
-int QgsStyleV2::groupId( QString name )
+int QgsStyleV2::groupId( const QString& name )
 {
   return getId( "symgroup", name );
 }
 
-int QgsStyleV2::tagId( QString name )
+int QgsStyleV2::tagId( const QString& name )
 {
   return getId( "tag", name );
 }
 
-int QgsStyleV2::smartgroupId( QString name )
+int QgsStyleV2::smartgroupId( const QString& name )
 {
   return getId( "smartgroup", name );
 }
 
-int QgsStyleV2::addSmartgroup( QString name, QString op, QgsSmartConditionMap conditions )
+int QgsStyleV2::addSmartgroup( const QString& name, const QString& op, const QgsSmartConditionMap& conditions )
 {
   QDomDocument doc( "dummy" );
   QDomElement smartEl = doc.createElement( "smartgroup" );
@@ -1252,7 +1252,7 @@ QString QgsStyleV2::smartgroupOperator( int id )
   return op;
 }
 
-bool QgsStyleV2::exportXML( QString filename )
+bool QgsStyleV2::exportXML( const QString& filename )
 {
   if ( filename.isEmpty() )
   {
@@ -1296,7 +1296,7 @@ bool QgsStyleV2::exportXML( QString filename )
   return true;
 }
 
-bool QgsStyleV2::importXML( QString filename )
+bool QgsStyleV2::importXML( const QString& filename )
 {
   mErrorString = QString();
   QDomDocument doc( "style" );
@@ -1392,7 +1392,7 @@ bool QgsStyleV2::importXML( QString filename )
   return true;
 }
 
-bool QgsStyleV2::updateSymbol( StyleEntity type, QString name )
+bool QgsStyleV2::updateSymbol( StyleEntity type, const QString& name )
 {
   QDomDocument doc( "dummy" );
   QDomElement symEl;

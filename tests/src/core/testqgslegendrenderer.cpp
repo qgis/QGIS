@@ -22,7 +22,7 @@
 
 
 
-static QString _fileNameForTest( QString testName )
+static QString _fileNameForTest( const QString& testName )
 {
   return QDir::tempPath() + "/" + testName + ".png";
 }

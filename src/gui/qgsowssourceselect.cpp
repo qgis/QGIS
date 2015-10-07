@@ -54,7 +54,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
-QgsOWSSourceSelect::QgsOWSSourceSelect( QString service, QWidget * parent, Qt::WindowFlags fl, bool managerMode, bool embeddedMode )
+QgsOWSSourceSelect::QgsOWSSourceSelect( const QString& service, QWidget * parent, const Qt::WindowFlags& fl, bool managerMode, bool embeddedMode )
     : QDialog( parent, fl )
     , mService( service )
     , mManagerMode( managerMode )
@@ -589,7 +589,7 @@ void QgsOWSSourceSelect::on_mAddDefaultButton_clicked()
   addDefaultServers();
 }
 
-QString QgsOWSSourceSelect::descriptionForAuthId( QString authId )
+QString QgsOWSSourceSelect::descriptionForAuthId( const QString& authId )
 {
   if ( mCrsNames.contains( authId ) )
     return mCrsNames[ authId ];

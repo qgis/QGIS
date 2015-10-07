@@ -58,13 +58,13 @@ class CORE_EXPORT QgsLayerTreeRegistryBridge : public QObject
     void addedLayersToLayerTree( QList<QgsMapLayer*> layers );
 
   protected slots:
-    void layersAdded( QList<QgsMapLayer*> layers );
-    void layersWillBeRemoved( QStringList layerIds );
+    void layersAdded( const QList<QgsMapLayer*>& layers );
+    void layersWillBeRemoved( const QStringList& layerIds );
 
     void groupWillRemoveChildren( QgsLayerTreeNode* node, int indexFrom, int indexTo );
     void groupRemovedChildren();
 
-    void removeLayersFromRegistry( QStringList layerIds );
+    void removeLayersFromRegistry( const QStringList& layerIds );
 
   protected:
     QgsLayerTreeGroup* mRoot;

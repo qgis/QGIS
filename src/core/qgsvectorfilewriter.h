@@ -65,7 +65,7 @@ class CORE_EXPORT QgsVectorFileWriter
     class SetOption : public Option
     {
       public:
-        SetOption( const QString& docString, QStringList values, const QString& defaultValue, bool allowNone = false )
+        SetOption( const QString& docString, const QStringList& values, const QString& defaultValue, bool allowNone = false )
             : Option( docString, Set )
             , values( values.toSet() )
             , defaultValue( defaultValue )
@@ -123,7 +123,7 @@ class CORE_EXPORT QgsVectorFileWriter
       MetaData()
       {}
 
-      MetaData( QString longName, QString trLongName, QString glob, QString ext, QMap<QString, Option*> driverOptions, QMap<QString, Option*> layerOptions )
+      MetaData( const QString& longName, const QString& trLongName, const QString& glob, const QString& ext, const QMap<QString, Option*>& driverOptions, const QMap<QString, Option*>& layerOptions )
           : longName( longName )
           , trLongName( trLongName )
           , glob( glob )
@@ -259,7 +259,7 @@ class CORE_EXPORT QgsVectorFileWriter
      * @param theFileName /path/to/file.shp
      * @return bool true if the file was deleted successfully
      */
-    static bool deleteShapeFile( QString theFileName );
+    static bool deleteShapeFile( const QString& theFileName );
 
     SymbologyExport symbologyExport() const { return mSymbologyExport; }
     void setSymbologyExport( SymbologyExport symExport ) { mSymbologyExport = symExport; }
@@ -307,7 +307,7 @@ class CORE_EXPORT QgsVectorFileWriter
     /**
      * @deprecated
      */
-    static bool driverMetadata( QString driverName, QString &longName, QString &trLongName, QString &glob, QString &ext );
+    static bool driverMetadata( const QString& driverName, QString &longName, QString &trLongName, QString &glob, QString &ext );
     void createSymbolLayerTable( QgsVectorLayer* vl,  const QgsCoordinateTransform* ct, OGRDataSourceH ds );
     OGRFeatureH createFeature( QgsFeature& feature );
     bool writeFeature( OGRLayerH layer, OGRFeatureH feature );

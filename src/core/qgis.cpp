@@ -99,7 +99,7 @@ const char* QGis::qgisUnitTypes[] =
   QT_TRANSLATE_NOOP( "QGis::UnitType", "nautical miles" )
 };
 
-QGis::UnitType QGis::fromLiteral( QString literal, QGis::UnitType defaultType )
+QGis::UnitType QGis::fromLiteral( const QString& literal, QGis::UnitType defaultType )
 {
   for ( unsigned int i = 0; i < ( sizeof( qgisUnitTypes ) / sizeof( qgisUnitTypes[0] ) ); i++ )
   {
@@ -121,7 +121,7 @@ QString QGis::tr( QGis::UnitType unit )
   return QCoreApplication::translate( "QGis::UnitType", qPrintable( toLiteral( unit ) ) );
 }
 
-QGis::UnitType QGis::fromTr( QString literal, QGis::UnitType defaultType )
+QGis::UnitType QGis::fromTr( const QString& literal, QGis::UnitType defaultType )
 {
   for ( unsigned int i = 0; i < ( sizeof( qgisUnitTypes ) / sizeof( qgisUnitTypes[0] ) ); i++ )
   {
@@ -266,7 +266,7 @@ bool qgsVariantGreaterThan( const QVariant& lhs, const QVariant& rhs )
   return ! qgsVariantLessThan( lhs, rhs );
 }
 
-QString qgsVsiPrefix( QString path )
+QString qgsVsiPrefix( const QString& path )
 {
   if ( path.startsWith( "/vsizip/", Qt::CaseInsensitive ) ||
        path.endsWith( ".zip", Qt::CaseInsensitive ) )

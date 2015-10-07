@@ -43,7 +43,7 @@ bool QgsAuthCrypto::isDisabled()
   return false;
 }
 
-const QString QgsAuthCrypto::encrypt( QString pass, QString cipheriv, QString text )
+const QString QgsAuthCrypto::encrypt( const QString& pass, const QString& cipheriv, const QString& text )
 {
   if ( QgsAuthCrypto::isDisabled() )
     return QString();
@@ -51,7 +51,7 @@ const QString QgsAuthCrypto::encrypt( QString pass, QString cipheriv, QString te
   return encryptdecrypt( pass, cipheriv, text, true );
 }
 
-const QString QgsAuthCrypto::decrypt( QString pass, QString cipheriv, QString text )
+const QString QgsAuthCrypto::decrypt( const QString& pass, const QString& cipheriv, const QString& text )
 {
   if ( QgsAuthCrypto::isDisabled() )
     return QString();
@@ -109,9 +109,9 @@ bool QgsAuthCrypto::verifyPasswordKeyHash( const QString& pass,
   return hash == derived;
 }
 
-QString QgsAuthCrypto::encryptdecrypt( QString passstr,
-                                       QString cipheriv,
-                                       QString textstr,
+QString QgsAuthCrypto::encryptdecrypt( const QString& passstr,
+                                       const QString& cipheriv,
+                                       const QString& textstr,
                                        bool encrypt )
 {
   QString outtxt = QString();

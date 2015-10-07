@@ -47,7 +47,7 @@ QgsLegendSettings::QgsLegendSettings()
   rstyle( QgsComposerLegendStyle::SymbolLabel ).rfont().setPointSizeF( 12.0 );
 }
 
-QStringList QgsLegendSettings::splitStringForWrapping( QString stringToSplt ) const
+QStringList QgsLegendSettings::splitStringForWrapping( const QString& stringToSplt ) const
 {
   QStringList list;
   // If the string contains nothing then just return the string without spliting.

@@ -63,7 +63,7 @@ void QgsAtlasComposition::setEnabled( bool enabled )
   emit parameterChanged();
 }
 
-void QgsAtlasComposition::removeLayers( QStringList layers )
+void QgsAtlasComposition::removeLayers( const QStringList& layers )
 {
   if ( !mCoverageLayer )
   {

@@ -154,7 +154,7 @@ void QgsSingleSymbolRendererV2::setSymbol( QgsSymbolV2* s )
   mSymbol.reset( s );
 }
 
-void QgsSingleSymbolRendererV2::setRotationField( QString fieldOrExpression )
+void QgsSingleSymbolRendererV2::setRotationField( const QString& fieldOrExpression )
 {
   if ( mSymbol->type() == QgsSymbolV2::Marker )
   {
@@ -175,7 +175,7 @@ QString QgsSingleSymbolRendererV2::rotationField() const
   return QString();
 }
 
-void QgsSingleSymbolRendererV2::setSizeScaleField( QString fieldOrExpression )
+void QgsSingleSymbolRendererV2::setSizeScaleField( const QString& fieldOrExpression )
 {
   mSizeScale.reset( QgsSymbolLayerV2Utils::fieldOrExpressionToExpression( fieldOrExpression ) );
 }
@@ -395,7 +395,7 @@ QgsLegendSymbologyList QgsSingleSymbolRendererV2::legendSymbologyItems( QSize ic
   return lst;
 }
 
-QgsLegendSymbolList QgsSingleSymbolRendererV2::legendSymbolItems( double scaleDenominator, QString rule )
+QgsLegendSymbolList QgsSingleSymbolRendererV2::legendSymbolItems( double scaleDenominator, const QString& rule )
 {
   Q_UNUSED( scaleDenominator );
   Q_UNUSED( rule );

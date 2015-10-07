@@ -67,12 +67,12 @@ class TestQgsWcsPublicServers: public QObject
     void test();
     void report();
   private:
-    QString cells( QStringList theValues, QString theClass = QString(), int colspan = 1, int rowspan = 1 );
-    QString row( QStringList theValues, QString theClass = QString() );
-    QString error( QString theMessage );
-    void writeReport( QString theReport );
+    QString cells( const QStringList& theValues, const QString& theClass = QString(), int colspan = 1, int rowspan = 1 );
+    QString row( const QStringList& theValues, const QString& theClass = QString() );
+    QString error( const QString& theMessage );
+    void writeReport( const QString& theReport );
 
-    QMap<QString, QString> readLog( QString theFileName );
+    QMap<QString, QString> readLog( const QString& theFileName );
 
     Server getServer( const QString & url );
 

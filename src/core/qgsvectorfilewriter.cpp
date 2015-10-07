@@ -2102,7 +2102,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
 }
 
 
-bool QgsVectorFileWriter::deleteShapeFile( QString theFileName )
+bool QgsVectorFileWriter::deleteShapeFile( const QString& theFileName )
 {
   QFileInfo fi( theFileName );
   QDir dir = fi.dir();
@@ -2277,7 +2277,7 @@ QString QgsVectorFileWriter::convertCodecNameForEncodingOption( const QString &c
   return codecName;
 }
 
-bool QgsVectorFileWriter::driverMetadata( QString driverName, QString &longName, QString &trLongName, QString &glob, QString &ext )
+bool QgsVectorFileWriter::driverMetadata( const QString& driverName, QString &longName, QString &trLongName, QString &glob, QString &ext )
 {
   if ( driverName.startsWith( "AVCE00" ) )
   {

@@ -179,7 +179,7 @@ class CORE_EXPORT QgsSvgCache : public QObject
                              bool& hasOutlineWidthParam, double& defaultOutlineWidth ) const;
 
     /** Release memory and remove cache entry from mEntryLookup*/
-    void removeCacheEntry( QString s, QgsSvgCacheEntry* entry );
+    void removeCacheEntry( const QString& s, QgsSvgCacheEntry* entry );
 
     /** For debugging*/
     void printEntryList();

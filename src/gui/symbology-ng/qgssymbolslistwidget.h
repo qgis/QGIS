@@ -77,7 +77,7 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     void setMarkerSize( double size );
     void setLineWidth( double width );
     void addSymbolToStyle();
-    void symbolAddedToStyle( QString name, QgsSymbolV2* symbol );
+    void symbolAddedToStyle( const QString& name, QgsSymbolV2* symbol );
     void on_mSymbolUnitWidget_changed();
     void on_mTransparencySlider_valueChanged( int value );
 
@@ -103,7 +103,7 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     QgsMapCanvas* mMapCanvas;
 
     void populateSymbolView();
-    void populateSymbols( QStringList symbols );
+    void populateSymbols( const QStringList& symbols );
     void updateSymbolColor();
     void updateSymbolInfo();
 
@@ -111,7 +111,7 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     /** Displays alpha value as transparency in mTransparencyLabel*/
     void displayTransparency( double alpha );
     /** Recursive function to create the group tree in the widget */
-    void populateGroups( QString parent = "", QString prepend = "" );
+    void populateGroups( const QString& parent = "", const QString& prepend = "" );
 
     QgsExpressionContext* mPresetExpressionContext;
 };

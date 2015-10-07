@@ -238,7 +238,7 @@ void QgsStyleV2ManagerDialog::populateList()
   groupChanged( groupTree->selectionModel()->currentIndex() );
 }
 
-void QgsStyleV2ManagerDialog::populateSymbols( QStringList symbolNames, bool check )
+void QgsStyleV2ManagerDialog::populateSymbols( const QStringList& symbolNames, bool check )
 {
   QStandardItemModel* model = qobject_cast<QStandardItemModel*>( listItems->model() );
   model->clear();
@@ -265,7 +265,7 @@ void QgsStyleV2ManagerDialog::populateSymbols( QStringList symbolNames, bool che
 }
 
 
-void QgsStyleV2ManagerDialog::populateColorRamps( QStringList colorRamps, bool check )
+void QgsStyleV2ManagerDialog::populateColorRamps( const QStringList& colorRamps, bool check )
 {
   QStandardItemModel* model = qobject_cast<QStandardItemModel*>( listItems->model() );
   model->clear();
@@ -760,7 +760,7 @@ void QgsStyleV2ManagerDialog::exportItemsSVG()
 }
 
 
-void QgsStyleV2ManagerDialog::exportSelectedItemsImages( QString dir, QString format, QSize size )
+void QgsStyleV2ManagerDialog::exportSelectedItemsImages( const QString& dir, const QString& format, const QSize& size )
 {
   if ( dir.isEmpty() )
     return;
@@ -1154,7 +1154,7 @@ void QgsStyleV2ManagerDialog::regrouped( QStandardItem *item )
   }
 }
 
-void QgsStyleV2ManagerDialog::setSymbolsChecked( QStringList symbols )
+void QgsStyleV2ManagerDialog::setSymbolsChecked( const QStringList& symbols )
 {
   QStandardItemModel *model = qobject_cast<QStandardItemModel*>( listItems->model() );
   Q_FOREACH ( const QString& symbol, symbols )
@@ -1165,7 +1165,7 @@ void QgsStyleV2ManagerDialog::setSymbolsChecked( QStringList symbols )
   }
 }
 
-void QgsStyleV2ManagerDialog::filterSymbols( QString qword )
+void QgsStyleV2ManagerDialog::filterSymbols( const QString& qword )
 {
   QStringList items;
   if ( currentItemType() == 3 )

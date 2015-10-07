@@ -102,7 +102,7 @@ class QgsComposerAttributeTableV2 : QgsComposerTableV2
      * @see setSource
      * @note only used if table source is set to RelationChildren
      */
-    void setRelationId( const QString relationId );
+    void setRelationId( const QString& relationId );
 
     /** Returns the relation id which the table displays child features from
      * @returns relation id

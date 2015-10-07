@@ -27,7 +27,7 @@ QgsDetailedItemWidget::~QgsDetailedItemWidget()
 {
 }
 
-void QgsDetailedItemWidget::setData( QgsDetailedItemData theData )
+void QgsDetailedItemWidget::setData( const QgsDetailedItemData& theData )
 {
   lblTitle->setText( theData.title() );
   lblDetail->setText( theData.detail() );

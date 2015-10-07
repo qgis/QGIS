@@ -29,7 +29,7 @@
 #include "qgslonglongvalidator.h"
 #include "qgsfield.h"
 
-QgsFieldValidator::QgsFieldValidator( QObject *parent, const QgsField &field, QString defaultValue, QString dateFormat )
+QgsFieldValidator::QgsFieldValidator( QObject *parent, const QgsField &field, const QString& defaultValue, const QString& dateFormat )
     : QValidator( parent )
     , mField( field )
     , mDefaultValue( defaultValue )

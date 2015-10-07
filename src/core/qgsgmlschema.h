@@ -40,7 +40,7 @@ class CORE_EXPORT QgsGmlFeatureClass
 {
   public:
     QgsGmlFeatureClass();
-    QgsGmlFeatureClass( QString name, QString path );
+    QgsGmlFeatureClass( const QString& name, const QString& path );
 
     ~QgsGmlFeatureClass();
 

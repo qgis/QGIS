@@ -211,7 +211,7 @@ void QgsFeatureRendererV2::copyPaintEffect( QgsFeatureRendererV2 *destRenderer )
 }
 
 
-QgsFeatureRendererV2::QgsFeatureRendererV2( QString type )
+QgsFeatureRendererV2::QgsFeatureRendererV2( const QString& type )
     : mType( type )
     , mUsingSymbolLevels( false )
     , mCurrentVertexMarkerType( QgsVectorLayer::Cross )
@@ -650,19 +650,19 @@ bool QgsFeatureRendererV2::legendSymbolItemsCheckable() const
   return false;
 }
 
-bool QgsFeatureRendererV2::legendSymbolItemChecked( QString key )
+bool QgsFeatureRendererV2::legendSymbolItemChecked( const QString& key )
 {
   Q_UNUSED( key );
   return false;
 }
 
-void QgsFeatureRendererV2::checkLegendSymbolItem( QString key, bool state )
+void QgsFeatureRendererV2::checkLegendSymbolItem( const QString& key, bool state )
 {
   Q_UNUSED( key );
   Q_UNUSED( state );
 }
 
-QgsLegendSymbolList QgsFeatureRendererV2::legendSymbolItems( double scaleDenominator, QString rule )
+QgsLegendSymbolList QgsFeatureRendererV2::legendSymbolItems( double scaleDenominator, const QString& rule )
 {
   Q_UNUSED( scaleDenominator );
   Q_UNUSED( rule );

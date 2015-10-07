@@ -21,7 +21,7 @@
 #include "qgslogger.h"
 #include "qgsprojectversion.h"
 
-QgsProjectVersion::QgsProjectVersion( int major, int minor, int sub, QString name )
+QgsProjectVersion::QgsProjectVersion( int major, int minor, int sub, const QString& name )
 {
   mMajor = major;
   mMinor = minor;
@@ -29,7 +29,7 @@ QgsProjectVersion::QgsProjectVersion( int major, int minor, int sub, QString nam
   mName  = name;
 }
 
-QgsProjectVersion::QgsProjectVersion( QString string )
+QgsProjectVersion::QgsProjectVersion( const QString& string )
 {
   QString pre = string.section( '-', 0, 0 );
 

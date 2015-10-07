@@ -48,7 +48,7 @@ class QgsLogger
     static int debugLevel();
 
     /** Logs the message passed in to the logfile defined in QGIS_LOG_FILE if any. **/
-    static void logMessageToFile( QString theMessage );
+    static void logMessageToFile( const QString& theMessage );
 
     /** Reads the environment variable QGIS_LOG_FILE. Returns NULL if the variable is not set,
      * otherwise returns a file name for writing log messages to.*/

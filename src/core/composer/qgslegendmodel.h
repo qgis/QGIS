@@ -61,7 +61,7 @@ class CORE_EXPORT QgsLegendModel : public QStandardItemModel
      * @deprecated in 2.6
      */
     Q_DECL_DEPRECATED void setLayerSetAndGroups( const QStringList& layerIds, const QList< GroupLayerInfo >& groupInfo );
-    void setLayerSet( const QStringList& layerIds, double scaleDenominator = -1, QString rule = "" );
+    void setLayerSet( const QStringList& layerIds, double scaleDenominator = -1, const QString& rule = "" );
     /** Adds a group
       @param text name of group (defaults to translation of "Group")
       @param position insertion position (toplevel position (or -1 if it should be placed at the end of the legend).
@@ -75,7 +75,7 @@ class CORE_EXPORT QgsLegendModel : public QStandardItemModel
     /** Updates the whole symbology of a layer*/
     void updateLayer( QStandardItem* layerItem );
     /** Tries to update a single classification item*/
-    void updateVectorV2ClassificationItem( QStandardItem* classificationItem, QgsSymbolV2* symbol, QString itemText )
+    void updateVectorV2ClassificationItem( QStandardItem* classificationItem, QgsSymbolV2* symbol, const QString& itemText )
     { Q_UNUSED( classificationItem ); Q_UNUSED( symbol ); Q_UNUSED( itemText ); }
     void updateRasterClassificationItem( QStandardItem* classificationItem )
     { Q_UNUSED( classificationItem ); }
@@ -105,7 +105,7 @@ class CORE_EXPORT QgsLegendModel : public QStandardItemModel
 
   public slots:
     void removeLayer( const QString& layerId );
-    void addLayer( QgsMapLayer* theMapLayer, double scaleDenominator = -1, QString rule = "", QStandardItem* parentItem = 0 );
+    void addLayer( QgsMapLayer* theMapLayer, double scaleDenominator = -1, const QString& rule = "", QStandardItem* parentItem = 0 );
 
   private slots:
     void updateLayer();
@@ -115,7 +115,7 @@ class CORE_EXPORT QgsLegendModel : public QStandardItemModel
 
   private:
     /** Adds classification items of vector layers using new symbology*/
-    int addVectorLayerItemsV2( QStandardItem* layerItem, QgsVectorLayer* vlayer, double scaleDenominator = -1, QString rule = "" );
+    int addVectorLayerItemsV2( QStandardItem* layerItem, QgsVectorLayer* vlayer, double scaleDenominator = -1, const QString& rule = "" );
 
     /** Adds item of raster layer
      @return 0 in case of success*/

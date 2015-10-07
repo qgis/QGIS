@@ -42,7 +42,7 @@ QgsSvgSelectorListModel::QgsSvgSelectorListModel( QObject* parent )
 }
 
 // Constructor to create model for icons in a specific path
-QgsSvgSelectorListModel::QgsSvgSelectorListModel( QObject* parent, QString path )
+QgsSvgSelectorListModel::QgsSvgSelectorListModel( QObject* parent, const QString& path )
     : QAbstractListModel( parent )
 {
   mSvgFiles = QgsSymbolLayerV2Utils::listSvgFilesAt( path );
@@ -275,7 +275,7 @@ void QgsSvgSelectorWidget::on_mFilePushButton_clicked()
   updateCurrentSvgPath( file );
 }
 
-void QgsSvgSelectorWidget::updateLineEditFeedback( bool ok, QString tip )
+void QgsSvgSelectorWidget::updateLineEditFeedback( bool ok, const QString& tip )
 {
   // draw red text for path field if invalid (path can't be resolved)
   mFileLineEdit->setStyleSheet( QString( !ok ? "QLineEdit{ color: rgb(225, 0, 0); }" : "" ) );
@@ -309,8 +309,8 @@ void QgsSvgSelectorWidget::populateList()
 
 //-- QgsSvgSelectorDialog
 
-QgsSvgSelectorDialog::QgsSvgSelectorDialog( QWidget *parent, Qt::WindowFlags fl,
-    QDialogButtonBox::StandardButtons buttons,
+QgsSvgSelectorDialog::QgsSvgSelectorDialog( QWidget *parent, const Qt::WindowFlags& fl,
+    const QDialogButtonBox::StandardButtons& buttons,
     Qt::Orientation orientation )
     : QDialog( parent, fl )
 {

@@ -38,12 +38,12 @@ class TestQgsWcsProvider: public QObject
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {};// will be called before each testfunction is executed.
-    void cleanup() {};// will be called after every testfunction.
+    void init() {} // will be called before each testfunction is executed.
+    void cleanup() {} // will be called after every testfunction.
 
     void read();
   private:
-    bool read( QString theIdentifier, QString theWcsUri, QString theFilePath, QString & theReport );
+    bool read( const QString& theIdentifier, const QString& theWcsUri, const QString& theFilePath, QString & theReport );
     QString mTestDataDir;
     QString mReport;
     QString mUrl;
@@ -149,7 +149,7 @@ void TestQgsWcsProvider::read()
   QVERIFY2( ok, "Reading data failed. See report for details." );
 }
 
-bool TestQgsWcsProvider::read( QString theIdentifier, QString theWcsUri, QString theFilePath, QString & theReport )
+bool TestQgsWcsProvider::read( const QString& theIdentifier, const QString& theWcsUri, const QString& theFilePath, QString & theReport )
 {
   theReport += QString( "<h2>Identifier (coverage): %1</h2>" ).arg( theIdentifier );
 

@@ -19,7 +19,7 @@
 #include <QString>
 #include <QObject>
 
-QgsStatisticalSummary::QgsStatisticalSummary( Statistics stats )
+QgsStatisticalSummary::QgsStatisticalSummary( const Statistics& stats )
     : mStatistics( stats )
 {
   reset();

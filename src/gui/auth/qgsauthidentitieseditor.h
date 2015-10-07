@@ -80,14 +80,14 @@ class GUI_EXPORT QgsAuthIdentitiesEditor : public QWidget, private Ui::QgsAuthId
 
     void setupIdentitiesTree();
 
-    void populateIdentitiesSection( QTreeWidgetItem *item, QList<QSslCertificate> certs,
+    void populateIdentitiesSection( QTreeWidgetItem *item, const QList<QSslCertificate>& certs,
                                     QgsAuthIdentitiesEditor::IdentityType identype );
 
-    void appendIdentitiesToGroup( QList<QSslCertificate> certs,
+    void appendIdentitiesToGroup( const QList<QSslCertificate>& certs,
                                   QgsAuthIdentitiesEditor::IdentityType identype,
                                   QTreeWidgetItem *parent = 0 );
 
-    void appendIdentitiesToItem( QList<QSslCertificate> certs,
+    void appendIdentitiesToItem( const QList<QSslCertificate>& certs,
                                  QgsAuthIdentitiesEditor::IdentityType identype,
                                  QTreeWidgetItem *parent = 0 );
 

@@ -55,7 +55,7 @@ class QgsInvertedPolygonRenderer : QgsFeatureRendererV2
     /** Proxy that will call this method on the embedded renderer.
       @note not available in python bindings
      */
-    // virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, QString rule = "" );
+    // virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString& rule = "" );
     /** Proxy that will call this method on the embedded renderer. */
     virtual bool willRenderFeature( QgsFeature& feat, QgsRenderContext& context );
 

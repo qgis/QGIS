@@ -46,7 +46,7 @@ QgsCredentials::~QgsCredentials()
 {
 }
 
-bool QgsCredentials::get( QString realm, QString &username, QString &password, QString message )
+bool QgsCredentials::get( const QString& realm, QString &username, QString &password, const QString& message )
 {
   if ( mCredentialCache.contains( realm ) )
   {
@@ -71,7 +71,7 @@ bool QgsCredentials::get( QString realm, QString &username, QString &password, Q
   }
 }
 
-void QgsCredentials::put( QString realm, QString username, QString password )
+void QgsCredentials::put( const QString& realm, const QString& username, const QString& password )
 {
   QgsDebugMsg( QString( "inserting realm:%1 username:%2 password:%3" ).arg( realm ).arg( username ).arg( password ) );
   mCredentialCache.insert( realm, QPair<QString, QString>( username, password ) );
@@ -106,7 +106,7 @@ QgsCredentialsConsole::QgsCredentialsConsole()
   setInstance( this );
 }
 
-bool QgsCredentialsConsole::request( QString realm, QString &username, QString &password, QString message )
+bool QgsCredentialsConsole::request( const QString& realm, QString &username, QString &password, const QString& message )
 {
   QTextStream in( stdin, QIODevice::ReadOnly );
   QTextStream out( stdout, QIODevice::WriteOnly );

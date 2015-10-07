@@ -33,7 +33,7 @@ class QgsLegendSettings
     QgsComposerLegendStyle & rstyle( QgsComposerLegendStyle::Style s );
     /** Returns style */
     QgsComposerLegendStyle style( QgsComposerLegendStyle::Style s ) const;
-    void setStyle( QgsComposerLegendStyle::Style s, const QgsComposerLegendStyle style );
+    void setStyle( QgsComposerLegendStyle::Style s, const QgsComposerLegendStyle& style );
 
     double boxSpace() const;
     void setBoxSpace( double s );
@@ -81,7 +81,7 @@ class QgsLegendSettings
 
     /** Splits a string using the wrap char taking into account handling empty
       wrap char which means no wrapping */
-    QStringList splitStringForWrapping( QString stringToSplt ) const;
+    QStringList splitStringForWrapping( const QString& stringToSplt ) const;
 
     /** Draws Text. Takes care about all the composer specific issues (calculation to pixel, scaling of font and painter
      to work around the Qt font bug)*/

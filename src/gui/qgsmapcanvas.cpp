@@ -790,7 +790,7 @@ void QgsMapCanvas::updateMap()
 }
 
 //the format defaults to "PNG" if not specified
-void QgsMapCanvas::saveAsImage( QString theFileName, QPixmap * theQPixmap, QString theFormat )
+void QgsMapCanvas::saveAsImage( const QString& theFileName, QPixmap * theQPixmap, const QString& theFormat )
 {
   //
   //check if the optional QPaintDevice was supplied

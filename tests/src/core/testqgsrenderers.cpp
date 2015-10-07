@@ -63,8 +63,8 @@ class TestQgsRenderers : public QObject
 //    void continuousSymbol();
   private:
     bool mTestHasError;
-    bool setQml( QString theType ); //uniquevalue / continuous / single /
-    bool imageCheck( QString theType ); //as above
+    bool setQml( const QString& theType ); //uniquevalue / continuous / single /
+    bool imageCheck( const QString& theType ); //as above
     QgsMapSettings *mMapSettings;
     QgsMapLayer * mpPointsLayer;
     QgsMapLayer * mpLinesLayer;
@@ -180,7 +180,7 @@ void TestQgsRenderers::continuousSymbol()
 // Private helper functions not called directly by CTest
 //
 
-bool TestQgsRenderers::setQml( QString theType )
+bool TestQgsRenderers::setQml( const QString& theType )
 {
   //load a qml style and apply to our layer
   //the style will correspond to the renderer
@@ -216,7 +216,7 @@ bool TestQgsRenderers::setQml( QString theType )
   return myStyleFlag;
 }
 
-bool TestQgsRenderers::imageCheck( QString theTestType )
+bool TestQgsRenderers::imageCheck( const QString& theTestType )
 {
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image

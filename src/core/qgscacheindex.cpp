@@ -24,7 +24,7 @@ QgsAbstractCacheIndex::~QgsAbstractCacheIndex()
 {
 }
 
-void QgsAbstractCacheIndex::requestCompleted( QgsFeatureRequest featureRequest, QgsFeatureIds fids )
+void QgsAbstractCacheIndex::requestCompleted( const QgsFeatureRequest& featureRequest, const QgsFeatureIds& fids )
 {
   Q_UNUSED( featureRequest )
   Q_UNUSED( fids )

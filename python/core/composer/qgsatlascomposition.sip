@@ -137,7 +137,7 @@ public:
     QString featureFilterErrorString() const;
 
     QString sortKeyAttributeName() const;
-    void setSortKeyAttributeName( QString fieldName );
+    void setSortKeyAttributeName( const QString& fieldName );
 
     /** Returns the current list of predefined scales for the atlas. This is used
      * for maps which are set to the predefined atlas scaling mode.

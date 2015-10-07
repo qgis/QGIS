@@ -77,7 +77,7 @@ QgsCoordinateTransform::QgsCoordinateTransform( long theSourceSrsId, long theDes
   initialise();
 }
 
-QgsCoordinateTransform::QgsCoordinateTransform( QString theSourceCRS, QString theDestCRS )
+QgsCoordinateTransform::QgsCoordinateTransform( const QString& theSourceCRS, const QString& theDestCRS )
     : QObject()
     , mInitialisedFlag( false )
     , mSourceProjection( 0 )
@@ -96,7 +96,7 @@ QgsCoordinateTransform::QgsCoordinateTransform( QString theSourceCRS, QString th
 }
 
 QgsCoordinateTransform::QgsCoordinateTransform( long theSourceSrid,
-    QString theDestWkt,
+    const QString& theDestWkt,
     QgsCoordinateReferenceSystem::CrsType theSourceCRSType )
     : QObject()
     , mInitialisedFlag( false )

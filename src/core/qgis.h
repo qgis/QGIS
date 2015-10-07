@@ -243,11 +243,11 @@ class CORE_EXPORT QGis
     //! Provides the canonical name of the type value
     static QString toLiteral( QGis::UnitType unit );
     //! Converts from the canonical name to the type value
-    static UnitType fromLiteral( QString  literal, QGis::UnitType defaultType = UnknownUnit );
+    static UnitType fromLiteral( const QString& literal, QGis::UnitType defaultType = UnknownUnit );
     //! Provides translated version of the type value
     static QString tr( QGis::UnitType unit );
     //! Provides type value from translated version
-    static UnitType fromTr( QString literal, QGis::UnitType defaultType = UnknownUnit );
+    static UnitType fromTr( const QString& literal, QGis::UnitType defaultType = UnknownUnit );
     //! Returns the conversion factor between the specified units
     static double fromUnitToUnitFactor( QGis::UnitType fromUnit, QGis::UnitType toUnit );
 
@@ -375,7 +375,7 @@ bool qgsVariantLessThan( const QVariant& lhs, const QVariant& rhs );
 
 bool qgsVariantGreaterThan( const QVariant& lhs, const QVariant& rhs );
 
-CORE_EXPORT QString qgsVsiPrefix( QString path );
+CORE_EXPORT QString qgsVsiPrefix( const QString& path );
 
 /** Allocates size bytes and returns a pointer to the allocated  memory.
     Works like C malloc() but prints debug message by QgsLogger if allocation fails.

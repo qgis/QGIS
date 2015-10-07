@@ -32,8 +32,8 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
 {
   public:
     /** Renderer owns color array*/
-    QgsPalettedRasterRenderer( QgsRasterInterface* input, int bandNumber, QColor* colorArray, int nColors, const QVector<QString> labels = QVector<QString>() );
-    QgsPalettedRasterRenderer( QgsRasterInterface* input, int bandNumber, QRgb* colorArray, int nColors, const QVector<QString> labels = QVector<QString>() );
+    QgsPalettedRasterRenderer( QgsRasterInterface* input, int bandNumber, QColor* colorArray, int nColors, const QVector<QString>& labels = QVector<QString>() );
+    QgsPalettedRasterRenderer( QgsRasterInterface* input, int bandNumber, QRgb* colorArray, int nColors, const QVector<QString>& labels = QVector<QString>() );
     ~QgsPalettedRasterRenderer();
     QgsRasterInterface * clone() const override;
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterInterface* input );
@@ -56,7 +56,7 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
 
     /** Set category label
      *  @note added in 2.1 */
-    void setLabel( int idx, QString label );
+    void setLabel( int idx, const QString& label );
 
     void writeXML( QDomDocument& doc, QDomElement& parentElem ) const override;
 

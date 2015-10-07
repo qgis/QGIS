@@ -123,7 +123,7 @@ bool QgsAttributeTableFilterModel::selectedOnTop()
   return mSelectedOnTop;
 }
 
-void QgsAttributeTableFilterModel::setFilteredFeatures( QgsFeatureIds ids )
+void QgsAttributeTableFilterModel::setFilteredFeatures( const QgsFeatureIds& ids )
 {
   mFilteredFeatures = ids;
   setFilterMode( ShowFilteredList );

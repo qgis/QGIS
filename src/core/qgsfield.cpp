@@ -35,8 +35,8 @@ QgsField::QgsField( QString nam, QString typ, int len, int prec, bool num,
   // names how they are now.
 }
 #endif
-QgsField::QgsField( QString name, QVariant::Type type,
-                    QString typeName, int len, int prec, QString comment )
+QgsField::QgsField( const QString& name, QVariant::Type type,
+                    const QString& typeName, int len, int prec, const QString& comment )
 {
   d = new QgsFieldPrivate( name, type, typeName, len, prec, comment );
 }

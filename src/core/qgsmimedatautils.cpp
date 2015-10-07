@@ -83,7 +83,7 @@ bool QgsMimeDataUtils::isUriList( const QMimeData* data )
   return data->hasFormat( QGIS_URILIST_MIMETYPE );
 }
 
-QMimeData* QgsMimeDataUtils::encodeUriList( QgsMimeDataUtils::UriList layers )
+QMimeData* QgsMimeDataUtils::encodeUriList( const QgsMimeDataUtils::UriList& layers )
 {
   QMimeData *mimeData = new QMimeData();
   QByteArray encodedData;

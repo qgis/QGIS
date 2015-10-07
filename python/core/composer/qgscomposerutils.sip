@@ -92,7 +92,7 @@ class QgsComposerUtils
      * @param ok will be true if string could be decoded
      * @returns decoded paper orientation
     */
-    static QgsComposition::PaperOrientation decodePaperOrientation( const QString orientationString, bool &ok );
+    static QgsComposition::PaperOrientation decodePaperOrientation( const QString& orientationString, bool &ok );
 
     /** Decodes a string representing a preset page size
      * @param presetString string to decode
@@ -100,7 +100,7 @@ class QgsComposerUtils
      * @param height double for decoded paper height
      * @returns true if string could be decoded successfully
     */
-    static bool decodePresetPaperSize( const QString presetString, double &width, double &height );
+    static bool decodePresetPaperSize( const QString& presetString, double &width, double &height );
 
     /** Reads all data defined properties from xml
      * @param itemElem dom element containing data defined properties

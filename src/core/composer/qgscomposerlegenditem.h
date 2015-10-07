@@ -138,7 +138,7 @@ class CORE_EXPORT QgsComposerLayerItem : public QgsComposerLegendItem
     void setShowFeatureCount( bool show ) { mShowFeatureCount = show; }
     bool showFeatureCount() const { return mShowFeatureCount; }
 
-    void setDefaultStyle( double scaleDenominator = -1, QString rule = "" );
+    void setDefaultStyle( double scaleDenominator = -1, const QString& rule = "" );
 
   private:
     QString mLayerID;

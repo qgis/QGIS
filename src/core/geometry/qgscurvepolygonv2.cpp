@@ -427,7 +427,7 @@ void QgsCurvePolygonV2::setExteriorRing( QgsCurveV2* ring )
   }
 }
 
-void QgsCurvePolygonV2::setInteriorRings( QList<QgsCurveV2*> rings )
+void QgsCurvePolygonV2::setInteriorRings( const QList<QgsCurveV2*>& rings )
 {
   qDeleteAll( mInteriorRings );
   mInteriorRings = rings;

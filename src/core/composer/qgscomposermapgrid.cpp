@@ -2224,7 +2224,7 @@ void QgsComposerMapGrid::setAnnotationDirection( const QgsComposerMapGrid::Annot
   }
 }
 
-void QgsComposerMapGrid::setFrameSideFlags( FrameSideFlags flags )
+void QgsComposerMapGrid::setFrameSideFlags( const FrameSideFlags& flags )
 {
   mGridFrameSides = flags;
 }

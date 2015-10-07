@@ -66,12 +66,12 @@ QgsFieldExpressionWidget::QgsFieldExpressionWidget( QWidget *parent )
   mExpressionContext->appendScope( QgsExpressionContextUtils::projectScope() );
 }
 
-void QgsFieldExpressionWidget::setExpressionDialogTitle( QString title )
+void QgsFieldExpressionWidget::setExpressionDialogTitle( const QString& title )
 {
   mExpressionDialogTitle = title;
 }
 
-void QgsFieldExpressionWidget::setFilters( QgsFieldProxyModel::Filters filters )
+void QgsFieldExpressionWidget::setFilters( const QgsFieldProxyModel::Filters& filters )
 {
   mFieldProxyModel->setFilters( filters );
 }
@@ -206,7 +206,7 @@ void QgsFieldExpressionWidget::editExpression()
   }
 }
 
-void QgsFieldExpressionWidget::expressionEdited( const QString expression )
+void QgsFieldExpressionWidget::expressionEdited( const QString& expression )
 {
   updateLineEditStyle( expression );
   emit fieldChanged( expression, isValidExpression() );
@@ -253,7 +253,7 @@ void QgsFieldExpressionWidget::currentFieldChanged()
   emit fieldChanged( fieldName, isValid );
 }
 
-void QgsFieldExpressionWidget::updateLineEditStyle( const QString expression )
+void QgsFieldExpressionWidget::updateLineEditStyle( const QString& expression )
 {
   QPalette palette;
   if ( !isEnabled() )
@@ -288,7 +288,7 @@ void QgsFieldExpressionWidget::updateLineEditStyle( const QString expression )
   mCombo->lineEdit()->setPalette( palette );
 }
 
-bool QgsFieldExpressionWidget::isExpressionValid( const QString expressionStr )
+bool QgsFieldExpressionWidget::isExpressionValid( const QString& expressionStr )
 {
   QgsExpression expression( expressionStr );
   expression.prepare( mExpressionContext.data() );

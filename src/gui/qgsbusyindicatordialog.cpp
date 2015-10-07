@@ -22,7 +22,7 @@
 #include <QLabel>
 #include <QProgressBar>
 
-QgsBusyIndicatorDialog::QgsBusyIndicatorDialog( const QString& message, QWidget* parent, Qt::WindowFlags fl )
+QgsBusyIndicatorDialog::QgsBusyIndicatorDialog( const QString& message, QWidget* parent, const Qt::WindowFlags& fl )
     : QDialog( parent, fl ), mMessage( QString( message ) ), mMsgLabel( 0 )
 {
   setWindowTitle( tr( "QGIS" ) );

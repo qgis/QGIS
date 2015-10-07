@@ -7,7 +7,7 @@ class QgsRendererV2AbstractMetadata
 %End
 
   public:
-    QgsRendererV2AbstractMetadata( QString name, QString visibleName, QIcon icon = QIcon() );
+    QgsRendererV2AbstractMetadata( const QString& name, const QString& visibleName, const QIcon& icon = QIcon() );
     virtual ~QgsRendererV2AbstractMetadata();
 
     QString name() const;
@@ -66,10 +66,10 @@ class QgsRendererV2Registry
     bool addRenderer( QgsRendererV2AbstractMetadata* metadata /Transfer/ );
 
     //! remove renderer from registry
-    bool removeRenderer( QString rendererName );
+    bool removeRenderer( const QString& rendererName );
 
     //! get metadata for particular renderer. Returns NULL if not found in registry.
-    QgsRendererV2AbstractMetadata* rendererMetadata( QString rendererName );
+    QgsRendererV2AbstractMetadata* rendererMetadata( const QString& rendererName );
 
     //! return a list of available renderers
     QStringList renderersList();

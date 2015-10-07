@@ -7,9 +7,9 @@ class QgsFilterLineEdit : QLineEdit
 #include <qgsfilterlineedit.h>
 %End
   public:
-    QgsFilterLineEdit( QWidget* parent /TransferThis/ = 0, QString nullValue = QString::null );
+    QgsFilterLineEdit( QWidget* parent /TransferThis/ = 0, const QString& nullValue = QString::null );
 
-    void setNullValue( QString nullValue );
+    void setNullValue( const QString& nullValue );
 
     QString nullValue() const;
 
@@ -18,7 +18,7 @@ class QgsFilterLineEdit : QLineEdit
      *
      * @param value The text to set. If a Null string is provided, the text will match the nullValue.
      */
-    void setValue( QString value );
+    void setValue( const QString& value );
 
     /**
      * Returns the text of this edit with NULL support

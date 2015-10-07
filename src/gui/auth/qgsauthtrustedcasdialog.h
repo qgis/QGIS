@@ -40,7 +40,7 @@ class GUI_EXPORT QgsAuthTrustedCAsDialog : public QDialog, private Ui::QgsAuthTr
      * @param trustedCAs List of trusted Certificate Authorities objects
      */
     explicit QgsAuthTrustedCAsDialog( QWidget *parent = 0,
-                                      QList<QSslCertificate> trustedCAs = QList<QSslCertificate>() );
+                                      const QList<QSslCertificate>& trustedCAs = QList<QSslCertificate>() );
     ~QgsAuthTrustedCAsDialog();
 
   private slots:
@@ -77,14 +77,14 @@ class GUI_EXPORT QgsAuthTrustedCAsDialog : public QDialog, private Ui::QgsAuthTr
 
     void setupCaCertsTree();
 
-    void populateCaCertsSection( QTreeWidgetItem *item, QList<QSslCertificate> certs,
+    void populateCaCertsSection( QTreeWidgetItem *item, const QList<QSslCertificate>& certs,
                                  QgsAuthTrustedCAsDialog::CaType catype );
 
-    void appendCertsToGroup( QList<QSslCertificate> certs,
+    void appendCertsToGroup( const QList<QSslCertificate>& certs,
                              QgsAuthTrustedCAsDialog::CaType catype,
                              QTreeWidgetItem *parent = 0 );
 
-    void appendCertsToItem( QList<QSslCertificate> certs,
+    void appendCertsToItem( const QList<QSslCertificate>& certs,
                             QgsAuthTrustedCAsDialog::CaType catype,
                             QTreeWidgetItem *parent = 0 );
 

@@ -5,7 +5,7 @@ class QgsAuthMethodConfig
 %End
   public:
 
-    QgsAuthMethodConfig( QString method = QString(), int version = 0 );
+    QgsAuthMethodConfig( const QString& method = QString(), int version = 0 );
 
     QgsAuthMethodConfig( const QgsAuthMethodConfig& methodconfig );
 
@@ -25,7 +25,7 @@ class QgsAuthMethodConfig
     void setUri( const QString& uri );
 
     QString method() const;
-    void setMethod( QString method );
+    void setMethod( const QString& method );
 
     int version() const;
     void setVersion( int version );
@@ -36,14 +36,14 @@ class QgsAuthMethodConfig
     void loadConfigString( const QString& configstr );
 
     QgsStringMap configMap() const;
-    void setConfigMap( QgsStringMap map );
+    void setConfigMap( const QgsStringMap& map );
 
     void setConfig( const QString &key, const QString &value );
     void setConfigList( const QString &key, const QStringList &value );
 
     int removeConfig( const QString &key );
 
-    QString config( const QString &key , const QString defaultvalue = QString() ) const;
+    QString config( const QString &key, const QString& defaultvalue = QString() ) const;
 
     QStringList configList( const QString &key ) const;
 

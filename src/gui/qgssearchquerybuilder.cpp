@@ -31,7 +31,7 @@
 #include "qgslogger.h"
 
 QgsSearchQueryBuilder::QgsSearchQueryBuilder( QgsVectorLayer* layer,
-    QWidget *parent, Qt::WindowFlags fl )
+    QWidget *parent, const Qt::WindowFlags& fl )
     : QDialog( parent, fl ), mLayer( layer )
 {
   setupUi( this );
@@ -183,7 +183,7 @@ void QgsSearchQueryBuilder::on_btnTest_clicked()
 }
 
 // This method tests the number of records that would be returned
-long QgsSearchQueryBuilder::countRecords( QString searchString )
+long QgsSearchQueryBuilder::countRecords( const QString& searchString )
 {
   QgsExpression search( searchString );
   if ( search.hasParserError() )
@@ -307,7 +307,7 @@ QString QgsSearchQueryBuilder::searchString()
   return txtSQL->text();
 }
 
-void QgsSearchQueryBuilder::setSearchString( QString searchString )
+void QgsSearchQueryBuilder::setSearchString( const QString& searchString )
 {
   txtSQL->setText( searchString );
 }

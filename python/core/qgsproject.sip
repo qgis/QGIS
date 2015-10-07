@@ -171,7 +171,7 @@ class QgsProject : QObject
         @note The key string <em>must</em> include '/'s.  E.g., "/foo" not "foo".
     */
     //@{
-    QStringList readListEntry( const QString & scope, const QString & key, QStringList def = QStringList(), bool *ok = 0 ) const;
+    QStringList readListEntry( const QString & scope, const QString & key, const QStringList& def = QStringList(), bool *ok = 0 ) const;
 
     QString readEntry( const QString & scope, const QString & key, const QString & def = QString::null, bool * ok = 0 ) const;
     int readNumEntry( const QString & scope, const QString & key, int def = 0, bool * ok = 0 ) const;
@@ -205,7 +205,7 @@ class QgsProject : QObject
     void dumpProperties() const;
 
     /** Prepare a filename to save it to the project file */
-    QString writePath( QString filename, QString relativeBasePath = QString::null ) const;
+    QString writePath( const QString& filename, const QString& relativeBasePath = QString::null ) const;
 
     /** Turn filename read from the project file to an absolute path */
     QString readPath( QString filename ) const;
@@ -271,7 +271,7 @@ class QgsProject : QObject
   protected:
 
     /** Set error message from read/write operation */
-    void setError( QString errorMessage );
+    void setError( const QString& errorMessage );
 
     /** Clear error message */
     void clearError();

@@ -98,10 +98,10 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
 
   protected slots:
 
-    void modelRowsInserted( QModelIndex index, int start, int end );
+    void modelRowsInserted( const QModelIndex& index, int start, int end );
     void modelRowsRemoved();
 
-    void updateExpandedStateToNode( QModelIndex index );
+    void updateExpandedStateToNode( const QModelIndex& index );
 
     void onCurrentChanged();
     void onExpandedChanged( QgsLayerTreeNode* node, bool expanded );

@@ -131,7 +131,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
     void finished();
 
   public slots:
-    void repaintRequested( QModelIndexList indexes );
+    void repaintRequested( const QModelIndexList& indexes );
     void repaintRequested();
     virtual void selectAll() override;
     virtual void selectRow( int row );

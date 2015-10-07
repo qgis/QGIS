@@ -201,7 +201,7 @@ void QgsHeatmapRendererWidget::on_mInvertCheckBox_toggled( bool v )
   mRenderer->setInvertRamp( v );
 }
 
-void QgsHeatmapRendererWidget::weightExpressionChanged( QString expression )
+void QgsHeatmapRendererWidget::weightExpressionChanged( const QString& expression )
 {
   mRenderer->setWeightExpression( expression );
 }

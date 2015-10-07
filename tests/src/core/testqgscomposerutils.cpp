@@ -62,7 +62,7 @@ class TestQgsComposerUtils : public QObject
     void drawTextRect(); //test drawing text in a rect
 
   private:
-    bool renderCheck( QString testName, QImage &image, int mismatchCount = 0 );
+    bool renderCheck( const QString& testName, QImage &image, int mismatchCount = 0 );
     QgsComposition* mComposition;
     QgsMapSettings *mMapSettings;
     QString mReport;
@@ -700,7 +700,7 @@ void TestQgsComposerUtils::drawTextRect()
   QVERIFY( renderCheck( "composerutils_drawtext_rectflag", testImage, 100 ) );
 }
 
-bool TestQgsComposerUtils::renderCheck( QString testName, QImage &image, int mismatchCount )
+bool TestQgsComposerUtils::renderCheck( const QString& testName, QImage &image, int mismatchCount )
 {
   mReport += "<h2>" + testName + "</h2>\n";
   QString myTmpDir = QDir::tempPath() + "/";

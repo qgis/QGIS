@@ -314,8 +314,8 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster(
   const QgsRectangle& outputExtent,
   const QgsCoordinateReferenceSystem& crs,
   QGis::DataType destDataType,
-  QList<bool> destHasNoDataValueList,
-  QList<double> destNoDataValueList,
+  const QList<bool>& destHasNoDataValueList,
+  const QList<double>& destNoDataValueList,
   QgsRasterDataProvider* destProvider,
   QProgressDialog* progressDialog )
 {
@@ -784,7 +784,7 @@ int QgsRasterFileWriter::pyramidsProgress( double dfComplete, const char *pszMes
 }
 #endif
 
-void QgsRasterFileWriter::createVRT( int xSize, int ySize, const QgsCoordinateReferenceSystem& crs, double* geoTransform, QGis::DataType type, QList<bool> destHasNoDataValueList, QList<double> destNoDataValueList )
+void QgsRasterFileWriter::createVRT( int xSize, int ySize, const QgsCoordinateReferenceSystem& crs, double* geoTransform, QGis::DataType type, const QList<bool>& destHasNoDataValueList, const QList<double>& destNoDataValueList )
 {
   mVRTDocument.clear();
   QDomElement VRTDatasetElem = mVRTDocument.createElement( "VRTDataset" );
@@ -908,7 +908,7 @@ QgsRasterDataProvider* QgsRasterFileWriter::createPartProvider( const QgsRectang
 
 QgsRasterDataProvider* QgsRasterFileWriter::initOutput( int nCols, int nRows, const QgsCoordinateReferenceSystem& crs,
     double* geoTransform, int nBands, QGis::DataType type,
-    QList<bool> destHasNoDataValueList, QList<double> destNoDataValueList )
+    const QList<bool>& destHasNoDataValueList, const QList<double>& destNoDataValueList )
 {
   if ( mTiledMode )
   {

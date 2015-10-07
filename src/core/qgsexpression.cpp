@@ -57,7 +57,7 @@ QgsExpression::Interval QgsExpression::Interval::invalidInterVal()
   return inter;
 }
 
-QgsExpression::Interval QgsExpression::Interval::fromString( QString string )
+QgsExpression::Interval QgsExpression::Interval::fromString( const QString& string )
 {
   int seconds = 0;
   QRegExp rx( "([-+]?\\d?\\.?\\d+\\s+\\S+)", Qt::CaseInsensitive );
@@ -2116,7 +2116,7 @@ bool QgsExpression::registerFunction( QgsExpression::Function* function, bool tr
   return true;
 }
 
-bool QgsExpression::unregisterFunction( QString name )
+bool QgsExpression::unregisterFunction( const QString& name )
 {
   // You can never override the built in functions.
   if ( QgsExpression::BuiltinFunctions().contains( name ) )
@@ -2355,7 +2355,7 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
 QMap<QString, QVariant> QgsExpression::gmSpecialColumns;
 QMap<QString, QString> QgsExpression::gmSpecialColumnGroups;
 
-void QgsExpression::setSpecialColumn( const QString& name, QVariant variant )
+void QgsExpression::setSpecialColumn( const QString& name, const QVariant& variant )
 {
   int fnIdx = functionIndex( name );
   if ( fnIdx != -1 )
@@ -3019,7 +3019,7 @@ int QgsExpression::NodeBinaryOperator::computeInt( int x, int y )
   }
 }
 
-QDateTime QgsExpression::NodeBinaryOperator::computeDateTimeFromInterval( QDateTime d, QgsExpression::Interval *i )
+QDateTime QgsExpression::NodeBinaryOperator::computeDateTimeFromInterval( const QDateTime& d, QgsExpression::Interval *i )
 {
   switch ( mOp )
   {
@@ -3652,7 +3652,7 @@ QString QgsExpression::variableHelpText( const QString &variableName, bool showV
 
 QHash<QString, QString> QgsExpression::gGroups;
 
-QString QgsExpression::group( QString name )
+QString QgsExpression::group( const QString& name )
 {
   if ( gGroups.isEmpty() )
   {

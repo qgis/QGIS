@@ -37,7 +37,7 @@ class GUI_EXPORT QgsColorSwatchGrid : public QWidget
      * @param context context string provided to color scheme
      * @param parent parent widget
      */
-    QgsColorSwatchGrid( QgsColorScheme* scheme, QString context = QString(), QWidget *parent = 0 );
+    QgsColorSwatchGrid( QgsColorScheme* scheme, const QString& context = QString(), QWidget *parent = 0 );
 
     virtual ~QgsColorSwatchGrid();
 
@@ -167,7 +167,7 @@ class GUI_EXPORT QgsColorSwatchGridAction: public QWidgetAction
      * @param context context string provided to color scheme
      * @param parent parent widget
      */
-    QgsColorSwatchGridAction( QgsColorScheme* scheme, QMenu* menu = 0, QString context = QString(), QWidget *parent = 0 );
+    QgsColorSwatchGridAction( QgsColorScheme* scheme, QMenu* menu = 0, const QString& context = QString(), QWidget *parent = 0 );
 
     virtual ~QgsColorSwatchGridAction();
 

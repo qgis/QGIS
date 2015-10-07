@@ -95,7 +95,7 @@ class CORE_EXPORT QgsLabelingEngineInterface
     Q_DECL_DEPRECATED virtual int addDiagramLayer( QgsVectorLayer* layer, const QgsDiagramLayerSettings* s )
     { Q_UNUSED( layer ); Q_UNUSED( s ); return 0; }
     //! called for every feature
-    virtual void registerFeature( const QString& layerID, QgsFeature& feat, QgsRenderContext& context, QString dxfLayer = QString::null ) = 0;
+    virtual void registerFeature( const QString& layerID, QgsFeature& feat, QgsRenderContext& context, const QString& dxfLayer = QString::null ) = 0;
     //! called for every diagram feature
     virtual void registerDiagramFeature( const QString& layerID, QgsFeature& feat, QgsRenderContext& context )
     { Q_UNUSED( layerID ); Q_UNUSED( feat ); Q_UNUSED( context ); }

@@ -198,7 +198,7 @@ bool QgsRangeWidgetWrapper::valid()
   return mSlider || mDial || mQgsDial || mQgsSlider || mIntSpinBox || mDoubleSpinBox;
 }
 
-void QgsRangeWidgetWrapper::valueChanged( QVariant v )
+void QgsRangeWidgetWrapper::valueChanged( const QVariant& v )
 {
   if ( v.type() == QVariant::Int )
     valueChanged( v.toInt() );

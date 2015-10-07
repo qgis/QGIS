@@ -215,7 +215,7 @@ class QgsComposerAttributeTable : QgsComposerTable
      * @deprecated use QgsComposerTable::columns() instead
      * @note not available in python bindings
      */
-    // void setSortAttributes( const QList<QPair<int, bool> > att ) /Deprecated/;
+    // void setSortAttributes( const QList<QPair<int, bool> >& att ) /Deprecated/;
 
     /** Returns the attributes used to sort the table's features.
      * @returns a QList of integer/bool pairs, where the integer refers to the attribute index and

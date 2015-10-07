@@ -28,7 +28,7 @@
 
 
 QgsAuthTrustedCAsDialog::QgsAuthTrustedCAsDialog( QWidget *parent,
-    QList<QSslCertificate> trustedCAs )
+    const QList<QSslCertificate>& trustedCAs )
     : QDialog( parent )
     , mTrustedCAs( trustedCAs )
     , mDisabled( false )
@@ -123,7 +123,7 @@ void QgsAuthTrustedCAsDialog::populateCaCertsView()
   populateCaCertsSection( mRootCaSecItem, mTrustedCAs, QgsAuthTrustedCAsDialog::CaCert );
 }
 
-void QgsAuthTrustedCAsDialog::populateCaCertsSection( QTreeWidgetItem* item, QList<QSslCertificate> certs,
+void QgsAuthTrustedCAsDialog::populateCaCertsSection( QTreeWidgetItem* item, const QList<QSslCertificate>& certs,
     QgsAuthTrustedCAsDialog::CaType catype )
 {
   if ( btnGroupByOrg->isChecked() )
@@ -136,7 +136,7 @@ void QgsAuthTrustedCAsDialog::populateCaCertsSection( QTreeWidgetItem* item, QLi
   }
 }
 
-void QgsAuthTrustedCAsDialog::appendCertsToGroup( QList<QSslCertificate> certs,
+void QgsAuthTrustedCAsDialog::appendCertsToGroup( const QList<QSslCertificate>& certs,
     QgsAuthTrustedCAsDialog::CaType catype,
     QTreeWidgetItem *parent )
 {
@@ -175,7 +175,7 @@ void QgsAuthTrustedCAsDialog::appendCertsToGroup( QList<QSslCertificate> certs,
   parent->sortChildren( 0, Qt::AscendingOrder );
 }
 
-void QgsAuthTrustedCAsDialog::appendCertsToItem( QList<QSslCertificate> certs,
+void QgsAuthTrustedCAsDialog::appendCertsToItem( const QList<QSslCertificate>& certs,
     QgsAuthTrustedCAsDialog::CaType catype,
     QTreeWidgetItem *parent )
 {

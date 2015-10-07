@@ -33,7 +33,7 @@
 #include <QKeyEvent>
 #include <QMessageBox>
 
-static bool _initRenderer( QString name, QgsRendererV2WidgetFunc f, QString iconName = QString() )
+static bool _initRenderer( const QString& name, QgsRendererV2WidgetFunc f, const QString& iconName = QString() )
 {
   QgsRendererV2Registry* reg = QgsRendererV2Registry::instance();
   QgsRendererV2AbstractMetadata* am = reg->rendererMetadata( name );

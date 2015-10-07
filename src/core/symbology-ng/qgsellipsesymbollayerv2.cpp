@@ -320,7 +320,7 @@ QgsSymbolLayerV2* QgsEllipseSymbolLayerV2::clone() const
   return QgsEllipseSymbolLayerV2::create( properties() );
 }
 
-void QgsEllipseSymbolLayerV2::toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const
+void QgsEllipseSymbolLayerV2::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const
 {
   QDomElement symbolizerElem = doc.createElement( "se:PointSymbolizer" );
   if ( !props.value( "uom", "" ).isEmpty() )
@@ -333,7 +333,7 @@ void QgsEllipseSymbolLayerV2::toSld( QDomDocument &doc, QDomElement &element, Qg
   writeSldMarker( doc, symbolizerElem, props );
 }
 
-void QgsEllipseSymbolLayerV2::writeSldMarker( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const
+void QgsEllipseSymbolLayerV2::writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const
 {
   // <Graphic>
   QDomElement graphicElem = doc.createElement( "se:Graphic" );

@@ -54,8 +54,8 @@ class TestQgsInvertedPolygon : public QObject
 
   private:
     bool mTestHasError;
-    bool setQml( QString qmlFile );
-    bool imageCheck( QString theType, const QgsRectangle* = 0 );
+    bool setQml( const QString& qmlFile );
+    bool imageCheck( const QString& theType, const QgsRectangle* = 0 );
     QgsMapSettings mMapSettings;
     QgsVectorLayer * mpPolysLayer;
     QString mTestDataDir;
@@ -153,7 +153,7 @@ void TestQgsInvertedPolygon::projectionTest()
 // Private helper functions not called directly by CTest
 //
 
-bool TestQgsInvertedPolygon::setQml( QString qmlFile )
+bool TestQgsInvertedPolygon::setQml( const QString& qmlFile )
 {
   //load a qml style and apply to our layer
   //the style will correspond to the renderer
@@ -169,7 +169,7 @@ bool TestQgsInvertedPolygon::setQml( QString qmlFile )
   return myStyleFlag;
 }
 
-bool TestQgsInvertedPolygon::imageCheck( QString theTestType, const QgsRectangle* extent )
+bool TestQgsInvertedPolygon::imageCheck( const QString& theTestType, const QgsRectangle* extent )
 {
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image

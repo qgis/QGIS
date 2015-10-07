@@ -197,7 +197,7 @@ class QgsComposerTable: QgsComposerItem
      * @note added in 2.3
      * @see columns
      */
-    void setColumns( QList<QgsComposerTableColumn*> columns );
+    void setColumns( const QList<QgsComposerTableColumn*>& columns );
 
   public slots:
 

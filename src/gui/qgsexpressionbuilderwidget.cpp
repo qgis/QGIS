@@ -151,7 +151,7 @@ void QgsExpressionBuilderWidget::on_btnRun_pressed()
   runPythonCode( txtPython->text() );
 }
 
-void QgsExpressionBuilderWidget::runPythonCode( QString code )
+void QgsExpressionBuilderWidget::runPythonCode( const QString& code )
 {
   if ( QgsPythonRunner::isValid() )
   {
@@ -186,7 +186,7 @@ void QgsExpressionBuilderWidget::saveFunctionFile( QString fileName )
   }
 }
 
-void QgsExpressionBuilderWidget::updateFunctionFileList( QString path )
+void QgsExpressionBuilderWidget::updateFunctionFileList( const QString& path )
 {
   mFunctionsPath = path;
   QDir dir( path );
@@ -201,7 +201,7 @@ void QgsExpressionBuilderWidget::updateFunctionFileList( QString path )
   }
 }
 
-void QgsExpressionBuilderWidget::newFunctionFile( QString fileName )
+void QgsExpressionBuilderWidget::newFunctionFile( const QString& fileName )
 {
   QString templatetxt;
   QgsPythonRunner::eval( "qgis.user.expressions.template", templatetxt );
@@ -235,7 +235,7 @@ void QgsExpressionBuilderWidget::loadCodeFromFile( QString path )
   txtPython->loadScript( path );
 }
 
-void QgsExpressionBuilderWidget::loadFunctionCode( QString code )
+void QgsExpressionBuilderWidget::loadFunctionCode( const QString& code )
 {
   txtPython->setText( code );
 }
@@ -338,10 +338,10 @@ void QgsExpressionBuilderWidget::fillFieldValues( const QString& fieldName, int 
   mFieldValues[fieldName] = strValues;
 }
 
-void QgsExpressionBuilderWidget::registerItem( QString group,
-    QString label,
-    QString expressionText,
-    QString helpText,
+void QgsExpressionBuilderWidget::registerItem( const QString& group,
+    const QString& label,
+    const QString& expressionText,
+    const QString& helpText,
     QgsExpressionItem::ItemType type, bool highlightedItem, int sortOrder )
 {
   QgsExpressionItem* item = new QgsExpressionItem( label, expressionText, helpText, type );
@@ -386,7 +386,7 @@ bool QgsExpressionBuilderWidget::isExpressionValid()
   return mExpressionValid;
 }
 
-void QgsExpressionBuilderWidget::saveToRecent( QString key )
+void QgsExpressionBuilderWidget::saveToRecent( const QString& key )
 {
   QSettings settings;
   QString location = QString( "/expressions/recent/%1" ).arg( key );
@@ -404,7 +404,7 @@ void QgsExpressionBuilderWidget::saveToRecent( QString key )
   this->loadRecent( key );
 }
 
-void QgsExpressionBuilderWidget::loadRecent( QString key )
+void QgsExpressionBuilderWidget::loadRecent( const QString& key )
 {
   mRecentKey = key;
   QString name = tr( "Recent (%1)" ).arg( key );
@@ -637,7 +637,7 @@ void QgsExpressionBuilderWidget::on_txtSearchEditValues_textChanged()
   mProxyValues->setFilterWildcard( txtSearchEditValues->text() );
 }
 
-void QgsExpressionBuilderWidget::on_lblPreview_linkActivated( QString link )
+void QgsExpressionBuilderWidget::on_lblPreview_linkActivated( const QString& link )
 {
   Q_UNUSED( link );
   QgsMessageViewer * mv = new QgsMessageViewer( this );

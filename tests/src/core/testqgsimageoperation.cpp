@@ -87,7 +87,7 @@ class TestQgsImageOperation : public QObject
     QString mSampleImage;
     QString mTransparentSampleImage;
 
-    bool imageCheck( QString testName, QImage &image, int mismatchCount );
+    bool imageCheck( const QString& testName, QImage &image, int mismatchCount );
 };
 
 void TestQgsImageOperation::initTestCase()
@@ -450,7 +450,7 @@ void TestQgsImageOperation::flipVertical()
 // Private helper functions not called directly by CTest
 //
 
-bool TestQgsImageOperation::imageCheck( QString testName, QImage &image, int mismatchCount )
+bool TestQgsImageOperation::imageCheck( const QString& testName, QImage &image, int mismatchCount )
 {
   //draw background
   QImage imageWithBackground( image.width(), image.height(), QImage::Format_RGB32 );

@@ -40,7 +40,7 @@ class QgsCollapsibleGroupBoxBasic : QGroupBox
 
     /** Named group which synchronizes collapsing action when triangle is clicked while holding alt modifier key */
     QString syncGroup() const;
-    void setSyncGroup( QString grp );
+    void setSyncGroup( const QString& grp );
 
     //! set this to false to not automatically scroll parent QScrollArea to this widget's contents when expanded
     void setScrollOnExpand( bool scroll );

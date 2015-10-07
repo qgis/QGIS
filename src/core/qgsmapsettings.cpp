@@ -272,7 +272,7 @@ void QgsMapSettings::setMapUnits( QGis::UnitType u )
   updateDerived();
 }
 
-void QgsMapSettings::setFlags( QgsMapSettings::Flags flags )
+void QgsMapSettings::setFlags( const QgsMapSettings::Flags& flags )
 {
   mFlags = flags;
 }

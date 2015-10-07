@@ -84,7 +84,7 @@ class TestQgsGeometry : public QObject
 
   private:
     /** A helper method to do a render check to see if the geometry op is as expected */
-    bool renderCheck( QString theTestName, QString theComment = "", int mismatchCount = 0 );
+    bool renderCheck( const QString& theTestName, const QString& theComment = "", int mismatchCount = 0 );
     /** A helper method to dump to qdebug the geometry of a multipolygon */
     void dumpMultiPolygon( QgsMultiPolygon &theMultiPolygon );
     /** A helper method to dump to qdebug the geometry of a polygon */
@@ -739,7 +739,7 @@ void TestQgsGeometry::dataStream()
   QVERIFY( resultGeometry.isEmpty() );
 }
 
-bool TestQgsGeometry::renderCheck( QString theTestName, QString theComment, int mismatchCount )
+bool TestQgsGeometry::renderCheck( const QString& theTestName, const QString& theComment, int mismatchCount )
 {
   mReport += "<h2>" + theTestName + "</h2>\n";
   mReport += "<h3>" + theComment + "</h3>\n";

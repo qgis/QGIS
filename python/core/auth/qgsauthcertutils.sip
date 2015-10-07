@@ -46,13 +46,13 @@ class QgsAuthCertUtils
     static QString getSslProtocolName( QSsl::SslProtocol protocol );
 
 
-    static QMap< QString, QSslCertificate> mapDigestToCerts( QList<QSslCertificate> certs );
+    static QMap< QString, QSslCertificate> mapDigestToCerts( const QList<QSslCertificate>& certs );
 
 
     // static QMap< QString, QList<QSslCertificate> > certsGroupedByOrg( QList<QSslCertificate> certs );
 
 
-    static QMap< QString, QgsAuthConfigSslServer> mapDigestToSslConfigs( QList<QgsAuthConfigSslServer> configs );
+    static QMap< QString, QgsAuthConfigSslServer> mapDigestToSslConfigs( const QList<QgsAuthConfigSslServer>& configs );
 
 
     // static QMap< QString, QList<QgsAuthConfigSslServer> > sslConfigsGroupedByOrg( QList<QgsAuthConfigSslServer> configs );

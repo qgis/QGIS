@@ -93,8 +93,8 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
         };
 
         //! Constructor takes ownership of the symbol
-        Rule( QgsSymbolV2* symbol, int scaleMinDenom = 0, int scaleMaxDenom = 0, QString filterExp = QString(),
-              QString label = QString(), QString description = QString(), bool elseRule = false );
+        Rule( QgsSymbolV2* symbol, int scaleMinDenom = 0, int scaleMaxDenom = 0, const QString& filterExp = QString(),
+              const QString& label = QString(), const QString& description = QString(), bool elseRule = false );
         ~Rule();
 
         /**
@@ -113,7 +113,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
         QgsSymbolV2List symbols( const QgsRenderContext& context = QgsRenderContext() );
 
         //! @note not available in python bindings
-        QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, QString rule = "" );
+        QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString& rule = "" );
 
         //! @note added in 2.6
         QgsLegendSymbolListV2 legendSymbolItemsV2( int currentLevel = -1 ) const;
@@ -179,7 +179,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
 
         //! set a new symbol (or NULL). Deletes old symbol.
         void setSymbol( QgsSymbolV2* sym );
-        void setLabel( QString label ) { mLabel = label; }
+        void setLabel( const QString& label ) { mLabel = label; }
 
         /**
          * Set the minimum denominator for which this rule shall apply.
@@ -202,14 +202,14 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
          *
          * @param filterExp An expression
          */
-        void setFilterExpression( QString filterExp ) { mFilterExp = filterExp; initFilter(); }
+        void setFilterExpression( const QString& filterExp ) { mFilterExp = filterExp; initFilter(); }
 
         /**
          * Set a human readable description for this rule
          *
          * @param description Description
          */
-        void setDescription( QString description ) { mDescription = description; }
+        void setDescription( const QString& description ) { mDescription = description; }
 
         //! @note added in 2.6
         //! @deprecated use setActive instead
@@ -320,7 +320,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
 
         //! Try to find a rule given its unique key
         //! @note added in 2.6
-        Rule* findRuleByKey( QString key );
+        Rule* findRuleByKey( const QString& key );
 
         /**
          * Check which child rules are else rules and update the internal list of else rules
@@ -408,15 +408,15 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
 
     //! items of symbology items in legend is checked
     //! @note added in 2.5
-    virtual bool legendSymbolItemChecked( QString key ) override;
+    virtual bool legendSymbolItemChecked( const QString& key ) override;
 
     //! item in symbology was checked
     //! @note added in 2.5
-    virtual void checkLegendSymbolItem( QString key, bool state = true ) override;
+    virtual void checkLegendSymbolItem( const QString& key, bool state = true ) override;
 
     //! return a list of item text / symbol
     //! @note not available in python bindings
-    virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, QString rule = "" ) override;
+    virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString& rule = "" ) override;
 
     //! Return a list of symbology items for the legend. Better choice than legendSymbolItems().
     //! Default fallback implementation just uses legendSymbolItems() implementation
@@ -459,7 +459,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
     static QgsRuleBasedRendererV2* convertFromRenderer( const QgsFeatureRendererV2 *renderer );
 
     //! helper function to convert the size scale and rotation fields present in some other renderers to data defined symbology
-    static void convertToDataDefinedSymbology( QgsSymbolV2* symbol, QString sizeScaleField, QString rotationField = QString() );
+    static void convertToDataDefinedSymbology( QgsSymbolV2* symbol, const QString& sizeScaleField, const QString& rotationField = QString() );
 
   protected:
     //! the root node with hierarchical list of rules

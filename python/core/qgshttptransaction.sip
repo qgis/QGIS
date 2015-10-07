@@ -7,14 +7,14 @@ class QgsHttpTransaction : QObject
     /**
     * Constructor.
     */
-    QgsHttpTransaction( QString uri,
-                        QString proxyHost = QString(),
+    QgsHttpTransaction( const QString& uri,
+                        const QString& proxyHost = QString(),
                         int     proxyPort = 80,
-                        QString proxyUser = QString(),
-                        QString proxyPass = QString(),
+                        const QString& proxyUser = QString(),
+                        const QString& proxyPass = QString(),
                         QNetworkProxy::ProxyType proxyType = QNetworkProxy::NoProxy,
-                        QString userName = QString(),
-                        QString password = QString() );
+                        const QString& userName = QString(),
+                        const QString& password = QString() );
 
     //! Destructor
     virtual ~QgsHttpTransaction();

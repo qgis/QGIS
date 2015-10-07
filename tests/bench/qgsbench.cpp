@@ -307,7 +307,7 @@ void QgsBench::printLog( const QString& printTime )
   }
 }
 
-QString QgsBench::serialize( QMap<QString, QVariant> theMap, int level )
+QString QgsBench::serialize( const QMap<QString, QVariant>& theMap, int level )
 {
   QStringList list;
   QString space = QString( " " ).repeated( level * 2 );

@@ -231,7 +231,7 @@ void QgsComposerLabel::setHtmlState( int state )
   }
 }
 
-void QgsComposerLabel::setExpressionContext( QgsFeature *feature, QgsVectorLayer* layer, QMap<QString, QVariant> substitutions )
+void QgsComposerLabel::setExpressionContext( QgsFeature *feature, QgsVectorLayer* layer, const QMap<QString, QVariant>& substitutions )
 {
   mExpressionFeature.reset( feature ? new QgsFeature( *feature ) : 0 );
   mExpressionLayer = layer;
@@ -257,7 +257,7 @@ void QgsComposerLabel::setExpressionContext( QgsFeature *feature, QgsVectorLayer
   update();
 }
 
-void QgsComposerLabel::setSubstitutions( QMap<QString, QVariant> substitutions )
+void QgsComposerLabel::setSubstitutions( const QMap<QString, QVariant>& substitutions )
 {
   mSubstitutions = substitutions;
 }

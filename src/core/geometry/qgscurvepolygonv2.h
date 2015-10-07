@@ -68,7 +68,7 @@ class CORE_EXPORT QgsCurvePolygonV2: public QgsSurfaceV2
     /** Sets exterior ring (takes ownership)*/
     void setExteriorRing( QgsCurveV2* ring );
     /** Sets all interior rings (takes ownership)*/
-    void setInteriorRings( QList<QgsCurveV2*> rings );
+    void setInteriorRings( const QList<QgsCurveV2*>& rings );
     /** Adds an interior ring to the geometry (takes ownership)*/
     void addInteriorRing( QgsCurveV2* ring );
     /** Removes ring. Exterior ring is 0, first interior ring 1, ...*/

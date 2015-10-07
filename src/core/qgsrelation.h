@@ -43,7 +43,7 @@ class CORE_EXPORT QgsRelation
             : QPair< QString, QString >() {}
 
         //! Constructor which takes two fields
-        FieldPair( QString referencingField, QString referencedField )
+        FieldPair( const QString& referencingField, const QString& referencedField )
             : QPair< QString, QString >( referencingField, referencedField ) {}
 
         //! Get the name of the referencing field
@@ -79,28 +79,28 @@ class CORE_EXPORT QgsRelation
      *
      * @param id
      */
-    void setRelationId( QString id );
+    void setRelationId( const QString& id );
 
     /**
      * Set a name for this relation
      *
      * @param name
      */
-    void setRelationName( QString name );
+    void setRelationName( const QString& name );
 
     /**
      * Set the referencing layer id. This layer will be searched in the registry.
      *
      * @param id
      */
-    void setReferencingLayer( QString id );
+    void setReferencingLayer( const QString& id );
 
     /**
      * Set the referenced layer id. This layer will be searched in the registry.
      *
      * @param id
      */
-    void setReferencedLayer( QString id );
+    void setReferencedLayer( const QString& id );
 
     /**
      * Add a field pairs which is part of this relation
@@ -110,7 +110,7 @@ class CORE_EXPORT QgsRelation
      * @param referencingField  The field name on the referencing layer (FK)
      * @param referencedField   The field name on the referenced layer  (PK)
      */
-    void addFieldPair( QString referencingField, QString referencedField );
+    void addFieldPair( const QString& referencingField, const QString& referencedField );
 
     /**
      * Add a field pairs which is part of this relation

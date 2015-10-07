@@ -137,7 +137,7 @@ class TestQgsRuleBasedRenderer: public QObject
     }
 
   private:
-    void xml2domElement( QString testFile, QDomDocument& doc )
+    void xml2domElement( const QString& testFile, QDomDocument& doc )
     {
       QString fileName = QString( TEST_DATA_DIR ) + "/" + testFile;
       QFile f( fileName );

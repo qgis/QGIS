@@ -23,7 +23,7 @@
 #include <QRegExpValidator>
 
 QgsNewHttpConnection::QgsNewHttpConnection(
-  QWidget *parent, const QString& baseKey, const QString& connName, Qt::WindowFlags fl )
+  QWidget *parent, const QString& baseKey, const QString& connName, const Qt::WindowFlags& fl )
     : QDialog( parent, fl )
     , mBaseKey( baseKey )
     , mOriginalConnName( connName )

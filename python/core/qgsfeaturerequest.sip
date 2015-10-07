@@ -47,7 +47,7 @@ class QgsFeatureRequest
     qint64 filterFid() const;
 
     //! Set feature ID that should be fetched.
-    QgsFeatureRequest& setFilterFids( QgsFeatureIds fids );
+    QgsFeatureRequest& setFilterFids( const QgsFeatureIds& fids );
     const QgsFeatureIds& filterFids() const;
 
     //! Set filter expression. {@see QgsExpression}
@@ -77,7 +77,7 @@ class QgsFeatureRequest
     QgsFeatureRequest& disableFilter();
 
     //! Set flags that affect how features will be fetched
-    QgsFeatureRequest& setFlags( Flags flags );
+    QgsFeatureRequest& setFlags( const Flags& flags );
     const Flags& flags() const;
 
     //! Set a subset of attributes that will be fetched. Empty list means that all attributes are used.

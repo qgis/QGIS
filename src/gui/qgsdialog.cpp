@@ -17,8 +17,8 @@
 
 #include "qgsdialog.h"
 
-QgsDialog::QgsDialog( QWidget *parent, Qt::WindowFlags fl,
-                      QDialogButtonBox::StandardButtons buttons,
+QgsDialog::QgsDialog( QWidget *parent, const Qt::WindowFlags& fl,
+                      const QDialogButtonBox::StandardButtons& buttons,
                       Qt::Orientation orientation )
     : QDialog( parent, fl )
 {

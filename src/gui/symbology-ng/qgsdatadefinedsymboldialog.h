@@ -27,7 +27,7 @@ class GUI_EXPORT QgsDataDefinedSymbolDialog: public QDialog, private Ui::QgsData
       QString helpText;
     };
 
-    Q_DECL_DEPRECATED QgsDataDefinedSymbolDialog( const QList< DataDefinedSymbolEntry >& entries, const QgsVectorLayer* vl, QWidget * parent = 0, Qt::WindowFlags f = 0 );
+    Q_DECL_DEPRECATED QgsDataDefinedSymbolDialog( const QList< DataDefinedSymbolEntry >& entries, const QgsVectorLayer* vl, QWidget * parent = 0, const Qt::WindowFlags& f = 0 );
     ~QgsDataDefinedSymbolDialog();
     Q_DECL_DEPRECATED QMap< QString, QString > dataDefinedProperties() const;
 

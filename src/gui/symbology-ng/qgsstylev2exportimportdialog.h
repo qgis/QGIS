@@ -59,7 +59,7 @@ class GUI_EXPORT QgsStyleV2ExportImportDialog : public QDialog, private Ui::QgsS
     void downloadCanceled();
 
   private:
-    void downloadStyleXML( QUrl url );
+    void downloadStyleXML( const QUrl& url );
     bool populateStyles( QgsStyleV2* style );
     void moveStyles( QModelIndexList* selection, QgsStyleV2* src, QgsStyleV2* dst );
 

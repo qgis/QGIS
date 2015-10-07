@@ -40,7 +40,7 @@ class QgsSymbolsListWidget : QWidget
     void setMarkerSize( double size );
     void setLineWidth( double width );
     void addSymbolToStyle();
-    void symbolAddedToStyle( QString name, QgsSymbolV2* symbol );
+    void symbolAddedToStyle( const QString& name, QgsSymbolV2* symbol );
     void on_mSymbolUnitWidget_changed();
     void on_mTransparencySlider_valueChanged( int value );
 
@@ -54,7 +54,7 @@ class QgsSymbolsListWidget : QWidget
 
   protected:
     void populateSymbolView();
-    void populateSymbols( QStringList symbols );
+    void populateSymbols( const QStringList& symbols );
     void updateSymbolColor();
     void updateSymbolInfo();
 };

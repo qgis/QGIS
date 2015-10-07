@@ -161,7 +161,7 @@ bool QgsGeometry::isEmpty() const
   return !d || !d->geometry;
 }
 
-QgsGeometry* QgsGeometry::fromWkt( QString wkt )
+QgsGeometry* QgsGeometry::fromWkt( const QString& wkt )
 {
   QgsAbstractGeometryV2* geom = QgsGeometryFactory::geomFromWkt( wkt );
   if ( !geom )
@@ -1495,7 +1495,7 @@ bool QgsGeometry::deletePart( int partNum )
   return ok;
 }
 
-int QgsGeometry::avoidIntersections( QMap<QgsVectorLayer*, QSet< QgsFeatureId > > ignoreFeatures )
+int QgsGeometry::avoidIntersections( const QMap<QgsVectorLayer*, QSet< QgsFeatureId > >& ignoreFeatures )
 {
   if ( !d || !d->geometry )
   {

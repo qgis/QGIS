@@ -96,7 +96,7 @@ QSqlDatabase QgsAuthManager::authDbConnection() const
   return authdb;
 }
 
-bool QgsAuthManager::init( QString pluginPath )
+bool QgsAuthManager::init( const QString& pluginPath )
 {
   if ( mAuthInit )
     return true;
@@ -1378,7 +1378,7 @@ bool QgsAuthManager::updateDataSourceUriItems( QStringList &connectionItems, con
   return false;
 }
 
-bool QgsAuthManager::storeAuthSetting( const QString &key, QVariant value, bool encrypt )
+bool QgsAuthManager::storeAuthSetting( const QString &key, const QVariant& value, bool encrypt )
 {
   if ( key.isEmpty() )
     return false;
@@ -1418,7 +1418,7 @@ bool QgsAuthManager::storeAuthSetting( const QString &key, QVariant value, bool 
   return true;
 }
 
-QVariant QgsAuthManager::getAuthSetting( const QString &key, QVariant defaultValue , bool decrypt )
+QVariant QgsAuthManager::getAuthSetting( const QString &key, const QVariant& defaultValue, bool decrypt )
 {
   if ( key.isEmpty() )
     return QVariant();

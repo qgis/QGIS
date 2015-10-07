@@ -236,7 +236,7 @@ QString QgsRasterRenderer::minMaxOriginLabel( int theOrigin )
   return label;
 }
 
-int QgsRasterRenderer::minMaxOriginFromName( QString theName )
+int QgsRasterRenderer::minMaxOriginFromName( const QString& theName )
 {
   if ( theName.contains( "Unknown" ) )
   {

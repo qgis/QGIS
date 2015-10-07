@@ -25,7 +25,7 @@ class QgsColorDialog : QObject
     static QColor getLiveColor( const QColor& initialColor, QObject* updateObject, const char* updateSlot,
                                 QWidget* parent = 0,
                                 const QString& title = "",
-                                QColorDialog::ColorDialogOptions options = 0 );
+                                const QColorDialog::ColorDialogOptions& options = 0 );
 };
 
 
@@ -49,7 +49,7 @@ class QgsColorDialogV2 : QDialog
      * @param fl window flags
      * @param color initial color for dialog
      */
-    QgsColorDialogV2( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags,
+    QgsColorDialogV2( QWidget *parent /TransferThis/ = 0, const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags,
                       const QColor& color = QColor() );
 
     ~QgsColorDialogV2();
@@ -62,7 +62,7 @@ class QgsColorDialogV2 : QDialog
     /** Sets the title for the color dialog
      * @param title title for dialog box
      */
-    void setTitle( const QString title );
+    void setTitle( const QString& title );
 
     /** Sets whether alpha modification (transparency) is permitted
      * for the color dialog. Defaults to true.

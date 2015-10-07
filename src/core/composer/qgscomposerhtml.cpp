@@ -106,7 +106,7 @@ void QgsComposerHtml::setUrl( const QUrl& url )
   emit changed();
 }
 
-void QgsComposerHtml::setHtml( const QString html )
+void QgsComposerHtml::setHtml( const QString& html )
 {
   mHtml = html;
   //TODO - this signal should be emitted, but without changing the signal which sets the html
@@ -270,7 +270,7 @@ void QgsComposerHtml::renderCachedImage()
   painter.end();
 }
 
-QString QgsComposerHtml::fetchHtml( QUrl url )
+QString QgsComposerHtml::fetchHtml( const QUrl& url )
 {
   //pause until HTML fetch
   mLoaded = false;
@@ -440,7 +440,7 @@ void QgsComposerHtml::setMaxBreakDistance( double maxBreakDistance )
   emit changed();
 }
 
-void QgsComposerHtml::setUserStylesheet( const QString stylesheet )
+void QgsComposerHtml::setUserStylesheet( const QString& stylesheet )
 {
   mUserStylesheet = stylesheet;
   //TODO - this signal should be emitted, but without changing the signal which sets the css

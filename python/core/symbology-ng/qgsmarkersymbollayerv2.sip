@@ -5,9 +5,9 @@ class QgsSimpleMarkerSymbolLayerV2 : QgsMarkerSymbolLayerV2
 %End
 
   public:
-    QgsSimpleMarkerSymbolLayerV2( QString name = DEFAULT_SIMPLEMARKER_NAME,
-                                  QColor color = DEFAULT_SIMPLEMARKER_COLOR,
-                                  QColor borderColor = DEFAULT_SIMPLEMARKER_BORDERCOLOR,
+    QgsSimpleMarkerSymbolLayerV2( const QString& name = DEFAULT_SIMPLEMARKER_NAME,
+                                  const QColor& color = DEFAULT_SIMPLEMARKER_COLOR,
+                                  const QColor& borderColor = DEFAULT_SIMPLEMARKER_BORDERCOLOR,
                                   double size = DEFAULT_SIMPLEMARKER_SIZE,
                                   double angle = DEFAULT_SIMPLEMARKER_ANGLE,
                                   QgsSymbolV2::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
@@ -31,12 +31,12 @@ class QgsSimpleMarkerSymbolLayerV2 : QgsMarkerSymbolLayerV2
 
     QgsSymbolLayerV2* clone() const /Factory/;
 
-    void writeSldMarker( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
+    void writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const;
 
     QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const;
 
     QString name() const;
-    void setName( QString name );
+    void setName( const QString& name );
 
     QColor borderColor() const;
     void setBorderColor( QColor color );
@@ -78,8 +78,8 @@ class QgsSimpleMarkerSymbolLayerV2 : QgsMarkerSymbolLayerV2
   protected:
     void drawMarker( QPainter* p, QgsSymbolV2RenderContext& context );
 
-    bool prepareShape( QString name = QString() );
-    bool prepareShape( QString name, QPolygonF &polygon ) const;
+    bool prepareShape( const QString& name = QString() );
+    bool prepareShape( const QString& name, QPolygonF &polygon ) const;
     bool preparePath( QString name = QString() );
 
     /** Prepares cache image
@@ -94,7 +94,7 @@ class QgsSvgMarkerSymbolLayerV2 : QgsMarkerSymbolLayerV2
 %End
 
   public:
-    QgsSvgMarkerSymbolLayerV2( QString name = DEFAULT_SVGMARKER_NAME,
+    QgsSvgMarkerSymbolLayerV2( const QString& name = DEFAULT_SVGMARKER_NAME,
                                double size = DEFAULT_SVGMARKER_SIZE,
                                double angle = DEFAULT_SVGMARKER_ANGLE,
                                QgsSymbolV2::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
@@ -118,10 +118,10 @@ class QgsSvgMarkerSymbolLayerV2 : QgsMarkerSymbolLayerV2
 
     QgsSymbolLayerV2* clone() const /Factory/;
 
-    void writeSldMarker( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
+    void writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const;
 
     QString path() const;
-    void setPath( QString path );
+    void setPath( const QString& path );
 
     QColor fillColor() const;
     void setFillColor( const QColor& c );
@@ -154,7 +154,7 @@ class QgsFontMarkerSymbolLayerV2 : QgsMarkerSymbolLayerV2
 %End
 
   public:
-    QgsFontMarkerSymbolLayerV2( QString fontFamily = DEFAULT_FONTMARKER_FONT,
+    QgsFontMarkerSymbolLayerV2( const QString& fontFamily = DEFAULT_FONTMARKER_FONT,
                                 QChar chr = DEFAULT_FONTMARKER_CHR,
                                 double pointSize = DEFAULT_FONTMARKER_SIZE,
                                 QColor color = DEFAULT_FONTMARKER_COLOR,
@@ -181,12 +181,12 @@ class QgsFontMarkerSymbolLayerV2 : QgsMarkerSymbolLayerV2
 
     QgsSymbolLayerV2* clone() const /Factory/;
 
-    void writeSldMarker( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
+    void writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const;
 
     // new methods
 
     QString fontFamily() const;
-    void setFontFamily( QString family );
+    void setFontFamily( const QString& family );
 
     QChar character() const;
     void setCharacter( QChar ch );

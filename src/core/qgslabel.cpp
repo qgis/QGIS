@@ -369,7 +369,7 @@ void QgsLabel::renderLabel( QgsRenderContext &renderContext,
 
 void QgsLabel::renderLabel( QgsRenderContext &renderContext,
                             QgsPoint point,
-                            QString text, QFont font, QPen pen,
+                            const QString& text, const QFont& font, const QPen& pen,
                             int dx, int dy,
                             double xoffset, double yoffset,
                             double ang,
@@ -705,7 +705,7 @@ const unsigned char* QgsLabel::labelPoint( labelpoint& point, const unsigned cha
   return geom;
 }
 
-bool QgsLabel::readLabelField( QDomElement &el, int attr, QString prefix = "field" )
+bool QgsLabel::readLabelField( QDomElement &el, int attr, const QString& prefix = "field" )
 {
   QString name = prefix + "name";
 

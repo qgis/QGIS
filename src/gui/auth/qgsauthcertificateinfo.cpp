@@ -48,10 +48,10 @@ static void removeChildren_( QTreeWidgetItem* item )
   }
 }
 
-QgsAuthCertInfo::QgsAuthCertInfo( QSslCertificate cert,
+QgsAuthCertInfo::QgsAuthCertInfo( const QSslCertificate& cert,
                                   bool manageCertTrust,
                                   QWidget *parent ,
-                                  QList<QSslCertificate> connectionCAs )
+                                  const QList<QSslCertificate>& connectionCAs )
     : QWidget( parent )
     , mConnectionCAs( connectionCAs )
     , mDefaultItemForeground( QBrush() )
@@ -172,7 +172,7 @@ bool QgsAuthCertInfo::populateQcaCertCollection()
   return true;
 }
 
-bool QgsAuthCertInfo::setQcaCertificate( QSslCertificate cert )
+bool QgsAuthCertInfo::setQcaCertificate( const QSslCertificate& cert )
 {
   QCA::ConvertResult res;
   mCert = QCA::Certificate::fromPEM( cert.toPem(), &res, QString( "qca-ossl" ) );
@@ -916,7 +916,7 @@ void QgsAuthCertInfo::decorateCertTreeItem( const QSslCertificate &cert,
 QgsAuthCertInfoDialog::QgsAuthCertInfoDialog( const QSslCertificate& cert,
     bool manageCertTrust,
     QWidget *parent ,
-    QList<QSslCertificate> connectionCAs )
+    const QList<QSslCertificate>& connectionCAs )
     : QDialog( parent )
     , mCertInfoWdgt( 0 )
 {

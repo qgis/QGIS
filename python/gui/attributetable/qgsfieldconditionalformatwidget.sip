@@ -32,7 +32,7 @@ class QgsFieldConditionalFormatWidget : QWidget
      * @param index index of conditional style to edit
      * @param style initial conditional styling options
      */
-    void editStyle( int index, QgsConditionalStyle style );
+    void editStyle( int index, const QgsConditionalStyle& style );
 
     /** Resets the formatting options to their default state.
      */

@@ -348,7 +348,7 @@ QString QgsRasterDataProvider::lastErrorFormat()
 }
 
 typedef QList<QPair<QString, QString> > *pyramidResamplingMethods_t();
-QList<QPair<QString, QString> > QgsRasterDataProvider::pyramidResamplingMethods( QString providerKey )
+QList<QPair<QString, QString> > QgsRasterDataProvider::pyramidResamplingMethods( const QString& providerKey )
 {
   pyramidResamplingMethods_t *pPyramidResamplingMethods = ( pyramidResamplingMethods_t * ) cast_to_fptr( QgsProviderRegistry::instance()->function( providerKey,  "pyramidResamplingMethods" ) );
   if ( pPyramidResamplingMethods )
@@ -390,7 +390,7 @@ bool QgsRasterDataProvider::hasPyramids()
   return false;
 }
 
-void QgsRasterDataProvider::setUserNoDataValue( int bandNo, QgsRasterRangeList noData )
+void QgsRasterDataProvider::setUserNoDataValue( int bandNo, const QgsRasterRangeList& noData )
 {
   if ( bandNo >= mUserNoDataValue.size() )
   {
@@ -434,7 +434,7 @@ QgsRasterDataProvider* QgsRasterDataProvider::create( const QString &providerKey
     QGis::DataType type,
     int width, int height, double* geoTransform,
     const QgsCoordinateReferenceSystem& crs,
-    QStringList createOptions )
+    const QStringList& createOptions )
 {
   createFunction_t *createFn = ( createFunction_t* ) cast_to_fptr( QgsProviderRegistry::instance()->function( providerKey, "create" ) );
   if ( !createFn )
@@ -481,7 +481,7 @@ QString QgsRasterDataProvider::identifyFormatLabel( QgsRaster::IdentifyFormat fo
   }
 }
 
-QgsRaster::IdentifyFormat QgsRasterDataProvider::identifyFormatFromName( QString formatName )
+QgsRaster::IdentifyFormat QgsRasterDataProvider::identifyFormatFromName( const QString& formatName )
 {
   if ( formatName == "Value" ) return QgsRaster::IdentifyFormatValue;
   if ( formatName == "Text" ) return QgsRaster::IdentifyFormatText;

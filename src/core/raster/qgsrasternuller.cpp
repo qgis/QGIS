@@ -48,7 +48,7 @@ void QgsRasterNuller::setOutputNoDataValue( int bandNo, double noData )
   mHasOutputNoData[bandNo-1] = true;
 }
 
-void QgsRasterNuller::setNoData( int bandNo, QgsRasterRangeList noData )
+void QgsRasterNuller::setNoData( int bandNo, const QgsRasterRangeList& noData )
 {
   if ( bandNo > mNoData.size() )
   {

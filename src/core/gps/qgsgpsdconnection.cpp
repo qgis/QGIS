@@ -20,7 +20,7 @@
 
 #include <QTcpSocket>
 
-QgsGpsdConnection::QgsGpsdConnection( QString host, qint16 port, QString device )
+QgsGpsdConnection::QgsGpsdConnection( const QString& host, qint16 port, const QString& device )
     : QgsNMEAConnection( new QTcpSocket() )
     , mDevice( device )
 {

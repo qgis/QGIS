@@ -88,7 +88,7 @@ void QgsLayerTreeGroup::insertChildNode( int index, QgsLayerTreeNode* node )
   insertChildNodes( index, nodes );
 }
 
-void QgsLayerTreeGroup::insertChildNodes( int index, QList<QgsLayerTreeNode*> nodes )
+void QgsLayerTreeGroup::insertChildNodes( int index, const QList<QgsLayerTreeNode*>& nodes )
 {
   QgsLayerTreeNode* meChild = 0;
   if ( mMutuallyExclusive && mMutuallyExclusiveChildIndex >= 0 && mMutuallyExclusiveChildIndex < mChildren.count() )

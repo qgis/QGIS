@@ -44,10 +44,10 @@ class QgsHelpViewer : public QDialog, private Ui::QgsHelpViewerBase
 {
     Q_OBJECT
   public:
-    QgsHelpViewer( QWidget *parent = 0, Qt::WindowFlags = 0 );
+    QgsHelpViewer( QWidget *parent = 0, const Qt::WindowFlags& = 0 );
     ~QgsHelpViewer();
   public slots:
-    void showHelp( QString );
+    void showHelp( const QString& );
     void fileExit();
   protected:
     void moveEvent( QMoveEvent *event ) override;

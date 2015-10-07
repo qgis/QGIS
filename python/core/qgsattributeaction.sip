@@ -15,7 +15,7 @@ class QgsAction
       OpenUrl,
     };
 
-    QgsAction( ActionType type, QString name, QString action, bool capture );
+    QgsAction( ActionType type, const QString& name, const QString& action, bool capture );
 
     //! The name of the action
     QString name() const;
@@ -62,7 +62,7 @@ class QgsAttributeAction
      * any stdout from the process will be captured and displayed in a
      * dialog box.
      */
-    void addAction( QgsAction::ActionType type, QString name, QString action, bool capture = false );
+    void addAction( QgsAction::ActionType type, const QString& name, const QString& action, bool capture = false );
 
     /** Add an action with the given name and action details.
      * Will happily have duplicate names and actions. If
@@ -70,7 +70,7 @@ class QgsAttributeAction
      * any stdout from the process will be captured and displayed in a
      * dialog box.
      */
-    void addAction( QgsAction::ActionType type, QString name, QString action, const QString& icon, bool capture = false );
+    void addAction( QgsAction::ActionType type, const QString& name, const QString& action, const QString& icon, bool capture = false );
 
     //! Remove an action at given index
     void removeAction( int index );
@@ -115,7 +115,7 @@ class QgsAttributeAction
      *  Additional substitutions can be passed through the substitutionMap
      *  parameter
      */
-    QString expandAction( QString action,
+    QString expandAction( const QString& action,
                           QgsFeature &feat,
                           const QMap<QString, QVariant> *substitutionMap = 0 );
 

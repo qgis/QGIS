@@ -45,7 +45,7 @@ class CORE_EXPORT QgsDxfExport
     QgsDxfExport &operator=( const QgsDxfExport &dxfExport );
 
     void addLayers( const QList< QPair<QgsVectorLayer *, int > > &layers );
-    int writeToFile( QIODevice *d, QString codec );  //maybe add progress dialog? other parameters (e.g. scale, dpi)?
+    int writeToFile( QIODevice *d, const QString& codec );  //maybe add progress dialog? other parameters (e.g. scale, dpi)?
 
     void setSymbologyScaleDenominator( double d ) { mSymbologyScaleDenominator = d; }
     double symbologyScaleDenominator() const { return mSymbologyScaleDenominator; }
@@ -141,7 +141,7 @@ class CORE_EXPORT QgsDxfExport
     QHash< const QgsSymbolLayerV2*, QString > mPointSymbolBlocks; //reference to point symbol blocks
 
     //AC1009
-    void writeHeader( QString codepage );
+    void writeHeader( const QString& codepage );
     void writeTables();
     void writeBlocks();
     void writeEntities();

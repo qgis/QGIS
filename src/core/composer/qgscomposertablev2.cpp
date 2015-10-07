@@ -624,7 +624,7 @@ void QgsComposerTableV2::setEmptyTableBehaviour( const QgsComposerTableV2::Empty
   emit changed();
 }
 
-void QgsComposerTableV2::setEmptyTableMessage( const QString message )
+void QgsComposerTableV2::setEmptyTableMessage( const QString& message )
 {
   if ( message == mEmptyTableMessage )
   {
@@ -798,7 +798,7 @@ void QgsComposerTableV2::setWrapBehaviour( QgsComposerTableV2::WrapBehaviour beh
   emit changed();
 }
 
-void QgsComposerTableV2::setColumns( QgsComposerTableColumns columns )
+void QgsComposerTableV2::setColumns( const QgsComposerTableColumns& columns )
 {
   //remove existing columns
   qDeleteAll( mColumns );

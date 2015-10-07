@@ -92,8 +92,8 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
     QgsDataDefinedButton( QWidget* parent = 0,
                           const QgsVectorLayer* vl = 0,
                           const QgsDataDefined* datadefined = 0,
-                          DataTypes datatypes = AnyType,
-                          QString description = QString() );
+                          const QgsDataDefinedButton::DataTypes& datatypes = AnyType,
+                          const QString& description = QString() );
     ~QgsDataDefinedButton();
 
     /**
@@ -106,8 +106,8 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
      */
     void init( const QgsVectorLayer* vl,
                const QgsDataDefined* datadefined = 0,
-               DataTypes datatypes = AnyType,
-               QString description = QString() );
+               const QgsDataDefinedButton::DataTypes& datatypes = AnyType,
+               const QString& description = QString() );
 
     QMap< QString, QString > definedProperty() const { return mProperty; }
 
@@ -175,7 +175,7 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
     /**
      * Register list of sibling widgets that get disabled/enabled when data definition or expression is set/unset
      */
-    void registerEnabledWidgets( QList<QWidget*> wdgts );
+    void registerEnabledWidgets( const QList<QWidget*>& wdgts );
 
     /**
      * Register a sibling widget that gets disabled/enabled when data definition or expression is set/unset
@@ -197,7 +197,7 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
     /**
      * Register list of sibling widgets that get checked when data definition or expression is active
      */
-    void registerCheckedWidgets( QList<QWidget*> wdgts );
+    void registerCheckedWidgets( const QList<QWidget*>& wdgts );
 
     /**
      * Register a sibling widget that get checked when data definition or expression is active
@@ -324,12 +324,12 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
     /**
      * Set the current defined expression
      */
-    void setExpression( QString exp ) { mProperty.insert( "expression", exp ); }
+    void setExpression( const QString& exp ) { mProperty.insert( "expression", exp ); }
 
     /**
      * Set the current defined field
      */
-    void setField( QString field ) { mProperty.insert( "field", field ); }
+    void setField( const QString& field ) { mProperty.insert( "field", field ); }
 
   private:
     void showDescriptionDialog();

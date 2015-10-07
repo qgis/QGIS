@@ -41,7 +41,7 @@ QgsColorDialog::~QgsColorDialog()
 QColor QgsColorDialog::getLiveColor( const QColor& initialColor, QObject* updateObject, const char* updateSlot,
                                      QWidget* parent,
                                      const QString& title,
-                                     QColorDialog::ColorDialogOptions options )
+                                     const QColorDialog::ColorDialogOptions& options )
 {
   QColor returnColor( initialColor );
   QColorDialog* liveDialog = new QColorDialog( initialColor, parent );
@@ -66,7 +66,7 @@ QColor QgsColorDialog::getLiveColor( const QColor& initialColor, QObject* update
 // QgsColorDialogV2
 //
 
-QgsColorDialogV2::QgsColorDialogV2( QWidget *parent, Qt::WindowFlags fl, const QColor& color )
+QgsColorDialogV2::QgsColorDialogV2( QWidget *parent, const Qt::WindowFlags& fl, const QColor& color )
     : QDialog( parent, fl )
     , mPreviousColor( color )
     , mAllowAlpha( true )
@@ -285,7 +285,7 @@ QColor QgsColorDialogV2::color() const
   return mColorPreview->color();
 }
 
-void QgsColorDialogV2::setTitle( const QString title )
+void QgsColorDialogV2::setTitle( const QString& title )
 {
   setWindowTitle( title.isEmpty() ? tr( "Select Color" ) : title );
 }

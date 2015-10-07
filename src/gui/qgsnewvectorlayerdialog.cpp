@@ -31,7 +31,7 @@
 #include <QFileDialog>
 
 
-QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WindowFlags fl )
+QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, const Qt::WindowFlags& fl )
     : QDialog( parent, fl )
 {
   setupUi( this );
@@ -214,7 +214,7 @@ QString QgsNewVectorLayerDialog::selectedFileEncoding() const
   return mFileEncoding->currentText();
 }
 
-void QgsNewVectorLayerDialog::nameChanged( QString name )
+void QgsNewVectorLayerDialog::nameChanged( const QString& name )
 {
   mAddAttributeButton->setDisabled( name.isEmpty() || mAttributeView->findItems( name, Qt::MatchExactly ).size() > 0 );
 }

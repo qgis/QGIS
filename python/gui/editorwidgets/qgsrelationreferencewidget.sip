@@ -17,7 +17,7 @@ class QgsRelationReferenceWidget : QWidget
 
     ~QgsRelationReferenceWidget();
 
-    void setRelation( QgsRelation relation, bool allowNullValue );
+    void setRelation( const QgsRelation& relation, bool allowNullValue );
 
     void setRelationEditable( bool editable );
 

@@ -81,12 +81,12 @@ class TestQgsRasterLayer : public QObject
     void transparency();
     void setRenderer();
   private:
-    bool render( QString theFileName );
-    bool setQml( QString theType );
+    bool render( const QString& theFileName );
+    bool setQml( const QString& theType );
     void populateColorRampShader( QgsColorRampShader* colorRampShader,
                                   QgsVectorColorRampV2* colorRamp,
                                   int numberOfEntries );
-    bool testColorRamp( QString name, QgsVectorColorRampV2* colorRamp,
+    bool testColorRamp( const QString& name, QgsVectorColorRampV2* colorRamp,
                         QgsColorRampShader::ColorRamp_TYPE type, int numberOfEntries );
     QString mTestDataDir;
     QgsRasterLayer * mpRasterLayer;
@@ -262,7 +262,7 @@ void TestQgsRasterLayer::populateColorRampShader( QgsColorRampShader* colorRampS
   colorRampShader->setColorRampItemList( colorRampItems );
 }
 
-bool TestQgsRasterLayer::testColorRamp( QString name, QgsVectorColorRampV2* colorRamp,
+bool TestQgsRasterLayer::testColorRamp( const QString& name, QgsVectorColorRampV2* colorRamp,
                                         QgsColorRampShader::ColorRamp_TYPE type, int numberOfEntries )
 {
   QgsRasterShader* rasterShader = new QgsRasterShader();
@@ -524,7 +524,7 @@ void TestQgsRasterLayer::registry()
 //
 
 
-bool TestQgsRasterLayer::render( QString theTestType )
+bool TestQgsRasterLayer::render( const QString& theTestType )
 {
   mReport += "<h2>" + theTestType + "</h2>\n";
   QgsRenderChecker myChecker;
@@ -535,7 +535,7 @@ bool TestQgsRasterLayer::render( QString theTestType )
   return myResultFlag;
 }
 
-bool TestQgsRasterLayer::setQml( QString theType )
+bool TestQgsRasterLayer::setQml( const QString& theType )
 {
   //load a qml style and apply to our layer
   // huh? this is failing but shouldnt!

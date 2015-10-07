@@ -113,7 +113,7 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     QgsComposerLegendStyle & rstyle( QgsComposerLegendStyle::Style s );
     /** Returns style */
     QgsComposerLegendStyle style( QgsComposerLegendStyle::Style s ) const;
-    void setStyle( QgsComposerLegendStyle::Style s, const QgsComposerLegendStyle style );
+    void setStyle( QgsComposerLegendStyle::Style s, const QgsComposerLegendStyle& style );
 
     QFont styleFont( QgsComposerLegendStyle::Style s ) const;
     /** Set style font */

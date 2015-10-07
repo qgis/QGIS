@@ -1579,7 +1579,7 @@ class QgsSvgListModel : public QAbstractListModel
     }
 
     // Constructor to create model for icons in a specific path
-    QgsSvgListModel( QObject* parent, QString path ) : QAbstractListModel( parent )
+    QgsSvgListModel( QObject* parent, const QString& path ) : QAbstractListModel( parent )
     {
       mSvgFiles = QgsSymbolLayerV2Utils::listSvgFilesAt( path );
     }

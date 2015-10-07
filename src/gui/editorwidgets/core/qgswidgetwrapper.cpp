@@ -52,7 +52,7 @@ void QgsWidgetWrapper::setContext( const QgsAttributeEditorContext &context )
   mContext = context;
 }
 
-QVariant QgsWidgetWrapper::config( QString key, QVariant defaultVal )
+QVariant QgsWidgetWrapper::config( const QString& key, const QVariant& defaultVal )
 {
   if ( mConfig.contains( key ) )
   {

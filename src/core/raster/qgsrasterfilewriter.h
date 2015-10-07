@@ -106,8 +106,8 @@ class CORE_EXPORT QgsRasterFileWriter
                                  const QgsRectangle& outputExtent,
                                  const QgsCoordinateReferenceSystem& crs,
                                  QGis::DataType destDataType,
-                                 QList<bool> destHasNoDataValueList,
-                                 QList<double> destNoDataValueList,
+                                 const QList<bool>& destHasNoDataValueList,
+                                 const QList<double>& destNoDataValueList,
                                  QgsRasterDataProvider* destProvider,
                                  QProgressDialog* progressDialog );
 
@@ -123,7 +123,7 @@ class CORE_EXPORT QgsRasterFileWriter
      *  @param destHasNoDataValueList true if destination has no data value, indexed from 0
      *  @param destNoDataValueList no data value, indexed from 0
      */
-    void createVRT( int xSize, int ySize, const QgsCoordinateReferenceSystem& crs, double* geoTransform, QGis::DataType type, QList<bool> destHasNoDataValueList, QList<double> destNoDataValueList );
+    void createVRT( int xSize, int ySize, const QgsCoordinateReferenceSystem& crs, double* geoTransform, QGis::DataType type, const QList<bool>& destHasNoDataValueList, const QList<double>& destNoDataValueList );
     //write vrt document to disk
     bool writeVRT( const QString& file );
     //add file entry to vrt
@@ -149,7 +149,7 @@ class CORE_EXPORT QgsRasterFileWriter
     QgsRasterDataProvider* initOutput( int nCols, int nRows,
                                        const QgsCoordinateReferenceSystem& crs, double* geoTransform, int nBands,
                                        QGis::DataType type,
-                                       QList<bool> destHasNoDataValueList = QList<bool>(), QList<double> destNoDataValueList = QList<double>() );
+                                       const QList<bool>& destHasNoDataValueList = QList<bool>(), const QList<double>& destNoDataValueList = QList<double>() );
 
     /** Calculate nRows, geotransform and pixel size for output*/
     void globalOutputParameters( const QgsRectangle& extent, int nCols, int& nRows, double* geoTransform, double& pixelSize );

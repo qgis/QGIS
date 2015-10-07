@@ -47,7 +47,7 @@
 #include "qgscursors.h"
 #include "qgscomposerutils.h"
 
-QgsComposerView::QgsComposerView( QWidget* parent, const char* name, Qt::WindowFlags f )
+QgsComposerView::QgsComposerView( QWidget* parent, const char* name, const Qt::WindowFlags& f )
     : QGraphicsView( parent )
     , mCurrentTool( Select )
     , mPreviousTool( Select )

@@ -90,7 +90,7 @@ class QgsAttributeTableView : QTableView
     void finished();
 
   public slots:
-    void repaintRequested( QModelIndexList indexes );
+    void repaintRequested( const QModelIndexList& indexes );
     void repaintRequested();
     virtual void selectAll();
     virtual void selectRow( int row );

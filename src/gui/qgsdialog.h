@@ -31,8 +31,8 @@ class GUI_EXPORT QgsDialog : public QDialog
 {
     Q_OBJECT
   public:
-    QgsDialog( QWidget *parent = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags,
-               QDialogButtonBox::StandardButtons buttons = QDialogButtonBox::Close,
+    QgsDialog( QWidget *parent = 0, const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags,
+               const QDialogButtonBox::StandardButtons& buttons = QDialogButtonBox::Close,
                Qt::Orientation orientation = Qt::Horizontal );
     ~QgsDialog();
 

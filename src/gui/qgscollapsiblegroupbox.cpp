@@ -187,7 +187,7 @@ void QgsCollapsibleGroupBoxBasic::changeEvent( QEvent *event )
     mCollapseButton->setEnabled( true );
 }
 
-void QgsCollapsibleGroupBoxBasic::setSyncGroup( QString grp )
+void QgsCollapsibleGroupBoxBasic::setSyncGroup( const QString& grp )
 {
   mSyncGroup = grp;
   QString tipTxt;

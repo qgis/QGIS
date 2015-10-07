@@ -157,9 +157,9 @@ class CORE_EXPORT QgsAuthMethod : public QObject
     void setVersion( int version ) { mVersion = version; }
 
     /** Set the support expansions (points in providers where the authentication is injected) of the auth method */
-    void setExpansions( QgsAuthMethod::Expansions expansions ) { mExpansions = expansions; }
+    void setExpansions( const QgsAuthMethod::Expansions& expansions ) { mExpansions = expansions; }
     /** Set list of data providers this auth method supports */
-    void setDataProviders( QStringList dataproviders ) { mDataProviders = dataproviders; }
+    void setDataProviders( const QStringList& dataproviders ) { mDataProviders = dataproviders; }
 
     QgsAuthMethod::Expansions mExpansions;
     QStringList mDataProviders;

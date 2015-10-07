@@ -16,9 +16,9 @@ class QgsTransectSample
       StrataUnits //units are the same as stratum layer
     };
 
-    QgsTransectSample( QgsVectorLayer* strataLayer, QString strataIdAttribute, QString minDistanceAttribute, QString nPointsAttribute,
+    QgsTransectSample( QgsVectorLayer* strataLayer, const QString& strataIdAttribute, const QString& minDistanceAttribute, const QString& nPointsAttribute,
                        DistanceUnits minDistUnits, QgsVectorLayer* baselineLayer, bool shareBaseline,
-                       QString baselineStrataId, const QString& outputPointLayer, const QString& outputLineLayer, const QString& usedBaselineLayer,
+                       const QString& baselineStrataId, const QString& outputPointLayer, const QString& outputLineLayer, const QString& usedBaselineLayer,
                        double minTransectLength = 0.0, double baselineBufferDistance = -1.0, double baselineSimplificationTolerance = -1.0 );
     ~QgsTransectSample();
 

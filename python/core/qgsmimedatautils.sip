@@ -21,7 +21,7 @@ class QgsMimeDataUtils
     };
     typedef QList<QgsMimeDataUtils::Uri> UriList;
 
-    static QMimeData* encodeUriList( UriList layers );
+    static QMimeData* encodeUriList( const UriList& layers );
 
     static bool isUriList( const QMimeData* data );
 

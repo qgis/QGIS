@@ -67,8 +67,8 @@ class TestQgsShapeburst : public QObject
 
   private:
     bool mTestHasError;
-    bool setQml( QString theType );
-    bool imageCheck( QString theType );
+    bool setQml( const QString& theType );
+    bool imageCheck( const QString& theType );
     QgsMapSettings mMapSettings;
     QgsVectorLayer * mpPolysLayer;
     QgsShapeburstFillSymbolLayerV2* mShapeburstFill;
@@ -222,7 +222,7 @@ void TestQgsShapeburst::shapeburstSymbolFromQml()
 // Private helper functions not called directly by CTest
 //
 
-bool TestQgsShapeburst::setQml( QString theType )
+bool TestQgsShapeburst::setQml( const QString& theType )
 {
   //load a qml style and apply to our layer
   //the style will correspond to the renderer
@@ -237,7 +237,7 @@ bool TestQgsShapeburst::setQml( QString theType )
   return myStyleFlag;
 }
 
-bool TestQgsShapeburst::imageCheck( QString theTestType )
+bool TestQgsShapeburst::imageCheck( const QString& theTestType )
 {
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image

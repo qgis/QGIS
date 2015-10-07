@@ -130,7 +130,7 @@ void QgsAuthServersEditor::refreshSslConfigsView()
 }
 
 void QgsAuthServersEditor::populateSslConfigsSection( QTreeWidgetItem *item,
-    QList<QgsAuthConfigSslServer> configs,
+    const QList<QgsAuthConfigSslServer>& configs,
     QgsAuthServersEditor::ConfigType conftype )
 {
   if ( btnGroupByOrg->isChecked() )
@@ -143,7 +143,7 @@ void QgsAuthServersEditor::populateSslConfigsSection( QTreeWidgetItem *item,
   }
 }
 
-void QgsAuthServersEditor::appendSslConfigsToGroup( QList<QgsAuthConfigSslServer> configs,
+void QgsAuthServersEditor::appendSslConfigsToGroup( const QList<QgsAuthConfigSslServer>& configs,
     QgsAuthServersEditor::ConfigType conftype,
     QTreeWidgetItem *parent )
 {
@@ -182,7 +182,7 @@ void QgsAuthServersEditor::appendSslConfigsToGroup( QList<QgsAuthConfigSslServer
   parent->sortChildren( 0, Qt::AscendingOrder );
 }
 
-void QgsAuthServersEditor::appendSslConfigsToItem( QList<QgsAuthConfigSslServer> configs,
+void QgsAuthServersEditor::appendSslConfigsToItem( const QList<QgsAuthConfigSslServer>& configs,
     QgsAuthServersEditor::ConfigType conftype,
     QTreeWidgetItem *parent )
 {

@@ -716,7 +716,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      * @see frameSideFlags
      * @see testFrameSideFlag
     */
-    void setFrameSideFlags( const FrameSideFlags flags );
+    void setFrameSideFlags( const FrameSideFlags& flags );
 
     /** Sets whether the grid frame is drawn for a certain side of the map item.
      * @param flag flag for grid frame side

@@ -31,7 +31,7 @@ class QgsDistanceArea
     void setSourceCrs( const QgsCoordinateReferenceSystem& srcCRS );
 
     //! sets source spatial reference system by authid
-    void setSourceAuthId( QString authid );
+    void setSourceAuthId( const QString& authid );
 
     //! returns source spatial reference system
     long sourceCrs() const;

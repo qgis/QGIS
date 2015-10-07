@@ -50,8 +50,8 @@ class QgsAuthMethod : QObject
 
     void setVersion( int version );
 
-    void setExpansions( QgsAuthMethod::Expansions expansions );
-    void setDataProviders( QStringList dataproviders );
+    void setExpansions( const QgsAuthMethod::Expansions& expansions );
+    void setDataProviders( const QStringList& dataproviders );
 };
 
 typedef QHash<QString, QgsAuthMethod*> QgsAuthMethodsMap;

@@ -27,7 +27,7 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 
-QgsVectorDataProvider::QgsVectorDataProvider( QString uri )
+QgsVectorDataProvider::QgsVectorDataProvider( const QString& uri )
     : QgsDataProvider( uri )
     , mCacheMinMaxDirty( true )
     , mAttrPalIndexName( QgsAttrPalIndexNameHash() )
@@ -449,7 +449,7 @@ void QgsVectorDataProvider::fillMinMaxCache()
   mCacheMinMaxDirty = false;
 }
 
-QVariant QgsVectorDataProvider::convertValue( QVariant::Type type, QString value )
+QVariant QgsVectorDataProvider::convertValue( QVariant::Type type, const QString& value )
 {
   QVariant v( value );
 
@@ -542,7 +542,7 @@ QStringList QgsVectorDataProvider::errors()
   return mErrors;
 }
 
-void QgsVectorDataProvider::pushError( QString msg )
+void QgsVectorDataProvider::pushError( const QString& msg )
 {
   mErrors << msg;
 }

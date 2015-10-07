@@ -39,8 +39,8 @@ QIcon QgsDataDefinedButton::mIconDataDefineExpressionError;
 QgsDataDefinedButton::QgsDataDefinedButton( QWidget* parent,
     const QgsVectorLayer* vl,
     const QgsDataDefined* datadefined,
-    DataTypes datatypes,
-    QString description )
+    const DataTypes& datatypes,
+    const QString& description )
     : QToolButton( parent )
     , mExpressionContextCallback( 0 )
     , mExpressionContextCallbackContext( 0 )
@@ -111,8 +111,8 @@ QgsDataDefinedButton::~QgsDataDefinedButton()
 
 void QgsDataDefinedButton::init( const QgsVectorLayer* vl,
                                  const QgsDataDefined* datadefined,
-                                 DataTypes datatypes,
-                                 QString description )
+                                 const DataTypes& datatypes,
+                                 const QString& description )
 {
   mVectorLayer = vl;
   // construct default property if none or incorrect passed in
@@ -623,7 +623,7 @@ void QgsDataDefinedButton::setActive( bool active )
   }
 }
 
-void QgsDataDefinedButton::registerEnabledWidgets( QList<QWidget*> wdgts )
+void QgsDataDefinedButton::registerEnabledWidgets( const QList<QWidget*>& wdgts )
 {
   for ( int i = 0; i < wdgts.size(); ++i )
   {
@@ -659,7 +659,7 @@ void QgsDataDefinedButton::disableEnabledWidgets( bool disable )
   }
 }
 
-void QgsDataDefinedButton::registerCheckedWidgets( QList<QWidget*> wdgts )
+void QgsDataDefinedButton::registerCheckedWidgets( const QList<QWidget*>& wdgts )
 {
   for ( int i = 0; i < wdgts.size(); ++i )
   {

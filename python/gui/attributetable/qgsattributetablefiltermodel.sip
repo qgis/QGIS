@@ -46,7 +46,7 @@ class QgsAttributeTableFilterModel: QSortFilterProxyModel, QgsFeatureModel
      *
      * @param ids  The list of feature ids which will be accepted by the filter
      */
-    virtual void setFilteredFeatures( QgsFeatureIds ids );
+    virtual void setFilteredFeatures( const QgsFeatureIds& ids );
 
     QgsFeatureIds filteredFeatures();
 

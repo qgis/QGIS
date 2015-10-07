@@ -31,9 +31,9 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
     Q_PROPERTY( QString nullValue READ nullValue WRITE setNullValue )
 
   public:
-    QgsFilterLineEdit( QWidget* parent = 0, QString nullValue = QString::null );
+    QgsFilterLineEdit( QWidget* parent = 0, const QString& nullValue = QString::null );
 
-    void setNullValue( QString nullValue ) { mNullValue = nullValue; }
+    void setNullValue( const QString& nullValue ) { mNullValue = nullValue; }
 
     QString nullValue() const { return mNullValue; }
 
@@ -42,7 +42,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      *
      * @param value The text to set. If a Null string is provided, the text will match the nullValue.
      */
-    void setValue( QString value ) { setText( value.isNull() ? mNullValue : value ); }
+    void setValue( const QString& value ) { setText( value.isNull() ? mNullValue : value ); }
 
     /**
      * Returns the text of this edit with NULL support

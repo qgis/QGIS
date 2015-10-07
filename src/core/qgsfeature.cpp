@@ -204,7 +204,7 @@ bool QgsFeature::setAttribute( int idx, const QVariant &value )
   return true;
 }
 
-bool QgsFeature::setAttribute( const QString& name, QVariant value )
+bool QgsFeature::setAttribute( const QString& name, const QVariant& value )
 {
   int fieldIdx = fieldNameIndex( name );
   if ( fieldIdx == -1 )

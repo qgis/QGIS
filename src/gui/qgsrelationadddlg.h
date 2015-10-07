@@ -13,7 +13,7 @@ class GUI_EXPORT QgsRelationAddDlg : public QDialog, private Ui::QgsRelationAddD
   public:
     explicit QgsRelationAddDlg( QWidget *parent = 0 );
 
-    void addLayers( QList<QgsVectorLayer* > layers );
+    void addLayers( const QList<QgsVectorLayer*>& layers );
 
     QString referencingLayerId();
     QString referencedLayerId();

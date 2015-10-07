@@ -32,7 +32,7 @@ class CORE_EXPORT QgsPluginLayer : public QgsMapLayer
     Q_OBJECT
 
   public:
-    QgsPluginLayer( QString layerType, QString layerName = QString() );
+    QgsPluginLayer( const QString& layerType, const QString& layerName = QString() );
 
     /** Return plugin layer type (the same as used in QgsPluginLayerRegistry) */
     QString pluginLayerType();

@@ -84,7 +84,7 @@ class QgsExpression
     /** Assign a special column
      * @deprecated use global or project QgsExpressionContext variables instead
      */
-    static void setSpecialColumn( const QString& name, QVariant value ) /Deprecated/;
+    static void setSpecialColumn( const QString& name, const QVariant& value ) /Deprecated/;
     /** Unset a special column
      * @deprecated use global or project QgsExpressionContext variables instead
      */
@@ -248,10 +248,10 @@ class QgsExpression
       public:
         Function( const QString& fnname,
                   int params,
-                  QString group,
-                  QString helpText = QString(),
+                  const QString& group,
+                  const QString& helpText = QString(),
                   bool usesGeometry = false,
-                  QStringList referencedColumns = QStringList(),
+                  const QStringList& referencedColumns = QStringList(),
                   bool lazyEval = false,
                   bool handlesNull = false,
                   bool isContextual = false );
@@ -317,7 +317,7 @@ class QgsExpression
      * @param name function name
      * @see registerFunction
      */
-    static bool unregisterFunction( QString name );
+    static bool unregisterFunction( const QString& name );
 
     /** Deletes all registered functions whose ownership have been transferred to the expression engine.
      * @note added in QGIS 2.12
@@ -436,7 +436,7 @@ class QgsExpression
         void setValid( bool valid );
         bool operator==( const QgsExpression::Interval& other ) const;
         static QgsExpression::Interval invalidInterVal();
-        static QgsExpression::Interval fromString( QString string );
+        static QgsExpression::Interval fromString( const QString& string );
     };
 
     class NodeUnaryOperator : QgsExpression::Node
@@ -619,7 +619,7 @@ class QgsExpression
     /** Returns the translated name for a function group.
      * @param group untranslated group name
      */
-    static QString group( QString group );
+    static QString group( const QString& group );
 
   protected:
     void initGeomCalculator();

@@ -74,7 +74,7 @@ QgsDataDefined* scaleWholeSymbol( double scaleFactorX, double scaleFactorY, cons
 
 ////////////////////
 
-QgsSymbolV2::QgsSymbolV2( SymbolType type, QgsSymbolLayerV2List layers )
+QgsSymbolV2::QgsSymbolV2( SymbolType type, const QgsSymbolLayerV2List& layers )
     : mType( type )
     , mLayers( layers )
     , mAlpha( 1.0 )
@@ -353,7 +353,7 @@ void QgsSymbolV2::drawPreviewIcon( QPainter* painter, QSize size, QgsRenderConte
   }
 }
 
-void QgsSymbolV2::exportImage( QString path, QString format, QSize size )
+void QgsSymbolV2::exportImage( const QString& path, const QString& format, const QSize& size )
 {
   if ( format.toLower() == "svg" )
   {
@@ -566,7 +566,7 @@ QgsFillSymbolV2* QgsFillSymbolV2::createSimple( const QgsStringMap& properties )
 
 ///////////////////
 
-QgsMarkerSymbolV2::QgsMarkerSymbolV2( QgsSymbolLayerV2List layers )
+QgsMarkerSymbolV2::QgsMarkerSymbolV2( const QgsSymbolLayerV2List& layers )
     : QgsSymbolV2( Marker, layers )
 {
   if ( mLayers.count() == 0 )
@@ -869,7 +869,7 @@ QgsSymbolV2* QgsMarkerSymbolV2::clone() const
 ///////////////////
 // LINE
 
-QgsLineSymbolV2::QgsLineSymbolV2( QgsSymbolLayerV2List layers )
+QgsLineSymbolV2::QgsLineSymbolV2( const QgsSymbolLayerV2List& layers )
     : QgsSymbolV2( Line, layers )
 {
   if ( mLayers.count() == 0 )
@@ -1051,7 +1051,7 @@ QgsSymbolV2* QgsLineSymbolV2::clone() const
 ///////////////////
 // FILL
 
-QgsFillSymbolV2::QgsFillSymbolV2( QgsSymbolLayerV2List layers )
+QgsFillSymbolV2::QgsFillSymbolV2( const QgsSymbolLayerV2List& layers )
     : QgsSymbolV2( Fill, layers )
 {
   if ( mLayers.count() == 0 )

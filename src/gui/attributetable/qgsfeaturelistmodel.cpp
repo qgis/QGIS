@@ -145,7 +145,7 @@ QgsAttributeTableModel* QgsFeatureListModel::masterModel()
   return mFilterModel->masterModel();
 }
 
-bool QgsFeatureListModel::setDisplayExpression( const QString expression )
+bool QgsFeatureListModel::setDisplayExpression( const QString& expression )
 {
   QgsExpression* exp = new QgsExpression( expression );
 

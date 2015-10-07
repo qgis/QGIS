@@ -78,14 +78,14 @@ class GUI_EXPORT QgsAuthServersEditor : public QWidget, private Ui::QgsAuthServe
     void setupSslConfigsTree();
 
     void populateSslConfigsSection( QTreeWidgetItem *item,
-                                    QList<QgsAuthConfigSslServer> configs,
+                                    const QList<QgsAuthConfigSslServer>& configs,
                                     QgsAuthServersEditor::ConfigType conftype );
 
-    void appendSslConfigsToGroup( QList<QgsAuthConfigSslServer> configs,
+    void appendSslConfigsToGroup( const QList<QgsAuthConfigSslServer>& configs,
                                   QgsAuthServersEditor::ConfigType conftype,
                                   QTreeWidgetItem *parent = 0 );
 
-    void appendSslConfigsToItem( QList<QgsAuthConfigSslServer> configs,
+    void appendSslConfigsToItem( const QList<QgsAuthConfigSslServer>& configs,
                                  QgsAuthServersEditor::ConfigType conftype,
                                  QTreeWidgetItem *parent = 0 );
 

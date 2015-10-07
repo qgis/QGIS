@@ -117,12 +117,12 @@ class CORE_EXPORT QgsLegendRenderer
      */
     QSizeF drawTitle( QPainter* painter = 0, QPointF point = QPointF(), Qt::AlignmentFlag halignment = Qt::AlignLeft, double legendWidth = 0 );
 
-    double spaceAboveAtom( Atom atom );
+    double spaceAboveAtom( const Atom& atom );
 
     /** Draw atom and return its actual size, the atom is drawn with the space above it
      *  so that first atoms in column are all aligned to the same line regardles their
      * style top space */
-    QSizeF drawAtom( Atom atom, QPainter* painter = 0, QPointF point = QPointF() );
+    QSizeF drawAtom( const Atom& atom, QPainter* painter = 0, QPointF point = QPointF() );
 
     Nucleon drawSymbolItem( QgsLayerTreeModelLegendNode* symbolItem, QPainter* painter = 0, QPointF point = QPointF(), double labelXOffset = 0 );
 

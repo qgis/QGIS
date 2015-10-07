@@ -46,7 +46,7 @@ void QgsMapRendererCache::clearInternal()
   mCachedImages.clear();
 }
 
-bool QgsMapRendererCache::init( QgsRectangle extent, double scale )
+bool QgsMapRendererCache::init( const QgsRectangle& extent, double scale )
 {
   QMutexLocker lock( &mMutex );
 
@@ -64,7 +64,7 @@ bool QgsMapRendererCache::init( QgsRectangle extent, double scale )
   return false;
 }
 
-void QgsMapRendererCache::setCacheImage( QString layerId, const QImage& img )
+void QgsMapRendererCache::setCacheImage( const QString& layerId, const QImage& img )
 {
   QMutexLocker lock( &mMutex );
   mCachedImages[layerId] = img;
@@ -77,7 +77,7 @@ void QgsMapRendererCache::setCacheImage( QString layerId, const QImage& img )
   }
 }
 
-QImage QgsMapRendererCache::cacheImage( QString layerId )
+QImage QgsMapRendererCache::cacheImage( const QString& layerId )
 {
   QMutexLocker lock( &mMutex );
   return mCachedImages.value( layerId );
@@ -90,7 +90,7 @@ void QgsMapRendererCache::layerRequestedRepaint()
     clearCacheImage( layer->id() );
 }
 
-void QgsMapRendererCache::clearCacheImage( QString layerId )
+void QgsMapRendererCache::clearCacheImage( const QString& layerId )
 {
   QMutexLocker lock( &mMutex );
 

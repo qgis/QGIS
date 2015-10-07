@@ -31,7 +31,7 @@ class CORE_EXPORT QgsPluginLayerType
 {
   public:
 
-    QgsPluginLayerType( QString name );
+    QgsPluginLayerType( const QString& name );
     virtual ~QgsPluginLayerType();
 
     QString name();
@@ -73,15 +73,15 @@ class CORE_EXPORT QgsPluginLayerRegistry
     bool addPluginLayerType( QgsPluginLayerType* pluginLayerType );
 
     /** Remove plugin layer type and return true on success */
-    bool removePluginLayerType( QString typeName );
+    bool removePluginLayerType( const QString& typeName );
 
     /** Return plugin layer type metadata or NULL if doesn't exist */
-    QgsPluginLayerType* pluginLayerType( QString typeName );
+    QgsPluginLayerType* pluginLayerType( const QString& typeName );
 
     /** Return new layer if corresponding plugin has been found, else return NULL.
      * @note optional param uri added in 2.10
      */
-    QgsPluginLayer* createLayer( QString typeName, const QString& uri = QString() );
+    QgsPluginLayer* createLayer( const QString& typeName, const QString& uri = QString() );
 
   private:
 

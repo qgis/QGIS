@@ -450,7 +450,7 @@ QgsLegendSymbologyList QgsInvertedPolygonRenderer::legendSymbologyItems( QSize i
   return mSubRenderer->legendSymbologyItems( iconSize );
 }
 
-QgsLegendSymbolList QgsInvertedPolygonRenderer::legendSymbolItems( double scaleDenominator, QString rule )
+QgsLegendSymbolList QgsInvertedPolygonRenderer::legendSymbolItems( double scaleDenominator, const QString& rule )
 {
   if ( !mSubRenderer )
   {

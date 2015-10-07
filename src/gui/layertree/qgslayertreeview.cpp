@@ -122,7 +122,7 @@ void QgsLayerTreeView::contextMenuEvent( QContextMenuEvent *event )
 }
 
 
-void QgsLayerTreeView::modelRowsInserted( QModelIndex index, int start, int end )
+void QgsLayerTreeView::modelRowsInserted( const QModelIndex& index, int start, int end )
 {
   QgsLayerTreeNode* parentNode = layerTreeModel()->index2node( index );
   if ( !parentNode )
@@ -160,7 +160,7 @@ void QgsLayerTreeView::modelRowsRemoved()
   onCurrentChanged();
 }
 
-void QgsLayerTreeView::updateExpandedStateToNode( QModelIndex index )
+void QgsLayerTreeView::updateExpandedStateToNode( const QModelIndex& index )
 {
   if ( QgsLayerTreeNode* node = layerTreeModel()->index2node( index ) )
   {

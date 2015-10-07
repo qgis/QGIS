@@ -48,7 +48,7 @@ class CORE_EXPORT QgsProviderRegistry
   public:
 
     /** Means of accessing canonical single instance  */
-    static QgsProviderRegistry* instance( QString pluginPath = QString::null );
+    static QgsProviderRegistry* instance( const QString& pluginPath = QString::null );
 
     /** Virtual dectructor */
     virtual ~QgsProviderRegistry();
@@ -80,7 +80,7 @@ class CORE_EXPORT QgsProviderRegistry
     int providerCapabilities( const QString& providerKey ) const;
 
     QWidget *selectWidget( const QString & providerKey,
-                           QWidget * parent = 0, Qt::WindowFlags fl = 0 );
+                           QWidget * parent = 0, const Qt::WindowFlags& fl = 0 );
 
 #if QT_VERSION >= 0x050000
     /** Get pointer to provider function
@@ -170,7 +170,7 @@ class CORE_EXPORT QgsProviderRegistry
 
   private:
     /** Ctor private since instance() creates it */
-    QgsProviderRegistry( QString pluginPath );
+    QgsProviderRegistry( const QString& pluginPath );
 
     /** Associative container of provider metadata handles */
     Providers mProviders;

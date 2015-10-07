@@ -62,8 +62,8 @@ class QgsDataDefinedButton : QToolButton
     QgsDataDefinedButton( QWidget* parent /TransferThis/ = 0,
                           const QgsVectorLayer* vl = 0,
                           const QgsDataDefined* datadefined = 0,
-                          DataTypes datatypes = AnyType,
-                          QString description = QString() );
+                          const DataTypes& datatypes = AnyType,
+                          const QString& description = QString() );
     ~QgsDataDefinedButton();
 
     /**
@@ -76,8 +76,8 @@ class QgsDataDefinedButton : QToolButton
      */
     void init( const QgsVectorLayer* vl,
                const QgsDataDefined* datadefined = 0,
-               DataTypes datatypes = AnyType,
-               QString description = QString() );
+               const DataTypes& datatypes = AnyType,
+               const QString& description = QString() );
 
     QMap< QString, QString > definedProperty() const;
 
@@ -144,7 +144,7 @@ class QgsDataDefinedButton : QToolButton
     /**
      * Register list of sibling widgets that get disabled/enabled when data definition or expression is set/unset
      */
-    void registerEnabledWidgets( QList<QWidget*> wdgts );
+    void registerEnabledWidgets( const QList<QWidget*>& wdgts );
 
     /**
      * Register a sibling widget that gets disabled/enabled when data definition or expression is set/unset
@@ -166,7 +166,7 @@ class QgsDataDefinedButton : QToolButton
     /**
      * Register list of sibling widgets that get checked when data definition or expression is active
      */
-    void registerCheckedWidgets( QList<QWidget*> wdgts );
+    void registerCheckedWidgets( const QList<QWidget*>& wdgts );
 
     /**
      * Register a sibling widget that get checked when data definition or expression is active
@@ -293,12 +293,12 @@ class QgsDataDefinedButton : QToolButton
     /**
      * Set the current defined expression
      */
-    void setExpression( QString exp );
+    void setExpression( const QString& exp );
 
     /**
      * Set the current defined field
      */
-    void setField( QString field );
+    void setField( const QString& field );
 
 };
 

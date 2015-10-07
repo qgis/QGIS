@@ -207,7 +207,7 @@ void QgsAuthAuthoritiesEditor::populateRootCaCerts()
   mRootCaSecItem->setExpanded( expanded );
 }
 
-void QgsAuthAuthoritiesEditor::populateCaCertsSection( QTreeWidgetItem* item, QList<QSslCertificate> certs,
+void QgsAuthAuthoritiesEditor::populateCaCertsSection( QTreeWidgetItem* item, const QList<QSslCertificate>& certs,
     QgsAuthAuthoritiesEditor::CaType catype )
 {
   if ( btnGroupByOrg->isChecked() )
@@ -220,7 +220,7 @@ void QgsAuthAuthoritiesEditor::populateCaCertsSection( QTreeWidgetItem* item, QL
   }
 }
 
-void QgsAuthAuthoritiesEditor::appendCertsToGroup( QList<QSslCertificate> certs,
+void QgsAuthAuthoritiesEditor::appendCertsToGroup( const QList<QSslCertificate>& certs,
     QgsAuthAuthoritiesEditor::CaType catype,
     QTreeWidgetItem *parent )
 {
@@ -259,7 +259,7 @@ void QgsAuthAuthoritiesEditor::appendCertsToGroup( QList<QSslCertificate> certs,
   parent->sortChildren( 0, Qt::AscendingOrder );
 }
 
-void QgsAuthAuthoritiesEditor::appendCertsToItem( QList<QSslCertificate> certs,
+void QgsAuthAuthoritiesEditor::appendCertsToItem( const QList<QSslCertificate>& certs,
     QgsAuthAuthoritiesEditor::CaType catype,
     QTreeWidgetItem *parent )
 {

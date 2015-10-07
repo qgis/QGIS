@@ -55,12 +55,12 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     /** Sets the current feature, the current layer and a list of local variable substitutions for evaluating expressions.
       * @deprecated use atlas features and setSubstitutions() instead
      */
-    Q_DECL_DEPRECATED void setExpressionContext( QgsFeature* feature, QgsVectorLayer* layer, QMap<QString, QVariant> substitutions = ( QMap<QString, QVariant>() ) );
+    Q_DECL_DEPRECATED void setExpressionContext( QgsFeature* feature, QgsVectorLayer* layer, const QMap<QString, QVariant>& substitutions = ( QMap<QString, QVariant>() ) );
 
     /** Sets the list of local variable substitutions for evaluating expressions in label text.
      * @note added in QGIS 2.12
      */
-    void setSubstitutions( QMap<QString, QVariant> substitutions = ( QMap<QString, QVariant>() ) );
+    void setSubstitutions( const QMap<QString, QVariant>& substitutions = ( QMap<QString, QVariant>() ) );
 
     QFont font() const;
     void setFont( const QFont& f );

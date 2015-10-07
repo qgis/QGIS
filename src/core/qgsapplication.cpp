@@ -89,7 +89,7 @@ const char* QgsApplication::QGIS_APPLICATION_NAME = "QGIS2";
   so that platform-conditional code is minimized and paths are easier
   to change due to centralization.
 */
-QgsApplication::QgsApplication( int & argc, char ** argv, bool GUIenabled, QString customConfigPath )
+QgsApplication::QgsApplication( int & argc, char ** argv, bool GUIenabled, const QString& customConfigPath )
     : QApplication( argc, argv, GUIenabled )
 {
   init( customConfigPath ); // init can also be called directly by e.g. unit tests that don't inherit QApplication.
@@ -379,7 +379,7 @@ QString QgsApplication::activeThemePath()
 }
 
 
-QString QgsApplication::iconPath( QString iconFile )
+QString QgsApplication::iconPath( const QString& iconFile )
 {
   // try active theme
   QString path = activeThemePath();
@@ -892,7 +892,7 @@ void QgsApplication::registerOgrDrivers()
   }
 }
 
-QString QgsApplication::absolutePathToRelativePath( QString aPath, QString targetPath )
+QString QgsApplication::absolutePathToRelativePath( const QString& aPath, const QString& targetPath )
 {
 #if defined( Q_OS_WIN )
   const Qt::CaseSensitivity cs = Qt::CaseInsensitive;
@@ -955,7 +955,7 @@ QString QgsApplication::absolutePathToRelativePath( QString aPath, QString targe
   return aPathElems.join( "/" );
 }
 
-QString QgsApplication::relativePathToAbsolutePath( QString rpath, QString targetPath )
+QString QgsApplication::relativePathToAbsolutePath( const QString& rpath, const QString& targetPath )
 {
   // relative path should always start with ./ or ../
   if ( !rpath.startsWith( "./" ) && !rpath.startsWith( "../" ) )
@@ -1002,7 +1002,7 @@ QString QgsApplication::relativePathToAbsolutePath( QString rpath, QString targe
   return targetElems.join( "/" );
 }
 
-void QgsApplication::skipGdalDriver( QString theDriver )
+void QgsApplication::skipGdalDriver( const QString& theDriver )
 {
   if ( ABISYM( mGdalSkipList ).contains( theDriver ) || theDriver.isEmpty() )
   {
@@ -1012,7 +1012,7 @@ void QgsApplication::skipGdalDriver( QString theDriver )
   applyGdalSkippedDrivers();
 }
 
-void QgsApplication::restoreGdalDriver( QString theDriver )
+void QgsApplication::restoreGdalDriver( const QString& theDriver )
 {
   if ( !ABISYM( mGdalSkipList ).contains( theDriver ) )
   {
@@ -1049,7 +1049,7 @@ bool QgsApplication::createThemeFolder()
   return true;
 }
 
-void QgsApplication::copyPath( QString src, QString dst )
+void QgsApplication::copyPath( const QString& src, const QString& dst )
 {
   QDir dir( src );
   if ( ! dir.exists() )

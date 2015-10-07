@@ -256,7 +256,7 @@ class QgsLinearlyInterpolatedDiagramRenderer : QgsDiagramRendererV2
     void setClassificationAttribute( int index );
 
     QString classificationAttributeExpression() const;
-    void setClassificationAttributeExpression( QString expression );
+    void setClassificationAttributeExpression( const QString& expression );
 
     bool classificationAttributeIsExpression() const;
     void setClassificationAttributeIsExpression( bool isExpression );

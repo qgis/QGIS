@@ -54,10 +54,10 @@ class QgsVectorGradientColorRampV2 : QgsVectorColorRampV2
 #include <qgsvectorcolorrampv2.h>
 %End
   public:
-    QgsVectorGradientColorRampV2( QColor color1 = DEFAULT_GRADIENT_COLOR1,
-                                  QColor color2 = QColor(0,255,0),
+    QgsVectorGradientColorRampV2( const QColor& color1 = DEFAULT_GRADIENT_COLOR1,
+                                  const QColor& color2 = QColor(0,255,0),
                                   bool discrete = false,
-                                  QgsGradientStopsList stops = QgsGradientStopsList() );
+                                  const QgsGradientStopsList& stops = QgsGradientStopsList() );
 
     static QgsVectorColorRampV2* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
 
@@ -175,7 +175,7 @@ class QgsVectorColorBrewerColorRampV2 : QgsVectorColorRampV2
 #include <qgsvectorcolorrampv2.h>
 %End
   public:
-    QgsVectorColorBrewerColorRampV2( QString schemeName = DEFAULT_COLORBREWER_SCHEMENAME,
+    QgsVectorColorBrewerColorRampV2( const QString& schemeName = DEFAULT_COLORBREWER_SCHEMENAME,
                                      int colors = DEFAULT_COLORBREWER_COLORS );
 
     static QgsVectorColorRampV2* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
@@ -194,11 +194,11 @@ class QgsVectorColorBrewerColorRampV2 : QgsVectorColorRampV2
     virtual int count() const;
     int colors() const;
 
-    void setSchemeName( QString schemeName );
+    void setSchemeName( const QString& schemeName );
     void setColors( int colors );
 
     static QStringList listSchemeNames();
-    static QList<int> listSchemeVariants( QString schemeName );
+    static QList<int> listSchemeVariants( const QString& schemeName );
 
   protected:
 
@@ -212,11 +212,11 @@ class QgsCptCityColorRampV2 : QgsVectorGradientColorRampV2
 #include <qgsvectorcolorrampv2.h>
 %End
   public:
-    QgsCptCityColorRampV2( QString schemeName = DEFAULT_CPTCITY_SCHEMENAME,
-                           QString variantName = DEFAULT_CPTCITY_VARIANTNAME,
+    QgsCptCityColorRampV2( const QString& schemeName = DEFAULT_CPTCITY_SCHEMENAME,
+                           const QString& variantName = DEFAULT_CPTCITY_VARIANTNAME,
                            bool doLoadFile = true );
-    QgsCptCityColorRampV2( QString schemeName, QStringList variantList,
-                           QString variantName = QString(), bool doLoadFile = true );
+    QgsCptCityColorRampV2( const QString& schemeName, const QStringList& variantList,
+                           const QString& variantName = QString(), bool doLoadFile = true );
 
     static QgsVectorColorRampV2* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
 
@@ -233,10 +233,10 @@ class QgsCptCityColorRampV2 : QgsVectorGradientColorRampV2
     QStringList variantList() const;
 
     /* lazy loading - have to call loadPalette() explicitly */
-    void setSchemeName( QString schemeName );
-    void setVariantName( QString variantName );
-    void setVariantList( QStringList variantList );
-    void setName( QString schemeName, QString variantName = "", QStringList variantList = QStringList() );
+    void setSchemeName( const QString& schemeName );
+    void setVariantName( const QString& variantName );
+    void setVariantList( const QStringList& variantList );
+    void setName( const QString& schemeName, const QString& variantName = "", const QStringList& variantList = QStringList() );
 
     void loadPalette();
     bool hasMultiStops() const;

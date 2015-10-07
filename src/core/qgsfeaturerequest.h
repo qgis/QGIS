@@ -127,7 +127,7 @@ class CORE_EXPORT QgsFeatureRequest
     const QgsFeatureId& filterFid() const { return mFilterFid; }
 
     //! Set feature IDs that should be fetched.
-    QgsFeatureRequest& setFilterFids( QgsFeatureIds fids );
+    QgsFeatureRequest& setFilterFids( const QgsFeatureIds& fids );
     //! Get feature IDs that should be fetched.
     const QgsFeatureIds& filterFids() const { return mFilterFids; }
 
@@ -169,7 +169,7 @@ class CORE_EXPORT QgsFeatureRequest
     QgsFeatureRequest& disableFilter() { mFilter = FilterNone; return *this; }
 
     //! Set flags that affect how features will be fetched
-    QgsFeatureRequest& setFlags( Flags flags );
+    QgsFeatureRequest& setFlags( const QgsFeatureRequest::Flags& flags );
     const Flags& flags() const { return mFlags; }
 
     //! Set a subset of attributes that will be fetched. Empty list means that all attributes are used.

@@ -117,7 +117,7 @@ class QgsVisibilityPresetCollection : QObject
 
     /** Handles updates of the preset collection when layers are removed from the registry
      */
-    void registryLayersRemoved( QStringList layerIDs );
+    void registryLayersRemoved( const QStringList& layerIDs );
 
     //! Update style name if a stored style gets renamed
     void layerStyleRenamed( const QString& oldName, const QString& newName );

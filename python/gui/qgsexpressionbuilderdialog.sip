@@ -8,7 +8,7 @@ class QgsExpressionBuilderDialog : QDialog
 %End
 
   public:
-    QgsExpressionBuilderDialog( QgsVectorLayer* layer, QString startText = QString(), QWidget* parent /TransferThis/ = NULL, QString key = "generic",
+    QgsExpressionBuilderDialog( QgsVectorLayer* layer, const QString& startText = QString(), QWidget* parent /TransferThis/ = NULL, const QString& key = "generic",
                                 const QgsExpressionContext& context = QgsExpressionContext() );
 
     /** The builder widget that is used by the dialog */

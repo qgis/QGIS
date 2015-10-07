@@ -7,10 +7,10 @@ class QgsDetailedItemData
   public:
     QgsDetailedItemData();
     ~QgsDetailedItemData();
-    void setTitle( const QString theTitle );
-    void setDetail( const QString theDetail );
-    void setCategory( const QString theCategory );
-    void setIcon( const QPixmap theIcon );
+    void setTitle( const QString& theTitle );
+    void setDetail( const QString& theDetail );
+    void setCategory( const QString& theCategory );
+    void setIcon( const QPixmap& theIcon );
     void setCheckable( const bool theFlag );
     void setChecked( const bool theFlag );
     void setEnabled( bool theFlag );

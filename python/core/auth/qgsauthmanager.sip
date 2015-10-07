@@ -24,7 +24,7 @@ class QgsAuthManager : QObject
 
     const QString authDbServersTable() const;
 
-    bool init( QString pluginPath = QString::null );
+    bool init( const QString& pluginPath = QString::null );
 
     bool isDisabled() const;
 
@@ -107,9 +107,9 @@ class QgsAuthManager : QObject
 
     ////////////////// Generic settings ///////////////////////
 
-    bool storeAuthSetting( const QString& key, QVariant value, bool encrypt = false );
+    bool storeAuthSetting( const QString& key, const QVariant& value, bool encrypt = false );
 
-    QVariant getAuthSetting( const QString& key, QVariant defaultValue = QVariant(), bool decrypt = false );
+    QVariant getAuthSetting( const QString& key, const QVariant& defaultValue = QVariant(), bool decrypt = false );
 
     bool existsAuthSetting( const QString& key );
 

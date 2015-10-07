@@ -21,7 +21,7 @@
 class GUI_EXPORT QgsRangeWidgetFactory : public QgsEditorWidgetFactory
 {
   public:
-    QgsRangeWidgetFactory( QString name );
+    QgsRangeWidgetFactory( const QString& name );
 
     // QgsEditorWidgetFactory interface
   public:

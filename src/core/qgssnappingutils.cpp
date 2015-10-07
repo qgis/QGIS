@@ -465,7 +465,7 @@ void QgsSnappingUtils::readConfigFromProject()
 
 }
 
-void QgsSnappingUtils::onLayersWillBeRemoved( QStringList layerIds )
+void QgsSnappingUtils::onLayersWillBeRemoved( const QStringList& layerIds )
 {
   // remove locators for layers that are going to be deleted
   Q_FOREACH ( const QString& layerId, layerIds )

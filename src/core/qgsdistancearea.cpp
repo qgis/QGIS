@@ -110,7 +110,7 @@ void QgsDistanceArea::setSourceCrs( const QgsCoordinateReferenceSystem& srcCRS )
   mCoordTransform->setSourceCrs( srcCRS );
 }
 
-void QgsDistanceArea::setSourceAuthId( QString authId )
+void QgsDistanceArea::setSourceAuthId( const QString& authId )
 {
   QgsCoordinateReferenceSystem srcCRS;
   srcCRS.createFromOgcWmsCrs( authId );

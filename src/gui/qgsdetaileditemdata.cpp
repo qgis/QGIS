@@ -29,22 +29,22 @@ QgsDetailedItemData::~QgsDetailedItemData()
 {
 }
 
-void QgsDetailedItemData::setTitle( const QString theTitle )
+void QgsDetailedItemData::setTitle( const QString& theTitle )
 {
   mTitle = theTitle;
 }
 
-void QgsDetailedItemData::setDetail( const QString theDetail )
+void QgsDetailedItemData::setDetail( const QString& theDetail )
 {
   mDetail = theDetail;
 }
 
-void QgsDetailedItemData::setCategory( const QString theCategory )
+void QgsDetailedItemData::setCategory( const QString& theCategory )
 {
   mCategory = theCategory;
 }
 
-void QgsDetailedItemData::setIcon( const QPixmap theIcon )
+void QgsDetailedItemData::setIcon( const QPixmap& theIcon )
 {
   mPixmap = theIcon;
 }

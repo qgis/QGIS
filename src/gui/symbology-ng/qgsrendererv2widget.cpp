@@ -229,7 +229,7 @@ const QgsMapCanvas*QgsRendererV2Widget::mapCanvas() const
 
 #include "qgsfield.h"
 
-QgsRendererV2DataDefinedMenus::QgsRendererV2DataDefinedMenus( QMenu* menu, QgsVectorLayer* layer, QString rotationField, QString sizeScaleField, QgsSymbolV2::ScaleMethod scaleMethod )
+QgsRendererV2DataDefinedMenus::QgsRendererV2DataDefinedMenus( QMenu* menu, QgsVectorLayer* layer, const QString& rotationField, const QString& sizeScaleField, QgsSymbolV2::ScaleMethod scaleMethod )
     : QObject( menu ), mLayer( layer )
 {
   mRotationMenu = new QMenu( tr( "Rotation field" ) );
@@ -281,7 +281,7 @@ QgsRendererV2DataDefinedMenus::~QgsRendererV2DataDefinedMenus()
   delete mSizeScaleMenu;
 }
 
-void QgsRendererV2DataDefinedMenus::populateMenu( QMenu* menu, QString fieldName, QActionGroup *actionGroup )
+void QgsRendererV2DataDefinedMenus::populateMenu( QMenu* menu, const QString& fieldName, QActionGroup *actionGroup )
 {
   QAction* aExpr = new QAction( tr( "- expression -" ), actionGroup );
   aExpr->setCheckable( true );

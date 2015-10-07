@@ -14,8 +14,8 @@ class QgsProjectVersion
 
     QgsProjectVersion();
     ~QgsProjectVersion();
-    QgsProjectVersion( int major, int minor, int sub, QString name = "" );
-    QgsProjectVersion( QString string );
+    QgsProjectVersion( int major, int minor, int sub, const QString& name = "" );
+    QgsProjectVersion( const QString& string );
     int majorVersion();
     int minorVersion();
     int subVersion();

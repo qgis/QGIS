@@ -34,7 +34,7 @@ void QgsCacheIndexFeatureId::flush()
 {
 }
 
-void QgsCacheIndexFeatureId::requestCompleted( QgsFeatureRequest featureRequest, QgsFeatureIds fids )
+void QgsCacheIndexFeatureId::requestCompleted( const QgsFeatureRequest& featureRequest, const QgsFeatureIds& fids )
 {
   Q_UNUSED( featureRequest )
   Q_UNUSED( fids )

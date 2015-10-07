@@ -21,7 +21,7 @@ class QgsLayerTreeUtils
     //! Convert Qt::CheckState to QString
     static QString checkStateToXml( Qt::CheckState state );
     //! Convert QString to Qt::CheckState
-    static Qt::CheckState checkStateFromXml( QString txt );
+    static Qt::CheckState checkStateFromXml( const QString& txt );
 
     //! Return true if any of the layers is editable
     static bool layersEditable( const QList<QgsLayerTreeLayer*>& layerNodes );

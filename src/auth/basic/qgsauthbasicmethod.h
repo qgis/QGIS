@@ -51,7 +51,7 @@ class QgsAuthBasicMethod : public QgsAuthMethod
   private:
     QgsAuthMethodConfig getMethodConfig( const QString &authcfg, bool fullconfig = true );
 
-    void putMethodConfig( const QString &authcfg, QgsAuthMethodConfig mconfig );
+    void putMethodConfig( const QString &authcfg, const QgsAuthMethodConfig& mconfig );
 
     void removeMethodConfig( const QString &authcfg );
 

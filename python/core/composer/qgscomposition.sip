@@ -364,12 +364,12 @@ class QgsComposition : QGraphicsScene
         retrieve.
       @return QgsComposerItem pointer or 0 pointer if no such item exists.
      */
-    const QgsComposerItem* getComposerItemById( const QString theId ) const;
+    const QgsComposerItem* getComposerItemById( const QString& theId ) const;
 
     /** Returns a composer item given its unique identifier.
       @param theUuid A QString representing the UUID of the item to
       **/
-    const QgsComposerItem* getComposerItemByUuid( const QString theUuid ) const;
+    const QgsComposerItem* getComposerItemByUuid( const QString& theUuid ) const;
 
     int printResolution() const;
     void setPrintResolution( const int dpi );

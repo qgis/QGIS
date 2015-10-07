@@ -8,7 +8,7 @@
 #include <QSettings>
 
 
-QgsDataDefinedSymbolDialog::QgsDataDefinedSymbolDialog( const QList< DataDefinedSymbolEntry >& entries, const QgsVectorLayer* vl, QWidget * parent, Qt::WindowFlags f )
+QgsDataDefinedSymbolDialog::QgsDataDefinedSymbolDialog( const QList< DataDefinedSymbolEntry >& entries, const QgsVectorLayer* vl, QWidget * parent, const Qt::WindowFlags& f )
     : QDialog( parent, f )
     , mVectorLayer( vl )
 {

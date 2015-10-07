@@ -493,7 +493,7 @@ class QgsPalLayerSettings
      * must have already had the feature and fields sets prior to calling this method.
      * @param dxfLayer dxfLayer name
      */
-    void registerFeature( QgsFeature& f, QgsRenderContext& context, QString dxfLayer );
+    void registerFeature( QgsFeature& f, QgsRenderContext& context, const QString& dxfLayer );
 
     void readFromLayer( QgsVectorLayer* layer );
     void writeToLayer( QgsVectorLayer* layer );
@@ -587,7 +587,7 @@ class QgsLabelCandidate
 %End
 
   public:
-    QgsLabelCandidate( QRectF r, double c );
+    QgsLabelCandidate( const QRectF& r, double c );
 
     QRectF rect;
     double cost;
@@ -766,7 +766,7 @@ class QgsPalLabeling : QgsLabelingEngineInterface
      * must have already had the feature and fields sets prior to calling this method.
      * @param dxfLayer dxfLayer name
      */
-    virtual void registerFeature( const QString& layerID, QgsFeature& feat, QgsRenderContext& context, QString dxfLayer = QString::null );
+    virtual void registerFeature( const QString& layerID, QgsFeature& feat, QgsRenderContext& context, const QString& dxfLayer = QString::null );
 
     virtual void registerDiagramFeature( const QString& layerID, QgsFeature& feat, QgsRenderContext& context );
     //! called when the map is drawn and labels should be placed

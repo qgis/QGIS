@@ -93,7 +93,7 @@ class QgsMapSettings
     typedef QFlags<QgsMapSettings::Flag> Flags;
 
     //! Set combination of flags that will be used for rendering
-    void setFlags( Flags flags );
+    void setFlags( const Flags& flags );
     //! Enable or disable a particular flag (other flags are not affected)
     void setFlag( Flag flag, bool on = true );
     //! Return combination of flags used for rendering

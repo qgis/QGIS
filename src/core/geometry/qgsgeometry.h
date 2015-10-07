@@ -116,7 +116,7 @@ class CORE_EXPORT QgsGeometry
     bool isEmpty() const;
 
     /** Creates a new geometry from a WKT string */
-    static QgsGeometry* fromWkt( QString wkt );
+    static QgsGeometry* fromWkt( const QString& wkt );
     /** Creates a new geometry from a QgsPoint object*/
     static QgsGeometry* fromPoint( const QgsPoint& point );
     /** Creates a new geometry from a QgsMultiPoint object */
@@ -565,7 +565,7 @@ class CORE_EXPORT QgsGeometry
      *  @param ignoreFeatures possibility to give a list of features where intersections should be ignored (not available in python bindings)
      *  @note added in 1.5
      */
-    int avoidIntersections( QMap<QgsVectorLayer*, QSet<QgsFeatureId> > ignoreFeatures = ( QMap<QgsVectorLayer*, QSet<QgsFeatureId> >() ) );
+    int avoidIntersections( const QMap<QgsVectorLayer*, QSet<QgsFeatureId> >& ignoreFeatures = ( QMap<QgsVectorLayer*, QSet<QgsFeatureId> >() ) );
 
     class Error
     {
@@ -574,8 +574,8 @@ class CORE_EXPORT QgsGeometry
         bool hasLocation;
       public:
         Error() : message( "none" ), hasLocation( false ) {}
-        explicit Error( QString m ) : message( m ), hasLocation( false ) {}
-        Error( QString m, const QgsPoint& p ) : message( m ), location( p ), hasLocation( true ) {}
+        explicit Error( const QString& m ) : message( m ), hasLocation( false ) {}
+        Error( const QString& m, const QgsPoint& p ) : message( m ), location( p ), hasLocation( true ) {}
 
         QString what() { return message; }
         QgsPoint where() { return location; }

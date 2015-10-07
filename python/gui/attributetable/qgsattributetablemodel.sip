@@ -209,7 +209,7 @@ class QgsAttributeTableModel : QAbstractTableModel
      * Launched when eatures have been deleted
      * @param fids feature ids
      */
-    virtual void featuresDeleted( QgsFeatureIds fid );
+    virtual void featuresDeleted( const QgsFeatureIds& fid );
     /**
      * Launched when a feature has been added
      * @param fid feature id

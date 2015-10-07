@@ -268,7 +268,7 @@ QString QgsDataSourceURI::username() const
   return mUsername;
 }
 
-void QgsDataSourceURI::setUsername( QString username )
+void QgsDataSourceURI::setUsername( const QString& username )
 {
   mUsername = username;
 }
@@ -293,7 +293,7 @@ QString QgsDataSourceURI::password() const
   return mPassword;
 }
 
-void QgsDataSourceURI::setPassword( QString password )
+void QgsDataSourceURI::setPassword( const QString& password )
 {
   mPassword = password;
 }
@@ -333,7 +333,7 @@ QString QgsDataSourceURI::keyColumn() const
   return mKeyColumn;
 }
 
-void QgsDataSourceURI::setKeyColumn( QString column )
+void QgsDataSourceURI::setKeyColumn( const QString& column )
 {
   mKeyColumn = column;
 }
@@ -359,7 +359,7 @@ bool QgsDataSourceURI::selectAtIdDisabled() const
   return mSelectAtIdDisabled;
 }
 
-void QgsDataSourceURI::setSql( QString sql )
+void QgsDataSourceURI::setSql( const QString& sql )
 {
   mSql = sql;
 }
@@ -369,7 +369,7 @@ void QgsDataSourceURI::clearSchema()
   mSchema = "";
 }
 
-void QgsDataSourceURI::setSchema( QString schema )
+void QgsDataSourceURI::setSchema( const QString& schema )
 {
   mSchema = schema;
 }
@@ -685,7 +685,7 @@ QString QgsDataSourceURI::srid() const
   return mSrid;
 }
 
-void QgsDataSourceURI::setSrid( QString srid )
+void QgsDataSourceURI::setSrid( const QString& srid )
 {
   mSrid = srid;
 }

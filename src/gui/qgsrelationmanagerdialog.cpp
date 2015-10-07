@@ -30,7 +30,7 @@ QgsRelationManagerDialog::~QgsRelationManagerDialog()
 {
 }
 
-void QgsRelationManagerDialog::setLayers( QList< QgsVectorLayer* > layers )
+void QgsRelationManagerDialog::setLayers( const QList< QgsVectorLayer* >& layers )
 {
   mLayers = layers;
 

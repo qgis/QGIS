@@ -46,7 +46,7 @@ typedef QString protocolDrivers_t();
 
 
 
-QgsProviderRegistry *QgsProviderRegistry::instance( QString pluginPath )
+QgsProviderRegistry *QgsProviderRegistry::instance( const QString& pluginPath )
 {
   static QgsProviderRegistry* sInstance( new QgsProviderRegistry( pluginPath ) );
   return sInstance;
@@ -54,7 +54,7 @@ QgsProviderRegistry *QgsProviderRegistry::instance( QString pluginPath )
 
 
 
-QgsProviderRegistry::QgsProviderRegistry( QString pluginPath )
+QgsProviderRegistry::QgsProviderRegistry( const QString& pluginPath )
 {
   // At startup, examine the libs in the qgis/lib dir and store those that
   // are a provider shared lib
@@ -413,7 +413,7 @@ int QgsProviderRegistry::providerCapabilities( const QString &providerKey ) cons
 typedef QWidget * selectFactoryFunction_t( QWidget * parent, Qt::WindowFlags fl );
 
 QWidget* QgsProviderRegistry::selectWidget( const QString & providerKey,
-    QWidget * parent, Qt::WindowFlags fl )
+    QWidget * parent, const Qt::WindowFlags& fl )
 {
   selectFactoryFunction_t * selectFactory =
     ( selectFactoryFunction_t * ) cast_to_fptr( function( providerKey, "selectWidget" ) );
