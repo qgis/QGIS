@@ -703,7 +703,7 @@ bool QgsOracleProvider::loadFields()
 
       if ( !mHasSpatialIndex )
       {
-        mHasSpatialIndex = qry.exec( QString( "SELECT %2 FROM %1 WHERE sdo_filter(%2,mdsys.sdo_geometry(2003,%3,NULL,mdsys.sdo_elem_info_array(1,1003,3),mdsys.sdo_ordinate_array(1,1,-1,-1)))='TRUE'" )
+        mHasSpatialIndex = qry.exec( QString( "SELECT %2 FROM %1 WHERE sdo_filter(%2,mdsys.sdo_geometry(2003,%3,NULL,mdsys.sdo_elem_info_array(1,1003,3),mdsys.sdo_ordinate_array(-1,-1,1,1)))='TRUE'" )
                                      .arg( mQuery )
                                      .arg( quotedIdentifier( mGeometryColumn ) )
                                      .arg( mSrid < 1 ? "NULL" : QString::number( mSrid ) ) );
