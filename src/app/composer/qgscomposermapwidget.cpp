@@ -149,6 +149,8 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap )
       connect( atlas, SIGNAL( coverageLayerChanged( QgsVectorLayer* ) ),
                this, SLOT( populateDataDefinedButtons() ) );
       connect( atlas, SIGNAL( toggled( bool ) ), this, SLOT( populateDataDefinedButtons() ) );
+
+      compositionAtlasToggled( atlas->enabled() );
     }
   }
 
@@ -281,7 +283,9 @@ QgsComposerObject::DataDefinedProperty QgsComposerMapWidget::ddPropertyForWidget
 
 void QgsComposerMapWidget::compositionAtlasToggled( bool atlasEnabled )
 {
-  if ( atlasEnabled )
+  if ( atlasEnabled &&
+       mComposerMap && mComposerMap->composition() && mComposerMap->composition()->atlasComposition().coverageLayer()
+       && mComposerMap->composition()->atlasComposition().coverageLayer()->wkbType() != QGis::WKBNoGeometry )
   {
     mAtlasCheckBox->setEnabled( true );
   }
@@ -1140,13 +1144,21 @@ void QgsComposerMapWidget::refreshMapComboBox()
 
 void QgsComposerMapWidget::atlasLayerChanged( QgsVectorLayer* layer )
 {
-  // enable or disable fixed scale control based on layer type
-  if ( !layer || !mAtlasCheckBox->isChecked() )
+  if ( !layer || layer->wkbType() == QGis::WKBNoGeometry )
   {
+    //geometryless layer, disable atlas control
+    mAtlasCheckBox->setChecked( false );
+    mAtlasCheckBox->setEnabled( false );
     return;
   }
+  else
+  {
+    mAtlasCheckBox->setEnabled( true );
+  }
 
-  toggleAtlasScalingOptionsByLayerType();
+  // enable or disable fixed scale control based on layer type
+  if ( mAtlasCheckBox->isChecked() )
+    toggleAtlasScalingOptionsByLayerType();
 }
 
 bool QgsComposerMapWidget::hasPredefinedScales() const

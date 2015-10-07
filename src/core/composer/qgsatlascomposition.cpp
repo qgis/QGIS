@@ -499,6 +499,8 @@ bool QgsAtlasComposition::prepareForFeature( const int featureI, const bool upda
 void QgsAtlasComposition::computeExtent( QgsComposerMap* map )
 {
   // compute the extent of the current feature, in the crs of the specified map
+  if ( !mCurrentFeature.constGeometry() )
+    return;
 
   const QgsCoordinateReferenceSystem& coverage_crs = mCoverageLayer->crs();
   // transformation needed for feature geometries
@@ -516,7 +518,7 @@ void QgsAtlasComposition::computeExtent( QgsComposerMap* map )
 
 void QgsAtlasComposition::prepareMap( QgsComposerMap* map )
 {
-  if ( !map->atlasDriven() )
+  if ( !map->atlasDriven() || mCoverageLayer->wkbType() == QGis::WKBNoGeometry )
   {
     return;
   }
