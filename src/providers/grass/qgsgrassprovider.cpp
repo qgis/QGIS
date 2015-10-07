@@ -1332,10 +1332,13 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
       }
       else
       {
-        mLayer->insertAttributes( newCat, feature, error );
-        if ( !error.isEmpty() )
+        if ( mLayer->hasTable() )
         {
-          QgsGrass::warning( error );
+          mLayer->insertAttributes( newCat, feature, error );
+          if ( !error.isEmpty() )
+          {
+            QgsGrass::warning( error );
+          }
         }
       }
     }
