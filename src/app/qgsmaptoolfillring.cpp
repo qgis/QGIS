@@ -79,7 +79,10 @@ void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
     closePolygon();
 
     vlayer->beginEditCommand( tr( "Ring added and filled" ) );
-    int addRingReturnCode = vlayer->addRing( points() );
+    QList< QgsPoint > pointList = points();
+
+    QgsFeatureId modifiedFid;
+    int addRingReturnCode = vlayer->addRing( pointList, &modifiedFid );
     if ( addRingReturnCode != 0 )
     {
       QString errorMessage;
@@ -122,7 +125,7 @@ void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
       yMin = std::numeric_limits<double>::max();
       yMax = -std::numeric_limits<double>::max();
 
-      Q_FOREACH ( const QgsPoint& point, points() )
+      Q_FOREACH ( const QgsPoint& point, pointList )
       {
         xMin = qMin( xMin, point.x() );
         xMax = qMax( xMax, point.x() );
@@ -135,18 +138,16 @@ void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
       bBox.setXMaximum( xMax );
       bBox.setYMaximum( yMax );
 
-      QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( bBox ).setFlags( QgsFeatureRequest::ExactIntersect ) );
+      QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterFid( modifiedFid ) );
 
       QgsFeature f;
       bool res = false;
-      while ( fit.nextFeature( f ) )
+      if ( fit.nextFeature( f ) )
       {
         //create QgsFeature with wkb representation
         QgsFeature* ft = new QgsFeature( vlayer->fields(), 0 );
 
-        QgsGeometry *g;
-        g = QgsGeometry::fromPolygon( QgsPolygon() << points().toVector() );
-        ft->setGeometry( g );
+        ft->setGeometry( QgsGeometry::fromPolygon( QgsPolygon() << pointList.toVector() ) );
         ft->setAttributes( f.attributes() );
 
         if ( QApplication::keyboardModifiers() == Qt::ControlModifier )
