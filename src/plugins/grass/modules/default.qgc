@@ -70,7 +70,7 @@
                 <grass name="db.in.ogr"/>
             </section>
         </section>
-        <section label="Upgrade from from GRASS 6" version_min="7">
+        <section label="Upgrade from GRASS 6" version_min="7">
             <grass name="qgis.v.upgrade"/>
         </section>
         <section label="Export from GRASS">
