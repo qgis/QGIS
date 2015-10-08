@@ -72,7 +72,7 @@ static bool generalizeWkbGeometryByBoundingBox(
   unsigned int geometryType = QGis::singleType( QGis::flatType( wkbType ) );
 
   int sizeOfDoubleX = sizeof( double );
-  int sizeOfDoubleY = QGis::wkbDimensions( wkbType ) == 3 /*hasZValue*/ ? 2 * sizeof( double ) : sizeof( double );
+  int sizeOfDoubleY = sizeof( double ) * ( QGis::wkbDimensions( wkbType ) - 1 );
 
   // If the geometry is already minimal skip the generalization
   size_t minimumSize = geometryType == QGis::WKBLineString ? 4 + 2 * ( sizeOfDoubleX + sizeOfDoubleY ) : 8 + 5 * ( sizeOfDoubleX + sizeOfDoubleY );
