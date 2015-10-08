@@ -493,7 +493,7 @@ void QgsRuleBasedRendererV2::Rule::setNormZLevels( const QMap<int, int>& zLevels
     for ( int i = 0; i < mSymbol->symbolLayerCount(); i++ )
     {
       int normLevel = zLevelsToNormLevels.value( mSymbol->symbolLayer( i )->renderingPass() );
-      mSymbolNormZLevels.append( normLevel );
+      mSymbolNormZLevels.insert( normLevel );
     }
   }
 

@@ -360,7 +360,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
         // temporary
         QgsExpression* mFilter;
         // temporary while rendering
-        QList<int> mSymbolNormZLevels;
+        QSet<int> mSymbolNormZLevels;
         RuleList mActiveChildren;
     };
 
