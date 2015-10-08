@@ -357,12 +357,6 @@ bool QgsGrass::init( void )
     return false;
   }
 
-  if ( active )
-  {
-    QgsGrass::instance()->loadMapsetSearchPath(); // must be after G_no_gisinit()
-    QgsGrass::instance()->setMapsetSearchPathWatcher();
-  }
-
   // I think that mask should not be used in QGIS as it can only confuses people,
   // anyway, I don't think anybody is using MASK
   // TODO7: Rast_suppress_masking (see G_suppress_masking() macro above) needs MAPSET
@@ -474,6 +468,14 @@ bool QgsGrass::init( void )
   }
 
   unlock();
+
+  // after unlock because it is using setMapset() which calls init()
+  if ( active )
+  {
+    QgsGrass::instance()->loadMapsetSearchPath(); // must be after G_no_gisinit()
+    QgsGrass::instance()->setMapsetSearchPathWatcher();
+  }
+
   return true;
 }
 
