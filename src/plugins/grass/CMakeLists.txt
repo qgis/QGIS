@@ -240,7 +240,6 @@ INSTALL (FILES themes/default/grass_arrow.svg themes/default/grass_plus.svg them
 IF(NOT WIN32)
   INSTALL(DIRECTORY qtermwidget/kb-layouts/ DESTINATION "${KB_LAYOUT_DIR}" FILES_MATCHING PATTERN "*.keytab" )
   INSTALL(DIRECTORY qtermwidget/kb-layouts/ DESTINATION "${KB_LAYOUT_DIR}" )
-  message(STATUS "Keyboard layouts will be installed in: ${KB_LAYOUT_DIR}")
   INSTALL(DIRECTORY qtermwidget/color-schemes/ DESTINATION "${COLORSCHEMES_DIR}" FILES_MATCHING PATTERN "*.*schem*")
 ENDIF(NOT WIN32)
 

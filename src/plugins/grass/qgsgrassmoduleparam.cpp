@@ -322,7 +322,7 @@ QgsGrassModuleOption::QgsGrassModuleOption( QgsGrassModule *module, QString key,
               if ( mControlType == ComboBox )
               {
                 mComboBox->addItem( desc );
-                if ( mAnswer.length() > 0 && desc == mAnswer )
+                if ( mAnswer.length() > 0 && val == mAnswer )
                 {
                   mComboBox->setCurrentIndex( mComboBox->count() - 1 );
                 }
