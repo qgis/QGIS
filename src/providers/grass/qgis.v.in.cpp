@@ -221,6 +221,9 @@ int main( int argc, char **argv )
   QgsFeature feature;
   struct line_cats *cats = Vect_new_cats_struct();
 
+  qint32 fidToCatPlus;
+  stdinStream >> fidToCatPlus;
+
   qint32 featureCount;
   stdinStream >> featureCount;
 
@@ -250,7 +253,7 @@ int main( int argc, char **argv )
       if ( !isPolygon )
       {
         Vect_reset_cats( cats );
-        Vect_cat_set( cats, 1, ( int )feature.id() );
+        Vect_cat_set( cats, 1, ( int )feature.id() + fidToCatPlus );
       }
 
       if ( geometryType == QGis::WKBPoint )
@@ -432,7 +435,7 @@ int main( int argc, char **argv )
         if ( feature.geometry()->contains( centroid.geometry() ) )
         {
           QgsAttributes attr = centroid.attributes();
-          attr.append( feature.id() );
+          attr.append(( int )feature.id() + fidToCatPlus );
           centroid.setAttributes( attr );
         }
       }

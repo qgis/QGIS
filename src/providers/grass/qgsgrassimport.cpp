@@ -598,19 +598,31 @@ bool QgsGrassVectorImport::import()
 
   outStream << mProvider->fields();
 
+  // FID may be 0, but cat should be >= 1 -> check if fid 0 exists
+  qint32 fidToCatPlus = 0;
+  QgsFeature feature;
+  QgsFeatureIterator iterator = mProvider->getFeatures( QgsFeatureRequest().setFilterFid( 0 ) );
+  if ( iterator.nextFeature( feature ) )
+  {
+    fidToCatPlus = 1;
+  }
+  iterator.close();
+  outStream << fidToCatPlus;
+
   qint32 featureCount = mProvider->featureCount();
   outStream << featureCount;
 
-  QgsFeatureIterator iterator = mProvider->getFeatures();
-  QgsFeature feature;
   mProgress->append( tr( "Writing features" ) );
   for ( int i = 0; i < ( isPolygon ? 2 : 1 ); i++ ) // two cycles with polygons
   {
+    iterator = mProvider->getFeatures();
+    // rewind does not work
+#if 0
     if ( i > 0 ) // second run for polygons
     {
-      //iterator.rewind(); // rewind does not work
-      iterator = mProvider->getFeatures();
+      iterator.rewind();
     }
+#endif
     QgsDebugMsg( "send features" );
     // Better to get real progress from module (without buffer)
 #if 0
@@ -681,8 +693,8 @@ bool QgsGrassVectorImport::import()
     QgsDebugMsg( "got feedback" );
 #endif
 #endif
+    iterator.close();
   }
-  iterator.close();
 
   // Close write channel before waiting for response to avoid stdin buffer problem on Windows
   mProcess->closeWriteChannel();
