@@ -282,13 +282,12 @@ void QgsGrassPlugin::initGui()
   connect( qGisInterface->layerTreeView(), SIGNAL( currentLayerChanged( QgsMapLayer* ) ),
            SLOT( onCurrentLayerChanged( QgsMapLayer* ) ) );
 
-  mapsetChanged();
-
   // open tools when plugin is loaded so that main app restores tools dock widget state
   mTools = new QgsGrassTools( qGisInterface, qGisInterface->mainWindow() );
   qGisInterface->addDockWidget( Qt::RightDockWidgetArea, mTools );
 
   onGisbaseChanged();
+  mapsetChanged();
 }
 
 void QgsGrassPlugin::onGisbaseChanged()
