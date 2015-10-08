@@ -125,7 +125,13 @@ class QgsFeatureRendererV2
     virtual int capabilities();
 
     //! for symbol levels
-    virtual QgsSymbolV2List symbols( QgsRenderContext& context ) = 0;
+    virtual QgsSymbolV2List symbols() /Deprecated/;
+
+    /** Returns list of symbols used by the renderer.
+     * @param context render context
+     * @note added in QGIS 2.12
+     */
+    virtual QgsSymbolV2List symbols( QgsRenderContext& context );
 
     bool usingSymbolLevels() const;
     void setUsingSymbolLevels( bool usingSymbolLevels );
