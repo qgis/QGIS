@@ -122,25 +122,14 @@ void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
       yMin = std::numeric_limits<double>::max();
       yMax = -std::numeric_limits<double>::max();
 
-      for ( QList<QgsPoint>::const_iterator it = points().constBegin(); it != points().constEnd(); ++it )
+      Q_FOREACH ( const QgsPoint& point, points() )
       {
-        if ( it->x() < xMin )
-        {
-          xMin = it->x();
-        }
-        if ( it->x() > xMax )
-        {
-          xMax = it->x();
-        }
-        if ( it->y() < yMin )
-        {
-          yMin = it->y();
-        }
-        if ( it->y() > yMax )
-        {
-          yMax = it->y();
-        }
+        xMin = qMin( xMin, point.x() );
+        xMax = qMax( xMax, point.x() );
+        yMin = qMin( yMin, point.y() );
+        yMax = qMax( yMax, point.y() );
       }
+
       bBox.setXMinimum( xMin );
       bBox.setYMinimum( yMin );
       bBox.setXMaximum( xMax );
