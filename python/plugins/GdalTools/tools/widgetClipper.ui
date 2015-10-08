@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>485</width>
-    <height>357</height>
+    <height>341</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -80,7 +80,16 @@
         </property>
         <widget class="QWidget" name="page">
          <layout class="QGridLayout" name="gridLayout_3">
-          <property name="margin">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
            <number>0</number>
           </property>
           <item row="0" column="0">
@@ -90,22 +99,18 @@
         </widget>
         <widget class="QWidget" name="page_2">
          <layout class="QGridLayout" name="gridLayout_4">
-          <property name="margin">
+          <property name="leftMargin">
            <number>0</number>
           </property>
-          <item row="10" column="0">
-           <spacer name="verticalSpacer">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
           <item row="0" column="1">
            <widget class="GdalToolsInOutSelector" name="maskSelector" native="true"/>
           </item>
@@ -123,20 +128,17 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="0" rowspan="5">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>Mask layer</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0" rowspan="5" colspan="2">
            <widget class="QGroupBox" name="gridGroupBox">
             <layout class="QGridLayout" name="gridLayout_7">
-             <item row="0" column="0">
-              <widget class="QRadioButton" name="keepResolutionRadio">
-               <property name="text">
-                <string>Keep resolution of input raster</string>
-               </property>
-               <property name="checked">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="1">
+             <item row="0" column="1" alignment="Qt::AlignHCenter">
               <widget class="QRadioButton" name="setResolutionRadio">
                <property name="text">
                 <string>Set output file resolution</string>
@@ -151,11 +153,39 @@
                <widget class="QWidget" name="page_3"/>
                <widget class="QWidget" name="resolutionWidget">
                 <layout class="QGridLayout" name="gridLayout_5" columnstretch="0,0,0,0,0">
-                 <property name="margin">
+                 <property name="leftMargin">
+                  <number>9</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>9</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>9</number>
+                 </property>
+                 <property name="bottomMargin">
                   <number>9</number>
                  </property>
                  <item row="0" column="4">
                   <widget class="QDoubleSpinBox" name="yRes">
+                   <property name="decimals">
+                    <number>1</number>
+                   </property>
+                   <property name="minimum">
+                    <double>0.100000000000000</double>
+                   </property>
+                   <property name="maximum">
+                    <double>999999.000000000000000</double>
+                   </property>
+                   <property name="singleStep">
+                    <double>0.100000000000000</double>
+                   </property>
+                   <property name="value">
+                    <double>12.500000000000000</double>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="2">
+                  <widget class="QDoubleSpinBox" name="xRes">
                    <property name="decimals">
                     <number>1</number>
                    </property>
@@ -196,38 +226,35 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="0" column="2">
-                  <widget class="QDoubleSpinBox" name="xRes">
-                   <property name="decimals">
-                    <number>1</number>
-                   </property>
-                   <property name="minimum">
-                    <double>0.100000000000000</double>
-                   </property>
-                   <property name="maximum">
-                    <double>999999.000000000000000</double>
-                   </property>
-                   <property name="singleStep">
-                    <double>0.100000000000000</double>
-                   </property>
-                   <property name="value">
-                    <double>12.500000000000000</double>
-                   </property>
-                  </widget>
-                 </item>
                 </layout>
                </widget>
+              </widget>
+             </item>
+             <item row="0" column="0" alignment="Qt::AlignHCenter">
+              <widget class="QRadioButton" name="keepResolutionRadio">
+               <property name="text">
+                <string>Keep resolution of input raster</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
               </widget>
              </item>
             </layout>
            </widget>
           </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label">
-            <property name="text">
-             <string>Mask layer</string>
+          <item row="10" column="0" colspan="2">
+           <spacer name="verticalSpacer">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
             </property>
-           </widget>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
           </item>
          </layout>
         </widget>
@@ -238,38 +265,28 @@
         <property name="title">
          <string/>
         </property>
-        <widget class="QRadioButton" name="extentModeRadio">
-         <property name="geometry">
-          <rect>
-           <x>0</x>
-           <y>0</y>
-           <width>218</width>
-           <height>22</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>Extent</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-        </widget>
-        <widget class="QRadioButton" name="maskModeRadio">
-         <property name="geometry">
-          <rect>
-           <x>220</x>
-           <y>0</y>
-           <width>217</width>
-           <height>22</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>Mask layer</string>
-         </property>
-        </widget>
-        <zorder>extentModeRadio</zorder>
-        <zorder>maskModeRadio</zorder>
-        <zorder>maskModeRadio</zorder>
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+          <widget class="QRadioButton" name="extentModeRadio">
+           <property name="text">
+            <string>Extent</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+          <widget class="QRadioButton" name="maskModeRadio">
+           <property name="layoutDirection">
+            <enum>Qt::LeftToRight</enum>
+           </property>
+           <property name="text">
+            <string>Mask layer</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </widget>
       </item>
      </layout>

@@ -31,8 +31,6 @@ from ui_widgetClipper import Ui_GdalToolsWidget as Ui_Widget
 from widgetPluginBase import GdalToolsBasePluginWidget as BasePluginWidget
 import GdalTools_utils as Utils
 
-from osgeo import gdal
-
 class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
 
     def __init__(self, iface):
@@ -189,11 +187,9 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
                     arguments.append("-dstalpha")
                 if self.keepResolutionRadio.isChecked():
                     arguments.append("-tr")
-                    r = gdal.Open(self.getInputFileName())
-                    geoTransform = r.GetGeoTransform()
-                    r = None
-                    arguments.append(geoTransform[1])
-                    arguments.append(geoTransform[5])
+                    resolution = Utils.getRasterResolution(self.getInputFileName())
+                    arguments.append(resolution[0])
+                    arguments.append(resolution[1])
                 if self.setResolutionRadio.isChecked():
                     arguments.append("-tr")
                     arguments.append(unicode(self.xRes.value()))
