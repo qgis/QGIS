@@ -104,7 +104,7 @@ bool QgsVectorLayerEditUtils::deleteVertex( QgsFeatureId atFeatureId, int atVert
   return true;
 }
 
-int QgsVectorLayerEditUtils::addRing( const QList<QgsPoint>& ring, QgsFeatureId* featureId )
+int QgsVectorLayerEditUtils::addRing( const QList<QgsPoint>& ring, QgsFeatureId* featureId, const QgsFeatureIds& preferredFeatureIds )
 {
   QgsLineStringV2* ringLine = new QgsLineStringV2();
   QList< QgsPointV2 > ringPoints;
@@ -114,10 +114,10 @@ int QgsVectorLayerEditUtils::addRing( const QList<QgsPoint>& ring, QgsFeatureId*
     ringPoints.append( QgsPointV2( ringIt->x(), ringIt->y() ) );
   }
   ringLine->setPoints( ringPoints );
-  return addRing( ringLine, featureId );
+  return addRing( ringLine, featureId, preferredFeatureIds );
 }
 
-int QgsVectorLayerEditUtils::addRing( QgsCurveV2* ring, QgsFeatureId* featureId )
+int QgsVectorLayerEditUtils::addRing( QgsCurveV2* ring, QgsFeatureId* modifiedFeatureId, const QgsFeatureIds& preferredFeatureIds )
 {
   if ( !L->hasGeometryType() )
   {
@@ -126,22 +126,45 @@ int QgsVectorLayerEditUtils::addRing( QgsCurveV2* ring, QgsFeatureId* featureId 
   }
 
   int addRingReturnCode = 5; //default: return code for 'ring not inserted'
-  QgsRectangle bBox = ring->boundingBox();
-  QgsFeatureIterator fit = L->getFeatures( QgsFeatureRequest().setFilterRect( bBox ).setFlags( QgsFeatureRequest::ExactIntersect ) );
-
   QgsFeature f;
-  while ( fit.nextFeature( f ) )
-  {
-    //add ring takes ownership of ring, and deletes it if there's an error
-    addRingReturnCode = f.geometry()->addRing( static_cast< QgsCurveV2* >( ring->clone() ) );
-    if ( addRingReturnCode == 0 )
-    {
-      L->editBuffer()->changeGeometry( f.id(), f.geometry() );
-      if ( featureId )
-        *featureId = f.id();
 
-      //setModified( true, true );
-      break;
+  //see if part can be added to preferred features
+  if ( !preferredFeatureIds.isEmpty() )
+  {
+    QgsFeatureIterator fit = L->getFeatures( QgsFeatureRequest().setFilterFids( preferredFeatureIds ) );
+    while ( fit.nextFeature( f ) )
+    {
+      //add ring takes ownership of ring, and deletes it if there's an error
+      addRingReturnCode = f.geometry()->addRing( static_cast< QgsCurveV2* >( ring->clone() ) );
+      if ( addRingReturnCode == 0 )
+      {
+        L->editBuffer()->changeGeometry( f.id(), f.geometry() );
+        if ( modifiedFeatureId )
+          *modifiedFeatureId = f.id();
+
+        break;
+      }
+    }
+  }
+
+  //no match so far, so check other intersecting features
+  if ( addRingReturnCode != 0 )
+  {
+    QgsRectangle bBox = ring->boundingBox();
+    QgsFeatureIterator fit = L->getFeatures( QgsFeatureRequest().setFilterRect( bBox ).setFlags( QgsFeatureRequest::ExactIntersect ) );
+    while ( fit.nextFeature( f ) )
+    {
+      //add ring takes ownership of ring, and deletes it if there's an error
+      addRingReturnCode = f.geometry()->addRing( static_cast< QgsCurveV2* >( ring->clone() ) );
+      if ( addRingReturnCode == 0 )
+      {
+        L->editBuffer()->changeGeometry( f.id(), f.geometry() );
+        if ( modifiedFeatureId )
+          *modifiedFeatureId = f.id();
+
+        //setModified( true, true );
+        break;
+      }
     }
   }
 

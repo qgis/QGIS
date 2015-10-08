@@ -1064,7 +1064,7 @@ int QgsVectorLayer::addRing( const QList<QgsPoint>& ring, QgsFeatureId* featureI
     return 6;
 
   QgsVectorLayerEditUtils utils( this );
-  return utils.addRing( ring, featureId );
+  return utils.addRing( ring, featureId, mSelectedFeatureIds );
 }
 
 int QgsVectorLayer::addRing( QgsCurveV2* ring, QgsFeatureId* featureId )
@@ -1087,7 +1087,7 @@ int QgsVectorLayer::addRing( QgsCurveV2* ring, QgsFeatureId* featureId )
   }
 
   QgsVectorLayerEditUtils utils( this );
-  return utils.addRing( ring, featureId );
+  return utils.addRing( ring, featureId, mSelectedFeatureIds );
 }
 
 int QgsVectorLayer::addPart( const QList<QgsPoint> &points )
