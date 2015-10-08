@@ -158,6 +158,7 @@ class CORE_EXPORT QgsGeometry
     size_t wkbSize() const;
 
     /** Returns a geos geometry. QgsGeometry retains ownership of the geometry, so the returned object should not be deleted.
+        @param precision The precision of the grid to which to snap the geometry vertices. If 0, no snapping is performed.
         @note this method was added in version 1.1
         @note not available in python bindings
       */
