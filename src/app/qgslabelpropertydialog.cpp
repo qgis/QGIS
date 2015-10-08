@@ -48,6 +48,8 @@ QgsLabelPropertyDialog::~QgsLabelPropertyDialog()
 {
   QSettings settings;
   settings.setValue( QString( "/Windows/ChangeLabelProps/geometry" ), saveGeometry() );
+
+  qDeleteAll( mDataDefinedProperties );
 }
 
 void QgsLabelPropertyDialog::on_buttonBox_clicked( QAbstractButton *button )
@@ -143,7 +145,11 @@ void QgsLabelPropertyDialog::init( const QString& layerId, int featureId, const 
 
   disableGuiElements();
 
-  mDataDefinedProperties = layerSettings.dataDefinedProperties;
+  QMap< QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* >::const_iterator it = layerSettings.dataDefinedProperties.constBegin();
+  for ( ; it != layerSettings.dataDefinedProperties.constEnd(); ++it )
+  {
+    mDataDefinedProperties.insert( it.key(), it.value() ? new QgsDataDefined( *it.value() ) : 0 );
+  }
 
   //set widget values from data defined results
   setDataDefinedValues( layerSettings, vlayer );
@@ -656,7 +662,7 @@ void QgsLabelPropertyDialog::insertChangedValue( QgsPalLayerSettings::DataDefine
   {
     QgsDataDefined* dd = ddIt.value();
 
-    if ( dd->isActive() && !dd->useExpression() && !dd->field().isEmpty() )
+    if ( dd && dd->isActive() && !dd->useExpression() && !dd->field().isEmpty() )
     {
       mChangedProperties.insert( mCurLabelFeat.fieldNameIndex( dd->field() ), value );
     }
