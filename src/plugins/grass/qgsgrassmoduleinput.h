@@ -77,6 +77,7 @@ class QgsGrassModuleInputModel : public QStandardItemModel
     void onMapsetChanged();
 
     void onDirectoryChanged( const QString & path );
+    void onMapsetSearchPathChanged();
 
   private:
     void addMapset( const QString & mapset );

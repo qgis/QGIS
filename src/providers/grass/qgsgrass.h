@@ -36,6 +36,7 @@ extern "C"
 #include "qgsfeature.h"
 #include "qgsfield.h"
 #include <qgsrectangle.h>
+#include <QFileSystemWatcher>
 #include <QProcess>
 #include <QString>
 #include <QMap>
@@ -172,6 +173,8 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
       int red1, red2, green1, green2, blue1, blue2;
     };
 
+    QgsGrass();
+
     /** Get singleton instance of this class. Used as signals proxy between provider and plugin. */
     static QgsGrass* instance();
 
@@ -198,6 +201,9 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     //! Get default MAPSET, returns MAPSET name or empty string if not in active mode
     static QString getDefaultMapset();
 
+    //! Get default path to MAPSET (gisdbase/location/mapset) or empty string if not in active mode
+    static QString getDefaultMapsetPath();
+
     //! Init or reset GRASS library
     /*!
     \param gisdbase full path to GRASS GISDBASE.
@@ -216,6 +222,10 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     /** Set mapset according to object gisdbase, location and mapset
      * @param grassObject */
     static void setMapset( QgsGrassObject grassObject );
+
+    /** Check if mapset is in search pat set by g.mapsets
+     *  @return true if in search path */
+    bool isMapsetInSearchPath( QString mapset );
 
     //! Error codes returned by error()
     enum GERROR
@@ -592,12 +602,21 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
 
     void openOptions();
 
+    /** Read mapset search path from GRASS location */
+    void loadMapsetSearchPath();
+
+    void setMapsetSearchPathWatcher();
+    void onSearchPathFileChanged( const QString & path );
+
   signals:
     /** Signal emitted  when user changed GISBASE */
     void gisbaseChanged();
 
     /** Signal emitted after mapset was opened */
     void mapsetChanged();
+
+    /** Signal emited when mapset search path changed (SEARCH_PATH file changed and it was loaded to mMapsetSearchPath) */
+    void mapsetSearchPathChanged();
 
     /** Emitted when path to modules config dir changed */
     void modulesConfigChanged();
@@ -626,6 +645,10 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     static QString defaultGisdbase;
     static QString defaultLocation;
     static QString defaultMapset;
+
+    // Mapsets in current search path
+    QStringList mMapsetSearchPath;
+    QFileSystemWatcher *mMapsetSearchPathWatcher;
 
     /* last error in GRASS libraries */
     static GERROR lastError;         // static, because used in constructor

@@ -262,6 +262,11 @@ bool QgsGrassObject::operator==( const QgsGrassObject& other ) const
          && mName == other.mName && mType == other.mType;
 }
 
+QgsGrass::QgsGrass()
+    : mMapsetSearchPathWatcher( 0 )
+{
+}
+
 QString QgsGrass::pathSeparator()
 {
 #ifdef Q_OS_WIN
@@ -316,8 +321,8 @@ bool QgsGrass::init( void )
   lock();
   QgsDebugMsg( "do init" );
 
-  // Is it active mode ?
   active = false;
+  // Is it active mode ?
   if ( getenv( "GISRC" ) )
   {
     G_TRY
@@ -350,6 +355,12 @@ bool QgsGrass::init( void )
     mNonInitializable = true;
     unlock();
     return false;
+  }
+
+  if ( active )
+  {
+    QgsGrass::instance()->loadMapsetSearchPath(); // must be after G_no_gisinit()
+    QgsGrass::instance()->setMapsetSearchPathWatcher();
   }
 
   // I think that mask should not be used in QGIS as it can only confuses people,
@@ -545,6 +556,11 @@ QString QgsGrass::getDefaultMapset()
   return defaultMapset;
 }
 
+QString QgsGrass::getDefaultMapsetPath()
+{
+  return getDefaultLocationPath() + "/" + defaultMapset;
+}
+
 void QgsGrass::setLocation( QString gisdbase, QString location )
 {
   QgsDebugMsg( QString( "gisdbase = %1 location = %2" ).arg( gisdbase ).arg( location ) );
@@ -599,6 +615,109 @@ void QgsGrass::setMapset( QString gisdbase, QString location, QString mapset )
 void QgsGrass::setMapset( QgsGrassObject grassObject )
 {
   setMapset( grassObject.gisdbase(), grassObject.location(), grassObject.mapset() );
+}
+
+bool QgsGrass::isMapsetInSearchPath( QString mapset )
+{
+  return mMapsetSearchPath.contains( mapset );
+}
+
+void QgsGrass::loadMapsetSearchPath()
+{
+  QgsDebugMsg( "entered" );
+  // do not lock, it is called from locked function
+  QStringList oldMapsetSearchPath = mMapsetSearchPath;
+  mMapsetSearchPath.clear();
+  if ( !activeMode() )
+  {
+    QgsDebugMsg( "not active" );
+    emit mapsetSearchPathChanged();
+    return;
+  }
+  G_TRY
+  {
+    QgsGrass::setMapset( getDefaultGisdbase(), getDefaultLocation(), getDefaultMapset() );
+    const char *mapset = 0;
+#if GRASS_VERSION_MAJOR >= 7
+    G_reset_mapsets();
+    for ( int i = 0; ( mapset = G_get_mapset_name( i ) ); i++ )
+#else
+    int result = G_reset_mapsets();
+    Q_UNUSED( result );
+    for ( int i = 0; ( mapset = G__mapset_name( i ) ); i++ )
+#endif
+    {
+      QgsDebugMsg( QString( "mapset = %1" ).arg( mapset ) );
+      if ( G_is_mapset_in_search_path( mapset ) )
+      {
+        mMapsetSearchPath << mapset;
+      }
+    }
+  }
+  G_CATCH( QgsGrass::Exception &e )
+  {
+    QgsDebugMsg( "cannot load mapset search path: " + QString( e.what() ) );
+  }
+  QgsDebugMsg( "mMapsetSearchPath = " +  mMapsetSearchPath.join( "," ) );
+  if ( mMapsetSearchPath != oldMapsetSearchPath )
+  {
+    emit mapsetSearchPathChanged();
+  }
+}
+
+void QgsGrass::setMapsetSearchPathWatcher()
+{
+  QgsDebugMsg( "etered" );
+  if ( mMapsetSearchPathWatcher )
+  {
+    delete mMapsetSearchPathWatcher;
+    mMapsetSearchPathWatcher = 0;
+  }
+  if ( !activeMode() )
+  {
+    return;
+  }
+  mMapsetSearchPathWatcher = new QFileSystemWatcher( this );
+
+  QString searchFilePath = getDefaultMapsetPath() + "/SEARCH_PATH";
+
+  if ( QFileInfo( searchFilePath ).exists() )
+  {
+    QgsDebugMsg( "add watcher on SEARCH_PATH file " + searchFilePath );
+    mMapsetSearchPathWatcher->addPath( searchFilePath );
+    connect( mMapsetSearchPathWatcher, SIGNAL( fileChanged( const QString & ) ), SLOT( onSearchPathFileChanged( const QString & ) ) );
+  }
+  else
+  {
+    QgsDebugMsg( "add watcher on mapset " + getDefaultMapsetPath() );
+    mMapsetSearchPathWatcher->addPath( getDefaultMapsetPath() );
+    connect( mMapsetSearchPathWatcher, SIGNAL( directoryChanged( const QString & ) ), SLOT( onSearchPathFileChanged( const QString & ) ) );
+  }
+}
+
+void QgsGrass::onSearchPathFileChanged( const QString & path )
+{
+  QgsDebugMsg( "path = " + path );
+  QString searchFilePath = getDefaultMapsetPath() + "/SEARCH_PATH";
+  if ( path == searchFilePath )
+  {
+    // changed or removed
+    loadMapsetSearchPath();
+    if ( !QFileInfo( searchFilePath ).exists() ) // removed
+    {
+      // reset watcher to mapset
+      setMapsetSearchPathWatcher();
+    }
+  }
+  else
+  {
+    // mapset directory changed
+    if ( QFileInfo( searchFilePath ).exists() ) // search path file added
+    {
+      loadMapsetSearchPath();
+      setMapsetSearchPathWatcher();
+    }
+  }
 }
 
 jmp_buf QgsGrass::jumper;
@@ -860,6 +979,9 @@ QString QgsGrass::openMapset( const QString& gisdbase,
 
   active = true;
 
+  QgsGrass::instance()->loadMapsetSearchPath();
+  QgsGrass::instance()->setMapsetSearchPathWatcher();
+
 // closeMapset() added at the beginning
 #if 0
 #ifndef Q_OS_WIN
@@ -936,6 +1058,7 @@ QString QgsGrass::closeMapset()
     }
   }
 
+  QgsGrass::instance()->setMapsetSearchPathWatcher(); // unset watcher
   emit QgsGrass::instance()->mapsetChanged();
   return QString::null;
 }

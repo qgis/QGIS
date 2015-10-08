@@ -67,6 +67,8 @@ QgsGrassModuleInputModel::QgsGrassModuleInputModel( QObject *parent )
 
   connect( QgsGrass::instance(), SIGNAL( mapsetChanged() ), SLOT( onMapsetChanged() ) );
 
+  connect( QgsGrass::instance(), SIGNAL( mapsetSearchPathChanged() ), SLOT( onMapsetSearchPathChanged() ) );
+
   reload();
 }
 
@@ -268,6 +270,12 @@ void QgsGrassModuleInputModel::onMapsetChanged()
   }
 }
 
+void QgsGrassModuleInputModel::onMapsetSearchPathChanged()
+{
+  QgsDebugMsg( "entered" );
+  emit dataChanged( index( 0, 0 ), index( rowCount() - 1, 0 ) );
+}
+
 QgsGrassModuleInputModel::~QgsGrassModuleInputModel()
 {
 
@@ -317,8 +325,23 @@ bool QgsGrassModuleInputProxy::filterAcceptsRow( int sourceRow, const QModelInde
 
   QgsDebugMsg( QString( "mType = %1 item type = %2" ).arg( mType ).arg( sourceModel()->data( sourceIndex, QgsGrassModuleInputModel::TypeRole ).toInt() ) );
   QgsGrassObject::Type itemType = ( QgsGrassObject::Type )( sourceModel()->data( sourceIndex, QgsGrassModuleInputModel::TypeRole ).toInt() );
-  // TODO: filter out mapsets without given type? May be confusing.
-  return itemType == QgsGrassObject::Mapset || mType == itemType;
+
+  if ( itemType == QgsGrassObject::Mapset )
+  {
+    // TODO: filter out mapsets which have no map of given type? May be confusin if user does not see existing mapset in the tree.
+    QString mapset = sourceModel()->data( sourceIndex, QgsGrassModuleInputModel::MapsetRole ).toString();
+    if ( QgsGrass::instance()->isMapsetInSearchPath( mapset ) )
+    {
+      return true;
+    }
+    else
+    {
+      QgsDebugMsg( "mapset " + mapset + " is not in search path" );
+      return false;
+    }
+  }
+
+  return mType == itemType;
 }
 
 bool QgsGrassModuleInputProxy::lessThan( const QModelIndex & left, const QModelIndex & right ) const
