@@ -6,7 +6,7 @@
  ***************************************************************************/
 
 #include "qgsgeometryselfintersectioncheck.h"
-#include "qgscurvepolygonv2.h"
+#include "qgspolygonv2.h"
 #include "qgslinestringv2.h"
 #include "qgsgeometryengine.h"
 #include "qgsmultipolygonv2.h"
@@ -193,7 +193,8 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError* error, i
         // If ring is exterior, build two polygons, and reassign interiors as necessary
         poly->setExteriorRing( ringGeom1 );
 
-        QgsCurvePolygonV2* poly2 = new QgsCurvePolygonV2();
+        // If original feature was a linear polygon, also create the new part as a linear polygon
+        QgsCurvePolygonV2* poly2 = dynamic_cast<QgsPolygonV2*>( part ) ? new QgsPolygonV2() : new QgsCurvePolygonV2();
         poly2->setExteriorRing( ringGeom2 );
 
         // Reassing interiors as necessary
