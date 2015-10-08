@@ -27,7 +27,7 @@ class QgsVectorLayerEditUtils
 
     /** Adds a ring to polygon/multipolygon features
      * @param ring ring to add
-     * @param featureId if specified, feature ID for feature ring was added to will be stored in this parameter
+     * @param modifiedFeatureId if specified, feature ID for feature ring was added to will be stored in this parameter
      * @param preferredFeatureIds if specified, the features will be the first candidates for adding a ring. Otherwise
      * all intersecting features are tested and the ring is added to the first valid feature.
      @return
@@ -37,7 +37,7 @@ class QgsVectorLayerEditUtils
        3 ring not valid,
        4 ring crosses existing rings,
        5 no feature found where ring can be inserted*/
-    int addRing( const QList<QgsPoint>& ring, QgsFeatureId* featureId = 0 );
+    int addRing( const QList<QgsPoint>& ring, QgsFeatureId* modifiedFeatureId = 0 );
 
     /** Adds a new part polygon to a multipart feature
      @return

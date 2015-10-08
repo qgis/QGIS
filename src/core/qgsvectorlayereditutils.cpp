@@ -104,7 +104,7 @@ bool QgsVectorLayerEditUtils::deleteVertex( QgsFeatureId atFeatureId, int atVert
   return true;
 }
 
-int QgsVectorLayerEditUtils::addRing( const QList<QgsPoint>& ring, QgsFeatureId* featureId, const QgsFeatureIds& preferredFeatureIds )
+int QgsVectorLayerEditUtils::addRing( const QList<QgsPoint>& ring, QgsFeatureId* modifiedFeatureId, const QgsFeatureIds& preferredFeatureIds )
 {
   QgsLineStringV2* ringLine = new QgsLineStringV2();
   QList< QgsPointV2 > ringPoints;
@@ -114,7 +114,7 @@ int QgsVectorLayerEditUtils::addRing( const QList<QgsPoint>& ring, QgsFeatureId*
     ringPoints.append( QgsPointV2( ringIt->x(), ringIt->y() ) );
   }
   ringLine->setPoints( ringPoints );
-  return addRing( ringLine, featureId, preferredFeatureIds );
+  return addRing( ringLine, modifiedFeatureId, preferredFeatureIds );
 }
 
 int QgsVectorLayerEditUtils::addRing( QgsCurveV2* ring, QgsFeatureId* modifiedFeatureId, const QgsFeatureIds& preferredFeatureIds )

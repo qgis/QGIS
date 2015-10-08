@@ -69,7 +69,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
 
     /** Adds a ring to polygon/multipolygon features
      * @param ring ring to add
-     * @param featureId if specified, feature ID for feature ring was added to will be stored in this parameter
+     * @param modifiedFeatureId if specified, feature ID for feature ring was added to will be stored in this parameter
      * @param preferredFeatureIds if specified, the features will be the first candidates for adding a ring. Otherwise
      * all intersecting features are tested and the ring is added to the first valid feature.
          @return
