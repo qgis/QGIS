@@ -31,6 +31,7 @@ from ui_widgetClipper import Ui_GdalToolsWidget as Ui_Widget
 from widgetPluginBase import GdalToolsBasePluginWidget as BasePluginWidget
 import GdalTools_utils as Utils
 
+from osgeo import gdal
 
 class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
 
@@ -57,7 +58,8 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
             (self.maskSelector, SIGNAL("filenameChanged()"), self.maskModeRadio, 1600),
             (self.alphaBandCheck, SIGNAL("stateChanged(int)")),
             (self.cropToCutlineCheck, SIGNAL("stateChanged(int)")),
-            ([self.xRes, self.yRes], SIGNAL("valueChanged(double)"), self.resolutionGroupBox),
+            ([self.xRes, self.yRes], SIGNAL("valueChanged(double)"), self.keepResolutionRadio),
+            ([self.xRes, self.yRes], SIGNAL("valueChanged(double)"), self.setResolutionRadio),
             (self.extentSelector, [SIGNAL("selectionStarted()"), SIGNAL("newExtentDefined()")], self.extentModeRadio),
             (self.modeStackedWidget, SIGNAL("currentIndexChanged(int)"))
         ])
@@ -69,9 +71,11 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         self.connect(self.extentSelector, SIGNAL("selectionStarted()"), self.checkRun)
 
         self.connect(self.extentModeRadio, SIGNAL("toggled(bool)"), self.switchClippingMode)
+        self.connect(self.keepResolutionRadio, SIGNAL("toggled(bool)"), self.switchResolutionMode)
 
     def show_(self):
         self.switchClippingMode()
+        self.switchResolutionMode()
         BasePluginWidget.show_(self)
 
     def onClosing(self):
@@ -88,6 +92,12 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         self.modeStackedWidget.setCurrentIndex(index)
         self.checkRun()
 
+    def switchResolutionMode(self):
+        if self.keepResolutionRadio.isChecked():
+            self.resolutionStackedWidget.setCurrentIndex(0)
+        else:
+            self.resolutionStackedWidget.setCurrentIndex(1)
+    
     def checkRun(self):
         if self.extentModeRadio.isChecked():
             enabler = self.extentSelector.isCoordsValid()
@@ -177,7 +187,14 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
                         arguments.append("-crop_to_cutline")
                 if self.alphaBandCheck.isChecked():
                     arguments.append("-dstalpha")
-                if self.resolutionGroupBox.isChecked():
+                if self.keepResolutionRadio.isChecked():
+                    arguments.append("-tr")
+                    r = gdal.Open(self.getInputFileName())
+                    geoTransform = r.GetGeoTransform()
+                    r = None
+                    arguments.append(geoTransform[1])
+                    arguments.append(geoTransform[5])
+                if self.setResolutionRadio.isChecked():
                     arguments.append("-tr")
                     arguments.append(unicode(self.xRes.value()))
                     arguments.append(unicode(self.yRes.value()))
