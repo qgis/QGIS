@@ -135,7 +135,7 @@
          </widget>
         </item>
         <item row="4" column="1" colspan="2">
-         <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,0,0">
+         <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,0">
           <item>
            <widget class="QgsColorRampComboBox" name="mRampComboBox"/>
           </item>
@@ -149,13 +149,6 @@
             </property>
             <property name="text">
              <string>Edit</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QCheckBox" name="mInvertCheckBox">
-            <property name="text">
-             <string>Invert</string>
             </property>
            </widget>
           </item>
@@ -298,7 +291,6 @@
   <tabstop>radioColorRamp</tabstop>
   <tabstop>mRampComboBox</tabstop>
   <tabstop>mButtonEditRamp</tabstop>
-  <tabstop>mInvertCheckBox</tabstop>
   <tabstop>mBlendCmbBx</tabstop>
   <tabstop>mDrawModeComboBox</tabstop>
  </tabstops>
@@ -349,22 +341,6 @@
     <hint type="destinationlabel">
      <x>423</x>
      <y>157</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>radioColorRamp</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>mInvertCheckBox</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>64</x>
-     <y>156</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>506</x>
-     <y>156</y>
     </hint>
    </hints>
   </connection>
