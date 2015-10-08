@@ -29,7 +29,7 @@ class QgsPolygonV2;
 class CORE_EXPORT QgsGeos: public QgsGeometryEngine
 {
   public:
-    QgsGeos( const QgsAbstractGeometryV2* geometry, double precision = 1E-8 );
+    QgsGeos( const QgsAbstractGeometryV2* geometry, double precision = 0 );
     ~QgsGeos();
 
     /** Removes caches*/
@@ -81,7 +81,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
 
     static QgsAbstractGeometryV2* fromGeos( const GEOSGeometry* geos );
     static QgsPolygonV2* fromGeosPolygon( const GEOSGeometry* geos );
-    static GEOSGeometry* asGeos( const QgsAbstractGeometryV2* geom , double precision = 1E-8 );
+    static GEOSGeometry* asGeos( const QgsAbstractGeometryV2* geom , double precision = 0 );
     static QgsPointV2 coordSeqPoint( const GEOSCoordSequence* cs, int i, bool hasZ, bool hasM );
 
     static GEOSContextHandle_t getGEOSHandler();

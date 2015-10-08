@@ -161,7 +161,7 @@ class CORE_EXPORT QgsGeometry
         @note this method was added in version 1.1
         @note not available in python bindings
       */
-    const GEOSGeometry* asGeos( double precision = 1E-8 ) const;
+    const GEOSGeometry* asGeos( double precision = 0 ) const;
 
     /** Returns type of the geometry as a WKB type (point / linestring / polygon etc.)
      * @see type
