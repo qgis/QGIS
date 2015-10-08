@@ -10,7 +10,7 @@
 #include "qgslinestringv2.h"
 #include "qgsgeometryengine.h"
 #include "qgsmultipolygonv2.h"
-#include "qgsmulticurvev2.h"
+#include "qgsmultilinestringv2.h"
 #include "qgsgeometryutils.h"
 #include "../utils/qgsfeaturepool.h"
 
@@ -266,7 +266,7 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError* error, i
         }
         else
         {
-          QgsMultiCurveV2* geomCollection = new QgsMultiCurveV2();
+          QgsMultiCurveV2* geomCollection = new QgsMultiLineStringV2();
           geomCollection->addGeometry( ringGeom1 );
           geomCollection->addGeometry( ringGeom2 );
           feature.setGeometry( new QgsGeometry( geomCollection ) );
