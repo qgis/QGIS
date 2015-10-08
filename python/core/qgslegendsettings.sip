@@ -59,6 +59,61 @@ class QgsLegendSettings
     QSizeF symbolSize() const;
     void setSymbolSize( QSizeF s );
 
+    /** Returns whether a border will be drawn around raster symbol items.
+     * @see setDrawRasterBorder()
+     * @see rasterBorderColor()
+     * @see rasterBorderWidth()
+     * @note added in QGIS 2.12
+     */
+    bool drawRasterBorder() const;
+
+    /** Sets whether a border will be drawn around raster symbol items.
+     * @param enabled set to true to draw borders
+     * @see drawRasterBorder()
+     * @see setRasterBorderColor()
+     * @see setRasterBorderWidth()
+     * @note added in QGIS 2.12
+     */
+    void setDrawRasterBorder( bool enabled );
+
+    /** Returns the border color for the border drawn around raster symbol items. The border is
+     * only drawn if drawRasterBorder() is true.
+     * @see setRasterBorderColor()
+     * @see drawRasterBorder()
+     * @see rasterBorderWidth()
+     * @note added in QGIS 2.12
+     */
+    QColor rasterBorderColor() const;
+
+    /** Sets the border color for the border drawn around raster symbol items. The border is
+     * only drawn if drawRasterBorder() is true.
+     * @param color border color
+     * @see rasterBorderColor()
+     * @see setDrawRasterBorder()
+     * @see setRasterBorderWidth()
+     * @note added in QGIS 2.12
+     */
+    void setRasterBorderColor( const QColor& color );
+
+    /** Returns the border width (in millimeters) for the border drawn around raster symbol items. The border is
+     * only drawn if drawRasterBorder() is true.
+     * @see setRasterBorderWidth()
+     * @see drawRasterBorder()
+     * @see rasterBorderColor()
+     * @note added in QGIS 2.12
+     */
+    double rasterBorderWidth() const;
+
+    /** Sets the border width for the border drawn around raster symbol items. The border is
+     * only drawn if drawRasterBorder() is true.
+     * @param width border width in millimeters
+     * @see rasterBorderWidth()
+     * @see setDrawRasterBorder()
+     * @see setRasterBorderColor()
+     * @note added in QGIS 2.12
+     */
+    void setRasterBorderWidth( double width );
+
     QSizeF wmsLegendSize() const;
     void setWmsLegendSize( QSizeF s );
 

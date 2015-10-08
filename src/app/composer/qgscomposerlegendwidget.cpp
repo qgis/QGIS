@@ -103,6 +103,10 @@ QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend* legend )
   mFontColorButton->setColorDialogTitle( tr( "Select font color" ) );
   mFontColorButton->setContext( "composer" );
 
+  mRasterBorderColorButton->setColorDialogTitle( tr( "Select border color" ) );
+  mRasterBorderColorButton->setAllowAlpha( true );
+  mRasterBorderColorButton->setContext( "composer " );
+
   //add widget for item properties
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, legend );
   mainLayout->addWidget( itemPropertiesWidget );
@@ -161,6 +165,11 @@ void QgsComposerLegendWidget::setGuiElements()
   mIconLabelSpaceSpinBox->setValue( mLegend->style( QgsComposerLegendStyle::SymbolLabel ).margin( QgsComposerLegendStyle::Left ) );
   mBoxSpaceSpinBox->setValue( mLegend->boxSpace() );
   mColumnSpaceSpinBox->setValue( mLegend->columnSpace() );
+
+  mRasterBorderGroupBox->setChecked( mLegend->drawRasterBorder() );
+  mRasterBorderWidthSpinBox->setValue( mLegend->rasterBorderWidth() );
+  mRasterBorderColorButton->setColor( mLegend->rasterBorderColor() );
+
   mCheckBoxAutoUpdate->setChecked( mLegend->autoUpdateModel() );
   refreshMapComboBox();
 
@@ -613,6 +622,47 @@ void QgsComposerLegendWidget::on_mMapComboBox_currentIndexChanged( int index )
   }
 }
 
+void QgsComposerLegendWidget::on_mRasterBorderGroupBox_toggled( bool state )
+{
+  if ( !mLegend )
+  {
+    return;
+  }
+
+  mLegend->beginCommand( tr( "Legend raster borders" ) );
+  mLegend->setDrawRasterBorder( state );
+  mLegend->adjustBoxSize();
+  mLegend->update();
+  mLegend->endCommand();
+}
+
+void QgsComposerLegendWidget::on_mRasterBorderWidthSpinBox_valueChanged( double d )
+{
+  if ( !mLegend )
+  {
+    return;
+  }
+
+  mLegend->beginCommand( tr( "Legend raster border width" ), QgsComposerMergeCommand::LegendRasterBorderWidth );
+  mLegend->setRasterBorderWidth( d );
+  mLegend->adjustBoxSize();
+  mLegend->update();
+  mLegend->endCommand();
+}
+
+void QgsComposerLegendWidget::on_mRasterBorderColorButton_colorChanged( const QColor& newColor )
+{
+  if ( !mLegend )
+  {
+    return;
+  }
+
+  mLegend->beginCommand( tr( "Legend raster border color" ) );
+  mLegend->setRasterBorderColor( newColor );
+  mLegend->update();
+  mLegend->endCommand();
+}
+
 void QgsComposerLegendWidget::on_mAddToolButton_clicked()
 {
   if ( !mLegend )
@@ -894,6 +944,9 @@ void QgsComposerLegendWidget::blockAllSignals( bool b )
   mBoxSpaceSpinBox->blockSignals( b );
   mColumnSpaceSpinBox->blockSignals( b );
   mFontColorButton->blockSignals( b );
+  mRasterBorderGroupBox->blockSignals( b );
+  mRasterBorderColorButton->blockSignals( b );
+  mRasterBorderWidthSpinBox->blockSignals( b );
 }
 
 void QgsComposerLegendWidget::refreshMapComboBox()

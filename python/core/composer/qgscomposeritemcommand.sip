@@ -68,6 +68,7 @@ class QgsComposerMergeCommand : QgsComposerItemCommand
       LegendIconSymbolSpace,
       LegendBoxSpace,
       LegendColumnSpace,
+      LegendRasterBorderWidth,
       //composer picture
       ComposerPictureRotation,
       // composer scalebar

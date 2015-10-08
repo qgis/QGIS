@@ -82,6 +82,61 @@ class CORE_EXPORT QgsLegendSettings
     QSizeF symbolSize() const {return mSymbolSize;}
     void setSymbolSize( QSizeF s ) {mSymbolSize = s;}
 
+    /** Returns whether a border will be drawn around raster symbol items.
+     * @see setDrawRasterBorder()
+     * @see rasterBorderColor()
+     * @see rasterBorderWidth()
+     * @note added in QGIS 2.12
+     */
+    bool drawRasterBorder() const { return mRasterSymbolBorder; }
+
+    /** Sets whether a border will be drawn around raster symbol items.
+     * @param enabled set to true to draw borders
+     * @see drawRasterBorder()
+     * @see setRasterBorderColor()
+     * @see setRasterBorderWidth()
+     * @note added in QGIS 2.12
+     */
+    void setDrawRasterBorder( bool enabled ) { mRasterSymbolBorder = enabled; }
+
+    /** Returns the border color for the border drawn around raster symbol items. The border is
+     * only drawn if drawRasterBorder() is true.
+     * @see setRasterBorderColor()
+     * @see drawRasterBorder()
+     * @see rasterBorderWidth()
+     * @note added in QGIS 2.12
+     */
+    QColor rasterBorderColor() const { return mRasterBorderColor; }
+
+    /** Sets the border color for the border drawn around raster symbol items. The border is
+     * only drawn if drawRasterBorder() is true.
+     * @param color border color
+     * @see rasterBorderColor()
+     * @see setDrawRasterBorder()
+     * @see setRasterBorderWidth()
+     * @note added in QGIS 2.12
+     */
+    void setRasterBorderColor( const QColor& color ) { mRasterBorderColor = color; }
+
+    /** Returns the border width (in millimeters) for the border drawn around raster symbol items. The border is
+     * only drawn if drawRasterBorder() is true.
+     * @see setRasterBorderWidth()
+     * @see drawRasterBorder()
+     * @see rasterBorderColor()
+     * @note added in QGIS 2.12
+     */
+    double rasterBorderWidth() const { return mRasterBorderWidth; }
+
+    /** Sets the border width for the border drawn around raster symbol items. The border is
+     * only drawn if drawRasterBorder() is true.
+     * @param width border width in millimeters
+     * @see rasterBorderWidth()
+     * @see setDrawRasterBorder()
+     * @see setRasterBorderColor()
+     * @note added in QGIS 2.12
+     */
+    void setRasterBorderWidth( double width ) { mRasterBorderWidth = width; }
+
     QSizeF wmsLegendSize() const {return mWmsLegendSize;}
     void setWmsLegendSize( QSizeF s ) {mWmsLegendSize = s;}
 
@@ -173,6 +228,10 @@ class CORE_EXPORT QgsLegendSettings
 
     /** Use the same width (maximum) for all columns */
     bool mEqualColumnWidth;
+
+    bool mRasterSymbolBorder;
+    QColor mRasterBorderColor;
+    double mRasterBorderWidth;
 
     QMap<QgsComposerLegendStyle::Style, QgsComposerLegendStyle> mStyleMap;
 

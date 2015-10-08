@@ -515,8 +515,21 @@ QSizeF QgsRasterSymbolLegendNode::drawSymbol( const QgsLegendSettings& settings,
       if ( QgsRasterRenderer* rasterRenderer = rasterLayer->renderer() )
         itemColor.setAlpha( rasterRenderer->opacity() * 255.0 );
     }
-
     ctx->painter->setBrush( itemColor );
+
+    if ( settings.drawRasterBorder() )
+    {
+      QPen pen;
+      pen.setColor( settings.rasterBorderColor() );
+      pen.setWidthF( settings.rasterBorderWidth() );
+      pen.setJoinStyle( Qt::MiterJoin );
+      ctx->painter->setPen( pen );
+    }
+    else
+    {
+      ctx->painter->setPen( Qt::NoPen );
+    }
+
     ctx->painter->drawRect( QRectF( ctx->point.x(), ctx->point.y() + ( itemHeight - settings.symbolSize().height() ) / 2,
                                     settings.symbolSize().width(), settings.symbolSize().height() ) );
   }

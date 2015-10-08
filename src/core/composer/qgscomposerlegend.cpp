@@ -28,6 +28,7 @@
 #include "qgslegendrenderer.h"
 #include "qgslogger.h"
 #include "qgsproject.h"
+#include "qgssymbollayerv2utils.h"
 #include <QDomDocument>
 #include <QDomElement>
 #include <QPainter>
@@ -241,6 +242,14 @@ void QgsComposerLegend::setSplitLayer( bool s ) { mSettings.setSplitLayer( s ); 
 bool QgsComposerLegend::equalColumnWidth() const { return mSettings.equalColumnWidth(); }
 void QgsComposerLegend::setEqualColumnWidth( bool s ) { mSettings.setEqualColumnWidth( s ); }
 
+bool QgsComposerLegend::drawRasterBorder() const { return mSettings.drawRasterBorder(); }
+void QgsComposerLegend::setDrawRasterBorder( bool enabled ) { mSettings.setDrawRasterBorder( enabled ); }
+
+QColor QgsComposerLegend::rasterBorderColor() const { return mSettings.rasterBorderColor(); }
+void QgsComposerLegend::setRasterBorderColor( const QColor& color ) { mSettings.setRasterBorderColor( color ); }
+
+double QgsComposerLegend::rasterBorderWidth() const { return mSettings.rasterBorderWidth(); }
+void QgsComposerLegend::setRasterBorderWidth( double width ) { mSettings.setRasterBorderWidth( width ); }
 
 void QgsComposerLegend::synchronizeWithModel()
 {
@@ -279,6 +288,11 @@ bool QgsComposerLegend::writeXML( QDomElement& elem, QDomDocument & doc ) const
 
   composerLegendElem.setAttribute( "symbolWidth", QString::number( mSettings.symbolSize().width() ) );
   composerLegendElem.setAttribute( "symbolHeight", QString::number( mSettings.symbolSize().height() ) );
+
+  composerLegendElem.setAttribute( "rasterBorder", mSettings.drawRasterBorder() );
+  composerLegendElem.setAttribute( "rasterBorderColor", QgsSymbolLayerV2Utils::encodeColor( mSettings.rasterBorderColor() ) );
+  composerLegendElem.setAttribute( "rasterBorderWidth", QString::number( mSettings.rasterBorderWidth() ) );
+
   composerLegendElem.setAttribute( "wmsLegendWidth", QString::number( mSettings.wmsLegendSize().width() ) );
   composerLegendElem.setAttribute( "wmsLegendHeight", QString::number( mSettings.wmsLegendSize().height() ) );
   composerLegendElem.setAttribute( "wrapChar", mSettings.wrapChar() );
@@ -401,6 +415,10 @@ bool QgsComposerLegend::readXML( const QDomElement& itemElem, const QDomDocument
 
   mSettings.setSymbolSize( QSizeF( itemElem.attribute( "symbolWidth", "7.0" ).toDouble(), itemElem.attribute( "symbolHeight", "14.0" ).toDouble() ) );
   mSettings.setWmsLegendSize( QSizeF( itemElem.attribute( "wmsLegendWidth", "50" ).toDouble(), itemElem.attribute( "wmsLegendHeight", "25" ).toDouble() ) );
+
+  mSettings.setDrawRasterBorder( itemElem.attribute( "rasterBorder", "1" ) != "0" );
+  mSettings.setRasterBorderColor( QgsSymbolLayerV2Utils::decodeColor( itemElem.attribute( "rasterBorderColor", "0,0,0" ) ) );
+  mSettings.setRasterBorderWidth( itemElem.attribute( "rasterBorderWidth", "0" ).toDouble() );
 
   mSettings.setWrapChar( itemElem.attribute( "wrapChar" ) );
 

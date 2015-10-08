@@ -69,6 +69,10 @@ class QgsComposerLegendWidget: public QgsComposerItemBaseWidget, private Ui::Qgs
     void on_mCheckBoxAutoUpdate_stateChanged( int state );
     void on_mMapComboBox_currentIndexChanged( int index );
 
+    void on_mRasterBorderGroupBox_toggled( bool state );
+    void on_mRasterBorderWidthSpinBox_valueChanged( double d );
+    void on_mRasterBorderColorButton_colorChanged( const QColor& newColor );
+
     //item manipulation
     void on_mMoveDownToolButton_clicked();
     void on_mMoveUpToolButton_clicked();

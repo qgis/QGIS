@@ -102,6 +102,7 @@ class CORE_EXPORT QgsComposerMergeCommand: public QgsComposerItemCommand
       LegendIconSymbolSpace,
       LegendBoxSpace,
       LegendColumnSpace,
+      LegendRasterBorderWidth,
       //composer picture
       ComposerPictureRotation,
       // composer scalebar

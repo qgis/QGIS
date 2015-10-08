@@ -63,9 +63,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
+        <y>-420</y>
         <width>375</width>
-        <height>1291</height>
+        <height>1392</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -226,7 +226,7 @@
              <bool>false</bool>
             </property>
             <property name="headerHidden">
-             <bool>false</bool>
+             <bool>true</bool>
             </property>
             <attribute name="headerVisible">
              <bool>false</bool>
@@ -636,6 +636,108 @@
             </property>
            </widget>
           </item>
+          <item row="2" column="0" colspan="2">
+           <widget class="QgsCollapsibleGroupBoxBasic" name="mRasterBorderGroupBox">
+            <property name="title">
+             <string>Draw border for raster symbols</string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="syncGroup" stdset="0">
+             <string notr="true">composeritem</string>
+            </property>
+            <property name="collapsed" stdset="0">
+             <bool>true</bool>
+            </property>
+            <layout class="QGridLayout" name="gridLayout">
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_17">
+               <property name="text">
+                <string>Border color</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <layout class="QHBoxLayout" name="horizontalLayout_6">
+               <item>
+                <widget class="QgsColorButtonV2" name="mRasterBorderColorButton">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>120</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>120</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer_2">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="mOutlineWidthLabel">
+               <property name="text">
+                <string>Thickness</string>
+               </property>
+               <property name="wordWrap">
+                <bool>true</bool>
+               </property>
+               <property name="buddy">
+                <cstring>mRasterBorderWidthSpinBox</cstring>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QgsDoubleSpinBox" name="mRasterBorderWidthSpinBox">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="specialValueText">
+                <string>Hairline</string>
+               </property>
+               <property name="suffix">
+                <string> mm</string>
+               </property>
+               <property name="singleStep">
+                <double>0.100000000000000</double>
+               </property>
+               <property name="showClearButton" stdset="0">
+                <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>
@@ -956,6 +1058,9 @@
   <tabstop>mSymbolsColGroupBox</tabstop>
   <tabstop>mSymbolWidthSpinBox</tabstop>
   <tabstop>mSymbolHeightSpinBox</tabstop>
+  <tabstop>mRasterBorderGroupBox</tabstop>
+  <tabstop>mRasterBorderColorButton</tabstop>
+  <tabstop>mRasterBorderWidthSpinBox</tabstop>
   <tabstop>mSymbolsColGroupBox_2</tabstop>
   <tabstop>mWmsLegendWidthSpinBox</tabstop>
   <tabstop>mWmsLegendHeightSpinBox</tabstop>

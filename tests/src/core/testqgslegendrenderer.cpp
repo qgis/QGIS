@@ -98,6 +98,7 @@ class TestQgsLegendRenderer : public QObject
     void testLongSymbolText();
     void testThreeColumns();
     void testFilterByMap();
+    void testRasterBorder();
 
   private:
     QgsLayerTreeGroup* mRoot;
@@ -323,6 +324,23 @@ void TestQgsLegendRenderer::testFilterByMap()
 
   QgsLegendSettings settings;
   _setStandardTestFont( settings );
+  _renderLegend( testName, &legendModel, settings );
+  QVERIFY( _verifyImage( testName, mReport ) );
+}
+
+void TestQgsLegendRenderer::testRasterBorder()
+{
+  QString testName = "legend_raster_border";
+
+  QgsLayerTreeGroup* root = new QgsLayerTreeGroup();
+  root->addLayer( mRL );
+
+  QgsLayerTreeModel legendModel( root );
+
+  QgsLegendSettings settings;
+  _setStandardTestFont( settings );
+  settings.setRasterBorderWidth( 2 );
+  settings.setRasterBorderColor( Qt::green );
   _renderLegend( testName, &legendModel, settings );
   QVERIFY( _verifyImage( testName, mReport ) );
 }
