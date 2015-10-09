@@ -59,7 +59,7 @@ QVariant QgsTextEditWrapper::value()
       v == QSettings().value( "qgis/nullValue", "NULL" ).toString() )
     return QVariant( field().type() );
 
-  if ( v == defaultValue().toString() )
+  if ( !defaultValue().isNull() && v == defaultValue().toString() )
   {
     return defaultValue();
   }
