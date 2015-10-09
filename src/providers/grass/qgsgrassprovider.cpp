@@ -614,6 +614,7 @@ bool QgsGrassProvider::closeEdit( bool newMap, QgsVectorLayer *vectorLayer )
       vectorLayer->updateFields();
     }
     connect( mLayer->map(), SIGNAL( dataChanged() ), SLOT( onDataChanged() ) );
+    emit fullExtentCalculated();
     return true;
   }
   return false;
