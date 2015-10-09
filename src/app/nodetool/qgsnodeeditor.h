@@ -20,12 +20,53 @@
 #define QGSNODEEDITOR_H
 
 #include <QDockWidget>
+#include <QAbstractTableModel>
+#include <QItemSelection>
 
 class QgsMapCanvas;
 class QgsRubberBand;
 class QgsSelectedFeature;
 class QgsVectorLayer;
-class QTableWidget;
+class QTableView;
+
+class QgsNodeEditorModel : public QAbstractTableModel
+{
+    Q_OBJECT
+  public:
+
+    QgsNodeEditorModel( QgsVectorLayer* layer,
+                        QgsSelectedFeature* selectedFeature,
+                        QgsMapCanvas* canvas, QObject* parent = 0 );
+
+    virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    virtual QVariant data( const QModelIndex &index, int role ) const override;
+    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
+    virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
+    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+
+  private:
+
+    QgsVectorLayer* mLayer;
+    QgsSelectedFeature* mSelectedFeature;
+    QgsMapCanvas* mCanvas;
+
+    bool mHasZ;
+    bool mHasM;
+    bool mHasR;
+
+    int mZCol;
+    int mMCol;
+    int mRCol;
+
+    QFont mWidgetFont;
+
+    bool calcR( int row, double& r, double &minRadius ) const;
+
+  private slots:
+
+    void featureChanged();
+};
 
 class QgsNodeEditor : public QDockWidget
 {
@@ -39,13 +80,17 @@ class QgsNodeEditor : public QDockWidget
     QgsVectorLayer* mLayer;
     QgsSelectedFeature* mSelectedFeature;
     QgsMapCanvas* mCanvas;
-    QTableWidget* mTableWidget;
+    QTableView* mTableView;
+    QgsNodeEditorModel* mNodeModel;
 
   private slots:
-    void rebuildTable();
-    void tableValueChanged( int row, int col );
-    void updateTableSelection();
-    void updateNodeSelection();
+    void updateTableSelection( );
+    void updateNodeSelection( const QItemSelection& selected, const QItemSelection& deselected );
+
+  private:
+
+    bool mUpdatingTableSelection;
+    bool mUpdatingNodeSelection;
 };
 
 #endif // QGSNODEEDITOR_H

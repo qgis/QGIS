@@ -62,175 +62,323 @@ class CoordinateItemDelegate : public QStyledItemDelegate
 };
 
 
+QgsNodeEditorModel::QgsNodeEditorModel( QgsVectorLayer* layer, QgsSelectedFeature* selectedFeature, QgsMapCanvas* canvas, QObject* parent )
+    : QAbstractTableModel( parent )
+    , mLayer( layer )
+    , mSelectedFeature( selectedFeature )
+    , mCanvas( canvas )
+    , mHasZ( false )
+    , mHasM( false )
+    , mHasR( true ) //always show for now - avoids scanning whole feature for curves TODO - avoid this
+    , mZCol( -1 )
+    , mMCol( -1 )
+    , mRCol( -1 )
+{
+
+  if ( !mSelectedFeature->vertexMap().isEmpty() )
+  {
+    mHasZ = mSelectedFeature->vertexMap().at( 0 )->point().is3D();
+    mHasM = mSelectedFeature->vertexMap().at( 0 )->point().isMeasure();
+
+    if ( mHasZ )
+      mZCol = 2;
+
+    if ( mHasM )
+      mMCol = 2 + ( mHasZ ? 1 : 0 );
+
+    if ( mHasR )
+      mRCol = 2 + ( mHasZ ? 1 : 0 ) + ( mHasM ? 1 : 0 );
+  }
+
+  QWidget* parentWidget = dynamic_cast< QWidget* >( parent );
+  if ( parentWidget )
+  {
+    mWidgetFont = parentWidget->font();
+  }
+
+  connect( mSelectedFeature, SIGNAL( vertexMapChanged() ), this, SLOT( featureChanged() ) );
+}
+
+int QgsNodeEditorModel::rowCount( const QModelIndex& parent ) const
+{
+  if ( parent.isValid() )
+    return 0;
+
+  return mSelectedFeature->vertexMap().count();
+}
+
+int QgsNodeEditorModel::columnCount( const QModelIndex& parent ) const
+{
+  Q_UNUSED( parent );
+  return 2 + ( mHasZ ? 1 : 0 ) + ( mHasM ? 1 : 0 ) + ( mHasR ? 1 : 0 );
+}
+
+QVariant QgsNodeEditorModel::data( const QModelIndex& index, int role ) const
+{
+  if ( !index.isValid() ||
+       ( role != Qt::DisplayRole && role != Qt::EditRole && role != MinRadiusRole && role != Qt::FontRole ) )
+    return QVariant();
+
+  if ( index.row() >= mSelectedFeature->vertexMap().count() )
+    return QVariant();
+
+  if ( index.column() >= columnCount() )
+    return QVariant();
+
+  //get QgsVertexEntry for row
+  const QgsVertexEntry* vertex = mSelectedFeature->vertexMap().at( index.row() );
+  if ( !vertex )
+  {
+    return QVariant();
+  }
+
+  if ( role == Qt::FontRole )
+  {
+    double r = 0;
+    double minRadius = 0;
+    if ( calcR( index.row(), r, minRadius ) )
+    {
+      QFont curvePointFont = mWidgetFont;
+      curvePointFont.setItalic( true );
+      return curvePointFont;
+    }
+    else
+    {
+      return QVariant();
+    }
+  }
+
+  if ( role == MinRadiusRole )
+  {
+    if ( index.column() == mRCol )
+    {
+      double r = 0;
+      double minRadius = 0;
+      if ( calcR( index.row(), r, minRadius ) )
+      {
+        return minRadius;
+      }
+    }
+    return QVariant();
+  }
+
+  if ( index.column() == 0 )
+    return vertex->point().x();
+  else if ( index.column() == 1 )
+    return vertex->point().y();
+  else if ( index.column() == mZCol )
+    return vertex->point().z();
+  else if ( index.column() ==  mMCol )
+    return vertex->point().m();
+  else if ( index.column() == mRCol )
+  {
+    double r = 0;
+    double minRadius = 0;
+    if ( calcR( index.row(), r, minRadius ) )
+    {
+      return r;
+    }
+    return QVariant();
+  }
+  else
+  {
+    return QVariant();
+  }
+
+}
+
+QVariant QgsNodeEditorModel::headerData( int section, Qt::Orientation orientation, int role ) const
+{
+  if ( role == Qt::DisplayRole )
+  {
+    if ( orientation == Qt::Vertical ) //row
+    {
+      return QVariant( section );
+    }
+    else
+    {
+      if ( section == 0 )
+        return QVariant( tr( "x" ) );
+      else if ( section == 1 )
+        return QVariant( tr( "y" ) );
+      else if ( section == mZCol )
+        return QVariant( tr( "z" ) );
+      else if ( section ==  mMCol )
+        return QVariant( tr( "m" ) );
+      else if ( section == mRCol )
+        return QVariant( tr( "r" ) );
+      else
+        return QVariant();
+    }
+  }
+  else
+  {
+    return QVariant();
+  }
+}
+
+bool QgsNodeEditorModel::setData( const QModelIndex& index, const QVariant& value, int role )
+{
+  if ( !index.isValid() || role != Qt::EditRole )
+  {
+    return false;
+  }
+  if ( index.row() >= mSelectedFeature->vertexMap().count() )
+  {
+    return false;
+  }
+
+  double x = ( index.column() == 0 ? value.toDouble() : mSelectedFeature->vertexMap().at( index.row() )->point().x() );
+  double y = ( index.column() == 1 ? value.toDouble() : mSelectedFeature->vertexMap().at( index.row() )->point().y() );
+
+  if ( index.column() == mRCol ) // radius modified
+  {
+    if ( index.row() == 0 || index.row() >= mSelectedFeature->vertexMap().count() - 1 )
+      return false;
+
+    double r = value.toDouble();
+    double x1 = mSelectedFeature->vertexMap().at( index.row() - 1 )->point().x();
+    double y1 = mSelectedFeature->vertexMap().at( index.row() - 1 )->point().y();
+    double x2 = x;
+    double y2 = y;
+    double x3 = mSelectedFeature->vertexMap().at( index.row() + 1 )->point().x();
+    double y3 = mSelectedFeature->vertexMap().at( index.row() + 1 )->point().y();
+
+    QgsPointV2 result;
+    if ( QgsGeometryUtils::segmentMidPoint( QgsPointV2( x1, y1 ), QgsPointV2( x3, y3 ), result, r, QgsPointV2( x2, y2 ) ) )
+    {
+      x = result.x();
+      y = result.y();
+    }
+  }
+  double z = ( index.column() == mZCol ? value.toDouble() : mSelectedFeature->vertexMap().at( index.row() )->point().z() );
+  double m = ( index.column() == mMCol ? value.toDouble() : mSelectedFeature->vertexMap().at( index.row() )->point().m() );
+  QgsPointV2 p( QgsWKBTypes::PointZM, x, y, z, m );
+
+  mLayer->beginEditCommand( QObject::tr( "Moved vertices" ) );
+  mLayer->moveVertex( p, mSelectedFeature->featureId(), index.row() );
+  mLayer->endEditCommand();
+  mCanvas->refresh();
+
+  return false;
+}
+
+Qt::ItemFlags QgsNodeEditorModel::flags( const QModelIndex& index ) const
+{
+  Qt::ItemFlags flags = QAbstractItemModel::flags( index );
+
+  if ( index.isValid() )
+  {
+    return flags | Qt::ItemIsEditable;
+  }
+  else
+  {
+    return flags;
+  }
+}
+
+bool QgsNodeEditorModel::calcR( int row, double& r, double& minRadius ) const
+{
+  if ( row <= 0 || row >= mSelectedFeature->vertexMap().count() - 1 )
+    return false;
+
+  const QgsVertexEntry* entry = mSelectedFeature->vertexMap().at( row );
+
+  bool curvePoint = ( entry->vertexId().type == QgsVertexId::CurveVertex );
+  if ( !curvePoint )
+    return false;
+
+  const QgsPointV2& p1 = mSelectedFeature->vertexMap().at( row - 1 )->point();
+  const QgsPointV2& p2 = mSelectedFeature->vertexMap().at( row )->point();
+  const QgsPointV2& p3 = mSelectedFeature->vertexMap().at( row + 1 )->point();
+
+  double cx, cy;
+  QgsGeometryUtils::circleCenterRadius( p1, p2, p3, r, cx, cy );
+
+  double x13 = p3.x() - p1.x(), y13 = p3.y() - p1.y();
+  minRadius = 0.5 * qSqrt( x13 * x13 + y13 * y13 );
+
+  return true;
+}
+
+void QgsNodeEditorModel::featureChanged()
+{
+  //TODO - avoid reset
+  reset();
+}
+
 QgsNodeEditor::QgsNodeEditor(
   QgsVectorLayer *layer,
   QgsSelectedFeature *selectedFeature,
   QgsMapCanvas *canvas )
+    : mUpdatingTableSelection( false )
+    , mUpdatingNodeSelection( false )
 {
-  setWindowTitle( tr( "Vertex editor" ) );
+  setWindowTitle( tr( "Vertex Editor" ) );
   setFeatures( features() ^ QDockWidget::DockWidgetClosable );
 
   mLayer = layer;
   mSelectedFeature = selectedFeature;
   mCanvas = canvas;
 
-  mTableWidget = new QTableWidget( 0, 6, this );
-  mTableWidget->setHorizontalHeaderLabels( QStringList() << "id" << "x" << "y" << "z" << "m" << "r" );
-  mTableWidget->setSelectionMode( QTableWidget::ExtendedSelection );
-  mTableWidget->setSelectionBehavior( QTableWidget::SelectRows );
-  mTableWidget->verticalHeader()->hide();
-  mTableWidget->horizontalHeader()->setResizeMode( 1, QHeaderView::Stretch );
-  mTableWidget->horizontalHeader()->setResizeMode( 2, QHeaderView::Stretch );
-  mTableWidget->horizontalHeader()->setResizeMode( 3, QHeaderView::Stretch );
-  mTableWidget->horizontalHeader()->setResizeMode( 4, QHeaderView::Stretch );
-  mTableWidget->horizontalHeader()->setResizeMode( 5, QHeaderView::Stretch );
-  mTableWidget->setItemDelegateForColumn( 1, new CoordinateItemDelegate() );
-  mTableWidget->setItemDelegateForColumn( 2, new CoordinateItemDelegate() );
-  mTableWidget->setItemDelegateForColumn( 3, new CoordinateItemDelegate() );
-  mTableWidget->setItemDelegateForColumn( 4, new CoordinateItemDelegate() );
-  mTableWidget->setItemDelegateForColumn( 5, new CoordinateItemDelegate() );
+  mTableView = new QTableView( this );
+  mNodeModel = new QgsNodeEditorModel( mLayer, mSelectedFeature, mCanvas, this );
+  mTableView->setModel( mNodeModel );
 
-  setWidget( mTableWidget );
+  mTableView->setSelectionMode( QTableWidget::ExtendedSelection );
+  mTableView->setSelectionBehavior( QTableWidget::SelectRows );
+  mTableView->setItemDelegateForColumn( 0, new CoordinateItemDelegate() );
+  mTableView->setItemDelegateForColumn( 1, new CoordinateItemDelegate() );
+  mTableView->setItemDelegateForColumn( 2, new CoordinateItemDelegate() );
+  mTableView->setItemDelegateForColumn( 3, new CoordinateItemDelegate() );
+  mTableView->setItemDelegateForColumn( 4, new CoordinateItemDelegate() );
+
+  setWidget( mTableView );
 
   connect( mSelectedFeature, SIGNAL( selectionChanged() ), this, SLOT( updateTableSelection() ) );
-  connect( mSelectedFeature, SIGNAL( vertexMapChanged() ), this, SLOT( rebuildTable() ) );
-  connect( mTableWidget, SIGNAL( itemSelectionChanged() ), this, SLOT( updateNodeSelection() ) );
-  connect( mTableWidget, SIGNAL( cellChanged( int, int ) ), this, SLOT( tableValueChanged( int, int ) ) );
-
-  rebuildTable();
-}
-
-void QgsNodeEditor::rebuildTable()
-{
-  QFont curvePointFont = mTableWidget->font();
-  curvePointFont.setItalic( true );
-
-  mTableWidget->blockSignals( true );
-  mTableWidget->setRowCount( 0 );
-  int row = 0;
-  bool hasR = false;
-  Q_FOREACH ( const QgsVertexEntry* entry, mSelectedFeature->vertexMap() )
-  {
-    mTableWidget->insertRow( row );
-
-    QTableWidgetItem* idItem = new QTableWidgetItem();
-    idItem->setData( Qt::DisplayRole, row );
-    idItem->setFlags( idItem->flags() ^ Qt::ItemIsEditable );
-    mTableWidget->setItem( row, 0, idItem );
-
-    QTableWidgetItem* xItem = new QTableWidgetItem();
-    xItem->setData( Qt::EditRole, entry->point().x() );
-    mTableWidget->setItem( row, 1, xItem );
-
-    QTableWidgetItem* yItem = new QTableWidgetItem();
-    yItem->setData( Qt::EditRole, entry->point().y() );
-    mTableWidget->setItem( row, 2, yItem );
-
-    QTableWidgetItem* zItem = new QTableWidgetItem();
-    zItem->setData( Qt::EditRole, entry->point().z() );
-    mTableWidget->setItem( row, 3, zItem );
-
-    QTableWidgetItem* mItem = new QTableWidgetItem();
-    mItem->setData( Qt::EditRole, entry->point().m() );
-    mTableWidget->setItem( row, 4, mItem );
-
-    QTableWidgetItem* rItem = new QTableWidgetItem();
-    mTableWidget->setItem( row, 5, rItem );
-
-    bool curvePoint = ( entry->vertexId().type == QgsVertexId::CurveVertex );
-    if ( curvePoint )
-    {
-      idItem->setFont( curvePointFont );
-      xItem->setFont( curvePointFont );
-      yItem->setFont( curvePointFont );
-      zItem->setFont( curvePointFont );
-      mItem->setFont( curvePointFont );
-      rItem->setFont( curvePointFont );
-
-      const QgsPointV2& p1 = mSelectedFeature->vertexMap()[row - 1]->point();
-      const QgsPointV2& p2 = mSelectedFeature->vertexMap()[row]->point();
-      const QgsPointV2& p3 = mSelectedFeature->vertexMap()[row + 1]->point();
-
-      double r, cx, cy;
-      QgsGeometryUtils::circleCenterRadius( p1, p2, p3, r, cx, cy );
-      rItem->setData( Qt::EditRole, r );
-
-      double x13 = p3.x() - p1.x(), y13 = p3.y() - p1.y();
-      rItem->setData( MinRadiusRole, 0.5 * qSqrt( x13 * x13 + y13 * y13 ) );
-
-      hasR = true;
-    }
-    else
-    {
-      rItem->setFlags( rItem->flags() & ~( Qt::ItemIsSelectable | Qt::ItemIsEnabled ) );
-    }
-
-    ++row;
-  }
-  mTableWidget->setColumnHidden( 3, !mSelectedFeature->vertexMap()[0]->point().is3D() );
-  mTableWidget->setColumnHidden( 4, !mSelectedFeature->vertexMap()[0]->point().isMeasure() );
-  mTableWidget->setColumnHidden( 5, !hasR );
-  mTableWidget->resizeColumnToContents( 0 );
-  mTableWidget->blockSignals( false );
-}
-
-void QgsNodeEditor::tableValueChanged( int row, int col )
-{
-  int nodeIdx = mTableWidget->item( row, 0 )->data( Qt::DisplayRole ).toInt();
-  double x, y;
-  if ( col == 5 ) // radius modified
-  {
-    double r = mTableWidget->item( row, 5 )->data( Qt::EditRole ).toDouble();
-    double x1 = mTableWidget->item( row - 1, 1 )->data( Qt::EditRole ).toDouble();
-    double y1 = mTableWidget->item( row - 1, 2 )->data( Qt::EditRole ).toDouble();
-    double x2 = mTableWidget->item( row    , 1 )->data( Qt::EditRole ).toDouble();
-    double y2 = mTableWidget->item( row    , 2 )->data( Qt::EditRole ).toDouble();
-    double x3 = mTableWidget->item( row + 1, 1 )->data( Qt::EditRole ).toDouble();
-    double y3 = mTableWidget->item( row + 1, 2 )->data( Qt::EditRole ).toDouble();
-
-    QgsPointV2 result;
-    QgsGeometryUtils::segmentMidPoint( QgsPointV2( x1, y1 ), QgsPointV2( x3, y3 ), result, r, QgsPointV2( x2, y2 ) );
-    x = result.x();
-    y = result.y();
-  }
-  else
-  {
-    x = mTableWidget->item( row, 1 )->data( Qt::EditRole ).toDouble();
-    y = mTableWidget->item( row, 2 )->data( Qt::EditRole ).toDouble();
-  }
-  double z = mTableWidget->item( row, 3 )->data( Qt::EditRole ).toDouble();
-  double m = mTableWidget->item( row, 4 )->data( Qt::EditRole ).toDouble();
-  QgsPointV2 p( QgsWKBTypes::PointZM, x, y, z, m );
-
-  mLayer->beginEditCommand( QObject::tr( "Moved vertices" ) );
-  mLayer->moveVertex( p, mSelectedFeature->featureId(), nodeIdx );
-  mLayer->endEditCommand();
-  mCanvas->refresh();
+  connect( mTableView->selectionModel(), SIGNAL( selectionChanged( QItemSelection, QItemSelection ) ), this, SLOT( updateNodeSelection( QItemSelection, QItemSelection ) ) );
+  connect( mTableView, SIGNAL( cellChanged( int, int ) ), this, SLOT( tableValueChanged( int, int ) ) );
 }
 
 void QgsNodeEditor::updateTableSelection()
 {
-  mTableWidget->blockSignals( true );
-  mTableWidget->clearSelection();
+  if ( mUpdatingNodeSelection )
+    return;
+
+  mUpdatingTableSelection = true;
+  mTableView->selectionModel()->clearSelection();
   const QList<QgsVertexEntry*>& vertexMap = mSelectedFeature->vertexMap();
+  int firstSelectedRow = -1;
   for ( int i = 0, n = vertexMap.size(); i < n; ++i )
   {
     if ( vertexMap[i]->isSelected() )
     {
-      mTableWidget->selectRow( i );
+      if ( firstSelectedRow < 0 )
+        firstSelectedRow = i;
+      mTableView->selectionModel()->select( mNodeModel->index( i, 0 ), QItemSelectionModel::Rows | QItemSelectionModel::Select );
     }
   }
-  mTableWidget->blockSignals( false );
+
+  if ( firstSelectedRow >= 0 )
+    mTableView->scrollTo( mNodeModel->index( firstSelectedRow, 0 ), QAbstractItemView::PositionAtTop );
+
+  mUpdatingTableSelection = false;
 }
 
-void QgsNodeEditor::updateNodeSelection()
+void QgsNodeEditor::updateNodeSelection( const QItemSelection&, const QItemSelection& )
 {
-  mSelectedFeature->blockSignals( true );
+  if ( mUpdatingTableSelection )
+    return;
+
+  mUpdatingNodeSelection = true;
+
   mSelectedFeature->deselectAllVertexes();
-  Q_FOREACH ( const QModelIndex& index, mTableWidget->selectionModel()->selectedRows() )
+  Q_FOREACH ( const QModelIndex& index, mTableView->selectionModel()->selectedRows() )
   {
-    int nodeIdx = mTableWidget->item( index.row(), 0 )->data( Qt::DisplayRole ).toInt();
+    int nodeIdx = index.row();
     mSelectedFeature->selectVertex( nodeIdx );
   }
-  mSelectedFeature->blockSignals( false );
+
+  mUpdatingNodeSelection = false;
 }
+
