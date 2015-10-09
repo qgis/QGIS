@@ -203,7 +203,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     QMutex mOpenCloseLayerMutex;
 };
 
-class QgsGrassVectorMapStore
+class GRASS_LIB_EXPORT QgsGrassVectorMapStore
 {
   public:
     QgsGrassVectorMapStore();
