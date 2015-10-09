@@ -26,6 +26,7 @@ class QgsRubberBand;
 class QgsSelectedFeature;
 class QgsVectorLayer;
 class QTableWidget;
+class QTableWidgetItem;
 
 class QgsNodeEditor : public QDockWidget
 {
@@ -46,6 +47,7 @@ class QgsNodeEditor : public QDockWidget
     void tableValueChanged( int row, int col );
     void updateTableSelection();
     void updateNodeSelection();
+    void zoomToNode( QTableWidgetItem *item );
 };
 
 #endif // QGSNODEEDITOR_H
