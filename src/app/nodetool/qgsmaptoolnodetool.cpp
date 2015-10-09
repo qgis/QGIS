@@ -339,6 +339,7 @@ void QgsMapToolNodeTool::canvasReleaseEvent( QgsMapMouseEvent* e )
   if ( !mSelectedFeature )
     return;
 
+  QgsFeatureIds movedFids( mMoveRubberBands.keys().toSet() );
   removeRubberBands();
 
   QgsVectorLayer *vlayer = mSelectedFeature->vlayer();
@@ -383,7 +384,8 @@ void QgsMapToolNodeTool::canvasReleaseEvent( QgsMapMouseEvent* e )
         int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
         if ( topologicalEditing )
         {
-          insertSegmentVerticesForSnap( snapResults, vlayer );
+          //insert vertices for snap, but don't add them to features which already has a vertex being moved
+          insertSegmentVerticesForSnap( snapResults, vlayer, movedFids );
         }
       }
       else
@@ -602,22 +604,28 @@ QgsPoint QgsMapToolNodeTool::snapPointFromResults( const QList<QgsSnappingResult
   }
 }
 
-int QgsMapToolNodeTool::insertSegmentVerticesForSnap( const QList<QgsSnappingResult>& snapResults, QgsVectorLayer* editedLayer )
+int QgsMapToolNodeTool::insertSegmentVerticesForSnap( const QList<QgsSnappingResult>& snapResults, QgsVectorLayer* editedLayer, const QgsFeatureIds& skipFids )
 {
-  QgsPoint layerPoint;
-
   if ( !editedLayer || !editedLayer->isEditable() )
   {
     return 1;
   }
 
   //transform snaping coordinates to layer crs first
-  QList<QgsSnappingResult> transformedSnapResults = snapResults;
-  QList<QgsSnappingResult>::iterator it = transformedSnapResults.begin();
-  for ( ; it != transformedSnapResults.constEnd(); ++it )
+  QList<QgsSnappingResult> transformedSnapResults;
+  QgsFeatureIds addedFeatures;
+  QList<QgsSnappingResult>::const_iterator it = snapResults.constBegin();
+  for ( ; it != snapResults.constEnd(); ++it )
   {
+    //skip if id is in skip list or we have already added a vertex to a feature
+    if ( skipFids.contains( it->snappedAtGeometry ) || addedFeatures.contains( it->snappedAtGeometry ) )
+      continue;
+
     QgsPoint layerPoint = toLayerCoordinates( editedLayer, it->snappedVertex );
-    it->snappedVertex = layerPoint;
+    QgsSnappingResult result( *it );
+    result.snappedVertex = layerPoint;
+    transformedSnapResults << result;
+    addedFeatures << it->snappedAtGeometry;
   }
 
   return editedLayer->insertSegmentVerticesForSnap( transformedSnapResults );

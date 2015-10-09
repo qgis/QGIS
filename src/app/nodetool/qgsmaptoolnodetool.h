@@ -105,8 +105,9 @@ class QgsMapToolNodeTool: public QgsMapToolEdit
          This is useful for topological editing if snap to segment is enabled.
          @param snapResults results collected from the snapping operation
          @param editedLayer pointer to the editing layer
+         @param skipFids set of feature IDs to avoid inserting vertices in
          @return 0 in case of success*/
-    int insertSegmentVerticesForSnap( const QList<QgsSnappingResult>& snapResults, QgsVectorLayer* editedLayer );
+    int insertSegmentVerticesForSnap( const QList<QgsSnappingResult>& snapResults, QgsVectorLayer* editedLayer , const QgsFeatureIds& skipFids );
 
     /** Snapper object that reads the settings from project and option
     and applies it to the map canvas*/
