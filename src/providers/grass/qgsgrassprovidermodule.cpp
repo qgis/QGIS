@@ -52,6 +52,8 @@ QList<QAction*> QgsGrassItemActions::actions()
   connect( optionsAction, SIGNAL( triggered() ), QgsGrass::instance(), SLOT( openOptions() ) );
   list << optionsAction;
 
+  bool isMapsetOwner = QgsGrass::isOwner( mGrassObject.gisdbase(), mGrassObject.location(), mGrassObject.mapset() );
+
   // TODO: add icons to provider
   // TODO: check ownership
   if ( mGrassObject.type() == QgsGrassObject::Location )
@@ -61,15 +63,15 @@ QList<QAction*> QgsGrassItemActions::actions()
     list << newMapsetAction;
   }
 
-  if ( mGrassObject.type() == QgsGrassObject::Mapset )
+  if ( mGrassObject.type() == QgsGrassObject::Mapset && isMapsetOwner )
   {
     QAction* openMapsetAction = new QAction( QgsApplication::getThemeIcon( "grass_open_mapset.png" ), tr( "Open mapset" ), this );
     connect( openMapsetAction, SIGNAL( triggered() ), SLOT( openMapset() ) );
     list << openMapsetAction;
   }
 
-  if ( mGrassObject.type() == QgsGrassObject::Raster || mGrassObject.type() == QgsGrassObject::Vector
-       ||  mGrassObject.type() == QgsGrassObject::Group )
+  if (( mGrassObject.type() == QgsGrassObject::Raster || mGrassObject.type() == QgsGrassObject::Vector
+        ||  mGrassObject.type() == QgsGrassObject::Group ) && isMapsetOwner )
   {
     QAction* renameAction = new QAction( tr( "Rename" ), this );
     connect( renameAction, SIGNAL( triggered() ), this, SLOT( renameGrassObject() ) );
@@ -81,7 +83,7 @@ QList<QAction*> QgsGrassItemActions::actions()
   }
 
   if (( mGrassObject.type() == QgsGrassObject::Mapset || mGrassObject.type() == QgsGrassObject::Vector )
-      && mValid )
+      && mValid && isMapsetOwner )
   {
     // TODO: disable new layer actions on maps currently being edited
     QAction* newPointAction = new QAction( tr( "New Point Layer" ), this );
