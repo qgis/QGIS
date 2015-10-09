@@ -28,8 +28,13 @@
 #
 #---------------------------------------------------------------------
 
+from math import pow, log
 from PyQt4.QtCore import Qt, QObject, SIGNAL, QThread
+from PyQt4.QtCore import QLineF, QRectF, QPyNullVariant
 from PyQt4.QtGui import QDialog, QApplication, QDialogButtonBox, QMessageBox, QTableWidgetItem, QHeaderView
+from PyQt4.QtGui import QGraphicsLineItem, QGraphicsRectItem
+from PyQt4.QtGui import QGraphicsTextItem, QGraphicsScene, QBrush
+from PyQt4.QtGui import QPen, QColor, QGraphicsView
 from qgis.core import QGis, QgsFeature, QgsDistanceArea, QgsFeatureRequest
 
 from ui_frmVisual import Ui_Dialog
@@ -54,9 +59,14 @@ class VisualDialog(QDialog, Ui_Dialog):
         self.line.hide()
         self.addToCanvasCheck.hide()
         self.buttonBox_2.setOrientation(Qt.Horizontal)
+        ## Hide the histogram by default
+        self.histogramGroupBox.hide()
 
         if self.myFunction == 2 or self.myFunction == 3:
             QObject.connect(self.inShape, SIGNAL("currentIndexChanged(QString)"), self.update)
+            QObject.connect(self.cmbField,
+                            SIGNAL("currentIndexChanged(QString)"),
+                            self.updatefield)
         self.manageGui()
         self.cancel_close = self.buttonBox_2.button(QDialogButtonBox.Close)
         self.buttonOk = self.buttonBox_2.button(QDialogButtonBox.Ok)
@@ -99,13 +109,25 @@ class VisualDialog(QDialog, Ui_Dialog):
             for f in changedField:
                 self.cmbField.addItem(unicode(f.name()))
 
+    def updatefield(self):
+        if self.myFunction == 3:
+            self.minSpinBox.setValue(0.0)
+            self.maxSpinBox.setValue(0.0)
+            self.scene.clear()
+
     def accept(self):
         if self.inShape.currentText() == "":
             QMessageBox.information(self, self.tr("Error!"), self.tr("Please specify input vector layer"))
         elif self.cmbField.isVisible() and self.cmbField.currentText() == "":
             QMessageBox.information(self, self.tr("Error!"), self.tr("Please specify input field"))
         else:
-            self.visual(self.inShape.currentText(), self.cmbField.currentText(), self.useSelected.checkState())
+            numberOfBins = self.binsSpinBox.value()
+            histMin = self.minSpinBox.value()
+            histMax = self.maxSpinBox.value()
+            self.visual(self.inShape.currentText(), 
+                        self.cmbField.currentText(),
+                        self.useSelected.checkState(),
+                        [numberOfBins, histMin, histMax])
 
     def manageGui(self):
         if self.myFunction == 2: # List unique values
@@ -116,9 +138,12 @@ class VisualDialog(QDialog, Ui_Dialog):
         elif self.myFunction == 3: # Basic statistics
             self.setWindowTitle(self.tr("Basics statistics"))
             self.label_2.setText(self.tr("Statistics output"))
+            self.histogramGroupBox.setVisible(True)
+            self.scene = QGraphicsScene(self)
+            self.graphicsView.setScene(self.scene)
             self.label_4.setVisible(False)
             self.lstCount.setVisible(False)
-            self.resize(381, 400)
+            self.resize(381, 650)
         elif self.myFunction == 4: # Nearest neighbour analysis
             self.setWindowTitle(self.tr("Nearest neighbour analysis"))
             self.cmbField.setVisible(False)
@@ -140,14 +165,16 @@ class VisualDialog(QDialog, Ui_Dialog):
 #2:  List unique values
 #3:  Basic statistics
 #4:  Nearest neighbour analysis
-    def visual(self, myLayer, myField, mySelection):
+    def visual(self, myLayer, myField, mySelection, myParameters):
         vlayer = ftools_utils.getVectorLayerByName(myLayer)
         self.tblUnique.clearContents()
         self.tblUnique.setRowCount(0)
         self.lstCount.clear()
         self.buttonOk.setEnabled(False)
 
-        self.testThread = visualThread(self.iface.mainWindow(), self, self.myFunction, vlayer, myField, mySelection)
+        self.testThread = visualThread(self.iface.mainWindow(), self,
+                                       self.myFunction, vlayer, myField,
+                                       mySelection, myParameters)
         QObject.connect(self.testThread, SIGNAL("runFinished(PyQt_PyObject)"), self.runFinishedFromThread)
         QObject.connect(self.testThread, SIGNAL("runStatus(PyQt_PyObject)"), self.runStatusFromThread)
         QObject.connect(self.testThread, SIGNAL("runRange(PyQt_PyObject)"), self.runRangeFromThread)
@@ -187,11 +214,19 @@ class VisualDialog(QDialog, Ui_Dialog):
                 self.tblUnique.setItem(rec, 1, item)
             self.tblUnique.setHorizontalHeaderLabels([self.tr("Parameter"), self.tr("Value")])
             self.tblUnique.horizontalHeader().setResizeMode(1, QHeaderView.ResizeToContents)
+            self.tblUnique.horizontalHeader().setResizeMode(1, QHeaderView.ResizeToContents)
             self.tblUnique.horizontalHeader().show()
         self.tblUnique.horizontalHeader().setResizeMode(0, QHeaderView.Stretch)
         self.tblUnique.resizeRowsToContents()
-
-        self.lstCount.insert(unicode(output[1]))
+        if self.myFunction == 3:
+            self.histogramGroupBox.setEnabled(False)
+            if output[1] is not None and len(output[1]) > 1:
+                self.minSpinBox.setValue(output[1][0][0])
+                self.histogramGroupBox.setEnabled(True)
+                self.maxSpinBox.setValue(output[1][len(output[1])-1][0])
+                self.drawHistogram(output[1])
+        else:
+            self.lstCount.insert(unicode(output[1]))
         self.cancel_close.setText("Close")
         QObject.disconnect(self.cancel_close, SIGNAL("clicked()"), self.cancelThread)
         return True
@@ -212,10 +247,126 @@ class VisualDialog(QDialog, Ui_Dialog):
         self.partProgressBar.setVisible(True)
         self.partProgressBar.setRange(range_vals[0], range_vals[1])
 
+    def drawHistogram(self, theBins):
+        histBins = theBins
+        if histBins is None:
+            return
+        # Find the maximum y axis value for scaling
+        maxyvalue = 0
+        for i in range(len(histBins)-1):
+            if self.cumulativeCheckBox.checkState():
+                maxyvalue = maxyvalue + histBins[i][1]
+            else:
+                if histBins[i][1] > maxyvalue:
+                    maxyvalue = histBins[i][1]
+        cutoffvalue = maxyvalue
+        #if (self.frequencyRangeSpinBox.value() > 0):
+        #    cutoffvalue = self.frequencyRangeSpinBox.value()
+        if maxyvalue == 0:
+            return
+        self.scene.clear()
+        viewprect = QRectF(self.graphicsView.viewport().rect())
+        self.graphicsView.setSceneRect(viewprect)
+        bottom = self.graphicsView.sceneRect().bottom()
+        top = self.graphicsView.sceneRect().top()
+        left = self.graphicsView.sceneRect().left()
+        right = self.graphicsView.sceneRect().right()
+        height = bottom - top - 1
+        width = right - left - 1
+        padding = 3
+        toppadding = 3
+        minValue = histBins[0][0]
+        minvaltext = QGraphicsTextItem(str(minValue))
+        minvaltextheight = minvaltext.boundingRect().height()
+        bottompadding = minvaltextheight
+        # Determine the width of the left margin (depends on the y range)
+        clog = log(cutoffvalue, 10)
+        clogint = int(clog)
+        yincr = pow(10, clogint)
+        ylabeltext = QGraphicsTextItem(str(int(yincr)))
+        # The left padding must accomodate the y labels
+        leftpadding = ylabeltext.boundingRect().width()
+        # Find the width of the maximium frequency label
+        maxfreqtext = QGraphicsTextItem(str(cutoffvalue))
+        maxfreqtextwidth = maxfreqtext.boundingRect().width()
+        rightpadding = maxfreqtextwidth
+        width = width - (leftpadding + rightpadding)
+        height = height - (toppadding + bottompadding)
+        if len(histBins) <= 1:
+            barwidth = width
+        else:
+            barwidth = width / (len(histBins)-1)
+        # Create the histogram
+        binsize = 0
+        for i in range(len(histBins) - 1):
+            if self.cumulativeCheckBox.checkState():
+                binsize = binsize + histBins[i][1]
+            else:
+                binsize = histBins[i][1]
+            barheight =  binsize * height / cutoffvalue
+            barrect = QGraphicsRectItem(QRectF(leftpadding + barwidth * i,
+                        height - barheight + toppadding, barwidth, barheight))
+            barbrush = QBrush(QColor(255, 153, 102))
+            barrect.setBrush(barbrush)
+            self.scene.addItem(barrect)
+        # Determine the increments for the horizontal lines
+        if (cutoffvalue // yincr <= 5 and yincr > 1):
+            yincr = yincr / 2
+            if (cutoffvalue // yincr < 5 and yincr > 10):
+                yincr = yincr / 2
+        # Draw horizontal lines with labels
+        yval = yincr
+        while (yval <= cutoffvalue):
+            scval = height + toppadding - yval * height / cutoffvalue
+            hline = QGraphicsLineItem(QLineF(leftpadding - 3, scval,
+                                             width + leftpadding, scval))
+            hlinepen = QPen(QColor(153, 153, 153))
+            hlinepen.setStyle(Qt.DotLine)
+            hline.setPen(hlinepen)
+            self.scene.addItem(hline)
+            ylabtext = QGraphicsTextItem(str(int(yval)))
+            ylabtextheight = ylabtext.boundingRect().height()
+            ylabtextwidth = ylabtext.boundingRect().width()
+            ylabtext.setPos(leftpadding - ylabtextwidth,
+                            scval - ylabtextheight / 2)
+            if (scval - ylabtextheight / 2 > 0):
+                self.scene.addItem(ylabtext)
+            yval = yval + yincr
+        # Draw frame
+        vline1 = QGraphicsLineItem(QLineF(leftpadding - 1, toppadding,
+                                 leftpadding - 1, toppadding + height))
+        vlinepen = QPen(QColor(153, 153, 153))
+        vline1.setPen(vlinepen)
+        self.scene.addItem(vline1)
+        vline2 = QGraphicsLineItem(QLineF(leftpadding + width + 1, toppadding,
+                               leftpadding + width + 1, toppadding + height))
+        vline2.setPen(vlinepen)
+        self.scene.addItem(vline2)
+        hline2 = QGraphicsLineItem(QLineF(leftpadding - 1, toppadding - 1,
+                               leftpadding + width + 1, toppadding - 1))
+        hline2.setPen(vlinepen)
+        self.scene.addItem(hline2)
+        # Label the x axis
+        minvaltextwidth = minvaltext.boundingRect().width()
+        minvaltext.setPos(leftpadding - minvaltextwidth / 2,
+                          height + toppadding + bottompadding
+                          - minvaltextheight)
+        self.scene.addItem(minvaltext)
+        maxValue = histBins[len(histBins) - 1][0]
+        maxvaltext = QGraphicsTextItem(str(maxValue))
+        maxvaltextwidth = maxvaltext.boundingRect().width()
+        maxvaltext.setPos(leftpadding + width - maxvaltextwidth / 2,
+                          height + toppadding + bottompadding
+                          - minvaltextheight)
+        self.scene.addItem(maxvaltext)
+        maxfreqtext.setPos(leftpadding + width, 0)
+        self.scene.addItem(maxfreqtext)
 
+        
+        
 class visualThread(QThread):
 
-    def __init__(self, parentThread, parentObject, function, vlayer, myField, mySelection):
+    def __init__(self, parentThread, parentObject, function, vlayer, myField, mySelection, myParameters):
         QThread.__init__(self, parentThread)
         self.parent = parentObject
         self.running = False
@@ -223,6 +374,7 @@ class visualThread(QThread):
         self.vlayer = vlayer
         self.myField = myField
         self.mySelection = mySelection
+        self.myParameters = myParameters
 
     def run(self):
         self.running = True
@@ -230,7 +382,7 @@ class visualThread(QThread):
         if self.myFunction == 2: # List unique values
             (lst, cnt) = self.list_unique_values(self.vlayer, self.myField)
         elif self.myFunction == 3: # Basic statistics
-            (lst, cnt) = self.basic_statistics(self.vlayer, self.myField)
+            (lst, cnt) = self.basic_statistics(self.vlayer, self.myField, self.myParameters)
         elif self.myFunction == 4: # Nearest neighbour analysis
             (lst, cnt) = self.nearest_neighbour_analysis(self.vlayer)
         self.emit(SIGNAL("runFinished(PyQt_PyObject)"), (lst, cnt))
@@ -256,7 +408,7 @@ class visualThread(QThread):
         lstCount = len(unique)
         return (lstUnique, lstCount)
 
-    def basic_statistics(self, vlayer, myField):
+    def basic_statistics(self, vlayer, myField, myParameters):
         vprovider = vlayer.dataProvider()
         index = vprovider.fieldNameIndex(myField)
         feat = QgsFeature()
@@ -348,6 +500,20 @@ class visualThread(QThread):
             medianVal = 0.00
             maxVal = 0.00
             minVal = 0.00
+            numberOfHistBins = myParameters[0]
+            histMin = myParameters[1]
+            histMax = myParameters[2]
+            if histMin == 0 and histMax == 0:
+                histMin = vlayer.minimumValue(index)
+                histMax = vlayer.maximumValue(index)
+            if isinstance(histMin, QPyNullVariant):
+                histMin = 0.0
+            if isinstance(histMax, QPyNullVariant):
+                histMax = 0.0
+            histBinSize = float(histMax - histMin) / float(numberOfHistBins)
+            histStatistics = []
+            for i in range(numberOfHistBins + 1):
+                histStatistics.append([histMin + i * histBinSize, 0])
             if self.mySelection: # only selected features
                 selection = vlayer.selectedFeatures()
                 nFeat = vlayer.selectedFeatureCount()
@@ -356,6 +522,8 @@ class visualThread(QThread):
                     self.emit(SIGNAL("runStatus(PyQt_PyObject)"), 0)
                     self.emit(SIGNAL("runRange(PyQt_PyObject)"), (0, nFeat))
                 for f in selection:
+                    if isinstance(f[index], QPyNullVariant):
+                        continue
                     value = float(f[index])
                     if first:
                         minVal = value
@@ -369,6 +537,14 @@ class visualThread(QThread):
                     values.append(value)
                     sumVal = sumVal + value
                     nElement += 1
+                    if (value >= histMin) and (value <= histMax):
+                        if histBinSize == 0:
+                            fittingbin = 0
+                        else:
+                            fittingbin = int((value - histMin) / histBinSize)
+                        if fittingbin >= numberOfHistBins:
+                            fittingbin = numberOfHistBins - 1
+                        histStatistics[fittingbin][1] = histStatistics[fittingbin][1] + 1
                     self.emit(SIGNAL("runStatus(PyQt_PyObject)"), nElement)
             else: # there is no selection, process the whole layer
                 nFeat = vprovider.featureCount()
@@ -378,6 +554,8 @@ class visualThread(QThread):
                     self.emit(SIGNAL("runRange(PyQt_PyObject)"), (0, nFeat))
                 fit = vprovider.getFeatures()
                 while fit.nextFeature(feat):
+                    if isinstance(feat[index], QPyNullVariant):
+                        continue
                     value = float(feat[index])
                     if first:
                         minVal = value
@@ -391,6 +569,14 @@ class visualThread(QThread):
                     values.append(value)
                     sumVal = sumVal + value
                     nElement += 1
+                    if (value >= histMin) and (value <= histMax):
+                        if histBinSize == 0:
+                            fittingbin = 0
+                        else:
+                            fittingbin = int((value - histMin) / histBinSize)
+                        if fittingbin >= numberOfHistBins:
+                            fittingbin = numberOfHistBins - 1
+                        histStatistics[fittingbin][1] = histStatistics[fittingbin][1] + 1
                     self.emit(SIGNAL("runStatus(PyQt_PyObject)"), nElement)
             nVal = float(len(values))
             if nVal > 0.00:
@@ -418,9 +604,9 @@ class visualThread(QThread):
                 lstStats.append(self.tr("Number of unique values:") + unicode(uniqueVal))
                 lstStats.append(self.tr("Range:") + unicode(rangeVal))
                 lstStats.append(self.tr("Median:") + unicode(medianVal))
-                return (lstStats, [])
+                return (lstStats, histStatistics)
             else:
-                return (["Error:No features selected!"], [])
+                return (["Error: No features with non-empty value selected!"], [])
 
     def nearest_neighbour_analysis(self, vlayer):
         vprovider = vlayer.dataProvider()
