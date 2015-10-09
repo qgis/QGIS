@@ -810,7 +810,7 @@ void TestQgsGrassProvider::edit()
     return;
   }
 
-  QList<QList<TestQgsGrassCommand>> commandGroups;
+  QList< QList<TestQgsGrassCommand> > commandGroups;
 
   QList<TestQgsGrassCommand> commands;
   QgsFeature feature;
