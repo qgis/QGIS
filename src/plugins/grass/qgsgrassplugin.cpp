@@ -194,10 +194,12 @@ void QgsGrassPlugin::initGui()
   mToolBarPointer->setObjectName( "GRASS" );
 
   // Add to the toolbar
+#if 0
   mToolBarPointer->addAction( mOpenMapsetAction );
   mToolBarPointer->addAction( mNewMapsetAction );
   mToolBarPointer->addAction( mCloseMapsetAction );
   mToolBarPointer->addSeparator();
+#endif
   mToolBarPointer->addAction( mOpenToolsAction );
   mToolBarPointer->addAction( mRegionAction );
 
