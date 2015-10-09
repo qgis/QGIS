@@ -44,6 +44,7 @@ class DBTree(QTreeView):
         self.setAcceptDrops(True)
         self.setDropIndicatorShown(True)
 
+        self.connect(self, SIGNAL("doubleClicked(const QModelIndex &)"), self.addLayer)
         self.connect(self.selectionModel(), SIGNAL("currentChanged(const QModelIndex&, const QModelIndex&)"),
                      self.currentItemChanged)
         self.connect(self, SIGNAL("expanded(const QModelIndex&)"), self.itemChanged)
