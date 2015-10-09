@@ -54,7 +54,7 @@ void QgsMapToolNodeTool::createTopologyRubberBands()
 {
   QgsVectorLayer* vlayer = mSelectedFeature->vlayer();
 
-  Q_FOREACH ( const QgsVertexEntry* vertexEntry, mSelectedFeature->vertexMap() )
+  Q_FOREACH( const QgsVertexEntry* vertexEntry, mSelectedFeature->vertexMap() )
   {
     if ( !vertexEntry->isSelected() )
     {
@@ -64,7 +64,7 @@ void QgsMapToolNodeTool::createTopologyRubberBands()
     // Snap vertex
     QMultiMap<double, QgsSnappingResult> snapResults;
     vlayer->snapWithContext( vertexEntry->pointV1(), ZERO_TOLERANCE, snapResults, QgsSnapper::SnapToVertex );
-    Q_FOREACH ( const QgsSnappingResult& snapResult, snapResults.values() )
+    Q_FOREACH( const QgsSnappingResult& snapResult, snapResults.values() )
     {
       // Get geometry of snapped feature
       QgsFeatureId snapFeatureId = snapResult.snappedAtGeometry;
@@ -121,7 +121,7 @@ void QgsMapToolNodeTool::canvasMoveEvent( QgsMapMouseEvent* e )
         rbGeom->transform( *mCanvas->mapSettings().layerTransform( vlayer ) );
       rb->setGeometry( rbGeom );
       mMoveRubberBands.insert( mSelectedFeature->featureId(), rb );
-      Q_FOREACH ( const QgsVertexEntry* vertexEntry, mSelectedFeature->vertexMap() )
+      Q_FOREACH( const QgsVertexEntry* vertexEntry, mSelectedFeature->vertexMap() )
       {
         if ( vertexEntry->isSelected() )
           mMoveVertices[mSelectedFeature->featureId()].append( qMakePair( vertexEntry->vertexId(), toMapCoordinates( vlayer, vertexEntry->point() ) ) );
@@ -142,10 +142,10 @@ void QgsMapToolNodeTool::canvasMoveEvent( QgsMapMouseEvent* e )
       double deltaX = curPos.x() - pressPos.x();
       double deltaY = curPos.y() - pressPos.y();
 
-      Q_FOREACH ( const QgsFeatureId& fid, mMoveRubberBands.keys() )
+      Q_FOREACH( const QgsFeatureId& fid, mMoveRubberBands.keys() )
       {
         typedef QPair<QgsVertexId, QgsPointV2> MoveVertex;
-        Q_FOREACH ( const MoveVertex& pair, mMoveVertices[fid] )
+        Q_FOREACH( const MoveVertex& pair, mMoveVertices[fid] )
         {
           QgsPointV2 newPos( pair.second.x() + deltaX, pair.second.y() + deltaY );
           mMoveRubberBands.value( fid )->moveVertex( pair.first, newPos );
@@ -586,7 +586,10 @@ void QgsMapToolNodeTool::safeSelectVertex( int vertexNr )
   if ( mSelectedFeature )
   {
     int n = mSelectedFeature->vertexMap().size();
-    mSelectedFeature->selectVertex(( vertexNr + n ) % n );
+    if ( n > 0 )
+    {
+      mSelectedFeature->selectVertex(( vertexNr + n ) % n );
+    }
   }
 }
 
