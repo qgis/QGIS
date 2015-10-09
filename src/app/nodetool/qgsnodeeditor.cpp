@@ -365,7 +365,7 @@ void QgsNodeEditor::updateTableSelection()
   mUpdatingTableSelection = false;
 }
 
-void QgsNodeEditor::updateNodeSelection( const QItemSelection&, const QItemSelection& )
+void QgsNodeEditor::updateNodeSelection( const QItemSelection& selected, const QItemSelection& )
 {
   if ( mUpdatingTableSelection )
     return;
@@ -379,6 +379,35 @@ void QgsNodeEditor::updateNodeSelection( const QItemSelection&, const QItemSelec
     mSelectedFeature->selectVertex( nodeIdx );
   }
 
+  //ensure that newly selected node is visible in canvas
+  if ( !selected.indexes().isEmpty() )
+  {
+    int newRow = selected.indexes().first().row();
+    zoomToNode( newRow );
+  }
+
   mUpdatingNodeSelection = false;
 }
+
+void QgsNodeEditor::zoomToNode( int idx )
+{
+  double x = mSelectedFeature->vertexMap().at( idx )->point().x();
+  double y = mSelectedFeature->vertexMap().at( idx )->point().y();
+  QgsPoint newCenter( x, y );
+
+  QgsCoordinateTransform t( mLayer->crs(), mCanvas->mapSettings().destinationCrs() );
+  QgsPoint tCenter = t.transform( newCenter );
+
+  QPolygonF ext = mCanvas->mapSettings().visiblePolygon();
+  //close polygon
+  ext.append( ext.first() );
+  QScopedPointer< QgsGeometry > extGeom( QgsGeometry::fromQPolygonF( ext ) );
+  QScopedPointer< QgsGeometry > nodeGeom( QgsGeometry::fromPoint( tCenter ) );
+  if ( !nodeGeom->within( extGeom.data() ) )
+  {
+    mCanvas->setCenter( tCenter );
+    mCanvas->refresh();
+  }
+}
+
 

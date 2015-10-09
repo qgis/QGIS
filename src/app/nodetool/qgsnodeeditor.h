@@ -86,6 +86,7 @@ class QgsNodeEditor : public QDockWidget
   private slots:
     void updateTableSelection( );
     void updateNodeSelection( const QItemSelection& selected, const QItemSelection& deselected );
+    void zoomToNode( int idx );
 
   private:
 
