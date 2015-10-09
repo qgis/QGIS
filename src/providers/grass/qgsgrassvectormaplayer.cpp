@@ -643,13 +643,13 @@ void QgsGrassVectorMapLayer::createTable( const QgsFields &fields, QString &erro
       mTableFields.append( fields[i] );
       mAttributeFields.append( fields[i] );
     }
+    mHasTable = true;
+    mKeyColumn = 0;
     insertCats( error );
     if ( !error.isEmpty() )
     {
       QgsDebugMsg( error );
     }
-    mHasTable = true;
-    mKeyColumn = 0;
   }
   QgsDebugMsg( "Table successfully created" );
 }
@@ -792,8 +792,8 @@ void QgsGrassVectorMapLayer::insertCats( QString &error )
     QgsDebugMsg( QString( "nCats = %1" ).arg( nCats ) );
     for ( int i = 0; i < nCats; i++ )
     {
-      int cat;
-      Vect_cidx_get_cat_by_index( map()->map(), cidxIndex, i, &cat, 0, 0 );
+      int cat, type, id;
+      Vect_cidx_get_cat_by_index( map()->map(), cidxIndex, i, &cat, &type, &id );
       QgsFeature feature;
       insertAttributes( cat, feature, error );
       if ( !error.isEmpty() )
