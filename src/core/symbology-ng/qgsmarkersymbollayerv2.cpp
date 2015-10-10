@@ -1290,6 +1290,7 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Re
     context.setOriginalValueVariable( mOutlineWidth );
     outlineWidth = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_OUTLINE_WIDTH, context, mOutlineWidth ).toDouble();
   }
+  outlineWidth = QgsSymbolLayerV2Utils::convertToPainterUnits( context.renderContext(), outlineWidth, mOutlineWidthUnit, mOutlineWidthMapUnitScale );
 
   QColor fillColor = mFillColor;
   if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_FILL ) )
@@ -1595,6 +1596,7 @@ bool QgsSvgMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScale
     context->setOriginalValueVariable( mOutlineWidth );
     outlineWidth = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_OUTLINE_WIDTH, *context, mOutlineWidth ).toDouble();
   }
+  outlineWidth = QgsSymbolLayerV2Utils::convertToPainterUnits( context->renderContext(), outlineWidth, mOutlineWidthUnit, mOutlineWidthMapUnitScale );
 
   QColor fillColor = mFillColor;
   if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_FILL ) )
