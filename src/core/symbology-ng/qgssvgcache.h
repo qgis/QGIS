@@ -178,6 +178,9 @@ class CORE_EXPORT QgsSvgCache : public QObject
     void containsElemParams( const QDomElement& elem, bool& hasFillParam, QColor& defaultFill, bool& hasOutlineParam, QColor& defaultOutline,
                              bool& hasOutlineWidthParam, double& defaultOutlineWidth ) const;
 
+    /** Calculates scaling for rendered image sizes to SVG logical sizes*/
+    double calcSizeScaleFactor( QgsSvgCacheEntry* entry, const QDomElement& docElem ) const;
+
     /** Release memory and remove cache entry from mEntryLookup*/
     void removeCacheEntry( const QString& s, QgsSvgCacheEntry* entry );
 
@@ -189,6 +192,7 @@ class CORE_EXPORT QgsSvgCache : public QObject
 
     //! Mutex to prevent concurrent access to the class from multiple threads at once (may corrupt the entries otherwise).
     QMutex mMutex;
+
 };
 
 #endif // QGSSVGCACHE_H

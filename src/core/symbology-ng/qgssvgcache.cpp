@@ -229,7 +229,7 @@ void QgsSvgCache::containsParams( const QString& path, bool& hasFillParam, QColo
 {
   defaultFillColor = QColor( Qt::black );
   defaultOutlineColor = QColor( Qt::black );
-  defaultOutlineWidth = 1.0;
+  defaultOutlineWidth = 0.2;
 
   QDomDocument svgDoc;
   if ( !svgDoc.setContent( getImageData( path ) ) )
@@ -256,10 +256,54 @@ void QgsSvgCache::replaceParamsAndCacheSvg( QgsSvgCacheEntry* entry )
 
   //replace fill color, outline color, outline with in all nodes
   QDomElement docElem = svgDoc.documentElement();
-  replaceElemParams( docElem, entry->fill, entry->outline, entry->outlineWidth );
+
+  double sizeScaleFactor = calcSizeScaleFactor( entry, docElem );
+  replaceElemParams( docElem, entry->fill, entry->outline, entry->outlineWidth * sizeScaleFactor );
 
   entry->svgContent = svgDoc.toByteArray();
   mTotalSize += entry->svgContent.size();
+}
+
+double QgsSvgCache::calcSizeScaleFactor( QgsSvgCacheEntry* entry, const QDomElement& docElem ) const
+{
+  QString viewBox;
+
+  //bad size
+  if ( !entry || entry->size == 0 )
+    return 1.0;
+
+  //find svg viewbox attribute
+  //first check if docElem is svg element
+  if ( docElem.tagName() == "svg" )
+  {
+    viewBox = docElem.attribute( "viewBox", QString() );
+  }
+  else
+  {
+    QDomElement svgElem = docElem.firstChildElement( "svg" ) ;
+    if ( !svgElem.isNull() )
+    {
+      viewBox = svgElem.attribute( "viewBox", QString() );
+    }
+  }
+
+  //could not find valid viewbox attribute
+  if ( viewBox.isEmpty() )
+    return 1.0;
+
+  //width should be 3rd element in a 4 part space delimited string
+  QStringList parts = viewBox.split( " " );
+  if ( parts.count() != 4 )
+    return 1.0;
+
+  bool widthOk = false;
+  double width = parts.at( 2 ).toDouble( &widthOk );
+  if ( widthOk )
+  {
+    return width / entry->size ;
+  }
+
+  return 1.0;
 }
 
 QByteArray QgsSvgCache::getImageData( const QString &path ) const

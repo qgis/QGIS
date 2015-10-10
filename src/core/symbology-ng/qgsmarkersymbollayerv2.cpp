@@ -1039,7 +1039,7 @@ QgsSvgMarkerSymbolLayerV2::QgsSvgMarkerSymbolLayerV2( const QString& name, doubl
   mAngle = angle;
   mOffset = QPointF( 0, 0 );
   mScaleMethod = scaleMethod;
-  mOutlineWidth = 1.0;
+  mOutlineWidth = 0.2;
   mOutlineWidthUnit = QgsSymbolV2::MM;
   mColor = QColor( Qt::black );
   mOutlineColor = QColor( Qt::black );

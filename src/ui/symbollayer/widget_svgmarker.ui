@@ -35,6 +35,9 @@
          <property name="singleStep">
           <double>0.200000000000000</double>
          </property>
+         <property name="value">
+          <double>0.200000000000000</double>
+         </property>
          <property name="showClearButton" stdset="0">
           <bool>false</bool>
          </property>
