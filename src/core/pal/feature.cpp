@@ -871,12 +871,31 @@ namespace pal
       return 0;
     }
 
+    //calculate overall angle of line
+    double lineAngle;
+    double bx = mapShape->x[0];
+    double by = mapShape->y[0];
+    double ex = mapShape->x[ mapShape->nbPoints - 1 ];
+    double ey = mapShape->y[ mapShape->nbPoints - 1 ];
+    if ( qgsDoubleNear( ey, by ) && qgsDoubleNear( ex, bx ) )
+    {
+      lineAngle = 0.0;
+    }
+    else
+      lineAngle = atan2( ey - by, ex - bx );
+
+    // find out whether the line direction for this candidate is from right to left
+    bool isRightToLeft = ( lineAngle > M_PI / 2 || lineAngle <= -M_PI / 2 );
+
     QLinkedList<LabelPosition*> positions;
     double delta = qMax( li->label_height, total_distance / 10.0 );
 
     unsigned long flags = mLF->layer()->arrangementFlags();
     if ( flags == 0 )
       flags = FLAG_ON_LINE; // default flag
+    // placements may need to be reversed if using line position dependent orientation
+    // and the line has right-to-left direction
+    bool reversed = ( !( flags & FLAG_MAP_ORIENTATION ) ? isRightToLeft : false );
 
     // generate curved labels
     for ( int i = 0; i*delta < total_distance; i++ )
@@ -916,15 +935,14 @@ namespace pal
         //std::cerr << "cost " << angle_diff << " vs " << costCenter << std::endl;
         slp->setCost( cost );
 
-
         // average angle is calculated with respect to periodicity of angles
         double angle_avg = atan2( sin_avg / li->char_num, cos_avg / li->char_num );
         // displacement
-        if ( flags & FLAG_ABOVE_LINE )
+        if (( !reversed && ( flags & FLAG_ABOVE_LINE ) ) || ( reversed && ( flags & FLAG_BELOW_LINE ) ) )
           positions.append( _createCurvedCandidate( slp, angle_avg, mLF->distLabel() ) );
         if ( flags & FLAG_ON_LINE )
           positions.append( _createCurvedCandidate( slp, angle_avg, -li->label_height / 2 ) );
-        if ( flags & FLAG_BELOW_LINE )
+        if (( !reversed && ( flags & FLAG_BELOW_LINE ) ) || ( reversed && ( flags & FLAG_ABOVE_LINE ) ) )
           positions.append( _createCurvedCandidate( slp, angle_avg, -li->label_height - mLF->distLabel() ) );
 
         // delete original candidate
