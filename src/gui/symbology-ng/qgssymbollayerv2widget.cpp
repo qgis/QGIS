@@ -1834,7 +1834,7 @@ void QgsSvgMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   setGuiForSvg( mLayer );
 
   registerDataDefinedButton( mSizeDDBtn, "size", QgsDataDefinedButton::Double, QgsDataDefinedButton::doublePosDesc() );
-  registerDataDefinedButton( mBorderWidthDDBtn, "outline-width", QgsDataDefinedButton::Double, QgsDataDefinedButton::doublePosDesc() );
+  registerDataDefinedButton( mBorderWidthDDBtn, "outline_width", QgsDataDefinedButton::Double, QgsDataDefinedButton::doublePosDesc() );
   registerDataDefinedButton( mAngleDDBtn, "angle", QgsDataDefinedButton::Double, QgsDataDefinedButton::double180RotDesc() );
   registerDataDefinedButton( mOffsetDDBtn, "offset", QgsDataDefinedButton::String, QgsDataDefinedButton::doubleXYDesc() );
   registerDataDefinedButton( mFilenameDDBtn, "name", QgsDataDefinedButton::String, QgsDataDefinedButton::filePathDesc() );
