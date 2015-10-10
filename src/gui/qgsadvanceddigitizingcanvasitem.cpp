@@ -173,7 +173,7 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter* painter )
   // Draw x
   if ( mAdvancedDigitizingDockWidget->constraintX()->isLocked() )
   {
-    double x;
+    double x = 0.0;
     bool draw = true;
     painter->setPen( mLockedPen );
     if ( mAdvancedDigitizingDockWidget->constraintX()->relative() )
@@ -203,7 +203,7 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter* painter )
   // Draw y
   if ( mAdvancedDigitizingDockWidget->constraintY()->isLocked() )
   {
-    double y;
+    double y = 0.0;
     bool draw = true;
     painter->setPen( mLockedPen );
     if ( mAdvancedDigitizingDockWidget->constraintY()->relative() )
