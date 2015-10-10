@@ -1081,6 +1081,7 @@ bool QgsDelimitedTextProvider::setSubsetString( QString subset, bool updateFeatu
     }
   }
 
+  emit dataChanged();
   return valid;
 }
 

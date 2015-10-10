@@ -556,6 +556,8 @@ bool QgsOgrProvider::setSubsetString( QString theSQL, bool updateFeatureCount )
     extent_ = 0;
   }
 
+  emit dataChanged();
+
   return true;
 }
 
