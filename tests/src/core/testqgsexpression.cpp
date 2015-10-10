@@ -357,6 +357,8 @@ class TestQgsExpression: public QObject
       QTest::newRow( "abs(0)" ) << "abs(0)" << false << QVariant( 0. );
       QTest::newRow( "abs(-0.1)" ) << "abs(-0.1)" << false << QVariant( 0.1 );
       QTest::newRow( "invalid sqrt value" ) << "sqrt('a')" << true << QVariant();
+      QTest::newRow( "degrees to radians" ) << "toint(radians(45)*1000000)" << false << QVariant( 785398 ); // sorry for the nasty hack to work around floating point comparison problems
+      QTest::newRow( "radians to degrees" ) << "toint(degrees(2)*1000)" << false << QVariant( 114592 );
       QTest::newRow( "sin 0" ) << "sin(0)" << false << QVariant( 0. );
       QTest::newRow( "cos 0" ) << "cos(0)" << false << QVariant( 1. );
       QTest::newRow( "tan 0" ) << "tan(0)" << false << QVariant( 0. );
@@ -648,55 +650,55 @@ class TestQgsExpression: public QObject
       QTest::newRow( "geometry to bool true" ) << QString( "case when geom_from_wkt('Point(3 4)') then true else false end" ) << false << QVariant( true );
     }
 
-    void run_evaluation_test( QgsExpression& exp, bool evalError, QVariant& result )
+    void run_evaluation_test( QgsExpression& exp, bool evalError, QVariant& expected )
     {
       QCOMPARE( exp.hasParserError(), false );
       if ( exp.hasParserError() )
         qDebug() << exp.parserErrorString();
 
-      QVariant res = exp.evaluate();
+      QVariant result = exp.evaluate();
       if ( exp.hasEvalError() )
         qDebug() << exp.evalErrorString();
-      if ( res.type() != result.type() )
+      if ( result.type() != expected.type() )
       {
-        qDebug() << "got " << res.typeName() << " instead of " << result.typeName();
+        qDebug() << "got " << result.typeName() << " instead of " << expected.typeName();
       }
       //qDebug() << res.type() << " " << result.type();
       //qDebug() << "type " << res.typeName();
       QCOMPARE( exp.hasEvalError(), evalError );
 
-      QCOMPARE( res.type(), result.type() );
-      switch ( res.type() )
+      QCOMPARE( result.type(), expected.type() );
+      switch ( result.type() )
       {
         case QVariant::Invalid:
           break; // nothing more to check
         case QVariant::Int:
-          QCOMPARE( res.toInt(), result.toInt() );
+          QCOMPARE( result.toInt(), expected.toInt() );
           break;
         case QVariant::Double:
-          QCOMPARE( res.toDouble(), result.toDouble() );
+          QCOMPARE( result.toDouble(), expected.toDouble() );
           break;
         case QVariant::Bool:
-          QCOMPARE( res.toBool(), result.toBool() );
+          QCOMPARE( result.toBool(), expected.toBool() );
           break;
         case QVariant::String:
-          QCOMPARE( res.toString(), result.toString() );
+          QCOMPARE( result.toString(), expected.toString() );
           break;
         case QVariant::Date:
-          QCOMPARE( res.toDate(), result.toDate() );
+          QCOMPARE( result.toDate(), expected.toDate() );
           break;
         case QVariant::DateTime:
-          QCOMPARE( res.toDateTime(), result.toDateTime() );
+          QCOMPARE( result.toDateTime(), expected.toDateTime() );
           break;
         case QVariant::Time:
-          QCOMPARE( res.toTime(), result.toTime() );
+          QCOMPARE( result.toTime(), expected.toTime() );
           break;
         case QVariant::UserType:
         {
-          if ( res.userType() == qMetaTypeId<QgsExpression::Interval>() )
+          if ( result.userType() == qMetaTypeId<QgsExpression::Interval>() )
           {
-            QgsExpression::Interval inter = res.value<QgsExpression::Interval>();
-            QgsExpression::Interval gotinter = result.value<QgsExpression::Interval>();
+            QgsExpression::Interval inter = result.value<QgsExpression::Interval>();
+            QgsExpression::Interval gotinter = expected.value<QgsExpression::Interval>();
             QCOMPARE( inter.seconds(), gotinter.seconds() );
           }
           else

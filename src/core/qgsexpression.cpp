@@ -431,6 +431,16 @@ static QVariant fcnAbs( const QVariantList& values, const QgsExpressionContext*,
   return QVariant( fabs( val ) );
 }
 
+static QVariant fcnRadians( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  double deg = getDoubleValue( values.at( 0 ), parent );
+  return ( deg * M_PI ) / 180;
+}
+static QVariant fcnDegrees( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  double rad = getDoubleValue( values.at( 0 ), parent );
+  return ( 180 * rad ) / M_PI;
+}
 static QVariant fcnSin( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   double x = getDoubleValue( values.at( 0 ), parent );
@@ -2418,6 +2428,8 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
   {
     gmFunctions
     << new StaticFunction( "sqrt", 1, fcnSqrt, "Math" )
+    << new StaticFunction( "radians", 1, fcnRadians, "Math" )
+    << new StaticFunction( "degrees", 1, fcnDegrees, "Math" )
     << new StaticFunction( "abs", 1, fcnAbs, "Math" )
     << new StaticFunction( "cos", 1, fcnCos, "Math" )
     << new StaticFunction( "sin", 1, fcnSin, "Math" )
