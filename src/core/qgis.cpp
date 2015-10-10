@@ -100,7 +100,7 @@ const char* QGis::qgisUnitTypes[] =
   QT_TRANSLATE_NOOP( "QGis::UnitType", "nautical miles" )
 };
 
-static QgsWKBTypes::Type fromOldWkbType( QGis::WkbType type )
+QgsWKBTypes::Type QGis::fromOldWkbType( QGis::WkbType type )
 {
   switch ( type )
   {
@@ -125,7 +125,7 @@ static QgsWKBTypes::Type fromOldWkbType( QGis::WkbType type )
   return ( QgsWKBTypes::Type ) type;
 }
 
-static QGis::WkbType fromNewWkbType( QgsWKBTypes::Type type )
+QGis::WkbType QGis::fromNewWkbType( QgsWKBTypes::Type type )
 {
   switch ( type )
   {

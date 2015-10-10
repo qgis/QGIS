@@ -52,6 +52,7 @@ static QByteArray fileData_( const QString& path, bool astext = false )
 QgsAuthImportIdentityDialog::QgsAuthImportIdentityDialog( QgsAuthImportIdentityDialog::IdentityType identitytype,
     QWidget *parent )
     : QDialog( parent )
+    , mIdentityType( CertIdentity )
     , mPkiBundle( QgsPkiBundle() )
     , mDisabled( false )
     , mAuthNotifyLayout( 0 )

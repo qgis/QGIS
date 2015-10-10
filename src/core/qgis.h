@@ -27,6 +27,7 @@
 #include <cfloat>
 #include <cmath>
 #include <qnumeric.h>
+#include "geometry/qgswkbtypes.h"
 
 /** \ingroup core
  * The QGis class provides global constants for use throughout the application.
@@ -92,6 +93,12 @@ class CORE_EXPORT QGis
     // get dimension of points
     // @deprecated use QgsWKBTypes::hasZ() and QgsWKBTypes::hasM()
     /* Q_DECL_DEPRECATED */ static int wkbDimensions( WkbType type );
+
+    //! Converts from old (pre 2.10) WKB type to new WKB type
+    static QgsWKBTypes::Type fromOldWkbType( QGis::WkbType type );
+
+    //! Converts from new (post 2.10) WKB type to old WKB type
+    static QGis::WkbType fromNewWkbType( QgsWKBTypes::Type type );
 
     enum GeometryType
     {

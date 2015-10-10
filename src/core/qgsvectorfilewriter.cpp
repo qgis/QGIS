@@ -1737,7 +1737,7 @@ OGRFeatureH QgsVectorFileWriter::createFeature( QgsFeature& feature )
       // we must force the use of 25D.
       if ( mWkbType >= QGis::WKBPoint25D && mWkbType <= QGis::WKBMultiPolygon25D )
       {
-        QgsWKBTypes::Type wkbType = ( QgsWKBTypes::Type )geom->wkbType();
+        QgsWKBTypes::Type wkbType = QGis::fromOldWkbType( geom->wkbType() );
         if ( wkbType >= QgsWKBTypes::PointZ && wkbType <= QgsWKBTypes::MultiPolygonZ )
         {
           QGis::WkbType wkbType25d = ( QGis::WkbType )( geom->wkbType() - QgsWKBTypes::PointZ + QgsWKBTypes::Point25D );

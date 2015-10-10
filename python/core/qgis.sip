@@ -66,6 +66,12 @@ class QGis
     static bool isMultiType( WkbType type );
     static int wkbDimensions( WkbType type );
 
+    //! Converts from old (pre 2.10) WKB type to new WKB type
+    static QgsWKBTypes::Type fromOldWkbType(QGis::WkbType type);
+
+    //! Converts from new (post 2.10) WKB type to old WKB type
+    static QGis::WkbType fromNewWkbType( QgsWKBTypes::Type type );
+
     enum GeometryType
     {
       Point,

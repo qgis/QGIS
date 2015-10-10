@@ -695,6 +695,7 @@ ErrorList topolTest::checkGaps( double tolerance, QgsVectorLayer *layer1, QgsVec
   //qDebug() << "difference gometry - " << diffGeoms->exportToWkt();
 
   QList<QgsGeometry*> geomColl = diffGeoms->asGeometryCollection();
+  delete diffGeoms;
 
   QgsGeometry* canvasExtentPoly = QgsGeometry::fromWkt( theQgsInterface->mapCanvas()->extent().asWktPolygon() );
 
@@ -713,7 +714,6 @@ ErrorList topolTest::checkGaps( double tolerance, QgsVectorLayer *layer1, QgsVec
       }
     }
     QgsRectangle bBox = conflictGeom->boundingBox();
-    QgsFeature feat;
     FeatureLayer ftrLayer1;
     ftrLayer1.layer = layer1;
     QList<FeatureLayer> errorFtrLayers;

@@ -104,6 +104,13 @@ void QgsAuthMethodPlugins::populateTable()
 
 QgsAuthEditorWidgets::QgsAuthEditorWidgets( QWidget *parent )
     : QWidget( parent )
+    , mAuthUtilitiesMenu( 0 )
+    , mActionSetMasterPassword( 0 )
+    , mActionClearCachedMasterPassword( 0 )
+    , mActionResetMasterPassword( 0 )
+    , mActionClearCachedAuthConfigs( 0 )
+    , mActionRemoveAuthConfigs( 0 )
+    , mActionEraseAuthDatabase( 0 )
 {
   setupUi( this );
   if ( !QgsAuthManager::instance()->isDisabled() )

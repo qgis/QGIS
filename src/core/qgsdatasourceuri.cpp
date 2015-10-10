@@ -139,7 +139,7 @@ QgsDataSourceURI::QgsDataSourceURI( QString uri )
       }
       else if ( pname == "type" )
       {
-        mWkbType = ( QGis::WkbType )QgsWKBTypes::parseType( pval );
+        mWkbType = QGis::fromNewWkbType( QgsWKBTypes::parseType( pval ) );
       }
       else if ( pname == "selectatid" )
       {

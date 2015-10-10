@@ -65,12 +65,12 @@ bool TopolError::fixUnion( FeatureLayer fl1, FeatureLayer fl2 )
   if ( !ok )
     return false;
 
-  QgsGeometry* g = f1.constGeometry()->combine( f2.constGeometry() );
-  if ( !g )
+  QScopedPointer< QgsGeometry > g( f1.constGeometry()->combine( f2.constGeometry() ) );
+  if ( !g.data() )
     return false;
 
   if ( fl2.layer->deleteFeature( f2.id() ) )
-    return fl1.layer->changeGeometry( f1.id(), g );
+    return fl1.layer->changeGeometry( f1.id(), g.data() );
 
   return false;
 }
