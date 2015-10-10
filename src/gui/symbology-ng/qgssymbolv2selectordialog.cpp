@@ -472,13 +472,8 @@ void QgsSymbolV2SelectorDialog::setWidget( QWidget* widget )
 {
   int index = stackedWidget->addWidget( widget );
   stackedWidget->setCurrentIndex( index );
-  if ( mPresentWidget )
-  {
-    stackedWidget->removeWidget( mPresentWidget );
-    QWidget *dummy = mPresentWidget;
-    mPresentWidget = widget;
-    delete dummy; // auto disconnects all signals
-  }
+  delete mPresentWidget;
+  mPresentWidget = widget;
 }
 
 void QgsSymbolV2SelectorDialog::updateLockButton()

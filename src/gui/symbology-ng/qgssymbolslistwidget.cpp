@@ -118,6 +118,13 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* sty
   btnColor->setContext( "symbology" );
 }
 
+QgsSymbolsListWidget::~QgsSymbolsListWidget()
+{
+  // This action was added to the menu by this widget, clean it up
+  // The menu can be passed in the constructor, so may live longer than this widget
+  btnAdvanced->menu()->removeAction( mClipFeaturesAction );
+}
+
 void QgsSymbolsListWidget::setMapCanvas( QgsMapCanvas* canvas )
 {
   mMapCanvas = canvas;

@@ -32,12 +32,16 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
   public:
     QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* style, QMenu* menu, QWidget* parent, const QgsVectorLayer * layer = 0 );
 
+    //! Destructor
+    virtual ~QgsSymbolsListWidget();
+
     /** Returns the expression context used for the widget, if set. This expression context is used for
      * evaluating data defined symbol properties and for populating based expression widgets in
      * the list widget.
      * @note added in QGIS 2.12
      * @see setExpressionContext()
      */
+
     QgsExpressionContext* expressionContext() const { return mPresetExpressionContext; }
 
     /** Sets the map canvas associated with the widget. This allows the widget to retrieve the current
