@@ -505,5 +505,6 @@ void QgsSnappingDialog::setSnappingMode()
     mSnapModeComboBox->setCurrentIndex( 1 );
   else // "advanced" or empty (backward compatibility)
     mSnapModeComboBox->setCurrentIndex( 2 );
+  onSnappingModeIndexChanged( mSnapModeComboBox->currentIndex() );
   mSnapModeComboBox->blockSignals( false );
 }
