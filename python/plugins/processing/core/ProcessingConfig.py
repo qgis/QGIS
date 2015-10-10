@@ -126,7 +126,7 @@ class ProcessingConfig:
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
             ProcessingConfig.DEFAULT_OUTPUT_VECTOR_LAYER_EXT,
-            ProcessingConfig.tr('Default output vector layer extension'), 'shp', valuetype=Setting.STRING)
+            ProcessingConfig.tr('Default output vector layer extension'), 'shp', valuetype=Setting.VECTOR_LAYER_FORMAT)
         )
     @staticmethod
     def setGroupIcon(group, icon):
@@ -197,6 +197,7 @@ class Setting:
     STRING = 0
     FILE = 1
     FOLDER = 2
+    VECTOR_LAYER_FORMAT = 3
 
     def __init__(self, group, name, description, default, hidden=False, valuetype=None):
         self.group = group

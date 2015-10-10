@@ -16,7 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
-
+from qgis._core import QgsVectorFileWriter
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -32,7 +32,7 @@ from PyQt4 import uic
 from PyQt4.QtCore import Qt, QEvent, QPyNullVariant
 from PyQt4.QtGui import (QFileDialog, QDialog, QIcon, QStyle,
                          QStandardItemModel, QStandardItem, QMessageBox, QStyledItemDelegate,
-                         QLineEdit, QSpinBox, QDoubleSpinBox, QWidget, QToolButton, QHBoxLayout)
+                         QLineEdit, QSpinBox, QDoubleSpinBox, QWidget, QToolButton, QHBoxLayout, QComboBox)
 
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.core.Processing import Processing
@@ -201,7 +201,9 @@ class SettingDelegate(QStyledItemDelegate):
             return spnBox
         elif isinstance(value, (str, unicode)):
             valuetype = self.convertValue(index.model().data(index, Qt.UserRole))
-            if valuetype == Setting.FOLDER:
+            if valuetype == Setting.VECTOR_LAYER_FORMAT:
+                return VectorFileFormatSelector(parent)
+            elif valuetype == Setting.FOLDER:
                 return FileDirectorySelector(parent)
             else:
                 return FileDirectorySelector(parent, True)
@@ -290,3 +292,29 @@ class FileDirectorySelector(QWidget):
 
     def setText(self, value):
         self.lineEdit.setText(value)
+
+
+class VectorFileFormatSelector(QComboBox):
+    def __init__(self, parent=None):
+        QComboBox.__init__(self, parent)
+
+        formats = QgsVectorFileWriter.supportedFiltersAndFormats()
+        for extension, filter_str in formats.items():
+            extension = unicode(extension)
+            extension = extension[extension.find('*.') + 2:]
+            extension = extension[:extension.find(' ')]
+
+            self.addItem(filter_str, extension)
+
+    def set_active_format(self, ext):
+        self.setCurrentIndex(self.findData(ext))
+
+
+    def get_active_format(self):
+        return self.itemData(self.currentIndex())
+
+    def text(self):
+        return self.get_active_format()
+
+    def setText(self, value):
+        self.set_active_format(value)
