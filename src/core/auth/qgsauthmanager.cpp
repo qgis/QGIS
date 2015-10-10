@@ -832,13 +832,15 @@ void QgsAuthManager::updateConfigAuthMethods()
   {
     QgsDebugMsg( "Synching existing auth config and their auth methods" );
     mConfigAuthMethods.clear();
+    QStringList cfgmethods;
     while ( query.next() )
     {
       mConfigAuthMethods.insert( query.value( 0 ).toString(),
                                  query.value( 1 ).toString() );
+      cfgmethods << QString( "%1=%2" ).arg( query.value( 0 ).toString() ).arg( query.value( 1 ).toString() );
     }
+    QgsDebugMsg( QString( "Stored auth config/methods:\n%1" ).arg( cfgmethods.join( ", " ) ) );
   }
-
 }
 
 QgsAuthMethod *QgsAuthManager::configAuthMethod( const QString &authcfg )
