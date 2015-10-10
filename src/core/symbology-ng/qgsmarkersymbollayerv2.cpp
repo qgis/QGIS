@@ -1041,7 +1041,7 @@ QgsSvgMarkerSymbolLayerV2::QgsSvgMarkerSymbolLayerV2( const QString& name, doubl
   mScaleMethod = scaleMethod;
   mOutlineWidth = 1.0;
   mOutlineWidthUnit = QgsSymbolV2::MM;
-  mFillColor = QColor( Qt::black );
+  mColor = QColor( Qt::black );
   mOutlineColor = QColor( Qt::black );
 }
 
@@ -1292,10 +1292,10 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Re
   }
   outlineWidth = QgsSymbolLayerV2Utils::convertToPainterUnits( context.renderContext(), outlineWidth, mOutlineWidthUnit, mOutlineWidthMapUnitScale );
 
-  QColor fillColor = mFillColor;
+  QColor fillColor = mColor;
   if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_FILL ) )
   {
-    context.setOriginalValueVariable( QgsSymbolLayerV2Utils::encodeColor( mFillColor ) );
+    context.setOriginalValueVariable( QgsSymbolLayerV2Utils::encodeColor( mColor ) );
     QString colorString = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_FILL, context, QVariant(), &ok ).toString();
     if ( ok )
       fillColor = QgsSymbolLayerV2Utils::decodeColor( colorString );
@@ -1386,8 +1386,8 @@ QgsStringMap QgsSvgMarkerSymbolLayerV2::properties() const
   map["offset_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOffsetUnit );
   map["offset_map_unit_scale"] = QgsSymbolLayerV2Utils::encodeMapUnitScale( mOffsetMapUnitScale );
   map["scale_method"] = QgsSymbolLayerV2Utils::encodeScaleMethod( mScaleMethod );
-  map["color"] = mFillColor.name();
-  map["outline_color"] = mOutlineColor.name();
+  map["color"] = QgsSymbolLayerV2Utils::encodeColor( mColor );
+  map["outline_color"] = QgsSymbolLayerV2Utils::encodeColor( mOutlineColor );
   map["outline_width"] = QString::number( mOutlineWidth );
   map["outline_width_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOutlineWidthUnit );
   map["outline_width_map_unit_scale"] = QgsSymbolLayerV2Utils::encodeMapUnitScale( mOutlineWidthMapUnitScale );
@@ -1401,7 +1401,7 @@ QgsStringMap QgsSvgMarkerSymbolLayerV2::properties() const
 QgsSymbolLayerV2* QgsSvgMarkerSymbolLayerV2::clone() const
 {
   QgsSvgMarkerSymbolLayerV2* m = new QgsSvgMarkerSymbolLayerV2( mPath, mSize, mAngle );
-  m->setFillColor( mFillColor );
+  m->setColor( mColor );
   m->setOutlineColor( mOutlineColor );
   m->setOutlineWidth( mOutlineWidth );
   m->setOutlineWidthUnit( mOutlineWidthUnit );
@@ -1455,7 +1455,7 @@ void QgsSvgMarkerSymbolLayerV2::writeSldMarker( QDomDocument &doc, QDomElement &
   QDomElement graphicElem = doc.createElement( "se:Graphic" );
   element.appendChild( graphicElem );
 
-  QgsSymbolLayerV2Utils::externalGraphicToSld( doc, graphicElem, mPath, "image/svg+xml", mFillColor, mSize );
+  QgsSymbolLayerV2Utils::externalGraphicToSld( doc, graphicElem, mPath, "image/svg+xml", mColor, mSize );
 
   // <Rotation>
   QString angleFunc;
@@ -1598,10 +1598,10 @@ bool QgsSvgMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScale
   }
   outlineWidth = QgsSymbolLayerV2Utils::convertToPainterUnits( context->renderContext(), outlineWidth, mOutlineWidthUnit, mOutlineWidthMapUnitScale );
 
-  QColor fillColor = mFillColor;
+  QColor fillColor = mColor;
   if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_FILL ) )
   {
-    context->setOriginalValueVariable( QgsSymbolLayerV2Utils::encodeColor( mFillColor ) );
+    context->setOriginalValueVariable( QgsSymbolLayerV2Utils::encodeColor( mColor ) );
     QString colorString = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_FILL, *context, QVariant(), &ok ).toString();
     if ( ok )
       fillColor = QgsSymbolLayerV2Utils::decodeColor( colorString );

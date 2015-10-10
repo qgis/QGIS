@@ -173,8 +173,8 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
     QString path() const { return mPath; }
     void setPath( const QString& path );
 
-    QColor fillColor() const override { return mFillColor; }
-    void setFillColor( const QColor& c ) override { mFillColor = c; }
+    QColor fillColor() const override { return color(); }
+    void setFillColor( const QColor& color ) override { setColor( color ); }
 
     QColor outlineColor() const override { return mOutlineColor; }
     void setOutlineColor( const QColor& c ) override { mOutlineColor = c; }
@@ -201,7 +201,6 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
 
     //param(fill), param(outline), param(outline-width) are going
     //to be replaced in memory
-    QColor mFillColor;
     QColor mOutlineColor;
     double mOutlineWidth;
     QgsSymbolV2::OutputUnit mOutlineWidthUnit;
