@@ -89,12 +89,13 @@ bool QgsAdvancedDigitizingDockWidget::lineCircleIntersection( const QgsPoint& ce
 QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas* canvas, QWidget *parent )
     : QDockWidget( parent )
     , mMapCanvas( canvas )
+    , mCurrentMapToolSupportsCad( false )
     , mCadEnabled( false )
     , mConstructionMode( false )
     , mSnappingMode(( QgsMapMouseEvent::SnappingMode ) QSettings().value( "/Cad/SnappingMode", QgsMapMouseEvent::SnapProjectConfig ).toInt() )
     , mCommonAngleConstraint( QSettings().value( "/Cad/CommonAngle", 90 ).toInt() )
-    , mCadPointList( QList<QgsPoint>() )
-    , mSnappedSegment( QList<QgsPoint>() )
+    , mSnappedToVertex( false )
+    , mSessionActive( false )
     , mErrorMessage( 0 )
 {
   setupUi( this );
