@@ -383,7 +383,7 @@ bool QGis::isSingleType( QGis::WkbType type )
 
 bool QGis::isMultiType( QGis::WkbType type )
 {
-  return QgsWKBTypes::flatType( fromOldWkbType( type ) );
+  return QgsWKBTypes::isMultiType( fromOldWkbType( type ) );
 }
 
 int QGis::wkbDimensions( QGis::WkbType type )
