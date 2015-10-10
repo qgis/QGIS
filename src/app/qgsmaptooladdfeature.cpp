@@ -213,7 +213,7 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
       }
 
       //create QgsFeature with wkb representation
-      QgsFeature* f = new QgsFeature( vlayer->fields(), 0 );
+      QScopedPointer< QgsFeature > f( new QgsFeature( vlayer->fields(), 0 ) );
 
       //does compoundcurve contain circular strings?
       //does provider support circular strings?
@@ -258,7 +258,6 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
         {
           //bail out...
           emit messageEmitted( tr( "The feature could not be added because removing the polygon intersections would change the geometry type" ), QgsMessageBar::CRITICAL );
-          delete f;
           stopCapturing();
           return;
         }
@@ -280,13 +279,12 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
             reason = tr( "The feature cannot be added because it's geometry collapsed due to intersection avoidance" );
           }
           emit messageEmitted( reason, QgsMessageBar::CRITICAL );
-          delete f;
           stopCapturing();
           return;
         }
       }
 
-      if ( addFeature( vlayer, f, false ) )
+      if ( addFeature( vlayer, f.data(), false ) )
       {
         //add points to other features to keep topology up-to-date
         int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );

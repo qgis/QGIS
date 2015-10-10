@@ -99,7 +99,7 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
       // style-related actions
       if ( layer && mView->selectedLayerNodes().count() == 1 )
       {
-        QMenu *menuStyleManager = new QMenu( tr( "Styles" ) );
+        QMenu *menuStyleManager = new QMenu( tr( "Styles" ), menu );
 
         QgisApp *app = QgisApp::instance();
         menuStyleManager->addAction( tr( "Copy Style" ), app, SLOT( copyStyle() ) );
