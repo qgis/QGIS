@@ -3191,6 +3191,8 @@ bool QgsSpatiaLiteProvider::setSubsetString( QString theSQL, bool updateFeatureC
 
   getTableSummary();
 
+  emit dataChanged();
+
   return false;
 }
 

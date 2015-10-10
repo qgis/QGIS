@@ -443,6 +443,8 @@ bool QgsMemoryProvider::setSubsetString( QString theSQL, bool updateFeatureCount
   }
 
   mSubsetString = theSQL;
+
+  emit dataChanged();
   return true;
 }
 

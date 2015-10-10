@@ -1426,6 +1426,8 @@ bool QgsMssqlProvider::setSubsetString( QString theSQL, bool )
 
   mExtent.setMinimal();
 
+  emit dataChanged();
+
   return true;
 }
 

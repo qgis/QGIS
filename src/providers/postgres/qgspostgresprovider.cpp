@@ -2488,6 +2488,8 @@ bool QgsPostgresProvider::setSubsetString( QString theSQL, bool updateFeatureCou
   }
   mLayerExtent.setMinimal();
 
+  emit dataChanged();
+
   return true;
 }
 

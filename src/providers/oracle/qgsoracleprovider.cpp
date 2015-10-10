@@ -1978,6 +1978,8 @@ bool QgsOracleProvider::setSubsetString( QString theSQL, bool updateFeatureCount
   }
   mLayerExtent.setMinimal();
 
+  emit dataChanged();
+
   return true;
 }
 
