@@ -413,6 +413,8 @@ class PythonConsoleWidget(QWidget):
         self.toolBarEditor.addAction(self.saveFileButton)
         self.toolBarEditor.addAction(self.saveAsFileButton)
         self.toolBarEditor.addSeparator()
+        self.toolBarEditor.addAction(self.runScriptEditorButton)
+        self.toolBarEditor.addSeparator()
         self.toolBarEditor.addAction(self.findTextButton)
         self.toolBarEditor.addSeparator()
         self.toolBarEditor.addAction(self.cutEditorButton)
@@ -423,8 +425,6 @@ class PythonConsoleWidget(QWidget):
         self.toolBarEditor.addAction(self.uncommentEditorButton)
         self.toolBarEditor.addSeparator()
         self.toolBarEditor.addAction(self.objectListButton)
-        self.toolBarEditor.addSeparator()
-        self.toolBarEditor.addAction(self.runScriptEditorButton)
 
         ## Menu Import Class
         self.classMenu = QMenu()
