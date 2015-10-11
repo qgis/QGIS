@@ -343,6 +343,11 @@ void TestQgsFields::indexFromName()
   //indexFromName is case sensitive, fieldNameIndex isn't
   QCOMPARE( fields.indexFromName( QString( "teStFiEld2" ) ), -1 );
   QCOMPARE( fields.fieldNameIndex( QString( "teStFiEld2" ) ), 1 );
+
+  //test that fieldNameIndex prefers exact case matches over case insensitive matches
+  QgsField sameNameDifferentCase( QString( "teStFielD" ) );
+  fields.append( sameNameDifferentCase );
+  QCOMPARE( fields.fieldNameIndex( QString( "teStFielD" ) ), 3 );
 }
 
 void TestQgsFields::toList()
