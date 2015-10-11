@@ -750,9 +750,9 @@ int QgsGeometry::reshapeGeometry( const QList<QgsPoint>& reshapeWithLine )
     detach( false );
     delete d->geometry;
     d->geometry = geom;
+    removeWkbGeos();
     return 0;
   }
-  removeWkbGeos();
   return errorCode;
 }
 
