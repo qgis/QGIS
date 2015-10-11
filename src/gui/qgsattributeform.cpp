@@ -22,6 +22,7 @@
 #include "qgsproject.h"
 #include "qgspythonrunner.h"
 #include "qgsrelationwidgetwrapper.h"
+#include "qgsvectordataprovider.h"
 
 #include <QDir>
 #include <QFileInfo>
@@ -366,7 +367,9 @@ void QgsAttributeForm::synchronizeEnabledState()
     QgsEditorWidgetWrapper* eww = qobject_cast<QgsEditorWidgetWrapper*>( ww );
     if ( eww )
     {
-      fieldEditable = mLayer->fieldEditable( eww->fieldIdx() );
+      fieldEditable = mLayer->fieldEditable( eww->fieldIdx() ) &&
+                      (( mLayer->dataProvider() && layer()->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) ||
+                       FID_IS_NEW( mFeature.id() ) );
     }
     ww->setEnabled( isEditable && fieldEditable );
   }
