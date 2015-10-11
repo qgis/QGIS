@@ -88,6 +88,25 @@ class QgsSvgCache : QObject
     void containsParams( const QString& path, bool& hasFillParam, QColor& defaultFillColor, bool& hasOutlineParam, QColor& defaultOutlineColor, bool& hasOutlineWidthParam,
                          double& defaultOutlineWidth ) const;
 
+    /** Tests if an svg file contains parameters for fill, outline color, outline width. If yes, possible default values are returned. If there are several
+     * default values in the svg file, only the first one is considered.
+     * @param path path to SVG file
+     * @param hasFillParam will be true if fill param present in SVG
+     * @param hasDefaultFillParam will be true if fill param has a default value specified
+     * @param defaultFillColor will be set to default fill color specified in SVG, if present
+     * @param hasOutlineParam will be true if outline param present in SVG
+     * @param hasDefaultOutlineColor will be true if outline param has a default value specified
+     * @param defaultOutlineColor will be set to default outline color specified in SVG, if present
+     * @param hasOutlineWidthParam will be true if outline width param present in SVG
+     * @param hasDefaultOutlineWidth will be true if outline width param has a default value specified
+     * @param defaultOutlineWidth will be set to default outline width specified in SVG, if present
+     * @note available in python bindings as containsParamsV2
+     * @note added in QGIS 2.12
+     */
+    void containsParams( const QString& path, bool& hasFillParam, bool& hasDefaultFillParam, QColor& defaultFillColor,
+                         bool& hasOutlineParam, bool& hasDefaultOutlineColor, QColor& defaultOutlineColor,
+                         bool& hasOutlineWidthParam, bool& hasDefaultOutlineWidth, double& defaultOutlineWidth ) const /PyName=containsParamsV2/;
+
     /** Get image data*/
     QByteArray getImageData( const QString &path ) const;
 

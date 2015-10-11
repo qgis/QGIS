@@ -1712,6 +1712,9 @@ QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QString& svgFilePath, double
   setSvgFilePath( svgFilePath );
   mOutlineWidth = 0.3;
   mAngle = angle;
+  mSvgFillColor = QColor( 0, 0, 0 );
+  mSvgOutlineColor = QColor( 0, 0, 0 );
+  mSvgOutlineWidth = 0.3;
   setDefaultSvgParams();
   mSvgPattern = 0;
 }
@@ -1725,6 +1728,9 @@ QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QByteArray& svgData, double 
   storeViewBox();
   mOutlineWidth = 0.3;
   mAngle = angle;
+  mSvgFillColor = QColor( 0, 0, 0 );
+  mSvgOutlineColor = QColor( 0, 0, 0 );
+  mSvgOutlineWidth = 0.3;
   setSubSymbol( new QgsLineSymbolV2() );
   setDefaultSvgParams();
   mSvgPattern = 0;
@@ -2224,31 +2230,28 @@ void QgsSVGFillSymbolLayer::storeViewBox()
 
 void QgsSVGFillSymbolLayer::setDefaultSvgParams()
 {
-  //default values
-  mSvgFillColor = QColor( 0, 0, 0 );
-  mSvgOutlineColor = QColor( 0, 0, 0 );
-  mSvgOutlineWidth = 0.3;
-
   if ( mSvgFilePath.isEmpty() )
   {
     return;
   }
 
   bool hasFillParam, hasOutlineParam, hasOutlineWidthParam;
+  bool hasDefaultFillColor, hasDefaultOutlineColor, hasDefaultOutlineWidth;
   QColor defaultFillColor, defaultOutlineColor;
   double defaultOutlineWidth;
-  QgsSvgCache::instance()->containsParams( mSvgFilePath, hasFillParam, defaultFillColor, hasOutlineParam, defaultOutlineColor, hasOutlineWidthParam,
-      defaultOutlineWidth );
+  QgsSvgCache::instance()->containsParams( mSvgFilePath, hasFillParam, hasDefaultFillColor, defaultFillColor,
+      hasOutlineParam, hasDefaultOutlineColor, defaultOutlineColor,
+      hasOutlineWidthParam, hasDefaultOutlineWidth, defaultOutlineWidth );
 
-  if ( hasFillParam )
+  if ( hasDefaultFillColor )
   {
     mSvgFillColor = defaultFillColor;
   }
-  if ( hasOutlineParam )
+  if ( hasDefaultOutlineColor )
   {
     mSvgOutlineColor = defaultOutlineColor;
   }
-  if ( hasOutlineWidthParam )
+  if ( hasDefaultOutlineWidth )
   {
     mSvgOutlineWidth = defaultOutlineWidth;
   }

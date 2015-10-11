@@ -67,7 +67,18 @@ QVariant QgsSvgSelectorListModel::data( const QModelIndex & index, int role ) co
       QColor fill, outline;
       double outlineWidth;
       bool fillParam, outlineParam, outlineWidthParam;
-      QgsSvgCache::instance()->containsParams( entry, fillParam, fill, outlineParam, outline, outlineWidthParam, outlineWidth );
+      bool hasDefaultFillColor = false, hasDefaultOutlineColor = false, hasDefaultOutlineWidth = false;
+      QgsSvgCache::instance()->containsParams( entry, fillParam, hasDefaultFillColor, fill,
+          outlineParam, hasDefaultOutlineColor, outline,
+          outlineWidthParam, hasDefaultOutlineWidth, outlineWidth );
+
+      //if defaults not set in symbol, use these values
+      if ( !hasDefaultFillColor )
+        fill = QColor( 200, 200, 200 );
+      if ( !hasDefaultOutlineColor )
+        outline = Qt::black;
+      if ( !hasDefaultOutlineWidth )
+        outlineWidth = 0.2;
 
       bool fitsInCache; // should always fit in cache at these sizes (i.e. under 559 px ^ 2, or half cache size)
       const QImage& img = QgsSvgCache::instance()->svgAsImage( entry, 30.0, fill, outline, outlineWidth, 3.5 /*appr. 88 dpi*/, 1.0, fitsInCache );

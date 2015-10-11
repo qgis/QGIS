@@ -1070,17 +1070,20 @@ QgsSymbolLayerV2* QgsSvgMarkerSymbolLayerV2::create( const QgsStringMap& props )
   {
     QColor fillColor, outlineColor;
     double outlineWidth;
-    bool hasFillParam, hasOutlineParam, hasOutlineWidthParam;
-    QgsSvgCache::instance()->containsParams( name, hasFillParam, fillColor, hasOutlineParam, outlineColor, hasOutlineWidthParam, outlineWidth );
-    if ( hasFillParam )
+    bool hasFillParam = false, hasOutlineParam = false, hasOutlineWidthParam = false;
+    bool hasDefaultFillColor = false, hasDefaultOutlineColor = false, hasDefaultOutlineWidth = false;
+    QgsSvgCache::instance()->containsParams( name, hasFillParam, hasDefaultFillColor, fillColor,
+        hasOutlineParam, hasDefaultOutlineColor, outlineColor,
+        hasOutlineWidthParam, hasDefaultOutlineWidth, outlineWidth );
+    if ( hasDefaultFillColor )
     {
       m->setFillColor( fillColor );
     }
-    if ( hasOutlineParam )
+    if ( hasDefaultOutlineColor )
     {
       m->setOutlineColor( outlineColor );
     }
-    if ( hasOutlineWidthParam )
+    if ( hasDefaultOutlineWidth )
     {
       m->setOutlineWidth( outlineWidth );
     }
@@ -1163,17 +1166,20 @@ void QgsSvgMarkerSymbolLayerV2::setPath( const QString& path )
   mPath = path;
   QColor fillColor, outlineColor;
   double outlineWidth;
-  bool hasFillParam, hasOutlineParam, hasOutlineWidthParam;
-  QgsSvgCache::instance()->containsParams( path, hasFillParam, fillColor, hasOutlineParam, outlineColor, hasOutlineWidthParam, outlineWidth );
-  if ( hasFillParam )
+  bool hasFillParam = false, hasOutlineParam = false, hasOutlineWidthParam = false;
+  bool hasDefaultFillColor = false, hasDefaultOutlineColor = false, hasDefaultOutlineWidth = false;
+  QgsSvgCache::instance()->containsParams( path, hasFillParam, hasDefaultFillColor, fillColor,
+      hasOutlineParam, hasDefaultOutlineColor, outlineColor,
+      hasOutlineWidthParam, hasDefaultOutlineWidth, outlineWidth );
+  if ( hasDefaultFillColor )
   {
     setFillColor( fillColor );
   }
-  if ( hasOutlineParam )
+  if ( hasDefaultOutlineColor )
   {
     setOutlineColor( outlineColor );
   }
-  if ( hasOutlineWidthParam )
+  if ( hasDefaultOutlineWidth )
   {
     setOutlineWidth( outlineWidth );
   }

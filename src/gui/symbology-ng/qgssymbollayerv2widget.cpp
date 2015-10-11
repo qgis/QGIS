@@ -1603,7 +1603,18 @@ class QgsSvgListModel : public QAbstractListModel
           QColor fill, outline;
           double outlineWidth;
           bool fillParam, outlineParam, outlineWidthParam;
-          QgsSvgCache::instance()->containsParams( entry, fillParam, fill, outlineParam, outline, outlineWidthParam, outlineWidth );
+          bool hasDefaultFillColor = false, hasDefaultOutlineColor = false, hasDefaultOutlineWidth = false;
+          QgsSvgCache::instance()->containsParams( entry, fillParam, hasDefaultFillColor, fill,
+              outlineParam, hasDefaultOutlineColor, outline,
+              outlineWidthParam, hasDefaultOutlineWidth, outlineWidth );
+
+          //if defaults not set in symbol, use these values
+          if ( !hasDefaultFillColor )
+            fill = QColor( 200, 200, 200 );
+          if ( !hasDefaultOutlineColor )
+            outline = Qt::black;
+          if ( !hasDefaultOutlineWidth )
+            outlineWidth = 0.6;
 
           bool fitsInCache; // should always fit in cache at these sizes (i.e. under 559 px ^ 2, or half cache size)
           const QImage& img = QgsSvgCache::instance()->svgAsImage( entry, 30.0, fill, outline, outlineWidth, 3.5 /*appr. 88 dpi*/, 1.0, fitsInCache );
@@ -1716,7 +1727,10 @@ void QgsSvgMarkerSymbolLayerV2Widget::setGuiForSvg( const QgsSvgMarkerSymbolLaye
   bool hasFillParam, hasOutlineParam, hasOutlineWidthParam;
   QColor defaultFill, defaultOutline;
   double defaultOutlineWidth;
-  QgsSvgCache::instance()->containsParams( layer->path(), hasFillParam, defaultFill, hasOutlineParam, defaultOutline, hasOutlineWidthParam, defaultOutlineWidth );
+  bool hasDefaultFillColor, hasDefaultOutlineColor, hasDefaultOutlineWidth;
+  QgsSvgCache::instance()->containsParams( layer->path(), hasFillParam, hasDefaultFillColor, defaultFill,
+      hasOutlineParam, hasDefaultOutlineColor, defaultOutline,
+      hasOutlineWidthParam, hasDefaultOutlineWidth, defaultOutlineWidth );
   mChangeColorButton->setEnabled( hasFillParam );
   mChangeBorderColorButton->setEnabled( hasOutlineParam );
   mBorderWidthSpinBox->setEnabled( hasOutlineWidthParam );
@@ -1727,7 +1741,7 @@ void QgsSvgMarkerSymbolLayerV2Widget::setGuiForSvg( const QgsSvgMarkerSymbolLaye
     {
       mChangeColorButton->setColor( layer->fillColor() );
     }
-    else
+    else if ( hasDefaultFillColor )
     {
       mChangeColorButton->setColor( defaultFill );
     }
@@ -1738,7 +1752,7 @@ void QgsSvgMarkerSymbolLayerV2Widget::setGuiForSvg( const QgsSvgMarkerSymbolLaye
     {
       mChangeBorderColorButton->setColor( layer->outlineColor() );
     }
-    else
+    else if ( hasDefaultOutlineColor )
     {
       mChangeBorderColorButton->setColor( defaultOutline );
     }
@@ -2195,18 +2209,21 @@ void QgsSVGFillSymbolLayerWidget::updateParamGui( bool resetValues )
   bool hasFillParam, hasOutlineParam, hasOutlineWidthParam;
   QColor defaultFill, defaultOutline;
   double defaultOutlineWidth;
-  QgsSvgCache::instance()->containsParams( mSVGLineEdit->text(), hasFillParam, defaultFill, hasOutlineParam, defaultOutline, hasOutlineWidthParam, defaultOutlineWidth );
-  if ( hasFillParam && resetValues )
+  bool hasDefaultFillColor, hasDefaultOutlineColor, hasDefaultOutlineWidth;
+  QgsSvgCache::instance()->containsParams( mSVGLineEdit->text(), hasFillParam, hasDefaultFillColor, defaultFill,
+      hasOutlineParam, hasDefaultOutlineColor, defaultOutline,
+      hasOutlineWidthParam, hasDefaultOutlineWidth, defaultOutlineWidth );
+  if ( hasDefaultFillColor && resetValues )
   {
     mChangeColorButton->setColor( defaultFill );
   }
   mChangeColorButton->setEnabled( hasFillParam );
-  if ( hasOutlineParam && resetValues )
+  if ( hasDefaultOutlineColor && resetValues )
   {
     mChangeBorderColorButton->setColor( defaultOutline );
   }
   mChangeBorderColorButton->setEnabled( hasOutlineParam );
-  if ( hasOutlineWidthParam && resetValues )
+  if ( hasDefaultOutlineWidth && resetValues )
   {
     mBorderWidthSpinBox->setValue( defaultOutlineWidth );
   }

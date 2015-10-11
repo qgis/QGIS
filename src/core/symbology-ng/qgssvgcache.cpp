@@ -227,12 +227,30 @@ QgsSvgCacheEntry* QgsSvgCache::insertSVG( const QString& file, double size, cons
 void QgsSvgCache::containsParams( const QString& path, bool& hasFillParam, QColor& defaultFillColor, bool& hasOutlineParam, QColor& defaultOutlineColor,
                                   bool& hasOutlineWidthParam, double& defaultOutlineWidth ) const
 {
+  bool hasDefaultFillColor = false;
+  bool hasDefaultOutlineColor = false;
+  bool hasDefaultOutlineWidth = false;
+
+  containsParams( path, hasFillParam, hasDefaultFillColor, defaultFillColor,
+                  hasOutlineParam, hasDefaultOutlineColor, defaultOutlineColor,
+                  hasOutlineWidthParam, hasDefaultOutlineWidth, defaultOutlineWidth );
+}
+
+void QgsSvgCache::containsParams( const QString& path,
+                                  bool& hasFillParam, bool& hasDefaultFillParam, QColor& defaultFillColor,
+                                  bool& hasOutlineParam, bool& hasDefaultOutlineColor, QColor& defaultOutlineColor,
+                                  bool& hasOutlineWidthParam, bool& hasDefaultOutlineWidth, double& defaultOutlineWidth ) const
+{
   hasFillParam = false;
   hasOutlineParam = false;
   hasOutlineWidthParam = false;
-  defaultFillColor = QColor( Qt::black );
+  defaultFillColor = QColor( Qt::white );
   defaultOutlineColor = QColor( Qt::black );
   defaultOutlineWidth = 0.2;
+
+  hasDefaultFillParam = false;
+  hasDefaultOutlineColor = false;
+  hasDefaultOutlineWidth = false;
 
   QDomDocument svgDoc;
   if ( !svgDoc.setContent( getImageData( path ) ) )
@@ -241,7 +259,9 @@ void QgsSvgCache::containsParams( const QString& path, bool& hasFillParam, QColo
   }
 
   QDomElement docElem = svgDoc.documentElement();
-  containsElemParams( docElem, hasFillParam, defaultFillColor, hasOutlineParam, defaultOutlineColor, hasOutlineWidthParam, defaultOutlineWidth );
+  containsElemParams( docElem, hasFillParam, hasDefaultFillParam, defaultFillColor,
+                      hasOutlineParam, hasDefaultOutlineColor, defaultOutlineColor,
+                      hasOutlineWidthParam, hasDefaultOutlineWidth, defaultOutlineWidth );
 }
 
 void QgsSvgCache::replaceParamsAndCacheSvg( QgsSvgCacheEntry* entry )
@@ -632,8 +652,8 @@ void QgsSvgCache::replaceElemParams( QDomElement& elem, const QColor& fill, cons
   }
 }
 
-void QgsSvgCache::containsElemParams( const QDomElement& elem, bool& hasFillParam, QColor& defaultFill, bool& hasOutlineParam, QColor& defaultOutline,
-                                      bool& hasOutlineWidthParam, double& defaultOutlineWidth ) const
+void QgsSvgCache::containsElemParams( const QDomElement& elem, bool& hasFillParam, bool& hasDefaultFill, QColor& defaultFill, bool& hasOutlineParam, bool& hasDefaultOutline, QColor& defaultOutline,
+                                      bool& hasOutlineWidthParam, bool& hasDefaultOutlineWidth, double& defaultOutlineWidth ) const
 {
   if ( elem.isNull() )
   {
@@ -675,6 +695,7 @@ void QgsSvgCache::containsElemParams( const QDomElement& elem, bool& hasFillPara
           if ( valueSplit.size() > 1 )
           {
             defaultFill = QColor( valueSplit.at( 1 ) );
+            hasDefaultFill = true;
           }
         }
         else if ( !hasOutlineParam && value.startsWith( "param(outline)" ) )
@@ -683,6 +704,7 @@ void QgsSvgCache::containsElemParams( const QDomElement& elem, bool& hasFillPara
           if ( valueSplit.size() > 1 )
           {
             defaultOutline = QColor( valueSplit.at( 1 ) );
+            hasDefaultOutline = true;
           }
         }
         else if ( !hasOutlineWidthParam && value.startsWith( "param(outline-width)" ) )
@@ -691,6 +713,7 @@ void QgsSvgCache::containsElemParams( const QDomElement& elem, bool& hasFillPara
           if ( valueSplit.size() > 1 )
           {
             defaultOutlineWidth = valueSplit.at( 1 ).toDouble();
+            hasDefaultOutlineWidth = true;
           }
         }
       }
@@ -705,6 +728,7 @@ void QgsSvgCache::containsElemParams( const QDomElement& elem, bool& hasFillPara
         if ( valueSplit.size() > 1 )
         {
           defaultFill = QColor( valueSplit.at( 1 ) );
+          hasDefaultFill = true;
         }
       }
       else if ( !hasOutlineParam && value.startsWith( "param(outline)" ) )
@@ -713,6 +737,7 @@ void QgsSvgCache::containsElemParams( const QDomElement& elem, bool& hasFillPara
         if ( valueSplit.size() > 1 )
         {
           defaultOutline = QColor( valueSplit.at( 1 ) );
+          hasDefaultOutline = true;
         }
       }
       else if ( !hasOutlineWidthParam && value.startsWith( "param(outline-width)" ) )
@@ -721,6 +746,7 @@ void QgsSvgCache::containsElemParams( const QDomElement& elem, bool& hasFillPara
         if ( valueSplit.size() > 1 )
         {
           defaultOutlineWidth = valueSplit.at( 1 ).toDouble();
+          hasDefaultOutlineWidth = true;
         }
       }
     }
@@ -732,7 +758,9 @@ void QgsSvgCache::containsElemParams( const QDomElement& elem, bool& hasFillPara
   for ( int i = 0; i < nChildren; ++i )
   {
     QDomElement childElem = childList.at( i ).toElement();
-    containsElemParams( childElem, hasFillParam, defaultFill, hasOutlineParam, defaultOutline, hasOutlineWidthParam, defaultOutlineWidth );
+    containsElemParams( childElem, hasFillParam, hasDefaultFill, defaultFill,
+                        hasOutlineParam, hasDefaultOutline, defaultOutline,
+                        hasOutlineWidthParam, hasDefaultOutlineWidth, defaultOutlineWidth );
   }
 }
 
