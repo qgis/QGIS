@@ -149,13 +149,14 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
 
     def getArgsModeExtent(self):
         self.base.setPluginCommand("gdal_translate")
+        inputFn = self.getInputFileName()
         arguments = []
         if self.noDataCheck.isChecked():
             arguments.append("-a_nodata")
             arguments.append(unicode(self.noDataSpin.value()))
         if self.extentModeRadio.isChecked() and self.extentSelector.isCoordsValid():
             rect = self.extentSelector.getExtent()
-            if rect is not None:
+            if rect is not None and not inputFn == '':
                 arguments.append("-projwin")
                 arguments.append(unicode(rect.xMinimum()))
                 arguments.append(unicode(rect.yMaximum()))
@@ -164,19 +165,20 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         if not self.getOutputFileName() == '':
             arguments.append("-of")
             arguments.append(self.outputFormat)
-        arguments.append(self.getInputFileName())
+        arguments.append(inputFn)
         arguments.append(self.getOutputFileName())
         return arguments
 
     def getArgsModeMask(self):
         self.base.setPluginCommand("gdalwarp")
+        inputFn = self.getInputFileName()
         arguments = []
         if self.noDataCheck.isChecked():
             arguments.append("-dstnodata")
             arguments.append(unicode(self.noDataSpin.value()))
         if self.maskModeRadio.isChecked():
             mask = self.maskSelector.filename()
-            if not mask == '':
+            if not mask == '' and not inputFn == '':
                 arguments.append("-q")
                 arguments.append("-cutline")
                 arguments.append(mask)
@@ -188,8 +190,9 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
                 if self.keepResolutionRadio.isChecked():
                     arguments.append("-tr")
                     resolution = Utils.getRasterResolution(self.getInputFileName())
-                    arguments.append(resolution[0])
-                    arguments.append(resolution[1])
+                    if resolution is not None:
+                        arguments.append(resolution[0])
+                        arguments.append(resolution[1])
                 if self.setResolutionRadio.isChecked():
                     arguments.append("-tr")
                     arguments.append(unicode(self.xRes.value()))
@@ -199,7 +202,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         if not outputFn == '':
             arguments.append("-of")
             arguments.append(self.outputFormat)
-        arguments.append(self.getInputFileName())
+        arguments.append(inputFn)
         arguments.append(outputFn)
         return arguments
 
