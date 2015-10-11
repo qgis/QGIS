@@ -1099,24 +1099,24 @@ QgsSymbolLayerV2* QgsSvgMarkerSymbolLayerV2::create( const QgsStringMap& props )
   if ( props.contains( "fill" ) )
   {
     //pre 2.5 projects used "fill"
-    m->setFillColor( QColor( props["fill"] ) );
+    m->setFillColor( QgsSymbolLayerV2Utils::decodeColor( props["fill"] ) );
   }
   else if ( props.contains( "color" ) )
   {
-    m->setFillColor( QColor( props["color"] ) );
+    m->setFillColor( QgsSymbolLayerV2Utils::decodeColor( props["color"] ) );
   }
   if ( props.contains( "outline" ) )
   {
     //pre 2.5 projects used "outline"
-    m->setOutlineColor( QColor( props["outline"] ) );
+    m->setOutlineColor( QgsSymbolLayerV2Utils::decodeColor( props["outline"] ) );
   }
   else if ( props.contains( "outline_color" ) )
   {
-    m->setOutlineColor( QColor( props["outline_color"] ) );
+    m->setOutlineColor( QgsSymbolLayerV2Utils::decodeColor( props["outline_color"] ) );
   }
   else if ( props.contains( "line_color" ) )
   {
-    m->setOutlineColor( QColor( props["line_color"] ) );
+    m->setOutlineColor( QgsSymbolLayerV2Utils::decodeColor( props["line_color"] ) );
   }
 
   if ( props.contains( "outline-width" ) )
