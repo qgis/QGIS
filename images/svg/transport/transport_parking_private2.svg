@@ -31,10 +31,10 @@
 		<inkscape:perspective  inkscape:vp_z="1 : 0.5 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 0.5 : 1" sodipodi:type="inkscape:persp3d" id="perspective2868" inkscape:persp3d-origin="0.5 : 0.33333333 : 1">
 		</inkscape:perspective>
 </defs>
-<path id="path2323" fill="param(fill)" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M879.291,36.805"/>
-<path id="path2329" fill="param(fill)" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M879.291,36.805"/>
+<path id="path2323" fill="param(fill)" stroke="param(outline)" stroke-width="param(outline-width) 1" d="M879.291,36.805"/>
+<path id="path2329" fill="param(fill)" stroke="param(outline)" stroke-width="param(outline-width) 1" d="M879.291,36.805"/>
 <g id="text2419_2_">
-	<path fill="param(fill)" stroke="param(outline) #000" stroke-width="param(outline-width) 1" stroke-miterlimit="10" d="M200.883,516.494h-55.525
+	<path fill="param(fill)" stroke="param(outline)" stroke-width="param(outline-width) 1" stroke-miterlimit="10" d="M200.883,516.494h-55.525
 		c-6.265,0-11.344-5.079-11.344-11.344V85.566c0-6.265,5.079-11.344,11.344-11.344h158.274c28.754,0,50.27,1.366,65.769,4.174
 		c22.136,3.7,41.083,10.917,56.313,21.452c15.479,10.709,28.051,25.796,37.367,44.844c9.216,18.848,13.889,39.783,13.89,62.226
 		c-0.001,38.449-12.467,71.509-37.051,98.262c-25.186,27.409-68.175,40.732-131.423,40.732h-96.271V505.15

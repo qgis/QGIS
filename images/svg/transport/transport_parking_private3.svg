@@ -40,7 +40,7 @@
 <g id="g2325" transform="translate(879.29125,36.805119)">
 	<path id="path2329" fill="#111111" stroke="#EEEEEE" stroke-width="3.408" d="M0,0"/>
 </g>
-<path id="text2419-4" fill="param(fill)" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M144.625,74.625
+<path id="text2419-4" fill="param(fill)" stroke="param(outline)" stroke-width="param(outline-width) 1" d="M144.625,74.625
 	c-6.265,0.001-11.343,5.079-11.344,11.344v419.563c0.001,6.265,5.079,11.343,11.344,11.344h55.5
 	c6.265-0.001,11.343-5.079,11.344-11.344v-159.22h96.281c60.915,0,105.399-12.414,131.438-40.75
 	c24.546-26.711,37.03-60.163,37.03-98.25c0-22.341-4.6-43.25-13.875-62.219c-9.203-18.818-21.712-34.007-37.375-44.844
