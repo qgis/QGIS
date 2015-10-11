@@ -264,11 +264,16 @@ int QgsFields::fieldNameIndex( const QString& fieldName ) const
 {
   for ( int idx = 0; idx < count(); ++idx )
   {
-    if ( QString::compare( mFields[idx].field.name(), fieldName, Qt::CaseInsensitive ) == 0 )
-    {
+    if ( mFields[idx].field.name() == fieldName )
       return idx;
-    }
   }
+
+  for ( int idx = 0; idx < count(); ++idx )
+  {
+    if ( QString::compare( mFields[idx].field.name(), fieldName, Qt::CaseInsensitive ) == 0 )
+      return idx;
+  }
+
   return -1;
 }
 
