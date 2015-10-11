@@ -339,6 +339,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
 
   mFields = fields;
   mAttrIdxToOgrIdx.clear();
+  QSet<int> existingIdxs;
 
   for ( int fldIdx = 0; fldIdx < fields.count(); ++fldIdx )
   {
@@ -447,7 +448,8 @@ QgsVectorFileWriter::QgsVectorFileWriter(
     OGR_Fld_Destroy( fld );
 
     int ogrIdx = OGR_FD_GetFieldIndex( defn, mCodec->fromUnicode( name ) );
-    if ( ogrIdx < 0 )
+    QgsDebugMsg( QString( "returned field index for %1: %2" ).arg( name ).arg( ogrIdx ) );
+    if ( ogrIdx < 0 || existingIdxs.contains( ogrIdx ) )
     {
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM < 1700
       // if we didn't find our new column, assume it's name was truncated and
@@ -480,6 +482,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
       }
     }
 
+    existingIdxs.insert( ogrIdx );
     mAttrIdxToOgrIdx.insert( fldIdx, ogrIdx );
   }
 
@@ -1388,7 +1391,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
 
   layerOptions.insert( "LAUNDER", new BoolOption(
                          QObject::tr( "Controls whether layer and field names will be laundered for easier use "
-                                      "in SQLite. Laundered names will be convered to lower case and some special "
+                                      "in SQLite. Laundered names will be converted to lower case and some special "
                                       "characters(' - #) will be changed to underscores." ),
                          true  // Default value
                        ) );
@@ -2633,7 +2636,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels
         if ( !styleString.isEmpty() )
         {
           OGR_F_SetStyleString( ogrFeature, styleString.toLocal8Bit().data() );
-          if ( ! writeFeature( mLayer, ogrFeature ) )
+          if ( !writeFeature( mLayer, ogrFeature ) )
           {
             ++nErrors;
           }

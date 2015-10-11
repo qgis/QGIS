@@ -13,7 +13,7 @@ class QgsField
 #include <qgsfield.h>
 %End
 
-public:
+  public:
     /** Constructor. Constructs a new QgsField object.
      * @param name Field name
      * @param type Field variant type, currently supported: String / Int / Double
@@ -177,7 +177,7 @@ public:
  *
  * In addition to storing a list of QgsField instances, it also:
  * - allows quick lookups of field names to index in the list
- *- keeps track of where the field definition comes from (vector data provider, joined layer or newly added from an editing operation)
+ * - keeps track of where the field definition comes from (vector data provider, joined layer or newly added from an editing operation)
  * \note QgsFields objects are implicitly shared.
  */
 
@@ -332,8 +332,8 @@ class QgsFields
     //! Look up field's index from name. Returns -1 on error
     int indexFromName( const QString& name ) const;
 
-    //! Look up field's index from name - case insensitive
-    //! TODO: sort out case sensitive (indexFromName()) vs insensitive (fieldNameIndex()) calls
+    //! Look up field's index from name
+    //! also looks up case-insensitive if there is no match otherwise
     //! @note added in 2.4
     int fieldNameIndex( const QString& fieldName ) const;
 
