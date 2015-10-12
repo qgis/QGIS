@@ -49,6 +49,16 @@ email                : marco.hugentobler at sourcepole dot com
     return r; \
   }
 
+#if defined(_MSC_VER) && (_MSC_VER < 1800)
+namespace std
+{
+  double round( double d )
+  {
+    return d < 0.0 ? ceil( d - 0.5 ) : floor( d + 0.5 );
+  }
+}
+#endif
+
 static void throwGEOSException( const char *fmt, ... )
 {
   va_list ap;
