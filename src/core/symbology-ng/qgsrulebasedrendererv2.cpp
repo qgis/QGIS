@@ -1055,9 +1055,18 @@ QgsFeatureRendererV2* QgsRuleBasedRendererV2::createFromSld( QDomElement& elemen
 
 void QgsRuleBasedRendererV2::refineRuleCategories( QgsRuleBasedRendererV2::Rule* initialRule, QgsCategorizedSymbolRendererV2* r )
 {
+  QString attr = r->classAttribute();
+  // categorizedAttr could be either an attribute name or an expression.
+  // the only way to differentiate is to test it as an expression...
+  QgsExpression testExpr( attr );
+  if ( testExpr.hasParserError() || ( testExpr.isField() && !attr.startsWith( "\"" ) ) )
+  {
+    //not an expression, so need to quote column name
+    attr = QgsExpression::quotedColumnRef( attr );
+  }
+
   Q_FOREACH ( const QgsRendererCategoryV2& cat, r->categories() )
   {
-    QString attr = QgsExpression::quotedColumnRef( r->classAttribute() );
     QString value;
     // not quoting numbers saves a type cast
     if ( cat.value().type() == QVariant::Int )
@@ -1076,14 +1085,31 @@ void QgsRuleBasedRendererV2::refineRuleCategories( QgsRuleBasedRendererV2::Rule*
 
 void QgsRuleBasedRendererV2::refineRuleRanges( QgsRuleBasedRendererV2::Rule* initialRule, QgsGraduatedSymbolRendererV2* r )
 {
+  QString attr = r->classAttribute();
+  // categorizedAttr could be either an attribute name or an expression.
+  // the only way to differentiate is to test it as an expression...
+  QgsExpression testExpr( attr );
+  if ( testExpr.hasParserError() || ( testExpr.isField() && !attr.startsWith( "\"" ) ) )
+  {
+    //not an expression, so need to quote column name
+    attr = QgsExpression::quotedColumnRef( attr );
+  }
+  else if ( !testExpr.isField() )
+  {
+    //otherwise wrap expression in brackets
+    attr = QString( "(%1)" ).arg( attr );
+  }
+
+  bool firstRange = true;
   Q_FOREACH ( const QgsRendererRangeV2& rng, r->ranges() )
   {
     // due to the loss of precision in double->string conversion we may miss out values at the limit of the range
     // TODO: have a possibility to construct expressions directly as a parse tree to avoid loss of precision
-    QString attr = QgsExpression::quotedColumnRef( r->classAttribute() );
-    QString filter = QString( "%1 >= %2 AND %1 <= %3" ).arg( attr )
+    QString filter = QString( "%1 %2 %3 AND %1 <= %4" ).arg( attr )
+                     .arg( firstRange ? ">=" : ">" )
                      .arg( QString::number( rng.lowerValue(), 'f', 4 ) )
                      .arg( QString::number( rng.upperValue(), 'f', 4 ) );
+    firstRange = false;
     QString label = filter;
     initialRule->appendChild( new Rule( rng.symbol()->clone(), 0, 0, filter, label ) );
   }
