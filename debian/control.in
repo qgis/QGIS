@@ -17,7 +17,6 @@ Build-Depends:
 #saucy# libgdal-dev (>= 1.9.0),
 #wheezy# libgdal1-dev,
  libgeos-dev (>= 3.0.0),
- libgeos++-dev,
  libgsl0-dev,
  libpq-dev,
  libproj-dev,
