@@ -294,7 +294,7 @@ size_t QgsGeometry::wkbSize() const
   return d->mWkbSize;
 }
 
-const GEOSGeometry* QgsGeometry::asGeos() const
+const GEOSGeometry* QgsGeometry::asGeos( double precision ) const
 {
   if ( !d || !d->geometry )
   {
@@ -303,7 +303,7 @@ const GEOSGeometry* QgsGeometry::asGeos() const
 
   if ( !d->mGeos )
   {
-    d->mGeos = QgsGeos::asGeos( d->geometry );
+    d->mGeos = QgsGeos::asGeos( d->geometry, precision );
   }
   return d->mGeos;
 }

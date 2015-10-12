@@ -18,7 +18,6 @@ sudo apt-get install --force-yes --no-install-recommends --no-install-suggests \
         libexpat1-dev \
         libfcgi-dev \
         libgdal1-dev \
-        libgeos++-dev \
         libgeos-dev \
         libgsl0-dev \
         libpq-dev \

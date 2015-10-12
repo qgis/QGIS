@@ -23,16 +23,11 @@ IF(WIN32)
   IF (MINGW)
     FIND_PATH(GEOS_INCLUDE_DIR geos_c.h /usr/local/include /usr/include c:/msys/local/include)
     FIND_LIBRARY(GEOS_LIBRARY NAMES geos_c PATHS /usr/local/lib /usr/lib c:/msys/local/lib)
-    FIND_LIBRARY(GEOS_CPP_LIBRARY NAMES geos PATHS /usr/local/lib /usr/lib c:/msys/local/lib)
   ENDIF (MINGW)
 
   IF (MSVC)
     FIND_PATH(GEOS_INCLUDE_DIR geos_c.h $ENV{LIB_DIR}/include $ENV{INCLUDE})
-    FIND_LIBRARY(GEOS_LIBRARY NAMES geos_c_i geos_c PATHS
-      "$ENV{LIB_DIR}/lib"
-      $ENV{LIB}
-      )
-    FIND_LIBRARY(GEOS_CPP_LIBRARY NAMES geos PATHS
+    FIND_LIBRARY(GEOS_LIBRARY NAMES geos geos_c_i geos_c PATHS
       "$ENV{LIB_DIR}/lib"
       $ENV{LIB}
       )
@@ -72,7 +67,6 @@ ELSE(WIN32)
 
     IF(CYGWIN)
       FIND_LIBRARY(GEOS_LIBRARY NAMES geos_c PATHS /usr/lib /usr/local/lib)
-      FIND_LIBRARY(GEOS_CPP_LIBRARY NAMES geos PATHS /usr/lib /usr/local/lib)
     ENDIF(CYGWIN)
 
     IF (NOT GEOS_INCLUDE_DIR OR NOT GEOS_LIBRARY OR NOT GEOS_CONFIG)
@@ -138,16 +132,12 @@ ELSE(WIN32)
         #MESSAGE("DBG  GEOS_CONFIG_LIBS=${GEOS_CONFIG_LIBS}")
         #MESSAGE("DBG  GEOS_LIB_NAME_WITH_PREFIX=${GEOS_LIB_NAME_WITH_PREFIX}")
         SET(GEOS_LIB_NAME_WITH_PREFIX -lgeos_c CACHE STRING INTERNAL)
-        SET(GEOS_CPP_LIB_NAME_WITH_PREFIX -lgeos CACHE STRING INTERNAL)
 
         ## remove prefix -l because we need the pure name
 
         IF (GEOS_LIB_NAME_WITH_PREFIX)
           STRING(REGEX REPLACE "[-][l]" "" GEOS_LIB_NAME ${GEOS_LIB_NAME_WITH_PREFIX} )
         ENDIF (GEOS_LIB_NAME_WITH_PREFIX)
-        IF (GEOS_CPP_LIB_NAME_WITH_PREFIX)
-          STRING(REGEX REPLACE "[-][l]" "" GEOS_CPP_LIB_NAME ${GEOS_CPP_LIB_NAME_WITH_PREFIX} )
-        ENDIF (GEOS_CPP_LIB_NAME_WITH_PREFIX)
         #MESSAGE("DBG  GEOS_LIB_NAME=${GEOS_LIB_NAME}")
 
         IF (APPLE)
@@ -156,11 +146,9 @@ ELSE(WIN32)
             # while still preserving user setting if given
             # ***FIXME*** need to improve framework check so below not needed
             SET(GEOS_LIBRARY ${GEOS_LINK_DIRECTORIES}/lib${GEOS_LIB_NAME}.dylib CACHE STRING INTERNAL FORCE)
-            SET(GEOS_CPP_LIBRARY ${GEOS_LINK_DIRECTORIES}/lib${GEOS_CPP_LIB_NAME}.dylib CACHE STRING INTERNAL FORCE)
           ENDIF (NOT GEOS_LIBRARY)
         ELSE (APPLE)
           SET(GEOS_LIBRARY ${GEOS_LINK_DIRECTORIES}/lib${GEOS_LIB_NAME}.so CACHE STRING INTERNAL)
-          SET(GEOS_CPP_LIBRARY ${GEOS_LINK_DIRECTORIES}/lib${GEOS_CPP_LIB_NAME}.so CACHE STRING INTERNAL)
         ENDIF (APPLE)
         #MESSAGE("DBG  GEOS_LIBRARY=${GEOS_LIBRARY}")
 
