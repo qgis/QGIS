@@ -86,11 +86,11 @@ class QgsTextLabelFeature : public QgsLabelFeature
         if ( curvedLabeling )
         {
           wordSpaceFix = qreal( 0.0 );
-          if ( mClusters[i] == QString( " " ) )
+          if ( mClusters[i] == QLatin1String( " " ) )
           {
             // word spacing only gets added once at end of consecutive run of spaces, see QTextEngine::shapeText()
             int nxt = i + 1;
-            wordSpaceFix = ( nxt < mClusters.count() && mClusters[nxt] != QString( " " ) ) ? wordSpacing : qreal( 0.0 );
+            wordSpaceFix = ( nxt < mClusters.count() && mClusters[nxt] != QLatin1String( " " ) ) ? wordSpacing : qreal( 0.0 );
           }
           // this workaround only works for clusters with a single character. Not sure how it should be handled
           // with multi-character clusters.

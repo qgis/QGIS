@@ -15,7 +15,7 @@ bool QgsLayerDefinition::loadLayerDefinition( const QString &path, QgsLayerTreeG
   QFile file( path );
   if ( !file.open( QIODevice::ReadOnly ) )
   {
-    errorMessage = QString( "Can not open file" );
+    errorMessage = QLatin1String( "Can not open file" );
     return false;
   }
 

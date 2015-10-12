@@ -129,7 +129,7 @@ bool QgsAuthManager::init( const QString& pluginPath )
   {
     QString pn = p->name();
     int pr = 0;
-    if ( pn != QString( "qca-ossl" ) )
+    if ( pn != QLatin1String( "qca-ossl" ) )
     {
       pr = QCA::providerPriority( pn ) + 1;
     }
@@ -632,7 +632,7 @@ bool QgsAuthManager::resetMasterPassword( const QString& newpass, const QString 
     // backup database of failed attempt, for inspection
     authDbConnection().close();
     QString errdbbackup( dbbackup );
-    errdbbackup.replace( QString( ".db" ), QString( "_ERROR.db" ) );
+    errdbbackup.replace( QLatin1String( ".db" ), QLatin1String( "_ERROR.db" ) );
     QFile::rename( authenticationDbPath(), errdbbackup );
     QgsDebugMsg( QString( "Master password reset FAILED: backed up failed db at %1" ).arg( errdbbackup ) );
 
@@ -1204,7 +1204,7 @@ bool QgsAuthManager::backupAuthenticationDatabase( QString *backuppath )
   // duplicate current db file to 'qgis-auth_YYYY-MM-DD-HHMMSS.db' backup
   QString datestamp( QDateTime::currentDateTime().toString( "yyyy-MM-dd-hhmmss" ) );
   QString dbbackup( authenticationDbPath() );
-  dbbackup.replace( QString( ".db" ), QString( "_%1.db" ).arg( datestamp ) );
+  dbbackup.replace( QLatin1String( ".db" ), QString( "_%1.db" ).arg( datestamp ) );
 
   if ( !QFile::copy( authenticationDbPath(), dbbackup ) )
   {

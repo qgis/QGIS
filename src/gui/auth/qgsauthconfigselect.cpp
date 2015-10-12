@@ -190,7 +190,7 @@ void QgsAuthConfigSelect::loadAvailableConfigs()
 void QgsAuthConfigSelect::on_cmbConfigSelect_currentIndexChanged( int index )
 {
   QString authcfg = cmbConfigSelect->itemData( index ).toString();
-  mAuthCfg = ( !authcfg.isEmpty() && authcfg != QString( "0" ) ) ? authcfg : QString();
+  mAuthCfg = ( !authcfg.isEmpty() && authcfg != QLatin1String( "0" ) ) ? authcfg : QString();
   loadConfig();
 }
 

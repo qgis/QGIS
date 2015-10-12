@@ -3669,7 +3669,7 @@ QString QgsSymbolLayerV2Utils::symbolNameToPath( QString name )
   for ( int i = 0; i < svgPaths.size(); i++ )
   {
     QString svgPath = svgPaths[i];
-    if ( svgPath.endsWith( QString( "/" ) ) )
+    if ( svgPath.endsWith( QChar( '/' ) ) )
     {
       svgPath.chop( 1 );
     }

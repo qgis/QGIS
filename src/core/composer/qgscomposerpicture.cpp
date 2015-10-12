@@ -426,7 +426,7 @@ void QgsComposerPicture::loadPicture( const QString &path )
   {
     //trying to load an invalid file or bad expression, show cross picture
     mMode = SVG;
-    QString badFile = QString( ":/images/composer/missing_image.svg" );
+    QString badFile( ":/images/composer/missing_image.svg" );
     mSVG.load( badFile );
     if ( mSVG.isValid() )
     {

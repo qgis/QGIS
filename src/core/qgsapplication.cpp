@@ -185,7 +185,7 @@ void QgsApplication::init( QString customConfigPath )
     ABISYM( mConfigPath ) = customConfigPath + "/"; // make sure trailing slash is included
   }
 
-  ABISYM( mDefaultSvgPaths ) << qgisSettingsDirPath() + QString( "svg/" );
+  ABISYM( mDefaultSvgPaths ) << qgisSettingsDirPath() + QLatin1String( "svg/" );
 
   ABISYM( mAuthDbDirPath ) = qgisSettingsDirPath();
   if ( getenv( "QGIS_AUTH_DB_DIR_PATH" ) )
@@ -524,18 +524,18 @@ QHash<QString, QString> QgsApplication::uiThemes()
 */
 QString QgsApplication::authorsFilePath()
 {
-  return ABISYM( mPkgDataPath ) + QString( "/doc/AUTHORS" );
+  return ABISYM( mPkgDataPath ) + QLatin1String( "/doc/AUTHORS" );
 }
 /*!
   Returns the path to the contributors file.
 */
 QString QgsApplication::contributorsFilePath()
 {
-  return ABISYM( mPkgDataPath ) + QString( "/doc/CONTRIBUTORS" );
+  return ABISYM( mPkgDataPath ) + QLatin1String( "/doc/CONTRIBUTORS" );
 }
 QString QgsApplication::developersMapFilePath()
 {
-  return ABISYM( mPkgDataPath ) + QString( "/doc/developersmap.html" );
+  return ABISYM( mPkgDataPath ) + QLatin1String( "/doc/developersmap.html" );
 }
 
 /*!
@@ -543,7 +543,7 @@ QString QgsApplication::developersMapFilePath()
 */
 QString QgsApplication::sponsorsFilePath()
 {
-  return ABISYM( mPkgDataPath ) + QString( "/doc/SPONSORS" );
+  return ABISYM( mPkgDataPath ) + QLatin1String( "/doc/SPONSORS" );
 }
 
 /*!
@@ -551,19 +551,19 @@ QString QgsApplication::sponsorsFilePath()
 */
 QString QgsApplication::donorsFilePath()
 {
-  return ABISYM( mPkgDataPath ) + QString( "/doc/DONORS" );
+  return ABISYM( mPkgDataPath ) + QLatin1String( "/doc/DONORS" );
 }
 
 /** Returns the path to the sponsors file. */
 QString QgsApplication::translatorsFilePath()
 {
-  return ABISYM( mPkgDataPath ) + QString( "/doc/TRANSLATORS" );
+  return ABISYM( mPkgDataPath ) + QLatin1String( "/doc/TRANSLATORS" );
 }
 
 /** Returns the path to the licence file. */
 QString QgsApplication::licenceFilePath()
 {
-  return ABISYM( mPkgDataPath ) + QString( "/doc/LICENSE" );
+  return ABISYM( mPkgDataPath ) + QLatin1String( "/doc/LICENSE" );
 }
 
 /*!
@@ -589,9 +589,9 @@ QString QgsApplication::helpAppPath()
 QString QgsApplication::i18nPath()
 {
   if ( ABISYM( mRunningFromBuildDir ) )
-    return ABISYM( mBuildOutputPath ) + QString( "/i18n" );
+    return ABISYM( mBuildOutputPath ) + QLatin1String( "/i18n" );
   else
-    return ABISYM( mPkgDataPath ) + QString( "/i18n/" );
+    return ABISYM( mPkgDataPath ) + QLatin1String( "/i18n/" );
 }
 
 /*!
@@ -599,7 +599,7 @@ QString QgsApplication::i18nPath()
 */
 QString QgsApplication::qgisMasterDbFilePath()
 {
-  return ABISYM( mPkgDataPath ) + QString( "/resources/qgis.db" );
+  return ABISYM( mPkgDataPath ) + QLatin1String( "/resources/qgis.db" );
 }
 
 /*!
@@ -615,7 +615,7 @@ QString QgsApplication::qgisSettingsDirPath()
 */
 QString QgsApplication::qgisUserDbFilePath()
 {
-  return qgisSettingsDirPath() + QString( "qgis.db" );
+  return qgisSettingsDirPath() + QLatin1String( "qgis.db" );
 }
 
 /*!
@@ -623,7 +623,7 @@ QString QgsApplication::qgisUserDbFilePath()
 */
 QString QgsApplication::qgisAuthDbFilePath()
 {
-  return ABISYM( mAuthDbDirPath ) + QString( "qgis-auth.db" );
+  return ABISYM( mAuthDbDirPath ) + QLatin1String( "qgis-auth.db" );
 }
 
 /*!
@@ -639,7 +639,7 @@ QString QgsApplication::splashPath()
 */
 QString QgsApplication::iconsPath()
 {
-  return ABISYM( mPkgDataPath ) + QString( "/images/icons/" );
+  return ABISYM( mPkgDataPath ) + QLatin1String( "/images/icons/" );
 }
 /*!
   Returns the path to the srs.db file.
@@ -663,7 +663,7 @@ QString QgsApplication::srsDbFilePath()
   }
   else
   {
-    return ABISYM( mPkgDataPath ) + QString( "/resources/srs.db" );
+    return ABISYM( mPkgDataPath ) + QLatin1String( "/resources/srs.db" );
   }
 }
 
@@ -688,22 +688,22 @@ QStringList QgsApplication::svgPaths()
 
 QString QgsApplication::userStyleV2Path()
 {
-  return qgisSettingsDirPath() + QString( "symbology-ng-style.db" );
+  return qgisSettingsDirPath() + QLatin1String( "symbology-ng-style.db" );
 }
 
 QString QgsApplication::userThemesFolder()
 {
-  return qgisSettingsDirPath() + QString( "/themes" );
+  return qgisSettingsDirPath() + QLatin1String( "/themes" );
 }
 
 QString QgsApplication::defaultStyleV2Path()
 {
-  return ABISYM( mPkgDataPath ) + QString( "/resources/symbology-ng-style.db" );
+  return ABISYM( mPkgDataPath ) + QLatin1String( "/resources/symbology-ng-style.db" );
 }
 
 QString QgsApplication::defaultThemesFolder()
 {
-  return ABISYM( mPkgDataPath ) + QString( "/resources/themes" );
+  return ABISYM( mPkgDataPath ) + QLatin1String( "/resources/themes" );
 }
 
 QString QgsApplication::libraryPath()
@@ -1073,7 +1073,7 @@ bool QgsApplication::createDB( QString *errorMessage )
   // set a working directory up for gdal to write .aux.xml files into
   // for cases where the raster dir is read only to the user
   // if the env var is already set it will be used preferentially
-  QString myPamPath = qgisSettingsDirPath() + QString( "gdal_pam/" );
+  QString myPamPath = qgisSettingsDirPath() + QLatin1String( "gdal_pam/" );
   QDir myDir( myPamPath );
   if ( !myDir.exists() )
   {

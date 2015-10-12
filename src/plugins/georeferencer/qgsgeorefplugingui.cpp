@@ -1666,7 +1666,7 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
   QGraphicsRectItem* previousItem = composerMap;
   if ( wldTransform )
   {
-    QString parameterTitle = tr( "Transformation parameters" ) + QString( " (" ) + convertTransformEnumToString( transform.transformParametrisation() ) + QString( ")" );
+    QString parameterTitle = tr( "Transformation parameters" ) + QLatin1String( " (" ) + convertTransformEnumToString( transform.transformParametrisation() ) + QLatin1String( ")" );
     parameterLabel = new QgsComposerLabel( composition );
     parameterLabel->setFont( titleFont );
     parameterLabel->setText( parameterTitle );

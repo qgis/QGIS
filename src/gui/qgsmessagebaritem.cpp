@@ -154,7 +154,7 @@ void QgsMessageBarItem::writeContent()
       QString t = mTitle.trimmed();
       if ( !content.isEmpty() && !t.endsWith( ":" ) && !t.endsWith( ": " ) )
         t += ": ";
-      content.prepend( QString( "<b>" ) + t + " </b>" );
+      content.prepend( QLatin1String( "<b>" ) + t + " </b>" );
     }
     mTextEdit->setText( content );
   }

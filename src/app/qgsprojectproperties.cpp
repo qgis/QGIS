@@ -1508,7 +1508,7 @@ void QgsProjectProperties::populateEllipsoidList()
   myItem.semiMinor = 0.0;
   mEllipsoidList.append( myItem );
 
-  myItem.acronym = QString( "PARAMETER:6370997:6370997" );
+  myItem.acronym = QLatin1String( "PARAMETER:6370997:6370997" );
   myItem.description = tr( "Parameters:" );
   myItem.semiMajor = 6370997.0;
   myItem.semiMinor = 6370997.0;

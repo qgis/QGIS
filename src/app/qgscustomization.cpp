@@ -55,7 +55,7 @@ QgsCustomizationDialog::QgsCustomizationDialog( QWidget *parent, QSettings* sett
   myHeaders << tr( "Object name" ) << tr( "Label" ) << tr( "Description" );
   treeWidget->setHeaderLabels( myHeaders );
 
-  mLastDirSettingsName  = QString( "/UI/lastCustomizationDir" );
+  mLastDirSettingsName  = QLatin1String( "/UI/lastCustomizationDir" );
   //treeWidget->hideColumn(0)
   connect( buttonBox->button( QDialogButtonBox::Ok ), SIGNAL( clicked() ), this, SLOT( ok() ) );
   connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );

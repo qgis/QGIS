@@ -135,7 +135,7 @@ void TestQgsRasterFill::cleanupTestCase()
 
 void TestQgsRasterFill::init()
 {
-  mRasterFill->setImageFilePath( mTestDataDir + QString( "sample_image.png" ) );
+  mRasterFill->setImageFilePath( mTestDataDir + QLatin1String( "sample_image.png" ) );
   mRasterFill->setWidth( 30.0 );
   mRasterFill->setWidthUnit( QgsSymbolV2::Pixel );
   mRasterFill->setCoordinateMode( QgsRasterFillSymbolLayer::Feature );

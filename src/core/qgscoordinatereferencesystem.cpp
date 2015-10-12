@@ -2098,7 +2098,7 @@ bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString& dbPath )
     }
 
     //switch sign of rotation parameters. See http://trac.osgeo.org/proj/wiki/GenParms#towgs84-DatumtransformationtoWGS84
-    if ( v.at( idxmcode ).compare( QString( "'9607'" ) ) == 0 )
+    if ( v.at( idxmcode ).compare( QLatin1String( "'9607'" ) ) == 0 )
     {
       v[ idxmcode ] = "'9606'";
       v[ idxrx ] = "'" + qgsDoubleToString( -( v[ idxrx ].remove( "'" ).toDouble() ) ) + "'";
@@ -2151,7 +2151,7 @@ QString QgsCoordinateReferenceSystem::geographicCRSAuthId() const
   }
   else if ( mCRS )
   {
-    return OSRGetAuthorityName( mCRS, "GEOGCS" ) + QString( ":" ) + OSRGetAuthorityCode( mCRS, "GEOGCS" );
+    return OSRGetAuthorityName( mCRS, "GEOGCS" ) + QLatin1String( ":" ) + OSRGetAuthorityCode( mCRS, "GEOGCS" );
   }
   else
   {

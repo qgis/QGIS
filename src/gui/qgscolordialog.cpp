@@ -523,7 +523,7 @@ void QgsColorDialogV2::newPalette()
   //generate file name for new palette
   QDir palettePath( gplFilePath() );
   QRegExp badChars( "[,^@={}\\[\\]~!?:&*\"|#%<>$\"'();`' /\\\\]" );
-  QString filename = name.simplified().toLower().replace( badChars, QString( "_" ) );
+  QString filename = name.simplified().toLower().replace( badChars, QLatin1String( "_" ) );
   if ( filename.isEmpty() )
   {
     filename = tr( "new_palette" );

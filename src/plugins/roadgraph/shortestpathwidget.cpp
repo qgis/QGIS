@@ -195,8 +195,8 @@ void RgShortestPathWidget::onSelectFrontPoint()
 void RgShortestPathWidget::setFrontPoint( const QgsPoint& pt )
 {
   mPlugin->iface()->mapCanvas()->unsetMapTool( mFrontPointMapTool );
-  mFrontPointLineEdit->setText( QString( "(" ) + QString().setNum( pt.x() ) + QString( "," ) +
-                                QString().setNum( pt.y() ) + QString( ")" ) );
+  mFrontPointLineEdit->setText( QString( "(" ) + QString().setNum( pt.x() ) + QLatin1String( "," ) +
+                                QString().setNum( pt.y() ) + QLatin1String( ")" ) );
   mFrontPoint = pt;
 
   double mupp = mPlugin->iface()->mapCanvas()->getCoordinateTransform()->mapUnitsPerPixel() * 2;
@@ -219,8 +219,8 @@ void RgShortestPathWidget::setBackPoint( const QgsPoint& pt )
   mPlugin->iface()->mapCanvas()->unsetMapTool( mBackPointMapTool );
 
   mBackPoint = pt;
-  mBackPointLineEdit->setText( QString( "(" ) + QString().setNum( pt.x() ) + QString( "," ) +
-                               QString().setNum( pt.y() ) + QString( ")" ) );
+  mBackPointLineEdit->setText( QString( "(" ) + QString().setNum( pt.x() ) + QLatin1String( "," ) +
+                               QString().setNum( pt.y() ) + QLatin1String( ")" ) );
 
   double mupp = mPlugin->iface()->mapCanvas()->getCoordinateTransform()->mapUnitsPerPixel() * 2;
 

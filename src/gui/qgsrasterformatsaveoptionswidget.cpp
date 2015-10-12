@@ -516,7 +516,7 @@ void QgsRasterFormatSaveOptionsWidget::setCreateOptions()
   while ( i != mOptionsMap.end() )
   {
     setCreateOptions( i.key(), i.value() );
-    myProfiles += i.key() + QString( " " );
+    myProfiles += i.key() + QLatin1String( " " );
     ++i;
   }
   mySettings.setValue( mProvider + "/driverOptions/" + mFormat.toLower() + "/profiles",

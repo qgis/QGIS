@@ -254,7 +254,7 @@ void QgsCollapsibleGroupBoxBasic::toggleCollapsed()
       if ( mSyncParent->parentWidget() )
       {
         // don't use whole app for grandparent (common for dialogs that use main window for parent)
-        if ( mSyncParent->parentWidget()->objectName() != QString( "QgisApp" ) )
+        if ( mSyncParent->parentWidget()->objectName() != QLatin1String( "QgisApp" ) )
         {
           mSyncParent = mSyncParent->parentWidget();
         }

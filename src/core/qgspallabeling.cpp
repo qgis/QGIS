@@ -736,7 +736,7 @@ void QgsPalLayerSettings::readDataDefinedProperty( QgsVectorLayer* layer,
     layer->removeCustomProperty( oldPropertyName );
   }
 
-  if ( !ddString.isEmpty() && ddString != QString( "0~~0~~~~" ) )
+  if ( !ddString.isEmpty() && ddString != QLatin1String( "0~~0~~~~" ) )
   {
     // TODO: update this when project settings for labeling are migrated to better XML layout
     QString newStyleString = updateDataDefinedString( ddString );
@@ -754,7 +754,7 @@ void QgsPalLayerSettings::readDataDefinedProperty( QgsVectorLayer* layer,
 
 void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
 {
-  if ( layer->customProperty( "labeling" ).toString() != QString( "pal" ) )
+  if ( layer->customProperty( "labeling" ).toString() != QLatin1String( "pal" ) )
   {
     // for polygons the "over point" (over centroid) placement is better than the default
     // "around point" (around centroid) which is more suitable for points
@@ -1845,7 +1845,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString t
 
   if ( wrapchr.isEmpty() )
   {
-    wrapchr = QString( "\n" ); // default to new line delimiter
+    wrapchr = QLatin1String( "\n" ); // default to new line delimiter
   }
 
   //consider the space needed for the direction symbol
@@ -1863,7 +1863,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString t
     }
     else
     {
-      text.prepend( dirSym + QString( "\n" ) ); // SymbolAbove or SymbolBelow
+      text.prepend( dirSym + QLatin1String( "\n" ) ); // SymbolAbove or SymbolBelow
     }
   }
 
@@ -3732,7 +3732,7 @@ bool QgsPalLabeling::geometryRequiresPreparation( const QgsGeometry* geometry, Q
 QStringList QgsPalLabeling::splitToLines( const QString &text, const QString &wrapCharacter )
 {
   QStringList multiLineSplit;
-  if ( !wrapCharacter.isEmpty() && wrapCharacter != QString( "\n" ) )
+  if ( !wrapCharacter.isEmpty() && wrapCharacter != QLatin1String( "\n" ) )
   {
     //wrap on both the wrapchr and new line characters
     Q_FOREACH ( const QString& line, text.split( wrapCharacter ) )

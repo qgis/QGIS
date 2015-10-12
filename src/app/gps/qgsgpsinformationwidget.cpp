@@ -414,7 +414,7 @@ void QgsGPSInformationWidget::connectGps()
   }
   else if ( mRadInternal->isChecked() )
   {
-    port = QString( "internalGPS" );
+    port = QLatin1String( "internalGPS" );
   }
 
   mGPSPlainTextEdit->appendPlainText( tr( "Connecting..." ) );

@@ -3415,7 +3415,7 @@ bool QgsExpression::NodeCondition::prepare( QgsExpression *parent, const QgsExpr
 
 QString QgsExpression::NodeCondition::dump() const
 {
-  QString msg = QString( "CASE" );
+  QString msg( "CASE" );
   Q_FOREACH ( WhenThen* cond, mConditions )
   {
     msg += QString( " WHEN %1 THEN %2" ).arg( cond->mWhenExp->dump() ).arg( cond->mThenExp->dump() );

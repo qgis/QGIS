@@ -1416,7 +1416,7 @@ QDomElement QgsWFSProvider::createTransactionElement( QDomDocument& doc ) const
   transactionElem.setAttribute( "service", "WFS" );
   transactionElem.setAttribute( "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance" );
   transactionElem.setAttribute( "xsi:schemaLocation", mWfsNamespace + " "
-                                + dataSourceUri().replace( QString( "GetFeature" ), QString( "DescribeFeatureType" ) ) );
+                                + dataSourceUri().replace( QLatin1String( "GetFeature" ), QLatin1String( "DescribeFeatureType" ) ) );
 
   QString namespacePrefix = nameSpacePrefix( parameterFromUrl( "typename" ) );
   if ( !namespacePrefix.isEmpty() )
@@ -1518,7 +1518,7 @@ void QgsWFSProvider::getLayerCapabilities()
   mNetworkRequestFinished = false;
 
   QString uri = dataSourceUri();
-  uri.replace( QString( "GetFeature" ), QString( "GetCapabilities" ) );
+  uri.replace( QLatin1String( "GetFeature" ), QLatin1String( "GetCapabilities" ) );
   QUrl getCapabilitiesUrl( uri );
   getCapabilitiesUrl.removeQueryItem( "username" );
   getCapabilitiesUrl.removeQueryItem( "password" );

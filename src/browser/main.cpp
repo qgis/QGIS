@@ -41,7 +41,7 @@ int main( int argc, char ** argv )
        || theme == "classic"
        || theme == "nkids" )
   {
-    theme = QString( "default" );
+    theme = QLatin1String( "default" );
   }
   a.setThemeName( theme );
   a.initQgis();
