@@ -356,7 +356,7 @@ class TestQgsGraduatedSymbolRendererV2(TestCase):
         self.assertEqual(renderer.minSymbolSize(), 2)
         refSizes = [2, (13 + 2) * .5, 13]
         ctx = QgsRenderContext()
-        for idx, symbol in enumerate(renderer.symbols(ctx)):
+        for idx, symbol in enumerate(renderer.symbols2(ctx)):
             self.assertEqual(symbol.size(), refSizes[idx])
 
     def testQgsGraduatedSymbolRendererV2_2(self):

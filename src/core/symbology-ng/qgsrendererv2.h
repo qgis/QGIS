@@ -92,8 +92,10 @@ class CORE_EXPORT QgsFeatureRendererV2
      * @param context render context
      * @return returns pointer to symbol or 0 if symbol was not found
      * @note added in QGIS 2.12
+     * @note available in Python bindings as symbolForFeature2
      */
-    //TODO - make pure virtual when above method is removed
+    //TODO - QGIS 3.0 make pure virtual when above method is removed
+    //TODO - QGIS 3.0 change PyName to symbolForFeature when deprecated method is removed
     virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature, QgsRenderContext& context );
 
     /**
@@ -109,7 +111,9 @@ class CORE_EXPORT QgsFeatureRendererV2
      * symbol which can be used as an identifier for renderer's rule - the former may return a temporary replacement
      * of a symbol for use in rendering.
      * @note added in 2.12
+     * @note available in Python bindings as originalSymbolForFeature2
      */
+    //TODO - QGIS 3.0 change PyName to originalSymbolForFeature when deprecated method is removed
     virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feature, QgsRenderContext& context );
 
     /**
@@ -168,7 +172,9 @@ class CORE_EXPORT QgsFeatureRendererV2
     /** Returns list of symbols used by the renderer.
      * @param context render context
      * @note added in QGIS 2.12
+     * @note available in Python bindings as symbols2
      */
+    //TODO - QGIS 3.0 change PyName to symbols when deprecated method is removed
     virtual QgsSymbolV2List symbols( QgsRenderContext& context );
 
     bool usingSymbolLevels() const { return mUsingSymbolLevels; }
@@ -251,7 +257,9 @@ class CORE_EXPORT QgsFeatureRendererV2
      * Must be called between startRender() and stopRender() calls.
      * Default implementation uses symbolForFeature().
      * @note added in QGIS 2.12
+     * @note available in Python bindings as willRenderFeature2
      */
+    //TODO - QGIS 3.0 change PyName to willRenderFeature when deprecated method is removed
     virtual bool willRenderFeature( QgsFeature& feat, QgsRenderContext& context );
 
     //! return list of symbols used for rendering the feature.
@@ -259,9 +267,13 @@ class CORE_EXPORT QgsFeatureRendererV2
     //! to use symbolForFeature()
     Q_DECL_DEPRECATED virtual QgsSymbolV2List symbolsForFeature( QgsFeature& feat );
 
-    //! return list of symbols used for rendering the feature.
-    //! For renderers that do not support MoreSymbolsPerFeature it is more efficient
-    //! to use symbolForFeature()
+    /** Returns list of symbols used for rendering the feature.
+     * For renderers that do not support MoreSymbolsPerFeature it is more efficient
+     * to use symbolForFeature()
+     * @note added in QGIS 2.12
+     * @note available in Python bindings as symbolsForFeature2
+    */
+    //TODO - QGIS 3.0 change PyName to symbolsForFeature when deprecated method is removed
     virtual QgsSymbolV2List symbolsForFeature( QgsFeature& feat, QgsRenderContext& context );
 
     //! Equivalent of originalSymbolsForFeature() call
@@ -269,9 +281,12 @@ class CORE_EXPORT QgsFeatureRendererV2
     //! @note added in 2.6
     Q_DECL_DEPRECATED virtual QgsSymbolV2List originalSymbolsForFeature( QgsFeature& feat );
 
-    //! Equivalent of originalSymbolsForFeature() call
-    //! extended to support renderers that may use more symbols per feature - similar to symbolsForFeature()
-    //! @note added in 2.6
+    /** Equivalent of originalSymbolsForFeature() call
+     * extended to support renderers that may use more symbols per feature - similar to symbolsForFeature()
+     * @note added in 2.12
+     * @note available in Python bindings as originalSymbolsForFeature2
+    */
+    //TODO - QGIS 3.0 change PyName to symbolsForFeature when deprecated method is removed
     virtual QgsSymbolV2List originalSymbolsForFeature( QgsFeature& feat, QgsRenderContext& context );
 
     /** Allows for a renderer to modify the extent of a feature request prior to rendering

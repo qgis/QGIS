@@ -67,7 +67,7 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
         ~Rule();
         QString dump( int offset = 0 ) const;
         QSet<QString> usedAttributes();
-        QgsSymbolV2List symbols( const QgsRenderContext& context = QgsRenderContext() );
+        QgsSymbolV2List symbols( const QgsRenderContext& context = QgsRenderContext() ) /PyName=symbols2/;
         //! @note not available in python bindings
         // QgsLegendSymbolList legendSymbolItems();
         //! @note added in 2.6
