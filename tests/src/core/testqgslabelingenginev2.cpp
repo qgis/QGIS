@@ -24,41 +24,78 @@
 #include <qgsvectorlayerdiagramprovider.h>
 #include <qgsvectorlayerlabeling.h>
 #include <qgsvectorlayerlabelprovider.h>
+#include "qgsrenderchecker.h"
+#include "qgsfontutils.h"
 
 class TestQgsLabelingEngineV2 : public QObject
 {
     Q_OBJECT
   public:
     TestQgsLabelingEngineV2() : vl( 0 ) {}
+
   private slots:
     void initTestCase();
     void cleanupTestCase();
+    void init();// will be called before each testfunction is executed.
+    void cleanup();// will be called after every testfunction.
     void testBasic();
     void testDiagrams();
     void testRuleBased();
 
   private:
     QgsVectorLayer* vl;
+
+    QString mReport;
+
+    void setDefaultLabelParams( QgsVectorLayer* layer );
+    bool imageCheck( const QString& testName, QImage &image, int mismatchCount );
 };
 
 void TestQgsLabelingEngineV2::initTestCase()
 {
+  mReport += "<h1>Labeling Engine V2 Tests</h1>\n";
+
   QgsApplication::init();
   QgsApplication::initQgis();
   QgsApplication::showSettings();
-
-  QString filename = QString( TEST_DATA_DIR ) + "/points.shp";
-
-  vl = new QgsVectorLayer( filename, "points", "ogr" );
-  Q_ASSERT( vl->isValid() );
-  QgsMapLayerRegistry::instance()->addMapLayer( vl );
+  QgsFontUtils::loadStandardTestFonts( QStringList() << "Bold" );
 }
 
 void TestQgsLabelingEngineV2::cleanupTestCase()
 {
   QgsApplication::exitQgis();
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  QFile myFile( myReportFile );
+  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
+  {
+    QTextStream myQTextStream( &myFile );
+    myQTextStream << mReport;
+    myFile.close();
+  }
 }
 
+void TestQgsLabelingEngineV2::init()
+{
+  QString filename = QString( TEST_DATA_DIR ) + "/points.shp";
+  vl = new QgsVectorLayer( filename, "points", "ogr" );
+  Q_ASSERT( vl->isValid() );
+  QgsMapLayerRegistry::instance()->addMapLayer( vl );
+}
+
+void TestQgsLabelingEngineV2::cleanup()
+{
+  QgsMapLayerRegistry::instance()->removeMapLayer( vl->id( ) );
+  vl = 0;
+}
+
+void TestQgsLabelingEngineV2::setDefaultLabelParams( QgsVectorLayer* layer )
+{
+  layer->setCustomProperty( "labeling/fontFamily", QgsFontUtils::getStandardTestFont( "Bold" ).family() );
+  layer->setCustomProperty( "labeling/namedStyle", "Bold" );
+  layer->setCustomProperty( "labeling/textColorR", "200" );
+  layer->setCustomProperty( "labeling/textColorG", "0" );
+  layer->setCustomProperty( "labeling/textColorB", "200" );
+}
 
 void TestQgsLabelingEngineV2::testBasic()
 {
@@ -67,6 +104,7 @@ void TestQgsLabelingEngineV2::testBasic()
   mapSettings.setOutputSize( size );
   mapSettings.setExtent( vl->extent() );
   mapSettings.setLayers( QStringList() << vl->id() );
+  mapSettings.setOutputDpi( 96 );
 
   // first render the map and labeling separately
 
@@ -83,6 +121,7 @@ void TestQgsLabelingEngineV2::testBasic()
   vl->setCustomProperty( "labeling", "pal" );
   vl->setCustomProperty( "labeling/enabled", true );
   vl->setCustomProperty( "labeling/fieldName", "Class" );
+  setDefaultLabelParams( vl );
 
   QgsLabelingEngineV2 engine;
   engine.setMapSettings( mapSettings );
@@ -92,6 +131,8 @@ void TestQgsLabelingEngineV2::testBasic()
 
   p.end();
 
+  QVERIFY( imageCheck( "labeling_basic", img, 0 ) );
+
   // now let's test the variant when integrated into rendering loop
 
   job.start();
@@ -100,7 +141,7 @@ void TestQgsLabelingEngineV2::testBasic()
 
   vl->setCustomProperty( "labeling/enabled", false );
 
-  QCOMPARE( img, img2 );
+  QVERIFY( imageCheck( "labeling_basic", img2, 0 ) );
 }
 
 void TestQgsLabelingEngineV2::testDiagrams()
@@ -110,6 +151,7 @@ void TestQgsLabelingEngineV2::testDiagrams()
   mapSettings.setOutputSize( size );
   mapSettings.setExtent( vl->extent() );
   mapSettings.setLayers( QStringList() << vl->id() );
+  mapSettings.setOutputDpi( 96 );
 
   // first render the map and diagrams separately
 
@@ -134,14 +176,15 @@ void TestQgsLabelingEngineV2::testDiagrams()
 
   p.end();
 
+  QVERIFY( imageCheck( "labeling_point_diagrams", img, 0 ) );
+
   // now let's test the variant when integrated into rendering loop
   job.start();
   job.waitForFinished();
   QImage img2 = job.renderedImage();
 
-  QCOMPARE( img, img2 );
-
   vl->loadDefaultStyle( res );
+  QVERIFY( imageCheck( "labeling_point_diagrams", img2, 0 ) );
 }
 
 
@@ -152,6 +195,7 @@ void TestQgsLabelingEngineV2::testRuleBased()
   mapSettings.setOutputSize( size );
   mapSettings.setExtent( vl->extent() );
   mapSettings.setLayers( QStringList() << vl->id() );
+  mapSettings.setOutputDpi( 96 );
 
   // set up most basic rule-based labeling for layer
   QgsRuleBasedLabeling::Rule* root = new QgsRuleBasedLabeling::Rule( 0 );
@@ -162,6 +206,12 @@ void TestQgsLabelingEngineV2::testRuleBased()
   s1.obstacle = false;
   s1.dist = 2;
   s1.distInMapUnits = false;
+  s1.textColor = QColor( 200, 0, 200 );
+  s1.textFont = QgsFontUtils::getStandardTestFont( "Bold" );
+  s1.placement = QgsPalLayerSettings::OverPoint;
+  s1.quadOffset = QgsPalLayerSettings::QuadrantAboveLeft;
+  s1.displayAll = true;
+
   root->appendChild( new QgsRuleBasedLabeling::Rule( new QgsPalLayerSettings( s1 ) ) );
 
   QgsPalLayerSettings s2;
@@ -170,18 +220,22 @@ void TestQgsLabelingEngineV2::testRuleBased()
   s2.obstacle = false;
   s2.dist = 2;
   s2.textColor = Qt::red;
+  s2.textFont = QgsFontUtils::getStandardTestFont( "Bold" );
+  s2.placement = QgsPalLayerSettings::OverPoint;
+  s2.quadOffset = QgsPalLayerSettings::QuadrantBelowRight;
+  s2.displayAll = true;
   s2.setDataDefinedProperty( QgsPalLayerSettings::Size, true, true, "18", QString() );
 
   root->appendChild( new QgsRuleBasedLabeling::Rule( new QgsPalLayerSettings( s2 ), 0, 0, "Class = 'Jet'" ) );
 
   vl->setLabeling( new QgsRuleBasedLabeling( root ) );
+  setDefaultLabelParams( vl );
 
   QgsMapRendererSequentialJob job( mapSettings );
   job.start();
   job.waitForFinished();
   QImage img = job.renderedImage();
-
-  img.save( "/tmp/rules.png" );
+  QVERIFY( imageCheck( "labeling_rulebased", img, 0 ) );
 
   // test read/write rules
   QDomDocument doc, doc2, doc3;
@@ -211,6 +265,29 @@ void TestQgsLabelingEngineV2::testRuleBased()
   engine.addProvider( new QgsRuleBasedLabelProvider( , vl ) );
   engine.run( context );*/
 
+}
+
+bool TestQgsLabelingEngineV2::imageCheck( const QString& testName, QImage &image, int mismatchCount )
+{
+  //draw background
+  QImage imageWithBackground( image.width(), image.height(), QImage::Format_RGB32 );
+  QgsRenderChecker::drawBackground( &imageWithBackground );
+  QPainter painter( &imageWithBackground );
+  painter.drawImage( 0, 0, image );
+  painter.end();
+
+  mReport += "<h2>" + testName + "</h2>\n";
+  QString tempDir = QDir::tempPath() + "/";
+  QString fileName = tempDir + testName + ".png";
+  imageWithBackground.save( fileName, "PNG" );
+  QgsRenderChecker checker;
+  checker.setControlPathPrefix( "labelingenginev2" );
+  checker.setControlName( "expected_" + testName );
+  checker.setRenderedImage( fileName );
+  checker.setColorTolerance( 2 );
+  bool resultFlag = checker.compareImages( testName, mismatchCount );
+  mReport += checker.report();
+  return resultFlag;
 }
 
 QTEST_MAIN( TestQgsLabelingEngineV2 )
