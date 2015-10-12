@@ -218,6 +218,10 @@ QgsSymbolV2SelectorDialog::QgsSymbolV2SelectorDialog( QgsSymbolV2* symbol, QgsSt
   mPresentWidget = NULL;
 
   setupUi( this );
+
+  QSettings settings;
+  restoreGeometry( settings.value( "/Windows/SymbolSelectorDialog/geometry" ).toByteArray() );
+
   // can be embedded in renderer properties dialog
   if ( embedded )
   {
@@ -257,6 +261,12 @@ QgsSymbolV2SelectorDialog::QgsSymbolV2SelectorDialog( QgsSymbolV2* symbol, QgsSt
   // set symbol as active item in the tree
   QModelIndex newIndex = layersTree->model()->index( 0, 0 );
   layersTree->setCurrentIndex( newIndex );
+}
+
+QgsSymbolV2SelectorDialog::~QgsSymbolV2SelectorDialog()
+{
+  QSettings settings;
+  settings.setValue( "/Windows/SymbolSelectorDialog/geometry", saveGeometry() );
 }
 
 void QgsSymbolV2SelectorDialog::keyPressEvent( QKeyEvent * e )
