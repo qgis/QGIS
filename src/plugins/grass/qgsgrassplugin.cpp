@@ -353,6 +353,7 @@ void QgsGrassPlugin::resetEditActions()
   if ( grassProvider && vectorLayer->editBuffer() )
   {
     mAddFeatureAction->setVisible( false );
+    qGisInterface->actionSaveActiveLayerEdits()->setVisible( false );
     mAddPointAction->setVisible( true );
     mAddLineAction->setVisible( true );
     mAddBoundaryAction->setVisible( true );
@@ -362,6 +363,7 @@ void QgsGrassPlugin::resetEditActions()
   else
   {
     mAddFeatureAction->setVisible( true );
+    qGisInterface->actionSaveActiveLayerEdits()->setVisible( true );
     mAddPointAction->setVisible( false );
     mAddLineAction->setVisible( false );
     mAddBoundaryAction->setVisible( false );
