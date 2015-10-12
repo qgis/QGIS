@@ -21,6 +21,7 @@ INCLUDE_DIRECTORIES(
   ../../core
   ../../core/auth
   ../../core/raster
+  ../../core/geometry
   ../../gui
   ../../gui/auth
   ../gdal

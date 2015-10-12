@@ -18,6 +18,7 @@ SET(AUTH_BASIC_UIS qgsauthbasicedit.ui)
 INCLUDE_DIRECTORIES (
   ../../core
   ../../core/auth
+  ../../core/geometry
   ${QCA_INCLUDE_DIR}
   ../../gui
   ../../gui/auth

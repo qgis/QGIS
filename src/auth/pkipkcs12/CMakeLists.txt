@@ -18,6 +18,7 @@ SET(AUTH_PKCS12_UIS qgsauthpkcs12edit.ui)
 INCLUDE_DIRECTORIES (
   ../../core
   ../../core/auth
+  ../../core/geometry
   ${QCA_INCLUDE_DIR}
   ../../gui
   ../../gui/auth

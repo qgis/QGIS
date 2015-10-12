@@ -2,6 +2,7 @@ ADD_EXECUTABLE(crssync main.cpp)
 
 INCLUDE_DIRECTORIES(
   ../core
+  ../core/geometry
   ${GDAL_INCLUDE_DIR}
   ${PROJ_INCLUDE_DIR}
 )

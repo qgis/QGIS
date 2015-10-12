@@ -9,6 +9,7 @@ SET(OWS_MOC_HDRS
 
 INCLUDE_DIRECTORIES (
   ../../core
+  ../../core/geometry
   ../../core/auth
   ../../gui
   ../../gui/auth

@@ -27,7 +27,8 @@
 #include <cfloat>
 #include <cmath>
 #include <qnumeric.h>
-#include "geometry/qgswkbtypes.h"
+
+#include <qgswkbtypes.h>
 
 /** \ingroup core
  * The QGis class provides global constants for use throughout the application.

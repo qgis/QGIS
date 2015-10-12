@@ -18,6 +18,7 @@ SET(AUTH_PKIPATHS_UIS qgsauthpkipathsedit.ui)
 INCLUDE_DIRECTORIES (
   ../../core
   ../../core/auth
+  ../../core/geometry
   ${QCA_INCLUDE_DIR}
   ../../gui
   ../../gui/auth

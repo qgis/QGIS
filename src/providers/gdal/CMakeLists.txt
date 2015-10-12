@@ -10,6 +10,7 @@ SET(GDAL_MOC_HDRS
 INCLUDE_DIRECTORIES (
   ../../core
   ../../core/raster
+  ../../core/geometry
   ../../gui
   ${CMAKE_CURRENT_BINARY_DIR}/../../ui
   ${GDAL_INCLUDE_DIR}

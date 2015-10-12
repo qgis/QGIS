@@ -18,6 +18,7 @@ SET(AUTH_IDENTCERT_UIS qgsauthidentcertedit.ui)
 INCLUDE_DIRECTORIES (
   ../../core
   ../../core/auth
+  ../../core/geometry
   ${QCA_INCLUDE_DIR}
   ../../gui
   ../../gui/auth
