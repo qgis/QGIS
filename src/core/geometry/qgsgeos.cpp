@@ -1422,11 +1422,11 @@ GEOSCoordSequence* QgsGeos::createCoordinateSequence( const QgsCurveV2* curve, d
       for ( int i = 0; i < numPoints; ++i )
       {
         QgsPointV2 pt = line->pointN( i ); //todo: create method to get const point reference
-        GEOSCoordSeq_setX_r( geosinit.ctxt, coordSeq, i, std::round( pt.x() / precision ) * precision );
-        GEOSCoordSeq_setY_r( geosinit.ctxt, coordSeq, i, std::round( pt.y() / precision ) * precision );
+        GEOSCoordSeq_setX_r( geosinit.ctxt, coordSeq, i, qgsRound( pt.x() / precision ) * precision );
+        GEOSCoordSeq_setY_r( geosinit.ctxt, coordSeq, i, qgsRound( pt.y() / precision ) * precision );
         if ( hasZ )
         {
-          GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, i, 2, std::round( pt.z() / precision ) * precision );
+          GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, i, 2, qgsRound( pt.z() / precision ) * precision );
         }
         if ( hasM )
         {
@@ -1474,11 +1474,11 @@ GEOSGeometry* QgsGeos::createGeosPoint( const QgsAbstractGeometryV2* point, int 
     GEOSCoordSequence* coordSeq = GEOSCoordSeq_create_r( geosinit.ctxt, 1, coordDims );
     if ( precision > 0. )
     {
-      GEOSCoordSeq_setX_r( geosinit.ctxt, coordSeq, 0, std::round( pt->x() / precision ) * precision );
-      GEOSCoordSeq_setY_r( geosinit.ctxt, coordSeq, 0, std::round( pt->y() / precision ) * precision );
+      GEOSCoordSeq_setX_r( geosinit.ctxt, coordSeq, 0, qgsRound( pt->x() / precision ) * precision );
+      GEOSCoordSeq_setY_r( geosinit.ctxt, coordSeq, 0, qgsRound( pt->y() / precision ) * precision );
       if ( pt->is3D() )
       {
-        GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, 0, 2, std::round( pt->z() / precision ) * precision );
+        GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, 0, 2, qgsRound( pt->z() / precision ) * precision );
       }
     }
     else
