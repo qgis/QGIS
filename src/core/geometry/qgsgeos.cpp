@@ -49,7 +49,7 @@ email                : marco.hugentobler at sourcepole dot com
     return r; \
   }
 
-#if defined(_MSC_VER) && (_MSC_VER < 1800)
+#ifndef HAVE_STD_ROUND
 namespace std
 {
   double round( double d )
