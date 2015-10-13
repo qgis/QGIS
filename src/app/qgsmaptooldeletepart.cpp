@@ -134,7 +134,11 @@ QgsGeometry* QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId& f
       vlayer->getFeatures( QgsFeatureRequest().setFilterFid( match.featureId() ) ).nextFeature( f );
       const QgsGeometry* g = f.constGeometry();
       if ( !g->isMultipart() )
-        return geomPart;
+      {
+        fid = match.featureId();
+        delete geomPart;
+        return QgsGeometry::fromPoint( match.point() );
+      }
       if ( g->wkbType() == QGis::WKBMultiPoint || g->wkbType() == QGis::WKBMultiPoint25D )
       {
         fid = match.featureId();
