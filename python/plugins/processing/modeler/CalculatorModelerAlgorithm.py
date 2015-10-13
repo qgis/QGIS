@@ -101,8 +101,9 @@ class CalculatorModelerParametersDialog(ModelerParametersDialog):
         self.formulaText = QLineEdit()
         if hasattr(self.formulaText, 'setPlaceholderText'):
             self.formulaText.setPlaceholderText(self.tr('[Enter your formula here]', 'CalculatorModelerParametersDialog'))
-        alg = self.model.algs[self._algName]
-        self.formulaText.setText(alg.params[FORMULA])
+        if self._algName is not None:
+            alg = self.model.algs[self._algName]
+            self.formulaText.setText(alg.params[FORMULA])
         self.setWindowTitle(self.tr('Calculator', 'CalculatorModelerParametersDialog'))
         self.verticalLayout = QVBoxLayout()
         self.verticalLayout.setSpacing(2)
