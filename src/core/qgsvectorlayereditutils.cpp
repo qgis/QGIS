@@ -442,6 +442,9 @@ int QgsVectorLayerEditUtils::splitParts( const QList<QgsPoint>& splitLine, bool 
     if ( splitFunctionReturn == 0 )
     {
       //add new parts
+      if ( !newGeometries.isEmpty() )
+        feat.geometry()->convertToMultiType();
+
       for ( int i = 0; i < newGeometries.size(); ++i )
       {
         addPartRet = feat.geometry()->addPart( newGeometries.at( i ) );
