@@ -19,7 +19,9 @@
 #include "qgscategorizedsymbolrendererv2.h"
 #include "qgscategorizedsymbolrendererv2widget.h"
 #include "qgsfeature.h"
+#include "qgslinesymbollayerv2.h"
 #include "qgslogger.h"
+#include "qgsmarkersymbollayerv2.h"
 #include "qgsrendererv2registry.h"
 #include "qgssymbollayerv2.h"
 #include "qgssymbollayerv2utils.h"
@@ -34,14 +36,14 @@ QgsGrassEditRenderer::QgsGrassEditRenderer()
     , mMarkerRenderer( 0 )
 {
   QHash<int, QColor> colors;
-  colors.insert( QgsGrassVectorMap::TopoUndefined, QColor( 125, 125, 125 ) );
+  //colors.insert( QgsGrassVectorMap::TopoUndefined, QColor( 125, 125, 125 ) );
   colors.insert( QgsGrassVectorMap::TopoLine, QColor( Qt::black ) );
   colors.insert( QgsGrassVectorMap::TopoBoundary0, QColor( Qt::red ) );
   colors.insert( QgsGrassVectorMap::TopoBoundary1, QColor( 255, 125, 0 ) );
   colors.insert( QgsGrassVectorMap::TopoBoundary2, QColor( Qt::green ) );
 
   QHash<int, QString> labels;
-  labels.insert( QgsGrassVectorMap::TopoUndefined, "Unknown type" );
+  //labels.insert( QgsGrassVectorMap::TopoUndefined, "Unknown type" );
   labels.insert( QgsGrassVectorMap::TopoLine, "Line" );
   labels.insert( QgsGrassVectorMap::TopoBoundary0, "Boundary (isolated)" );
   labels.insert( QgsGrassVectorMap::TopoBoundary1, "Boundary (area on one side)" );
@@ -49,19 +51,33 @@ QgsGrassEditRenderer::QgsGrassEditRenderer()
 
   QgsCategoryList categoryList;
 
+  // first/last vertex marker to distinguish vertices from nodes
+  QgsMarkerLineSymbolLayerV2 * firstVertexMarkerLine = new QgsMarkerLineSymbolLayerV2( false );
+  QgsSimpleMarkerSymbolLayerV2 *markerSymbolLayer = new QgsSimpleMarkerSymbolLayerV2( "x", QColor( 255, 0, 0 ), QColor( 255, 0, 0 ), 2 );
+  markerSymbolLayer->setOutlineWidth( 0.5 );
+  QgsSymbolLayerV2List markerLayers;
+  markerLayers << markerSymbolLayer;
+  QgsMarkerSymbolV2 * markerSymbol = new QgsMarkerSymbolV2( markerLayers );
+  firstVertexMarkerLine->setSubSymbol( markerSymbol );
+  firstVertexMarkerLine->setPlacement( QgsMarkerLineSymbolLayerV2::FirstVertex );
+  QgsMarkerLineSymbolLayerV2 * lastVertexMarkerLine = dynamic_cast<QgsMarkerLineSymbolLayerV2 *>( firstVertexMarkerLine->clone() );
+  lastVertexMarkerLine->setPlacement( QgsMarkerLineSymbolLayerV2::LastVertex );
   foreach ( int value, colors.keys() )
   {
     QgsSymbolV2 * symbol = QgsSymbolV2::defaultSymbol( QGis::Line );
     symbol->setColor( colors.value( value ) );
+    symbol->appendSymbolLayer( firstVertexMarkerLine->clone() );
+    symbol->appendSymbolLayer( lastVertexMarkerLine->clone() );
     categoryList << QgsRendererCategoryV2( QVariant( value ), symbol, labels.value( value ) );
   }
-
+  delete firstVertexMarkerLine;
+  delete lastVertexMarkerLine;
   mLineRenderer = new QgsCategorizedSymbolRendererV2( "topo_symbol", categoryList );
 
   colors.clear();
   labels.clear();
 
-  colors.insert( QgsGrassVectorMap::TopoPoint, QColor( 0, 0, 0 ) );
+  colors.insert( QgsGrassVectorMap::TopoPoint, QColor( 0, 255, 255 ) );
   colors.insert( QgsGrassVectorMap::TopoCentroidIn, QColor( 0, 255, 0 ) );
   colors.insert( QgsGrassVectorMap::TopoCentroidOut, QColor( 255, 0, 0 ) );
   colors.insert( QgsGrassVectorMap::TopoCentroidDupl, QColor( 255, 0, 255 ) );
