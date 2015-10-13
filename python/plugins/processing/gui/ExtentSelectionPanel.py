@@ -117,7 +117,7 @@ class ExtentSelectionPanel(BASE, WIDGET):
                 elif isinstance(param, ParameterMultipleInput):
                     layers = param.value.split(';')
                     for layername in layers:
-                        layer = dataobjects.getObject(layername, first)
+                        layer = dataobjects.getObject(layername)
                         if layer:
                             found = True
                             self.addToRegion(layer, first)
