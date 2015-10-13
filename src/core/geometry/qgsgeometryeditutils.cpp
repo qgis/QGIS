@@ -81,6 +81,13 @@ int QgsGeometryEditUtils::addRing( QgsAbstractGeometryV2* geom, QgsCurveV2* ring
           delete ring; return 4;
         }
       }
+
+      //make sure dimensionality of ring matches geometry
+      if ( QgsWKBTypes::hasZ( geom->wkbType() ) )
+        ring->addZValue( 0 );
+      if ( QgsWKBTypes::hasM( geom->wkbType() ) )
+        ring->addMValue( 0 );
+
       ( *polyIter )->addInteriorRing( ring );
       return 0; //success
     }
