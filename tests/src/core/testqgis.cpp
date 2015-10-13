@@ -36,6 +36,7 @@ class TestQGis : public QObject
     void permissiveToDouble();
     void permissiveToInt();
     void doubleToString();
+    void qgsround();
 
   private:
     QString mReport;
@@ -134,6 +135,20 @@ void TestQGis::doubleToString()
   QCOMPARE( qgsDoubleToString( 12000, 1 ), QString( "12000" ) );
   QCOMPARE( qgsDoubleToString( 12000, 10 ), QString( "12000" ) );
   QCOMPARE( qgsDoubleToString( 12345, -1 ), QString( "12345" ) );
+}
+
+void TestQGis::qgsround()
+{
+  QCOMPARE( qgsRound( 3.141592653589793 ), 3. );
+  QCOMPARE( qgsRound( 2.718281828459045 ), 3. );
+  QCOMPARE( qgsRound( -3.141592653589793 ), -3. );
+  QCOMPARE( qgsRound( -2.718281828459045 ), -3. );
+  QCOMPARE( qgsRound( 314159265358979.3 ), 314159265358979. );
+  QCOMPARE( qgsRound( 2718281828459.045 ), 2718281828459. );
+  QCOMPARE( qgsRound( -314159265358979.3 ), -314159265358979. );
+  QCOMPARE( qgsRound( -2718281828459.045 ), -2718281828459. );
+  QCOMPARE( qgsRound( 1.5 ), 2. );
+  QCOMPARE( qgsRound( -1.5 ), -2. );
 }
 
 QTEST_MAIN( TestQGis )
