@@ -74,6 +74,7 @@ QgsMapOverviewCanvas::QgsMapOverviewCanvas( QWidget * parent, QgsMapCanvas* mapC
     , mMapCanvas( mapCanvas )
     , mJob( 0 )
 {
+  setAutoFillBackground( true );
   setObjectName( "theOverviewCanvas" );
   mPanningWidget = new QgsPanningWidget( this );
 

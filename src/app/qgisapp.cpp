@@ -956,6 +956,7 @@ QgisApp::QgisApp()
     , mToolPopupOverviews( 0 )
     , mToolPopupDisplay( 0 )
     , mMapCanvas( 0 )
+    , mOverviewCanvas( 0 )
     , mLayerTreeView( 0 )
     , mLayerTreeCanvasBridge( 0 )
     , mMapLayerOrder( 0 )
@@ -2463,25 +2464,33 @@ void QgisApp::createCanvasTools()
 void QgisApp::createOverview()
 {
   // overview canvas
-  QgsMapOverviewCanvas* overviewCanvas = new QgsMapOverviewCanvas( NULL, mMapCanvas );
-  overviewCanvas->setWhatsThis( tr( "Map overview canvas. This canvas can be used to display a locator map that shows the current extent of the map canvas. The current extent is shown as a red rectangle. Any layer on the map can be added to the overview canvas." ) );
+  mOverviewCanvas = new QgsMapOverviewCanvas( NULL, mMapCanvas );
+
+  //set canvas color to default
+  QSettings settings;
+  int red = settings.value( "/qgis/default_canvas_color_red", 255 ).toInt();
+  int green = settings.value( "/qgis/default_canvas_color_green", 255 ).toInt();
+  int blue = settings.value( "/qgis/default_canvas_color_blue", 255 ).toInt();
+  mOverviewCanvas->setBackgroundColor( QColor( red, green, blue ) );
+
+  mOverviewCanvas->setWhatsThis( tr( "Map overview canvas. This canvas can be used to display a locator map that shows the current extent of the map canvas. The current extent is shown as a red rectangle. Any layer on the map can be added to the overview canvas." ) );
 
   QBitmap overviewPanBmp = QBitmap::fromData( QSize( 16, 16 ), pan_bits );
   QBitmap overviewPanBmpMask = QBitmap::fromData( QSize( 16, 16 ), pan_mask_bits );
   mOverviewMapCursor = new QCursor( overviewPanBmp, overviewPanBmpMask, 0, 0 ); //set upper left corner as hot spot - this is better when extent marker is small; hand won't cover the marker
-  overviewCanvas->setCursor( *mOverviewMapCursor );
+  mOverviewCanvas->setCursor( *mOverviewMapCursor );
 //  QVBoxLayout *myOverviewLayout = new QVBoxLayout;
 //  myOverviewLayout->addWidget(overviewCanvas);
 //  overviewFrame->setLayout(myOverviewLayout);
   mOverviewDock = new QDockWidget( tr( "Overview Panel" ), this );
   mOverviewDock->setObjectName( "Overview" );
   mOverviewDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
-  mOverviewDock->setWidget( overviewCanvas );
+  mOverviewDock->setWidget( mOverviewCanvas );
   addDockWidget( Qt::LeftDockWidgetArea, mOverviewDock );
   // add to the Panel submenu
   mPanelMenu->addAction( mOverviewDock->toggleViewAction() );
 
-  mMapCanvas->enableOverviewMode( overviewCanvas );
+  mMapCanvas->enableOverviewMode( mOverviewCanvas );
 
   // moved here to set anti aliasing to both map canvas and overview
   QSettings mySettings;
@@ -3864,6 +3873,7 @@ void QgisApp::fileNew( bool thePromptToSaveFlag, bool forceBlank )
   prj->writeEntry( "Gui", "/CanvasColorGreenPart", myGreen );
   prj->writeEntry( "Gui", "/CanvasColorBluePart", myBlue );
   mMapCanvas->setCanvasColor( QColor( myRed, myGreen, myBlue ) );
+  mOverviewCanvas->setBackgroundColor( QColor( myRed, myGreen, myBlue ) );
 
   prj->dirty( false );
 
@@ -4251,6 +4261,8 @@ bool QgisApp::addProject( const QString& projectFile )
   int  myBlueInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorBluePart", 255 );
   QColor myColor = QColor( myRedInt, myGreenInt, myBlueInt );
   mMapCanvas->setCanvasColor( myColor ); //this is fill color before rendering starts
+  mOverviewCanvas->setBackgroundColor( myColor );
+
   QgsDebugMsg( "Canvas background color restored..." );
   myRedInt = QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorRedPart", 255 );
   myGreenInt = QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorGreenPart", 255 );

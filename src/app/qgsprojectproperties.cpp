@@ -49,6 +49,7 @@
 #include "qgssymbollayerv2utils.h"
 #include "qgscolordialog.h"
 #include "qgsexpressioncontext.h"
+#include "qgsmapoverviewcanvas.h"
 
 //qt includes
 #include <QInputDialog>
@@ -683,6 +684,8 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->writeEntry( "Gui", "/CanvasColorGreenPart", myColor.green() );
   QgsProject::instance()->writeEntry( "Gui", "/CanvasColorBluePart", myColor.blue() );
   mMapCanvas->setCanvasColor( myColor );
+  QgisApp::instance()->mapOverviewCanvas()->setBackgroundColor( myColor );
+  QgisApp::instance()->mapOverviewCanvas()->refresh();
 
   //save project scales
   QStringList myScales;
