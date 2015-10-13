@@ -327,12 +327,6 @@ SET(QGIS_CORE_SRCS
   geometry/qgswkbtypes.cpp
 )
 
-INCLUDE(CheckCXXSourceCompiles)
-CHECK_CXX_SOURCE_COMPILES("#include <cmath>\nint main() { double d = std::round (0.3); return 0; }\n" HAVE_STD_ROUND)
-IF(HAVE_STD_ROUND)
-  ADD_DEFINITIONS(-DHAVE_STD_ROUND)
-ENDIF(HAVE_STD_ROUND)
-
 FILE(GLOB JSON_HELP_FILES "${CMAKE_SOURCE_DIR}/resources/function_help/json/*")
 STRING(REPLACE "$" "$$" JSON_HELP_FILES "${JSON_HELP_FILES}")
 STRING(REPLACE "\(" "\\(" JSON_HELP_FILES "${JSON_HELP_FILES}")

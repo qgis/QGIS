@@ -49,15 +49,6 @@ email                : marco.hugentobler at sourcepole dot com
     return r; \
   }
 
-#ifndef HAVE_STD_ROUND
-namespace std
-{
-  double round( double d )
-  {
-    return d < 0.0 ? ceil( d - 0.5 ) : floor( d + 0.5 );
-  }
-}
-#endif
 
 static void throwGEOSException( const char *fmt, ... )
 {
