@@ -983,7 +983,6 @@ void QgsGrassVectorMapLayer::deleteAttribute( int cat, QString &error )
 bool QgsGrassVectorMapLayer::recordExists( int cat, QString &error )
 {
   QgsDebugMsg( QString( "mField = %1 cat = %2" ).arg( mField ).arg( cat ) );
-  bool exists = false;
   if ( !mDriver )
   {
     error = tr( "Driver is not open" );
@@ -991,41 +990,18 @@ bool QgsGrassVectorMapLayer::recordExists( int cat, QString &error )
     return false;
   }
 
-  QgsDebugMsg( "Database opened -> select record" );
+  QgsDebugMsg( "Database open -> select record" );
 
-  dbString dbstr;
-  db_init_string( &dbstr );
-
-  QString query = QString( "SELECT count(*) FROM %1 WHERE %2 = %3" ).arg( mFieldInfo->table ).arg( mFieldInfo->key ).arg( cat );
-  db_set_string( &dbstr, query.toLatin1().data() );
-
-  QgsDebugMsg( QString( "SQL: %1" ).arg( db_get_string( &dbstr ) ) );
-
-  dbCursor cursor;
-  if ( db_open_select_cursor( mDriver, &dbstr, &cursor, DB_SCROLL ) != DB_OK )
+  // DBF driver in GRASS does not support count(*)
+  dbValue value;
+  int nValues = db_select_value(mDriver, mFieldInfo->table, mFieldInfo->key, cat, mFieldInfo->key, &value);
+  if ( nValues == -1)
   {
-    error = tr( "Cannot query database: %1" ).arg( query );
+    error = tr( "Cannot select record from table" );
+    return false;
   }
-  else
-  {
-    int more;
-    if ( db_fetch( &cursor, DB_NEXT, &more ) != DB_OK )
-    {
-      error = tr( "Cannot fetch DB record" );
-    }
-    else
-    {
-      dbTable *table = db_get_cursor_table( &cursor );
-      dbColumn *column = db_get_table_column( table, 0 );
-      dbValue *value = db_get_column_value( column );
-      int count = db_get_value_int( value );
-      QgsDebugMsg( QString( "count = %1" ).arg( count ) );
-      exists = count > 0;
-    }
-    db_close_cursor( &cursor );
-  }
-  db_free_string( &dbstr );
-  return exists;
+
+  return nValues > 0;
 }
 
 bool QgsGrassVectorMapLayer::isOrphan( int cat, QString &error )

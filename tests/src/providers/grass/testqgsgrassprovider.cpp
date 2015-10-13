@@ -1205,7 +1205,7 @@ bool TestQgsGrassProvider::equal( QgsFeature feature, QgsFeature expectedFeature
     indexes.remove( index );
     if ( feature.attribute( index ) != expectedFeature.attribute( i ) )
     {
-      reportRow( QString( "Attribute name %1, value: '%2'' does not match expected value: '%2'" )
+      reportRow( QString( "Attribute name %1, value: '%2' does not match expected value: '%2'" )
                  .arg( name ).arg( feature.attribute( index ).toString() ).arg( expectedFeature.attribute( i ).toString() ) );
       return false;
     }
@@ -1257,6 +1257,7 @@ bool TestQgsGrassProvider::compare( QList<QgsFeature> features, QList<QgsFeature
 
 bool TestQgsGrassProvider::compare( QString uri, QgsGrassObject mapObject, QgsVectorLayer *expectedLayer, bool& ok )
 {
+  Q_UNUSED(mapObject)
   QList<QgsFeature> expectedFeatures = getFeatures( expectedLayer );
 
   // read the map using another layer/provider
@@ -1281,6 +1282,10 @@ bool TestQgsGrassProvider::compare( QString uri, QgsGrassObject mapObject, QgsVe
     reportRow( "comparison with shared layer failed" );
   }
 
+  // We cannot test attribute table changes with independent layer in GRASS 6, which is using
+  // DBF files, which are written when driver is closed (map layer keeps driver open during editing)
+  bool independentOk = true;
+#if GRASS_VERSION_MAJOR >= 7
   // Open an independent layer which does not share data with edited one
   // build topology
   G_TRY
@@ -1291,19 +1296,19 @@ bool TestQgsGrassProvider::compare( QString uri, QgsGrassObject mapObject, QgsVe
     int result = Vect_open_old( map, mapObject.name().toUtf8().data(), mapObject.mapset().toUtf8().data() );
 
     if ( result == -1 )
-{
-  QgsGrass::vectDestroyMapStruct( map );
-    throw QgsGrass::Exception( "Cannot open map " + mapObject.name() );
-  }
+    {
+      QgsGrass::vectDestroyMapStruct( map );
+      throw QgsGrass::Exception( "Cannot open map " + mapObject.name() );
+    }
 
 #if ( GRASS_VERSION_MAJOR == 6 && GRASS_VERSION_MINOR >= 4 ) || GRASS_VERSION_MAJOR > 6
-  Vect_build( map );
+    Vect_build( map );
 #else
-  Vect_build( map, stderr );
+    Vect_build( map, stderr );
 #endif
-  //Vect_set_release_support( map );
-  Vect_close( map );
-  QgsGrass::vectDestroyMapStruct( map );
+    //Vect_set_release_support( map );
+    Vect_close( map );
+    QgsGrass::vectDestroyMapStruct( map );
   }
   G_CATCH( QgsGrass::Exception &e )
   {
@@ -1327,7 +1332,7 @@ bool TestQgsGrassProvider::compare( QString uri, QgsGrassObject mapObject, QgsVe
   QgsGrassVectorMapStore::setStore( 0 );
   delete mapStore;
 
-  bool independentOk = compare( features, expectedFeatures, ok );
+  independentOk = compare( features, expectedFeatures, ok );
   if ( independentOk )
   {
     //reportRow( "comparison with independent layer ok" );
@@ -1336,6 +1341,7 @@ bool TestQgsGrassProvider::compare( QString uri, QgsGrassObject mapObject, QgsVe
   {
     reportRow( "comparison with independent layer failed" );
   }
+#endif // GRASS_VERSION_MAJOR >= 7
 
   return sharedOk && independentOk;
 }
