@@ -147,6 +147,8 @@ void TestQGis::qgsround()
   QCOMPARE( qgsRound( 2718281828459.045 ), 2718281828459. );
   QCOMPARE( qgsRound( -314159265358979.3 ), -314159265358979. );
   QCOMPARE( qgsRound( -2718281828459.045 ), -2718281828459. );
+  QCOMPARE( qgsRound( 1.5 ), 2. );
+  QCOMPARE( qgsRound( -1.5 ), -2. );
 }
 
 QTEST_MAIN( TestQGis )
