@@ -249,6 +249,7 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature& feature )
   int lid = 0;
   QgsFeatureId featureId = 0;
   QgsAbstractGeometryV2 *oldGeometry = 0;
+  int cidxFieldIndex = mSource->mLayer->cidxFieldIndex();
 
 #ifdef QGISDEBUG
   if ( mSource->mEditing )
@@ -313,9 +314,9 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature& feature )
       cat = 0;
       type = 0;
       lid = 0;
-      QgsDebugMsgLevel( QString( "mNextLid = %1 mNextCidx = %2 numLines() = %3 mCidxFieldIndex = %4 cidxFieldNumCats() = %5" )
+      QgsDebugMsgLevel( QString( "mNextLid = %1 mNextCidx = %2 numLines() = %3 cidxFieldIndex() = %4 cidxFieldNumCats() = %5" )
                         .arg( mNextLid ).arg( mNextCidx ).arg( mSource->mLayer->map()->numLines() )
-                        .arg( mSource->mCidxFieldIndex ).arg( mSource->mLayer->cidxFieldNumCats() ), 3 );
+                        .arg( mSource->mLayer->cidxFieldIndex() ).arg( mSource->mLayer->cidxFieldNumCats() ), 3 );
       if ( mSource->mEditing )
       {
         // TODO should be numLines before editing started (?), but another layer
@@ -421,12 +422,12 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature& feature )
         int tmpLid, tmpType, tmpCat;
 
         int numFields = Vect_cidx_get_num_fields( mSource->map() );
-        if ( mSource->mCidxFieldIndex < 0 || mSource->mCidxFieldIndex >= numFields )
+        if ( cidxFieldIndex < 0 || cidxFieldIndex >= numFields )
         {
-          QgsDebugMsg( QString( "mCidxFieldIndex %1 out of range (0,%2)" ).arg( mSource->mCidxFieldIndex ).arg( numFields - 1 ) );
+          QgsDebugMsg( QString( "cidxFieldIndex %1 out of range (0,%2)" ).arg( cidxFieldIndex ).arg( numFields - 1 ) );
           break;
         }
-        Vect_cidx_get_cat_by_index( mSource->map(), mSource->mCidxFieldIndex, mNextCidx++, &tmpCat, &tmpType, &tmpLid );
+        Vect_cidx_get_cat_by_index( mSource->map(), cidxFieldIndex, mNextCidx++, &tmpCat, &tmpType, &tmpLid );
         // Warning: selection array is only of type line/area of current layer -> check type first
         if ( !( tmpType & mSource->mGrassType ) )
         {
@@ -691,7 +692,6 @@ QgsGrassFeatureSource::QgsGrassFeatureSource( const QgsGrassProvider* p )
     , mLayerType( p->mLayerType )
     , mGrassType( p->mGrassType )
     , mQgisType( p->mQgisType )
-    , mCidxFieldIndex( p->mCidxFieldIndex )
     , mFields( p->fields() )
     , mEncoding( p->mEncoding )
     , mEditing( p->mEditBuffer )

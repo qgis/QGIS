@@ -219,7 +219,7 @@ bool QgsGrassVector::openHead()
 
   /* Open vector */
   QgsGrass::resetError();
-  //Vect_set_open_level( 2 );
+  Vect_set_open_level( 2 );
 
   // TODO: We are currently using vectDestroyMapStruct in G_CATCH blocks because we know
   // that it cannot call another G_fatal_error, but once we switch to hypothetical Vect_destroy_map_struct

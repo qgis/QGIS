@@ -421,9 +421,6 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     // The version of the map for which the instance was last time updated
     int mMapVersion;
 
-    // Index for layerField in category index or -1 if no such field
-    int mCidxFieldIndex;
-
     bool mValid;
     long mNumberFeatures;
 
@@ -460,6 +457,9 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
 
     //  next digitized feature GRASS type
     int mNewFeatureType;
+
+    // Last version of layer fields during editing, updated after addAttribute and deleteAttribute
+    QgsFields mEditLayerFields;
 
     // points and cats used only for editing
     struct line_pnts *mPoints;

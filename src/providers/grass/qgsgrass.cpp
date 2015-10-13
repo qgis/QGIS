@@ -1749,6 +1749,7 @@ bool QgsGrass::mapRegion( QgsGrassObject::Type type, QString gisdbase,
     G_TRY
     {
       Map = vectNewMapStruct();
+      Vect_set_open_level( 2 );
       level = Vect_open_old_head( Map, map.toUtf8().data(), mapset.toUtf8().data() );
     }
     G_CATCH( QgsGrass::Exception &e )

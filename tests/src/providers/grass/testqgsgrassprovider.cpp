@@ -48,6 +48,94 @@ extern "C"
 
 #define TINY_VALUE  std::numeric_limits<double>::epsilon() * 20
 
+// Feature + GRASS primitive type
+class TestQgsGrassFeature : public QgsFeature
+{
+  public:
+    TestQgsGrassFeature() {}
+    TestQgsGrassFeature( int type ) : grassType( type )  {}
+
+    int grassType;
+};
+
+// Command which can be composed of more GRASS features, e.g. boundaries + centroid equivalent
+// of simple fature polygon
+class TestQgsGrassCommand
+{
+  public:
+    enum Command
+    {
+      AddFeature,
+      DeleteFeature,
+      ChangeGeometry,
+      AddAttribute,
+      DeleteAttribute,
+      ChangeAttributeValue
+    };
+
+    TestQgsGrassCommand() {}
+    TestQgsGrassCommand( Command c ) : command( c ), geometry( 0 ) {}
+
+    QString toString() const;
+    Command command;
+
+    QList<TestQgsGrassFeature> grassFeatures;
+    QgsFeature expectedFeature; // simple feature for verification
+    QgsFeatureId fid;
+    QgsField field;
+    QgsGeometry *geometry;
+    QVariant value;
+};
+
+QString TestQgsGrassCommand::toString() const
+{
+  QString string;
+  if ( command == AddFeature )
+  {
+    string += "AddFeature ";
+    string += expectedFeature.constGeometry()->exportToWkt( 1 );
+  }
+  else if ( command == DeleteFeature )
+  {
+    string += "DeleteFeature ";
+    string += QString( "fid: %1" ).arg( fid );
+  }
+  else if ( command == ChangeGeometry )
+  {
+    string += "ChangeGeometry ";
+    string += QString( "fid: %1 geometry: %2" ).arg( fid ).arg( geometry->exportToWkt( 1 ) );
+  }
+  else if ( command == AddAttribute )
+  {
+    string += "AddAttribute ";
+    string += "name: " + field.name() + " type: " + QVariant::typeToName( field.type() );
+  }
+  else if ( command == DeleteAttribute )
+  {
+    string += "DeleteAttribute ";
+    string += "name: " + field.name();
+  }
+  else if ( command == ChangeAttributeValue )
+  {
+    string += "ChangeAttributeValue ";
+    string += "name: " + field.name() + " value: " + value.toString();
+  }
+  return string;
+}
+
+// Group of commands for one vector layer
+class TestQgsGrassCommandGroup
+{
+  public:
+    TestQgsGrassCommandGroup( QString code ): layerCode( code ) {}
+    QString layerCode; // 1_point etc.
+    QList<TestQgsGrassCommand> commands;
+
+    // mapping of our fid to negative fid assigned by qgis (start from -2, static variable for all layers)
+    QMap<QgsFeatureId, QgsFeatureId> fids;
+    QMap<QgsFeatureId, QgsFeatureId> expectedFids;
+};
+
 /** \ingroup UnitTests
  * This is a unit test for the QgsRasterLayer class.
  */
@@ -89,6 +177,7 @@ class TestQgsGrassProvider: public QObject
     bool equal( QgsFeature feature, QgsFeature expectedFeatures );
     bool compare( QList<QgsFeature> features, QList<QgsFeature> expectedFeatures, bool& ok );
     bool compare( QString uri, QgsGrassObject mapObject, QgsVectorLayer *expectedLayer, bool& ok );
+    QList< TestQgsGrassCommandGroup > createCommands();
     QList<QgsFeature> getFeatures( QgsVectorLayer *layer );
     QString mGisdbase;
     QString mLocation;
@@ -767,31 +856,56 @@ void TestQgsGrassProvider::vectorImport()
   GVERIFY( ok );
 }
 
-class TestQgsGrassCommand
+QList< TestQgsGrassCommandGroup > TestQgsGrassProvider::createCommands()
 {
-  public:
-    enum Command
-    {
-      AddFeature
-    };
+  QList< TestQgsGrassCommandGroup > commandGroups;
 
-    TestQgsGrassCommand( Command c, QgsFeature f, int t ) : command( c ), feature( f ), type( t )  {}
+  TestQgsGrassCommandGroup commandGroup = TestQgsGrassCommandGroup( "1_point" );
+  TestQgsGrassCommand command;
+  TestQgsGrassFeature grassFeature;
+  QgsGeometry *geometry;
 
-    QString toString();
-    Command command;
-    QgsFeature feature;
-    int type; // GRASS type
-};
+  // Add point
+  command = TestQgsGrassCommand( TestQgsGrassCommand::AddFeature );
+  grassFeature = TestQgsGrassFeature( GV_POINT );
+  grassFeature.setFeatureId( 1 );
+  geometry = new QgsGeometry( new QgsPointV2( QgsWKBTypes::Point, 10, 10, 0 ) );
+  grassFeature.setGeometry( geometry );
+  command.grassFeatures << grassFeature;
+  command.expectedFeature = grassFeature;
+  commandGroup.commands << command;
 
-QString TestQgsGrassCommand::toString()
-{
-  QString string;
-  if ( command == AddFeature )
-  {
-    string += "AddFeature ";
-    string += feature.geometry()->exportToWkt( 1 );
-  }
-  return string;
+  // Change geometry
+  command = TestQgsGrassCommand( TestQgsGrassCommand::ChangeGeometry );
+  command.fid = 1;
+  command.geometry = new QgsGeometry( new QgsPointV2( QgsWKBTypes::Point, 20, 20, 0 ) );
+  commandGroup.commands << command;
+
+  // Add field
+  command = TestQgsGrassCommand( TestQgsGrassCommand::AddAttribute );
+  command.field = QgsField( "field_int", QVariant::Int, "integer" );
+  commandGroup.commands << command;
+
+  // Change attribute
+  command = TestQgsGrassCommand( TestQgsGrassCommand::ChangeAttributeValue );
+  command.fid = 1;
+  command.field.setName( "field_int" );
+  command.value = 123;
+  commandGroup.commands << command;
+
+  // Delete field
+  command = TestQgsGrassCommand( TestQgsGrassCommand::DeleteAttribute );
+  command.field = QgsField( "field_int", QVariant::Int, "integer" );
+  commandGroup.commands << command;
+
+  // Delete feature
+  command = TestQgsGrassCommand( TestQgsGrassCommand::DeleteFeature );
+  command.fid = 1;
+  commandGroup.commands << command;
+
+  commandGroups << commandGroup;
+
+  return commandGroups;
 }
 
 void TestQgsGrassProvider::edit()
@@ -810,17 +924,11 @@ void TestQgsGrassProvider::edit()
     return;
   }
 
-  QList< QList<TestQgsGrassCommand> > commandGroups;
-
-  QList<TestQgsGrassCommand> commands;
-  QgsFeature feature;
-  feature.setGeometry( new QgsGeometry( new QgsPointV2( QgsWKBTypes::Point, 10, 10, 0 ) ) );
-  commands << TestQgsGrassCommand( TestQgsGrassCommand::AddFeature, feature, GV_POINT );
-  commandGroups << commands;
+  QList< TestQgsGrassCommandGroup > commandGroups = createCommands();
 
   for ( int i = 0; i < commandGroups.size(); i++ )
   {
-    commands = commandGroups[i];
+    TestQgsGrassCommandGroup & commandGroup = commandGroups[i];
 
     // Create GRASS vector
     QString name = QString( "edit_%1" ).arg( i );
@@ -835,7 +943,7 @@ void TestQgsGrassProvider::edit()
       break;
     }
 
-    QString uri = mapObject.mapsetPath() + "/" + name + "/1_point";
+    QString uri = mapObject.mapsetPath() + "/" + name + "/" + commandGroup.layerCode;
     reportRow( "uri: " + uri );
     QgsVectorLayer *layer = new QgsVectorLayer( uri, name, "grass" );
     if ( !layer->isValid() )
@@ -866,23 +974,120 @@ void TestQgsGrassProvider::edit()
 
     expectedLayer->startEditing();
 
-    for ( int j = 0; j < commands.size(); j++ )
+    Q_FOREACH ( const TestQgsGrassCommand & command, commandGroup.commands )
     {
-      TestQgsGrassCommand command = commands[j];
+      reportRow( "<br>command: " + command.toString() );
+      bool commandOk = true;
       if ( command.command == TestQgsGrassCommand::AddFeature )
       {
-        reportRow( "command: " + command.toString() );
-        provider->setNewFeatureType( command.type );
+        Q_FOREACH ( TestQgsGrassFeature grassFeature, command.grassFeatures ) // copy feature, not reference
+        {
+          QgsFeatureId fid = grassFeature.id();
+          provider->setNewFeatureType( grassFeature.grassType );
+          grassFeature.initAttributes( layer->fields().size() ); // attributes must match layer fields
+          if ( !layer->addFeature( grassFeature ) )
+          {
+            reportRow( "cannot add feature" );
+            commandOk = false;
+            break;
+          }
+          commandGroup.fids.insert( fid, grassFeature.id() );
+        }
 
-        QgsFeature feature = command.feature;
-        feature.initAttributes( layer->fields().size() ); // attributes must match layer fields
-        layer->addFeature( feature );
-
-        QgsFeature expectedFeature = command.feature;
+        QgsFeature expectedFeature = command.expectedFeature;
+        QgsFeatureId expectedFid = expectedFeature.id();
         expectedFeature.initAttributes( expectedLayer->fields().size() );
         //expectedFeature.setGeometry( new QgsGeometry( new QgsPointV2( QgsWKBTypes::Point, 10, 20, 0 ) ) ); // debug
-        expectedLayer->addFeature( expectedFeature );
+        if ( !expectedLayer->addFeature( expectedFeature ) )
+        {
+          reportRow( "cannot add expectedFeature" );
+          commandOk = false;
+        }
+        commandGroup.expectedFids.insert( expectedFid, expectedFeature.id() );
       }
+      else if ( command.command == TestQgsGrassCommand::DeleteFeature )
+      {
+        QgsFeatureId fid = commandGroup.fids.value( command.fid );
+        if ( !layer->deleteFeature( fid ) )
+        {
+          reportRow( "cannot delete feature" );
+          commandOk = false;
+        }
+        QgsFeatureId expectedFid = commandGroup.expectedFids.value( command.fid );
+        if ( !expectedLayer->deleteFeature( expectedFid ) )
+        {
+          reportRow( "cannot delete expected feature" );
+          commandOk = false;
+        }
+      }
+      else if ( command.command == TestQgsGrassCommand::ChangeGeometry )
+      {
+        QgsFeatureId fid = commandGroup.fids.value( command.fid );
+        if ( !layer->changeGeometry( fid, command.geometry ) )
+        {
+          reportRow( "cannot change feature geometry" );
+          commandOk = false;
+        }
+        QgsFeatureId expectedFid = commandGroup.expectedFids.value( command.fid );
+        if ( !expectedLayer->changeGeometry( expectedFid, command.geometry ) )
+        {
+          reportRow( "cannot change expected feature geometry" );
+          commandOk = false;
+        }
+      }
+      else if ( command.command == TestQgsGrassCommand::AddAttribute )
+      {
+        if ( !layer->addAttribute( command.field ) )
+        {
+          reportRow( "cannot add field to layer" );
+          commandOk = false;
+        }
+        if ( !expectedLayer->addAttribute( command.field ) )
+        {
+          reportRow( "cannot add field to expectedLayer" );
+          commandOk = false;
+        }
+      }
+      else if ( command.command == TestQgsGrassCommand::DeleteAttribute )
+      {
+        int index = layer->fields().indexFromName( command.field.name() );
+        if ( !layer->deleteAttribute( index ) )
+        {
+          reportRow( "cannot delete field from layer" );
+          commandOk = false;
+        }
+        QgsFeatureId expectedFid = commandGroup.expectedFids.value( command.fid );
+        if ( !expectedLayer->deleteAttribute( expectedFid ) )
+        {
+          reportRow( "cannot delete field from expected layer" );
+          commandOk = false;
+        }
+      }
+      else if ( command.command == TestQgsGrassCommand::ChangeAttributeValue )
+      {
+        QgsFeatureId fid = commandGroup.fids.value( command.fid );
+        int index = layer->fields().indexFromName( command.field.name() );
+        if ( !layer->changeAttributeValue( fid, index, command.value ) )
+        {
+          reportRow( "cannot change feature attribute" );
+          commandOk = false;
+        }
+        QgsFeatureId expectedFid = commandGroup.expectedFids.value( command.fid );
+        int expectedIndex = expectedLayer->fields().indexFromName( command.field.name() );
+        if ( !expectedLayer->changeAttributeValue( expectedFid, expectedIndex, command.value ) )
+        {
+          reportRow( "cannot change expected feature attribute" );
+          commandOk = false;
+        }
+      }
+
+      if ( !commandOk )
+      {
+        reportRow( "command failed" );
+        ok = false;
+        break;
+      }
+
       if ( !compare( uri, mapObject, expectedLayer, ok ) )
       {
         reportRow( "command failed" );
@@ -891,6 +1096,55 @@ void TestQgsGrassProvider::edit()
       else
       {
         reportRow( "command ok" );
+      }
+    }
+
+    // Undo
+    if ( layer->undoStack()->count() !=  commandGroup.commands.size() ||
+         layer->undoStack()->count() != expectedLayer->undoStack()->count() )
+    {
+      reportRow( QString( "Different undo stack size: %1, expected: %2, commands %3" )
+                 .arg( layer->undoStack()->count() ).arg( expectedLayer->undoStack()->count() ).arg( commandGroup.commands.size() ) );
+      ok = false;
+    }
+    else
+    {
+      bool undoOk = true;
+      for ( int j = commandGroup.commands.size() - 1; j >= 0; j-- )
+      {
+        reportRow( "<br>undo command: " + commandGroup.commands[j].toString() );
+        layer->undoStack()->undo();
+        expectedLayer->undoStack()->undo();
+        if ( !compare( uri, mapObject, expectedLayer, ok ) )
+        {
+          reportRow( "undo failed" );
+          undoOk = false;
+          ok = false;
+          break;
+        }
+        else
+        {
+          reportRow( "undo ok" );
+        }
+      }
+      if ( undoOk )
+      {
+        for ( int j = 0; j < commandGroup.commands.size(); j++ )
+        {
+          reportRow( "<br>redo command: " + commandGroup.commands[j].toString() );
+          layer->undoStack()->redo();
+          expectedLayer->undoStack()->redo();
+          if ( !compare( uri, mapObject, expectedLayer, ok ) )
+          {
+            reportRow( "redo failed" );
+            ok = false;
+            break;
+          }
+          else
+          {
+            reportRow( "redo ok" );
+          }
+        }
       }
     }
 
@@ -940,11 +1194,19 @@ bool TestQgsGrassProvider::equal( QgsFeature feature, QgsFeature expectedFeature
     if ( index < 0 )
     {
       // not found
+      QStringList names;
+      for ( int j = 0; j < feature.fields()->size(); j++ )
+      {
+        names << feature.fields()->at( j ).name();
+      }
+      reportRow( QString( "Attribute %1 not found, feature attributes: %2" ).arg( name ).arg( names.join( "," ) ) );
       return false;
     }
     indexes.remove( index );
     if ( feature.attribute( index ) != expectedFeature.attribute( i ) )
     {
+      reportRow( QString( "Attribute name %1, value: '%2'' does not match expected value: '%2'" )
+                 .arg( name ).arg( feature.attribute( index ).toString() ).arg( expectedFeature.attribute( i ).toString() ) );
       return false;
     }
   }
@@ -1012,7 +1274,7 @@ bool TestQgsGrassProvider::compare( QString uri, QgsGrassObject mapObject, QgsVe
   bool sharedOk = compare( features, expectedFeatures, ok );
   if ( sharedOk )
   {
-    reportRow( "comparison with shared layer ok" );
+    //reportRow( "comparison with shared layer ok" );
   }
   else
   {
@@ -1025,16 +1287,23 @@ bool TestQgsGrassProvider::compare( QString uri, QgsGrassObject mapObject, QgsVe
   {
     struct Map_info *map = QgsGrass::vectNewMapStruct();
     QgsGrass::setMapset( mapObject );
-    Vect_open_old( map, mapObject.name().toUtf8().data(), mapObject.mapset().toUtf8().data() );
+    Vect_set_open_level( 1 ); // otherwise Vect_open_old fails if cannot open on level 2
+    int result = Vect_open_old( map, mapObject.name().toUtf8().data(), mapObject.mapset().toUtf8().data() );
+
+    if ( result == -1 )
+{
+  QgsGrass::vectDestroyMapStruct( map );
+    throw QgsGrass::Exception( "Cannot open map " + mapObject.name() );
+  }
 
 #if ( GRASS_VERSION_MAJOR == 6 && GRASS_VERSION_MINOR >= 4 ) || GRASS_VERSION_MAJOR > 6
-    Vect_build( map );
+  Vect_build( map );
 #else
-    Vect_build( map, stderr );
+  Vect_build( map, stderr );
 #endif
-    Vect_set_release_support( map );
-    Vect_close( map );
-    QgsGrass::vectDestroyMapStruct( map );
+  //Vect_set_release_support( map );
+  Vect_close( map );
+  QgsGrass::vectDestroyMapStruct( map );
   }
   G_CATCH( QgsGrass::Exception &e )
   {
@@ -1061,7 +1330,7 @@ bool TestQgsGrassProvider::compare( QString uri, QgsGrassObject mapObject, QgsVe
   bool independentOk = compare( features, expectedFeatures, ok );
   if ( independentOk )
   {
-    reportRow( "comparison with independent layer ok" );
+    //reportRow( "comparison with independent layer ok" );
   }
   else
   {

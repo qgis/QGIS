@@ -136,7 +136,7 @@ bool QgsGrassVectorMap::openMap()
   int level = -1;
   G_TRY
   {
-    //Vect_set_open_level( 2 );
+    Vect_set_open_level( 2 );
     level = Vect_open_old_head( mMap, mGrassObject.name().toUtf8().data(), mGrassObject.mapset().toUtf8().data() );
     Vect_close( mMap );
   }
@@ -235,6 +235,7 @@ bool QgsGrassVectorMap::startEdit()
   G_TRY
   {
     Vect_close( mMap );
+    Vect_set_open_level( 2 );
     level = Vect_open_update( mMap, mGrassObject.name().toUtf8().data(), mGrassObject.mapset().toUtf8().data() );
     if ( level < 2 )
     {

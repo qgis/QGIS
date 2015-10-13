@@ -81,7 +81,6 @@ QgsGrassProvider::QgsGrassProvider( QString uri )
     , mQgisType( QGis::WKBUnknown )
     , mLayer( 0 )
     , mMapVersion( 0 )
-    , mCidxFieldIndex( -1 )
     , mNumberFeatures( 0 )
     , mEditBuffer( 0 )
     , mEditLayer( 0 )
@@ -226,9 +225,9 @@ QgsGrassProvider::QgsGrassProvider( QString uri )
 
   // TODO: types according to database
   mNativeTypes
-  << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), "integer", QVariant::Int, 1, 10 )
-  << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), "double precision", QVariant::Double, 1, 20, 0, 15 )
-  << QgsVectorDataProvider::NativeType( tr( "Text, limited variable length (varchar)" ), "varchar", QVariant::String, 1, 255, -1, -1 );
+  << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), "integer", QVariant::Int, -1, -1, -1, -1 )
+  << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), "double precision", QVariant::Double, -1, -1, -1, -1 )
+  << QgsVectorDataProvider::NativeType( tr( "Text, limited variable length (varchar)" ), "varchar", QVariant::String, 1, -1, -1, -1 );
   // TODO:
   // << QgsVectorDataProvider::NativeType( tr( "Date" ), "date", QVariant::Date, 8, 8 );
 
@@ -299,8 +298,8 @@ bool QgsGrassProvider::openLayer()
 void QgsGrassProvider::loadMapInfo()
 {
   // Getting the total number of features in the layer
+  int cidxFieldIndex = -1;
   mNumberFeatures = 0;
-  mCidxFieldIndex = -1;
   if ( mLayerType == TOPO_POINT )
   {
     mNumberFeatures = Vect_get_num_primitives( map(), GV_POINTS );
@@ -317,8 +316,8 @@ void QgsGrassProvider::loadMapInfo()
   {
     if ( mLayerField >= 0 )
     {
-      mCidxFieldIndex = Vect_cidx_get_field_index( map(), mLayerField );
-      if ( mCidxFieldIndex >= 0 )
+      cidxFieldIndex = Vect_cidx_get_field_index( map(), mLayerField );
+      if ( cidxFieldIndex >= 0 )
       {
         mNumberFeatures = Vect_cidx_get_type_count( map(), mLayerField, mGrassType );
       }
@@ -329,7 +328,7 @@ void QgsGrassProvider::loadMapInfo()
       mNumberFeatures = 0;
     }
   }
-  QgsDebugMsg( QString( "mNumberFeatures = %1 mCidxFieldIndex = %2" ).arg( mNumberFeatures ).arg( mCidxFieldIndex ) );
+  QgsDebugMsg( QString( "mNumberFeatures = %1 cidxFieldIndex = %2" ).arg( mNumberFeatures ).arg( cidxFieldIndex ) );
 }
 
 void QgsGrassProvider::update()
@@ -1093,6 +1092,7 @@ void QgsGrassProvider::startEditing( QgsVectorLayer *vectorLayer )
 
   // let qgis know (attribute table etc.) that we added topo symbol field
   vectorLayer->updateFields();
+  mEditLayerFields = vectorLayer->fields();
 
   // TODO: enable cats editing once all consequences are implemented
   // disable cat and topo symbol editing
@@ -1242,15 +1242,15 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
       }
       if ( newCat == 0 )
       {
-        QgsDebugMsg( QString( "get new cat for mCidxFieldIndex = %1" ).arg( mCidxFieldIndex ) );
-        if ( mCidxFieldIndex == -1 )
+        QgsDebugMsg( QString( "get new cat for cidxFieldIndex() = %1" ).arg( mLayer->cidxFieldIndex() ) );
+        if ( mLayer->cidxFieldIndex() == -1 )
         {
           // No features with this field yet in map
           newCat = 1;
         }
         else
         {
-          newCat = cidxGetMaxCat( mCidxFieldIndex ) + 1;
+          newCat = cidxGetMaxCat( mLayer->cidxFieldIndex() ) + 1;
         }
       }
       QgsDebugMsg( QString( "newCat = %1" ).arg( newCat ) );
@@ -1456,17 +1456,10 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
 
     QgsDebugMsg( QString( "newLine = %1" ).arg( newLid ) );
 
-    if ( mCidxFieldIndex == -1 && type != GV_BOUNDARY )
-    {
-      // first feature in this layer
-      mCidxFieldIndex = Vect_cidx_get_field_index( map(), mLayerField );
-      QgsDebugMsg( QString( "new mCidxFieldIndex = %1" ).arg( mCidxFieldIndex ) );
-    }
-
     setAddedFeaturesSymbol();
   }
-  QgsDebugMsg( QString( "mCidxFieldIndex = %1 cidxFieldNumCats() = %2" )
-               .arg( mCidxFieldIndex ).arg( mLayer->cidxFieldNumCats() ) );
+  QgsDebugMsg( QString( "mLayer->cidxFieldIndex() = %1 cidxFieldNumCats() = %2" )
+               .arg( mLayer->cidxFieldIndex() ).arg( mLayer->cidxFieldNumCats() ) );
 }
 
 void QgsGrassProvider::onFeatureDeleted( QgsFeatureId fid )
@@ -1726,33 +1719,39 @@ void QgsGrassProvider::onAttributeAdded( int idx )
   mLayer->addColumn( mEditLayer->fields()[idx], error );
   if ( !error.isEmpty() )
   {
+    QgsDebugMsg( error );
     QgsGrass::warning( error );
     // TODO: remove the column somehow from the layer/buffer - undo?
+  }
+  else
+  {
+    mEditLayerFields = mEditLayer->fields();
   }
 }
 
 void QgsGrassProvider::onAttributeDeleted( int idx )
 {
-  Q_UNUSED( idx );
-  QgsDebugMsg( QString( "idx = %1" ).arg( idx ) );
-  // The index of deleted field is useless because the field was already removed from mEditLayer->fields().
-  // Find deleted field.
-  QgsField deletedField;
-  for ( int i = 0; i < mLayer->fields().size(); i++ )
+  QgsDebugMsg( QString( "idx = %1 mEditLayerFields.size() = %2" ).arg( idx ).arg( mEditLayerFields.size() ) );
+  // The field was already removed from mEditLayer->fields() -> using stored last version of fields
+  if ( idx < 0 || idx >= mEditLayerFields.size() )
   {
-    QgsField field = mLayer->fields()[i];
-    if ( mEditLayer->fields().indexFromName( field.name() ) == -1 )
-    {
-      deletedField = field;
-    }
+    QgsDebugMsg( "index out of range" );
+    return;
   }
+  QgsField deletedField = mEditLayerFields.at( idx );
   QgsDebugMsg( QString( "deletedField.name() = %1" ).arg( deletedField.name() ) );
+
   QString error;
   mLayer->deleteColumn( deletedField, error );
   if ( !error.isEmpty() )
   {
+    QgsDebugMsg( error );
     QgsGrass::warning( error );
     // TODO: get back the column somehow to the layer/buffer - undo?
+  }
+  else
+  {
+    mEditLayerFields = mEditLayer->fields();
   }
 }
 
@@ -1843,6 +1842,7 @@ int QgsGrassProvider::cidxGetFieldNumber( int idx )
 
 int QgsGrassProvider::cidxGetMaxCat( int idx )
 {
+  QgsDebugMsg( QString( "idx = %1" ).arg( idx ) );
   if ( idx < 0 || idx >= cidxGetNumFields() )
   {
     QgsDebugMsg( QString( "idx %1 out of range (0,%2)" ).arg( idx ).arg( cidxGetNumFields() - 1 ) );
@@ -1850,6 +1850,12 @@ int QgsGrassProvider::cidxGetMaxCat( int idx )
   }
 
   int ncats = Vect_cidx_get_num_cats_by_index( map(), idx );
+  QgsDebugMsg( QString( "ncats = %1" ).arg( ncats ) );
+
+  if ( ncats == 0 )
+  {
+    return 0;
+  }
 
   int cat, type, id;
   Vect_cidx_get_cat_by_index( map(), idx, ncats - 1, &cat, &type, &id );
