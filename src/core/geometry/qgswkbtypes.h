@@ -120,8 +120,36 @@ class CORE_EXPORT QgsWKBTypes
     static int wkbDimensions( Type type );
     static GeometryType geometryType( Type type );
     static QString displayString( Type type );
+
+    /** Tests whether a WKB type contains the z-dimension.
+     * @returns true if type has z values
+     * @see addZ()
+     * @see hasM()
+     */
     static bool hasZ( Type type );
+
+    /** Tests whether a WKB type contains m values.
+     * @returns true if type has m values
+     * @see addM()
+     * @see hasZ()
+     */
     static bool hasM( Type type );
+
+    /** Adds the z dimension to a WKB type and returns the new type
+     * @param type original type
+     * @note added in QGIS 2.12
+     * @see addM()
+     * @see hasZ()
+     */
+    static Type addZ( Type type );
+
+    /** Adds the m dimension to a WKB type and returns the new type
+     * @param type original type
+     * @note added in QGIS 2.12
+     * @see addZ()
+     * @see hasM()
+     */
+    static Type addM( Type type );
 
   private:
     static QMap<Type, wkbEntry> registerTypes();

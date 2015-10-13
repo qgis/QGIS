@@ -8,53 +8,57 @@ class QgsWKBTypes
 
     enum Type
     {
-      Unknown = 0,
-      Point = 1,
-      LineString = 2,
-      Polygon = 3,
-      MultiPoint = 4,
-      MultiLineString = 5,
-      MultiPolygon = 6,
-      CircularString = 8,
-      CompoundCurve = 9,
-      CurvePolygon =  10, //13, //should be 10. Seems to be correct in newer postgis versions
-      MultiCurve = 11,
-      MultiSurface = 12,
-      NoGeometry = 100, //attributes only
-      PointZ = 1001,
-      LineStringZ = 1002,
-      PolygonZ = 1003,
-      MultiPointZ = 1004,
-      MultiLineStringZ = 1005,
-      MultiPolygonZ = 1006,
-      CircularStringZ = 1008,
-      CompoundCurveZ = 1009,
-      CurvePolygonZ = 1010,
-      MultiCurveZ = 1011,
-      MultiSurfaceZ = 1012,
-      PointM = 2001,
-      LineStringM = 2002,
-      PolygonM = 2003,
-      MultiPointM = 2004,
-      MultiLineStringM = 2005,
-      MultiPolygonM = 2006,
-      CircularStringM = 2008,
-      CompoundCurveM = 2009,
-      CurvePolygonM = 2010,
-      MultiCurveM = 2011,
-      MultiSurfaceM = 2012,
-      PointZM = 3001,
-      LineStringZM = 3002,
-      PolygonZM = 3003,
-      MultiPointZM = 3004,
-      MultiLineStringZM = 3005,
-      MultiPolygonZM = 3006,
-      CircularStringZM = 3008,
-      CompoundCurveZM = 3009,
-      CurvePolygonZM = 3010,
-      MultiCurveZM = 3011,
-      MultiSurfaceZM = 3012,
-      Point25D = 0x80000001,
+      Unknown,
+      Point,
+      LineString,
+      Polygon,
+      MultiPoint,
+      MultiLineString,
+      MultiPolygon,
+      GeometryCollection,
+      CircularString,
+      CompoundCurve,
+      CurvePolygon,
+      MultiCurve,
+      MultiSurface,
+      NoGeometry,
+      PointZ,
+      LineStringZ,
+      PolygonZ,
+      MultiPointZ,
+      MultiLineStringZ,
+      MultiPolygonZ,
+      GeometryCollectionZ,
+      CircularStringZ,
+      CompoundCurveZ,
+      CurvePolygonZ,
+      MultiCurveZ,
+      MultiSurfaceZ,
+      PointM,
+      LineStringM,
+      PolygonM,
+      MultiPointM,
+      MultiLineStringM,
+      MultiPolygonM,
+      GeometryCollectionM,
+      CircularStringM,
+      CompoundCurveM,
+      CurvePolygonM,
+      MultiCurveM,
+      MultiSurfaceM,
+      PointZM,
+      LineStringZM,
+      PolygonZM,
+      MultiPointZM,
+      MultiLineStringZM,
+      MultiPolygonZM,
+      GeometryCollectionZM,
+      CircularStringZM,
+      CompoundCurveZM,
+      CurvePolygonZM,
+      MultiCurveZM,
+      MultiSurfaceZM,
+      Point25D,
       LineString25D,
       Polygon25D,
       MultiPoint25D,
@@ -90,4 +94,35 @@ class QgsWKBTypes
     static bool isMultiType( Type type );
     static int wkbDimensions( Type type );
     static GeometryType geometryType( Type type );
+    static QString displayString( Type type );
+
+    /** Tests whether a WKB type contains the z-dimension.
+     * @returns true if type has z values
+     * @see addZ()
+     * @see hasM()
+     */
+    static bool hasZ( Type type );
+
+    /** Tests whether a WKB type contains m values.
+     * @returns true if type has m values
+     * @see addM()
+     * @see hasZ()
+     */
+    static bool hasM( Type type );
+
+    /** Adds the z dimension to a WKB type and returns the new type
+     * @param type original type
+     * @note added in QGIS 2.12
+     * @see addM()
+     * @see hasZ()
+     */
+    static Type addZ( Type type );
+
+    /** Adds the m dimension to a WKB type and returns the new type
+     * @param type original type
+     * @note added in QGIS 2.12
+     * @see addZ()
+     * @see hasM()
+     */
+    static Type addM( Type type );
 };

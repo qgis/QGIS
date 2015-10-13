@@ -21,6 +21,7 @@ from qgis.core import (QgsGeometry,
                        QgsPoint,
                        QgsCoordinateTransform,
                        QgsRectangle,
+                       QgsWKBTypes,
                        QGis)
 
 from utilities import (getQgisTestApp,
@@ -1486,6 +1487,240 @@ class TestQgsGeometry(TestCase):
         #test conversion of Polygon
         assert poly.convertToSingleType()
         assert compareWkt(expWkt, wkt), "testConvertToSingleType failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
+
+    def testWkbTypes(self):
+        """ Test QgsWKBTypes methods """
+
+        # test hasZ methods
+        assert not QgsWKBTypes.hasZ(QgsWKBTypes.Unknown)
+        assert not QgsWKBTypes.hasZ(QgsWKBTypes.Point)
+        assert not QgsWKBTypes.hasZ(QgsWKBTypes.LineString)
+        assert not QgsWKBTypes.hasZ(QgsWKBTypes.Polygon)
+        assert not QgsWKBTypes.hasZ(QgsWKBTypes.MultiPoint)
+        assert not QgsWKBTypes.hasZ(QgsWKBTypes.MultiLineString)
+        assert not QgsWKBTypes.hasZ(QgsWKBTypes.MultiPolygon)
+        assert not QgsWKBTypes.hasZ(QgsWKBTypes.GeometryCollection)
+        assert not QgsWKBTypes.hasZ(QgsWKBTypes.CircularString)
+        assert not QgsWKBTypes.hasZ(QgsWKBTypes.CompoundCurve)
+        assert not QgsWKBTypes.hasZ(QgsWKBTypes.CurvePolygon)
+        assert not QgsWKBTypes.hasZ(QgsWKBTypes.MultiCurve)
+        assert not QgsWKBTypes.hasZ(QgsWKBTypes.MultiSurface)
+        assert not QgsWKBTypes.hasZ(QgsWKBTypes.NoGeometry)
+        assert QgsWKBTypes.hasZ(QgsWKBTypes.PointZ)
+        assert QgsWKBTypes.hasZ(QgsWKBTypes.LineStringZ)
+        assert QgsWKBTypes.hasZ(QgsWKBTypes.PolygonZ)
+        assert QgsWKBTypes.hasZ(QgsWKBTypes.MultiPointZ)
+        assert QgsWKBTypes.hasZ(QgsWKBTypes.MultiLineStringZ)
+        assert QgsWKBTypes.hasZ(QgsWKBTypes.MultiPolygonZ)
+        assert QgsWKBTypes.hasZ(QgsWKBTypes.GeometryCollectionZ)
+        assert QgsWKBTypes.hasZ(QgsWKBTypes.CircularStringZ)
+        assert QgsWKBTypes.hasZ(QgsWKBTypes.CompoundCurveZ)
+        assert QgsWKBTypes.hasZ(QgsWKBTypes.CurvePolygonZ)
+        assert QgsWKBTypes.hasZ(QgsWKBTypes.MultiCurveZ)
+        assert QgsWKBTypes.hasZ(QgsWKBTypes.MultiSurfaceZ)
+        assert not QgsWKBTypes.hasZ(QgsWKBTypes.PointM)
+        assert not QgsWKBTypes.hasZ(QgsWKBTypes.LineStringM)
+        assert not QgsWKBTypes.hasZ(QgsWKBTypes.PolygonM)
+        assert not QgsWKBTypes.hasZ(QgsWKBTypes.MultiPointM)
+        assert not QgsWKBTypes.hasZ(QgsWKBTypes.MultiLineStringM)
+        assert not QgsWKBTypes.hasZ(QgsWKBTypes.MultiPolygonM)
+        assert not QgsWKBTypes.hasZ(QgsWKBTypes.GeometryCollectionM)
+        assert not QgsWKBTypes.hasZ(QgsWKBTypes.CircularStringM)
+        assert not QgsWKBTypes.hasZ(QgsWKBTypes.CompoundCurveM)
+        assert not QgsWKBTypes.hasZ(QgsWKBTypes.CurvePolygonM)
+        assert not QgsWKBTypes.hasZ(QgsWKBTypes.MultiCurveM)
+        assert not QgsWKBTypes.hasZ(QgsWKBTypes.MultiSurfaceM)
+        assert QgsWKBTypes.hasZ(QgsWKBTypes.PointZM)
+        assert QgsWKBTypes.hasZ(QgsWKBTypes.LineStringZM)
+        assert QgsWKBTypes.hasZ(QgsWKBTypes.PolygonZM)
+        assert QgsWKBTypes.hasZ(QgsWKBTypes.MultiPointZM)
+        assert QgsWKBTypes.hasZ(QgsWKBTypes.MultiLineStringZM)
+        assert QgsWKBTypes.hasZ(QgsWKBTypes.MultiPolygonZM)
+        assert QgsWKBTypes.hasZ(QgsWKBTypes.GeometryCollectionZM)
+        assert QgsWKBTypes.hasZ(QgsWKBTypes.CircularStringZM)
+        assert QgsWKBTypes.hasZ(QgsWKBTypes.CompoundCurveZM)
+        assert QgsWKBTypes.hasZ(QgsWKBTypes.CurvePolygonZM)
+        assert QgsWKBTypes.hasZ(QgsWKBTypes.MultiCurveZM)
+        assert QgsWKBTypes.hasZ(QgsWKBTypes.MultiSurfaceZM)
+        assert QgsWKBTypes.hasZ(QgsWKBTypes.Point25D)
+        assert QgsWKBTypes.hasZ(QgsWKBTypes.LineString25D)
+        assert QgsWKBTypes.hasZ(QgsWKBTypes.Polygon25D)
+        assert QgsWKBTypes.hasZ(QgsWKBTypes.MultiPoint25D)
+        assert QgsWKBTypes.hasZ(QgsWKBTypes.MultiLineString25D)
+        assert QgsWKBTypes.hasZ(QgsWKBTypes.MultiPolygon25D)
+
+        # test hasM methods
+        assert not QgsWKBTypes.hasM(QgsWKBTypes.Unknown)
+        assert not QgsWKBTypes.hasM(QgsWKBTypes.Point)
+        assert not QgsWKBTypes.hasM(QgsWKBTypes.LineString)
+        assert not QgsWKBTypes.hasM(QgsWKBTypes.Polygon)
+        assert not QgsWKBTypes.hasM(QgsWKBTypes.MultiPoint)
+        assert not QgsWKBTypes.hasM(QgsWKBTypes.MultiLineString)
+        assert not QgsWKBTypes.hasM(QgsWKBTypes.MultiPolygon)
+        assert not QgsWKBTypes.hasM(QgsWKBTypes.GeometryCollection)
+        assert not QgsWKBTypes.hasM(QgsWKBTypes.CircularString)
+        assert not QgsWKBTypes.hasM(QgsWKBTypes.CompoundCurve)
+        assert not QgsWKBTypes.hasM(QgsWKBTypes.CurvePolygon)
+        assert not QgsWKBTypes.hasM(QgsWKBTypes.MultiCurve)
+        assert not QgsWKBTypes.hasM(QgsWKBTypes.MultiSurface)
+        assert not QgsWKBTypes.hasM(QgsWKBTypes.NoGeometry)
+        assert not QgsWKBTypes.hasM(QgsWKBTypes.PointZ)
+        assert not QgsWKBTypes.hasM(QgsWKBTypes.LineStringZ)
+        assert not QgsWKBTypes.hasM(QgsWKBTypes.PolygonZ)
+        assert not QgsWKBTypes.hasM(QgsWKBTypes.MultiPointZ)
+        assert not QgsWKBTypes.hasM(QgsWKBTypes.MultiLineStringZ)
+        assert not QgsWKBTypes.hasM(QgsWKBTypes.MultiPolygonZ)
+        assert not QgsWKBTypes.hasM(QgsWKBTypes.GeometryCollectionZ)
+        assert not QgsWKBTypes.hasM(QgsWKBTypes.CircularStringZ)
+        assert not QgsWKBTypes.hasM(QgsWKBTypes.CompoundCurveZ)
+        assert not QgsWKBTypes.hasM(QgsWKBTypes.CurvePolygonZ)
+        assert not QgsWKBTypes.hasM(QgsWKBTypes.MultiCurveZ)
+        assert not QgsWKBTypes.hasM(QgsWKBTypes.MultiSurfaceZ)
+        assert QgsWKBTypes.hasM(QgsWKBTypes.PointM)
+        assert QgsWKBTypes.hasM(QgsWKBTypes.LineStringM)
+        assert QgsWKBTypes.hasM(QgsWKBTypes.PolygonM)
+        assert QgsWKBTypes.hasM(QgsWKBTypes.MultiPointM)
+        assert QgsWKBTypes.hasM(QgsWKBTypes.MultiLineStringM)
+        assert QgsWKBTypes.hasM(QgsWKBTypes.MultiPolygonM)
+        assert QgsWKBTypes.hasM(QgsWKBTypes.GeometryCollectionM)
+        assert QgsWKBTypes.hasM(QgsWKBTypes.CircularStringM)
+        assert QgsWKBTypes.hasM(QgsWKBTypes.CompoundCurveM)
+        assert QgsWKBTypes.hasM(QgsWKBTypes.CurvePolygonM)
+        assert QgsWKBTypes.hasM(QgsWKBTypes.MultiCurveM)
+        assert QgsWKBTypes.hasM(QgsWKBTypes.MultiSurfaceM)
+        assert QgsWKBTypes.hasM(QgsWKBTypes.PointZM)
+        assert QgsWKBTypes.hasM(QgsWKBTypes.LineStringZM)
+        assert QgsWKBTypes.hasM(QgsWKBTypes.PolygonZM)
+        assert QgsWKBTypes.hasM(QgsWKBTypes.MultiPointZM)
+        assert QgsWKBTypes.hasM(QgsWKBTypes.MultiLineStringZM)
+        assert QgsWKBTypes.hasM(QgsWKBTypes.MultiPolygonZM)
+        assert QgsWKBTypes.hasM(QgsWKBTypes.GeometryCollectionZM)
+        assert QgsWKBTypes.hasM(QgsWKBTypes.CircularStringZM)
+        assert QgsWKBTypes.hasM(QgsWKBTypes.CompoundCurveZM)
+        assert QgsWKBTypes.hasM(QgsWKBTypes.CurvePolygonZM)
+        assert QgsWKBTypes.hasM(QgsWKBTypes.MultiCurveZM)
+        assert QgsWKBTypes.hasM(QgsWKBTypes.MultiSurfaceZM)
+        assert not QgsWKBTypes.hasM(QgsWKBTypes.Point25D)
+        assert not QgsWKBTypes.hasM(QgsWKBTypes.LineString25D)
+        assert not QgsWKBTypes.hasM(QgsWKBTypes.Polygon25D)
+        assert not QgsWKBTypes.hasM(QgsWKBTypes.MultiPoint25D)
+        assert not QgsWKBTypes.hasM(QgsWKBTypes.MultiLineString25D)
+        assert not QgsWKBTypes.hasM(QgsWKBTypes.MultiPolygon25D)
+
+        # test adding z dimension to types
+        assert QgsWKBTypes.addZ(QgsWKBTypes.Unknown) == QgsWKBTypes.Unknown
+        assert QgsWKBTypes.addZ(QgsWKBTypes.Point) == QgsWKBTypes.PointZ
+        assert QgsWKBTypes.addZ(QgsWKBTypes.PointZ) == QgsWKBTypes.PointZ
+        assert QgsWKBTypes.addZ(QgsWKBTypes.PointM) == QgsWKBTypes.PointZM
+        assert QgsWKBTypes.addZ(QgsWKBTypes.PointZM) == QgsWKBTypes.PointZM
+        assert QgsWKBTypes.addZ(QgsWKBTypes.MultiPoint) == QgsWKBTypes.MultiPointZ
+        assert QgsWKBTypes.addZ(QgsWKBTypes.MultiPointZ) == QgsWKBTypes.MultiPointZ
+        assert QgsWKBTypes.addZ(QgsWKBTypes.MultiPointM) == QgsWKBTypes.MultiPointZM
+        assert QgsWKBTypes.addZ(QgsWKBTypes.MultiPointZM) == QgsWKBTypes.MultiPointZM
+        assert QgsWKBTypes.addZ(QgsWKBTypes.LineString) == QgsWKBTypes.LineStringZ
+        assert QgsWKBTypes.addZ(QgsWKBTypes.LineStringZ) == QgsWKBTypes.LineStringZ
+        assert QgsWKBTypes.addZ(QgsWKBTypes.LineStringM) == QgsWKBTypes.LineStringZM
+        assert QgsWKBTypes.addZ(QgsWKBTypes.LineStringZM) == QgsWKBTypes.LineStringZM
+        assert QgsWKBTypes.addZ(QgsWKBTypes.MultiLineString) == QgsWKBTypes.MultiLineStringZ
+        assert QgsWKBTypes.addZ(QgsWKBTypes.MultiLineStringZ) == QgsWKBTypes.MultiLineStringZ
+        assert QgsWKBTypes.addZ(QgsWKBTypes.MultiLineStringM) == QgsWKBTypes.MultiLineStringZM
+        assert QgsWKBTypes.addZ(QgsWKBTypes.MultiLineStringZM) == QgsWKBTypes.MultiLineStringZM
+        assert QgsWKBTypes.addZ(QgsWKBTypes.Polygon) == QgsWKBTypes.PolygonZ
+        assert QgsWKBTypes.addZ(QgsWKBTypes.PolygonZ) == QgsWKBTypes.PolygonZ
+        assert QgsWKBTypes.addZ(QgsWKBTypes.PolygonM) == QgsWKBTypes.PolygonZM
+        assert QgsWKBTypes.addZ(QgsWKBTypes.PolygonZM) == QgsWKBTypes.PolygonZM
+        assert QgsWKBTypes.addZ(QgsWKBTypes.MultiPolygon) == QgsWKBTypes.MultiPolygonZ
+        assert QgsWKBTypes.addZ(QgsWKBTypes.MultiPolygonZ) == QgsWKBTypes.MultiPolygonZ
+        assert QgsWKBTypes.addZ(QgsWKBTypes.MultiPolygonM) == QgsWKBTypes.MultiPolygonZM
+        assert QgsWKBTypes.addZ(QgsWKBTypes.MultiPolygonZM) == QgsWKBTypes.MultiPolygonZM
+        assert QgsWKBTypes.addZ(QgsWKBTypes.GeometryCollection) == QgsWKBTypes.GeometryCollectionZ
+        assert QgsWKBTypes.addZ(QgsWKBTypes.GeometryCollectionZ) == QgsWKBTypes.GeometryCollectionZ
+        assert QgsWKBTypes.addZ(QgsWKBTypes.GeometryCollectionM) == QgsWKBTypes.GeometryCollectionZM
+        assert QgsWKBTypes.addZ(QgsWKBTypes.GeometryCollectionZM) == QgsWKBTypes.GeometryCollectionZM
+        assert QgsWKBTypes.addZ(QgsWKBTypes.CircularString) == QgsWKBTypes.CircularStringZ
+        assert QgsWKBTypes.addZ(QgsWKBTypes.CircularStringZ) == QgsWKBTypes.CircularStringZ
+        assert QgsWKBTypes.addZ(QgsWKBTypes.CircularStringM) == QgsWKBTypes.CircularStringZM
+        assert QgsWKBTypes.addZ(QgsWKBTypes.CircularStringZM) == QgsWKBTypes.CircularStringZM
+        assert QgsWKBTypes.addZ(QgsWKBTypes.CompoundCurve) == QgsWKBTypes.CompoundCurveZ
+        assert QgsWKBTypes.addZ(QgsWKBTypes.CompoundCurveZ) == QgsWKBTypes.CompoundCurveZ
+        assert QgsWKBTypes.addZ(QgsWKBTypes.CompoundCurveM) == QgsWKBTypes.CompoundCurveZM
+        assert QgsWKBTypes.addZ(QgsWKBTypes.CompoundCurveZM) == QgsWKBTypes.CompoundCurveZM
+        assert QgsWKBTypes.addZ(QgsWKBTypes.CurvePolygon) == QgsWKBTypes.CurvePolygonZ
+        assert QgsWKBTypes.addZ(QgsWKBTypes.CurvePolygonZ) == QgsWKBTypes.CurvePolygonZ
+        assert QgsWKBTypes.addZ(QgsWKBTypes.CurvePolygonM) == QgsWKBTypes.CurvePolygonZM
+        assert QgsWKBTypes.addZ(QgsWKBTypes.CurvePolygonZM) == QgsWKBTypes.CurvePolygonZM
+        assert QgsWKBTypes.addZ(QgsWKBTypes.MultiCurve) == QgsWKBTypes.MultiCurveZ
+        assert QgsWKBTypes.addZ(QgsWKBTypes.MultiCurveZ) == QgsWKBTypes.MultiCurveZ
+        assert QgsWKBTypes.addZ(QgsWKBTypes.MultiCurveM) == QgsWKBTypes.MultiCurveZM
+        assert QgsWKBTypes.addZ(QgsWKBTypes.MultiCurveZM) == QgsWKBTypes.MultiCurveZM
+        assert QgsWKBTypes.addZ(QgsWKBTypes.MultiSurface) == QgsWKBTypes.MultiSurfaceZ
+        assert QgsWKBTypes.addZ(QgsWKBTypes.MultiSurfaceZ) == QgsWKBTypes.MultiSurfaceZ
+        assert QgsWKBTypes.addZ(QgsWKBTypes.MultiSurfaceM) == QgsWKBTypes.MultiSurfaceZM
+        assert QgsWKBTypes.addZ(QgsWKBTypes.MultiSurfaceZM) == QgsWKBTypes.MultiSurfaceZM
+        assert QgsWKBTypes.addZ(QgsWKBTypes.NoGeometry) == QgsWKBTypes.NoGeometry
+        assert QgsWKBTypes.addZ(QgsWKBTypes.Point25D) == QgsWKBTypes.Point25D
+        assert QgsWKBTypes.addZ(QgsWKBTypes.LineString25D) == QgsWKBTypes.LineString25D
+        assert QgsWKBTypes.addZ(QgsWKBTypes.Polygon25D) == QgsWKBTypes.Polygon25D
+        assert QgsWKBTypes.addZ(QgsWKBTypes.MultiLineString25D) == QgsWKBTypes.MultiLineString25D
+        assert QgsWKBTypes.addZ(QgsWKBTypes.MultiPolygon25D) == QgsWKBTypes.MultiPolygon25D
+
+        # test adding m dimension to types
+        assert QgsWKBTypes.addM(QgsWKBTypes.Unknown) == QgsWKBTypes.Unknown
+        assert QgsWKBTypes.addM(QgsWKBTypes.Point) == QgsWKBTypes.PointM
+        assert QgsWKBTypes.addM(QgsWKBTypes.PointZ) == QgsWKBTypes.PointZM
+        assert QgsWKBTypes.addM(QgsWKBTypes.PointM) == QgsWKBTypes.PointM
+        assert QgsWKBTypes.addM(QgsWKBTypes.PointZM) == QgsWKBTypes.PointZM
+        assert QgsWKBTypes.addM(QgsWKBTypes.MultiPoint) == QgsWKBTypes.MultiPointM
+        assert QgsWKBTypes.addM(QgsWKBTypes.MultiPointZ) == QgsWKBTypes.MultiPointZM
+        assert QgsWKBTypes.addM(QgsWKBTypes.MultiPointM) == QgsWKBTypes.MultiPointM
+        assert QgsWKBTypes.addM(QgsWKBTypes.MultiPointZM) == QgsWKBTypes.MultiPointZM
+        assert QgsWKBTypes.addM(QgsWKBTypes.LineString) == QgsWKBTypes.LineStringM
+        assert QgsWKBTypes.addM(QgsWKBTypes.LineStringZ) == QgsWKBTypes.LineStringZM
+        assert QgsWKBTypes.addM(QgsWKBTypes.LineStringM) == QgsWKBTypes.LineStringM
+        assert QgsWKBTypes.addM(QgsWKBTypes.LineStringZM) == QgsWKBTypes.LineStringZM
+        assert QgsWKBTypes.addM(QgsWKBTypes.MultiLineString) == QgsWKBTypes.MultiLineStringM
+        assert QgsWKBTypes.addM(QgsWKBTypes.MultiLineStringZ) == QgsWKBTypes.MultiLineStringZM
+        assert QgsWKBTypes.addM(QgsWKBTypes.MultiLineStringM) == QgsWKBTypes.MultiLineStringM
+        assert QgsWKBTypes.addM(QgsWKBTypes.MultiLineStringZM) == QgsWKBTypes.MultiLineStringZM
+        assert QgsWKBTypes.addM(QgsWKBTypes.Polygon) == QgsWKBTypes.PolygonM
+        assert QgsWKBTypes.addM(QgsWKBTypes.PolygonZ) == QgsWKBTypes.PolygonZM
+        assert QgsWKBTypes.addM(QgsWKBTypes.PolygonM) == QgsWKBTypes.PolygonM
+        assert QgsWKBTypes.addM(QgsWKBTypes.PolygonZM) == QgsWKBTypes.PolygonZM
+        assert QgsWKBTypes.addM(QgsWKBTypes.MultiPolygon) == QgsWKBTypes.MultiPolygonM
+        assert QgsWKBTypes.addM(QgsWKBTypes.MultiPolygonZ) == QgsWKBTypes.MultiPolygonZM
+        assert QgsWKBTypes.addM(QgsWKBTypes.MultiPolygonM) == QgsWKBTypes.MultiPolygonM
+        assert QgsWKBTypes.addM(QgsWKBTypes.MultiPolygonZM) == QgsWKBTypes.MultiPolygonZM
+        assert QgsWKBTypes.addM(QgsWKBTypes.GeometryCollection) == QgsWKBTypes.GeometryCollectionM
+        assert QgsWKBTypes.addM(QgsWKBTypes.GeometryCollectionZ) == QgsWKBTypes.GeometryCollectionZM
+        assert QgsWKBTypes.addM(QgsWKBTypes.GeometryCollectionM) == QgsWKBTypes.GeometryCollectionM
+        assert QgsWKBTypes.addM(QgsWKBTypes.GeometryCollectionZM) == QgsWKBTypes.GeometryCollectionZM
+        assert QgsWKBTypes.addM(QgsWKBTypes.CircularString) == QgsWKBTypes.CircularStringM
+        assert QgsWKBTypes.addM(QgsWKBTypes.CircularStringZ) == QgsWKBTypes.CircularStringZM
+        assert QgsWKBTypes.addM(QgsWKBTypes.CircularStringM) == QgsWKBTypes.CircularStringM
+        assert QgsWKBTypes.addM(QgsWKBTypes.CircularStringZM) == QgsWKBTypes.CircularStringZM
+        assert QgsWKBTypes.addM(QgsWKBTypes.CompoundCurve) == QgsWKBTypes.CompoundCurveM
+        assert QgsWKBTypes.addM(QgsWKBTypes.CompoundCurveZ) == QgsWKBTypes.CompoundCurveZM
+        assert QgsWKBTypes.addM(QgsWKBTypes.CompoundCurveM) == QgsWKBTypes.CompoundCurveM
+        assert QgsWKBTypes.addM(QgsWKBTypes.CompoundCurveZM) == QgsWKBTypes.CompoundCurveZM
+        assert QgsWKBTypes.addM(QgsWKBTypes.CurvePolygon) == QgsWKBTypes.CurvePolygonM
+        assert QgsWKBTypes.addM(QgsWKBTypes.CurvePolygonZ) == QgsWKBTypes.CurvePolygonZM
+        assert QgsWKBTypes.addM(QgsWKBTypes.CurvePolygonM) == QgsWKBTypes.CurvePolygonM
+        assert QgsWKBTypes.addM(QgsWKBTypes.CurvePolygonZM) == QgsWKBTypes.CurvePolygonZM
+        assert QgsWKBTypes.addM(QgsWKBTypes.MultiCurve) == QgsWKBTypes.MultiCurveM
+        assert QgsWKBTypes.addM(QgsWKBTypes.MultiCurveZ) == QgsWKBTypes.MultiCurveZM
+        assert QgsWKBTypes.addM(QgsWKBTypes.MultiCurveM) == QgsWKBTypes.MultiCurveM
+        assert QgsWKBTypes.addM(QgsWKBTypes.MultiCurveZM) == QgsWKBTypes.MultiCurveZM
+        assert QgsWKBTypes.addM(QgsWKBTypes.MultiSurface) == QgsWKBTypes.MultiSurfaceM
+        assert QgsWKBTypes.addM(QgsWKBTypes.MultiSurfaceZ) == QgsWKBTypes.MultiSurfaceZM
+        assert QgsWKBTypes.addM(QgsWKBTypes.MultiSurfaceM) == QgsWKBTypes.MultiSurfaceM
+        assert QgsWKBTypes.addM(QgsWKBTypes.MultiSurfaceZM) == QgsWKBTypes.MultiSurfaceZM
+        assert QgsWKBTypes.addM(QgsWKBTypes.NoGeometry) == QgsWKBTypes.NoGeometry
+        # can't be added to these types
+        assert QgsWKBTypes.addM(QgsWKBTypes.Point25D) == QgsWKBTypes.Point25D
+        assert QgsWKBTypes.addM(QgsWKBTypes.LineString25D) == QgsWKBTypes.LineString25D
+        assert QgsWKBTypes.addM(QgsWKBTypes.Polygon25D) == QgsWKBTypes.Polygon25D
+        assert QgsWKBTypes.addM(QgsWKBTypes.MultiLineString25D) == QgsWKBTypes.MultiLineString25D
+        assert QgsWKBTypes.addM(QgsWKBTypes.MultiPolygon25D) == QgsWKBTypes.MultiPolygon25D
 
 if __name__ == '__main__':
     unittest.main()
