@@ -1488,6 +1488,108 @@ class TestQgsGeometry(TestCase):
         assert poly.convertToSingleType()
         assert compareWkt(expWkt, wkt), "testConvertToSingleType failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
 
+    def testAddZValue(self):
+        """ Test adding z dimension to geometries """
+
+        #circular string
+        geom = QgsGeometry.fromWkt('CircularString (1 5, 6 2, 7 3)')
+        assert geom.geometry().addZValue(2)
+        assert geom.geometry().wkbType() == QgsWKBTypes.CircularStringZ
+        expWkt = 'CircularStringZ (1 5 2, 6 2 2, 7 3 2)'
+        wkt = geom.exportToWkt()
+        assert compareWkt(expWkt, wkt), "addZValue to CircularString failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
+
+        #compound curve
+        geom = QgsGeometry.fromWkt('CompoundCurve ((5 3, 5 13),CircularString (5 13, 7 15, 9 13),(9 13, 9 3),CircularString (9 3, 7 1, 5 3))')
+        assert geom.geometry().addZValue(2)
+        assert geom.geometry().wkbType() == QgsWKBTypes.CompoundCurveZ
+        expWkt = 'CompoundCurveZ ((5 3 2, 5 13 2),CircularStringZ (5 13 2, 7 15 2, 9 13 2),(9 13 2, 9 3 2),CircularStringZ (9 3 2, 7 1 2, 5 3 2))'
+        wkt = geom.exportToWkt()
+        assert compareWkt(expWkt, wkt), "addZValue to CompoundCurve failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
+
+        #curve polygon
+        geom = QgsGeometry.fromWkt('Polygon ((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0))')
+        assert geom.geometry().addZValue(3)
+        assert geom.geometry().wkbType() == QgsWKBTypes.PolygonZ
+        expWkt = 'PolygonZ ((0 0 3, 1 0 3, 1 1 3, 2 1 3, 2 2 3, 0 2 3, 0 0 3))'
+        wkt = geom.exportToWkt()
+        assert compareWkt(expWkt, wkt), "addZValue to CurvePolygon failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
+
+        #geometry collection
+        geom = QgsGeometry.fromWkt('MultiPoint ((1 2),(2 3))')
+        assert geom.geometry().addZValue(4)
+        assert geom.geometry().wkbType() == QgsWKBTypes.MultiPointZ
+        expWkt = 'MultiPointZ ((1 2 4),(2 3 4))'
+        wkt = geom.exportToWkt()
+        assert compareWkt(expWkt, wkt), "addZValue to GeometryCollection failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
+
+        #LineString
+        geom = QgsGeometry.fromWkt('LineString (1 2, 2 3)')
+        assert geom.geometry().addZValue(4)
+        assert geom.geometry().wkbType() == QgsWKBTypes.LineStringZ
+        expWkt = 'LineStringZ (1 2 4, 2 3 4)'
+        wkt = geom.exportToWkt()
+        assert compareWkt(expWkt, wkt), "addZValue to LineString failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
+
+        #Point
+        geom = QgsGeometry.fromWkt('Point (1 2)')
+        assert geom.geometry().addZValue(4)
+        assert geom.geometry().wkbType() == QgsWKBTypes.PointZ
+        expWkt = 'PointZ (1 2 4)'
+        wkt = geom.exportToWkt()
+        assert compareWkt(expWkt, wkt), "addZValue to Point failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
+
+    def testAddMValue(self):
+        """ Test adding m dimension to geometries """
+
+        #circular string
+        geom = QgsGeometry.fromWkt('CircularString (1 5, 6 2, 7 3)')
+        assert geom.geometry().addMValue(2)
+        assert geom.geometry().wkbType() == QgsWKBTypes.CircularStringM
+        expWkt = 'CircularStringM (1 5 2, 6 2 2, 7 3 2)'
+        wkt = geom.exportToWkt()
+        assert compareWkt(expWkt, wkt), "addMValue to CircularString failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
+
+        #compound curve
+        geom = QgsGeometry.fromWkt('CompoundCurve ((5 3, 5 13),CircularString (5 13, 7 15, 9 13),(9 13, 9 3),CircularString (9 3, 7 1, 5 3))')
+        assert geom.geometry().addMValue(2)
+        assert geom.geometry().wkbType() == QgsWKBTypes.CompoundCurveM
+        expWkt = 'CompoundCurveM ((5 3 2, 5 13 2),CircularStringM (5 13 2, 7 15 2, 9 13 2),(9 13 2, 9 3 2),CircularStringM (9 3 2, 7 1 2, 5 3 2))'
+        wkt = geom.exportToWkt()
+        assert compareWkt(expWkt, wkt), "addMValue to CompoundCurve failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
+
+        #curve polygon
+        geom = QgsGeometry.fromWkt('Polygon ((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0))')
+        assert geom.geometry().addMValue(3)
+        assert geom.geometry().wkbType() == QgsWKBTypes.PolygonM
+        expWkt = 'PolygonM ((0 0 3, 1 0 3, 1 1 3, 2 1 3, 2 2 3, 0 2 3, 0 0 3))'
+        wkt = geom.exportToWkt()
+        assert compareWkt(expWkt, wkt), "addMValue to CurvePolygon failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
+
+        #geometry collection
+        geom = QgsGeometry.fromWkt('MultiPoint ((1 2),(2 3))')
+        assert geom.geometry().addMValue(4)
+        assert geom.geometry().wkbType() == QgsWKBTypes.MultiPointM
+        expWkt = 'MultiPointM ((1 2 4),(2 3 4))'
+        wkt = geom.exportToWkt()
+        assert compareWkt(expWkt, wkt), "addMValue to GeometryCollection failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
+
+        #LineString
+        geom = QgsGeometry.fromWkt('LineString (1 2, 2 3)')
+        assert geom.geometry().addMValue(4)
+        assert geom.geometry().wkbType() == QgsWKBTypes.LineStringM
+        expWkt = 'LineStringM (1 2 4, 2 3 4)'
+        wkt = geom.exportToWkt()
+        assert compareWkt(expWkt, wkt), "addMValue to LineString failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
+
+        #Point
+        geom = QgsGeometry.fromWkt('Point (1 2)')
+        assert geom.geometry().addMValue(4)
+        assert geom.geometry().wkbType() == QgsWKBTypes.PointM
+        expWkt = 'PointM (1 2 4)'
+        wkt = geom.exportToWkt()
+        assert compareWkt(expWkt, wkt), "addMValue to Point failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
+
     def testWkbTypes(self):
         """ Test QgsWKBTypes methods """
 

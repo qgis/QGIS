@@ -70,4 +70,7 @@ class QgsCurvePolygonV2: public QgsSurfaceV2
     virtual int vertexCount(int part = 0, int ring = 0) const;
     virtual int ringCount(int part = 0) const;
     virtual int partCount() const;
+
+    virtual bool addZValue( double zValue = 0 );
+    virtual bool addMValue( double mValue = 0 );
 };

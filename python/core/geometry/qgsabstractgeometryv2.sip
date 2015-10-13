@@ -134,4 +134,20 @@ class QgsAbstractGeometryV2
     virtual int vertexCount(int part = 0, int ring = 0) const = 0;
     virtual int ringCount(int part = 0) const = 0;
     virtual int partCount() const = 0;
+
+    /** Adds a z-dimension to the geometry, initialized to a preset value.
+     * @param zValue initial z-value for all nodes
+     * @returns true on success
+     * @note added in QGIS 2.12
+     * @see addMValue
+     */
+    virtual bool addZValue( double zValue = 0 ) = 0;
+
+    /** Adds a measure to the geometry, initialized to a preset value.
+     * @param mValue initial m-value for all nodes
+     * @returns true on success
+     * @note added in QGIS 2.12
+     * @see addZValue
+     */
+    virtual bool addMValue( double mValue = 0 ) = 0;
 };

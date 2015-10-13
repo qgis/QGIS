@@ -700,3 +700,35 @@ QgsPointV2 QgsCurvePolygonV2::vertexAt( const QgsVertexId& id ) const
 {
   return id.ring == 0 ? mExteriorRing->vertexAt( id ) : mInteriorRings[id.ring - 1]->vertexAt( id );
 }
+
+bool QgsCurvePolygonV2::addZValue( double zValue )
+{
+  if ( QgsWKBTypes::hasZ( mWkbType ) )
+    return false;
+
+  mWkbType = QgsWKBTypes::addZ( mWkbType );
+
+  if ( mExteriorRing )
+    mExteriorRing->addZValue( zValue );
+  Q_FOREACH ( QgsCurveV2* curve, mInteriorRings )
+  {
+    curve->addZValue( zValue );
+  }
+  return true;
+}
+
+bool QgsCurvePolygonV2::addMValue( double mValue )
+{
+  if ( QgsWKBTypes::hasM( mWkbType ) )
+    return false;
+
+  mWkbType = QgsWKBTypes::addM( mWkbType );
+
+  if ( mExteriorRing )
+    mExteriorRing->addMValue( mValue );
+  Q_FOREACH ( QgsCurveV2* curve, mInteriorRings )
+  {
+    curve->addMValue( mValue );
+  }
+  return true;
+}

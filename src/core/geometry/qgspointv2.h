@@ -96,6 +96,9 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometryV2
     virtual int partCount() const override { return 1; }
     virtual QgsPointV2 vertexAt( const QgsVertexId& /*id*/ ) const override { return *this; }
 
+    virtual bool addZValue( double zValue = 0 ) override;
+    virtual bool addMValue( double mValue = 0 ) override;
+
   private:
     double mX;
     double mY;

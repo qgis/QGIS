@@ -125,6 +125,9 @@ class CORE_EXPORT QgsCircularStringV2: public QgsCurveV2
         @return rotation in radians, clockwise from north*/
     double vertexAngle( const QgsVertexId& vertex ) const override;
 
+    virtual bool addZValue( double zValue = 0 ) override;
+    virtual bool addMValue( double mValue = 0 ) override;
+
   private:
     QVector<double> mX;
     QVector<double> mY;

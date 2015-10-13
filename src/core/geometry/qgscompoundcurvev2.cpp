@@ -608,3 +608,31 @@ double QgsCompoundCurveV2::vertexAngle( const QgsVertexId& vertex ) const
   }
 }
 
+bool QgsCompoundCurveV2::addZValue( double zValue )
+{
+  if ( QgsWKBTypes::hasZ( mWkbType ) )
+    return false;
+
+  mWkbType = QgsWKBTypes::addZ( mWkbType );
+
+  Q_FOREACH ( QgsCurveV2* curve, mCurves )
+  {
+    curve->addZValue( zValue );
+  }
+  return true;
+}
+
+bool QgsCompoundCurveV2::addMValue( double mValue )
+{
+  if ( QgsWKBTypes::hasM( mWkbType ) )
+    return false;
+
+  mWkbType = QgsWKBTypes::addM( mWkbType );
+
+  Q_FOREACH ( QgsCurveV2* curve, mCurves )
+  {
+    curve->addMValue( mValue );
+  }
+  return true;
+}
+

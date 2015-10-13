@@ -244,6 +244,26 @@ bool QgsPointV2::nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const
   }
 }
 
+bool QgsPointV2::addZValue( double zValue )
+{
+  if ( QgsWKBTypes::hasZ( mWkbType ) )
+    return false;
+
+  mWkbType = QgsWKBTypes::addZ( mWkbType );
+  mZ = zValue;
+  return true;
+}
+
+bool QgsPointV2::addMValue( double mValue )
+{
+  if ( QgsWKBTypes::hasM( mWkbType ) )
+    return false;
+
+  mWkbType = QgsWKBTypes::addM( mWkbType );
+  mM = mValue;
+  return true;
+}
+
 void QgsPointV2::transform( const QTransform& t )
 {
   qreal x, y;

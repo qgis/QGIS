@@ -103,6 +103,9 @@ class CORE_EXPORT QgsCurvePolygonV2: public QgsSurfaceV2
     virtual int partCount() const override { return ringCount() > 0 ? 1 : 0; }
     virtual QgsPointV2 vertexAt( const QgsVertexId& id ) const override;
 
+    virtual bool addZValue( double zValue = 0 ) override;
+    virtual bool addMValue( double mValue = 0 ) override;
+
   protected:
 
     QgsCurveV2* mExteriorRing;

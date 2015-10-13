@@ -537,3 +537,31 @@ double QgsGeometryCollectionV2::vertexAngle( const QgsVertexId& vertex ) const
 
   return geom->vertexAngle( vertex );
 }
+
+bool QgsGeometryCollectionV2::addZValue( double zValue )
+{
+  if ( QgsWKBTypes::hasZ( mWkbType ) )
+    return false;
+
+  mWkbType = QgsWKBTypes::addZ( mWkbType );
+
+  Q_FOREACH ( QgsAbstractGeometryV2* geom, mGeometries )
+  {
+    geom->addZValue( zValue );
+  }
+  return true;
+}
+
+bool QgsGeometryCollectionV2::addMValue( double mValue )
+{
+  if ( QgsWKBTypes::hasM( mWkbType ) )
+    return false;
+
+  mWkbType = QgsWKBTypes::addM( mWkbType );
+
+  Q_FOREACH ( QgsAbstractGeometryV2* geom, mGeometries )
+  {
+    geom->addMValue( mValue );
+  }
+  return true;
+}
