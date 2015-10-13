@@ -1899,9 +1899,6 @@ int QgsWMSServer::configureMapRender( const QPaintDevice* paintDevice ) const
       QgsDebugMsg( "Error, could not create output CRS from EPSG" );
       throw QgsMapServiceException( "InvalidCRS", "Could not create output CRS" );
     }
-    mMapRenderer->setDestinationCrs( outputCRS );
-    mMapRenderer->setProjectionsEnabled( true );
-    mapUnits = outputCRS.mapUnits();
 
     //read layer coordinate transforms from project file (e.g. ct with special datum shift)
     if ( mConfigParser )
@@ -1914,6 +1911,11 @@ int QgsWMSServer::configureMapRender( const QPaintDevice* paintDevice ) const
         mMapRenderer->addLayerCoordinateTransform( ltIt->first, t.srcAuthId, t.destAuthId, t.srcDatumTransform, t.destDatumTransform );
       }
     }
+    
+    //then set destinationCrs
+    mMapRenderer->setDestinationCrs( outputCRS );
+    mMapRenderer->setProjectionsEnabled( true );
+    mapUnits = outputCRS.mapUnits();
   }
   mMapRenderer->setMapUnits( mapUnits );
 
