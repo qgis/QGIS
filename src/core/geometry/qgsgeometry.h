@@ -312,15 +312,21 @@ class CORE_EXPORT QgsGeometry
      3 ring is not valid geometry, 4 ring not disjoint with existing rings, 5 no polygon found which contained the ring*/
     int addRing( QgsCurveV2* ring );
 
-    /** Adds a new island polygon to a multipolygon feature
-     @return 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
-     not disjoint with existing polygons of the feature*/
+    /** Adds a new part to a the geometry.
+     * @param points points describing part to add
+     * @param geomType default geometry type to create if no existing geometry
+     * @returns 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
+     * not disjoint with existing polygons of the feature
+    */
     int addPart( const QList<QgsPoint> &points, QGis::GeometryType geomType = QGis::UnknownGeometry );
 
-    /** Adds a new part to this geometry (takes ownership)
-     @return 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
-     not disjoint with existing polygons of the feature*/
-    int addPart( QgsAbstractGeometryV2* part );
+    /** Adds a new part to this geometry.
+     * @param part part to add (ownership is transferred)
+     * @param geomType default geometry type to create if no existing geometry
+     * @returns 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
+     * not disjoint with existing polygons of the feature
+    */
+    int addPart( QgsAbstractGeometryV2* part, QGis::GeometryType geomType = QGis::UnknownGeometry );
 
     /** Adds a new island polygon to a multipolygon feature
      @return 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
@@ -557,6 +563,17 @@ class CORE_EXPORT QgsGeometry
      * @return true in case of success and false else
      */
     bool convertToMultiType();
+
+    /**
+     * Converts multi type geometry into single type geometry
+     * e.g. a multipolygon into a polygon geometry. Only the first part of the
+     * multi geometry will be retained.
+     * If it is already a single part geometry, it will return true and
+     * not change the geometry.
+     *
+     * @return true in case of success and false else
+     */
+    bool convertToSingleType();
 
     /** Modifies geometry to avoid intersections with the layers specified in project properties
      *  @return 0 in case of success,

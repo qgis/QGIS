@@ -1213,6 +1213,46 @@ class TestQgsGeometry(TestCase):
         wkt = mp.exportToWkt()
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
 
+        #Test adding parts to empty geometry, should become first part
+        empty = QgsGeometry()
+        #if not default type specified, addPart should fail
+        result = empty.addPart([QgsPoint(4, 0)])
+        assert result != 0, 'Got return code {}'.format(result)
+        result = empty.addPart([QgsPoint(4, 0)], QGis.Point)
+        assert result == 0, 'Got return code {}'.format(result)
+        wkt = empty.exportToWkt()
+        expwkt = 'MultiPoint ((4 0))'
+        assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
+        result = empty.addPart([QgsPoint(5, 1)])
+        assert result == 0, 'Got return code {}'.format(result)
+        wkt = empty.exportToWkt()
+        expwkt = 'MultiPoint ((4 0),(5 1))'
+        assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
+        #next try with lines
+        empty = QgsGeometry()
+        result = empty.addPart(points[0][0], QGis.Line)
+        assert result == 0, 'Got return code {}'.format(result)
+        wkt = empty.exportToWkt()
+        expwkt = 'MultiLineString ((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0))'
+        assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
+        result = empty.addPart(points[1][0])
+        assert result == 0, 'Got return code {}'.format(result)
+        wkt = empty.exportToWkt()
+        expwkt = 'MultiLineString ((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0),(4 0, 5 0, 5 2, 3 2, 3 1, 4 1, 4 0))'
+        assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
+        #finally try with polygons
+        empty = QgsGeometry()
+        result = empty.addPart(points[0][0], QGis.Polygon)
+        assert result == 0, 'Got return code {}'.format(result)
+        wkt = empty.exportToWkt()
+        expwkt = 'MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)))'
+        assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
+        result = empty.addPart(points[1][0])
+        assert result == 0, 'Got return code {}'.format(result)
+        wkt = empty.exportToWkt()
+        expwkt = 'MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)),((4 0, 5 0, 5 2, 3 2, 3 1, 4 1, 4 0)))'
+        assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
+
     def testConvertToType(self):
         # 5-+-4 0-+-9  13-+-+-12
         # |   | |   |  |       |
@@ -1388,6 +1428,64 @@ class TestQgsGeometry(TestCase):
         expWkt = 'LineString (0 0, 1 0, 2 0)'
         wkt = c.exportToWkt()
         assert compareWkt(expWkt, wkt), "testRegression13274 failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
+
+    def testConvertToMultiType(self):
+        """ Test converting geometries to multi type """
+        point = QgsGeometry.fromWkt('Point (1 2)')
+        assert point.convertToMultiType()
+        expWkt = 'MultiPoint ((1 2))'
+        wkt = point.exportToWkt()
+        assert compareWkt(expWkt, wkt), "testConvertToMultiType failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
+        #test conversion of MultiPoint
+        assert point.convertToMultiType()
+        assert compareWkt(expWkt, wkt), "testConvertToMultiType failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
+
+        line = QgsGeometry.fromWkt('LineString (1 0, 2 0)')
+        assert line.convertToMultiType()
+        expWkt = 'MultiLineString ((1 0, 2 0))'
+        wkt = line.exportToWkt()
+        assert compareWkt(expWkt, wkt), "testConvertToMultiType failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
+        #test conversion of MultiLineString
+        assert line.convertToMultiType()
+        assert compareWkt(expWkt, wkt), "testConvertToMultiType failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
+
+        poly = QgsGeometry.fromWkt('Polygon ((1 0, 2 0, 2 1, 1 1, 1 0))')
+        assert poly.convertToMultiType()
+        expWkt = 'MultiPolygon (((1 0, 2 0, 2 1, 1 1, 1 0)))'
+        wkt = poly.exportToWkt()
+        assert compareWkt(expWkt, wkt), "testConvertToMultiType failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
+        #test conversion of MultiPolygon
+        assert poly.convertToMultiType()
+        assert compareWkt(expWkt, wkt), "testConvertToMultiType failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
+
+    def testConvertToSingleType(self):
+        """ Test converting geometries to single type """
+        point = QgsGeometry.fromWkt('MultiPoint ((1 2),(2 3))')
+        assert point.convertToSingleType()
+        expWkt = 'Point (1 2)'
+        wkt = point.exportToWkt()
+        assert compareWkt(expWkt, wkt), "testConvertToSingleType failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
+        #test conversion of Point
+        assert point.convertToSingleType()
+        assert compareWkt(expWkt, wkt), "testConvertToSingleType failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
+
+        line = QgsGeometry.fromWkt('MultiLineString ((1 0, 2 0),(2 3, 4 5))')
+        assert line.convertToSingleType()
+        expWkt = 'LineString (1 0, 2 0)'
+        wkt = line.exportToWkt()
+        assert compareWkt(expWkt, wkt), "testConvertToSingleType failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
+        #test conversion of LineString
+        assert line.convertToSingleType()
+        assert compareWkt(expWkt, wkt), "testConvertToSingleType failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
+
+        poly = QgsGeometry.fromWkt('MultiPolygon (((1 0, 2 0, 2 1, 1 1, 1 0)),((2 3,2 4, 3 4, 3 3, 2 3)))')
+        assert poly.convertToSingleType()
+        expWkt = 'Polygon ((1 0, 2 0, 2 1, 1 1, 1 0))'
+        wkt = poly.exportToWkt()
+        assert compareWkt(expWkt, wkt), "testConvertToSingleType failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
+        #test conversion of Polygon
+        assert poly.convertToSingleType()
+        assert compareWkt(expWkt, wkt), "testConvertToSingleType failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
 
 if __name__ == '__main__':
     unittest.main()

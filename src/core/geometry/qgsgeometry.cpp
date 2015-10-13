@@ -591,6 +591,24 @@ int QgsGeometry::addRing( QgsCurveV2* ring )
 
 int QgsGeometry::addPart( const QList<QgsPoint> &points, QGis::GeometryType geomType )
 {
+  QgsAbstractGeometryV2* partGeom = 0;
+  if ( points.size() == 1 )
+  {
+    partGeom = new QgsPointV2( points[0].x(), points[0].y() );
+  }
+  else if ( points.size() > 1 )
+  {
+    QgsLineStringV2* ringLine = new QgsLineStringV2();
+    QList< QgsPointV2 > partPoints;
+    convertPointList( points, partPoints );
+    ringLine->setPoints( partPoints );
+    partGeom = ringLine;
+  }
+  return addPart( partGeom, geomType );
+}
+
+int QgsGeometry::addPart( QgsAbstractGeometryV2* part, QGis::GeometryType geomType )
+{
   if ( !d )
   {
     return 1;
@@ -614,29 +632,13 @@ int QgsGeometry::addPart( const QList<QgsPoint> &points, QGis::GeometryType geom
         return 1;
     }
   }
+  else
+  {
+    detach( true );
+    removeWkbGeos();
+  }
 
   convertToMultiType();
-
-  QgsAbstractGeometryV2* partGeom = 0;
-  if ( points.size() == 1 )
-  {
-    partGeom = new QgsPointV2( points[0].x(), points[0].y() );
-  }
-  else if ( points.size() > 1 )
-  {
-    QgsLineStringV2* ringLine = new QgsLineStringV2();
-    QList< QgsPointV2 > partPoints;
-    convertPointList( points, partPoints );
-    ringLine->setPoints( partPoints );
-    partGeom = ringLine;
-  }
-  return addPart( partGeom );
-}
-
-int QgsGeometry::addPart( QgsAbstractGeometryV2* part )
-{
-  detach( true );
-  removeWkbGeos();
   return QgsGeometryEditUtils::addPart( d->geometry, part );
 }
 
@@ -954,6 +956,30 @@ bool QgsGeometry::convertToMultiType()
   detach( true );
   multiGeom->addGeometry( d->geometry );
   d->geometry = multiGeom;
+  removeWkbGeos();
+  return true;
+}
+
+bool QgsGeometry::convertToSingleType()
+{
+  if ( !d || !d->geometry )
+  {
+    return false;
+  }
+
+  if ( !isMultipart() ) //already single part, no need to convert
+  {
+    return true;
+  }
+
+  QgsGeometryCollectionV2* multiGeom = dynamic_cast<QgsGeometryCollectionV2*>( d->geometry );
+  if ( multiGeom->partCount() < 1 )
+    return false;
+
+  QgsAbstractGeometryV2* firstPart = multiGeom->geometryN( 0 )->clone();
+  detach( false );
+
+  d->geometry = firstPart;
   removeWkbGeos();
   return true;
 }

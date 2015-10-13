@@ -20,6 +20,9 @@
 #include "qgslinestringv2.h"
 #include "qgslogger.h"
 #include "qgspointv2.h"
+#include "qgsgeometryfactory.h"
+#include "qgis.h"
+#include "qgswkbtypes.h"
 
 #include <limits>
 
@@ -144,6 +147,9 @@ int QgsVectorLayerEditUtils::addRing( QgsCurveV2* ring, const QgsFeatureIds& tar
   //find first valid feature we can add the ring to
   while ( fit.nextFeature( f ) )
   {
+    if ( !f.constGeometry() )
+      continue;
+
     //add ring takes ownership of ring, and deletes it if there's an error
     addRingReturnCode = f.geometry()->addRing( static_cast< QgsCurveV2* >( ring->clone() ) );
     if ( addRingReturnCode == 0 )
@@ -167,21 +173,34 @@ int QgsVectorLayerEditUtils::addPart( const QList<QgsPoint> &points, QgsFeatureI
     return 6;
 
   QgsGeometry geometry;
+  bool firstPart = false;
   if ( !cache()->geometry( featureId, geometry ) ) // maybe it's in cache
   {
     // it's not in cache: let's fetch it from layer
     QgsFeature f;
-    if ( !L->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) || !f.geometry() )
-      return 6; //geometry not found
+    if ( !L->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) )
+      return 6; //not found
 
-    geometry = *f.geometry();
+    if ( !f.constGeometry() )
+    {
+      //no existing geometry, so adding first part to null geometry
+      firstPart = true;
+    }
+    else
+    {
+      geometry = *f.geometry();
+    }
   }
-
-  geometry.convertToMultiType();
 
   int errorCode = geometry.addPart( points, L->geometryType() );
   if ( errorCode == 0 )
   {
+    if ( firstPart && QgsWKBTypes::isSingleType( QGis::fromOldWkbType( L->wkbType() ) )
+         && L->dataProvider()->doesStrictFeatureTypeCheck() )
+    {
+      //convert back to single part if required by layer
+      geometry.convertToSingleType();
+    }
     L->editBuffer()->changeGeometry( featureId, &geometry );
   }
   return errorCode;
@@ -193,21 +212,34 @@ int QgsVectorLayerEditUtils::addPart( QgsCurveV2* ring, QgsFeatureId featureId )
     return 6;
 
   QgsGeometry geometry;
+  bool firstPart = false;
   if ( !cache()->geometry( featureId, geometry ) ) // maybe it's in cache
   {
     // it's not in cache: let's fetch it from layer
     QgsFeature f;
-    if ( !L->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) || !f.geometry() )
-      return 6; //geometry not found
+    if ( !L->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) )
+      return 6; //not found
 
-    geometry = *f.geometry();
+    if ( !f.constGeometry() )
+    {
+      //no existing geometry, so adding first part to null geometry
+      firstPart = true;
+    }
+    else
+    {
+      geometry = *f.geometry();
+    }
   }
 
-  geometry.convertToMultiType();
-
-  int errorCode = geometry.addPart( ring );
+  int errorCode = geometry.addPart( ring, L->geometryType() );
   if ( errorCode == 0 )
   {
+    if ( firstPart && QgsWKBTypes::isSingleType( QGis::fromOldWkbType( L->wkbType() ) )
+         && L->dataProvider()->doesStrictFeatureTypeCheck() )
+    {
+      //convert back to single part if required by layer
+      geometry.convertToSingleType();
+    }
     L->editBuffer()->changeGeometry( featureId, &geometry );
   }
   return errorCode;

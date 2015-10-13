@@ -119,7 +119,7 @@ QgsVectorLayerUndoCommandChangeGeometry::QgsVectorLayerUndoCommandChangeGeometry
   {
     QgsFeatureMap::const_iterator it = mBuffer->mAddedFeatures.find( mFid );
     Q_ASSERT( it != mBuffer->mAddedFeatures.end() );
-    mOldGeom = new QgsGeometry( *it.value().constGeometry() );
+    mOldGeom = ( it.value().constGeometry() ? new QgsGeometry( *it.value().constGeometry() ) : 0 );
   }
   else
   {
