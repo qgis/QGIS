@@ -396,6 +396,12 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
 
     void onDataChanged();
 
+  signals:
+    // TODO: move to QGIS core?
+    // Emited when a fields was added/deleted so that other layers sharing the same layer
+    // may be updated
+    void fieldsChanged();
+
   protected:
     // used by QgsGrassFeatureSource
     QgsGrassVectorMapLayer *openLayer() const;

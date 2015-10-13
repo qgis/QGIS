@@ -121,6 +121,8 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
     void onEditingStopped();
     void onCurrentLayerChanged( QgsMapLayer* layer );
 
+    void onFieldsChanged();
+
     // Start editing tools
     void addFeature();
 

@@ -419,6 +419,7 @@ void QgsGrassPlugin::onEditingStarted()
   vectorLayer->updateFields();
 
   connect( vectorLayer, SIGNAL( editingStopped() ), SLOT( onEditingStopped() ) );
+  connect( grassProvider, SIGNAL( fieldsChanged() ), SLOT( onFieldsChanged() ) );
 
   resetEditActions();
 }
@@ -437,6 +438,35 @@ void QgsGrassPlugin::onEditingStopped()
     }
   }
   resetEditActions();
+}
+
+void QgsGrassPlugin::onFieldsChanged()
+{
+  QgsDebugMsg( "entered" );
+  QgsGrassProvider* grassProvider = dynamic_cast<QgsGrassProvider*>( sender() );
+  if ( !grassProvider )
+  {
+    return;
+  }
+  QString uri = grassProvider->dataSourceUri();
+  uri.remove( QRegExp( "[^_]*$" ) );
+  QgsDebugMsg( "uri = " + uri );
+  foreach ( QgsMapLayer *layer, QgsMapLayerRegistry::instance()->mapLayers().values() )
+  {
+    if ( !layer || layer->type() != QgsMapLayer::VectorLayer )
+    {
+      continue;
+    }
+
+    QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
+    if ( vectorLayer && vectorLayer->providerType() == "grass" &&  vectorLayer->dataProvider() )
+    {
+      if ( vectorLayer->dataProvider()->dataSourceUri().startsWith( uri ) )
+      {
+        vectorLayer->updateFields();
+      }
+    }
+  }
 }
 
 void QgsGrassPlugin::addFeature()

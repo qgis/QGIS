@@ -1726,6 +1726,7 @@ void QgsGrassProvider::onAttributeAdded( int idx )
   else
   {
     mEditLayerFields = mEditLayer->fields();
+    emit fieldsChanged();
   }
 }
 
@@ -1752,6 +1753,7 @@ void QgsGrassProvider::onAttributeDeleted( int idx )
   else
   {
     mEditLayerFields = mEditLayer->fields();
+    emit fieldsChanged();
   }
 }
 
