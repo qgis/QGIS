@@ -31,7 +31,7 @@ __revision__ = '$Format:%H$'
 # AUTHOR(S):    Radim Blazek
 #
 # PURPOSE:      Upgrade all vectors from GRASS 6 to GRASS 7
-#               
+#
 # COPYRIGHT:    (C) 2015 by Radim Blazek
 #
 #               This program is free software under the GNU General Public
@@ -53,20 +53,21 @@ except ImportError:
 except:
     raise Exception("Cannot find 'grass' Python module. Python is supported by GRASS from version >= 6.4")
 
+
 def main():
-  # see https://grasswiki.osgeo.org/wiki/Convert_all_GRASS_6_vector_maps_to_GRASS_7
-  grass.message('Building topology')
-  if grass.run_command('v.build.all') != 0:
-     grass.warning('Cannot build topology')
+    # see https://grasswiki.osgeo.org/wiki/Convert_all_GRASS_6_vector_maps_to_GRASS_7
+    grass.message('Building topology')
+    if grass.run_command('v.build.all') != 0:
+        grass.warning('Cannot build topology')
 
-  grass.message('Creating new DB connection')
-  if grass.run_command('db.connect', flags='d') != 0:
-     grass.warning('Cannot create new DB connection')
-     return
+    grass.message('Creating new DB connection')
+    if grass.run_command('db.connect', flags='d') != 0:
+        grass.warning('Cannot create new DB connection')
+        return
 
-  grass.message('Transfering tables to the new DB')
-  if grass.run_command('v.db.reconnect.all', flags='cd') != 0:
-     grass.warning('Cannot transfer tables')
+    grass.message('Transfering tables to the new DB')
+    if grass.run_command('v.db.reconnect.all', flags='cd') != 0:
+        grass.warning('Cannot transfer tables')
 
 if __name__ == "__main__":
     options, flags = grass.parser()

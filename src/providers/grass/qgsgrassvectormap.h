@@ -149,7 +149,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     /** Close all iterators. Connected to iterators in different threads with Qt::BlockingQueuedConnection */
     void closeIterators();
 
-    /** Emited when data were reloaded */
+    /** Emitted when data were reloaded */
     void dataChanged();
 
   private:

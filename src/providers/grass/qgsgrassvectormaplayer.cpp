@@ -994,8 +994,8 @@ bool QgsGrassVectorMapLayer::recordExists( int cat, QString &error )
 
   // DBF driver in GRASS does not support count(*)
   dbValue value;
-  int nValues = db_select_value(mDriver, mFieldInfo->table, mFieldInfo->key, cat, mFieldInfo->key, &value);
-  if ( nValues == -1)
+  int nValues = db_select_value( mDriver, mFieldInfo->table, mFieldInfo->key, cat, mFieldInfo->key, &value );
+  if ( nValues == -1 )
   {
     error = tr( "Cannot select record from table" );
     return false;

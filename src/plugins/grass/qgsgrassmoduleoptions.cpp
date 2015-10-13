@@ -300,8 +300,8 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
 
   if ( mParams.size() == 0 )
   {
-    QLabel *label = new QLabel(this);
-    label->setText( tr("This module has no options") );
+    QLabel *label = new QLabel( this );
+    label->setText( tr( "This module has no options" ) );
     mypSimpleLayout->addWidget( label );
   }
 

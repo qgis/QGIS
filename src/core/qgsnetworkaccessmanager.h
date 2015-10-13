@@ -102,7 +102,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     void requestAboutToBeCreated( QNetworkAccessManager::Operation, const QNetworkRequest &, QIODevice * );
     void requestCreated( QNetworkReply * );
     void requestTimedOut( QNetworkReply * );
-    /** Emited when request was sent by request()
+    /** Emitted when request was sent by request()
      * @param reply request reply
      * @param sender the object which called request() slot.
      */

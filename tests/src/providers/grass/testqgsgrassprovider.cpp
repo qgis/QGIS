@@ -1257,7 +1257,7 @@ bool TestQgsGrassProvider::compare( QList<QgsFeature> features, QList<QgsFeature
 
 bool TestQgsGrassProvider::compare( QString uri, QgsGrassObject mapObject, QgsVectorLayer *expectedLayer, bool& ok )
 {
-  Q_UNUSED(mapObject)
+  Q_UNUSED( mapObject )
   QList<QgsFeature> expectedFeatures = getFeatures( expectedLayer );
 
   // read the map using another layer/provider
@@ -1296,19 +1296,19 @@ bool TestQgsGrassProvider::compare( QString uri, QgsGrassObject mapObject, QgsVe
     int result = Vect_open_old( map, mapObject.name().toUtf8().data(), mapObject.mapset().toUtf8().data() );
 
     if ( result == -1 )
-    {
-      QgsGrass::vectDestroyMapStruct( map );
-      throw QgsGrass::Exception( "Cannot open map " + mapObject.name() );
-    }
+{
+  QgsGrass::vectDestroyMapStruct( map );
+    throw QgsGrass::Exception( "Cannot open map " + mapObject.name() );
+  }
 
 #if ( GRASS_VERSION_MAJOR == 6 && GRASS_VERSION_MINOR >= 4 ) || GRASS_VERSION_MAJOR > 6
-    Vect_build( map );
+  Vect_build( map );
 #else
-    Vect_build( map, stderr );
+  Vect_build( map, stderr );
 #endif
-    //Vect_set_release_support( map );
-    Vect_close( map );
-    QgsGrass::vectDestroyMapStruct( map );
+  //Vect_set_release_support( map );
+  Vect_close( map );
+  QgsGrass::vectDestroyMapStruct( map );
   }
   G_CATCH( QgsGrass::Exception &e )
   {

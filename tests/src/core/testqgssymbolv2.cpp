@@ -447,7 +447,7 @@ void TestQgsSymbolV2::symbolProperties()
             QgsSymbolLayerV2Utils::symbolProperties( fillSymbol2 ) );
 
   //modify one of the symbols
-  fillSymbol2->symbolLayer(0)->setColor( QColor( 235, 135, 35 ) );
+  fillSymbol2->symbolLayer( 0 )->setColor( QColor( 235, 135, 35 ) );
   QVERIFY( QgsSymbolLayerV2Utils::symbolProperties( fillSymbol ) !=
            QgsSymbolLayerV2Utils::symbolProperties( fillSymbol2 ) );
 

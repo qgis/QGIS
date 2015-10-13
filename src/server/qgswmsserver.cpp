@@ -1911,7 +1911,7 @@ int QgsWMSServer::configureMapRender( const QPaintDevice* paintDevice ) const
         mMapRenderer->addLayerCoordinateTransform( ltIt->first, t.srcAuthId, t.destAuthId, t.srcDatumTransform, t.destDatumTransform );
       }
     }
-    
+
     //then set destinationCrs
     mMapRenderer->setDestinationCrs( outputCRS );
     mMapRenderer->setProjectionsEnabled( true );

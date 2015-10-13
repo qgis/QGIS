@@ -398,7 +398,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
 
   signals:
     // TODO: move to QGIS core?
-    // Emited when a fields was added/deleted so that other layers sharing the same layer
+    // Emitted when a fields was added/deleted so that other layers sharing the same layer
     // may be updated
     void fieldsChanged();
 

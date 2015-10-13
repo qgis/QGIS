@@ -96,8 +96,8 @@ QSize QgsWelcomePageItemDelegate::sizeHint( const QStyleOptionViewItem & option,
   if ( option.rect.width() < 450 )
   {
     width = 450;
-  } 
-  else 
+  }
+  else
   {
     width = option.rect.width();
   }

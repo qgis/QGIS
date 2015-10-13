@@ -1072,7 +1072,7 @@ QSet<QString> QgsServerProjectParser::findRestrictedLayers() const
       }
     }
   }
-  
+
   // wmsLayerRestrictionValues contains LayerIDs
   if ( mUseLayerIDs )
   {
