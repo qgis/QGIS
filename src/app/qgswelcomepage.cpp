@@ -42,6 +42,8 @@ QgsWelcomePage::QgsWelcomePage( QWidget* parent )
   recentProjctsContainer->layout()->addWidget( recentProjectsTitle );
 
   QListView* recentProjectsListView = new QListView();
+  recentProjectsListView->setResizeMode( QListView::Adjust );
+
   mModel = new QgsWelcomePageItemsModel( recentProjectsListView );
   recentProjectsListView->setModel( mModel );
   recentProjectsListView->setItemDelegate( new QgsWelcomePageItemDelegate( recentProjectsListView ) );
