@@ -73,7 +73,8 @@ extern "C"
 
 // Vect_rewrite_line and Vect_delete_line use int in GRASS 6 and off_t in GRASS 7 for line id argument.
 // off_t size is not specified by C, POSIX specifies it as signed integer and its size depends on compiler.
-// In OSGeo4W 32bit the off_t size is 8 bytes in GRASS (compiled with MinGW), and 4 bytes QGIS (compiled with MSVC), which is causing crashes.
+// In OSGeo4W 32bit the off_t size is 8 bytes in GRASS (32bit, compiled with MinGW, 'g.version -g' prints build_off_t_size=8 )
+// and 4 bytes QGIS (32bit, compiled with MSVC), which is causing crashes.
 // The problem with off_t size was also reported for custom build of QGIS on Xubuntu 14.04 LTS using GRASS 7.0.1-2~ubuntu14.04.1.
 // See: https://lists.osgeo.org/pipermail/grass-dev/2015-June/075539.html
 //      https://lists.osgeo.org/pipermail/grass-dev/2015-September/076338.html
@@ -83,17 +84,15 @@ typedef int Vect_rewrite_line_function_type( struct Map_info *, int, int, struct
 typedef int Vect_delete_line_function_type( struct Map_info *, int );
 #else
 #ifdef Q_OS_WIN
-// TODO: switch to qint64 and compile with msvc (expected comilation error or warning)
-typedef off_t grass_off_t;
-//typedef qint64 grass_off_t;
+typedef qint64 grass_off_t;
 #else
 typedef off_t grass_off_t;
 #endif
-typedef off_t Vect_rewrite_line_function_type( struct Map_info *, grass_off_t, int, const struct line_pnts *, const struct line_cats * );
+typedef grass_off_t Vect_rewrite_line_function_type( struct Map_info *, grass_off_t, int, const struct line_pnts *, const struct line_cats * );
 typedef int Vect_delete_line_function_type( struct Map_info *, grass_off_t );
 #endif
-Vect_rewrite_line_function_type *Vect_rewrite_line_function_pointer = Vect_rewrite_line;
-Vect_delete_line_function_type *Vect_delete_line_function_pointer = Vect_delete_line;
+Vect_rewrite_line_function_type *Vect_rewrite_line_function_pointer = (Vect_rewrite_line_function_type *)Vect_rewrite_line;
+Vect_delete_line_function_type *Vect_delete_line_function_pointer = (Vect_delete_line_function_type *)Vect_delete_line;
 
 static QString GRASS_KEY = "grass";
 
@@ -1537,7 +1536,7 @@ void QgsGrassProvider::onFeatureDeleted( QgsFeatureId fid )
       {
         QgsDebugMsg( "no more cats on the line -> delete" );
 
-        Vect_delete_line( map(), realLine );
+        Vect_delete_line_function_pointer( map(), realLine );
         // oldLids are maping to the very first, original version (used by undo)
         int oldestLid = oldLid;
         if ( mLayer->map()->oldLids().contains( oldLid ) )
