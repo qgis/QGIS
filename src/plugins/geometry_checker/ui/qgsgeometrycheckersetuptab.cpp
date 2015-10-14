@@ -64,7 +64,7 @@ QgsGeometryCheckerSetupTab::QgsGeometryCheckerSetupTab( QgisInterface* iface , Q
 
   updateLayers();
 
-  Q_FOREACH ( const QgsGeometryCheckFactory* factory, QgsGeometryCheckFactoryRegistry::getCheckFactories() )
+  Q_FOREACH( const QgsGeometryCheckFactory* factory, QgsGeometryCheckFactoryRegistry::getCheckFactories() )
   {
     factory->restorePrevious( ui );
   }
@@ -83,7 +83,7 @@ void QgsGeometryCheckerSetupTab::updateLayers()
   // Collect layers
   QgsMapLayer* currentLayer = mIface->mapCanvas()->currentLayer();
   int currIdx = -1;
-  Q_FOREACH ( QgsMapLayer* layer, QgsMapLayerRegistry::instance()->mapLayers() )
+  Q_FOREACH( QgsMapLayer* layer, QgsMapLayerRegistry::instance()->mapLayers() )
   {
     if ( qobject_cast<QgsVectorLayer*>( layer ) )
     {
@@ -117,7 +117,7 @@ void QgsGeometryCheckerSetupTab::validateInput()
   int nApplicable = 0;
   if ( layer )
   {
-    Q_FOREACH ( const QgsGeometryCheckFactory* factory, QgsGeometryCheckFactoryRegistry::getCheckFactories() )
+    Q_FOREACH( const QgsGeometryCheckFactory* factory, QgsGeometryCheckFactoryRegistry::getCheckFactories() )
     {
       nApplicable += factory->checkApplicability( ui, layer->geometryType() );
     }
@@ -130,7 +130,7 @@ void QgsGeometryCheckerSetupTab::selectOutputFile()
 {
   QString filterString = QgsVectorFileWriter::filterForDriver( "ESRI Shapefile" );
   QMap<QString, QString> filterFormatMap = QgsVectorFileWriter::supportedFiltersAndFormats();
-  Q_FOREACH ( const QString& filter, filterFormatMap.keys() )
+  Q_FOREACH( const QString& filter, filterFormatMap.keys() )
   {
     QString driverName = filterFormatMap.value( filter );
     if ( driverName != "ESRI Shapefile" ) // Default entry, first in list (see above)
@@ -172,6 +172,13 @@ void QgsGeometryCheckerSetupTab::runChecks()
   if ( !layer )
     return;
 
+  if ( ui.radioButtonOutputNew->isChecked() &&
+       layer->dataProvider()->dataSourceUri().startsWith( ui.lineEditOutput->text() ) )
+  {
+    QMessageBox::critical( this, tr( "Invalid Output Layer" ), tr( "The chosen output layer is the same as the input layer." ) );
+    return;
+  }
+
   if ( layer->isEditable() )
   {
     QMessageBox::critical( this, tr( "Editable Input Layer" ), tr( "The input layer is not allowed to be in editing mode." ) );
@@ -194,7 +201,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
 
     // Remove existing layer with same uri
     QStringList toRemove;
-    Q_FOREACH ( QgsMapLayer* maplayer, QgsMapLayerRegistry::instance()->mapLayers() )
+    Q_FOREACH( QgsMapLayer* maplayer, QgsMapLayerRegistry::instance()->mapLayers() )
     {
       if ( dynamic_cast<QgsVectorLayer*>( maplayer ) &&
            static_cast<QgsVectorLayer*>( maplayer )->dataProvider()->dataSourceUri().startsWith( filename ) )
@@ -269,7 +276,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
 
   QList<QgsGeometryCheck*> checks;
   double mapToLayer = 1. / mIface->mapCanvas()->mapSettings().layerToMapUnits( layer );
-  Q_FOREACH ( const QgsGeometryCheckFactory* factory, QgsGeometryCheckFactoryRegistry::getCheckFactories() )
+  Q_FOREACH( const QgsGeometryCheckFactory* factory, QgsGeometryCheckFactoryRegistry::getCheckFactories() )
   {
     QgsGeometryCheck* check = factory->createInstance( featurePool, ui, mapToLayer );
     if ( check )

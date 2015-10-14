@@ -72,7 +72,7 @@ void QgsGeometrySnapperDialog::updateLayers()
   QgsMapLayer* currentLayer = mIface->mapCanvas()->currentLayer();
   int curInputIdx = -1;
   int curReferenceIdx = -1;
-  Q_FOREACH ( QgsMapLayer* layer, QgsMapLayerRegistry::instance()->mapLayers() )
+  Q_FOREACH( QgsMapLayer* layer, QgsMapLayerRegistry::instance()->mapLayers() )
   {
     if ( qobject_cast<QgsVectorLayer*>( layer ) )
     {
@@ -142,7 +142,7 @@ void QgsGeometrySnapperDialog::selectOutputFile()
 {
   QString filterString = QgsVectorFileWriter::filterForDriver( "ESRI Shapefile" );
   QMap<QString, QString> filterFormatMap = QgsVectorFileWriter::supportedFiltersAndFormats();
-  Q_FOREACH ( const QString& filter, filterFormatMap.keys() )
+  Q_FOREACH( const QString& filter, filterFormatMap.keys() )
   {
     QString driverName = filterFormatMap.value( filter );
     if ( driverName != "ESRI Shapefile" ) // Default entry, first in list (see above)
@@ -187,6 +187,14 @@ void QgsGeometrySnapperDialog::run()
     return;
   }
 
+  if ( radioButtonOutputNew->isChecked() &&
+       ( layer->dataProvider()->dataSourceUri().startsWith( lineEditOutput->text() ) ||
+         referenceLayer->dataProvider()->dataSourceUri().startsWith( lineEditOutput->text() ) ) )
+  {
+    QMessageBox::critical( this, tr( "Invalid Output Layer" ), tr( "The chosen output layer is the same as an input layer." ) );
+    return;
+  }
+
   bool selectedOnly = checkBoxInputSelectedOnly->isChecked();
 
   /** Duplicate if necessary **/
@@ -196,7 +204,7 @@ void QgsGeometrySnapperDialog::run()
 
     // Remove existing layer with same uri
     QStringList toRemove;
-    Q_FOREACH ( QgsMapLayer* maplayer, QgsMapLayerRegistry::instance()->mapLayers() )
+    Q_FOREACH( QgsMapLayer* maplayer, QgsMapLayerRegistry::instance()->mapLayers() )
     {
       if ( dynamic_cast<QgsVectorLayer*>( maplayer ) &&
            static_cast<QgsVectorLayer*>( maplayer )->dataProvider()->dataSourceUri().startsWith( filename ) )
