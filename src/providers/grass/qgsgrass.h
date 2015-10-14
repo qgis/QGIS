@@ -195,11 +195,15 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     //! Get default LOCATION_NAME, returns LOCATION_NAME name or empty string if not in active mode
     static QString getDefaultLocation();
 
+    static QgsGrassObject getDefaultLocationObject();
+
     //! Get default path to location (gisdbase/location) or empty string if not in active mode
     static QString getDefaultLocationPath();
 
     //! Get default MAPSET, returns MAPSET name or empty string if not in active mode
     static QString getDefaultMapset();
+
+    static QgsGrassObject getDefaultMapsetObject();
 
     //! Get default path to MAPSET (gisdbase/location/mapset) or empty string if not in active mode
     static QString getDefaultMapsetPath();

@@ -28,6 +28,8 @@
 #include "qgscoordinatereferencesystem.h"
 
 #include "qgsgrassmoduleparam.h"
+#include "qgsgrassprovider.h"
+#include "qgsgrassrasterprovider.h"
 
 class QgsGrassTools;
 class QgsGrassModule;
@@ -64,11 +66,9 @@ class QgsGrassModuleOptions
     // return list of existing output maps
     virtual QStringList checkOutput() { return QStringList() ; }
 
-    //! Freeze output vector maps used in QGIS on Windows
-    virtual void freezeOutput() {}
-
-    //! Thaw output vector maps used in QGIS on Windows
-    virtual void thawOutput() { }
+    //! Freeze output maps used in QGIS
+    // freeze / thaw output layers
+    virtual void freezeOutput( bool freeze = true ) { Q_UNUSED( freeze ) }
 
     //! Check if option is ready
     //  Returns empty string or error message
@@ -163,8 +163,8 @@ class QgsGrassModuleStandardOptions: public QWidget, public QgsGrassModuleOption
 
     // Reimplemented methods from QgsGrassModuleOptions
     QStringList checkOutput() override;
-    void freezeOutput() override;
-    void thawOutput() override;
+    // freeze / thaw output layers
+    void freezeOutput( bool freeze = true ) override;
     QStringList ready() override;
     QStringList output( int type ) override;
     bool hasOutput( int type ) override;
@@ -188,6 +188,10 @@ class QgsGrassModuleStandardOptions: public QWidget, public QgsGrassModuleOption
      * @return true if region was successfully read
      */
     bool getCurrentMapRegion( QgsGrassModuleInput * param, struct Cell_head *window );
+
+    // List of providers used by layers in QgsMapLayerRegistry
+    QList<QgsGrassProvider *> grassProviders();
+    QList<QgsGrassRasterProvider *> grassRasterProviders();
 
     //! Name of module executable
     QString mXName;

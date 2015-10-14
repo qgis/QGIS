@@ -394,8 +394,7 @@ QString QgsGrassProvider::storageType() const
 
 QgsFeatureIterator QgsGrassProvider::getFeatures( const QgsFeatureRequest& request )
 {
-  //if ( isEdited() || isFrozen() || !mValid )
-  if ( isFrozen() || !mValid )
+  if ( !mValid )
   {
     return QgsFeatureIterator();
   }
@@ -568,52 +567,38 @@ bool QgsGrassProvider::isEdited( void )
   return ( mEditBuffer );
 }
 
-bool QgsGrassProvider::isFrozen( void )
-{
-  QgsDebugMsgLevel( "entered", 3 );
-
-  // TODO ?
-  //return ( map()->mFrozen );
-  return false;
-}
-
 void QgsGrassProvider::freeze()
 {
   QgsDebugMsg( "entered" );
 
-  // TODO ?
-#if 0
   if ( !isValid() )
+  {
     return;
+  }
 
-  QgsGrassVectorMap *map = &( map()s[mLayers[mLayerId].mapId] );
+  mValid = false;
 
-  if ( map->mFrozen )
-    return;
-
-  map->mFrozen = true;
-  Vect_close( map->map() );
-#endif
+  if ( mLayer )
+  {
+    mLayer->close();
+    mLayer->map()->close(); // closes all iterators, blocking
+    mLayer = 0;
+  }
 }
 
 void QgsGrassProvider::thaw()
 {
   QgsDebugMsg( "entered" );
 
-  // TODO ?
-#if 0
-  if ( !isValid() )
-    return;
-  QgsGrassVectorMap *map = &( map()s[mLayers[mLayerId].mapId] );
-
-  if ( !map->mFrozen )
-    return;
-
-  if ( reopenMap() )
+  if ( !openLayer() )
   {
-    map->mFrozen = false;
+    QgsDebugMsg( "Cannot open layer" );
+    return;
   }
-#endif
+
+  loadMapInfo();
+
+  mValid = true;
 }
 
 bool QgsGrassProvider::closeEdit( bool newMap, QgsVectorLayer *vectorLayer )

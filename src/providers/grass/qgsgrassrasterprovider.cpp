@@ -41,9 +41,6 @@
 #define ERR(message) QGS_ERROR_MESSAGE(message,"GRASS provider")
 #define ERROR(message) QgsError(message,"GRASS provider")
 
-static QString PROVIDER_KEY = "grassraster";
-static QString PROVIDER_DESCRIPTION = QString( "GRASS %1 raster provider" ).arg( GRASS_VERSION_MAJOR );
-
 // Do not use warning dialogs, providers are also created on threads (rendering) where dialogs connot be used (constructing QPixmap icon)
 
 QgsGrassRasterProvider::QgsGrassRasterProvider( QString const & uri )
@@ -616,12 +613,12 @@ QString QgsGrassRasterProvider::lastError()
 
 QString  QgsGrassRasterProvider::name() const
 {
-  return PROVIDER_KEY;
+  return QString( "grassraster" );
 }
 
 QString  QgsGrassRasterProvider::description() const
 {
-  return PROVIDER_DESCRIPTION;
+  return QString( "GRASS %1 raster provider" ).arg( GRASS_VERSION_MAJOR );
 }
 
 QDateTime QgsGrassRasterProvider::dataTimestamp() const
@@ -640,46 +637,43 @@ QDateTime QgsGrassRasterProvider::dataTimestamp() const
     }
   }
   QgsDebugMsg( "timestamp = " + time.toString() );
+
   return time;
 }
 
-/**
- * Class factory to return a pointer to a newly created
- * QgsGrassRasterProvider object
- */
-QGISEXTERN QgsGrassRasterProvider * classFactory( const QString *uri )
+void QgsGrassRasterProvider::freeze()
 {
-  return new QgsGrassRasterProvider( *uri );
+  QgsDebugMsg( "entered" );
+  mRasterValue.stop();
+  mValid = false;
 }
-/** Required key function (used to map the plugin to a data store type)
-*/
-QGISEXTERN QString providerKey()
+
+void QgsGrassRasterProvider::thaw()
 {
-  return PROVIDER_KEY;
+  QgsDebugMsg( "entered" );
+  mRasterValue.start( mGisdbase, mLocation, mMapset, mMapName );
+  mValid = true;
 }
-/**
- * Required description function
- */
-QGISEXTERN QString description()
-{
-  return PROVIDER_DESCRIPTION;
-}
-/**
- * Required isProvider function. Used to determine if this shared library
- * is a data provider plugin
- */
-QGISEXTERN bool isProvider()
-{
-  return true;
-}
+
+//-------------------------------- QgsGrassRasterValue ----------------------------------------
 
 QgsGrassRasterValue::QgsGrassRasterValue() : mProcess( 0 )
 {
 }
 
+QgsGrassRasterValue::~QgsGrassRasterValue()
+{
+  stop();
+}
+
 void QgsGrassRasterValue::start( QString gisdbase, QString location,
                                  QString mapset, QString map )
 {
+  QgsDebugMsg( "entered" );
+  if ( mProcess )
+  {
+    QgsDebugMsg( "alread running" );
+  }
   mGisdbase = gisdbase;
   mLocation = location;
   mMapset = mapset;
@@ -701,8 +695,10 @@ void QgsGrassRasterValue::start( QString gisdbase, QString location,
     QgsDebugMsg( error );
   }
 }
-QgsGrassRasterValue::~QgsGrassRasterValue()
+
+void QgsGrassRasterValue::stop()
 {
+  QgsDebugMsg( "entered" );
   if ( mProcess )
   {
     QgsDebugMsg( "closing process" );
@@ -710,6 +706,7 @@ QgsGrassRasterValue::~QgsGrassRasterValue()
     mProcess->waitForFinished();
     QgsDebugMsg( "process finished" );
     delete mProcess;
+    mProcess = 0;
   }
 }
 

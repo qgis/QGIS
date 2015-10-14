@@ -57,6 +57,7 @@ class QgsGrassRasterValue
     QgsGrassRasterValue();
     ~QgsGrassRasterValue();
     void start( QString gisdbase, QString location, QString mapset, QString map );
+    void stop();
     // returns raster value, NaN for no data
     // ok is set to true if ok or false on error
     double value( double x, double y, bool *ok );
@@ -207,6 +208,11 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
     QString metadata() override;
 
     virtual QDateTime dataTimestamp() const override;
+
+    // used by GRASS tools
+    void freeze();
+    void thaw();
+
   private:
     void setLastError( QString error );
     void clearLastError();

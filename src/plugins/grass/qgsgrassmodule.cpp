@@ -834,7 +834,7 @@ void QgsGrassModule::finished( int exitCode, QProcess::ExitStatus exitStatus )
       mProgressBar->setValue( 100 );
       mSuccess = true;
       mViewButton->setEnabled( true );
-      mOptions->thawOutput();
+      mOptions->freezeOutput( false );
       mCanvas->refresh();
     }
     else

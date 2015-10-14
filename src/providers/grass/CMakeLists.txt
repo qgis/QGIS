@@ -28,6 +28,7 @@ MACRO(ADD_GRASSLIB GRASS_BUILD_VERSION)
       ../qgsgrassimport.h
       ../qgsgrassoptions.h
       ../qgsgrassprovider.h
+      ../qgsgrassrasterprovider.h
       ../qgsgrassvector.h
       ../qgsgrassvectormap.h
       ../qgsgrassvectormaplayer.h
@@ -40,6 +41,7 @@ MACRO(ADD_GRASSLIB GRASS_BUILD_VERSION)
       ../qgsgrassimport.cpp
       ../qgsgrassoptions.cpp
       ../qgsgrassprovider.cpp
+      ../qgsgrassrasterprovider.cpp
       ../qgsgrassvector.cpp
       ../qgsgrassvectormap.cpp
       ../qgsgrassvectormaplayer.cpp
@@ -131,12 +133,17 @@ MACRO(ADD_GRASSLIB GRASS_BUILD_VERSION)
     #
     # grass raster provider
     #
-    QT4_WRAP_CPP(GRASS_RASTERPROVIDER_MOC_SRCS ../qgsgrassrasterprovider.h)
-    ADD_LIBRARY(grassrasterprovider${GRASS_BUILD_VERSION} MODULE ../qgsgrassrasterprovider.cpp ${GRASS_RASTERPROVIDER_MOC_SRCS})
+    SET (GRASS_RASTER_PROVIDER_SRCS
+      ../qgsgrassrasterprovidermodule.cpp
+    )
+    ADD_LIBRARY(grassrasterprovider${GRASS_BUILD_VERSION} MODULE ${GRASS_RASTER_PROVIDER_SRCS})
     SET_TARGET_PROPERTIES(grassrasterprovider${GRASS_BUILD_VERSION} PROPERTIES
       COMPILE_FLAGS "-DGRASS_BASE=\\\"${GRASS_PREFIX}\\\" \"-DGRASS_EXPORT=${DLLEXPORT}\" \"-DGRASS_LIB_EXPORT=${DLLIMPORT}\""
     )
-    TARGET_LINK_LIBRARIES(grassrasterprovider${GRASS_BUILD_VERSION} qgisgrass${GRASS_BUILD_VERSION} qgis_core)
+    TARGET_LINK_LIBRARIES(grassrasterprovider${GRASS_BUILD_VERSION} 
+      qgisgrass${GRASS_BUILD_VERSION} 
+      qgis_core
+    )
 
     # override default path where built files are put to allow running qgis without installing
     # the modules go under libexec subdir

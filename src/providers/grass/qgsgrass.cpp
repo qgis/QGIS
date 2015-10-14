@@ -544,6 +544,11 @@ QString QgsGrass::getDefaultLocation()
   return defaultLocation;
 }
 
+QgsGrassObject QgsGrass::getDefaultLocationObject()
+{
+  return QgsGrassObject( defaultGisdbase, defaultLocation, "", "", QgsGrassObject::Location );
+}
+
 QString QgsGrass::getDefaultLocationPath()
 {
   if ( !active )
@@ -556,6 +561,11 @@ QString QgsGrass::getDefaultLocationPath()
 QString QgsGrass::getDefaultMapset()
 {
   return defaultMapset;
+}
+
+QgsGrassObject QgsGrass::getDefaultMapsetObject()
+{
+  return QgsGrassObject( defaultGisdbase, defaultLocation, defaultMapset, "", QgsGrassObject::Mapset );
 }
 
 QString QgsGrass::getDefaultMapsetPath()

@@ -406,7 +406,7 @@ void QgsGrassVectorMap::reloadLayers()
 
 void QgsGrassVectorMap::closeLayer( QgsGrassVectorMapLayer * layer )
 {
-  if ( !layer || !layer->map() )
+  if ( !layer )
   {
     return;
   }
@@ -421,11 +421,13 @@ void QgsGrassVectorMap::closeLayer( QgsGrassVectorMapLayer * layer )
     QgsDebugMsg( "No more users -> clear" );
     layer->clear();
   }
-  if ( layer->map()->userCount() == 0 )
+
+  QgsDebugMsg( QString( "%1 map users" ).arg( userCount() ) );
+  if ( userCount() == 0 )
   {
-    QgsDebugMsg( "No more map users -> close" );
     // TODO: attention about dead lock, probably move to QgsGrassVectorMapStore
-    //layer->map()->close();
+    //QgsDebugMsg( "No more map users -> close" );
+    //close();
   }
 
   QgsDebugMsg( "layer closed" );

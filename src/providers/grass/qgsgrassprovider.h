@@ -164,12 +164,10 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     //void startEditing( QgsVectorLayerEditBuffer* buffer );
     void startEditing( QgsVectorLayer *vectorLayer );
 
-    /** Freeze vector.
-     */
+    /** Freeze vector. */
     void freeze();
 
-    /** Thaw vector.
-     */
+    /** Thaw vector. */
     void thaw();
 
     /** Close editing. Rebuild topology, GMAP.update = false
