@@ -200,7 +200,8 @@ static int cell_draw( char *name,
   set = G_malloc( ncols );
 
   /* some buggy C libraries require BOTH setmode() and fdopen(bin) */
-#ifdef Q_OS_WIN
+  // Do not use Q_OS_WIN, we are in C file, no Qt headers
+#ifdef WIN32
   if ( _setmode( _fileno( stdout ), _O_BINARY ) == -1 )
     G_fatal_error( "Cannot set stdout mode" );
 #endif
