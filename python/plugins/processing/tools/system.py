@@ -17,6 +17,7 @@
 ***************************************************************************
 """
 
+
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -52,9 +53,10 @@ def isWindows():
 def isMac():
     return sys.platform == 'darwin'
 
+_tempFolderSuffix = unicode(uuid.uuid4()).replace('-', '')
 
 def tempFolder():
-    tempDir = os.path.join(unicode(QDir.tempPath()), 'processing')
+    tempDir = os.path.join(unicode(QDir.tempPath()), 'processing' + _tempFolderSuffix)
     if not QDir(tempDir).exists():
         QDir().mkpath(tempDir)
 
