@@ -139,6 +139,9 @@ class Grass7Algorithm(GeoAlgorithm):
                         hasRasterOutput = True
                     elif isinstance(output, OutputVector):
                         vectorOutputs += 1
+                    if isinstance(output, OutputHTML):
+                        self.addOutput(OutputFile("rawoutput", output.description +
+                                                  " (raw output)", "txt"))
                 line = lines.readline().strip('\n').strip()
             except Exception as e:
                 ProcessingLog.addToLog(
