@@ -23,6 +23,9 @@ class QgsLabelingWidget : public QWidget, private Ui::QgsLabelingWidget
     //! save config to layer
     void writeSettingsToLayer();
 
+    //! Saves the labeling configuration and immediately updates the map canvas to reflect the changes
+    void apply();
+
   protected slots:
     void labelModeChanged( int index );
     void showEngineConfigDialog();

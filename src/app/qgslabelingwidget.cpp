@@ -4,6 +4,7 @@
 #include "qgslabelinggui.h"
 #include "qgsrulebasedlabelingwidget.h"
 #include "qgsvectorlayerlabeling.h"
+#include "qgisapp.h"
 
 QgsLabelingWidget::QgsLabelingWidget( QgsVectorLayer* layer, QgsMapCanvas* canvas, QWidget* parent )
     : QWidget( parent )
@@ -54,6 +55,16 @@ void QgsLabelingWidget::writeSettingsToLayer()
   }
 }
 
+void QgsLabelingWidget::apply()
+{
+  writeSettingsToLayer();
+  QgisApp::instance()->markDirty();
+  // trigger refresh
+  if ( mCanvas )
+  {
+    mCanvas->refresh();
+  }
+}
 
 void QgsLabelingWidget::labelModeChanged( int index )
 {
