@@ -69,9 +69,11 @@ void QgsGeometrySnapperDialog::updateLayers()
   comboBoxReferenceLayer->clear();
 
   // Collect layers
-  QgsMapLayer* currentLayer = mIface->mapCanvas()->currentLayer();
+  // Don't switch current layer if dialog is visible to avoid confusing the user
+  QgsMapLayer* currentLayer = isVisible() ? 0 : mIface->mapCanvas()->currentLayer();
   int curInputIdx = -1;
   int curReferenceIdx = -1;
+  int idx = 0;
   Q_FOREACH( QgsMapLayer* layer, QgsMapLayerRegistry::instance()->mapLayers() )
   {
     if ( qobject_cast<QgsVectorLayer*>( layer ) )
@@ -83,17 +85,18 @@ void QgsGeometrySnapperDialog::updateLayers()
         comboBoxReferenceLayer->addItem( layer->name(), layer->id() );
         if ( layer->name() == curInput )
         {
-          curInputIdx = comboBoxInputLayer->count() - 1;
+          curInputIdx = idx;
         }
         else if ( curInputIdx == -1 && layer == currentLayer )
         {
-          curInputIdx = comboBoxInputLayer->count() - 1;
+          curInputIdx = idx;
         }
 
         if ( layer->name() == curReference )
         {
-          curReferenceIdx = comboBoxReferenceLayer->count() - 1;
+          curReferenceIdx = idx;
         }
+        ++idx;
       }
     }
   }
