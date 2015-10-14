@@ -51,7 +51,7 @@ class QgsCoordinateTransform;
   Executes qgis.g.info and keeps it open comunicating through pipe. Restarts the command if raster was updated.
 */
 
-class QgsGrassRasterValue
+class GRASS_LIB_EXPORT QgsGrassRasterValue
 {
   public:
     QgsGrassRasterValue();
@@ -78,7 +78,7 @@ class QgsGrassRasterValue
   data residing in a OGC Web Map Service.
 
 */
-class QgsGrassRasterProvider : public QgsRasterDataProvider
+class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
 {
     Q_OBJECT
 
