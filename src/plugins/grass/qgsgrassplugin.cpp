@@ -394,6 +394,7 @@ void QgsGrassPlugin::onEditingStarted()
   QgsGrassEditRenderer *renderer = new QgsGrassEditRenderer();
 
   mOldStyles[vectorLayer] = vectorLayer->styleManager()->currentStyle();
+  mFormSuppress[vectorLayer] = vectorLayer->featureFormSuppress();
 
   // Because the edit style may be stored to project:
   // - do not translate because it may be loaded in QGIS running with different language
@@ -483,7 +484,7 @@ void QgsGrassPlugin::addFeature()
     QgsDebugMsg( "grassProvider is null" );
     return;
   }
-  QgsVectorLayer::FeatureFormSuppress formSuppress = QgsVectorLayer::SuppressDefault;
+  QgsVectorLayer::FeatureFormSuppress formSuppress = mFormSuppress.value( vectorLayer );
   if ( sender() == mAddPointAction )
   {
     qGisInterface->mapCanvas()->setMapTool( mAddPoint );

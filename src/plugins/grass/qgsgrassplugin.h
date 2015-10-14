@@ -18,6 +18,7 @@
 #include "../qgisplugin.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
+#include "qgsvectorlayer.h"
 #include <QObject>
 
 class QgsGrassTools;
@@ -28,7 +29,6 @@ class QgsMapCanvas;
 class QgsMapLayer;
 class QgsMapTool;
 class QgsRubberBand;
-class QgsVectorLayer;
 
 class QAction;
 class QIcon;
@@ -175,6 +175,8 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
 
     // Names of layer styles before editing started
     QMap<QgsVectorLayer *, QString> mOldStyles;
+    // Original layer form suppress
+    QMap<QgsVectorLayer *, QgsVectorLayer::FeatureFormSuppress> mFormSuppress;
 };
 
 #endif // QGSGRASSPLUGIN_H
