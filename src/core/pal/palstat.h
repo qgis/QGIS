@@ -36,8 +36,11 @@ namespace pal
 {
 
   /**
-   * Summury of problem
+   * \brief Summary statistics of labelling problem.
+   * \class pal::PalStat
+   * \note not available in Python bindings
    */
+
   class PalStat
   {
 

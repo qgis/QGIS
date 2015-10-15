@@ -41,6 +41,10 @@ namespace pal
   class LabelPosition;
   class Label;
 
+  /**
+   * \class pal::Sol
+   * \note not available in Python bindings
+   */
   class Sol
   {
     public:
@@ -88,7 +92,9 @@ namespace pal
   } Chain;
 
   /**
-   * \brief Represent a problem
+   * \brief Representation of a labeling problem
+   * \class pal::Problem
+   * \note not available in Python bindings
    */
   class CORE_EXPORT Problem
   {

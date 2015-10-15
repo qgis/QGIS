@@ -41,14 +41,6 @@
 
 class QgsAbstractLabelProvider;
 
-/**
- *
- * \section intro_sec Introduction
- *
- * Pal is a labelling library released under the GPLv3 license
- *
- */
-
 namespace pal
 {
   /** Get GEOS context handle to be used in all GEOS library calls with reentrant API */
@@ -101,12 +93,12 @@ namespace pal
   };
 
   /**
-   *  \brief Pal main class.
+   *  \brief Main Pal labelling class
    *
    *  A pal object will contains layers and global information such as which search method
    *  will be used.
-   *
-   *  \author Maxence Laurent (maxence _dot_ laurent _at_ heig-vd _dot_ ch)
+   *  \class pal::Pal
+   *  \note not available in Python bindings
    */
   class CORE_EXPORT Pal
   {
