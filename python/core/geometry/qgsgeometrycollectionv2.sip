@@ -73,4 +73,12 @@ class QgsGeometryCollectionV2: public QgsAbstractGeometryV2
 
     virtual bool addZValue( double zValue = 0 );
     virtual bool addMValue( double mValue = 0 );
+
+  protected:
+
+    /** Returns whether child type names are omitted from Wkt representations of the collection
+     * @note added in QGIS 2.12
+     */
+    virtual bool wktOmitChildType() const;
+
 };

@@ -125,6 +125,11 @@ class CORE_EXPORT QgsGeometryCollectionV2: public QgsAbstractGeometryV2
   protected:
     QVector< QgsAbstractGeometryV2* > mGeometries;
 
+    /** Returns whether child type names are omitted from Wkt representations of the collection
+     * @note added in QGIS 2.12
+     */
+    virtual bool wktOmitChildType() const { return false; }
+
     /** Reads a collection from a WKT string.
      */
     bool fromCollectionWkt( const QString &wkt, const QList<QgsAbstractGeometryV2*>& subtypes, const QString& defaultChildWkbType = QString() );

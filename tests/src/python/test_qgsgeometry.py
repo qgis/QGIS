@@ -94,6 +94,36 @@ class TestQgsGeometry(TestCase):
                      (QGis.WKBMultiPolygon, myMultiPolygon.type()))
         assert myMultiPolygon.wkbType() == QGis.WKBMultiPolygon, myMessage
 
+    def testExportToWkt(self):
+
+        # test exporting collections to wkt. MultiPolygon, MultiLineString and MultiPoint should omit child types
+        wkt = "MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)),((4 0, 5 0, 5 2, 3 2, 3 1, 4 1, 4 0)))"
+        g = QgsGeometry.fromWkt(wkt)
+        res = g.exportToWkt()
+        assert compareWkt(res, wkt), "Expected:\n%s\nGot:\n%s\n" % (wkt, res)
+
+        wkt = "MultiLineString ((0 0, 1 0, 1 1, 2 1, 2 0), (3 1, 5 1, 5 0, 6 0))"
+        g = QgsGeometry.fromWkt(wkt)
+        res = g.exportToWkt()
+        assert compareWkt(res, wkt), "Expected:\n%s\nGot:\n%s\n" % (wkt, res)
+
+        wkt = "MultiPoint ((10 30),(40 20),(30 10),(20 10))"
+        g = QgsGeometry.fromWkt(wkt)
+        res = g.exportToWkt()
+        assert compareWkt(res, wkt), "Expected:\n%s\nGot:\n%s\n" % (wkt, res)
+
+        #mixed GeometryCollection should keep child types
+        wkt = "GeometryCollection (Point (10 10),Point (30 30),LineString (15 15, 20 20))"
+        g = QgsGeometry.fromWkt(wkt)
+        res = g.exportToWkt()
+        assert compareWkt(res, wkt), "Expected:\n%s\nGot:\n%s\n" % (wkt, res)
+
+        #Multicurve should keep child type
+        wkt = "MultiCurve (CircularString (90 232, 95 230, 100 232),CircularString (90 232, 95 234, 100 232))"
+        g = QgsGeometry.fromWkt(wkt)
+        res = g.exportToWkt()
+        assert compareWkt(res, wkt), "Expected:\n%s\nGot:\n%s\n" % (wkt, res)
+
     def testIntersection(self):
         myLine = QgsGeometry.fromPolyline([
             QgsPoint(0, 0),

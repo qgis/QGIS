@@ -259,11 +259,8 @@ QString QgsGeometryCollectionV2::asWkt( int precision ) const
   Q_FOREACH ( const QgsAbstractGeometryV2 *geom, mGeometries )
   {
     QString childWkt = geom->asWkt( precision );
-    if ( dynamic_cast<const QgsPointV2*>( geom ) ||
-         dynamic_cast<const QgsLineStringV2*>( geom ) ||
-         dynamic_cast<const QgsPolygonV2*>( geom ) )
+    if ( wktOmitChildType() )
     {
-      // Type names of linear geometries are omitted
       childWkt = childWkt.mid( childWkt.indexOf( "(" ) );
     }
     wkt += childWkt + ",";

@@ -19,4 +19,8 @@ public:
 
   /** Adds a geometry and takes ownership. Returns true in case of success*/
   virtual bool addGeometry( QgsAbstractGeometryV2* g );
+
+  protected:
+
+    virtual bool wktOmitChildType() const;
 };
