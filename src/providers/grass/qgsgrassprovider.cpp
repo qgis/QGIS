@@ -91,8 +91,8 @@ typedef off_t grass_off_t;
 typedef grass_off_t Vect_rewrite_line_function_type( struct Map_info *, grass_off_t, int, const struct line_pnts *, const struct line_cats * );
 typedef int Vect_delete_line_function_type( struct Map_info *, grass_off_t );
 #endif
-Vect_rewrite_line_function_type *Vect_rewrite_line_function_pointer = (Vect_rewrite_line_function_type *)Vect_rewrite_line;
-Vect_delete_line_function_type *Vect_delete_line_function_pointer = (Vect_delete_line_function_type *)Vect_delete_line;
+Vect_rewrite_line_function_type *Vect_rewrite_line_function_pointer = ( Vect_rewrite_line_function_type * )Vect_rewrite_line;
+Vect_delete_line_function_type *Vect_delete_line_function_pointer = ( Vect_delete_line_function_type * )Vect_delete_line;
 
 static QString GRASS_KEY = "grass";
 
@@ -250,7 +250,11 @@ QgsGrassProvider::QgsGrassProvider( QString uri )
   mNativeTypes
   << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), "integer", QVariant::Int, -1, -1, -1, -1 )
   << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), "double precision", QVariant::Double, -1, -1, -1, -1 )
-  << QgsVectorDataProvider::NativeType( tr( "Text, limited variable length (varchar)" ), "varchar", QVariant::String, 1, -1, -1, -1 );
+#if GRASS_VERSION_MAJOR < 7
+  << QgsVectorDataProvider::NativeType( tr( "Text, limited variable length (varchar)" ), "varchar", QVariant::String, 1, 255, -1, -1 );
+#else
+  << QgsVectorDataProvider::NativeType( tr( "Text" ), "text", QVariant::String );
+#endif
   // TODO:
   // << QgsVectorDataProvider::NativeType( tr( "Date" ), "date", QVariant::Date, 8, 8 );
 
