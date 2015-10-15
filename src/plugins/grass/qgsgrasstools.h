@@ -57,6 +57,8 @@ class QgsGrassTools: public QDockWidget, public Ui::QgsGrassToolsBase
     //! Returns application directory
     QString appDir();
 
+    void resetTitle();
+
   public slots:
     bool loadConfig();
 

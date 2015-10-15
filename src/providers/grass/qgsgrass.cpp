@@ -350,8 +350,8 @@ bool QgsGrass::init( void )
   }
   G_CATCH( QgsGrass::Exception &e )
   {
-    error_message = tr( "Problem in GRASS initialization, GRASS provider and plugin will not work" ) + " : " + e.what();
-    QgsDebugMsg( error_message );
+    mInitError = tr( "Problem in GRASS initialization, GRASS provider and plugin will not work" ) + " : " + e.what();
+    QgsDebugMsg( mInitError );
     mNonInitializable = true;
     unlock();
     return false;
@@ -373,8 +373,8 @@ bool QgsGrass::init( void )
   if ( !isValidGrassBaseDir( gisbase() ) )
   {
     mNonInitializable = true;
-    error_message = tr( "GRASS was not found in '%1'(GISBASE), provider and plugin will not work." ).arg( gisbase() );
-    QgsDebugMsg( error_message );
+    mInitError = tr( "GRASS was not found in '%1' (GISBASE), provider and plugin will not work." ).arg( gisbase() );
+    QgsDebugMsg( mInitError );
 #if 0
     // TODO: how to emit message from provider (which does not know about QgisApp)
     QgisApp::instance()->messageBar()->pushMessage( tr( "GRASS error" ),
@@ -742,6 +742,7 @@ bool QgsGrass::active = 0;
 QgsGrass::GERROR QgsGrass::lastError = QgsGrass::OK;
 
 QString QgsGrass::error_message;
+QString QgsGrass::mInitError;
 
 QStringList QgsGrass::mGrassModulesPaths;
 QString QgsGrass::defaultGisdbase;
@@ -2655,9 +2656,10 @@ void QgsGrass::setGisbase( bool custom, const QString &customDir )
   {
     mNonInitializable = false;
     initialized = false;
+    mInitError.clear();
     if ( !QgsGrass::init() )
     {
-      QgsDebugMsg( "cannot init : " + QgsGrass::errorMessage() );
+      QgsDebugMsg( "cannot init : " + QgsGrass::initError() );
     }
     emit gisbaseChanged();
   }

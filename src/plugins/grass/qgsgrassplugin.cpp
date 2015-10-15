@@ -298,13 +298,15 @@ void QgsGrassPlugin::onGisbaseChanged()
   if ( !QgsGrass::init() )
   {
     // TODO: save init error and get it here more reliably
-    qGisInterface->messageBar()->pushMessage( tr( "GRASS error" ), QgsGrass::errorMessage(), QgsMessageBar::WARNING );
+    QString error = tr( "GRASS init error" );
+    qGisInterface->messageBar()->pushMessage( error, QgsGrass::initError(), QgsMessageBar::WARNING );
 
     mOpenToolsAction->setDisabled( false ); // allow to open to see that tools are disabled
     mRegionAction->setDisabled( true );
     mOpenMapsetAction->setDisabled( true );
     mCloseMapsetAction->setDisabled( true );
 
+    mTools->setWindowTitle( error + " : " + QgsGrass::initError() );
     mTools->setDisabled( true );
   }
   else
@@ -316,6 +318,7 @@ void QgsGrassPlugin::onGisbaseChanged()
     mCloseMapsetAction->setDisabled( !QgsGrass::activeMode() );
 
     mTools->setDisabled( false );
+    mTools->resetTitle();
   }
 }
 

@@ -163,17 +163,13 @@ QgsGrassTools::QgsGrassTools( QgisInterface *iface, QWidget * parent, const char
 
   qRegisterMetaType<QgsDetailedItemData>();
 
-  setWindowTitle( tr( "GRASS Tools" ) );
-  //    setupUi(this);
-
   mIface = iface;
   mCanvas = mIface->mapCanvas();
 
   //statusBar()->hide();
 
   // set the dialog title
-  QString title = tr( "GRASS Tools: %1/%2" ).arg( QgsGrass::getDefaultLocation(), QgsGrass::getDefaultMapset() );
-  setWindowTitle( title );
+  resetTitle();
 
   // Tree view code.
   if ( !QgsGrass::modulesDebug() )
@@ -218,10 +214,8 @@ QgsGrassTools::QgsGrassTools( QgisInterface *iface, QWidget * parent, const char
   showTabs();
 }
 
-void QgsGrassTools::showTabs()
+void QgsGrassTools::resetTitle()
 {
-  QgsDebugMsg( "entered." );
-
   QString title;
   if ( QgsGrass::activeMode() )
   {
@@ -232,6 +226,13 @@ void QgsGrassTools::showTabs()
     title = tr( "GRASS Tools" );
   }
   setWindowTitle( title );
+}
+
+void QgsGrassTools::showTabs()
+{
+  QgsDebugMsg( "entered." );
+
+  resetTitle();
 
   // Build modules tree if empty
   QgsDebugMsg( QString( "mTreeModel->rowCount() = %1" ).arg( mTreeModel->rowCount() ) );

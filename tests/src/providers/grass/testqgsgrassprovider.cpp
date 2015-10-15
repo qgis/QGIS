@@ -220,7 +220,10 @@ void TestQgsGrassProvider::initTestCase()
 #endif
 
   QgsGrass::setMute();
-  QgsGrass::init();
+  if ( !QgsGrass::init() )
+  {
+    reportRow( "Cannot init GRASS: " + QgsGrass::initError() );
+  }
 
   //create some objects that will be used in all tests...
   //create a raster layer that will be used in all tests...

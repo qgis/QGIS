@@ -248,6 +248,9 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     //! Get last error message
     static QString errorMessage( void );
 
+    //! Get initialization error
+    static QString initError() { return mInitError; }
+
     /** Test is current user is owner of mapset */
     static bool isOwner( const QString& gisdbase, const QString& location, const QString& mapset );
 
@@ -657,6 +660,8 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     /* last error in GRASS libraries */
     static GERROR lastError;         // static, because used in constructor
     static QString error_message;
+    // error set in init() if it failed
+    static QString mInitError;
 
     // G_set_error_routine has two versions of the function's first argument it expects:
     // - char* msg - older version
