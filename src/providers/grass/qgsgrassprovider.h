@@ -410,6 +410,8 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     bool openLayer();
     // update topo symbol of new features
     void setAddedFeaturesSymbol();
+    // get new, not yet used cat
+    int getNewCat();
 
     QgsGrassObject mGrassObject;
     // field part of layer or -1 if no field specified

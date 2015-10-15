@@ -1254,16 +1254,7 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
       }
       if ( newCat == 0 )
       {
-        QgsDebugMsg( QString( "get new cat for cidxFieldIndex() = %1" ).arg( mLayer->cidxFieldIndex() ) );
-        if ( mLayer->cidxFieldIndex() == -1 )
-        {
-          // No features with this field yet in map
-          newCat = 1;
-        }
-        else
-        {
-          newCat = cidxGetMaxCat( mLayer->cidxFieldIndex() ) + 1;
-        }
+        newCat = getNewCat();
       }
       QgsDebugMsg( QString( "newCat = %1" ).arg( newCat ) );
       Vect_cat_set( mCats, mLayerField, newCat );
@@ -1714,8 +1705,31 @@ void QgsGrassProvider::onAttributeValueChanged( QgsFeatureId fid, int idx, const
     }
     else
     {
-      QgsDebugMsg( "no cat -> add new cat to line" );
-      // TODO
+      int newCat = getNewCat();
+      QgsDebugMsg( QString( "no cat -> add new cat %1 to line" ).arg( newCat ) );
+      int type = readLine( mPoints, mCats, realLine );
+      if ( type <= 0 )
+      {
+        QgsDebugMsg( "cannot read line" );
+      }
+      else
+      {
+        Vect_cat_set( mCats, mLayerField, newCat );
+        mLayer->map()->lockReadWrite();
+        int newLid = rewriteLine( realLine, type, mPoints, mCats );
+        Q_UNUSED( newLid )
+
+        // TODO: - store the new cat somewhere for cats mapping
+        QString error;
+        // it does insert new record if it doesn't exist
+        mLayer->changeAttributeValue( newCat, field, value, error );
+        if ( !error.isEmpty() )
+        {
+          QgsGrass::warning( error );
+        }
+
+        mLayer->map()->unlockReadWrite();
+      }
     }
   }
 }
@@ -1875,6 +1889,20 @@ int QgsGrassProvider::cidxGetMaxCat( int idx )
   Vect_cidx_get_cat_by_index( map(), idx, ncats - 1, &cat, &type, &id );
 
   return cat;
+}
+
+int QgsGrassProvider::getNewCat()
+{
+  QgsDebugMsg( QString( "get new cat for cidxFieldIndex() = %1" ).arg( mLayer->cidxFieldIndex() ) );
+  if ( mLayer->cidxFieldIndex() == -1 )
+  {
+    // No features with this field yet in map
+    return 1;
+  }
+  else
+  {
+    return cidxGetMaxCat( mLayer->cidxFieldIndex() ) + 1;
+  }
 }
 
 QgsGrassVectorMapLayer * QgsGrassProvider::openLayer() const
