@@ -1324,12 +1324,12 @@ bool QgsPostgresProvider::determinePrimaryKey()
   return mValid;
 }
 
-bool QgsPostgresProvider::uniqueData( QString query, QString quotedColName )
+bool QgsPostgresProvider::uniqueData( QString query, QString quotedColNames )
 {
   Q_UNUSED( query );
-  // Check to see if the given column contains unique data
-  QString sql = QString( "SELECT count(distinct %1)=count(%1) FROM %2%3" )
-                .arg( quotedColName,
+  // Check to see if the given columns contain unique data
+  QString sql = QString( "SELECT count(distinct (%1))=count((%1)) AND bool_and((%1) IS NOT NULL) FROM %2%3" )
+                .arg( quotedColNames,
                       mQuery,
                       filterWhereClause() );
 
