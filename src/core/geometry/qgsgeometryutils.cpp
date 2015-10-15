@@ -285,7 +285,7 @@ void QgsGeometryUtils::circleCenterRadius( const QgsPointV2& pt1, const QgsPoint
   det = ( pt1.x() - pt2.x() ) * ( pt2.y() - pt3.y() ) - ( pt2.x() - pt3.x() ) * ( pt1.y() - pt2.y() );
 
   /* Check colinearity */
-  if ( qgsDoubleNear( fabs( det ), 0.0 ) )
+  if ( qgsDoubleNear( fabs( det ), 0.0, 0.00000000001 ) )
   {
     radius = -1.0;
     return;
