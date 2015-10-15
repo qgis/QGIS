@@ -1,4 +1,4 @@
-Catchment Area (Flow Tracing)
+Flow Accumulation (Flow Tracing)
 ta_hydrology
 ParameterRaster|ELEVATION|Elevation|False
 ParameterRaster|SINKROUTE|Sink Routes|True
