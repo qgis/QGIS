@@ -111,7 +111,7 @@ void QgsRendererCategoryV2::setRenderState( bool render )
 
 QString QgsRendererCategoryV2::dump() const
 {
-  return QString( "%1::%2::%3:%4\n" ).arg( mValue.toString() ).arg( mLabel ).arg( mSymbol->dump() ).arg( mRender );
+  return QString( "%1::%2::%3:%4\n" ).arg( mValue.toString(), mLabel, mSymbol->dump() ).arg( mRender );
 }
 
 void QgsRendererCategoryV2::toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const
@@ -130,15 +130,15 @@ void QgsRendererCategoryV2::toSld( QDomDocument &doc, QDomElement &element, QgsS
 
   QDomElement descrElem = doc.createElement( "se:Description" );
   QDomElement titleElem = doc.createElement( "se:Title" );
-  QString descrStr = QString( "%1 is '%2'" ).arg( attrName ).arg( mValue.toString() );
+  QString descrStr = QString( "%1 is '%2'" ).arg( attrName, mValue.toString() );
   titleElem.appendChild( doc.createTextNode( !mLabel.isEmpty() ? mLabel : descrStr ) );
   descrElem.appendChild( titleElem );
   ruleElem.appendChild( descrElem );
 
   // create the ogc:Filter for the range
   QString filterFunc = QString( "%1 = '%2'" )
-                       .arg( attrName.replace( "\"", "\"\"" ) )
-                       .arg( mValue.toString().replace( "'", "''" ) );
+                       .arg( attrName.replace( "\"", "\"\"" ),
+                             mValue.toString().replace( "'", "''" ) );
   QgsSymbolLayerV2Utils::createFunctionElement( doc, ruleElem, filterFunc );
 
   mSymbol->toSld( doc, ruleElem, props );

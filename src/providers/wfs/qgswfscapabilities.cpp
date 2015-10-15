@@ -125,10 +125,10 @@ QString QgsWFSCapabilities::uriGetFeature( QString typeName, QString crsString, 
   if ( !bBox.isEmpty() )
   {
     bBoxString = QString( "&BBOX=%1,%2,%3,%4" )
-                 .arg( qgsDoubleToString( bBox.xMinimum() ) )
-                 .arg( qgsDoubleToString( bBox.yMinimum() ) )
-                 .arg( qgsDoubleToString( bBox.xMaximum() ) )
-                 .arg( qgsDoubleToString( bBox.yMaximum() ) );
+                 .arg( qgsDoubleToString( bBox.xMinimum() ),
+                       qgsDoubleToString( bBox.yMinimum() ),
+                       qgsDoubleToString( bBox.xMaximum() ),
+                       qgsDoubleToString( bBox.yMaximum() ) );
   }
 
   QString uri = mBaseUrl;
@@ -160,7 +160,7 @@ bool QgsWFSCapabilities::setAuthorization( QNetworkRequest &request ) const
   else if ( mUri.hasParam( "username" ) && mUri.hasParam( "password" ) )
   {
     QgsDebugMsg( "setAuthorization " + mUri.param( "username" ) );
-    request.setRawHeader( "Authorization", "Basic " + QString( "%1:%2" ).arg( mUri.param( "username" ) ).arg( mUri.param( "password" ) ).toAscii().toBase64() );
+    request.setRawHeader( "Authorization", "Basic " + QString( "%1:%2" ).arg( mUri.param( "username" ), mUri.param( "password" ) ).toAscii().toBase64() );
   }
   return true;
 }

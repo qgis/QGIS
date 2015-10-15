@@ -89,7 +89,7 @@ void QgsAuthIdentCertEdit::populateIdentityComboBox()
       QString org( SSL_SUBJECT_INFO( cert, QSslCertificate::Organization ) );
       if ( org.isEmpty() )
         org = tr( "Organization not defined" );
-      idents.insert( QString( "%1 (%2)" ).arg( QgsAuthCertUtils::resolvedCertName( cert ) ).arg( org ),
+      idents.insert( QString( "%1 (%2)" ).arg( QgsAuthCertUtils::resolvedCertName( cert ), org ),
                      QgsAuthCertUtils::shaHexForCert( cert ) );
     }
     QgsStringMap::const_iterator it = idents.constBegin();

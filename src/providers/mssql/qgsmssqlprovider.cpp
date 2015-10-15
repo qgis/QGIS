@@ -343,7 +343,7 @@ void QgsMssqlProvider::loadMetadata()
 
   QSqlQuery query = QSqlQuery( mDatabase );
   query.setForwardOnly( true );
-  if ( !query.exec( QString( "select f_geometry_column, coord_dimension, srid, geometry_type from geometry_columns where f_table_schema = '%1' and f_table_name = '%2'" ).arg( mSchemaName ).arg( mTableName ) ) )
+  if ( !query.exec( QString( "select f_geometry_column, coord_dimension, srid, geometry_type from geometry_columns where f_table_schema = '%1' and f_table_name = '%2'" ).arg( mSchemaName, mTableName ) ) )
   {
     QString msg = query.lastError().text();
     QgsDebugMsg( msg );
@@ -443,9 +443,7 @@ void QgsMssqlProvider::loadFields()
         query.clear();
         query.setForwardOnly( true );
         if ( !query.exec( QString( "select count(distinct [%1]), count([%1]) from [%2].[%3]" )
-                          .arg( pk )
-                          .arg( mSchemaName )
-                          .arg( mTableName ) ) )
+                          .arg( pk, mSchemaName, mTableName ) ) )
         {
           QString msg = query.lastError().text();
           QgsDebugMsg( msg );
@@ -599,7 +597,7 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate )
   QString sql = "SELECT min(bounding_box_xmin), min(bounding_box_ymin), max(bounding_box_xmax), max(bounding_box_ymax)"
                 " FROM sys.spatial_index_tessellations WHERE object_id =  OBJECT_ID('[%1].[%2]')";
 
-  statement = QString( sql ).arg( mSchemaName ).arg( mTableName );
+  statement = QString( sql ).arg( mSchemaName, mTableName );
 
   if ( query.exec( statement ) )
   {
@@ -727,7 +725,7 @@ long QgsMssqlProvider::featureCount() const
                 " JOIN sys.partitions p ON t.object_id = p.object_id AND p.index_id IN (0,1)"
                 " WHERE SCHEMA_NAME(t.schema_id) = '%1' AND OBJECT_NAME(t.OBJECT_ID) = '%2'";
 
-  QString statement = QString( sql ).arg( mSchemaName ).arg( mTableName );
+  QString statement = QString( sql ).arg( mSchemaName, mTableName );
 
   if ( query.exec( statement ) && query.next() )
   {
@@ -1702,10 +1700,10 @@ QgsVectorLayerImport::ImportError QgsMssqlProvider::createEmptyLayer(
     }
     sql = QString( "IF NOT EXISTS (SELECT * FROM spatial_ref_sys WHERE srid=%1) INSERT INTO spatial_ref_sys (srid, auth_name, auth_srid, srtext, proj4text) VALUES (%1, %2, %3, '%4', '%5')" )
           .arg( srs->srsid() )
-          .arg( auth_name )
-          .arg( auth_srid )
-          .arg( srs->toWkt() )
-          .arg( srs->toProj4() );
+          .arg( auth_name,
+                auth_srid,
+                srs->toWkt(),
+                srs->toProj4() );
     if ( !q.exec( sql ) )
     {
       if ( errorMessage )
@@ -1723,7 +1721,7 @@ QgsVectorLayerImport::ImportError QgsMssqlProvider::createEmptyLayer(
   {
     // remove the old table with the same name
     sql = QString( "IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[%1].[%2]') AND type in (N'U')) BEGIN DROP TABLE [%1].[%2] DELETE FROM geometry_columns where f_table_schema = '%1' and f_table_name = '%2' END;" )
-          .arg( schemaName ).arg( tableName );
+          .arg( schemaName, tableName );
     if ( !q.exec( sql ) )
     {
       if ( errorMessage )
@@ -1737,14 +1735,14 @@ QgsVectorLayerImport::ImportError QgsMssqlProvider::createEmptyLayer(
                  "DELETE FROM geometry_columns WHERE f_table_schema = '%1' AND f_table_name = '%2'\n"
                  "INSERT INTO [geometry_columns] ([f_table_catalog], [f_table_schema],[f_table_name], "
                  "[f_geometry_column],[coord_dimension],[srid],[geometry_type]) VALUES ('%5', '%1', '%2', '%4', %6, %7, '%8')" )
-        .arg( schemaName )
-        .arg( tableName )
-        .arg( primaryKey )
-        .arg( geometryColumn )
-        .arg( dbName )
-        .arg( QString::number( dim ) )
-        .arg( QString::number( srid ) )
-        .arg( geometryType );
+        .arg( schemaName,
+              tableName,
+              primaryKey,
+              geometryColumn,
+              dbName,
+              QString::number( dim ),
+              QString::number( srid ),
+              geometryType );
 
   if ( !q.exec( sql ) )
   {

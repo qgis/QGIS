@@ -809,7 +809,7 @@ static QVariant fcnRegexpReplace( const QVariantList& values, const QgsExpressio
   QRegExp re( regexp );
   if ( !re.isValid() )
   {
-    parent->setEvalErrorString( QObject::tr( "Invalid regular expression '%1': %2" ).arg( regexp ).arg( re.errorString() ) );
+    parent->setEvalErrorString( QObject::tr( "Invalid regular expression '%1': %2" ).arg( regexp, re.errorString() ) );
     return QVariant();
   }
   return QVariant( str.replace( re, after ) );
@@ -823,7 +823,7 @@ static QVariant fcnRegexpMatch( const QVariantList& values, const QgsExpressionC
   QRegExp re( regexp );
   if ( !re.isValid() )
   {
-    parent->setEvalErrorString( QObject::tr( "Invalid regular expression '%1': %2" ).arg( regexp ).arg( re.errorString() ) );
+    parent->setEvalErrorString( QObject::tr( "Invalid regular expression '%1': %2" ).arg( regexp, re.errorString() ) );
     return QVariant();
   }
   return QVariant( str.contains( re ) ? 1 : 0 );
@@ -837,7 +837,7 @@ static QVariant fcnRegexpSubstr( const QVariantList& values, const QgsExpression
   QRegExp re( regexp );
   if ( !re.isValid() )
   {
-    parent->setEvalErrorString( QObject::tr( "Invalid regular expression '%1': %2" ).arg( regexp ).arg( re.errorString() ) );
+    parent->setEvalErrorString( QObject::tr( "Invalid regular expression '%1': %2" ).arg( regexp, re.errorString() ) );
     return QVariant();
   }
 
@@ -2795,7 +2795,7 @@ bool QgsExpression::NodeUnaryOperator::prepare( QgsExpression *parent, const Qgs
 
 QString QgsExpression::NodeUnaryOperator::dump() const
 {
-  return QString( "%1 %2" ).arg( UnaryOperatorText[mOp] ).arg( mOperand->dump() );
+  return QString( "%1 %2" ).arg( UnaryOperatorText[mOp], mOperand->dump() );
 }
 
 //
@@ -3150,7 +3150,7 @@ QString QgsExpression::NodeBinaryOperator::dump() const
     fmt += rOp && ( rOp->precedence() < precedence() ) ? "(%3)" : "%3";
   }
 
-  return fmt.arg( mOpLeft->dump() ).arg( BinaryOperatorText[mOp] ).arg( mOpRight->dump() );
+  return fmt.arg( mOpLeft->dump(), BinaryOperatorText[mOp], mOpRight->dump() );
 }
 
 //
@@ -3213,7 +3213,7 @@ bool QgsExpression::NodeInOperator::prepare( QgsExpression *parent, const QgsExp
 
 QString QgsExpression::NodeInOperator::dump() const
 {
-  return QString( "%1 %2 IN (%3)" ).arg( mNode->dump() ).arg( mNotIn ? "NOT" : "" ).arg( mList->dump() );
+  return QString( "%1 %2 IN (%3)" ).arg( mNode->dump(), mNotIn ? "NOT" : "", mList->dump() );
 }
 
 //
@@ -3271,9 +3271,9 @@ QString QgsExpression::NodeFunction::dump() const
 {
   Function* fd = Functions()[mFnIndex];
   if ( fd->params() == 0 )
-    return QString( "%1%2" ).arg( fd->name() ).arg( fd->name().startsWith( '$' ) ? "" : "()" ); // special column
+    return QString( "%1%2" ).arg( fd->name(), fd->name().startsWith( '$' ) ? "" : "()" ); // special column
   else
-    return QString( "%1(%2)" ).arg( fd->name() ).arg( mArgs ? mArgs->dump() : QString() ); // function
+    return QString( "%1(%2)" ).arg( fd->name(), mArgs ? mArgs->dump() : QString() ); // function
 }
 
 QStringList QgsExpression::NodeFunction::referencedColumns() const
@@ -3324,7 +3324,7 @@ QString QgsExpression::NodeLiteral::dump() const
     case QVariant::Double: return QString::number( mValue.toDouble() );
     case QVariant::String: return quotedString( mValue.toString() );
     case QVariant::Bool: return mValue.toBool() ? "TRUE" : "FALSE";
-    default: return tr( "[unsupported type;%1; value:%2]" ).arg( mValue.typeName() ).arg( mValue.toString() );
+    default: return tr( "[unsupported type;%1; value:%2]" ).arg( mValue.typeName(), mValue.toString() );
   }
 }
 
@@ -3418,7 +3418,7 @@ QString QgsExpression::NodeCondition::dump() const
   QString msg( "CASE" );
   Q_FOREACH ( WhenThen* cond, mConditions )
   {
-    msg += QString( " WHEN %1 THEN %2" ).arg( cond->mWhenExp->dump() ).arg( cond->mThenExp->dump() );
+    msg += QString( " WHEN %1 THEN %2" ).arg( cond->mWhenExp->dump(), cond->mThenExp->dump() );
   }
   if ( mElseExp )
     msg += QString( " ELSE %1" ).arg( mElseExp->dump() );
@@ -3476,14 +3476,14 @@ QString QgsExpression::helptext( QString name )
 #endif
 
   QString helpContents( QString( "<h3>%1</h3>\n<div class=\"description\"><p>%2</p></div>" )
-                        .arg( tr( "%1 %2" ).arg( f.mType ).arg( name ) )
-                        .arg( f.mDescription ) );
+                        .arg( tr( "%1 %2" ).arg( f.mType, name ),
+                              f.mDescription ) );
 
   Q_FOREACH ( const HelpVariant &v, f.mVariants )
   {
     if ( f.mVariants.size() > 1 )
     {
-      helpContents += QString( "<h3>%1</h3>\n<div class=\"description\">%2</p></div>" ).arg( v.mName ).arg( v.mDescription );
+      helpContents += QString( "<h3>%1</h3>\n<div class=\"description\">%2</p></div>" ).arg( v.mName, v.mDescription );
     }
 
     if ( f.mType != tr( "group" ) )
@@ -3494,12 +3494,12 @@ QString QgsExpression::helptext( QString name )
       if ( v.mArguments.size() == 1 )
       {
         helpContents += QString( "<code><span class=\"functionname\">%1</span> <span class=\"argument\">%2</span></code>" )
-                        .arg( name ).arg( v.mArguments[0].mArg );
+                        .arg( name, v.mArguments[0].mArg );
       }
       else if ( v.mArguments.size() == 2 )
       {
         helpContents += QString( "<code><span class=\"argument\">%1</span> <span class=\"functionname\">%2</span> <span class=\"argument\">%3</span></code>" )
-                        .arg( v.mArguments[0].mArg ).arg( name ).arg( v.mArguments[1].mArg );
+                        .arg( v.mArguments[0].mArg, name, v.mArguments[1].mArg );
       }
     }
     else if ( f.mType != tr( "group" ) )
@@ -3539,7 +3539,7 @@ QString QgsExpression::helptext( QString name )
         if ( a.mSyntaxOnly )
           continue;
 
-        helpContents += QString( "<tr><td class=\"argument\">%1</td><td>%2</td></tr>" ).arg( a.mArg ).arg( a.mDescription );
+        helpContents += QString( "<tr><td class=\"argument\">%1</td><td>%2</td></tr>" ).arg( a.mArg, a.mDescription );
       }
 
       helpContents += "</table>\n</div>\n";
@@ -3564,7 +3564,7 @@ QString QgsExpression::helptext( QString name )
 
     if ( !v.mNotes.isEmpty() )
     {
-      helpContents += QString( "<h4>%1</h4>\n<div class=\"notes\"><p>%2</p></div>\n" ).arg( tr( "Notes" ) ).arg( v.mNotes );
+      helpContents += QString( "<h4>%1</h4>\n<div class=\"notes\"><p>%2</p></div>\n" ).arg( tr( "Notes" ), v.mNotes );
     }
   }
 

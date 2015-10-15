@@ -40,7 +40,7 @@ QgsRangeConfigDlg::QgsRangeConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget 
       QVariant min = vl->minimumValue( fieldIdx );
       QVariant max = vl->maximumValue( fieldIdx );
 
-      text = tr( "Current minimum for this value is %1 and current maximum is %2." ).arg( min.toString() ).arg( max.toString() );
+      text = tr( "Current minimum for this value is %1 and current maximum is %2." ).arg( min.toString(), max.toString() );
       break;
     }
 

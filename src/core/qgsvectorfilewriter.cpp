@@ -126,8 +126,8 @@ QgsVectorFileWriter::QgsVectorFileWriter(
   if ( !poDriver )
   {
     mErrorMessage = QObject::tr( "OGR driver for '%1' not found (OGR error: %2)" )
-                    .arg( driverName )
-                    .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
+                    .arg( driverName,
+                          QString::fromUtf8( CPLGetLastErrorMsg() ) );
     mError = ErrDriverNotFound;
     return;
   }
@@ -439,8 +439,8 @@ QgsVectorFileWriter::QgsVectorFileWriter(
     {
       QgsDebugMsg( "error creating field " + attrField.name() );
       mErrorMessage = QObject::tr( "creation of field %1 failed (OGR error: %2)" )
-                      .arg( attrField.name() )
-                      .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
+                      .arg( attrField.name(),
+                            QString::fromUtf8( CPLGetLastErrorMsg() ) );
       mError = ErrAttributeCreationFailed;
       OGR_Fld_Destroy( fld );
       return;
@@ -475,8 +475,8 @@ QgsVectorFileWriter::QgsVectorFileWriter(
       {
         QgsDebugMsg( "error creating field " + attrField.name() );
         mErrorMessage = QObject::tr( "created field %1 not found (OGR error: %2)" )
-                        .arg( attrField.name() )
-                        .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
+                        .arg( attrField.name(),
+                              QString::fromUtf8( CPLGetLastErrorMsg() ) );
         mError = ErrAttributeCreationFailed;
         return;
       }
@@ -1713,8 +1713,8 @@ OGRFeatureH QgsVectorFileWriter::createFeature( QgsFeature& feature )
         mErrorMessage = QObject::tr( "Invalid variant type for field %1[%2]: received %3 with type %4" )
                         .arg( mFields[fldIdx].name() )
                         .arg( ogrField )
-                        .arg( attrValue.typeName() )
-                        .arg( attrValue.toString() );
+                        .arg( attrValue.typeName(),
+                              attrValue.toString() );
         QgsMessageLog::logMessage( mErrorMessage, QObject::tr( "OGR" ) );
         mError = ErrFeatureWriteFailed;
         return 0;
@@ -2123,7 +2123,7 @@ bool QgsVectorFileWriter::deleteShapeFile( const QString& theFileName )
     QFile f( dir.canonicalPath() + "/" + file );
     if ( !f.remove( ) )
     {
-      QgsDebugMsg( QString( "Removing file %1 failed: %2" ).arg( file ).arg( f.errorString() ) );
+      QgsDebugMsg( QString( "Removing file %1 failed: %2" ).arg( file, f.errorString() ) );
       ok = false;
     }
   }

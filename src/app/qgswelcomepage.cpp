@@ -87,8 +87,8 @@ void QgsWelcomePage::versionInfoReceived()
   {
     mVersionInformation->setVisible( true );
     mVersionInformation->setText( QString( "<b>%1</b>: %2" )
-                                  .arg( tr( "There is a new QGIS version available" ) )
-                                  .arg( versionInfo->downloadInfo() ) );
+                                  .arg( tr( "There is a new QGIS version available" ),
+                                        versionInfo->downloadInfo() ) );
     mVersionInformation->setStyleSheet( "QLabel{"
                                         "  background-color: #dddd00;"
                                         "  padding: 5px;"

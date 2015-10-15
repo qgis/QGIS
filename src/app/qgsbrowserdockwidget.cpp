@@ -130,7 +130,7 @@ class QgsBrowserTreeFilterProxyModel : public QSortFilterProxyModel
 
     void updateFilter()
     {
-      QgsDebugMsg( QString( "filter = %1 syntax = %2" ).arg( mFilter ).arg( mPatternSyntax ) );
+      QgsDebugMsg( QString( "filter = %1 syntax = %2" ).arg( mFilter, mPatternSyntax ) );
       mREList.clear();
       if ( mPatternSyntax == "normal" )
       {
@@ -176,7 +176,7 @@ class QgsBrowserTreeFilterProxyModel : public QSortFilterProxyModel
       {
         Q_FOREACH ( const QRegExp& rx, mREList )
         {
-          QgsDebugMsg( QString( "value: [%1] rx: [%2] match: %3" ).arg( value ).arg( rx.pattern() ).arg( rx.exactMatch( value ) ) );
+          QgsDebugMsg( QString( "value: [%1] rx: [%2] match: %3" ).arg( value, rx.pattern() ).arg( rx.exactMatch( value ) ) );
           if ( rx.exactMatch( value ) )
             return true;
         }
@@ -185,7 +185,7 @@ class QgsBrowserTreeFilterProxyModel : public QSortFilterProxyModel
       {
         Q_FOREACH ( const QRegExp& rx, mREList )
         {
-          QgsDebugMsg( QString( "value: [%1] rx: [%2] match: %3" ).arg( value ).arg( rx.pattern() ).arg( rx.indexIn( value ) ) );
+          QgsDebugMsg( QString( "value: [%1] rx: [%2] match: %3" ).arg( value, rx.pattern() ).arg( rx.indexIn( value ) ) );
           if ( rx.indexIn( value ) != -1 )
             return true;
         }

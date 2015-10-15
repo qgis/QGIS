@@ -3351,7 +3351,7 @@ void QgsDxfExport::writePolyline( const QgsPolyline& line, const QString& layer,
   int n = line.size();
   if ( n == 0 )
   {
-    QgsDebugMsg( QString( "writePolyline: empty line layer=%1 lineStyleName=%2" ).arg( layer ).arg( lineStyleName ) );
+    QgsDebugMsg( QString( "writePolyline: empty line layer=%1 lineStyleName=%2" ).arg( layer, lineStyleName ) );
     return;
   }
 
@@ -3360,7 +3360,7 @@ void QgsDxfExport::writePolyline( const QgsPolyline& line, const QString& layer,
     --n;
   if ( n < 2 )
   {
-    QgsDebugMsg( QString( "writePolyline: line too short layer=%1 lineStyleName=%2" ).arg( layer ).arg( lineStyleName ) );
+    QgsDebugMsg( QString( "writePolyline: line too short layer=%1 lineStyleName=%2" ).arg( layer, lineStyleName ) );
     return;
   }
 

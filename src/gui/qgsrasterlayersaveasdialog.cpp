@@ -178,7 +178,7 @@ void QgsRasterLayerSaveAsDialog::on_mBrowseButton_clicked()
       if ( !files.isEmpty() )
       {
         QMessageBox::StandardButton button = QMessageBox::warning( this, tr( "Warning" ),
-                                             tr( "The directory %1 contains files which will be overwritten: %2" ).arg( dir.absolutePath() ).arg( files.join( ", " ) ),
+                                             tr( "The directory %1 contains files which will be overwritten: %2" ).arg( dir.absolutePath(), files.join( ", " ) ),
                                              QMessageBox::Ok | QMessageBox::Cancel );
 
         if ( button == QMessageBox::Ok )

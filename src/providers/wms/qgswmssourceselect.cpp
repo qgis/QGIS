@@ -320,7 +320,7 @@ bool QgsWMSSourceSelect::populateLayerList( const QgsWmsCapabilities& capabiliti
     // Layer Styles
     for ( int j = 0; j < layer->style.size(); j++ )
     {
-      QgsDebugMsg( QString( "got style name %1 and title '%2'." ).arg( layer->style[j].name ).arg( layer->style[j].title ) );
+      QgsDebugMsg( QString( "got style name %1 and title '%2'." ).arg( layer->style[j].name, layer->style[j].title ) );
 
       QgsNumericSortTreeWidgetItem *lItem2 = new QgsNumericSortTreeWidgetItem( lItem );
       lItem2->setText( 0, QString::number( ++layerAndStyleCount ) );
@@ -1065,7 +1065,7 @@ void QgsWMSSourceSelect::showError( QgsWmsProvider * wms )
   }
   else
   {
-    mv->setMessageAsPlainText( tr( "Could not understand the response. The %1 provider said:\n%2" ).arg( wms->name() ).arg( wms->lastError() ) );
+    mv->setMessageAsPlainText( tr( "Could not understand the response. The %1 provider said:\n%2" ).arg( wms->name(), wms->lastError() ) );
   }
   mv->showMessage( true ); // Is deleted when closed
 }

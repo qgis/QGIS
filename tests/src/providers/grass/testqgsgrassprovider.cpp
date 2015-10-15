@@ -1199,14 +1199,14 @@ bool TestQgsGrassProvider::equal( QgsFeature feature, QgsFeature expectedFeature
       {
         names << feature.fields()->at( j ).name();
       }
-      reportRow( QString( "Attribute %1 not found, feature attributes: %2" ).arg( name ).arg( names.join( "," ) ) );
+      reportRow( QString( "Attribute %1 not found, feature attributes: %2" ).arg( name, names.join( "," ) ) );
       return false;
     }
     indexes.remove( index );
     if ( feature.attribute( index ) != expectedFeature.attribute( i ) )
     {
-      reportRow( QString( "Attribute name %1, value: '%2' does not match expected value: '%2'" )
-                 .arg( name ).arg( feature.attribute( index ).toString() ).arg( expectedFeature.attribute( i ).toString() ) );
+      reportRow( QString( "Attribute name %1, value: '%2' does not match expected value: '%3'" )
+                 .arg( name, feature.attribute( index ).toString(), expectedFeature.attribute( i ).toString() ) );
       return false;
     }
   }

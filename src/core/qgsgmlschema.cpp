@@ -196,7 +196,7 @@ bool QgsGmlSchema::xsdFeatureClass( const QDomElement &element, const QString & 
       else
       {
         // TODO: get type from referenced element
-        QgsDebugMsg( QString( "field %1.%2 is referencing %3 - not supported" ).arg( typeName ).arg( fieldName ) );
+        QgsDebugMsg( QString( "field %1.%2 is referencing %3 - not supported" ).arg( typeName, fieldName ) );
       }
       continue;
     }
@@ -218,7 +218,7 @@ bool QgsGmlSchema::xsdFeatureClass( const QDomElement &element, const QString & 
     QVariant::Type fieldType = QVariant::String;
     if ( fieldTypeName.isEmpty() )
     {
-      QgsDebugMsg( QString( "Cannot get %1.%2 field type" ).arg( typeName ).arg( fieldName ) );
+      QgsDebugMsg( QString( "Cannot get %1.%2 field type" ).arg( typeName, fieldName ) );
     }
     else
     {
@@ -361,7 +361,7 @@ void QgsGmlSchema::startElement( const XML_Char* el, const XML_Char** attr )
   mLevel++;
 
   QString elementName = QString::fromUtf8( el );
-  QgsDebugMsgLevel( QString( "-> %1 %2 %3" ).arg( mLevel ).arg( elementName ).arg( mLevel >= mSkipLevel ? "skip" : "" ), 5 );
+  QgsDebugMsgLevel( QString( "-> %1 %2 %3" ).arg( mLevel ).arg( elementName, mLevel >= mSkipLevel ? "skip" : "" ), 5 );
 
   if ( mLevel >= mSkipLevel )
   {

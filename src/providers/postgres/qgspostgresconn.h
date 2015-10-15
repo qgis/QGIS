@@ -134,13 +134,13 @@ struct QgsPostgresLayerProperty
     }
 
     return QString( "%1.%2.%3 type=%4 srid=%5 pkCols=%6 sql=%7 nSpCols=%8 force2d=%9" )
-           .arg( schemaName )
-           .arg( tableName )
-           .arg( geometryColName )
-           .arg( typeString )
-           .arg( sridString )
-           .arg( pkCols.join( "|" ) )
-           .arg( sql )
+           .arg( schemaName,
+                 tableName,
+                 geometryColName,
+                 typeString,
+                 sridString,
+                 pkCols.join( "|" ),
+                 sql )
            .arg( nSpCols )
            .arg( force2d ? "yes" : "no" );
   }

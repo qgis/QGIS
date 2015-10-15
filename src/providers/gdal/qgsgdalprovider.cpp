@@ -145,7 +145,7 @@ QgsGdalProvider::QgsGdalProvider( const QString &uri, bool update )
   {
     if ( !uri.startsWith( vsiPrefix ) )
       setDataSourceUri( vsiPrefix + uri );
-    QgsDebugMsg( QString( "Trying %1 syntax, uri= %2" ).arg( vsiPrefix ).arg( dataSourceUri() ) );
+    QgsDebugMsg( QString( "Trying %1 syntax, uri= %2" ).arg( vsiPrefix, dataSourceUri() ) );
   }
 
   QString gdalUri = dataSourceUri();
@@ -155,7 +155,7 @@ QgsGdalProvider::QgsGdalProvider( const QString &uri, bool update )
 
   if ( !mGdalBaseDataset )
   {
-    QString msg = QString( "Cannot open GDAL dataset %1:\n%2" ).arg( dataSourceUri() ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
+    QString msg = QString( "Cannot open GDAL dataset %1:\n%2" ).arg( dataSourceUri(), QString::fromUtf8( CPLGetLastErrorMsg() ) );
     appendError( ERRMSG( msg ) );
     return;
   }
@@ -182,8 +182,8 @@ bool QgsGdalProvider::crsFromWkt( const char *wkt )
     if ( OSRAutoIdentifyEPSG( hCRS ) == OGRERR_NONE )
     {
       QString authid = QString( "%1:%2" )
-                       .arg( OSRGetAuthorityName( hCRS, NULL ) )
-                       .arg( OSRGetAuthorityCode( hCRS, NULL ) );
+                       .arg( OSRGetAuthorityName( hCRS, NULL ),
+                             OSRGetAuthorityCode( hCRS, NULL ) );
       QgsDebugMsg( "authid recognized as " + authid );
       mCrs.createFromOgcWmsCrs( authid );
     }
@@ -1575,7 +1575,7 @@ QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> & theRaste
       myConfigOptionsOld[ opt[0] ] = QString( CPLGetConfigOption( key.data(), NULL ) );
       // set temp. value
       CPLSetConfigOption( key.data(), value.data() );
-      QgsDebugMsg( QString( "set option %1=%2" ).arg( key.data() ).arg( value.data() ) );
+      QgsDebugMsg( QString( "set option %1=%2" ).arg( key.data(), value.data() ) );
     }
   }
 
@@ -2179,7 +2179,7 @@ QGISEXTERN bool isValidRasterFileName( QString const & theFileNameQString, QStri
   {
     if ( !fileName.startsWith( vsiPrefix ) )
       fileName = vsiPrefix + fileName;
-    QgsDebugMsg( QString( "Trying %1 syntax, fileName= %2" ).arg( vsiPrefix ).arg( fileName ) );
+    QgsDebugMsg( QString( "Trying %1 syntax, fileName= %2" ).arg( vsiPrefix, fileName ) );
   }
 
   //open the file using gdal making sure we have handled locale properly
@@ -2726,7 +2726,7 @@ QGISEXTERN QgsGdalProvider * create(
   CSLDestroy( papszOptions );
   if ( dataset == NULL )
   {
-    QgsError error( QString( "Cannot create new dataset  %1:\n%2" ).arg( uri ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ), "GDAL provider" );
+    QgsError error( QString( "Cannot create new dataset  %1:\n%2" ).arg( uri, QString::fromUtf8( CPLGetLastErrorMsg() ) ), "GDAL provider" );
     QgsDebugMsg( error.summary() );
     return new QgsGdalProvider( uri, error );
   }

@@ -94,9 +94,9 @@ QgsCptCityColorRampV2Dialog::QgsCptCityColorRampV2Dialog( QgsCptCityColorRampV2*
                            "2) Download the complete archive (in svg format) "
                            "and unzip it to your QGIS settings directory [%1] .\n\n"
                            "This file can be found at [%2]\nand current file is [%3]"
-                         ).arg( QgsApplication::qgisSettingsDirPath()
-                              ).arg( "http://soliton.vm.bytemark.co.uk/pub/cpt-city/pkg/"
-                                   ).arg( "http://soliton.vm.bytemark.co.uk/pub/cpt-city/pkg/cpt-city-svg-2.07.zip" );
+                         ).arg( QgsApplication::qgisSettingsDirPath(),
+                                "http://soliton.vm.bytemark.co.uk/pub/cpt-city/pkg/",
+                                "http://soliton.vm.bytemark.co.uk/pub/cpt-city/pkg/cpt-city-svg-2.07.zip" );
     edit->setText( helpText );
     mStackedWidget->addWidget( edit );
     mStackedWidget->setCurrentIndex( 1 );
@@ -120,7 +120,7 @@ QgsCptCityColorRampV2Dialog::QgsCptCityColorRampV2Dialog( QgsCptCityColorRampV2*
     mRamp = new QgsCptCityColorRampV2( "", "", false );
     ramp = mRamp;
   }
-  QgsDebugMsg( QString( "ramp name= %1 variant= %2 - %3 variants" ).arg( ramp->schemeName() ).arg( ramp->variantName() ).arg( ramp->variantList().count() ) );
+  QgsDebugMsg( QString( "ramp name= %1 variant= %2 - %3 variants" ).arg( ramp->schemeName(), ramp->variantName() ).arg( ramp->variantList().count() ) );
 
   // model / view
   QgsDebugMsg( "loading model/view objects" );
@@ -182,7 +182,7 @@ void QgsCptCityColorRampV2Dialog::populateVariants()
 {
   QStringList variantList = mRamp->variantList();
 
-  QgsDebugMsg( QString( "ramp %1%2 has %3 variants" ).arg( mRamp->schemeName() ).arg( mRamp->variantName() ).arg( variantList.count() ) );
+  QgsDebugMsg( QString( "ramp %1%2 has %3 variants" ).arg( mRamp->schemeName(), mRamp->variantName() ).arg( variantList.count() ) );
 
   cboVariantName->blockSignals( true );
   cboVariantName->clear();
@@ -636,7 +636,7 @@ bool QgsCptCityColorRampV2Dialog::updateRamp()
   {
     if ( mListRamps[i] == childItem )
     {
-      QgsDebugMsg( QString( "found matching item %1 target=%2" ).arg( mListRamps[i]->path() ).arg( childItem->path() ) );
+      QgsDebugMsg( QString( "found matching item %1 target=%2" ).arg( mListRamps[i]->path(), childItem->path() ) );
       QListWidgetItem* listItem = mListWidget->item( i );
       mListWidget->setCurrentItem( listItem );
       // on_mListWidget_itemClicked( listItem );

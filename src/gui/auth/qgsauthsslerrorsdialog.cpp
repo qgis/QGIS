@@ -69,8 +69,8 @@ QgsAuthSslErrorsDialog::QgsAuthSslErrorsDialog( QNetworkReply *reply,
   {
     saveButton()->setEnabled( false );
 
-    saveButton()->setText( QString( "%1 && %2" ).arg( saveButton()->text() )
-                           .arg( ignoreButton()->text() ) );
+    saveButton()->setText( QString( "%1 && %2" ).arg( saveButton()->text(),
+                           ignoreButton()->text() ) );
 
     grpbxSslConfig->setChecked( false );
     grpbxSslConfig->setCollapsed( true );
@@ -169,7 +169,7 @@ void QgsAuthSslErrorsDialog::on_buttonBox_clicked( QAbstractButton *button )
   {
     case QDialogButtonBox::Ignore:
       QgsAuthManager::instance()->updateIgnoredSslErrorsCache(
-        QString( "%1:%2" ).arg( mDigest ).arg( mHostPort ),
+        QString( "%1:%2" ).arg( mDigest, mHostPort ),
         mSslErrors );
       accept();
       break;
@@ -192,8 +192,8 @@ void QgsAuthSslErrorsDialog::populateErrorsList()
   Q_FOREACH ( const QSslError &err, mSslErrors )
   {
     errs <<  QString( "* %1: %2" )
-    .arg( QgsAuthCertUtils::sslErrorEnumString( err.error() ) )
-    .arg( err.errorString() );
+    .arg( QgsAuthCertUtils::sslErrorEnumString( err.error() ),
+          err.errorString() );
   }
   teSslErrors->setPlainText( errs.join( "\n" ) );
 }

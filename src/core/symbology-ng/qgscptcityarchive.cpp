@@ -477,7 +477,7 @@ void QgsCptCityArchive::initArchives( bool loadAll )
       QgsCptCityArchive::initArchive( it.key(), it.value() );
     else
     {
-      QgsDebugMsg( QString( "not loading archive [%1] because dir %2 does not exist " ).arg( it.key() ).arg( it.value() ) );
+      QgsDebugMsg( QString( "not loading archive [%1] because dir %2 does not exist " ).arg( it.key(), it.value() ) );
     }
   }
   mDefaultArchiveName = defArchiveName;
@@ -959,7 +959,7 @@ QVector<QgsCptCityDataItem*> QgsCptCityDirectoryItem::createChildren()
       children << childItem;
   }
 
-  QgsDebugMsg( QString( "name= %1 path= %2 found %3 children" ).arg( mName ).arg( mPath ).arg( children.count() ) );
+  QgsDebugMsg( QString( "name= %1 path= %2 found %3 children" ).arg( mName, mPath ).arg( children.count() ) );
 
   return children;
 }

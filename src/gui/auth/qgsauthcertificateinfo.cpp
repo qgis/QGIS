@@ -495,8 +495,8 @@ void QgsAuthCertInfo::populateInfoGeneralSection()
   if (( isissuer || isca ) && isselfsigned )
   {
     certype = QString( "%1 %2" )
-              .arg( tr( "Root" ) )
-              .arg( QgsAuthCertUtils::certificateUsageTypeString( QgsAuthCertUtils::CertAuthorityUsage ) );
+              .arg( tr( "Root" ),
+                    QgsAuthCertUtils::certificateUsageTypeString( QgsAuthCertUtils::CertAuthorityUsage ) );
   }
   if ( isselfsigned )
   {
@@ -521,7 +521,7 @@ void QgsAuthCertInfo::populateInfoGeneralSection()
   QString alg( pubkey.algorithm() == QSsl::Rsa ? "RSA" : "DSA" );
   int bitsize( pubkey.length() );
   addFieldItem( mSecGeneral, tr( "Public key" ),
-                QString( "%1, %2 bits" ).arg( alg ).arg( bitsize == -1 ? QString( "?" ) : QString::number( bitsize ) ),
+                QString( "%1, %2 bits" ).arg( alg, bitsize == -1 ? QString( "?" ) : QString::number( bitsize ) ),
                 LineEdit );
   addFieldItem( mSecGeneral, tr( "Signature algorithm" ),
                 QgsAuthCertUtils::qcaSignatureAlgorithm( mCurrentACert.signatureAlgorithm() ),

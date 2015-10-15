@@ -804,7 +804,7 @@ bool QgsProject::read()
 
     imp_->file.close();
 
-    setError( tr( "%1 for file %2" ).arg( errorString ).arg( imp_->file.fileName() ) );
+    setError( tr( "%1 for file %2" ).arg( errorString, imp_->file.fileName() ) );
 
     return false;
   }

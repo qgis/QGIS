@@ -227,8 +227,8 @@ bool QgsProjectBadLayerGuiHandler::findMissingFile( QString const & fileFilters,
   QStringList selectedFiles;
   QString enc;
   QString title = QObject::tr( "Where is '%1' (original location: %2)?" )
-                  .arg( originalDataSource.fileName() )
-                  .arg( originalDataSource.absoluteFilePath() );
+                  .arg( originalDataSource.fileName(),
+                        originalDataSource.absoluteFilePath() );
 
   bool retVal = QgisGui::openFilesRememberingFilter( memoryQualifier,
                 myFileFilters,

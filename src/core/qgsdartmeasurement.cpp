@@ -33,10 +33,10 @@ const QString QgsDartMeasurement::toString() const
   }
 
   QString dashMessage = QString( "<%1 name=\"%2\" type=\"%3\">%4</%1>" )
-                        .arg( elementName )
-                        .arg( mName )
-                        .arg( typeToString( mType ) )
-                        .arg( mValue );
+                        .arg( elementName,
+                              mName,
+                              typeToString( mType ),
+                              mValue );
   return dashMessage;
 }
 

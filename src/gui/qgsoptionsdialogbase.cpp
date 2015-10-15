@@ -224,7 +224,7 @@ void QgsOptionsDialogBase::updateWindowTitle()
   QListWidgetItem *curitem = mOptListWidget->currentItem();
   if ( curitem )
   {
-    setWindowTitle( QString( "%1 | %2" ).arg( mDialogTitle ).arg( curitem->text() ) );
+    setWindowTitle( QString( "%1 | %2" ).arg( mDialogTitle, curitem->text() ) );
   }
   else
   {

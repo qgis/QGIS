@@ -51,7 +51,7 @@ struct QgsWFSAuthorization
     }
     else if ( !mUserName.isNull() || !mPassword.isNull() )
     {
-      request.setRawHeader( "Authorization", "Basic " + QString( "%1:%2" ).arg( mUserName ).arg( mPassword ).toAscii().toBase64() );
+      request.setRawHeader( "Authorization", "Basic " + QString( "%1:%2" ).arg( mUserName, mPassword ).toAscii().toBase64() );
     }
     return true;
   }

@@ -945,7 +945,7 @@ QgsAttributeMap *QgsGrassProvider::attributes( int field, int cat )
 
   if ( !driver )
   {
-    QgsDebugMsg( QString( "Cannot open database %1 by driver %2" ).arg( fi->database ).arg( fi->driver ) );
+    QgsDebugMsg( QString( "Cannot open database %1 by driver %2" ).arg( fi->database, fi->driver ) );
     return att;
   }
 

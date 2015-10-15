@@ -245,10 +245,10 @@ bool QgsWmsCapabilities::parseCapabilitiesDom( QByteArray const &xml, QgsWmsCapa
     mErrorCaption = QObject::tr( "Dom Exception" );
     mErrorFormat = "text/plain";
     mError = QObject::tr( "Could not get WMS capabilities in the expected format (DTD): no %1 or %2 found.\nThis might be due to an incorrect WMS Server URL.\nTag:%3\nResponse was:\n%4" )
-             .arg( "WMS_Capabilities" )
-             .arg( "WMT_MS_Capabilities" )
-             .arg( docElem.tagName() )
-             .arg( QString( xml ) );
+             .arg( "WMS_Capabilities",
+                   "WMT_MS_Capabilities",
+                   docElem.tagName(),
+                   QString( xml ) );
 
     QgsLogger::debug( "Dom Exception: " + mError );
 
@@ -1296,9 +1296,9 @@ void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
       invert = !invert;
 
     QgsDebugMsg( QString( "tilematrix set: %1 (supportedCRS:%2 crs:%3; metersPerUnit:%4 axisInverted:%5)" )
-                 .arg( s.identifier )
-                 .arg( supportedCRS )
-                 .arg( s.crs )
+                 .arg( s.identifier,
+                       supportedCRS,
+                       s.crs )
                  .arg( metersPerUnit, 0, 'f' )
                  .arg( invert ? "yes" : "no" )
                );
@@ -1629,9 +1629,9 @@ void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
       if ( format.isEmpty() || resourceType.isEmpty() || tmpl.isEmpty() )
       {
         QgsDebugMsg( QString( "SKIPPING ResourceURL format=%1 resourceType=%2 template=%3" )
-                     .arg( format )
-                     .arg( resourceType )
-                     .arg( tmpl ) );
+                     .arg( format,
+                           resourceType,
+                           tmpl ) );
         continue;
       }
 
@@ -1673,9 +1673,9 @@ void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
       else
       {
         QgsDebugMsg( QString( "UNEXPECTED resourceType in ResourcURL format=%1 resourceType=%2 template=%3" )
-                     .arg( format )
-                     .arg( resourceType )
-                     .arg( tmpl ) );
+                     .arg( format,
+                           resourceType,
+                           tmpl ) );
       }
     }
 
@@ -1800,7 +1800,7 @@ bool QgsWmsCapabilities::detectTileLayerBoundingBox( QgsWmtsTileLayer& l )
                         tm.topLeft.y() - res * tm.tileHeight * tm.matrixHeight );
 
   QgsDebugMsg( QString( "detecting WMTS layer bounding box: tileset %1 matrix %2 crs %3 res %4" )
-               .arg( tmsIt->identifier ).arg( tm.identifier ).arg( tmsIt->crs ).arg( res ) );
+               .arg( tmsIt->identifier, tm.identifier, tmsIt->crs ).arg( res ) );
 
   QgsRectangle extent( tm.topLeft, bottomRight );
   extent.normalize();

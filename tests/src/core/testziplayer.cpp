@@ -145,7 +145,7 @@ bool TestZipLayer::testZipItemPassthru( const QString& myFileName, const QString
 bool TestZipLayer::testZipItem( const QString& myFileName, const QString& myChildName, const QString& myProviderName )
 {
   QgsDebugMsg( QString( "\n=======================================\nfile = %1 name = %2 provider = %3"
-                      ).arg( myFileName ).arg( myChildName ).arg( myProviderName ) );
+                      ).arg( myFileName, myChildName, myProviderName ) );
   QFileInfo myFileInfo( myFileName );
   QgsZipItem *myZipItem = new QgsZipItem( NULL, myFileInfo.fileName(), myFileName );
   myZipItem->populate();
@@ -171,7 +171,7 @@ bool TestZipLayer::testZipItem( const QString& myFileName, const QString& myChil
       QgsLayerItem *layerItem = dynamic_cast<QgsLayerItem*>( item );
       if ( layerItem )
       {
-        QgsDebugMsg( QString( "child name=%1 provider=%2 path=%3" ).arg( layerItem->name() ).arg( layerItem->providerKey() ).arg( layerItem->path() ) );
+        QgsDebugMsg( QString( "child name=%1 provider=%2 path=%3" ).arg( layerItem->name(), layerItem->providerKey(), layerItem->path() ) );
         if ( myChildName == "" || myChildName == item->name() )
         {
           QgsMapLayer* layer = getLayer( layerItem->path(), layerItem->name(), layerItem->providerKey() );
@@ -200,7 +200,7 @@ bool TestZipLayer::testZipItem( const QString& myFileName, const QString& myChil
                 if ( ! ok )
                 {
                   QWARN( QString( "Layer %1 opened by provider %2, expecting %3"
-                                ).arg( layerItem->path() ).arg( layerItem->providerKey() ).arg( myProviderName ).toLocal8Bit().data() );
+                                ).arg( layerItem->path(), layerItem->providerKey(), myProviderName ).toLocal8Bit().data() );
                 }
               }
               break;
@@ -250,7 +250,7 @@ int TestZipLayer::getLayerTransparency( const QString& myFileName, const QString
     }
   }
   else
-    QWARN( QString( "Could not open filename %1 using %2 provider" ).arg( myFileName ).arg( myProviderKey ).toLocal8Bit().data() );
+    QWARN( QString( "Could not open filename %1 using %2 provider" ).arg( myFileName, myProviderKey ).toLocal8Bit().data() );
   if ( myLayer )
     delete myLayer;
   return myTransparency;

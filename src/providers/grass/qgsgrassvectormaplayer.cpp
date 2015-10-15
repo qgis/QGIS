@@ -113,7 +113,7 @@ void QgsGrassVectorMapLayer::load()
 
     QgsGrass::lock();
     dbDriver *databaseDriver = 0;
-    QString error = QString( "Cannot open database %1 by driver %2" ).arg( mFieldInfo->database ).arg( mFieldInfo->driver );
+    QString error = QString( "Cannot open database %1 by driver %2" ).arg( mFieldInfo->database, mFieldInfo->driver );
     G_TRY
     {
       setMapset();
@@ -196,7 +196,7 @@ void QgsGrassVectorMapLayer::load()
         if ( mKeyColumn < 0 )
         {
           mTableFields.clear();
-          QgsGrass::warning( QObject::tr( "Key column '%1' not found in the table '%2'" ).arg( mFieldInfo->key ).arg( mFieldInfo->table ) );
+          QgsGrass::warning( QObject::tr( "Key column '%1' not found in the table '%2'" ).arg( mFieldInfo->key, mFieldInfo->table ) );
         }
         else
         {
@@ -239,7 +239,7 @@ void QgsGrassVectorMapLayer::load()
               value = db_get_column_value( column );
               db_convert_value_to_string( value, sqltype, &dbstr );
 
-              QgsDebugMsgLevel( QString( "column = %1 value = %2" ).arg( db_get_column_name( column ) ).arg( db_get_string( &dbstr ) ), 3 );
+              QgsDebugMsgLevel( QString( "column = %1 value = %2" ).arg( db_get_column_name( column ), db_get_string( &dbstr ) ), 3 );
 
               QVariant variant;
               if ( !db_test_value_isnull( value ) )
@@ -271,7 +271,7 @@ void QgsGrassVectorMapLayer::load()
                     variant = QVariant( QByteArray( db_get_string( &dbstr ) ) );
                 }
               }
-              QgsDebugMsgLevel( QString( "column = %1 variant = %2" ).arg( db_get_column_name( column ) ).arg( variant.toString() ), 3 );
+              QgsDebugMsgLevel( QString( "column = %1 variant = %2" ).arg( db_get_column_name( column ), variant.toString() ), 3 );
               values << variant;
             }
             mAttributes.insert( cat, values );
@@ -439,7 +439,7 @@ dbDriver * QgsGrassVectorMapLayer::openDriver( QString &error )
 
     if ( !driver )
     {
-      error = tr( "Cannot open database %1 by driver %2" ).arg( mFieldInfo->database ).arg( mFieldInfo->driver );
+      error = tr( "Cannot open database %1 by driver %2" ).arg( mFieldInfo->database, mFieldInfo->driver );
       QgsDebugMsg( error );
     }
     else
@@ -681,7 +681,7 @@ void QgsGrassVectorMapLayer::addColumn( const QgsField &field, QString &error )
         type = QString( "%1(%2)" ).arg( type ).arg( field.length() );
       }
     }
-    QString query = QString( "ALTER TABLE %1 ADD COLUMN %2 %3" ).arg( mFieldInfo->table ).arg( field.name() ).arg( type );
+    QString query = QString( "ALTER TABLE %1 ADD COLUMN %2 %3" ).arg( mFieldInfo->table, field.name(), type );
     executeSql( query, error );
 
     if ( error.isEmpty() )
@@ -698,7 +698,7 @@ void QgsGrassVectorMapLayer::addColumn( const QgsField &field, QString &error )
         {
           QVariant value = mAttributes.value( cat ).value( index );
           QString valueString = quotedValue( value );
-          QString query = QString( "UPDATE %1 SET %2 = %3" ).arg( mFieldInfo->table ).arg( field.name() ).arg( valueString );
+          QString query = QString( "UPDATE %1 SET %2 = %3" ).arg( mFieldInfo->table, field.name(), valueString );
           QString err;
           executeSql( query, err );
           if ( !err.isEmpty() )
@@ -749,11 +749,11 @@ void QgsGrassVectorMapLayer::deleteColumn( const QgsField &field, QString &error
     }
     QStringList queries;
     queries << "BEGIN TRANSACTION";
-    queries << QString( "CREATE TEMPORARY TABLE %1_tmp_drop_column AS SELECT %2 FROM %1" ).arg( mFieldInfo->table ).arg( columns.join( "," ) );
+    queries << QString( "CREATE TEMPORARY TABLE %1_tmp_drop_column AS SELECT %2 FROM %1" ).arg( mFieldInfo->table, columns.join( "," ) );
     queries << QString( "DROP TABLE %1" ).arg( mFieldInfo->table );
     queries << QString( "CREATE TABLE %1 AS SELECT * FROM %1_tmp_drop_column" ).arg( mFieldInfo->table );
     queries << QString( "DROP TABLE %1_tmp_drop_column" ).arg( mFieldInfo->table );
-    queries << QString( "CREATE UNIQUE INDEX %1_%2 ON %1 (%2)" ).arg( mFieldInfo->table ).arg( mFieldInfo->key );
+    queries << QString( "CREATE UNIQUE INDEX %1_%2 ON %1 (%2)" ).arg( mFieldInfo->table, mFieldInfo->key );
     queries << "COMMIT";
     // Execute one after another to get possible error
     Q_FOREACH ( const QString& query, queries )
@@ -768,7 +768,7 @@ void QgsGrassVectorMapLayer::deleteColumn( const QgsField &field, QString &error
   }
   else
   {
-    QString query = QString( "ALTER TABLE %1 DROP COLUMN %2" ).arg( mFieldInfo->table ).arg( field.name() );
+    QString query = QString( "ALTER TABLE %1 DROP COLUMN %2" ).arg( mFieldInfo->table, field.name() );
     QgsDebugMsg( "query = " + query );
     executeSql( query, error );
   }
@@ -840,8 +840,8 @@ void QgsGrassVectorMapLayer::insertAttributes( int cat, const QgsFeature &featur
     }
   }
 
-  QString query = QString( "INSERT INTO %1 ( %2 ) VALUES ( %3 )" ).arg( mFieldInfo->table )
-                  .arg( names.join( ", " ) ).arg( values.join( "," ) );
+  QString query = QString( "INSERT INTO %1 ( %2 ) VALUES ( %3 )" ).arg( mFieldInfo->table,
+                  names.join( ", " ), values.join( "," ) );
   executeSql( query, error );
   if ( error.isEmpty() )
   {
@@ -892,7 +892,7 @@ void QgsGrassVectorMapLayer::reinsertAttributes( int cat, QString &error )
       }
     }
 
-    QString query = QString( "INSERT INTO %1 ( %2 ) VALUES ( %3 )" ).arg( mFieldInfo->table ).arg( names.join( ", " ) ).arg( values.join( "," ) );
+    QString query = QString( "INSERT INTO %1 ( %2 ) VALUES ( %3 )" ).arg( mFieldInfo->table, names.join( ", " ), values.join( "," ) );
     executeSql( query, error );
   }
   else
@@ -959,8 +959,8 @@ void QgsGrassVectorMapLayer::updateAttributes( int cat, const QgsFeature &featur
     return;
   }
 
-  QString query = QString( "UPDATE %1 SET %2 WHERE %3 = %4" ).arg( mFieldInfo->table )
-                  .arg( updates.join( ", " ) ).arg( mFieldInfo->key ).arg( cat );
+  QString query = QString( "UPDATE %1 SET %2 WHERE %3 = %4" ).arg( mFieldInfo->table,
+                  updates.join( ", " ), mFieldInfo->key ).arg( cat );
 
   executeSql( query, error );
   if ( error.isEmpty() )
@@ -976,7 +976,7 @@ void QgsGrassVectorMapLayer::deleteAttribute( int cat, QString &error )
 {
   QgsDebugMsg( QString( "mField = %1 cat = %2" ).arg( mField ).arg( cat ) );
 
-  QString query = QString( "DELETE FROM %1 WHERE %2 = %3" ).arg( mFieldInfo->table ).arg( mFieldInfo->key ).arg( cat );
+  QString query = QString( "DELETE FROM %1 WHERE %2 = %3" ).arg( mFieldInfo->table, mFieldInfo->key ).arg( cat );
   executeSql( query, error );
 }
 
@@ -1029,7 +1029,7 @@ bool QgsGrassVectorMapLayer::isOrphan( int cat, QString &error )
 
 void QgsGrassVectorMapLayer::changeAttributeValue( int cat, QgsField field, QVariant value, QString &error )
 {
-  QgsDebugMsg( QString( "cat = %1 field.name() = %2 value = %3" ).arg( cat ).arg( field.name() ).arg( value.toString() ) );
+  QgsDebugMsg( QString( "cat = %1 field.name() = %2 value = %3" ).arg( cat ).arg( field.name(), value.toString() ) );
 
   if ( !mDriver )
   {
@@ -1052,8 +1052,8 @@ void QgsGrassVectorMapLayer::changeAttributeValue( int cat, QgsField field, QVar
 
   if ( exists )
   {
-    query = QString( "UPDATE %1 SET %2 = %3 WHERE %4 = %5" ).arg( mFieldInfo->table )
-            .arg( field.name() ).arg( valueString ).arg( mFieldInfo->key ).arg( cat );
+    query = QString( "UPDATE %1 SET %2 = %3 WHERE %4 = %5" ).arg( mFieldInfo->table,
+            field.name(), valueString, mFieldInfo->key ).arg( cat );
   }
   else
   {
@@ -1063,8 +1063,8 @@ void QgsGrassVectorMapLayer::changeAttributeValue( int cat, QgsField field, QVar
     values << QString::number( cat );
     names << field.name();
     values << quotedValue( value );
-    query = QString( "INSERT INTO %1 ( %2 ) VALUES ( %3 )" ).arg( mFieldInfo->table )
-            .arg( names.join( ", " ) ).arg( values.join( "," ) );
+    query = QString( "INSERT INTO %1 ( %2 ) VALUES ( %3 )" ).arg( mFieldInfo->table,
+            names.join( ", " ), values.join( "," ) );
   }
 
   QgsDebugMsg( QString( "query: %1" ).arg( query ) );

@@ -468,9 +468,9 @@ bool QgsWcsCapabilities::parseCapabilitiesDom( QByteArray const &xml, QgsWcsCapa
       mErrorTitle = tr( "Dom Exception" );
       mErrorFormat = "text/plain";
       mError = tr( "Could not get WCS capabilities in the expected format (DTD): no %1 found.\nThis might be due to an incorrect WCS Server URL.\nTag:%3\nResponse was:\n%4" )
-               .arg( "Capabilities" )
-               .arg( docElem.tagName() )
-               .arg( QString( xml ) );
+               .arg( "Capabilities",
+                     docElem.tagName(),
+                     QString( xml ) );
     }
 
     QgsLogger::debug( "Dom Exception: " + mError );
@@ -775,9 +775,9 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom10( QByteArray const &xml, QgsW
     mErrorTitle = tr( "Dom Exception" );
     mErrorFormat = "text/plain";
     mError = tr( "Could not get WCS capabilities in the expected format (DTD): no %1 found.\nThis might be due to an incorrect WCS Server URL.\nTag:%3\nResponse was:\n%4" )
-             .arg( "CoverageDescription" )
-             .arg( docElem.tagName() )
-             .arg( QString( xml ) );
+             .arg( "CoverageDescription",
+                   docElem.tagName(),
+                   QString( xml ) );
 
     QgsLogger::debug( "Dom Exception: " + mError );
 
@@ -930,9 +930,9 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom11( QByteArray const &xml, QgsW
     mErrorTitle = tr( "Dom Exception" );
     mErrorFormat = "text/plain";
     mError = tr( "Could not get WCS capabilities in the expected format (DTD): no %1 found.\nThis might be due to an incorrect WCS Server URL.\nTag:%3\nResponse was:\n%4" )
-             .arg( "CoverageDescriptions" )
-             .arg( docElem.tagName() )
-             .arg( QString( xml ) );
+             .arg( "CoverageDescriptions",
+                   docElem.tagName(),
+                   QString( xml ) );
 
     QgsLogger::debug( "Dom Exception: " + mError );
 
@@ -1184,7 +1184,7 @@ bool QgsWcsCapabilities::setAuthorization( QNetworkRequest &request ) const
   else if ( mUri.hasParam( "username" ) && mUri.hasParam( "password" ) )
   {
     QgsDebugMsg( "setAuthorization " + mUri.param( "username" ) );
-    request.setRawHeader( "Authorization", "Basic " + QString( "%1:%2" ).arg( mUri.param( "username" ) ).arg( mUri.param( "password" ) ).toAscii().toBase64() );
+    request.setRawHeader( "Authorization", "Basic " + QString( "%1:%2" ).arg( mUri.param( "username" ), mUri.param( "password" ) ).toAscii().toBase64() );
   }
   return true;
 }

@@ -400,7 +400,7 @@ QByteArray QgsSvgCache::getImageData( const QString &path ) const
 
     if ( reply->error() != QNetworkReply::NoError )
     {
-      QgsMessageLog::logMessage( tr( "SVG request failed [error: %1 - url: %2]" ).arg( reply->errorString() ).arg( reply->url().toString() ), tr( "SVG" ) );
+      QgsMessageLog::logMessage( tr( "SVG request failed [error: %1 - url: %2]" ).arg( reply->errorString(), reply->url().toString() ), tr( "SVG" ) );
 
       reply->deleteLater();
       return QByteArray();

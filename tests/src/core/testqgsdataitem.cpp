@@ -125,9 +125,9 @@ void TestQgsDataItem::testDirItemChildren()
       QFileInfo info( layerItem->path() );
       QString lFile = info.fileName();
       QString lProvider = layerItem->providerKey();
-      QString errStr = QString( "layer #%1 - %2 provider = %3 tmpSetting = %4" ).arg( i ).arg( lFile ).arg( lProvider ).arg( tmpSetting );
+      QString errStr = QString( "layer #%1 - %2 provider = %3 tmpSetting = %4" ).arg( i ).arg( lFile, lProvider, tmpSetting );
 
-      QgsDebugMsg( QString( "testing child name=%1 provider=%2 path=%3 tmpSetting = %4" ).arg( layerItem->name() ).arg( lProvider ).arg( lFile ).arg( tmpSetting ) );
+      QgsDebugMsg( QString( "testing child name=%1 provider=%2 path=%3 tmpSetting = %4" ).arg( layerItem->name(), lProvider, lFile, tmpSetting ) );
 
       if ( lFile == "landsat.tif" )
       {
@@ -152,7 +152,7 @@ void TestQgsDataItem::testDirItemChildren()
 
       // test layerName() does not include extension for gdal and ogr items (bug #5621)
       QString lName = layerItem->layerName();
-      errStr = QString( "layer #%1 - %2 lName = %3 tmpSetting = %4" ).arg( i ).arg( lFile ).arg( lName ).arg( tmpSetting );
+      errStr = QString( "layer #%1 - %2 lName = %3 tmpSetting = %4" ).arg( i ).arg( lFile, lName, tmpSetting );
 
       if ( lFile == "landsat.tif" )
       {

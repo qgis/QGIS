@@ -190,9 +190,9 @@ QString QgsProjectionSelector::ogcWmsCrsFilterAsSqlExpression( QSet<QString> * c
     Q_FOREACH ( const QString& auth_name, authParts.keys() )
     {
       sqlExpression += QString( "%1(upper(auth_name)='%2' AND upper(auth_id) IN ('%3'))" )
-                       .arg( prefix )
-                       .arg( auth_name )
-                       .arg( authParts[auth_name].join( "','" ) );
+                       .arg( prefix,
+                             auth_name,
+                             authParts[auth_name].join( "','" ) );
       prefix = " OR ";
     }
     sqlExpression += ")";
@@ -398,8 +398,8 @@ QString QgsProjectionSelector::getSelectedExpression( const QString& expression 
   const char *tail;
   sqlite3_stmt *stmt;
   QString sql = QString( "select %1 from tbl_srs where srs_id=%2" )
-                .arg( expression )
-                .arg( lvi->text( QGIS_CRS_ID_COLUMN ) );
+                .arg( expression,
+                      lvi->text( QGIS_CRS_ID_COLUMN ) );
 
   QgsDebugMsg( QString( "Finding selected attribute using : %1" ).arg( sql ) );
   rc = sqlite3_prepare( database, sql.toUtf8(), sql.toUtf8().length(), &stmt, &tail );

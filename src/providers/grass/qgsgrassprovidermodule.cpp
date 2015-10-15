@@ -177,7 +177,7 @@ void QgsGrassItemActions::renameGrassObject()
   catch ( QgsGrass::Exception &e )
   {
     QgsMessageOutput::showMessage( errorTitle,
-                                   QObject::tr( "Cannot rename %1 to %2" ).arg( mGrassObject.name() ).arg( obj.name() ) + "\n" + e.what(),
+                                   QObject::tr( "Cannot rename %1 to %2" ).arg( mGrassObject.name(), obj.name() ) + "\n" + e.what(),
                                    QgsMessageOutput::MessageText );
   }
 }
@@ -690,12 +690,12 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData * data, Qt::DropAction )
     {
       if ( !provider )
       {
-        errors.append( tr( "Cannot create provider %1 : %2" ).arg( u.providerKey ).arg( u.uri ) );
+        errors.append( tr( "Cannot create provider %1 : %2" ).arg( u.providerKey, u.uri ) );
         continue;
       }
       if ( !provider->isValid() )
       {
-        errors.append( tr( "Provider is not valid  %1 : %2" ).arg( u.providerKey ).arg( u.uri ) );
+        errors.append( tr( "Provider is not valid  %1 : %2" ).arg( u.providerKey, u.uri ) );
         delete provider;
         continue;
       }
@@ -860,8 +860,9 @@ void QgsGrassMapsetItem::onImportFinished( QgsGrassImport* import )
   {
     QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
     output->setTitle( tr( "Import to GRASS mapset failed" ) );
-    output->setMessage( tr( "Failed to import %1 to %2: %3" ).arg( import->srcDescription() ).arg( import->grassObject()
-                        .mapsetPath() ).arg( import->error() ), QgsMessageOutput::MessageText );
+    output->setMessage( tr( "Failed to import %1 to %2: %3" ).arg( import->srcDescription(),
+                        import->grassObject().mapsetPath(),
+                        import->error() ), QgsMessageOutput::MessageText );
     output->showMessage();
   }
 

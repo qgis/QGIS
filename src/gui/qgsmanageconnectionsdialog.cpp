@@ -134,8 +134,8 @@ void QgsManageConnectionsDialog::doExportImport()
     {
       QMessageBox::warning( this, tr( "Saving connections" ),
                             tr( "Cannot write file %1:\n%2." )
-                            .arg( mFileName )
-                            .arg( file.errorString() ) );
+                            .arg( mFileName,
+                                  file.errorString() ) );
       return;
     }
 
@@ -149,8 +149,8 @@ void QgsManageConnectionsDialog::doExportImport()
     {
       QMessageBox::warning( this, tr( "Loading connections" ),
                             tr( "Cannot read file %1:\n%2." )
-                            .arg( mFileName )
-                            .arg( file.errorString() ) );
+                            .arg( mFileName,
+                                  file.errorString() ) );
       return;
     }
 
@@ -244,8 +244,8 @@ bool QgsManageConnectionsDialog::populateConnections()
     {
       QMessageBox::warning( this, tr( "Loading connections" ),
                             tr( "Cannot read file %1:\n%2." )
-                            .arg( mFileName )
-                            .arg( file.errorString() ) );
+                            .arg( mFileName,
+                                  file.errorString() ) );
       return false;
     }
 

@@ -66,9 +66,9 @@ QgsMimeDataUtils::Uri::Uri( QString& encData )
   }
 
   QgsDebugMsg( QString( "type:%1 key:%2 name:%3 uri:%4 supportedCRS:%5 supportedFormats:%6" )
-               .arg( layerType ).arg( providerKey ).arg( name ).arg( uri )
-               .arg( supportedCrs.join( ", " ) )
-               .arg( supportedFormats.join( ", " ) ) );
+               .arg( layerType, providerKey, name, uri,
+                     supportedCrs.join( ", " ),
+                     supportedFormats.join( ", " ) ) );
 }
 
 QString QgsMimeDataUtils::Uri::data() const

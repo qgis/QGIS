@@ -1220,7 +1220,7 @@ int QgsWFSProvider::getFeaturesFromGML2( const QDomElement& wfsCollectionElement
           }
 
           const QgsField &fld = mFields[attr];
-          QgsDebugMsg( QString( "set attribute %1: type=%2 value=%3" ).arg( attr ).arg( QVariant::typeToName( fld.type() ) ).arg( currentAttributeElement.text() ) );
+          QgsDebugMsg( QString( "set attribute %1: type=%2 value=%3" ).arg( attr ).arg( QVariant::typeToName( fld.type() ), currentAttributeElement.text() ) );
           f->setAttribute( attr, convertValue( fld.type(), currentAttributeElement.text() ) );
         }
         else //a geometry attribute
@@ -1704,8 +1704,8 @@ void QgsWFSProvider::handleException( const QDomDocument& serverResponse )
   {
     QDomElement exception = exceptionElem.firstChildElement( "Exception" );
     pushError( tr( "WFS exception report (code=%1 text=%2)" )
-               .arg( exception.attribute( "exceptionCode", tr( "missing" ) ) )
-               .arg( exception.firstChildElement( "ExceptionText" ).text() )
+               .arg( exception.attribute( "exceptionCode", tr( "missing" ) ),
+                     exception.firstChildElement( "ExceptionText" ).text() )
              );
     return;
   }
@@ -1741,10 +1741,10 @@ void QgsWFSProvider::extendExtent( const QgsRectangle &extent )
 
   setDataSourceUri( dataSourceUri().replace( QRegExp( "BBOX=[^&]*" ),
                     QString( "BBOX=%1,%2,%3,%4" )
-                    .arg( qgsDoubleToString( mGetExtent.xMinimum() ) )
-                    .arg( qgsDoubleToString( mGetExtent.yMinimum() ) )
-                    .arg( qgsDoubleToString( mGetExtent.xMaximum() ) )
-                    .arg( qgsDoubleToString( mGetExtent.yMaximum() ) ) ) );
+                    .arg( qgsDoubleToString( mGetExtent.xMinimum() ),
+                          qgsDoubleToString( mGetExtent.yMinimum() ),
+                          qgsDoubleToString( mGetExtent.xMaximum() ),
+                          qgsDoubleToString( mGetExtent.yMaximum() ) ) ) );
 
   if ( !mPendingRetrieval )
   {

@@ -252,8 +252,8 @@ bool QgsVectorDataProvider::supportedType( const QgsField &field ) const
 {
   int i;
   QgsDebugMsgLevel( QString( "field name = %1 type = %2 length = %3 precision = %4" )
-                    .arg( field.name() )
-                    .arg( QVariant::typeToName( field.type() ) )
+                    .arg( field.name(),
+                          QVariant::typeToName( field.type() ) )
                     .arg( field.length() )
                     .arg( field.precision() ), 2 );
   for ( i = 0; i < mNativeTypes.size(); i++ )

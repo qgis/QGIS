@@ -72,7 +72,10 @@ void QgsWelcomePageItemDelegate::paint( QPainter* painter, const QStyleOptionVie
   int titleSize = QApplication::fontMetrics().height() * 1.1;
   int textSize = titleSize * 0.85;
 
-  doc.setHtml( QString( "<div style='font-size:%1px;'><span style='font-size:%2px;font-weight:bold;'>%3</span><br>%4<br>%5</div>" ).arg( textSize ).arg( titleSize ).arg( index.data( QgsWelcomePageItemsModel::TitleRole ).toString() ).arg( index.data( QgsWelcomePageItemsModel::PathRole ).toString() ).arg( index.data( QgsWelcomePageItemsModel::CrsRole ).toString() ) );
+  doc.setHtml( QString( "<div style='font-size:%1px;'><span style='font-size:%2px;font-weight:bold;'>%3</span><br>%4<br>%5</div>" ).arg( textSize ).arg( titleSize )
+               .arg( index.data( QgsWelcomePageItemsModel::TitleRole ).toString(),
+                     index.data( QgsWelcomePageItemsModel::PathRole ).toString(),
+                     index.data( QgsWelcomePageItemsModel::CrsRole ).toString() ) );
   doc.setTextWidth( option.rect.width() - ( !icon.isNull() ? icon.width() + 35 : 35 ) );
 
   if ( !icon.isNull() )
@@ -105,7 +108,10 @@ QSize QgsWelcomePageItemDelegate::sizeHint( const QStyleOptionViewItem & option,
   int titleSize = QApplication::fontMetrics().height() * 1.1;
   int textSize = titleSize * 0.85;
 
-  doc.setHtml( QString( "<div style='font-size:%1px;'><span style='font-size:%2px;font-weight:bold;'>%3</span><br>%4<br>%5</div>" ).arg( textSize ).arg( titleSize ).arg( index.data( QgsWelcomePageItemsModel::TitleRole ).toString() ).arg( index.data( QgsWelcomePageItemsModel::PathRole ).toString() ).arg( index.data( QgsWelcomePageItemsModel::CrsRole ).toString() ) );
+  doc.setHtml( QString( "<div style='font-size:%1px;'><span style='font-size:%2px;font-weight:bold;'>%3</span><br>%4<br>%5</div>" ).arg( textSize ).arg( titleSize )
+               .arg( index.data( QgsWelcomePageItemsModel::TitleRole ).toString(),
+                     index.data( QgsWelcomePageItemsModel::PathRole ).toString(),
+                     index.data( QgsWelcomePageItemsModel::CrsRole ).toString() ) );
   doc.setTextWidth( width - ( !icon.isNull() ? icon.width() + 35 : 35 ) );
 
   return QSize( width, qMax( doc.size().height() + 10, ( double )icon.height() ) + 20 );
@@ -145,7 +151,7 @@ QVariant QgsWelcomePageItemsModel::data( const QModelIndex& index, int role ) co
       {
         QgsCoordinateReferenceSystem crs;
         crs.createFromOgcWmsCrs( mRecentProjects.at( index.row() ).crs );
-        return  QString( "%1 (%2)" ).arg( mRecentProjects.at( index.row() ).crs ).arg( crs.description() );
+        return  QString( "%1 (%2)" ).arg( mRecentProjects.at( index.row() ).crs, crs.description() );
       }
       else
       {

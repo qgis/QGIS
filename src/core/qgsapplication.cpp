@@ -762,15 +762,15 @@ QString QgsApplication::showSettings()
                         "SVG Search Paths:\t%8\n"
                         "User DB Path:\t%9\n"
                         "Auth DB Path:\t%10\n" )
-                    .arg( myEnvironmentVar )
-                    .arg( prefixPath() )
-                    .arg( pluginPath() )
-                    .arg( pkgDataPath() )
-                    .arg( themeName() )
-                    .arg( activeThemePath() )
-                    .arg( defaultThemePath() )
-                    .arg( svgPaths().join( tr( "\n\t\t", "match indentation of application state" ) ) )
-                    .arg( qgisMasterDbFilePath() )
+                    .arg( myEnvironmentVar,
+                          prefixPath(),
+                          pluginPath(),
+                          pkgDataPath(),
+                          themeName(),
+                          activeThemePath(),
+                          defaultThemePath(),
+                          svgPaths().join( tr( "\n\t\t", "match indentation of application state" ) ),
+                          qgisMasterDbFilePath() )
                     .arg( qgisAuthDbFilePath() );
   return myState;
 }

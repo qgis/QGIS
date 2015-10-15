@@ -123,6 +123,6 @@ const QString QgsAuthCertTrustPolicyComboBox::defaultTrustText( QgsAuthCertUtils
     }
   }
   return QString( "%1 (%2)" )
-         .arg( QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::DefaultTrust ) )
-         .arg( QgsAuthCertUtils::getCertTrustName( defaultpolicy ) );
+         .arg( QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::DefaultTrust ),
+               QgsAuthCertUtils::getCertTrustName( defaultpolicy ) );
 }

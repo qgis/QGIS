@@ -285,7 +285,7 @@ void eVisDatabaseConnectionGui::on_pbtnConnect_clicked()
     //Try to connect the database connection object
     if ( mDatabaseConnection->connect() )
     {
-      teditConsole->append( tr( "Connection to [%1.%2] established" ).arg( leDatabaseHost->text() ).arg( leDatabaseName->text() ) );
+      teditConsole->append( tr( "Connection to [%1.%2] established" ).arg( leDatabaseHost->text(), leDatabaseName->text() ) );
       lblConnectionStatus->setText( tr( "connected" ) );
 
       //List the tables in the database
@@ -299,7 +299,7 @@ void eVisDatabaseConnectionGui::on_pbtnConnect_clicked()
     else
     {
       teditConsole->append( tr( "Connection to [%1.%2] failed: %3" )
-                            .arg( leDatabaseHost->text() ).arg( leDatabaseName->text() ).arg( mDatabaseConnection->lastError() ) );
+                            .arg( leDatabaseHost->text(), leDatabaseName->text(), mDatabaseConnection->lastError() ) );
     }
   }
 }

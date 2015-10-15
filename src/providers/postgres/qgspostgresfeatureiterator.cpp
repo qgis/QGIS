@@ -125,7 +125,7 @@ bool QgsPostgresFeatureIterator::fetchFeature( QgsFeature& feature )
     QgsDebugMsgLevel( QString( "fetching %1 features." ).arg( mFeatureQueueSize ), 4 );
     if ( mConn->PQsendQuery( fetch ) == 0 ) // fetch features asynchronously
     {
-      QgsMessageLog::logMessage( QObject::tr( "Fetching from cursor %1 failed\nDatabase error: %2" ).arg( mCursorName ).arg( mConn->PQerrorMessage() ), QObject::tr( "PostGIS" ) );
+      QgsMessageLog::logMessage( QObject::tr( "Fetching from cursor %1 failed\nDatabase error: %2" ).arg( mCursorName, mConn->PQerrorMessage() ), QObject::tr( "PostGIS" ) );
     }
 
     QgsPostgresResult queryResult;
@@ -137,7 +137,7 @@ bool QgsPostgresFeatureIterator::fetchFeature( QgsFeature& feature )
 
       if ( queryResult.PQresultStatus() != PGRES_TUPLES_OK )
       {
-        QgsMessageLog::logMessage( QObject::tr( "Fetching from cursor %1 failed\nDatabase error: %2" ).arg( mCursorName ).arg( mConn->PQerrorMessage() ), QObject::tr( "PostGIS" ) );
+        QgsMessageLog::logMessage( QObject::tr( "Fetching from cursor %1 failed\nDatabase error: %2" ).arg( mCursorName, mConn->PQerrorMessage() ), QObject::tr( "PostGIS" ) );
         break;
       }
 
@@ -267,26 +267,26 @@ QString QgsPostgresFeatureIterator::whereClauseRect()
   if ( mConn->majorVersion() < 2 )
   {
     qBox = QString( "setsrid('BOX3D(%1)'::box3d,%2)" )
-           .arg( rect.asWktCoordinates() )
-           .arg( mSource->mRequestedSrid.isEmpty() ? mSource->mDetectedSrid : mSource->mRequestedSrid );
+           .arg( rect.asWktCoordinates(),
+                 mSource->mRequestedSrid.isEmpty() ? mSource->mDetectedSrid : mSource->mRequestedSrid );
   }
   else
   {
     qBox = QString( "st_makeenvelope(%1,%2,%3,%4,%5)" )
-           .arg( qgsDoubleToString( rect.xMinimum() ) )
-           .arg( qgsDoubleToString( rect.yMinimum() ) )
-           .arg( qgsDoubleToString( rect.xMaximum() ) )
-           .arg( qgsDoubleToString( rect.yMaximum() ) )
-           .arg( mSource->mRequestedSrid.isEmpty() ? mSource->mDetectedSrid : mSource->mRequestedSrid );
+           .arg( qgsDoubleToString( rect.xMinimum() ),
+                 qgsDoubleToString( rect.yMinimum() ),
+                 qgsDoubleToString( rect.xMaximum() ),
+                 qgsDoubleToString( rect.yMaximum() ),
+                 mSource->mRequestedSrid.isEmpty() ? mSource->mDetectedSrid : mSource->mRequestedSrid );
   }
 
   bool castToGeometry = mSource->mSpatialColType == sctGeography ||
                         mSource->mSpatialColType == sctPcPatch;
 
   QString whereClause = QString( "%1%2 && %3" )
-                        .arg( QgsPostgresConn::quotedIdentifier( mSource->mGeometryColumn ) )
-                        .arg( castToGeometry ? "::geometry" : "" )
-                        .arg( qBox );
+                        .arg( QgsPostgresConn::quotedIdentifier( mSource->mGeometryColumn ),
+                              castToGeometry ? "::geometry" : "",
+                              qBox );
 
   if ( mRequest.flags() & QgsFeatureRequest::ExactIntersect )
   {
@@ -294,20 +294,20 @@ QString QgsPostgresFeatureIterator::whereClauseRect()
     if ( mConn->majorVersion() >= 2 || ( mConn->majorVersion() == 1 && mConn->minorVersion() >= 5 ) )
       curveToLineFn = "st_curvetoline"; // st_ prefix is always used
     whereClause += QString( " AND %1(%2(%3%4),%5)" )
-                   .arg( mConn->majorVersion() < 2 ? "intersects" : "st_intersects" )
-                   .arg( curveToLineFn )
-                   .arg( QgsPostgresConn::quotedIdentifier( mSource->mGeometryColumn ) )
-                   .arg( castToGeometry ? "::geometry" : "" )
-                   .arg( qBox );
+                   .arg( mConn->majorVersion() < 2 ? "intersects" : "st_intersects",
+                         curveToLineFn,
+                         QgsPostgresConn::quotedIdentifier( mSource->mGeometryColumn ),
+                         castToGeometry ? "::geometry" : "",
+                         qBox );
   }
 
   if ( !mSource->mRequestedSrid.isEmpty() && ( mSource->mRequestedSrid != mSource->mDetectedSrid || mSource->mRequestedSrid.toInt() == 0 ) )
   {
     whereClause += QString( " AND %1(%2%3)=%4" )
-                   .arg( mConn->majorVersion() < 2 ? "srid" : "st_srid" )
-                   .arg( QgsPostgresConn::quotedIdentifier( mSource->mGeometryColumn ) )
-                   .arg( castToGeometry ? "::geometry" : "" )
-                   .arg( mSource->mRequestedSrid );
+                   .arg( mConn->majorVersion() < 2 ? "srid" : "st_srid",
+                         QgsPostgresConn::quotedIdentifier( mSource->mGeometryColumn ),
+                         castToGeometry ? "::geometry" : "",
+                         mSource->mRequestedSrid );
   }
 
   if ( mSource->mRequestedGeomType != QGis::WKBUnknown && mSource->mRequestedGeomType != mSource->mDetectedGeomType )
@@ -351,8 +351,8 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause )
                    // ST_Force2D since 2.1.0
                    : mConn->majorVersion() > 2 || mConn->minorVersion() > 0 ? "st_force2d"
                    // ST_Force_2D in 2.0.x
-                   : "st_force_2d" )
-             .arg( geom );
+                   : "st_force_2d",
+                   geom );
     }
 
     if ( !mRequest.simplifyMethod().forceLocalOptimization() &&
@@ -364,15 +364,15 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause )
       geom = QString( "%1(%2,%3)" )
              .arg( mRequest.simplifyMethod().methodType() == QgsSimplifyMethod::OptimizeForRendering
                    ? ( mConn->majorVersion() < 2 ? "snaptogrid" : "st_snaptogrid" )
-                       : ( mConn->majorVersion() < 2 ? "simplifypreservetopology" : "st_simplifypreservetopology" ) )
-                 .arg( geom )
+                       : ( mConn->majorVersion() < 2 ? "simplifypreservetopology" : "st_simplifypreservetopology" ),
+                       geom )
                  .arg( mRequest.simplifyMethod().tolerance() * 0.8 ); //-> Default factor for the maximum displacement distance for simplification, similar as GeoServer does
     }
 
     geom = QString( "%1(%2,'%3')" )
-           .arg( mConn->majorVersion() < 2 ? "asbinary" : "st_asbinary" )
-           .arg( geom )
-           .arg( QgsPostgresProvider::endianString() );
+           .arg( mConn->majorVersion() < 2 ? "asbinary" : "st_asbinary",
+                 geom,
+                 QgsPostgresProvider::endianString() );
 
     query += delim + geom;
     delim = ",";

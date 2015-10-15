@@ -66,9 +66,9 @@ void QgsDefaultSearchWidgetWrapper::setExpression( QString exp )
   else
   {
     str = QString( "%1 %2 '%3'" )
-          .arg( QgsExpression::quotedColumnRef( fieldName ) )
-          .arg( numeric ? "=" : mCaseString )
-          .arg( numeric
+          .arg( QgsExpression::quotedColumnRef( fieldName ),
+                numeric ? "=" : mCaseString,
+                numeric
                 ? exp.replace( "'", "''" )
                 :
                 "%" + exp.replace( "'", "''" ) + "%" ); // escape quotes

@@ -567,9 +567,9 @@ QString QgsDataSourceURI::uri( bool expandAuthConfig ) const
   columnName.replace( ")", "\\)" );
 
   theUri += QString( " table=%1%2 sql=%3" )
-            .arg( quotedTablename() )
-            .arg( mGeometryColumn.isNull() ? QString() : QString( " (%1)" ).arg( columnName ) )
-            .arg( mSql );
+            .arg( quotedTablename(),
+                  mGeometryColumn.isNull() ? QString() : QString( " (%1)" ).arg( columnName ),
+                  mSql );
 
   return theUri;
 }
@@ -608,8 +608,8 @@ QString QgsDataSourceURI::quotedTablename() const
 {
   if ( !mSchema.isEmpty() )
     return QString( "\"%1\".\"%2\"" )
-           .arg( escape( mSchema, '"' ) )
-           .arg( escape( mTable, '"' ) );
+           .arg( escape( mSchema, '"' ),
+                 escape( mTable, '"' ) );
   else
     return QString( "\"%1\"" )
            .arg( escape( mTable, '"' ) );

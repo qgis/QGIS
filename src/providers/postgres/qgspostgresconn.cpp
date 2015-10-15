@@ -325,8 +325,8 @@ void QgsPostgresConn::addColumnInfo( QgsPostgresLayerProperty& layerProperty, co
   //       could use array_agg() and count()
   //       array output would look like this: "{One,tWo}"
   QString sql = QString( "SELECT attname, CASE WHEN typname = ANY(ARRAY['geometry','geography','topogeometry']) THEN 1 ELSE null END AS isSpatial FROM pg_attribute JOIN pg_type ON atttypid=pg_type.oid WHERE attrelid=regclass('%1.%2') AND attnum>0" )
-                .arg( quotedIdentifier( schemaName ) )
-                .arg( quotedIdentifier( viewName ) );
+                .arg( quotedIdentifier( schemaName ),
+                      quotedIdentifier( viewName ) );
   //QgsDebugMsg( sql );
   QgsPostgresResult colRes( PQexec( sql ) );
 
@@ -444,13 +444,13 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
                    " AND has_schema_privilege(n.nspname,'usage')"
                    " AND has_table_privilege('\"'||n.nspname||'\".\"'||c.relname||'\"','select')" // user has select privilege
                  )
-          .arg( tableName ).arg( schemaName ).arg( columnName ).arg( typeName ).arg( sridName ).arg( dimName ).arg( gtableName );
+          .arg( tableName, schemaName, columnName, typeName, sridName, dimName, gtableName );
 
     if ( searchPublicOnly )
       sql += " AND n.nspname='public'";
 
     if ( !schema.isEmpty() )
-      sql += QString( " AND %1='%2'" ).arg( schemaName ).arg( schema );
+      sql += QString( " AND %1='%2'" ).arg( schemaName, schema );
 
     sql += QString( " ORDER BY n.nspname,c.relname,%1" ).arg( columnName );
 
@@ -840,8 +840,8 @@ QString QgsPostgresConn::postgisVersion()
     mGeosAvailable = result.PQntuples() == 1 && !result.PQgetisnull( 0, 0 );
     mProjAvailable = result.PQntuples() == 1 && !result.PQgetisnull( 0, 1 );
     QgsDebugMsg( QString( "geos:%1 proj:%2" )
-                 .arg( mGeosAvailable ? result.PQgetvalue( 0, 0 ) : "none" )
-                 .arg( mProjAvailable ? result.PQgetvalue( 0, 1 ) : "none" ) );
+                 .arg( mGeosAvailable ? result.PQgetvalue( 0, 0 ) : "none",
+                       mProjAvailable ? result.PQgetvalue( 0, 1 ) : "none" ) );
     mGistAvailable = true;
   }
   else
@@ -992,9 +992,9 @@ bool QgsPostgresConn::openCursor( QString cursorName, QString sql )
     else
       PQexecNR( "BEGIN" );
   }
-  QgsDebugMsgLevel( QString( "Binary cursor %1 for %2" ).arg( cursorName ).arg( sql ), 3 );
+  QgsDebugMsgLevel( QString( "Binary cursor %1 for %2" ).arg( cursorName, sql ), 3 );
   return PQexecNR( QString( "DECLARE %1 BINARY CURSOR%2 FOR %3" ).
-                   arg( cursorName ).arg( !mTransaction ? "" : QString( " WITH HOLD" ) ).arg( sql ) );
+                   arg( cursorName, !mTransaction ? "" : QString( " WITH HOLD" ), sql ) );
 }
 
 bool QgsPostgresConn::closeCursor( QString cursorName )
@@ -1263,8 +1263,8 @@ QString QgsPostgresConn::fieldExpression( const QgsField &fld, QString expr )
   else if ( type == "geometry" )
   {
     return QString( "%1(%2)" )
-           .arg( majorVersion() < 2 ? "asewkt" : "st_asewkt" )
-           .arg( expr );
+           .arg( majorVersion() < 2 ? "asewkt" : "st_asewkt",
+                 expr );
   }
   else if ( type == "geography" )
   {
@@ -1319,8 +1319,8 @@ void QgsPostgresConn::retrieveLayerTypes( QgsPostgresLayerProperty &layerPropert
   if ( !layerProperty.schemaName.isEmpty() )
   {
     table = QString( "%1.%2" )
-            .arg( quotedIdentifier( layerProperty.schemaName ) )
-            .arg( quotedIdentifier( layerProperty.tableName ) );
+            .arg( quotedIdentifier( layerProperty.schemaName ),
+                  quotedIdentifier( layerProperty.tableName ) );
   }
   else
   {
@@ -1334,9 +1334,9 @@ void QgsPostgresConn::retrieveLayerTypes( QgsPostgresLayerProperty &layerPropert
     if ( useEstimatedMetadata )
     {
       table = QString( "(SELECT %1 FROM %2%3 LIMIT %4) AS t" )
-              .arg( quotedIdentifier( layerProperty.geometryColName ) )
-              .arg( table )
-              .arg( layerProperty.sql.isEmpty() ? "" : QString( " WHERE %1" ).arg( layerProperty.sql ) )
+              .arg( quotedIdentifier( layerProperty.geometryColName ),
+                    table,
+                    layerProperty.sql.isEmpty() ? "" : QString( " WHERE %1" ).arg( layerProperty.sql ) )
               .arg( sGeomTypeSelectLimit );
     }
     else if ( !layerProperty.sql.isEmpty() )
@@ -1353,8 +1353,8 @@ void QgsPostgresConn::retrieveLayerTypes( QgsPostgresLayerProperty &layerPropert
     if ( type == QGis::WKBUnknown )
     {
       query += QString( "upper(geometrytype(%1%2))" )
-               .arg( quotedIdentifier( layerProperty.geometryColName ) )
-               .arg( castToGeometry ?  "::geometry" : "" );
+               .arg( quotedIdentifier( layerProperty.geometryColName ),
+                     castToGeometry ?  "::geometry" : "" );
     }
     else
     {
@@ -1367,9 +1367,9 @@ void QgsPostgresConn::retrieveLayerTypes( QgsPostgresLayerProperty &layerPropert
     if ( srid  == INT_MIN )
     {
       query += QString( "%1(%2%3)" )
-               .arg( majorVersion() < 2 ? "srid" : "st_srid" )
-               .arg( quotedIdentifier( layerProperty.geometryColName ) )
-               .arg( castToGeometry ?  "::geometry" : "" );
+               .arg( majorVersion() < 2 ? "srid" : "st_srid",
+                     quotedIdentifier( layerProperty.geometryColName ),
+                     castToGeometry ?  "::geometry" : "" );
     }
     else
     {
@@ -1379,9 +1379,9 @@ void QgsPostgresConn::retrieveLayerTypes( QgsPostgresLayerProperty &layerPropert
     if ( !layerProperty.force2d )
     {
       query += QString( ",%1(%2%3)" )
-               .arg( majorVersion() < 2 ? "ndims" : "st_ndims" )
-               .arg( quotedIdentifier( layerProperty.geometryColName ) )
-               .arg( castToGeometry ?  "::geometry" : "" );
+               .arg( majorVersion() < 2 ? "ndims" : "st_ndims",
+                     quotedIdentifier( layerProperty.geometryColName ),
+                     castToGeometry ?  "::geometry" : "" );
     }
 
     query += " FROM " + table;

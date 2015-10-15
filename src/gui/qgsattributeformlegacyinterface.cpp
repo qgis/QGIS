@@ -66,10 +66,10 @@ void QgsAttributeFormLegacyInterface::featureChanged()
   QgsPythonRunner::run( initFeature );
 
   QString expr = QString( "%1( %2, %3, %4)" )
-                 .arg( mPyFunctionName )
-                 .arg( mPyFormVarName )
-                 .arg( mPyLayerVarName )
-                 .arg( pyFeatureVarName );
+                 .arg( mPyFunctionName,
+                       mPyFormVarName,
+                       mPyLayerVarName,
+                       pyFeatureVarName );
 
   QgsPythonRunner::run( expr );
 

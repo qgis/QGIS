@@ -363,7 +363,7 @@ void QgsEllipseSymbolLayerV2::writeSldMarker( QDomDocument &doc, QDomElement &el
   {
     // the symbol has an angle and the symbol layer have a rotation
     // property set
-    angleFunc = QString( "%1 + %2" ).arg( angleFunc ).arg( ddRotation->useExpression() ? ddRotation->expressionString() : ddRotation->field() );
+    angleFunc = QString( "%1 + %2" ).arg( angleFunc, ddRotation->useExpression() ? ddRotation->expressionString() : ddRotation->field() );
   }
   else if ( !qgsDoubleNear( mAngle, 0.0 ) )
   {

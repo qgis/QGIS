@@ -143,7 +143,7 @@ bool TestStyleV2::testValidColor( QgsVectorColorRampV2 *ramp, double value, cons
   if ( result != expected )
   {
     QWARN( QString( "value = %1 result = %2 expected = %3" ).arg( value ).arg(
-             result.name() ).arg( expected.name() ).toLocal8Bit().data() );
+             result.name(), expected.name() ).toLocal8Bit().data() );
     return false;
   }
   return true;

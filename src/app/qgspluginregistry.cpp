@@ -130,9 +130,9 @@ void QgsPluginRegistry::dump()
         ++it )
   {
     QgsDebugMsg( QString( "PLUGIN: %1 -> (%2, %3)" )
-                 .arg( it.key() )
-                 .arg( it->name() )
-                 .arg( it->library() ) );
+                 .arg( it.key(),
+                       it->name(),
+                       it->library() ) );
   }
 
   if ( mPythonUtils && mPythonUtils->isEnabled() )
@@ -291,7 +291,7 @@ void QgsPluginRegistry::loadPythonPlugin( const QString& packageName )
 
     // add to settings
     settings.setValue( "/PythonPlugins/" + packageName, true );
-    QgsMessageLog::logMessage( QObject::tr( "Loaded %1 (package: %2)" ).arg( pluginName ).arg( packageName ), QObject::tr( "Plugins" ), QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( QObject::tr( "Loaded %1 (package: %2)" ).arg( pluginName, packageName ), QObject::tr( "Plugins" ), QgsMessageLog::INFO );
   }
 }
 
@@ -318,7 +318,7 @@ void QgsPluginRegistry::loadCppPlugin( const QString& theFullPathName )
   bool loaded = myLib.load();
   if ( !loaded )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Failed to load %1 (Reason: %2)" ).arg( myLib.fileName() ).arg( myLib.errorString() ), QObject::tr( "Plugins" ) );
+    QgsMessageLog::logMessage( QObject::tr( "Failed to load %1 (Reason: %2)" ).arg( myLib.fileName(), myLib.errorString() ), QObject::tr( "Plugins" ) );
     return;
   }
 
@@ -344,7 +344,7 @@ void QgsPluginRegistry::loadCppPlugin( const QString& theFullPathName )
           addPlugin( baseName, QgsPluginMetadata( myLib.fileName(), pName(), pl ) );
           //add it to the qsettings file [ts]
           settings.setValue( "/Plugins/" + baseName, true );
-          QgsMessageLog::logMessage( QObject::tr( "Loaded %1 (Path: %2)" ).arg( pName() ).arg( myLib.fileName() ), QObject::tr( "Plugins" ), QgsMessageLog::INFO );
+          QgsMessageLog::logMessage( QObject::tr( "Loaded %1 (Path: %2)" ).arg( pName(), myLib.fileName() ), QObject::tr( "Plugins" ), QgsMessageLog::INFO );
 
           QObject *o = dynamic_cast<QObject *>( pl );
           if ( o )
@@ -545,7 +545,7 @@ bool QgsPluginRegistry::checkCppPlugin( const QString& pluginFullPath )
   bool loaded = myLib.load();
   if ( ! loaded )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Failed to load %1 (Reason: %2)" ).arg( myLib.fileName() ).arg( myLib.errorString() ), QObject::tr( "Plugins" ) );
+    QgsMessageLog::logMessage( QObject::tr( "Failed to load %1 (Reason: %2)" ).arg( myLib.fileName(), myLib.errorString() ), QObject::tr( "Plugins" ) );
     return false;
   }
 

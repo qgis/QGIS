@@ -110,8 +110,8 @@ QString QgsError::message( QgsErrorMessage::Format theFormat ) const
       QString location = QString( "%1 : %2 : %3" ).arg( file ).arg( m.line() ).arg( m.function() );
       if ( !srcUrl.isEmpty() )
       {
-        QString url = QString( "%1/%2#L%3" ).arg( srcUrl ).arg( file ).arg( m.line() );
-        str += QString( "<br>(<a href='%1'>%2</a>)" ).arg( url ).arg( location );
+        QString url = QString( "%1/%2#L%3" ).arg( srcUrl, file ).arg( m.line() );
+        str += QString( "<br>(<a href='%1'>%2</a>)" ).arg( url, location );
       }
       else
       {

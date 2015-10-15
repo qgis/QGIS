@@ -115,8 +115,8 @@ void QgsConfigureShortcutsDialog::saveShortcuts()
   {
     QMessageBox::warning( this, tr( "Saving shortcuts" ),
                           tr( "Cannot write file %1:\n%2." )
-                          .arg( fileName )
-                          .arg( file.errorString() ) );
+                          .arg( fileName,
+                                file.errorString() ) );
     return;
   }
 
@@ -163,8 +163,8 @@ void QgsConfigureShortcutsDialog::loadShortcuts()
   {
     QMessageBox::warning( this, tr( "Loading shortcuts" ),
                           tr( "Cannot read file %1:\n%2." )
-                          .arg( fileName )
-                          .arg( file.errorString() ) );
+                          .arg( fileName,
+                                file.errorString() ) );
     return;
   }
 

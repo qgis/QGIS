@@ -701,10 +701,10 @@ void QgsCoordinateTransform::transformCoords( const int& numPoints, double *x, d
                       "%2"
                       "PROJ.4: %3 +to %4\n"
                       "Error: %5" )
-                  .arg( dir )
-                  .arg( points )
-                  .arg( srcdef ).arg( dstdef )
-                  .arg( QString::fromUtf8( pj_strerrno( projResult ) ) );
+                  .arg( dir,
+                        points,
+                        srcdef, dstdef,
+                        QString::fromUtf8( pj_strerrno( projResult ) ) );
 
     pj_dalloc( srcdef );
     pj_dalloc( dstdef );

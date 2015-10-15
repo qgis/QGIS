@@ -85,8 +85,8 @@ const QString QgsLegacyHelpers::convertEditType( QgsVectorLayer::EditType editTy
            editTypeElement.hasAttribute( "filterAttributeValue" ) )
       {
         filterExpression = QString( "\"%1\"='%2'" )
-                           .arg( editTypeElement.attribute( "filterAttributeColumn" ) )
-                           .arg( editTypeElement.attribute( "filterAttributeValue" ) );
+                           .arg( editTypeElement.attribute( "filterAttributeColumn" ),
+                                 editTypeElement.attribute( "filterAttributeValue" ) );
       }
       else
       {

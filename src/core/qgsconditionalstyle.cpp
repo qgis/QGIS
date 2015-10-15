@@ -160,7 +160,7 @@ QString QgsConditionalStyle::displayText() const
   if ( name().isEmpty() )
     return rule();
   else
-    return QString( "%1 \n%2" ).arg( name() ).arg( rule() );
+    return QString( "%1 \n%2" ).arg( name(), rule() );
 }
 
 void QgsConditionalStyle::setSymbol( QgsSymbolV2* value )

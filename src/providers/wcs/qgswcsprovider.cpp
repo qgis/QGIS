@@ -568,7 +568,7 @@ void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, in
            !qgsDoubleNearSig( cacheExtent.yMaximum(), viewExtent.yMaximum(), 10 ) )
       {
         QgsDebugMsg( "cacheExtent and viewExtent differ" );
-        QgsMessageLog::logMessage( tr( "Received coverage has wrong extent %1 (expected %2)" ).arg( cacheExtent.toString() ).arg( viewExtent.toString() ), tr( "WCS" ) );
+        QgsMessageLog::logMessage( tr( "Received coverage has wrong extent %1 (expected %2)" ).arg( cacheExtent.toString(), viewExtent.toString() ), tr( "WCS" ) );
         // We are doing all possible to avoid this situation,
         // If it happens, it would be possible to rescale the portion we get
         // to only part of the data block, but it is better to left it
@@ -677,10 +677,10 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const & viewExtent, int
 
   // Bounding box in WCS format (Warning: does not work with scientific notation)
   QString bbox = QString( changeXY ? "%2,%1,%4,%3" : "%1,%2,%3,%4" )
-                 .arg( qgsDoubleToString( extent.xMinimum() ) )
-                 .arg( qgsDoubleToString( extent.yMinimum() ) )
-                 .arg( qgsDoubleToString( extent.xMaximum() ) )
-                 .arg( qgsDoubleToString( extent.yMaximum() ) );
+                 .arg( qgsDoubleToString( extent.xMinimum() ),
+                       qgsDoubleToString( extent.yMinimum() ),
+                       qgsDoubleToString( extent.xMaximum() ),
+                       qgsDoubleToString( extent.yMaximum() ) );
 
   QUrl url( mIgnoreGetCoverageUrl ? mBaseUrl : mCapabilities.getCoverageUrl() );
 
@@ -715,7 +715,7 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const & viewExtent, int
   if ( mCapabilities.version().startsWith( "1.1" ) )
   {
     setQueryItem( url, "IDENTIFIER", mIdentifier );
-    QString crsUrn = QString( "urn:ogc:def:crs:%1::%2" ).arg( crs.split( ':' ).value( 0 ) ).arg( crs.split( ':' ).value( 1 ) );
+    QString crsUrn = QString( "urn:ogc:def:crs:%1::%2" ).arg( crs.split( ':' ).value( 0 ), crs.split( ':' ).value( 1 ) );
     bbox += "," + crsUrn;
 
     if ( !mTime.isEmpty() )
@@ -744,8 +744,8 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const & viewExtent, int
     // Mapserver 6.0.3 does not work with origin on yMinimum (lower left)
     // Geoserver works OK with yMinimum (lower left)
     QString gridOrigin = QString( changeXY ? "%2,%1" : "%1,%2" )
-                         .arg( qgsDoubleToString( extent.xMinimum() ) )
-                         .arg( qgsDoubleToString( extent.yMaximum() ) );
+                         .arg( qgsDoubleToString( extent.xMinimum() ),
+                               qgsDoubleToString( extent.yMaximum() ) );
     setQueryItem( url, "GRIDORIGIN", gridOrigin );
 
     // GridOffsets WCS 1.1:
@@ -764,8 +764,8 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const & viewExtent, int
     QString gridOffsets = QString( changeXY ? "%2,%1" : "%1,%2" )
                           //setQueryItem( url, "GRIDTYPE", "urn:ogc:def:method:WCS:1.1:2dGridIn2dCrs" );
                           //QString gridOffsets = QString( changeXY ? "%2,0,0,%1" : "%1,0,0,%2" )
-                          .arg( qgsDoubleToString( xRes ) )
-                          .arg( qgsDoubleToString( yOff ) );
+                          .arg( qgsDoubleToString( xRes ),
+                                qgsDoubleToString( yOff ) );
     setQueryItem( url, "GRIDOFFSETS", gridOffsets );
   }
 
@@ -1743,8 +1743,8 @@ void QgsWcsDownloadHandler::cacheReplyFinished()
 
       QgsMessageLog::logMessage( tr( "Map request error (Status: %1; Reason phrase: %2; URL:%3)" )
                                  .arg( status.toInt() )
-                                 .arg( phrase.toString() )
-                                 .arg( mCacheReply->url().toString() ), tr( "WCS" ) );
+                                 .arg( phrase.toString(),
+                                       mCacheReply->url().toString() ), tr( "WCS" ) );
 
       mCacheReply->deleteLater();
       mCacheReply = 0;
@@ -1774,15 +1774,15 @@ void QgsWcsDownloadHandler::cacheReplyFinished()
           && QgsWcsProvider::parseServiceExceptionReportDom( text, mWcsVersion, errorTitle, errorText ) )
       {
         mCachedError.append( SRVERR( tr( "Map request error:<br>Title: %1<br>Error: %2<br>URL: <a href='%3'>%3</a>)" )
-                                     .arg( errorTitle ).arg( errorText )
-                                     .arg( mCacheReply->url().toString() ) ) );
+                                     .arg( errorTitle, errorText,
+                                           mCacheReply->url().toString() ) ) );
       }
       else
       {
         QgsMessageLog::logMessage( tr( "Map request error (Status: %1; Response: %2; URL:%3)" )
                                    .arg( status.toInt() )
-                                   .arg( QString::fromUtf8( text ) )
-                                   .arg( mCacheReply->url().toString() ), tr( "WCS" ) );
+                                   .arg( QString::fromUtf8( text ),
+                                         mCacheReply->url().toString() ), tr( "WCS" ) );
       }
 
       mCacheReply->deleteLater();
@@ -1836,14 +1836,14 @@ void QgsWcsDownloadHandler::cacheReplyFinished()
         if ( QgsWcsProvider::parseServiceExceptionReportDom( body, mWcsVersion, errorTitle, errorText ) )
         {
           QgsMessageLog::logMessage( tr( "Map request error (Title:%1; Error:%2; URL: %3)" )
-                                     .arg( errorTitle ).arg( errorText )
-                                     .arg( mCacheReply->url().toString() ), tr( "WCS" ) );
+                                     .arg( errorTitle, errorText,
+                                           mCacheReply->url().toString() ), tr( "WCS" ) );
         }
         else
         {
           QgsMessageLog::logMessage( tr( "Map request error (Response: %1; URL:%2)" )
-                                     .arg( QString::fromUtf8( body ) )
-                                     .arg( mCacheReply->url().toString() ), tr( "WCS" ) );
+                                     .arg( QString::fromUtf8( body ),
+                                           mCacheReply->url().toString() ), tr( "WCS" ) );
         }
 
         mCacheReply->deleteLater();
@@ -1902,7 +1902,7 @@ void QgsWcsDownloadHandler::cacheReplyFinished()
     sErrors++;
     if ( sErrors < 100 )
     {
-      QgsMessageLog::logMessage( tr( "Map request failed [error:%1 url:%2]" ).arg( mCacheReply->errorString() ).arg( mCacheReply->url().toString() ), tr( "WCS" ) );
+      QgsMessageLog::logMessage( tr( "Map request failed [error:%1 url:%2]" ).arg( mCacheReply->errorString(), mCacheReply->url().toString() ), tr( "WCS" ) );
     }
     else if ( sErrors == 100 )
     {

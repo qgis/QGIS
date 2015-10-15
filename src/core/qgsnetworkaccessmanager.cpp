@@ -71,7 +71,7 @@ class QgsNetworkProxyFactory : public QNetworkProxyFactory
       {
         if ( url.startsWith( exclude ) )
         {
-          QgsDebugMsg( QString( "using default proxy for %1 [exclude %2]" ).arg( url ).arg( exclude ) );
+          QgsDebugMsg( QString( "using default proxy for %1 [exclude %2]" ).arg( url, exclude ) );
           return QList<QNetworkProxy>() << QNetworkProxy();
         }
       }
@@ -147,11 +147,11 @@ void QgsNetworkAccessManager::setFallbackProxyAndExcludes( const QNetworkProxy &
                      proxy.type() == QNetworkProxy::HttpProxy ? "HttpProxy" :
                      proxy.type() == QNetworkProxy::HttpCachingProxy ? "HttpCachingProxy" :
                      proxy.type() == QNetworkProxy::FtpCachingProxy ? "FtpCachingProxy" :
-                     "Undefined" )
-               .arg( proxy.hostName() )
+                     "Undefined",
+                     proxy.hostName() )
                .arg( proxy.port() )
-               .arg( proxy.user() )
-               .arg( proxy.password().isEmpty() ? "not set" : "set" ) );
+               .arg( proxy.user(),
+                     proxy.password().isEmpty() ? "not set" : "set" ) );
 
   mFallbackProxy = proxy;
   mExcludedURLs = excludes;
@@ -349,7 +349,7 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache()
       QgsDebugMsg( QString( "setting proxy %1 %2:%3 %4/%5" )
                    .arg( proxyType )
                    .arg( proxyHost ).arg( proxyPort )
-                   .arg( proxyUser ).arg( proxyPassword )
+                   .arg( proxyUser, proxyPassword )
                  );
       proxy = QNetworkProxy( proxyType, proxyHost, proxyPort, proxyUser, proxyPassword );
     }

@@ -183,7 +183,7 @@ bool QgsSpatiaLiteFeatureIterator::prepareStatement( QString whereClause )
     if ( sqlite3_prepare_v2( mHandle->handle(), sql.toUtf8().constData(), -1, &sqliteStatement, NULL ) != SQLITE_OK )
     {
       // some error occurred
-      QgsMessageLog::logMessage( QObject::tr( "SQLite error: %2\nSQL: %1" ).arg( sql ).arg( sqlite3_errmsg( mHandle->handle() ) ), QObject::tr( "SpatiaLite" ) );
+      QgsMessageLog::logMessage( QObject::tr( "SQLite error: %2\nSQL: %1" ).arg( sql, sqlite3_errmsg( mHandle->handle() ) ), QObject::tr( "SpatiaLite" ) );
       return false;
     }
   }
@@ -229,12 +229,12 @@ QString QgsSpatiaLiteFeatureIterator::whereClauseRect()
   if ( mRequest.flags() & QgsFeatureRequest::ExactIntersect )
   {
     // we are requested to evaluate a true INTERSECT relationship
-    whereClause += QString( "Intersects(%1, BuildMbr(%2)) AND " ).arg( QgsSpatiaLiteProvider::quotedIdentifier( mSource->mGeometryColumn ) ).arg( mbr( rect ) );
+    whereClause += QString( "Intersects(%1, BuildMbr(%2)) AND " ).arg( QgsSpatiaLiteProvider::quotedIdentifier( mSource->mGeometryColumn ), mbr( rect ) );
   }
   if ( mSource->mVShapeBased )
   {
     // handling a VirtualShape layer
-    whereClause += QString( "MbrIntersects(%1, BuildMbr(%2))" ).arg( QgsSpatiaLiteProvider::quotedIdentifier( mSource->mGeometryColumn ) ).arg( mbr( rect ) );
+    whereClause += QString( "MbrIntersects(%1, BuildMbr(%2))" ).arg( QgsSpatiaLiteProvider::quotedIdentifier( mSource->mGeometryColumn ), mbr( rect ) );
   }
   else if ( rect.isFinite() )
   {
@@ -245,25 +245,25 @@ QString QgsSpatiaLiteFeatureIterator::whereClauseRect()
       mbrFilter += QString( "xmax >= %1 AND " ).arg( qgsDoubleToString( rect.xMinimum() ) );
       mbrFilter += QString( "ymin <= %1 AND " ).arg( qgsDoubleToString( rect.yMaximum() ) );
       mbrFilter += QString( "ymax >= %1" ).arg( qgsDoubleToString( rect.yMinimum() ) );
-      QString idxName = QString( "idx_%1_%2" ).arg( mSource->mIndexTable ).arg( mSource->mIndexGeometry );
+      QString idxName = QString( "idx_%1_%2" ).arg( mSource->mIndexTable, mSource->mIndexGeometry );
       whereClause += QString( "%1 IN (SELECT pkid FROM %2 WHERE %3)" )
-                     .arg( quotedPrimaryKey() )
-                     .arg( QgsSpatiaLiteProvider::quotedIdentifier( idxName ) )
-                     .arg( mbrFilter );
+                     .arg( quotedPrimaryKey(),
+                           QgsSpatiaLiteProvider::quotedIdentifier( idxName ),
+                           mbrFilter );
     }
     else if ( mSource->spatialIndexMbrCache )
     {
       // using the MbrCache spatial index
-      QString idxName = QString( "cache_%1_%2" ).arg( mSource->mIndexTable ).arg( mSource->mIndexGeometry );
+      QString idxName = QString( "cache_%1_%2" ).arg( mSource->mIndexTable, mSource->mIndexGeometry );
       whereClause += QString( "%1 IN (SELECT rowid FROM %2 WHERE mbr = FilterMbrIntersects(%3))" )
-                     .arg( quotedPrimaryKey() )
-                     .arg( QgsSpatiaLiteProvider::quotedIdentifier( idxName ) )
-                     .arg( mbr( rect ) );
+                     .arg( quotedPrimaryKey(),
+                           QgsSpatiaLiteProvider::quotedIdentifier( idxName ),
+                           mbr( rect ) );
     }
     else
     {
       // using simple MBR filtering
-      whereClause += QString( "MbrIntersects(%1, BuildMbr(%2))" ).arg( QgsSpatiaLiteProvider::quotedIdentifier( mSource->mGeometryColumn ) ).arg( mbr( rect ) );
+      whereClause += QString( "MbrIntersects(%1, BuildMbr(%2))" ).arg( QgsSpatiaLiteProvider::quotedIdentifier( mSource->mGeometryColumn ), mbr( rect ) );
     }
   }
   else
@@ -277,10 +277,10 @@ QString QgsSpatiaLiteFeatureIterator::whereClauseRect()
 QString QgsSpatiaLiteFeatureIterator::mbr( const QgsRectangle& rect )
 {
   return QString( "%1, %2, %3, %4" )
-         .arg( qgsDoubleToString( rect.xMinimum() ) )
-         .arg( qgsDoubleToString( rect.yMinimum() ) )
-         .arg( qgsDoubleToString( rect.xMaximum() ) )
-         .arg( qgsDoubleToString( rect.yMaximum() ) );
+         .arg( qgsDoubleToString( rect.xMinimum() ),
+               qgsDoubleToString( rect.yMinimum() ),
+               qgsDoubleToString( rect.xMaximum() ),
+               qgsDoubleToString( rect.yMaximum() ) );
 }
 
 

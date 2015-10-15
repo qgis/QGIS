@@ -608,7 +608,7 @@ void QgsDataDefinedButton::updateGui()
     deftip.append( "..." );
   }
 
-  mFullDescription += tr( "<b>Current definition %1:</b><br>%2" ).arg( deftype ).arg( deftip );
+  mFullDescription += tr( "<b>Current definition %1:</b><br>%2" ).arg( deftype, deftip );
 
   setToolTip( mFullDescription );
 

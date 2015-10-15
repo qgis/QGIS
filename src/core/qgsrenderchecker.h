@@ -202,14 +202,14 @@ class CORE_EXPORT QgsRenderChecker
 
 inline bool compareWkt( const QString& a, const QString& b, double tolerance = 0.000001 )
 {
-  QgsDebugMsg( QString( "a:%1 b:%2 tol:%3" ).arg( a ).arg( b ).arg( tolerance ) );
+  QgsDebugMsg( QString( "a:%1 b:%2 tol:%3" ).arg( a, b ).arg( tolerance ) );
   QRegExp re( "-?\\d+(?:\\.\\d+)?(?:[eE]\\d+)?" );
 
   QString a0( a ), b0( b );
   a0.replace( re, "#" );
   b0.replace( re, "#" );
 
-  QgsDebugMsg( QString( "a0:%1 b0:%2" ).arg( a0 ).arg( b0 ) );
+  QgsDebugMsg( QString( "a0:%1 b0:%2" ).arg( a0, b0 ) );
 
   if ( a0 != b0 )
     return false;

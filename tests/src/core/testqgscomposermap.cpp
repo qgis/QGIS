@@ -280,7 +280,7 @@ void TestQgsComposerMap::dataDefinedLayers()
 
   //test subset of valid layers
   mComposerMap->setDataDefinedProperty( QgsComposerObject::MapLayers, true, true,
-                                        QString( "'%1|%2'" ).arg( mPolysLayer->name() ).arg( mRasterLayer->name() ), QString() );
+                                        QString( "'%1|%2'" ).arg( mPolysLayer->name(), mRasterLayer->name() ), QString() );
   result = mComposerMap->layersToRender();
   QCOMPARE( result.count(), 2 );
   QVERIFY( result.contains( mPolysLayer->id() ) );
@@ -288,7 +288,7 @@ void TestQgsComposerMap::dataDefinedLayers()
 
   //test non-existant layer
   mComposerMap->setDataDefinedProperty( QgsComposerObject::MapLayers, true, true,
-                                        QString( "'x|%1|%2'" ).arg( mLinesLayer->name() ).arg( mPointsLayer->name() ), QString() );
+                                        QString( "'x|%1|%2'" ).arg( mLinesLayer->name(), mPointsLayer->name() ), QString() );
   result = mComposerMap->layersToRender();
   QCOMPARE( result.count(), 2 );
   QVERIFY( result.contains( mLinesLayer->id() ) );
@@ -328,7 +328,7 @@ void TestQgsComposerMap::dataDefinedLayers()
 
   //render test
   mComposerMap->setDataDefinedProperty( QgsComposerObject::MapLayers, true, true,
-                                        QString( "'%1|%2'" ).arg( mPolysLayer->name() ).arg( mPointsLayer->name() ), QString() );
+                                        QString( "'%1|%2'" ).arg( mPolysLayer->name(), mPointsLayer->name() ), QString() );
   mComposerMap->setNewExtent( QgsRectangle( -110.0, 25.0, -90, 40.0 ) );
 
   QgsCompositionChecker checker( "composermap_ddlayers", mComposition );

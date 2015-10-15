@@ -56,7 +56,7 @@ bool QgsCredentialDialog::request( const QString& realm, QString &username, QStr
   {
     QgsDebugMsg( "emitting signal" );
     emit credentialsRequested( realm, &username, &password, message, &ok );
-    QgsDebugMsg( QString( "signal returned %1 (username=%2, password=%3)" ).arg( ok ? "true" : "false" ).arg( username ).arg( password ) );
+    QgsDebugMsg( QString( "signal returned %1 (username=%2, password=%3)" ).arg( ok ? "true" : "false", username, password ) );
   }
   else
   {

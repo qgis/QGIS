@@ -566,10 +566,10 @@ void QgsColorButton::setButtonBackground( QColor color )
                             " border-width: 2px;"
                             " border-color: rgb(128,128,128);"
                             " border-radius: 4px;} " )
-                   .arg( bkgrd )
-                   .arg( margin )
-                   .arg( isEnabled() ? "128" : "110" )
-                   .arg( isEnabled() ? "outset" : "dotted" ) );
+                   .arg( bkgrd,
+                         margin,
+                         isEnabled() ? "128" : "110",
+                         isEnabled() ? "outset" : "dotted" ) );
   }
 }
 

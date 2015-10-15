@@ -3789,7 +3789,7 @@ QString QgsVectorLayer::metadata()
     }
 
     myMetadata += tr( "xMin,yMin %1,%2 : xMax,yMax %3,%4" )
-                  .arg( xMin ).arg( yMin ).arg( xMax ).arg( yMax );
+                  .arg( xMin, yMin, xMax, yMax );
   }
   else
   {
@@ -4049,7 +4049,7 @@ int QgsVectorLayer::listStylesInDatabase( QStringList &ids, QStringList &names, 
   if ( !listStylesExternalMethod )
   {
     delete myLib;
-    msgError = QObject::tr( "Provider %1 has no %2 method" ).arg( mProviderKey ).arg( "listStyles" );
+    msgError = QObject::tr( "Provider %1 has no %2 method" ).arg( mProviderKey, "listStyles" );
     return -1;
   }
 
@@ -4070,7 +4070,7 @@ QString QgsVectorLayer::getStyleFromDatabase( const QString& styleId, QString &m
   if ( !getStyleByIdMethod )
   {
     delete myLib;
-    msgError = QObject::tr( "Provider %1 has no %2 method" ).arg( mProviderKey ).arg( "getStyleById" );
+    msgError = QObject::tr( "Provider %1 has no %2 method" ).arg( mProviderKey, "getStyleById" );
     return QObject::tr( "" );
   }
 
@@ -4095,7 +4095,7 @@ void QgsVectorLayer::saveStyleToDatabase( const QString& name, const QString& de
   if ( !saveStyleExternalMethod )
   {
     delete myLib;
-    msgError = QObject::tr( "Provider %1 has no %2 method" ).arg( mProviderKey ).arg( "saveStyle" );
+    msgError = QObject::tr( "Provider %1 has no %2 method" ).arg( mProviderKey, "saveStyle" );
     return;
   }
 

@@ -136,7 +136,7 @@ QString QgsPoint::toString( int thePrecision ) const
 {
   QString x = qIsFinite( m_x ) ? QString::number( m_x, 'f', thePrecision ) : QObject::tr( "infinite" );
   QString y = qIsFinite( m_y ) ? QString::number( m_y, 'f', thePrecision ) : QObject::tr( "infinite" );
-  return QString( "%1,%2" ).arg( x ).arg( y );
+  return QString( "%1,%2" ).arg( x, y );
 }
 
 QString QgsPoint::toDegreesMinutesSeconds( int thePrecision, const bool useSuffix, const bool padded ) const
@@ -339,7 +339,7 @@ QString QgsPoint::toDegreesMinutes( int thePrecision, const bool useSuffix, cons
 
 QString QgsPoint::wellKnownText() const
 {
-  return QString( "POINT(%1 %2)" ).arg( qgsDoubleToString( m_x ) ).arg( qgsDoubleToString( m_y ) );
+  return QString( "POINT(%1 %2)" ).arg( qgsDoubleToString( m_x ), qgsDoubleToString( m_y ) );
 }
 
 double QgsPoint::sqrDist( double x, double y ) const

@@ -192,10 +192,10 @@ QImage* QgsGrassRasterProvider::draw( QgsRectangle  const & viewExtent, int pixe
   arguments.append( "map=" +  mMapName + "@" + mMapset );
 
   arguments.append(( QString( "window=%1,%2,%3,%4,%5,%6" )
-                     .arg( QgsRasterBlock::printValue( viewExtent.xMinimum() ) )
-                     .arg( QgsRasterBlock::printValue( viewExtent.yMinimum() ) )
-                     .arg( QgsRasterBlock::printValue( viewExtent.xMaximum() ) )
-                     .arg( QgsRasterBlock::printValue( viewExtent.yMaximum() ) )
+                     .arg( QgsRasterBlock::printValue( viewExtent.xMinimum() ),
+                           QgsRasterBlock::printValue( viewExtent.yMinimum() ),
+                           QgsRasterBlock::printValue( viewExtent.xMaximum() ),
+                           QgsRasterBlock::printValue( viewExtent.yMaximum() ) )
                      .arg( pixelWidth ).arg( pixelHeight ) ) );
   QString cmd = QgsApplication::libexecPath() + "grass/modules/qgis.d.rast";
   QByteArray data;
@@ -244,10 +244,10 @@ void QgsGrassRasterProvider::readBlock( int bandNo, int xBlock, int yBlock, void
 
   QgsDebugMsg( "mYBlockSize = " + QString::number( mYBlockSize ) );
   arguments.append(( QString( "window=%1,%2,%3,%4,%5,%6" )
-                     .arg( QgsRasterBlock::printValue( ext.xMinimum() ) )
-                     .arg( QgsRasterBlock::printValue( yMinimum ) )
-                     .arg( QgsRasterBlock::printValue( ext.xMaximum() ) )
-                     .arg( QgsRasterBlock::printValue( yMaximum ) )
+                     .arg( QgsRasterBlock::printValue( ext.xMinimum() ),
+                           QgsRasterBlock::printValue( yMinimum ),
+                           QgsRasterBlock::printValue( ext.xMaximum() ),
+                           QgsRasterBlock::printValue( yMaximum ) )
                      .arg( mCols ).arg( mYBlockSize ) ) );
 
   arguments.append( "format=value" );
@@ -294,10 +294,10 @@ void QgsGrassRasterProvider::readBlock( int bandNo, QgsRectangle  const & viewEx
   arguments.append( "map=" +  mMapName + "@" + mMapset );
 
   arguments.append(( QString( "window=%1,%2,%3,%4,%5,%6" )
-                     .arg( QgsRasterBlock::printValue( viewExtent.xMinimum() ) )
-                     .arg( QgsRasterBlock::printValue( viewExtent.yMinimum() ) )
-                     .arg( QgsRasterBlock::printValue( viewExtent.xMaximum() ) )
-                     .arg( QgsRasterBlock::printValue( viewExtent.yMaximum() ) )
+                     .arg( QgsRasterBlock::printValue( viewExtent.xMinimum() ),
+                           QgsRasterBlock::printValue( viewExtent.yMinimum() ),
+                           QgsRasterBlock::printValue( viewExtent.xMaximum() ),
+                           QgsRasterBlock::printValue( viewExtent.yMaximum() ) )
                      .arg( pixelWidth ).arg( pixelHeight ) ) );
   arguments.append( "format=value" );
   QString cmd = QgsApplication::libexecPath() + "grass/modules/qgis.d.rast";
@@ -717,8 +717,8 @@ double QgsGrassRasterValue::value( double x, double y, bool *ok )
 
   if ( !mProcess ) return value;
 
-  QString coor = QString( "%1 %2\n" ).arg( QgsRasterBlock::printValue( x ) )
-                 .arg( QgsRasterBlock::printValue( y ) );
+  QString coor = QString( "%1 %2\n" ).arg( QgsRasterBlock::printValue( x ),
+                 QgsRasterBlock::printValue( y ) );
   QgsDebugMsg( "coor : " + coor );
   mProcess->write( coor.toAscii() ); // how to flush, necessary?
   mProcess->waitForReadyRead();

@@ -301,7 +301,7 @@ bool QgsAuthImportIdentityDialog::validatePkiPaths()
   QDateTime startdate( clientcert.effectiveDate() );
   QDateTime enddate( clientcert.expiryDate() );
 
-  writeValidation( tr( "%1 thru %2" ).arg( startdate.toString() ).arg( enddate.toString() ),
+  writeValidation( tr( "%1 thru %2" ).arg( startdate.toString(), enddate.toString() ),
                    ( isvalid ? Valid : Invalid ) );
   //TODO: set enabled on cert info button, relative to cert validity
 
@@ -419,7 +419,7 @@ bool QgsAuthImportIdentityDialog::validatePkiPkcs12()
   QDateTime now( QDateTime::currentDateTime() );
   bool bundlevalid = ( now >= startdate && now <= enddate );
 
-  writeValidation( tr( "%1 thru %2" ).arg( startdate.toString() ).arg( enddate.toString() ),
+  writeValidation( tr( "%1 thru %2" ).arg( startdate.toString(), enddate.toString() ),
                    ( bundlevalid ? Valid : Invalid ) );
 
   if ( bundlevalid )

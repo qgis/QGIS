@@ -107,7 +107,7 @@ bool QgsAuthPkcs12Edit::validateConfig()
   bool bundlevalid = ( now >= startdate && now <= enddate );
 
   writePkiMessage( lePkcs12Msg,
-                   tr( "%1 thru %2" ).arg( startdate.toString() ).arg( enddate.toString() ),
+                   tr( "%1 thru %2" ).arg( startdate.toString(), enddate.toString() ),
                    ( bundlevalid ? Valid : Invalid ) );
 
   return validityChange( bundlevalid );

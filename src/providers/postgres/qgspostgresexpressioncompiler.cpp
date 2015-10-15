@@ -204,7 +204,7 @@ QgsPostgresExpressionCompiler::Result QgsPostgresExpressionCompiler::compile( co
       if ( rn != Complete )
         return rn;
 
-      result = QString( "%1 %2IN(%3)" ).arg( nd ).arg( n->isNotIn() ? "NOT " : "" ).arg( list.join( "," ) );
+      result = QString( "%1 %2IN(%3)" ).arg( nd, n->isNotIn() ? "NOT " : "", list.join( "," ) );
       return Complete;
     }
 

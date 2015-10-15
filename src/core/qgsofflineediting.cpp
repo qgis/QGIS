@@ -484,10 +484,10 @@ QgsVectorLayer* QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlit
     }
     else
     {
-      showWarning( tr( "%1: Unknown data type %2. Not using type affinity for the field." ).arg( fields[idx].name() ).arg( QVariant::typeToName( type ) ) );
+      showWarning( tr( "%1: Unknown data type %2. Not using type affinity for the field." ).arg( fields[idx].name(), QVariant::typeToName( type ) ) );
     }
 
-    sql += delim + QString( "'%1' %2" ).arg( fields[idx].name() ).arg( dataType );
+    sql += delim + QString( "'%1' %2" ).arg( fields[idx].name(), dataType );
     delim = ",";
   }
   sql += ")";
@@ -544,8 +544,8 @@ QgsVectorLayer* QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlit
   {
     // add new layer
     QgsVectorLayer* newLayer = new QgsVectorLayer( QString( "dbname='%1' table='%2'%3 sql=" )
-        .arg( offlineDbPath )
-        .arg( tableName ).arg( layer->hasGeometryType() ? "(Geometry)" : "" ),
+        .arg( offlineDbPath,
+              tableName, layer->hasGeometryType() ? "(Geometry)" : "" ),
         layer->name() + " (offline)", "spatialite" );
     if ( newLayer->isValid() )
     {

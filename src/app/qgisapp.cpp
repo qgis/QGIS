@@ -475,14 +475,14 @@ void QgisApp::validateSrs( QgsCoordinateReferenceSystem &srs )
     authid = QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs().authid();
     srs.createFromOgcWmsCrs( authid );
     QgsDebugMsg( "Layer srs set from project: " + authid );
-    messageBar()->pushMessage( tr( "CRS was undefined" ), tr( "defaulting to project CRS %1 - %2" ).arg( authid ).arg( srs.description() ), QgsMessageBar::WARNING, messageTimeout() );
+    messageBar()->pushMessage( tr( "CRS was undefined" ), tr( "defaulting to project CRS %1 - %2" ).arg( authid, srs.description() ), QgsMessageBar::WARNING, messageTimeout() );
   }
   else ///Projections/defaultBehaviour==useGlobal
   {
     authid = mySettings.value( "/Projections/layerDefaultCrs", GEO_EPSG_CRS_AUTHID ).toString();
     srs.createFromOgcWmsCrs( authid );
     QgsDebugMsg( "Layer srs set from default: " + authid );
-    messageBar()->pushMessage( tr( "CRS was undefined" ), tr( "defaulting to CRS %1 - %2" ).arg( authid ).arg( srs.description() ), QgsMessageBar::WARNING, messageTimeout() );
+    messageBar()->pushMessage( tr( "CRS was undefined" ), tr( "defaulting to CRS %1 - %2" ).arg( authid, srs.description() ), QgsMessageBar::WARNING, messageTimeout() );
   }
 }
 
@@ -748,7 +748,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   connect( QgsMapLayerActionRegistry::instance(), SIGNAL( changed() ), this, SLOT( refreshActionFeatureAction() ) );
 
   // set application's caption
-  QString caption = tr( "QGIS - %1 ('%2')" ).arg( QGis::QGIS_VERSION ).arg( QGis::QGIS_RELEASE_NAME );
+  QString caption = tr( "QGIS - %1 ('%2')" ).arg( QGis::QGIS_VERSION, QGis::QGIS_RELEASE_NAME );
   setWindowTitle( caption );
 
   QgsMessageLog::logMessage( tr( "QGIS starting..." ), QString::null, QgsMessageLog::INFO );
@@ -2811,7 +2811,7 @@ void QgisApp::updateRecentProjectPaths()
 
   Q_FOREACH ( const QgsWelcomePageItemsModel::RecentProjectData& recentProject, mRecentProjects )
   {
-    QAction* action = mRecentProjectsMenu->addAction( QString( "%1 (%2)" ).arg( recentProject.title != recentProject.path ? recentProject.title : QFileInfo( recentProject.path ).baseName() ).arg( recentProject.path ) );
+    QAction* action = mRecentProjectsMenu->addAction( QString( "%1 (%2)" ).arg( recentProject.title != recentProject.path ? recentProject.title : QFileInfo( recentProject.path ).baseName(), recentProject.path ) );
     action->setEnabled( QFile::exists(( recentProject.path ) ) );
     action->setData( recentProject.path );
   }
@@ -2840,7 +2840,7 @@ void QgisApp::saveRecentProjectPath( const QString& projectPath, bool savePrevie
     // Generate a unique file name
     QString fileName( QCryptographicHash::hash(( projectData.path.toUtf8() ), QCryptographicHash::Md5 ).toHex() );
     QString previewDir = QString( "%1/previewImages" ).arg( QgsApplication::qgisSettingsDirPath() );
-    projectData.previewImagePath = QString( "%1/%2.png" ).arg( previewDir ).arg( fileName );
+    projectData.previewImagePath = QString( "%1/%2.png" ).arg( previewDir, fileName );
     QDir().mkdir( previewDir );
 
     // Render the map canvas
@@ -3281,15 +3281,15 @@ bool QgisApp::askUserForZipItemLayers( QString path )
       QgsLayerItem *layerItem = dynamic_cast<QgsLayerItem *>( item );
       if ( layerItem )
       {
-        QgsDebugMsgLevel( QString( "item path=%1 provider=%2" ).arg( item->path() ).arg( layerItem->providerKey() ), 2 );
+        QgsDebugMsgLevel( QString( "item path=%1 provider=%2" ).arg( item->path(), layerItem->providerKey() ), 2 );
       }
       if ( layerItem && layerItem->providerKey() == "gdal" )
       {
-        layers << QString( "%1|%2|%3" ).arg( i ).arg( item->name() ).arg( "Raster" );
+        layers << QString( "%1|%2|%3" ).arg( i ).arg( item->name(), "Raster" );
       }
       else if ( layerItem && layerItem->providerKey() == "ogr" )
       {
-        layers << QString( "%1|%2|%3" ).arg( i ).arg( item->name() ).arg( tr( "Vector" ) );
+        layers << QString( "%1|%2|%3" ).arg( i ).arg( item->name(), tr( "Vector" ) );
       }
     }
 
@@ -3317,7 +3317,7 @@ bool QgisApp::askUserForZipItemLayers( QString path )
     if ( !layerItem )
       continue;
 
-    QgsDebugMsg( QString( "item path=%1 provider=%2" ).arg( item->path() ).arg( layerItem->providerKey() ) );
+    QgsDebugMsg( QString( "item path=%1 provider=%2" ).arg( item->path(), layerItem->providerKey() ) );
     if ( layerItem->providerKey() == "gdal" )
     {
       if ( addRasterLayer( item->path(), QFileInfo( item->name() ).completeBaseName() ) )
@@ -4382,8 +4382,8 @@ bool QgisApp::fileSave()
                                  tr( "The loaded project file on disk was meanwhile changed.  Do you want to overwrite the changes?\n"
                                      "\nLast modification date on load was: %1"
                                      "\nCurrent last modification date is: %2" )
-                                 .arg( mProjectLastModified.toString( Qt::DefaultLocaleLongDate ) )
-                                 .arg( fi.lastModified().toString( Qt::DefaultLocaleLongDate ) ),
+                                 .arg( mProjectLastModified.toString( Qt::DefaultLocaleLongDate ),
+                                       fi.lastModified().toString( Qt::DefaultLocaleLongDate ) ),
                                  QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
         return false;
     }
@@ -5141,7 +5141,7 @@ void QgisApp::labelingFontNotFound( QgsVectorLayer* vlayer, const QString& fontf
   // no timeout set, since notice needs attention and is only shown first time layer is labeled
   QgsMessageBarItem* fontMsg = new QgsMessageBarItem(
     tr( "Labeling" ),
-    tr( "Font for layer <b><u>%1</u></b> was not found (<i>%2</i>). %3" ).arg( vlayer->name() ).arg( fontfamily ).arg( substitute ),
+    tr( "Font for layer <b><u>%1</u></b> was not found (<i>%2</i>). %3" ).arg( vlayer->name(), fontfamily, substitute ),
     btnOpenPrefs,
     QgsMessageBar::WARNING,
     0,
@@ -6686,11 +6686,11 @@ QgsVectorLayer *QgisApp::pasteToNewMemoryVector()
 
   Q_FOREACH ( QgsField f, clipboard()->fields().toList() )
   {
-    QgsDebugMsg( QString( "field %1 (%2)" ).arg( f.name() ).arg( QVariant::typeToName( f.type() ) ) );
+    QgsDebugMsg( QString( "field %1 (%2)" ).arg( f.name(), QVariant::typeToName( f.type() ) ) );
     if ( !layer->addAttribute( f ) )
     {
       QMessageBox::warning( this, tr( "Warning" ),
-                            tr( "Cannot create field %1 (%2,%3)" ).arg( f.name() ).arg( f.typeName() ).arg( QVariant::typeToName( f.type() ) ),
+                            tr( "Cannot create field %1 (%2,%3)" ).arg( f.name(), f.typeName(), QVariant::typeToName( f.type() ) ),
                             QMessageBox::Ok );
       delete layer;
       return 0;
@@ -7035,9 +7035,9 @@ void QgisApp::cancelEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerR
     QMessageBox::information( 0,
                               tr( "Error" ),
                               tr( "Could not %1 changes to layer %2\n\nErrors: %3\n" )
-                              .arg( leaveEditable ? tr( "rollback" ) : tr( "cancel" ) )
-                              .arg( vlayer->name() )
-                              .arg( vlayer->commitErrors().join( "\n  " ) ) );
+                              .arg( leaveEditable ? tr( "rollback" ) : tr( "cancel" ),
+                                    vlayer->name(),
+                                    vlayer->commitErrors().join( "\n  " ) ) );
   }
   mMapCanvas->freeze( false );
 
@@ -7135,8 +7135,8 @@ bool QgisApp::verifyEditsActionDialog( const QString& act, const QString& upon )
   switch ( QMessageBox::information( 0,
                                      tr( "Current edits" ),
                                      tr( "%1 current changes for %2 layer(s)?" )
-                                     .arg( act )
-                                     .arg( upon ),
+                                     .arg( act,
+                                           upon ),
                                      QMessageBox::Cancel | QMessageBox::Ok ) )
   {
     case QMessageBox::Ok:
@@ -7509,8 +7509,8 @@ void QgisApp::duplicateLayers( const QList<QgsMapLayer *>& lyrList )
       msgBars.append( new QgsMessageBarItem(
                         tr( "Duplicate layer: " ),
                         tr( "%1 (%2 type unsupported)" )
-                        .arg( selectedLyr->name() )
-                        .arg( !unSppType.isEmpty() ? QString( "'" ) + unSppType + "' " : "" ),
+                        .arg( selectedLyr->name(),
+                              !unSppType.isEmpty() ? QString( "'" ) + unSppType + "' " : "" ),
                         QgsMessageBar::WARNING,
                         0,
                         mInfoBar ) );
@@ -7810,7 +7810,7 @@ void QgisApp::loadPythonSupport()
   pythonlibName.prepend( "lib" );
 #endif
   QString version = QString( "%1.%2.%3" ).arg( QGis::QGIS_VERSION_INT / 10000 ).arg( QGis::QGIS_VERSION_INT / 100 % 100 ).arg( QGis::QGIS_VERSION_INT % 100 );
-  QgsDebugMsg( QString( "load library %1 (%2)" ).arg( pythonlibName ).arg( version ) );
+  QgsDebugMsg( QString( "load library %1 (%2)" ).arg( pythonlibName, version ) );
   QLibrary pythonlib( pythonlibName, version );
   // It's necessary to set these two load hints, otherwise Python library won't work correctly
   // see http://lists.kde.org/?l=pykde&m=117190116820758&w=2
@@ -10232,11 +10232,11 @@ void QgisApp::oldProjectVersionWarning( const QString& oldVersion )
                         "<p>To remove this warning when opening an older project file, "
                         "uncheck the box '%5' in the %4 menu."
                         "<p>Version of the project file: %1<br>Current version of QGIS: %2" )
-                    .arg( oldVersion )
-                    .arg( QGis::QGIS_VERSION )
-                    .arg( "<a href=\"http://hub.qgis.org/projects/quantum-gis\">http://hub.qgis.org/projects/quantum-gis</a> " )
-                    .arg( tr( "<tt>Settings:Options:General</tt>", "Menu path to setting options" ) )
-                    .arg( tr( "Warn me when opening a project file saved with an older version of QGIS" ) );
+                    .arg( oldVersion,
+                          QGis::QGIS_VERSION,
+                          "<a href=\"http://hub.qgis.org/projects/quantum-gis\">http://hub.qgis.org/projects/quantum-gis</a> ",
+                          tr( "<tt>Settings:Options:General</tt>", "Menu path to setting options" ),
+                          tr( "Warn me when opening a project file saved with an older version of QGIS" ) );
     QString title =  tr( "Project file is older" );
 
 #ifdef ANDROID
@@ -10478,7 +10478,7 @@ void QgisApp::namAuthenticationRequired( QNetworkReply *reply, QAuthenticator *a
     for ( ;; )
     {
       bool ok = QgsCredentials::instance()->get(
-                  QString( "%1 at %2" ).arg( auth->realm() ).arg( reply->url().host() ),
+                  QString( "%1 at %2" ).arg( auth->realm(), reply->url().host() ),
                   username, password,
                   tr( "Authentication required" ) );
       if ( !ok )
@@ -10492,13 +10492,13 @@ void QgisApp::namAuthenticationRequired( QNetworkReply *reply, QAuthenticator *a
 
       // credentials didn't change - stored ones probably wrong? clear password and retry
       QgsCredentials::instance()->put(
-        QString( "%1 at %2" ).arg( auth->realm() ).arg( reply->url().host() ),
+        QString( "%1 at %2" ).arg( auth->realm(), reply->url().host() ),
         username, QString::null );
     }
 
     // save credentials
     QgsCredentials::instance()->put(
-      QString( "%1 at %2" ).arg( auth->realm() ).arg( reply->url().host() ),
+      QString( "%1 at %2" ).arg( auth->realm(), reply->url().host() ),
       username, password
     );
   }
@@ -10571,7 +10571,7 @@ void QgisApp::namSslErrors( QNetworkReply *reply, const QList<QSslError> &errors
                     .arg( reply->url().port() != -1 ? reply->url().port() : 443 )
                     .trimmed() );
   QString digest( QgsAuthCertUtils::shaHexForCert( reply->sslConfiguration().peerCertificate() ) );
-  QString dgsthostport( QString( "%1:%2" ).arg( digest ).arg( hostport ) );
+  QString dgsthostport( QString( "%1:%2" ).arg( digest, hostport ) );
 
   const QHash<QString, QSet<QSslError::SslError> > &errscache( QgsAuthManager::instance()->getIgnoredSslErrorCache() );
 
@@ -10602,8 +10602,8 @@ void QgisApp::namSslErrors( QNetworkReply *reply, const QList<QSslError> &errors
     }
 
     QgsDebugMsg( QString( "Errors %1 for cached item for %2" )
-                 .arg( errenums.isEmpty() ? "not found" : "did not match" )
-                 .arg( hostport ) );
+                 .arg( errenums.isEmpty() ? "not found" : "did not match",
+                       hostport ) );
   }
 
 

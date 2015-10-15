@@ -248,13 +248,13 @@ void QgsAuthSslImportDialog::socketEncrypted()
 
   appendString( tr( "Socket ENCRYPTED" ) );
 
-  appendString( QString( "%1: %2" ).arg( tr( "Protocol" ) )
-                .arg( QgsAuthCertUtils::getSslProtocolName( mSocket->protocol() ) ) );
+  appendString( QString( "%1: %2" ).arg( tr( "Protocol" ),
+                                         QgsAuthCertUtils::getSslProtocolName( mSocket->protocol() ) ) );
 
   QSslCipher ciph = mSocket->sessionCipher();
   QString cipher = QString( "%1: %2, %3 (%4/%5)" )
-                   .arg( tr( "Session cipher" ) ).arg( ciph.authenticationMethod() )
-                   .arg( ciph.name() ).arg( ciph.usedBits() ).arg( ciph.supportedBits() );
+                   .arg( tr( "Session cipher" ), ciph.authenticationMethod(), ciph.name() )
+                   .arg( ciph.usedBits() ).arg( ciph.supportedBits() );
   appendString( cipher );
 
 
@@ -281,7 +281,7 @@ void QgsAuthSslImportDialog::socketError( QAbstractSocket::SocketError err )
   Q_UNUSED( err );
   if ( mSocket )
   {
-    appendString( QString( "%1: %2" ).arg( tr( "Socket ERROR" ) ).arg( mSocket->errorString() ) );
+    appendString( QString( "%1: %2" ).arg( tr( "Socket ERROR" ), mSocket->errorString() ) );
   }
 }
 

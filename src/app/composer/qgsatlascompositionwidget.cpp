@@ -118,8 +118,8 @@ void QgsAtlasCompositionWidget::on_mAtlasFilenamePatternEdit_editingFinished()
     QMessageBox::warning( this
                           , tr( "Could not evaluate filename pattern" )
                           , tr( "Could not set filename pattern as '%1'.\nParser error:\n%2" )
-                          .arg( mAtlasFilenamePatternEdit->text() )
-                          .arg( atlasMap->filenamePatternErrorString() )
+                          .arg( mAtlasFilenamePatternEdit->text(),
+                                atlasMap->filenamePatternErrorString() )
                         );
   }
 }
@@ -149,8 +149,8 @@ void QgsAtlasCompositionWidget::on_mAtlasFilenameExpressionButton_clicked()
         QMessageBox::warning( this
                               , tr( "Could not evaluate filename pattern" )
                               , tr( "Could not set filename pattern as '%1'.\nParser error:\n%2" )
-                              .arg( expression )
-                              .arg( atlasMap->filenamePatternErrorString() )
+                              .arg( expression,
+                                    atlasMap->filenamePatternErrorString() )
                             );
       }
     }

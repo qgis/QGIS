@@ -371,7 +371,7 @@ void QgsCollapsibleGroupBoxBasic::updateStyle()
   }
 
   QgsDebugMsg( QString( "groupbox: %1 style: %2 offset: left=%3 top=%4 top2=%5" ).arg(
-                 objectName() ).arg( QApplication::style()->objectName() ).arg( offsetLeft ).arg( offsetTop ).arg( offsetTopTri ) );
+                 objectName(), QApplication::style()->objectName() ).arg( offsetLeft ).arg( offsetTop ).arg( offsetTopTri ) );
 
   // customize style sheet for collapse/expand button and force left-aligned title
   QString ss;

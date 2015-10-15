@@ -205,9 +205,9 @@ void QgsMapRenderer::adjustExtentToSize()
     dymax = mExtent.yMaximum() + whitespace;
   }
 
-  QgsDebugMsg( QString( "Map units per pixel (x,y) : %1, %2" ).arg( qgsDoubleToString( mapUnitsPerPixelX ) ).arg( qgsDoubleToString( mapUnitsPerPixelY ) ) );
-  QgsDebugMsg( QString( "Pixmap dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( myWidth ) ).arg( qgsDoubleToString( myHeight ) ) );
-  QgsDebugMsg( QString( "Extent dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( mExtent.width() ) ).arg( qgsDoubleToString( mExtent.height() ) ) );
+  QgsDebugMsg( QString( "Map units per pixel (x,y) : %1, %2" ).arg( qgsDoubleToString( mapUnitsPerPixelX ), qgsDoubleToString( mapUnitsPerPixelY ) ) );
+  QgsDebugMsg( QString( "Pixmap dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( myWidth ), qgsDoubleToString( myHeight ) ) );
+  QgsDebugMsg( QString( "Extent dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( mExtent.width() ), qgsDoubleToString( mExtent.height() ) ) );
   QgsDebugMsg( mExtent.toString() );
 
   // update extent
@@ -216,9 +216,9 @@ void QgsMapRenderer::adjustExtentToSize()
   mExtent.setYMinimum( dymin );
   mExtent.setYMaximum( dymax );
 
-  QgsDebugMsg( QString( "Adjusted map units per pixel (x,y) : %1, %2" ).arg( qgsDoubleToString( mExtent.width() / myWidth ) ).arg( qgsDoubleToString( mExtent.height() / myHeight ) ) );
+  QgsDebugMsg( QString( "Adjusted map units per pixel (x,y) : %1, %2" ).arg( qgsDoubleToString( mExtent.width() / myWidth ), qgsDoubleToString( mExtent.height() / myHeight ) ) );
 
-  QgsDebugMsg( QString( "Recalced pixmap dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( mExtent.width() / mMapUnitsPerPixel ) ).arg( qgsDoubleToString( mExtent.height() / mMapUnitsPerPixel ) ) );
+  QgsDebugMsg( QString( "Recalced pixmap dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( mExtent.width() / mMapUnitsPerPixel ), qgsDoubleToString( mExtent.height() / mMapUnitsPerPixel ) ) );
 
   // update the scale
   updateScale();

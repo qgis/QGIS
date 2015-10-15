@@ -1286,10 +1286,10 @@ void QgsGeorefPluginGui::saveGCPs()
     Q_FOREACH ( QgsGeorefDataPoint *pt, mPoints )
     {
       points << QString( "%1,%2,%3,%4,%5" )
-      .arg( qgsDoubleToString( pt->mapCoords().x() ) )
-      .arg( qgsDoubleToString( pt->mapCoords().y() ) )
-      .arg( qgsDoubleToString( pt->pixelCoords().x() ) )
-      .arg( qgsDoubleToString( pt->pixelCoords().y() ) )
+      .arg( qgsDoubleToString( pt->mapCoords().x() ),
+            qgsDoubleToString( pt->mapCoords().y() ),
+            qgsDoubleToString( pt->pixelCoords().x() ),
+            qgsDoubleToString( pt->pixelCoords().y() ) )
       .arg( pt->isEnabled() ) << endl;
     }
 

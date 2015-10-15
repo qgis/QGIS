@@ -436,8 +436,8 @@ bool QgsGrassRasterImport::import()
 
     QString processResult = QString( "exitStatus=%1, exitCode=%2, error=%3, errorString=%4 stdout=%5, stderr=%6" )
                             .arg( mProcess->exitStatus() ).arg( mProcess->exitCode() )
-                            .arg( mProcess->error() ).arg( mProcess->errorString() )
-                            .arg( stdoutString.replace( "\n", ", " ) ).arg( stderrString.replace( "\n", ", " ) );
+                            .arg( mProcess->error() ).arg( mProcess->errorString(),
+                                                           stdoutString.replace( "\n", ", " ), stderrString.replace( "\n", ", " ) );
     QgsDebugMsg( "processResult: " + processResult );
 
     if ( mProcess->exitStatus() != QProcess::NormalExit )
@@ -713,8 +713,8 @@ bool QgsGrassVectorImport::import()
 
   QString processResult = QString( "exitStatus=%1, exitCode=%2, error=%3, errorString=%4 stdout=%5, stderr=%6" )
                           .arg( mProcess->exitStatus() ).arg( mProcess->exitCode() )
-                          .arg( mProcess->error() ).arg( mProcess->errorString() )
-                          .arg( stdoutString.replace( "\n", ", " ) ).arg( stderrString.replace( "\n", ", " ) );
+                          .arg( mProcess->error() ).arg( mProcess->errorString(),
+                                                         stdoutString.replace( "\n", ", " ), stderrString.replace( "\n", ", " ) );
   QgsDebugMsg( "processResult: " + processResult );
 
   if ( mProcess->exitStatus() != QProcess::NormalExit )

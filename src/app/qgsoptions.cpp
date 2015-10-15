@@ -1748,7 +1748,7 @@ void QgsOptions::loadGdalDriverList()
       pszVirtualIO = "v";
     else
       pszVirtualIO = "";
-    myDriversFlags[myGdalDriverDescription] = QString( "%1%2" ).arg( pszRWFlag ).arg( pszVirtualIO );
+    myDriversFlags[myGdalDriverDescription] = QString( "%1%2" ).arg( pszRWFlag, pszVirtualIO );
 
     // get driver extensions and long name
     // the gdal provider can override/add extensions but there is no interface to query this

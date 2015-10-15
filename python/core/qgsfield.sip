@@ -155,7 +155,7 @@ class QgsField
         if ( !sipRes )
         {
           PyErr_SetString(PyExc_ValueError,
-            QString( "Value %1 (%2) could not be converted to field type %3." ).arg( a0->toString() ).arg ( a0->typeName() ).arg( sipCpp->type() ).toUtf8().constData() );
+            QString( "Value %1 (%2) could not be converted to field type %3." ).arg( a0->toString(), a0->typeName() ).arg( sipCpp->type() ).toUtf8().constData() );
             sipError = sipErrorFail;
         }
 

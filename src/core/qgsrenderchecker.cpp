@@ -125,11 +125,11 @@ bool QgsRenderChecker::isKnownAnomaly( const QString& theDiffImageFile )
     QString myAnomalyHash = imageToHash( controlImagePath() + mControlName + "/" + myFile );
     QString myHashMessage = QString(
                               "Checking if anomaly %1 (hash %2)<br>" )
-                            .arg( myFile )
-                            .arg( myAnomalyHash );
+                            .arg( myFile,
+                                  myAnomalyHash );
     myHashMessage += QString( "&nbsp; matches %1 (hash %2)" )
-                     .arg( theDiffImageFile )
-                     .arg( myImageHash );
+                     .arg( theDiffImageFile,
+                           myImageHash );
     //foo CDash
     emitDashMessage( "Anomaly check", QgsDartMeasurement::Text, myHashMessage );
 
@@ -232,10 +232,10 @@ bool QgsRenderChecker::runTest( const QString& theTestName,
 
     QTextStream stream( &wldFile );
     stream << QString( "%1\r\n0 \r\n0 \r\n%2\r\n%3\r\n%4\r\n" )
-    .arg( qgsDoubleToString( mMapSettings.mapUnitsPerPixel() ) )
-    .arg( qgsDoubleToString( -mMapSettings.mapUnitsPerPixel() ) )
-    .arg( qgsDoubleToString( r.xMinimum() + mMapSettings.mapUnitsPerPixel() / 2.0 ) )
-    .arg( qgsDoubleToString( r.yMaximum() - mMapSettings.mapUnitsPerPixel() / 2.0 ) );
+    .arg( qgsDoubleToString( mMapSettings.mapUnitsPerPixel() ),
+          qgsDoubleToString( -mMapSettings.mapUnitsPerPixel() ),
+          qgsDoubleToString( r.xMinimum() + mMapSettings.mapUnitsPerPixel() / 2.0 ),
+          qgsDoubleToString( r.yMaximum() - mMapSettings.mapUnitsPerPixel() / 2.0 ) );
   }
 
   return compareImages( theTestName, theMismatchCount );
@@ -349,10 +349,10 @@ bool QgsRenderChecker::compareImages( const QString& theTestName,
                              "</tr>"
                              "</table>\n"
                              "<script>\naddComparison(\"td-%1-%7\",\"file://%3\",\"file://%4\",%5,%6);\n</script>\n" )
-                           .arg( theTestName )
-                           .arg( myDiffImageFile )
-                           .arg( mRenderedImageFile )
-                           .arg( mExpectedImageFile )
+                           .arg( theTestName,
+                                 myDiffImageFile,
+                                 mRenderedImageFile,
+                                 mExpectedImageFile )
                            .arg( imgWidth ).arg( imgHeight )
                            .arg( renderCounter++ );
 

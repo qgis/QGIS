@@ -99,7 +99,7 @@ bool QgsAuthPkiPathsEdit::validateConfig()
   QDateTime enddate( cert.expiryDate() );
 
   writePkiMessage( lePkiPathsMsg,
-                   tr( "%1 thru %2" ).arg( startdate.toString() ).arg( enddate.toString() ),
+                   tr( "%1 thru %2" ).arg( startdate.toString(), enddate.toString() ),
                    ( certvalid ? Valid : Invalid ) );
 
   return validityChange( certvalid );

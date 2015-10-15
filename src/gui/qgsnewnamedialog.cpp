@@ -48,7 +48,7 @@ QgsNewNameDialog::QgsNewNameDialog( const QString& source, const QString& initia
   }
   else
   {
-    hintString = tr( "Enter new %1 for %2" ).arg( nameDesc ).arg( source );
+    hintString = tr( "Enter new %1 for %2" ).arg( nameDesc, source );
   }
   mHintLabel = new QLabel( hintString, this );
   layout()->addWidget( mHintLabel );

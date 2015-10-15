@@ -72,7 +72,7 @@ QgsVectorLayerImport::QgsVectorLayerImport( const QString &uri,
   {
     delete myLib;
     mError = ErrProviderUnsupportedFeature;
-    mErrorMessage = QObject::tr( "Provider %1 has no %2 method" ).arg( providerKey ).arg( "createEmptyLayer" );
+    mErrorMessage = QObject::tr( "Provider %1 has no %2 method" ).arg( providerKey, "createEmptyLayer" );
     return;
   }
 

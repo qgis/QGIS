@@ -660,8 +660,8 @@ bool QgsSpatiaLiteConnection::isDeclaredHidden( sqlite3 * handle, QString table,
     return false;
   // checking if some Layer has been declared as HIDDEN
   QString sql = QString( "SELECT hidden FROM geometry_columns_auth"
-                         " WHERE f_table_name=%1 and f_geometry_column=%2" ).arg( quotedValue( table ) ).
-                arg( quotedValue( geom ) );
+                         " WHERE f_table_name=%1 and f_geometry_column=%2" ).arg( quotedValue( table ),
+                             quotedValue( geom ) );
 
   ret = sqlite3_get_table( handle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
   if ( ret != SQLITE_OK )
@@ -747,8 +747,8 @@ QgsSqliteHandle* QgsSqliteHandle::openDb( const QString & dbPath, bool shared )
   {
     // failure
     QgsDebugMsg( QString( "Failure while connecting to: %1\n%2" )
-                 .arg( dbPath )
-                 .arg( QString::fromUtf8( sqlite3_errmsg( sqlite_handle ) ) ) );
+                 .arg( dbPath,
+                       QString::fromUtf8( sqlite3_errmsg( sqlite_handle ) ) ) );
     return NULL;
   }
 

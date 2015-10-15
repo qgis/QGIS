@@ -565,9 +565,9 @@ void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
 
   if ( exp.hasParserError() || exp.hasEvalError() )
   {
-    QString tooltip = QString( "<b>%1:</b><br>%2" ).arg( tr( "Parser Error" ) ).arg( exp.parserErrorString() );
+    QString tooltip = QString( "<b>%1:</b><br>%2" ).arg( tr( "Parser Error" ), exp.parserErrorString() );
     if ( exp.hasEvalError() )
-      tooltip += QString( "<br><br><b>%1:</b><br>%2" ).arg( tr( "Eval Error" ) ).arg( exp.evalErrorString() );
+      tooltip += QString( "<br><br><b>%1:</b><br>%2" ).arg( tr( "Eval Error" ), exp.evalErrorString() );
 
     lblPreview->setText( tr( "Expression is invalid <a href=""more"">(more info)</a>" ) );
     lblPreview->setStyleSheet( "color: rgba(255, 6, 10,  255);" );

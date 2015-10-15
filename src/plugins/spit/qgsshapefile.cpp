@@ -272,15 +272,15 @@ bool QgsShapeFile::insertLayer( const QString& dbname, const QString& schema, co
   bool result = true;
 
   QString query = QString( "CREATE TABLE %1.%2(%3 SERIAL PRIMARY KEY" )
-                  .arg( QgsPgUtil::quotedIdentifier( schema ) )
-                  .arg( QgsPgUtil::quotedIdentifier( table_name ) )
-                  .arg( QgsPgUtil::quotedIdentifier( primary_key ) );
+                  .arg( QgsPgUtil::quotedIdentifier( schema ),
+                        QgsPgUtil::quotedIdentifier( table_name ),
+                        QgsPgUtil::quotedIdentifier( primary_key ) );
 
   for ( int n = 0; n < column_names.size() && result; n++ )
   {
     query += QString( ",%1 %2" )
-             .arg( QgsPgUtil::quotedIdentifier( column_names[n] ) )
-             .arg( column_types[n] );
+             .arg( QgsPgUtil::quotedIdentifier( column_names[n] ),
+                   column_types[n] );
   }
   query += " )";
 
@@ -292,7 +292,7 @@ bool QgsShapeFile::insertLayer( const QString& dbname, const QString& schema, co
   {
     // flag error and send query and error message to stdout on debug
     errorText += tr( "The database gave an error while executing this SQL:\n%1\nThe error was:\n%2\n" )
-                 .arg( query ).arg( PQresultErrorMessage( res ) );
+                 .arg( query, PQresultErrorMessage( res ) );
     PQclear( res );
     return false;
   }
@@ -302,18 +302,18 @@ bool QgsShapeFile::insertLayer( const QString& dbname, const QString& schema, co
   }
 
   query = QString( "SELECT AddGeometryColumn(%1,%2,%3,%4,%5,2)" )
-          .arg( QgsPgUtil::quotedValue( schema ) )
-          .arg( QgsPgUtil::quotedValue( table_name ) )
-          .arg( QgsPgUtil::quotedValue( geom_col ) )
-          .arg( srid )
-          .arg( QgsPgUtil::quotedValue( geom_type ) );
+          .arg( QgsPgUtil::quotedValue( schema ),
+                QgsPgUtil::quotedValue( table_name ),
+                QgsPgUtil::quotedValue( geom_col ),
+                srid,
+                QgsPgUtil::quotedValue( geom_type ) );
 
   res = PQexec( conn, query.toUtf8() );
 
   if ( PQresultStatus( res ) != PGRES_TUPLES_OK )
   {
     errorText += tr( "The database gave an error while executing this SQL:\n%1\nThe error was:\n%2\n" )
-                 .arg( query ).arg( PQresultErrorMessage( res ) );
+                 .arg( query, PQresultErrorMessage( res ) );
     PQclear( res );
     return false;
   }
@@ -325,8 +325,8 @@ bool QgsShapeFile::insertLayer( const QString& dbname, const QString& schema, co
   if ( isMulti )
   {
     query = QString( "select constraint_name from information_schema.table_constraints where table_schema=%1 and table_name=%2 and constraint_name in ('$2','enforce_geotype_the_geom')" )
-            .arg( QgsPgUtil::quotedValue( schema ) )
-            .arg( QgsPgUtil::quotedValue( table_name ) );
+            .arg( QgsPgUtil::quotedValue( schema ),
+                  QgsPgUtil::quotedValue( table_name ) );
 
     QStringList constraints;
     res = PQexec( conn, query.toUtf8() );
@@ -345,14 +345,14 @@ bool QgsShapeFile::insertLayer( const QString& dbname, const QString& schema, co
       // multiple types in the check constraint. For now, we
       // just drop the constraint...
       query = QString( "alter table %1 drop constraint %2" )
-              .arg( QgsPgUtil::quotedIdentifier( table_name ) )
-              .arg( QgsPgUtil::quotedIdentifier( constraints[0] ) );
+              .arg( QgsPgUtil::quotedIdentifier( table_name ),
+                    QgsPgUtil::quotedIdentifier( constraints[0] ) );
 
       res = PQexec( conn, query.toUtf8() );
       if ( PQresultStatus( res ) != PGRES_COMMAND_OK )
       {
         errorText += tr( "The database gave an error while executing this SQL:\n%1\nThe error was:\n%2\n" )
-                     .arg( query ).arg( PQresultErrorMessage( res ) );
+                     .arg( query, PQresultErrorMessage( res ) );
         PQclear( res );
         return false;
       }
@@ -378,8 +378,8 @@ bool QgsShapeFile::insertLayer( const QString& dbname, const QString& schema, co
       if ( geom )
       {
         query = QString( "INSERT INTO %1.%2(" )
-                .arg( QgsPgUtil::quotedIdentifier( schema ) )
-                .arg( QgsPgUtil::quotedIdentifier( table_name ) );
+                .arg( QgsPgUtil::quotedIdentifier( schema ),
+                      QgsPgUtil::quotedIdentifier( table_name ) );
         QString values = " VALUES (";
 
         char *geo_temp;
@@ -416,8 +416,8 @@ bool QgsShapeFile::insertLayer( const QString& dbname, const QString& schema, co
         }
         query += "," + QgsPgUtil::quotedIdentifier( geom_col );
         values += QString( ",st_geometryfromtext(%1,%2)" )
-                  .arg( QgsPgUtil::quotedValue( geometry ) )
-                  .arg( srid );
+                  .arg( QgsPgUtil::quotedValue( geometry ),
+                        srid );
 
         query += ")" + values + ")";
 

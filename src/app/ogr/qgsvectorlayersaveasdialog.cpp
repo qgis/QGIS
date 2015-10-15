@@ -343,7 +343,7 @@ QStringList QgsVectorLayerSaveAsDialog::datasourceOptions() const
         {
           QComboBox* cb = mDatasourceOptionsGroupBox->findChild<QComboBox*>( it.key() );
           if ( cb && !cb->itemData( cb->currentIndex() ).isNull() )
-            options << QString( "%1=%2" ).arg( it.key() ).arg( cb->currentText() );
+            options << QString( "%1=%2" ).arg( it.key(), cb->currentText() );
           break;
         }
 
@@ -351,7 +351,7 @@ QStringList QgsVectorLayerSaveAsDialog::datasourceOptions() const
         {
           QLineEdit* le = mDatasourceOptionsGroupBox->findChild<QLineEdit*>( it.key() );
           if ( le )
-            options << QString( "%1=%2" ).arg( it.key() ).arg( le->text() );
+            options << QString( "%1=%2" ).arg( it.key(), le->text() );
           break;
         }
 
@@ -359,7 +359,7 @@ QStringList QgsVectorLayerSaveAsDialog::datasourceOptions() const
         {
           QgsVectorFileWriter::HiddenOption *opt =
             dynamic_cast<QgsVectorFileWriter::HiddenOption*>( it.value() );
-          options << QString( "%1=%2" ).arg( it.key() ).arg( opt->mValue );
+          options << QString( "%1=%2" ).arg( it.key(), opt->mValue );
           break;
         }
       }
@@ -393,14 +393,14 @@ QStringList QgsVectorLayerSaveAsDialog::layerOptions() const
         case QgsVectorFileWriter::Set:
         {
           QComboBox* cb = mLayerOptionsGroupBox->findChild<QComboBox*>( it.key() );
-          options << QString( "%1=%2" ).arg( it.key() ).arg( cb->currentText() );
+          options << QString( "%1=%2" ).arg( it.key(), cb->currentText() );
           break;
         }
 
         case QgsVectorFileWriter::String:
         {
           QLineEdit* le = mLayerOptionsGroupBox->findChild<QLineEdit*>( it.key() );
-          options << QString( "%1=%2" ).arg( it.key() ).arg( le->text() );
+          options << QString( "%1=%2" ).arg( it.key(), le->text() );
           break;
         }
 
@@ -408,7 +408,7 @@ QStringList QgsVectorLayerSaveAsDialog::layerOptions() const
         {
           QgsVectorFileWriter::HiddenOption *opt =
             dynamic_cast<QgsVectorFileWriter::HiddenOption*>( it.value() );
-          options << QString( "%1=%2" ).arg( it.key() ).arg( opt->mValue );
+          options << QString( "%1=%2" ).arg( it.key(), opt->mValue );
           break;
         }
       }

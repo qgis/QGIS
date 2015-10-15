@@ -129,7 +129,7 @@ QgsFields QgsGrassVectorLayer::fields()
 
     if ( !driver )
     {
-      mError = QObject::tr( "Cannot open database %1 by driver %2" ).arg( mDatabase ).arg( mDatabase );
+      mError = QObject::tr( "Cannot open database %1 by driver %2" ).arg( mDatabase, mDatabase );
       QgsDebugMsg( mError );
     }
     else

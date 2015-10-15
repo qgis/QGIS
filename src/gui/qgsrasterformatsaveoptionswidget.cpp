@@ -293,7 +293,7 @@ QString QgsRasterFormatSaveOptionsWidget::validateOptions( bool gui, bool report
   QStringList createOptions = options();
   QString message;
 
-  QgsDebugMsg( QString( "layer: [%1] file: [%2] format: [%3]" ).arg( mRasterLayer ? mRasterLayer->id() : "none" ).arg( mRasterFileName ).arg( mFormat ) );
+  QgsDebugMsg( QString( "layer: [%1] file: [%2] format: [%3]" ).arg( mRasterLayer ? mRasterLayer->id() : "none", mRasterFileName, mFormat ) );
   // if no rasterLayer is defined, but we have a raster fileName, then create a temp. rasterLayer to validate options
   // ideally we should keep it for future access, but this is trickier
   QgsRasterLayer* rasterLayer = mRasterLayer;
@@ -375,7 +375,7 @@ QString QgsRasterFormatSaveOptionsWidget::validateOptions( bool gui, bool report
     }
     else
     {
-      QMessageBox::warning( this, "", tr( "Invalid %1:\n\n%2\n\nClick on help button to get valid creation options for this format." ).arg( mPyramids ? tr( "pyramid creation option" ) : tr( "creation option" ) ).arg( message ), QMessageBox::Close );
+      QMessageBox::warning( this, "", tr( "Invalid %1:\n\n%2\n\nClick on help button to get valid creation options for this format." ).arg( mPyramids ? tr( "pyramid creation option" ) : tr( "creation option" ), message ), QMessageBox::Close );
     }
   }
 

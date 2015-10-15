@@ -837,7 +837,7 @@ void QgsAuthManager::updateConfigAuthMethods()
     {
       mConfigAuthMethods.insert( query.value( 0 ).toString(),
                                  query.value( 1 ).toString() );
-      cfgmethods << QString( "%1=%2" ).arg( query.value( 0 ).toString() ).arg( query.value( 1 ).toString() );
+      cfgmethods << QString( "%1=%2" ).arg( query.value( 0 ).toString(), query.value( 1 ).toString() );
     }
     QgsDebugMsg( QString( "Stored auth config/methods:\n%1" ).arg( cfgmethods.join( ", " ) ) );
   }
@@ -1120,10 +1120,10 @@ bool QgsAuthManager::loadAuthenticationConfig( const QString &authcfg, QgsAuthMe
       }
       else
       {
-        QgsDebugMsg( QString( "Update of authcfg %1 FAILED for auth method %2" ).arg( authcfg ) .arg( authMethodKey ) );
+        QgsDebugMsg( QString( "Update of authcfg %1 FAILED for auth method %2" ).arg( authcfg, authMethodKey ) );
       }
 
-      QgsDebugMsg( QString( "Load %1 config SUCCESS for authcfg: %2" ).arg( full ? "full" : "base" ) .arg( authcfg ) );
+      QgsDebugMsg( QString( "Load %1 config SUCCESS for authcfg: %2" ).arg( full ? "full" : "base", authcfg ) );
       return true;
     }
     if ( query.next() )
@@ -1815,7 +1815,7 @@ bool QgsAuthManager::storeSslCertCustomConfig( const QgsAuthConfigSslServer &con
     return false;
 
   QgsDebugMsg( QString( "Store SSL cert custom config SUCCESS for host:port, id: %1, %2" )
-               .arg( config.sslHostPort().trimmed() ).arg( id ) );
+               .arg( config.sslHostPort().trimmed(), id ) );
 
   updateIgnoredSslErrorsCacheFromConfig( config );
 
@@ -1849,13 +1849,13 @@ const QgsAuthConfigSslServer QgsAuthManager::getSslCertCustomConfig( const QStri
       config.setSslCertificate( QSslCertificate( query.value( 2 ).toByteArray(), QSsl::Pem ) );
       config.setSslHostPort( query.value( 1 ).toString().trimmed() );
       config.loadConfigString( query.value( 3 ).toString() );
-      QgsDebugMsg( QString( "SSL cert custom config retrieved for host:port, id: %1, %2" ).arg( hostport ).arg( id ) );
+      QgsDebugMsg( QString( "SSL cert custom config retrieved for host:port, id: %1, %2" ).arg( hostport, id ) );
     }
     if ( query.next() )
     {
-      QgsDebugMsg( QString( "Select contains more than one SSL cert custom config for host:port, id: %1, %2" ).arg( hostport ).arg( id ) );
+      QgsDebugMsg( QString( "Select contains more than one SSL cert custom config for host:port, id: %1, %2" ).arg( hostport, id ) );
       emit messageOut( tr( "Authentication database contains duplicate SSL cert custom configs for host:port, id: %1, %2" )
-                       .arg( hostport ).arg( id ), authManTag(), WARNING );
+                       .arg( hostport, id ), authManTag(), WARNING );
       QgsAuthConfigSslServer emptyconfig;
       return emptyconfig;
     }
@@ -1952,14 +1952,14 @@ bool QgsAuthManager::existsSslCertCustomConfig( const QString &id , const QStrin
   {
     if ( query.first() )
     {
-      QgsDebugMsg( QString( "SSL cert custom config exists for host:port, id: %1, %2" ).arg( hostport ).arg( id ) );
+      QgsDebugMsg( QString( "SSL cert custom config exists for host:port, id: %1, %2" ).arg( hostport, id ) );
       res = true;
     }
     if ( query.next() )
     {
-      QgsDebugMsg( QString( "Select contains more than one SSL cert custom config for host:port, id: %1, %2" ).arg( hostport ).arg( id ) );
+      QgsDebugMsg( QString( "Select contains more than one SSL cert custom config for host:port, id: %1, %2" ).arg( hostport, id ) );
       emit messageOut( tr( "Authentication database contains duplicate SSL cert custom configs for host:port, id: %1, %2" )
-                       .arg( hostport ).arg( id ), authManTag(), WARNING );
+                       .arg( hostport, id ), authManTag(), WARNING );
       return false;
     }
   }
@@ -1990,13 +1990,13 @@ bool QgsAuthManager::removeSslCertCustomConfig( const QString &id, const QString
   if ( !authDbCommit() )
     return false;
 
-  QString shahostport( QString( "%1:%2" ).arg( id ).arg( hostport ) );
+  QString shahostport( QString( "%1:%2" ).arg( id, hostport ) );
   if ( mIgnoredSslErrorsCache.contains( shahostport ) )
   {
     mIgnoredSslErrorsCache.remove( shahostport );
   }
 
-  QgsDebugMsg( QString( "REMOVED SSL cert custom config for host:port, id: %1, %2" ).arg( hostport ).arg( id ) );
+  QgsDebugMsg( QString( "REMOVED SSL cert custom config for host:port, id: %1, %2" ).arg( hostport, id ) );
   dumpIgnoredSslErrorsCache_();
   return true;
 }
@@ -2014,7 +2014,7 @@ void QgsAuthManager::dumpIgnoredSslErrorsCache_()
       {
         errs << QgsAuthCertUtils::sslErrorEnumString( err );
       }
-      QgsDebugMsg( QString( "%1 = %2" ).arg( i.key() ).arg( errs.join( ", " ) ) );
+      QgsDebugMsg( QString( "%1 = %2" ).arg( i.key(), errs.join( ", " ) ) );
       ++i;
     }
   }
@@ -2033,8 +2033,8 @@ bool QgsAuthManager::updateIgnoredSslErrorsCacheFromConfig( const QgsAuthConfigS
   }
 
   QString shahostport( QString( "%1:%2" )
-                       .arg( QgsAuthCertUtils::shaHexForCert( config.sslCertificate() ).trimmed() )
-                       .arg( config.sslHostPort().trimmed() ) );
+                       .arg( QgsAuthCertUtils::shaHexForCert( config.sslCertificate() ).trimmed(),
+                             config.sslHostPort().trimmed() ) );
   if ( mIgnoredSslErrorsCache.contains( shahostport ) )
   {
     mIgnoredSslErrorsCache.remove( shahostport );
@@ -2114,8 +2114,8 @@ bool QgsAuthManager::rebuildIgnoredSslErrorCache()
     while ( query.next() )
     {
       QString shahostport( QString( "%1:%2" )
-                           .arg( query.value( 0 ).toString().trimmed() )
-                           .arg( query.value( 1 ).toString().trimmed() ) );
+                           .arg( query.value( 0 ).toString().trimmed(),
+                                 query.value( 1 ).toString().trimmed() ) );
       QgsAuthConfigSslServer config;
       config.loadConfigString( query.value( 2 ).toString() );
       QList<QSslError::SslError> errenums( config.sslIgnoredErrorEnums() );
@@ -3231,9 +3231,9 @@ bool QgsAuthManager::authDbOpen() const
     if ( !authdb.open() )
     {
       QgsDebugMsg( QString( "Unable to establish database connection\nDatabase: %1\nDriver error: %2\nDatabase error: %3" )
-                   .arg( authenticationDbPath() )
-                   .arg( authdb.lastError().driverText() )
-                   .arg( authdb.lastError().databaseText() ) );
+                   .arg( authenticationDbPath(),
+                         authdb.lastError().driverText(),
+                         authdb.lastError().databaseText() ) );
       emit messageOut( tr( "Unable to establish authentication database connection" ), authManTag(), CRITICAL );
       return false;
     }
@@ -3258,8 +3258,8 @@ bool QgsAuthManager::authDbQuery( QSqlQuery *query ) const
   if ( query->lastError().isValid() )
   {
     QgsDebugMsg( QString( "Auth db query FAILED: %1\nError: %2" )
-                 .arg( query->executedQuery() )
-                 .arg( query->lastError().text() ) );
+                 .arg( query->executedQuery(),
+                       query->lastError().text() ) );
     emit messageOut( tr( "Auth db query FAILED" ), authManTag(), WARNING );
     return false;
   }

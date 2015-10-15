@@ -272,9 +272,9 @@ bool QgsAlignRaster::checkInputParameters()
       mErrorMessage = QString( "Failed to get suggested warp output.\n\n"
                                "File:\n%1\n\n"
                                "Source WKT:\n%2\n\nDestination WKT:\n%3" )
-                      .arg( r.inputFilename )
-                      .arg( info.mCrsWkt )
-                      .arg( mCrsWkt );
+                      .arg( r.inputFilename,
+                            info.mCrsWkt,
+                            mCrsWkt );
       return false;
     }
 

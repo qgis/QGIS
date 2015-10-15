@@ -808,7 +808,7 @@ void QgsCustomization::customizeWidget( QWidget * widget, QEvent * event, QSetti
 
   QgsDebugMsg( QString( "objectName = %1 event type = %2" ).arg( widget->objectName() ).arg( event->type() ) );
 
-  QgsDebugMsg( QString( "%1 x %2" ).arg( widget->metaObject()->className() ).arg( QDialog::staticMetaObject.className() ) );
+  QgsDebugMsg( QString( "%1 x %2" ).arg( widget->metaObject()->className(), QDialog::staticMetaObject.className() ) );
   QString path = "/Customization/Widgets/";
 
   QgsCustomization::customizeWidget( path, widget, settings );

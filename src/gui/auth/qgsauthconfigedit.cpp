@@ -185,7 +185,7 @@ void QgsAuthConfigEdit::loadConfig()
   if ( indx == -1 )
   {
     QgsDebugMsg( QString( "Loading FAILED for authcfg (%1): no edit widget loaded for auth method '%2'" )
-                 .arg( mAuthCfg ).arg( authMethodKey ) );
+                 .arg( mAuthCfg, authMethodKey ) );
     if ( cmbAuthMethods->count() > 0 )
     {
       cmbAuthMethods->setCurrentIndex( 0 );
@@ -201,7 +201,7 @@ void QgsAuthConfigEdit::loadConfig()
   if ( !editWidget )
   {
     QgsDebugMsg( QString( "Cast to edit widget FAILED for authcfg (%1) and auth method key (%2)" )
-                 .arg( mAuthCfg ).arg( authMethodKey ) );
+                 .arg( mAuthCfg, authMethodKey ) );
     return;
   }
 

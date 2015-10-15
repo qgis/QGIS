@@ -127,7 +127,7 @@ void TestQgsWcsProvider::read()
       qDebug() << "copy " <<  testFilePath << " to " << tmpFilePath;
       if ( !QFile::copy( testFilePath, tmpFilePath ) )
       {
-        mReport += QString( "Cannot copy %1 to %2" ).arg( testFilePath ).arg( tmpFilePath );
+        mReport += QString( "Cannot copy %1 to %2" ).arg( testFilePath, tmpFilePath );
         ok = false;
         continue;
       }

@@ -43,13 +43,13 @@ QgsMssqlTableModel::~QgsMssqlTableModel()
 void QgsMssqlTableModel::addTableEntry( const QgsMssqlLayerProperty &layerProperty )
 {
   QgsDebugMsg( QString( "%1.%2.%3 type=%4 srid=%5 pk=%6 sql=%7" )
-               .arg( layerProperty.schemaName )
-               .arg( layerProperty.tableName )
-               .arg( layerProperty.geometryColName )
-               .arg( layerProperty.type )
-               .arg( layerProperty.srid )
-               .arg( layerProperty.pkCols.join( "," ) )
-               .arg( layerProperty.sql ) );
+               .arg( layerProperty.schemaName,
+                     layerProperty.tableName,
+                     layerProperty.geometryColName,
+                     layerProperty.type,
+                     layerProperty.srid,
+                     layerProperty.pkCols.join( "," ),
+                     layerProperty.sql ) );
 
   // is there already a root item with the given scheme Name?
   QStandardItem *schemaItem;

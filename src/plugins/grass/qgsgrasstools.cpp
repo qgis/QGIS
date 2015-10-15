@@ -172,7 +172,7 @@ QgsGrassTools::QgsGrassTools( QgisInterface *iface, QWidget * parent, const char
   //statusBar()->hide();
 
   // set the dialog title
-  QString title = tr( "GRASS Tools: %1/%2" ).arg( QgsGrass::getDefaultLocation() ).arg( QgsGrass::getDefaultMapset() );
+  QString title = tr( "GRASS Tools: %1/%2" ).arg( QgsGrass::getDefaultLocation(), QgsGrass::getDefaultMapset() );
   setWindowTitle( title );
 
   // Tree view code.
@@ -225,7 +225,7 @@ void QgsGrassTools::showTabs()
   QString title;
   if ( QgsGrass::activeMode() )
   {
-    title = tr( "GRASS Tools: %1/%2" ).arg( QgsGrass::getDefaultLocation() ).arg( QgsGrass::getDefaultMapset() );
+    title = tr( "GRASS Tools: %1/%2" ).arg( QgsGrass::getDefaultLocation(), QgsGrass::getDefaultMapset() );
   }
   else
   {

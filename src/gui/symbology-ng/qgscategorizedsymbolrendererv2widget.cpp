@@ -733,7 +733,7 @@ void QgsCategorizedSymbolRendererV2Widget::addCategories()
                                      tr( "Confirm Delete" ),
                                      tr( "The classification field was changed from '%1' to '%2'.\n"
                                          "Should the existing classes be deleted before classification?" )
-                                     .arg( mOldClassificationAttribute ).arg( attrName ),
+                                     .arg( mOldClassificationAttribute, attrName ),
                                      QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel );
     if ( res == QMessageBox::Cancel )
     {

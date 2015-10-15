@@ -353,7 +353,7 @@ bool QgsNewSpatialiteLayerDialog::apply()
   QTreeWidgetItemIterator it( mAttributeView );
   while ( *it )
   {
-    sql += delim + QString( "%1 %2" ).arg( quotedIdentifier(( *it )->text( 0 ) ) ).arg(( *it )->text( 1 ) );
+    sql += delim + QString( "%1 %2" ).arg( quotedIdentifier(( *it )->text( 0 ) ), ( *it )->text( 1 ) );
 
     delim = ",";
 
@@ -368,15 +368,15 @@ bool QgsNewSpatialiteLayerDialog::apply()
   QgsDebugMsg( sql ); // OK
 
   QString sqlAddGeom = QString( "select AddGeometryColumn(%1,%2,%3,%4,2)" )
-                       .arg( quotedValue( leLayerName->text() ) )
-                       .arg( quotedValue( leGeometryColumn->text() ) )
+                       .arg( quotedValue( leLayerName->text() ),
+                             quotedValue( leGeometryColumn->text() ) )
                        .arg( mCrsId.split( ':' ).value( 1, "0" ).toInt() )
                        .arg( quotedValue( selectedType() ) );
   QgsDebugMsg( sqlAddGeom ); // OK
 
   QString sqlCreateIndex = QString( "select CreateSpatialIndex(%1,%2)" )
-                           .arg( quotedValue( leLayerName->text() ) )
-                           .arg( quotedValue( leGeometryColumn->text() ) );
+                           .arg( quotedValue( leLayerName->text() ),
+                                 quotedValue( leGeometryColumn->text() ) );
   QgsDebugMsg( sqlCreateIndex ); // OK
 
   sqlite3 *db;
@@ -395,7 +395,7 @@ bool QgsNewSpatialiteLayerDialog::apply()
     {
       QMessageBox::warning( this,
                             tr( "Error Creating SpatiaLite Table" ),
-                            tr( "Failed to create the SpatiaLite table %1. The database returned:\n%2" ).arg( leLayerName->text() ).arg( errmsg ) );
+                            tr( "Failed to create the SpatiaLite table %1. The database returned:\n%2" ).arg( leLayerName->text(), errmsg ) );
       sqlite3_free( errmsg );
     }
     else
@@ -422,9 +422,9 @@ bool QgsNewSpatialiteLayerDialog::apply()
         }
 
         QgsVectorLayer *layer = new QgsVectorLayer( QString( "dbname='%1' table='%2'(%3) sql=" )
-            .arg( mDatabaseComboBox->currentText() )
-            .arg( leLayerName->text() )
-            .arg( leGeometryColumn->text() ), leLayerName->text(), "spatialite" );
+            .arg( mDatabaseComboBox->currentText(),
+                  leLayerName->text(),
+                  leGeometryColumn->text() ), leLayerName->text(), "spatialite" );
         if ( layer->isValid() )
         {
           // register this layer with the central layers registry

@@ -50,7 +50,7 @@ void QgsGenericProjectionSelector::setMessage( QString theMessage )
     QString sentence1 = tr( "This layer appears to have no projection specification." );
     QString sentence2 = tr( "By default, this layer will now have its projection set to that of the project, "
                             "but you may override this by selecting a different projection below." );
-    theMessage = format.arg( header ).arg( sentence1 ).arg( sentence2 );
+    theMessage = format.arg( header, sentence1, sentence2 );
   }
 
   QString myStyle = QgsApplication::reportStyleSheet();
