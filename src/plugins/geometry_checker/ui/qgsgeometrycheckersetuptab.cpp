@@ -312,6 +312,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
   connect( checker, SIGNAL( progressValue( int ) ), ui.progressBar, SLOT( setValue( int ) ) );
   connect( &futureWatcher, SIGNAL( finished() ), &evLoop, SLOT( quit() ) );
   connect( mAbortButton, SIGNAL( clicked() ), &futureWatcher, SLOT( cancel() ) );
+  connect( mAbortButton, SIGNAL( clicked() ), this, SLOT( showCancelFeedback() ) );
 
   int maxSteps = 0;
   futureWatcher.setFuture( checker->execute( &maxSteps ) );
@@ -320,12 +321,22 @@ void QgsGeometryCheckerSetupTab::runChecks()
 
   /** Restore window **/
   unsetCursor();
+  mAbortButton->setEnabled( true );
   ui.buttonBox->removeButton( mAbortButton );
   mRunButton->setEnabled( true );
   mRunButton->show();
   ui.progressBar->hide();
+  ui.labelStatus->hide();
   ui.widgetInputs->setEnabled( true );
 
   /** Show result **/
   emit checkerFinished( !futureWatcher.isCanceled() );
+}
+
+void QgsGeometryCheckerSetupTab::showCancelFeedback()
+{
+  mAbortButton->setEnabled( false );
+  ui.labelStatus->setText( tr( "<b>Waiting for running checks to finish...</b>" ) );
+  ui.labelStatus->show();
+  ui.progressBar->hide();
 }

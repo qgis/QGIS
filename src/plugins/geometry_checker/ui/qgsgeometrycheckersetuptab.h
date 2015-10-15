@@ -53,6 +53,7 @@ class QgsGeometryCheckerSetupTab : public QWidget
     void updateLayers();
     void validateInput();
     void selectOutputFile();
+    void showCancelFeedback();
 };
 
 #endif // QGS_GEOMETRY_CHECKER_SETUP_TAB_H
