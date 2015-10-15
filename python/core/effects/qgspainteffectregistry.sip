@@ -69,6 +69,10 @@ class QgsPaintEffectRegistry
 
   public:
 
+    /** Returns a reference to the singleton instance of the paint effect registry.
+     */
+    static QgsPaintEffectRegistry* instance();
+
     /** Returns the metadata for a specific effect.
      * @param name unique string name for paint effect class
      * @returns paint effect metadata if found, otherwise NULL

@@ -79,6 +79,8 @@ ENDIF (ENABLE_PGTEST)
 
 IF (WITH_APIDOC)
   ADD_PYTHON_TEST(PyQgsDocCoverage test_qgsdoccoverage.py)
+  #SIP coverage test relies on API doc parsing to identify members which should be in bindings
+  ADD_PYTHON_TEST(PyQgsSipCoverage test_qgssipcoverage.py)
 ENDIF (WITH_APIDOC)
 
 IF (WITH_SERVER)

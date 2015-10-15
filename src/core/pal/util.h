@@ -46,6 +46,7 @@ namespace pal
 
   /**
    * \brief For usage in problem solving algorithm
+   * \note not available in Python bindings
    */
   class Feats
   {

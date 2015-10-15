@@ -56,7 +56,10 @@ namespace pal
     double length;
   } CHullBox;
 
-
+  /**
+   * \class pal::PointSet
+   * \note not available in Python bindings
+   */
   class CORE_EXPORT PointSet
   {
       friend class FeaturePart;

@@ -98,6 +98,10 @@ class GEOSInit
 
 static GEOSInit geosinit;
 
+/**
+ * @brief Scoped GEOS pointer
+ * @note not available in Python bindings
+ */
 class GEOSGeomScopedPtr
 {
   public:

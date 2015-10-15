@@ -154,6 +154,9 @@ class CORE_EXPORT QgsPaintEffectMetadata : public QgsPaintEffectAbstractMetadata
 class CORE_EXPORT QgsPaintEffectRegistry
 {
   public:
+
+    /** Returns a reference to the singleton instance of the paint effect registry.
+     */
     static QgsPaintEffectRegistry* instance();
 
     /** Returns the metadata for a specific effect.

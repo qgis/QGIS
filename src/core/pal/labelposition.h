@@ -44,6 +44,8 @@ namespace pal
 
   /**
    * \brief LabelPosition is a candidate feature label position
+   * \class pal::LabelPosition
+   * \note not available in Python bindings
    */
   class CORE_EXPORT LabelPosition : public PointSet
   {
