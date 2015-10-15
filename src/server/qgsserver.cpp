@@ -41,13 +41,11 @@
 #include "qgseditorwidgetregistry.h"
 
 #include <QDomDocument>
-#include <QFile>
 #include <QNetworkDiskCache>
 #include <QImage>
 #include <QSettings>
 #include <QDateTime>
 #include <QScopedPointer>
-#include <QTextStream>
 // TODO: remove, it's only needed by a single debug message
 #include <fcgi_stdio.h>
 #include <stdlib.h>
@@ -360,46 +358,9 @@ bool QgsServer::init( int & argc, char ** argv )
 
   // Instantiate authentication system
   //   creates or uses qgis-auth.db in ~/.qgis2/ or directory defined by QGIS_AUTH_DB_DIR_PATH env variable
+  //   set the master password as first line of file defined by QGIS_AUTH_PASSWORD_FILE env variable
+  //   (QGIS_AUTH_PASSWORD_FILE variable removed from environment after accessing)
   QgsAuthManager::instance()->init( QgsApplication::pluginPath() );
-  //   set the master password from first line of file defined by QGIS_AUTH_PASSWORD_FILE env variable
-  const char* passenv = "QGIS_AUTH_PASSWORD_FILE";
-  if ( getenv( passenv ) )
-  {
-    QString passpath( getenv( passenv ) );
-    // clear the env variable, so it can not be accessed from plugins, etc.
-#ifdef Q_OS_WIN
-    putenv( passenv );
-#else
-    unsetenv( passenv );
-#endif
-    QString masterpass;
-    QFile passfile( passpath );
-    if ( passfile.exists() && passfile.open( QIODevice::ReadOnly | QIODevice::Text ) )
-    {
-      QTextStream passin( &passfile );
-      while ( !passin.atEnd() )
-      {
-        masterpass = passin.readLine();
-        break;
-      }
-      passfile.close();
-    }
-    if ( !masterpass.isEmpty() )
-    {
-      if ( QgsAuthManager::instance()->setMasterPassword( masterpass, true ) )
-      {
-        QgsDebugMsg( "Authentication master password set" );
-      }
-      else
-      {
-        QgsDebugMsg( "Setting authentication master password FAILED using file: " + passpath );
-      }
-    }
-    else
-    {
-      QgsDebugMsg( "QGIS_AUTH_PASSWORD_FILE set, but FAILED to read file: " + passpath );
-    }
-  }
 
   QString defaultConfigFilePath;
   QFileInfo projectFileInfo = defaultProjectFile(); //try to find a .qgs file in the server directory

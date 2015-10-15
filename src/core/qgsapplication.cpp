@@ -196,6 +196,7 @@ void QgsApplication::init( QString customConfigPath )
 
   // store system environment variables passed to application, before they are adjusted
   QMap<QString, QString> systemEnvVarMap;
+  QString passfile( "QGIS_AUTH_PASSWORD_FILE" ); // QString, for comparison
   Q_FOREACH ( const QString &varStr, QProcess::systemEnvironment() )
   {
     int pos = varStr.indexOf( QLatin1Char( '=' ) );
@@ -203,7 +204,10 @@ void QgsApplication::init( QString customConfigPath )
       continue;
     QString varStrName = varStr.left( pos );
     QString varStrValue = varStr.mid( pos + 1 );
-    systemEnvVarMap.insert( varStrName, varStrValue );
+    if ( varStrName != passfile )
+    {
+      systemEnvVarMap.insert( varStrName, varStrValue );
+    }
   }
   ABISYM( mSystemEnvVars ) = systemEnvVarMap;
 

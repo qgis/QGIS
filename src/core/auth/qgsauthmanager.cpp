@@ -18,6 +18,7 @@
 
 #include <QDir>
 #include <QEventLoop>
+#include <QFile>
 #include <QFileInfo>
 #include <QMutexLocker>
 #include <QObject>
@@ -199,6 +200,49 @@ bool QgsAuthManager::init( const QString& pluginPath )
 #ifndef QT_NO_OPENSSL
       initSslCaches();
 #endif
+
+      // set the master password from first line of file defined by QGIS_AUTH_PASSWORD_FILE env variable
+      const char* passenv = "QGIS_AUTH_PASSWORD_FILE";
+      if ( getenv( passenv ) && masterPasswordHashInDb() )
+      {
+        QString passpath( getenv( passenv ) );
+        // clear the env variable, so it can not be accessed from plugins, etc.
+        // (note: stored QgsApplication::systemEnvVars() skips this env variable as well)
+#ifdef Q_OS_WIN
+        putenv( passenv );
+#else
+        unsetenv( passenv );
+#endif
+        QString masterpass;
+        QFile passfile( passpath );
+        if ( passfile.exists() && passfile.open( QIODevice::ReadOnly | QIODevice::Text ) )
+        {
+          QTextStream passin( &passfile );
+          while ( !passin.atEnd() )
+          {
+            masterpass = passin.readLine();
+            break;
+          }
+          passfile.close();
+        }
+        if ( !masterpass.isEmpty() )
+        {
+          if ( setMasterPassword( masterpass, true ) )
+          {
+            QgsDebugMsg( "Authentication master password set from QGIS_AUTH_PASSWORD_FILE" );
+          }
+          else
+          {
+            QgsDebugMsg( "QGIS_AUTH_PASSWORD_FILE set, but FAILED to set password using: " + passpath );
+            return false;
+          }
+        }
+        else
+        {
+          QgsDebugMsg( "QGIS_AUTH_PASSWORD_FILE set, but FAILED to read password from: " + passpath );
+          return false;
+        }
+      }
 
       return true;
     }
