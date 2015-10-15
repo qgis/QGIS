@@ -23,6 +23,8 @@
 #include <qgsdistancearea.h>
 #include <qgspoint.h>
 #include "qgslogger.h"
+#include "qgsgeometryfactory.h"
+#include "qgsgeometry.h"
 
 class TestQgsDistanceArea: public QObject
 {
@@ -34,6 +36,7 @@ class TestQgsDistanceArea: public QObject
     void basic();
     void test_distances();
     void unit_conversions();
+    void regression13601();
 };
 
 void TestQgsDistanceArea::initTestCase()
@@ -163,7 +166,18 @@ void TestQgsDistanceArea::unit_conversions()
   QString myTxt = QgsDistanceArea::textUnit( inputValue, 7, inputUnit, true, false );
   QString expectedTxt = QLocale::system().toString( 2.4710538146717, 'g', 1 + 7 );
   QVERIFY( myTxt.startsWith( expectedTxt ) ); // Ignore units for now.
-};
+}
+
+void TestQgsDistanceArea::regression13601()
+{
+  //test regression #13601
+  QgsDistanceArea calc;
+  calc.setEllipsoidalMode( true );
+  calc.setEllipsoid( "NONE" );
+  calc.setSourceCrs( 1108L );
+  QgsGeometry geom( QgsGeometryFactory::geomFromWkt("Polygon ((252000 1389000, 265000 1389000, 265000 1385000, 252000 1385000, 252000 1389000))") );
+  QVERIFY( qgsDoubleNear( calc.measure( &geom ), 52000000, 0.0001 ) );
+}
 
 QTEST_MAIN( TestQgsDistanceArea )
 #include "testqgsdistancearea.moc"

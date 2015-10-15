@@ -701,6 +701,18 @@ class QgsGeometry
 
     /** Creates and returns a new geometry engine*/
     static QgsGeometryEngine* createGeometryEngine( const QgsAbstractGeometryV2* geometry ) /Factory/;
+    
+    /** Upgrades a point list from QgsPoint to QgsPointV2
+     * @param input list of QgsPoint objects to be upgraded
+     * @param output destination for list of points converted to QgsPointV2
+     */
+    static void convertPointList( const QList<QgsPoint>& input, QList<QgsPointV2>& output );
+
+    /** Downgrades a point list from QgsPointV2 to QgsPoint
+     * @param input list of QgsPointV2 objects to be downgraded
+     * @param output destination for list of points converted to QgsPoint
+     */
+    static void convertPointList( const QList<QgsPointV2>& input, QList<QgsPoint>& output );    
 
 }; // class QgsGeometry
 

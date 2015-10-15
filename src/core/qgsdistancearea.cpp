@@ -276,8 +276,9 @@ double QgsDistanceArea::measure( const QgsAbstractGeometryV2* geomV2 ) const
     return 0.0;
   }
 
-  if ( !mEllipsoidalMode )
+  if ( !mEllipsoidalMode || mEllipsoid == GEO_NONE )
   {
+    //no transform required
     if ( geomDimension == 1 )
     {
       return geomV2->length();
@@ -296,6 +297,8 @@ double QgsDistanceArea::measure( const QgsAbstractGeometryV2* geomV2 ) const
       double sum = 0;
       for ( int i = 0; i < collection->numGeometries(); ++i )
       {
+        //hmm... this is a bit broken. What if a collection consists of both lines and polygons?
+        //the sum will be a mash of both areas and lengths
         sum += measure( collection->geometryN( i ) );
       }
       return sum;
@@ -596,15 +599,9 @@ double QgsDistanceArea::measurePolygon( const QgsCurveV2* curve ) const
 
   QList<QgsPointV2> linePointsV2;
   curve->points( linePointsV2 );
-
   QList<QgsPoint> linePoints;
-  QList<QgsPointV2>::const_iterator ptIt = linePointsV2.constBegin();
-  for ( ; ptIt != linePointsV2.constEnd(); ++ptIt )
-  {
-    linePoints.append( mCoordTransform->transform( QPoint( ptIt->x(), ptIt->y() ) ) );
-  }
-
-  return computePolygonArea( linePoints );
+  QgsGeometry::convertPointList( linePointsV2, linePoints );
+  return measurePolygon( linePoints );
 }
 
 
