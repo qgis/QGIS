@@ -41,7 +41,7 @@ class GUI_EXPORT QgsDefaultSearchWidgetWrapper : public QgsSearchWidgetWrapper
     void setExpression( QString exp ) override;
 
   private slots:
-    void setCaseString( Qt::CheckState );
+    void setCaseString( int caseSensitiveCheckState );
     void filterChanged();
 
   protected:
