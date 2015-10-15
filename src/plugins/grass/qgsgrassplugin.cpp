@@ -220,7 +220,7 @@ void QgsGrassPlugin::initGui()
   mAddCentroidAction->setObjectName( "mAddCentroidAction" );
   mAddCentroidAction->setCheckable( true );
 
-  mAddAreaAction = new QAction( QgsApplication::getThemeIcon( "/mActionCapturePolygon.png" ), tr( "Add Area" ), this );
+  mAddAreaAction = new QAction( QgsApplication::getThemeIcon( "/mActionCapturePolygon.png" ), tr( "Add Closed Boundary" ), this );
   mAddAreaAction->setObjectName( "mAddAreaAction" );
   mAddAreaAction->setCheckable( true );
 

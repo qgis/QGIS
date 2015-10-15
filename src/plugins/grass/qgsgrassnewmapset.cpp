@@ -1303,8 +1303,8 @@ void QgsGrassNewMapset::createMapset()
     if ( !error.isEmpty() )
     {
       QgsGrass::warning( tr( "Cannot create new mapset: %1" ).arg( error ) );
+      return;
     }
-    return;
   }
 
   if ( mOpenNewMapsetCheckBox->isChecked() )

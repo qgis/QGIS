@@ -171,7 +171,7 @@ QgsGrassMapcalc::QgsGrassMapcalc(
   mFunctions.push_back( QgsGrassMapcalcFunction( t, "ewres", 0, tr( "Current east-west resolution" ) ) );
   mFunctions.push_back( QgsGrassMapcalcFunction( t, "exp", 1, tr( "Exponential function of x" ), "exp(x)" ) );
   mFunctions.push_back( QgsGrassMapcalcFunction( t, "exp", 2, tr( "x to the power y" ), "exp(x,y)" ) );
-  mFunctions.push_back( QgsGrassMapcalcFunction( t, "float", 2, tr( "Convert x to single-precision floating point" ), "float(x)" ) );
+  mFunctions.push_back( QgsGrassMapcalcFunction( t, "float", 1, tr( "Convert x to single-precision floating point" ), "float(x)" ) );
   mFunctions.push_back( QgsGrassMapcalcFunction( t, "if", 1, tr( "Decision: 1 if x not zero, 0 otherwise" ), "if(x)" ) );
   mFunctions.push_back( QgsGrassMapcalcFunction( t, "if", 2, tr( "Decision: a if x not zero, 0 otherwise" ), "if(x,a)" ) );
   mFunctions.push_back( QgsGrassMapcalcFunction( t, "if", 3, tr( "Decision: a if x not zero, b otherwise" ), "if(x,a,b)", "if,then,else", false ) );
