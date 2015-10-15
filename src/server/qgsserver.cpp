@@ -416,6 +416,11 @@ bool QgsServer::init( int & argc, char ** argv )
       defaultConfigFilePath = adminSLDFileInfo.absoluteFilePath();
     }
   }
+  if ( !defaultConfigFilePath.isEmpty() )
+  {
+    mConfigFilePath = defaultConfigFilePath;
+  }
+
   //create cache for capabilities XML
   mCapabilitiesCache = new QgsCapabilitiesCache();
   mMapRenderer =  new QgsMapRenderer;
@@ -524,9 +529,9 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString queryStrin
   printRequestParameters( parameterMap, logLevel );
   QMap<QString, QString>::const_iterator paramIt;
   //Config file path
-  mConfigFilePath = configPath( mConfigFilePath, parameterMap );
+  QString configFilePath = configPath( mConfigFilePath, parameterMap );
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-  mServerInterface->setConfigFilePath( mConfigFilePath );
+  mServerInterface->setConfigFilePath( configFilePath );
 #endif
   //Service parameter
   QString serviceString = theRequestHandler->parameter( "SERVICE" );
@@ -554,40 +559,40 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString queryStrin
   {
     if ( serviceString == "WCS" )
     {
-      QgsWCSProjectParser* p = QgsConfigCache::instance()->wcsConfiguration( mConfigFilePath );
+      QgsWCSProjectParser* p = QgsConfigCache::instance()->wcsConfiguration( configFilePath );
       if ( !p )
       {
         theRequestHandler->setServiceException( QgsMapServiceException( "Project file error", "Error reading the project file" ) );
       }
       else
       {
-        QgsWCSServer wcsServer( mConfigFilePath, parameterMap, p, theRequestHandler.data() );
+        QgsWCSServer wcsServer( configFilePath, parameterMap, p, theRequestHandler.data() );
         wcsServer.executeRequest();
       }
     }
     else if ( serviceString == "WFS" )
     {
-      QgsWFSProjectParser* p = QgsConfigCache::instance()->wfsConfiguration( mConfigFilePath );
+      QgsWFSProjectParser* p = QgsConfigCache::instance()->wfsConfiguration( configFilePath );
       if ( !p )
       {
         theRequestHandler->setServiceException( QgsMapServiceException( "Project file error", "Error reading the project file" ) );
       }
       else
       {
-        QgsWFSServer wfsServer( mConfigFilePath, parameterMap, p, theRequestHandler.data() );
+        QgsWFSServer wfsServer( configFilePath, parameterMap, p, theRequestHandler.data() );
         wfsServer.executeRequest();
       }
     }
     else if ( serviceString == "WMS" )
     {
-      QgsWMSConfigParser* p = QgsConfigCache::instance()->wmsConfiguration( mConfigFilePath, parameterMap );
+      QgsWMSConfigParser* p = QgsConfigCache::instance()->wmsConfiguration( configFilePath, parameterMap );
       if ( !p )
       {
         theRequestHandler->setServiceException( QgsMapServiceException( "WMS configuration error", "There was an error reading the project file or the SLD configuration" ) );
       }
       else
       {
-        QgsWMSServer wmsServer( mConfigFilePath, parameterMap, p, theRequestHandler.data(), mMapRenderer, mCapabilitiesCache );
+        QgsWMSServer wmsServer( configFilePath, parameterMap, p, theRequestHandler.data(), mMapRenderer, mCapabilitiesCache );
         wmsServer.executeRequest();
       }
     }
