@@ -1219,22 +1219,7 @@ bool QgsPostgresProvider::determinePrimaryKey()
   }
   else
   {
-    QString primaryKey = mUri.keyColumn();
-    int idx = fieldNameIndex( mUri.keyColumn() );
-
-    if ( idx >= 0 && ( mAttributeFields[idx].type() == QVariant::Int || mAttributeFields[idx].type() == QVariant::LongLong ) )
-    {
-      if ( mUseEstimatedMetadata || uniqueData( mQuery, primaryKey ) )
-      {
-        mPrimaryKeyType = pktInt;
-        mPrimaryKeyAttrs << idx;
-      }
-    }
-    else
-    {
-      QgsMessageLog::logMessage( tr( "No key field for query given." ), tr( "PostGIS" ) );
-      mPrimaryKeyType = pktUnknown;
-    }
+    determinePrimaryKeyFromUriKeyColumn();
   }
 
   mValid = mPrimaryKeyType != pktUnknown;
@@ -1299,7 +1284,7 @@ void QgsPostgresProvider::determinePrimaryKeyFromUriKeyColumn()
       int idx = fieldNameIndex( col );
       if ( idx < 0 )
       {
-        QgsMessageLog::logMessage( tr( "Key field '%1' for view not found." ).arg( col ), tr( "PostGIS" ) );
+        QgsMessageLog::logMessage( tr( "Key field '%1' for view/query not found." ).arg( col ), tr( "PostGIS" ) );
         mPrimaryKeyAttrs.clear();
         break;
       }
@@ -1315,17 +1300,17 @@ void QgsPostgresProvider::determinePrimaryKeyFromUriKeyColumn()
       }
       else
       {
-        QgsMessageLog::logMessage( tr( "Primary key field '%1' for view not unique." ).arg( primaryKey ), tr( "PostGIS" ) );
+        QgsMessageLog::logMessage( tr( "Primary key field '%1' for view/query not unique." ).arg( primaryKey ), tr( "PostGIS" ) );
       }
     }
     else
     {
-      QgsMessageLog::logMessage( tr( "Keys for view undefined." ).arg( primaryKey ), tr( "PostGIS" ) );
+      QgsMessageLog::logMessage( tr( "Keys for view/query undefined." ).arg( primaryKey ), tr( "PostGIS" ) );
     }
   }
   else
   {
-    QgsMessageLog::logMessage( tr( "No key field for view given." ), tr( "PostGIS" ) );
+    QgsMessageLog::logMessage( tr( "No key field for view/query given." ), tr( "PostGIS" ) );
   }
 }
 
