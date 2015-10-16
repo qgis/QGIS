@@ -288,6 +288,16 @@ void QgsGrassPlugin::initGui()
   mTools = new QgsGrassTools( qGisInterface, qGisInterface->mainWindow() );
   qGisInterface->addDockWidget( Qt::RightDockWidgetArea, mTools );
 
+  // add edit renderer immediately so that if project was saved during editing, the layer can be loaded
+  if ( !QgsRendererV2Registry::instance()->renderersList().contains( "grassEdit" ) )
+  {
+    QgsRendererV2Registry::instance()->addRenderer( new QgsRendererV2Metadata( "grassEdit",
+        QObject::tr( "GRASS Edit" ),
+        QgsGrassEditRenderer::create,
+        QIcon(),
+        QgsGrassEditRendererWidget::create ) );
+  }
+
   onGisbaseChanged();
   mapsetChanged();
 }
@@ -408,15 +418,6 @@ void QgsGrassPlugin::onEditingStarted()
 
     //vectorLayer->styleManager()->addStyle( editStyleName, QgsMapLayerStyle() );
     vectorLayer->styleManager()->setCurrentStyle( editStyleName );
-
-    if ( !QgsRendererV2Registry::instance()->renderersList().contains( "grassEdit" ) )
-    {
-      QgsRendererV2Registry::instance()->addRenderer( new QgsRendererV2Metadata( "grassEdit",
-          QObject::tr( "GRASS Edit" ),
-          QgsGrassEditRenderer::create,
-          QIcon(),
-          QgsGrassEditRendererWidget::create ) );
-    }
 
     QgsGrassEditRenderer *renderer = new QgsGrassEditRenderer();
 
