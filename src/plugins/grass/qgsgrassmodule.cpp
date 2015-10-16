@@ -833,7 +833,7 @@ void QgsGrassModule::finished( int exitCode, QProcess::ExitStatus exitStatus )
       mOutputTextBrowser->append( tr( "<B>Successfully finished</B>" ) );
       mProgressBar->setValue( 100 );
       mSuccess = true;
-      mViewButton->setEnabled( true );
+      mViewButton->setEnabled( !mOutputVector.isEmpty() || !mOutputRaster.isEmpty() );
       mOptions->freezeOutput( false );
       mCanvas->refresh();
     }
