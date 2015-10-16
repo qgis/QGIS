@@ -272,7 +272,7 @@ QgsGrassEditRendererWidget::QgsGrassEditRendererWidget( QgsVectorLayer* layer, Q
   mRenderer = dynamic_cast<QgsGrassEditRenderer*>( renderer->clone() );
   if ( !mRenderer )
   {
-    return;
+    mRenderer = new QgsGrassEditRenderer();
   }
 
   QVBoxLayout* layout = new QVBoxLayout( this );
