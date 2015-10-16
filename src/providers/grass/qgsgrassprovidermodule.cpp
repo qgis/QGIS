@@ -761,9 +761,6 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData * data, Qt::DropAction )
         useSrcRegion = false;
       }
 
-      QgsRasterPipe* pipe = new QgsRasterPipe();
-      pipe->set( rasterProvider );
-
       QgsCoordinateReferenceSystem providerCrs = rasterProvider->crs();
       QgsDebugMsg( "providerCrs = " + providerCrs.toWkt() );
       QgsDebugMsg( "mapsetCrs = " + mapsetCrs.toWkt() );
@@ -775,10 +772,11 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData * data, Qt::DropAction )
       {
         import = new QgsGrassExternal( rasterProvider->dataSourceUri(), rasterObject );
         delete rasterProvider;
-        delete pipe;
       }
       else
       {
+        QgsRasterPipe* pipe = new QgsRasterPipe();
+        pipe->set( rasterProvider );
         if ( providerCrs.isValid() && mapsetCrs.isValid() && providerCrs != mapsetCrs )
         {
           QgsRasterProjector * projector = new QgsRasterProjector;

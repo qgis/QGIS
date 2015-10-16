@@ -388,14 +388,6 @@ void QgsGrassPlugin::onEditingStarted()
   if ( !grassProvider )
     return;
 
-  QgsRendererV2Registry::instance()->addRenderer( new QgsRendererV2Metadata( "grassEdit",
-      QObject::tr( "GRASS Edit" ),
-      QgsGrassEditRenderer::create,
-      QIcon(),
-      QgsGrassEditRendererWidget::create ) );
-
-  QgsGrassEditRenderer *renderer = new QgsGrassEditRenderer();
-
   mOldStyles[vectorLayer] = vectorLayer->styleManager()->currentStyle();
   mFormSuppress[vectorLayer] = vectorLayer->featureFormSuppress();
 
@@ -408,7 +400,6 @@ void QgsGrassPlugin::onEditingStarted()
   {
     QgsDebugMsg( editStyleName + " style exists -> set as current" );
     vectorLayer->styleManager()->setCurrentStyle( editStyleName );
-    delete renderer;
   }
   else
   {
@@ -417,6 +408,18 @@ void QgsGrassPlugin::onEditingStarted()
 
     //vectorLayer->styleManager()->addStyle( editStyleName, QgsMapLayerStyle() );
     vectorLayer->styleManager()->setCurrentStyle( editStyleName );
+
+    if ( !QgsRendererV2Registry::instance()->renderersList().contains( "grassEdit" ) )
+    {
+      QgsRendererV2Registry::instance()->addRenderer( new QgsRendererV2Metadata( "grassEdit",
+          QObject::tr( "GRASS Edit" ),
+          QgsGrassEditRenderer::create,
+          QIcon(),
+          QgsGrassEditRendererWidget::create ) );
+    }
+
+    QgsGrassEditRenderer *renderer = new QgsGrassEditRenderer();
+
     vectorLayer->setRendererV2( renderer );
   }
 
