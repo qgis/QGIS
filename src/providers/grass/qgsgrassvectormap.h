@@ -34,9 +34,10 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
       TopoUndefined = 0,
       TopoPoint,
       TopoLine,
-      TopoBoundary0,
-      TopoBoundary1,
-      TopoBoundary2,
+      TopoBoundaryError, // both sides  topology broken
+      TopoBoundaryErrorLeft, // left side topology broken
+      TopoBoundaryErrorRight, // right side topology broken
+      TopoBoundaryOk,
       TopoCentroidIn,
       TopoCentroidOut,
       TopoCentroidDupl,

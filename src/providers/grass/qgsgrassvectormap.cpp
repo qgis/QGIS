@@ -782,15 +782,19 @@ QgsGrassVectorMap::TopoSymbol QgsGrassVectorMap::topoSymbol( int lid )
     Vect_get_line_areas( mMap, lid, &left, &right );
     if ( left != 0 && right != 0 )
     {
-      symbol = TopoBoundary2;
+      symbol = TopoBoundaryOk;
     }
     else if ( left == 0 && right == 0 )
     {
-      symbol = TopoBoundary0;
+      symbol = TopoBoundaryError;
     }
-    else
+    else if ( left == 0 )
     {
-      symbol = TopoBoundary1;
+      symbol = TopoBoundaryErrorLeft;
+    }
+    else if ( right == 0 )
+    {
+      symbol = TopoBoundaryErrorRight;
     }
   }
   QgsDebugMsgLevel( QString( "lid = %1 type = %2 symbol = %3" ).arg( lid ).arg( type ).arg( symbol ), 3 );

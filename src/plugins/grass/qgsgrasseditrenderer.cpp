@@ -38,16 +38,18 @@ QgsGrassEditRenderer::QgsGrassEditRenderer()
   QHash<int, QColor> colors;
   //colors.insert( QgsGrassVectorMap::TopoUndefined, QColor( 125, 125, 125 ) );
   colors.insert( QgsGrassVectorMap::TopoLine, QColor( Qt::black ) );
-  colors.insert( QgsGrassVectorMap::TopoBoundary0, QColor( Qt::red ) );
-  colors.insert( QgsGrassVectorMap::TopoBoundary1, QColor( 255, 125, 0 ) );
-  colors.insert( QgsGrassVectorMap::TopoBoundary2, QColor( Qt::green ) );
+  colors.insert( QgsGrassVectorMap::TopoBoundaryError, QColor( Qt::red ) );
+  colors.insert( QgsGrassVectorMap::TopoBoundaryErrorLeft, QColor( 255, 125, 0 ) );
+  colors.insert( QgsGrassVectorMap::TopoBoundaryErrorRight, QColor( 255, 125, 0 ) );
+  colors.insert( QgsGrassVectorMap::TopoBoundaryOk, QColor( Qt::green ) );
 
   QHash<int, QString> labels;
   //labels.insert( QgsGrassVectorMap::TopoUndefined, "Unknown type" );
   labels.insert( QgsGrassVectorMap::TopoLine, "Line" );
-  labels.insert( QgsGrassVectorMap::TopoBoundary0, "Boundary (isolated)" );
-  labels.insert( QgsGrassVectorMap::TopoBoundary1, "Boundary (area on one side)" );
-  labels.insert( QgsGrassVectorMap::TopoBoundary2, "Boundary (areas on both sides)" );
+  labels.insert( QgsGrassVectorMap::TopoBoundaryError, "Boundary (topological error on both sides)" );
+  labels.insert( QgsGrassVectorMap::TopoBoundaryErrorLeft, "Boundary (topological error on the left side)" );
+  labels.insert( QgsGrassVectorMap::TopoBoundaryErrorRight, "Boundary (topological error on the right side)" );
+  labels.insert( QgsGrassVectorMap::TopoBoundaryOk, "Boundary (correct)" );
 
   QgsCategoryList categoryList;
 
@@ -129,8 +131,9 @@ QgsSymbolV2* QgsGrassEditRenderer::symbolForFeature( QgsFeature& feature, QgsRen
   {
     symbol = mMarkerRenderer->symbolForFeature( feature, context );
   }
-  else if ( symbolCode == QgsGrassVectorMap::TopoLine || symbolCode == QgsGrassVectorMap::TopoBoundary0 ||
-            symbolCode == QgsGrassVectorMap::TopoBoundary1 || symbolCode == QgsGrassVectorMap::TopoBoundary2 )
+  else if ( symbolCode == QgsGrassVectorMap::TopoLine || symbolCode == QgsGrassVectorMap::TopoBoundaryError ||
+            symbolCode == QgsGrassVectorMap::TopoBoundaryErrorLeft || symbolCode == QgsGrassVectorMap::TopoBoundaryErrorRight ||
+            symbolCode == QgsGrassVectorMap::TopoBoundaryOk )
   {
     symbol = mLineRenderer->symbolForFeature( feature, context );
   }
