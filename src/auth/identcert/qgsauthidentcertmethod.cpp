@@ -48,7 +48,7 @@ QgsAuthIdentCertMethod::QgsAuthIdentCertMethod()
 
 QgsAuthIdentCertMethod::~QgsAuthIdentCertMethod()
 {
-  qDeleteAll( mPkiConfigBundleCache.values() );
+  qDeleteAll( mPkiConfigBundleCache );
   mPkiConfigBundleCache.clear();
 }
 

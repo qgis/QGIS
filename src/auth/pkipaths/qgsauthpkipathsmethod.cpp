@@ -48,7 +48,7 @@ QgsAuthPkiPathsMethod::QgsAuthPkiPathsMethod()
 
 QgsAuthPkiPathsMethod::~QgsAuthPkiPathsMethod()
 {
-  qDeleteAll( mPkiConfigBundleCache.values() );
+  qDeleteAll( mPkiConfigBundleCache );
   mPkiConfigBundleCache.clear();
 }
 

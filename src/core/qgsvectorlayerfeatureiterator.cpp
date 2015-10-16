@@ -170,7 +170,7 @@ QgsVectorLayerFeatureIterator::~QgsVectorLayerFeatureIterator()
   delete mEditGeometrySimplifier;
   mEditGeometrySimplifier = NULL;
 
-  qDeleteAll( mExpressionFieldInfo.values() );
+  qDeleteAll( mExpressionFieldInfo );
 
   close();
 }
