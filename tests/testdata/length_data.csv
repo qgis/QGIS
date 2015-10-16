@@ -9,3 +9,5 @@ MultiLineString ()|0
 MultiPoint ()|0
 GeometryCollection ()|0
 LineString (0 0, 10 10, 20 0)|28.2842712
+LineString (0 0,3 4)|5
+LineString (0 0,3 4,4 3)|6.4142135624
