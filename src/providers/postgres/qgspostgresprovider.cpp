@@ -1175,89 +1175,7 @@ bool QgsPostgresProvider::determinePrimaryKey()
       }
       else if ( type == "v" || type == "m" ) // the relation is a view
       {
-        QString primaryKey = mUri.keyColumn();
-        mPrimaryKeyType = pktUnknown;
-
-        if ( !primaryKey.isEmpty() )
-        {
-          QStringList cols;
-
-          // remove quotes from key list
-          if ( primaryKey.startsWith( '"' ) && primaryKey.endsWith( '"' ) )
-          {
-            int i = 1;
-            QString col;
-            while ( i < primaryKey.size() )
-            {
-              if ( primaryKey[i] == '"' )
-              {
-                if ( i + 1 < primaryKey.size() && primaryKey[i+1] == '"' )
-                {
-                  i++;
-                }
-                else
-                {
-                  cols << col;
-                  col = "";
-
-                  if ( ++i == primaryKey.size() )
-                    break;
-
-                  Q_ASSERT( primaryKey[i] == ',' );
-                  i++;
-                  Q_ASSERT( primaryKey[i] == '"' );
-                  i++;
-                  col = "";
-                  continue;
-                }
-              }
-
-              col += primaryKey[i++];
-            }
-          }
-          else if ( primaryKey.contains( "," ) )
-          {
-            cols = primaryKey.split( "," );
-          }
-          else
-          {
-            cols << primaryKey;
-            primaryKey = quotedIdentifier( primaryKey );
-          }
-
-          Q_FOREACH ( const QString& col, cols )
-          {
-            int idx = fieldNameIndex( col );
-            if ( idx < 0 )
-            {
-              QgsMessageLog::logMessage( tr( "Key field '%1' for view not found." ).arg( col ), tr( "PostGIS" ) );
-              mPrimaryKeyAttrs.clear();
-              break;
-            }
-
-            mPrimaryKeyAttrs << idx;
-          }
-
-          if ( mPrimaryKeyAttrs.size() > 0 )
-          {
-            if ( mUseEstimatedMetadata || uniqueData( mQuery, primaryKey ) )
-            {
-              mPrimaryKeyType = ( mPrimaryKeyAttrs.size() == 1 && ( mAttributeFields[ mPrimaryKeyAttrs[0] ].type() == QVariant::Int || mAttributeFields[ mPrimaryKeyAttrs[0] ].type() == QVariant::LongLong ) ) ? pktInt : pktFidMap;
-            }
-            else
-            {
-              QgsMessageLog::logMessage( tr( "Primary key field '%1' for view not unique." ).arg( primaryKey ), tr( "PostGIS" ) );
-            }
-          }
-          else
-          {
-            QgsMessageLog::logMessage( tr( "Keys for view undefined." ).arg( primaryKey ), tr( "PostGIS" ) );
-          }
-        }
-        else
-        {
-          QgsMessageLog::logMessage( tr( "No key field for view given." ), tr( "PostGIS" ) );
-        }
+        determinePrimaryKeyFromUriKeyColumn();
       }
       else
       {
@@ -1322,6 +1240,93 @@ bool QgsPostgresProvider::determinePrimaryKey()
   mValid = mPrimaryKeyType != pktUnknown;
 
   return mValid;
+}
+
+void QgsPostgresProvider::determinePrimaryKeyFromUriKeyColumn()
+{
+  QString primaryKey = mUri.keyColumn();
+  mPrimaryKeyType = pktUnknown;
+
+  if ( !primaryKey.isEmpty() )
+  {
+    QStringList cols;
+
+    // remove quotes from key list
+    if ( primaryKey.startsWith( '"' ) && primaryKey.endsWith( '"' ) )
+    {
+      int i = 1;
+      QString col;
+      while ( i < primaryKey.size() )
+      {
+        if ( primaryKey[i] == '"' )
+        {
+          if ( i + 1 < primaryKey.size() && primaryKey[i+1] == '"' )
+          {
+            i++;
+          }
+          else
+          {
+            cols << col;
+            col = "";
+
+            if ( ++i == primaryKey.size() )
+              break;
+
+            Q_ASSERT( primaryKey[i] == ',' );
+            i++;
+            Q_ASSERT( primaryKey[i] == '"' );
+            i++;
+            col = "";
+            continue;
+          }
+        }
+
+        col += primaryKey[i++];
+      }
+    }
+    else if ( primaryKey.contains( "," ) )
+    {
+      cols = primaryKey.split( "," );
+    }
+    else
+    {
+      cols << primaryKey;
+      primaryKey = quotedIdentifier( primaryKey );
+    }
+
+    Q_FOREACH ( const QString& col, cols )
+    {
+      int idx = fieldNameIndex( col );
+      if ( idx < 0 )
+      {
+        QgsMessageLog::logMessage( tr( "Key field '%1' for view not found." ).arg( col ), tr( "PostGIS" ) );
+        mPrimaryKeyAttrs.clear();
+        break;
+      }
+
+      mPrimaryKeyAttrs << idx;
+    }
+
+    if ( mPrimaryKeyAttrs.size() > 0 )
+    {
+      if ( mUseEstimatedMetadata || uniqueData( mQuery, primaryKey ) )
+      {
+        mPrimaryKeyType = ( mPrimaryKeyAttrs.size() == 1 && ( mAttributeFields[ mPrimaryKeyAttrs[0] ].type() == QVariant::Int || mAttributeFields[ mPrimaryKeyAttrs[0] ].type() == QVariant::LongLong ) ) ? pktInt : pktFidMap;
+      }
+      else
+      {
+        QgsMessageLog::logMessage( tr( "Primary key field '%1' for view not unique." ).arg( primaryKey ), tr( "PostGIS" ) );
+      }
+    }
+    else
+    {
+      QgsMessageLog::logMessage( tr( "Keys for view undefined." ).arg( primaryKey ), tr( "PostGIS" ) );
+    }
+  }
+  else
+  {
+    QgsMessageLog::logMessage( tr( "No key field for view given." ), tr( "PostGIS" ) );
+  }
 }
 
 bool QgsPostgresProvider::uniqueData( QString query, QString quotedColName )

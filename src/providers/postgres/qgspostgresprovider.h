@@ -136,6 +136,10 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     */
     bool determinePrimaryKey();
 
+    /** Determine the fields making up the primary key from the uri attribute keyColumn
+    */
+    void determinePrimaryKeyFromUriKeyColumn();
+
     /**
      * Get the field information for the layer
      * @return vector of QgsField objects
