@@ -837,11 +837,9 @@ bool QgsGrassModuleStandardOptions::usesRegion()
   for ( int i = 0; i < mParams.size(); i++ )
   {
     QgsGrassModuleInput *input = dynamic_cast<QgsGrassModuleInput *>( mParams[i] );
-    if ( input && input->useRegion() )
+    if ( input && input->usesRegion() )
       return true;
 
-    /* It only make sense to check input, right?
-     * Output has no region yet */
     QgsGrassModuleOption *option = dynamic_cast<QgsGrassModuleOption *>( mParams[i] );
     if ( option && option->usesRegion() )
       return true;

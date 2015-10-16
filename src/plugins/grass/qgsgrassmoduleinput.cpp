@@ -931,6 +931,7 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
     if ( type() == QgsGrassObject::Raster )
       mUsesRegion = true;
   }
+  QgsDebugMsg( QString( "mUsesRegion = %1" ).arg( mUsesRegion ) );
   onChanged( "" );
 }
 
