@@ -55,8 +55,29 @@ class QgsDistanceArea
     //! returns ellipsoid's inverse flattening
     double ellipsoidInverseFlattening() const;
 
-    //! general measurement (line distance or polygon area)
-    double measure( const QgsGeometry* geometry ) const;
+    /** General measurement (line distance or polygon area)
+     * @deprecated use measureArea() or measureLength() methods instead, as this method
+     * is unpredictable for geometry collections
+     */
+    double measure( const QgsGeometry* geometry ) const /Deprecated/;
+
+    /** Measures the area of a geometry.
+     * @param geometry geometry to measure
+     * @returns area of geometry. For geometry collections, non surface geometries will be ignored
+     * @note added in QGIS 2.12
+     * @see measureLength()
+     * @see measurePerimeter()
+     */
+    double measureArea( const QgsGeometry* geometry ) const;
+
+    /** Measures the length of a geometry.
+     * @param geometry geometry to measure
+     * @returns length of geometry. For geometry collections, non curve geometries will be ignored
+     * @note added in QGIS 2.12
+     * @see measureArea()
+     * @see measurePerimeter()
+     */
+    double measureLength( const QgsGeometry* geometry ) const;
 
     //! measures perimeter of polygon
     double measurePerimeter( const QgsGeometry* geometry ) const;

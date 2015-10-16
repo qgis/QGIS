@@ -37,6 +37,7 @@ class TestQgsDistanceArea: public QObject
     void test_distances();
     void unit_conversions();
     void regression13601();
+    void collections();
 };
 
 void TestQgsDistanceArea::initTestCase()
@@ -175,8 +176,49 @@ void TestQgsDistanceArea::regression13601()
   calc.setEllipsoidalMode( true );
   calc.setEllipsoid( "NONE" );
   calc.setSourceCrs( 1108L );
-  QgsGeometry geom( QgsGeometryFactory::geomFromWkt("Polygon ((252000 1389000, 265000 1389000, 265000 1385000, 252000 1385000, 252000 1389000))") );
-  QVERIFY( qgsDoubleNear( calc.measure( &geom ), 52000000, 0.0001 ) );
+  QgsGeometry geom( QgsGeometryFactory::geomFromWkt( "Polygon ((252000 1389000, 265000 1389000, 265000 1385000, 252000 1385000, 252000 1389000))" ) );
+  QVERIFY( qgsDoubleNear( calc.measureArea( &geom ), 52000000, 0.0001 ) );
+}
+
+void TestQgsDistanceArea::collections()
+{
+  Q_NOWARN_DEPRECATED_PUSH
+  //test measuring for collections
+  QgsDistanceArea myDa;
+  myDa.setSourceAuthId( "EPSG:4030" );
+  myDa.setEllipsoidalMode( true );
+  myDa.setEllipsoid( "WGS84" );
+
+  //collection of lines, should be sum of line length
+  QgsGeometry lines( QgsGeometryFactory::geomFromWkt( "GeometryCollection( LineString(0 36.53, 5.76 -48.16), LineString(0 25.54, 24.20 36.70) )" ) );
+  double result = myDa.measure( &lines ); //should measure length
+  QVERIFY( qgsDoubleNear( result, 12006159, 1 ) );
+  result = myDa.measureLength( &lines );
+  QVERIFY( qgsDoubleNear( result, 12006159, 1 ) );
+  result = myDa.measureArea( &lines );
+  QVERIFY( qgsDoubleNear( result, 0 ) );
+
+  //collection of polygons
+  QgsGeometry polys( QgsGeometryFactory::geomFromWkt( "GeometryCollection( Polygon((0 36.53, 5.76 -48.16, 0 25.54, 0 36.53)), Polygon((10 20, 15 20, 15 10, 10 20)) )" ) );
+  result = myDa.measure( &polys ); //should meaure area
+  QVERIFY( qgsDoubleNear( result, 670434859475, 1 ) );
+  result = myDa.measureArea( &polys );
+  QVERIFY( qgsDoubleNear( result, 670434859475, 1 ) );
+  result = myDa.measureLength( &polys );
+  QVERIFY( qgsDoubleNear( result, 0 ) );
+
+  //mixed collection
+  QgsGeometry mixed( QgsGeometryFactory::geomFromWkt( "GeometryCollection( LineString(0 36.53, 5.76 -48.16), LineString(0 25.54, 24.20 36.70), Polygon((0 36.53, 5.76 -48.16, 0 25.54, 0 36.53)), Polygon((10 20, 15 20, 15 10, 10 20)) )" ) );
+  result = myDa.measure( &mixed ); //should measure area
+  QVERIFY( qgsDoubleNear( result, 670434859475, 1 ) );
+  //measure area specifically
+  result = myDa.measureArea( &mixed );
+  QVERIFY( qgsDoubleNear( result, 670434859475, 1 ) );
+  //measure length
+  result = myDa.measureLength( &mixed );
+  QVERIFY( qgsDoubleNear( result, 12006159, 1 ) );
+
+  Q_NOWARN_DEPRECATED_POP
 }
 
 QTEST_MAIN( TestQgsDistanceArea )

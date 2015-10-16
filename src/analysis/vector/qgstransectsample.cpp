@@ -259,7 +259,7 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
       }
 
       //cancel if length of lineClipStratum is too small
-      double transectLength = distanceArea.measure( lineClipStratum );
+      double transectLength = distanceArea.measureLength( lineClipStratum );
       if ( transectLength < mMinTransectLength )
       {
         delete lineFarAwayGeom; delete lineClipStratum;

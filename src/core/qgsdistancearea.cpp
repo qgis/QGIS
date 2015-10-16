@@ -263,7 +263,7 @@ bool  QgsDistanceArea::setEllipsoid( double semiMajor, double semiMinor )
   return true;
 }
 
-double QgsDistanceArea::measure( const QgsAbstractGeometryV2* geomV2 ) const
+double QgsDistanceArea::measure( const QgsAbstractGeometryV2* geomV2, MeasureType type ) const
 {
   if ( !geomV2 )
   {
@@ -276,10 +276,16 @@ double QgsDistanceArea::measure( const QgsAbstractGeometryV2* geomV2 ) const
     return 0.0;
   }
 
+  MeasureType measureType = type;
+  if ( measureType == Default )
+  {
+    measureType = ( geomDimension == 1 ? Length : Area );
+  }
+
   if ( !mEllipsoidalMode || mEllipsoid == GEO_NONE )
   {
     //no transform required
-    if ( geomDimension == 1 )
+    if ( measureType == Length )
     {
       return geomV2->length();
     }
@@ -297,14 +303,12 @@ double QgsDistanceArea::measure( const QgsAbstractGeometryV2* geomV2 ) const
       double sum = 0;
       for ( int i = 0; i < collection->numGeometries(); ++i )
       {
-        //hmm... this is a bit broken. What if a collection consists of both lines and polygons?
-        //the sum will be a mash of both areas and lengths
-        sum += measure( collection->geometryN( i ) );
+        sum += measure( collection->geometryN( i ), measureType );
       }
       return sum;
     }
 
-    if ( geomDimension == 1 )
+    if ( measureType == Length )
     {
       const QgsCurveV2* curve = dynamic_cast<const QgsCurveV2*>( geomV2 );
       if ( !curve )
@@ -320,6 +324,9 @@ double QgsDistanceArea::measure( const QgsAbstractGeometryV2* geomV2 ) const
     else
     {
       const QgsSurfaceV2* surface = dynamic_cast<const QgsSurfaceV2*>( geomV2 );
+      if ( !surface )
+        return 0.0;
+
       QgsPolygonV2* polygon = surface->surfaceToPolygon();
 
       double area = 0;
@@ -344,6 +351,24 @@ double QgsDistanceArea::measure( const QgsGeometry *geometry ) const
 
   const QgsAbstractGeometryV2* geomV2 = geometry->geometry();
   return measure( geomV2 );
+}
+
+double QgsDistanceArea::measureArea( const QgsGeometry* geometry ) const
+{
+  if ( !geometry )
+    return 0.0;
+
+  const QgsAbstractGeometryV2* geomV2 = geometry->geometry();
+  return measure( geomV2, Area );
+}
+
+double QgsDistanceArea::measureLength( const QgsGeometry* geometry ) const
+{
+  if ( !geometry )
+    return 0.0;
+
+  const QgsAbstractGeometryV2* geomV2 = geometry->geometry();
+  return measure( geomV2, Length );
 }
 
 double QgsDistanceArea::measurePerimeter( const QgsGeometry* geometry ) const

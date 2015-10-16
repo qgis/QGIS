@@ -308,7 +308,7 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( QgsFeatur
   if ( geometryType == QGis::Line )
   {
     const QgsPolyline &pline = feature->constGeometry()->asPolyline();
-    double dist = calc.measure( feature->constGeometry() );
+    double dist = calc.measureLength( feature->constGeometry() );
     QGis::UnitType myDisplayUnits;
     convertMeasurement( calc, dist, myDisplayUnits, false );
     QString str = calc.textUnit( dist, 3, myDisplayUnits, false );  // dist and myDisplayUnits are out params
@@ -332,7 +332,7 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( QgsFeatur
   }
   else if ( geometryType == QGis::Polygon )
   {
-    double area = calc.measure( feature->constGeometry() );
+    double area = calc.measureArea( feature->constGeometry() );
     double perimeter = calc.measurePerimeter( feature->constGeometry() );
     QGis::UnitType myDisplayUnits;
     convertMeasurement( calc, area, myDisplayUnits, true );  // area and myDisplayUnits are out params

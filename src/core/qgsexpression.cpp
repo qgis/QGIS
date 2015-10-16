@@ -1383,7 +1383,7 @@ static QVariant fcnGeomArea( const QVariantList&, const QgsExpressionContext* co
   FEAT_FROM_CONTEXT( context, f );
   ENSURE_GEOM_TYPE( f, g, QGis::Polygon );
   QgsDistanceArea* calc = parent->geomCalculator();
-  return QVariant( calc->measure( f.constGeometry() ) );
+  return QVariant( calc->measureArea( f.constGeometry() ) );
 }
 
 static QVariant fcnArea( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
@@ -1401,7 +1401,7 @@ static QVariant fcnGeomLength( const QVariantList&, const QgsExpressionContext* 
   FEAT_FROM_CONTEXT( context, f );
   ENSURE_GEOM_TYPE( f, g, QGis::Line );
   QgsDistanceArea* calc = parent->geomCalculator();
-  return QVariant( calc->measure( f.constGeometry() ) );
+  return QVariant( calc->measureLength( f.constGeometry() ) );
 }
 
 static QVariant fcnGeomPerimeter( const QVariantList&, const QgsExpressionContext* context, QgsExpression* parent )
