@@ -382,7 +382,7 @@ double QgsDistanceArea::measurePerimeter( const QgsGeometry* geometry ) const
     return 0.0;
   }
 
-  if ( !mEllipsoidalMode )
+  if ( !mEllipsoidalMode || mEllipsoid == GEO_NONE )
   {
     return geomV2->length();
   }
