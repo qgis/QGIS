@@ -193,12 +193,14 @@ QgsGrassVector::QgsGrassVector( const QString& gisdbase, const QString& location
                                 const QString& name, QObject *parent )
     : QObject( parent )
     , mGrassObject( gisdbase, location, mapset, name )
+    , mNodeCount( 0 )
 {
 }
 
 QgsGrassVector::QgsGrassVector( const QgsGrassObject& grassObject, QObject *parent )
     : QObject( parent )
     , mGrassObject( grassObject )
+    , mNodeCount( 0 )
 {
 }
 

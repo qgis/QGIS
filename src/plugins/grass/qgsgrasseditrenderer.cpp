@@ -60,7 +60,7 @@ QgsGrassEditRenderer::QgsGrassEditRenderer()
   QgsMarkerSymbolV2 * markerSymbol = new QgsMarkerSymbolV2( markerLayers );
   firstVertexMarkerLine->setSubSymbol( markerSymbol );
   firstVertexMarkerLine->setPlacement( QgsMarkerLineSymbolLayerV2::FirstVertex );
-  QgsMarkerLineSymbolLayerV2 * lastVertexMarkerLine = dynamic_cast<QgsMarkerLineSymbolLayerV2 *>( firstVertexMarkerLine->clone() );
+  QgsMarkerLineSymbolLayerV2 * lastVertexMarkerLine = static_cast<QgsMarkerLineSymbolLayerV2 *>( firstVertexMarkerLine->clone() );
   lastVertexMarkerLine->setPlacement( QgsMarkerLineSymbolLayerV2::LastVertex );
   foreach ( int value, colors.keys() )
   {
@@ -101,6 +101,8 @@ QgsGrassEditRenderer::QgsGrassEditRenderer()
 
 QgsGrassEditRenderer::~QgsGrassEditRenderer()
 {
+  delete mMarkerRenderer;
+  delete mLineRenderer;
 }
 
 void QgsGrassEditRenderer::setLineRenderer( QgsFeatureRendererV2 *renderer )
@@ -260,6 +262,8 @@ QgsRendererV2Widget* QgsGrassEditRendererWidget::create( QgsVectorLayer* layer, 
 QgsGrassEditRendererWidget::QgsGrassEditRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
     : QgsRendererV2Widget( layer, style )
     , mRenderer( 0 )
+    , mLineRendererWidget( 0 )
+    , mPointRendererWidget( 0 )
 {
   QgsDebugMsg( "entered" );
   mRenderer = dynamic_cast<QgsGrassEditRenderer*>( renderer->clone() );

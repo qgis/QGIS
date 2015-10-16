@@ -804,6 +804,9 @@ void QgsGraduatedSymbolRendererV2Widget::changeGraduatedSymbol()
 
 void QgsGraduatedSymbolRendererV2Widget::updateGraduatedSymbolIcon()
 {
+  if ( !mGraduatedSymbol )
+    return;
+
   QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mGraduatedSymbol, btnChangeGraduatedSymbol->iconSize() );
   btnChangeGraduatedSymbol->setIcon( icon );
 }

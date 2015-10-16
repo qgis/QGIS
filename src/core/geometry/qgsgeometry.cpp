@@ -973,7 +973,7 @@ bool QgsGeometry::convertToSingleType()
   }
 
   QgsGeometryCollectionV2* multiGeom = dynamic_cast<QgsGeometryCollectionV2*>( d->geometry );
-  if ( multiGeom->partCount() < 1 )
+  if ( !multiGeom || multiGeom->partCount() < 1 )
     return false;
 
   QgsAbstractGeometryV2* firstPart = multiGeom->geometryN( 0 )->clone();

@@ -52,7 +52,7 @@ extern "C"
 class TestQgsGrassFeature : public QgsFeature
 {
   public:
-    TestQgsGrassFeature() {}
+    TestQgsGrassFeature() : grassType( 0 ) {}
     TestQgsGrassFeature( int type ) : grassType( type )  {}
 
     int grassType;
@@ -73,8 +73,8 @@ class TestQgsGrassCommand
       ChangeAttributeValue
     };
 
-    TestQgsGrassCommand() {}
-    TestQgsGrassCommand( Command c ) : command( c ), geometry( 0 ) {}
+    TestQgsGrassCommand() : command( AddFeature ), fid( 0 ), geometry( 0 ) {}
+    TestQgsGrassCommand( Command c ) : command( c ), fid( 0 ), geometry( 0 ) {}
 
     QString toString() const;
     Command command;

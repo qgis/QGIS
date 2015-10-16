@@ -1664,8 +1664,7 @@ bool QgsPalLayerSettings::dataDefinedEvaluate( DataDefinedProperties p, QVariant
   if ( !context )
   {
     scopedEc.reset( new QgsExpressionContext() );
-    if ( mCurFeat )
-      scopedEc->setFeature( *mCurFeat );
+    scopedEc->setFeature( *mCurFeat );
     scopedEc->setFields( mCurFields );
   }
   QgsExpressionContext* ec = context ? context : scopedEc.data();

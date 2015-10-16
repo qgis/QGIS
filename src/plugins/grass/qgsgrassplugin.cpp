@@ -408,6 +408,7 @@ void QgsGrassPlugin::onEditingStarted()
   {
     QgsDebugMsg( editStyleName + " style exists -> set as current" );
     vectorLayer->styleManager()->setCurrentStyle( editStyleName );
+    delete renderer;
   }
   else
   {

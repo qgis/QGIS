@@ -267,6 +267,7 @@ void QgsGrassVectorMapLayer::load()
                     break;
                   case DB_C_TYPE_DATETIME:
                     variant = QVariant( QByteArray( db_get_string( &dbstr ) ) );
+                    break;
                   default:
                     variant = QVariant( QByteArray( db_get_string( &dbstr ) ) );
                 }

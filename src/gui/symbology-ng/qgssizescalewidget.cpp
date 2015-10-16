@@ -203,7 +203,7 @@ void QgsSizeScaleWidget::updatePreview()
   int widthMax = 0;
   for ( int i = 0; i < breaks.length(); i++ )
   {
-    QScopedPointer< QgsMarkerSymbolV2 > symbol( dynamic_cast<QgsMarkerSymbolV2*>( mSymbol->clone() ) );
+    QScopedPointer< QgsMarkerSymbolV2 > symbol( static_cast<QgsMarkerSymbolV2*>( mSymbol->clone() ) );
     symbol->setDataDefinedSize( QgsDataDefined() );
     symbol->setDataDefinedAngle( QgsDataDefined() ); // to avoid symbol not beeing drawn
     symbol->setSize( expr->size( breaks[i] ) );

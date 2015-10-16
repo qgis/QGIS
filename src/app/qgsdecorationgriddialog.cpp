@@ -88,7 +88,7 @@ void QgsDecorationGridDialog::updateGuiElements()
     delete mLineSymbol;
   if ( mDeco.lineSymbol() )
   {
-    mLineSymbol = dynamic_cast<QgsLineSymbolV2*>( mDeco.lineSymbol()->clone() );
+    mLineSymbol = static_cast<QgsLineSymbolV2*>( mDeco.lineSymbol()->clone() );
     QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mLineSymbol, mLineSymbolButton->iconSize() );
     mLineSymbolButton->setIcon( icon );
   }
@@ -96,7 +96,7 @@ void QgsDecorationGridDialog::updateGuiElements()
     delete mMarkerSymbol;
   if ( mDeco.markerSymbol() )
   {
-    mMarkerSymbol = dynamic_cast<QgsMarkerSymbolV2*>( mDeco.markerSymbol()->clone() );
+    mMarkerSymbol = static_cast<QgsMarkerSymbolV2*>( mDeco.markerSymbol()->clone() );
     QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mMarkerSymbol, mMarkerSymbolButton->iconSize() );
     mMarkerSymbolButton->setIcon( icon );
   }
