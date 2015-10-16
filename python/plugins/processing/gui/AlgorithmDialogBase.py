@@ -77,13 +77,27 @@ class AlgorithmDialogBase(BASE, WIDGET):
             if isText:
                 self.txtHelp.setHtml(algHelp)
             else:
+                self.txtHelp.settings().clearMemoryCaches()
+                self.tabWidget.setTabText(2, self.tr("Help (loading...)"))
+                self.tabWidget.setTabEnabled(2, False)
+                self.txtHelp.loadFinished.connect(self.loadFinished)
+                self.tabWidget.currentChanged.connect(self.loadHelp)
                 self.txtHelp.load(algHelp)
+                self.algHelp = algHelp
         except:
             self.txtHelp.setHtml(
                 self.tr('<h2>Could not open help file :-( </h2>'))
 
         self.showDebug = ProcessingConfig.getSetting(
             ProcessingConfig.SHOW_DEBUG_IN_DIALOG)
+
+    def loadFinished(self):
+        self.tabWidget.setTabEnabled(2, True)
+        self.tabWidget.setTabText(2, self.tr("Help"))
+
+    def loadHelp(self, i):
+        if i == 2:
+            self.txtHelp.findText(self.alg.name)
 
     def closeEvent(self, evt):
         self.settings.setValue("/Processing/dialogBase", self.saveGeometry())
