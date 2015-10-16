@@ -56,7 +56,6 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
             (self.maskSelector, SIGNAL("filenameChanged()"), self.maskModeRadio, 1600),
             (self.alphaBandCheck, SIGNAL("stateChanged(int)")),
             (self.cropToCutlineCheck, SIGNAL("stateChanged(int)")),
-            ([self.xRes, self.yRes], SIGNAL("valueChanged(double)"), self.keepResolutionRadio),
             ([self.xRes, self.yRes], SIGNAL("valueChanged(double)"), self.setResolutionRadio),
             (self.extentSelector, [SIGNAL("selectionStarted()"), SIGNAL("newExtentDefined()")], self.extentModeRadio),
             (self.modeStackedWidget, SIGNAL("currentIndexChanged(int)"))
@@ -92,9 +91,9 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
 
     def switchResolutionMode(self):
         if self.keepResolutionRadio.isChecked():
-            self.resolutionStackedWidget.setCurrentIndex(0)
+            self.resolutionWidget.hide()
         else:
-            self.resolutionStackedWidget.setCurrentIndex(1)
+            self.resolutionWidget.show()
     
     def checkRun(self):
         if self.extentModeRadio.isChecked():
@@ -162,11 +161,12 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
                 arguments.append(unicode(rect.yMaximum()))
                 arguments.append(unicode(rect.xMaximum()))
                 arguments.append(unicode(rect.yMinimum()))
-        if not self.getOutputFileName() == '':
+        outputFn = self.getOutputFileName()
+        if not outputFn == '':
             arguments.append("-of")
             arguments.append(self.outputFormat)
         arguments.append(inputFn)
-        arguments.append(self.getOutputFileName())
+        arguments.append(outputFn)
         return arguments
 
     def getArgsModeMask(self):
@@ -188,16 +188,15 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
                 if self.alphaBandCheck.isChecked():
                     arguments.append("-dstalpha")
                 if self.keepResolutionRadio.isChecked():
-                    arguments.append("-tr")
-                    resolution = Utils.getRasterResolution(self.getInputFileName())
+                    resolution = Utils.getRasterResolution(inputFn)
                     if resolution is not None:
+                        arguments.append("-tr")
                         arguments.append(resolution[0])
                         arguments.append(resolution[1])
-                if self.setResolutionRadio.isChecked():
+                else:
                     arguments.append("-tr")
                     arguments.append(unicode(self.xRes.value()))
                     arguments.append(unicode(self.yRes.value()))
-
         outputFn = self.getOutputFileName()
         if not outputFn == '':
             arguments.append("-of")
