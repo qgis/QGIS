@@ -1345,6 +1345,8 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
           }
         }
       }
+      // update table
+      emit dataChanged();
     }
   }
   else
