@@ -149,8 +149,11 @@
         <file>themes/default/mActionCancelAllEdits.svg</file>
         <file>themes/default/mActionCancelEdits.svg</file>
         <file>themes/default/mActionCaptureLine.png</file>
+        <file>themes/default/mActionCaptureLine.svg</file>
         <file>themes/default/mActionCapturePoint.png</file>
+        <file>themes/default/mActionCapturePoint.svg</file>
         <file>themes/default/mActionCapturePolygon.png</file>
+        <file>themes/default/mActionCapturePolygon.svg</file>
         <file>themes/default/mActionNewTableRow.png</file>
         <file>themes/default/mActionChangeLabelProperties.png</file>
         <file>themes/default/mActionCheckQgisVersion.png</file>
@@ -514,8 +517,10 @@
         <file>themes/default/mIconWarning.svg</file>
         <file>flags/zh.png</file>
         <file>themes/default/mIconPaintEffects.svg</file>
-	<file>themes/default/mActionCircularStringCurvePoint.png</file>
-	<file>themes/default/mActionCircularStringRadius.png</file>
+        <file>themes/default/mActionCircularStringCurvePoint.png</file>
+        <file>themes/default/mActionCircularStringCurvePoint.svg</file>
+        <file>themes/default/mActionCircularStringRadius.png</file>
+        <file>themes/default/mActionCircularStringRadius.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

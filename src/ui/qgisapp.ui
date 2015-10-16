@@ -2358,7 +2358,7 @@ Acts on currently active editable layer</string>
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionCircularStringCurvePoint.png</normaloff>:/images/themes/default/mActionCircularStringCurvePoint.png</iconset>
+     <normaloff>:/images/themes/default/mActionCircularStringCurvePoint.svg</normaloff>:/images/themes/default/mActionCircularStringCurvePoint.svg</iconset>
    </property>
    <property name="text">
     <string>Add circular string</string>
@@ -2370,7 +2370,7 @@ Acts on currently active editable layer</string>
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionCircularStringRadius.png</normaloff>:/images/themes/default/mActionCircularStringRadius.png</iconset>
+     <normaloff>:/images/themes/default/mActionCircularStringRadius.svg</normaloff>:/images/themes/default/mActionCircularStringRadius.svg</iconset>
    </property>
    <property name="text">
     <string>Add circular string by radius</string>
