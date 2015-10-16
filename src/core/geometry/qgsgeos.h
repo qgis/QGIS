@@ -61,6 +61,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     bool overlaps( const QgsAbstractGeometryV2& geom, QString* errorMsg = 0 ) const override;
     bool contains( const QgsAbstractGeometryV2& geom, QString* errorMsg = 0 ) const override;
     bool disjoint( const QgsAbstractGeometryV2& geom, QString* errorMsg = 0 ) const override;
+    QString relate( const QgsAbstractGeometryV2& geom, QString* errorMsg = 0 ) const override;
     double area( QString* errorMsg = 0 ) const override;
     double length( QString* errorMsg = 0 ) const override;
     bool isValid( QString* errorMsg = 0 ) const override;

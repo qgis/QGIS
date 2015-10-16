@@ -20,8 +20,11 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgscircularstringv2.h"
 #include "qgscompoundcurvev2.h"
 #include "qgslinestringv2.h"
+#include "qgsmultilinestringv2.h"
 #include "qgspointv2.h"
+#include "qgsmultipointv2.h"
 #include "qgspolygonv2.h"
+#include "qgsmultipolygonv2.h"
 #include "qgswkbptr.h"
 
 QgsGeometryCollectionV2::QgsGeometryCollectionV2(): QgsAbstractGeometryV2()
@@ -214,8 +217,10 @@ bool QgsGeometryCollectionV2::fromWkb( const unsigned char * wkb )
 
 bool QgsGeometryCollectionV2::fromWkt( const QString& wkt )
 {
-  return fromCollectionWkt( wkt, QList<QgsAbstractGeometryV2*>() << new QgsPointV2 << new QgsLineStringV2
-                            << new QgsCircularStringV2 << new QgsCompoundCurveV2, "GeometryCollection" );
+  return fromCollectionWkt( wkt, QList<QgsAbstractGeometryV2*>() << new QgsPointV2 << new QgsLineStringV2 << new QgsPolygonV2
+                            << new QgsCircularStringV2 << new QgsCompoundCurveV2
+                            << new QgsMultiPointV2 << new QgsMultiLineStringV2
+                            << new QgsMultiPolygonV2 << new QgsGeometryCollectionV2, "GeometryCollection" );
 }
 
 int QgsGeometryCollectionV2::wkbSize() const

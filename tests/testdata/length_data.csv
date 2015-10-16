@@ -1,0 +1,11 @@
+MultiPolygon( ((0 0, 10 0, 10 10, 0 10, 0 0)),( (0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7 , 5 7, 5 5) ) ,( (0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7, 5 7, 5 5),(1 1,2 1, 2 2, 1 2, 1 1) ) )|140
+MultiLineString((0 0, 1 1),(0 0, 1 1, 2 2) )|4.24264068711929
+Point (1 2)|0
+MultiPoint ((1 2),(2 3))|0
+Polygon (())|0
+LineString ()|0
+MultiPolygon ((()))|0
+MultiLineString ()|0
+MultiPoint ()|0
+GeometryCollection ()|0
+LineString (0 0, 10 10, 20 0)|28.2842712

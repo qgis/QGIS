@@ -32,6 +32,16 @@ class QgsGeometryEngine
     virtual bool overlaps( const QgsAbstractGeometryV2& geom, QString* errorMsg = 0 ) const = 0;
     virtual bool contains( const QgsAbstractGeometryV2& geom, QString* errorMsg = 0 ) const = 0;
     virtual bool disjoint( const QgsAbstractGeometryV2& geom, QString* errorMsg = 0 ) const = 0;
+
+    /** Returns the Dimensional Extended 9 Intersection Model (DE-9IM) representation of the
+     * relationship between the geometries.
+     * @param geom geometry to relate to
+     * @param errorMsg destination storage for any error message
+     * @returns DE-9IM string for relationship, or an empty string if an error occurred
+     * @note added in QGIS 2.12
+     */
+    virtual QString relate( const QgsAbstractGeometryV2& geom, QString* errorMsg = 0 ) const = 0;
+
     virtual double area( QString* errorMsg = 0 ) const = 0;
     virtual double length( QString* errorMsg = 0 ) const = 0;
     virtual bool isValid( QString* errorMsg = 0 ) const = 0;

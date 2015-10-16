@@ -256,6 +256,40 @@ bool QgsGeos::disjoint( const QgsAbstractGeometryV2& geom, QString* errorMsg ) c
   return relation( geom, DISJOINT, errorMsg );
 }
 
+QString QgsGeos::relate( const QgsAbstractGeometryV2& geom, QString* errorMsg ) const
+{
+  if ( !mGeos )
+  {
+    return QString();
+  }
+
+  GEOSGeomScopedPtr geosGeom( asGeos( &geom, mPrecision ) );
+  if ( !geosGeom )
+  {
+    return QString();
+  }
+
+  QString result;
+  try
+  {
+    char* r = GEOSRelate_r( geosinit.ctxt, mGeos, geosGeom.get() );
+    if ( r )
+    {
+      result = QString( r );
+      GEOSFree_r( geosinit.ctxt, r );
+    }
+  }
+  catch ( GEOSException &e )
+  {
+    if ( errorMsg )
+    {
+      *errorMsg = e.what();
+    }
+  }
+
+  return result;
+}
+
 double QgsGeos::area( QString* errorMsg ) const
 {
   double area = -1.0;

@@ -35,6 +35,7 @@ from utilities import (getQgisTestApp,
 # Convenience instances in case you may need them not used in this test
 
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsGeometry(TestCase):
@@ -45,6 +46,27 @@ class TestQgsGeometry(TestCase):
         myMessage = ('Expected:\n%s\nGot:\n%s\n' %
                      (QGis.WKBPoint, myGeometry.type()))
         assert myGeometry.wkbType() == QGis.WKBPoint, myMessage
+
+    def testWktMultiPointLoading(self):
+        #Standard format
+        wkt = 'MultiPoint ((10 15),(20 30))'
+        geom = QgsGeometry.fromWkt(wkt)
+        assert geom.wkbType() == QGis.WKBMultiPoint, ('Expected:\n%s\nGot:\n%s\n' % (QGis.WKBPoint, geom.type()))
+        assert geom.geometry().numGeometries() == 2
+        assert geom.geometry().geometryN(0).x() == 10
+        assert geom.geometry().geometryN(0).y() == 15
+        assert geom.geometry().geometryN(1).x() == 20
+        assert geom.geometry().geometryN(1).y() == 30
+
+        #Check MS SQL format
+        wkt = 'MultiPoint (11 16, 21 31)'
+        geom = QgsGeometry.fromWkt(wkt)
+        assert geom.wkbType() == QGis.WKBMultiPoint, ('Expected:\n%s\nGot:\n%s\n' % (QGis.WKBPoint, geom.type()))
+        assert geom.geometry().numGeometries() == 2
+        assert geom.geometry().geometryN(0).x() == 11
+        assert geom.geometry().geometryN(0).y() == 16
+        assert geom.geometry().geometryN(1).x() == 21
+        assert geom.geometry().geometryN(1).y() == 31
 
     def testFromPoint(self):
         myPoint = QgsGeometry.fromPoint(QgsPoint(10, 10))
@@ -95,34 +117,48 @@ class TestQgsGeometry(TestCase):
         assert myMultiPolygon.wkbType() == QGis.WKBMultiPolygon, myMessage
 
     def testExportToWkt(self):
+        """ Test parsing a whole range of valid wkt formats and variants.
+        Note the bulk of this test data was taken from the PostGIS WKT test data """
+        with open(os.path.join(TEST_DATA_DIR, 'wkt_data.csv'), 'r') as d:
+            for i, t in enumerate(d):
+                test_data = t.strip().split('|')
+                wkt = test_data[0].strip()
+                geom = QgsGeometry.fromWkt(wkt)
+                assert geom, "WKT conversion {} failed: could not create geom:\n{}\n".format(i + 1, wkt)
+                result = geom.exportToWkt()
+                if len(test_data) > 1:
+                    exp = test_data[1]
+                else:
+                    exp = test_data[0]
+                assert compareWkt(result, exp), "WKT conversion {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp, result)
 
-        # test exporting collections to wkt. MultiPolygon, MultiLineString and MultiPoint should omit child types
-        wkt = "MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)),((4 0, 5 0, 5 2, 3 2, 3 1, 4 1, 4 0)))"
-        g = QgsGeometry.fromWkt(wkt)
-        res = g.exportToWkt()
-        assert compareWkt(res, wkt), "Expected:\n%s\nGot:\n%s\n" % (wkt, res)
+    def testArea(self):
+        """ Test area calculations """
+        with open(os.path.join(TEST_DATA_DIR, 'area_data.csv'), 'r') as d:
+            for i, t in enumerate(d):
+                if not t:
+                    continue
 
-        wkt = "MultiLineString ((0 0, 1 0, 1 1, 2 1, 2 0), (3 1, 5 1, 5 0, 6 0))"
-        g = QgsGeometry.fromWkt(wkt)
-        res = g.exportToWkt()
-        assert compareWkt(res, wkt), "Expected:\n%s\nGot:\n%s\n" % (wkt, res)
+                test_data = t.strip().split('|')
+                geom = QgsGeometry.fromWkt(test_data[0])
+                assert geom, "Area {} failed: could not create geom:\n{}\n".format(i + 1, test_data[0])
+                result = geom.area()
+                exp = float(test_data[1])
+                assert abs(float(result) - float(exp)) < 0.0000001, "Area failed: mismatch Expected:\n{}\nGot:\n{}\nGeom:\n{}\n".format(i + 1, exp, result, test_data[0])
 
-        wkt = "MultiPoint ((10 30),(40 20),(30 10),(20 10))"
-        g = QgsGeometry.fromWkt(wkt)
-        res = g.exportToWkt()
-        assert compareWkt(res, wkt), "Expected:\n%s\nGot:\n%s\n" % (wkt, res)
+    def testLength(self):
+        """ Test length/perimeter calculations """
+        with open(os.path.join(TEST_DATA_DIR, 'length_data.csv'), 'r') as d:
+            for i, t in enumerate(d):
+                if not t:
+                    continue
 
-        #mixed GeometryCollection should keep child types
-        wkt = "GeometryCollection (Point (10 10),Point (30 30),LineString (15 15, 20 20))"
-        g = QgsGeometry.fromWkt(wkt)
-        res = g.exportToWkt()
-        assert compareWkt(res, wkt), "Expected:\n%s\nGot:\n%s\n" % (wkt, res)
-
-        #Multicurve should keep child type
-        wkt = "MultiCurve (CircularString (90 232, 95 230, 100 232),CircularString (90 232, 95 234, 100 232))"
-        g = QgsGeometry.fromWkt(wkt)
-        res = g.exportToWkt()
-        assert compareWkt(res, wkt), "Expected:\n%s\nGot:\n%s\n" % (wkt, res)
+                test_data = t.strip().split('|')
+                geom = QgsGeometry.fromWkt(test_data[0])
+                assert geom, "Length {} failed: could not create geom:\n{}\n".format(i + 1, test_data[0])
+                result = geom.length()
+                exp = float(test_data[1])
+                assert abs(float(result) - float(exp)) < 0.0000001, "Length {} failed: mismatch Expected:\n{}\nGot:\n{}\nGeom:\n{}\n".format(i + 1, exp, result, test_data[0])
 
     def testIntersection(self):
         myLine = QgsGeometry.fromPolyline([
@@ -1620,6 +1656,19 @@ class TestQgsGeometry(TestCase):
         wkt = geom.exportToWkt()
         assert compareWkt(expWkt, wkt), "addMValue to Point failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
 
+    def testRelates(self):
+        """ Test relationships between geometries. Note the bulk of these tests were taken from the PostGIS relate testdata """
+        with open(os.path.join(TEST_DATA_DIR, 'relates_data.csv'), 'r') as d:
+            for i, t in enumerate(d):
+                test_data = t.strip().split('|')
+                geom1 = QgsGeometry.fromWkt(test_data[0])
+                assert geom1, "Relates {} failed: could not create geom:\n{}\n".format(i + 1, test_data[0])
+                geom2 = QgsGeometry.fromWkt(test_data[1])
+                assert geom2, "Relates {} failed: could not create geom:\n{}\n".format(i + 1, test_data[1])
+                result = QgsGeometry.createGeometryEngine(geom1.geometry()).relate(geom2.geometry())
+                exp = test_data[2]
+                assert result == exp, "Relates {} failed: mismatch Expected:\n{}\nGot:\n{}\nGeom1:\n{}\nGeom2:\n{}\n".format(i + 1, exp, result, test_data[0], test_data[1])
+
     def testWkbTypes(self):
         """ Test QgsWKBTypes methods """
 
@@ -1853,6 +1902,7 @@ class TestQgsGeometry(TestCase):
         assert QgsWKBTypes.addM(QgsWKBTypes.Polygon25D) == QgsWKBTypes.Polygon25D
         assert QgsWKBTypes.addM(QgsWKBTypes.MultiLineString25D) == QgsWKBTypes.MultiLineString25D
         assert QgsWKBTypes.addM(QgsWKBTypes.MultiPolygon25D) == QgsWKBTypes.MultiPolygon25D
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -26,7 +26,17 @@ QgsMultiPointV2 *QgsMultiPointV2::clone() const
 
 bool QgsMultiPointV2::fromWkt( const QString& wkt )
 {
-  return fromCollectionWkt( wkt, QList<QgsAbstractGeometryV2*>() << new QgsPointV2, "Point" );
+  QString collectionWkt( wkt );
+  //test for non-standard MultiPoint(x1 y1, x2 y2) format
+  QRegExp regex( "^\\s*MultiPoint\\s*[ZM]*\\s*\\(\\s*\\d" );
+  regex.setCaseSensitivity( Qt::CaseInsensitive );
+  if ( regex.indexIn( collectionWkt ) >= 0 )
+  {
+    //alternate style without extra brackets, upgrade to standard
+    collectionWkt.replace( "(", "((" ).replace( ")", "))" ).replace( ",", "),(" );
+  }
+
+  return fromCollectionWkt( collectionWkt, QList<QgsAbstractGeometryV2*>() << new QgsPointV2, "Point" );
 }
 
 QDomElement QgsMultiPointV2::asGML2( QDomDocument& doc, int precision, const QString& ns ) const
