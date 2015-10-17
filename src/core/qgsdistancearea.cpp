@@ -384,7 +384,7 @@ double QgsDistanceArea::measurePerimeter( const QgsGeometry* geometry ) const
 
   if ( !mEllipsoidalMode || mEllipsoid == GEO_NONE )
   {
-    return geomV2->length();
+    return geomV2->perimeter();
   }
 
   //create list with (single) surfaces

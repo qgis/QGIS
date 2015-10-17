@@ -58,6 +58,7 @@ class QgsGeometryCollectionV2: public QgsAbstractGeometryV2
 
     virtual double length() const;
     virtual double area() const;
+    virtual double perimeter() const;
 
     bool hasCurvedSegments() const;
 

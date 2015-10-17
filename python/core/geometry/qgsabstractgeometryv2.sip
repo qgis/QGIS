@@ -118,8 +118,22 @@ class QgsAbstractGeometryV2
     virtual bool moveVertex( const QgsVertexId& position, const QgsPointV2& newPos ) = 0;
     virtual bool deleteVertex( const QgsVertexId& position ) = 0;
 
-    /** Length for linear geometries,perimeter for area geometries*/
+    /** Returns the length of the geometry.
+     * @see area()
+     * @see perimeter()
+     */
     virtual double length() const;
+
+    /** Returns the perimeter of the geometry.
+     * @see area()
+     * @see length()
+     */
+    virtual double perimeter() const;
+
+    /** Returns the area of the geometry.
+     * @see length()
+     * @see perimeter()
+     */
     virtual double area() const;
 
     /** Returns the centroid of the geometry*/

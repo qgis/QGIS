@@ -182,41 +182,15 @@ class TestQgsGeometry(TestCase):
                 result = geom.geometry().area()
                 assert doubleNear(result, exp), "Area {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp, result)
 
-                #NOTE - disabled due to misleading length/perimeter calculations for geometry collections
-                #exp = float(row['length'])
-                #result = geom.geometry().length()
-                #assert doubleNear(result, exp), "Length {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp, result)
-                #exp = float(row['perimeter'])
-                #result = geom.geometry().length()
-                #assert doubleNear(result, exp), "Length {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp, result)
-
-    def testArea(self):
-        """ Test area calculations """
-        with open(os.path.join(TEST_DATA_DIR, 'area_data.csv'), 'r') as d:
-            for i, t in enumerate(d):
-                if not t:
-                    continue
-
-                test_data = t.strip().split('|')
-                geom = QgsGeometry.fromWkt(test_data[0])
-                assert geom, "Area {} failed: could not create geom:\n{}\n".format(i + 1, test_data[0])
-                result = geom.area()
-                exp = float(test_data[1])
-                assert abs(float(result) - float(exp)) < 0.0000001, "Area failed: mismatch Expected:\n{}\nGot:\n{}\nGeom:\n{}\n".format(i + 1, exp, result, test_data[0])
-
-    def testLength(self):
-        """ Test length/perimeter calculations """
-        with open(os.path.join(TEST_DATA_DIR, 'length_data.csv'), 'r') as d:
-            for i, t in enumerate(d):
-                if not t:
-                    continue
-
-                test_data = t.strip().split('|')
-                geom = QgsGeometry.fromWkt(test_data[0])
-                assert geom, "Length {} failed: could not create geom:\n{}\n".format(i + 1, test_data[0])
-                result = geom.length()
-                exp = float(test_data[1])
-                assert abs(float(result) - float(exp)) < 0.0000001, "Length {} failed: mismatch Expected:\n{}\nGot:\n{}\nGeom:\n{}\n".format(i + 1, exp, result, test_data[0])
+                #test length calculation
+                exp = float(row['length'])
+                result = geom.geometry().length()
+                assert doubleNear(result, exp, 0.00001), "Length {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp, result)
+                
+                #test perimeter calculation
+                exp = float(row['perimeter'])
+                result = geom.geometry().perimeter()
+                assert doubleNear(result, exp, 0.00001), "Perimeter {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp, result)
 
     def testIntersection(self):
         myLine = QgsGeometry.fromPolyline([

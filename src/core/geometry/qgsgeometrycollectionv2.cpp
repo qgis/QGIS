@@ -454,6 +454,17 @@ double QgsGeometryCollectionV2::area() const
   return area;
 }
 
+double QgsGeometryCollectionV2::perimeter() const
+{
+  double perimeter = 0.0;
+  QVector< QgsAbstractGeometryV2* >::const_iterator geomIt = mGeometries.constBegin();
+  for ( ; geomIt != mGeometries.constEnd(); ++geomIt )
+  {
+    perimeter += ( *geomIt )->perimeter();
+  }
+  return perimeter;
+}
+
 bool QgsGeometryCollectionV2::fromCollectionWkt( const QString &wkt, const QList<QgsAbstractGeometryV2*>& subtypes, const QString& defaultChildWkbType )
 {
   clear();
