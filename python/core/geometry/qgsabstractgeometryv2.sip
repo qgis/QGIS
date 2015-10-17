@@ -49,14 +49,16 @@ class QgsAbstractGeometryV2
         sipClass = sipClass_QgsCurvePolygonV2;
       else if (dynamic_cast<QgsMultiPointV2*>(sipCpp) != NULL )
         sipClass = sipClass_QgsMultiPointV2;
-      else if (dynamic_cast<QgsLineStringV2*>(sipCpp) != NULL )
-        sipClass = sipClass_QgsLineStringV2;
+      else if (dynamic_cast<QgsMultiLineStringV2*>(sipCpp) != NULL )
+        sipClass = sipClass_QgsMultiLineStringV2;
       else if (dynamic_cast<QgsMultiPolygonV2*>(sipCpp) != NULL )
         sipClass = sipClass_QgsMultiPolygonV2;
       else if (dynamic_cast<QgsMultiSurfaceV2*>(sipCpp) != NULL )
         sipClass = sipClass_QgsMultiSurfaceV2;
       else if (dynamic_cast<QgsMultiCurveV2*>(sipCpp) != NULL )
         sipClass = sipClass_QgsMultiCurveV2;
+      else if (dynamic_cast<QgsGeometryCollectionV2*>(sipCpp) != NULL )
+        sipClass = sipClass_QgsGeometryCollectionV2;
       else
         sipClass = 0;
 %End
