@@ -161,9 +161,6 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         if old_model:
             old_model.deleteLater()
 
-        self.uniqueCombo.clear()
-        self.geomCombo.clear()
-
         try:
             # set the new model
             model = self.db.sqlResultModel(sql, self)
@@ -173,11 +170,12 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         except BaseError as e:
             QApplication.restoreOverrideCursor()
             DlgDbError.showError(e, self)
+            self.uniqueCombo.clear()
+            self.geomCombo.clear()
             return
 
-        cols = sorted(self.viewResult.model().columnNames())
-        self.uniqueCombo.addItems(cols)
-        self.geomCombo.addItems(cols)
+        cols = self.viewResult.model().columnNames()
+        self.setColumnCombos(cols)
 
         self.update()
         QApplication.restoreOverrideCursor()
@@ -236,8 +234,6 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
             return
 
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-        self.uniqueCombo.clear()
-        self.geomCombo.clear()
 
         # get a new alias
         aliasIndex = 0
@@ -265,6 +261,8 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         except BaseError as e:
             QApplication.restoreOverrideCursor()
             DlgDbError.showError(e, self)
+            self.uniqueCombo.clear()
+            self.geomCombo.clear()
             return
 
         finally:
@@ -272,6 +270,11 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
                 c.close()
                 del c
 
+        self.setColumnCombos(cols)
+
+        QApplication.restoreOverrideCursor()
+
+    def setColumnCombos(self, cols):
         # get sensible default columns. do this before sorting in case there's hints in the column order (eg, id is more likely to be first)
         try:
             defaultGeomCol = next(col for col in cols if col in ['geom', 'geometry', 'the_geom', 'way'])
@@ -283,6 +286,8 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
             defaultUniqueCol = None
 
         cols.sort()
+        self.uniqueCombo.clear()
+        self.geomCombo.clear()
         self.uniqueCombo.addItems(cols)
         self.geomCombo.addItems(cols)
 
@@ -295,8 +300,6 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
             self.uniqueCombo.setCurrentIndex(cols.index(defaultUniqueCol))
         except:
             pass
-
-        QApplication.restoreOverrideCursor()
 
     def copySelectedResults(self):
         if len(self.viewResult.selectedIndexes()) <= 0:
