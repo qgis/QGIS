@@ -1834,6 +1834,110 @@ template <TYPE>
 %End
 };
 
+// QList<QgsField> is implemented as a Python list of QgsField.
+%MappedType QList<QgsField> /DocType="list-of-qgsfield"/
+{
+%TypeHeaderCode
+#include <qgsfield.h>
+%End
+
+%ConvertFromTypeCode
+    PyObject *l = PyList_New(sipCpp->size());
+
+    if (!l)
+        return 0;
+
+    for (int i = 0; i < sipCpp->size(); ++i)
+    {
+        QgsField *t = new QgsField(sipCpp->at(i));
+        PyObject *tobj = sipConvertFromNewType(t, sipType_QgsField, sipTransferObj);
+
+        if (!tobj)
+        {
+            delete t;
+            Py_DECREF(l);
+
+            return 0;
+        }
+
+        PyList_SET_ITEM(l, i, tobj);
+    }
+
+    return l;
+%End
+
+%ConvertToTypeCode
+    PyObject *iter = PyObject_GetIter(sipPy);
+
+    if (!sipIsErr)
+    {
+        Py_XDECREF(iter);
+
+        return (iter
+#if PY_MAJOR_VERSION < 3
+                && !PyString_Check(sipPy)
+#endif
+                && !PyUnicode_Check(sipPy));
+    }
+
+    if (!iter)
+    {
+        *sipIsErr = 1;
+
+        return 0;
+    }
+
+    QList<QgsField> *ql = new QList<QgsField>;
+
+    for (SIP_SSIZE_T i = 0; ; ++i)
+    {
+        PyErr_Clear();
+        PyObject *itm = PyIter_Next(iter);
+
+        if (!itm)
+        {
+            if (PyErr_Occurred())
+            {
+                delete ql;
+                Py_DECREF(iter);
+                *sipIsErr = 1;
+
+                return 0;
+            }
+
+            break;
+        }
+
+        int state;
+        QgsField *t = reinterpret_cast<QgsField *>( sipForceConvertToType(itm, sipType_QgsField, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
+
+        if (*sipIsErr)
+        {
+            PyErr_Format(PyExc_TypeError,
+                    "index %ld has type '%s' but 'QgsField' is expected",
+                    (long) i, Py_TYPE(itm)->tp_name);
+
+            Py_DECREF(itm);
+            delete ql;
+            Py_DECREF(iter);
+
+            return 0;
+        }
+
+        ql->append(*t);
+
+        sipReleaseType(t, sipType_QgsField, state);
+        Py_DECREF(itm);
+    }
+
+    Py_DECREF(iter);
+
+    *sipCppPtr = ql;
+
+    return sipGetState(sipTransferObj);
+%End
+};
+
 %If (QVECTORINT_CONVERSION)
 // QVector<int> is implemented as a Python list of integers.
 %MappedType QVector<int> /DocType="list-of-int"/
