@@ -86,7 +86,13 @@ typedef int Vect_delete_line_function_type( struct Map_info *, int );
 #ifdef Q_OS_WIN
 typedef qint64 grass_off_t;
 #else
-typedef off_t grass_off_t;
+#if GRASS_OFF_T_SIZE == 4
+typedef qint32 grass_off_t;
+#elif GRASS_OFF_T_SIZE == 8
+typedef qint64 grass_off_t;
+#else
+typedef off_t grass_off_t; // GRASS_OFF_T_SIZE undefined, default to off_t
+#endif
 #endif
 typedef grass_off_t Vect_rewrite_line_function_type( struct Map_info *, grass_off_t, int, const struct line_pnts *, const struct line_cats * );
 typedef int Vect_delete_line_function_type( struct Map_info *, grass_off_t );
