@@ -14,6 +14,7 @@ __revision__ = '$Format:%H$'
 
 import qgis
 import os
+import csv
 
 from qgis.core import (QgsGeometry,
                        QgsVectorLayer,
@@ -28,6 +29,7 @@ from utilities import (getQgisTestApp,
                        TestCase,
                        unittest,
                        compareWkt,
+                       doubleNear,
                        unitTestDataPath,
                        writeShape)
 
@@ -116,21 +118,77 @@ class TestQgsGeometry(TestCase):
                      (QGis.WKBMultiPolygon, myMultiPolygon.type()))
         assert myMultiPolygon.wkbType() == QGis.WKBMultiPolygon, myMessage
 
-    def testExportToWkt(self):
-        """ Test parsing a whole range of valid wkt formats and variants.
+    def testReferenceGeometry(self):
+        """ Test parsing a whole range of valid reference wkt formats and variants, and checking
+        expected values such as length, area, centroids, bounding boxes, etc of the resultant geometry.
         Note the bulk of this test data was taken from the PostGIS WKT test data """
-        with open(os.path.join(TEST_DATA_DIR, 'wkt_data.csv'), 'r') as d:
-            for i, t in enumerate(d):
-                test_data = t.strip().split('|')
-                wkt = test_data[0].strip()
-                geom = QgsGeometry.fromWkt(wkt)
-                assert geom, "WKT conversion {} failed: could not create geom:\n{}\n".format(i + 1, wkt)
+
+        with open(os.path.join(TEST_DATA_DIR, 'geom_data.csv'), 'rb') as f:
+            reader = csv.DictReader(f)
+            for i, row in enumerate(reader):
+
+                #test that geometry can be created from WKT
+                geom = QgsGeometry.fromWkt(row['wkt'])
+                assert geom, "WKT conversion {} failed: could not create geom:\n{}\n".format(i + 1, row['wkt'])
+
+                #test exporting to WKT results in expected string
                 result = geom.exportToWkt()
-                if len(test_data) > 1:
-                    exp = test_data[1]
-                else:
-                    exp = test_data[0]
+                exp = row['valid_wkt']
                 assert compareWkt(result, exp), "WKT conversion {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp, result)
+
+                #test num points in geometry
+                exp_nodes = int(row['num_points'])
+                assert geom.geometry().nCoordinates() == exp_nodes, "Node count {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp_nodes, geom.geometry().nCoordinates())
+
+                #test num geometries in collections
+                exp_geometries = int(row['num_geometries'])
+                try:
+                    assert geom.geometry().numGeometries() == exp_geometries, "Geometry count {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp_geometries, geom.geometry().numGeometries())
+                except:
+                    #some geometry types don't have numGeometries()
+                    assert exp_geometries <= 1, "Geometry count {}:  Expected:\n{} geometries but could not call numGeometries()\n".format(i + 1, exp_geometries)
+
+                #test count of rings
+                if row['num_rings']:
+                    exp_rings = int(row['num_rings'])
+                    try:
+                        assert geom.geometry().numInteriorRings() == exp_geometries, "Ring count {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp_geometries, geom.geometry().numInteriorRings())
+                    except:
+                        #some geometry types don't have numInteriorRings()
+                        assert exp_geometries <= 1, "Ring count {}:  Expected:\n{} rings but could not call numInteriorRings()\n".format(i + 1, exp_geometries)
+
+                #test geometry centroid
+                exp = row['centroid']
+                result = geom.centroid().exportToWkt()
+                assert compareWkt(result, exp), "Centroid {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp, result)
+
+                #test bounding box limits
+                bbox = geom.geometry().boundingBox()
+                exp = float(row['x_min'])
+                result = bbox.xMinimum()
+                assert doubleNear(result, exp), "Min X {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp, result)
+                exp = float(row['y_min'])
+                result = bbox.yMinimum()
+                assert doubleNear(result, exp), "Min Y {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp, result)
+                exp = float(row['x_max'])
+                result = bbox.xMaximum()
+                assert doubleNear(result, exp), "Max X {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp, result)
+                exp = float(row['y_max'])
+                result = bbox.yMaximum()
+                assert doubleNear(result, exp), "Max Y {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp, result)
+
+                #test area calculation
+                exp = float(row['area'])
+                result = geom.geometry().area()
+                assert doubleNear(result, exp), "Area {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp, result)
+
+                #NOTE - disabled due to misleading length/perimeter calculations for geometry collections
+                #exp = float(row['length'])
+                #result = geom.geometry().length()
+                #assert doubleNear(result, exp), "Length {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp, result)
+                #exp = float(row['perimeter'])
+                #result = geom.geometry().length()
+                #assert doubleNear(result, exp), "Length {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp, result)
 
     def testArea(self):
         """ Test area calculations """

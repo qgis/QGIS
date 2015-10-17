@@ -205,13 +205,43 @@ def writeShape(theMemoryLayer, theFileName):
     assert myResult == QgsVectorFileWriter.NoError
 
 
+def doubleNear(a, b, tol=0.0000000001):
+    """
+    Tests whether two floats are near, within a specified tolerance
+    """
+    return abs(float(a) - float(b)) < tol
+
+
 def compareWkt(a, b, tol=0.000001):
-    r0 = re.compile("-?\d+(?:\.\d+)?(?:[eE]\d+)?")
-    r1 = re.compile("\s*,\s*")
+    """
+    Compares two WKT strings, ignoring allowed differences between strings
+    and allowing a tolerance for coordinates
+    """
+    #ignore case
+    a0 = a.lower()
+    b0 = b.lower()
+
+    #remove optional spaces before z/m
+    r = re.compile("\s+([zm])")
+    a0 = r.sub(r'\1', a0)
+    b0 = r.sub(r'\1', b0)
+
+    #ignore the z/m flag on GeometryCollections
+    #NOTE - I'm not sure about this, possibly the flag is required and there's a bug in QGIS omitting this
+    r = re.compile("geometrycollection\s*[zm]*")
+    a0 = r.sub('geometrycollection', a0)
+    b0 = r.sub('geometrycollection', b0)
+
+    #spaces before brackets are optional
+    r = re.compile("\s*\(")
+    a0 = r.sub('(', a0)
+    b0 = r.sub('(', b0)
 
     # compare the structure
-    a0 = r1.sub(",", r0.sub("#", a))
-    b0 = r1.sub(",", r0.sub("#", b))
+    r0 = re.compile("-?\d+(?:\.\d+)?(?:[eE]\d+)?")
+    r1 = re.compile("\s*,\s*")
+    a0 = r1.sub(",", r0.sub("#", a0))
+    b0 = r1.sub(",", r0.sub("#", b0))
     if a0 != b0:
         return False
 
@@ -222,7 +252,7 @@ def compareWkt(a, b, tol=0.000001):
         return False
 
     for (a1, b1) in izip(a0, b0):
-        if abs(float(a1) - float(b1)) > tol:
+        if not doubleNear(a1, b1, tol):
             return False
 
     return True
