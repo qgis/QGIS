@@ -309,29 +309,38 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         colNames = zip(cols, quotedCols)
         colNames.sort()
         newItems = []
+        uniqueIsFilled = False
         for (col, quotedCol) in colNames:
             item = QStandardItem(col)
             item.setData(quotedCol)
             item.setEnabled(True)
             item.setCheckable(True)
             item.setSelectable(False)
-            item.setCheckState(Qt.Unchecked)
+            matchingItems = self.uniqueModel.findItems(col)
+            if matchingItems:
+                item.setCheckState(matchingItems[0].checkState())
+                uniqueIsFilled = uniqueIsFilled or matchingItems[0].checkState() == Qt.Checked
+            else:
+                item.setCheckState(Qt.Unchecked)
             newItems.append(item)
         self.uniqueModel.clear()
         self.uniqueModel.appendColumn(newItems)
         self.uniqueChanged()
 
+        oldGeometryColumn = self.geomCombo.currentText()
         self.geomCombo.clear()
         self.geomCombo.addItems(cols)
+        self.geomCombo.setCurrentIndex(self.geomCombo.findText(oldGeometryColumn, Qt.MatchExactly))
 
-        # set sensible default columns
+        # set sensible default columns if the columns are not already set
         try:
-            self.geomCombo.setCurrentIndex(cols.index(defaultGeomCol))
+            if self.geomCombo.currentIndex() == -1:
+                self.geomCombo.setCurrentIndex(cols.index(defaultGeomCol))
         except:
             pass
         try:
             items = self.uniqueModel.findItems(defaultUniqueCol)
-            if items:
+            if items and not uniqueIsFilled:
                 items[0].setCheckState(Qt.Checked)
         except:
             pass
