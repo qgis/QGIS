@@ -24,7 +24,7 @@ The content of this file is based on
 
 from PyQt4.QtCore import Qt, QObject, QSettings, QByteArray, SIGNAL, pyqtSignal
 from PyQt4.QtGui import QDialog, QWidget, QAction, QKeySequence, \
-    QDialogButtonBox, QApplication, QCursor, QMessageBox, QClipboard, QInputDialog, QIcon
+    QDialogButtonBox, QApplication, QCursor, QMessageBox, QClipboard, QInputDialog, QIcon, QStyledItemDelegate, QStandardItemModel, QStandardItem
 from PyQt4.Qsci import QsciAPIs
 
 from qgis.core import QgsProject
@@ -79,6 +79,15 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         self.presetCombo.activated[str].connect(self.presetName.setText)
 
         self.updatePresetsCombobox()
+
+        self.uniqueCombo.setItemDelegate(QStyledItemDelegate())
+        self.uniqueModel = QStandardItemModel(self.uniqueCombo)
+        self.uniqueCombo.setModel(self.uniqueModel)
+        self.uniqueCombo.setEditable(True)
+        self.uniqueCombo.lineEdit().setReadOnly(True)
+        self.uniqueModel.itemChanged.connect(self.uniqueChanged)                # react to the (un)checking of an item
+        self.uniqueCombo.lineEdit().textChanged.connect(self.uniqueTextChanged) # there are other events that change the displayed text and some of them can not be caught directly
+        self.uniqueChanged
 
         # hide the load query as layer if feature is not supported
         self._loadAsLayerAvailable = self.db.connector.hasCustomQuerySupport()
@@ -161,21 +170,26 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         if old_model:
             old_model.deleteLater()
 
+        cols = []
+        quotedCols = []
+
         try:
             # set the new model
             model = self.db.sqlResultModel(sql, self)
             self.viewResult.setModel(model)
             self.lblResult.setText(self.tr("%d rows, %.1f seconds") % (model.affectedRows(), model.secs()))
+            cols = self.viewResult.model().columnNames()
+            for col in cols:
+                quotedCols.append(self.db.connector.quoteId(col))
 
         except BaseError as e:
             QApplication.restoreOverrideCursor()
             DlgDbError.showError(e, self)
-            self.uniqueCombo.clear()
+            self.uniqueModel.clear()
             self.geomCombo.clear()
             return
 
-        cols = self.viewResult.model().columnNames()
-        self.setColumnCombos(cols)
+        self.setColumnCombos(cols, quotedCols)
 
         self.update()
         QApplication.restoreOverrideCursor()
@@ -183,7 +197,11 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
     def loadSqlLayer(self):
         hasUniqueField = self.uniqueColumnCheck.checkState() == Qt.Checked
         if hasUniqueField:
-            uniqueFieldName = self.uniqueCombo.currentText()
+            checkedCols = []
+            for item in self.uniqueModel.findItems("*", Qt.MatchWildcard):
+                if item.checkState() == Qt.Checked:
+                    checkedCols.append(item.data())
+            uniqueFieldName = ",".join(checkedCols)
         else:
             uniqueFieldName = None
         hasGeomCol = self.hasGeometryCol.checkState() == Qt.Checked
@@ -250,6 +268,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
 
         # get all the columns
         cols = []
+        quotedCols = []
         connector = self.db.connector
         sql = u"SELECT * FROM (%s\n) AS %s LIMIT 0" % (unicode(query), connector.quoteId(alias))
 
@@ -257,11 +276,13 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         try:
             c = connector._execute(None, sql)
             cols = connector._get_cursor_columns(c)
+            for col in cols:
+                quotedCols.append(connector.quoteId(col))
 
         except BaseError as e:
             QApplication.restoreOverrideCursor()
             DlgDbError.showError(e, self)
-            self.uniqueCombo.clear()
+            self.uniqueModel.clear()
             self.geomCombo.clear()
             return
 
@@ -270,11 +291,11 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
                 c.close()
                 del c
 
-        self.setColumnCombos(cols)
+        self.setColumnCombos(cols, quotedCols)
 
         QApplication.restoreOverrideCursor()
 
-    def setColumnCombos(self, cols):
+    def setColumnCombos(self, cols, quotedCols):
         # get sensible default columns. do this before sorting in case there's hints in the column order (eg, id is more likely to be first)
         try:
             defaultGeomCol = next(col for col in cols if col in ['geom', 'geometry', 'the_geom', 'way'])
@@ -285,10 +306,22 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         except:
             defaultUniqueCol = None
 
-        cols.sort()
-        self.uniqueCombo.clear()
+        colNames = zip(cols, quotedCols)
+        colNames.sort()
+        newItems = []
+        for (col, quotedCol) in colNames:
+            item = QStandardItem(col)
+            item.setData(quotedCol)
+            item.setEnabled(True)
+            item.setCheckable(True)
+            item.setSelectable(False)
+            item.setCheckState(Qt.Unchecked)
+            newItems.append(item)
+        self.uniqueModel.clear()
+        self.uniqueModel.appendColumn(newItems)
+        self.uniqueChanged()
+
         self.geomCombo.clear()
-        self.uniqueCombo.addItems(cols)
         self.geomCombo.addItems(cols)
 
         # set sensible default columns
@@ -297,7 +330,9 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         except:
             pass
         try:
-            self.uniqueCombo.setCurrentIndex(cols.index(defaultUniqueCol))
+            items = self.uniqueModel.findItems(defaultUniqueCol)
+            if items:
+                items[0].setCheckState(Qt.Checked)
         except:
             pass
 
@@ -356,3 +391,17 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         if len(sql) == 0:
             sql = self.editSql.text()
         return sql
+
+    def uniqueChanged(self):
+        # when an item is (un)checked, simply trigger an update of the combobox text
+        self.uniqueTextChanged(None)
+
+    def uniqueTextChanged(self, text):
+        # Whenever there is new text displayed in the combobox, check if it is the correct one and if not, display the correct one.
+        checkedItems = []
+        for item in self.uniqueModel.findItems("*", Qt.MatchWildcard):
+            if item.checkState() == Qt.Checked:
+                checkedItems.append(item.text())
+        label = ", ".join(checkedItems)
+        if text != label:
+            self.uniqueCombo.setEditText(label)
