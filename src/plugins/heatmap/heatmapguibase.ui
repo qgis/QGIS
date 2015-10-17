@@ -89,7 +89,7 @@
       <widget class="QComboBox" name="mBufferUnitCombo">
        <item>
         <property name="text">
-         <string>meters</string>
+         <string>layer units</string>
         </property>
        </item>
        <item>
@@ -269,7 +269,7 @@
           </property>
           <item>
            <property name="text">
-            <string>meters</string>
+            <string>layer units</string>
            </property>
           </item>
           <item>
