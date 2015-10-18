@@ -337,7 +337,6 @@ QgsNodeEditor::QgsNodeEditor(
 
   connect( mSelectedFeature, SIGNAL( selectionChanged() ), this, SLOT( updateTableSelection() ) );
   connect( mTableView->selectionModel(), SIGNAL( selectionChanged( QItemSelection, QItemSelection ) ), this, SLOT( updateNodeSelection( QItemSelection, QItemSelection ) ) );
-  connect( mTableView, SIGNAL( cellChanged( int, int ) ), this, SLOT( tableValueChanged( int, int ) ) );
 }
 
 void QgsNodeEditor::updateTableSelection()
