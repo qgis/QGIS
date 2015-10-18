@@ -482,7 +482,8 @@ void QgsSymbolV2SelectorDialog::setWidget( QWidget* widget )
 {
   int index = stackedWidget->addWidget( widget );
   stackedWidget->setCurrentIndex( index );
-  mPresentWidget->deleteLater();
+  if ( mPresentWidget )
+    mPresentWidget->deleteLater();
   mPresentWidget = widget;
 }
 
