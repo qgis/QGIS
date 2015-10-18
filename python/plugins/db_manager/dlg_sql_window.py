@@ -30,6 +30,7 @@ from PyQt4.Qsci import QsciAPIs
 from qgis.core import QgsProject
 
 from .db_plugins.plugin import BaseError
+from .db_plugins.postgis.plugin import PGDatabase
 from .dlg_db_error import DlgDbError
 from .dlg_query_builder import QueryBuilderDlg
 
@@ -53,6 +54,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         QWidget.__init__(self, parent)
         self.iface = iface
         self.db = db
+        self.allowMultiColumnPk = isinstance(db, PGDatabase) # at the moment only PostGIS allows a primary key to span multiple columns, spatialite doesn't
         self.setupUi(self)
         self.setWindowTitle(
             u"%s - %s [%s]" % (self.windowTitle(), db.connection().connectionName(), db.connection().typeNameString()))
@@ -83,11 +85,12 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         self.uniqueCombo.setItemDelegate(QStyledItemDelegate())
         self.uniqueModel = QStandardItemModel(self.uniqueCombo)
         self.uniqueCombo.setModel(self.uniqueModel)
-        self.uniqueCombo.setEditable(True)
-        self.uniqueCombo.lineEdit().setReadOnly(True)
-        self.uniqueModel.itemChanged.connect(self.uniqueChanged)                # react to the (un)checking of an item
-        self.uniqueCombo.lineEdit().textChanged.connect(self.uniqueTextChanged) # there are other events that change the displayed text and some of them can not be caught directly
-        self.uniqueChanged
+        if self.allowMultiColumnPk:
+            self.uniqueCombo.setEditable(True)
+            self.uniqueCombo.lineEdit().setReadOnly(True)
+            self.uniqueModel.itemChanged.connect(self.uniqueChanged)                # react to the (un)checking of an item
+            self.uniqueCombo.lineEdit().textChanged.connect(self.uniqueTextChanged) # there are other events that change the displayed text and some of them can not be caught directly
+            self.uniqueChanged
 
         # hide the load query as layer if feature is not supported
         self._loadAsLayerAvailable = self.db.connector.hasCustomQuerySupport()
@@ -197,11 +200,16 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
     def loadSqlLayer(self):
         hasUniqueField = self.uniqueColumnCheck.checkState() == Qt.Checked
         if hasUniqueField:
-            checkedCols = []
-            for item in self.uniqueModel.findItems("*", Qt.MatchWildcard):
-                if item.checkState() == Qt.Checked:
-                    checkedCols.append(item.data())
-            uniqueFieldName = ",".join(checkedCols)
+            if self.allowMultiColumnPk:
+                checkedCols = []
+                for item in self.uniqueModel.findItems("*", Qt.MatchWildcard):
+                    if item.checkState() == Qt.Checked:
+                        checkedCols.append(item.data())
+                uniqueFieldName = ",".join(checkedCols)
+            elif self.uniqueCombo.currentIndex() >= 0:
+                uniqueFieldName = self.uniqueModel.item(self.uniqueCombo.currentIndex()).data()
+            else:
+                uniqueFieldName = None
         else:
             uniqueFieldName = None
         hasGeomCol = self.hasGeometryCol.checkState() == Qt.Checked
@@ -314,18 +322,28 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
             item = QStandardItem(col)
             item.setData(quotedCol)
             item.setEnabled(True)
-            item.setCheckable(True)
-            item.setSelectable(False)
-            matchingItems = self.uniqueModel.findItems(col)
-            if matchingItems:
-                item.setCheckState(matchingItems[0].checkState())
-                uniqueIsFilled = uniqueIsFilled or matchingItems[0].checkState() == Qt.Checked
-            else:
-                item.setCheckState(Qt.Unchecked)
+            item.setCheckable(self.allowMultiColumnPk)
+            item.setSelectable(not self.allowMultiColumnPk)
+            if self.allowMultiColumnPk:
+                matchingItems = self.uniqueModel.findItems(col)
+                if matchingItems:
+                    item.setCheckState(matchingItems[0].checkState())
+                    uniqueIsFilled = uniqueIsFilled or matchingItems[0].checkState() == Qt.Checked
+                else:
+                    item.setCheckState(Qt.Unchecked)
             newItems.append(item)
-        self.uniqueModel.clear()
-        self.uniqueModel.appendColumn(newItems)
-        self.uniqueChanged()
+        if self.allowMultiColumnPk:
+            self.uniqueModel.clear()
+            self.uniqueModel.appendColumn(newItems)
+            self.uniqueChanged()
+        else:
+            previousUniqueColumn = self.uniqueCombo.currentText()
+            self.uniqueModel.clear()
+            self.uniqueModel.appendColumn(newItems)
+            if self.uniqueModel.findItems(previousUniqueColumn):
+                self.uniqueCombo.setEditText(previousUniqueColumn)
+                uniqueIsFilled = True
+            
 
         oldGeometryColumn = self.geomCombo.currentText()
         self.geomCombo.clear()
@@ -338,10 +356,14 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
                 self.geomCombo.setCurrentIndex(cols.index(defaultGeomCol))
         except:
             pass
-        try:
-            items = self.uniqueModel.findItems(defaultUniqueCol)
-            if items and not uniqueIsFilled:
+        items = self.uniqueModel.findItems(defaultUniqueCol)
+        if items and not uniqueIsFilled:
+            if self.allowMultiColumnPk:
                 items[0].setCheckState(Qt.Checked)
+            else:
+                self.uniqueCombo.setEditText(defaultUniqueCol)
+        try:
+            pass
         except:
             pass
 
