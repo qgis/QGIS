@@ -232,6 +232,12 @@ override_dh_auto_install:
 	install -o root -g root -m 644 $(CURDIR)/debian/qgis-icon.xpm $(CURDIR)/debian/tmp/usr/share/pixmaps/qgis.xpm
 	install -o root -g root -m 644 $(CURDIR)/debian/qbrowser-icon.xpm $(CURDIR)/debian/tmp/usr/share/pixmaps/qbrowser.xpm
 
+	# Install MIME type icon
+	for size in 8x8 16x16 22x22 24x24 32x32 36x36 42x42 48x48 64x64 72x72 80x80 96x96 128x128; do \
+		install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/icons/hicolor/$${size}/mimetypes ; \
+		install -o root -g root -m 644 $(CURDIR)/debian/qgis-mime-icon$${size}.png $(CURDIR)/debian/tmp/usr/share/icons/hicolor/$${size}/mimetypes/qgis-mime.png ; \
+	done
+
 	# Install application icon
 	for size in 8x8 16x16 22x22 24x24 32x32 36x36 42x42 48x48 64x64 72x72 80x80 96x96 128x128 192x192 256x256 512x512; do \
 		install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/icons/hicolor/$${size}/apps ; \
