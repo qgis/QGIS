@@ -17,7 +17,6 @@ class QgsCurveV2: public QgsAbstractGeometryV2
     virtual void points( QList<QgsPointV2>& pt ) const = 0;
     virtual int numPoints() const = 0;
 
-    virtual double area() const;
     virtual void sumUpArea( double& sum ) const = 0;
 
     virtual void coordinateSequence( QList< QList< QList< QgsPointV2 > > >& coord /Out/ ) const;

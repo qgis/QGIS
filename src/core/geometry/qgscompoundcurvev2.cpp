@@ -161,6 +161,23 @@ bool QgsCompoundCurveV2::fromWkt( const QString& wkt )
       return false;
     }
   }
+
+  //scan through curves and check if dimensionality of curves is different to compound curve.
+  //if so, update the type dimensionality of the compound curve to match
+  bool hasZ = false;
+  bool hasM = false;
+  Q_FOREACH ( const QgsCurveV2* curve, mCurves )
+  {
+    hasZ = hasZ || curve->is3D();
+    hasM = hasM || curve->isMeasure();
+    if ( hasZ && hasM )
+      break;
+  }
+  if ( hasZ )
+    addZValue( 0 );
+  if ( hasM )
+    addMValue( 0 );
+
   return true;
 }
 

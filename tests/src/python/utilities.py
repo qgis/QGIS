@@ -226,16 +226,14 @@ def compareWkt(a, b, tol=0.000001):
     a0 = r.sub(r'\1', a0)
     b0 = r.sub(r'\1', b0)
 
-    #ignore the z/m flag on GeometryCollections
-    #NOTE - I'm not sure about this, possibly the flag is required and there's a bug in QGIS omitting this
-    r = re.compile("geometrycollection\s*[zm]*")
-    a0 = r.sub('geometrycollection', a0)
-    b0 = r.sub('geometrycollection', b0)
-
     #spaces before brackets are optional
-    r = re.compile("\s*\(")
+    r = re.compile("\s*\(\s*")
     a0 = r.sub('(', a0)
     b0 = r.sub('(', b0)
+    #spaces after brackets are optional
+    r = re.compile("\s*\)\s*")
+    a0 = r.sub(')', a0)
+    b0 = r.sub(')', b0)
 
     # compare the structure
     r0 = re.compile("-?\d+(?:\.\d+)?(?:[eE]\d+)?")

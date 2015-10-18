@@ -464,7 +464,30 @@ QList<QgsPointV2> QgsGeometryUtils::pointsFromWKT( const QString &wktCoordinateL
 {
   int dim = 2 + is3D + isMeasure;
   QList<QgsPointV2> points;
-  Q_FOREACH ( const QString& pointCoordinates, wktCoordinateList.split( ",", QString::SkipEmptyParts ) )
+  QStringList coordList = wktCoordinateList.split( ",", QString::SkipEmptyParts );
+
+  //first scan through for extra unexpected dimensions
+  bool foundZ = false;
+  bool foundM = false;
+  Q_FOREACH ( const QString& pointCoordinates, coordList )
+  {
+    QStringList coordinates = pointCoordinates.split( " ", QString::SkipEmptyParts );
+    if ( coordinates.size() == 3 && !foundZ && !foundM && !is3D && !isMeasure )
+    {
+      // 3 dimensional coordinates, but not specifically marked as such. We allow this
+      // anyway and upgrade geometry to have Z dimension
+      foundZ = true;
+    }
+    else if ( coordinates.size() >= 4 && ( !( is3D || foundZ ) || !( isMeasure || foundM ) ) )
+    {
+      // 4 (or more) dimensional coordinates, but not specifically marked as such. We allow this
+      // anyway and upgrade geometry to have Z&M dimensions
+      foundZ = true;
+      foundM = true;
+    }
+  }
+
+  Q_FOREACH ( const QString& pointCoordinates, coordList )
   {
     QStringList coordinates = pointCoordinates.split( " ", QString::SkipEmptyParts );
     if ( coordinates.size() < dim )
@@ -474,20 +497,25 @@ QList<QgsPointV2> QgsGeometryUtils::pointsFromWKT( const QString &wktCoordinateL
     double x = coordinates[idx++].toDouble();
     double y = coordinates[idx++].toDouble();
 
-    double z = is3D ? coordinates[idx++].toDouble() : 0.;
-    double m = isMeasure ? coordinates[idx++].toDouble() : 0.;
+    double z = 0;
+    if (( is3D || foundZ ) && coordinates.length() >= idx )
+      z = coordinates[idx++].toDouble();
+
+    double m = 0;
+    if (( isMeasure || foundM ) && coordinates.length() >= idx )
+      m = coordinates[idx++].toDouble();
 
     QgsWKBTypes::Type t = QgsWKBTypes::Point;
-    if ( is3D )
+    if ( is3D || foundZ )
     {
-      if ( isMeasure )
+      if ( isMeasure || foundM )
         t = QgsWKBTypes::PointZM;
       else
         t = QgsWKBTypes::PointZ;
     }
     else
     {
-      if ( isMeasure )
+      if ( isMeasure || foundM )
         t = QgsWKBTypes::PointM;
       else
         t = QgsWKBTypes::Point;
@@ -495,6 +523,7 @@ QList<QgsPointV2> QgsGeometryUtils::pointsFromWKT( const QString &wktCoordinateL
 
     points.append( QgsPointV2( t, x, y, z, m ) );
   }
+
   return points;
 }
 

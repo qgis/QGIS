@@ -61,7 +61,7 @@ QgsAbstractGeometryV2* QgsGeometryFactory::geomFromWkt( const QString& text )
   {
     geom = new QgsLineStringV2();
   }
-  else if ( text .startsWith( "CircularString", Qt::CaseInsensitive ) )
+  else if ( text.startsWith( "CircularString", Qt::CaseInsensitive ) )
   {
     geom = new QgsCircularStringV2();
   }

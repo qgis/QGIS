@@ -26,7 +26,15 @@ QgsCurveV2::~QgsCurveV2()
 
 bool QgsCurveV2::isClosed() const
 {
-  return ( numPoints() > 0 && ( startPoint() == endPoint() ) );
+  if ( numPoints() == 0 )
+    return false;
+
+  //don't consider M-coordinates when testing closedness
+  QgsPointV2 start = startPoint();
+  QgsPointV2 end = endPoint();
+  return ( qgsDoubleNear( start.x(), end.x(), 1E-8 ) &&
+           qgsDoubleNear( start.y(), end.y(), 1E-8 ) &&
+           qgsDoubleNear( start.z(), end.z(), 1E-8 ) );
 }
 
 bool QgsCurveV2::isRing() const
@@ -67,18 +75,6 @@ bool QgsCurveV2::nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const
     ++id.vertex;
   }
   return pointAt( id.vertex, vertex, id.type );
-}
-
-double QgsCurveV2::area() const
-{
-  if ( !isClosed() )
-  {
-    return 0.0;
-  }
-
-  double area = 0.0;
-  sumUpArea( area );
-  return qAbs( area );
 }
 
 QgsAbstractGeometryV2* QgsCurveV2::segmentize() const

@@ -176,6 +176,27 @@ bool QgsCurvePolygonV2::fromWkt( const QString& wkt )
   mExteriorRing = mInteriorRings.first();
   mInteriorRings.removeFirst();
 
+  //scan through rings and check if dimensionality of rings is different to CurvePolygon.
+  //if so, update the type dimensionality of the CurvePolygon to match
+  bool hasZ = false;
+  bool hasM = false;
+  if ( mExteriorRing )
+  {
+    hasZ = hasZ || mExteriorRing->is3D();
+    hasM = hasM || mExteriorRing->isMeasure();
+  }
+  Q_FOREACH ( const QgsCurveV2* curve, mInteriorRings )
+  {
+    hasZ = hasZ || curve->is3D();
+    hasM = hasM || curve->isMeasure();
+    if ( hasZ && hasM )
+      break;
+  }
+  if ( hasZ )
+    addZValue( 0 );
+  if ( hasM )
+    addMValue( 0 );
+
   return true;
 }
 
@@ -327,13 +348,26 @@ double QgsCurvePolygonV2::area() const
     return 0.0;
   }
 
-  double area = mExteriorRing->area();
+  double totalArea = 0.0;
+
+  if ( mExteriorRing->isClosed() )
+  {
+    double area = 0.0;
+    mExteriorRing->sumUpArea( area );
+    totalArea += qAbs( area );
+  }
+
   QList<QgsCurveV2*>::const_iterator ringIt = mInteriorRings.constBegin();
   for ( ; ringIt != mInteriorRings.constEnd(); ++ringIt )
   {
-    area -= ( *ringIt )->area();
+    double area = 0.0;
+    if (( *ringIt )->isClosed() )
+    {
+      ( *ringIt )->sumUpArea( area );
+      totalArea -= qAbs( area );
+    }
   }
-  return area;
+  return totalArea;
 }
 
 double QgsCurvePolygonV2::perimeter() const

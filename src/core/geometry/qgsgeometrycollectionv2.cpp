@@ -502,6 +502,23 @@ bool QgsGeometryCollectionV2::fromCollectionWkt( const QString &wkt, const QList
     }
   }
   qDeleteAll( subtypes );
+
+  //scan through geometries and check if dimensionality of geometries is different to collection.
+  //if so, update the type dimensionality of the collection to match
+  bool hasZ = false;
+  bool hasM = false;
+  Q_FOREACH ( QgsAbstractGeometryV2* geom, mGeometries )
+  {
+    hasZ = hasZ || geom->is3D();
+    hasM = hasM || geom->isMeasure();
+    if ( hasZ && hasM )
+      break;
+  }
+  if ( hasZ )
+    addZValue( 0 );
+  if ( hasM )
+    addMValue( 0 );
+
   return true;
 }
 

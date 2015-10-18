@@ -94,6 +94,19 @@ bool QgsPointV2::fromWkt( const QString& wkt )
     clear();
     return false;
   }
+  else if ( coordinates.size() == 3 && !is3D() && !isMeasure() )
+  {
+    // 3 dimensional coordinates, but not specifically marked as such. We allow this
+    // anyway and upgrade geometry to have Z dimension
+    mWkbType = QgsWKBTypes::addZ( mWkbType );
+  }
+  else if ( coordinates.size() >= 4 && ( !is3D() || !isMeasure() ) )
+  {
+    // 4 (or more) dimensional coordinates, but not specifically marked as such. We allow this
+    // anyway and upgrade geometry to have Z&M dimensions
+    mWkbType = QgsWKBTypes::addZ( mWkbType );
+    mWkbType = QgsWKBTypes::addM( mWkbType );
+  }
 
   int idx = 0;
   mX = coordinates[idx++].toDouble();

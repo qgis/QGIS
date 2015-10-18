@@ -75,8 +75,6 @@ class CORE_EXPORT QgsCurveV2: public QgsAbstractGeometryV2
      */
     virtual int numPoints() const = 0;
 
-    virtual double area() const override;
-
     /** Calculates the area of the curve. Derived classes should override this
      * to return the correct area of the curve.
      */

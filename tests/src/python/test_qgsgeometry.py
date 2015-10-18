@@ -134,7 +134,7 @@ class TestQgsGeometry(TestCase):
                 #test exporting to WKT results in expected string
                 result = geom.exportToWkt()
                 exp = row['valid_wkt']
-                assert compareWkt(result, exp), "WKT conversion {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp, result)
+                assert compareWkt(result, exp, 0.000001), "WKT conversion {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp, result)
 
                 #test num points in geometry
                 exp_nodes = int(row['num_points'])
@@ -149,13 +149,20 @@ class TestQgsGeometry(TestCase):
                     assert exp_geometries <= 1, "Geometry count {}:  Expected:\n{} geometries but could not call numGeometries()\n".format(i + 1, exp_geometries)
 
                 #test count of rings
-                if row['num_rings']:
-                    exp_rings = int(row['num_rings'])
-                    try:
-                        assert geom.geometry().numInteriorRings() == exp_geometries, "Ring count {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp_geometries, geom.geometry().numInteriorRings())
-                    except:
-                        #some geometry types don't have numInteriorRings()
-                        assert exp_geometries <= 1, "Ring count {}:  Expected:\n{} rings but could not call numInteriorRings()\n".format(i + 1, exp_geometries)
+                exp_rings = int(row['num_rings'])
+                try:
+                    assert geom.geometry().numInteriorRings() == exp_rings, "Ring count {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp_rings, geom.geometry().numInteriorRings())
+                except:
+                    #some geometry types don't have numInteriorRings()
+                    assert exp_rings <= 1, "Ring count {}:  Expected:\n{} rings but could not call numInteriorRings()\n{}".format(i + 1, exp_rings, geom.geometry())
+
+                #test isClosed
+                exp = (row['is_closed'] == '1')
+                try:
+                    assert geom.geometry().isClosed() == exp, "isClosed {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, True, geom.geometry().isClosed())
+                except:
+                    #some geometry types don't have isClosed()
+                    assert not exp, "isClosed {}:  Expected:\n isClosed() but could not call isClosed()\n".format(i + 1)
 
                 #test geometry centroid
                 exp = row['centroid']
@@ -186,7 +193,7 @@ class TestQgsGeometry(TestCase):
                 exp = float(row['length'])
                 result = geom.geometry().length()
                 assert doubleNear(result, exp, 0.00001), "Length {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp, result)
-                
+
                 #test perimeter calculation
                 exp = float(row['perimeter'])
                 result = geom.geometry().perimeter()
@@ -1512,7 +1519,7 @@ class TestQgsGeometry(TestCase):
         p = QgsGeometry.fromWkt('Polygon((0 0 0, 0 1 0, 1 1 0, 0 0 0 ))')
         assert p is not None
 
-        expWkt = 'Polygon ((0 0, 0 1, 1 1, 0 0))'
+        expWkt = 'PolygonZ ((0 0 0, 0 1 0, 1 1 0, 0 0 0 ))'
         wkt = p.exportToWkt()
         assert compareWkt(expWkt, wkt), "testRegression13055 failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
 
