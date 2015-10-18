@@ -142,7 +142,7 @@ void QgsGrassItemActions::renameGrassObject()
 {
   QgsDebugMsg( "Entered" );
 
-  QStringList existingNames = QgsGrass::grassObjects( mGrassObject.mapsetPath(), mGrassObject.type() );
+  QStringList existingNames = QgsGrass::grassObjects( mGrassObject, mGrassObject.type() );
   // remove current name to avoid warning that exists
   existingNames.removeOne( mGrassObject.name() );
   QgsDebugMsg( "existingNames = " + existingNames.join( "," ) );
@@ -200,7 +200,7 @@ QString QgsGrassItemActions::newVectorMap()
 {
   QgsDebugMsg( "entered" );
 
-  QStringList existingNames = QgsGrass::grassObjects( mGrassObject.mapsetPath(), QgsGrassObject::Vector );
+  QStringList existingNames = QgsGrass::grassObjects( mGrassObject, QgsGrassObject::Vector );
   QgsDebugMsg( "existingNames = " + existingNames.join( "," ) );
   QRegExp regExp = QgsGrassObject::newNameRegExp( QgsGrassObject::Vector );
   Qt::CaseSensitivity caseSensitivity = QgsGrass::caseSensitivity();

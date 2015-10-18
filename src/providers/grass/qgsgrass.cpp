@@ -165,22 +165,33 @@ bool QgsGrassObject::setFromUri( const QString& uri )
 
 QString QgsGrassObject::elementShort() const
 {
-  if ( mType == Raster )
+  return elementShort( mType );
+}
+
+QString QgsGrassObject::elementShort( Type type )
+{
+  if ( type == Raster )
 #if GRASS_VERSION_MAJOR < 7
     return "rast";
 #else
     return "raster";
 #endif
-  else if ( mType == Group )
+  else if ( type == Group )
     return "group";
-  else if ( mType == Vector )
+  else if ( type == Vector )
 #if GRASS_VERSION_MAJOR < 7
     return "vect";
 #else
     return "vector";
 #endif
-  else if ( mType == Region )
+  else if ( type == Region )
     return "region";
+  else if ( type == Strds )
+    return "strds";
+  else if ( type == Stvds )
+    return "stvds";
+  else if ( type == Str3ds )
+    return "str3ds";
   else
     return "";
 }
@@ -1462,9 +1473,56 @@ QStringList QgsGrass::elements( const QString&  mapsetPath, const QString&  elem
   return list;
 }
 
-QStringList QgsGrass::grassObjects( const QString& mapsetPath, QgsGrassObject::Type type )
+QStringList QgsGrass::grassObjects( const QgsGrassObject& mapsetObject, QgsGrassObject::Type type )
 {
-  return QgsGrass::elements( mapsetPath, QgsGrassObject::dirName( type ) );
+  QgsDebugMsg( "mapsetPath = " + mapsetObject.mapsetPath() + " type = " +  QgsGrassObject::elementShort( type ) );
+  QTime time;
+  time.start();
+  QStringList list;
+  if ( !QDir( mapsetObject.mapsetPath() ).isReadable() )
+  {
+    QgsDebugMsg( "mapset is not readable" );
+    return QStringList();
+  }
+  else if ( type == QgsGrassObject::Strds || type == QgsGrassObject::Stvds || type == QgsGrassObject::Str3ds )
+  {
+    QString cmd =  gisbase() + "/scripts/t.list";
+    QStringList arguments;
+
+    // Running t.list module is quite slow (about 500ms) -> check first if temporal db exists.
+    // Also, if tgis/sqlite.db does not exist, it is created by t.list for current mapset!
+    // If user is not owner of the mapset (even if has read permission) t.list fails because it checks ownership.
+    if ( !QFile( mapsetObject.mapsetPath() + "/tgis/sqlite.db" ).exists() )
+    {
+      QgsDebugMsg( "tgis/sqlite.db does not exist" );
+    }
+    else
+    {
+      arguments << "type=" + QgsGrassObject::elementShort( type );
+
+      int timeout = -1; // What timeout to use? It can take long time on network or database
+      QByteArray data = runModule( mapsetObject.gisdbase(), mapsetObject.location(), mapsetObject.mapset(), cmd, arguments, timeout, false );
+      Q_FOREACH ( QString fullName, QString::fromLocal8Bit( data ).split( '\n' ) )
+      {
+        fullName = fullName.trimmed();
+        if ( !fullName.isEmpty() )
+        {
+          QStringList nameMapset = fullName.split( "@" );
+          if ( nameMapset.value( 1 ) == mapsetObject.mapset() || nameMapset.value( 1 ).isEmpty() )
+          {
+            list << nameMapset.value( 0 );
+          }
+        }
+      }
+    }
+  }
+  else
+  {
+    list = QgsGrass::elements( mapsetObject.mapsetPath(), QgsGrassObject::dirName( type ) );
+  }
+  QgsDebugMsg( "list = " + list.join( "," ) );
+  QgsDebugMsg( QString( "time (ms) = %1" ).arg( time.elapsed() ) );
+  return list;
 }
 
 bool QgsGrass::objectExists( const QgsGrassObject& grassObject )
@@ -1893,6 +1951,7 @@ QProcess *QgsGrass::startModule( const QString& gisdbase, const QString&  locati
   QStringList environment = QProcess::systemEnvironment();
   environment.append( "GISRC=" + gisrcFile.fileName() );
   environment.append( "GRASS_MESSAGE_FORMAT=gui" );
+  environment.append( "GRASS_SKIP_MAPSET_OWNER_CHECK=1" );
 
   process->setEnvironment( environment );
 
@@ -1911,6 +1970,8 @@ QByteArray QgsGrass::runModule( const QString& gisdbase, const QString&  locatio
                                 const QStringList& arguments, int timeOut, bool qgisModule )
 {
   QgsDebugMsg( QString( "gisdbase = %1 location = %2 timeOut = %3" ).arg( gisdbase, location ).arg( timeOut ) );
+  QTime time;
+  time.start();
 
   QTemporaryFile gisrcFile;
   QProcess *process = startModule( gisdbase, location, mapset, moduleName, arguments, gisrcFile, qgisModule );
@@ -1927,6 +1988,7 @@ QByteArray QgsGrass::runModule( const QString& gisdbase, const QString&  locatio
                                      process->readAllStandardError().constData() ) );
   }
   QByteArray data = process->readAllStandardOutput();
+  QgsDebugMsg( QString( "time (ms) = %1" ).arg( time.elapsed() ) );
   delete process;
   return data;
 }

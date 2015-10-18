@@ -81,7 +81,9 @@ class GRASS_LIB_EXPORT QgsGrassObject
 {
   public:
     //! Element type
-    enum Type { None, Location, Mapset, Raster, Group, Vector, Region };
+    enum Type { None, Location, Mapset, Raster, Group, Vector, Region,
+                Strds, Stvds, Str3ds
+            };
 
     QgsGrassObject() : mType( None ) {}
     QgsGrassObject( const QString& gisdbase, const QString& location = QString::null,
@@ -108,6 +110,7 @@ class GRASS_LIB_EXPORT QgsGrassObject
     // set from QGIS layer uri, returns true if set correctly, verifies also if location is a GRASS location
     bool setFromUri( const QString& uri );
     // element name used as modules param, e.g. g.remove element=name
+    static QString elementShort( Type type );
     QString elementShort() const;
     // descriptive full name
     QString elementName() const;
@@ -315,7 +318,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     static QStringList elements( const QString&  mapsetPath, const QString&  element );
 
     //! List of existing objects
-    static QStringList grassObjects( const QString& mapsetPath, QgsGrassObject::Type type );
+    static QStringList grassObjects( const QgsGrassObject& mapsetObject, QgsGrassObject::Type type );
 
     // returns true if object (vector, raster, region) exists
     static bool objectExists( const QgsGrassObject& grassObject );

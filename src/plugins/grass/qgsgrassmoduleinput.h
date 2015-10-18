@@ -77,16 +77,17 @@ class QgsGrassModuleInputModel : public QStandardItemModel
     void onMapsetChanged();
 
     void onDirectoryChanged( const QString & path );
+    void onFileChanged( const QString & path );
     void onMapsetSearchPathChanged();
 
   private:
     void addMapset( const QString & mapset );
-    void refreshMapset( QStandardItem *mapsetItem, const QString & mapset );
+    void refreshMapset( QStandardItem *mapsetItem, const QString & mapset, const QList<QgsGrassObject::Type> & theTypes = QList<QgsGrassObject::Type>() );
     // Add to watched paths if exists and if not yet watched
     void watch( const QString & path );
     QString mLocationPath;
     // mapset watched dirs
-    QStringList watchedDirs() { QStringList l; l << "cellhd" << "vector"; return l; }
+    QStringList watchedDirs() { QStringList l; l << "cellhd" << "vector" << "tgis"; return l; }
     // names of
     QStringList locationDirNames();
     QFileSystemWatcher *mWatcher;

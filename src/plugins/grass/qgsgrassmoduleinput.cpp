@@ -64,6 +64,7 @@ QgsGrassModuleInputModel::QgsGrassModuleInputModel( QObject *parent )
 
   mWatcher = new QFileSystemWatcher( this );
   connect( mWatcher, SIGNAL( directoryChanged( const QString & ) ), SLOT( onDirectoryChanged( const QString & ) ) );
+  connect( mWatcher, SIGNAL( fileChanged( const QString & ) ), SLOT( onFileChanged( const QString & ) ) );
 
   connect( QgsGrass::instance(), SIGNAL( mapsetChanged() ), SLOT( onMapsetChanged() ) );
 
@@ -80,7 +81,7 @@ void QgsGrassModuleInputModel::onDirectoryChanged( const QString & path )
   QDir parentDir( path );
   parentDir.cdUp();
   QString mapset;
-
+  QList<QgsGrassObject::Type> types;
   if ( path == locationPath )
   {
     QgsDebugMsg( "location = " + path );
@@ -117,25 +118,58 @@ void QgsGrassModuleInputModel::onDirectoryChanged( const QString & path )
     {
       watch( path + "/" + watchedDir );
     }
+    // TODO: use db path defined in mapset VAR
+    watch( path + "/tgis/sqlite.db" );
   }
   else // cellhd or vector dir
   {
     QgsDebugMsg( "cellhd/vector = " + path );
     mapset = parentDir.dirName();
+    if ( path.endsWith( "cellhd" ) )
+    {
+      types << QgsGrassObject::Raster;
+    }
+    else if ( path.endsWith( "vector" ) )
+    {
+      types << QgsGrassObject::Vector;
+    }
   }
   if ( !mapset.isEmpty() )
   {
     QList<QStandardItem *> items = findItems( mapset );
     if ( items.size() == 1 )
     {
-      refreshMapset( items[0], mapset );
+      refreshMapset( items[0], mapset, types );
+    }
+  }
+}
+
+void QgsGrassModuleInputModel::onFileChanged( const QString & path )
+{
+  QgsDebugMsg( "path = " + path );
+  // when tgis/sqlite.db is changed, this gets called twice, probably the file changes more times when it is modified
+  if ( path.endsWith( "/tgis/sqlite.db" ) )
+  {
+    QDir dir = QFileInfo( path ).dir();
+    dir.cdUp();
+    QString mapset = dir.dirName();
+    QList<QStandardItem *> items = findItems( mapset );
+    if ( items.size() == 1 )
+    {
+      QList<QgsGrassObject::Type> types;
+      types << QgsGrassObject::Strds << QgsGrassObject::Stvds << QgsGrassObject::Str3ds;
+      refreshMapset( items[0], mapset, types );
     }
   }
 }
 
 void QgsGrassModuleInputModel::watch( const QString & path )
 {
-  if ( !mWatcher->directories().contains( path ) && QFileInfo( path ).exists() )
+  if ( QFileInfo( path ).isDir() && !mWatcher->directories().contains( path ) )
+  {
+    mWatcher->addPath( path );
+  }
+  else if ( QFileInfo( path ).isFile() && !mWatcher->files().contains( path ) )
   {
     mWatcher->addPath( path );
   }
@@ -163,7 +197,7 @@ void QgsGrassModuleInputModel::addMapset( const QString & mapset )
   appendRow( mapsetItem );
 }
 
-void QgsGrassModuleInputModel::refreshMapset( QStandardItem *mapsetItem, const QString & mapset )
+void QgsGrassModuleInputModel::refreshMapset( QStandardItem *mapsetItem, const QString & mapset, const QList<QgsGrassObject::Type> & theTypes )
 {
   QgsDebugMsg( "mapset = " + mapset );
   if ( !mapsetItem )
@@ -171,11 +205,16 @@ void QgsGrassModuleInputModel::refreshMapset( QStandardItem *mapsetItem, const Q
     return;
   }
 
-  QList<QgsGrassObject::Type> types;
-  types << QgsGrassObject::Raster << QgsGrassObject::Vector;
+  QList<QgsGrassObject::Type> types = theTypes;
+  if ( types.isEmpty() )
+  {
+    types << QgsGrassObject::Raster << QgsGrassObject::Vector;
+    types << QgsGrassObject::Strds << QgsGrassObject::Stvds << QgsGrassObject::Str3ds;
+  }
   foreach ( QgsGrassObject::Type type, types )
   {
-    QStringList maps = QgsGrass::grassObjects( QgsGrass::getDefaultGisdbase() + "/" + QgsGrass::getDefaultLocation() + "/" + mapset, type );
+    QgsGrassObject mapsetObject( QgsGrass::getDefaultGisdbase(), QgsGrass::getDefaultLocation(), mapset, "", QgsGrassObject::Mapset );
+    QStringList maps = QgsGrass::grassObjects( mapsetObject, type );
     QStringList mapNames;
     foreach ( const QString& map, maps )
     {
@@ -230,9 +269,16 @@ void QgsGrassModuleInputModel::refreshMapset( QStandardItem *mapsetItem, const Q
 
 void QgsGrassModuleInputModel::reload()
 {
+
   QgsDebugMsg( "entered" );
-  mWatcher->removePaths( mWatcher->files() );
-  mWatcher->removePaths( mWatcher->directories() );
+  if ( !mWatcher->files().isEmpty() )
+  {
+    mWatcher->removePaths( mWatcher->files() );
+  }
+  if ( !mWatcher->directories().isEmpty() )
+  {
+    mWatcher->removePaths( mWatcher->directories() );
+  }
 
   clear();
 
@@ -258,6 +304,7 @@ void QgsGrassModuleInputModel::reload()
     {
       watch( dirPath + "/" + watchedDir );
     }
+    watch( dirPath + "/tgis/sqlite.db" );
   }
 }
 
@@ -824,6 +871,18 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
   else if ( element == "cell" )
   {
     mType = QgsGrassObject::Raster;
+  }
+  else if ( element == "strds" )
+  {
+    mType = QgsGrassObject::Strds;
+  }
+  else if ( element == "stvds" )
+  {
+    mType = QgsGrassObject::Stvds;
+  }
+  else if ( element == "str3ds" )
+  {
+    mType = QgsGrassObject::Str3ds;
   }
   else
   {

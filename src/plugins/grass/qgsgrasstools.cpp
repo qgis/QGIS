@@ -128,7 +128,6 @@ class QgsGrassToolsTreeFilterProxyModel : public QSortFilterProxyModel
 
       for ( int i = 0; i < mModel->rowCount( sourceIndex ); i++ )
       {
-        QgsDebugMsg( QString( "i = %1" ).arg( i ) );
         QModelIndex sourceChildIndex = mModel->index( i, 0, sourceIndex );
         if ( filterAcceptsItem( sourceChildIndex ) )
           return true;
