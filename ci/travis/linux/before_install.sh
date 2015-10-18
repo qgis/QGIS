@@ -22,12 +22,7 @@ sudo apt-get install --force-yes --no-install-recommends --no-install-suggests \
         libgsl0-dev \
         libpq-dev \
         libproj-dev \
-        libqca2-dev \
-        libqca2-plugin-ossl \
         libqscintilla2-dev \
-        libqt4-dev \
-        libqt4-opengl-dev \
-        libqt4-sql-sqlite \
         libqtwebkit-dev \
         libqwt-dev \
         libspatialindex-dev \
@@ -36,12 +31,8 @@ sudo apt-get install --force-yes --no-install-recommends --no-install-suggests \
         lighttpd \
         pkg-config \
         poppler-utils \
-        pyqt4-dev-tools \
         python \
         python-dev \
-        python-qt4 \
-        python-qt4-dev \
-        python-qt4-sql \
         python-sip \
         python-sip-dev \
         spawn-fcgi \
@@ -53,5 +44,27 @@ sudo apt-get install --force-yes --no-install-recommends --no-install-suggests \
         xfonts-scalable \
         xvfb \
         postgresql-9.1-postgis-2.1/precise # from ubuntugis-unstable, not pgdg
+
+if [ ${QT} == 5 ]; then
+  sudo apt-get install --force-yes --no-install-recommends --no-install-suggests \
+    libqwt-qt5-dev \
+    libqt5scintilla2-dev \
+    libqca-qt5-2-dev \
+    libqca-qt5-2-plugins \
+    libqt5xmlpatterns5-dev \
+    libqt5svg5-dev
+else
+  sudo apt-get install --force-yes --no-install-recommends --no-install-suggests \
+    libqca2-dev \
+    libqca2-plugin-ossl \
+    libqt4-dev \
+    libqt4-opengl-dev \
+    libqt4-sql-sqlite \
+    python-qt4 \
+    python-qt4-dev \
+    python-qt4-sql \
+    pyqt4-dev-tools \
+fi
+
 cmake --version
 clang --version
