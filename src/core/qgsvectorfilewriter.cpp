@@ -69,6 +69,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
 )
     : mDS( NULL )
     , mLayer( NULL )
+    , mOgrRef( NULL )
     , mGeom( NULL )
     , mError( NoError )
     , mCodec( 0 )
@@ -260,12 +261,11 @@ QgsVectorFileWriter::QgsVectorFileWriter(
   }
 
   // consider spatial reference system of the layer
-  OGRSpatialReferenceH ogrRef = NULL;
   if ( srs )
   {
     QString srsWkt = srs->toWkt();
     QgsDebugMsg( "WKT to save as is " + srsWkt );
-    ogrRef = OSRNewSpatialReference( srsWkt.toLocal8Bit().data() );
+    mOgrRef = OSRNewSpatialReference( srsWkt.toLocal8Bit().data() );
   }
 
   // datasource created, now create the output layer
@@ -285,7 +285,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
   // disable encoding conversion of OGR Shapefile layer
   CPLSetConfigOption( "SHAPE_ENCODING", "" );
 
-  mLayer = OGR_DS_CreateLayer( mDS, TO8F( layerName ), ogrRef, wkbType, options );
+  mLayer = OGR_DS_CreateLayer( mDS, TO8F( layerName ), mOgrRef, wkbType, options );
 
   if ( options )
   {
@@ -318,8 +318,6 @@ QgsVectorFileWriter::QgsVectorFileWriter(
         QgsDebugMsg( "Couldn't open file " + layerName + ".qpj" );
       }
     }
-
-    OSRDestroySpatialReference( ogrRef );
   }
 
   if ( mLayer == NULL )
@@ -1828,6 +1826,11 @@ QgsVectorFileWriter::~QgsVectorFileWriter()
   if ( mDS )
   {
     OGR_DS_Destroy( mDS );
+  }
+
+  if ( mOgrRef )
+  {
+    OSRDestroySpatialReference( mOgrRef );
   }
 }
 
