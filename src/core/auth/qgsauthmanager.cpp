@@ -746,7 +746,7 @@ bool QgsAuthManager::registerCoreAuthMethods()
   if ( isDisabled() )
     return false;
 
-  qDeleteAll( mAuthMethods.values() );
+  qDeleteAll( mAuthMethods );
   mAuthMethods.clear();
   Q_FOREACH ( const QString& authMethodKey, QgsAuthMethodRegistry::instance()->authMethodList() )
   {
@@ -2819,7 +2819,7 @@ QgsAuthManager::~QgsAuthManager()
   if ( !isDisabled() )
   {
     delete QgsAuthMethodRegistry::instance();
-    qDeleteAll( mAuthMethods.values() );
+    qDeleteAll( mAuthMethods );
 
     QSqlDatabase authConn = authDbConnection();
     if ( authConn.isValid() && authConn.isOpen() )

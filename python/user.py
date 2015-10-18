@@ -68,5 +68,5 @@ try:
 except ImportError:
     # We get a import error and crash for some reason even if we make the expressions package
     # TODO Fix the crash on first load with no expressions folder
-    # But for now it's not the end of the world if it doesn't laod the first time
+    # But for now it's not the end of the world if it doesn't load the first time
     pass

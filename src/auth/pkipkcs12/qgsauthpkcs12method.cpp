@@ -48,7 +48,7 @@ QgsAuthPkcs12Method::QgsAuthPkcs12Method()
 
 QgsAuthPkcs12Method::~QgsAuthPkcs12Method()
 {
-  qDeleteAll( mPkiConfigBundleCache.values() );
+  qDeleteAll( mPkiConfigBundleCache );
   mPkiConfigBundleCache.clear();
 }
 

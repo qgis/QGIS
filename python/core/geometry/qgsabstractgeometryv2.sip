@@ -49,14 +49,16 @@ class QgsAbstractGeometryV2
         sipClass = sipClass_QgsCurvePolygonV2;
       else if (dynamic_cast<QgsMultiPointV2*>(sipCpp) != NULL )
         sipClass = sipClass_QgsMultiPointV2;
-      else if (dynamic_cast<QgsLineStringV2*>(sipCpp) != NULL )
-        sipClass = sipClass_QgsLineStringV2;
+      else if (dynamic_cast<QgsMultiLineStringV2*>(sipCpp) != NULL )
+        sipClass = sipClass_QgsMultiLineStringV2;
       else if (dynamic_cast<QgsMultiPolygonV2*>(sipCpp) != NULL )
         sipClass = sipClass_QgsMultiPolygonV2;
       else if (dynamic_cast<QgsMultiSurfaceV2*>(sipCpp) != NULL )
         sipClass = sipClass_QgsMultiSurfaceV2;
       else if (dynamic_cast<QgsMultiCurveV2*>(sipCpp) != NULL )
         sipClass = sipClass_QgsMultiCurveV2;
+      else if (dynamic_cast<QgsGeometryCollectionV2*>(sipCpp) != NULL )
+        sipClass = sipClass_QgsGeometryCollectionV2;
       else
         sipClass = 0;
 %End
@@ -116,8 +118,22 @@ class QgsAbstractGeometryV2
     virtual bool moveVertex( const QgsVertexId& position, const QgsPointV2& newPos ) = 0;
     virtual bool deleteVertex( const QgsVertexId& position ) = 0;
 
-    /** Length for linear geometries,perimeter for area geometries*/
+    /** Returns the length of the geometry.
+     * @see area()
+     * @see perimeter()
+     */
     virtual double length() const;
+
+    /** Returns the perimeter of the geometry.
+     * @see area()
+     * @see length()
+     */
+    virtual double perimeter() const;
+
+    /** Returns the area of the geometry.
+     * @see length()
+     * @see perimeter()
+     */
     virtual double area() const;
 
     /** Returns the centroid of the geometry*/
