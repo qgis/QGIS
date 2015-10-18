@@ -36,7 +36,7 @@ QString QgsDefaultSearchWidgetWrapper::expression()
   return mExpression;
 }
 
-void QgsDefaultSearchWidgetWrapper::setCaseString( Qt::CheckState caseSensitiveCheckState )
+void QgsDefaultSearchWidgetWrapper::setCaseString( int caseSensitiveCheckState )
 {
   if ( caseSensitiveCheckState == Qt::Checked )
   {
@@ -74,7 +74,6 @@ void QgsDefaultSearchWidgetWrapper::setExpression( QString exp )
                 "%" + exp.replace( "'", "''" ) + "%" ); // escape quotes
   }
   mExpression = str;
-  emit expressionChanged( mExpression );
 }
 
 QWidget* QgsDefaultSearchWidgetWrapper::createWidget( QWidget* parent )
