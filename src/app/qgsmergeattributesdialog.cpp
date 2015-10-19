@@ -53,6 +53,8 @@ QgsMergeAttributesDialog::QgsMergeAttributesDialog( const QgsFeatureList &featur
 
   QSettings settings;
   restoreGeometry( settings.value( "/Windows/MergeAttributes/geometry" ).toByteArray() );
+
+  connect( mSkipAllButton, SIGNAL( clicked() ), this, SLOT( setAllToSkip() ) );
 }
 
 QgsMergeAttributesDialog::QgsMergeAttributesDialog()
@@ -635,4 +637,16 @@ QSet<int> QgsMergeAttributesDialog::skippedAttributeIndexes() const
   }
 
   return skipped;
+}
+
+void QgsMergeAttributesDialog::setAllToSkip()
+{
+  for ( int i = 0; i < mTableWidget->columnCount(); ++i )
+  {
+    QComboBox* currentComboBox = qobject_cast<QComboBox *>( mTableWidget->cellWidget( 0, i ) );
+    if ( currentComboBox )
+    {
+      currentComboBox->setCurrentIndex( currentComboBox->findData( "skip" ) );
+    }
+  }
 }

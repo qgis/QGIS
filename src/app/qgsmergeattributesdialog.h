@@ -35,12 +35,19 @@ class APP_EXPORT QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeA
   public:
     QgsMergeAttributesDialog( const QgsFeatureList& features, QgsVectorLayer* vl, QgsMapCanvas* canvas, QWidget * parent = 0, Qt::WindowFlags f = 0 );
     ~QgsMergeAttributesDialog();
+
     QgsAttributes mergedAttributes() const;
 
     /** Returns a list of attribute indexes which should be skipped when merging (eg, attributes
      * which have been set to "skip"
      */
     QSet<int> skippedAttributeIndexes() const;
+
+  public slots:
+
+    /** Resets all columns to "skip"
+     */
+    void setAllToSkip();
 
   private slots:
     void comboValueChanged( const QString & text );
