@@ -427,6 +427,12 @@ void QgisAppInterface::removeDockWidget( QDockWidget * dockwidget )
   qgis->removeDockWidget( dockwidget );
 }
 
+
+QgsAdvancedDigitizingDockWidget*QgisAppInterface::cadDockWidget()
+{
+  return qgis->cadDockWidget();
+}
+
 void QgisAppInterface::showLayerProperties( QgsMapLayer *l )
 {
   if ( l && qgis )

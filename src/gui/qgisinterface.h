@@ -25,6 +25,7 @@ class QDockWidget;
 class QMainWindow;
 class QWidget;
 
+class QgsAdvancedDigitizingDockWidget;
 class QgsAttributeDialog;
 class QgsComposerView;
 class QgsFeature;
@@ -301,6 +302,11 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /** Remove specified dock widget from main window (doesn't delete it). */
     virtual void removeDockWidget( QDockWidget * dockwidget ) = 0;
+
+    /** Advanced digitizing dock widget
+     *  @note Added in 2.12
+     */
+    virtual QgsAdvancedDigitizingDockWidget* cadDockWidget() = 0;
 
     /** Open layer properties dialog */
     virtual void showLayerProperties( QgsMapLayer *l ) = 0;
