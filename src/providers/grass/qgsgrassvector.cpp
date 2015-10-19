@@ -66,7 +66,7 @@ QgsGrassVectorLayer::~QgsGrassVectorLayer()
 int QgsGrassVectorLayer::typeCount( int type ) const
 {
   int count = 0;
-  foreach ( int t, mTypeCounts.keys() )
+  Q_FOREACH ( int t, mTypeCounts.keys() )
   {
     if ( t & type )
     {
@@ -79,7 +79,7 @@ int QgsGrassVectorLayer::typeCount( int type ) const
 int QgsGrassVectorLayer::type() const
 {
   int type = 0;
-  foreach ( int t, mTypeCounts.keys() )
+  Q_FOREACH ( int t, mTypeCounts.keys() )
   {
     if ( mTypeCounts.value( t ) > 0 )
     {
@@ -92,7 +92,7 @@ int QgsGrassVectorLayer::type() const
 QList<int> QgsGrassVectorLayer::types() const
 {
   QList<int> types;
-  foreach ( int t, mTypeCounts.keys() )
+  Q_FOREACH ( int t, mTypeCounts.keys() )
   {
     if ( mTypeCounts.value( t ) > 0 )
     {
@@ -206,7 +206,7 @@ QgsGrassVector::QgsGrassVector( const QgsGrassObject& grassObject, QObject *pare
 
 bool QgsGrassVector::openHead()
 {
-  foreach ( QgsGrassVectorLayer *layer, mLayers )
+  Q_FOREACH ( QgsGrassVectorLayer *layer, mLayers )
   {
     layer->deleteLater();
   }
@@ -291,7 +291,7 @@ bool QgsGrassVector::openHead()
       struct field_info *fieldInfo = Vect_get_field( map, field ); // should work also with field = 0
 
       QgsGrassVectorLayer *layer = new QgsGrassVectorLayer( mGrassObject, field, fieldInfo, this );
-      foreach ( int type, QgsGrass::vectorTypeMap().keys() )
+      Q_FOREACH ( int type, QgsGrass::vectorTypeMap().keys() )
       {
         int count = Vect_cidx_get_type_count( map, field, type );
         if ( count > 0 )
@@ -305,7 +305,7 @@ bool QgsGrassVector::openHead()
     QgsDebugMsg( "standard layers listed: " + list.join( "," ) );
 
     // Get primitives
-    foreach ( int type, QgsGrass::vectorTypeMap().keys() )
+    Q_FOREACH ( int type, QgsGrass::vectorTypeMap().keys() )
     {
       if ( type == GV_AREA )
       {
@@ -339,7 +339,7 @@ bool QgsGrassVector::openHead()
 int QgsGrassVector::typeCount( int type ) const
 {
   int count = 0;
-  foreach ( int t, mTypeCounts.keys() )
+  Q_FOREACH ( int t, mTypeCounts.keys() )
   {
     if ( t & type )
     {
@@ -352,7 +352,7 @@ int QgsGrassVector::typeCount( int type ) const
 int QgsGrassVector::maxLayerNumber() const
 {
   int max = 0;
-  foreach ( QgsGrassVectorLayer *layer, mLayers )
+  Q_FOREACH ( QgsGrassVectorLayer *layer, mLayers )
   {
     max = qMax( max, layer->number() );
   }

@@ -339,7 +339,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
   // (guidependency missing in GRASS 6)
   // Add default inter param relations
   QList<QgsGrassModuleInput *>vectorInputs;
-  foreach ( QgsGrassModuleParam *param, mParams )
+  Q_FOREACH ( QgsGrassModuleParam *param, mParams )
   {
     QgsGrassModuleInput *vectorInput = dynamic_cast<QgsGrassModuleInput *>( param );
     if ( vectorInput )
@@ -351,7 +351,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
   {
     QgsDebugMsg( "One input found, try to connect with column options" );
     QgsGrassModuleInput *vectorInput = vectorInputs[0];
-    foreach ( QgsGrassModuleParam *param, mParams )
+    Q_FOREACH ( QgsGrassModuleParam *param, mParams )
     {
       QgsGrassModuleField *moduleField = dynamic_cast<QgsGrassModuleField *>( param );
       if ( moduleField )
@@ -376,7 +376,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
     layout->addStretch();
   }
 
-  foreach ( QgsGrassModuleParam* item, mParams )
+  Q_FOREACH ( QgsGrassModuleParam* item, mParams )
   {
     mErrors << item->errors();
   }

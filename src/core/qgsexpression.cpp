@@ -2680,7 +2680,7 @@ QString QgsExpression::replaceExpressionText( const QString &action, const QgsEx
     if ( exp.hasParserError() )
     {
       QgsDebugMsg( "Expression parser error: " + exp.parserErrorString() );
-      expr_action += action.mid( start, index - start );
+      expr_action += action.midRef( start, index - start );
       continue;
     }
 
@@ -2695,7 +2695,7 @@ QString QgsExpression::replaceExpressionText( const QString &action, const QgsEx
     if ( exp.hasEvalError() )
     {
       QgsDebugMsg( "Expression parser eval error: " + exp.evalErrorString() );
-      expr_action += action.mid( start, index - start );
+      expr_action += action.midRef( start, index - start );
       continue;
     }
 
@@ -2703,7 +2703,7 @@ QString QgsExpression::replaceExpressionText( const QString &action, const QgsEx
     expr_action += action.mid( start, pos - start ) + result.toString();
   }
 
-  expr_action += action.mid( index );
+  expr_action += action.midRef( index );
 
   // restore overwritten local values
   Q_NOWARN_DEPRECATED_PUSH

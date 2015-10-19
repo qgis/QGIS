@@ -224,7 +224,7 @@ QString QgsAttributeAction::expandAction( const QString& action, QgsFeature &fea
     if ( exp.hasParserError() )
     {
       QgsDebugMsg( "Expression parser error: " + exp.parserErrorString() );
-      expr_action += action.mid( start, index - start );
+      expr_action += action.midRef( start, index - start );
       continue;
     }
 
@@ -235,7 +235,7 @@ QString QgsAttributeAction::expandAction( const QString& action, QgsFeature &fea
     if ( exp.hasEvalError() )
     {
       QgsDebugMsg( "Expression parser eval error: " + exp.evalErrorString() );
-      expr_action += action.mid( start, index - start );
+      expr_action += action.midRef( start, index - start );
       continue;
     }
 
@@ -243,7 +243,7 @@ QString QgsAttributeAction::expandAction( const QString& action, QgsFeature &fea
     expr_action += action.mid( start, pos - start ) + result.toString();
   }
 
-  expr_action += action.mid( index );
+  expr_action += action.midRef( index );
   return expr_action;
 }
 

@@ -173,7 +173,7 @@ class Raytracer
 
 QgsSnapIndex::GridRow::~GridRow()
 {
-  foreach ( const QgsSnapIndex::Cell& cell, mCells )
+  Q_FOREACH ( const QgsSnapIndex::Cell& cell, mCells )
   {
     qDeleteAll( cell );
   }
@@ -347,7 +347,7 @@ QgsPointV2 QgsSnapIndex::getClosestSnapToPoint( const QgsPointV2& p, const QgsPo
     {
       continue;
     }
-    foreach ( const SnapItem* item, *cell )
+    Q_FOREACH ( const SnapItem* item, *cell )
     {
       if ( item->type == SnapSegment )
       {
@@ -389,7 +389,7 @@ QgsSnapIndex::SnapItem* QgsSnapIndex::getSnapItem( const QgsPointV2& pos, double
   QgsSnapIndex::SegmentSnapItem* snapSegment = 0;
   QgsSnapIndex::PointSnapItem* snapPoint = 0;
 
-  foreach ( QgsSnapIndex::SnapItem* item, items )
+  Q_FOREACH ( QgsSnapIndex::SnapItem* item, items )
   {
     if ( item->type == SnapPoint )
     {

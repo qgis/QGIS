@@ -98,7 +98,7 @@ void QgsGrassModuleInputModel::onDirectoryChanged( const QString & path )
       }
     }
 
-    foreach ( const QString& dirName, dirNames )
+    Q_FOREACH ( const QString& dirName, dirNames )
     {
       // Add to watcher in any case, either for WIND, cellhd or vector
       QString dirPath = locationPath + "/" + dirName;
@@ -114,7 +114,7 @@ void QgsGrassModuleInputModel::onDirectoryChanged( const QString & path )
     QgsDebugMsg( "mapset = " + path );
     QDir dir( path );
     mapset = dir.dirName();
-    foreach ( QString watchedDir, watchedDirs() )
+    Q_FOREACH ( const QString& watchedDir, watchedDirs() )
     {
       watch( path + "/" + watchedDir );
     }
@@ -211,12 +211,12 @@ void QgsGrassModuleInputModel::refreshMapset( QStandardItem *mapsetItem, const Q
     types << QgsGrassObject::Raster << QgsGrassObject::Vector;
     types << QgsGrassObject::Strds << QgsGrassObject::Stvds << QgsGrassObject::Str3ds;
   }
-  foreach ( QgsGrassObject::Type type, types )
+  Q_FOREACH ( QgsGrassObject::Type type, types )
   {
     QgsGrassObject mapsetObject( QgsGrass::getDefaultGisdbase(), QgsGrass::getDefaultLocation(), mapset, "", QgsGrassObject::Mapset );
     QStringList maps = QgsGrass::grassObjects( mapsetObject, type );
     QStringList mapNames;
-    foreach ( const QString& map, maps )
+    Q_FOREACH ( const QString& map, maps )
     {
       if ( map.startsWith( "qgis_import_tmp_" ) )
       {
@@ -285,7 +285,7 @@ void QgsGrassModuleInputModel::reload()
   mLocationPath = QgsGrass::getDefaultLocationPath();
 
   QStringList mapsets = QgsGrass::mapsets( QgsGrass::getDefaultGisdbase(), QgsGrass::getDefaultLocation() );
-  foreach ( const QString& mapset, mapsets )
+  Q_FOREACH ( const QString& mapset, mapsets )
   {
     addMapset( mapset );
   }
@@ -294,13 +294,13 @@ void QgsGrassModuleInputModel::reload()
 
   // Watching all dirs in location because a dir may become a mapset later, when WIND is created
   QStringList dirNames = locationDirNames();
-  foreach ( const QString& dirName, dirNames )
+  Q_FOREACH ( const QString& dirName, dirNames )
   {
     QString dirPath = mLocationPath + "/" + dirName;
     // Watch the dir in any case, WIND mabe created later
     mWatcher->addPath( dirPath );
 
-    foreach ( QString watchedDir, watchedDirs() )
+    Q_FOREACH ( const QString& watchedDir, watchedDirs() )
     {
       watch( dirPath + "/" + watchedDir );
     }
@@ -839,7 +839,7 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
     {
       int mask = 0;
 
-      foreach ( const QString& typeName, opt.split( "," ) )
+      Q_FOREACH ( const QString& typeName, opt.split( "," ) )
       {
         mask |= QgsGrass::vectorType( typeName );
       }
@@ -952,7 +952,7 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
 
       QList<int> types;
       types << GV_POINT << GV_LINE << GV_BOUNDARY << GV_CENTROID << GV_AREA;
-      foreach ( int type, types )
+      Q_FOREACH ( int type, types )
       {
         if ( !( type & mGeometryTypeMask ) )
         {
@@ -1088,7 +1088,7 @@ QgsGrassVectorLayer * QgsGrassModuleInput::currentLayer()
 QStringList QgsGrassModuleInput::currentGeometryTypeNames()
 {
   QStringList typeNames;
-  foreach ( int checkBoxType, mTypeCheckBoxes.keys() )
+  Q_FOREACH ( int checkBoxType, mTypeCheckBoxes.keys() )
   {
     QCheckBox *checkBox = mTypeCheckBoxes.value( checkBoxType );
     if ( checkBox->isChecked() )
@@ -1145,7 +1145,7 @@ void QgsGrassModuleInput::onChanged( const QString & text )
       else
       {
         // Find layers matching type mask
-        foreach ( QgsGrassVectorLayer *layer, mVector->layers() )
+        Q_FOREACH ( QgsGrassVectorLayer *layer, mVector->layers() )
         {
           QgsDebugMsg( QString( "layer->number() = %1 layer.type() = %2 mGeometryTypeMask = %3" ).arg( layer->number() ).arg( layer->type() ).arg( mGeometryTypeMask ) );
           // TODO: does it make sense to add layer 0, i.e. no layer?
@@ -1158,7 +1158,7 @@ void QgsGrassModuleInput::onChanged( const QString & text )
       QgsDebugMsg( QString( "mLayers.size() = %1" ).arg( mLayers.size() ) );
 
       // Combo is used to get layer even if just one
-      foreach ( QgsGrassVectorLayer * layer, mLayers )
+      Q_FOREACH ( QgsGrassVectorLayer * layer, mLayers )
       {
         mLayerComboBox->addItem( QString::number( layer->number() ), layer->number() );
       }
@@ -1185,7 +1185,7 @@ void QgsGrassModuleInput::onLayerChanged()
   {
     return;
   }
-  foreach ( int checkBoxType, mTypeCheckBoxes.keys() )
+  Q_FOREACH ( int checkBoxType, mTypeCheckBoxes.keys() )
   {
     QCheckBox *checkBox = mTypeCheckBoxes.value( checkBoxType );
     checkBox->setChecked( false );
@@ -1197,7 +1197,7 @@ void QgsGrassModuleInput::onLayerChanged()
   {
     // number of types  in the layer matching mGeometryTypeMask
     int typeCount = 0;
-    foreach ( int type, layer->types() )
+    Q_FOREACH ( int type, layer->types() )
     {
       if ( type & mGeometryTypeMask )
       {
@@ -1207,7 +1207,7 @@ void QgsGrassModuleInput::onLayerChanged()
     QgsDebugMsg( QString( "typeCount = %1" ).arg( typeCount ) );
 
     int layerType = layer->type(); // may be multiple
-    foreach ( int checkBoxType, mTypeCheckBoxes.keys() )
+    Q_FOREACH ( int checkBoxType, mTypeCheckBoxes.keys() )
     {
       QCheckBox *checkBox = mTypeCheckBoxes.value( checkBoxType );
       checkBox->hide();

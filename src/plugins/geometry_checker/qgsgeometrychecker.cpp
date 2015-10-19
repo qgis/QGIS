@@ -41,7 +41,7 @@ QFuture<void> QgsGeometryChecker::execute( int *totalSteps )
   {
     *totalSteps = 0;
     int nCheckFeatures = mFeaturePool->getFeatureIds().size();
-    foreach ( QgsGeometryCheck* check, mChecks )
+    Q_FOREACH ( QgsGeometryCheck* check, mChecks )
     {
       if ( check->getCheckType() <= QgsGeometryCheck::FeatureCheck )
       {
@@ -98,10 +98,10 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError* error, int method )
   // Determine what to recheck
   // - Collect all features which were changed, get affected area
   QgsFeatureIds recheckFeatures;
-  foreach ( const QgsFeatureId& id, changes.keys() )
+  Q_FOREACH ( const QgsFeatureId& id, changes.keys() )
   {
     bool removed = false;
-    foreach ( const QgsGeometryCheck::Change& change, changes.value( id ) )
+    Q_FOREACH ( const QgsGeometryCheck::Change& change, changes.value( id ) )
     {
       if ( change.what == QgsGeometryCheck::ChangeFeature && change.type == QgsGeometryCheck::ChangeRemoved )
       {
@@ -120,7 +120,7 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError* error, int method )
     }
   }
   // - Determine extent to recheck for gaps
-  foreach ( QgsGeometryCheckError* err, mCheckErrors )
+  Q_FOREACH ( QgsGeometryCheckError* err, mCheckErrors )
   {
     if ( err->check()->getCheckType() == QgsGeometryCheck::LayerCheck )
     {
@@ -141,7 +141,7 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError* error, int method )
 
   // Recheck feature / changed area to detect new errors
   QList<QgsGeometryCheckError*> recheckErrors;
-  foreach ( const QgsGeometryCheck* check, mChecks )
+  Q_FOREACH ( const QgsGeometryCheck* check, mChecks )
   {
     if ( check->getCheckType() == QgsGeometryCheck::LayerCheck )
     {
@@ -154,7 +154,7 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError* error, int method )
   }
 
   // Remove just-fixed error from newly-found errors (needed in case error was fixed with "no change")
-  foreach ( QgsGeometryCheckError* recheckErr, recheckErrors )
+  Q_FOREACH ( QgsGeometryCheckError* recheckErr, recheckErrors )
   {
     if ( recheckErr->isEqual( error ) )
     {
@@ -165,7 +165,7 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError* error, int method )
   }
 
   // Go through error list, update other errors of the checked feature
-  foreach ( QgsGeometryCheckError* err, mCheckErrors )
+  Q_FOREACH ( QgsGeometryCheckError* err, mCheckErrors )
   {
     if ( err == error || err->status() == QgsGeometryCheckError::StatusObsolete )
     {
@@ -185,7 +185,7 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError* error, int method )
     // Check if this error now matches one found when rechecking the feature/area
     QgsGeometryCheckError* matchErr = 0;
     int nMatch = 0;
-    foreach ( QgsGeometryCheckError* recheckErr, recheckErrors )
+    Q_FOREACH ( QgsGeometryCheckError* recheckErr, recheckErrors )
     {
       if ( recheckErr->isEqual( err ) )
       {
@@ -226,7 +226,7 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError* error, int method )
   }
 
   // Add new errors
-  foreach ( QgsGeometryCheckError* recheckErr, recheckErrors )
+  Q_FOREACH ( QgsGeometryCheckError* recheckErr, recheckErrors )
   {
     emit errorAdded( recheckErr );
     mCheckErrors.append( recheckErr );
@@ -245,7 +245,7 @@ void QgsGeometryChecker::runCheck( const QgsGeometryCheck* check )
   mCheckErrors.append( errors );
   mMessages.append( messages );
   mErrorListMutex.unlock();
-  foreach ( QgsGeometryCheckError* error, errors )
+  Q_FOREACH ( QgsGeometryCheckError* error, errors )
   {
     emit errorAdded( error );
   }

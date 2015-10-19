@@ -29,7 +29,7 @@ bool QgsGeometrySelfIntersectionCheckError::handleChanges( const QgsGeometryChec
   {
     return false;
   }
-  foreach ( const QgsGeometryCheck::Change& change, changes.value( featureId() ) )
+  Q_FOREACH ( const QgsGeometryCheck::Change& change, changes.value( featureId() ) )
   {
     if ( change.vidx.vertex == mInter.segment1 ||
          change.vidx.vertex == mInter.segment1 + 1 ||
@@ -57,7 +57,7 @@ bool QgsGeometrySelfIntersectionCheckError::handleChanges( const QgsGeometryChec
 void QgsGeometrySelfIntersectionCheck::collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList &/*messages*/, QAtomicInt* progressCounter , const QgsFeatureIds &ids ) const
 {
   const QgsFeatureIds& featureIds = ids.isEmpty() ? mFeaturePool->getFeatureIds() : ids;
-  foreach ( const QgsFeatureId& featureid, featureIds )
+  Q_FOREACH ( const QgsFeatureId& featureid, featureIds )
   {
     if ( progressCounter ) progressCounter->fetchAndAddRelaxed( 1 );
     QgsFeature feature;
@@ -71,7 +71,7 @@ void QgsGeometrySelfIntersectionCheck::collectErrors( QList<QgsGeometryCheckErro
     {
       for ( int iRing = 0, nRings = geom->ringCount( iPart ); iRing < nRings; ++iRing )
       {
-        foreach ( const QgsGeometryUtils::SelfIntersection& inter, QgsGeometryUtils::getSelfIntersections( geom, iPart, iRing, QgsGeometryCheckPrecision::tolerance() ) )
+        Q_FOREACH ( const QgsGeometryUtils::SelfIntersection& inter, QgsGeometryUtils::getSelfIntersections( geom, iPart, iRing, QgsGeometryCheckPrecision::tolerance() ) )
         {
           errors.append( new QgsGeometrySelfIntersectionCheckError( this, featureid, inter.point, QgsVertexId( iPart, iRing ), inter ) );
         }

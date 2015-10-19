@@ -34,7 +34,7 @@ class QgsGeometryDuplicateCheckError : public QgsGeometryCheckError
     static inline QString duplicatesString( const QList<QgsFeatureId>& duplicates )
     {
       QStringList str;
-      foreach ( QgsFeatureId id, duplicates )
+      Q_FOREACH ( QgsFeatureId id, duplicates )
       {
         str.append( QString::number( id ) );
       }

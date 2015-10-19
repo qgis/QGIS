@@ -72,7 +72,7 @@ void QgsGeometrySnapperDialog::updateLayers()
   QgsMapLayer* currentLayer = mIface->mapCanvas()->currentLayer();
   int curInputIdx = -1;
   int curReferenceIdx = -1;
-  foreach ( QgsMapLayer* layer, QgsMapLayerRegistry::instance()->mapLayers() )
+  Q_FOREACH ( QgsMapLayer* layer, QgsMapLayerRegistry::instance()->mapLayers() )
   {
     if ( qobject_cast<QgsVectorLayer*>( layer ) )
     {
@@ -144,7 +144,7 @@ void QgsGeometrySnapperDialog::selectOutputFile()
 {
   QString filterString = QgsVectorFileWriter::filterForDriver( "ESRI Shapefile" );
   QMap<QString, QString> filterFormatMap = QgsVectorFileWriter::supportedFiltersAndFormats();
-  foreach ( const QString& filter, filterFormatMap.keys() )
+  Q_FOREACH ( const QString& filter, filterFormatMap.keys() )
   {
     QString driverName = filterFormatMap.value( filter );
     if ( driverName != "ESRI Shapefile" ) // Default entry, first in list (see above)
@@ -198,7 +198,7 @@ void QgsGeometrySnapperDialog::run()
 
     // Remove existing layer with same uri
     QStringList toRemove;
-    foreach ( QgsMapLayer* maplayer, QgsMapLayerRegistry::instance()->mapLayers() )
+    Q_FOREACH ( QgsMapLayer* maplayer, QgsMapLayerRegistry::instance()->mapLayers() )
     {
       if ( dynamic_cast<QgsVectorLayer*>( maplayer ) &&
            static_cast<QgsVectorLayer*>( maplayer )->dataProvider()->dataSourceUri().startsWith( filename ) )

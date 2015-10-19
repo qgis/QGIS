@@ -25,7 +25,7 @@ QMap<QgsWKBTypes::Type, QgsWKBTypes::wkbEntry>* QgsWKBTypes::entries()
 
 QgsWKBTypes::Type QgsWKBTypes::singleType( Type type )
 {
-  QMap< Type, wkbEntry >::const_iterator it = entries()->find( type );
+  QMap< Type, wkbEntry >::const_iterator it = entries()->constFind( type );
   if ( it == entries()->constEnd() || it.key() == Unknown )
   {
     return Unknown;
@@ -35,7 +35,7 @@ QgsWKBTypes::Type QgsWKBTypes::singleType( Type type )
 
 QgsWKBTypes::Type QgsWKBTypes::multiType( Type type )
 {
-  QMap< Type, wkbEntry >::const_iterator it = entries()->find( type );
+  QMap< Type, wkbEntry >::const_iterator it = entries()->constFind( type );
   if ( it == entries()->constEnd() || it.key() == Unknown )
   {
     return Unknown;
@@ -45,7 +45,7 @@ QgsWKBTypes::Type QgsWKBTypes::multiType( Type type )
 
 QgsWKBTypes::Type QgsWKBTypes::flatType( Type type )
 {
-  QMap< Type, wkbEntry >::const_iterator it = entries()->find( type );
+  QMap< Type, wkbEntry >::const_iterator it = entries()->constFind( type );
   if ( it == entries()->constEnd() || it.key() == Unknown )
   {
     return Unknown;
@@ -58,7 +58,7 @@ QgsWKBTypes::Type QgsWKBTypes::parseType( const QString &wktStr )
   QString typestr = wktStr.left( wktStr.indexOf( '(' ) ).simplified().replace( " ", "" );
   Q_FOREACH ( const Type& type, entries()->keys() )
   {
-    QMap< Type, wkbEntry >::const_iterator it = entries()->find( type );
+    QMap< Type, wkbEntry >::const_iterator it = entries()->constFind( type );
     if ( it != entries()->constEnd() && it.value().mName.compare( typestr, Qt::CaseInsensitive ) == 0 )
     {
       return type;
@@ -74,7 +74,7 @@ bool QgsWKBTypes::isSingleType( Type type )
 
 bool QgsWKBTypes::isMultiType( Type type )
 {
-  QMap< Type, wkbEntry >::const_iterator it = entries()->find( type );
+  QMap< Type, wkbEntry >::const_iterator it = entries()->constFind( type );
   if ( it == entries()->constEnd() )
   {
     return Unknown;
@@ -98,7 +98,7 @@ int QgsWKBTypes::wkbDimensions( Type type )
 
 QgsWKBTypes::GeometryType QgsWKBTypes::geometryType( Type type )
 {
-  QMap< Type, wkbEntry >::const_iterator it = entries()->find( type );
+  QMap< Type, wkbEntry >::const_iterator it = entries()->constFind( type );
   if ( it == entries()->constEnd() )
   {
     return UnknownGeometry;
@@ -108,7 +108,7 @@ QgsWKBTypes::GeometryType QgsWKBTypes::geometryType( Type type )
 
 QString QgsWKBTypes::displayString( Type type )
 {
-  QMap< Type, wkbEntry >::const_iterator it = entries()->find( type );
+  QMap< Type, wkbEntry >::const_iterator it = entries()->constFind( type );
   if ( it == entries()->constEnd() )
   {
     return QString::null;
@@ -118,7 +118,7 @@ QString QgsWKBTypes::displayString( Type type )
 
 bool QgsWKBTypes::hasZ( Type type )
 {
-  QMap< Type, wkbEntry >::const_iterator it = entries()->find( type );
+  QMap< Type, wkbEntry >::const_iterator it = entries()->constFind( type );
   if ( it == entries()->constEnd() )
   {
     return false;
@@ -128,7 +128,7 @@ bool QgsWKBTypes::hasZ( Type type )
 
 bool QgsWKBTypes::hasM( Type type )
 {
-  QMap< Type, wkbEntry >::const_iterator it = entries()->find( type );
+  QMap< Type, wkbEntry >::const_iterator it = entries()->constFind( type );
   if ( it == entries()->constEnd() )
   {
     return false;

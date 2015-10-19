@@ -352,7 +352,7 @@ void TestQgsGrassProvider::mapsets()
   QgsGrass::setLocation( tmpGisdbase,  mLocation ); // for G_is_mapset_in_search_path
   // Disabled because adding of all mapsets to search path was disabled in setLocation()
 #if 0
-  foreach ( QString expectedMapset, expectedMapsets )
+  Q_FOREACH ( QString expectedMapset, expectedMapsets )
   {
     if ( G_is_mapset_in_search_path( expectedMapset.toAscii().data() ) != 1 )
     {
@@ -517,7 +517,7 @@ void TestQgsGrassProvider::info()
   es.minimumValue = -20.25;
   es.maximumValue = 20.25;
   expectedStats.insert( "fcell", es );
-  foreach ( QString map, expectedStats.keys() )
+  Q_FOREACH ( const QString& map, expectedStats.keys() )
   {
     es = expectedStats.value( map );
     // TODO: QgsGrass::info() may open dialog window on error which blocks tests
@@ -607,7 +607,7 @@ bool TestQgsGrassProvider::copyRecursively( const QString &srcFilePath, const QS
     }
     QDir sourceDir( srcFilePath );
     QStringList fileNames = sourceDir.entryList( QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot | QDir::Hidden | QDir::System );
-    foreach ( const QString &fileName, fileNames )
+    Q_FOREACH ( const QString &fileName, fileNames )
     {
       const QString newSrcFilePath
       = srcFilePath + QLatin1Char( '/' ) + fileName;
@@ -645,7 +645,7 @@ bool TestQgsGrassProvider::removeRecursively( const QString &filePath, QString *
     QDir dir( filePath );
     QStringList fileNames = dir.entryList( QDir::Files | QDir::Hidden
                                            | QDir::System | QDir::Dirs | QDir::NoDotAndDotDot );
-    foreach ( const QString &fileName, fileNames )
+    Q_FOREACH ( const QString &fileName, fileNames )
     {
       if ( !removeRecursively( filePath + QLatin1Char( '/' ) + fileName, error ) )
         return false;
@@ -720,7 +720,7 @@ bool TestQgsGrassProvider::createTmpLocation( QString& tmpGisdbase, QString& tmp
   QStringList cpFiles;
   cpFiles << "DEFAULT_WIND" << "WIND" << "PROJ_INFO" << "PROJ_UNITS";
   QString templateMapsetPath = mGisdbase + "/" + mLocation + "/PERMANENT";
-  foreach ( QString cpFile, cpFiles )
+  Q_FOREACH ( const QString& cpFile, cpFiles )
   {
     if ( !QFile::copy( templateMapsetPath + "/" + cpFile, tmpMapsetPath + "/" + cpFile ) )
     {
@@ -752,7 +752,7 @@ void TestQgsGrassProvider::rasterImport()
   rasterFiles << "raster/band1_float32_noct_epsg4326.tif" << "raster/band3_int16_noct_epsg4326.tif";
 
   QgsCoordinateReferenceSystem mapsetCrs = QgsGrass::crsDirect( mGisdbase, mLocation );
-  foreach ( QString rasterFile, rasterFiles )
+  Q_FOREACH ( const QString& rasterFile, rasterFiles )
   {
     QString uri = QString( TEST_DATA_DIR ) + "/" + rasterFile;
     QString name = QFileInfo( uri ).baseName();
@@ -824,7 +824,7 @@ void TestQgsGrassProvider::vectorImport()
   files << "polys_overlapping.shp" << "bug5598.shp";
 
   QgsCoordinateReferenceSystem mapsetCrs = QgsGrass::crsDirect( mGisdbase, mLocation );
-  foreach ( QString file, files )
+  Q_FOREACH ( const QString& file, files )
   {
     QString uri = QString( TEST_DATA_DIR ) + "/" + file;
     QString name = QFileInfo( uri ).baseName();

@@ -68,7 +68,7 @@ QgsGrassVectorMap::~QgsGrassVectorMap()
 int QgsGrassVectorMap::userCount() const
 {
   int count = 0;
-  foreach ( QgsGrassVectorMapLayer *layer, mLayers )
+  Q_FOREACH ( QgsGrassVectorMapLayer *layer, mLayers )
   {
     count += layer->userCount();
   }
@@ -369,7 +369,7 @@ QgsGrassVectorMapLayer * QgsGrassVectorMap::openLayer( int field )
   lockOpenClose();
   QgsGrassVectorMapLayer *layer = 0;
   // Check if this layer is already open
-  foreach ( QgsGrassVectorMapLayer *l, mLayers )
+  Q_FOREACH ( QgsGrassVectorMapLayer *l, mLayers )
   {
     if ( l->field() == field )
     {
@@ -398,7 +398,7 @@ QgsGrassVectorMapLayer * QgsGrassVectorMap::openLayer( int field )
 void QgsGrassVectorMap::reloadLayers()
 {
   QgsDebugMsg( "entered" );
-  foreach ( QgsGrassVectorMapLayer *l, mLayers )
+  Q_FOREACH ( QgsGrassVectorMapLayer *l, mLayers )
   {
     l->load();
   }
@@ -734,7 +734,7 @@ QgsGrassVectorMap * QgsGrassVectorMapStore::openMap( const QgsGrassObject & gras
   QgsGrassVectorMap *map = 0;
 
   // Check if this map is already open
-  foreach ( QgsGrassVectorMap *m, mMaps )
+  Q_FOREACH ( QgsGrassVectorMap *m, mMaps )
   {
     if ( m->grassObject() == grassObject )
     {

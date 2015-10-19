@@ -75,7 +75,7 @@ void QgsGeometrySnapper::processFeature( const QgsFeatureId &id )
   mIndexMutex.lock();
   QList<QgsFeatureId> refFeatureIds = mIndex.intersects( feature.geometry()->boundingBox() );
   mIndexMutex.unlock();
-  foreach ( const QgsFeatureId& refId, refFeatureIds )
+  Q_FOREACH ( const QgsFeatureId& refId, refFeatureIds )
   {
     QgsFeature refFeature;
     if ( getFeature( mReferenceLayer, mReferenceLayerMutex, refId, refFeature ) )
@@ -90,7 +90,7 @@ void QgsGeometrySnapper::processFeature( const QgsFeatureId &id )
     }
   }
   QgsSnapIndex refSnapIndex( center, 10 * snapTolerance );
-  foreach ( const QgsAbstractGeometryV2* geom, refGeometries )
+  Q_FOREACH ( const QgsAbstractGeometryV2* geom, refGeometries )
   {
     refSnapIndex.addGeometry( geom );
   }
@@ -146,7 +146,7 @@ void QgsGeometrySnapper::processFeature( const QgsFeatureId &id )
   origSubjSnapIndex->addGeometry( origSubjGeom );
 
   // Pass 2: add missing vertices to subject geometry
-  foreach ( const QgsAbstractGeometryV2* refGeom, refGeometries )
+  Q_FOREACH ( const QgsAbstractGeometryV2* refGeom, refGeometries )
   {
     for ( int iPart = 0, nParts = refGeom->partCount(); iPart < nParts; ++iPart )
     {

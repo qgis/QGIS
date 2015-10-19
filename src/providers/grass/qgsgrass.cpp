@@ -1293,7 +1293,7 @@ QStringList QgsGrass::vectorLayers( const QString& gisdbase, const QString& loca
   QgsDebugMsg( "GRASS vector successfully opened" );
 
   // Get layers
-  foreach ( QgsGrassVectorLayer * layer, vector.layers() )
+  Q_FOREACH ( QgsGrassVectorLayer * layer, vector.layers() )
   {
     QString fs = QString::number( layer->number() );
     QgsDebugMsg( "layer number = " + fs );
@@ -2420,7 +2420,7 @@ void QgsGrass::insertRow( dbDriver *driver, const QString tableName,
   }
 
   QStringList valuesStringList;
-  foreach ( const QVariant& attribute, attributes )
+  Q_FOREACH ( const QVariant& attribute, attributes )
   {
     QString valueString;
 

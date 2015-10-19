@@ -319,7 +319,7 @@ QVector<QgsDataItem*>QgsGrassLocationItem::createChildren()
   QDir dir( mDirPath );
 
   QStringList entries = dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name );
-  foreach ( const QString& name, entries )
+  Q_FOREACH ( const QString& name, entries )
   {
     QString path = dir.absoluteFilePath( name );
 
@@ -385,7 +385,7 @@ void QgsGrassMapsetItem::setState( State state )
 
 bool QgsGrassMapsetItem::objectInImports( QgsGrassObject grassObject )
 {
-  foreach ( QgsGrassImport* import, mImports )
+  Q_FOREACH ( QgsGrassImport* import, mImports )
   {
     if ( !import )
     {
@@ -500,7 +500,7 @@ QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
       //map->setCapabilities( QgsDataItem::NoCapabilities ); // disable fertility
       map = new QgsGrassVectorItem( this, vectorObject, mapPath );
     }
-    foreach ( const QString& layerName, layerNames )
+    Q_FOREACH ( const QString& layerName, layerNames )
     {
       // don't use QDir::separator(), windows work with '/' and backslash may be lost if
       // somewhere not properly escaped (there was bug in QgsMimeDataUtils for example)
@@ -539,7 +539,7 @@ QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
 
   QStringList rasterNames = QgsGrass::rasters( mDirPath );
 
-  foreach ( const QString& name, rasterNames )
+  Q_FOREACH ( const QString& name, rasterNames )
   {
     if ( mRefreshLater )
     {
@@ -562,7 +562,7 @@ QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
   }
 
   QStringList groupNames = QgsGrass::groups( mDirPath );
-  foreach ( const QString& name, groupNames )
+  Q_FOREACH ( const QString& name, groupNames )
   {
     if ( mRefreshLater )
     {
@@ -578,7 +578,7 @@ QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
     items.append( layer );
   }
 
-  foreach ( QgsGrassImport* import, mImports )
+  Q_FOREACH ( QgsGrassImport* import, mImports )
   {
     if ( mRefreshLater )
     {
@@ -593,7 +593,7 @@ QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
     {
       continue;
     }
-    foreach ( QString name, import->names() )
+    Q_FOREACH ( const QString& name, import->names() )
     {
       QString path = mPath + "/" + import->grassObject().elementName() + "/" + name;
       items.append( new QgsGrassImportItem( this, name, path, import ) );
@@ -615,7 +615,7 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData * data, Qt::DropAction )
   QStringList existingRasters = QgsGrass::rasters( mGrassObject.mapsetPath() );
   QStringList existingVectors = QgsGrass::vectors( mGrassObject.mapsetPath() );
   // add currently being imported
-  foreach ( QgsGrassImport* import, mImports )
+  Q_FOREACH ( QgsGrassImport* import, mImports )
   {
     if ( import && import->grassObject().type() == QgsGrassObject::Raster )
     {
@@ -631,7 +631,7 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData * data, Qt::DropAction )
   QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
   Qt::CaseSensitivity caseSensitivity = QgsGrass::caseSensitivity();
 
-  foreach ( const QgsMimeDataUtils::Uri& u, lst )
+  Q_FOREACH ( const QgsMimeDataUtils::Uri& u, lst )
   {
     if ( u.layerType != "raster" && u.layerType != "vector" )
     {
@@ -809,7 +809,7 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData * data, Qt::DropAction )
 
     // delete existing files (confirmed before in dialog)
     bool deleteOk = true;
-    foreach ( const QString& name, import->names() )
+    Q_FOREACH ( const QString& name, import->names() )
     {
       QgsGrassObject obj( import->grassObject() );
       obj.setName( name );

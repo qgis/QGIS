@@ -29,19 +29,19 @@ QgsGeometryCheckerFixSummaryDialog::QgsGeometryCheckerFixSummaryDialog( QgisInte
   ui.groupBoxNotFixed->setTitle( tr( "%1 errors were not fixed" ).arg( stats.failedErrors.count() ) );
   ui.groupBoxObsoleteErrors->setTitle( tr( "%1 errors are obsolete" ).arg( stats.obsoleteErrors.count() ) );
 
-  foreach ( QgsGeometryCheckError* error, stats.fixedErrors )
+  Q_FOREACH ( QgsGeometryCheckError* error, stats.fixedErrors )
   {
     addError( ui.tableWidgetFixedErrors, error );
   }
-  foreach ( QgsGeometryCheckError* error, stats.newErrors )
+  Q_FOREACH ( QgsGeometryCheckError* error, stats.newErrors )
   {
     addError( ui.tableWidgetNewErrors, error );
   }
-  foreach ( QgsGeometryCheckError* error, stats.failedErrors )
+  Q_FOREACH ( QgsGeometryCheckError* error, stats.failedErrors )
   {
     addError( ui.tableWidgetNotFixed, error );
   }
-  foreach ( QgsGeometryCheckError* error, stats.obsoleteErrors )
+  Q_FOREACH ( QgsGeometryCheckError* error, stats.obsoleteErrors )
   {
     addError( ui.tableWidgetObsoleteErrors, error );
   }
@@ -114,7 +114,7 @@ void QgsGeometryCheckerFixSummaryDialog::onTableSelectionChanged( const QItemSel
 {
   const QAbstractItemModel* model = qobject_cast<QItemSelectionModel*>( QObject::sender() )->model();
 
-  foreach ( QTableWidget* table, QList<QTableWidget*>() << ui.tableWidgetFixedErrors << ui.tableWidgetNewErrors << ui.tableWidgetNotFixed << ui.tableWidgetObsoleteErrors )
+  Q_FOREACH ( QTableWidget* table, QList<QTableWidget*>() << ui.tableWidgetFixedErrors << ui.tableWidgetNewErrors << ui.tableWidgetNotFixed << ui.tableWidgetObsoleteErrors )
     if ( table->model() != model )
     {
       table->selectionModel()->blockSignals( true );

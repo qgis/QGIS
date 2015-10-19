@@ -888,7 +888,7 @@ void QgsGrassModuleGdalInput::updateQgisLayers()
     mLayerComboBox->addItem( tr( "Select a layer" ), QVariant() );
   }
 
-  foreach ( QgsMapLayer *layer, QgsMapLayerRegistry::instance()->mapLayers().values() )
+  Q_FOREACH ( QgsMapLayer *layer, QgsMapLayerRegistry::instance()->mapLayers().values() )
   {
     if ( !layer ) continue;
 
@@ -1078,7 +1078,7 @@ QgsGrassModuleField::QgsGrassModuleField( QgsGrassModule *module, QString key,
   // Validator is disabled to allow to enter also expressions
 #if 0
   QRegExp rx( "^[a-zA-Z_][a-zA-Z0-9_]*$" );
-  foreach ( QLineEdit *lineEdit, mLineEdits )
+  Q_FOREACH ( QLineEdit *lineEdit, mLineEdits )
   {
     lineEdit->setValidator( new QRegExpValidator( rx, this ) );
   }

@@ -81,7 +81,7 @@ bool QgsGeometryCheckError::handleChanges( const QgsGeometryCheck::Changes& chan
     return false;
   }
 
-  foreach ( const QgsGeometryCheck::Change& change, changes.value( featureId() ) )
+  Q_FOREACH ( const QgsGeometryCheck::Change& change, changes.value( featureId() ) )
   {
     if ( change.what == QgsGeometryCheck::ChangeFeature )
     {

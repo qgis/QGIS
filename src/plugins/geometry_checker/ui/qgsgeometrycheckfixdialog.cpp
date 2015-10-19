@@ -102,7 +102,7 @@ void QgsGeometryCheckerFixDialog::setupNextError()
 
   int id = 0;
   int checkedid = QSettings().value( QgsGeometryCheckerResultTab::sSettingsGroup + error->check()->errorName(), QVariant::fromValue<int>( 0 ) ).toInt();
-  foreach ( const QString& method, error->check()->getResolutionMethods() )
+  Q_FOREACH ( const QString& method, error->check()->getResolutionMethods() )
   {
     QRadioButton* radio = new QRadioButton( method );
     radio->setChecked( checkedid == id );

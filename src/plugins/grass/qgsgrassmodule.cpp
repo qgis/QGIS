@@ -82,7 +82,7 @@ QString QgsGrassModule::findExec( QString file )
 
 #ifdef Q_OS_WIN
   // On windows try .bat first
-  foreach ( QString path, QgsGrass::grassModulesPaths() )
+  Q_FOREACH ( const QString& path, QgsGrass::grassModulesPaths() )
   {
     QString full = path + "/" + file + ".bat";
     if ( QFile::exists( full ) )
@@ -92,7 +92,7 @@ QString QgsGrassModule::findExec( QString file )
   }
 
   // .exe next
-  foreach ( QString path, QgsGrass::grassModulesPaths() )
+  Q_FOREACH ( const QString& path, QgsGrass::grassModulesPaths() )
   {
     QString full = path + "/" + file + ".exe";
     if ( QFile::exists( full ) )
@@ -105,7 +105,7 @@ QString QgsGrassModule::findExec( QString file )
 #endif
 
   // Search for module
-  foreach ( const QString& path, QgsGrass::grassModulesPaths() )
+  Q_FOREACH ( const QString& path, QgsGrass::grassModulesPaths() )
   {
     QString full = path + "/" + file;
     if ( QFile::exists( full ) )
@@ -712,7 +712,7 @@ void QgsGrassModule::run()
 
       // Print some important variables
       variables << "QGIS_PREFIX_PATH" << "QGIS_GRASS_CRS" << "GRASS_REGION";
-      foreach ( const QString& v, variables )
+      Q_FOREACH ( const QString& v, variables )
       {
         mOutputTextBrowser->append( v + "=" + environment.value( v ) + "<BR>" );
       }

@@ -47,9 +47,9 @@ class CORE_EXPORT QgsRelation
             : QPair< QString, QString >( referencingField, referencedField ) {}
 
         //! Get the name of the referencing field
-        const QString& referencingField() const { return first; }
+        QString referencingField() const { return first; }
         //! Get the name of the referenced field
-        const QString& referencedField() const { return second; }
+        QString referencedField() const { return second; }
     };
 
     /**

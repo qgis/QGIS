@@ -515,7 +515,7 @@ QStringList QgsGrassRasterImport::names() const
   QStringList list;
   if ( mPipe && mPipe->provider() )
   {
-    foreach ( const QString& ext, extensions( mPipe->provider() ) )
+    Q_FOREACH ( const QString& ext, extensions( mPipe->provider() ) )
     {
       list << mGrassObject.name() + ext;
     }

@@ -64,7 +64,7 @@ QgsGeometryCheckerSetupTab::QgsGeometryCheckerSetupTab( QgisInterface* iface , Q
 
   updateLayers();
 
-  foreach ( const QgsGeometryCheckFactory* factory, QgsGeometryCheckFactoryRegistry::getCheckFactories() )
+  Q_FOREACH ( const QgsGeometryCheckFactory* factory, QgsGeometryCheckFactoryRegistry::getCheckFactories() )
   {
     factory->restorePrevious( ui );
   }
@@ -83,7 +83,7 @@ void QgsGeometryCheckerSetupTab::updateLayers()
   // Collect layers
   QgsMapLayer* currentLayer = mIface->mapCanvas()->currentLayer();
   int currIdx = -1;
-  foreach ( QgsMapLayer* layer, QgsMapLayerRegistry::instance()->mapLayers() )
+  Q_FOREACH ( QgsMapLayer* layer, QgsMapLayerRegistry::instance()->mapLayers() )
   {
     if ( qobject_cast<QgsVectorLayer*>( layer ) )
     {
@@ -118,7 +118,7 @@ void QgsGeometryCheckerSetupTab::validateInput()
   int nApplicable = 0;
   if ( layer != 0 )
   {
-    foreach ( const QgsGeometryCheckFactory* factory, QgsGeometryCheckFactoryRegistry::getCheckFactories() )
+    Q_FOREACH ( const QgsGeometryCheckFactory* factory, QgsGeometryCheckFactoryRegistry::getCheckFactories() )
     {
       nApplicable += factory->checkApplicability( ui, layer->geometryType() );
     }
@@ -131,7 +131,7 @@ void QgsGeometryCheckerSetupTab::selectOutputFile()
 {
   QString filterString = QgsVectorFileWriter::filterForDriver( "ESRI Shapefile" );
   QMap<QString, QString> filterFormatMap = QgsVectorFileWriter::supportedFiltersAndFormats();
-  foreach ( const QString& filter, filterFormatMap.keys() )
+  Q_FOREACH ( const QString& filter, filterFormatMap.keys() )
   {
     QString driverName = filterFormatMap.value( filter );
     if ( driverName != "ESRI Shapefile" ) // Default entry, first in list (see above)
@@ -197,7 +197,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
 
     // Remove existing layer with same uri
     QStringList toRemove;
-    foreach ( QgsMapLayer* maplayer, QgsMapLayerRegistry::instance()->mapLayers() )
+    Q_FOREACH ( QgsMapLayer* maplayer, QgsMapLayerRegistry::instance()->mapLayers() )
     {
       if ( dynamic_cast<QgsVectorLayer*>( maplayer ) &&
            static_cast<QgsVectorLayer*>( maplayer )->dataProvider()->dataSourceUri().startsWith( filename ) )
@@ -272,7 +272,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
 
   QList<QgsGeometryCheck*> checks;
   double mapToLayer = 1. / mIface->mapCanvas()->mapSettings().layerToMapUnits( layer );
-  foreach ( const QgsGeometryCheckFactory* factory, QgsGeometryCheckFactoryRegistry::getCheckFactories() )
+  Q_FOREACH ( const QgsGeometryCheckFactory* factory, QgsGeometryCheckFactoryRegistry::getCheckFactories() )
   {
     QgsGeometryCheck* check = factory->createInstance( featurePool, ui, mapToLayer );
     if ( check )

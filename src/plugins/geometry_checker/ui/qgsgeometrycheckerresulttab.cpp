@@ -270,7 +270,7 @@ bool QgsGeometryCheckerResultTab::exportErrorsDo( const QString& file )
 
   // Remove existing layer with same uri
   QStringList toRemove;
-  foreach ( QgsMapLayer* maplayer, QgsMapLayerRegistry::instance()->mapLayers() )
+  Q_FOREACH ( QgsMapLayer* maplayer, QgsMapLayerRegistry::instance()->mapLayers() )
   {
     if ( dynamic_cast<QgsVectorLayer*>( maplayer ) &&
          static_cast<QgsVectorLayer*>( maplayer )->dataProvider()->dataSourceUri() == layer->dataProvider()->dataSourceUri() )
@@ -315,7 +315,7 @@ void QgsGeometryCheckerResultTab::highlightErrors( bool current )
   {
     items.append( ui.tableWidgetErrors->selectedItems() );
   }
-  foreach ( QTableWidgetItem* item, items )
+  Q_FOREACH ( QTableWidgetItem* item, items )
   {
     QgsGeometryCheckError* error = ui.tableWidgetErrors->item( item->row(), 0 )->data( Qt::UserRole ).value<QgsGeometryCheckError*>();
 
@@ -366,7 +366,7 @@ void QgsGeometryCheckerResultTab::highlightErrors( bool current )
   {
     double cx = 0., cy = 0.;
     QgsRectangle pointExtent( errorPositions.first(), errorPositions.first() );
-    foreach ( const QgsPoint& p, errorPositions )
+    Q_FOREACH ( const QgsPoint& p, errorPositions )
     {
       cx += p.x();
       cy += p.y();
@@ -407,7 +407,7 @@ void QgsGeometryCheckerResultTab::onSelectionChanged( const QItemSelection &newS
 void QgsGeometryCheckerResultTab::openAttributeTable()
 {
   QSet<int> ids;
-  foreach ( QModelIndex idx, ui.tableWidgetErrors->selectionModel()->selectedRows() )
+  Q_FOREACH ( QModelIndex idx, ui.tableWidgetErrors->selectionModel()->selectedRows() )
   {
     QgsFeatureId id = ui.tableWidgetErrors->item( idx.row(), 0 )->data( Qt::UserRole ).value<QgsGeometryCheckError*>()->featureId();
     if ( id >= 0 )
@@ -420,7 +420,7 @@ void QgsGeometryCheckerResultTab::openAttributeTable()
     return;
   }
   QStringList expr;
-  foreach ( int id, ids )
+  Q_FOREACH ( int id, ids )
   {
     expr.append( QString( "$id = %1 " ).arg( id ) );
   }
@@ -444,7 +444,7 @@ void QgsGeometryCheckerResultTab::fixErrors( bool prompt )
     rows = ui.tableWidgetErrors->selectionModel()->selectedRows();
   }
   QList<QgsGeometryCheckError*> errors;
-  foreach ( const QModelIndex& index, rows )
+  Q_FOREACH ( const QModelIndex& index, rows )
   {
     QgsGeometryCheckError* error = ui.tableWidgetErrors->item( index.row(), 0 )->data( Qt::UserRole ).value<QgsGeometryCheckError*>();
     if ( error->status() < QgsGeometryCheckError::StatusFixed )
@@ -486,7 +486,7 @@ void QgsGeometryCheckerResultTab::fixErrors( bool prompt )
     ui.progressBarFixErrors->setVisible( true );
     ui.progressBarFixErrors->setRange( 0, errors.size() );
 
-    foreach ( QgsGeometryCheckError* error, errors )
+    Q_FOREACH ( QgsGeometryCheckError* error, errors )
     {
       int fixMethod = QSettings().value( sSettingsGroup + error->check()->errorName(), QVariant::fromValue<int>( 0 ) ).toInt();
       mChecker->fixError( error, fixMethod );
@@ -544,7 +544,7 @@ void QgsGeometryCheckerResultTab::setDefaultResolutionMethods()
   QWidget* scrollAreaContents = new QWidget( scrollArea );
   QVBoxLayout* scrollAreaLayout = new QVBoxLayout( scrollAreaContents );
 
-  foreach ( const QgsGeometryCheck* check, mChecker->getChecks() )
+  Q_FOREACH ( const QgsGeometryCheck* check, mChecker->getChecks() )
   {
     QGroupBox* groupBox = new QGroupBox( scrollAreaContents );
     groupBox->setTitle( check->errorDescription() );
@@ -556,7 +556,7 @@ void QgsGeometryCheckerResultTab::setDefaultResolutionMethods()
     radioGroup->setProperty( "errorType", check->errorName() );
     int id = 0;
     int checkedId = QSettings().value( sSettingsGroup + check->errorName(), QVariant::fromValue<int>( 0 ) ).toInt();
-    foreach ( const QString& method, check->getResolutionMethods() )
+    Q_FOREACH ( const QString& method, check->getResolutionMethods() )
     {
       QRadioButton* radio = new QRadioButton( method, groupBox );
       radio->setChecked( id == checkedId );

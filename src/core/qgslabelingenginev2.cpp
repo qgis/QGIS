@@ -132,7 +132,7 @@ void QgsLabelingEngineV2::processProvider( QgsAbstractLabelProvider* provider, Q
 
   QList<QgsLabelFeature*> features = provider->labelFeatures( context );
 
-  foreach ( QgsLabelFeature* feature, features )
+  Q_FOREACH ( QgsLabelFeature* feature, features )
   {
     try
     {
@@ -180,7 +180,7 @@ void QgsLabelingEngineV2::run( QgsRenderContext& context )
 
 
   // for each provider: get labels and register them in PAL
-  foreach ( QgsAbstractLabelProvider* provider, mProviders )
+  Q_FOREACH ( QgsAbstractLabelProvider* provider, mProviders )
   {
     processProvider( provider, context, p );
   }

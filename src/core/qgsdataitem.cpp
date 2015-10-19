@@ -1420,10 +1420,11 @@ QgsDataItem* QgsZipItem::itemFromPath( QgsDataItem* parent, const QString& fileP
     QString vsiPath = vsiPrefix + filePath;
     if ( zipItem )
     {
-      if ( zipItem->children().size() == 1 )
+      QVector<QgsDataItem*> children = zipItem->children();
+      if ( children.size() == 1 )
       {
         // take the name of the only child so we can get a normal data item from it
-        QgsLayerItem *layerItem = qobject_cast<QgsLayerItem*>( zipItem->children().first() );
+        QgsLayerItem *layerItem = qobject_cast<QgsLayerItem*>( children.first() );
         if ( layerItem )
           vsiPath = layerItem->uri();
       }
