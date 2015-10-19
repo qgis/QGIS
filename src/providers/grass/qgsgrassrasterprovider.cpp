@@ -90,7 +90,7 @@ QgsGrassRasterProvider::QgsGrassRasterProvider( QString const & uri )
 
   mTimestamp = dataTimestamp();
 
-  mRasterValue.start( mGisdbase, mLocation, mMapset, mMapName );
+  mRasterValue.set( mGisdbase, mLocation, mMapset, mMapName );
   //mValidNoDataValue = true;
 
   QString error;
@@ -651,13 +651,13 @@ void QgsGrassRasterProvider::freeze()
 void QgsGrassRasterProvider::thaw()
 {
   QgsDebugMsg( "entered" );
-  mRasterValue.start( mGisdbase, mLocation, mMapset, mMapName );
   mValid = true;
 }
 
 //-------------------------------- QgsGrassRasterValue ----------------------------------------
 
-QgsGrassRasterValue::QgsGrassRasterValue() : mProcess( 0 )
+QgsGrassRasterValue::QgsGrassRasterValue()
+    : mProcess( 0 )
 {
 }
 
@@ -666,18 +666,21 @@ QgsGrassRasterValue::~QgsGrassRasterValue()
   stop();
 }
 
-void QgsGrassRasterValue::start( QString gisdbase, QString location,
-                                 QString mapset, QString map )
+void QgsGrassRasterValue::set( const QString & gisdbase, const QString & location, const QString & mapset, const QString & map )
 {
-  QgsDebugMsg( "entered" );
-  if ( mProcess )
-  {
-    QgsDebugMsg( "alread running" );
-  }
   mGisdbase = gisdbase;
   mLocation = location;
   mMapset = mapset;
   mMapName = map;
+}
+
+void QgsGrassRasterValue::start()
+{
+  QgsDebugMsg( "entered" );
+  if ( mProcess )
+  {
+    QgsDebugMsg( "already running" );
+  }
   // TODO: catch exceptions
   QString module = QgsGrass::qgisGrassModulePath() + "/qgis.g.info";
   QStringList arguments;
@@ -715,7 +718,15 @@ double QgsGrassRasterValue::value( double x, double y, bool *ok )
   *ok = false;
   double value = std::numeric_limits<double>::quiet_NaN();
 
-  if ( !mProcess ) return value;
+  if ( !mProcess )
+  {
+    start();
+  }
+
+  if ( !mProcess )
+  {
+    return value;
+  }
 
   QString coor = QString( "%1 %2\n" ).arg( QgsRasterBlock::printValue( x ),
                  QgsRasterBlock::printValue( y ) );
