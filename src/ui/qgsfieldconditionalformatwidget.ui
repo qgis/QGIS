@@ -41,7 +41,7 @@
    <item>
     <widget class="QLabel" name="label_4">
      <property name="text">
-      <string>Condtional Format Rules</string>
+      <string>Conditional Format Rules</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>

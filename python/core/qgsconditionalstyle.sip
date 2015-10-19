@@ -1,5 +1,6 @@
 typedef QList<QgsConditionalStyle> QgsConditionalStyles;
 
+
 /**
  * @brief The QgsConditionalLayerStyles class holds conditional style information
  * for a layer. This includes field styles and full row styles.
@@ -71,7 +72,7 @@ class QgsConditionalStyle
      * @brief Render a preview icon of the rule.
      * @return QPixmap preview of the style
      */
-    QPixmap renderPreview();
+    QPixmap renderPreview() const;
 
     /**
      * @brief Set the name of the style.  Names are optional but handy for display
@@ -181,19 +182,19 @@ class QgsConditionalStyle
 
     /**
      * @brief Find and return the matching styles for the value and feature.
-     * If no match is found a invalid QgsCondtionalStyle is return.
+     * If no match is found a invalid QgsConditionalStyle is return.
      *
      * @return A condtional style that matches the value and feature.
-     * Check with QgsCondtionalStyle::isValid()
+     * Check with QgsConditionalStyle::isValid()
      */
     static QList<QgsConditionalStyle> matchingConditionalStyles( const QList<QgsConditionalStyle>& styles, const QVariant& value, QgsExpressionContext& context );
 
     /**
      * @brief Find and return the matching style for the value and feature.
-     * If no match is found a invalid QgsCondtionalStyle is return.
+     * If no match is found a invalid QgsConditionalStyle is return.
      *
      * @return A condtional style that matches the value and feature.
-     * Check with QgsCondtionalStyle::isValid()
+     * Check with QgsConditionalStyle::isValid()
      */
     static QgsConditionalStyle matchingConditionalStyle( const QList<QgsConditionalStyle>& styles, const QVariant& value, QgsExpressionContext& context );
 
@@ -211,5 +212,5 @@ class QgsConditionalStyle
 
     /** Write vector conditional style specific state from layer Dom node.
      */
-    virtual bool writeXml( QDomNode & node, QDomDocument & doc );
+    virtual bool writeXml( QDomNode & node, QDomDocument & doc ) const;
 };

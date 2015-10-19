@@ -60,7 +60,8 @@ class CORE_EXPORT QgsConditionalLayerStyles
     QList<QgsConditionalStyle> mRowStyles;
 };
 
-/** \class QgsFieldFormat
+/** \class QgsConditionalStyle
+ *  \ingroup core
  * Conditional styling for a rule.
  */
 class CORE_EXPORT QgsConditionalStyle
@@ -195,19 +196,19 @@ class CORE_EXPORT QgsConditionalStyle
 
     /**
      * @brief Find and return the matching styles for the value and feature.
-     * If no match is found a invalid QgsCondtionalStyle is return.
+     * If no match is found a invalid QgsConditionalStyle is return.
      *
      * @return A condtional style that matches the value and feature.
-     * Check with QgsCondtionalStyle::isValid()
+     * Check with QgsConditionalStyle::isValid()
      */
     static QList<QgsConditionalStyle> matchingConditionalStyles( const QList<QgsConditionalStyle>& styles, const QVariant& value, QgsExpressionContext& context );
 
     /**
      * @brief Find and return the matching style for the value and feature.
-     * If no match is found a invalid QgsCondtionalStyle is return.
+     * If no match is found a invalid QgsConditionalStyle is return.
      *
      * @return A condtional style that matches the value and feature.
-     * Check with QgsCondtionalStyle::isValid()
+     * Check with QgsConditionalStyle::isValid()
      */
     static QgsConditionalStyle matchingConditionalStyle( const QList<QgsConditionalStyle>& styles, const QVariant& value, QgsExpressionContext& context );
 
