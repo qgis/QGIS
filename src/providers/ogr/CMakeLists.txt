@@ -13,6 +13,8 @@ INCLUDE_DIRECTORIES(
   ../../core
   ../../core/geometry
   ${CMAKE_CURRENT_SOURCE_DIR}/../../core/symbology-ng
+)
+INCLUDE_DIRECTORIES(SYSTEM
   ${GDAL_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
 )

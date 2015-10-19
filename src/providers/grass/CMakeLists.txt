@@ -7,6 +7,8 @@ INCLUDE_DIRECTORIES(
   ../../core/geometry
   ../../core/raster
   ../../gui
+)
+INCLUDE_DIRECTORIES (SYSTEM
   ${GDAL_INCLUDE_DIR}
   ${PROJ_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}

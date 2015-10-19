@@ -62,6 +62,8 @@ INCLUDE_DIRECTORIES(
      ../../app
      ../../providers/postgres
      ..
+)
+INCLUDE_DIRECTORIES(SYSTEM
      ${POSTGRES_INCLUDE_DIR}
      ${GDAL_INCLUDE_DIR}
      ${QCA_INCLUDE_DIR}
