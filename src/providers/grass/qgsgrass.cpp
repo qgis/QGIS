@@ -1922,35 +1922,25 @@ QProcess *QgsGrass::startModule( const QString& gisdbase, const QString&  locati
 
   QString error = tr( "Cannot start module" ) + "\n" + tr( "command: %1 %2" ).arg( module, arguments.join( " " ) );
 
-  // Modules must be run in a mapset owned by user, because each module calls G_gisinit()
-  // which checks if G_mapset() is owned by user.
-  QString ownedMapset = mapset;
-  if ( ownedMapset.isEmpty() )
-  {
-    Q_FOREACH ( const QString& ms, mapsets( gisdbase, location ) )
-    {
-      if ( isOwner( gisdbase, location, ms ) )
-      {
-        ownedMapset = ms;
-      }
-    }
-  }
-  if ( ownedMapset.isEmpty() )
-  {
-    throw QgsGrass::Exception( error + "\n" + tr( "Cannot find a mapset owned by current user" ) );
-  }
-
   QTextStream out( &gisrcFile );
   out << "GISDBASE: " << gisdbase << "\n";
   out << "LOCATION_NAME: " << location << "\n";
-  //out << "MAPSET: PERMANENT\n";
-  out << "MAPSET: " << ownedMapset << "\n";
+  if ( mapset.isEmpty() )
+  {
+    out << "MAPSET: PERMANENT\n";
+  }
+  else
+  {
+    out << "MAPSET: " << mapset << "\n";
+  }
   out.flush();
   QgsDebugMsg( gisrcFile.fileName() );
   gisrcFile.close();
   QStringList environment = QProcess::systemEnvironment();
   environment.append( "GISRC=" + gisrcFile.fileName() );
   environment.append( "GRASS_MESSAGE_FORMAT=gui" );
+  // Normaly modules must be run in a mapset owned by user, because each module calls G_gisinit()
+  // which checks if G_mapset() is owned by user. The check is disabled by GRASS_SKIP_MAPSET_OWNER_CHECK.
   environment.append( "GRASS_SKIP_MAPSET_OWNER_CHECK=1" );
 
   process->setEnvironment( environment );

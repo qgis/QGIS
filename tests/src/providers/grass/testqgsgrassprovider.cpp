@@ -496,15 +496,6 @@ void TestQgsGrassProvider::info()
   reportHeader( "TestQgsGrassProvider::info" );
   bool ok = true;
 
-  // GRASS modules must be run in a mapset owned by user, the source code may have different user.
-  QString tmpGisdbase;
-  if ( !copyLocation( tmpGisdbase ) )
-  {
-    reportRow( "cannot copy location" );
-    GVERIFY( false );
-    return;
-  }
-
   QgsRectangle expectedExtent( -5, -5, 5, 5 );
   QMap<QString, QgsRasterBandStats> expectedStats;
   QgsRasterBandStats es;
@@ -522,7 +513,7 @@ void TestQgsGrassProvider::info()
     es = expectedStats.value( map );
     // TODO: QgsGrass::info() may open dialog window on error which blocks tests
     QString error;
-    QHash<QString, QString> info = QgsGrass::info( tmpGisdbase, mLocation, "test", map, QgsGrassObject::Raster, "stats",
+    QHash<QString, QString> info = QgsGrass::info( mGisdbase, mLocation, "test", map, QgsGrassObject::Raster, "stats",
                                    expectedExtent, 10, 10, 5000, error );
     if ( !error.isEmpty() )
     {
@@ -541,7 +532,7 @@ void TestQgsGrassProvider::info()
     compare( es.minimumValue, s.minimumValue, ok );
     compare( es.maximumValue, s.maximumValue, ok );
 
-    QgsRectangle extent = QgsGrass::extent( tmpGisdbase, mLocation, "test", map, QgsGrassObject::Raster, error );
+    QgsRectangle extent = QgsGrass::extent( mGisdbase, mLocation, "test", map, QgsGrassObject::Raster, error );
     reportRow( "expectedExtent: " + expectedExtent.toString() );
     reportRow( "extent: " + extent.toString() );
     if ( !error.isEmpty() )
@@ -561,7 +552,7 @@ void TestQgsGrassProvider::info()
 
   reportRow( "expectedCrs: " + expectedCrs.toWkt() );
   QString error;
-  QgsCoordinateReferenceSystem crs = QgsGrass::crs( tmpGisdbase, mLocation, error );
+  QgsCoordinateReferenceSystem crs = QgsGrass::crs( mGisdbase, mLocation, error );
   if ( !error.isEmpty() )
   {
     ok = false;
@@ -583,7 +574,6 @@ void TestQgsGrassProvider::info()
       }
     }
   }
-  removeRecursively( tmpGisdbase );
   GVERIFY( ok );
 }
 
