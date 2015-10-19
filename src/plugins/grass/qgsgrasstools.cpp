@@ -273,10 +273,22 @@ void QgsGrassTools::runModule( QString name, bool direct )
   {
 #ifdef Q_OS_WIN
     QgsGrass::putEnv( "GRASS_HTML_BROWSER", QgsGrassUtils::htmlBrowserPath() );
+    QStringList env;
+    QByteArray origPath = qgetenv( "PATH" ); 
+    QByteArray origPythonPath = qgetenv( "PYTHONPATH" );
+    QString path = QString( origPath ) + QgsGrass::pathSeparator() + QgsGrass::grassModulesPaths().join( QgsGrass::pathSeparator() );
+    QString pythonPath = QString( origPythonPath ) + QgsGrass::pathSeparator() + QgsGrass::getPythonPath();
+    QgsDebugMsg( "path = " + path );
+    QgsDebugMsg( "pythonPath = " + pythonPath );
+    qputenv( "PATH", path.toLocal8Bit() );
+    qputenv( "PYTHONPATH", pythonPath.toLocal8Bit() );
+    // QProcess does not support environment for startDetached() -> set/reset to orig
     if ( !QProcess::startDetached( getenv( "COMSPEC" ) ) )
     {
       QMessageBox::warning( 0, "Warning", tr( "Cannot start command shell (%1)" ).arg( getenv( "COMSPEC" ) ) );
     }
+    qputenv( "PATH", origPath );
+    qputenv( "PYTHONPATH", origPythonPath );
     return;
 #else
 
