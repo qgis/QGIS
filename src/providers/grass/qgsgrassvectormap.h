@@ -54,6 +54,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     bool isValid() const { return mValid; }
     bool isFrozen() const { return mFrozen; }
     bool isEdited() const { return mIsEdited; }
+    bool isOpen() const { return mOpen; }
     int version() const { return mVersion; }
     int oldNumLines() const { return mOldNumLines; }
     // number of instances using this map

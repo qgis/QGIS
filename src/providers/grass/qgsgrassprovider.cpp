@@ -489,9 +489,9 @@ QVariant QgsGrassProvider::maxValue( int index )
 
 bool QgsGrassProvider::isValid()
 {
-  QgsDebugMsg( QString( "returned: %1" ).arg( mValid ) );
-
-  return mValid && mLayer && mLayer->map() && mLayer->map()->map();
+  bool valid = mValid && mLayer && mLayer->map() && mLayer->map()->map();
+  QgsDebugMsg( QString( "valid = %1" ).arg( valid ) );
+  return valid;
 }
 
 QgsCoordinateReferenceSystem QgsGrassProvider::crs()

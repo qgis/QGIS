@@ -93,7 +93,7 @@ bool QgsGrassVectorMap::open()
 void QgsGrassVectorMap::close()
 {
   QgsDebugMsg( toString() );
-  if ( mOpen )
+  if ( !mOpen )
   {
     QgsDebugMsg( "is not open" );
     return;
@@ -738,8 +738,12 @@ QgsGrassVectorMap * QgsGrassVectorMapStore::openMap( const QgsGrassObject & gras
   {
     if ( m->grassObject() == grassObject )
     {
-      QgsDebugMsg( "The map is already open" );
+      QgsDebugMsg( "The map already exists" );
       map = m;
+      if ( !map->isOpen() )
+      {
+        map->open();
+      }
     }
   }
 
