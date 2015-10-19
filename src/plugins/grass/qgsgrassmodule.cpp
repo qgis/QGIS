@@ -352,7 +352,7 @@ QPixmap QgsGrassModule::pixmap( QString path, int height )
 {
   //QgsDebugMsg( QString( "path = %1" ).arg( path ) );
 
-  std::vector<QPixmap> pixmaps;
+  QList<QPixmap> pixmaps;
 
   // Create vector of available pictures
   int cnt = 1;
@@ -383,7 +383,7 @@ QPixmap QgsGrassModule::pixmap( QString path, int height )
       pic.render( &painter );
       painter.end();
 
-      pixmaps.push_back( pixmap );
+      pixmaps << pixmap;
     }
     else // PNG
     {
@@ -410,9 +410,14 @@ QPixmap QgsGrassModule::pixmap( QString path, int height )
     cnt++;
   }
 
+  if ( pixmaps.isEmpty() )
+  {
+    return QPixmap();
+  }
+
   // Get total width
   int width = 0;
-  for ( unsigned int i = 0; i < pixmaps.size(); i++ )
+  for ( int i = 0; i < pixmaps.size(); i++ )
   {
     width += pixmaps[i].width();
   }
@@ -514,7 +519,7 @@ QPixmap QgsGrassModule::pixmap( QString path, int height )
   painter.setRenderHint( QPainter::Antialiasing );
 
   int pos = 0;
-  for ( unsigned int i = 0; i < pixmaps.size(); i++ )
+  for ( int i = 0; i < pixmaps.size(); i++ )
   {
     if ( i == 1 && pixmaps.size() == 3 )   // +
     {
