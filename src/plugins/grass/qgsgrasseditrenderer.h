@@ -27,20 +27,6 @@
 class QgsGrassEditRenderer : public QgsFeatureRendererV2
 {
   public:
-    enum TopoSymbol
-    {
-      TopoPoint,
-      TopoLine,
-      TopoBoundary0,
-      TopoBoundary1,
-      TopoBoundary2,
-      TopoCentroidIn,
-      TopoCentroidOut,
-      TopoCentroidDupl,
-      TopoNode0,
-      TopoNode1,
-      TopoNode2
-    };
 
     QgsGrassEditRenderer( );
 

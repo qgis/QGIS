@@ -126,6 +126,8 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
     // Start editing tools
     void addFeature();
 
+    void onSplitFeaturesTriggered( bool checked );
+
     // Called when new layer was created in browser
     void onNewLayer( QString uri, QString name );
 

@@ -57,6 +57,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     Q_OBJECT
 
   public:
+    static int LAST_TYPE;
 
     QgsGrassProvider( QString uri = QString() );
 
@@ -470,6 +471,9 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     // points and cats used only for editing
     struct line_pnts *mPoints;
     struct line_cats *mCats;
+
+    // last geometry GV_* type, used e.g. for splitting features
+    int mLastType;
 
     friend class QgsGrassFeatureSource;
     friend class QgsGrassFeatureIterator;

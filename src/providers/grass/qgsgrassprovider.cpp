@@ -102,6 +102,8 @@ Vect_delete_line_function_type *Vect_delete_line_function_pointer = ( Vect_delet
 
 static QString GRASS_KEY = "grass";
 
+int QgsGrassProvider::LAST_TYPE = -9999;
+
 QgsGrassProvider::QgsGrassProvider( QString uri )
     : QgsVectorDataProvider( uri )
     , mLayerField( -1 )
@@ -116,6 +118,7 @@ QgsGrassProvider::QgsGrassProvider( QString uri )
     , mNewFeatureType( 0 )
     , mPoints( 0 )
     , mCats( 0 )
+    , mLastType( 0 )
 {
   QgsDebugMsg( "uri = " + uri );
 
@@ -1192,7 +1195,15 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
 
   if ( FID_IS_NEW( fid ) )
   {
-    type = mNewFeatureType == GV_AREA ? GV_BOUNDARY : mNewFeatureType;
+    if ( mNewFeatureType == QgsGrassProvider::LAST_TYPE )
+    {
+      type = mLastType;
+      QgsDebugMsg( QString( "use mLastType = %1" ).arg( mLastType ) );
+    }
+    else
+    {
+      type = mNewFeatureType == GV_AREA ? GV_BOUNDARY : mNewFeatureType;
+    }
     // geometry
     const QgsAbstractGeometryV2 *geometry = 0;
     if ( !mEditBuffer->addedFeatures().contains( fid ) )
@@ -1598,6 +1609,7 @@ void QgsGrassProvider::onGeometryChanged( QgsFeatureId fid, QgsGeometry &geom )
   {
     return;
   }
+  mLastType = type;
 
   // store only the first original geometry if it is not new feature, changed geometries are stored in the buffer
   if ( oldLid > 0 && !mLayer->map()->oldGeometries().contains( oldLid ) )
@@ -1814,7 +1826,9 @@ void QgsGrassProvider::setAddedFeaturesSymbol()
     }
     QgsDebugMsg( QString( "fid = %1 lid = %2 realLid = %3" ).arg( fid ).arg( lid ).arg( realLid ) );
     QgsGrassVectorMap::TopoSymbol symbol = mLayer->map()->topoSymbol( realLid );
-    feature.setAttribute( QgsGrassVectorMap::topoSymbolFieldName(), symbol );
+    // the feature may be without fields and set attribute by name does not work
+    int index = mLayer->fields().indexFromName( QgsGrassVectorMap::topoSymbolFieldName() );
+    feature.setAttribute( index, symbol );
     features[fid] = feature;
   }
 }

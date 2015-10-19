@@ -257,6 +257,8 @@ void QgsGrassPlugin::initGui()
   mAddArea = new QgsGrassAddFeature( qGisInterface->mapCanvas(), QgsMapToolAdvancedDigitizing::CapturePolygon );
   mAddArea->setAction( mAddAreaAction );
 
+  connect( qGisInterface->actionSplitFeatures(), SIGNAL( triggered( bool ) ), SLOT( onSplitFeaturesTriggered( bool ) ) );
+
   // Connect project
   QWidget* qgis = qGisInterface->mainWindow();
   connect( qgis, SIGNAL( projectRead() ), this, SLOT( projectRead() ) );
@@ -521,6 +523,26 @@ void QgsGrassPlugin::addFeature()
     formSuppress = QgsVectorLayer::SuppressOn;
   }
   vectorLayer->setFeatureFormSuppress( formSuppress );
+}
+
+void QgsGrassPlugin::onSplitFeaturesTriggered( bool checked )
+{
+  QgsDebugMsg( "entered" );
+  if ( checked )
+  {
+    QgsGrassProvider* grassProvider = 0;
+    QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( qGisInterface->activeLayer() );
+    if ( vectorLayer )
+    {
+      grassProvider = dynamic_cast<QgsGrassProvider*>( vectorLayer->dataProvider() );
+    }
+    if ( !grassProvider )
+    {
+      QgsDebugMsg( "grassProvider is null" );
+      return;
+    }
+    grassProvider->setNewFeatureType( QgsGrassProvider::LAST_TYPE );
+  }
 }
 
 void QgsGrassPlugin::mapsetChanged()
