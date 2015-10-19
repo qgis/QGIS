@@ -586,8 +586,6 @@ QgsAttributes QgsMergeAttributesDialog::mergedAttributes() const
     return QgsAttributes();
   }
 
-  QgsFields fields = mVectorLayer->fields();
-
   QgsAttributes results( mTableWidget->columnCount() );
   for ( int i = 0; i < mTableWidget->columnCount(); i++ )
   {
@@ -604,7 +602,7 @@ QgsAttributes QgsMergeAttributesDialog::mergedAttributes() const
     if ( idx >= results.count() )
       results.resize( idx + 1 ); // make sure the results vector is long enough (maybe not necessary)
 
-    if ( comboBox->itemData( comboBox->currentIndex() ) != "skip" )
+    if ( comboBox->itemData( comboBox->currentIndex() ).toString() != "skip" )
     {
       results[idx] = currentItem->data( Qt::DisplayRole );
     }
@@ -615,4 +613,26 @@ QgsAttributes QgsMergeAttributesDialog::mergedAttributes() const
   }
 
   return results;
+}
+
+QSet<int> QgsMergeAttributesDialog::skippedAttributeIndexes() const
+{
+  QSet<int> skipped;
+  for ( int i = 0; i < mTableWidget->columnCount(); ++i )
+  {
+    QComboBox *comboBox = qobject_cast<QComboBox *>( mTableWidget->cellWidget( 0, i ) );
+    if ( !comboBox )
+    {
+      //something went wrong, better skip this attribute
+      skipped << i;
+      continue;
+    }
+
+    if ( comboBox->itemData( comboBox->currentIndex() ).toString() == "skip" )
+    {
+      skipped << i;
+    }
+  }
+
+  return skipped;
 }

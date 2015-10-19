@@ -37,6 +37,11 @@ class APP_EXPORT QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeA
     ~QgsMergeAttributesDialog();
     QgsAttributes mergedAttributes() const;
 
+    /** Returns a list of attribute indexes which should be skipped when merging (eg, attributes
+     * which have been set to "skip"
+     */
+    QSet<int> skippedAttributeIndexes() const;
+
   private slots:
     void comboValueChanged( const QString & text );
     void selectedRowChanged();

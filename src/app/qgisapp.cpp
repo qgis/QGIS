@@ -6150,11 +6150,15 @@ void QgisApp::mergeAttributesOfSelectedFeatures()
   vl->beginEditCommand( tr( "Merged feature attributes" ) );
 
   QgsAttributes merged = d.mergedAttributes();
+  QSet<int> toSkip = d.skippedAttributeIndexes();
 
   Q_FOREACH ( QgsFeatureId fid, vl->selectedFeaturesIds() )
   {
     for ( int i = 0; i < merged.count(); ++i )
     {
+      if ( toSkip.contains( i ) )
+        continue;
+
       vl->changeAttributeValue( fid, i, merged.at( i ) );
     }
   }
