@@ -398,7 +398,10 @@ bool QgsGrassMapsetItem::objectInImports( QgsGrassObject grassObject )
     }
     if ( import->names().contains( grassObject.name() ) )
     {
-      return true;
+      return true;  if ( !QgsGrass::isOwner( mGrassObject.gisdbase(), mGrassObject.location(), mGrassObject.mapset() ) )
+      {
+        return false;
+      }
     }
   }
   return false;
@@ -601,6 +604,11 @@ QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
   }
 
   return items;
+}
+
+bool QgsGrassMapsetItem::acceptDrop()
+{
+  return QgsGrass::isOwner( mGrassObject.gisdbase(), mGrassObject.location(), mGrassObject.mapset() );
 }
 
 bool QgsGrassMapsetItem::handleDrop( const QMimeData * data, Qt::DropAction )
