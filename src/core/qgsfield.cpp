@@ -16,6 +16,7 @@
 
 #include "qgsfield.h"
 #include "qgsfield_p.h"
+#include "qgis.h"
 
 #include <QSettings>
 #include <QDataStream>
@@ -153,6 +154,30 @@ bool QgsField::convertCompatible( QVariant& v ) const
   {
     v = QVariant( d->type );
     return false;
+  }
+
+  //String representations of doubles in QVariant will return false to convert( QVariant::Int )
+  //work around this by first converting to double, and then checking whether the double is convertible to int
+  if ( d->type == QVariant::Int && v.canConvert( QVariant::Double ) )
+  {
+    bool ok = false;
+    double dbl = v.toDouble( &ok );
+    if ( !ok )
+    {
+      //couldn't convert to number
+      v = QVariant( d->type );
+      return false;
+    }
+
+    double round = qgsRound( dbl );
+    if ( round  > INT_MAX || round < -INT_MAX )
+    {
+      //double too large to fit in int
+      v = QVariant( d->type );
+      return false;
+    }
+    v = QVariant( qRound( dbl ) );
+    return true;
   }
 
   if ( !v.convert( d->type ) )

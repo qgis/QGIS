@@ -256,12 +256,52 @@ void TestQgsField::convertCompatible()
 
   //test special rules
 
-  //conversion of longlong to int
+  //conversion of double to int
   QgsField intField( "int", QVariant::Int, "int" );
+  //small double, should be rounded
+  QVariant smallDouble( 45.7 );
+  QVERIFY( intField.convertCompatible( smallDouble ) );
+  QCOMPARE( smallDouble.type(), QVariant::Int );
+  QCOMPARE( smallDouble, QVariant( 46 ) );
+  QVariant negativeSmallDouble( -9345.754534525235235 );
+  QVERIFY( intField.convertCompatible( negativeSmallDouble ) );
+  QCOMPARE( negativeSmallDouble.type(), QVariant::Int );
+  QCOMPARE( negativeSmallDouble, QVariant( -9346 ) );
+  //large double, cannot be converted
+  QVariant largeDouble( 9999999999.99 );
+  QVERIFY( !intField.convertCompatible( largeDouble ) );
+  QCOMPARE( largeDouble.type(), QVariant::Int );
+  QVERIFY( largeDouble.isNull( ) );
+
+  //conversion of string double value to int
+  QVariant notNumberString( "notanumber" );
+  QVERIFY( !intField.convertCompatible( notNumberString ) );
+  QCOMPARE( notNumberString.type(), QVariant::Int );
+  QVERIFY( notNumberString.isNull( ) );
+  //small double, should be rounded
+  QVariant smallDoubleString( "45.7" );
+  QVERIFY( intField.convertCompatible( smallDoubleString ) );
+  QCOMPARE( smallDoubleString.type(), QVariant::Int );
+  QCOMPARE( smallDoubleString, QVariant( 46 ) );
+  QVariant negativeSmallDoubleString( "-9345.754534525235235" );
+  QVERIFY( intField.convertCompatible( negativeSmallDoubleString ) );
+  QCOMPARE( negativeSmallDoubleString.type(), QVariant::Int );
+  QCOMPARE( negativeSmallDoubleString, QVariant( -9346 ) );
+  //large double, cannot be converted
+  QVariant largeDoubleString( "9999999999.99" );
+  QVERIFY( !intField.convertCompatible( largeDoubleString ) );
+  QCOMPARE( largeDoubleString.type(), QVariant::Int );
+  QVERIFY( largeDoubleString.isNull( ) );
+
+  //conversion of longlong to int
   QVariant longlong( 99999999999999999LL );
   QVERIFY( !intField.convertCompatible( longlong ) );
   QCOMPARE( longlong.type(), QVariant::Int );
   QVERIFY( longlong.isNull( ) );
+  QVariant smallLonglong( 99LL );
+  QVERIFY( intField.convertCompatible( smallLonglong ) );
+  QCOMPARE( smallLonglong.type(), QVariant::Int );
+  QCOMPARE( smallLonglong, QVariant( 99 ) );
   //conversion of longlong to longlong field
   QgsField longlongField( "long", QVariant::LongLong, "longlong" );
   longlong = QVariant( 99999999999999999LL );
