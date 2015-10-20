@@ -588,9 +588,6 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       // catalog doesn't exist in postgresql so we ignore that, but we
       // do need to get the geometry type.
 
-      // Make the assumption that the geometry type for the first
-      // row is the same as for all other rows.
-
       QString tableName  = result.PQgetvalue( i, 0 ); // relname
       QString schemaName = result.PQgetvalue( i, 1 ); // nspname
       QString column     = result.PQgetvalue( i, 2 ); // attname
@@ -601,8 +598,8 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
 
       //QgsDebugMsg( QString( "%1.%2.%3: %4" ).arg( schemaName ).arg( tableName ).arg( column ).arg( relkind ) );
 
-      layerProperty.types.clear();
-      layerProperty.srids.clear();
+      layerProperty.types = QList<QGis::WkbType>() << QGis::WKBUnknown;
+      layerProperty.srids = QList<int>() << INT_MIN;
       layerProperty.schemaName = schemaName;
       layerProperty.tableName = tableName;
       layerProperty.geometryColName = column;
