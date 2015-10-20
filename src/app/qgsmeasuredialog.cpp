@@ -135,8 +135,11 @@ void QgsMeasureDialog::mouseMove( QgsPoint &point )
 
     // Set moving
     QTreeWidgetItem *item = mTable->topLevelItem( mTable->topLevelItemCount() - 1 );
-    item->setText( 0, QLocale::system().toString( d, 'f', mDecimalPlaces ) );
-    QgsDebugMsg( QString( "Final result is %1" ).arg( item->text( 0 ) ) );
+    if ( item )
+    {
+      item->setText( 0, QLocale::system().toString( d, 'f', mDecimalPlaces ) );
+      QgsDebugMsg( QString( "Final result is %1" ).arg( item->text( 0 ) ) );
+    }
   }
 }
 
