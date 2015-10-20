@@ -1258,7 +1258,8 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
       // resetting fid probably is not possible because it is stored in undo commands and used in buffer maps
 
       // It may be that user manualy entered cat value
-      const QgsFeature &feature = mEditBuffer->addedFeatures()[fid];
+      QgsFeatureMap& addedFeatures = const_cast<QgsFeatureMap&>( mEditBuffer->addedFeatures() );
+      QgsFeature& feature = addedFeatures[fid];
       int catIndex = feature.fields()->indexFromName( mLayer->keyColumnName() );
       if ( catIndex != -1 )
       {
@@ -1298,7 +1299,6 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
         mLayer->updateAttributes( newCat, feature, error ); // also updates feature by existing non null attributes
 
         // There may be other new features with the same cat which we have to update
-        QgsFeatureMap& addedFeatures = const_cast<QgsFeatureMap&>( mEditBuffer->addedFeatures() );
         Q_FOREACH ( QgsFeatureId addedFid, addedFeatures.keys() )
         {
           if ( addedFid == fid )

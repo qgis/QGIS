@@ -902,7 +902,7 @@ void QgsGrassVectorMapLayer::reinsertAttributes( int cat, QString &error )
   }
 }
 
-void QgsGrassVectorMapLayer::updateAttributes( int cat, const QgsFeature &feature, QString &error, bool nullValues )
+void QgsGrassVectorMapLayer::updateAttributes( int cat, QgsFeature &feature, QString &error, bool nullValues )
 {
   QgsDebugMsg( QString( "mField = %1 cat = %2" ).arg( mField ).arg( cat ) );
 
@@ -936,7 +936,7 @@ void QgsGrassVectorMapLayer::updateAttributes( int cat, const QgsFeature &featur
       // update feature null values by existing values
       if ( cacheIndex != -1 )
       {
-        feature.attributes()[i] = mAttributes[cat][cacheIndex];
+        feature.setAttribute( i, mAttributes[cat][cacheIndex] );
       }
       continue;
     }

@@ -120,7 +120,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapLayer : public QObject
      *  @param cat
      *  @param nullValues override all values, if false, only non empty values are used for update
      */
-    void updateAttributes( int cat, const QgsFeature &feature, QString &error, bool nullValues = false );
+    void updateAttributes( int cat, QgsFeature &feature, QString &error, bool nullValues = false );
 
     /** Delete attributes from the table
      *   @param cat
