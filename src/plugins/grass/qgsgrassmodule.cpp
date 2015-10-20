@@ -630,13 +630,15 @@ void QgsGrassModule::run()
         if ( ret == QMessageBox::Cancel )
           return;
 
-        // r.mapcalc does not use standard parser
-        if ( typeid( *mOptions ) != typeid( QgsGrassMapcalc ) )
+#if GRASS_VERSION_MAJOR < 7
+        // r.mapcalc does not use standard parser (does not accept --o) in GRASS 6
+        if ( mXName != "r.mapcalc" )
         {
           arguments.append( "--o" );
-          //mProcess.addArgument( "--o" );
-          //command.append ( " --o" );
         }
+#else
+        arguments.append( "--o" );
+#endif
       }
     }
 
@@ -649,6 +651,7 @@ void QgsGrassModule::run()
     mViewButton->setEnabled( false );
 
     QStringList list = mOptions->arguments();
+    list << arguments;
 
     QStringList argumentsHtml;
     for ( QStringList::Iterator it = list.begin(); it != list.end(); ++it )

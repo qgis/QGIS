@@ -1486,6 +1486,7 @@ QStringList QgsGrass::grassObjects( const QgsGrassObject& mapsetObject, QgsGrass
   }
   else if ( type == QgsGrassObject::Strds || type == QgsGrassObject::Stvds || type == QgsGrassObject::Str3ds )
   {
+#if GRASS_VERSION_MAJOR >= 7
     QString cmd =  gisbase() + "/scripts/t.list";
     QStringList arguments;
 
@@ -1515,6 +1516,7 @@ QStringList QgsGrass::grassObjects( const QgsGrassObject& mapsetObject, QgsGrass
         }
       }
     }
+#endif
   }
   else
   {

@@ -119,7 +119,9 @@ void QgsGrassModuleInputModel::onDirectoryChanged( const QString & path )
       watch( path + "/" + watchedDir );
     }
     // TODO: use db path defined in mapset VAR
+#if GRASS_VERSION_MAJOR >= 7
     watch( path + "/tgis/sqlite.db" );
+#endif
   }
   else // cellhd or vector dir
   {
@@ -209,7 +211,9 @@ void QgsGrassModuleInputModel::refreshMapset( QStandardItem *mapsetItem, const Q
   if ( types.isEmpty() )
   {
     types << QgsGrassObject::Raster << QgsGrassObject::Vector;
+#if GRASS_VERSION_MAJOR >= 7
     types << QgsGrassObject::Strds << QgsGrassObject::Stvds << QgsGrassObject::Str3ds;
+#endif
   }
   Q_FOREACH ( QgsGrassObject::Type type, types )
   {
@@ -304,7 +308,9 @@ void QgsGrassModuleInputModel::reload()
     {
       watch( dirPath + "/" + watchedDir );
     }
+#if GRASS_VERSION_MAJOR >= 7
     watch( dirPath + "/tgis/sqlite.db" );
+#endif
   }
 }
 

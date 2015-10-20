@@ -274,7 +274,7 @@ void QgsGrassTools::runModule( QString name, bool direct )
 #ifdef Q_OS_WIN
     QgsGrass::putEnv( "GRASS_HTML_BROWSER", QgsGrassUtils::htmlBrowserPath() );
     QStringList env;
-    QByteArray origPath = qgetenv( "PATH" ); 
+    QByteArray origPath = qgetenv( "PATH" );
     QByteArray origPythonPath = qgetenv( "PYTHONPATH" );
     QString path = QString( origPath ) + QgsGrass::pathSeparator() + QgsGrass::grassModulesPaths().join( QgsGrass::pathSeparator() );
     QString pythonPath = QString( origPythonPath ) + QgsGrass::pathSeparator() + QgsGrass::getPythonPath();
@@ -303,7 +303,10 @@ void QgsGrassTools::runModule( QString name, bool direct )
   }
   else
   {
+    // set wait cursor because starting module may be slow because of getting temporal datasets (t.list)
+    QApplication::setOverrideCursor( Qt::WaitCursor );
     QgsGrassModule *gmod = new QgsGrassModule( this, name, mIface, direct, mTabWidget );
+    QApplication::restoreOverrideCursor();
     if ( !gmod->errors().isEmpty() )
     {
       QgsGrass::warning( gmod->errors().join( "\n" ) );
@@ -332,7 +335,6 @@ void QgsGrassTools::runModule( QString name, bool direct )
 
   // We must call resize to reset COLUMNS environment variable
   // used by bash !!!
-
 #if 0
   /* TODO: Implement something that resizes the terminal without
    *       crashes.
