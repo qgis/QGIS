@@ -125,3 +125,13 @@ void QgsAttributeDialog::init( QgsVectorLayer* layer, QgsFeature* feature, const
   restoreGeometry();
   focusNextChild();
 }
+
+bool QgsAttributeDialog::event( QEvent* e )
+{
+  if ( e->type() == QEvent::WindowActivate && mHighlight )
+    mHighlight->show();
+  else if ( e->type() == QEvent::WindowDeactivate && mHighlight )
+    mHighlight->hide();
+
+  return QDialog::event( e );
+}
