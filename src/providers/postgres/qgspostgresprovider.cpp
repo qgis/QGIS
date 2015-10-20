@@ -284,7 +284,12 @@ QString QgsPostgresProvider::storageType() const
 #if QT_VERSION < 0x050000
 static bool operator<( const QVariant &a, const QVariant &b )
 {
-  if ( a.isNull() || b.isNull() )
+  // invalid < NULL < any value
+  if ( !a.isValid() )
+    return b.isValid();
+  else if ( a.isNull() )
+    return b.isValid() && !b.isNull();
+  else if ( !b.isValid() || b.isNull() )
     return false;
 
   if ( a.type() == b.type() )
@@ -303,11 +308,11 @@ static bool operator<( const QVariant &a, const QVariant &b )
 
       case QVariant::List:
       {
-        QList<QVariant> al = a.toList();
-        QList<QVariant> bl = b.toList();
+        const QList<QVariant> &al = a.toList();
+        const QList<QVariant> &bl = b.toList();
 
         int i, n = qMin( al.size(), bl.size() );
-        for ( i = 0; i < n && al[i] == bl[i]; i++ )
+        for ( i = 0; i < n && al[i].type() == bl[i].type() && al[i].isNull() == bl[i].isNull() && al[i] == bl[i]; i++ )
           ;
 
         if ( i == n )
@@ -319,8 +324,8 @@ static bool operator<( const QVariant &a, const QVariant &b )
 
       case QVariant::StringList:
       {
-        QStringList al = a.toStringList();
-        QStringList bl = b.toStringList();
+        const QStringList &al = a.toStringList();
+        const QStringList &bl = b.toStringList();
 
         int i, n = qMin( al.size(), bl.size() );
         for ( i = 0; i < n && al[i] == bl[i]; i++ )
@@ -516,7 +521,12 @@ QString QgsPostgresUtils::whereClause( QgsFeatureId featureId, const QgsFields& 
           int idx = pkAttrs[i];
           const QgsField &fld = fields[ idx ];
 
-          whereClause += delim + QString( "%1=%2" ).arg( conn->fieldExpression( fld ), QgsPostgresConn::quotedValue( pkVals[i].toString() ) );
+          whereClause += delim + conn->fieldExpression( fld );
+          if ( pkVals[i].isNull() )
+            whereClause += " IS NULL";
+          else
+            whereClause += "=" + QgsPostgresConn::quotedValue( pkVals[i].toString() );
+
           delim = " AND ";
         }
       }
