@@ -159,6 +159,9 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapLayer : public QObject
     // update fields to real state
     void updateFields();
 
+    // for debug only
+    void printCachedAttributes();
+
   private:
     QString quotedValue( QVariant value );
     dbDriver * openDriver( QString &error );

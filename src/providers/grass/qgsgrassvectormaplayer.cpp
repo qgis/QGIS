@@ -696,12 +696,14 @@ void QgsGrassVectorMapLayer::addColumn( const QgsField &field, QString &error )
       {
         // the column is already in attributes (delete column undo)
         QgsDebugMsg( "insert old values" );
+        printCachedAttributes();
         QStringList errors;
         Q_FOREACH ( int cat, mAttributes.keys() )
         {
           QVariant value = mAttributes.value( cat ).value( index );
           QString valueString = quotedValue( value );
-          QString query = QString( "UPDATE %1 SET %2 = %3" ).arg( mFieldInfo->table, field.name(), valueString );
+          QString query = QString( "UPDATE %1 SET %2 = %3 WHERE %4 = %5" )
+                          .arg( mFieldInfo->table ).arg( field.name() ).arg( valueString ).arg( keyColumnName() ).arg( cat );
           QString err;
           executeSql( query, err );
           if ( !err.isEmpty() )
@@ -856,6 +858,7 @@ void QgsGrassVectorMapLayer::insertAttributes( int cat, const QgsFeature &featur
     }
     mAttributes[cat] = values;
   }
+  printCachedAttributes();
 }
 
 void QgsGrassVectorMapLayer::reinsertAttributes( int cat, QString &error )
@@ -902,10 +905,12 @@ void QgsGrassVectorMapLayer::reinsertAttributes( int cat, QString &error )
   {
     QgsDebugMsg( "cat not found in mAttributes -> don't restore" );
   }
+  printCachedAttributes();
 }
 
 void QgsGrassVectorMapLayer::updateAttributes( int cat, QgsFeature &feature, QString &error, bool nullValues )
 {
+  Q_UNUSED( nullValues )
   QgsDebugMsg( QString( "mField = %1 cat = %2" ).arg( mField ).arg( cat ) );
 
   if ( !mHasTable )
@@ -933,6 +938,8 @@ void QgsGrassVectorMapLayer::updateAttributes( int cat, QgsFeature &feature, QSt
 
     int cacheIndex = mAttributeFields.indexFromName( name );
 
+    // Merging old and new attributes currently not allowed (entering changing cat)
+#if 0
     if ( valueVariant.isNull() && !nullValues )
     {
       // update feature null values by existing values
@@ -942,6 +949,7 @@ void QgsGrassVectorMapLayer::updateAttributes( int cat, QgsFeature &feature, QSt
       }
       continue;
     }
+#endif
 
     updates << name + " = " + quotedValue( valueVariant );
 
@@ -973,6 +981,7 @@ void QgsGrassVectorMapLayer::updateAttributes( int cat, QgsFeature &feature, QSt
       mAttributes[cat][index] = cacheUpdates[index];
     }
   }
+  printCachedAttributes();
 }
 
 void QgsGrassVectorMapLayer::deleteAttribute( int cat, QString &error )
@@ -1123,4 +1132,28 @@ void QgsGrassVectorMapLayer::changeAttributeValue( int cat, QgsField field, QVar
     return;
   }
   mAttributes[cat][index] = value;
+  printCachedAttributes();
+}
+
+void QgsGrassVectorMapLayer::printCachedAttributes()
+{
+#ifdef QGISDEBUG
+  QgsDebugMsgLevel( QString( "mAttributes.size() = %1" ).arg( mAttributes.size() ), 4 );
+  QStringList names;
+  for ( int i = 0; i < mAttributeFields.size(); i++ )
+  {
+    names << mAttributeFields[i].name();
+  }
+  QgsDebugMsgLevel( names.join( "|" ), 4 );
+
+  Q_FOREACH ( int cat, mAttributes.keys() )
+  {
+    QStringList values;
+    for ( int i = 0; i <  mAttributes.value( cat ).size(); i++ )
+    {
+      values << mAttributes.value( cat ).value( i ).toString();
+    }
+    QgsDebugMsgLevel( QString( "cat = %1 : %2" ).arg( cat ).arg( values.join( "|" ) ), 4 );
+  }
+#endif
 }
