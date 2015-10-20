@@ -1,0 +1,13 @@
+SAGA Wetness Index
+ta_hydrology
+ParameterRaster|DEM|Elevation|False
+ParameterNumber|SUCTION|Suction|0.0|None|10.0
+ParameterSelection|AREA_TYPE|Type of Area|[0] absolute catchment area;[1] square root of catchment area;[2] specific catchment area
+ParameterSelection|SLOPE_TYPE|Type of Slope|[0] local slope;[1] catchment slope
+ParameterNumber|SLOPE_MIN|Suction|0.0|None|0.0
+ParameterNumber|SLOPE_OFF|Suction|0.0|None|0.1
+ParameterNumber|SLOPE_WEIGHT|Suction|0.0|None|1.0
+OutputRaster|AREA|Catchment area
+OutputRaster|SLOPE|Catchment slope
+OutputRaster|AREA_MOD|Modified catchment area
+OutputRaster|TWI|Topographic Wetness Index
