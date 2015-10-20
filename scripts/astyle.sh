@@ -112,14 +112,12 @@ for f in "$@"; do
 		continue
 	fi
 
-	flip -ub "$f"
-	eval "$cmd '$f'"
 	if [[ -f $f && `head -c 3 $f` == $'\xef\xbb\xbf' ]]; then
 		mv $f $f.bom
 		tail -c +4 $f.bom > $f
 		echo "removed BOM from $f"
 	fi
 
-	#qgsloggermig.pl "$f"
+	flip -ub "$f"
 	eval "$cmd '$f'"
 done
