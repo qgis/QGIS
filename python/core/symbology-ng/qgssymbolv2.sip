@@ -10,10 +10,10 @@ class QgsSymbolV2
 %ConvertToSubClassCode
   switch (sipCpp->type())
   {
-    case QgsSymbolV2::Marker: sipClass = sipClass_QgsMarkerSymbolV2; break;
-    case QgsSymbolV2::Line: sipClass = sipClass_QgsLineSymbolV2; break;
-    case QgsSymbolV2::Fill: sipClass = sipClass_QgsFillSymbolV2; break;
-    default: sipClass = 0; break;
+    case QgsSymbolV2::Marker: sipType = sipType_QgsMarkerSymbolV2; break;
+    case QgsSymbolV2::Line: sipType = sipType_QgsLineSymbolV2; break;
+    case QgsSymbolV2::Fill: sipType = sipType_QgsFillSymbolV2; break;
+    default: sipType = 0; break;
   }
 %End
 

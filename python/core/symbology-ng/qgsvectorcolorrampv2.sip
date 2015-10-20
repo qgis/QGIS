@@ -6,17 +6,17 @@ class QgsVectorColorRampV2
 
 %ConvertToSubClassCode
   if (sipCpp->type() == "gradient")
-    sipClass = sipClass_QgsVectorGradientColorRampV2;
+    sipType = sipType_QgsVectorGradientColorRampV2;
   else if (sipCpp->type() == "random")
-    sipClass = sipClass_QgsVectorRandomColorRampV2;
+    sipType = sipType_QgsVectorRandomColorRampV2;
   else if (sipCpp->type() == "randomcolors")
-    sipClass = sipClass_QgsRandomColorsV2;
+    sipType = sipType_QgsRandomColorsV2;
   else if (sipCpp->type() == "colorbrewer")
-    sipClass = sipClass_QgsVectorColorBrewerColorRampV2;
+    sipType = sipType_QgsVectorColorBrewerColorRampV2;
   else if (sipCpp->type() == "cpt-city")
-    sipClass = sipClass_QgsCptCityColorRampV2;
+    sipType = sipType_QgsCptCityColorRampV2;
   else
-    sipClass = 0;
+    sipType = 0;
 %End
 
   public:

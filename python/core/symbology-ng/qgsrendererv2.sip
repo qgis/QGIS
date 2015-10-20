@@ -36,21 +36,21 @@ class QgsFeatureRendererV2
 
 %ConvertToSubClassCode
   if (sipCpp->type() == "singleSymbol")
-    sipClass = sipClass_QgsSingleSymbolRendererV2;
+    sipType = sipType_QgsSingleSymbolRendererV2;
   else if (sipCpp->type() == "categorizedSymbol")
-    sipClass = sipClass_QgsCategorizedSymbolRendererV2;
+    sipType = sipType_QgsCategorizedSymbolRendererV2;
   else if (sipCpp->type() == "graduatedSymbol")
-    sipClass = sipClass_QgsGraduatedSymbolRendererV2;
+    sipType = sipType_QgsGraduatedSymbolRendererV2;
   else if (sipCpp->type() == "RuleRenderer")
-    sipClass = sipClass_QgsRuleBasedRendererV2;
+    sipType = sipType_QgsRuleBasedRendererV2;
   else if (sipCpp->type() == "heatmapRenderer")
-    sipClass = sipClass_QgsHeatmapRenderer;
+    sipType = sipType_QgsHeatmapRenderer;
   else if (sipCpp->type() == "invertedPolygonRenderer")
-    sipClass = sipClass_QgsInvertedPolygonRenderer;
+    sipType = sipType_QgsInvertedPolygonRenderer;
   else if (sipCpp->type() == "pointDisplacement")
-    sipClass = sipClass_QgsPointDisplacementRenderer;
+    sipType = sipType_QgsPointDisplacementRenderer;
   else
-    sipClass = 0;
+    sipType = 0;
 %End
 
   public:

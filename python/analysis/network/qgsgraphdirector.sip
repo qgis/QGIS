@@ -15,9 +15,9 @@ class QgsGraphDirector : QObject
 
 %ConvertToSubClassCode
   if ( dynamic_cast< QgsLineVectorLayerDirector* > ( sipCpp ) != NULL )
-    sipClass = sipClass_QgsLineVectorLayerDirector;
+    sipType = sipType_QgsLineVectorLayerDirector;
   else
-    sipClass = NULL;
+    sipType = NULL;
 %End
 
 

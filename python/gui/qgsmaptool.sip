@@ -19,15 +19,15 @@ class QgsMapTool : QObject
 
 %ConvertToSubClassCode
   if (dynamic_cast<QgsMapToolZoom*>(sipCpp) != NULL)
-    sipClass = sipClass_QgsMapToolZoom;
+    sipType = sipType_QgsMapToolZoom;
   else if (dynamic_cast<QgsMapToolPan*>(sipCpp) != NULL)
-    sipClass = sipClass_QgsMapToolPan;
+    sipType = sipType_QgsMapToolPan;
   else if (dynamic_cast<QgsMapToolEmitPoint*>(sipCpp) != NULL)
-    sipClass = sipClass_QgsMapToolEmitPoint;
+    sipType = sipType_QgsMapToolEmitPoint;
   else if (dynamic_cast<QgsMapToolIdentify*>(sipCpp) != NULL)
-    sipClass = sipClass_QgsMapToolIdentify;
+    sipType = sipType_QgsMapToolIdentify;
   else
-    sipClass = NULL;
+    sipType = NULL;
 %End
 
   public:
