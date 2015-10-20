@@ -6154,6 +6154,7 @@ void QgisApp::mergeAttributesOfSelectedFeatures()
   QgsAttributes merged = d.mergedAttributes();
   QSet<int> toSkip = d.skippedAttributeIndexes();
 
+  bool firstFeature = true;
   Q_FOREACH ( QgsFeatureId fid, vl->selectedFeaturesIds() )
   {
     for ( int i = 0; i < merged.count(); ++i )
@@ -6161,8 +6162,25 @@ void QgisApp::mergeAttributesOfSelectedFeatures()
       if ( toSkip.contains( i ) )
         continue;
 
-      vl->changeAttributeValue( fid, i, merged.at( i ) );
+      QVariant val = merged.at( i );
+      // convert to destination data type
+      if ( ! vl->fields()[i].convertCompatible( val ) )
+      {
+        if ( firstFeature )
+        {
+          //only warn on first feature
+          messageBar()->pushMessage(
+            tr( "Invalid result" ),
+            tr( "Could not store value '%1' in field of type %2" ).arg( merged.at( i ).toString(), vl->fields()[i].typeName() ),
+            QgsMessageBar::WARNING );
+        }
+      }
+      else
+      {
+        vl->changeAttributeValue( fid, i, val );
+      }
     }
+    firstFeature = false;
   }
 
   vl->endEditCommand();
@@ -6277,7 +6295,22 @@ void QgisApp::mergeSelectedFeatures()
   //create new feature
   QgsFeature newFeature;
   newFeature.setGeometry( unionGeom );
-  newFeature.setAttributes( d.mergedAttributes() );
+
+  QgsAttributes attrs = d.mergedAttributes();
+  for ( int i = 0; i < attrs.count(); ++i )
+  {
+    QVariant val = attrs.at( i );
+    // convert to destination data type
+    if ( ! vl->fields()[i].convertCompatible( val ) )
+    {
+      messageBar()->pushMessage(
+        tr( "Invalid result" ),
+        tr( "Could not store value '%1' in field of type %2" ).arg( attrs.at( i ).toString(), vl->fields()[i].typeName() ),
+        QgsMessageBar::WARNING );
+    }
+    attrs[i] = val;
+  }
+  newFeature.setAttributes( attrs );
 
   QgsFeatureIds::const_iterator feature_it = featureIdsAfter.constBegin();
   for ( ; feature_it != featureIdsAfter.constEnd(); ++feature_it )

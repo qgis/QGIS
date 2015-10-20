@@ -263,7 +263,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     void removeDockWidget( QDockWidget * dockwidget ) override;
 
     //! return CAD dock widget
-    QgsAdvancedDigitizingDockWidget *cadDockWidget();
+    QgsAdvancedDigitizingDockWidget *cadDockWidget() override;
 
     /** Show layer properties dialog for layer
      * @param l layer to show properties table for
