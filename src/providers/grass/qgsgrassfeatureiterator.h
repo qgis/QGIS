@@ -84,8 +84,11 @@ class GRASS_LIB_EXPORT QgsGrassFeatureIterator : public QObject, public QgsAbstr
     //! end of iterating: free the resources / lock
     virtual bool close() override;
 
-    // create QgsFeatureId from GRASS geometry object id and cat
-    static QgsFeatureId makeFeatureId( int grassId, int cat );
+    // create QgsFeatureId from GRASS geometry object id, cat and layer number (editing)
+    static QgsFeatureId makeFeatureId( int grassId, int cat, int layer = 0 );
+
+    // Get layer number from QGIS fid
+    static int layerFromFid( QgsFeatureId fid );
 
     // Get GRASS line id from QGIS fid
     static int lidFromFid( QgsFeatureId fid );

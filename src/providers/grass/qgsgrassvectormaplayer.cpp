@@ -482,7 +482,9 @@ void QgsGrassVectorMapLayer::closeEdit()
 
   if ( mDriver )
   {
+    QgsDebugMsg( "close driver" );
     db_close_database_shutdown_driver( mDriver );
+    QgsDebugMsg( "driver closed" );
     mDriver = 0;
   }
 }
@@ -1014,6 +1016,14 @@ bool QgsGrassVectorMapLayer::isOrphan( int cat, QString &error )
   int fieldIndex = Vect_cidx_get_field_index( mMap->map(), mField );
   if ( fieldIndex >= 0 )
   {
+    // There is a bug in GRASS: https://lists.osgeo.org/pipermail/grass-dev/2015-October/076921.html
+    // -> check num cats first
+    if ( Vect_cidx_get_num_cats_by_index( mMap->map(), fieldIndex ) == 0 )
+    {
+      QgsDebugMsg( "no more cats" );
+      return true;
+    }
+
     int t, id;
     int ret = Vect_cidx_find_next( mMap->map(), fieldIndex, cat,
                                    GV_POINTS | GV_LINES | GV_FACE, 0, &t, &id );

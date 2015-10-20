@@ -610,6 +610,13 @@ QgsAbstractGeometryV2 * QgsGrassVectorMap::lineGeometry( int id )
   struct line_pnts *points = Vect_new_line_struct();
 
   int type = Vect_read_line( mMap, points, 0, id );
+  QgsDebugMsgLevel( QString( "type = %1 n_points = %2" ).arg( type ).arg( points->n_points ), 3 );
+  if ( points->n_points == 0 )
+  {
+    Vect_destroy_line_struct( points );
+    return 0;
+  }
+
   QList<QgsPointV2> pointList;
   pointList.reserve( points->n_points );
   for ( int i = 0; i < points->n_points; i++ )

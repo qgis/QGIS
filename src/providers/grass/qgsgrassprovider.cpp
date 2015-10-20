@@ -625,6 +625,15 @@ bool QgsGrassProvider::closeEdit( bool newMap, QgsVectorLayer *vectorLayer )
 
   mEditBuffer = 0;
   mEditLayer = 0;
+  // drivers must be closed in reversed order in which were opened
+  // TODO: close driver order for simultaneous editing of multiple vector maps
+  for ( int i = mOtherEditLayers.size() - 1; i >= 0; i-- )
+  {
+    QgsGrassVectorMapLayer *layer = mOtherEditLayers[i];
+    layer->closeEdit();
+    mLayer->map()->closeLayer( layer );
+  }
+  mOtherEditLayers.clear();
   mLayer->closeEdit();
   if ( mLayer->map()->closeEdit( newMap ) )
   {
@@ -1372,6 +1381,7 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
     int oldLid = lid;
     realLine = oldLid;
     int realCat = cat;
+    int layerField = QgsGrassFeatureIterator::layerFromFid( fid );
     if ( mLayer->map()->newLids().contains( oldLid ) ) // if it was changed already
     {
       realLine = mLayer->map()->newLids().value( oldLid );
@@ -1380,8 +1390,8 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
     {
       realCat = mLayer->map()->newCats().value( fid );
     }
-    QgsDebugMsg( QString( "fid = %1 lid = %2 realLine = %3 cat = %4 realCat = %5" )
-                 .arg( fid ).arg( lid ).arg( realLine ).arg( cat ).arg( realCat ) );
+    QgsDebugMsg( QString( "fid = %1 lid = %2 realLine = %3 cat = %4 realCat = %5 layerField = %6" )
+                 .arg( fid ).arg( lid ).arg( realLine ).arg( cat ).arg( realCat ).arg( layerField ) );
 
     if ( realLine > 0 )
     {
@@ -1422,28 +1432,35 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
       setPoints( mPoints, geometry );
     }
 
-    // TODO: orig field, maybe different?
-    int field = mLayerField;
-    QgsDebugMsg( QString( "field = %1 realCat = %2" ).arg( field ).arg( realCat ) );
-    if ( realCat > 0 )
+    QgsDebugMsg( QString( "layerField = %1 realCat = %2" ).arg( layerField ).arg( realCat ) );
+    if ( realCat > 0 && layerField > 0 )
     {
-      Vect_cat_set( mCats, field, realCat );
-    }
+      Vect_cat_set( mCats, layerField, realCat );
 
-    // restore attributes
-    if ( realCat > 0 )
-    {
-      QString error;
-      bool recordExists = mLayer->recordExists( realCat, error );
-      QgsDebugMsg( QString( "recordExists = %1 error = %2" ).arg( recordExists ).arg( error ) );
-      if ( !recordExists && error.isEmpty() )
+      // restore attributes
+      QgsGrassVectorMapLayer *layer = mLayer;
+      if ( layerField != mLayer->field() )
       {
-        QgsDebugMsg( "record does not exist -> restore attributes" );
-        error.clear();
-        mLayer->reinsertAttributes( realCat, error );
-        if ( !error.isEmpty() )
+        layer = otherEditLayer( layerField );
+      }
+      if ( !layer )
+      {
+        QgsDebugMsg( "Cannot get layer" );
+      }
+      else
+      {
+        QString error;
+        bool recordExists = layer->recordExists( realCat, error );
+        QgsDebugMsg( QString( "recordExists = %1 error = %2" ).arg( recordExists ).arg( error ) );
+        if ( !recordExists && error.isEmpty() )
         {
-          QgsGrass::warning( tr( "Cannot restore record with cat %1" ).arg( realCat ) );
+          QgsDebugMsg( "record does not exist -> restore attributes" );
+          error.clear();
+          layer->reinsertAttributes( realCat, error );
+          if ( !error.isEmpty() )
+          {
+            QgsGrass::warning( tr( "Cannot restore record with cat %1" ).arg( realCat ) );
+          }
         }
       }
     }
@@ -1490,6 +1507,7 @@ void QgsGrassProvider::onFeatureDeleted( QgsFeatureId fid )
 
   int oldLid = QgsGrassFeatureIterator::lidFromFid( fid );
   int cat = QgsGrassFeatureIterator::catFromFid( fid );
+  int layerField = QgsGrassFeatureIterator::layerFromFid( fid );
   int realLine = oldLid;
   int realCat = cat;
   if ( mLayer->map()->newLids().contains( oldLid ) ) // if it was changed already
@@ -1501,8 +1519,8 @@ void QgsGrassProvider::onFeatureDeleted( QgsFeatureId fid )
     realCat = mLayer->map()->newCats().value( fid );
   }
 
-  QgsDebugMsg( QString( "fid = %1 oldLid = %2 realLine = %3 cat = %4 realCat = %5" )
-               .arg( fid ).arg( oldLid ).arg( realLine ).arg( cat ).arg( realCat ) );
+  QgsDebugMsg( QString( "fid = %1 oldLid = %2 realLine = %3 cat = %4 realCat = %5 layerField = %6" )
+               .arg( fid ).arg( oldLid ).arg( realLine ).arg( cat ).arg( realCat ).arg( layerField ) );
 
   int type = 0;
   mLayer->map()->lockReadWrite();
@@ -1531,9 +1549,9 @@ void QgsGrassProvider::onFeatureDeleted( QgsFeatureId fid )
         }
       }
 
-      if ( realCat > 0 )
+      if ( realCat > 0 && layerField > 0 )
       {
-        if ( Vect_field_cat_del( mCats, mLayerField, realCat ) == 0 )
+        if ( Vect_field_cat_del( mCats, layerField, realCat ) == 0 )
         {
           // should not happen
           QgsDebugMsg( "the line does not have old category" );
@@ -1563,19 +1581,31 @@ void QgsGrassProvider::onFeatureDeleted( QgsFeatureId fid )
       }
 
       // Delete record if orphan
-      if ( realCat > 0 )
+      if ( realCat > 0 && layerField > 0 )
       {
-        QString error;
-        bool orphan = mLayer->isOrphan( realCat, error );
-        QgsDebugMsg( QString( "orphan = %1 error = %2" ).arg( orphan ).arg( error ) );
-        if ( orphan && error.isEmpty() )
+        QgsGrassVectorMapLayer *layer = mLayer;
+        if ( layerField != mLayer->field() )
         {
-          QgsDebugMsg( QString( "realCat = %1 is orphan -> delete record" ).arg( realCat ) );
-          error.clear();
-          mLayer->deleteAttribute( realCat, error );
-          if ( !error.isEmpty() )
+          layer = otherEditLayer( layerField );
+        }
+        if ( !layer )
+        {
+          QgsDebugMsg( "Cannot get layer" );
+        }
+        else
+        {
+          QString error;
+          bool orphan = layer->isOrphan( realCat, error );
+          QgsDebugMsg( QString( "orphan = %1 error = %2" ).arg( orphan ).arg( error ) );
+          if ( orphan && error.isEmpty() )
           {
-            QgsGrass::warning( tr( "Cannot delete orphan record with cat %1" ).arg( realCat ) );
+            QgsDebugMsg( QString( "realCat = %1 is orphan -> delete record" ).arg( realCat ) );
+            error.clear();
+            layer->deleteAttribute( realCat, error );
+            if ( !error.isEmpty() )
+            {
+              QgsGrass::warning( tr( "Cannot delete orphan record with cat %1" ).arg( realCat ) );
+            }
           }
         }
       }
@@ -1943,6 +1973,24 @@ struct Map_info * QgsGrassProvider::map()
 void QgsGrassProvider::setMapset()
 {
   QgsGrass::setMapset( mGrassObject.gisdbase(), mGrassObject.location(), mGrassObject.mapset() );
+}
+
+QgsGrassVectorMapLayer * QgsGrassProvider::otherEditLayer( int layerField )
+{
+  Q_FOREACH ( QgsGrassVectorMapLayer *layer, mOtherEditLayers )
+  {
+    if ( layer->field() == layerField )
+    {
+      return layer;
+    }
+  }
+  QgsGrassVectorMapLayer *layer = mLayer->map()->openLayer( layerField );
+  if ( layer )
+  {
+    layer->startEdit();
+    mOtherEditLayers << layer;
+  }
+  return layer;
 }
 
 QString QgsGrassProvider::name() const

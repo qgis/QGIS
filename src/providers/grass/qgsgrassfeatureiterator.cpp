@@ -322,7 +322,6 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature& feature )
         // TODO should be numLines before editing started (?), but another layer
         // where editing started later mest have different, because its buffer does not have previous changes
         // -> editing of more layers must be synchronized or not allowed
-        //if ( mNextLid > mSource->mLayer->map()->numOldLines() )
         if ( mNextLid > mSource->mLayer->map()->numLines() )
         {
           QgsDebugMsgLevel( "mNextLid > numLines()", 3 );
@@ -339,12 +338,14 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature& feature )
         if ( oldLid < 0 )
         {
           QgsDebugMsg( QString( "skip new feature oldLid = %1" ).arg( oldLid ) );
+          mNextCidx = 0;
           mNextLid++;
           continue;
         }
 
         if ( !Vect_line_alive( mSource->map(), mNextLid ) ) // should not be necessary for rewritten lines
         {
+          mNextCidx = 0;
           mNextLid++;
           continue;
         }
@@ -356,8 +357,9 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature& feature )
           lid = mNextLid;
           type = tmpType;
           cat = 0;
-
-          featureId = makeFeatureId( oldLid, cat );
+          int layer = 0;
+          featureId = makeFeatureId( oldLid, cat, layer );
+          mNextCidx = 0;
           mNextLid++;
         }
         else
@@ -366,24 +368,18 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature& feature )
           {
             mNextCidx = 0;
             mNextLid++;
+            Vect_destroy_cats_struct( cats );
             continue;
           }
           else
           {
-            // Show only cats of currently edited layer
-            if ( cats->field[mNextCidx] != mSource->mLayer->field() )
-            {
-              mNextCidx++;
-              continue;
-            }
-            else
-            {
-              lid = mNextLid;
-              type = tmpType;
-              cat = cats->cat[mNextCidx];
-              featureId = makeFeatureId( oldLid, cat );
-              mNextCidx++;
-            }
+            lid = mNextLid;
+            type = tmpType;
+            cat = cats->cat[mNextCidx];
+            int layer = cats->field[mNextCidx];
+            QgsDebugMsgLevel( QString( "lid = %1 layer = %2 cat = %3" ).arg( lid ).arg( layer ).arg( cat ), 3 );
+            featureId = makeFeatureId( oldLid, cat, layer );
+            mNextCidx++;
           }
         }
         Vect_destroy_cats_struct( cats );
@@ -612,11 +608,23 @@ void QgsGrassFeatureIterator::setFeatureGeometry( QgsFeature& feature, int id, i
   feature.setGeometry( new QgsGeometry( geometry ) );
 }
 
-QgsFeatureId QgsGrassFeatureIterator::makeFeatureId( int grassId, int cat )
+QgsFeatureId QgsGrassFeatureIterator::makeFeatureId( int grassId, int cat, int layer )
 {
   // Because GRASS object id and category are both int and QgsFeatureId is qint64
-  // we can create unique QgsFeatureId from GRASS id and cat
-  return ( QgsFeatureId )grassId * 1000000000 + cat;
+  // we can create unique QgsFeatureId from GRASS id and cat.
+  // Max  supported layer number is 92 (max 64bit int is 9,223,372,036,854,775,807).
+  QgsFeatureId fid = ( QgsFeatureId )layer * 100000000000000000 + ( QgsFeatureId )grassId * 1000000000 + cat;
+  QgsDebugMsgLevel( QString( "grassId = %1 cat = %2 layer = %3 fid = %4" ).arg( grassId ).arg( cat ).arg( layer ).arg( fid ), 3 );
+  return fid;
+}
+
+int QgsGrassFeatureIterator::layerFromFid( QgsFeatureId fid )
+{
+  if ( FID_IS_NEW( fid ) )
+  {
+    return 0;
+  }
+  return fid / 100000000000000000;
 }
 
 int QgsGrassFeatureIterator::lidFromFid( QgsFeatureId fid )
@@ -627,7 +635,8 @@ int QgsGrassFeatureIterator::lidFromFid( QgsFeatureId fid )
   {
     return fid;
   }
-  return fid / 1000000000;
+  qint64 lidCat = fid % 100000000000000000;
+  return lidCat / 1000000000;
 }
 
 int QgsGrassFeatureIterator::catFromFid( QgsFeatureId fid )
@@ -664,20 +673,50 @@ void QgsGrassFeatureIterator::setFeatureAttributes( int cat, QgsFeature *feature
   QgsDebugMsgLevel( QString( "setFeatureAttributes cat = %1 symbol = %2" ).arg( cat ).arg( symbol ), 3 );
   feature->initAttributes( mSource->mLayer->fields().size() );
 
+  bool isEditedLayer = true;
+  int layerNumber = 0;
+  if ( mSource->mEditing )
+  {
+    layerNumber = layerFromFid( feature->id() );
+    if ( layerNumber != mSource->mLayer->field() )
+    {
+      isEditedLayer = false;
+    }
+  }
+
   for ( QgsAttributeList::const_iterator iter = attlist.begin(); iter != attlist.end(); ++iter )
   {
     if ( *iter == mSource->mSymbolAttributeIndex )
     {
       continue;
     }
-    QVariant value =  mSource->mLayer->attribute( cat, *iter );
-    if ( value.type() == QVariant::ByteArray )
+    QVariant value;
+    if ( isEditedLayer )
     {
-      value = QVariant( mSource->mEncoding->toUnicode( value.toByteArray() ) );
+      value =  mSource->mLayer->attribute( cat, *iter );
+      if ( value.type() == QVariant::ByteArray )
+      {
+        value = QVariant( mSource->mEncoding->toUnicode( value.toByteArray() ) );
+      }
+    }
+    else
+    {
+      // TODO: use real layer keyColumn(), but to get it the layer must be first opened and attributes loaded
+      int keyColumn = 0;
+      if ( *iter == keyColumn )
+      {
+        value = QVariant( cat );
+      }
+      else
+      {
+        value = tr( "<not editable (layer %1)>" ).arg( layerNumber );
+      }
     }
     QgsDebugMsgLevel( QString( "iter = %1 value = %2" ).arg( *iter ).arg( value.toString() ), 3 );
+
     feature->setAttribute( *iter, value );
   }
+
 
   if ( mSource->mEditing && attlist.contains( mSource->mSymbolAttributeIndex ) )
   {

@@ -454,6 +454,9 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
 
     void setPoints( struct line_pnts *points, const QgsAbstractGeometryV2 * geometry );
 
+    // Get other edited layer, returns 0 if layer does not exist
+    QgsGrassVectorMapLayer * otherEditLayer( int layerField );
+
     /** Fields used for topo layers */
     QgsFields mTopoFields;
 
@@ -467,6 +470,9 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
 
     // Last version of layer fields during editing, updated after addAttribute and deleteAttribute
     QgsFields mEditLayerFields;
+
+    // List of other layers opened for editing
+    QList<QgsGrassVectorMapLayer *> mOtherEditLayers;
 
     // points and cats used only for editing
     struct line_pnts *mPoints;
