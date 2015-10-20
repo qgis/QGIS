@@ -49,11 +49,11 @@ class QgsGPSConnection: QObject
 
 %ConvertToSubClassCode
   if (sipCpp->inherits("QgsGpsdConnection"))
-    sipClass = sipClass_QgsGpsdConnection;
+    sipType = sipType_QgsGpsdConnection;
   else if (sipCpp->inherits("QgsNMEAConnection"))
-    sipClass = sipClass_QgsNMEAConnection;
+    sipType = sipType_QgsNMEAConnection;
   else
-    sipClass = NULL;
+    sipType = NULL;
 %End
 
   public:

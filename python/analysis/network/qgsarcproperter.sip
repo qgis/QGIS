@@ -19,9 +19,9 @@ class QgsArcProperter
 
 %ConvertToSubClassCode
   if ( dynamic_cast< QgsDistanceArcProperter* > ( sipCpp ) != NULL )
-    sipClass = sipClass_QgsDistanceArcProperter;
+    sipType = sipType_QgsDistanceArcProperter;
   else
-    sipClass = NULL;
+    sipType = NULL;
 %End
 
   public:

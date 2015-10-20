@@ -20,15 +20,15 @@ class QgsComposerMultiFrame: QgsComposerObject
 
 %ConvertToSubClassCode
   if (dynamic_cast<QgsComposerHtml*>(sipCpp) != NULL)
-    sipClass = sipClass_QgsComposerHtml;
+    sipType = sipType_QgsComposerHtml;
   else if (dynamic_cast<QgsComposerAttributeTableV2*>(sipCpp) != NULL)
-    sipClass = sipClass_QgsComposerAttributeTableV2;
+    sipType = sipType_QgsComposerAttributeTableV2;
   else if (dynamic_cast<QgsComposerTableV2*>(sipCpp) != NULL)
-    sipClass = sipClass_QgsComposerTableV2;
+    sipType = sipType_QgsComposerTableV2;
   else if (dynamic_cast<QgsComposerMultiFrame*>(sipCpp) != NULL)
-    sipClass = sipClass_QgsComposerMultiFrame;
+    sipType = sipType_QgsComposerMultiFrame;
   else
-    sipClass = NULL;
+    sipType = NULL;
 %End
 
   public:

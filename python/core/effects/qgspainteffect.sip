@@ -30,39 +30,39 @@ class QgsPaintEffect
 %ConvertToSubClassCode
   if (sipCpp->type() == "drawSource" && dynamic_cast<QgsDrawSourceEffect*>(sipCpp) != NULL)
   {
-     sipClass = sipClass_QgsDrawSourceEffect;
+     sipType = sipType_QgsDrawSourceEffect;
   }
   else if (sipCpp->type() == "effectStack" && dynamic_cast<QgsEffectStack*>(sipCpp) != NULL)
   {
-     sipClass = sipClass_QgsEffectStack;
+     sipType = sipType_QgsEffectStack;
   }
   else if (sipCpp->type() == "blur" && dynamic_cast<QgsBlurEffect*>(sipCpp) != NULL)
   {
-     sipClass = sipClass_QgsBlurEffect;
+     sipType = sipType_QgsBlurEffect;
   }
   else if (sipCpp->type() == "dropShadow" && dynamic_cast<QgsDropShadowEffect*>(sipCpp) != NULL)
   {
-     sipClass = sipClass_QgsDropShadowEffect;
+     sipType = sipType_QgsDropShadowEffect;
   }
   else if (sipCpp->type() == "outerGlow" && dynamic_cast<QgsOuterGlowEffect*>(sipCpp) != NULL)
   {
-     sipClass = sipClass_QgsOuterGlowEffect;
+     sipType = sipType_QgsOuterGlowEffect;
   }
   else if (sipCpp->type() == "innerGlow" && dynamic_cast<QgsInnerGlowEffect*>(sipCpp) != NULL)
   {
-     sipClass = sipClass_QgsInnerGlowEffect;
+     sipType = sipType_QgsInnerGlowEffect;
   }
   else if (sipCpp->type() == "transform" && dynamic_cast<QgsTransformEffect*>(sipCpp) != NULL)
   {
-     sipClass = sipClass_QgsTransformEffect;
+     sipType = sipType_QgsTransformEffect;
   }
   else if (sipCpp->type() == "color" && dynamic_cast<QgsColorEffect*>(sipCpp) != NULL)
   {
-     sipClass = sipClass_QgsColorEffect;
+     sipType = sipType_QgsColorEffect;
   }
   else
   {
-    sipClass = 0;
+    sipType = 0;
   }
 %End
 

@@ -12,14 +12,14 @@ class QgsAttributeEditorElement : QObject
 %ConvertToSubClassCode
   QgsAttributeEditorElement* e = qobject_cast<QgsAttributeEditorElement*>( sipCpp );
 
-  sipClass = 0;
+  sipType = 0;
   if ( e )
   {
     switch ( e->type() )
     {
-      case QgsAttributeEditorElement::AeTypeContainer: sipClass = sipClass_QgsAttributeEditorContainer; break;
-      case QgsAttributeEditorElement::AeTypeField:   sipClass = sipClass_QgsAttributeEditorField; break;
-      case QgsAttributeEditorElement::AeTypeRelation:  sipClass = sipClass_QgsAttributeEditorRelation; break;
+      case QgsAttributeEditorElement::AeTypeContainer: sipType = sipType_QgsAttributeEditorContainer; break;
+      case QgsAttributeEditorElement::AeTypeField:   sipType = sipType_QgsAttributeEditorField; break;
+      case QgsAttributeEditorElement::AeTypeRelation:  sipType = sipType_QgsAttributeEditorRelation; break;
     }
   }
 %End
