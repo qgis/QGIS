@@ -2,6 +2,9 @@
 Tests to ensure that a QGIS installation contains Processing dependencies
 and they are correctly configured by default
 '''
+from utilities import getQgisTestApp, unittest
+QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+
 import unittest
 import sys
 from processing.algs.saga.SagaUtils import *

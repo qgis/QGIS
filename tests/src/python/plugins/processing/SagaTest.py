@@ -25,6 +25,9 @@ __copyright__ = '(C) 2013, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+from utilities import getQgisTestApp, unittest
+QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+
 import os
 import unittest
 from osgeo import gdal

@@ -1,5 +1,7 @@
 SET (ENABLE_PGTEST FALSE CACHE BOOL "Enable PostgreSQL provider tests")
 
+ADD_SUBDIRECTORY(plugins)
+
 INCLUDE(UsePythonTest)
 # Run one of the two server tests at the beginning so they don't run in
 # parallel
