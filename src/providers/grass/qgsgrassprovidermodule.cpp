@@ -398,10 +398,7 @@ bool QgsGrassMapsetItem::objectInImports( QgsGrassObject grassObject )
     }
     if ( import->names().contains( grassObject.name() ) )
     {
-      return true;  if ( !QgsGrass::isOwner( mGrassObject.gisdbase(), mGrassObject.location(), mGrassObject.mapset() ) )
-      {
-        return false;
-      }
+      return true;
     }
   }
   return false;
