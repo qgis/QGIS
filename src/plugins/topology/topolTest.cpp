@@ -1263,7 +1263,7 @@ ErrorList topolTest::checkPointCoveredByLineEnds( double tolerance, QgsVectorLay
         QgsMessageLog::logMessage( tr( "Second geometry missing or GEOS import failed." ), tr( "Topology plugin" ) );
         continue;
       }
-      QgsGeometry* startPoint = QgsGeometry::fromPoint( g2->asPolyline().first() );
+      QgsGeometry* startPoint = QgsGeometry::fromPoint( g2->asPolyline().at( 0 ) );
       QgsGeometry* endPoint = QgsGeometry::fromPoint( g2->asPolyline().last() );
       touched = g1->intersects( startPoint ) || g1->intersects( endPoint );
       delete startPoint;
@@ -1329,7 +1329,7 @@ ErrorList topolTest::checkyLineEndsCoveredByPoints( double tolerance, QgsVectorL
       break;
     QgsGeometry* g1 = it->feature.geometry();
 
-    QgsGeometry* startPoint = QgsGeometry::fromPoint( g1->asPolyline().first() );
+    QgsGeometry* startPoint = QgsGeometry::fromPoint( g1->asPolyline().at( 0 ) );
     QgsGeometry* endPoint = QgsGeometry::fromPoint( g1->asPolyline().last() );
 
     QgsRectangle bb = g1->boundingBox();

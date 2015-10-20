@@ -1317,11 +1317,11 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
               {
                 continue;
               }
-              if ( feature.attributes()[i].isNull() )
+              if ( feature.attributes().at( i ).isNull() )
               {
                 continue;
               }
-              addedFeature.setAttribute( i, feature.attributes()[i] );
+              addedFeature.setAttribute( i, feature.attributes().at( i ) );
             }
             addedFeatures[addedFid] = addedFeature;
           }

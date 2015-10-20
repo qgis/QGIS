@@ -549,7 +549,7 @@ bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents &co
       int idx = layer->fieldNameIndex(( *columnIt )->attribute() );
       if ( idx != -1 )
       {
-        currentRow << replaceWrapChar( f.attributes()[idx] );
+        currentRow << replaceWrapChar( f.attributes().at( idx ) );
       }
       else
       {

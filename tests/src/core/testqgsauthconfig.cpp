@@ -174,7 +174,7 @@ void TestQgsAuthConfig::testPkiConfigBundle()
   mconfig.setUri( "http://example.com" );
   QVERIFY( mconfig.isValid( true ) );
 
-  QSslCertificate clientcert( QSslCertificate::fromPath( smPkiData + "/gerardus_cert.pem" ).first() );
+  QSslCertificate clientcert( QSslCertificate::fromPath( smPkiData + "/gerardus_cert.pem" ).at( 0 ) );
   QByteArray keydata;
   QFile file( smPkiData + "/gerardus_key.pem" );
   if ( file.open( QIODevice::ReadOnly | QIODevice::Text ) )
@@ -201,7 +201,7 @@ void TestQgsAuthConfig::testConfigSslServer()
 {
   QString hostport( "localhost:443" );
   QString confstr( "2|||470|||2|||10~~19|||0~~2" );
-  QSslCertificate sslcert( QSslCertificate::fromPath( smPkiData + "/localhost_ssl_cert.pem" ).first() );
+  QSslCertificate sslcert( QSslCertificate::fromPath( smPkiData + "/localhost_ssl_cert.pem" ).at( 0 ) );
 
   QgsAuthConfigSslServer sslconfig;
   QVERIFY( sslconfig.isNull() );

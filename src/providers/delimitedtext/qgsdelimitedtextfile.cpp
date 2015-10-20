@@ -437,7 +437,7 @@ void QgsDelimitedTextFile::setFieldNames( const QStringList &names )
     // valid if the number matches its column number..
     else if ( mDefaultFieldRegexp.indexIn( name ) == 0 )
     {
-      int col = mDefaultFieldRegexp.capturedTexts()[1].toInt();
+      int col = mDefaultFieldRegexp.capturedTexts().at( 1 ).toInt();
       nameOk = col == fieldNo;
     }
     // Otherwise it is valid if isn't the name of an existing field...
@@ -493,7 +493,7 @@ int QgsDelimitedTextFile::fieldIndex( QString name )
   // Field_### and simple integer fields.
   if ( mDefaultFieldRegexp.indexIn( name ) == 0 )
   {
-    return mDefaultFieldRegexp.capturedTexts()[1].toInt() - 1;
+    return mDefaultFieldRegexp.capturedTexts().at( 1 ).toInt() - 1;
   }
   for ( int i = 0; i < mFieldNames.size(); i++ )
   {

@@ -311,7 +311,7 @@ void QgsFieldsProperties::loadRelations()
     item->setFlags( Qt::ItemIsDragEnabled | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
     mRelationsList->setItem( idx, RelLayerCol, item );
 
-    item = new QTableWidgetItem( relation.fieldPairs().first().referencingField() );
+    item = new QTableWidgetItem( relation.fieldPairs().at( 0 ).referencingField() );
     item->setFlags( Qt::ItemIsDragEnabled | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
     mRelationsList->setItem( idx, RelFieldCol, item );
 

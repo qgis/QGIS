@@ -57,7 +57,7 @@ void QgsRelationManagerDialog::addRelation( const QgsRelation &rel )
   item->setFlags( Qt::ItemIsEditable );
   mRelationsTable->setItem( row, 1, item );
 
-  item = new QTableWidgetItem( rel.fieldPairs().first().referencingField() );
+  item = new QTableWidgetItem( rel.fieldPairs().at( 0 ).referencingField() );
   item->setFlags( Qt::ItemIsEditable );
   mRelationsTable->setItem( row, 2, item );
 
@@ -65,7 +65,7 @@ void QgsRelationManagerDialog::addRelation( const QgsRelation &rel )
   item->setFlags( Qt::ItemIsEditable );
   mRelationsTable->setItem( row, 3, item );
 
-  item = new QTableWidgetItem( rel.fieldPairs().first().referencedField() );
+  item = new QTableWidgetItem( rel.fieldPairs().at( 0 ).referencedField() );
   item->setFlags( Qt::ItemIsEditable );
   mRelationsTable->setItem( row, 4, item );
 
@@ -89,9 +89,9 @@ void QgsRelationManagerDialog::on_mBtnAddRelation_clicked()
     if ( addDlg.relationId() == "" )
       relationId = QString( "%1_%2_%3_%4" )
                    .arg( addDlg.referencingLayerId(),
-                         addDlg.references().first().first,
+                         addDlg.references().at( 0 ).first,
                          addDlg.referencedLayerId(),
-                         addDlg.references().first().second );
+                         addDlg.references().at( 0 ).second );
 
     QStringList existingNames;
 
@@ -109,7 +109,7 @@ void QgsRelationManagerDialog::on_mBtnAddRelation_clicked()
       ++suffix;
     }
     relation.setRelationId( relationId );
-    relation.addFieldPair( addDlg.references().first().first, addDlg.references().first().second );
+    relation.addFieldPair( addDlg.references().at( 0 ).first, addDlg.references().at( 0 ).second );
     relation.setRelationName( addDlg.relationName() );
 
     addRelation( relation );

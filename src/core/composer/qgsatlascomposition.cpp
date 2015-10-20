@@ -257,7 +257,7 @@ int QgsAtlasComposition::updateFeatures()
 
     if ( mSortFeatures && sortIdx != -1 )
     {
-      mFeatureKeys.insert( feat.id(), feat.attributes()[ sortIdx ] );
+      mFeatureKeys.insert( feat.id(), feat.attributes().at( sortIdx ) );
     }
   }
 

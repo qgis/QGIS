@@ -148,8 +148,8 @@ void TestOpenStreetMap::importAndQueries()
   QgsOSMWay w = db.way( 32137532 );
   QCOMPARE( w.isValid(), true );
   QCOMPARE( w.nodes().count(), 5 );
-  QCOMPARE( w.nodes()[0], ( qint64 )360769661 );
-  QCOMPARE( w.nodes()[1], ( qint64 )360769664 );
+  QCOMPARE( w.nodes().at( 0 ), ( qint64 )360769661 );
+  QCOMPARE( w.nodes().at( 1 ), ( qint64 )360769664 );
 
   QgsOSMWay wNot = db.way( 1234567 );
   QCOMPARE( wNot.isValid(), false );

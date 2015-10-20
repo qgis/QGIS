@@ -580,7 +580,7 @@ QgsIdentifyPlotCurve::QgsIdentifyPlotCurve( const QMap<QString, QString> &attrib
 
   if ( color == QColor() )
   {
-    color = QgsVectorRandomColorRampV2::randomColors( 1 )[0];
+    color = QgsVectorRandomColorRampV2::randomColors( 1 ).at( 0 );
   }
 #if defined(QWT_VERSION) && QWT_VERSION>=0x060000
   mPlotCurve->setSymbol( new QwtSymbol( QwtSymbol::Ellipse, QBrush( Qt::white ),

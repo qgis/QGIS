@@ -846,7 +846,7 @@ static QVariant fcnRegexpSubstr( const QVariantList& values, const QgsExpression
   if ( re.captureCount() > 0 )
   {
     // return first capture
-    return QVariant( re.capturedTexts()[1] );
+    return QVariant( re.capturedTexts().at( 1 ) );
   }
   else
   {
@@ -1197,7 +1197,7 @@ static QVariant fcnX( const QVariantList&, const QgsExpressionContext* context, 
   ENSURE_GEOM_TYPE( f, g, QGis::Point );
   if ( g->isMultipart() )
   {
-    return g->asMultiPoint()[ 0 ].x();
+    return g->asMultiPoint().at( 0 ).x();
   }
   else
   {
@@ -1211,7 +1211,7 @@ static QVariant fcnY( const QVariantList&, const QgsExpressionContext* context, 
   ENSURE_GEOM_TYPE( f, g, QGis::Point );
   if ( g->isMultipart() )
   {
-    return g->asMultiPoint()[ 0 ].y();
+    return g->asMultiPoint().at( 0 ).y();
   }
   else
   {

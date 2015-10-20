@@ -445,7 +445,7 @@ bool QgsComposerAttributeTable::getFeatureAttributes( QList<QgsAttributeMap> &at
       int idx = mVectorLayer->fieldNameIndex(( *columnIt )->attribute() );
       if ( idx != -1 )
       {
-        attributeMaps.last().insert( i, f.attributes()[idx] );
+        attributeMaps.last().insert( i, f.attributes().at( idx ) );
       }
       else
       {

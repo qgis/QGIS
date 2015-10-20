@@ -95,7 +95,7 @@ void QgsFeaturePool::updateFeature( QgsFeature& feature )
   QgsAttributeMap attribMap;
   for ( int i = 0, n = feature.attributes().size(); i < n; ++i )
   {
-    attribMap.insert( i, feature.attributes()[i] );
+    attribMap.insert( i, feature.attributes().at( i ) );
   }
   changedAttributesMap.insert( feature.id(), attribMap );
   mLayerMutex.lock();

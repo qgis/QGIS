@@ -199,7 +199,7 @@ void QgsRelationReferenceWidget::setRelation( const QgsRelation& relation, bool 
     mReferencingLayer = relation.referencingLayer();
     mRelationName = relation.name();
     mReferencedLayer = relation.referencedLayer();
-    mFkeyFieldIdx = mReferencedLayer->fieldNameIndex( relation.fieldPairs().first().second );
+    mFkeyFieldIdx = mReferencedLayer->fieldNameIndex( relation.fieldPairs().at( 0 ).second );
 
     QgsAttributeEditorContext context( mEditorContext, relation, QgsAttributeEditorContext::Single, QgsAttributeEditorContext::Embed );
 
@@ -485,7 +485,7 @@ void QgsRelationReferenceWidget::init()
     QgsExpression exp( mReferencedLayer->displayExpression() );
 
     requestedAttrs += exp.referencedColumns().toSet();
-    requestedAttrs << mRelation.fieldPairs().first().second;
+    requestedAttrs << mRelation.fieldPairs().at( 0 ).second;
 
     QgsAttributeList attributes;
     Q_FOREACH ( const QString& attr, requestedAttrs )

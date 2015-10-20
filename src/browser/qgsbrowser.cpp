@@ -335,8 +335,8 @@ void QgsBrowser::saveWindowState()
   QSettings settings;
   settings.setValue( "/Windows/Browser/state", saveState() );
   settings.setValue( "/Windows/Browser/geometry", saveGeometry() );
-  settings.setValue( "/Windows/Browser/sizes/0", splitter->sizes()[0] );
-  settings.setValue( "/Windows/Browser/sizes/1", splitter->sizes()[1] );
+  settings.setValue( "/Windows/Browser/sizes/0", splitter->sizes().at( 0 ) );
+  settings.setValue( "/Windows/Browser/sizes/1", splitter->sizes().at( 1 ) );
 }
 
 void QgsBrowser::restoreWindowState()

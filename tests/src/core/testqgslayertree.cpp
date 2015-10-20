@@ -41,11 +41,11 @@ class TestQgsLayerTree : public QObject
 
     Qt::CheckState childState( int childIndex )
     {
-      return QgsLayerTree::toGroup( mRoot->children()[childIndex] )->isVisible();
+      return QgsLayerTree::toGroup( mRoot->children().at( childIndex ) )->isVisible();
     }
     void setChildState( int childIndex, Qt::CheckState state )
     {
-      QgsLayerTree::toGroup( mRoot->children()[childIndex] )->setVisible( state );
+      QgsLayerTree::toGroup( mRoot->children().at( childIndex ) )->setVisible( state );
     }
 };
 
@@ -145,7 +145,7 @@ void TestQgsLayerTree::testCheckStateMutuallyExclusive()
   QCOMPARE( mRoot->isVisible(), Qt::Checked );
 
   // remove a child
-  mRoot->removeChildNode( mRoot->children()[0] );
+  mRoot->removeChildNode( mRoot->children().at( 0 ) );
   QCOMPARE( childState( 0 ), Qt::Unchecked );
   QCOMPARE( childState( 1 ), Qt::Checked );
   QCOMPARE( mRoot->isVisible(), Qt::Checked );
@@ -158,7 +158,7 @@ void TestQgsLayerTree::testCheckStateMutuallyExclusive()
   QCOMPARE( mRoot->isVisible(), Qt::Checked );
 
   // remove a child that is checked
-  mRoot->removeChildNode( mRoot->children()[2] );
+  mRoot->removeChildNode( mRoot->children().at( 2 ) );
   QCOMPARE( childState( 0 ), Qt::Unchecked );
   QCOMPARE( childState( 1 ), Qt::Unchecked );
   QCOMPARE( mRoot->isVisible(), Qt::Unchecked );
@@ -190,22 +190,22 @@ void TestQgsLayerTree::testCheckStateMutuallyExclusiveEdgeCases()
   QgsLayerTreeGroup* root2 = new QgsLayerTreeGroup();
   root2->setIsMutuallyExclusive( true );
   root2->addGroup( "1" );
-  QCOMPARE( QgsLayerTree::toGroup( root2->children()[0] )->isVisible(), Qt::Checked );
+  QCOMPARE( QgsLayerTree::toGroup( root2->children().at( 0 ) )->isVisible(), Qt::Checked );
   root2->addGroup( "2" );
-  QCOMPARE( QgsLayerTree::toGroup( root2->children()[0] )->isVisible(), Qt::Checked );
-  QCOMPARE( QgsLayerTree::toGroup( root2->children()[1] )->isVisible(), Qt::Unchecked );
+  QCOMPARE( QgsLayerTree::toGroup( root2->children().at( 0 ) )->isVisible(), Qt::Checked );
+  QCOMPARE( QgsLayerTree::toGroup( root2->children().at( 1 ) )->isVisible(), Qt::Unchecked );
   delete root2;
 
   // check-uncheck the only child
   QgsLayerTreeGroup* root3 = new QgsLayerTreeGroup();
   root3->setIsMutuallyExclusive( true );
   root3->addGroup( "1" );
-  QCOMPARE( QgsLayerTree::toGroup( root3->children()[0] )->isVisible(), Qt::Checked );
-  QgsLayerTree::toGroup( root3->children()[0] )->setVisible( Qt::Unchecked );
-  QCOMPARE( QgsLayerTree::toGroup( root3->children()[0] )->isVisible(), Qt::Unchecked );
+  QCOMPARE( QgsLayerTree::toGroup( root3->children().at( 0 ) )->isVisible(), Qt::Checked );
+  QgsLayerTree::toGroup( root3->children().at( 0 ) )->setVisible( Qt::Unchecked );
+  QCOMPARE( QgsLayerTree::toGroup( root3->children().at( 0 ) )->isVisible(), Qt::Unchecked );
   QCOMPARE( root3->isVisible(), Qt::Unchecked );
-  QgsLayerTree::toGroup( root3->children()[0] )->setVisible( Qt::Checked );
-  QCOMPARE( QgsLayerTree::toGroup( root3->children()[0] )->isVisible(), Qt::Checked );
+  QgsLayerTree::toGroup( root3->children().at( 0 ) )->setVisible( Qt::Checked );
+  QCOMPARE( QgsLayerTree::toGroup( root3->children().at( 0 ) )->isVisible(), Qt::Checked );
   QCOMPARE( root3->isVisible(), Qt::Checked );
   delete root3;
 }

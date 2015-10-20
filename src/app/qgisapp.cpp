@@ -3277,7 +3277,7 @@ bool QgisApp::askUserForZipItemLayers( QString path )
     QStringList layers;
     for ( int i = 0; i < zipItem->children().size(); i++ )
     {
-      QgsDataItem *item = zipItem->children()[i];
+      QgsDataItem *item = zipItem->children().at( i );
       QgsLayerItem *layerItem = dynamic_cast<QgsLayerItem *>( item );
       if ( layerItem )
       {
@@ -3299,7 +3299,7 @@ bool QgisApp::askUserForZipItemLayers( QString path )
     {
       Q_FOREACH ( int i, chooseSublayersDialog.selectionIndexes() )
       {
-        childItems << zipItem->children()[i];
+        childItems << zipItem->children().at( i );
       }
     }
   }

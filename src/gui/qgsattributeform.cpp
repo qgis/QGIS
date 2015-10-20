@@ -320,8 +320,8 @@ void QgsAttributeForm::onUpdatedFields()
       int idx = mFeature.fields()->indexFromName( layer()->fields()[i].name() );
       if ( idx != -1 )
       {
-        attrs[i] = mFeature.attributes()[idx];
-        if ( mFeature.attributes()[idx].type() != layer()->fields()[i].type() )
+        attrs[i] = mFeature.attributes().at( idx );
+        if ( mFeature.attributes().at( idx ).type() != layer()->fields()[i].type() )
         {
           attrs[i].convert( layer()->fields()[i].type() );
         }

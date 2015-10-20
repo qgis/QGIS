@@ -936,7 +936,7 @@ void QgsGrassVectorMapLayer::updateAttributes( int cat, QgsFeature &feature, QSt
       // update feature null values by existing values
       if ( cacheIndex != -1 )
       {
-        feature.setAttribute( i, mAttributes[cat][cacheIndex] );
+        feature.setAttribute( i, mAttributes[cat].at( cacheIndex ) );
       }
       continue;
     }

@@ -213,9 +213,9 @@ void TestQgsLegendRenderer::testModel()
 {
   QgsLayerTreeModel legendModel( mRoot );
 
-  QgsLayerTreeNode* nodeGroup0 = mRoot->children()[0];
+  QgsLayerTreeNode* nodeGroup0 = mRoot->children().at( 0 );
   QVERIFY( nodeGroup0 );
-  QgsLayerTreeNode* nodeLayer0 = nodeGroup0->children()[0];
+  QgsLayerTreeNode* nodeLayer0 = nodeGroup0->children().at( 0 );
   QVERIFY( QgsLayerTree::isLayer( nodeLayer0 ) );
   QModelIndex idx = legendModel.node2index( nodeLayer0 );
   QVERIFY( idx.isValid() );

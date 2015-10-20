@@ -99,7 +99,7 @@ static void _collectLayerIdsInGroup( QgsLayerTreeGroup* group, int indexFrom, in
 {
   for ( int i = indexFrom; i <= indexTo; ++i )
   {
-    QgsLayerTreeNode* child = group->children()[i];
+    QgsLayerTreeNode* child = group->children().at( i );
     if ( QgsLayerTree::isLayer( child ) )
     {
       lst << QgsLayerTree::toLayer( child )->layerId();

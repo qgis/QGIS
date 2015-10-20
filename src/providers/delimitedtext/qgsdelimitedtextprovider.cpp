@@ -838,9 +838,9 @@ double QgsDelimitedTextProvider::dmsStringToDouble( const QString &sX, bool *xOk
 
   *xOk = re.indexIn( sX ) == 0;
   if ( ! *xOk ) return 0.0;
-  QString dms1 = re.capturedTexts()[2];
-  QString dms2 = re.capturedTexts()[3];
-  QString dms3 = re.capturedTexts()[4];
+  QString dms1 = re.capturedTexts().at( 2 );
+  QString dms2 = re.capturedTexts().at( 3 );
+  QString dms3 = re.capturedTexts().at( 4 );
   x = dms3.toDouble( xOk );
   // Allow for Degrees/minutes format as well as DMS
   if ( ! dms2.isEmpty() )
@@ -848,8 +848,8 @@ double QgsDelimitedTextProvider::dmsStringToDouble( const QString &sX, bool *xOk
     x = dms2.toInt( xOk ) + x / 60.0;
   }
   x = dms1.toInt( xOk ) + x / 60.0;
-  QString sign1 = re.capturedTexts()[1];
-  QString sign2 = re.capturedTexts()[5];
+  QString sign1 = re.capturedTexts().at( 1 );
+  QString sign2 = re.capturedTexts().at( 5 );
 
   if ( sign1.isEmpty() )
   {
