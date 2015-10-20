@@ -61,13 +61,13 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      *
      * @param e The mouse event
      */
-    void cadCanvasMoveEvent( QgsMapMouseEvent * e ) override;
+    virtual void cadCanvasMoveEvent( QgsMapMouseEvent * e ) override;
 
     /**
      * Intercept key events like Esc or Del to delete the last point
      * @param e key event
      */
-    void keyPressEvent( QKeyEvent* e ) override;
+    virtual void keyPressEvent( QKeyEvent* e ) override;
 
 #ifdef Q_OS_WIN
     virtual bool eventFilter( QObject *obj, QEvent *e ) override;

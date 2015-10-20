@@ -31,11 +31,31 @@ class QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     /** Adds a whole curve (e.g. circularstring) to the captured geometry. Curve must be in map CRS*/
     int addCurve( QgsCurveV2* c );
 
+    /**
+     * Get the capture curve
+     *
+     * @return Capture curve
+     */
     const QgsCompoundCurveV2* captureCurve() const;
 
+
+    /**
+     * Update the rubberband according to mouse position
+     *
+     * @param e The mouse event
+     */
+    virtual void cadCanvasMoveEvent( QgsMapMouseEvent * e );
+
+    /**
+     * Intercept key events like Esc or Del to delete the last point
+     * @param e key event
+     */
+    virtual void keyPressEvent( QKeyEvent* e );
+
+    /**
+     * Clean a temporary rubberband
+     */
     void deleteTempRubberBand();
-    void cadCanvasMoveEvent( QgsMapMouseEvent * e );
-    void keyPressEvent( QKeyEvent* e );
 
   private slots:
     void validationFinished();

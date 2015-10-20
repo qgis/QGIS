@@ -40,11 +40,11 @@ class QgsMapToolAdvancedDigitizing : QgsMapToolEdit
     ~QgsMapToolAdvancedDigitizing();
 
     //! catch the mouse press event, filters it, transforms it to map coordinates and send it to virtual method
-    void canvasPressEvent( QgsMapMouseEvent* e );
+    virtual void canvasPressEvent( QgsMapMouseEvent* e );
     //! catch the mouse release event, filters it, transforms it to map coordinates and send it to virtual method
-    void canvasReleaseEvent( QgsMapMouseEvent* e );
+    virtual void canvasReleaseEvent( QgsMapMouseEvent* e );
     //! catch the mouse move event, filters it, transforms it to map coordinates and send it to virtual method
-    void canvasMoveEvent( QgsMapMouseEvent* e );
+    virtual void canvasMoveEvent( QgsMapMouseEvent* e );
 
     /**
      * The capture mode
@@ -54,14 +54,22 @@ class QgsMapToolAdvancedDigitizing : QgsMapToolEdit
     CaptureMode mode() const;
 
     /**
+     * Set capture mode. This should correspond to the layer on which the digitizing
+     * happens.
+     *
+     * @param mode Capture Mode
+     */
+    void setMode( CaptureMode mode );
+
+    /**
      * Registers this maptool with the cad dock widget
      */
-    void activate();
+    virtual void activate();
 
     /**
      * Unregisters this maptool from the cad dock widget
      */
-    void deactivate();
+    virtual void deactivate();
 
     QgsAdvancedDigitizingDockWidget* cadDockWidget() const;
 

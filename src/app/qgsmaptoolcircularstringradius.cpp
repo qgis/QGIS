@@ -139,7 +139,7 @@ void QgsMapToolCircularStringRadius::recalculateCircularString()
   QgsCircularStringV2* cString = new QgsCircularStringV2();
   cString->setPoints( rubberBandPoints );
   delete mRubberBand;
-  mRubberBand = createGeometryRubberBand(( mCaptureMode == CapturePolygon ) ? QGis::Polygon : QGis::Line );
+  mRubberBand = createGeometryRubberBand(( mode() == CapturePolygon ) ? QGis::Polygon : QGis::Line );
   mRubberBand->setGeometry( cString );
   mRubberBand->show();
 }
