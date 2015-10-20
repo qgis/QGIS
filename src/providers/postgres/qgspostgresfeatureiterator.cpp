@@ -391,14 +391,14 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause )
       break;
 
     case pktInt:
-      query += delim + QgsPostgresConn::quotedIdentifier( mSource->mFields[ mSource->mPrimaryKeyAttrs[0] ].name() );
+      query += delim + QgsPostgresConn::quotedIdentifier( mSource->mFields.at( mSource->mPrimaryKeyAttrs.at( 0 ) ).name() );
       delim = ",";
       break;
 
     case pktFidMap:
       Q_FOREACH ( int idx, mSource->mPrimaryKeyAttrs )
       {
-        query += delim + mConn->fieldExpression( mSource->mFields[idx] );
+        query += delim + mConn->fieldExpression( mSource->mFields.at( idx ) );
         delim = ",";
       }
       break;
@@ -415,7 +415,7 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause )
     if ( mSource->mPrimaryKeyAttrs.contains( idx ) )
       continue;
 
-    query += delim + mConn->fieldExpression( mSource->mFields[idx] );
+    query += delim + mConn->fieldExpression( mSource->mFields.at( idx ) );
   }
 
   query += " FROM " + mSource->mQuery;
@@ -538,7 +538,7 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
 
       Q_FOREACH ( int idx, mSource->mPrimaryKeyAttrs )
       {
-        const QgsField &fld = mSource->mFields[idx];
+        const QgsField &fld = mSource->mFields.at( idx );
 
         QVariant v = QgsPostgresProvider::convertValue( fld.type(), queryResult.PQgetvalue( row, col ) );
         primaryKeyVals << v;
@@ -582,7 +582,7 @@ void QgsPostgresFeatureIterator::getFeatureAttribute( int idx, QgsPostgresResult
   if ( mSource->mPrimaryKeyAttrs.contains( idx ) )
     return;
 
-  QVariant v = QgsPostgresProvider::convertValue( mSource->mFields[idx].type(), queryResult.PQgetvalue( row, col ) );
+  QVariant v = QgsPostgresProvider::convertValue( mSource->mFields.at( idx ).type(), queryResult.PQgetvalue( row, col ) );
   feature.setAttribute( idx, v );
 
   col++;

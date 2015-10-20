@@ -360,7 +360,7 @@ QgsSymbolV2* QgsGraduatedSymbolRendererV2::originalSymbolForFeature( QgsFeature&
   }
   else
   {
-    value = attrs[mAttrNum];
+    value = attrs.at( mAttrNum );
   }
 
   // Null values should not be categorized

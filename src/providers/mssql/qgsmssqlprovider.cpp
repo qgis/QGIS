@@ -479,7 +479,7 @@ QString QgsMssqlProvider::storageType() const
 QVariant QgsMssqlProvider::minimumValue( int index )
 {
   // get the field name
-  QgsField fld = mAttributeFields[ index ];
+  QgsField fld = mAttributeFields.at( index );
   QString sql = QString( "select min([%1]) from " )
                 .arg( fld.name() );
 
@@ -511,7 +511,7 @@ QVariant QgsMssqlProvider::minimumValue( int index )
 QVariant QgsMssqlProvider::maximumValue( int index )
 {
   // get the field name
-  QgsField fld = mAttributeFields[ index ];
+  QgsField fld = mAttributeFields.at( index );
   QString sql = QString( "select max([%1]) from " )
                 .arg( fld.name() );
 
@@ -545,7 +545,7 @@ void QgsMssqlProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, i
   uniqueValues.clear();
 
   // get the field name
-  QgsField fld = mAttributeFields[ index ];
+  QgsField fld = mAttributeFields.at( index );
   QString sql = QString( "select distinct " );
 
   if ( limit > 0 )
@@ -769,7 +769,7 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList & flist )
 
     for ( int i = 0; i < attrs.count(); ++i )
     {
-      QgsField fld = mAttributeFields[i];
+      QgsField fld = mAttributeFields.at( i );
 
       if ( fld.typeName().endsWith( " identity", Qt::CaseInsensitive ) )
         continue; // skip identity field
@@ -777,7 +777,7 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList & flist )
       if ( fld.name().isEmpty() )
         continue; // invalid
 
-      if ( mDefaultValues.contains( i ) && mDefaultValues[i] == attrs[i] )
+      if ( mDefaultValues.contains( i ) && mDefaultValues[i] == attrs.at( i ) )
         continue; // skip fields having default values
 
       if ( !first )
@@ -842,7 +842,7 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList & flist )
 
     for ( int i = 0; i < attrs.count(); ++i )
     {
-      QgsField fld = mAttributeFields[i];
+      QgsField fld = mAttributeFields.at( i );
 
       if ( fld.typeName().endsWith( " identity", Qt::CaseInsensitive ) )
         continue; // skip identity field
@@ -850,11 +850,11 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList & flist )
       if ( fld.name().isEmpty() )
         continue; // invalid
 
-      if ( mDefaultValues.contains( i ) && mDefaultValues[i] == attrs[i] )
+      if ( mDefaultValues.contains( i ) && mDefaultValues[i] == attrs.at( i ) )
         continue; // skip fields having default values
 
       QVariant::Type type = fld.type();
-      if ( attrs[i].isNull() || !attrs[i].isValid() )
+      if ( attrs.at( i ).isNull() || !attrs.at( i ).isValid() )
       {
         // binding null values
         if ( type == QVariant::Date || type == QVariant::DateTime )
@@ -865,36 +865,36 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList & flist )
       else if ( type == QVariant::Int )
       {
         // binding an INTEGER value
-        query.addBindValue( attrs[i].toInt() );
+        query.addBindValue( attrs.at( i ).toInt() );
       }
       else if ( type == QVariant::Double )
       {
         // binding a DOUBLE value
-        query.addBindValue( attrs[i].toDouble() );
+        query.addBindValue( attrs.at( i ).toDouble() );
       }
       else if ( type == QVariant::String )
       {
         // binding a TEXT value
-        query.addBindValue( attrs[i].toString() );
+        query.addBindValue( attrs.at( i ).toString() );
       }
       else if ( type == QVariant::Time )
       {
         // binding a TIME value
-        query.addBindValue( attrs[i].toTime().toString( Qt::ISODate ) );
+        query.addBindValue( attrs.at( i ).toTime().toString( Qt::ISODate ) );
       }
       else if ( type == QVariant::Date )
       {
         // binding a DATE value
-        query.addBindValue( attrs[i].toDate().toString( Qt::ISODate ) );
+        query.addBindValue( attrs.at( i ).toDate().toString( Qt::ISODate ) );
       }
       else if ( type == QVariant::DateTime )
       {
         // binding a DATETIME value
-        query.addBindValue( attrs[i].toDateTime().toString( Qt::ISODate ) );
+        query.addBindValue( attrs.at( i ).toDateTime().toString( Qt::ISODate ) );
       }
       else
       {
-        query.addBindValue( attrs[i] );
+        query.addBindValue( attrs.at( i ) );
       }
     }
 
@@ -1015,7 +1015,7 @@ bool QgsMssqlProvider::deleteAttributes( const QgsAttributeIds &attributes )
     else
       statement += ",";
 
-    statement += QString( "[%1]" ).arg( mAttributeFields[*it].name() );
+    statement += QString( "[%1]" ).arg( mAttributeFields.at( *it ).name() );
   }
 
   if ( !mDatabase.isOpen() )
@@ -1071,7 +1071,7 @@ bool QgsMssqlProvider::changeAttributeValues( const QgsChangedAttributesMap &att
 
     for ( QgsAttributeMap::const_iterator it2 = attrs.begin(); it2 != attrs.end(); ++it2 )
     {
-      QgsField fld = mAttributeFields[it2.key()];
+      QgsField fld = mAttributeFields.at( it2.key() );
 
       if ( fld.typeName().endsWith( " identity", Qt::CaseInsensitive ) )
         continue; // skip identity field
@@ -1103,7 +1103,7 @@ bool QgsMssqlProvider::changeAttributeValues( const QgsChangedAttributesMap &att
 
     for ( QgsAttributeMap::const_iterator it2 = attrs.begin(); it2 != attrs.end(); ++it2 )
     {
-      QgsField fld = mAttributeFields[it2.key()];
+      QgsField fld = mAttributeFields.at( it2.key() );
 
       if ( fld.typeName().endsWith( " identity", Qt::CaseInsensitive ) )
         continue; // skip identity field
@@ -1341,7 +1341,7 @@ bool QgsMssqlProvider::createAttributeIndex( int field )
   }
 
   statement = QString( "CREATE NONCLUSTERED INDEX [qgs_%1_idx] ON [%2].[%3] ( [%4] )" ).arg(
-                mGeometryColName, mSchemaName, mTableName, mAttributeFields[field].name() );
+                mGeometryColName, mSchemaName, mTableName, mAttributeFields.at( field ).name() );
 
   if ( !query.exec( statement ) )
   {

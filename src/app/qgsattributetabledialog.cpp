@@ -389,7 +389,7 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer* layer, const 
   << QgsExpressionContextUtils::projectScope()
   << QgsExpressionContextUtils::layerScope( layer );
 
-  QgsField fld = layer->fields()[ fieldindex ];
+  QgsField fld = layer->fields().at( fieldindex );
 
   //go through all the features and change the new attributes
   QgsFeatureIterator fit = layer->getFeatures( request );

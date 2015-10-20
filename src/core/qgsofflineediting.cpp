@@ -622,7 +622,7 @@ QgsVectorLayer* QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlit
         QgsAttributes newAttrs( attrs.count() );
         for ( int it = 0; it < attrs.count(); ++it )
         {
-          newAttrs[column++] = attrs[it];
+          newAttrs[column++] = attrs.at( it );
         }
         f.setAttributes( newAttrs );
 
@@ -747,15 +747,15 @@ void QgsOfflineEditing::applyFeaturesAdded( QgsVectorLayer* offlineLayer, QgsVec
     QgsAttributes attrs = f.attributes();
     for ( int it = 0; it < attrs.count(); ++it )
     {
-      newAttrs[ attrLookup[ it ] ] = attrs[ it ];
+      newAttrs[ attrLookup[ it ] ] = attrs.at( it );
     }
 
     // try to use default value from the provider
     // (important especially e.g. for postgis primary key generated from a sequence)
     for ( int k = 0; k < newAttrs.count(); ++k )
     {
-      if ( newAttrs[k].isNull() && !defaultValues[k].isNull() )
-        newAttrs[k] = defaultValues[k];
+      if ( newAttrs.at( k ).isNull() && !defaultValues.at( k ).isNull() )
+        newAttrs[k] = defaultValues.at( k );
     }
 
     f.setAttributes( newAttrs );

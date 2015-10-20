@@ -1219,7 +1219,7 @@ int QgsWFSProvider::getFeaturesFromGML2( const QDomElement& wfsCollectionElement
             continue;
           }
 
-          const QgsField &fld = mFields[attr];
+          const QgsField &fld = mFields.at( attr );
           QgsDebugMsg( QString( "set attribute %1: type=%2 value=%3" ).arg( attr ).arg( QVariant::typeToName( fld.type() ), currentAttributeElement.text() ) );
           f->setAttribute( attr, convertValue( fld.type(), currentAttributeElement.text() ) );
         }

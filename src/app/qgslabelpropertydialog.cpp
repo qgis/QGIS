@@ -96,7 +96,7 @@ void QgsLabelPropertyDialog::init( const QString& layerId, int featureId, const 
       mCurLabelField = vlayer->fieldNameIndex( labelFieldName );
       if ( mCurLabelField >= 0 )
       {
-        mLabelTextLineEdit->setText( attributeValues[mCurLabelField].toString() );
+        mLabelTextLineEdit->setText( attributeValues.at( mCurLabelField ).toString() );
         const QgsFields& layerFields = vlayer->fields();
         switch ( layerFields[mCurLabelField].type() )
         {

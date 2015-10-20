@@ -102,7 +102,7 @@ QWidget* QgsFormAnnotationItem::createDesignerWidget( const QString& filePath )
           QWidget* attWidget = widget->findChild<QWidget*>( fields[i].name() );
           if ( attWidget )
           {
-            QgsAttributeEditor::createAttributeEditor( widget, attWidget, mVectorLayer, i, attrs[i] );
+            QgsAttributeEditor::createAttributeEditor( widget, attWidget, mVectorLayer, i, attrs.at( i ) );
           }
         }
       }

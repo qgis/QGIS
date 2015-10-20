@@ -93,11 +93,11 @@ QSizeF QgsHistogramDiagram::diagramSize( const QgsAttributes& attributes, const 
     return QSizeF(); //zero size if no attributes
   }
 
-  double maxValue = attributes[0].toDouble();
+  double maxValue = attributes.at( 0 ).toDouble();
 
   for ( int i = 0; i < attributes.count(); ++i )
   {
-    maxValue = qMax( attributes[i].toDouble(), maxValue );
+    maxValue = qMax( attributes.at( i ).toDouble(), maxValue );
   }
 
   switch ( s.diagramOrientation )

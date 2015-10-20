@@ -1709,7 +1709,7 @@ OGRFeatureH QgsVectorFileWriter::createFeature( QgsFeature& feature )
         break;
       default:
         mErrorMessage = QObject::tr( "Invalid variant type for field %1[%2]: received %3 with type %4" )
-                        .arg( mFields[fldIdx].name() )
+                        .arg( mFields.at( fldIdx ).name() )
                         .arg( ogrField )
                         .arg( attrValue.typeName(),
                               attrValue.toString() );
@@ -1934,7 +1934,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
   {
     for ( int i = 0; i < fields.size(); i++ )
     {
-      if ( fields[i].type() == QVariant::LongLong )
+      if ( fields.at( i ).type() == QVariant::LongLong )
       {
         QVariant min = layer->minimumValue( i );
         QVariant max = layer->maximumValue( i );

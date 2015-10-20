@@ -113,10 +113,10 @@ void QgsValueRelationSearchWidgetWrapper::initWidget( QWidget* editor )
 
   if ( mComboBox )
   {
-    mComboBox->addItem( tr( "Please select" ), QVariant( layer()->fields()[mFieldIdx].type() ) );
+    mComboBox->addItem( tr( "Please select" ), QVariant( layer()->fields().at( mFieldIdx ).type() ) );
     if ( config( "AllowNull" ).toBool() )
     {
-      mComboBox->addItem( tr( "(no selection)" ), QVariant( layer()->fields()[mFieldIdx].type() ) );
+      mComboBox->addItem( tr( "(no selection)" ), QVariant( layer()->fields().at( mFieldIdx ).type() ) );
     }
 
     Q_FOREACH ( const ValueRelationItem& element, mCache )

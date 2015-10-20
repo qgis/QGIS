@@ -165,7 +165,7 @@ bool QgsSpatiaLiteFeatureIterator::prepareStatement( QString whereClause )
       // fetch all attributes
       for ( int idx = 0; idx < mSource->mFields.count(); ++idx )
       {
-        sql += "," + fieldName( mSource->mFields[idx] );
+        sql += "," + fieldName( mSource->mFields.at( idx ) );
         colIdx++;
       }
     }

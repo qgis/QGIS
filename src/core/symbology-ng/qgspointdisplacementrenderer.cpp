@@ -464,7 +464,7 @@ QString QgsPointDisplacementRenderer::getLabel( const QgsFeature& f )
   QgsAttributes attrs = f.attributes();
   if ( mLabelIndex >= 0 && mLabelIndex < attrs.count() )
   {
-    attribute = attrs[mLabelIndex].toString();
+    attribute = attrs.at( mLabelIndex ).toString();
   }
   return attribute;
 }

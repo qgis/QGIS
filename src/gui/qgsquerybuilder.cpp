@@ -325,7 +325,7 @@ void QgsQueryBuilder::on_lstFields_clicked( const QModelIndex &index )
 
 void QgsQueryBuilder::on_lstFields_doubleClicked( const QModelIndex &index )
 {
-  txtSQL->insertText( "\"" + mLayer->fields()[ mModelFields->data( index, Qt::UserRole+1 ).toInt()].name() + "\"" );
+  txtSQL->insertText( "\"" + mLayer->fields().at( mModelFields->data( index, Qt::UserRole + 1 ).toInt() ).name() + "\"" );
   txtSQL->setFocus();
 }
 

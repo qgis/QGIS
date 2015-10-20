@@ -171,7 +171,7 @@ bool QgsAttributeForm::save()
       QgsEditorWidgetWrapper* eww = qobject_cast<QgsEditorWidgetWrapper*>( ww );
       if ( eww )
       {
-        QVariant dstVar = dst[eww->fieldIdx()];
+        QVariant dstVar = dst.at( eww->fieldIdx() );
         QVariant srcVar = eww->value();
         // need to check dstVar.isNull() != srcVar.isNull()
         // otherwise if dstVar=NULL and scrVar=0, then dstVar = srcVar
@@ -218,8 +218,8 @@ bool QgsAttributeForm::save()
         int n = 0;
         for ( int i = 0; i < dst.count(); ++i )
         {
-          if (( dst[i] == src[i] && dst[i].isNull() == src[i].isNull() )  // If field is not changed...
-              || !dst[i].isValid()                                       // or the widget returns invalid (== do not change)
+          if (( dst.at( i ) == src.at( i ) && dst.at( i ).isNull() == src.at( i ).isNull() )  // If field is not changed...
+              || !dst.at( i ).isValid()                                     // or the widget returns invalid (== do not change)
               || !mLayer->fieldEditable( i ) )                           // or the field cannot be edited ...
           {
             continue;
@@ -227,11 +227,11 @@ bool QgsAttributeForm::save()
 
           QgsDebugMsg( QString( "Updating field %1" ).arg( i ) );
           QgsDebugMsg( QString( "dst:'%1' (type:%2, isNull:%3, isValid:%4)" )
-                       .arg( dst[i].toString(), dst[i].typeName() ).arg( dst[i].isNull() ).arg( dst[i].isValid() ) );
+                       .arg( dst.at( i ).toString(), dst.at( i ).typeName() ).arg( dst.at( i ).isNull() ).arg( dst.at( i ).isValid() ) );
           QgsDebugMsg( QString( "src:'%1' (type:%2, isNull:%3, isValid:%4)" )
-                       .arg( src[i].toString(), src[i].typeName() ).arg( src[i].isNull() ).arg( src[i].isValid() ) );
+                       .arg( src.at( i ).toString(), src.at( i ).typeName() ).arg( src.at( i ).isNull() ).arg( src.at( i ).isValid() ) );
 
-          success &= mLayer->changeAttributeValue( mFeature.id(), i, dst[i], src[i] );
+          success &= mLayer->changeAttributeValue( mFeature.id(), i, dst.at( i ), src.at( i ) );
           n++;
         }
 
@@ -287,7 +287,7 @@ void QgsAttributeForm::onAttributeAdded( int idx )
   if ( mFeature.isValid() )
   {
     QgsAttributes attrs = mFeature.attributes();
-    attrs.insert( idx, QVariant( layer()->fields()[idx].type() ) );
+    attrs.insert( idx, QVariant( layer()->fields().at( idx ).type() ) );
     mFeature.setFields( layer()->fields() );
     mFeature.setAttributes( attrs );
   }
@@ -317,18 +317,18 @@ void QgsAttributeForm::onUpdatedFields()
     QgsAttributes attrs( layer()->fields().size() );
     for ( int i = 0; i < layer()->fields().size(); i++ )
     {
-      int idx = mFeature.fields()->indexFromName( layer()->fields()[i].name() );
+      int idx = mFeature.fields()->indexFromName( layer()->fields().at( i ).name() );
       if ( idx != -1 )
       {
         attrs[i] = mFeature.attributes().at( idx );
-        if ( mFeature.attributes().at( idx ).type() != layer()->fields()[i].type() )
+        if ( mFeature.attributes().at( idx ).type() != layer()->fields().at( i ).type() )
         {
-          attrs[i].convert( layer()->fields()[i].type() );
+          attrs[i].convert( layer()->fields().at( i ).type() );
         }
       }
       else
       {
-        attrs[i] = QVariant( layer()->fields()[i].type() );
+        attrs[i] = QVariant( layer()->fields().at( i ).type() );
       }
     }
     mFeature.setFields( layer()->fields() );
@@ -649,7 +649,7 @@ QWidget* QgsAttributeForm::createWidgetFromDef( const QgsAttributeEditorElement 
         newWidget = eww->widget();
         addWidgetWrapper( eww );
 
-        newWidget->setObjectName( mLayer->fields()[ fldIdx ].name() );
+        newWidget->setObjectName( mLayer->fields().at( fldIdx ).name() );
       }
 
       labelOnTop = mLayer->labelOnTop( fieldDef->idx() );

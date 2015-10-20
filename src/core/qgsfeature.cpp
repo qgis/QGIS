@@ -231,7 +231,7 @@ QVariant QgsFeature::attribute( int fieldIdx ) const
   if ( fieldIdx < 0 || fieldIdx >= d->attributes.count() )
     return QVariant();
 
-  return d->attributes[fieldIdx];
+  return d->attributes.at( fieldIdx );
 }
 
 
@@ -241,7 +241,7 @@ QVariant QgsFeature::attribute( const QString& name ) const
   if ( fieldIdx == -1 )
     return QVariant();
 
-  return d->attributes[fieldIdx];
+  return d->attributes.at( fieldIdx );
 }
 
 int QgsFeature::fieldNameIndex( const QString& fieldName ) const

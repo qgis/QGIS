@@ -153,12 +153,12 @@ void QgsVectorLayerJoinBuffer::cacheJoinLayer( QgsVectorJoinInfo& joinInfo )
     while ( fit.nextFeature( f ) )
     {
       QgsAttributes attrs = f.attributes();
-      QString key = attrs[joinFieldIndex].toString();
+      QString key = attrs.at( joinFieldIndex ).toString();
       if ( hasSubset )
       {
         QgsAttributes subsetAttrs( subsetIndices.count() );
         for ( int i = 0; i < subsetIndices.count(); ++i )
-          subsetAttrs[i] = attrs[ subsetIndices[i] ];
+          subsetAttrs[i] = attrs.at( subsetIndices.at( i ) );
         joinInfo.cachedAttributes.insert( key, subsetAttrs );
       }
       else

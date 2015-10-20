@@ -239,7 +239,7 @@ void QgsOgrFeatureIterator::getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature 
 
   if ( OGR_F_IsFieldSet( ogrFet, attindex ) )
   {
-    switch ( mSource->mFields[attindex].type() )
+    switch ( mSource->mFields.at( attindex ).type() )
     {
       case QVariant::String: value = QVariant( mSource->mEncoding->toUnicode( OGR_F_GetFieldAsString( ogrFet, attindex ) ) ); break;
       case QVariant::Int: value = QVariant( OGR_F_GetFieldAsInteger( ogrFet, attindex ) ); break;
@@ -250,7 +250,7 @@ void QgsOgrFeatureIterator::getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature 
         int year, month, day, hour, minute, second, tzf;
 
         OGR_F_GetFieldAsDateTime( ogrFet, attindex, &year, &month, &day, &hour, &minute, &second, &tzf );
-        if ( mSource->mFields[attindex].type() == QVariant::Date )
+        if ( mSource->mFields.at( attindex ).type() == QVariant::Date )
           value = QDate( year, month, day );
         else
           value = QDateTime( QDate( year, month, day ), QTime( hour, minute, second ) );

@@ -716,7 +716,7 @@ bool QgsLabel::readLabelField( QDomElement &el, int attr, const QString& prefix 
     int idx = 0;
     for ( ; idx < mFields.count(); ++idx )
     {
-      if ( mFields[idx].name() == name )
+      if ( mFields.at( idx ).name() == name )
       {
         break;
       }

@@ -2637,7 +2637,7 @@ QString QgsExpression::replaceExpressionText( const QString &action, const QgsFe
     QgsVectorLayer *layer,
     const QMap<QString, QVariant> *substitutionMap, const QgsDistanceArea *distanceArea )
 {
-  QgsExpressionContext context = QgsExpressionContextUtils::createFeatureBasedContext( feat ? *feat : QgsFeature(), layer ? layer->pendingFields() : QgsFields() );
+  QgsExpressionContext context = QgsExpressionContextUtils::createFeatureBasedContext( feat ? *feat : QgsFeature(), layer ? layer->fields() : QgsFields() );
   return replaceExpressionText( action, &context, substitutionMap, distanceArea );
 }
 
@@ -3353,7 +3353,7 @@ bool QgsExpression::NodeColumnRef::prepare( QgsExpression *parent, const QgsExpr
 
   for ( int i = 0; i < fields.count(); ++i )
   {
-    if ( QString::compare( fields[i].name(), mName, Qt::CaseInsensitive ) == 0 )
+    if ( QString::compare( fields.at( i ).name(), mName, Qt::CaseInsensitive ) == 0 )
     {
       mIndex = i;
       return true;

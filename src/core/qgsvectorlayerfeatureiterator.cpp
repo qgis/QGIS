@@ -639,7 +639,7 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesCached( Qg
   const QgsAttributes& featureAttributes = it.value();
   for ( int i = 0; i < featureAttributes.count(); ++i )
   {
-    f.setAttribute( index++, featureAttributes[i] );
+    f.setAttribute( index++, featureAttributes.at( i ) );
   }
 }
 
@@ -710,7 +710,7 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
     if ( hasSubset )
     {
       for ( int i = 0; i < subsetIndices.count(); ++i )
-        f.setAttribute( index++, attr[ subsetIndices[i] ] );
+        f.setAttribute( index++, attr.at( subsetIndices.at( i ) ) );
     }
     else
     {
@@ -720,7 +720,7 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
         if ( i == joinField )
           continue;
 
-        f.setAttribute( index++, attr[i] );
+        f.setAttribute( index++, attr.at( i ) );
       }
     }
   }

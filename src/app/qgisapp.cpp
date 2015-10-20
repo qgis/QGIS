@@ -6164,14 +6164,14 @@ void QgisApp::mergeAttributesOfSelectedFeatures()
 
       QVariant val = merged.at( i );
       // convert to destination data type
-      if ( ! vl->fields()[i].convertCompatible( val ) )
+      if ( ! vl->fields().at( i ).convertCompatible( val ) )
       {
         if ( firstFeature )
         {
           //only warn on first feature
           messageBar()->pushMessage(
             tr( "Invalid result" ),
-            tr( "Could not store value '%1' in field of type %2" ).arg( merged.at( i ).toString(), vl->fields()[i].typeName() ),
+            tr( "Could not store value '%1' in field of type %2" ).arg( merged.at( i ).toString(), vl->fields().at( i ).typeName() ),
             QgsMessageBar::WARNING );
         }
       }
@@ -6301,11 +6301,11 @@ void QgisApp::mergeSelectedFeatures()
   {
     QVariant val = attrs.at( i );
     // convert to destination data type
-    if ( ! vl->fields()[i].convertCompatible( val ) )
+    if ( ! vl->fields().at( i ).convertCompatible( val ) )
     {
       messageBar()->pushMessage(
         tr( "Invalid result" ),
-        tr( "Could not store value '%1' in field of type %2" ).arg( attrs.at( i ).toString(), vl->fields()[i].typeName() ),
+        tr( "Could not store value '%1' in field of type %2" ).arg( attrs.at( i ).toString(), vl->fields().at( i ).typeName() ),
         QgsMessageBar::WARNING );
     }
     attrs[i] = val;
@@ -6527,13 +6527,13 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
       if ( pkAttrList.contains( dst ) )
       {
         dstAttr[ dst ] = pasteVectorLayer->dataProvider()->defaultValue( dst );
-        if ( !dstAttr[ dst ].isNull() )
+        if ( !dstAttr.at( dst ).isNull() )
           continue;
         else if ( pasteVectorLayer->providerType() == "spatialite" )
           continue;
       }
 
-      dstAttr[ dst ] = srcAttr[ src ];
+      dstAttr[ dst ] = srcAttr.at( src );
     }
 
     featureIt->setAttributes( dstAttr );

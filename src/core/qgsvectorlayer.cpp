@@ -257,7 +257,7 @@ void QgsVectorLayer::setDisplayField( const QString& fldName )
 
     for ( int idx = 0; idx < mUpdatedFields.count(); ++idx )
     {
-      QString fldName = mUpdatedFields[idx].name();
+      QString fldName = mUpdatedFields.at( idx ).name();
       QgsDebugMsg( "Checking field " + fldName + " of " + QString::number( fieldsSize ) + " total" );
 
       // Check the fields and keep the first one that matches.
@@ -303,7 +303,7 @@ void QgsVectorLayer::setDisplayField( const QString& fldName )
       }
       else
       {
-        mDisplayField = mUpdatedFields[0].name();
+        mDisplayField = mUpdatedFields.at( 0 ).name();
       }
     }
 
@@ -984,9 +984,9 @@ bool QgsVectorLayer::updateFeature( QgsFeature &f )
 
   for ( int attr = 0; attr < fa.count(); ++attr )
   {
-    if ( fa[attr] != ca[attr] )
+    if ( fa.at( attr ) != ca.at( attr ) )
     {
-      if ( !changeAttributeValue( f.id(), attr, fa[attr], ca[attr] ) )
+      if ( !changeAttributeValue( f.id(), attr, fa.at( attr ), ca.at( attr ) ) )
       {
         QgsDebugMsg( QString( "attribute %1 of feature %2 could not be changed." ).arg( attr ).arg( f.id() ) );
         return false;
@@ -1820,7 +1820,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
         int index = aliasElem.attribute( "index" ).toInt();
 
         if ( index >= 0 && index < fields().count() )
-          field = fields()[ index ].name();
+          field = fields().at( index ).name();
       }
 
       mAttributeAliasMap.insert( field, aliasElem.attribute( "name" ) );
@@ -2220,7 +2220,7 @@ void QgsVectorLayer::remAttributeAlias( int attIndex )
   if ( attIndex < 0 || attIndex >= fields().count() )
     return;
 
-  QString name = fields()[ attIndex ].name();
+  QString name = fields().at( attIndex ).name();
   if ( mAttributeAliasMap.contains( name ) )
   {
     mAttributeAliasMap.remove( name );
@@ -2233,7 +2233,7 @@ void QgsVectorLayer::addAttributeAlias( int attIndex, const QString& aliasString
   if ( attIndex < 0 || attIndex >= fields().count() )
     return;
 
-  QString name = fields()[ attIndex ].name();
+  QString name = fields().at( attIndex ).name();
 
   mAttributeAliasMap.insert( name, aliasString );
   emit layerModified(); // TODO[MD]: should have a different signal?
@@ -2275,7 +2275,7 @@ QString QgsVectorLayer::attributeAlias( int attributeIndex ) const
   if ( attributeIndex < 0 || attributeIndex >= fields().count() )
     return "";
 
-  QString name = fields()[ attributeIndex ].name();
+  QString name = fields().at( attributeIndex ).name();
 
   return mAttributeAliasMap.value( name, "" );
 }
@@ -2787,7 +2787,7 @@ void QgsVectorLayer::setEditorWidgetV2( int attrIdx, const QString& widgetType )
   if ( attrIdx < 0 || attrIdx >= mUpdatedFields.count() )
     return;
 
-  mEditorWidgetV2Types[ mUpdatedFields[ attrIdx ].name()] = widgetType;
+  mEditorWidgetV2Types[ mUpdatedFields.at( attrIdx ).name()] = widgetType;
 }
 
 void QgsVectorLayer::setEditorWidgetV2Config( int attrIdx, const QgsEditorWidgetConfig& config )
@@ -2795,7 +2795,7 @@ void QgsVectorLayer::setEditorWidgetV2Config( int attrIdx, const QgsEditorWidget
   if ( attrIdx < 0 || attrIdx >= mUpdatedFields.count() )
     return;
 
-  mEditorWidgetV2Configs[ mUpdatedFields[ attrIdx ].name()] = config;
+  mEditorWidgetV2Configs[ mUpdatedFields.at( attrIdx ).name()] = config;
 }
 
 QString QgsVectorLayer::editForm()
@@ -2864,7 +2864,7 @@ bool QgsVectorLayer::fieldEditable( int idx )
     if ( mUpdatedFields.fieldOrigin( idx ) == QgsFields::OriginJoin
          || mUpdatedFields.fieldOrigin( idx ) == QgsFields::OriginExpression )
       return false;
-    return mFieldEditables.value( mUpdatedFields[idx].name(), true );
+    return mFieldEditables.value( mUpdatedFields.at( idx ).name(), true );
   }
   else
     return true;
@@ -2873,7 +2873,7 @@ bool QgsVectorLayer::fieldEditable( int idx )
 bool QgsVectorLayer::labelOnTop( int idx )
 {
   if ( idx >= 0 && idx < mUpdatedFields.count() )
-    return mLabelOnTop.value( mUpdatedFields[idx].name(), false );
+    return mLabelOnTop.value( mUpdatedFields.at( idx ).name(), false );
   else
     return false;
 }
@@ -2881,13 +2881,13 @@ bool QgsVectorLayer::labelOnTop( int idx )
 void QgsVectorLayer::setFieldEditable( int idx, bool editable )
 {
   if ( idx >= 0 && idx < mUpdatedFields.count() )
-    mFieldEditables[ mUpdatedFields[idx].name()] = editable;
+    mFieldEditables[ mUpdatedFields.at( idx ).name()] = editable;
 }
 
 void QgsVectorLayer::setLabelOnTop( int idx, bool onTop )
 {
   if ( idx >= 0 && idx < mUpdatedFields.count() )
-    mLabelOnTop[ mUpdatedFields[idx].name()] = onTop;
+    mLabelOnTop[ mUpdatedFields.at( idx ).name()] = onTop;
 }
 
 void QgsVectorLayer::setRendererV2( QgsFeatureRendererV2 *r )
@@ -3714,7 +3714,7 @@ QString QgsVectorLayer::metadata()
     myMetadata += "<p>";
     Q_FOREACH ( int idx, pkAttrList )
     {
-      myMetadata += fields()[ idx ].name() + " ";
+      myMetadata += fields().at( idx ).name() + " ";
     }
     myMetadata += "</p>\n";
   }

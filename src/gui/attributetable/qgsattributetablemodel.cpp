@@ -511,7 +511,7 @@ QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orient
       QString attributeName = layer()->attributeAlias( mAttributes[section] );
       if ( attributeName.isEmpty() )
       {
-        QgsField field = layer()->fields()[ mAttributes[section] ];
+        QgsField field = layer()->fields().at( mAttributes[section] );
         attributeName = field.name();
       }
       return QVariant( attributeName );

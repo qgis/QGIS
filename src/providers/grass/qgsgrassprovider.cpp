@@ -1667,7 +1667,7 @@ void QgsGrassProvider::onAttributeValueChanged( QgsFeatureId fid, int idx, const
     QgsDebugMsg( "index out of range" );
     return;
   }
-  QgsField field = mEditLayer->fields()[idx];
+  QgsField field = mEditLayer->fields().at( idx );
 
   QgsDebugMsg( "field.name() = " + field.name() + " keyColumnName() = " + mLayer->keyColumnName() );
   // TODO: Changing existing category is currently disabled (read only widget set on layer)
@@ -1762,7 +1762,7 @@ void QgsGrassProvider::onAttributeAdded( int idx )
     QgsDebugMsg( "index out of range" );
   }
   QString error;
-  mLayer->addColumn( mEditLayer->fields()[idx], error );
+  mLayer->addColumn( mEditLayer->fields().at( idx ), error );
   if ( !error.isEmpty() )
   {
     QgsDebugMsg( error );

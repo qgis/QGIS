@@ -1022,7 +1022,7 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
     OGRFieldDefnH fldDef = OGR_FD_GetFieldDefn( fdef, targetAttributeId );
     OGRFieldType type = OGR_Fld_GetType( fldDef );
 
-    QVariant attrVal = attrs[targetAttributeId];
+    QVariant attrVal = attrs.at( targetAttributeId );
     if ( attrVal.isNull() || ( type != OFTString && attrVal.toString().isEmpty() ) )
     {
       OGR_F_UnsetField( feature, targetAttributeId );
@@ -2314,7 +2314,7 @@ void QgsOgrProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, int
   if ( index < 0 || index >= mAttributeFields.count() )
     return;
 
-  const QgsField& fld = mAttributeFields[index];
+  const QgsField& fld = mAttributeFields.at( index );
   if ( fld.name().isNull() )
   {
     return; //not a provider field
@@ -2362,7 +2362,7 @@ QVariant QgsOgrProvider::minimumValue( int index )
   {
     return QVariant();
   }
-  const QgsField& fld = mAttributeFields[index];
+  const QgsField& fld = mAttributeFields.at( index );
 
   // Don't quote column name (see https://trac.osgeo.org/gdal/ticket/5799#comment:9)
   QByteArray sql = "SELECT MIN(" + mEncoding->fromUnicode( fld.name() );
@@ -2401,7 +2401,7 @@ QVariant QgsOgrProvider::maximumValue( int index )
   {
     return QVariant();
   }
-  const QgsField& fld = mAttributeFields[index];
+  const QgsField& fld = mAttributeFields.at( index );
 
   // Don't quote column name (see https://trac.osgeo.org/gdal/ticket/5799#comment:9)
   QByteArray sql = "SELECT MAX(" + mEncoding->fromUnicode( fld.name() );

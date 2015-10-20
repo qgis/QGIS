@@ -355,7 +355,7 @@ void QgsProjectFileTransform::transform0110to1000()
         int fieldNumber = classificationFieldElem.text().toInt();
         if ( fieldNumber >= 0 && fieldNumber < theFields.count() )
         {
-          QDomText fieldName = mDom.createTextNode( theFields[fieldNumber].name() );
+          QDomText fieldName = mDom.createTextNode( theFields.at( fieldNumber ).name() );
           QDomNode nameNode = classificationFieldElem.firstChild();
           classificationFieldElem.replaceChild( fieldName, nameNode );
         }

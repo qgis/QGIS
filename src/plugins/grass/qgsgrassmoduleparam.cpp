@@ -1150,10 +1150,10 @@ void QgsGrassModuleVectorField::updateFields()
 
   for ( int i = 0; i < fields.size(); i++ )
   {
-    if ( mType.contains( fields[i].typeName() ) )
+    if ( mType.contains( fields.at( i ).typeName() ) )
     {
-      mFieldComboBox->addItem( fields[i].name() );
-      if ( fields[i].name() == current )
+      mFieldComboBox->addItem( fields.at( i ).name() );
+      if ( fields.at( i ).name() == current )
       {
         mFieldComboBox->setItemText( mFieldComboBox->currentIndex(), current );
       }

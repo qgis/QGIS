@@ -231,10 +231,10 @@ void QgsFeatureAction::onFeatureSaved( const QgsFeature& feature )
     {
       QgsAttributes newValues = feature.attributes();
       QgsAttributeMap origValues = sLastUsedValues[ mLayer ];
-      if ( origValues[idx] != newValues[idx] )
+      if ( origValues[idx] != newValues.at( idx ) )
       {
         QgsDebugMsg( QString( "saving %1 for %2" ).arg( sLastUsedValues[ mLayer ][idx].toString() ).arg( idx ) );
-        sLastUsedValues[ mLayer ][idx] = newValues[idx];
+        sLastUsedValues[ mLayer ][idx] = newValues.at( idx );
       }
     }
   }

@@ -46,9 +46,9 @@ QgsGeometryCheckerResultTab::QgsGeometryCheckerResultTab( QgisInterface* iface, 
   mCloseable = true;
   mAttribTableDialog = 0;
 
-  for ( int i = 0, n = mFeaturePool->getLayer()->pendingFields().count(); i < n; ++i )
+  for ( int i = 0, n = mFeaturePool->getLayer()->fields().count(); i < n; ++i )
   {
-    ui.comboBoxMergeAttribute->addItem( mFeaturePool->getLayer()->pendingFields()[i].name() );
+    ui.comboBoxMergeAttribute->addItem( mFeaturePool->getLayer()->fields().at( i ).name() );
   }
 
   connect( checker, SIGNAL( errorAdded( QgsGeometryCheckError* ) ), this, SLOT( addError( QgsGeometryCheckError* ) ) );
@@ -261,7 +261,7 @@ bool QgsGeometryCheckerResultTab::exportErrorsDo( const QString& file )
   {
     QgsGeometryCheckError* error = ui.tableWidgetErrors->item( row, 0 )->data( Qt::UserRole ).value<QgsGeometryCheckError*>();
 
-    QgsFeature f( layer->pendingFields() );
+    QgsFeature f( layer->fields() );
     f.setAttribute( fieldFeatureId, error->featureId() );
     f.setAttribute( fieldErrDesc, error->description() );
     f.setGeometry( new QgsGeometry( error->location().clone() ) );

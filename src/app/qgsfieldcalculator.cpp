@@ -252,7 +252,7 @@ void QgsFieldCalculator::accept()
     bool useGeometry = exp.needsGeometry();
     int rownum = 1;
 
-    QgsField field = mVectorLayer->fields()[mAttributeId];
+    QgsField field = mVectorLayer->fields().at( mAttributeId );
 
     bool newField = !mUpdateExistingGroupBox->isChecked();
     QVariant emptyAttribute;

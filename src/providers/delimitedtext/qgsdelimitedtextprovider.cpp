@@ -767,7 +767,7 @@ void QgsDelimitedTextProvider::rescanFile()
 
   for ( int i = 0; i < attributeFields.size(); i++ )
   {
-    attributeColumns[i] = mFile->fieldIndex( attributeFields[i].name() );
+    attributeColumns[i] = mFile->fieldIndex( attributeFields.at( i ).name() );
   }
 
   // Scan through the features in the file

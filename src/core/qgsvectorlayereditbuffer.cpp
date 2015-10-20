@@ -304,7 +304,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList& commitErrors )
       QString list = "ERROR: Pending attribute deletes:";
       Q_FOREACH ( int idx, mDeletedAttributeIds )
       {
-        list.append( " " + L->pendingFields()[idx].name() );
+        list.append( " " + L->pendingFields().at( idx ).name() );
       }
       commitErrors << list;
 #endif
@@ -358,8 +358,8 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList& commitErrors )
 
     for ( int i = 0; i < qMin( oldFields.count(), newFields.count() ); ++i )
     {
-      const QgsField& oldField = oldFields[i];
-      const QgsField& newField = newFields[i];
+      const QgsField& oldField = oldFields.at( i );
+      const QgsField& newField = newFields.at( i );
       if ( attributeChangesOk && oldField != newField )
       {
         commitErrors
@@ -410,7 +410,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList& commitErrors )
           list.append( "\n  " + FID_TO_STRING( id ) + "[" );
           Q_FOREACH ( int idx, mChangedAttributeValues[ id ].keys() )
           {
-            list.append( QString( " %1:%2" ).arg( L->pendingFields()[idx].name() ).arg( mChangedAttributeValues[id][idx].toString() ) );
+            list.append( QString( " %1:%2" ).arg( L->pendingFields().at( idx ).name() ).arg( mChangedAttributeValues[id][idx].toString() ) );
           }
           list.append( " ]" );
         }
@@ -501,7 +501,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList& commitErrors )
             list.append( " " + FID_TO_STRING( f.id() ) + "[" );
             for ( int i = 0; i < L->pendingFields().size(); i++ )
             {
-              list.append( QString( " %1:%2" ).arg( L->pendingFields()[i].name() ).arg( f.attributes()[i].toString() ) );
+              list.append( QString( " %1:%2" ).arg( L->pendingFields().at( i ).name() ).arg( f.attributes()[i].toString() ) );
             }
             list.append( " ]" );
           }

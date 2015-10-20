@@ -285,7 +285,7 @@ void QgsEditorWidgetRegistry::writeMapLayer( QgsMapLayer* mapLayer, QDomElement&
   QgsFields fields = vectorLayer->fields();
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
-    const QgsField &field = fields[ idx ];
+    const QgsField &field = fields.at( idx );
     const QString& widgetType = vectorLayer->editorWidgetV2( idx );
     if ( !mWidgetFactories.contains( widgetType ) )
     {

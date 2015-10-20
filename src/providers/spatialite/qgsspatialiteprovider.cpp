@@ -3421,7 +3421,7 @@ void QgsSpatiaLiteProvider::uniqueValues( int index, QList < QVariant > &uniqueV
   {
     return; //invalid field
   }
-  const QgsField& fld = attributeFields[index];
+  const QgsField& fld = attributeFields.at( index );
 
   sql = QString( "SELECT DISTINCT %1 FROM %2" ).arg( quotedIdentifier( fld.name() ), mQuery );
 
@@ -3471,7 +3471,7 @@ void QgsSpatiaLiteProvider::uniqueValues( int index, QList < QVariant > &uniqueV
           uniqueValues.append( QVariant( QString::fromUtf8(( const char * ) sqlite3_column_text( stmt, 0 ) ) ) );
           break;
         default:
-          uniqueValues.append( QVariant( attributeFields[index].type() ) );
+          uniqueValues.append( QVariant( attributeFields.at( index ).type() ) );
           break;
       }
     }
@@ -3568,13 +3568,13 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
 
     for ( int i = 0; i < attributevec.count(); ++i )
     {
-      if ( !attributevec[i].isValid() )
+      if ( !attributevec.at( i ).isValid() )
         continue;
 
       if ( i >= attributeFields.count() )
         continue;
 
-      QString fieldname = attributeFields[i].name();
+      QString fieldname = attributeFields.at( i ).name();
       if ( fieldname.isEmpty() || fieldname == mGeometryColumn )
         continue;
 
@@ -3625,7 +3625,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
 
         for ( int i = 0; i < attributevec.count(); ++i )
         {
-          QVariant v = attributevec[i];
+          QVariant v = attributevec.at( i );
           if ( !v.isValid() )
             continue;
 
@@ -3633,11 +3633,11 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
           if ( i >= attributeFields.count() )
             break;
 
-          QString fieldname = attributeFields[i].name();
+          QString fieldname = attributeFields.at( i ).name();
           if ( fieldname.isEmpty() || fieldname == mGeometryColumn )
             continue;
 
-          QVariant::Type type = attributeFields[i].type();
+          QVariant::Type type = attributeFields.at( i ).type();
 
           if ( v.isNull() )
           {

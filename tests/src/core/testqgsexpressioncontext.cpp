@@ -586,7 +586,7 @@ void TestQgsExpressionContext::layerScope()
 
   //check that fields were set
   QgsFields fromVar = qvariant_cast<QgsFields>( context.variable( QgsExpressionContext::EXPR_FIELDS ) );
-  QCOMPARE( fromVar, vectorLayer->pendingFields() );
+  QCOMPARE( fromVar, vectorLayer->fields() );
 
   //test setting layer variables
   QgsExpressionContextUtils::setLayerVariable( vectorLayer.data(), "testvar", "testval" );

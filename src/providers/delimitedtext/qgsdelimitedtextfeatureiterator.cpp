@@ -421,7 +421,7 @@ void QgsDelimitedTextFeatureIterator::fetchAttribute( QgsFeature& feature, int f
   if ( column < 0 || column >= tokens.count() ) return;
   const QString &value = tokens[column];
   QVariant val;
-  switch ( mSource->mFields[fieldIdx].type() )
+  switch ( mSource->mFields.at( fieldIdx ).type() )
   {
     case QVariant::Int:
     {
@@ -431,7 +431,7 @@ void QgsDelimitedTextFeatureIterator::fetchAttribute( QgsFeature& feature, int f
       if ( ok )
         val = QVariant( ivalue );
       else
-        val = QVariant( mSource->mFields[fieldIdx].type() );
+        val = QVariant( mSource->mFields.at( fieldIdx ).type() );
       break;
     }
     case QVariant::Double:
@@ -455,7 +455,7 @@ void QgsDelimitedTextFeatureIterator::fetchAttribute( QgsFeature& feature, int f
       }
       else
       {
-        val = QVariant( mSource->mFields[fieldIdx].type() );
+        val = QVariant( mSource->mFields.at( fieldIdx ).type() );
       }
       break;
     }

@@ -26,7 +26,7 @@ QVariant RgSpeedProperter::property( double distance, const QgsFeature& f ) cons
   if ( mAttributeId < 0 || mAttributeId >= attrs.count() )
     return QVariant( distance / ( mDefaultValue*mToMetricFactor ) );
 
-  double val = distance / ( attrs[mAttributeId].toDouble() * mToMetricFactor );
+  double val = distance / ( attrs.at( mAttributeId ).toDouble() * mToMetricFactor );
   if ( val <= 0.0 )
     return QVariant( distance / ( mDefaultValue / mToMetricFactor ) );
 

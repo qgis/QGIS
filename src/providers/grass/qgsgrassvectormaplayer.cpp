@@ -348,7 +348,7 @@ QStringList QgsGrassVectorMapLayer::fieldNames( QgsFields & fields )
   QStringList list;
   for ( int i = 0; i < fields.size(); i++ )
   {
-    list << fields[i].name();
+    list << fields.at( i ).name();
   }
   return list;
 }
@@ -360,7 +360,7 @@ void QgsGrassVectorMapLayer::updateFields()
   // update fields to pass layer/buffer check when commiting
   for ( int i = mFields.size() - 1; i >= 0; i-- )
   {
-    QgsField field = mFields[i];
+    QgsField field = mFields.at( i );
     if ( field.name() == QgsGrassVectorMap::topoSymbolFieldName() )
     {
       continue;
@@ -372,7 +372,7 @@ void QgsGrassVectorMapLayer::updateFields()
   }
   for ( int i = 0; i < mTableFields.size(); i++ )
   {
-    QgsField field = mTableFields[i];
+    QgsField field = mTableFields.at( i );
     if ( mFields.indexFromName( field.name() ) == -1 )
     {
       mFields.append( field );
@@ -742,7 +742,7 @@ void QgsGrassVectorMapLayer::deleteColumn( const QgsField &field, QString &error
     QStringList columns;
     for ( int i = 0; i < mTableFields.size(); i++ )
     {
-      QgsField f = mTableFields[i];
+      QgsField f = mTableFields.at( i );
       if ( f.name() != field.name() )
       {
         columns << f.name();

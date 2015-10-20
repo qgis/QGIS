@@ -72,7 +72,7 @@ void FieldSelectorDelegate::setEditorData( QWidget *editor, const QModelIndex &i
 
   int idx = m->attributeIndex( vl );
   if ( vl->fields().exists( idx ) )
-    fcb->setField( vl->fields()[ idx ].name() );
+    fcb->setField( vl->fields().at( idx ).name() );
 }
 
 void FieldSelectorDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
@@ -217,7 +217,7 @@ QVariant QgsVectorLayerAndAttributeModel::data( const QModelIndex& idx, int role
     if ( role == Qt::DisplayRole )
     {
       if ( vl->fields().exists( idx ) )
-        return vl->fields()[ idx ].name();
+        return vl->fields().at( idx ).name();
       else
         return vl->name();
     }

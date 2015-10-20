@@ -114,7 +114,7 @@ void QgsSearchQueryBuilder::getFieldValues( int limit )
   // determine the field type
   QString fieldName = mModelFields->data( lstFields->currentIndex() ).toString();
   int fieldIndex = mFieldMap[fieldName];
-  QgsField field = mLayer->fields()[fieldIndex];//provider->fields()[fieldIndex];
+  QgsField field = mLayer->fields().at( fieldIndex );//provider->fields().at( fieldIndex );
   bool numeric = ( field.type() == QVariant::Int || field.type() == QVariant::Double );
 
   QgsFeature feat;

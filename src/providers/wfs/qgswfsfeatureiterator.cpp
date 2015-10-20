@@ -132,8 +132,8 @@ void QgsWFSFeatureIterator::copyFeature( const QgsFeature* f, QgsFeature& featur
   for ( int i = 0; i < mSource->mFields.size(); i++ )
   {
     const QVariant &v = f->attributes().value( i );
-    if ( v.type() != mSource->mFields[i].type() )
-      feature.setAttribute( i, QgsVectorDataProvider::convertValue( mSource->mFields[i].type(), v.toString() ) );
+    if ( v.type() != mSource->mFields.at( i ).type() )
+      feature.setAttribute( i, QgsVectorDataProvider::convertValue( mSource->mFields.at( i ).type(), v.toString() ) );
     else
       feature.setAttribute( i, v );
   }

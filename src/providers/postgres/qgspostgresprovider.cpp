@@ -189,14 +189,14 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
     case pktInt:
       Q_ASSERT( mPrimaryKeyAttrs.size() == 1 );
       Q_ASSERT( mPrimaryKeyAttrs[0] >= 0 && mPrimaryKeyAttrs[0] < mAttributeFields.count() );
-      key = mAttributeFields[ mPrimaryKeyAttrs[0] ].name();
+      key = mAttributeFields.at( mPrimaryKeyAttrs.at( 0 ) ).name();
       break;
     case pktFidMap:
     {
       QString delim;
       Q_FOREACH ( int idx, mPrimaryKeyAttrs )
       {
-        key += delim + mAttributeFields[ idx ].name();
+        key += delim + mAttributeFields.at( idx ).name();
         delim = ",";
       }
     }
@@ -1204,7 +1204,7 @@ bool QgsPostgresProvider::determinePrimaryKey()
           QgsDebugMsg( "Skipping " + name );
           continue;
         }
-        const QgsField& fld = mAttributeFields[idx];
+        const QgsField& fld = mAttributeFields.at( idx );
 
         if ( isInt &&
              fld.type() != QVariant::Int &&
@@ -1296,7 +1296,7 @@ void QgsPostgresProvider::determinePrimaryKeyFromUriKeyColumn()
     {
       if ( mUseEstimatedMetadata || uniqueData( mQuery, primaryKey ) )
       {
-        mPrimaryKeyType = ( mPrimaryKeyAttrs.size() == 1 && ( mAttributeFields[ mPrimaryKeyAttrs[0] ].type() == QVariant::Int || mAttributeFields[ mPrimaryKeyAttrs[0] ].type() == QVariant::LongLong ) ) ? pktInt : pktFidMap;
+        mPrimaryKeyType = ( mPrimaryKeyAttrs.size() == 1 && ( mAttributeFields.at( mPrimaryKeyAttrs.at( 0 ) ).type() == QVariant::Int || mAttributeFields.at( mPrimaryKeyAttrs[0] ).type() == QVariant::LongLong ) ) ? pktInt : pktFidMap;
       }
       else
       {
@@ -1408,8 +1408,8 @@ void QgsPostgresProvider::enumValues( int index, QStringList& enumList )
     return;
 
   //find out type of index
-  QString fieldName = mAttributeFields[index].name();
-  QString typeName = mAttributeFields[index].typeName();
+  QString fieldName = mAttributeFields.at( index ).name();
+  QString typeName = mAttributeFields.at( index ).typeName();
 
   //is type an enum?
   QString typeSql = QString( "SELECT typtype FROM pg_type WHERE typname=%1" ).arg( quotedValue( typeName ) );
@@ -1731,15 +1731,15 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
     // e.g. for defaults
     for ( int idx = 0; idx < attributevec.count(); ++idx )
     {
-      QVariant v = attributevec[idx];
+      QVariant v = attributevec.at( idx );
       if ( fieldId.contains( idx ) )
         continue;
 
       if ( idx >= mAttributeFields.count() )
         continue;
 
-      QString fieldname = mAttributeFields[idx].name();
-      QString fieldTypeName = mAttributeFields[idx].typeName();
+      QString fieldname = mAttributeFields.at( idx ).name();
+      QString fieldTypeName = mAttributeFields.at( idx ).typeName();
 
       QgsDebugMsg( "Checking field against: " + fieldname );
 
@@ -1750,7 +1750,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
       for ( i = 1; i < flist.size(); i++ )
       {
         QgsAttributes attrs2 = flist[i].attributes();
-        QVariant v2 = attrs2[idx];
+        QVariant v2 = attrs2.at( idx );
 
         if ( v2 != v )
           break;
@@ -1841,7 +1841,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
       for ( int i = 0; i < fieldId.size(); i++ )
       {
         int attrIdx = fieldId[i];
-        QVariant value = attrs[ attrIdx ];
+        QVariant value = attrs.at( attrIdx );
 
         QString v;
         if ( value.isNull() )
@@ -1884,7 +1884,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
 
         if ( mPrimaryKeyType == pktInt )
         {
-          features->setFeatureId( STRING_TO_FID( attrs[ mPrimaryKeyAttrs[0] ] ) );
+          features->setFeatureId( STRING_TO_FID( attrs.at( mPrimaryKeyAttrs.at( 0 ) ) ) );
         }
         else
         {
@@ -1892,7 +1892,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
 
           Q_FOREACH ( int idx, mPrimaryKeyAttrs )
           {
-            primaryKeyVals << attrs[ idx ];
+            primaryKeyVals << attrs.at( idx );
           }
 
           features->setFeatureId( mShared->lookupFid( QVariant( primaryKeyVals ) ) );
@@ -2076,7 +2076,7 @@ bool QgsPostgresProvider::deleteAttributes( const QgsAttributeIds& ids )
       if ( index < 0 || index >= mAttributeFields.count() )
         continue;
 
-      QString column = mAttributeFields[index].name();
+      QString column = mAttributeFields.at( index ).name();
       QString sql = QString( "ALTER TABLE %1 DROP COLUMN %2" )
                     .arg( mQuery,
                           quotedIdentifier( column ) );

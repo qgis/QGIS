@@ -485,8 +485,8 @@ bool QgsGeometryAnalyzer::convexHull( QgsVectorLayer* layer, const QString& shap
       values = simpleMeasure( dissolveGeometry );
       QgsAttributes attributes( 3 );
       attributes[0] = QVariant( currentKey );
-      attributes[1] = values[ 0 ];
-      attributes[2] = values[ 1 ];
+      attributes[1] = values.at( 0 );
+      attributes[2] = values.at( 1 );
       QgsFeature dissolveFeature;
       dissolveFeature.setAttributes( attributes );
       dissolveFeature.setGeometry( dissolveGeometry );

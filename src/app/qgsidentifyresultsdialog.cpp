@@ -471,7 +471,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
     if ( i >= fields.count() )
       continue;
 
-    QString value = fields[i].displayString( attrs[i] );
+    QString value = fields.at( i ).displayString( attrs.at( i ) );
     QTreeWidgetItem *attrItem = new QTreeWidgetItem( QStringList() << QString::number( i ) << value );
 
     attrItem->setData( 0, Qt::DisplayRole, vlayer->attributeDisplayName( i ) );
@@ -486,7 +486,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
       continue;
     }
 
-    value = representValue( vlayer, fields[i].name(), attrs[i] );
+    value = representValue( vlayer, fields[i].name(), attrs.at( i ) );
 
     attrItem->setData( 1, Qt::DisplayRole, value );
 
@@ -513,8 +513,8 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
     if ( i >= fields.count() )
       continue;
 
-    QString value = fields[i].displayString( attrs[i] );
-    QString value2 = representValue( vlayer, fields[i].name(), value );
+    QString value = fields.at( i ).displayString( attrs.at( i ) );
+    QString value2 = representValue( vlayer, fields.at( i ).name(), value );
 
     tblResults->setRowCount( j + 1 );
 
@@ -734,11 +734,11 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
       if ( i >= fields.count() )
         continue;
 
-      QTreeWidgetItem *attrItem = new QTreeWidgetItem( QStringList() << QString::number( i ) << attrs[i].toString() );
+      QTreeWidgetItem *attrItem = new QTreeWidgetItem( QStringList() << QString::number( i ) << attrs.at( i ).toString() );
 
       attrItem->setData( 0, Qt::DisplayRole, fields[i].name() );
 
-      QVariant value = attrs[i];
+      QVariant value = attrs.at( i );
       attrItem->setData( 1, Qt::DisplayRole, value );
       featItem->addChild( attrItem );
     }
