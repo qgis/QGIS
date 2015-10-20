@@ -88,6 +88,8 @@ QgsPointLocator* QgsSnappingUtils::temporaryLocatorForLayer( QgsVectorLayer* vl,
 
 bool QgsSnappingUtils::willUseIndex( QgsVectorLayer* vl ) const
 {
+  if ( vl->geometryType() == QGis::NoGeometry )
+    return false;
   if ( mStrategy == IndexAlwaysFull )
     return true;
   else if ( mStrategy == IndexNeverFull )
