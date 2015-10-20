@@ -1134,7 +1134,7 @@ void QgsGrassProvider::setPoints( struct line_pnts *points, const QgsAbstractGeo
   {
     return;
   }
-  if ( geometry->wkbType() == QgsWKBTypes::Point )
+  if ( geometry->wkbType() == QgsWKBTypes::Point || geometry->wkbType() == QgsWKBTypes::PointZ )
   {
     const QgsPointV2* point = dynamic_cast<const QgsPointV2*>( geometry );
     if ( point )
@@ -1143,7 +1143,7 @@ void QgsGrassProvider::setPoints( struct line_pnts *points, const QgsAbstractGeo
       QgsDebugMsg( QString( "x = %1 y = %2" ).arg( point->x() ).arg( point->y() ) );
     }
   }
-  else if ( geometry->wkbType() == QgsWKBTypes::LineString )
+  else if ( geometry->wkbType() == QgsWKBTypes::LineString || geometry->wkbType() == QgsWKBTypes::LineStringZ )
   {
     const QgsLineStringV2* lineString = dynamic_cast<const QgsLineStringV2*>( geometry );
     if ( lineString )
@@ -1155,7 +1155,7 @@ void QgsGrassProvider::setPoints( struct line_pnts *points, const QgsAbstractGeo
       }
     }
   }
-  else if ( geometry->wkbType() == QgsWKBTypes::Polygon )
+  else if ( geometry->wkbType() == QgsWKBTypes::Polygon || geometry->wkbType() == QgsWKBTypes::PolygonZ )
   {
     const QgsPolygonV2* polygon = dynamic_cast<const QgsPolygonV2*>( geometry );
     if ( polygon && polygon->exteriorRing() )
