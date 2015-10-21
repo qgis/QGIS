@@ -923,6 +923,7 @@ namespace pal
       double ny;
       ( void )GEOSCoordSeq_getX_r( geosctxt, nearestCoord, 0, &nx );
       ( void )GEOSCoordSeq_getY_r( geosctxt, nearestCoord, 0, &ny );
+      GEOSCoordSeq_destroy_r( geosctxt, nearestCoord );
       GEOSGeom_destroy_r( geosctxt, geosPt );
 
       if ( rx )
