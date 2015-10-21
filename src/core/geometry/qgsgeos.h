@@ -84,6 +84,9 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     QgsAbstractGeometryV2* offsetCurve( double distance, int segments, int joinStyle, double mitreLimit, QString* errorMsg = 0 ) const override;
     QgsAbstractGeometryV2* reshapeGeometry( const QgsLineStringV2& reshapeWithLine, int* errorCode, QString* errorMsg = 0 ) const;
 
+    /** Create a geometry from a GEOSGeometry
+     * @param goes GEOSGeometry. Ownership is NOT transferred.
+     */
     static QgsAbstractGeometryV2* fromGeos( const GEOSGeometry* geos );
     static QgsPolygonV2* fromGeosPolygon( const GEOSGeometry* geos );
     static GEOSGeometry* asGeos( const QgsAbstractGeometryV2* geom , double precision = 0 );
@@ -124,6 +127,9 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     static int numberOfGeometries( GEOSGeometry* g );
     static GEOSGeometry* nodeGeometries( const GEOSGeometry *splitLine, const GEOSGeometry *geom );
     int mergeGeometriesMultiTypeSplit( QVector<GEOSGeometry*>& splitResult ) const;
+
+    /** Ownership of geoms is transferred
+     */
     static GEOSGeometry* createGeosCollection( int typeId, const QVector<GEOSGeometry*>& geoms );
 
     static GEOSGeometry* createGeosPoint( const QgsAbstractGeometryV2* point, int coordDims , double precision );
