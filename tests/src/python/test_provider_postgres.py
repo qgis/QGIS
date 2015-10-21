@@ -14,6 +14,7 @@ __revision__ = '$Format:%H$'
 
 import qgis
 import os
+import sys
 from qgis.core import NULL
 
 from qgis.core import QgsVectorLayer, QgsFeatureRequest, QgsFeature, QgsProviderRegistry
@@ -34,8 +35,11 @@ class TestPyQgsPostgresProvider(TestCase, ProviderTestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        cls.dbconn = u'dbname=\'qgis_test\' host=localhost port=5432 user=\'postgres\' password=\'postgres\''
+        if os.environ.has_key('QGIS_PGTEST_DB'):
+            cls.dbconn = os.environ['QGIS_PGTEST_DB']
         # Create test layer
-        cls.vl = QgsVectorLayer(u'dbname=\'qgis_test\' host=localhost port=5432 user=\'postgres\' password=\'postgres\' sslmode=disable key=\'pk\' srid=4326 type=POINT table="qgis_test"."someData" (geom) sql=', 'test', 'postgres')
+        cls.vl = QgsVectorLayer( cls.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POINT table="qgis_test"."someData" (geom) sql=', 'test', 'postgres')
         assert(cls.vl.isValid())
         cls.provider = cls.vl.dataProvider()
 
@@ -54,6 +58,32 @@ class TestPyQgsPostgresProvider(TestCase, ProviderTestCase):
         assert self.provider.defaultValue(0) == u'nextval(\'qgis_test."someData_pk_seq"\'::regclass)'
         assert self.provider.defaultValue(1) == NULL
         assert self.provider.defaultValue(2) == '\'qgis\'::text'
+
+    def testWkbTypes(self):
+        def test_table( dbconn, table_name, wkt ):
+            vl = QgsVectorLayer( '%s srid=4326 table="qgis_test".%s (geom) sql=' % (dbconn, table_name), "testgeom", "postgres" )
+            assert( vl.isValid() )
+            for f in vl.getFeatures():
+                print f.geometry().exportToWkt(), wkt
+                assert f.geometry().exportToWkt() == wkt
+
+        test_table(self.dbconn, 'p2d', 'Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))')
+        test_table(self.dbconn, 'p3d', 'PolygonZ ((0 0 0, 1 0 0, 1 1 0, 0 1 0, 0 0 0))')
+        test_table(self.dbconn, 'triangle2d', 'Polygon ((0 0, 1 0, 1 1, 0 0))')
+        test_table(self.dbconn, 'triangle3d', 'PolygonZ ((0 0 0, 1 0 0, 1 1 0, 0 0 0))')
+        test_table(self.dbconn, 'tin2d', 'MultiPolygon (((0 0, 1 0, 1 1, 0 0)),((0 0, 0 1, 1 1, 0 0)))')
+        test_table(self.dbconn, 'tin3d', 'MultiPolygonZ (((0 0 0, 1 0 0, 1 1 0, 0 0 0)),((0 0 0, 0 1 0, 1 1 0, 0 0 0)))')
+        test_table(self.dbconn, 'ps2d', 'MultiPolygon (((0 0, 1 0, 1 1, 0 1, 0 0)))')
+        test_table(self.dbconn, 'ps3d', 'MultiPolygonZ (((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)),((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),((1 0 0, 1 0 1, 0 0 1, 0 0 0, 1 0 0)))')
+        test_table(self.dbconn, 'mp3d', 'MultiPolygonZ (((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)),((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),((1 0 0, 1 0 1, 0 0 1, 0 0 0, 1 0 0)))')
+        test_table(self.dbconn, 'pt2d', 'Point (0 0)')
+        test_table(self.dbconn, 'pt3d', 'PointZ (0 0 0)')
+        test_table(self.dbconn, 'ls2d', 'LineString (0 0, 1 1)')
+        test_table(self.dbconn, 'ls3d', 'LineStringZ (0 0 0, 1 1 1)')
+        test_table(self.dbconn, 'mpt2d', 'MultiPoint ((0 0),(1 1))')
+        test_table(self.dbconn, 'mpt3d', 'MultiPointZ ((0 0 0),(1 1 1))')
+        test_table(self.dbconn, 'mls2d', 'MultiLineString ((0 0, 1 1),(2 2, 3 3))')
+        test_table(self.dbconn, 'mls3d', 'MultiLineStringZ ((0 0 0, 1 1 1),(2 2 2, 3 3 3))')
 
 if __name__ == '__main__':
     unittest.main()

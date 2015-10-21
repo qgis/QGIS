@@ -451,57 +451,42 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
       memcpy( featureGeom, PQgetvalue( queryResult.result(), row, col ), returnedLength );
       memset( featureGeom + returnedLength, 0, 1 );
 
-      // modify 2.5D WKB types to make them compliant with OGR
       unsigned int wkbType;
       memcpy( &wkbType, featureGeom + 1, sizeof( wkbType ) );
-      wkbType = QgsPostgresConn::wkbTypeFromOgcWkbType( wkbType );
-      memcpy( featureGeom + 1, &wkbType, sizeof( wkbType ) );
+      QgsWKBTypes::Type newType = QgsPostgresConn::wkbTypeFromOgcWkbType( wkbType );
 
-      // change wkb type of inner geometries
-      if ( wkbType == QGis::WKBMultiPoint25D ||
-           wkbType == QGis::WKBMultiLineString25D ||
-           wkbType == QGis::WKBMultiPolygon25D )
+      if (( unsigned int )newType != wkbType )
+      {
+        // overwrite type
+        unsigned int n = newType;
+        memcpy( featureGeom + 1, &n, sizeof( n ) );
+      }
+
+      // PostGIS stores TIN as a collection of Triangles.
+      // Since Triangles are not supported, they have to be converted to Polygons
+      const int nDims = 2 + ( QgsWKBTypes::hasZ( newType ) ? 1 : 0 ) + ( QgsWKBTypes::hasM( newType ) ? 1 : 0 );
+      if ( wkbType % 1000 == 16 )
       {
         unsigned int numGeoms;
         memcpy( &numGeoms, featureGeom + 5, sizeof( unsigned int ) );
         unsigned char *wkb = featureGeom + 9;
         for ( unsigned int i = 0; i < numGeoms; ++i )
         {
-          unsigned int localType;
-          memcpy( &localType, wkb + 1, sizeof( localType ) );
-          localType = QgsPostgresConn::wkbTypeFromOgcWkbType( localType );
+          const unsigned int localType = QgsWKBTypes::singleType( newType ); // polygon(Z|M)
           memcpy( wkb + 1, &localType, sizeof( localType ) );
 
           // skip endian and type info
           wkb += sizeof( unsigned int ) + 1;
 
           // skip coordinates
-          switch ( wkbType )
+          unsigned int nRings;
+          memcpy( &nRings, wkb, sizeof( int ) );
+          wkb += sizeof( int );
+          for ( unsigned int j = 0; j < nRings; ++j )
           {
-            case QGis::WKBMultiPoint25D:
-              wkb += sizeof( double ) * 3;
-              break;
-            case QGis::WKBMultiLineString25D:
-            {
-              unsigned int nPoints;
-              memcpy( &nPoints, wkb, sizeof( int ) );
-              wkb += sizeof( int ) + sizeof( double ) * 3 * nPoints;
-            }
-            break;
-            default:
-            case QGis::WKBMultiPolygon25D:
-            {
-              unsigned int nRings;
-              memcpy( &nRings, wkb, sizeof( int ) );
-              wkb += sizeof( int );
-              for ( unsigned int j = 0; j < nRings; ++j )
-              {
-                unsigned int nPoints;
-                memcpy( &nPoints, wkb, sizeof( int ) );
-                wkb += sizeof( nPoints ) + sizeof( double ) * 3 * nPoints;
-              }
-            }
-            break;
+            unsigned int nPoints;
+            memcpy( &nPoints, wkb, sizeof( int ) );
+            wkb += sizeof( nPoints ) + sizeof( double ) * nDims * nPoints;
           }
         }
       }

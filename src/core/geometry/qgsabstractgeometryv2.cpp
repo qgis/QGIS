@@ -55,12 +55,12 @@ QgsRectangle QgsAbstractGeometryV2::boundingBox() const
 
 bool QgsAbstractGeometryV2::is3D() const
 {
-  return(( mWkbType >= 1001 && mWkbType <= 1012 ) || ( mWkbType > 3000 || mWkbType & 0x80000000 ) );
+  return(( mWkbType >= 1001 && mWkbType <= 1017 ) || ( mWkbType > 3000 || mWkbType & 0x80000000 ) );
 }
 
 bool QgsAbstractGeometryV2::isMeasure() const
 {
-  return ( mWkbType >= 2001 && mWkbType <= 3012 );
+  return ( mWkbType >= 2001 && mWkbType <= 3017 );
 }
 
 #if 0
