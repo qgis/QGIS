@@ -1709,8 +1709,33 @@ void QgsGrassProvider::onAttributeValueChanged( QgsFeatureId fid, int idx, const
 {
   QgsDebugMsg( QString( "fid = %1 idx = %2 value = %3" ).arg( fid ).arg( idx ).arg( value.toString() ) );
 
-  int oldLid = QgsGrassFeatureIterator::lidFromFid( fid );
+  int layerField = QgsGrassFeatureIterator::layerFromFid( fid );
   int cat = QgsGrassFeatureIterator::catFromFid( fid );
+  QgsDebugMsg( QString( "layerField = %1" ).arg( layerField ) );
+
+  if ( !FID_IS_NEW( fid ) && layerField != mLayerField )
+  {
+    QgsDebugMsg( "changing attributes in different layer is not allowed" );
+    // reset the value
+    QgsChangedAttributesMap &changedAttributes = const_cast<QgsChangedAttributesMap &>( mEditBuffer->changedAttributeValues() );
+    if ( idx == mLayer->keyColumn() )
+    {
+      // should not happen because cat field is not editable
+      changedAttributes[fid][idx] = cat;
+    }
+    else
+    {
+      changedAttributes[fid][idx] = QgsGrassFeatureIterator::nonEditableValue( layerField );
+    }
+    // update table
+    // TODO: This would be too slow with buld update (field calculator for example), causing update
+    // of the whole table after each change. How to update single row?
+    //emit dataChanged();
+    return;
+  }
+
+  int oldLid = QgsGrassFeatureIterator::lidFromFid( fid );
+
   int realLine = oldLid;
   int realCat = cat;
   if ( mLayer->map()->newLids().contains( oldLid ) ) // if it was changed already

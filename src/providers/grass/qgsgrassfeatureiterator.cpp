@@ -649,6 +649,11 @@ int QgsGrassFeatureIterator::catFromFid( QgsFeatureId fid )
   return fid % 1000000000;
 }
 
+QVariant QgsGrassFeatureIterator::nonEditableValue( int layerNumber )
+{
+  return tr( "<not editable (layer %1)>" ).arg( layerNumber );
+}
+
 void QgsGrassFeatureIterator::setFeatureAttributes( int cat, QgsFeature *feature, QgsGrassVectorMap::TopoSymbol symbol )
 {
   QgsDebugMsgLevel( QString( "setFeatureAttributes cat = %1" ).arg( cat ), 3 );
@@ -701,15 +706,14 @@ void QgsGrassFeatureIterator::setFeatureAttributes( int cat, QgsFeature *feature
     }
     else
     {
-      // TODO: use real layer keyColumn(), but to get it the layer must be first opened and attributes loaded
-      int keyColumn = 0;
-      if ( *iter == keyColumn )
+      // We are setting cat of different layer in cat column of this layer
+      if ( *iter == mSource->mLayer->keyColumn() )
       {
         value = QVariant( cat );
       }
       else
       {
-        value = tr( "<not editable (layer %1)>" ).arg( layerNumber );
+        value = nonEditableValue( layerNumber );
       }
     }
     QgsDebugMsgLevel( QString( "iter = %1 value = %2" ).arg( *iter ).arg( value.toString() ), 3 );

@@ -96,6 +96,9 @@ class GRASS_LIB_EXPORT QgsGrassFeatureIterator : public QObject, public QgsAbstr
     // Get GRASS cat from QGIS fid
     static int catFromFid( QgsFeatureId fid );
 
+    // get attribute value to be used in different layer when it is edited
+    static QVariant nonEditableValue( int layerNumber );
+
   public slots:
     /** Cancel iterator, iterator will be closed on next occasion, probably when next getFeature() gets called.
      * This function can be called directly from other threads (setting bool is atomic) */
