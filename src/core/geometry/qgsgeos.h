@@ -85,7 +85,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     QgsAbstractGeometryV2* reshapeGeometry( const QgsLineStringV2& reshapeWithLine, int* errorCode, QString* errorMsg = 0 ) const;
 
     /** Create a geometry from a GEOSGeometry
-     * @param goes GEOSGeometry. Ownership is NOT transferred.
+     * @param geos GEOSGeometry. Ownership is NOT transferred.
      */
     static QgsAbstractGeometryV2* fromGeos( const GEOSGeometry* geos );
     static QgsPolygonV2* fromGeosPolygon( const GEOSGeometry* geos );
