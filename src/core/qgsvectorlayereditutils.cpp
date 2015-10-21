@@ -181,7 +181,7 @@ int QgsVectorLayerEditUtils::addPart( const QList<QgsPoint> &points, QgsFeatureI
     if ( !L->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) )
       return 6; //not found
 
-    if ( !f.constGeometry() )
+    if ( !f.constGeometry() || f.constGeometry()->isEmpty() )
     {
       //no existing geometry, so adding first part to null geometry
       firstPart = true;
@@ -220,7 +220,7 @@ int QgsVectorLayerEditUtils::addPart( QgsCurveV2* ring, QgsFeatureId featureId )
     if ( !L->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) )
       return 6; //not found
 
-    if ( !f.constGeometry() )
+    if ( !f.constGeometry() || f.constGeometry()->isEmpty() )
     {
       //no existing geometry, so adding first part to null geometry
       firstPart = true;
