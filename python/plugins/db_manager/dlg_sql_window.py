@@ -61,6 +61,11 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
 
         self.defaultLayerName = 'QueryLayer'
 
+        if self.allowMultiColumnPk:
+            self.uniqueColumnCheck.setText(self.trUtf8("Column(s) with unique values"))
+        else:
+            self.uniqueColumnCheck.setText(self.trUtf8("Column with unique values"))
+
         self.editSql.setFocus()
         self.editSql.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.initCompleter()
@@ -82,15 +87,17 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
 
         self.updatePresetsCombobox()
 
-        self.uniqueCombo.setItemDelegate(QStyledItemDelegate())
+        self.geomCombo.setEditable(True)
+        self.geomCombo.lineEdit().setReadOnly(True)
+
+        self.uniqueCombo.setEditable(True)
+        self.uniqueCombo.lineEdit().setReadOnly(True)
         self.uniqueModel = QStandardItemModel(self.uniqueCombo)
         self.uniqueCombo.setModel(self.uniqueModel)
         if self.allowMultiColumnPk:
-            self.uniqueCombo.setEditable(True)
-            self.uniqueCombo.lineEdit().setReadOnly(True)
+            self.uniqueCombo.setItemDelegate(QStyledItemDelegate())
             self.uniqueModel.itemChanged.connect(self.uniqueChanged)                # react to the (un)checking of an item
             self.uniqueCombo.lineEdit().textChanged.connect(self.uniqueTextChanged) # there are other events that change the displayed text and some of them can not be caught directly
-            self.uniqueChanged
 
         # hide the load query as layer if feature is not supported
         self._loadAsLayerAvailable = self.db.connector.hasCustomQuerySupport()
@@ -154,6 +161,8 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
     def loadAsLayerToggled(self, checked):
         self.loadAsLayerGroup.setChecked(checked)
         self.loadAsLayerWidget.setVisible(checked)
+        if checked:
+            self.fillColumnCombos()
 
     def clearSql(self):
         self.editSql.clear()
