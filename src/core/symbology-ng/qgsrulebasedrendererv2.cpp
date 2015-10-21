@@ -536,7 +536,7 @@ QgsRuleBasedRendererV2::Rule::RenderResult QgsRuleBasedRendererV2::Rule::renderF
       RenderResult res = rule->renderFeature( featToRender, context, renderQueue );
       // consider inactive items as "rendered" so the else rule will ignore them
       willrendersomething |= ( res == Rendered || res == Inactive );
-      rendered |= willrendersomething;
+      rendered |= ( res == Rendered );
     }
   }
 
@@ -545,7 +545,7 @@ QgsRuleBasedRendererV2::Rule::RenderResult QgsRuleBasedRendererV2::Rule::renderF
   {
     Q_FOREACH ( Rule* rule, mElseRules )
     {
-      rendered |= rule->renderFeature( featToRender, context, renderQueue ) != Filtered;
+      rendered |= rule->renderFeature( featToRender, context, renderQueue ) == Rendered;
     }
   }
   if ( !mIsActive )
@@ -821,7 +821,7 @@ bool QgsRuleBasedRendererV2::renderFeature( QgsFeature& feature,
   mCurrentFeatures.append( FeatureToRender( feature, flags ) );
 
   // check each active rule
-  return mRootRule->renderFeature( mCurrentFeatures.last(), context, mRenderQueue );
+  return mRootRule->renderFeature( mCurrentFeatures.last(), context, mRenderQueue ) == Rule::Rendered;
 }
 
 
