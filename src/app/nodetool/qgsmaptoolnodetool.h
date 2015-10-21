@@ -62,6 +62,11 @@ class QgsMapToolNodeTool: public QgsMapToolEdit
 
   private:
     /**
+     * Get the feature on the mouse click
+     */
+    QgsFeature getFeatureAtPoint( QgsMapMouseEvent* e );
+
+    /**
      * Deletes the rubber band pointers and clears mRubberBands
      */
     void removeRubberBands();
