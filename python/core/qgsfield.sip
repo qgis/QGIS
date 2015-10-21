@@ -249,13 +249,13 @@ class QgsFields
 
     //! Get field at particular index (must be in range 0..N-1)
     // const QgsField& operator[]( int i ) const;
-    QgsField& operator[](int i);
+    QgsField& operator[](int i) /Factory/;
 %MethodCode
   SIP_SSIZE_T idx = sipConvertFromSequenceIndex(a0, sipCpp->count());
   if (idx < 0)
     sipIsErr = 1;
   else
-    sipRes = &(*sipCpp)[idx];
+    sipRes = new QgsField(sipCpp->operator[](idx));
 %End
 
     //! Get field at particular index (must be in range 0..N-1)
