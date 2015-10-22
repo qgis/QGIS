@@ -82,13 +82,15 @@ void QgsMapHitTest::runHitTestLayer( QgsVectorLayer* vl, SymbolV2Set& usedSymbol
     {
       Q_FOREACH ( QgsSymbolV2* s, r->originalSymbolsForFeature( f, context ) )
       {
-        usedSymbols.insert( QgsSymbolLayerV2Utils::symbolProperties( s ) );
+        if ( s )
+          usedSymbols.insert( QgsSymbolLayerV2Utils::symbolProperties( s ) );
       }
     }
     else
     {
       QgsSymbolV2* s = r->originalSymbolForFeature( f, context );
-      usedSymbols.insert( QgsSymbolLayerV2Utils::symbolProperties( s ) );
+      if ( s )
+        usedSymbols.insert( QgsSymbolLayerV2Utils::symbolProperties( s ) );
     }
   }
   r->stopRender( context );
