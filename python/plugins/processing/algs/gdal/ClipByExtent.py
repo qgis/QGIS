@@ -66,10 +66,8 @@ class ClipByExtent(GdalAlgorithm):
                                           self.tr("Nodata value, leave blank to take the nodata value from input"),
                                           ''))
         self.addParameter(ParameterExtent(self.PROJWIN, self.tr('Clipping extent')))
-        self.addParameter(ParameterString(self.EXTRA,
-                                          self.tr('Additional creation parameters'), '', optional=True))
 
-        params = []										   						   
+        params = []
         params.append(ParameterSelection(self.RTYPE,
                                              self.tr('Output raster type'), self.TYPE, 5))
         params.append(ParameterSelection(self.COMPRESS,
@@ -95,7 +93,7 @@ class ClipByExtent(GdalAlgorithm):
         for param in params:
             param.isAdvanced = True
             self.addParameter(param)
-			
+
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Clipped (extent)')))
 
     def getConsoleCommands(self):
@@ -110,7 +108,7 @@ class ClipByExtent(GdalAlgorithm):
         compress = self.COMPRESSTYPE[self.getParameterValue(self.COMPRESS)]
         bigtiff = self.BIGTIFFTYPE[self.getParameterValue(self.BIGTIFF)]
         tfw = unicode(self.getParameterValue(self.TFW))
-		
+
         arguments = []
         arguments.append('-of')
         arguments.append(GdalUtils.getFormatShortNameFromFilename(out))

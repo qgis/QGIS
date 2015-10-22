@@ -76,8 +76,6 @@ class ClipByMask(GdalAlgorithm,OgrAlgorithm):
                                            self.tr('Create and output alpha band'), False))
         self.addParameter(ParameterBoolean(self.KEEP_RESOLUTION,
                                            self.tr('Keep resolution of output raster'), False))
-        self.addParameter(ParameterString(self.EXTRA,
-                                          self.tr('Additional creation parameters'), '', optional=True))
 
         params = []
         params.append(ParameterSelection(self.RTYPE,
@@ -104,8 +102,8 @@ class ClipByMask(GdalAlgorithm,OgrAlgorithm):
 
         for param in params:
             param.isAdvanced = True
-            self.addParameter(param)										  
-										  
+            self.addParameter(param)  
+
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Clipped (mask)')))
 
     def getConsoleCommands(self):
@@ -123,7 +121,7 @@ class ClipByMask(GdalAlgorithm,OgrAlgorithm):
         compress = self.COMPRESSTYPE[self.getParameterValue(self.COMPRESS)]
         bigtiff = self.BIGTIFFTYPE[self.getParameterValue(self.BIGTIFF)]
         tfw = unicode(self.getParameterValue(self.TFW))
-		
+
         arguments = []
         arguments.append('-ot')
         arguments.append(self.TYPE[self.getParameterValue(self.RTYPE)])
