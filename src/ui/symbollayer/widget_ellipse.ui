@@ -155,7 +155,7 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string>Border</string>
+          <string>Outline</string>
          </property>
          <property name="buddy">
           <cstring>btnChangeColorBorder</cstring>
