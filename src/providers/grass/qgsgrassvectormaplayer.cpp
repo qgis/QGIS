@@ -14,11 +14,13 @@
  *                                                                         *
  ***************************************************************************/
 
+
 #include <QFileInfo>
 
 #include "qgslogger.h"
 
 #include "qgsgrass.h"
+#include "qgsgrasswin.h"
 #include "qgsgrassvectormap.h"
 #include "qgsgrassvectormaplayer.h"
 
@@ -111,26 +113,17 @@ void QgsGrassVectorMapLayer::load()
     QFileInfo di( mMap->grassObject().mapsetPath() + "/vector/" + mMap->grassObject().name() + "/dbln" );
     mLastLoaded = di.lastModified();
 
-    QgsGrass::lock();
-    dbDriver *databaseDriver = 0;
-    QString error = QString( "Cannot open database %1 by driver %2" ).arg( mFieldInfo->database, mFieldInfo->driver );
-    G_TRY
-    {
-      setMapset();
-      databaseDriver = db_start_driver_open_database( mFieldInfo->driver, mFieldInfo->database );
-    }
-    G_CATCH( QgsGrass::Exception &e )
-    {
-      QgsGrass::warning( error + " : " + e.what() );
-    }
+    QString error;
+    dbDriver *databaseDriver = openDriver( error );
 
-    if ( !databaseDriver )
+    if ( !databaseDriver || !error.isEmpty() )
     {
       QgsDebugMsg( error );
     }
     else
     {
       QgsDebugMsg( "Database opened -> open select cursor" );
+      QgsGrass::lock(); // not sure if lock is necessary
       dbString dbstr;
       db_init_string( &dbstr );
       db_set_string( &dbstr, ( char * )"select * from " );
@@ -286,8 +279,8 @@ void QgsGrassVectorMapLayer::load()
         QgsDebugMsg( QString( "mTableFields.size = %1" ).arg( mTableFields.size() ) );
         QgsDebugMsg( QString( "number of attributes = %1" ).arg( mAttributes.size() ) );
       }
+      QgsGrass::unlock();
     }
-    QgsGrass::unlock();
   }
 
   // Add cat if no attribute fields exist (otherwise qgis crashes)
@@ -427,6 +420,7 @@ dbDriver * QgsGrassVectorMapLayer::openDriver( QString &error )
 {
   QgsDebugMsg( "entered" );
   dbDriver * driver = 0;
+
   if ( !mFieldInfo )
   {
     error = tr( "No field info" );
@@ -435,17 +429,33 @@ dbDriver * QgsGrassVectorMapLayer::openDriver( QString &error )
   else
   {
     QgsDebugMsg( "Field info found -> open database" );
-    setMapset();
-    driver = db_start_driver_open_database( mFieldInfo->driver, mFieldInfo->database );
-
-    if ( !driver )
+    QString err = QString( "Cannot open database %1 by driver %2" ).arg( mFieldInfo->database, mFieldInfo->driver );
+    QgsGrass::lock();
+    G_TRY
     {
-      error = tr( "Cannot open database %1 by driver %2" ).arg( mFieldInfo->database, mFieldInfo->driver );
+      setMapset();
+      driver = db_start_driver_open_database( mFieldInfo->driver, mFieldInfo->database );
+      if ( !driver )
+      {
+        error = err;
+        QgsDebugMsg( error );
+      }
+    }
+    G_CATCH( QgsGrass::Exception &e )
+    {
+      error = err + " : " + e.what();
       QgsDebugMsg( error );
     }
-    else
+    QgsGrass::unlock();
+
+    if ( driver )
     {
       QgsDebugMsg( "Database opened" );
+#ifdef Q_OS_WIN
+      // Driver on Windows opens black window:
+      // https://lists.osgeo.org/pipermail/grass-dev/2015-October/076831.html
+      QgsGrassWin::hideWindow( driver->pid );
+#endif
     }
   }
   return driver;
