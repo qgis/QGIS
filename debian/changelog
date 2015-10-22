@@ -4,9 +4,14 @@ qgis (2.11.0) UNRELEASED; urgency=medium
   * moved grass default.qgc from config to modules
   * include grass7 plugin
   * move grass provider to separate package
-  * add ubuntu wily
+  * add ubuntu wily and debian stretch
+  * add dependencies to qca2 and python-qt4-sql for new auth system
+    and jquery and leaflet for developer map
+  * separate libqgis_app to separate package
+  * include geometry checker and snapper plugins
+  * merge downstream debian changes from Bas Couwenberg
 
- -- Jürgen E. Fischer <jef@norbit.de>  Wed, 30 Sep 2015 14:06:10 +0200
+ -- Jürgen E. Fischer <jef@norbit.de>  Thu, 22 Oct 2015 22:33:23 +0200
 
 qgis (2.10.0) unstable; urgency=medium
 
