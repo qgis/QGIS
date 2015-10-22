@@ -344,6 +344,9 @@
             </section>
             <section label="Convert 2D vector to 3D by sampling raster">
                 <grass name="v.drape"/>
+                <grass name="v.to.2d" version_min="6.4"/>
+                <grass name="v.to.3d.fixed" version_min="6.4"/>
+                <grass name="v.to.3d.attr" version_min="6.4"/>
                 <grass name="v.extrude.fixed"/>
                 <grass name="v.extrude.attr"/>
             </section>
