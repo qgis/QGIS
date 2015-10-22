@@ -36,10 +36,10 @@ class TestPyQgsPostgresProvider(TestCase, ProviderTestCase):
     def setUpClass(cls):
         """Run before all tests"""
         cls.dbconn = u'dbname=\'qgis_test\' host=localhost port=5432 user=\'postgres\' password=\'postgres\''
-        if os.environ.has_key('QGIS_PGTEST_DB'):
+        if 'QGIS_PGTEST_DB' in os.environ:
             cls.dbconn = os.environ['QGIS_PGTEST_DB']
         # Create test layer
-        cls.vl = QgsVectorLayer( cls.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POINT table="qgis_test"."someData" (geom) sql=', 'test', 'postgres')
+        cls.vl = QgsVectorLayer(cls.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POINT table="qgis_test"."someData" (geom) sql=', 'test', 'postgres')
         assert(cls.vl.isValid())
         cls.provider = cls.vl.dataProvider()
 
@@ -60,9 +60,9 @@ class TestPyQgsPostgresProvider(TestCase, ProviderTestCase):
         assert self.provider.defaultValue(2) == '\'qgis\'::text'
 
     def testWkbTypes(self):
-        def test_table( dbconn, table_name, wkt ):
-            vl = QgsVectorLayer( '%s srid=4326 table="qgis_test".%s (geom) sql=' % (dbconn, table_name), "testgeom", "postgres" )
-            assert( vl.isValid() )
+        def test_table(dbconn, table_name, wkt):
+            vl = QgsVectorLayer('%s srid=4326 table="qgis_test".%s (geom) sql=' % (dbconn, table_name), "testgeom", "postgres")
+            assert(vl.isValid())
             for f in vl.getFeatures():
                 print f.geometry().exportToWkt(), wkt
                 assert f.geometry().exportToWkt() == wkt

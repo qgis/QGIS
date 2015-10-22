@@ -201,7 +201,7 @@ class fToolsPlugin:
         self.intersect.setObjectName("intersect")
         self.union = QAction(QCoreApplication.translate("fTools", "Union..."), self.iface.mainWindow())
         self.union.setObjectName("union")
-        self.symDifference = QAction(QCoreApplication.translate("fTools", "Symetrical Difference..."), self.iface.mainWindow())
+        self.symDifference = QAction(QCoreApplication.translate("fTools", "Symmetrical Difference..."), self.iface.mainWindow())
         self.symDifference.setObjectName("symDifference")
         self.clip = QAction(QCoreApplication.translate("fTools", "Clip..."), self.iface.mainWindow())
         self.clip.setObjectName("clip")

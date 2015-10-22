@@ -210,7 +210,7 @@ class GeoprocessingDialog(QDialog, Ui_Dialog):
 #4: Dissolve
 #5: Intersection
 #6: Union
-#7: Symetrical Difference
+#7: Symmetrical Difference
 #8: Clip
 
     def geoprocessing(self, myLayerA, myLayerB, myParam, myMerge, mySelectionA, mySelectionB, mySegments):

@@ -122,10 +122,10 @@ class Dissolve(GeoAlgorithm):
         self.name = 'Dissolve'
         self.group = 'Vector geometry tools'
         self.addParameter(ParameterVector(Dissolve.INPUT,
-            self.tr('Input layer'),
-            [ParameterVector.VECTOR_TYPE_POLYGON, ParameterVector.VECTOR_TYPE_LINE]))
+                                          self.tr('Input layer'),
+                                          [ParameterVector.VECTOR_TYPE_POLYGON, ParameterVector.VECTOR_TYPE_LINE]))
         self.addParameter(ParameterBoolean(Dissolve.DISSOLVE_ALL,
-            self.tr('Dissolve all (do not use field)'), True))
+                                           self.tr('Dissolve all (do not use field)'), True))
         self.addParameter(ParameterTableField(Dissolve.FIELD,
-            self.tr('Unique ID field'), Dissolve.INPUT, optional=True))
+                                              self.tr('Unique ID field'), Dissolve.INPUT, optional=True))
         self.addOutput(OutputVector(Dissolve.OUTPUT, self.tr('Dissolved')))

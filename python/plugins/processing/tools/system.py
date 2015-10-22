@@ -55,6 +55,7 @@ def isMac():
 
 _tempFolderSuffix = unicode(uuid.uuid4()).replace('-', '')
 
+
 def tempFolder():
     tempDir = os.path.join(unicode(QDir.tempPath()), 'processing' + _tempFolderSuffix)
     if not QDir(tempDir).exists():

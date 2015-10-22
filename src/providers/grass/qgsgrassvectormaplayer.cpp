@@ -350,7 +350,7 @@ void QgsGrassVectorMapLayer::updateFields()
 {
   QgsDebugMsg( "entered" );
 
-  // update fields to pass layer/buffer check when commiting
+  // update fields to pass layer/buffer check when committing
   for ( int i = mFields.size() - 1; i >= 0; i-- )
   {
     QgsField field = mFields.at( i );

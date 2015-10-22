@@ -323,8 +323,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         except:
             defaultUniqueCol = None
 
-        colNames = zip(cols, quotedCols)
-        colNames.sort()
+        colNames = sorted(zip(cols, quotedCols))
         newItems = []
         uniqueIsFilled = False
         for (col, quotedCol) in colNames:
@@ -352,7 +351,6 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
             if self.uniqueModel.findItems(previousUniqueColumn):
                 self.uniqueCombo.setEditText(previousUniqueColumn)
                 uniqueIsFilled = True
-            
 
         oldGeometryColumn = self.geomCombo.currentText()
         self.geomCombo.clear()

@@ -38,7 +38,7 @@ class BaseError(Exception):
             msg = e
 
         if not isinstance(msg, unicode):
-             msg = unicode(msg, 'utf-8', 'replace') # convert from utf8 and replace errors (if any)
+            msg = unicode(msg, 'utf-8', 'replace') # convert from utf8 and replace errors (if any)
 
         self.msg = msg
         Exception.__init__(self, msg)

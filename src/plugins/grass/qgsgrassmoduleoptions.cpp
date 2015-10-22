@@ -334,7 +334,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
 
 #if 0
   // This works, but it would mean to desable check if 'field' tag has 'layer' defined in qgm.
-  // It is probably better to require 'layer' attribute, so that it is always explicitely defined,
+  // It is probably better to require 'layer' attribute, so that it is always explicitly defined,
   // and we are sure it is set for modules with more inputs, where auto connection cannot be used
   // (guidependency missing in GRASS 6)
   // Add default inter param relations

@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    SymetricalDifference.py
+    SymmetricalDifference.py
     ---------------------
     Date                 : September 2014
     Copyright            : (C) 2014 by Alexander Bruy
@@ -47,7 +47,7 @@ class SymmetricalDifference(GeoAlgorithm):
         self.addParameter(ParameterVector(self.OVERLAY,
                                           self.tr('Difference layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addOutput(OutputVector(self.OUTPUT,
-                                    self.tr('Symetrical difference')))
+                                    self.tr('Symmetrical difference')))
 
     def processAlgorithm(self, progress):
         layerA = dataobjects.getObjectFromUri(

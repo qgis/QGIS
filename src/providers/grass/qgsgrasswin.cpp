@@ -28,37 +28,42 @@
 #ifdef Q_OS_WIN
 // Ideas/code from http://stackoverflow.com/questions/20162359/c-best-way-to-get-window-handle-of-the-only-window-from-a-process-by-process
 // Get window for pid
-struct EnumData {
-    DWORD dwProcessId;
-    HWND hWnd;
+struct EnumData
+{
+  DWORD dwProcessId;
+  HWND hWnd;
 };
-BOOL CALLBACK EnumProc( HWND hWnd, LPARAM lParam ) {
-    EnumData& ed = *(EnumData*)lParam;
-    DWORD dwProcessId = 0x0;
-    GetWindowThreadProcessId( hWnd, &dwProcessId );
-    if ( ed.dwProcessId == dwProcessId ) {
-        ed.hWnd = hWnd;
-        SetLastError( ERROR_SUCCESS );
-        return FALSE;
-    }
-    return TRUE;
+BOOL CALLBACK EnumProc( HWND hWnd, LPARAM lParam )
+{
+  EnumData& ed = *( EnumData* )lParam;
+  DWORD dwProcessId = 0x0;
+  GetWindowThreadProcessId( hWnd, &dwProcessId );
+  if ( ed.dwProcessId == dwProcessId )
+  {
+    ed.hWnd = hWnd;
+    SetLastError( ERROR_SUCCESS );
+    return FALSE;
+  }
+  return TRUE;
 }
-HWND FindWindowFromProcessId( DWORD dwProcessId ) {
-    EnumData ed = { dwProcessId };
-    if ( !EnumWindows( EnumProc, (LPARAM)&ed ) &&
-         ( GetLastError() == ERROR_SUCCESS ) ) {
-        return ed.hWnd;
-    }
-    return NULL;
+HWND FindWindowFromProcessId( DWORD dwProcessId )
+{
+  EnumData ed = { dwProcessId };
+  if ( !EnumWindows( EnumProc, ( LPARAM )&ed ) &&
+       ( GetLastError() == ERROR_SUCCESS ) )
+  {
+    return ed.hWnd;
+  }
+  return NULL;
 }
 #endif
 
 void QgsGrassWin::hideWindow( int pid )
 {
-  Q_UNUSED(pid)
-  QgsDebugMsg( QString("pid = %1").arg(pid) );
+  Q_UNUSED( pid )
+  QgsDebugMsg( QString( "pid = %1" ).arg( pid ) );
 #ifdef Q_OS_WIN
-  HWND hWnd = FindWindowFromProcessId( (DWORD)pid );
+  HWND hWnd = FindWindowFromProcessId(( DWORD )pid );
   if ( hWnd )
   {
     QgsDebugMsg( "driver window found -> minimize" );
@@ -68,6 +73,6 @@ void QgsGrassWin::hideWindow( int pid )
     QgsDebugMsg( "cannot find driver window" );
   }
   // Unfortunately the window opens first for a moment
-  ShowWindow( hWnd, SW_HIDE);
+  ShowWindow( hWnd, SW_HIDE );
 #endif
 }

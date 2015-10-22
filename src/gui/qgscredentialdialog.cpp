@@ -200,7 +200,7 @@ void QgsCredentialDialog::requestCredentialsMasterPassword( QString * password, 
   chkbxEraseAuthDb->setChecked( false );
   lblSavedForSession->setVisible( true );
 
-  // reenable OK button or non-master-password requests will be blocked
+  // re-enable OK button or non-master-password requests will be blocked
   // needs to come after leMasterPass->clear() or textChanged auto-slot with disable it again
   mOkButton->setEnabled( true );
 

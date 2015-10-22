@@ -139,7 +139,7 @@ class CORE_EXPORT QgsFeatureRendererV2
      * You do not need to specify the extent in here, this is taken care of separately and
      * will be combined with a filter returned from this method.
      *
-     * @return An expresion used as where clause
+     * @return An expression used as where clause
      */
     virtual QString filter() { return QString::null; }
 

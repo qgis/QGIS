@@ -65,7 +65,7 @@ def main():
         grass.warning('Cannot create new DB connection')
         return
 
-    grass.message('Transfering tables to the new DB')
+    grass.message('Transferring tables to the new DB')
     if grass.run_command('v.db.reconnect.all', flags='cd') != 0:
         grass.warning('Cannot transfer tables')
 

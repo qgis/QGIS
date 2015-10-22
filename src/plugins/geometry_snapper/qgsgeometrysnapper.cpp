@@ -196,7 +196,7 @@ void QgsGeometrySnapper::processFeature( const QgsFeatureId &id )
   delete subjSnapIndex;
   delete origSubjSnapIndex;
 
-  // Pass 3: remove superfluous vertices: all vertices which are snapped to a segment and not preceeded or succeeded by an unsnapped vertex
+  // Pass 3: remove superfluous vertices: all vertices which are snapped to a segment and not preceded or succeeded by an unsnapped vertex
   for ( int iPart = 0, nParts = subjGeom->partCount(); iPart < nParts; ++iPart )
   {
     for ( int iRing = 0, nRings = subjGeom->ringCount( iPart ); iRing < nRings; ++iRing )

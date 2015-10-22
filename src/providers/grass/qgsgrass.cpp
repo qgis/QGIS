@@ -2886,7 +2886,7 @@ QgsGrass::ModuleOutput QgsGrass::parseModuleOutput( const QString & input, QStri
   QRegExp rxwarning( "GRASS_INFO_WARNING\\(\\d+,\\d+\\): (.*)" );
   QRegExp rxerror( "GRASS_INFO_ERROR\\(\\d+,\\d+\\): (.*)" );
   QRegExp rxend( "GRASS_INFO_END\\(\\d+,\\d+\\)" );
-  // GRASS added G_progress() which does not suport GRASS_MESSAGE_FORMAT=gui
+  // GRASS added G_progress() which does not support GRASS_MESSAGE_FORMAT=gui
   // and it is printing fprintf(stderr, "%10ld\b\b\b\b\b\b\b\b\b\b", n);
   // Ticket created https://trac.osgeo.org/grass/ticket/2751
   QRegExp rxprogress( " +(\\d+)\\b\\b\\b\\b\\b\\b\\b\\b\\b\\b" );

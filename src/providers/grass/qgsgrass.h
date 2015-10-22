@@ -603,7 +603,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
      * @param input input string read from module stderr
      * @param text parsed text
      * @param html html formated parsed text, e.g. + icons
-     * @param value percent 0-100 or progress as absolut number if total is unknown*/
+     * @param value percent 0-100 or progress as absolute number if total is unknown*/
     static ModuleOutput parseModuleOutput( const QString & input, QString &text, QString &html, int &value );
 
   public slots:
@@ -625,7 +625,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     /** Signal emitted after mapset was opened */
     void mapsetChanged();
 
-    /** Signal emited when mapset search path changed (SEARCH_PATH file changed and it was loaded to mMapsetSearchPath) */
+    /** Signal emitted when mapset search path changed (SEARCH_PATH file changed and it was loaded to mMapsetSearchPath) */
     void mapsetSearchPathChanged();
 
     /** Emitted when path to modules config dir changed */
@@ -635,7 +635,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     void modulesDebugChanged();
 
     /** Emitted when current region changed
-     *  TODO: currently only emited when writeRegion is called, add file system watcher
+     *  TODO: currently only emitted when writeRegion is called, add file system watcher
      *  to get also changes done outside QGIS or by modules.
      */
     void regionChanged();

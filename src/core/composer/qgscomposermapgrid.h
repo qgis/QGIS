@@ -138,7 +138,7 @@ class CORE_EXPORT QgsComposerMapGridStack : public QgsComposerMapItemStack
 
     /** Calculates the maximum distance grids within the stack extend beyond the
      * QgsComposerMap's item rect. This method calculates the distance for each side of the
-     * map item seperately
+     * map item separately
      * @param top storage for top extension
      * @param right storage for right extension
      * @param bottom storage for bottom extension
@@ -334,7 +334,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
 
     /** Calculates the maximum distance the grid extends beyond the
      * QgsComposerMap's item rect. This method calculates the distance for each side of the
-     * map item seperately
+     * map item separately
      * @param top storage for top extension
      * @param right storage for right extension
      * @param bottom storage for bottom extension
