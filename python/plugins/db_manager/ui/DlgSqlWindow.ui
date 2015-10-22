@@ -43,8 +43,8 @@
            <item>
             <widget class="QCheckBox" name="uniqueColumnCheck">
              <property name="text">
-              <string>Column with unique 
-integer values</string>
+              <string>Column(s) with 
+unique values</string>
              </property>
             </widget>
            </item>
@@ -144,7 +144,16 @@ columns</string>
            <item>
             <widget class="QWidget" name="layerTypeWidget" native="true">
              <layout class="QHBoxLayout" name="horizontalLayout_3">
-              <property name="margin">
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
                <number>0</number>
               </property>
               <item>
