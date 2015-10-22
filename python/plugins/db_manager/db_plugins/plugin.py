@@ -37,10 +37,7 @@ class BaseError(Exception):
         else:
             msg = e
 
-        try:
-            return unicode(val) # convert to unicode
-        except UnicodeDecodeError:
-            return unicode(val, 'utf-8', 'replace') # convert from utf8 and replace errors (if any)
+        msg = unicode(val, 'utf-8', 'replace') # convert from utf8 and replace errors (if any)
 
         self.msg = msg
         Exception.__init__(self, msg)
