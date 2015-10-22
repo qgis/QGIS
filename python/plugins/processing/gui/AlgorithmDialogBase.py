@@ -34,6 +34,7 @@ from PyQt4.QtGui import QApplication, QDialogButtonBox
 from qgis.utils import iface
 
 from processing.core.ProcessingConfig import ProcessingConfig
+from processing.gui import AlgorithmClassification
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
@@ -64,7 +65,7 @@ class AlgorithmDialogBase(BASE, WIDGET):
 
         self.btnClose = self.buttonBox.button(QDialogButtonBox.Close)
 
-        self.setWindowTitle(self.alg.name)
+        self.setWindowTitle(AlgorithmClassification.getDisplayName(self.alg))
 
         # load algorithm help if available
         isText, algHelp = self.alg.help()
