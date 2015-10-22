@@ -108,6 +108,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
     , mTitle( title )
     , mQgis( qgis )
     , mPrinter( 0 )
+    , mSetPageOrientation( false )
     , mUndoView( 0 )
     , mAtlasFeatureAction( 0 )
 {
@@ -638,9 +639,6 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   connect( atlasMap, SIGNAL( coverageLayerChanged( QgsVectorLayer* ) ), this, SLOT( updateAtlasMapLayerAction( QgsVectorLayer * ) ) );
   connect( atlasMap, SIGNAL( numberFeaturesChanged( int ) ), this, SLOT( updateAtlasPageComboBox( int ) ) );
   connect( atlasMap, SIGNAL( featureChanged( QgsFeature* ) ), this, SLOT( atlasFeatureChanged( QgsFeature* ) ) );
-
-  //default printer page setup
-  setPrinterPageDefaults();
 
   // Create size grip (needed by Mac OS X for QMainWindow if QStatusBar is not visible)
   //should not be needed now that composer has a status bar?
@@ -1528,8 +1526,13 @@ void QgsComposer::setComposition( QgsComposition* composition )
   connect( atlasMap, SIGNAL( numberFeaturesChanged( int ) ), this, SLOT( updateAtlasPageComboBox( int ) ) );
   connect( atlasMap, SIGNAL( featureChanged( QgsFeature* ) ), this, SLOT( atlasFeatureChanged( QgsFeature* ) ) );
 
-  //default printer page setup
-  setPrinterPageDefaults();
+  mSetPageOrientation = false;
+  if ( mPrinter )
+  {
+    //if printer has already been created then we need to reset the page orientation to match
+    //new composition
+    setPrinterPageOrientation();
+  }
 }
 
 void QgsComposer::dockVisibilityChanged( bool visible )
@@ -1835,7 +1838,9 @@ void QgsComposer::printComposition( QgsComposer::OutputMode mode )
     mComposition->setUseAdvancedEffects( false );
   }
 
-  //orientation and page size are already set to QPrinter in the page setup dialog
+  //set printer page orientation
+  setPrinterPageOrientation();
+
   QPrintDialog printDialog( printer(), 0 );
   if ( printDialog.exec() != QDialog::Accepted )
   {
@@ -3455,7 +3460,7 @@ void QgsComposer::createCompositionWidget()
   QgsCompositionWidget* compositionWidget = new QgsCompositionWidget( mGeneralDock, mComposition );
   connect( mComposition, SIGNAL( paperSizeChanged() ), compositionWidget, SLOT( displayCompositionWidthHeight() ) );
   connect( this, SIGNAL( printAsRasterChanged( bool ) ), compositionWidget, SLOT( setPrintAsRasterCheckBox( bool ) ) );
-  connect( compositionWidget, SIGNAL( pageOrientationChanged( QString ) ), this, SLOT( setPrinterPageOrientation( QString ) ) );
+  connect( compositionWidget, SIGNAL( pageOrientationChanged( QString ) ), this, SLOT( pageOrientationChanged( QString ) ) );
   mGeneralDock->setWidget( compositionWidget );
 }
 
@@ -3553,8 +3558,13 @@ void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& 
   connect( atlasMap, SIGNAL( numberFeaturesChanged( int ) ), this, SLOT( updateAtlasPageComboBox( int ) ) );
   connect( atlasMap, SIGNAL( featureChanged( QgsFeature* ) ), this, SLOT( atlasFeatureChanged( QgsFeature* ) ) );
 
-  //default printer page setup
-  setPrinterPageDefaults();
+  mSetPageOrientation = false;
+  if ( mPrinter )
+  {
+    //if printer has already been created then we need to reset the page orientation to match
+    //new composition
+    setPrinterPageOrientation();
+  }
 
   //setup items tree view
   mItemsTreeView->setModel( mComposition->itemsModel() );
@@ -3896,6 +3906,9 @@ void QgsComposer::on_mActionPageSetup_triggered()
     return;
   }
 
+  //set printer page orientation
+  setPrinterPageOrientation();
+
   QPageSetupDialog pageSetupDialog( printer(), this );
   pageSetupDialog.exec();
 }
@@ -4066,31 +4079,29 @@ void QgsComposer::updateAtlasMapLayerAction( QgsVectorLayer *coverageLayer )
   }
 }
 
-void QgsComposer::setPrinterPageOrientation( const QString& orientation )
+void QgsComposer::pageOrientationChanged( const QString& )
 {
-  if ( orientation == tr( "Landscape" ) )
-  {
-    printer()->setOrientation( QPrinter::Landscape );
-  }
-  else
-  {
-    printer()->setOrientation( QPrinter::Portrait );
-  }
+  mSetPageOrientation = false;
 }
 
-void QgsComposer::setPrinterPageDefaults()
+void QgsComposer::setPrinterPageOrientation()
 {
-  double paperWidth = mComposition->paperWidth();
-  double paperHeight = mComposition->paperHeight();
+  if ( !mSetPageOrientation )
+  {
+    double paperWidth = mComposition->paperWidth();
+    double paperHeight = mComposition->paperHeight();
 
-  //set printer page orientation
-  if ( paperWidth > paperHeight )
-  {
-    printer()->setOrientation( QPrinter::Landscape );
-  }
-  else
-  {
-    printer()->setOrientation( QPrinter::Portrait );
+    //set printer page orientation
+    if ( paperWidth > paperHeight )
+    {
+      printer()->setOrientation( QPrinter::Landscape );
+    }
+    else
+    {
+      printer()->setOrientation( QPrinter::Portrait );
+    }
+
+    mSetPageOrientation = true;
   }
 }
 

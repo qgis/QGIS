@@ -508,9 +508,6 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Updates the "set as atlas feature" map layer action, removing it if atlas is disabled
     void updateAtlasMapLayerAction( bool atlasEnabled );
 
-    //! Set default settings for printer page settings based on composition paper size
-    void setPrinterPageDefaults();
-
     //! Load predefined scales from the project's properties
     void loadAtlasPredefinedScalesFromProject();
 
@@ -566,6 +563,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     //! Page & Printer Setup
     QPrinter* mPrinter;
+    bool mSetPageOrientation;
 
     QUndoView* mUndoView;
 
@@ -644,7 +642,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     void updateAtlasMapLayerAction( QgsVectorLayer* coverageLayer );
 
     //! Sets the printer page orientation when the page orientation changes
-    void setPrinterPageOrientation( const QString& orientation );
+    void pageOrientationChanged( const QString& orientation );
+
+    void setPrinterPageOrientation();
 
     void disablePreviewMode();
     void activateGrayscalePreview();
