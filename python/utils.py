@@ -75,22 +75,35 @@ def showException(type, value, tb, msg, messagebar=False):
     QgsMessageLog.logMessage(logmessage, title)
 
     blockingdialog = QApplication.instance().activeModalWidget()
+    window = QApplication.instance().activeWindow()
 
-    if messagebar and iface and not blockingdialog:
-        item = iface.messageBar().currentItem()
-        if item and item.property("Error") == msg:
-            # Return of we already have a message with the same error message
-            return
-
-        widget = iface.messageBar().createMessage(title, msg + " See message log (Python Error) for more details.")
-        widget.setProperty("Error", msg)
-        stackbutton = QPushButton("Stack trace", pressed=functools.partial(open_stack_dialog, type, value, tb, msg))
-        button = QPushButton("View message log", pressed=show_message_log)
-        widget.layout().addWidget(stackbutton)
-        widget.layout().addWidget(button)
-        iface.messageBar().pushWidget(widget, QgsMessageBar.WARNING)
-    else:
+    # Still show the normal blocking dialog in this case for now.
+    if blockingdialog or not window or not messagebar or not iface:
         open_stack_dialog(type, value, tb, msg)
+        return
+
+    bar = iface.messageBar()
+
+    # If it's not the main window see if we can find a message bar to report the error in
+    if not window.objectName() == "QgisApp":
+        widgets = window.findChildren(QgsMessageBar)
+        if widgets:
+            # Grab the first message bar for now
+            bar = widgets[0]
+
+
+    item = bar.currentItem()
+    if item and item.property("Error") == msg:
+        # Return of we already have a message with the same error message
+        return
+
+    widget = bar.createMessage(title, msg + " See message log (Python Error) for more details.")
+    widget.setProperty("Error", msg)
+    stackbutton = QPushButton("Stack trace", pressed=functools.partial(open_stack_dialog, type, value, tb, msg))
+    button = QPushButton("View message log", pressed=show_message_log)
+    widget.layout().addWidget(stackbutton)
+    widget.layout().addWidget(button)
+    bar.pushWidget(widget, QgsMessageBar.WARNING)
 
 
 def show_message_log(pop_error=True):
