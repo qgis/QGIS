@@ -103,6 +103,7 @@ Vect_delete_line_function_type *Vect_delete_line_function_pointer = ( Vect_delet
 static QString GRASS_KEY = "grass";
 
 int QgsGrassProvider::LAST_TYPE = -9999;
+int QgsGrassProvider::mEditedCount = 0;
 
 QgsGrassProvider::QgsGrassProvider( QString uri )
     : QgsVectorDataProvider( uri )
@@ -291,6 +292,14 @@ QgsGrassProvider::~QgsGrassProvider()
 
 int QgsGrassProvider::capabilities() const
 {
+  // Because of bug in GRASS https://trac.osgeo.org/grass/ticket/2775 it is not possible
+  // close db drivers in random order on Unix and probably Mac -> disable editing if another layer is edited
+#ifndef Q_OS_WIN
+  if ( mEditedCount > 0 && !mEditBuffer )
+  {
+    return 0;
+  }
+#endif
   // for now, only one map may be edited at time
   if ( mEditBuffer || ( mLayer && mLayer->map() && !mLayer->map()->isEdited() ) )
   {
@@ -644,6 +653,7 @@ bool QgsGrassProvider::closeEdit( bool newMap, QgsVectorLayer *vectorLayer )
     }
     connect( mLayer->map(), SIGNAL( dataChanged() ), SLOT( onDataChanged() ) );
     emit fullExtentCalculated();
+    mEditedCount--;
     return true;
   }
   return false;
@@ -1128,6 +1138,8 @@ void QgsGrassProvider::startEditing( QgsVectorLayer *vectorLayer )
   // disable cat and topo symbol editing
   vectorLayer->setFieldEditable( mLayer->keyColumn(), false );
   vectorLayer->setFieldEditable( mLayer->fields().size() - 1, false );
+
+  mEditedCount++;
 
   QgsDebugMsg( "edit started" );
 }

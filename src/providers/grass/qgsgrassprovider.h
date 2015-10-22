@@ -481,6 +481,9 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     // last geometry GV_* type, used e.g. for splitting features
     int mLastType;
 
+    // number of currently being edited providers
+    static int mEditedCount;
+
     friend class QgsGrassFeatureSource;
     friend class QgsGrassFeatureIterator;
 };
