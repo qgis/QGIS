@@ -364,6 +364,22 @@ def getRasterExtent(parent, fileName):
     return QgsRectangle(xUL, yLR, xLR, yUL)
 
 
+# get raster resolution
+
+def getRasterResolution(fileName):
+    ds = gdal.Open(fileName)
+    if ds is None:
+        return
+
+    gt = ds.GetGeoTransform()
+
+    if gt is None:
+        return
+    else:
+        xRes = abs(gt[1])
+        yRes = abs(gt[5])
+        return (xRes, yRes)
+
 # This class is used to replace the QFileDialog class.
 # Its static methods are used in place of the respective QFileDialog ones to:
 # 1. set the last used directory

@@ -31,7 +31,6 @@ from ui_widgetClipper import Ui_GdalToolsWidget as Ui_Widget
 from widgetPluginBase import GdalToolsBasePluginWidget as BasePluginWidget
 import GdalTools_utils as Utils
 
-
 class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
 
     def __init__(self, iface):
@@ -46,12 +45,19 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         self.extentSelector.setCanvas(self.canvas)
         self.outputFormat = Utils.fillRasterOutputFormat()
 
+        # set the default QDoubleSpinBoxes
+        self.xRes.setValue(12.5)
+        self.yRes.setValue(12.5)
+
         self.setParamsStatus([
             (self.inSelector, SIGNAL("filenameChanged()")),
             (self.outSelector, SIGNAL("filenameChanged()")),
             (self.noDataSpin, SIGNAL("valueChanged(int)"), self.noDataCheck, 1700),
             (self.maskSelector, SIGNAL("filenameChanged()"), self.maskModeRadio, 1600),
-            (self.alphaBandCheck, SIGNAL("stateChanged( int )")),
+            (self.alphaBandCheck, SIGNAL("stateChanged(int)")),
+            (self.cropToCutlineCheck, SIGNAL("stateChanged(int)")),
+            ([self.xRes, self.yRes], SIGNAL("valueChanged(double)"), self.keepResolutionRadio),
+            ([self.xRes, self.yRes], SIGNAL("valueChanged(double)"), self.setResolutionRadio),
             (self.extentSelector, [SIGNAL("selectionStarted()"), SIGNAL("newExtentDefined()")], self.extentModeRadio),
             (self.modeStackedWidget, SIGNAL("currentIndexChanged(int)"))
         ])
@@ -63,9 +69,11 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         self.connect(self.extentSelector, SIGNAL("selectionStarted()"), self.checkRun)
 
         self.connect(self.extentModeRadio, SIGNAL("toggled(bool)"), self.switchClippingMode)
+        self.connect(self.keepResolutionRadio, SIGNAL("toggled(bool)"), self.switchResolutionMode)
 
     def show_(self):
         self.switchClippingMode()
+        self.switchResolutionMode()
         BasePluginWidget.show_(self)
 
     def onClosing(self):
@@ -82,6 +90,12 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         self.modeStackedWidget.setCurrentIndex(index)
         self.checkRun()
 
+    def switchResolutionMode(self):
+        if self.keepResolutionRadio.isChecked():
+            self.resolutionStackedWidget.setCurrentIndex(0)
+        else:
+            self.resolutionStackedWidget.setCurrentIndex(1)
+    
     def checkRun(self):
         if self.extentModeRadio.isChecked():
             enabler = self.extentSelector.isCoordsValid()
@@ -135,13 +149,14 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
 
     def getArgsModeExtent(self):
         self.base.setPluginCommand("gdal_translate")
+        inputFn = self.getInputFileName()
         arguments = []
         if self.noDataCheck.isChecked():
             arguments.append("-a_nodata")
             arguments.append(unicode(self.noDataSpin.value()))
         if self.extentModeRadio.isChecked() and self.extentSelector.isCoordsValid():
             rect = self.extentSelector.getExtent()
-            if rect is not None:
+            if rect is not None and not inputFn == '':
                 arguments.append("-projwin")
                 arguments.append(unicode(rect.xMinimum()))
                 arguments.append(unicode(rect.yMaximum()))
@@ -150,32 +165,44 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         if not self.getOutputFileName() == '':
             arguments.append("-of")
             arguments.append(self.outputFormat)
-        arguments.append(self.getInputFileName())
+        arguments.append(inputFn)
         arguments.append(self.getOutputFileName())
         return arguments
 
     def getArgsModeMask(self):
         self.base.setPluginCommand("gdalwarp")
+        inputFn = self.getInputFileName()
         arguments = []
         if self.noDataCheck.isChecked():
             arguments.append("-dstnodata")
             arguments.append(unicode(self.noDataSpin.value()))
         if self.maskModeRadio.isChecked():
             mask = self.maskSelector.filename()
-            if not mask == '':
+            if not mask == '' and not inputFn == '':
                 arguments.append("-q")
                 arguments.append("-cutline")
                 arguments.append(mask)
                 if Utils.GdalConfig.versionNum() >= 1800:
-                    arguments.append("-crop_to_cutline")
+                    if self.cropToCutlineCheck.isChecked():
+                        arguments.append("-crop_to_cutline")
                 if self.alphaBandCheck.isChecked():
                     arguments.append("-dstalpha")
+                if self.keepResolutionRadio.isChecked():
+                    arguments.append("-tr")
+                    resolution = Utils.getRasterResolution(self.getInputFileName())
+                    if resolution is not None:
+                        arguments.append(resolution[0])
+                        arguments.append(resolution[1])
+                if self.setResolutionRadio.isChecked():
+                    arguments.append("-tr")
+                    arguments.append(unicode(self.xRes.value()))
+                    arguments.append(unicode(self.yRes.value()))
 
         outputFn = self.getOutputFileName()
         if not outputFn == '':
             arguments.append("-of")
             arguments.append(self.outputFormat)
-        arguments.append(self.getInputFileName())
+        arguments.append(inputFn)
         arguments.append(outputFn)
         return arguments
 
