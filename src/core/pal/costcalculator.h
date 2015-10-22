@@ -28,7 +28,7 @@ namespace pal
       /** Increase candidate's cost according to its collision with passed feature */
       static void addObstacleCostPenalty( LabelPosition* lp, pal::FeaturePart *obstacle );
 
-      static void setPolygonCandidatesCost( int nblp, QList< LabelPosition* >& lPos, int max_p, RTree<pal::FeaturePart*, double, 2, double> *obstacles, double bbx[4], double bby[4] );
+      static void setPolygonCandidatesCost( int nblp, QList< LabelPosition* >& lPos, RTree<pal::FeaturePart*, double, 2, double> *obstacles, double bbx[4], double bby[4] );
 
       /** Set cost to the smallest distance between lPos's centroid and a polygon stored in geoetry field */
       static void setCandidateCostFromPolygon( LabelPosition* lp, RTree<pal::FeaturePart *, double, 2, double> *obstacles, double bbx[4], double bby[4] );
