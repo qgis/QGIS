@@ -66,6 +66,7 @@ class GrassAlgorithm(GeoAlgorithm):
 
     def __init__(self, descriptionfile):
         GeoAlgorithm.__init__(self)
+        self.hardcodedStrings = []
         self.descriptionFile = descriptionfile
         self.defineCharacteristicsFromFile()
         self.numExportedLayers = 0
@@ -121,7 +122,9 @@ class GrassAlgorithm(GeoAlgorithm):
         while line != '':
             try:
                 line = line.strip('\n').strip()
-                if line.startswith('Parameter'):
+                if line.startswith('Hardcoded'):
+                    self.hardcodedStrings.append(line[len('Hardcoded|'):])
+                elif line.startswith('Parameter'):
                     parameter = getParameterFromString(line)
                     self.addParameter(parameter)
                     if isinstance(parameter, ParameterVector):
@@ -297,6 +300,8 @@ class GrassAlgorithm(GeoAlgorithm):
         # 2: Set parameters and outputs
 
         command = self.grassName
+        command += ' ' + ' '.join(self.hardcodedStrings)
+
         for param in self.parameters:
             if param.value is None or param.value == '':
                 continue
