@@ -131,7 +131,6 @@ void QgsHttpRequestHandler::sendHeaders()
       printf( it.value().toLocal8Bit() );
       printf( "\n" );
     }
-    printf( "\n" );
   }
   printf( "\n" );
   mHeaders.clear();
