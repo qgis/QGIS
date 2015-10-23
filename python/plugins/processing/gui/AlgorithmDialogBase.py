@@ -29,6 +29,7 @@ import os
 
 from PyQt4 import uic
 from PyQt4.QtCore import QCoreApplication, QUrl, QSettings, QByteArray
+from PyQt4.QtNetwork import QNetworkProxy
 from PyQt4.QtGui import QApplication, QDialogButtonBox
 
 from qgis.utils import iface
@@ -83,6 +84,9 @@ class AlgorithmDialogBase(BASE, WIDGET):
                 self.tabWidget.setTabEnabled(2, False)
                 self.txtHelp.loadFinished.connect(self.loadFinished)
                 self.tabWidget.currentChanged.connect(self.loadHelp)
+                # Handle proxy settings if available
+                if self.settings.value( "proxy/proxyEnabled", 'true') == u"true":
+                    self.setProxy()
                 self.txtHelp.load(algHelp)
                 self.algHelp = algHelp
         except:
@@ -91,6 +95,30 @@ class AlgorithmDialogBase(BASE, WIDGET):
 
         self.showDebug = ProcessingConfig.getSetting(
             ProcessingConfig.SHOW_DEBUG_IN_DIALOG)
+
+    def setProxy(self):
+        """ Grab the QGIS proxy config and make it the Application Proxy"""
+        # Grab QGIS settings on proxy
+        from qgis.core import QgsMessageLog
+        proxyHost = self.settings.value("proxy/proxyHost", unicode())
+        proxyUser = self.settings.value("proxy/proxyUser", unicode())
+        proxyPassword = self.settings.value("proxy/proxyPassword", unicode())
+        proxyPort = self.settings.value("proxy/proxyPort", unicode())
+        proxyType = self.settings.value("proxy/proxyType", unicode())
+        proxyTypes = { 'DefaultProxy' : QNetworkProxy.DefaultProxy,
+                       'HttpProxy' : QNetworkProxy.HttpProxy,
+                       'Socks5Proxy' : QNetworkProxy.Socks5Proxy,
+                       'HttpCachingProxy' : QNetworkProxy.HttpCachingProxy,
+                       'FtpCachingProxy' : QNetworkProxy.FtpCachingProxy
+        }
+        if proxyType in proxyTypes: 
+            proxyType = proxyTypes[proxyType]
+        else:
+            proxyType = QNetworkProxy.DefaultProxy
+
+        # build the proxy definition
+        proxy = QNetworkProxy(proxyType, proxyHost, int(proxyPort), proxyUser, proxyPassword)
+        QNetworkProxy.setApplicationProxy(proxy)
 
     def loadFinished(self):
         self.tabWidget.setTabEnabled(2, True)
