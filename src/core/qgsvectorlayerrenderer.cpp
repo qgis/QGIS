@@ -152,7 +152,7 @@ bool QgsVectorLayerRenderer::render()
                                      .setFilterRect( requestExtent )
                                      .setSubsetOfAttributes( mAttrNames, mFields );
 
-  if ( !rendererFilter.isEmpty() )
+  if ( !rendererFilter.isEmpty() && rendererFilter != "TRUE" )
   {
     featureRequest.setFilterExpression( rendererFilter );
     featureRequest.setExpressionContext( mContext.expressionContext() );
@@ -303,28 +303,30 @@ void QgsVectorLayerRenderer::drawRendererV2( QgsFeatureIterator& fit )
       bool rendered = mRendererV2->renderFeature( fet, mContext, -1, sel, drawMarker );
 
       // labeling - register feature
-      Q_UNUSED( rendered );
-      if ( rendered && mContext.labelingEngine() )
+      if ( rendered )
       {
-        if ( mLabeling )
+        if ( mContext.labelingEngine() )
         {
-          mContext.labelingEngine()->registerFeature( mLayerID, fet, mContext );
+          if ( mLabeling )
+          {
+            mContext.labelingEngine()->registerFeature( mLayerID, fet, mContext );
+          }
+          if ( mDiagrams )
+          {
+            mContext.labelingEngine()->registerDiagramFeature( mLayerID, fet, mContext );
+          }
         }
-        if ( mDiagrams )
+        // new labeling engine
+        if ( mContext.labelingEngineV2() )
         {
-          mContext.labelingEngine()->registerDiagramFeature( mLayerID, fet, mContext );
-        }
-      }
-      // new labeling engine
-      if ( rendered && mContext.labelingEngineV2() )
-      {
-        if ( mLabelProvider )
-        {
-          mLabelProvider->registerFeature( fet, mContext );
-        }
-        if ( mDiagramProvider )
-        {
-          mDiagramProvider->registerFeature( fet, mContext );
+          if ( mLabelProvider )
+          {
+            mLabelProvider->registerFeature( fet, mContext );
+          }
+          if ( mDiagramProvider )
+          {
+            mDiagramProvider->registerFeature( fet, mContext );
+          }
         }
       }
     }
