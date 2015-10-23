@@ -1616,12 +1616,16 @@ void QgsComposer::exportCompositionAsPDF( QgsComposer::OutputMode mode )
     {
       outputFileName = file.path();
     }
-
+#ifdef Q_OS_MAC
+    mQgis->activateWindow();
+    this->raise();
+#endif
     outputFileName = QFileDialog::getSaveFileName(
                        this,
                        tr( "Save composition as" ),
                        outputFileName,
                        tr( "PDF Format" ) + " (*.pdf *.PDF)" );
+    this->activateWindow();
     if ( outputFileName.isEmpty() )
     {
       return;
@@ -1995,7 +1999,12 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
       outputFileName = QDir( lastUsedDir ).filePath( atlasMap->currentFilename() );
     }
 
+#ifdef Q_OS_MAC
+    mQgis->activateWindow();
+    this->raise();
+#endif
     QPair<QString, QString> fileNExt = QgisGui::getSaveAsImageName( this, tr( "Save composition as" ), outputFileName );
+    this->activateWindow();
 
     if ( fileNExt.first.isEmpty() )
     {
@@ -2449,11 +2458,16 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
     }
 
     // open file dialog
+#ifdef Q_OS_MAC
+    mQgis->activateWindow();
+    this->raise();
+#endif
     outputFileName = QFileDialog::getSaveFileName(
                        this,
                        tr( "Save composition as" ),
                        outputFileName,
                        tr( "SVG Format" ) + " (*.svg *.SVG)" );
+    this->activateWindow();
 
     if ( outputFileName.isEmpty() )
       return;
@@ -2983,6 +2997,10 @@ void QgsComposer::on_mActionSaveAsTemplate_triggered()
   //show file dialog
   QSettings settings;
   QString lastSaveDir = settings.value( "UI/lastComposerTemplateDir", "" ).toString();
+#ifdef Q_OS_MAC
+    mQgis->activateWindow();
+    this->raise();
+#endif
   QString saveFileName = QFileDialog::getSaveFileName(
                            this,
                            tr( "Save template" ),
@@ -3908,7 +3926,6 @@ void QgsComposer::on_mActionPageSetup_triggered()
 
   //set printer page orientation
   setPrinterPageOrientation();
-
   QPageSetupDialog pageSetupDialog( printer(), this );
   pageSetupDialog.exec();
 }
