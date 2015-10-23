@@ -1538,6 +1538,7 @@ QDomDocument QgsWMSProjectParser::getStyles( QStringList& layerList ) const
   // Create the root element
   QDomElement root = myDocument.createElementNS( "http://www.opengis.net/sld", "StyledLayerDescriptor" );
   root.setAttribute( "version", "1.1.0" );
+  root.setAttribute( "units", "mm" ); // default qgsmaprenderer is Millimeters
   root.setAttribute( "xsi:schemaLocation", "http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/StyledLayerDescriptor.xsd" );
   root.setAttribute( "xmlns:ogc", "http://www.opengis.net/ogc" );
   root.setAttribute( "xmlns:se", "http://www.opengis.net/se" );
