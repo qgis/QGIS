@@ -1102,6 +1102,51 @@ void QgisApp::dropEvent( QDropEvent *event )
   for ( i = urls.begin(); i != urls.end(); ++i )
   {
     QString fileName = i->toLocalFile();
+#ifdef Q_OS_MAC
+    // Mac OS X 10.10, under Qt4.8 ,changes dropped URL format
+    // https://bugreports.qt.io/browse/QTBUG-40449
+    // [pzion 20150805] Work around
+    if ( fileName.startsWith( "/.file/id=" ) )
+    {
+      QgsDebugMsg( "Mac dropped URL with /.file/id= (converting)" );
+      CFStringRef relCFStringRef =
+        CFStringCreateWithCString(
+          kCFAllocatorDefault,
+          fileName.toUtf8().constData(),
+          kCFStringEncodingUTF8
+        );
+      CFURLRef relCFURL =
+        CFURLCreateWithFileSystemPath(
+          kCFAllocatorDefault,
+          relCFStringRef,
+          kCFURLPOSIXPathStyle,
+          false // isDirectory
+        );
+      CFErrorRef error = 0;
+      CFURLRef absCFURL =
+        CFURLCreateFilePathURL(
+          kCFAllocatorDefault,
+          relCFURL,
+          &error
+        );
+      if ( !error )
+      {
+        static const CFIndex maxAbsPathCStrBufLen = 4096;
+        char absPathCStr[maxAbsPathCStrBufLen];
+        if ( CFURLGetFileSystemRepresentation(
+               absCFURL,
+               true, // resolveAgainstBase
+               reinterpret_cast<UInt8 *>( &absPathCStr[0] ),
+               maxAbsPathCStrBufLen ) )
+        {
+          fileName = QString( absPathCStr );
+        }
+      }
+      CFRelease( absCFURL );
+      CFRelease( relCFURL );
+      CFRelease( relCFStringRef );
+    }
+#endif
     // seems that some drag and drop operations include an empty url
     // so we test for length to make sure we have something
     if ( !fileName.isEmpty() )
