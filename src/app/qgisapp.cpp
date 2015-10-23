@@ -6208,15 +6208,20 @@ void QgisApp::mergeAttributesOfSelectedFeatures()
         continue;
 
       QVariant val = merged.at( i );
+      const QgsField &fld( vl->fields().at( i ) );
+      bool isDefaultValue = vl->fields().fieldOrigin( i ) == QgsFields::OriginProvider &&
+                            vl->dataProvider() &&
+                            vl->dataProvider()->defaultValue( vl->fields().fieldOriginIndex( i ) ) == val;
+
       // convert to destination data type
-      if ( ! vl->fields().at( i ).convertCompatible( val ) )
+      if ( !isDefaultValue && !fld.convertCompatible( val ) )
       {
         if ( firstFeature )
         {
           //only warn on first feature
           messageBar()->pushMessage(
             tr( "Invalid result" ),
-            tr( "Could not store value '%1' in field of type %2" ).arg( merged.at( i ).toString(), vl->fields().at( i ).typeName() ),
+            tr( "Could not store value '%1' in field of type %2" ).arg( merged.at( i ).toString(), fld.typeName() ),
             QgsMessageBar::WARNING );
         }
       }
@@ -6345,8 +6350,12 @@ void QgisApp::mergeSelectedFeatures()
   for ( int i = 0; i < attrs.count(); ++i )
   {
     QVariant val = attrs.at( i );
+    bool isDefaultValue = vl->fields().fieldOrigin( i ) == QgsFields::OriginProvider &&
+                          vl->dataProvider() &&
+                          vl->dataProvider()->defaultValue( vl->fields().fieldOriginIndex( i ) ) == val;
+
     // convert to destination data type
-    if ( ! vl->fields().at( i ).convertCompatible( val ) )
+    if ( !isDefaultValue && !vl->fields().at( i ).convertCompatible( val ) )
     {
       messageBar()->pushMessage(
         tr( "Invalid result" ),
