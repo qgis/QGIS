@@ -435,7 +435,12 @@ bool QgsRuleBasedRendererV2::Rule::startRender( QgsRenderContext& context, const
   QString sf;
   // If there are subfilters present (and it's not a single empty one), group them and join them with OR
   if ( subfilters.length() > 1 || subfilters.value( 0 ).trimmed().length() > 0 )
-    sf = subfilters.join( ") OR (" ).prepend( "(" ).append( ")" );
+  {
+    if ( subfilters.contains( "TRUE" ) )
+      sf = "TRUE";
+    else
+      sf = subfilters.join( ") OR (" ).prepend( "(" ).append( ")" );
+  }
 
   // Now join the subfilters with their parent (this) based on if
   // * The parent is an else rule
@@ -521,8 +526,8 @@ QgsRuleBasedRendererV2::Rule::RenderResult QgsRuleBasedRendererV2::Rule::renderF
     {
       //QgsDebugMsg(QString("add job at level %1").arg(normZLevel));
       renderQueue[normZLevel].jobs.append( new RenderJob( featToRender, mSymbol ) );
+      rendered = true;
     }
-    rendered = true;
   }
 
   bool willrendersomething = false;
@@ -548,7 +553,7 @@ QgsRuleBasedRendererV2::Rule::RenderResult QgsRuleBasedRendererV2::Rule::renderF
       rendered |= rule->renderFeature( featToRender, context, renderQueue ) == Rendered;
     }
   }
-  if ( !mIsActive )
+  if ( !mIsActive || ( mSymbol && !rendered ) )
     return Inactive;
   else if ( rendered )
     return Rendered;
