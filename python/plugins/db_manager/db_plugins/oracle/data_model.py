@@ -64,6 +64,9 @@ class ORTableDataModel(TableDataModel):
         if field.dataType.upper() == u"DATE":
             return u"CAST({} AS VARCHAR2(8))".format(
                 self.db.quoteId(field.name))
+        if u"TIMESTAMP" in field.dataType.upper():
+            return u"TO_CHAR({}, 'YYYY-MM-DD HH:MI:SS.FF')".format(
+                self.db.quoteId(field.name))
         if field.dataType.upper() == u"NUMBER":
             if not field.charMaxLen:
                 return u"CAST({} AS VARCHAR2(135))".format(
