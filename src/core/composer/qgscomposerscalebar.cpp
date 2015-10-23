@@ -305,14 +305,24 @@ double QgsComposerScaleBar::mapWidth() const
     da.setSourceCrs( mComposition->mapSettings().destinationCrs().srsid() );
     da.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", "WGS84" ) );
 
-    double measure = da.measureLine( QgsPoint( composerMapRect.xMinimum(), composerMapRect.yMinimum() ), QgsPoint( composerMapRect.xMaximum(), composerMapRect.yMinimum() ) );
-    if ( mUnits == QgsComposerScaleBar::Feet )
+    QGis::UnitType units = QGis::Meters;
+    double measure = da.measureLine( QgsPoint( composerMapRect.xMinimum(), composerMapRect.yMinimum() ),
+                                     QgsPoint( composerMapRect.xMaximum(), composerMapRect.yMinimum() ),
+                                     units );
+    switch ( mUnits )
     {
-      measure /= QGis::fromUnitToUnitFactor( QGis::Feet, QGis::Meters );
-    }
-    else if ( mUnits == QgsComposerScaleBar::NauticalMiles )
-    {
-      measure /= QGis::fromUnitToUnitFactor( QGis::NauticalMiles, QGis::Meters );
+      case QgsComposerScaleBar::Feet:
+        measure /= QGis::fromUnitToUnitFactor( QGis::Feet, units );
+        break;
+      case QgsComposerScaleBar::NauticalMiles:
+        measure /= QGis::fromUnitToUnitFactor( QGis::NauticalMiles, units );
+        break;
+      case QgsComposerScaleBar::Meters:
+        measure /= QGis::fromUnitToUnitFactor( QGis::Meters, units );
+        break;
+      case QgsComposerScaleBar::MapUnits:
+        //avoid warning
+        break;
     }
     return measure;
   }

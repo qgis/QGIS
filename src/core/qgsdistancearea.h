@@ -118,8 +118,21 @@ class CORE_EXPORT QgsDistanceArea
     //! measures line
     double measureLine( const QList<QgsPoint>& points ) const;
 
-    //! measures line with one segment
+    /** Measures length of line with one segment
+     * @param p1 start of line
+     * @param p2 end of line
+     * @returns distance in meters, or map units if cartesian calculation was performed
+     */
     double measureLine( const QgsPoint& p1, const QgsPoint& p2 ) const;
+
+    /** Measures length of line with one segment and returns units of distance.
+     * @param p1 start of line
+     * @param p2 end of line
+     * @param units will be set to units of measure
+     * @returns calculated distance between points. Distance units are stored in units parameter.
+     * @note added in QGIS 2.12
+     */
+    double measureLine( const QgsPoint& p1, const QgsPoint& p2, QGis::UnitType& units ) const;
 
     //! measures polygon area
     double measurePolygon( const QList<QgsPoint>& points ) const;

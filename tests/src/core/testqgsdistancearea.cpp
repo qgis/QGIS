@@ -25,6 +25,8 @@
 #include "qgslogger.h"
 #include "qgsgeometryfactory.h"
 #include "qgsgeometry.h"
+#include "qgis.h"
+
 
 class TestQgsDistanceArea: public QObject
 {
@@ -38,6 +40,7 @@ class TestQgsDistanceArea: public QObject
     void unit_conversions();
     void regression13601();
     void collections();
+    void measureUnits();
 };
 
 void TestQgsDistanceArea::initTestCase()
@@ -219,6 +222,30 @@ void TestQgsDistanceArea::collections()
   QVERIFY( qgsDoubleNear( result, 12006159, 1 ) );
 
   Q_NOWARN_DEPRECATED_POP
+}
+
+void TestQgsDistanceArea::measureUnits()
+{
+  //test regression #13610
+  QgsDistanceArea calc;
+  calc.setEllipsoidalMode( false );
+  calc.setEllipsoid( "NONE" );
+  calc.setSourceCrs( 254L );
+  QGis::UnitType units;
+  QgsPoint p1( 1341683.9854275715, 408256.9562717728 );
+  QgsPoint p2( 1349321.7807031618, 408256.9562717728 );
+
+  double result = calc.measureLine( p1, p2, units );
+  //no OTF, result will be in CRS unit (feet)
+  QCOMPARE( units, QGis::Feet );
+  QVERIFY( qgsDoubleNear( result, 7637.7952755903825, 0.001 ) );
+
+  calc.setEllipsoidalMode( true );
+  calc.setEllipsoid( "WGS84" );
+  result = calc.measureLine( p1, p2, units );
+  //OTF, result will be in meters
+  QCOMPARE( units, QGis::Meters );
+  QVERIFY( qgsDoubleNear( result, 2328.0988253106957, 0.001 ) );
 }
 
 QTEST_MAIN( TestQgsDistanceArea )
