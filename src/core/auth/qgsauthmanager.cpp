@@ -512,6 +512,14 @@ bool QgsAuthManager::verifyMasterPassword( const QString &compare )
 
         emit masterPasswordVerified( false );
       }
+      ++mPassTries;
+      if ( mPassTries >= 5 )
+      {
+        mAuthDisabled = true;
+        const char* err = QT_TR_NOOP( "Master password: failed 5 times authentication system DISABLED" );
+        QgsDebugMsg( err );
+        emit messageOut( tr( err ), authManTag(), WARNING );
+      }
       return false;
     }
     else
@@ -2800,6 +2808,7 @@ QgsAuthManager::QgsAuthManager()
     , mAuthDbPath( QString() )
     , mQcaInitializer( 0 )
     , mMasterPass( QString() )
+    , mPassTries( 0 )
     , mAuthDisabled( false )
     , mScheduledDbEraseTimer( 0 )
     , mScheduledDbErase( false )

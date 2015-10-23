@@ -607,6 +607,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     QHash<QString, QgsAuthMethod*> mAuthMethods;
 
     QString mMasterPass;
+    int mPassTries;
     bool mAuthDisabled;
     QString mAuthDisabledMessage;
     QTimer *mScheduledDbEraseTimer;

@@ -190,6 +190,11 @@ void QgsCredentialDialog::requestCredentialsMasterPassword( QString * password, 
     {
       break;
     }
+
+    if ( passfailed >= 5 )
+    {
+      break;
+    }
   }
 
   // don't leave master password in singleton's text field, or the ability to show it
@@ -205,6 +210,11 @@ void QgsCredentialDialog::requestCredentialsMasterPassword( QString * password, 
   mOkButton->setEnabled( true );
 
   QApplication::restoreOverrideCursor();
+
+  if ( passfailed >= 5 )
+  {
+    close();
+  }
 }
 
 void QgsCredentialDialog::on_chkMasterPassShow_stateChanged( int state )

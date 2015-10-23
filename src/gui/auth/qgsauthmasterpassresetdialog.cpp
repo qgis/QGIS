@@ -73,14 +73,14 @@ void QgsMasterPasswordResetDialog::on_leMasterPassCurrent_textChanged( const QSt
 {
   // since this is called on every keystroke, block signals emitted during verification of password
   QgsAuthManager::instance()->blockSignals( true );
-  mPassCurOk = !pass.isEmpty() && QgsAuthManager::instance()->setMasterPassword( pass, true );
+  mPassCurOk = !pass.isEmpty();
   QgsAuthManager::instance()->blockSignals( false );
   validatePasswords();
 }
 
 void QgsMasterPasswordResetDialog::on_leMasterPassNew_textChanged( const QString& pass )
 {
-  mPassNewOk = !pass.isEmpty() && !QgsAuthManager::instance()->masterPasswordSame( pass );
+  mPassNewOk = !pass.isEmpty();
   validatePasswords();
 }
 
@@ -96,10 +96,12 @@ void QgsMasterPasswordResetDialog::on_chkPassShowNew_stateChanged( int state )
 
 void QgsMasterPasswordResetDialog::validatePasswords()
 {
-  QString ss = mPassCurOk ? QgsAuthGuiUtils::greenTextStyleSheet( "QLineEdit" )
-               : QgsAuthGuiUtils::redTextStyleSheet( "QLineEdit" );
-  leMasterPassCurrent->setStyleSheet( ss );
-  leMasterPassNew->setStyleSheet( ss );
+  QString ss1 = mPassCurOk ? QgsAuthGuiUtils::greenTextStyleSheet( "QLineEdit" )
+                : QgsAuthGuiUtils::redTextStyleSheet( "QLineEdit" );
+  leMasterPassCurrent->setStyleSheet( ss1 );
+  QString ss2 = mPassNewOk ? QgsAuthGuiUtils::greenTextStyleSheet( "QLineEdit" )
+                : QgsAuthGuiUtils::redTextStyleSheet( "QLineEdit" );
+  leMasterPassNew->setStyleSheet( ss2 );
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( mPassCurOk && mPassNewOk );
 }
 
