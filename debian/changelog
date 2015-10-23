@@ -1,4 +1,16 @@
-qgis (2.11.0) UNRELEASED; urgency=medium
+qgis (2.13.0) UNRELEASED; urgency=medium
+
+  * New development version 2.13 after branch of 2.12
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Fri, 23 Oct 2015 14:11:22 +0200
+
+qgis (2.12.0) unstable; urgency=medium
+
+  * Release of 2.12.0
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Fri, 23 Oct 2015 14:11:22 +0200
+
+qgis (2.11.0) unstable; urgency=medium
 
   * New development version 2.11 after branch of 2.10
   * moved grass default.qgc from config to modules
@@ -11,7 +23,7 @@ qgis (2.11.0) UNRELEASED; urgency=medium
   * include geometry checker and snapper plugins
   * merge downstream debian changes from Bas Couwenberg
 
- -- Jürgen E. Fischer <jef@norbit.de>  Thu, 22 Oct 2015 22:33:23 +0200
+ -- Jürgen E. Fischer <jef@norbit.de>  Fri, 23 Oct 2015 14:10:38 +0200
 
 qgis (2.10.0) unstable; urgency=medium
 
