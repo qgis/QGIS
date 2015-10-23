@@ -553,7 +553,7 @@ QgsRuleBasedRendererV2::Rule::RenderResult QgsRuleBasedRendererV2::Rule::renderF
       rendered |= rule->renderFeature( featToRender, context, renderQueue ) == Rendered;
     }
   }
-  if ( !mIsActive )
+  if ( !mIsActive || ( mSymbol && !rendered ) )
     return Inactive;
   else if ( rendered )
     return Rendered;
