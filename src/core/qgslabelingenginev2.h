@@ -45,6 +45,7 @@ namespace pal
  * Individual label providers may create subclasses of QgsLabelFeature in order to add
  * more data to the instances that will be later used for drawing of labels.
  *
+ * @note this class is not a part of public API yet. See notes in QgsLabelingEngineV2
  * @note added in QGIS 2.12
  */
 class CORE_EXPORT QgsLabelFeature
@@ -241,6 +242,7 @@ class QgsLabelingEngineV2;
  *
  * Implementations also take care of drawing the returned final label positions.
  *
+ * @note this class is not a part of public API yet. See notes in QgsLabelingEngineV2
  * @note added in QGIS 2.12
  */
 class CORE_EXPORT QgsAbstractLabelProvider
@@ -342,6 +344,13 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( QgsAbstractLabelProvider::Flags )
  *   engine.run( context );
  * \endcode
  *
+ * @note this class is not a part of public API yet. The provider's interface still
+ * uses pal::LabelPosition as an argument in drawLabels() method - this should be
+ * sorted out first (a class common to API and pal?). Also, the API may need more
+ * polishing to be easy to use - e.g. use concept of labeling layers in API
+ * (equivalent of pal::Layer) instead of subProviders(), label providers integrated
+ * into feature loop vs providers with independent feature loop), split labeling
+ * computation from drawing of labels, improved results class with label iterator).
  * @note added in QGIS 2.12
  */
 class CORE_EXPORT QgsLabelingEngineV2
