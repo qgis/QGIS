@@ -456,9 +456,8 @@ class QgsPostgresProvider : public QgsVectorDataProvider
       QString mWhat;
     };
 
-    // A function that determines if the given columns
-    // contain unique entries
-    bool uniqueData( QString query, QString quotedColNames );
+    // A function that determines if the given columns contain unique entries
+    bool uniqueData( QString quotedColNames );
 
     int mEnabledCapabilities;
 

@@ -1196,17 +1196,28 @@ bool QgsPostgresProvider::determinePrimaryKey()
     {
       // have a primary key or unique index
       QString indrelid = res.PQgetvalue( 0, 0 );
-      sql = QString( "SELECT attname FROM pg_index,pg_attribute WHERE indexrelid=%1 AND indrelid=attrelid AND pg_attribute.attnum=any(pg_index.indkey)" ).arg( indrelid );
+      sql = QString( "SELECT attname,attnotnull FROM pg_index,pg_attribute WHERE indexrelid=%1 AND indrelid=attrelid AND pg_attribute.attnum=any(pg_index.indkey)" ).arg( indrelid );
 
       QgsDebugMsg( "Retrieving key columns: " + sql );
       res = connectionRO()->PQexec( sql );
       QgsDebugMsg( QString( "Got %1 rows." ).arg( res.PQntuples() ) );
 
       bool isInt = true;
+      bool mightBeNull = false;
+      QString primaryKey;
+      QString delim = "";
 
       for ( int i = 0; i < res.PQntuples(); i++ )
       {
         QString name = res.PQgetvalue( i, 0 );
+        if ( res.PQgetvalue( i, 1 ).startsWith( "f" ) )
+        {
+          QgsMessageLog::logMessage( tr( "Unique column '%1' doesn't have a NOT NULL constraint." ).arg( name ), tr( "PostGIS" ) );
+          mightBeNull = true;
+        }
+
+        primaryKey += delim + quotedIdentifier( name );
+        delim = ",";
 
         int idx = fieldNameIndex( name );
         if ( idx == -1 )
@@ -1225,6 +1236,13 @@ bool QgsPostgresProvider::determinePrimaryKey()
       }
 
       mPrimaryKeyType = ( mPrimaryKeyAttrs.size() == 1 && isInt ) ? pktInt : pktFidMap;
+
+      if ( mightBeNull && !mUseEstimatedMetadata && !uniqueData( primaryKey ) )
+      {
+        QgsMessageLog::logMessage( tr( "Ignoring key candidate because of NULL values" ), tr( "PostGIS" ) );
+        mPrimaryKeyType = pktUnknown;
+        mPrimaryKeyAttrs.clear();
+      }
     }
   }
   else
@@ -1304,7 +1322,7 @@ void QgsPostgresProvider::determinePrimaryKeyFromUriKeyColumn()
 
     if ( mPrimaryKeyAttrs.size() > 0 )
     {
-      if ( mUseEstimatedMetadata || uniqueData( mQuery, primaryKey ) )
+      if ( mUseEstimatedMetadata || uniqueData( primaryKey ) )
       {
         mPrimaryKeyType = ( mPrimaryKeyAttrs.size() == 1 && ( mAttributeFields.at( mPrimaryKeyAttrs.at( 0 ) ).type() == QVariant::Int || mAttributeFields.at( mPrimaryKeyAttrs[0] ).type() == QVariant::LongLong ) ) ? pktInt : pktFidMap;
       }
@@ -1324,9 +1342,8 @@ void QgsPostgresProvider::determinePrimaryKeyFromUriKeyColumn()
   }
 }
 
-bool QgsPostgresProvider::uniqueData( QString query, QString quotedColNames )
+bool QgsPostgresProvider::uniqueData( QString quotedColNames )
 {
-  Q_UNUSED( query );
   // Check to see if the given columns contain unique data
   QString sql = QString( "SELECT count(distinct (%1))=count((%1)) FROM %2%3" )
                 .arg( quotedColNames,
@@ -2469,7 +2486,7 @@ bool QgsPostgresProvider::setSubsetString( QString theSQL, bool updateFeatureCou
 
 #if 0
   // FIXME
-  if ( mPrimaryKeyType == pktInt && !uniqueData( mQuery, primaryKeyAttr ) )
+  if ( mPrimaryKeyType == pktInt && !uniqueData( primaryKeyAttr ) )
   {
     sqlWhereClause = prevWhere;
     return false;
