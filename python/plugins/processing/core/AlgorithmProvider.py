@@ -109,12 +109,13 @@ class AlgorithmProvider(object):
 
     def getSupportedOutputVectorLayerExtensions(self):
         formats = QgsVectorFileWriter.supportedFiltersAndFormats()
-        extensions = ['shp']  # shp is the default, should be the first
+        default_ext = ProcessingConfig.getSetting(ProcessingConfig.DEFAULT_OUTPUT_VECTOR_LAYER_EXT)
+        extensions = [default_ext]
         for extension in formats.keys():
             extension = unicode(extension)
             extension = extension[extension.find('*.') + 2:]
             extension = extension[:extension.find(' ')]
-            if extension.lower() != 'shp':
+            if extension.lower() != default_ext:
                 extensions.append(extension)
         return extensions
 

@@ -49,6 +49,7 @@ class ProcessingConfig:
     POST_EXECUTION_SCRIPT = 'POST_EXECUTION_SCRIPT'
     SHOW_CRS_DEF = 'SHOW_CRS_DEF'
     WARN_UNMATCHING_CRS = 'WARN_UNMATCHING_CRS'
+    DEFAULT_OUTPUT_VECTOR_LAYER_EXT = 'DEFAULT_OUTPUT_VECTOR_LAYER_EXT'
 
     settings = {}
     settingIcons = {}
@@ -122,7 +123,11 @@ class ProcessingConfig:
             ProcessingConfig.tr('General'),
             ProcessingConfig.RECENT_ALGORITHMS,
             ProcessingConfig.tr('Recent algs'), '', hidden=True))
-
+        ProcessingConfig.addSetting(Setting(
+            ProcessingConfig.tr('General'),
+            ProcessingConfig.DEFAULT_OUTPUT_VECTOR_LAYER_EXT,
+            ProcessingConfig.tr('Default output vector layer extension'), 'shp', valuetype=Setting.VECTOR_LAYER_FORMAT)
+        )
     @staticmethod
     def setGroupIcon(group, icon):
         ProcessingConfig.settingIcons[group] = icon
@@ -192,6 +197,7 @@ class Setting:
     STRING = 0
     FILE = 1
     FOLDER = 2
+    VECTOR_LAYER_FORMAT = 3
 
     def __init__(self, group, name, description, default, hidden=False, valuetype=None):
         self.group = group
