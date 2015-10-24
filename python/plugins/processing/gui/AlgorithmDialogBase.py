@@ -85,7 +85,7 @@ class AlgorithmDialogBase(BASE, WIDGET):
                 self.txtHelp.loadFinished.connect(self.loadFinished)
                 self.tabWidget.currentChanged.connect(self.loadHelp)
                 # Handle proxy settings if available
-                if self.settings.value( "proxy/proxyEnabled", 'true') == u"true":
+                if self.settings.value( "proxy/proxyEnabled", 'false') == u"true":
                     self.setProxy()
                 self.txtHelp.load(algHelp)
                 self.algHelp = algHelp
