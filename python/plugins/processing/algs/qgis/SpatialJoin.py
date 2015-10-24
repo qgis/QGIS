@@ -29,6 +29,7 @@ from qgis.core import QGis, QgsFields, QgsField, QgsFeature, QgsGeometry, NULL
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterGeometryPredicate
+from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterString
 from processing.core.outputs import OutputVector
@@ -39,6 +40,7 @@ class SpatialJoin(GeoAlgorithm):
     TARGET = "TARGET"
     JOIN = "JOIN"
     PREDICATE = "PREDICATE"
+    PRECISION = 'PRECISION'
     SUMMARY = "SUMMARY"
     STATS = "STATS"
     KEEP = "KEEP"
@@ -70,6 +72,9 @@ class SpatialJoin(GeoAlgorithm):
                                                      self.tr('Geometric predicate'),
                                                      left=self.TARGET, right=self.JOIN,
                                                      enabledPredicates=predicates))
+        self.addParameter(ParameterNumber(self.PRECISION,
+                                          self.tr('Precision'),
+                                          0.0, None, 0.0))
         self.addParameter(ParameterSelection(self.SUMMARY,
                                              self.tr('Attribute summary'), self.summarys))
         self.addParameter(ParameterString(self.STATS,
@@ -85,6 +90,7 @@ class SpatialJoin(GeoAlgorithm):
         join = dataobjects.getObjectFromUri(
             self.getParameterValue(self.JOIN))
         predicates = self.getParameterValue(self.PREDICATE)
+        precision = self.getParameterValue(self.PRECISION)
 
         summary = self.getParameterValue(self.SUMMARY) == 1
         keep = self.getParameterValue(self.KEEP) == 1
@@ -140,29 +146,22 @@ class SpatialJoin(GeoAlgorithm):
         features = vector.features(target)
         total = 100.0 / len(features)
         for c, f in enumerate(features):
-            inGeom = f.geometry()
             atMap1 = f.attributes()
-            outFeat.setGeometry(inGeom)
+            outFeat.setGeometry(f.geometry())
+            inGeom = vector.snapToPrecision(f.geometry(), precision)
             none = True
             joinList = []
             if inGeom.type() == QGis.Point:
-                joinList = index.intersects(inGeom.buffer(10, 2).boundingBox())
-                if len(joinList) > 0:
-                    check = 0
-                else:
-                    check = 1
+                bbox = inGeom.buffer(10, 2).boundingBox()
             else:
-                joinList = index.intersects(inGeom.boundingBox())
-                if len(joinList) > 0:
-                    check = 0
-                else:
-                    check = 1
-
-            if check == 0:
+                bbox = inGeom.boundingBox()
+            bufferedBox = vector.bufferedBoundingBox(bbox, 0.51 * precision)
+            joinList = index.intersects(bufferedBox)
+            if len(joinList) > 0:
                 count = 0
                 for i in joinList:
                     inFeatB = mapP2[i]
-                    inGeomB = inFeatB.geometry()
+                    inGeomB = vector.snapToPrecision(inFeatB.geometry(), precision)
 
                     res = False
                     for predicate in predicates:

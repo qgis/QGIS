@@ -30,6 +30,7 @@ from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterGeometryPredicate
+from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
 
@@ -39,6 +40,7 @@ class SelectByLocation(GeoAlgorithm):
     INPUT = 'INPUT'
     INTERSECT = 'INTERSECT'
     PREDICATE = 'PREDICATE'
+    PRECISION = 'PRECISION'
     METHOD = 'METHOD'
     OUTPUT = 'OUTPUT'
 
@@ -59,6 +61,9 @@ class SelectByLocation(GeoAlgorithm):
         self.addParameter(ParameterGeometryPredicate(self.PREDICATE,
                                                      self.tr('Geometric predicate'),
                                                      left=self.INPUT, right=self.INTERSECT))
+        self.addParameter(ParameterNumber(self.PRECISION,
+                                          self.tr('Precision'),
+                                          0.0, None, 0.0))
         self.addParameter(ParameterSelection(self.METHOD,
                                              self.tr('Modify current selection by'),
                                              self.methods, 0))
@@ -71,6 +76,7 @@ class SelectByLocation(GeoAlgorithm):
         filename2 = self.getParameterValue(self.INTERSECT)
         selectLayer = dataobjects.getObjectFromUri(filename2)
         predicates = self.getParameterValue(self.PREDICATE)
+        precision = self.getParameterValue(self.PRECISION)
 
         oldSelection = set(inputLayer.selectedFeaturesIds())
         inputLayer.removeSelection()
@@ -87,13 +93,15 @@ class SelectByLocation(GeoAlgorithm):
         features = vector.features(selectLayer)
         total = 100.0 / float(len(features))
         for f in features:
-            geom = QgsGeometry(f.geometry())
+            geom = vector.snapToPrecision(f.geometry(), precision)
+            bbox = vector.bufferedBoundingBox(geom.boundingBox(), 0.51 * precision)
+            intersects = index.intersects(bbox)
 
-            intersects = index.intersects(geom.boundingBox())
             for i in intersects:
                 request = QgsFeatureRequest().setFilterFid(i)
                 feat = inputLayer.getFeatures(request).next()
-                tmpGeom = QgsGeometry(feat.geometry())
+                tmpGeom = vector.snapToPrecision(feat.geometry(), precision)
+
                 res = False
                 for predicate in predicates:
                     if predicate == 'disjoint':

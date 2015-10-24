@@ -31,7 +31,7 @@ import codecs
 import cStringIO
 
 from PyQt4.QtCore import QVariant, QSettings
-from qgis.core import QGis, QgsFields, QgsField, QgsSpatialIndex, QgsMapLayerRegistry, QgsMapLayer, QgsVectorLayer, QgsVectorFileWriter, QgsDistanceArea
+from qgis.core import QGis, QgsFields, QgsField, QgsGeometry, QgsRectangle, QgsSpatialIndex, QgsMapLayerRegistry, QgsMapLayer, QgsVectorLayer, QgsVectorFileWriter, QgsDistanceArea
 from processing.core.ProcessingConfig import ProcessingConfig
 
 
@@ -379,6 +379,33 @@ def _toQgsField(f):
     if isinstance(f, QgsField):
         return f
     return QgsField(f[0], TYPE_MAP.get(f[1], QVariant.String))
+
+
+def snapToPrecision(geom, precision):
+    snapped = QgsGeometry(geom)
+    if precision == 0.0:
+        return snapped
+
+    i = 0
+    p = snapped.vertexAt(i)
+    while p.x() != 0.0 and p.y() != 0.0:
+        x = round(p.x() / precision,0) * precision
+        y = round(p.y() / precision,0) * precision
+        snapped.moveVertex(x,y,i)
+        i = i + 1
+        p = snapped.vertexAt(i)
+    return snapped
+
+
+def bufferedBoundingBox(bbox, buffer_size):
+    if buffer_size == 0.0:
+        return QgsRectangle(bbox)
+
+    return QgsRectangle(
+        bbox.xMinimum() - buffer_size,
+        bbox.yMinimum() - buffer_size,
+        bbox.xMaximum() + buffer_size,
+        bbox.yMaximum() + buffer_size)
 
 
 class VectorWriter:
