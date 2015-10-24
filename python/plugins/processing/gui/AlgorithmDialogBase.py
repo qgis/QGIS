@@ -32,6 +32,7 @@ from PyQt4.QtCore import QCoreApplication, QUrl, QSettings, QByteArray
 from PyQt4.QtGui import QApplication, QDialogButtonBox
 
 from qgis.utils import iface
+from qgis.core import QgsNetworkAccessManager
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.gui import AlgorithmClassification
@@ -66,6 +67,8 @@ class AlgorithmDialogBase(BASE, WIDGET):
         self.btnClose = self.buttonBox.button(QDialogButtonBox.Close)
 
         self.setWindowTitle(AlgorithmClassification.getDisplayName(self.alg))
+
+        self.txtHelp.page().setNetworkAccessManager(QgsNetworkAccessManager.instance())
 
         # load algorithm help if available
         isText, algHelp = self.alg.help()
