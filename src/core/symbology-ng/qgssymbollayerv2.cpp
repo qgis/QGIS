@@ -736,7 +736,9 @@ void QgsFillSymbolLayerV2::_renderPolygon( QPainter* p, const QPolygonF& points,
     return;
   }
 
-  if ( rings == NULL )
+  // polygons outlines are sometimes rendered wrongly with drawPolygon, when
+  // clipped (see #13343), so use drawPath instead.
+  if ( !rings && p->pen().style() == Qt::NoPen )
   {
     // simple polygon without holes
     p->drawPolygon( points );
@@ -748,11 +750,14 @@ void QgsFillSymbolLayerV2::_renderPolygon( QPainter* p, const QPolygonF& points,
     QPolygonF outerRing = points;
     path.addPolygon( outerRing );
 
-    QList<QPolygonF>::const_iterator it = rings->constBegin();
-    for ( ; it != rings->constEnd(); ++it )
+    if ( rings )
     {
-      QPolygonF ring = *it;
-      path.addPolygon( ring );
+      QList<QPolygonF>::const_iterator it = rings->constBegin();
+      for ( ; it != rings->constEnd(); ++it )
+      {
+        QPolygonF ring = *it;
+        path.addPolygon( ring );
+      }
     }
 
     p->drawPath( path );
