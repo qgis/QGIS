@@ -151,16 +151,11 @@ class OutputRaster(Output):
 
     compatible = None
 
+
     def getFileFilter(self, alg):
-        providerExts = alg.provider.getSupportedOutputRasterLayerExtensions()
-        if providerExts == ['tif']:
-            # use default extensions
-            exts = dataobjects.getSupportedOutputRasterLayerExtensions()
-        else:
-            # use extensions given by the algorithm provider
-            exts = providerExts
+        exts = dataobjects.getSupportedOutputRasterLayerExtensions()
         for i in range(len(exts)):
-            exts[i] = self.tr('%s files(*.%s)', 'OutputRaster') % (exts[i].upper(), exts[i].lower())
+            exts[i] = self.tr('%s files (*.%s)', 'OutputVector') % (exts[i].upper(), exts[i].lower())
         return ';;'.join(exts)
 
     def getDefaultFileExtension(self, alg):
