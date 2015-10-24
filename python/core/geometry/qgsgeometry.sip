@@ -113,7 +113,7 @@ class QgsGeometry
     */
     SIP_PYOBJECT asWkb();
 %MethodCode
-  sipRes = PyString_FromStringAndSize((const char *)sipCpp->asWkb(), sipCpp->wkbSize());
+  sipRes = PyBytes_FromStringAndSize((const char *)sipCpp->asWkb(), sipCpp->wkbSize());
 %End
 
     /**

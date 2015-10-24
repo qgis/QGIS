@@ -140,7 +140,7 @@ class QgsPoint
 %MethodCode
     QString str = "(" + QString::number(sipCpp->x()) + "," + QString::number(sipCpp->y()) + ")";
     //QString str("(%f,%f)").arg(sipCpp->x()).arg(sipCpp->y());
-    sipRes = PyString_FromString(str.toLocal8Bit().data());
+    sipRes = PyUnicode_FromString( str.toUtf8().data() );
 %End
 
   int __len__();

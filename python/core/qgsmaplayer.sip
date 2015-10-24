@@ -536,8 +536,6 @@ class QgsMapLayer : QObject
     /** Write style manager's configuration (if exists). To be called by subclasses. */
     void writeStyleManager( QDomNode& layerNode, QDomDocument& doc ) const;
 
-    /** Debugging member - invoked when a connect() is made to this object */
-    void connectNotify( const char * signal );
 
     /** Add error message */
     void appendError( const QgsErrorMessage & theMessage );

@@ -379,10 +379,15 @@ QString QgsPythonUtilsImpl::getTraceback()
     TRACEBACK_FETCH_ERROR( "getvalue() failed." );
 
   /* And it should be a string all ready to go - duplicate it. */
-  if ( !PyString_Check( obResult ) )
+  if ( !PyUnicode_Check( obResult ) )
     TRACEBACK_FETCH_ERROR( "getvalue() did not return a string" );
 
+#if PYTHON2
   result = PyString_AsString( obResult );
+#else
+  result = QString::fromUtf8( PyUnicode_AsUTF8( obResult ) );
+#endif
+
 
 done:
 
@@ -410,7 +415,6 @@ QString QgsPythonUtilsImpl::getTypeAsString( PyObject* obj )
 {
   if ( obj == NULL )
     return NULL;
-
   if ( PyClass_Check( obj ) )
   {
     QgsDebugMsg( "got class" );
@@ -515,7 +519,6 @@ QString QgsPythonUtilsImpl::PyObjectToQString( PyObject* obj )
     Py_XDECREF( obj_uni );
     return result;
   }
-
   // if conversion to unicode failed, try to convert it to classic string, i.e. str(obj)
   PyObject* obj_str = PyObject_Str( obj ); // new reference
   if ( obj_str )

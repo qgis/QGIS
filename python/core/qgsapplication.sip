@@ -25,10 +25,15 @@ static char **qtgui_ArgvToC(PyObject *argvlist, int &argc)
         char *arg;
 
         // Get the argument and allocate memory for it.
+#if PYTHON2
         if ((arg = PyString_AsString(PyList_GET_ITEM(argvlist, a))) == NULL ||
             (argv[a] = (char *)sipMalloc(strlen(arg) + 1)) == NULL)
             return NULL;
-
+#else
+        if ((arg = PyUnicode_AsString(PyList_GET_ITEM(argvlist, a))) == NULL ||
+            (argv[a] = (char *)sipMalloc(strlen(arg) + 1)) == NULL)
+            return NULL;
+#endif
         // Copy the argument and save a pointer to it.
         strcpy(argv[a], arg);
         argv[a + argc + 1] = argv[a];

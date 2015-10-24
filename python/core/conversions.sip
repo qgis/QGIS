@@ -421,7 +421,7 @@ template <TYPE>
   {
     PyObject *tobj;
 
-    if ((tobj = PyInt_FromLong(*it)) == NULL)
+    if ((tobj = PyLong_FromLong(*it)) == NULL)
     {
       Py_DECREF(l);
       return NULL;
@@ -441,7 +441,7 @@ template <TYPE>
 
   for (int i = 0; i < PyList_GET_SIZE(sipPy); ++i)
   {
-    qset->insert(PyInt_AsLong(PyList_GET_ITEM(sipPy, i)));
+    qset->insert(PyLong_AsLong(PyList_GET_ITEM(sipPy, i)));
   }
 
   *sipCppPtr = qset;
@@ -743,7 +743,7 @@ template<TYPE>
     Py_ssize_t j = 0;
     while (PyDict_Next(tobj, &j, &kobj2, &tobj2))
     {
-      int k2 = PyInt_AsLong(kobj2);
+      int k2 = PyLong_AsLong(kobj2);
       int state;
 
       TYPE* t2 = reinterpret_cast<TYPE*>(sipConvertToType(tobj2, sipType_TYPE, sipTransferObj,SIP_NOT_NONE,&state,sipIsErr));
@@ -900,7 +900,7 @@ template<TYPE>
         QString *t1 = new QString(i.key());
 
         PyObject *t1obj = sipConvertFromNewType(t1, sipType_QString, sipTransferObj);
-        PyObject *t2obj = PyInt_FromLong( (long) i.value() );
+        PyObject *t2obj = PyLong_FromLong( (long) i.value() );
 
         if (t1obj == NULL || t2obj == NULL || PyDict_SetItem(d, t1obj, t2obj) < 0)
         {
@@ -959,7 +959,7 @@ template<TYPE>
         int state;
 
         QString *t1 = reinterpret_cast<QString *>(sipConvertToType(t1obj, sipType_QString, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
-        QVariant::Type t2 = (QVariant::Type) PyInt_AsLong(t1obj);
+        QVariant::Type t2 = (QVariant::Type) PyLong_AsLong(t1obj);
 
         if (*sipIsErr)
         {
@@ -1002,7 +1002,7 @@ template<TYPE>
         QString *t1 = new QString(i.key());
 
         PyObject *t1obj = sipConvertFromNewType(t1, sipType_QString, sipTransferObj);
-        PyObject *t2obj = PyInt_FromLong( (long) i.value() );
+        PyObject *t2obj = PyLong_FromLong( (long) i.value() );
 
         if (t1obj == NULL || t2obj == NULL || PyDict_SetItem(d, t1obj, t2obj) < 0)
         {
@@ -1061,7 +1061,7 @@ template<TYPE>
         int state;
 
         QString *t1 = reinterpret_cast<QString *>(sipConvertToType(t1obj, sipType_QString, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
-        int t2 = PyInt_AsLong(t1obj);
+        int t2 = PyLong_AsLong(t1obj);
 
         if (*sipIsErr)
         {
@@ -1501,7 +1501,7 @@ template<int, TYPE2*>
     while (PyDict_Next(sipPy, &i, &t1obj, &t2obj))
     {
        int state2;
-       int k = (int) PyInt_AsLong(t1obj);
+       int k = (int) PyLong_AsLong(t1obj);
        for (int i = 0; i < PyList_GET_SIZE(t2obj); ++i)
        {
            TYPE2 *t2 =
@@ -1639,7 +1639,7 @@ template<int, TYPE2*>
       }
 
       PyObject *t1obj = sipConvertFromNewType(sipCpp->at(i).first, sipType_QgsVectorLayer, sipTransferObj);
-      PyObject *t2obj = PyInt_FromLong( (long) sipCpp->at(i).second );
+      PyObject *t2obj = PyLong_FromLong( (long) sipCpp->at(i).second );
       PyList_SetItem( p, 0, t1obj );
       PyList_SetItem( p, 1, t2obj );
 
@@ -1775,7 +1775,7 @@ template <TYPE>
     {
         QgsFeature* oobj = new QgsFeature(*it.value());
 
-        PyObject* keyobj = PyInt_FromLong(it.key());
+        PyObject* keyobj = PyLong_FromLong(it.key());
         PyObject* pyOobj = sipConvertFromType(oobj, sipType_QgsFeature, sipTransferObj);
         PyDict_SetItem(d, keyobj, pyOobj);
 
