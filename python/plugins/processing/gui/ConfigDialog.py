@@ -32,7 +32,8 @@ from PyQt4 import uic
 from PyQt4.QtCore import Qt, QEvent, QPyNullVariant
 from PyQt4.QtGui import (QFileDialog, QDialog, QIcon, QStyle,
                          QStandardItemModel, QStandardItem, QMessageBox, QStyledItemDelegate,
-                         QLineEdit, QSpinBox, QDoubleSpinBox, QWidget, QToolButton, QHBoxLayout)
+                         QLineEdit, QSpinBox, QDoubleSpinBox, QWidget, QToolButton, QHBoxLayout,
+                         QComboBox)
 
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.core.Processing import Processing
@@ -166,7 +167,7 @@ class SettingItem(QStandardItem):
     def __init__(self, setting):
         QStandardItem.__init__(self)
         self.setting = setting
-        self.setData(setting.valuetype, Qt.UserRole)
+        self.setData(setting, Qt.UserRole)
         if isinstance(setting.value, bool):
             self.setCheckable(True)
             self.setEditable(False)
@@ -189,40 +190,55 @@ class SettingDelegate(QStyledItemDelegate):
         options,
         index,
     ):
-        value = self.convertValue(index.model().data(index, Qt.EditRole))
-        if isinstance(value, (int, long)):
-            spnBox = QSpinBox(parent)
-            spnBox.setRange(-999999999, 999999999)
-            return spnBox
-        elif isinstance(value, float):
-            spnBox = QDoubleSpinBox(parent)
-            spnBox.setRange(-999999999.999999, 999999999.999999)
-            spnBox.setDecimals(6)
-            return spnBox
-        elif isinstance(value, (str, unicode)):
-            valuetype = self.convertValue(index.model().data(index, Qt.UserRole))
-            if valuetype == Setting.FOLDER:
-                return FileDirectorySelector(parent)
-            else:
-                return FileDirectorySelector(parent, True)
+        setting = index.model().data(index, Qt.UserRole)
+        if setting.valuetype == Setting.FOLDER:
+            return FileDirectorySelector(parent)
+        elif setting.valuetype == Setting.FILE:
+            return FileDirectorySelector(parent, True)
+        elif setting.valuetype == Setting.SELECTION:
+            combo = QComboBox(parent)
+            combo.addItems(setting.options)
+            return combo
+        else:
+            value = self.convertValue(index.model().data(index, Qt.EditRole))
+            if isinstance(value, (int, long)):
+                spnBox = QSpinBox(parent)
+                spnBox.setRange(-999999999, 999999999)
+                return spnBox
+            elif isinstance(value, float):
+                spnBox = QDoubleSpinBox(parent)
+                spnBox.setRange(-999999999.999999, 999999999.999999)
+                spnBox.setDecimals(6)
+                return spnBox
+            elif isinstance(value, (str, unicode)):
+                return QLineEdit(parent)
+
 
     def setEditorData(self, editor, index):
         value = self.convertValue(index.model().data(index, Qt.EditRole))
-        if isinstance(value, (int, long)):
-            editor.setValue(value)
-        elif isinstance(value, float):
-            editor.setValue(value)
-        elif isinstance(value, (str, unicode)):
-            editor.setText(value)
+        setting = index.model().data(index, Qt.UserRole)
+        if setting.valuetype == Setting.SELECTION:
+            editor.setCurrentIndex(editor.findText(value))
+        else:
+            if isinstance(value, (int, long)):
+                editor.setValue(value)
+            elif isinstance(value, float):
+                editor.setValue(value)
+            elif isinstance(value, (str, unicode)):
+                editor.setText(value)
 
     def setModelData(self, editor, model, index):
         value = self.convertValue(index.model().data(index, Qt.EditRole))
-        if isinstance(value, (int, long)):
-            model.setData(index, editor.value(), Qt.EditRole)
-        elif isinstance(value, float):
-            model.setData(index, editor.value(), Qt.EditRole)
-        elif isinstance(value, (str, unicode)):
-            model.setData(index, editor.text(), Qt.EditRole)
+        setting = index.model().data(index, Qt.UserRole)
+        if setting.valuetype == Setting.SELECTION:
+            model.setData(index, editor.currentText(), Qt.EditRole)
+        else:
+            if isinstance(value, (int, long)):
+                model.setData(index, editor.value(), Qt.EditRole)
+            elif isinstance(value, float):
+                model.setData(index, editor.value(), Qt.EditRole)
+            elif isinstance(value, (str, unicode)):
+                model.setData(index, editor.text(), Qt.EditRole)
 
     def sizeHint(self, option, index):
         return QSpinBox().sizeHint()
@@ -238,10 +254,10 @@ class SettingDelegate(QStyledItemDelegate):
             return ""
         try:
             return int(value)
-        except ValueError:
+        except:
             try:
                 return float(value)
-            except ValueError:
+            except:
                 return unicode(value)
 
 

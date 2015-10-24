@@ -15,6 +15,7 @@
 ***************************************************************************
 """
 
+
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -28,7 +29,7 @@ from PyQt4.QtCore import QCoreApplication, QSettings
 from processing.tools.system import isWindows, getTempFilenameInTempFolder
 from processing.tools.vector import VectorWriter, TableWriter
 from processing.tools import dataobjects
-
+from processing.core.ProcessingConfig import ProcessingConfig
 
 def getOutputFromString(s):
     tokens = s.split("|")
@@ -159,7 +160,10 @@ class OutputRaster(Output):
         return ';;'.join(exts)
 
     def getDefaultFileExtension(self, alg):
-        return alg.provider.getSupportedOutputRasterLayerExtensions()[0]
+        supported = alg.provider.getSupportedOutputRasterLayerExtensions()
+        default = ProcessingConfig.getSetting(ProcessingConfig.DEFAULT_OUTPUT_VECTOR_LAYER_EXT)
+        ext = default if default in supported else supported[0]
+        return ext
 
     def getCompatibleFileName(self, alg):
         """
@@ -253,7 +257,10 @@ class OutputVector(Output):
         return ';;'.join(exts)
 
     def getDefaultFileExtension(self, alg):
-        return alg.provider.getSupportedOutputVectorLayerExtensions()[0]
+        supported = alg.provider.getSupportedOutputVectorLayerExtensions()
+        default = ProcessingConfig.getSetting(ProcessingConfig.DEFAULT_OUTPUT_VECTOR_LAYER_EXT)
+        ext = default if default in supported else supported[0]
+        return ext
 
     def getCompatibleFileName(self, alg):
         """Returns a filename that is compatible with the algorithm

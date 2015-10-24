@@ -30,7 +30,7 @@ import os
 from PyQt4.QtCore import QPyNullVariant, QCoreApplication, QSettings
 from PyQt4.QtGui import QIcon
 from processing.tools.system import tempFolder
-
+import processing.tools.dataobjects
 
 class ProcessingConfig:
 
@@ -49,6 +49,8 @@ class ProcessingConfig:
     POST_EXECUTION_SCRIPT = 'POST_EXECUTION_SCRIPT'
     SHOW_CRS_DEF = 'SHOW_CRS_DEF'
     WARN_UNMATCHING_CRS = 'WARN_UNMATCHING_CRS'
+    DEFAULT_OUTPUT_RASTER_LAYER_EXT = 'DEFAULT_OUTPUT_RASTER_LAYER_EXT'
+    DEFAULT_OUTPUT_VECTOR_LAYER_EXT = 'DEFAULT_OUTPUT_VECTOR_LAYER_EXT'
 
     settings = {}
     settingIcons = {}
@@ -93,35 +95,49 @@ class ProcessingConfig:
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
             ProcessingConfig.RASTER_STYLE,
-            ProcessingConfig.tr('Style for raster layers'), ''))
+            ProcessingConfig.tr('Style for raster layers'), '',
+            valuetype=Setting.FILE))
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
             ProcessingConfig.VECTOR_POINT_STYLE,
-            ProcessingConfig.tr('Style for point layers'), ''))
+            ProcessingConfig.tr('Style for point layers'), '',
+            valuetype=Setting.FILE))
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
             ProcessingConfig.VECTOR_LINE_STYLE,
-            ProcessingConfig.tr('Style for line layers'), ''))
+            ProcessingConfig.tr('Style for line layers'), '',
+            valuetype=Setting.FILE))
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
             ProcessingConfig.VECTOR_POLYGON_STYLE,
-            ProcessingConfig.tr('Style for polygon layers'), ''))
-        ProcessingConfig.addSetting(Setting(
-            ProcessingConfig.tr('General'),
-            ProcessingConfig.VECTOR_POLYGON_STYLE,
-            ProcessingConfig.tr('Style for polygon layers'), ''))
+            ProcessingConfig.tr('Style for polygon layers'), '',
+            valuetype=Setting.FILE))
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
             ProcessingConfig.PRE_EXECUTION_SCRIPT,
-            ProcessingConfig.tr('Pre-execution script'), ''))
+            ProcessingConfig.tr('Pre-execution script'), '',
+            valuetype=Setting.FILE))
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
             ProcessingConfig.POST_EXECUTION_SCRIPT,
-            ProcessingConfig.tr('Post-execution script'), ''))
+            ProcessingConfig.tr('Post-execution script'), '',
+            valuetype=Setting.FILE))
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
             ProcessingConfig.RECENT_ALGORITHMS,
             ProcessingConfig.tr('Recent algs'), '', hidden=True))
+        extensions = processing.tools.dataobjects.getSupportedOutputVectorLayerExtensions()
+        ProcessingConfig.addSetting(Setting(
+            ProcessingConfig.tr('General'),
+            ProcessingConfig.DEFAULT_OUTPUT_VECTOR_LAYER_EXT,
+            ProcessingConfig.tr('Default output vector layer extension'), extensions[0],
+                                valuetype=Setting.SELECTION, options=extensions))
+        extensions = processing.tools.dataobjects.getSupportedOutputRasterLayerExtensions()
+        ProcessingConfig.addSetting(Setting(
+            ProcessingConfig.tr('General'),
+            ProcessingConfig.DEFAULT_OUTPUT_RASTER_LAYER_EXT,
+            ProcessingConfig.tr('Default output raster layer extension'), extensions[0],
+                                valuetype=Setting.SELECTION, options=extensions))
 
     @staticmethod
     def setGroupIcon(group, icon):
@@ -192,8 +208,9 @@ class Setting:
     STRING = 0
     FILE = 1
     FOLDER = 2
+    SELECTION = 3
 
-    def __init__(self, group, name, description, default, hidden=False, valuetype=None):
+    def __init__(self, group, name, description, default, hidden=False, valuetype=None, options=None):
         self.group = group
         self.name = name
         self.qname = "Processing/Configuration/" + self.name
@@ -202,6 +219,7 @@ class Setting:
         self.value = default
         self.hidden = hidden
         self.valuetype = valuetype
+        self.options = options
 
     def read(self):
         qsettings = QSettings()
