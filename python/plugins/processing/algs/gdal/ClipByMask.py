@@ -49,6 +49,7 @@ class ClipByMask(GdalAlgorithm,OgrAlgorithm):
     NO_DATA = 'NO_DATA'
     MASK = 'MASK'
     ALPHA_BAND = 'ALPHA_BAND'
+    CROP_TO_CUTLINE = 'CROP_TO_CUTLINE'
     KEEP_RESOLUTION = 'KEEP_RESOLUTION'
     EXTRA = 'EXTRA'
     RTYPE = 'RTYPE'
@@ -74,6 +75,8 @@ class ClipByMask(GdalAlgorithm,OgrAlgorithm):
                                           '-9999'))
         self.addParameter(ParameterBoolean(self.ALPHA_BAND,
                                            self.tr('Create and output alpha band'), False))
+        self.addParameter(ParameterBoolean(self.CROP_TO_CUTLINE,
+                                           self.tr('Crop the extent of the target dataset to the extent of the cutline'), False))
         self.addParameter(ParameterBoolean(self.KEEP_RESOLUTION,
                                            self.tr('Keep resolution of output raster'), False))
 
@@ -112,6 +115,7 @@ class ClipByMask(GdalAlgorithm,OgrAlgorithm):
         ogrMask = self.ogrConnectionString(mask)[1:-1]
         noData = unicode(self.getParameterValue(self.NO_DATA))
         addAlphaBand = self.getParameterValue(self.ALPHA_BAND)
+        cropToCutline = self.getParameterValue(self.CROP_TO_CUTLINE)
         keepResolution = self.getParameterValue(self.KEEP_RESOLUTION)
         extra = unicode(self.getParameterValue(self.EXTRA))
         jpegcompression = unicode(self.getParameterValue(self.JPEGCOMPRESSION))
@@ -143,11 +147,13 @@ class ClipByMask(GdalAlgorithm,OgrAlgorithm):
 
         arguments.append('-cutline')
         arguments.append(ogrMask)
-        arguments.append('-crop_to_cutline')
+
+        if cropToCutline:
+            arguments.append('-crop_to_cutline')
 
         if addAlphaBand:
             arguments.append('-dstalpha')
-
+		
         if len(extra) > 0:
             arguments.append(extra)
         if GdalUtils.getFormatShortNameFromFilename(out) == "GTiff":
