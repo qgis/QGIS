@@ -2114,8 +2114,9 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
 
         QFileInfo fi( outputFilePath );
         // build the world file name
+        QString outputSuffix = fi.suffix();
         QString worldFileName = fi.absolutePath() + "/" + fi.baseName() + "."
-                                + fi.suffix()[0] + fi.suffix()[fi.suffix().size()-1] + "w";
+                                + outputSuffix.at( 0 ) + outputSuffix.at( fi.suffix().size() - 1 ) + "w";
 
         writeWorldFile( worldFileName, a, b, c, d, e, f );
       }
@@ -2334,8 +2335,9 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
 
           QFileInfo fi( imageFilename );
           // build the world file name
+          QString outputSuffix = fi.suffix();
           QString worldFileName = fi.absolutePath() + "/" + fi.baseName() + "."
-                                  + fi.suffix()[0] + fi.suffix()[fi.suffix().size()-1] + "w";
+                                  + outputSuffix.at( 0 ) + outputSuffix.at( fi.suffix().size() - 1 ) + "w";
 
           writeWorldFile( worldFileName, a, b, c, d, e, f );
         }
@@ -2998,8 +3000,8 @@ void QgsComposer::on_mActionSaveAsTemplate_triggered()
   QSettings settings;
   QString lastSaveDir = settings.value( "UI/lastComposerTemplateDir", "" ).toString();
 #ifdef Q_OS_MAC
-    mQgis->activateWindow();
-    this->raise();
+  mQgis->activateWindow();
+  this->raise();
 #endif
   QString saveFileName = QFileDialog::getSaveFileName(
                            this,
