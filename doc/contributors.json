@@ -222,6 +222,23 @@
     {
       "type": "Feature",
       "properties": {
+        "Name": "Giuseppe Sucameli",
+        "Committer": "Yes",
+        "First Commit Message": "save file instead of open it in select output file dialog",
+        "First Commit Date": "10-05-2010",
+        "GIT Nickname": "brushtyler"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.399920546093,
+          43.716183974789
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
         "Name": "Yoichi Kayama",
         "Committer": "No",
         "First Commit Message": "unknown",
