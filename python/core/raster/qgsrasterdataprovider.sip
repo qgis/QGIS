@@ -159,7 +159,7 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
      * ACTUALLY exists you need to look at the existsFlag member in each struct stored in the
      * list.
      */
-    virtual QList<QgsRasterPyramid> buildPyramidList( QList<int> overviewList = QList<int>() );
+    virtual QList<QgsRasterPyramid> buildPyramidList( const QList<int>& overviewList = QList<int>() );
 
     /** \brief Returns true if raster has at least one populated histogram. */
     bool hasPyramids();
@@ -261,7 +261,7 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     /** Validates creation options for a specific dataset and destination format.
      * @note used by GDAL provider only
      * @note see also validateCreationOptionsFormat() in gdal provider for validating options based on format only */
-    virtual QString validateCreationOptions( const QStringList& createOptions, QString format );
+    virtual QString validateCreationOptions( const QStringList& createOptions, const QString& format );
 
     /** Validates pyramid creation options for a specific dataset and destination format
      * @note used by GDAL provider only */

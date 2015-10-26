@@ -31,7 +31,7 @@ QgsProjectBadLayerGuiHandler::QgsProjectBadLayerGuiHandler()
 
 bool QgsProjectBadLayerGuiHandler::mIgnore = false;
 
-void QgsProjectBadLayerGuiHandler::handleBadLayers( QList<QDomNode> layers, QDomDocument projectDom )
+void QgsProjectBadLayerGuiHandler::handleBadLayers( const QList<QDomNode>& layers, const QDomDocument& projectDom )
 {
   Q_UNUSED( projectDom );
 

@@ -75,7 +75,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
       GeomAsWkt
     };
 
-    explicit QgsDelimitedTextProvider( QString uri = QString() );
+    explicit QgsDelimitedTextProvider( const QString& uri = QString() );
 
     virtual ~QgsDelimitedTextProvider();
 
@@ -164,7 +164,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
      * Set the subset string used to create a subset of features in
      * the layer.
      */
-    virtual bool setSubsetString( QString subset, bool updateFeatureCount = true ) override;
+    virtual bool setSubsetString( const QString& subset, bool updateFeatureCount = true ) override;
 
     /**
      * provider supports setting of subset strings
@@ -209,7 +209,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
      * @param message  Pointer to a string to receive a status message
      * @return A list of field type strings, empty if not found or not valid
      */
-    QStringList readCsvtFieldTypes( QString filename, QString *message = 0 );
+    QStringList readCsvtFieldTypes( const QString& filename, QString *message = 0 );
 
   private slots:
 
@@ -225,10 +225,10 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     void resetCachedSubset();
     void resetIndexes();
     void clearInvalidLines();
-    void recordInvalidLine( QString message );
-    void reportErrors( QStringList messages = QStringList(), bool showDialog = false );
+    void recordInvalidLine( const QString& message );
+    void reportErrors( const QStringList& messages = QStringList(), bool showDialog = false );
     static bool recordIsEmpty( QStringList &record );
-    void setUriParameter( QString parameter, QString value );
+    void setUriParameter( const QString& parameter, const QString& value );
 
 
     static QgsGeometry *geomFromWkt( QString &sWkt, bool wktHasPrefixRegexp, bool wktHasZM );

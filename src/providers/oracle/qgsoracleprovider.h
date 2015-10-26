@@ -228,7 +228,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
     QString subsetString();
 
     /** Mutator for sql where clause used to limit dataset size */
-    bool setSubsetString( QString theSQL, bool updateFeatureCount = true );
+    bool setSubsetString( const QString& theSQL, bool updateFeatureCount = true );
 
     virtual bool supportsSubsetString() { return true; }
 

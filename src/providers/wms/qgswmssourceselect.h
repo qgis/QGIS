@@ -156,7 +156,7 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
         const QMap<int, QStringList> &layerParentNames );
 
     //! Returns a textual description for the authority id
-    QString descriptionForAuthId( QString authId );
+    QString descriptionForAuthId( const QString& authId );
 
     //! Keeps the layer order list up-to-date with changed layers and styles
     void updateLayerOrderTab( const QStringList& newLayerList, const QStringList& newStyleList, const QStringList &newTitleList );

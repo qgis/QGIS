@@ -116,7 +116,7 @@ typedef int listStyles_t(
 
 typedef QString getStyleById_t(
   const QString& uri,
-  QString styleID,
+  const QString& styleID,
   QString& errCause
 );
 

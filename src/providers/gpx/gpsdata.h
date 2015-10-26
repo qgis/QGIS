@@ -181,20 +181,20 @@ class QgsGPSData
     /** This function tries to add a new waypoint. An iterator to the new
         waypoint will be returned (it will be waypointsEnd() if the waypoint
         couldn't be added. */
-    WaypointIterator addWaypoint( double lat, double lon, QString name = "",
+    WaypointIterator addWaypoint( double lat, double lon, const QString& name = "",
                                   double ele = -std::numeric_limits<double>::max() );
 
     WaypointIterator addWaypoint( const QgsWaypoint& wpt );
 
     /** This function tries to add a new route. It returns an iterator to the
         new route. */
-    RouteIterator addRoute( QString name = "" );
+    RouteIterator addRoute( const QString& name = "" );
 
     RouteIterator addRoute( const QgsRoute& rte );
 
     /** This function tries to add a new track. An iterator to the new track
         will be returned. */
-    TrackIterator addTrack( QString name = "" );
+    TrackIterator addTrack( const QString& name = "" );
 
     TrackIterator addTrack( const QgsTrack& trk );
 

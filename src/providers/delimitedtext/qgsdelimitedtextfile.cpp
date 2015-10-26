@@ -30,7 +30,7 @@
 #include <QUrl>
 
 
-QgsDelimitedTextFile::QgsDelimitedTextFile( QString url ) :
+QgsDelimitedTextFile::QgsDelimitedTextFile( const QString& url ) :
     mFileName( QString() ),
     mEncoding( "UTF-8" ),
     mFile( 0 ),
@@ -136,7 +136,7 @@ void QgsDelimitedTextFile::resetDefinition()
 }
 
 // Extract the provider definition from the url
-bool QgsDelimitedTextFile::setFromUrl( QString url )
+bool QgsDelimitedTextFile::setFromUrl( const QString& url )
 {
   QUrl qurl = QUrl::fromEncoded( url.toAscii() );
   return setFromUrl( qurl );
@@ -308,13 +308,13 @@ QUrl QgsDelimitedTextFile::url()
   return url;
 }
 
-void QgsDelimitedTextFile::setFileName( QString filename )
+void QgsDelimitedTextFile::setFileName( const QString& filename )
 {
   resetDefinition();
   mFileName = filename;
 }
 
-void QgsDelimitedTextFile::setEncoding( QString encoding )
+void QgsDelimitedTextFile::setEncoding( const QString& encoding )
 {
   resetDefinition();
   mEncoding = encoding;
@@ -341,7 +341,7 @@ void QgsDelimitedTextFile::setTypeWhitespace()
   mType = DelimTypeWhitespace;
 }
 
-void QgsDelimitedTextFile::setTypeRegexp( QString regexp )
+void QgsDelimitedTextFile::setTypeRegexp( const QString& regexp )
 {
   resetDefinition();
   mType = DelimTypeRegexp;
@@ -372,7 +372,7 @@ QString QgsDelimitedTextFile::encodeChars( QString chars )
   return chars;
 }
 
-void QgsDelimitedTextFile::setTypeCSV( QString delim, QString quote, QString escape )
+void QgsDelimitedTextFile::setTypeCSV( const QString& delim, const QString& quote, const QString& escape )
 {
   resetDefinition();
   mType = DelimTypeCSV;
@@ -484,7 +484,7 @@ QStringList &QgsDelimitedTextFile::fieldNames()
   return mFieldNames;
 }
 
-int QgsDelimitedTextFile::fieldIndex( QString name )
+int QgsDelimitedTextFile::fieldIndex( const QString& name )
 {
   // If not yet opened then reset file to read column headers
   //

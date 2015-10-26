@@ -30,17 +30,17 @@ class QgsSpatiaLiteConnection : public QObject
     Q_OBJECT
   public:
     /** Construct a connection. Name can be either stored connection name or a path to the database file */
-    explicit QgsSpatiaLiteConnection( QString name );
+    explicit QgsSpatiaLiteConnection( const QString& name );
 
     QString path() { return mPath; }
 
     static QStringList connectionList();
-    static void deleteConnection( QString name );
-    static QString connectionPath( QString name );
+    static void deleteConnection( const QString& name );
+    static QString connectionPath( const QString& name );
 
     typedef struct TableEntry
     {
-      TableEntry( QString _tableName, QString _column, QString _type )
+      TableEntry( const QString& _tableName, const QString& _column, const QString& _type )
           : tableName( _tableName ), column( _column ), type( _type ) {}
       QString tableName;
       QString column;
@@ -76,7 +76,7 @@ class QgsSpatiaLiteConnection : public QObject
 
   protected:
     // SpatiaLite DB open / close
-    sqlite3 *openSpatiaLiteDb( QString path );
+    sqlite3 *openSpatiaLiteDb( const QString& path );
     void closeSpatiaLiteDb( sqlite3 * handle );
 
     /** Checks if geometry_columns and spatial_ref_sys exist and have expected layout*/
@@ -113,7 +113,7 @@ class QgsSpatiaLiteConnection : public QObject
     bool checkVirtsGeometryColumns( sqlite3 * handle );
 
     /** Checks if this layer has been declared HIDDEN*/
-    bool isDeclaredHidden( sqlite3 * handle, QString table, QString geom );
+    bool isDeclaredHidden( sqlite3 * handle, const QString& table, const QString& geom );
 
     /** Checks if this layer is a RasterLite-1 datasource*/
     bool isRasterlite1Datasource( sqlite3 * handle, const char * table );

@@ -141,7 +141,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * that can be used by the data provider to create a subset.
      * Must be implemented in the dataprovider.
      */
-    virtual bool setSubsetString( QString subset, bool updateFeatureCount = true )
+    virtual bool setSubsetString( const QString& subset, bool updateFeatureCount = true )
     {
       // NOP by default
       Q_UNUSED( subset );

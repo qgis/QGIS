@@ -28,7 +28,7 @@ class QgsMemoryProvider : public QgsVectorDataProvider
     Q_OBJECT
 
   public:
-    explicit QgsMemoryProvider( QString uri = QString() );
+    explicit QgsMemoryProvider( const QString& uri = QString() );
 
     virtual ~QgsMemoryProvider();
 
@@ -115,7 +115,7 @@ class QgsMemoryProvider : public QgsVectorDataProvider
     QString subsetString() override;
 
     /** Mutator for sql where clause used to limit dataset size */
-    bool setSubsetString( QString theSQL, bool updateFeatureCount = true ) override;
+    bool setSubsetString( const QString& theSQL, bool updateFeatureCount = true ) override;
 
     virtual bool supportsSubsetString() override { return true; }
 

@@ -25,7 +25,7 @@ class QgsWMSConnectionItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsWMSConnectionItem( QgsDataItem* parent, QString name, QString path, QString uri );
+    QgsWMSConnectionItem( QgsDataItem* parent, const QString& name, const QString& path, const QString& uri );
     ~QgsWMSConnectionItem();
 
     QVector<QgsDataItem*> createChildren() override;
@@ -49,9 +49,9 @@ class QgsWMSLayerItem : public QgsLayerItem
 {
     Q_OBJECT
   public:
-    QgsWMSLayerItem( QgsDataItem* parent, QString name, QString path,
+    QgsWMSLayerItem( QgsDataItem* parent, const QString& name, const QString& path,
                      const QgsWmsCapabilitiesProperty &capabilitiesProperty,
-                     QgsDataSourceURI dataSourceUri,
+                     const QgsDataSourceURI& dataSourceUri,
                      const QgsWmsLayerProperty &layerProperty );
     ~QgsWMSLayerItem();
 
@@ -90,7 +90,7 @@ class QgsWMSRootItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsWMSRootItem( QgsDataItem* parent, QString name, QString path );
+    QgsWMSRootItem( QgsDataItem* parent, const QString& name, const QString& path );
     ~QgsWMSRootItem();
 
     QVector<QgsDataItem*> createChildren() override;

@@ -547,7 +547,7 @@ QString QgsPostgresUtils::whereClause( QgsFeatureId featureId, const QgsFields& 
   return whereClause;
 }
 
-QString QgsPostgresUtils::whereClause( QgsFeatureIds featureIds, const QgsFields& fields, QgsPostgresConn* conn, QgsPostgresPrimaryKeyType pkType, const QList<int>& pkAttrs, QSharedPointer<QgsPostgresSharedData> sharedData )
+QString QgsPostgresUtils::whereClause( const QgsFeatureIds& featureIds, const QgsFields& fields, QgsPostgresConn* conn, QgsPostgresPrimaryKeyType pkType, const QList<int>& pkAttrs, QSharedPointer<QgsPostgresSharedData> sharedData )
 {
   QStringList whereClauses;
   Q_FOREACH ( const QgsFeatureId featureId, featureIds )
@@ -1342,7 +1342,7 @@ void QgsPostgresProvider::determinePrimaryKeyFromUriKeyColumn()
   }
 }
 
-bool QgsPostgresProvider::uniqueData( QString quotedColNames )
+bool QgsPostgresProvider::uniqueData( const QString& quotedColNames )
 {
   // Check to see if the given columns contain unique data
   QString sql = QString( "SELECT count(distinct (%1))=count((%1)) FROM %2%3" )
@@ -1574,7 +1574,7 @@ QVariant QgsPostgresProvider::defaultValue( int fieldId )
   return mDefaultValues.value( fieldId, QString::null );
 }
 
-QString QgsPostgresProvider::paramValue( QString fieldValue, const QString &defaultValue ) const
+QString QgsPostgresProvider::paramValue( const QString& fieldValue, const QString &defaultValue ) const
 {
   if ( fieldValue.isNull() )
     return QString::null;
@@ -2461,7 +2461,7 @@ int QgsPostgresProvider::capabilities() const
   return mEnabledCapabilities;
 }
 
-bool QgsPostgresProvider::setSubsetString( QString theSQL, bool updateFeatureCount )
+bool QgsPostgresProvider::setSubsetString( const QString& theSQL, bool updateFeatureCount )
 {
   QString prevWhere = mSqlWhereClause;
 
@@ -3426,7 +3426,7 @@ QGISEXTERN int dataCapabilities()
   return QgsDataProvider::Database;
 }
 
-QGISEXTERN QgsDataItem *dataItem( QString thePath, QgsDataItem *parentItem )
+QGISEXTERN QgsDataItem *dataItem( const QString& thePath, QgsDataItem *parentItem )
 {
   Q_UNUSED( thePath );
   return new QgsPGRootItem( parentItem, "PostGIS", "pg:" );
@@ -3813,7 +3813,7 @@ QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &na
   return numberOfRelatedStyles;
 }
 
-QGISEXTERN QString getStyleById( const QString& uri, QString styleId, QString& errCause )
+QGISEXTERN QString getStyleById( const QString& uri, const QString& styleId, QString& errCause )
 {
   QgsDataSourceURI dsUri( uri );
 

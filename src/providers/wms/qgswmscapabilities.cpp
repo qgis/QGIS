@@ -17,7 +17,7 @@ static QString DEFAULT_LATLON_CRS = "CRS:84";
 
 
 
-bool QgsWmsSettings::parseUri( QString uriString )
+bool QgsWmsSettings::parseUri( const QString& uriString )
 {
   QgsDebugMsg( "uriString = " + uriString );
   QgsDataSourceURI uri;
@@ -1755,7 +1755,7 @@ void QgsWmsCapabilities::parseTheme( const QDomElement &e, QgsWmtsTheme &t )
   }
 }
 
-QString QgsWmsCapabilities::nodeAttribute( const QDomElement &e, QString name, QString defValue )
+QString QgsWmsCapabilities::nodeAttribute( const QDomElement &e, const QString& name, const QString& defValue )
 {
   if ( e.hasAttribute( name ) )
     return e.attribute( name );

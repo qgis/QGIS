@@ -24,7 +24,7 @@
 #include <QCoreApplication>
 
 
-QgsWFSLayerItem::QgsWFSLayerItem( QgsDataItem* parent, QString name, QgsDataSourceURI uri, QString featureType, QString title, QString crsString )
+QgsWFSLayerItem::QgsWFSLayerItem( QgsDataItem* parent, const QString& name, const QgsDataSourceURI& uri, const QString& featureType, const QString& title, const QString& crsString )
     : QgsLayerItem( parent, title, parent->path() + "/" + name, QString(), QgsLayerItem::Vector, "WFS" )
 {
   mUri = QgsWFSCapabilities( uri.encodedUri() ).uriGetFeature( featureType, crsString );
@@ -38,7 +38,7 @@ QgsWFSLayerItem::~QgsWFSLayerItem()
 
 ////
 
-QgsWFSConnectionItem::QgsWFSConnectionItem( QgsDataItem* parent, QString name, QString path, QString uri )
+QgsWFSConnectionItem::QgsWFSConnectionItem( QgsDataItem* parent, const QString& name, const QString& path, const QString& uri )
     : QgsDataCollectionItem( parent, name, path )
     , mUri( uri )
     , mCapabilities( NULL )
@@ -136,7 +136,7 @@ void QgsWFSConnectionItem::deleteConnection()
 //////
 
 
-QgsWFSRootItem::QgsWFSRootItem( QgsDataItem* parent, QString name, QString path )
+QgsWFSRootItem::QgsWFSRootItem( QgsDataItem* parent, const QString& name, const QString& path )
     : QgsDataCollectionItem( parent, name, path )
 {
   mCapabilities |= Fast;
@@ -208,7 +208,7 @@ QGISEXTERN int dataCapabilities()
   return  QgsDataProvider::Net;
 }
 
-QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
+QGISEXTERN QgsDataItem * dataItem( const QString& thePath, QgsDataItem* parentItem )
 {
   QgsDebugMsg( "thePath = " + thePath );
   if ( thePath.isEmpty() )

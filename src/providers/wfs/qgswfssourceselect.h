@@ -92,7 +92,7 @@ class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
     void treeWidgetItemDoubleClicked( const QModelIndex & index );
     void treeWidgetCurrentRowChanged( const QModelIndex & current, const QModelIndex & previous );
     void buildQueryButtonClicked();
-    void filterChanged( QString text );
+    void filterChanged( const QString& text );
 
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 

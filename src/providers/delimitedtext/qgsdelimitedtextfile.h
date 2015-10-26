@@ -94,14 +94,14 @@ class QgsDelimitedTextFile : public QObject
       DelimTypeRegexp
     };
 
-    explicit QgsDelimitedTextFile( QString url = QString() );
+    explicit QgsDelimitedTextFile( const QString& url = QString() );
 
     virtual ~QgsDelimitedTextFile();
 
     /** Set the filename
      * @param filename  the name of the file
      */
-    void setFileName( QString filename );
+    void setFileName( const QString& filename );
     /** Return the filename
      * @return filename  the name of the file
      */
@@ -113,7 +113,7 @@ class QgsDelimitedTextFile : public QObject
     /** Set the file encoding (defuault is UTF-8)
      *  @param encoding the encoding to use for the fileName()
      */
-    void setEncoding( QString encoding );
+    void setEncoding( const QString& encoding );
     /** Return the file encoding
      *  @return encoding The file encoding
      */
@@ -122,7 +122,7 @@ class QgsDelimitedTextFile : public QObject
     /** Decode the parser settings from a url as a string
      *  @param url  The url from which the delimiter and delimiterType items are read
      */
-    bool setFromUrl( QString url );
+    bool setFromUrl( const QString& url );
     /** Decode the parser settings from a url
      *  @param url  The url from which the delimiter and delimiterType items are read
      */
@@ -140,14 +140,14 @@ class QgsDelimitedTextFile : public QObject
     /** Set the parser for parsing based on a reqular expression delimiter
         @param regexp A string defining the regular expression
     */
-    void setTypeRegexp( QString regexp );
+    void setTypeRegexp( const QString& regexp );
     /** Set the parser to use a character type delimiter.
      *  @param delim  The field delimiter character set
      *  @param quote  The quote character, used to define quoted fields
      *  @param escape The escape character used to escape quote or delim
      *                characters.
      */
-    void setTypeCSV( QString delim = QString( "," ), QString quote = QString( "\"" ), QString escape = QString( "\"" ) );
+    void setTypeCSV( const QString& delim = QString( "," ), const QString& quote = QString( "\"" ), const QString& escape = QString( "\"" ) );
 
     /** Set the number of header lines to skip
      * @param skiplines The maximum lines to skip
@@ -231,7 +231,7 @@ class QgsDelimitedTextFile : public QObject
      *  @return index  The zero based index of the field name, or -1 if the field
      *                 name does not exist or cannot be inferred
      */
-    int fieldIndex( QString name );
+    int fieldIndex( const QString& name );
 
     /** Reads the next record from the stream splits into string fields.
      *  @param fields  The string list to populate with the fields

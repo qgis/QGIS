@@ -21,7 +21,7 @@ class QgsOWSConnectionItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsOWSConnectionItem( QgsDataItem* parent, QString name, QString path );
+    QgsOWSConnectionItem( QgsDataItem* parent, const QString& name, const QString& path );
     ~QgsOWSConnectionItem();
 
     QVector<QgsDataItem*> createChildren() override;
@@ -34,14 +34,14 @@ class QgsOWSConnectionItem : public QgsDataCollectionItem
     void deleteConnection();
 
   private:
-    void replacePath( QgsDataItem* item, QString before, QString after );
+    void replacePath( QgsDataItem* item, const QString& before, const QString& after );
 };
 
 class QgsOWSRootItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsOWSRootItem( QgsDataItem* parent, QString name, QString path );
+    QgsOWSRootItem( QgsDataItem* parent, const QString& name, const QString& path );
     ~QgsOWSRootItem();
 
     QVector<QgsDataItem*> createChildren() override;

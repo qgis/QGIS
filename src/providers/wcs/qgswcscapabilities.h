@@ -129,7 +129,7 @@ class QgsWcsCapabilities : public QObject
 
     /** \brief Returns the GetCoverage full url
      *  \param version optional version, e.g. 1.0.0 or 1.1.0 */
-    QString getCapabilitiesUrl( const QString version ) const;
+    QString getCapabilitiesUrl( const QString& version ) const;
 
     /** \brief Returns the GetCoverage full url using current version  */
     QString getCapabilitiesUrl() const;
@@ -247,7 +247,7 @@ class QgsWcsCapabilities : public QObject
      *
      * TODO: Make network-timeout tolerant
      */
-    bool retrieveServerCapabilities( QString preferredVersion );
+    bool retrieveServerCapabilities( const QString& preferredVersion );
 
     /** Retrieve the best WCS version supported by server and QGIS */
     bool retrieveServerCapabilities();

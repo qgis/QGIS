@@ -42,7 +42,7 @@ typedef QString databaseDrivers_t();
 typedef QString directoryDrivers_t();
 typedef QString protocolDrivers_t();
 //typedef int dataCapabilities_t();
-//typedef QgsDataItem * dataItem_t(QString);
+//typedef QgsDataItem * dataItem_t(const QString&);
 
 
 

@@ -436,7 +436,7 @@ bool QgsWmsProvider::setImageCrs( QString const & crs )
   return true;
 }
 
-void QgsWmsProvider::setQueryItem( QUrl &url, QString item, QString value )
+void QgsWmsProvider::setQueryItem( QUrl &url, const QString& item, const QString& value )
 {
   url.removeQueryItem( item );
   url.addQueryItem( item, value );
@@ -2928,7 +2928,7 @@ QVector<QgsWmsSupportedFormat> QgsWmsProvider::supportedFormats()
   return formats;
 }
 
-QString QgsWmsProvider::nodeAttribute( const QDomElement &e, QString name, QString defValue )
+QString QgsWmsProvider::nodeAttribute( const QDomElement &e, const QString& name, const QString& defValue )
 {
   if ( e.hasAttribute( name ) )
     return e.attribute( name );

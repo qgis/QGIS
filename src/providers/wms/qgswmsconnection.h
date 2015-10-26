@@ -31,16 +31,16 @@ class QgsWMSConnection : public QObject
 
   public:
     //! Constructor
-    explicit QgsWMSConnection( QString theConnName );
+    explicit QgsWMSConnection( const QString& theConnName );
     //! Destructor
     ~QgsWMSConnection();
 
     static QStringList connectionList();
 
-    static void deleteConnection( QString name );
+    static void deleteConnection( const QString& name );
 
     static QString selectedConnection();
-    static void setSelectedConnection( QString name );
+    static void setSelectedConnection( const QString& name );
 
   public:
     QString mConnName;

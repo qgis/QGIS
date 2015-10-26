@@ -612,7 +612,7 @@ QStringList QgsPythonUtilsImpl::pluginList()
   return output.split( QChar( '\n' ), QString::SkipEmptyParts );
 }
 
-QString QgsPythonUtilsImpl::getPluginMetadata( QString pluginName, QString function )
+QString QgsPythonUtilsImpl::getPluginMetadata( const QString& pluginName, const QString& function )
 {
   QString res;
   QString str = "qgis.utils.pluginMetadata('" + pluginName + "', '" + function + "')";
@@ -621,35 +621,35 @@ QString QgsPythonUtilsImpl::getPluginMetadata( QString pluginName, QString funct
   return res;
 }
 
-bool QgsPythonUtilsImpl::loadPlugin( QString packageName )
+bool QgsPythonUtilsImpl::loadPlugin( const QString& packageName )
 {
   QString output;
   evalString( "qgis.utils.loadPlugin('" + packageName + "')", output );
   return ( output == "True" );
 }
 
-bool QgsPythonUtilsImpl::startPlugin( QString packageName )
+bool QgsPythonUtilsImpl::startPlugin( const QString& packageName )
 {
   QString output;
   evalString( "qgis.utils.startPlugin('" + packageName + "')", output );
   return ( output == "True" );
 }
 
-bool QgsPythonUtilsImpl::canUninstallPlugin( QString packageName )
+bool QgsPythonUtilsImpl::canUninstallPlugin( const QString& packageName )
 {
   QString output;
   evalString( "qgis.utils.canUninstallPlugin('" + packageName + "')", output );
   return ( output == "True" );
 }
 
-bool QgsPythonUtilsImpl::unloadPlugin( QString packageName )
+bool QgsPythonUtilsImpl::unloadPlugin( const QString& packageName )
 {
   QString output;
   evalString( "qgis.utils.unloadPlugin('" + packageName + "')", output );
   return ( output == "True" );
 }
 
-bool QgsPythonUtilsImpl::isPluginLoaded( QString packageName )
+bool QgsPythonUtilsImpl::isPluginLoaded( const QString& packageName )
 {
   QString output;
   evalString( "qgis.utils.isPluginLoaded('" + packageName + "')", output );

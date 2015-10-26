@@ -384,7 +384,7 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
   QgsDebugMsg( "Constructed ok, provider valid." );
 }
 
-bool QgsWcsProvider::parseUri( QString uriString )
+bool QgsWcsProvider::parseUri( const QString& uriString )
 {
 
   QgsDebugMsg( "uriString = " + uriString );
@@ -509,7 +509,7 @@ void QgsWcsProvider::setCoverageCrs( QString const & crs )
   }
 }
 
-void QgsWcsProvider::setQueryItem( QUrl &url, QString item, QString value )
+void QgsWcsProvider::setQueryItem( QUrl &url, const QString& item, const QString& value )
 {
   url.removeQueryItem( item );
   url.addQueryItem( item, value );
@@ -1575,7 +1575,7 @@ void QgsWcsProvider::reloadData()
   clearCache();
 }
 
-QString QgsWcsProvider::nodeAttribute( const QDomElement &e, QString name, QString defValue )
+QString QgsWcsProvider::nodeAttribute( const QDomElement &e, const QString& name, const QString& defValue )
 {
   if ( e.hasAttribute( name ) )
     return e.attribute( name );

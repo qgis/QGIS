@@ -1081,7 +1081,7 @@ void QgsWMSSourceSelect::on_btnAddDefault_clicked()
   addDefaultServers();
 }
 
-QString QgsWMSSourceSelect::descriptionForAuthId( QString authId )
+QString QgsWMSSourceSelect::descriptionForAuthId( const QString& authId )
 {
   if ( mCrsNames.contains( authId ) )
     return mCrsNames[ authId ];

@@ -343,7 +343,7 @@ class QgsProjectBadLayerHandler
 %End
 
   public:
-    virtual void handleBadLayers( QList<QDomNode> layers, QDomDocument projectDom ) = 0;
+    virtual void handleBadLayers( const QList<QDomNode>& layers, const QDomDocument& projectDom ) = 0;
     virtual ~QgsProjectBadLayerHandler();
 };
 
@@ -356,6 +356,6 @@ class QgsProjectBadLayerDefaultHandler : QgsProjectBadLayerHandler
 %End
 
   public:
-    virtual void handleBadLayers( QList<QDomNode> layers, QDomDocument projectDom );
+    virtual void handleBadLayers( const QList<QDomNode>& layers, const QDomDocument& projectDom );
 
 };

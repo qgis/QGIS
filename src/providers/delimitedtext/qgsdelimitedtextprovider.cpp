@@ -57,7 +57,7 @@ QRegExp QgsDelimitedTextProvider::WktZMRegexp( "\\s*(?:z|m|zm)(?=\\s*\\()", Qt::
 QRegExp QgsDelimitedTextProvider::WktCrdRegexp( "(\\-?\\d+(?:\\.\\d*)?\\s+\\-?\\d+(?:\\.\\d*)?)\\s[\\s\\d\\.\\-]+" );
 QRegExp QgsDelimitedTextProvider::CrdDmsRegexp( "^\\s*(?:([-+nsew])\\s*)?(\\d{1,3})(?:[^0-9.]+([0-5]?\\d))?[^0-9.]+([0-5]?\\d(?:\\.\\d+)?)[^0-9.]*([-+nsew])?\\s*$", Qt::CaseInsensitive );
 
-QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
+QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString& uri )
     : QgsVectorDataProvider( uri )
     , mLayerValid( false )
     , mValid( false )
@@ -204,7 +204,7 @@ QgsAbstractFeatureSource *QgsDelimitedTextProvider::featureSource() const
   return new QgsDelimitedTextFeatureSource( this );
 }
 
-QStringList QgsDelimitedTextProvider::readCsvtFieldTypes( QString filename, QString *message )
+QStringList QgsDelimitedTextProvider::readCsvtFieldTypes( const QString& filename, QString *message )
 {
   // Look for a file with the same name as the data file, but an extra 't' or 'T' at the end
   QStringList types;
@@ -926,7 +926,7 @@ bool QgsDelimitedTextProvider::recordIsEmpty( QStringList &record )
   return true;
 }
 
-void QgsDelimitedTextProvider::recordInvalidLine( QString message )
+void QgsDelimitedTextProvider::recordInvalidLine( const QString& message )
 {
   if ( mInvalidLines.size() < mMaxInvalidLines )
   {
@@ -938,7 +938,7 @@ void QgsDelimitedTextProvider::recordInvalidLine( QString message )
   }
 }
 
-void QgsDelimitedTextProvider::reportErrors( QStringList messages, bool showDialog )
+void QgsDelimitedTextProvider::reportErrors( const QStringList& messages, bool showDialog )
 {
   if ( !mInvalidLines.isEmpty() || ! messages.isEmpty() )
   {
@@ -983,22 +983,23 @@ void QgsDelimitedTextProvider::reportErrors( QStringList messages, bool showDial
   }
 }
 
-bool QgsDelimitedTextProvider::setSubsetString( QString subset, bool updateFeatureCount )
+bool QgsDelimitedTextProvider::setSubsetString( const QString& subset, bool updateFeatureCount )
 {
-  // If not changing string, then oll ok, nothing to do
+  QString nonNullSubset = subset.isNull() ? QString( "" ) : subset;
 
-  if ( subset.isNull() ) subset = "";
-  if ( subset == mSubsetString ) return true;
+  // If not changing string, then oll ok, nothing to do
+  if ( nonNullSubset == mSubsetString )
+    return true;
 
   bool valid = true;
 
   // If there is a new subset string then encode it..
 
   QgsExpression *expression = 0;
-  if ( ! subset.isEmpty() )
+  if ( ! nonNullSubset.isEmpty() )
   {
 
-    expression = new QgsExpression( subset );
+    expression = new QgsExpression( nonNullSubset );
     QString error;
     if ( expression->hasParserError() )
     {
@@ -1019,7 +1020,7 @@ bool QgsDelimitedTextProvider::setSubsetString( QString subset, bool updateFeatu
       delete expression;
       expression = 0;
       QString tag( "DelimitedText" );
-      QgsMessageLog::logMessage( tr( "Invalid subset string %1 for %2" ).arg( subset, mFile->fileName() ), tag );
+      QgsMessageLog::logMessage( tr( "Invalid subset string %1 for %2" ).arg( nonNullSubset, mFile->fileName() ), tag );
     }
   }
 
@@ -1032,7 +1033,7 @@ bool QgsDelimitedTextProvider::setSubsetString( QString subset, bool updateFeatu
     // a friend class after it has been freed but before it has been
     // reassigned
     QString previousSubset = mSubsetString;
-    mSubsetString = subset;
+    mSubsetString = nonNullSubset;
     mSubsetExpression = expression;
     if ( tmpSubsetExpression ) delete tmpSubsetExpression;
     // Update the feature count and extents if requested
@@ -1062,7 +1063,7 @@ bool QgsDelimitedTextProvider::setSubsetString( QString subset, bool updateFeatu
         // Reset the subset index
         rescanFile();
         // Encode the subset string into the data source URI.
-        setUriParameter( "subset", subset );
+        setUriParameter( "subset", nonNullSubset );
       }
     }
     else
@@ -1085,7 +1086,7 @@ bool QgsDelimitedTextProvider::setSubsetString( QString subset, bool updateFeatu
   return valid;
 }
 
-void QgsDelimitedTextProvider::setUriParameter( QString parameter, QString value )
+void QgsDelimitedTextProvider::setUriParameter( const QString& parameter, const QString& value )
 {
   QUrl url = QUrl::fromEncoded( dataSourceUri().toAscii() );
   if ( url.hasQueryItem( parameter ) ) url.removeAllQueryItems( parameter );

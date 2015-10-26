@@ -23,7 +23,7 @@ class QgsWFSRootItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsWFSRootItem( QgsDataItem* parent, QString name, QString path );
+    QgsWFSRootItem( QgsDataItem* parent, const QString& name, const QString& path );
     ~QgsWFSRootItem();
 
     QVector<QgsDataItem*> createChildren() override;
@@ -43,7 +43,7 @@ class QgsWFSConnectionItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsWFSConnectionItem( QgsDataItem* parent, QString name, QString path, QString uri );
+    QgsWFSConnectionItem( QgsDataItem* parent, const QString& name, const QString& path, const QString& uri );
     ~QgsWFSConnectionItem();
 
     QVector<QgsDataItem*> createChildren() override;
@@ -68,7 +68,7 @@ class QgsWFSConnectionItem : public QgsDataCollectionItem
 class QgsWFSLayerItem : public QgsLayerItem
 {
   public:
-    QgsWFSLayerItem( QgsDataItem* parent, QString name, QgsDataSourceURI uri, QString featureType, QString title, QString crsString );
+    QgsWFSLayerItem( QgsDataItem* parent, const QString& name, const QgsDataSourceURI& uri, const QString& featureType, const QString& title, const QString& crsString );
     ~QgsWFSLayerItem();
 
 };

@@ -49,16 +49,16 @@ class QgisInterface : QObject
     virtual void zoomToActiveLayer() = 0;
 
     //! Add a vector layer
-    virtual QgsVectorLayer* addVectorLayer( QString vectorLayerPath, QString baseName, QString providerKey ) = 0;
+    virtual QgsVectorLayer* addVectorLayer( const QString& vectorLayerPath, const QString& baseName, const QString& providerKey ) = 0;
 
     //! Add a raster layer given a raster layer file name
-    virtual QgsRasterLayer* addRasterLayer( QString rasterLayerPath, QString baseName = QString() ) = 0;
+    virtual QgsRasterLayer* addRasterLayer( const QString& rasterLayerPath, const QString& baseName = QString() ) = 0;
 
     //! Add a WMS layer
     virtual QgsRasterLayer* addRasterLayer( const QString& url, const QString& layerName, const QString& providerKey ) = 0;
 
     //! Add a project
-    virtual bool addProject( QString theProject ) = 0;
+    virtual bool addProject( const QString& theProject ) = 0;
     //! Start a blank project
     virtual void newProject( bool thePromptToSaveFlag = false ) = 0;
 
@@ -150,7 +150,7 @@ class QgisInterface : QObject
     virtual void removeWebToolBarIcon( QAction *qAction ) = 0;
 
     //! Add toolbar with specified name
-    virtual QToolBar *addToolBar( QString name ) = 0 /Factory/;
+    virtual QToolBar *addToolBar( const QString& name ) = 0 /Factory/;
 
     //! Add a toolbar
     //! @note added in 2.3
@@ -181,7 +181,7 @@ class QgisInterface : QObject
      * @return pointer to composer's view
      * @note new composer window will be shown and activated
      */
-    virtual QgsComposerView* createNewComposer( QString title = QString() ) = 0;
+    virtual QgsComposerView* createNewComposer( const QString& title = QString() ) = 0;
 
     /** Duplicate an existing parent composer from composer view
      * @param composerView pointer to existing composer view
@@ -189,7 +189,7 @@ class QgisInterface : QObject
      * @return pointer to duplicate composer's view
      * @note dupicate composer window will be hidden until loaded, then shown and activated
      */
-    virtual QgsComposerView* duplicateComposer( QgsComposerView* composerView, QString title = QString() ) = 0;
+    virtual QgsComposerView* duplicateComposer( QgsComposerView* composerView, const QString& title = QString() ) = 0;
 
     /** Deletes parent composer of composer view, after closing composer window */
     virtual void deleteComposer( QgsComposerView* composerView ) = 0;
@@ -209,10 +209,10 @@ class QgisInterface : QObject
     virtual QFont defaultStyleSheetFont() = 0;
 
     /** Add action to the plugins menu */
-    virtual void addPluginToMenu( QString name, QAction* action ) = 0;
+    virtual void addPluginToMenu( const QString& name, QAction* action ) = 0;
 
     /** Remove action from the plugins menu */
-    virtual void removePluginMenu( QString name, QAction* action ) = 0;
+    virtual void removePluginMenu( const QString& name, QAction* action ) = 0;
 
     /** Add "add layer" action to layer menu */
     virtual void insertAddLayerAction( QAction *action ) = 0;
@@ -221,28 +221,28 @@ class QgisInterface : QObject
     virtual void removeAddLayerAction( QAction *action ) = 0;
 
     /** Add action to the Database menu */
-    virtual void addPluginToDatabaseMenu( QString name, QAction* action ) = 0;
+    virtual void addPluginToDatabaseMenu( const QString& name, QAction* action ) = 0;
 
     /** Remove action from the Database menu */
-    virtual void removePluginDatabaseMenu( QString name, QAction* action ) = 0;
+    virtual void removePluginDatabaseMenu( const QString& name, QAction* action ) = 0;
 
     /** Add action to the Raster menu */
-    virtual void addPluginToRasterMenu( QString name, QAction* action ) = 0;
+    virtual void addPluginToRasterMenu( const QString& name, QAction* action ) = 0;
 
     /** Remove action from the Raster menu */
-    virtual void removePluginRasterMenu( QString name, QAction* action ) = 0;
+    virtual void removePluginRasterMenu( const QString& name, QAction* action ) = 0;
 
     /** Add action to the Vector menu */
-    virtual void addPluginToVectorMenu( QString name, QAction* action ) = 0;
+    virtual void addPluginToVectorMenu( const QString& name, QAction* action ) = 0;
 
     /** Remove action from the Vector menu */
-    virtual void removePluginVectorMenu( QString name, QAction* action ) = 0;
+    virtual void removePluginVectorMenu( const QString& name, QAction* action ) = 0;
 
     /** Add action to the Web menu */
-    virtual void addPluginToWebMenu( QString name, QAction* action ) = 0;
+    virtual void addPluginToWebMenu( const QString& name, QAction* action ) = 0;
 
     /** Remove action from the Web menu */
-    virtual void removePluginWebMenu( QString name, QAction* action ) = 0;
+    virtual void removePluginWebMenu( const QString& name, QAction* action ) = 0;
 
     /** Add a dock widget to the main window */
     virtual void addDockWidget( Qt::DockWidgetArea area, QDockWidget * dockwidget ) = 0;
@@ -270,7 +270,7 @@ class QgisInterface : QObject
     virtual void removeWindow( QAction *action ) = 0;
 
     /** Register action to the shortcuts manager so its shortcut can be changed in GUI */
-    virtual bool registerMainWindowAction( QAction* action, QString defaultShortcut ) = 0;
+    virtual bool registerMainWindowAction( QAction* action, const QString& defaultShortcut ) = 0;
 
     /** Unregister a previously registered action. (e.g. when plugin is going to be unloaded) */
     virtual bool unregisterMainWindowAction( QAction* action ) = 0;
@@ -284,7 +284,7 @@ class QgisInterface : QObject
      * url to the QGIS documentation directory path (prefix/share/doc)
      * @deprecated
      */
-    virtual void openURL( QString url, bool useQgisDocDirectory = true ) = 0 /Deprecated/;
+    virtual void openURL( const QString& url, bool useQgisDocDirectory = true ) = 0 /Deprecated/;
 
     /** Accessors for inserting items into menus and toolbars.
      * An item can be inserted before any existing action.
@@ -488,7 +488,7 @@ class QgisInterface : QObject
      *
      * More information here: http://qt-project.org/forums/viewthread/27098/
      */
-    virtual void preloadForm( QString uifile ) = 0;
+    virtual void preloadForm( const QString& uifile ) = 0;
 
     /** Return vector layers in edit mode
      * @param modified whether to return only layers that have been modified

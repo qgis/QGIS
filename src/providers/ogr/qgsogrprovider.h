@@ -97,7 +97,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
     virtual bool supportsSubsetString() override { return true; }
 
     /** Mutator for sql where clause used to limit dataset size */
-    virtual bool setSubsetString( QString theSQL, bool updateFeatureCount = true ) override;
+    virtual bool setSubsetString( const QString& theSQL, bool updateFeatureCount = true ) override;
 
     /**
      * Get feature type.
@@ -261,7 +261,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     QTextCodec* textEncoding() { return mEncoding; }
 
-    QByteArray quotedIdentifier( QByteArray field );
+    QByteArray quotedIdentifier( const QByteArray& field );
 
     /**
      * A forced reload invalidates the underlying connection.
@@ -289,7 +289,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
   private:
     unsigned char *getGeometryPointer( OGRFeatureH fet );
     QString ogrWkbGeometryTypeName( OGRwkbGeometryType type ) const;
-    OGRwkbGeometryType ogrWkbGeometryTypeFromName( QString typeName ) const;
+    OGRwkbGeometryType ogrWkbGeometryTypeFromName( const QString& typeName ) const;
     QgsFields mAttributeFields;
     OGRDataSourceH ogrDataSource;
     void *extent_;

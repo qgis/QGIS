@@ -35,7 +35,7 @@
 class QgsDataProvider;
 class QgsDataItem;
 
-typedef QgsDataItem * dataItem_t( QString, QgsDataItem* );
+typedef QgsDataItem * dataItem_t( const QString&, QgsDataItem* );
 
 /** Animated icon is keeping an animation running if there are listeners connected to frameChanged */
 class CORE_EXPORT QgsAnimatedIcon : public QObject
@@ -152,7 +152,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     Q_DECLARE_FLAGS( Capabilities, Capability )
 
     // This will _write_ selected crs in data source
-    virtual bool setCrs( QgsCoordinateReferenceSystem crs )
+    virtual bool setCrs( const QgsCoordinateReferenceSystem& crs )
     { Q_UNUSED( crs ); return false; }
 
     //! @deprecated since 2.8, returned type this will changed to Capabilities
@@ -203,7 +203,7 @@ class CORE_EXPORT QgsDataItem : public QObject
 
   protected:
     virtual void populate( const QVector<QgsDataItem*>& children );
-    virtual void refresh( QVector<QgsDataItem*> children );
+    virtual void refresh( const QVector<QgsDataItem*>& children );
     /** The item is scheduled to be deleted. E.g. if deleteLater() is called when
      * item is in Populating state (createChildren() running in another thread),
      * the deferredDelete() returns true and item will be deleted once Populating finished.

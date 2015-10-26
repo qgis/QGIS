@@ -209,7 +209,7 @@ void QgsWcsCapabilities::clear()
   mCapabilities = QgsWcsCapabilitiesProperty();
 }
 
-QString QgsWcsCapabilities::getCapabilitiesUrl( const QString version ) const
+QString QgsWcsCapabilities::getCapabilitiesUrl( const QString& version ) const
 {
   QString url = prepareUri( mUri.param( "url" ) ) + "SERVICE=WCS&REQUEST=GetCapabilities";
 
@@ -266,7 +266,7 @@ bool QgsWcsCapabilities::retrieveServerCapabilities()
   return false;
 }
 
-bool QgsWcsCapabilities::retrieveServerCapabilities( QString preferredVersion )
+bool QgsWcsCapabilities::retrieveServerCapabilities( const QString& preferredVersion )
 {
   clear();
 

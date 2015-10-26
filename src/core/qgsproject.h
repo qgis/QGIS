@@ -415,7 +415,7 @@ class CORE_EXPORT QgsProject : public QObject
 class CORE_EXPORT QgsProjectBadLayerHandler
 {
   public:
-    virtual void handleBadLayers( QList<QDomNode> layers, QDomDocument projectDom ) = 0;
+    virtual void handleBadLayers( const QList<QDomNode>& layers, const QDomDocument& projectDom ) = 0;
     virtual ~QgsProjectBadLayerHandler() {}
 };
 
@@ -424,7 +424,7 @@ class CORE_EXPORT QgsProjectBadLayerHandler
 class CORE_EXPORT QgsProjectBadLayerDefaultHandler : public QgsProjectBadLayerHandler
 {
   public:
-    virtual void handleBadLayers( QList<QDomNode> layers, QDomDocument projectDom ) override;
+    virtual void handleBadLayers( const QList<QDomNode>& layers, const QDomDocument& projectDom ) override;
 
 };
 

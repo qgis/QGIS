@@ -67,7 +67,7 @@ const QString GPX_KEY = "gpx";
 const QString GPX_DESCRIPTION = QObject::tr( "GPS eXchange format provider" );
 
 
-QgsGPXProvider::QgsGPXProvider( QString uri )
+QgsGPXProvider::QgsGPXProvider( const QString& uri )
     : QgsVectorDataProvider( uri )
     , data( 0 )
     , mFeatureType( WaypointType )

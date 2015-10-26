@@ -141,7 +141,7 @@ bool QgsSpatiaLiteFeatureIterator::close()
 ////
 
 
-bool QgsSpatiaLiteFeatureIterator::prepareStatement( QString whereClause )
+bool QgsSpatiaLiteFeatureIterator::prepareStatement( const QString& whereClause )
 {
   if ( !mHandle )
     return false;

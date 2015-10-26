@@ -94,7 +94,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     virtual QString subsetString() override;
 
     /** Mutator for sql where clause used to limit dataset size */
-    virtual bool setSubsetString( QString theSQL, bool updateFeatureCount = true ) override;
+    virtual bool setSubsetString( const QString& theSQL, bool updateFeatureCount = true ) override;
 
     virtual bool supportsSubsetString() override { return true; }
 

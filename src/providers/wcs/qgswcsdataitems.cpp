@@ -24,7 +24,7 @@
 #include <QFileInfo>
 #include <QSettings>
 
-QgsWCSConnectionItem::QgsWCSConnectionItem( QgsDataItem* parent, QString name, QString path, QString uri )
+QgsWCSConnectionItem::QgsWCSConnectionItem( QgsDataItem* parent, const QString& name, const QString& path, const QString& uri )
     : QgsDataCollectionItem( parent, name, path )
     , mUri( uri )
 {
@@ -119,7 +119,7 @@ void QgsWCSConnectionItem::deleteConnection()
 
 // ---------------------------------------------------------------------------
 
-QgsWCSLayerItem::QgsWCSLayerItem( QgsDataItem* parent, QString name, QString path, const QgsWcsCapabilitiesProperty& capabilitiesProperty, QgsDataSourceURI dataSourceUri, const QgsWcsCoverageSummary& coverageSummary )
+QgsWCSLayerItem::QgsWCSLayerItem( QgsDataItem* parent, const QString& name, const QString& path, const QgsWcsCapabilitiesProperty& capabilitiesProperty, const QgsDataSourceURI& dataSourceUri, const QgsWcsCoverageSummary& coverageSummary )
     : QgsLayerItem( parent, name, path, QString(), QgsLayerItem::Raster, "wcs" )
     , mCapabilities( capabilitiesProperty )
     , mDataSourceUri( dataSourceUri )
@@ -217,7 +217,7 @@ QString QgsWCSLayerItem::createUri()
 
 // ---------------------------------------------------------------------------
 
-QgsWCSRootItem::QgsWCSRootItem( QgsDataItem* parent, QString name, QString path )
+QgsWCSRootItem::QgsWCSRootItem( QgsDataItem* parent, const QString& name, const QString& path )
     : QgsDataCollectionItem( parent, name, path )
 {
   mCapabilities |= Fast;
@@ -286,7 +286,7 @@ QGISEXTERN int dataCapabilities()
   return  QgsDataProvider::Net;
 }
 
-QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
+QGISEXTERN QgsDataItem * dataItem( const QString& thePath, QgsDataItem* parentItem )
 {
   QgsDebugMsg( "thePath = " + thePath );
   if ( thePath.isEmpty() )

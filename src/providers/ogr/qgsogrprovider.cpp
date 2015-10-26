@@ -481,7 +481,7 @@ QgsAbstractFeatureSource* QgsOgrProvider::featureSource() const
   return new QgsOgrFeatureSource( this );
 }
 
-bool QgsOgrProvider::setSubsetString( QString theSQL, bool updateFeatureCount )
+bool QgsOgrProvider::setSubsetString( const QString& theSQL, bool updateFeatureCount )
 {
   QgsCPLErrorHandler handler;
 
@@ -593,7 +593,7 @@ QString QgsOgrProvider::ogrWkbGeometryTypeName( OGRwkbGeometryType type ) const
   return geom;
 }
 
-OGRwkbGeometryType QgsOgrProvider::ogrWkbGeometryTypeFromName( QString typeName ) const
+OGRwkbGeometryType QgsOgrProvider::ogrWkbGeometryTypeFromName( const QString& typeName ) const
 {
   if ( typeName == "Point" ) return wkbPoint;
   else if ( typeName == "LineString" ) return wkbLineString;
@@ -1613,7 +1613,7 @@ static QString createFileFilter_( QString const &longName, QString const &glob )
 } // createFileFilter_
 
 
-QString createFilters( QString type )
+QString createFilters( const QString& type )
 {
   /** Database drivers available*/
   static QString myDatabaseDrivers;
@@ -2436,7 +2436,7 @@ QVariant QgsOgrProvider::maximumValue( int index )
   return value;
 }
 
-QByteArray QgsOgrProvider::quotedIdentifier( QByteArray field )
+QByteArray QgsOgrProvider::quotedIdentifier( const QByteArray& field )
 {
   return QgsOgrUtils::quotedIdentifier( field, ogrDriverName );
 }

@@ -36,7 +36,7 @@ class QgsMssqlNewConnection : public QDialog, private Ui::QgsMssqlNewConnectionB
     ~QgsMssqlNewConnection();
 
     //! Tests the connection using the parameters supplied
-    bool testConnection( QString testDatabase = QString() );
+    bool testConnection( const QString& testDatabase = QString() );
 
     /**
      * @brief List all databases found for the given server.

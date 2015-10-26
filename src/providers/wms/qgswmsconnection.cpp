@@ -36,7 +36,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
-QgsWMSConnection::QgsWMSConnection( QString theConnName ) :
+QgsWMSConnection::QgsWMSConnection( const QString& theConnName ) :
     mConnName( theConnName )
 {
   QgsDebugMsg( "theConnName = " + theConnName );
@@ -134,13 +134,13 @@ QString QgsWMSConnection::selectedConnection()
   return settings.value( "/Qgis/connections-wms/selected" ).toString();
 }
 
-void QgsWMSConnection::setSelectedConnection( QString name )
+void QgsWMSConnection::setSelectedConnection( const QString& name )
 {
   QSettings settings;
   settings.setValue( "/Qgis/connections-wms/selected", name );
 }
 
-void QgsWMSConnection::deleteConnection( QString name )
+void QgsWMSConnection::deleteConnection( const QString& name )
 {
   QSettings settings;
   settings.remove( "/Qgis/connections-wms/" + name );

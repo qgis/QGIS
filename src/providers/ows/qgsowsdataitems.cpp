@@ -25,7 +25,7 @@
 #include <QFileInfo>
 
 // ---------------------------------------------------------------------------
-QgsOWSConnectionItem::QgsOWSConnectionItem( QgsDataItem* parent, QString name, QString path )
+QgsOWSConnectionItem::QgsOWSConnectionItem( QgsDataItem* parent, const QString& name, const QString& path )
     : QgsDataCollectionItem( parent, name, path )
 {
   mIconName = "mIconConnect.png";
@@ -110,7 +110,7 @@ QVector<QgsDataItem*> QgsOWSConnectionItem::createChildren()
 }
 
 // reset path recursively
-void QgsOWSConnectionItem::replacePath( QgsDataItem* item, QString before, QString after )
+void QgsOWSConnectionItem::replacePath( QgsDataItem* item, const QString& before, const QString& after )
 {
   item->setPath( item->path().replace( before, after ) );
   Q_FOREACH ( QgsDataItem* subItem, item->children() )
@@ -170,7 +170,7 @@ void QgsOWSConnectionItem::deleteConnection()
 // ---------------------------------------------------------------------------
 
 
-QgsOWSRootItem::QgsOWSRootItem( QgsDataItem* parent, QString name, QString path )
+QgsOWSRootItem::QgsOWSRootItem( QgsDataItem* parent, const QString& name, const QString& path )
     : QgsDataCollectionItem( parent, name, path )
 {
   mCapabilities |= Fast;
@@ -257,7 +257,7 @@ QGISEXTERN int dataCapabilities()
   return QgsDataProvider::Net;
 }
 
-QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
+QGISEXTERN QgsDataItem * dataItem( const QString& thePath, QgsDataItem* parentItem )
 {
   if ( thePath.isEmpty() )
   {

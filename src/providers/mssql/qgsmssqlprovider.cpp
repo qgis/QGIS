@@ -53,7 +53,7 @@ static const QString TEXT_PROVIDER_KEY = "mssql";
 static const QString TEXT_PROVIDER_DESCRIPTION = "MSSQL spatial data provider";
 int QgsMssqlProvider::sConnectionId = 0;
 
-QgsMssqlProvider::QgsMssqlProvider( QString uri )
+QgsMssqlProvider::QgsMssqlProvider( const QString& uri )
     : QgsVectorDataProvider( uri )
     , mNumberFeatures( 0 )
     , mCrs()
@@ -204,7 +204,7 @@ bool QgsMssqlProvider::OpenDatabase( QSqlDatabase db )
   return true;
 }
 
-QSqlDatabase QgsMssqlProvider::GetDatabase( QString service, QString host, QString database, QString username, QString password )
+QSqlDatabase QgsMssqlProvider::GetDatabase( const QString& service, const QString& host, const QString& database, const QString& username, const QString& password )
 {
   QSqlDatabase db;
   QString connectionName;
@@ -274,7 +274,7 @@ QSqlDatabase QgsMssqlProvider::GetDatabase( QString service, QString host, QStri
   return db;
 }
 
-QVariant::Type QgsMssqlProvider::DecodeSqlType( QString sqlTypeName )
+QVariant::Type QgsMssqlProvider::DecodeSqlType( const QString& sqlTypeName )
 {
   QVariant::Type type = QVariant::Invalid;
   if ( sqlTypeName.startsWith( "decimal", Qt::CaseInsensitive ) ||
@@ -1392,7 +1392,7 @@ QString  QgsMssqlProvider::name() const
   return TEXT_PROVIDER_KEY;
 } // ::name()
 
-bool QgsMssqlProvider::setSubsetString( QString theSQL, bool )
+bool QgsMssqlProvider::setSubsetString( const QString& theSQL, bool )
 {
   QString prevWhere = mSqlWhereClause;
 
@@ -1542,7 +1542,7 @@ void QgsMssqlProvider::mssqlWkbTypeAndDimension( QGis::WkbType wkbType, QString 
   }
 }
 
-QGis::WkbType QgsMssqlProvider::getWkbType( QString geometryType, int dim )
+QGis::WkbType QgsMssqlProvider::getWkbType( const QString& geometryType, int dim )
 {
   if ( dim == 3 )
   {
@@ -1865,7 +1865,7 @@ QGISEXTERN int dataCapabilities()
   return QgsDataProvider::Database;
 }
 
-QGISEXTERN QgsDataItem *dataItem( QString thePath, QgsDataItem *parentItem )
+QGISEXTERN QgsDataItem *dataItem( const QString& thePath, QgsDataItem *parentItem )
 {
   Q_UNUSED( thePath );
   return new QgsMssqlRootItem( parentItem, "MSSQL", "mssql:" );

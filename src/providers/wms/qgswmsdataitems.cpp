@@ -24,7 +24,7 @@
 #include "qgstilescalewidget.h"
 
 // ---------------------------------------------------------------------------
-QgsWMSConnectionItem::QgsWMSConnectionItem( QgsDataItem* parent, QString name, QString path, QString uri )
+QgsWMSConnectionItem::QgsWMSConnectionItem( QgsDataItem* parent, const QString& name, const QString& path, const QString& uri )
     : QgsDataCollectionItem( parent, name, path )
     , mUri( uri )
     , mCapabilitiesDownload( 0 )
@@ -215,7 +215,7 @@ void QgsWMSConnectionItem::deleteConnection()
 
 // ---------------------------------------------------------------------------
 
-QgsWMSLayerItem::QgsWMSLayerItem( QgsDataItem* parent, QString name, QString path, const QgsWmsCapabilitiesProperty &capabilitiesProperty, QgsDataSourceURI dataSourceUri, const QgsWmsLayerProperty &layerProperty )
+QgsWMSLayerItem::QgsWMSLayerItem( QgsDataItem* parent, const QString& name, const QString& path, const QgsWmsCapabilitiesProperty &capabilitiesProperty, const QgsDataSourceURI& dataSourceUri, const QgsWmsLayerProperty &layerProperty )
     : QgsLayerItem( parent, name, path, QString(), QgsLayerItem::Raster, "wms" )
     , mCapabilitiesProperty( capabilitiesProperty )
     , mDataSourceUri( dataSourceUri )
@@ -335,7 +335,7 @@ QString QgsWMTSLayerItem::createUri()
 }
 
 // ---------------------------------------------------------------------------
-QgsWMSRootItem::QgsWMSRootItem( QgsDataItem* parent, QString name, QString path )
+QgsWMSRootItem::QgsWMSRootItem( QgsDataItem* parent, const QString& name, const QString& path )
     : QgsDataCollectionItem( parent, name, path )
 {
   mCapabilities |= Fast;
@@ -413,7 +413,7 @@ QGISEXTERN int dataCapabilities()
   return  QgsDataProvider::Net;
 }
 
-QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
+QGISEXTERN QgsDataItem * dataItem( const QString& thePath, QgsDataItem* parentItem )
 {
   QgsDebugMsg( "thePath = " + thePath );
   if ( thePath.isEmpty() )

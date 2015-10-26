@@ -27,7 +27,7 @@
 
 static const QString WFS_NAMESPACE = "http://www.opengis.net/wfs";
 
-QgsWFSCapabilities::QgsWFSCapabilities( QString theUri )
+QgsWFSCapabilities::QgsWFSCapabilities( const QString& theUri )
     : mCapabilitiesReply( 0 )
     , mErrorCode( QgsWFSCapabilities::NoError )
 {
@@ -81,7 +81,7 @@ QString QgsWFSCapabilities::uriDescribeFeatureType( const QString& typeName ) co
   return mBaseUrl + "SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=1.0.0&TYPENAME=" + typeName;
 }
 
-QString QgsWFSCapabilities::uriGetFeature( QString typeName, QString crsString, QString filter, QgsRectangle bBox ) const
+QString QgsWFSCapabilities::uriGetFeature( const QString& typeName, QString crsString, QString filter, const QgsRectangle& bBox ) const
 {
   //get CRS
   if ( !crsString.isEmpty() )

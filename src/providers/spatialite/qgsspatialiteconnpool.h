@@ -24,7 +24,7 @@ inline QString qgsConnectionPool_ConnectionToName( QgsSqliteHandle* c )
   return c->dbPath();
 }
 
-inline void qgsConnectionPool_ConnectionCreate( QString connInfo, QgsSqliteHandle*& c )
+inline void qgsConnectionPool_ConnectionCreate( const QString& connInfo, QgsSqliteHandle*& c )
 {
   c = QgsSqliteHandle::openDb( connInfo, false );
 }
@@ -51,7 +51,7 @@ class QgsSpatiaLiteConnPoolGroup : public QObject, public QgsConnectionPoolGroup
     Q_OBJECT
 
   public:
-    explicit QgsSpatiaLiteConnPoolGroup( QString name ) : QgsConnectionPoolGroup<QgsSqliteHandle*>( name ) { initTimer( this ); }
+    explicit QgsSpatiaLiteConnPoolGroup( const QString& name ) : QgsConnectionPoolGroup<QgsSqliteHandle*>( name ) { initTimer( this ); }
 
   protected slots:
     void handleConnectionExpired() { onConnectionExpired(); }

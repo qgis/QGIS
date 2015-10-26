@@ -32,7 +32,7 @@ QStringList QgsSpatiaLiteConnection::connectionList()
   return settings.childGroups();
 }
 
-void QgsSpatiaLiteConnection::deleteConnection( QString name )
+void QgsSpatiaLiteConnection::deleteConnection( const QString& name )
 {
   QSettings settings;
   QString key = "/SpatiaLite/connections/" + name;
@@ -40,7 +40,7 @@ void QgsSpatiaLiteConnection::deleteConnection( QString name )
   settings.remove( key );
 }
 
-QString QgsSpatiaLiteConnection::connectionPath( QString name )
+QString QgsSpatiaLiteConnection::connectionPath( const QString& name )
 {
   QSettings settings;
   return settings.value( "/SpatiaLite/connections/" + name + "/sqlitepath" ).toString();
@@ -48,7 +48,7 @@ QString QgsSpatiaLiteConnection::connectionPath( QString name )
 
 // -------
 
-QgsSpatiaLiteConnection::QgsSpatiaLiteConnection( QString name )
+QgsSpatiaLiteConnection::QgsSpatiaLiteConnection( const QString& name )
 {
   // "name" can be either a saved connection or a path to database
 
@@ -135,7 +135,7 @@ bool QgsSpatiaLiteConnection::updateStatistics()
 #endif
 }
 
-sqlite3 *QgsSpatiaLiteConnection::openSpatiaLiteDb( QString path )
+sqlite3 *QgsSpatiaLiteConnection::openSpatiaLiteDb( const QString& path )
 {
   sqlite3 *handle = NULL;
   int ret;
@@ -646,7 +646,7 @@ bool QgsSpatiaLiteConnection::isRasterlite1Datasource( sqlite3 * handle, const c
   return exists;
 }
 
-bool QgsSpatiaLiteConnection::isDeclaredHidden( sqlite3 * handle, QString table, QString geom )
+bool QgsSpatiaLiteConnection::isDeclaredHidden( sqlite3 * handle, const QString& table, const QString& geom )
 {
   int ret;
   int i;

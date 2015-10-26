@@ -32,7 +32,7 @@ QGISEXTERN QStringList wildcards();
 
 
 QgsOgrLayerItem::QgsOgrLayerItem( QgsDataItem* parent,
-                                  QString name, QString path, QString uri, LayerType layerType )
+                                  const QString& name, const QString& path, const QString& uri, LayerType layerType )
     : QgsLayerItem( parent, name, path, uri, layerType, "ogr" )
 {
   mToolTip = uri;
@@ -64,7 +64,7 @@ QgsLayerItem::Capability QgsOgrLayerItem::capabilities()
   return mCapabilities & SetCrs ? SetCrs : NoCapabilities;
 }
 
-bool QgsOgrLayerItem::setCrs( QgsCoordinateReferenceSystem crs )
+bool QgsOgrLayerItem::setCrs( const QgsCoordinateReferenceSystem& crs )
 {
   if ( !( mCapabilities & SetCrs ) )
     return false;
@@ -179,7 +179,7 @@ static QgsOgrLayerItem* dataItemForLayer( QgsDataItem* parentItem, QString name,
 
 // ----
 
-QgsOgrDataCollectionItem::QgsOgrDataCollectionItem( QgsDataItem* parent, QString name, QString path )
+QgsOgrDataCollectionItem::QgsOgrDataCollectionItem( QgsDataItem* parent, const QString& name, const QString& path )
     : QgsDataCollectionItem( parent, name, path )
 {
 }

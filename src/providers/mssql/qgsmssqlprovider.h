@@ -49,11 +49,11 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     Q_OBJECT
 
   public:
-    explicit QgsMssqlProvider( QString uri = QString() );
+    explicit QgsMssqlProvider( const QString& uri = QString() );
 
     virtual ~QgsMssqlProvider();
 
-    static QSqlDatabase GetDatabase( QString service, QString host, QString database, QString username, QString password );
+    static QSqlDatabase GetDatabase( const QString& service, const QString& host, const QString& database, const QString& username, const QString& password );
 
     virtual QgsAbstractFeatureSource* featureSource() const override;
 
@@ -135,7 +135,7 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     QString subsetString() override;
 
     /** Mutator for sql where clause used to limit dataset size */
-    bool setSubsetString( QString theSQL, bool updateFeatureCount = true ) override;
+    bool setSubsetString( const QString& theSQL, bool updateFeatureCount = true ) override;
 
     virtual bool supportsSubsetString() override { return true; }
 
@@ -242,7 +242,7 @@ class QgsMssqlProvider : public QgsVectorDataProvider
 
   protected:
     /** Loads fields from input file to member attributeFields */
-    QVariant::Type DecodeSqlType( QString sqlTypeName );
+    QVariant::Type DecodeSqlType( const QString& sqlTypeName );
     void loadFields();
     void loadMetadata();
 
@@ -306,13 +306,13 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     QString mSqlWhereClause;
 
     // Sets the error messages
-    void setLastError( QString error )
+    void setLastError( const QString& error )
     {
       mLastError = error;
     }
 
     static void mssqlWkbTypeAndDimension( QGis::WkbType wkbType, QString &geometryType, int &dim );
-    static QGis::WkbType getWkbType( QString geometryType, int dim );
+    static QGis::WkbType getWkbType( const QString& geometryType, int dim );
 
     friend class QgsMssqlFeatureSource;
 

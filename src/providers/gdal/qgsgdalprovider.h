@@ -224,13 +224,13 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
                            const QString & theResamplingMethod = "NEAREST",
                            QgsRaster::RasterPyramidsFormat theFormat = QgsRaster::PyramidsGTiff,
                            const QStringList & theCreateOptions = QStringList() ) override;
-    QList<QgsRasterPyramid> buildPyramidList( QList<int> overviewList = QList<int>() ) override;
+    QList<QgsRasterPyramid> buildPyramidList( const QList<int>& overviewList = QList<int>() ) override;
 
     /** \brief Close data set and release related data */
     void closeDataset();
 
     /** Emit a signal to notify of the progress event. */
-    void emitProgress( int theType, double theProgress, QString theMessage );
+    void emitProgress( int theType, double theProgress, const QString& theMessage );
     void emitProgressUpdate( int theProgress );
 
     static QMap<QString, QString> supportedMimes();
@@ -243,7 +243,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     /** Remove dataset*/
     bool remove() override;
 
-    QString validateCreationOptions( const QStringList& createOptions, QString format ) override;
+    QString validateCreationOptions( const QStringList& createOptions, const QString& format ) override;
     QString validatePyramidsCreationOptions( QgsRaster::RasterPyramidsFormat pyramidsFormat,
         const QStringList & theConfigOptions, const QString & fileFormat );
 

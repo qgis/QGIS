@@ -28,7 +28,7 @@ class QgsWFSCapabilities : public QObject
     Q_OBJECT
   public:
     //explicit QgsWFSCapabilities( QString connName, QObject *parent = 0 );
-    explicit QgsWFSCapabilities( QString theUri );
+    explicit QgsWFSCapabilities( const QString& theUri );
 
     //! Append ? or & if necessary
     QString prepareUri( QString uri );
@@ -41,10 +41,10 @@ class QgsWFSCapabilities : public QObject
     QString uriDescribeFeatureType( const QString& typeName ) const;
     //! URI to get features
     //! @param filter can be an OGC filter xml or a QGIS expression (containing =,!=, <,>,<=, >=, AND, OR, NOT )
-    QString uriGetFeature( QString typeName,
+    QString uriGetFeature( const QString& typeName,
                            QString crs = QString(),
                            QString filter = QString(),
-                           QgsRectangle bBox = QgsRectangle() ) const;
+                           const QgsRectangle& bBox = QgsRectangle() ) const;
 
     //! start network connection to get capabilities
     void requestCapabilities();

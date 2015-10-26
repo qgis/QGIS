@@ -233,7 +233,7 @@ void QgsSpatiaLiteSourceSelect::on_mSearchModeComboBox_currentIndexChanged( cons
   on_mSearchTableEdit_textChanged( mSearchTableEdit->text() );
 }
 
-void QgsSpatiaLiteSourceSelect::setLayerType( QString table, QString column, QString type )
+void QgsSpatiaLiteSourceSelect::setLayerType( const QString& table, const QString& column, const QString& type )
 {
   mTableModel.setGeometryTypesForTable( table, column, type );
   mTablesTreeView->sortByColumn( 0, Qt::AscendingOrder );
@@ -530,7 +530,7 @@ void QgsSpatiaLiteSourceSelect::setSql( const QModelIndex &index )
   delete vlayer;
 }
 
-QString QgsSpatiaLiteSourceSelect::fullDescription( QString table, QString column, QString type )
+QString QgsSpatiaLiteSourceSelect::fullDescription( const QString& table, const QString& column, const QString& type )
 {
   QString full_desc = "";
   full_desc += table + "\" (" + column + ") " + type;

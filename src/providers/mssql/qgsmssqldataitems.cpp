@@ -33,7 +33,7 @@
 #include <QtSql/QSqlError>
 
 // ---------------------------------------------------------------------------
-QgsMssqlConnectionItem::QgsMssqlConnectionItem( QgsDataItem* parent, QString name, QString path )
+QgsMssqlConnectionItem::QgsMssqlConnectionItem( QgsDataItem* parent, const QString& name, const QString& path )
     : QgsDataCollectionItem( parent, name, path )
     , mUseGeometryColumns( false )
     , mUseEstimatedMetadata( false )
@@ -406,7 +406,7 @@ bool QgsMssqlConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction 
 
 
 // ---------------------------------------------------------------------------
-QgsMssqlLayerItem::QgsMssqlLayerItem( QgsDataItem* parent, QString name, QString path, QgsLayerItem::LayerType layerType, QgsMssqlLayerProperty layerProperty )
+QgsMssqlLayerItem::QgsMssqlLayerItem( QgsDataItem* parent, const QString& name, const QString& path, QgsLayerItem::LayerType layerType, const QgsMssqlLayerProperty& layerProperty )
     : QgsLayerItem( parent, name, path, QString(), layerType, "mssql" )
     , mLayerProperty( layerProperty )
 {
@@ -443,7 +443,7 @@ QString QgsMssqlLayerItem::createUri()
 }
 
 // ---------------------------------------------------------------------------
-QgsMssqlSchemaItem::QgsMssqlSchemaItem( QgsDataItem* parent, QString name, QString path )
+QgsMssqlSchemaItem::QgsMssqlSchemaItem( QgsDataItem* parent, const QString& name, const QString& path )
     : QgsDataCollectionItem( parent, name, path )
 {
   mIconName = "mIconDbSchema.png";
@@ -474,7 +474,7 @@ void QgsMssqlSchemaItem::addLayers( QgsDataItem* newLayers )
   }
 }
 
-QgsMssqlLayerItem* QgsMssqlSchemaItem::addLayer( QgsMssqlLayerProperty layerProperty, bool refresh )
+QgsMssqlLayerItem* QgsMssqlSchemaItem::addLayer( const QgsMssqlLayerProperty& layerProperty, bool refresh )
 {
   QGis::WkbType wkbType = QgsMssqlTableModel::wkbTypeFromMssql( layerProperty.type );
   QString tip = tr( "%1 as %2 in %3" ).arg( layerProperty.geometryColName, QgsMssqlTableModel::displayStringForWkbType( wkbType ), layerProperty.srid );
@@ -523,7 +523,7 @@ QgsMssqlLayerItem* QgsMssqlSchemaItem::addLayer( QgsMssqlLayerProperty layerProp
 }
 
 // ---------------------------------------------------------------------------
-QgsMssqlRootItem::QgsMssqlRootItem( QgsDataItem* parent, QString name, QString path )
+QgsMssqlRootItem::QgsMssqlRootItem( QgsDataItem* parent, const QString& name, const QString& path )
     : QgsDataCollectionItem( parent, name, path )
 {
   mIconName = "mIconMssql.svg";

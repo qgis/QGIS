@@ -896,30 +896,32 @@ void QgsApplication::registerOgrDrivers()
   }
 }
 
-QString QgsApplication::absolutePathToRelativePath( QString aPath, QString targetPath )
+QString QgsApplication::absolutePathToRelativePath( const QString& aPath, const QString& targetPath )
 {
+  QString aPathUrl = aPath;
+  QString tPathUrl = targetPath;
 #if defined( Q_OS_WIN )
   const Qt::CaseSensitivity cs = Qt::CaseInsensitive;
 
-  aPath.replace( "\\", "/" );
-  if ( aPath.startsWith( "//" ) )
+  aPathUrl.replace( "\\", "/" );
+  if ( aPathUrl.startsWith( "//" ) )
   {
     // keep UNC prefix
-    aPath = "\\\\" + aPath.mid( 2 );
+    aPathUrl = "\\\\" + aPathUrl.mid( 2 );
   }
 
-  targetPath.replace( "\\", "/" );
-  if ( targetPath.startsWith( "//" ) )
+  tPathUrl.replace( "\\", "/" );
+  if ( tPathUrl.startsWith( "//" ) )
   {
     // keep UNC prefix
-    targetPath = "\\\\" + targetPath.mid( 2 );
+    tPathUrl = "\\\\" + tPathUrl.mid( 2 );
   }
 #else
   const Qt::CaseSensitivity cs = Qt::CaseSensitive;
 #endif
 
-  QStringList targetElems = targetPath.split( "/", QString::SkipEmptyParts );
-  QStringList aPathElems = aPath.split( "/", QString::SkipEmptyParts );
+  QStringList targetElems = tPathUrl.split( "/", QString::SkipEmptyParts );
+  QStringList aPathElems = aPathUrl.split( "/", QString::SkipEmptyParts );
 
   targetElems.removeAll( "." );
   aPathElems.removeAll( "." );
@@ -938,7 +940,7 @@ QString QgsApplication::absolutePathToRelativePath( QString aPath, QString targe
   if ( n == 0 )
   {
     // no common parts; might not even be a file
-    return aPath;
+    return aPathUrl;
   }
 
   if ( targetElems.size() > 0 )
@@ -959,7 +961,7 @@ QString QgsApplication::absolutePathToRelativePath( QString aPath, QString targe
   return aPathElems.join( "/" );
 }
 
-QString QgsApplication::relativePathToAbsolutePath( QString rpath, QString targetPath )
+QString QgsApplication::relativePathToAbsolutePath( const QString& rpath, const QString& targetPath )
 {
   // relative path should always start with ./ or ../
   if ( !rpath.startsWith( "./" ) && !rpath.startsWith( "../" ) )
@@ -967,15 +969,18 @@ QString QgsApplication::relativePathToAbsolutePath( QString rpath, QString targe
     return rpath;
   }
 
-#if defined(Q_OS_WIN)
-  rpath.replace( "\\", "/" );
-  targetPath.replace( "\\", "/" );
+  QString rPathUrl = rpath;
+  QString targetPathUrl = targetPath;
 
-  bool uncPath = targetPath.startsWith( "//" );
+#if defined(Q_OS_WIN)
+  rPathUrl.replace( "\\", "/" );
+  targetPathUrl.replace( "\\", "/" );
+
+  bool uncPath = targetPathUrl.startsWith( "//" );
 #endif
 
-  QStringList srcElems = rpath.split( "/", QString::SkipEmptyParts );
-  QStringList targetElems = targetPath.split( "/", QString::SkipEmptyParts );
+  QStringList srcElems = rPathUrl.split( "/", QString::SkipEmptyParts );
+  QStringList targetElems = targetPathUrl.split( "/", QString::SkipEmptyParts );
 
 #if defined(Q_OS_WIN)
   if ( uncPath )

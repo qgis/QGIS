@@ -146,7 +146,7 @@ QgsMssqlNewConnection::~QgsMssqlNewConnection()
   delete bar;
 }
 
-bool QgsMssqlNewConnection::testConnection( QString testDatabase )
+bool QgsMssqlNewConnection::testConnection( const QString& testDatabase )
 {
   bar->pushMessage( "Testing connection", "....." );
   // Gross but needed to show the last message.

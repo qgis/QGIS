@@ -224,7 +224,7 @@ QString QgsDelimitedTextSourceSelect::selectedChars()
   chars.append( txtDelimiterOther->text() );
   return chars;
 }
-void QgsDelimitedTextSourceSelect::setSelectedChars( QString delimiters )
+void QgsDelimitedTextSourceSelect::setSelectedChars( const QString& delimiters )
 {
   QString chars = QgsDelimitedTextFile::decodeChars( delimiters );
   cbxDelimComma->setChecked( chars.contains( "," ) );
@@ -237,7 +237,7 @@ void QgsDelimitedTextSourceSelect::setSelectedChars( QString delimiters )
   txtDelimiterOther->setText( chars );
 }
 
-void QgsDelimitedTextSourceSelect::loadSettings( QString subkey, bool loadGeomSettings )
+void QgsDelimitedTextSourceSelect::loadSettings( const QString& subkey, bool loadGeomSettings )
 {
   QSettings settings;
 
@@ -294,7 +294,7 @@ void QgsDelimitedTextSourceSelect::loadSettings( QString subkey, bool loadGeomSe
 
 }
 
-void QgsDelimitedTextSourceSelect::saveSettings( QString subkey, bool saveGeomSettings )
+void QgsDelimitedTextSourceSelect::saveSettings( const QString& subkey, bool saveGeomSettings )
 {
   QSettings settings;
   QString key = mPluginKey;
@@ -331,7 +331,7 @@ void QgsDelimitedTextSourceSelect::saveSettings( QString subkey, bool saveGeomSe
 
 }
 
-void QgsDelimitedTextSourceSelect::loadSettingsForFile( QString filename )
+void QgsDelimitedTextSourceSelect::loadSettingsForFile( const QString& filename )
 {
   if ( filename.isEmpty() ) return;
   QFileInfo fi( filename );
@@ -341,7 +341,7 @@ void QgsDelimitedTextSourceSelect::loadSettingsForFile( QString filename )
   mLastFileType = filetype;
 }
 
-void QgsDelimitedTextSourceSelect::saveSettingsForFile( QString filename )
+void QgsDelimitedTextSourceSelect::saveSettingsForFile( const QString& filename )
 {
   if ( filename.isEmpty() ) return;
   QFileInfo fi( filename );
@@ -567,7 +567,7 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
 
 }
 
-bool QgsDelimitedTextSourceSelect::trySetXYField( QStringList &fields, QList<bool> &isValidNumber, QString xname, QString yname )
+bool QgsDelimitedTextSourceSelect::trySetXYField( QStringList &fields, QList<bool> &isValidNumber, const QString& xname, const QString& yname )
 {
   // If fields already set, then nothing to do
   if ( cmbXField->currentIndex() >= 0 && cmbYField->currentIndex() >= 0 ) return true;

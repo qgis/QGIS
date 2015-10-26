@@ -246,7 +246,7 @@ class QgsWFSProvider : public QgsVectorDataProvider
        @param coords list where the found coordinates are appended
        @param elem the <gml:coordinates> element
        @return 0 in case of success*/
-    int readGML2Coordinates( std::list<QgsPoint>& coords, const QDomElement elem ) const;
+    int readGML2Coordinates( std::list<QgsPoint>& coords, const QDomElement& elem ) const;
     /** Tries to create a QgsCoordinateReferenceSystem object and assign it to mSourceCRS. Returns 0 in case of success*/
     int setCRSFromGML2( const QDomElement& wfsCollectionElement );
 
@@ -285,7 +285,7 @@ class QgsWFSProvider : public QgsVectorDataProvider
     bool initGetRenderedOnly( const QgsRectangle &rect );
 #endif
     /** Converts DescribeFeatureType schema geometry property type to WKBType*/
-    QGis::WkbType geomTypeFromPropertyType( QString attName, QString propType );
+    QGis::WkbType geomTypeFromPropertyType( const QString& attName, const QString& propType );
 
     void deleteData();
 };

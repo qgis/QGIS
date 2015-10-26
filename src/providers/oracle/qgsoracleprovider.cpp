@@ -1935,7 +1935,7 @@ int QgsOracleProvider::capabilities() const
   return mEnabledCapabilities;
 }
 
-bool QgsOracleProvider::setSubsetString( QString theSQL, bool updateFeatureCount )
+bool QgsOracleProvider::setSubsetString( const QString& theSQL, bool updateFeatureCount )
 {
   QString prevWhere = mSqlWhereClause;
 

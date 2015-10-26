@@ -225,7 +225,7 @@ QgsGPSData::TrackIterator QgsGPSData::tracksEnd()
 
 
 QgsGPSData::WaypointIterator QgsGPSData::addWaypoint( double lat, double lon,
-    QString name, double ele )
+    const QString& name, double ele )
 {
   QgsWaypoint wpt;
   wpt.lat = lat;
@@ -248,7 +248,7 @@ QgsGPSData::WaypointIterator QgsGPSData::addWaypoint( const QgsWaypoint& wpt )
 }
 
 
-QgsGPSData::RouteIterator QgsGPSData::addRoute( QString name )
+QgsGPSData::RouteIterator QgsGPSData::addRoute( const QString& name )
 {
   QgsRoute rte;
   rte.name = name;
@@ -268,7 +268,7 @@ QgsGPSData::RouteIterator QgsGPSData::addRoute( const QgsRoute& rte )
 }
 
 
-QgsGPSData::TrackIterator QgsGPSData::addTrack( QString name )
+QgsGPSData::TrackIterator QgsGPSData::addTrack( const QString& name )
 {
   QgsTrack trk;
   trk.name = name;

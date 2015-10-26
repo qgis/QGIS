@@ -378,7 +378,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     bool extentForNonTiledLayer( const QString& layerName, const QString& crs, QgsRectangle& extent );
 
     // case insensitive attribute value lookup
-    static QString nodeAttribute( const QDomElement &e, QString name, QString defValue = QString::null );
+    static QString nodeAttribute( const QDomElement &e, const QString& name, const QString& defValue = QString::null );
 
     /**
      * Add the list of WMS layer names to be rendered by this server
@@ -443,7 +443,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     QString layerMetadata( QgsWmsLayerProperty &layer );
 
     //! remove query item and replace it with a new value
-    void setQueryItem( QUrl &url, QString key, QString value );
+    void setQueryItem( QUrl &url, const QString& key, const QString& value );
 
     //! add image FORMAT parameter to url
     void setFormatQueryItem( QUrl &url );

@@ -73,7 +73,7 @@ class QgsSpatiaLiteFeatureIterator : public QgsAbstractFeatureIteratorFromSource
     QString whereClauseFid();
     QString whereClauseFids();
     QString mbr( const QgsRectangle& rect );
-    bool prepareStatement( QString whereClause );
+    bool prepareStatement( const QString& whereClause );
     QString quotedPrimaryKey();
     bool getFeature( sqlite3_stmt *stmt, QgsFeature &feature );
     QString fieldName( const QgsField& fld );

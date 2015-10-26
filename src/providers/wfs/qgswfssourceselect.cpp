@@ -562,7 +562,7 @@ void QgsWFSSourceSelect::buildQueryButtonClicked()
   buildQuery( treeView->selectionModel()->currentIndex() );
 }
 
-void QgsWFSSourceSelect::filterChanged( QString text )
+void QgsWFSSourceSelect::filterChanged( const QString& text )
 {
   QgsDebugMsg( "WFS FeatureType filter changed to :" + text );
   QRegExp::PatternSyntax mySyntax = QRegExp::PatternSyntax( QRegExp::RegExp );

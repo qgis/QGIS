@@ -231,7 +231,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     QString subsetString() override;
 
     /** Mutator for sql where clause used to limit dataset size */
-    bool setSubsetString( QString theSQL, bool updateFeatureCount = true ) override;
+    bool setSubsetString( const QString& theSQL, bool updateFeatureCount = true ) override;
 
     virtual bool supportsSubsetString() override { return true; }
 
@@ -457,14 +457,14 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     };
 
     // A function that determines if the given columns contain unique entries
-    bool uniqueData( QString quotedColNames );
+    bool uniqueData( const QString& quotedColNames );
 
     int mEnabledCapabilities;
 
     void appendGeomParam( const QgsGeometry *geom, QStringList &param ) const;
     void appendPkParams( QgsFeatureId fid, QStringList &param ) const;
 
-    QString paramValue( QString fieldvalue, const QString &defaultValue ) const;
+    QString paramValue( const QString& fieldvalue, const QString &defaultValue ) const;
 
     QgsPostgresConn *mConnectionRO; //! read-only database connection (initially)
     QgsPostgresConn *mConnectionRW; //! read-write database connection (on update)
@@ -474,8 +474,8 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     void disconnectDb();
 
-    static QString quotedIdentifier( QString ident ) { return QgsPostgresConn::quotedIdentifier( ident ); }
-    static QString quotedValue( QVariant value ) { return QgsPostgresConn::quotedValue( value ); }
+    static QString quotedIdentifier( const QString& ident ) { return QgsPostgresConn::quotedIdentifier( ident ); }
+    static QString quotedValue( const QVariant& value ) { return QgsPostgresConn::quotedValue( value ); }
 
     friend class QgsPostgresFeatureSource;
 
@@ -498,7 +498,7 @@ class QgsPostgresUtils
                                 const QList<int>& pkAttrs,
                                 QSharedPointer<QgsPostgresSharedData> sharedData );
 
-    static QString whereClause( QgsFeatureIds featureIds,
+    static QString whereClause( const QgsFeatureIds& featureIds,
                                 const QgsFields& fields,
                                 QgsPostgresConn* conn,
                                 QgsPostgresPrimaryKeyType pkType,

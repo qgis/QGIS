@@ -3166,7 +3166,7 @@ QString QgsSpatiaLiteProvider::subsetString()
   return mSubsetString;
 }
 
-bool QgsSpatiaLiteProvider::setSubsetString( QString theSQL, bool updateFeatureCount )
+bool QgsSpatiaLiteProvider::setSubsetString( const QString& theSQL, bool updateFeatureCount )
 {
   QString prevSubsetString = mSubsetString;
   mSubsetString = theSQL;
@@ -5519,7 +5519,7 @@ QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &na
   return numberOfRelatedStyles;
 }
 
-QGISEXTERN QString getStyleById( const QString& uri, QString styleId, QString& errCause )
+QGISEXTERN QString getStyleById( const QString& uri, const QString& styleId, QString& errCause )
 {
   QgsSqliteHandle *handle;
   sqlite3 *sqliteHandle = NULL;

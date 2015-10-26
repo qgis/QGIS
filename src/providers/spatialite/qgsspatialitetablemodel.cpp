@@ -34,7 +34,7 @@ QgsSpatiaLiteTableModel::~QgsSpatiaLiteTableModel()
 
 }
 
-void QgsSpatiaLiteTableModel::addTableEntry( QString type, QString tableName, QString geometryColName, QString sql )
+void QgsSpatiaLiteTableModel::addTableEntry( const QString& type, const QString& tableName, const QString& geometryColName, const QString& sql )
 {
   //is there already a root item ?
   QStandardItem *dbItem;

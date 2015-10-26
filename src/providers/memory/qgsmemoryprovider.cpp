@@ -30,7 +30,7 @@
 static const QString TEXT_PROVIDER_KEY = "memory";
 static const QString TEXT_PROVIDER_DESCRIPTION = "Memory provider";
 
-QgsMemoryProvider::QgsMemoryProvider( QString uri )
+QgsMemoryProvider::QgsMemoryProvider( const QString& uri )
     : QgsVectorDataProvider( uri )
     , mSpatialIndex( 0 )
 {
@@ -431,7 +431,7 @@ QString QgsMemoryProvider::subsetString()
   return mSubsetString;
 }
 
-bool QgsMemoryProvider::setSubsetString( QString theSQL, bool updateFeatureCount )
+bool QgsMemoryProvider::setSubsetString( const QString& theSQL, bool updateFeatureCount )
 {
   Q_UNUSED( updateFeatureCount );
 

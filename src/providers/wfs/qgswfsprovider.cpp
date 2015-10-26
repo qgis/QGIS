@@ -1242,7 +1242,7 @@ int QgsWFSProvider::getFeaturesFromGML2( const QDomElement& wfsCollectionElement
   return 0;
 }
 
-int QgsWFSProvider::readGML2Coordinates( std::list<QgsPoint>& coords, const QDomElement elem ) const
+int QgsWFSProvider::readGML2Coordinates( std::list<QgsPoint>& coords, const QDomElement& elem ) const
 {
   QString coordSeparator = ",";
   QString tupelSeparator = " ";
@@ -1653,7 +1653,7 @@ bool QgsWFSProvider::initGetRenderedOnly( const QgsRectangle &rect )
 }
 #endif
 
-QGis::WkbType QgsWFSProvider::geomTypeFromPropertyType( QString attName, QString propType )
+QGis::WkbType QgsWFSProvider::geomTypeFromPropertyType( const QString& attName, const QString& propType )
 {
   Q_UNUSED( attName );
   const QStringList geomTypes = ( QStringList()

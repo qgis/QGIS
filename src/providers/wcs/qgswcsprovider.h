@@ -217,7 +217,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     void showMessageBox( const QString& title, const QString& text );
 
     // case insensitive attribute value lookup
-    static QString nodeAttribute( const QDomElement &e, QString name, QString defValue = QString::null );
+    static QString nodeAttribute( const QDomElement &e, const QString& name, const QString& defValue = QString::null );
 
     //! parse the WCS ServiceException XML element
     static void parseServiceException( QDomElement const &e, const QString& wcsVersion, QString& errorTitle, QString& errorText );
@@ -238,7 +238,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
      *
      */
 
-    bool parseUri( QString uri );
+    bool parseUri( const QString& uri );
 
     /**
      * \brief Prepare the URI so that we can later simply append param=value
@@ -250,7 +250,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     QString coverageMetadata( const QgsWcsCoverageSummary& c );
 
     //! remove query item and replace it with a new value
-    void setQueryItem( QUrl &url, QString key, QString value );
+    void setQueryItem( QUrl &url, const QString& key, const QString& value );
 
     //! Release cache resources
     void clearCache();

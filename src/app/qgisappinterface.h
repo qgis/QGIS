@@ -63,14 +63,14 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     void zoomToActiveLayer() override;
 
     //! Add a vector layer
-    QgsVectorLayer* addVectorLayer( QString vectorLayerPath, QString baseName, QString providerKey ) override;
+    QgsVectorLayer* addVectorLayer( const QString& vectorLayerPath, const QString& baseName, const QString& providerKey ) override;
     //! Add a raster layer given its file name
-    QgsRasterLayer* addRasterLayer( QString rasterLayerPath, QString baseName ) override;
+    QgsRasterLayer* addRasterLayer( const QString& rasterLayerPath, const QString& baseName ) override;
     //! Add a WMS layer
     QgsRasterLayer* addRasterLayer( const QString& url, const QString& baseName, const QString& providerKey ) override;
 
     //! Add a project
-    bool addProject( QString theProjectName ) override;
+    bool addProject( const QString& theProjectName ) override;
     //! Start a new blank project
     void newProject( bool thePromptToSaveFlag = false ) override;
 
@@ -147,7 +147,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     void removeWebToolBarIcon( QAction *qAction ) override;
 
     //! Add toolbar with specified name
-    QToolBar* addToolBar( QString name ) override;
+    QToolBar* addToolBar( const QString& name ) override;
 
     //! Add a toolbar
     //! @note added in 2.3
@@ -163,7 +163,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
 #ifndef Q_MOC_RUN
     Q_DECL_DEPRECATED
 #endif
-    void openURL( QString url, bool useQgisDocDirectory = true ) override;
+    void openURL( const QString& url, bool useQgisDocDirectory = true ) override;
 
     /** Return a pointer to the map canvas used by qgisapp */
     QgsMapCanvas * mapCanvas() override;
@@ -199,7 +199,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
      * @return pointer to composer's view
      * @note new composer window will be shown and activated
      */
-    QgsComposerView* createNewComposer( QString title = QString() ) override;
+    QgsComposerView* createNewComposer( const QString& title = QString() ) override;
 
     // ### QGIS 3: return QgsComposer*, not QgsComposerView*
     /** Duplicate an existing parent composer from composer view
@@ -208,7 +208,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
      * @return pointer to duplicate composer's view
      * @note dupicate composer window will be hidden until loaded, then shown and activated
      */
-    QgsComposerView* duplicateComposer( QgsComposerView* composerView, QString title = QString() ) override;
+    QgsComposerView* duplicateComposer( QgsComposerView* composerView, const QString& title = QString() ) override;
 
     /** Deletes parent composer of composer view, after closing composer window */
     void deleteComposer( QgsComposerView* composerView ) override;
@@ -227,29 +227,29 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QFont defaultStyleSheetFont() override;
 
     /** Add action to the plugins menu */
-    void addPluginToMenu( QString name, QAction* action ) override;
+    void addPluginToMenu( const QString& name, QAction* action ) override;
     /** Remove action from the plugins menu */
-    void removePluginMenu( QString name, QAction* action ) override;
+    void removePluginMenu( const QString& name, QAction* action ) override;
 
     /** Add action to the Database menu */
-    void addPluginToDatabaseMenu( QString name, QAction* action ) override;
+    void addPluginToDatabaseMenu( const QString& name, QAction* action ) override;
     /** Remove action from the Database menu */
-    void removePluginDatabaseMenu( QString name, QAction* action ) override;
+    void removePluginDatabaseMenu( const QString& name, QAction* action ) override;
 
     /** Add action to the Raster menu */
-    void addPluginToRasterMenu( QString name, QAction* action ) override;
+    void addPluginToRasterMenu( const QString& name, QAction* action ) override;
     /** Remove action from the Raster menu */
-    void removePluginRasterMenu( QString name, QAction* action ) override;
+    void removePluginRasterMenu( const QString& name, QAction* action ) override;
 
     /** Add action to the Vector menu */
-    void addPluginToVectorMenu( QString name, QAction* action ) override;
+    void addPluginToVectorMenu( const QString& name, QAction* action ) override;
     /** Remove action from the Raster menu */
-    void removePluginVectorMenu( QString name, QAction* action ) override;
+    void removePluginVectorMenu( const QString& name, QAction* action ) override;
 
     /** Add action to the Web menu */
-    void addPluginToWebMenu( QString name, QAction* action ) override;
+    void addPluginToWebMenu( const QString& name, QAction* action ) override;
     /** Remove action from the Web menu */
-    void removePluginWebMenu( QString name, QAction* action ) override;
+    void removePluginWebMenu( const QString& name, QAction* action ) override;
 
     /** Add "add layer" action to the layer menu */
     void insertAddLayerAction( QAction *action ) override;
@@ -283,7 +283,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     virtual void removeWindow( QAction *action ) override;
 
     /** Register action to the shortcuts manager so its shortcut can be changed in GUI. */
-    virtual bool registerMainWindowAction( QAction* action, QString defaultShortcut ) override;
+    virtual bool registerMainWindowAction( QAction* action, const QString& defaultShortcut ) override;
 
     /** Unregister a previously registered action. (e.g. when plugin is going to be unloaded. */
     virtual bool unregisterMainWindowAction( QAction* action ) override;
@@ -466,7 +466,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
      *
      * More information here: http://qt-project.org/forums/viewthread/27098/
      */
-    virtual void preloadForm( QString uifile ) override;
+    virtual void preloadForm( const QString& uifile ) override;
 
     /** Return vector layers in edit mode
      * @param modified whether to return only layers that have been modified
@@ -482,7 +482,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
 
   private slots:
 
-    void cacheloadForm( QString uifile );
+    void cacheloadForm( const QString& uifile );
 
   private:
 
