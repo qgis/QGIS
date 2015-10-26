@@ -397,6 +397,7 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%/%PACKAGENAME%-%VERS
 	"apps/%PACKAGENAME%/qtplugins/designer/" ^
 	"apps/%PACKAGENAME%/python/" ^
 	"apps/%PACKAGENAME%/resources/customization.xml" ^
+	"apps/%PACKAGENAME%/resources/themes/" ^
 	"bin/%PACKAGENAME%.bat.tmpl" ^
 	"bin/%PACKAGENAME%-browser.bat.tmpl" ^
 	"bin/%PACKAGENAME%-designer.bat.tmpl" ^
