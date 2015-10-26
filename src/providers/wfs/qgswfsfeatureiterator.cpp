@@ -25,8 +25,7 @@ QgsWFSFeatureIterator::QgsWFSFeatureIterator( QgsWFSFeatureSource* source, bool 
   {
     mSelectedFeatures = mSource->mSpatialIndex->intersects( request.filterRect() );
   }
-
-  if ( request.filterType() == QgsFeatureRequest::FilterFid )
+  else if ( request.filterType() == QgsFeatureRequest::FilterFid )
   {
     mSelectedFeatures.push_back( request.filterFid() );
   }
