@@ -28,6 +28,7 @@
 #include "qgsdistancearea.h"
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
+#include "qgsgeometryengine.h"
 #include "qgslogger.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsogcutils.h"
@@ -1474,6 +1475,21 @@ static QVariant fcnYMax( const QVariantList& values, const QgsExpressionContext*
   return QVariant::fromValue( geom.boundingBox().yMaximum() );
 }
 
+static QVariant fcnRelate( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
+  QgsGeometry sGeom = getGeometry( values.at( 1 ), parent );
+
+  if ( fGeom.isEmpty() || sGeom.isEmpty() )
+    return QVariant();
+
+  QgsGeometryEngine* engine = QgsGeometry::createGeometryEngine( fGeom.geometry() );
+  QString result = engine->relate( *sGeom.geometry() );
+  delete engine;
+
+  return QVariant::fromValue( result  );
+}
+
 static QVariant fcnBbox( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
@@ -2171,6 +2187,7 @@ const QStringList& QgsExpression::BuiltinFunctions()
     << "y_min" << "ymin" << "y_max" << "ymax" << "geom_from_wkt" << "geomFromWKT"
     << "geom_from_gml" << "geomFromGML" << "intersects_bbox" << "bbox"
     << "disjoint" << "intersects" << "touches" << "crosses" << "contains"
+    << "relate"
     << "overlaps" << "within" << "buffer" << "centroid" << "bounds"
     << "bounds_width" << "bounds_height" << "convex_hull" << "difference"
     << "distance" << "intersection" << "sym_difference" << "combine"
@@ -2292,6 +2309,7 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( "y_max", 1, fcnYMax, "GeometryGroup", QString(), false, QStringList(), false, QStringList() << "ymax" )
     << new StaticFunction( "geom_from_wkt", 1, fcnGeomFromWKT, "GeometryGroup", QString(), false, QStringList(), false, QStringList() << "geomFromWKT" )
     << new StaticFunction( "geom_from_gml", 1, fcnGeomFromGML, "GeometryGroup", QString(), false, QStringList(), false, QStringList() << "geomFromGML" )
+    << new StaticFunction( "relate", 2, fcnRelate, "GeometryGroup" )
     << new StaticFunction( "intersects_bbox", 2, fcnBbox, "GeometryGroup", QString(), false, QStringList(), false, QStringList() << "bbox" )
     << new StaticFunction( "disjoint", 2, fcnDisjoint, "GeometryGroup" )
     << new StaticFunction( "intersects", 2, fcnIntersects, "GeometryGroup" )
