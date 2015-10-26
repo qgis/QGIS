@@ -1281,7 +1281,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /** Signal emitted when the current theme is changed so plugins
      * can change there tool button icons. */
-    void currentThemeChanged( QString );
+    void currentThemeChanged( const QString& );
 
     /** This signal is emitted when a new composer instance has been created
        */
@@ -1303,7 +1303,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /** This signal is emitted when a layer has been saved using save as
        @note added in version 2.7
     */
-    void layerSavedAs( QgsMapLayer* l, QString path );
+    void layerSavedAs( QgsMapLayer* l, const QString& path );
 
   private:
     /** This method will open a dialog so the user can select GDAL sublayers to load

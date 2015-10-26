@@ -97,7 +97,7 @@ class QgsProjectionSelector : QWidget
     void resizeEvent( QResizeEvent * theEvent );
 
   signals:
-    void sridSelected( QString theSRID );
+    void sridSelected( const QString& theSRID );
     //! Refresh any listening canvases
     void refresh();
     //! Let listeners know if find has focus so they can adjust the default button

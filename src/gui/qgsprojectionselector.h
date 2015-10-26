@@ -200,7 +200,7 @@ class GUI_EXPORT QgsProjectionSelector : public QWidget, private Ui::QgsProjecti
     QStringList authorities();
 
   signals:
-    void sridSelected( QString theSRID );
+    void sridSelected( const QString& theSRID );
     //! Refresh any listening canvases
     void refresh();
     //! Let listeners know if find has focus so they can adjust the default button

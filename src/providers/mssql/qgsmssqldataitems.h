@@ -65,7 +65,7 @@ class QgsMssqlConnectionItem : public QgsDataCollectionItem
     QString connInfo() const { return mConnInfo; }
 
   signals:
-    void addGeometryColumn( QgsMssqlLayerProperty );
+    void addGeometryColumn( const QgsMssqlLayerProperty& );
 
   public slots:
     void editConnection();

@@ -315,7 +315,7 @@ class CORE_EXPORT QgsStyleV2 : public QObject
     bool importXML( const QString& filename );
 
   signals:
-    void symbolSaved( QString name, QgsSymbolV2* symbol );
+    void symbolSaved( const QString& name, QgsSymbolV2* symbol );
 
   protected:
 

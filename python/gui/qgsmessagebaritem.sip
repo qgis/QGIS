@@ -41,6 +41,6 @@ class QgsMessageBarItem: QWidget
 
   signals:
     //! emitted when the message level has changed
-    void styleChanged( QString styleSheet );
+    void styleChanged( const QString& styleSheet );
 };
 

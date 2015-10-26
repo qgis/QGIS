@@ -16,7 +16,7 @@ class QgsGeometryValidator : QThread
     static void validateGeometry( const QgsGeometry *g, QList<QgsGeometry::Error> &errors );
 
   signals:
-    void errorFound( QgsGeometry::Error );
+    void errorFound( const QgsGeometry::Error& );
 
   public slots:
     void addError( const QgsGeometry::Error& );

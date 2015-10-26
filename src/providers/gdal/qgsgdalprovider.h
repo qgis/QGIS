@@ -248,7 +248,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
         const QStringList & theConfigOptions, const QString & fileFormat );
 
   signals:
-    void statusChanged( QString );
+    void statusChanged( const QString& );
 
   private:
     // update mode

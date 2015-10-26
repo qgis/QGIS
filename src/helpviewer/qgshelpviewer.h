@@ -36,7 +36,7 @@ class QgsReaderThread : public QThread
     virtual void run() override;
 
   signals:
-    void helpRead( QString help );
+    void helpRead( const QString& help );
 };
 
 

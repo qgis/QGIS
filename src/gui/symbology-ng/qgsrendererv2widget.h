@@ -137,8 +137,8 @@ class QgsRendererV2DataDefinedMenus : public QObject
 
   signals:
 
-    void rotationFieldChanged( QString fldName );
-    void sizeScaleFieldChanged( QString fldName );
+    void rotationFieldChanged( const QString& fldName );
+    void sizeScaleFieldChanged( const QString& fldName );
     void scaleMethodChanged( QgsSymbolV2::ScaleMethod scaleMethod );
 
   protected:

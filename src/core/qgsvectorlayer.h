@@ -934,7 +934,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /**
      * Change selection to the new set of features. Dismisses the current selection.
-     * Will emit the { @link selectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) } signal with the
+     * Will emit the { @link selectionChanged( const QgsFeatureIds&, const QgsFeatureIds&qt_check_for_QOBJECT_macro, bool ) } signal with the
      * clearAndSelect flag set.
      *
      * @param ids   The ids which will be the new selection
@@ -1853,7 +1853,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @param deselected      Ids of all features which have previously been selected but are not any more
      * @param clearAndSelect  In case this is set to true, the old selection was dismissed and the new selection corresponds to selected
      */
-    void selectionChanged( const QgsFeatureIds selected, const QgsFeatureIds deselected, const bool clearAndSelect );
+    void selectionChanged( const QgsFeatureIds& selected, const QgsFeatureIds& deselected, const bool clearAndSelect );
 
     /** This signal is emitted when selection was changed */
     void selectionChanged();
@@ -1891,7 +1891,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      *
      * @param fieldName The name of the attribute to be added
      */
-    void beforeAddingExpressionField( QString fieldName );
+    void beforeAddingExpressionField( const QString& fieldName );
     /**
      * Will be emitted, when an attribute has been deleted from this vector layer.
      * Applies only to types {@link QgsFields::OriginEdit}, {@link QgsFields::OriginProvider} and {@link QgsFields::OriginExpression }
@@ -1919,7 +1919,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * Emitted when a feature has been deleted.
      *
      * If you do expensive operations in a slot connected to this, you should prever to use
-     * {@link featuresDeleted(QgsFeatureIds)}.
+     * {@link featuresDeleted( const QgsFeatureIds& )}.
      *
      * @param fid The id of the feature which has been deleted
      */
@@ -1933,7 +1933,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      *
      * @param fids The feature ids that have been deleted.
      */
-    void featuresDeleted( QgsFeatureIds fids );
+    void featuresDeleted( const QgsFeatureIds& fids );
     /**
      * Is emitted, whenever the fields available from this layer have been changed.
      * This can be due to manually adding attributes or due to a join.

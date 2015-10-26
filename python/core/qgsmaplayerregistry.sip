@@ -138,7 +138,7 @@ class QgsMapLayerRegistry : QObject
      *
      * @param theLayerIds  A list of ids of the layers which are removed.
      */
-    void layersWillBeRemoved( QStringList theLayerIds );
+    void layersWillBeRemoved( const QStringList& theLayerIds );
 
     /**
      * Emitted when a layer is removed from the registry
@@ -147,14 +147,14 @@ class QgsMapLayerRegistry : QObject
      *
      * @note Consider using {@link layersWillBeRemoved()} instead
      */
-    void layerWillBeRemoved( QString theLayerId );
+    void layerWillBeRemoved( const QString& theLayerId );
 
     /**
      * Emitted after one or more layers were removed from the registry
      *
      * @param theLayerIds  A list of ids of the layers which were removed.
      */
-    void layersRemoved( QStringList theLayerIds );
+    void layersRemoved( const QStringList& theLayerIds );
 
     /**
      * Emitted after a layer was removed from the registry
@@ -163,7 +163,7 @@ class QgsMapLayerRegistry : QObject
      *
      * @note Consider using {@link layersRemoved()} instead
      */
-    void layerRemoved( QString theLayerId );
+    void layerRemoved( const QString& theLayerId );
 
 
     /**
@@ -183,7 +183,7 @@ class QgsMapLayerRegistry : QObject
      *
      * @see legendLayersAdded()
      */
-    void layersAdded( QList<QgsMapLayer *> theMapLayers );
+    void layersAdded( const QList<QgsMapLayer *>& theMapLayers );
 
     /**
      * Emitted when a layer is added to the registry.
@@ -202,7 +202,7 @@ class QgsMapLayerRegistry : QObject
      *
      * @param theMapLayers  The {@link QgsMapLayer}s which are added to the legend.
      */
-    void legendLayersAdded( QList<QgsMapLayer*> theMapLayers );
+    void legendLayersAdded( const QList<QgsMapLayer*>& theMapLayers );
 
   private:
     QgsMapLayerRegistry(); // private 'cause it's a singleton

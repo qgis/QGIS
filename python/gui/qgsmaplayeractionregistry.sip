@@ -45,7 +45,7 @@ class QgsMapLayerAction : QAction
 
   signals:
     /** Triggered when action has been run for a specific list of features */
-    void triggeredForFeatures( QgsMapLayer* layer, const QList<QgsFeature> featureList );
+    void triggeredForFeatures( QgsMapLayer* layer, const QList<QgsFeature>& featureList );
 
     /** Triggered when action has been run for a specific feature */
     void triggeredForFeature( QgsMapLayer* layer, const QgsFeature& feature );

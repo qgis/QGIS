@@ -46,7 +46,7 @@ class CORE_EXPORT QgsMessageLog : public QObject
     static void logMessage( const QString& message, const QString& tag = QString::null, MessageLevel level = WARNING );
 
   signals:
-    void messageReceived( QString message, QString tag, QgsMessageLog::MessageLevel level );
+    void messageReceived( const QString& message, const QString& tag, QgsMessageLog::MessageLevel level );
 
     void messageReceived( bool received );
 

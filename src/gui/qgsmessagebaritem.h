@@ -67,7 +67,7 @@ class GUI_EXPORT QgsMessageBarItem : public QWidget
 
   signals:
     //! emitted when the message level has changed
-    void styleChanged( QString styleSheet );
+    void styleChanged( const QString& styleSheet );
 
 
   private:

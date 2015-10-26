@@ -1080,7 +1080,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     void refreshItemsTriggered();
 
     /** Is emitted when the composition has an updated status bar message for the composer window*/
-    void statusMsgChanged( QString message );
+    void statusMsgChanged( const QString& message );
 
     friend class QgsComposerObject; //for accessing dataDefinedEvaluate, readDataDefinedPropertyMap and writeDataDefinedPropertyMap
     friend class QgsComposerModel; //for accessing updateZValues (should not be public)

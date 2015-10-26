@@ -62,7 +62,7 @@ class QgsMssqlGeomColumnTypeThread : public QThread
     virtual void run() override;
 
   signals:
-    void setLayerType( QgsMssqlLayerProperty layerProperty );
+    void setLayerType( const QgsMssqlLayerProperty& layerProperty );
 
   public slots:
     void addGeometryColumn( const QgsMssqlLayerProperty& layerProperty );
@@ -108,7 +108,7 @@ class QgsMssqlSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
   signals:
     void addDatabaseLayers( QStringList const & layerPathList, QString const & providerKey );
     void connectionsChanged();
-    void addGeometryColumn( QgsMssqlLayerProperty );
+    void addGeometryColumn( const QgsMssqlLayerProperty& );
 
   public slots:
     //! Determines the tables the user selected and closes the dialog

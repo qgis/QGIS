@@ -132,7 +132,7 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
 
   signals:
     void identifyProgress( int, int );
-    void identifyMessage( QString );
+    void identifyMessage( const QString& );
     void changedRasterResults( QList<IdentifyResult>& );
 
   protected:

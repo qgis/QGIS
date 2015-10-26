@@ -66,7 +66,7 @@ class QgsPGConnectionItem : public QgsDataCollectionItem
     bool handleDrop( const QMimeData * data, const QString& toSchema );
 
   signals:
-    void addGeometryColumn( QgsPostgresLayerProperty );
+    void addGeometryColumn( const QgsPostgresLayerProperty& );
 
   public slots:
     void editConnection();

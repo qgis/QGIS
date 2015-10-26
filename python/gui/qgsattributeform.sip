@@ -94,7 +94,7 @@ class QgsAttributeForm : QWidget
      * @param attribute The name of the attribute that changed.
      * @param value     The new value of the attribute.
      */
-    void attributeChanged( QString attribute, const QVariant& value );
+    void attributeChanged( const QString& attribute, const QVariant& value );
 
     /**
      * Will be emitted before the feature is saved. Use this signal to perform sanity checks.

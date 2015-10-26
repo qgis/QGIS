@@ -42,7 +42,7 @@ class QgsFeatureSelectionModel : QItemSelectionModel
      *
      * @param indexes The model indexes which need to be repainted
      */
-    void requestRepaint( QModelIndexList indexes );
+    void requestRepaint( const QModelIndexList& indexes );
 
     /**
      * Request a repaint of the visible items of connected views.

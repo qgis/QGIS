@@ -70,5 +70,5 @@ class QgsRelationReferenceWidget : QWidget
     void init();
 
   signals:
-    void foreignKeyChanged( QVariant );
+    void foreignKeyChanged( const QVariant& );
 };

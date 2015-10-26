@@ -362,14 +362,14 @@ class CORE_EXPORT QgsProject : public QObject
     void projectSaved();
 
     //! emitted when an old project file is read.
-    void oldProjectVersionWarning( QString );
+    void oldProjectVersionWarning( const QString& );
 
     //! emitted when a layer from a projects was read
     // @param i current layer
     // @param n number of layers
     void layerLoaded( int i, int n );
 
-    void loadingLayer( QString );
+    void loadingLayer( const QString& );
 
     void snapSettingsChanged();
 

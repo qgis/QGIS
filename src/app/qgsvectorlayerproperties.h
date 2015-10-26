@@ -124,8 +124,8 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
   signals:
 
     /** Emitted when changes to layer were saved to update legend */
-    void refreshLegend( QString layerID, bool expandItem );
-    void refreshLegend( QString layerID );
+    void refreshLegend( const QString& layerID, bool expandItem );
+    void refreshLegend( const QString& layerID );
 
     void toggleEditing( QgsMapLayer * );
 

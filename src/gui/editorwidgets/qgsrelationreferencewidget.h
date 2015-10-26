@@ -125,7 +125,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     void init();
 
   signals:
-    void foreignKeyChanged( QVariant );
+    void foreignKeyChanged( const QVariant& );
 
   private slots:
     void highlightActionTriggered( QAction* action );

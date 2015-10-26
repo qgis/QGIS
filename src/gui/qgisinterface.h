@@ -606,7 +606,7 @@ class GUI_EXPORT QgisInterface : public QObject
        @note
        added in version 2.7
     */
-    void layerSavedAs( QgsMapLayer* l, QString path );
+    void layerSavedAs( QgsMapLayer* l, const QString& path );
 };
 
 #endif //#ifndef QGISINTERFACE_H

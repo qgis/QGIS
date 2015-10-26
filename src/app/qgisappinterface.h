@@ -478,7 +478,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     virtual int messageTimeout() override;
 
   signals:
-    void currentThemeChanged( QString );
+    void currentThemeChanged( const QString& );
 
   private slots:
 

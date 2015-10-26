@@ -252,7 +252,7 @@ class QgsStyleV2 : QObject
     bool importXML( const QString& filename );
 
   signals:
-    void symbolSaved( QString name, QgsSymbolV2* symbol );
+    void symbolSaved( const QString& name, QgsSymbolV2* symbol );
 
   protected:
     //! convenience function to open the DB and return a sqlite3 object

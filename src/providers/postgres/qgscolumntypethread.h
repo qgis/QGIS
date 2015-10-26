@@ -35,9 +35,9 @@ class QgsGeomColumnTypeThread : public QThread
     virtual void run() override;
 
   signals:
-    void setLayerType( QgsPostgresLayerProperty layerProperty );
+    void setLayerType( const QgsPostgresLayerProperty& layerProperty );
     void progress( int, int );
-    void progressMessage( QString );
+    void progressMessage( const QString& );
 
   public slots:
     void stop();

@@ -280,7 +280,7 @@ public:
     void toggled( bool );
 
     /** Is emitted when the atlas has an updated status bar message for the composer window*/
-    void statusMsgChanged( QString message );
+    void statusMsgChanged( const QString& message );
 
     /** Is emitted when the coverage layer for an atlas changes*/
     void coverageLayerChanged( QgsVectorLayer* layer );

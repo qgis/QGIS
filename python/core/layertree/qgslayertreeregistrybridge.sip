@@ -32,6 +32,6 @@ class QgsLayerTreeRegistryBridge : QObject
   signals:
     //! Tell others we have just added layers to the tree (used in QGIS to auto-select first newly added layer)
     //! @note added in 2.6
-    void addedLayersToLayerTree( QList<QgsMapLayer*> layers );
+    void addedLayersToLayerTree( const QList<QgsMapLayer*>& layers );
 
 };

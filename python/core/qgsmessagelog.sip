@@ -18,7 +18,7 @@ class QgsMessageLog : QObject
     static void logMessage( const QString& message, const QString& tag = QString::null, MessageLevel level = WARNING );
 
   signals:
-    void messageReceived( QString message, QString tag, MessageLevel level );
+    void messageReceived( const QString& message, const QString& tag, MessageLevel level );
 
   private:
     QgsMessageLog();

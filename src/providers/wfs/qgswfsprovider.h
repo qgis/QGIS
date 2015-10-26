@@ -154,7 +154,7 @@ class QgsWFSProvider : public QgsVectorDataProvider
     virtual void reloadData() override;
 
   signals:
-    void dataReadProgressMessage( QString message );
+    void dataReadProgressMessage( const QString& message );
 
     void dataChanged();
 

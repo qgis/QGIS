@@ -133,7 +133,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
      * Is emitted, whenever the display expression is successfully changed
      * @param expression The expression that was applied
      */
-    void displayExpressionChanged( const QString expression );
+    void displayExpressionChanged( const QString& expression );
 
     void aboutToChangeEditSelection( bool& ok );
 

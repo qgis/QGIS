@@ -70,7 +70,7 @@ class QgsCompositionWidget: public QWidget, private Ui::QgsCompositionWidgetBase
 
   signals:
     /** Is emitted when page orientation changes*/
-    void pageOrientationChanged( QString orientation );
+    void pageOrientationChanged( const QString& orientation );
 
   private slots:
     /* when a new map is added */

@@ -44,7 +44,7 @@ class dxf2shpConverterGui: public QDialog, private Ui::dxf2shpConverterGui
     void on_btnBrowseOutputDir_clicked();
 
   signals:
-    void createLayer( QString, QString );
+    void createLayer( const QString&, const QString& );
 };
 
 #endif

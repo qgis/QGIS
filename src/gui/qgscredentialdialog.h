@@ -36,7 +36,7 @@ class GUI_EXPORT QgsCredentialDialog : public QDialog, public QgsCredentials, pr
     ~QgsCredentialDialog();
 
   signals:
-    void credentialsRequested( QString, QString *, QString *, QString, bool * );
+    void credentialsRequested( const QString&, QString *, QString *, const QString&, bool * );
 
     void credentialsRequestedMasterPassword( QString *, bool, bool * );
 

@@ -35,7 +35,7 @@ class CORE_EXPORT QgsBrowserWatcher : public QFutureWatcher<QVector <QgsDataItem
     QgsDataItem* item() const { return mItem; }
 
   signals:
-    void finished( QgsDataItem* item, QVector <QgsDataItem*> items );
+    void finished( QgsDataItem* item, const QVector <QgsDataItem*>& items );
 
   private:
     QgsDataItem *mItem;

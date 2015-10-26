@@ -57,7 +57,7 @@ class GUI_EXPORT QgsFieldComboBox : public QComboBox
 
   signals:
     //! the signal is emitted when the currently selected field changes
-    void fieldChanged( QString fieldName );
+    void fieldChanged( const QString& fieldName );
 
   public slots:
     //! set the layer of which the fields are listed

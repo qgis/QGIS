@@ -73,7 +73,7 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
      * Emitted whenever the expression changes
      * @param exp The new search expression
      */
-    void expressionChanged( QString exp );
+    void expressionChanged( const QString& exp );
 
   protected slots:
 

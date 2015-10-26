@@ -55,7 +55,7 @@ class CORE_EXPORT QgsLayerTreeRegistryBridge : public QObject
   signals:
     //! Tell others we have just added layers to the tree (used in QGIS to auto-select first newly added layer)
     //! @note added in 2.6
-    void addedLayersToLayerTree( QList<QgsMapLayer*> layers );
+    void addedLayersToLayerTree( const QList<QgsMapLayer*>& layers );
 
   protected slots:
     void layersAdded( const QList<QgsMapLayer*>& layers );

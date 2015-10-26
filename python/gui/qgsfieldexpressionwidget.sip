@@ -63,10 +63,10 @@ class QgsFieldExpressionWidget : QWidget
 
   signals:
     //! the signal is emitted when the currently selected field changes
-    void fieldChanged( QString fieldName );
+    void fieldChanged( const QString& fieldName );
 
     //! fieldChanged signal with indication of the validity of the expression
-    void fieldChanged( QString fieldName, bool isValid );
+    void fieldChanged( const QString& fieldName, bool isValid );
 
 //    void returnPressed();
 

@@ -75,7 +75,7 @@ class QgsLegendInterface : QObject
     void groupRelationsChanged();
 
     /* //! emitted when an item (group/layer) is added */
-    void itemAdded( QModelIndex index );
+    void itemAdded( const QModelIndex& index );
 
     /* //! emitted when an item (group/layer) is removed */
     void itemRemoved();

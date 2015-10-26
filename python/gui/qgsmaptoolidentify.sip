@@ -87,7 +87,7 @@ class QgsMapToolIdentify : QgsMapTool
 
   signals:
     void identifyProgress( int, int );
-    void identifyMessage( QString );
+    void identifyMessage( const QString& );
     void changedRasterResults( QList<QgsMapToolIdentify::IdentifyResult>& );
 
   protected:

@@ -73,7 +73,7 @@ class QgsDelimitedTextSourceSelect : public QDialog, private Ui::QgsDelimitedTex
     bool validate();
 
   signals:
-    void addVectorLayer( QString, QString, QString );
+    void addVectorLayer( const QString&, const QString&, const QString& );
 };
 
 #endif // QGSDELIMITEDTEXTSOURCESELECT_H

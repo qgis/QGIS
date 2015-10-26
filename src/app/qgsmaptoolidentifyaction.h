@@ -68,7 +68,7 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
 
   signals:
     void identifyProgress( int, int );
-    void identifyMessage( QString );
+    void identifyMessage( const QString& );
     void copyToClipboard( QgsFeatureStore & );
 
   private slots:
