@@ -39,8 +39,10 @@ SET (geometrychecker_HDRS
 
 SET (geometrychecker_MOC_HDRS
     qgsgeometrychecker.h
+    qgsgeometrycheckerplugin.h
     checks/qgsgeometryanglecheck.h
     checks/qgsgeometryareacheck.h
+    checks/qgsgeometrycheck.h
     checks/qgsgeometrydegeneratepolygoncheck.h
     checks/qgsgeometryduplicatecheck.h
     checks/qgsgeometryduplicatenodescheck.h
