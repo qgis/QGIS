@@ -41,6 +41,8 @@ class QgsGeometryCheckPrecision
 
 class QgsGeometryCheck : public QObject
 {
+    Q_OBJECT
+
   public:
     enum ChangeWhat { ChangeFeature, ChangePart, ChangeRing, ChangeNode };
     enum ChangeType { ChangeAdded, ChangeRemoved, ChangeChanged };

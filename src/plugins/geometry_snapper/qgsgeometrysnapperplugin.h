@@ -33,6 +33,8 @@ static const QString sPluginIcon = ":/geometrysnapper/icons/geometrysnapper.png"
 
 class QgsGeometrySnapperPlugin : public QObject, public QgisPlugin
 {
+    Q_OBJECT
+
   public:
     explicit QgsGeometrySnapperPlugin( QgisInterface* iface );
     void initGui() override;
