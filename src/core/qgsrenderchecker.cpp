@@ -257,10 +257,9 @@ bool QgsRenderChecker::compareImages( const QString& theTestName,
   }
   if ( ! theRenderedImageFile.isEmpty() )
   {
-#ifndef Q_OS_WIN
     mRenderedImageFile = theRenderedImageFile;
-#else
-    mRenderedImageFile = theRenderedImageFile.replace( "\\", "/" );
+#ifdef Q_OS_WIN
+    mRenderedImageFile = mRenderedImageFile.replace( "\\", "/" );
 #endif
   }
 
