@@ -81,26 +81,59 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsCoordinateTransform* ct
 
     if ( layerCrsGeographic )
     {
-      // Note: ll = lower left point
-      //   and ur = upper right point
-      QgsPoint ll = ct->transform( extent.xMinimum(), extent.yMinimum(),
-                                   QgsCoordinateTransform::ReverseTransform );
-
-      QgsPoint ur = ct->transform( extent.xMaximum(), extent.yMaximum(),
-                                   QgsCoordinateTransform::ReverseTransform );
-
-      extent = ct->transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
-
-      if ( ll.x() > ur.x() )
+      if ( !ct->destCRS().geographicFlag() )
       {
-        // the coordinates projected in reverse order than what one would expect.
-        // we are probably looking at an area that includes longitude of 180 degrees.
-        // we need to take into account coordinates from two intervals: (-180,x1) and (x2,180)
-        // so let's use (-180,180). This hopefully does not add too much overhead. It is
-        // more straightforward than rendering with two separate extents and more consistent
-        // for rendering, labeling and caching as everything is rendered just in one go
-        extent.setXMinimum( -splitCoord );
-        extent.setXMaximum( splitCoord );
+        // if we transform from a projected coordinate system check
+        // check if transforming back roughly returns the input
+        // extend - otherwise render the world.
+        QgsRectangle extent1 = ct->transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
+        QgsRectangle extent2 = ct->transformBoundingBox( extent1, QgsCoordinateTransform::ForwardTransform );
+
+        QgsDebugMsg( QString( "\n0:%1 %2x%3\n1:%4\n2:%5 %6x%7 (w:%8 h:%9)" )
+                     .arg( extent.toString() ).arg( extent.width() ).arg( extent.height() )
+                     .arg( extent1.toString() )
+                     .arg( extent2.toString() ).arg( extent2.width() ).arg( extent2.height() )
+                     .arg( fabs( 1.0 - extent2.width() / extent.width() ) )
+                     .arg( fabs( 1.0 - extent2.height() / extent.height() ) )
+                   );
+
+        if ( fabs( 1.0 - extent2.width() / extent.width() ) < 0.5 &&
+             fabs( 1.0 - extent2.height() / extent.height() ) < 0.5 )
+        {
+          extent = extent1;
+        }
+        else
+        {
+          extent = QgsRectangle( -180.0, -90.0, 180.0, 90.0 );
+        }
+      }
+      else
+      {
+        // Note: ll = lower left point
+        QgsPoint ll = ct->transform( extent.xMinimum(), extent.yMinimum(),
+                                     QgsCoordinateTransform::ReverseTransform );
+
+        //   and ur = upper right point
+        QgsPoint ur = ct->transform( extent.xMaximum(), extent.yMaximum(),
+                                     QgsCoordinateTransform::ReverseTransform );
+
+        QgsDebugMsg( QString( "in:%1 (ll:%2 ur:%3)" ).arg( extent.toString() ).arg( ll.toString() ).arg( ur.toString() ) );
+
+        extent = ct->transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
+
+        QgsDebugMsg( QString( "out:%1 (w:%2 h:%3)" ).arg( extent.toString() ).arg( extent.width() ).arg( extent.height() ) );
+
+        if ( ll.x() > ur.x() )
+        {
+          // the coordinates projected in reverse order than what one would expect.
+          // we are probably looking at an area that includes longitude of 180 degrees.
+          // we need to take into account coordinates from two intervals: (-180,x1) and (x2,180)
+          // so let's use (-180,180). This hopefully does not add too much overhead. It is
+          // more straightforward than rendering with two separate extents and more consistent
+          // for rendering, labeling and caching as everything is rendered just in one go
+          extent.setXMinimum( -splitCoord );
+          extent.setXMaximum( splitCoord );
+        }
       }
 
       // TODO: the above rule still does not help if using a projection that covers the whole
