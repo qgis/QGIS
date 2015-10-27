@@ -18,6 +18,11 @@
 #include <QList>
 #include "rtree.hpp"
 
+/**
+ * \class pal::CostCalculator
+ * \note not available in Python bindings
+ */
+
 namespace pal
 {
   class Feats;
@@ -48,9 +53,11 @@ namespace pal
   /**
    * \brief Data structure to compute polygon's candidates costs
    *
-   *  eight segment from center of candidat to (rpx,rpy) points (0°, 45°, 90°, ..., 315°)
+   *  Eight segments from center of candidate to (rpx,rpy) points (0°, 45°, 90°, ..., 315°)
    *  dist store the shortest square distance from the center to an object
    *  ok[i] is the to true whether the corresponding dist[i] is set
+   *
+   * \note not available in Python bindings
    */
   class PolygonCostCalculator
   {

@@ -39,7 +39,10 @@
 
 namespace pal
 {
-
+  /**
+   * \class pal::PriorityQueue
+   * \note not available in Python bindings
+   */
   class PriorityQueue
   {
 

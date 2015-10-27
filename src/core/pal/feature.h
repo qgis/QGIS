@@ -41,6 +41,11 @@
 
 #include "qgslabelingenginev2.h"
 
+/**
+ * \class pal::LabelInfo
+ * \note not available in Python bindings
+ */
+
 namespace pal
 {
   /** Optional additional info about label (for curved labels) */
@@ -75,6 +80,8 @@ namespace pal
 
   /**
    * \brief Main class to handle feature
+   * \class pal::FeaturePart
+   * \note not available in Python bindings
    */
   class CORE_EXPORT FeaturePart : public PointSet
   {
