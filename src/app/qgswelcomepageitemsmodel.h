@@ -44,7 +44,7 @@ class QgsWelcomePageItemsModel : public QAbstractListModel
 
     struct RecentProjectData
     {
-      bool operator==( const RecentProjectData& other ) { return other.path == this->path; }
+      bool operator==( const RecentProjectData& other ) const { return other.path == this->path; }
       QString path;
       QString title;
       QString previewImagePath;

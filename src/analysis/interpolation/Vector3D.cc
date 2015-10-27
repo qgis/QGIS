@@ -37,12 +37,12 @@ Vector3D& Vector3D::operator=( const Vector3D & v )
   return ( *this );
 }
 
-bool Vector3D::operator==( const Vector3D& v )
+bool Vector3D::operator==( const Vector3D& v ) const
 {
   return ( mX == v.getX() && mY == v.getY() && mZ == v.getZ() );
 }
 
-bool Vector3D::operator!=( const Vector3D& v )
+bool Vector3D::operator!=( const Vector3D& v ) const
 {
   return ( !(( *this ) == v ) );
 }

@@ -43,15 +43,15 @@ class CORE_EXPORT QgsProjectVersion
 
     /** Boolean equal operator
     */
-    bool operator==( const QgsProjectVersion &other );
+    bool operator==( const QgsProjectVersion &other ) const;
 
     /** Boolean >= operator
     */
-    bool operator>=( const QgsProjectVersion &other );
+    bool operator>=( const QgsProjectVersion &other ) const;
 
     /** Boolean > operator
     */
-    bool operator>( const QgsProjectVersion &other );
+    bool operator>( const QgsProjectVersion &other ) const;
 
   private:
     int mMajor;
