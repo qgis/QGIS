@@ -608,7 +608,7 @@ class QgsLabelComponent
 
     // methods
 
-    const QString& text() const;
+    QString text() const;
     void setText( const QString& text );
 
     const QgsPoint& origin() const;

@@ -687,7 +687,7 @@ class CORE_EXPORT QgsLabelComponent
 
     // methods
 
-    const QString& text() const { return mText; }
+    QString text() const { return mText; }
     void setText( const QString& text ) { mText = text; }
 
     const QgsPoint& origin() const { return mOrigin; }

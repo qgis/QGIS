@@ -25,19 +25,19 @@ class QgsProviderMetadata
 
         This key string is used for the associative container in QgsProviderRegistry
     */
-    const QString & key() const;
+    QString key() const;
 
     /** This returns descriptive text for the provider
 
         This is used to provide a descriptive list of available data providers.
     */
-    const QString & description() const;
+    QString description() const;
 
     /** This returns the library file name
 
         This is used to QLibrary calls to load the data provider.
     */
-    const QString & library() const;
+    QString library() const;
 
 
 }; // class QgsProviderMetadata

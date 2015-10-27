@@ -46,7 +46,7 @@ class QgsDistanceArea
     bool setEllipsoid( double semiMajor, double semiMinor );
 
     //! returns ellipsoid's acronym
-    const QString& ellipsoid() const;
+    QString ellipsoid() const;
 
     //! returns ellipsoid's semi major axis
     double ellipsoidSemiMajor() const;

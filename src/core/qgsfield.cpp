@@ -69,7 +69,7 @@ bool QgsField::operator!=( const QgsField& other ) const
   return !( *this == other );
 }
 
-const QString & QgsField::name() const
+QString QgsField::name() const
 {
   return d->name;
 }
@@ -79,7 +79,7 @@ QVariant::Type QgsField::type() const
   return d->type;
 }
 
-const QString & QgsField::typeName() const
+QString QgsField::typeName() const
 {
   return d->typeName;
 }
@@ -94,7 +94,7 @@ int QgsField::precision() const
   return d->precision;
 }
 
-const QString & QgsField::comment() const
+QString QgsField::comment() const
 {
   return d->comment;
 }

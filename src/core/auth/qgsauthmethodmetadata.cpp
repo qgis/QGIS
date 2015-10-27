@@ -26,17 +26,17 @@ QgsAuthMethodMetadata::QgsAuthMethodMetadata( QString const & _key,
     , library_( _library )
 {}
 
-QString const & QgsAuthMethodMetadata::key() const
+QString QgsAuthMethodMetadata::key() const
 {
   return key_;
 }
 
-QString const & QgsAuthMethodMetadata::description() const
+QString QgsAuthMethodMetadata::description() const
 {
   return description_;
 }
 
-QString const & QgsAuthMethodMetadata::library() const
+QString QgsAuthMethodMetadata::library() const
 {
   return library_;
 }

@@ -177,7 +177,7 @@ public:
     bool prepareForFeature( const QgsFeature * feat );
 
     /** Returns the current filename. Must be called after prepareForFeature() */
-    const QString& currentFilename() const;
+    QString currentFilename() const;
 
     void writeXML( QDomElement& elem, QDomDocument& doc ) const;
 

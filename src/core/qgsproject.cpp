@@ -367,7 +367,7 @@ void QgsProject::setTitle( const QString &title )
 }
 
 
-QString const &QgsProject::title() const
+QString QgsProject::title() const
 {
   return imp_->title;
 } // QgsProject::title() const

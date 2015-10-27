@@ -85,39 +85,39 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Get the display name of the layer
      * @return the layer name
      */
-    const QString & name() const;
+    QString name() const;
 
     /** Get the original name of the layer */
-    const QString & originalName() const { return mLayerOrigName; }
+    QString originalName() const { return mLayerOrigName; }
 
     void setTitle( const QString& title ) { mTitle = title; }
-    const QString& title() const { return mTitle; }
+    QString title() const { return mTitle; }
 
     void setAbstract( const QString& abstract ) { mAbstract = abstract; }
-    const QString& abstract() const { return mAbstract; }
+    QString abstract() const { return mAbstract; }
 
     void setKeywordList( const QString& keywords ) { mKeywordList = keywords; }
-    const QString& keywordList() const { return mKeywordList; }
+    QString keywordList() const { return mKeywordList; }
 
     /* Layer dataUrl information */
     void setDataUrl( const QString& dataUrl ) { mDataUrl = dataUrl; }
-    const QString& dataUrl() const { return mDataUrl; }
+    QString dataUrl() const { return mDataUrl; }
     void setDataUrlFormat( const QString& dataUrlFormat ) { mDataUrlFormat = dataUrlFormat; }
-    const QString& dataUrlFormat() const { return mDataUrlFormat; }
+    QString dataUrlFormat() const { return mDataUrlFormat; }
 
     /* Layer attribution information */
     void setAttribution( const QString& attrib ) { mAttribution = attrib; }
-    const QString& attribution() const { return mAttribution; }
+    QString attribution() const { return mAttribution; }
     void setAttributionUrl( const QString& attribUrl ) { mAttributionUrl = attribUrl; }
-    const QString& attributionUrl() const { return mAttributionUrl; }
+    QString attributionUrl() const { return mAttributionUrl; }
 
     /* Layer metadataUrl information */
     void setMetadataUrl( const QString& metaUrl ) { mMetadataUrl = metaUrl; }
-    const QString& metadataUrl() const { return mMetadataUrl; }
+    QString metadataUrl() const { return mMetadataUrl; }
     void setMetadataUrlType( const QString& metaUrlType ) { mMetadataUrlType = metaUrlType; }
-    const QString& metadataUrlType() const { return mMetadataUrlType; }
+    QString metadataUrlType() const { return mMetadataUrlType; }
     void setMetadataUrlFormat( const QString& metaUrlFormat ) { mMetadataUrlFormat = metaUrlFormat; }
-    const QString& metadataUrlFormat() const { return mMetadataUrlFormat; }
+    QString metadataUrlFormat() const { return mMetadataUrlFormat; }
 
     /** Set the blending mode used for rendering a layer */
     void setBlendMode( const QPainter::CompositionMode &blendMode );
@@ -162,7 +162,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QString publicSource() const;
 
     /** Returns the source for the layer */
-    const QString &source() const;
+    QString source() const;
 
     /**
      * Returns the sublayers of this layer
@@ -375,9 +375,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /* Layer legendUrl information */
     void setLegendUrl( const QString& legendUrl ) { mLegendUrl = legendUrl; }
-    const QString& legendUrl() const { return mLegendUrl; }
+    QString legendUrl() const { return mLegendUrl; }
     void setLegendUrlFormat( const QString& legendUrlFormat ) { mLegendUrlFormat = legendUrlFormat; }
-    const QString& legendUrlFormat() const { return mLegendUrlFormat; }
+    QString legendUrlFormat() const { return mLegendUrlFormat; }
 
     /** @deprecated since 2.4 - returns NULL */
     Q_DECL_DEPRECATED QImage *cacheImage() { return 0; }

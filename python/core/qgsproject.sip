@@ -46,7 +46,7 @@ class QgsProject : QObject
     void setTitle( const QString& title );
 
     /** Returns title */
-    const QString & title() const;
+    QString title() const;
     //@}
 
     /**

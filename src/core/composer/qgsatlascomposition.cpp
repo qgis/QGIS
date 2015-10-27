@@ -644,7 +644,7 @@ void QgsAtlasComposition::prepareMap( QgsComposerMap* map )
   map->setNewAtlasFeatureExtent( newExtent );
 }
 
-const QString& QgsAtlasComposition::currentFilename() const
+QString QgsAtlasComposition::currentFilename() const
 {
   return mCurrentFilename;
 }

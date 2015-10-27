@@ -79,7 +79,7 @@ class CORE_EXPORT QgsDistanceArea
     bool setEllipsoid( double semiMajor, double semiMinor );
 
     //! returns ellipsoid's acronym
-    const QString& ellipsoid() const { return mEllipsoid; }
+    QString ellipsoid() const { return mEllipsoid; }
 
     //! returns ellipsoid's semi major axis
     double ellipsoidSemiMajor() const { return mSemiMajor; }

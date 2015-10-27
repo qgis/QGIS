@@ -82,7 +82,7 @@ class CORE_EXPORT QgsRenderChecker
      *
      * @return The path to the rendered image
      */
-    const QString& renderedImage() { return mRenderedImageFile; }
+    QString renderedImage() { return mRenderedImageFile; }
 
     //! @deprecated since 2.4 - use setMapSettings()
     Q_DECL_DEPRECATED void setMapRenderer( QgsMapRenderer *  thepMapRenderer );
@@ -148,7 +148,7 @@ class CORE_EXPORT QgsRenderChecker
      *
      * @return Path to the expected image file
      */
-    const QString& expectedImageFile() const { return mExpectedImageFile; }
+    QString expectedImageFile() const { return mExpectedImageFile; }
 
     /**
      * Call this to enable internal buffering of dash messages. You may later call
@@ -166,7 +166,7 @@ class CORE_EXPORT QgsRenderChecker
      * @return buffered dash messages
      * @note not available in python bindings
      */
-    const QVector<QgsDartMeasurement>& dartMeasurements() const { return mDashMessages; }
+    QVector<QgsDartMeasurement> dartMeasurements() const { return mDashMessages; }
 
   protected:
     QString mReport;

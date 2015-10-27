@@ -95,7 +95,7 @@ bool QgsMultiRenderChecker::runTest( const QString& theTestName, unsigned int th
   return successful;
 }
 
-const QString QgsMultiRenderChecker::controlImagePath() const
+QString QgsMultiRenderChecker::controlImagePath() const
 {
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   QString myControlImageDir = myDataDir + QDir::separator() + "control_images" +

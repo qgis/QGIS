@@ -115,7 +115,7 @@ void QgsMapLayer::setLayerName( const QString & name )
 }
 
 /** Read property of QString layerName. */
-QString const & QgsMapLayer::name() const
+QString QgsMapLayer::name() const
 {
   QgsDebugMsgLevel( "returning name '" + mLayerName + "'", 4 );
   return mLayerName;
@@ -129,7 +129,7 @@ QString QgsMapLayer::publicSource() const
   return safeName;
 }
 
-QString const & QgsMapLayer::source() const
+QString QgsMapLayer::source() const
 {
   return mDataSource;
 }

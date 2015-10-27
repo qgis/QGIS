@@ -69,39 +69,39 @@ class QgsMapLayer : QObject
     /** Get the display name of the layer
      * @return the layer name
      */
-    const QString & name() const;
+    QString name() const;
 
     /** Get the original name of the layer */
-    const QString & originalName() const;
+    QString originalName() const;
 
     void setTitle( const QString& title );
-    const QString& title() const;
+    QString title() const;
 
     void setAbstract( const QString& abstract );
-    const QString& abstract() const;
+    QString abstract() const;
 
     void setKeywordList( const QString& keywords );
-    const QString& keywordList() const;
+    QString keywordList() const;
 
     /* Layer dataUrl information */
     void setDataUrl( const QString& dataUrl );
-    const QString& dataUrl() const;
+    QString dataUrl() const;
     void setDataUrlFormat( const QString& dataUrlFormat );
-    const QString& dataUrlFormat() const;
+    QString dataUrlFormat() const;
 
     /* Layer attribution information */
     void setAttribution( const QString& attrib );
-    const QString& attribution() const;
+    QString attribution() const;
     void setAttributionUrl( const QString& attribUrl );
-    const QString& attributionUrl() const;
+    QString attributionUrl() const;
 
     /* Layer metadataUrl information */
     void setMetadataUrl( const QString& metaUrl );
-    const QString& metadataUrl() const;
+    QString metadataUrl() const;
     void setMetadataUrlType( const QString& metaUrlType );
-    const QString& metadataUrlType() const;
+    QString metadataUrlType() const;
     void setMetadataUrlFormat( const QString& metaUrlFormat );
-    const QString& metadataUrlFormat() const;
+    QString metadataUrlFormat() const;
 
     /** Set the blending mode used for rendering a layer */
     void setBlendMode( const QPainter::CompositionMode &blendMode );
@@ -146,7 +146,7 @@ class QgsMapLayer : QObject
     QString publicSource() const;
 
     /** Returns the source for the layer */
-    const QString &source() const;
+    QString source() const;
 
     /**
      * Returns the sublayers of this layer
@@ -356,9 +356,9 @@ class QgsMapLayer : QObject
 
     /* Layer legendUrl information */
     void setLegendUrl( const QString& legendUrl );
-    const QString& legendUrl() const;
+    QString legendUrl() const;
     void setLegendUrlFormat( const QString& legendUrlFormat );
-    const QString& legendUrlFormat() const;
+    QString legendUrlFormat() const;
 
     /** @deprecated since 2.4 - returns NULL */
     QImage *cacheImage() /Deprecated/;

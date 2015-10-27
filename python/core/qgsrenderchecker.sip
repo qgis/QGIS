@@ -47,7 +47,7 @@ class QgsRenderChecker
      *
      * @return The path to the rendered image
      */
-    const QString& renderedImage();
+    QString renderedImage();
 
     //! @deprecated since 2.4 - use setMapSettings()
     void setMapRenderer( QgsMapRenderer *  thepMapRenderer ) /Deprecated/;
@@ -113,7 +113,7 @@ class QgsRenderChecker
      *
      * @return Path to the expected image file
      */
-    const QString& expectedImageFile() const;
+    QString expectedImageFile() const;
 
     /**
      * Call this to enable internal buffering of dash messages. You may later call
