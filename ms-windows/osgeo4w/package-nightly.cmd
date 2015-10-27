@@ -56,7 +56,10 @@ if "%ARCH%"=="x86" goto devenv_x86
 goto devenv_x86_64
 
 :devenv_x86
-set GRASS_VERSIONS=6.4.4 7.0.1
+for /f "usebackq tokens=1" %%a in (`%OSGEO4W_ROOT%\bin\grass70 --config path`) do set GRASS70_PATH=%%a
+for %%i in ("%GRASS70_PATH%") do set GRASS70_VERSION=%%~nxi
+set GRASS70_VERSION=%GRASS70_VERSION:grass-=%
+set GRASS_VERSIONS=6.4.4 %GRASS70_VERSION%
 call "%PF86%\Microsoft Visual Studio 10.0\VC\vcvarsall.bat" x86
 if exist "c:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.Cmd" call "c:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.Cmd" /x86 /Release
 path %path%;%PF86%\Microsoft Visual Studio 10.0\VC\bin
@@ -69,7 +72,7 @@ set CMAKE_OPT=^
 	-D WITH_GRASS6=TRUE ^
 	-D WITH_GRASS7=TRUE ^
 	-D GRASS_PREFIX=%O4W_ROOT%/apps/grass/grass-6.4.4 ^
-	-D GRASS_PREFIX7=%O4W_ROOT%/apps/grass/grass-7.0.1 ^
+	-D GRASS_PREFIX7=%GRASS70_PATH:\=/% ^
 	-D CMAKE_CXX_FLAGS_RELWITHDEBINFO="/MD /ZI /MP /Od /D NDEBUG /D QGISDEBUG" ^
 	-D CMAKE_PDB_OUTPUT_DIRECTORY_RELWITHDEBINFO=%BUILDDIR%\apps\%PACKAGENAME%\pdb
 goto devenv
@@ -88,6 +91,7 @@ set CMAKE_OPT=^
 	-G "Visual Studio 10 Win64" ^
 	-D SPATIALINDEX_LIBRARY=%O4W_ROOT%/lib/spatialindex-64.lib ^
 	-D WITH_GRASS=TRUE ^
+	-D WITH_GRASS6=TRUE ^
 	-D WITH_GRASS7=FALSE ^
 	-D GRASS_PREFIX=%O4W_ROOT%/apps/grass/grass-6.4.3 ^
 	-D SIP_BINARY_PATH=%O4W_ROOT%/bin/sip.exe ^
