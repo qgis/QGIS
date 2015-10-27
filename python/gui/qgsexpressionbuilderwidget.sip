@@ -165,18 +165,6 @@ class QgsExpressionBuilderWidget : QWidget
     void updateFunctionFileList( const QString& path );
 
   public slots:
-    void currentChanged( const QModelIndex &index, const QModelIndex & );
-    void on_btnRun_pressed();
-    void on_btnNewFile_pressed();
-    void on_cmbFileNames_currentIndexChanged( int index );
-    void on_btnSaveFile_pressed();
-    void on_expressionTree_doubleClicked( const QModelIndex &index );
-    void on_txtExpressionString_textChanged();
-    void on_txtSearchEdit_textChanged();
-    void on_txtSearchEditValues_textChanged();
-    void on_lblPreview_linkActivated( const QString& link );
-    void on_mValuesListView_doubleClicked( const QModelIndex &index );
-    void operatorButtonClicked();
     void showContextMenu( const QPoint & );
     void loadSampleValues();
     void loadAllValues();

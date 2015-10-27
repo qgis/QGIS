@@ -232,10 +232,19 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void updateFunctionFileList( const QString& path );
 
   public slots:
+    void showContextMenu( const QPoint & );
+    void loadSampleValues();
+    void loadAllValues();
+    void autosave();
+    void setAutoSave( bool enabled );
+
+  private slots:
+    void setExpressionState( bool state );
     void currentChanged( const QModelIndex &index, const QModelIndex & );
+    void operatorButtonClicked();
     void on_btnRun_pressed();
     void on_btnNewFile_pressed();
-    void on_cmbFileNames_currentIndexChanged( int index );
+    void on_cmbFileNames_currentItemChanged( QListWidgetItem* item, QListWidgetItem* lastitem );
     void on_btnSaveFile_pressed();
     void on_expressionTree_doubleClicked( const QModelIndex &index );
     void on_txtExpressionString_textChanged();
@@ -243,13 +252,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void on_txtSearchEditValues_textChanged();
     void on_lblPreview_linkActivated( const QString& link );
     void on_mValuesListView_doubleClicked( const QModelIndex &index );
-    void operatorButtonClicked();
-    void showContextMenu( const QPoint & );
-    void loadSampleValues();
-    void loadAllValues();
-
-  private slots:
-    void setExpressionState( bool state );
+    void on_txtPython_textChanged();
 
   signals:
     /** Emitted when the user changes the expression in the widget.
@@ -274,6 +277,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
 
     void loadExpressionContext();
 
+    bool mAutoSave;
     QString mFunctionsPath;
     QgsVectorLayer *mLayer;
     QStandardItemModel *mModel;
@@ -284,6 +288,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     QgsFeature mFeature;
     QgsExpressionHighlighter* highlighter;
     bool mExpressionValid;
+    QTimer* mAutoSaveTimer;
     QgsDistanceArea mDa;
     QString mRecentKey;
     QMap<QString, QStringList> mFieldValues;

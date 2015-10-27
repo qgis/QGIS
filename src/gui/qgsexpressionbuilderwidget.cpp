@@ -25,7 +25,10 @@
 #include <QFile>
 #include <QTextStream>
 #include <QDir>
+#include <QInputDialog>
 #include <QComboBox>
+#include <QGraphicsOpacityEffect>
+#include <QPropertyAnimation>
 
 
 
@@ -82,20 +85,21 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   if ( QgsPythonRunner::isValid() )
   {
     QgsPythonRunner::eval( "qgis.user.expressionspath", mFunctionsPath );
-    newFunctionFile();
-    // The scratch file gets written each time the widget opens.
-    saveFunctionFile( "scratch" );
     updateFunctionFileList( mFunctionsPath );
   }
   else
   {
-    tab_2->setEnabled( false );
+    tab_2->hide();
   }
 
   // select the first item in the function list
   // in order to avoid a blank help widget
   QModelIndex firstItem = mProxyModel->index( 0, 0, QModelIndex() );
   expressionTree->setCurrentIndex( firstItem );
+
+  mAutoSaveTimer = new QTimer();
+  mAutoSaveTimer->setInterval( 10000 );
+  connect( mAutoSaveTimer, SIGNAL( timeout() ), this, SLOT( autosave() ) );
 }
 
 
@@ -147,7 +151,11 @@ void QgsExpressionBuilderWidget::currentChanged( const QModelIndex &index, const
 
 void QgsExpressionBuilderWidget::on_btnRun_pressed()
 {
-  saveFunctionFile( cmbFileNames->currentText() );
+  if ( !cmbFileNames->currentItem() )
+    return;
+
+  QString file = cmbFileNames->currentItem()->text();
+  saveFunctionFile( file );
   runPythonCode( txtPython->text() );
 }
 
@@ -199,31 +207,44 @@ void QgsExpressionBuilderWidget::updateFunctionFileList( const QString& path )
     if ( info.baseName() == "__init__" ) continue;
     cmbFileNames->addItem( info.baseName() );
   }
+  if ( !cmbFileNames->currentItem() )
+    cmbFileNames->setCurrentRow( 0 );
 }
 
 void QgsExpressionBuilderWidget::newFunctionFile( const QString& fileName )
 {
+  QList<QListWidgetItem*> items = cmbFileNames->findItems( fileName, Qt::MatchExactly );
+  if ( items.count() > 0 )
+    return;
+
   QString templatetxt;
   QgsPythonRunner::eval( "qgis.user.expressions.template", templatetxt );
   txtPython->setText( templatetxt );
-  int index = cmbFileNames->findText( fileName );
-  if ( index == -1 )
-    cmbFileNames->setEditText( fileName );
-  else
-    cmbFileNames->setCurrentIndex( index );
+  cmbFileNames->insertItem( 0, fileName );
+  cmbFileNames->setCurrentRow( 0 );
+  saveFunctionFile( fileName );
 }
 
 void QgsExpressionBuilderWidget::on_btnNewFile_pressed()
 {
-  newFunctionFile();
+  bool ok;
+  QString text = QInputDialog::getText( this, tr( "Enter new file name" ),
+                                        tr( "File name:" ), QLineEdit::Normal,
+                                        "", &ok );
+  if ( ok && !text.isEmpty() )
+  {
+    newFunctionFile( text );
+  }
 }
 
-void QgsExpressionBuilderWidget::on_cmbFileNames_currentIndexChanged( int index )
+void QgsExpressionBuilderWidget::on_cmbFileNames_currentItemChanged( QListWidgetItem* item, QListWidgetItem* lastitem )
 {
-  if ( index == -1 )
-    return;
-
-  QString path = mFunctionsPath + QDir::separator() + cmbFileNames->currentText();
+  if ( lastitem )
+  {
+    QString filename = lastitem->text();
+    saveFunctionFile( filename );
+  }
+  QString path = mFunctionsPath + QDir::separator() + item->text();
   loadCodeFromFile( path );
 }
 
@@ -242,14 +263,12 @@ void QgsExpressionBuilderWidget::loadFunctionCode( const QString& code )
 
 void QgsExpressionBuilderWidget::on_btnSaveFile_pressed()
 {
-  QString name = cmbFileNames->currentText();
+  QListWidgetItem* item = cmbFileNames->currentItem();
+  if ( !item )
+    return;
+
+  QString name = item->text();
   saveFunctionFile( name );
-  int index = cmbFileNames->findText( name );
-  if ( index == -1 )
-  {
-    cmbFileNames->addItem( name );
-    cmbFileNames->setCurrentIndex( cmbFileNames->count() - 1 );
-  }
 }
 
 void QgsExpressionBuilderWidget::on_expressionTree_doubleClicked( const QModelIndex &index )
@@ -703,6 +722,49 @@ void QgsExpressionBuilderWidget::loadAllValues()
 
   mValueGroupBox->show();
   fillFieldValues( item->text(), -1 );
+}
+
+void QgsExpressionBuilderWidget::on_txtPython_textChanged()
+{
+  lblAutoSave->setText( "Saving..." );
+  autosave();
+//  if ( mAutoSave && !mAutoSaveTimer->isActive() )
+//  {
+//    mAutoSaveTimer->start();
+//    lblAutoSave->setText("Auto saving active");
+//  }
+}
+
+void QgsExpressionBuilderWidget::setAutoSave( bool enable )
+{
+  mAutoSave = enable;
+  if ( !enable )
+    mAutoSaveTimer->stop();
+  else
+    mAutoSaveTimer->start();
+}
+
+void QgsExpressionBuilderWidget::autosave()
+{
+  // Don't auto save if not on function editor that would be silly.
+  if ( tabWidget->currentIndex() != 1 )
+    return;
+
+  QListWidgetItem* item = cmbFileNames->currentItem();
+  if ( !item )
+    return;
+
+  QString file = item->text();
+  saveFunctionFile( file );
+  lblAutoSave->setText( "Saved" );
+  QGraphicsOpacityEffect *effect = new QGraphicsOpacityEffect();
+  lblAutoSave->setGraphicsEffect( effect );
+  QPropertyAnimation *anim = new QPropertyAnimation( effect, "opacity" );
+  anim->setDuration( 2000 );
+  anim->setStartValue( 1.0 );
+  anim->setEndValue( 0.0 );
+  anim->setEasingCurve( QEasingCurve::OutQuad );
+  anim->start( QAbstractAnimation::DeleteWhenStopped );
 }
 
 void QgsExpressionBuilderWidget::setExpressionState( bool state )
