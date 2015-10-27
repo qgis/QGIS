@@ -232,24 +232,43 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void updateFunctionFileList( const QString& path );
 
   public slots:
+
+    /**
+     * Load sample values into the sample value area
+     */
+    void loadSampleValues();
+
+    /**
+     * Load all unique values from the set layer into the sample area
+     */
+    void loadAllValues();
+
+    /**
+     * Auto save the current Python function code.
+     */
+    void autosave();
+    /**
+     * Enabled or disable auto saving. When enabled Python scripts will be auto saved
+     * when text changes.
+     * @param enabled True to enable auto saving.
+     */
+    void setAutoSave( bool enabled ) { mAutoSave = enabled; }
+
+  private slots:
+    void showContextMenu( const QPoint & );
+    void setExpressionState( bool state );
     void currentChanged( const QModelIndex &index, const QModelIndex & );
+    void operatorButtonClicked();
     void on_btnRun_pressed();
     void on_btnNewFile_pressed();
-    void on_cmbFileNames_currentIndexChanged( int index );
-    void on_btnSaveFile_pressed();
+    void on_cmbFileNames_currentItemChanged( QListWidgetItem* item, QListWidgetItem* lastitem );
     void on_expressionTree_doubleClicked( const QModelIndex &index );
     void on_txtExpressionString_textChanged();
     void on_txtSearchEdit_textChanged();
     void on_txtSearchEditValues_textChanged();
     void on_lblPreview_linkActivated( const QString& link );
     void on_mValuesListView_doubleClicked( const QModelIndex &index );
-    void operatorButtonClicked();
-    void showContextMenu( const QPoint & );
-    void loadSampleValues();
-    void loadAllValues();
-
-  private slots:
-    void setExpressionState( bool state );
+    void on_txtPython_textChanged();
 
   signals:
     /** Emitted when the user changes the expression in the widget.
@@ -277,6 +296,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
 
     void loadExpressionContext();
 
+    bool mAutoSave;
     QString mFunctionsPath;
     QgsVectorLayer *mLayer;
     QStandardItemModel *mModel;
