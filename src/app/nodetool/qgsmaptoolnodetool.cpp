@@ -186,7 +186,7 @@ void QgsMapToolNodeTool::canvasPressEvent( QgsMapMouseEvent* e )
 
     if ( snapResults.size() < 1 )
     {
-      emit messageEmitted( tr( "could not snap to a segment on the current layer." ) );
+      emit messageEmitted( tr( "could not snap to a segment or a vertex on the current layer. Please click closer to the feature or enhance the search tolerance under Settings->Options->Digitizing->Search radius for vertex edits" ) );
       return;
     }
 
