@@ -462,6 +462,12 @@
       <layout class="QHBoxLayout" name="horizontalLayout_3">
        <item>
         <widget class="QSplitter" name="splitter_2">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
@@ -512,26 +518,6 @@ Change the name of the script and save to allow QGIS to auto load on startup.</s
                 </size>
                </property>
               </spacer>
-             </item>
-             <item>
-              <widget class="QToolButton" name="btnSaveFile">
-               <property name="toolTip">
-                <string>Save the current script into the users function file folder.</string>
-               </property>
-               <property name="text">
-                <string>Save file</string>
-               </property>
-               <property name="icon">
-                <iconset resource="../../images/images.qrc">
-                 <normaloff>:/images/themes/default/console/iconSaveConsole.png</normaloff>:/images/themes/default/console/iconSaveConsole.png</iconset>
-               </property>
-               <property name="toolButtonStyle">
-                <enum>Qt::ToolButtonIconOnly</enum>
-               </property>
-               <property name="autoRaise">
-                <bool>true</bool>
-               </property>
-              </widget>
              </item>
             </layout>
            </item>
@@ -621,7 +607,7 @@ Saved scripts are auto loaded on QGIS startup.</string>
                  </sizepolicy>
                 </property>
                 <property name="text">
-                 <string>Test</string>
+                 <string>Function Test</string>
                 </property>
                </widget>
               </item>

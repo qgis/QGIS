@@ -37,6 +37,7 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
     , mLayer( NULL )
     , highlighter( NULL )
     , mExpressionValid( false )
+    , mAutoSave( true )
 {
   setupUi( this );
 
@@ -97,9 +98,6 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   QModelIndex firstItem = mProxyModel->index( 0, 0, QModelIndex() );
   expressionTree->setCurrentIndex( firstItem );
 
-  mAutoSaveTimer = new QTimer();
-  mAutoSaveTimer->setInterval( 10000 );
-  connect( mAutoSaveTimer, SIGNAL( timeout() ), this, SLOT( autosave() ) );
 }
 
 
@@ -259,16 +257,6 @@ void QgsExpressionBuilderWidget::loadCodeFromFile( QString path )
 void QgsExpressionBuilderWidget::loadFunctionCode( const QString& code )
 {
   txtPython->setText( code );
-}
-
-void QgsExpressionBuilderWidget::on_btnSaveFile_pressed()
-{
-  QListWidgetItem* item = cmbFileNames->currentItem();
-  if ( !item )
-    return;
-
-  QString name = item->text();
-  saveFunctionFile( name );
 }
 
 void QgsExpressionBuilderWidget::on_expressionTree_doubleClicked( const QModelIndex &index )
@@ -727,21 +715,10 @@ void QgsExpressionBuilderWidget::loadAllValues()
 void QgsExpressionBuilderWidget::on_txtPython_textChanged()
 {
   lblAutoSave->setText( "Saving..." );
-  autosave();
-//  if ( mAutoSave && !mAutoSaveTimer->isActive() )
-//  {
-//    mAutoSaveTimer->start();
-//    lblAutoSave->setText("Auto saving active");
-//  }
-}
-
-void QgsExpressionBuilderWidget::setAutoSave( bool enable )
-{
-  mAutoSave = enable;
-  if ( !enable )
-    mAutoSaveTimer->stop();
-  else
-    mAutoSaveTimer->start();
+  if ( mAutoSave )
+  {
+    autosave();
+  }
 }
 
 void QgsExpressionBuilderWidget::autosave()

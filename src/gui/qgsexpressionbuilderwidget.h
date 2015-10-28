@@ -236,7 +236,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void loadSampleValues();
     void loadAllValues();
     void autosave();
-    void setAutoSave( bool enabled );
+    void setAutoSave( bool enabled ) { mAutoSave = enabled; }
 
   private slots:
     void setExpressionState( bool state );
@@ -245,7 +245,6 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void on_btnRun_pressed();
     void on_btnNewFile_pressed();
     void on_cmbFileNames_currentItemChanged( QListWidgetItem* item, QListWidgetItem* lastitem );
-    void on_btnSaveFile_pressed();
     void on_expressionTree_doubleClicked( const QModelIndex &index );
     void on_txtExpressionString_textChanged();
     void on_txtSearchEdit_textChanged();
@@ -288,7 +287,6 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     QgsFeature mFeature;
     QgsExpressionHighlighter* highlighter;
     bool mExpressionValid;
-    QTimer* mAutoSaveTimer;
     QgsDistanceArea mDa;
     QString mRecentKey;
     QMap<QString, QStringList> mFieldValues;
