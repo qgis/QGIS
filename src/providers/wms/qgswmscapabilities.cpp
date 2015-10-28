@@ -2018,8 +2018,13 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
           request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
           mCapabilitiesReply->deleteLater();
+          mCapabilitiesReply = 0;
+
           QgsDebugMsg( QString( "redirected getcapabilities: %1" ).arg( redirect.toString() ) );
           //mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
+          connect( QgsNetworkAccessManager::instance(),
+                   SIGNAL( requestSent( QNetworkReply *, QObject * ) ),
+                   SLOT( requestSent( QNetworkReply *, QObject * ) ) );
           emit sendRequest( request );
           return;
         }
