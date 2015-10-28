@@ -136,16 +136,16 @@ void TestQgsAuthManager::cleanupTempDir()
   {
     Q_FOREACH ( const QString &tf, tmpDir.entryList( QDir::NoDotAndDotDot | QDir::Files ) )
     {
-      QVERIFY( tmpDir.remove( mTempDir + "/" + tf ) );
+      QVERIFY2( tmpDir.remove( mTempDir + "/" + tf ), qPrintable( "Could not remove " + mTempDir + "/" + tf ) );
     }
-    QVERIFY( tmpDir.rmdir( mTempDir ) );
+    QVERIFY2( tmpDir.rmdir( mTempDir ), qPrintable( "Could not remove directory " + mTempDir ) );
   }
 }
 
 void TestQgsAuthManager::cleanupTestCase()
 {
-  cleanupTempDir();
   QgsApplication::exitQgis();
+  cleanupTempDir();
 
   QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
