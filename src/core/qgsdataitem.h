@@ -35,7 +35,7 @@
 class QgsDataProvider;
 class QgsDataItem;
 
-typedef QgsDataItem * dataItem_t( const QString&, QgsDataItem* );
+typedef QgsDataItem * dataItem_t( QString, QgsDataItem* );
 
 /** Animated icon is keeping an animation running if there are listeners connected to frameChanged */
 class CORE_EXPORT QgsAnimatedIcon : public QObject
