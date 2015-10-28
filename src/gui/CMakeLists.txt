@@ -24,6 +24,7 @@ SET(QGIS_GUI_SRCS
   symbology-ng/qgsinvertedpolygonrendererwidget.cpp
   symbology-ng/qgsrendererv2propertiesdialog.cpp
   symbology-ng/qgsstylev2managerdialog.cpp
+  symbology-ng/qgsstylev2groupselectiondialog.cpp
   symbology-ng/qgssymbollevelsv2dialog.cpp
   symbology-ng/qgssymbolv2selectordialog.cpp
   symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp
@@ -419,6 +420,7 @@ SET(QGIS_GUI_MOC_HDRS
   symbology-ng/qgssinglesymbolrendererv2widget.h
   symbology-ng/qgssmartgroupeditordialog.h
   symbology-ng/qgsstylev2exportimportdialog.h
+  symbology-ng/qgsstylev2groupselectiondialog.h
   symbology-ng/qgsstylev2managerdialog.h
   symbology-ng/qgssvgselectorwidget.h
   symbology-ng/qgssymbollayerv2widget.h
