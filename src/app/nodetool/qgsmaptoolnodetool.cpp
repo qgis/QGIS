@@ -539,7 +539,15 @@ void QgsMapToolNodeTool::keyPressEvent( QKeyEvent* e )
       return;
 
     mSelectedFeature->deleteSelectedVertexes();
-    safeSelectVertex( firstSelectedIndex );
+
+    if ( mSelectedFeature->geometry()->isEmpty() )
+    {
+      emit messageEmitted( tr( "Geometry has been cleared. Use the add part tool to set geometry for this feature." ) );
+    }
+    else
+    {
+      safeSelectVertex( firstSelectedIndex );
+    }
     mCanvas->refresh();
 
     // Override default shortcut management in MapCanvas
