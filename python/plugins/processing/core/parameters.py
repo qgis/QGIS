@@ -76,6 +76,11 @@ class Parameter:
         Returns true if the value passed is correct for the type
         of parameter.
         """
+        if obj is None:
+            if not self.optional:
+                return False
+            self.value = None
+            return True
         self.value = unicode(obj)
         return True
 
@@ -111,6 +116,8 @@ class ParameterBoolean(Parameter):
 
     def setValue(self, value):
         if value is None:
+            if not self.optional:
+                return False
             self.value = self.default
             return True
         if isinstance(value, basestring):
@@ -133,6 +140,8 @@ class ParameterCrs(Parameter):
 
     def setValue(self, value):
         if value is None:
+            if not self.optional:
+                return False
             self.value = self.default
             return True
 
@@ -167,7 +176,9 @@ class ParameterExtent(Parameter):
 
     def setValue(self, text):
         if text is None:
-            self.value = self.default
+            if not self.optional:
+                return False
+            self.value = None
             return True
         tokens = text.split(',')
         if len(tokens) != 4:
@@ -203,8 +214,7 @@ class ParameterFile(Parameter):
         if self.value.strip() == '' or self.value is None:
             if not self.optional:
                 return False
-            else:
-                self.value = ''
+            self.value = ''
         if self.ext is not None and self.value != '':
             return self.value.endswith(self.ext)
         return True
@@ -229,6 +239,11 @@ class ParameterFixedTable(Parameter):
         self.value = None
 
     def setValue(self, obj):
+        if obj is None:
+            if not self.optional:
+                return False
+            self.value = None
+            return True
         # TODO: check that it contains a correct number of elements
         if isinstance(obj, (str, unicode)):
             self.value = obj
@@ -276,11 +291,10 @@ class ParameterMultipleInput(ParameterDataObject):
     def setValue(self, obj):
         self.exported = None
         if obj is None:
-            if self.optional:
-                self.value = None
-                return True
-            else:
+            if not self.optional:
                 return False
+            self.value = None
+            return True
 
         if isinstance(obj, list):
             if len(obj) == 0:
@@ -417,7 +431,9 @@ class ParameterNumber(Parameter):
 
     def setValue(self, n):
         if n is None:
-            self.value = self.default
+            if not self.optional:
+                return False
+            self.value = None
             return True
         try:
             if float(n) - int(float(n)) == 0:
@@ -453,7 +469,9 @@ class ParameterRange(Parameter):
 
     def setValue(self, text):
         if text is None:
-            self.value = self.default
+            if not self.optional:
+                return False
+            self.value = None
             return True
         tokens = text.split(',')
         if len(tokens) != 2:
@@ -510,11 +528,10 @@ class ParameterRaster(ParameterDataObject):
     def setValue(self, obj):
         self.exported = None
         if obj is None:
-            if self.optional:
-                self.value = None
-                return True
-            else:
+            if not self.optional:
                 return False
+            self.value = None
+            return True
         if isinstance(obj, QgsRasterLayer):
             self.value = unicode(obj.dataProvider().dataSourceUri())
             return True
@@ -552,6 +569,8 @@ class ParameterSelection(Parameter):
 
     def setValue(self, n):
         if n is None:
+            if not self.optional:
+                return False
             self.value = self.default
             return True
         try:
@@ -577,10 +596,9 @@ class ParameterString(Parameter):
 
     def setValue(self, obj):
         if obj is None:
-            if self.optional:
-                self.value = ''
-                return True
-            self.value = self.default
+            if not self.optional:
+                return false
+            self.value = ''
             return True
         self.value = unicode(obj).replace(
             ParameterString.ESCAPED_NEWLINE,
@@ -604,11 +622,10 @@ class ParameterTable(ParameterDataObject):
     def setValue(self, obj):
         self.exported = None
         if obj is None:
-            if self.optional:
-                self.value = None
-                return True
-            else:
+            if not self.optional:
                 return False
+            self.value = None
+            return True
         if isinstance(obj, QgsVectorLayer):
             source = unicode(obj.source())
             self.value = source
@@ -679,7 +696,10 @@ class ParameterTableField(Parameter):
 
     def setValue(self, value):
         if value is None:
-            return self.optional
+            if not self.optional:
+                return False
+            self.value = None
+            return True
         elif len(value) > 0:
             self.value = unicode(value)
         else:
@@ -721,11 +741,10 @@ class ParameterVector(ParameterDataObject):
     def setValue(self, obj):
         self.exported = None
         if obj is None:
-            if self.optional:
-                self.value = None
-                return True
-            else:
+            if not self.optional:
                 return False
+            self.value = None
+            return True
         if isinstance(obj, QgsVectorLayer):
             self.value = unicode(obj.source())
             return True
@@ -814,7 +833,10 @@ class ParameterGeometryPredicate(Parameter):
 
     def setValue(self, value):
         if value is None:
-            return self.optional
+            if not self.optional:
+                return False
+            self.value = None
+            return True
         elif len(value) == 0:
             return self.optional
         if isinstance(value, unicode):
