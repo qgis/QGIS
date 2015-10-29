@@ -106,7 +106,6 @@ QgsStyleV2ExportImportDialog::QgsStyleV2ExportImportDialog( QgsStyleV2* style, Q
     }
 
   }
-
   // use Ok button for starting import and export operations
   disconnect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
   connect( buttonBox, SIGNAL( accepted() ), this, SLOT( doExportImport() ) );
@@ -393,7 +392,6 @@ void QgsStyleV2ExportImportDialog::clearSelection()
   listItems->clearSelection();
 }
 
-
 void QgsStyleV2ExportImportDialog::selectSymbols( const QStringList symbolNames )
 {
   foreach ( QString symbolName, symbolNames )
@@ -405,7 +403,6 @@ void QgsStyleV2ExportImportDialog::selectSymbols( const QStringList symbolNames 
     }
   }
 }
-
 
 void QgsStyleV2ExportImportDialog::deselectSymbols( const QStringList symbolNames )
 {
@@ -424,6 +421,8 @@ void QgsStyleV2ExportImportDialog::selectGroup( const QString groupName )
 {
   QStringList symbolNames = mQgisStyle->symbolsOfGroup( QgsStyleV2::StyleEntity::SymbolEntity, mQgisStyle->groupId( groupName ) );
   selectSymbols( symbolNames );
+  symbolNames = mQgisStyle->symbolsOfGroup( QgsStyleV2::StyleEntity::ColorrampEntity, mQgisStyle->groupId( groupName ) );
+  selectSymbols( symbolNames );
 }
 
 
@@ -431,22 +430,25 @@ void QgsStyleV2ExportImportDialog::deselectGroup( const QString groupName )
 {
   QStringList symbolNames = mQgisStyle->symbolsOfGroup( QgsStyleV2::StyleEntity::SymbolEntity, mQgisStyle->groupId( groupName ) );
   deselectSymbols( symbolNames );
+  symbolNames = mQgisStyle->symbolsOfGroup( QgsStyleV2::StyleEntity::ColorrampEntity, mQgisStyle->groupId( groupName ) );
+  deselectSymbols( symbolNames );
 }
-
 
 void QgsStyleV2ExportImportDialog::selectSmartgroup( const QString groupName )
 {
   QStringList symbolNames = mQgisStyle->symbolsOfSmartgroup( QgsStyleV2::StyleEntity::SymbolEntity, mQgisStyle->smartgroupId( groupName ) );
   selectSymbols( symbolNames );
+  symbolNames = mQgisStyle->symbolsOfSmartgroup( QgsStyleV2::StyleEntity::ColorrampEntity, mQgisStyle->smartgroupId( groupName ) );
+  selectSymbols( symbolNames );
 }
-
 
 void QgsStyleV2ExportImportDialog::deselectSmartgroup( const QString groupName )
 {
   QStringList symbolNames = mQgisStyle->symbolsOfSmartgroup( QgsStyleV2::StyleEntity::SymbolEntity, mQgisStyle->smartgroupId( groupName ) );
   deselectSymbols( symbolNames );
+  symbolNames = mQgisStyle->symbolsOfSmartgroup( QgsStyleV2::StyleEntity::ColorrampEntity, mQgisStyle->smartgroupId( groupName ) );
+  deselectSymbols( symbolNames );
 }
-
 
 void QgsStyleV2ExportImportDialog::selectByGroup( )
 {
@@ -465,7 +467,6 @@ void QgsStyleV2ExportImportDialog::selectByGroup( )
   mGroupSelectionDlg->raise();
   mGroupSelectionDlg->activateWindow();
 }
-
 
 void QgsStyleV2ExportImportDialog::importTypeChanged( int index )
 {
