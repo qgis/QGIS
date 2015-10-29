@@ -166,7 +166,7 @@ void QgsSLDConfigParser::layersAndStylesCapabilities( QDomElement& parentElement
         QStringList crsNumbers = QgsConfigParserUtils::createCRSListForLayer( theMapLayer );
         QStringList crsRestriction; //no crs restrictions in SLD parser
         QgsConfigParserUtils::appendCRSElementsToLayer( layerElement, doc, crsNumbers, crsRestriction );
-        QgsConfigParserUtils::appendLayerBoundingBoxes( layerElement, doc, theMapLayer->extent(), theMapLayer->crs() );
+        QgsConfigParserUtils::appendLayerBoundingBoxes( layerElement, doc, theMapLayer->extent(), theMapLayer->crs(), crsNumbers, crsRestriction );
 
         //iterate over all <UserStyle> nodes within a user layer
         QDomNodeList userStyleList = layerNodeList.item( i ).toElement().elementsByTagName( "UserStyle" );

@@ -418,25 +418,32 @@ void QgsServerProjectParser::serviceCapabilities( QDomElement& parentElement, QD
 
   //keyword list
   QDomElement keywordListElem = propertiesElement.firstChildElement( "WMSKeywordList" );
+  QDomElement wmsKeywordElem = doc.createElement( "KeywordList" );
+  //add default keyword
+  QDomElement keywordElem = doc.createElement( "Keyword" );
+  keywordElem.setAttribute( "vocabulary", "ISO" );
+  QDomText keywordText = doc.createTextNode( "infoMapAccessService" );
+  if ( service.compare( "WFS", Qt::CaseInsensitive ) == 0 )
+    keywordText = doc.createTextNode( "infoFeatureAccessService" );
+  else if ( service.compare( "WCS", Qt::CaseInsensitive ) == 0 )
+    keywordText = doc.createTextNode( "infoCoverageAccessService" );
+  keywordElem.appendChild( keywordText );
+  wmsKeywordElem.appendChild( keywordElem );
+  serviceElem.appendChild( wmsKeywordElem );
+  //add config keywords
   if ( !keywordListElem.isNull() && !keywordListElem.text().isEmpty() )
   {
-    QDomElement wmsKeywordElem = doc.createElement( "KeywordList" );
     QDomNodeList keywordList = keywordListElem.elementsByTagName( "value" );
     for ( int i = 0; i < keywordList.size(); ++i )
     {
-      QDomElement keywordElem = doc.createElement( "Keyword" );
-      QDomText keywordText = doc.createTextNode( keywordList.at( i ).toElement().text() );
+      keywordElem = doc.createElement( "Keyword" );
+      keywordText = doc.createTextNode( keywordList.at( i ).toElement().text() );
       keywordElem.appendChild( keywordText );
       if ( sia2045 )
       {
         keywordElem.setAttribute( "vocabulary", "SIA_Geo405" );
       }
       wmsKeywordElem.appendChild( keywordElem );
-    }
-
-    if ( keywordList.size() > 0 )
-    {
-      serviceElem.appendChild( wmsKeywordElem );
     }
   }
 
@@ -511,23 +518,25 @@ void QgsServerProjectParser::serviceCapabilities( QDomElement& parentElement, QD
 
   //Fees
   QDomElement feesElem = propertiesElement.firstChildElement( "WMSFees" );
-  if ( !feesElem.isNull() )
+  QDomElement wmsFeesElem = doc.createElement( "Fees" );
+  QDomText wmsFeesText = doc.createTextNode( "conditions unknown" ); // default value if access conditions are unknown
+  if ( !feesElem.isNull() && feesElem.text() != "" )
   {
-    QDomElement wmsFeesElem = doc.createElement( "Fees" );
-    QDomText wmsFeesText = doc.createTextNode( feesElem.text() );
-    wmsFeesElem.appendChild( wmsFeesText );
-    serviceElem.appendChild( wmsFeesElem );
+    wmsFeesText = doc.createTextNode( feesElem.text() );
   }
+  wmsFeesElem.appendChild( wmsFeesText );
+  serviceElem.appendChild( wmsFeesElem );
 
   //AccessConstraints
   QDomElement accessConstraintsElem = propertiesElement.firstChildElement( "WMSAccessConstraints" );
-  if ( !accessConstraintsElem.isNull() )
+  QDomElement wmsAccessConstraintsElem = doc.createElement( "AccessConstraints" );
+  QDomText wmsAccessConstraintsText = doc.createTextNode( "None" ); // default value if access constraints are unknown
+  if ( !accessConstraintsElem.isNull() && accessConstraintsElem.text() != "" )
   {
-    QDomElement wmsAccessConstraintsElem = doc.createElement( "AccessConstraints" );
-    QDomText wmsAccessConstraintsText = doc.createTextNode( accessConstraintsElem.text() );
-    wmsAccessConstraintsElem.appendChild( wmsAccessConstraintsText );
-    serviceElem.appendChild( wmsAccessConstraintsElem );
+    wmsAccessConstraintsText = doc.createTextNode( accessConstraintsElem.text() );
   }
+  wmsAccessConstraintsElem.appendChild( wmsAccessConstraintsText );
+  serviceElem.appendChild( wmsAccessConstraintsElem );
 
   //max width, max height for WMS
   if ( service.compare( "WMS", Qt::CaseInsensitive ) == 0 )
@@ -692,7 +701,7 @@ void QgsServerProjectParser::combineExtentAndCrsOfGroupChildren( QDomElement& gr
       combinedBBox = mapRect;
     }
   }
-  QgsConfigParserUtils::appendLayerBoundingBoxes( groupElem, doc, combinedBBox, groupCRS );
+  QgsConfigParserUtils::appendLayerBoundingBoxes( groupElem, doc, combinedBBox, groupCRS, combinedCRSSet.toList(), supportedOutputCrsList() );
 }
 
 void QgsServerProjectParser::addLayerProjectSettings( QDomElement& layerElem, QDomDocument& doc, QgsMapLayer* currentLayer ) const
