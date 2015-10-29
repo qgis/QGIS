@@ -534,7 +534,14 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
     return QgsRectangle( p, p );
   }
 
-  static const int numP = 8;
+  // 64 points (<=2.12) is not enough, see #13665, for EPSG:4326 -> EPSG:3574 (say that it is a hard one),
+  // are decent result from about 500 points and more. This method is called quite often, but
+  // even with 1000 points it takes < 1ms
+  // TODO: how to effectively and precisely reproject bounding box?
+  const int nPoints = 1000;
+  double d = sqrt(( rect.width() * rect.height() ) / pow( sqrt( nPoints ) - 1, 2.0 ) );
+  int nXPoints = ( int ) ceil( rect.width() / d ) + 1;
+  int nYPoints = ( int ) ceil( rect.height() / d ) + 1;
 
   QgsRectangle bb_rect;
   bb_rect.setMinimal();
@@ -542,31 +549,31 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
   // We're interfacing with C-style vectors in the
   // end, so let's do C-style vectors here too.
 
-  double x[numP * numP];
-  double y[numP * numP];
-  double z[numP * numP];
+  double x[nXPoints * nYPoints];
+  double y[nXPoints * nYPoints];
+  double z[nXPoints * nYPoints];
 
   QgsDebugMsg( "Entering transformBoundingBox..." );
 
   // Populate the vectors
 
-  double dx = rect.width()  / ( double )( numP - 1 );
-  double dy = rect.height() / ( double )( numP - 1 );
+  double dx = rect.width()  / ( double )( nXPoints - 1 );
+  double dy = rect.height() / ( double )( nYPoints - 1 );
 
   double pointY = rect.yMinimum();
 
-  for ( int i = 0; i < numP ; i++ )
+  for ( int i = 0; i < nYPoints ; i++ )
   {
 
     // Start at right edge
     double pointX = rect.xMinimum();
 
-    for ( int j = 0; j < numP; j++ )
+    for ( int j = 0; j < nXPoints; j++ )
     {
-      x[( i*numP ) + j] = pointX;
-      y[( i*numP ) + j] = pointY;
+      x[( i*nXPoints ) + j] = pointX;
+      y[( i*nXPoints ) + j] = pointY;
       // and the height...
-      z[( i*numP ) + j] = 0.0;
+      z[( i*nXPoints ) + j] = 0.0;
       // QgsDebugMsg(QString("BBox coord: (%1, %2)").arg(x[(i*numP) + j]).arg(y[(i*numP) + j]));
       pointX += dx;
     }
@@ -577,7 +584,7 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
   // be handled in above layers.
   try
   {
-    transformCoords( numP * numP, x, y, z, direction );
+    transformCoords( nXPoints * nYPoints, x, y, z, direction );
   }
   catch ( const QgsCsException & )
   {
@@ -588,7 +595,7 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
 
   // Calculate the bounding box and use that for the extent
 
-  for ( int i = 0; i < numP * numP; i++ )
+  for ( int i = 0; i < nXPoints * nYPoints; i++ )
   {
     if ( !qIsFinite( x[i] ) || !qIsFinite( y[i] ) )
     {
