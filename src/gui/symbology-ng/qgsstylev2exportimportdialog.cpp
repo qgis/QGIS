@@ -394,10 +394,10 @@ void QgsStyleV2ExportImportDialog::clearSelection()
 
 void QgsStyleV2ExportImportDialog::selectSymbols( const QStringList symbolNames )
 {
-  foreach ( QString symbolName, symbolNames )
+  Q_FOREACH( const QString &symbolName, symbolNames )
   {
     QModelIndexList indexes = listItems->model()->match( listItems->model()->index( 0, 0 ), Qt::DisplayRole, symbolName , 1, Qt::MatchFixedString | Qt::MatchCaseSensitive );
-    foreach ( QModelIndex index, indexes )
+    Q_FOREACH ( const QModelIndex &index, indexes )
     {
       listItems->selectionModel()->select( index, QItemSelectionModel::Select );
     }
@@ -406,10 +406,10 @@ void QgsStyleV2ExportImportDialog::selectSymbols( const QStringList symbolNames 
 
 void QgsStyleV2ExportImportDialog::deselectSymbols( const QStringList symbolNames )
 {
-  foreach ( QString symbolName, symbolNames )
+  Q_FOREACH ( const QString &symbolName, symbolNames )
   {
     QModelIndexList indexes = listItems->model()->match( listItems->model()->index( 0, 0 ), Qt::DisplayRole, symbolName , 1, Qt::MatchFixedString | Qt::MatchCaseSensitive );
-    foreach ( QModelIndex index, indexes )
+    Q_FOREACH ( const QModelIndex &index, indexes )
     {
       QItemSelection deselection( index, index );
       listItems->selectionModel()->select( deselection, QItemSelectionModel::Deselect );
