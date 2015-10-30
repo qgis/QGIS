@@ -78,26 +78,26 @@ class warp(GdalAlgorithm):
 
         params = []
         params.append(ParameterSelection(self.RTYPE,
-                                             self.tr('Output raster type'), self.TYPE, 5))
+                                         self.tr('Output raster type'), self.TYPE, 5))
         params.append(ParameterSelection(self.COMPRESS,
-                                             self.tr('GeoTIFF options. Compression type:'), self.COMPRESSTYPE, 4))
+                                         self.tr('GeoTIFF options. Compression type:'), self.COMPRESSTYPE, 4))
         params.append(ParameterNumber(self.JPEGCOMPRESSION,
-                                          self.tr('Set the JPEG compression level'),
-                                          1, 100, 75))
+                                      self.tr('Set the JPEG compression level'),
+                                      1, 100, 75))
         params.append(ParameterNumber(self.ZLEVEL,
-                                          self.tr('Set the DEFLATE compression level'),
-                                          1, 9, 6))
+                                      self.tr('Set the DEFLATE compression level'),
+                                      1, 9, 6))
         params.append(ParameterNumber(self.PREDICTOR,
-                                          self.tr('Set the predictor for LZW or DEFLATE compression'),
-                                          1, 3, 1))
+                                      self.tr('Set the predictor for LZW or DEFLATE compression'),
+                                      1, 3, 1))
         params.append(ParameterBoolean(self.TILED,
-                                           self.tr('Create tiled output (only used for the GTiff format)'), False))
+                                       self.tr('Create tiled output (only used for the GTiff format)'), False))
         params.append(ParameterSelection(self.BIGTIFF,
-                                             self.tr('Control whether the created file is a BigTIFF or a classic TIFF'), self.BIGTIFFTYPE, 0))
+                                         self.tr('Control whether the created file is a BigTIFF or a classic TIFF'), self.BIGTIFFTYPE, 0))
         params.append(ParameterBoolean(self.TFW,
-                                           self.tr('Force the generation of an associated ESRI world file (.tfw))'), False))
+                                       self.tr('Force the generation of an associated ESRI world file (.tfw))'), False))
         params.append(ParameterString(self.EXTRA,
-                                          self.tr('Additional creation parameters'), '', optional=True))
+                                      self.tr('Additional creation parameters'), '', optional=True))
 
         for param in params:
             param.isAdvanced = True

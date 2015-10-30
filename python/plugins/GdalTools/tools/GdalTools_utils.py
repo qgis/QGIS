@@ -387,6 +387,8 @@ def getRasterResolution(fileName):
 # 3. bypass the following bug:
 # when you use the 'filter' argument, the dialog is enlarged up to the longest filter length,
 # so sometimes the dialog excedes the screen width
+
+
 class FileDialog:
 
     @classmethod

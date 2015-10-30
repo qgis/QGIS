@@ -37,6 +37,7 @@ from processing.algs.gdal.OgrAlgorithm import OgrAlgorithm
 
 DIALECTS = [None, 'ogrsql', 'sqlite']
 
+
 class OgrSql(OgrAlgorithm):
 
     INPUT = 'INPUT'

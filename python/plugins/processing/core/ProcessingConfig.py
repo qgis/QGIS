@@ -32,6 +32,7 @@ from PyQt4.QtGui import QIcon
 from processing.tools.system import tempFolder
 import processing.tools.dataobjects
 
+
 class ProcessingConfig:
 
     OUTPUT_FOLDER = 'OUTPUT_FOLDER'

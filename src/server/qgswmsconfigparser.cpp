@@ -148,7 +148,7 @@ QgsComposition* QgsWMSConfigParser::createPrintComposition( const QString& compo
         {
           styleName = wmsStyleList.at( i );
         }
-        
+
         bool allowCaching = true;
         if ( wmsLayerList.count( wmsLayer ) > 1 )
         {

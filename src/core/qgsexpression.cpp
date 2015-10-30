@@ -1487,7 +1487,7 @@ static QVariant fcnRelate( const QVariantList& values, const QgsExpressionContex
   QString result = engine->relate( *sGeom.geometry() );
   delete engine;
 
-  return QVariant::fromValue( result  );
+  return QVariant::fromValue( result );
 }
 
 static QVariant fcnBbox( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )

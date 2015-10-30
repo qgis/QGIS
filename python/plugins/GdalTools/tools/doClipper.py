@@ -31,6 +31,7 @@ from ui_widgetClipper import Ui_GdalToolsWidget as Ui_Widget
 from widgetPluginBase import GdalToolsBasePluginWidget as BasePluginWidget
 import GdalTools_utils as Utils
 
+
 class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
 
     def __init__(self, iface):
@@ -94,7 +95,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
             self.resolutionWidget.hide()
         else:
             self.resolutionWidget.show()
-    
+
     def checkRun(self):
         if self.extentModeRadio.isChecked():
             enabler = self.extentSelector.isCoordsValid()

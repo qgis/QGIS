@@ -195,7 +195,7 @@ class SagaAlgorithm212(GeoAlgorithm):
                 f.write('\t'.join([col for col in param.cols]) + '\n')
                 values = param.value.split(',')
                 for i in range(0, len(values), 3):
-                    s = values[i] + '\t' + values[i + 1] + '\t' + values[i+ 2] + '\n'
+                    s = values[i] + '\t' + values[i + 1] + '\t' + values[i + 2] + '\n'
                     f.write(s)
                 f.close()
                 command += ' -' + param.name + ' "' + tempTableFile + '"'

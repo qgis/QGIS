@@ -101,7 +101,7 @@ class rasterize(OgrAlgorithm):
         self.addParameter(ParameterBoolean(self.TFW,
                                            self.tr('Force the generation of an associated ESRI world file (.tfw)'), False))
         params.append(ParameterString(self.EXTRA,
-                                          self.tr('Additional creation parameters'), '', optional=True))
+                                      self.tr('Additional creation parameters'), '', optional=True))
 
         for param in params:
             param.isAdvanced = True
@@ -122,7 +122,7 @@ class rasterize(OgrAlgorithm):
         bigtiff = self.BIGTIFFTYPE[self.getParameterValue(self.BIGTIFF)]
         tfw = unicode(self.getParameterValue(self.TFW))
         out = self.getOutputValue(self.OUTPUT)
-        extra = unicode(self.getParameterValue(self.EXTRA))		
+        extra = unicode(self.getParameterValue(self.EXTRA))
 
         arguments = []
         arguments.append('-a')

@@ -213,7 +213,6 @@ class SettingDelegate(QStyledItemDelegate):
             elif isinstance(value, (str, unicode)):
                 return QLineEdit(parent)
 
-
     def setEditorData(self, editor, index):
         value = self.convertValue(index.model().data(index, Qt.EditRole))
         setting = index.model().data(index, Qt.UserRole)

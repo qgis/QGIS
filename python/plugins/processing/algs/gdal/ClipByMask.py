@@ -42,7 +42,7 @@ from processing.algs.gdal.OgrAlgorithm import OgrAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
 
-class ClipByMask(GdalAlgorithm,OgrAlgorithm):
+class ClipByMask(GdalAlgorithm, OgrAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
@@ -63,7 +63,7 @@ class ClipByMask(GdalAlgorithm,OgrAlgorithm):
     BIGTIFFTYPE = ['', 'YES', 'NO', 'IF_NEEDED', 'IF_SAFER']
     COMPRESSTYPE = ['NONE', 'JPEG', 'LZW', 'PACKBITS', 'DEFLATE']
     TFW = 'TFW'
-	
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Clip raster by mask layer')
         self.group, self.i18n_group = self.trAlgorithm('[GDAL] Extraction')
@@ -82,30 +82,30 @@ class ClipByMask(GdalAlgorithm,OgrAlgorithm):
 
         params = []
         params.append(ParameterSelection(self.RTYPE,
-                                             self.tr('Output raster type'), self.TYPE, 5))
+                                         self.tr('Output raster type'), self.TYPE, 5))
         params.append(ParameterSelection(self.COMPRESS,
-                                             self.tr('GeoTIFF options. Compression type:'), self.COMPRESSTYPE, 4))
+                                         self.tr('GeoTIFF options. Compression type:'), self.COMPRESSTYPE, 4))
         params.append(ParameterNumber(self.JPEGCOMPRESSION,
-                                          self.tr('Set the JPEG compression level'),
-                                          1, 100, 75))
+                                      self.tr('Set the JPEG compression level'),
+                                      1, 100, 75))
         params.append(ParameterNumber(self.ZLEVEL,
-                                          self.tr('Set the DEFLATE compression level'),
-                                          1, 9, 6))
+                                      self.tr('Set the DEFLATE compression level'),
+                                      1, 9, 6))
         params.append(ParameterNumber(self.PREDICTOR,
-                                          self.tr('Set the predictor for LZW or DEFLATE compression'),
-                                          1, 3, 1))
+                                      self.tr('Set the predictor for LZW or DEFLATE compression'),
+                                      1, 3, 1))
         params.append(ParameterBoolean(self.TILED,
-                                           self.tr('Create tiled output (only used for the GTiff format)'), False))
+                                       self.tr('Create tiled output (only used for the GTiff format)'), False))
         params.append(ParameterSelection(self.BIGTIFF,
-                                             self.tr('Control whether the created file is a BigTIFF or a classic TIFF'), self.BIGTIFFTYPE, 0))
+                                         self.tr('Control whether the created file is a BigTIFF or a classic TIFF'), self.BIGTIFFTYPE, 0))
         params.append(ParameterBoolean(self.TFW,
-                                           self.tr('Force the generation of an associated ESRI world file (.tfw))'), False))
+                                       self.tr('Force the generation of an associated ESRI world file (.tfw))'), False))
         params.append(ParameterString(self.EXTRA,
-                                          self.tr('Additional creation parameters'), '', optional=True))
+                                      self.tr('Additional creation parameters'), '', optional=True))
 
         for param in params:
             param.isAdvanced = True
-            self.addParameter(param)  
+            self.addParameter(param)
 
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Clipped (mask)')))
 
@@ -153,7 +153,7 @@ class ClipByMask(GdalAlgorithm,OgrAlgorithm):
 
         if addAlphaBand:
             arguments.append('-dstalpha')
-		
+
         if len(extra) > 0:
             arguments.append(extra)
         if GdalUtils.getFormatShortNameFromFilename(out) == "GTiff":

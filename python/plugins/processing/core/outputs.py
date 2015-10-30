@@ -31,6 +31,7 @@ from processing.tools.vector import VectorWriter, TableWriter
 from processing.tools import dataobjects
 from processing.core.ProcessingConfig import ProcessingConfig
 
+
 def getOutputFromString(s):
     tokens = s.split("|")
     params = [t if unicode(t) != "None" else None for t in tokens[1:]]
@@ -151,7 +152,6 @@ class OutputNumber(Output):
 class OutputRaster(Output):
 
     compatible = None
-
 
     def getFileFilter(self, alg):
         exts = dataobjects.getSupportedOutputRasterLayerExtensions()

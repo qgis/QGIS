@@ -114,7 +114,7 @@ QSize QgsWelcomePageItemDelegate::sizeHint( const QStyleOptionViewItem & option,
                      index.data( QgsWelcomePageItemsModel::CrsRole ).toString() ) );
   doc.setTextWidth( width - ( !icon.isNull() ? icon.width() + 35 : 35 ) );
 
-  return QSize( width, qMax( ( double ) doc.size().height() + 10, ( double )icon.height() ) + 20 );
+  return QSize( width, qMax(( double ) doc.size().height() + 10, ( double )icon.height() ) + 20 );
 }
 
 QgsWelcomePageItemsModel::QgsWelcomePageItemsModel( QObject* parent )
