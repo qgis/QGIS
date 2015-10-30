@@ -218,6 +218,8 @@ bool QgsVectorLayerRenderer::render()
       QgsSimplifyMethod simplifyMethod;
       simplifyMethod.setMethodType( QgsSimplifyMethod::OptimizeForRendering );
       simplifyMethod.setTolerance( map2pixelTol );
+      simplifyMethod.setThreshold( mSimplifyMethod.threshold() );
+
       simplifyMethod.setForceLocalOptimization( mSimplifyMethod.forceLocalOptimization() );
 
       featureRequest.setSimplifyMethod( simplifyMethod );
