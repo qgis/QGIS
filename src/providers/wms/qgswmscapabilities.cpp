@@ -1908,8 +1908,8 @@ bool QgsWmsCapabilitiesDownload::downloadCapabilities()
 
   QString url = mBaseUrl;
   QgsDebugMsg( "url = " + url );
-  if ( !url.contains( "SERVICE=WMTS" ) &&
-       !url.contains( "/WMTSCapabilities.xml" ) )
+  if ( !url.contains( "SERVICE=WMTS", Qt::CaseInsensitive ) &&
+       !url.contains( "/WMTSCapabilities.xml", Qt::CaseInsensitive ) )
   {
     url += "SERVICE=WMS&REQUEST=GetCapabilities";
   }
