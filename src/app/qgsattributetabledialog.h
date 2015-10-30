@@ -86,6 +86,10 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
      * Saves edits
      */
     void on_mSaveEditsButton_clicked();
+    /**
+     * Reload the data
+     */
+    void on_mReloadButton_clicked();
 
     /**
      * Inverts selection
