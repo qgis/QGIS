@@ -593,7 +593,11 @@ void QgsGrass::setLocation( QString gisdbase, QString location )
 void QgsGrass::setMapset( QString gisdbase, QString location, QString mapset )
 {
   QgsDebugMsg( QString( "gisdbase = %1 location = %2 mapset = %3" ).arg( gisdbase, location, mapset ) );
-  init();
+  if ( !init() )
+  {
+    QgsDebugMsg( QgsGrass::initError() );
+    return;
+  }
 
   // Set principal GRASS variables (in memory)
 #ifdef Q_OS_WIN

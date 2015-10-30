@@ -1061,6 +1061,13 @@ void TestQgsGrassProvider::edit()
 
         expectedLayer->startEditing();
       }
+
+      if ( !grassLayer || !grassProvider || !expectedLayer )
+      {
+        reportRow( "grassLayer, grassProvider or expectedLayer is null" );
+        commandOk = false;
+        break;
+      }
       else if ( command.command == TestQgsGrassCommand::CommitChanges )
       {
         grassLayer->commitChanges();
