@@ -539,7 +539,7 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
   // even with 1000 points it takes < 1ms
   // TODO: how to effectively and precisely reproject bounding box?
   const int nPoints = 1000;
-  double d = sqrt(( rect.width() * rect.height() ) / pow( sqrt( nPoints ) - 1, 2.0 ) );
+  double d = sqrt(( rect.width() * rect.height() ) / pow( sqrt(( double ) nPoints ) - 1, 2.0 ) );
   int nXPoints = ( int ) ceil( rect.width() / d ) + 1;
   int nYPoints = ( int ) ceil( rect.height() / d ) + 1;
 
@@ -549,9 +549,9 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
   // We're interfacing with C-style vectors in the
   // end, so let's do C-style vectors here too.
 
-  double x[nXPoints * nYPoints];
-  double y[nXPoints * nYPoints];
-  double z[nXPoints * nYPoints];
+  QVector<double> x( nXPoints * nYPoints );
+  QVector<double> y( nXPoints * nYPoints );
+  QVector<double> z( nXPoints * nYPoints );
 
   QgsDebugMsg( "Entering transformBoundingBox..." );
 
@@ -584,7 +584,7 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
   // be handled in above layers.
   try
   {
-    transformCoords( nXPoints * nYPoints, x, y, z, direction );
+    transformCoords( nXPoints * nYPoints, x.data(), y.data(), z.data(), direction );
   }
   catch ( const QgsCsException & )
   {
