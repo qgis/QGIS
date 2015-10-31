@@ -28,6 +28,7 @@
 #include "qgsexpressioncontext.h"
 #include "qgsvectorlayer.h"
 #include "qgsmaplayerregistry.h"
+#include "qgsvectordataprovider.h"
 
 static void _parseAndEvalExpr( int arg )
 {
@@ -47,11 +48,13 @@ class TestQgsExpression: public QObject
 
     TestQgsExpression()
         : mPointsLayer( 0 )
+        , mMemoryLayer( 0 )
     {}
 
   private:
 
     QgsVectorLayer* mPointsLayer;
+    QgsVectorLayer* mMemoryLayer;
 
   private slots:
 
@@ -82,6 +85,24 @@ class TestQgsExpression: public QObject
       mPointsLayer->setAttributionUrl( "attribution url" );
       mPointsLayer->setMaximumScale( 500 );
       mPointsLayer->setMinimumScale( 1000 );
+
+      // test memory layer for get_feature tests
+      mMemoryLayer = new QgsVectorLayer( "Point?field=col1:integer&field=col2:string", "test", "memory" );
+      QVERIFY( mMemoryLayer->isValid() );
+      QgsFeature f1( mMemoryLayer->dataProvider()->fields(), 1 );
+      f1.setAttribute( "col1", 10 );
+      f1.setAttribute( "col2", "test1" );
+      QgsFeature f2( mMemoryLayer->dataProvider()->fields(), 2 );
+      f2.setAttribute( "col1", 11 );
+      f2.setAttribute( "col2", "test2" );
+      QgsFeature f3( mMemoryLayer->dataProvider()->fields(), 3 );
+      f3.setAttribute( "col1", 3 );
+      f3.setAttribute( "col2", "test3" );
+      QgsFeature f4( mMemoryLayer->dataProvider()->fields(), 4 );
+      f4.setAttribute( "col1", 41 );
+      f4.setAttribute( "col2", "test4" );
+      mMemoryLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 << f3 << f4 );
+      QgsMapLayerRegistry::instance()->addMapLayer( mMemoryLayer );
     }
 
     void cleanupTestCase()
@@ -789,6 +810,59 @@ class TestQgsExpression: public QObject
       QCOMPARE( v.toString(), QString( "test value" ) );
       v = exp2.evaluate( &context );
       QCOMPARE( v.toInt(), 5 );
+    }
+
+    void eval_get_feature_data()
+    {
+      QTest::addColumn<QString>( "string" );
+      QTest::addColumn<bool>( "featureMatched" );
+      QTest::addColumn<int>( "featureId" );
+
+      // get_feature evaluation
+
+      //by layer name
+      QTest::newRow( "get_feature 1" ) << "get_feature('test','col1',10)" << true << 1;
+      QTest::newRow( "get_feature 2" ) << "get_feature('test','col2','test1')" << true << 1;
+      QTest::newRow( "get_feature 3" ) << "get_feature('test','col1',11)" << true << 2;
+      QTest::newRow( "get_feature 4" ) << "get_feature('test','col2','test2')" << true << 2;
+      QTest::newRow( "get_feature 5" ) << "get_feature('test','col1',3)" << true << 3;
+      QTest::newRow( "get_feature 6" ) << "get_feature('test','col2','test3')" << true << 3;
+      QTest::newRow( "get_feature 7" ) << "get_feature('test','col1',41)" << true << 4;
+      QTest::newRow( "get_feature 8" ) << "get_feature('test','col2','test4')" << true << 4;
+
+      //by layer id
+      QTest::newRow( "get_feature 3" ) << QString("get_feature('%1','col1',11)").arg( mMemoryLayer->id() ) << true << 2;
+      QTest::newRow( "get_feature 4" ) << QString("get_feature('%1','col2','test2')").arg( mMemoryLayer->id() ) << true << 2;
+
+      //no matching features
+      QTest::newRow( "get_feature no match1" ) << "get_feature('test','col1',499)" << false << -1;
+      QTest::newRow( "get_feature no match2" ) << "get_feature('test','col2','no match!')" << false << -1;
+      //no matching layer
+      QTest::newRow( "get_feature no match layer" ) << "get_feature('not a layer!','col1',10)" << false << -1;
+    }
+
+    void eval_get_feature()
+    {
+      QFETCH( QString, string );
+      QFETCH( bool, featureMatched );
+      QFETCH( int, featureId );
+
+      QgsExpression exp( string );
+      QCOMPARE( exp.hasParserError(), false );
+      if ( exp.hasParserError() )
+        qDebug() << exp.parserErrorString();
+
+      QVariant res = exp.evaluate();
+      if ( exp.hasEvalError() )
+        qDebug() << exp.evalErrorString();
+
+      QCOMPARE( exp.hasEvalError(), false );
+      QCOMPARE( res.canConvert<QgsFeature>(), featureMatched );
+      if ( featureMatched )
+      {
+        QgsFeature feat = res.value<QgsFeature>();
+        QCOMPARE( feat.id(), (long long)featureId );
+      }
     }
 
     void eval_rand()
