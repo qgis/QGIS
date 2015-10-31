@@ -39,9 +39,9 @@ QgsLayerTreeGroup::QgsLayerTreeGroup( const QgsLayerTreeGroup& other )
     : QgsLayerTreeNode( other )
     , mName( other.mName )
     , mChecked( other.mChecked )
-    , mChangingChildVisibility( false )
-    , mMutuallyExclusive( false )
-    , mMutuallyExclusiveChildIndex( -1 )
+    , mChangingChildVisibility( other.mChangingChildVisibility )
+    , mMutuallyExclusive( other.mMutuallyExclusive )
+    , mMutuallyExclusiveChildIndex( other.mMutuallyExclusiveChildIndex )
 {
   connect( this, SIGNAL( visibilityChanged( QgsLayerTreeNode*, Qt::CheckState ) ), this, SLOT( nodeVisibilityChanged( QgsLayerTreeNode* ) ) );
 }
