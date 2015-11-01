@@ -765,7 +765,10 @@ void TestQgsGrassProvider::rasterImport()
   }
 
   QStringList rasterFiles;
-  rasterFiles << "tenbytenraster.asc" << "landsat.tif" << "raster/band1_byte_ct_epsg4326.tif" << "raster/band1_int16_noct_epsg4326.tif";
+  // tenbytenraster.asc does not have CRS, import to EPSG:4326 without reprojection fails
+  // in G_adjust_Cell_head() (Illegal latitude for North)
+  //rasterFiles << "tenbytenraster.asc";
+  rasterFiles << "landsat.tif" << "raster/band1_byte_ct_epsg4326.tif" << "raster/band1_int16_noct_epsg4326.tif";
   rasterFiles << "raster/band1_float32_noct_epsg4326.tif" << "raster/band3_int16_noct_epsg4326.tif";
 
   QgsCoordinateReferenceSystem mapsetCrs = QgsGrass::crsDirect( mGisdbase, mLocation );
