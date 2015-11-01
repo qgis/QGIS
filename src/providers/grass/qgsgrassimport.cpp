@@ -241,6 +241,14 @@ bool QgsGrassRasterImport::import()
     return false;
   }
 
+
+  struct Cell_head defaultWindow;
+  if ( !QgsGrass::defaultRegion( mGrassObject.gisdbase(), mGrassObject.location(), &defaultWindow ) )
+  {
+    setError( "Cannot get default window" );
+    return false;
+  }
+
   int redBand = 0;
   int greenBand = 0;
   int blueBand = 0;
@@ -326,6 +334,8 @@ bool QgsGrassRasterImport::import()
 
     QDataStream outStream( mProcess );
 
+    outStream << ( qint32 ) defaultWindow.proj;
+    outStream << ( qint32 ) defaultWindow.zone;
     outStream << mExtent << ( qint32 )mXSize << ( qint32 )mYSize;
     outStream << ( qint32 )qgis_out_type;
 
