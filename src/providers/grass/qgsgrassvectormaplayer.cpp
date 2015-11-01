@@ -836,17 +836,40 @@ void QgsGrassVectorMapLayer::insertAttributes( int cat, const QgsFeature &featur
   names << mFieldInfo->key;
   values << QString::number( cat );
 
-  if ( feature.isValid() && feature.fields() )
+  QList<QVariant> cacheValues;
+  cacheValues.reserve( mAttributeFields.size() );
+  for ( int i = 0; i < mAttributeFields.size(); ++i )
+  {
+    cacheValues << QVariant();
+  }
+
+  if ( feature.fields() )
   {
     // append feature attributes if not null
     for ( int i = 0; i < feature.fields()->size(); i++ )
     {
       QString name = feature.fields()->at( i ).name();
+      QVariant valueVariant = feature.attributes().value( i );
+
+      if ( name != QgsGrassVectorMap::topoSymbolFieldName() )
+      {
+        int cacheIndex = mAttributeFields.indexFromName( name );
+        if ( cacheIndex < 0 ) // should not happen
+        {
+          error = QString( "Field %1 not found in cached attributes" ).arg( name );
+          return;
+        }
+        else
+        {
+          cacheValues[cacheIndex] = valueVariant;
+        }
+      }
+
       if ( name == mFieldInfo->key )
       {
         continue;
       }
-      QVariant valueVariant = feature.attributes().value( i );
+
       if ( !valueVariant.isNull() )
       {
         names << name;
@@ -860,13 +883,7 @@ void QgsGrassVectorMapLayer::insertAttributes( int cat, const QgsFeature &featur
   executeSql( query, error );
   if ( error.isEmpty() )
   {
-    QList<QVariant> values;
-    values.reserve( mAttributeFields.size() );
-    for ( int i = 0; i < mAttributeFields.size(); ++i )
-    {
-      values << QVariant();
-    }
-    mAttributes[cat] = values;
+    mAttributes[cat] = cacheValues;
   }
   printCachedAttributes();
 }
