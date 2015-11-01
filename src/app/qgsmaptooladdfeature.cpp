@@ -283,6 +283,7 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
           return;
         }
       }
+      f->setValid( true );
 
       if ( addFeature( vlayer, f.data(), false ) )
       {
