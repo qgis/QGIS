@@ -92,6 +92,8 @@ class TestQgsGrassCommand
     QVariant value;
 
     QMap<QString, QVariant> values;
+    // map of attributes by name
+    QMap<QString, QVariant> attributes;
 };
 
 QString TestQgsGrassCommand::toString() const
@@ -206,6 +208,7 @@ class TestQgsGrassProvider: public QObject
     bool compare( QString uri, QgsVectorLayer *expectedLayer, bool& ok );
     QList< TestQgsGrassCommandGroup > createCommands();
     QList<QgsFeature> getFeatures( QgsVectorLayer *layer );
+    bool setAttributes( QgsFeature & feature, const QMap<QString, QVariant> &attributes );
     QString mGisdbase;
     QString mLocation;
     QString mReport;
@@ -887,6 +890,7 @@ QList< TestQgsGrassCommandGroup > TestQgsGrassProvider::createCommands()
   TestQgsGrassCommand command;
   TestQgsGrassFeature grassFeature;
   QgsGeometry *geometry;
+  QList<QgsPointV2> pointList;
 
   // Start editing
   command = TestQgsGrassCommand( TestQgsGrassCommand::StartEditing );
@@ -969,7 +973,63 @@ QList< TestQgsGrassCommandGroup > TestQgsGrassProvider::createCommands()
 
   commandGroups << commandGroup;
 
+  //------------------------ Group 2 (issue #13726) -------------------------------
+  commandGroup = TestQgsGrassCommandGroup();
+
+  // Start editing
+  command = TestQgsGrassCommand( TestQgsGrassCommand::StartEditing );
+  command.values["grassLayerCode"] = "1_line";
+  command.values["expectedLayerType"] = "LineString";
+  commandGroup.commands << command;
+
+  // Add field
+  command = TestQgsGrassCommand( TestQgsGrassCommand::AddAttribute );
+  command.field = QgsField( "field_int", QVariant::Int, "integer" );
+  commandGroup.commands << command;
+
+  // Add line feature with attributes
+  command = TestQgsGrassCommand( TestQgsGrassCommand::AddFeature );
+  grassFeature = TestQgsGrassFeature( GV_LINE );
+  grassFeature.setFeatureId( 1 );
+  QgsLineStringV2 * line = new QgsLineStringV2();
+  pointList.clear();
+  pointList << QgsPointV2( QgsWKBTypes::Point, 0, 0, 0 );
+  pointList << QgsPointV2( QgsWKBTypes::Point, 20, 10, 0 );
+  line->setPoints( pointList );
+  pointList.clear();
+  geometry = new QgsGeometry( line );
+  grassFeature.setGeometry( geometry );
+  command.grassFeatures << grassFeature;
+  command.expectedFeature = grassFeature;
+  command.attributes["field_int"] = 456;
+  commandGroup.commands << command;
+
+  // Commit
+  command = TestQgsGrassCommand( TestQgsGrassCommand::CommitChanges );
+  commandGroup.commands << command;
+
+  commandGroups << commandGroup;
+
   return commandGroups;
+}
+
+bool TestQgsGrassProvider::setAttributes( QgsFeature & feature, const QMap<QString, QVariant> &attributes )
+{
+  bool attributesSet = true;
+  Q_FOREACH ( const QString fieldName, attributes.keys() )
+  {
+    int index = feature.fields()->indexFromName( fieldName );
+    if ( index < 0 )
+    {
+      attributesSet = false;
+      reportRow( "cannot find index of attribute " + fieldName );
+    }
+    else
+    {
+      feature.setAttribute( index, attributes.value( fieldName ) );
+    }
+  }
+  return attributesSet;
 }
 
 void TestQgsGrassProvider::edit()
@@ -1089,7 +1149,14 @@ void TestQgsGrassProvider::edit()
         {
           QgsFeatureId fid = grassFeature.id();
           grassProvider->setNewFeatureType( grassFeature.grassType );
+          grassFeature.setFields( grassLayer->fields() );
           grassFeature.initAttributes( grassLayer->fields().size() ); // attributes must match layer fields
+          if ( !setAttributes( grassFeature, command.attributes ) )
+          {
+            commandOk = false;
+            break;
+          }
+
           if ( !grassLayer->addFeature( grassFeature ) )
           {
             reportRow( "cannot add feature" );
@@ -1101,8 +1168,13 @@ void TestQgsGrassProvider::edit()
 
         QgsFeature expectedFeature = command.expectedFeature;
         QgsFeatureId expectedFid = expectedFeature.id();
+        expectedFeature.setFields( expectedLayer->fields() );
         expectedFeature.initAttributes( expectedLayer->fields().size() );
-        //expectedFeature.setGeometry( new QgsGeometry( new QgsPointV2( QgsWKBTypes::Point, 10, 20, 0 ) ) ); // debug
+        if ( !setAttributes( expectedFeature, command.attributes ) )
+        {
+          commandOk = false;
+          break;
+        }
         if ( !expectedLayer->addFeature( expectedFeature ) )
         {
           reportRow( "cannot add expectedFeature" );
