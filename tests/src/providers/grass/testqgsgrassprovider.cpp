@@ -52,8 +52,8 @@ extern "C"
 class TestQgsGrassFeature : public QgsFeature
 {
   public:
-    TestQgsGrassFeature() : grassType( 0 ) {}
-    TestQgsGrassFeature( int type ) : grassType( type )  {}
+    TestQgsGrassFeature() : grassType( 0 ) { setValid( true ); }
+    TestQgsGrassFeature( int type ) : grassType( type )  { setValid( true ); }
 
     int grassType;
 };
@@ -78,11 +78,13 @@ class TestQgsGrassCommand
       RedoAll
     };
 
-    TestQgsGrassCommand() : command( AddFeature ), fid( 0 ), geometry( 0 ) {}
-    TestQgsGrassCommand( Command c ) : command( c ), fid( 0 ), geometry( 0 ) {}
+    TestQgsGrassCommand() : command( AddFeature ), verify( true ), fid( 0 ), geometry( 0 ) {}
+    TestQgsGrassCommand( Command c ) : command( c ), verify( true ), fid( 0 ), geometry( 0 ) {}
 
     QString toString() const;
     Command command;
+    // some commands (in case of multiple commands making single change) must not be verified
+    bool verify;
 
     QList<TestQgsGrassFeature> grassFeatures;
     QgsFeature expectedFeature; // simple feature for verification
@@ -115,7 +117,18 @@ QString TestQgsGrassCommand::toString() const
   else if ( command == AddFeature )
   {
     string += "AddFeature ";
-    string += expectedFeature.constGeometry()->exportToWkt( 1 );
+    Q_FOREACH ( const TestQgsGrassFeature & grassFeature, grassFeatures )
+    {
+      if ( grassFeature.constGeometry() )
+      {
+        string += "<br>grass: " + grassFeature.constGeometry()->exportToWkt( 1 );
+      }
+    }
+
+    if ( expectedFeature.constGeometry() )
+    {
+      string += "<br>expected: " + expectedFeature.constGeometry()->exportToWkt( 1 );
+    }
   }
   else if ( command == DeleteFeature )
   {
@@ -889,6 +902,7 @@ QList< TestQgsGrassCommandGroup > TestQgsGrassProvider::createCommands()
   TestQgsGrassCommandGroup commandGroup;
   TestQgsGrassCommand command;
   TestQgsGrassFeature grassFeature;
+  QgsLineStringV2 * line;
   QgsGeometry *geometry;
   QList<QgsPointV2> pointList;
 
@@ -991,7 +1005,7 @@ QList< TestQgsGrassCommandGroup > TestQgsGrassProvider::createCommands()
   command = TestQgsGrassCommand( TestQgsGrassCommand::AddFeature );
   grassFeature = TestQgsGrassFeature( GV_LINE );
   grassFeature.setFeatureId( 1 );
-  QgsLineStringV2 * line = new QgsLineStringV2();
+  line = new QgsLineStringV2();
   pointList.clear();
   pointList << QgsPointV2( QgsWKBTypes::Point, 0, 0, 0 );
   pointList << QgsPointV2( QgsWKBTypes::Point, 20, 10, 0 );
@@ -1010,6 +1024,71 @@ QList< TestQgsGrassCommandGroup > TestQgsGrassProvider::createCommands()
 
   commandGroups << commandGroup;
 
+  //------------------------ Group 3 (issue #13739) -------------------------------
+  // TODO: resolve issue and enable test
+#if 0
+  commandGroup = TestQgsGrassCommandGroup();
+
+  // Start editing
+  command = TestQgsGrassCommand( TestQgsGrassCommand::StartEditing );
+  command.values["grassLayerCode"] = "1_line";
+  command.values["expectedLayerType"] = "LineString";
+  commandGroup.commands << command;
+
+  // Add field
+  command = TestQgsGrassCommand( TestQgsGrassCommand::AddAttribute );
+  command.field = QgsField( "field_int", QVariant::Int, "integer" );
+  commandGroup.commands << command;
+
+  // Add grass boundary feature without attributes and expected line feature with attributes
+  command = TestQgsGrassCommand( TestQgsGrassCommand::AddFeature );
+  command.verify = false;
+  grassFeature = TestQgsGrassFeature( GV_BOUNDARY );
+  grassFeature.setFeatureId( 1 );
+  line = new QgsLineStringV2();
+  pointList.clear();
+  pointList << QgsPointV2( QgsWKBTypes::Point, 0, 0, 0 );
+  pointList << QgsPointV2( QgsWKBTypes::Point, 20, 10, 0 );
+  line->setPoints( pointList );
+  pointList.clear();
+  geometry = new QgsGeometry( line );
+  grassFeature.setGeometry( geometry );
+  command.grassFeatures << grassFeature;
+  commandGroup.commands << command;
+
+  command = TestQgsGrassCommand( TestQgsGrassCommand::AddFeature );
+  command.expectedFeature = grassFeature;
+  command.attributes["field_int"] = 123;
+  command.verify = false;
+  commandGroup.commands << command;
+
+  // Commit
+  command = TestQgsGrassCommand( TestQgsGrassCommand::CommitChanges );
+  command.verify = false;
+  commandGroup.commands << command;
+
+  // Restart editing
+  command = TestQgsGrassCommand( TestQgsGrassCommand::StartEditing );
+  command.values["grassLayerCode"] = "1_line";
+  command.values["expectedLayerType"] = "LineString";
+  command.verify = false;
+  commandGroup.commands << command;
+
+  // Change attribute
+  command = TestQgsGrassCommand( TestQgsGrassCommand::ChangeAttributeValue );
+  // hack: it will only change attribute in GRASS layer, the feature in expected layer
+  // with this fid does not exist and changeAttributeValue() on non existing fid does not fail
+  command.fid = 1000000000;
+  command.field.setName( "field_int" );
+  command.value = 123;
+  commandGroup.commands << command;
+
+  // Roll back
+  command = TestQgsGrassCommand( TestQgsGrassCommand::RollBack );
+  commandGroup.commands << command;
+
+  commandGroups << commandGroup;
+#endif
   return commandGroups;
 }
 
@@ -1136,12 +1215,16 @@ void TestQgsGrassProvider::edit()
         grassLayer->commitChanges();
         expectedLayer->commitChanges();
         editCommands.clear();
+        commandGroup.fids.clear();
+        commandGroup.expectedFids.clear();
       }
       else if ( command.command == TestQgsGrassCommand::RollBack )
       {
         grassLayer->rollBack();
         expectedLayer->rollBack();
         editCommands.clear();
+        commandGroup.fids.clear();
+        commandGroup.expectedFids.clear();
       }
       else if ( command.command == TestQgsGrassCommand::AddFeature )
       {
@@ -1167,20 +1250,25 @@ void TestQgsGrassProvider::edit()
         }
 
         QgsFeature expectedFeature = command.expectedFeature;
-        QgsFeatureId expectedFid = expectedFeature.id();
-        expectedFeature.setFields( expectedLayer->fields() );
-        expectedFeature.initAttributes( expectedLayer->fields().size() );
-        if ( !setAttributes( expectedFeature, command.attributes ) )
+        // some features (e.g. boundaries for future line features) are added only to grass layer
+        // in that case expectedFeature is invalid
+        if ( expectedFeature.isValid() )
         {
-          commandOk = false;
-          break;
+          QgsFeatureId expectedFid = expectedFeature.id();
+          expectedFeature.setFields( expectedLayer->fields() );
+          expectedFeature.initAttributes( expectedLayer->fields().size() );
+          if ( !setAttributes( expectedFeature, command.attributes ) )
+          {
+            commandOk = false;
+            break;
+          }
+          if ( !expectedLayer->addFeature( expectedFeature ) )
+          {
+            reportRow( "cannot add expectedFeature" );
+            commandOk = false;
+          }
+          commandGroup.expectedFids.insert( expectedFid, expectedFeature.id() );
         }
-        if ( !expectedLayer->addFeature( expectedFeature ) )
-        {
-          reportRow( "cannot add expectedFeature" );
-          commandOk = false;
-        }
-        commandGroup.expectedFids.insert( expectedFid, expectedFeature.id() );
         editCommands << command;
       }
       else if ( command.command == TestQgsGrassCommand::DeleteFeature )
@@ -1201,13 +1289,21 @@ void TestQgsGrassProvider::edit()
       }
       else if ( command.command == TestQgsGrassCommand::ChangeGeometry )
       {
-        QgsFeatureId fid = commandGroup.fids.value( command.fid );
+        QgsFeatureId fid = command.fid;
+        if ( commandGroup.fids.contains( fid ) )
+        {
+          fid = commandGroup.fids.value( fid );
+        }
         if ( !grassLayer->changeGeometry( fid, command.geometry ) )
         {
           reportRow( "cannot change feature geometry" );
           commandOk = false;
         }
-        QgsFeatureId expectedFid = commandGroup.expectedFids.value( command.fid );
+        QgsFeatureId expectedFid = command.fid;
+        if ( commandGroup.expectedFids.contains( expectedFid ) )
+        {
+          expectedFid = commandGroup.expectedFids.value( expectedFid );
+        }
         if ( !expectedLayer->changeGeometry( expectedFid, command.geometry ) )
         {
           reportRow( "cannot change expected feature geometry" );
@@ -1237,8 +1333,8 @@ void TestQgsGrassProvider::edit()
           reportRow( "cannot delete field from layer" );
           commandOk = false;
         }
-        QgsFeatureId expectedFid = commandGroup.expectedFids.value( command.fid );
-        if ( !expectedLayer->deleteAttribute( expectedFid ) )
+        int expectedIndex = expectedLayer->fields().indexFromName( command.field.name() );
+        if ( !expectedLayer->deleteAttribute( expectedIndex ) )
         {
           reportRow( "cannot delete field from expected layer" );
           commandOk = false;
@@ -1247,14 +1343,22 @@ void TestQgsGrassProvider::edit()
       }
       else if ( command.command == TestQgsGrassCommand::ChangeAttributeValue )
       {
-        QgsFeatureId fid = commandGroup.fids.value( command.fid );
+        QgsFeatureId fid = command.fid;
+        if ( commandGroup.fids.contains( fid ) )
+        {
+          fid = commandGroup.fids.value( fid );
+        }
         int index = grassLayer->fields().indexFromName( command.field.name() );
         if ( !grassLayer->changeAttributeValue( fid, index, command.value ) )
         {
           reportRow( "cannot change feature attribute" );
           commandOk = false;
         }
-        QgsFeatureId expectedFid = commandGroup.expectedFids.value( command.fid );
+        QgsFeatureId expectedFid = command.fid;
+        if ( commandGroup.expectedFids.contains( expectedFid ) )
+        {
+          expectedFid = commandGroup.expectedFids.value( expectedFid );
+        }
         int expectedIndex = expectedLayer->fields().indexFromName( command.field.name() );
         if ( !expectedLayer->changeAttributeValue( expectedFid, expectedIndex, command.value ) )
         {
@@ -1327,6 +1431,12 @@ void TestQgsGrassProvider::edit()
         reportRow( "command failed" );
         ok = false;
         break;
+      }
+
+      if ( !command.verify )
+      {
+        reportRow( "partial command not verified" );
+        continue;
       }
 
       if ( command.command != TestQgsGrassCommand::UndoAll && command.command != TestQgsGrassCommand::RedoAll )
