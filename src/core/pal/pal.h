@@ -27,8 +27,8 @@
  *
  */
 
-#ifndef _PAL_H
-#define _PAL_H
+#ifndef PAL_H
+#define PAL_H
 
 #include "qgsgeometry.h"
 #include <QList>

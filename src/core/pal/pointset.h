@@ -27,8 +27,8 @@
  *
  */
 
-#ifndef _POINTSET_H
-#define _POINTSET_H
+#ifndef POINTSET_H
+#define POINTSET_H
 
 #include "qgsgeometry.h"
 #include "rtree.hpp"

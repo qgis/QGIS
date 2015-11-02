@@ -27,8 +27,8 @@
  *
  */
 
-#ifndef _POINT_SET_H_
-#define _POINT_SET_H_
+#ifndef POINT_SET_H
+#define POINT_SET_H
 
 #if defined(_VERBOSE_) || (_DEBUG_) || (_DEBUG_FULL_)
 #include <iostream>

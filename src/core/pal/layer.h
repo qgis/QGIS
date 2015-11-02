@@ -27,8 +27,8 @@
  *
  */
 
-#ifndef _LAYER_H_
-#define _LAYER_H_
+#ifndef PAL_LAYER_H_
+#define PAL_LAYER_H_
 
 #include "pal.h"
 #include <QMutex>

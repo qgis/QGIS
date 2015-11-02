@@ -16,8 +16,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef _QGSVECTORFILEWRITER_H_
-#define _QGSVECTORFILEWRITER_H_
+#ifndef QGSVECTORFILEWRITER_H
+#define QGSVECTORFILEWRITER_H
 
 #include "qgsvectorlayer.h"
 #include "qgsfield.h"

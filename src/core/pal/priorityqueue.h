@@ -27,8 +27,8 @@
  *
  */
 
-#ifndef _PRIORITYQUEUE_H
-#define _PRIORITYQUEUE_H
+#ifndef PAL_PRIORITYQUEUE_H
+#define PAL_PRIORITYQUEUE_H
 
 #include <iostream>
 

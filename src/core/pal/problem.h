@@ -27,8 +27,8 @@
  *
  */
 
-#ifndef _PROBLEM_H
-#define _PROBLEM_H
+#ifndef PAL_PROBLEM_H
+#define PAL_PROBLEM_H
 
 #include "pal.h"
 #include "rtree.hpp"

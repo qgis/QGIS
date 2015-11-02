@@ -26,8 +26,8 @@
 
 /** \file */
 
-#ifndef __NMEA_TIME_H__
-#define __NMEA_TIME_H__
+#ifndef NMEA_TIME_H
+#define NMEA_TIME_H
 
 #include "config.h"
 
@@ -61,4 +61,4 @@ extern "C"
 }
 #endif
 
-#endif /* __NMEA_TIME_H__ */
+#endif /* NMEA_TIME_H */

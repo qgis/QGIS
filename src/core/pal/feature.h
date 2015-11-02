@@ -27,8 +27,8 @@
  *
  */
 
-#ifndef _FEATURE_H
-#define _FEATURE_H
+#ifndef FEATURE_H
+#define FEATURE_H
 
 #include "qgsgeometry.h"
 #include "pointset.h"

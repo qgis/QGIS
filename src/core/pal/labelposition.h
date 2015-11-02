@@ -27,8 +27,8 @@
  *
  */
 
-#ifndef _LABELPOSITION_H
-#define _LABELPOSITION_H
+#ifndef LABELPOSITION_H
+#define LABELPOSITION_H
 
 #include "pointset.h"
 #include "rtree.hpp"

@@ -4,8 +4,8 @@
  * \see QextSerialEnumerator
  */
 
-#ifndef _QEXTSERIALENUMERATOR_H_
-#define _QEXTSERIALENUMERATOR_H_
+#ifndef QEXTSERIALENUMERATOR_H
+#define QEXTSERIALENUMERATOR_H
 
 #include <QString>
 #include <QList>
@@ -205,4 +205,4 @@ Q_OBJECT
         void deviceRemoved( const QextPortInfo & info );
 };
 
-#endif /*_QEXTSERIALENUMERATOR_H_*/
+#endif /*QEXTSERIALENUMERATOR_H*/

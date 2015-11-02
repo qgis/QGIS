@@ -27,8 +27,8 @@
  *
  */
 
-#ifndef _PALSTAT_H_
-#define _PALSTAT_H_
+#ifndef PALSTAT_H
+#define PALSTAT_H
 
 #include <QStringList>
 
