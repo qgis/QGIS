@@ -62,10 +62,10 @@ void TestQgsRasterFileWriter::initTestCase()
   // disable any PAM stuff to make sure stats are consistent
   CPLSetConfigOption( "GDAL_PAM_ENABLED", "NO" );
   QString mySettings = QgsApplication::showSettings();
-  mySettings = mySettings.replace( "\n", "<br />" );
+  mySettings = mySettings.replace( '\n', "<br />" );
   //create some objects that will be used in all tests...
   //create a raster layer that will be used in all tests...
-  mTestDataDir = QString( TEST_DATA_DIR ) + "/"; //defined in CmakeLists.txt
+  mTestDataDir = QString( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
   mReport += "<h1>Raster File Writer Tests</h1>\n";
   mReport += "<p>" + mySettings + "</p>";
 }
@@ -104,7 +104,7 @@ bool TestQgsRasterFileWriter::writeTest( const QString& theRasterName )
 {
   mReport += "<h2>" + theRasterName + "</h2>\n";
 
-  QString myFileName = mTestDataDir + "/" + theRasterName;
+  QString myFileName = mTestDataDir + '/' + theRasterName;
   qDebug() << myFileName;
   QFileInfo myRasterFileInfo( myFileName );
 

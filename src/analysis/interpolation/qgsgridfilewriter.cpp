@@ -86,7 +86,7 @@ int QgsGridFileWriter::writeFile( bool showProgressDialog )
     {
       if ( mInterpolator->interpolatePoint( currentXValue, currentYValue, interpolatedValue ) == 0 )
       {
-        outStream << interpolatedValue << " ";
+        outStream << interpolatedValue << ' ';
       }
       else
       {
@@ -114,7 +114,7 @@ int QgsGridFileWriter::writeFile( bool showProgressDialog )
   QgsVectorLayer* vl = ld.vectorLayer;
   QString crs = vl->crs().toWkt();
   QFileInfo fi( mOutputFilePath );
-  QString fileName = fi.absolutePath() + "/" + fi.completeBaseName() + ".prj";
+  QString fileName = fi.absolutePath() + '/' + fi.completeBaseName() + ".prj";
   QFile prjFile( fileName );
   if ( !prjFile.open( QFile::WriteOnly ) )
   {

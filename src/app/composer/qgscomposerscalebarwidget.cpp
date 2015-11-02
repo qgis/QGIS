@@ -149,7 +149,7 @@ void QgsComposerScaleBarWidget::on_mMapComboBox_activated( const QString& text )
   //extract id
   int id;
   bool conversionOk;
-  QStringList textSplit = text.split( " " );
+  QStringList textSplit = text.split( ' ' );
   if ( textSplit.size() < 1 )
   {
     return;

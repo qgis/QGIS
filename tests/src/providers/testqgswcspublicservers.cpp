@@ -281,10 +281,10 @@ void TestQgsWcsPublicServers::test()
     myServerLog << "server:" + serverUrl;
     QString myServerDirName = serverUrl;
     myServerDirName.replace( QRegExp( "[:/]+" ), "." );
-    myServerDirName.replace( QRegExp( "\\.$" ), "" );
+    myServerDirName.remove( QRegExp( "\\.$" ) );
     QgsDebugMsg( "myServerDirName = " + myServerDirName );
 
-    QDir myServerDir( mCacheDir.absolutePath() + "/" + myServerDirName );
+    QDir myServerDir( mCacheDir.absolutePath() + '/' + myServerDirName );
 
     if ( !myServerDir.exists() )
     {
@@ -300,7 +300,7 @@ void TestQgsWcsPublicServers::test()
       myVersionLog << "version:" + version;
 
       QString myVersionDirName = "v" + version;
-      QString myVersionDirPath = myServerDir.absolutePath() + "/" + myVersionDirName;
+      QString myVersionDirPath = myServerDir.absolutePath() + '/' + myVersionDirName;
 
       QString myVersionLogPath = myVersionDirPath + "/version.log";
 
@@ -331,7 +331,7 @@ void TestQgsWcsPublicServers::test()
       if ( !myCapabilities.lastError().isEmpty() )
       {
         QgsDebugMsg( myCapabilities.lastError() );
-        myVersionLog << "error:" +  myCapabilities.lastError().replace( "\n", " " );
+        myVersionLog << "error:" +  myCapabilities.lastError().replace( '\n', ' ' );
         continue;
       }
 
@@ -372,7 +372,7 @@ void TestQgsWcsPublicServers::test()
         if ( myCoverageCount > mMaxCoverages ) break;
 
 
-        QString myPath = myVersionDirPath + "/" + myCoverage.identifier;
+        QString myPath = myVersionDirPath + '/' + myCoverage.identifier;
         QString myLogPath = myPath + ".log";
 
         if ( QFileInfo( myLogPath ).exists() && !mForce )
@@ -426,7 +426,7 @@ void TestQgsWcsPublicServers::test()
             Q_ASSERT( myGdalXmlFile.open( QIODevice::WriteOnly | QIODevice::Text ) );
             QTextStream myStream( &myGdalXmlFile );
             myStream << "<WCS_GDAL>\n";
-            myStream << "  <ServiceURL>" + serverUrl + "?" + "</ServiceURL>\n";
+            myStream << "  <ServiceURL>" + serverUrl + '?' + "</ServiceURL>\n";
             myStream << "  <CoverageName>" + myCoverage.identifier + "</CoverageName>\n";
             myStream << "  <Version>" + version + "</Version>\n";
             myStream << QString( "  <Timeout>%1</Timeout>\n" ).arg( mTimeout / 1000., 0, 'd' );
@@ -443,10 +443,10 @@ void TestQgsWcsPublicServers::test()
             myLog << provider + "_height:" + QString::number( myLayer->dataProvider()->ySize() );
             QgsRectangle extent = myLayer->dataProvider()->extent();
             myLog << provider + "_extent:"
-            + QgsRasterBlock::printValue( extent.xMinimum() ) + ","
-            + QgsRasterBlock::printValue( extent.yMinimum() ) + ","
-            + QgsRasterBlock::printValue( extent.xMaximum() ) + ","
-            + QgsRasterBlock::printValue( extent.yMaximum() ) + ",";
+            + QgsRasterBlock::printValue( extent.xMinimum() ) + ','
+            + QgsRasterBlock::printValue( extent.yMinimum() ) + ','
+            + QgsRasterBlock::printValue( extent.xMaximum() ) + ','
+            + QgsRasterBlock::printValue( extent.yMaximum() ) + ',';
             int myBandCount = myLayer->dataProvider()->bandCount();
             myLog << provider + "_bandCount:" + QString::number( myBandCount );
             if ( myBandCount > 0 )
@@ -580,7 +580,7 @@ void TestQgsWcsPublicServers::report()
   Q_FOREACH ( const QString& myServerDirName, mCacheDir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
   {
     myServerCount++;
-    QDir myServerDir( mCacheDir.absolutePath() + "/" + myServerDirName );
+    QDir myServerDir( mCacheDir.absolutePath() + '/' + myServerDirName );
 
     QString myServerLogPath = myServerDir.absolutePath() + "/server.log";
     QMap<QString, QString> myServerLog = readLog( myServerLogPath );
@@ -596,7 +596,7 @@ void TestQgsWcsPublicServers::report()
       myReport += "<br>Additional params: ";
       Q_FOREACH ( const QString& key, myServer.params.keys() )
       {
-        myReport += key + "=" + myServer.params.value( key ) + " ";
+        myReport += key + '=' + myServer.params.value( key ) + " ";
       }
       myReport += "<br>\n";
     }
@@ -612,7 +612,7 @@ void TestQgsWcsPublicServers::report()
       int myVersionErrCount = 0;
       int myVersionWarnCount = 0;
 
-      QString myVersionDirPath = myServerDir.absolutePath() + "/" + myVersionDirName;
+      QString myVersionDirPath = myServerDir.absolutePath() + '/' + myVersionDirName;
       QString myVersionLogPath = myVersionDirPath + "/version.log";
       QMap<QString, QString> myVersionLog = readLog( myVersionLogPath );
       QDir myVersionDir( myVersionDirPath );
@@ -643,7 +643,7 @@ void TestQgsWcsPublicServers::report()
           myVersionCoverageCount++;
           myCoverageCount++;
 
-          QString myLogPath = myVersionDir.absolutePath() + "/" + myLogFileName;
+          QString myLogPath = myVersionDir.absolutePath() + '/' + myLogFileName;
           QMap<QString, QString>myLog = readLog( myLogPath );
           myVersionReport += "<tr>";
 
@@ -662,7 +662,7 @@ void TestQgsWcsPublicServers::report()
           bool hasErr = false;
           Q_FOREACH ( const QString& provider, providers )
           {
-            QString imgPath = myVersionDir.absolutePath() + "/" + QFileInfo( myLogPath ).completeBaseName() + "-" + provider + ".png";
+            QString imgPath = myVersionDir.absolutePath() + '/' + QFileInfo( myLogPath ).completeBaseName() + "-" + provider + ".png";
 
 
             if ( !myLog.value( provider + "_error" ).isEmpty() )
@@ -698,7 +698,7 @@ void TestQgsWcsPublicServers::report()
               myValues << myLog.value( provider + "_crs" );
               myValues << myLog.value( provider + "_width" );
               myValues << myLog.value( provider + "_height" );
-              myValues << QString( myLog.value( provider + "_extent" ) ).replace( ",", "<br>" );
+              myValues << QString( myLog.value( provider + "_extent" ) ).replace( ',', "<br>" );
               myValues << "<img src='" + imgPath + "'>";
               myValues << myLog.value( provider + "_bandCount" );
               myValues << myLog.value( provider + "_srcType" );
@@ -765,7 +765,7 @@ void TestQgsWcsPublicServers::report()
   } // servers
 
   QString mySettings = QgsApplication::showSettings();
-  mySettings = mySettings.replace( "\n", "<br />" );
+  mySettings = mySettings.replace( '\n', "<br />" );
   QString myRep = "<h1>WCS public servers test</h1>\n";
   myRep += "<p>" + mySettings + "</p>";
 
@@ -801,9 +801,9 @@ QMap<QString, QString> TestQgsWcsPublicServers::readLog( const QString& theFileN
   if ( myFile.open( QIODevice::ReadOnly ) )
   {
     QTextStream myStream( &myFile );
-    Q_FOREACH ( const QString& row, myStream.readAll().split( "\n" ) )
+    Q_FOREACH ( const QString& row, myStream.readAll().split( '\n' ) )
     {
-      int sepIdx = row.indexOf( ":" );
+      int sepIdx = row.indexOf( ':' );
       myMap.insert( row.left( sepIdx ), row.mid( sepIdx + 1 ) );
     }
     myFile.close();

@@ -339,7 +339,7 @@ QString QgsRasterLayer::metadata()
   }
   else
   {
-    myMetadata += "*" + tr( "NoDataValue not set" ) + "*";
+    myMetadata += '*' + tr( "NoDataValue not set" ) + '*';
   }
   myMetadata += "</p>\n";
 

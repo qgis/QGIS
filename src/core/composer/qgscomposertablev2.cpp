@@ -940,7 +940,7 @@ bool QgsComposerTableV2::calculateMaxColumnWidths()
       if ( mColumns.at( col )->width() <= 0 )
       {
         //column width set to automatic, so check content size
-        QStringList multiLineSplit = ( *colIt ).toString().split( "\n" );
+        QStringList multiLineSplit = ( *colIt ).toString().split( '\n' );
         currentCellTextWidth = 0;
         Q_FOREACH ( const QString& line, multiLineSplit )
         {
@@ -1166,7 +1166,7 @@ bool QgsComposerTableV2::textRequiresWrapping( const QString& text, double colum
   if ( columnWidth == 0 || mWrapBehaviour != WrapText )
     return false;
 
-  QStringList multiLineSplit = text.split( "\n" );
+  QStringList multiLineSplit = text.split( '\n' );
   double currentTextWidth = 0;
   Q_FOREACH ( const QString& line, multiLineSplit )
   {
@@ -1178,14 +1178,14 @@ bool QgsComposerTableV2::textRequiresWrapping( const QString& text, double colum
 
 QString QgsComposerTableV2::wrappedText( const QString &value, double columnWidth, const QFont &font ) const
 {
-  QStringList lines = value.split( "\n" );
+  QStringList lines = value.split( '\n' );
   QStringList outLines;
   Q_FOREACH ( const QString& line, lines )
   {
     if ( textRequiresWrapping( line, columnWidth, font ) )
     {
       //first step is to identify words which must be on their own line (too long to fit)
-      QStringList words = line.split( " " );
+      QStringList words = line.split( ' ' );
       QStringList linesToProcess;
       QString wordsInCurrentLine;
       Q_FOREACH ( const QString& word, words )
@@ -1201,7 +1201,7 @@ QString QgsComposerTableV2::wrappedText( const QString &value, double columnWidt
         else
         {
           if ( !wordsInCurrentLine.isEmpty() )
-            wordsInCurrentLine.append( " " );
+            wordsInCurrentLine.append( ' ' );
           wordsInCurrentLine.append( word );
         }
       }
@@ -1211,7 +1211,7 @@ QString QgsComposerTableV2::wrappedText( const QString &value, double columnWidt
       Q_FOREACH ( const QString& line, linesToProcess )
       {
         QString remainingText = line;
-        int lastPos = remainingText.lastIndexOf( " " );
+        int lastPos = remainingText.lastIndexOf( ' ' );
         while ( lastPos > -1 )
         {
           if ( !textRequiresWrapping( remainingText.left( lastPos ), columnWidth, font ) )
@@ -1220,7 +1220,7 @@ QString QgsComposerTableV2::wrappedText( const QString &value, double columnWidt
             remainingText = remainingText.mid( lastPos + 1 );
             lastPos = 0;
           }
-          lastPos = remainingText.lastIndexOf( " ", lastPos - 1 );
+          lastPos = remainingText.lastIndexOf( ' ', lastPos - 1 );
         }
         outLines << remainingText;
       }

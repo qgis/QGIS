@@ -203,14 +203,14 @@ void QgsRasterFormatSaveOptionsWidget::updateProfiles()
 void QgsRasterFormatSaveOptionsWidget::updateOptions()
 {
   QString myOptions = mOptionsMap.value( currentProfileKey() );
-  QStringList myOptionsList = myOptions.trimmed().split( " ", QString::SkipEmptyParts );
+  QStringList myOptionsList = myOptions.trimmed().split( ' ', QString::SkipEmptyParts );
 
   if ( mOptionsStackedWidget->currentIndex() == 0 )
   {
     mOptionsTable->setRowCount( 0 );
     for ( int i = 0; i < myOptionsList.count(); i++ )
     {
-      QStringList key_value = myOptionsList[i].split( "=" );
+      QStringList key_value = myOptionsList[i].split( '=' );
       if ( key_value.count() == 2 )
       {
         mOptionsTable->insertRow( i );
@@ -397,7 +397,7 @@ void QgsRasterFormatSaveOptionsWidget::optionsTableChanged()
     value = mOptionsTable->item( i, 1 );
     if ( ! value  || value->text().isEmpty() )
       continue;
-    options += key->text() + "=" + value->text() + " ";
+    options += key->text() + '=' + value->text() + ' ';
   }
   options = options.trimmed();
   mOptionsMap[ currentProfileKey()] = options;
@@ -493,7 +493,7 @@ QString QgsRasterFormatSaveOptionsWidget::currentProfileKey() const
 
 QStringList QgsRasterFormatSaveOptionsWidget::options() const
 {
-  return mOptionsMap.value( currentProfileKey() ).trimmed().split( " ", QString::SkipEmptyParts );
+  return mOptionsMap.value( currentProfileKey() ).trimmed().split( ' ', QString::SkipEmptyParts );
 }
 
 QString QgsRasterFormatSaveOptionsWidget::createOptions( const QString& profileName ) const
@@ -539,7 +539,7 @@ void QgsRasterFormatSaveOptionsWidget::setCreateOptions( const QString& profileN
 QStringList QgsRasterFormatSaveOptionsWidget::profiles() const
 {
   QSettings mySettings;
-  return mySettings.value( mProvider + "/driverOptions/" + mFormat.toLower() + "/profiles", "" ).toString().trimmed().split( " ", QString::SkipEmptyParts );
+  return mySettings.value( mProvider + "/driverOptions/" + mFormat.toLower() + "/profiles", "" ).toString().trimmed().split( ' ', QString::SkipEmptyParts );
 }
 
 void QgsRasterFormatSaveOptionsWidget::swapOptionsUI( int newIndex )

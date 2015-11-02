@@ -304,7 +304,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList& commitErrors )
       QString list = "ERROR: Pending attribute deletes:";
       Q_FOREACH ( int idx, mDeletedAttributeIds )
       {
-        list.append( " " + L->pendingFields().at( idx ).name() );
+        list.append( ' ' + L->pendingFields().at( idx ).name() );
       }
       commitErrors << list;
 #endif
@@ -333,7 +333,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList& commitErrors )
       QString list = "ERROR: Pending adds:";
       Q_FOREACH ( QgsField f, mAddedAttributes )
       {
-        list.append( " " + f.name() );
+        list.append( ' ' + f.name() );
       }
       commitErrors << list;
 #endif
@@ -407,7 +407,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList& commitErrors )
         QString list = "ERROR: pending changes:";
         Q_FOREACH ( QgsFeatureId id, mChangedAttributeValues.keys() )
         {
-          list.append( "\n  " + FID_TO_STRING( id ) + "[" );
+          list.append( "\n  " + FID_TO_STRING( id ) + '[' );
           Q_FOREACH ( int idx, mChangedAttributeValues[ id ].keys() )
           {
             list.append( QString( " %1:%2" ).arg( L->pendingFields().at( idx ).name() ).arg( mChangedAttributeValues[id][idx].toString() ) );
@@ -446,7 +446,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList& commitErrors )
         QString list = "ERROR: pending deletes:";
         Q_FOREACH ( QgsFeatureId id, mDeletedFeatureIds )
         {
-          list.append( " " + FID_TO_STRING( id ) );
+          list.append( ' ' + FID_TO_STRING( id ) );
         }
         commitErrors << list;
 #endif
@@ -498,7 +498,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList& commitErrors )
           QString list = "ERROR: pending adds:";
           Q_FOREACH ( QgsFeature f, mAddedFeatures )
           {
-            list.append( " " + FID_TO_STRING( f.id() ) + "[" );
+            list.append( ' ' + FID_TO_STRING( f.id() ) + '[' );
             for ( int i = 0; i < L->pendingFields().size(); i++ )
             {
               list.append( QString( " %1:%2" ).arg( L->pendingFields().at( i ).name() ).arg( f.attributes()[i].toString() ) );
@@ -527,7 +527,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList& commitErrors )
     commitErrors << tr( "\n  Provider errors:" );
     Q_FOREACH ( QString e, provider->errors() )
     {
-      commitErrors << "    " + e.replace( "\n", "\n    " );
+      commitErrors << "    " + e.replace( '\n', "\n    " );
     }
     provider->clearErrors();
   }

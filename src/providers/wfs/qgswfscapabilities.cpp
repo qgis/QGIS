@@ -46,7 +46,7 @@ QgsWFSCapabilities::QgsWFSCapabilities( const QString& theUri )
 
   //make a GetCapabilities request
   //modify mUri to add '?' or '&' at the end if it is not already there
-  if ( !( mUri.contains( "?" ) ) )
+  if ( !( mUri.contains( '?' ) ) )
   {
     mUri.append( "?" );
   }
@@ -59,13 +59,13 @@ QgsWFSCapabilities::QgsWFSCapabilities( const QString& theUri )
 
 QString QgsWFSCapabilities::prepareUri( QString uri )
 {
-  if ( !uri.contains( "?" ) )
+  if ( !uri.contains( '?' ) )
   {
-    uri.append( "?" );
+    uri.append( '?' );
   }
   else if ( uri.right( 1 ) != "?" && uri.right( 1 ) != "&" )
   {
-    uri.append( "&" );
+    uri.append( '&' );
   }
 
   return uri;
@@ -92,7 +92,7 @@ QString QgsWFSCapabilities::uriGetFeature( const QString& typeName, QString crsS
   QString filterString;
 
   //if the xml comes from the dialog, it needs to be a string to pass the validity test
-  if ( filter.startsWith( "'" ) && filter.endsWith( "'" ) && filter.size() > 1 )
+  if ( filter.startsWith( '\'' ) && filter.endsWith( '\'' ) && filter.size() > 1 )
   {
     filter.chop( 1 );
     filter.remove( 0, 1 );

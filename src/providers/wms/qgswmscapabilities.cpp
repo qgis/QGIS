@@ -58,7 +58,7 @@ bool QgsWmsSettings::parseUri( const QString& uriString )
   QgsDebugMsg( "Entering: layers:" + mActiveSubLayers.join( ", " ) + ", styles:" + mActiveSubStyles.join( ", " ) );
 
   mImageMimeType = uri.param( "format" );
-  QgsDebugMsg( "Setting image encoding to " + mImageMimeType + "." );
+  QgsDebugMsg( "Setting image encoding to " + mImageMimeType + '.' );
 
   mMaxWidth = 0;
   mMaxHeight = 0;
@@ -79,9 +79,9 @@ bool QgsWmsSettings::parseUri( const QString& uriString )
   if ( uri.hasParam( "tileDimensions" ) )
   {
     mTiled = true;
-    Q_FOREACH ( const QString& param, uri.param( "tileDimensions" ).split( ";" ) )
+    Q_FOREACH ( const QString& param, uri.param( "tileDimensions" ).split( ';' ) )
     {
-      QStringList kv = param.split( "=" );
+      QStringList kv = param.split( '=' );
       if ( kv.size() == 1 )
       {
         mTileDimensionValues.insert( kv[0], QString::null );
@@ -1224,7 +1224,7 @@ void QgsWmsCapabilities::parseTileSetProfile( QDomElement const &e )
       }
       else if ( tagName == "Resolutions" )
       {
-        resolutions = e1.text().trimmed().split( " ", QString::SkipEmptyParts );
+        resolutions = e1.text().trimmed().split( ' ', QString::SkipEmptyParts );
       }
       else
       {
@@ -1316,7 +1316,7 @@ void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
 
       m.scaleDenom = e1.firstChildElement( "ScaleDenominator" ).text().toDouble();
 
-      QStringList topLeft = e1.firstChildElement( "TopLeftCorner" ).text().split( " " );
+      QStringList topLeft = e1.firstChildElement( "TopLeftCorner" ).text().split( ' ' );
       if ( topLeft.size() == 2 )
       {
         if ( invert )
@@ -1379,8 +1379,8 @@ void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
     QDomElement bbox = e0.firstChildElement( "ows:WGS84BoundingBox" );
     if ( !bbox.isNull() )
     {
-      QStringList ll = bbox.firstChildElement( "ows:LowerCorner" ).text().split( " " );
-      QStringList ur = bbox.firstChildElement( "ows:UpperCorner" ).text().split( " " );
+      QStringList ll = bbox.firstChildElement( "ows:LowerCorner" ).text().split( ' ' );
+      QStringList ur = bbox.firstChildElement( "ows:UpperCorner" ).text().split( ' ' );
 
       if ( ll.size() == 2 && ur.size() == 2 )
       {
@@ -1396,8 +1396,8 @@ void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
           !bbox.isNull();
           bbox = bbox.nextSiblingElement( "ows:BoundingBox" ) )
     {
-      QStringList ll = bbox.firstChildElement( "ows:LowerCorner" ).text().split( " " );
-      QStringList ur = bbox.firstChildElement( "ows:UpperCorner" ).text().split( " " );
+      QStringList ll = bbox.firstChildElement( "ows:LowerCorner" ).text().split( ' ' );
+      QStringList ur = bbox.firstChildElement( "ows:UpperCorner" ).text().split( ' ' );
 
       if ( ll.size() == 2 && ur.size() == 2 )
       {

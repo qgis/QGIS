@@ -78,7 +78,7 @@ QString QgsRasterCalcDialog::outputFile() const
     return outputFileName;
   }
 
-  return outputFileName + "." + it.value();
+  return outputFileName + '.' + it.value();
 }
 
 QString QgsRasterCalcDialog::outputFormat() const
@@ -146,7 +146,7 @@ void QgsRasterCalcDialog::insertAvailableRasterBands()
         QgsRasterCalculatorEntry entry;
         entry.raster = rlayer;
         entry.bandNumber = i + 1;
-        entry.ref = rlayer->name() + "@" + QString::number( i + 1 );
+        entry.ref = rlayer->name() + '@' + QString::number( i + 1 );
         mAvailableRasterBands.push_back( entry );
         mRasterBandsListWidget->addItem( entry.ref );
       }
@@ -450,8 +450,8 @@ QString QgsRasterCalcDialog::quoteBandEntry( const QString& layerName )
 {
   // '"' -> '\\"'
   QString quotedName = layerName;
-  quotedName.replace( "\"", "\\\"" );
-  quotedName.append( "\"" );
-  quotedName.prepend( "\"" );
+  quotedName.replace( '\"', "\\\"" );
+  quotedName.append( '\"' );
+  quotedName.prepend( '\"' );
   return quotedName;
 }

@@ -437,13 +437,13 @@ bool QgsWcsProvider::parseUri( const QString& uriString )
 
 QString QgsWcsProvider::prepareUri( QString uri ) const
 {
-  if ( !uri.contains( "?" ) )
+  if ( !uri.contains( '?' ) )
   {
-    uri.append( "?" );
+    uri.append( '?' );
   }
   else if ( uri.right( 1 ) != "?" && uri.right( 1 ) != "&" )
   {
-    uri.append( "&" );
+    uri.append( '&' );
   }
 
   return uri;
@@ -483,14 +483,14 @@ QString QgsWcsProvider::format() const
 
 void QgsWcsProvider::setFormat( QString const & format )
 {
-  QgsDebugMsg( "Setting format to " + format + "." );
+  QgsDebugMsg( "Setting format to " + format + '.' );
   mFormat = format;
 }
 
 
 void QgsWcsProvider::setCoverageCrs( QString const & crs )
 {
-  QgsDebugMsg( "Setting coverage CRS to " + crs + "." );
+  QgsDebugMsg( "Setting coverage CRS to " + crs + '.' );
 
   if ( crs != mCoverageCrs && !crs.isEmpty() )
   {
@@ -552,7 +552,7 @@ void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, in
     {
       QgsDebugMsg( "Cached does not have CRS" );
     }
-    QgsDebugMsg( "Cache CRS: " + cacheCrs.authid() + " " + cacheCrs.description() );
+    QgsDebugMsg( "Cache CRS: " + cacheCrs.authid() + ' ' + cacheCrs.description() );
 
     QgsRectangle cacheExtent = QgsGdalProviderBase::extent( mCachedGdalDataset );
     QgsDebugMsg( "viewExtent = " + viewExtent.toString() );
@@ -716,7 +716,7 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const & viewExtent, int
   {
     setQueryItem( url, "IDENTIFIER", mIdentifier );
     QString crsUrn = QString( "urn:ogc:def:crs:%1::%2" ).arg( crs.split( ':' ).value( 0 ), crs.split( ':' ).value( 1 ) );
-    bbox += "," + crsUrn;
+    bbox += ',' + crsUrn;
 
     if ( !mTime.isEmpty() )
     {
@@ -1039,10 +1039,10 @@ void QgsWcsProvider::parseServiceException( QDomElement const & e, const QString
   }
   else
   {
-    errorText = seCode + " " + tr( "(Unknown error code)" );
+    errorText = seCode + ' ' + tr( "(Unknown error code)" );
   }
 
-  errorText += "\n" + tr( "The WCS vendor also reported: " );
+  errorText += '\n' + tr( "The WCS vendor also reported: " );
   errorText += seText;
 
   QgsMessageLog::logMessage( tr( "composed error message '%1'." ).arg( errorText ), tr( "WCS" ) );
@@ -1159,7 +1159,7 @@ bool QgsWcsProvider::calculateExtent()
     {
       QgsDebugMsg( "Cached does not have CRS" );
     }
-    QgsDebugMsg( "Cache CRS: " + cacheCrs.authid() + " " + cacheCrs.description() );
+    QgsDebugMsg( "Cache CRS: " + cacheCrs.authid() + ' ' + cacheCrs.description() );
 
     // We can only verify extent if CRS is set
     // If dataset comes rotated, GDAL probably cuts latitude extend, disable
@@ -1624,7 +1624,7 @@ QMap<QString, QString> QgsWcsProvider::supportedMimes()
 
     desc = desc.isEmpty() ? mimeType : desc;
 
-    QgsDebugMsg( "add GDAL format " + mimeType + " " + desc );
+    QgsDebugMsg( "add GDAL format " + mimeType + ' ' + desc );
 
     mimes[mimeType] = desc;
   }

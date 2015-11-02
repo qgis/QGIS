@@ -305,7 +305,7 @@ QModelIndex QgsBrowserModel::findPath( QAbstractItemModel *model, const QString&
       }
 
       // paths are slash separated identifier
-      if ( path.startsWith( itemPath + "/" ) )
+      if ( path.startsWith( itemPath + '/' ) )
       {
         foundChild = true;
         theIndex = idx;

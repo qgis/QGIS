@@ -61,7 +61,7 @@ QgsVariantDelegate::QgsVariantDelegate( QObject* parent )
 
   mDateExp.setPattern( "([0-9]{,4})-([0-9]{,2})-([0-9]{,2})" );
   mTimeExp.setPattern( "([0-9]{,2}):([0-9]{,2}):([0-9]{,2})" );
-  mDateTimeExp.setPattern( mDateExp.pattern() + "T" + mTimeExp.pattern() );
+  mDateTimeExp.setPattern( mDateExp.pattern() + 'T' + mTimeExp.pattern() );
 }
 
 void QgsVariantDelegate::paint( QPainter* painter,
@@ -225,7 +225,7 @@ void QgsVariantDelegate::setModelData( QWidget* editor, QAbstractItemModel* mode
       value = QSize( mSizeExp.cap( 1 ).toInt(), mSizeExp.cap( 2 ).toInt() );
       break;
     case QVariant::StringList:
-      value = text.split( "," );
+      value = text.split( ',' );
       break;
     case QVariant::Time:
     {

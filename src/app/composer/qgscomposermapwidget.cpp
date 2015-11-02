@@ -1171,7 +1171,7 @@ bool QgsComposerMapWidget::hasPredefinedScales() const
     // default to global map tool scales
     QSettings settings;
     QString scalesStr( settings.value( "Map/scales", PROJECT_SCALES ).toString() );
-    QStringList myScalesList = scalesStr.split( "," );
+    QStringList myScalesList = scalesStr.split( ',' );
     return myScalesList.size() > 0 && myScalesList[0] != "";
   }
   return true;
@@ -2534,7 +2534,7 @@ void QgsComposerMapWidget::on_mOverviewFrameMapComboBox_currentIndexChanged( con
 
     //extract id
     bool conversionOk;
-    QStringList textSplit = text.split( " " );
+    QStringList textSplit = text.split( ' ' );
     if ( textSplit.size() < 1 )
     {
       return;

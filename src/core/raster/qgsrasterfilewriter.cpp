@@ -369,7 +369,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster(
         // No more parts, create VRT and return
         if ( mTiledMode )
         {
-          QString vrtFilePath( mOutputUrl + "/" + vrtFileName() );
+          QString vrtFilePath( mOutputUrl + '/' + vrtFileName() );
           writeVRT( vrtFilePath );
           if ( mBuildPyramidsFlag == QgsRaster::PyramidsFlagYes )
           {
@@ -604,7 +604,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
 
   if ( mTiledMode )
   {
-    QString vrtFilePath( mOutputUrl + "/" + vrtFileName() );
+    QString vrtFilePath( mOutputUrl + '/' + vrtFileName() );
     writeVRT( vrtFilePath );
     if ( mBuildPyramidsFlag == QgsRaster::PyramidsFlagYes )
     {
@@ -887,7 +887,7 @@ QgsRasterDataProvider* QgsRasterFileWriter::createPartProvider( const QgsRectang
   double mapBottom = mapTop - iterRows * mup;
   QgsRectangle mapRect( mapLeft, mapBottom, mapRight, mapTop );
 
-  QString outputFile = outputUrl + "/" + partFileName( fileIndex );
+  QString outputFile = outputUrl + '/' + partFileName( fileIndex );
 
   //geotransform
   double geoTransform[6];

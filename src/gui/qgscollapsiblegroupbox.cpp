@@ -193,7 +193,7 @@ void QgsCollapsibleGroupBoxBasic::setSyncGroup( const QString& grp )
   QString tipTxt;
   if ( !grp.isEmpty() )
   {
-    tipTxt = tr( "Ctrl (or Alt)-click to toggle all" ) + "\n" + tr( "Shift-click to expand, then collapse others" );
+    tipTxt = tr( "Ctrl (or Alt)-click to toggle all" ) + '\n' + tr( "Shift-click to expand, then collapse others" );
   }
   mCollapseButton->setToolTip( tipTxt );
 }
@@ -379,7 +379,7 @@ void QgsCollapsibleGroupBoxBasic::updateStyle()
   {
     ss += "QgsCollapsibleGroupBoxBasic, QgsCollapsibleGroupBox {";
     ss += QString( "  margin-top: %1px;" ).arg( topBuffer + ( usingQgsStyle ? rectTitle.height() + 5 : rectFrame.top() ) );
-    ss += "}";
+    ss += '}';
   }
   ss += "QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {";
   ss += "  subcontrol-origin: margin;";
@@ -392,7 +392,7 @@ void QgsCollapsibleGroupBoxBasic::updateStyle()
   {
     ss += "  background-color: rgba(0,0,0,0)";
   }
-  ss += "}";
+  ss += '}';
   setStyleSheet( ss );
 
   // clear toolbutton default background and border and apply offset
@@ -557,7 +557,7 @@ QString QgsCollapsibleGroupBox::saveKey() const
 {
   // save key for load/save state
   // currently QgsCollapsibleGroupBox/window()/object
-  QString saveKey = "/" + objectName();
+  QString saveKey = '/' + objectName();
   // QObject* parentWidget = parent();
   // while ( parentWidget != NULL )
   // {
@@ -567,7 +567,7 @@ QString QgsCollapsibleGroupBox::saveKey() const
   // if ( parent() != NULL )
   //   saveKey = "/" + parent()->objectName() + saveKey;
   QString setgrp = mSettingGroup.isEmpty() ? window()->objectName() : mSettingGroup;
-  saveKey = "/" + setgrp + saveKey;
+  saveKey = '/' + setgrp + saveKey;
   saveKey = "QgsCollapsibleGroupBox" + saveKey;
   return saveKey;
 }

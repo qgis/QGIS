@@ -144,11 +144,11 @@ void QgsGPSDetector::advance()
       return;
     }
 
-    if ( mPortList[ mPortIndex ].first.contains( ":" ) )
+    if ( mPortList[ mPortIndex ].first.contains( ':' ) )
     {
       mBaudIndex = mBaudList.size() - 1;
 
-      QStringList gpsParams = mPortList[ mPortIndex ].first.split( ":" );
+      QStringList gpsParams = mPortList[ mPortIndex ].first.split( ':' );
 
       Q_ASSERT( gpsParams.size() >= 3 );
 

@@ -33,11 +33,11 @@
 QString QgsGPSObject::xmlify( const QString& str )
 {
   QString tmp = str;
-  tmp.replace( "&", "&amp;" );
-  tmp.replace( "<", "&lt;" );
-  tmp.replace( ">", "&gt;" );
-  tmp.replace( "\"", "&quot;" );
-  tmp.replace( "\'", "&apos;" );
+  tmp.replace( '&', "&amp;" );
+  tmp.replace( '<', "&lt;" );
+  tmp.replace( '>', "&gt;" );
+  tmp.replace( '\"', "&quot;" );
+  tmp.replace( '\'', "&apos;" );
   return tmp;
 }
 

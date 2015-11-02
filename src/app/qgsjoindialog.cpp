@@ -169,6 +169,6 @@ void QgsJoinDialog::joinedLayerChanged( QgsMapLayer* layer )
 
   if ( !mUseCustomPrefix->isChecked() )
   {
-    mCustomPrefix->setText( layer->name() + "_" );
+    mCustomPrefix->setText( layer->name() + '_' );
   }
 }

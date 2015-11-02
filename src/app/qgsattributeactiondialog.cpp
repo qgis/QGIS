@@ -426,7 +426,7 @@ QString QgsAttributeActionDialog::uniqueName( QString name )
     while ( !unique )
     {
       QString suffix = QString::number( suffix_num );
-      new_name = name + "_" + suffix;
+      new_name = name + '_' + suffix;
       unique = true;
       for ( int i = 0; i < pos; ++i )
         if ( attributeActionTable->item( i, 0 )->text() == new_name )

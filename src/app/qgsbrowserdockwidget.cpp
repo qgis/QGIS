@@ -134,7 +134,7 @@ class QgsBrowserTreeFilterProxyModel : public QSortFilterProxyModel
       mREList.clear();
       if ( mPatternSyntax == "normal" )
       {
-        Q_FOREACH ( const QString& f, mFilter.split( "|" ) )
+        Q_FOREACH ( const QString& f, mFilter.split( '|' ) )
         {
           QRegExp rx( QString( "*%1*" ).arg( f.trimmed() ) );
           rx.setPatternSyntax( QRegExp::Wildcard );
@@ -144,7 +144,7 @@ class QgsBrowserTreeFilterProxyModel : public QSortFilterProxyModel
       }
       else if ( mPatternSyntax == "wildcard" )
       {
-        Q_FOREACH ( const QString& f, mFilter.split( "|" ) )
+        Q_FOREACH ( const QString& f, mFilter.split( '|' ) )
         {
           QRegExp rx( f.trimmed() );
           rx.setPatternSyntax( QRegExp::Wildcard );
@@ -403,7 +403,7 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem* item )
     QgsCoordinateReferenceSystem defaultCrs =
       QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs();
     if ( layerCrs == defaultCrs )
-      mNoticeLabel->setText( "NOTICE: Layer srs set from project (" + defaultCrs.authid() + ")" );
+      mNoticeLabel->setText( "NOTICE: Layer srs set from project (" + defaultCrs.authid() + ')' );
   }
 
   if ( mNoticeLabel->text().isEmpty() )

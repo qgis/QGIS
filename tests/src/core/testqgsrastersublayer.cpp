@@ -83,8 +83,8 @@ void TestQgsRasterSubLayer::initTestCase()
   // disable any PAM stuff to make sure stats are consistent
   CPLSetConfigOption( "GDAL_PAM_ENABLED", "NO" );
   QString mySettings = QgsApplication::showSettings();
-  mySettings = mySettings.replace( "\n", "<br />" );
-  mTestDataDir = QString( TEST_DATA_DIR ) + "/"; //defined in CmakeLists.txt
+  mySettings = mySettings.replace( '\n', "<br />" );
+  mTestDataDir = QString( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
 
   GDALAllRegister();
   QString format = "netCDF";

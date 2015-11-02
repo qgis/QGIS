@@ -120,9 +120,9 @@ QString QgsMimeDataUtils::encode( const QStringList& items )
   Q_FOREACH ( const QString& item, items )
   {
     QString str = item;
-    str.replace( "\\", "\\\\" );
-    str.replace( ":", "\\:" );
-    encoded += str + ":";
+    str.replace( '\\', "\\\\" );
+    str.replace( ':', "\\:" );
+    encoded += str + ':';
   }
   return encoded.left( encoded.length() - 1 );
 }

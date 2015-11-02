@@ -182,7 +182,7 @@ void QgsOWSSourceSelect::populateFormats()
   {
     QString format = layersFormats.value( i );
     QgsDebugMsg( "server format = " + format );
-    QString simpleFormat = format.toLower().replace( "image/", "" ).replace( QRegExp( "_.*" ), "" );
+    QString simpleFormat = format.toLower().remove( "image/" ).remove( QRegExp( "_.*" ) );
     QgsDebugMsg( "server simpleFormat = " + simpleFormat );
     QString mimeFormat = "image/" + formatsMap.value( simpleFormat );
     QgsDebugMsg( "server mimeFormat = " + mimeFormat );
@@ -199,7 +199,7 @@ void QgsOWSSourceSelect::populateFormats()
 
       if ( simpleFormat.contains( "tif" ) ) // prefer *tif*
       {
-        if ( preferred < 0 || simpleFormat.startsWith( "g" ) ) // prefer geotiff
+        if ( preferred < 0 || simpleFormat.startsWith( 'g' ) ) // prefer geotiff
         {
           preferred = i;
         }
@@ -245,7 +245,7 @@ void QgsOWSSourceSelect::populateConnectionList()
 }
 void QgsOWSSourceSelect::on_mNewButton_clicked()
 {
-  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, "/Qgis/connections-" + mService.toLower() + "/" );
+  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, "/Qgis/connections-" + mService.toLower() + '/' );
 
   if ( nc->exec() )
   {
@@ -258,7 +258,7 @@ void QgsOWSSourceSelect::on_mNewButton_clicked()
 
 void QgsOWSSourceSelect::on_mEditButton_clicked()
 {
-  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, "/Qgis/connections-" + mService.toLower() + "/", mConnectionsComboBox->currentText() );
+  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, "/Qgis/connections-" + mService.toLower() + '/', mConnectionsComboBox->currentText() );
 
   if ( nc->exec() )
   {
@@ -419,7 +419,7 @@ void QgsOWSSourceSelect::populateCRS()
   QgsDebugMsg( "Entered" );
   clearCRS();
   mSelectedLayersCRSs = selectedLayersCRSs().toSet();
-  mCRSLabel->setText( tr( "Coordinate Reference System (%n available)", "crs count", mSelectedLayersCRSs.count() ) + ":" );
+  mCRSLabel->setText( tr( "Coordinate Reference System (%n available)", "crs count", mSelectedLayersCRSs.count() ) + ':' );
 
   mChangeCRSButton->setDisabled( mSelectedLayersCRSs.isEmpty() );
 
@@ -456,7 +456,7 @@ void QgsOWSSourceSelect::populateCRS()
 
 void QgsOWSSourceSelect::clearCRS()
 {
-  mCRSLabel->setText( tr( "Coordinate Reference System" ) + ":" );
+  mCRSLabel->setText( tr( "Coordinate Reference System" ) + ':' );
   mSelectedCRS = "";
   mSelectedCRSLabel->setText( "" );
   mChangeCRSButton->setEnabled( false );

@@ -88,7 +88,7 @@ struct QgsPostgresLayerProperty
   QString   defaultName() const
   {
     QString n = tableName;
-    if ( nSpCols > 1 ) n += "." + geometryColName;
+    if ( nSpCols > 1 ) n += '.' + geometryColName;
     return n;
   }
 
@@ -122,14 +122,14 @@ struct QgsPostgresLayerProperty
     Q_FOREACH ( QGis::WkbType type, types )
     {
       if ( !typeString.isEmpty() )
-        typeString += "|";
+        typeString += '|';
       typeString += QString::number( type );
     }
     QString sridString;
     Q_FOREACH ( int srid, srids )
     {
       if ( !sridString.isEmpty() )
-        sridString += "|";
+        sridString += '|';
       sridString += QString::number( srid );
     }
 

@@ -229,8 +229,8 @@ bool QgsRectangle::isNull() const
 QString QgsRectangle::asWktCoordinates() const
 {
   QString rep =
-    qgsDoubleToString( xmin ) + " " + qgsDoubleToString( ymin ) + ", " +
-    qgsDoubleToString( xmax ) + " " + qgsDoubleToString( ymax );
+    qgsDoubleToString( xmin ) + ' ' + qgsDoubleToString( ymin ) + ", " +
+    qgsDoubleToString( xmax ) + ' ' + qgsDoubleToString( ymax );
 
   return rep;
 }
@@ -239,11 +239,11 @@ QString QgsRectangle::asWktPolygon() const
 {
   QString rep =
     QString( "POLYGON((" ) +
-    qgsDoubleToString( xmin ) + " " + qgsDoubleToString( ymin ) + ", " +
-    qgsDoubleToString( xmax ) + " " + qgsDoubleToString( ymin ) + ", " +
-    qgsDoubleToString( xmax ) + " " + qgsDoubleToString( ymax ) + ", " +
-    qgsDoubleToString( xmin ) + " " + qgsDoubleToString( ymax ) + ", " +
-    qgsDoubleToString( xmin ) + " " + qgsDoubleToString( ymin ) +
+    qgsDoubleToString( xmin ) + ' ' + qgsDoubleToString( ymin ) + ", " +
+    qgsDoubleToString( xmax ) + ' ' + qgsDoubleToString( ymin ) + ", " +
+    qgsDoubleToString( xmax ) + ' ' + qgsDoubleToString( ymax ) + ", " +
+    qgsDoubleToString( xmin ) + ' ' + qgsDoubleToString( ymax ) + ", " +
+    qgsDoubleToString( xmin ) + ' ' + qgsDoubleToString( ymin ) +
     QString( "))" );
 
   return rep;
@@ -308,11 +308,11 @@ QString QgsRectangle::asPolygon() const
   // NOTE: a polygon isn't a polygon unless its closed. In the case of
   //       a rectangle, that means 5 points (last == first)
   foo
-  << xmin << " " << ymin << ", "
-  << xmin << " " << ymax << ", "
-  << xmax << " " << ymax << ", "
-  << xmax << " " << ymin << ", "
-  << xmin << " " << ymin;
+  << xmin << ' ' << ymin << ", "
+  << xmin << ' ' << ymax << ", "
+  << xmax << ' ' << ymax << ", "
+  << xmax << ' ' << ymin << ", "
+  << xmin << ' ' << ymin;
 
   return rep;
 

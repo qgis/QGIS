@@ -190,7 +190,7 @@ void QgsCoordinateTransform::initialise()
   }
   if ( mSourceDatumTransform != -1 )
   {
-    sourceProjString += ( " " + datumTransformString( mSourceDatumTransform ) );
+    sourceProjString += ( ' ' + datumTransformString( mSourceDatumTransform ) );
   }
 
   pj_free( mDestinationProjection );
@@ -201,7 +201,7 @@ void QgsCoordinateTransform::initialise()
   }
   if ( mDestinationDatumTransform != -1 )
   {
-    destProjString += ( " " +  datumTransformString( mDestinationDatumTransform ) );
+    destProjString += ( ' ' +  datumTransformString( mDestinationDatumTransform ) );
   }
 
   if ( !useDefaultDatumTransform )
@@ -823,8 +823,8 @@ QList< QList< int > > QgsCoordinateTransform::datumTransformations( const QgsCoo
     return transformations;
   }
 
-  QStringList srcSplit = srcGeoId.split( ":" );
-  QStringList destSplit = destGeoId.split( ":" );
+  QStringList srcSplit = srcGeoId.split( ':' );
+  QStringList destSplit = destGeoId.split( ':' );
 
   if ( srcSplit.size() < 2 || destSplit.size() < 2 )
   {
@@ -881,7 +881,7 @@ QList< QList< int > > QgsCoordinateTransform::datumTransformations( const QgsCoo
 
 QString QgsCoordinateTransform::stripDatumTransform( const QString& proj4 )
 {
-  QStringList parameterSplit = proj4.split( "+", QString::SkipEmptyParts );
+  QStringList parameterSplit = proj4.split( '+', QString::SkipEmptyParts );
   QString currentParameter;
   QString newProjString;
 
@@ -891,9 +891,9 @@ QString QgsCoordinateTransform::stripDatumTransform( const QString& proj4 )
     if ( !currentParameter.startsWith( "towgs84", Qt::CaseInsensitive )
          && !currentParameter.startsWith( "nadgrids", Qt::CaseInsensitive ) )
     {
-      newProjString.append( "+" );
+      newProjString.append( '+' );
       newProjString.append( currentParameter );
-      newProjString.append( " " );
+      newProjString.append( ' ' );
     }
   }
   return newProjString;

@@ -55,7 +55,7 @@ void TestQgsGdalProvider::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  mTestDataDir = QString( TEST_DATA_DIR ) + "/"; //defined in CmakeLists.txt
+  mTestDataDir = QString( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
   mReport = "<h1>GDAL Provider Tests</h1>\n";
 }
 

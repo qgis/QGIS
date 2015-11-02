@@ -232,7 +232,7 @@ QString QgsAuthMethodRegistry::pluginList( bool asHtml ) const
     }
     else
     {
-      list += "\n";
+      list += '\n';
     }
 
     ++it;

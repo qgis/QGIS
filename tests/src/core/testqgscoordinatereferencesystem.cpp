@@ -241,7 +241,7 @@ void TestQgsCoordinateReferenceSystem::createFromESRIWkt()
     {
       // use ogr to open file, make sure CRS is ok
       // this probably could be in another test, but leaving it here since it deals with CRS
-      QString fileStr = QString( TEST_DATA_DIR ) + "/" + myFiles[i];
+      QString fileStr = QString( TEST_DATA_DIR ) + '/' + myFiles[i];
       QgsDebugMsg( QString( "i=%1 file=%2" ).arg( i ).arg( fileStr ) );
 
       QgsVectorLayer *myLayer = new QgsVectorLayer( fileStr, "", "ogr" );

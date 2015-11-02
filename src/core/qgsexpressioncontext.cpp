@@ -147,7 +147,7 @@ QStringList QgsExpressionContextScope::filteredVariableNames() const
   QStringList filtered;
   Q_FOREACH ( const QString& variable, allVariables )
   {
-    if ( variable.startsWith( "_" ) )
+    if ( variable.startsWith( '_' ) )
       continue;
 
     filtered << variable;
@@ -317,7 +317,7 @@ QStringList QgsExpressionContext::filteredVariableNames() const
   QStringList filtered;
   Q_FOREACH ( const QString& variable, allVariables )
   {
-    if ( variable.startsWith( "_" ) )
+    if ( variable.startsWith( '_' ) )
       continue;
 
     filtered << variable;

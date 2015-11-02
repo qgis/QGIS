@@ -169,7 +169,7 @@ static QgsOgrLayerItem* dataItemForLayer( QgsDataItem* parentItem, QString name,
 
     layerUri += "|layerid=" + QString::number( layerId );
 
-    path += "/" + name;
+    path += '/' + name;
   }
 
   QgsDebugMsgLevel( "OGR layer uri : " + layerUri, 2 );
@@ -318,7 +318,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
     if (( is_vsizip || is_vsitar ) && ( thePath != vsiPrefix + parentItem->path() ) )
     {
       name = thePath;
-      name = name.replace( vsiPrefix + parentItem->path() + "/", "" );
+      name = name.replace( vsiPrefix + parentItem->path() + '/', "" );
     }
     */
   }

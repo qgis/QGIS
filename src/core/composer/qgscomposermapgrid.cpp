@@ -1549,7 +1549,7 @@ QString QgsComposerMapGrid::gridAnnotationString( double value, QgsComposerMapGr
     annotationString = p.toDegreesMinutesSeconds( mGridAnnotationPrecision, true, true );
   }
 
-  QStringList split = annotationString.split( "," );
+  QStringList split = annotationString.split( ',' );
   if ( coord == QgsComposerMapGrid::Longitude )
   {
     return split.at( 0 );

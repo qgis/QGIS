@@ -160,7 +160,7 @@ QgsPostgresExpressionCompiler::Result QgsPostgresExpressionCompiler::compile( co
       QString right;
       Result rr( compile( n->opRight(), right ) );
 
-      result = left + " " + op + " " + right;
+      result = left + ' ' + op + ' ' + right;
       return ( lr == Complete && rr == Complete ) ? Complete : Fail;
     }
 

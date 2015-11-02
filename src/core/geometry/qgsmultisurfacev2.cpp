@@ -79,7 +79,7 @@ QString QgsMultiSurfaceV2::asJSON( int precision ) const
   {
     if ( dynamic_cast<const QgsSurfaceV2*>( geom ) )
     {
-      json += "[";
+      json += '[';
 
       QgsPolygonV2* polygon = static_cast<const QgsSurfaceV2*>( geom )->surfaceToPolygon();
 

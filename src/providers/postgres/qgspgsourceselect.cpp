@@ -633,7 +633,7 @@ QString QgsPgSourceSelect::fullDescription( const QString& schema, const QString
 {
   QString full_desc = "";
   if ( !schema.isEmpty() )
-    full_desc = QgsPostgresConn::quotedIdentifier( schema ) + ".";
+    full_desc = QgsPostgresConn::quotedIdentifier( schema ) + '.';
   full_desc += QgsPostgresConn::quotedIdentifier( table ) + " (" + column + ") " + type;
   return full_desc;
 }

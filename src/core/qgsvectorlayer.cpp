@@ -1547,7 +1547,7 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
 
       if ( it != layers.constEnd() && stuff.size() > 2 )
       {
-        lName += "." + stuff[2].mid( 2, stuff[2].length() - 3 );
+        lName += '.' + stuff[2].mid( 2, stuff[2].length() - 3 );
       }
 
       if ( !lName.isEmpty() )
@@ -3679,7 +3679,7 @@ QString QgsVectorLayer::metadata()
     //provider description
     myMetadata += "<p class=\"glossy\">" + tr( "Description of this provider" ) + "</p>\n";
     myMetadata += "<p>";
-    myMetadata += dataProvider()->description().replace( "\n", "<br>" );
+    myMetadata += dataProvider()->description().replace( '\n', "<br>" );
     myMetadata += "</p>\n";
   }
 
@@ -3714,7 +3714,7 @@ QString QgsVectorLayer::metadata()
     myMetadata += "<p>";
     Q_FOREACH ( int idx, pkAttrList )
     {
-      myMetadata += fields().at( idx ).name() + " ";
+      myMetadata += fields().at( idx ).name() + ' ';
     }
     myMetadata += "</p>\n";
   }

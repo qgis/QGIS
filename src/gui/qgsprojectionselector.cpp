@@ -173,7 +173,7 @@ QString QgsProjectionSelector::ogcWmsCrsFilterAsSqlExpression( QSet<QString> * c
 
   Q_FOREACH ( const QString& auth_id, crsFilter->values() )
   {
-    QStringList parts = auth_id.split( ":" );
+    QStringList parts = auth_id.split( ':' );
 
     if ( parts.size() < 2 )
       continue;
@@ -195,7 +195,7 @@ QString QgsProjectionSelector::ogcWmsCrsFilterAsSqlExpression( QSet<QString> * c
                              authParts[auth_name].join( "','" ) );
       prefix = " OR ";
     }
-    sqlExpression += ")";
+    sqlExpression += ')';
   }
 
   QgsDebugMsg( "exiting with '" + sqlExpression + "'." );
@@ -950,10 +950,10 @@ QStringList QgsProjectionSelector::authorities()
 const QString QgsProjectionSelector::sqlSafeString( const QString& theSQL )
 {
   QString retval = theSQL;
-  retval.replace( "\\", "\\\\" );
+  retval.replace( '\\', "\\\\" );
   retval.replace( '\"', "\\\"" );
-  retval.replace( "\'", "\\'" );
-  retval.replace( "%", "\\%" );
+  retval.replace( '\'', "\\'" );
+  retval.replace( '%', "\\%" );
   return retval;
 }
 

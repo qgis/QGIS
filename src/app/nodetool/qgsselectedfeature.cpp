@@ -201,7 +201,7 @@ void QgsSelectedFeature::addError( QgsGeometry::Error e )
 {
   mGeomErrors << e;
   if ( !mTip.isEmpty() )
-    mTip += "\n";
+    mTip += '\n';
   mTip += e.what();
 
   if ( e.hasWhere() )

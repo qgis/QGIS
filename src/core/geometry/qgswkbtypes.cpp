@@ -55,7 +55,7 @@ QgsWKBTypes::Type QgsWKBTypes::flatType( Type type )
 
 QgsWKBTypes::Type QgsWKBTypes::parseType( const QString &wktStr )
 {
-  QString typestr = wktStr.left( wktStr.indexOf( '(' ) ).simplified().replace( " ", "" );
+  QString typestr = wktStr.left( wktStr.indexOf( '(' ) ).simplified().remove( ' ' );
   Q_FOREACH ( const Type& type, entries()->keys() )
   {
     QMap< Type, wkbEntry >::const_iterator it = entries()->constFind( type );

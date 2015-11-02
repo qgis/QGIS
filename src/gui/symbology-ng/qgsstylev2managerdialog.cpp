@@ -769,7 +769,7 @@ void QgsStyleV2ManagerDialog::exportSelectedItemsImages( const QString& dir, con
   Q_FOREACH ( const QModelIndex& index, indexes )
   {
     QString name = index.data().toString();
-    QString path = dir + "/" + name + "." + format;
+    QString path = dir + '/' + name + '.' + format;
     QgsSymbolV2 *sym = mStyle->symbol( name );
     sym->exportImage( path, format, size );
   }
@@ -1187,7 +1187,7 @@ void QgsStyleV2ManagerDialog::tagsChanged()
   QStringList removetags;
 
   QStringList oldtags = mTagList;
-  QStringList newtags = tagsLineEdit->text().split( ",", QString::SkipEmptyParts );
+  QStringList newtags = tagsLineEdit->text().split( ',', QString::SkipEmptyParts );
 
   QgsStyleV2::StyleEntity type;
   if ( currentItemType() < 3 )

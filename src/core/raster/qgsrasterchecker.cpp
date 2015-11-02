@@ -62,8 +62,8 @@ bool QgsRasterChecker::runTest( const QString& theVerifiedKey, QString theVerifi
 
   if ( !ok ) return false;
 
-  mReport += QString( "Verified URI: %1<br>" ).arg( theVerifiedUri.replace( "&", "&amp;" ) );
-  mReport += QString( "Expected URI: %1<br>" ).arg( theExpectedUri.replace( "&", "&amp;" ) );
+  mReport += QString( "Verified URI: %1<br>" ).arg( theVerifiedUri.replace( '&', "&amp;" ) );
+  mReport += QString( "Expected URI: %1<br>" ).arg( theExpectedUri.replace( '&', "&amp;" ) );
 
   mReport += "<br>";
   mReport += QString( "<table style='%1'>\n" ).arg( mTabStyle );

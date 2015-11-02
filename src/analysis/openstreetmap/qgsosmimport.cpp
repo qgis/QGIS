@@ -141,10 +141,10 @@ bool QgsOSMXmlImport::createDatabase()
   if ( ret == SQLITE_OK && rows == 1 && columns == 1 )
   {
     QString version = QString::fromUtf8( results[1] );
-    QStringList parts = version.split( " ", QString::SkipEmptyParts );
+    QStringList parts = version.split( ' ', QString::SkipEmptyParts );
     if ( parts.size() >= 1 )
     {
-      QStringList verparts = parts[0].split( ".", QString::SkipEmptyParts );
+      QStringList verparts = parts[0].split( '.', QString::SkipEmptyParts );
       above41 = verparts.size() >= 2 && ( verparts[0].toInt() > 4 || ( verparts[0].toInt() == 4 && verparts[1].toInt() >= 1 ) );
     }
   }

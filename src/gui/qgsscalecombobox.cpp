@@ -51,7 +51,7 @@ void QgsScaleComboBox::updateScales( const QStringList &scales )
     QString myScales = settings.value( "Map/scales", PROJECT_SCALES ).toString();
     if ( !myScales.isEmpty() )
     {
-      myScalesList = myScales.split( "," );
+      myScalesList = myScales.split( ',' );
     }
   }
   else

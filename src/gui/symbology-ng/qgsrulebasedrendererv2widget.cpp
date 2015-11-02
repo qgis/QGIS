@@ -812,7 +812,7 @@ QVariant QgsRuleBasedRendererV2Model::data( const QModelIndex &index, int role )
               QString tip = "<p style='margin:0px;'><ul>";
               Q_FOREACH ( QgsRuleBasedRendererV2::Rule* duplicateRule, mFeatureCountMap[rule].duplicateCountMap.keys() )
               {
-                QString label = duplicateRule->label().replace( "&", "&amp;" ).replace( ">", "&gt;" ).replace( "<", "&lt;" );
+                QString label = duplicateRule->label().replace( '&', "&amp;" ).replace( '>', "&gt;" ).replace( '<', "&lt;" );
                 tip += tr( "<li><nobr>%1 features also in rule %2</nobr></li>" ).arg( mFeatureCountMap[rule].duplicateCountMap[duplicateRule] ).arg( label );
               }
               tip += "</ul>";

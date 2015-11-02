@@ -103,7 +103,7 @@ bool QgsPythonUtilsImpl::checkSystemImports()
 
   // import SIP
   if ( !runString( "import sip",
-                   QObject::tr( "Couldn't load SIP module." ) + "\n" + QObject::tr( "Python support will be disabled." ) ) )
+                   QObject::tr( "Couldn't load SIP module." ) + '\n' + QObject::tr( "Python support will be disabled." ) ) )
   {
     return false;
   }
@@ -114,7 +114,7 @@ bool QgsPythonUtilsImpl::checkSystemImports()
   Q_FOREACH ( const QString& clsName, apiV2classes )
   {
     if ( !runString( QString( "sip.setapi('%1', 2)" ).arg( clsName ),
-                     QObject::tr( "Couldn't set SIP API versions." ) + "\n" + QObject::tr( "Python support will be disabled." ) ) )
+                     QObject::tr( "Couldn't set SIP API versions." ) + '\n' + QObject::tr( "Python support will be disabled." ) ) )
     {
       return false;
     }
@@ -122,28 +122,28 @@ bool QgsPythonUtilsImpl::checkSystemImports()
 
   // import Qt bindings
   if ( !runString( "from PyQt4 import QtCore, QtGui",
-                   QObject::tr( "Couldn't load PyQt4." ) + "\n" + QObject::tr( "Python support will be disabled." ) ) )
+                   QObject::tr( "Couldn't load PyQt4." ) + '\n' + QObject::tr( "Python support will be disabled." ) ) )
   {
     return false;
   }
 
   // import QGIS bindings
-  QString error_msg = QObject::tr( "Couldn't load PyQGIS." ) + "\n" + QObject::tr( "Python support will be disabled." );
+  QString error_msg = QObject::tr( "Couldn't load PyQGIS." ) + '\n' + QObject::tr( "Python support will be disabled." );
   if ( !runString( "from qgis.core import *", error_msg ) || !runString( "from qgis.gui import *", error_msg ) )
   {
     return false;
   }
 
   // import QGIS utils
-  error_msg = QObject::tr( "Couldn't load QGIS utils." ) + "\n" + QObject::tr( "Python support will be disabled." );
+  error_msg = QObject::tr( "Couldn't load QGIS utils." ) + '\n' + QObject::tr( "Python support will be disabled." );
   if ( !runString( "import qgis.utils", error_msg ) )
   {
     return false;
   }
 
   // tell the utils script where to look for the plugins
-  runString( "qgis.utils.plugin_paths = [" + pluginpaths.join( "," ) + "]" );
-  runString( "qgis.utils.sys_plugin_path = \"" + pluginsPath() + "\"" );
+  runString( "qgis.utils.plugin_paths = [" + pluginpaths.join( "," ) + ']' );
+  runString( "qgis.utils.sys_plugin_path = \"" + pluginsPath() + '\"' );
   runString( "qgis.utils.home_plugin_path = " + homePluginsPath() );
 
 #ifdef Q_OS_WIN
@@ -179,7 +179,7 @@ void QgsPythonUtilsImpl::finish()
 bool QgsPythonUtilsImpl::checkQgisUser()
 {
   // import QGIS user
-  QString error_msg = QObject::tr( "Couldn't load qgis.user." ) + "\n" + QObject::tr( "Python support will be disabled." );
+  QString error_msg = QObject::tr( "Couldn't load qgis.user." ) + '\n' + QObject::tr( "Python support will be disabled." );
   if ( !runString( "import qgis.user", error_msg ) )
   {
     // Should we really bail because of this?!
@@ -204,7 +204,7 @@ void QgsPythonUtilsImpl::initPython( QgisInterface* interface )
     return;
   }
   // initialize 'iface' object
-  runString( "qgis.utils.initInterface(" + QString::number(( unsigned long ) interface ) + ")" );
+  runString( "qgis.utils.initInterface(" + QString::number(( unsigned long ) interface ) + ')' );
   if ( !checkQgisUser() )
   {
     exitPython();
@@ -227,14 +227,14 @@ void QgsPythonUtilsImpl::initServerPython( QgsServerInterface* interface )
 
   // This is the main difference with initInterface() for desktop plugins
   // import QGIS Server bindings
-  QString error_msg = QObject::tr( "Couldn't load PyQGIS Server." ) + "\n" + QObject::tr( "Python support will be disabled." );
+  QString error_msg = QObject::tr( "Couldn't load PyQGIS Server." ) + '\n' + QObject::tr( "Python support will be disabled." );
   if ( !runString( "from qgis.server import *", error_msg ) )
   {
     return;
   }
 
   // This is the other main difference with initInterface() for desktop plugins
-  runString( "qgis.utils.initServerInterface(" + QString::number(( unsigned long ) interface ) + ")" );
+  runString( "qgis.utils.initServerInterface(" + QString::number(( unsigned long ) interface ) + ')' );
 
   doUserImports();
   finish();
@@ -317,7 +317,7 @@ bool QgsPythonUtilsImpl::runString( const QString& command, QString msgOnError, 
                 + QObject::tr( "Python version:" ) + "<br>" + version + "<br><br>"
                 + QObject::tr( "QGIS version:" ) + "<br>" + QString( "%1 '%2', %3" ).arg( QGis::QGIS_VERSION, QGis::QGIS_RELEASE_NAME, QGis::QGIS_DEV_VERSION ) + "<br><br>"
                 + QObject::tr( "Python path:" ) + "<br>" + path;
-  str.replace( "\n", "<br>" ).replace( "  ", "&nbsp; " );
+  str.replace( '\n', "<br>" ).replace( "  ", "&nbsp; " );
 
   QgsMessageOutput* msg = QgsMessageOutput::createMessageOutput();
   msg->setTitle( QObject::tr( "Python error" ) );

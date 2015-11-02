@@ -82,7 +82,7 @@ QVariant QgsValueRelationWidgetWrapper::value()
         selection << item->data( Qt::UserRole ).toString();
     }
 
-    v = selection.join( "," ).prepend( "{" ).append( "}" );
+    v = selection.join( "," ).prepend( '{' ).append( '}' );
   }
 
   if ( mLineEdit )
@@ -173,7 +173,7 @@ void QgsValueRelationWidgetWrapper::setValue( const QVariant& value )
 {
   if ( mListWidget )
   {
-    QStringList checkList = value.toString().remove( QChar( '{' ) ).remove( QChar( '}' ) ).split( "," );
+    QStringList checkList = value.toString().remove( QChar( '{' ) ).remove( QChar( '}' ) ).split( ',' );
 
     for ( int i = 0; i < mListWidget->count(); ++i )
     {

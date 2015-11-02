@@ -244,7 +244,7 @@ void QgsGeorefPluginGui::openRaster()
   QSettings s;
   QString dir = s.value( "/Plugin-GeoReferencer/rasterdirectory" ).toString();
   if ( dir.isEmpty() )
-    dir = ".";
+    dir = '.';
 
   QString otherFiles = tr( "All other files (*)" );
   QString lastUsedFilter = s.value( "/Plugin-GeoReferencer/lastusedfilter", otherFiles ).toString();
@@ -264,7 +264,7 @@ void QgsGeorefPluginGui::openRaster()
     QString msg = tr( "%1 is not a supported raster data source" ).arg( mRasterFileName );
 
     if ( errMsg.size() > 0 )
-      msg += "\n" + errMsg;
+      msg += '\n' + errMsg;
 
     QMessageBox::information( this, tr( "Unsupported Data Source" ), msg );
     return;
@@ -1243,12 +1243,12 @@ bool QgsGeorefPluginGui::loadGCPs( /*bool verbose*/ )
     if ( line.contains( QRegExp( "," ) ) ) // in previous format "\t" is delimiter of points in new - ","
     {
       // points from new georeferencer
-      ls = line.split( "," );
+      ls = line.split( ',' );
     }
     else
     {
       // points from prev georeferencer
-      ls = line.split( "\t" );
+      ls = line.split( '\t' );
     }
 
     if ( ls.count() < 4 )
@@ -1803,16 +1803,16 @@ void QgsGeorefPluginGui::updateTransformParamLabel()
   double scaleX, scaleY, rotation;
   if ( mGeorefTransform.getOriginScaleRotation( origin, scaleX, scaleY, rotation ) )
   {
-    labelString += " ";
-    labelString += tr( "Translation (%1, %2)" ).arg( origin.x() ).arg( origin.y() ); labelString += " ";
-    labelString += tr( "Scale (%1, %2)" ).arg( scaleX ).arg( scaleY ); labelString += " ";
+    labelString += ' ';
+    labelString += tr( "Translation (%1, %2)" ).arg( origin.x() ).arg( origin.y() ); labelString += ' ';
+    labelString += tr( "Scale (%1, %2)" ).arg( scaleX ).arg( scaleY ); labelString += ' ';
     labelString += tr( "Rotation: %1" ).arg( rotation * 180 / M_PI );
   }
 
   double meanError = 0;
   if ( calculateMeanError( meanError ) )
   {
-    labelString += " ";
+    labelString += ' ';
     labelString += tr( "Mean error: %1" ).arg( meanError );
   }
   mTransformParamLabel->setText( labelString );
@@ -1821,7 +1821,7 @@ void QgsGeorefPluginGui::updateTransformParamLabel()
 // Gdal script
 void QgsGeorefPluginGui::showGDALScript( const QStringList& commands )
 {
-  QString script = commands.join( "\n" ) + "\n";
+  QString script = commands.join( "\n" ) + '\n';
 
   // create window to show gdal script
   QDialogButtonBox *bbxGdalScript = new QDialogButtonBox( QDialogButtonBox::Cancel, Qt::Horizontal, this );
@@ -1868,7 +1868,7 @@ QString QgsGeorefPluginGui::generateGDALtranslateCommand( bool generateTFW )
   }
 
   QFileInfo rasterFileInfo( mRasterFileName );
-  mTranslatedRasterFileName = QDir::tempPath() + "/" + rasterFileInfo.fileName();
+  mTranslatedRasterFileName = QDir::tempPath() + '/' + rasterFileInfo.fileName();
   gdalCommand << QString( "\"%1\"" ).arg( mRasterFileName ) << QString( "\"%1\"" ).arg( mTranslatedRasterFileName );
 
   return gdalCommand.join( " " );

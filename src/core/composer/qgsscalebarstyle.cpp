@@ -96,7 +96,7 @@ void QgsScaleBarStyle::drawLabels( QPainter* p ) const
   {
     currentNumericLabel = QString::number( currentLabelNumber / mScaleBar->numMapUnitsPerScaleBarUnit() );
     QgsComposerUtils::drawText( p, QPointF( segmentInfo.last().first + mScaleBar->segmentMillimeters() - QgsComposerUtils::textWidthMM( mScaleBar->font(), currentNumericLabel ) / 2 + xOffset, QgsComposerUtils::fontAscentMM( mScaleBar->font() ) + mScaleBar->boxContentSpace() ),
-                                currentNumericLabel + " " + mScaleBar->unitLabeling(), mScaleBar->font(), mScaleBar->fontColor() );
+                                currentNumericLabel + ' ' + mScaleBar->unitLabeling(), mScaleBar->font(), mScaleBar->fontColor() );
   }
 
   p->restore();
@@ -116,7 +116,7 @@ QRectF QgsScaleBarStyle::calculateBoxSize() const
 
   double largestLabelNumber = mScaleBar->numSegments() * mScaleBar->numUnitsPerSegment() / mScaleBar->numMapUnitsPerScaleBarUnit();
   QString largestNumberLabel = QString::number( largestLabelNumber );
-  QString largestLabel = QString::number( largestLabelNumber ) + " " + mScaleBar->unitLabeling();
+  QString largestLabel = QString::number( largestLabelNumber ) + ' ' + mScaleBar->unitLabeling();
   double largestLabelWidth = QgsComposerUtils::textWidthMM( mScaleBar->font(), largestLabel ) - QgsComposerUtils::textWidthMM( mScaleBar->font(), largestNumberLabel ) / 2;
 
   double totalBarLength = 0.0;

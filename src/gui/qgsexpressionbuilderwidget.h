@@ -128,9 +128,9 @@ class QgsExpressionItemSearchProxy : public QSortFilterProxyModel
       QString rightString = sourceModel()->data( right, Qt::DisplayRole ).toString();
 
       //ignore $ prefixes when sorting
-      if ( leftString.startsWith( "$" ) )
+      if ( leftString.startsWith( '$' ) )
         leftString = leftString.mid( 1 );
-      if ( rightString.startsWith( "$" ) )
+      if ( rightString.startsWith( '$' ) )
         rightString = rightString.mid( 1 );
 
       return QString::localeAwareCompare( leftString, rightString ) < 0;

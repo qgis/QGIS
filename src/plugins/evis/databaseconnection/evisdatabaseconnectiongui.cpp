@@ -289,7 +289,7 @@ void eVisDatabaseConnectionGui::on_pbtnConnect_clicked()
       lblConnectionStatus->setText( tr( "connected" ) );
 
       //List the tables in the database
-      teditConsole->append( tr( "Tables" ) + ":" );
+      teditConsole->append( tr( "Tables" ) + ':' );
       QStringList myTableList = mDatabaseConnection->tables();
       for ( int myIterator = 0; myIterator < myTableList.size(); myIterator++ )
       {

@@ -42,7 +42,7 @@ PGconn *QgsPgUtil::connection()
 QString QgsPgUtil::quotedIdentifier( QString ident )
 {
   ident.replace( '"', "\"\"" );
-  return ident.prepend( "\"" ).append( "\"" );
+  return ident.prepend( '\"' ).append( '\"' );
 }
 
 QString QgsPgUtil::quotedValue( QString value )
@@ -51,6 +51,6 @@ QString QgsPgUtil::quotedValue( QString value )
     return "NULL";
 
   // FIXME: use PQescapeStringConn
-  value.replace( "'", "''" );
-  return value.prepend( "'" ).append( "'" );
+  value.replace( '\'', "''" );
+  return value.prepend( '\'' ).append( '\'' );
 }

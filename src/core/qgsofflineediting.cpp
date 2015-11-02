@@ -109,7 +109,7 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString& offlineDataPath,
             QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer(( *it ).joinLayerId ) );
 
             if ( vl )
-              ( *it ).prefix = vl->name() + "_";
+              ( *it ).prefix = vl->name() + '_';
           }
           ++it;
         }
@@ -334,10 +334,10 @@ void QgsOfflineEditing::initializeSpatialMetadata( sqlite3 *sqlite_handle )
   if ( ret == SQLITE_OK && rows == 1 && columns == 1 )
   {
     QString version = QString::fromUtf8( results[1] );
-    QStringList parts = version.split( " ", QString::SkipEmptyParts );
+    QStringList parts = version.split( ' ', QString::SkipEmptyParts );
     if ( parts.size() >= 1 )
     {
-      QStringList verparts = parts[0].split( ".", QString::SkipEmptyParts );
+      QStringList verparts = parts[0].split( '.', QString::SkipEmptyParts );
       above41 = verparts.size() >= 2 && ( verparts[0].toInt() > 4 || ( verparts[0].toInt() == 4 && verparts[1].toInt() >= 1 ) );
     }
   }
@@ -488,9 +488,9 @@ QgsVectorLayer* QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlit
     }
 
     sql += delim + QString( "'%1' %2" ).arg( fields[idx].name(), dataType );
-    delim = ",";
+    delim = ',';
   }
-  sql += ")";
+  sql += ')';
 
   int rc = sqlExec( db, sql );
 

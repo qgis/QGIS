@@ -283,14 +283,14 @@ void QgsBookmarks::importFromXML()
                "  VALUES (NULL,"
                "'" + name.text() + "',"
                "'" + prjname.text() + "',"
-               + xmin.text() + ","
-               + ymin.text() + ","
-               + xmax.text() + ","
-               + ymax.text() + ","
+               + xmin.text() + ','
+               + ymin.text() + ','
+               + xmax.text() + ','
+               + ymax.text() + ','
                + srid.text() + ");";
   }
 
-  QStringList queriesList = queries.split( ";" );
+  QStringList queriesList = queries.split( ';' );
   QSqlQuery query( model->database() );
 
   Q_FOREACH ( const QString& queryTxt, queriesList )

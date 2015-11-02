@@ -219,15 +219,15 @@ QString QgsCompoundCurveV2::asWkt( int precision ) const
     if ( dynamic_cast<const QgsLineStringV2*>( curve ) )
     {
       // Type names of linear geometries are omitted
-      childWkt = childWkt.mid( childWkt.indexOf( "(" ) );
+      childWkt = childWkt.mid( childWkt.indexOf( '(' ) );
     }
-    wkt += childWkt + ",";
+    wkt += childWkt + ',';
   }
-  if ( wkt.endsWith( "," ) )
+  if ( wkt.endsWith( ',' ) )
   {
     wkt.chop( 1 );
   }
-  wkt += ")";
+  wkt += ')';
   return wkt;
 }
 

@@ -211,15 +211,15 @@ QString QgsDelimitedTextSourceSelect::selectedChars()
 {
   QString chars = "";
   if ( cbxDelimComma->isChecked() )
-    chars.append( "," );
+    chars.append( ',' );
   if ( cbxDelimSpace->isChecked() )
-    chars.append( " " );
+    chars.append( ' ' );
   if ( cbxDelimTab->isChecked() )
-    chars.append( "\t" );
+    chars.append( '\t' );
   if ( cbxDelimSemicolon->isChecked() )
-    chars.append( ";" );
+    chars.append( ';' );
   if ( cbxDelimColon->isChecked() )
-    chars.append( ":" );
+    chars.append( ':' );
   chars = QgsDelimitedTextFile::encodeChars( chars );
   chars.append( txtDelimiterOther->text() );
   return chars;
@@ -227,11 +227,11 @@ QString QgsDelimitedTextSourceSelect::selectedChars()
 void QgsDelimitedTextSourceSelect::setSelectedChars( const QString& delimiters )
 {
   QString chars = QgsDelimitedTextFile::decodeChars( delimiters );
-  cbxDelimComma->setChecked( chars.contains( "," ) );
-  cbxDelimSpace->setChecked( chars.contains( " " ) );
-  cbxDelimTab->setChecked( chars.contains( "\t" ) );
-  cbxDelimColon->setChecked( chars.contains( ":" ) );
-  cbxDelimSemicolon->setChecked( chars.contains( ";" ) );
+  cbxDelimComma->setChecked( chars.contains( ',' ) );
+  cbxDelimSpace->setChecked( chars.contains( ' ' ) );
+  cbxDelimTab->setChecked( chars.contains( '\t' ) );
+  cbxDelimColon->setChecked( chars.contains( ':' ) );
+  cbxDelimSemicolon->setChecked( chars.contains( ';' ) );
   chars = chars.remove( QRegExp( "[ ,:;\t]" ) );
   chars = QgsDelimitedTextFile::encodeChars( chars );
   txtDelimiterOther->setText( chars );
@@ -244,7 +244,7 @@ void QgsDelimitedTextSourceSelect::loadSettings( const QString& subkey, bool loa
   // at startup, fetch the last used delimiter and directory from
   // settings
   QString key = mPluginKey;
-  if ( ! subkey.isEmpty() ) key.append( "/" ).append( subkey );
+  if ( ! subkey.isEmpty() ) key.append( '/' ).append( subkey );
 
   // and how to use the delimiter
   QString delimiterType = settings.value( key + "/delimiterType", "" ).toString();
@@ -277,7 +277,7 @@ void QgsDelimitedTextSourceSelect::loadSettings( const QString& subkey, bool loa
   cbxUseHeader->setChecked( settings.value( key + "/useHeader", "true" ) != "false" );
   cbxTrimFields->setChecked( settings.value( key + "/trimFields", "false" ) == "true" );
   cbxSkipEmptyFields->setChecked( settings.value( key + "/skipEmptyFields", "false" ) == "true" );
-  cbxPointIsComma->setChecked( settings.value( key + "/decimalPoint", "." ).toString().contains( "," ) );
+  cbxPointIsComma->setChecked( settings.value( key + "/decimalPoint", "." ).toString().contains( ',' ) );
   cbxSubsetIndex->setChecked( settings.value( key + "/subsetIndex", "false" ) == "true" );
   cbxSpatialIndex->setChecked( settings.value( key + "/spatialIndex", "false" ) == "true" );
   cbxWatchFile->setChecked( settings.value( key + "/watchFile", "false" ) == "true" );
@@ -298,7 +298,7 @@ void QgsDelimitedTextSourceSelect::saveSettings( const QString& subkey, bool sav
 {
   QSettings settings;
   QString key = mPluginKey;
-  if ( ! subkey.isEmpty() ) key.append( "/" ).append( subkey );
+  if ( ! subkey.isEmpty() ) key.append( '/' ).append( subkey );
   settings.setValue( key + "/encoding", cmbEncoding->currentText() );
   settings.setValue( key + "/geometry", saveGeometry() );
 
@@ -460,7 +460,7 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
           bool ok = true;
           if ( cbxPointIsComma->isChecked() )
           {
-            value.replace( ",", "." );
+            value.replace( ',', '.' );
           }
           if ( xyDms )
           {
@@ -690,7 +690,7 @@ bool QgsDelimitedTextSourceSelect::validate()
     {
       message = tr( "Regular expression is not valid" );
     }
-    else if ( re.pattern().startsWith( "^" ) && re.captureCount() == 0 )
+    else if ( re.pattern().startsWith( '^' ) && re.captureCount() == 0 )
     {
       message = tr( "^.. expression needs capture groups" );
     }
@@ -711,7 +711,7 @@ bool QgsDelimitedTextSourceSelect::validate()
     message = tr( "No data found in file" );
     if ( mBadRowCount > 0 )
     {
-      message = message + " (" + tr( "%1 badly formatted records discarded" ).arg( mBadRowCount ) + ")";
+      message = message + " (" + tr( "%1 badly formatted records discarded" ).arg( mBadRowCount ) + ')';
     }
   }
   else if ( geomTypeXY->isChecked() && ( cmbXField->currentText().isEmpty()  || cmbYField->currentText().isEmpty() ) )

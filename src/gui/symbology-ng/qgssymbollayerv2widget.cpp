@@ -138,10 +138,10 @@ QString QgsSymbolLayerV2Widget::dataDefinedPropertyLabel( const QString &entryNa
       switch ( layer->scaleMethod() )
       {
         case QgsSymbolV2::ScaleArea:
-          label += " (" + tr( "area" ) + ")";
+          label += " (" + tr( "area" ) + ')';
           break;
         case QgsSymbolV2::ScaleDiameter:
-          label += " (" + tr( "diameter" ) + ")";
+          label += " (" + tr( "diameter" ) + ')';
           break;
       }
     }
@@ -1678,10 +1678,10 @@ class QgsSvgGroupsModel : public QStandardItemModel
       Q_FOREACH ( const QString& item, parentDir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
       {
         QStandardItem* group = new QStandardItem( item );
-        group->setData( QVariant( parentDir.path() + "/" + item ) );
+        group->setData( QVariant( parentDir.path() + '/' + item ) );
         group->setEditable( false );
         group->setCheckable( false );
-        group->setToolTip( parentDir.path() + "/" + item );
+        group->setToolTip( parentDir.path() + '/' + item );
         group->setIcon( QgsApplication::style()->standardIcon( QStyle::SP_DirIcon ) );
         parentGroup->appendRow( group );
         createTree( group );

@@ -355,13 +355,13 @@ bool QgsNewSpatialiteLayerDialog::apply()
   {
     sql += delim + QString( "%1 %2" ).arg( quotedIdentifier(( *it )->text( 0 ) ), ( *it )->text( 1 ) );
 
-    delim = ",";
+    delim = ',';
 
     ++it;
   }
 
   // complete the create table statement
-  sql += ")";
+  sql += ')';
 
   QgsDebugMsg( QString( "Creating table in database %1" ).arg( mDatabaseComboBox->currentText() ) );
 
@@ -452,14 +452,14 @@ bool QgsNewSpatialiteLayerDialog::apply()
 
 QString QgsNewSpatialiteLayerDialog::quotedIdentifier( QString id )
 {
-  id.replace( "\"", "\"\"" );
-  return id.prepend( "\"" ).append( "\"" );
+  id.replace( '\"', "\"\"" );
+  return id.prepend( '\"' ).append( '\"' );
 }
 
 QString QgsNewSpatialiteLayerDialog::quotedValue( QString value )
 {
-  value.replace( "'", "''" );
-  return value.prepend( "'" ).append( "'" );
+  value.replace( '\'', "''" );
+  return value.prepend( '\'' ).append( '\'' );
 }
 
 

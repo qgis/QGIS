@@ -182,7 +182,7 @@ QString QgsVariableEditorWidget::saveKey() const
   // save key for load/save state
   // currently QgsVariableEditorTree/window()/object
   QString setGroup = mSettingGroup.isEmpty() ? objectName() : mSettingGroup;
-  QString saveKey = "/QgsVariableEditorTree/" + setGroup + "/";
+  QString saveKey = "/QgsVariableEditorTree/" + setGroup + '/';
   return saveKey;
 }
 

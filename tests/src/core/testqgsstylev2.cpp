@@ -81,7 +81,7 @@ void TestStyleV2::initTestCase()
   QgsApplication::init( QDir::tempPath() + "/dot-qgis" );
   QgsApplication::initQgis();
   QgsApplication::createDB();
-  mTestDataDir = QString( TEST_DATA_DIR ) + "/"; //defined in CmakeLists.txt
+  mTestDataDir = QString( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
 
   // output test environment
   QgsApplication::showSettings();

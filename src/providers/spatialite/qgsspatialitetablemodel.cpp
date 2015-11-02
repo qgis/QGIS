@@ -104,7 +104,7 @@ void QgsSpatiaLiteTableModel::setSql( const QModelIndex &index, const QString &s
 void QgsSpatiaLiteTableModel::setGeometryTypesForTable( const QString & table, const QString & attribute, const QString & type )
 {
   bool typeIsEmpty = type.isEmpty();  //true means the table has no valid geometry entry and the item for this table should be removed
-  QStringList typeList = type.split( "," );
+  QStringList typeList = type.split( ',' );
 
   //find schema item and table item
   QStandardItem *dbItem;

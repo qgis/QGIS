@@ -58,7 +58,7 @@ void TestQgsZonalStatistics::initTestCase()
 
   QString myDataPath( TEST_DATA_DIR ); //defined in CmakeLists.txt
   QString myTestDataPath = myDataPath + "/zonalstatistics/";
-  QString myTempPath = QDir::tempPath() + "/";
+  QString myTempPath = QDir::tempPath() + '/';
 
   // copy test data to temp directory
   QDir testDir( myTestDataPath );

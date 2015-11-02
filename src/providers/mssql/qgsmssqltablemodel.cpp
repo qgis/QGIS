@@ -208,8 +208,8 @@ void QgsMssqlTableModel::setSql( const QModelIndex &index, const QString &sql )
 
 void QgsMssqlTableModel::setGeometryTypesForTable( QgsMssqlLayerProperty layerProperty )
 {
-  QStringList typeList = layerProperty.type.split( ",", QString::SkipEmptyParts );
-  QStringList sridList = layerProperty.srid.split( ",", QString::SkipEmptyParts );
+  QStringList typeList = layerProperty.type.split( ',', QString::SkipEmptyParts );
+  QStringList sridList = layerProperty.srid.split( ',', QString::SkipEmptyParts );
   Q_ASSERT( typeList.size() == sridList.size() );
 
   //find schema item and table item

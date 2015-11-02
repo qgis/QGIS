@@ -516,20 +516,20 @@ QgsExpression* QgsPalLayerSettings::getLabelExpression()
 
 static QColor _readColor( QgsVectorLayer* layer, const QString& property, const QColor& defaultColor = Qt::black, bool withAlpha = true )
 {
-  int r = layer->customProperty( property + "R", QVariant( defaultColor.red() ) ).toInt();
-  int g = layer->customProperty( property + "G", QVariant( defaultColor.green() ) ).toInt();
-  int b = layer->customProperty( property + "B", QVariant( defaultColor.blue() ) ).toInt();
-  int a = withAlpha ? layer->customProperty( property + "A", QVariant( defaultColor.alpha() ) ).toInt() : 255;
+  int r = layer->customProperty( property + 'R', QVariant( defaultColor.red() ) ).toInt();
+  int g = layer->customProperty( property + 'G', QVariant( defaultColor.green() ) ).toInt();
+  int b = layer->customProperty( property + 'B', QVariant( defaultColor.blue() ) ).toInt();
+  int a = withAlpha ? layer->customProperty( property + 'A', QVariant( defaultColor.alpha() ) ).toInt() : 255;
   return QColor( r, g, b, a );
 }
 
 static void _writeColor( QgsVectorLayer* layer, const QString& property, const QColor& color, bool withAlpha = true )
 {
-  layer->setCustomProperty( property + "R", color.red() );
-  layer->setCustomProperty( property + "G", color.green() );
-  layer->setCustomProperty( property + "B", color.blue() );
+  layer->setCustomProperty( property + 'R', color.red() );
+  layer->setCustomProperty( property + 'G', color.green() );
+  layer->setCustomProperty( property + 'B', color.blue() );
   if ( withAlpha )
-    layer->setCustomProperty( property + "A", color.alpha() );
+    layer->setCustomProperty( property + 'A', color.alpha() );
 }
 
 static QgsPalLayerSettings::SizeUnit _decodeUnits( const QString& str )
@@ -2154,7 +2154,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
       QString numberFormat;
       if ( d > 0 && signPlus )
       {
-        numberFormat.append( "+" );
+        numberFormat.append( '+' );
       }
       numberFormat.append( "%1" );
       labelText = numberFormat.arg( d, 0, 'f', decimalPlaces );
@@ -3736,12 +3736,12 @@ QStringList QgsPalLabeling::splitToLines( const QString &text, const QString &wr
     //wrap on both the wrapchr and new line characters
     Q_FOREACH ( const QString& line, text.split( wrapCharacter ) )
     {
-      multiLineSplit.append( line.split( QString( "\n" ) ) );
+      multiLineSplit.append( line.split( '\n' ) );
     }
   }
   else
   {
-    multiLineSplit = text.split( "\n" );
+    multiLineSplit = text.split( '\n' );
   }
 
   return multiLineSplit;

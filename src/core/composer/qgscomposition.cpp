@@ -1092,7 +1092,7 @@ bool QgsComposition::loadFromTemplate( const QDomDocument& doc, QMap<QString, QS
     QMap<QString, QString>::const_iterator sIt = substitutionMap->constBegin();
     for ( ; sIt != substitutionMap->constEnd(); ++sIt )
     {
-      xmlString = xmlString.replace( "[" + sIt.key() + "]", encodeStringForXML( sIt.value() ) );
+      xmlString = xmlString.replace( '[' + sIt.key() + ']', encodeStringForXML( sIt.value() ) );
     }
 
     QString errorMsg;
@@ -2997,11 +2997,11 @@ void QgsComposition::renderRect( QPainter* p, const QRectF& rect )
 QString QgsComposition::encodeStringForXML( const QString& str )
 {
   QString modifiedStr( str );
-  modifiedStr.replace( "&", "&amp;" );
-  modifiedStr.replace( "\"", "&quot;" );
-  modifiedStr.replace( "'", "&apos;" );
-  modifiedStr.replace( "<", "&lt;" );
-  modifiedStr.replace( ">", "&gt;" );
+  modifiedStr.replace( '&', "&amp;" );
+  modifiedStr.replace( '\"', "&quot;" );
+  modifiedStr.replace( '\'', "&apos;" );
+  modifiedStr.replace( '<', "&lt;" );
+  modifiedStr.replace( '>', "&gt;" );
   return modifiedStr;
 }
 

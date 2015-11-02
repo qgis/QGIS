@@ -705,7 +705,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
     {
       // Add format combo box item
       // Space added before format to keep it first in ordered list: TODO better (user data)
-      QTreeWidgetItem *formatItem = new QTreeWidgetItem( QStringList() << " " + tr( "Format" ) );
+      QTreeWidgetItem *formatItem = new QTreeWidgetItem( QStringList() << ' ' + tr( "Format" ) );
       layItem->addChild( formatItem );
       lstResults->setItemWidget( formatItem, 1, formatCombo );
       connect( formatCombo, SIGNAL( currentIndexChanged( int ) ), this, SLOT( formatChanged( int ) ) );

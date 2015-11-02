@@ -297,7 +297,7 @@ void QgsAuthCertUtils::appendDirSegment_( QStringList &dirname,
 {
   if ( !value.isEmpty() )
   {
-    dirname.append( segment + "=" + value.replace( ",", "\\," ) );
+    dirname.append( segment + '=' + value.replace( ',', "\\," ) );
   }
 }
 

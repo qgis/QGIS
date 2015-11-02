@@ -74,14 +74,14 @@ void TestVectorLayerCache::initTestCase()
   backupFiles << "points.shp" << "points.shx" << "points.dbf" << "points.prj";
 
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
-  QString myTestDataDir = myDataDir + "/";
+  QString myTestDataDir = myDataDir + '/';
 
   Q_FOREACH ( const QString& f, backupFiles )
   {
     QString origFileName = myTestDataDir + f;
     QFileInfo origFileInfo( origFileName );
 
-    QString tmpFileName = QDir::tempPath() + "/" + origFileInfo.baseName() + "_" + QString::number( qApp->applicationPid() ) + "." + origFileInfo.completeSuffix();
+    QString tmpFileName = QDir::tempPath() + '/' + origFileInfo.baseName() + '_' + QString::number( qApp->applicationPid() ) + '.' + origFileInfo.completeSuffix();
 
     qDebug() << "Copy " << origFileName << " " << tmpFileName;
 

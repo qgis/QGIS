@@ -1239,13 +1239,13 @@ void QgsRasterLayerProperties::on_pbnExportTransparentPixelValues_clicked()
     if ( myOutputFile.open( QFile::WriteOnly ) )
     {
       QTextStream myOutputStream( &myOutputFile );
-      myOutputStream << "# " << tr( "QGIS Generated Transparent Pixel Value Export File" ) << "\n";
+      myOutputStream << "# " << tr( "QGIS Generated Transparent Pixel Value Export File" ) << '\n';
       if ( rasterIsMultiBandColor() )
       {
         myOutputStream << "#\n#\n# " << tr( "Red" ) << "\t" << tr( "Green" ) << "\t" << tr( "Blue" ) << "\t" << tr( "Percent Transparent" );
         for ( int myTableRunner = 0; myTableRunner < tableTransparency->rowCount(); myTableRunner++ )
         {
-          myOutputStream << "\n" << QString::number( transparencyCellValue( myTableRunner, 0 ) ) << "\t"
+          myOutputStream << '\n' << QString::number( transparencyCellValue( myTableRunner, 0 ) ) << "\t"
           << QString::number( transparencyCellValue( myTableRunner, 1 ) ) << "\t"
           << QString::number( transparencyCellValue( myTableRunner, 2 ) ) << "\t"
           << QString::number( transparencyCellValue( myTableRunner, 3 ) );
@@ -1257,7 +1257,7 @@ void QgsRasterLayerProperties::on_pbnExportTransparentPixelValues_clicked()
 
         for ( int myTableRunner = 0; myTableRunner < tableTransparency->rowCount(); myTableRunner++ )
         {
-          myOutputStream << "\n" << QString::number( transparencyCellValue( myTableRunner, 0 ) ) << "\t"
+          myOutputStream << '\n' << QString::number( transparencyCellValue( myTableRunner, 0 ) ) << "\t"
           << QString::number( transparencyCellValue( myTableRunner, 1 ) ) << "\t"
           << QString::number( transparencyCellValue( myTableRunner, 2 ) );
         }
@@ -1411,7 +1411,7 @@ void QgsRasterLayerProperties::on_pbnImportTransparentPixelValues_clicked()
         myInputLine = myInputStream.readLine();
         if ( !myInputLine.isEmpty() )
         {
-          if ( !myInputLine.simplified().startsWith( "#" ) )
+          if ( !myInputLine.simplified().startsWith( '#' ) )
           {
             QStringList myTokens = myInputLine.split( QRegExp( "\\s+" ), QString::SkipEmptyParts );
             if ( myTokens.count() != 4 )
@@ -1444,7 +1444,7 @@ void QgsRasterLayerProperties::on_pbnImportTransparentPixelValues_clicked()
         myInputLine = myInputStream.readLine();
         if ( !myInputLine.isEmpty() )
         {
-          if ( !myInputLine.simplified().startsWith( "#" ) )
+          if ( !myInputLine.simplified().startsWith( '#' ) )
           {
             QStringList myTokens = myInputLine.split( QRegExp( "\\s+" ), QString::SkipEmptyParts );
             if ( myTokens.count() != 3 && myTokens.count() != 2 ) // 2 for QGIS < 1.9 compatibility
@@ -1556,7 +1556,7 @@ void QgsRasterLayerProperties::sliderTransparency_valueChanged( int theValue )
 {
   //set the transparency percentage label to a suitable value
   int myInt = static_cast < int >(( theValue / 255.0 ) * 100 );  //255.0 to prevent integer division
-  lblTransparencyPercent->setText( QString::number( myInt ) + "%" );
+  lblTransparencyPercent->setText( QString::number( myInt ) + '%' );
 }//sliderTransparency_valueChanged
 
 void QgsRasterLayerProperties::toggleSaturationControls( int grayscaleMode )

@@ -439,7 +439,7 @@ bool QgsRuleBasedRendererV2::Rule::startRender( QgsRenderContext& context, const
     if ( subfilters.contains( "TRUE" ) )
       sf = "TRUE";
     else
-      sf = subfilters.join( ") OR (" ).prepend( "(" ).append( ")" );
+      sf = subfilters.join( ") OR (" ).prepend( '(' ).append( ')' );
   }
 
   // Now join the subfilters with their parent (this) based on if
@@ -1064,7 +1064,7 @@ void QgsRuleBasedRendererV2::refineRuleCategories( QgsRuleBasedRendererV2::Rule*
   // categorizedAttr could be either an attribute name or an expression.
   // the only way to differentiate is to test it as an expression...
   QgsExpression testExpr( attr );
-  if ( testExpr.hasParserError() || ( testExpr.isField() && !attr.startsWith( "\"" ) ) )
+  if ( testExpr.hasParserError() || ( testExpr.isField() && !attr.startsWith( '\"' ) ) )
   {
     //not an expression, so need to quote column name
     attr = QgsExpression::quotedColumnRef( attr );
@@ -1094,7 +1094,7 @@ void QgsRuleBasedRendererV2::refineRuleRanges( QgsRuleBasedRendererV2::Rule* ini
   // categorizedAttr could be either an attribute name or an expression.
   // the only way to differentiate is to test it as an expression...
   QgsExpression testExpr( attr );
-  if ( testExpr.hasParserError() || ( testExpr.isField() && !attr.startsWith( "\"" ) ) )
+  if ( testExpr.hasParserError() || ( testExpr.isField() && !attr.startsWith( '\"' ) ) )
   {
     //not an expression, so need to quote column name
     attr = QgsExpression::quotedColumnRef( attr );
@@ -1204,7 +1204,7 @@ QgsRuleBasedRendererV2* QgsRuleBasedRendererV2::convertFromRenderer( const QgsFe
       }
       else
       {
-        value = "'" + category.value().toString() + "'";
+        value = '\'' + category.value().toString() + '\'';
       }
 
       //An empty category is equivalent to the ELSE keyword

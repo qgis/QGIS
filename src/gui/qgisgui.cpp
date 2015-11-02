@@ -168,9 +168,9 @@ namespace QgisGui
 #endif
 
     // Add the file type suffix to the fileName if required
-    if ( !ext.isNull() && !outputFileName.toLower().endsWith( "." + ext.toLower() ) )
+    if ( !ext.isNull() && !outputFileName.toLower().endsWith( '.' + ext.toLower() ) )
     {
-      outputFileName += "." + ext;
+      outputFileName += '.' + ext;
     }
 
     return qMakePair<QString, QString>( outputFileName, ext );

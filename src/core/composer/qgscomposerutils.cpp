@@ -483,7 +483,7 @@ double QgsComposerUtils::textWidthMM( const QFont &font, const QString &text )
 
 double QgsComposerUtils::textHeightMM( const QFont &font, const QString &text, double multiLineHeight )
 {
-  QStringList multiLineSplit =  text.split( "\n" );
+  QStringList multiLineSplit =  text.split( '\n' );
   int lines = multiLineSplit.size();
 
   //upscale using FONT_WORKAROUND_SCALE

@@ -73,7 +73,7 @@ QgsCustomizationDialog::~QgsCustomizationDialog()
 QTreeWidgetItem * QgsCustomizationDialog::item( const QString& thePath, QTreeWidgetItem *theItem )
 {
   QString path = thePath;
-  if ( path.startsWith( "/" ) )
+  if ( path.startsWith( '/' ) )
     path = path.mid( 1 ); // remove '/'
   QStringList names = path.split( '/' );
   path = QStringList( names.mid( 1 ) ).join( "/" );
@@ -137,7 +137,7 @@ void QgsCustomizationDialog::settingsToItem( const QString& thePath, QTreeWidget
   if ( objectName.isEmpty() )
     return; // object is not identifiable
 
-  QString myPath = thePath + "/" + objectName;
+  QString myPath = thePath + '/' + objectName;
 
   bool on = theSettings->value( myPath, true ).toBool();
   theItem->setCheckState( 0, on ? Qt::Checked : Qt::Unchecked );
@@ -156,7 +156,7 @@ void QgsCustomizationDialog::itemToSettings( const QString& thePath, QTreeWidget
   if ( objectName.isEmpty() )
     return; // object is not identifiable
 
-  QString myPath = thePath + "/" + objectName;
+  QString myPath = thePath + '/' + objectName;
   bool on = theItem->checkState( 0 ) == Qt::Checked ? true : false;
   theSettings->setValue( myPath, on );
 
@@ -404,7 +404,7 @@ bool QgsCustomizationDialog::switchWidget( QWidget *widget, QMouseEvent *e )
         return false;
       QString toolbarName = widget->parent()->objectName();
       QString actionName = action->objectName();
-      path = "/Toolbars/" + toolbarName + "/" + actionName;
+      path = "/Toolbars/" + toolbarName + '/' + actionName;
     }
     else
     {
@@ -453,7 +453,7 @@ QString QgsCustomizationDialog::widgetPath( QWidget * theWidget, const QString& 
   {
     if ( !path.isEmpty() )
     {
-      path = name + "/" + path;
+      path = name + '/' + path;
     }
     else
     {
@@ -465,7 +465,7 @@ QString QgsCustomizationDialog::widgetPath( QWidget * theWidget, const QString& 
 
   if ( !parent || theWidget->inherits( "QDialog" ) )
   {
-    return "/" + path;
+    return '/' + path;
   }
 
   return widgetPath( parent, path );
@@ -510,7 +510,7 @@ void QgsCustomization::addTreeItemMenu( QTreeWidgetItem* parentItem, QMenu* menu
 {
   QStringList menustrs;
   // remove '&' which are used to mark shortcut key
-  menustrs << menu->objectName() << menu->title().replace( "&", "" );
+  menustrs << menu->objectName() << menu->title().remove( '&' );
   QTreeWidgetItem* menuItem = new QTreeWidgetItem( parentItem, menustrs );
   menuItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable );
   menuItem->setCheckState( 0, Qt::Checked );
@@ -825,7 +825,7 @@ void QgsCustomization::customizeWidget( const QString& thePath, QWidget * theWid
 
   if ( !QgsCustomization::mInternalWidgets.contains( name ) )
   {
-    myPath = thePath + "/" + name;
+    myPath = thePath + '/' + name;
   }
 
   QObjectList children = theWidget->children();
@@ -836,7 +836,7 @@ void QgsCustomization::customizeWidget( const QString& thePath, QWidget * theWid
       continue;
     QWidget * w = qobject_cast<QWidget*>( *i );
 
-    QString p = myPath + "/" + w->objectName();
+    QString p = myPath + '/' + w->objectName();
 
     bool on = settings->value( p, true ).toBool();
     //QgsDebugMsg( QString( "p = %1 on = %2" ).arg( p ).arg( on ) );

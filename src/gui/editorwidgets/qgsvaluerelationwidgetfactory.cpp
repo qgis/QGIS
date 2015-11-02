@@ -97,7 +97,7 @@ QString QgsValueRelationWidgetFactory::representValue( QgsVectorLayer* vl, int f
 
   if ( config.value( "AllowMulti" ).toBool() )
   {
-    QStringList keyList = value.toString().remove( QChar( '{' ) ).remove( QChar( '}' ) ).split( "," );
+    QStringList keyList = value.toString().remove( QChar( '{' ) ).remove( QChar( '}' ) ).split( ',' );
     QStringList valueList;
 
     Q_FOREACH ( const QgsValueRelationWidgetWrapper::ValueRelationItem& item, vrCache )

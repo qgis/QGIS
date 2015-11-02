@@ -71,7 +71,7 @@ class TestQgsExpression: public QObject
       QgsApplication::showSettings();
 
       //create a point layer that will be used in all tests...
-      QString testDataDir = QString( TEST_DATA_DIR ) + "/";
+      QString testDataDir = QString( TEST_DATA_DIR ) + '/';
       QString pointsFileName = testDataDir + "points.shp";
       QFileInfo pointFileInfo( pointsFileName );
       mPointsLayer = new QgsVectorLayer( pointFileInfo.filePath(),
@@ -831,8 +831,8 @@ class TestQgsExpression: public QObject
       QTest::newRow( "get_feature 8" ) << "get_feature('test','col2','test4')" << true << 4;
 
       //by layer id
-      QTest::newRow( "get_feature 3" ) << QString("get_feature('%1','col1',11)").arg( mMemoryLayer->id() ) << true << 2;
-      QTest::newRow( "get_feature 4" ) << QString("get_feature('%1','col2','test2')").arg( mMemoryLayer->id() ) << true << 2;
+      QTest::newRow( "get_feature 3" ) << QString( "get_feature('%1','col1',11)" ).arg( mMemoryLayer->id() ) << true << 2;
+      QTest::newRow( "get_feature 4" ) << QString( "get_feature('%1','col2','test2')" ).arg( mMemoryLayer->id() ) << true << 2;
 
       //no matching features
       QTest::newRow( "get_feature no match1" ) << "get_feature('test','col1',499)" << false << -1;
@@ -861,7 +861,7 @@ class TestQgsExpression: public QObject
       if ( featureMatched )
       {
         QgsFeature feat = res.value<QgsFeature>();
-        QCOMPARE( feat.id(), (long long)featureId );
+        QCOMPARE( feat.id(), ( long long )featureId );
       }
     }
 

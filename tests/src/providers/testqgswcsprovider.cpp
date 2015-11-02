@@ -56,7 +56,7 @@ void TestQgsWcsProvider::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   QString mySettings = QgsApplication::showSettings();
-  mySettings = mySettings.replace( "\n", "<br />" );
+  mySettings = mySettings.replace( '\n', "<br />" );
   mReport += "<h1>WCS provider tests</h1>\n";
   mReport += "<p>" + mySettings + "</p>";
   // Style is now inlined by QgsRasterChecker
@@ -123,7 +123,7 @@ void TestQgsWcsProvider::read()
     Q_FOREACH ( const QString& identifier, identifiers )
     {
       // copy to temporary to avoid creation/changes/use of GDAL .aux.xml files
-      QString testFilePath = mTestDataDir + "/" + identifier + ".tif";
+      QString testFilePath = mTestDataDir + '/' + identifier + ".tif";
       qDebug() << "copy " <<  testFilePath << " to " << tmpFilePath;
       if ( !QFile::copy( testFilePath, tmpFilePath ) )
       {

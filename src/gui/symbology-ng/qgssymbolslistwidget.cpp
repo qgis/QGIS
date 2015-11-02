@@ -158,7 +158,7 @@ void QgsSymbolsListWidget::populateGroups( const QString& parent, const QString&
     QString text;
     if ( !prepend.isEmpty() )
     {
-      text = prepend + "/" + i.value();
+      text = prepend + '/' + i.value();
     }
     else
     {

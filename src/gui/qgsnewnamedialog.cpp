@@ -132,7 +132,7 @@ void QgsNewNameDialog::nameChanged()
   QStringList newNames = fullNames( newName, mExtensions );
   if ( !mExtensions.isEmpty() )
   {
-    namesString += " " + newNames.join( ", " );
+    namesString += ' ' + newNames.join( ", " );
     mNamesLabel->setText( namesString );
   }
 

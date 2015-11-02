@@ -153,9 +153,9 @@ QString QgsAbstractGeometryV2::wktTypeStr() const
 {
   QString wkt = geometryType();
   if ( is3D() )
-    wkt += "Z";
+    wkt += 'Z';
   if ( isMeasure() )
-    wkt += "M";
+    wkt += 'M';
   return wkt;
 }
 

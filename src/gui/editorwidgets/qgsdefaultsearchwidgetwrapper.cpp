@@ -69,9 +69,9 @@ void QgsDefaultSearchWidgetWrapper::setExpression( QString exp )
           .arg( QgsExpression::quotedColumnRef( fieldName ),
                 numeric ? "=" : mCaseString,
                 numeric
-                ? exp.replace( "'", "''" )
+                ? exp.replace( '\'', "''" )
                 :
-                "%" + exp.replace( "'", "''" ) + "%" ); // escape quotes
+                '%' + exp.replace( '\'', "''" ) + '%' ); // escape quotes
   }
   mExpression = str;
 }

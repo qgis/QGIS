@@ -91,7 +91,7 @@ void TestQgsBlendModes::initTestCase()
 
   //create a point layer
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
-  mTestDataDir = myDataDir + "/";
+  mTestDataDir = myDataDir + '/';
   QString myPointsFileName = mTestDataDir + "points.shp";
   QFileInfo myPointFileInfo( myPointsFileName );
   mpPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),

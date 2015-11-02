@@ -306,7 +306,7 @@ void QgsPluginManager::getCppPluginsMetadata()
   QString myPaths = settings.value( "plugins/searchPathsForPlugins", "" ).toString();
   if ( !myPaths.isEmpty() )
   {
-    myPathList.append( myPaths.split( "|" ) );
+    myPathList.append( myPaths.split( '|' ) );
   }
 
   for ( int j = 0; j < myPathList.size(); ++j )
@@ -754,7 +754,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem * item )
   if ( ! metadata->value( "about" ).isEmpty() )
   {
     QString about = metadata->value( "about" );
-    html += about.replace( "\n", "<br/>" );
+    html += about.replace( '\n', "<br/>" );
   }
 
   html += "<br/><br/>";
@@ -819,7 +819,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem * item )
   if ( ! metadata->value( "version_installed" ).isEmpty() )
   {
     QString ver = metadata->value( "version_installed" );
-    if ( ver == "-1" ) ver = "?";
+    if ( ver == "-1" ) ver = '?';
     html += tr( "Installed version: %1 (in %2)<br/>" ).arg( ver, metadata->value( "library" ) );
   }
   if ( ! metadata->value( "version_available" ).isEmpty() )
@@ -831,7 +831,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem * item )
   {
     html += "<br/>";
     QString changelog = tr( "changelog:<br/>%1 <br/>" ).arg( metadata->value( "changelog" ) );
-    html += changelog.replace( "\n", "<br/>" );
+    html += changelog.replace( '\n', "<br/>" );
   }
 
   html += "</td></tr></table>";
@@ -1160,8 +1160,8 @@ void QgsPluginManager::on_wvDetails_linkClicked( const QUrl & url )
       QString params = url.path();
       QString response;
       QgsPythonRunner::eval( QString( "pyplugin_installer.instance().sendVote('%1', '%2')" )
-                             .arg( params.split( "/" )[1],
-                                   params.split( "/" )[2] ), response );
+                             .arg( params.split( '/' )[1],
+                                   params.split( '/' )[2] ), response );
       if ( response == "True" )
       {
         pushMessage( tr( "Vote sent successfully" ), QgsMessageBar::INFO );
@@ -1244,7 +1244,7 @@ void QgsPluginManager::setRepositoryFilter()
   if ( current )
   {
     QString key = current->text( 1 );
-    key = key.replace( "\'", "\\\'" ).replace( "\"", "\\\"" );
+    key = key.replace( '\'', "\\\'" ).replace( '\"', "\\\"" );
     QgsDebugMsg( "Disabling all repositories but selected: " + key );
     QgsPythonRunner::run( QString( "pyplugin_installer.instance().setRepositoryInspectionFilter('%1')" ).arg( key ) );
   }
@@ -1282,7 +1282,7 @@ void QgsPluginManager::on_buttonEditRep_clicked()
   if ( current )
   {
     QString key = current->text( 1 );
-    key = key.replace( "\'", "\\\'" ).replace( "\"", "\\\"" );
+    key = key.replace( '\'', "\\\'" ).replace( '\"', "\\\"" );
     QgsDebugMsg( "Editing repository connection: " + key );
     QgsPythonRunner::run( QString( "pyplugin_installer.instance().editRepository('%1')" ).arg( key ) );
   }
@@ -1296,7 +1296,7 @@ void QgsPluginManager::on_buttonDeleteRep_clicked()
   if ( current )
   {
     QString key = current->text( 1 );
-    key = key.replace( "\'", "\\\'" ).replace( "\"", "\\\"" );
+    key = key.replace( '\'', "\\\'" ).replace( '\"', "\\\"" );
     QgsDebugMsg( "Deleting repository connection: " + key );
     QgsPythonRunner::run( QString( "pyplugin_installer.instance().deleteRepository('%1')" ).arg( key ) );
   }

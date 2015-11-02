@@ -703,7 +703,7 @@ void TestQgsComposerUtils::drawTextRect()
 bool TestQgsComposerUtils::renderCheck( const QString& testName, QImage &image, int mismatchCount )
 {
   mReport += "<h2>" + testName + "</h2>\n";
-  QString myTmpDir = QDir::tempPath() + "/";
+  QString myTmpDir = QDir::tempPath() + '/';
   QString myFileName = myTmpDir + testName + ".png";
   image.save( myFileName, "PNG" );
   QgsRenderChecker myChecker;

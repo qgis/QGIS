@@ -73,7 +73,7 @@ QVector<QgsDataItem*> QgsPGConnectionItem::createChildren()
 
   Q_FOREACH ( const QgsPostgresSchemaProperty& schema, schemas )
   {
-    QgsPGSchemaItem * schemaItem = new QgsPGSchemaItem( this, mName, schema.name, mPath + "/" + schema.name );
+    QgsPGSchemaItem * schemaItem = new QgsPGSchemaItem( this, mName, schema.name, mPath + '/' + schema.name );
     if ( !schema.description.isEmpty() )
     {
       schemaItem->setToolTip( schema.description );
@@ -350,7 +350,7 @@ void QgsPGLayerItem::renameLayer()
   QString schemaTableName;
   if ( !schemaName.isEmpty() )
   {
-    schemaTableName = QgsPostgresConn::quotedIdentifier( schemaName ) + ".";
+    schemaTableName = QgsPostgresConn::quotedIdentifier( schemaName ) + '.';
   }
   QString oldName = schemaTableName + QgsPostgresConn::quotedIdentifier( tableName );
   QString newName = QgsPostgresConn::quotedIdentifier( dlg.name() );
@@ -409,7 +409,7 @@ void QgsPGLayerItem::truncateTable()
   QString schemaTableName;
   if ( !schemaName.isEmpty() )
   {
-    schemaTableName = QgsPostgresConn::quotedIdentifier( schemaName ) + ".";
+    schemaTableName = QgsPostgresConn::quotedIdentifier( schemaName ) + '.';
   }
   QString tableRef = schemaTableName + QgsPostgresConn::quotedIdentifier( tableName );
 
@@ -652,7 +652,7 @@ QgsPGLayerItem *QgsPGSchemaItem::createLayer( const QgsPostgresLayerProperty& la
   QString tip = tr( "%1 as %2 in %3" ).arg( layerProperty.geometryColName, QgsPostgresConn::displayStringForWkbType( wkbType ) ).arg( layerProperty.srids[0] );
   if ( !layerProperty.tableComment.isEmpty() )
   {
-    tip = layerProperty.tableComment + "\n" + tip;
+    tip = layerProperty.tableComment + '\n' + tip;
   }
 
   QgsLayerItem::LayerType layerType;
@@ -676,7 +676,7 @@ QgsPGLayerItem *QgsPGSchemaItem::createLayer( const QgsPostgresLayerProperty& la
       tip = tr( "as geometryless table" );
   }
 
-  QgsPGLayerItem *layerItem = new QgsPGLayerItem( this, layerProperty.defaultName(), mPath + "/" + layerProperty.tableName, layerType, layerProperty );
+  QgsPGLayerItem *layerItem = new QgsPGLayerItem( this, layerProperty.defaultName(), mPath + '/' + layerProperty.tableName, layerType, layerProperty );
   layerItem->setToolTip( tip );
   return layerItem;
 }
@@ -708,7 +708,7 @@ QVector<QgsDataItem*> QgsPGRootItem::createChildren()
   QVector<QgsDataItem*> connections;
   Q_FOREACH ( const QString& connName, QgsPostgresConn::connectionList() )
   {
-    connections << new QgsPGConnectionItem( this, connName, mPath + "/" + connName );
+    connections << new QgsPGConnectionItem( this, connName, mPath + '/' + connName );
   }
   return connections;
 }

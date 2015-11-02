@@ -906,9 +906,9 @@ int QgsWFSProvider::readAttributesFromSchema( QDomDocument& schemaDoc, QString& 
     }
 
     //remove the namespace on complexTypeType
-    if ( complexTypeType.contains( ":" ) )
+    if ( complexTypeType.contains( ':' ) )
     {
-      complexTypeType = complexTypeType.section( ":", 1, 1 );
+      complexTypeType = complexTypeType.section( ':', 1, 1 );
     }
 
     //find <complexType name=complexTypeType
@@ -1164,16 +1164,16 @@ int QgsWFSProvider::setCRSFromGML2( const QDomElement& wfsCollectionElement )
 
   //extract the EpsgCrsId id
   bool conversionSuccess;
-  if ( srsName.contains( "#" ) )//geoserver has "http://www.opengis.net/gml/srs/epsg.xml#4326"
+  if ( srsName.contains( '#' ) )//geoserver has "http://www.opengis.net/gml/srs/epsg.xml#4326"
   {
-    int epsgId = srsName.section( "#", 1, 1 ).toInt( &conversionSuccess );
+    int epsgId = srsName.section( '#', 1, 1 ).toInt( &conversionSuccess );
     if ( !conversionSuccess )
     {
       return 4;
     }
     srsName = QString( "EPSG:%1" ).arg( epsgId );
   }
-  else if ( !srsName.contains( ":" ) ) //mapserver has "EPSG:4326"
+  else if ( !srsName.contains( ':' ) ) //mapserver has "EPSG:4326"
     srsName = GEO_EPSG_CRS_AUTHID;
 
   if ( !mSourceCRS.createFromOgcWmsCrs( srsName ) )
@@ -1319,16 +1319,16 @@ int QgsWFSProvider::capabilities() const
 
 QString QgsWFSProvider::parameterFromUrl( const QString& name ) const
 {
-  QStringList urlSplit = dataSourceUri().split( "?" );
+  QStringList urlSplit = dataSourceUri().split( '?' );
   if ( urlSplit.size() > 1 )
   {
-    QStringList keyValueSplit = urlSplit.at( 1 ).split( "&" );
+    QStringList keyValueSplit = urlSplit.at( 1 ).split( '&' );
     QStringList::const_iterator kvIt = keyValueSplit.constBegin();
     for ( ; kvIt != keyValueSplit.constEnd(); ++kvIt )
     {
       if ( kvIt->startsWith( name, Qt::CaseInsensitive ) )
       {
-        QStringList equalSplit = kvIt->split( "=" );
+        QStringList equalSplit = kvIt->split( '=' );
         if ( equalSplit.size() > 1 )
         {
           return equalSplit.at( 1 );
@@ -1342,9 +1342,9 @@ QString QgsWFSProvider::parameterFromUrl( const QString& name ) const
 
 void QgsWFSProvider::removeNamespacePrefix( QString& tname ) const
 {
-  if ( tname.contains( ":" ) )
+  if ( tname.contains( ':' ) )
   {
-    QStringList splitList = tname.split( ":" );
+    QStringList splitList = tname.split( ':' );
     if ( splitList.size() > 1 )
     {
       tname = splitList.at( 1 );
@@ -1354,7 +1354,7 @@ void QgsWFSProvider::removeNamespacePrefix( QString& tname ) const
 
 QString QgsWFSProvider::nameSpacePrefix( const QString& tname ) const
 {
-  QStringList splitList = tname.split( ":" );
+  QStringList splitList = tname.split( ':' );
   if ( splitList.size() < 2 )
   {
     return QString();
@@ -1415,7 +1415,7 @@ QDomElement QgsWFSProvider::createTransactionElement( QDomDocument& doc ) const
   transactionElem.setAttribute( "version", "1.0.0" );
   transactionElem.setAttribute( "service", "WFS" );
   transactionElem.setAttribute( "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance" );
-  transactionElem.setAttribute( "xsi:schemaLocation", mWfsNamespace + " "
+  transactionElem.setAttribute( "xsi:schemaLocation", mWfsNamespace + ' '
                                 + dataSourceUri().replace( QLatin1String( "GetFeature" ), QLatin1String( "DescribeFeatureType" ) ) );
 
   QString namespacePrefix = nameSpacePrefix( parameterFromUrl( "typename" ) );

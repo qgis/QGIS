@@ -143,7 +143,7 @@ void TestQgsPaintEffect::initTestCase()
   registry->addEffectType( new QgsPaintEffectMetadata( "Dummy", "Dummy effect", DummyPaintEffect::create ) );
 
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
-  mTestDataDir = myDataDir + "/";
+  mTestDataDir = myDataDir + '/';
 }
 
 void TestQgsPaintEffect::cleanupTestCase()
@@ -916,7 +916,7 @@ bool TestQgsPaintEffect::imageCheck( const QString& testName, QImage &image, int
   painter.end();
 
   mReport += "<h2>" + testName + "</h2>\n";
-  QString tempDir = QDir::tempPath() + "/";
+  QString tempDir = QDir::tempPath() + '/';
   QString fileName = tempDir + testName + ".png";
   imageWithBackground.save( fileName, "PNG" );
   QgsRenderChecker checker;

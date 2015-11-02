@@ -189,13 +189,13 @@ bool QgsDatumTransformDialog::testGridShiftFileAvailability( QTreeWidgetItem* it
     return true;
   }
 
-  QStringList itemEqualSplit = itemText.split( "=" );
+  QStringList itemEqualSplit = itemText.split( '=' );
   QString filename;
   for ( int i = 1; i < itemEqualSplit.size(); ++i )
   {
     if ( i > 1 )
     {
-      filename.append( "=" );
+      filename.append( '=' );
     }
     filename.append( itemEqualSplit.at( i ) );
   }

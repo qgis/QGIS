@@ -346,7 +346,7 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
     {
       if ( errorMessage )
       {
-        *errorMessage += "\n" + QObject::tr( "Import was canceled at %1 of %2" ).arg( progress->value() ).arg( progress->maximum() );
+        *errorMessage += '\n' + QObject::tr( "Import was canceled at %1 of %2" ).arg( progress->value() ).arg( progress->maximum() );
       }
       break;
     }
@@ -355,7 +355,7 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
     {
       if ( errorMessage )
       {
-        *errorMessage += "\n" + QObject::tr( "Stopping after %1 errors" ).arg( writer->errorCount() );
+        *errorMessage += '\n' + QObject::tr( "Stopping after %1 errors" ).arg( writer->errorCount() );
       }
       break;
     }
@@ -381,7 +381,7 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
                       .arg( fet.id() ).arg( e.what() );
         QgsMessageLog::logMessage( msg, QObject::tr( "Vector import" ) );
         if ( errorMessage )
-          *errorMessage += "\n" + msg;
+          *errorMessage += '\n' + msg;
 
         return ErrProjection;
       }
@@ -394,7 +394,7 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
     {
       if ( writer->hasError() && errorMessage )
       {
-        *errorMessage += "\n" + writer->errorMessage();
+        *errorMessage += '\n' + writer->errorMessage();
       }
     }
     n++;
@@ -410,7 +410,7 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
   {
     if ( writer->hasError() && errorMessage )
     {
-      *errorMessage += "\n" + writer->errorMessage();
+      *errorMessage += '\n' + writer->errorMessage();
     }
   }
   int errors = writer->errorCount();
@@ -419,7 +419,7 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
   {
     if ( writer->hasError() && errorMessage )
     {
-      *errorMessage += "\n" + writer->errorMessage();
+      *errorMessage += '\n' + writer->errorMessage();
     }
   }
 
@@ -434,7 +434,7 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
   {
     if ( errors > 0 )
     {
-      *errorMessage += "\n" + QObject::tr( "Only %1 of %2 features written." ).arg( n - errors ).arg( n );
+      *errorMessage += '\n' + QObject::tr( "Only %1 of %2 features written." ).arg( n - errors ).arg( n );
     }
     else
     {

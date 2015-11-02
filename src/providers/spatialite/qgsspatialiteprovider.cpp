@@ -457,7 +457,7 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
   bool specialCase = false;
   if ( mGeometryColumn.isEmpty() )
     specialCase = true; // non-spatial table
-  if ( mQuery.startsWith( "(" ) && mQuery.endsWith( ")" ) )
+  if ( mQuery.startsWith( '(' ) && mQuery.endsWith( ')' ) )
     specialCase = true;
 
   if ( !specialCase )
@@ -686,10 +686,10 @@ QString QgsSpatiaLiteProvider::spatialiteVersion()
 
   QgsDebugMsg( "SpatiaLite version info: " + mSpatialiteVersionInfo );
 
-  QStringList spatialiteParts = mSpatialiteVersionInfo.split( " ", QString::SkipEmptyParts );
+  QStringList spatialiteParts = mSpatialiteVersionInfo.split( ' ', QString::SkipEmptyParts );
 
   // Get major and minor version
-  QStringList spatialiteVersionParts = spatialiteParts[0].split( ".", QString::SkipEmptyParts );
+  QStringList spatialiteVersionParts = spatialiteParts[0].split( '.', QString::SkipEmptyParts );
   if ( spatialiteVersionParts.size() < 2 )
   {
     QgsMessageLog::logMessage( tr( "Could not parse spatialite version string '%1'" ).arg( mSpatialiteVersionInfo ), tr( "SpatiaLite" ) );
@@ -3297,7 +3297,7 @@ QVariant QgsSpatiaLiteProvider::minimumValue( int index )
 
     if ( !mSubsetString.isEmpty() )
     {
-      sql += " WHERE ( " + mSubsetString + ")";
+      sql += " WHERE ( " + mSubsetString + ')';
     }
 
     ret = sqlite3_get_table( sqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
@@ -3363,7 +3363,7 @@ QVariant QgsSpatiaLiteProvider::maximumValue( int index )
 
     if ( !mSubsetString.isEmpty() )
     {
-      sql += " WHERE ( " + mSubsetString + ")";
+      sql += " WHERE ( " + mSubsetString + ')';
     }
 
     ret = sqlite3_get_table( sqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
@@ -3429,7 +3429,7 @@ void QgsSpatiaLiteProvider::uniqueValues( int index, QList < QVariant > &uniqueV
 
   if ( !mSubsetString.isEmpty() )
   {
-    sql += " WHERE ( " + mSubsetString + ")";
+    sql += " WHERE ( " + mSubsetString + ')';
   }
 
   sql += QString( " ORDER BY %1" ).arg( quotedIdentifier( fld.name() ) );
@@ -3532,7 +3532,7 @@ QString QgsSpatiaLiteProvider::geomParam() const
 
   if ( forceMulti && hasMultiFunction )
   {
-    geometry += ")";
+    geometry += ')';
   }
 
   return geometry;
@@ -3565,7 +3565,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
     {
       sql += separator + quotedIdentifier( mGeometryColumn );
       values += separator + geomParam();
-      separator = ",";
+      separator = ',';
     }
 
     for ( int i = 0; i < attributevec.count(); ++i )
@@ -3581,12 +3581,12 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
         continue;
 
       sql += separator + quotedIdentifier( fieldname );
-      values += separator + "?";
-      separator = ",";
+      values += separator + '?';
+      separator = ',';
     }
 
     sql += values;
-    sql += ")";
+    sql += ')';
 
     // SQLite prepared statement
     ret = sqlite3_prepare_v2( sqliteHandle, sql.toUtf8().constData(), -1, &stmt, NULL );
@@ -3909,7 +3909,7 @@ bool QgsSpatiaLiteProvider::changeAttributeValues( const QgsChangedAttributesMap
         const QVariant& val = siter.value();
 
         if ( !first )
-          sql += ",";
+          sql += ',';
         else
           first = false;
 
@@ -4074,8 +4074,8 @@ void QgsSpatiaLiteProvider::closeDb()
 
 QString QgsSpatiaLiteProvider::quotedIdentifier( QString id )
 {
-  id.replace( "\"", "\"\"" );
-  return id.prepend( "\"" ).append( "\"" );
+  id.replace( '\"', "\"\"" );
+  return id.prepend( '\"' ).append( '\"' );
 }
 
 QString QgsSpatiaLiteProvider::quotedValue( QString value )
@@ -4083,8 +4083,8 @@ QString QgsSpatiaLiteProvider::quotedValue( QString value )
   if ( value.isNull() )
     return "NULL";
 
-  value.replace( "'", "''" );
-  return value.prepend( "'" ).append( "'" );
+  value.replace( '\'', "''" );
+  return value.prepend( '\'' ).append( '\'' );
 }
 
 #ifdef SPATIALITE_VERSION_GE_4_0_0
@@ -4151,7 +4151,7 @@ bool QgsSpatiaLiteProvider::checkLayerType()
 
   QString sql;
 
-  if ( mGeometryColumn.isEmpty() && !( mQuery.startsWith( "(" ) && mQuery.endsWith( ")" ) ) )
+  if ( mGeometryColumn.isEmpty() && !( mQuery.startsWith( '(' ) && mQuery.endsWith( ')' ) ) )
   {
     // checking if is a non-spatial table
     sql = QString( "SELECT type FROM sqlite_master "
@@ -4182,7 +4182,7 @@ bool QgsSpatiaLiteProvider::checkLayerType()
     }
     sqlite3_free_table( results );
   }
-  else if ( mQuery.startsWith( "(" ) && mQuery.endsWith( ")" ) )
+  else if ( mQuery.startsWith( '(' ) && mQuery.endsWith( ')' ) )
   {
     // checking if this one is a select query
 
@@ -4891,7 +4891,7 @@ bool QgsSpatiaLiteProvider::getTableSummary()
 
   if ( !mSubsetString.isEmpty() )
   {
-    sql += " WHERE ( " + mSubsetString + ")";
+    sql += " WHERE ( " + mSubsetString + ')';
   }
 
   ret = sqlite3_get_table( sqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
@@ -5028,10 +5028,10 @@ static bool initializeSpatialMetadata( sqlite3 *sqlite_handle, QString& errCause
   if ( ret == SQLITE_OK && rows == 1 && columns == 1 )
   {
     QString version = QString::fromUtf8( results[1] );
-    QStringList parts = version.split( " ", QString::SkipEmptyParts );
+    QStringList parts = version.split( ' ', QString::SkipEmptyParts );
     if ( parts.size() >= 1 )
     {
-      QStringList verparts = parts[0].split( ".", QString::SkipEmptyParts );
+      QStringList verparts = parts[0].split( '.', QString::SkipEmptyParts );
       above41 = verparts.size() >= 2 && ( verparts[0].toInt() > 4 || ( verparts[0].toInt() == 4 && verparts[1].toInt() >= 1 ) );
     }
   }

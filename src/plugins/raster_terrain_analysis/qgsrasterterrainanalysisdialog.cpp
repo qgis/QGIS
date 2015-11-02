@@ -158,7 +158,7 @@ QString QgsRasterTerrainAnalysisDialog::outputFile() const
     return outputFileName;
   }
 
-  return ( outputFileName + "." + it.value() );
+  return ( outputFileName + '.' + it.value() );
 }
 
 QString QgsRasterTerrainAnalysisDialog::outputFormat() const

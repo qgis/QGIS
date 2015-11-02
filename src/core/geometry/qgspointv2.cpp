@@ -88,7 +88,7 @@ bool QgsPointV2::fromWkt( const QString& wkt )
     return false;
   mWkbType = parts.first;
 
-  QStringList coordinates = parts.second.split( " ", QString::SkipEmptyParts );
+  QStringList coordinates = parts.second.split( ' ', QString::SkipEmptyParts );
   if ( coordinates.size() < 2 + is3D() + isMeasure() )
   {
     clear();
@@ -148,12 +148,12 @@ unsigned char* QgsPointV2::asWkb( int& binarySize ) const
 QString QgsPointV2::asWkt( int precision ) const
 {
   QString wkt = wktTypeStr() + " (";
-  wkt += qgsDoubleToString( mX, precision ) + " " + qgsDoubleToString( mY, precision );
+  wkt += qgsDoubleToString( mX, precision ) + ' ' + qgsDoubleToString( mY, precision );
   if ( is3D() )
-    wkt += " " + qgsDoubleToString( mZ, precision );
+    wkt += ' ' + qgsDoubleToString( mZ, precision );
   if ( isMeasure() )
-    wkt += " " + qgsDoubleToString( mM, precision );
-  wkt += ")";
+    wkt += ' ' + qgsDoubleToString( mM, precision );
+  wkt += ')';
   return wkt;
 }
 
@@ -161,7 +161,7 @@ QDomElement QgsPointV2::asGML2( QDomDocument& doc, int precision, const QString&
 {
   QDomElement elemPoint = doc.createElementNS( ns, "Point" );
   QDomElement elemCoordinates = doc.createElementNS( ns, "coordinates" );
-  QString strCoordinates = qgsDoubleToString( mX, precision ) + "," + qgsDoubleToString( mY, precision );
+  QString strCoordinates = qgsDoubleToString( mX, precision ) + ',' + qgsDoubleToString( mY, precision );
   elemCoordinates.appendChild( doc.createTextNode( strCoordinates ) );
   elemPoint.appendChild( elemCoordinates );
   return elemPoint;
@@ -172,9 +172,9 @@ QDomElement QgsPointV2::asGML3( QDomDocument& doc, int precision, const QString&
   QDomElement elemPoint = doc.createElementNS( ns, "Point" );
   QDomElement elemPosList = doc.createElementNS( ns, "posList" );
   elemPosList.setAttribute( "srsDimension", is3D() ? 3 : 2 );
-  QString strCoordinates = qgsDoubleToString( mX, precision ) + " " + qgsDoubleToString( mY, precision );
+  QString strCoordinates = qgsDoubleToString( mX, precision ) + ' ' + qgsDoubleToString( mY, precision );
   if ( is3D() )
-    strCoordinates += " " + qgsDoubleToString( mZ, precision );
+    strCoordinates += ' ' + qgsDoubleToString( mZ, precision );
 
   elemPosList.appendChild( doc.createTextNode( strCoordinates ) );
   elemPoint.appendChild( elemPosList );

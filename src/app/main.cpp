@@ -606,7 +606,7 @@ int main( int argc, char *argv[] )
       {
         QgsLocaleNumC l;
         QString ext( args[++i] );
-        QStringList coords( ext.split( "," ) );
+        QStringList coords( ext.split( ',' ) );
 
         if ( coords.size() != 4 )
         {
@@ -1115,7 +1115,7 @@ int main( int argc, char *argv[] )
   {
 #ifdef Q_OS_WIN
     //replace backslashes with forward slashes
-    pythonfile.replace( "\\", "/" );
+    pythonfile.replace( '\\', '/' );
 #endif
     QgsPythonRunner::run( QString( "execfile('%1')" ).arg( pythonfile ) );
   }

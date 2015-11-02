@@ -105,7 +105,7 @@ unsigned char* QgsLineStringV2::asWkb( int& binarySize ) const
 
 QString QgsLineStringV2::asWkt( int precision ) const
 {
-  QString wkt = wktTypeStr() + " ";
+  QString wkt = wktTypeStr() + ' ';
   QList<QgsPointV2> pts;
   points( pts );
   wkt += QgsGeometryUtils::pointsToWKT( pts, precision, is3D(), isMeasure() );
@@ -143,7 +143,7 @@ QString QgsLineStringV2::asJSON( int precision ) const
   QList<QgsPointV2> pts;
   points( pts );
 
-  return "{\"type\": \"LineString\", \"coordinates\": " + QgsGeometryUtils::pointsToJSON( pts, precision ) + "}";
+  return "{\"type\": \"LineString\", \"coordinates\": " + QgsGeometryUtils::pointsToJSON( pts, precision ) + '}';
 }
 
 double QgsLineStringV2::length() const

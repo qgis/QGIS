@@ -242,8 +242,8 @@ QString QgsShapeFile::getTable()
 
 void QgsShapeFile::setTable( QString new_table )
 {
-  new_table.replace( "\'", "\\'" );
-  new_table.replace( "\\", "\\\\" );
+  new_table.replace( '\'', "\\'" );
+  new_table.replace( '\\', "\\\\" );
   table_name = new_table;
 }
 
@@ -408,18 +408,18 @@ bool QgsShapeFile::insertLayer( const QString& dbname, const QString& schema, co
 
           if ( n > 0 )
           {
-            query += ",";
-            values += ",";
+            query += ',';
+            values += ',';
           }
           query += QgsPgUtil::quotedIdentifier( column_names[n] );
           values += val;
         }
-        query += "," + QgsPgUtil::quotedIdentifier( geom_col );
+        query += ',' + QgsPgUtil::quotedIdentifier( geom_col );
         values += QString( ",st_geometryfromtext(%1,%2)" )
                   .arg( QgsPgUtil::quotedValue( geometry ),
                         srid );
 
-        query += ")" + values + ")";
+        query += ')' + values + ')';
 
         if ( result )
           res = PQexec( conn, query.toUtf8() );
@@ -428,12 +428,12 @@ bool QgsShapeFile::insertLayer( const QString& dbname, const QString& schema, co
         {
           // flag error and send query and error message to stdout on debug
           result = false;
-          errorText += tr( "The database gave an error while executing this SQL:" ) + "\n";
+          errorText += tr( "The database gave an error while executing this SQL:" ) + '\n';
           // the query string can be quite long. Trim if necessary...
           if ( query.count() > 100 )
             errorText += query.left( 150 ) +
                          tr( "... (rest of SQL trimmed)", "is appended to a truncated SQL statement" ) +
-                         "\n";
+                         '\n';
           else
             errorText += query + '\n';
           errorText += tr( "The error was:\n%1\n" ).arg( PQresultErrorMessage( res ) );

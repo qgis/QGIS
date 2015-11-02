@@ -46,7 +46,7 @@ QString QgsSymbolLayerV2Utils::encodeColor( const QColor& color )
 
 QColor QgsSymbolLayerV2Utils::decodeColor( const QString& str )
 {
-  QStringList lst = str.split( "," );
+  QStringList lst = str.split( ',' );
   if ( lst.count() < 3 )
   {
     return QColor( str );
@@ -440,7 +440,7 @@ QString QgsSymbolLayerV2Utils::encodeRealVector( const QVector<qreal>& v )
   {
     if ( it != v.constBegin() )
     {
-      vectorString.append( ";" );
+      vectorString.append( ';' );
     }
     vectorString.append( QString::number( *it ) );
   }
@@ -451,7 +451,7 @@ QVector<qreal> QgsSymbolLayerV2Utils::decodeRealVector( const QString& s )
 {
   QVector<qreal> resultVector;
 
-  QStringList realList = s.split( ";" );
+  QStringList realList = s.split( ';' );
   QStringList::const_iterator it = realList.constBegin();
   for ( ; it != realList.constEnd(); ++it )
   {
@@ -469,7 +469,7 @@ QString QgsSymbolLayerV2Utils::encodeSldRealVector( const QVector<qreal>& v )
   {
     if ( it != v.constBegin() )
     {
-      vectorString.append( " " );
+      vectorString.append( ' ' );
     }
     vectorString.append( QString::number( *it ) );
   }
@@ -480,7 +480,7 @@ QVector<qreal> QgsSymbolLayerV2Utils::decodeSldRealVector( const QString& s )
 {
   QVector<qreal> resultVector;
 
-  QStringList realList = s.split( " " );
+  QStringList realList = s.split( ' ' );
   QStringList::const_iterator it = realList.constBegin();
   for ( ; it != realList.constEnd(); ++it )
   {
@@ -2376,12 +2376,12 @@ QString QgsSymbolLayerV2Utils::ogrFeatureStylePen( double width, double mmScaleF
     {
       if ( pIt != dashPattern->constBegin() )
       {
-        penStyle.append( " " );
+        penStyle.append( ' ' );
       }
       penStyle.append( QString::number( *pIt * mapUnitScaleFactor ) );
-      penStyle.append( "g" );
+      penStyle.append( 'g' );
     }
-    penStyle.append( "\"" );
+    penStyle.append( '\"' );
   }
 
   //cap
@@ -2389,14 +2389,14 @@ QString QgsSymbolLayerV2Utils::ogrFeatureStylePen( double width, double mmScaleF
   switch ( capStyle )
   {
     case Qt::SquareCap:
-      penStyle.append( "p" );
+      penStyle.append( 'p' );
       break;
     case Qt::RoundCap:
-      penStyle.append( "r" );
+      penStyle.append( 'r' );
       break;
     case Qt::FlatCap:
     default:
-      penStyle.append( "b" );
+      penStyle.append( 'b' );
   }
 
   //join
@@ -2404,14 +2404,14 @@ QString QgsSymbolLayerV2Utils::ogrFeatureStylePen( double width, double mmScaleF
   switch ( joinStyle )
   {
     case Qt::BevelJoin:
-      penStyle.append( "b" );
+      penStyle.append( 'b' );
       break;
     case Qt::RoundJoin:
-      penStyle.append( "r" );
+      penStyle.append( 'r' );
       break;
     case Qt::MiterJoin:
     default:
-      penStyle.append( "m" );
+      penStyle.append( 'm' );
   }
 
   //offset
@@ -2419,10 +2419,10 @@ QString QgsSymbolLayerV2Utils::ogrFeatureStylePen( double width, double mmScaleF
   {
     penStyle.append( ",dp:" );
     penStyle.append( QString::number( offset * mapUnitScaleFactor ) );
-    penStyle.append( "g" );
+    penStyle.append( 'g' );
   }
 
-  penStyle.append( ")" );
+  penStyle.append( ')' );
   return penStyle;
 }
 
@@ -2432,7 +2432,7 @@ QString QgsSymbolLayerV2Utils::ogrFeatureStyleBrush( const QColor& fillColor )
   brushStyle.append( "BRUSH(" );
   brushStyle.append( "fc:" );
   brushStyle.append( fillColor.name() );
-  brushStyle.append( ")" );
+  brushStyle.append( ')' );
   return brushStyle;
 }
 
@@ -2691,7 +2691,7 @@ QgsSymbolV2Map QgsSymbolLayerV2Utils::loadSymbols( QDomElement& element )
     // add to array (for deletion)
     subsymbols.append( it.key() );
 
-    QStringList parts = it.key().split( "@" );
+    QStringList parts = it.key().split( '@' );
     if ( parts.count() < 3 )
     {
       QgsDebugMsg( "found subsymbol with invalid name: " + it.key() );
@@ -2839,7 +2839,7 @@ QList<QColor> QgsSymbolLayerV2Utils::parseColorList( const QString& colorStr )
   }
 
   //try splitting string at whitespace or newlines
-  components = colorStr.simplified().split( QString( " " ) );
+  components = colorStr.simplified().split( QString( ' ' ) );
   it = components.begin();
   for ( ; it != components.end(); ++it )
   {
@@ -2855,7 +2855,7 @@ QList<QColor> QgsSymbolLayerV2Utils::parseColorList( const QString& colorStr )
   }
 
   //try splitting string just at newlines
-  components = colorStr.split( QString( "\n" ) );
+  components = colorStr.split( '\n' );
   it = components.begin();
   for ( ; it != components.end(); ++it )
   {
@@ -2968,7 +2968,7 @@ QgsNamedColorList QgsSymbolLayerV2Utils::colorListFromMimeData( const QMimeData 
         {
           QDomElement colorElem = colorNodes.at( 0 ).toElement();
 
-          QStringList colorParts = colorElem.text().simplified().split( " " );
+          QStringList colorParts = colorElem.text().simplified().split( ' ' );
           if ( colorParts.length() < 3 )
           {
             continue;
@@ -3073,7 +3073,7 @@ bool QgsSymbolLayerV2Utils::saveColorsToGpl( QFile &file, const QString& palette
     stream << "Name: " << paletteName << endl;
   }
   stream << "Columns: 4" << endl;
-  stream << "#" << endl;
+  stream << '#' << endl;
 
   for ( QgsNamedColorList::ConstIterator colorIt = colors.constBegin(); colorIt != colors.constEnd(); ++colorIt )
   {
@@ -3110,7 +3110,7 @@ QgsNamedColorList QgsSymbolLayerV2Utils::importColorsFromGpl( QFile &file, bool 
   }
 
   //find name line
-  while ( !in.atEnd() && !line.startsWith( "Name:" ) && !line.startsWith( "#" ) )
+  while ( !in.atEnd() && !line.startsWith( "Name:" ) && !line.startsWith( '#' ) )
   {
     line = in.readLine();
   }
@@ -3124,7 +3124,7 @@ QgsNamedColorList QgsSymbolLayerV2Utils::importColorsFromGpl( QFile &file, bool 
   }
 
   //ignore lines until after "#"
-  while ( !in.atEnd() && !line.startsWith( "#" ) )
+  while ( !in.atEnd() && !line.startsWith( '#' ) )
   {
     line = in.readLine();
   }
@@ -3594,13 +3594,13 @@ QStringList QgsSymbolLayerV2Utils::listSvgFiles()
     QDir dir( svgPaths[i] );
     Q_FOREACH ( const QString& item, dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
     {
-      svgPaths.insert( i + 1, dir.path() + "/" + item );
+      svgPaths.insert( i + 1, dir.path() + '/' + item );
     }
 
     Q_FOREACH ( const QString& item, dir.entryList( QStringList( "*.svg" ), QDir::Files ) )
     {
       // TODO test if it is correct SVG
-      list.append( dir.path() + "/" + item );
+      list.append( dir.path() + '/' + item );
     }
   }
   return list;
@@ -3620,12 +3620,12 @@ QStringList QgsSymbolLayerV2Utils::listSvgFilesAt( const QString& directory )
     QDir dir( svgPaths[i] );
     Q_FOREACH ( const QString& item, dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
     {
-      svgPaths.insert( i + 1, dir.path() + "/" + item );
+      svgPaths.insert( i + 1, dir.path() + '/' + item );
     }
 
     Q_FOREACH ( const QString& item, dir.entryList( QStringList( "*.svg" ), QDir::Files ) )
     {
-      list.append( dir.path() + "/" + item );
+      list.append( dir.path() + '/' + item );
     }
   }
   return list;
@@ -3679,7 +3679,7 @@ QString QgsSymbolLayerV2Utils::symbolNameToPath( QString name )
     //QFileInfo myInfo( name );
     //QString myFileName = myInfo.fileName(); // foo.svg
     //QString myLowestDir = myInfo.dir().dirName();
-    //QString myLocalPath = svgPath + QString( myLowestDir.isEmpty() ? "" : "/" + myLowestDir ) + "/" + myFileName;
+    //QString myLocalPath = svgPath + QString( myLowestDir.isEmpty() ? "" : '/' + myLowestDir ) + '/' + myFileName;
     QString myLocalPath = svgPath + QDir::separator() + name;
 
     QgsDebugMsg( "Alternative svg path: " + myLocalPath );

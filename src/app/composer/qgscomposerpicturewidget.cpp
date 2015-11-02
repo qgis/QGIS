@@ -300,7 +300,7 @@ void QgsComposerPictureWidget::on_mComposerMapComboBox_activated( const QString 
   //extract id
   int id;
   bool conversionOk;
-  QStringList textSplit = text.split( " " );
+  QStringList textSplit = text.split( ' ' );
   if ( textSplit.size() < 1 )
   {
     return;

@@ -72,7 +72,7 @@ QString QgsMultiPolygonV2::asJSON( int precision ) const
   {
     if ( dynamic_cast<const QgsPolygonV2*>( geom ) )
     {
-      json += "[";
+      json += '[';
 
       const QgsPolygonV2* polygon = static_cast<const QgsPolygonV2*>( geom );
 

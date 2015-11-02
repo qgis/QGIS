@@ -252,8 +252,8 @@ QString QgsDataSourceURI::removePassword( const QString& aUri )
   }
   else if ( aUri.contains( "SDE:" ) )
   {
-    QStringList strlist = aUri.split( "," );
-    safeName = strlist[0] + "," + strlist[1] + "," + strlist[2] + "," + strlist[3];
+    QStringList strlist = aUri.split( ',' );
+    safeName = strlist[0] + ',' + strlist[1] + ',' + strlist[2] + ',' + strlist[3];
   }
   return safeName;
 }
@@ -378,7 +378,7 @@ QString QgsDataSourceURI::escape( const QString &theVal, QChar delim = '\'' ) co
 {
   QString val = theVal;
 
-  val.replace( "\\", "\\\\" );
+  val.replace( '\\', "\\\\" );
   val.replace( delim, QString( "\\%1" ).arg( delim ) );
 
   return val;
@@ -464,12 +464,12 @@ QString QgsDataSourceURI::connectionInfo( bool expandAuthConfig ) const
 
   if ( mDatabase != "" )
   {
-    connectionItems << "dbname='" + escape( mDatabase ) + "'";
+    connectionItems << "dbname='" + escape( mDatabase ) + '\'';
   }
 
   if ( mService != "" )
   {
-    connectionItems << "service='" + escape( mService ) + "'";
+    connectionItems << "service='" + escape( mService ) + '\'';
   }
   else if ( mHost != "" )
   {
@@ -484,11 +484,11 @@ QString QgsDataSourceURI::connectionInfo( bool expandAuthConfig ) const
 
   if ( mUsername != "" )
   {
-    connectionItems << "user='" + escape( mUsername ) + "'";
+    connectionItems << "user='" + escape( mUsername ) + '\'';
 
     if ( mPassword != "" )
     {
-      connectionItems << "password='" + escape( mPassword ) + "'";
+      connectionItems << "password='" + escape( mPassword ) + '\'';
     }
   }
 
@@ -553,18 +553,18 @@ QString QgsDataSourceURI::uri( bool expandAuthConfig ) const
 
   for ( QMap<QString, QString>::const_iterator it = mParams.begin(); it != mParams.end(); ++it )
   {
-    if ( it.key().contains( "=" ) || it.key().contains( " " ) )
+    if ( it.key().contains( '=' ) || it.key().contains( ' ' ) )
     {
       QgsDebugMsg( QString( "invalid uri parameter %1 skipped" ).arg( it.key() ) );
       continue;
     }
 
-    theUri += " " + it.key() + "='" + escape( it.value() ) + "'";
+    theUri += ' ' + it.key() + "='" + escape( it.value() ) + '\'';
   }
 
   QString columnName( mGeometryColumn );
-  columnName.replace( "\\", "\\\\" );
-  columnName.replace( ")", "\\)" );
+  columnName.replace( '\\', "\\\\" );
+  columnName.replace( ')', "\\)" );
 
   theUri += QString( " table=%1%2 sql=%3" )
             .arg( quotedTablename(),

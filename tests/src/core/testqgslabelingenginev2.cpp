@@ -277,7 +277,7 @@ bool TestQgsLabelingEngineV2::imageCheck( const QString& testName, QImage &image
   painter.end();
 
   mReport += "<h2>" + testName + "</h2>\n";
-  QString tempDir = QDir::tempPath() + "/";
+  QString tempDir = QDir::tempPath() + '/';
   QString fileName = tempDir + testName + ".png";
   imageWithBackground.save( fileName, "PNG" );
   QgsRenderChecker checker;

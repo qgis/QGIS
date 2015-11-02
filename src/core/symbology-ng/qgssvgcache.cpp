@@ -315,7 +315,7 @@ double QgsSvgCache::calcSizeScaleFactor( QgsSvgCacheEntry* entry, const QDomElem
     return 1.0;
 
   //width should be 3rd element in a 4 part space delimited string
-  QStringList parts = viewBox.split( " " );
+  QStringList parts = viewBox.split( ' ' );
   if ( parts.count() != 4 )
     return 1.0;
 
@@ -619,9 +619,9 @@ void QgsSvgCache::replaceElemParams( QDomElement& elem, const QColor& fill, cons
 
         if ( entryIt != entryList.constBegin() )
         {
-          newAttributeString.append( ";" );
+          newAttributeString.append( ';' );
         }
-        newAttributeString.append( key + ":" + value );
+        newAttributeString.append( key + ':' + value );
       }
       elem.setAttribute( attribute.name(), newAttributeString );
     }
@@ -688,7 +688,7 @@ void QgsSvgCache::containsElemParams( const QDomElement& elem, bool& hasFillPara
         }
         QString key = keyValueSplit.at( 0 );
         QString value = keyValueSplit.at( 1 );
-        valueSplit = value.split( " " );
+        valueSplit = value.split( ' ' );
         if ( !hasFillParam && value.startsWith( "param(fill)" ) )
         {
           hasFillParam = true;
@@ -721,7 +721,7 @@ void QgsSvgCache::containsElemParams( const QDomElement& elem, bool& hasFillPara
     else
     {
       QString value = attribute.value();
-      valueSplit = value.split( " " );
+      valueSplit = value.split( ' ' );
       if ( !hasFillParam && value.startsWith( "param(fill)" ) )
       {
         hasFillParam = true;

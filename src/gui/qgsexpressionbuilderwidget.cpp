@@ -331,7 +331,7 @@ void QgsExpressionBuilderWidget::fillFieldValues( const QString& fieldName, int 
     else if ( value.type() == QVariant::Int || value.type() == QVariant::Double || value.type() == QVariant::LongLong )
       strValue = value.toString();
     else
-      strValue = "'" + value.toString().replace( "'", "''" ) + "'";
+      strValue = '\'' + value.toString().replace( '\'', "''" ) + '\'';
     strValues.append( strValue );
   }
   mValuesModel->setStringList( strValues );
@@ -462,7 +462,7 @@ void QgsExpressionBuilderWidget::updateFunctionTree()
   {
     QgsExpression::Function* func = QgsExpression::Functions()[i];
     QString name = func->name();
-    if ( name.startsWith( "_" ) ) // do not display private functions
+    if ( name.startsWith( '_' ) ) // do not display private functions
       continue;
     if ( func->group() == "deprecated" ) // don't show deprecated functions
       continue;
@@ -473,17 +473,17 @@ void QgsExpressionBuilderWidget::updateFunctionTree()
       continue;
     }
     if ( func->params() != 0 )
-      name += "(";
-    else if ( !name.startsWith( "$" ) )
+      name += '(';
+    else if ( !name.startsWith( '$' ) )
       name += "()";
-    registerItem( func->group(), func->name(), " " + name + " ", func->helptext() );
+    registerItem( func->group(), func->name(), ' ' + name + ' ', func->helptext() );
   }
 
   QList<QgsExpression::Function*> specials = QgsExpression::specialColumns();
   for ( int i = 0; i < specials.size(); ++i )
   {
     QString name = specials[i]->name();
-    registerItem( specials[i]->group(), name, " " + name + " " );
+    registerItem( specials[i]->group(), name, ' ' + name + ' ' );
   }
 
   loadExpressionContext();
@@ -602,7 +602,7 @@ void QgsExpressionBuilderWidget::loadExpressionContext()
   QStringList variableNames = mExpressionContext.filteredVariableNames();
   Q_FOREACH ( const QString& variable, variableNames )
   {
-    registerItem( "Variables", variable, " @" + variable + " ",
+    registerItem( "Variables", variable, " @" + variable + ' ',
                   QgsExpression::variableHelpText( variable, true, mExpressionContext.variable( variable ) ),
                   QgsExpressionItem::ExpressionNode,
                   mExpressionContext.isHighlightedVariable( variable ) );
@@ -614,11 +614,11 @@ void QgsExpressionBuilderWidget::loadExpressionContext()
   {
     QgsExpression::Function* func = mExpressionContext.function( functionName );
     QString name = func->name();
-    if ( name.startsWith( "_" ) ) // do not display private functions
+    if ( name.startsWith( '_' ) ) // do not display private functions
       continue;
     if ( func->params() != 0 )
-      name += "(";
-    registerItem( func->group(), func->name(), " " + name + " ", func->helptext() );
+      name += '(';
+    registerItem( func->group(), func->name(), ' ' + name + ' ', func->helptext() );
   }
 }
 
@@ -649,7 +649,7 @@ void QgsExpressionBuilderWidget::on_lblPreview_linkActivated( const QString& lin
 void QgsExpressionBuilderWidget::on_mValuesListView_doubleClicked( const QModelIndex &index )
 {
   // Insert the item text or replace selected text
-  txtExpressionString->insertText( " " + index.data( Qt::DisplayRole ).toString() + " " );
+  txtExpressionString->insertText( ' ' + index.data( Qt::DisplayRole ).toString() + ' ' );
   txtExpressionString->setFocus();
 }
 
@@ -658,7 +658,7 @@ void QgsExpressionBuilderWidget::operatorButtonClicked()
   QPushButton* button = dynamic_cast<QPushButton*>( sender() );
 
   // Insert the button text or replace selected text
-  txtExpressionString->insertText( " " + button->text() + " " );
+  txtExpressionString->insertText( ' ' + button->text() + ' ' );
   txtExpressionString->setFocus();
 }
 

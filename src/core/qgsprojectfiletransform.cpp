@@ -588,7 +588,7 @@ void QgsProjectFileTransform::transform1800to1900()
           QDomElement propElem = propList.at( k ).toElement();
           if ( propElem.attribute( "k" ) == "color" || propElem.attribute( "k" ) == "color_border" )
           {
-            propElem.setAttribute( "v", propElem.attribute( "v" ).section( ",", 0, 2 ) + ",255" );
+            propElem.setAttribute( "v", propElem.attribute( "v" ).section( ',', 0, 2 ) + ",255" );
           }
         }
       }

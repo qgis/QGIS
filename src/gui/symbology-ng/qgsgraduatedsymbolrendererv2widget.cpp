@@ -1053,7 +1053,7 @@ QList<QgsSymbolV2*> QgsGraduatedSymbolRendererV2Widget::selectedSymbols()
     QModelIndexList::const_iterator indexIt = selectedIndexes.constBegin();
     for ( ; indexIt != selectedIndexes.constEnd(); ++indexIt )
     {
-      QStringList list = m->model()->data( *indexIt ).toString().split( " " );
+      QStringList list = m->model()->data( *indexIt ).toString().split( ' ' );
       if ( list.size() < 3 )
       {
         continue;

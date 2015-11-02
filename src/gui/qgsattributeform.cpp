@@ -579,7 +579,7 @@ void QgsAttributeForm::initPython()
   {
     QString module = mLayer->editFormInit();
 
-    int pos = module.lastIndexOf( "." );
+    int pos = module.lastIndexOf( '.' );
     if ( pos >= 0 )
     {
       QgsPythonRunner::run( QString( "import %1" ).arg( module.left( pos ) ) );

@@ -343,7 +343,7 @@ QString QgsGdalProvider::metadata()
     myMetadata += "</p>\n";
     myMetadata += "<p>";
     myMetadata += QString::number( mGeoTransform[0] );
-    myMetadata += ",";
+    myMetadata += ',';
     myMetadata += QString::number( mGeoTransform[3] );
     myMetadata += "</p>\n";
 
@@ -352,7 +352,7 @@ QString QgsGdalProvider::metadata()
     myMetadata += "</p>\n";
     myMetadata += "<p>";
     myMetadata += QString::number( mGeoTransform[1] );
-    myMetadata += ",";
+    myMetadata += ',';
     myMetadata += QString::number( mGeoTransform[5] );
     myMetadata += "</p>\n";
   }
@@ -909,16 +909,16 @@ QString QgsGdalProvider::generateBandName( int theBandNumber ) const
         QString val( *i );
         if ( !val.startsWith( "NETCDF_DIM_EXTRA" ) && !val.contains( "#units=" ) )
           continue;
-        QStringList values = val.split( "=" );
+        QStringList values = val.split( '=' );
         val = values.at( 1 );
         if ( values.at( 0 ) == "NETCDF_DIM_EXTRA" )
         {
-          dimExtraValues = val.replace( QString( "{" ), QString() ).replace( QString( "}" ), QString() ).split( "," );
+          dimExtraValues = val.replace( QString( "{" ), QString() ).replace( QString( "}" ), QString() ).split( ',' );
           //http://qt-project.org/doc/qt-4.8/qregexp.html#capturedTexts
         }
         else
         {
-          unitsMap[ values.at( 0 ).split( "#" ).at( 0 )] = val;
+          unitsMap[ values.at( 0 ).split( '#' ).at( 0 )] = val;
         }
       }
       if ( dimExtraValues.count() > 0 )
@@ -936,7 +936,7 @@ QString QgsGdalProvider::generateBandName( int theBandNumber ) const
             QString val( *i );
             if ( !val.startsWith( "NETCDF_DIM_" ) )
               continue;
-            QStringList values = val.split( "=" );
+            QStringList values = val.split( '=' );
             for ( QStringList::const_iterator j = dimExtraValues.begin();
                   j != dimExtraValues.end(); ++j )
             {
@@ -944,9 +944,9 @@ QString QgsGdalProvider::generateBandName( int theBandNumber ) const
               if ( values.at( 0 ) != "NETCDF_DIM_" + dim )
                 continue;
               if ( unitsMap.contains( dim ) && unitsMap[ dim ] != "" && unitsMap[ dim ] != "none" )
-                bandNameValues.append( dim + "=" + values.at( 1 ) + " (" + unitsMap[ dim ] + ")" );
+                bandNameValues.append( dim + '=' + values.at( 1 ) + " (" + unitsMap[ dim ] + ')' );
               else
-                bandNameValues.append( dim + "=" + values.at( 1 ) );
+                bandNameValues.append( dim + '=' + values.at( 1 ) );
             }
           }
         }
@@ -1568,7 +1568,7 @@ QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> & theRaste
   {
     Q_FOREACH ( const QString& option, theConfigOptions )
     {
-      QStringList opt = option.split( "=" );
+      QStringList opt = option.split( '=' );
       QByteArray key = opt[0].toLocal8Bit();
       QByteArray value = opt[1].toLocal8Bit();
       // save previous value
@@ -1933,8 +1933,8 @@ QGISEXTERN bool isProvider()
 */
 static QString createFileFilter_( QString const &longName, QString const &glob )
 {
-  // return longName + " [GDAL] (" + glob.toLower() + " " + glob.toUpper() + ");;";
-  return longName + " (" + glob.toLower() + " " + glob.toUpper() + ");;";
+  // return longName + " [GDAL] (" + glob.toLower() + ' ' + glob.toUpper() + ");;";
+  return longName + " (" + glob.toLower() + ' ' + glob.toUpper() + ");;";
 } // createFileFilter_
 
 void buildSupportedRasterFileFilterAndExtensions( QString & theFileFiltersString, QStringList & theExtensions, QStringList & theWildcards )
@@ -2011,7 +2011,7 @@ void buildSupportedRasterFileFilterAndExtensions( QString & theFileFiltersString
     // address is 0, or the first character is null
     while ( myGdalDriverMetadata && myGdalDriverMetadata[0] )
     {
-      metadataTokens = QString( *myGdalDriverMetadata ).split( "=", QString::SkipEmptyParts );
+      metadataTokens = QString( *myGdalDriverMetadata ).split( '=', QString::SkipEmptyParts );
       // QgsDebugMsg(QString("\t%1").arg(*myGdalDriverMetadata));
 
       // XXX add check for malformed metadataTokens
@@ -2045,8 +2045,8 @@ void buildSupportedRasterFileFilterAndExtensions( QString & theFileFiltersString
       if ( !( myGdalDriverExtension.isEmpty() || myGdalDriverLongName.isEmpty() ) )
       {
         // XXX add check for SDTS; in that case we want (*CATD.DDF)
-        QString glob = "*." + myGdalDriverExtension.replace( "/", " *." );
-        theExtensions << myGdalDriverExtension.replace( "/", "" ).replace( "*", "" ).replace( ".", "" );
+        QString glob = "*." + myGdalDriverExtension.replace( '/', " *." );
+        theExtensions << myGdalDriverExtension.remove( '/' ).remove( '*' ).remove( '.' );
         // Add only the first JP2 driver found to the filter list (it's the one GDAL uses)
         if ( myGdalDriverDescription == "JPEG2000" ||
              myGdalDriverDescription.startsWith( "JP2" ) ) // JP2ECW, JP2KAK, JP2MrSID
@@ -2885,7 +2885,7 @@ QString QgsGdalProvider::validateCreationOptions( const QStringList& createOptio
   QMap< QString, QString > optionsMap;
   Q_FOREACH ( const QString& option, createOptions )
   {
-    QStringList opt = option.split( "=" );
+    QStringList opt = option.split( '=' );
     optionsMap[ opt[0].toUpper()] = opt[1];
     QgsDebugMsg( "option: " + option );
   }

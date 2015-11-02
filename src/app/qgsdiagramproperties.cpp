@@ -484,8 +484,8 @@ void QgsDiagramProperties::on_mDiagramTypeComboBox_currentIndexChanged( int inde
 QString QgsDiagramProperties::guessLegendText( const QString& expression )
 {
   //trim unwanted characters from expression text for legend
-  QString text = expression.mid( expression.startsWith( "\"" ) ? 1 : 0 );
-  if ( text.endsWith( "\"" ) )
+  QString text = expression.mid( expression.startsWith( '\"' ) ? 1 : 0 );
+  if ( text.endsWith( '\"' ) )
     text.chop( 1 );
   return text;
 }

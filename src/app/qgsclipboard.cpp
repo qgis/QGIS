@@ -157,7 +157,7 @@ QgsFeatureList QgsClipboard::copyOf( const QgsFields &fields )
   QString text = cb->text( QClipboard::Clipboard );
 #endif
 
-  QStringList values = text.split( "\n" );
+  QStringList values = text.split( '\n' );
   if ( values.isEmpty() || text.isEmpty() )
     return mFeatureClipboard;
 

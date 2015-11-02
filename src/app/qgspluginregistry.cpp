@@ -238,7 +238,7 @@ bool QgsPluginRegistry::checkQgisVersion( const QString& minVersion, const QStri
   // our qgis version - cut release name after version number
   QString qgisVersion = QString( QGis::QGIS_VERSION ).section( '-', 0, 0 );
 
-  QStringList qgisVersionParts = qgisVersion.split( "." );
+  QStringList qgisVersionParts = qgisVersion.split( '.' );
 
   int qgisMajor = qgisVersionParts.at( 0 ).toInt();
   int qgisMinor = qgisVersionParts.at( 1 ).toInt();
@@ -463,7 +463,7 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString& thePluginDirString
 
   for ( uint i = 0; i < myPluginDir.count(); i++ )
   {
-    QString myFullPath = thePluginDirString + "/" + myPluginDir[i];
+    QString myFullPath = thePluginDirString + '/' + myPluginDir[i];
     if ( checkCppPlugin( myFullPath ) )
     {
       // check if the plugin was active on last session

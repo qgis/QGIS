@@ -215,7 +215,7 @@ QSqlDatabase QgsMssqlProvider::GetDatabase( const QString& service, const QStrin
   if ( service.isEmpty() )
   {
     if ( !host.isEmpty() )
-      connectionName = host + ".";
+      connectionName = host + '.';
 
     if ( database.isEmpty() )
     {
@@ -641,7 +641,7 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate )
 
   if ( !mSqlWhereClause.isEmpty() )
   {
-    statement += " where (" + mSqlWhereClause + ")";
+    statement += " where (" + mSqlWhereClause + ')';
   }
 
   if ( !query.exec( statement ) )
@@ -782,8 +782,8 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList & flist )
 
       if ( !first )
       {
-        statement += ",";
-        values += ",";
+        statement += ',';
+        values += ',';
       }
       else
         first = false;
@@ -797,8 +797,8 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList & flist )
     {
       if ( !first )
       {
-        statement += ",";
-        values += ",";
+        statement += ',';
+        values += ',';
       }
 
       statement += QString( "[%1]" ).arg( mGeometryColName );
@@ -822,7 +822,7 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList & flist )
       }
     }
 
-    statement += ") VALUES (" + values + ")";
+    statement += ") VALUES (" + values + ')';
 
     // use prepared statement to prevent from sql injection
     if ( !query.prepare( statement ) )
@@ -981,7 +981,7 @@ bool QgsMssqlProvider::addAttributes( const QList<QgsField> &attributes )
                     mSchemaName, mTableName );
     }
     else
-      statement += ",";
+      statement += ',';
 
     statement += QString( "[%1] %2" ).arg( it->name(), type );
   }
@@ -1013,7 +1013,7 @@ bool QgsMssqlProvider::deleteAttributes( const QgsAttributeIds &attributes )
       statement = QString( "ALTER TABLE [%1].[%2] DROP COLUMN " ).arg( mSchemaName, mTableName );
     }
     else
-      statement += ",";
+      statement += ',';
 
     statement += QString( "[%1]" ).arg( mAttributeFields.at( *it ).name() );
   }
@@ -1080,7 +1080,7 @@ bool QgsMssqlProvider::changeAttributeValues( const QgsChangedAttributesMap &att
         continue; // invalid
 
       if ( !first )
-        statement += ",";
+        statement += ',';
       else
         first = false;
 
@@ -1255,7 +1255,7 @@ bool QgsMssqlProvider::deleteFeatures( const QgsFeatureIds & id )
     if ( featureIds.isEmpty() )
       featureIds = FID_TO_STRING( *it );
     else
-      featureIds += "," + FID_TO_STRING( *it );
+      featureIds += ',' + FID_TO_STRING( *it );
   }
 
   if ( !mDatabase.isOpen() )
@@ -1697,7 +1697,7 @@ QgsVectorLayerImport::ImportError QgsMssqlProvider::createEmptyLayer(
     QStringList sl = srs->authid().split( ':' );
     if ( sl.length() == 2 )
     {
-      auth_name = "'" + sl[0] + "'";
+      auth_name = '\'' + sl[0] + '\'';
       auth_srid = sl[1];
     }
     sql = QString( "IF NOT EXISTS (SELECT * FROM spatial_ref_sys WHERE srid=%1) INSERT INTO spatial_ref_sys (srid, auth_name, auth_srid, srtext, proj4text) VALUES (%1, %2, %3, '%4', '%5')" )

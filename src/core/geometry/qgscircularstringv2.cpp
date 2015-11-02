@@ -269,7 +269,7 @@ unsigned char* QgsCircularStringV2::asWkb( int& binarySize ) const
 
 QString QgsCircularStringV2::asWkt( int precision ) const
 {
-  QString wkt = wktTypeStr() + " ";
+  QString wkt = wktTypeStr() + ' ';
   QList<QgsPointV2> pts;
   points( pts );
   wkt += QgsGeometryUtils::pointsToWKT( pts, precision, is3D(), isMeasure() );

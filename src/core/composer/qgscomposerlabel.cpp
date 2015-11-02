@@ -317,8 +317,8 @@ void QgsComposerLabel::replaceDateText( QString& text ) const
   {
     //check if there is a bracket just after $CURRENT_DATE
     QString formatText;
-    int openingBracketPos = text.indexOf( "(", currentDatePos );
-    int closingBracketPos = text.indexOf( ")", openingBracketPos + 1 );
+    int openingBracketPos = text.indexOf( '(', currentDatePos );
+    int closingBracketPos = text.indexOf( ')', openingBracketPos + 1 );
     if ( openingBracketPos != -1 &&
          closingBracketPos != -1 &&
          ( closingBracketPos - openingBracketPos ) > 1 &&

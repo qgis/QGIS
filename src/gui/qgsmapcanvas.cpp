@@ -824,14 +824,14 @@ void QgsMapCanvas::saveAsImage( const QString& theFileName, QPixmap * theQPixmap
   myHeader += "0 \r\n";
   //Pixel YDim - almost always negative - see
   //http://en.wikipedia.org/wiki/World_file#cite_note-2
-  myHeader += "-" + qgsDoubleToString( mapUnitsPerPixel() ) + "\r\n";
+  myHeader += '-' + qgsDoubleToString( mapUnitsPerPixel() ) + "\r\n";
   //Origin X (center of top left cell)
   myHeader += qgsDoubleToString( myRect.xMinimum() + ( mapUnitsPerPixel() / 2 ) ) + "\r\n";
   //Origin Y (center of top left cell)
   myHeader += qgsDoubleToString( myRect.yMaximum() - ( mapUnitsPerPixel() / 2 ) ) + "\r\n";
   QFileInfo myInfo  = QFileInfo( theFileName );
   // allow dotted names
-  QString myWorldFileName = myInfo.absolutePath() + "/" + myInfo.completeBaseName() + "." + theFormat + "w";
+  QString myWorldFileName = myInfo.absolutePath() + '/' + myInfo.completeBaseName() + '.' + theFormat + 'w';
   QFile myWorldFile( myWorldFileName );
   if ( !myWorldFile.open( QIODevice::WriteOnly ) ) //don't use QIODevice::Text
   {

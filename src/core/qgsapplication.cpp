@@ -132,7 +132,7 @@ void QgsApplication::init( QString customConfigPath )
     qDebug( "- source directory: %s", ABISYM( mBuildSourcePath ).toUtf8().data() );
     qDebug( "- output directory of the build: %s", ABISYM( mBuildOutputPath ).toUtf8().data() );
 #ifdef _MSC_VER
-    ABISYM( mCfgIntDir ) = prefixPath.split( "/", QString::SkipEmptyParts ).last();
+    ABISYM( mCfgIntDir ) = prefixPath.split( '/', QString::SkipEmptyParts ).last();
     qDebug( "- cfg: %s", ABISYM( mCfgIntDir ).toUtf8().data() );
 #endif
   }
@@ -142,16 +142,16 @@ void QgsApplication::init( QString customConfigPath )
     // we run from source directory - not installed to destination (specified prefix)
     ABISYM( mPrefixPath ) = QString(); // set invalid path
 #if defined(_MSC_VER) && !defined(USING_NMAKE)
-    setPluginPath( ABISYM( mBuildOutputPath ) + "/" + QString( QGIS_PLUGIN_SUBDIR ) + "/" + ABISYM( mCfgIntDir ) );
+    setPluginPath( ABISYM( mBuildOutputPath ) + '/' + QString( QGIS_PLUGIN_SUBDIR ) + '/' + ABISYM( mCfgIntDir ) );
 #else
-    setPluginPath( ABISYM( mBuildOutputPath ) + "/" + QString( QGIS_PLUGIN_SUBDIR ) );
+    setPluginPath( ABISYM( mBuildOutputPath ) + '/' + QString( QGIS_PLUGIN_SUBDIR ) );
 #endif
     setPkgDataPath( ABISYM( mBuildSourcePath ) ); // directly source path - used for: doc, resources, svg
-    ABISYM( mLibraryPath ) = ABISYM( mBuildOutputPath ) + "/" + QGIS_LIB_SUBDIR + "/";
+    ABISYM( mLibraryPath ) = ABISYM( mBuildOutputPath ) + '/' + QGIS_LIB_SUBDIR + '/';
 #if defined(_MSC_VER) && !defined(USING_NMAKE)
-    ABISYM( mLibexecPath ) = ABISYM( mBuildOutputPath ) + "/" + QGIS_LIBEXEC_SUBDIR + "/" + ABISYM( mCfgIntDir ) + "/";
+    ABISYM( mLibexecPath ) = ABISYM( mBuildOutputPath ) + '/' + QGIS_LIBEXEC_SUBDIR + '/' + ABISYM( mCfgIntDir ) + '/';
 #else
-    ABISYM( mLibexecPath ) = ABISYM( mBuildOutputPath ) + "/" + QGIS_LIBEXEC_SUBDIR + "/";
+    ABISYM( mLibexecPath ) = ABISYM( mBuildOutputPath ) + '/' + QGIS_LIBEXEC_SUBDIR + '/';
 #endif
   }
   else
@@ -182,7 +182,7 @@ void QgsApplication::init( QString customConfigPath )
 
   if ( !customConfigPath.isEmpty() )
   {
-    ABISYM( mConfigPath ) = customConfigPath + "/"; // make sure trailing slash is included
+    ABISYM( mConfigPath ) = customConfigPath + '/'; // make sure trailing slash is included
   }
 
   ABISYM( mDefaultSvgPaths ) << qgisSettingsDirPath() + QLatin1String( "svg/" );
@@ -318,11 +318,11 @@ void QgsApplication::setPrefixPath( const QString &thePrefixPath, bool useDefaul
 #endif
   if ( useDefaultPaths && !ABISYM( mRunningFromBuildDir ) )
   {
-    setPluginPath( ABISYM( mPrefixPath ) + "/" + QString( QGIS_PLUGIN_SUBDIR ) );
-    setPkgDataPath( ABISYM( mPrefixPath ) + "/" + QString( QGIS_DATA_SUBDIR ) );
+    setPluginPath( ABISYM( mPrefixPath ) + '/' + QString( QGIS_PLUGIN_SUBDIR ) );
+    setPkgDataPath( ABISYM( mPrefixPath ) + '/' + QString( QGIS_DATA_SUBDIR ) );
   }
-  ABISYM( mLibraryPath ) = ABISYM( mPrefixPath ) + "/" + QGIS_LIB_SUBDIR + "/";
-  ABISYM( mLibexecPath ) = ABISYM( mPrefixPath ) + "/" + QGIS_LIBEXEC_SUBDIR + "/";
+  ABISYM( mLibraryPath ) = ABISYM( mPrefixPath ) + '/' + QGIS_LIB_SUBDIR + '/';
+  ABISYM( mLibexecPath ) = ABISYM( mPrefixPath ) + '/' + QGIS_LIBEXEC_SUBDIR + '/';
 }
 
 void QgsApplication::setPluginPath( const QString &thePluginPath )
@@ -478,9 +478,9 @@ void QgsApplication::setUITheme( const QString &themeName )
     {
       QString line = in.readLine();
       // This is is a variable
-      if ( line.startsWith( "@" ) )
+      if ( line.startsWith( '@' ) )
       {
-        int index = line.indexOf( ":" );
+        int index = line.indexOf( ':' );
         QString name = line.mid( 0, index );
         QString value = line.mid( index + 1, line.length() );
         styledata.replace( name, value );
@@ -683,7 +683,7 @@ QStringList QgsApplication::svgPaths()
   QString myPaths = settings.value( "svg/searchPathsForSVG", "" ).toString();
   if ( !myPaths.isEmpty() )
   {
-    myPathList = myPaths.split( "|" );
+    myPathList = myPaths.split( '|' );
   }
 
   myPathList << ABISYM( mDefaultSvgPaths );
@@ -903,14 +903,14 @@ QString QgsApplication::absolutePathToRelativePath( const QString& aPath, const 
 #if defined( Q_OS_WIN )
   const Qt::CaseSensitivity cs = Qt::CaseInsensitive;
 
-  aPathUrl.replace( "\\", "/" );
+  aPathUrl.replace( '\\', '/' );
   if ( aPathUrl.startsWith( "//" ) )
   {
     // keep UNC prefix
     aPathUrl = "\\\\" + aPathUrl.mid( 2 );
   }
 
-  tPathUrl.replace( "\\", "/" );
+  tPathUrl.replace( '\\', '/' );
   if ( tPathUrl.startsWith( "//" ) )
   {
     // keep UNC prefix
@@ -920,8 +920,8 @@ QString QgsApplication::absolutePathToRelativePath( const QString& aPath, const 
   const Qt::CaseSensitivity cs = Qt::CaseSensitive;
 #endif
 
-  QStringList targetElems = tPathUrl.split( "/", QString::SkipEmptyParts );
-  QStringList aPathElems = aPathUrl.split( "/", QString::SkipEmptyParts );
+  QStringList targetElems = tPathUrl.split( '/', QString::SkipEmptyParts );
+  QStringList aPathElems = aPathUrl.split( '/', QString::SkipEmptyParts );
 
   targetElems.removeAll( "." );
   aPathElems.removeAll( "." );
@@ -973,14 +973,14 @@ QString QgsApplication::relativePathToAbsolutePath( const QString& rpath, const 
   QString targetPathUrl = targetPath;
 
 #if defined(Q_OS_WIN)
-  rPathUrl.replace( "\\", "/" );
-  targetPathUrl.replace( "\\", "/" );
+  rPathUrl.replace( '\\', '/' );
+  targetPathUrl.replace( '\\', '/' );
 
   bool uncPath = targetPathUrl.startsWith( "//" );
 #endif
 
-  QStringList srcElems = rPathUrl.split( "/", QString::SkipEmptyParts );
-  QStringList targetElems = targetPathUrl.split( "/", QString::SkipEmptyParts );
+  QStringList srcElems = rPathUrl.split( '/', QString::SkipEmptyParts );
+  QStringList targetElems = targetPathUrl.split( '/', QString::SkipEmptyParts );
 
 #if defined(Q_OS_WIN)
   if ( uncPath )

@@ -652,7 +652,7 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
   QString bkSubsetString = subsetString;
   if ( !subsetString.isEmpty() )
   {
-    subsetString.prepend( "(" ).append( ") AND " );
+    subsetString.prepend( '(' ).append( ") AND " );
   }
 
   QString joinFieldName;
@@ -679,11 +679,11 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
 
       default:
       case QVariant::String:
-        v.replace( "'", "''" );
-        v.prepend( "'" ).append( "'" );
+        v.replace( '\'', "''" );
+        v.prepend( '\'' ).append( '\'' );
         break;
     }
-    subsetString += "=" + v;
+    subsetString += '=' + v;
   }
 
   joinLayer->dataProvider()->setSubsetString( subsetString, false );

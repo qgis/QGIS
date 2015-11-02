@@ -125,7 +125,7 @@ class CustomLayerOrderModel : public QAbstractListModel
         return false;
 
       QByteArray encodedData = data->data( "application/qgis.layerorderdata" );
-      QStringList lst = QString::fromUtf8( encodedData ).split( "\n" );
+      QStringList lst = QString::fromUtf8( encodedData ).split( '\n' );
 
       if ( row < 0 )
         row = mOrder.count();

@@ -43,8 +43,8 @@ QgsOWSConnection::QgsOWSConnection( const QString & theService, const QString & 
 
   QSettings settings;
 
-  QString key = "/Qgis/connections-" + mService.toLower() + "/" + mConnName;
-  QString credentialsKey = "/Qgis/" + mService + "/" + mConnName;
+  QString key = "/Qgis/connections-" + mService.toLower() + '/' + mConnName;
+  QString credentialsKey = "/Qgis/" + mService + '/' + mConnName;
 
   QStringList connStringParts;
 
@@ -129,6 +129,6 @@ void QgsOWSConnection::setSelectedConnection( const QString & theService, const 
 void QgsOWSConnection::deleteConnection( const QString & theService, const QString & name )
 {
   QSettings settings;
-  settings.remove( "/Qgis/connections-" + theService.toLower() + "/" + name );
-  settings.remove( "/Qgis/" + theService + "/" + name );
+  settings.remove( "/Qgis/connections-" + theService.toLower() + '/' + name );
+  settings.remove( "/Qgis/" + theService + '/' + name );
 }

@@ -271,14 +271,14 @@ QString QgsGmlSchema::xsdComplexTypeGmlBaseType( const QDomElement &element, con
 
 QString QgsGmlSchema::stripNS( const QString & name )
 {
-  return name.contains( ":" ) ? name.section( ':', 1 ) : name;
+  return name.contains( ':' ) ? name.section( ':', 1 ) : name;
 }
 
 QList<QDomElement> QgsGmlSchema::domElements( const QDomElement &element, const QString & path )
 {
   QList<QDomElement> list;
 
-  QStringList names = path.split( "." );
+  QStringList names = path.split( '.' );
   if ( names.size() == 0 ) return list;
   QString name = names.value( 0 );
   names.removeFirst();

@@ -213,7 +213,7 @@ bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( QString theCrs )
   QRegExp re( "urn:ogc:def:crs:([^:]+).+([^:]+)", Qt::CaseInsensitive );
   if ( re.exactMatch( theCrs ) )
   {
-    theCrs = re.cap( 1 ) + ":" + re.cap( 2 );
+    theCrs = re.cap( 1 ) + ':' + re.cap( 2 );
   }
   else
   {
@@ -357,7 +357,7 @@ bool QgsCoordinateReferenceSystem::loadFromDb( const QString& db, const QString&
 
   QString mySql = "select srs_id,description,projection_acronym,"
                   "ellipsoid_acronym,parameters,srid,auth_name||':'||auth_id,is_geo "
-                  "from tbl_srs where " + expression + "=" + quotedValue( value ) + " order by deprecated";
+                  "from tbl_srs where " + expression + '=' + quotedValue( value ) + " order by deprecated";
   myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(),
                               mySql.toUtf8().length(),
                               &myPreparedStatement, &myTail );
@@ -1475,19 +1475,19 @@ bool QgsCoordinateReferenceSystem::saveAsUserCRS( const QString& name )
   {
     mySql = "insert into tbl_srs (srs_id,description,projection_acronym,ellipsoid_acronym,parameters,is_geo) values ("
             + QString::number( USER_CRS_START_ID )
-            + "," + quotedValue( name )
-            + "," + quotedValue( projectionAcronym() )
-            + "," + quotedValue( ellipsoidAcronym() )
-            + "," + quotedValue( toProj4() )
+            + ',' + quotedValue( name )
+            + ',' + quotedValue( projectionAcronym() )
+            + ',' + quotedValue( ellipsoidAcronym() )
+            + ',' + quotedValue( toProj4() )
             + ",0)"; // <-- is_geo shamelessly hard coded for now
   }
   else
   {
     mySql = "insert into tbl_srs (description,projection_acronym,ellipsoid_acronym,parameters,is_geo) values ("
             + quotedValue( name )
-            + "," + quotedValue( projectionAcronym() )
-            + "," + quotedValue( ellipsoidAcronym() )
-            + "," + quotedValue( toProj4() )
+            + ',' + quotedValue( projectionAcronym() )
+            + ',' + quotedValue( ellipsoidAcronym() )
+            + ',' + quotedValue( toProj4() )
             + ",0)"; // <-- is_geo shamelessly hard coded for now
   }
   sqlite3      *myDatabase;
@@ -1566,8 +1566,8 @@ long QgsCoordinateReferenceSystem::getRecordCount()
 
 QString QgsCoordinateReferenceSystem::quotedValue( QString value )
 {
-  value.replace( "'", "''" );
-  return value.prepend( "'" ).append( "'" );
+  value.replace( '\'', "''" );
+  return value.prepend( '\'' ).append( '\'' );
 }
 
 // adapted from gdal/ogr/ogr_srs_dict.cpp
@@ -1601,7 +1601,7 @@ bool QgsCoordinateReferenceSystem::loadWkts( QHash<int, QString> &wkts, const ch
     }
     else
     {
-      int pos = line.indexOf( "," );
+      int pos = line.indexOf( ',' );
       if ( pos < 0 )
         return false;
 
@@ -1642,7 +1642,7 @@ bool QgsCoordinateReferenceSystem::loadIDs( QHash<int, QString> &wkts )
       if ( line.isNull() )
         break;
 
-      int pos = line.indexOf( "," );
+      int pos = line.indexOf( ',' );
       if ( pos < 0 )
         continue;
 
@@ -1840,7 +1840,7 @@ int QgsCoordinateReferenceSystem::syncDb()
   Q_FOREACH ( int i, wkts.keys() )
   {
     sql += delim + QString::number( i );
-    delim = ",";
+    delim = ',';
   }
   sql += ") AND NOT noupdate";
 
@@ -2027,8 +2027,8 @@ bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString& dbPath )
 
     if ( i > 0 )
     {
-      insert += ",";
-      values += ",";
+      insert += ',';
+      values += ',';
 
       if ( last )
       {
@@ -2036,7 +2036,7 @@ bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString& dbPath )
       }
       else
       {
-        update += ",";
+        update += ',';
       }
     }
 
@@ -2046,7 +2046,7 @@ bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString& dbPath )
     values += QString( "%%1" ).arg( i + 1 );
   }
 
-  insert = "INSERT INTO tbl_datum_transform(" + insert + ") VALUES (" + values + ")";
+  insert = "INSERT INTO tbl_datum_transform(" + insert + ") VALUES (" + values + ')';
 
   QgsDebugMsgLevel( QString( "insert:%1" ).arg( insert ), 4 );
   QgsDebugMsgLevel( QString( "update:%1" ).arg( update ), 4 );
@@ -2101,9 +2101,9 @@ bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString& dbPath )
     if ( v.at( idxmcode ).compare( QLatin1String( "'9607'" ) ) == 0 )
     {
       v[ idxmcode ] = "'9606'";
-      v[ idxrx ] = "'" + qgsDoubleToString( -( v[ idxrx ].remove( "'" ).toDouble() ) ) + "'";
-      v[ idxry ] = "'" + qgsDoubleToString( -( v[ idxry ].remove( "'" ).toDouble() ) ) + "'";
-      v[ idxrz ] = "'" + qgsDoubleToString( -( v[ idxrz ].remove( "'" ).toDouble() ) ) + "'";
+      v[ idxrx ] = '\'' + qgsDoubleToString( -( v[ idxrx ].remove( '\'' ).toDouble() ) ) + '\'';
+      v[ idxry ] = '\'' + qgsDoubleToString( -( v[ idxry ].remove( '\'' ).toDouble() ) ) + '\'';
+      v[ idxrz ] = '\'' + qgsDoubleToString( -( v[ idxrz ].remove( '\'' ).toDouble() ) ) + '\'';
     }
 
     //entry already in db?

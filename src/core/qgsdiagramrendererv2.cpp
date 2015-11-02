@@ -182,7 +182,7 @@ void QgsDiagramSettings::readXML( const QDomElement& elem, const QgsVectorLayer*
   {
     // Restore old format attributes and colors
 
-    QStringList colorList = elem.attribute( "colors" ).split( "/" );
+    QStringList colorList = elem.attribute( "colors" ).split( '/' );
     QStringList::const_iterator colorIt = colorList.constBegin();
     for ( ; colorIt != colorList.constEnd(); ++colorIt )
     {
@@ -193,7 +193,7 @@ void QgsDiagramSettings::readXML( const QDomElement& elem, const QgsVectorLayer*
 
     //attribute indices
     categoryAttributes.clear();
-    QStringList catList = elem.attribute( "categories" ).split( "/" );
+    QStringList catList = elem.attribute( "categories" ).split( '/' );
     QStringList::const_iterator catIt = catList.constBegin();
     for ( ; catIt != catList.constEnd(); ++catIt )
     {

@@ -302,7 +302,7 @@ QString QgsProviderRegistry::pluginList( bool asHTML ) const
     if ( asHTML )
       list + "<br></li>";
     else
-      list += "\n";
+      list += '\n';
 
     ++it;
   }

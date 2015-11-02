@@ -221,10 +221,10 @@ void CoordinateCapture::update( const QgsPoint& thePoint )
 {
   //this is the coordinate resolved back to lat / lon
   QgsPoint myUserCrsPoint = mTransform.transform( thePoint );
-  mpUserCrsEdit->setText( QString::number( myUserCrsPoint.x(), 'f', mUserCrsDisplayPrecision ) + "," +
+  mpUserCrsEdit->setText( QString::number( myUserCrsPoint.x(), 'f', mUserCrsDisplayPrecision ) + ',' +
                           QString::number( myUserCrsPoint.y(), 'f', mUserCrsDisplayPrecision ) );
   // This is the coordinate space of the map canvas
-  mpCanvasEdit->setText( QString::number( thePoint.x(), 'f', mCanvasDisplayPrecision ) + "," +
+  mpCanvasEdit->setText( QString::number( thePoint.x(), 'f', mCanvasDisplayPrecision ) + ',' +
                          QString::number( thePoint.y(), 'f', mCanvasDisplayPrecision ) );
 }
 void CoordinateCapture::copy()
@@ -233,10 +233,10 @@ void CoordinateCapture::copy()
   //if we are on x11 system put text into selection ready for middle button pasting
   if ( myClipboard->supportsSelection() )
   {
-    myClipboard->setText( mpUserCrsEdit->text() + "," + mpCanvasEdit->text(), QClipboard::Selection );
+    myClipboard->setText( mpUserCrsEdit->text() + ',' + mpCanvasEdit->text(), QClipboard::Selection );
   }
 
-  myClipboard->setText( mpUserCrsEdit->text() + "," + mpCanvasEdit->text(), QClipboard::Clipboard );
+  myClipboard->setText( mpUserCrsEdit->text() + ',' + mpCanvasEdit->text(), QClipboard::Clipboard );
 }
 
 

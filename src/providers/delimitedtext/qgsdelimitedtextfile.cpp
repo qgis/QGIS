@@ -232,9 +232,9 @@ bool QgsDelimitedTextFile::setFromUrl( const QUrl &url )
   QgsDebugMsg( "Delimited text file is: " + mFileName );
   QgsDebugMsg( "Encoding is: " + mEncoding );
   QgsDebugMsg( "Delimited file type is: " + type );
-  QgsDebugMsg( "Delimiter is: [" + delimiter + "]" );
-  QgsDebugMsg( "Quote character is: [" + quote + "]" );
-  QgsDebugMsg( "Escape character is: [" + escape + "]" );
+  QgsDebugMsg( "Delimiter is: [" + delimiter + ']' );
+  QgsDebugMsg( "Quote character is: [" + quote + ']' );
+  QgsDebugMsg( "Escape character is: [" + escape + ']' );
   QgsDebugMsg( "Skip lines: " + QString::number( mSkipLines ) );
   QgsDebugMsg( "Maximum number of fields in record: " + QString::number( mMaxFields ) );
   QgsDebugMsg( "Use headers: " + QString( mUseHeader ? "Yes" : "No" ) );
@@ -346,7 +346,7 @@ void QgsDelimitedTextFile::setTypeRegexp( const QString& regexp )
   resetDefinition();
   mType = DelimTypeRegexp;
   mDelimRegexp.setPattern( regexp );
-  mAnchoredRegexp = regexp.startsWith( "^" );
+  mAnchoredRegexp = regexp.startsWith( '^' );
   mParser = &QgsDelimitedTextFile::parseRegexp;
   mDefinitionValid = regexp.size() > 0 && mDelimRegexp.isValid();
   if ( ! mDefinitionValid )
@@ -368,7 +368,7 @@ QString QgsDelimitedTextFile::decodeChars( QString chars )
 
 QString QgsDelimitedTextFile::encodeChars( QString chars )
 {
-  chars = chars.replace( "\t", "\\t" );
+  chars = chars.replace( '\t', "\\t" );
   return chars;
 }
 

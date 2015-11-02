@@ -72,7 +72,7 @@ void  TestQgsRasterCalculator::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  QString testDataDir = QString( TEST_DATA_DIR ) + "/"; //defined in CmakeLists.txt
+  QString testDataDir = QString( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
 
   QString landsatFileName = testDataDir + "landsat.tif";
   QFileInfo landsatRasterFileInfo( landsatFileName );

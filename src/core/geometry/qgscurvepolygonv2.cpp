@@ -257,9 +257,9 @@ QString QgsCurvePolygonV2::asWkt( int precision ) const
     if ( dynamic_cast<QgsLineStringV2*>( mExteriorRing ) )
     {
       // Type names of linear geometries are omitted
-      childWkt = childWkt.mid( childWkt.indexOf( "(" ) );
+      childWkt = childWkt.mid( childWkt.indexOf( '(' ) );
     }
-    wkt += childWkt + ",";
+    wkt += childWkt + ',';
   }
   Q_FOREACH ( const QgsCurveV2* curve, mInteriorRings )
   {
@@ -267,15 +267,15 @@ QString QgsCurvePolygonV2::asWkt( int precision ) const
     if ( dynamic_cast<const QgsLineStringV2*>( curve ) )
     {
       // Type names of linear geometries are omitted
-      childWkt = childWkt.mid( childWkt.indexOf( "(" ) );
+      childWkt = childWkt.mid( childWkt.indexOf( '(' ) );
     }
-    wkt += childWkt + ",";
+    wkt += childWkt + ',';
   }
-  if ( wkt.endsWith( "," ) )
+  if ( wkt.endsWith( ',' ) )
   {
-    wkt.chop( 1 ); // Remove last ","
+    wkt.chop( 1 ); // Remove last ','
   }
-  wkt += ")";
+  wkt += ')';
   return wkt;
 }
 

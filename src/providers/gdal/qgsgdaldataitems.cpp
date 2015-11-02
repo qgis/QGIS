@@ -97,14 +97,14 @@ QVector<QgsDataItem*> QgsGdalLayerItem::createChildren()
       else
       {
         // remove driver name and file name
-        name.replace( name.split( ":" )[0], "" );
-        name.replace( mPath, "" );
+        name.remove( name.split( ':' )[0] );
+        name.remove( mPath );
       }
       // remove any : or " left over
-      if ( name.startsWith( ":" ) ) name.remove( 0, 1 );
-      if ( name.startsWith( "\"" ) ) name.remove( 0, 1 );
-      if ( name.endsWith( ":" ) ) name.chop( 1 );
-      if ( name.endsWith( "\"" ) ) name.chop( 1 );
+      if ( name.startsWith( ':' ) ) name.remove( 0, 1 );
+      if ( name.startsWith( '\"' ) ) name.remove( 0, 1 );
+      if ( name.endsWith( ':' ) ) name.chop( 1 );
+      if ( name.endsWith( '\"' ) ) name.chop( 1 );
 
       childItem = new QgsGdalLayerItem( this, name, sublayers[i], sublayers[i] );
       if ( childItem )
@@ -240,7 +240,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
     if (( is_vsizip || is_vsitar ) && ( thePath != vsiPrefix + parentItem->path() ) )
     {
       name = thePath;
-      name = name.replace( vsiPrefix + parentItem->path() + "/", "" );
+      name = name.replace( vsiPrefix + parentItem->path() + '/', "" );
     }
     */
   }

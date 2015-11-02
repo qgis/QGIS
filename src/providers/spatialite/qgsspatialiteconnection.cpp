@@ -266,7 +266,7 @@ error:
   // unexpected IO error
   if ( errMsg )
   {
-    mErrorMsg += "\n";
+    mErrorMsg += '\n';
     mErrorMsg += errMsg;
     sqlite3_free( errMsg );
   }
@@ -494,8 +494,8 @@ QString QgsSpatiaLiteConnection::quotedValue( QString value ) const
   if ( value.isNull() )
     return "NULL";
 
-  value.replace( "'", "''" );
-  return value.prepend( "'" ).append( "'" );
+  value.replace( '\'', "''" );
+  return value.prepend( '\'' ).append( '\'' );
 }
 
 bool QgsSpatiaLiteConnection::checkGeometryColumnsAuth( sqlite3 * handle )

@@ -563,7 +563,7 @@ QStringList QgsComposerMap::layersToRender( const QgsExpressionContext* context 
   {
     renderLayerSet.clear();
 
-    QStringList layerNames = exprVal.toString().split( "|" );
+    QStringList layerNames = exprVal.toString().split( '|' );
     //need to convert layer names to layer ids
     Q_FOREACH ( const QString& name, layerNames )
     {

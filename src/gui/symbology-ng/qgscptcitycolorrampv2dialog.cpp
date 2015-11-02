@@ -206,9 +206,9 @@ void QgsCptCityColorRampV2Dialog::populateVariants()
     Q_FOREACH ( const QString& variant, variantList )
     {
       QString variantStr = variant;
-      if ( variantStr.startsWith( "-" ) || variantStr.startsWith( "_" ) )
+      if ( variantStr.startsWith( '-' ) || variantStr.startsWith( '_' ) )
         variantStr.remove( 0, 1 );
-      cboVariantName->addItem( " " + variantStr );
+      cboVariantName->addItem( ' ' + variantStr );
       index = cboVariantName->count() - 1;
       cboVariantName->setItemData( index, variant, Qt::UserRole );
 
@@ -229,9 +229,9 @@ void QgsCptCityColorRampV2Dialog::populateVariants()
     QgsDebugMsg( QString( "variant= %1 - %2 variants" ).arg( mRamp->variantName() ).arg( mRamp->variantList().count() ) );
     if ( newVariant != QString() )
     {
-      if ( newVariant.startsWith( "-" ) || newVariant.startsWith( "_" ) )
+      if ( newVariant.startsWith( '-' ) || newVariant.startsWith( '_' ) )
         newVariant.remove( 0, 1 );
-      newVariant = " " + newVariant;
+      newVariant = ' ' + newVariant;
       idx = cboVariantName->findText( newVariant );
     }
     else
@@ -462,19 +462,19 @@ void QgsCptCityColorRampV2Dialog::updateCopyingInfo( const QMap< QString, QStrin
 {
   QString authorStr = copyingMap.value( "authors" );
   if ( authorStr.length() > 80 )
-    authorStr.replace( authorStr.indexOf( " ", 80 ), 1, "\n" );
+    authorStr.replace( authorStr.indexOf( ' ', 80 ), 1, "\n" );
   lblAuthorName->setText( authorStr );
   QString licenseStr = copyingMap.value( "license/informal" );
   if ( copyingMap.contains( "license/year" ) )
-    licenseStr += " (" + copyingMap.value( "license/year" ) + ")";
+    licenseStr += " (" + copyingMap.value( "license/year" ) + ')';
   if ( licenseStr.length() > 80 )
-    licenseStr.replace( licenseStr.indexOf( " ", 80 ), 1, "\n" );
+    licenseStr.replace( licenseStr.indexOf( ' ', 80 ), 1, "\n" );
   if ( copyingMap.contains( "license/url" ) )
     licenseStr += "\n[ " + copyingMap.value( "license/url" ) + " ]";
   else
-    licenseStr += "\n";
+    licenseStr += '\n';
   lblLicenseName->setText( licenseStr );
-  licenseStr.replace( "\n", "  " );
+  licenseStr.replace( '\n', "  " );
   lblLicensePreview->setText( licenseStr );
   lblLicensePreview->setCursorPosition( 0 );
   if ( copyingMap.contains( "src/link" ) )
@@ -541,7 +541,7 @@ void QgsCptCityColorRampV2Dialog::updateListWidget( QgsCptCityDataItem *item )
       QListWidgetItem* listItem = new QListWidgetItem();
       listItem->setText( rampItem->shortInfo() );
       listItem->setIcon( rampItem->icon( QSize( 75, 50 ) ) );
-      listItem->setToolTip( rampItem->path() + "\n" + rampItem->info() );
+      listItem->setToolTip( rampItem->path() + '\n' + rampItem->info() );
       listItem->setData( Qt::UserRole, QVariant( i ) );
       mListWidget->addItem( listItem );
       mListRamps << rampItem;

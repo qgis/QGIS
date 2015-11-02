@@ -731,16 +731,16 @@ QString QgsSimpleMarkerSymbolLayerV2::ogrFeatureStyle( double mmScaleFactor, dou
   QString ogrString;
   ogrString.append( "SYMBOL(" );
   ogrString.append( "id:" );
-  ogrString.append( "\"" );
+  ogrString.append( '\"' );
   ogrString.append( "ogr-sym-" );
   ogrString.append( ogrType );
-  ogrString.append( "\"" );
+  ogrString.append( '\"' );
   ogrString.append( ",c:" );
   ogrString.append( mColor.name() );
   ogrString.append( ",o:" );
   ogrString.append( mBorderColor.name() );
   ogrString.append( QString( ",s:%1mm" ).arg( mSize ) );
-  ogrString.append( ")" );
+  ogrString.append( ')' );
   return ogrString;
 #endif //0
 

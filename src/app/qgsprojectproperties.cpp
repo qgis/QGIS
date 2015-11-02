@@ -740,10 +740,10 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->writeEntry( "WMSFees", "/", mWMSFees->text() );
   QgsProject::instance()->writeEntry( "WMSAccessConstraints", "/", mWMSAccessConstraints->text() );
   //WMS keyword list
-  QStringList keywordStringList = mWMSKeywordList->text().split( "," );
+  QStringList keywordStringList = mWMSKeywordList->text().split( ',' );
   if ( keywordStringList.size() > 0 )
   {
-    QgsProject::instance()->writeEntry( "WMSKeywordList", "/", mWMSKeywordList->text().split( "," ) );
+    QgsProject::instance()->writeEntry( "WMSKeywordList", "/", mWMSKeywordList->text().split( ',' ) );
   }
   else
   {

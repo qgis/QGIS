@@ -100,7 +100,7 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
     return false;
   }
 
-  QString userparam = "user='" + escapeUserPass( username ) + "'";
+  QString userparam = "user='" + escapeUserPass( username ) + '\'';
   int userindx = connectionItems.indexOf( QRegExp( "^user='.*" ) );
   if ( userindx != -1 )
   {
@@ -111,7 +111,7 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
     connectionItems.append( userparam );
   }
 
-  QString passparam = "password='" + escapeUserPass( password ) + "'";
+  QString passparam = "password='" + escapeUserPass( password ) + '\'';
   int passindx = connectionItems.indexOf( QRegExp( "^password='.*" ) );
   if ( passindx != -1 )
   {
@@ -190,7 +190,7 @@ QString QgsAuthBasicMethod::escapeUserPass( const QString &theVal, QChar delim )
 {
   QString val = theVal;
 
-  val.replace( "\\", "\\\\" );
+  val.replace( '\\', "\\\\" );
   val.replace( delim, QString( "\\%1" ).arg( delim ) );
 
   return val;

@@ -84,7 +84,7 @@ QStringList QgsSublayersDialog::selectionNames()
 
     if ( count > 1 )
     {
-      name += ":" + layersTable->selectedItems().at( i )->text( 3 );
+      name += ':' + layersTable->selectedItems().at( i )->text( 3 );
     }
     else
     {

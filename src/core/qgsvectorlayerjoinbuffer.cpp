@@ -223,7 +223,7 @@ void QgsVectorLayerJoinBuffer::updateFields( QgsFields& fields )
 
     if ( joinIt->prefix.isNull() )
     {
-      prefix = joinLayer->name() + "_";
+      prefix = joinLayer->name() + '_';
     }
     else
     {

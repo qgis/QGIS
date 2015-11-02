@@ -58,10 +58,10 @@ QVector<QgsDataItem*> QgsWCSConnectionItem::createChildren()
   Q_FOREACH ( const QgsWcsCoverageSummary& coverageSummary, mCapabilities.capabilities().contents.coverageSummary )
   {
     // Attention, the name may be empty
-    QgsDebugMsg( QString::number( coverageSummary.orderId ) + " " + coverageSummary.identifier + " " + coverageSummary.title );
+    QgsDebugMsg( QString::number( coverageSummary.orderId ) + ' ' + coverageSummary.identifier + ' ' + coverageSummary.title );
     QString pathName = coverageSummary.identifier.isEmpty() ? QString::number( coverageSummary.orderId ) : coverageSummary.identifier;
 
-    QgsWCSLayerItem * layer = new QgsWCSLayerItem( this, coverageSummary.title, mPath + "/" + pathName, mCapabilities.capabilities(), uri, coverageSummary );
+    QgsWCSLayerItem * layer = new QgsWCSLayerItem( this, coverageSummary.title, mPath + '/' + pathName, mCapabilities.capabilities(), uri, coverageSummary );
 
     children.append( layer );
   }
@@ -132,9 +132,9 @@ QgsWCSLayerItem::QgsWCSLayerItem( QgsDataItem* parent, const QString& name, cons
   Q_FOREACH ( const QgsWcsCoverageSummary& coverageSummary, mCoverageSummary.coverageSummary )
   {
     // Attention, the name may be empty
-    QgsDebugMsg( QString::number( coverageSummary.orderId ) + " " + coverageSummary.identifier + " " + coverageSummary.title );
+    QgsDebugMsg( QString::number( coverageSummary.orderId ) + ' ' + coverageSummary.identifier + ' ' + coverageSummary.title );
     QString pathName = coverageSummary.identifier.isEmpty() ? QString::number( coverageSummary.orderId ) : coverageSummary.identifier;
-    QgsWCSLayerItem * layer = new QgsWCSLayerItem( this, coverageSummary.title, mPath + "/" + pathName, mCapabilities, mDataSourceUri, coverageSummary );
+    QgsWCSLayerItem * layer = new QgsWCSLayerItem( this, coverageSummary.title, mPath + '/' + pathName, mCapabilities, mDataSourceUri, coverageSummary );
     mChildren.append( layer );
   }
 
@@ -235,7 +235,7 @@ QVector<QgsDataItem*>QgsWCSRootItem::createChildren()
   Q_FOREACH ( const QString& connName, QgsOWSConnection::connectionList( "WCS" ) )
   {
     QgsOWSConnection connection( "WCS", connName );
-    QgsDataItem * conn = new QgsWCSConnectionItem( this, connName, mPath + "/" + connName, connection.uri().encodedUri() );
+    QgsDataItem * conn = new QgsWCSConnectionItem( this, connName, mPath + '/' + connName, connection.uri().encodedUri() );
     connections.append( conn );
   }
   return connections;

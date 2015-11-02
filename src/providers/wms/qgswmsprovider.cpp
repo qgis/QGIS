@@ -169,11 +169,11 @@ QString QgsWmsProvider::prepareUri( QString uri )
 
   if ( !uri.contains( "?" ) )
   {
-    uri.append( "?" );
+    uri.append( '?' );
   }
   else if ( uri.right( 1 ) != "?" && uri.right( 1 ) != "&" )
   {
-    uri.append( "&" );
+    uri.append( '&' );
   }
 
   return uri;
@@ -349,7 +349,7 @@ void QgsWmsProvider::setSubLayerVisibility( QString const & name, bool vis )
 
 bool QgsWmsProvider::setImageCrs( QString const & crs )
 {
-  QgsDebugMsg( "Setting image CRS to " + crs + "." );
+  QgsDebugMsg( "Setting image CRS to " + crs + '.' );
 
   if ( crs != mImageCrs && !crs.isEmpty() )
   {
@@ -445,10 +445,10 @@ void QgsWmsProvider::setQueryItem( QUrl &url, const QString& item, const QString
 void QgsWmsProvider::setFormatQueryItem( QUrl &url )
 {
   url.removeQueryItem( "FORMAT" );
-  if ( mSettings.mImageMimeType.contains( "+" ) )
+  if ( mSettings.mImageMimeType.contains( '+' ) )
   {
     QString format( mSettings.mImageMimeType );
-    format.replace( "+", "%2b" );
+    format.replace( '+', "%2b" );
     url.addEncodedQueryItem( "FORMAT", format.toUtf8() );
   }
   else
@@ -1140,10 +1140,10 @@ void QgsWmsProvider::parseServiceException( QDomElement const & e, QString& erro
   }
   else
   {
-    errorText = seCode + " " + tr( "(Unknown error code)" );
+    errorText = seCode + ' ' + tr( "(Unknown error code)" );
   }
 
-  errorText += "\n" + tr( "The WMS vendor also reported: " );
+  errorText += '\n' + tr( "The WMS vendor also reported: " );
   errorText += seText;
 
   // TODO = e.attribute("locator");
@@ -1263,7 +1263,7 @@ bool QgsWmsProvider::calculateExtent()
         continue;
       }
 
-      QgsDebugMsg( "extent for " + *it  + " is " + extent.toString( 3 )  + "." );
+      QgsDebugMsg( "extent for " + *it  + " is " + extent.toString( 3 )  + '.' );
 
       // add to the combined extent of all the active sublayers
       if ( firstLayer )
@@ -1314,7 +1314,7 @@ int QgsWmsProvider::capabilities() const
         // Is sublayer queryable?
         if ( mCaps.mQueryableForLayer.find( *it ).value() )
         {
-          QgsDebugMsg( "'"  + ( *it )  + "' is queryable." );
+          QgsDebugMsg( '\''  + ( *it )  + "' is queryable." );
           canIdentify = true;
         }
       }
@@ -1599,7 +1599,7 @@ QString QgsWmsProvider::metadata()
   metadata += tr( "Online Resource" );
   metadata += "</td>";
   metadata += "<td>";
-  metadata += "-";
+  metadata += '-';
   metadata += "</td></tr>";
 
   // Service Contact Information
@@ -2632,7 +2632,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
       else if ( jsonPart != -1 )
       {
         QString json = QString::fromUtf8( mIdentifyResultBodies.value( jsonPart ) );
-        json.prepend( "(" ).append( ")" );
+        json.prepend( '(' ).append( ')' );
 
         QScriptEngine engine;
         engine.evaluate( "function json_stringify(obj) { return JSON.stringify(obj); }" );

@@ -228,7 +228,7 @@ void QgsLabel::renderLabel( QgsRenderContext &renderContext,
 
   if ( mLabelAttributes->multilineEnabled() )
   {
-    QStringList texts = text.split( "\n" );
+    QStringList texts = text.split( '\n' );
 
     width = 0;
     for ( int i = 0; i < texts.size(); i++ )

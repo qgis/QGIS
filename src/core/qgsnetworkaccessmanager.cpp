@@ -165,7 +165,7 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
 
   QString userAgent = s.value( "/qgis/networkAndProxy/userAgent", "Mozilla/5.0" ).toString();
   if ( !userAgent.isEmpty() )
-    userAgent += " ";
+    userAgent += ' ';
   userAgent += QString( "QGIS/%1" ).arg( QGis::QGIS_VERSION );
   pReq->setRawHeader( "User-Agent", userAgent.toUtf8() );
 
@@ -306,7 +306,7 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache()
   bool proxyEnabled = settings.value( "proxy/proxyEnabled", false ).toBool();
   if ( proxyEnabled )
   {
-    excludes = settings.value( "proxy/proxyExcludedUrls", "" ).toString().split( "|", QString::SkipEmptyParts );
+    excludes = settings.value( "proxy/proxyExcludedUrls", "" ).toString().split( '|', QString::SkipEmptyParts );
 
     //read type, host, port, user, passw from settings
     QString proxyHost = settings.value( "proxy/proxyHost", "" ).toString();

@@ -33,7 +33,7 @@ QgsProjectVersion::QgsProjectVersion( const QString& string )
 {
   QString pre = string.section( '-', 0, 0 );
 
-  QStringList fileVersionParts = pre.section( "-", 0 ).split( "." );
+  QStringList fileVersionParts = pre.section( '-', 0 ).split( '.' );
 
   mMinor = 0;
   mSub   = 0;

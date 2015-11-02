@@ -72,13 +72,13 @@ QgsExpression::Interval QgsExpression::Interval::fromString( const QString& stri
   }
 
   QMap<int, QStringList> map;
-  map.insert( 1, QStringList() << "second" << "seconds" << tr( "second|seconds", "list of words separated by | which reference years" ).split( "|" ) );
-  map.insert( 0 + MINUTE, QStringList() << "minute" << "minutes" << tr( "minute|minutes", "list of words separated by | which reference minutes" ).split( "|" ) );
-  map.insert( 0 + HOUR, QStringList() << "hour" << "hours" << tr( "hour|hours", "list of words separated by | which reference minutes hours" ).split( "|" ) );
-  map.insert( 0 + DAY, QStringList() << "day" << "days" << tr( "day|days", "list of words separated by | which reference days" ).split( "|" ) );
-  map.insert( 0 + WEEKS, QStringList() << "week" << "weeks" << tr( "week|weeks", "wordlist separated by | which reference weeks" ).split( "|" ) );
-  map.insert( 0 + MONTHS, QStringList() << "month" << "months" << tr( "month|months", "list of words separated by | which reference months" ).split( "|" ) );
-  map.insert( 0 + YEARS, QStringList() << "year" << "years" << tr( "year|years", "list of words separated by | which reference years" ).split( "|" ) );
+  map.insert( 1, QStringList() << "second" << "seconds" << tr( "second|seconds", "list of words separated by | which reference years" ).split( '|' ) );
+  map.insert( 0 + MINUTE, QStringList() << "minute" << "minutes" << tr( "minute|minutes", "list of words separated by | which reference minutes" ).split( '|' ) );
+  map.insert( 0 + HOUR, QStringList() << "hour" << "hours" << tr( "hour|hours", "list of words separated by | which reference minutes hours" ).split( '|' ) );
+  map.insert( 0 + DAY, QStringList() << "day" << "days" << tr( "day|days", "list of words separated by | which reference days" ).split( '|' ) );
+  map.insert( 0 + WEEKS, QStringList() << "week" << "weeks" << tr( "week|weeks", "wordlist separated by | which reference weeks" ).split( '|' ) );
+  map.insert( 0 + MONTHS, QStringList() << "month" << "months" << tr( "month|months", "list of words separated by | which reference months" ).split( '|' ) );
+  map.insert( 0 + YEARS, QStringList() << "year" << "years" << tr( "year|years", "list of words separated by | which reference years" ).split( '|' ) );
 
   Q_FOREACH ( const QString& match, list )
   {
@@ -667,7 +667,7 @@ static QVariant fcnUpper( const QVariantList& values, const QgsExpressionContext
 static QVariant fcnTitle( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   QString str = getStringValue( values.at( 0 ), parent );
-  QStringList elems = str.split( " " );
+  QStringList elems = str.split( ' ' );
   for ( int i = 0; i < elems.size(); i++ )
   {
     if ( elems[i].size() > 1 )
@@ -722,10 +722,10 @@ static QVariant fcnWordwrap( const QVariantList& values, const QgsExpressionCont
       QString newstr;
       QString delimiterstr;
       if ( values.length() == 3 ) delimiterstr = getStringValue( values.at( 2 ), parent );
-      if ( delimiterstr.isEmpty() ) delimiterstr = " ";
+      if ( delimiterstr.isEmpty() ) delimiterstr = ' ';
       int delimiterlength = delimiterstr.length();
 
-      QStringList lines = str.split( "\n" );
+      QStringList lines = str.split( '\n' );
       int strlength, strcurrent, strhit, lasthit;
 
       for ( int i = 0; i < lines.size(); i++ )
@@ -757,7 +757,7 @@ static QVariant fcnWordwrap( const QVariantList& values, const QgsExpressionCont
           if ( strhit > -1 )
           {
             newstr.append( lines[i].midRef( strcurrent, strhit - strcurrent ) );
-            newstr.append( "\n" );
+            newstr.append( '\n' );
             strcurrent = strhit + delimiterlength;
           }
           else
@@ -766,7 +766,7 @@ static QVariant fcnWordwrap( const QVariantList& values, const QgsExpressionCont
             strcurrent = strlength;
           }
         }
-        if ( i < lines.size() - 1 ) newstr.append( "\n" );
+        if ( i < lines.size() - 1 ) newstr.append( '\n' );
       }
 
       return QVariant( newstr );
@@ -2444,12 +2444,12 @@ QList<QgsExpression::Function*> QgsExpression::specialColumns()
 
 QString QgsExpression::quotedColumnRef( QString name )
 {
-  return QString( "\"%1\"" ).arg( name.replace( "\"", "\"\"" ) );
+  return QString( "\"%1\"" ).arg( name.replace( '\"', "\"\"" ) );
 }
 
 QString QgsExpression::quotedString( QString text )
 {
-  text.replace( "'", "''" );
+  text.replace( '\'', "''" );
   text.replace( '\\', "\\\\" );
   text.replace( '\n', "\\n" );
   text.replace( '\t', "\\t" );
@@ -2977,8 +2977,8 @@ QVariant QgsExpression::NodeBinaryOperator::eval( QgsExpression *parent, const Q
         {
           QString esc_regexp = QRegExp::escape( regexp );
           // XXX escape % and _  ???
-          esc_regexp.replace( "%", ".*" );
-          esc_regexp.replace( "_", "." );
+          esc_regexp.replace( '%', ".*" );
+          esc_regexp.replace( '_', '.' );
           matches = QRegExp( esc_regexp, mOp == boLike || mOp == boNotLike ? Qt::CaseSensitive : Qt::CaseInsensitive ).exactMatch( str );
         }
         else
@@ -3359,7 +3359,7 @@ QVariant QgsExpression::NodeColumnRef::eval( QgsExpression *parent, const QgsExp
     else
       return feature.attribute( mName );
   }
-  return QVariant( "[" + mName + "]" );
+  return QVariant( '[' + mName + ']' );
 }
 
 bool QgsExpression::NodeColumnRef::prepare( QgsExpression *parent, const QgsExpressionContext *context )
@@ -3526,7 +3526,7 @@ QString QgsExpression::helptext( QString name )
 
       if ( f.mType == tr( "function" ) && ( f.mName[0] != '$' || v.mArguments.size() > 0 || v.mVariableLenArguments ) )
       {
-        helpContents += "(";
+        helpContents += '(';
 
         QString delim;
         Q_FOREACH ( const HelpArg &a, v.mArguments )
@@ -3542,7 +3542,7 @@ QString QgsExpression::helptext( QString name )
           helpContents += "...";
         }
 
-        helpContents += ")";
+        helpContents += ')';
       }
 
       helpContents += "</code>";

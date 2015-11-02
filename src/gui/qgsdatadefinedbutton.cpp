@@ -266,7 +266,7 @@ void QgsDataDefinedButton::aboutToShowMenu()
 
   if ( addActiveAction )
   {
-    ddTitleAct->setText( ddTitle + " (" + ( useExpression() ? tr( "expression" ) : tr( "field" ) ) + ")" );
+    ddTitleAct->setText( ddTitle + " (" + ( useExpression() ? tr( "expression" ) : tr( "field" ) ) + ')' );
     mDefineMenu->addAction( mActionActive );
     mActionActive->setText( isActive() ? tr( "Deactivate" ) : tr( "Activate" ) );
     mActionActive->setData( QVariant( isActive() ? false : true ) );
@@ -296,7 +296,7 @@ void QgsDataDefinedButton::aboutToShowMenu()
       for ( int j = 0; j < mFieldNameList.count(); ++j )
       {
         QString fldname = mFieldNameList.at( j );
-        QAction* act = mFieldsMenu->addAction( fldname + "    (" + mFieldTypeList.at( j ) + ")" );
+        QAction* act = mFieldsMenu->addAction( fldname + "    (" + mFieldTypeList.at( j ) + ')' );
         act->setData( QVariant( fldname ) );
         if ( getField() == fldname )
         {
@@ -332,13 +332,13 @@ void QgsDataDefinedButton::aboutToShowMenu()
     {
       if ( context.isReadOnly( variable ) ) //only want to show user-set variables
         continue;
-      if ( variable.startsWith( "_" ) ) //no hidden variables
+      if ( variable.startsWith( '_' ) ) //no hidden variables
         continue;
 
       QAction* act = mVariablesMenu->addAction( variable );
       act->setData( QVariant( variable ) );
 
-      if ( useExpression() && hasExp && getExpression() == "@" + variable )
+      if ( useExpression() && hasExp && getExpression() == '@' + variable )
       {
         act->setCheckable( true );
         act->setChecked( true );

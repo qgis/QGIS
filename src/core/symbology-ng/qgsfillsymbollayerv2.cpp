@@ -361,7 +361,7 @@ QString QgsSimpleFillSymbolLayerV2::ogrFeatureStyle( double mmScaleFactor, doubl
   //brush
   QString symbolStyle;
   symbolStyle.append( QgsSymbolLayerV2Utils::ogrFeatureStyleBrush( mColor ) );
-  symbolStyle.append( ";" );
+  symbolStyle.append( ';' );
   //pen
   symbolStyle.append( QgsSymbolLayerV2Utils::ogrFeatureStylePen( mBorderWidth, mmScaleFactor, mapUnitScaleFactor, mBorderColor, mPenJoinStyle ) );
   return symbolStyle;
@@ -2867,7 +2867,7 @@ QString QgsLinePatternFillSymbolLayer::ogrFeatureStyleWidth( double widthScaleFa
   featureStyle.append( QString( ",s:%1" ).arg( mLineWidth * widthScaleFactor ) );
   featureStyle.append( ",dx:0mm" );
   featureStyle.append( QString( ",dy:%1mm" ).arg( mDistance * widthScaleFactor ) );
-  featureStyle.append( ")" );
+  featureStyle.append( ')' );
   return featureStyle;
 }
 

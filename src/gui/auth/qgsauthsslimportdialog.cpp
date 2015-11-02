@@ -442,7 +442,7 @@ void QgsAuthSslImportDialog::appendString( const QString &line )
 {
   QTextCursor cursor( pteSessionStatus->textCursor() );
   cursor.movePosition( QTextCursor::End );
-  cursor.insertText( line + "\n" );
+  cursor.insertText( line + '\n' );
 //  pteSessionStatus->verticalScrollBar()->setValue( pteSessionStatus->verticalScrollBar()->maximum() );
 }
 

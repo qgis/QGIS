@@ -142,7 +142,7 @@ void QgsSpatiaLiteSourceSelect::buildQuery()
 void QgsSpatiaLiteSourceSelect::updateStatistics()
 {
   QString subKey = cmbConnections->currentText();
-  int idx = subKey.indexOf( "@" );
+  int idx = subKey.indexOf( '@' );
   if ( idx > 0 )
     subKey.truncate( idx );
 
@@ -352,7 +352,7 @@ QString QgsSpatiaLiteSourceSelect::layerURI( const QModelIndex &index )
 void QgsSpatiaLiteSourceSelect::on_btnDelete_clicked()
 {
   QString subKey = cmbConnections->currentText();
-  int idx = subKey.indexOf( "@" );
+  int idx = subKey.indexOf( '@' );
   if ( idx > 0 )
     subKey.truncate( idx );
 
@@ -422,7 +422,7 @@ void QgsSpatiaLiteSourceSelect::on_btnConnect_clicked()
   cbxAllowGeometrylessTables->setEnabled( false );
 
   QString subKey = cmbConnections->currentText();
-  int idx = subKey.indexOf( "@" );
+  int idx = subKey.indexOf( '@' );
   if ( idx > 0 )
     subKey.truncate( idx );
 
@@ -503,7 +503,7 @@ QStringList QgsSpatiaLiteSourceSelect::selectedTables()
 
 QString QgsSpatiaLiteSourceSelect::connectionInfo()
 {
-  return QString( "dbname='%1'" ).arg( QString( mSqlitePath ).replace( "'", "\\'" ) );
+  return QString( "dbname='%1'" ).arg( QString( mSqlitePath ).replace( '\'', "\\'" ) );
 }
 
 void QgsSpatiaLiteSourceSelect::setSql( const QModelIndex &index )
@@ -550,7 +550,7 @@ void QgsSpatiaLiteSourceSelect::setConnectionListPosition()
   // If possible, set the item currently displayed database
   QString toSelect = settings.value( "/SpatiaLite/connections/selected" ).toString();
 
-  toSelect += "@" + settings.value( "/SpatiaLite/connections/" + toSelect + "/sqlitepath" ).toString();
+  toSelect += '@' + settings.value( "/SpatiaLite/connections/" + toSelect + "/sqlitepath" ).toString();
 
   cmbConnections->setCurrentIndex( cmbConnections->findText( toSelect ) );
 

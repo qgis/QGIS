@@ -366,7 +366,7 @@ QStringList QgsVectorLayerSaveAsDialog::datasourceOptions() const
     }
   }
 
-  return options + mOgrDatasourceOptions->toPlainText().split( "\n" );
+  return options + mOgrDatasourceOptions->toPlainText().split( '\n' );
 }
 
 QStringList QgsVectorLayerSaveAsDialog::layerOptions() const
@@ -415,7 +415,7 @@ QStringList QgsVectorLayerSaveAsDialog::layerOptions() const
     }
   }
 
-  return options + mOgrLayerOptions->toPlainText().split( "\n" );
+  return options + mOgrLayerOptions->toPlainText().split( '\n' );
 }
 
 bool QgsVectorLayerSaveAsDialog::skipAttributeCreation() const

@@ -306,7 +306,7 @@ QIcon QgsDataItem::icon()
 
   if ( !mIconMap.contains( mIconName ) )
   {
-    mIconMap.insert( mIconName, mIconName.startsWith( ":" ) ? QIcon( mIconName ) : QgsApplication::getThemeIcon( mIconName ) );
+    mIconMap.insert( mIconName, mIconName.startsWith( ':' ) ? QIcon( mIconName ) : QgsApplication::getThemeIcon( mIconName ) );
   }
 
   return mIconMap.value( mIconName );
@@ -790,7 +790,7 @@ QVector<QgsDataItem*> QgsDirectoryItem::createChildren()
     QString subdirPath = dir.absoluteFilePath( subdir );
     QgsDebugMsgLevel( QString( "creating subdir: %1" ).arg( subdirPath ), 2 );
 
-    QString path = mPath + "/" + subdir; // may differ from subdirPath
+    QString path = mPath + '/' + subdir; // may differ from subdirPath
     QgsDirectoryItem *item = new QgsDirectoryItem( this, subdir, subdirPath, path );
     // propagate signals up to top
 
@@ -812,7 +812,7 @@ QVector<QgsDataItem*> QgsDirectoryItem::createChildren()
     // vsizip support was added to GDAL/OGR 1.6 but GDAL_VERSION_NUM not available here
     //   so we assume it's available anyway
     {
-      QgsDataItem * item = QgsZipItem::itemFromPath( this, path, name, mPath + "/" + name );
+      QgsDataItem * item = QgsZipItem::itemFromPath( this, path, name, mPath + '/' + name );
       if ( item )
       {
         children.append( item );
@@ -1088,7 +1088,7 @@ QVector<QgsDataItem*> QgsFavouritesItem::createChildren()
   Q_FOREACH ( const QString& favDir, favDirs )
   {
     QString pathName = pathComponent( favDir );
-    QgsDataItem *item = new QgsDirectoryItem( this, favDir, favDir, mPath + "/" + pathName );
+    QgsDataItem *item = new QgsDirectoryItem( this, favDir, favDir, mPath + '/' + pathName );
     if ( item )
     {
       children.append( item );
@@ -1108,7 +1108,7 @@ void QgsFavouritesItem::addDirectory( const QString& favDir )
   if ( state() == Populated )
   {
     QString pathName = pathComponent( favDir );
-    addChildItem( new QgsDirectoryItem( this, favDir, favDir, mPath + "/" + pathName ), true );
+    addChildItem( new QgsDirectoryItem( this, favDir, favDir, mPath + '/' + pathName ), true );
   }
 }
 
@@ -1308,7 +1308,7 @@ QVector<QgsDataItem*> QgsZipItem::createChildren()
   Q_FOREACH ( const QString& fileName, mZipFileList )
   {
     QFileInfo info( fileName );
-    tmpPath = mVsiPrefix + mFilePath + "/" + fileName;
+    tmpPath = mVsiPrefix + mFilePath + '/' + fileName;
     QgsDebugMsgLevel( "tmpPath = " + tmpPath, 3 );
 
     // Q_FOREACH( dataItem_t *dataItem, mDataItemPtr )

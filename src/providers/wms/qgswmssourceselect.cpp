@@ -546,8 +546,8 @@ void QgsWMSSourceSelect::addClicked()
             it != dims.constEnd();
             ++it )
       {
-        dimString += delim + it.key() + "=" + it.value();
-        delim = ";";
+        dimString += delim + it.key() + '=' + it.value();
+        delim = ';';
       }
 
       delete dlg;

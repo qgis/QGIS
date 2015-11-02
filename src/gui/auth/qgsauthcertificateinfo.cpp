@@ -595,13 +595,13 @@ void QgsAuthCertInfo::populateInfoDetailsSection()
   QStringList emails( alts.values( QSsl::EmailEntry ) );
   if ( !emails.isEmpty() )
   {
-    altslist << email + emails.join( "\n" + email );
+    altslist << email + emails.join( '\n' + email );
   }
   QString dns( tr( "DNS: " ) );
   QStringList dnss( alts.values( QSsl::DnsEntry ) );
   if ( !dnss.isEmpty() )
   {
-    altslist << dns + dnss.join( "\n" + dns );
+    altslist << dns + dnss.join( '\n' + dns );
   }
   addFieldItem( mGrpSubj, tr( "Alternate names" ),
                 altslist.join( "\n" ),

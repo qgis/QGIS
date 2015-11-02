@@ -175,10 +175,10 @@ QString QgsAttributeAction::expandAction( QString action, const QgsAttributeMap 
       QString to_replace;
       switch ( i )
       {
-        case 0: to_replace = "[%" + fields[attrIdx].name() + "]"; break;
-        case 1: to_replace = "[%" + mLayer->attributeDisplayName( attrIdx ) + "]"; break;
-        case 2: to_replace = "%" + fields[attrIdx].name(); break;
-        case 3: to_replace = "%" + mLayer->attributeDisplayName( attrIdx ); break;
+        case 0: to_replace = "[%" + fields[attrIdx].name() + ']'; break;
+        case 1: to_replace = "[%" + mLayer->attributeDisplayName( attrIdx ) + ']'; break;
+        case 2: to_replace = '%' + fields[attrIdx].name(); break;
+        case 3: to_replace = '%' + mLayer->attributeDisplayName( attrIdx ); break;
       }
 
       expanded_action = expanded_action.replace( to_replace, it.value().toString() );

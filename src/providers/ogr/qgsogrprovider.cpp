@@ -55,7 +55,7 @@ static const QString TEXT_PROVIDER_DESCRIPTION =
   + GDAL_RELEASE_NAME
   + ", running against GDAL/OGR library version "
   + GDALVersionInfo( "RELEASE_NAME" )
-  + ")";
+  + ')';
 
 
 class QgsCPLErrorHandler
@@ -283,7 +283,7 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
 
   // make connection to the data source
 
-  QgsDebugMsg( "Data source uri is [" + uri + "]" );
+  QgsDebugMsg( "Data source uri is [" + uri + ']' );
 
   // try to open for update, but disable error messages to avoid a
   // message if the file is read only, because we cope with that
@@ -304,13 +304,13 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
   }
   else
   {
-    QStringList theURIParts = uri.split( "|" );
+    QStringList theURIParts = uri.split( '|' );
     mFilePath = theURIParts.at( 0 );
 
     for ( int i = 1 ; i < theURIParts.size(); i++ )
     {
       QString part = theURIParts.at( i );
-      int pos = part.indexOf( "=" );
+      int pos = part.indexOf( '=' );
       QString field = part.left( pos );
       QString value = part.mid( pos + 1 );
 
@@ -1375,7 +1375,7 @@ bool QgsOgrProvider::createSpatialIndex()
 
   QFileInfo fi( mFilePath );     // to get the base name
   //find out, if the .qix file is there
-  QFile indexfile( fi.path().append( "/" ).append( fi.completeBaseName() ).append( ".qix" ) );
+  QFile indexfile( fi.path().append( '/' ).append( fi.completeBaseName() ).append( ".qix" ) );
   return indexfile.exists();
 }
 
@@ -1389,7 +1389,7 @@ bool QgsOgrProvider::createAttributeIndex( int field )
 
   QFileInfo fi( mFilePath );     // to get the base name
   //find out, if the .idm file is there
-  QFile indexfile( fi.path().append( "/" ).append( fi.completeBaseName() ).append( ".idm" ) );
+  QFile indexfile( fi.path().append( '/' ).append( fi.completeBaseName() ).append( ".idm" ) );
   return indexfile.exists();
 }
 
@@ -1608,8 +1608,8 @@ QString  QgsOgrProvider::description() const
 */
 static QString createFileFilter_( QString const &longName, QString const &glob )
 {
-  // return longName + " [OGR] (" + glob.toLower() + " " + glob.toUpper() + ");;";
-  return longName + " (" + glob.toLower() + " " + glob.toUpper() + ");;";
+  // return longName + " [OGR] (" + glob.toLower() + ' ' + glob.toUpper() + ");;";
+  return longName + " (" + glob.toLower() + ' ' + glob.toUpper() + ");;";
 } // createFileFilter_
 
 
@@ -1976,12 +1976,12 @@ QString QgsOgrProvider::directoryDrivers() const
 
 QGISEXTERN QStringList fileExtensions()
 {
-  return  createFilters( "extensions" ).split( "|" );
+  return  createFilters( "extensions" ).split( '|' );
 }
 
 QGISEXTERN QStringList wildcards()
 {
-  return  createFilters( "wildcards" ).split( "|" );
+  return  createFilters( "wildcards" ).split( '|' );
 }
 
 
@@ -2170,7 +2170,7 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
 
   for ( QList<QPair<QString, QString> >::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
   {
-    QStringList fields = it->second.split( ";" );
+    QStringList fields = it->second.split( ';' );
 
     if ( fields.size() == 0 )
       continue;
@@ -2451,15 +2451,15 @@ QByteArray QgsOgrUtils::quotedIdentifier( QByteArray field, const QString& ogrDr
   if ( ogrDriverName == "MySQL" )
   {
     field.replace( '\\', "\\\\" );
-    field.replace( "`", "``" );
-    return field.prepend( "`" ).append( "`" );
+    field.replace( '`', "``" );
+    return field.prepend( '`' ).append( '`' );
   }
   else
   {
     field.replace( '\\', "\\\\" );
     field.replace( '"', "\\\"" );
-    field.replace( "'", "\\'" );
-    return field.prepend( "\"" ).append( "\"" );
+    field.replace( '\'', "\\'" );
+    return field.prepend( '\"' ).append( '\"' );
   }
 }
 
@@ -2575,7 +2575,7 @@ OGRLayerH QgsOgrUtils::setSubsetString( OGRLayerH layer, OGRDataSourceH ds, QTex
   if ( ogrDriverName == "ODBC" ) //the odbc driver does not like schema names for subset
   {
     QString layerNameString = encoding->toUnicode( layerName );
-    int dotIndex = layerNameString.indexOf( "." );
+    int dotIndex = layerNameString.indexOf( '.' );
     if ( dotIndex > 1 )
     {
       QString modifiedLayerName = layerNameString.right( layerNameString.size() - dotIndex - 1 );

@@ -98,7 +98,7 @@ QList<int> QgsMapLayerLegendUtils::legendNodeOrder( QgsLayerTreeLayer* nodeLayer
   int numNodes = _originalLegendNodeCount( nodeLayer );
 
   QList<int> lst;
-  Q_FOREACH ( const QString& item, orderStr.split( "," ) )
+  Q_FOREACH ( const QString& item, orderStr.split( ',' ) )
   {
     bool ok;
     int id = item.toInt( &ok );

@@ -448,7 +448,7 @@ void QgsVectorLayerProperties::syncToLayer( void )
     mSimplifyDrawingGroupBox->setEnabled( false );
   }
 
-  QStringList myScalesList = PROJECT_SCALES.split( "," );
+  QStringList myScalesList = PROJECT_SCALES.split( ',' );
   myScalesList.append( "1:1" );
   mSimplifyMaximumScaleComboBox->updateScales( myScalesList );
   mSimplifyMaximumScaleComboBox->setScale( 1.0 / simplifyMethod.maximumScale() );

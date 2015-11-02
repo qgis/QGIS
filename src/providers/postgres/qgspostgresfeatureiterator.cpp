@@ -92,7 +92,7 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
     if ( !whereClause.isEmpty() )
       whereClause += " AND ";
 
-    whereClause += "(" + mSource->mSqlWhereClause + ")";
+    whereClause += '(' + mSource->mSqlWhereClause + ')';
   }
 
   if ( !declareCursor( whereClause ) )
@@ -375,31 +375,31 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause )
                  QgsPostgresProvider::endianString() );
 
     query += delim + geom;
-    delim = ",";
+    delim = ',';
   }
 
   switch ( mSource->mPrimaryKeyType )
 {
     case pktOid:
       query += delim + "oid";
-      delim = ",";
+      delim = ',';
       break;
 
     case pktTid:
       query += delim + "ctid";
-      delim = ",";
+      delim = ',';
       break;
 
     case pktInt:
       query += delim + QgsPostgresConn::quotedIdentifier( mSource->mFields.at( mSource->mPrimaryKeyAttrs.at( 0 ) ).name() );
-      delim = ",";
+      delim = ',';
       break;
 
     case pktFidMap:
       Q_FOREACH ( int idx, mSource->mPrimaryKeyAttrs )
       {
         query += delim + mConn->fieldExpression( mSource->mFields.at( idx ) );
-        delim = ",";
+        delim = ',';
       }
       break;
 

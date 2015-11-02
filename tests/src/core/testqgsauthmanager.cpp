@@ -87,7 +87,7 @@ void TestQgsAuthManager::initTestCase()
             "Authentication system is DISABLED" );
 
   QString mySettings = QgsApplication::showSettings();
-  mySettings = mySettings.replace( "\n", "<br />\n" );
+  mySettings = mySettings.replace( '\n', "<br />\n" );
   mReport += "<p>" + mySettings + "</p>\n";
 
   // verify QGIS_AUTH_DB_DIR_PATH (temp auth db path) worked
@@ -136,7 +136,7 @@ void TestQgsAuthManager::cleanupTempDir()
   {
     Q_FOREACH ( const QString &tf, tmpDir.entryList( QDir::NoDotAndDotDot | QDir::Files ) )
     {
-      QVERIFY2( tmpDir.remove( mTempDir + "/" + tf ), qPrintable( "Could not remove " + mTempDir + "/" + tf ) );
+      QVERIFY2( tmpDir.remove( mTempDir + '/' + tf ), qPrintable( "Could not remove " + mTempDir + '/' + tf ) );
     }
     QVERIFY2( tmpDir.rmdir( mTempDir ), qPrintable( "Could not remove directory " + mTempDir ) );
   }

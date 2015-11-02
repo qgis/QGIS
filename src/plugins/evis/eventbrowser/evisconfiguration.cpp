@@ -124,14 +124,14 @@ void eVisConfiguration::setBasePath( const QString& thePath )
     {
       if ( mBasePath[mBasePath.length()-1] != '/' )
       {
-        mBasePath = mBasePath + "/";
+        mBasePath = mBasePath + '/';
       }
     }
     else
     {
       if ( mBasePath[mBasePath.length()-1] != '\\' )
       {
-        mBasePath = mBasePath + "\\";
+        mBasePath = mBasePath + '\\';
       }
     }
   }

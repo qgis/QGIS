@@ -62,7 +62,7 @@ bool QgsAuthPkiPathsEdit::validateConfig()
   QSslCertificate cert;
   QFile file( certpath );
   QFileInfo fileinfo( file );
-  QString ext( fileinfo.fileName().replace( fileinfo.completeBaseName(), "" ).toLower() );
+  QString ext( fileinfo.fileName().remove( fileinfo.completeBaseName() ).toLower() );
   if ( ext.isEmpty() )
   {
     writePkiMessage( lePkiPathsMsg, tr( "Certificate file has no extension" ), Invalid );

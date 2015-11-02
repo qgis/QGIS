@@ -199,7 +199,7 @@ void QgsSimpleLineSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context 
     //scale pattern vector
     double dashWidthDiv = scaledWidth;
     //fix dash pattern width in Qt 4.8
-    QStringList versionSplit = QString( qVersion() ).split( "." );
+    QStringList versionSplit = QString( qVersion() ).split( '.' );
     if ( versionSplit.size() > 1
          && versionSplit.at( 1 ).toInt() >= 8
          && ( scaledWidth * context.renderContext().rasterScaleFactor() ) < 1.0 )
@@ -510,7 +510,7 @@ void QgsSimpleLineSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderCon
     }
 
     //fix dash pattern width in Qt 4.8
-    QStringList versionSplit = QString( qVersion() ).split( "." );
+    QStringList versionSplit = QString( qVersion() ).split( '.' );
     if ( versionSplit.size() > 1
          && versionSplit.at( 1 ).toInt() >= 8
          && ( scaledWidth * context.renderContext().rasterScaleFactor() ) < 1.0 )
@@ -519,7 +519,7 @@ void QgsSimpleLineSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderCon
     }
 
     QVector<qreal> dashVector;
-    QStringList dashList = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_CUSTOMDASH, context, QVariant(), &ok ).toString().split( ";" );
+    QStringList dashList = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_CUSTOMDASH, context, QVariant(), &ok ).toString().split( ';' );
     if ( ok )
     {
       QStringList::const_iterator dashIt = dashList.constBegin();

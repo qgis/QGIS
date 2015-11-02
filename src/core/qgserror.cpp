@@ -80,11 +80,11 @@ QString QgsError::message( QgsErrorMessage::Format theFormat ) const
     {
       if ( !str.isEmpty() )
       {
-        str += "\n"; // new message
+        str += '\n'; // new message
       }
       if ( !m.tag().isEmpty() )
       {
-        str += m.tag() + " ";
+        str += m.tag() + ' ';
       }
       str += m.message();
 #ifdef QGISDEBUG

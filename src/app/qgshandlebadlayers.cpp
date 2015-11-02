@@ -191,7 +191,7 @@ QString QgsHandleBadLayers::filename( int row )
     }
     else if ( provider == "ogr" )
     {
-      QStringList theURIParts = datasource.split( "|" );
+      QStringList theURIParts = datasource.split( '|' );
       return theURIParts[0];
     }
     else if ( provider == "delimitedtext" )
@@ -228,7 +228,7 @@ void QgsHandleBadLayers::setFilename( int row, const QString& filename )
     }
     else if ( provider == "ogr" )
     {
-      QStringList theURIParts = datasource.split( "|" );
+      QStringList theURIParts = datasource.split( '|' );
       theURIParts[0] = filename;
       datasource = theURIParts.join( "|" );
     }

@@ -63,9 +63,9 @@ QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
   mCRS = new QgsCoordinateReferenceSystem();
 
   // Set the display name = internal name
-  QgsDebugMsg( "original name: '" + mLayerOrigName + "'" );
+  QgsDebugMsg( "original name: '" + mLayerOrigName + '\'' );
   mLayerName = capitaliseLayerName( mLayerOrigName );
-  QgsDebugMsg( "display name: '" + mLayerName + "'" );
+  QgsDebugMsg( "display name: '" + mLayerName + '\'' );
 
   // Generate the unique ID of this layer
   QDateTime dt = QDateTime::currentDateTime();
@@ -105,9 +105,9 @@ QString QgsMapLayer::id() const
 /** Write property of QString layerName. */
 void QgsMapLayer::setLayerName( const QString & name )
 {
-  QgsDebugMsg( "new original name: '" + name + "'" );
+  QgsDebugMsg( "new original name: '" + name + '\'' );
   QString newName = capitaliseLayerName( name );
-  QgsDebugMsg( "new display name: '" + name + "'" );
+  QgsDebugMsg( "new display name: '" + name + '\'' );
   if ( name == mLayerOrigName && newName == mLayerName ) return;
   mLayerOrigName = name; // store the new original name
   mLayerName = newName;
@@ -117,7 +117,7 @@ void QgsMapLayer::setLayerName( const QString & name )
 /** Read property of QString layerName. */
 QString QgsMapLayer::name() const
 {
-  QgsDebugMsgLevel( "returning name '" + mLayerName + "'", 4 );
+  QgsDebugMsgLevel( "returning name '" + mLayerName + '\'', 4 );
   return mLayerName;
 }
 
@@ -201,13 +201,13 @@ bool QgsMapLayer::readLayerXML( const QDomElement& layerElement )
   }
   else if ( provider == "ogr" )
   {
-    QStringList theURIParts = mDataSource.split( "|" );
+    QStringList theURIParts = mDataSource.split( '|' );
     theURIParts[0] = QgsProject::instance()->readPath( theURIParts[0] );
     mDataSource = theURIParts.join( "|" );
   }
   else if ( provider == "gpx" )
   {
-    QStringList theURIParts = mDataSource.split( "?" );
+    QStringList theURIParts = mDataSource.split( '?' );
     theURIParts[0] = QgsProject::instance()->readPath( theURIParts[0] );
     mDataSource = theURIParts.join( "?" );
   }
@@ -217,7 +217,7 @@ bool QgsMapLayer::readLayerXML( const QDomElement& layerElement )
 
     if ( !mDataSource.startsWith( "file:" ) )
     {
-      QUrl file = QUrl::fromLocalFile( mDataSource.left( mDataSource.indexOf( "?" ) ) );
+      QUrl file = QUrl::fromLocalFile( mDataSource.left( mDataSource.indexOf( '?' ) ) );
       urlSource.setScheme( "file" );
       urlSource.setPath( file.path() );
     }
@@ -245,7 +245,7 @@ bool QgsMapLayer::readLayerXML( const QDomElement& layerElement )
       QgsDataSourceURI uri;
       if ( !mDataSource.startsWith( "http:" ) )
       {
-        QStringList parts = mDataSource.split( "," );
+        QStringList parts = mDataSource.split( ',' );
         QStringListIterator iter( parts );
         while ( iter.hasNext() )
         {
@@ -264,7 +264,7 @@ bool QgsMapLayer::readLayerXML( const QDomElement& layerElement )
             // tiled=width;height - non tiled mode, specifies max width and max height
             // tiled=width;height;resolutions-1;resolution2;... - tile mode
 
-            QStringList params = item.mid( 6 ).split( ";" );
+            QStringList params = item.mid( 6 ).split( ';' );
 
             if ( params.size() == 2 ) // non tiled mode
             {
@@ -288,7 +288,7 @@ bool QgsMapLayer::readLayerXML( const QDomElement& layerElement )
           }
           else if ( item.startsWith( "ignoreUrl=" ) )
           {
-            uri.setParam( "ignoreUrl", item.mid( 10 ).split( ";" ) );
+            uri.setParam( "ignoreUrl", item.mid( 10 ).split( ';' ) );
           }
         }
       }
@@ -357,7 +357,7 @@ bool QgsMapLayer::readLayerXML( const QDomElement& layerElement )
         QRegExp r( "([^:]+):([^:]+):(.+)" );
         if ( r.exactMatch( mDataSource ) )
         {
-          mDataSource = r.cap( 1 ) + ":" + r.cap( 2 ) + ":" + QgsProject::instance()->readPath( r.cap( 3 ) );
+          mDataSource = r.cap( 1 ) + ':' + r.cap( 2 ) + ':' + QgsProject::instance()->readPath( r.cap( 3 ) );
           handled = true;
         }
       }
@@ -542,13 +542,13 @@ bool QgsMapLayer::writeLayerXML( QDomElement& layerElement, QDomDocument& docume
   }
   else if ( vlayer && vlayer->providerType() == "ogr" )
   {
-    QStringList theURIParts = src.split( "|" );
+    QStringList theURIParts = src.split( '|' );
     theURIParts[0] = QgsProject::instance()->writePath( theURIParts[0], relativeBasePath );
     src = theURIParts.join( "|" );
   }
   else if ( vlayer && vlayer->providerType() == "gpx" )
   {
-    QStringList theURIParts = src.split( "?" );
+    QStringList theURIParts = src.split( '?' );
     theURIParts[0] = QgsProject::instance()->writePath( theURIParts[0], relativeBasePath );
     src = theURIParts.join( "?" );
   }
@@ -618,7 +618,7 @@ bool QgsMapLayer::writeLayerXML( QDomElement& layerElement, QDomDocument& docume
           QRegExp r( "([^:]+):([^:]+):(.+)" );
           if ( r.exactMatch( src ) )
           {
-            src = r.cap( 1 ) + ":" + r.cap( 2 ) + ":" + QgsProject::instance()->writePath( r.cap( 3 ), relativeBasePath );
+            src = r.cap( 1 ) + ':' + r.cap( 2 ) + ':' + QgsProject::instance()->writePath( r.cap( 3 ), relativeBasePath );
             handled = true;
           }
         }
@@ -655,7 +655,7 @@ bool QgsMapLayer::writeLayerXML( QDomElement& layerElement, QDomDocument& docume
   layerElement.appendChild( layerAbstract );
 
   // layer keyword list
-  QStringList keywordStringList = keywordList().split( "," );
+  QStringList keywordStringList = keywordList().split( ',' );
   if ( keywordStringList.size() > 0 )
   {
     QDomElement layerKeywordList = document.createElement( "keywordList" );
@@ -1242,12 +1242,12 @@ QString QgsMapLayer::saveNamedStyle( const QString &theURI, bool &theResultFlag 
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( this );
   if ( vlayer && vlayer->providerType() == "ogr" )
   {
-    QStringList theURIParts = theURI.split( "|" );
+    QStringList theURIParts = theURI.split( '|' );
     filename = theURIParts[0];
   }
   else if ( vlayer && vlayer->providerType() == "gpx" )
   {
-    QStringList theURIParts = theURI.split( "?" );
+    QStringList theURIParts = theURI.split( '?' );
     filename = theURIParts[0];
   }
   else if ( vlayer && vlayer->providerType() == "delimitedtext" )
@@ -1426,12 +1426,12 @@ QString QgsMapLayer::saveSldStyle( const QString &theURI, bool &theResultFlag )
   QString filename;
   if ( vlayer->providerType() == "ogr" )
   {
-    QStringList theURIParts = theURI.split( "|" );
+    QStringList theURIParts = theURI.split( '|' );
     filename = theURIParts[0];
   }
   else if ( vlayer->providerType() == "gpx" )
   {
-    QStringList theURIParts = theURI.split( "?" );
+    QStringList theURIParts = theURI.split( '?' );
     filename = theURIParts[0];
   }
   else if ( vlayer->providerType() == "delimitedtext" )

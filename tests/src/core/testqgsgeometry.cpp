@@ -743,7 +743,7 @@ bool TestQgsGeometry::renderCheck( const QString& theTestName, const QString& th
 {
   mReport += "<h2>" + theTestName + "</h2>\n";
   mReport += "<h3>" + theComment + "</h3>\n";
-  QString myTmpDir = QDir::tempPath() + "/";
+  QString myTmpDir = QDir::tempPath() + '/';
   QString myFileName = myTmpDir + theTestName + ".png";
   mImage.save( myFileName, "PNG" );
   QgsRenderChecker myChecker;

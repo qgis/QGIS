@@ -128,7 +128,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString& uri )
 
       if ( url.hasQueryItem( "xyDms" ) )
       {
-        mXyDms = ! url.queryItemValue( "xyDms" ).toLower().startsWith( "n" );
+        mXyDms = ! url.queryItemValue( "xyDms" ).toLower().startsWith( 'n' );
       }
     }
     else
@@ -145,12 +145,12 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString& uri )
 
   if ( url.hasQueryItem( "subsetIndex" ) )
   {
-    mBuildSubsetIndex = ! url.queryItemValue( "subsetIndex" ).toLower().startsWith( "n" );
+    mBuildSubsetIndex = ! url.queryItemValue( "subsetIndex" ).toLower().startsWith( 'n' );
   }
 
   if ( url.hasQueryItem( "spatialIndex" ) )
   {
-    mBuildSpatialIndex = ! url.queryItemValue( "spatialIndex" ).toLower().startsWith( "n" );
+    mBuildSpatialIndex = ! url.queryItemValue( "spatialIndex" ).toLower().startsWith( 'n' );
   }
 
   if ( url.hasQueryItem( "subset" ) )

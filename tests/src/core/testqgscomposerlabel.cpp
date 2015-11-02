@@ -68,7 +68,7 @@ void TestQgsComposerLabel::initTestCase()
   mMapSettings = new QgsMapSettings();
 
   //create maplayers from testdata and add to layer registry
-  QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + "/" +  "france_parts.shp" );
+  QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + '/' +  "france_parts.shp" );
   mVectorLayer = new QgsVectorLayer( vectorFileInfo.filePath(),
                                      vectorFileInfo.completeBaseName(),
                                      "ogr" );

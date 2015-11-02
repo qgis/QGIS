@@ -61,7 +61,7 @@ QgsNewHttpConnection::QgsNewHttpConnection(
     QSettings settings;
 
     QString key = mBaseKey + connName;
-    QString credentialsKey = "/Qgis/" + mCredentialsBaseKey + "/" + connName;
+    QString credentialsKey = "/Qgis/" + mCredentialsBaseKey + '/' + connName;
     txtName->setText( connName );
     txtUrl->setText( settings.value( key + "/url" ).toString() );
 
@@ -166,7 +166,7 @@ void QgsNewHttpConnection::accept()
 {
   QSettings settings;
   QString key = mBaseKey + txtName->text();
-  QString credentialsKey = "/Qgis/" + mCredentialsBaseKey + "/" + txtName->text();
+  QString credentialsKey = "/Qgis/" + mCredentialsBaseKey + '/' + txtName->text();
 
   // warn if entry was renamed to an existing connection
   if (( mOriginalConnName.isNull() || mOriginalConnName.compare( txtName->text(), Qt::CaseInsensitive ) != 0 ) &&
@@ -192,7 +192,7 @@ void QgsNewHttpConnection::accept()
   if ( !mOriginalConnName.isNull() && mOriginalConnName != key )
   {
     settings.remove( mBaseKey + mOriginalConnName );
-    settings.remove( "/Qgis/" + mCredentialsBaseKey + "/" + mOriginalConnName );
+    settings.remove( "/Qgis/" + mCredentialsBaseKey + '/' + mOriginalConnName );
     settings.sync();
   }
 

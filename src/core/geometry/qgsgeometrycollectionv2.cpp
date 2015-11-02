@@ -266,15 +266,15 @@ QString QgsGeometryCollectionV2::asWkt( int precision ) const
     QString childWkt = geom->asWkt( precision );
     if ( wktOmitChildType() )
     {
-      childWkt = childWkt.mid( childWkt.indexOf( "(" ) );
+      childWkt = childWkt.mid( childWkt.indexOf( '(' ) );
     }
-    wkt += childWkt + ",";
+    wkt += childWkt + ',';
   }
-  if ( wkt.endsWith( "," ) )
+  if ( wkt.endsWith( ',' ) )
   {
-    wkt.chop( 1 ); // Remove last ","
+    wkt.chop( 1 ); // Remove last ','
   }
-  wkt += ")";
+  wkt += ')';
   return wkt;
 }
 

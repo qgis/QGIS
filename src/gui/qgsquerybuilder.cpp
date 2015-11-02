@@ -325,7 +325,7 @@ void QgsQueryBuilder::on_lstFields_clicked( const QModelIndex &index )
 
 void QgsQueryBuilder::on_lstFields_doubleClicked( const QModelIndex &index )
 {
-  txtSQL->insertText( "\"" + mLayer->fields().at( mModelFields->data( index, Qt::UserRole + 1 ).toInt() ).name() + "\"" );
+  txtSQL->insertText( '\"' + mLayer->fields().at( mModelFields->data( index, Qt::UserRole + 1 ).toInt() ).name() + '\"' );
   txtSQL->setFocus();
 }
 
@@ -335,11 +335,11 @@ void QgsQueryBuilder::on_lstValues_doubleClicked( const QModelIndex &index )
   if ( value.isNull() )
     txtSQL->insertText( "NULL" );
   else if ( value.type() == QVariant::Date && mLayer->providerType() == "ogr" && mLayer->storageType() == "ESRI Shapefile" )
-    txtSQL->insertText( "'" + value.toDate().toString( "yyyy/MM/dd" ) + "'" );
+    txtSQL->insertText( '\'' + value.toDate().toString( "yyyy/MM/dd" ) + '\'' );
   else if ( value.type() == QVariant::Int || value.type() == QVariant::Double || value.type() == QVariant::LongLong )
     txtSQL->insertText( value.toString() );
   else
-    txtSQL->insertText( "'" + value.toString().replace( "'", "''" ) + "'" );
+    txtSQL->insertText( '\'' + value.toString().replace( '\'', "''" ) + '\'' );
 
   txtSQL->setFocus();
 }

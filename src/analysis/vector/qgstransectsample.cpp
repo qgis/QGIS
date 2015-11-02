@@ -210,7 +210,7 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
       samplePointFeature.setAttribute( "id", nTotalTransects + 1 );
       samplePointFeature.setAttribute( "station_id", nCreatedTransects + 1 );
       samplePointFeature.setAttribute( "stratum_id", strataId );
-      samplePointFeature.setAttribute( "station_code", strataId.toString() + "_" + QString::number( nCreatedTransects + 1 ) );
+      samplePointFeature.setAttribute( "station_code", strataId.toString() + '_' + QString::number( nCreatedTransects + 1 ) );
       samplePointFeature.setAttribute( "start_lat", latLongSamplePoint.y() );
       samplePointFeature.setAttribute( "start_long", latLongSamplePoint.x() );
 
@@ -279,7 +279,7 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
       sampleLineFeature.setAttribute( "id", nTotalTransects + 1 );
       sampleLineFeature.setAttribute( "station_id", nCreatedTransects + 1 );
       sampleLineFeature.setAttribute( "stratum_id", strataId );
-      sampleLineFeature.setAttribute( "station_code", strataId.toString() + "_" + QString::number( nCreatedTransects + 1 ) );
+      sampleLineFeature.setAttribute( "station_code", strataId.toString() + '_' + QString::number( nCreatedTransects + 1 ) );
       sampleLineFeature.setAttribute( "start_lat", latLongSamplePoint.y() );
       sampleLineFeature.setAttribute( "start_long", latLongSamplePoint.x() );
       sampleLineFeature.setAttribute( "bearing", bearing );

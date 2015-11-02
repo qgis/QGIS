@@ -141,7 +141,7 @@ bool QgsDistanceArea::setEllipsoid( const QString& ellipsoid )
   // Distances in meters.  Flattening is calculated.
   if ( ellipsoid.startsWith( "PARAMETER" ) )
   {
-    QStringList paramList = ellipsoid.split( ":" );
+    QStringList paramList = ellipsoid.split( ':' );
     bool semiMajorOk, semiMinorOk;
     double semiMajor = paramList[1].toDouble( & semiMajorOk );
     double semiMinor = paramList[2].toDouble( & semiMinorOk );
@@ -167,7 +167,7 @@ bool QgsDistanceArea::setEllipsoid( const QString& ellipsoid )
     return false;
   }
   // Set up the query to retrieve the projection information needed to populate the ELLIPSOID list
-  QString mySql = "select radius, parameter2 from tbl_ellipsoid where acronym='" + ellipsoid + "'";
+  QString mySql = "select radius, parameter2 from tbl_ellipsoid where acronym='" + ellipsoid + '\'';
   myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
   // XXX Need to free memory from the error msg if one is set
   if ( myResult == SQLITE_OK )

@@ -254,7 +254,7 @@ void QgsLayerTreeViewDefaultActions::zoomToLayers( QgsMapCanvas* canvas, const Q
 QString QgsLayerTreeViewDefaultActions::uniqueGroupName( QgsLayerTreeGroup* parentGroup )
 {
   QString prefix = parentGroup == mView->layerTreeModel()->rootGroup() ? "group" : "sub-group";
-  QString newName = prefix + "1";
+  QString newName = prefix + '1';
   for ( int i = 2; parentGroup->findGroup( newName ); ++i )
     newName = prefix + QString::number( i );
   return newName;

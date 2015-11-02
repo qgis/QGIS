@@ -205,14 +205,14 @@ void QgsValueMapConfigDlg::loadFromCSVButtonPushed()
     else
       continue;
 
-    if (( key.startsWith( "\"" ) && key.endsWith( "\"" ) ) ||
-        ( key.startsWith( "'" ) && key.endsWith( "'" ) ) )
+    if (( key.startsWith( '\"' ) && key.endsWith( '\"' ) ) ||
+        ( key.startsWith( '\'' ) && key.endsWith( '\'' ) ) )
     {
       key = key.mid( 1, key.length() - 2 );
     }
 
-    if (( val.startsWith( "\"" ) && val.endsWith( "\"" ) ) ||
-        ( val.startsWith( "'" ) && val.endsWith( "'" ) ) )
+    if (( val.startsWith( '\"' ) && val.endsWith( '\"' ) ) ||
+        ( val.startsWith( '\'' ) && val.endsWith( '\'' ) ) )
     {
       val = val.mid( 1, val.length() - 2 );
     }

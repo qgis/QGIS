@@ -91,7 +91,7 @@ void TestQgsRenderers::initTestCase()
   //create a point layer that will be used in all tests...
   //
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
-  mTestDataDir = myDataDir + "/";
+  mTestDataDir = myDataDir + '/';
   QString myPointsFileName = mTestDataDir + "points.shp";
   QFileInfo myPointFileInfo( myPointsFileName );
   mpPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),

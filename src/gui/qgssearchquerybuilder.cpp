@@ -141,7 +141,7 @@ void QgsSearchQueryBuilder::getFieldValues( int limit )
     if ( !numeric )
     {
       // put string in single quotes and escape single quotes in the string
-      value = "'" + value.replace( "'", "''" ) + "'";
+      value = '\'' + value.replace( '\'', "''" ) + '\'';
     }
 
     // add item only if it's not there already

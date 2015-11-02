@@ -86,7 +86,7 @@ void TestQgsRasterFill::initTestCase()
 
   //create some objects that will be used in all tests...
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
-  mTestDataDir = myDataDir + "/";
+  mTestDataDir = myDataDir + '/';
 
   //
   //create a poly layer that will be used in all tests...

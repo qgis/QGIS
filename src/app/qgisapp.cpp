@@ -796,7 +796,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
     QString myPaths = settings.value( "plugins/searchPathsForPlugins", "" ).toString();
     if ( !myPaths.isEmpty() )
     {
-      QStringList myPathList = myPaths.split( "|" );
+      QStringList myPathList = myPaths.split( '|' );
       QgsPluginRegistry::instance()->restoreSessionPlugins( myPathList );
     }
   }
@@ -1557,7 +1557,7 @@ void QgisApp::showPythonDialog()
   {
     QString className, text;
     mPythonUtils->getError( className, text );
-    messageBar()->pushMessage( tr( "Error" ), tr( "Failed to open Python console:" ) + "\n" + className + ": " + text, QgsMessageBar::WARNING );
+    messageBar()->pushMessage( tr( "Error" ), tr( "Failed to open Python console:" ) + '\n' + className + ": " + text, QgsMessageBar::WARNING );
   }
 #ifdef Q_OS_MAC
   else
@@ -3218,12 +3218,12 @@ bool QgisApp::addVectorLayers( const QStringList &theLayerQStringList, const QSt
       {
         //set friendly name for datasources with only one layer
         QStringList sublayers = layer->dataProvider()->subLayers();
-        QStringList elements = sublayers.at( 0 ).split( ":" );
+        QStringList elements = sublayers.at( 0 ).split( ':' );
         if ( layer->storageType() != "GeoJSON" )
         {
           while ( elements.size() > 4 )
           {
-            elements[1] += ":" + elements[2];
+            elements[1] += ':' + elements[2];
             elements.removeAt( 2 );
           }
 
@@ -3287,7 +3287,7 @@ bool QgisApp::askUserForZipItemLayers( QString path )
   QSettings settings;
   int promptLayers = settings.value( "/qgis/promptForRasterSublayers", 1 ).toInt();
 
-  QgsDebugMsg( "askUserForZipItemLayers( " + path + ")" );
+  QgsDebugMsg( "askUserForZipItemLayers( " + path + ')' );
 
   // if scanZipBrowser == no: skip to the next file
   if ( settings.value( "/qgis/scanZipInBrowser2", "basic" ).toString() == "no" )
@@ -3424,20 +3424,20 @@ void QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
     else
     {
       // remove driver name and file name
-      name.replace( name.split( ":" )[0], "" );
-      name.replace( path, "" );
+      name.remove( name.split( ':' )[0] );
+      name.remove( path );
     }
     // remove any : or " left over
-    if ( name.startsWith( ":" ) )
+    if ( name.startsWith( ':' ) )
       name.remove( 0, 1 );
 
-    if ( name.startsWith( "\"" ) )
+    if ( name.startsWith( '\"' ) )
       name.remove( 0, 1 );
 
-    if ( name.endsWith( ":" ) )
+    if ( name.endsWith( ':' ) )
       name.chop( 1 );
 
-    if ( name.endsWith( "\"" ) )
+    if ( name.endsWith( '\"' ) )
       name.chop( 1 );
 
     names << name;
@@ -3530,7 +3530,7 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
       // If we get here, there are some options added to the filename.
       // A valid uri is of the form: filename&option1=value1&option2=value2,...
       // We want only the filename here, so we get the first part of the split.
-      QStringList theURIParts = uri.split( "|" );
+      QStringList theURIParts = uri.split( '|' );
       uri = theURIParts.at( 0 );
     }
     QgsDebugMsg( "Layer type " + layertype );
@@ -3553,10 +3553,10 @@ void QgisApp::loadOGRSublayers( const QString& layertype, const QString& uri, co
   for ( int i = 0; i < list.size(); i++ )
   {
     QString composedURI;
-    QStringList elements = list.at( i ).split( ":" );
+    QStringList elements = list.at( i ).split( ':' );
     while ( elements.size() > 2 )
     {
-      elements[0] += ":" + elements[1];
+      elements[0] += ':' + elements[1];
       elements.removeAt( 1 );
     }
 
@@ -3586,7 +3586,7 @@ void QgisApp::loadOGRSublayers( const QString& layertype, const QString& uri, co
 
     QgsDebugMsg( "Creating new vector layer using " + composedURI );
     QString name = list.at( i );
-    name.replace( ":", " " );
+    name.replace( ':', ' ' );
     QgsVectorLayer *layer = new QgsVectorLayer( composedURI, name, "ogr", false );
     if ( layer && layer->isValid() )
     {
@@ -4406,7 +4406,7 @@ bool QgisApp::fileSave()
     QString path = QFileDialog::getSaveFileName(
                      this,
                      tr( "Choose a QGIS project file" ),
-                     lastUsedDir + "/" + QgsProject::instance()->title(),
+                     lastUsedDir + '/' + QgsProject::instance()->title(),
                      tr( "QGIS files" ) + " (*.qgs *.QGS)" );
     if ( path.isEmpty() )
       return false;
@@ -4483,7 +4483,7 @@ void QgisApp::fileSaveAs()
 
   QString path = QFileDialog::getSaveFileName( this,
                  tr( "Choose a file name to save the QGIS project file as" ),
-                 lastUsedDir + "/" + QgsProject::instance()->title(),
+                 lastUsedDir + '/' + QgsProject::instance()->title(),
                  tr( "QGIS files" ) + " (*.qgs *.QGS)" );
   if ( path.isEmpty() )
     return;
@@ -5807,7 +5807,7 @@ bool QgisApp::uniqueComposerTitle( QWidget* parent, QString& composerTitle, bool
   QString chooseMsg = tr( "Create unique print composer title" );
   if ( acceptEmpty )
   {
-    chooseMsg += "\n" + tr( "(title generated if left empty)" );
+    chooseMsg += '\n' + tr( "(title generated if left empty)" );
   }
   QString titleMsg = chooseMsg;
 
@@ -6744,7 +6744,7 @@ QgsVectorLayer *QgisApp::pasteToNewMemoryVector()
 
   QGis::WkbType wkbType = typeCounts.size() > 0 ? typeCounts.keys().value( 0 ) : QGis::WKBPoint;
 
-  QString typeName = QString( QGis::featureType( wkbType ) ).replace( "WKB", "" );
+  QString typeName = QString( QGis::featureType( wkbType ) ).remove( "WKB" );
 
   typeName += QString( "?memoryid=%1" ).arg( QUuid::createUuid().toString() );
 
@@ -7554,7 +7554,7 @@ void QgisApp::duplicateLayers( const QList<QgsMapLayer *>& lyrList )
   {
     dupLayer = 0;
     unSppType.clear();
-    layerDupName = selectedLyr->name() + " " + tr( "copy" );
+    layerDupName = selectedLyr->name() + ' ' + tr( "copy" );
 
     if ( selectedLyr->type() == QgsMapLayer::PluginLayer )
     {
@@ -10167,7 +10167,7 @@ bool QgisApp::addRasterLayers( QStringList const &theFileNameQStringList, bool g
 
         msg = tr( "%1 is not a supported raster data source" ).arg( *myIterator );
         if ( errMsg.size() > 0 )
-          msg += "\n" + errMsg;
+          msg += '\n' + errMsg;
         error.append( QGS_ERROR_MESSAGE( msg, tr( "Raster layer" ) ) );
 
         QgsErrorDialog::show( error, tr( "Unsupported Data Source" ) );
@@ -10394,13 +10394,13 @@ void QgisApp::projectChanged( const QDomDocument &doc )
   if ( !prevProjectDir.isNull() )
   {
     QString prev = prevProjectDir;
-    expr = QString( "sys.path.remove('%1'); " ).arg( prev.replace( "'", "\\'" ) );
+    expr = QString( "sys.path.remove('%1'); " ).arg( prev.replace( '\'', "\\'" ) );
   }
 
   prevProjectDir = fi.canonicalPath();
 
   QString prev = prevProjectDir;
-  expr += QString( "sys.path.append('%1')" ).arg( prev.replace( "'", "\\'" ) );
+  expr += QString( "sys.path.append('%1')" ).arg( prev.replace( '\'', "\\'" ) );
 
   QgsPythonRunner::run( expr );
 }
@@ -10561,7 +10561,7 @@ void QgisApp::namAuthenticationRequired( QNetworkReply *reply, QAuthenticator *a
     if ( header.startsWith( "Basic " ) )
     {
       QByteArray auth( QByteArray::fromBase64( header.mid( 6 ) ) );
-      int pos = auth.indexOf( ":" );
+      int pos = auth.indexOf( ':' );
       if ( pos >= 0 )
       {
         username = auth.left( pos );

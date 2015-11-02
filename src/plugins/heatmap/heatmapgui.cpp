@@ -595,7 +595,7 @@ QString HeatmapGui::outputFilename() const
       // Some drivers don't seem to have any extension at all
       if ( !it.value().isEmpty() )
       {
-        outputFileName.append( "." );
+        outputFileName.append( '.' );
         outputFileName.append( it.value() );
       }
     }

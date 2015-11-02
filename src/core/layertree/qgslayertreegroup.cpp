@@ -305,7 +305,7 @@ QString QgsLayerTreeGroup::dump() const
   QString header = QString( "GROUP: %1 visible=%2 expanded=%3\n" ).arg( name() ).arg( mChecked ).arg( mExpanded );
   QStringList childrenDump;
   Q_FOREACH ( QgsLayerTreeNode* node, mChildren )
-    childrenDump << node->dump().split( "\n" );
+    childrenDump << node->dump().split( '\n' );
   for ( int i = 0; i < childrenDump.count(); ++i )
     childrenDump[i].prepend( "  " );
   return header + childrenDump.join( "\n" );

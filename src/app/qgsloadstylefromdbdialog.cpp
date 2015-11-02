@@ -67,8 +67,8 @@ void QgsLoadStyleFromDBDialog::initializeLists( const QStringList& ids, const QS
 
   mRelatedTable->setColumnCount( relatedTableNOfCols );
   mOthersTable->setColumnCount( othersTableNOfCols );
-  mRelatedTable->setHorizontalHeaderLabels( relatedTableHeader.split( ";" ) );
-  mOthersTable->setHorizontalHeaderLabels( othersTableHeader.split( ";" ) );
+  mRelatedTable->setHorizontalHeaderLabels( relatedTableHeader.split( ';' ) );
+  mOthersTable->setHorizontalHeaderLabels( othersTableHeader.split( ';' ) );
   mRelatedTable->setRowCount( sectionLimit );
   mOthersTable->setRowCount( ids.count() - sectionLimit );
   mRelatedTable->setDisabled( relatedTableNOfCols == 1 );

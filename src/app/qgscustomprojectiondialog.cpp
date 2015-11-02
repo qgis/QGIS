@@ -211,10 +211,10 @@ void  QgsCustomProjectionDialog::insertProjection( const QString& myProjectionAc
         // We have the result from system srs.db. Now insert into user db.
         mySql = "insert into tbl_projection(acronym,name,notes,parameters) values ("
                 + quotedValue( QString::fromUtf8(( char * )sqlite3_column_text( srsPreparedStatement, 0 ) ) )
-                + "," + quotedValue( QString::fromUtf8(( char * )sqlite3_column_text( srsPreparedStatement, 1 ) ) )
-                + "," + quotedValue( QString::fromUtf8(( char * )sqlite3_column_text( srsPreparedStatement, 2 ) ) )
-                + "," + quotedValue( QString::fromUtf8(( char * )sqlite3_column_text( srsPreparedStatement, 3 ) ) )
-                + ")"
+                + ',' + quotedValue( QString::fromUtf8(( char * )sqlite3_column_text( srsPreparedStatement, 1 ) ) )
+                + ',' + quotedValue( QString::fromUtf8(( char * )sqlite3_column_text( srsPreparedStatement, 2 ) ) )
+                + ',' + quotedValue( QString::fromUtf8(( char * )sqlite3_column_text( srsPreparedStatement, 3 ) ) )
+                + ')'
                 ;
         myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.length(), &myPreparedStatement, &myTail );
         if ( myResult != SQLITE_OK || sqlite3_step( myPreparedStatement ) != SQLITE_DONE )
@@ -528,7 +528,7 @@ void QgsCustomProjectionDialog::on_pbnCalculate_clicked()
 
 QString QgsCustomProjectionDialog::quotedValue( QString value )
 {
-  value.replace( "'", "''" );
-  return value.prepend( "'" ).append( "'" );
+  value.replace( '\'', "''" );
+  return value.prepend( '\'' ).append( '\'' );
 }
 

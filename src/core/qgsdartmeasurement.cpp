@@ -42,7 +42,7 @@ const QString QgsDartMeasurement::toString() const
 
 void QgsDartMeasurement::send() const
 {
-  qDebug() << toString() + "\n";
+  qDebug() << toString() + '\n';
 }
 
 const QString QgsDartMeasurement::typeToString( QgsDartMeasurement::Type type )

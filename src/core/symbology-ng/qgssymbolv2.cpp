@@ -43,7 +43,7 @@ QgsDataDefined* rotateWholeSymbol( double additionalRotation, const QgsDataDefin
 {
   QgsDataDefined* rotatedDD = new QgsDataDefined( dd );
   QString exprString = dd.useExpression() ? dd.expressionString() : dd.field();
-  rotatedDD->setExpressionString( QString::number( additionalRotation ) + " + (" + exprString + ")" );
+  rotatedDD->setExpressionString( QString::number( additionalRotation ) + " + (" + exprString + ')' );
   rotatedDD->setUseExpression( true );
   return rotatedDD;
 }
@@ -53,7 +53,7 @@ QgsDataDefined* scaleWholeSymbol( double scaleFactor, const QgsDataDefined& dd )
 {
   QgsDataDefined* scaledDD = new QgsDataDefined( dd );
   QString exprString = dd.useExpression() ? dd.expressionString() : dd.field();
-  scaledDD->setExpressionString( QString::number( scaleFactor ) + "*(" + exprString + ")" );
+  scaledDD->setExpressionString( QString::number( scaleFactor ) + "*(" + exprString + ')' );
   scaledDD->setUseExpression( true );
   return scaledDD;
 }

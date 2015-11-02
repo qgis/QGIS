@@ -293,7 +293,7 @@ QString QgsSettingsTree::itemKey( QTreeWidgetItem *item )
   QTreeWidgetItem *ancestor = item->parent();
   while ( ancestor )
   {
-    key.prepend( ancestor->text( 0 ) + "/" );
+    key.prepend( ancestor->text( 0 ) + '/' );
     ancestor = ancestor->parent();
   }
 

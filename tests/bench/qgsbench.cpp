@@ -301,7 +301,7 @@ void QgsBench::printLog( const QString& printTime )
   QMap<QString, QVariant>::iterator i = totalMap.begin();
   while ( i != totalMap.end() )
   {
-    QString s = printTime + "_" + i.key() + ": " + i.value().toString();
+    QString s = printTime + '_' + i.key() + ": " + i.value().toString();
     std::cout << s.toAscii().constData() << std::endl;
     ++i;
   }
@@ -318,22 +318,22 @@ QString QgsBench::serialize( const QMap<QString, QVariant>& theMap, int level )
     switch (( QMetaType::Type )i.value().type() )
     {
       case QMetaType::Int:
-        list.append( space2 + "\"" + i.key() + "\": " + QString( "%1" ).arg( i.value().toInt() ) );
+        list.append( space2 + '\"' + i.key() + "\": " + QString( "%1" ).arg( i.value().toInt() ) );
         break;
       case QMetaType::Double:
-        list.append( space2 + "\"" + i.key() + "\": " + QString( "%1" ).arg( i.value().toDouble(), 0, 'f', 3 ) );
+        list.append( space2 + '\"' + i.key() + "\": " + QString( "%1" ).arg( i.value().toDouble(), 0, 'f', 3 ) );
         break;
       case QMetaType::QString:
-        list.append( space2 + "\"" + i.key() + "\": \"" + i.value().toString().replace( "\\", "\\\\" ).replace( "\"", "\\\"" ) + "\"" );
+        list.append( space2 + '\"' + i.key() + "\": \"" + i.value().toString().replace( '\\', "\\\\" ).replace( '\"', "\\\"" ) + '\"' );
         break;
         //case QMetaType::QMap: QMap is not in QMetaType
       default:
-        list.append( space2 + "\"" + i.key() + "\": " + serialize( i.value().toMap(), level + 1 ) );
+        list.append( space2 + '\"' + i.key() + "\": " + serialize( i.value().toMap(), level + 1 ) );
         break;
     }
     ++i;
   }
-  return space + "{\n" +  list.join( ",\n" ) + "\n" + space + "}";
+  return space + "{\n" +  list.join( ",\n" ) + '\n' + space + '}';
 }
 
 void QgsBench::saveLog( const QString & fileName )
@@ -343,7 +343,7 @@ void QgsBench::saveLog( const QString & fileName )
     return;
 
   QTextStream out( &file );
-  out << serialize( mLogMap ).toAscii().constData() << "\n";
+  out << serialize( mLogMap ).toAscii().constData() << '\n';
   file.close();
 }
 

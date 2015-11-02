@@ -496,15 +496,15 @@ void QgsMssqlSourceSelect::on_btnConnect_clicked()
 
   bool estimateMetadata = settings.value( key + "/estimatedMetadata", true ).toBool();
 
-  mConnInfo =  "dbname='" + database + "'";
+  mConnInfo =  "dbname='" + database + '\'';
   if ( !host.isEmpty() )
-    mConnInfo += " host='" + host + "'";
+    mConnInfo += " host='" + host + '\'';
   if ( !username.isEmpty() )
-    mConnInfo += " user='" + username + "'";
+    mConnInfo += " user='" + username + '\'';
   if ( !password.isEmpty() )
-    mConnInfo += " password='" + password + "'";
+    mConnInfo += " password='" + password + '\'';
   if ( !service.isEmpty() )
-    mConnInfo += " service='" + service + "'";
+    mConnInfo += " service='" + service + '\'';
 
   QgsDebugMsg( "GetDatabase" );
   QSqlDatabase db = QgsMssqlProvider::GetDatabase( service, host, database, username, password );
@@ -711,7 +711,7 @@ QString QgsMssqlSourceSelect::fullDescription( const QString& schema, const QStr
 {
   QString full_desc = "";
   if ( !schema.isEmpty() )
-    full_desc = schema + ".";
+    full_desc = schema + '.';
   full_desc += table + " (" + column + ") " + type;
   return full_desc;
 }

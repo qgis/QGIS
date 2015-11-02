@@ -191,11 +191,11 @@ QgsVectorFileWriter::QgsVectorFileWriter(
     QString exts;
     if ( QgsVectorFileWriter::driverMetadata( driverName, longName, trLongName, glob, exts ) )
     {
-      QStringList allExts = exts.split( " ", QString::SkipEmptyParts );
+      QStringList allExts = exts.split( ' ', QString::SkipEmptyParts );
       bool found = false;
       Q_FOREACH ( const QString& ext, allExts )
       {
-        if ( vectorFileName.endsWith( "." + ext, Qt::CaseInsensitive ) )
+        if ( vectorFileName.endsWith( '.' + ext, Qt::CaseInsensitive ) )
         {
           found = true;
           break;
@@ -204,7 +204,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
 
       if ( !found )
       {
-        vectorFileName += "." + allExts[0];
+        vectorFileName += '.' + allExts[0];
       }
     }
 
@@ -1602,7 +1602,7 @@ bool QgsVectorFileWriter::addFeature( QgsFeature& feature, QgsFeatureRendererV2*
         {
           if ( symbolIt != symbols.constBegin() || i != 0 )
           {
-            styleString.append( ";" );
+            styleString.append( ';' );
           }
           styleString.append( currentStyle );
         }
@@ -1901,7 +1901,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
 
   if ( layer->providerType() == "ogr" && layer->dataProvider() )
   {
-    QStringList theURIParts = layer->dataProvider()->dataSourceUri().split( "|" );
+    QStringList theURIParts = layer->dataProvider()->dataSourceUri().split( '|' );
     QString srcFileName = theURIParts[0];
 
     if ( QFile::exists( srcFileName ) && QFileInfo( fileName ).canonicalFilePath() == QFileInfo( srcFileName ).canonicalFilePath() )
@@ -2070,7 +2070,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
         {
           *errorMessage = QObject::tr( "Feature write errors:" );
         }
-        *errorMessage += "\n" + writer->errorMessage();
+        *errorMessage += '\n' + writer->errorMessage();
       }
       errors++;
 
@@ -2123,7 +2123,7 @@ bool QgsVectorFileWriter::deleteShapeFile( const QString& theFileName )
   bool ok = true;
   Q_FOREACH ( const QString& file, dir.entryList( filter ) )
   {
-    QFile f( dir.canonicalPath() + "/" + file );
+    QFile f( dir.canonicalPath() + '/' + file );
     if ( !f.remove( ) )
     {
       QgsDebugMsg( QString( "Removing file %1 failed: %2" ).arg( file, f.errorString() ) );
@@ -2263,7 +2263,7 @@ QString QgsVectorFileWriter::filterForDriver( const QString& driverName )
   if ( !driverMetadata( driverName, longName, trLongName, glob, exts ) || trLongName.isEmpty() || glob.isEmpty() )
     return "";
 
-  return trLongName + " [OGR] (" + glob.toLower() + " " + glob.toUpper() + ")";
+  return trLongName + " [OGR] (" + glob.toLower() + ' ' + glob.toUpper() + ')';
 }
 
 QString QgsVectorFileWriter::convertCodecNameForEncodingOption( const QString &codecName )
@@ -2274,7 +2274,7 @@ QString QgsVectorFileWriter::convertCodecNameForEncodingOption( const QString &c
   QRegExp re = QRegExp( QString( "(CP|windows-|ISO[ -])(.+)" ), Qt::CaseInsensitive );
   if ( re.exactMatch( codecName ) )
   {
-    QString c = re.cap( 2 ).replace( "-", "" );
+    QString c = re.cap( 2 ).remove( '-' );
     bool isNumber;
     c.toInt( &isNumber );
     if ( isNumber )

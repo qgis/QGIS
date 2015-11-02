@@ -25,7 +25,7 @@
 
 
 QgsWFSLayerItem::QgsWFSLayerItem( QgsDataItem* parent, const QString& name, const QgsDataSourceURI& uri, const QString& featureType, const QString& title, const QString& crsString )
-    : QgsLayerItem( parent, title, parent->path() + "/" + name, QString(), QgsLayerItem::Vector, "WFS" )
+    : QgsLayerItem( parent, title, parent->path() + '/' + name, QString(), QgsLayerItem::Vector, "WFS" )
 {
   mUri = QgsWFSCapabilities( uri.encodedUri() ).uriGetFeature( featureType, crsString );
   setState( Populated );

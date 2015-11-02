@@ -2088,7 +2088,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
       else
       {
         QFileInfo fi( fileNExt.first );
-        outputFilePath = fi.absolutePath() + "/" + fi.baseName() + "_" + QString::number( i + 1 ) + "." + fi.suffix();
+        outputFilePath = fi.absolutePath() + '/' + fi.baseName() + '_' + QString::number( i + 1 ) + '.' + fi.suffix();
       }
 
       saveOk = image.save( outputFilePath, fileNExt.second.toLocal8Bit().constData() );
@@ -2115,8 +2115,8 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
         QFileInfo fi( outputFilePath );
         // build the world file name
         QString outputSuffix = fi.suffix();
-        QString worldFileName = fi.absolutePath() + "/" + fi.baseName() + "."
-                                + outputSuffix.at( 0 ) + outputSuffix.at( fi.suffix().size() - 1 ) + "w";
+        QString worldFileName = fi.absolutePath() + '/' + fi.baseName() + '.'
+                                + outputSuffix.at( 0 ) + outputSuffix.at( fi.suffix().size() - 1 ) + 'w';
 
         writeWorldFile( worldFileName, a, b, c, d, e, f );
       }
@@ -2185,7 +2185,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
     }
     QString dir = s.at( 0 );
     QString format = box->currentText();
-    QString fileExt = "." + format;
+    QString fileExt = '.' + format;
 
     if ( dir.isEmpty() )
     {
@@ -2309,7 +2309,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
         {
           //append page number
           QFileInfo fi( filename );
-          imageFilename = fi.absolutePath() + "/" + fi.baseName() + "_" + QString::number( i + 1 ) + "." + fi.suffix();
+          imageFilename = fi.absolutePath() + '/' + fi.baseName() + '_' + QString::number( i + 1 ) + '.' + fi.suffix();
         }
 
         bool saveOk = image.save( imageFilename, format.toLocal8Bit().constData() );
@@ -2336,8 +2336,8 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
           QFileInfo fi( imageFilename );
           // build the world file name
           QString outputSuffix = fi.suffix();
-          QString worldFileName = fi.absolutePath() + "/" + fi.baseName() + "."
-                                  + outputSuffix.at( 0 ) + outputSuffix.at( fi.suffix().size() - 1 ) + "w";
+          QString worldFileName = fi.absolutePath() + '/' + fi.baseName() + '.'
+                                  + outputSuffix.at( 0 ) + outputSuffix.at( fi.suffix().size() - 1 ) + 'w';
 
           writeWorldFile( worldFileName, a, b, c, d, e, f );
         }
@@ -2621,7 +2621,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
         else
         {
           QFileInfo fi( outputFileName );
-          currentFileName = fi.absolutePath() + "/" + fi.baseName() + "_" + QString::number( i + 1 ) + "." + fi.suffix();
+          currentFileName = fi.absolutePath() + '/' + fi.baseName() + '_' + QString::number( i + 1 ) + '.' + fi.suffix();
           generator.setFileName( currentFileName );
         }
 
@@ -2787,7 +2787,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
             QString errorMsg;
             int errorLine;
             if ( ! doc.setContent( &svgBuffer, false, &errorMsg, &errorLine ) )
-              QMessageBox::warning( 0, tr( "SVG error" ), tr( "There was an error in SVG output for SVG layer " ) + layerName + tr( " on page " ) + QString::number( i + 1 ) + "(" + errorMsg + ")" );
+              QMessageBox::warning( 0, tr( "SVG error" ), tr( "There was an error in SVG output for SVG layer " ) + layerName + tr( " on page " ) + QString::number( i + 1 ) + '(' + errorMsg + ')' );
             if ( 1 == svgLayerId )
             {
               svg = QDomDocument( doc.doctype() );
@@ -2813,7 +2813,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
           }
         }
         QFileInfo fi( outputFileName );
-        QString currentFileName = i == 0 ? outputFileName : fi.absolutePath() + "/" + fi.baseName() + "_" + QString::number( i + 1 ) + "." + fi.suffix();
+        QString currentFileName = i == 0 ? outputFileName : fi.absolutePath() + '/' + fi.baseName() + '_' + QString::number( i + 1 ) + '.' + fi.suffix();
         QFile out( currentFileName );
         bool openOk = out.open( QIODevice::WriteOnly | QIODevice::Text );
         if ( !openOk )
@@ -4159,7 +4159,7 @@ void QgsComposer::loadAtlasPredefinedScalesFromProject()
     // default to global map tool scales
     QSettings settings;
     QString scalesStr( settings.value( "Map/scales", PROJECT_SCALES ).toString() );
-    scales = scalesStr.split( "," );
+    scales = scalesStr.split( ',' );
   }
 
   for ( QStringList::const_iterator scaleIt = scales.constBegin(); scaleIt != scales.constEnd(); ++scaleIt )

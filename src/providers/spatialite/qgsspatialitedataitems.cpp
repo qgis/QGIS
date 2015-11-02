@@ -129,13 +129,13 @@ QVector<QgsDataItem*> QgsSLConnectionItem::createChildren()
     return children;
   }
 
-  QString connectionInfo = QString( "dbname='%1'" ).arg( QString( connection.path() ).replace( "'", "\\'" ) );
+  QString connectionInfo = QString( "dbname='%1'" ).arg( QString( connection.path() ).replace( '\'', "\\'" ) );
   QgsDataSourceURI uri( connectionInfo );
 
   Q_FOREACH ( const QgsSpatiaLiteConnection::TableEntry& entry, connection.tables() )
   {
     uri.setDataSource( QString(), entry.tableName, entry.column, QString(), QString() );
-    QgsSLLayerItem * layer = new QgsSLLayerItem( this, entry.tableName, mPath + "/" + entry.tableName, uri.uri(), _layerTypeFromDb( entry.type ) );
+    QgsSLLayerItem * layer = new QgsSLLayerItem( this, entry.tableName, mPath + '/' + entry.tableName, uri.uri(), _layerTypeFromDb( entry.type ) );
     children.append( layer );
   }
   return children;
@@ -271,7 +271,7 @@ QVector<QgsDataItem*> QgsSLRootItem::createChildren()
   QVector<QgsDataItem*> connections;
   Q_FOREACH ( const QString& connName, QgsSpatiaLiteConnection::connectionList() )
   {
-    QgsDataItem * conn = new QgsSLConnectionItem( this, connName, mPath + "/" + connName );
+    QgsDataItem * conn = new QgsSLConnectionItem( this, connName, mPath + '/' + connName );
     connections.push_back( conn );
   }
   return connections;

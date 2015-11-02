@@ -65,7 +65,7 @@ QVariant QgsValueRelationSearchWidgetWrapper::value()
         selection << item->data( Qt::UserRole ).toString();
     }
 
-    v = selection.join( "," ).prepend( "{" ).append( "}" );
+    v = selection.join( "," ).prepend( '{' ).append( '}' );
   }
 
   if ( mLineEdit )

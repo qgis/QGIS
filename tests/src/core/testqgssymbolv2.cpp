@@ -85,7 +85,7 @@ void TestQgsSymbolV2::initTestCase()
   QgsApplication::init( QDir::tempPath() + "/dot-qgis" );
   QgsApplication::initQgis();
   QgsApplication::createDB();
-  mTestDataDir = QString( TEST_DATA_DIR ) + "/"; //defined in CmakeLists.txt
+  mTestDataDir = QString( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
 
   // output test environment
   QgsApplication::showSettings();
@@ -107,7 +107,7 @@ void TestQgsSymbolV2::initTestCase()
   //create a point layer that will be used in all tests...
   //
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
-  mTestDataDir = myDataDir + "/";
+  mTestDataDir = myDataDir + '/';
   QString myPointsFileName = mTestDataDir + "points.shp";
   QFileInfo myPointFileInfo( myPointsFileName );
   mpPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),

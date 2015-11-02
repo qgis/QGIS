@@ -67,9 +67,9 @@ class CORE_EXPORT QgsRenderChecker
     /** Prefix where the control images are kept.
      * This will be appended to controlImagePath
       */
-    void setControlPathPrefix( const QString &theName ) { mControlPathPrefix = theName + "/"; }
+    void setControlPathPrefix( const QString &theName ) { mControlPathPrefix = theName + '/'; }
 
-    void setControlPathSuffix( const QString& theName ) { mControlPathSuffix = theName + "/"; }
+    void setControlPathSuffix( const QString& theName ) { mControlPathSuffix = theName + '/'; }
 
     /** Get an md5 hash that uniquely identifies an image */
     QString imageToHash( const QString& theImageFile );

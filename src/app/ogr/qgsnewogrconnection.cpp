@@ -41,11 +41,11 @@ QgsNewOgrConnection::QgsNewOgrConnection( QWidget *parent, const QString& connTy
   restoreGeometry( settings.value( "/Windows/OGRDatabaseConnection/geometry" ).toByteArray() );
 
   //add database drivers
-  QStringList dbDrivers = QgsProviderRegistry::instance()->databaseDrivers().split( ";" );
+  QStringList dbDrivers = QgsProviderRegistry::instance()->databaseDrivers().split( ';' );
   for ( int i = 0; i < dbDrivers.count(); i++ )
   {
     QString dbDrive = dbDrivers.at( i );
-    cmbDatabaseTypes->addItem( dbDrive.split( "," ).at( 0 ) );
+    cmbDatabaseTypes->addItem( dbDrive.split( ',' ).at( 0 ) );
   }
   txtName->setEnabled( true );
   cmbDatabaseTypes->setEnabled( true );
@@ -53,7 +53,7 @@ QgsNewOgrConnection::QgsNewOgrConnection( QWidget *parent, const QString& connTy
   {
     // populate the dialog with the information stored for the connection
     // populate the fields with the stored setting parameters
-    QString key = "/" + connType + "/connections/" + connName;
+    QString key = '/' + connType + "/connections/" + connName;
     txtHost->setText( settings.value( key + "/host" ).toString() );
     txtDatabase->setText( settings.value( key + "/database" ).toString() );
     QString port = settings.value( key + "/port" ).toString();
@@ -104,7 +104,7 @@ void QgsNewOgrConnection::testConnection()
 void QgsNewOgrConnection::accept()
 {
   QSettings settings;
-  QString baseKey = "/" + cmbDatabaseTypes->currentText() + "/connections/";
+  QString baseKey = '/' + cmbDatabaseTypes->currentText() + "/connections/";
   settings.setValue( baseKey + "selected", txtName->text() );
 
   // warn if entry was renamed to an existing connection

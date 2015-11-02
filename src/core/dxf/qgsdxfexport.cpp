@@ -455,14 +455,14 @@ void QgsDxfExport::writeInt( int i )
 void QgsDxfExport::writeDouble( double d )
 {
   QString s( qgsDoubleToString( d ) );
-  if ( !s.contains( "." ) )
+  if ( !s.contains( '.' ) )
     s += ".0";
-  mTextStream << s << "\n";
+  mTextStream << s << '\n';
 }
 
 void QgsDxfExport::writeString( const QString& s )
 {
-  mTextStream << s << "\n";
+  mTextStream << s << '\n';
 }
 
 int QgsDxfExport::writeToFile( QIODevice* d, const QString& encoding )
@@ -4085,18 +4085,18 @@ QString QgsDxfExport::dxfLayerName( const QString& name )
   // replaced restricted characters with underscore
   // < > / \ " : ; ? * | = '
   // See http://docs.autodesk.com/ACD/2010/ENU/AutoCAD%202010%20User%20Documentation/index.html?url=WS1a9193826455f5ffa23ce210c4a30acaf-7345.htm,topicNumber=d0e41665
-  layerName.replace( "<", "_" );
-  layerName.replace( ">", "_" );
-  layerName.replace( "/", "_" );
-  layerName.replace( "\\", "_" );
-  layerName.replace( "\"", "_" );
-  layerName.replace( ":", "_" );
-  layerName.replace( ";", "_" );
-  layerName.replace( "?", "_" );
-  layerName.replace( "*", "_" );
-  layerName.replace( "|", "_" );
-  layerName.replace( "=", "_" );
-  layerName.replace( "\'", "_" );
+  layerName.replace( '<', '_' );
+  layerName.replace( '>', '_' );
+  layerName.replace( '/', '_' );
+  layerName.replace( '\\', '_' );
+  layerName.replace( '\"', '_' );
+  layerName.replace( ':', '_' );
+  layerName.replace( ';', '_' );
+  layerName.replace( '?', '_' );
+  layerName.replace( '*', '_' );
+  layerName.replace( '|', '_' );
+  layerName.replace( '=', '_' );
+  layerName.replace( '\'', '_' );
 
   return layerName;
 }

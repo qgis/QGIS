@@ -674,7 +674,7 @@ void QgsRasterLayerSaveAsDialog::populatePyramidsLevels()
       if ( ! mPyramidsUseExistingCheckBox->isChecked() ||  myRasterPyramidIterator->exists )
       {
         text += QString::number( myRasterPyramidIterator->xDim ) + QLatin1String( "x" ) +
-                QString::number( myRasterPyramidIterator->yDim ) + " ";
+                QString::number( myRasterPyramidIterator->yDim ) + ' ';
       }
     }
   }

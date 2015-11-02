@@ -33,7 +33,7 @@ bool QgsMultiPointV2::fromWkt( const QString& wkt )
   if ( regex.indexIn( collectionWkt ) >= 0 )
   {
     //alternate style without extra brackets, upgrade to standard
-    collectionWkt.replace( "(", "((" ).replace( ")", "))" ).replace( ",", "),(" );
+    collectionWkt.replace( '(', "((" ).replace( ')', "))" ).replace( ',', "),(" );
   }
 
   return fromCollectionWkt( collectionWkt, QList<QgsAbstractGeometryV2*>() << new QgsPointV2, "Point" );

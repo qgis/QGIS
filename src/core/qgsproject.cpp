@@ -980,7 +980,7 @@ bool QgsProject::write()
   // Create backup file
   if ( QFile::exists( fileName() ) )
   {
-    QString backup = fileName() + "~";
+    QString backup = fileName() + '~';
     if ( QFile::exists( backup ) )
       QFile::remove( backup );
     QFile::rename( fileName(), backup );
@@ -1416,7 +1416,7 @@ QString QgsProject::readPath( QString src ) const
     if ( home.isNull() )
       return vsiPrefix + src;
 
-    QFileInfo fi( home + "/" + src );
+    QFileInfo fi( home + '/' + src );
 
     if ( !fi.exists() )
     {
@@ -1437,14 +1437,14 @@ QString QgsProject::readPath( QString src ) const
   }
 
 #if defined(Q_OS_WIN)
-  srcPath.replace( "\\", "/" );
-  projPath.replace( "\\", "/" );
+  srcPath.replace( '\\', '/' );
+  projPath.replace( '\\', '/' );
 
   bool uncPath = projPath.startsWith( "//" );
 #endif
 
-  QStringList srcElems = srcPath.split( "/", QString::SkipEmptyParts );
-  QStringList projElems = projPath.split( "/", QString::SkipEmptyParts );
+  QStringList srcElems = srcPath.split( '/', QString::SkipEmptyParts );
+  QStringList projElems = projPath.split( '/', QString::SkipEmptyParts );
 
 #if defined(Q_OS_WIN)
   if ( uncPath )
@@ -1511,7 +1511,7 @@ QString QgsProject::writePath( const QString& src, const QString& relativeBasePa
 #if defined( Q_OS_WIN )
   const Qt::CaseSensitivity cs = Qt::CaseInsensitive;
 
-  srcPath.replace( "\\", "/" );
+  srcPath.replace( '\\', '/' );
 
   if ( srcPath.startsWith( "//" ) )
   {
@@ -1519,7 +1519,7 @@ QString QgsProject::writePath( const QString& src, const QString& relativeBasePa
     srcPath = "\\\\" + srcPath.mid( 2 );
   }
 
-  projPath.replace( "\\", "/" );
+  projPath.replace( '\\', '/' );
   if ( projPath.startsWith( "//" ) )
   {
     // keep UNC prefix
@@ -1529,8 +1529,8 @@ QString QgsProject::writePath( const QString& src, const QString& relativeBasePa
   const Qt::CaseSensitivity cs = Qt::CaseSensitive;
 #endif
 
-  QStringList projElems = projPath.split( "/", QString::SkipEmptyParts );
-  QStringList srcElems = srcPath.split( "/", QString::SkipEmptyParts );
+  QStringList projElems = projPath.split( '/', QString::SkipEmptyParts );
+  QStringList srcElems = srcPath.split( '/', QString::SkipEmptyParts );
 
   // remove project file element
   projElems.removeLast();
@@ -1675,7 +1675,7 @@ bool QgsProject::createEmbeddedLayer( const QString &layerId, const QString &pro
         if ( provider == "spatialite" )
         {
           QgsDataSourceURI uri( datasource );
-          QFileInfo absoluteDs( QFileInfo( projectFilePath ).absolutePath() + "/" + uri.database() );
+          QFileInfo absoluteDs( QFileInfo( projectFilePath ).absolutePath() + '/' + uri.database() );
           if ( absoluteDs.exists() )
           {
             uri.setDatabase( absoluteDs.absoluteFilePath() );
@@ -1684,8 +1684,8 @@ bool QgsProject::createEmbeddedLayer( const QString &layerId, const QString &pro
         }
         else if ( provider == "ogr" )
         {
-          QStringList theURIParts( datasource.split( "|" ) );
-          QFileInfo absoluteDs( QFileInfo( projectFilePath ).absolutePath() + "/" + theURIParts[0] );
+          QStringList theURIParts( datasource.split( '|' ) );
+          QFileInfo absoluteDs( QFileInfo( projectFilePath ).absolutePath() + '/' + theURIParts[0] );
           if ( absoluteDs.exists() )
           {
             theURIParts[0] = absoluteDs.absoluteFilePath();
@@ -1694,8 +1694,8 @@ bool QgsProject::createEmbeddedLayer( const QString &layerId, const QString &pro
         }
         else if ( provider == "gpx" )
         {
-          QStringList theURIParts( datasource.split( "?" ) );
-          QFileInfo absoluteDs( QFileInfo( projectFilePath ).absolutePath() + "/" + theURIParts[0] );
+          QStringList theURIParts( datasource.split( '?' ) );
+          QFileInfo absoluteDs( QFileInfo( projectFilePath ).absolutePath() + '/' + theURIParts[0] );
           if ( absoluteDs.exists() )
           {
             theURIParts[0] = absoluteDs.absoluteFilePath();
@@ -1708,12 +1708,12 @@ bool QgsProject::createEmbeddedLayer( const QString &layerId, const QString &pro
 
           if ( !datasource.startsWith( "file:" ) )
           {
-            QUrl file( QUrl::fromLocalFile( datasource.left( datasource.indexOf( "?" ) ) ) );
+            QUrl file( QUrl::fromLocalFile( datasource.left( datasource.indexOf( '?' ) ) ) );
             urlSource.setScheme( "file" );
             urlSource.setPath( file.path() );
           }
 
-          QFileInfo absoluteDs( QFileInfo( projectFilePath ).absolutePath() + "/" + urlSource.toLocalFile() );
+          QFileInfo absoluteDs( QFileInfo( projectFilePath ).absolutePath() + '/' + urlSource.toLocalFile() );
           if ( absoluteDs.exists() )
           {
             QUrl urlDest = QUrl::fromLocalFile( absoluteDs.absoluteFilePath() );
@@ -1723,7 +1723,7 @@ bool QgsProject::createEmbeddedLayer( const QString &layerId, const QString &pro
         }
         else
         {
-          QFileInfo absoluteDs( QFileInfo( projectFilePath ).absolutePath() + "/" + datasource );
+          QFileInfo absoluteDs( QFileInfo( projectFilePath ).absolutePath() + '/' + datasource );
           if ( absoluteDs.exists() )
           {
             datasource = absoluteDs.absoluteFilePath();
