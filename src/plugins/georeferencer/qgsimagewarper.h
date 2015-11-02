@@ -29,7 +29,7 @@ class QWidget;
 
 class QgsImageWarper
 {
-    Q_DECLARE_TR_FUNCTIONS( QgsImageWarper );
+    Q_DECLARE_TR_FUNCTIONS( QgsImageWarper )
 
   public:
     explicit QgsImageWarper( QWidget *theParent );

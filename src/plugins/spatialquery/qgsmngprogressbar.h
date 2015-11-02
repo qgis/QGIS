@@ -35,7 +35,7 @@ class MngProgressBar
     /**
     * \brief Destructor
     */
-    ~MngProgressBar() { mPb->reset(); };
+    ~MngProgressBar() { mPb->reset(); }
 
     /**
     * \brief Sets the progress bar's minimum and maximum values to minimum and maximum respectively

@@ -76,7 +76,7 @@ void TestQgsClipper::basic()
   clipRectInner = clipRect;
   clipRectInner.scale( 0.999 );
   QVERIFY( ! checkBoundingBox( polygon, clipRectInner ) );
-};
+}
 
 bool TestQgsClipper::checkBoundingBox( const QPolygonF& polygon, const QgsRectangle& clipRect )
 {

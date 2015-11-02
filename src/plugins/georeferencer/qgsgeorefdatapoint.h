@@ -39,7 +39,7 @@ class QgsGeorefDataPoint : public QObject
     QgsPoint mapCoords() const { return mMapCoords; }
     void setMapCoords( const QgsPoint &p );
 
-    bool isEnabled() const { return mEnabled; };
+    bool isEnabled() const { return mEnabled; }
     void setEnabled( bool enabled );
 
     int id() const { return mId; }

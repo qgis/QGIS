@@ -96,7 +96,7 @@ void TestQgsDistanceArea::basic()
   daA.setEllipsoid( 6378135.0, 6378135.0 - ( 6378135.0 / 298.26 ) );
   resultA = daA.measureLine( p1, p2 );
   QCOMPARE( resultA, resultB );
-};
+}
 
 void TestQgsDistanceArea::test_distances()
 {
@@ -144,7 +144,7 @@ void TestQgsDistanceArea::test_distances()
     }
   }
 
-};
+}
 
 void TestQgsDistanceArea::unit_conversions()
 {

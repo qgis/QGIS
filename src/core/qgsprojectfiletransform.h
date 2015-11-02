@@ -77,7 +77,7 @@ class CORE_EXPORT QgsProjectFileTransform
     // Transformer functions below. Declare functions here,
     // define them in qgsprojectfiletransform.cpp and add them
     // to the transformArray with proper version number
-    void transformNull() {}; // Do absolutely nothing
+    void transformNull() {} // Do absolutely nothing
     void transform081to090();
     void transform091to0100();
     void transform0100to0110();

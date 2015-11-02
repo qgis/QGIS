@@ -158,7 +158,7 @@ class CORE_EXPORT QgsField
 
 }; // class QgsField
 
-Q_DECLARE_METATYPE( QgsField );
+Q_DECLARE_METATYPE( QgsField )
 
 /** Writes the field to stream out. QGIS version compatibility is not guaranteed. */
 CORE_EXPORT QDataStream& operator<<( QDataStream& out, const QgsField& field );
@@ -280,7 +280,7 @@ class CORE_EXPORT QgsFields
 
 };
 
-Q_DECLARE_METATYPE( QgsFields );
+Q_DECLARE_METATYPE( QgsFields )
 
 /** Writes the fields to stream out. QGIS version compatibility is not guaranteed. */
 CORE_EXPORT QDataStream& operator<<( QDataStream& out, const QgsFields& fields );

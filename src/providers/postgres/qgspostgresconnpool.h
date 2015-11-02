@@ -71,7 +71,7 @@ class QgsPostgresConnPool : public QgsConnectionPool<QgsPostgresConn*, QgsPostgr
     static QgsPostgresConnPool* instance();
 
   protected:
-    Q_DISABLE_COPY( QgsPostgresConnPool );
+    Q_DISABLE_COPY( QgsPostgresConnPool )
 
   private:
     QgsPostgresConnPool();

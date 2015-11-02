@@ -777,7 +777,7 @@ class CORE_EXPORT QgsGeometry
     QgsGeometry* convertToPolygon( bool destMultipart ) const;
 }; // class QgsGeometry
 
-Q_DECLARE_METATYPE( QgsGeometry );
+Q_DECLARE_METATYPE( QgsGeometry )
 
 /** Writes the geometry to stream out. QGIS version compatibility is not guaranteed. */
 CORE_EXPORT QDataStream& operator<<( QDataStream& out, const QgsGeometry& geometry );

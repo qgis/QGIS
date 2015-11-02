@@ -1022,7 +1022,7 @@ class CORE_EXPORT QgsExpression
 };
 Q_NOWARN_DEPRECATED_POP
 
-Q_DECLARE_METATYPE( QgsExpression::Interval );
-Q_DECLARE_METATYPE( QgsExpression::Node* );
+Q_DECLARE_METATYPE( QgsExpression::Interval )
+Q_DECLARE_METATYPE( QgsExpression::Node* )
 
 #endif // QGSEXPRESSION_H

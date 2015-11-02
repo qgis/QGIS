@@ -34,7 +34,7 @@
  */
 class CORE_EXPORT QgsRasterInterface
 {
-    Q_DECLARE_TR_FUNCTIONS( QgsRasterInterface );
+    Q_DECLARE_TR_FUNCTIONS( QgsRasterInterface )
 
   public:
     //! If you add to this, please also add to capabilitiesString()
@@ -75,7 +75,7 @@ class CORE_EXPORT QgsRasterInterface
 
     /** Returns source data type for the band specified by number,
      *  source data type may be shorter than dataType */
-    virtual QGis::DataType srcDataType( int bandNo ) const { if ( mInput ) return mInput->srcDataType( bandNo ); else return QGis::UnknownDataType; };
+    virtual QGis::DataType srcDataType( int bandNo ) const { if ( mInput ) return mInput->srcDataType( bandNo ); else return QGis::UnknownDataType; }
 
     /**
      * Get the extent of the interface.

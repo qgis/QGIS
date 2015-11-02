@@ -82,8 +82,8 @@ class CORE_EXPORT QgsFeatureStore
 
 typedef QList<QgsFeatureStore> QgsFeatureStoreList;
 
-Q_DECLARE_METATYPE( QgsFeatureStore );
+Q_DECLARE_METATYPE( QgsFeatureStore )
 
-Q_DECLARE_METATYPE( QgsFeatureStoreList );
+Q_DECLARE_METATYPE( QgsFeatureStoreList )
 
 #endif

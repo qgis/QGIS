@@ -279,7 +279,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      * @note added in 2.3
      * @deprecated no longer required
      */
-    Q_DECL_DEPRECATED void updatePictureExpression() {};
+    Q_DECL_DEPRECATED void updatePictureExpression() {}
 
     /** Forces a recalculation of the picture's frame size
      * @note added in 2.3

@@ -66,7 +66,7 @@ class CORE_EXPORT QgsComposerShape: public QgsComposerItem
     /** Sets radius for rounded rectangle corners. Added in v2.1 */
     void setCornerRadius( double radius );
     /** Returns the radius for rounded rectangle corners*/
-    double cornerRadius() const { return mCornerRadius; };
+    double cornerRadius() const { return mCornerRadius; }
 
     /** Sets the QgsFillSymbolV2 used to draw the shape. Must also call setUseSymbolV2( true ) to
      * enable drawing with a symbol.

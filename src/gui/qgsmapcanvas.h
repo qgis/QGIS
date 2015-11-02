@@ -454,7 +454,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Whether to suppress rendering or not
     void setRenderFlag( bool theFlag );
     //! State of render suppression flag
-    bool renderFlag() {return mRenderFlag;};
+    bool renderFlag() {return mRenderFlag;}
 
     /** A simple helper method to find out if on the fly projections are enabled or not */
     bool hasCrsTransformEnabled();

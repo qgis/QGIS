@@ -51,7 +51,7 @@ void TestQgsRectangle::manipulate()
   rect3.unionRect( rect2 );
   // Check union
   QVERIFY( rect3 == QgsRectangle( 1.0, 1.0, 7.0, 5.0 ) );
-};
+}
 
 void TestQgsRectangle::regression6194()
 {
@@ -83,7 +83,7 @@ void TestQgsRectangle::regression6194()
   QVERIFY( rect2.xMaximum() == rect1.xMaximum() );
   QVERIFY( rect2.yMaximum() == rect1.yMaximum() );
   QVERIFY( rect1 == rect2 );
-};
+}
 
 QTEST_MAIN( TestQgsRectangle )
 #include "testqgsrectangle.moc"

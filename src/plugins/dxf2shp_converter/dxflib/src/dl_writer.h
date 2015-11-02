@@ -67,7 +67,6 @@ public:
     }
 
     virtual ~DL_Writer() {}
-    ;
 
     /** Generic section for section 'name'.
      *

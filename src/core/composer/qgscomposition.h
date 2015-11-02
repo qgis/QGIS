@@ -560,7 +560,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
      * after reading all the items from xml file
      * @deprecated use refreshZList instead
     */
-    Q_DECL_DEPRECATED void sortZList() {};
+    Q_DECL_DEPRECATED void sortZList() {}
 
     /** Rebuilds the z order list by adding any item which are present in the composition
      * but missing from the z order list.
