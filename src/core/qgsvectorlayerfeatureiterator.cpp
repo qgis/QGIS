@@ -236,6 +236,17 @@ bool QgsVectorLayerFeatureIterator::fetchFeature( QgsFeature& f )
     if ( mHasVirtualAttributes )
       addVirtualAttributes( f );
 
+    if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression && mProviderRequest.filterType() != QgsFeatureRequest::FilterExpression )
+    {
+        //filtering by expression, and couldn't do it on the provider side
+        mRequest.expressionContext()->setFeature( f );
+        if ( !mRequest.filterExpression()->evaluate( mRequest.expressionContext() ).toBool() )
+        {
+          //feature did not match filter
+          continue;
+        }
+    }
+
     // update geometry
     // TODO[MK]: FilterRect check after updating the geometry
     if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
