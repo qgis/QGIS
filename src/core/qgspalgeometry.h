@@ -7,8 +7,6 @@
 
 #include "qgslabelingenginev2.h"
 
-using namespace pal;
-
 /**
  * Class that adds extra information to QgsLabelFeature for text labels
  *

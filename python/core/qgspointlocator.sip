@@ -69,6 +69,7 @@ class QgsPointLocator : QObject
     //! Implement the interface and pass its instance to QgsPointLocator or QgsSnappingUtils methods.
     struct MatchFilter
     {
+      virtual ~MatchFilter();
       virtual bool acceptMatch( const QgsPointLocator::Match& match ) = 0;
     };
 

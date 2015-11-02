@@ -208,9 +208,9 @@ class QgsConditionalStyle
 
     /** Reads vector conditional style specific state from layer Dom node.
      */
-    virtual bool readXml( const QDomNode& node );
+    bool readXml( const QDomNode& node );
 
     /** Write vector conditional style specific state from layer Dom node.
      */
-    virtual bool writeXml( QDomNode & node, QDomDocument & doc ) const;
+    bool writeXml( QDomNode & node, QDomDocument & doc ) const;
 };

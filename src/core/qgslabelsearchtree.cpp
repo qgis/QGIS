@@ -67,7 +67,7 @@ void QgsLabelSearchTree::labelsInRect( const QgsRectangle& r, QList<QgsLabelPosi
   }
 }
 
-bool QgsLabelSearchTree::insertLabel( LabelPosition* labelPos, int featureId, const QString& layerName, const QString& labeltext, const QFont& labelfont, bool diagram, bool pinned )
+bool QgsLabelSearchTree::insertLabel( pal::LabelPosition* labelPos, int featureId, const QString& layerName, const QString& labeltext, const QFont& labelfont, bool diagram, bool pinned )
 {
   if ( !labelPos )
   {

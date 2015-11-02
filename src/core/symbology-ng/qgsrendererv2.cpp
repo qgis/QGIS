@@ -307,7 +307,9 @@ void QgsFeatureRendererV2::renderFeatureWithSymbol( QgsFeature& feature, QgsSymb
       }
       segmentizedGeometry = new QgsGeometry( g );
       deleteSegmentizedGeometry = true;
+      break;
     }
+
     default:
       break;
   }

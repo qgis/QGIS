@@ -139,6 +139,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
     //! Implement the interface and pass its instance to QgsPointLocator or QgsSnappingUtils methods.
     struct MatchFilter
     {
+      virtual ~MatchFilter() {}
       virtual bool acceptMatch( const Match& match ) = 0;
     };
 

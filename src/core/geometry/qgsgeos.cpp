@@ -1526,10 +1526,12 @@ GEOSGeometry* QgsGeos::createGeosPoint( const QgsAbstractGeometryV2* point, int 
         GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, 0, 2, pt->z() );
       }
     }
-    if ( 0 /*pt->isMeasure()*/ ) //disabled until geos supports m-coordinates
+#if 0 //disabled until geos supports m-coordinates
+    if (pt->isMeasure() )
     {
       GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, 0, 3, pt->m() );
     }
+#endif
     geosPoint = GEOSGeom_createPoint_r( geosinit.ctxt, coordSeq );
   }
   CATCH_GEOS( 0 )

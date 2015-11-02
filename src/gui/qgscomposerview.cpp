@@ -953,6 +953,7 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
         removeRubberBand();
         emit actionFinished();
       }
+      break;
     default:
       break;
   }

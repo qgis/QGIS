@@ -28,6 +28,7 @@
 
 #include <QPicture>
 
+using namespace pal;
 
 Q_GUI_EXPORT extern int qt_defaultDpiX();
 Q_GUI_EXPORT extern int qt_defaultDpiY();

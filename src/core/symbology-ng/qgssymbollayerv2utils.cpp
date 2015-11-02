@@ -1128,6 +1128,8 @@ bool QgsSymbolLayerV2Utils::createSymbolLayerV2ListFromSld( QDomElement& element
           if ( l )
             layers.append( l );
 
+          break;
+
         default:
           break;
       }

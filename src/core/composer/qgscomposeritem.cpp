@@ -44,12 +44,6 @@
 
 #include <cmath>
 
-#define FONT_WORKAROUND_SCALE 10 //scale factor for upscaling fontsize and downscaling painter
-
-#ifndef M_DEG2RAD
-#define M_DEG2RAD 0.0174532925
-#endif
-
 QgsComposerItem::QgsComposerItem( QgsComposition* composition, bool manageZValue )
     : QgsComposerObject( composition )
     , QGraphicsRectItem( 0 )
