@@ -7,6 +7,9 @@ Content-Type: text/xml; charset=utf-8
   <Name>WMS</Name>
   <Title>QGIS TestProject</Title>
   <Abstract>Some UTF8 text èòù</Abstract>
+  <KeywordList>
+   <Keyword vocabulary="ISO">infoMapAccessService</Keyword>
+  </KeywordList>
   <OnlineResource xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href=""/>
   <ContactInformation>
    <ContactPersonPrimary>
@@ -16,8 +19,8 @@ Content-Type: text/xml; charset=utf-8
    <ContactVoiceTelephone></ContactVoiceTelephone>
    <ContactElectronicMailAddress>elpaso@itopen.it</ContactElectronicMailAddress>
   </ContactInformation>
-  <Fees></Fees>
-  <AccessConstraints></AccessConstraints>
+  <Fees>conditions unknown</Fees>
+  <AccessConstraints>None</AccessConstraints>
  </Service>
  <Capability>
   <Request>
@@ -106,6 +109,7 @@ Content-Type: text/xml; charset=utf-8
     <southBoundLatitude>44.9012</southBoundLatitude>
     <northBoundLatitude>44.9016</northBoundLatitude>
    </EX_GeographicBoundingBox>
+   <BoundingBox CRS="EPSG:3857" maxx="913283" minx="913171" maxy="5.60604e+06" miny="5.60599e+06"/>
    <BoundingBox CRS="EPSG:4326" maxx="44.9016" minx="44.9012" maxy="8.20416" miny="8.20315"/>
    <Layer queryable="1">
     <Name>testlayer èé</Name>
@@ -119,6 +123,7 @@ Content-Type: text/xml; charset=utf-8
      <southBoundLatitude>44.9014</southBoundLatitude>
      <northBoundLatitude>44.9015</northBoundLatitude>
     </EX_GeographicBoundingBox>
+    <BoundingBox CRS="EPSG:3857" maxx="913215" minx="913205" maxy="5.60603e+06" miny="5.60601e+06"/>
     <BoundingBox CRS="EPSG:4326" maxx="44.9015" minx="44.9014" maxy="8.20355" miny="8.20346"/>
     <Style>
      <Name>default</Name>
