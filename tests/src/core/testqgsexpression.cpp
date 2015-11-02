@@ -865,6 +865,22 @@ class TestQgsExpression: public QObject
       }
     }
 
+    void get_feature_geometry()
+    {
+      //test that get_feature fetches feature's geometry
+      QgsExpression exp( QString( "x(geometry(get_feature('%1','heading',340)))" ).arg( mPointsLayer->id() ) );
+      QCOMPARE( exp.hasParserError(), false );
+      if ( exp.hasParserError() )
+        qDebug() << exp.parserErrorString();
+
+      QVariant res = exp.evaluate();
+      if ( exp.hasEvalError() )
+        qDebug() << exp.evalErrorString();
+
+      QCOMPARE( exp.hasEvalError(), false );
+      QVERIFY( qgsDoubleNear( res.toDouble(), -85.65217, 0.00001 ) );
+    }
+
     void eval_rand()
     {
       QgsExpression exp1( "rand(1,10)" );
@@ -1234,6 +1250,7 @@ class TestQgsExpression: public QObject
       QTest::addColumn<QString>( "string" );
       QTest::addColumn<void*>( "geomptr" );
       QTest::addColumn<bool>( "evalError" );
+      QTest::addColumn<bool>( "needsGeom" );
 
       QgsPoint point( 123, 456 );
       QgsPolyline line;
@@ -1245,10 +1262,10 @@ class TestQgsExpression: public QObject
       QgsPolygon polygon;
       polygon << polygon_ring;
 
-      QTest::newRow( "geometry Point" ) << "geometry( $currentfeature )" << ( void* ) QgsGeometry::fromPoint( point ) << false;
-      QTest::newRow( "geometry Line" ) << "geometry( $currentfeature )" << ( void* ) QgsGeometry::fromPolyline( line ) << false;
-      QTest::newRow( "geometry Polyline" ) << "geometry( $currentfeature )" << ( void* ) QgsGeometry::fromPolyline( polyline ) << false;
-      QTest::newRow( "geometry Polygon" ) << "geometry( $currentfeature )" << ( void* ) QgsGeometry::fromPolygon( polygon ) << false;
+      QTest::newRow( "geometry Point" ) << "geometry( $currentfeature )" << ( void* ) QgsGeometry::fromPoint( point ) << false << true;
+      QTest::newRow( "geometry Line" ) << "geometry( $currentfeature )" << ( void* ) QgsGeometry::fromPolyline( line ) << false << true;
+      QTest::newRow( "geometry Polyline" ) << "geometry( $currentfeature )" << ( void* ) QgsGeometry::fromPolyline( polyline ) << false << true;
+      QTest::newRow( "geometry Polygon" ) << "geometry( $currentfeature )" << ( void* ) QgsGeometry::fromPolygon( polygon ) << false << true;
 
       QgsCoordinateReferenceSystem s;
       s.createFromOgcWmsCrs( "EPSG:4326" );
@@ -1263,8 +1280,8 @@ class TestQgsExpression: public QObject
 
       QgsGeometry* oLine = QgsGeometry::fromPolyline( line );
       QgsGeometry* oPolygon = QgsGeometry::fromPolygon( polygon );
-      QTest::newRow( "transform Line" ) << "transform( geomFromWKT('" + oLine->exportToWkt() + "'), 'EPSG:4326', 'EPSG:3857' )" << ( void* ) tLine << false;
-      QTest::newRow( "transform Polygon" ) << "transform( geomFromWKT('" + oPolygon->exportToWkt() + "'), 'EPSG:4326', 'EPSG:3857' )" << ( void* ) tPolygon << false;
+      QTest::newRow( "transform Line" ) << "transform( geomFromWKT('" + oLine->exportToWkt() + "'), 'EPSG:4326', 'EPSG:3857' )" << ( void* ) tLine << false << false;
+      QTest::newRow( "transform Polygon" ) << "transform( geomFromWKT('" + oPolygon->exportToWkt() + "'), 'EPSG:4326', 'EPSG:3857' )" << ( void* ) tPolygon << false << false;
       delete oLine;
       delete oPolygon;
     }
@@ -1274,6 +1291,7 @@ class TestQgsExpression: public QObject
       QFETCH( QString, string );
       QFETCH( void*, geomptr );
       QFETCH( bool, evalError );
+      QFETCH( bool, needsGeom );
 
       QgsGeometry* geom = ( QgsGeometry* ) geomptr;
 
@@ -1282,7 +1300,7 @@ class TestQgsExpression: public QObject
 
       QgsExpression exp( string );
       QCOMPARE( exp.hasParserError(), false );
-      QCOMPARE( exp.needsGeometry(), false );
+      QCOMPARE( exp.needsGeometry(), needsGeom );
 
       //deprecated method
       Q_NOWARN_DEPRECATED_PUSH
