@@ -1790,7 +1790,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
   QDomNode editFormInitUseCodeNode = node.namedItem( "editforminitusecode" );
   if ( !editFormInitCodeNode.isNull() )
   {
-    mEditFormInitUseCode = (bool) editFormInitUseCodeNode.toElement().text().toInt();
+    mEditFormInitUseCode = ( bool ) editFormInitUseCodeNode.toElement().text().toInt();
   }
 
   QDomNode fFSuppNode = node.namedItem( "featformsuppress" );
@@ -2056,7 +2056,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
   node.appendChild( efiField );
 
   QDomElement efiucField  = doc.createElement( "editforminitusecode" );
-  efiucField.appendChild( doc.createTextNode( mEditFormInitUseCode ? "1" : "0") );
+  efiucField.appendChild( doc.createTextNode( mEditFormInitUseCode ? "1" : "0" ) );
   node.appendChild( efiucField );
 
   QDomElement eficField  = doc.createElement( "editforminitcode" );

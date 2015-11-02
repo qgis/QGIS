@@ -1638,10 +1638,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     void setEditFormInit( const QString& function );
 
     /** Set python code for edit form initialization */
-    void setEditFormInitCode( const QString& code);
+    void setEditFormInitCode( const QString& code );
 
     /** Set python code for edit form initialization */
-    void setEditFormInitUseCode( const bool useCode);
+    void setEditFormInitUseCode( const bool useCode );
 
     /**
      * Access value map
@@ -1801,7 +1801,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     QgsConditionalLayerStyles *conditionalStyles() const;
 
-public slots:
+  public slots:
     /**
      * Select feature by its ID
      *
