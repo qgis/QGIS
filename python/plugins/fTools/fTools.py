@@ -34,38 +34,20 @@ from qgis.core import QGis
 
 import os.path
 import sys
-# Set up current path, so that we know where to look for mudules
-currentPath = os.path.dirname(__file__)
-sys.path.append(os.path.abspath(os.path.dirname(__file__) + '/tools'))
+
 # Multi-function modules
-import doGeometry
-import doGeoprocessing
-import doVisual
+from tools import doGeometry, doGeoprocessing, doVisual
+
 # Single function modules
 # TODO: Eliminate the following modules in favour of above multi-function formats
-import doIntersectLines
-import doSelectByLocation
-import doVectorSplit
-import doMeanCoords
-import doPointDistance
-import doPointsInPolygon
-import doRandom
-import doRandPoints
-import doRegPoints
-import doSpatialJoin
-import doSubsetSelect
-import doSumLines
-import doVectorGrid
-import doMergeShapes
-import doValidate
-import doSimplify
-import doDefineProj
-import doSpatialIndex
-import doEliminate
+from tools import (doIntersectLines, doSelectByLocation, doVectorSplit,
+        doMeanCoords, doPointDistance, doPointsInPolygon, doRandom,
+        doRandPoints, doRegPoints, doSpatialJoin, doSubsetSelect, doSumLines,
+        doVectorGrid, doMergeShapes, doValidate, doSimplify, doDefineProj,
+        doSpatialIndex, doEliminate)
 
 # load icons for actions
 import resources_rc
-
 
 class fToolsPlugin:
 
