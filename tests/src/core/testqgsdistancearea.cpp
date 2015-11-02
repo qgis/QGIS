@@ -203,20 +203,20 @@ void TestQgsDistanceArea::collections()
 
   //collection of polygons
   QgsGeometry polys( QgsGeometryFactory::geomFromWkt( "GeometryCollection( Polygon((0 36.53, 5.76 -48.16, 0 25.54, 0 36.53)), Polygon((10 20, 15 20, 15 10, 10 20)) )" ) );
-  result = myDa.measure( &polys ); //should meaure area
-  QVERIFY( qgsDoubleNear( result, 670434859475, 1 ) );
+  result = myDa.measure( &polys ); //should measure area
+  QVERIFY( qgsDoubleNear( result, 670434859475LL, 1 ) );
   result = myDa.measureArea( &polys );
-  QVERIFY( qgsDoubleNear( result, 670434859475, 1 ) );
+  QVERIFY( qgsDoubleNear( result, 670434859475LL, 1 ) );
   result = myDa.measureLength( &polys );
   QVERIFY( qgsDoubleNear( result, 0 ) );
 
   //mixed collection
   QgsGeometry mixed( QgsGeometryFactory::geomFromWkt( "GeometryCollection( LineString(0 36.53, 5.76 -48.16), LineString(0 25.54, 24.20 36.70), Polygon((0 36.53, 5.76 -48.16, 0 25.54, 0 36.53)), Polygon((10 20, 15 20, 15 10, 10 20)) )" ) );
   result = myDa.measure( &mixed ); //should measure area
-  QVERIFY( qgsDoubleNear( result, 670434859475, 1 ) );
+  QVERIFY( qgsDoubleNear( result, 670434859475LL, 1 ) );
   //measure area specifically
   result = myDa.measureArea( &mixed );
-  QVERIFY( qgsDoubleNear( result, 670434859475, 1 ) );
+  QVERIFY( qgsDoubleNear( result, 670434859475LL, 1 ) );
   //measure length
   result = myDa.measureLength( &mixed );
   QVERIFY( qgsDoubleNear( result, 12006159, 1 ) );
