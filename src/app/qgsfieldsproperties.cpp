@@ -843,6 +843,8 @@ void QgsFieldsProperties::apply()
   if ( mEditorLayoutComboBox->currentIndex() == QgsVectorLayer::UiFileLayout )
     mLayer->setEditForm( leEditForm->text() );
   mLayer->setEditFormInit( leEditFormInit->text() );
+  mLayer->setEditFormInitUseCode( leEditFormInitUseCode->isChecked() );
+  // TODO: mLayer->setEditFormInitCode( leEditFormInitCode->text() );
   mLayer->setFeatureFormSuppress(( QgsVectorLayer::FeatureFormSuppress )mFormSuppressCmbBx->currentIndex() );
 
   mLayer->setExcludeAttributesWMS( excludeAttributesWMS );

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>613</width>
+    <width>719</width>
     <height>634</height>
    </rect>
   </property>
@@ -113,6 +113,20 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
        </property>
       </spacer>
      </item>
+     <item>
+      <widget class="QCheckBox" name="leEditFormInitUseCode">
+       <property name="text">
+        <string>use code</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="leButtonOpenEditor">
+       <property name="text">
+        <string>Open editor</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
    <item row="2" column="0" colspan="7">
@@ -128,7 +142,16 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
        </sizepolicy>
       </property>
       <layout class="QGridLayout" name="gridLayout">
-       <property name="margin">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
         <number>0</number>
        </property>
        <item row="0" column="0">
@@ -254,7 +277,16 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
       </property>
       <widget class="QWidget" name="page">
        <layout class="QGridLayout" name="gridLayout_2">
-        <property name="margin">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
          <number>0</number>
         </property>
         <item row="0" column="1">
@@ -295,10 +327,19 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
       </widget>
       <widget class="QWidget" name="page_2">
        <layout class="QGridLayout" name="gridLayout_5">
-        <property name="horizontalSpacing">
+        <property name="leftMargin">
          <number>0</number>
         </property>
-        <property name="margin">
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <property name="horizontalSpacing">
          <number>0</number>
         </property>
         <item row="0" column="0">
@@ -319,7 +360,16 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
            <property name="spacing">
             <number>6</number>
            </property>
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
@@ -415,7 +465,16 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
            <bool>true</bool>
           </property>
           <layout class="QGridLayout" name="mDesignerListLayout">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
           </layout>

@@ -1628,8 +1628,20 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Get python function for edit form initialization */
     QString editFormInit();
 
+    /** Get python code for edit form initialization */
+    QString editFormInitCode();
+
+    /** Reeturn if python code has to be loaded for edit form initialization */
+    bool editFormInitUseCode();
+
     /** Set python function for edit form initialization */
     void setEditFormInit( const QString& function );
+
+    /** Set python code for edit form initialization */
+    void setEditFormInitCode( const QString& code);
+
+    /** Set python code for edit form initialization */
+    void setEditFormInitUseCode( const bool useCode);
 
     /**
      * Access value map
@@ -1789,7 +1801,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     QgsConditionalLayerStyles *conditionalStyles() const;
 
-  public slots:
+public slots:
     /**
      * Select feature by its ID
      *
@@ -2141,7 +2153,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Defines the default layout to use for the attribute editor (Drag and drop, UI File, Generated) */
     EditorLayout mEditorLayout;
 
-    QString mEditForm, mEditFormInit;
+    QString mEditForm, mEditFormInit, mEditFormInitCode;
+    bool mEditFormInitUseCode;
 
     /** Type of feature form suppression after feature creation
      * @note added in 2.1 */
