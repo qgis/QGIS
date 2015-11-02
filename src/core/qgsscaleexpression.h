@@ -34,6 +34,7 @@ class CORE_EXPORT QgsScaleExpression : public QgsExpression
       Linear,
       Area,
       Flannery,
+      Exponential,
       Unknown
     };
 
@@ -52,8 +53,9 @@ class CORE_EXPORT QgsScaleExpression : public QgsExpression
      * @param minSize minimum size
      * @param maxSize maximum size
      * @param nullSize size in case expression evaluates to NULL
+     * @param exponent to use in case of Exponential type
      */
-    QgsScaleExpression( Type type, const QString& baseExpression, double minValue, double maxValue, double minSize, double maxSize, double nullSize = 0 );
+    QgsScaleExpression( Type type, const QString& baseExpression, double minValue, double maxValue, double minSize, double maxSize, double nullSize = 0, double exponent = 1 );
 
     operator bool() const { return ! mExpression.isEmpty(); }
 
@@ -90,6 +92,11 @@ class CORE_EXPORT QgsScaleExpression : public QgsExpression
      */
     double nullSize() const { return mNullSize; }
 
+    /** Returns the exponent of the exponential expression.
+     * @see exponent
+     */
+    double exponent() const { return mExponent; }
+
     /** Returns the base expression string (or field reference) used for
      * calculating the values to be mapped to a size.
      */
@@ -108,9 +115,10 @@ class CORE_EXPORT QgsScaleExpression : public QgsExpression
     double mMinValue;
     double mMaxValue;
     double mNullSize;
+    double mExponent;
 
     void init();
-    static QString createExpression( Type type, const QString& baseExpr, double minValue, double maxValue, double minSize, double maxSize, double nullSize );
+    static QString createExpression( Type type, const QString& baseExpr, double minValue, double maxValue, double minSize, double maxSize, double nullSize, double exponent );
 
 };
 

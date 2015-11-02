@@ -26,12 +26,13 @@ QgsScaleExpression::QgsScaleExpression( const QString& expression )
     , mMinValue( 0 )
     , mMaxValue( 100 )
     , mNullSize( 0 )
+    , mExponent( 1 )
 {
   init();
 }
 
-QgsScaleExpression::QgsScaleExpression( Type type, const QString& baseExpression, double minValue, double maxValue, double minSize, double maxSize, double nullSize )
-    : QgsExpression( createExpression( type, baseExpression, minValue, maxValue, minSize, maxSize, nullSize ) )
+QgsScaleExpression::QgsScaleExpression( Type type, const QString& baseExpression, double minValue, double maxValue, double minSize, double maxSize, double nullSize, double exponent )
+    : QgsExpression( createExpression( type, baseExpression, minValue, maxValue, minSize, maxSize, nullSize, exponent ) )
     , mExpression( baseExpression )
     , mType( type )
     , mMinSize( minSize )
@@ -39,8 +40,25 @@ QgsScaleExpression::QgsScaleExpression( Type type, const QString& baseExpression
     , mMinValue( minValue )
     , mMaxValue( maxValue )
     , mNullSize( nullSize )
+    , mExponent( 1 )
 {
-
+  switch ( type )
+  {
+    case Linear:
+      mExponent = 1;
+      break;
+    case Area:
+      mExponent = .5;
+      break;
+    case Flannery:
+      mExponent = .57;
+      break;
+    case Exponential:
+      mExponent = exponent;
+      break;
+    case Unknown:
+      break;
+  }
 }
 
 void QgsScaleExpression::init()
@@ -76,17 +94,15 @@ void QgsScaleExpression::init()
   }
   else if ( "scale_exp" == Functions()[f->fnIndex()]->name() )
   {
-    const double exp = QgsExpression( args[5]->dump() ).evaluate().toDouble( &ok );
+    mExponent = QgsExpression( args[5]->dump() ).evaluate().toDouble( &ok );
     if ( ! ok )
       return;
-    if ( qgsDoubleNear( exp, 0.57, 0.001 ) )
+    if ( qgsDoubleNear( mExponent, 0.57, 0.001 ) )
       mType = Flannery;
-    else if ( qgsDoubleNear( exp, 0.5, 0.001 ) )
+    else if ( qgsDoubleNear( mExponent, 0.5, 0.001 ) )
       mType = Area;
     else
-    {
-      return;
-    }
+      mType = Exponential;
   }
   else
   {
@@ -111,13 +127,14 @@ void QgsScaleExpression::init()
   mExpression = args[0]->dump();
 }
 
-QString QgsScaleExpression::createExpression( Type type, const QString & baseExpr, double minValue, double maxValue, double minSize, double maxSize, double nullSize )
+QString QgsScaleExpression::createExpression( Type type, const QString & baseExpr, double minValue, double maxValue, double minSize, double maxSize, double nullSize, double exponent )
 {
   QString minValueString = QString::number( minValue );
   QString maxValueString = QString::number( maxValue );
   QString minSizeString = QString::number( minSize );
   QString maxSizeString = QString::number( maxSize );
   QString nullSizeString = QString::number( nullSize );
+  QString exponentString = QString::number( exponent );
 
   switch ( type )
   {
@@ -125,10 +142,9 @@ QString QgsScaleExpression::createExpression( Type type, const QString & baseExp
       return QString( "coalesce(scale_linear(%1, %2, %3, %4, %5), %6)" ).arg( baseExpr, minValueString, maxValueString, minSizeString, maxSizeString, nullSizeString );
 
     case Area:
-      return QString( "coalesce(scale_exp(%1, %2, %3, %4, %5, 0.5), %6)" ).arg( baseExpr, minValueString, maxValueString, minSizeString, maxSizeString, nullSizeString );
-
     case Flannery:
-      return QString( "coalesce(scale_exp(%1, %2, %3, %4, %5, 0.57), %6)" ).arg( baseExpr, minValueString, maxValueString, minSizeString, maxSizeString, nullSizeString );
+    case Exponential:
+      return QString( "coalesce(scale_exp(%1, %2, %3, %4, %5, %6), %7)" ).arg( baseExpr, minValueString, maxValueString, minSizeString, maxSizeString, exponentString, nullSizeString );
 
     case Unknown:
       break;
@@ -144,10 +160,9 @@ double QgsScaleExpression::size( double value ) const
       return mMinSize + ( qBound( mMinValue, value, mMaxValue ) - mMinValue ) * ( mMaxSize - mMinSize ) / ( mMaxValue - mMinValue );
 
     case Area:
-      return mMinSize + qPow( qBound( mMinValue, value, mMaxValue ) - mMinValue, .5 ) * ( mMaxSize - mMinSize ) / qPow( mMaxValue - mMinValue, .5 );
-
     case Flannery:
-      return mMinSize + qPow( qBound( mMinValue, value, mMaxValue ) - mMinValue, .57 ) * ( mMaxSize - mMinSize ) / qPow( mMaxValue - mMinValue, .57 );
+    case Exponential:
+      return mMinSize + qPow( qBound( mMinValue, value, mMaxValue ) - mMinValue, mExponent ) * ( mMaxSize - mMinSize ) / qPow( mMaxValue - mMinValue, mExponent );
 
     case Unknown:
       break;

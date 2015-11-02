@@ -36,8 +36,9 @@ class QgsScaleExpression : QgsExpression
      * @param minSize minimum size
      * @param maxSize maximum size
      * @param nullSize size in case expression evaluates to NULL
+     * @param exponent to use in case of Exponential type
      */
-    QgsScaleExpression( Type type, const QString& baseExpression, double minValue, double maxValue, double minSize, double maxSize, double nullSize = 0 );
+    QgsScaleExpression( Type type, const QString& baseExpression, double minValue, double maxValue, double minSize, double maxSize, double nullSize = 0, double exponent = 1 );
 
     operator bool() const;
 
@@ -73,6 +74,11 @@ class QgsScaleExpression : QgsExpression
      * @see nullSize
      */
     double nullSize() const;
+
+    /** Returns the exponent of the exponential expression.
+     * @see exponent
+     */
+    double exponent() const;
 
     /** Returns the base expression string (or field reference) used for
      * calculating the values to be mapped to a size.

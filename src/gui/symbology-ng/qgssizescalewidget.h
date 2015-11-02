@@ -24,7 +24,7 @@
 #include <QStandardItemModel>
 
 class QgsVectorLayer;
-class QgsMarkerSymbolV2;
+class QgsSymbolV2;
 class QgsLayerTreeLayer;
 class QgsScaleExpression;
 class QgsDataDefined;
@@ -35,7 +35,7 @@ class GUI_EXPORT QgsSizeScaleWidget : public QgsDataDefinedAssistant, private Ui
     Q_OBJECT
 
   public:
-    QgsSizeScaleWidget( const QgsVectorLayer * layer, const QgsMarkerSymbolV2 * symbol );
+    QgsSizeScaleWidget( const QgsVectorLayer * layer, const QgsSymbolV2 * symbol );
 
     QgsDataDefined dataDefined() const override;
 
@@ -54,7 +54,7 @@ class GUI_EXPORT QgsSizeScaleWidget : public QgsDataDefinedAssistant, private Ui
 
   private:
 
-    const QgsMarkerSymbolV2* mSymbol;
+    const QgsSymbolV2* mSymbol;
     QgsVectorLayer* mLayer;
     QgsLayerTreeLayer* mLayerTreeLayer;
     QgsLayerTreeGroup mRoot;
