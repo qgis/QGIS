@@ -219,7 +219,7 @@ void QgsRelationEditorWidget::addFeature()
 
 void QgsRelationEditorWidget::linkFeature()
 {
-  QgsFeatureSelectionDlg selectionDlg( mRelation.referencingLayer(), this );
+  QgsFeatureSelectionDlg selectionDlg( mRelation.referencingLayer(), mEditorContext , this );
 
   if ( selectionDlg.exec() )
   {
