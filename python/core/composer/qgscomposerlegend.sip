@@ -65,6 +65,16 @@ class QgsComposerLegend : QgsComposerItem
     //! @note added in 2.6
     bool legendFilterByMapEnabled() const;
 
+    //! When set to true, during an atlas rendering, it will filter out legend elements
+    //! where features are outside the current atlas feature.
+    //! @note added in 2.14
+    void setLegendFilterOutAtlas( bool doFilter );
+
+    //! Whether to filter out legend elements outside of the current atlas feature
+    //! @see setLegendFilterOutAtlas()
+    //! @note added in 2.14
+    bool legendFilterOutAtlas() const;
+
     //setters and getters
     void setTitle( const QString& t );
     QString title() const;

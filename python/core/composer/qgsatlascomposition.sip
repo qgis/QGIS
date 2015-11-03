@@ -260,6 +260,9 @@ public:
     /** Returns the current atlas feature. Must be called after prepareForFeature(). */
     QgsFeature* currentFeature() /Deprecated/;
 
+    /** Returns the current atlas geometry in the given projection system (default to the coverage layer's CRS) */
+    QgsGeometry currentGeometry( const QgsCoordinateReferenceSystem& projectedTo = QgsCoordinateReferenceSystem() ) const;
+
   public slots:
 
     /** Refreshes the current atlas feature, by refetching its attributes from the vector layer provider

@@ -28,6 +28,7 @@
 #include "qgsproject.h"
 #include "qgsmessagelog.h"
 #include "qgsexpressioncontext.h"
+#include "qgscrscache.h"
 
 QgsAtlasComposition::QgsAtlasComposition( QgsComposition* composition )
     : mComposition( composition )
@@ -432,6 +433,7 @@ bool QgsAtlasComposition::prepareForFeature( const int featureI, const bool upda
     return false;
   }
 
+  mGeometryCache.clear();
   emit featureChanged( &mCurrentFeature );
   emit statusMsgChanged( QString( tr( "Atlas feature %1 of %2" ) ).arg( featureI + 1 ).arg( mFeatureIds.size() ) );
 
@@ -498,22 +500,10 @@ bool QgsAtlasComposition::prepareForFeature( const int featureI, const bool upda
 
 void QgsAtlasComposition::computeExtent( QgsComposerMap* map )
 {
-  // compute the extent of the current feature, in the crs of the specified map
-  if ( !mCurrentFeature.constGeometry() )
-    return;
-
-  const QgsCoordinateReferenceSystem& coverage_crs = mCoverageLayer->crs();
-  // transformation needed for feature geometries
-  const QgsCoordinateReferenceSystem& destination_crs = map->composition()->mapSettings().destinationCrs();
-  mTransform.setSourceCrs( coverage_crs );
-  mTransform.setDestCRS( destination_crs );
-
   // QgsGeometry::boundingBox is expressed in the geometry"s native CRS
   // We have to transform the grometry to the destination CRS and ask for the bounding box
   // Note: we cannot directly take the transformation of the bounding box, since transformations are not linear
-  QgsGeometry tgeom( *mCurrentFeature.constGeometry() );
-  tgeom.transform( mTransform );
-  mTransformedFeatureBounds = tgeom.boundingBox();
+  mTransformedFeatureBounds = currentGeometry( map->composition()->mapSettings().destinationCrs() ).boundingBox();
 }
 
 void QgsAtlasComposition::prepareMap( QgsComposerMap* map )
@@ -917,4 +907,36 @@ void QgsAtlasComposition::setMargin( float margin )
 
   map->setAtlasMargin(( double ) margin );
 }
+
+QgsGeometry QgsAtlasComposition::currentGeometry( const QgsCoordinateReferenceSystem& crs ) const
+{
+  if ( !mCoverageLayer || !mCurrentFeature.isValid() || !mCurrentFeature.constGeometry() )
+  {
+    return QgsGeometry();
+  }
+
+  if ( !crs.isValid() )
+  {
+    // no projection, return the native geometry
+    return *mCurrentFeature.constGeometry();
+  }
+
+  QMap<long, QgsGeometry>::const_iterator it = mGeometryCache.find( crs.srsid() );
+  if ( it != mGeometryCache.end() )
+  {
+    // we have it in cache, return it
+    return it.value();
+  }
+
+  if ( mCoverageLayer->crs() == crs )
+  {
+    return *mCurrentFeature.constGeometry();
+  }
+
+  QgsGeometry transformed = *mCurrentFeature.constGeometry();
+  transformed.transform( *QgsCoordinateTransformCache::instance()->transform( mCoverageLayer->crs().authid(), crs.authid() ) );
+  mGeometryCache[crs.srsid()] = transformed;
+  return transformed;
+}
+
 Q_NOWARN_DEPRECATED_POP

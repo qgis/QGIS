@@ -16,6 +16,7 @@
 #include "qgslayertreemodel.h"
 
 #include "qgslayertree.h"
+#include "qgslayertreeutils.h"
 #include "qgslayertreemodellegendnode.h"
 
 #include <QMimeData>
@@ -559,20 +560,47 @@ void QgsLayerTreeModel::setLegendFilterByScale( double scaleDenominator )
 
 void QgsLayerTreeModel::setLegendFilterByMap( const QgsMapSettings* settings )
 {
+  setLegendFilter( settings, /* useExtent = */ true );
+}
+
+void QgsLayerTreeModel::setLegendFilter( const QgsMapSettings* settings, bool useExtent, const QgsGeometry& polygon, bool useExpressions )
+{
   if ( settings && settings->hasValidSettings() )
   {
-    mLegendFilterByMapSettings.reset( new QgsMapSettings( *settings ) );
-    mLegendFilterByMapSettings->setLayerStyleOverrides( mLayerStyleOverrides );
-    mLegendFilterByMapHitTest.reset( new QgsMapHitTest( *mLegendFilterByMapSettings ) );
-    mLegendFilterByMapHitTest->run();
+    mLegendFilterMapSettings.reset( new QgsMapSettings( *settings ) );
+    mLegendFilterMapSettings->setLayerStyleOverrides( mLayerStyleOverrides );
+    QgsMapHitTest::LayerFilterExpression exprs;
+    // collect expression filters
+    if ( useExpressions )
+    {
+      foreach ( QgsLayerTreeLayer* nodeLayer, mRootNode->findLayers() )
+      {
+        bool enabled;
+        QString expr = QgsLayerTreeUtils::legendFilterByExpression( *nodeLayer, &enabled );
+        if ( enabled && !expr.isEmpty() )
+        {
+          exprs[ nodeLayer->layerId()] = expr;
+        }
+      }
+    }
+    bool polygonValid = !polygon.isEmpty() && polygon.type() == QGis::Polygon;
+    if ( useExpressions && !useExtent && !polygonValid ) // only expressions
+    {
+      mLegendFilterHitTest.reset( new QgsMapHitTest( *mLegendFilterMapSettings, exprs ) );
+    }
+    else
+    {
+      mLegendFilterHitTest.reset( new QgsMapHitTest( *mLegendFilterMapSettings, polygon, exprs ) );
+    }
+    mLegendFilterHitTest->run();
   }
   else
   {
-    if ( !mLegendFilterByMapSettings )
+    if ( !mLegendFilterMapSettings )
       return; // no change
 
-    mLegendFilterByMapSettings.reset();
-    mLegendFilterByMapHitTest.reset();
+    mLegendFilterMapSettings.reset();
+    mLegendFilterHitTest.reset();
   }
 
   // temporarily disable autocollapse so that legend nodes stay visible
@@ -1022,7 +1050,7 @@ QList<QgsLayerTreeModelLegendNode*> QgsLayerTreeModel::filterLegendNodes( const 
         filtered << node;
     }
   }
-  else if ( mLegendFilterByMapSettings )
+  else if ( mLegendFilterMapSettings )
   {
     Q_FOREACH ( QgsLayerTreeModelLegendNode* node, nodes )
     {
@@ -1031,7 +1059,7 @@ QList<QgsLayerTreeModelLegendNode*> QgsLayerTreeModel::filterLegendNodes( const 
       {
         if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( node->layerNode()->layer() ) )
         {
-          if ( mLegendFilterByMapHitTest->symbolVisible( ruleKey, vl ) )
+          if ( mLegendFilterHitTest->symbolVisible( ruleKey, vl ) )
             filtered << node;
         }
       }

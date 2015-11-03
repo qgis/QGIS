@@ -133,7 +133,22 @@ class QgsLayerTreeModel : QAbstractItemModel
     //! Ownership of map settings pointer does not change.
     //! @note added in 2.6
     void setLegendFilterByMap( const QgsMapSettings* settings );
+
+    //! Filter display of legend nodes for given map settings
+    //! @param settings Map settings. Setting a null pointer or invalid settings will disable any filter. Ownership is not changed, a copy is made
+    //! @param useExtent Whether to use the extent of the map settings as a first spatial filter on legend nodes
+    //! @param polygon If not empty, this polygon will be used instead of the map extent to filter legend nodes
+    //! @param useExpressions Whether to use legend node filter expressions
+    //! @note added in 2.14
+    void setLegendFilter( const QgsMapSettings* settings, bool useExtent = true, const QgsGeometry& polygon = QgsGeometry(), bool useExpressions = true );
+
+    //! Returns the current map settings used for legend filtering
+    //! @deprecated It has been renamed to legendFilterMapSettings()
     const QgsMapSettings* legendFilterByMap() const;
+
+    //! Returns the current map settings used for the current legend filter (or null if none is enabled)
+    //! @note added in 2.14
+    const QgsMapSettings* legendFilterMapSettings() const;
 
     //! Give the layer tree model hints about the currently associated map view
     //! so that legend nodes that use map units can be scaled currectly

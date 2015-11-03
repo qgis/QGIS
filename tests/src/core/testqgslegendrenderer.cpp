@@ -7,6 +7,7 @@
 #include "qgscomposerlegenditem.h"
 #include "qgsfontutils.h"
 #include "qgslayertree.h"
+#include "qgslayertreeutils.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreemodellegendnode.h"
 #include "qgslegendmodel.h"
@@ -99,6 +100,8 @@ class TestQgsLegendRenderer : public QObject
     void testThreeColumns();
     void testFilterByMap();
     void testRasterBorder();
+    void testFilterByPolygon();
+    void testFilterByExpression();
 
   private:
     QgsLayerTreeGroup* mRoot;
@@ -341,6 +344,78 @@ void TestQgsLegendRenderer::testRasterBorder()
   _setStandardTestFont( settings );
   settings.setRasterBorderWidth( 2 );
   settings.setRasterBorderColor( Qt::green );
+  _renderLegend( testName, &legendModel, settings );
+  QVERIFY( _verifyImage( testName, mReport ) );
+}
+
+void TestQgsLegendRenderer::testFilterByPolygon()
+{
+  QString testName = "legend_filter_by_polygon";
+
+  QgsLayerTreeModel legendModel( mRoot );
+
+  QgsMapSettings mapSettings;
+  // extent and size to include only the red and green points
+  mapSettings.setExtent( QgsRectangle( 0, 0, 10.0, 4.0 ) );
+  mapSettings.setOutputSize( QSize( 400, 100 ) );
+  mapSettings.setOutputDpi( 96 );
+  QStringList ll;
+  foreach ( auto l, QgsMapLayerRegistry::instance()->mapLayers() )
+  {
+    ll << l->id();
+  }
+  mapSettings.setLayers( ll );
+
+  // select only within a polygon
+  QScopedPointer<QgsGeometry> geom( QgsGeometry::fromWkt( "POLYGON((0 0,2 0,2 2,0 2,0 0))" ) );
+  legendModel.setLegendFilter( &mapSettings, /*useExtent*/ false, *geom.data() );
+
+  QgsLegendSettings settings;
+  _setStandardTestFont( settings );
+  _renderLegend( testName, &legendModel, settings );
+  QVERIFY( _verifyImage( testName, mReport ) );
+
+  // again with useExtent to true
+  legendModel.setLegendFilter( &mapSettings, /*useExtent*/ true, *geom.data() );
+
+  _setStandardTestFont( settings );
+  _renderLegend( testName, &legendModel, settings );
+  QVERIFY( _verifyImage( testName, mReport ) );
+}
+
+void TestQgsLegendRenderer::testFilterByExpression()
+{
+  QString testName = "legend_filter_by_expression";
+
+  QgsLayerTreeModel legendModel( mRoot );
+
+  QgsMapSettings mapSettings;
+  // extent and size to include only the red and green points
+  mapSettings.setExtent( QgsRectangle( 0, 0, 10.0, 4.0 ) );
+  mapSettings.setOutputSize( QSize( 400, 100 ) );
+  mapSettings.setOutputDpi( 96 );
+  QStringList ll;
+  foreach ( auto l, QgsMapLayerRegistry::instance()->mapLayers() )
+  {
+    ll << l->id();
+  }
+  mapSettings.setLayers( ll );
+
+  // use an expression to only include the red point
+  QgsLayerTreeUtils::setLegendFilterByExpression( *legendModel.rootGroup()->findLayer( mVL3->id() ), "test_attr=1" );
+  
+  legendModel.setLegendFilterByMap( &mapSettings );
+
+  QgsLegendSettings settings;
+  _setStandardTestFont( settings );
+  _renderLegend( testName, &legendModel, settings );
+  QVERIFY( _verifyImage( testName, mReport ) );
+
+  // test again with setLegendFilter and only expressions
+  legendModel.setLegendFilterByMap( 0 );
+  legendModel.setLegendFilter( &mapSettings, /*useExtent*/ false );
+
+  _setStandardTestFont( settings );
   _renderLegend( testName, &legendModel, settings );
   QVERIFY( _verifyImage( testName, mReport ) );
 }

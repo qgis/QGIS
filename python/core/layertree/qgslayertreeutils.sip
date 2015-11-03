@@ -37,4 +37,11 @@ class QgsLayerTreeUtils
 
     //! get invisible layers
     static QStringList invisibleLayerList( QgsLayerTreeNode *node );
+
+    //! Set the expression filter of a legend layer
+    static void setLegendFilterByExpression( QgsLayerTreeLayer& layer, const QString& expr, bool enabled = true );
+    //! Return the expression filter of a legend layer
+    static QString legendFilterByExpression( const QgsLayerTreeLayer& layer, bool* enabled = 0 );
+    //! Test if one of the layers in a group has an expression filter
+    static bool hasLegendFilterExpression( const QgsLayerTreeGroup& group );
 };
