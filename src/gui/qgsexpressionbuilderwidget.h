@@ -232,13 +232,31 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void updateFunctionFileList( const QString& path );
 
   public slots:
-    void showContextMenu( const QPoint & );
+
+    /**
+     * Load sample values into the sample value area
+     */
     void loadSampleValues();
+
+    /**
+     * Load all unique values from the set layer into the sample area
+     */
     void loadAllValues();
+
+    /**
+     * Auto save the current Python function code.
+     */
     void autosave();
+
+    /**
+     * Enabled or disable auto saving. When enabled Python scripts will be auto saved
+     * when text changes.
+     * @param enabled True to enable auto saving.
+     */
     void setAutoSave( bool enabled ) { mAutoSave = enabled; }
 
   private slots:
+    void showContextMenu( const QPoint & );
     void setExpressionState( bool state );
     void currentChanged( const QModelIndex &index, const QModelIndex & );
     void operatorButtonClicked();

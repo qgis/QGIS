@@ -165,9 +165,28 @@ class QgsExpressionBuilderWidget : QWidget
     void updateFunctionFileList( const QString& path );
 
   public slots:
-    void showContextMenu( const QPoint & );
+
+    /**
+     * Load sample values into the sample value area
+     */
     void loadSampleValues();
+
+    /**
+     * Load all unique values from the set layer into the sample area
+     */
     void loadAllValues();
+
+    /**
+     * Auto save the current Python function code.
+     */
+    void autosave();
+
+    /**
+     * Enabled or disable auto saving. When enabled Python scripts will be auto saved
+     * when text changes.
+     * @param enabled True to enable auto saving.
+     */
+    void setAutoSave( bool enabled ) { mAutoSave = enabled; }
 
   signals:
     /** Emitted when the user changes the expression in the widget.
