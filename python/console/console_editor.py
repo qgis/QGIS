@@ -722,9 +722,6 @@ class Editor(QsciScintilla):
 
             self.parent.tw.listObject(self.parent.tw.currentWidget())
             self.lastModified = QFileInfo(pathfile).lastModified()
-            msgText = QCoreApplication.translate('PythonConsole',
-                                                 'The file <b>"{0}"</b> has been changed and reloaded').format(pathfile)
-            self.parent.pc.callWidgetMessageBarEditor(msgText, 1, False)
         QsciScintilla.focusInEvent(self, e)
 
     def fileReadOnly(self):
