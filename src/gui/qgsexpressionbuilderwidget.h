@@ -259,6 +259,9 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
       */
     void expressionParsed( bool isValid );
 
+  protected:
+    void showEvent( QShowEvent *e );
+
   private:
     void runPythonCode( const QString& code );
     void updateFunctionTree();
@@ -288,7 +291,6 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     QString mRecentKey;
     QMap<QString, QStringList> mFieldValues;
     QgsExpressionContext mExpressionContext;
-
 };
 
 #endif // QGSEXPRESSIONBUILDER_H

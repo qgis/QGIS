@@ -622,6 +622,12 @@ void QgsExpressionBuilderWidget::loadExpressionContext()
   }
 }
 
+void QgsExpressionBuilderWidget::showEvent( QShowEvent *e )
+{
+  QWidget::showEvent( e );
+  txtExpressionString->setFocus();
+}
+
 void QgsExpressionBuilderWidget::on_txtSearchEdit_textChanged()
 {
   mProxyModel->setFilterWildcard( txtSearchEdit->text() );
