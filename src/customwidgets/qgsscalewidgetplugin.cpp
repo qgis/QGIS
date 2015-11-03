@@ -42,7 +42,7 @@ QString QgsScaleWidgetPlugin::includeFile() const
 
 QIcon QgsScaleWidgetPlugin::icon() const
 {
-  return QIcon();
+  return QIcon( ":/images/icons/qgis-icon-60x60.png" );
 }
 
 bool QgsScaleWidgetPlugin::isContainer() const
