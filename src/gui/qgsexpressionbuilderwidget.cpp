@@ -34,9 +34,9 @@
 
 QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
     : QWidget( parent )
+    , mAutoSave( true )
     , mLayer( NULL )
     , highlighter( NULL )
-    , mAutoSave( true )
     , mExpressionValid( false )
 {
   setupUi( this );
