@@ -41,7 +41,7 @@ Build-Depends:
 #saucy wheezy# python-dev,
 #saucy# libpython2.7-dev,
 #sid stretch jessie trusty utopic vivid wily# python-all (>= 2.6.6-3~), python-all-dev (>= 2.6.6-3~),
-#sid stretch jessie# pyqt4.qsci-dev,
+#sid stretch jessie wily# pyqt4.qsci-dev,
 #sid stretch jessie trusty utopic vivid wily# python-pyspatialite,
 #sid stretch# dh-python,
  python-sip (>= 4.5.0),
