@@ -187,18 +187,19 @@ QgsFeatureRequest QgsRelation::getReferencedFeatureRequest( const QgsAttributes&
   {
     int referencedIdx = referencedLayer()->fields().indexFromName( fieldPair.referencedField() );
     int referencingIdx = referencingLayer()->fields().indexFromName( fieldPair.referencingField() );
+    Q_UNUSED(referencingIdx);
 
     QgsField referencedField = referencedLayer()->fields().at( referencedIdx );
 
     if ( referencedField.type() == QVariant::String )
     {
       // Use quotes
-      conditions << QString( "\"%1\" = '%2'" ).arg( fieldPair.referencedField(), attributes.at( referencingIdx ).toString() );
+      conditions << QString( "\"%1\" = '%2'" ).arg( fieldPair.referencedField(), attributes.at( referencedIdx ).toString() );
     }
     else
     {
       // No quotes
-      conditions << QString( "\"%1\" = %2" ).arg( fieldPair.referencedField(), attributes.at( referencingIdx ).toString() );
+      conditions << QString( "\"%1\" = %2" ).arg( fieldPair.referencedField(), attributes.at( referencedIdx ).toString() );
     }
   }
 
