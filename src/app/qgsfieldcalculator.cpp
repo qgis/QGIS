@@ -22,6 +22,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsexpressioncontext.h"
+#include "qgsgeometry.h"
 
 #include <QMessageBox>
 #include <QSettings>
@@ -173,6 +174,8 @@ void QgsFieldCalculator::accept()
     return;
   }
 
+  bool updatingGeom = false;
+
   // Test for creating expression field based on ! mUpdateExistingGroupBox checked rather
   // than on mNewFieldGroupBox checked, as if the provider does not support adding attributes
   // then mUpdateExistingGroupBox is set to not checkable, and hence is not checked.  This
@@ -193,10 +196,19 @@ void QgsFieldCalculator::accept()
     //update existing field
     if ( mUpdateExistingGroupBox->isChecked() || !mNewFieldGroupBox->isEnabled() )
     {
-      QMap<QString, int>::const_iterator fieldIt = mFieldMap.find( mExistingFieldComboBox->currentText() );
-      if ( fieldIt != mFieldMap.end() )
+      if ( mExistingFieldComboBox->itemData( mExistingFieldComboBox->currentIndex() ).toString() == "geom" )
       {
-        mAttributeId = fieldIt.value();
+        //update geometry
+        mAttributeId = -1;
+        updatingGeom = true;
+      }
+      else
+      {
+        QMap<QString, int>::const_iterator fieldIt = mFieldMap.find( mExistingFieldComboBox->currentText() );
+        if ( fieldIt != mFieldMap.end() )
+        {
+          mAttributeId = fieldIt.value();
+        }
       }
     }
     else
@@ -234,7 +246,7 @@ void QgsFieldCalculator::accept()
       }
     }
 
-    if ( mAttributeId == -1 )
+    if ( mAttributeId == -1 && !updatingGeom )
     {
       mVectorLayer->destroyEditCommand();
       QApplication::restoreOverrideCursor();
@@ -252,7 +264,7 @@ void QgsFieldCalculator::accept()
     bool useGeometry = exp.needsGeometry();
     int rownum = 1;
 
-    QgsField field = mVectorLayer->fields().at( mAttributeId );
+    QgsField field = !updatingGeom ? mVectorLayer->fields().at( mAttributeId ) : QgsField();
 
     bool newField = !mUpdateExistingGroupBox->isChecked();
     QVariant emptyAttribute;
@@ -274,15 +286,23 @@ void QgsFieldCalculator::accept()
       expContext.lastScope()->setVariable( QString( "row_number" ), rownum );
 
       QVariant value = exp.evaluate( &expContext );
-      field.convertCompatible( value );
       if ( exp.hasEvalError() )
       {
         calculationSuccess = false;
         error = exp.evalErrorString();
         break;
       }
+      else if ( updatingGeom )
+      {
+        if ( value.canConvert< QgsGeometry >() )
+        {
+          QgsGeometry geom = value.value< QgsGeometry >();
+          mVectorLayer->changeGeometry( feature.id(), &geom );
+        }
+      }
       else
       {
+        field.convertCompatible( value );
         mVectorLayer->changeAttributeValue( feature.id(), mAttributeId, value, newField ? emptyAttribute : feature.attributes().value( mAttributeId ) );
       }
 
@@ -429,6 +449,15 @@ void QgsFieldCalculator::populateFields()
     //insert into field list and field combo box
     mFieldMap.insert( fieldName, idx );
     mExistingFieldComboBox->addItem( fieldName );
+  }
+
+  if ( mVectorLayer->geometryType() != QGis::NoGeometry )
+  {
+    mExistingFieldComboBox->addItem( tr( "<geometry>" ), "geom" );
+
+    QFont font = mExistingFieldComboBox->itemData( mExistingFieldComboBox->count() - 1, Qt::FontRole ).value<QFont>();
+    font.setItalic( true );
+    mExistingFieldComboBox->setItemData( mExistingFieldComboBox->count() - 1, font, Qt::FontRole );
   }
 }
 
