@@ -115,8 +115,32 @@ QgsFieldsProperties::QgsFieldsProperties( QgsVectorLayer *layer, QWidget* parent
   mRelationsList->setHorizontalHeaderItem( RelFieldCol, new QTableWidgetItem( tr( "Field" ) ) );
   mRelationsList->verticalHeader()->hide();
 
+  // Python init function and code
   leEditForm->setText( layer->editForm() );
   leEditFormInit->setText( layer->editFormInit() );
+  leEditFormInitUseCode->setChecked( layer->editFormInitUseCode() );
+  QString code( layer->editFormInitCode() );
+  if ( code.isEmpty( ) )
+  {
+    code.append( tr( "\"\"\"\n"
+                     "QGIS forms can have a Python function that is called when the form is\n"
+                     "opened.\n"
+                     "\n"
+                     "Use this function to add extra logic to your forms.\n"
+                     "\n"
+                     "Enter the name of the function in the \"Python Init function\"\n"
+                     "field.\n"
+                     "An example follows:\n"
+                     "\"\"\"\n"
+                     "def my_form_open(dialog, layer, feature):\n"
+                     "    geom = feature.geometry()\n"
+                     "    control = dialog.findChild(QWidget, \"MyLineEdit\")\n" ) );
+
+  }
+  leEditFormInitCode->setText( code );
+  // Show or hide as needed
+  mPythonInitCodeGroupBox->setVisible( layer->editFormInitUseCode() );
+  connect( leEditFormInitUseCode, SIGNAL( toggled( bool ) ), this, SLOT( on_leEditFormInitUseCodeToggled( bool ) ) );
 
   loadRelations();
 
@@ -422,6 +446,11 @@ void QgsFieldsProperties::on_mMoveUpItem_clicked()
     itemToMoveUp->setSelected( true );
     parent->child( itemIndex )->setSelected( false );
   }
+}
+
+void QgsFieldsProperties::on_leEditFormInitUseCodeToggled( bool checked )
+{
+  mPythonInitCodeGroupBox->setVisible( checked );
 }
 
 void QgsFieldsProperties::attributeTypeDialog()
@@ -844,7 +873,7 @@ void QgsFieldsProperties::apply()
     mLayer->setEditForm( leEditForm->text() );
   mLayer->setEditFormInit( leEditFormInit->text() );
   mLayer->setEditFormInitUseCode( leEditFormInitUseCode->isChecked() );
-  // TODO: mLayer->setEditFormInitCode( leEditFormInitCode->text() );
+  mLayer->setEditFormInitCode( leEditFormInitCode->text() );
   mLayer->setFeatureFormSuppress(( QgsVectorLayer::FeatureFormSuppress )mFormSuppressCmbBx->currentIndex() );
 
   mLayer->setExcludeAttributesWMS( excludeAttributesWMS );

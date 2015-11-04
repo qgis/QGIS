@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>719</width>
+    <width>742</width>
     <height>634</height>
    </rect>
   </property>
@@ -115,15 +115,11 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
      </item>
      <item>
       <widget class="QCheckBox" name="leEditFormInitUseCode">
-       <property name="text">
-        <string>use code</string>
+       <property name="toolTip">
+        <string>Check this box to provide python init function code here instead of using an external file.</string>
        </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="leButtonOpenEditor">
        <property name="text">
-        <string>Open editor</string>
+        <string>Use provided code</string>
        </property>
       </widget>
      </item>
@@ -141,19 +137,7 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
-      <layout class="QGridLayout" name="gridLayout">
-       <property name="leftMargin">
-        <number>0</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="rightMargin">
-        <number>0</number>
-       </property>
-       <property name="bottomMargin">
-        <number>0</number>
-       </property>
+      <layout class="QGridLayout" name="gridLayout_4">
        <item row="0" column="0">
         <widget class="QSplitter" name="splitter">
          <property name="orientation">
@@ -266,6 +250,21 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
            <bool>true</bool>
           </property>
           <layout class="QGridLayout" name="mRelationsFrameLayout"/>
+          <zorder>leEditFormInitCode</zorder>
+          <zorder>mPythonInitCodeGroupBox</zorder>
+         </widget>
+         <widget class="QgsCollapsibleGroupBox" name="mPythonInitCodeGroupBox">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="title">
+           <string>Python init code</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout">
+           <item row="0" column="0">
+            <widget class="QgsCodeEditorPython" name="leEditFormInitCode" native="true"/>
+           </item>
+          </layout>
          </widget>
         </widget>
        </item>
@@ -546,6 +545,12 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsCodeEditorPython</class>
+   <extends>QWidget</extends>
+   <header>qgscodeeditorpython.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

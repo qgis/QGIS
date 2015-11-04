@@ -580,18 +580,30 @@ void QgsAttributeForm::initPython()
     QString module = mLayer->editFormInit();
 
     int pos = module.lastIndexOf( '.' );
-    if ( pos >= 0 )
+
+    if ( pos >= 0 ) // It's a module
     {
       QgsPythonRunner::run( QString( "import %1" ).arg( module.left( pos ) ) );
+      /* Reload the module if the DEBUGMODE switch has been set in the module.
+      If set to False you have to reload QGIS to reset it to True due to Python
+      module caching */
+      QString reload = QString( "if hasattr(%1,'DEBUGMODE') and %1.DEBUGMODE:"
+                                " reload(%1)" ).arg( module.left( pos ) );
+
+      QgsPythonRunner::run( reload );
+    }
+    else // Must be supplied code
+    {
+      if ( mLayer->editFormInitUseCode() )
+      {
+        QgsPythonRunner::run( mLayer->editFormInitCode() );
+      }
+      else
+      {
+        QgsDebugMsg( "No dot in editFormInit and no custom python code provided! There is nothing to run." );
+      }
     }
 
-    /* Reload the module if the DEBUGMODE switch has been set in the module.
-    If set to False you have to reload QGIS to reset it to True due to Python
-    module caching */
-    QString reload = QString( "if hasattr(%1,'DEBUGMODE') and %1.DEBUGMODE:"
-                              " reload(%1)" ).arg( module.left( pos ) );
-
-    QgsPythonRunner::run( reload );
 
     QgsPythonRunner::run( "import inspect" );
     QString numArgs;

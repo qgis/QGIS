@@ -2060,7 +2060,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
   node.appendChild( efiucField );
 
   QDomElement eficField  = doc.createElement( "editforminitcode" );
-  eficField.appendChild( doc.createTextNode( mEditFormInitCode ) );
+  eficField.appendChild( doc.createCDATASection( mEditFormInitCode ) );
   node.appendChild( eficField );
 
   QDomElement fFSuppElem  = doc.createElement( "featformsuppress" );
@@ -2849,6 +2849,11 @@ QString QgsVectorLayer::editFormInit()
 QString QgsVectorLayer::editFormInitCode()
 {
   return mEditFormInitCode;
+}
+
+bool QgsVectorLayer::editFormInitUseCode()
+{
+  return mEditFormInitUseCode;
 }
 
 void QgsVectorLayer::setEditFormInit( const QString& function )
