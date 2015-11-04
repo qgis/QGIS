@@ -37,6 +37,7 @@ from SplitRGBBands import SplitRGBBands
 import SagaUtils
 from processing.tools.system import isWindows, isMac
 
+
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
 
@@ -55,9 +56,10 @@ class SagaAlgorithmProvider(AlgorithmProvider):
         self.activate = True
 
     def initializeSettings(self):
-        if isWindows() or isMac():
+        if (isWindows() or isMac()) and SagaUtils.findSagaFolder() is None:
             ProcessingConfig.addSetting(Setting("SAGA",
-                                                SagaUtils.SAGA_FOLDER, self.tr('SAGA folder'), '',
+                                                SagaUtils.SAGA_FOLDER, self.tr('SAGA folder'),
+                                                '',
                                                 valuetype=Setting.FOLDER))
         ProcessingConfig.addSetting(Setting("SAGA",
                                             SagaUtils.SAGA_IMPORT_EXPORT_OPTIMIZATION,
@@ -74,7 +76,7 @@ class SagaAlgorithmProvider(AlgorithmProvider):
 
     def unload(self):
         AlgorithmProvider.unload(self)
-        if isWindows() or isMac():
+        if (isWindows() or isMac()) and SagaUtils.findSagaFolder() is None:
             ProcessingConfig.removeSetting(SagaUtils.SAGA_FOLDER)
 
         ProcessingConfig.removeSetting(SagaUtils.SAGA_LOG_CONSOLE)
