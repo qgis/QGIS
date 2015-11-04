@@ -42,6 +42,16 @@ class QgsGeometryEngine
      */
     virtual QString relate( const QgsAbstractGeometryV2& geom, QString* errorMsg = 0 ) const = 0;
 
+    /** Tests whether two geometries are related by a specified Dimensional Extended 9 Intersection Model (DE-9IM)
+     * pattern.
+     * @param geom geometry to relate to
+     * @param pattern DE-9IM pattern for match
+     * @param errorMsg destination storage for any error message
+     * @returns true if geometry relationship matches with pattern
+     * @note added in QGIS 2.14
+     */
+    virtual bool relatePattern( const QgsAbstractGeometryV2& geom, const QString& pattern, QString* errorMsg = 0 ) const = 0;
+
     virtual double area( QString* errorMsg = 0 ) const = 0;
     virtual double length( QString* errorMsg = 0 ) const = 0;
     virtual bool isValid( QString* errorMsg = 0 ) const = 0;

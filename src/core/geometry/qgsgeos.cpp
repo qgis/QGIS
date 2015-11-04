@@ -300,6 +300,35 @@ QString QgsGeos::relate( const QgsAbstractGeometryV2& geom, QString* errorMsg ) 
   return result;
 }
 
+bool QgsGeos::relatePattern( const QgsAbstractGeometryV2& geom, const QString& pattern, QString* errorMsg ) const
+{
+  if ( !mGeos )
+  {
+    return false;
+  }
+
+  GEOSGeomScopedPtr geosGeom( asGeos( &geom, mPrecision ) );
+  if ( !geosGeom )
+  {
+    return false;
+  }
+
+  bool result = false;
+  try
+  {
+    result = ( GEOSRelatePattern_r( geosinit.ctxt, mGeos, geosGeom.get(), pattern.toLocal8Bit().constData() ) == 1 );
+  }
+  catch ( GEOSException &e )
+  {
+    if ( errorMsg )
+    {
+      *errorMsg = e.what();
+    }
+  }
+
+  return result;
+}
+
 double QgsGeos::area( QString* errorMsg ) const
 {
   double area = -1.0;
@@ -1527,7 +1556,7 @@ GEOSGeometry* QgsGeos::createGeosPoint( const QgsAbstractGeometryV2* point, int 
       }
     }
 #if 0 //disabled until geos supports m-coordinates
-    if (pt->isMeasure() )
+    if ( pt->isMeasure() )
     {
       GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, 0, 3, pt->m() );
     }

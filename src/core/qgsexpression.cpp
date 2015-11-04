@@ -1477,17 +1477,30 @@ static QVariant fcnYMax( const QVariantList& values, const QgsExpressionContext*
 
 static QVariant fcnRelate( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
+  if ( values.length() < 2 || values.length() > 3 )
+    return QVariant();
+
   QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
   QgsGeometry sGeom = getGeometry( values.at( 1 ), parent );
 
   if ( fGeom.isEmpty() || sGeom.isEmpty() )
     return QVariant();
 
-  QgsGeometryEngine* engine = QgsGeometry::createGeometryEngine( fGeom.geometry() );
-  QString result = engine->relate( *sGeom.geometry() );
-  delete engine;
+  QScopedPointer<QgsGeometryEngine> engine( QgsGeometry::createGeometryEngine( fGeom.geometry() ) );
 
-  return QVariant::fromValue( result );
+  if ( values.length() == 2 )
+  {
+    //two geometry arguments, return relation
+    QString result = engine->relate( *sGeom.geometry() );
+    return QVariant::fromValue( result );
+  }
+  else
+  {
+    //three arguments, test pattern
+    QString pattern = getStringValue( values.at( 2 ), parent );
+    bool result = engine->relatePattern( *sGeom.geometry(), pattern );
+    return QVariant::fromValue( result );
+  }
 }
 
 static QVariant fcnBbox( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
@@ -2309,7 +2322,7 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( "y_max", 1, fcnYMax, "GeometryGroup", QString(), false, QStringList(), false, QStringList() << "ymax" )
     << new StaticFunction( "geom_from_wkt", 1, fcnGeomFromWKT, "GeometryGroup", QString(), false, QStringList(), false, QStringList() << "geomFromWKT" )
     << new StaticFunction( "geom_from_gml", 1, fcnGeomFromGML, "GeometryGroup", QString(), false, QStringList(), false, QStringList() << "geomFromGML" )
-    << new StaticFunction( "relate", 2, fcnRelate, "GeometryGroup" )
+    << new StaticFunction( "relate", -1, fcnRelate, "GeometryGroup" )
     << new StaticFunction( "intersects_bbox", 2, fcnBbox, "GeometryGroup", QString(), false, QStringList(), false, QStringList() << "bbox" )
     << new StaticFunction( "disjoint", 2, fcnDisjoint, "GeometryGroup" )
     << new StaticFunction( "intersects", 2, fcnIntersects, "GeometryGroup" )
