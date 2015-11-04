@@ -25,6 +25,7 @@ class QgsAttributeTableFilterModel;
 class QgsFeatureListModel;
 class QgsFeatureSelectionModel;
 class QgsAttributeTableModel;
+class QgsIFeatureSelectionManager;
 class QgsVectorLayer;
 class QgsVectorLayerCache;
 class QgsFeatureListViewDelegate;
@@ -114,6 +115,11 @@ class GUI_EXPORT QgsFeatureListView : public QListView
      */
     void setCurrentFeatureEdited( bool state );
 
+    /**
+     * @brief setFeatureSelectionManager
+     * @param featureSelectionManager We will take ownership
+     */
+    void setFeatureSelectionManager( QgsIFeatureSelectionManager* featureSelectionManager );
   protected:
     virtual void mouseMoveEvent( QMouseEvent *event ) override;
     virtual void mousePressEvent( QMouseEvent *event ) override;
@@ -170,6 +176,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     QgsFeatureListModel *mModel;
     QItemSelectionModel* mCurrentEditSelectionModel;
     QgsFeatureSelectionModel* mFeatureSelectionModel;
+    QgsIFeatureSelectionManager* mFeatureSelectionManager;
     QgsFeatureListViewDelegate* mItemDelegate;
     bool mEditSelectionDrag; // Is set to true when the user initiated a left button click over an edit button and still keeps pressing /**< TODO */
     int mRowAnchor;

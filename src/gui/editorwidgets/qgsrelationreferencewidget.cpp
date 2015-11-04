@@ -245,8 +245,10 @@ void QgsRelationReferenceWidget::setForeignKey( const QVariant& value )
   if ( !mReferencedLayer )
     return;
 
+  // Attributes from the referencing layer
   QgsAttributes attrs = QgsAttributes( mReferencingLayer->fields().count() );
-  attrs[mFkeyFieldIdx] = value;
+  // Set the value on the foreign key field of the referencing record
+  attrs[ mReferencingLayer->fieldNameIndex( mRelation.fieldPairs().at( 0 ).first )] = value;
 
   QgsFeatureRequest request = mRelation.getReferencedFeatureRequest( attrs );
 

@@ -75,6 +75,12 @@ class QgsFeatureListView : QListView
      */
     void setCurrentFeatureEdited( bool state );
 
+    /**
+     * @brief setFeatureSelectionManager
+     * @param featureSelectionManager We will take ownership
+     */
+    void setFeatureSelectionManager( QgsIFeatureSelectionManager* featureSelectionManager );
+
   protected:
     virtual void mouseMoveEvent( QMouseEvent *event );
     virtual void mousePressEvent( QMouseEvent *event );

@@ -187,6 +187,7 @@ QgsFeatureRequest QgsRelation::getReferencedFeatureRequest( const QgsAttributes&
   {
     int referencedIdx = referencedLayer()->fields().indexFromName( fieldPair.referencedField() );
     int referencingIdx = referencingLayer()->fields().indexFromName( fieldPair.referencingField() );
+    Q_UNUSED( referencingIdx );
 
     QgsField referencedField = referencedLayer()->fields().at( referencedIdx );
 
