@@ -146,6 +146,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     QgsMessageBar* mMessageBar;
     QVariant mForeignKey;
     QgsFeature mFeature;
+    // Index of the referenced layer key
     int mFkeyFieldIdx;
     bool mAllowNull;
     QgsHighlight* mHighlight;
