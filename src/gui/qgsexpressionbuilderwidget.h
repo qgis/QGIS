@@ -271,9 +271,9 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
 
     /** Formats an expression preview result for display in the widget
      * by truncating the string
-     * @param previewString expression preview result to format
+     * @param value expression preview result to format
      */
-    QString formatPreviewString( const QString &previewString ) const;
+    QString formatPreviewString( const QVariant& value ) const;
 
     void loadExpressionContext();
 

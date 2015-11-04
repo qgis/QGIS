@@ -19,6 +19,8 @@
 #include "qgsmessageviewer.h"
 #include "qgsapplication.h"
 #include "qgspythonrunner.h"
+#include "qgsgeometry.h"
+#include "qgsfeature.h"
 
 #include <QSettings>
 #include <QMenu>
@@ -544,7 +546,7 @@ void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
       mExpressionContext.setFeature( mFeature );
       QVariant value = exp.evaluate( &mExpressionContext );
       if ( !exp.hasEvalError() )
-        lblPreview->setText( formatPreviewString( value.toString() ) );
+        lblPreview->setText( formatPreviewString( value ) );
     }
     else
     {
@@ -559,7 +561,7 @@ void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
     QVariant value = exp.evaluate( &mExpressionContext );
     if ( !exp.hasEvalError() )
     {
-      lblPreview->setText( formatPreviewString( value.toString() ) );
+      lblPreview->setText( formatPreviewString( value ) );
     }
   }
 
@@ -585,15 +587,35 @@ void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
   }
 }
 
-QString QgsExpressionBuilderWidget::formatPreviewString( const QString& previewString ) const
+QString QgsExpressionBuilderWidget::formatPreviewString( const QVariant& value ) const
 {
-  if ( previewString.length() > 63 )
+  if ( value.canConvert<QgsGeometry>() )
   {
-    return QString( tr( "%1..." ) ).arg( previewString.left( 60 ) );
+    //result is a geometry
+    QgsGeometry geom = value.value<QgsGeometry>();
+    if ( geom.isEmpty() )
+      return tr( "<i>&lt;empty geometry&gt;</i>" );
+    else
+      return tr( "<i>&lt;geometry: %1&gt;</i>" ).arg( QgsWKBTypes::displayString( geom.geometry()->wkbType() ) );
+  }
+  else if ( value.canConvert< QgsFeature >() )
+  {
+    //result is a feature
+    QgsFeature feat = value.value<QgsFeature>();
+    return tr( "<i>&lt;feature: %1&gt;</i>" ).arg( feat.id() );
   }
   else
   {
-    return previewString;
+    QString previewString = value.toString();
+
+    if ( previewString.length() > 63 )
+    {
+      return QString( tr( "%1..." ) ).arg( previewString.left( 60 ) );
+    }
+    else
+    {
+      return previewString;
+    }
   }
 }
 

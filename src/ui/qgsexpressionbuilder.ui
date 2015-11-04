@@ -111,14 +111,6 @@
                     <verstretch>0</verstretch>
                    </sizepolicy>
                   </property>
-                  <property name="font">
-                   <font>
-                    <weight>50</weight>
-                    <italic>true</italic>
-                    <bold>false</bold>
-                    <underline>false</underline>
-                   </font>
-                  </property>
                   <property name="toolTip">
                    <string>Output preview is generated &lt;br&gt; using the first feature from the layer.</string>
                   </property>
@@ -363,7 +355,7 @@
                </item>
               </layout>
              </widget>
-             <widget class="QWidget" name="">
+             <widget class="QWidget" name="layoutWidget_2">
               <layout class="QVBoxLayout" name="verticalLayout_2">
                <item>
                 <widget class="QTextEdit" name="txtHelpText">
