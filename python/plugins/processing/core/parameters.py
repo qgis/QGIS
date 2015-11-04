@@ -39,7 +39,7 @@ from processing.tools import dataobjects
 
 def getParameterFromString(s):
     tokens = s.split("|")
-    params = [t if unicode(t) != "None" else None for t in tokens[1:]]
+    params = [t if unicode(t) != unicode(None) else None for t in tokens[1:]]
     clazz = getattr(sys.modules[__name__], tokens[0])
     return clazz(*params)
 
@@ -484,7 +484,7 @@ class ParameterRange(Parameter):
             return False
 
     def getValueAsCommandLineParameter(self):
-        return '"' + unicode(self.value) + '"'
+        return '"' + unicode(self.value) + '"' if self.value is not None else unicode(None)
 
 
 class ParameterRaster(ParameterDataObject):
@@ -605,8 +605,9 @@ class ParameterString(Parameter):
         return True
 
     def getValueAsCommandLineParameter(self):
-        return '"' + unicode(self.value.replace(ParameterString.NEWLINE,
+        return ('"' + unicode(self.value.replace(ParameterString.NEWLINE,
                              ParameterString.ESCAPED_NEWLINE)) + '"'
+                             if self.value is not None else unicode(None))
 
 
 class ParameterTable(ParameterDataObject):
@@ -688,7 +689,7 @@ class ParameterTableField(Parameter):
         self.datatype = int(datatype)
 
     def getValueAsCommandLineParameter(self):
-        return '"' + unicode(self.value) + '"'
+        return '"' + unicode(self.value) + '"' if self.value is not None else unicode(None)
 
     def setValue(self, value):
         if value is None:
