@@ -194,12 +194,12 @@ QgsFeatureRequest QgsRelation::getReferencedFeatureRequest( const QgsAttributes&
     if ( referencedField.type() == QVariant::String )
     {
       // Use quotes
-      conditions << QString( "\"%1\" = '%2'" ).arg( fieldPair.referencedField(), attributes.at( referencedIdx ).toString() );
+      conditions << QString( "\"%1\" = '%2'" ).arg( fieldPair.referencedField(), attributes.at( referencingIdx ).toString() );
     }
     else
     {
       // No quotes
-      conditions << QString( "\"%1\" = %2" ).arg( fieldPair.referencedField(), attributes.at( referencedIdx ).toString() );
+      conditions << QString( "\"%1\" = %2" ).arg( fieldPair.referencedField(), attributes.at( referencingIdx ).toString() );
     }
   }
 
