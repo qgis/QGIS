@@ -360,7 +360,7 @@ void TestQgsLegendRenderer::testFilterByPolygon()
   mapSettings.setOutputSize( QSize( 400, 100 ) );
   mapSettings.setOutputDpi( 96 );
   QStringList ll;
-  foreach ( auto l, QgsMapLayerRegistry::instance()->mapLayers() )
+  foreach ( QgsMapLayer *l, QgsMapLayerRegistry::instance()->mapLayers() )
   {
     ll << l->id();
   }
@@ -395,7 +395,7 @@ void TestQgsLegendRenderer::testFilterByExpression()
   mapSettings.setOutputSize( QSize( 400, 100 ) );
   mapSettings.setOutputDpi( 96 );
   QStringList ll;
-  foreach ( auto l, QgsMapLayerRegistry::instance()->mapLayers() )
+  foreach ( QgsMapLayer *l, QgsMapLayerRegistry::instance()->mapLayers() )
   {
     ll << l->id();
   }
@@ -403,7 +403,7 @@ void TestQgsLegendRenderer::testFilterByExpression()
 
   // use an expression to only include the red point
   QgsLayerTreeUtils::setLegendFilterByExpression( *legendModel.rootGroup()->findLayer( mVL3->id() ), "test_attr=1" );
-  
+
   legendModel.setLegendFilterByMap( &mapSettings );
 
   QgsLegendSettings settings;
