@@ -348,8 +348,7 @@ void QgsFeatureListView::selectRow( const QModelIndex& index, bool anchor )
 
 void QgsFeatureListView::setFeatureSelectionManager( QgsIFeatureSelectionManager* featureSelectionManager )
 {
-  if ( mFeatureSelectionManager )
-    delete mFeatureSelectionManager;
+  delete mFeatureSelectionManager;
 
   mFeatureSelectionManager = featureSelectionManager;
 
