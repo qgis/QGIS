@@ -165,21 +165,28 @@ class QgsExpressionBuilderWidget : QWidget
     void updateFunctionFileList( const QString& path );
 
   public slots:
-    void currentChanged( const QModelIndex &index, const QModelIndex & );
-    void on_btnRun_pressed();
-    void on_btnNewFile_pressed();
-    void on_cmbFileNames_currentIndexChanged( int index );
-    void on_btnSaveFile_pressed();
-    void on_expressionTree_doubleClicked( const QModelIndex &index );
-    void on_txtExpressionString_textChanged();
-    void on_txtSearchEdit_textChanged();
-    void on_txtSearchEditValues_textChanged();
-    void on_lblPreview_linkActivated( const QString& link );
-    void on_mValuesListView_doubleClicked( const QModelIndex &index );
-    void operatorButtonClicked();
-    void showContextMenu( const QPoint & );
+
+    /**
+     * Load sample values into the sample value area
+     */
     void loadSampleValues();
+
+    /**
+     * Load all unique values from the set layer into the sample area
+     */
     void loadAllValues();
+
+    /**
+     * Auto save the current Python function code.
+     */
+    void autosave();
+
+    /**
+     * Enabled or disable auto saving. When enabled Python scripts will be auto saved
+     * when text changes.
+     * @param enabled True to enable auto saving.
+     */
+    void setAutoSave( bool enabled );
 
   signals:
     /** Emitted when the user changes the expression in the widget.
