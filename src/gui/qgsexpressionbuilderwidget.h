@@ -253,7 +253,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
      * when text changes.
      * @param enabled True to enable auto saving.
      */
-    void setAutoSave( bool enabled ) { mAutoSave = enabled; }
+    void setAutoSave( bool enabled );
 
   private slots:
     void showContextMenu( const QPoint & );
