@@ -186,7 +186,7 @@ class QgsExpressionBuilderWidget : QWidget
      * when text changes.
      * @param enabled True to enable auto saving.
      */
-    void setAutoSave( bool enabled ) { mAutoSave = enabled; }
+    void setAutoSave( bool enabled );
 
   signals:
     /** Emitted when the user changes the expression in the widget.
