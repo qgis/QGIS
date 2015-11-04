@@ -94,7 +94,7 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
 
     //! Update() overloading. Use it rather than update()
     //! @note added in 2.12
-    virtual void updateItem();
+    virtual void updateItem() override;
 
     //! When set to true, during an atlas rendering, it will filter out legend elements
     //! where features are outside the current atlas feature.

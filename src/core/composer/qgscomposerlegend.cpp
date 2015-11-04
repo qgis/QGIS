@@ -304,7 +304,7 @@ void QgsComposerLegend::updateLegend()
 void QgsComposerLegend::updateItem()
 {
   updateFilterByMap();
-  update();
+  QgsComposerItem::updateItem();
 }
 
 bool QgsComposerLegend::writeXML( QDomElement& elem, QDomDocument & doc ) const
