@@ -217,6 +217,11 @@ class CORE_EXPORT QgsSymbolV2
 
     QSet<QString> usedAttributes() const;
 
+    /** Returns whether the symbol utilises any data defined properties.
+     * @note added in QGIS 2.12
+     */
+    bool hasDataDefinedProperties() const;
+
     //! @note the layer will be NULL after stopRender
     void setLayer( const QgsVectorLayer* layer ) { mLayer = layer; }
     const QgsVectorLayer* layer() const { return mLayer; }
