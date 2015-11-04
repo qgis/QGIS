@@ -552,10 +552,15 @@ class ModelerParametersDialog(QDialog):
     def setParamNumberValue(self, alg, param, widget):
         idx = widget.findText(widget.currentText())
         if idx < 0:
-            s = widget.currentText()
-            try:
-                value = float(s)
-            except:
+            s = widget.currentText().strip()
+            if s:
+                try:
+                    value = float(s)
+                except:
+                    return False
+            elif param.optional:
+                value = None
+            else:
                 return False
         else:
             value = widget.itemData(widget.currentIndex())
@@ -565,14 +570,19 @@ class ModelerParametersDialog(QDialog):
     def setParamExtentValue(self, alg, param, widget):
         idx = widget.findText(widget.currentText())
         if idx < 0:
-            s = unicode(widget.currentText())
-            try:
-                tokens = s.split(',')
-                if len(tokens) != 4:
+            s = unicode(widget.currentText()).strip()
+            if s:
+                try:
+                    tokens = s.split(',')
+                    if len(tokens) != 4:
+                        return False
+                    for token in tokens:
+                        float(token)
+                except:
                     return False
-                for token in tokens:
-                    float(token)
-            except:
+            elif param.optional:
+                s = None
+            else:
                 return False
             alg.params[param.name] = [s]
         else:
@@ -607,13 +617,15 @@ class ModelerParametersDialog(QDialog):
             return True
         elif isinstance(param, ParameterCrs):
             authid = widget.getValue()
-            if authid is None:
-                alg.params[param.name] = None
-            else:
-                alg.params[param.name] = authid
+            if authid is None and not param.optional:
+                return False
+            alg.params[param.name] = authid
             return True
         elif isinstance(param, ParameterFixedTable):
-            alg.params[param.name] = ParameterFixedTable.tableToString(widget.table)
+            table = widget.table
+            if not bool(table) and not param.optional:
+                return False
+            alg.params[param.name] = ParameterFixedTable.tableToString(table)
             return True
         elif isinstance(param, ParameterTableField):
             return self.setParamTableFieldValue(alg, param, widget)
