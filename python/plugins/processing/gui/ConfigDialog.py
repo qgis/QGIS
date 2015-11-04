@@ -140,18 +140,14 @@ class ConfigDialog(BASE, WIDGET):
     def accept(self):
         for setting in self.items.keys():
             if isinstance(setting.value, bool):
-                setting.value = self.items[setting].checkState() == Qt.Checked
-            elif isinstance(setting.value, (float, int, long)):
-                value = unicode(self.items[setting].text())
-                try:
-                    value = float(value)
-                    setting.value = value
-                except ValueError:
-                    QMessageBox.critical(self, self.tr('Wrong value'),
-                                         self.tr('Wrong parameter value:\n%1') % value)
-                    return
+                setting.setValue(self.items[setting].checkState() == Qt.Checked)
             else:
-                setting.value = unicode(self.items[setting].text())
+                try:
+                    setting.setValue(unicode(self.items[setting].text()))
+                except ValueError, e:
+                    QMessageBox.warning(self, self.tr('Wrong value'),
+                                         self.tr('Wrong value for parameter "%s":\n\n%s' %(setting.description, unicode(e))))
+                    return
             setting.save()
         Processing.updateAlgsList()
 
