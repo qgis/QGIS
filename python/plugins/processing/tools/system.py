@@ -45,6 +45,12 @@ def userFolder():
 
     return unicode(QDir.toNativeSeparators(userDir))
 
+def defaultOutputFolder():
+    folder = os.path.join(os.path.dirname(QgsApplication.qgisUserDbFilePath()), "processing", "outputs")
+    if not QDir(folder).exists():
+        QDir().mkpath(folder)
+
+    return unicode(QDir.toNativeSeparators(folder))
 
 def isWindows():
     return os.name == 'nt'

@@ -29,13 +29,13 @@ import os
 
 from PyQt4.QtCore import QPyNullVariant, QCoreApplication, QSettings
 from PyQt4.QtGui import QIcon
-from processing.tools.system import tempFolder
+from processing.tools.system import defaultOutputFolder
 import processing.tools.dataobjects
 
 
 class ProcessingConfig:
 
-    OUTPUT_FOLDER = 'OUTPUT_FOLDER'
+    OUTPUT_FOLDER = 'OUTPUTS_FOLDER'
     RASTER_STYLE = 'RASTER_STYLE'
     VECTOR_POINT_STYLE = 'VECTOR_POINT_STYLE'
     VECTOR_LINE_STYLE = 'VECTOR_LINE_STYLE'
@@ -83,7 +83,7 @@ class ProcessingConfig:
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
             ProcessingConfig.OUTPUT_FOLDER,
-            ProcessingConfig.tr('Output folder'), tempFolder(),
+            ProcessingConfig.tr('Output folder'), defaultOutputFolder(),
             valuetype=Setting.FOLDER))
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
