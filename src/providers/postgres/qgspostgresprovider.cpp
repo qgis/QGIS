@@ -549,13 +549,35 @@ QString QgsPostgresUtils::whereClause( QgsFeatureId featureId, const QgsFields& 
 
 QString QgsPostgresUtils::whereClause( const QgsFeatureIds& featureIds, const QgsFields& fields, QgsPostgresConn* conn, QgsPostgresPrimaryKeyType pkType, const QList<int>& pkAttrs, QSharedPointer<QgsPostgresSharedData> sharedData )
 {
-  QStringList whereClauses;
-  Q_FOREACH ( const QgsFeatureId featureId, featureIds )
+  switch ( pkType )
   {
-    whereClauses << whereClause( featureId, fields, conn, pkType, pkAttrs, sharedData );
-  }
+    case pktOid:
+    case pktInt:
+    {
+      //simple primary key, so prefer to use an "IN (...)" query. These are much faster then multiple chained ...OR... clauses
+      QString delim;
+      QString expr = QString( "%1 IN (" ).arg(( pkType == pktOid ? "oid" : QgsPostgresConn::quotedIdentifier( fields[ pkAttrs[0] ].name() ) ) );
 
-  return whereClauses.isEmpty() ? "" : whereClauses.join( " OR " ).prepend( '(' ).append( ')' );
+      Q_FOREACH ( const QgsFeatureId featureId, featureIds )
+      {
+        expr += delim + QString::number( featureId );
+        delim = ',';
+      }
+      expr += ')';
+
+      return expr;
+    }
+    default:
+    {
+      //complex primary key, need to build up where string
+      QStringList whereClauses;
+      Q_FOREACH ( const QgsFeatureId featureId, featureIds )
+      {
+        whereClauses << whereClause( featureId, fields, conn, pkType, pkAttrs, sharedData );
+      }
+      return whereClauses.isEmpty() ? "" : whereClauses.join( " OR " ).prepend( '(' ).append( ')' );
+    }
+  }
 }
 
 QString QgsPostgresUtils::andWhereClauses( const QString& c1, const QString& c2 )
