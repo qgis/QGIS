@@ -106,14 +106,14 @@ QgsConditionalStyle::QgsConditionalStyle()
     : mValid( false )
     , mSymbol( 0 )
     , mBackColor( QColor( 0, 0, 0, 0 ) )
-    , mTextColor( Qt::black )
+    , mTextColor( QColor( 0, 0, 0, 0 ) )
 {}
 
 QgsConditionalStyle::QgsConditionalStyle( const QString& rule )
     : mValid( false )
     , mSymbol( 0 )
     , mBackColor( QColor( 0, 0, 0, 0 ) )
-    , mTextColor( Qt::black )
+    , mTextColor( QColor( 0, 0, 0, 0 ) )
 {
   setRule( rule );
 }
