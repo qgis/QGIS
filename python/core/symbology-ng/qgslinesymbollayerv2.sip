@@ -209,6 +209,8 @@ class QgsMarkerLineSymbolLayerV2 : QgsLineSymbolLayerV2
 
     QSet<QString> usedAttributes() const;
 
+    void setDataDefinedProperty( const QString& property, QgsDataDefined* dataDefined /Transfer/ );
+
   protected:
 
     void renderPolylineInterval( const QPolygonF& points, QgsSymbolV2RenderContext& context );

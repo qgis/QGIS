@@ -259,6 +259,9 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
 
     QSet<QString> usedAttributes() const override;
 
+    void setDataDefinedProperty( const QString& property, QgsDataDefined* dataDefined ) override;
+
+
   protected:
 
     void renderPolylineInterval( const QPolygonF& points, QgsSymbolV2RenderContext& context );

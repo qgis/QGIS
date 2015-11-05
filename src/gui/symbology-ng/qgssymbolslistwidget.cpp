@@ -73,7 +73,7 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* sty
   groupsCombo->addItem( "" );
   populateGroups();
   QStringList groups = style->smartgroupNames();
-  Q_FOREACH ( const QString& group, groups )
+  Q_FOREACH( const QString& group, groups )
   {
     groupsCombo->addItem( group, QVariant( "smart" ) );
   }
@@ -109,7 +109,9 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* sty
   connect( mWidthDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedLineWidth() ) );
 
   if ( mSymbol->type() == QgsSymbolV2::Marker && mLayer )
-    mSizeDDBtn->setAssistant( tr( "Size Assistant..." ), new QgsSizeScaleWidget( mLayer, static_cast<const QgsMarkerSymbolV2*>( mSymbol ) ) );
+    mSizeDDBtn->setAssistant( tr( "Size Assistant..." ), new QgsSizeScaleWidget( mLayer, mSymbol ) );
+  else if ( mSymbol->type() == QgsSymbolV2::Line && mLayer )
+    mWidthDDBtn->setAssistant( tr( "Width Assistant..." ), new QgsSizeScaleWidget( mLayer, mSymbol ) );
 
   // Live color updates are not undoable to child symbol layers
   btnColor->setAcceptLiveUpdates( false );
@@ -128,11 +130,11 @@ QgsSymbolsListWidget::~QgsSymbolsListWidget()
 void QgsSymbolsListWidget::setMapCanvas( QgsMapCanvas* canvas )
 {
   mMapCanvas = canvas;
-  Q_FOREACH ( QgsUnitSelectionWidget* unitWidget, findChildren<QgsUnitSelectionWidget*>() )
+  Q_FOREACH( QgsUnitSelectionWidget* unitWidget, findChildren<QgsUnitSelectionWidget*>() )
   {
     unitWidget->setMapCanvas( canvas );
   }
-  Q_FOREACH ( QgsDataDefinedButton* ddButton, findChildren<QgsDataDefinedButton*>() )
+  Q_FOREACH( QgsDataDefinedButton* ddButton, findChildren<QgsDataDefinedButton*>() )
   {
     if ( ddButton->assistant() )
       ddButton->assistant()->setMapCanvas( mMapCanvas );
@@ -427,7 +429,7 @@ void QgsSymbolsListWidget::updateSymbolInfo()
 {
   updateSymbolColor();
 
-  Q_FOREACH ( QgsDataDefinedButton* button, findChildren< QgsDataDefinedButton* >() )
+  Q_FOREACH( QgsDataDefinedButton* button, findChildren< QgsDataDefinedButton* >() )
   {
     button->registerGetExpressionContextCallback( &_getExpressionContext, this );
   }

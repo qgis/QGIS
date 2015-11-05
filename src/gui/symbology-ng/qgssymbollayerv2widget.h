@@ -112,6 +112,8 @@ class GUI_EXPORT QgsSimpleLineSymbolLayerV2Widget : public QgsSymbolLayerV2Widge
   public:
     QgsSimpleLineSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent = NULL );
 
+    ~QgsSimpleLineSymbolLayerV2Widget();
+
     static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) { return new QgsSimpleLineSymbolLayerV2Widget( vl ); }
 
     // from base class
@@ -135,6 +137,14 @@ class GUI_EXPORT QgsSimpleLineSymbolLayerV2Widget : public QgsSymbolLayerV2Widge
 
     //creates a new icon for the 'change pattern' button
     void updatePatternIcon();
+
+  private slots:
+
+    void updateAssistantSymbol();
+
+  private:
+
+    QgsLineSymbolV2* mAssistantPreviewSymbol;
 
 };
 

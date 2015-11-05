@@ -1502,6 +1502,15 @@ void QgsMarkerLineSymbolLayerV2::setWidth( double width )
   mMarker->setSize( width );
 }
 
+void QgsMarkerLineSymbolLayerV2::setDataDefinedProperty( const QString& property, QgsDataDefined* dataDefined )
+{
+  if ( property == QgsSymbolLayerV2::EXPR_WIDTH && mMarker && dataDefined )
+  {
+    mMarker->setDataDefinedSize( *dataDefined );
+  }
+  QgsLineSymbolLayerV2::setDataDefinedProperty( property, dataDefined );
+}
+
 double QgsMarkerLineSymbolLayerV2::width() const
 {
   return mMarker->size();

@@ -30,14 +30,14 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="0">
+     <item row="3" column="0">
       <widget class="QLabel" name="label_5">
        <property name="text">
         <string>Size from</string>
        </property>
       </widget>
      </item>
-     <item row="2" column="1">
+     <item row="3" column="1">
       <widget class="QgsDoubleSpinBox" name="minSizeSpinBox">
        <property name="decimals">
         <number>6</number>
@@ -53,14 +53,14 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="2">
+     <item row="3" column="2">
       <widget class="QLabel" name="label_6">
        <property name="text">
         <string>to</string>
        </property>
       </widget>
      </item>
-     <item row="2" column="3">
+     <item row="3" column="3">
       <widget class="QgsDoubleSpinBox" name="maxSizeSpinBox">
        <property name="decimals">
         <number>6</number>
@@ -73,14 +73,14 @@
        </property>
       </widget>
      </item>
-     <item row="3" column="0">
+     <item row="4" column="0">
       <widget class="QLabel" name="label_3">
        <property name="text">
         <string>Values from</string>
        </property>
       </widget>
      </item>
-     <item row="3" column="1">
+     <item row="4" column="1">
       <widget class="QgsDoubleSpinBox" name="minValueSpinBox">
        <property name="decimals">
         <number>6</number>
@@ -93,14 +93,14 @@
        </property>
       </widget>
      </item>
-     <item row="3" column="2">
+     <item row="4" column="2">
       <widget class="QLabel" name="label_4">
        <property name="text">
         <string>to</string>
        </property>
       </widget>
      </item>
-     <item row="3" column="3">
+     <item row="4" column="3">
       <widget class="QgsDoubleSpinBox" name="maxValueSpinBox">
        <property name="decimals">
         <number>6</number>
@@ -113,7 +113,7 @@
        </property>
       </widget>
      </item>
-     <item row="3" column="4">
+     <item row="4" column="4">
       <widget class="QToolButton" name="computeValuesButton">
        <property name="maximumSize">
         <size>
@@ -142,8 +142,18 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="1" colspan="3">
+     <item row="1" column="1" colspan="2">
       <widget class="QComboBox" name="scaleMethodComboBox"/>
+     </item>
+     <item row="1" column="3">
+      <widget class="QgsDoubleSpinBox" name="exponentSpinBox">
+       <property name="minimum">
+        <double>0.000000000000000</double>
+       </property>
+       <property name="value">
+        <double>0.570000000000000</double>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
