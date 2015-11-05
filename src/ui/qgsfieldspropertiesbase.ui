@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>613</width>
+    <width>965</width>
     <height>634</height>
    </rect>
   </property>
@@ -86,7 +86,9 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
       <widget class="QLineEdit" name="leEditFormInit">
        <property name="toolTip">
         <string>QGIS forms can have a Python function that is called when the form is opened.
-Use this function to add extra logic to your forms.
+Use this function to add extra logic to your forms. You can either provide the python 
+code directly in this dialog or run the code from an external file (that must live on 
+PYTHONPATH, .qgis/python, or inside the project folder).
 
 An example is (in module MyForms.py):
 
@@ -94,9 +96,11 @@ An example is (in module MyForms.py):
 	geom = feature.geometry()
 	control = dialog.findChild(QWidget,&quot;MyLineEdit&quot;)
 
-Reference in Python Init Function like so: MyForms.open
+Reference in Python Init Function like so: &quot;MyForms.open&quot; or just &quot;open&quot; if provided
+directly in this dialog. 
 
-MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.</string>
+
+</string>
        </property>
       </widget>
      </item>
@@ -113,6 +117,16 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
        </property>
       </spacer>
      </item>
+     <item>
+      <widget class="QCheckBox" name="leEditFormInitUseCode">
+       <property name="toolTip">
+        <string>Check this box to provide python init function code here instead of using an external file.</string>
+       </property>
+       <property name="text">
+        <string>Use provided code</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
    <item row="2" column="0" colspan="7">
@@ -127,10 +141,7 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
-      <layout class="QGridLayout" name="gridLayout">
-       <property name="margin">
-        <number>0</number>
-       </property>
+      <layout class="QGridLayout" name="gridLayout_4">
        <item row="0" column="0">
         <widget class="QSplitter" name="splitter">
          <property name="orientation">
@@ -244,6 +255,19 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
           </property>
           <layout class="QGridLayout" name="mRelationsFrameLayout"/>
          </widget>
+         <widget class="QgsCollapsibleGroupBox" name="mPythonInitCodeGroupBox">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="title">
+           <string>Python init code</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout">
+           <item row="0" column="0">
+            <widget class="QgsCodeEditorPython" name="leEditFormInitCode" native="true"/>
+           </item>
+          </layout>
+         </widget>
         </widget>
        </item>
       </layout>
@@ -254,7 +278,16 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
       </property>
       <widget class="QWidget" name="page">
        <layout class="QGridLayout" name="gridLayout_2">
-        <property name="margin">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
          <number>0</number>
         </property>
         <item row="0" column="1">
@@ -295,10 +328,19 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
       </widget>
       <widget class="QWidget" name="page_2">
        <layout class="QGridLayout" name="gridLayout_5">
-        <property name="horizontalSpacing">
+        <property name="leftMargin">
          <number>0</number>
         </property>
-        <property name="margin">
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <property name="horizontalSpacing">
          <number>0</number>
         </property>
         <item row="0" column="0">
@@ -319,7 +361,16 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
            <property name="spacing">
             <number>6</number>
            </property>
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
@@ -415,7 +466,16 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
            <bool>true</bool>
           </property>
           <layout class="QGridLayout" name="mDesignerListLayout">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
           </layout>
@@ -487,6 +547,12 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsCodeEditorPython</class>
+   <extends>QWidget</extends>
+   <header>qgscodeeditorpython.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

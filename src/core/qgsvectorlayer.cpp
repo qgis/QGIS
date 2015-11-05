@@ -138,6 +138,7 @@ QgsVectorLayer::QgsVectorLayer( const QString& vectorLayerPath,
     , mLayerTransparency( 0 )
     , mVertexMarkerOnlyForSelection( false )
     , mEditorLayout( GeneratedLayout )
+    , mEditFormInitUseCode( false )
     , mFeatureFormSuppress( SuppressDefault )
     , mCache( new QgsGeometryCache() )
     , mEditBuffer( 0 )
@@ -149,6 +150,7 @@ QgsVectorLayer::QgsVectorLayer( const QString& vectorLayerPath,
     , mLazyExtent( true )
     , mSymbolFeatureCounted( false )
     , mEditCommandActive( false )
+
 {
   mActions = new QgsAttributeAction( this );
   mConditionalStyles = new QgsConditionalLayerStyles();
@@ -1632,6 +1634,7 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
   return writeSymbology( layer_node, document, errorMsg );
 } // bool QgsVectorLayer::writeXml
 
+
 bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage )
 {
   emit readCustomSymbology( node.toElement(), errorMessage );
@@ -1778,6 +1781,18 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
   if ( !editFormInitNode.isNull() )
   {
     mEditFormInit = editFormInitNode.toElement().text();
+  }
+
+  QDomNode editFormInitCodeNode = node.namedItem( "editforminitcode" );
+  if ( !editFormInitCodeNode.isNull() )
+  {
+    mEditFormInitCode = editFormInitCodeNode.toElement().text();
+  }
+
+  QDomNode editFormInitUseCodeNode = node.namedItem( "editforminitusecode" );
+  if ( !editFormInitCodeNode.isNull() )
+  {
+    mEditFormInitUseCode = ( bool ) editFormInitUseCodeNode.toElement().text().toInt();
   }
 
   QDomNode fFSuppNode = node.namedItem( "featformsuppress" );
@@ -2041,6 +2056,14 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
   if ( !mEditFormInit.isEmpty() )
     efiField.appendChild( doc.createTextNode( mEditFormInit ) );
   node.appendChild( efiField );
+
+  QDomElement efiucField  = doc.createElement( "editforminitusecode" );
+  efiucField.appendChild( doc.createTextNode( mEditFormInitUseCode ? "1" : "0" ) );
+  node.appendChild( efiucField );
+
+  QDomElement eficField  = doc.createElement( "editforminitcode" );
+  eficField.appendChild( doc.createCDATASection( mEditFormInitCode ) );
+  node.appendChild( eficField );
 
   QDomElement fFSuppElem  = doc.createElement( "featformsuppress" );
   QDomText fFSuppText = doc.createTextNode( QString::number( featureFormSuppress() ) );
@@ -2825,9 +2848,29 @@ QString QgsVectorLayer::editFormInit()
   return mEditFormInit;
 }
 
+QString QgsVectorLayer::editFormInitCode()
+{
+  return mEditFormInitCode;
+}
+
+bool QgsVectorLayer::editFormInitUseCode()
+{
+  return mEditFormInitUseCode;
+}
+
 void QgsVectorLayer::setEditFormInit( const QString& function )
 {
   mEditFormInit = function;
+}
+
+void QgsVectorLayer::setEditFormInitUseCode( const bool useCode )
+{
+  mEditFormInitUseCode = useCode;
+}
+
+void QgsVectorLayer::setEditFormInitCode( const QString& code )
+{
+  mEditFormInitCode = code;
 }
 
 QMap< QString, QVariant > QgsVectorLayer::valueMap( int idx )

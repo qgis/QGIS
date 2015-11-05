@@ -145,6 +145,11 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
      */
     void updateVariableEditor();
 
+    /**
+     * @brief updates the FieldsPropertiesDialog when syncing the layer properties
+     */
+    void updateFieldsPropertiesDialog();
+
   protected:
 
     void saveStyleAs( StyleType styleType );

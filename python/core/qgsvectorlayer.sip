@@ -1095,6 +1095,18 @@ class QgsVectorLayer : QgsMapLayer
     /** Set python function for edit form initialization */
     void setEditFormInit( const QString& function );
 
+    /** Get python code for edit form initialization */
+    QString editFormInitCode();
+
+    /** Reeturn if python code has to be loaded for edit form initialization */
+    bool editFormInitUseCode();
+
+    /** Set python code for edit form initialization */
+    void setEditFormInitCode( const QString& code );
+
+    /** Set python code for edit form initialization */
+    void setEditFormInitUseCode( const bool useCode );
+
     /**
      * Access value map
      * @deprecated Use editorWidgetV2Config() instead

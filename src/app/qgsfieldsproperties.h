@@ -160,6 +160,15 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
     void loadAttributeEditorTree();
     QTreeWidgetItem *loadAttributeEditorTreeItem( QgsAttributeEditorElement* const widgetDef, QTreeWidgetItem* parent );
 
+    /**
+     * @brief setEditFormInit set the private ui fields
+     * @param editForm
+     * @param editFormInit
+     * @param editFormInitCode
+     * @param editFormInitUseCode
+     */
+    void setEditFormInit( const QString &editForm, const QString &editFormInit, const QString &editFormInitCode, const bool editFormInitUseCode );
+
   signals:
     void toggleEditing();
 
@@ -170,7 +179,7 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
     void onAttributeSelectionChanged();
     void on_pbnSelectEditForm_clicked();
     void on_mEditorLayoutComboBox_currentIndexChanged( int index );
-
+    void on_leEditFormInitUseCodeToggled( bool checked );
     void attributeAdded( int idx );
     void attributeDeleted( int idx );
     void attributeTypeDialog();
