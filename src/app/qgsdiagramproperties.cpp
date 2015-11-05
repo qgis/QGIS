@@ -31,6 +31,11 @@
 #include "qgsfeatureiterator.h"
 #include "qgscolordialog.h"
 #include "qgisgui.h"
+#include "qgssymbolv2.h"
+#include "qgssizescalewidget.h"
+#include "qgsscaleexpression.h"
+#include "qgsdatadefined.h"
+#include "qgsmarkersymbollayerv2.h"
 
 #include <QList>
 #include <QMessageBox>
@@ -51,6 +56,7 @@ static QgsExpressionContext _getExpressionContext( const void* context )
   return expContext;
 }
 
+
 QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* parent )
     : QWidget( parent )
 {
@@ -68,8 +74,17 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
   connect( mEnableDiagramsCheckBox, SIGNAL( toggled( bool ) ), mDiagramTypeFrame, SLOT( setEnabled( bool ) ) );
   connect( mEnableDiagramsCheckBox, SIGNAL( toggled( bool ) ), mDiagramFrame, SLOT( setEnabled( bool ) ) );
 
+  QgsStringMap properties;
+  properties.insert( "name", "circle" );
+  properties.insert( "size", "15.0" );
+  properties.insert( "color", "0,0,0,255" );
+  mAssistantPreviewSymbol.reset( QgsMarkerSymbolV2::createSimple( properties ) );
+
   mScaleRangeWidget->setMapCanvas( QgisApp::instance()->mapCanvas() );
-  mSizeFieldExpressionWidget->registerGetExpressionContextCallback( &_getExpressionContext, mLayer );
+  mSizeDDBtn->init( mLayer );
+  mSizeDDBtn->registerGetExpressionContextCallback( _getExpressionContext, mLayer );
+  mSizeDDBtn->setAssistant( tr( "Size Assistant..." ), new QgsSizeScaleWidget( mLayer, mAssistantPreviewSymbol.data() ) );
+  mSizeDDBtn->registerEnabledWidget(mSpinSize);
 
   mBackgroundColorButton->setColorDialogTitle( tr( "Select background color" ) );
   mBackgroundColorButton->setAllowAlpha( true );
@@ -82,10 +97,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
   mDiagramPenColorButton->setShowNoColor( true );
   mDiagramPenColorButton->setNoColorString( tr( "Transparent outline" ) );
 
-  mMaxValueSpinBox->setShowClearButton( false );
-
-  mDiagramUnitComboBox->insertItem( 0, tr( "mm" ), QgsDiagramSettings::MM );
-  mDiagramUnitComboBox->insertItem( 1, tr( "Map units" ), QgsDiagramSettings::MapUnits );
+  mSizeUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit );
 
   QGis::GeometryType layerType = layer->geometryType();
   if ( layerType == QGis::UnknownGeometry || layerType == QGis::NoGeometry )
@@ -134,9 +146,6 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
   mLabelPlacementComboBox->addItem( tr( "Height" ), QgsDiagramSettings::Height );
   mLabelPlacementComboBox->addItem( tr( "x-height" ), QgsDiagramSettings::XHeight );
 
-  mScaleDependencyComboBox->addItem( tr( "Area" ), true );
-  mScaleDependencyComboBox->addItem( tr( "Diameter" ), false );
-
   mDataDefinedXComboBox->addItem( tr( "None" ), -1 );
   mDataDefinedYComboBox->addItem( tr( "None" ), -1 );
 
@@ -163,14 +172,6 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
   mDiagramOptionsSplitter->restoreState( settings.value( QString( "/Windows/Diagrams/OptionsSplitState" ) ).toByteArray() );
   mDiagramOptionsListWidget->setCurrentRow( settings.value( QString( "/Windows/Diagrams/Tab" ), 0 ).toInt() );
 
-  // field combo and expression button
-  mSizeFieldExpressionWidget->setLayer( mLayer );
-  QgsDistanceArea myDa;
-  myDa.setSourceCrs( mLayer->crs().srsid() );
-  myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapSettings().hasCrsTransformEnabled() );
-  myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
-  mSizeFieldExpressionWidget->setGeomCalculator( myDa );
-
   //insert all attributes into the combo boxes
   const QgsFields& layerFields = layer->fields();
   for ( int idx = 0; idx < layerFields.count(); ++idx )
@@ -191,14 +192,9 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
     mEnableDiagramsCheckBox->setChecked( false );
     mDiagramTypeFrame->setEnabled( false );
     mDiagramFrame->setEnabled( false );
-    mFixedSizeRadio->setChecked( true );
-    mDiagramUnitComboBox->setCurrentIndex( mDiagramUnitComboBox->findText( tr( "mm" ) ) );
+    mSizeUnitWidget->setUnit( QgsSymbolV2::MM );
     mLabelPlacementComboBox->setCurrentIndex( mLabelPlacementComboBox->findText( tr( "x-height" ) ) );
-    mDiagramSizeSpinBox->setEnabled( true );
-    mDiagramSizeSpinBox->setValue( 15 );
-    mLinearScaleFrame->setEnabled( false );
-    mIncreaseMinimumSizeSpinBox->setEnabled( false );
-    mIncreaseMinimumSizeLabel->setEnabled( false );
+    mSpinSize->setValue( 15 );
     mBarWidthSpinBox->setValue( 5 );
     mScaleVisibilityGroupBox->setChecked( layer->hasScaleBasedVisibility() );
     mScaleRangeWidget->setScaleRange( 1.0 / layer->maximumScale(), 1.0 / layer->minimumScale() ); // caution: layer uses scale denoms, widget uses true scales
@@ -232,18 +228,6 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
   }
   else // already a diagram renderer present
   {
-    //single category renderer or interpolated one?
-    if ( dr->rendererName() == "SingleCategory" )
-    {
-      mFixedSizeRadio->setChecked( true );
-    }
-    else
-    {
-      mAttributeBasedScalingRadio->setChecked( true );
-    }
-    mDiagramSizeSpinBox->setEnabled( mFixedSizeRadio->isChecked() );
-    mLinearScaleFrame->setEnabled( mAttributeBasedScalingRadio->isChecked() );
-
     //assume single category or linearly interpolated diagram renderer for now
     QList<QgsDiagramSettings> settingList = dr->diagramSettings();
     if ( settingList.size() > 0 )
@@ -258,19 +242,14 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
       mTransparencySlider->setValue( mTransparencySpinBox->value() );
       mDiagramPenColorButton->setColor( settingList.at( 0 ).penColor );
       mPenWidthSpinBox->setValue( settingList.at( 0 ).penWidth );
-      mDiagramSizeSpinBox->setValue(( size.width() + size.height() ) / 2.0 );
+      mSpinSize->setValue(( size.width() + size.height() ) / 2.0 );
       // caution: layer uses scale denoms, widget uses true scales
       mScaleRangeWidget->setScaleRange( 1.0 / ( settingList.at( 0 ).maxScaleDenominator > 0 ? settingList.at( 0 ).maxScaleDenominator : layer->maximumScale() ),
                                         1.0 / ( settingList.at( 0 ).minScaleDenominator > 0 ? settingList.at( 0 ).minScaleDenominator : layer->minimumScale() ) );
       mScaleVisibilityGroupBox->setChecked( settingList.at( 0 ).scaleBasedVisibility );
-      if ( settingList.at( 0 ).sizeType == QgsDiagramSettings::MM )
-      {
-        mDiagramUnitComboBox->setCurrentIndex( 0 );
-      }
-      else
-      {
-        mDiagramUnitComboBox->setCurrentIndex( 1 );
-      }
+      mSizeUnitWidget->setUnit( settingList.at( 0 ).sizeType == QgsDiagramSettings::MM
+                                ? QgsSymbolV2::MM
+                                : QgsSymbolV2::MapUnit );
 
       if ( settingList.at( 0 ).labelPlacementMethod == QgsDiagramSettings::Height )
       {
@@ -308,21 +287,6 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
 
       mBarWidthSpinBox->setValue( settingList.at( 0 ).barWidth );
 
-      mIncreaseSmallDiagramsCheck->setChecked( settingList.at( 0 ).minimumSize != 0 );
-      mIncreaseMinimumSizeSpinBox->setEnabled( mIncreaseSmallDiagramsCheck->isChecked() );
-      mIncreaseMinimumSizeLabel->setEnabled( mIncreaseSmallDiagramsCheck->isChecked() );
-
-      mIncreaseMinimumSizeSpinBox->setValue( settingList.at( 0 ).minimumSize );
-
-      if ( settingList.at( 0 ).scaleByArea )
-      {
-        mScaleDependencyComboBox->setCurrentIndex( 0 );
-      }
-      else
-      {
-        mScaleDependencyComboBox->setCurrentIndex( 1 );
-      }
-
       QList< QColor > categoryColors = settingList.at( 0 ).categoryColors;
       QList< QString > categoryAttributes = settingList.at( 0 ).categoryAttributes;
       QList< QString > categoryLabels = settingList.at( 0 ).categoryLabels;
@@ -348,18 +312,22 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
       const QgsLinearlyInterpolatedDiagramRenderer* lidr = dynamic_cast<const QgsLinearlyInterpolatedDiagramRenderer*>( dr );
       if ( lidr )
       {
-        mDiagramSizeSpinBox->setEnabled( false );
-        mLinearScaleFrame->setEnabled( true );
-        mMaxValueSpinBox->setValue( lidr->upperValue() );
-        mSizeSpinBox->setValue(( lidr->upperSize().width() + lidr->upperSize().height() ) / 2 );
-        if ( lidr->classificationAttributeIsExpression() )
-        {
-          mSizeFieldExpressionWidget->setField( lidr->classificationAttributeExpression() );
-        }
-        else
-        {
-          mSizeFieldExpressionWidget->setField( mLayer->fields().at( lidr->classificationAttribute() ).name() );
-        }
+        const QgsScaleExpression scaleExpr( 
+          settingList.at( 0 ).scaleByArea 
+            ? QgsScaleExpression::Area
+            : QgsScaleExpression::Linear,
+          lidr->classificationAttributeIsExpression()
+            ? lidr->classificationAttributeExpression()
+            : mLayer->fields().at( lidr->classificationAttribute() ).name(),
+          0,
+          lidr->upperValue(),
+          settingList.at( 0 ).minimumSize,
+          ( lidr->upperSize().width() + lidr->upperSize().height() ) / 2
+          );
+        const QgsDataDefined ddSize( &scaleExpr );
+        mSizeDDBtn->setActive( true ); // because init won't disable mSpinSize
+        mSizeDDBtn->init( mLayer, &ddSize );
+        mAssistantPreviewSymbol->setDataDefinedSize( ddSize );
       }
     }
 
@@ -418,12 +386,15 @@ void QgsDiagramProperties::on_mDiagramTypeComboBox_currentIndexChanged( int inde
 {
   QString diagramType = mDiagramTypeComboBox->itemData( index ).toString();
 
+  QgsDataDefined ddSize( mAssistantPreviewSymbol->dataDefinedSize() );
+
   if ( DIAGRAM_NAME_TEXT == diagramType )
   {
     mTextOptionsFrame->show();
     mBackgroundColorLabel->show();
     mBackgroundColorButton->show();
     mDiagramFontButton->show();
+    static_cast<QgsSimpleMarkerSymbolLayerV2*>( mAssistantPreviewSymbol->symbolLayer(0) )->setName("square");
   }
   else
   {
@@ -438,47 +409,30 @@ void QgsDiagramProperties::on_mDiagramTypeComboBox_currentIndexChanged( int inde
     mBarWidthLabel->show();
     mBarWidthSpinBox->show();
     mBarOptionsFrame->show();
-    mAttributeBasedScalingRadio->setChecked( true );
-    mFixedSizeRadio->setEnabled( false );
-    mDiagramSizeSpinBox->setEnabled( false );
-    mLinearlyScalingLabel->setText( tr( "Bar length: Scale linearly, so that the following value matches the specified bar length:" ) );
     mSizeLabel->setText( tr( "Bar length" ) );
-    mFrameIncreaseSize->setVisible( false );
+    static_cast<QgsSimpleMarkerSymbolLayerV2*>( mAssistantPreviewSymbol->symbolLayer(0) )->setName("square");
   }
   else
   {
     mBarWidthLabel->hide();
     mBarWidthSpinBox->hide();
     mBarOptionsFrame->hide();
-    mLinearlyScalingLabel->setText( tr( "Scale linearly between 0 and the following attribute value / diagram size:" ) );
     mSizeLabel->setText( tr( "Size" ) );
-    mAttributeBasedScalingRadio->setEnabled( true );
-    mFixedSizeRadio->setEnabled( true );
-    mDiagramSizeSpinBox->setEnabled( mFixedSizeRadio->isChecked() );
-    mFrameIncreaseSize->setVisible( true );
-  }
-
-  if ( DIAGRAM_NAME_TEXT == diagramType || DIAGRAM_NAME_PIE == diagramType )
-  {
-    mScaleDependencyComboBox->show();
-    mScaleDependencyLabel->show();
-  }
-  else
-  {
-    mScaleDependencyComboBox->hide();
-    mScaleDependencyLabel->hide();
   }
 
   if ( DIAGRAM_NAME_PIE == diagramType )
   {
     mAngleOffsetComboBox->show();
     mAngleOffsetLabel->show();
+    static_cast<QgsSimpleMarkerSymbolLayerV2*>( mAssistantPreviewSymbol->symbolLayer(0) )->setName("circle");
   }
   else
   {
     mAngleOffsetComboBox->hide();
     mAngleOffsetLabel->hide();
   }
+  
+  mAssistantPreviewSymbol->setDataDefinedSize( ddSize );
 }
 
 QString QgsDiagramProperties::guessLegendText( const QString& expression )
@@ -528,49 +482,6 @@ void QgsDiagramProperties::on_mRemoveCategoryPushButton_clicked()
   {
     delete attributeItem;
   }
-}
-
-void QgsDiagramProperties::on_mFindMaximumValueButton_clicked()
-{
-  if ( !mLayer )
-    return;
-
-  float maxValue = 0.0;
-
-  bool isExpression;
-  QString sizeFieldNameOrExp = mSizeFieldExpressionWidget->currentField( &isExpression );
-  if ( isExpression )
-  {
-    QgsExpression exp( sizeFieldNameOrExp );
-    QgsExpressionContext context;
-    context << QgsExpressionContextUtils::globalScope()
-    << QgsExpressionContextUtils::projectScope()
-    << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() )
-    << QgsExpressionContextUtils::layerScope( mLayer );
-
-    exp.prepare( &context );
-    if ( !exp.hasEvalError() )
-    {
-      QgsFeature feature;
-      QgsFeatureIterator features = mLayer->getFeatures();
-      while ( features.nextFeature( *&feature ) )
-      {
-        context.setFeature( feature );
-        maxValue = qMax( maxValue, exp.evaluate( &context ).toFloat() );
-      }
-    }
-    else
-    {
-      QgsDebugMsgLevel( "Prepare error:" + exp.evalErrorString(), 4 );
-    }
-  }
-  else
-  {
-    int attributeNumber = mLayer->fields().fieldNameIndex( sizeFieldNameOrExp );
-    maxValue = mLayer->maximumValue( attributeNumber ).toFloat();
-  }
-
-  mMaxValueSpinBox->setValue( maxValue );
 }
 
 void QgsDiagramProperties::on_mDiagramFontButton_clicked()
@@ -698,19 +609,11 @@ void QgsDiagramProperties::apply()
   ds.categoryColors = categoryColors;
   ds.categoryAttributes = categoryAttributes;
   ds.categoryLabels = categoryLabels;
-  ds.size = QSizeF( mDiagramSizeSpinBox->value(), mDiagramSizeSpinBox->value() );
-  ds.sizeType = static_cast<QgsDiagramSettings::SizeType>( mDiagramUnitComboBox->itemData( mDiagramUnitComboBox->currentIndex() ).toInt() );
+  ds.size = QSizeF( mSpinSize->value(), mSpinSize->value() );
+  ds.sizeType = static_cast<QgsDiagramSettings::SizeType>( mSizeUnitWidget->getUnit() );
   ds.labelPlacementMethod = static_cast<QgsDiagramSettings::LabelPlacementMethod>( mLabelPlacementComboBox->itemData( mLabelPlacementComboBox->currentIndex() ).toInt() );
-  ds.scaleByArea = mScaleDependencyComboBox->itemData( mScaleDependencyComboBox->currentIndex() ).toBool();
-
-  if ( mIncreaseSmallDiagramsCheck->isChecked() )
-  {
-    ds.minimumSize = mIncreaseMinimumSizeSpinBox->value();
-  }
-  else
-  {
-    ds.minimumSize = 0;
-  }
+  ds.scaleByArea = false;
+  ds.minimumSize = 0;
 
   ds.backgroundColor = mBackgroundColorButton->color();
   ds.penColor = mDiagramPenColorButton->color();
@@ -728,7 +631,7 @@ void QgsDiagramProperties::apply()
 
   ds.barWidth = mBarWidthSpinBox->value();
 
-  if ( mFixedSizeRadio->isChecked() )
+  if ( !mSizeDDBtn->isActive() )
   {
     QgsSingleCategoryDiagramRenderer* dr = new QgsSingleCategoryDiagramRenderer();
     dr->setDiagram( diagram );
@@ -740,21 +643,15 @@ void QgsDiagramProperties::apply()
     QgsLinearlyInterpolatedDiagramRenderer* dr = new QgsLinearlyInterpolatedDiagramRenderer();
     dr->setLowerValue( 0.0 );
     dr->setLowerSize( QSizeF( 0.0, 0.0 ) );
-    dr->setUpperValue( mMaxValueSpinBox->value() );
-    dr->setUpperSize( QSizeF( mSizeSpinBox->value(), mSizeSpinBox->value() ) );
+    // scaling in done within the expression
+    // no more need for those settings
+    // they are kept for API compatibility
+    const double ridiculouslyBigSizeToAvoidScaling = 1e12;
+    dr->setUpperValue( ridiculouslyBigSizeToAvoidScaling );
+    dr->setUpperSize( QSizeF( ridiculouslyBigSizeToAvoidScaling, ridiculouslyBigSizeToAvoidScaling ) );
 
-    bool isExpression;
-    QString sizeFieldNameOrExp = mSizeFieldExpressionWidget->currentField( &isExpression );
-    dr->setClassificationAttributeIsExpression( isExpression );
-    if ( isExpression )
-    {
-      dr->setClassificationAttributeExpression( sizeFieldNameOrExp );
-    }
-    else
-    {
-      int attributeNumber = mLayer->fields().fieldNameIndex( sizeFieldNameOrExp );
-      dr->setClassificationAttribute( attributeNumber );
-    }
+    dr->setClassificationAttributeIsExpression( true );
+    dr->setClassificationAttributeExpression( mSizeDDBtn->currentDataDefined().expressionOrField() );
     dr->setDiagram( diagram );
     dr->setDiagramSettings( ds );
     mLayer->setDiagramRenderer( dr );
