@@ -1982,9 +1982,9 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
     req.setFlags( QgsFeatureRequest::NoGeometry );
   }
   req.setSubsetOfAttributes( allAttr );
+  if ( onlySelected )
+    req.setFilterFids( layer->selectedFeaturesIds() );
   QgsFeatureIterator fit = layer->getFeatures( req );
-
-  const QgsFeatureIds& ids = layer->selectedFeaturesIds();
 
   //create symbol table if needed
   if ( writer->symbologyExport() != NoSymbology )
@@ -2027,9 +2027,6 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
   // write all features
   while ( fit.nextFeature( fet ) )
   {
-    if ( onlySelected && !ids.contains( fet.id() ) )
-      continue;
-
     if ( shallTransform )
     {
       try
