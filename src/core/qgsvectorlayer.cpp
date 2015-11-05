@@ -619,17 +619,16 @@ QgsRectangle QgsVectorLayer::boundingBoxOfSelected()
   QgsFeature fet;
   if ( mDataProvider->capabilities() & QgsVectorDataProvider::SelectAtId )
   {
-    Q_FOREACH ( QgsFeatureId fid, mSelectedFeatureIds )
+    QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
+                                          .setFilterFids( mSelectedFeatureIds )
+                                          .setSubsetOfAttributes( QgsAttributeList() ) );
+
+    while ( fit.nextFeature( fet ) )
     {
-      if ( getFeatures( QgsFeatureRequest()
-                        .setFilterFid( fid )
-                        .setSubsetOfAttributes( QgsAttributeList() ) )
-           .nextFeature( fet ) &&
-           fet.constGeometry() )
-      {
-        r = fet.constGeometry()->boundingBox();
-        retval.combineExtentWith( &r );
-      }
+      if ( !fet.constGeometry() || fet.constGeometry()->isEmpty() )
+        continue;
+      r = fet.constGeometry()->boundingBox();
+      retval.combineExtentWith( &r );
     }
   }
   else
