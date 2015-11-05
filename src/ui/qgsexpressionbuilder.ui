@@ -319,7 +319,7 @@
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
              </property>
-             <widget class="QWidget" name="layoutWidget">
+             <widget class="QWidget" name="layoutWidget1">
               <layout class="QVBoxLayout" name="verticalLayout_4">
                <item>
                 <widget class="QgsFilterLineEdit" name="txtSearchEdit">
@@ -355,7 +355,7 @@
                </item>
               </layout>
              </widget>
-             <widget class="QWidget" name="layoutWidget">
+             <widget class="QWidget" name="layoutWidget2">
               <layout class="QVBoxLayout" name="verticalLayout_2">
                <item>
                 <widget class="QTextEdit" name="txtHelpText">
@@ -478,7 +478,7 @@
          <property name="childrenCollapsible">
           <bool>false</bool>
          </property>
-         <widget class="QWidget" name="layoutWidget">
+         <widget class="QWidget" name="layoutWidget3">
           <layout class="QVBoxLayout" name="verticalLayout_5">
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_6">
