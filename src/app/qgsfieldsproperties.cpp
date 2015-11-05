@@ -122,7 +122,7 @@ QgsFieldsProperties::QgsFieldsProperties( QgsVectorLayer *layer, QWidget* parent
   QString code( layer->editFormInitCode() );
   if ( code.isEmpty( ) )
   {
-    code.append( tr( "\"\"\"\n"
+    code.append( tr( "# -*- coding: utf-8 -*-\n\"\"\"\n"
                      "QGIS forms can have a Python function that is called when the form is\n"
                      "opened.\n"
                      "\n"
