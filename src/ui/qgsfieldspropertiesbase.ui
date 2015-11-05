@@ -86,7 +86,9 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
       <widget class="QLineEdit" name="leEditFormInit">
        <property name="toolTip">
         <string>QGIS forms can have a Python function that is called when the form is opened.
-Use this function to add extra logic to your forms.
+Use this function to add extra logic to your forms. You can either provide the python 
+code directly in this dialog or run the code from an external file (that must live on 
+PYTHONPATH, .qgis/python, or inside the project folder).
 
 An example is (in module MyForms.py):
 
@@ -94,9 +96,11 @@ An example is (in module MyForms.py):
 	geom = feature.geometry()
 	control = dialog.findChild(QWidget,&quot;MyLineEdit&quot;)
 
-Reference in Python Init Function like so: MyForms.open
+Reference in Python Init Function like so: &quot;MyForms.open&quot; or just &quot;open&quot; if provided
+directly in this dialog. 
 
-MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.</string>
+
+</string>
        </property>
       </widget>
      </item>
