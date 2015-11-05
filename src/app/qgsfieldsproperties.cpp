@@ -132,9 +132,10 @@ QgsFieldsProperties::QgsFieldsProperties( QgsVectorLayer *layer, QWidget* parent
                      "field.\n"
                      "An example follows:\n"
                      "\"\"\"\n"
+                     "from PyQt4.QtGui import QWidget\n\n"
                      "def my_form_open(dialog, layer, feature):\n"
-                     "    geom = feature.geometry()\n"
-                     "    control = dialog.findChild(QWidget, \"MyLineEdit\")\n" ) );
+                     "\tgeom = feature.geometry()\n"
+                     "\tcontrol = dialog.findChild(QWidget, \"MyLineEdit\")\n" ) );
 
   }
   leEditFormInitCode->setText( code );
