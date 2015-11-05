@@ -306,5 +306,5 @@ class OutputVector(Output):
 
         w = VectorWriter(self.value, self.encoding, fields, geomType,
                          crs, options)
-        self.memoryLayer = w.memLayer
+        self.layer = w.layer
         return w

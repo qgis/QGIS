@@ -32,10 +32,12 @@ from PyQt4 import uic
 from PyQt4.QtCore import QCoreApplication, QSettings
 from PyQt4.QtGui import QDialog, QMenu, QAction, QCursor, QFileDialog
 from qgis.gui import QgsEncodingFileDialog
+from qgis.core import *
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.outputs import OutputVector
 from processing.core.outputs import OutputDirectory
+from processing.gui.PostgisTableSelector import PostgisTableSelector
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
@@ -81,11 +83,40 @@ class OutputSelectionPanel(BASE, WIDGET):
                     self.tr('Save to memory layer'), self.btnSelect)
                 actionSaveToMemory.triggered.connect(self.saveToMemory)
                 popupMenu.addAction(actionSaveToMemory)
+                actionSaveToPostGIS = QAction(
+                    self.tr('Save to PostGIS table...'), self.btnSelect)
+                actionSaveToPostGIS.triggered.connect(self.saveToPostGIS)
+                settings = QSettings()
+                settings.beginGroup('/PostgreSQL/connections/')
+                names = settings.childGroups()
+                settings.endGroup()
+                actionSaveToPostGIS.setEnabled(bool(names))
+                popupMenu.addAction(actionSaveToPostGIS)
 
             popupMenu.exec_(QCursor.pos())
 
     def saveToTemporaryFile(self):
         self.leText.setText('')
+
+    def saveToPostGIS(self):
+        dlg = PostgisTableSelector(self, self.output.name.lower())
+        dlg.exec_()
+        if dlg.connection:
+            settings = QSettings()
+            mySettings = '/PostgreSQL/connections/' + dlg.connection
+            dbname = settings.value(mySettings + '/database')
+            user = settings.value(mySettings + '/username')
+            host = settings.value(mySettings + '/host')
+            port = settings.value(mySettings + '/port')
+            password = settings.value(mySettings + '/password')
+            uri = QgsDataSourceURI()
+            uri.setConnection(host, str(port), dbname, user, password)
+            uri.setDataSource(dlg.schema, dlg.table, "the_geom")
+            connInfo = uri.connectionInfo()
+            (success, user, passwd ) = QgsCredentials.instance().get(connInfo, None, None)
+            if success:
+                QgsCredentials.instance().put(connInfo, user, passwd)
+            self.leText.setText("postgis:" + uri.uri())
 
     def saveToMemory(self):
         self.leText.setText('memory:')
@@ -124,10 +155,8 @@ class OutputSelectionPanel(BASE, WIDGET):
 
     def selectDirectory(self):
         lastDir = ''
-
-        dirName = QFileDialog.getExistingDirectory(self,
-                                                   self.tr('Select directory'), lastDir, QFileDialog.ShowDirsOnly)
-
+        dirName = QFileDialog.getExistingDirectory(self,self.tr('Select directory'),
+                                                   lastDir, QFileDialog.ShowDirsOnly)
         self.leText.setText(dirName)
 
     def getValue(self):
@@ -136,10 +165,14 @@ class OutputSelectionPanel(BASE, WIDGET):
             value = None
         elif fileName.startswith('memory:'):
             value = fileName
+        elif fileName.startswith('postgis:'):
+            value = fileName
         elif not os.path.isabs(fileName):
             value = ProcessingConfig.getSetting(
                 ProcessingConfig.OUTPUT_FOLDER) + os.sep + fileName
         else:
             value = fileName
+
+
 
         return value

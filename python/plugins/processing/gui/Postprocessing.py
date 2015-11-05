@@ -59,9 +59,8 @@ def handleAlgorithmResults(alg, progress=None, showResults=True):
             continue
         if isinstance(out, (OutputRaster, OutputVector, OutputTable)):
             try:
-                if out.value.startswith('memory:'):
-                    layer = out.memoryLayer
-                    QgsMapLayerRegistry.instance().addMapLayers([layer])
+                if out.layer is not None:
+                    QgsMapLayerRegistry.instance().addMapLayers([out.layer])
                 else:
                     if ProcessingConfig.getSetting(
                             ProcessingConfig.USE_FILENAME_AS_LAYER_NAME):
