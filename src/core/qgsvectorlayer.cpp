@@ -1635,6 +1635,7 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
   return writeSymbology( layer_node, document, errorMsg );
 } // bool QgsVectorLayer::writeXml
 
+
 bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage )
 {
   emit readCustomSymbology( node.toElement(), errorMessage );

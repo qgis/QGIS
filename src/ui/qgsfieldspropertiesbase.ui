@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>742</width>
+    <width>965</width>
     <height>634</height>
    </rect>
   </property>
@@ -250,8 +250,6 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
            <bool>true</bool>
           </property>
           <layout class="QGridLayout" name="mRelationsFrameLayout"/>
-          <zorder>leEditFormInitCode</zorder>
-          <zorder>mPythonInitCodeGroupBox</zorder>
          </widget>
          <widget class="QgsCollapsibleGroupBox" name="mPythonInitCodeGroupBox">
           <property name="enabled">

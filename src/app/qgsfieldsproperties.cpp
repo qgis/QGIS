@@ -211,6 +211,15 @@ QTreeWidgetItem *QgsFieldsProperties::loadAttributeEditorTreeItem( QgsAttributeE
   return newWidget;
 }
 
+void QgsFieldsProperties::setEditFormInit( const QString &editForm, const QString &editFormInit, const QString &editFormInitCode, const bool editFormInitUseCode )
+{
+  leEditForm->setText( editForm );
+  leEditFormInit->setText( editFormInit );
+  leEditFormInitCode->setText( editFormInitCode );
+  leEditFormInitUseCode->setChecked( editFormInitUseCode );
+}
+
+
 void QgsFieldsProperties::loadAttributeEditorTree()
 {
   // tabs and groups info

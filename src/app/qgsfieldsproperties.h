@@ -160,6 +160,15 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
     void loadAttributeEditorTree();
     QTreeWidgetItem *loadAttributeEditorTreeItem( QgsAttributeEditorElement* const widgetDef, QTreeWidgetItem* parent );
 
+    /**
+     * @brief setEditFormInit set the private ui fields
+     * @param editForm
+     * @param editFormInit
+     * @param editFormInitCode
+     * @param editFormInitUseCode
+     */
+    void setEditFormInit( const QString &editForm, const QString &editFormInit, const QString &editFormInitCode, const bool editFormInitUseCode );
+
   signals:
     void toggleEditing();
 
