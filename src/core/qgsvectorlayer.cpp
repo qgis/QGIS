@@ -138,6 +138,7 @@ QgsVectorLayer::QgsVectorLayer( const QString& vectorLayerPath,
     , mLayerTransparency( 0 )
     , mVertexMarkerOnlyForSelection( false )
     , mEditorLayout( GeneratedLayout )
+    , mEditFormInitUseCode( false )
     , mFeatureFormSuppress( SuppressDefault )
     , mCache( new QgsGeometryCache() )
     , mEditBuffer( 0 )
@@ -149,6 +150,7 @@ QgsVectorLayer::QgsVectorLayer( const QString& vectorLayerPath,
     , mLazyExtent( true )
     , mSymbolFeatureCounted( false )
     , mEditCommandActive( false )
+
 {
   mActions = new QgsAttributeAction( this );
   mConditionalStyles = new QgsConditionalLayerStyles();
