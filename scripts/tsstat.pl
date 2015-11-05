@@ -88,9 +88,8 @@ my $translators= {
 	'tr' => 'Osman Yalçın YILMAZ, Omur Saygin',
 	'uk' => 'Alexander Bruy',
 	'vi' => 'Phùng Văn Doanh, Bùi Hữu Mạnh, Nguyễn Văn Thanh, Nguyễn Hữu Phúc, Cao Minh Tu',
-	'zh_CN' => 'Calvin Ngei, Zhang Jun, Richard Xie',
+	'zh-Hant' => 'Calvin Ngei, Zhang Jun, Richard Xie',
 	'zh-Hans' => 'Calvin Ngei, Lisashen',
-	'zh_TW' => 'Nung-yao Lin',
 };
 
 my $maxn;

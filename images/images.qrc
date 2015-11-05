@@ -35,8 +35,6 @@
         <file>flags/uk.png</file>
         <file>flags/vi.png</file>
         <file>flags/xh.png</file>
-        <file>flags/zh_CN.png</file>
-        <file>flags/zh_TW.png</file>
         <file>icons/qgis-icon-16x16.png</file>
         <file>icons/qgis-icon-60x60.png</file>
         <file>icons/qbrowser-icon-60x60.png</file>
@@ -515,12 +513,12 @@
         <file>themes/default/mIconSuccess.png</file>
         <file>themes/default/mIconClear.png</file>
         <file>themes/default/mIconWarning.svg</file>
-        <file>flags/zh.png</file>
         <file>themes/default/mIconPaintEffects.svg</file>
         <file>themes/default/mActionCircularStringCurvePoint.png</file>
         <file>themes/default/mActionCircularStringCurvePoint.svg</file>
         <file>themes/default/mActionCircularStringRadius.png</file>
         <file>themes/default/mActionCircularStringRadius.svg</file>
+        <file>flags/zh.png</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>
