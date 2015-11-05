@@ -2033,6 +2033,8 @@ static QVariant fcnGetFeature( const QVariantList& values, const QgsExpressionCo
 
   const QVariant& attVal = values.at( 2 );
   QgsFeatureRequest req;
+  req.setFilterExpression( QString( "%1=%2" ).arg( QgsExpression::quotedColumnRef( attribute ),
+                                                   QgsExpression::quotedString( attVal.toString() ) ) );
   if ( !parent->needsGeometry() )
   {
     req.setFlags( QgsFeatureRequest::NoGeometry );
@@ -2040,13 +2042,9 @@ static QVariant fcnGetFeature( const QVariantList& values, const QgsExpressionCo
   QgsFeatureIterator fIt = vl->getFeatures( req );
 
   QgsFeature fet;
-  while ( fIt.nextFeature( fet ) )
-  {
-    if ( fet.attribute( attributeId ) == attVal )
-    {
-      return QVariant::fromValue( fet );
-    }
-  }
+  if ( fIt.nextFeature( fet ) )
+    return QVariant::fromValue( fet );
+
   return QVariant();
 }
 
