@@ -238,13 +238,7 @@ class GeoAlgorithm:
             # If something goes wrong and is not caught in the
             # algorithm, we catch it here and wrap it
             lines = [self.tr('Uncaught error while executing algorithm')]
-            errstring = traceback.format_exc()
-            newline = errstring.find('\n')
-            if newline != -1:
-                lines.append(errstring[:newline])
-            else:
-                lines.append(errstring)
-            lines.append(errstring.replace('\n', '|'))
+            lines.append(traceback.format_exc())
             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, lines)
             raise GeoAlgorithmExecutionException(
                 unicode(e) + self.tr('\nSee log for more details'))
