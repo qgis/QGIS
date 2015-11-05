@@ -21,7 +21,7 @@ email                : jef at norbit dot de
 #include <QMetaType>
 #include <climits>
 
-QgsGeomColumnTypeThread::QgsGeomColumnTypeThread( const QString& name, bool useEstimatedMetaData, bool allowGeometrylessTables )
+QgsGeomColumnTypeThread::QgsGeomColumnTypeThread( QString name, bool useEstimatedMetaData, bool allowGeometrylessTables )
     : QThread()
     , mConn( 0 )
     , mName( name )

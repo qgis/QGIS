@@ -95,7 +95,7 @@ class QgsDataItem : QObject
     typedef QFlags<QgsDataItem::Capability> Capabilities;
 
     // This will _write_ selected crs in data source
-    virtual bool setCrs( const QgsCoordinateReferenceSystem& crs );
+    virtual bool setCrs( QgsCoordinateReferenceSystem crs );
 
     //! @deprecated since 2.8, returned type this will changed to Capabilities
     virtual Capability capabilities() /Deprecated/;

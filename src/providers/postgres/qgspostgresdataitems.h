@@ -33,7 +33,7 @@ class QgsPGRootItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsPGRootItem( QgsDataItem* parent, const QString& name, const QString& path );
+    QgsPGRootItem( QgsDataItem* parent, QString name, QString path );
     ~QgsPGRootItem();
 
     QVector<QgsDataItem*> createChildren() override;
@@ -53,7 +53,7 @@ class QgsPGConnectionItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsPGConnectionItem( QgsDataItem* parent, const QString& name, const QString& path );
+    QgsPGConnectionItem( QgsDataItem* parent, QString name, QString path );
     ~QgsPGConnectionItem();
 
     QVector<QgsDataItem*> createChildren() override;
@@ -63,7 +63,7 @@ class QgsPGConnectionItem : public QgsDataCollectionItem
     virtual bool acceptDrop() override { return true; }
     virtual bool handleDrop( const QMimeData * data, Qt::DropAction action ) override;
 
-    bool handleDrop( const QMimeData * data, const QString& toSchema );
+    bool handleDrop( const QMimeData * data, QString toSchema );
 
   signals:
     void addGeometryColumn( const QgsPostgresLayerProperty& );
@@ -80,7 +80,7 @@ class QgsPGSchemaItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsPGSchemaItem( QgsDataItem* parent, const QString& connectionName, const QString& name, const QString& path );
+    QgsPGSchemaItem( QgsDataItem* parent, QString connectionName, QString name, QString path );
     ~QgsPGSchemaItem();
 
     QVector<QgsDataItem*> createChildren() override;
@@ -94,7 +94,7 @@ class QgsPGSchemaItem : public QgsDataCollectionItem
     void renameSchema();
 
   private:
-    QgsPGLayerItem * createLayer( const QgsPostgresLayerProperty& layerProperty );
+    QgsPGLayerItem * createLayer( QgsPostgresLayerProperty layerProperty );
 
     QString mConnectionName;
 };
@@ -104,7 +104,7 @@ class QgsPGLayerItem : public QgsLayerItem
     Q_OBJECT
 
   public:
-    QgsPGLayerItem( QgsDataItem* parent, const QString& name, const QString& path, QgsLayerItem::LayerType layerType, const QgsPostgresLayerProperty& layerProperties );
+    QgsPGLayerItem( QgsDataItem* parent, QString name, QString path, QgsLayerItem::LayerType layerType, QgsPostgresLayerProperty layerProperties );
     ~QgsPGLayerItem();
 
     QString createUri();

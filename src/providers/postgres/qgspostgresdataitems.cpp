@@ -34,7 +34,7 @@ QGISEXTERN bool deleteSchema( const QString& schema, const QgsDataSourceURI& uri
 
 
 // ---------------------------------------------------------------------------
-QgsPGConnectionItem::QgsPGConnectionItem( QgsDataItem* parent, const QString& name, const QString& path )
+QgsPGConnectionItem::QgsPGConnectionItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
   mIconName = "mIconConnect.png";
@@ -191,7 +191,7 @@ bool QgsPGConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction )
   return handleDrop( data, QString::null );
 }
 
-bool QgsPGConnectionItem::handleDrop( const QMimeData * data, const QString& toSchema )
+bool QgsPGConnectionItem::handleDrop( const QMimeData * data, QString toSchema )
 {
   if ( !QgsMimeDataUtils::isUriList( data ) )
     return false;
@@ -272,7 +272,7 @@ bool QgsPGConnectionItem::handleDrop( const QMimeData * data, const QString& toS
 }
 
 // ---------------------------------------------------------------------------
-QgsPGLayerItem::QgsPGLayerItem( QgsDataItem* parent, const QString& name, const QString& path, QgsLayerItem::LayerType layerType, const QgsPostgresLayerProperty& layerProperty )
+QgsPGLayerItem::QgsPGLayerItem( QgsDataItem* parent, QString name, QString path, QgsLayerItem::LayerType layerType, QgsPostgresLayerProperty layerProperty )
     : QgsLayerItem( parent, name, path, QString(), layerType, "postgres" )
     , mLayerProperty( layerProperty )
 {
@@ -449,7 +449,7 @@ QString QgsPGLayerItem::createUri()
 }
 
 // ---------------------------------------------------------------------------
-QgsPGSchemaItem::QgsPGSchemaItem( QgsDataItem* parent, const QString& connectionName, const QString& name, const QString& path )
+QgsPGSchemaItem::QgsPGSchemaItem( QgsDataItem* parent, QString connectionName, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
     , mConnectionName( connectionName )
 {
@@ -645,7 +645,7 @@ void QgsPGSchemaItem::renameSchema()
     mParent->refresh();
 }
 
-QgsPGLayerItem *QgsPGSchemaItem::createLayer( const QgsPostgresLayerProperty& layerProperty )
+QgsPGLayerItem *QgsPGSchemaItem::createLayer( QgsPostgresLayerProperty layerProperty )
 {
   //QgsDebugMsg( "schemaName = " + layerProperty.schemaName + " tableName = " + layerProperty.tableName + " geometryColName = " + layerProperty.geometryColName );
   QGis::WkbType wkbType = layerProperty.types[0];
@@ -691,7 +691,7 @@ bool QgsPGSchemaItem::handleDrop( const QMimeData * data, Qt::DropAction )
 }
 
 // ---------------------------------------------------------------------------
-QgsPGRootItem::QgsPGRootItem( QgsDataItem* parent, const QString& name, const QString& path )
+QgsPGRootItem::QgsPGRootItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
   mCapabilities |= Fast;

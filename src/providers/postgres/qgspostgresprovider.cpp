@@ -3426,7 +3426,7 @@ QGISEXTERN int dataCapabilities()
   return QgsDataProvider::Database;
 }
 
-QGISEXTERN QgsDataItem *dataItem( const QString& thePath, QgsDataItem *parentItem )
+QGISEXTERN QgsDataItem *dataItem( QString thePath, QgsDataItem *parentItem )
 {
   Q_UNUSED( thePath );
   return new QgsPGRootItem( parentItem, "PostGIS", "pg:" );
@@ -3813,7 +3813,7 @@ QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &na
   return numberOfRelatedStyles;
 }
 
-QGISEXTERN QString getStyleById( const QString& uri, const QString& styleId, QString& errCause )
+QGISEXTERN QString getStyleById( const QString& uri, QString styleId, QString& errCause )
 {
   QgsDataSourceURI dsUri( uri );
 

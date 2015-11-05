@@ -470,7 +470,7 @@ void QgsDataItem::refresh()
   }
 }
 
-void QgsDataItem::refresh( const QVector<QgsDataItem*>& children )
+void QgsDataItem::refresh( QVector<QgsDataItem*> children )
 {
   QgsDebugMsgLevel( "mPath = " + mPath, 2 );
 

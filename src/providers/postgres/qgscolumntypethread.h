@@ -28,7 +28,7 @@ class QgsGeomColumnTypeThread : public QThread
 {
     Q_OBJECT
   public:
-    QgsGeomColumnTypeThread( const QString& connName, bool useEstimatedMetaData, bool allowGeometrylessTables );
+    QgsGeomColumnTypeThread( QString connName, bool useEstimatedMetaData, bool allowGeometrylessTables );
 
     // These functions get the layer types and pass that information out
     // by emitting the setLayerType() signal.

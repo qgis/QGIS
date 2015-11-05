@@ -24,7 +24,7 @@ void buildSupportedRasterFileFilterAndExtensions( QString & theFileFiltersString
 
 
 QgsGdalLayerItem::QgsGdalLayerItem( QgsDataItem* parent,
-                                    const QString& name, const QString& path, const QString& uri,
+                                    QString name, QString path, QString uri,
                                     QStringList *theSublayers )
     : QgsLayerItem( parent, name, path, uri, QgsLayerItem::Raster, "gdal" )
 {
@@ -58,7 +58,7 @@ QgsLayerItem::Capability QgsGdalLayerItem::capabilities()
   return mCapabilities & SetCrs ? SetCrs : NoCapabilities;
 }
 
-bool QgsGdalLayerItem::setCrs( const QgsCoordinateReferenceSystem& crs )
+bool QgsGdalLayerItem::setCrs( QgsCoordinateReferenceSystem crs )
 {
   GDALDatasetH hDS = GDALOpen( TO8F( mPath ), GA_Update );
   if ( !hDS )

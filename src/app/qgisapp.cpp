@@ -7883,7 +7883,7 @@ class QgsPythonRunnerImpl : public QgsPythonRunner
   public:
     explicit QgsPythonRunnerImpl( QgsPythonUtils* pythonUtils ) : mPythonUtils( pythonUtils ) {}
 
-    virtual bool runCommand( const QString& command, const QString& messageOnError = QString() ) override
+    virtual bool runCommand( QString command, QString messageOnError = QString() ) override
     {
       if ( mPythonUtils && mPythonUtils->isEnabled() )
       {
@@ -7892,7 +7892,7 @@ class QgsPythonRunnerImpl : public QgsPythonRunner
       return false;
     }
 
-    virtual bool evalCommand( const QString& command, QString &result ) override
+    virtual bool evalCommand( QString command, QString &result ) override
     {
       if ( mPythonUtils && mPythonUtils->isEnabled() )
       {

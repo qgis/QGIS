@@ -25,11 +25,11 @@ class QgsGdalLayerItem : public QgsLayerItem
 
   public:
     QgsGdalLayerItem( QgsDataItem* parent,
-                      const QString& name, const QString& path, const QString& uri,
+                      QString name, QString path, QString uri,
                       QStringList *theSublayers = NULL );
     ~QgsGdalLayerItem();
 
-    bool setCrs( const QgsCoordinateReferenceSystem& crs ) override;
+    bool setCrs( QgsCoordinateReferenceSystem crs ) override;
     Capability capabilities() override;
 
     QVector<QgsDataItem*> createChildren() override;

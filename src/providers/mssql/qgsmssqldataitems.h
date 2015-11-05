@@ -33,7 +33,7 @@ class QgsMssqlRootItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsMssqlRootItem( QgsDataItem* parent, const QString& name, const QString& path );
+    QgsMssqlRootItem( QgsDataItem* parent, QString name, QString path );
     ~QgsMssqlRootItem();
 
     QVector<QgsDataItem*> createChildren() override;
@@ -51,7 +51,7 @@ class QgsMssqlConnectionItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsMssqlConnectionItem( QgsDataItem* parent, const QString& name, const QString& path );
+    QgsMssqlConnectionItem( QgsDataItem* parent, QString name, QString path );
     ~QgsMssqlConnectionItem();
 
     QVector<QgsDataItem*> createChildren() override;
@@ -92,12 +92,12 @@ class QgsMssqlSchemaItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsMssqlSchemaItem( QgsDataItem* parent, const QString& name, const QString& path );
+    QgsMssqlSchemaItem( QgsDataItem* parent, QString name, QString path );
     ~QgsMssqlSchemaItem();
 
     QVector<QgsDataItem*> createChildren() override;
 
-    QgsMssqlLayerItem* addLayer( const QgsMssqlLayerProperty& layerProperty, bool refresh );
+    QgsMssqlLayerItem* addLayer( QgsMssqlLayerProperty layerProperty, bool refresh );
     void refresh() override {} // do not refresh directly
     void addLayers( QgsDataItem* newLayers );
 };
@@ -107,7 +107,7 @@ class QgsMssqlLayerItem : public QgsLayerItem
     Q_OBJECT
 
   public:
-    QgsMssqlLayerItem( QgsDataItem* parent, const QString& name, const QString& path, QgsLayerItem::LayerType layerType, const QgsMssqlLayerProperty& layerProperties );
+    QgsMssqlLayerItem( QgsDataItem* parent, QString name, QString path, QgsLayerItem::LayerType layerType, QgsMssqlLayerProperty layerProperties );
     ~QgsMssqlLayerItem();
 
     QString createUri();

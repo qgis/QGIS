@@ -281,7 +281,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * ACTUALLY exists you need to look at the existsFlag member in each struct stored in the
      * list.
      */
-    virtual QList<QgsRasterPyramid> buildPyramidList( const QList<int>& overviewList = QList<int>() )
+    virtual QList<QgsRasterPyramid> buildPyramidList( QList<int> overviewList = QList<int>() )
     { Q_UNUSED( overviewList ); return QList<QgsRasterPyramid>(); }
 
     /** \brief Returns true if raster has at least one populated histogram. */

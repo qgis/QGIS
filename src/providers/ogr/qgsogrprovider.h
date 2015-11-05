@@ -261,7 +261,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     QTextCodec* textEncoding() { return mEncoding; }
 
-    QByteArray quotedIdentifier( const QByteArray& field );
+    QByteArray quotedIdentifier( QByteArray field );
 
     /**
      * A forced reload invalidates the underlying connection.

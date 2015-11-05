@@ -234,8 +234,8 @@ void QgsRasterFormatSaveOptionsWidget::apply()
 }
 
 // typedefs for gdal provider function pointers
-typedef QString validateCreationOptionsFormat_t( const QStringList& createOptions, const QString& format );
-typedef QString helpCreationOptionsFormat_t( const QString& format );
+typedef QString validateCreationOptionsFormat_t( const QStringList& createOptions, QString format );
+typedef QString helpCreationOptionsFormat_t( QString format );
 
 void QgsRasterFormatSaveOptionsWidget::helpOptions()
 {

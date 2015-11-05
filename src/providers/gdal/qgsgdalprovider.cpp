@@ -1781,7 +1781,7 @@ QList<QgsRasterPyramid> QgsGdalProvider::buildPyramidList()
 }
 #endif
 
-QList<QgsRasterPyramid> QgsGdalProvider::buildPyramidList( const QList<int>& overviewList )
+QList<QgsRasterPyramid> QgsGdalProvider::buildPyramidList( QList<int> overviewList )
 {
   int myWidth = mWidth;
   int myHeight = mHeight;
@@ -1790,8 +1790,7 @@ QList<QgsRasterPyramid> QgsGdalProvider::buildPyramidList( const QList<int>& ove
   mPyramidList.clear();
 
   // if overviewList is empty (default) build the pyramid list
-  QList<int> nonEmptyList = overviewList;
-  if ( nonEmptyList.isEmpty() )
+  if ( overviewList.isEmpty() )
   {
     int myDivisor = 2;
 
@@ -1799,14 +1798,14 @@ QList<QgsRasterPyramid> QgsGdalProvider::buildPyramidList( const QList<int>& ove
 
     while (( myWidth / myDivisor > 32 ) && (( myHeight / myDivisor ) > 32 ) )
     {
-      nonEmptyList.append( myDivisor );
+      overviewList.append( myDivisor );
       //sqare the divisor each step
       myDivisor = ( myDivisor * 2 );
     }
   }
 
   // loop over pyramid list
-  Q_FOREACH ( int myDivisor, nonEmptyList )
+  Q_FOREACH ( int myDivisor, overviewList )
   {
     //
     // First we build up a list of potential pyramid layers
@@ -1875,7 +1874,7 @@ QStringList QgsGdalProvider::subLayers() const
   return mSubLayers;
 }
 
-void QgsGdalProvider::emitProgress( int theType, double theProgress, const QString& theMessage )
+void QgsGdalProvider::emitProgress( int theType, double theProgress, QString theMessage )
 {
   emit progress( theType, theProgress, theMessage );
 }
@@ -2708,7 +2707,7 @@ QGISEXTERN QgsGdalProvider * create(
   QGis::DataType type,
   int width, int height, double* geoTransform,
   const QgsCoordinateReferenceSystem& crs,
-  const QStringList& createOptions )
+  QStringList createOptions )
 {
   //get driver
   GDALDriverH driver = GDALGetDriverByName( format.toLocal8Bit().data() );
@@ -2817,7 +2816,7 @@ QGISEXTERN void buildSupportedRasterFileFilter( QString & theFileFiltersString )
 /**
   Gets creation options metadata for a given format
 */
-QGISEXTERN QString helpCreationOptionsFormat( const QString& format )
+QGISEXTERN QString helpCreationOptionsFormat( QString format )
 {
   QString message;
   GDALDriverH myGdalDriver = GDALGetDriverByName( format.toLocal8Bit().constData() );
@@ -2849,7 +2848,7 @@ QGISEXTERN QString helpCreationOptionsFormat( const QString& format )
 /**
   Validates creation options for a given format, regardless of layer.
 */
-QGISEXTERN QString validateCreationOptionsFormat( const QStringList& createOptions, const QString& format )
+QGISEXTERN QString validateCreationOptionsFormat( const QStringList& createOptions, QString format )
 {
   GDALDriverH myGdalDriver = GDALGetDriverByName( format.toLocal8Bit().constData() );
   if ( ! myGdalDriver )

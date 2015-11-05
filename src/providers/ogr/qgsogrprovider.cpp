@@ -1613,7 +1613,7 @@ static QString createFileFilter_( QString const &longName, QString const &glob )
 } // createFileFilter_
 
 
-QString createFilters( const QString& type )
+QString createFilters( QString type )
 {
   /** Database drivers available*/
   static QString myDatabaseDrivers;
@@ -2436,7 +2436,7 @@ QVariant QgsOgrProvider::maximumValue( int index )
   return value;
 }
 
-QByteArray QgsOgrProvider::quotedIdentifier( const QByteArray& field )
+QByteArray QgsOgrProvider::quotedIdentifier( QByteArray field )
 {
   return QgsOgrUtils::quotedIdentifier( field, ogrDriverName );
 }

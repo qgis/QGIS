@@ -55,7 +55,7 @@ class QgsMssqlGeomColumnTypeThread : public QThread
 {
     Q_OBJECT
   public:
-    QgsMssqlGeomColumnTypeThread( const QString& connectionName, bool useEstimatedMetadata );
+    QgsMssqlGeomColumnTypeThread( QString connectionName, bool useEstimatedMetadata );
 
     // These functions get the layer types and pass that information out
     // by emitting the setLayerType() signal.
@@ -65,7 +65,7 @@ class QgsMssqlGeomColumnTypeThread : public QThread
     void setLayerType( const QgsMssqlLayerProperty& layerProperty );
 
   public slots:
-    void addGeometryColumn( const QgsMssqlLayerProperty& layerProperty );
+    void addGeometryColumn( QgsMssqlLayerProperty layerProperty );
     void stop();
 
   private:
@@ -158,7 +158,7 @@ class QgsMssqlSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     bool mEmbeddedMode;
 
     // queue another query for the thread
-    void addSearchGeometryColumn( const QString& connectionName, const QgsMssqlLayerProperty& layerProperty, bool estimateMetadata );
+    void addSearchGeometryColumn( QString connectionName, QgsMssqlLayerProperty layerProperty, bool estimateMetadata );
 
     // Set the position of the database connection list to the last
     // used one.

@@ -50,9 +50,9 @@ class CORE_EXPORT QgsPythonRunner
     QgsPythonRunner();
     virtual ~QgsPythonRunner();
 
-    virtual bool runCommand( const QString& command, const QString& messageOnError = QString() ) = 0;
+    virtual bool runCommand( QString command, QString messageOnError = QString() ) = 0;
 
-    virtual bool evalCommand( const QString& command, QString& result ) = 0;
+    virtual bool evalCommand( QString command, QString& result ) = 0;
 
     static QgsPythonRunner* mInstance;
 };

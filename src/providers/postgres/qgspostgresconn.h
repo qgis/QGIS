@@ -182,7 +182,7 @@ class QgsPostgresConn : public QObject
     Q_OBJECT
 
   public:
-    static QgsPostgresConn *connectDb( const QString& connInfo, bool readOnly, bool shared = true, bool transaction = false );
+    static QgsPostgresConn *connectDb( QString connInfo, bool readOnly, bool shared = true, bool transaction = false );
 
     void ref() { ++mRef; }
     void unref();
@@ -273,7 +273,7 @@ class QgsPostgresConn : public QObject
                           bool searchGeometryColumnsOnly = true,
                           bool searchPublicOnly = true,
                           bool allowGeometrylessTables = false,
-                          const QString& schema = QString() );
+                          const QString schema = QString() );
 
     /** Get the list of database schemas
      * @param schemas list to store schemas in
