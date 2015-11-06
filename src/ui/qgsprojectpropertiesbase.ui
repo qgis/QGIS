@@ -1449,12 +1449,6 @@
                   <string notr="true">projowsserver</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_6">
-                  <item row="7" column="1">
-                   <widget class="QLineEdit" name="mWMSFees"/>
-                  </item>
-                  <item row="8" column="1">
-                   <widget class="QLineEdit" name="mWMSAccessConstraints"/>
-                  </item>
                   <item row="0" column="0">
                    <widget class="QLabel" name="label_10">
                     <property name="text">
@@ -1485,13 +1479,13 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="4" column="1">
+                  <item row="5" column="1">
                    <widget class="QLineEdit" name="mWMSContactMail"/>
                   </item>
                   <item row="3" column="1">
                    <widget class="QLineEdit" name="mWMSContactPerson"/>
                   </item>
-                  <item row="4" column="0">
+                  <item row="5" column="0">
                    <widget class="QLabel" name="label_13">
                     <property name="text">
                      <string>E-Mail</string>
@@ -1501,7 +1495,7 @@
                   <item row="1" column="1">
                    <widget class="QLineEdit" name="mWMSContactOrganization"/>
                   </item>
-                  <item row="5" column="0">
+                  <item row="6" column="0">
                    <widget class="QLabel" name="label_12">
                     <property name="text">
                      <string>Phone</string>
@@ -1514,7 +1508,7 @@
                   <item row="0" column="1">
                    <widget class="QLineEdit" name="mWMSTitle"/>
                   </item>
-                  <item row="6" column="0">
+                  <item row="7" column="0">
                    <widget class="QLabel" name="label_15">
                     <property name="text">
                      <string>Abstract</string>
@@ -1524,20 +1518,20 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="5" column="1">
+                  <item row="6" column="1">
                    <widget class="QLineEdit" name="mWMSContactPhone"/>
                   </item>
-                  <item row="6" column="1">
+                  <item row="7" column="1">
                    <widget class="QTextEdit" name="mWMSAbstract"/>
                   </item>
-                  <item row="9" column="0">
+                  <item row="10" column="0">
                    <widget class="QLabel" name="mWMSKeywordListLabel">
                     <property name="text">
                      <string>Keyword list</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="9" column="1">
+                  <item row="10" column="1">
                    <widget class="QLineEdit" name="mWMSKeywordList"/>
                   </item>
                   <item row="1" column="0">
@@ -1550,17 +1544,45 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="8" column="0">
+                  <item row="9" column="0">
                    <widget class="QLabel" name="mWMSAccessConstraintsLabel">
                     <property name="text">
                      <string>Access constraints</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="7" column="0">
+                  <item row="8" column="0">
                    <widget class="QLabel" name="mWMSFeesLabel">
                     <property name="text">
                      <string>Fees</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="8" column="1">
+                   <widget class="QComboBox" name="mWMSFeesCb">
+                    <property name="editable">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="9" column="1">
+                   <widget class="QComboBox" name="mWMSAccessConstraintsCb">
+                    <property name="editable">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="4" column="0">
+                   <widget class="QLabel" name="label_20">
+                    <property name="text">
+                     <string>Position</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="4" column="1">
+                   <widget class="QComboBox" name="mWMSContactPositionCb">
+                    <property name="editable">
+                     <bool>true</bool>
                     </property>
                    </widget>
                   </item>
@@ -2391,9 +2413,10 @@
   <tabstop>mWMSContactPerson</tabstop>
   <tabstop>mWMSContactMail</tabstop>
   <tabstop>mWMSContactPhone</tabstop>
+  <tabstop>mWMSContactPositionCb</tabstop>
   <tabstop>mWMSAbstract</tabstop>
-  <tabstop>mWMSFees</tabstop>
-  <tabstop>mWMSAccessConstraints</tabstop>
+  <tabstop>mWMSFeesCb</tabstop>
+  <tabstop>mWMSAccessConstraintsCb</tabstop>
   <tabstop>mWMSKeywordList</tabstop>
   <tabstop>grpWMSExt</tabstop>
   <tabstop>mWMSExtMinX</tabstop>

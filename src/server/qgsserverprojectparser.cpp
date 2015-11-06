@@ -491,6 +491,18 @@ void QgsServerProjectParser::serviceCapabilities( QDomElement& parentElement, QD
     QDomText contactOrganizationText = doc.createTextNode( contactOrganizationString );
     wmsContactOrganizationElem.appendChild( contactOrganizationText );
     contactPersonPrimaryElem.appendChild( wmsContactOrganizationElem );
+    
+    //Contact position
+    QDomElement contactPositionElem = propertiesElement.firstChildElement( "WMSContactPosition" );
+    QString contactPositionString;
+    if ( !contactPositionElem.isNull() )
+    {
+      contactPositionString = contactPositionElem.text();
+    }
+    QDomElement wmsContactPositionElem = doc.createElement( "ContactPosition" );
+    QDomText contactPositionText = doc.createTextNode( contactPositionString );
+    wmsContactPositionElem.appendChild( contactPositionText );
+    contactPersonPrimaryElem.appendChild( wmsContactPositionElem );
     contactInfoElem.appendChild( contactPersonPrimaryElem );
 
     //phone

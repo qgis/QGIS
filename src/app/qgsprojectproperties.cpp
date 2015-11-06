@@ -51,6 +51,8 @@
 #include "qgsexpressioncontext.h"
 #include "qgsmapoverviewcanvas.h"
 
+#include "qgsmessagelog.h"
+
 //qt includes
 #include <QInputDialog>
 #include <QFileDialog>
@@ -270,9 +272,65 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   mWMSAbstract->setPlainText( QgsProject::instance()->readEntry( "WMSServiceAbstract", "/", "" ) );
   mWMSOnlineResourceLineEdit->setText( QgsProject::instance()->readEntry( "WMSOnlineResource", "/", "" ) );
   mWMSUrlLineEdit->setText( QgsProject::instance()->readEntry( "WMSUrl", "/", "" ) );
-  mWMSFees->setText( QgsProject::instance()->readEntry( "WMSFees", "/", "" ) );
-  mWMSAccessConstraints->setText( QgsProject::instance()->readEntry( "WMSAccessConstraints", "/", "" ) );
   mWMSKeywordList->setText( QgsProject::instance()->readListEntry( "WMSKeywordList", "/" ).join( ", " ) );
+
+  // WMS Contact Position
+  QString contactPositionText = QgsProject::instance()->readEntry( "WMSContactPosition", "/", "" );
+  mWMSContactPositionCb->addItem( "" );
+  mWMSContactPositionCb->addItem( tr( "Custodian" ), "custodian" );
+  mWMSContactPositionCb->addItem( tr( "Owner" ), "owner" );
+  mWMSContactPositionCb->addItem( tr( "User" ), "user" );
+  mWMSContactPositionCb->addItem( tr( "Distributor" ), "distributor" );
+  mWMSContactPositionCb->addItem( tr( "Originator" ), "originator" );
+  mWMSContactPositionCb->addItem( tr( "Point of contact" ), "pointOfContact" );
+  mWMSContactPositionCb->addItem( tr( "Principal investigator" ), "principalInvestigator" );
+  mWMSContactPositionCb->addItem( tr( "Processor" ), "processor" );
+  mWMSContactPositionCb->addItem( tr( "Publisher" ), "publisher" );
+  mWMSContactPositionCb->addItem( tr( "Author" ), "author" );
+  int contactPositionIndex = mWMSContactPositionCb->findData( contactPositionText );
+  if ( contactPositionIndex > 0 )
+  {
+    mWMSContactPositionCb->setCurrentIndex( contactPositionIndex );
+  }
+  else if ( contactPositionText != "" )
+  {
+    mWMSContactPositionCb->setEditText( contactPositionText );
+  }
+
+  // WMS Fees
+  QString feesText = QgsProject::instance()->readEntry( "WMSFees", "/", "" );
+  mWMSFeesCb->addItem( tr( "Conditions unknown" ), "conditions unknown" );
+  mWMSFeesCb->addItem( tr( "No conditions apply" ), "no conditions apply" );
+  int feesIndex = mWMSFeesCb->findData( feesText );
+  if ( feesIndex > -1 )
+  {
+    mWMSFeesCb->setCurrentIndex( feesIndex );
+  }
+  else if ( feesText != "" )
+  {
+    mWMSFeesCb->setEditText( feesText );
+  }
+
+  // WMS Access Constraints
+  QString accessConstraintsText = QgsProject::instance()->readEntry( "WMSAccessConstraints", "/", "" );
+  mWMSAccessConstraintsCb->addItem( tr( "None" ), "None" );
+  mWMSAccessConstraintsCb->addItem( tr( "Copyright" ), "copyright" );
+  mWMSAccessConstraintsCb->addItem( tr( "Patent" ), "patent" );
+  mWMSAccessConstraintsCb->addItem( tr( "Patent pending" ), "patentPending" );
+  mWMSAccessConstraintsCb->addItem( tr( "Trademark" ), "trademark" );
+  mWMSAccessConstraintsCb->addItem( tr( "License" ), "license" );
+  mWMSAccessConstraintsCb->addItem( tr( "Intellectual property rights" ), "intellectualPropertyRights" );
+  mWMSAccessConstraintsCb->addItem( tr( "Restricted" ), "restricted" );
+  mWMSAccessConstraintsCb->addItem( tr( "Other restrictions" ), "otherRestrictions" );
+  int accessConstraintsIndex = mWMSAccessConstraintsCb->findData( accessConstraintsText );
+  if ( accessConstraintsIndex > -1 )
+  {
+    mWMSAccessConstraintsCb->setCurrentIndex( accessConstraintsIndex );
+  }
+  else if ( accessConstraintsText != "" )
+  {
+    mWMSAccessConstraintsCb->setEditText( accessConstraintsText );
+  }
 
   // WMS GetFeatureInfo precision
   int WMSprecision = QgsProject::instance()->readNumEntry( "WMSPrecision", "/", -1 );
@@ -737,8 +795,43 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->writeEntry( "WMSServiceAbstract", "/", mWMSAbstract->toPlainText() );
   QgsProject::instance()->writeEntry( "WMSOnlineResource", "/", mWMSOnlineResourceLineEdit->text() );
   QgsProject::instance()->writeEntry( "WMSUrl", "/", mWMSUrlLineEdit->text() );
-  QgsProject::instance()->writeEntry( "WMSFees", "/", mWMSFees->text() );
-  QgsProject::instance()->writeEntry( "WMSAccessConstraints", "/", mWMSAccessConstraints->text() );
+
+  // WMS Contact Position
+  int contactPositionIndex = mWMSContactPositionCb->currentIndex();
+  QString contactPositionText = mWMSContactPositionCb->currentText();
+  if ( contactPositionText != "" && contactPositionText == mWMSContactPositionCb->itemText( contactPositionIndex ) )
+  {
+    QgsProject::instance()->writeEntry( "WMSContactPosition", "/", mWMSContactPositionCb->itemData( contactPositionIndex ).toString() );
+  }
+  else
+  {
+    QgsProject::instance()->writeEntry( "WMSContactPosition", "/", contactPositionText );
+  }
+
+  // WMS Fees
+  int feesIndex = mWMSFeesCb->currentIndex();
+  QString feesText = mWMSFeesCb->currentText();
+  if ( feesText != "" && feesText == mWMSFeesCb->itemText( feesIndex ) )
+  {
+    QgsProject::instance()->writeEntry( "WMSFees", "/", mWMSFeesCb->itemData( feesIndex ).toString() );
+  }
+  else
+  {
+    QgsProject::instance()->writeEntry( "WMSFees", "/", feesText );
+  }
+
+  // WMS Access Constraints
+  int accessConstraintsIndex = mWMSAccessConstraintsCb->currentIndex();
+  QString accessConstraintsText = mWMSAccessConstraintsCb->currentText();
+  if ( accessConstraintsText != "" && accessConstraintsText == mWMSAccessConstraintsCb->itemText( accessConstraintsIndex ) )
+  {
+    QgsProject::instance()->writeEntry( "WMSAccessConstraints", "/", mWMSAccessConstraintsCb->itemData( accessConstraintsIndex ).toString() );
+  }
+  else
+  {
+    QgsProject::instance()->writeEntry( "WMSAccessConstraints", "/", accessConstraintsText );
+  }
+
   //WMS keyword list
   QStringList keywordStringList = mWMSKeywordList->text().split( ',' );
   if ( keywordStringList.size() > 0 )
