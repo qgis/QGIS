@@ -78,7 +78,7 @@
       <widget objectName="label" class="QLabel" label="-"/>
       <widget objectName="label_2" class="QLabel" label="%"/>
       <widget objectName="mMinMaxRadioButton" class="QRadioButton" label="Min / max"/>
-      <widget objectName="mStdDevRadioButton" class="QRadioButton" label="Mean +/-&#xa;standard deviation ×"/>
+      <widget objectName="mStdDevRadioButton" class="QRadioButton" label="Mean +/-&#xa;standard deviation Ã—"/>
       <widget objectName="mExtentGroupBox" class="QGroupBox" label="">
         <widget objectName="mFullExtentRadioButton" class="QRadioButton" label="Full"/>
         <widget objectName="mCurrentExtentRadioButton" class="QRadioButton" label="Current"/>
@@ -1369,8 +1369,8 @@
                 <widget objectName="leDefaultLabel" class="QLineEdit" label=""/>
                 <widget objectName="textLabel5_2_2_3_2" class="QLabel" label="Font size"/>
                 <widget objectName="textLabel1_2_2_2_2_2" class="QLabel" label="Angle (deg)"/>
-                <widget objectName="spinAngle" class="QSpinBox" label="0°">
-                  <widget objectName="qt_spinbox_lineedit" class="QLineEdit" label="0°"/>
+                <widget objectName="spinAngle" class="QSpinBox" label="0Â°">
+                  <widget objectName="qt_spinbox_lineedit" class="QLineEdit" label="0Â°"/>
                 </widget>
                 <widget objectName="cboFontSizeUnits" class="QComboBox" label=""/>
                 <widget objectName="btnDefaultFont" class="QPushButton" label="Font"/>
@@ -1617,7 +1617,7 @@
         <widget objectName="classificationLabel" class="QLabel" label="Displays combo box containing values of attribute used for classification."/>
       </widget>
       <widget objectName="lineEditPage" class="QWidget" label="">
-        <widget objectName="lineEditLabel" class="QLabel" label="Simple edit box. This is the default edition widget."/>
+        <widget objectName="lineEditLabel" class="QLabel" label="Simple edit box. This is the default edit widget."/>
       </widget>
       <widget objectName="calendarPage" class="QWidget" label="">
         <widget objectName="label_10" class="QLabel" label="Date format"/>
