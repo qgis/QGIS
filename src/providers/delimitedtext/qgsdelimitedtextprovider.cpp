@@ -409,6 +409,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
   QList<bool> couldBeInt;
   QList<bool> couldBeLongLong;
   QList<bool> couldBeDouble;
+  bool foundFirstGeometry = false;
 
   while ( true )
   {
@@ -458,11 +459,12 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
             if ( mGeometryType == QGis::UnknownGeometry || geom->type() == mGeometryType )
             {
               mGeometryType = geom->type();
-              if ( mNumberFeatures == 0 )
+              if ( !foundFirstGeometry )
               {
                 mNumberFeatures++;
                 mWkbType = type;
                 mExtent = geom->boundingBox();
+                foundFirstGeometry = true;
               }
               else
               {
@@ -517,7 +519,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
 
         if ( ok )
         {
-          if ( mNumberFeatures > 0 )
+          if ( foundFirstGeometry )
           {
             mExtent.combineExtentWith( pt.x(), pt.y() );
           }
@@ -527,6 +529,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
             mExtent.set( pt.x(), pt.y(), pt.x(), pt.y() );
             mWkbType = QGis::WKBPoint;
             mGeometryType = QGis::Point;
+            foundFirstGeometry = true;
           }
           mNumberFeatures++;
           if ( buildSpatialIndex && qIsFinite( pt.x() ) && qIsFinite( pt.y() ) )
@@ -778,13 +781,15 @@ void QgsDelimitedTextProvider::rescanFile()
   mNumberFeatures = 0;
   mExtent = QgsRectangle();
   QgsFeature f;
+  bool foundFirstGeometry = false;
   while ( fi.nextFeature( f ) )
   {
     if ( mGeometryType != QGis::NoGeometry )
     {
-      if ( mNumberFeatures == 0 )
+      if ( !foundFirstGeometry )
       {
         mExtent = f.constGeometry()->boundingBox();
+        foundFirstGeometry = true;
       }
       else
       {

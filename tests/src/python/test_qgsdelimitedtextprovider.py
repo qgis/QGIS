@@ -43,7 +43,8 @@ from qgis.core import (QgsProviderRegistry,
                        QgsVectorLayer,
                        QgsFeatureRequest,
                        QgsRectangle,
-                       QgsMessageLog
+                       QgsMessageLog,
+                       QGis
                        )
 
 from utilities import (getQgisTestApp,
@@ -190,7 +191,7 @@ def delimitedTextData(testname, filename, requests, verbose, **params):
             msg = re.sub(r'file\s+.*' + re.escape(filename), 'file ' + filelogname, msg)
             msg = msg.replace(filepath, filelogname)
             log.append(msg)
-        return dict(fields=fields, fieldTypes=fieldTypes, data=data, log=log, uri=uri)
+        return dict(fields=fields, fieldTypes=fieldTypes, data=data, log=log, uri=uri, geometryType=layer.geometryType())
 
 
 def printWanted(testname, result):
@@ -206,6 +207,7 @@ def printWanted(testname, result):
     print prefix + "wanted={}"
     print prefix + "wanted['uri']=" + repr(result['uri'])
     print prefix + "wanted['fieldTypes']=" + repr(result['fieldTypes'])
+    print prefix + "wanted['geometryType']=" + repr(result['geometryType'])
     print prefix + "wanted['data']={"
     for k in sorted(data.keys()):
         row = data[k]
@@ -271,6 +273,10 @@ def runTest(file, requests, **params):
     if result['fieldTypes'] != wanted['fieldTypes']:
         msg = "Layer field types ({0}) doesn't match expected ({1})".format(
             result['fieldTypes'], wanted['fieldTypes'])
+        failures.append(msg)
+    if result['geometryType'] != wanted['geometryType']:
+        msg = "Layer geometry type ({0}) doesn't match expected ({1})".format(
+            result['geometryType'], wanted['geometryType'])
         failures.append(msg)
     wanted_data = wanted['data']
     for id in sorted(wanted_data.keys()):
@@ -727,6 +733,14 @@ class TestQgsDelimitedTextProviderOther(TestCase):
         params = {'yField': 'lat', 'xField': 'lon', 'type': 'csv'}
         requests = None
         runTest(filename, requests, **params)
+
+    def test_039_issue_13749(self):
+        # First record contains missing geometry
+        filename = 'test13749.csv'
+        params = {'yField': 'geom_y', 'xField': 'geom_x', 'type': 'csv'}
+        requests = None
+        runTest(filename, requests, **params)
+
 
 if __name__ == '__main__':
     unittest.main()
