@@ -6,7 +6,7 @@ This function can take any number of arguments.
 <code>coalesce(expression1, expression2 ...)</code><br>
 
 <h4>Arguments</h4>
-<code>expression</code> - any valid expression or value, irregardless of type.
+<code>expression</code> - any valid expression or value, regardless of type.
 <br>
 
 <h4>Example</h4>
