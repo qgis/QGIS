@@ -89,7 +89,7 @@ class Algorithm():
         #A dict of Input object. keys are param names
         self.params = {}
 
-        #A dict of Output with final output descriptions. Keys are output names.
+        #A dict of ModelerOutput with final output descriptions. Keys are output names.
         #Outputs not final are not stored in this dict
         self.outputs = {}
 
@@ -119,6 +119,33 @@ class Algorithm():
                 name = self.consoleName + "_" + unicode(i)
             self.name = name
 
+    def getOutputType(self, outputName):
+        output = self.algorithm.getOutputFromName(outputName)
+        return "output " + output.__class__.__name__.split(".")[-1][6:].lower()
+
+    def toPython(self):
+        s = []
+        params = []
+        for param in self.algorithm.parameters:
+            value = self.params[param.name]
+            def _toString(v):
+                if isinstance(v, (ValueFromInput, ValueFromOutput)):
+                    return v.asPythonParameter()
+                elif isinstance(v, basestring):
+                    return "'%s'" % v
+                elif isinstance(v, list):
+                    return "[%s]" % ",".join([_toString(val) for val in v])
+                else:
+                    return unicode(value)
+            params.append(_toString(value))
+        for out in self.algorithm.outputs:
+            if out.name in self.outputs:
+                params.append(safeName(self.outputs[out.name].description).lower())
+            else:
+                params.append(str(None))
+        s.append("outputs_%s=processing.runalg('%s', %s)" % (self.name, self.consoleName, ",".join(params)))
+        return s
+
 
 class ValueFromInput():
 
@@ -137,6 +164,8 @@ class ValueFromInput():
         except:
             return False
 
+    def asPythonParameter(self):
+        return self.name
 
 class ValueFromOutput():
 
@@ -155,6 +184,9 @@ class ValueFromOutput():
 
     def __str__(self):
         return self.alg + "," + self.output
+
+    def asPythonParameter(self):
+        return "outputs_%s['%s']" % (self.alg, self.output)
 
 
 class ModelerAlgorithm(GeoAlgorithm):
@@ -654,3 +686,33 @@ class ModelerAlgorithm(GeoAlgorithm):
                 raise e
             else:
                 raise WrongModelException(_tr('Error in model definition line: ') + '%s\n%s' % (line.strip(), traceback.format_exc()))
+
+
+    def toPython(self):
+        s = ['##%s=name' % self.name]
+        for param in self.inputs.values():
+            s.append(param.param.getAsScriptCode())
+        for alg in self.algs.values():
+            for name, out in alg.outputs.iteritems():
+                s.append('##%s=%s' % (safeName(out.description).lower(), alg.getOutputType(name)))
+
+        executed = []
+        toExecute = [alg for alg in self.algs.values() if alg.active]
+        while len(executed) < len(toExecute):
+            for alg in toExecute:
+                if alg.name not in executed:
+                    canExecute = True
+                    required = self.getDependsOnAlgorithms(alg.name)
+                    for requiredAlg in required:
+                        if requiredAlg != alg.name and requiredAlg not in executed:
+                            canExecute = False
+                            break
+                    if canExecute:
+                        s.extend(alg.toPython())
+                        executed.append(alg.name)
+
+        return '\n'.join(s)
+
+def safeName(name):
+    validChars = 'abcdefghijklmnopqrstuvwxyz'
+    return ''.join(c for c in name.lower() if c in validChars)

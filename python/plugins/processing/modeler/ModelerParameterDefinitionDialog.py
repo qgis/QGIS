@@ -198,7 +198,7 @@ class ModelerParameterDefinitionDialog(QDialog):
             self.yesNoCombo.setCurrentIndex(
                 1 if self.param.optional else 0)
         self.verticalLayout.addLayout(self.horizontalLayout2)
-        
+
         self.buttonBox = QDialogButtonBox(self)
         self.buttonBox.setOrientation(Qt.Horizontal)
         self.buttonBox.setStandardButtons(QDialogButtonBox.Cancel
@@ -221,8 +221,10 @@ class ModelerParameterDefinitionDialog(QDialog):
             validChars = \
                 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
             safeName = ''.join(c for c in description if c in validChars)
-            name = self.paramType.upper().replace(' ', '') + '_' \
-                + safeName.upper()
+            name = safeName.lower()
+            i = 2
+            while name in self.alg.inputs:
+                name = safeName.lower() + str(i)
         else:
             name = self.param.name
         if self.paramType \

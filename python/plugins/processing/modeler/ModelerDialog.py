@@ -39,7 +39,6 @@ from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
 from processing.gui.HelpEditionDialog import HelpEditionDialog
 from processing.gui.AlgorithmDialog import AlgorithmDialog
-import processing.gui.AlgorithmClassification
 from processing.modeler.ModelerParameterDefinitionDialog import ModelerParameterDefinitionDialog
 from processing.modeler.ModelerAlgorithm import ModelerAlgorithm, ModelerParameter
 from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
@@ -161,6 +160,7 @@ class ModelerDialog(BASE, WIDGET):
         self.btnSave.setIcon(QgsApplication.getThemeIcon('/mActionFileSave.svg'))
         self.btnSaveAs.setIcon(QgsApplication.getThemeIcon('/mActionFileSaveAs.svg'))
         self.btnExportImage.setIcon(QgsApplication.getThemeIcon('/mActionSaveMapAsImage.png'))
+        self.btnExportPython.setIcon(QgsApplication.getThemeIcon('/console/iconSaveAsConsole.png'))
         self.btnEditHelp.setIcon(QIcon(os.path.join(pluginPath, 'images', 'edithelp.png')))
         self.btnRun.setIcon(QIcon(os.path.join(pluginPath, 'images', 'runalgorithm.png')))
 
@@ -184,6 +184,7 @@ class ModelerDialog(BASE, WIDGET):
         self.btnSave.clicked.connect(self.save)
         self.btnSaveAs.clicked.connect(self.saveAs)
         self.btnExportImage.clicked.connect(self.exportAsImage)
+        self.btnExportPython.clicked.connect(self.exportAsPython)
         self.btnEditHelp.clicked.connect(self.editHelp)
         self.btnRun.clicked.connect(self.runModel)
 
@@ -280,6 +281,23 @@ class ModelerDialog(BASE, WIDGET):
         painter.end()
 
         img.save(filename)
+
+    def exportAsPython(self):
+        filename = unicode(QFileDialog.getSaveFileName(self,
+                           self.tr('Save Model As Python Script'), '',
+                           self.tr('Python files (*.py *.PY)')))
+        if not filename:
+            return
+
+        if not filename.lower().endswith('.py'):
+            filename += '.py'
+
+        text = self.alg.toPython()
+        with codecs.open(filename, 'w', encoding='utf-8') as fout:
+            fout.write(text)
+        QMessageBox.information(self, self.tr('Model exported'),
+                                    self.tr('Model was correctly exported.'))
+
 
     def saveModel(self, saveAs):
         if unicode(self.textGroup.text()).strip() == '' \

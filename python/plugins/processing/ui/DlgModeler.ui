@@ -97,6 +97,16 @@
       </widget>
      </item>
      <item>
+      <widget class="QToolButton" name="btnExportPython">
+       <property name="text">
+        <string>...</string>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="Line" name="line_2">
        <property name="orientation">
         <enum>Qt::Vertical</enum>

@@ -127,6 +127,9 @@ class ParameterBoolean(Parameter):
             self.value = bool(value)
         return True
 
+    def getAsScriptCode(self):
+        return '##' + self.name + '=boolean ' + str(self.default)
+
 
 class ParameterCrs(Parameter):
 
@@ -153,6 +156,8 @@ class ParameterCrs(Parameter):
     def getValueAsCommandLineParameter(self):
         return '"' + unicode(self.value) + '"'
 
+    def getAsScriptCode(self):
+        return '##' + self.name + '=crs ' + str(self.default)
 
 class ParameterDataObject(Parameter):
 
@@ -197,6 +202,8 @@ class ParameterExtent(Parameter):
     def getValueAsCommandLineParameter(self):
         return '"' + unicode(self.value) + '"'
 
+    def getAsScriptCode(self):
+        return '##' + self.name + '=extent'
 
 class ParameterFile(Parameter):
 
@@ -224,6 +231,12 @@ class ParameterFile(Parameter):
             return 'directory'
         else:
             return 'file'
+
+    def getAsScriptCode(self):
+        if self.isFolder:
+            return '##' + self.name + '=folder'
+        else:
+            return '##' + self.name + '=file'
 
 
 class ParameterFixedTable(Parameter):
@@ -406,6 +419,13 @@ class ParameterMultipleInput(ParameterDataObject):
         else:
             return 'any vectors'
 
+    def getAsScriptCode(self):
+        if self.datatype == self.TYPE_RASTER:
+            return '##' + self.name + '=multiple raster'
+        if self.datatype == self.TYPE_FILE:
+            return '##' + self.name + '=multiple file'
+        else:
+            return '##' + self.name + '=multiple vector'
 
 class ParameterNumber(Parameter):
 
@@ -450,6 +470,9 @@ class ParameterNumber(Parameter):
         except:
             return False
 
+
+    def getAsScriptCode(self):
+        return '##' + self.name + '=number ' + str(self.default)
 
 class ParameterRange(Parameter):
 
@@ -543,6 +566,9 @@ class ParameterRaster(ParameterDataObject):
             exts[i] = self.tr('%s files(*.%s)', 'ParameterRaster') % (exts[i].upper(), exts[i].lower())
         return ';;'.join(exts)
 
+    def getAsScriptCode(self):
+        return '##' + self.name + '=raster'
+
 
 class ParameterSelection(Parameter):
 
@@ -609,6 +635,8 @@ class ParameterString(Parameter):
                              ParameterString.ESCAPED_NEWLINE)) + '"'
                              if self.value is not None else unicode(None))
 
+    def getAsScriptCode(self):
+        return '##' + self.name + '=string ' + self.default
 
 class ParameterTable(ParameterDataObject):
 
@@ -674,6 +702,9 @@ class ParameterTable(ParameterDataObject):
             exts[i] = self.tr('%s files(*.%s)', 'ParameterTable') % (exts[i].upper(), exts[i].lower())
         return ';;'.join(exts)
 
+    def getAsScriptCode(self):
+        return '##' + self.name + '=table'
+
 
 class ParameterTableField(Parameter):
 
@@ -714,6 +745,9 @@ class ParameterTableField(Parameter):
             return 'string'
         else:
             return 'any'
+
+    def getAsScriptCode(self):
+        return '##' + self.name + '=field ' + self.parent
 
 
 class ParameterVector(ParameterDataObject):
@@ -799,6 +833,9 @@ class ParameterVector(ParameterDataObject):
                 types += 'any, '
 
         return types[:-2]
+
+    def getAsScriptCode(self):
+        return '##' + self.name + '=vector'
 
 
 class ParameterGeometryPredicate(Parameter):
