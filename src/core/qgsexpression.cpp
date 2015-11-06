@@ -1258,6 +1258,40 @@ static QVariant fcnGeomY( const QVariantList& values, const QgsExpressionContext
   return result;
 }
 
+static QVariant fcnGeomZ( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QgsGeometry geom = getGeometry( values.at( 0 ), parent );
+  if ( geom.isEmpty() )
+    return QVariant(); //or 0?
+
+  //if single point, return the point's z coordinate
+  if ( geom.type() == QGis::Point && !geom.isMultipart() )
+  {
+    QgsPointV2* point = dynamic_cast< QgsPointV2* >( geom.geometry() );
+    if ( point )
+      return point->z();
+  }
+
+  return QVariant();
+}
+
+static QVariant fcnGeomM( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QgsGeometry geom = getGeometry( values.at( 0 ), parent );
+  if ( geom.isEmpty() )
+    return QVariant(); //or 0?
+
+  //if single point, return the point's m value
+  if ( geom.type() == QGis::Point && !geom.isMultipart() )
+  {
+    QgsPointV2* point = dynamic_cast< QgsPointV2* >( geom.geometry() );
+    if ( point )
+      return point->m();
+  }
+
+  return QVariant();
+}
+
 static QVariant fcnPointN( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   QgsGeometry geom = getGeometry( values.at( 0 ), parent );
@@ -1315,9 +1349,34 @@ static QVariant fcnEndPoint( const QVariantList& values, const QgsExpressionCont
 
 static QVariant fcnMakePoint( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
+  if ( values.count() < 2 || values.count() > 4 )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function make_point requires 2-4 arguments" ) );
+    return QVariant();
+  }
+
   double x = getDoubleValue( values.at( 0 ), parent );
   double y = getDoubleValue( values.at( 1 ), parent );
-  return QVariant::fromValue( QgsGeometry( new QgsPointV2( x, y ) ) );
+  double z = values.count() >= 3 ? getDoubleValue( values.at( 2 ), parent ) : 0.0;
+  double m = values.count() >= 4 ? getDoubleValue( values.at( 3 ), parent ) : 0.0;
+  switch ( values.count() )
+  {
+    case 2:
+      return QVariant::fromValue( QgsGeometry( new QgsPointV2( x, y ) ) );
+    case 3:
+      return QVariant::fromValue( QgsGeometry( new QgsPointV2( QgsWKBTypes::PointZ, x, y, z ) ) );
+    case 4:
+      return QVariant::fromValue( QgsGeometry( new QgsPointV2( QgsWKBTypes::PointZM, x, y, z, m ) ) );
+  }
+  return QVariant(); //avoid warning
+}
+
+static QVariant fcnMakePointM( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  double x = getDoubleValue( values.at( 0 ), parent );
+  double y = getDoubleValue( values.at( 1 ), parent );
+  double m = getDoubleValue( values.at( 2 ), parent );
+  return QVariant::fromValue( QgsGeometry( new QgsPointV2( QgsWKBTypes::PointM, x, y, 0.0, m ) ) );
 }
 
 static QVariant pointAt( const QVariantList& values, const QgsExpressionContext* context, QgsExpression* parent ) // helper function
@@ -2034,7 +2093,7 @@ static QVariant fcnGetFeature( const QVariantList& values, const QgsExpressionCo
   const QVariant& attVal = values.at( 2 );
   QgsFeatureRequest req;
   req.setFilterExpression( QString( "%1=%2" ).arg( QgsExpression::quotedColumnRef( attribute ),
-                                                   QgsExpression::quotedString( attVal.toString() ) ) );
+                           QgsExpression::quotedString( attVal.toString() ) ) );
   if ( !parent->needsGeometry() )
   {
     req.setFlags( QgsFeatureRequest::NoGeometry );
@@ -2192,8 +2251,8 @@ const QStringList& QgsExpression::BuiltinFunctions()
     << "color_hsl" << "color_hsla" << "color_hsv" << "color_hsva"
     << "color_cmyk" << "color_cmyka" << "color_part" << "set_color_part"
     << "xat" << "yat" << "$area" << "area" << "perimeter"
-    << "$length" << "$perimeter" << "x" << "y" << "$x" << "$y" << "num_points"
-    << "point_n" << "start_point" << "end_point" << "make_point"
+    << "$length" << "$perimeter" << "x" << "y" << "$x" << "$y" << "z" << "m" << "num_points"
+    << "point_n" << "start_point" << "end_point" << "make_point" << "make_point_m"
     << "$x_at" << "x_at" << "xat" << "$y_at" << "y_at" << "yat" << "x_min" << "xmin" << "x_max" << "xmax"
     << "y_min" << "ymin" << "y_max" << "ymax" << "geom_from_wkt" << "geomFromWKT"
     << "geom_from_gml" << "geomFromGML" << "intersects_bbox" << "bbox"
@@ -2308,10 +2367,13 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( "$y", 0, fcnY, "GeometryGroup", QString(), true )
     << new StaticFunction( "x", 1, fcnGeomX, "GeometryGroup" )
     << new StaticFunction( "y", 1, fcnGeomY, "GeometryGroup" )
+    << new StaticFunction( "z", 1, fcnGeomZ, "GeometryGroup" )
+    << new StaticFunction( "m", 1, fcnGeomM, "GeometryGroup" )
     << new StaticFunction( "point_n", 2, fcnPointN, "GeometryGroup" )
     << new StaticFunction( "start_point", 1, fcnStartPoint, "GeometryGroup" )
     << new StaticFunction( "end_point", 1, fcnEndPoint, "GeometryGroup" )
-    << new StaticFunction( "make_point", 2, fcnMakePoint, "GeometryGroup" )
+    << new StaticFunction( "make_point", -1, fcnMakePoint, "GeometryGroup" )
+    << new StaticFunction( "make_point_m", 3, fcnMakePointM, "GeometryGroup" )
     << new StaticFunction( "$x_at", 1, fcnXat, "GeometryGroup", QString(), true, QStringList(), false, QStringList() << "xat" << "x_at" )
     << new StaticFunction( "$y_at", 1, fcnYat, "GeometryGroup", QString(), true, QStringList(), false, QStringList() << "yat" << "y_at" )
     << new StaticFunction( "x_min", 1, fcnXMin, "GeometryGroup", QString(), false, QStringList(), false, QStringList() << "xmin" )

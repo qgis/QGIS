@@ -122,7 +122,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "invalid binary operator" ) << "1+" << false;
       QTest::newRow( "invalid function no params" ) << "cos" << false;
       QTest::newRow( "invalid function not known" ) << "coz(1)" << false;
-      QTest::newRow( "invalid operator IN" ) << "n in m" << false;
+      QTest::newRow( "invalid operator IN" ) << "n in p" << false;
       QTest::newRow( "empty node list" ) << "1 in ()" << false;
       QTest::newRow( "invalid sqrt params" ) << "sqrt(2,4)" << false;
       QTest::newRow( "special column as function" ) << "$id()" << false;
@@ -145,16 +145,16 @@ class TestQgsExpression: public QObject
       QTest::newRow( "arithmetics" ) << "1+2*3" << true;
       QTest::newRow( "logic" ) << "be or not be" << true;
 
-      QTest::newRow( "conditions +1" ) << "case when n then m end" << true;
-      QTest::newRow( "conditions +2" ) << "case when n then m else o end" << true;
-      QTest::newRow( "conditions +3" ) << "case when n then m when a then b end" << true;
-      QTest::newRow( "conditions +4" ) << "case when n then ym when a then b else z end" << true;
+      QTest::newRow( "conditions +1" ) << "case when n then p end" << true;
+      QTest::newRow( "conditions +2" ) << "case when n then p else o end" << true;
+      QTest::newRow( "conditions +3" ) << "case when n then p when a then b end" << true;
+      QTest::newRow( "conditions +4" ) << "case when n then ym when a then b else p end" << true;
 
       QTest::newRow( "conditions -1" ) << "case end" << false;
-      QTest::newRow( "conditions -2" ) << "when n then m" << false;
+      QTest::newRow( "conditions -2" ) << "when n then p" << false;
       QTest::newRow( "conditions -3" ) << "case" << false;
-      QTest::newRow( "conditions -4" ) << "case when n m end" << false;
-      QTest::newRow( "conditions -5" ) << "case m end" << false;
+      QTest::newRow( "conditions -4" ) << "case when n p end" << false;
+      QTest::newRow( "conditions -5" ) << "case p end" << false;
     }
     void parsing()
     {
@@ -443,8 +443,17 @@ class TestQgsExpression: public QObject
       QTest::newRow( "end_point line" ) << "geom_to_wkt(end_point(geom_from_wkt('LINESTRING(4 1, 1 1, 2 2)')))" << false << QVariant( "Point (2 2)" );
       QTest::newRow( "end_point polygon" ) << "geom_to_wkt(end_point(geom_from_wkt('POLYGON((-1 -1, 4 0, 4 2, 0 2, -1 -1))')))" << false << QVariant( "Point (-1 -1)" );
       QTest::newRow( "make_point" ) << "geom_to_wkt(make_point(2.2,4.4))" << false << QVariant( "Point (2.2 4.4)" );
+      QTest::newRow( "make_point z" ) << "geom_to_wkt(make_point(2.2,4.4,5.5))" << false << QVariant( "PointZ (2.2 4.4 5.5)" );
+      QTest::newRow( "make_point zm" ) << "geom_to_wkt(make_point(2.2,4.4,5.5,6.6))" << false << QVariant( "PointZM (2.2 4.4 5.5 6.6)" );
+      QTest::newRow( "make_point bad" ) << "make_point(2.2)" << true << QVariant();
+      QTest::newRow( "make_point bad 2" ) << "make_point(2.2, 3, 3, 3, 3)" << true << QVariant();
+      QTest::newRow( "make_point_m" ) << "geom_to_wkt(make_point_m(2.2,4.4,5.5))" << false << QVariant( "PointM (2.2 4.4 5.5)" );
       QTest::newRow( "x point" ) << "x(make_point(2.2,4.4))" << false << QVariant( 2.2 );
       QTest::newRow( "y point" ) << "y(make_point(2.2,4.4))" << false << QVariant( 4.4 );
+      QTest::newRow( "z point" ) << "z(make_point(2.2,4.4,6.6))" << false << QVariant( 6.6 );
+      QTest::newRow( "z not point" ) << "z(geom_from_wkt('LINESTRING(2 0,2 2, 3 2, 3 0)'))" << false << QVariant();
+      QTest::newRow( "m point" ) << "m(make_point_m(2.2,4.4,7.7))" << false << QVariant( 7.7 );
+      QTest::newRow( "m not point" ) << "m(geom_from_wkt('LINESTRING(2 0,2 2, 3 2, 3 0)'))" << false << QVariant();
       QTest::newRow( "x line" ) << "x(geom_from_wkt('LINESTRING(2 0,2 2, 3 2, 3 0)'))" << false << QVariant( 2.5 );
       QTest::newRow( "x line" ) << "y(geom_from_wkt('LINESTRING(2 0,2 2, 3 2, 3 0)'))" << false << QVariant( 1.2 );
       QTest::newRow( "x polygon" ) << "x(geom_from_wkt('POLYGON((2 0,2 2, 3 2, 3 0, 2 0))'))" << false << QVariant( 2.5 );
