@@ -44,6 +44,7 @@ class QgsClipboard;
 class QgsComposer;
 class QgsComposerManager;
 class QgsComposerView;
+class QgsStatusBarCoordinatesWidget;
 class QgsContrastEnhancement;
 class QgsCustomLayerOrderWidget;
 class QgsDoubleSpinBox;
@@ -718,14 +719,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //#endif
     //! toggles whether the current selected layer is in overview or not
     void isInOverview();
-    //! Slot to show the map coordinate position of the mouse cursor
-    void showMouseCoordinate( const QgsPoint & );
+    //! Store the position for map tool tip
+    void saveLastMousePosition( const QgsPoint & );
     //! Slot to show current map scale;
     void showScale( double theScale );
     //! Slot to handle user scale input;
     void userScale();
-    //! Slot to handle user center input;
-    void userCenter();
     //! Slot to handle user rotation input;
     //! @note added in 2.8
     void userRotation();
@@ -1073,8 +1072,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void selectionChanged( QgsMapLayer *layer );
 
     void showProgress( int theProgress, int theTotalSteps );
-    void extentsViewToggled( bool theFlag );
-    void showExtents();
+    void extentChanged();
     void showRotation();
     void showStatusMessage( const QString& theMessage );
     void displayMapToolMessage( const QString& message, QgsMessageBar::MessageLevel level = QgsMessageBar::INFO );
@@ -1248,11 +1246,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * @note added in 2.3 */
     void activateDeuteranopePreview();
 
-    void toggleFilterLegendByExpression(bool);
+    void toggleFilterLegendByExpression( bool );
     void updateFilterLegend();
-
-    /** Make the user feel dizzy */
-    void dizzy();
 
     /** Shows the statistical summary dock widget and brings it to the foreground
      */
@@ -1544,12 +1539,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsScaleComboBox *mScaleEdit;
     //! The validator for the mScaleEdit
     QValidator * mScaleEditValidator;
-    //! Widget that will live on the statusbar to display "Coordinate / Extent"
-    QLabel *mCoordsLabel;
+
     //! Widget that will live in the statusbar to display and edit coords
-    QLineEdit *mCoordsEdit;
-    //! The validator for the mCoordsEdit
-    QValidator *mCoordsEditValidator;
+    QgsStatusBarCoordinatesWidget *mCoordsEdit;
+
     //! Widget that will live on the statusbar to display "Rotation"
     QLabel *mRotationLabel;
     //! Widget that will live in the statusbar to display and edit rotation
@@ -1560,8 +1553,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QProgressBar *mProgressBar;
     //! Widget used to suppress rendering
     QCheckBox *mRenderSuppressionCBox;
-    //! A toggle to switch between mouse coords and view extents display
-    QToolButton *mToggleExtentsViewButton;
     //! Widget in status bar used to show current project CRS
     QLabel *mOnTheFlyProjectionStatusLabel;
     //! Widget in status bar used to show status of on the fly projection
@@ -1606,8 +1597,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QList<QgsWelcomePageItemsModel::RecentProjectData> mRecentProjects;
     //! Print composers of this project, accessible by id string
     QSet<QgsComposer*> mPrintComposers;
-    //! The number of decimal places to use if not automatic
-    unsigned int mMousePrecisionDecimalPlaces;
     /** QGIS-internal vector feature clipboard */
     QgsClipboard *mInternalClipboard;
     //! Flag to indicate how the project properties dialog was summoned
@@ -1623,9 +1612,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Timer for map tips
     QTimer *mpMapTipsTimer;
-
-    //! Helps to make people dizzy
-    QTimer *mDizzyTimer;
 
     //! Point of last mouse position in map coordinates (used with MapTips)
     QgsPoint mLastMapPosition;

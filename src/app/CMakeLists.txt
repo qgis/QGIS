@@ -30,6 +30,7 @@ SET(QGIS_APP_SRCS
   qgsdecorationgriddialog.cpp
   qgsdxfexportdialog.cpp
   qgsformannotationdialog.cpp
+  qgsguivectorlayertools.cpp
   qgshtmlannotationdialog.cpp
   qgsdelattrdialog.cpp
   qgsdiagramproperties.cpp
@@ -48,10 +49,10 @@ SET(QGIS_APP_SRCS
   qgsmaplayerstyleguiutils.cpp
   qgsrulebasedlabelingwidget.cpp
   qgssavestyletodbdialog.cpp
-  qgsguivectorlayertools.cpp
+  qgsstatusbarcoordinateswidget.cpp
+  qgsversioninfo.cpp
   qgswelcomepageitemsmodel.cpp
   qgswelcomepage.cpp
-  qgsversioninfo.cpp
 
   qgsmaptooladdfeature.cpp
   qgsmaptooladdpart.cpp
@@ -176,6 +177,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsjoindialog.h
   qgsaddtaborgroup.h
   qgsannotationwidget.h
+  qgsapplayertreeviewmenuprovider.h
   qgsattributeactiondialog.h
   qgsattributetypedialog.h
   qgsattributetabledialog.h
@@ -202,6 +204,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsfieldcalculator.h
   qgsfieldsproperties.h
   qgsformannotationdialog.h
+  qgsguivectorlayertools.h
   qgshtmlannotationdialog.h
   qgsidentifyresultsdialog.h
   qgslabeldialog.h
@@ -214,11 +217,10 @@ SET (QGIS_APP_MOC_HDRS
   qgsrulebasedlabelingwidget.h
   qgssavestyletodbdialog.h
   qgsshortcutsmanager.h
-  qgsapplayertreeviewmenuprovider.h
-  qgsguivectorlayertools.h
+  qgsstatusbarcoordinateswidget.h
+  qgsversioninfo.h
   qgswelcomepageitemsmodel.h
   qgswelcomepage.h
-  qgsversioninfo.h
 
   qgsmaptooladdfeature.h
   qgsmaptoolcircularstringradius.h
