@@ -145,20 +145,20 @@ class ScriptAlgorithm(GeoAlgorithm):
         if tokens[1].lower().strip() == 'name':
             self.name = self.i18n_name = tokens[0]
             return
-            
+
         if tokens[1].lower().strip().startswith('output'):
             outToken = tokens[1].strip()[len('output') + 1:]
             out = self.processOutputParameterToken(outToken)
-            
+
         elif tokens[1].lower().strip().startswith('optional'):
             optToken = tokens[1].strip()[len('optional') + 1:]
             param = self.processInputParameterToken(optToken, tokens[0])
             if param:
                 param.optional = True
-        
+
         else:
             param = self.processInputParameterToken(tokens[1], tokens[0])
-          
+
 
         if param is not None:
             self.addParameter(param)
@@ -173,9 +173,9 @@ class ScriptAlgorithm(GeoAlgorithm):
 
     def processInputParameterToken(self, token, name):
         param = None
-        
+
         descName = self.createDescriptiveName(name)
-        
+
         if token.lower().strip() == 'raster':
             param = ParameterRaster(name, descName, False)
         elif token.lower().strip() == 'vector':
@@ -204,7 +204,7 @@ class ScriptAlgorithm(GeoAlgorithm):
             options = token.strip()[len('selectionfromfile '):].split(';')
             param = ParameterSelection(name, descName, options, isSource=True)
         elif token.lower().strip().startswith('selection'):
-            options = tokens[1].strip()[len('selection '):].split(';')
+            options = token.strip()[len('selection '):].split(';')
             param = ParameterSelection(name, descName, options)
         elif token.lower().strip().startswith('boolean'):
             default = token.strip()[len('boolean') + 1:]
@@ -238,12 +238,12 @@ class ScriptAlgorithm(GeoAlgorithm):
             if not default:
                 default = 'EPSG:4326'
             param = ParameterCrs(name, descName, default)
-            
+
         return param
 
     def processOutputParameterToken(self, token):
         out = None
-        
+
         if token.lower().strip().startswith('raster'):
             out = OutputRaster()
         elif token.lower().strip().startswith('vector'):
@@ -263,7 +263,7 @@ class ScriptAlgorithm(GeoAlgorithm):
             out = OutputNumber()
         elif token.lower().strip().startswith('string'):
             out = OutputString()
-            
+
         return out
 
     def processDescriptionParameterLine(self, line):
