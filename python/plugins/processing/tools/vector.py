@@ -17,6 +17,7 @@
 ***************************************************************************
 """
 from processing.algs.qgis import postgis_utils
+from processing.algs.qgis import spatialite_utils
 
 __author__ = 'Victor Olaya'
 __date__ = 'February 2013'
@@ -67,6 +68,13 @@ TYPE_MAP_POSTGIS_LAYER = {
     QVariant.Double: "REAL",
     QVariant.Int: "INTEGER",
     QVariant.Bool: "BOOLEAN"
+}
+
+TYPE_MAP_SPATIALITE_LAYER = {
+    QVariant.String: "VARCHAR",
+    QVariant.Double: "REAL",
+    QVariant.Int: "INTEGER",
+    QVariant.Bool: "INTEGER"
 }
 
 
@@ -423,6 +431,7 @@ class VectorWriter:
 
     MEMORY_LAYER_PREFIX = 'memory:'
     POSTGIS_LAYER_PREFIX = 'postgis:'
+    SPATIALITE_LAYER_PREFIX = 'spatialite:'
 
     def __init__(self, destination, encoding, fields, geometryType,
                  crs, options=None):
@@ -485,7 +494,37 @@ class VectorWriter:
                                     table=uri.table().lower(), schema=uri.schema(), srid=crs.authid().split(":")[-1],
                                     typmod=GEOM_TYPE_MAP[geometryType].upper()))
 
-            self.layer = QgsVectorLayer(uri.uri(), uri.table(), "postgres")
+            self.layer = QgsVectorLayer(uri.uri(), uri.table(), "spatialite")
+            self.writer = self.layer.dataProvider()
+        elif self.destination.startswith(self.SPATIALITE_LAYER_PREFIX):
+            self.isNotFileBased = True
+            uri = QgsDataSourceURI(self.destination[len(self.SPATIALITE_LAYER_PREFIX):])
+            print uri.uri()
+            try:
+                db = spatialite_utils.GeoDB(uri=uri)
+            except spatialite_utils.DbError as e:
+                raise GeoAlgorithmExecutionException(
+                    "Couldn't connect to database:\n%s" % e.message)
+
+            def _runSQL(sql):
+                try:
+                    db._exec_sql_and_commit(unicode(sql))
+                except spatialite_utils.DbError as e:
+                    raise GeoAlgorithmExecutionException(
+                        'Error creating output Spatialite table:\n%s' % e.message)
+
+            fields = [_toQgsField(f) for f in fields]
+            fieldsdesc = ",".join('%s %s' % (f.name(),
+                                            TYPE_MAP_SPATIALITE_LAYER.get(f.type(), "VARCHAR"))
+                                  for f in fields)
+            
+            _runSQL("DROP TABLE IF EXISTS %s" % uri.table().lower())
+            _runSQL("CREATE TABLE %s (%s)" % (uri.table().lower(), fieldsdesc))
+            _runSQL("SELECT AddGeometryColumn('{table}', 'the_geom', {srid}, '{typmod}', 2)".format(
+                                    table=uri.table().lower(), srid=crs.authid().split(":")[-1],
+                                    typmod=GEOM_TYPE_MAP[geometryType].upper()))
+
+            self.layer = QgsVectorLayer(uri.uri(), uri.table(), "spatialite")
             self.writer = self.layer.dataProvider()
         else:
             formats = QgsVectorFileWriter.supportedFiltersAndFormats()
