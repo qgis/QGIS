@@ -41,6 +41,7 @@
 #include "qgsstringutils.h"
 #include "qgsgeometrycollectionv2.h"
 #include "qgspointv2.h"
+#include "qgspolygonv2.h"
 
 #if QT_VERSION < 0x050000
 #include <qtextdocument.h>
@@ -1379,6 +1380,65 @@ static QVariant fcnMakePointM( const QVariantList& values, const QgsExpressionCo
   return QVariant::fromValue( QgsGeometry( new QgsPointV2( QgsWKBTypes::PointM, x, y, 0.0, m ) ) );
 }
 
+static QVariant fcnMakeLine( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  if ( values.count() < 2 )
+  {
+    return QVariant();
+  }
+
+  QgsLineStringV2* lineString = new QgsLineStringV2();
+  lineString->clear();
+
+  Q_FOREACH ( const QVariant& value, values )
+  {
+    QgsGeometry geom = getGeometry( value, parent );
+    if ( geom.isEmpty() )
+      continue;
+
+    if ( geom.type() != QGis::Point || geom.isMultipart() )
+      continue;
+
+    QgsPointV2* point = dynamic_cast< QgsPointV2* >( geom.geometry() );
+    if ( !point )
+      continue;
+
+    lineString->addVertex( *point );
+  }
+
+  return QVariant::fromValue( QgsGeometry( lineString ) );
+}
+
+static QVariant fcnMakePolygon( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  if ( values.count() < 1 )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function make_polygon requires an argument" ) );
+    return QVariant();
+  }
+
+  QgsGeometry outerRing = getGeometry( values.at( 0 ), parent );
+  if ( outerRing.type() != QGis::Line || outerRing.isMultipart() || outerRing.isEmpty() )
+    return QVariant();
+
+  QgsPolygonV2* polygon = new QgsPolygonV2();
+  polygon->setExteriorRing( dynamic_cast< QgsCurveV2* >( outerRing.geometry()->clone() ) );
+
+  for ( int i = 1; i < values.count(); ++i )
+  {
+    QgsGeometry ringGeom = getGeometry( values.at( i ), parent );
+    if ( ringGeom.isEmpty() )
+      continue;
+
+    if ( ringGeom.type() != QGis::Line || ringGeom.isMultipart() || ringGeom.isEmpty() )
+      continue;
+
+    polygon->addInteriorRing( dynamic_cast< QgsCurveV2* >( ringGeom.geometry()->clone() ) );
+  }
+
+  return QVariant::fromValue( QgsGeometry( polygon ) );
+}
+
 static QVariant pointAt( const QVariantList& values, const QgsExpressionContext* context, QgsExpression* parent ) // helper function
 {
   FEAT_FROM_CONTEXT( context, f );
@@ -2253,6 +2313,7 @@ const QStringList& QgsExpression::BuiltinFunctions()
     << "xat" << "yat" << "$area" << "area" << "perimeter"
     << "$length" << "$perimeter" << "x" << "y" << "$x" << "$y" << "z" << "m" << "num_points"
     << "point_n" << "start_point" << "end_point" << "make_point" << "make_point_m"
+    << "make_line" << "make_polygon"
     << "$x_at" << "x_at" << "xat" << "$y_at" << "y_at" << "yat" << "x_min" << "xmin" << "x_max" << "xmax"
     << "y_min" << "ymin" << "y_max" << "ymax" << "geom_from_wkt" << "geomFromWKT"
     << "geom_from_gml" << "geomFromGML" << "intersects_bbox" << "bbox"
@@ -2374,6 +2435,8 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( "end_point", 1, fcnEndPoint, "GeometryGroup" )
     << new StaticFunction( "make_point", -1, fcnMakePoint, "GeometryGroup" )
     << new StaticFunction( "make_point_m", 3, fcnMakePointM, "GeometryGroup" )
+    << new StaticFunction( "make_line", -1, fcnMakeLine, "GeometryGroup" )
+    << new StaticFunction( "make_polygon", -1, fcnMakePolygon, "GeometryGroup" )
     << new StaticFunction( "$x_at", 1, fcnXat, "GeometryGroup", QString(), true, QStringList(), false, QStringList() << "xat" << "x_at" )
     << new StaticFunction( "$y_at", 1, fcnYat, "GeometryGroup", QString(), true, QStringList(), false, QStringList() << "yat" << "y_at" )
     << new StaticFunction( "x_min", 1, fcnXMin, "GeometryGroup", QString(), false, QStringList(), false, QStringList() << "xmin" )
