@@ -140,6 +140,14 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     void on_mBtnRemovePluginPath_clicked();
 
     /* Let the user add a path to the list of search paths
+     * used for finding composer template files. */
+    void on_mBtnAddTemplatePath_clicked();
+
+    /* Let the user remove a path from the list of search paths
+     * used for finding composer template files. */
+    void on_mBtnRemoveTemplatePath_clicked();
+
+    /* Let the user add a path to the list of search paths
      * used for finding SVG files. */
     void on_mBtnAddSVGPath_clicked();
 

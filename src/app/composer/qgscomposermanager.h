@@ -52,6 +52,8 @@ class QgsComposerManager: public QDialog, private Ui::QgsComposerManagerBase
     QgsComposerManager( QWidget * parent = 0, Qt::WindowFlags f = 0 );
     ~QgsComposerManager();
 
+    void addTemplates( QMap<QString, QString> templates );
+
   public slots:
     /** Raise, unminimize and activate this window */
     void activate();
@@ -65,6 +67,9 @@ class QgsComposerManager: public QDialog, private Ui::QgsComposerManagerBase
      * @param fromUser whether to return user templates from ~/.qgis/composer_templates
      */
     QMap<QString, QString> defaultTemplates( bool fromUser = false ) const;
+    QMap<QString, QString> otherTemplates() const;
+
+    QMap<QString, QString> templatesFromPath( QString path ) const;
 
     /** Open local directory with user's system, creating it if not present
      */

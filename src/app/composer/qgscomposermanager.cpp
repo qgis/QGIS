@@ -74,27 +74,12 @@ QgsComposerManager::QgsComposerManager( QWidget * parent, Qt::WindowFlags f ): Q
 
   mUserTemplatesDir = QgsApplication::qgisSettingsDirPath() + "/composer_templates";
   QMap<QString, QString> userTemplateMap = defaultTemplates( true );
-  if ( userTemplateMap.size() > 0 )
-  {
-    mTemplate->insertSeparator( mTemplate->count() );
-    QMap<QString, QString>::const_iterator templateIt = userTemplateMap.constBegin();
-    for ( ; templateIt != userTemplateMap.constEnd(); ++templateIt )
-    {
-      mTemplate->addItem( templateIt.key(), templateIt.value() );
-    }
-  }
+  this->addTemplates( userTemplateMap );
 
   mDefaultTemplatesDir = QgsApplication::pkgDataPath() + "/composer_templates";
   QMap<QString, QString> defaultTemplateMap = defaultTemplates( false );
-  if ( defaultTemplateMap.size() > 0 )
-  {
-    mTemplate->insertSeparator( mTemplate->count() );
-    QMap<QString, QString>::const_iterator templateIt = defaultTemplateMap.constBegin();
-    for ( ; templateIt != defaultTemplateMap.constEnd(); ++templateIt )
-    {
-      mTemplate->addItem( templateIt.key(), templateIt.value() );
-    }
-  }
+  this->addTemplates( defaultTemplateMap );
+  this->addTemplates( this->otherTemplates() );
 
   mTemplatePathLineEdit->setText( settings.value( "/UI/ComposerManager/templatePath", QString() ).toString() );
 
@@ -135,6 +120,20 @@ void QgsComposerManager::refreshComposers()
   }
 }
 
+void QgsComposerManager::addTemplates( QMap<QString, QString> templates )
+{
+  if ( templates.size() > 0 )
+  {
+    mTemplate->insertSeparator( mTemplate->count() );
+    QMap<QString, QString>::const_iterator templateIt = templates.constBegin();
+    for ( ; templateIt != templates.constEnd(); ++templateIt )
+    {
+      mTemplate->addItem( templateIt.key(), templateIt.value() );
+    }
+  }
+
+}
+
 void QgsComposerManager::activate()
 {
   raise();
@@ -144,17 +143,39 @@ void QgsComposerManager::activate()
 
 QMap<QString, QString> QgsComposerManager::defaultTemplates( bool fromUser ) const
 {
-  QMap<QString, QString> templateMap;
-
   //search for default templates in $pkgDataPath/composer_templates
   // user templates in $qgisSettingsDirPath/composer_templates
-  QDir defaultTemplateDir( fromUser ? mUserTemplatesDir : mDefaultTemplatesDir );
-  if ( !defaultTemplateDir.exists() )
+  return templatesFromPath( fromUser ? mUserTemplatesDir : mDefaultTemplatesDir );
+}
+
+QMap<QString, QString> QgsComposerManager::otherTemplates() const
+{
+  QMap<QString, QString> templateMap;
+  QStringList paths = QgsApplication::composerTemplatePaths();
+  Q_FOREACH ( QString path, paths )
+  {
+    QMap<QString, QString> templates = templatesFromPath( path );
+    QMap<QString, QString>::const_iterator templateIt = templates.constBegin();
+    for ( ; templateIt != templates.constEnd(); ++templateIt )
+    {
+      templateMap.insert( templateIt.key(), templateIt.value() );
+    }
+  }
+  return templateMap;
+}
+
+
+QMap<QString, QString> QgsComposerManager::templatesFromPath( QString path ) const
+{
+  QMap<QString, QString> templateMap;
+
+  QDir templateDir( path );
+  if ( !templateDir.exists() )
   {
     return templateMap;
   }
 
-  QFileInfoList fileInfoList = defaultTemplateDir.entryInfoList( QDir::Files );
+  QFileInfoList fileInfoList = templateDir.entryInfoList( QDir::Files );
   QFileInfoList::const_iterator infoIt = fileInfoList.constBegin();
   for ( ; infoIt != fileInfoList.constEnd(); ++infoIt )
   {

@@ -244,6 +244,20 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
     }
   }
 
+  myPaths = settings.value( "composer/searchPathsForTemplates", "" ).toString();
+  if ( !myPaths.isEmpty() )
+  {
+    QStringList myPathList = myPaths.split( '|' );
+    QStringList::const_iterator pathIt = myPathList.constBegin();
+    for ( ; pathIt != myPathList.constEnd(); ++pathIt )
+    {
+      QListWidgetItem* newItem = new QListWidgetItem( mListComposerTemplatePaths );
+      newItem->setText( *pathIt );
+      newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+      mListComposerTemplatePaths->addItem( newItem );
+    }
+  }
+
   //Network timeout
   mNetworkTimeoutSpinBox->setValue( settings.value( "/qgis/networkAndProxy/networkTimeout", "60000" ).toInt() );
   leUserAgent->setText( settings.value( "/qgis/networkAndProxy/userAgent", "Mozilla/5.0" ).toString() );
@@ -1012,6 +1026,17 @@ void QgsOptions::saveOptions()
   }
   settings.setValue( "svg/searchPathsForSVG", myPaths );
 
+  myPaths.clear();
+  for ( int i = 0; i < mListComposerTemplatePaths->count(); ++i )
+  {
+    if ( i != 0 )
+    {
+      myPaths += '|';
+    }
+    myPaths += mListComposerTemplatePaths->item( i )->text();
+  }
+  settings.setValue( "composer/searchPathsForTemplates", myPaths );
+
   //Network timeout
   settings.setValue( "/qgis/networkAndProxy/networkTimeout", mNetworkTimeoutSpinBox->value() );
   settings.setValue( "/qgis/networkAndProxy/userAgent", leUserAgent->text() );
@@ -1614,6 +1639,33 @@ void QgsOptions::on_mBtnRemovePluginPath_clicked()
   QListWidgetItem* itemToRemove = mListPluginPaths->takeItem( currentRow );
   delete itemToRemove;
 }
+
+void QgsOptions::on_mBtnAddTemplatePath_clicked()
+{
+  QString myDir = QFileDialog::getExistingDirectory(
+                    this,
+                    tr( "Choose a directory" ),
+                    QDir::toNativeSeparators( QDir::homePath() ),
+                    QFileDialog::ShowDirsOnly
+                  );
+
+  if ( ! myDir.isEmpty() )
+  {
+    QListWidgetItem* newItem = new QListWidgetItem( mListComposerTemplatePaths );
+    newItem->setText( myDir );
+    newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+    mListComposerTemplatePaths->addItem( newItem );
+    mListComposerTemplatePaths->setCurrentItem( newItem );
+  }
+}
+
+void QgsOptions::on_mBtnRemoveTemplatePath_clicked()
+{
+  int currentRow = mListComposerTemplatePaths->currentRow();
+  QListWidgetItem* itemToRemove = mListComposerTemplatePaths->takeItem( currentRow );
+  delete itemToRemove;
+}
+
 
 void QgsOptions::on_mBtnAddSVGPath_clicked()
 {

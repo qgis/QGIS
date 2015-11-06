@@ -690,6 +690,24 @@ QStringList QgsApplication::svgPaths()
   return myPathList;
 }
 
+/*!
+  Returns the paths to the composer template directories.
+*/
+QStringList QgsApplication::composerTemplatePaths()
+{
+  //local directories to search when looking for an SVG with a given basename
+  //defined by user in options dialog
+  QSettings settings;
+  QStringList myPathList;
+  QString myPaths = settings.value( "composer/searchPathsForTemplates", "" ).toString();
+  if ( !myPaths.isEmpty() )
+  {
+    myPathList = myPaths.split( '|' );
+  }
+
+  return myPathList;
+}
+
 QString QgsApplication::userStyleV2Path()
 {
   return qgisSettingsDirPath() + QLatin1String( "symbology-ng-style.db" );
