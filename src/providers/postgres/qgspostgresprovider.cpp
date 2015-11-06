@@ -128,11 +128,15 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
     return;
   }
 
+  // NOTE: mValid would be true after true return from
+  // getGeometryDetails, see http://hub.qgis.org/issues/13781
+
   if ( mSpatialColType == sctTopoGeometry )
   {
     if ( !getTopoLayerInfo() ) // gets topology name and layer id
     {
       QgsMessageLog::logMessage( tr( "invalid PostgreSQL topology layer" ), tr( "PostGIS" ) );
+      mValid = false;
       disconnectDb();
       return;
     }
