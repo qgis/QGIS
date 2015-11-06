@@ -3595,7 +3595,7 @@ void QgisApp::loadOGRSublayers( const QString& layertype, const QString& uri, co
     QgsDebugMsg( "Creating new vector layer using " + composedURI );
     QString name = list.at( i );
     name.replace( ':', ' ' );
-    QgsVectorLayer *layer = new QgsVectorLayer( composedURI, name, "ogr", false );
+    QgsVectorLayer *layer = new QgsVectorLayer( composedURI, fileName + " " + name, "ogr", false );
     if ( layer && layer->isValid() )
     {
       myList << layer;
