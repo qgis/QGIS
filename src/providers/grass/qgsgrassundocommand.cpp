@@ -27,6 +27,7 @@ QgsGrassUndoCommandChangeAttribute::QgsGrassUndoCommandChangeAttribute( QgsGrass
   , mDeleteCat(deleteCat)
   , mDeleteRecord( deleteRecord )
 {
+  Q_UNUSED(mField);
 }
 
 void QgsGrassUndoCommandChangeAttribute::undo()
