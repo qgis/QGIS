@@ -46,6 +46,7 @@ MACRO(ADD_GRASSLIB GRASS_BUILD_VERSION)
       ../qgsgrassoptions.cpp
       ../qgsgrassprovider.cpp
       ../qgsgrassrasterprovider.cpp
+      ../qgsgrassundocommand.cpp
       ../qgsgrassvector.cpp
       ../qgsgrassvectormap.cpp
       ../qgsgrassvectormaplayer.cpp

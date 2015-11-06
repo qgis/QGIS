@@ -391,7 +391,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     void onBeforeCommitChanges();
     void onBeforeRollBack();
     void onEditingStopped();
-    void onUndoIndexChanged( int index );
+    void onUndoIndexChanged( int currentIndex );
 
     void onDataChanged();
 
@@ -486,6 +486,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
 
     friend class QgsGrassFeatureSource;
     friend class QgsGrassFeatureIterator;
+    friend class QgsGrassUndoCommandChangeAttribute;
 };
 
 #endif // QGSGRASSPROVIDER_H

@@ -36,6 +36,7 @@
 #include "qgsgrassprovider.h"
 #include "qgsgrassfeatureiterator.h"
 #include "qgsgrassvector.h"
+#include "qgsgrassundocommand.h"
 
 #include "qgsapplication.h"
 #include "qgscoordinatereferencesystem.h"
@@ -797,7 +798,8 @@ int QgsGrassProvider::rewriteLine( int oldLid, int type, struct line_pnts *Point
       oldestLid = mLayer->map()->oldLids().value( oldLid );
     }
 
-    QgsDebugMsg( QString( "oldLid = %1 oldestLid = %2 newLine = %3" ).arg( oldLid ).arg( oldestLid ).arg( newLid ) );
+    QgsDebugMsg( QString( "oldLid = %1 oldestLid = %2 newLine = %3 numLines = %4" )
+                 .arg( oldLid ).arg( oldestLid ).arg( newLid ).arg( mLayer->map()->numLines() ) );
     QgsDebugMsg( QString( "oldLids : %1 -> %2" ).arg( newLid ).arg( oldestLid ) );
     mLayer->map()->oldLids()[newLid] = oldestLid;
     QgsDebugMsg( QString( "newLids : %1 -> %2" ).arg( oldestLid ).arg( newLid ) );
@@ -1725,7 +1727,7 @@ void QgsGrassProvider::onAttributeValueChanged( QgsFeatureId fid, int idx, const
   int cat = QgsGrassFeatureIterator::catFromFid( fid );
   QgsDebugMsg( QString( "layerField = %1" ).arg( layerField ) );
 
-  if ( !FID_IS_NEW( fid ) && layerField != mLayerField )
+  if ( !FID_IS_NEW( fid ) && ( layerField > 0 && layerField != mLayerField ) )
   {
     QgsDebugMsg( "changing attributes in different layer is not allowed" );
     // reset the value
@@ -1802,6 +1804,7 @@ void QgsGrassProvider::onAttributeValueChanged( QgsFeatureId fid, int idx, const
         mLayer->map()->lockReadWrite();
         int newLid = rewriteLine( realLine, type, mPoints, mCats );
         Q_UNUSED( newLid )
+        mLayer->map()->newCats()[fid] = newCat;
 
         // TODO: - store the new cat somewhere for cats mapping
         //       - insert record if does not exist
@@ -1813,14 +1816,26 @@ void QgsGrassProvider::onAttributeValueChanged( QgsFeatureId fid, int idx, const
   }
   else
   {
-
+    int undoIndex = mEditLayer->undoStack()->index();
+    QgsDebugMsg( QString( "undoIndex = %1" ).arg( undoIndex ) );
     if ( realCat > 0 )
     {
       QString error;
+      bool recordExists = mLayer->recordExists( realCat, error );
+      if ( !error.isEmpty() )
+      {
+        QgsGrass::warning( error );
+      }
+      error.clear();
       mLayer->changeAttributeValue( realCat, field, value, error );
       if ( !error.isEmpty() )
       {
         QgsGrass::warning( error );
+      }
+      if ( !recordExists )
+      {
+        mLayer->map()->undoCommands()[undoIndex]
+        << new QgsGrassUndoCommandChangeAttribute( this, fid, realLine, mLayerField, realCat, false, true );
       }
     }
     else
@@ -1837,16 +1852,25 @@ void QgsGrassProvider::onAttributeValueChanged( QgsFeatureId fid, int idx, const
         Vect_cat_set( mCats, mLayerField, newCat );
         mLayer->map()->lockReadWrite();
         int newLid = rewriteLine( realLine, type, mPoints, mCats );
-        Q_UNUSED( newLid )
+        Q_UNUSED( newLid );
+        mLayer->map()->newCats()[fid] = newCat;
 
-        // TODO: - store the new cat somewhere for cats mapping
         QString error;
+        bool recordExists = mLayer->recordExists( newCat, error );
+        if ( !error.isEmpty() )
+        {
+          QgsGrass::warning( error );
+        }
+        error.clear();
         // it does insert new record if it doesn't exist
         mLayer->changeAttributeValue( newCat, field, value, error );
         if ( !error.isEmpty() )
         {
           QgsGrass::warning( error );
         }
+
+        mLayer->map()->undoCommands()[undoIndex]
+        << new QgsGrassUndoCommandChangeAttribute( this, fid, newLid, mLayerField, newCat, true, !recordExists );
 
         mLayer->map()->unlockReadWrite();
       }
@@ -1933,12 +1957,33 @@ void QgsGrassProvider::setAddedFeaturesSymbol()
   }
 }
 
-void QgsGrassProvider::onUndoIndexChanged( int index )
+void QgsGrassProvider::onUndoIndexChanged( int currentIndex )
 {
-  Q_UNUSED( index )
-  QgsDebugMsg( QString( "index = %1" ).arg( index ) );
-}
+  QgsDebugMsg( QString( "currentIndex = %1" ).arg( currentIndex ) );
+  // multiple commands maybe undone with single undoIndexChanged signal
+  QList<int> indexes = mLayer->map()->undoCommands().keys();
+  qSort( indexes );
+  for ( int i = indexes.size() - 1; i >= 0; i-- )
+  {
+    int index = indexes[i];
+    if ( index < currentIndex )
+    {
+      break;
+    }
+    QgsDebugMsg( QString( "index = %1" ).arg( index ) );
+    if ( mLayer->map()->undoCommands().contains( index ) )
+    {
+      QgsDebugMsg( QString( "%1 undo commands" ).arg( mLayer->map()->undoCommands()[index].size() ) );
 
+      for ( int j = 0; j < mLayer->map()->undoCommands()[index].size(); j++ )
+      {
+        mLayer->map()->undoCommands()[index][j]->undo();
+        delete mLayer->map()->undoCommands()[index][j];
+      }
+      mLayer->map()->undoCommands().remove( index );
+    }
+  }
+}
 
 bool QgsGrassProvider::addAttributes( const QList<QgsField> &attributes )
 {
@@ -1959,6 +2004,7 @@ bool QgsGrassProvider::deleteAttributes( const QgsAttributeIds &attributes )
 void QgsGrassProvider::onBeforeCommitChanges()
 {
   QgsDebugMsg( "entered" );
+  mLayer->map()->clearUndoCommands();
 }
 
 void QgsGrassProvider::onBeforeRollBack()

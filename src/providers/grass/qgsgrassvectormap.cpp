@@ -27,6 +27,7 @@
 #include "qgsgrass.h"
 #include "qgsgrassvectormap.h"
 #include "qgsgrassvectormaplayer.h"
+#include "qgsgrassundocommand.h"
 
 extern "C"
 {
@@ -313,6 +314,7 @@ bool QgsGrassVectorMap::closeEdit( bool newMap )
   mNewLids.clear();
   mOldGeometries.clear();
   mNewCats.clear();
+  clearUndoCommands();
 
   // Mapset must be set before Vect_close()
   QgsGrass::setMapset( mGrassObject.gisdbase(), mGrassObject.location(), mGrassObject.mapset() );
@@ -355,6 +357,18 @@ bool QgsGrassVectorMap::closeEdit( bool newMap )
   emit dataChanged();
   QgsDebugMsg( "edit closed" );
   return mValid;
+}
+
+void QgsGrassVectorMap::clearUndoCommands()
+{
+  Q_FOREACH ( int index, mUndoCommands.keys() )
+  {
+    Q_FOREACH ( QgsGrassUndoCommand *command, mUndoCommands[index] )
+    {
+      delete command;
+    }
+  }
+  mUndoCommands.clear();
 }
 
 QgsGrassVectorMapLayer * QgsGrassVectorMap::openLayer( int field )
@@ -520,6 +534,13 @@ int QgsGrassVectorMap::numLines()
   QgsDebugMsg( "entered" );
 
   return ( Vect_get_num_lines( mMap ) );
+}
+
+int QgsGrassVectorMap::numAreas()
+{
+  QgsDebugMsg( "entered" );
+
+  return ( Vect_get_num_areas( mMap ) );
 }
 
 QString QgsGrassVectorMap::toString()

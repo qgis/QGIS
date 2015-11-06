@@ -25,6 +25,8 @@
 #include "qgsgrass.h"
 #include "qgsgrassvectormaplayer.h"
 
+class QgsGrassUndoCommand;
+
 class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
 {
     Q_OBJECT
@@ -62,6 +64,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     /** Get current number of lines.
      *   @return number of lines */
     int numLines();
+    int numAreas();
     // 3D map with z coordinates
     bool is3d() { return mIs3d; }
 
@@ -82,6 +85,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     QHash<int, QgsAbstractGeometryV2*> & oldGeometries() { return mOldGeometries; }
     QHash<int, int> & oldTypes() { return mOldTypes; }
     QHash<QgsFeatureId, int> & newCats() { return mNewCats; }
+    QMap<int, QList<QgsGrassUndoCommand *> > & undoCommands() { return mUndoCommands; }
 
     /** Get geometry of line.
      * @return geometry (point,line or polygon(GV_FACE)) or 0 */
@@ -106,6 +110,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
 
     bool startEdit();
     bool closeEdit( bool newMap );
+    void clearUndoCommands();
 
     /** Get layer, layer is created and loaded if not yet.
      *  @param field
@@ -194,6 +199,9 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     // New categories attached to new features or old features without category
     // fid -> cat, the fid may be old fid without category or new (negative) feature id
     QHash<QgsFeatureId, int> mNewCats;
+
+    // Map of undo commands with undo stack index as key.
+    QMap<int, QList<QgsGrassUndoCommand *> > mUndoCommands;
 
     // Mutex used to avoid concurrent read/write, used only in editing mode
     QMutex mReadWriteMutex;
