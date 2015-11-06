@@ -16,6 +16,8 @@
 #ifndef QGSWEBVIEW_H
 #define QGSWEBVIEW_H
 
+#include <stdlib.h>
+
 #include <QWidget>
 #include <QPrinter>
 
@@ -29,7 +31,13 @@ class CORE_EXPORT QgsWebView : public QWebView
   public:
     explicit QgsWebView( QWidget* parent = 0 )
         : QWebView( parent )
-    {}
+    {
+      // Apply zoom factor for HiDPI screens
+      if ( getenv( "QT_DEVICE_PIXEL_RATIO" ) )
+      {
+        setZoomFactor( atoi( getenv( "QT_DEVICE_PIXEL_RATIO" ) ) );
+      }
+    }
 };
 #else
 #include "qgswebpage.h"

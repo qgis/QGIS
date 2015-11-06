@@ -17,6 +17,8 @@
 #include "qgspixmaplabel.h"
 #include "qgsproject.h"
 
+#include "qgswebview.h"
+
 #include <QGridLayout>
 #include <QFileDialog>
 #include <QSettings>
@@ -30,9 +32,7 @@ QgsPhotoWidgetWrapper::QgsPhotoWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, 
     , mLineEdit( 0 )
     , mButton( 0 )
 {
-#ifdef WITH_QTWEBKIT
   mWebView = 0;
-#endif
 }
 
 void QgsPhotoWidgetWrapper::selectFileName()
@@ -61,12 +61,10 @@ void QgsPhotoWidgetWrapper::loadPixmap( const QString& fileName )
   if ( QUrl( fileName ).isRelative() )
     filePath = QDir( QgsProject::instance()->fileInfo().absolutePath() ).filePath( fileName );
 
-#ifdef WITH_QTWEBKIT
   if ( mWebView )
   {
     mWebView->setUrl( filePath );
   }
-#endif
 
   QPixmap pm( filePath );
   if ( !pm.isNull() && mPhotoLabel )
@@ -139,21 +137,18 @@ void QgsPhotoWidgetWrapper::initWidget( QWidget* editor )
   QWidget* container;
 
   mLineEdit = qobject_cast<QLineEdit*>( editor );
-#ifdef WITH_QTWEBKIT
-  mWebView = qobject_cast<QWebView*>( editor );
-#endif
+  mWebView = qobject_cast<QgsWebView*>( editor );
+
 
   if ( mLineEdit )
   {
     container = mLineEdit->parentWidget();
   }
-#ifdef WITH_QTWEBKIT
   else if ( mWebView )
   {
     container = mWebView->parentWidget();
     mLineEdit = container->findChild<QLineEdit*>();
   }
-#endif
   else
   {
     container = editor;
