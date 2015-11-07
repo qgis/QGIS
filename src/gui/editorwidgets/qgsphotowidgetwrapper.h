@@ -22,7 +22,11 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QLineEdit>
-#include "qgswebview.h"
+
+#ifdef WITH_QTWEBKIT
+#include <QWebView>
+#endif
+
 
 /**
  * Wraps a photo widget. Will show a picture and a file chooser to change the picture.
