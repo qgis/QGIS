@@ -67,6 +67,11 @@ class QgsMapToolNodeTool: public QgsMapToolEdit
     QgsFeature getFeatureAtPoint( QgsMapMouseEvent* e );
 
     /**
+     * Update select feature rubber band
+     */
+    void updateSelectFeature();
+
+    /**
      * Deletes the rubber band pointers and clears mRubberBands
      */
     void removeRubberBands();
@@ -120,6 +125,9 @@ class QgsMapToolNodeTool: public QgsMapToolEdit
 
     /** Rubber bands during node move */
     QMap<QgsFeatureId, QgsGeometryRubberBand*> mMoveRubberBands;
+
+    /** Rubber band for selected feature */
+    QgsGeometryRubberBand* mSelectRubberBand;
 
     /** Vertices of features to move */
     QMap<QgsFeatureId, QList< QPair<QgsVertexId, QgsPointV2> > > mMoveVertices;

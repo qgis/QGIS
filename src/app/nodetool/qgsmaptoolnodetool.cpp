@@ -212,6 +212,7 @@ void QgsMapToolNodeTool::canvasPressEvent( QgsMapMouseEvent* e )
 	// remove previous warning
 	emit messageDiscarded();
 	mSelectedFeature = new QgsSelectedFeature( feature.id(), vlayer, mCanvas );
+	updateSelectFeature();
       }
     }
     else {
@@ -219,6 +220,7 @@ void QgsMapToolNodeTool::canvasPressEvent( QgsMapMouseEvent* e )
       emit messageDiscarded();
 
       mSelectedFeature = new QgsSelectedFeature( snapResults[0].snappedAtGeometry, vlayer, mCanvas );
+      updateSelectFeature();
     }
     connect( QgisApp::instance()->layerTreeView(), SIGNAL( currentLayerChanged( QgsMapLayer* ) ), this, SLOT( currentLayerChanged( QgsMapLayer* ) ) );
     connect( mSelectedFeature, SIGNAL( destroyed() ), this, SLOT( selectedFeatureDestroyed() ) );
@@ -350,6 +352,21 @@ void QgsMapToolNodeTool::canvasPressEvent( QgsMapMouseEvent* e )
   }
 }
 
+void QgsMapToolNodeTool::updateSelectFeature()
+{
+  if (mSelectRubberBand != NULL) {
+    delete mSelectRubberBand;
+  }
+  mSelectRubberBand = new QgsGeometryRubberBand( mCanvas, mSelectedFeature->geometry()->type() );
+  mSelectRubberBand->setBrushStyle( Qt::SolidPattern );
+  mSelectRubberBand->setFillColor( QColor( 255, 0, 0, 50 ) );
+  QgsAbstractGeometryV2* rbGeom = mSelectedFeature->geometry()->geometry()->clone();
+  QgsVectorLayer *vlayer = mSelectedFeature->vlayer();
+  if ( mCanvas->mapSettings().layerTransform( vlayer ) )
+    rbGeom->transform( *mCanvas->mapSettings().layerTransform( vlayer ) );
+  mSelectRubberBand->setGeometry( rbGeom );
+}
+
 void QgsMapToolNodeTool::selectedFeatureDestroyed()
 {
   QgsDebugCall;
@@ -396,6 +413,7 @@ void QgsMapToolNodeTool::canvasReleaseEvent( QgsMapMouseEvent* e )
     {
       // select another feature
       mSelectedFeature->setSelectedFeature( mAnother, vlayer, mCanvas );
+      updateSelectFeature();
       mIsPoint = vlayer->geometryType() == QGis::Point;
       mSelectAnother = false;
     }
@@ -494,6 +512,10 @@ void QgsMapToolNodeTool::cleanTool( bool deleteSelectedFeature )
 {
   removeRubberBands();
 
+  if ( mSelectRubberBand != NULL ) {
+    delete mSelectRubberBand;
+    mSelectRubberBand = NULL;
+  }
   if ( mSelectedFeature )
   {
     QgsVectorLayer *vlayer = mSelectedFeature->vlayer();
@@ -504,7 +526,7 @@ void QgsMapToolNodeTool::cleanTool( bool deleteSelectedFeature )
     disconnect( vlayer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
 
     if ( deleteSelectedFeature ) delete mSelectedFeature;
-    mSelectedFeature = 0;
+    mSelectedFeature = NULL;
   }
   if ( mNodeEditor )
   {
