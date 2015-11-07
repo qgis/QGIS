@@ -32,13 +32,19 @@ ELSE(EXISTS QSCINTILLA_VERSION_STR)
       /usr/include
     )
 
-  FIND_LIBRARY(QSCINTILLA_LIBRARY
-    NAMES qscintilla2 libqscintilla2 libqscintilla2.dylib
+  if(ENABLE_QT5)
+    set(QSCINTILLA_LIBRARY_NAMES qscintilla2-qt5 libqscintilla2-qt5 libqscintilla2-qt5.dylib)
+  else(ENABLE_QT5)
+    set(QSCINTILLA_LIBRARY_NAMES qscintilla2 libqscintilla2 libqscintilla2.dylib)
+  endif(ENABLE_QT5)
+
+  find_library(QSCINTILLA_LIBRARY
+    NAMES ${QSCINTILLA_LIBRARY_NAMES}
     PATHS
       "${QT_LIBRARY_DIR}"
       /usr/local/lib
       /usr/lib
-    )
+  )
 
   IF(QSCINTILLA_LIBRARY AND QSCINTILLA_INCLUDE_DIR)
     SET(QSCINTILLA_FOUND TRUE)
