@@ -65,10 +65,8 @@ class GUI_EXPORT QgsPhotoWidgetWrapper : public QgsEditorWidgetWrapper
     //! This label is used as a container to display a picture that scales with the dialog layout.
     //! It will always point to the same label as mPhotoLabel, but may be NULL if the widget is of type QLabel.
     QgsPixmapLabel* mPhotoPixmapLabel;
-#ifdef WITH_QTWEBKIT
     //! This webview is used as a container to display the picture
-    QWebView* mWebView;
-#endif
+    QgsWebView* mWebView;
     //! The line edit containing the path to the picture
     QLineEdit* mLineEdit;
     //! The button to open the file chooser dialog
