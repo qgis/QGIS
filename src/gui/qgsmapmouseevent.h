@@ -85,13 +85,19 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
      *
      * @return True if there is a snapped point cached.
      */
-    bool isSnapped() const { return mSnapMatch.isValid(); }
+    bool isSnapped() const { return mSnapMatchMap.isValid(); }
 
     /**
      * @brief mapPoint returns the point in coordinates
      * @return the point in map coordinates, after snapping if requested in the event.
      */
     inline QgsPoint mapPoint() const { return mMapPoint; }
+
+    /**
+      * @brief layerPoint returns the point in coordinates
+      * @return the point in layer coordinates, after snapping if requested in the event.
+      */
+    inline QgsPoint layerPoint() const { return mLayerPoint; }
 
     /**
      * Set the (snapped) point this event points to in map coordinates.
@@ -106,7 +112,14 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
      *
      * @return The cursor position in map coordinates.
      */
-    QgsPoint originalMapPoint() const { return mMapPoint; }
+    QgsPoint originalMapPoint() const { return mOriginalMapPoint; }
+
+    /**
+     * Returns the original, unmodified layer point of the mouse cursor.
+     *
+     * @return The cursor position in layer coordinates.
+     */
+    QgsPoint originalLayerPoint() const { return mOriginalLayerPoint; }
 
     /**
      * The snapped mouse cursor in pixel coordinates.
@@ -132,8 +145,14 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
     //! Unsnapped point in map coordinates.
     QgsPoint mOriginalMapPoint;
 
+    //! Unsnapped point in layer coordinates.
+    QgsPoint mOriginalLayerPoint;
+
     //! Location in map coordinates. May be snapped.
     QgsPoint mMapPoint;
+
+    //! Location in current layer coordinates. May be snapped.
+    QgsPoint mLayerPoint;
 
     //! Location in pixel coordinates. May be snapped.
     //! Original pixel point available through the parent QMouseEvent.
@@ -142,7 +161,8 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
     //! The map canvas on which the event was triggered.
     QgsMapCanvas* mMapCanvas;
 
-    QgsPointLocator::Match mSnapMatch;
+    QgsPointLocator::Match mSnapMatchMap;
+    QgsPointLocator::Match mSnapMatchLayer;
 };
 
 #endif // QGSMAPMOUSEEVENT_H

@@ -87,6 +87,18 @@ class QgsSnappingUtils : QObject
     /** Query whether to consider intersections of nearby segments for snapping */
     bool snapOnIntersections() const;
 
+    enum SnapToType
+    {
+      Invalid = 0,      //!< This value is invalid
+      SnapToMap = 1,    //!< Perform snapping with map coordinates
+      SnapToLayer = 2,  //!< Perform snapping with (current) layer coordinates
+    };
+
+    /** Set whether snapping occurs with map or layer coordinates */
+    void setSnapToType( int snapToType );
+    /** Find out whether snapping occurs with map or layer coordinates */
+    int getSnapToType();
+
   public slots:
     /** Read snapping configuration from the project */
     void readConfigFromProject();

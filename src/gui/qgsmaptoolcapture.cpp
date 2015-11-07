@@ -347,18 +347,23 @@ int QgsMapToolCapture::nextPoint( const QPoint &p, QgsPoint &layerPoint, QgsPoin
 
 int QgsMapToolCapture::addVertex( const QgsPoint& point )
 {
-  if ( mode() == CaptureNone )
-  {
-    QgsDebugMsg( "invalid capture mode" );
-    return 2;
-  }
-
   int res;
   QgsPoint layerPoint;
   res = nextPoint( point, layerPoint );
   if ( res != 0 )
   {
     return res;
+  }
+
+  return addVertex( point, layerPoint );
+}
+
+int QgsMapToolCapture::addVertex( const QgsPoint& mapPoint, const QgsPoint& layerPoint )
+{
+  if ( mode() == CaptureNone )
+  {
+    QgsDebugMsg( "invalid capture mode" );
+    return 2;
   }
 
   if ( !mRubberBand )
@@ -390,14 +395,14 @@ int QgsMapToolCapture::addVertex( const QgsPoint& point )
 
   if ( mCaptureMode == CaptureLine )
   {
-    mTempRubberBand->addPoint( point );
+    mTempRubberBand->addPoint( mapPoint );
   }
   else if ( mCaptureMode == CapturePolygon )
   {
     const QgsPoint *firstPoint = mRubberBand->getPoint( 0, 0 );
     mTempRubberBand->addPoint( *firstPoint );
-    mTempRubberBand->movePoint( point );
-    mTempRubberBand->addPoint( point );
+    mTempRubberBand->movePoint( mapPoint );
+    mTempRubberBand->addPoint( mapPoint );
   }
 
   validateGeometry();

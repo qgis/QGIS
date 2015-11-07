@@ -136,6 +136,18 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     /** Query whether to consider intersections of nearby segments for snapping */
     bool snapOnIntersections() const { return mSnapOnIntersection; }
 
+    enum SnapToType
+    {
+      Invalid = 0,      //!< This value is invalid
+      SnapToMap = 1,    //!< Perform snapping with map coordinates
+      SnapToLayer = 2,  //!< Perform snapping with (current) layer coordinates
+    };
+
+    /** Set whether snapping occurs with map or layer coordinates */
+    void setSnapToType( int snapToType );
+    /** Find out whether snapping occurs with map or layer coordinates */
+    int getSnapToType() { return mSnapToType; }
+
   public slots:
     /** Read snapping configuration from the project */
     void readConfigFromProject();
@@ -159,8 +171,11 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     //! get from map settings pointer to destination CRS - or 0 if projections are disabled
     const QgsCoordinateReferenceSystem* destCRS();
 
-    //! delete all existing locators (e.g. when destination CRS has changed and we need to reindex)
-    void clearAllLocators();
+    //! delete all existing locators to map coordinates (e.g. when map CRS has changed and we need to reindex)
+    void clearAllToMapLocators();
+
+    //! delete all existing locators to layer coordinates (e.g. when current layer has changed and we need to reindex)
+    void clearAllToLayerLocators();
 
     //! return a locator (temporary or not) according to the indexing strategy
     QgsPointLocator* locatorForLayerUsingStrategy( QgsVectorLayer* vl, const QgsPoint& pointMap, double tolerance );
@@ -183,15 +198,20 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     int mDefaultType;
     double mDefaultTolerance;
     QgsTolerance::UnitType mDefaultUnit;
+    int mSnapToType;
     QList<LayerConfig> mLayers;
     bool mSnapOnIntersection;
 
     // internal data
     typedef QMap<QgsVectorLayer*, QgsPointLocator*> LocatorsMap;
-    //! on-demand locators used (locators are owned)
+    //! on-demand locators used (locators are owned) for snapping to map coordinates
     LocatorsMap mLocators;
-    //! temporary locators (indexing just a part of layers). owned by the instance
+    //! temporary locators (indexing just a part of layers) for snapping to map coordinates. owned by the instance
     LocatorsMap mTemporaryLocators;
+    //! on-demand locators used (locators are owned) for snapping to layer coordinates
+    LocatorsMap mToLayerLocators;
+    //! temporary locators (indexing just a part of layers) for snapping to layer coordinates. owned by the instance
+    LocatorsMap mTemporaryToLayerLocators;
     //! list of layer IDs that are too large to be indexed (hybrid strategy will use temporary locators for those)
     QSet<QString> mHybridNonindexableLayers;
 

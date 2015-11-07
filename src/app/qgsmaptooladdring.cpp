@@ -58,7 +58,7 @@ void QgsMapToolAddRing::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
   //add point to list and to rubber band
   if ( e->button() == Qt::LeftButton )
   {
-    int error = addVertex( e->mapPoint() );
+    int error = addVertex( e->mapPoint(), e->layerPoint() );
     if ( error == 1 )
     {
       //current layer is not a vector layer

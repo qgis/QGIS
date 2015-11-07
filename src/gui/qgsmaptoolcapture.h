@@ -92,8 +92,10 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     int nextPoint( const QPoint &p, QgsPoint &layerPoint, QgsPoint &mapPoint );
 
     /** Adds a point to the rubber band (in map coordinates) and to the capture list (in layer coordinates)
-     @return 0 in case of success, 1 if current layer is not a vector layer, 2 if coordinate transformation failed*/
-    int addVertex( const QgsPoint& point );
+      * @param mapPoint The point in map coordinates
+      * @param layerPoint The point in the crs of the current layer
+      * @return 0 in case of success, 1 if current layer is not a vector layer, 2 if coordinate transformation failed*/
+    int addVertex( const QgsPoint& mapPoint, const QgsPoint& layerPoint );
 
     /** Removes the last vertex from mRubberBand and mCaptureList*/
     void undo();
@@ -139,6 +141,13 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      * Close an open polygon
      */
     void closePolygon();
+
+    // deprecated methods
+
+    /** Adds a point to the rubber band (in map coordinates) and to the capture list (in layer coordinates).
+      * @deprecated Use addVertex( mapPoint, layerPoint ) instead
+      * @return 0 in case of success, 1 if current layer is not a vector layer, 2 if coordinate transformation failed*/
+    Q_DECL_DEPRECATED int addVertex( const QgsPoint& point );
 
   private:
     //! whether tracing has been requested by the user
