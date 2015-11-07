@@ -184,6 +184,9 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     //! Returns the pathes to svg directories.
     static QStringList svgPaths();
 
+    //! Returns the pathes to composer template directories
+    static QStringList composerTemplatePaths();
+
     //! Returns the system environment variables passed to application.
     static QMap<QString, QString> systemEnvVars();
 
