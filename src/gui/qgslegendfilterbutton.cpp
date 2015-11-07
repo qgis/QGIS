@@ -43,8 +43,7 @@ QgsLegendFilterButton::QgsLegendFilterButton( QWidget* parent ) :
 
   setMenu( mMenu );
 
-  connect( this, SIGNAL( toggled( bool ) ), this, SIGNAL( triggered( bool ) ) );
-  connect( this, SIGNAL( toggled(bool) ), this, SLOT( onToggle( bool ) ) );
+  connect( this, SIGNAL( toggled( bool ) ), this, SLOT( onToggle( bool ) ) );
 }
 
 QgsLegendFilterButton::~QgsLegendFilterButton()
@@ -53,7 +52,8 @@ QgsLegendFilterButton::~QgsLegendFilterButton()
 
 void QgsLegendFilterButton::onToggle( bool checked )
 {
-  if ( checked && expressionText().isEmpty() ) {
+  if ( checked && expressionText().isEmpty() )
+  {
     // show the dialog if the current expression is empty
     blockSignals( true );
     onSetLegendFilterExpression();
