@@ -255,7 +255,7 @@ class Setting:
 
     def setValue(self, value):
         self.validator(value)
-        self._value = value
+        self.value = value
 
     def read(self):
         qsettings = QSettings()

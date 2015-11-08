@@ -215,12 +215,7 @@ class SettingDelegate(QStyledItemDelegate):
         if setting.valuetype == Setting.SELECTION:
             editor.setCurrentIndex(editor.findText(value))
         else:
-            if isinstance(value, (int, long)):
-                editor.setValue(value)
-            elif isinstance(value, float):
-                editor.setValue(value)
-            elif isinstance(value, (str, unicode)):
-                editor.setText(value)
+            editor.setText(value)
 
     def setModelData(self, editor, model, index):
         value = self.convertValue(index.model().data(index, Qt.EditRole))
@@ -228,12 +223,7 @@ class SettingDelegate(QStyledItemDelegate):
         if setting.valuetype == Setting.SELECTION:
             model.setData(index, editor.currentText(), Qt.EditRole)
         else:
-            if isinstance(value, (int, long)):
-                model.setData(index, editor.value(), Qt.EditRole)
-            elif isinstance(value, float):
-                model.setData(index, editor.value(), Qt.EditRole)
-            elif isinstance(value, (str, unicode)):
-                model.setData(index, editor.text(), Qt.EditRole)
+            model.setData(index, editor.text(), Qt.EditRole)
 
     def sizeHint(self, option, index):
         return QSpinBox().sizeHint()
