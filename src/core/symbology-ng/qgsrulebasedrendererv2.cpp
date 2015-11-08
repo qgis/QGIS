@@ -980,7 +980,7 @@ bool QgsRuleBasedRendererV2::legendSymbolItemsCheckable() const
 bool QgsRuleBasedRendererV2::legendSymbolItemChecked( const QString& key )
 {
   Rule* rule = mRootRule->findRuleByKey( key );
-  return rule ? rule->checkState() : true;
+  return rule ? rule->active() : true;
 }
 
 void QgsRuleBasedRendererV2::checkLegendSymbolItem( const QString& key, bool state )
