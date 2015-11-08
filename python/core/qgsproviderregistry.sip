@@ -48,6 +48,7 @@ class QgsProviderRegistry
     QWidget *selectWidget( const QString & providerKey,
                            QWidget * parent = 0, const Qt::WindowFlags& fl = 0 );
 
+%If (!QT5_SUPPORT)
     /** Get pointer to provider function
         @param providerKey identificator of the provider
         @param functionName name of function
@@ -55,6 +56,7 @@ class QgsProviderRegistry
      */
     void *function( const QString & providerKey,
                     const QString & functionName );
+%End
 
     QLibrary *providerLibrary( const QString & providerKey ) const;
 

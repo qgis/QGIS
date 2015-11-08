@@ -4,15 +4,20 @@
 
 %Feature HAVE_QSCI_SIP
 
+%Import core/core.sip
+
 %Import QtCore/QtCoremod.sip
 %Import QtGui/QtGuimod.sip
 %Import QtXml/QtXmlmod.sip
 
 %If (HAVE_QSCI_SIP)
-%Import Qsci/qscimod4.sip
+  %If (!QT5_SUPPORT)
+    %Import Qsci/qscimod4.sip
+  %End
+  %If (QT5_SUPPORT)
+    %Import Qsci/qscimod5.sip
+  %End
 %End
-
-%Import core/core.sip
 
 %Include qgsblendmodecombobox.sip
 
