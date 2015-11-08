@@ -162,6 +162,8 @@ class QgsSymbolLayerV2Utils
     static bool wellKnownMarkerFromSld( QDomElement &element,
         QString &name, QColor &color, QColor &borderColor,
         double &borderWidth, double &size ) /Deprecated/;
+
+    //! @note available in python as wellKnownMarkerFromSld2
     static bool wellKnownMarkerFromSld( QDomElement &element,
                                         QString &name, QColor &color, QColor &borderColor, Qt::PenStyle &borderStyle,
                                         double &borderWidth, double &size ) /PyName=wellKnownMarkerFromSld2/;
@@ -175,7 +177,7 @@ class QgsSymbolLayerV2Utils
 
 
     static void labelTextToSld( QDomDocument &doc, QDomElement &element, const QString& label,
-                                const QFont& font, const QColor& color = QColor(), double size = -1 );
+                                const QFont &font, const QColor& color = QColor(), double size = -1 );
 
     /** Create ogr feature style string for pen */
     static QString ogrFeatureStylePen( double width, double mmScaleFactor, double mapUnitsScaleFactor, const QColor& c,

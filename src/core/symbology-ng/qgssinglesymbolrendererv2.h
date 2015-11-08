@@ -30,8 +30,10 @@ class CORE_EXPORT QgsSingleSymbolRendererV2 : public QgsFeatureRendererV2
 
     virtual ~QgsSingleSymbolRendererV2();
 
+    //! @note available in python as symbolForFeature2
     virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
 
+    //! @note available in python as originalSymbolForFeature2
     virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
 
     virtual void startRender( QgsRenderContext& context, const QgsFields& fields ) override;
@@ -62,6 +64,7 @@ class CORE_EXPORT QgsSingleSymbolRendererV2 : public QgsFeatureRendererV2
     //! returns bitwise OR-ed capabilities of the renderer
     virtual int capabilities() override { return SymbolLevels | RotationField; }
 
+    //! @note available in python as symbol2
     virtual QgsSymbolV2List symbols( QgsRenderContext& context ) override;
 
     //! create renderer from XML element

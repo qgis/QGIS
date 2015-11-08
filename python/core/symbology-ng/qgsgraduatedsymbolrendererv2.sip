@@ -87,8 +87,9 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
 
     virtual ~QgsGraduatedSymbolRendererV2();
 
+    //! @note labelForLowerUpper in python bindings
     virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) /PyName=symbolForFeature2/;
-
+    //! @note originalSymbolForFeature2 in python bindings
     virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feature, QgsRenderContext& context ) /PyName=originalSymbolForFeature2/;
 
     virtual void startRender( QgsRenderContext& context, const QgsFields& fields );
@@ -106,6 +107,7 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
     //! returns bitwise OR-ed capabilities of the renderer
     virtual int capabilities();
 
+    //! @note symbol2 in python bindings
     virtual QgsSymbolV2List symbols( QgsRenderContext& context ) /PyName=symbols2/;
 
     QString classAttribute() const;

@@ -73,6 +73,7 @@ class CORE_EXPORT QgsDxfExport
     void writeInt( int i );
     void writeDouble( double d );
     void writeString( const QString &s );
+    //! @note available in python bindings as writeGroupPoint
     void writeGroup( int code, const QgsPoint &p, double z = 0.0, bool skipz = false );
     void writeGroup( const QColor& color, int exactMatch = 62, int rgbCode = 420, int transparencyCode = 440 );
 

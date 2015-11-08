@@ -94,8 +94,8 @@ class CORE_EXPORT QgsFeatureRendererV2
      * @note added in QGIS 2.12
      * @note available in Python bindings as symbolForFeature2
      */
-    //TODO - QGIS 3.0 make pure virtual when above method is removed
-    //TODO - QGIS 3.0 change PyName to symbolForFeature when deprecated method is removed
+    // TODO - QGIS 3.0 make pure virtual when above method is removed
+    // TODO - QGIS 3.0 change PyName to symbolForFeature when deprecated method is removed
     virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature, QgsRenderContext& context );
 
     /**

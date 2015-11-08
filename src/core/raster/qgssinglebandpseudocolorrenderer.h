@@ -41,6 +41,7 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
     /** Takes ownership of the shader*/
     void setShader( QgsRasterShader* shader );
     QgsRasterShader* shader() { return mShader; }
+    //! @note available in python as constShader
     const QgsRasterShader* shader() const { return mShader; }
 
     void writeXML( QDomDocument& doc, QDomElement& parentElem ) const override;

@@ -493,6 +493,7 @@ class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
     static QString vsiPrefix( const QString& uri ) { return qgsVsiPrefix( uri ); }
 
     static QgsDataItem* itemFromPath( QgsDataItem* parent, QString path, QString name );
+    //! @note available in python as itemFromFilePath
     static QgsDataItem* itemFromPath( QgsDataItem* parent, const QString& filePath, const QString& name, const QString& path );
 
     static const QIcon &iconZip();

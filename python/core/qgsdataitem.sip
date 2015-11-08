@@ -354,6 +354,7 @@ class QgsZipItem : QgsDataCollectionItem
     static QString vsiPrefix( const QString& uri );
 
     static QgsDataItem* itemFromPath( QgsDataItem* parent, QString path, QString name ) /Factory/;
+    //! @note available in python as itemFromFilePath
     static QgsDataItem* itemFromPath( QgsDataItem* parent, const QString& filePath, const QString& name, const QString& path ) /Factory,PyName=itemFromFilePath/;
 
     static const QIcon &iconZip();
