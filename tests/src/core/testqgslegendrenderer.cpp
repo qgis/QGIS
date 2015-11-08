@@ -402,7 +402,9 @@ void TestQgsLegendRenderer::testFilterByExpression()
   mapSettings.setLayers( ll );
 
   // use an expression to only include the red point
-  QgsLayerTreeUtils::setLegendFilterByExpression( *legendModel.rootGroup()->findLayer( mVL3->id() ), "test_attr=1" );
+  QgsLayerTreeLayer* layer = legendModel.rootGroup()->findLayer( mVL3->id() );
+  QVERIFY( layer );
+  QgsLayerTreeUtils::setLegendFilterByExpression( *layer, "test_attr=1" );
 
   legendModel.setLegendFilterByMap( &mapSettings );
 
