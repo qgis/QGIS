@@ -17,6 +17,7 @@
 ***************************************************************************
 """
 
+
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -26,12 +27,14 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+import traceback
 from PyQt4.QtGui import QApplication
 from PyQt4.QtCore import QCoreApplication
 from qgis.core import QgsMapLayerRegistry
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingResults import ProcessingResults
+from processing.core.ProcessingLog import ProcessingLog
 
 from processing.gui.ResultsDialog import ResultsDialog
 from processing.gui.RenderingStyles import RenderingStyles
@@ -71,7 +74,9 @@ def handleAlgorithmResults(alg, progress=None, showResults=True):
                     dataobjects.load(out.value, name, alg.crs,
                                      RenderingStyles.getStyle(alg.commandLineName(),
                                                               out.name))
-            except Exception as e:
+            except Exception:
+                ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
+                                       "Error loading result layer:\n" + traceback.format_exc())
                 wrongLayers.append(out.description)
         elif isinstance(out, OutputHTML):
             ProcessingResults.addResult(out.description, out.value)
