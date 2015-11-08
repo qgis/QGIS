@@ -68,7 +68,8 @@ class Parameter:
         # It can be used as any other parameter, but it will not be
         # shown to the user
         self.hidden = False
-        self.optional = optional
+
+        self.optional = parseBool(optional)
 
     def setValue(self, obj):
         """
@@ -248,7 +249,7 @@ class ParameterFixedTable(Parameter):
         if isinstance(cols, basestring):
             self.cols = self.cols.split(";")
         self.numRows = int(numRows)
-        self.fixedNumOfRows = fixedNumOfRows
+        self.fixedNumOfRows = parseBool(fixedNumOfRows)
         self.value = None
 
     def setValue(self, obj):
@@ -575,6 +576,7 @@ class ParameterSelection(Parameter):
     def __init__(self, name='', description='', options=[], default=0, isSource=False,
                  optional=False):
         Parameter.__init__(self, name, description, optional)
+        isSource = parseBool(isSource)
         self.options = options
         if isSource:
             self.options = []
