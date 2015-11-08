@@ -558,20 +558,27 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds& featureIds, const Qg
     case pktOid:
     case pktInt:
     {
-      //simple primary key, so prefer to use an "IN (...)" query. These are much faster then multiple chained ...OR... clauses
-      QString delim;
-      QString expr = QString( "%1 IN (" ).arg(( pkType == pktOid ? "oid" : QgsPostgresConn::quotedIdentifier( fields[ pkAttrs[0] ].name() ) ) );
+      QString expr;
 
-      Q_FOREACH ( const QgsFeatureId featureId, featureIds )
+      //simple primary key, so prefer to use an "IN (...)" query. These are much faster then multiple chained ...OR... clauses
+      if ( !featureIds.isEmpty() )
       {
-        expr += delim + QString::number( featureId );
-        delim = ',';
+        QString delim;
+        expr = QString( "%1 IN (" ).arg(( pkType == pktOid ? "oid" : QgsPostgresConn::quotedIdentifier( fields[ pkAttrs[0] ].name() ) ) );
+
+        Q_FOREACH ( const QgsFeatureId featureId, featureIds )
+        {
+          expr += delim + FID_TO_STRING( featureId );
+          delim = ',';
+        }
+        expr += ')';
       }
-      expr += ')';
 
       return expr;
     }
-    default:
+    case pktFidMap:
+    case pktTid:
+    case pktUnknown:
     {
       //complex primary key, need to build up where string
       QStringList whereClauses;
