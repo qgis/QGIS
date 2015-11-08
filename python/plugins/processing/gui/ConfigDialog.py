@@ -223,7 +223,11 @@ class SettingDelegate(QStyledItemDelegate):
         if setting.valuetype == Setting.SELECTION:
             model.setData(index, editor.currentText(), Qt.EditRole)
         else:
-            model.setData(index, editor.text(), Qt.EditRole)
+            if isinstance(value, (str, basestring)):
+                model.setData(index, editor.text(), Qt.EditRole)
+            else:
+                model.setData(index, editor.value(), Qt.EditRole)
+
 
     def sizeHint(self, option, index):
         return QSpinBox().sizeHint()
