@@ -316,6 +316,43 @@ class fToolsPlugin:
         QObject.connect(self.mergeShapes, SIGNAL("triggered()"), self.doMergeShapes)
         QObject.connect(self.spatialIndex, SIGNAL("triggered()"), self.doSpatIndex)
 
+        # if qgis version is > 2.10 than warn user that the application of
+        # the new geometry V2 engine make ftools prone to geometry errors
+        if int(self.QgisVersion) >= 21000:
+
+            def notifySeverWarning():
+                # remove listener if it has been registered at startup
+                try:
+                    self.iface.initializationCompleted.disconnect(notifySeverWarning)
+                except:
+                    pass
+
+                QMessageBox.warning(
+                    self.iface.mainWindow(),
+                    "FWTools message title",
+                    """ <style>p { margin-bottom: 1em; }</style>
+                        
+                        <p>...General description of the reason of the message...</p>
+                        
+                        <ul>
+                            <li><p><b>...a bold title about the content of the message...</b></p>
+                                
+                                <p>...detailed and polite description of message related with FWTool</p>
+                                
+                                <p><a href="https://github.com/qgis//put_here_issue_hiperlink">
+                                    Click here to read more details of the issue
+                                </a></p>
+                            </li>
+                        </ul>
+                    """
+                )
+
+            # notify severe warning only when the desktop interface has been loaded
+            if self.iface.mainWindow().isVisible():
+                notifySeverWarning()
+            else:
+                self.iface.initializationCompleted.connect(notifySeverWarning)
+
     def unload(self):
         self.menu.removeAction(self.analysisMenu.menuAction())
         self.menu.removeAction(self.researchMenu.menuAction())
