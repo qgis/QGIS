@@ -165,7 +165,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     void setScheduledAuthDbEraseRequestEmitted( bool emitted ) { mScheduledDbEraseRequestEmitted = emitted; }
 
     /** Simple text tag describing authentication system for message logs */
-    const QString authManTag() const { return smAuthManTag; }
+    QString authManTag() const { return smAuthManTag; }
 
     /** Instantiate and register existing C++ core authentication methods from plugins */
     bool registerCoreAuthMethods();
