@@ -171,7 +171,7 @@ QgsOracleProvider::QgsOracleProvider( QString const & uri )
       Q_ASSERT( mPrimaryKeyType != pktInt || mPrimaryKeyAttrs.size() == 1 );
 
       QString delim;
-      foreach ( int idx, mPrimaryKeyAttrs )
+      Q_FOREACH ( int idx, mPrimaryKeyAttrs )
       {
         Q_ASSERT( idx >= 0 && idx < mAttributeFields.size() );
         key += delim + mAttributeFields[ idx ].name();
@@ -373,7 +373,7 @@ void QgsOracleProvider::appendPkParams( QgsFeatureId fid, QSqlQuery &qry ) const
       QVariant pkValsVariant = mShared->lookupKey( fid );
       if ( !pkValsVariant.isNull() )
       {
-        foreach ( const QVariant &v, pkValsVariant.toList() )
+        Q_FOREACH ( const QVariant &v, pkValsVariant.toList() )
         {
           QgsDebugMsgLevel( QString( "addBindValue pk %1" ).arg( FID_TO_STRING( fid ) ), 4 );
           qry.addBindValue( v );
@@ -457,7 +457,7 @@ QString QgsOracleUtils::whereClause( QgsFeatureId featureId, const QgsFields& fi
 QString QgsOracleUtils::whereClause( QgsFeatureIds featureIds, const QgsFields &fields, QgsOraclePrimaryKeyType primaryKeyType, const QList<int> &primaryKeyAttrs, QSharedPointer<QgsOracleSharedData> sharedData )
 {
   QStringList whereClauses;
-  foreach ( const QgsFeatureId featureId, featureIds )
+  Q_FOREACH ( const QgsFeatureId featureId, featureIds )
   {
     whereClauses << whereClause( featureId, fields, primaryKeyType, primaryKeyAttrs, sharedData );
   }
@@ -635,14 +635,6 @@ bool QgsOracleProvider::loadFields()
           else
           {
             types.insert( name, QString( "%1(%2,%3)" ).arg( type ).arg( prec ).arg( scale ) );
-          }
-        }
-        else if ( type == "MDSYS.SDO_GEOMETRY" )
-        {
-          if ( !mConnection->hasSpatial() )
-          {
-            QgsMessageLog::logMessage( tr( "Other spatial field %1.%2.%3 ignored" ).arg( mOwnerName ).arg( mTableName ).arg( name ), tr( "Oracle" ) );
-            continue;
           }
         }
         else
@@ -1204,7 +1196,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
     {
       QString keys, kdelim = "";
 
-      foreach ( int idx, mPrimaryKeyAttrs )
+      Q_FOREACH ( int idx, mPrimaryKeyAttrs )
       {
         const QgsField &fld = field( idx );
         insert += delim + quotedIdentifier( fld.name() );
@@ -1272,7 +1264,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
             values += delim + defVal;
           }
         }
-        else if ( fld.typeName() == "MDSYS.SDO_GEOMETRY" )
+        else if ( fld.typeName().endsWith( ".SDO_GEOMETRY" ) )
         {
           values += delim + "?";
         }
@@ -1352,7 +1344,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
           throw OracleException( tr( "Could not retrieve feature id %1" ).arg( features->id() ), getfid );
 
         int col = 0;
-        foreach ( int idx, mPrimaryKeyAttrs )
+        Q_FOREACH ( int idx, mPrimaryKeyAttrs )
         {
           const QgsField &fld = field( idx );
 
@@ -1386,7 +1378,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
         {
           QList<QVariant> primaryKeyVals;
 
-          foreach ( int idx, mPrimaryKeyAttrs )
+          Q_FOREACH ( int idx, mPrimaryKeyAttrs )
           {
             primaryKeyVals << attributevec[ idx ];
           }
@@ -1567,7 +1559,7 @@ bool QgsOracleProvider::deleteAttributes( const QgsAttributeIds& ids )
     QList<int> idsList = ids.values();
     qSort( idsList.begin(), idsList.end(), qGreater<int>() );
 
-    foreach ( int id, idsList )
+    Q_FOREACH ( int id, idsList )
     {
       const QgsField &fld = mAttributeFields.at( id );
 
@@ -1644,6 +1636,7 @@ bool QgsOracleProvider::changeAttributeValues( const QgsChangedAttributesMap &at
       QString sql = QString( "UPDATE %1 SET " ).arg( mQuery );
 
       bool pkChanged = false;
+      QList<int> geometryParams;
 
       // cycle through the changed attributes of the feature
       QString delim;
@@ -1658,9 +1651,15 @@ bool QgsOracleProvider::changeAttributeValues( const QgsChangedAttributesMap &at
           sql += delim + QString( "%1=" ).arg( quotedIdentifier( fld.name() ) );
           delim = ",";
 
-          if ( fld.typeName() == "MDSYS.SDO_GEOMETRY" )
+          if ( fld.typeName().endsWith( ".SDO_GEOMETRY" ) )
           {
-            sql += QString( "SDO_UTIL.FROM_WKTGEOMETRY(%1)" ).arg( quotedValue( siter->toString() ) );
+            if ( mConnection->hasSpatial() )
+              sql += QString( "SDO_UTIL.FROM_WKTGEOMETRY(%1)" ).arg( quotedValue( siter->toString() ) );
+            else
+            {
+              geometryParams << siter.key();
+              sql += "?";
+            }
           }
           else
           {
@@ -1675,10 +1674,32 @@ bool QgsOracleProvider::changeAttributeValues( const QgsChangedAttributesMap &at
 
       sql += QString( " WHERE %1" ).arg( whereClause( fid ) );
 
-      if ( !exec( qry, sql ) )
+      if ( !qry.prepare( sql ) )
       {
-        throw OracleException( tr( "Update of feature %1 failed" ).arg( fid ), qry );
+        throw OracleException( tr( "Could not prepare update statement." ), qry );
       }
+
+      Q_FOREACH ( int idx, geometryParams )
+      {
+        QgsGeometry *g;
+        if ( !attrs[idx].isNull() )
+        {
+          g = QgsGeometry::fromWkt( attrs[ idx ].toString() );
+        }
+        else
+        {
+          g = new QgsGeometry();
+        }
+
+        appendGeomParam( g, qry );
+
+        delete g;
+      }
+
+      if ( !qry.exec() )
+        throw OracleException( tr( "Update of feature %1 failed" ).arg( iter.key() ), qry );
+
+      qry.finish();
 
       // update feature id map if key was changed
       if ( pkChanged && mPrimaryKeyType == pktFidMap )
