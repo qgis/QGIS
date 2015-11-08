@@ -1962,7 +1962,8 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
     }
 
     conn->PQexecNR( "DEALLOCATE addfeatures" );
-    conn->commit();
+
+    returnvalue &= conn->commit();
 
     mShared->addFeaturesCounted( flist.size() );
   }
@@ -2010,7 +2011,7 @@ bool QgsPostgresProvider::deleteFeatures( const QgsFeatureIds & id )
       mShared->removeFid( *it );
     }
 
-    conn->commit();
+    returnvalue &= conn->commit();
 
     if ( mSpatialColType == sctTopoGeometry )
     {
@@ -2095,7 +2096,7 @@ bool QgsPostgresProvider::addAttributes( const QList<QgsField> &attributes )
       }
     }
 
-    conn->commit();
+    returnvalue &= conn->commit();
   }
   catch ( PGException &e )
   {
@@ -2150,7 +2151,7 @@ bool QgsPostgresProvider::deleteAttributes( const QgsAttributeIds& ids )
       mAttributeFields.remove( index );
     }
 
-    conn->commit();
+    returnvalue &= conn->commit();
   }
   catch ( PGException &e )
   {
@@ -2262,7 +2263,7 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
       }
     }
 
-    conn->commit();
+    returnvalue &= conn->commit();
   }
   catch ( PGException &e )
   {
@@ -2458,7 +2459,8 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
       connectionRO()->PQexecNR( "DEALLOCATE getid" );
       conn->PQexecNR( "DEALLOCATE replacetopogeom" );
     }
-    conn->commit();
+
+    returnvalue &= conn->commit();
   }
   catch ( PGException &e )
   {
