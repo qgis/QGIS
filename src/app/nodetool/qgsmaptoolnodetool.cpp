@@ -33,6 +33,7 @@
 
 QgsMapToolNodeTool::QgsMapToolNodeTool( QgsMapCanvas* canvas )
     : QgsMapToolEdit( canvas )
+    , mSelectRubberBand( 0 )
     , mSelectedFeature( 0 )
     , mNodeEditor( 0 )
     , mMoving( true )
