@@ -30,7 +30,7 @@ static char **qtgui_ArgvToC(PyObject *argvlist, int &argc)
             (argv[a] = (char *)sipMalloc(strlen(arg) + 1)) == NULL)
             return NULL;
 #else
-        if ((arg = PyUnicode_AsString(PyList_GET_ITEM(argvlist, a))) == NULL ||
+        if ((arg = PyBytes_AsString(PyList_GET_ITEM(argvlist, a))) == NULL ||
             (argv[a] = (char *)sipMalloc(strlen(arg) + 1)) == NULL)
             return NULL;
 #endif

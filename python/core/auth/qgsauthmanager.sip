@@ -48,7 +48,7 @@ class QgsAuthManager : QObject
 
     bool resetMasterPassword( const QString& newpassword, const QString& oldpass, bool keepbackup, QString *backuppath /In,Out/ = 0 );
 
-    const QString authManTag() const;
+    QString authManTag() const;
 
     bool registerCoreAuthMethods();
 
@@ -213,7 +213,7 @@ class QgsAuthManager : QObject
     QMutex *mutex();
 
   signals:
-    void messageOut( const QString& message, const QString& tag = smAuthManTag, QgsAuthManager::MessageLevel level = INFO ) const;
+    void messageOut( const QString& message, const QString& tag, QgsAuthManager::MessageLevel level = INFO ) const;
 
     void masterPasswordVerified( bool verified ) const;
 
