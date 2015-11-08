@@ -49,7 +49,7 @@ ENDIF(WIN32)
 MESSAGE(\"PYTHONPATH:\$ENV{PYTHONPATH}\")
 MESSAGE(STATUS \"Running ${PYTHON_EXECUTABLE} ${loc} ${wo_semicolon}\")
 EXECUTE_PROCESS(
-  COMMAND ${PYTHON_EXECUTABLE} ${loc} ${wo_semicolumn}
+  COMMAND ${PYTHON_EXECUTABLE} ${loc} ${wo_semicolon}
   RESULT_VARIABLE import_res
 )
 # Pass the output back to ctest
