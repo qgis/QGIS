@@ -347,8 +347,8 @@ struct QOCISpatialResultPrivate
   OCIError *err;
   OCISvcCtx *&svc;
   OCIStmt *sql;
-  QOCISDOGeometryObj *sdoobj;
-  QOCISDOGeometryInd *sdoind;
+  QList<QOCISDOGeometryObj*> sdoobj;
+  QList<QOCISDOGeometryInd*> sdoind;
   bool transaction;
   int serverVersion;
   int prefetchRows, prefetchMem;
@@ -1151,7 +1151,7 @@ class QOCISpatialCols
         QString oraTypeName;
     };
 
-    bool convertToWkb( QVariant &v );
+    bool convertToWkb( QVariant &v, int index );
     bool getValue( OCINumber *num, unsigned int &value );
     bool getValue( OCINumber *num, int &value );
     bool getValue( OCINumber *num, double &value );
@@ -1336,12 +1336,15 @@ QOCISpatialCols::QOCISpatialCols( int size, QOCISpatialResultPrivate* dp )
 
           if ( r == OCI_SUCCESS )
           {
+            dp->sdoobj.push_back( 0 );
+            dp->sdoind.push_back( 0 );
+
             qDebug( "define object" );
             r = OCIDefineObject( dfn,
                                  d->err,
                                  ofi.oraOCIType,
-                                 ( void** ) & dp->sdoobj, 0,
-                                 ( void** ) & dp->sdoind, 0 );
+                                 ( void** ) & dp->sdoobj.last(), 0,
+                                 ( void** ) & dp->sdoind.last(), 0 );
           }
           else
           {
@@ -2315,31 +2318,37 @@ bool QOCISpatialCols::getElemInfoElem( int iElem, const QVector<int> &vElems, in
   return true;
 }
 
-bool QOCISpatialCols::convertToWkb( QVariant &v )
+bool QOCISpatialCols::convertToWkb( QVariant &v, int index )
 {
   ENTER
 
-  qDebug() << "sdoobj ="  << d->sdoobj;
-  qDebug() << "sdoinf =" << d->sdoind;
-  if ( d->sdoind )
-    qDebug() << "sdoind->_atomic =" << d->sdoind->_atomic;
+  Q_ASSERT( index < d->sdoobj.size() );
+  Q_ASSERT( index < d->sdoind.size() );
+
+  QOCISDOGeometryObj *sdoobj = d->sdoobj[index];
+  QOCISDOGeometryInd *sdoind = d->sdoind[index];
+
+  qDebug() << "sdoobj =" << sdoobj;
+  qDebug() << "sdoinf =" << sdoind;
+  if ( sdoind )
+    qDebug() << "sdoind->_atomic =" << sdoind->_atomic;
 
   v = QVariant( QVariant::ByteArray );
 
-  if ( !d->sdoobj || !d->sdoind )
+  if ( !sdoobj || !sdoind )
   {
     qDebug() << "sdoobj or sdoind not set";
     return false;
   }
 
-  if ( d->sdoind->_atomic == OCI_IND_NULL )
+  if ( sdoind->_atomic == OCI_IND_NULL )
   {
     qDebug() << "geometry is NULL";
     return true;
   }
 
   unsigned int iGType;
-  if ( !getValue( &d->sdoobj->gtype, iGType ) )
+  if ( !getValue( &sdoobj->gtype, iGType ) )
     return false;
 
   int nDims = SDO_GTYPE_D( iGType );
@@ -2353,9 +2362,9 @@ bool QOCISpatialCols::convertToWkb( QVariant &v )
   }
 
   int iSrid = 0;
-  if ( d->sdoind->srid == OCI_IND_NOTNULL )
+  if ( sdoind->srid == OCI_IND_NOTNULL )
   {
-    if ( !getValue( &d->sdoobj->srid, iSrid ) )
+    if ( !getValue( &sdoobj->srid, iSrid ) )
       return false;
   }
 
@@ -2366,14 +2375,14 @@ bool QOCISpatialCols::convertToWkb( QVariant &v )
   union wkbPtr ptr;
 
   int nElems;
-  if ( !getArraySize( d->sdoobj->elem_info, nElems ) )
+  if ( !getArraySize( sdoobj->elem_info, nElems ) )
   {
     qWarning() << "could not determine element info array size";
     return false;
   }
 
   int nOrds;
-  if ( !getArraySize( d->sdoobj->ordinates, nOrds ) )
+  if ( !getArraySize( sdoobj->ordinates, nOrds ) )
   {
     qWarning() << "could not determine ordinate array size";
     return false;
@@ -2392,9 +2401,9 @@ bool QOCISpatialCols::convertToWkb( QVariant &v )
   {
     Q_ASSERT( nOrds == 0 );
 
-    if ( d->sdoind->_atomic != OCI_IND_NOTNULL ||
-         d->sdoind->point.x != OCI_IND_NOTNULL ||
-         d->sdoind->point.y != OCI_IND_NOTNULL )
+    if ( sdoind->_atomic != OCI_IND_NOTNULL ||
+         sdoind->point.x != OCI_IND_NOTNULL ||
+         sdoind->point.y != OCI_IND_NOTNULL )
     {
       qDebug() << "null point";
       v = QVariant();
@@ -2402,13 +2411,13 @@ bool QOCISpatialCols::convertToWkb( QVariant &v )
     }
 
     double x, y, z = 0.0;
-    if ( !getValue( &d->sdoobj->point.x, x ) )
+    if ( !getValue( &sdoobj->point.x, x ) )
     {
       qWarning() << "could not convert x ordinate to real";
       return false;
     }
 
-    if ( !getValue( &d->sdoobj->point.y, y ) )
+    if ( !getValue( &sdoobj->point.y, y ) )
     {
       qWarning() << "could not convert y ordinate to real";
       return false;
@@ -2416,13 +2425,13 @@ bool QOCISpatialCols::convertToWkb( QVariant &v )
 
     if ( nDims > 2 )
     {
-      if ( d->sdoind->point.z != OCI_IND_NOTNULL )
+      if ( sdoind->point.z != OCI_IND_NOTNULL )
       {
         qWarning() << "null value in z ordinate";
         return false;
       }
 
-      if ( !getValue( &d->sdoobj->point.z, z ) )
+      if ( !getValue( &sdoobj->point.z, z ) )
       {
         qDebug() << "could not convert z ordinate to real";
         return false;
@@ -2442,7 +2451,7 @@ bool QOCISpatialCols::convertToWkb( QVariant &v )
     return true;
   }
 
-  if ( d->sdoind->_atomic != OCI_IND_NOTNULL )
+  if ( sdoind->_atomic != OCI_IND_NOTNULL )
   {
     qWarning() << "geometry with sdo_elem_info and non-null sdo_point found.";
     return false;
@@ -2455,7 +2464,7 @@ bool QOCISpatialCols::convertToWkb( QVariant &v )
     QVector<boolean> exists( nElems );
     QVector<OCINumber*> numbers( nElems );
     uword nelems = nElems;
-    OCI_VERIFY_E( d->err, OCICollGetElemArray( d->env, d->err, d->sdoobj->elem_info, 0, exists.data(), ( void** ) numbers.data(), 0, &nelems ) );
+    OCI_VERIFY_E( d->err, OCICollGetElemArray( d->env, d->err, sdoobj->elem_info, 0, exists.data(), ( void** ) numbers.data(), 0, &nelems ) );
     if ( !exists[0] )
     {
       qWarning() << "element info array does not exists";
@@ -2484,7 +2493,7 @@ bool QOCISpatialCols::convertToWkb( QVariant &v )
     QVector<boolean> exists( nOrds );
     QVector<OCINumber*> numbers( nOrds );
     uword nords = nOrds;
-    OCI_VERIFY_E( d->err, OCICollGetElemArray( d->env, d->err, d->sdoobj->ordinates, 0, exists.data(), ( void** ) numbers.data(), 0, &nords ) );
+    OCI_VERIFY_E( d->err, OCICollGetElemArray( d->env, d->err, sdoobj->ordinates, 0, exists.data(), ( void** ) numbers.data(), 0, &nords ) );
     if ( !exists[0] )
     {
       qWarning() << "ordinate array does not exists";
@@ -2797,7 +2806,7 @@ bool QOCISpatialCols::convertToWkb( QVariant &v )
 void QOCISpatialCols::getValues( QVector<QVariant> &v, int index )
 {
   ENTER
-  for ( int i = 0; i < fieldInf.size(); ++i )
+  for ( int i = 0, gcindex = 0; i < fieldInf.size(); ++i )
   {
     qDebug() << "getValues( index =" << index << "i =" << i << " )";
     const OraFieldInf &fld = fieldInf.at( i );
@@ -2871,7 +2880,7 @@ void QOCISpatialCols::getValues( QVector<QVariant> &v, int index )
         if ( fld.oraType == SQLT_NTY && fld.oraTypeName == "SDO_GEOMETRY" )
         {
           qDebug() << "SQLT_NTY SDO_GEOMETRY";
-          convertToWkb( v[ index+i ] );
+          convertToWkb( v[ index+i ], gcindex++ );
         }
         else
         {
@@ -2896,8 +2905,8 @@ QOCISpatialResultPrivate::QOCISpatialResultPrivate( QOCISpatialResult *result, c
     , err( 0 )
     , svc( const_cast<OCISvcCtx*&>( driver->svc ) )
     , sql( 0 )
-    , sdoobj( 0 )
-    , sdoind( 0 )
+    , sdoobj()
+    , sdoind()
     , transaction( driver->transaction )
     , serverVersion( driver->serverVersion )
     , prefetchRows( driver->prefetchRows )
@@ -3190,8 +3199,8 @@ bool QOCISpatialResult::exec()
                         0, OCI_ATTR_PARAM_COUNT, d->err );
     if ( r == OCI_SUCCESS && !d->cols )
     {
-      d->sdoobj = 0;
-      d->sdoind = 0;
+      d->sdoobj.clear();
+      d->sdoind.clear();
       d->cols = new QOCISpatialCols( parmCount, d );
     }
     else

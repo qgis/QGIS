@@ -187,7 +187,7 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature& feature )
 
         if ( mSource->mPrimaryKeyType == pktFidMap )
         {
-          foreach ( int idx, mSource->mPrimaryKeyAttrs )
+          Q_FOREACH ( int idx, mSource->mPrimaryKeyAttrs )
           {
             const QgsField &fld = mSource->mFields[idx];
 
@@ -220,7 +220,7 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature& feature )
     QgsDebugMsgLevel( QString( "fid=%1" ).arg( fid ), 5 );
 
     // iterate attributes
-    foreach ( int idx, mAttributeList )
+    Q_FOREACH ( int idx, mAttributeList )
     {
       if ( mSource->mPrimaryKeyAttrs.contains( idx ) )
         continue;
@@ -228,7 +228,18 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature& feature )
       const QgsField &fld = mSource->mFields[idx];
 
       QVariant v = mQry.value( col );
-      if ( v.type() != fld.type() )
+      if ( fld.type() == QVariant::ByteArray && fld.typeName().endsWith( ".SDO_GEOMETRY" ) )
+      {
+        QByteArray *ba = static_cast<QByteArray*>( v.data() );
+        unsigned char *copy = new unsigned char[ba->size()];
+        memcpy( copy, ba->constData(), ba->size() );
+
+        QgsGeometry *g = new QgsGeometry();
+        g->fromWkb( copy, ba->size() );
+        v = g->exportToWkt();
+        delete g;
+      }
+      else if ( v.type() != fld.type() )
         v = QgsVectorDataProvider::convertValue( fld.type(), v.toString() );
       feature.setAttribute( idx, v );
 
@@ -291,7 +302,7 @@ bool QgsOracleFeatureIterator::openQuery( QString whereClause )
         break;
 
       case pktFidMap:
-        foreach ( int idx, mSource->mPrimaryKeyAttrs )
+        Q_FOREACH ( int idx, mSource->mPrimaryKeyAttrs )
         {
           query += delim + mConnection->fieldExpression( mSource->mFields[idx] );
           delim = ",";
@@ -304,7 +315,7 @@ bool QgsOracleFeatureIterator::openQuery( QString whereClause )
         break;
     }
 
-    foreach ( int idx, mAttributeList )
+    Q_FOREACH ( int idx, mAttributeList )
     {
       if ( mSource->mPrimaryKeyAttrs.contains( idx ) )
         continue;
