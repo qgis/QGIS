@@ -108,4 +108,10 @@ If these members are not suitable for the Python bindings, please add the Doxyge
 
 
 if __name__ == '__main__':
+    if "MISSING_SIP_CLASSES" in os.environ:
+        ACCEPTABLE_MISSING_CLASSES -= int(os.environ['MISSING_SIP_CLASSES'])
+
+    if "MISSING_SIP_MEMBERS" in os.environ:
+        ACCEPTABLE_MISSING_MEMBERS -= int(os.environ['MISSING_SIP_MEMBERS'])
+
     unittest.main()

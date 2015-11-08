@@ -214,6 +214,8 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
     Q_DECL_DEPRECATED static bool wellKnownMarkerFromSld( QDomElement &element,
         QString &name, QColor &color, QColor &borderColor,
         double &borderWidth, double &size );
+
+    //! @note available in python as wellKnownMarkerFromSld2
     static bool wellKnownMarkerFromSld( QDomElement &element,
                                         QString &name, QColor &color, QColor &borderColor, Qt::PenStyle &borderStyle,
                                         double &borderWidth, double &size );

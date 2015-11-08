@@ -448,6 +448,7 @@ class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayerV2
     //handles marker offset and anchor point shift together
     void markerOffset( QgsSymbolV2RenderContext& context, double& offsetX, double& offsetY ) const;
 
+    //! @note available in python as markerOffsetWithWidthAndHeight
     void markerOffset( QgsSymbolV2RenderContext& context, double width, double height, double& offsetX, double& offsetY ) const;
 
     //! @note available in python bindings as markerOffset2

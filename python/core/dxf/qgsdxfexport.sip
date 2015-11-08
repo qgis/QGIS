@@ -60,13 +60,13 @@ class QgsDxfExport
     void writeInt( int i );
     void writeDouble( double d );
     void writeString( const QString &s );
+    //! @note available in python bindings as writeGroupPoint
     void writeGroup( int code, const QgsPoint &p, double z = 0.0, bool skipz = false ) /PyName=writeGroupPoint/;
     void writeGroup( const QColor& color, int exactMatch = 62, int rgbCode = 420, int transparencyCode = 440 );
 
-    //! Write handle
     int writeHandle( int code = 5, int handle = 0 );
 
-    //! Draw dxf polyline
+    //! Draw dxf primitives (LWPOLYLINE)
     void writePolyline( const QgsPolyline &line, const QString &layer, const QString &lineStyleName, const QColor& color, double width = -1 );
 
     //! Draw dxf polygon (HATCH)

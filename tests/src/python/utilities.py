@@ -547,6 +547,10 @@ class DoxygenParser():
         if not self.visibility(elem) in ('public', 'protected'):
             return False
 
+        # property themselves are not bound, only getters and setters
+        if self.isProperty(elem):
+            return False
+
         if self.isVariable(elem) and self.visibility(elem) == 'protected':
             #protected variables can't be bound in SIP
             return False
@@ -643,6 +647,18 @@ class DoxygenParser():
         """
         try:
             if member_elem.get('kind') == 'variable':
+                return True
+        except:
+            pass
+
+        return False
+
+    def isProperty(self, member_elem):
+        """ Tests whether an member is a property
+            :param member_elem: XML element for a class member
+        """
+        try:
+            if member_elem.get('kind') == 'property':
                 return True
         except:
             pass

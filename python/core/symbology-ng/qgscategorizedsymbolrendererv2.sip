@@ -45,8 +45,10 @@ class QgsCategorizedSymbolRendererV2 : QgsFeatureRendererV2
 
     virtual ~QgsCategorizedSymbolRendererV2();
 
+    //! @note available in python as symbolForFeature2
     virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) /PyName=symbolForFeature2/;
 
+    //! @note available in python as originalSymbolForFeature2
     virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feature, QgsRenderContext& context ) /PyName=originalSymbolForFeature2/;
 
     virtual void startRender( QgsRenderContext& context, const QgsFields& fields );
@@ -64,6 +66,7 @@ class QgsCategorizedSymbolRendererV2 : QgsFeatureRendererV2
     //! returns bitwise OR-ed capabilities of the renderer
     virtual int capabilities();
 
+    //! @note available in python as symbols2
     virtual QgsSymbolV2List symbols( QgsRenderContext& context ) /PyName=symbols2/;
     void updateSymbols( QgsSymbolV2 * sym );
 

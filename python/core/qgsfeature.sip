@@ -498,4 +498,4 @@ class QgsFeature
 
 }; // class QgsFeature
 
-typedef QSet<QgsFeatureId> QgsFeatureIds;
+typedef QSet<qint64> QgsFeatureIds;

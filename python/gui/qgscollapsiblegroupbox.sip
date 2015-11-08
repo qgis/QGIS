@@ -22,7 +22,7 @@ class QgsGroupBoxCollapseButton : QToolButton
  * Holding Alt modifier key when toggling collapsed state will synchronize the toggling across other collapsible group boxes with the same syncGroup QString value
  * Holding Shift modifier key when attempting to toggle collapsed state will expand current group box, then collapse any others with the same syncGroup QString value
  * @note To add Collapsible properties in promoted QtDesigner widgets, you can add the following "Dynamic properties" by clicking on the green + in the propreties palette:
- * bool collapsed, QString syncGroup
+ * bool collapsed, QString syncGroup, bool scrollOnExpand
  */
 
 class QgsCollapsibleGroupBoxBasic : QGroupBox
@@ -35,16 +35,31 @@ class QgsCollapsibleGroupBoxBasic : QGroupBox
     QgsCollapsibleGroupBoxBasic( const QString &title, QWidget *parent /TransferThis/ = 0 );
     ~QgsCollapsibleGroupBoxBasic();
 
+    /**
+     * Returns the current collapsed state of this group box
+     */
     bool isCollapsed() const;
+    /**
+     * Collapse or uncollapse this groupbox
+     *
+     * @param collapse Will collapse on true and uncollapse on false
+     */
     void setCollapsed( bool collapse );
 
-    /** Named group which synchronizes collapsing action when triangle is clicked while holding alt modifier key */
+    /**
+     * Named group which synchronizes collapsing action when triangle is clicked while holding alt modifier key
+     */
     QString syncGroup() const;
+
+    /**
+     * Named group which synchronizes collapsing action when triangle is clicked while holding alt modifier key
+     */
     void setSyncGroup( const QString& grp );
 
-    //! set this to false to not automatically scroll parent QScrollArea to this widget's contents when expanded
+    //! Set this to false to not automatically scroll parent QScrollArea to this widget's contents when expanded
     void setScrollOnExpand( bool scroll );
 
+    //! If this is set to false the parent QScrollArea will not be automatically scrolled to this widget's contents when expanded
     bool scrollOnExpand();
 
   signals:
