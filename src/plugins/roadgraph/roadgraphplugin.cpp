@@ -215,7 +215,7 @@ const QgsGraphDirector* RoadGraphPlugin::director() const
   if ( layer->wkbType() == QGis::WKBLineString
        || layer->wkbType() == QGis::WKBMultiLineString )
   {
-    QgsVectorDataProvider *provider = dynamic_cast< QgsVectorDataProvider* >( layer->dataProvider() );
+    QgsVectorDataProvider *provider = layer->dataProvider();
     if ( provider == NULL )
       return NULL;
     SpeedUnit speedUnit = SpeedUnit::byName( mSettings->mSpeedUnitName );
