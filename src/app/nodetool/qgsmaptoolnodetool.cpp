@@ -33,6 +33,7 @@
 
 QgsMapToolNodeTool::QgsMapToolNodeTool( QgsMapCanvas* canvas )
     : QgsMapToolEdit( canvas )
+    , mSelectRubberBand( 0 )
     , mSelectedFeature( 0 )
     , mNodeEditor( 0 )
     , mMoving( true )
@@ -173,9 +174,9 @@ QgsFeature QgsMapToolNodeTool::getFeatureAtPoint( QgsMapMouseEvent* e )
 {
   QgsFeature feature;
   QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
-  if ( vlayer == NULL ) {
-      return feature;
-  }
+
+  if ( !vlayer )
+    return feature;
 
   QgsFeatureRequest request;
   request.setFilterRect( QgsRectangle( e->mapPoint().x(), e->mapPoint().y(), e->mapPoint().x(), e->mapPoint().y() ) );
@@ -204,18 +205,21 @@ void QgsMapToolNodeTool::canvasPressEvent( QgsMapMouseEvent* e )
     if ( snapResults.size() < 1 )
     {
       QgsFeature feature = getFeatureAtPoint( e );
-      if ( feature.geometry() == NULL ) {
-	emit messageEmitted(tr( "could not snap to a segment on the current layer." ) );
-	return;
+      if ( !feature.geometry() )
+      {
+        emit messageEmitted( tr( "could not snap to a segment on the current layer." ) );
+        return;
       }
-      else {
-	// remove previous warning
-	emit messageDiscarded();
-	mSelectedFeature = new QgsSelectedFeature( feature.id(), vlayer, mCanvas );
-	updateSelectFeature();
+      else
+      {
+        // remove previous warning
+        emit messageDiscarded();
+        mSelectedFeature = new QgsSelectedFeature( feature.id(), vlayer, mCanvas );
+        updateSelectFeature();
       }
     }
-    else {
+    else
+    {
       // remove previous warning
       emit messageDiscarded();
 
@@ -339,14 +343,12 @@ void QgsMapToolNodeTool::canvasPressEvent( QgsMapMouseEvent* e )
       {
         mSelectedFeature->deselectAllVertexes();
 
-	QgsFeature feature = getFeatureAtPoint( e );
-	if ( feature.geometry() == NULL ) {
-	  return;
-	}
-	else {
-	  mAnother = feature.id();
-	  mSelectAnother = true;
-	}
+        QgsFeature feature = getFeatureAtPoint( e );
+        if ( !feature.geometry() )
+          return;
+
+        mAnother = feature.id();
+        mSelectAnother = true;
       }
     }
   }
@@ -354,9 +356,8 @@ void QgsMapToolNodeTool::canvasPressEvent( QgsMapMouseEvent* e )
 
 void QgsMapToolNodeTool::updateSelectFeature()
 {
-  if (mSelectRubberBand != NULL) {
-    delete mSelectRubberBand;
-  }
+  delete mSelectRubberBand;
+
   mSelectRubberBand = new QgsGeometryRubberBand( mCanvas, mSelectedFeature->geometry()->type() );
   mSelectRubberBand->setBrushStyle( Qt::SolidPattern );
   mSelectRubberBand->setFillColor( QColor( 255, 0, 0, 50 ) );
@@ -512,10 +513,12 @@ void QgsMapToolNodeTool::cleanTool( bool deleteSelectedFeature )
 {
   removeRubberBands();
 
-  if ( mSelectRubberBand != NULL ) {
+  if ( mSelectRubberBand )
+  {
     delete mSelectRubberBand;
-    mSelectRubberBand = NULL;
+    mSelectRubberBand = 0;
   }
+
   if ( mSelectedFeature )
   {
     QgsVectorLayer *vlayer = mSelectedFeature->vlayer();
@@ -525,9 +528,12 @@ void QgsMapToolNodeTool::cleanTool( bool deleteSelectedFeature )
     disconnect( mSelectedFeature, SIGNAL( destroyed() ), this, SLOT( selectedFeatureDestroyed() ) );
     disconnect( vlayer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
 
-    if ( deleteSelectedFeature ) delete mSelectedFeature;
-    mSelectedFeature = NULL;
+    if ( deleteSelectedFeature )
+      delete mSelectedFeature;
+
+    mSelectedFeature = 0;
   }
+
   if ( mNodeEditor )
   {
     delete mNodeEditor;
