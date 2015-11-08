@@ -674,27 +674,42 @@ ENDIF (UNIX AND NOT APPLE)
 #############################################################
 # Python build dependency
 
-FIND_PACKAGE(PythonInterp REQUIRED)
+IF(ENABLE_QT5)
+  SET(PYTHON_VER 3)
+ELSE(ENABLE_QT5)
+  SET(PYTHON_VER 2)
+ENDIF(ENABLE_QT5)
+
+FIND_PACKAGE(PythonInterp ${PYTHON_VER} REQUIRED)
 
 #############################################################
 # Python bindings
 
 IF (WITH_BINDINGS)
 
-  # python support: check for interpreter, sip, pyqt4
   FIND_PACKAGE(PythonLibrary REQUIRED)
+
+  # python support: check for interpreter, sip, pyqt4
+  IF(ENABLE_QT5)
+    FIND_PACKAGE(PyQt5 REQUIRED)
+    SET(PYQT_SIP_FLAGS ${PYQT5_SIP_FLAGS})
+    SET(PYQT_SIP_DIR ${PYQT5_SIP_DIR})
+  ELSE(ENABLE_QT5)
+    FIND_PACKAGE(PyQt4 REQUIRED)
+    # setup SIP variables
+    SET(PYQT_SIP_FLAGS ${PYQT4_SIP_FLAGS})
+    SET(PYQT_SIP_DIR ${PYQT4_SIP_DIR})
+  ENDIF(ENABLE_QT5)
+  SEPARATE_ARGUMENTS(PYQT_SIP_FLAGS) # convert space separated values to a list
+
   FIND_PACKAGE(SIP REQUIRED)
-  FIND_PACKAGE(PyQt4 REQUIRED)
   FIND_PACKAGE(Qsci REQUIRED)
   INCLUDE(PythonMacros)
+  INCLUDE(PyQtMacros)
   INCLUDE(SIPMacros)
-  INCLUDE(PyQt4Macros)
 
-  # setup SIP variables
-  SEPARATE_ARGUMENTS(PYQT4_SIP_FLAGS) # convert space separated values to a list
-  SET(SIP_INCLUDES ${PYQT4_SIP_DIR} ${CMAKE_SOURCE_DIR}/python)
+  SET(SIP_INCLUDES ${PYQT_SIP_DIR} ${CMAKE_SOURCE_DIR}/python)
   SET(SIP_CONCAT_PARTS 4)
-  SET(SIP_EXTRA_OPTIONS ${PYQT4_SIP_FLAGS})
 
   IF (NOT BINDINGS_GLOBAL_INSTALL)
     SET(PYTHON_SITE_PACKAGES_DIR ${QGIS_DATA_DIR}/python)

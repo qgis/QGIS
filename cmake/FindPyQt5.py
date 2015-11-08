@@ -31,22 +31,22 @@
 # For details see the accompanying COPYING-CMAKE-SCRIPTS file.
 
 try:
-    import PyQt4.pyqtconfig
-    pyqtcfg = PyQt4.pyqtconfig.Configuration()
+    import PyQt5.pyqtconfig
+    pyqtcfg = PyQt5.pyqtconfig.Configuration()
 except ImportError:
-    import PyQt4.QtCore
+    import PyQt5.QtCore
     import sipconfig # won't work for SIP v5
     import os.path
     cfg = sipconfig.Configuration()
     sip_dir = cfg.default_sip_dir
-    for p in (os.path.join(sip_dir, "PyQt4"), sip_dir):
+    for p in (os.path.join(sip_dir, "PyQt5"), sip_dir):
         if os.path.exists(os.path.join(p, "QtCore", "QtCoremod.sip")):
             sip_dir = p
             break
     cfg = {
-        'pyqt_version': PyQt4.QtCore.PYQT_VERSION,
-        'pyqt_version_str': PyQt4.QtCore.PYQT_VERSION_STR,
-        'pyqt_sip_flags': PyQt4.QtCore.PYQT_CONFIGURATION['sip_flags'],
+        'pyqt_version': PyQt5.QtCore.PYQT_VERSION,
+        'pyqt_version_str': PyQt5.QtCore.PYQT_VERSION_STR,
+        'pyqt_sip_flags': PyQt5.QtCore.PYQT_CONFIGURATION['sip_flags'],
         'pyqt_mod_dir': cfg.default_mod_dir,
         'pyqt_sip_dir': sip_dir,
         'pyqt_bin_dir': cfg.default_bin_dir,
@@ -60,7 +60,7 @@ print("pyqt_version_str:%s" % pyqtcfg.pyqt_version_str)
 pyqt_version_tag = ""
 in_t = False
 for item in pyqtcfg.pyqt_sip_flags.split(' '):
-    if item=="-t":
+    if item == "-t":
         in_t = True
     elif in_t:
         if item.startswith("Qt_4"):
