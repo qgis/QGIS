@@ -98,6 +98,9 @@
      </item>
      <item>
       <widget class="QToolButton" name="btnExportPython">
+       <property name="toolTip">
+        <string>Export as Python script</string>
+       </property>
        <property name="text">
         <string>...</string>
        </property>
@@ -278,7 +281,7 @@
   <customwidget>
    <class>QgsFilterLineEdit</class>
    <extends>QLineEdit</extends>
-   <header>qgis.gui</header>
+   <header>qgsfilterlineedit.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
