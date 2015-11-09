@@ -61,22 +61,6 @@ class TestQgsSipCoverage(TestCase):
 
         missing_objects.sort()
 
-        missing_count = len(missing_objects)
-        present_count = len(objects) - missing_count
-        coverage = 100.0 * present_count / len(objects)
-
-        print "---------------------------------"
-        printImportant("{} total bindable classes".format(len(objects)))
-        printImportant("{} total have bindings".format(present_count))
-        printImportant("Binding coverage by classes {}%".format(coverage))
-        printImportant("---------------------------------")
-        printImportant("{} classes missing bindings, out of {} allowed".format(missing_count, ACCEPTABLE_MISSING_CLASSES))
-        print "---------------------------------"
-
-        assert missing_count <= ACCEPTABLE_MISSING_CLASSES, """\n\nFAIL: new unbound classes have been introduced, please add SIP bindings for these classes
-If these classes are not suitable for the Python bindings, please add the Doxygen tag
-"@note not available in Python bindings" to the CLASS Doxygen comments"""
-
         #next check for individual members
         parser.bindable_members.sort()
         missing_members = []
@@ -87,8 +71,27 @@ If these classes are not suitable for the Python bindings, please add the Doxyge
                     missing_members.append('{}.{}'.format(m[0], m[1]))
 
         missing_members.sort()
-        missing_count = len(missing_members)
-        present_count = len(parser.bindable_members) - missing_count
+
+        print "---------------------------------"
+        print 'Missing classes:\n {}'.format('\n '.join(missing_objects))
+        print "---------------------------------"
+        print 'Missing members:\n {}'.format('\n '.join(missing_members))
+
+        #print summaries
+        missing_class_count = len(missing_objects)
+        present_count = len(objects) - missing_class_count
+        coverage = 100.0 * present_count / len(objects)
+
+        print "---------------------------------"
+        printImportant("{} total bindable classes".format(len(objects)))
+        printImportant("{} total have bindings".format(present_count))
+        printImportant("Binding coverage by classes {}%".format(coverage))
+        printImportant("---------------------------------")
+        printImportant("{} classes missing bindings, out of {} allowed".format(missing_class_count, ACCEPTABLE_MISSING_CLASSES))
+        print "---------------------------------"
+
+        missing_member_count = len(missing_members)
+        present_count = len(parser.bindable_members) - missing_member_count
         coverage = 100.0 * present_count / len(parser.bindable_members)
 
         print "---------------------------------"
@@ -96,13 +99,13 @@ If these classes are not suitable for the Python bindings, please add the Doxyge
         printImportant("{} total have bindings".format(present_count))
         printImportant("Binding coverage by members {}%".format(coverage))
         printImportant("---------------------------------")
-        printImportant("{} members missing bindings, out of {} allowed".format(missing_count, ACCEPTABLE_MISSING_MEMBERS))
-        print "---------------------------------"
-        print 'Missing classes:\n {}'.format('\n '.join(missing_objects))
-        print "---------------------------------"
-        print 'Missing members:\n {}'.format('\n '.join(missing_members))
+        printImportant("{} members missing bindings, out of {} allowed".format(missing_member_count, ACCEPTABLE_MISSING_MEMBERS))
 
-        assert missing_count <= ACCEPTABLE_MISSING_MEMBERS, """\n\nFAIL: new unbound members have been introduced, please add SIP bindings for these members
+        assert missing_class_count <= ACCEPTABLE_MISSING_CLASSES, """\n\nFAIL: new unbound classes have been introduced, please add SIP bindings for these classes
+If these classes are not suitable for the Python bindings, please add the Doxygen tag
+"@note not available in Python bindings" to the CLASS Doxygen comments"""
+
+        assert missing_member_count <= ACCEPTABLE_MISSING_MEMBERS, """\n\nFAIL: new unbound members have been introduced, please add SIP bindings for these members
 If these members are not suitable for the Python bindings, please add the Doxygen tag
 "@note not available in Python bindings" to the MEMBER Doxygen comments"""
 
