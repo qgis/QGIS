@@ -55,7 +55,10 @@ class TestQgsSipCoverage(TestCase):
         bound_objects = {}
         for o in objects:
             try:
-                bound_objects[o] = globals()[o]
+                if '::' in o:
+                    bound_objects[o] = getattr(globals()[o.split('::')[0]], o.split('::')[1])
+                else:
+                    bound_objects[o] = globals()[o]
             except:
                 missing_objects.append(o)
 
@@ -67,8 +70,21 @@ class TestQgsSipCoverage(TestCase):
         for m in parser.bindable_members:
             if m[0] in bound_objects:
                 obj = bound_objects[m[0]]
-                if not hasattr(obj, m[1]):
-                    missing_members.append('{}.{}'.format(m[0], m[1]))
+
+                #try two different methods of checking for member existence
+                try:
+                    if hasattr(obj, m[1]):
+                        continue
+                except:
+                    pass
+
+                try:
+                    if m[1] in dir(obj):
+                        continue
+                except:
+                    printImportant("SIP coverage test: something strange happened in {}.{}, obj={}".format(m[0], m[1], obj))
+
+                missing_members.append('{}.{}'.format(m[0], m[1]))
 
         missing_members.sort()
 
