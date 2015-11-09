@@ -494,7 +494,7 @@ class VectorWriter:
                                     table=uri.table().lower(), schema=uri.schema(), srid=crs.authid().split(":")[-1],
                                     typmod=GEOM_TYPE_MAP[geometryType].upper()))
 
-            self.layer = QgsVectorLayer(uri.uri(), uri.table(), "spatialite")
+            self.layer = QgsVectorLayer(uri.uri(), uri.table(), "postgres")
             self.writer = self.layer.dataProvider()
         elif self.destination.startswith(self.SPATIALITE_LAYER_PREFIX):
             self.isNotFileBased = True
@@ -517,7 +517,7 @@ class VectorWriter:
             fieldsdesc = ",".join('%s %s' % (f.name(),
                                             TYPE_MAP_SPATIALITE_LAYER.get(f.type(), "VARCHAR"))
                                   for f in fields)
-            
+
             _runSQL("DROP TABLE IF EXISTS %s" % uri.table().lower())
             _runSQL("CREATE TABLE %s (%s)" % (uri.table().lower(), fieldsdesc))
             _runSQL("SELECT AddGeometryColumn('{table}', 'the_geom', {srid}, '{typmod}', 2)".format(
