@@ -555,6 +555,10 @@ class DoxygenParser():
         if self.isFriendClass(elem):
             return False
 
+        # ignore typedefs (can't test for them)
+        if self.isTypeDef(elem):
+            return False
+
         if self.isVariable(elem) and self.visibility(elem) == 'protected':
             #protected variables can't be bound in SIP
             return False
@@ -577,6 +581,10 @@ class DoxygenParser():
 
         # ignore operators, also can't test
         if self.isOperator(elem):
+            return False
+
+        # ignore deprecated members
+        if self.isDeprecated(elem):
             return False
 
         return True
@@ -631,12 +639,8 @@ class DoxygenParser():
             pass
 
         # ignore deprecated members
-        typeelem = elem.find('type')
-        try:
-            if typeelem.text and 'Q_DECL_DEPRECATED' in typeelem.text:
-                return False
-        except:
-            pass
+        if self.isDeprecated(elem):
+            return False
 
         return True
 
@@ -718,8 +722,18 @@ class DoxygenParser():
             :param member_elem: XML element for a class member
         """
         try:
-            definition = member_elem.find('definition').text
-            if definition.startswith('friend class'):
+            if member_elem.get('kind') == 'friend':
+                return True
+        except:
+            pass
+        return False
+
+    def isTypeDef(self, member_elem):
+        """ Tests whether an member is a type def
+            :param member_elem: XML element for a class member
+        """
+        try:
+            if member_elem.get('kind') == 'typedef':
                 return True
         except:
             pass
@@ -735,6 +749,20 @@ class DoxygenParser():
             if member_elem.find('reimplements') is not None:
                 return True
             if ' override' in member_elem.find('argsstring').text:
+                return True
+        except:
+            pass
+
+        return False
+
+    def isDeprecated(self, member_elem):
+        """ Tests whether an member is deprecated
+            :param member_elem: XML element for a class member
+        """
+
+        type_elem = member_elem.find('type')
+        try:
+            if 'Q_DECL_DEPRECATED' in type_elem.text:
                 return True
         except:
             pass
