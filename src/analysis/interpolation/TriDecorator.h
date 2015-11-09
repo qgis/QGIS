@@ -20,7 +20,7 @@
 #include "Triangulation.h"
 
 /** Decorator class for Triangulations (s. Decorator pattern in Gamma et al.)*/
-class TriDecorator : public Triangulation
+class ANALYSIS_EXPORT TriDecorator : public Triangulation
 {
   public:
     TriDecorator();
@@ -36,7 +36,6 @@ class TriDecorator : public Triangulation
     virtual bool calcPoint( double x, double y, Point3D* result ) override;
     virtual Point3D* getPoint( unsigned int i ) const override;
     virtual int getNumberOfPoints() const override;
-    //! @note not available in python bindings
     bool getTriangle( double x, double y, Point3D* p1, int* n1, Point3D* p2, int* n2, Point3D* p3, int* n3 ) override;
     bool getTriangle( double x, double y, Point3D* p1, Point3D* p2, Point3D* p3 ) override;
     virtual int getOppositePoint( int p1, int p2 ) override;

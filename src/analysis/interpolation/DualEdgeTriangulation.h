@@ -75,10 +75,6 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     virtual double getYMin() const override { return yMin; }
     /** Returns the number of points*/
     virtual int getNumberOfPoints() const override;
-    /** Removes the line with number i from the triangulation*/
-    void removeLine( int i );
-    /** Removes the point with the number i from the triangulation*/
-    void removePoint( int i );
     /** Sets the behaviour of the triangulation in case of crossing forced lines*/
     virtual void setForcedCrossBehaviour( Triangulation::forcedCrossBehaviour b ) override;
     /** Sets the color of the normal edges*/
