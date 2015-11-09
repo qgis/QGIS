@@ -551,6 +551,10 @@ class DoxygenParser():
         if self.isProperty(elem):
             return False
 
+        # ignore friend classes
+        if self.isFriendClass(elem):
+            return False
+
         if self.isVariable(elem) and self.visibility(elem) == 'protected':
             #protected variables can't be bound in SIP
             return False
@@ -592,6 +596,10 @@ class DoxygenParser():
 
         # ignore reimplemented methods
         if self.isReimplementation(elem):
+            return False
+
+        # ignore friend classes
+        if self.isFriendClass(elem):
             return False
 
         # ignore destructor
@@ -703,6 +711,18 @@ class DoxygenParser():
         except:
             pass
 
+        return False
+
+    def isFriendClass(self, member_elem):
+        """ Tests whether an member is a friend class
+            :param member_elem: XML element for a class member
+        """
+        try:
+            definition = member_elem.find('definition').text
+            if definition.startswith('friend class'):
+                return True
+        except:
+            pass
         return False
 
     def isReimplementation(self, member_elem):
