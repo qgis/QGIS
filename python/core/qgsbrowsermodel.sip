@@ -78,6 +78,10 @@ class QgsBrowserModel : QAbstractItemModel
     bool canFetchMore( const QModelIndex & parent ) const;
     void fetchMore( const QModelIndex & parent );
 
+  signals:
+    /** Emitted when item children fetch was finished */
+    void stateChanged( const QModelIndex & index, QgsDataItem::State oldState );
+
   public slots:
     // Reload the whole model
     void reload();

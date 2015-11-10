@@ -24,7 +24,7 @@
 
 /**
  * Wraps a web view widget. Will show the content available at the URL of the value in a web browser.
- *
+ * \note not available in Python bindings
  */
 
 class GUI_EXPORT QgsWebViewWidgetWrapper : public QgsEditorWidgetWrapper

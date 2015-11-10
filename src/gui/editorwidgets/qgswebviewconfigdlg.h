@@ -20,6 +20,10 @@
 
 #include "qgseditorconfigwidget.h"
 
+/** \class QgsWebViewWidgetConfigDlg
+ * \note not available in Python bindings
+ */
+
 class GUI_EXPORT QgsWebViewWidgetConfigDlg : public QgsEditorConfigWidget, private Ui::QgsWebViewWidgetConfigDlgBase
 {
     Q_OBJECT

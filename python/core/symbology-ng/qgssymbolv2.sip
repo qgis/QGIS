@@ -27,6 +27,8 @@ class QgsSymbolV2
       Pixel
     };
 
+    typedef QList<QgsSymbolV2::OutputUnit> OutputUnitList;
+
     enum SymbolType
     {
       Marker,

@@ -33,6 +33,9 @@
 // - fix Diverging children when first show Selections
 // - fix crash on Diverging?
 
+///@cond
+//not part of public API
+
 class TreeFilterProxyModel : public QSortFilterProxyModel
 {
     //  Q_OBJECT
@@ -54,6 +57,7 @@ class TreeFilterProxyModel : public QSortFilterProxyModel
     QgsCptCityBrowserModel* mModel;
 };
 
+///@endcond
 
 // ----------------------
 

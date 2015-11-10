@@ -44,6 +44,9 @@
 #include <QFile>
 #include <QStandardItem>
 
+///@cond
+//not part of public API
+
 static const int SymbolLayerItemType = QStandardItem::UserType + 1;
 
 DataDefinedRestorer::DataDefinedRestorer( QgsSymbolV2* symbol, const QgsSymbolLayerV2* symbolLayer )
@@ -201,6 +204,8 @@ class SymbolLayerItem : public QStandardItem
     QgsSymbolV2* mSymbol;
     bool mIsLayer;
 };
+
+///@endcond
 
 //////////
 

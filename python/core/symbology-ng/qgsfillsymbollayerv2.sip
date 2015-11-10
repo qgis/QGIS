@@ -886,4 +886,7 @@ class QgsCentroidFillSymbolLayerV2 : QgsFillSymbolLayerV2
     QgsMapUnitScale mapUnitScale() const;
 
     virtual QSet<QString> usedAttributes() const;
+
+    void setPointOnSurface( bool pointOnSurface );
+    bool pointOnSurface() const;
 };

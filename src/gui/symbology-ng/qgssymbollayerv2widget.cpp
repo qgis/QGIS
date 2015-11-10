@@ -1599,6 +1599,9 @@ QgsSvgMarkerSymbolLayerV2Widget::~QgsSvgMarkerSymbolLayerV2Widget()
 #include <QPixmapCache>
 #include <QStyle>
 
+///@cond
+//not part of public API
+
 class QgsSvgListModel : public QAbstractListModel
 {
 
@@ -1718,6 +1721,8 @@ class QgsSvgGroupsModel : public QStandardItemModel
       }
     }
 };
+
+///@endcond
 
 void QgsSvgMarkerSymbolLayerV2Widget::populateList()
 {

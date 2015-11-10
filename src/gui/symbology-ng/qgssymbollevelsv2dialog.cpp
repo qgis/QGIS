@@ -23,6 +23,9 @@
 #include <QItemDelegate>
 #include <QSpinBox>
 
+///@cond
+//not part of public API
+
 // delegate used from Qt Spin Box example
 class SpinBoxDelegate : public QItemDelegate
 {
@@ -59,6 +62,8 @@ class SpinBoxDelegate : public QItemDelegate
     }
 
 };
+
+///@endcond
 
 ////////////////
 

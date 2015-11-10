@@ -30,7 +30,7 @@
  * </ul>
  *
  * Any option will be treated as entry in the value map.
- *
+ * \note not available in Python bindings
  */
 
 class GUI_EXPORT QgsValueMapWidgetWrapper : public QgsEditorWidgetWrapper

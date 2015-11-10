@@ -20,7 +20,7 @@
 
 /**
  * Wraps a hidden widget. Fields with this widget type will not be visible.
- *
+ * \note not available in Python bindings
  */
 
 class GUI_EXPORT QgsHiddenWidgetWrapper : public QgsEditorWidgetWrapper

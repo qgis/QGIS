@@ -28,7 +28,7 @@
  * <ul>
  * <li><b>Editable</b> <i>If True the user can manually insert new (not yet used) values.</i></li>
  * </ul>
- *
+ * \note not available in Python bindings
  */
 
 class GUI_EXPORT QgsUniqueValuesWidgetWrapper : public QgsEditorWidgetWrapper

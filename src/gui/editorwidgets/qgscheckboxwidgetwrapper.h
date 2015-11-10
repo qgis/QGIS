@@ -30,6 +30,7 @@
  * <li><b>UncheckedState</b> <i>The value used to represent "False" in the data.</i></li>
  * </ul>
  *
+ * \note not available in Python bindings
  */
 
 class GUI_EXPORT QgsCheckboxWidgetWrapper : public QgsEditorWidgetWrapper

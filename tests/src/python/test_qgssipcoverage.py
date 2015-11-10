@@ -38,7 +38,7 @@ except:
 # (changes which lower this threshold are welcomed though!)
 
 ACCEPTABLE_MISSING_CLASSES = 196
-ACCEPTABLE_MISSING_MEMBERS = 530
+ACCEPTABLE_MISSING_MEMBERS = 527
 
 
 class TestQgsSipCoverage(TestCase):

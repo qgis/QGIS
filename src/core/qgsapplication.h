@@ -45,7 +45,8 @@ class CORE_EXPORT QgsApplication : public QApplication
         when your app does not extend the QApplication class.
         @note you will probably want to call initQgis too to load the providers in
         the above case.
-        */
+        @note not available in Python bindings
+      */
     static void init( QString customConfigPath = QString() );
 
     //! Watch for QFileOpenEvent.
@@ -232,17 +233,18 @@ class CORE_EXPORT QgsApplication : public QApplication
     static void exitQgis();
 
     /** Constants for endian-ness */
-    typedef enum ENDIAN
+    enum endian_t
     {
       XDR = 0,  // network, or big-endian, byte order
       NDR = 1   // little-endian byte order
-    }
-    endian_t;
+    };
 
     //! Returns whether this machine uses big or little endian
     static endian_t endian();
 
-    //! Swap the endianness of the specified value
+    /** Swap the endianness of the specified value.
+     * @note not available in Python bindings
+     */
     template<typename T>
     static void endian_swap( T& value )
     {

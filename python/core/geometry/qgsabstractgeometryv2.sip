@@ -139,6 +139,10 @@ class QgsAbstractGeometryV2
     /** Returns the centroid of the geometry*/
     virtual QgsPointV2 centroid() const;
 
+    /** Returns true if the geometry is empty
+     */
+    bool isEmpty() const;
+
     virtual bool hasCurvedSegments() const;
     /** Returns a geometry without curves. Caller takes ownership*/
     virtual QgsAbstractGeometryV2* segmentize() const /Factory/;
@@ -166,4 +170,21 @@ class QgsAbstractGeometryV2
      * @see addZValue
      */
     virtual bool addMValue( double mValue = 0 ) = 0;
+
+  protected:
+
+    /** Updates the geometry type based on whether sub geometries contain z or m values.
+     */
+    void setZMTypeFromSubGeometry( const QgsAbstractGeometryV2* subggeom, QgsWKBTypes::Type baseGeomType );
+
+    /** Reads a WKB header and tests its validity.
+     * @param wkbPtr
+     * @param wkbType destination for WKB type from header
+     * @param endianSwap will be set to true if endian from WKB must be swapped to match QGIS platform endianness
+     * @param expectedType expected WKB type
+     * @returns true if header is valid and matches expected type
+     * @note not available in Python bindings
+     */
+    //static bool readWkbHeader( QgsConstWkbPtr& wkbPtr, QgsWKBTypes::Type& wkbType, bool& endianSwap, QgsWKBTypes::Type expectedType );
+
 };

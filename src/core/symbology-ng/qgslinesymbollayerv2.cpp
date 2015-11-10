@@ -628,6 +628,8 @@ double QgsSimpleLineSymbolLayerV2::dxfOffset( const QgsDxfExport& e, QgsSymbolV2
 
 /////////
 
+///@cond
+//not part of public API
 
 class MyLine
 {
@@ -688,6 +690,7 @@ class MyLine
     double mLength;
 };
 
+///@endcond
 
 QgsMarkerLineSymbolLayerV2::QgsMarkerLineSymbolLayerV2( bool rotateMarker, double interval )
 {

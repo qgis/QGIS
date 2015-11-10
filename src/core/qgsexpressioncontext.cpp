@@ -496,6 +496,9 @@ void QgsExpressionContextUtils::setGlobalVariables( const QgsStringMap &variable
   settings.setValue( QString( "/variables/values" ), customVariableVariants );
 }
 
+///@cond
+//not part of public API
+
 class GetNamedProjectColor : public QgsScopedExpressionFunction
 {
   public:
@@ -544,6 +547,8 @@ class GetNamedProjectColor : public QgsScopedExpressionFunction
     QHash< QString, QColor > mColors;
 
 };
+
+///@endcond
 
 QgsExpressionContextScope* QgsExpressionContextUtils::projectScope()
 {

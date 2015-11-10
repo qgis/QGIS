@@ -63,6 +63,11 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
 
 
   public:
+
+    static const char* QGIS_ORGANIZATION_NAME;
+    static const char* QGIS_ORGANIZATION_DOMAIN;
+    static const char* QGIS_APPLICATION_NAME;
+
     //QgsApplication(int argc, char ** argv, bool GUIenabled);
     QgsApplication(SIP_PYLIST argv, bool GUIenabled, QString customConfigPath = QString() ) /PostHook=__pyQtQAppHook__/ [(int &argc, char **argv, bool GUIenabled, const QString& customConfigPath = QString() )];
 %MethodCode
@@ -87,6 +92,9 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
 %End
 
     virtual ~QgsApplication();
+
+    //! Set the FileOpen event receiver
+    static void setFileOpenEventReceiver( QObject * receiver );
 
     /** Set the active theme to the specified theme.
      * The theme name should be a single word e.g. 'default','classic'.

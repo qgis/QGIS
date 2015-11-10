@@ -49,6 +49,8 @@ email                : marco.hugentobler at sourcepole dot com
     return r; \
   }
 
+///@cond
+//not part of public API
 
 static void throwGEOSException( const char *fmt, ... )
 {
@@ -97,6 +99,9 @@ class GEOSInit
 };
 
 static GEOSInit geosinit;
+
+///@endcond
+
 
 /**
  * @brief Scoped GEOS pointer

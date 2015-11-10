@@ -603,11 +603,12 @@ class GUI_EXPORT QgsCentroidFillSymbolLayerV2Widget : public QgsSymbolLayerV2Wid
     virtual void setSymbolLayer( QgsSymbolLayerV2* layer ) override;
     virtual QgsSymbolLayerV2* symbolLayer() override;
 
-  public slots:
-    void on_mDrawInsideCheckBox_stateChanged( int state );
-
   protected:
     QgsCentroidFillSymbolLayerV2* mLayer;
+
+  private slots:
+    void on_mDrawInsideCheckBox_stateChanged( int state );
+
 };
 
 

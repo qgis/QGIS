@@ -20,6 +20,10 @@
 
 #include <QComboBox>
 
+/** \class QgsEnumerationWidgetWrapper
+ * \note not available in Python bindings
+ */
+
 class GUI_EXPORT QgsEnumerationWidgetWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT

@@ -20,6 +20,10 @@
 
 class QgsRelationEditorWidget;
 
+/** \class QgsRelationWidgetWrapper
+ * \note not available in Python bindings
+ */
+
 class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
 {
     Q_OBJECT

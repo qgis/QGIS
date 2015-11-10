@@ -20,6 +20,10 @@
 
 #include <QComboBox>
 
+/** \class QgsClassificationWidgetWrapper
+ * \note not available in Python bindings
+ */
+
 class GUI_EXPORT QgsClassificationWidgetWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT

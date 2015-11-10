@@ -22,6 +22,10 @@
 class QgsMapCanvas;
 class QgsMessageBar;
 
+/** \class QgsRelationReferenceFactory
+ * \note not available in Python bindings
+ */
+
 class GUI_EXPORT QgsRelationReferenceFactory : public QgsEditorWidgetFactory
 {
   public:

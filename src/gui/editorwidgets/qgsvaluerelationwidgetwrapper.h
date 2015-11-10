@@ -41,7 +41,7 @@ class QgsValueRelationWidgetFactory;
  * <li><b>FilterExpression</b> <i>If not empty, will be used as expression. Only if this evaluates to True, the value will be shown.</i></li>
  * <li><b>OrderByValue</b> <i>Will order by value instead of key.</i></li>
  * </ul>
- *
+ * \note not available in Python bindings
  */
 
 class GUI_EXPORT QgsValueRelationWidgetWrapper : public QgsEditorWidgetWrapper

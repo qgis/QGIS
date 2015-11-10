@@ -34,7 +34,7 @@
  * <li><b>Max</b> <i>The maximal allowed value</i></li>
  * <li><b>Step</b> <i>The step size when incrementing/decrementing the value</i></li>
  * </ul>
- *
+ * \note not available in Python bindings
  */
 
 class GUI_EXPORT QgsRangeWidgetWrapper : public QgsEditorWidgetWrapper

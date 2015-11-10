@@ -49,7 +49,7 @@ class CORE_EXPORT QgsCptCityArchive
     static QString findFileName( const QString & target, const QString & startDir, const QString & baseDir );
     static QMap< QString, QString > copyingInfo( const QString& fileName );
     static QMap< QString, QString > description( const QString& fileName );
-    //! note not available in python bindings
+    //! @note not available in python bindings
     static QMap< double, QPair<QColor, QColor> > gradientColorMap( const QString& fileName );
 
     // archive management

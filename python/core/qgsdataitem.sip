@@ -1,3 +1,33 @@
+/** Animated icon is keeping an animation running if there are listeners connected to frameChanged */
+class QgsAnimatedIcon : QObject
+{
+%TypeHeaderCode
+#include <qgsdataitem.h>
+%End
+  public:
+
+    /** Constructor
+     * @param iconPath path to a movie, e.g. animated GIF */
+    QgsAnimatedIcon( const QString & iconPath = QString::null );
+
+    QString iconPath() const;
+    void setIconPath( const QString & iconPath );
+    QIcon icon() const;
+
+    /** Connect listener to frameChanged() signal */
+    void connectFrameChanged( const QObject * receiver, const char * method );
+    /** Disconnect listener from frameChanged() signal */
+    void disconnectFrameChanged( const QObject * receiver, const char * method );
+
+  public slots:
+    void onFrameChanged();
+
+  signals:
+    /** Emitted when icon changed */
+    void frameChanged();
+
+};
+
 class QgsDataItem : QObject
 {
 %TypeHeaderCode
@@ -143,6 +173,16 @@ class QgsDataItem : QObject
     /** Move object and all its descendants to thread */
     void moveToThread( QThread * targetThread );
 
+  protected:
+    virtual void populate( const QVector<QgsDataItem*>& children );
+    virtual void refresh( QVector<QgsDataItem*> children );
+    /** The item is scheduled to be deleted. E.g. if deleteLater() is called when
+     * item is in Populating state (createChildren() running in another thread),
+     * the deferredDelete() returns true and item will be deleted once Populating finished.
+     * Items with slow reateChildren() (for example network or database based) may
+     * check during createChildren() if deferredDelete() returns true and return from
+     * createChildren() immediately because result will be useless. */
+    bool deferredDelete();
 
   public slots:
 
@@ -168,6 +208,8 @@ class QgsDataItem : QObject
     void endInsertItems();
     void beginRemoveItems( QgsDataItem* parent, int first, int last );
     void endRemoveItems();
+    void dataChanged( QgsDataItem * item );
+    void stateChanged( QgsDataItem * item, QgsDataItem::State oldState );
 };
 
 QFlags<QgsDataItem::Capability> operator|(QgsDataItem::Capability f1, QFlags<QgsDataItem::Capability> f2);

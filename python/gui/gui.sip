@@ -17,13 +17,16 @@
 %Include qgsblendmodecombobox.sip
 
 %Include qgisinterface.sip
+%Include qgsactionmenu.sip
 %Include qgsannotationitem.sip
+%Include qgsadvanceddigitizingcanvasitem.sip
 %Include qgsadvanceddigitizingdockwidget.sip
 %Include qgsattributeeditor.sip
 %Include qgsattributeeditorcontext.sip
 %Include qgsattributedialog.sip
 %Include qgsattributeform.sip
 %Include qgsattributeforminterface.sip
+%Include qgsbrowsertreeview.sip
 %Include qgsbusyindicatordialog.sip
 %Include qgscollapsiblegroupbox.sip
 %If (HAVE_QSCI_SIP)
@@ -47,6 +50,7 @@
 %Include qgsdetaileditemdata.sip
 %Include qgsdetaileditemdelegate.sip
 %Include qgsdetaileditemwidget.sip
+%Include qgsdial.sip
 %Include qgsdialog.sip
 %Include qgsencodingfiledialog.sip
 %Include qgserrordialog.sip
@@ -122,9 +126,11 @@
 %Include qgsscalevisibilitydialog.sip
 %Include qgsscalewidget.sip
 %Include qgssearchquerybuilder.sip
+%Include qgsslider.sip
 %Include qgssublayersdialog.sip
 %Include qgssvgannotationitem.sip
 %Include qgstextannotationitem.sip
+%Include qgsunitselectionwidget.sip
 %Include qgsuserinputdockwidget.sip
 %Include qgsvariableeditorwidget.sip
 %Include qgsvectorlayertools.sip

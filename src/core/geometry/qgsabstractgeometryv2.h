@@ -332,6 +332,7 @@ class CORE_EXPORT QgsAbstractGeometryV2
      * @param endianSwap will be set to true if endian from WKB must be swapped to match QGIS platform endianness
      * @param expectedType expected WKB type
      * @returns true if header is valid and matches expected type
+     * @note not available in Python bindings
      */
     static bool readWkbHeader( QgsConstWkbPtr& wkbPtr, QgsWKBTypes::Type& wkbType, bool& endianSwap, QgsWKBTypes::Type expectedType );
 
