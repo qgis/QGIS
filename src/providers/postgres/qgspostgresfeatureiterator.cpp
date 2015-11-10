@@ -218,6 +218,7 @@ bool QgsPostgresFeatureIterator::rewind()
   mConn->PQexecNR( QString( "move absolute 0 in %1" ).arg( mCursorName ) );
   mFeatureQueue.clear();
   mFetched = 0;
+  mLastFetch = false;
 
   return true;
 }
