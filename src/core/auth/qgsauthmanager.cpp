@@ -2840,6 +2840,7 @@ QgsAuthManager::~QgsAuthManager()
   mScheduledDbEraseTimer = 0;
   delete mQcaInitializer;
   mQcaInitializer = 0;
+  QSqlDatabase::removeDatabase( "authentication.configs" );
 }
 
 bool QgsAuthManager::masterPasswordInput()
