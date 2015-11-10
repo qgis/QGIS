@@ -64,5 +64,5 @@ class QgsActionMenu : QMenu
 
   signals:
     void reinit();
-    
+
 };

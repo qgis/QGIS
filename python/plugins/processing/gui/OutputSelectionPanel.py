@@ -117,14 +117,14 @@ class OutputSelectionPanel(BASE, WIDGET):
             uri.setConnection(host, str(port), dbname, user, password)
             uri.setDataSource(dlg.schema, dlg.table, "the_geom")
             connInfo = uri.connectionInfo()
-            (success, user, passwd ) = QgsCredentials.instance().get(connInfo, None, None)
+            (success, user, passwd) = QgsCredentials.instance().get(connInfo, None, None)
             if success:
                 QgsCredentials.instance().put(connInfo, user, passwd)
             self.leText.setText("postgis:" + uri.uri())
 
     def saveToSpatialite(self):
         fileFilter = self.output.tr('Spatialite files(*.sqlite)', 'OutputFile')
-        
+
         settings = QSettings()
         if settings.contains('/Processing/LastOutputPath'):
             path = settings.value('/Processing/LastOutputPath')
@@ -152,7 +152,7 @@ class OutputSelectionPanel(BASE, WIDGET):
             settings.setValue('/Processing/LastOutputPath',
                               os.path.dirname(fileName))
             settings.setValue('/Processing/encoding', encoding)
-            
+
             uri = QgsDataSourceURI()
             uri.setDatabase(fileName)
             uri.setDataSource('', self.output.name.lower(), 'the_geom')
@@ -195,7 +195,7 @@ class OutputSelectionPanel(BASE, WIDGET):
 
     def selectDirectory(self):
         lastDir = ''
-        dirName = QFileDialog.getExistingDirectory(self,self.tr('Select directory'),
+        dirName = QFileDialog.getExistingDirectory(self, self.tr('Select directory'),
                                                    lastDir, QFileDialog.ShowDirsOnly)
         self.leText.setText(dirName)
 
@@ -214,7 +214,5 @@ class OutputSelectionPanel(BASE, WIDGET):
                 ProcessingConfig.OUTPUT_FOLDER) + os.sep + fileName
         else:
             value = fileName
-
-
 
         return value

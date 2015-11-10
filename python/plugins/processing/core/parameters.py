@@ -160,6 +160,7 @@ class ParameterCrs(Parameter):
     def getAsScriptCode(self):
         return '##' + self.name + '=crs ' + str(self.default)
 
+
 class ParameterDataObject(Parameter):
 
     def getValueAsCommandLineParameter(self):
@@ -205,6 +206,7 @@ class ParameterExtent(Parameter):
 
     def getAsScriptCode(self):
         return '##' + self.name + '=extent'
+
 
 class ParameterFile(Parameter):
 
@@ -428,6 +430,7 @@ class ParameterMultipleInput(ParameterDataObject):
         else:
             return '##' + self.name + '=multiple vector'
 
+
 class ParameterNumber(Parameter):
 
     def __init__(self, name='', description='', minValue=None, maxValue=None,
@@ -471,9 +474,9 @@ class ParameterNumber(Parameter):
         except:
             return False
 
-
     def getAsScriptCode(self):
         return '##' + self.name + '=number ' + str(self.default)
+
 
 class ParameterRange(Parameter):
 
@@ -634,11 +637,12 @@ class ParameterString(Parameter):
 
     def getValueAsCommandLineParameter(self):
         return ('"' + unicode(self.value.replace(ParameterString.NEWLINE,
-                             ParameterString.ESCAPED_NEWLINE)) + '"'
-                             if self.value is not None else unicode(None))
+                                                 ParameterString.ESCAPED_NEWLINE)) + '"'
+                if self.value is not None else unicode(None))
 
     def getAsScriptCode(self):
         return '##' + self.name + '=string ' + self.default
+
 
 class ParameterTable(ParameterDataObject):
 

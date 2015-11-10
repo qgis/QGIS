@@ -464,7 +464,7 @@ class VectorWriter:
             self.isNotFileBased = True
             uri = QgsDataSourceURI(self.destination[len(self.POSTGIS_LAYER_PREFIX):])
             connInfo = uri.connectionInfo()
-            (success, user, passwd ) = QgsCredentials.instance().get(connInfo, None, None)
+            (success, user, passwd) = QgsCredentials.instance().get(connInfo, None, None)
             if success:
                 QgsCredentials.instance().put(connInfo, user, passwd)
             else:
@@ -472,7 +472,7 @@ class VectorWriter:
             print uri.uri()
             try:
                 db = postgis_utils.GeoDB(host=uri.host(), port=int(uri.port()),
-                    dbname=uri.database(), user=user, passwd=passwd)
+                                         dbname=uri.database(), user=user, passwd=passwd)
             except postgis_utils.DbError as e:
                 raise GeoAlgorithmExecutionException(
                     "Couldn't connect to database:\n%s" % e.message)
@@ -486,12 +486,12 @@ class VectorWriter:
 
             fields = [_toQgsField(f) for f in fields]
             fieldsdesc = ",".join('%s %s' % (f.name(),
-                                            TYPE_MAP_POSTGIS_LAYER.get(f.type(), "VARCHAR"))
+                                             TYPE_MAP_POSTGIS_LAYER.get(f.type(), "VARCHAR"))
                                   for f in fields)
 
             _runSQL("CREATE TABLE %s.%s (%s)" % (uri.schema(), uri.table().lower(), fieldsdesc))
             _runSQL("SELECT AddGeometryColumn('{schema}', '{table}', 'the_geom', {srid}, '{typmod}', 2)".format(
-                                    table=uri.table().lower(), schema=uri.schema(), srid=crs.authid().split(":")[-1],
+                table=uri.table().lower(), schema=uri.schema(), srid=crs.authid().split(":")[-1],
                                     typmod=GEOM_TYPE_MAP[geometryType].upper()))
 
             self.layer = QgsVectorLayer(uri.uri(), uri.table(), "postgres")
@@ -515,13 +515,13 @@ class VectorWriter:
 
             fields = [_toQgsField(f) for f in fields]
             fieldsdesc = ",".join('%s %s' % (f.name(),
-                                            TYPE_MAP_SPATIALITE_LAYER.get(f.type(), "VARCHAR"))
+                                             TYPE_MAP_SPATIALITE_LAYER.get(f.type(), "VARCHAR"))
                                   for f in fields)
 
             _runSQL("DROP TABLE IF EXISTS %s" % uri.table().lower())
             _runSQL("CREATE TABLE %s (%s)" % (uri.table().lower(), fieldsdesc))
             _runSQL("SELECT AddGeometryColumn('{table}', 'the_geom', {srid}, '{typmod}', 2)".format(
-                                    table=uri.table().lower(), srid=crs.authid().split(":")[-1],
+                table=uri.table().lower(), srid=crs.authid().split(":")[-1],
                                     typmod=GEOM_TYPE_MAP[geometryType].upper()))
 
             self.layer = QgsVectorLayer(uri.uri(), uri.table(), "spatialite")
@@ -545,7 +545,7 @@ class VectorWriter:
                 qgsfields.append(_toQgsField(field))
 
             self.writer = QgsVectorFileWriter(self.destination, encoding,
-                qgsfields, geometryType, crs, OGRCodes[extension])
+                                              qgsfields, geometryType, crs, OGRCodes[extension])
 
     def addFeature(self, feature):
         if self.isNotFileBased:

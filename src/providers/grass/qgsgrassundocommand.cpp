@@ -19,20 +19,20 @@
 #include "qgslogger.h"
 
 QgsGrassUndoCommandChangeAttribute::QgsGrassUndoCommandChangeAttribute( QgsGrassProvider * provider, int fid, int lid, int field, int cat, bool deleteCat, bool deleteRecord )
-  : mProvider( provider )
-  , mFid(fid)
-  , mLid(lid)
-  , mField(field)
-  , mCat(cat)
-  , mDeleteCat(deleteCat)
-  , mDeleteRecord( deleteRecord )
+    : mProvider( provider )
+    , mFid( fid )
+    , mLid( lid )
+    , mField( field )
+    , mCat( cat )
+    , mDeleteCat( deleteCat )
+    , mDeleteRecord( deleteRecord )
 {
-  Q_UNUSED(mField);
+  Q_UNUSED( mField );
 }
 
 void QgsGrassUndoCommandChangeAttribute::undo()
 {
-  QgsDebugMsg( QString("mLid = %1 mField = %2, mCat = %3").arg(mLid).arg(mField).arg(mCat) );
+  QgsDebugMsg( QString( "mLid = %1 mField = %2, mCat = %3" ).arg( mLid ).arg( mField ).arg( mCat ) );
   if ( mDeleteCat )
   {
     int realLine = mLid;
@@ -40,7 +40,7 @@ void QgsGrassUndoCommandChangeAttribute::undo()
     {
       realLine = mProvider->mLayer->map()->newLids().value( mLid );
     }
-    QgsDebugMsg( QString("realLine = %1").arg(realLine) );
+    QgsDebugMsg( QString( "realLine = %1" ).arg( realLine ) );
 
     int type = mProvider->readLine( mProvider->mPoints, mProvider->mCats, realLine );
     if ( type <= 0 )
@@ -59,7 +59,7 @@ void QgsGrassUndoCommandChangeAttribute::undo()
         mProvider->mLayer->map()->lockReadWrite();
         int newLid = mProvider->rewriteLine( realLine, type, mProvider->mPoints, mProvider->mCats );
         Q_UNUSED( newLid );
-        mProvider->mLayer->map()->newCats().remove(mFid);
+        mProvider->mLayer->map()->newCats().remove( mFid );
         mProvider->mLayer->map()->unlockReadWrite();
       }
     }

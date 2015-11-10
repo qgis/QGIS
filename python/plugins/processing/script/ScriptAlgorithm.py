@@ -159,7 +159,6 @@ class ScriptAlgorithm(GeoAlgorithm):
         else:
             param = self.processInputParameterToken(tokens[1], tokens[0])
 
-
         if param is not None:
             self.addParameter(param)
         elif out is not None:

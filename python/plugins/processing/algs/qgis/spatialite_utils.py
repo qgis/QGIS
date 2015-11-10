@@ -27,6 +27,7 @@ __revision__ = '$Format:%H$'
 
 from pyspatialite import dbapi2 as sqlite
 
+
 class DbError(Exception):
 
     def __init__(self, message, query=None):
@@ -36,19 +37,20 @@ class DbError(Exception):
 
     def __str__(self):
         return 'MESSAGE: %s\nQUERY: %s' % (self.message, self.query)
-        
+
+
 class GeoDB:
 
     def __init__(self, uri=None):
         self.uri = uri
         self.dbname = uri.database()
-        
+
         try:
             self.con = sqlite.connect(self.con_info())
 
         except (sqlite.InterfaceError, sqlite.OperationalError) as e:
             raise DbError(e.message)
-        
+
         self.has_spatialite = self.check_spatialite()
         if not self.has_spatialite:
             self.has_spatialite = self.init_spatialite()
@@ -77,15 +79,15 @@ class GeoDB:
             return False
         finally:
             self.con.close()
-        
+
         try:
             self.con = sqlite.connect(self.con_info())
 
         except (sqlite.InterfaceError, sqlite.OperationalError) as e:
             raise DbError(e.message)
-            
+
         return self.check_spatialite()
-            
+
     def check_spatialite(self):
         try:
             c = self.con.cursor()
@@ -99,13 +101,13 @@ class GeoDB:
 
         self.has_geometry_columns_access = self.has_geometry_columns
         return self.has_geometry_columns
-        
+
     def _exec_sql(self, cursor, sql):
         try:
             cursor.execute(sql)
         except (sqlite.Error, sqlite.ProgrammingError, sqlite.Warning, sqlite.InterfaceError, sqlite.OperationalError) as e:
             raise DbError(e.message, sql)
-            
+
     def _exec_sql_and_commit(self, sql):
         """Tries to execute and commit some action, on error it rolls
         back the change.

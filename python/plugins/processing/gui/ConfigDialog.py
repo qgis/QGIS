@@ -144,9 +144,9 @@ class ConfigDialog(BASE, WIDGET):
             else:
                 try:
                     setting.setValue(unicode(self.items[setting].text()))
-                except ValueError, e:
+                except ValueError as e:
                     QMessageBox.warning(self, self.tr('Wrong value'),
-                                         self.tr('Wrong value for parameter "%s":\n\n%s' %(setting.description, unicode(e))))
+                                        self.tr('Wrong value for parameter "%s":\n\n%s' % (setting.description, unicode(e))))
                     return
             setting.save()
         Processing.updateAlgsList()
@@ -227,7 +227,6 @@ class SettingDelegate(QStyledItemDelegate):
                 model.setData(index, editor.text(), Qt.EditRole)
             else:
                 model.setData(index, editor.value(), Qt.EditRole)
-
 
     def sizeHint(self, option, index):
         return QSpinBox().sizeHint()

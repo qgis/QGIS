@@ -128,6 +128,7 @@ class Algorithm():
         params = []
         for param in self.algorithm.parameters:
             value = self.params[param.name]
+
             def _toString(v):
                 if isinstance(v, (ValueFromInput, ValueFromOutput)):
                     return v.asPythonParameter()
@@ -166,6 +167,7 @@ class ValueFromInput():
 
     def asPythonParameter(self):
         return self.name
+
 
 class ValueFromOutput():
 
@@ -687,7 +689,6 @@ class ModelerAlgorithm(GeoAlgorithm):
             else:
                 raise WrongModelException(_tr('Error in model definition line: ') + '%s\n%s' % (line.strip(), traceback.format_exc()))
 
-
     def toPython(self):
         s = ['##%s=name' % self.name]
         for param in self.inputs.values():
@@ -712,6 +713,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                         executed.append(alg.name)
 
         return '\n'.join(s)
+
 
 def safeName(name):
     validChars = 'abcdefghijklmnopqrstuvwxyz'

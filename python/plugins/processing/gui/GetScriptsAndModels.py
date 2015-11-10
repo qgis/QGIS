@@ -50,6 +50,7 @@ pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
     os.path.join(pluginPath, 'ui', 'DlgGetScriptsAndModels.ui'))
 
+
 class GetScriptsAction(ToolboxAction):
 
     def __init__(self):
@@ -115,9 +116,9 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
     SCRIPTS = 1
     RSCRIPTS = 2
 
-    tr_disambiguation = { 0: 'GetModelsAction',
-                          1: 'GetScriptsAction',
-                          2: 'GetRScriptsAction' }
+    tr_disambiguation = {0: 'GetModelsAction',
+                         1: 'GetScriptsAction',
+                         2: 'GetRScriptsAction'}
 
     def __init__(self, resourceType):
         super(GetScriptsAndModelsDialog, self).__init__(iface.mainWindow())
@@ -144,7 +145,7 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
         self.buttonBox.accepted.connect(self.okPressed)
         self.buttonBox.rejected.connect(self.cancelPressed)
         self.tree.currentItemChanged.connect(self.currentItemChanged)
-    
+
     def popupError(self, error=None, url=None):
         """Popups an Error message bar for network errors."""
         disambiguation = self.tr_disambiguation[self.resourceType]
@@ -156,7 +157,7 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
             widget.layout().addWidget(button)
 
         iface.messageBar().pushWidget(widget, level=QgsMessageBar.CRITICAL, duration=5)
-        
+
     def grabHTTP(self, url, loadFunction, arguments=None):
         """Grab distant content via QGIS internal classes and QtNetwork."""
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
@@ -166,7 +167,7 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
             reply.finished.connect(partial(loadFunction, reply, arguments))
         else:
             reply.finished.connect(partial(loadFunction, reply))
-        
+
     def populateTree(self):
         self.uptodateItem = QTreeWidgetItem()
         self.uptodateItem.setText(0, self.tr('Installed'))
@@ -181,7 +182,7 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
 
     def treeLoaded(self, reply):
         """
-        update the tree of scripts/models whenever 
+        update the tree of scripts/models whenever
         HTTP request is finished
         """
         QApplication.restoreOverrideCursor()
@@ -219,7 +220,7 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
             html += self.tr('<p><b>Version:</b> %s') % getDescription(ALG_VERSION, descriptions)
         reply.deleteLater()
         self.webView.setHtml(html)
-        
+
     def currentItemChanged(self, item, prev):
         if isinstance(item, TreeItem):
             url = self.urlBase + item.filename.replace(' ', '%20') + '.help'
@@ -283,7 +284,7 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
                 QCoreApplication.processEvents()
                 url = self.urlBase + filename.replace(' ', '%20')
                 self.grabHTTP(url, self.storeFile, filename)
-                
+
                 url += '.help'
                 self.grabHTTP(url, self.storeFile, filename + '.help')
 

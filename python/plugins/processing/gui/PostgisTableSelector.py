@@ -54,6 +54,7 @@ class PostgisTableSelector(BASE, WIDGET):
         self.connection = item.parent().text(0)
         self.close()
 
+
 class ConnectionItem(QtGui.QTreeWidgetItem):
 
     connIcon = QtGui.QIcon(os.path.dirname(__file__) + '/../images/postgis.png')
@@ -79,7 +80,7 @@ class ConnectionItem(QtGui.QTreeWidgetItem):
         uri = QgsDataSourceURI()
         uri.setConnection(host, str(port), database, user, passwd)
         connInfo = uri.connectionInfo()
-        (success, user, passwd ) = QgsCredentials.instance().get(connInfo, None, None)
+        (success, user, passwd) = QgsCredentials.instance().get(connInfo, None, None)
         if success:
             QgsCredentials.instance().put(connInfo, user, passwd)
             geodb = GeoDB(host, int(port), database, user, passwd)
@@ -89,4 +90,3 @@ class ConnectionItem(QtGui.QTreeWidgetItem):
                 item.setText(0, name)
                 item.setIcon(0, self.schemaIcon)
                 self.addChild(item)
-
