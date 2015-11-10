@@ -580,7 +580,7 @@ QPicture QgsSymbolLayerV2Utils::symbolLayerPreviewPicture( QgsSymbolLayerV2* lay
   painter.begin( &picture );
   painter.setRenderHint( QPainter::Antialiasing );
   QgsRenderContext renderContext = createRenderContext( &painter );
-  renderContext.setForceVectorOutput( true );
+  renderContext.setFlag( QgsRenderContext::ForceVectorOutput, true );
   QgsSymbolV2RenderContext symbolContext( renderContext, units, 1.0, false, 0, 0, 0, scale );
   layer->drawPreviewIcon( symbolContext, size );
   painter.end();

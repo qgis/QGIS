@@ -679,7 +679,7 @@ void QgsComposerMapGrid::draw( QPainter* p )
   ms.setExtent( *mComposerMap->currentMapExtent() );
   ms.setOutputDpi( p->device()->logicalDpiX() );
   QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
-  context.setForceVectorOutput( true );
+  context.setFlag( QgsRenderContext::ForceVectorOutput, true );
   context.setPainter( p );
   QgsExpressionContext* expressionContext = createExpressionContext();
   context.setExpressionContext( *expressionContext );

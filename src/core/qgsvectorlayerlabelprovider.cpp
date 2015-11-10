@@ -631,7 +631,7 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition* label, Q
         }
 
         // paint the text
-        if ( context.useAdvancedEffects() )
+        if ( context.testFlag( QgsRenderContext::UseAdvancedEffects ) )
         {
           painter->setCompositionMode( tmpLyr.blendMode );
         }

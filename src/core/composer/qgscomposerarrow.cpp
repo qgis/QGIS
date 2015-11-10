@@ -184,7 +184,7 @@ void QgsComposerArrow::drawLine( QPainter *painter )
   //context units should be in dots
   ms.setOutputDpi( painter->device()->logicalDpiX() );
   QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
-  context.setForceVectorOutput( true );
+  context.setFlag( QgsRenderContext::ForceVectorOutput, true );
   context.setPainter( painter );
   QgsExpressionContext* expressionContext = createExpressionContext();
   context.setExpressionContext( *expressionContext );
