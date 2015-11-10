@@ -74,6 +74,7 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings& mapSet
   ctx.setCoordinateTransform( 0 );
   ctx.setSelectionColor( mapSettings.selectionColor() );
   ctx.setFlag( DrawSelection, mapSettings.testFlag( QgsMapSettings::DrawSelection ) );
+  ctx.setFlag( DrawSymbolBounds, mapSettings.testFlag( QgsMapSettings::DrawSymbolBounds ) );
   ctx.setRasterScaleFactor( 1.0 );
   ctx.setScaleFactor( mapSettings.outputDpi() / 25.4 ); // = pixels per mm
   ctx.setRendererScale( mapSettings.scale() );

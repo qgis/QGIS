@@ -59,6 +59,7 @@ class TestQgsSvgMarkerSymbol : public QObject
     void cleanup() {} // will be called after every testfunction.
 
     void svgMarkerSymbol();
+    void bounds();
 
   private:
     bool mTestHasError;
@@ -137,6 +138,21 @@ void TestQgsSvgMarkerSymbol::svgMarkerSymbol()
   mSvgMarkerLayer->setSize( 10 );
   mSvgMarkerLayer->setOutlineWidth( 0.5 );
   QVERIFY( imageCheck( "svgmarker" ) );
+}
+
+void TestQgsSvgMarkerSymbol::bounds()
+{
+  //use a tall, narrow symbol (non-square to test calculation of height)
+  mSvgMarkerLayer->setPath( mTestDataDir + "test_symbol_svg.svg" );
+  mSvgMarkerLayer->setOutlineColor( Qt::black );
+  mSvgMarkerLayer->setColor( Qt::blue );
+  mSvgMarkerLayer->setOutlineWidth( 0.5 );
+  mSvgMarkerLayer->setDataDefinedProperty( "size", new QgsDataDefined( true, true, "min(\"importance\" * 2, 6)" ) );
+
+  mMapSettings.setFlag( QgsMapSettings::DrawSymbolBounds, true );
+  bool result = imageCheck( "svgmarker_bounds" );
+  mMapSettings.setFlag( QgsMapSettings::DrawSymbolBounds, false );
+  QVERIFY( result );
 }
 
 //

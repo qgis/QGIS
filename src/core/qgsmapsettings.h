@@ -135,6 +135,7 @@ class CORE_EXPORT QgsMapSettings
       DrawLabeling       = 0x10,  //!< Enable drawing of labels on top of the map
       UseRenderingOptimization = 0x20, //!< Enable vector simplification and other rendering optimizations
       DrawSelection      = 0x40,  //!< Whether vector selections should be shown in the rendered map
+      DrawSymbolBounds   = 0x80,  //!< Draw bounds of symbols (for debugging/testing)
       // TODO: ignore scale-based visibility (overview)
     };
     Q_DECLARE_FLAGS( Flags, Flag )

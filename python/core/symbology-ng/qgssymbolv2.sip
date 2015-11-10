@@ -305,6 +305,12 @@ class QgsMarkerSymbolV2 : QgsSymbolV2
 
     void renderPoint( const QPointF& point, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
 
+    /** Returns the approximate bounding box of the marker symbol, which includes the bounding box
+     * of all symbol layers for the symbol.
+     * @returns approximate symbol bounds, in painter units
+     * @note added in QGIS 2.14     */
+    QRectF bounds( const QPointF& point, QgsRenderContext& context ) const;
+
     virtual QgsMarkerSymbolV2* clone() const /Factory/;
 };
 

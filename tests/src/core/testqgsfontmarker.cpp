@@ -60,6 +60,7 @@ class TestQgsFontMarkerSymbol : public QObject
     void cleanup() {} // will be called after every testfunction.
 
     void fontMarkerSymbol();
+    void bounds();
 
   private:
     bool mTestHasError;
@@ -139,6 +140,23 @@ void TestQgsFontMarkerSymbol::fontMarkerSymbol()
   mFontMarkerLayer->setSize( 12 );
   QVERIFY( imageCheck( "fontmarker" ) );
 }
+
+void TestQgsFontMarkerSymbol::bounds()
+{
+  mFontMarkerLayer->setColor( Qt::blue );
+  QFont font = QgsFontUtils::getStandardTestFont( "Bold" );
+  mFontMarkerLayer->setFontFamily( font.family() );
+  //use a narrow character to test that width is correctly calculated
+  mFontMarkerLayer->setCharacter( 'l' );
+  mFontMarkerLayer->setSize( 12 );
+  mFontMarkerLayer->setDataDefinedProperty( "size", new QgsDataDefined( true, true, "min(\"importance\" * 20, 50)" ) );
+
+  mMapSettings.setFlag( QgsMapSettings::DrawSymbolBounds, true );
+  bool result = imageCheck( "fontmarker_bounds" );
+  mMapSettings.setFlag( QgsMapSettings::DrawSymbolBounds, false );
+  QVERIFY( result );
+}
+
 
 //
 // Private helper functions not called directly by CTest

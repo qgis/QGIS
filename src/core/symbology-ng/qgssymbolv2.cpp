@@ -866,6 +866,21 @@ void QgsMarkerSymbolV2::renderPoint( const QPointF& point, const QgsFeature* f, 
   }
 }
 
+QRectF QgsMarkerSymbolV2::bounds( const QPointF& point, QgsRenderContext& context ) const
+{
+  QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, false, mRenderHints, 0, 0, mapUnitScale() );
+
+  QRectF bound;
+  for ( QgsSymbolLayerV2List::const_iterator it = mLayers.constBegin(); it != mLayers.constEnd(); ++it )
+  {
+    if ( bound.isNull() )
+      bound = dynamic_cast< QgsMarkerSymbolLayerV2* >( *it )->bounds( point, symbolContext );
+    else
+      bound = bound.united( dynamic_cast< QgsMarkerSymbolLayerV2* >( *it )->bounds( point, symbolContext ) );
+  }
+  return bound;
+}
+
 QgsMarkerSymbolV2* QgsMarkerSymbolV2::clone() const
 {
   QgsMarkerSymbolV2* cloneSymbol = new QgsMarkerSymbolV2( cloneLayers() );

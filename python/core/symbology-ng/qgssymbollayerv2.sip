@@ -385,6 +385,15 @@ class QgsMarkerSymbolLayerV2 : QgsSymbolLayerV2
     void setVerticalAnchorPoint( VerticalAnchorPoint v );
     VerticalAnchorPoint verticalAnchorPoint() const;
 
+    /** Returns the approximate bounding box of the marker symbol layer, taking into account
+     * any data defined overrides and offsets which are set for the marker layer.
+     * @returns approximate symbol bounds, in painter units
+     * @note added in QGIS 2.14
+     * @note this method will become pure virtual in QGIS 3.0
+     */
+    //TODO QGIS 3.0 - make pure virtual
+    virtual QRectF bounds( const QPointF& point, QgsSymbolV2RenderContext& context );
+
   protected:
     QgsMarkerSymbolLayerV2( bool locked = false );
 

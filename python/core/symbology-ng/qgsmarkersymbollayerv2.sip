@@ -75,6 +75,8 @@ class QgsSimpleMarkerSymbolLayerV2 : QgsMarkerSymbolLayerV2
     void setMapUnitScale( const QgsMapUnitScale& scale );
     QgsMapUnitScale mapUnitScale() const;
 
+    QRectF bounds( const QPointF& point, QgsSymbolV2RenderContext& context );
+
   protected:
     void drawMarker( QPainter* p, QgsSymbolV2RenderContext& context );
 
@@ -145,6 +147,8 @@ class QgsSvgMarkerSymbolLayerV2 : QgsMarkerSymbolLayerV2
     QgsMapUnitScale mapUnitScale() const;
 
     bool writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName, QgsSymbolV2RenderContext* context, const QgsFeature* f, const QPointF& shift = QPointF( 0.0, 0.0 ) ) const;
+
+    QRectF bounds( const QPointF& point, QgsSymbolV2RenderContext& context );
 };
 
 class QgsFontMarkerSymbolLayerV2 : QgsMarkerSymbolLayerV2
@@ -190,4 +194,7 @@ class QgsFontMarkerSymbolLayerV2 : QgsMarkerSymbolLayerV2
 
     QChar character() const;
     void setCharacter( QChar ch );
+
+    QRectF bounds( const QPointF& point, QgsSymbolV2RenderContext& context );
+
 };
