@@ -125,6 +125,7 @@ class QgsPostgresFeatureIterator : public QgsAbstractFeatureIteratorFromSource<Q
     virtual bool providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const override;
 
     bool mExpressionCompiled;
+    bool mLastFetch;
 };
 
 #endif // QGSPOSTGRESFEATUREITERATOR_H
