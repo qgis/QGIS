@@ -551,7 +551,7 @@ GEOSGeometry* QgsGeos::linePointDifference( GEOSGeometry* GEOSsplitPoint ) const
       //For each segment
       QgsLineStringV2 newLine;
       newLine.addVertex( line->pointN( 0 ) );
-      int nVertices = newLine.numPoints();
+      int nVertices = line->numPoints();
       for ( int j = 1; j < ( nVertices - 1 ); ++j )
       {
         QgsPointV2 currentPoint = line->pointN( j );
