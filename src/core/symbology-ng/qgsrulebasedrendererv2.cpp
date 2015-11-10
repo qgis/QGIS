@@ -1214,7 +1214,7 @@ QgsRuleBasedRendererV2* QgsRuleBasedRendererV2::convertFromRenderer( const QgsFe
       }
       else
       {
-        expression = QString( "\"%1\" = %2" ).arg( categorizedRenderer->classAttribute(), value );
+        expression = QString( "%1 = %2" ).arg( QgsExpression::quotedColumnRef( categorizedRenderer->classAttribute() ), value );
       }
       rule->setFilterExpression( expression );
 
