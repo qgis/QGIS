@@ -371,6 +371,20 @@ static TVL getTVLValue( const QVariant& value, QgsExpression* parent )
   if ( value.isNull() )
     return Unknown;
 
+  //handle some special cases
+  if ( value.canConvert<QgsGeometry>() )
+  {
+    //geom is false if empty
+    QgsGeometry geom = value.value<QgsGeometry>();
+    return geom.isEmpty() ? False : True;
+  }
+  else if ( value.canConvert<QgsFeature>() )
+  {
+    //feat is false if non-valid
+    QgsFeature feat = value.value<QgsFeature>();
+    return feat.isValid() ? True : False;
+  }
+
   if ( value.type() == QVariant::Int )
     return value.toInt() != 0 ? True : False;
 
