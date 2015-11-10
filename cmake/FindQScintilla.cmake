@@ -27,13 +27,14 @@ ELSE(EXISTS QSCINTILLA_VERSION_STR)
   FIND_PATH(QSCINTILLA_INCLUDE_DIR
     NAMES Qsci/qsciglobal.h
     PATHS
+      ${Qt5Core_INCLUDE_DIRS}
       "${QT_INCLUDE_DIR}"
       /usr/local/include
       /usr/include
     )
 
   if(ENABLE_QT5)
-    set(QSCINTILLA_LIBRARY_NAMES qscintilla2-qt5 libqscintilla2-qt5 libqscintilla2-qt5.dylib)
+    set(QSCINTILLA_LIBRARY_NAMES qscintilla2-qt5 libqscintilla2-qt5 qt5scintilla2 libqscintilla2-qt5.dylib)
   else(ENABLE_QT5)
     set(QSCINTILLA_LIBRARY_NAMES qscintilla2 libqscintilla2 libqscintilla2.dylib)
   endif(ENABLE_QT5)
