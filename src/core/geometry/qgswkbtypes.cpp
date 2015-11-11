@@ -96,6 +96,19 @@ int QgsWKBTypes::wkbDimensions( Type type )
   }
 }
 
+int QgsWKBTypes::coordDimensions( QgsWKBTypes::Type type )
+{
+  if ( type == Unknown || type == NoGeometry )
+    return 0;
+
+  QMap< Type, wkbEntry >::const_iterator it = entries()->constFind( type );
+  if ( it == entries()->constEnd() )
+  {
+    return 0;
+  }
+  return 2 + it->mHasZ + it->mHasM;
+}
+
 QgsWKBTypes::GeometryType QgsWKBTypes::geometryType( Type type )
 {
   QMap< Type, wkbEntry >::const_iterator it = entries()->constFind( type );

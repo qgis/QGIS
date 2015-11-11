@@ -75,25 +75,67 @@ class QgsWKBTypes
       NullGeometry
     };
 
-    /*struct wkbEntry
-    {
-      wkbEntry( const QString& name, bool isMultiType, Type multiType, Type singleType, Type flatType, GeometryType geometryType );
-      QString mName;
-      bool mIsMultiType;
-      Type mMultiType;
-      Type mSingleType;
-      Type mFlatType;
-      GeometryType mGeometryType;
-    };*/
-
+    /** Returns the single type for a WKB type. Eg, for MultiPolygon WKB types the single type would be Polygon.
+     * @see isSingleType()
+     * @see multiType()
+     * @see flatType()
+     */
     static Type singleType( Type type );
+
+    /** Returns the multi type for a WKB type. Eg, for Polygon WKB types the multi type would be MultiPolygon.
+     * @see isMultiType()
+     * @see singleType()
+     * @see flatType()
+     */
     static Type multiType( Type type );
+
+    /** Returns the flat type for a WKB type. This is the WKB type minus any Z or M dimensions.
+     * Eg, for PolygonZM WKB types the single type would be Polygon.
+     * @see singleType()
+     * @see multiType()
+     */
     static Type flatType( Type type );
+
+    /** Attempts to extract the WKB type from a WKT string.
+     * @param wktStr a valid WKT string
+     */
     static Type parseType( const QString& wktStr );
+
+    /** Returns true if the WKB type is a single type.
+     * @see isMultiType()
+     * @see singleType()
+     */
     static bool isSingleType( Type type );
+
+    /** Returns true if the WKB type is a multi type.
+     * @see isSingleType()
+     * @see multiType()
+     */
     static bool isMultiType( Type type );
+
+    /** Returns the inherent dimension of the geometry type as an integer. Returned value will
+     * always be less than or equal to the coordinate dimension.
+     * @returns 0 for point geometries, 1 for line geometries, 2 for polygon geometries
+     * Invalid geometry types will return a dimension of 0.
+     * @see coordDimensions()
+     */
     static int wkbDimensions( Type type );
+
+    /** Returns the coordinate dimension of the geometry type as an integer. Returned value will
+     * be between 2-4, depending on whether the geometry type contains the Z or M dimensions.
+     * Invalid geometry types will return a dimension of 0.
+     * @note added in QGIS 2.14
+     * @see wkbDimensions()
+     */
+    static int coordDimensions( Type type );
+
+    /** Returns the geometry type for a WKB type, eg both MultiPolygon and CurvePolygon would have a
+     * PolygonGeometry geometry type.
+     */
     static GeometryType geometryType( Type type );
+
+    /** Returns a display string type for a WKB type, eg the geometry name used in WKT geometry representations.
+     */
     static QString displayString( Type type );
 
     /** Tests whether a WKB type contains the z-dimension.
