@@ -78,7 +78,12 @@ def showException(type, value, tb, msg, messagebar=False):
     window = QApplication.instance().activeWindow()
 
     # Still show the normal blocking dialog in this case for now.
-    if blockingdialog or not window or not messagebar or not iface:
+    if not iface:
+        for s in traceback.format_exception(type, value, tb):
+            print(s.decode('utf-8', 'replace'))
+
+        return
+    elif blockingdialog or not window or not messagebar:
         open_stack_dialog(type, value, tb, msg)
         return
 
