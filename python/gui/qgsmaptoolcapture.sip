@@ -80,7 +80,7 @@ class QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     /** Adds a point to the rubber band (in map coordinates) and to the capture list (in layer coordinates).
       * @deprecated Use addVertex( mapPoint, layerPoint ) instead
       * @return 0 in case of success, 1 if current layer is not a vector layer, 2 if coordinate transformation failed*/
-    int addVertex( const QgsPoint& point );
+    int addVertex( const QgsPoint& point ) /Deprecated/;
 
     /** Removes the last vertex from mRubberBand and mCaptureList*/
     void undo();

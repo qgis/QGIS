@@ -63,7 +63,7 @@ QgsMapMouseEvent::QgsMapMouseEvent( QgsMapCanvas* mapCanvas, QEvent::Type type, 
 
 QgsPoint QgsMapMouseEvent::snapPoint( SnappingMode snappingMode )
 {
-  int snapToType;
+  QgsSnappingUtils::SnapToType snapToType;
 
   // Use cached result
   if ( mSnappingMode == snappingMode )
@@ -153,7 +153,7 @@ QList<QgsPoint> QgsMapMouseEvent::snapSegment( SnappingMode snappingMode, bool* 
       int type;
       double tolerance;
       QgsTolerance::UnitType unit;
-      int snapToType;
+      QgsSnappingUtils::SnapToType snapToType;
       snappingUtils->defaultSettings( type, tolerance, unit );
       snapToType = snappingUtils->getSnapToType();
       snappingUtils->setSnapToMapMode( QgsSnappingUtils::SnapAllLayers );

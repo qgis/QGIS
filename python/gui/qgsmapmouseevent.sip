@@ -94,6 +94,11 @@ class QgsMapMouseEvent : QMouseEvent
 
     QgsPoint originalMapPoint() const;
 
+    /**
+     * Returns the original, unmodified layer point of the mouse cursor.
+     *
+     * @return The cursor position in layer coordinates.
+     */
     QgsPoint originalLayerPoint() const;
 
     QPoint pixelPoint() const;

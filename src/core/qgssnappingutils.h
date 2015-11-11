@@ -136,17 +136,17 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     /** Query whether to consider intersections of nearby segments for snapping */
     bool snapOnIntersections() const { return mSnapOnIntersection; }
 
+    //! enum of possible settings for the coordinate system to snap to
     enum SnapToType
     {
-      Invalid = 0,      //!< This value is invalid
-      SnapToMap = 1,    //!< Perform snapping with map coordinates
-      SnapToLayer = 2,  //!< Perform snapping with (current) layer coordinates
+      SnapToMap,        //!< Perform snapping with map coordinates
+      SnapToLayer       //!< Perform snapping with (current) layer coordinates
     };
 
     /** Set whether snapping occurs with map or layer coordinates */
-    void setSnapToType( int snapToType );
+    void setSnapToType( SnapToType snapToType );
     /** Find out whether snapping occurs with map or layer coordinates */
-    int getSnapToType() { return mSnapToType; }
+    SnapToType getSnapToType() { return mSnapToType; }
 
   public slots:
     /** Read snapping configuration from the project */
@@ -198,7 +198,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     int mDefaultType;
     double mDefaultTolerance;
     QgsTolerance::UnitType mDefaultUnit;
-    int mSnapToType;
+    SnapToType mSnapToType;
     QList<LayerConfig> mLayers;
     bool mSnapOnIntersection;
 

@@ -476,7 +476,7 @@ const QgsCoordinateReferenceSystem* QgsSnappingUtils::destCRS()
     return NULL;
 }
 
-void QgsSnappingUtils::setSnapToType( int snapToType )
+void QgsSnappingUtils::setSnapToType( SnapToType snapToType )
 {
   mSnapToType = snapToType;
 }
