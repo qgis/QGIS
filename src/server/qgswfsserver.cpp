@@ -1742,7 +1742,10 @@ QString QgsWFSServer::createFeatureGeoJSON( QgsFeature* feat, int prec, QgsCoord
     else
     {
       fStr += "\"";
-      fStr +=  val.toString().replace( QString( "\"" ), QString( "\\\"" ) );
+      fStr +=  val.toString()
+                  .replace( QString( "\"" ), QString( "\\\"" ) )
+                  .replace( QString( "\r" ), QString( "\\r" ) )
+                  .replace( QString( "\n" ), QString( "\\n" ) );
       fStr += "\"";
     }
     fStr += "\n";
