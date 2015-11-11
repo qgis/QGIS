@@ -197,13 +197,13 @@ class ORDatabase(Database):
 
     def toSqlLayer(self, sql, geomCol, uniqueCol,
                    layerName=u"QueryLayer", layerType=None,
-                   avoidSelectById=False):
+                   avoidSelectById=False, filter=""):
         from qgis.core import QgsMapLayer, QgsVectorLayer
 
         uri = self.uri()
         con = self.database().connector
 
-        uri.setDataSource(u"", u"({})".format(sql), geomCol, u"", uniqueCol)
+        uri.setDataSource(u"", u"({})".format(sql), geomCol, filter, uniqueCol)
         if avoidSelectById:
             uri.disableSelectAtId(True)
         provider = self.dbplugin().providerName()

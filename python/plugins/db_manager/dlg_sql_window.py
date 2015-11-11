@@ -54,6 +54,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         QWidget.__init__(self, parent)
         self.iface = iface
         self.db = db
+        self.filter = ""
         self.allowMultiColumnPk = isinstance(db, PGDatabase) # at the moment only PostGIS allows a primary key to span multiple columns, spatialite doesn't
         self.setupUi(self)
         self.setWindowTitle(
@@ -78,6 +79,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         copyAction.triggered.connect(self.copySelectedResults)
 
         self.btnExecute.clicked.connect(self.executeSql)
+        self.btnSetFilter.clicked.connect(self.setFilter)
         self.btnClear.clicked.connect(self.clearSql)
 
         self.presetStore.clicked.connect(self.storePreset)
@@ -167,6 +169,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
     def clearSql(self):
         self.editSql.clear()
         self.editSql.setFocus()
+        self.filter = ""
 
     def executeSql(self):
 
@@ -206,7 +209,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         self.update()
         QApplication.restoreOverrideCursor()
 
-    def loadSqlLayer(self):
+    def _getSqlLayer(self):
         hasUniqueField = self.uniqueColumnCheck.checkState() == Qt.Checked
         if hasUniqueField:
             if self.allowMultiColumnPk:
@@ -229,13 +232,11 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
 
         query = self._getSqlQuery()
         if query == "":
-            return
+            return None
 
         # remove a trailing ';' from query if present
         if query.strip().endswith(';'):
             query = query.strip()[:-1]
-
-        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
 
         from qgis.core import QgsMapLayer, QgsMapLayerRegistry
 
@@ -257,10 +258,23 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
 
         # create the layer
         layer = self.db.toSqlLayer(query, geomFieldName, uniqueFieldName, newLayerName, layerType,
-                                   self.avoidSelectById.isChecked())
+                                   self.avoidSelectById.isChecked(), self.filter)
         if layer.isValid():
-            QgsMapLayerRegistry.instance().addMapLayers([layer], True)
+            return layer
+        else:
+            return None
 
+    def loadSqlLayer(self):
+        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+        layer = self._getSqlLayer()
+        QApplication.restoreOverrideCursor()
+
+        if layer == None:
+            return
+
+        from qgis.core import QgsMapLayerRegistry
+        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+        QgsMapLayerRegistry.instance().addMapLayers([layer], True)
         QApplication.restoreOverrideCursor()
 
     def fillColumnCombos(self):
@@ -443,3 +457,21 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         label = ", ".join(checkedItems)
         if text != label:
             self.uniqueCombo.setEditText(label)
+
+    def setFilter(self):
+        from qgis.gui import QgsQueryBuilder
+        layer = self._getSqlLayer()
+
+        if layer == None:
+            # probably the defined filter does not work for the query, so try to create the layer without the filter
+            filter = self.filter
+            self.filter = ""
+            layer = self._getSqlLayer()
+            self.filter = filter
+            if layer == None:
+                return
+
+        dlg = QgsQueryBuilder(layer)
+        dlg.setSql(self.filter)
+        if dlg.exec_():
+            self.filter = dlg.sql()
