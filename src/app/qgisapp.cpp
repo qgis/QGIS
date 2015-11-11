@@ -8087,7 +8087,7 @@ void QgisApp::adjustBrightnessContrast( int delta, bool updateBrightness )
 void QgisApp::helpContents()
 {
   // We should really ship the HTML version of the docs local too.
-  openURL( QString( "http://docs.qgis.org/%1.%2/%3/docs/user_manual/" )
+  openURL( QString( "https://docs.qgis.org/%1.%2/%3/docs/user_manual/" )
            .arg( QGis::QGIS_VERSION_INT / 10000 )
            .arg( QGis::QGIS_VERSION_INT / 100 % 100 )
            .arg( tr( "en", "documentation language" ) ),
@@ -8102,18 +8102,18 @@ void QgisApp::apiDocumentation()
   }
   else
   {
-    openURL( "http://qgis.org/api/", false );
+    openURL( "https://qgis.org/api/", false );
   }
 }
 
 void QgisApp::supportProviders()
 {
-  openURL( tr( "http://qgis.org/en/site/forusers/commercial_support.html" ), false );
+  openURL( tr( "https://qgis.org/en/site/forusers/commercial_support.html" ), false );
 }
 
 void QgisApp::helpQgisHomePage()
 {
-  openURL( "http://qgis.org", false );
+  openURL( "https://qgis.org", false );
 }
 
 void QgisApp::openURL( QString url, bool useQgisDocDirectory )
@@ -10187,19 +10187,19 @@ void QgisApp::oldProjectVersionWarning( const QString& oldVersion )
                         "<p>Version of the project file: %1<br>Current version of QGIS: %2" )
                     .arg( oldVersion,
                           QGis::QGIS_VERSION,
-                          "<a href=\"http://hub.qgis.org/projects/quantum-gis\">http://hub.qgis.org/projects/quantum-gis</a> ",
+                          "<a href=\"https://hub.qgis.org/projects/quantum-gis\">https://hub.qgis.org/projects/quantum-gis</a> ",
                           tr( "<tt>Settings:Options:General</tt>", "Menu path to setting options" ),
                           tr( "Warn me when opening a project file saved with an older version of QGIS" ) );
     QString title =  tr( "Project file is older" );
 
 #ifdef ANDROID
-    //this is needed to deal with http://hub.qgis.org/issues/4573
+    //this is needed to deal with https://hub.qgis.org/issues/4573
     QMessageBox box( QMessageBox::Warning, title, tr( "This project file was saved by an older version of QGIS" ), QMessageBox::Ok, NULL );
     box.setDetailedText(
       text.remove( 0, 3 )
       .replace( QString( "<p>" ), QString( "\n\n" ) )
       .replace( QString( "<br>" ), QString( "\n" ) )
-      .replace( QString( "<a href=\"http://hub.qgis.org/projects/quantum-gis\">http://hub.qgis.org/projects/quantum-gis</a> " ), QString( "\nhttp://hub.qgis.org/projects/quantum-gis" ) )
+      .replace( QString( "<a href=\"https://hub.qgis.org/projects/quantum-gis\">https://hub.qgis.org/projects/quantum-gis</a> " ), QString( "\nhttps://hub.qgis.org/projects/quantum-gis" ) )
       .replace( QRegExp( "</?tt>" ), QString() )
     );
     box.exec();
