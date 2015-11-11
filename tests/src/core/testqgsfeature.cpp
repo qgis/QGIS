@@ -431,7 +431,7 @@ void TestQgsFeature::dataStream()
   QCOMPARE( *resultFeature.constGeometry()->asWkb(), *originalFeature.constGeometry()->asWkb() );
   QCOMPARE( resultFeature.isValid(), originalFeature.isValid() );
 
-  //also test with feature without geometry
+  //also test with feature empty geometry
   originalFeature.setGeometry( new QgsGeometry() );
   QByteArray ba2;
   QDataStream ds2( &ba2, QIODevice::ReadWrite );
@@ -439,6 +439,20 @@ void TestQgsFeature::dataStream()
 
   ds2.device()->seek( 0 );
   ds2 >> resultFeature;
+
+  QCOMPARE( resultFeature.id(), originalFeature.id() );
+  QCOMPARE( resultFeature.attributes(), originalFeature.attributes() );
+  QVERIFY( resultFeature.constGeometry()->isEmpty() );
+  QCOMPARE( resultFeature.isValid(), originalFeature.isValid() );
+
+  //test with feature with null geometry
+  originalFeature.setGeometry( 0 );
+  QByteArray ba3;
+  QDataStream ds3( &ba3, QIODevice::ReadWrite );
+  ds3 << originalFeature;
+
+  ds3.device()->seek( 0 );
+  ds3 >> resultFeature;
 
   QCOMPARE( resultFeature.id(), originalFeature.id() );
   QCOMPARE( resultFeature.attributes(), originalFeature.attributes() );
