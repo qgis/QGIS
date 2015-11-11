@@ -52,22 +52,22 @@ class Dissolve(GeoAlgorithm):
         fieldname = self.getParameterValue(Dissolve.FIELD)
         vlayerA = dataobjects.getObjectFromUri(
             self.getParameterValue(Dissolve.INPUT))
-        field = vlayerA.fieldNameIndex(fieldname)
         vproviderA = vlayerA.dataProvider()
-        fields = vproviderA.fields()
+        fields = vlayerA.fields()
         writer = self.getOutputFromName(
             Dissolve.OUTPUT).getVectorWriter(fields,
                                              vproviderA.geometryType(),
                                              vproviderA.crs())
         outFeat = QgsFeature()
         nElement = 0
-        nFeat = vproviderA.featureCount()
+        features = vector.features(vlayerA)
+        nFeat = len(features)
+
         if not useField:
             first = True
-            features = vector.features(vlayerA)
             for inFeat in features:
                 nElement += 1
-                progress.setPercentage(int(nElement / nFeat * 100))
+                progress.setPercentage(int(nElement * 100 / nFeat))
                 if first:
                     attrs = inFeat.attributes()
                     tmpInGeom = QgsGeometry(inFeat.geometry())
@@ -85,37 +85,49 @@ class Dissolve(GeoAlgorithm):
             outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
         else:
-            unique = vector.getUniqueValues(vlayerA, int(field))
-            nFeat = nFeat * len(unique)
+            fieldIdx = vlayerA.fieldNameIndex(fieldname)
+            unique = vector.getUniqueValues(vlayerA, int(fieldIdx))
+            nFeat = len(unique)
+            myDict = {}
+            attrDict = {}
             for item in unique:
-                first = True
-                add = True
-                features = vector.features(vlayerA)
-                for inFeat in features:
-                    nElement += 1
-                    progress.setPercentage(int(nElement / nFeat * 100))
-                    atMap = inFeat.attributes()
-                    tempItem = atMap[field]
-                    if unicode(tempItem).strip() == unicode(item).strip():
-                        if first:
-                            QgsGeometry(inFeat.geometry())
-                            tmpInGeom = QgsGeometry(inFeat.geometry())
-                            outFeat.setGeometry(tmpInGeom)
-                            first = False
-                            attrs = inFeat.attributes()
-                        else:
-                            tmpInGeom = QgsGeometry(inFeat.geometry())
-                            tmpOutGeom = QgsGeometry(outFeat.geometry())
-                            try:
-                                tmpOutGeom = QgsGeometry(
-                                    tmpOutGeom.combine(tmpInGeom))
-                                outFeat.setGeometry(tmpOutGeom)
-                            except:
-                                raise GeoAlgorithmExecutionException(
-                                    self.tr('Geometry exception while dissolving'))
-                if add:
-                    outFeat.setAttributes(attrs)
-                    writer.addFeature(outFeat)
+                myDict[unicode(item).strip()] = []
+                attrDict[unicode(item).strip()] = None
+
+            unique = None
+
+            for inFeat in features:
+                attrs = inFeat.attributes()
+                tempItem = attrs[fieldIdx]
+                tmpInGeom = QgsGeometry(inFeat.geometry())
+
+                if attrDict[unicode(tempItem).strip()] == None:
+                    # keep attributes of first feature
+                    attrDict[unicode(tempItem).strip()] = attrs
+
+                myDict[unicode(tempItem).strip()].append(tmpInGeom)
+
+            features = None
+
+            for key, value in myDict.items():
+                nElement += 1
+                progress.setPercentage(int(nElement * 100 / nFeat))
+                for i in range(len(value)):
+                    tmpInGeom = value[i]
+
+                    if i == 0:
+                        tmpOutGeom = tmpInGeom
+                    else:
+                        try:
+                            tmpOutGeom = QgsGeometry(
+                                tmpOutGeom.combine(tmpInGeom))
+                        except:
+                            raise GeoAlgorithmExecutionException(
+                                self.tr('Geometry exception while dissolving'))
+                outFeat.setGeometry(tmpOutGeom)
+                outFeat.setAttributes(attrDict[key])
+                writer.addFeature(outFeat)
+
         del writer
 
     def defineCharacteristics(self):
