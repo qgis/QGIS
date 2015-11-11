@@ -589,6 +589,7 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds& featureIds, const Qg
       return whereClauses.isEmpty() ? "" : whereClauses.join( " OR " ).prepend( '(' ).append( ')' );
     }
   }
+  return QString(); //avoid warning
 }
 
 QString QgsPostgresUtils::andWhereClauses( const QString& c1, const QString& c2 )
