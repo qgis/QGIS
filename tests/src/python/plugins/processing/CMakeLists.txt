@@ -1,0 +1,12 @@
+INCLUDE(UsePythonTest)
+
+ADD_PYTHON_TEST(ProcessingGdalTest GdalTest.py)
+ADD_PYTHON_TEST(ProcessingGeoAlgorithmTest GeoAlgorithmTest.py)
+ADD_PYTHON_TEST(ProcessingModelerAlgorithmTest ModelerAlgorithmTest.py)
+ADD_PYTHON_TEST(ProcessingPackagingTests PackagingTests.py)
+ADD_PYTHON_TEST(ProcessingParametersTest ParametersTest.py)
+ADD_PYTHON_TEST(ProcessingProcessingToolsTest ProcessingToolsTest.py)
+ADD_PYTHON_TEST(ProcessingQgisAlgsTest QgisAlgsTest.py)
+ADD_PYTHON_TEST(ProcessingRunAlgTest RunAlgTest.py)
+ADD_PYTHON_TEST(ProcessingSagaTest SagaTest.py)
+ADD_PYTHON_TEST(ProcessingScriptTest ScriptTest.py)

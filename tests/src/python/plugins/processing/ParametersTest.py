@@ -25,10 +25,12 @@ __copyright__ = '(C) 2013, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import unittest
-from processing.core.parameters import ParameterNumber
-from processing.core.parameters import ParameterCrs
-from processing.core.parameters import ParameterExtent
+from utilities import getQgisTestApp, unittest
+
+QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+
+from plugins.processing.core.parameters import ParameterNumber
+from plugins.processing.core.parameters import ParameterCrs
 
 
 class ParametersTest(unittest.TestCase):

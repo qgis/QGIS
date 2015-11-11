@@ -25,6 +25,9 @@ __copyright__ = '(C) 2013, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+from utilities import getQgisTestApp, unittest
+QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+
 import os
 import unittest
 from osgeo import gdal
@@ -33,7 +36,6 @@ from osgeo.gdalconst import GA_ReadOnly
 import processing
 from processing.modeler import ModelerAlgorithmProvider
 from processing.modeler.ModelerAlgorithm import ModelerAlgorithm
-from processing.modeler.Providers import Providers
 from processing.tools import dataobjects
 
 from processing.tests.TestData import points, polygons, union, raster
