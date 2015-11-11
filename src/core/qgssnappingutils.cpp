@@ -20,6 +20,7 @@
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 
+#include <QLinkedList>
 
 QgsSnappingUtils::QgsSnappingUtils( QObject* parent )
     : QObject( parent )
@@ -560,29 +561,13 @@ void QgsSnappingUtils::readConfigFromProject()
 
 void QgsSnappingUtils::onLayersWillBeRemoved( const QStringList& layerIds )
 {
-  LocatorsMap* locators;
+  QLinkedList<LocatorsMap*> locatorsMapList;
+  locatorsMapList << &mLocators << &mTemporaryLocators << &mToLayerLocators << &mTemporaryToLayerLocators;
   // remove locators for layers that are going to be deleted
   Q_FOREACH ( const QString& layerId, layerIds )
   {
-    for ( int i = 1; i <= 4; i++ )
+    Q_FOREACH ( LocatorsMap* locators, locatorsMapList )
     {
-      switch ( i )
-      {
-        case 1:
-          locators = &mLocators;
-          break;
-        case 2:
-          locators = &mTemporaryLocators;
-          break;
-        case 3:
-          locators = &mToLayerLocators;
-          break;
-        case 4:
-          locators = &mTemporaryToLayerLocators;
-          break;
-        default:
-          locators = NULL;
-      }
       for ( LocatorsMap::iterator it = locators->begin(); it != locators->end(); )
       {
         if ( it.key()->id() == layerId )
