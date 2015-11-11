@@ -1278,13 +1278,21 @@ bool QgsGdalProvider::hasHistogram( int theBandNo,
   // get default histogram with force=false to see if there is a cached histo
   double myMinVal, myMaxVal;
   int myBinCount;
-  int *myHistogramArray = 0;
+
+#if GDAL_VERSION_MAJOR >= 2
+  GUIntBig* myHistogramArray = 0;
+  CPLErr myError = GDALGetDefaultHistogramEx( myGdalBand, &myMinVal, &myMaxVal,
+                   &myBinCount, &myHistogramArray, false,
+                   NULL, NULL );
+#else
+  int* myHistogramArray = 0;
 
   // TODO: GDALGetDefaultHistogram has no bIncludeOutOfRange and bApproxOK,
   //       consider consequences
   CPLErr myError = GDALGetDefaultHistogram( myGdalBand, &myMinVal, &myMaxVal,
                    &myBinCount, &myHistogramArray, false,
                    NULL, NULL );
+#endif
 
   if ( myHistogramArray )
     VSIFree( myHistogramArray ); // use VSIFree because allocated by GDAL
@@ -1433,11 +1441,20 @@ QgsRasterHistogram QgsGdalProvider::histogram( int theBandNo,
   }
 #endif
 
-  int *myHistogramArray = new int[myHistogram.binCount];
+#if GDAL_VERSION_MAJOR >= 2
+  GUIntBig* myHistogramArray = new GUIntBig[myHistogram.binCount];
+  CPLErr myError = GDALGetRasterHistogramEx( myGdalBand, myMinVal, myMaxVal,
+                   myHistogram.binCount, myHistogramArray,
+                   theIncludeOutOfRange, bApproxOK, progressCallback,
+                   &myProg ); //this is the arg for our custom gdal progress callback
+#else
+  int* myHistogramArray = new int[myHistogram.binCount];
   CPLErr myError = GDALGetRasterHistogram( myGdalBand, myMinVal, myMaxVal,
                    myHistogram.binCount, myHistogramArray,
                    theIncludeOutOfRange, bApproxOK, progressCallback,
                    &myProg ); //this is the arg for our custom gdal progress callback
+#endif
+
   if ( myError != CE_None )
   {
     QgsDebugMsg( "Cannot get histogram" );
@@ -1449,12 +1466,14 @@ QgsRasterHistogram QgsGdalProvider::histogram( int theBandNo,
 
   for ( int myBin = 0; myBin < myHistogram.binCount; myBin++ )
   {
+#if GDAL_VERSION_MAJOR < 2
     if ( myHistogramArray[myBin] < 0 ) //can't have less than 0 pixels of any value
     {
       myHistogram.histogramVector.push_back( 0 );
       // QgsDebugMsg( "Added 0 to histogram vector as freq was negative!" );
     }
     else
+#endif
     {
       myHistogram.histogramVector.push_back( myHistogramArray[myBin] );
       myHistogram.nonNullCount += myHistogramArray[myBin];
