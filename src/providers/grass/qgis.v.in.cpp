@@ -307,7 +307,7 @@ int main( int argc, char **argv )
       }
 
       QgsAttributes attributes = feature.attributes();
-      attributes.insert( 0, QVariant( feature.id() ) );
+      attributes.insert( 0, QVariant( feature.id() + fidToCatPlus ) );
       try
       {
         // TODO: inserting row is extremely slow on Windows (at least with SQLite), v.in.ogr is fast
