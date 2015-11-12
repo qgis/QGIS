@@ -22,6 +22,7 @@ ParameterBoolean|COORD_X|Include X Coordinate|False
 ParameterBoolean|COORD_Y|Include Y Coordinate|False
 ParameterBoolean|INTERCEPT|Intercept|True
 ParameterSelection|METHOD|Method|[0] include all;[1] forward;[2] backward;[3] stepwise|3
+ParameterNumber|P_VALUES|Significance Level|0|100.0|5.0
 ParameterSelection|INTERPOL|Grid Interpolation|[0] Nearest Neighbor;[1] Bilinear Interpolation;[2] Inverse Distance Interpolation;[3] Bicubic Spline Interpolation;[4] B-Spline Interpolation
 ParameterSelection|SEARCH_RANGE|Search Range|[0] local;[1] global
 ParameterNumber|SEARCH_RADIUS|Maximum Search Distance|0|None|1000
