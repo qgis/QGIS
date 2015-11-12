@@ -86,6 +86,7 @@ QVariant QgsValueRelationSearchWidgetWrapper::value()
 void QgsValueRelationSearchWidgetWrapper::valueChanged()
 {
   setExpression( value().toString() );
+  emit expressionChanged( mExpression );
 }
 
 QWidget* QgsValueRelationSearchWidgetWrapper::createWidget( QWidget* parent )
