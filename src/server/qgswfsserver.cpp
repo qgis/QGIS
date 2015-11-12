@@ -1752,9 +1752,9 @@ QString QgsWFSServer::createFeatureGeoJSON( QgsFeature* feat, int prec, QgsCoord
     {
       fStr += "\"";
       fStr +=  val.toString()
-               .replace( QString( "\"" ), QString( "\\\"" ) )
-               .replace( QString( "\r" ), QString( "\\r" ) )
-               .replace( QString( "\n" ), QString( "\\n" ) );
+               .replace( '"', "\\\"" )
+               .replace( '\r', "\\r" )
+               .replace( '\n', "\\n" );
       fStr += "\"";
     }
     fStr += "\n";
