@@ -105,7 +105,7 @@ class GridMetrics(FusionAlgorithm):
             commands.append('/outlier:' + unicode(outlier))
         first = self.getParameterValue(self.FIRST)
         if first:
-            commands.append('/first:' + unicode(first))
+            commands.append('/first')
         minht = self.getParameterValue(self.MINHT)
         if unicode(minht).strip() != '':
             commands.append('/minht:' + unicode(minht))
