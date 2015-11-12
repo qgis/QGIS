@@ -39,7 +39,7 @@ QgsHueSaturationFilter::~QgsHueSaturationFilter()
 {
 }
 
-QgsRasterInterface * QgsHueSaturationFilter::clone() const
+QgsHueSaturationFilter* QgsHueSaturationFilter::clone() const
 {
   QgsDebugMsg( "Entered hue/saturation filter" );
   QgsHueSaturationFilter * filter = new QgsHueSaturationFilter( 0 );

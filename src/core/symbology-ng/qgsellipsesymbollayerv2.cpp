@@ -315,9 +315,9 @@ void QgsEllipseSymbolLayerV2::stopRender( QgsSymbolV2RenderContext & )
 {
 }
 
-QgsSymbolLayerV2* QgsEllipseSymbolLayerV2::clone() const
+QgsEllipseSymbolLayerV2* QgsEllipseSymbolLayerV2::clone() const
 {
-  return QgsEllipseSymbolLayerV2::create( properties() );
+  return dynamic_cast< QgsEllipseSymbolLayerV2* >( QgsEllipseSymbolLayerV2::create( properties() ) );
 }
 
 void QgsEllipseSymbolLayerV2::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const

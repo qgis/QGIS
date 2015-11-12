@@ -786,7 +786,7 @@ class QgsPalLabeling : QgsLabelingEngineInterface
     QgsLabelingResults* takeResults() /TransferBack/;
 
     //! called when passing engine among map renderers
-    virtual QgsLabelingEngineInterface* clone() /Factory/;
+    virtual QgsPalLabeling* clone() /Factory/;
 
     //! @note not available in python bindings
     // void drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* painter, const QgsMapToPixel* xform );

@@ -17,7 +17,7 @@ class QgsHueSaturationFilter : QgsRasterInterface
     QgsHueSaturationFilter( QgsRasterInterface *input = 0 );
     ~QgsHueSaturationFilter();
 
-    QgsRasterInterface * clone() const /Factory/;
+    virtual QgsHueSaturationFilter * clone() const /Factory/;
 
     int bandCount() const;
 

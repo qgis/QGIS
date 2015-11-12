@@ -311,7 +311,7 @@ QString QgsLayerTreeGroup::dump() const
   return header + childrenDump.join( "\n" );
 }
 
-QgsLayerTreeNode* QgsLayerTreeGroup::clone() const
+QgsLayerTreeGroup* QgsLayerTreeGroup::clone() const
 {
   return new QgsLayerTreeGroup( *this );
 }

@@ -191,7 +191,7 @@ QgsWmsProvider::~QgsWmsProvider()
   }
 }
 
-QgsRasterInterface * QgsWmsProvider::clone() const
+QgsWmsProvider* QgsWmsProvider::clone() const
 {
   QgsWmsProvider* provider = new QgsWmsProvider( dataSourceUri(), mCaps.isValid() ? &mCaps : 0 );
   provider->copyBaseSettings( *this );

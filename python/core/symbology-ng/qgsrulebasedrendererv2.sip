@@ -330,7 +330,7 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
 
     virtual QList<QString> usedAttributes();
 
-    virtual QgsFeatureRendererV2* clone() const /Factory/;
+    virtual QgsRuleBasedRendererV2* clone() const /Factory/;
 
     virtual void toSld( QDomDocument& doc, QDomElement &element ) const;
 

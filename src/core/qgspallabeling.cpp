@@ -4913,7 +4913,7 @@ void QgsPalLabeling::clearEngineSettings()
   QgsProject::instance()->removeEntry( "PAL", "/DrawOutlineLabels" );
 }
 
-QgsLabelingEngineInterface* QgsPalLabeling::clone()
+QgsPalLabeling* QgsPalLabeling::clone()
 {
   QgsPalLabeling* lbl = new QgsPalLabeling();
   lbl->setShowingAllLabels( isShowingAllLabels() );

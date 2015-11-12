@@ -389,7 +389,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
 
     virtual QList<QString> usedAttributes() override;
 
-    virtual QgsFeatureRendererV2* clone() const override;
+    virtual QgsRuleBasedRendererV2* clone() const override;
 
     virtual void toSld( QDomDocument& doc, QDomElement &element ) const override;
 

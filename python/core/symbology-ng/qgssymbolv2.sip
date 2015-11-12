@@ -305,7 +305,7 @@ class QgsMarkerSymbolV2 : QgsSymbolV2
 
     void renderPoint( const QPointF& point, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
 
-    virtual QgsSymbolV2* clone() const /Factory/;
+    virtual QgsMarkerSymbolV2* clone() const /Factory/;
 };
 
 
@@ -344,7 +344,7 @@ class QgsLineSymbolV2 : QgsSymbolV2
 
     void renderPolyline( const QPolygonF& points, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
 
-    virtual QgsSymbolV2* clone() const /Factory/;
+    virtual QgsLineSymbolV2* clone() const /Factory/;
 };
 
 
@@ -365,5 +365,5 @@ class QgsFillSymbolV2 : QgsSymbolV2
     void setAngle( double angle );
     void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
 
-    virtual QgsSymbolV2* clone() const /Factory/;
+    virtual QgsFillSymbolV2* clone() const /Factory/;
 };

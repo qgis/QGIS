@@ -39,7 +39,7 @@ class CORE_EXPORT QgsRasterNuller : public QgsRasterInterface
       double max;
     };
 
-    QgsRasterInterface * clone() const override;
+    QgsRasterNuller * clone() const override;
 
     int bandCount() const override;
 

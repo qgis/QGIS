@@ -76,7 +76,7 @@ class CORE_EXPORT QgsVectorGradientColorRampV2 : public QgsVectorColorRampV2
 
     virtual QString type() const override { return "gradient"; }
 
-    virtual QgsVectorColorRampV2* clone() const override;
+    virtual QgsVectorGradientColorRampV2* clone() const override;
 
     virtual QgsStringMap properties() const override;
 
@@ -130,7 +130,7 @@ class CORE_EXPORT QgsVectorRandomColorRampV2 : public QgsVectorColorRampV2
 
     virtual QString type() const override { return "random"; }
 
-    virtual QgsVectorColorRampV2* clone() const override;
+    virtual QgsVectorRandomColorRampV2* clone() const override;
 
     virtual QgsStringMap properties() const override;
 
@@ -186,7 +186,7 @@ class CORE_EXPORT QgsRandomColorsV2: public QgsVectorColorRampV2
 
     QString type() const override;
 
-    QgsVectorColorRampV2* clone() const override;
+    QgsRandomColorsV2* clone() const override;
 
     QgsStringMap properties() const override;
 
@@ -215,7 +215,7 @@ class CORE_EXPORT QgsVectorColorBrewerColorRampV2 : public QgsVectorColorRampV2
 
     virtual QString type() const override { return "colorbrewer"; }
 
-    virtual QgsVectorColorRampV2* clone() const override;
+    virtual QgsVectorColorBrewerColorRampV2* clone() const override;
 
     virtual QgsStringMap properties() const override;
 
@@ -255,7 +255,7 @@ class CORE_EXPORT QgsCptCityColorRampV2 : public QgsVectorGradientColorRampV2
 
     virtual QString type() const override { return "cpt-city"; }
 
-    virtual QgsVectorColorRampV2* clone() const override;
+    virtual QgsCptCityColorRampV2* clone() const override;
     void copy( const QgsCptCityColorRampV2* other );
     QgsVectorGradientColorRampV2* cloneGradientRamp() const;
 

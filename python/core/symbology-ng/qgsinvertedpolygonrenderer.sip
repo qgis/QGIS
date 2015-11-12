@@ -12,7 +12,7 @@ class QgsInvertedPolygonRenderer : QgsFeatureRendererV2
     virtual ~QgsInvertedPolygonRenderer();
 
     /** Used to clone this feature renderer.*/
-    virtual QgsFeatureRendererV2* clone() const /Factory/;
+    virtual QgsInvertedPolygonRenderer* clone() const /Factory/;
 
     virtual void startRender( QgsRenderContext& context, const QgsFields& fields );
 

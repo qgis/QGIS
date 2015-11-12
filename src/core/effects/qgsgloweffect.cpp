@@ -234,7 +234,7 @@ QgsPaintEffect *QgsOuterGlowEffect::create( const QgsStringMap &map )
   return effect;
 }
 
-QgsPaintEffect *QgsOuterGlowEffect::clone() const
+QgsOuterGlowEffect* QgsOuterGlowEffect::clone() const
 {
   QgsOuterGlowEffect* newEffect = new QgsOuterGlowEffect( *this );
   return newEffect;
@@ -263,7 +263,7 @@ QgsPaintEffect *QgsInnerGlowEffect::create( const QgsStringMap &map )
   return effect;
 }
 
-QgsPaintEffect *QgsInnerGlowEffect::clone() const
+QgsInnerGlowEffect* QgsInnerGlowEffect::clone() const
 {
   QgsInnerGlowEffect* newEffect = new QgsInnerGlowEffect( *this );
   return newEffect;

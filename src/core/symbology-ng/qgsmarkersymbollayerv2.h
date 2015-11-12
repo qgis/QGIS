@@ -58,7 +58,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
 
     QgsStringMap properties() const override;
 
-    QgsSymbolLayerV2* clone() const override;
+    QgsSimpleMarkerSymbolLayerV2* clone() const override;
 
     void writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const override;
 
@@ -166,7 +166,7 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
 
     QgsStringMap properties() const override;
 
-    QgsSymbolLayerV2* clone() const override;
+    QgsSvgMarkerSymbolLayerV2* clone() const override;
 
     void writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const override;
 
@@ -247,7 +247,7 @@ class CORE_EXPORT QgsFontMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
 
     QgsStringMap properties() const override;
 
-    QgsSymbolLayerV2* clone() const override;
+    QgsFontMarkerSymbolLayerV2* clone() const override;
 
     void writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const override;
 

@@ -84,7 +84,7 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
 
     QgsRasterProjector & operator=( const QgsRasterProjector &projector );
 
-    QgsRasterInterface *clone() const override;
+    QgsRasterProjector *clone() const override;
 
     int bandCount() const override;
 

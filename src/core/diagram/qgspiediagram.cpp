@@ -30,7 +30,7 @@ QgsPieDiagram::~QgsPieDiagram()
 {
 }
 
-QgsDiagram* QgsPieDiagram::clone() const
+QgsPieDiagram* QgsPieDiagram::clone() const
 {
   return new QgsPieDiagram( *this );
 }

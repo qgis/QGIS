@@ -125,7 +125,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     //! Destructor
     virtual ~QgsWmsProvider();
 
-    QgsRasterInterface * clone() const override;
+    QgsWmsProvider * clone() const override;
 
 
     /** Get the QgsCoordinateReferenceSystem for this layer

@@ -47,7 +47,7 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect
     virtual QString type() const override { return QString( "color" ); }
     virtual QgsStringMap properties() const override;
     virtual void readProperties( const QgsStringMap& props ) override;
-    virtual QgsPaintEffect* clone() const override;
+    virtual QgsColorEffect* clone() const override;
 
     /** Sets the brightness modification for the effect.
      * @param brightness Valid values are between -255 and 255, where 0 represents

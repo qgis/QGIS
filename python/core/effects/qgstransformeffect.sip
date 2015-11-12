@@ -26,7 +26,7 @@ class QgsTransformEffect : QgsPaintEffect
     virtual QString type() const;
     virtual QgsStringMap properties() const;
     virtual void readProperties( const QgsStringMap& props );
-    virtual QgsPaintEffect* clone() const /Factory/;
+    virtual QgsTransformEffect* clone() const /Factory/;
 
     /** Sets the transform x translation.
      * @param translateX distance to translate along the x axis

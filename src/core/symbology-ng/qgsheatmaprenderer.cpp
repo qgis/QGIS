@@ -283,7 +283,7 @@ QString QgsHeatmapRenderer::dump() const
   return "[HEATMAP]";
 }
 
-QgsFeatureRendererV2* QgsHeatmapRenderer::clone() const
+QgsHeatmapRenderer* QgsHeatmapRenderer::clone() const
 {
   QgsHeatmapRenderer* newRenderer = new QgsHeatmapRenderer();
   if ( mGradientRamp )

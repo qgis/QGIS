@@ -2718,7 +2718,7 @@ void QgsWMSServer::applyOpacities( const QStringList& layerList, QList< QPair< Q
         QgsRasterRenderer* rasterRenderer = rl->renderer();
         if ( rasterRenderer )
         {
-          rasterRenderers.push_back( qMakePair( rl, dynamic_cast<QgsRasterRenderer*>( rasterRenderer->clone() ) ) );
+          rasterRenderers.push_back( qMakePair( rl, rasterRenderer->clone() ) );
           rasterRenderer->setOpacity( rasterRenderer->opacity() * opacityRatio );
         }
       }

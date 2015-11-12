@@ -230,14 +230,14 @@ void QgsVectorFieldSymbolLayer::stopRender( QgsSymbolV2RenderContext& context )
   }
 }
 
-QgsSymbolLayerV2* QgsVectorFieldSymbolLayer::clone() const
+QgsVectorFieldSymbolLayer* QgsVectorFieldSymbolLayer::clone() const
 {
   QgsSymbolLayerV2* clonedLayer = QgsVectorFieldSymbolLayer::create( properties() );
   if ( mLineSymbol )
   {
     clonedLayer->setSubSymbol( mLineSymbol->clone() );
   }
-  return clonedLayer;
+  return dynamic_cast< QgsVectorFieldSymbolLayer* >( clonedLayer );
 }
 
 QgsStringMap QgsVectorFieldSymbolLayer::properties() const

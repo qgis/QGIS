@@ -107,7 +107,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     //! Destructor
     virtual ~QgsWcsProvider();
 
-    QgsRasterInterface * clone() const override;
+    QgsWcsProvider * clone() const override;
 
     /** Get the QgsCoordinateReferenceSystem for this layer
      * @note Must be reimplemented by each provider.

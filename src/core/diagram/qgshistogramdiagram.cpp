@@ -30,7 +30,7 @@ QgsHistogramDiagram::~QgsHistogramDiagram()
 {
 }
 
-QgsDiagram* QgsHistogramDiagram::clone() const
+QgsHistogramDiagram* QgsHistogramDiagram::clone() const
 {
   return new QgsHistogramDiagram( *this );
 }

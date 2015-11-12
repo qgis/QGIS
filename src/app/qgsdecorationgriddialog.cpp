@@ -154,12 +154,12 @@ void QgsDecorationGridDialog::updateDecoFromGui()
   if ( mLineSymbol )
   {
     mDeco.setLineSymbol( mLineSymbol );
-    mLineSymbol = dynamic_cast<QgsLineSymbolV2*>( mDeco.lineSymbol()->clone() );
+    mLineSymbol = mDeco.lineSymbol()->clone();
   }
   if ( mMarkerSymbol )
   {
     mDeco.setMarkerSymbol( mMarkerSymbol );
-    mMarkerSymbol = dynamic_cast<QgsMarkerSymbolV2*>( mDeco.markerSymbol()->clone() );
+    mMarkerSymbol = mDeco.markerSymbol()->clone();
   }
 }
 
@@ -210,7 +210,7 @@ void QgsDecorationGridDialog::on_mLineSymbolButton_clicked()
   if ( ! mLineSymbol )
     return;
 
-  QgsLineSymbolV2* lineSymbol = dynamic_cast<QgsLineSymbolV2*>( mLineSymbol->clone() );
+  QgsLineSymbolV2* lineSymbol = mLineSymbol->clone();
   QgsSymbolV2SelectorDialog dlg( lineSymbol, QgsStyleV2::defaultStyle(), 0, this );
   if ( dlg.exec() == QDialog::Rejected )
   {
@@ -233,7 +233,7 @@ void QgsDecorationGridDialog::on_mMarkerSymbolButton_clicked()
   if ( ! mMarkerSymbol )
     return;
 
-  QgsMarkerSymbolV2* markerSymbol = dynamic_cast<QgsMarkerSymbolV2*>( mMarkerSymbol->clone() );
+  QgsMarkerSymbolV2* markerSymbol = mMarkerSymbol->clone();
   QgsSymbolV2SelectorDialog dlg( markerSymbol, QgsStyleV2::defaultStyle(), 0, this );
   if ( dlg.exec() == QDialog::Rejected )
   {

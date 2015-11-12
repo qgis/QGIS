@@ -7,7 +7,7 @@ class QgsPieDiagram: QgsDiagram
     QgsPieDiagram();
     ~QgsPieDiagram();
 
-    virtual QgsDiagram* clone() const;
+    virtual QgsPieDiagram* clone() const /Factory/;
 
     void renderDiagram( const QgsFeature& feature, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position );
 

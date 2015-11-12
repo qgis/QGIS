@@ -138,7 +138,7 @@ void QgsEffectStack::draw( QgsRenderContext &context )
   }
 }
 
-QgsPaintEffect *QgsEffectStack::clone() const
+QgsEffectStack* QgsEffectStack::clone() const
 {
   return new QgsEffectStack( *this );
 }

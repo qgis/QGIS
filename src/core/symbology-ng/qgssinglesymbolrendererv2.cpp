@@ -196,7 +196,7 @@ QString QgsSingleSymbolRendererV2::dump() const
   return mSymbol.data() ? QString( "SINGLE: %1" ).arg( mSymbol->dump() ) : "";
 }
 
-QgsFeatureRendererV2* QgsSingleSymbolRendererV2::clone() const
+QgsSingleSymbolRendererV2* QgsSingleSymbolRendererV2::clone() const
 {
   QgsSingleSymbolRendererV2* r = new QgsSingleSymbolRendererV2( mSymbol->clone() );
   r->setUsingSymbolLevels( usingSymbolLevels() );

@@ -648,7 +648,7 @@ QgsStringMap QgsSimpleMarkerSymbolLayerV2::properties() const
   return map;
 }
 
-QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::clone() const
+QgsSimpleMarkerSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::clone() const
 {
   QgsSimpleMarkerSymbolLayerV2* m = new QgsSimpleMarkerSymbolLayerV2( mName, mColor, mBorderColor, mSize, mAngle, mScaleMethod );
   m->setOffset( mOffset );
@@ -1404,7 +1404,7 @@ QgsStringMap QgsSvgMarkerSymbolLayerV2::properties() const
   return map;
 }
 
-QgsSymbolLayerV2* QgsSvgMarkerSymbolLayerV2::clone() const
+QgsSvgMarkerSymbolLayerV2* QgsSvgMarkerSymbolLayerV2::clone() const
 {
   QgsSvgMarkerSymbolLayerV2* m = new QgsSvgMarkerSymbolLayerV2( mPath, mSize, mAngle );
   m->setColor( mColor );
@@ -1871,7 +1871,7 @@ QgsStringMap QgsFontMarkerSymbolLayerV2::properties() const
   return props;
 }
 
-QgsSymbolLayerV2* QgsFontMarkerSymbolLayerV2::clone() const
+QgsFontMarkerSymbolLayerV2* QgsFontMarkerSymbolLayerV2::clone() const
 {
   QgsFontMarkerSymbolLayerV2* m = new QgsFontMarkerSymbolLayerV2( mFontFamily, mChr, mSize, mColor, mAngle );
   m->setOffset( mOffset );

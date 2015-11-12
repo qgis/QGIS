@@ -164,7 +164,7 @@ QgsGdalProvider::QgsGdalProvider( const QString &uri, bool update )
   initBaseDataset();
 }
 
-QgsRasterInterface * QgsGdalProvider::clone() const
+QgsGdalProvider* QgsGdalProvider::clone() const
 {
   QgsDebugMsg( "Entered" );
   QgsGdalProvider * provider = new QgsGdalProvider( dataSourceUri() );

@@ -269,7 +269,7 @@ class QgsDrawSourceEffect : QgsPaintEffect
     static QgsPaintEffect* create( const QgsStringMap& map ) /Factory/;
 
     virtual QString type() const;
-    virtual QgsPaintEffect* clone() const /Factory/;
+    virtual QgsDrawSourceEffect* clone() const /Factory/;
     virtual QgsStringMap properties() const;
     virtual void readProperties( const QgsStringMap& props );
 

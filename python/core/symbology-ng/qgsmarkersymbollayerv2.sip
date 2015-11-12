@@ -1,7 +1,7 @@
 class QgsSimpleMarkerSymbolLayerV2 : QgsMarkerSymbolLayerV2
 {
 %TypeHeaderCode
-#include <qgssymbollayerv2.h>
+#include <qgsmarkersymbollayerv2.h>
 %End
 
   public:
@@ -29,7 +29,7 @@ class QgsSimpleMarkerSymbolLayerV2 : QgsMarkerSymbolLayerV2
 
     QgsStringMap properties() const;
 
-    QgsSymbolLayerV2* clone() const /Factory/;
+    virtual QgsSimpleMarkerSymbolLayerV2* clone() const /Factory/;
 
     void writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const;
 
@@ -116,7 +116,7 @@ class QgsSvgMarkerSymbolLayerV2 : QgsMarkerSymbolLayerV2
 
     QgsStringMap properties() const;
 
-    QgsSymbolLayerV2* clone() const /Factory/;
+    virtual QgsSvgMarkerSymbolLayerV2* clone() const /Factory/;
 
     void writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const;
 
@@ -179,7 +179,7 @@ class QgsFontMarkerSymbolLayerV2 : QgsMarkerSymbolLayerV2
 
     QgsStringMap properties() const;
 
-    QgsSymbolLayerV2* clone() const /Factory/;
+    virtual QgsFontMarkerSymbolLayerV2* clone() const /Factory/;
 
     void writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const;
 

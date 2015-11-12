@@ -12,7 +12,7 @@ class QgsSingleBandGrayRenderer: QgsRasterRenderer
 
     QgsSingleBandGrayRenderer( QgsRasterDataProvider* provider, int grayBand );
     ~QgsSingleBandGrayRenderer();
-    QgsRasterInterface * clone() const /Factory/;
+    virtual QgsSingleBandGrayRenderer * clone() const /Factory/;
 
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterDataProvider* provider ) /Factory/;
 

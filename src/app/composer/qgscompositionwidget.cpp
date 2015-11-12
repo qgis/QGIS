@@ -577,7 +577,7 @@ void QgsCompositionWidget::on_mPageStyleButton_clicked()
     coverageLayer = mComposition->atlasComposition().coverageLayer();
   }
 
-  QgsFillSymbolV2* newSymbol = dynamic_cast<QgsFillSymbolV2*>( mComposition->pageStyleSymbol()->clone() );
+  QgsFillSymbolV2* newSymbol = mComposition->pageStyleSymbol()->clone();
   if ( !newSymbol )
   {
     newSymbol = new QgsFillSymbolV2();

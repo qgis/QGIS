@@ -906,7 +906,7 @@ QList<QString> QgsRuleBasedRendererV2::usedAttributes()
   return attrs.values();
 }
 
-QgsFeatureRendererV2* QgsRuleBasedRendererV2::clone() const
+QgsRuleBasedRendererV2* QgsRuleBasedRendererV2::clone() const
 {
   QgsRuleBasedRendererV2::Rule* clonedRoot = mRootRule->clone();
 

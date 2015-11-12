@@ -464,7 +464,7 @@ QgsWcsProvider::~QgsWcsProvider()
 
 }
 
-QgsRasterInterface * QgsWcsProvider::clone() const
+QgsWcsProvider* QgsWcsProvider::clone() const
 {
   QgsWcsProvider * provider = new QgsWcsProvider( dataSourceUri() );
   provider->copyBaseSettings( *this );

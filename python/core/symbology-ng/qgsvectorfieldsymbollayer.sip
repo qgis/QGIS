@@ -38,7 +38,7 @@ class QgsVectorFieldSymbolLayer : QgsMarkerSymbolLayerV2
     void startRender( QgsSymbolV2RenderContext& context );
     void stopRender( QgsSymbolV2RenderContext& context );
 
-    QgsSymbolLayerV2* clone() const /Factory/;
+    virtual QgsVectorFieldSymbolLayer* clone() const /Factory/;
     QgsStringMap properties() const;
 
     void toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props ) const;
