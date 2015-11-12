@@ -21,6 +21,7 @@
 
 #include "ui_qgsmergeattributesdialogbase.h"
 #include "qgsfeature.h"
+#include "qgsstatisticalsummary.h"
 
 class QgsMapCanvas;
 class QgsRubberBand;
@@ -67,18 +68,14 @@ class APP_EXPORT QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeA
     void refreshMergedValue( int col );
     /** Inserts the attribute value of a specific feature into the row of merged attributes*/
     QVariant featureAttribute( int featureId, int col );
-    /** Calculates and inserts the minimum attribute value of a column*/
-    QVariant minimumAttribute( int col );
-    /** Calculates and inserts the maximum value of a column*/
-    QVariant maximumAttribute( int col );
-    /** Calculates and inserts the mean value of a column*/
-    QVariant meanAttribute( int col );
-    /** Calculates and inserts the median value of a column*/
-    QVariant medianAttribute( int col );
-    /** Calculates and inserts the sum of a column*/
-    QVariant sumAttribute( int col );
     /** Appends the values of the features for the final value*/
     QVariant concatenationAttribute( int col );
+
+    /** Calculates a summary statistic for a column. Returns null if no valid numerical
+     * values found in column.
+    */
+    QVariant calcStatistic( int col, QgsStatisticalSummary::Statistic stat );
+
     /** Sets mSelectionRubberBand to a new feature*/
     void createRubberBandForFeature( int featureId );
 
@@ -87,6 +84,9 @@ class APP_EXPORT QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeA
     QgsMapCanvas* mMapCanvas;
     /** Item that highlights the selected feature in the merge table*/
     QgsRubberBand* mSelectionRubberBand;
+
+    static QList< QgsStatisticalSummary::Statistic > mDisplayStats;
+
 };
 
 #endif // QGSMERGEATTRIBUTESDIALOG_H

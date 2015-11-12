@@ -25,10 +25,28 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsattributeeditor.h"
+#include "qgsstatisticalsummary.h"
 
 #include <limits>
 #include <QComboBox>
 #include <QSettings>
+
+QList< QgsStatisticalSummary::Statistic > QgsMergeAttributesDialog::mDisplayStats =
+  QList< QgsStatisticalSummary::Statistic > () << QgsStatisticalSummary::Count
+  << QgsStatisticalSummary::Sum
+  << QgsStatisticalSummary::Mean
+  << QgsStatisticalSummary::Median
+  << QgsStatisticalSummary::StDev
+  << QgsStatisticalSummary::StDevSample
+  << QgsStatisticalSummary::Min
+  << QgsStatisticalSummary::Max
+  << QgsStatisticalSummary::Range
+  << QgsStatisticalSummary::Minority
+  << QgsStatisticalSummary::Majority
+  << QgsStatisticalSummary::Variety
+  << QgsStatisticalSummary::FirstQuartile
+  << QgsStatisticalSummary::ThirdQuartile
+  << QgsStatisticalSummary::InterQuartileRange;
 
 QgsMergeAttributesDialog::QgsMergeAttributesDialog( const QgsFeatureList &features, QgsVectorLayer *vl, QgsMapCanvas *canvas, QWidget *parent, Qt::WindowFlags f )
     : QDialog( parent, f )
@@ -152,16 +170,15 @@ QComboBox *QgsMergeAttributesDialog::createMergeComboBox( QVariant::Type columnT
   QgsFeatureList::const_iterator f_it = mFeatureList.constBegin();
   for ( ; f_it != mFeatureList.constEnd(); ++f_it )
   {
-    newComboBox->addItem( tr( "Feature %1" ).arg( f_it->id() ), QString::number( f_it->id() ) );
+    newComboBox->addItem( tr( "Feature %1" ).arg( f_it->id() ), QString( "f%1" ).arg( f_it->id() ) );
   }
 
   if ( columnType == QVariant::Double || columnType == QVariant::Int )
   {
-    newComboBox->addItem( tr( "Minimum" ), "minimum" );
-    newComboBox->addItem( tr( "Maximum" ), "maximum" );
-    newComboBox->addItem( tr( "Median" ), "median" );
-    newComboBox->addItem( tr( "Sum" ), "sum" );
-    newComboBox->addItem( tr( "Mean" ), "mean" );
+    Q_FOREACH ( QgsStatisticalSummary::Statistic stat, mDisplayStats )
+    {
+      newComboBox->addItem( QgsStatisticalSummary::displayName( stat ) , stat );
+    }
   }
   else if ( columnType == QVariant::String )
   {
@@ -250,27 +267,7 @@ void QgsMergeAttributesDialog::refreshMergedValue( int col )
   //evaluate behaviour (feature value or min / max / mean )
   QString mergeBehaviourString = comboBox->itemData( comboBox->currentIndex() ).toString();
   QVariant mergeResult; // result to show in the merge result field
-  if ( mergeBehaviourString == "minimum" )
-  {
-    mergeResult = minimumAttribute( col );
-  }
-  else if ( mergeBehaviourString == "maximum" )
-  {
-    mergeResult = maximumAttribute( col );
-  }
-  else if ( mergeBehaviourString == "mean" )
-  {
-    mergeResult = meanAttribute( col );
-  }
-  else if ( mergeBehaviourString == "median" )
-  {
-    mergeResult = medianAttribute( col );
-  }
-  else if ( mergeBehaviourString == "sum" )
-  {
-    mergeResult = sumAttribute( col );
-  }
-  else if ( mergeBehaviourString == "concat" )
+  if ( mergeBehaviourString == "concat" )
   {
     mergeResult = concatenationAttribute( col );
   }
@@ -278,10 +275,17 @@ void QgsMergeAttributesDialog::refreshMergedValue( int col )
   {
     mergeResult = tr( "Skipped" );
   }
-  else //an existing feature value
+  else if ( mergeBehaviourString.startsWith( "f" ) )
   {
-    int featureId = mergeBehaviourString.toInt();
+    //an existing feature value - TODO should be QgsFeatureId, not int
+    int featureId = mergeBehaviourString.mid( 1 ).toInt();
     mergeResult = featureAttribute( featureId, col );
+  }
+  else
+  {
+    //numerical statistic
+    QgsStatisticalSummary::Statistic stat = ( QgsStatisticalSummary::Statistic )( comboBox->itemData( comboBox->currentIndex() ).toInt() );
+    mergeResult = calcStatistic( col, stat );
   }
 
   //insert string into table widget
@@ -311,141 +315,30 @@ QVariant QgsMergeAttributesDialog::featureAttribute( int featureId, int col )
   }
 }
 
-QVariant QgsMergeAttributesDialog::minimumAttribute( int col )
+
+QVariant QgsMergeAttributesDialog::calcStatistic( int col, QgsStatisticalSummary::Statistic stat )
 {
-  double minimumValue = std::numeric_limits<double>::max();
-  double currentValue;
+  QgsStatisticalSummary summary( stat );
+
   bool conversion = false;
-  int numberOfConsideredFeatures = 0;
-
-  for ( int i = 0; i < mFeatureList.size(); ++i )
-  {
-    currentValue = mTableWidget->item( i + 1, col )->text().toDouble( &conversion );
-    if ( conversion )
-    {
-      if ( currentValue < minimumValue )
-      {
-        minimumValue = currentValue;
-        ++numberOfConsideredFeatures;
-      }
-    }
-  }
-
-  if ( numberOfConsideredFeatures < 1 )
-  {
-    return QVariant( mVectorLayer->fields().at( col ).type() );
-  }
-
-  return QVariant( minimumValue );
-}
-
-QVariant QgsMergeAttributesDialog::maximumAttribute( int col )
-{
-  double maximumValue = -std::numeric_limits<double>::max();
-  double currentValue;
-  bool conversion = false;
-  int numberOfConsideredFeatures = 0;
-
-  for ( int i = 0; i < mFeatureList.size(); ++i )
-  {
-    currentValue = mTableWidget->item( i + 1, col )->text().toDouble( &conversion );
-    if ( conversion )
-    {
-      if ( currentValue > maximumValue )
-      {
-        maximumValue = currentValue;
-        ++numberOfConsideredFeatures;
-      }
-    }
-  }
-
-  if ( numberOfConsideredFeatures < 1 )
-  {
-    return QVariant( mVectorLayer->fields().at( col ).type() );
-  }
-
-  return QVariant( maximumValue );
-}
-
-QVariant QgsMergeAttributesDialog::meanAttribute( int col )
-{
-  int numberOfConsideredFeatures = 0;
-  double currentValue;
-  double sum = 0;
-  bool conversion = false;
-
-  for ( int i = 0; i < mFeatureList.size(); ++i )
-  {
-    currentValue = mTableWidget->item( i + 1, col )->text().toDouble( &conversion );
-    if ( conversion )
-    {
-      sum += currentValue;
-      ++numberOfConsideredFeatures;
-    }
-  }
-
-  if ( numberOfConsideredFeatures < 1 )
-  {
-    return QVariant( mVectorLayer->fields().at( col ).type() );
-  }
-
-  double mean = sum / numberOfConsideredFeatures;
-  return QVariant( mean );
-}
-
-QVariant QgsMergeAttributesDialog::medianAttribute( int col )
-{
-  //bring all values into a list and sort
-  QList<double> valueList;
-  double currentValue;
-  bool conversionSuccess;
-
-  for ( int i = 0; i < mFeatureList.size(); ++i )
-  {
-    currentValue = mTableWidget->item( i + 1, col )->text().toDouble( &conversionSuccess );
-    if ( !conversionSuccess )
-    {
-      continue;
-    }
-    valueList.push_back( currentValue );
-  }
-  qSort( valueList );
-
-  double medianValue;
-  int size = valueList.size();
-
-
-  if ( size < 1 )
-  {
-    return QVariant( mVectorLayer->fields().at( col ).type() );
-  }
-
-  bool even = ( size % 2 ) < 1;
-  if ( even )
-  {
-    medianValue = ( valueList[size / 2 - 1] + valueList[size / 2] ) / 2;
-  }
-  else //odd
-  {
-    medianValue = valueList[( size + 1 ) / 2 - 1];
-  }
-  return QVariant( medianValue );
-}
-
-QVariant QgsMergeAttributesDialog::sumAttribute( int col )
-{
-  double sum = 0.0;
-  bool conversion = false;
-
+  QList<double> values;
   for ( int i = 0; i < mFeatureList.size(); ++i )
   {
     double currentValue = mTableWidget->item( i + 1, col )->text().toDouble( &conversion );
     if ( conversion )
     {
-      sum += currentValue;
+      values << currentValue;
     }
   }
-  return QVariant( sum );
+
+  if ( values.isEmpty() )
+  {
+    return QVariant( mVectorLayer->fields()[col].type() );
+  }
+
+  summary.calculate( values );
+
+  return QVariant::fromValue( summary.statistic( stat ) );
 }
 
 QVariant QgsMergeAttributesDialog::concatenationAttribute( int col )
