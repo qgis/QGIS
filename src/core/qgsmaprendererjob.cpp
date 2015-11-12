@@ -63,7 +63,7 @@ const QgsMapSettings& QgsMapRendererJob::mapSettings() const
 }
 
 
-bool QgsMapRendererJob::reprojectToLayerExtent( const QgsCoordinateTransform* ct, bool layerCrsGeographic, QgsRectangle& extent, QgsRectangle& r2 )
+bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const QgsCoordinateTransform *ct, QgsRectangle &extent, QgsRectangle &r2 )
 {
   bool split = false;
 
@@ -79,9 +79,9 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsCoordinateTransform* ct
     // extent separately.
     static const double splitCoord = 180.0;
 
-    if ( layerCrsGeographic )
+    if ( ml->crs().geographicFlag() )
     {
-      if ( !ct->destCRS().geographicFlag() )
+      if ( ml->type() == QgsMapLayer::VectorLayer && !ct->destCRS().geographicFlag() )
       {
         // if we transform from a projected coordinate system check
         // check if transforming back roughly returns the input
@@ -221,7 +221,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsPalLabelin
       ct = mSettings.layerTransform( ml );
       if ( ct )
       {
-        reprojectToLayerExtent( ct, ml->crs().geographicFlag(), r1, r2 );
+        reprojectToLayerExtent( ml, ct, r1, r2 );
       }
       QgsDebugMsg( "extent: " + r1.toString() );
       if ( !r1.isFinite() || !r2.isFinite() )
