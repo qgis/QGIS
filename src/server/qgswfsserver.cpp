@@ -504,10 +504,10 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
 
         //map extent
         searchRect = layer->extent();
-        searchRect.set( searchRect.xMinimum() - 1/pow(10,layerPrec)
-                        , searchRect.yMinimum() - 1/pow(10,layerPrec)
-                        , searchRect.xMaximum() + 1/pow(10,layerPrec)
-                        , searchRect.yMaximum() + 1/pow(10,layerPrec) );
+        searchRect.set( searchRect.xMinimum() - 1. / pow( 10., layerPrec )
+                        , searchRect.yMinimum() - 1. / pow( 10., layerPrec )
+                        , searchRect.xMaximum() + 1. / pow( 10., layerPrec )
+                        , searchRect.yMaximum() + 1. / pow( 10., layerPrec ) );
         layerCrs = layer->crs();
 
         QgsFeatureIterator fit = layer->getFeatures(
@@ -843,10 +843,10 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
       if ( bboxOk )
         searchRect.set( minx, miny, maxx, maxy );
       else
-        searchRect.set( searchRect.xMinimum() - 1/pow(10,layerPrec),
-                        searchRect.yMinimum() - 1/pow(10,layerPrec),
-                        searchRect.xMaximum() + 1/pow(10,layerPrec),
-                        searchRect.yMaximum() + 1/pow(10,layerPrec) );
+        searchRect.set( searchRect.xMinimum() - 1. / pow( 10., layerPrec ),
+                        searchRect.yMinimum() - 1. / pow( 10., layerPrec ),
+                        searchRect.xMaximum() + 1. / pow( 10., layerPrec ),
+                        searchRect.yMaximum() + 1. / pow( 10., layerPrec ) );
       layerCrs = layer->crs();
 
       long featCounter = 0;
@@ -1724,9 +1724,9 @@ QString QgsWFSServer::createFeatureGeoJSON( QgsFeature* feat, int prec, QgsCoord
     {
       fStr += "\"";
       fStr +=  val.toString()
-                  .replace( QString( "\"" ), QString( "\\\"" ) )
-                  .replace( QString( "\r" ), QString( "\\r" ) )
-                  .replace( QString( "\n" ), QString( "\\n" ) );
+               .replace( QString( "\"" ), QString( "\\\"" ) )
+               .replace( QString( "\r" ), QString( "\\r" ) )
+               .replace( QString( "\n" ), QString( "\\n" ) );
       fStr += "\"";
     }
     fStr += "\n";
