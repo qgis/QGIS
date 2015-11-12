@@ -28,8 +28,8 @@ ELSE(EXISTS QSCINTILLA_VERSION_STR)
     NAMES Qsci/qsciglobal.h
     PATHS
       "${QT_INCLUDE_DIR}"
-      /usr/include/x86_64-linux-gnu/qt5
       /usr/local/include
+      /usr/include/x86_64-linux-gnu/qt5
       /usr/include
     )
 
