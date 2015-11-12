@@ -327,7 +327,7 @@ void QgsAttributeTableDialog::columnBoxInit()
   mFilterButton->addAction( mActionFilterColumnsMenu );
   mFilterButton->addAction( mActionAdvancedFilter );
 
-  QList<QgsField> fields = mLayer->fields().toList();
+  const QList<QgsField> fields = mLayer->fields().toList();
 
   Q_FOREACH ( const QgsField& field, fields )
   {
@@ -338,10 +338,11 @@ void QgsAttributeTableDialog::columnBoxInit()
     if ( mLayer->editorWidgetV2( idx ) != "Hidden" )
     {
       QIcon icon = QgsApplication::getThemeIcon( "/mActionNewAttribute.png" );
-      QString text = field.name();
+      QString alias = mLayer->attributeDisplayName( idx );
 
       // Generate action for the filter popup button
-      QAction* filterAction = new QAction( icon, text, mFilterButton );
+      QAction* filterAction = new QAction( icon, alias, mFilterButton );
+      filterAction->setData( field.name() );
       mFilterActionMapper->setMapping( filterAction, filterAction );
       connect( filterAction, SIGNAL( triggered() ), mFilterActionMapper, SLOT( map() ) );
       mFilterColumnsMenu->addAction( filterAction );
@@ -453,7 +454,7 @@ void QgsAttributeTableDialog::filterColumnChanged( QObject* filterAction )
     mCurrentSearchWidgetWrapper->widget()->setVisible( false );
     delete mCurrentSearchWidgetWrapper;
   }
-  QString fieldName = mFilterButton->defaultAction()->text();
+  QString fieldName = mFilterButton->defaultAction()->data().toString();
   // get the search widget
   int fldIdx = mLayer->fieldNameIndex( fieldName );
   if ( fldIdx < 0 )
