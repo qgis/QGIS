@@ -471,9 +471,9 @@ const QgsCoordinateReferenceSystem* QgsSnappingUtils::destCRS()
   if ( mSnapToType == SnapToType::SnapToMap )
     return mMapSettings.hasCrsTransformEnabled() ? &mMapSettings.destinationCrs() : nullptr;
   else if ( mSnapToType == SnapToType::SnapToLayer )
-    return &mCurrentLayer->crs();
+    return mMapSettings.hasCrsTransformEnabled() ? &mCurrentLayer->crs() : 0;
   else
-    return NULL;
+    return 0;
 }
 
 void QgsSnappingUtils::setSnapToType( SnapToType snapToType )
