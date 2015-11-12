@@ -188,7 +188,11 @@ void QgsPhotoWidgetWrapper::initWidget( QWidget* editor )
 
 bool QgsPhotoWidgetWrapper::valid()
 {
+#ifdef WITH_QTWEBKIT
   return mPhotoLabel || mLineEdit || mButton || mWebView;
+#else
+  return mPhotoLabel || mLineEdit || mButton;
+#endif
 }
 
 void QgsPhotoWidgetWrapper::setValue( const QVariant& value )
