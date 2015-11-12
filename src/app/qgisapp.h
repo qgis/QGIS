@@ -750,6 +750,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /** Set the CRS of the current legend group*/
     void legendGroupSetCRS();
 
+    /** Apply the same style for all layers of the current legend group*/
+    void applyStyleGroup();
+
     //! zoom to extent of layer
     void zoomToLayerExtent();
     //! zoom to actual size of raster layer

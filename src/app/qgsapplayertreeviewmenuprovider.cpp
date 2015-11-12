@@ -55,6 +55,11 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       menu->addAction( actions->actionMutuallyExclusiveGroup( menu ) );
 
+      if ( QgisApp::instance()->clipboard()->hasFormat( QGSCLIPBOARD_STYLE_MIME ) )
+      {
+        menu->addAction( tr( "Paste Style" ), QgisApp::instance(), SLOT( applyStyleGroup() ) );
+      }
+
       if ( mView->selectedNodes( true ).count() >= 2 )
         menu->addAction( actions->actionGroupSelected( menu ) );
 
@@ -263,7 +268,7 @@ QList< LegendLayerAction > QgsAppLayerTreeViewMenuProvider::legendLayerActions( 
   {
     QgsDebugMsg( QString( "legendLayerActions for layers of type %1:" ).arg( type ) );
 
-    Q_FOREACH ( const LegendLayerAction& lyrAction, mLegendLayerActionMap[ type ] )
+    Q_FOREACH( const LegendLayerAction& lyrAction, mLegendLayerActionMap[ type ] )
     {
       Q_UNUSED( lyrAction );
       QgsDebugMsg( QString( "%1/%2 - %3 layers" ).arg( lyrAction.menu, lyrAction.action->text() ).arg( lyrAction.layers.count() ) );
@@ -307,7 +312,7 @@ void QgsAppLayerTreeViewMenuProvider::addCustomLayerActions( QMenu* menu, QgsMap
           QMenu* newMenu = 0;
           QString dst = menuName;
           dst.remove( QChar( '&' ) );
-          Q_FOREACH ( QMenu* menu, theMenus )
+          Q_FOREACH( QMenu* menu, theMenus )
           {
             QString src = menu->title();
             src.remove( QChar( '&' ) );
