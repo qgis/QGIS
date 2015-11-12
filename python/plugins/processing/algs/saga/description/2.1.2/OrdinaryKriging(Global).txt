@@ -1,22 +1,19 @@
 Ordinary Kriging (Global)
 statistics_kriging
-ParameterVector|SHAPES|Points|0|False
-ParameterTableField|FIELD|Attribute|SHAPES|-1|False
-ParameterBoolean|BVARIANCE              |Create Variance Grid|True
+ParameterVector|POINTS|Points|0|False
+ParameterTableField|ZFIELD|Attribute|SHAPES|-1|False
 Hardcoded|-TARGET 0
-ParameterSelection|MODEL|Variogram Model|[0] Spherical Model;[1] Exponential Model;[2] Gaussian Model;[3] Linear Regression;[4] Exponential Regression;[5] Power Function Regression
-ParameterBoolean|BLOCK                  |Block Kriging|True
+ParameterSelection|TQUALITY|Type of Quality Measure|[0] standard deviation;[1] variance
+ParameterBoolean|LOG|Logarithmic Transformation|True
+ParameterBoolean|BLOCK|Block Kriging|True
 ParameterNumber|DBLOCK|Block Size|1|None|100
-ParameterBoolean|BLOG                   |Logarithmic Transformation|True
-ParameterNumber|NUGGET|Nugget|None|None|0.0
-ParameterNumber|SILL|Sill|None|None|0.0
-ParameterNumber|RANGE|Range|None|None|0.0
-ParameterNumber|LIN_B|Linear Regression|None|None|1.0
-ParameterNumber|EXP_B|Exponential Regression|None|None|0.1
-ParameterNumber|POW_A|Power Function - A|None|None|1.0
-ParameterNumber|POW_B|Power Function - B|None|None|0.5
-ParameterNumber|USER_CELL_SIZE|Grid Size|0|None|1.0
-ParameterBoolean|USER_FIT_EXTENT        |Fit Extent|True
-Extent USER_X_EXTENT_MIN USER_X_EXTENT_MAX USER_Y_EXTENT_MIN USER_Y_EXTENT_MIN
-OutputRaster|GRID|Grid
-OutputRaster|VARIANCE|Variance
+ParameterNumber|VAR_MAXDIST|Maximum Distance|None|None|-1.0
+ParameterNumber|VAR_NCLASSES|Lag Distance Classes|1|None|100
+ParameterNumber|VAR_NSKIP|Skip|1|None|1
+ParameterString|VAR_MODEL|Variogram Model|a + b * x
+ParameterBoolean|USER_BVARIANCE|Create Quality Grid|True
+Extent USER_XMIN USER_XMAX USER_YMIN USER_YMAX
+ParameterNumber|USER_SIZE|Grid Size|0|None|100.0
+ParameterSelection|USER_FIT|Search Direction|[0] nodes;[1] cells
+OutputRaster|USER_GRID|Grid
+OutputRaster|USER_VARIANCE|Variance
