@@ -29,11 +29,12 @@ ELSE(EXISTS QSCINTILLA_VERSION_STR)
     PATHS
       "${QT_INCLUDE_DIR}"
       /usr/local/include
+      /usr/include/x86_64-linux-gnu/qt5
       /usr/include
     )
 
   if(ENABLE_QT5)
-    set(QSCINTILLA_LIBRARY_NAMES qscintilla2-qt5 libqscintilla2-qt5 libqscintilla2-qt5.dylib)
+    set(QSCINTILLA_LIBRARY_NAMES qscintilla2-qt5 qt5scintilla2 libqscintilla2-qt5 libqscintilla2-qt5.dylib)
   else(ENABLE_QT5)
     set(QSCINTILLA_LIBRARY_NAMES qscintilla2 libqscintilla2 libqscintilla2.dylib)
   endif(ENABLE_QT5)
