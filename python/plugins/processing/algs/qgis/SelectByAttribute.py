@@ -26,7 +26,7 @@ __copyright__ = '(C) 2010, Michael Minn'
 __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import QVariant
-from qgis.core import QgsExpression
+from qgis.core import QgsExpression, QgsFeatureRequest
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
@@ -115,18 +115,12 @@ class SelectByAttribute(GeoAlgorithm):
             raise GeoAlgorithmExecutionException(
                 self.tr('Unsupported field type "%s"' % fields[idx].typeName()))
 
-        expression = QgsExpression(expr)
-        expression.prepare(fields)
-
-        features = vector.features(layer)
-
-        selected = []
-        count = len(features)
-        total = 100.0 / float(count)
-        for count, f in enumerate(features):
-            if expression.evaluate(f, fields):
-                selected.append(f.id())
-            progress.setPercentage(int(count * total))
+        qExp = QgsExpression(expr)
+        if not qExp.hasParserError():
+            qReq = QgsFeatureRequest(qExp)
+        else:
+            raise GeoAlgorithmExecutionException(qExp.parserErrorString())
+        selected = [f.id() for f in layer.getFeatures(qReq)]
 
         layer.setSelectedFeatures(selected)
         self.setOutputValue(self.OUTPUT, fileName)
