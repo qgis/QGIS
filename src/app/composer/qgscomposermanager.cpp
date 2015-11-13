@@ -179,7 +179,10 @@ QMap<QString, QString> QgsComposerManager::templatesFromPath( QString path ) con
   QFileInfoList::const_iterator infoIt = fileInfoList.constBegin();
   for ( ; infoIt != fileInfoList.constEnd(); ++infoIt )
   {
-    templateMap.insert( infoIt->baseName(), infoIt->absoluteFilePath() );
+    if ( infoIt->suffix().toLower() == "qpt" )
+    {
+      templateMap.insert( infoIt->baseName(), infoIt->absoluteFilePath() );
+    }
   }
   return templateMap;
 }
