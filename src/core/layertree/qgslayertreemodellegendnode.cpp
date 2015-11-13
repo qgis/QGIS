@@ -307,7 +307,7 @@ QSizeF QgsSymbolV2LegendNode::drawSymbol( const QgsLegendSettings& settings, Ite
   context.setScaleFactor( settings.dpi() / 25.4 );
   context.setRendererScale( settings.mapScale() );
   context.setMapToPixel( QgsMapToPixel( 1 / ( settings.mmPerMapUnit() * context.scaleFactor() ) ) );
-  context.setForceVectorOutput( true );
+  context.setFlag( QgsRenderContext::ForceVectorOutput, true );
   context.setPainter( ctx ? ctx->painter : 0 );
 
   //Consider symbol size for point markers

@@ -282,7 +282,7 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
 #endif
 
   if ( mOverview )
-    mRenderContext.setDrawEditingInformation( !mOverview );
+    mRenderContext.setFlag( QgsRenderContext::DrawEditingInfo, !mOverview );
 
   mRenderContext.setPainter( painter );
   mRenderContext.setCoordinateTransform( 0 );
@@ -386,7 +386,7 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
                  .arg( ml->blendMode() )
                );
 
-    if ( mRenderContext.useAdvancedEffects() )
+    if ( mRenderContext.testFlag( QgsRenderContext::UseAdvancedEffects ) )
     {
       // Set the QPainter composition mode so that this layer is rendered using
       // the desired blending mode
@@ -442,7 +442,7 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
       // blending occuring between objects on the layer
       // (this is not required for raster layers or when layer caching is enabled, since that has the same effect)
       bool flattenedLayer = false;
-      if (( mRenderContext.useAdvancedEffects() ) && ( ml->type() == QgsMapLayer::VectorLayer ) )
+      if ( mRenderContext.testFlag( QgsRenderContext::UseAdvancedEffects ) && ( ml->type() == QgsMapLayer::VectorLayer ) )
       {
         QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>( ml );
         if ((( vl->blendMode() != QPainter::CompositionMode_SourceOver )
@@ -471,7 +471,7 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
       }
 
       // Per feature blending mode
-      if (( mRenderContext.useAdvancedEffects() ) && ( ml->type() == QgsMapLayer::VectorLayer ) )
+      if ( mRenderContext.testFlag( QgsRenderContext::UseAdvancedEffects ) && ( ml->type() == QgsMapLayer::VectorLayer ) )
       {
         QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>( ml );
         if ( vl->featureBlendMode() != QPainter::CompositionMode_SourceOver )
@@ -520,7 +520,7 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
       }
 
       //apply layer transparency for vector layers
-      if (( mRenderContext.useAdvancedEffects() ) && ( ml->type() == QgsMapLayer::VectorLayer ) )
+      if ( mRenderContext.testFlag( QgsRenderContext::UseAdvancedEffects ) && ( ml->type() == QgsMapLayer::VectorLayer ) )
       {
         QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>( ml );
         if ( vl->layerTransparency() != 0 )

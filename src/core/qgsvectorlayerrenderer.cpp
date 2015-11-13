@@ -134,7 +134,7 @@ bool QgsVectorLayerRenderer::render()
   }
 
   // Per feature blending mode
-  if ( mContext.useAdvancedEffects() && mFeatureBlendMode != QPainter::CompositionMode_SourceOver )
+  if ( mContext.testFlag( QgsRenderContext::UseAdvancedEffects ) && mFeatureBlendMode != QPainter::CompositionMode_SourceOver )
   {
     // set the painter to the feature blend mode, so that features drawn
     // on this layer will interact and blend with each other
@@ -245,7 +245,7 @@ bool QgsVectorLayerRenderer::render()
   }
 
   //apply layer transparency for vector layers
-  if ( mContext.useAdvancedEffects() && mLayerTransparency != 0 )
+  if ( mContext.testFlag( QgsRenderContext::UseAdvancedEffects ) && mLayerTransparency != 0 )
   {
     // a layer transparency has been set, so update the alpha for the flattened layer
     // by combining it with the layer transparency
@@ -290,8 +290,8 @@ void QgsVectorLayerRenderer::drawRendererV2( QgsFeatureIterator& fit )
 
       mContext.expressionContext().setFeature( fet );
 
-      bool sel = mContext.showSelection() && mSelectedFeatureIds.contains( fet.id() );
-      bool drawMarker = ( mDrawVertexMarkers && mContext.drawEditingInformation() && ( !mVertexMarkerOnlyForSelection || sel ) );
+      bool sel = mContext.testFlag( QgsRenderContext::DrawSelection ) && mSelectedFeatureIds.contains( fet.id() );
+      bool drawMarker = ( mDrawVertexMarkers && mContext.testFlag( QgsRenderContext::DrawEditingInfo ) && ( !mVertexMarkerOnlyForSelection || sel ) );
 
       if ( mCache )
       {
@@ -456,7 +456,7 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
 
         bool sel = mSelectedFeatureIds.contains( fit->id() );
         // maybe vertex markers should be drawn only during the last pass...
-        bool drawMarker = ( mDrawVertexMarkers && mContext.drawEditingInformation() && ( !mVertexMarkerOnlyForSelection || sel ) );
+        bool drawMarker = ( mDrawVertexMarkers && mContext.testFlag( QgsRenderContext::DrawEditingInfo ) && ( !mVertexMarkerOnlyForSelection || sel ) );
 
         mContext.expressionContext().setFeature( *fit );
 

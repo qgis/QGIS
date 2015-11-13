@@ -2732,7 +2732,7 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolV2RenderContext
   lineRenderContext.setScaleFactor( context.renderContext().scaleFactor() * context.renderContext().rasterScaleFactor() );
   QgsMapToPixel mtp( context.renderContext().mapToPixel().mapUnitsPerPixel() / context.renderContext().rasterScaleFactor() );
   lineRenderContext.setMapToPixel( mtp );
-  lineRenderContext.setForceVectorOutput( false );
+  lineRenderContext.setFlag( QgsRenderContext::ForceVectorOutput, false );
   lineRenderContext.setExpressionContext( context.renderContext().expressionContext() );
 
   fillLineSymbol->startRender( lineRenderContext, context.fields() );
@@ -3147,7 +3147,7 @@ void QgsPointPatternFillSymbolLayer::applyPattern( const QgsSymbolV2RenderContex
     pointRenderContext.setScaleFactor( context.renderContext().scaleFactor() * context.renderContext().rasterScaleFactor() );
     QgsMapToPixel mtp( context.renderContext().mapToPixel().mapUnitsPerPixel() / context.renderContext().rasterScaleFactor() );
     pointRenderContext.setMapToPixel( mtp );
-    pointRenderContext.setForceVectorOutput( false );
+    pointRenderContext.setFlag( QgsRenderContext::ForceVectorOutput, false );
     pointRenderContext.setExpressionContext( context.renderContext().expressionContext() );
 
     mMarkerSymbol->startRender( pointRenderContext, context.fields() );

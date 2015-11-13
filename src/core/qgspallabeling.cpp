@@ -4430,7 +4430,7 @@ void QgsPalLabeling::drawLabelBuffer( QgsRenderContext& context,
   }
 
   p->save();
-  if ( context.useAdvancedEffects() )
+  if ( context.testFlag( QgsRenderContext::UseAdvancedEffects ) )
   {
     p->setCompositionMode( tmpLyr.bufferBlendMode );
   }
@@ -4596,7 +4596,7 @@ void QgsPalLabeling::drawLabelBackground( QgsRenderContext& context,
                                          ( 100.0 - ( double )( tmpLyr.shapeTransparency ) ) / 100.0 );
 
     p->save();
-    if ( context.useAdvancedEffects() )
+    if ( context.testFlag( QgsRenderContext::UseAdvancedEffects ) )
     {
       p->setCompositionMode( tmpLyr.shapeBlendMode );
     }
@@ -4729,7 +4729,7 @@ void QgsPalLabeling::drawLabelBackground( QgsRenderContext& context,
     }
 
     p->setOpacity(( 100.0 - ( double )( tmpLyr.shapeTransparency ) ) / 100.0 );
-    if ( context.useAdvancedEffects() )
+    if ( context.testFlag( QgsRenderContext::UseAdvancedEffects ) )
     {
       p->setCompositionMode( tmpLyr.shapeBlendMode );
     }
@@ -4835,7 +4835,7 @@ void QgsPalLabeling::drawLabelShadow( QgsRenderContext& context,
 
   p->save();
   p->setRenderHints( QPainter::Antialiasing | QPainter::SmoothPixmapTransform );
-  if ( context.useAdvancedEffects() )
+  if ( context.testFlag( QgsRenderContext::UseAdvancedEffects ) )
   {
     p->setCompositionMode( tmpLyr.shadowBlendMode );
   }

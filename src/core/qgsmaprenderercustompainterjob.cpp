@@ -240,7 +240,7 @@ void QgsMapRendererCustomPainterJob::doRender()
     if ( job.context.renderingStopped() )
       break;
 
-    if ( job.context.useAdvancedEffects() )
+    if ( job.context.testFlag( QgsRenderContext::UseAdvancedEffects ) )
     {
       // Set the QPainter composition mode so that this layer is rendered using
       // the desired blending mode

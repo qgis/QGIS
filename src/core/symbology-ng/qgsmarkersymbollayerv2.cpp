@@ -187,7 +187,7 @@ void QgsSimpleMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& contex
   // use caching only when:
   // - size, rotation, shape, color, border color is not data-defined
   // - drawing to screen (not printer)
-  mUsingCache = !hasDataDefinedRotation && !hasDataDefinedSize && !context.renderContext().forceVectorOutput()
+  mUsingCache = !hasDataDefinedRotation && !hasDataDefinedSize && !context.renderContext().testFlag( QgsRenderContext::ForceVectorOutput )
                 && !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_NAME ) && !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR ) && !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR_BORDER )
                 && !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_OUTLINE_WIDTH ) && !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_OUTLINE_STYLE ) &&
                 !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_SIZE );
@@ -1319,7 +1319,7 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Re
   bool fitsInCache = true;
   bool usePict = true;
   double hwRatio = 1.0;
-  if ( !context.renderContext().forceVectorOutput() && !rotated )
+  if ( !context.renderContext().testFlag( QgsRenderContext::ForceVectorOutput ) && !rotated )
   {
     usePict = false;
     const QImage& img = QgsSvgCache::instance()->svgAsImage( path, size, fillColor, outlineColor, outlineWidth,
@@ -1346,7 +1346,7 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Re
   {
     p->setOpacity( context.alpha() );
     const QPicture& pct = QgsSvgCache::instance()->svgAsPicture( path, size, fillColor, outlineColor, outlineWidth,
-                          context.renderContext().scaleFactor(), context.renderContext().rasterScaleFactor(), context.renderContext().forceVectorOutput() );
+                          context.renderContext().scaleFactor(), context.renderContext().rasterScaleFactor(), context.renderContext().testFlag( QgsRenderContext::ForceVectorOutput ) );
 
     if ( pct.width() > 1 )
     {

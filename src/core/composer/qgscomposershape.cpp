@@ -181,7 +181,7 @@ void QgsComposerShape::drawShapeUsingSymbol( QPainter* p )
   ms.setOutputDpi( p->device()->logicalDpiX() );
   QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
   context.setPainter( p );
-  context.setForceVectorOutput( true );
+  context.setFlag( QgsRenderContext::ForceVectorOutput, true );
   QgsExpressionContext* expressionContext = createExpressionContext();
   context.setExpressionContext( *expressionContext );
   delete expressionContext;

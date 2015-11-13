@@ -163,7 +163,7 @@ void QgsPaperItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* ite
   ms.setOutputDpi( painter->device()->logicalDpiX() );
   QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
   context.setPainter( painter );
-  context.setForceVectorOutput( true );
+  context.setFlag( QgsRenderContext::ForceVectorOutput, true );
   QgsExpressionContext* expressionContext = createExpressionContext();
   context.setExpressionContext( *expressionContext );
   delete expressionContext;
