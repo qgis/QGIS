@@ -90,7 +90,7 @@ class PointsInPolygonUnique(GeoAlgorithm):
 
             attrs = ftPoly.attributes()
 
-            classes = []
+            classes = set()
             points = spatialIndex.intersects(geom.boundingBox())
             if len(points) > 0:
                 request = QgsFeatureRequest().setFilterFids(points)
@@ -101,7 +101,7 @@ class PointsInPolygonUnique(GeoAlgorithm):
                     if engine.contains(tmpGeom.geometry()):
                         clazz = ftPoint.attributes()[classFieldIndex]
                         if clazz not in classes:
-                            classes.append(clazz)
+                            classes.add(clazz)
 
             outFeat.setGeometry(geom)
             if idxCount == len(attrs):
