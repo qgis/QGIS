@@ -2387,6 +2387,19 @@ long QgsVectorLayer::featureCount() const
          ( mEditBuffer ? mEditBuffer->mAddedFeatures.size() - mEditBuffer->mDeletedFeatureIds.size() : 0 );
 }
 
+long QgsVectorLayer::featureCount( QgsFeatureRequest request )
+{
+  QgsFeatureIterator fit = getFeatures( request );
+
+  long count = 0;
+  QgsFeature fet;
+  while ( fit.nextFeature( fet ) )
+  {
+    count += 1;
+  }
+  return count;
+}
+
 bool QgsVectorLayer::commitChanges()
 {
   mCommitErrors.clear();
