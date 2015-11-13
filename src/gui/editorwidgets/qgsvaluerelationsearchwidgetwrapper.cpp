@@ -97,8 +97,15 @@ bool QgsValueRelationSearchWidgetWrapper::valid()
 void QgsValueRelationSearchWidgetWrapper::valueChanged()
 {
   QVariant vl = value();
-  QSettings settings;
-  setExpression( vl.isNull() ? settings.value( "qgis/nullValue", "NULL" ).toString() : vl.toString() );
+  if ( !vl.isValid() )
+  {
+    clearExpression();
+  }
+  else
+  {
+    QSettings settings;
+    setExpression( vl.isNull() ? settings.value( "qgis/nullValue", "NULL" ).toString() : vl.toString() );
+  }
   emit expressionChanged( mExpression );
 }
 
@@ -149,7 +156,7 @@ void QgsValueRelationSearchWidgetWrapper::initWidget( QWidget* editor )
 
   if ( mComboBox )
   {
-    mComboBox->addItem( tr( "Please select" ), QVariant( layer()->fields().at( mFieldIdx ).type() ) );
+    mComboBox->addItem( tr( "Please select" ), QVariant() ); // creates an invalid to allow selecting all features
     if ( config( "AllowNull" ).toBool() )
     {
       mComboBox->addItem( tr( "(no selection)" ), QVariant( layer()->fields().at( mFieldIdx ).type() ) );

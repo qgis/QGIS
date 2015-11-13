@@ -37,7 +37,14 @@ void QgsValueMapSearchWidgetWrapper::comboBoxIndexChanged( int idx )
 {
   if ( mComboBox )
   {
-    setExpression( mComboBox->itemData( idx ).toString() );
+    if ( idx == 0 )
+    {
+      clearExpression();
+    }
+    else
+    {
+      setExpression( mComboBox->itemData( idx ).toString() );
+    }
     emit expressionChanged( mExpression );
   }
 }
