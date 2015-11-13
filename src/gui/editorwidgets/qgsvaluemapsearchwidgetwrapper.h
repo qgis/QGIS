@@ -16,24 +16,33 @@
 #ifndef QGSVALUEMAPSEARCHWIDGETWRAPPER_H
 #define QGSVALUEMAPSEARCHWIDGETWRAPPER_H
 
-#include "qgsdefaultsearchwidgetwrapper.h"
+#include "qgssearchwidgetwrapper.h"
 #include <QComboBox>
 
+/**
+ * Wraps a value map search widget. This widget will offer a combobox with values from another layer
+ * referenced by a foreign key (a constraint may be set but is not required on data level).
+ * It will be used as a search widget and produces expression to look for in the layer.
+ */
 
-
-class GUI_EXPORT QgsValueMapSearchWidgetWrapper : public QgsDefaultSearchWidgetWrapper
+class GUI_EXPORT QgsValueMapSearchWidgetWrapper : public QgsSearchWidgetWrapper
 {
     Q_OBJECT
   public:
     explicit QgsValueMapSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent = 0 );
     bool applyDirectly() override;
+    QString expression() override;
+    bool valid() override;
 
   protected:
     QWidget* createWidget( QWidget* parent ) override;
     void initWidget( QWidget* editor ) override;
 
+  protected slots:
+    void setExpression( QString exp ) override;
+
   private slots:
-    void comboBoxIndexChanged( int );
+    void comboBoxIndexChanged( int idx );
 
   private:
     QComboBox * mComboBox;
