@@ -17,6 +17,12 @@
 
 #include "qgswkbtypes.h"
 
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests.
+ * See details in QEP #17
+ ****************************************************************************/
+
 QMap<QgsWKBTypes::Type, QgsWKBTypes::wkbEntry>* QgsWKBTypes::entries()
 {
   static QMap<QgsWKBTypes::Type, QgsWKBTypes::wkbEntry> entries = registerTypes();
@@ -53,6 +59,12 @@ QgsWKBTypes::Type QgsWKBTypes::flatType( Type type )
   return it->mFlatType;
 }
 
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests.
+ * See details in QEP #17
+ ****************************************************************************/
+
 QgsWKBTypes::Type QgsWKBTypes::parseType( const QString &wktStr )
 {
   QString typestr = wktStr.left( wktStr.indexOf( '(' ) ).simplified().remove( ' ' );
@@ -81,6 +93,12 @@ bool QgsWKBTypes::isMultiType( Type type )
   }
   return it->mIsMultiType;
 }
+
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests.
+ * See details in QEP #17
+ ****************************************************************************/
 
 int QgsWKBTypes::wkbDimensions( Type type )
 {
@@ -128,6 +146,12 @@ QString QgsWKBTypes::displayString( Type type )
   }
   return it->mName;
 }
+
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests.
+ * See details in QEP #17
+ ****************************************************************************/
 
 bool QgsWKBTypes::hasZ( Type type )
 {
@@ -189,6 +213,12 @@ QgsWKBTypes::Type QgsWKBTypes::addM( QgsWKBTypes::Type type )
   else
     return ( QgsWKBTypes::Type )( flat + 2000 );
 }
+
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests.
+ * See details in QEP #17
+ ****************************************************************************/
 
 QMap<QgsWKBTypes::Type, QgsWKBTypes::wkbEntry> QgsWKBTypes::registerTypes()
 {

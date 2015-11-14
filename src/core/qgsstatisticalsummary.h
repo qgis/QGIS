@@ -18,6 +18,12 @@
 
 #include <QMap>
 
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests in testqgsstatisticalsummary.cpp.
+ * See details in QEP #17
+ ****************************************************************************/
+
 /** \ingroup core
  * \class QgsStatisticalSummary
  * \brief Calculator for summary statistics for a list of doubles.

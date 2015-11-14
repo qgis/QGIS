@@ -21,6 +21,12 @@
 #include <QMap>
 #include <QString>
 
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests in testqgsstatisticalsummary.cpp.
+ * See details in QEP #17
+ ****************************************************************************/
+
 /** \ingroup core
  * \class QgsWKBTypes
  * \brief Handles storage of information regarding WKB types and their properties.
