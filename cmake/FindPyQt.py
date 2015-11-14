@@ -30,28 +30,45 @@
 # Redistribution and use is allowed according to the terms of the BSD license.
 # For details see the accompanying COPYING-CMAKE-SCRIPTS file.
 
+import argparse
+
+parser = argparse.ArgumentParser(description='Find the PyQt on the system.')
+parser.add_argument('--version', type=int, help='The major pyqt version to find (4 or 5, Default: 4)', default=4)
+
+version = parser.parse_args().version
+
+if version == 4:
+    from PyQt4 import QtCore
+    pyqt_sip_dir = 'PyQt4'
+elif version == 5:
+    from PyQt5 import QtCore
+    pyqt_sip_dir = 'PyQt5'
+else:
+    parser.print_help()
+    exit(1)
+
 try:
-    import PyQt5.pyqtconfig
-    pyqtcfg = PyQt5.pyqtconfig.Configuration()
-except ImportError:
-    import PyQt5.QtCore
     import sipconfig # won't work for SIP v5
     import os.path
     cfg = sipconfig.Configuration()
     sip_dir = cfg.default_sip_dir
-    for p in (os.path.join(sip_dir, "PyQt5"), sip_dir):
+    for p in (os.path.join(sip_dir, pyqt_sip_dir), sip_dir):
         if os.path.exists(os.path.join(p, "QtCore", "QtCoremod.sip")):
             sip_dir = p
             break
     cfg = {
-        'pyqt_version': PyQt5.QtCore.PYQT_VERSION,
-        'pyqt_version_str': PyQt5.QtCore.PYQT_VERSION_STR,
-        'pyqt_sip_flags': PyQt5.QtCore.PYQT_CONFIGURATION['sip_flags'],
+        'pyqt_version': QtCore.PYQT_VERSION,
+        'pyqt_version_str': QtCore.PYQT_VERSION_STR,
+        'pyqt_sip_flags': QtCore.PYQT_CONFIGURATION['sip_flags'],
         'pyqt_mod_dir': cfg.default_mod_dir,
         'pyqt_sip_dir': sip_dir,
         'pyqt_bin_dir': cfg.default_bin_dir,
     }
     pyqtcfg = sipconfig.Configuration([cfg])
+except AttributeError:
+    # Legacy code
+    import PyQt4.pyqtconfig
+    pyqtcfg = PyQt4.pyqtconfig.Configuration()
 
 print("pyqt_version:%06.0x" % pyqtcfg.pyqt_version)
 print("pyqt_version_num:%d" % pyqtcfg.pyqt_version)
