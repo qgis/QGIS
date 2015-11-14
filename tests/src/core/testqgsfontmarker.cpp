@@ -1,6 +1,6 @@
 /***************************************************************************
-     testqgslinefillsymbol.cpp
-     -------------------------
+     testqgsfontmarker.cpp
+     ---------------------
     Date                 : Nov 2015
     Copyright            : (C) 2015 by Nyall Dawson
     Email                : nyall dot dawson at gmail dot com
@@ -30,26 +30,26 @@
 #include <qgsmaplayerregistry.h>
 #include <qgssymbolv2.h>
 #include <qgssinglesymbolrendererv2.h>
-#include <qgsfillsymbollayerv2.h>
-#include "qgslinesymbollayerv2.h"
+#include "qgsmarkersymbollayerv2.h"
 #include "qgsdatadefined.h"
+#include "qgsfontutils.h"
 
 //qgis test includes
 #include "qgsrenderchecker.h"
 
 /** \ingroup UnitTests
- * This is a unit test for line fill symbol types.
+ * This is a unit test for font marker symbol types.
  */
-class TestQgsLineFillSymbol : public QObject
+class TestQgsFontMarkerSymbol : public QObject
 {
     Q_OBJECT
 
   public:
-    TestQgsLineFillSymbol()
+    TestQgsFontMarkerSymbol()
         : mTestHasError( false )
-        , mpPolysLayer( 0 )
-        , mLineFill( 0 )
-        , mFillSymbol( 0 )
+        , mpPointsLayer( 0 )
+        , mFontMarkerLayer( 0 )
+        , mMarkerSymbol( 0 )
         , mSymbolRenderer( 0 )
     {}
 
@@ -59,24 +59,23 @@ class TestQgsLineFillSymbol : public QObject
     void init() {} // will be called before each testfunction is executed.
     void cleanup() {} // will be called after every testfunction.
 
-    void lineFillSymbol();
-    void dataDefinedSubSymbol();
+    void fontMarkerSymbol();
 
   private:
     bool mTestHasError;
 
     bool imageCheck( const QString& theType );
     QgsMapSettings mMapSettings;
-    QgsVectorLayer * mpPolysLayer;
-    QgsLinePatternFillSymbolLayer* mLineFill;
-    QgsFillSymbolV2* mFillSymbol;
+    QgsVectorLayer * mpPointsLayer;
+    QgsFontMarkerSymbolLayerV2* mFontMarkerLayer;
+    QgsMarkerSymbolV2* mMarkerSymbol;
     QgsSingleSymbolRendererV2* mSymbolRenderer;
     QString mTestDataDir;
     QString mReport;
 };
 
 
-void TestQgsLineFillSymbol::initTestCase()
+void TestQgsFontMarkerSymbol::initTestCase()
 {
   mTestHasError = false;
   // init QGIS's paths - true means that all path will be inited from prefix
@@ -91,35 +90,31 @@ void TestQgsLineFillSymbol::initTestCase()
   //
   //create a poly layer that will be used in all tests...
   //
-  QString myPolysFileName = mTestDataDir + "polys.shp";
-  QFileInfo myPolyFileInfo( myPolysFileName );
-  mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(),
-                                     myPolyFileInfo.completeBaseName(), "ogr" );
-
-  QgsVectorSimplifyMethod simplifyMethod;
-  simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
-  mpPolysLayer->setSimplifyMethod( simplifyMethod );
+  QString pointFileName = mTestDataDir + "points.shp";
+  QFileInfo pointFileInfo( pointFileName );
+  mpPointsLayer = new QgsVectorLayer( pointFileInfo.filePath(),
+                                      pointFileInfo.completeBaseName(), "ogr" );
 
   // Register the layer with the registry
   QgsMapLayerRegistry::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpPolysLayer );
+    QList<QgsMapLayer *>() << mpPointsLayer );
 
-  //setup gradient fill
-  mLineFill = new QgsLinePatternFillSymbolLayer();
-  mFillSymbol = new QgsFillSymbolV2();
-  mFillSymbol->changeSymbolLayer( 0, mLineFill );
-  mSymbolRenderer = new QgsSingleSymbolRendererV2( mFillSymbol );
-  mpPolysLayer->setRendererV2( mSymbolRenderer );
+  //setup symbol
+  mFontMarkerLayer = new QgsFontMarkerSymbolLayerV2();
+  mMarkerSymbol = new QgsMarkerSymbolV2();
+  mMarkerSymbol->changeSymbolLayer( 0, mFontMarkerLayer );
+  mSymbolRenderer = new QgsSingleSymbolRendererV2( mMarkerSymbol );
+  mpPointsLayer->setRendererV2( mSymbolRenderer );
 
   // We only need maprender instead of mapcanvas
   // since maprender does not require a qui
   // and is more light weight
   //
-  mMapSettings.setLayers( QStringList() << mpPolysLayer->id() );
-  mReport += "<h1>Line Fill Symbol Tests</h1>\n";
+  mMapSettings.setLayers( QStringList() << mpPointsLayer->id() );
+  mReport += "<h1>Font Marker Tests</h1>\n";
 
 }
-void TestQgsLineFillSymbol::cleanupTestCase()
+void TestQgsFontMarkerSymbol::cleanupTestCase()
 {
   QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
@@ -133,32 +128,16 @@ void TestQgsLineFillSymbol::cleanupTestCase()
   QgsApplication::exitQgis();
 }
 
-void TestQgsLineFillSymbol::lineFillSymbol()
+void TestQgsFontMarkerSymbol::fontMarkerSymbol()
 {
-  mReport += "<h2>Line fill symbol renderer test</h2>\n";
+  mReport += "<h2>Font marker symbol layer test</h2>\n";
 
-  QgsStringMap properties;
-  properties.insert( "color", "0,0,0,255" );
-  properties.insert( "width", "0.3" );
-  properties.insert( "capstyle", "flat" );
-  QgsLineSymbolV2* lineSymbol = QgsLineSymbolV2::createSimple( properties );
-
-  mLineFill->setSubSymbol( lineSymbol );
-  QVERIFY( imageCheck( "symbol_linefill" ) );
-}
-
-void TestQgsLineFillSymbol::dataDefinedSubSymbol()
-{
-  mReport += "<h2>Line fill symbol data defined sub symbol test</h2>\n";
-
-  QgsStringMap properties;
-  properties.insert( "color", "0,0,0,255" );
-  properties.insert( "width", "0.3" );
-  properties.insert( "capstyle", "flat" );
-  QgsLineSymbolV2* lineSymbol = QgsLineSymbolV2::createSimple( properties );
-  lineSymbol->symbolLayer( 0 )->setDataDefinedProperty( "color", new QgsDataDefined( QString( "if(\"Name\" ='Lake','#ff0000','#ff00ff')" ) ) );
-  mLineFill->setSubSymbol( lineSymbol );
-  QVERIFY( imageCheck( "datadefined_subsymbol" ) );
+  mFontMarkerLayer->setColor( Qt::blue );
+  QFont font = QgsFontUtils::getStandardTestFont( "Bold" );
+  mFontMarkerLayer->setFontFamily( font.family() );
+  mFontMarkerLayer->setCharacter( 'A' );
+  mFontMarkerLayer->setSize( 12 );
+  QVERIFY( imageCheck( "fontmarker" ) );
 }
 
 //
@@ -166,14 +145,14 @@ void TestQgsLineFillSymbol::dataDefinedSubSymbol()
 //
 
 
-bool TestQgsLineFillSymbol::imageCheck( const QString& theTestType )
+bool TestQgsFontMarkerSymbol::imageCheck( const QString& theTestType )
 {
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image
-  mMapSettings.setExtent( mpPolysLayer->extent() );
+  mMapSettings.setExtent( mpPointsLayer->extent() );
   mMapSettings.setOutputDpi( 96 );
   QgsRenderChecker myChecker;
-  myChecker.setControlPathPrefix( "symbol_linefill" );
+  myChecker.setControlPathPrefix( "symbol_fontmarker" );
   myChecker.setControlName( "expected_" + theTestType );
   myChecker.setMapSettings( mMapSettings );
   bool myResultFlag = myChecker.runTest( theTestType );
@@ -181,5 +160,5 @@ bool TestQgsLineFillSymbol::imageCheck( const QString& theTestType )
   return myResultFlag;
 }
 
-QTEST_MAIN( TestQgsLineFillSymbol )
-#include "testqgslinefillsymbol.moc"
+QTEST_MAIN( TestQgsFontMarkerSymbol )
+#include "testqgsfontmarker.moc"

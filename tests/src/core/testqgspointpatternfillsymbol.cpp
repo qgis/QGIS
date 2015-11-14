@@ -104,7 +104,7 @@ void TestQgsPointPatternFillSymbol::initTestCase()
   QgsMapLayerRegistry::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mpPolysLayer );
 
-  //setup gradient fill
+  //setup symbol
   mPointPatternFill = new QgsPointPatternFillSymbolLayer();
   mFillSymbol = new QgsFillSymbolV2();
   mFillSymbol->changeSymbolLayer( 0, mPointPatternFill );
@@ -116,7 +116,7 @@ void TestQgsPointPatternFillSymbol::initTestCase()
   // and is more light weight
   //
   mMapSettings.setLayers( QStringList() << mpPolysLayer->id() );
-  mReport += "<h1>Gradient Renderer Tests</h1>\n";
+  mReport += "<h1>Point Pattern Fill Tests</h1>\n";
 
 }
 void TestQgsPointPatternFillSymbol::cleanupTestCase()
