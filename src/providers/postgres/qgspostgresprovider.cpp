@@ -2910,7 +2910,42 @@ bool QgsPostgresProvider::getGeometryDetails()
   }
   else
   {
-    detectedType = mRequestedGeomType == QGis::WKBUnknown ? "" : QgsPostgresConn::postgisWkbTypeName( mRequestedGeomType );
+    sql = QString( "SELECT %1 FROM %2 LIMIT 0" ).arg( quotedIdentifier( mGeometryColumn ), mQuery );
+    result = connectionRO()->PQexec( sql );
+    if ( PGRES_TUPLES_OK == result.PQresultStatus() )
+    {
+      sql = QString( "SELECT (SELECT t.typname FROM pg_type t WHERE oid = %1), upper(postgis_typmod_type(%2)), postgis_typmod_srid(%2)" )
+          .arg(QString::number( result.PQftype( 0 ) ), QString::number( result.PQfmod( 0 ) ) );
+      result = connectionRO()->PQexec( sql );
+      if ( result.PQntuples() == 1 )
+      {
+        geomColType  = result.PQgetvalue( 0, 0 );
+        detectedType = result.PQgetvalue( 0, 1 );
+        detectedSrid = result.PQgetvalue( 0, 2 );
+        if ( geomColType == "geometry" )
+          mSpatialColType = sctGeometry;
+        else if ( geomColType == "geography" )
+          mSpatialColType = sctGeography;
+        else if ( geomColType == "topogeometry" )
+          mSpatialColType = sctTopoGeometry;
+        else if ( geomColType == "pcpatch" )
+          mSpatialColType = sctPcPatch;
+        else {
+          detectedType = mRequestedGeomType == QGis::WKBUnknown ? "" : QgsPostgresConn::postgisWkbTypeName( mRequestedGeomType );
+          detectedSrid = mRequestedSrid;
+        }
+      }
+      else
+      {
+        connectionRO()->PQexecNR( "COMMIT" );
+        detectedType = mRequestedGeomType == QGis::WKBUnknown ? "" : QgsPostgresConn::postgisWkbTypeName( mRequestedGeomType );
+      }
+    }
+    else
+    {
+      mValid = false;
+      return false;
+    }
   }
 
   mDetectedGeomType = QgsPostgresConn::wkbTypeFromPostgis( detectedType );
