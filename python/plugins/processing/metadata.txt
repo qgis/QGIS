@@ -1,11 +1,16 @@
 [general]
 name=Processing
 description=Spatial data processing framework for QGIS
+about=Spatial data processing framework for QGIS
 category=Analysis
-version=2.10.99
+version=2.12.99
 qgisMinimumVersion=2.6
 
 author=Victor Olaya
 email=volayaf@gmail.com
 
 icon=images/alg.png
+
+homepage=http://qgis.org
+tracker=https://hub.qgis.org/projects/quantum-gis/issues
+repository=https://github.com/qgis/QGIS
