@@ -261,7 +261,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     QTextCodec* textEncoding() { return mEncoding; }
 
-    QByteArray quotedIdentifier( QByteArray field );
+    QByteArray quotedIdentifier( QByteArray field ) const;
 
     /**
      * A forced reload invalidates the underlying connection.
@@ -361,4 +361,8 @@ class QgsOgrUtils
     static void setRelevantFields( OGRLayerH ogrLayer, int fieldCount, bool fetchGeometry, const QgsAttributeList &fetchAttributes );
     static OGRLayerH setSubsetString( OGRLayerH layer, OGRDataSourceH ds, QTextCodec* encoding, const QString& subsetString );
     static QByteArray quotedIdentifier( QByteArray field, const QString& ogrDriverName );
+
+    /** Quote a value for placement in a SQL string.
+     */
+    static QString quotedValue( const QVariant& value );
 };
