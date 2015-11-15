@@ -87,7 +87,7 @@ class Cover(FusionAlgorithm):
             FusionUtils.createFileList(files)
             commands.append(FusionUtils.tempFileListFilepath())
         FusionUtils.runFusion(commands, progress)
-        commands = [os.path.join(FusionUtils.FusionPath(), 'DTM2TIF.exe')]
+        commands = [os.path.join(FusionUtils.FusionPath(), 'DTM2ASCII.exe')]
         commands.append(outFile)
         commands.append(self.getOutputValue(self.OUTPUT))
         p = subprocess.Popen(commands, shell=True)
