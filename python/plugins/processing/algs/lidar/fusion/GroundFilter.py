@@ -55,7 +55,7 @@ class GroundFilter(FusionAlgorithm):
         commands = [os.path.join(FusionUtils.FusionPath(), 'GroundFilter.exe')]
         commands.append('/verbose')
         self.addAdvancedModifiersToCommand(commands)
-        outFile = self.getOutputValue(self.OUTPUT) + '.lda'
+        outFile = self.getOutputValue(self.OUTPUT)
         commands.append(unicode(self.getParameterValue(self.CELLSIZE)))
         commands.append(outFile)
         files = self.getParameterValue(self.INPUT).split(';')
@@ -65,8 +65,5 @@ class GroundFilter(FusionAlgorithm):
             FusionUtils.createFileList(files)
             commands.append(FusionUtils.tempFileListFilepath())
         FusionUtils.runFusion(commands, progress)
-        commands = [os.path.join(FusionUtils.FusionPath(), 'LDA2LAS.exe')]
-        commands.append(outFile)
-        commands.append(self.getOutputValue(self.OUTPUT))
         p = subprocess.Popen(commands, shell=True)
         p.wait()
