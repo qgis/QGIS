@@ -50,7 +50,7 @@ class FilterData(FusionAlgorithm):
         self.addParameter(ParameterNumber(
             self.VALUE, self.tr('Standard Deviation multiplier')))
         self.addParameter(ParameterNumber(
-            self.VALUE, self.tr('Window size'), None, None, 10))
+            self.WINDOWSIZE, self.tr('Window size'), None, None, 10))
         self.addOutput(OutputFile(
             self.OUTPUT, self.tr('Output filtered LAS file')))
         self.addAdvancedModifiers()
@@ -62,7 +62,7 @@ class FilterData(FusionAlgorithm):
         commands.append('outlier')
         commands.append(unicode(self.getParameterValue(self.VALUE)))
         commands.append(unicode(self.getParameterValue(self.WINDOWSIZE)))
-        outFile = self.getOutputValue(self.OUTPUT) + '.lda'
+        outFile = self.getOutputValue(self.OUTPUT)
         commands.append(outFile)
         files = self.getParameterValue(self.INPUT).split(';')
         if len(files) == 1:
@@ -71,8 +71,5 @@ class FilterData(FusionAlgorithm):
             FusionUtils.createFileList(files)
             commands.append(FusionUtils.tempFileListFilepath())
         FusionUtils.runFusion(commands, progress)
-        commands = [os.path.join(FusionUtils.FusionPath(), 'LDA2LAS.exe')]
-        commands.append(outFile)
-        commands.append(self.getOutputValue(self.OUTPUT))
         p = subprocess.Popen(commands, shell=True)
         p.wait()
