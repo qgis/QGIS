@@ -59,9 +59,16 @@ QgsOgrExpressionCompiler::Result QgsOgrExpressionCompiler::compile( const QgsExp
       const QgsExpression::NodeBinaryOperator* n = static_cast<const QgsExpression::NodeBinaryOperator*>( node );
 
       QString op;
+      bool partialCompilation = false;
       switch ( n->op() )
       {
         case QgsExpression::boEQ:
+          if ( n->opLeft()->nodeType() == QgsExpression::ntColumnRef && n->opRight()->nodeType() == QgsExpression::ntColumnRef )
+          {
+            // equality between column refs results in a partial compilation, since OGR will case-insensitive match strings
+            // in columns
+            partialCompilation = true;
+          }
           op = "=";
           break;
 
@@ -118,8 +125,17 @@ QgsOgrExpressionCompiler::Result QgsOgrExpressionCompiler::compile( const QgsExp
           break;
 
         case QgsExpression::boMul:
+          op = "*";
+          break;
+
         case QgsExpression::boPlus:
+          op = "+";
+          break;
+
         case QgsExpression::boMinus:
+          op = "-";
+          break;
+
         case QgsExpression::boDiv:
         case QgsExpression::boMod:
         case QgsExpression::boConcat:
@@ -140,7 +156,7 @@ QgsOgrExpressionCompiler::Result QgsOgrExpressionCompiler::compile( const QgsExp
 
       result = left + ' ' + op + ' ' + right;
       if ( lr == Complete && rr == Complete )
-        return Complete;
+        return ( partialCompilation ? Partial : Complete );
       else if (( lr == Partial && rr == Complete ) || ( lr == Complete && rr == Partial ) || ( lr == Partial && rr == Partial ) )
         return Partial;
       else

@@ -53,10 +53,14 @@ class ProviderTestCase(object):
         self.assert_query(provider, 'pk IN (1, 2, 4, 8)', [1, 2, 4])
         self.assert_query(provider, 'cnt = 50 * 2', [1])
         self.assert_query(provider, 'cnt = 99 + 1', [1])
+        self.assert_query(provider, 'cnt = 101 - 1', [1])
+        self.assert_query(provider, 'cnt - 1 = 99', [1])
+        self.assert_query(provider, 'cnt + 1 = 101', [1])
         self.assert_query(provider, 'cnt = 1100 % 1000', [1])
         self.assert_query(provider, '"name" || \' \' || "cnt" = \'Orange 100\'', [1])
         self.assert_query(provider, 'cnt = 10 ^ 2', [1])
         self.assert_query(provider, '"name" ~ \'[OP]ra[gne]+\'', [1])
+        self.assert_query(provider, '"name"="name2"', [2, 4])  # mix of matched and non-matched case sensitive names
         self.assert_query(provider, 'true', [1, 2, 3, 4, 5])
 
     def testGetFeaturesUncompiled(self):

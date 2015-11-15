@@ -93,9 +93,11 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource* source, bool 
     if ( result == QgsOgrExpressionCompiler::Complete || result == QgsOgrExpressionCompiler::Partial )
     {
       QString whereClause = compiler.result();
-      OGR_L_SetAttributeFilter( ogrLayer, whereClause.toLocal8Bit().data() );
-      //if only partial success when compiling expression, we need to double-check results using QGIS' expressions
-      mExpressionCompiled = ( result == QgsOgrExpressionCompiler::Complete );
+      if ( OGR_L_SetAttributeFilter( ogrLayer, whereClause.toLocal8Bit().data() ) == OGRERR_NONE )
+      {
+        //if only partial success when compiling expression, we need to double-check results using QGIS' expressions
+        mExpressionCompiled = ( result == QgsOgrExpressionCompiler::Complete );
+      }
     }
     else
     {
