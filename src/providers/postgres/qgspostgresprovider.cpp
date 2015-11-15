@@ -2915,7 +2915,7 @@ bool QgsPostgresProvider::getGeometryDetails()
     if ( PGRES_TUPLES_OK == result.PQresultStatus() )
     {
       sql = QString( "SELECT (SELECT t.typname FROM pg_type t WHERE oid = %1), upper(postgis_typmod_type(%2)), postgis_typmod_srid(%2)" )
-          .arg(QString::number( result.PQftype( 0 ) ), QString::number( result.PQfmod( 0 ) ) );
+            .arg( QString::number( result.PQftype( 0 ) ), QString::number( result.PQfmod( 0 ) ) );
       result = connectionRO()->PQexec( sql );
       if ( result.PQntuples() == 1 )
       {
@@ -2930,7 +2930,8 @@ bool QgsPostgresProvider::getGeometryDetails()
           mSpatialColType = sctTopoGeometry;
         else if ( geomColType == "pcpatch" )
           mSpatialColType = sctPcPatch;
-        else {
+        else
+        {
           detectedType = mRequestedGeomType == QGis::WKBUnknown ? "" : QgsPostgresConn::postgisWkbTypeName( mRequestedGeomType );
           detectedSrid = mRequestedSrid;
         }
