@@ -1242,7 +1242,7 @@ void QgsWMSProjectParser::addOWSLayers( QDomDocument &doc,
                                         const QStringList &nonIdentifiableLayers,
                                         const QString& strHref,
                                         QgsRectangle& combinedBBox,
-                                        QString strGroup ) const
+                                        const QString& strGroup ) const
 {
   const QgsCoordinateReferenceSystem& projectCrs = mProjectParser->projectCRS();
   QDomNodeList legendChildren = legendElem.childNodes();

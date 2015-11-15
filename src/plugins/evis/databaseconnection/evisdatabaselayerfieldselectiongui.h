@@ -53,6 +53,6 @@ class eVisDatabaseLayerFieldSelectionGui : public QDialog, private Ui::eVisDatab
 
   signals:
     /** \brief Signal emitted when the user has entered the layername, selected the field names, and pressed the accept button */
-    void eVisDatabaseLayerFieldsSelected( QString, QString, QString );
+    void eVisDatabaseLayerFieldsSelected( const QString&, const QString&, const QString& );
 };
 #endif

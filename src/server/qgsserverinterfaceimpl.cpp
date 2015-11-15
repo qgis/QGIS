@@ -49,7 +49,7 @@ void QgsServerInterfaceImpl::setRequestHandler( QgsRequestHandler * requestHandl
   mRequestHandler = requestHandler;
 }
 
-void QgsServerInterfaceImpl::setConfigFilePath( QString configFilePath )
+void QgsServerInterfaceImpl::setConfigFilePath( const QString& configFilePath )
 {
   mConfigFilePath = configFilePath;
 }

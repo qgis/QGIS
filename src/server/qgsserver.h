@@ -69,7 +69,7 @@ class SERVER_EXPORT QgsServer
      * @param queryString optional QString containing the query string
      * @return the response headers and body QPair of QByteArray if called from python bindings, empty otherwise
      */
-    QPair<QByteArray, QByteArray> handleRequest( const QString queryString = QString( ) );
+    QPair<QByteArray, QByteArray> handleRequest( const QString& queryString = QString( ) );
     /* The following code was used to test type conversion in python bindings
     QPair<QByteArray, QByteArray> testQPair( QPair<QByteArray, QByteArray> pair );
     */

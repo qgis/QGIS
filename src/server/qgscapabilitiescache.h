@@ -32,9 +32,9 @@ class SERVER_EXPORT QgsCapabilitiesCache : public QObject
     ~QgsCapabilitiesCache();
 
     /** Returns cached capabilities document (or 0 if document for configuration file not in cache)*/
-    const QDomDocument* searchCapabilitiesDocument( QString configFilePath, QString version );
+    const QDomDocument* searchCapabilitiesDocument( const QString& configFilePath, const QString& version );
     /** Inserts new capabilities document (creates a copy of the document, does not take ownership)*/
-    void insertCapabilitiesDocument( QString configFilePath, QString version, const QDomDocument* doc );
+    void insertCapabilitiesDocument( const QString& configFilePath, const QString& version, const QDomDocument* doc );
 
   private:
     QHash< QString, QHash< QString, QDomDocument > > mCachedCapabilities;

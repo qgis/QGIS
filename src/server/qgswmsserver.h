@@ -100,7 +100,7 @@ class QgsWMSServer: public QgsOWSServer
 
     /** Creates an xml document that describes the result of the getFeatureInfo request.
        @return 0 in case of success*/
-    int getFeatureInfo( QDomDocument& result, QString version = "1.3.0" );
+    int getFeatureInfo( QDomDocument& result, const QString& version = "1.3.0" );
 
     /** Sets configuration parser for administration settings. Does not take ownership*/
     void setAdminConfigParser( QgsWMSConfigParser* parser ) { mConfigParser = parser; }
@@ -147,16 +147,16 @@ class QgsWMSServer: public QgsOWSServer
                                     QDomElement& layerElement,
                                     QgsMapRenderer* mapRender,
                                     QgsRenderContext& renderContext,
-                                    QString version,
-                                    QString infoFormat,
+                                    const QString& version,
+                                    const QString& infoFormat,
                                     QgsRectangle* featureBBox = 0 ) const;
     /** Appends feature info xml for the layer to the layer element of the dom document*/
     int featureInfoFromRasterLayer( QgsRasterLayer* layer,
                                     const QgsPoint* infoPoint,
                                     QDomDocument& infoDocument,
                                     QDomElement& layerElement,
-                                    QString version,
-                                    QString infoFormat ) const;
+                                    const QString& version,
+                                    const QString& infoFormat ) const;
 
     /** Creates a layer set and returns a stringlist with layer ids that can be passed to a QgsMapRenderer. Usually used in conjunction with readLayersAndStyles
        @param scaleDenominator Filter out layer if scale based visibility does not match (or use -1 if no scale restriction)*/
@@ -236,14 +236,13 @@ class QgsWMSServer: public QgsOWSServer
     bool mDrawLegendLayerLabel;
     bool mDrawLegendItemLabel;
 
-    QDomElement createFeatureGML(
-      QgsFeature* feat,
-      QgsVectorLayer* layer,
-      QDomDocument& doc,
-      QgsCoordinateReferenceSystem& crs,
-      QString typeName,
-      bool withGeom,
-      int version ) const;
+    QDomElement createFeatureGML( QgsFeature* feat,
+                                  QgsVectorLayer* layer,
+                                  QDomDocument& doc,
+                                  QgsCoordinateReferenceSystem& crs,
+                                  const QString& typeName,
+                                  bool withGeom,
+                                  int version ) const;
 
     /** Replaces attribute value with ValueRelation or ValueRelation if defined. Otherwise returns the original value*/
     static QString replaceValueMapAndRelation( QgsVectorLayer* vl, int idx, const QString& attributeVal );

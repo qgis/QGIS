@@ -28,7 +28,7 @@ QgsCapabilitiesCache::~QgsCapabilitiesCache()
 {
 }
 
-const QDomDocument* QgsCapabilitiesCache::searchCapabilitiesDocument( QString configFilePath, QString version )
+const QDomDocument* QgsCapabilitiesCache::searchCapabilitiesDocument( const QString& configFilePath, const QString& version )
 {
   QCoreApplication::processEvents(); //get updates from file system watcher
 
@@ -42,7 +42,7 @@ const QDomDocument* QgsCapabilitiesCache::searchCapabilitiesDocument( QString co
   }
 }
 
-void QgsCapabilitiesCache::insertCapabilitiesDocument( QString configFilePath, QString version, const QDomDocument* doc )
+void QgsCapabilitiesCache::insertCapabilitiesDocument( const QString& configFilePath, const QString& version, const QDomDocument* doc )
 {
   if ( mCachedCapabilities.size() > 40 )
   {

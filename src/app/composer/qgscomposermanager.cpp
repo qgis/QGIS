@@ -120,7 +120,7 @@ void QgsComposerManager::refreshComposers()
   }
 }
 
-void QgsComposerManager::addTemplates( QMap<QString, QString> templates )
+void QgsComposerManager::addTemplates( const QMap<QString, QString>& templates )
 {
   if ( templates.size() > 0 )
   {
@@ -152,7 +152,7 @@ QMap<QString, QString> QgsComposerManager::otherTemplates() const
 {
   QMap<QString, QString> templateMap;
   QStringList paths = QgsApplication::composerTemplatePaths();
-  Q_FOREACH ( QString path, paths )
+  Q_FOREACH ( const QString& path, paths )
   {
     QMap<QString, QString> templates = templatesFromPath( path );
     QMap<QString, QString>::const_iterator templateIt = templates.constBegin();
@@ -165,7 +165,7 @@ QMap<QString, QString> QgsComposerManager::otherTemplates() const
 }
 
 
-QMap<QString, QString> QgsComposerManager::templatesFromPath( QString path ) const
+QMap<QString, QString> QgsComposerManager::templatesFromPath( const QString& path ) const
 {
   QMap<QString, QString> templateMap;
 

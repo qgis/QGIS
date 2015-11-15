@@ -95,7 +95,7 @@ class QgsWMSServer: public QgsOWSServer
 
     /** Creates an xml document that describes the result of the getFeatureInfo request.
        @return 0 in case of success*/
-    int getFeatureInfo( QDomDocument& result, QString version = "1.3.0" );
+    int getFeatureInfo( QDomDocument& result, const QString& version = "1.3.0" );
 
     /** Sets configuration parser for administration settings. Does not take ownership*/
     void setAdminConfigParser( QgsWMSConfigParser* parser ) { mConfigParser = parser; }

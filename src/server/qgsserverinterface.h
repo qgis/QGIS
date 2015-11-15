@@ -99,7 +99,7 @@ class SERVER_EXPORT QgsServerInterface
      * Set the configuration file path
      * @param configFilePath QString with the configuration file path
      */
-    virtual void setConfigFilePath( QString configFilePath ) = 0;
+    virtual void setConfigFilePath( const QString& configFilePath ) = 0;
 
   private:
     QString mConfigFilePath;

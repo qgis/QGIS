@@ -36,7 +36,7 @@ class QgsServerLogger: public QObject
     //QString logFile() const { return mLogFile; }
 
   public slots:
-    void logMessage( QString message, QString tag, QgsMessageLog::MessageLevel level );
+    void logMessage( const QString& message, const QString& tag, QgsMessageLog::MessageLevel level );
 
   protected:
     QgsServerLogger();

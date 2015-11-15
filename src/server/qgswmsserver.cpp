@@ -1403,7 +1403,7 @@ void QgsWMSServer::getMapAsDxf()
   d.close();
 }
 
-int QgsWMSServer::getFeatureInfo( QDomDocument& result, QString version )
+int QgsWMSServer::getFeatureInfo( QDomDocument& result, const QString& version )
 {
   if ( !mMapRenderer || !mConfigParser )
   {
@@ -2016,8 +2016,8 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
     QDomElement& layerElement,
     QgsMapRenderer* mapRender,
     QgsRenderContext& renderContext,
-    QString version,
-    QString infoFormat,
+    const QString& version,
+    const QString& infoFormat,
     QgsRectangle* featureBBox ) const
 {
   if ( !layer || !mapRender )
@@ -2205,8 +2205,8 @@ int QgsWMSServer::featureInfoFromRasterLayer( QgsRasterLayer* layer,
     const QgsPoint* infoPoint,
     QDomDocument& infoDocument,
     QDomElement& layerElement,
-    QString version,
-    QString infoFormat ) const
+    const QString& version,
+    const QString& infoFormat ) const
 {
   Q_UNUSED( version );
 
@@ -2984,7 +2984,7 @@ QDomElement QgsWMSServer::createFeatureGML(
   QgsVectorLayer* layer,
   QDomDocument& doc,
   QgsCoordinateReferenceSystem& crs,
-  QString typeName,
+  const QString& typeName,
   bool withGeom,
   int version ) const
 {

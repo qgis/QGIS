@@ -422,7 +422,7 @@ bool QgsServer::init( int & argc, char ** argv )
  * @param queryString
  * @return response headers and body
  */
-QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString queryString /*= QString( )*/ )
+QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryString /*= QString( )*/ )
 {
   // Run init if handleRequest was called without previously initialising
   // the server

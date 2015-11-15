@@ -59,7 +59,7 @@ class QgsServerInterface
      * available after requestReady has been called.*/
     virtual QString configFilePath( ) = 0;
     /** Set the config file path */
-    virtual void setConfigFilePath( QString configFilePath) = 0;
+    virtual void setConfigFilePath( const QString& configFilePath) = 0;
 
 private:
     /** Constructor */

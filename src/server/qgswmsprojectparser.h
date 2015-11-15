@@ -145,7 +145,7 @@ class SERVER_EXPORT QgsWMSProjectParser : public QgsWMSConfigParser
 
     void addOWSLayers( QDomDocument &doc, QDomElement &parentElem, const QDomElement &legendElem,
                        const QMap<QString, QgsMapLayer *> &layerMap, const QStringList &nonIdentifiableLayers,
-                       const QString& strHref, QgsRectangle& combinedBBox, QString strGroup ) const;
+                       const QString& strHref, QgsRectangle& combinedBBox, const QString& strGroup ) const;
 
     /** Adds layers from a legend group to list (could be embedded or a normal group)*/
     void addLayersFromGroup( const QDomElement& legendGroupElem, QMap< int, QgsMapLayer*>& layers, bool useCache = true ) const;
