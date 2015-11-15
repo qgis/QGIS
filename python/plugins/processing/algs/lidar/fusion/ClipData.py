@@ -55,7 +55,7 @@ class ClipData(FusionAlgorithm):
         self.addAdvancedModifiers()
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(FusionUtils.FusionPath(), 'FilterData.exe')]
+        commands = [os.path.join(FusionUtils.FusionPath(), 'ClipData.exe')]
         commands.append('/verbose')
         self.addAdvancedModifiersToCommand(commands)
         commands.append('/shape:' + unicode(self.getParameterValue(self.SHAPE)))
@@ -65,7 +65,7 @@ class ClipData(FusionAlgorithm):
         else:
             FusionUtils.createFileList(files)
             commands.append(FusionUtils.tempFileListFilepath())
-        outFile = self.getOutputValue(self.OUTPUT) + '.lda'
+        outFile = self.getOutputValue(self.OUTPUT)
         commands.append(outFile)
         extent = unicode(self.getParameterValue(self.EXTENT)).split(',')
         commands.append(extent[0])
@@ -73,8 +73,5 @@ class ClipData(FusionAlgorithm):
         commands.append(extent[1])
         commands.append(extent[3])
         FusionUtils.runFusion(commands, progress)
-        commands = [os.path.join(FusionUtils.FusionPath(), 'LDA2LAS.exe')]
-        commands.append(outFile)
-        commands.append(self.getOutputValue(self.OUTPUT))
         p = subprocess.Popen(commands, shell=True)
         p.wait()
