@@ -212,6 +212,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   mToggleEditingButton->blockSignals( false );
 
   mSaveEditsButton->setEnabled( mToggleEditingButton->isEnabled() && mLayer->isEditable() );
+  mReloadButton->setEnabled( ! mLayer->isEditable() );
   mAddAttribute->setEnabled(( canChangeAttributes || canAddAttributes ) && mLayer->isEditable() );
   mDeleteSelectedButton->setEnabled( canDeleteFeatures && mLayer->isEditable() );
   mAddFeature->setEnabled( canAddFeatures && mLayer->isEditable() );
@@ -580,6 +581,11 @@ void QgsAttributeTableDialog::on_mSaveEditsButton_clicked()
   QgisApp::instance()->saveEdits( mLayer, true, true );
 }
 
+void QgsAttributeTableDialog::on_mReloadButton_clicked()
+{
+  mMainView->masterModel()->layer()->dataProvider()->forceReload();
+}
+
 void QgsAttributeTableDialog::on_mAddFeature_clicked()
 {
   if ( !mLayer->isEditable() )
@@ -659,6 +665,7 @@ void QgsAttributeTableDialog::editingToggled()
   mToggleEditingButton->blockSignals( true );
   mToggleEditingButton->setChecked( mLayer->isEditable() );
   mSaveEditsButton->setEnabled( mLayer->isEditable() );
+  mReloadButton->setEnabled( ! mLayer->isEditable() );
   mToggleEditingButton->blockSignals( false );
 
   bool canChangeAttributes = mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues;
