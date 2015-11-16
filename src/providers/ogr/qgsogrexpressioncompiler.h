@@ -18,30 +18,24 @@
 
 #include "qgsexpression.h"
 #include "qgsogrfeatureiterator.h"
+#include "qgssqlexpressioncompiler.h"
 
-class QgsOgrExpressionCompiler
+class QgsOgrExpressionCompiler : public QgsSqlExpressionCompiler
 {
   public:
-    enum Result
-    {
-      None,
-      Complete,
-      Partial,
-      Fail
-    };
 
     explicit QgsOgrExpressionCompiler( QgsOgrFeatureSource* source );
-    ~QgsOgrExpressionCompiler();
 
-    Result compile( const QgsExpression* exp );
+    Result compile( const QgsExpression* exp ) override;
 
-    const QString& result() { return mResult; }
+  protected:
+
+    Result compile( const QgsExpression::Node* node, QString& str ) override;
+    virtual QString quotedIdentifier( const QString& identifier ) override;
+    virtual QString quotedValue( const QVariant& value ) override;
 
   private:
-    Result compile( const QgsExpression::Node* node, QString& str );
 
-  private:
-    QString mResult;
     QgsOgrFeatureSource* mSource;
 };
 
