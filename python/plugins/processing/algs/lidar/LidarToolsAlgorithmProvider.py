@@ -129,6 +129,7 @@ from fusion.TinSurfaceCreate import TinSurfaceCreate
 from fusion.Csv2Grid import Csv2Grid
 from fusion.GroundFilter import GroundFilter
 from fusion.MergeData import MergeData
+from fusion.PolyClipData import PolyClipData
 from fusion.FilterData import FilterData
 from fusion.PolyClipData import PolyClipData
 from fusion.FusionUtils import FusionUtils
