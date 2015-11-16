@@ -2363,7 +2363,8 @@ const QList<QSslCertificate> QgsAuthManager::getSystemRootCAs()
 #ifndef Q_OS_MAC
   return QSslSocket::systemCaCertificates();
 #else
-  return QNetworkRequest::sslConfiguration().caCertificates();
+  QNetworkRequest req;
+  return req.sslConfiguration().caCertificates();
 #endif
 }
 
