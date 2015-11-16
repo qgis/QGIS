@@ -62,6 +62,28 @@ class ProviderTestCase(object):
         self.assert_query(provider, '"name" ~ \'[OP]ra[gne]+\'', [1])
         self.assert_query(provider, '"name"="name2"', [2, 4])  # mix of matched and non-matched case sensitive names
         self.assert_query(provider, 'true', [1, 2, 3, 4, 5])
+        #Three value logic
+        self.assert_query(provider, 'false and false', [])
+        self.assert_query(provider, 'false and true', [])
+        self.assert_query(provider, 'false and NULL', [])
+        self.assert_query(provider, 'true and false', [])
+        self.assert_query(provider, 'true and true', [1, 2, 3, 4, 5])
+        self.assert_query(provider, 'true and NULL', [])
+        self.assert_query(provider, 'NULL and false', [])
+        self.assert_query(provider, 'NULL and true', [])
+        self.assert_query(provider, 'NULL and NULL', [])
+        self.assert_query(provider, 'false or false', [])
+        self.assert_query(provider, 'false or true', [1, 2, 3, 4, 5])
+        self.assert_query(provider, 'false or NULL', [])
+        self.assert_query(provider, 'true or false', [1, 2, 3, 4, 5])
+        self.assert_query(provider, 'true or true', [1, 2, 3, 4, 5])
+        self.assert_query(provider, 'true or NULL', [1, 2, 3, 4, 5])
+        self.assert_query(provider, 'NULL or false', [])
+        self.assert_query(provider, 'NULL or true', [1, 2, 3, 4, 5])
+        self.assert_query(provider, 'NULL or NULL', [])
+        self.assert_query(provider, 'not true', [])
+        self.assert_query(provider, 'not false', [1, 2, 3, 4, 5])
+        self.assert_query(provider, 'not null', [])
 
     def testGetFeaturesUncompiled(self):
         try:
