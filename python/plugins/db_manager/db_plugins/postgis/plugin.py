@@ -79,8 +79,8 @@ class PostGisDBPlugin(DBPlugin):
 
         uri = QgsDataSourceURI()
 
-        settingsList = ["service", "host", "port", "database", "username", "password"]
-        service, host, port, database, username, password = map(lambda x: settings.value(x, "", type=str), settingsList)
+        settingsList = ["service", "host", "port", "database", "username", "password", "authcfg"]
+        service, host, port, database, username, password, authcfg = map(lambda x: settings.value(x, "", type=str), settingsList)
 
         useEstimatedMetadata = settings.value("estimatedMetadata", False, type=bool)
         sslmode = settings.value("sslmode", QgsDataSourceURI.SSLprefer, type=int)
@@ -88,9 +88,9 @@ class PostGisDBPlugin(DBPlugin):
         settings.endGroup()
 
         if service:
-            uri.setConnection(service, database, username, password, sslmode)
+            uri.setConnection(service, database, username, password, sslmode, authcfg)
         else:
-            uri.setConnection(host, port, database, username, password, sslmode)
+            uri.setConnection(host, port, database, username, password, sslmode, authcfg)
 
         uri.setUseEstimatedMetadata(useEstimatedMetadata)
 

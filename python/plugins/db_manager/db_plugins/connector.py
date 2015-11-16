@@ -38,10 +38,10 @@ class DBConnector:
         self.connection = None
 
     def uri(self):
-        return QgsDataSourceURI(self._uri.uri())
+        return QgsDataSourceURI(self._uri.uri(False))
 
     def publicUri(self):
-        publicUri = QgsDataSourceURI.removePassword(self._uri.uri())
+        publicUri = QgsDataSourceURI.removePassword(self._uri.uri(False))
         return QgsDataSourceURI(publicUri)
 
     def hasSpatialSupport(self):
