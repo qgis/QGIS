@@ -399,7 +399,13 @@ QString QgsPythonUtilsImpl::getTraceback()
     TRACEBACK_FETCH_ERROR( "getvalue() failed." );
 
   /* And it should be a string all ready to go - duplicate it. */
-  if ( !PyUnicode_Check( obResult ) )
+  if ( !
+#ifdef PYTHON2
+       PyString_Check( obResult )
+#else
+       PyUnicode_Check( obResult )
+#endif
+     )
     TRACEBACK_FETCH_ERROR( "getvalue() did not return a string" );
 
   result = PYOBJ2QSTRING( obResult );
@@ -506,7 +512,16 @@ QString QgsPythonUtilsImpl::PyObjectToQString( PyObject* obj )
   // check whether the object is already a unicode string
   if ( PyUnicode_Check( obj ) )
   {
+#ifdef PYTHON2
+    PyObject* utf8 = PyUnicode_AsUTF8String( obj );
+    if ( utf8 )
+      result = QString::fromUtf8( PyString_AS_STRING( utf8 ) );
+    else
+      result = "(qgis error)";
+    Py_XDECREF( utf8 );
+#else
     result = PYOBJ2QSTRING( obj );
+#endif
     return result;
   }
 
