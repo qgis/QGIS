@@ -156,7 +156,9 @@ void TestQgsStatisticSummary::individualStatCalculations()
   QgsStatisticalSummary::Statistic stat = ( QgsStatisticalSummary::Statistic ) statInt;
   QFETCH( double, expected );
 
-  QgsStatisticalSummary s;
+  //start with a summary which calculates NO statistics
+  QgsStatisticalSummary s( QgsStatisticalSummary::Statistics( 0 ) );
+  //set it to calculate just a single statistic
   s.setStatistics( stat );
   QCOMPARE( s.statistics(), stat );
 
