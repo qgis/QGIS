@@ -29,6 +29,24 @@ QgsOgrExpressionCompiler::~QgsOgrExpressionCompiler()
 
 QgsOgrExpressionCompiler::Result QgsOgrExpressionCompiler::compile( const QgsExpression* exp )
 {
+  //for certain driver types, OGR forwards SQL through to the underlying provider. In these cases
+  //the syntax may differ from OGR SQL, so we don't support compilation for these drivers
+  //see http://www.gdal.org/ogr_sql.html
+  if ( mSource->mDriverName == "MySQL" )
+    return Fail;
+  else if ( mSource->mDriverName == "PostgreSQL" )
+    return Fail;
+  else if ( mSource->mDriverName == "OCI" )
+    return Fail;
+  else if ( mSource->mDriverName == "SQLite" )
+    return Fail;
+  else if ( mSource->mDriverName == "ODBC" )
+    return Fail;
+  else if ( mSource->mDriverName == "PGeo" )
+    return Fail;
+  else if ( mSource->mDriverName == "MSSQLSpatial" )
+    return Fail;
+
   if ( exp->rootNode() )
     return compile( exp->rootNode(), mResult );
   else
