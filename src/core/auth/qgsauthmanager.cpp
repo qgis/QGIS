@@ -2360,8 +2360,11 @@ bool QgsAuthManager::removeCertAuthority( const QSslCertificate& cert )
 
 const QList<QSslCertificate> QgsAuthManager::getSystemRootCAs()
 {
-  QNetworkRequest req;
-  return req.sslConfiguration().caCertificates();
+#ifndef Q_OS_MAC
+  return QSslSocket::systemCaCertificates();
+#else
+  return QNetworkRequest::sslConfiguration().caCertificates();
+#endif
 }
 
 const QList<QSslCertificate> QgsAuthManager::getExtraFileCAs()
