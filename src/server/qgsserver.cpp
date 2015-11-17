@@ -53,9 +53,9 @@
 
 // Static initialisers, default values for fcgi server
 QgsApplication* QgsServer::mQgsApplication = NULL;
-bool QgsServer::mInitialised = FALSE;
+bool QgsServer::mInitialised = false;
 QString QgsServer::mServerName( "qgis_server" );
-bool QgsServer::mCaptureOutput = FALSE;
+bool QgsServer::mCaptureOutput = false;
 char* QgsServer::mArgv[1];
 int QgsServer::mArgc = 1;
 QString QgsServer::mConfigFilePath;
@@ -63,7 +63,7 @@ QgsMapRenderer* QgsServer::mMapRenderer = NULL;
 QgsCapabilitiesCache* QgsServer::mCapabilitiesCache;
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-bool QgsServer::mInitPython = TRUE;
+bool QgsServer::mInitPython = true;
 QgsServerInterfaceImpl* QgsServer::mServerInterface = NULL;
 #endif
 
@@ -108,7 +108,7 @@ void QgsServer::setupNetworkAccessManager()
  * @param captureOutput
  * @return request instance
  */
-QgsRequestHandler* QgsServer::createRequestHandler( const bool captureOutput /*= FALSE*/ )
+QgsRequestHandler* QgsServer::createRequestHandler( const bool captureOutput /*= false*/ )
 {
   QgsRequestHandler* requestHandler = 0;
   char* requestMethod = getenv( "REQUEST_METHOD" );
@@ -289,13 +289,13 @@ bool QgsServer::init()
 {
   if ( mInitialised )
   {
-    return FALSE;
+    return false;
   }
   mArgv[0] = mServerName.toUtf8( ).data( );
   mArgc = 1;
-  mCaptureOutput = TRUE;
+  mCaptureOutput = true;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-  mInitPython = FALSE;
+  mInitPython = false;
 #endif
   return init( mArgc , mArgv );
 }
@@ -308,7 +308,7 @@ bool QgsServer::init( int & argc, char ** argv )
 {
   if ( mInitialised )
   {
-    return FALSE;
+    return false;
   }
 
 #ifndef _MSC_VER
@@ -333,7 +333,7 @@ bool QgsServer::init( int & argc, char ** argv )
   QgsApplication::init();
 #if !defined(Q_OS_WIN)
   // init QGIS's paths - true means that all path will be inited from prefix
-  QgsApplication::setPrefixPath( CMAKE_INSTALL_PREFIX, TRUE );
+  QgsApplication::setPrefixPath( CMAKE_INSTALL_PREFIX, true );
 #endif
 
 #if defined(SERVER_SKIP_ECW)
@@ -410,9 +410,9 @@ bool QgsServer::init( int & argc, char ** argv )
   QgsServerLogger::instance();
 
   QgsEditorWidgetRegistry::initEditors();
-  mInitialised = TRUE;
+  mInitialised = true;
   QgsMessageLog::logMessage( "Server intialised", "Server", QgsMessageLog::INFO );
-  return TRUE;
+  return true;
 }
 
 

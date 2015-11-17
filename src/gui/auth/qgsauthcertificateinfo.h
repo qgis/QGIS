@@ -18,6 +18,8 @@
 #ifndef QGSAUTHCERTIFICATEINFO_H
 #define QGSAUTHCERTIFICATEINFO_H
 
+#include <QFile>
+
 #ifndef QT_NO_OPENSSL
 #include <QtCrypto>
 #include <QSslCertificate>

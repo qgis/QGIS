@@ -27,9 +27,9 @@ IF(EXISTS PYQT5_VERSION)
   SET(PYQT5_FOUND TRUE)
 ELSE(EXISTS PYQT5_VERSION)
 
-  FIND_FILE(_find_pyqt_py FindPyQt.py --version=5 PATHS ${CMAKE_MODULE_PATH})
+  FIND_FILE(_find_pyqt_py FindPyQt.py PATHS ${CMAKE_MODULE_PATH})
 
-  EXECUTE_PROCESS(COMMAND ${PYTHON_EXECUTABLE} ${_find_pyqt_py} OUTPUT_VARIABLE pyqt_config)
+  EXECUTE_PROCESS(COMMAND ${PYTHON_EXECUTABLE} ${_find_pyqt_py} --version=5 OUTPUT_VARIABLE pyqt_config)
   IF(pyqt_config)
     STRING(REGEX REPLACE "^pyqt_version:([^\n]+).*$" "\\1" PYQT5_VERSION ${pyqt_config})
     STRING(REGEX REPLACE ".*\npyqt_version_str:([^\n]+).*$" "\\1" PYQT5_VERSION_STR ${pyqt_config})

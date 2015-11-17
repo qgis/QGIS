@@ -733,7 +733,7 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
       NULL,
       myGdalMemDataset,
       NULL,
-      FALSE, 0.0, 1
+      false, 0.0, 1
     );
 #if 0
   myWarpOptions->pTransformerArg =
@@ -845,7 +845,7 @@ void QgsGdalProvider::computeMinMax( int theBandNo ) const
   adfMinMax[1] = GDALGetRasterMaximum( myGdalBand, &bGotMax );
   if ( !( bGotMin && bGotMax ) )
   {
-    GDALComputeRasterMinMax( myGdalBand, TRUE, adfMinMax );
+    GDALComputeRasterMinMax( myGdalBand, true, adfMinMax );
   }
   mMinimum[theBandNo-1] = adfMinMax[0];
   mMaximum[theBandNo-1] = adfMinMax[1];
@@ -1429,7 +1429,7 @@ QgsRasterHistogram QgsGdalProvider::histogram( int theBandNo,
   {
     CPLErr eErr = CE_Failure;
     double dfHalfBucket = 0;
-    eErr = GDALGetRasterStatistics( myGdalBand, TRUE, TRUE, &myMinVal, &myMaxVal, NULL, NULL );
+    eErr = GDALGetRasterStatistics( myGdalBand, true, true, &myMinVal, &myMaxVal, NULL, NULL );
     if ( eErr != CE_None )
     {
       delete [] myHistogramArray;
@@ -2878,7 +2878,7 @@ QGISEXTERN QString validateCreationOptionsFormat( const QStringList& createOptio
   int ok = GDALValidateCreationOptions( myGdalDriver, papszOptions );
   CSLDestroy( papszOptions );
 
-  if ( ok == FALSE )
+  if ( !ok )
     return "Failed GDALValidateCreationOptions() test";
   return QString();
 }

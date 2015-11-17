@@ -96,8 +96,7 @@ class SERVER_EXPORT QgsServer
     static QFileInfo defaultAdminSLD();
     static void setupNetworkAccessManager();
     //! Create and return a request handler instance
-    static QgsRequestHandler* createRequestHandler(
-      const bool captureOutput = FALSE );
+    static QgsRequestHandler* createRequestHandler( const bool captureOutput = false );
 
     // Server status
     static QString mConfigFilePath;

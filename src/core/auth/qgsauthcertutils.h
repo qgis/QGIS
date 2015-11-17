@@ -18,6 +18,7 @@
 #ifndef QGSAUTHCERTUTILS_H
 #define QGSAUTHCERTUTILS_H
 
+#include <QFile>
 #include <QtCrypto>
 #include <QSslCertificate>
 #include <QSslError>

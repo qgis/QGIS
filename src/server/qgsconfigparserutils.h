@@ -18,6 +18,7 @@
 #ifndef QGSCONFIGPARSERUTILS_H
 #define QGSCONFIGPARSERUTILS_H
 
+#include <QMap>
 #include <QStringList>
 
 class QgsCoordinateReferenceSystem;

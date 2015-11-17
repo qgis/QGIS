@@ -58,7 +58,7 @@ bool QgsServerPlugins::initPlugins( QgsServerInterface *interface )
     if ( !pythonlib.load() )
     {
       QgsDebugMsg( QString( "Couldn't load Python support library: %1" ).arg( pythonlib.errorString() ) );
-      return FALSE;
+      return false;
     }
   }
 
@@ -69,7 +69,7 @@ bool QgsServerPlugins::initPlugins( QgsServerInterface *interface )
   {
     //using stderr on purpose because we want end users to see this [TS]
     QgsDebugMsg( QString( "Couldn't resolve python support library's instance() symbol." ) );
-    return FALSE;
+    return false;
   }
 
   QgsDebugMsg( "Python support library's instance() symbol resolved." );
@@ -83,13 +83,13 @@ bool QgsServerPlugins::initPlugins( QgsServerInterface *interface )
   else
   {
     QgsDebugMsg( "Python support FAILED :-(" );
-    return FALSE;
+    return false;
   }
 
   //Init plugins: loads a list of installed plugins and filter them
   //for "server" metadata
   QListIterator<QString> plugins( mPythonUtils->pluginList() );
-  bool atLeastOneEnabled = FALSE;
+  bool atLeastOneEnabled = false;
   while ( plugins.hasNext() )
   {
     QString pluginName = plugins.next();
@@ -100,7 +100,7 @@ bool QgsServerPlugins::initPlugins( QgsServerInterface *interface )
       {
         if ( mPythonUtils->startServerPlugin( pluginName ) )
         {
-          atLeastOneEnabled = TRUE;
+          atLeastOneEnabled = true;
           mServerPlugins.append( pluginName );
           QgsMessageLog::logMessage( QString( "Server plugin %1 loaded!" ).arg( pluginName ), "Server", QgsMessageLog::INFO );
         }

@@ -17,6 +17,7 @@
 #ifndef QGSAUTHCRYPTO_H
 #define QGSAUTHCRYPTO_H
 
+#include <QFile>
 #include <QString>
 
 /** \ingroup core

@@ -25,7 +25,7 @@
 class QgsGetRequestHandler: public QgsHttpRequestHandler
 {
   public:
-    explicit QgsGetRequestHandler( const bool captureOutput = FALSE );
+    explicit QgsGetRequestHandler( const bool captureOutput = false );
     void parseInput() override;
 };
 
