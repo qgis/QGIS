@@ -8245,7 +8245,7 @@ void QgisApp::apiDocumentation()
 
 void QgisApp::reportaBug()
 {
-  openURL( "http://hub.qgis.org/projects/quantum-gis/issues", false );
+  openURL( "https://qgis.org/en/site/getinvolved/development/index.html#bugs-features-and-issues", false );
 }
 void QgisApp::supportProviders()
 {
