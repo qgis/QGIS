@@ -23,7 +23,7 @@ QgsOgrExpressionCompiler::QgsOgrExpressionCompiler( QgsOgrFeatureSource* source 
 }
 
 
-QgsOgrExpressionCompiler::Result QgsOgrExpressionCompiler::compile( const QgsExpression* exp )
+QgsSqlExpressionCompiler::Result QgsOgrExpressionCompiler::compile( const QgsExpression* exp )
 {
   //for certain driver types, OGR forwards SQL through to the underlying provider. In these cases
   //the syntax may differ from OGR SQL, so we don't support compilation for these drivers
@@ -46,7 +46,7 @@ QgsOgrExpressionCompiler::Result QgsOgrExpressionCompiler::compile( const QgsExp
   return QgsSqlExpressionCompiler::compile( exp );
 }
 
-QgsOgrExpressionCompiler::Result QgsOgrExpressionCompiler::compile( const QgsExpression::Node* node, QString& result )
+QgsSqlExpressionCompiler::Result QgsOgrExpressionCompiler::compileNode( const QgsExpression::Node* node, QString& result )
 {
   switch ( node->nodeType() )
   {
@@ -68,7 +68,7 @@ QgsOgrExpressionCompiler::Result QgsOgrExpressionCompiler::compile( const QgsExp
 
         default:
           //fallback to default handling
-          return QgsSqlExpressionCompiler::compile( node, result );
+          return QgsSqlExpressionCompiler::compileNode( node, result );
       }
     }
 
@@ -78,10 +78,10 @@ QgsOgrExpressionCompiler::Result QgsOgrExpressionCompiler::compile( const QgsExp
       return Fail;
 
     default:
-      return QgsSqlExpressionCompiler::compile( node, result );
+      return QgsSqlExpressionCompiler::compileNode( node, result );
   }
 
-  return QgsSqlExpressionCompiler::compile( node, result );
+  return QgsSqlExpressionCompiler::compileNode( node, result );
 }
 
 QString QgsOgrExpressionCompiler::quotedIdentifier( const QString& identifier )

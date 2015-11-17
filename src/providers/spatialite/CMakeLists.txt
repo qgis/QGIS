@@ -10,6 +10,7 @@ SET(SPATIALITE_SRCS
   qgsspatialitedataitems.cpp
   qgsspatialiteconnection.cpp
   qgsspatialiteconnpool.cpp
+  qgsspatialiteexpressioncompiler.cpp
   qgsspatialitefeatureiterator.cpp
   qgsspatialitesourceselect.cpp
   qgsspatialitetablemodel.cpp

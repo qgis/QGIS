@@ -88,15 +88,15 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource* source, bool 
   {
     QgsOgrExpressionCompiler compiler = QgsOgrExpressionCompiler( source );
 
-    QgsOgrExpressionCompiler::Result result = compiler.compile( request.filterExpression() );
+    QgsSqlExpressionCompiler::Result result = compiler.compile( request.filterExpression() );
 
-    if ( result == QgsOgrExpressionCompiler::Complete || result == QgsOgrExpressionCompiler::Partial )
+    if ( result == QgsSqlExpressionCompiler::Complete || result == QgsSqlExpressionCompiler::Partial )
     {
       QString whereClause = compiler.result();
       if ( OGR_L_SetAttributeFilter( ogrLayer, whereClause.toLocal8Bit().data() ) == OGRERR_NONE )
       {
         //if only partial success when compiling expression, we need to double-check results using QGIS' expressions
-        mExpressionCompiled = ( result == QgsOgrExpressionCompiler::Complete );
+        mExpressionCompiled = ( result == QgsSqlExpressionCompiler::Complete );
       }
     }
     else

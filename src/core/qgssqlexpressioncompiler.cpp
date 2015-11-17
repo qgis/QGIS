@@ -30,7 +30,7 @@ QgsSqlExpressionCompiler::~QgsSqlExpressionCompiler()
 QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compile( const QgsExpression* exp )
 {
   if ( exp->rootNode() )
-    return compile( exp->rootNode(), mResult );
+    return compileNode( exp->rootNode(), mResult );
   else
     return Fail;
 }
@@ -69,7 +69,7 @@ QString QgsSqlExpressionCompiler::quotedValue( const QVariant& value )
   }
 }
 
-QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compile( const QgsExpression::Node* node, QString& result )
+QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const QgsExpression::Node* node, QString& result )
 {
   switch ( node->nodeType() )
   {
@@ -133,18 +133,26 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compile( const QgsExp
 
         case QgsExpression::boLike:
           op = "LIKE";
+          partialCompilation = mFlags.testFlag( LikeIsCaseInsensitive );
           break;
 
         case QgsExpression::boILike:
-          op = "ILIKE";
+          if ( mFlags.testFlag( LikeIsCaseInsensitive ) )
+            op = "LIKE";
+          else
+            op = "ILIKE";
           break;
 
         case QgsExpression::boNotLike:
           op = "NOT LIKE";
+          partialCompilation = mFlags.testFlag( LikeIsCaseInsensitive );
           break;
 
         case QgsExpression::boNotILike:
-          op = "NOT ILIKE";
+          if ( mFlags.testFlag( LikeIsCaseInsensitive ) )
+            op = "NOT LIKE";
+          else
+            op = "NOT ILIKE";
           break;
 
         case QgsExpression::boOr:
@@ -198,10 +206,10 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compile( const QgsExp
         return Fail;
 
       QString left;
-      Result lr( compile( n->opLeft(), left ) );
+      Result lr( compileNode( n->opLeft(), left ) );
 
       QString right;
-      Result rr( compile( n->opRight(), right ) );
+      Result rr( compileNode( n->opRight(), right ) );
 
       result = left + ' ' + op + ' ' + right;
       if ( lr == Complete && rr == Complete )
@@ -251,7 +259,7 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compile( const QgsExp
       Q_FOREACH ( const QgsExpression::Node* ln, n->list()->list() )
       {
         QString s;
-        Result r = compile( ln, s );
+        Result r = compileNode( ln, s );
         if ( r == Complete || r == Partial )
         {
           list << s;
@@ -263,7 +271,7 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compile( const QgsExp
       }
 
       QString nd;
-      Result rn = compile( n->node(), nd );
+      Result rn = compileNode( n->node(), nd );
       if ( rn != Complete && rn != Partial )
         return rn;
 

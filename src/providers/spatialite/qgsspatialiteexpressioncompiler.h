@@ -1,6 +1,6 @@
 /***************************************************************************
-                             qgsogrexpressioncompiler.h
-                             --------------------------
+                             qgsspatialiteexpressioncompiler.h
+                             ---------------------------------
     begin                : November 2015
     copyright            : (C) 2015 Nyall Dawson
     email                : nyall dot dawson at gmail dot com
@@ -13,20 +13,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSOGREXPRESSIONCOMPILER_H
-#define QGSOGREXPRESSIONCOMPILER_H
+#ifndef QGSSPATIALITEEXPRESSIONCOMPILER_H
+#define QGSSPATIALITEEXPRESSIONCOMPILER_H
 
-#include "qgsexpression.h"
-#include "qgsogrfeatureiterator.h"
 #include "qgssqlexpressioncompiler.h"
+#include "qgsexpression.h"
+#include "qgsspatialitefeatureiterator.h"
 
-class QgsOgrExpressionCompiler : public QgsSqlExpressionCompiler
+class QgsSpatiaLiteExpressionCompiler : public QgsSqlExpressionCompiler
 {
   public:
 
-    explicit QgsOgrExpressionCompiler( QgsOgrFeatureSource* source );
-
-    virtual Result compile( const QgsExpression* exp ) override;
+    explicit QgsSpatiaLiteExpressionCompiler( QgsSpatiaLiteFeatureSource* source );
 
   protected:
 
@@ -34,9 +32,6 @@ class QgsOgrExpressionCompiler : public QgsSqlExpressionCompiler
     virtual QString quotedIdentifier( const QString& identifier ) override;
     virtual QString quotedValue( const QVariant& value ) override;
 
-  private:
-
-    QgsOgrFeatureSource* mSource;
 };
 
-#endif // QGSOGREXPRESSIONCOMPILER_H
+#endif // QGSSPATIALITEEXPRESSIONCOMPILER_H

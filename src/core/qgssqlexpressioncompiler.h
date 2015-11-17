@@ -47,7 +47,8 @@ class CORE_EXPORT QgsSqlExpressionCompiler
      */
     enum Flag
     {
-      CaseInsensitiveStringMatch = 0x01,  //!< Provider performs case-insensitive string matching
+      CaseInsensitiveStringMatch = 0x01,  //!< Provider performs case-insensitive string matching for all strings
+      LikeIsCaseInsensitive = 0x02, //!< Provider treats LIKE as case-insensitive
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -86,7 +87,7 @@ class CORE_EXPORT QgsSqlExpressionCompiler
      * @param str string representing compiled node should be stored in this parameter
      * @returns result of node compilation
      */
-    virtual Result compile( const QgsExpression::Node* node, QString& str );
+    virtual Result compileNode( const QgsExpression::Node* node, QString& str );
 
     QString mResult;
     QgsFields mFields;
