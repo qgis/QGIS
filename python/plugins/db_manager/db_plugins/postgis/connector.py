@@ -56,7 +56,7 @@ class PostGisDBConnector(DBConnector):
         except self.connection_error_types() as e:
             err = unicode(e)
             uri = self.uri()
-            conninfo = uri.connectionInfo()
+            conninfo = uri.connectionInfo(False)
 
             for i in range(3):
                 (ok, username, password) = QgsCredentials.instance().get(conninfo, username, password, err)
@@ -70,7 +70,7 @@ class PostGisDBConnector(DBConnector):
                     uri.setPassword(password)
 
                 try:
-                    self.connection = psycopg2.connect(uri.connectionInfo().encode('utf-8'))
+                    self.connection = psycopg2.connect(uri.connectionInfo(True).encode('utf-8'))
                     QgsCredentials.instance().put(conninfo, username, password)
                 except self.connection_error_types() as e:
                     if i == 2:
@@ -90,7 +90,7 @@ class PostGisDBConnector(DBConnector):
         self._checkRasterColumnsTable()
 
     def _connectionInfo(self):
-        return unicode(self.uri().connectionInfo())
+        return unicode(self.uri().connectionInfo(True))
 
     def _checkSpatial(self):
         """ check whether postgis_version is present in catalog """
