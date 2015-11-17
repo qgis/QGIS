@@ -65,7 +65,7 @@ class CORE_EXPORT QgsStatisticalSummary
     /** Constructor for QgsStatisticalSummary
      * @param stats flags for statistics to calculate
      */
-    QgsStatisticalSummary( const QgsStatisticalSummary::Statistics& stats = Statistics( 0 ) );
+    QgsStatisticalSummary( const QgsStatisticalSummary::Statistics& stats = All );
 
     virtual ~QgsStatisticalSummary();
 
