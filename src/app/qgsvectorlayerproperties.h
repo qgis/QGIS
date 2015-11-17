@@ -163,6 +163,8 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     bool mMetadataFilled;
 
+    QString mOriginalSubsetSQL;
+
     QMenu *mSaveAsMenu;
     QMenu *mLoadStyleMenu;
 

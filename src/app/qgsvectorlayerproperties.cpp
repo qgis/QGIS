@@ -76,6 +76,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     : QgsOptionsDialogBase( "VectorLayerProperties", parent, fl )
     , layer( lyr )
     , mMetadataFilled( false )
+    , mOriginalSubsetSQL( lyr->subsetString() )
     , mSaveAsMenu( 0 )
     , mLoadStyleMenu( 0 )
     , mRendererDialog( 0 )
@@ -531,6 +532,7 @@ void QgsVectorLayerProperties::apply()
     layer->setSubsetString( txtSubsetSQL->toPlainText() );
     mMetadataFilled = false;
   }
+  mOriginalSubsetSQL = layer->subsetString();
 
   // set up the scale based layer visibility stuff....
   layer->setScaleBasedVisibility( mScaleVisibilityGroupBox->isChecked() );
@@ -643,6 +645,14 @@ void QgsVectorLayerProperties::onCancel()
 
     Q_FOREACH ( const QgsVectorJoinInfo& info, mOldJoins )
       layer->addJoin( info );
+  }
+
+  if ( mOriginalSubsetSQL != layer->subsetString() )
+  {
+    // need to undo changes in subset string - they are applied directly to the layer (not in apply())
+    // by QgsQueryBuilder::accept()
+
+    layer->setSubsetString( mOriginalSubsetSQL );
   }
 }
 
