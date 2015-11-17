@@ -125,7 +125,7 @@ class OracleDBConnector(DBConnector):
         self._checkGeometryColumnsTable()
 
     def _connectionInfo(self):
-        return unicode(self._uri.connectionInfo())
+        return unicode(self._uri.connectionInfo(True))
 
     def _checkSpatial(self):
         """Check whether Oracle Spatial is present in catalog."""
