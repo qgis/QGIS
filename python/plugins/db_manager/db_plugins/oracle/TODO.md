@@ -3,10 +3,6 @@
 * SQL Window - "Retrieve columns" don't work => problem in
   dlg_sql_window.py (not enough abstraction for connectors). 
 
-* SQL Window - Can't retrieve column: dlg_sql_window.py launch an
-  invalid request for Oracle (no LIMIT operator in Oracle). Should
-  patch dlg_sql_window.py to use a connector method to grab columns.
-
 * Query-builder - Add date functions menu (needs to change the main
   code of query builder).
 
