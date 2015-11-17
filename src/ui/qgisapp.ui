@@ -2381,7 +2381,7 @@ Acts on currently active editable layer</string>
   </action>
   <action name="mActionReportaBug">
    <property name="text">
-    <string>Report a Bug</string>
+    <string>Report an issue</string>
    </property>
   </action>
  </widget>
