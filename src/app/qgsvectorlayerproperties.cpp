@@ -84,6 +84,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     , actionDialog( 0 )
     , diagramPropertiesDialog( 0 )
     , mFieldsPropertiesDialog( 0 )
+    , mOriginalSubsetSQL( lyr->subsetString() )
 {
   setupUi( this );
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
@@ -531,6 +532,7 @@ void QgsVectorLayerProperties::apply()
     layer->setSubsetString( txtSubsetSQL->toPlainText() );
     mMetadataFilled = false;
   }
+  mOriginalSubsetSQL = txtSubsetSQL->toPlainText();
 
   // set up the scale based layer visibility stuff....
   layer->setScaleBasedVisibility( mScaleVisibilityGroupBox->isChecked() );
@@ -643,6 +645,14 @@ void QgsVectorLayerProperties::onCancel()
 
     Q_FOREACH ( const QgsVectorJoinInfo& info, mOldJoins )
       layer->addJoin( info );
+  }
+
+  if ( mOriginalSubsetSQL != layer->subsetString() )
+  {
+    // need to undo changes in subset string - they are applied directly to the layer (not in apply())
+    // by QgsQueryBuilder::accept()
+
+    layer->setSubsetString( mOriginalSubsetSQL );
   }
 }
 
