@@ -287,7 +287,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         cols = []
         quotedCols = []
         connector = self.db.connector
-        sql = u"SELECT * FROM (%s\n) AS %s LIMIT 0" % (unicode(query), connector.quoteId(alias))
+        sql = u"SELECT * FROM (%s\n) AS %s WHERE 0=1" % (unicode(query), connector.quoteId(alias))
 
         c = None
         try:
