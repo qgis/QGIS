@@ -878,6 +878,11 @@ bool QgsPostgresProvider::loadFields()
         fieldType = QVariant::Date;
         fieldSize = -1;
       }
+      else if ( fieldTypeName == "timestamp" )
+      {
+        fieldType = QVariant::DateTime;
+        fieldSize = -1;
+      }
       else if ( fieldTypeName == "text" ||
                 fieldTypeName == "bool" ||
                 fieldTypeName == "geometry" ||
