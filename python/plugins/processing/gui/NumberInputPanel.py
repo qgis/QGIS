@@ -61,6 +61,7 @@ class NumberInputPanel(BASE, WIDGET):
             self.spnValue.setMinimum(-99999999)
 
         self.spnValue.setValue(float(number))
+        self.spnValue.setClearValue(float(number))
 
         self.btnCalc.clicked.connect(self.showNumberInputDialog)
 
