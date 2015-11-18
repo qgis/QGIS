@@ -168,15 +168,15 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap& defaultAttributes, boo
   bool isDisabledAttributeValuesDlg = ( fields.count() == 0 ) || settings.value( "/qgis/digitizing/disable_enter_attribute_values_dialog", false ).toBool();
 
   // override application-wide setting with any layer setting
-  switch ( mLayer->featureFormSuppress() )
+  switch ( mLayer->editFormConfig()->suppress() )
   {
-    case QgsVectorLayer::SuppressOn:
+    case QgsEditFormConfig::SuppressOn:
       isDisabledAttributeValuesDlg = true;
       break;
-    case QgsVectorLayer::SuppressOff:
+    case QgsEditFormConfig::SuppressOff:
       isDisabledAttributeValuesDlg = false;
       break;
-    case QgsVectorLayer::SuppressDefault:
+    case QgsEditFormConfig::SuppressDefault:
       break;
   }
   if ( isDisabledAttributeValuesDlg )

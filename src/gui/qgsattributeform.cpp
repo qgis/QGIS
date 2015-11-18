@@ -175,7 +175,7 @@ bool QgsAttributeForm::save()
         QVariant srcVar = eww->value();
         // need to check dstVar.isNull() != srcVar.isNull()
         // otherwise if dstVar=NULL and scrVar=0, then dstVar = srcVar
-        if (( dstVar != srcVar || dstVar.isNull() != srcVar.isNull() ) && srcVar.isValid() && mLayer->fieldEditable( eww->fieldIdx() ) )
+        if (( dstVar != srcVar || dstVar.isNull() != srcVar.isNull() ) && srcVar.isValid() && mLayer->editFormConfig()->fieldEditable( eww->fieldIdx() ) )
         {
           dst[eww->fieldIdx()] = srcVar;
 
@@ -220,7 +220,7 @@ bool QgsAttributeForm::save()
         {
           if (( dst.at( i ) == src.at( i ) && dst.at( i ).isNull() == src.at( i ).isNull() )  // If field is not changed...
               || !dst.at( i ).isValid()                                     // or the widget returns invalid (== do not change)
-              || !mLayer->fieldEditable( i ) )                           // or the field cannot be edited ...
+              || !mLayer->editFormConfig()->fieldEditable( i ) )                           // or the field cannot be edited ...
           {
             continue;
           }
@@ -367,7 +367,7 @@ void QgsAttributeForm::synchronizeEnabledState()
     QgsEditorWidgetWrapper* eww = qobject_cast<QgsEditorWidgetWrapper*>( ww );
     if ( eww )
     {
-      fieldEditable = mLayer->fieldEditable( eww->fieldIdx() ) &&
+      fieldEditable = mLayer->editFormConfig()->fieldEditable( eww->fieldIdx() ) &&
                       (( mLayer->dataProvider() && layer()->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) ||
                        FID_IS_NEW( mFeature.id() ) );
     }
@@ -408,15 +408,15 @@ void QgsAttributeForm::init()
   setLayout( new QGridLayout( this ) );
 
   // Try to load Ui-File for layout
-  if ( mLayer->editorLayout() == QgsVectorLayer::UiFileLayout && !mLayer->editForm().isEmpty() )
+  if ( mLayer->editFormConfig()->layout() == QgsEditFormConfig::UiFileLayout && !mLayer->editFormConfig()->uiForm().isEmpty() )
   {
-    QFile file( mLayer->editForm() );
+    QFile file( mLayer->editFormConfig()->uiForm() );
 
     if ( file.open( QFile::ReadOnly ) )
     {
       QUiLoader loader;
 
-      QFileInfo fi( mLayer->editForm() );
+      QFileInfo fi( mLayer->editFormConfig()->uiForm() );
       loader.setWorkingDirectory( fi.dir() );
       formWidget = loader.load( &file, this );
       formWidget->setWindowFlags( Qt::Widget );
@@ -431,12 +431,12 @@ void QgsAttributeForm::init()
   }
 
   // Tab layout
-  if ( !formWidget && mLayer->editorLayout() == QgsVectorLayer::TabLayout )
+  if ( !formWidget && mLayer->editFormConfig()->layout() == QgsEditFormConfig::TabLayout )
   {
     QTabWidget* tabWidget = new QTabWidget();
     layout()->addWidget( tabWidget );
 
-    Q_FOREACH ( QgsAttributeEditorElement *widgDef, mLayer->attributeEditorElements() )
+    Q_FOREACH ( QgsAttributeEditorElement* widgDef, mLayer->editFormConfig()->tabs() )
     {
       QWidget* tabPage = new QWidget( tabWidget );
 
@@ -491,13 +491,13 @@ void QgsAttributeForm::init()
       //show attribute alias if available
       QString fieldName = mLayer->attributeDisplayName( idx );
 
-      const QString widgetType = mLayer->editorWidgetV2( idx );
+      const QString widgetType = mLayer->editFormConfig()->widgetType( idx );
 
       if ( widgetType == "Hidden" )
         continue;
 
-      const QgsEditorWidgetConfig widgetConfig = mLayer->editorWidgetV2Config( idx );
-      bool labelOnTop = mLayer->labelOnTop( idx );
+      const QgsEditorWidgetConfig widgetConfig = mLayer->editFormConfig()->widgetConfig( idx );
+      bool labelOnTop = mLayer->editFormConfig()->labelOnTop( idx );
 
       // This will also create the widget
       QWidget *l = new QLabel( fieldName );
@@ -575,9 +575,9 @@ void QgsAttributeForm::initPython()
   cleanPython();
 
   // Init Python
-  if ( !mLayer->editFormInit().isEmpty() )
+  if ( !mLayer->editFormConfig()->initFunction().isEmpty() )
   {
-    QString module = mLayer->editFormInit();
+    QString module = mLayer->editFormConfig()->initFunction();
 
     int pos = module.lastIndexOf( '.' );
 
@@ -592,16 +592,13 @@ void QgsAttributeForm::initPython()
 
       QgsPythonRunner::run( reload );
     }
-    else // Must be supplied code
+    else if ( mLayer->editFormConfig()->useInitCode() )  // Must be supplied code
     {
-      if ( mLayer->editFormInitUseCode() )
-      {
-        QgsPythonRunner::run( mLayer->editFormInitCode() );
-      }
-      else
-      {
-        QgsDebugMsg( "No dot in editFormInit and no custom python code provided! There is nothing to run." );
-      }
+      QgsPythonRunner::run( mLayer->editFormConfig()->initCode() );
+    }
+    else
+    {
+      QgsDebugMsg( "No dot in editFormInit and no custom python code provided! There is nothing to run." );
     }
 
 
@@ -654,8 +651,8 @@ QWidget* QgsAttributeForm::createWidgetFromDef( const QgsAttributeEditorElement 
       int fldIdx = vl->fieldNameIndex( fieldDef->name() );
       if ( fldIdx < vl->fields().count() && fldIdx >= 0 )
       {
-        const QString widgetType = mLayer->editorWidgetV2( fldIdx );
-        const QgsEditorWidgetConfig widgetConfig = mLayer->editorWidgetV2Config( fldIdx );
+        const QString widgetType = mLayer->editFormConfig()->widgetType( fldIdx );
+        const QgsEditorWidgetConfig widgetConfig = mLayer->editFormConfig()->widgetConfig( fldIdx );
 
         QgsEditorWidgetWrapper* eww = QgsEditorWidgetRegistry::instance()->create( widgetType, mLayer, fldIdx, widgetConfig, 0, this, mContext );
         newWidget = eww->widget();
@@ -664,7 +661,7 @@ QWidget* QgsAttributeForm::createWidgetFromDef( const QgsAttributeEditorElement 
         newWidget->setObjectName( mLayer->fields().at( fldIdx ).name() );
       }
 
-      labelOnTop = mLayer->labelOnTop( fieldDef->idx() );
+      labelOnTop = mLayer->editFormConfig()->labelOnTop( fieldDef->idx() );
       labelText = mLayer->attributeDisplayName( fieldDef->idx() );
 
       break;
@@ -809,8 +806,8 @@ void QgsAttributeForm::createWrappers()
       {
         if ( field.name() == myWidget->objectName() )
         {
-          const QString widgetType = mLayer->editorWidgetV2( field.name() );
-          const QgsEditorWidgetConfig widgetConfig = mLayer->editorWidgetV2Config( field.name() );
+          const QString widgetType = mLayer->editFormConfig()->widgetType( field.name() );
+          const QgsEditorWidgetConfig widgetConfig = mLayer->editFormConfig()->widgetConfig( field.name() );
           int idx = mLayer->fieldNameIndex( field.name() );
 
           QgsEditorWidgetWrapper* eww = QgsEditorWidgetRegistry::instance()->create( widgetType, mLayer, idx, widgetConfig, myWidget, this, mContext );

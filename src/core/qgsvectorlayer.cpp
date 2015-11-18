@@ -128,6 +128,7 @@ QgsVectorLayer::QgsVectorLayer( const QString& vectorLayerPath,
     , mDataProvider( NULL )
     , mProviderKey( providerKey )
     , mReadOnly( false )
+    , mEditFormConfig( new QgsEditFormConfig( this ) )
     , mWkbType( QGis::WKBUnknown )
     , mRendererV2( NULL )
     , mLabel( 0 )
@@ -137,9 +138,6 @@ QgsVectorLayer::QgsVectorLayer( const QString& vectorLayerPath,
     , mFeatureBlendMode( QPainter::CompositionMode_SourceOver ) // Default to normal feature blending
     , mLayerTransparency( 0 )
     , mVertexMarkerOnlyForSelection( false )
-    , mEditorLayout( GeneratedLayout )
-    , mEditFormInitUseCode( false )
-    , mFeatureFormSuppress( SuppressDefault )
     , mCache( new QgsGeometryCache() )
     , mEditBuffer( 0 )
     , mJoinBuffer( 0 )
@@ -163,7 +161,6 @@ QgsVectorLayer::QgsVectorLayer( const QString& vectorLayerPath,
 
   connect( this, SIGNAL( selectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) ), this, SIGNAL( selectionChanged() ) );
   connect( this, SIGNAL( selectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) ), this, SIGNAL( repaintRequested() ) );
-  connect( QgsProject::instance()->relationManager(), SIGNAL( relationsLoaded() ), this, SLOT( onRelationsLoaded() ) );
 
   // Default simplify drawing settings
   QSettings settings;
@@ -1774,36 +1771,36 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
   if ( !editFormNode.isNull() )
   {
     QDomElement e = editFormNode.toElement();
-    mEditForm = QgsProject::instance()->readPath( e.text() );
+    mEditFormConfig->setUiForm( QgsProject::instance()->readPath( e.text() ) );
   }
 
   QDomNode editFormInitNode = node.namedItem( "editforminit" );
   if ( !editFormInitNode.isNull() )
   {
-    mEditFormInit = editFormInitNode.toElement().text();
+    mEditFormConfig->setInitFunction( editFormInitNode.toElement().text() );
   }
 
   QDomNode editFormInitCodeNode = node.namedItem( "editforminitcode" );
   if ( !editFormInitCodeNode.isNull() )
   {
-    mEditFormInitCode = editFormInitCodeNode.toElement().text();
+    mEditFormConfig->setInitCode( editFormInitCodeNode.toElement().text() );
   }
 
   QDomNode editFormInitUseCodeNode = node.namedItem( "editforminitusecode" );
-  if ( !editFormInitCodeNode.isNull() )
+  if ( !editFormInitCodeNode.isNull() || ( !editFormInitNode.isNull() && !editFormInitNode.toElement().text().isEmpty() ) )
   {
-    mEditFormInitUseCode = ( bool ) editFormInitUseCodeNode.toElement().text().toInt();
+    mEditFormConfig->setUseInitCode( editFormInitUseCodeNode.toElement().text().toInt() );
   }
 
   QDomNode fFSuppNode = node.namedItem( "featformsuppress" );
   if ( fFSuppNode.isNull() )
   {
-    mFeatureFormSuppress = SuppressDefault;
+    mEditFormConfig->setSuppress( QgsEditFormConfig::SuppressDefault );
   }
   else
   {
     QDomElement e = fFSuppNode.toElement();
-    mFeatureFormSuppress = ( QgsVectorLayer::FeatureFormSuppress )e.text().toInt();
+    mEditFormConfig->setSuppress(( QgsEditFormConfig::FeatureFormSuppress )e.text().toInt() );
   }
 
   QDomNode annotationFormNode = node.namedItem( "annotationform" );
@@ -1845,21 +1842,21 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
   QDomNode editorLayoutNode = node.namedItem( "editorlayout" );
   if ( editorLayoutNode.isNull() )
   {
-    mEditorLayout = GeneratedLayout;
+    mEditFormConfig->setLayout( QgsEditFormConfig::GeneratedLayout );
   }
   else
   {
     if ( editorLayoutNode.toElement().text() == "uifilelayout" )
     {
-      mEditorLayout = UiFileLayout;
+      mEditFormConfig->setLayout( QgsEditFormConfig::UiFileLayout );
     }
     else if ( editorLayoutNode.toElement().text() == "tablayout" )
     {
-      mEditorLayout = TabLayout;
+      mEditFormConfig->setLayout( QgsEditFormConfig::TabLayout );
     }
     else
     {
-      mEditorLayout = GeneratedLayout;
+      mEditFormConfig->setLayout( QgsEditFormConfig::GeneratedLayout );
     }
   }
 
@@ -1887,7 +1884,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
   }
 
   // tabs and groups display info
-  mAttributeEditorElements.clear();
+  mEditFormConfig->clearTabs();
   QDomNode attributeEditorFormNode = node.namedItem( "attributeEditorForm" );
   QDomNodeList attributeEditorFormNodeList = attributeEditorFormNode.toElement().childNodes();
 
@@ -1896,7 +1893,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
     QDomElement elem = attributeEditorFormNodeList.at( i ).toElement();
 
     QgsAttributeEditorElement *attributeEditorWidget = attributeEditorElementFromDomElement( elem, this );
-    mAttributeEditorElements.append( attributeEditorWidget );
+    mEditFormConfig->addTab( attributeEditorWidget );
   }
 
   conditionalStyles()->readXml( node );
@@ -2048,25 +2045,25 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
   // although they are not part of symbology either
 
   QDomElement efField  = doc.createElement( "editform" );
-  QDomText efText = doc.createTextNode( QgsProject::instance()->writePath( mEditForm ) );
+  QDomText efText = doc.createTextNode( QgsProject::instance()->writePath( mEditFormConfig->uiForm() ) );
   efField.appendChild( efText );
   node.appendChild( efField );
 
   QDomElement efiField  = doc.createElement( "editforminit" );
-  if ( !mEditFormInit.isEmpty() )
-    efiField.appendChild( doc.createTextNode( mEditFormInit ) );
+  if ( !mEditFormConfig->initFunction().isEmpty() )
+    efiField.appendChild( doc.createTextNode( mEditFormConfig->initFunction() ) );
   node.appendChild( efiField );
 
   QDomElement efiucField  = doc.createElement( "editforminitusecode" );
-  efiucField.appendChild( doc.createTextNode( mEditFormInitUseCode ? "1" : "0" ) );
+  efiucField.appendChild( doc.createTextNode( mEditFormConfig->useInitCode() ? "1" : "0" ) );
   node.appendChild( efiucField );
 
   QDomElement eficField  = doc.createElement( "editforminitcode" );
-  eficField.appendChild( doc.createCDATASection( mEditFormInitCode ) );
+  eficField.appendChild( doc.createCDATASection( mEditFormConfig->initCode() ) );
   node.appendChild( eficField );
 
   QDomElement fFSuppElem  = doc.createElement( "featformsuppress" );
-  QDomText fFSuppText = doc.createTextNode( QString::number( featureFormSuppress() ) );
+  QDomText fFSuppText = doc.createTextNode( QString::number( mEditFormConfig->suppress() ) );
   fFSuppElem.appendChild( fFSuppText );
   node.appendChild( fFSuppElem );
 
@@ -2077,17 +2074,17 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
 
   // tab display
   QDomElement editorLayoutElem  = doc.createElement( "editorlayout" );
-  switch ( mEditorLayout )
+  switch ( mEditFormConfig->layout() )
   {
-    case UiFileLayout:
+    case QgsEditFormConfig::UiFileLayout:
       editorLayoutElem.appendChild( doc.createTextNode( "uifilelayout" ) );
       break;
 
-    case TabLayout:
+    case QgsEditFormConfig::TabLayout:
       editorLayoutElem.appendChild( doc.createTextNode( "tablayout" ) );
       break;
 
-    case GeneratedLayout:
+    case QgsEditFormConfig::GeneratedLayout:
     default:
       editorLayoutElem.appendChild( doc.createTextNode( "generatedlayout" ) );
       break;
@@ -2140,11 +2137,11 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
   node.appendChild( excludeWFSElem );
 
   // tabs and groups of edit form
-  if ( mAttributeEditorElements.size() > 0 )
+  if ( mEditFormConfig->tabs().size() > 0 )
   {
     QDomElement tabsElem = doc.createElement( "attributeEditorForm" );
 
-    for ( QList< QgsAttributeEditorElement* >::const_iterator it = mAttributeEditorElements.begin(); it != mAttributeEditorElements.end(); ++it )
+    for ( QList< QgsAttributeEditorElement* >::const_iterator it = mEditFormConfig->tabs().constBegin(); it != mEditFormConfig->tabs().constEnd(); ++it )
     {
       QDomElement attributeEditorWidgetElem = ( *it )->toDomElement( doc );
       tabsElem.appendChild( attributeEditorWidgetElem );
@@ -2259,37 +2256,6 @@ void QgsVectorLayer::addAttributeAlias( int attIndex, const QString& aliasString
 
   mAttributeAliasMap.insert( name, aliasString );
   emit layerModified(); // TODO[MD]: should have a different signal?
-}
-
-void QgsVectorLayer::addAttributeEditorWidget( QgsAttributeEditorElement* data )
-{
-  mAttributeEditorElements.append( data );
-}
-
-const QString QgsVectorLayer::editorWidgetV2( int fieldIdx ) const
-{
-  if ( fieldIdx < 0 || fieldIdx >= mUpdatedFields.count() )
-    return "TextEdit";
-
-  return mEditorWidgetV2Types.value( mUpdatedFields[fieldIdx].name(), "TextEdit" );
-}
-
-const QString QgsVectorLayer::editorWidgetV2( const QString& fieldName ) const
-{
-  return mEditorWidgetV2Types.value( fieldName, "TextEdit" );
-}
-
-const QgsEditorWidgetConfig QgsVectorLayer::editorWidgetV2Config( int fieldIdx ) const
-{
-  if ( fieldIdx < 0 || fieldIdx >= mUpdatedFields.count() )
-    return QgsEditorWidgetConfig();
-
-  return mEditorWidgetV2Configs.value( mUpdatedFields[fieldIdx].name() );
-}
-
-const QgsEditorWidgetConfig QgsVectorLayer::editorWidgetV2Config( const QString& fieldName ) const
-{
-  return mEditorWidgetV2Configs.value( fieldName );
 }
 
 QString QgsVectorLayer::attributeAlias( int attributeIndex ) const
@@ -2794,83 +2760,9 @@ void QgsVectorLayer::setEditType( int idx, EditType type )
   setEditorWidgetV2Config( idx, cfg );
 }
 
-QgsVectorLayer::EditorLayout QgsVectorLayer::editorLayout()
-{
-  return mEditorLayout;
-}
-
-void QgsVectorLayer::setEditorLayout( EditorLayout editorLayout )
-{
-  mEditorLayout = editorLayout;
-}
-
-void QgsVectorLayer::setEditorWidgetV2( int attrIdx, const QString& widgetType )
-{
-  if ( attrIdx < 0 || attrIdx >= mUpdatedFields.count() )
-    return;
-
-  mEditorWidgetV2Types[ mUpdatedFields.at( attrIdx ).name()] = widgetType;
-}
-
-void QgsVectorLayer::setEditorWidgetV2Config( int attrIdx, const QgsEditorWidgetConfig& config )
-{
-  if ( attrIdx < 0 || attrIdx >= mUpdatedFields.count() )
-    return;
-
-  mEditorWidgetV2Configs[ mUpdatedFields.at( attrIdx ).name()] = config;
-}
-
-QString QgsVectorLayer::editForm()
-{
-  return mEditForm;
-}
-
-void QgsVectorLayer::setEditForm( const QString& ui )
-{
-  if ( ui.isEmpty() || ui.isNull() )
-  {
-    setEditorLayout( GeneratedLayout );
-  }
-  else
-  {
-    setEditorLayout( UiFileLayout );
-  }
-  mEditForm = ui;
-}
-
 void QgsVectorLayer::setAnnotationForm( const QString& ui )
 {
   mAnnotationForm = ui;
-}
-
-QString QgsVectorLayer::editFormInit()
-{
-  return mEditFormInit;
-}
-
-QString QgsVectorLayer::editFormInitCode()
-{
-  return mEditFormInitCode;
-}
-
-bool QgsVectorLayer::editFormInitUseCode()
-{
-  return mEditFormInitUseCode;
-}
-
-void QgsVectorLayer::setEditFormInit( const QString& function )
-{
-  mEditFormInit = function;
-}
-
-void QgsVectorLayer::setEditFormInitUseCode( const bool useCode )
-{
-  mEditFormInitUseCode = useCode;
-}
-
-void QgsVectorLayer::setEditFormInitCode( const QString& code )
-{
-  mEditFormInitCode = code;
 }
 
 QMap< QString, QVariant > QgsVectorLayer::valueMap( int idx )
@@ -2899,39 +2791,6 @@ QSize QgsVectorLayer::widgetSize( int idx )
   return QSize( cfg.value( "Width" ).toInt(), cfg.value( "Height" ).toInt() );
 }
 
-bool QgsVectorLayer::fieldEditable( int idx )
-{
-  if ( idx >= 0 && idx < mUpdatedFields.count() )
-  {
-    if ( mUpdatedFields.fieldOrigin( idx ) == QgsFields::OriginJoin
-         || mUpdatedFields.fieldOrigin( idx ) == QgsFields::OriginExpression )
-      return false;
-    return mFieldEditables.value( mUpdatedFields.at( idx ).name(), true );
-  }
-  else
-    return true;
-}
-
-bool QgsVectorLayer::labelOnTop( int idx )
-{
-  if ( idx >= 0 && idx < mUpdatedFields.count() )
-    return mLabelOnTop.value( mUpdatedFields.at( idx ).name(), false );
-  else
-    return false;
-}
-
-void QgsVectorLayer::setFieldEditable( int idx, bool editable )
-{
-  if ( idx >= 0 && idx < mUpdatedFields.count() )
-    mFieldEditables[ mUpdatedFields.at( idx ).name()] = editable;
-}
-
-void QgsVectorLayer::setLabelOnTop( int idx, bool onTop )
-{
-  if ( idx >= 0 && idx < mUpdatedFields.count() )
-    mLabelOnTop[ mUpdatedFields.at( idx ).name()] = onTop;
-}
-
 void QgsVectorLayer::setRendererV2( QgsFeatureRendererV2 *r )
 {
   if ( !hasGeometryType() )
@@ -2947,8 +2806,6 @@ void QgsVectorLayer::setRendererV2( QgsFeatureRendererV2 *r )
     emit rendererChanged();
   }
 }
-
-
 
 void QgsVectorLayer::beginEditCommand( const QString& text )
 {
@@ -3089,7 +2946,10 @@ void QgsVectorLayer::updateFields()
     mExpressionFieldBuffer->updateFields( mUpdatedFields );
 
   if ( oldFields != mUpdatedFields )
+  {
     emit updatedFields();
+    mEditFormConfig->setFields( mUpdatedFields );
+  }
 }
 
 
@@ -3950,29 +3810,6 @@ void QgsVectorLayer::invalidateSymbolCountedFlag()
   mSymbolFeatureCounted = false;
 }
 
-void QgsVectorLayer::onRelationsLoaded()
-{
-  Q_FOREACH ( QgsAttributeEditorElement* elem, mAttributeEditorElements )
-  {
-    if ( elem->type() == QgsAttributeEditorElement::AeTypeContainer )
-    {
-      QgsAttributeEditorContainer* cont = dynamic_cast< QgsAttributeEditorContainer* >( elem );
-      if ( !cont )
-        continue;
-
-      QList<QgsAttributeEditorElement*> relations = cont->findElements( QgsAttributeEditorElement::AeTypeRelation );
-      Q_FOREACH ( QgsAttributeEditorElement* relElem, relations )
-      {
-        QgsAttributeEditorRelation* rel = dynamic_cast< QgsAttributeEditorRelation* >( relElem );
-        if ( !rel )
-          continue;
-
-        rel->init( QgsProject::instance()->relationManager() );
-      }
-    }
-  }
-}
-
 void QgsVectorLayer::onJoinedFieldsChanged()
 {
   // some of the fields of joined layers have changed -> we need to update this layer's fields too
@@ -3991,9 +3828,9 @@ void QgsVectorLayer::onFeatureDeleted( const QgsFeatureId& fid )
 
 QgsVectorLayer::ValueRelationData QgsVectorLayer::valueRelation( int idx )
 {
-  if ( editorWidgetV2( idx ) == "ValueRelation" )
+  if ( mEditFormConfig->widgetType( idx ) == "ValueRelation" )
   {
-    QgsEditorWidgetConfig cfg = editorWidgetV2Config( idx );
+    QgsEditorWidgetConfig cfg = mEditFormConfig->widgetConfig( idx );
 
     return ValueRelationData( cfg.value( "Layer" ).toString(),
                               cfg.value( "Key" ).toString(),
@@ -4013,16 +3850,6 @@ QgsVectorLayer::ValueRelationData QgsVectorLayer::valueRelation( int idx )
 QList<QgsRelation> QgsVectorLayer::referencingRelations( int idx )
 {
   return QgsProject::instance()->relationManager()->referencingRelations( this, idx );
-}
-
-QList<QgsAttributeEditorElement*> &QgsVectorLayer::attributeEditorElements()
-{
-  return mAttributeEditorElements;
-}
-
-void QgsVectorLayer::clearAttributeEditorWidgets()
-{
-  mAttributeEditorElements.clear();
 }
 
 QDomElement QgsAttributeEditorContainer::toDomElement( QDomDocument& doc ) const

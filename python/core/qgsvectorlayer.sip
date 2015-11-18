@@ -1097,7 +1097,7 @@ class QgsVectorLayer : QgsMapLayer
     /**
      * Returns a list of tabs holding groups and fields
      */
-    QList< QgsAttributeEditorElement* > &attributeEditorElements();
+    QList< QgsAttributeEditorElement* > attributeEditorElements();
     /**
      * Clears all the tabs for the attribute editor form
      */
@@ -1255,20 +1255,8 @@ class QgsVectorLayer : QgsMapLayer
     /** Get python function for edit form initialization */
     QString editFormInit();
 
-    /** Get python code for edit form initialization */
-    QString editFormInitCode();
-
-    /** Reeturn if python code has to be loaded for edit form initialization */
-    bool editFormInitUseCode();
-
     /** Set python function for edit form initialization */
     void setEditFormInit( const QString& function );
-
-    /** Set python code for edit form initialization */
-    void setEditFormInitCode( const QString& code );
-
-    /** Set python code for edit form initialization */
-    void setEditFormInitUseCode( const bool useCode );
 
     /**
      * Access value map
