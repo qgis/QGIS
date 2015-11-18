@@ -159,7 +159,7 @@ class TestQgsVectorLayer(TestCase):
         checkAfter()
         assert layer.dataProvider().featureCount() == 1
 
-    #DELETE FEATURE
+    # DELETE FEATURE
 
     def test_DeleteFeature(self):
         layer = createLayerWithOnePoint()
@@ -258,7 +258,7 @@ class TestQgsVectorLayer(TestCase):
 
         assert layer.dataProvider().featureCount() == 0
 
-    #CHANGE ATTRIBUTE
+    # CHANGE ATTRIBUTE
 
     def test_ChangeAttribute(self):
         layer = createLayerWithOnePoint()
@@ -347,8 +347,8 @@ class TestQgsVectorLayer(TestCase):
         assert layer.commitChanges()
         checkAfter()
 
-        #print "COMMIT ERRORS:"
-        #for item in list(layer.commitErrors()): print item
+        # print "COMMIT ERRORS:"
+        # for item in list(layer.commitErrors()): print item
 
     # CHANGE GEOMETRY
 
@@ -471,8 +471,8 @@ class TestQgsVectorLayer(TestCase):
         assert layer.commitChanges()
         checkAfter()
 
-        #print "COMMIT ERRORS:"
-        #for item in list(layer.commitErrors()): print item
+        # print "COMMIT ERRORS:"
+        # for item in list(layer.commitErrors()): print item
 
     # ADD ATTRIBUTE
 
@@ -517,7 +517,7 @@ class TestQgsVectorLayer(TestCase):
             assert f2[1] == 123
             assert f2[2] is None
 
-        #for nt in layer.dataProvider().nativeTypes():
+        # for nt in layer.dataProvider().nativeTypes():
         #    print (nt.mTypeDesc, nt.mTypeName, nt.mType, nt.mMinLen,
         #          nt.mMaxLen, nt.mMinPrec, nt.mMaxPrec)
         assert layer.dataProvider().supportedType(fld1)
@@ -591,8 +591,8 @@ class TestQgsVectorLayer(TestCase):
         layer.commitChanges()
         checkAfter()
 
-        #print "COMMIT ERRORS:"
-        #for item in list(layer.commitErrors()): print item
+        # print "COMMIT ERRORS:"
+        # for item in list(layer.commitErrors()): print item
 
     def test_AddAttributeAfterChangeValue(self):
         pass  # not interesting to test...?
@@ -634,7 +634,7 @@ class TestQgsVectorLayer(TestCase):
 
         def checkAfterOneDelete():
             flds = layer.pendingFields()
-            #for fld in flds: print "FLD", fld.name()
+            # for fld in flds: print "FLD", fld.name()
             assert len(flds) == 2
             assert flds[0].name() == "fldint"
             assert flds[1].name() == "flddouble"
@@ -654,7 +654,7 @@ class TestQgsVectorLayer(TestCase):
         def checkAfterTwoDeletes():
             assert layer.pendingAllAttributesList() == [0]
             flds = layer.pendingFields()
-            #for fld in flds: print "FLD", fld.name()
+            # for fld in flds: print "FLD", fld.name()
             assert len(flds) == 1
             assert flds[0].name() == "flddouble"
 
@@ -975,6 +975,19 @@ class TestQgsVectorLayer(TestCase):
         layer.removeExpressionField(idx)
 
         assert(layer.pendingFields().count() == cnt)
+
+    def test_ExpressionFilter(self):
+        layer = createLayerWithOnePoint()
+
+        idx = layer.addExpressionField('5', QgsField('test', QVariant.LongLong))
+
+        features = layer.getFeatures(QgsFeatureRequest().setFilterExpression('"test" = 6'))
+
+        assert(len(list(features)) == 0)
+
+        features = layer.getFeatures(QgsFeatureRequest().setFilterExpression('"test" = 5'))
+
+        assert(len(list(features)) == 1)
 
     def onLayerTransparencyChanged(self, tr):
         self.transparencyTest = tr
