@@ -32,8 +32,9 @@ from PyQt4 import uic
 from PyQt4.QtCore import Qt, QEvent, QPyNullVariant
 from PyQt4.QtGui import (QFileDialog, QDialog, QIcon, QStyle,
                          QStandardItemModel, QStandardItem, QMessageBox, QStyledItemDelegate,
-                         QLineEdit, QSpinBox, QDoubleSpinBox, QWidget, QToolButton, QHBoxLayout,
+                         QLineEdit, QWidget, QToolButton, QHBoxLayout,
                          QComboBox)
+from qgis.gui import QgsDoubleSpinBox, QgsSpinBox
 
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.core.Processing import Processing
@@ -198,11 +199,11 @@ class SettingDelegate(QStyledItemDelegate):
         else:
             value = self.convertValue(index.model().data(index, Qt.EditRole))
             if isinstance(value, (int, long)):
-                spnBox = QSpinBox(parent)
+                spnBox = QgsSpinBox(parent)
                 spnBox.setRange(-999999999, 999999999)
                 return spnBox
             elif isinstance(value, float):
-                spnBox = QDoubleSpinBox(parent)
+                spnBox = QgsDoubleSpinBox(parent)
                 spnBox.setRange(-999999999.999999, 999999999.999999)
                 spnBox.setDecimals(6)
                 return spnBox
