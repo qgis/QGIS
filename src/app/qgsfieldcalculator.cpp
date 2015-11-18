@@ -246,9 +246,6 @@ void QgsFieldCalculator::accept()
     bool calculationSuccess = true;
     QString error;
 
-    bool onlySelected = mOnlyUpdateSelectedCheckBox->isChecked();
-    QgsFeatureIds selectedIds = mVectorLayer->selectedFeaturesIds();
-
     bool useGeometry = exp.needsGeometry();
     int rownum = 1;
 
@@ -259,17 +256,14 @@ void QgsFieldCalculator::accept()
     if ( newField )
       emptyAttribute = QVariant( field.type() );
 
-    QgsFeatureIterator fit = mVectorLayer->getFeatures( QgsFeatureRequest().setFlags( useGeometry ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) );
+    QgsFeatureRequest req = QgsFeatureRequest().setFlags( useGeometry ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry );
+    if ( mOnlyUpdateSelectedCheckBox->isChecked() )
+    {
+      req.setFilterFids( mVectorLayer->selectedFeaturesIds() );
+    }
+    QgsFeatureIterator fit = mVectorLayer->getFeatures( req );
     while ( fit.nextFeature( feature ) )
     {
-      if ( onlySelected )
-      {
-        if ( !selectedIds.contains( feature.id() ) )
-        {
-          continue;
-        }
-      }
-
       expContext.setFeature( feature );
       expContext.lastScope()->setVariable( QString( "row_number" ), rownum );
 
