@@ -227,6 +227,9 @@ QgsSvgCacheEntry* QgsSvgCache::insertSVG( const QString& file, double size, cons
 void QgsSvgCache::containsParams( const QString& path, bool& hasFillParam, QColor& defaultFillColor, bool& hasOutlineParam, QColor& defaultOutlineColor,
                                   bool& hasOutlineWidthParam, double& defaultOutlineWidth ) const
 {
+  hasFillParam = false;
+  hasOutlineParam = false;
+  hasOutlineWidthParam = false;
   defaultFillColor = QColor( Qt::black );
   defaultOutlineColor = QColor( Qt::black );
   defaultOutlineWidth = 1.0;
