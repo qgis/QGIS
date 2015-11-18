@@ -2577,7 +2577,8 @@ QString QgsOgrUtils::quotedValue( const QVariant& value )
       return value.toString();
 
     case QVariant::Bool:
-      return value.toBool() ? "TRUE" : "FALSE";
+      //OGR does not support boolean literals
+      return value.toBool() ? "1" : "0";
 
     default:
     case QVariant::String:

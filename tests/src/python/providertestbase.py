@@ -65,6 +65,8 @@ class ProviderTestCase(object):
         self.assert_query(provider, '"name" ~ \'[OP]ra[gne]+\'', [1])
         self.assert_query(provider, '"name"="name2"', [2, 4])  # mix of matched and non-matched case sensitive names
         self.assert_query(provider, 'true', [1, 2, 3, 4, 5])
+        self.assert_query(provider, 'false', [])
+
         #Three value logic
         self.assert_query(provider, 'false and false', [])
         self.assert_query(provider, 'false and true', [])
@@ -87,6 +89,7 @@ class ProviderTestCase(object):
         self.assert_query(provider, 'not true', [])
         self.assert_query(provider, 'not false', [1, 2, 3, 4, 5])
         self.assert_query(provider, 'not null', [])
+
         #not
         self.assert_query(provider, 'not name = \'Apple\'', [1, 3, 4])
         self.assert_query(provider, 'not name IS NULL', [1, 2, 3, 4])

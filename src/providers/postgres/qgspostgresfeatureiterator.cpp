@@ -77,7 +77,7 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
     whereClause = QgsPostgresUtils::andWhereClauses( whereClause, fidsWhereClause );
   }
   else if ( request.filterType() == QgsFeatureRequest::FilterExpression
-            && QSettings().value( "/qgis/postgres/compileExpressions", false ).toBool() )
+            && QSettings().value( "/qgis/compileExpressions", true ).toBool() )
   {
     QgsPostgresExpressionCompiler compiler = QgsPostgresExpressionCompiler( source );
 

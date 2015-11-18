@@ -30,7 +30,7 @@ QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestPyQgsPostgresProvider(TestCase, ProviderTestCase):
+class TestPyQgsShapefileProvider(TestCase, ProviderTestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -54,6 +54,12 @@ class TestPyQgsPostgresProvider(TestCase, ProviderTestCase):
         """Run after all tests"""
         shutil.rmtree(cls.basetestpath, True)
         shutil.rmtree(cls.repackfilepath, True)
+
+    def enableCompiler(self):
+        QSettings().setValue(u'/qgis/compileExpressions', True)
+
+    def disableCompiler(self):
+        QSettings().setValue(u'/qgis/compileExpressions', False)
 
     def testRepack(self):
         vl = QgsVectorLayer(u'{}|layerid=0'.format(self.repackfile), u'test', u'ogr')

@@ -84,7 +84,8 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource* source, bool 
     OGR_L_SetSpatialFilter( ogrLayer, 0 );
   }
 
-  if ( request.filterType() == QgsFeatureRequest::FilterExpression )
+  if ( request.filterType() == QgsFeatureRequest::FilterExpression
+       && QSettings().value( "/qgis/compileExpressions", true ).toBool() )
   {
     QgsOgrExpressionCompiler compiler = QgsOgrExpressionCompiler( source );
 

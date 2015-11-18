@@ -48,10 +48,10 @@ class TestPyQgsPostgresProvider(TestCase, ProviderTestCase):
         """Run after all tests"""
 
     def enableCompiler(self):
-        QSettings().setValue(u'/qgis/postgres/compileExpressions', True)
+        QSettings().setValue(u'/qgis/compileExpressions', True)
 
     def disableCompiler(self):
-        QSettings().setValue(u'/qgis/postgres/compileExpressions', False)
+        QSettings().setValue(u'/qgis/compileExpressions', False)
 
 # HERE GO THE PROVIDER SPECIFIC TESTS
     def testDefaultValue(self):

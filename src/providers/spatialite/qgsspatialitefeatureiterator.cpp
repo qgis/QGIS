@@ -21,8 +21,7 @@
 
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
-
-
+#include <QSettings>
 
 QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
     : QgsAbstractFeatureIteratorFromSource<QgsSpatiaLiteFeatureSource>( source, ownSource, request )
@@ -64,7 +63,8 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
       whereClauses.append( whereClause );
     }
   }
-  else if ( request.filterType() == QgsFeatureRequest::FilterExpression )
+  else if ( request.filterType() == QgsFeatureRequest::FilterExpression
+            && QSettings().value( "/qgis/compileExpressions", true ).toBool() )
   {
     QgsSpatiaLiteExpressionCompiler compiler = QgsSpatiaLiteExpressionCompiler( source );
 
