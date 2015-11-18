@@ -438,7 +438,7 @@ class QgsImageFillSymbolLayer: QgsFillSymbolLayerV2
     void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context );
 
     virtual QgsSymbolV2* subSymbol();
-    virtual bool setSubSymbol( QgsSymbolV2* symbol );
+    virtual bool setSubSymbol( QgsSymbolV2* symbol /Transfer/ );
 
     void setOutlineWidthUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit outlineWidthUnit() const;
@@ -495,7 +495,7 @@ class QgsRasterFillSymbolLayer: QgsImageFillSymbolLayer
 
     //override QgsImageFillSymbolLayer's support for sub symbols
     virtual QgsSymbolV2* subSymbol();
-    virtual bool setSubSymbol( QgsSymbolV2* symbol );
+    virtual bool setSubSymbol( QgsSymbolV2* symbol /Transfer/ );
 
     /** Sets the path to the raster image used for the fill.
      * @param imagePath path to image file
@@ -758,7 +758,7 @@ class QgsLinePatternFillSymbolLayer: QgsImageFillSymbolLayer
     void setMapUnitScale( const QgsMapUnitScale& scale );
     QgsMapUnitScale mapUnitScale() const;
 
-    bool setSubSymbol( QgsSymbolV2* symbol );
+    bool setSubSymbol( QgsSymbolV2* symbol /Transfer/ );
     QgsSymbolV2* subSymbol();
 
     QSet<QString> usedAttributes() const;
@@ -804,7 +804,7 @@ class QgsPointPatternFillSymbolLayer : QgsImageFillSymbolLayer
     double displacementY() const;
     void setDisplacementY( double d );
 
-    bool setSubSymbol( QgsSymbolV2* symbol );
+    bool setSubSymbol( QgsSymbolV2* symbol /Transfer/ );
     virtual QgsSymbolV2* subSymbol();
 
     void setDistanceXUnit( QgsSymbolV2::OutputUnit unit );
