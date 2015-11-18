@@ -75,7 +75,7 @@ class CORE_EXPORT QgsLineStringV2: public QgsCurveV2
     void addToPainterPath( QPainterPath& path ) const override;
     void drawAsPolygon( QPainter& p ) const override;
 
-    const QPolygonF& qPolygonF() const { return mCoords; }
+    QPolygonF qPolygonF() const;
 
     virtual bool insertVertex( const QgsVertexId& position, const QgsPointV2& vertex ) override;
     virtual bool moveVertex( const QgsVertexId& position, const QgsPointV2& newPos ) override;
@@ -99,7 +99,8 @@ class CORE_EXPORT QgsLineStringV2: public QgsCurveV2
     virtual bool addMValue( double mValue = 0 ) override;
 
   private:
-    QPolygonF mCoords;
+    QVector<double> mX;
+    QVector<double> mY;
     QVector<double> mZ;
     QVector<double> mM;
 

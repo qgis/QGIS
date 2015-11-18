@@ -40,7 +40,8 @@ QgsLineStringV2 *QgsLineStringV2::clone() const
 
 void QgsLineStringV2::clear()
 {
-  mCoords.clear();
+  mX.clear();
+  mY.clear();
   mZ.clear();
   mM.clear();
   mWkbType = QgsWKBTypes::Unknown;
@@ -149,12 +150,12 @@ QString QgsLineStringV2::asJSON( int precision ) const
 double QgsLineStringV2::length() const
 {
   double length = 0;
-  int size = mCoords.size();
+  int size = mX.size();
   double dx, dy;
   for ( int i = 1; i < size; ++i )
   {
-    dx = mCoords[i].x() - mCoords[ i - 1 ].x();
-    dy = mCoords[i].y() - mCoords[ i - 1 ].y();
+    dx = mX.at( i ) - mX.at( i - 1 );
+    dy = mY.at( i ) - mY.at( i - 1 );
     length += sqrt( dx * dx + dy * dy );
   }
   return length;
@@ -185,17 +186,18 @@ QgsLineStringV2* QgsLineStringV2::curveToLine() const
 
 int QgsLineStringV2::numPoints() const
 {
-  return mCoords.size();
+  return mX.size();
 }
 
 QgsPointV2 QgsLineStringV2::pointN( int i ) const
 {
-  if ( mCoords.size() <= i )
+  if ( mX.size() <= i )
   {
     return QgsPointV2();
   }
 
-  const QPointF& pt = mCoords.at( i );
+  double x = mX.at( i );
+  double y = mY.at( i );
   double z = 0;
   double m = 0;
 
@@ -223,7 +225,7 @@ QgsPointV2 QgsLineStringV2::pointN( int i ) const
   {
     t = QgsWKBTypes::PointM;
   }
-  return QgsPointV2( t, pt.x(), pt.y(), z, m );
+  return QgsPointV2( t, x, y, z, m );
 }
 
 void QgsLineStringV2::points( QList<QgsPointV2>& pts ) const
@@ -241,7 +243,8 @@ void QgsLineStringV2::setPoints( const QList<QgsPointV2>& points )
   if ( points.size() < 1 )
   {
     mWkbType = QgsWKBTypes::Unknown;
-    mCoords.clear();
+    mX.clear();
+    mY.clear();
     mZ.clear();
     mM.clear();
     return;
@@ -254,7 +257,8 @@ void QgsLineStringV2::setPoints( const QList<QgsPointV2>& points )
 
   setZMTypeFromSubGeometry( &firstPt, QgsWKBTypes::LineString );
 
-  mCoords.resize( points.size() );
+  mX.resize( points.size() );
+  mY.resize( points.size() );
   if ( hasZ )
   {
     mZ.resize( points.size() );
@@ -274,15 +278,15 @@ void QgsLineStringV2::setPoints( const QList<QgsPointV2>& points )
 
   for ( int i = 0; i < points.size(); ++i )
   {
-    mCoords[i].rx() = points[i].x();
-    mCoords[i].ry() = points[i].y();
+    mX[i] = points.at( i ).x();
+    mY[i] = points.at( i ).y();
     if ( hasZ )
     {
-      mZ[i] = points[i].z();
+      mZ[i] = points.at( i ).z();
     }
     if ( hasM )
     {
-      mM[i] = points[i].m();
+      mM[i] = points.at( i ).m();
     }
   }
 }
@@ -299,14 +303,15 @@ void QgsLineStringV2::append( const QgsLineStringV2* line )
     setZMTypeFromSubGeometry( line, QgsWKBTypes::LineString );
   }
 
-  mCoords += line->mCoords;
+  mX += line->mX;
+  mY += line->mY;
   mZ += line->mZ;
   mM += line->mM;
 }
 
 void QgsLineStringV2::draw( QPainter& p ) const
 {
-  p.drawPolyline( mCoords );
+  p.drawPolyline( qPolygonF() );
 }
 
 void QgsLineStringV2::addToPainterPath( QPainterPath& path ) const
@@ -317,39 +322,73 @@ void QgsLineStringV2::addToPainterPath( QPainterPath& path ) const
     return;
   }
 
-  if ( path.isEmpty() || path.currentPosition() != mCoords[0] )
+  if ( path.isEmpty() || path.currentPosition() != QPointF( mX.at( 0 ), mY.at( 0 ) ) )
   {
-    path.moveTo( mCoords[0] );
+    path.moveTo( mX.at( 0 ), mY.at( 0 ) );
   }
 
   for ( int i = 1; i < nPoints; ++i )
   {
-    path.lineTo( mCoords[i] );
+    path.lineTo( mX.at( i ), mY.at( i ) );
   }
 }
 
 void QgsLineStringV2::drawAsPolygon( QPainter& p ) const
 {
-  p.drawPolygon( mCoords );
+  p.drawPolygon( qPolygonF() );
+}
+
+QPolygonF QgsLineStringV2::qPolygonF() const
+{
+  QPolygonF points;
+  for ( int i = 0; i < mX.count(); ++i )
+  {
+    points << QPointF( mX.at( i ), mY.at( i ) );
+  }
+  return points;
 }
 
 void QgsLineStringV2::transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d )
 {
-  ct.transformPolygon( mCoords, d );
+  double* zArray = mZ.data();
+
+  bool hasZ = is3D();
+  int nPoints = numPoints();
+  if ( !hasZ )
+  {
+    zArray = new double[nPoints];
+    for ( int i = 0; i < nPoints; ++i )
+    {
+      zArray[i] = 0;
+    }
+  }
+  ct.transformCoords( nPoints, mX.data(), mY.data(), zArray, d );
+  if ( !hasZ )
+  {
+    delete[] zArray;
+  }
+
 }
 
 void QgsLineStringV2::transform( const QTransform& t )
 {
-  mCoords = t.map( mCoords );
+  int nPoints = numPoints();
+  for ( int i = 0; i < nPoints; ++i )
+  {
+    qreal x, y;
+    t.map( mX.at( i ), mY.at( i ), &x, &y );
+    mX[i] = x; mY[i] = y;
+  }
 }
 
 bool QgsLineStringV2::insertVertex( const QgsVertexId& position, const QgsPointV2& vertex )
 {
-  if ( position.vertex < 0 || position.vertex > mCoords.size() )
+  if ( position.vertex < 0 || position.vertex > mX.size() )
   {
     return false;
   }
-  mCoords.insert( position.vertex, QPointF( vertex.x(), vertex.y() ) );
+  mX.insert( position.vertex, vertex.x() );
+  mY.insert( position.vertex, vertex.y() );
   if ( is3D() )
   {
     mZ.insert( position.vertex, vertex.z() );
@@ -364,12 +403,12 @@ bool QgsLineStringV2::insertVertex( const QgsVertexId& position, const QgsPointV
 
 bool QgsLineStringV2::moveVertex( const QgsVertexId& position, const QgsPointV2& newPos )
 {
-  if ( position.vertex < 0 || position.vertex >= mCoords.size() )
+  if ( position.vertex < 0 || position.vertex >= mX.size() )
   {
     return false;
   }
-  mCoords[position.vertex].rx() = newPos.x();
-  mCoords[position.vertex].ry() = newPos.y();
+  mX[position.vertex] = newPos.x();
+  mY[position.vertex] = newPos.y();
   if ( is3D() && newPos.is3D() )
   {
     mZ[position.vertex] = newPos.z();
@@ -384,12 +423,13 @@ bool QgsLineStringV2::moveVertex( const QgsVertexId& position, const QgsPointV2&
 
 bool QgsLineStringV2::deleteVertex( const QgsVertexId& position )
 {
-  if ( position.vertex >= mCoords.size() || position.vertex < 0 )
+  if ( position.vertex >= mX.size() || position.vertex < 0 )
   {
     return false;
   }
 
-  mCoords.remove( position.vertex );
+  mX.remove( position.vertex );
+  mY.remove( position.vertex );
   if ( is3D() )
   {
     mZ.remove( position.vertex );
@@ -409,7 +449,8 @@ void QgsLineStringV2::addVertex( const QgsPointV2& pt )
     setZMTypeFromSubGeometry( &pt, QgsWKBTypes::LineString );
   }
 
-  mCoords.append( QPointF( pt.x(), pt.y() ) );
+  mX.append( pt.x() );
+  mY.append( pt.y() );
   if ( is3D() )
   {
     mZ.append( pt.z() );
@@ -427,12 +468,14 @@ double QgsLineStringV2::closestSegment( const QgsPointV2& pt, QgsPointV2& segmen
   double testDist = 0;
   double segmentPtX, segmentPtY;
 
-  int size = mCoords.size();
+  int size = mX.size();
   for ( int i = 1; i < size; ++i )
   {
-    const QPointF& prev = mCoords.at( i - 1 );
-    const QPointF& currentPt = mCoords.at( i );
-    testDist = QgsGeometryUtils::sqrDistToLine( pt.x(), pt.y(), prev.x(), prev.y(), currentPt.x(), currentPt.y(), segmentPtX, segmentPtY, epsilon );
+    double prevX = mX.at( i - 1 );
+    double prevY = mY.at( i - 1 );
+    double currentX = mX.at( i );
+    double currentY = mY.at( i );
+    testDist = QgsGeometryUtils::sqrDistToLine( pt.x(), pt.y(), prevX, prevY, currentX, currentY, segmentPtX, segmentPtY, epsilon );
     if ( testDist < sqrDist )
     {
       sqrDist = testDist;
@@ -440,7 +483,7 @@ double QgsLineStringV2::closestSegment( const QgsPointV2& pt, QgsPointV2& segmen
       segmentPt.setY( segmentPtY );
       if ( leftOf )
       {
-        *leftOf = ( QgsGeometryUtils::leftOfLine( segmentPtX, segmentPtY, prev.x(), prev.y(), pt.x(), pt.y() ) < 0 );
+        *leftOf = ( QgsGeometryUtils::leftOfLine( segmentPtX, segmentPtY, prevX, prevY, pt.x(), pt.y() ) < 0 );
       }
       vertexAfter.part = 0; vertexAfter.ring = 0; vertexAfter.vertex = i;
     }
@@ -464,7 +507,7 @@ void QgsLineStringV2::sumUpArea( double& sum ) const
   int maxIndex = numPoints() - 1;
   for ( int i = 0; i < maxIndex; ++i )
   {
-    sum += 0.5 * ( mCoords[i].x() * mCoords[i+1].y() - mCoords[i].y() * mCoords[i+1].x() );
+    sum += 0.5 * ( mX.at( i ) * mY.at( i + 1 ) - mY.at( i ) * mX.at( i + 1 ) );
   }
 }
 
@@ -474,13 +517,14 @@ void QgsLineStringV2::importVerticesFromWkb( const QgsConstWkbPtr& wkb )
   bool hasM = isMeasure();
   int nVertices = 0;
   wkb >> nVertices;
-  mCoords.resize( nVertices );
+  mX.resize( nVertices );
+  mY.resize( nVertices );
   hasZ ? mZ.resize( nVertices ) : mZ.clear();
   hasM ? mM.resize( nVertices ) : mM.clear();
   for ( int i = 0; i < nVertices; ++i )
   {
-    wkb >> mCoords[i].rx();
-    wkb >> mCoords[i].ry();
+    wkb >> mX[i];
+    wkb >> mY[i];
     if ( hasZ )
     {
       wkb >> mZ[i];
@@ -507,28 +551,34 @@ double QgsLineStringV2::vertexAngle( const QgsVertexId& vertex ) const
   {
     if ( isClosed() )
     {
-      QPointF previous = mCoords[numPoints() - 1 ];
-      QPointF current = mCoords[0];
-      QPointF after = mCoords[1];
-      return QgsGeometryUtils::averageAngle( previous.x(), previous.y(), current.x(), current.y(), after.x(), after.y() );
+      double previousX = mX.at( numPoints() - 1 );
+      double previousY = mY.at( numPoints() - 1 );
+      double currentX = mX.at( 0 );
+      double currentY = mY.at( 0 );
+      double afterX = mX.at( 1 );
+      double afterY = mY.at( 1 );
+      return QgsGeometryUtils::averageAngle( previousX, previousY, currentX, currentY, afterX, afterY );
     }
     else if ( vertex.vertex == 0 )
     {
-      return QgsGeometryUtils::linePerpendicularAngle( mCoords[0].x(), mCoords[0].y(), mCoords[1].x(), mCoords[1].y() );
+      return QgsGeometryUtils::linePerpendicularAngle( mX.at( 0 ), mY.at( 0 ), mX.at( 1 ), mY.at( 1 ) );
     }
     else
     {
       int a = numPoints() - 2;
       int b = numPoints() - 1;
-      return QgsGeometryUtils::linePerpendicularAngle( mCoords[a].x(), mCoords[a].y(), mCoords[b].x(), mCoords[b].y() );
+      return QgsGeometryUtils::linePerpendicularAngle( mX.at( a ), mY.at( a ), mX.at( b ), mY.at( b ) );
     }
   }
   else
   {
-    QPointF previous = mCoords[vertex.vertex - 1 ];
-    QPointF current = mCoords[vertex.vertex];
-    QPointF after = mCoords[vertex.vertex + 1];
-    return QgsGeometryUtils::averageAngle( previous.x(), previous.y(), current.x(), current.y(), after.x(), after.y() );
+    double previousX = mX.at( vertex.vertex - 1 );
+    double previousY = mY.at( vertex.vertex - 1 );
+    double currentX = mX.at( vertex.vertex );
+    double currentY = mY.at( vertex.vertex );
+    double afterX = mX.at( vertex.vertex + 1 );
+    double afterY = mY.at( vertex.vertex + 1 );
+    return QgsGeometryUtils::averageAngle( previousX, previousY, currentX, currentY, afterX, afterY );
   }
 }
 
