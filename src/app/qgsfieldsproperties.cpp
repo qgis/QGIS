@@ -848,7 +848,7 @@ void QgsFieldsProperties::apply()
     int idx = mFieldsList->item( i, attrIdCol )->text().toInt();
     FieldConfig cfg = configForRow( i );
 
-    mLayer->editFormConfig()->setFieldEditable( i, cfg.mEditable );
+    mLayer->editFormConfig()->setReadOnly( i, !cfg.mEditable );
     mLayer->editFormConfig()->setLabelOnTop( i, cfg.mLabelOnTop );
 
     mLayer->editFormConfig()->setWidgetType( idx, cfg.mEditorWidgetV2Type );
@@ -900,7 +900,7 @@ QgsFieldsProperties::FieldConfig::FieldConfig()
 QgsFieldsProperties::FieldConfig::FieldConfig( QgsVectorLayer* layer, int idx )
     : mButton( 0 )
 {
-  mEditable = layer->editFormConfig()->fieldEditable( idx );
+  mEditable = !layer->editFormConfig()->readOnly( idx );
   mEditableEnabled = layer->fields().fieldOrigin( idx ) != QgsFields::OriginJoin
                      && layer->fields().fieldOrigin( idx ) != QgsFields::OriginExpression;
   mLabelOnTop = layer->editFormConfig()->labelOnTop( idx );

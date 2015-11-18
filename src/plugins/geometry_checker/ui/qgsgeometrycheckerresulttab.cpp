@@ -78,7 +78,7 @@ QgsGeometryCheckerResultTab::QgsGeometryCheckerResultTab( QgisInterface* iface, 
 QgsGeometryCheckerResultTab::~QgsGeometryCheckerResultTab()
 {
   if ( mFeaturePool->getLayer() )
-    mFeaturePool->getLayer()->setReadOnly( false );
+    mFeaturePool->getLayer()->setFieldEditable( false );
   delete mChecker;
   delete mFeaturePool;
   qDeleteAll( mCurrentRubberBands );

@@ -1006,7 +1006,7 @@ class QgsVectorLayer : QgsMapLayer
     /** Make layer read-only (editing disabled) or not
      *  @return false if the layer is in editing yet
      */
-    bool setReadOnly( bool readonly = true );
+    bool setFieldEditable( bool editable = true );
 
     /**
      * Make layer editable.

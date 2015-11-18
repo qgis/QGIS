@@ -286,7 +286,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
   emit checkerStarted( checker, featurePool );
 
   /** Add result layer (do this after checkerStarted, otherwise warning about removing of result layer may appear) **/
-  layer->setReadOnly( true );
+  layer->setFieldEditable( true );
   if ( ui.radioButtonOutputNew->isChecked() )
   {
     QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << layer );
