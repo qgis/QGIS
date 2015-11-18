@@ -1171,6 +1171,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /**
      * Adds a tab (for the attribute editor form) holding groups and fields
+     *
+     * @deprecated Use `editFormConfig()->addTab()` instead
      */
     Q_DECL_DEPRECATED void addAttributeEditorWidget( QgsAttributeEditorElement* data ) {mEditFormConfig->addTab( data );}
 
@@ -1180,6 +1182,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @param fieldIdx  The index of the field
      *
      * @return The id for the editor widget or a NULL string if not applicable
+     *
+     * @deprecated Use `editFormConfig()->widgetType()` instead
      */
     Q_DECL_DEPRECATED const QString editorWidgetV2( int fieldIdx ) const { return mEditFormConfig->widgetType( fieldIdx ); }
 
@@ -1191,6 +1195,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @return The id for the editor widget or a NULL string if not applicable
      *
      * @note python method name editorWidgetV2ByName
+     *
+     * @deprecated Use `editFormConfig()->widgetType()` instead
      */
     Q_DECL_DEPRECATED const QString editorWidgetV2( const QString& fieldName ) const { return mEditFormConfig->widgetType( fieldName ); }
 
@@ -1200,6 +1206,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @param fieldIdx  The index of the field
      *
      * @return The configuration for the editor widget or an empty config if the field does not exist
+     *
+     * @deprecated Use `editFormConfig()->widgetConfig()` instead
      */
     Q_DECL_DEPRECATED const QgsEditorWidgetConfig editorWidgetV2Config( int fieldIdx ) const { return mEditFormConfig->widgetConfig( fieldIdx ); }
 
@@ -1211,11 +1219,15 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @return The configuration for the editor widget or an empty config if the field does not exist
      *
      * @note python method name is editorWidgetV2ConfigByName
+     *
+     * @deprecated Use `editFormConfig()->widgetConfig()` instead
      */
     Q_DECL_DEPRECATED const QgsEditorWidgetConfig editorWidgetV2Config( const QString& fieldName ) const { return mEditFormConfig->widgetConfig( fieldName ); }
 
     /**
      * Returns a list of tabs holding groups and fields
+     *
+     * @deprecated Use `editFormConfig()->tabs()` instead
      */
     Q_DECL_DEPRECATED QList< QgsAttributeEditorElement* > attributeEditorElements() { return mEditFormConfig->tabs(); }
 
@@ -1290,21 +1302,27 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /**
      * Get edit type
      *
-     * @deprecated Use editorWidgetV2() instead
+     * @deprecated Use `editFormConfig()->widgetType()` instead
      */
     Q_DECL_DEPRECATED EditType editType( int idx );
 
     /**
      * Get edit type
      *
-     * @deprecated Use setEditorWidgetV2() instead
+     * @deprecated Use `editFormConfig()->setWidgetType()` instead
      */
     Q_DECL_DEPRECATED void setEditType( int idx, EditType edit );
 
-    /** Get the active layout for the attribute editor for this layer */
+    /**
+     * Get the active layout for the attribute editor for this layer
+     * @deprecated Use `editFormConfig()->layout()` instead
+     */
     Q_DECL_DEPRECATED EditorLayout editorLayout() { return ( EditorLayout )mEditFormConfig->layout(); }
 
-    /** Set the active layout for the attribute editor for this layer */
+    /**
+     * Set the active layout for the attribute editor for this layer
+     * @deprecated Use `editFormConfig()->setLayout()` instead
+     */
     Q_DECL_DEPRECATED void setEditorLayout( EditorLayout editorLayout ) { mEditFormConfig->setLayout(( QgsEditFormConfig::EditorLayout )editorLayout ); }
 
     /**
@@ -1334,6 +1352,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      *
      * @param attrIdx     Index of the field
      * @param widgetType  Type id of the editor widget to use
+     *
+     * @deprecated Use `editFormConfig()->setWidgetType()` instead
      */
     Q_DECL_DEPRECATED void setEditorWidgetV2( int attrIdx, const QString& widgetType ) { mEditFormConfig->setWidgetType( attrIdx, widgetType ); }
 
@@ -1351,28 +1371,41 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @param config      The config to set for this field
      *
      * @see setEditorWidgetV2() for a list of widgets and choose the widget to see the available options.
+     *
+     * @deprecated Use `editFormConfig()->setWidgetConfig()` instead
      */
     Q_DECL_DEPRECATED void setEditorWidgetV2Config( int attrIdx, const QgsEditorWidgetConfig& config ) { mEditFormConfig->setWidgetConfig( attrIdx, config ); }
 
     /**
      * Set string representing 'true' for a checkbox
      *
-     * @deprecated Use setEditorWidgetV2Config() instead
+     * @deprecated Use @deprecated Use `editFormConfig()->setWidgetConfig()` instead
      */
     Q_DECL_DEPRECATED void setCheckedState( int idx, const QString& checked, const QString& notChecked );
 
-    /** Get edit form */
+    /**
+     * Get edit form
+     *
+     * @deprecated Use `editFormConfig()->uiForm()` instead
+     */
     Q_DECL_DEPRECATED QString editForm() const { return mEditFormConfig->uiForm(); }
 
-    /** Set edit form */
+    /**
+     * Set edit form
+     * @deprecated Use `editFormConfig()->setUiForm()` instead
+     */
     Q_DECL_DEPRECATED void setEditForm( const QString& ui ) { mEditFormConfig->setUiForm( ui ); }
 
     /** Type of feature form pop-up suppression after feature creation (overrides app setting)
-     * @note added in 2.1 */
+     * @note added in 2.1
+     * @deprecated Use `editFormConfig()->suppress()` instead
+     */
     Q_DECL_DEPRECATED QgsVectorLayer::FeatureFormSuppress featureFormSuppress() const { return ( FeatureFormSuppress )mEditFormConfig->suppress(); }
 
     /** Set type of feature form pop-up suppression after feature creation (overrides app setting)
-     * @note added in 2.1 */
+     * @note added in 2.1
+     * @deprecated Use `editFormConfig()->setSuppress()` instead
+     */
     Q_DECL_DEPRECATED void setFeatureFormSuppress( QgsVectorLayer::FeatureFormSuppress s ) { mEditFormConfig->setSuppress(( QgsEditFormConfig::FeatureFormSuppress )s ); }
 
     /** Get annotation form */
@@ -1381,22 +1414,30 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Set annotation form for layer */
     void setAnnotationForm( const QString& ui );
 
-    /** Get python function for edit form initialization */
+    /**
+     * Get python function for edit form initialization
+     *
+     * @deprecated Use `editFormConfig()->initFunction()` instead
+     */
     Q_DECL_DEPRECATED QString editFormInit() const { return mEditFormConfig->initFunction(); }
 
-    /** Set python function for edit form initialization */
+    /**
+     * Set python function for edit form initialization
+     *
+     * @deprecated Use `editFormConfig()->setInitFunction()` instead
+     */
     Q_DECL_DEPRECATED void setEditFormInit( const QString& function ) { mEditFormConfig->setInitFunction( function ); }
 
     /**
      * Access value map
-     * @deprecated Use editorWidgetV2Config() instead
+     * @deprecated Use `editFormConfig()->widgetConfig()` instead
      */
     Q_DECL_DEPRECATED QMap<QString, QVariant> valueMap( int idx );
 
     /**
      * Access range widget config data
      *
-     * @deprecated Use editorWidgetV2Config() instead
+     * @deprecated Use `editFormConfig()->widgetConfig()` instead
      */
     Q_DECL_DEPRECATED RangeData range( int idx );
 
@@ -1414,27 +1455,40 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /**
      * Access date format
      *
-     * @deprecated Use setEditorWidgetV2Config() instead
+     * @deprecated Use `editFormConfig()->widgetConfig()` instead
      */
     Q_DECL_DEPRECATED QString dateFormat( int idx );
 
     /**
      * Access widget size for photo and webview widget
      *
-     * @deprecated Use setEditorWidgetV2Config() instead
+     * @deprecated Use `editFormConfig()->widgetConfig()` instead
      */
     Q_DECL_DEPRECATED QSize widgetSize( int idx );
 
-    /** Is edit widget editable **/
-    Q_DECL_DEPRECATED bool fieldEditable( int idx ) { return mEditFormConfig->fieldEditable( idx ); }
+    /**
+     * Is edit widget editable
+     *
+     * @deprecated Use `editFormConfig()->readOnly()` instead
+     */
+    Q_DECL_DEPRECATED bool fieldEditable( int idx ) { return mEditFormConfig->readOnly( idx ); }
 
-    /** Label widget on top **/
+    /**
+     * Label widget on top
+     * @deprecated Use `editFormConfig()->labelOnTop()` instead
+     */
     Q_DECL_DEPRECATED bool labelOnTop( int idx ) { return mEditFormConfig->labelOnTop( idx ); }
 
-    /** Set edit widget editable **/
-    Q_DECL_DEPRECATED void setFieldEditable( int idx, bool editable ) { mEditFormConfig->setFieldEditable( idx, editable ); }
+    /**
+     * Set edit widget editable
+     * @deprecated Use `editFormConfig()->setReadOnly()` instead
+     */
+    Q_DECL_DEPRECATED void setReadOnly( int idx, bool editable ) { mEditFormConfig->setFieldEditable( idx, editable ); }
 
-    /** Label widget on top **/
+    /**
+     * Label widget on top
+     * @deprecated Use `editFormConfig()->setLabelOnTop()` instead
+     */
     Q_DECL_DEPRECATED void setLabelOnTop( int idx, bool onTop ) { mEditFormConfig->setLabelOnTop( idx, onTop ); }
 
     //! Buffer with uncommitted editing operations. Only valid after editing has been turned on.
