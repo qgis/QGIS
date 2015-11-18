@@ -131,6 +131,7 @@ from FieldsMapper import FieldsMapper
 from Datasources2Vrt import Datasources2Vrt
 from CheckValidity import CheckValidity
 from OrientedMinimumBoundingBox import OrientedMinimumBoundingBox
+from Smooth import Smooth
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -179,7 +180,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         SelectByExpression(), HypsometricCurves(),
                         SplitLinesWithLines(), CreateConstantRaster(),
                         FieldsMapper(), SelectByAttributeSum(), Datasources2Vrt(),
-                        CheckValidity(), OrientedMinimumBoundingBox()
+                        CheckValidity(), OrientedMinimumBoundingBox(), Smooth()
                         ]
 
         if hasMatplotlib:
