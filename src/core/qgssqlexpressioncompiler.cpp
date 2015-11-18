@@ -219,7 +219,7 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
       if ( failOnPartialNode && ( lr == Partial || rr == Partial ) )
         return Fail;
 
-      result = left + ' ' + op + ' ' + right;
+      result = '(' + left + ' ' + op + ' ' + right + ')';
       if ( lr == Complete && rr == Complete )
         return ( partialCompilation ? Partial : Complete );
       else if (( lr == Partial && rr == Complete ) || ( lr == Complete && rr == Partial ) || ( lr == Partial && rr == Partial ) )
