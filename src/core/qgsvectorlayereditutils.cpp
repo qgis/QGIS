@@ -103,6 +103,13 @@ bool QgsVectorLayerEditUtils::deleteVertex( QgsFeatureId atFeatureId, int atVert
   if ( !geometry.deleteVertex( atVertex ) )
     return false;
 
+  if ( geometry.geometry() && geometry.geometry()->nCoordinates() == 0 )
+  {
+    //last vertex deleted, set geometry to null
+    geometry.setGeometry( 0 );
+  }
+
+
   L->editBuffer()->changeGeometry( atFeatureId, &geometry );
   return true;
 }
