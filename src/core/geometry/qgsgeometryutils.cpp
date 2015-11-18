@@ -498,11 +498,11 @@ QList<QgsPointV2> QgsGeometryUtils::pointsFromWKT( const QString &wktCoordinateL
     double y = coordinates[idx++].toDouble();
 
     double z = 0;
-    if (( is3D || foundZ ) && coordinates.length() >= idx )
+    if (( is3D || foundZ ) && coordinates.length() > idx )
       z = coordinates[idx++].toDouble();
 
     double m = 0;
-    if (( isMeasure || foundM ) && coordinates.length() >= idx )
+    if (( isMeasure || foundM ) && coordinates.length() > idx )
       m = coordinates[idx++].toDouble();
 
     QgsWKBTypes::Type t = QgsWKBTypes::Point;
