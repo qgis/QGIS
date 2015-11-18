@@ -1333,20 +1333,20 @@ bool QgsGeos::pointOnSurface( QgsPointV2& pt, QString* errorMsg ) const
   try
   {
     geos.reset( GEOSPointOnSurface_r( geosinit.ctxt, mGeos ) );
+
+    if ( !geos || GEOSisEmpty_r( geosinit.ctxt, geos.get() ) != 0 )
+    {
+      return false;
+    }
+
+    double x, y;
+    GEOSGeomGetX_r( geosinit.ctxt, geos.get(), &x );
+    GEOSGeomGetY_r( geosinit.ctxt, geos.get(), &y );
+
+    pt.setX( x );
+    pt.setY( y );
   }
   CATCH_GEOS_WITH_ERRMSG( false );
-
-  if ( !geos )
-  {
-    return false;
-  }
-
-  double x, y;
-  GEOSGeomGetX_r( geosinit.ctxt, geos.get(), &x );
-  GEOSGeomGetY_r( geosinit.ctxt, geos.get(), &y );
-
-  pt.setX( x );
-  pt.setY( y );
 
   return true;
 }
