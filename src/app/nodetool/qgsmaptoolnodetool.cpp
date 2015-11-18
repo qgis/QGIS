@@ -546,7 +546,14 @@ void QgsMapToolNodeTool::keyPressEvent( QKeyEvent* e )
     }
     else
     {
-      safeSelectVertex( firstSelectedIndex );
+      int nextVertexToSelect = firstSelectedIndex;
+      if ( mSelectedFeature->geometry()->type() == QGis::Line )
+      {
+        // for lines we don't wrap around vertex selection when deleting nodes from end of line
+        nextVertexToSelect = qMin( nextVertexToSelect, mSelectedFeature->geometry()->geometry()->nCoordinates() - 1 );
+      }
+
+      safeSelectVertex( nextVertexToSelect );
     }
     mCanvas->refresh();
 
