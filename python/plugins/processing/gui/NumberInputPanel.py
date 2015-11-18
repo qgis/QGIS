@@ -45,14 +45,14 @@ class NumberInputPanel(BASE, WIDGET):
         self.isInteger = isInteger
         if self.isInteger:
             self.spnValue.setDecimals(0)
-            if maximum == 0 or maximum:
-                self.spnValue.setMaximum(maximum)
-            else:
-                self.spnValue.setMaximum(99999999)
-            if minimum == 0 or minimum:
-                self.spnValue.setMinimum(minimum)
-            else:
-                self.spnValue.setMinimum(-99999999)
+        if maximum == 0 or maximum:
+            self.spnValue.setMaximum(maximum)
+        else:
+            self.spnValue.setMaximum(99999999)
+        if minimum == 0 or minimum:
+            self.spnValue.setMinimum(minimum)
+        else:
+            self.spnValue.setMinimum(-99999999)
 
         self.spnValue.setValue(float(number))
 
