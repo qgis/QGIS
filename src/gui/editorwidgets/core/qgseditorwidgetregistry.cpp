@@ -245,7 +245,7 @@ void QgsEditorWidgetRegistry::readMapLayer( QgsMapLayer* mapLayer, const QDomEle
         cfg = mWidgetFactories[ewv2Type]->readEditorConfig( ewv2CfgElem, vectorLayer, idx );
       }
 
-      vectorLayer->editFormConfig()->setFieldEditable( idx, ewv2CfgElem.attribute( "fieldEditable", "1" ) == "1" );
+      vectorLayer->editFormConfig()->setReadOnly( idx, ewv2CfgElem.attribute( "fieldEditable", "1" ) != "1" );
       vectorLayer->editFormConfig()->setLabelOnTop( idx, ewv2CfgElem.attribute( "labelOnTop", "0" ) == "1" );
       vectorLayer->editFormConfig()->setWidgetConfig( idx, cfg );
     }
@@ -301,7 +301,7 @@ void QgsEditorWidgetRegistry::writeMapLayer( QgsMapLayer* mapLayer, QDomElement&
     if ( mWidgetFactories.contains( widgetType ) )
     {
       QDomElement ewv2CfgElem = doc.createElement( "widgetv2config" );
-      ewv2CfgElem.setAttribute( "fieldEditable", vectorLayer->editFormConfig()->fieldEditable( idx ) );
+      ewv2CfgElem.setAttribute( "fieldEditable", !vectorLayer->editFormConfig()->readOnly( idx ) );
       ewv2CfgElem.setAttribute( "labelOnTop", vectorLayer->editFormConfig()->labelOnTop( idx ) );
 
       mWidgetFactories[widgetType]->writeConfig( vectorLayer->editFormConfig()->widgetConfig( idx ), ewv2CfgElem, doc, vectorLayer, idx );

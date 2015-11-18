@@ -681,7 +681,7 @@ Qt::ItemFlags QgsAttributeTableModel::flags( const QModelIndex &index ) const
   Qt::ItemFlags flags = QAbstractItemModel::flags( index );
 
   if ( layer()->isEditable() &&
-       layer()->editFormConfig()->fieldEditable( mAttributes[ index.column()] ) &&
+       !layer()->editFormConfig()->readOnly( mAttributes[ index.column()] ) &&
        (( layer()->dataProvider() && layer()->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) ||
         FID_IS_NEW( rowToId( index.row() ) ) ) )
     flags |= Qt::ItemIsEditable;

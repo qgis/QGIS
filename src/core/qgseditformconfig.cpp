@@ -4,8 +4,8 @@
 QgsEditFormConfig::QgsEditFormConfig( QObject* parent )
     : QObject( parent )
     , mEditorLayout( GeneratedLayout )
-    , mUseInitCode( false )
     , mFeatureFormSuppress( SuppressDefault )
+    , mUseInitCode( false )
 {
   connect( QgsProject::instance()->relationManager(), SIGNAL( relationsLoaded() ), this, SLOT( onRelationsLoaded() ) );
 }
@@ -72,17 +72,17 @@ void QgsEditFormConfig::setUiForm( const QString& ui )
   mEditForm = ui;
 }
 
-bool QgsEditFormConfig::fieldEditable( int idx )
+bool QgsEditFormConfig::readOnly( int idx )
 {
   if ( idx >= 0 && idx < mFields.count() )
   {
     if ( mFields.fieldOrigin( idx ) == QgsFields::OriginJoin
          || mFields.fieldOrigin( idx ) == QgsFields::OriginExpression )
-      return false;
-    return mFieldEditables.value( mFields.at( idx ).name(), true );
+      return true;
+    return !mFieldEditables.value( mFields.at( idx ).name(), true );
   }
   else
-    return true;
+    return false;
 }
 
 bool QgsEditFormConfig::labelOnTop( int idx )
@@ -93,10 +93,10 @@ bool QgsEditFormConfig::labelOnTop( int idx )
     return false;
 }
 
-void QgsEditFormConfig::setFieldEditable( int idx, bool editable )
+void QgsEditFormConfig::setReadOnly( int idx, bool readOnly )
 {
   if ( idx >= 0 && idx < mFields.count() )
-    mFieldEditables[ mFields.at( idx ).name()] = editable;
+    mFieldEditables[ mFields.at( idx ).name()] = !readOnly;
 }
 
 void QgsEditFormConfig::setLabelOnTop( int idx, bool onTop )

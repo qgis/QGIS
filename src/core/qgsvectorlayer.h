@@ -1126,7 +1126,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Make layer read-only (editing disabled) or not
      *  @return false if the layer is in editing yet
      */
-    bool setReadOnly( bool readonly = true );
+    bool setFieldEditable( bool editable = true );
 
     /**
      * Make layer editable.
@@ -1469,9 +1469,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /**
      * Is edit widget editable
      *
-     * @deprecated Use `editFormConfig()->readOnly()` instead
+     * @deprecated Use `editFormConfig()->fieldEditable()` instead
      */
-    Q_DECL_DEPRECATED bool fieldEditable( int idx ) { return mEditFormConfig->readOnly( idx ); }
+    Q_DECL_DEPRECATED bool fieldEditable( int idx ) { return !mEditFormConfig->readOnly( idx ); }
 
     /**
      * Label widget on top
@@ -1481,9 +1481,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /**
      * Set edit widget editable
-     * @deprecated Use `editFormConfig()->setReadOnly()` instead
+     * @deprecated Use `editFormConfig()->setFieldEditable()` instead
      */
-    Q_DECL_DEPRECATED void setReadOnly( int idx, bool editable ) { mEditFormConfig->setFieldEditable( idx, editable ); }
+    Q_DECL_DEPRECATED void setFieldEditable( int idx, bool editable ) { mEditFormConfig->setReadOnly( idx, !editable ); }
 
     /**
      * Label widget on top

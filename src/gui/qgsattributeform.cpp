@@ -175,7 +175,7 @@ bool QgsAttributeForm::save()
         QVariant srcVar = eww->value();
         // need to check dstVar.isNull() != srcVar.isNull()
         // otherwise if dstVar=NULL and scrVar=0, then dstVar = srcVar
-        if (( dstVar != srcVar || dstVar.isNull() != srcVar.isNull() ) && srcVar.isValid() && mLayer->editFormConfig()->fieldEditable( eww->fieldIdx() ) )
+        if (( dstVar != srcVar || dstVar.isNull() != srcVar.isNull() ) && srcVar.isValid() && !mLayer->editFormConfig()->readOnly( eww->fieldIdx() ) )
         {
           dst[eww->fieldIdx()] = srcVar;
 
@@ -220,7 +220,7 @@ bool QgsAttributeForm::save()
         {
           if (( dst.at( i ) == src.at( i ) && dst.at( i ).isNull() == src.at( i ).isNull() )  // If field is not changed...
               || !dst.at( i ).isValid()                                     // or the widget returns invalid (== do not change)
-              || !mLayer->editFormConfig()->fieldEditable( i ) )                           // or the field cannot be edited ...
+              || mLayer->editFormConfig()->readOnly( i ) )                           // or the field cannot be edited ...
           {
             continue;
           }
@@ -367,7 +367,7 @@ void QgsAttributeForm::synchronizeEnabledState()
     QgsEditorWidgetWrapper* eww = qobject_cast<QgsEditorWidgetWrapper*>( ww );
     if ( eww )
     {
-      fieldEditable = mLayer->editFormConfig()->fieldEditable( eww->fieldIdx() ) &&
+      fieldEditable = !mLayer->editFormConfig()->readOnly( eww->fieldIdx() ) &&
                       (( mLayer->dataProvider() && layer()->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) ||
                        FID_IS_NEW( mFeature.id() ) );
     }

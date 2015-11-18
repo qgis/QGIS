@@ -190,9 +190,9 @@ class QgsEditFormConfig : QObject
     QgsEditorWidgetConfig widgetConfig( const QString& fieldName ) const;
 
     /**
-     * If this returns false, the widget at the given index will always be read-only.
+     * If this returns true, the field is manually set to read only.
      */
-    bool fieldEditable( int idx );
+    bool readOnly( int idx );
 
     /**
      * If set to false, the widget at the given index will be read-only, regardless of the
@@ -200,7 +200,7 @@ class QgsEditFormConfig : QObject
      * If it is set to true, the widget's editable state will be synchronized with the layer's
      * edit state.
      */
-    void setFieldEditable( int idx, bool editable );
+    void setReadOnly(int idx, bool readOnly );
 
     /**
      * If this returns true, the widget at the given index will receive its label on the previous line

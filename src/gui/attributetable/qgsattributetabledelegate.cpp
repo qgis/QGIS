@@ -75,7 +75,7 @@ QWidget *QgsAttributeTableDelegate::createEditor(
 
   w->setAutoFillBackground( true );
 
-  eww->setEnabled( vl->editFormConfig()->fieldEditable( fieldIdx ) );
+  eww->setEnabled( !vl->editFormConfig()->readOnly( fieldIdx ) );
 
   return w;
 }

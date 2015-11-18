@@ -441,17 +441,15 @@ class CORE_EXPORT QgsEditFormConfig : public QObject
     QgsEditorWidgetConfig widgetConfig( const QString& fieldName ) const;
 
     /**
-     * If this returns false, the widget at the given index will always be read-only.
+     * This returns true if the field is manually set to read only or if the field
+     * does not support editing like joins or vitual fields.
      */
-    bool fieldEditable( int idx );
+    bool readOnly( int idx );
 
     /**
-     * If set to false, the widget at the given index will be read-only, regardless of the
-     * layer's editable state and data provider capacities.
-     * If it is set to true, the widget's editable state will be synchronized with the layer's
-     * edit state.
+     * If set to false, the widget at the given index will be read-only.
      */
-    void setFieldEditable( int idx, bool editable );
+    void setReadOnly( int idx, bool readOnly = true );
 
     /**
      * If this returns true, the widget at the given index will receive its label on the previous line
