@@ -101,8 +101,9 @@ void QgsVectorGradientColorRampV2Dialog::on_btnInformation_pressed()
   tableInfo->setRowCount( mRamp->info().count() );
   tableInfo->setColumnCount( 2 );
   int i = 0;
-  for ( QgsStringMap::const_iterator it = mRamp->info().constBegin();
-        it != mRamp->info().constEnd(); ++it )
+  QgsStringMap rampInfo = mRamp->info();
+  for ( QgsStringMap::const_iterator it = rampInfo.constBegin();
+        it != rampInfo.constEnd(); ++it )
   {
     if ( it.key().startsWith( "cpt-city" ) )
       continue;
