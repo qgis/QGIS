@@ -844,7 +844,6 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
 
     //param(fill), param(outline), param(outline-width) are going
     //to be replaced in memory
-    QColor mSvgFillColor;
     QColor mSvgOutlineColor;
     double mSvgOutlineWidth;
     QgsSymbolV2::OutputUnit mSvgOutlineWidthUnit;
