@@ -173,6 +173,12 @@ bool QgsCurvePolygonV2::fromWkt( const QString& wkt )
     }
   }
 
+  if ( mInteriorRings.isEmpty() )
+  {
+    clear();
+    return false;
+  }
+
   mExteriorRing = mInteriorRings.first();
   mInteriorRings.removeFirst();
 

@@ -129,7 +129,11 @@ class TestQgsGeometry(TestCase):
 
                 #test that geometry can be created from WKT
                 geom = QgsGeometry.fromWkt(row['wkt'])
-                assert geom, "WKT conversion {} failed: could not create geom:\n{}\n".format(i + 1, row['wkt'])
+                if row['valid_wkt']:
+                    assert geom, "WKT conversion {} failed: could not create geom:\n{}\n".format(i + 1, row['wkt'])
+                else:
+                    assert not geom, "Corrupt WKT {} was incorrectly converted to geometry:\n{}\n".format(i + 1, row['wkt'])
+                    continue
 
                 #test exporting to WKT results in expected string
                 result = geom.exportToWkt()
