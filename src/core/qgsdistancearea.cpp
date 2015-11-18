@@ -461,7 +461,14 @@ double QgsDistanceArea::measureLine( const QList<QgsPoint> &points )
 
 double QgsDistanceArea::measureLine( const QgsPoint &p1, const QgsPoint &p2 )
 {
+  QGis::UnitType units;
+  return measureLine( p1, p2, units );
+}
+
+double QgsDistanceArea::measureLine( const QgsPoint& p1, const QgsPoint& p2, QGis::UnitType& units ) const
+{
   double result;
+  units = mCoordTransform->sourceCrs().mapUnits();
 
   try
   {
@@ -470,6 +477,7 @@ double QgsDistanceArea::measureLine( const QgsPoint &p1, const QgsPoint &p2 )
     QgsDebugMsgLevel( QString( "Measuring from %1 to %2" ).arg( p1.toString( 4 ) ).arg( p2.toString( 4 ) ), 3 );
     if ( mEllipsoidalMode && ( mEllipsoid != GEO_NONE ) )
     {
+      units = QGis::Meters;
       QgsDebugMsgLevel( QString( "Ellipsoidal calculations is enabled, using ellipsoid %1" ).arg( mEllipsoid ), 4 );
       QgsDebugMsgLevel( QString( "From proj4 : %1" ).arg( mCoordTransform->sourceCrs().toProj4() ), 4 );
       QgsDebugMsgLevel( QString( "To   proj4 : %1" ).arg( mCoordTransform->destCRS().toProj4() ), 4 );

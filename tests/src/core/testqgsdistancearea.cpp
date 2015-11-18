@@ -163,7 +163,31 @@ void TestQgsDistanceArea::unit_conversions()
   QString myTxt = QgsDistanceArea::textUnit( inputValue, 7, inputUnit, true, false );
   QString expectedTxt = QLocale::system().toString( 2.4710538146717, 'g', 1 + 7 );
   QVERIFY( myTxt.startsWith( expectedTxt ) ); // Ignore units for now.
-};
+}
+
+void TestQgsDistanceArea::measureUnits()
+{
+  //test regression #13610
+  QgsDistanceArea calc;
+  calc.setEllipsoidalMode( false );
+  calc.setEllipsoid( "NONE" );
+  calc.setSourceCrs( 254L );
+  QGis::UnitType units;
+  QgsPoint p1( 1341683.9854275715, 408256.9562717728 );
+  QgsPoint p2( 1349321.7807031618, 408256.9562717728 );
+
+  double result = calc.measureLine( p1, p2, units );
+  //no OTF, result will be in CRS unit (feet)
+  QCOMPARE( units, QGis::Feet );
+  QVERIFY( qgsDoubleNear( result, 7637.7952755903825, 0.001 ) );
+
+  calc.setEllipsoidalMode( true );
+  calc.setEllipsoid( "WGS84" );
+  result = calc.measureLine( p1, p2, units );
+  //OTF, result will be in meters
+  QCOMPARE( units, QGis::Meters );
+  QVERIFY( qgsDoubleNear( result, 2328.0988253106957, 0.001 ) );
+}
 
 QTEST_MAIN( TestQgsDistanceArea )
 #include "testqgsdistancearea.moc"
