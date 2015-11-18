@@ -124,6 +124,12 @@ int QgsPostgresResult::PQftype( int col )
   return ::PQftype( mRes, col );
 }
 
+int QgsPostgresResult::PQfmod( int col )
+{
+  Q_ASSERT( mRes );
+  return ::PQfmod( mRes, col );
+}
+
 Oid QgsPostgresResult::PQoidValue()
 {
   Q_ASSERT( mRes );
