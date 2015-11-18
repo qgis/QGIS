@@ -1961,7 +1961,7 @@ void QgsSVGFillSymbolLayer::applyPattern( QBrush& brush, const QString& svgFileP
 void QgsSVGFillSymbolLayer::startRender( QgsSymbolV2RenderContext& context )
 {
 
-  applyPattern( mBrush, mSvgFilePath, mPatternWidth, mPatternWidthUnit, mSvgFillColor, mSvgOutlineColor, mSvgOutlineWidth, mSvgOutlineWidthUnit, context, mPatternWidthMapUnitScale, mSvgOutlineWidthMapUnitScale );
+  applyPattern( mBrush, mSvgFilePath, mPatternWidth, mPatternWidthUnit, mColor, mSvgOutlineColor, mSvgOutlineWidth, mSvgOutlineWidthUnit, context, mPatternWidthMapUnitScale, mSvgOutlineWidthMapUnitScale );
 
   if ( mOutline )
   {
@@ -1995,7 +1995,7 @@ QgsStringMap QgsSVGFillSymbolLayer::properties() const
   map.insert( "angle", QString::number( mAngle ) );
 
   //svg parameters
-  map.insert( "color", QgsSymbolLayerV2Utils::encodeColor( mSvgFillColor ) );
+  map.insert( "color", QgsSymbolLayerV2Utils::encodeColor( mColor ) );
   map.insert( "outline_color", QgsSymbolLayerV2Utils::encodeColor( mSvgOutlineColor ) );
   map.insert( "outline_width", QString::number( mSvgOutlineWidth ) );
 
@@ -2017,7 +2017,7 @@ QgsSymbolLayerV2* QgsSVGFillSymbolLayer::clone() const
   if ( !mSvgFilePath.isEmpty() )
   {
     clonedLayer = new QgsSVGFillSymbolLayer( mSvgFilePath, mPatternWidth, mAngle );
-    clonedLayer->setSvgFillColor( mSvgFillColor );
+    clonedLayer->setSvgFillColor( mColor );
     clonedLayer->setSvgOutlineColor( mSvgOutlineColor );
     clonedLayer->setSvgOutlineWidth( mSvgOutlineWidth );
   }
@@ -2061,7 +2061,7 @@ void QgsSVGFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, QgsS
 
   if ( !mSvgFilePath.isEmpty() )
   {
-    QgsSymbolLayerV2Utils::externalGraphicToSld( doc, graphicElem, mSvgFilePath, "image/svg+xml", mSvgFillColor, mPatternWidth );
+    QgsSymbolLayerV2Utils::externalGraphicToSld( doc, graphicElem, mSvgFilePath, "image/svg+xml", mColor, mPatternWidth );
   }
   else
   {
@@ -2186,7 +2186,7 @@ void QgsSVGFillSymbolLayer::applyDataDefinedSettings( const QgsSymbolV2RenderCon
   {
     svgFile = svgFileExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString();
   }
-  QColor svgFillColor = mSvgFillColor;
+  QColor svgFillColor = mColor;
   if ( fillColorExpression )
   {
     svgFillColor = QgsSymbolLayerV2Utils::decodeColor( fillColorExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() );
@@ -2225,7 +2225,7 @@ void QgsSVGFillSymbolLayer::storeViewBox()
 void QgsSVGFillSymbolLayer::setDefaultSvgParams()
 {
   //default values
-  mSvgFillColor = QColor( 0, 0, 0 );
+  mColor = QColor( 0, 0, 0 );
   mSvgOutlineColor = QColor( 0, 0, 0 );
   mSvgOutlineWidth = 0.3;
 
@@ -2242,7 +2242,7 @@ void QgsSVGFillSymbolLayer::setDefaultSvgParams()
 
   if ( hasFillParam )
   {
-    mSvgFillColor = defaultFillColor;
+    mColor = defaultFillColor;
   }
   if ( hasOutlineParam )
   {
