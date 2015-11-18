@@ -28,6 +28,7 @@
 #include "qgsexpressioncontext.h"
 #include "qgsvectorlayer.h"
 #include "qgsmaplayerregistry.h"
+#include "qgsvectordataprovider.h"
 
 static void _parseAndEvalExpr( int arg )
 {
@@ -47,11 +48,13 @@ class TestQgsExpression: public QObject
 
     TestQgsExpression()
         : mPointsLayer( 0 )
+        , mMemoryLayer( 0 )
     {}
 
   private:
 
     QgsVectorLayer* mPointsLayer;
+    QgsVectorLayer* mMemoryLayer;
 
   private slots:
 
@@ -68,7 +71,7 @@ class TestQgsExpression: public QObject
       QgsApplication::showSettings();
 
       //create a point layer that will be used in all tests...
-      QString testDataDir = QString( TEST_DATA_DIR ) + "/";
+      QString testDataDir = QString( TEST_DATA_DIR ) + '/';
       QString pointsFileName = testDataDir + "points.shp";
       QFileInfo pointFileInfo( pointsFileName );
       mPointsLayer = new QgsVectorLayer( pointFileInfo.filePath(),
@@ -82,6 +85,24 @@ class TestQgsExpression: public QObject
       mPointsLayer->setAttributionUrl( "attribution url" );
       mPointsLayer->setMaximumScale( 500 );
       mPointsLayer->setMinimumScale( 1000 );
+
+      // test memory layer for get_feature tests
+      mMemoryLayer = new QgsVectorLayer( "Point?field=col1:integer&field=col2:string", "test", "memory" );
+      QVERIFY( mMemoryLayer->isValid() );
+      QgsFeature f1( mMemoryLayer->dataProvider()->fields(), 1 );
+      f1.setAttribute( "col1", 10 );
+      f1.setAttribute( "col2", "test1" );
+      QgsFeature f2( mMemoryLayer->dataProvider()->fields(), 2 );
+      f2.setAttribute( "col1", 11 );
+      f2.setAttribute( "col2", "test2" );
+      QgsFeature f3( mMemoryLayer->dataProvider()->fields(), 3 );
+      f3.setAttribute( "col1", 3 );
+      f3.setAttribute( "col2", "test3" );
+      QgsFeature f4( mMemoryLayer->dataProvider()->fields(), 4 );
+      f4.setAttribute( "col1", 41 );
+      f4.setAttribute( "col2", "test4" );
+      mMemoryLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 << f3 << f4 );
+      QgsMapLayerRegistry::instance()->addMapLayer( mMemoryLayer );
     }
 
     void cleanupTestCase()
@@ -788,6 +809,75 @@ class TestQgsExpression: public QObject
       QCOMPARE( v.toInt(), 5 );
     }
 
+    void eval_get_feature_data()
+    {
+      QTest::addColumn<QString>( "string" );
+      QTest::addColumn<bool>( "featureMatched" );
+      QTest::addColumn<int>( "featureId" );
+
+      // get_feature evaluation
+
+      //by layer name
+      QTest::newRow( "get_feature 1" ) << "get_feature('test','col1',10)" << true << 1;
+      QTest::newRow( "get_feature 2" ) << "get_feature('test','col2','test1')" << true << 1;
+      QTest::newRow( "get_feature 3" ) << "get_feature('test','col1',11)" << true << 2;
+      QTest::newRow( "get_feature 4" ) << "get_feature('test','col2','test2')" << true << 2;
+      QTest::newRow( "get_feature 5" ) << "get_feature('test','col1',3)" << true << 3;
+      QTest::newRow( "get_feature 6" ) << "get_feature('test','col2','test3')" << true << 3;
+      QTest::newRow( "get_feature 7" ) << "get_feature('test','col1',41)" << true << 4;
+      QTest::newRow( "get_feature 8" ) << "get_feature('test','col2','test4')" << true << 4;
+
+      //by layer id
+      QTest::newRow( "get_feature 3" ) << QString( "get_feature('%1','col1',11)" ).arg( mMemoryLayer->id() ) << true << 2;
+      QTest::newRow( "get_feature 4" ) << QString( "get_feature('%1','col2','test2')" ).arg( mMemoryLayer->id() ) << true << 2;
+
+      //no matching features
+      QTest::newRow( "get_feature no match1" ) << "get_feature('test','col1',499)" << false << -1;
+      QTest::newRow( "get_feature no match2" ) << "get_feature('test','col2','no match!')" << false << -1;
+      //no matching layer
+      QTest::newRow( "get_feature no match layer" ) << "get_feature('not a layer!','col1',10)" << false << -1;
+    }
+
+    void eval_get_feature()
+    {
+      QFETCH( QString, string );
+      QFETCH( bool, featureMatched );
+      QFETCH( int, featureId );
+
+      QgsExpression exp( string );
+      QCOMPARE( exp.hasParserError(), false );
+      if ( exp.hasParserError() )
+        qDebug() << exp.parserErrorString();
+
+      QVariant res = exp.evaluate();
+      if ( exp.hasEvalError() )
+        qDebug() << exp.evalErrorString();
+
+      QCOMPARE( exp.hasEvalError(), false );
+      QCOMPARE( res.canConvert<QgsFeature>(), featureMatched );
+      if ( featureMatched )
+      {
+        QgsFeature feat = res.value<QgsFeature>();
+        QCOMPARE( feat.id(), ( long long )featureId );
+      }
+    }
+
+    void get_feature_geometry()
+    {
+      //test that get_feature fetches feature's geometry
+      QgsExpression exp( QString( "x(geometry(get_feature('%1','heading',340)))" ).arg( mPointsLayer->id() ) );
+      QCOMPARE( exp.hasParserError(), false );
+      if ( exp.hasParserError() )
+        qDebug() << exp.parserErrorString();
+
+      QVariant res = exp.evaluate();
+      if ( exp.hasEvalError() )
+        qDebug() << exp.evalErrorString();
+
+      QCOMPARE( exp.hasEvalError(), false );
+      QVERIFY( qgsDoubleNear( res.toDouble(), -85.65217, 0.00001 ) );
+    }
+
     void eval_rand()
     {
       QgsExpression exp1( "rand(1,10)" );
@@ -1157,6 +1247,7 @@ class TestQgsExpression: public QObject
       QTest::addColumn<QString>( "string" );
       QTest::addColumn<void*>( "geomptr" );
       QTest::addColumn<bool>( "evalError" );
+      QTest::addColumn<bool>( "needsGeom" );
 
       QgsPoint point( 123, 456 );
       QgsPolyline line;
@@ -1168,10 +1259,10 @@ class TestQgsExpression: public QObject
       QgsPolygon polygon;
       polygon << polygon_ring;
 
-      QTest::newRow( "geometry Point" ) << "geometry( $currentfeature )" << ( void* ) QgsGeometry::fromPoint( point ) << false;
-      QTest::newRow( "geometry Line" ) << "geometry( $currentfeature )" << ( void* ) QgsGeometry::fromPolyline( line ) << false;
-      QTest::newRow( "geometry Polyline" ) << "geometry( $currentfeature )" << ( void* ) QgsGeometry::fromPolyline( polyline ) << false;
-      QTest::newRow( "geometry Polygon" ) << "geometry( $currentfeature )" << ( void* ) QgsGeometry::fromPolygon( polygon ) << false;
+      QTest::newRow( "geometry Point" ) << "geometry( $currentfeature )" << ( void* ) QgsGeometry::fromPoint( point ) << false << true;
+      QTest::newRow( "geometry Line" ) << "geometry( $currentfeature )" << ( void* ) QgsGeometry::fromPolyline( line ) << false << true;
+      QTest::newRow( "geometry Polyline" ) << "geometry( $currentfeature )" << ( void* ) QgsGeometry::fromPolyline( polyline ) << false << true;
+      QTest::newRow( "geometry Polygon" ) << "geometry( $currentfeature )" << ( void* ) QgsGeometry::fromPolygon( polygon ) << false << true;
 
       QgsCoordinateReferenceSystem s;
       s.createFromOgcWmsCrs( "EPSG:4326" );
@@ -1186,8 +1277,8 @@ class TestQgsExpression: public QObject
 
       QgsGeometry* oLine = QgsGeometry::fromPolyline( line );
       QgsGeometry* oPolygon = QgsGeometry::fromPolygon( polygon );
-      QTest::newRow( "transform Line" ) << "transform( geomFromWKT('" + oLine->exportToWkt() + "'), 'EPSG:4326', 'EPSG:3857' )" << ( void* ) tLine << false;
-      QTest::newRow( "transform Polygon" ) << "transform( geomFromWKT('" + oPolygon->exportToWkt() + "'), 'EPSG:4326', 'EPSG:3857' )" << ( void* ) tPolygon << false;
+      QTest::newRow( "transform Line" ) << "transform( geomFromWKT('" + oLine->exportToWkt() + "'), 'EPSG:4326', 'EPSG:3857' )" << ( void* ) tLine << false << false;
+      QTest::newRow( "transform Polygon" ) << "transform( geomFromWKT('" + oPolygon->exportToWkt() + "'), 'EPSG:4326', 'EPSG:3857' )" << ( void* ) tPolygon << false << false;
       delete oLine;
       delete oPolygon;
     }
@@ -1197,6 +1288,7 @@ class TestQgsExpression: public QObject
       QFETCH( QString, string );
       QFETCH( void*, geomptr );
       QFETCH( bool, evalError );
+      QFETCH( bool, needsGeom );
 
       QgsGeometry* geom = ( QgsGeometry* ) geomptr;
 
@@ -1205,7 +1297,7 @@ class TestQgsExpression: public QObject
 
       QgsExpression exp( string );
       QCOMPARE( exp.hasParserError(), false );
-      QCOMPARE( exp.needsGeometry(), false );
+      QCOMPARE( exp.needsGeometry(), needsGeom );
 
       //deprecated method
       Q_NOWARN_DEPRECATED_PUSH
