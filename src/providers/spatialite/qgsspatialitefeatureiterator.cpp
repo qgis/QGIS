@@ -34,30 +34,45 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
   mHasPrimaryKey = !mSource->mPrimaryKey.isEmpty();
   mRowNumber = 0;
 
+  QStringList whereClauses;
   QString whereClause;
   if ( !request.filterRect().isNull() && !mSource->mGeometryColumn.isNull() )
   {
     // some kind of MBR spatial filtering is required
-    whereClause += whereClauseRect();
+    whereClause = whereClauseRect();
+    if ( ! whereClause.isEmpty() )
+    {
+      whereClauses.append( whereClause );
+    }
   }
 
   if ( request.filterType() == QgsFeatureRequest::FilterFid )
   {
-    whereClause += whereClauseFid();
+    whereClause = whereClauseFid();
+    if ( ! whereClause.isEmpty() )
+    {
+      whereClauses.append( whereClause );
+    }
   }
   else if ( request.filterType() == QgsFeatureRequest::FilterFids )
   {
-    whereClause += whereClauseFids();
+    whereClause = whereClauseFids();
+    if ( ! whereClause.isEmpty() )
+    {
+      whereClauses.append( whereClause );
+    }
   }
 
   if ( !mSource->mSubsetString.isEmpty() )
   {
-    if ( !whereClause.isEmpty() )
+    whereClause = "( " + mSource->mSubsetString + ')';
+    if ( ! whereClause.isEmpty() )
     {
-      whereClause += " AND ";
+      whereClauses.append( whereClause );
     }
-    whereClause += "( " + mSource->mSubsetString + ")";
   }
+
+  whereClause = whereClauses.join( " AND " );
 
   // preparing the SQL statement
   if ( !prepareStatement( whereClause ) )
