@@ -576,7 +576,7 @@ class DoxygenParser():
             for p in detailed_sec.getiterator('para'):
                 for s in p.getiterator('simplesect'):
                     for ps in s.getiterator('para'):
-                        if 'python' in ps.text.lower():
+                        if ps.text and 'python' in ps.text.lower():
                             return False
         except:
             pass
