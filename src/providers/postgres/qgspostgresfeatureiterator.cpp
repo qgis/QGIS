@@ -77,11 +77,11 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
     whereClause = QgsPostgresUtils::andWhereClauses( whereClause, fidsWhereClause );
   }
   else if ( request.filterType() == QgsFeatureRequest::FilterExpression
-            && QSettings().value( "/qgis/postgres/compileExpressions", false ).toBool() )
+            && QSettings().value( "/qgis/compileExpressions", true ).toBool() )
   {
     QgsPostgresExpressionCompiler compiler = QgsPostgresExpressionCompiler( source );
 
-    if ( compiler.compile( request.filterExpression() ) == QgsPostgresExpressionCompiler::Complete )
+    if ( compiler.compile( request.filterExpression() ) == QgsSqlExpressionCompiler::Complete )
     {
       whereClause = QgsPostgresUtils::andWhereClauses( whereClause, compiler.result() );
       mExpressionCompiled = true;

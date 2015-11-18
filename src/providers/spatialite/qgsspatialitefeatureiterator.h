@@ -49,6 +49,7 @@ class QgsSpatiaLiteFeatureSource : public QgsAbstractFeatureSource
     QString mSqlitePath;
 
     friend class QgsSpatiaLiteFeatureIterator;
+    friend class QgsSpatiaLiteExpressionCompiler;
 };
 
 class QgsSpatiaLiteFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsSpatiaLiteFeatureSource>
@@ -68,6 +69,9 @@ class QgsSpatiaLiteFeatureIterator : public QgsAbstractFeatureIteratorFromSource
 
     //! fetch next feature, return true on success
     virtual bool fetchFeature( QgsFeature& feature ) override;
+
+    //! fetch next feature filter expression
+    bool nextFeatureFilterExpression( QgsFeature& f ) override;
 
     QString whereClauseRect();
     QString whereClauseFid();
@@ -96,6 +100,10 @@ class QgsSpatiaLiteFeatureIterator : public QgsAbstractFeatureIteratorFromSource
 
     bool mHasPrimaryKey;
     QgsFeatureId mRowNumber;
+
+  private:
+
+    bool mExpressionCompiled;
 };
 
 #endif // QGSSPATIALITEFEATUREITERATOR_H

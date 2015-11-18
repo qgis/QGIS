@@ -178,6 +178,7 @@ SET(QGIS_CORE_SRCS
   qgssnapper.cpp
   qgssnappingutils.cpp
   qgsspatialindex.cpp
+  qgssqlexpressioncompiler.cpp
   qgsstatisticalsummary.cpp
   qgsstringutils.cpp
   qgstransaction.cpp
@@ -624,6 +625,7 @@ SET(QGIS_CORE_HDRS
   qgssnapper.h
   qgssnappingutils.h
   qgsspatialindex.h
+  qgssqlexpressioncompiler.h
   qgsstatisticalsummary.h
   qgsstringutils.h
   qgstolerance.h

@@ -1936,7 +1936,7 @@ QString createFilters( QString type )
       }
       else if ( driverName.startsWith( "SVG" ) )
       {
-        myFileFilters += createFileFilter_(QObject::tr( "Scalable Vector Graphics" ), "*.svg" );
+        myFileFilters += createFileFilter_( QObject::tr( "Scalable Vector Graphics" ), "*.svg" );
         myExtensions << "svg";
       }
       else if ( driverName.startsWith( "ARCGEN" ) )
@@ -1961,9 +1961,9 @@ QString createFilters( QString type )
       }
       else if ( driverName.startsWith( "SEGUKOOA" ) )
       {
-	myFileFilters += createFileFilter_( QObject::tr( "SEG-P1" ), "*.seg *.seg1 *.sp1" );
-	myFileFilters += createFileFilter_( QObject::tr( "UKOOA P1/90" ), "*.uko *.ukooa" );
-	myExtensions << "seg" << "seg1" << "sp1" << "uko" << "ukooa";
+        myFileFilters += createFileFilter_( QObject::tr( "SEG-P1" ), "*.seg *.seg1 *.sp1" );
+        myFileFilters += createFileFilter_( QObject::tr( "UKOOA P1/90" ), "*.uko *.ukooa" );
+        myExtensions << "seg" << "seg1" << "sp1" << "uko" << "ukooa";
       }
       else
       {
@@ -2537,7 +2537,7 @@ QVariant QgsOgrProvider::maximumValue( int index )
   return value;
 }
 
-QByteArray QgsOgrProvider::quotedIdentifier( QByteArray field )
+QByteArray QgsOgrProvider::quotedIdentifier( QByteArray field ) const
 {
   return QgsOgrUtils::quotedIdentifier( field, ogrDriverName );
 }
@@ -2561,6 +2561,33 @@ QByteArray QgsOgrUtils::quotedIdentifier( QByteArray field, const QString& ogrDr
     field.replace( '"', "\\\"" );
     field.replace( '\'', "\\'" );
     return field.prepend( '\"' ).append( '\"' );
+  }
+}
+
+QString QgsOgrUtils::quotedValue( const QVariant& value )
+{
+  if ( value.isNull() )
+    return "NULL";
+
+  switch ( value.type() )
+  {
+    case QVariant::Int:
+    case QVariant::LongLong:
+    case QVariant::Double:
+      return value.toString();
+
+    case QVariant::Bool:
+      //OGR does not support boolean literals
+      return value.toBool() ? "1" : "0";
+
+    default:
+    case QVariant::String:
+      QString v = value.toString();
+      v.replace( '\'', "''" );
+      if ( v.contains( '\\' ) )
+        return v.replace( '\\', "\\\\" ).prepend( "E'" ).append( '\'' );
+      else
+        return v.prepend( '\'' ).append( '\'' );
   }
 }
 

@@ -39,28 +39,28 @@ class TestPyQgsMemoryProvider(TestCase, ProviderTestCase):
     def setUpClass(cls):
         """Run before all tests"""
         # Create test layer
-        cls.vl = QgsVectorLayer(u'Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&key=pk',
+        cls.vl = QgsVectorLayer(u'Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&key=pk',
                                 u'test', u'memory')
         assert (cls.vl.isValid())
         cls.provider = cls.vl.dataProvider()
 
         f1 = QgsFeature()
-        f1.setAttributes([5, -200, NULL])
+        f1.setAttributes([5, -200, NULL, 'NuLl'])
         f1.setGeometry(QgsGeometry.fromWkt('Point (-71.123 78.23)'))
 
         f2 = QgsFeature()
-        f2.setAttributes([3, 300, 'Pear'])
+        f2.setAttributes([3, 300, 'Pear', 'PEaR'])
 
         f3 = QgsFeature()
-        f3.setAttributes([1, 100, 'Orange'])
+        f3.setAttributes([1, 100, 'Orange', 'oranGe'])
         f3.setGeometry(QgsGeometry.fromWkt('Point (-70.332 66.33)'))
 
         f4 = QgsFeature()
-        f4.setAttributes([2, 200, 'Apple'])
+        f4.setAttributes([2, 200, 'Apple', 'Apple'])
         f4.setGeometry(QgsGeometry.fromWkt('Point (-68.2 70.8)'))
 
         f5 = QgsFeature()
-        f5.setAttributes([4, 400, 'Honey'])
+        f5.setAttributes([4, 400, 'Honey', 'Honey'])
         f5.setGeometry(QgsGeometry.fromWkt('Point (-65.32 78.3)'))
 
         cls.provider.addFeatures([f1, f2, f3, f4, f5])

@@ -16,33 +16,20 @@
 #ifndef QGSPOSTGRESEXPRESSIONCOMPILER_H
 #define QGSPOSTGRESEXPRESSIONCOMPILER_H
 
+#include "qgssqlexpressioncompiler.h"
 #include "qgsexpression.h"
 #include "qgspostgresfeatureiterator.h"
 
-class QgsPostgresExpressionCompiler
+class QgsPostgresExpressionCompiler : public QgsSqlExpressionCompiler
 {
   public:
-    enum Result
-    {
-      None,
-      Complete,
-      Partial,
-      Fail
-    };
 
     explicit QgsPostgresExpressionCompiler( QgsPostgresFeatureSource* source );
-    ~QgsPostgresExpressionCompiler();
 
-    Result compile( const QgsExpression* exp );
+  protected:
 
-    const QString& result() { return mResult; }
-
-  private:
-    Result compile( const QgsExpression::Node* node, QString& str );
-
-  private:
-    QString mResult;
-    QgsPostgresFeatureSource* mSource;
+    virtual QString quotedIdentifier( const QString& identifier ) override;
+    virtual QString quotedValue( const QVariant& value ) override;
 };
 
 #endif // QGSPOSTGRESEXPRESSIONCOMPILER_H
