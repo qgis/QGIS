@@ -21,6 +21,7 @@ SET (geometrysnapper_UIS
 SET (geometrysnapper_MOC_HDRS
     qgsgeometrysnapper.h
     qgsgeometrysnapperdialog.h
+    qgsgeometrysnapperplugin.h
 )
 
 SET (geometrysnapper_RCCS
