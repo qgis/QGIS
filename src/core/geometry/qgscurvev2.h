@@ -87,6 +87,11 @@ class CORE_EXPORT QgsCurveV2: public QgsAbstractGeometryV2
      */
     virtual bool pointAt( int i, QgsPointV2& vertex, QgsVertexId::VertexType& type ) const = 0;
 
+    /** Returns a reversed copy of the curve, where the direction of the curve has been flipped.
+     * @note added in QGIS 2.14
+     */
+    virtual QgsCurveV2* reversed() const = 0;
+
     QgsAbstractGeometryV2* segmentize() const override;
 
     virtual int vertexCount( int /*part*/ = 0, int /*ring*/ = 0 ) const override { return numPoints(); }

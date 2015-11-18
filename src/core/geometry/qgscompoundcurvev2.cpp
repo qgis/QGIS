@@ -625,6 +625,17 @@ double QgsCompoundCurveV2::vertexAngle( const QgsVertexId& vertex ) const
   }
 }
 
+QgsCompoundCurveV2* QgsCompoundCurveV2::reversed() const
+{
+  QgsCompoundCurveV2* clone = new QgsCompoundCurveV2();
+  Q_FOREACH ( QgsCurveV2* curve, mCurves )
+  {
+    QgsCurveV2* reversedCurve = curve->reversed();
+    clone->addCurve( reversedCurve );
+  }
+  return clone;
+}
+
 bool QgsCompoundCurveV2::addZValue( double zValue )
 {
   if ( QgsWKBTypes::hasZ( mWkbType ) )

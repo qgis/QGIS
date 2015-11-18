@@ -117,7 +117,7 @@ class QgsPointV2: public QgsAbstractGeometryV2
     //implementation of inherited methods
     virtual QString geometryType() const;
     virtual int dimension() const;
-    virtual QgsPointV2* clone() const;
+    virtual QgsPointV2* clone() const /Factory/;
     void clear();
     virtual bool fromWkb( const unsigned char* wkb );
     virtual bool fromWkt( const QString& wkt );

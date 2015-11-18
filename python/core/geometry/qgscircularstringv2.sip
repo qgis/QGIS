@@ -60,6 +60,8 @@ class QgsCircularStringV2: public QgsCurveV2
         @return rotation in radians, clockwise from north*/
     double vertexAngle( const QgsVertexId& vertex ) const;
 
+    virtual QgsCircularStringV2* reversed() const /Factory/;
+
     virtual bool addZValue( double zValue = 0 );
     virtual bool addMValue( double mValue = 0 );
 

@@ -1009,6 +1009,22 @@ double QgsCircularStringV2::vertexAngle( const QgsVertexId& vId ) const
   return 0.0;
 }
 
+QgsCircularStringV2* QgsCircularStringV2::reversed() const
+{
+  QgsCircularStringV2* copy = clone();
+  std::reverse( copy->mX.begin(), copy->mX.end() );
+  std::reverse( copy->mY.begin(), copy->mY.end() );
+  if ( is3D() )
+  {
+    std::reverse( copy->mZ.begin(), copy->mZ.end() );
+  }
+  if ( isMeasure() )
+  {
+    std::reverse( copy->mM.begin(), copy->mM.end() );
+  }
+  return copy;
+}
+
 bool QgsCircularStringV2::addZValue( double zValue )
 {
   if ( QgsWKBTypes::hasZ( mWkbType ) )

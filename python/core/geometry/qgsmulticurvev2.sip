@@ -22,4 +22,9 @@ class QgsMultiCurveV2: public QgsGeometryCollectionV2
     virtual bool addGeometry( QgsAbstractGeometryV2* g );
     /** Returns a geometry without curves. Caller takes ownership*/
     QgsAbstractGeometryV2* segmentize() const /Factory/;
+
+    /** Returns a copy of the multi curve, where each component curve has had its line direction reversed.
+     * @note added in QGIS 2.14
+     */
+    QgsMultiCurveV2* reversed() const /Factory/;
 };

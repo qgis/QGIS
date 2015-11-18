@@ -24,9 +24,8 @@
 
 /** \ingroup core
  * \class QgsLineStringV2
- * \brief Line string geometry type.
+ * \brief Line string geometry type, with support for z-dimension and m-values.
  * \note added in QGIS 2.10
- * \note this API is not considered stable and may change for 2.12
  */
 class CORE_EXPORT QgsLineStringV2: public QgsCurveV2
 {
@@ -34,13 +33,48 @@ class CORE_EXPORT QgsLineStringV2: public QgsCurveV2
     QgsLineStringV2();
     ~QgsLineStringV2();
 
+    /** Resets the line string to match the line string in a WKB geometry.
+     * @param type WKB type
+     * @param wkb WKB representation of line geometry
+     * @note not available in Python bindings
+     */
+    void fromWkbPoints( QgsWKBTypes::Type type, const QgsConstWkbPtr& wkb );
+
+    /** Returns the specified point from inside the line string.
+     * @param i index of point, starting at 0 for the first point
+     */
+    QgsPointV2 pointN( int i ) const;
+
+    /** Resets the line string to match the specified list of points.
+     * @param points new points for line string. If empty, line string will be cleared.
+     */
+    void setPoints( const QList<QgsPointV2>& points );
+
+    /** Appends the contents of another line string to the end of this line string.
+     * @param line line to append. Ownership is not transferred.
+     */
+    void append( const QgsLineStringV2* line );
+
+    /** Adds a new vertex to the end of the line string.
+     * @param pt vertex to add
+     */
+    void addVertex( const QgsPointV2& pt );
+
+    /** Closes the line string by appending the first point to the end of the line, if it is not already closed.*/
+    void close();
+
+    /** Returns a QPolygonF representing the line string.
+     */
+    QPolygonF asQPolygonF() const;
+
+    //reimplemented methods
+
     virtual QString geometryType() const override { return "LineString"; }
     virtual int dimension() const override { return 1; }
     virtual QgsLineStringV2* clone() const override;
     virtual void clear() override;
 
     virtual bool fromWkb( const unsigned char* wkb ) override;
-    void fromWkbPoints( QgsWKBTypes::Type type, const QgsConstWkbPtr& wkb );
     virtual bool fromWkt( const QString& wkt ) override;
 
     int wkbSize() const override;
@@ -57,42 +91,26 @@ class CORE_EXPORT QgsLineStringV2: public QgsCurveV2
     virtual QgsLineStringV2* curveToLine() const override;
 
     int numPoints() const override;
-    QgsPointV2 pointN( int i ) const;
     void points( QList<QgsPointV2>& pt ) const override;
-
-    void setPoints( const QList<QgsPointV2>& points );
-    void append( const QgsLineStringV2* line );
 
     void draw( QPainter& p ) const override;
 
-    /** Transforms the geometry using a coordinate transform
-     * @param ct coordinate transform
-       @param d transformation direction
-     */
     void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform ) override;
     void transform( const QTransform& t ) override;
 
     void addToPainterPath( QPainterPath& path ) const override;
     void drawAsPolygon( QPainter& p ) const override;
 
-    QPolygonF qPolygonF() const;
-
     virtual bool insertVertex( const QgsVertexId& position, const QgsPointV2& vertex ) override;
     virtual bool moveVertex( const QgsVertexId& position, const QgsPointV2& newPos ) override;
     virtual bool deleteVertex( const QgsVertexId& position ) override;
-    void addVertex( const QgsPointV2& pt );
+
+    virtual QgsLineStringV2* reversed() const override;
 
     double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const override;
     bool pointAt( int i, QgsPointV2& vertex, QgsVertexId::VertexType& type ) const override;
 
     void sumUpArea( double& sum ) const override;
-
-    /** Appends first point if not already closed*/
-    void close();
-
-    /** Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
-        @param vertex the vertex id
-        @return rotation in radians, clockwise from north*/
     double vertexAngle( const QgsVertexId& vertex ) const override;
 
     virtual bool addZValue( double zValue = 0 ) override;

@@ -191,7 +191,7 @@ int QgsLineStringV2::numPoints() const
 
 QgsPointV2 QgsLineStringV2::pointN( int i ) const
 {
-  if ( mX.size() <= i )
+  if ( i < 0 || i >= mX.size() )
   {
     return QgsPointV2();
   }
@@ -240,7 +240,9 @@ void QgsLineStringV2::points( QList<QgsPointV2>& pts ) const
 
 void QgsLineStringV2::setPoints( const QList<QgsPointV2>& points )
 {
-  if ( points.size() < 1 )
+  mBoundingBox = QgsRectangle(); //set bounding box invalid
+
+  if ( points.isEmpty() )
   {
     mWkbType = QgsWKBTypes::Unknown;
     mX.clear();
@@ -307,11 +309,29 @@ void QgsLineStringV2::append( const QgsLineStringV2* line )
   mY += line->mY;
   mZ += line->mZ;
   mM += line->mM;
+
+  mBoundingBox = QgsRectangle(); //set bounding box invalid
+}
+
+QgsLineStringV2* QgsLineStringV2::reversed() const
+{
+  QgsLineStringV2* copy = clone();
+  std::reverse( copy->mX.begin(), copy->mX.end() );
+  std::reverse( copy->mY.begin(), copy->mY.end() );
+  if ( copy->is3D() )
+  {
+    std::reverse( copy->mZ.begin(), copy->mZ.end() );
+  }
+  if ( copy->isMeasure() )
+  {
+    std::reverse( copy->mM.begin(), copy->mM.end() );
+  }
+  return copy;
 }
 
 void QgsLineStringV2::draw( QPainter& p ) const
 {
-  p.drawPolyline( qPolygonF() );
+  p.drawPolyline( asQPolygonF() );
 }
 
 void QgsLineStringV2::addToPainterPath( QPainterPath& path ) const
@@ -335,10 +355,10 @@ void QgsLineStringV2::addToPainterPath( QPainterPath& path ) const
 
 void QgsLineStringV2::drawAsPolygon( QPainter& p ) const
 {
-  p.drawPolygon( qPolygonF() );
+  p.drawPolygon( asQPolygonF() );
 }
 
-QPolygonF QgsLineStringV2::qPolygonF() const
+QPolygonF QgsLineStringV2::asQPolygonF() const
 {
   QPolygonF points;
   for ( int i = 0; i < mX.count(); ++i )
@@ -534,6 +554,7 @@ void QgsLineStringV2::importVerticesFromWkb( const QgsConstWkbPtr& wkb )
       wkb >> mM[i];
     }
   }
+  mBoundingBox = QgsRectangle(); //set bounding box invalid
 }
 
 void QgsLineStringV2::close()
