@@ -128,7 +128,7 @@ class QgsMarkerLineSymbolLayerV2 : QgsLineSymbolLayerV2
     void setColor( const QColor& color );
 
     QgsSymbolV2* subSymbol();
-    bool setSubSymbol( QgsSymbolV2* symbol );
+    bool setSubSymbol( QgsSymbolV2* symbol /Transfer/);
 
     virtual void setWidth( double width );
     virtual double width() const;
