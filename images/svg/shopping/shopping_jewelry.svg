@@ -1,43 +1,88 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg version="1.1"
-	 id="svg2" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" inkscape:output_extension="org.inkscape.output.svg.inkscape" sodipodi:docbase="s:\Data\FacilityIcons" sodipodi:docname="shopping_jewelry.svg" inkscape:version="0.46" sodipodi:version="0.32"
-	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="580px" height="580px"
-	 viewBox="0 0 580 580" enable-background="new 0 0 580 580" xml:space="preserve">
-<polygon opacity="0.33" fill="param(fill)" stroke="param(outline)" stroke-width="param(outline-width)" points="417.956,109.62 341.506,59.524 
-	324.201,59.524 254.912,59.524 249.23,59.524 172.78,109.62 233.673,222.646 295.367,215.243 357.063,222.646 "/>
-<path opacity="0.66" fill="param(fill)" stroke="param(outline)" stroke-width="param(outline-width)" d="M362.153,218.065l58.812-109.199l-76.728-50.284
-	l-0.159-1.335H342.2h-93.663h-0.766l-0.049,0.534l-77.949,51.084l58.746,109.079l-1.078,7.786l4.95-0.597l0,0l62.978-7.592
-	l62.978,7.592v0l4.628,0.558L362.153,218.065z M336.531,131.274l8.165,75.905l-48.359-5.83h-0.001l-0.968-0.117l-0.968,0.117h-0.001
-	l-48.037,5.791l10.507-75.866H336.531z M195.362,122.23l45.378,7.471l-8.46,61.08L195.362,122.23z M352.602,129.272l42.773-7.042
-	l-36.284,67.371L352.602,129.272z M388.503,106.952l-37.747,6.214l-4.01-33.58L388.503,106.952z M329.705,73.439l4.973,41.642
-	H258.69l3.849-41.642H329.705z M242.573,113.593l-40.339-6.641l43.587-28.565L242.573,113.593z"/>
-<sodipodi:namedview  showgrid="false" inkscape:cy="442.3878" inkscape:cx="181.98368" inkscape:zoom="1.8433542" pagecolor="#ffffff" bordercolor="#666666" guidetolerance="10.0" objecttolerance="10.0" gridtolerance="10.0" borderopacity="1.0" id="base" inkscape:current-layer="svg2" inkscape:window-y="45" inkscape:window-x="0" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-width="1400" inkscape:window-height="978">
-	</sodipodi:namedview>
-<defs>
-	
-	
-		<inkscape:perspective  inkscape:vp_z="580 : 290 : 1" inkscape:vp_y="6.1230318e-14 : 1000 : 0" inkscape:vp_x="0 : 290 : 1" sodipodi:type="inkscape:persp3d" id="perspective2441" inkscape:persp3d-origin="290 : 193.33333 : 1">
-		</inkscape:perspective>
-	
-		<inkscape:perspective  inkscape:vp_z="60 : 30 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 30 : 1" sodipodi:type="inkscape:persp3d" id="perspective3452" inkscape:persp3d-origin="30 : 20 : 1">
-		</inkscape:perspective>
-	
-		<inkscape:perspective  inkscape:vp_z="744.09448 : 526.18109 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 526.18109 : 1" sodipodi:type="inkscape:persp3d" id="perspective4471" inkscape:persp3d-origin="372.04724 : 350.78739 : 1">
-		</inkscape:perspective>
-	
-		<inkscape:perspective  inkscape:vp_z="12 : 6 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 6 : 1" sodipodi:type="inkscape:persp3d" id="perspective4668" inkscape:persp3d-origin="6 : 4 : 1">
-		</inkscape:perspective>
-</defs>
-<g id="layer3" transform="matrix(48.14969,0,0,48.14969,-536.27327,-33.306752)" inkscape:label="Layout" display="none">
-	<rect id="rect4134" x="1" y="1" display="inline" fill="none" stroke="#757575" stroke-width="0.1" width="10" height="10"/>
-	<rect id="rect4136" x="2" y="2" display="inline" fill="none" stroke="#757575" stroke-width="0.1" width="8" height="8"/>
-</g>
-<g id="g3338" transform="matrix(1.3973279,-0.2437849,0.2437849,1.3973279,-185.07402,-56.183307)">
-</g>
-<path fill="param(fill)" stroke="param(outline)" stroke-width="param(outline-width)" d="M295.114,509.804c-90.733,0-164.551-73.816-164.551-164.55
-	c0-90.734,73.817-164.552,164.551-164.552s164.551,73.817,164.551,164.552C459.665,435.987,385.848,509.804,295.114,509.804z
-	 M295.114,241.089c-57.436,0-104.164,46.728-104.164,104.165c0,57.436,46.728,104.163,104.164,104.163
-	c57.437,0,104.164-46.728,104.164-104.163C399.278,287.817,352.551,241.089,295.114,241.089z"/>
-</svg>
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   id="svg2"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   sodipodi:docname="shopping_jewelry.svg"
+   inkscape:version="0.91 r13725"
+   sodipodi:version="0.32"
+   x="0px"
+   y="0px"
+   width="580px"
+   height="580px"
+   viewBox="0 0 580 580"
+   enable-background="new 0 0 580 580"
+   xml:space="preserve"><metadata
+     id="metadata20"><rdf:RDF><cc:Work
+         rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><polygon
+     opacity="0.33"
+     fill="param(fill)"
+     stroke="param(outline)"
+     stroke-width="param(outline-width)"
+     points="417.956,109.62 341.506,59.524   324.201,59.524 254.912,59.524 249.23,59.524 172.78,109.62 233.673,222.646 295.367,215.243 357.063,222.646 "
+     id="polygon3" /><path
+     opacity="0.66"
+     fill="param(fill)"
+     stroke="param(outline)"
+     stroke-width="param(outline-width)"
+     d="M362.153,218.065l58.812-109.199l-76.728-50.284  l-0.159-1.335H342.2h-93.663h-0.766l-0.049,0.534l-77.949,51.084l58.746,109.079l-1.078,7.786l4.95-0.597l0,0l62.978-7.592  l62.978,7.592v0l4.628,0.558L362.153,218.065z M336.531,131.274l8.165,75.905l-48.359-5.83h-0.001l-0.968-0.117l-0.968,0.117h-0.001  l-48.037,5.791l10.507-75.866H336.531z M195.362,122.23l45.378,7.471l-8.46,61.08L195.362,122.23z M352.602,129.272l42.773-7.042  l-36.284,67.371L352.602,129.272z M388.503,106.952l-37.747,6.214l-4.01-33.58L388.503,106.952z M329.705,73.439l4.973,41.642  H258.69l3.849-41.642H329.705z M242.573,113.593l-40.339-6.641l43.587-28.565L242.573,113.593z"
+     id="path5" /><sodipodi:namedview
+     showgrid="false"
+     inkscape:cy="296.4745"
+     inkscape:cx="295.114"
+     inkscape:zoom="1.3412675"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     guidetolerance="10.0"
+     objecttolerance="10.0"
+     gridtolerance="10.0"
+     borderopacity="1.0"
+     id="base"
+     inkscape:current-layer="svg2"
+     inkscape:window-y="24"
+     inkscape:window-x="65"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1215"
+     inkscape:window-height="776"
+     inkscape:window-maximized="1" /><defs
+     id="defs8" /><g
+     id="layer3"
+     transform="matrix(48.14969,0,0,48.14969,-536.27327,-33.306752)"
+     inkscape:label="Layout"
+     display="none"><rect
+       id="rect4134"
+       x="1"
+       y="1"
+       display="inline"
+       fill="none"
+       stroke="#757575"
+       stroke-width="0.1"
+       width="10"
+       height="10" /><rect
+       id="rect4136"
+       x="2"
+       y="2"
+       display="inline"
+       fill="none"
+       stroke="#757575"
+       stroke-width="0.1"
+       width="8"
+       height="8" /></g><g
+     id="g3338"
+     transform="matrix(1.3973279,-0.2437849,0.2437849,1.3973279,-185.07402,-56.183307)" /><path
+     fill="param(fill)"
+     stroke="param(outline)"
+     stroke-width="param(outline-width)"
+     d="M295.114,509.804c-90.733,0-164.551-73.816-164.551-164.55  c0-90.734,73.817-164.552,164.551-164.552s164.551,73.817,164.551,164.552C459.665,435.987,385.848,509.804,295.114,509.804z   M295.114,241.089c-57.436,0-104.164,46.728-104.164,104.165c0,57.436,46.728,104.163,104.164,104.163  c57.437,0,104.164-46.728,104.164-104.163C399.278,287.817,352.551,241.089,295.114,241.089z"
+     id="path18" /></svg>
