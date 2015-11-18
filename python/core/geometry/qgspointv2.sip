@@ -1,72 +1,156 @@
+/** \ingroup core
+ * \class QgsPointV2
+ * \brief Point geometry type, with support for z-dimension and m-values.
+ * \note added in QGIS 2.10
+ */
+
 class QgsPointV2: public QgsAbstractGeometryV2
 {
 %TypeHeaderCode
 #include <qgspointv2.h>
 %End
 
-    public:
-      QgsPointV2( double x = 0.0, double y = 0.0 );
-      QgsPointV2( const QgsPoint& p );
-      QgsPointV2( QgsWKBTypes::Type type, double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0 );
+  public:
 
-      bool operator==( const QgsPointV2& pt ) const;
-      bool operator!=( const QgsPointV2& pt ) const;
+    /** Construct a 2 dimensional point with an initial x and y coordinate.
+     * @param x x-coordinate of point
+     * @param y y-coordinate of point
+     */
+    QgsPointV2( double x = 0.0, double y = 0.0 );
 
-      virtual QgsPointV2* clone() const;
-      void clear();
+    /** Construct a QgsPointV2 from a QgsPoint object
+     */
+    QgsPointV2( const QgsPoint& p );
 
-      double x() const;
-      double y() const;
-      double z() const;
-      double m() const;
+    /** Construct a point with a specified type (eg PointZ, PointM) and initial x, y, z, and m values.
+     * @param type point type
+     * @param x x-coordinate of point
+     * @param y y-coordinate of point
+     * @param z z-coordinate of point, for PointZ or PointZM types
+     * @param m m-value of point, for PointM or PointZM types
+     */
+    QgsPointV2( QgsWKBTypes::Type type, double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0 );
 
-      void setX( double x );
-      void setY( double y );
-      void setZ( double z );
-      void setM( double m );
+    bool operator==( const QgsPointV2& pt ) const;
+    bool operator!=( const QgsPointV2& pt ) const;
 
-      virtual QString geometryType() const;
+    /** Returns the point's x-coordinate.
+     * @see setX()
+     * @see rx()
+     */
+    double x() const;
 
-      //implementation of inherited methods
-      virtual int dimension() const;
+    /** Returns the point's y-coordinate.
+     * @see setY()
+     * @see ry()
+     */
+    double y() const;
 
+    /** Returns the point's z-coordinate.
+     * @see setZ()
+     * @see rz()
+     */
+    double z() const;
 
-      virtual bool fromWkb( const unsigned char* wkb );
-      virtual bool fromWkt( const QString& wkt );
+    /** Returns the point's m value.
+     * @see setM()
+     * @see rm()
+     */
+    double m() const;
 
-      int wkbSize() const;
-      unsigned char* asWkb( int& binarySize ) const;
-      QString asWkt( int precision = 17 ) const;
-      QDomElement asGML2( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
-      QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
-      QString asJSON( int precision = 17 ) const;
+    /** Returns a reference to the x-coordinate of this point.
+     * Using a reference makes it possible to directly manipulate x in place.
+     * @see x()
+     * @see setX()
+     * @note not available in Python bindings
+     */
+    //double &rx();
 
-      virtual QgsRectangle calculateBoundingBox() const;
+    /** Returns a reference to the y-coordinate of this point.
+     * Using a reference makes it possible to directly manipulate y in place.
+     * @see y()
+     * @see setY()
+     * @note not available in Python bindings
+     */
+    //double &ry();
 
-      void draw( QPainter& p ) const;
-      void transform( const QgsCoordinateTransform& ct );
-      void transform( const QTransform& t );
+    /** Returns a reference to the z-coordinate of this point.
+     * Using a reference makes it possible to directly manipulate z in place.
+     * @see z()
+     * @see setZ()
+     * @note not available in Python bindings
+     */
+    //double &rz();
 
-      virtual void coordinateSequence( QList< QList< QList< QgsPointV2 > > >& coord /Out/ ) const;
+    /** Returns a reference to the m value of this point.
+     * Using a reference makes it possible to directly manipulate m in place.
+     * @see m()
+     * @see setM()
+     * @note not available in Python bindings
+     */
+    //double &rm()
 
-      //low-level editing
-      virtual bool insertVertex( const QgsVertexId& position, const QgsPointV2& vertex );
-      virtual bool moveVertex( const QgsVertexId& position, const QgsPointV2& newPos );
-      virtual bool deleteVertex( const QgsVertexId& position );
+    /** Sets the point's x-coordinate.
+     * @see x()
+     * @see rx()
+     */
+    void setX( double x );
 
-      double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const;
-      bool nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const;
+    /** Sets the point's y-coordinate.
+     * @see y()
+     * @see ry()
+     */
+    void setY( double y );
 
-      /** Angle undefined. Always returns 0.0
-          @param vertex the vertex id
-          @return 0.0*/
-      double vertexAngle( const QgsVertexId& vertex ) const;
+    /** Sets the point's z-coordinate.
+     * @see z()
+     * @see rz()
+     */
+    void setZ( double z );
 
-      virtual int vertexCount(int part = 0, int ring = 0) const;
-      virtual int ringCount(int part = 0) const;
-      virtual int partCount() const;
-      virtual QgsPointV2 vertexAt( const QgsVertexId& id ) const;
+    /** Sets the point's m-value.
+     * @see m()
+     * @see rm()
+     */
+    void setM( double m );
 
-      virtual bool addZValue( double zValue = 0 );
-      virtual bool addMValue( double mValue = 0 );
+    //implementation of inherited methods
+    virtual QString geometryType() const;
+    virtual int dimension() const;
+    virtual QgsPointV2* clone() const;
+    void clear();
+    virtual bool fromWkb( const unsigned char* wkb );
+    virtual bool fromWkt( const QString& wkt );
+    int wkbSize() const;
+    unsigned char* asWkb( int& binarySize ) const;
+    QString asWkt( int precision = 17 ) const;
+    QDomElement asGML2( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
+    QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
+    QString asJSON( int precision = 17 ) const;
+    virtual QgsRectangle calculateBoundingBox() const;
+    void draw( QPainter& p ) const;
+    void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform );
+    void transform( const QTransform& t );
+    virtual void coordinateSequence( QList< QList< QList< QgsPointV2 > > >& coord /Out/ ) const;
+
+    //low-level editing
+    virtual bool insertVertex( const QgsVertexId& position, const QgsPointV2& vertex );
+    virtual bool moveVertex( const QgsVertexId& position, const QgsPointV2& newPos );
+    virtual bool deleteVertex( const QgsVertexId& position );
+
+    double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const;
+    bool nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const;
+
+    /** Angle undefined. Always returns 0.0
+        @param vertex the vertex id
+        @return 0.0*/
+    double vertexAngle( const QgsVertexId& vertex ) const;
+
+    virtual int vertexCount(int part = 0, int ring = 0) const;
+    virtual int ringCount(int part = 0) const;
+    virtual int partCount() const;
+    virtual QgsPointV2 vertexAt( const QgsVertexId& id ) const;
+
+    virtual bool addZValue( double zValue = 0 );
+    virtual bool addMValue( double mValue = 0 );
 };
