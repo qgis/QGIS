@@ -29,6 +29,7 @@ import os
 
 from PyQt4 import uic
 
+from math import log10, floor
 from processing.gui.NumberInputDialog import NumberInputDialog
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
@@ -45,6 +46,11 @@ class NumberInputPanel(BASE, WIDGET):
         self.isInteger = isInteger
         if self.isInteger:
             self.spnValue.setDecimals(0)
+        else:
+            #Guess reasonable step value
+            if (maximum == 0 or maximum) and (minimum == 0 or minimum):
+                self.spnValue.setSingleStep(self.calculateStep(minimum, maximum))
+
         if maximum == 0 or maximum:
             self.spnValue.setMaximum(maximum)
         else:
@@ -66,3 +72,12 @@ class NumberInputPanel(BASE, WIDGET):
 
     def getValue(self):
         return self.spnValue.value()
+
+    def calculateStep(self, minimum, maximum):
+        valueRange = maximum - minimum
+        if valueRange <= 1.0:
+            step = valueRange / 10.0
+            # round to 1 significant figure
+            return round(step, -int(floor(log10(step))))
+        else:
+            return 1.0
