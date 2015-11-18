@@ -457,6 +457,8 @@ class QgsImageFillSymbolLayer: QgsFillSymbolLayerV2
     virtual double dxfWidth( const QgsDxfExport& e, QgsSymbolV2RenderContext& context ) const;
     virtual QColor dxfColor( QgsSymbolV2RenderContext& context ) const;
     virtual Qt::PenStyle dxfPenStyle() const;
+
+    QSet<QString> usedAttributes() const;
 };
 
 /** \ingroup core

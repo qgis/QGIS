@@ -160,6 +160,11 @@ class QgsSymbolV2
 
     QSet<QString> usedAttributes() const;
 
+    /** Returns whether the symbol utilises any data defined properties.
+     * @note added in QGIS 2.12
+     */
+    bool hasDataDefinedProperties() const;
+
     void setLayer( const QgsVectorLayer* layer );
     const QgsVectorLayer* layer() const;
 

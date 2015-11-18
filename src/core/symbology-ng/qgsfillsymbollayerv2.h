@@ -571,6 +571,8 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayerV2
     virtual QColor dxfColor( QgsSymbolV2RenderContext& context ) const override;
     virtual Qt::PenStyle dxfPenStyle() const override;
 
+    QSet<QString> usedAttributes() const override;
+
   protected:
     QBrush mBrush;
     double mNextAngle; // mAngle / data defined angle

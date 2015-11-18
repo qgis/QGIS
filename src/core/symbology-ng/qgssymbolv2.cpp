@@ -490,6 +490,16 @@ QSet<QString> QgsSymbolV2::usedAttributes() const
   return attributes;
 }
 
+bool QgsSymbolV2::hasDataDefinedProperties() const
+{
+  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
+  {
+    if ( layer->hasDataDefinedProperties() )
+      return true;
+  }
+  return false;
+}
+
 ////////////////////
 
 

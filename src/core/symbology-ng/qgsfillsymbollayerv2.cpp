@@ -1701,6 +1701,14 @@ Qt::PenStyle QgsImageFillSymbolLayer::dxfPenStyle() const
 #endif //0
 }
 
+QSet<QString> QgsImageFillSymbolLayer::usedAttributes() const
+{
+  QSet<QString> attr = QgsFillSymbolLayerV2::usedAttributes();
+  if ( mOutline )
+    attr.unite( mOutline->usedAttributes() );
+  return attr;
+}
+
 
 //QgsSVGFillSymbolLayer
 
@@ -2319,7 +2327,7 @@ QgsSymbolV2* QgsLinePatternFillSymbolLayer::subSymbol()
 
 QSet<QString> QgsLinePatternFillSymbolLayer::usedAttributes() const
 {
-  QSet<QString> attr = QgsFillSymbolLayerV2::usedAttributes();
+  QSet<QString> attr = QgsImageFillSymbolLayer::usedAttributes();
   if ( mFillLineSymbol )
     attr.unite( mFillLineSymbol->usedAttributes() );
   return attr;
@@ -2875,7 +2883,8 @@ QString QgsLinePatternFillSymbolLayer::ogrFeatureStyleWidth( double widthScaleFa
 void QgsLinePatternFillSymbolLayer::applyDataDefinedSettings( QgsSymbolV2RenderContext &context )
 {
   if ( !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_LINEANGLE ) && !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_DISTANCE )
-       && !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_LINEWIDTH ) && !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR ) )
+       && !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_LINEWIDTH ) && !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR )
+       && ( !mFillLineSymbol || !mFillLineSymbol->hasDataDefinedProperties() ) )
   {
     return; //no data defined settings
   }
@@ -3288,14 +3297,12 @@ bool QgsPointPatternFillSymbolLayer::setSubSymbol( QgsSymbolV2* symbol )
 
 void QgsPointPatternFillSymbolLayer::applyDataDefinedSettings( QgsSymbolV2RenderContext &context )
 {
-#if 0
-  // TODO: enable but check also if mMarkerSymbol has data defined properties
   if ( !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_DISTANCE_X ) && !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_DISTANCE_Y )
-       && !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_DISPLACEMENT_X ) && !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_DISPLACEMENT_Y ) )
+       && !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_DISPLACEMENT_X ) && !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_DISPLACEMENT_Y )
+       && ( !mMarkerSymbol || !mMarkerSymbol->hasDataDefinedProperties() ) )
   {
     return;
   }
-#endif
 
   double distanceX = mDistanceX;
   if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_DISTANCE_X ) )
@@ -3331,7 +3338,7 @@ double QgsPointPatternFillSymbolLayer::estimateMaxBleed() const
 
 QSet<QString> QgsPointPatternFillSymbolLayer::usedAttributes() const
 {
-  QSet<QString> attributes = QgsSymbolLayerV2::usedAttributes();
+  QSet<QString> attributes = QgsImageFillSymbolLayer::usedAttributes();
 
   if ( mMarkerSymbol )
     attributes.unite( mMarkerSymbol->usedAttributes() );
@@ -3457,9 +3464,7 @@ bool QgsCentroidFillSymbolLayerV2::setSubSymbol( QgsSymbolV2* symbol )
 
 QSet<QString> QgsCentroidFillSymbolLayerV2::usedAttributes() const
 {
-  QSet<QString> attributes;
-
-  attributes.unite( QgsSymbolLayerV2::usedAttributes() );
+  QSet<QString> attributes = QgsFillSymbolLayerV2::usedAttributes();
 
   if ( mMarker )
     attributes.unite( mMarker->usedAttributes() );
