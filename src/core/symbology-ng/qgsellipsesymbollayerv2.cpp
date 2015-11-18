@@ -26,22 +26,23 @@
 #include <QDomElement>
 
 QgsEllipseSymbolLayerV2::QgsEllipseSymbolLayerV2()
-    : mSymbolName( "circle" )
+    : QgsMarkerSymbolLayerV2()
+    , mSymbolName( "circle" )
     , mSymbolWidth( 4 )
     , mSymbolWidthUnit( QgsSymbolV2::MM )
     , mSymbolHeight( 3 )
     , mSymbolHeightUnit( QgsSymbolV2::MM )
-    , mFillColor( Qt::white )
     , mOutlineColor( Qt::black )
     , mOutlineStyle( Qt::SolidLine )
     , mOutlineWidth( 0 )
     , mOutlineWidthUnit( QgsSymbolV2::MM )
 {
+  mColor = Qt::white;
   mPen.setColor( mOutlineColor );
   mPen.setStyle( mOutlineStyle );
   mPen.setWidth( 1.0 );
   mPen.setJoinStyle( Qt::MiterJoin );
-  mBrush.setColor( mFillColor );
+  mBrush.setColor( mColor );
   mBrush.setStyle( Qt::SolidPattern );
   mOffset = QPointF( 0, 0 );
 
@@ -340,7 +341,7 @@ void QgsEllipseSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
   mPen.setColor( mOutlineColor );
   mPen.setStyle( mOutlineStyle );
   mPen.setWidthF( mOutlineWidth * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOutlineWidthUnit, mOutlineWidthMapUnitScale ) );
-  mBrush.setColor( mFillColor );
+  mBrush.setColor( mColor );
   prepareExpressions( context.fields(), context.renderContext().rendererScale() );
 }
 
@@ -372,7 +373,7 @@ void QgsEllipseSymbolLayerV2::writeSldMarker( QDomDocument &doc, QDomElement &el
   QDomElement graphicElem = doc.createElement( "se:Graphic" );
   element.appendChild( graphicElem );
 
-  QgsSymbolLayerV2Utils::wellKnownMarkerToSld( doc, graphicElem, mSymbolName, mFillColor, mOutlineColor, mOutlineStyle, mOutlineWidth, mSymbolWidth );
+  QgsSymbolLayerV2Utils::wellKnownMarkerToSld( doc, graphicElem, mSymbolName, mColor, mOutlineColor, mOutlineStyle, mOutlineWidth, mSymbolWidth );
 
   // store w/h factor in a <VendorOption>
   double widthHeightFactor = mSymbolWidth / mSymbolHeight;
@@ -481,7 +482,7 @@ QgsStringMap QgsEllipseSymbolLayerV2::properties() const
   map["outline_width"] = QString::number( mOutlineWidth );
   map["outline_width_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOutlineWidthUnit );
   map["outline_width_map_unit_scale"] = QgsSymbolLayerV2Utils::encodeMapUnitScale( mOutlineWidthMapUnitScale );
-  map["color"] = QgsSymbolLayerV2Utils::encodeColor( mFillColor );
+  map["color"] = QgsSymbolLayerV2Utils::encodeColor( mColor );
   map["outline_color"] = QgsSymbolLayerV2Utils::encodeColor( mOutlineColor );
   map["offset"] = QgsSymbolLayerV2Utils::encodePoint( mOffset );
   map["offset_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOffsetUnit );
@@ -656,7 +657,7 @@ bool QgsEllipseSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFa
   }
 
   //fill color
-  QColor fc = mFillColor;
+  QColor fc = mColor;
   QgsExpression* fillColorExpression = expression( "fill_color" );
   if ( fillColorExpression )
   {
