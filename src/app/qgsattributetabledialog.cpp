@@ -336,7 +336,7 @@ void QgsAttributeTableDialog::columnBoxInit()
     if ( idx < 0 )
       continue;
 
-    if ( mLayer->editorWidgetV2( idx ) != "Hidden" )
+    if ( mLayer->editFormConfig()->widgetType( idx ) != "Hidden" )
     {
       QIcon icon = QgsApplication::getThemeIcon( "/mActionNewAttribute.png" );
       QString alias = mLayer->attributeDisplayName( idx );
@@ -460,8 +460,8 @@ void QgsAttributeTableDialog::filterColumnChanged( QObject* filterAction )
   int fldIdx = mLayer->fieldNameIndex( fieldName );
   if ( fldIdx < 0 )
     return;
-  const QString widgetType = mLayer->editorWidgetV2( fldIdx );
-  const QgsEditorWidgetConfig widgetConfig = mLayer->editorWidgetV2Config( fldIdx );
+  const QString widgetType = mLayer->editFormConfig()->widgetType( fldIdx );
+  const QgsEditorWidgetConfig widgetConfig = mLayer->editFormConfig()->widgetConfig( fldIdx );
   mCurrentSearchWidgetWrapper = QgsEditorWidgetRegistry::instance()->
                                 createSearchWidget( widgetType, mLayer, fldIdx, widgetConfig, mFilterContainer );
   if ( mCurrentSearchWidgetWrapper->applyDirectly() )

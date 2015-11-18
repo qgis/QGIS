@@ -98,6 +98,7 @@ SET(QGIS_CORE_SRCS
   qgsdbfilterproxymodel.cpp
   qgsdiagramrendererv2.cpp
   qgsdistancearea.cpp
+  qgseditformconfig.cpp
   qgserror.cpp
   qgsexpression.cpp
   qgsexpressioncontext.cpp
@@ -403,6 +404,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgscoordinatetransform.h
   qgsdataitem.h
   qgsdataprovider.h
+  qgseditformconfig.h
   qgsgml.h
   qgsgmlschema.h
   qgsmaplayer.h

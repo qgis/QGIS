@@ -43,9 +43,9 @@
 QgsFieldsProperties::QgsFieldsProperties( QgsVectorLayer *layer, QWidget* parent )
     : QWidget( parent )
     , mLayer( layer )
-    , mDesignerTree( NULL )
-    , mFieldsList( NULL )
-    , mRelationsList( NULL )
+    , mDesignerTree( nullptr )
+    , mFieldsList( nullptr )
+    , mRelationsList( nullptr )
 {
   if ( !layer )
     return;
@@ -129,8 +129,8 @@ void QgsFieldsProperties::init()
 {
   loadRows();
 
-  mEditorLayoutComboBox->setCurrentIndex( mLayer->editorLayout() );
-  mFormSuppressCmbBx->setCurrentIndex( mLayer->featureFormSuppress() );
+  mEditorLayoutComboBox->setCurrentIndex( mLayer->editFormConfig()->layout() );
+  mFormSuppressCmbBx->setCurrentIndex( mLayer->editFormConfig()->suppress() );
 
   loadAttributeEditorTree();
 }
@@ -225,7 +225,7 @@ void QgsFieldsProperties::loadAttributeEditorTree()
   mDesignerTree->setAcceptDrops( true );
   mDesignerTree->setDragDropMode( QAbstractItemView::DragDrop );
 
-  Q_FOREACH ( QgsAttributeEditorElement* wdg, mLayer->attributeEditorElements() )
+  Q_FOREACH ( QgsAttributeEditorElement* wdg, mLayer->editFormConfig()->tabs() )
   {
     loadAttributeEditorTreeItem( wdg, mDesignerTree->invisibleRootItem() );
   }
@@ -848,11 +848,11 @@ void QgsFieldsProperties::apply()
     int idx = mFieldsList->item( i, attrIdCol )->text().toInt();
     FieldConfig cfg = configForRow( i );
 
-    mLayer->setFieldEditable( i, cfg.mEditable );
-    mLayer->setLabelOnTop( i, cfg.mLabelOnTop );
+    mLayer->editFormConfig()->setFieldEditable( i, cfg.mEditable );
+    mLayer->editFormConfig()->setLabelOnTop( i, cfg.mLabelOnTop );
 
-    mLayer->setEditorWidgetV2( idx, cfg.mEditorWidgetV2Type );
-    mLayer->setEditorWidgetV2Config( idx, cfg.mEditorWidgetV2Config );
+    mLayer->editFormConfig()->setWidgetType( idx, cfg.mEditorWidgetV2Type );
+    mLayer->editFormConfig()->setWidgetConfig( idx, cfg.mEditorWidgetV2Config );
 
     if ( mFieldsList->item( i, attrWMSCol )->checkState() == Qt::Unchecked )
     {
@@ -870,16 +870,16 @@ void QgsFieldsProperties::apply()
   {
     QTreeWidgetItem* tabItem = mDesignerTree->invisibleRootItem()->child( t );
 
-    mLayer->addAttributeEditorWidget( createAttributeEditorWidget( tabItem, mLayer ) );
+    mLayer->editFormConfig()->addTab( createAttributeEditorWidget( tabItem, mLayer ) );
   }
 
-  mLayer->setEditorLayout(( QgsVectorLayer::EditorLayout ) mEditorLayoutComboBox->currentIndex() );
-  if ( mEditorLayoutComboBox->currentIndex() == QgsVectorLayer::UiFileLayout )
-    mLayer->setEditForm( leEditForm->text() );
-  mLayer->setEditFormInit( leEditFormInit->text() );
-  mLayer->setEditFormInitUseCode( leEditFormInitUseCode->isChecked() );
-  mLayer->setEditFormInitCode( leEditFormInitCode->text() );
-  mLayer->setFeatureFormSuppress(( QgsVectorLayer::FeatureFormSuppress )mFormSuppressCmbBx->currentIndex() );
+  mLayer->editFormConfig()->setLayout(( QgsEditFormConfig::EditorLayout ) mEditorLayoutComboBox->currentIndex() );
+  if ( mEditorLayoutComboBox->currentIndex() == QgsEditFormConfig::UiFileLayout )
+    mLayer->editFormConfig()->setUiForm( leEditForm->text() );
+  mLayer->editFormConfig()->setInitFunction( leEditFormInit->text() );
+  mLayer->editFormConfig()->setUseInitCode( leEditFormInitUseCode->isChecked() );
+  mLayer->editFormConfig()->setInitCode( leEditFormInitCode->text() );
+  mLayer->editFormConfig()->setSuppress(( QgsEditFormConfig::FeatureFormSuppress )mFormSuppressCmbBx->currentIndex() );
 
   mLayer->setExcludeAttributesWMS( excludeAttributesWMS );
   mLayer->setExcludeAttributesWFS( excludeAttributesWFS );
@@ -900,12 +900,12 @@ QgsFieldsProperties::FieldConfig::FieldConfig()
 QgsFieldsProperties::FieldConfig::FieldConfig( QgsVectorLayer* layer, int idx )
     : mButton( 0 )
 {
-  mEditable = layer->fieldEditable( idx );
+  mEditable = layer->editFormConfig()->fieldEditable( idx );
   mEditableEnabled = layer->fields().fieldOrigin( idx ) != QgsFields::OriginJoin
                      && layer->fields().fieldOrigin( idx ) != QgsFields::OriginExpression;
-  mLabelOnTop = layer->labelOnTop( idx );
-  mEditorWidgetV2Type = layer->editorWidgetV2( idx );
-  mEditorWidgetV2Config = layer->editorWidgetV2Config( idx );
+  mLabelOnTop = layer->editFormConfig()->labelOnTop( idx );
+  mEditorWidgetV2Type = layer->editFormConfig()->widgetType( idx );
+  mEditorWidgetV2Config = layer->editFormConfig()->widgetConfig( idx );
 
 }
 
@@ -921,12 +921,12 @@ QStringList QgsFieldsProperties::DragList::mimeTypes() const
 QMimeData* QgsFieldsProperties::DragList::mimeData( const QList<QTableWidgetItem*> items ) const
 {
   if ( items.count() <= 0 )
-    return NULL;
+    return nullptr;
 
   QStringList types = mimeTypes();
 
   if ( types.isEmpty() )
-    return NULL;
+    return nullptr;
 
   QMimeData* data = new QMimeData();
   QString format = types.at( 0 );
@@ -1091,12 +1091,12 @@ QStringList QgsFieldsProperties::DesignerTree::mimeTypes() const
 QMimeData* QgsFieldsProperties::DesignerTree::mimeData( const QList<QTreeWidgetItem*> items ) const
 {
   if ( items.count() <= 0 )
-    return NULL;
+    return nullptr;
 
   QStringList types = mimeTypes();
 
   if ( types.isEmpty() )
-    return NULL;
+    return nullptr;
 
   QMimeData* data = new QMimeData();
   QString format = types.at( 0 );

@@ -1138,8 +1138,8 @@ void QgsGrassProvider::startEditing( QgsVectorLayer *vectorLayer )
 
   // TODO: enable cats editing once all consequences are implemented
   // disable cat and topo symbol editing
-  vectorLayer->setFieldEditable( mLayer->keyColumn(), false );
-  vectorLayer->setFieldEditable( mLayer->fields().size() - 1, false );
+  vectorLayer->editFormConfig()->setFieldEditable( mLayer->keyColumn(), false );
+  vectorLayer->editFormConfig()->setFieldEditable( mLayer->fields().size() - 1, false );
 
   mEditedCount++;
 
