@@ -532,7 +532,7 @@ void QgsVectorLayerProperties::apply()
     layer->setSubsetString( txtSubsetSQL->toPlainText() );
     mMetadataFilled = false;
   }
-  mOriginalSubsetSQL = txtSubsetSQL->toPlainText();
+  mOriginalSubsetSQL = layer->subsetString();
 
   // set up the scale based layer visibility stuff....
   layer->setScaleBasedVisibility( mScaleVisibilityGroupBox->isChecked() );
