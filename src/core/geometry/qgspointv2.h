@@ -37,7 +37,11 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometryV2
 
     /** Construct a QgsPointV2 from a QgsPoint object
      */
-    QgsPointV2( const QgsPoint& p );
+    explicit QgsPointV2( const QgsPoint& p );
+
+    /** Construct a QgsPointV2 from a QPointF
+     */
+    explicit QgsPointV2( const QPointF& p );
 
     /** Construct a point with a specified type (eg PointZ, PointM) and initial x, y, z, and m values.
      * @param type point type
@@ -111,13 +115,13 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometryV2
      * @see x()
      * @see rx()
      */
-    void setX( double x ) { mX = x; }
+    void setX( double x ) { mX = x; mBoundingBox = QgsRectangle(); }
 
     /** Sets the point's y-coordinate.
      * @see y()
      * @see ry()
      */
-    void setY( double y ) { mY = y; }
+    void setY( double y ) { mY = y; mBoundingBox = QgsRectangle(); }
 
     /** Sets the point's z-coordinate.
      * @see z()

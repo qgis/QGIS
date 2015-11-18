@@ -20,7 +20,11 @@ class QgsPointV2: public QgsAbstractGeometryV2
 
     /** Construct a QgsPointV2 from a QgsPoint object
      */
-    QgsPointV2( const QgsPoint& p );
+    explicit QgsPointV2( const QgsPoint& p );
+
+    /** Construct a QgsPointV2 from a QPointF
+     */
+    explicit QgsPointV2( const QPointF& p );
 
     /** Construct a point with a specified type (eg PointZ, PointM) and initial x, y, z, and m values.
      * @param type point type

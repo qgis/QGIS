@@ -34,6 +34,11 @@ QgsPointV2::QgsPointV2( const QgsPoint& p ): QgsAbstractGeometryV2(), mX( p.x() 
   mWkbType = QgsWKBTypes::Point;
 }
 
+QgsPointV2::QgsPointV2( const QPointF& p ): QgsAbstractGeometryV2(), mX( p.x() ), mY( p.y() ), mZ( 0.0 ), mM( 0.0 )
+{
+  mWkbType = QgsWKBTypes::Point;
+}
+
 QgsPointV2::QgsPointV2( QgsWKBTypes::Type type, double x, double y, double z, double m ): mX( x ), mY( y ), mZ( z ), mM( m )
 {
   mWkbType = type;
@@ -75,6 +80,7 @@ bool QgsPointV2::fromWkb( const unsigned char* wkb )
   if ( isMeasure() )
     wkbPtr >> mM;
 
+  mBoundingBox = QgsRectangle(); //set bounding box invalid
   return true;
 }
 
@@ -197,11 +203,13 @@ void QgsPointV2::clear()
 {
   mWkbType = QgsWKBTypes::Unknown;
   mX = mY = mZ = mM = 0.;
+  mBoundingBox = QgsRectangle(); //set bounding box invalid
 }
 
 void QgsPointV2::transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d )
 {
   ct.transformInPlace( mX, mY, mZ, d );
+  mBoundingBox = QgsRectangle(); //set bounding box invalid
 }
 
 void QgsPointV2::coordinateSequence( QList< QList< QList< QgsPointV2 > > >& coord ) const
@@ -282,4 +290,5 @@ void QgsPointV2::transform( const QTransform& t )
   qreal x, y;
   t.map( mX, mY, &x, &y );
   mX = x; mY = y;
+  mBoundingBox = QgsRectangle(); //set bounding box invalid
 }

@@ -45,6 +45,7 @@ void QgsLineStringV2::clear()
   mZ.clear();
   mM.clear();
   mWkbType = QgsWKBTypes::Unknown;
+  mBoundingBox = QgsRectangle();
 }
 
 bool QgsLineStringV2::fromWkb( const unsigned char* wkb )
@@ -228,6 +229,64 @@ QgsPointV2 QgsLineStringV2::pointN( int i ) const
   return QgsPointV2( t, x, y, z, m );
 }
 
+double QgsLineStringV2::xAt( int index ) const
+{
+  if ( index >= 0 && index < mX.size() )
+    return mX.at( index );
+  else
+    return 0.0;
+}
+
+double QgsLineStringV2::yAt( int index ) const
+{
+  if ( index >= 0 && index < mY.size() )
+    return mY.at( index );
+  else
+    return 0.0;
+}
+
+double QgsLineStringV2::zAt( int index ) const
+{
+  if ( index >= 0 && index < mZ.size() )
+    return mZ.at( index );
+  else
+    return 0.0;
+}
+
+double QgsLineStringV2::mAt( int index ) const
+{
+  if ( index >= 0 && index < mM.size() )
+    return mM.at( index );
+  else
+    return 0.0;
+}
+
+void QgsLineStringV2::setXAt( int index, double x )
+{
+  if ( index >= 0 && index < mX.size() )
+    mX[ index ] = x;
+  mBoundingBox = QgsRectangle();
+}
+
+void QgsLineStringV2::setYAt( int index, double y )
+{
+  if ( index >= 0 && index < mY.size() )
+    mY[ index ] = y;
+  mBoundingBox = QgsRectangle();
+}
+
+void QgsLineStringV2::setZAt( int index, double z )
+{
+  if ( index >= 0 && index < mZ.size() )
+    mZ[ index ] = z;
+}
+
+void QgsLineStringV2::setMAt( int index, double m )
+{
+  if ( index >= 0 && index < mM.size() )
+    mM[ index ] = m;
+}
+
 void QgsLineStringV2::points( QList<QgsPointV2>& pts ) const
 {
   pts.clear();
@@ -387,7 +446,7 @@ void QgsLineStringV2::transform( const QgsCoordinateTransform& ct, QgsCoordinate
   {
     delete[] zArray;
   }
-
+  mBoundingBox = QgsRectangle();
 }
 
 void QgsLineStringV2::transform( const QTransform& t )
@@ -399,6 +458,7 @@ void QgsLineStringV2::transform( const QTransform& t )
     t.map( mX.at( i ), mY.at( i ), &x, &y );
     mX[i] = x; mY[i] = y;
   }
+  mBoundingBox = QgsRectangle();
 }
 
 bool QgsLineStringV2::insertVertex( const QgsVertexId& position, const QgsPointV2& vertex )
