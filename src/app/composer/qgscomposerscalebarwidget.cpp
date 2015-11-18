@@ -596,6 +596,11 @@ void QgsComposerScaleBarWidget::on_mUnitsComboBox_currentIndexChanged( int index
   }
 
   mComposerScaleBar->update();
+
+  mUnitLabelLineEdit->setText( mComposerScaleBar->unitLabeling() );
+  mSegmentSizeSpinBox->setValue( mComposerScaleBar->numUnitsPerSegment() );
+  mMapUnitsPerBarUnitSpinBox->setValue( mComposerScaleBar->numMapUnitsPerScaleBarUnit() );
+
   connectUpdateSignal();
   mComposerScaleBar->endCommand();
 }
