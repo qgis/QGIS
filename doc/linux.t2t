@@ -202,3 +202,18 @@ Install them using dpkg.  E.g.:
 sudo debi
 ```
 
+== Building QGIS with Qt 5.x ==
+
+Only build steps deviating from Qt 4 builds are outlined.
+
+== On Fedora Linux ==
+
+=== Install build dependencies ===
+
+```
+dnf install qt5-qtwebkit-devel qt5-qtlocation-devel qt5-qttools-static qt5-qtscript-devel qca-qt5-devel python3-qt5-devel
+```
+
+```
+cmake -DENABLE_QT5=ON -DWITH_QWTPOLAR=OFF ..
+```
