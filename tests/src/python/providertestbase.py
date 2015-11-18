@@ -41,7 +41,10 @@ class ProviderTestCase(object):
         self.assert_query(provider, '"name" NOT ILIKE \'QGIS\'', [1, 2, 3, 4])
         self.assert_query(provider, '"name" NOT ILIKE \'pEAR\'', [1, 2, 4])
         self.assert_query(provider, 'name = \'Apple\'', [2])
+        self.assert_query(provider, 'name <> \'Apple\'', [1, 3, 4])
         self.assert_query(provider, 'name = \'apple\'', [])
+        self.assert_query(provider, '"name" <> \'apple\'', [1, 2, 3, 4])
+        self.assert_query(provider, '(name = \'Apple\') is not null', [1, 2, 3, 4])
         self.assert_query(provider, 'name LIKE \'Apple\'', [2])
         self.assert_query(provider, 'name LIKE \'aPple\'', [])
         self.assert_query(provider, 'name ILIKE \'aPple\'', [2])
@@ -84,6 +87,14 @@ class ProviderTestCase(object):
         self.assert_query(provider, 'not true', [])
         self.assert_query(provider, 'not false', [1, 2, 3, 4, 5])
         self.assert_query(provider, 'not null', [])
+        #not
+        self.assert_query(provider, 'not name = \'Apple\'', [1, 3, 4])
+        self.assert_query(provider, 'not name IS NULL', [1, 2, 3, 4])
+        self.assert_query(provider, 'not name = \'Apple\' or name = \'Apple\'', [1, 2, 3, 4])
+        self.assert_query(provider, 'not name = \'Apple\' or not name = \'Apple\'', [1, 3, 4])
+        self.assert_query(provider, 'not name = \'Apple\' and pk = 4', [4])
+        self.assert_query(provider, 'not name = \'Apple\' and not pk = 4', [1, 3])
+        self.assert_query(provider, 'not pk IN (1, 2, 4, 8)', [3, 5])
 
     def testGetFeaturesUncompiled(self):
         try:

@@ -94,6 +94,7 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
 
       QString op;
       bool partialCompilation = false;
+      bool failOnPartialNode = false;
       switch ( n->op() )
       {
         case QgsExpression::boEQ:
@@ -129,6 +130,7 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
 
         case QgsExpression::boIsNot:
           op = "IS NOT";
+          failOnPartialNode = mFlags.testFlag( CaseInsensitiveStringMatch );
           break;
 
         case QgsExpression::boLike:
@@ -146,9 +148,11 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
         case QgsExpression::boNotLike:
           op = "NOT LIKE";
           partialCompilation = mFlags.testFlag( LikeIsCaseInsensitive );
+          failOnPartialNode = mFlags.testFlag( CaseInsensitiveStringMatch );
           break;
 
         case QgsExpression::boNotILike:
+          failOnPartialNode = mFlags.testFlag( CaseInsensitiveStringMatch );
           if ( mFlags.testFlag( LikeIsCaseInsensitive ) )
             op = "NOT LIKE";
           else
@@ -164,6 +168,7 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
           break;
 
         case QgsExpression::boNE:
+          failOnPartialNode = mFlags.testFlag( CaseInsensitiveStringMatch );
           op = "<>";
           break;
 
@@ -210,6 +215,9 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
 
       QString right;
       Result rr( compileNode( n->opRight(), right ) );
+
+      if ( failOnPartialNode && ( lr == Partial || rr == Partial ) )
+        return Fail;
 
       result = left + ' ' + op + ' ' + right;
       if ( lr == Complete && rr == Complete )
