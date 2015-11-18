@@ -88,7 +88,7 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
   QStringList::const_iterator it = rendererList.constBegin();
   for ( ; it != rendererList.constEnd(); ++it )
   {
-    if ( *it != "pointDisplacement" )
+    if ( *it != "pointDisplacement" && *it != "heatmapRenderer" && *it != "invertedPolygonRenderer" )
     {
       QgsRendererV2AbstractMetadata* m = QgsRendererV2Registry::instance()->rendererMetadata( *it );
       mRendererComboBox->addItem( m->icon(), m->visibleName(), *it );
