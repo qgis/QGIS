@@ -4009,6 +4009,11 @@ bool QgisApp::addProject( QString projectFile )
   QColor myColor = QColor( myRedInt, myGreenInt, myBlueInt );
   mMapCanvas->setCanvasColor( myColor ); //this is fill color before rendering starts
   QgsDebugMsg( "Canvas background color restored..." );
+  myRedInt = QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorRedPart", 255 );
+  myGreenInt = QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorGreenPart", 255 );
+  myBlueInt = QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorBluePart", 0 );
+  myColor = QColor( myRedInt, myGreenInt, myBlueInt );
+  mMapCanvas->setSelectionColor( myColor ); //this is selection color before rendering starts
 
   //load project scales
   bool projectScales = QgsProject::instance()->readBoolEntry( "Scales", "/useProjectScales" );
@@ -9085,12 +9090,6 @@ void QgisApp::projectProperties()
 
   // Display the modal dialog box.
   pp->exec();
-
-  int  myRedInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorRedPart", 255 );
-  int  myGreenInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorGreenPart", 255 );
-  int  myBlueInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorBluePart", 255 );
-  QColor myColor = QColor( myRedInt, myGreenInt, myBlueInt );
-  mMapCanvas->setCanvasColor( myColor ); // this is fill color before rendering onto canvas
 
   qobject_cast<QgsMeasureTool*>( mMapTools.mMeasureDist )->updateSettings();
   qobject_cast<QgsMeasureTool*>( mMapTools.mMeasureArea )->updateSettings();
