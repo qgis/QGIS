@@ -97,7 +97,7 @@ bool QgsVectorLayerEditUtils::deleteVertex( QgsFeatureId atFeatureId, int atVert
 }
 
 
-int QgsVectorLayerEditUtils::addRing( const QList<QgsPoint>& ring )
+int QgsVectorLayerEditUtils::addRing( const QList<QgsPoint>& ring, QgsFeatureId* featureId )
 {
   if ( !L->hasGeometryType() )
     return 5;
@@ -125,7 +125,8 @@ int QgsVectorLayerEditUtils::addRing( const QList<QgsPoint>& ring )
     if ( addRingReturnCode == 0 )
     {
       L->editBuffer()->changeGeometry( f.id(), f.geometry() );
-
+      if ( featureId )
+        *featureId = f.id();
       //setModified( true, true );
       break;
     }

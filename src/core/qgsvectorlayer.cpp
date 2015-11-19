@@ -1065,13 +1065,13 @@ bool QgsVectorLayer::deleteSelectedFeatures( int* deletedCount )
   return deleted == count;
 }
 
-int QgsVectorLayer::addRing( const QList<QgsPoint>& ring )
+int QgsVectorLayer::addRing( const QList<QgsPoint>& ring, QgsFeatureId* featureId )
 {
   if ( !mEditBuffer || !mDataProvider )
     return 6;
 
   QgsVectorLayerEditUtils utils( this );
-  return utils.addRing( ring );
+  return utils.addRing( ring, featureId );
 }
 
 int QgsVectorLayer::addPart( const QList<QgsPoint> &points )
