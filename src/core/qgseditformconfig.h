@@ -378,7 +378,7 @@ class CORE_EXPORT QgsEditFormConfig : public QObject
      * <li>WebView (QgsWebViewWidgetWrapper)</li>
      * </ul>
      *
-     * @param attrIdx     Index of the field
+     * @param fieldIdx    Index of the field
      * @param widgetType  Type id of the editor widget to use
      */
     void setWidgetType( int fieldIdx, const QString& widgetType );
