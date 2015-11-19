@@ -85,7 +85,7 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometryV2
      * @see setX()
      * @note not available in Python bindings
      */
-    double &rx() { return mX; }
+    double &rx() { mBoundingBox = QgsRectangle(); return mX; }
 
     /** Returns a reference to the y-coordinate of this point.
      * Using a reference makes it possible to directly manipulate y in place.
@@ -93,7 +93,7 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometryV2
      * @see setY()
      * @note not available in Python bindings
      */
-    double &ry() { return mY; }
+    double &ry() { mBoundingBox = QgsRectangle(); return mY; }
 
     /** Returns a reference to the z-coordinate of this point.
      * Using a reference makes it possible to directly manipulate z in place.

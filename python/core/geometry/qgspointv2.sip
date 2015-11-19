@@ -33,7 +33,19 @@ class QgsPointV2: public QgsAbstractGeometryV2
      * @param z z-coordinate of point, for PointZ or PointZM types
      * @param m m-value of point, for PointM or PointZM types
      */
-    QgsPointV2( QgsWKBTypes::Type type, double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0 );
+    QgsPointV2( QgsWKBTypes::Type type, double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0 ) /Factory/;
+    %MethodCode
+  if ( QgsWKBTypes::flatType( a0 ) != QgsWKBTypes::Point )
+  {
+    PyErr_SetString(PyExc_ValueError,
+            QString( "%1 is not a valid WKB type for point geometries" ).arg( QgsWKBTypes::displayString( a0 ) ).toUtf8().constData( ) );
+    sipIsErr = 1;
+  }
+  else
+  {
+    sipCpp = new sipQgsPointV2( a0, a1, a2, a3, a4 );
+  }
+%End
 
     bool operator==( const QgsPointV2& pt ) const;
     bool operator!=( const QgsPointV2& pt ) const;

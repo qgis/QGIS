@@ -97,6 +97,10 @@ Point( 1 2 3 4 ),PointZM( 1 2 3 4 ),1,0,0,0,1,0,0,Point( 1 2 ),1,2,1,2,"4d coord
 PointM( 4 5 6 ),PointM ( 4 5 6 ),1,0,0,0,1,0,0,POINT(4 5),4,5,4,5,
 PointZ (1 2 3),POINT Z (1 2 3),1,0,0,0,1,0,0,POINT(1 2),1,2,1,2,
 PointZM( 7 8 9 10 ),PointZM( 7 8 9 10 ),1,0,0,0,1,0,0,POINT( 7 8 ),7,8,7,8,
+PointZ( 1 2 ),PointZ( 1 2 0 ),1,0,0,0,1,0,0,Point(1 2),1,2,1,2,"No z coordinate specified, set to 0"
+PointM( 1 2 ),PointM( 1 2 0 ),1,0,0,0,1,0,0,Point(1 2),1,2,1,2,"No m value specified, set to 0"
+PointZM( 1 2 ),PointZM( 1 2 0 0 ),1,0,0,0,1,0,0,Point(1 2),1,2,1,2,"No z or m value specified, set to 0"
+PointZM( 1 2 3 ),PointZM( 1 2 3 0 ),1,0,0,0,1,0,0,Point(1 2),1,2,1,2,"No m value specified, set to 0"
 Polygon(),,,,,,,,,,,,,,Malformed WKT
 Polygon,,,,,,,,,,,,,,Malformed WKT
 "Polygon ((0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7 , 5 7, 5 5),(1 1,2 1, 2 2, 1 2, 1 1))","POLYGON((0 0,10 0,10 10,0 10,0 0),(5 5,7 5,7 7,5 7,5 5),(1 1,2 1,2 2,1 2,1 1))",15,0,95,52,1,2,0,POINT(4.99473684210526 4.99473684210526),0,0,10,10,
