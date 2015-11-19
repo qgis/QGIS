@@ -565,6 +565,7 @@ SET(QGIS_CORE_HDRS
   qgsdiagramrendererv2.h
   qgsdistancearea.h
   qgseditorwidgetconfig.h
+  qgsfeaturefilterprovider.h
   qgserror.h
   qgsexception.h
   qgsexpression.h
