@@ -353,7 +353,7 @@ QVariant QgsRelationReferenceWidget::foreignKey()
   {
     if ( !mFeature.isValid() )
     {
-      return QVariant( mReferencingLayer->fields().at( mFkeyFieldIdx ).type() );
+      return QVariant( mReferencingLayer->fields().at( mReferencingLayer->fieldNameIndex( mRelation.fieldPairs().at( 0 ).first ) ).type() );
     }
     else
     {
