@@ -20,6 +20,7 @@
 
 #include "qgsaccesscontrolfilter.h"
 #include "qgsmessagelog.h"
+#include "qgsfeature.h"
 
 #include <QString>
 #include <QStringList>
@@ -83,5 +84,5 @@ bool QgsAccessControlFilter::allowToEdit( const QgsVectorLayer* layer, const Qgs
 /** Cache key to used to create the capabilities cache, "" for no cache */
 const QString QgsAccessControlFilter::cacheKey() const
 {
-    return "";
+  return "";
 }
