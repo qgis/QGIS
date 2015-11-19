@@ -57,7 +57,6 @@ class QgsEditFormConfig : QObject
       SuppressOff = 2      //!< Do not suppress feature form
     };
 
-    explicit QgsEditFormConfig( QObject* parent = nullptr );
 
     /**
      * This is only useful in combination with EditorLayout::TabLayout.

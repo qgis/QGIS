@@ -308,8 +308,6 @@ class CORE_EXPORT QgsEditFormConfig : public QObject
       SuppressOff = 2      //!< Do not suppress feature form
     };
 
-    explicit QgsEditFormConfig( QObject* parent = nullptr );
-
     /**
      * This is only useful in combination with EditorLayout::TabLayout.
      *
@@ -522,9 +520,15 @@ class CORE_EXPORT QgsEditFormConfig : public QObject
   private slots:
     void onRelationsLoaded();
 
-  private:
-
+  protected:
     // Internal stuff
+
+    /**
+     * Create a new edit form config. Normally invoked by QgsVectorLayer
+     */
+    explicit QgsEditFormConfig( QObject* parent = nullptr );
+
+  private:
 
     /**
      * Used internally to set the fields when they change.

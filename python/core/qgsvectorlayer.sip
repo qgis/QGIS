@@ -1098,6 +1098,15 @@ class QgsVectorLayer : QgsMapLayer
      * Returns a list of tabs holding groups and fields
      */
     QList< QgsAttributeEditorElement* > attributeEditorElements();
+
+    /**
+     * Get the configuration of the form used to represent this vector layer.
+     * This is a writable configuration that can directly be changed in place.
+     *
+     * @return The configuration of this layers' form
+     */
+    QgsEditFormConfig* editFormConfig() const;
+
     /**
      * Clears all the tabs for the attribute editor form
      */
