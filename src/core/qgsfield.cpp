@@ -18,6 +18,7 @@
 
 #include <QSettings>
 #include <QtCore/qmath.h>
+#include "qgis.h"
 
 #if 0
 QgsField::QgsField( QString nam, QString typ, int len, int prec, bool num,
@@ -141,6 +142,30 @@ bool QgsField::convertCompatible( QVariant& v ) const
   {
     v = QVariant( mType );
     return false;
+  }
+
+  //String representations of doubles in QVariant will return false to convert( QVariant::Int )
+  //work around this by first converting to double, and then checking whether the double is convertible to int
+  if ( mType == QVariant::Int && v.canConvert( QVariant::Double ) )
+  {
+    bool ok = false;
+    double dbl = v.toDouble( &ok );
+    if ( !ok )
+    {
+      //couldn't convert to number
+      v = QVariant( mType );
+      return false;
+    }
+
+    double round = qgsRound( dbl );
+    if ( round  > INT_MAX || round < -INT_MAX )
+    {
+      //double too large to fit in int
+      v = QVariant( mType );
+      return false;
+    }
+    v = QVariant( qRound( dbl ) );
+    return true;
   }
 
   if ( !v.convert( mType ) )
