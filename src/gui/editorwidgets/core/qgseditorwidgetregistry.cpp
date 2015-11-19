@@ -351,23 +351,28 @@ QString QgsEditorWidgetRegistry::findSuitableWrapper( QWidget* editor, const QSt
   QMap<const char*, QPair<int, QString> >::ConstIterator it;
 
   QString widgetid;
-  int weight = 0;
-
-  it = mFactoriesByType.constBegin();
-  for ( ; it != mFactoriesByType.constEnd(); ++it )
+  
+  // Editor can be null
+  if ( editor )
   {
-    if ( editor->staticMetaObject.className() == it.key() )
+    int weight = 0;
+
+    it = mFactoriesByType.constBegin();
+    for ( ; it != mFactoriesByType.constEnd(); ++it )
     {
-      // if it's a perfect match: return it directly
-      return it.value().second;
-    }
-    else if ( editor->inherits( it.key() ) )
-    {
-      // if it's a subclass, continue evaluating, maybe we find a more-specific or one with more weight
-      if ( it.value().first > weight )
+      if ( editor->staticMetaObject.className() == it.key() )
       {
-        weight = it.value().first;
-        widgetid = it.value().second;
+        // if it's a perfect match: return it directly
+        return it.value().second;
+      }
+      else if ( editor->inherits( it.key() ) )
+      {
+        // if it's a subclass, continue evaluating, maybe we find a more-specific or one with more weight
+        if ( it.value().first > weight )
+        {
+          weight = it.value().first;
+          widgetid = it.value().second;
+        }
       }
     }
   }
