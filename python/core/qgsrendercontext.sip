@@ -140,4 +140,18 @@ class QgsRenderContext
     /** Sets pointer to original (unsegmentized) geometry
         @geometry the geometry*/
     void setGeometry( const QgsAbstractGeometryV2* geometry );
+
+    /** Set a filter feature provider used for additional filtering of rendered features.
+     * @param ffp the filter feature provider
+     * @note added in QGIS 2.14
+     * @see featureFilterProvider()
+     */
+    void setFeatureFilterProvider( const QgsFeatureFilterProvider* ffp );
+
+    /** Get the filter feature provider used for additional filtering of rendered features.
+     * @return the filter feature provider
+     * @note added in QGIS 2.14
+     * @see setFeatureFilterProvider()
+     */
+    const QgsFeatureFilterProvider* featureFilterProvider() const;
 };

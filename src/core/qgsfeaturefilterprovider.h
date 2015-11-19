@@ -26,21 +26,25 @@ class QgsFeatureRequest;
 
 
 /** \ingroup core
- * Interface used by class that will filter the features of a layer.
- * The only method `filterFeatures` fill the `QgsFeatureRequest` to get only the
- * wanted features.
+ * \class QgsFeatureFilterProvider
+ * Abstract interface for use by classes that filter the features of a layer.
+ * A QgsFeatureFilterProvider provides a method for modifying a QgsFeatureRequest in place to apply
+ * additional filters to the request.
+ * \note added in QGIS 2.14
  **/
+
 class CORE_EXPORT QgsFeatureFilterProvider
 {
   public:
 
     /** Constructor */
-    QgsFeatureFilterProvider() {};
+    QgsFeatureFilterProvider() {}
 
     /** Destructor */
-    virtual ~QgsFeatureFilterProvider() {};
+    virtual ~QgsFeatureFilterProvider() {}
 
-    /** Add some filter to the feature request to don't have the unauthorized (unauthorised) features
+    /** Add additional filters to the feature request to further restrict the features returned by the request.
+     * Derived classes must implement this method.
      * @param layer the layer to filter
      * @param featureRequest the feature request to update
      */

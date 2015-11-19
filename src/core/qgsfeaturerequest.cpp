@@ -117,6 +117,19 @@ QgsFeatureRequest& QgsFeatureRequest::setFilterExpression( const QString& expres
   return *this;
 }
 
+QgsFeatureRequest&QgsFeatureRequest::combineFilterExpression( const QString& expression )
+{
+  if ( mFilterExpression )
+  {
+    setFilterExpression( QString( "(%1) AND (%2)" ).arg( mFilterExpression->expression(), expression ) );
+  }
+  else
+  {
+    setFilterExpression( expression );
+  }
+  return *this;
+}
+
 QgsFeatureRequest &QgsFeatureRequest::setExpressionContext( const QgsExpressionContext &context )
 {
   mExpressionContext = context;

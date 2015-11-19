@@ -32,6 +32,7 @@
 #include "qgsvectorlayerlabeling.h"
 #include "qgsvectorlayerlabelprovider.h"
 #include "qgspainteffect.h"
+#include "qgsfeaturefilterprovider.h"
 
 #include <QSettings>
 #include <QPicture>
@@ -151,25 +152,17 @@ bool QgsVectorLayerRenderer::render()
 
   QgsFeatureRequest featureRequest = QgsFeatureRequest()
                                      .setFilterRect( requestExtent )
-                                     .setSubsetOfAttributes( mAttrNames, mFields );
+                                     .setSubsetOfAttributes( mAttrNames, mFields )
+                                     .setExpressionContext( mContext.expressionContext() );
 
   const QgsFeatureFilterProvider* featureFilterProvider = mContext.featureFilterProvider();
   if ( featureFilterProvider )
   {
     featureFilterProvider->filterFeatures( mLayer, featureRequest );
   }
-  if ( !rendererFilter.isNull() )
+  if ( !rendererFilter.isEmpty() && rendererFilter != "TRUE" )
   {
-    featureRequest.setExpressionContext( mContext.expressionContext() );
-    if ( !featureRequest.filterExpression() )
-    {
-      featureRequest.setFilterExpression( rendererFilter );
-    }
-    else
-    {
-      featureRequest.setFilterExpression( QString( "(%s) AND (%s)" )
-                                          .arg( rendererFilter, featureRequest.filterExpression()->expression() ) );
-    }
+    featureRequest.combineFilterExpression( rendererFilter );
   }
 
   // enable the simplification of the geometries (Using the current map2pixel context) before send it to renderer engine.

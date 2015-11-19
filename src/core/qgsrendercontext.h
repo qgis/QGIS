@@ -25,7 +25,6 @@
 #include "qgsrectangle.h"
 #include "qgsvectorsimplifymethod.h"
 #include "qgsexpressioncontext.h"
-#include "qgsfeaturefilterprovider.h"
 
 class QPainter;
 
@@ -33,8 +32,7 @@ class QgsAbstractGeometryV2;
 class QgsLabelingEngineInterface;
 class QgsLabelingEngineV2;
 class QgsMapSettings;
-class QgsExpression;
-class QgsVectorLayer;
+class QgsFeatureFilterProvider;
 
 
 /** \ingroup core
@@ -199,17 +197,19 @@ class CORE_EXPORT QgsRenderContext
     /** Sets pointer to original (unsegmentized) geometry*/
     void setGeometry( const QgsAbstractGeometryV2* geometry ) { mGeometry = geometry; }
 
-    /** Set a filter feature provider used to filter the features
+    /** Set a filter feature provider used for additional filtering of rendered features.
      * @param ffp the filter feature provider
-     * @note not available in Python bindings
+     * @note added in QGIS 2.14
+     * @see featureFilterProvider()
      */
     void setFeatureFilterProvider( const QgsFeatureFilterProvider* ffp );
 
-    /** Get the filter feature provider used to filter the features
+    /** Get the filter feature provider used for additional filtering of rendered features.
      * @return the filter feature provider
-     * @note not available in Python bindings
+     * @note added in QGIS 2.14
+     * @see setFeatureFilterProvider()
      */
-    const QgsFeatureFilterProvider* featureFilterProvider() { return mFeatureFilterProvider; }
+    const QgsFeatureFilterProvider* featureFilterProvider() const { return mFeatureFilterProvider; }
 
   private:
 

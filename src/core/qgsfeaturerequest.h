@@ -144,6 +144,13 @@ class CORE_EXPORT QgsFeatureRequest
      */
     QgsExpression* filterExpression() const { return mFilterExpression; }
 
+    /** Modifies the existing filter expression to add an additional expression filter. The
+     * filter expressions are combined using AND, so only features matching both
+     * the existing expression and the additional expression will be returned.
+     * @note added in QGIS 2.14
+     */
+    QgsFeatureRequest& combineFilterExpression( const QString& expression );
+
     /** Returns the expression context used to evaluate filter expressions.
      * @note added in QGIS 2.12
      * @see setExpressionContext

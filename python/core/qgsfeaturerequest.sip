@@ -50,9 +50,25 @@ class QgsFeatureRequest
     QgsFeatureRequest& setFilterFids( const QgsFeatureIds& fids );
     const QgsFeatureIds& filterFids() const;
 
-    //! Set filter expression. {@see QgsExpression}
+    /** Set the filter expression. {@see QgsExpression}
+     * @param expression expression string
+     * @see filterExpression
+     * @see setExpressionContext
+     */
     QgsFeatureRequest& setFilterExpression( const QString& expression );
+
+    /** Returns the filter expression if set.
+     * @see setFilterExpression
+     * @see expressionContext
+     */
     QgsExpression* filterExpression() const;
+
+    /** Modifies the existing filter expression to add an additional expression filter. The
+     * filter expressions are combined using AND, so only features matching both
+     * the existing expression and the additional expression will be returned.
+     * @note added in QGIS 2.14
+     */
+    QgsFeatureRequest& combineFilterExpression( const QString& expression );
 
     /** Returns the expression context used to evaluate filter expressions.
      * @note added in QGIS 2.12

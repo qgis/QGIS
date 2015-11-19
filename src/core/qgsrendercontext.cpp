@@ -21,6 +21,7 @@
 #include "qgsmapsettings.h"
 #include "qgsexpression.h"
 #include "qgsvectorlayer.h"
+#include "qgsfeaturefilterprovider.h"
 
 QgsRenderContext::QgsRenderContext()
     : mFlags( DrawEditingInfo | UseAdvancedEffects | DrawSelection | UseRenderingOptimization )
@@ -40,11 +41,8 @@ QgsRenderContext::QgsRenderContext()
 
 QgsRenderContext::~QgsRenderContext()
 {
-  if ( mFeatureFilterProvider )
-  {
-    delete mFeatureFilterProvider;
-    mFeatureFilterProvider = 0;
-  }
+  delete mFeatureFilterProvider;
+  mFeatureFilterProvider = 0;
 }
 
 void QgsRenderContext::setFlags( const QgsRenderContext::Flags& flags )
@@ -151,11 +149,9 @@ void QgsRenderContext::setUseRenderingOptimization( bool enabled )
 
 void QgsRenderContext::setFeatureFilterProvider( const QgsFeatureFilterProvider* ffp )
 {
-  if ( mFeatureFilterProvider )
-  {
-    delete mFeatureFilterProvider;
-    mFeatureFilterProvider = 0;
-  }
+  delete mFeatureFilterProvider;
+  mFeatureFilterProvider = 0;
+
   if ( ffp )
   {
     mFeatureFilterProvider = ffp->clone();
