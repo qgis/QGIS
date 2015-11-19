@@ -1012,7 +1012,7 @@ static QVariant fcnConcat( const QVariantList& values, const QgsExpressionContex
 static QVariant fcnStrpos( const QVariantList& values, const QgsExpressionContext*, QgsExpression *parent )
 {
   QString string = getStringValue( values.at( 0 ), parent );
-  return string.indexOf( QRegExp( getStringValue( values.at( 1 ), parent ) ) );
+  return string.indexOf( QRegExp( getStringValue( values.at( 1 ), parent ) ) ) + 1;
 }
 
 static QVariant fcnRight( const QVariantList& values, const QgsExpressionContext*, QgsExpression *parent )
