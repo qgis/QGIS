@@ -18,6 +18,8 @@
 #ifndef QGSCONFIGCACHE_H
 #define QGSCONFIGCACHE_H
 
+#include "qgsconfig.h"
+
 #include <QCache>
 #include <QFileSystemWatcher>
 #include <QMap>
@@ -27,6 +29,7 @@ class QgsServerProjectParser;
 class QgsWCSProjectParser;
 class QgsWFSProjectParser;
 class QgsWMSConfigParser;
+class QgsAccessControl;
 
 class QDomDocument;
 
@@ -38,9 +41,25 @@ class SERVER_EXPORT QgsConfigCache : public QObject
     ~QgsConfigCache();
 
     QgsServerProjectParser* serverConfiguration( const QString& filePath );
-    QgsWCSProjectParser* wcsConfiguration( const QString& filePath );
-    QgsWFSProjectParser* wfsConfiguration( const QString& filePath );
-    QgsWMSConfigParser* wmsConfiguration( const QString& filePath, const QMap<QString, QString>& parameterMap = ( QMap< QString, QString >() ) );
+    QgsWCSProjectParser* wcsConfiguration(
+      const QString& filePath
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+      , const QgsAccessControl* accessControl
+#endif
+    );
+    QgsWFSProjectParser* wfsConfiguration(
+      const QString& filePath
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+      , const QgsAccessControl* accessControl
+#endif
+    );
+    QgsWMSConfigParser* wmsConfiguration(
+      const QString& filePath
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+      , const QgsAccessControl* accessControl
+#endif
+      , const QMap<QString, QString>& parameterMap = ( QMap< QString, QString >() )
+    );
 
   private:
     QgsConfigCache();

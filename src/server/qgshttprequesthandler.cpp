@@ -20,7 +20,7 @@
 #include "qgshttprequesthandler.h"
 #include "qgsftptransaction.h"
 #include "qgshttptransaction.h"
-#include "qgslogger.h"
+#include "qgsmessagelog.h"
 #include "qgsmapserviceexception.h"
 #include <QBuffer>
 #include <QByteArray>
@@ -47,7 +47,7 @@ QgsHttpRequestHandler::~QgsHttpRequestHandler()
 
 void QgsHttpRequestHandler::setHttpResponse( QByteArray *ba, const QString &format )
 {
-  QgsDebugMsg( "Checking byte array is ok to set..." );
+  QgsMessageLog::logMessage( "Checking byte array is ok to set..." );
   if ( !ba )
   {
     return;
@@ -57,7 +57,7 @@ void QgsHttpRequestHandler::setHttpResponse( QByteArray *ba, const QString &form
   {
     return;
   }
-  QgsDebugMsg( "Byte array looks good, setting response..." );
+  QgsMessageLog::logMessage( "Byte array looks good, setting response..." );
   appendBody( *ba );
   mInfoFormat = format;
 }
@@ -178,7 +178,7 @@ void QgsHttpRequestHandler::sendBody()
     // Cannot use addToResponse because it uses printf
     size_t result = fwrite(( void* )mBody.data(), mBody.size(), 1, FCGI_stdout );
 #ifdef QGISDEBUG
-    QgsDebugMsg( QString( "Sent %1 blocks of %2 bytes" ).arg( result ).arg( mBody.size() ) );
+    QgsMessageLog::logMessage( QString( "Sent %1 blocks of %2 bytes" ).arg( result ).arg( mBody.size() ) );
 #else
     Q_UNUSED( result );
 #endif
@@ -194,10 +194,10 @@ void QgsHttpRequestHandler::setPluginFilters( QgsServerFiltersMap pluginFilters 
 
 void QgsHttpRequestHandler::sendResponse()
 {
-  QgsDebugMsg( QString( "Sending HTTP response" ) );
+  QgsMessageLog::logMessage( QString( "Sending HTTP response" ) );
   if ( ! responseReady() )
   {
-    QgsDebugMsg( QString( "Trying to send out an invalid response" ) );
+    QgsMessageLog::logMessage( QString( "Trying to send out an invalid response" ) );
     return;
   }
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
@@ -249,7 +249,7 @@ QString QgsHttpRequestHandler::formatToMimeType( const QString& format ) const
 void QgsHttpRequestHandler::setGetMapResponse( const QString& service, QImage* img, int imageQuality = -1 )
 {
   Q_UNUSED( service );
-  QgsDebugMsg( "setting getmap response..." );
+  QgsMessageLog::logMessage( "setting getmap response..." );
   if ( img )
   {
     bool png16Bit = ( mFormatString.compare( "image/png; mode=16bit", Qt::CaseInsensitive ) == 0 );
@@ -258,7 +258,7 @@ void QgsHttpRequestHandler::setGetMapResponse( const QString& service, QImage* i
     bool isBase64 = mFormatString.endsWith( ";base64", Qt::CaseInsensitive );
     if ( mFormat != "PNG" && mFormat != "JPG" && !png16Bit && !png8Bit && !png1Bit )
     {
-      QgsDebugMsg( "service exception - incorrect image format requested..." );
+      QgsMessageLog::logMessage( "service exception - incorrect image format requested..." );
       setServiceException( QgsMapServiceException( "InvalidFormat", "Output format '" + mFormatString + "' is not supported in the GetMap request" ) );
       return;
     }
@@ -328,7 +328,7 @@ void QgsHttpRequestHandler::setXmlResponse( const QDomDocument& doc, const QStri
 void QgsHttpRequestHandler::setGetFeatureInfoResponse( const QDomDocument& infoDoc, const QString& infoFormat )
 {
   QByteArray ba;
-  QgsDebugMsg( "Info format is:" + infoFormat );
+  QgsMessageLog::logMessage( "Info format is:" + infoFormat );
 
   if ( infoFormat == "text/xml" || infoFormat.startsWith( "application/vnd.ogc.gml" ) )
   {
@@ -596,7 +596,7 @@ void QgsHttpRequestHandler::requestStringToParameterMap( const QString& request,
 
     }
     parameters.insert( key.toUpper(), value );
-    QgsDebugMsg( "inserting pair " + key.toUpper() + " // " + value + " into the parameter map" );
+    QgsMessageLog::logMessage( "inserting pair " + key.toUpper() + " // " + value + " into the parameter map" );
   }
 
   //feature info format?
@@ -611,7 +611,7 @@ void QgsHttpRequestHandler::requestStringToParameterMap( const QString& request,
     QString formatString = mFormatString;
     if ( !formatString.isEmpty() )
     {
-      QgsDebugMsg( QString( "formatString is: %1" ).arg( formatString ) );
+      QgsMessageLog::logMessage( QString( "formatString is: %1" ).arg( formatString ) );
 
       //remove the image/ in front of the format
       if ( formatString.contains( "image/png", Qt::CaseInsensitive ) || formatString.compare( "png", Qt::CaseInsensitive ) == 0 )
@@ -640,6 +640,7 @@ void QgsHttpRequestHandler::requestStringToParameterMap( const QString& request,
 
 QString QgsHttpRequestHandler::readPostBody() const
 {
+  QgsMessageLog::logMessage( "QgsHttpRequestHandler::readPostBody" );
   char* lengthString = NULL;
   int length = 0;
   char* input = NULL;
@@ -652,7 +653,7 @@ QString QgsHttpRequestHandler::readPostBody() const
     bool conversionSuccess = false;
     lengthQString = QString( lengthString );
     length = lengthQString.toInt( &conversionSuccess );
-    QgsDebugMsg( "length is: " + lengthQString );
+    QgsMessageLog::logMessage( "length is: " + lengthQString );
     if ( conversionSuccess )
     {
       input = ( char* )malloc( length + 1 );
@@ -668,14 +669,18 @@ QString QgsHttpRequestHandler::readPostBody() const
       }
       else
       {
-        QgsDebugMsg( "input is NULL " );
+        QgsMessageLog::logMessage( "input is NULL " );
       }
       free( input );
     }
     else
     {
-      QgsDebugMsg( "could not convert CONTENT_LENGTH to int" );
+      QgsMessageLog::logMessage( "could not convert CONTENT_LENGTH to int" );
     }
+  }
+  // Used by the tests
+  else if ( getenv( "REQUEST_BODY" ) != NULL ) {
+      inputString = getenv( "REQUEST_BODY" );
   }
   return inputString;
 }

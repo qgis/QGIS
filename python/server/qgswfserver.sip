@@ -61,7 +61,7 @@ class QgsWFSServer: public QgsOWSServer
   public:
     /** Constructor. Takes parameter map and a pointer to a renderer object (does not take ownership)*/
     QgsWFSServer( const QString& configFilePath, QMap<QString, QString>& parameters, QgsWFSProjectParser* cp,
-                  QgsRequestHandler* rh );
+                  QgsRequestHandler* rh, const QgsAccessControl* accessControl );
     ~QgsWFSServer();
 
     void executeRequest() override;

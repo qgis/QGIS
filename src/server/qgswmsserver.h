@@ -44,6 +44,8 @@ class QgsRenderContext;
 class QgsVectorLayer;
 class QgsSymbol;
 class QgsSymbolV2;
+class QgsAccessControl;
+
 class QColor;
 class QFile;
 class QFont;
@@ -61,8 +63,17 @@ class QgsWMSServer: public QgsOWSServer
   public:
     /** Constructor. Does _NOT_ take ownership of
         QgsConfigParser, QgsCapabilitiesCache and QgsMapRenderer*/
-    QgsWMSServer( const QString& configFilePath, QMap<QString, QString> &parameters, QgsWMSConfigParser* cp, QgsRequestHandler* rh,
-                  QgsMapRenderer* renderer, QgsCapabilitiesCache* capCache );
+    QgsWMSServer(
+        const QString& configFilePath
+        , QMap<QString, QString> &parameters
+        , QgsWMSConfigParser* cp
+        , QgsRequestHandler* rh
+        , QgsMapRenderer* renderer
+        , QgsCapabilitiesCache* capCache
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+        , const QgsAccessControl* accessControl
+#endif
+    );
     ~QgsWMSServer();
 
     void executeRequest() override;
@@ -178,8 +189,13 @@ class QgsWMSServer: public QgsOWSServer
     /** Apply filter (subset) strings from the request to the layers. Example: '&FILTER=<layer1>:"AND property > 100",<layer2>:"AND bla = 'hallo!'" '
        @return a map with the original filters ( layer id / filter string )*/
     QMap<QString, QString> applyRequestedLayerFilters( const QStringList& layerList ) const;
-    /** Restores the original layer filters*/
-    void restoreLayerFilters( const QMap < QString, QString >& filterMap ) const;
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    /** Apply filter strings from the access control to the layers.
+     * @param layerList layers to filter
+     * @param originalLayerFilters the original layers filter dictionary
+     */
+    void applyAccessControlLayersFilters( const QStringList& layerList, QMap<QString, QString>& originalLayerFilters ) const;
+#endif
     /** Tests if a filter sql string is allowed (safe)
       @return true in case of success, false if string seems unsafe*/
     bool testFilterStringSafety( const QString& filter ) const;
@@ -236,13 +252,15 @@ class QgsWMSServer: public QgsOWSServer
     bool mDrawLegendLayerLabel;
     bool mDrawLegendItemLabel;
 
-    QDomElement createFeatureGML( QgsFeature* feat,
-                                  QgsVectorLayer* layer,
-                                  QDomDocument& doc,
-                                  QgsCoordinateReferenceSystem& crs,
-                                  const QString& typeName,
-                                  bool withGeom,
-                                  int version ) const;
+    QDomElement createFeatureGML(
+      QgsFeature* feat,
+      QgsVectorLayer* layer,
+      QDomDocument& doc,
+      QgsCoordinateReferenceSystem& crs,
+      const QString& typeName,
+      bool withGeom,
+      int version,
+      QStringList* attributes=NULL) const;
 
     /** Replaces attribute value with ValueRelation or ValueRelation if defined. Otherwise returns the original value*/
     static QString replaceValueMapAndRelation( QgsVectorLayer* vl, int idx, const QString& attributeVal );

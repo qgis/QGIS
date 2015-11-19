@@ -18,7 +18,9 @@
 #ifndef QGSSERVERPROJECTPARSER_H
 #define QGSSERVERPROJECTPARSER_H
 
+#include "qgsconfig.h"
 #include "qgsvectorlayer.h"
+
 #include <QDomElement>
 #include <QHash>
 #include <QMap>

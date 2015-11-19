@@ -22,13 +22,22 @@
 #include "qgsserverprojectparser.h"
 #include "qgslayertreegroup.h"
 
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+class QgsAccessControl;
+#endif
+
 class QTextDocument;
 class QSvgRenderer;
 
 class SERVER_EXPORT QgsWMSProjectParser : public QgsWMSConfigParser
 {
   public:
-    QgsWMSProjectParser( const QString& filePath );
+    QgsWMSProjectParser(
+      const QString& filePath
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+      , const QgsAccessControl* accessControl
+#endif
+    );
     virtual ~QgsWMSProjectParser();
 
     /** Adds layer and style specific capabilities elements to the parent node. This includes the individual layers and styles, their description, native CRS, bounding boxes, etc.
@@ -114,6 +123,9 @@ class SERVER_EXPORT QgsWMSProjectParser : public QgsWMSConfigParser
 
   private:
     QgsServerProjectParser* mProjectParser;
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    const QgsAccessControl* mAccessControl;
+#endif
 
     mutable QFont mLegendLayerFont;
     mutable QFont mLegendItemFont;

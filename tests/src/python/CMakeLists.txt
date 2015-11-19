@@ -93,4 +93,5 @@ ENDIF (WITH_APIDOC)
 
 IF (WITH_SERVER)
   ADD_PYTHON_TEST(PyQgsServer test_qgsserver.py)
+  ADD_PYTHON_TEST(PyQgsServerAccessControl test_qgsserver_accesscontrol.py)
 ENDIF (WITH_SERVER)

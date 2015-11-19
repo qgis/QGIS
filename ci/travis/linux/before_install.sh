@@ -44,6 +44,7 @@ sudo apt-get install --force-yes --no-install-recommends --no-install-suggests \
         python-qt4-sql \
         python-sip \
         python-sip-dev \
+        python-gdal \
         spawn-fcgi \
         txt2tags \
         xauth \

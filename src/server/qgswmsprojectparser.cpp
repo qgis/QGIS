@@ -40,6 +40,7 @@
 #include "qgscomposershape.h"
 #include "qgslayertreegroup.h"
 #include "qgslayertreelayer.h"
+#include "qgsaccesscontrol.h"
 
 #include <QFileInfo>
 #include <QTextDocument>
@@ -48,8 +49,16 @@
 // this implies that a layer style called "default" will not be usable in WMS server
 #define EMPTY_STYLE_NAME   "default"
 
-QgsWMSProjectParser::QgsWMSProjectParser( const QString& filePath )
+QgsWMSProjectParser::QgsWMSProjectParser(
+  const QString& filePath
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+  , const QgsAccessControl* accessControl
+#endif
+)
     : QgsWMSConfigParser()
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    , mAccessControl( accessControl )
+#endif
 {
   mProjectParser = QgsConfigCache::instance()->serverConfiguration( filePath );
   mLegendLayerFont.fromString( mProjectParser->firstComposerLegendElement().attribute( "layerFont" ) );
@@ -185,7 +194,12 @@ QList<QgsMapLayer*> QgsWMSProjectParser::mapLayerFromStyle( const QString& lName
     if ( legendIt->attribute( "embedded" ) == "1" )
     {
       QString project = mProjectParser->convertToAbsolutePath( legendIt->attribute( "project" ) );
-      QgsWMSProjectParser* p = dynamic_cast<QgsWMSProjectParser*>( QgsConfigCache::instance()->wmsConfiguration( project ) );
+      QgsWMSProjectParser* p = dynamic_cast<QgsWMSProjectParser*>( QgsConfigCache::instance()->wmsConfiguration(
+	project
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+	, mAccessControl
+#endif
+      ) );
       if ( p )
       {
         QgsServerProjectParser* pp = p->mProjectParser;
@@ -229,7 +243,12 @@ void QgsWMSProjectParser::addLayersFromGroup( const QDomElement& legendGroupElem
     int drawingOrder = mProjectParser->updateLegendDrawingOrder() ? legendGroupElem.attribute( "drawingOrder", "-1" ).toInt() : -1;
 
     QString project = mProjectParser->convertToAbsolutePath( legendGroupElem.attribute( "project" ) );
-    QgsWMSProjectParser* p = dynamic_cast<QgsWMSProjectParser*>( QgsConfigCache::instance()->wmsConfiguration( project ) );
+    QgsWMSProjectParser* p = dynamic_cast<QgsWMSProjectParser*>( QgsConfigCache::instance()->wmsConfiguration(
+      project
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+      , mAccessControl
+#endif
+    ) );
     if ( p )
     {
       QgsServerProjectParser* pp = p->mProjectParser;
@@ -945,7 +964,12 @@ void QgsWMSProjectParser::addLayers( QDomDocument &doc,
         QString project = mProjectParser->convertToAbsolutePath( currentChildElem.attribute( "project" ) );
         QgsDebugMsg( QString( "Project path: %1" ).arg( project ) );
         QString embeddedGroupName = currentChildElem.attribute( "name" );
-        QgsWMSProjectParser* p = dynamic_cast<QgsWMSProjectParser*>( QgsConfigCache::instance()->wmsConfiguration( project ) );
+        QgsWMSProjectParser* p = dynamic_cast<QgsWMSProjectParser*>( QgsConfigCache::instance()->wmsConfiguration(
+	  project
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+	  , mAccessControl
+#endif
+	) );
         if ( p )
         {
           QgsServerProjectParser* pp = p->mProjectParser;
@@ -1001,6 +1025,13 @@ void QgsWMSProjectParser::addLayers( QDomDocument &doc,
       {
         continue;
       }
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+      if ( !mAccessControl->layerReadPermission( currentLayer ) )
+      {
+	continue;
+      }
+#endif
+
       // queryable layer
       if ( nonIdentifiableLayers.contains( currentLayer->id() ) )
       {
@@ -1273,7 +1304,12 @@ void QgsWMSProjectParser::addOWSLayers( QDomDocument &doc,
         QString project = mProjectParser->convertToAbsolutePath( currentChildElem.attribute( "project" ) );
         QgsDebugMsg( QString( "Project path: %1" ).arg( project ) );
         QString embeddedGroupName = currentChildElem.attribute( "name" );
-        QgsWMSProjectParser* p = dynamic_cast<QgsWMSProjectParser*>( QgsConfigCache::instance()->wmsConfiguration( project ) );
+        QgsWMSProjectParser* p = dynamic_cast<QgsWMSProjectParser*>( QgsConfigCache::instance()->wmsConfiguration(
+	  project
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+	  , mAccessControl
+#endif
+	) );
         if ( p )
         {
           QgsServerProjectParser* pp = p->mProjectParser;
@@ -1640,6 +1676,14 @@ QDomDocument QgsWMSProjectParser::describeLayer( QStringList& layerList, const Q
     for ( int j = 0; j < currentLayerList.size(); j++ )
     {
       QgsMapLayer* currentLayer = currentLayerList.at( j );
+
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+      if ( !mAccessControl->layerReadPermission( currentLayer ) )
+      {
+	throw QgsMapServiceException( "Security", "You are not allowed to access to this layer" );
+      }
+#endif
+
       QString layerTypeName = mProjectParser->useLayerIDs() ? currentLayer->id() : currentLayer->name();
 
       // Create the NamedLayer element
