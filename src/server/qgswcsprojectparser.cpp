@@ -33,7 +33,7 @@ QgsWCSProjectParser::QgsWCSProjectParser(
 #endif
 )
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-  : mAccessControl( as )
+    : mAccessControl( as )
 #endif
 {
   mProjectParser = QgsConfigCache::instance()->serverConfiguration( filePath );
@@ -225,7 +225,7 @@ void QgsWCSProjectParser::describeCoverage( const QString& aCoveName, QDomElemen
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
       if ( !mAccessControl->layerReadPermission( rLayer ) )
       {
-	continue;
+        continue;
       }
 #endif
 

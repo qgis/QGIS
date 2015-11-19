@@ -36,7 +36,7 @@
 QgsHttpRequestHandler::QgsHttpRequestHandler( const bool captureOutput /*= FALSE*/ )
     : QgsRequestHandler( )
 {
-  mException = NULL;
+  mException = 0;
   mHeadersSent = FALSE;
   mCaptureOutput = captureOutput;
 }
@@ -69,7 +69,7 @@ bool QgsHttpRequestHandler::responseReady() const
 
 bool QgsHttpRequestHandler::exceptionRaised() const
 {
-  return mException != NULL;
+  return mException;
 }
 
 void QgsHttpRequestHandler::setDefaultHeaders()
@@ -641,14 +641,14 @@ void QgsHttpRequestHandler::requestStringToParameterMap( const QString& request,
 QString QgsHttpRequestHandler::readPostBody() const
 {
   QgsMessageLog::logMessage( "QgsHttpRequestHandler::readPostBody" );
-  char* lengthString = NULL;
+  char* lengthString = 0;
   int length = 0;
-  char* input = NULL;
+  char* input = 0;
   QString inputString;
   QString lengthQString;
 
   lengthString = getenv( "CONTENT_LENGTH" );
-  if ( lengthString != NULL )
+  if ( lengthString )
   {
     bool conversionSuccess = false;
     lengthQString = QString( lengthString );
@@ -663,7 +663,7 @@ QString QgsHttpRequestHandler::readPostBody() const
         input[i] = getchar();
       }
       //fgets(input, length+1, stdin);
-      if ( input != NULL )
+      if ( input )
       {
         inputString = QString::fromLocal8Bit( input );
       }
@@ -679,8 +679,9 @@ QString QgsHttpRequestHandler::readPostBody() const
     }
   }
   // Used by the tests
-  else if ( getenv( "REQUEST_BODY" ) != NULL ) {
-      inputString = getenv( "REQUEST_BODY" );
+  else if ( getenv( "REQUEST_BODY" ) )
+  {
+    inputString = getenv( "REQUEST_BODY" );
   }
   return inputString;
 }

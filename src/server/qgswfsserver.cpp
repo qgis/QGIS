@@ -31,7 +31,6 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
-#include "qgsmessagelog.h"
 #include "qgsmapserviceexception.h"
 #include "qgssymbolv2.h"
 #include "qgslegendmodel.h"
@@ -551,8 +550,9 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
         mAccessControl->filterFeatures( layer, fReq );
 
         QStringList attributes = QStringList();
-        foreach( int idx, attrIndexes ) {
-          attributes.append( layer->pendingFields().field(idx).name() );
+        foreach ( int idx, attrIndexes )
+        {
+          attributes.append( layer->pendingFields().field( idx ).name() );
         }
         fReq.setSubsetOfAttributes(
           mAccessControl->layerAttributes( layer, attributes ),
@@ -1532,7 +1532,7 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
           for ( ; fidIt != fids.constEnd(); ++fidIt )
           {
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-            QgsFeatureIterator fit = layer->getFeatures(QgsFeatureRequest( *fidIt ) );
+            QgsFeatureIterator fit = layer->getFeatures( QgsFeatureRequest( *fidIt ) );
             QgsFeature feature;
             while ( fit.nextFeature( feature ) )
             {
@@ -1568,7 +1568,7 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
             }
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-            fit = layer->getFeatures(QgsFeatureRequest( *fidIt ) );
+            fit = layer->getFeatures( QgsFeatureRequest( *fidIt ) );
             while ( fit.nextFeature( feature ) )
             {
               if ( !mAccessControl->allowToEdit( layer, feature ) )
@@ -1613,7 +1613,7 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
           QgsFeatureIds::const_iterator fidIt = fids.constBegin();
           for ( ; fidIt != fids.constEnd(); ++fidIt )
           {
-            QgsFeatureIterator fit = layer->getFeatures(QgsFeatureRequest( *fidIt ) );
+            QgsFeatureIterator fit = layer->getFeatures( QgsFeatureRequest( *fidIt ) );
             QgsFeature feature;
             while ( fit.nextFeature( feature ) )
             {
@@ -1712,7 +1712,7 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
       QgsFeatureList::iterator featureIt = inFeatList.begin();
       while ( featureIt != inFeatList.end() )
       {
-        if ( !mAccessControl->allowToEdit( layer, *featureIt) )
+        if ( !mAccessControl->allowToEdit( layer, *featureIt ) )
         {
           throw QgsMapServiceException( "Security", "Feature modify permission denied" );
         }

@@ -40,7 +40,7 @@ class QgsOWSServer
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
         , mAccessControl( ac )
 #endif
-	{}
+    {}
     virtual ~QgsOWSServer() {}
 
     virtual void executeRequest() = 0;

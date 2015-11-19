@@ -93,7 +93,7 @@ QgsWMSServer::QgsWMSServer(
     , mDrawLegendItemLabel( true )
 {
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-    mMapRenderer->setFeatureFilterProvider( mAccessControl );
+  mMapRenderer->setFeatureFilterProvider( mAccessControl );
 #endif
 }
 
@@ -158,7 +158,7 @@ void QgsWMSServer::executeRequest()
   if ( request.compare( "GetCapabilities", Qt::CaseInsensitive ) == 0 || getProjectSettings )
   {
     QStringList cacheKeyList;
-    cacheKeyList << (getProjectSettings ? "projectSettings" : version);
+    cacheKeyList << ( getProjectSettings ? "projectSettings" : version );
     bool cache = true;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     cache = mAccessControl->fillCacheKey( cacheKeyList );
@@ -1680,7 +1680,7 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, const QString& version )
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
       if ( !mAccessControl->layerReadPermission( currentLayer ) )
       {
-	throw QgsMapServiceException( "Security", "You are not allowed to access to the layer: " + currentLayer->name() );
+        throw QgsMapServiceException( "Security", "You are not allowed to access to the layer: " + currentLayer->name() );
       }
 #endif
 
@@ -2151,8 +2151,8 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
   {
     if ( fReq.filterExpression() != NULL )
     {
-      fReq.setFilterExpression( QString("intersects( $geometry , geomFromWKT( '%1' ) ) AND ( %2 )").
-          arg( searchRect.asWktPolygon() ).arg( fReq.filterExpression()->expression() ) );
+      fReq.setFilterExpression( QString( "intersects( $geometry , geomFromWKT( '%1' ) ) AND ( %2 )" ).
+                                arg( searchRect.asWktPolygon() ).arg( fReq.filterExpression()->expression() ) );
     }
     else
     {
@@ -2162,7 +2162,8 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
 
   QStringList attributes;
   QgsField field;
-  foreach( field, layer->pendingFields().toList() ) {
+  foreach ( field, layer->pendingFields().toList() )
+  {
     attributes.append( field.name() );
   }
   attributes = mAccessControl->layerAttributes( layer, attributes );
@@ -2232,11 +2233,11 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
       int version = infoFormat.startsWith( "application/vnd.ogc.gml/3" ) ? 3 : 2;
       QString typeName = mConfigParser && mConfigParser->useLayerIDs() ? layer->id() : layer->name();
       QDomElement elem = createFeatureGML(
-          &feature, layer, infoDocument, outputCrs, typeName, withGeom, version
+                           &feature, layer, infoDocument, outputCrs, typeName, withGeom, version
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-          , &attributes
+                           , &attributes
 #endif
-      );
+                         );
       QDomElement featureMemberElem = infoDocument.createElement( "gml:featureMember"/*wfs:FeatureMember*/ );
       featureMemberElem.appendChild( elem );
       layerElement.appendChild( featureMemberElem );
@@ -2379,7 +2380,7 @@ int QgsWMSServer::featureInfoFromRasterLayer( QgsRasterLayer* layer,
     int version = infoFormat.startsWith( "application/vnd.ogc.gml/3" ) ? 3 : 2;
     QString typeName = mConfigParser && mConfigParser->useLayerIDs() ? layer->id() : layer->name();
     QDomElement elem = createFeatureGML(
-        &feature, 0, infoDocument, layerCrs, typeName, false, version, NULL );
+                         &feature, 0, infoDocument, layerCrs, typeName, false, version, NULL );
     layerElement.appendChild( elem );
   }
   else
@@ -2550,10 +2551,12 @@ QMap<QString, QString> QgsWMSServer::applyRequestedLayerFilters( const QStringLi
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 void QgsWMSServer::applyAccessControlLayersFilters( const QStringList& layerList, QMap<QString, QString>& originalLayerFilters ) const
 {
-  foreach ( QString layerName, layerList ) {
+  foreach ( QString layerName, layerList )
+  {
     QList<QgsMapLayer*> mapLayers = QgsMapLayerRegistry::instance()->mapLayersByName( layerName );
-    foreach ( QgsMapLayer* mapLayer, mapLayers ) {
-      applyAccessControlLayerFilters(mapLayer, originalLayerFilters);
+    foreach ( QgsMapLayer* mapLayer, mapLayers )
+    {
+      applyAccessControlLayerFilters( mapLayer, originalLayerFilters );
     }
   }
 }
@@ -3112,7 +3115,7 @@ QDomElement QgsWMSServer::createFeatureGML(
   const QString& typeName,
   bool withGeom,
   int version,
-  QStringList* attributes) const
+  QStringList* attributes ) const
 {
   //qgs:%TYPENAME%
   QDomElement typeNameElement = doc.createElement( "qgs:" + typeName /*qgs:%TYPENAME%*/ );

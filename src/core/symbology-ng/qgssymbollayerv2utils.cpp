@@ -784,7 +784,7 @@ QList<QPolygonF> offsetLine( QPolygonF polyline, double dist, QGis::GeometryType
         QgsPolyline line = tempGeometry->asPolyline();
         // Reverse the line if offset was negative, see
         // http://hub.qgis.org/issues/13811
-        if ( dist < 0 ) std::reverse(line.begin(), line.end() );
+        if ( dist < 0 ) std::reverse( line.begin(), line.end() );
         resultLine.append( makeOffsetGeometry( line ) );
         delete tempGeometry;
         return resultLine;

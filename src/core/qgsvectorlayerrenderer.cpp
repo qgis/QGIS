@@ -154,21 +154,21 @@ bool QgsVectorLayerRenderer::render()
                                      .setSubsetOfAttributes( mAttrNames, mFields );
 
   const QgsFeatureFilterProvider* featureFilterProvider = mContext.featureFilterProvider();
-  if ( featureFilterProvider != NULL)
+  if ( featureFilterProvider )
   {
     featureFilterProvider->filterFeatures( mLayer, featureRequest );
   }
   if ( !rendererFilter.isNull() )
   {
     featureRequest.setExpressionContext( mContext.expressionContext() );
-    if ( featureRequest.filterExpression() == NULL )
+    if ( !featureRequest.filterExpression() )
     {
       featureRequest.setFilterExpression( rendererFilter );
     }
     else
     {
       featureRequest.setFilterExpression( QString( "(%s) AND (%s)" )
-        .arg( rendererFilter, featureRequest.filterExpression()->expression() ) );
+                                          .arg( rendererFilter, featureRequest.filterExpression()->expression() ) );
     }
   }
 
@@ -352,14 +352,14 @@ void QgsVectorLayerRenderer::drawRendererV2( QgsFeatureIterator& fit )
     }
   }
 
-  stopRendererV2( NULL );
+  stopRendererV2( 0 );
 }
 
 void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
 {
   QHash< QgsSymbolV2*, QList<QgsFeature> > features; // key = symbol, value = array of features
 
-  QgsSingleSymbolRendererV2* selRenderer = NULL;
+  QgsSingleSymbolRendererV2* selRenderer = 0;
   if ( !mSelectedFeatureIds.isEmpty() )
   {
     selRenderer = new QgsSingleSymbolRendererV2( QgsSymbolV2::defaultSymbol( mGeometryType ) );

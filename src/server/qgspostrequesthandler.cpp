@@ -54,7 +54,8 @@ void QgsPostRequestHandler::parseInput()
   if ( !doc.setContent( inputString, true, &errorMsg, &line, &column ) )
   {
     char* requestMethod = getenv( "REQUEST_METHOD" );
-    if ( requestMethod != NULL && strcmp( requestMethod, "POST" ) == 0 ) {
+    if ( requestMethod && strcmp( requestMethod, "POST" ) == 0 )
+    {
       QgsMessageLog::logMessage( QString( "Error at line %1, column %2: %3." ).arg( line ).arg( column ).arg( errorMsg ) );
     }
     requestStringToParameterMap( inputString, mParameterMap );

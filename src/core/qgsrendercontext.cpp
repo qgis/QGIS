@@ -30,19 +30,20 @@ QgsRenderContext::QgsRenderContext()
     , mScaleFactor( 1.0 )
     , mRasterScaleFactor( 1.0 )
     , mRendererScale( 1.0 )
-    , mLabelingEngine( NULL )
+    , mLabelingEngine( 0 )
     , mLabelingEngine2( 0 )
     , mGeometry( 0 )
-    , mFeatureFilterProvider( NULL )
+    , mFeatureFilterProvider( 0 )
 {
   mVectorSimplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
 }
 
 QgsRenderContext::~QgsRenderContext()
 {
-  if ( mFeatureFilterProvider != NULL ) {
+  if ( mFeatureFilterProvider )
+  {
     delete mFeatureFilterProvider;
-    mFeatureFilterProvider = NULL;
+    mFeatureFilterProvider = 0;
   }
 }
 
@@ -150,11 +151,12 @@ void QgsRenderContext::setUseRenderingOptimization( bool enabled )
 
 void QgsRenderContext::setFeatureFilterProvider( const QgsFeatureFilterProvider* ffp )
 {
-  if ( mFeatureFilterProvider != NULL ) {
+  if ( mFeatureFilterProvider )
+  {
     delete mFeatureFilterProvider;
-    mFeatureFilterProvider = NULL;
+    mFeatureFilterProvider = 0;
   }
-  if ( ffp != NULL )
+  if ( ffp )
   {
     mFeatureFilterProvider = ffp->clone();
   }

@@ -31,19 +31,21 @@ void QgsAccessControl::filterFeatures( const QgsVectorLayer* layer, QgsFeatureRe
   for ( acIterator = mPluginsAccessControls->constBegin(); acIterator != mPluginsAccessControls->constEnd(); ++acIterator )
   {
     const QString expression = acIterator.value()->layerFilterExpression( layer );
-    if ( expression != NULL ) {
+    if ( expression )
+    {
       expressions.append( expression );
     }
   }
-  if ( !expressions.isEmpty() ) {
-    featureRequest.setFilterExpression( expressions.join(" AND ") );
+  if ( !expressions.isEmpty() )
+  {
+    featureRequest.setFilterExpression( expressions.join( " AND " ) );
   }
 }
 
 /** Clone the object */
 QgsFeatureFilterProvider* QgsAccessControl::clone() const
 {
-  return new QgsAccessControl(*this);
+  return new QgsAccessControl( *this );
 }
 
 /** Return an additional subset string (typically SQL) filter */
@@ -54,11 +56,12 @@ const QString QgsAccessControl::extraSubsetString( const QgsVectorLayer* layer )
   for ( acIterator = mPluginsAccessControls->constBegin(); acIterator != mPluginsAccessControls->constEnd(); ++acIterator )
   {
     const QString sql = acIterator.value()->layerFilterSubsetString( layer );
-    if ( sql != NULL ) {
+    if ( sql )
+    {
       sqls.append( sql );
     }
   }
-  return sqls.isEmpty() ? NULL : sqls.join(" AND ");
+  return sqls.isEmpty() ? QString::null : sqls.join( " AND " );
 }
 
 /** Return the layer read right */
@@ -67,7 +70,7 @@ bool QgsAccessControl::layerReadPermission( const QgsMapLayer* layer ) const
   QgsAccessControlFilterMap::const_iterator acIterator;
   for ( acIterator = mPluginsAccessControls->constBegin(); acIterator != mPluginsAccessControls->constEnd(); ++acIterator )
   {
-    if ( !acIterator.value()->layerPermissions( layer ).canRead)
+    if ( !acIterator.value()->layerPermissions( layer ).canRead )
     {
       return false;
     }
@@ -81,7 +84,7 @@ bool QgsAccessControl::layerInsertPermission( const QgsVectorLayer* layer ) cons
   QgsAccessControlFilterMap::const_iterator acIterator;
   for ( acIterator = mPluginsAccessControls->constBegin(); acIterator != mPluginsAccessControls->constEnd(); ++acIterator )
   {
-    if ( !acIterator.value()->layerPermissions( layer ).canInsert)
+    if ( !acIterator.value()->layerPermissions( layer ).canInsert )
     {
       return false;
     }
@@ -95,7 +98,7 @@ bool QgsAccessControl::layerUpdatePermission( const QgsVectorLayer* layer ) cons
   QgsAccessControlFilterMap::const_iterator acIterator;
   for ( acIterator = mPluginsAccessControls->constBegin(); acIterator != mPluginsAccessControls->constEnd(); ++acIterator )
   {
-    if ( !acIterator.value()->layerPermissions( layer ).canUpdate)
+    if ( !acIterator.value()->layerPermissions( layer ).canUpdate )
     {
       return false;
     }
@@ -109,7 +112,7 @@ bool QgsAccessControl::layerDeletePermission( const QgsVectorLayer* layer ) cons
   QgsAccessControlFilterMap::const_iterator acIterator;
   for ( acIterator = mPluginsAccessControls->constBegin(); acIterator != mPluginsAccessControls->constEnd(); ++acIterator )
   {
-    if ( !acIterator.value()->layerPermissions( layer ).canDelete)
+    if ( !acIterator.value()->layerPermissions( layer ).canDelete )
     {
       return false;
     }
@@ -125,7 +128,8 @@ const QStringList QgsAccessControl::layerAttributes( const QgsVectorLayer* layer
   for ( acIterator = mPluginsAccessControls->constBegin(); acIterator != mPluginsAccessControls->constEnd(); ++acIterator )
   {
     const QStringList* newAttributes = acIterator.value()->authorizedLayerAttributes( layer, currentAttributes );
-    if (newAttributes != NULL) {
+    if ( newAttributes )
+    {
       currentAttributes = *newAttributes;
     }
   }
@@ -153,7 +157,8 @@ bool QgsAccessControl::fillCacheKey( QStringList& cacheKey ) const
   for ( acIterator = mPluginsAccessControls->constBegin(); acIterator != mPluginsAccessControls->constEnd(); ++acIterator )
   {
     QString newKey = acIterator.value()->cacheKey();
-    if ( newKey.length() == 0 ) {
+    if ( newKey.length() == 0 )
+    {
       cacheKey.clear();
       return false;
     }

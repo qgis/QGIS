@@ -195,11 +195,11 @@ QList<QgsMapLayer*> QgsWMSProjectParser::mapLayerFromStyle( const QString& lName
     {
       QString project = mProjectParser->convertToAbsolutePath( legendIt->attribute( "project" ) );
       QgsWMSProjectParser* p = dynamic_cast<QgsWMSProjectParser*>( QgsConfigCache::instance()->wmsConfiguration(
-	project
+                                 project
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-	, mAccessControl
+                                 , mAccessControl
 #endif
-      ) );
+                               ) );
       if ( p )
       {
         QgsServerProjectParser* pp = p->mProjectParser;
@@ -244,11 +244,11 @@ void QgsWMSProjectParser::addLayersFromGroup( const QDomElement& legendGroupElem
 
     QString project = mProjectParser->convertToAbsolutePath( legendGroupElem.attribute( "project" ) );
     QgsWMSProjectParser* p = dynamic_cast<QgsWMSProjectParser*>( QgsConfigCache::instance()->wmsConfiguration(
-      project
+                               project
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-      , mAccessControl
+                               , mAccessControl
 #endif
-    ) );
+                             ) );
     if ( p )
     {
       QgsServerProjectParser* pp = p->mProjectParser;
@@ -965,11 +965,11 @@ void QgsWMSProjectParser::addLayers( QDomDocument &doc,
         QgsDebugMsg( QString( "Project path: %1" ).arg( project ) );
         QString embeddedGroupName = currentChildElem.attribute( "name" );
         QgsWMSProjectParser* p = dynamic_cast<QgsWMSProjectParser*>( QgsConfigCache::instance()->wmsConfiguration(
-	  project
+                                   project
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-	  , mAccessControl
+                                   , mAccessControl
 #endif
-	) );
+                                 ) );
         if ( p )
         {
           QgsServerProjectParser* pp = p->mProjectParser;
@@ -1028,7 +1028,7 @@ void QgsWMSProjectParser::addLayers( QDomDocument &doc,
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
       if ( !mAccessControl->layerReadPermission( currentLayer ) )
       {
-	continue;
+        continue;
       }
 #endif
 
@@ -1305,11 +1305,11 @@ void QgsWMSProjectParser::addOWSLayers( QDomDocument &doc,
         QgsDebugMsg( QString( "Project path: %1" ).arg( project ) );
         QString embeddedGroupName = currentChildElem.attribute( "name" );
         QgsWMSProjectParser* p = dynamic_cast<QgsWMSProjectParser*>( QgsConfigCache::instance()->wmsConfiguration(
-	  project
+                                   project
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-	  , mAccessControl
+                                   , mAccessControl
 #endif
-	) );
+                                 ) );
         if ( p )
         {
           QgsServerProjectParser* pp = p->mProjectParser;
@@ -1680,7 +1680,7 @@ QDomDocument QgsWMSProjectParser::describeLayer( QStringList& layerList, const Q
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
       if ( !mAccessControl->layerReadPermission( currentLayer ) )
       {
-	throw QgsMapServiceException( "Security", "You are not allowed to access to this layer" );
+        throw QgsMapServiceException( "Security", "You are not allowed to access to this layer" );
       }
 #endif
 

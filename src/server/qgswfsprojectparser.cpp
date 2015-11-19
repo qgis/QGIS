@@ -30,7 +30,7 @@ QgsWFSProjectParser::QgsWFSProjectParser(
 #endif
 )
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-  : mAccessControl( ac )
+    : mAccessControl( ac )
 #endif
 {
   mProjectParser = QgsConfigCache::instance()->serverConfiguration( filePath );
@@ -350,7 +350,7 @@ void QgsWFSProjectParser::describeFeatureType( const QString& aTypeName, QDomEle
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
       if ( !mAccessControl->layerReadPermission( layer ) )
       {
-	continue;
+        continue;
       }
 #endif
 

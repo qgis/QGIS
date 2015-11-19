@@ -64,14 +64,14 @@ class QgsWMSServer: public QgsOWSServer
     /** Constructor. Does _NOT_ take ownership of
         QgsConfigParser, QgsCapabilitiesCache and QgsMapRenderer*/
     QgsWMSServer(
-        const QString& configFilePath
-        , QMap<QString, QString> &parameters
-        , QgsWMSConfigParser* cp
-        , QgsRequestHandler* rh
-        , QgsMapRenderer* renderer
-        , QgsCapabilitiesCache* capCache
+      const QString& configFilePath
+      , QMap<QString, QString> &parameters
+      , QgsWMSConfigParser* cp
+      , QgsRequestHandler* rh
+      , QgsMapRenderer* renderer
+      , QgsCapabilitiesCache* capCache
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-        , const QgsAccessControl* accessControl
+      , const QgsAccessControl* accessControl
 #endif
     );
     ~QgsWMSServer();
@@ -260,7 +260,7 @@ class QgsWMSServer: public QgsOWSServer
       const QString& typeName,
       bool withGeom,
       int version,
-      QStringList* attributes=NULL) const;
+      QStringList* attributes = NULL ) const;
 
     /** Replaces attribute value with ValueRelation or ValueRelation if defined. Otherwise returns the original value*/
     static QString replaceValueMapAndRelation( QgsVectorLayer* vl, int idx, const QString& attributeVal );

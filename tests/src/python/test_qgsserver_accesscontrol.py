@@ -74,6 +74,7 @@ WFS_TRANSACTION_DELETE = """<?xml version="1.0" encoding="UTF-8"?>
 
 
 class RestrictedAccessControl(QgsAccessControlFilter):
+
     """ Used to have restriction access """
 
     # Be able to deactivate the access control to have a reference point

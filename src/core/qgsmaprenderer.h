@@ -338,7 +338,8 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     /** Set a feature filter provider to filter the features
      * @param ffp the feature filter provider
      */
-    void setFeatureFilterProvider( const QgsFeatureFilterProvider* ffp ) {
+    void setFeatureFilterProvider( const QgsFeatureFilterProvider* ffp )
+    {
       mRenderContext.setFeatureFilterProvider( ffp );
     }
 

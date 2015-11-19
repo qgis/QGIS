@@ -378,7 +378,8 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * This forces QGIS to reopen a file or connection.
      * This can be required if the underlying file is replaced.
      */
-    virtual void forceReload() {
+    virtual void forceReload()
+    {
       emit dataChanged();
     }
 

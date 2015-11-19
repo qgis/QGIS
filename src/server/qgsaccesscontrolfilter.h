@@ -54,7 +54,8 @@ class SERVER_EXPORT QgsAccessControlFilter
     virtual ~QgsAccessControlFilter();
 
     /** Describe the layer permission */
-    struct LayerPermissions {
+    struct LayerPermissions
+    {
       bool canRead;
       bool canUpdate;
       bool canInsert;

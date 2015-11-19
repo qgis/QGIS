@@ -142,9 +142,9 @@ QgsWMSConfigParser *QgsConfigCache::wmsConfiguration(
     else
     {
       p = new QgsWMSProjectParser(
-	filePath
+        filePath
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-	, accessControl
+        , accessControl
 #endif
       );
     }
