@@ -55,6 +55,7 @@ class QgsMapLayer;
 class QgsMapTip;
 class QgsMapTool;
 class QgsMapToolAdvancedDigitizing;
+class QgsMapOverviewCanvas;
 class QgsPoint;
 class QgsProviderRegistry;
 class QgsPythonUtils;
@@ -431,6 +432,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! return CAD dock widget
     QgsAdvancedDigitizingDockWidget *cadDockWidget() { return mAdvancedDigitizingDockWidget; }
+
+    //! Returns map overview canvas
+    QgsMapOverviewCanvas* mapOverviewCanvas() { return mOverviewCanvas; }
 
     //! show layer properties
     void showLayerProperties( QgsMapLayer *ml );
@@ -1534,6 +1538,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QMenu *mToolPopupDisplay;
     //! Map canvas
     QgsMapCanvas *mMapCanvas;
+    //! Overview map canvas
+    QgsMapOverviewCanvas *mOverviewCanvas;
     //! Table of contents (legend) for the map
     QgsLayerTreeView *mLayerTreeView;
     //! Helper class that connects layer tree with map canvas
