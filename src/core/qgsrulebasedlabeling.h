@@ -37,9 +37,36 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
           Registered    //!< Something was registered
         };
 
+        /**
+         * Get the labeling settings. May return a null pointer.
+         */
         QgsPalLayerSettings* settings() const { return mSettings; }
+
+        /**
+         * Determines if scale based labeling is active
+         *
+         * @return True if scale based labeling is active
+         */
         bool dependsOnScale() const { return mScaleMinDenom != 0 || mScaleMaxDenom != 0; }
+
+        /**
+         * The minimum scale at which this label rule should be applied
+         *
+         * E.g. Denominator 1000 is a scale of 1:1000, where a rule with minimum denominator
+         * of 900 will not be applied while a rule with 2000 will be applied.
+         *
+         * @return The minimum scale denominator
+         */
         int scaleMinDenom() const { return mScaleMinDenom; }
+
+        /**
+         * The maximum scale denominator at which this label rule should be applied
+         *
+         * E.g. Denominator 1000 is a scale of 1:1000, where a rule with maximum denominator
+         * of 900 will be applied while a rule with 2000 will not be applied.
+         *
+         * @return The maximum scale denominator
+         */
         int scaleMaxDenom() const { return mScaleMaxDenom; }
         /**
          * A filter that will check if this rule applies
@@ -186,6 +213,9 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          */
         bool isScaleOK( double scale ) const;
 
+        /**
+         * Initialize filters. Automatically called by setFilterExpression.
+         */
         void initFilter();
 
         /**
