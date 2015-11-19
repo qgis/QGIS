@@ -147,7 +147,8 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     QVariant mForeignKey;
     QgsFeature mFeature;
     // Index of the referenced layer key
-    int mFkeyFieldIdx;
+    int mReferencedFieldIdx;
+    int mReferencingFieldIdx;
     bool mAllowNull;
     QgsHighlight* mHighlight;
     QgsMapToolIdentifyFeature* mMapTool;
