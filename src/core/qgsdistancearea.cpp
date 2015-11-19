@@ -465,7 +465,7 @@ double QgsDistanceArea::measureLine( const QgsPoint &p1, const QgsPoint &p2 )
   return measureLine( p1, p2, units );
 }
 
-double QgsDistanceArea::measureLine( const QgsPoint& p1, const QgsPoint& p2, QGis::UnitType& units ) const
+double QgsDistanceArea::measureLine( const QgsPoint& p1, const QgsPoint& p2, QGis::UnitType& units )
 {
   double result;
   units = mCoordTransform->sourceCrs().mapUnits();
