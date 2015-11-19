@@ -351,6 +351,14 @@ inline bool qgsDoubleNearSig( double a, double b, int significantDigits = 10 )
          qRound( ar * pow( 10.0, significantDigits ) ) == qRound( br * pow( 10.0, significantDigits ) );
 }
 
+//
+// a round function which returns a double to guard against overflows
+//
+inline double qgsRound( double x )
+{
+  return x < 0.0 ? std::ceil( x - 0.5 ) : std::floor( x + 0.5 );
+}
+
 bool qgsVariantLessThan( const QVariant& lhs, const QVariant& rhs );
 
 bool qgsVariantGreaterThan( const QVariant& lhs, const QVariant& rhs );
