@@ -31,7 +31,7 @@ void QgsAccessControl::filterFeatures( const QgsVectorLayer* layer, QgsFeatureRe
   for ( acIterator = mPluginsAccessControls->constBegin(); acIterator != mPluginsAccessControls->constEnd(); ++acIterator )
   {
     const QString expression = acIterator.value()->layerFilterExpression( layer );
-    if ( expression )
+    if ( !expression.isEmpty() )
     {
       expressions.append( expression );
     }
@@ -56,7 +56,7 @@ const QString QgsAccessControl::extraSubsetString( const QgsVectorLayer* layer )
   for ( acIterator = mPluginsAccessControls->constBegin(); acIterator != mPluginsAccessControls->constEnd(); ++acIterator )
   {
     const QString sql = acIterator.value()->layerFilterSubsetString( layer );
-    if ( sql )
+    if ( !sql.isEmpty() )
     {
       sqls.append( sql );
     }
