@@ -33,7 +33,7 @@ class QgsPointV2: public QgsAbstractGeometryV2
      * @param z z-coordinate of point, for PointZ or PointZM types
      * @param m m-value of point, for PointM or PointZM types
      */
-    QgsPointV2( QgsWKBTypes::Type type, double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0 ) /Factory/;
+    QgsPointV2( QgsWKBTypes::Type type, double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0 );
     %MethodCode
   if ( QgsWKBTypes::flatType( a0 ) != QgsWKBTypes::Point )
   {
