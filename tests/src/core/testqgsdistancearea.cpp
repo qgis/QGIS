@@ -34,6 +34,7 @@ class TestQgsDistanceArea: public QObject
     void basic();
     void test_distances();
     void unit_conversions();
+    void measureUnits();
 };
 
 void TestQgsDistanceArea::initTestCase()
@@ -191,7 +192,3 @@ void TestQgsDistanceArea::measureUnits()
 
 QTEST_MAIN( TestQgsDistanceArea )
 #include "testqgsdistancearea.moc"
-
-
-
-
