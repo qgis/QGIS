@@ -2719,7 +2719,7 @@ bool QgsVectorLayer::isReadOnly() const
   return mReadOnly;
 }
 
-bool QgsVectorLayer::setFieldEditable( bool readonly )
+bool QgsVectorLayer::setReadOnly( bool readonly )
 {
   // exit if the layer is in editing mode
   if ( readonly && mEditBuffer )

@@ -261,7 +261,7 @@ void QgsGeometrySnapperDialog::run()
     }
   }
 
-  layer->setFieldEditable( true );
+  layer->setReadOnly( true );
   if ( ui.radioButtonOutputNew->isChecked() )
   {
     QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << layer );
@@ -294,7 +294,7 @@ void QgsGeometrySnapperDialog::run()
   ui.progressBar->hide();
   ui.widgetInputs->setEnabled( true );
 
-  layer->setFieldEditable( false );
+  layer->setReadOnly( false );
 
   /** Refresh canvas **/
   mIface->mapCanvas()->refresh();
