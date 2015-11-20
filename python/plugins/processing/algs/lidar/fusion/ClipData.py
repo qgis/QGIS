@@ -60,7 +60,7 @@ class ClipData(FusionAlgorithm):
         dtm.isAdvanced = True
         self.addParameter(dtm)
         height = ParameterBoolean(
-            self.HEIGHT, self.tr("Convert point elevations into heights above ground (used with 'DTM')"), False)
+            self.HEIGHT, self.tr("Convert point elevations into heights above ground (used with the above command)"), False)
         height.isAdvanced = True
         self.addParameter(height)
         self.addAdvancedModifiers()
