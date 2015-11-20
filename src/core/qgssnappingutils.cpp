@@ -250,7 +250,13 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPoint& pointMap, Qg
     prepareIndex( QList<QgsVectorLayer*>() << mCurrentLayer );
 
     // data from project
-    double tolerance = QgsTolerance::toleranceInProjectUnits( mDefaultTolerance, mCurrentLayer, mMapSettings, mDefaultUnit );
+    double tolerance;
+    if ( mSnapToType == SnapToType::SnapToMap )
+      tolerance = QgsTolerance::toleranceInProjectUnits( mDefaultTolerance, mCurrentLayer, mMapSettings, mDefaultUnit );
+    else if ( mSnapToType == SnapToType::SnapToLayer )
+      tolerance = QgsTolerance::toleranceInMapUnits( mDefaultTolerance, mCurrentLayer, mMapSettings, mDefaultUnit );
+    else
+      tolerance = mDefaultTolerance;
     int type = mDefaultType;
 
     // use ad-hoc locator
