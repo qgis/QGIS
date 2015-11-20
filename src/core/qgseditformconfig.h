@@ -343,12 +343,6 @@ class CORE_EXPORT QgsEditFormConfig : public QObject
     void setUiForm( const QString& ui );
 
 
-
-
-
-
-
-
     // Widget stuff
 
     /**
@@ -505,7 +499,6 @@ class CORE_EXPORT QgsEditFormConfig : public QObject
      */
     void setInitCode( const QString& code ) { mEditFormInitCode = code; }
 
-
     /** Return if python code shall be loaded for edit form initialization */
     bool useInitCode() const { return mUseInitCode; }
 
@@ -526,7 +519,7 @@ class CORE_EXPORT QgsEditFormConfig : public QObject
     /**
      * Create a new edit form config. Normally invoked by QgsVectorLayer
      */
-    explicit QgsEditFormConfig( QObject* parent = nullptr );
+    explicit QgsEditFormConfig( QObject* parent = 0 );
 
   private:
 

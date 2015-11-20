@@ -57,7 +57,6 @@ class QgsEditFormConfig : QObject
       SuppressOff = 2      //!< Do not suppress feature form
     };
 
-
     /**
      * This is only useful in combination with EditorLayout::TabLayout.
      *
@@ -93,12 +92,6 @@ class QgsEditFormConfig : QObject
     void setUiForm( const QString& ui );
 
 
-
-
-
-
-
-
     // Widget stuff
 
     /**
@@ -126,7 +119,7 @@ class QgsEditFormConfig : QObject
      * <li>WebView (QgsWebViewWidgetWrapper)</li>
      * </ul>
      *
-     * @param attrIdx     Index of the field
+     * @param fieldIdx    Index of the field
      * @param widgetType  Type id of the editor widget to use
      */
     void setWidgetType( int fieldIdx, const QString& widgetType );
@@ -189,15 +182,13 @@ class QgsEditFormConfig : QObject
     QgsEditorWidgetConfig widgetConfig( const QString& fieldName ) const;
 
     /**
-     * If this returns true, the field is manually set to read only.
+     * This returns true if the field is manually set to read only or if the field
+     * does not support editing like joins or vitual fields.
      */
     bool readOnly( int idx );
 
     /**
-     * If set to false, the widget at the given index will be read-only, regardless of the
-     * layer's editable state and data provider capacities.
-     * If it is set to true, the widget's editable state will be synchronized with the layer's
-     * edit state.
+     * If set to false, the widget at the given index will be read-only.
      */
     void setReadOnly(int idx, bool readOnly );
 
@@ -229,16 +220,32 @@ class QgsEditFormConfig : QObject
     // Python stuff
 
 
-    /** Get python function for edit form initialization */
+    /**
+     * Get python function for edit form initialization.
+     * Will be looked up in a python file relative to the project folder if it
+     * includes a module name or if it's a pure function name it will searched
+     * in the python code set with @link setInitCode @endlink.
+     */
     QString initFunction() const;
 
-    /** Set python function for edit form initialization */
+    /**
+     * Set python function for edit form initialization.
+     * Will be looked up in a python file relative to the project folder if it
+     * includes a module name or if it's a pure function name it will searched
+     * in the python code set with @link setInitCode @endlink.
+     */
     void setInitFunction( const QString& function );
 
-    /** Get python code for edit form initialization */
+    /**
+     * Get python code for edit form initialization.
+     */
     QString initCode() const;
 
-    /** Set python code for edit form initialization */
+    /**
+     * Get python code for edit form initialization.
+     * Make sure that you also set the appropriate function name in
+     * @link setInitFunction @endlink
+     */
     void setInitCode( const QString& code );
 
     /** Return if python code shall be loaded for edit form initialization */
@@ -247,6 +254,8 @@ class QgsEditFormConfig : QObject
     /** Set if python code shall be used for edit form initialization */
     void setUseInitCode( const bool useCode );
 
+    /** Type of feature form pop-up suppression after feature creation (overrides app setting) */
     FeatureFormSuppress suppress() const;
+    /** Set type of feature form pop-up suppression after feature creation (overrides app setting) */
     void setSuppress( FeatureFormSuppress s );
 };

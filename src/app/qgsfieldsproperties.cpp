@@ -43,9 +43,9 @@
 QgsFieldsProperties::QgsFieldsProperties( QgsVectorLayer *layer, QWidget* parent )
     : QWidget( parent )
     , mLayer( layer )
-    , mDesignerTree( nullptr )
-    , mFieldsList( nullptr )
-    , mRelationsList( nullptr )
+    , mDesignerTree( 0 )
+    , mFieldsList( 0 )
+    , mRelationsList( 0 )
 {
   if ( !layer )
     return;
@@ -921,12 +921,12 @@ QStringList QgsFieldsProperties::DragList::mimeTypes() const
 QMimeData* QgsFieldsProperties::DragList::mimeData( const QList<QTableWidgetItem*> items ) const
 {
   if ( items.count() <= 0 )
-    return nullptr;
+    return 0;
 
   QStringList types = mimeTypes();
 
   if ( types.isEmpty() )
-    return nullptr;
+    return 0;
 
   QMimeData* data = new QMimeData();
   QString format = types.at( 0 );
@@ -1091,12 +1091,12 @@ QStringList QgsFieldsProperties::DesignerTree::mimeTypes() const
 QMimeData* QgsFieldsProperties::DesignerTree::mimeData( const QList<QTreeWidgetItem*> items ) const
 {
   if ( items.count() <= 0 )
-    return nullptr;
+    return 0;
 
   QStringList types = mimeTypes();
 
   if ( types.isEmpty() )
-    return nullptr;
+    return 0;
 
   QMimeData* data = new QMimeData();
   QString format = types.at( 0 );
