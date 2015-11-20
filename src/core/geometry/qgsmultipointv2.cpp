@@ -73,20 +73,23 @@ QDomElement QgsMultiPointV2::asGML3( QDomDocument& doc, int precision, const QSt
 
 QString QgsMultiPointV2::asJSON( int precision ) const
 {
-  QString json = "{\"type\": \"MultiPoint\", \"coordinates\": [";
+  QString json = "{\"type\": \"MultiPoint\", \"coordinates\": ";
+  
+  QList<QgsPointV2> pts;
   Q_FOREACH ( const QgsAbstractGeometryV2 *geom, mGeometries )
   {
     if ( dynamic_cast<const QgsPointV2*>( geom ) )
     {
       const QgsPointV2* point = static_cast<const QgsPointV2*>( geom );
-      json += QgsGeometryUtils::pointsToJSON( QList<QgsPointV2>() << *point, precision ) + ", ";
+      pts << *point;
     }
   }
-  if ( json.endsWith( ", " ) )
+  json += QgsGeometryUtils::pointsToJSON( pts, precision );
+  /*if ( json.endsWith( ", " ) )
   {
     json.chop( 2 ); // Remove last ", "
-  }
-  json += "] }";
+  }*/
+  json += " }";
   return json;
 }
 
