@@ -67,4 +67,6 @@ class QgsEllipseSymbolLayerV2 : QgsMarkerSymbolLayerV2
 
     void setMapUnitScale( const QgsMapUnitScale& scale );
     QgsMapUnitScale mapUnitScale() const;
+
+    QRectF bounds( const QPointF& point, QgsSymbolV2RenderContext& context );
 };

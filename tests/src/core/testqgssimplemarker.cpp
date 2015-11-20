@@ -59,6 +59,7 @@ class TestQgsSimpleMarkerSymbol : public QObject
     void cleanup() {} // will be called after every testfunction.
 
     void simpleMarkerSymbol();
+    void bounds();
 
   private:
     bool mTestHasError;
@@ -137,6 +138,21 @@ void TestQgsSimpleMarkerSymbol::simpleMarkerSymbol()
   mSimpleMarkerLayer->setSize( 5 );
   mSimpleMarkerLayer->setOutlineWidth( 1 );
   QVERIFY( imageCheck( "simplemarker" ) );
+}
+
+void TestQgsSimpleMarkerSymbol::bounds()
+{
+  mSimpleMarkerLayer->setColor( QColor( 200, 200, 200 ) );
+  mSimpleMarkerLayer->setBorderColor( QColor( 0, 0, 0 ) );
+  mSimpleMarkerLayer->setName( "circle" );
+  mSimpleMarkerLayer->setSize( 5 );
+  mSimpleMarkerLayer->setDataDefinedProperty( "size", new QgsDataDefined( true, true, "min(\"importance\" * 2, 6)" ) );
+  mSimpleMarkerLayer->setOutlineWidth( 0.5 );
+
+  mMapSettings.setFlag( QgsMapSettings::DrawSymbolBounds, true );
+  bool result = imageCheck( "simplemarker_bounds" );
+  mMapSettings.setFlag( QgsMapSettings::DrawSymbolBounds, false );
+  QVERIFY( result );
 }
 
 //

@@ -57,6 +57,7 @@ class CORE_EXPORT QgsRenderContext
       UseAdvancedEffects = 0x04,  //!< Enable layer transparency and blending effects
       UseRenderingOptimization = 0x08, //!< Enable vector simplification and other rendering optimizations
       DrawSelection      = 0x10,  //!< Whether vector selections should be shown in the rendered map
+      DrawSymbolBounds   = 0x20,  //!< Draw bounds of symbols (for debugging/testing)
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
