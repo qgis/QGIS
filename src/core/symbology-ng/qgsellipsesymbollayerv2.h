@@ -87,6 +87,8 @@ class CORE_EXPORT QgsEllipseSymbolLayerV2: public QgsMarkerSymbolLayerV2
     void setMapUnitScale( const QgsMapUnitScale& scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
 
+    QRectF bounds( const QPointF& point, QgsSymbolV2RenderContext& context ) override;
+
   private:
     QString mSymbolName;
     double mSymbolWidth;
@@ -114,6 +116,8 @@ class CORE_EXPORT QgsEllipseSymbolLayerV2: public QgsMarkerSymbolLayerV2
       @param f optional feature to render (0 if no data defined rendering)
      */
     void preparePath( const QString& symbolName, QgsSymbolV2RenderContext& context, double* scaledWidth = 0, double* scaledHeight = 0, const QgsFeature* f = 0 );
+    QSizeF calculateSize( QgsSymbolV2RenderContext& context, double* scaledWidth = 0, double* scaledHeight = 0 );
+    void calculateOffsetAndRotation( QgsSymbolV2RenderContext& context, double scaledWidth, double scaledHeight, bool& hasDataDefinedRotation, QPointF& offset, double& angle ) const;
 };
 
 #endif // QGSELLIPSESYMBOLLAYERV2_H
