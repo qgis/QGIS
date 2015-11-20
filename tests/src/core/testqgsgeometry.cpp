@@ -80,6 +80,8 @@ class TestQgsGeometry : public QObject
     void bufferCheck();
     void smoothCheck();
 
+    void exportToGeoJSON();
+
   private:
     /** A helper method to do a render check to see if the geometry op is as expected */
     bool renderCheck( QString theTestName, QString theComment = "", int mismatchCount = 0 );
@@ -704,6 +706,51 @@ void TestQgsGeometry::smoothCheck()
                          <<  QgsPoint( 4.0, 3.8 ) << QgsPoint( 3.8, 4.0 ) << QgsPoint( 2.2, 4.0 ) << QgsPoint( 2.0, 3.8 )
                          << QgsPoint( 2, 2.2 ) << QgsPoint( 2.2, 2 ) ) );
   QVERIFY( QgsGeometry::compare( multipoly, expectedMultiPoly ) );
+}
+
+void TestQgsGeometry::exportToGeoJSON()
+{
+  //Point
+  QString wkt = "Point (40 50)";
+  QScopedPointer<QgsGeometry> geom( QgsGeometry::fromWkt( wkt ) );
+  QString obtained = geom->exportToGeoJSON();
+  QString geojson = "{\"type\": \"Point\", \"coordinates\": [40, 50]}";
+  QCOMPARE( obtained, geojson );
+  
+  //MultiPoint
+  wkt = "MultiPoint (0 0, 10 0, 10 10, 20 10)";
+  geom.reset( QgsGeometry::fromWkt( wkt ) );
+  obtained = geom->exportToGeoJSON();
+  geojson = "{\"type\": \"MultiPoint\", \"coordinates\": [ [0, 0], [10, 0], [10, 10], [20, 10]] }";
+  QCOMPARE( obtained, geojson );
+
+  //Linestring
+  wkt = "LineString(0 0, 10 0, 10 10, 20 10)";
+  geom.reset( QgsGeometry::fromWkt( wkt ) );
+  obtained = geom->exportToGeoJSON();
+  geojson = "{\"type\": \"LineString\", \"coordinates\": [ [0, 0], [10, 0], [10, 10], [20, 10]]}";
+  QCOMPARE( obtained, geojson );
+  
+  //MultiLineString
+  wkt = "MultiLineString ((0 0, 10 0, 10 10, 20 10),(30 30, 40 30, 40 40, 50 40))";
+  geom.reset( QgsGeometry::fromWkt( wkt ) );
+  obtained = geom->exportToGeoJSON();
+  geojson = "{\"type\": \"MultiLineString\", \"coordinates\": [[ [0, 0], [10, 0], [10, 10], [20, 10]], [ [30, 30], [40, 30], [40, 40], [50, 40]]] }";
+  QCOMPARE( obtained, geojson );
+  
+  //Polygon
+  wkt = "Polygon ((0 0, 10 0, 10 10, 0 10, 0 0 ),(2 2, 4 2, 4 4, 2 4, 2 2))";
+  geom.reset( QgsGeometry::fromWkt( wkt ) );
+  obtained = geom->exportToGeoJSON();
+  geojson = "{\"type\": \"Polygon\", \"coordinates\": [[ [0, 0], [10, 0], [10, 10], [0, 10], [0, 0]], [ [2, 2], [4, 2], [4, 4], [2, 4], [2, 2]]] }";
+  QCOMPARE( obtained, geojson );
+
+  //MultiPolygon
+  wkt = "MultiPolygon (((0 0, 10 0, 10 10, 0 10, 0 0 )),((2 2, 4 2, 4 4, 2 4, 2 2)))";
+  geom.reset( QgsGeometry::fromWkt( wkt ) );
+  obtained = geom->exportToGeoJSON();
+  geojson = "{\"type\": \"MultiPolygon\", \"coordinates\": [[[ [0, 0], [10, 0], [10, 10], [0, 10], [0, 0]]], [[ [2, 2], [4, 2], [4, 4], [2, 4], [2, 2]]]] }";
+  QCOMPARE( obtained, geojson );
 }
 
 bool TestQgsGeometry::renderCheck( QString theTestName, QString theComment, int mismatchCount )
