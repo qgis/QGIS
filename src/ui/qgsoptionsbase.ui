@@ -3558,6 +3558,32 @@
                   <string>Rubberband</string>
                  </property>
                  <layout class="QGridLayout" name="_9">
+                  <item row="0" column="9">
+                   <spacer name="horizontalSpacer_33">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="mLineWidthTextLabel">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="text">
+                     <string>Line width</string>
+                    </property>
+                   </widget>
+                  </item>
                   <item row="0" column="2">
                    <widget class="QLabel" name="mLineColorTextLabel">
                     <property name="sizePolicy">
@@ -3581,8 +3607,33 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="mLineWidthTextLabel">
+                  <item row="0" column="5">
+                   <widget class="QgsColorButtonV2" name="mFillColorToolButton">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>120</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>120</width>
+                      <height>16777215</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="4">
+                   <widget class="QLabel" name="mSelectColorTextLabel">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
                       <horstretch>0</horstretch>
@@ -3590,22 +3641,9 @@
                      </sizepolicy>
                     </property>
                     <property name="text">
-                     <string>Line width</string>
+                     <string>Fill color</string>
                     </property>
                    </widget>
-                  </item>
-                  <item row="0" column="4">
-                   <spacer name="horizontalSpacer_33">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
                   </item>
                   <item row="0" column="3">
                    <widget class="QgsColorButtonV2" name="mLineColorToolButton">
