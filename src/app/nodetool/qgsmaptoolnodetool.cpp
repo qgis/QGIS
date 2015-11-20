@@ -498,6 +498,8 @@ void QgsMapToolNodeTool::canvasReleaseEvent( QgsMapMouseEvent* e )
 
     mDeselectOnRelease = -1;
   }
+
+  updateSelectFeature();
 }
 
 void QgsMapToolNodeTool::deactivate()
