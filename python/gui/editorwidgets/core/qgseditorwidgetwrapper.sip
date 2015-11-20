@@ -32,7 +32,31 @@ class QgsEditorWidgetWrapper : QObject
 
     QWidget* widget();
     virtual void setConfig( QMap<QString, QVariant> config );
-    QVariant config( QString key );
+
+    /**
+     * Use this to access the configuration.
+     *
+     * @param key         The configuration option you want to load
+     * @param defaultVal  Default value
+     *
+     * @return the value assigned to this configuration option
+     */
+    const QVariant config( const QString& key, const QVariant& defaultVal = QVariant() );
+
+    /**
+     * Returns the whole config
+     *
+     * @return The configuration
+     */
+    const QgsEditorWidgetConfig config();
+
+    /**
+     * Access the QgsVectorLayer, you are working on
+     *
+     * @return The layer
+     *
+     * @see field()
+     */
     QgsVectorLayer* layer();
 
     /**
