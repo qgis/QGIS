@@ -6808,6 +6808,10 @@ void QgisApp::copyStyle( QgsMapLayer * sourceLayer )
     rootNode.setAttribute( "version", QString( "%1" ).arg( QGis::QGIS_VERSION ) );
     doc.appendChild( rootNode );
 
+    rootNode.setAttribute( "hasScaleBasedVisibilityFlag", selectionLayer->hasScaleBasedVisibility() ? 1 : 0 );
+    rootNode.setAttribute( "minimumScale", QString::number( selectionLayer->minimumScale() ) );
+    rootNode.setAttribute( "maximumScale", QString::number( selectionLayer->maximumScale() ) );
+
     /*
      * Check to see if the layer is vector - in which case we should also copy its geometryType
      * to avoid eventually pasting to a layer with a different geometry
@@ -6888,6 +6892,10 @@ void QgisApp::pasteStyle( QgsMapLayer * destinationLayer )
                                    QgsMessageBar::CRITICAL, messageTimeout() );
         return;
       }
+
+      selectionLayer->setScaleBasedVisibility( rootNode.attribute( "hasScaleBasedVisibilityFlag" ).toInt() == 1 );
+      selectionLayer->setMinimumScale( rootNode.attribute( "minimumScale" ).toFloat() );
+      selectionLayer->setMaximumScale( rootNode.attribute( "maximumScale" ).toFloat() );
 
       mLayerTreeView->refreshLayerSymbology( selectionLayer->id() );
       mMapCanvas->clearCache();
