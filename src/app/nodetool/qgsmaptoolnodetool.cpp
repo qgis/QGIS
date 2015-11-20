@@ -360,7 +360,16 @@ void QgsMapToolNodeTool::updateSelectFeature()
 
   mSelectRubberBand = new QgsGeometryRubberBand( mCanvas, mSelectedFeature->geometry()->type() );
   mSelectRubberBand->setBrushStyle( Qt::SolidPattern );
-  mSelectRubberBand->setFillColor( QColor( 255, 0, 0, 50 ) );
+
+  QSettings settings;
+  QColor color(
+    settings.value( "/qgis/digitizing/select_color_red", 255 ).toInt(),
+    settings.value( "/qgis/digitizing/select_color_green", 0 ).toInt(),
+    settings.value( "/qgis/digitizing/select_color_blue", 0 ).toInt() );
+  double myAlpha = settings.value( "/qgis/digitizing/select_color_alpha", 30 ).toInt() / 255.0 ;
+  color.setAlphaF( myAlpha );
+  mSelectRubberBand->setFillColor( color );
+
   QgsAbstractGeometryV2* rbGeom = mSelectedFeature->geometry()->geometry()->clone();
   QgsVectorLayer *vlayer = mSelectedFeature->vlayer();
   if ( mCanvas->mapSettings().layerTransform( vlayer ) )
