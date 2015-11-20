@@ -79,21 +79,21 @@ class QgsWidgetWrapper : QObject
      *
      * @return the value assigned to this configuration option
      */
-    QVariant config( const QString& key, const QVariant& defaultVal = QVariant() );
+    QVariant config( const QString& key, const QVariant& defaultVal = QVariant() ) const;
 
     /**
      * Returns the whole config
      *
      * @return The configuration
      */
-    const QgsEditorWidgetConfig config();
+    QgsEditorWidgetConfig config() const;
 
     /**
      * Returns information about the context in which this widget is shown
      *
      * @return context information
      */
-    const QgsAttributeEditorContext& context();
+    const QgsAttributeEditorContext& context() const;
 
     /**
      * Access the QgsVectorLayer, you are working on
@@ -102,7 +102,7 @@ class QgsWidgetWrapper : QObject
      *
      * @see field()
      */
-    QgsVectorLayer* layer();
+    QgsVectorLayer* layer() const;
 
     /**
      * Will return a wrapper for a given widget
@@ -120,7 +120,7 @@ class QgsWidgetWrapper : QObject
      *
      * @return Validity status of this widget.
      */
-    virtual bool valid() = 0;
+    virtual bool valid() const = 0;
 
   protected:
     /**

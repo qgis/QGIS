@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-class QgsEditorWidgetWrapper : QObject
+class QgsEditorWidgetWrapper : QgsWidgetWrapper
 {
 %TypeHeaderCode
 #include <qgseditorwidgetwrapper.h>
@@ -30,35 +30,6 @@ class QgsEditorWidgetWrapper : QObject
      */
     explicit QgsEditorWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor = 0, QWidget* parent /TransferThis/ = 0 );
 
-    QWidget* widget();
-    virtual void setConfig( QMap<QString, QVariant> config );
-
-    /**
-     * Use this to access the configuration.
-     *
-     * @param key         The configuration option you want to load
-     * @param defaultVal  Default value
-     *
-     * @return the value assigned to this configuration option
-     */
-    const QVariant config( const QString& key, const QVariant& defaultVal = QVariant() );
-
-    /**
-     * Returns the whole config
-     *
-     * @return The configuration
-     */
-    const QgsEditorWidgetConfig config();
-
-    /**
-     * Access the QgsVectorLayer, you are working on
-     *
-     * @return The layer
-     *
-     * @see field()
-     */
-    QgsVectorLayer* layer();
-
     /**
      * Will be used to access the widget's value. Read the value from the widget and
      * return it properly formatted to be saved in the attribute.
@@ -68,7 +39,7 @@ class QgsEditorWidgetWrapper : QObject
      *
      * @return The current value the widget represents
      */
-    virtual QVariant value() = 0;
+    virtual QVariant value() const = 0;
 
     /**
      * Access the field index.
@@ -77,7 +48,7 @@ class QgsEditorWidgetWrapper : QObject
      *
      * @see layer()
      */
-    int fieldIdx();
+    int fieldIdx() const;
 
     /**
      * Access the field.
@@ -86,7 +57,7 @@ class QgsEditorWidgetWrapper : QObject
      *
      * @see layer()
      */
-    QgsField field();
+    QgsField field() const;
 
     /**
      * Access the default value of the field.
@@ -95,7 +66,7 @@ class QgsEditorWidgetWrapper : QObject
      *
      * @see layer()
      */
-    QVariant defaultValue();
+    QVariant defaultValue() const;
 
     /**
      * Will return a wrapper for a given widget
@@ -111,12 +82,6 @@ class QgsEditorWidgetWrapper : QObject
      * @param enabled  Enable or Disable?
      */
     void setEnabled( bool enabled );
-
-    virtual bool valid() = 0;
-  protected:
-    virtual QWidget* createWidget( QWidget* parent ) = 0;
-
-    virtual void initWidget( QWidget* editor );
 
   signals:
     /**
