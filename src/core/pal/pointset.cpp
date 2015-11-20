@@ -115,10 +115,10 @@ namespace pal
       : mGeos( 0 )
       , mOwnsGeom( false )
       , parent( 0 )
-      , xmin( DBL_MAX )
-      , xmax( -DBL_MAX )
-      , ymin( DBL_MAX )
-      , ymax( -DBL_MAX )
+      , xmin( ps.xmin )
+      , xmax( ps.xmax )
+      , ymin( ps.ymin )
+      , ymax( ps.ymax )
       , mPreparedGeom( 0 )
   {
     int i;
