@@ -16,7 +16,6 @@
 class QgsEditorWidgetWrapper : QObject
 {
 %TypeHeaderCode
-#include <qgseditorwidgetconfig.h>
 #include <qgseditorwidgetwrapper.h>
 %End
 
@@ -42,7 +41,7 @@ class QgsEditorWidgetWrapper : QObject
      *
      * @return the value assigned to this configuration option
      */
-    QVariant config( const QString& key, const QVariant& defaultVal = QVariant() );
+    const QVariant config( const QString& key, const QVariant& defaultVal = QVariant() );
 
     /**
      * Returns the whole config
