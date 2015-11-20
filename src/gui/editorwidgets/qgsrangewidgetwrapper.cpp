@@ -193,7 +193,7 @@ void QgsRangeWidgetWrapper::initWidget( QWidget* editor )
   }
 }
 
-bool QgsRangeWidgetWrapper::valid()
+bool QgsRangeWidgetWrapper::valid() const
 {
   return mSlider || mDial || mQgsDial || mQgsSlider || mIntSpinBox || mDoubleSpinBox;
 }
@@ -206,7 +206,7 @@ void QgsRangeWidgetWrapper::valueChanged( const QVariant& v )
     valueChanged( v.toDouble() );
 }
 
-QVariant QgsRangeWidgetWrapper::value()
+QVariant QgsRangeWidgetWrapper::value() const
 {
   QVariant value;
 

@@ -34,7 +34,7 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
   protected:
     QWidget* createWidget( QWidget* parent ) override;
     void initWidget( QWidget* editor ) override;
-    bool valid() override;
+    bool valid() const override;
 
   public slots:
     void setFeature( const QgsFeature& feature ) override;

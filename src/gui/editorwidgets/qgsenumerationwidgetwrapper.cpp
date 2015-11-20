@@ -25,7 +25,7 @@ QgsEnumerationWidgetWrapper::QgsEnumerationWidgetWrapper( QgsVectorLayer* vl, in
 }
 
 
-QVariant QgsEnumerationWidgetWrapper::value()
+QVariant QgsEnumerationWidgetWrapper::value() const
 {
   QVariant value;
 
@@ -57,7 +57,7 @@ void QgsEnumerationWidgetWrapper::initWidget( QWidget* editor )
   }
 }
 
-bool QgsEnumerationWidgetWrapper::valid()
+bool QgsEnumerationWidgetWrapper::valid() const
 {
   return mComboBox;
 }

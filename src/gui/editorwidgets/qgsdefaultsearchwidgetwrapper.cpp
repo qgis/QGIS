@@ -101,7 +101,7 @@ void QgsDefaultSearchWidgetWrapper::initWidget( QWidget* widget )
   mCaseString = "ILIKE";
 }
 
-bool QgsDefaultSearchWidgetWrapper::valid()
+bool QgsDefaultSearchWidgetWrapper::valid() const
 {
   return true;
 }

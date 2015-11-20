@@ -39,8 +39,8 @@ class GUI_EXPORT QgsFileNameWidgetWrapper : public QgsEditorWidgetWrapper
 
     // QgsEditorWidgetWrapper interface
   public:
-    QVariant value() override;
-    bool valid() override;
+    QVariant value() const override;
+    bool valid() const override;
 
   protected:
     QWidget* createWidget( QWidget* parent ) override;

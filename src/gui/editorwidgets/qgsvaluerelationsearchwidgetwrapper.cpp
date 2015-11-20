@@ -89,7 +89,7 @@ QVariant QgsValueRelationSearchWidgetWrapper::value() const
   return v;
 }
 
-bool QgsValueRelationSearchWidgetWrapper::valid()
+bool QgsValueRelationSearchWidgetWrapper::valid() const
 {
   return true;
 }

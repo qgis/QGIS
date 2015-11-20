@@ -59,7 +59,7 @@ QString QgsValueMapSearchWidgetWrapper::expression()
   return mExpression;
 }
 
-bool QgsValueMapSearchWidgetWrapper::valid()
+bool QgsValueMapSearchWidgetWrapper::valid() const
 {
   return true;
 }

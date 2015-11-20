@@ -59,7 +59,7 @@ QgsValueRelationWidgetWrapper::QgsValueRelationWidgetWrapper( QgsVectorLayer* vl
 }
 
 
-QVariant QgsValueRelationWidgetWrapper::value()
+QVariant QgsValueRelationWidgetWrapper::value() const
 {
   QVariant v;
 
@@ -164,7 +164,7 @@ void QgsValueRelationWidgetWrapper::initWidget( QWidget* editor )
   }
 }
 
-bool QgsValueRelationWidgetWrapper::valid()
+bool QgsValueRelationWidgetWrapper::valid() const
 {
   return mListWidget || mLineEdit || mComboBox;
 }

@@ -32,7 +32,7 @@ class GUI_EXPORT QgsValueMapSearchWidgetWrapper : public QgsSearchWidgetWrapper
     explicit QgsValueMapSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent = 0 );
     bool applyDirectly() override;
     QString expression() override;
-    bool valid() override;
+    bool valid() const override;
 
   protected:
     QWidget* createWidget( QWidget* parent ) override;

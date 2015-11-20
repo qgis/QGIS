@@ -42,7 +42,7 @@ void QgsWebViewWidgetWrapper::loadUrl( const QString &url )
     mWebView->load( path );
 }
 
-QVariant QgsWebViewWidgetWrapper::value()
+QVariant QgsWebViewWidgetWrapper::value() const
 {
   QVariant v;
 
@@ -127,7 +127,7 @@ void QgsWebViewWidgetWrapper::initWidget( QWidget* editor )
   }
 }
 
-bool QgsWebViewWidgetWrapper::valid()
+bool QgsWebViewWidgetWrapper::valid() const
 {
   return mWebView || mButton || mLineEdit;
 }

@@ -26,12 +26,12 @@ QgsEditorWidgetWrapper::QgsEditorWidgetWrapper( QgsVectorLayer* vl, int fieldIdx
 {
 }
 
-int QgsEditorWidgetWrapper::fieldIdx()
+int QgsEditorWidgetWrapper::fieldIdx() const
 {
   return mFieldIdx;
 }
 
-QgsField QgsEditorWidgetWrapper::field()
+QgsField QgsEditorWidgetWrapper::field() const
 {
   if ( mFieldIdx < layer()->fields().count() )
     return layer()->fields().at( mFieldIdx );
@@ -39,7 +39,7 @@ QgsField QgsEditorWidgetWrapper::field()
     return QgsField();
 }
 
-QVariant QgsEditorWidgetWrapper::defaultValue()
+QVariant QgsEditorWidgetWrapper::defaultValue() const
 {
   return layer()->dataProvider()->defaultValue( mFieldIdx );
 }

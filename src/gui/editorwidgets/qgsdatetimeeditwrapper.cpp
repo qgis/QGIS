@@ -90,7 +90,7 @@ void QgsDateTimeEditWrapper::initWidget( QWidget *editor )
   }
 }
 
-bool QgsDateTimeEditWrapper::valid()
+bool QgsDateTimeEditWrapper::valid() const
 {
   return mQgsDateTimeEdit || mQDateTimeEdit;
 }
@@ -101,7 +101,7 @@ void QgsDateTimeEditWrapper::dateTimeChanged( const QDateTime& dateTime )
   emit valueChanged( dateTime.toString( fieldFormat ) );
 }
 
-QVariant QgsDateTimeEditWrapper::value()
+QVariant QgsDateTimeEditWrapper::value() const
 {
   if ( !mQDateTimeEdit )
     return QVariant( field().type() );
