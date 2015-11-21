@@ -142,6 +142,40 @@ class TestPointPlacement(TestPlacementBase):
         self.removeMapLayer(self.layer)
         self.layer = None
 
+    def test_polygon_placement_with_hole(self):
+        # Horizontal label placement for polygon with hole
+        # Note for this test, the mask is used to check only pixels outside of the polygon.
+        # We don't care where in the polygon the label is, just that it
+        # is INSIDE the polygon
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('polygon_with_hole')
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self.lyr.placement = QgsPalLayerSettings.Horizontal
+        self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_polygon_placement_with_hole_and_point(self):
+        # Testing that hole from a feature is not treated as an obstacle for other feature's labels
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('point')
+        polyLayer = TestQgsPalLabeling.loadFeatureLayer('polygon_with_hole')
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.removeMapLayer(polyLayer)
+        self.layer = None
+
+    def test_polygon_multiple_labels(self):
+        # Horizontal label placement for polygon with hole
+        # Note for this test, the mask is used to check only pixels outside of the polygon.
+        # We don't care where in the polygon the label is, just that it
+        # is INSIDE the polygon
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('polygon_rule_based')
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self.lyr.placement = QgsPalLayerSettings.Horizontal
+        self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
 if __name__ == '__main__':
     # NOTE: unless PAL_SUITE env var is set all test class methods will be run
     # SEE: test_qgspallabeling_tests.suiteTests() to define suite

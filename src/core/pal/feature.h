@@ -165,6 +165,12 @@ namespace pal
        */
       QgsFeatureId featureId() const;
 
+      /** Tests whether this feature part belongs to the same QgsLabelFeature as another
+       * feature part.
+       * @param part part to compare to
+       * @returns true if both parts belong to same QgsLabelFeature
+       */
+      bool hasSameLabelFeatureAs( FeaturePart* part ) const;
 
 #if 0
       /**

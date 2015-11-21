@@ -154,6 +154,14 @@ namespace pal
     return mLF->id();
   }
 
+  bool FeaturePart::hasSameLabelFeatureAs( FeaturePart* part ) const
+  {
+    if ( !part )
+      return false;
+
+    return mLF->id() == part->featureId() && mLF->layer()->name() == part->layer()->name();
+  }
+
   LabelPosition::Quadrant FeaturePart::quadrantFromOffset() const
   {
     QPointF quadOffset = mLF->quadOffset();
