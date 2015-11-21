@@ -6799,21 +6799,12 @@ void QgisApp::copyStyle( QgsMapLayer * sourceLayer )
 
   if ( selectionLayer )
   {
-    QDomImplementation DomImplementation;
-    QDomDocumentType documentType =
-      DomImplementation.createDocumentType(
-        "qgis", "http://mrcc.com/qgis.dtd", "SYSTEM" );
-    QDomDocument doc( documentType );
-    QDomElement rootNode = doc.createElement( "qgis" );
-    rootNode.setAttribute( "version", QString( "%1" ).arg( QGis::QGIS_VERSION ) );
-    doc.appendChild( rootNode );
-
-    rootNode.setAttribute( "hasScaleBasedVisibilityFlag", selectionLayer->hasScaleBasedVisibility() ? 1 : 0 );
-    rootNode.setAttribute( "minimumScale", QString::number( selectionLayer->minimumScale() ) );
-    rootNode.setAttribute( "maximumScale", QString::number( selectionLayer->maximumScale() ) );
-
     QString errorMsg;
-    if ( !selectionLayer->writeSymbology( rootNode, doc, errorMsg ) )
+    QDomDocument doc( "qgis" );
+    selectionLayer->exportNamedStyle( doc, errorMsg );
+
+
+    if ( !errorMsg.isEmpty() )
     {
       messageBar()->pushMessage( errorMsg,
                                  tr( "Cannot copy style: %1" ),
@@ -6827,7 +6818,7 @@ void QgisApp::copyStyle( QgsMapLayer * sourceLayer )
   }
 }
 /**
-   \param destinatioLayer  The layer that the clipboard will be pasted to
+   \param destinationLayer  The layer that the clipboard will be pasted to
                             (defaults to the active layer on the legend)
  */
 
@@ -6851,19 +6842,13 @@ void QgisApp::pasteStyle( QgsMapLayer * destinationLayer )
         return;
       }
 
-      QDomElement rootNode = doc.firstChildElement( "qgis" );
-
-      if ( !selectionLayer->readSymbology( rootNode, errorMsg ) )
+      if ( !selectionLayer->importNamedStyle( doc, errorMsg ) )
       {
         messageBar()->pushMessage( errorMsg,
-                                   tr( "Cannot read style: %1" ),
+                                   tr( "Cannot paste style: %1" ),
                                    QgsMessageBar::CRITICAL, messageTimeout() );
         return;
       }
-
-      selectionLayer->setScaleBasedVisibility( rootNode.attribute( "hasScaleBasedVisibilityFlag" ).toInt() == 1 );
-      selectionLayer->setMinimumScale( rootNode.attribute( "minimumScale" ).toFloat() );
-      selectionLayer->setMaximumScale( rootNode.attribute( "maximumScale" ).toFloat() );
 
       mLayerTreeView->refreshLayerSymbology( selectionLayer->id() );
       mMapCanvas->clearCache();
