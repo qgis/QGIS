@@ -6812,24 +6812,6 @@ void QgisApp::copyStyle( QgsMapLayer * sourceLayer )
     rootNode.setAttribute( "minimumScale", QString::number( selectionLayer->minimumScale() ) );
     rootNode.setAttribute( "maximumScale", QString::number( selectionLayer->maximumScale() ) );
 
-    /*
-     * Check to see if the layer is vector - in which case we should also copy its geometryType
-     * to avoid eventually pasting to a layer with a different geometry
-    */
-    if ( selectionLayer->type() == 0 )
-    {
-      //Getting the selectionLayer geometry
-      QgsVectorLayer *SelectionGeometry = static_cast<QgsVectorLayer*>( selectionLayer );
-      QString geoType = QString::number( SelectionGeometry->geometryType() );
-
-      //Adding geometryinformation
-      QDomElement layerGeometryType = doc.createElement( "layerGeometryType" );
-      QDomText type = doc.createTextNode( geoType );
-
-      layerGeometryType.appendChild( type );
-      rootNode.appendChild( layerGeometryType );
-    }
-
     QString errorMsg;
     if ( !selectionLayer->writeSymbology( rootNode, doc, errorMsg ) )
     {
@@ -6870,20 +6852,6 @@ void QgisApp::pasteStyle( QgsMapLayer * destinationLayer )
       }
 
       QDomElement rootNode = doc.firstChildElement( "qgis" );
-
-      //Test for matching geometry type on vector layers when pasting
-      if ( selectionLayer->type() == QgsMapLayer::VectorLayer )
-      {
-        QgsVectorLayer *selectionVectorLayer = static_cast<QgsVectorLayer*>( selectionLayer );
-        int pasteLayerGeometryType = doc.elementsByTagName( "layerGeometryType" ).item( 0 ).toElement().text().toInt();
-        if ( selectionVectorLayer->geometryType() != pasteLayerGeometryType )
-        {
-          messageBar()->pushMessage( tr( "Cannot paste style to layer with a different geometry type" ),
-                                     tr( "Your copied style does not match the layer you are pasting to" ),
-                                     QgsMessageBar::INFO, messageTimeout() );
-          return;
-        }
-      }
 
       if ( !selectionLayer->readSymbology( rootNode, errorMsg ) )
       {

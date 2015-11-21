@@ -1173,6 +1173,18 @@ bool QgsMapLayer::importNamedStyle( QDomDocument& myDocument, QString& myErrorMe
     return false;
   }
 
+  //Test for matching geometry type on vector layers when applying, if geometry type is given in the style
+  if ( type() == QgsMapLayer::VectorLayer && !myRoot.firstChildElement( "layerGeometryType" ).isNull() )
+  {
+    QgsVectorLayer *vl = static_cast<QgsVectorLayer*>( this );
+    int importLayerGeometryType = myRoot.firstChildElement( "layerGeometryType" ).text().toInt();
+    if ( vl->geometryType() != importLayerGeometryType )
+    {
+      myErrorMessage = tr( "Cannot apply style to layer with a different geometry type" );
+      return false;
+    }
+  }
+
   // use scale dependent visibility flag
   setScaleBasedVisibility( myRoot.attribute( "hasScaleBasedVisibilityFlag" ).toInt() == 1 );
   setMinimumScale( myRoot.attribute( "minimumScale" ).toFloat() );
@@ -1220,6 +1232,25 @@ void QgsMapLayer::exportNamedStyle( QDomDocument &doc, QString &errorMsg )
     errorMsg = QObject::tr( "Could not save symbology because:\n%1" ).arg( errorMsg );
     return;
   }
+
+  /*
+   * Check to see if the layer is vector - in which case we should also export its geometryType
+   * to avoid eventually pasting to a layer with a different geometry
+  */
+  if ( type() == QgsMapLayer::VectorLayer )
+  {
+    //Getting the selectionLayer geometry
+    QgsVectorLayer *vl = static_cast<QgsVectorLayer*>( this );
+    QString geoType = QString::number( vl->geometryType() );
+
+    //Adding geometryinformation
+    QDomElement layerGeometryType = myDocument.createElement( "layerGeometryType" );
+    QDomText type = myDocument.createTextNode( geoType );
+
+    layerGeometryType.appendChild( type );
+    myRootNode.appendChild( layerGeometryType );
+  }
+
   doc = myDocument;
 }
 
