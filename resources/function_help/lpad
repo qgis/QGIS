@@ -10,8 +10,8 @@ using the fill character.
 <br>
 <code>length</code> - is int. The length of the new string.
 <br>
-<code>fill</code> - is char. The character to padd the remaining space with. 
+<code>fill</code> - is char. The character to pad the remaining space with.
 
 <h4>Example</h4>
 <!-- Show example of function.-->
-<code>lpad('Hello', 10, 'x') &rarr; 'Helloxxxxx'</code><br>
+<code>lpad('Hello', 10, 'x') &rarr; 'xxxxxHello'</code><br>
