@@ -413,7 +413,7 @@
      <item>
       <widget class="QToolButton" name="mRemoveAttribute">
        <property name="toolTip">
-        <string>Delete column (Ctrl+L)</string>
+        <string>Delete field (Ctrl+L)</string>
        </property>
        <property name="text">
         <string/>
@@ -439,7 +439,7 @@
      <item>
       <widget class="QToolButton" name="mAddAttribute">
        <property name="toolTip">
-        <string>New column (Ctrl+W)</string>
+        <string>New field (Ctrl+W)</string>
        </property>
        <property name="text">
         <string/>
@@ -772,7 +772,7 @@
   </action>
   <action name="mActionFilterColumnsMenu">
    <property name="text">
-    <string>Column Filter</string>
+    <string>Field Filter</string>
    </property>
   </action>
   <action name="mActionEditedFilter">
