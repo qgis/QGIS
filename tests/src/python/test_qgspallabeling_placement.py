@@ -24,7 +24,7 @@ from PyQt4.QtCore import Qt, QPointF, QThreadPool
 from PyQt4.QtGui import QFont
 
 from qgis.core import QgsPalLayerSettings
-
+from unittest import skip
 from utilities import (
     svgSymbolsPath,
     getTempfilePath,
@@ -131,6 +131,15 @@ class TestPointPlacement(TestPlacementBase):
         self.checkTest()
         self.removeMapLayer(self.layer)
         self.removeMapLayer(polyLayer)
+        self.layer = None
+
+    @skip("not yet implemented")
+    def test_point_placement_around_obstacle_large_symbol(self):
+        # Default point label placement with obstacle and large symbols
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('point3')
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self.checkTest()
+        self.removeMapLayer(self.layer)
         self.layer = None
 
 if __name__ == '__main__':
