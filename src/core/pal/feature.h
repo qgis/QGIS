@@ -94,6 +94,8 @@ namespace pal
         */
       FeaturePart( QgsLabelFeature* lf, const GEOSGeometry* geom );
 
+      FeaturePart( const FeaturePart& other );
+
       /** Delete the feature
        */
       virtual ~FeaturePart();

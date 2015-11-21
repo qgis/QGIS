@@ -62,6 +62,22 @@ class CORE_EXPORT QgsLabelFeature
     //! Get access to the associated geometry
     GEOSGeometry* geometry() const { return mGeometry; }
 
+    /** Sets the label's obstacle geometry, if different to the feature geometry.
+     * This can be used to override the shape of the feature for obstacle detection, eg to
+     * buffer around a point geometry to prevent labels being placed too close to the
+     * point itself. It not set, the feature's geometry is used for obstacle detection.
+     * Ownership of obstacle geometry is transferred.
+     * @note added in QGIS 2.14
+     * @see obstacleGeometry()
+     */
+    void setObstacleGeometry( GEOSGeometry* obstacleGeom );
+
+    /** Returns the label's obstacle geometry, if different to the feature geometry.
+     * @note added in QGIS 2.14
+     * @see setObstacleGeometry()
+     */
+    GEOSGeometry* obstacleGeometry() const { return mObstacleGeometry; }
+
     //! Size of the label (in map units)
     QSizeF size() const { return mSize; }
 
@@ -196,6 +212,8 @@ class CORE_EXPORT QgsLabelFeature
     QgsFeatureId mId;
     //! Geometry of the feature to be labelled
     GEOSGeometry* mGeometry;
+    //! Optional geometry to use for label obstacles, if different to mGeometry
+    GEOSGeometry* mObstacleGeometry;
     //! Width and height of the label
     QSizeF mSize;
     //! Priority of the label

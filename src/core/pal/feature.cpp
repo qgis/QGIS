@@ -74,6 +74,16 @@ namespace pal
 
   }
 
+  FeaturePart::FeaturePart( const FeaturePart& other )
+      : PointSet( other )
+      , mLF( other.mLF )
+  {
+    Q_FOREACH ( FeaturePart* part, other.mHoles )
+    {
+      mHoles << new FeaturePart( *part );
+    }
+  }
+
 
   FeaturePart::~FeaturePart()
   {
