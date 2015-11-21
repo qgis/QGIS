@@ -78,9 +78,10 @@ namespace pal
       : PointSet( other )
       , mLF( other.mLF )
   {
-    Q_FOREACH ( FeaturePart* part, other.mHoles )
+    Q_FOREACH ( FeaturePart* hole, other.mHoles )
     {
-      mHoles << new FeaturePart( *part );
+      mHoles << new FeaturePart( *hole );
+      mHoles.last()->holeOf = this;
     }
   }
 
