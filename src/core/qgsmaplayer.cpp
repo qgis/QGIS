@@ -1147,8 +1147,15 @@ QString QgsMapLayer::loadNamedStyle( const QString &theURI, bool &theResultFlag 
 
 bool QgsMapLayer::importNamedStyle( QDomDocument& myDocument, QString& myErrorMessage )
 {
+  QDomElement myRoot = myDocument.firstChildElement( "qgis" );
+  if ( myRoot.isNull() )
+  {
+    myErrorMessage = tr( "Root <qgis> element could not be found" );
+    return false;
+  }
+
   // get style file version string, if any
-  QgsProjectVersion fileVersion( myDocument.firstChildElement( "qgis" ).attribute( "version" ) );
+  QgsProjectVersion fileVersion( myRoot.attribute( "version" ) );
   QgsProjectVersion thisVersion( QGis::QGIS_VERSION );
 
   if ( thisVersion > fileVersion )
@@ -1162,15 +1169,6 @@ bool QgsMapLayer::importNamedStyle( QDomDocument& myDocument, QString& myErrorMe
     // styleFile.dump();
     styleFile.updateRevision( thisVersion );
     // styleFile.dump();
-  }
-
-  // now get the layer node out and pass it over to the layer
-  // to deserialise...
-  QDomElement myRoot = myDocument.firstChildElement( "qgis" );
-  if ( myRoot.isNull() )
-  {
-    myErrorMessage = tr( "Root <qgis> element could not be found" );
-    return false;
   }
 
   //Test for matching geometry type on vector layers when applying, if geometry type is given in the style
