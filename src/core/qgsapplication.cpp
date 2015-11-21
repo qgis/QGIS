@@ -99,12 +99,13 @@ const char* QgsApplication::QGIS_APPLICATION_NAME = "QGIS2";
   so that platform-conditional code is minimized and paths are easier
   to change due to centralization.
 */
-QgsApplication::QgsApplication( int & argc, char ** argv, bool GUIenabled, const QString& customConfigPath, const QString& platformName )
+QgsApplication::QgsApplication( int & argc, char ** argv, bool GUIenabled, const QString& customConfigPath, const QString& platformName, bool initLater )
     : QApplication( argc, argv, GUIenabled )
 {
   sPlatformName = platformName;
 
-  init( customConfigPath ); // init can also be called directly by e.g. unit tests that don't inherit QApplication.
+  if ( !initLater )
+    init( customConfigPath ); // init can also be called directly by e.g. unit tests that don't inherit QApplication.
 }
 
 void QgsApplication::init( QString customConfigPath )
