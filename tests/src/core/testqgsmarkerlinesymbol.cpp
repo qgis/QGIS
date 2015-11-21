@@ -142,7 +142,7 @@ bool TestQgsMarkerLineSymbol::render( const QString& theTestType )
   mReport += "<h2>" + theTestType + "</h2>\n";
   mMapSettings->setOutputDpi( 96 );
   QgsRenderChecker checker;
-  checker.setControlPathPrefix( "markerlinesymbol" );
+  checker.setControlPathPrefix( "symbol_markerline" );
   checker.setControlName( "expected_" + theTestType );
   checker.setMapSettings( *mMapSettings );
   bool result = checker.runTest( theTestType );
