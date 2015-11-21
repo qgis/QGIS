@@ -53,12 +53,14 @@ QgsAttributeTableView::QgsAttributeTableView( QWidget *parent )
 
   setSelectionBehavior( QAbstractItemView::SelectRows );
   setSelectionMode( QAbstractItemView::ExtendedSelection );
-  setSortingEnabled( true );
+  setSortingEnabled( true ); // At this point no data is in the model yet, so actually nothing is sorted.
+  horizontalHeader()->setSortIndicatorShown( false ); // So hide the indicator to avoid confusion.
 
   verticalHeader()->viewport()->installEventFilter( this );
 
   connect( verticalHeader(), SIGNAL( sectionPressed( int ) ), this, SLOT( selectRow( int ) ) );
   connect( verticalHeader(), SIGNAL( sectionEntered( int ) ), this, SLOT( _q_selectRow( int ) ) );
+  connect( horizontalHeader(), SIGNAL( sortIndicatorChanged( int, Qt::SortOrder ) ), this, SLOT( showHorizontalSortIndicator() ) );
 }
 
 QgsAttributeTableView::~QgsAttributeTableView()
@@ -281,4 +283,9 @@ void QgsAttributeTableView::selectRow( int row, bool anchor )
     else
       mFeatureSelectionModel->selectFeatures( QItemSelection( tl, br ), command );
   }
+}
+
+void QgsAttributeTableView::showHorizontalSortIndicator()
+{
+  horizontalHeader()->setSortIndicatorShown( true );
 }
