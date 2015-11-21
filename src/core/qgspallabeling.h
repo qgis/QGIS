@@ -474,9 +474,15 @@ class CORE_EXPORT QgsPalLayerSettings
      * @param context render context. The QgsExpressionContext contained within the render context
      * must have already had the feature and fields sets prior to calling this method.
      * @param dxfLayer dxfLayer name
-     * @param labelFeature if using QgsLabelingEngineV2, this will receive the label feature
+     * @param labelFeature if using QgsLabelingEngineV2, this will receive the label feature. Not available
+     * in Python bindings.
+     * @param obstacleGeometry optional obstacle geometry, if a different geometry to the feature's geometry
+     * should be used as an obstacle for labels (eg, if the feature has been rendered with an offset point
+     * symbol, the obstacle geometry should represent the bounds of the offset symbol). If not set,
+     * the feature's original geometry will be used as an obstacle for labels. Not available
+     * in Python bindings.
      */
-    void registerFeature( QgsFeature& f, QgsRenderContext& context, const QString& dxfLayer, QgsLabelFeature** labelFeature = 0 );
+    void registerFeature( QgsFeature& f, QgsRenderContext& context, const QString& dxfLayer, QgsLabelFeature** labelFeature = 0, QgsGeometry* obstacleGeometry = 0 );
 
     void readFromLayer( QgsVectorLayer* layer );
     void writeToLayer( QgsVectorLayer* layer );
@@ -644,7 +650,7 @@ class CORE_EXPORT QgsPalLayerSettings
 
     /** Registers a feature as an obstacle only (no label rendered)
      */
-    void registerObstacleFeature( QgsFeature &f, QgsRenderContext &context, const QString& dxfLayer, QgsLabelFeature** obstacleFeature );
+    void registerObstacleFeature( QgsFeature &f, QgsRenderContext &context, const QString& dxfLayer, QgsLabelFeature** obstacleFeature, QgsGeometry* obstacleGeometry = 0 );
 
     QMap<DataDefinedProperties, QVariant> dataDefinedValues;
     QgsExpression* expression;
