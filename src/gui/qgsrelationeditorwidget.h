@@ -45,12 +45,21 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
 
     //! Define the view mode for the dual view
     void setViewMode( QgsDualView::ViewMode mode );
+
+    //! Get the view mode for the dual view
     QgsDualView::ViewMode viewMode() {return mViewMode;}
 
     //! Defines the relation ID (from project relations)
     //! @note use a widget's property to keep compatibility with using basic widget instead of QgsRelationEditorWidget
     void setQgisRelation( const QString& qgisRelationId );
-    QString qgisRelation() { return mRelationId; }  //property( "qgisRelation" ).toString()
+
+    //! Get the relation ID (from project relations)
+    //! @note use a widget's property to keep compatibility with using basic widget instead of QgsRelationEditorWidget
+    QString qgisRelation() const { return mRelationId; }  //property( "qgisRelation" ).toString()
+
+    void setQgisNmRelation( const QString& qgisRelationId );
+
+    QString qgisNmRelation() const { return mNmRelationId; }
 
     void setRelationFeature( const QgsRelation& relation, const QgsFeature& feature );
 
@@ -75,6 +84,8 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     QgsAttributeEditorContext mEditorContext;
     QgsRelation mRelation;
     QString mRelationId;
+    QgsRelation mNmRelation;
+    QString mNmRelationId;
     QgsFeature mFeature;
 
     QToolButton* mToggleEditingButton;
