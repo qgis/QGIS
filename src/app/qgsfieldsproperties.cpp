@@ -113,7 +113,9 @@ QgsFieldsProperties::QgsFieldsProperties( QgsVectorLayer *layer, QWidget* parent
   mRelationsList->setHorizontalHeaderItem( RelNameCol, new QTableWidgetItem( tr( "Name" ) ) );
   mRelationsList->setHorizontalHeaderItem( RelLayerCol, new QTableWidgetItem( tr( "Layer" ) ) );
   mRelationsList->setHorizontalHeaderItem( RelFieldCol, new QTableWidgetItem( tr( "Field" ) ) );
+  mRelationsList->setHorizontalHeaderItem( RelNmCol, new QTableWidgetItem( tr( "Cardinality" ) ) );
   mRelationsList->verticalHeader()->hide();
+  mRelationsList->horizontalHeader()->setStretchLastSection( true );
 
   // Init function stuff
   mInitCodeSourceComboBox->addItem( tr( "" ) );
@@ -331,11 +333,11 @@ void QgsFieldsProperties::loadRelations()
 {
   mRelationsList->setRowCount( 0 );
 
-  QList<QgsRelation> relations = QgsProject::instance()->relationManager()->referencedRelations( mLayer );
+  mRelations = QgsProject::instance()->relationManager()->referencedRelations( mLayer );
 
   int idx = 0;
 
-  Q_FOREACH ( const QgsRelation& relation, relations )
+  Q_FOREACH ( const QgsRelation& relation, mRelations )
   {
     mRelationsList->insertRow( idx );
 
@@ -357,6 +359,29 @@ void QgsFieldsProperties::loadRelations()
     item->setFlags( Qt::ItemIsDragEnabled | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
     mRelationsList->setItem( idx, RelIdCol, item );
 
+    QComboBox* nmCombo = new QComboBox( mRelationsList );
+    nmCombo->addItem( tr( "Many to one relation" ) );
+    Q_FOREACH ( const QgsRelation& nmrel, QgsProject::instance()->relationManager()->referencingRelations( relation.referencingLayer() ) )
+    {
+      if ( nmrel.fieldPairs().first().referencingField() != relation.fieldPairs().first().referencingField() )
+        nmCombo->addItem( QString( "%1 (%2)" ).arg( nmrel.referencedLayer()->name() ).arg( nmrel.fieldPairs().first().referencedField() ), nmrel.id() );
+
+      QgsEditorWidgetConfig cfg = mLayer->editFormConfig()->widgetConfig( relation.id() );
+
+      QVariant nmrelcfg = cfg.value( "nm-rel" );
+
+      int idx =  nmCombo->findData( nmrelcfg.toString() );
+
+      if ( idx != -1 )
+        nmCombo->setCurrentIndex( idx );
+    }
+
+    if ( nmCombo->count() == 1 )
+    {
+      nmCombo->setEnabled( false );
+    }
+
+    mRelationsList->setCellWidget( idx, RelNmCol, nmCombo );
     ++idx;
   }
 }
@@ -894,7 +919,9 @@ void QgsFieldsProperties::apply()
     }
   }
 
-  //tabs and groups
+
+
+  // tabs and groups
   mLayer->clearAttributeEditorWidgets();
   for ( int t = 0; t < mDesignerTree->invisibleRootItem()->childCount(); t++ )
   {
@@ -917,8 +944,27 @@ void QgsFieldsProperties::apply()
 
   mLayer->setExcludeAttributesWMS( excludeAttributesWMS );
   mLayer->setExcludeAttributesWFS( excludeAttributesWFS );
-}
 
+  // relations
+  for ( int i = 0; i < mRelationsList->rowCount(); ++i )
+  {
+    QgsEditorWidgetConfig cfg;
+
+    QComboBox* cb = qobject_cast<QComboBox*>( mRelationsList->cellWidget( i, RelNmCol ) );
+    QVariant otherRelation = cb->itemData( cb->currentIndex() );
+
+    if ( otherRelation.isValid() )
+    {
+      cfg["nm-rel"] = otherRelation.toString();
+    }
+
+    DesignerTreeItemData itemData = mRelationsList->item( i, RelNameCol )->data( DesignerTreeRole ).value<DesignerTreeItemData>();
+
+    QString relationName = itemData.name();
+
+    mLayer->editFormConfig()->setWidgetConfig( relationName, cfg );
+  }
+}
 /*
  * FieldConfig implementation
  */
