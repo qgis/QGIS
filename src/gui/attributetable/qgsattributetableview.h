@@ -139,6 +139,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
 
   private slots:
     void modelDeleted();
+    void showHorizontalSortIndicator();
 
   private:
     void selectRow( int row, bool anchor );
