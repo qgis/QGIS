@@ -874,9 +874,9 @@ QRectF QgsMarkerSymbolV2::bounds( const QPointF& point, QgsRenderContext& contex
   for ( QgsSymbolLayerV2List::const_iterator it = mLayers.constBegin(); it != mLayers.constEnd(); ++it )
   {
     if ( bound.isNull() )
-      bound = dynamic_cast< QgsMarkerSymbolLayerV2* >( *it )->bounds( point, symbolContext );
+      bound = static_cast< QgsMarkerSymbolLayerV2* >( *it )->bounds( point, symbolContext );
     else
-      bound = bound.united( dynamic_cast< QgsMarkerSymbolLayerV2* >( *it )->bounds( point, symbolContext ) );
+      bound = bound.united( static_cast< QgsMarkerSymbolLayerV2* >( *it )->bounds( point, symbolContext ) );
   }
   return bound;
 }

@@ -237,7 +237,7 @@ QgsVectorFieldSymbolLayer* QgsVectorFieldSymbolLayer::clone() const
   {
     clonedLayer->setSubSymbol( mLineSymbol->clone() );
   }
-  return dynamic_cast< QgsVectorFieldSymbolLayer* >( clonedLayer );
+  return static_cast< QgsVectorFieldSymbolLayer* >( clonedLayer );
 }
 
 QgsStringMap QgsVectorFieldSymbolLayer::properties() const
