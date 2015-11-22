@@ -326,13 +326,18 @@ void QgsVectorLayerRenderer::drawRendererV2( QgsFeatureIterator& fit )
         // new labeling engine
         if ( mContext.labelingEngineV2() )
         {
+          QScopedPointer<QgsGeometry> obstacleGeometry;
+          if ( fet.constGeometry()->type() == QGis::Point )
+          {
+            obstacleGeometry.reset( QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, mContext, mRendererV2 ) );
+          }
           if ( mLabelProvider )
           {
-            mLabelProvider->registerFeature( fet, mContext );
+            mLabelProvider->registerFeature( fet, mContext, obstacleGeometry.data() );
           }
           if ( mDiagramProvider )
           {
-            mDiagramProvider->registerFeature( fet, mContext );
+            mDiagramProvider->registerFeature( fet, mContext, obstacleGeometry.data() );
           }
         }
       }
@@ -409,13 +414,18 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
     // new labeling engine
     if ( mContext.labelingEngineV2() )
     {
+      QScopedPointer<QgsGeometry> obstacleGeometry;
+      if ( fet.constGeometry()->type() == QGis::Point )
+      {
+        obstacleGeometry.reset( QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, mContext, mRendererV2 ) );
+      }
       if ( mLabelProvider )
       {
-        mLabelProvider->registerFeature( fet, mContext );
+        mLabelProvider->registerFeature( fet, mContext, obstacleGeometry.data() );
       }
       if ( mDiagramProvider )
       {
-        mDiagramProvider->registerFeature( fet, mContext );
+        mDiagramProvider->registerFeature( fet, mContext, obstacleGeometry.data() );
       }
     }
   }

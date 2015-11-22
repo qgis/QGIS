@@ -133,7 +133,6 @@ class TestPointPlacement(TestPlacementBase):
         self.removeMapLayer(polyLayer)
         self.layer = None
 
-    @skip("not yet implemented")
     def test_point_placement_around_obstacle_large_symbol(self):
         # Default point label placement with obstacle and large symbols
         self.layer = TestQgsPalLabeling.loadFeatureLayer('point3')
