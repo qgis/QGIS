@@ -77,6 +77,10 @@ class QgsComposerManager: public QDialog, private Ui::QgsComposerManagerBase
 
     QString mDefaultTemplatesDir;
     QString mUserTemplatesDir;
+    QPushButton* mShowButton;
+    QPushButton* mRemoveButton;
+    QPushButton* mRenameButton;
+    QPushButton* mDuplicateButton;
 
 #ifdef Q_OS_MAC
     void showEvent( QShowEvent *event );
@@ -86,6 +90,8 @@ class QgsComposerManager: public QDialog, private Ui::QgsComposerManagerBase
 #endif
 
   private slots:
+    /** Slot to update buttons state when selecting compositions */
+    void toggleButtons();
     void on_mAddButton_clicked();
     /** Slot to track combobox to use specific template path */
     void on_mTemplate_currentIndexChanged( int indx );
