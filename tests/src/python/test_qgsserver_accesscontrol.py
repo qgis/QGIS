@@ -22,6 +22,7 @@ from osgeo import gdal
 from osgeo.gdalconst import GA_ReadOnly
 from qgis.server import QgsServer, QgsAccessControlFilter
 from qgis.core import QgsRenderChecker
+import tempfile
 
 
 XML_NS = \
@@ -990,7 +991,7 @@ class TestQgsServerAccessControl(TestCase):
         return result
 
     def _img_diff(self, image, control_image, max_diff):
-        temp_image = "/tmp/%s_result.png" % control_image
+        temp_image = path.join(tempfile.gettempdir(), "%s_result.png" % control_image)
         with open(temp_image, "w") as f:
             f.write(image)
 
@@ -1006,23 +1007,23 @@ class TestQgsServerAccessControl(TestCase):
             "Content type is wrong: %s" % headers.get("Content-Type"))
         test, report = self._img_diff(response, image, max_diff)
 
-        result_img = check_output(["base64", "/tmp/" + image + "_result.png"])
-        message = "Image is wrong\n%s\nImage:\necho '%s' | base64 -d > /tmp/%s_result.png" % (
-            report, result_img.strip(), image
+        result_img = check_output(["base64", path.join(tempfile.gettempdir(), image + "_result.png")])
+        message = "Image is wrong\n%s\nImage:\necho '%s' | base64 -d >%s/%s_result.png" % (
+            report, result_img.strip(), tempfile.gettempdir(), image
         )
 
-        if path.isfile("/tmp/" + image + "_result_diff.png"):
-            diff_img = check_output(["base64", "/tmp/" + image + "_result_diff.png"])
-            message += "\nDiff:\necho '%s' | base64 -d > /tmp/%s_result_diff.png" % (
-                diff_img.strip(), image
+        if path.isfile(path.join(tempfile.gettempdir(), image + "_result_diff.png")):
+            diff_img = check_output(["base64", path.join(tempfile.gettempdir(), image + "_result_diff.png")])
+            message += "\nDiff:\necho '%s' | base64 -d > %s/%s_result_diff.png" % (
+                diff_img.strip(), tempfile.gettempdir(), image
             )
         self.assertTrue(test, message)
 
     def _geo_img_diff(self, image_1, image_2):
 
-        with open("/tmp/" + image_2, "w") as f:
+        with open(path.join(tempfile.gettempdir(), image_2), "w") as f:
             f.write(image_1)
-        image_1 = gdal.Open("/tmp/" + image_2, GA_ReadOnly)
+        image_1 = gdal.Open(path.join(tempfile.gettempdir(), image_2), GA_ReadOnly)
 
         image_2 = gdal.Open(self.testdata_path + "/results/" + image_2, GA_ReadOnly)
 

@@ -268,6 +268,7 @@ QString QgsServer::configPath( const QString& defaultConfigPath, const QMap<QStr
   if ( !projectFile.isEmpty() )
   {
     cfPath = projectFile;
+    QgsDebugMsg( QString( "QGIS_PROJECT_FILE:%1" ).arg( cfPath ) );
   }
   else
   {
@@ -279,6 +280,7 @@ QString QgsServer::configPath( const QString& defaultConfigPath, const QMap<QStr
     else
     {
       cfPath = paramIt.value();
+      QgsDebugMsg( QString( "MAP:%1" ).arg( cfPath ) );
     }
   }
   return cfPath;
@@ -357,7 +359,7 @@ bool QgsServer::init( int & argc, char ** argv )
   QgsMessageLog::logMessage( "PkgData PATH: " + QgsApplication::pkgDataPath(), "Server", QgsMessageLog::INFO );
   QgsMessageLog::logMessage( "User DB PATH: " + QgsApplication::qgisUserDbFilePath(), "Server", QgsMessageLog::INFO );
   QgsMessageLog::logMessage( "Auth DB PATH: " + QgsApplication::qgisAuthDbFilePath(), "Server", QgsMessageLog::INFO );
-  QgsMessageLog::logMessage( "SVG PATHS: " + QgsApplication::svgPaths().join( ":" ), "Server", QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( "SVG PATHS: " + QgsApplication::svgPaths().join( QDir::separator() ), "Server", QgsMessageLog::INFO );
 
   QgsApplication::createDB(); //init qgis.db (e.g. necessary for user crs)
 
