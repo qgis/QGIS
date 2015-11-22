@@ -57,9 +57,7 @@ ENDIF (APPLE)
 #See: http://www.cmake.org/Wiki/CMake_RPATH_handling#No_relinking_and_full_RPATH_for_the_install_tree
 
 MACRO (ADD_QGIS_TEST testname testsrc)
-  SET(qgis_${testname}_SRCS ${testsrc} ${util_SRCS})
-  SET(qgis_${testname}_MOC_CPPS ${testsrc})
-  ADD_EXECUTABLE(qgis_${testname} ${qgis_${testname}_SRCS})
+  ADD_EXECUTABLE(qgis_${testname} ${testsrc} ${util_SRCS})
   SET_TARGET_PROPERTIES(qgis_${testname} PROPERTIES AUTOMOC TRUE)
   TARGET_LINK_LIBRARIES(qgis_${testname}
     ${QT_QTXML_LIBRARY}
@@ -71,9 +69,6 @@ MACRO (ADD_QGIS_TEST testname testsrc)
     ${GDAL_LIBRARY}
     qgis_core)
   ADD_TEST(qgis_${testname} ${CMAKE_CURRENT_BINARY_DIR}/../../../output/bin/qgis_${testname} -maxwarnings 10000)
-  #SET_TARGET_PROPERTIES(qgis_${testname} PROPERTIES
-  #  INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${QGIS_LIB_DIR}
-  #  INSTALL_RPATH_USE_LINK_PATH true )
 ENDMACRO (ADD_QGIS_TEST)
 
 #############################################################
@@ -86,7 +81,7 @@ ADD_QGIS_TEST(authconfigtest testqgsauthconfig.cpp)
 ADD_QGIS_TEST(authmanagertest testqgsauthmanager.cpp)
 ADD_QGIS_TEST(blendmodestest testqgsblendmodes.cpp)
 ADD_QGIS_TEST(clippertest testqgsclipper.cpp)
-ADD_QGIS_TEST(colorscheme testqgscolorscheme.cpp)
+ADD_QGIS_TEST(colorschemetest testqgscolorscheme.cpp)
 ADD_QGIS_TEST(colorschemeregistry testqgscolorschemeregistry.cpp)
 ADD_QGIS_TEST(composerddtest testqgscomposerdd.cpp)
 ADD_QGIS_TEST(composereffectstest testqgscomposereffects.cpp)
@@ -123,7 +118,7 @@ ADD_QGIS_TEST(featuretest testqgsfeature.cpp)
 ADD_QGIS_TEST(fieldstest testqgsfields.cpp)
 ADD_QGIS_TEST(fieldtest testqgsfield.cpp)
 ADD_QGIS_TEST(filewritertest testqgsvectorfilewriter.cpp)
-ADD_QGIS_TEST(fontmarkertest testqgsfontmarker.cpp)
+ADD_QGIS_TEST(fontmarkertest2 testqgsfontmarker.cpp)
 ADD_QGIS_TEST(fontutils testqgsfontutils.cpp)
 ADD_QGIS_TEST(geometryimporttest testqgsgeometryimport.cpp)
 ADD_QGIS_TEST(geometrytest testqgsgeometry.cpp)
