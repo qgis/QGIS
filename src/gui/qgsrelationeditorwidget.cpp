@@ -187,6 +187,13 @@ void QgsRelationEditorWidget::setQgisRelation( const QString& qgisRelationId )
   loadState();
 }
 
+void QgsRelationEditorWidget::setQgisNmRelation( const QString& qgisRelationId )
+{
+  mNmRelationId = qgisRelationId;
+
+  loadState();
+}
+
 void QgsRelationEditorWidget::referencingLayerEditingToggled()
 {
   bool editable = false;
