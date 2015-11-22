@@ -19,6 +19,7 @@
 #include "qgslabelingenginev2.h"
 
 class QgsAbstractFeatureSource;
+class QgsFeatureRendererV2;
 
 /**
  * @brief The QgsVectorLayerLabelProvider class implements a label provider
@@ -64,8 +65,12 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
      * @param feature feature to label
      * @param context render context. The QgsExpressionContext contained within the render context
      * must have already had the feature and fields sets prior to calling this method.
+     * @param obstacleGeometry optional obstacle geometry, if a different geometry to the feature's geometry
+     * should be used as an obstacle for labels (eg, if the feature has been rendered with an offset point
+     * symbol, the obstacle geometry should represent the bounds of the offset symbol). If not set,
+     * the feature's original geometry will be used as an obstacle for labels.
      */
-    virtual void registerFeature( QgsFeature& feature, QgsRenderContext &context );
+    virtual void registerFeature( QgsFeature& feature, QgsRenderContext &context, QgsGeometry* obstacleGeometry = 0 );
 
   protected:
     //! initialization method - called from constructors

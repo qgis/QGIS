@@ -52,6 +52,7 @@ QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( QgsVectorLayer* layer,
   mLayerId = layer->id();
   mFields = layer->fields();
   mCrs = layer->crs();
+
   if ( withFeatureLoop )
   {
     mSource = new QgsVectorLayerFeatureSource( layer );
@@ -66,13 +67,12 @@ QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( QgsVectorLayer* layer,
   init();
 }
 
-QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider(
-  const QgsPalLayerSettings& settings,
-  const QString& layerId,
-  const QgsFields& fields,
-  const QgsCoordinateReferenceSystem& crs,
-  QgsAbstractFeatureSource* source,
-  bool ownsSource )
+QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( const QgsPalLayerSettings& settings,
+    const QString& layerId,
+    const QgsFields& fields,
+    const QgsCoordinateReferenceSystem& crs,
+    QgsAbstractFeatureSource* source,
+    bool ownsSource )
     : mSettings( settings )
     , mLayerId( layerId )
     , mFields( fields )
@@ -269,16 +269,13 @@ QList<QgsLabelFeature*> QgsVectorLayerLabelProvider::labelFeatures( QgsRenderCon
   return mLabels;
 }
 
-
-void QgsVectorLayerLabelProvider::registerFeature( QgsFeature& feature, QgsRenderContext& context )
+void QgsVectorLayerLabelProvider::registerFeature( QgsFeature& feature, QgsRenderContext& context, QgsGeometry* obstacleGeometry )
 {
   QgsLabelFeature* label = 0;
-  mSettings.registerFeature( feature, context, QString(), &label );
+  mSettings.registerFeature( feature, context, QString(), &label, obstacleGeometry );
   if ( label )
     mLabels << label;
 }
-
-
 
 void QgsVectorLayerLabelProvider::drawLabel( QgsRenderContext& context, pal::LabelPosition* label ) const
 {

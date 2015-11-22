@@ -2257,14 +2257,12 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
     geos_geom = geom->asGeos();
   }
   const GEOSGeometry* geosObstacleGeom = 0;
-  const QgsGeometry* preparedObstacleGeom = obstacleGeometry;
   QScopedPointer<QgsGeometry> scopedObstacleGeom;
   if ( isObstacle )
   {
     if ( obstacleGeometry && QgsPalLabeling::geometryRequiresPreparation( obstacleGeometry, context, ct, doClip ? extentGeom : 0 ) )
     {
       scopedObstacleGeom.reset( QgsPalLabeling::prepareGeometry( obstacleGeometry, context, ct, doClip ? extentGeom : 0 ) );
-      preparedObstacleGeom = scopedObstacleGeom.data();
       geosObstacleGeom = scopedObstacleGeom.data()->asGeos();
     }
     else if ( obstacleGeometry )
