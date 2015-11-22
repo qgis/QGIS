@@ -24,6 +24,7 @@ import time
 import shutil
 import subprocess
 import tempfile
+import errno
 
 from utilities import unittest, unitTestDataPath
 
@@ -47,7 +48,7 @@ class TestPyQgsAppStartup(unittest.TestCase):
     # TODO: refactor parameters to **kwargs to handle all startup combinations
     def doTestStartup(self, option='', testDir='', testFile='',
                       loadPlugins=False, customization=False,
-                      timeOut=15, env=None):
+                      timeOut=15, env=None, additionalArguments = []):
         """Run QGIS with the given option. Wait for testFile to be created.
         If time runs out, fail.
         """
@@ -75,19 +76,28 @@ class TestPyQgsAppStartup(unittest.TestCase):
             myenv.update(env)
 
         p = subprocess.Popen(
-            [QGIS_BIN, "--nologo", plugins, customize, option, testDir],
+            [QGIS_BIN, "--nologo", plugins, customize, option, testDir] + additionalArguments,
             env=myenv)
 
         s = 0
         ok = True
         while not os.path.exists(myTestFile):
+            p.poll()
+            if p.returncode is not None:
+                ok = False
+                break
             time.sleep(1)
             s += 1
             if s > timeOut:
                 ok = False
                 break
 
-        p.terminate()
+        try:
+            p.terminate()
+        except OSError as e:
+            if e.errno != errno.ESRCH:
+                raise
+
         return ok
 
     def testOptionsPath(self):
