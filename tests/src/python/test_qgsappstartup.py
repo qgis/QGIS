@@ -165,6 +165,17 @@ class TestPyQgsAppStartup(unittest.TestCase):
             timeOut=15,
             env={'PYQGIS_STARTUP': testmod}), msg
 
+    def testOptionsAsFiles(self):
+        # verify QGIS accepts filenames that match options after the special option '--'
+        # '--help' should return immediatly (after displaying the usage hints)
+        # '-- --help' should not exit but try (and probably fail) to load a layer called '--help'
+        for t in [(False, ['--help']), (True, ['--', '--help'])]:
+            assert t[0] == self.doTestStartup(option="--configpath",
+                                              testDir=os.path.join(self.TMP_DIR, 'test_optionsAsFiles'),
+                                              testFile="qgis.db",
+                                              timeOut=15,
+                                              additionalArguments = t[1]), "additional arguments: %s" % ' '.join(t[1])
+
 
 if __name__ == '__main__':
     # look for qgis bin path

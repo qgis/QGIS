@@ -133,7 +133,8 @@ void usage( std::string const & appName )
             << "\t[--dxf-scale-denom scale]\tscale for dxf output\n"
             << "\t[--dxf-encoding encoding]\tencoding to use for dxf output\n"
             << "\t[--dxf-preset visiblity-preset]\tlayer visibility preset to use for dxf output\n"
-            << "\t[--help]\t\tthis text\n\n"
+            << "\t[--help]\t\tthis text\n"
+            << "\t[--]\t\ttreat all following arguments as FILEs\n\n"
             << "  FILE:\n"
             << "    Files specified on the command line can include rasters,\n"
             << "    vectors, and QGIS project files (.qgs): \n"
@@ -682,6 +683,11 @@ int main( int argc, char *argv[] )
       else if ( arg == "--dxf-preset" )
       {
         dxfPreset = args[++i];
+      }
+      else if ( arg == "--" )
+      {
+        for ( i++; i < args.size(); ++i )
+          myFileList.append( QDir::toNativeSeparators( QFileInfo( args[i] ).absoluteFilePath() ) );
       }
       else
       {
