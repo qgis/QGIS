@@ -336,7 +336,7 @@ class CORE_EXPORT QgsEditFormConfig : public QObject
     /**
      * Returns a list of tabs for EditorLayout::TabLayout.
      */
-    QList< QgsAttributeEditorElement* > tabs() { return mAttributeEditorElements; }
+    QList< QgsAttributeEditorElement* > tabs() const { return mAttributeEditorElements; }
 
     /**
      * Clears all the tabs for the attribute editor form with EditorLayout::TabLayout.
@@ -344,13 +344,13 @@ class CORE_EXPORT QgsEditFormConfig : public QObject
     void clearTabs() { mAttributeEditorElements.clear(); }
 
     /** Get the active layout style for the attribute editor for this layer */
-    EditorLayout layout() { return mEditorLayout; }
+    EditorLayout layout() const { return mEditorLayout; }
 
     /** Set the active layout style for the attribute editor for this layer */
     void setLayout( EditorLayout editorLayout ) { mEditorLayout = editorLayout; }
 
     /** Get path to the .ui form. Only meaningful with EditorLayout::UiFileLayout. */
-    QString uiForm() const;
+    QString uiForm() const { return mUiFormPath; }
 
     /**
      * Set path to the .ui form.
@@ -431,6 +431,23 @@ class CORE_EXPORT QgsEditFormConfig : public QObject
     void setWidgetConfig( int attrIdx, const QgsEditorWidgetConfig& config );
 
     /**
+     * Set the editor widget config for a field.
+     *
+     * Python: Will accept a map.
+     *
+     * Example:
+     * \code{.py}
+     *   layer.setEditorWidgetV2Config( 1, { 'Layer': 'otherlayerid_1234', 'Key': 'Keyfield', 'Value': 'ValueField' } )
+     * \endcode
+     *
+     * @param attrIdx     Index of the field
+     * @param config      The config to set for this field
+     *
+     * @see setEditorWidgetV2() for a list of widgets and choose the widget to see the available options.
+     */
+    void setWidgetConfig( const QString& widgetName , const QgsEditorWidgetConfig& config );
+
+    /**
      * Get the configuration for the editor widget used to represent the field at the given index
      *
      * @param fieldIdx  The index of the field
@@ -442,19 +459,19 @@ class CORE_EXPORT QgsEditFormConfig : public QObject
     /**
      * Get the configuration for the editor widget used to represent the field with the given name
      *
-     * @param fieldName The name of the field
+     * @param widgetName The name of the widget. This can be a field name or the name of an additional widget.
      *
      * @return The configuration for the editor widget or an empty config if the field does not exist
      *
      * @note python method name is editorWidgetV2ConfigByName
      */
-    QgsEditorWidgetConfig widgetConfig( const QString& fieldName ) const;
+    QgsEditorWidgetConfig widgetConfig( const QString& widgetName ) const;
 
     /**
      * This returns true if the field is manually set to read only or if the field
      * does not support editing like joins or vitual fields.
      */
-    bool readOnly( int idx );
+    bool readOnly( int idx ) const;
 
     /**
      * If set to false, the widget at the given index will be read-only.
@@ -466,7 +483,7 @@ class CORE_EXPORT QgsEditFormConfig : public QObject
      * while if it returns false, the widget will receive its label on the left hand side.
      * Labeling on top leaves more horizontal space for the widget itself.
      **/
-    bool labelOnTop( int idx );
+    bool labelOnTop( int idx ) const;
 
     /**
      * If this is set to true, the widget at the given index will receive its label on
@@ -529,9 +546,21 @@ class CORE_EXPORT QgsEditFormConfig : public QObject
     void setInitCodeSource( const PythonInitCodeSource initCodeSource ) { mInitCodeSource = initCodeSource; }
 
     /** Type of feature form pop-up suppression after feature creation (overrides app setting) */
-    FeatureFormSuppress suppress() const { return mFeatureFormSuppress; }
+    FeatureFormSuppress suppress() const { return mSuppressForm; }
     /** Set type of feature form pop-up suppression after feature creation (overrides app setting) */
-    void setSuppress( FeatureFormSuppress s ) { mFeatureFormSuppress = s; }
+    void setSuppress( FeatureFormSuppress s ) { mSuppressForm = s; }
+
+
+
+
+
+    // Serialization
+
+    void readXml( const QDomNode& node );
+
+    void writeXml( QDomNode& node ) const;
+
+    QgsAttributeEditorElement* attributeEditorElementFromDomElement( QDomElement &elem, QObject* parent );
 
   private slots:
     void onRelationsLoaded();
@@ -565,13 +594,13 @@ class CORE_EXPORT QgsEditFormConfig : public QObject
     QMap< QString, bool> mLabelOnTop;
 
     QMap<QString, QString> mEditorWidgetV2Types;
-    QMap<QString, QgsEditorWidgetConfig > mEditorWidgetV2Configs;
+    QMap<QString, QgsEditorWidgetConfig > mWidgetConfigs;
 
     /** Defines the default layout to use for the attribute editor (Drag and drop, UI File, Generated) */
     EditorLayout mEditorLayout;
 
     /** Init form instance */
-    QString mEditForm;
+    QString mUiFormPath;
     /** Name of the python form init function */
     QString mInitFunction;
     /** Path of the python external file to be loaded */
@@ -582,7 +611,7 @@ class CORE_EXPORT QgsEditFormConfig : public QObject
     QString mInitCode;
 
     /** Type of feature form suppression after feature creation */
-    FeatureFormSuppress mFeatureFormSuppress;
+    FeatureFormSuppress mSuppressForm;
 
     QgsFields mFields;
 

@@ -1767,62 +1767,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
   // process the attribute actions
   mActions->readXML( node );
 
-  QDomNode editFormNode = node.namedItem( "editform" );
-  if ( !editFormNode.isNull() )
-  {
-    QDomElement e = editFormNode.toElement();
-    mEditFormConfig->setUiForm( QgsProject::instance()->readPath( e.text() ) );
-  }
-
-  QDomNode editFormInitNode = node.namedItem( "editforminit" );
-  if ( !editFormInitNode.isNull() )
-  {
-    mEditFormConfig->setInitFunction( editFormInitNode.toElement().text() );
-  }
-
-  QDomNode editFormInitCodeSourceNode = node.namedItem( "editforminitcodesource" );
-  if ( !editFormInitCodeSourceNode.isNull() || ( !editFormInitCodeSourceNode.isNull() && !editFormInitCodeSourceNode.toElement().text().isEmpty() ) )
-  {
-    mEditFormConfig->setInitCodeSource(( QgsEditFormConfig::PythonInitCodeSource ) editFormInitCodeSourceNode.toElement().text().toInt() );
-  }
-
-  QDomNode editFormInitCodeNode = node.namedItem( "editforminitcode" );
-  if ( !editFormInitCodeNode.isNull() )
-  {
-    mEditFormConfig->setInitCode( editFormInitCodeNode.toElement().text() );
-  }
-
-  // Temporary < 2.12 b/w compatibility "dot" support patch
-  // @see: https://github.com/qgis/QGIS/pull/2498
-  // For b/w compatibility, check if there's a dot in the function name
-  // and if yes, transform it in an import statement for the module
-  // and set the PythonInitCodeSource to CodeSourceDialog
-  QString initFunction = mEditFormConfig->initFunction();
-  int dotPos = initFunction.lastIndexOf( '.' );
-  if ( dotPos >= 0 ) // It's a module
-  {
-    mEditFormConfig->setInitCodeSource( QgsEditFormConfig::CodeSourceDialog );
-    mEditFormConfig->setInitFunction( initFunction.mid( dotPos + 1 ) );
-    mEditFormConfig->setInitCode( QString( "from %1 import %2\n" ).arg( initFunction.left( dotPos ), initFunction.mid( dotPos + 1 ) ) );
-  }
-
-
-  QDomNode editFormInitFilePathNode = node.namedItem( "editforminitfilepath" );
-  if ( !editFormInitFilePathNode.isNull() || ( !editFormInitFilePathNode.isNull() && !editFormInitFilePathNode.toElement().text().isEmpty() ) )
-  {
-    mEditFormConfig->setInitFilePath( editFormInitFilePathNode.toElement().text() );
-  }
-
-  QDomNode fFSuppNode = node.namedItem( "featformsuppress" );
-  if ( fFSuppNode.isNull() )
-  {
-    mEditFormConfig->setSuppress( QgsEditFormConfig::SuppressDefault );
-  }
-  else
-  {
-    QDomElement e = fFSuppNode.toElement();
-    mEditFormConfig->setSuppress(( QgsEditFormConfig::FeatureFormSuppress )e.text().toInt() );
-  }
+  mEditFormConfig->readXml( node );
 
   QDomNode annotationFormNode = node.namedItem( "annotationform" );
   if ( !annotationFormNode.isNull() )
@@ -1859,28 +1804,6 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
     }
   }
 
-  // tab display
-  QDomNode editorLayoutNode = node.namedItem( "editorlayout" );
-  if ( editorLayoutNode.isNull() )
-  {
-    mEditFormConfig->setLayout( QgsEditFormConfig::GeneratedLayout );
-  }
-  else
-  {
-    if ( editorLayoutNode.toElement().text() == "uifilelayout" )
-    {
-      mEditFormConfig->setLayout( QgsEditFormConfig::UiFileLayout );
-    }
-    else if ( editorLayoutNode.toElement().text() == "tablayout" )
-    {
-      mEditFormConfig->setLayout( QgsEditFormConfig::TabLayout );
-    }
-    else
-    {
-      mEditFormConfig->setLayout( QgsEditFormConfig::GeneratedLayout );
-    }
-  }
-
   //Attributes excluded from WMS and WFS
   mExcludeAttributesWMS.clear();
   QDomNode excludeWMSNode = node.namedItem( "excludeAttributesWMS" );
@@ -1904,58 +1827,11 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
     }
   }
 
-  // tabs and groups display info
-  mEditFormConfig->clearTabs();
-  QDomNode attributeEditorFormNode = node.namedItem( "attributeEditorForm" );
-  QDomNodeList attributeEditorFormNodeList = attributeEditorFormNode.toElement().childNodes();
+  mEditFormConfig->readXml( node );
 
-  for ( int i = 0; i < attributeEditorFormNodeList.size(); i++ )
-  {
-    QDomElement elem = attributeEditorFormNodeList.at( i ).toElement();
-
-    QgsAttributeEditorElement *attributeEditorWidget = attributeEditorElementFromDomElement( elem, this );
-    mEditFormConfig->addTab( attributeEditorWidget );
-  }
-
-  conditionalStyles()->readXml( node );
+  mConditionalStyles->readXml( node );
 
   return true;
-}
-
-QgsAttributeEditorElement* QgsVectorLayer::attributeEditorElementFromDomElement( QDomElement &elem, QObject* parent )
-{
-  QgsAttributeEditorElement* newElement = NULL;
-
-  if ( elem.tagName() == "attributeEditorContainer" )
-  {
-    QgsAttributeEditorContainer* container = new QgsAttributeEditorContainer( elem.attribute( "name" ), parent );
-
-    QDomNodeList childNodeList = elem.childNodes();
-
-    for ( int i = 0; i < childNodeList.size(); i++ )
-    {
-      QDomElement childElem = childNodeList.at( i ).toElement();
-      QgsAttributeEditorElement *myElem = attributeEditorElementFromDomElement( childElem, container );
-      if ( myElem )
-        container->addChildElement( myElem );
-    }
-
-    newElement = container;
-  }
-  else if ( elem.tagName() == "attributeEditorField" )
-  {
-    QString name = elem.attribute( "name" );
-    int idx = fieldNameIndex( name );
-    newElement = new QgsAttributeEditorField( name, idx, parent );
-  }
-  else if ( elem.tagName() == "attributeEditorRelation" )
-  {
-    // At this time, the relations are not loaded
-    // So we only grab the id and delegate the rest to onRelationsLoaded()
-    QString name = elem.attribute( "name" );
-    newElement = new QgsAttributeEditorRelation( name, elem.attribute( "relation", "[None]" ), parent );
-  }
-  return newElement;
 }
 
 bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString& errorMessage ) const
@@ -2065,58 +1941,10 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
   // still other editing settings are written here,
   // although they are not part of symbology either
 
-  QDomElement efField  = doc.createElement( "editform" );
-  QDomText efText = doc.createTextNode( QgsProject::instance()->writePath( mEditFormConfig->uiForm() ) );
-  efField.appendChild( efText );
-  node.appendChild( efField );
-
-  QDomElement efiField  = doc.createElement( "editforminit" );
-  if ( !mEditFormConfig->initFunction().isEmpty() )
-    efiField.appendChild( doc.createTextNode( mEditFormConfig->initFunction() ) );
-  node.appendChild( efiField );
-
-  QDomElement eficsField  = doc.createElement( "editforminitcodesource" );
-  eficsField.appendChild( doc.createTextNode( QString::number( mEditFormConfig->initCodeSource() ) ) );
-  node.appendChild( eficsField );
-
-  QDomElement efifpField  = doc.createElement( "editforminitfilepath" );
-  efifpField.appendChild( doc.createTextNode( QgsProject::instance()->writePath( mEditFormConfig->initFilePath() ) ) );
-  node.appendChild( efifpField );
-
-
-  QDomElement eficField  = doc.createElement( "editforminitcode" );
-  eficField.appendChild( doc.createCDATASection( mEditFormConfig->initCode() ) );
-  node.appendChild( eficField );
-
-  QDomElement fFSuppElem  = doc.createElement( "featformsuppress" );
-  QDomText fFSuppText = doc.createTextNode( QString::number( mEditFormConfig->suppress() ) );
-  fFSuppElem.appendChild( fFSuppText );
-  node.appendChild( fFSuppElem );
-
   QDomElement afField = doc.createElement( "annotationform" );
   QDomText afText = doc.createTextNode( QgsProject::instance()->writePath( mAnnotationForm ) );
   afField.appendChild( afText );
   node.appendChild( afField );
-
-  // tab display
-  QDomElement editorLayoutElem  = doc.createElement( "editorlayout" );
-  switch ( mEditFormConfig->layout() )
-  {
-    case QgsEditFormConfig::UiFileLayout:
-      editorLayoutElem.appendChild( doc.createTextNode( "uifilelayout" ) );
-      break;
-
-    case QgsEditFormConfig::TabLayout:
-      editorLayoutElem.appendChild( doc.createTextNode( "tablayout" ) );
-      break;
-
-    case QgsEditFormConfig::GeneratedLayout:
-    default:
-      editorLayoutElem.appendChild( doc.createTextNode( "generatedlayout" ) );
-      break;
-  }
-
-  node.appendChild( editorLayoutElem );
 
   //attribute aliases
   if ( !mAttributeAliasMap.isEmpty() )
@@ -2162,22 +1990,10 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
   }
   node.appendChild( excludeWFSElem );
 
-  // tabs and groups of edit form
-  if ( !mEditFormConfig->tabs().isEmpty() )
-  {
-    QDomElement tabsElem = doc.createElement( "attributeEditorForm" );
-
-    for ( QList< QgsAttributeEditorElement* >::const_iterator it = mEditFormConfig->tabs().constBegin(); it != mEditFormConfig->tabs().constEnd(); ++it )
-    {
-      QDomElement attributeEditorWidgetElem = ( *it )->toDomElement( doc );
-      tabsElem.appendChild( attributeEditorWidgetElem );
-    }
-
-    node.appendChild( tabsElem );
-  }
-
   // add attribute actions
   mActions->writeXML( node, doc );
+
+  mEditFormConfig->writeXml( node );
 
   mConditionalStyles->writeXml( node, doc );
 
