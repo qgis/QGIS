@@ -285,11 +285,20 @@ QList<QgsLabelFeature*> QgsVectorLayerLabelProvider::labelFeatures( QgsRenderCon
   while ( fit.nextFeature( fet ) )
   {
     QScopedPointer<QgsGeometry> obstacleGeometry;
-    if ( fet.constGeometry()->type() == QGis::Point )
+    if ( mRenderer )
     {
-      //point feature, use symbol bounds as obstacle
-      obstacleGeometry.reset( getPointObstacleGeometry( fet, ctx, mRenderer ) );
+      QgsSymbolV2List symbols = mRenderer->originalSymbolsForFeature( fet, ctx );
+      if ( !symbols.isEmpty() && fet.constGeometry()->type() == QGis::Point )
+      {
+        //point feature, use symbol bounds as obstacle
+        obstacleGeometry.reset( QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, ctx, symbols ) );
+      }
+      if ( !symbols.isEmpty() )
+      {
+        QgsExpressionContextUtils::addSymbolScope( ctx.expressionContext(), symbols.at( 0 ) );
+      }
     }
+
     registerFeature( fet, ctx, obstacleGeometry.data() );
   }
 
@@ -307,13 +316,10 @@ void QgsVectorLayerLabelProvider::registerFeature( QgsFeature& feature, QgsRende
     mLabels << label;
 }
 
-QgsGeometry* QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature& fet, QgsRenderContext& context, QgsFeatureRendererV2* renderer )
+QgsGeometry* QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature& fet, QgsRenderContext& context, const QgsSymbolV2List& symbols )
 {
-  if ( !fet.constGeometry() || fet.constGeometry()->isEmpty() || fet.constGeometry()->type() != QGis::Point || !renderer )
+  if ( !fet.constGeometry() || fet.constGeometry()->isEmpty() || fet.constGeometry()->type() != QGis::Point )
     return 0;
-
-  //calculate bounds for symbols for feature
-  QgsSymbolV2List symbols = renderer->originalSymbolsForFeature( fet, context );
 
   bool isMultiPoint = fet.constGeometry()->geometry()->nCoordinates() > 1;
   QgsAbstractGeometryV2* obstacleGeom = 0;

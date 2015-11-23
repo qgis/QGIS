@@ -28,6 +28,7 @@ class QgsComposition;
 class QgsComposerItem;
 class QgsAtlasComposition;
 class QgsMapSettings;
+class QgsSymbolV2;
 
 /** \ingroup core
  * \class QgsScopedExpressionFunction
@@ -420,6 +421,8 @@ class CORE_EXPORT QgsExpressionContext
     static const QString EXPR_FIELDS;
     static const QString EXPR_FEATURE;
     static const QString EXPR_ORIGINAL_VALUE;
+    static const QString EXPR_SYMBOL_COLOR;
+    static const QString EXPR_SYMBOL_ANGLE;
 
   private:
 
@@ -513,6 +516,16 @@ class CORE_EXPORT QgsExpressionContextUtils
      * For instance, map scale and rotation.
      */
     static QgsExpressionContextScope* mapSettingsScope( const QgsMapSettings &mapSettings );
+
+    /** Adds variables related to a QgsSymbolV2 to an expression context. Note that unlike the other
+     * methods in QgsExpressionContextUtils, this method adds its variable directly to the final
+     * scope in the context. This is designed to allow the method to be used thousands of times
+     * with the same context without the cost of adding additional scopes for each symbol.
+     * @param context expression context to add symbol scope variables to
+     * @param symbol symbol to extract properties from
+     * @note added in QGIS 2.14
+     */
+    static void addSymbolScope( QgsExpressionContext& context, const QgsSymbolV2* symbol );
 
     /** Creates a new scope which contains variables and functions relating to a QgsComposition.
      * For instance, number of pages and page sizes.

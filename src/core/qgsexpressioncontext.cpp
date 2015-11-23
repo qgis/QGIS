@@ -32,6 +32,8 @@
 const QString QgsExpressionContext::EXPR_FIELDS( "_fields_" );
 const QString QgsExpressionContext::EXPR_FEATURE( "_feature_" );
 const QString QgsExpressionContext::EXPR_ORIGINAL_VALUE( "value" );
+const QString QgsExpressionContext::EXPR_SYMBOL_COLOR( "symbol_color" );
+const QString QgsExpressionContext::EXPR_SYMBOL_ANGLE( "symbol_angle" );
 
 //
 // QgsExpressionContextScope
@@ -700,6 +702,29 @@ QgsExpressionContextScope* QgsExpressionContextUtils::mapSettingsScope( const Qg
   scope->addVariable( QgsExpressionContextScope::StaticVariable( "map_scale", mapSettings.scale(), true ) );
 
   return scope;
+}
+
+void QgsExpressionContextUtils::addSymbolScope( QgsExpressionContext& context, const QgsSymbolV2* symbol )
+{
+  QgsExpressionContextScope* scope = context.lastScope();
+
+  if ( !scope )
+  {
+    context.appendScope( new QgsExpressionContextScope() );
+    scope = context.lastScope();
+  }
+
+  //careful, symbol may validly be null here
+
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_SYMBOL_COLOR, symbol ? symbol->color().name() : QString(), true ) );
+
+  double angle = 0.0;
+  const QgsMarkerSymbolV2* markerSymbol = dynamic_cast< const QgsMarkerSymbolV2* >( symbol );
+  if ( markerSymbol )
+  {
+    angle = markerSymbol->angle();
+  }
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_SYMBOL_ANGLE, angle, true ) );
 }
 
 QgsExpressionContextScope *QgsExpressionContextUtils::compositionScope( const QgsComposition *composition )
