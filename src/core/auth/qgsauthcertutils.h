@@ -18,6 +18,7 @@
 #ifndef QGSAUTHCERTUTILS_H
 #define QGSAUTHCERTUTILS_H
 
+#include <QFile>
 #include <QtCrypto>
 #include <QSslCertificate>
 #include <QSslError>
@@ -25,13 +26,13 @@
 #include "qgsauthconfig.h"
 
 #if QT_VERSION >= 0x050000
-#define SSL_ISSUER_INFO( var, prop ) var.issuerInfo( prop ).first()
+#define SSL_ISSUER_INFO( var, prop ) var.issuerInfo( prop ).value(0)
 #else
 #define SSL_ISSUER_INFO( var, prop ) var.issuerInfo( prop )
 #endif
 
 #if QT_VERSION >= 0x050000
-#define SSL_SUBJECT_INFO( var, prop ) var.subjectInfo( prop ).first()
+#define SSL_SUBJECT_INFO( var, prop ) var.subjectInfo( prop ).value(0)
 #else
 #define SSL_SUBJECT_INFO( var, prop ) var.subjectInfo( prop )
 #endif

@@ -441,16 +441,22 @@ namespace pal
 
   //////////
 
-  bool LabelPosition::pruneCallback( LabelPosition *lp, void *ctx )
+  bool LabelPosition::pruneCallback( LabelPosition *candidatePosition, void *ctx )
   {
-    FeaturePart *feat = (( PruneCtx* ) ctx )->obstacle;
+    FeaturePart *obstaclePart = (( PruneCtx* ) ctx )->obstacle;
 
-    if (( feat == lp->feature ) || ( feat->getHoleOf() && feat->getHoleOf() != lp->feature ) )
+    // test whether we should ignore this obstacle for the candidate. We do this if:
+    // 1. it's not a hole, and the obstacle belongs to the same label feature as the candidate (eg
+    // features aren't obstacles for their own labels)
+    // 2. it IS a hole, and the hole belongs to a different label feature to the candidate (eg, holes
+    // are ONLY obstacles for the labels of the feature they belong to)
+    if (( !obstaclePart->getHoleOf() && candidatePosition->feature->hasSameLabelFeatureAs( obstaclePart ) )
+        || ( obstaclePart->getHoleOf() && !candidatePosition->feature->hasSameLabelFeatureAs( dynamic_cast< FeaturePart* >( obstaclePart->getHoleOf() ) ) ) )
     {
       return true;
     }
 
-    CostCalculator::addObstacleCostPenalty( lp, feat );
+    CostCalculator::addObstacleCostPenalty( candidatePosition, obstaclePart );
 
     return true;
   }
@@ -593,35 +599,46 @@ namespace pal
       polygon->createGeosGeom();
 
     GEOSContextHandle_t geosctxt = geosContext();
-
     double cost = 0;
-    //check the label center. if covered by polygon, initial cost of 4
-    if ( polygon->containsPoint(( x[0] + x[2] ) / 2.0, ( y[0] + y[2] ) / 2.0 ) )
-      cost += 4;
-
     try
     {
-      //calculate proportion of label candidate which is covered by polygon
-      GEOSGeometry* intersectionGeom = GEOSIntersection_r( geosctxt, mGeos, polygon->mGeos );
-      if ( intersectionGeom )
+      if ( GEOSPreparedIntersects_r( geosctxt, polygon->preparedGeom(), mGeos ) == 1 )
       {
-        double positionArea = 0;
-        if ( GEOSArea_r( geosctxt, mGeos, &positionArea ) == 1 )
+        //at least a partial intersection
+        cost += 1;
+
+        double px, py;
+
+        // check each corner
+        for ( int i = 0; i < 4; ++i )
         {
-          double intersectionArea = 0;
-          if ( GEOSArea_r( geosctxt, intersectionGeom, &intersectionArea ) == 1 )
+          px = x[i];
+          py = y[i];
+
+          for ( int a = 0; a < 2; ++a ) // and each middle of segment
           {
-            double portionCovered = intersectionArea / positionArea;
-            cost += portionCovered * 8.0; //cost of 8 if totally covered
+            if ( polygon->containsPoint( px, py ) )
+              cost++;
+            px = ( x[i] + x[( i+1 ) %4] ) / 2.0;
+            py = ( y[i] + y[( i+1 ) %4] ) / 2.0;
           }
         }
-        GEOSGeom_destroy_r( geosctxt, intersectionGeom );
+
+        px = ( x[0] + x[2] ) / 2.0;
+        py = ( y[0] + y[2] ) / 2.0;
+
+        //check the label center. if covered by polygon, cost of 4
+        if ( polygon->containsPoint( px, py ) )
+          cost += 4;
       }
     }
     catch ( GEOSException &e )
     {
       QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
     }
+
+    //maintain scaling from 0 -> 12
+    cost = 12.0 * cost / 13.0;
 
     if ( nextPart )
     {

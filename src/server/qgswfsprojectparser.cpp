@@ -20,8 +20,18 @@
 #include "qgsconfigparserutils.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsvectordataprovider.h"
+#include "qgsmapserviceexception.h"
+#include "qgsaccesscontrol.h"
 
-QgsWFSProjectParser::QgsWFSProjectParser( const QString& filePath )
+QgsWFSProjectParser::QgsWFSProjectParser(
+  const QString& filePath
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+  , const QgsAccessControl* ac
+#endif
+)
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    : mAccessControl( ac )
+#endif
 {
   mProjectParser = QgsConfigCache::instance()->serverConfiguration( filePath );
 }
@@ -76,6 +86,12 @@ void QgsWFSProjectParser::featureTypeList( QDomElement& parentElement, QDomDocum
       {
         continue;
       }
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+      if ( !mAccessControl->layerReadPermission( layer ) )
+      {
+        continue;
+      }
+#endif
       QgsDebugMsg( QString( "add layer %1 to map" ).arg( layer->id() ) );
       layerMap.insert( layer->id(), layer );
 
@@ -330,6 +346,13 @@ void QgsWFSProjectParser::describeFeatureType( const QString& aTypeName, QDomEle
       QgsVectorLayer* layer = dynamic_cast<QgsVectorLayer*>( mLayer );
       if ( !layer )
         continue;
+
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+      if ( !mAccessControl->layerReadPermission( layer ) )
+      {
+        continue;
+      }
+#endif
 
       QString typeName = layer->name();
       typeName = typeName.replace( " ", "_" );

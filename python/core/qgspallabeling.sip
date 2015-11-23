@@ -492,6 +492,13 @@ class QgsPalLayerSettings
      * @param context render context. The QgsExpressionContext contained within the render context
      * must have already had the feature and fields sets prior to calling this method.
      * @param dxfLayer dxfLayer name
+     * @param labelFeature if using QgsLabelingEngineV2, this will receive the label feature. Not available
+     * in Python bindings.
+     * @param obstacleGeometry optional obstacle geometry, if a different geometry to the feature's geometry
+     * should be used as an obstacle for labels (eg, if the feature has been rendered with an offset point
+     * symbol, the obstacle geometry should represent the bounds of the offset symbol). If not set,
+     * the feature's original geometry will be used as an obstacle for labels. Not available
+     * in Python bindings.
      */
     void registerFeature( QgsFeature& f, QgsRenderContext& context, const QString& dxfLayer );
 
@@ -786,7 +793,7 @@ class QgsPalLabeling : QgsLabelingEngineInterface
     QgsLabelingResults* takeResults() /TransferBack/;
 
     //! called when passing engine among map renderers
-    virtual QgsLabelingEngineInterface* clone() /Factory/;
+    virtual QgsPalLabeling* clone() /Factory/;
 
     //! @note not available in python bindings
     // void drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* painter, const QgsMapToPixel* xform );

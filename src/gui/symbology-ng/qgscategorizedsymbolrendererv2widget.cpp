@@ -40,6 +40,9 @@
 #include <QPainter>
 #include <QFileDialog>
 
+///@cond
+//not part of public API
+
 QgsCategorizedSymbolRendererV2Model::QgsCategorizedSymbolRendererV2Model( QObject * parent ) : QAbstractItemModel( parent )
     , mRenderer( 0 )
     , mMimeFormat( "application/x-qgscategorizedsymbolrendererv2model" )
@@ -364,6 +367,8 @@ void QgsCategorizedSymbolRendererV2ViewStyle::drawPrimitive( PrimitiveElement el
   }
   QProxyStyle::drawPrimitive( element, option, painter, widget );
 }
+
+///@endcond
 
 // ------------------------------ Widget ------------------------------------
 QgsRendererV2Widget* QgsCategorizedSymbolRendererV2Widget::create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )

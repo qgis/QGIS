@@ -39,9 +39,13 @@ class CORE_EXPORT QgsMultiCurveV2: public QgsGeometryCollectionV2
     QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const override;
     QString asJSON( int precision = 17 ) const override;
 
-
     /** Adds a geometry and takes ownership. Returns true in case of success*/
     virtual bool addGeometry( QgsAbstractGeometryV2* g ) override;
+
+    /** Returns a copy of the multi curve, where each component curve has had its line direction reversed.
+     * @note added in QGIS 2.14
+     */
+    QgsMultiCurveV2* reversed() const;
 };
 
 #endif // QGSMULTICURVEV2_H

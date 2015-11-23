@@ -19,28 +19,53 @@
 #include "qgsrendercontext.h"
 
 #include "qgsmapsettings.h"
+#include "qgsexpression.h"
+#include "qgsvectorlayer.h"
+#include "qgsfeaturefilterprovider.h"
 
 QgsRenderContext::QgsRenderContext()
-    : mPainter( 0 )
+    : mFlags( DrawEditingInfo | UseAdvancedEffects | DrawSelection | UseRenderingOptimization )
+    , mPainter( 0 )
     , mCoordTransform( 0 )
-    , mDrawEditingInformation( true )
-    , mForceVectorOutput( false )
-    , mUseAdvancedEffects( true )
     , mRenderingStopped( false )
     , mScaleFactor( 1.0 )
     , mRasterScaleFactor( 1.0 )
     , mRendererScale( 1.0 )
-    , mLabelingEngine( NULL )
+    , mLabelingEngine( 0 )
     , mLabelingEngine2( 0 )
-    , mShowSelection( true )
-    , mUseRenderingOptimization( true )
     , mGeometry( 0 )
+    , mFeatureFilterProvider( 0 )
 {
   mVectorSimplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
 }
 
 QgsRenderContext::~QgsRenderContext()
 {
+  delete mFeatureFilterProvider;
+  mFeatureFilterProvider = 0;
+}
+
+void QgsRenderContext::setFlags( const QgsRenderContext::Flags& flags )
+{
+  mFlags = flags;
+}
+
+void QgsRenderContext::setFlag( QgsRenderContext::Flag flag, bool on )
+{
+  if ( on )
+    mFlags |= flag;
+  else
+    mFlags &= ~flag;
+}
+
+QgsRenderContext::Flags QgsRenderContext::flags() const
+{
+  return mFlags;
+}
+
+bool QgsRenderContext::testFlag( QgsRenderContext::Flag flag ) const
+{
+  return mFlags.testFlag( flag );
 }
 
 QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings& mapSettings )
@@ -48,13 +73,14 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings& mapSet
   QgsRenderContext ctx;
   ctx.setMapToPixel( mapSettings.mapToPixel() );
   ctx.setExtent( mapSettings.visibleExtent() );
-  ctx.setDrawEditingInformation( mapSettings.testFlag( QgsMapSettings::DrawEditingInfo ) );
-  ctx.setForceVectorOutput( mapSettings.testFlag( QgsMapSettings::ForceVectorOutput ) );
-  ctx.setUseAdvancedEffects( mapSettings.testFlag( QgsMapSettings::UseAdvancedEffects ) );
-  ctx.setUseRenderingOptimization( mapSettings.testFlag( QgsMapSettings::UseRenderingOptimization ) );
+  ctx.setFlag( DrawEditingInfo, mapSettings.testFlag( QgsMapSettings::DrawEditingInfo ) );
+  ctx.setFlag( ForceVectorOutput, mapSettings.testFlag( QgsMapSettings::ForceVectorOutput ) );
+  ctx.setFlag( UseAdvancedEffects, mapSettings.testFlag( QgsMapSettings::UseAdvancedEffects ) );
+  ctx.setFlag( UseRenderingOptimization, mapSettings.testFlag( QgsMapSettings::UseRenderingOptimization ) );
   ctx.setCoordinateTransform( 0 );
   ctx.setSelectionColor( mapSettings.selectionColor() );
-  ctx.setShowSelection( mapSettings.testFlag( QgsMapSettings::DrawSelection ) );
+  ctx.setFlag( DrawSelection, mapSettings.testFlag( QgsMapSettings::DrawSelection ) );
+  ctx.setFlag( DrawSymbolBounds, mapSettings.testFlag( QgsMapSettings::DrawSymbolBounds ) );
   ctx.setRasterScaleFactor( 1.0 );
   ctx.setScaleFactor( mapSettings.outputDpi() / 25.4 ); // = pixels per mm
   ctx.setRendererScale( mapSettings.scale() );
@@ -67,7 +93,68 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings& mapSet
   return ctx;
 }
 
+bool QgsRenderContext::forceVectorOutput() const
+{
+  return mFlags.testFlag( ForceVectorOutput );
+}
+
+bool QgsRenderContext::useAdvancedEffects() const
+{
+  return mFlags.testFlag( UseAdvancedEffects );
+}
+
+void QgsRenderContext::setUseAdvancedEffects( bool enabled )
+{
+  setFlag( UseAdvancedEffects, enabled );
+}
+
+bool QgsRenderContext::drawEditingInformation() const
+{
+  return mFlags.testFlag( DrawEditingInfo );
+}
+
+bool QgsRenderContext::showSelection() const
+{
+  return mFlags.testFlag( DrawSelection );
+}
+
 void QgsRenderContext::setCoordinateTransform( const QgsCoordinateTransform* t )
 {
   mCoordTransform = t;
+}
+
+void QgsRenderContext::setDrawEditingInformation( bool b )
+{
+  setFlag( DrawEditingInfo, b );
+}
+
+void QgsRenderContext::setForceVectorOutput( bool force )
+{
+  setFlag( ForceVectorOutput, force );
+}
+
+void QgsRenderContext::setShowSelection( const bool showSelection )
+{
+  setFlag( DrawSelection, showSelection );
+}
+
+bool QgsRenderContext::useRenderingOptimization() const
+{
+  return mFlags.testFlag( UseRenderingOptimization );
+}
+
+void QgsRenderContext::setUseRenderingOptimization( bool enabled )
+{
+  setFlag( UseRenderingOptimization, enabled );
+}
+
+void QgsRenderContext::setFeatureFilterProvider( const QgsFeatureFilterProvider* ffp )
+{
+  delete mFeatureFilterProvider;
+  mFeatureFilterProvider = 0;
+
+  if ( ffp )
+  {
+    mFeatureFilterProvider = ffp->clone();
+  }
 }

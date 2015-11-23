@@ -45,7 +45,7 @@ class APP_EXPORT QgsStatusBarCoordinatesWidget : public QWidget
     //! define the map canvas associated to the widget
     void setMapCanvas( QgsMapCanvas* mapCanvas );
 
-    void setFont( QFont myFont );
+    void setFont( const QFont& myFont );
 
     void setMouseCoordinatesPrecision( unsigned int precision );
 

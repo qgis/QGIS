@@ -10,10 +10,10 @@ class QgsSymbolV2
 %ConvertToSubClassCode
   switch (sipCpp->type())
   {
-    case QgsSymbolV2::Marker: sipClass = sipClass_QgsMarkerSymbolV2; break;
-    case QgsSymbolV2::Line: sipClass = sipClass_QgsLineSymbolV2; break;
-    case QgsSymbolV2::Fill: sipClass = sipClass_QgsFillSymbolV2; break;
-    default: sipClass = 0; break;
+    case QgsSymbolV2::Marker: sipType = sipType_QgsMarkerSymbolV2; break;
+    case QgsSymbolV2::Line: sipType = sipType_QgsLineSymbolV2; break;
+    case QgsSymbolV2::Fill: sipType = sipType_QgsFillSymbolV2; break;
+    default: sipType = 0; break;
   }
 %End
 
@@ -26,6 +26,8 @@ class QgsSymbolV2
       Mixed, //mixed units in symbol layers
       Pixel
     };
+
+    typedef QList<QgsSymbolV2::OutputUnit> OutputUnitList;
 
     enum SymbolType
     {
@@ -303,7 +305,13 @@ class QgsMarkerSymbolV2 : QgsSymbolV2
 
     void renderPoint( const QPointF& point, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
 
-    virtual QgsSymbolV2* clone() const /Factory/;
+    /** Returns the approximate bounding box of the marker symbol, which includes the bounding box
+     * of all symbol layers for the symbol.
+     * @returns approximate symbol bounds, in painter units
+     * @note added in QGIS 2.14     */
+    QRectF bounds( const QPointF& point, QgsRenderContext& context ) const;
+
+    virtual QgsMarkerSymbolV2* clone() const /Factory/;
 };
 
 
@@ -342,7 +350,7 @@ class QgsLineSymbolV2 : QgsSymbolV2
 
     void renderPolyline( const QPolygonF& points, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
 
-    virtual QgsSymbolV2* clone() const /Factory/;
+    virtual QgsLineSymbolV2* clone() const /Factory/;
 };
 
 
@@ -363,5 +371,5 @@ class QgsFillSymbolV2 : QgsSymbolV2
     void setAngle( double angle );
     void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
 
-    virtual QgsSymbolV2* clone() const /Factory/;
+    virtual QgsFillSymbolV2* clone() const /Factory/;
 };

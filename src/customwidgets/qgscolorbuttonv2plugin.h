@@ -16,8 +16,15 @@
 #ifndef QGSCOLORBUTTONV2PLUGIN_H
 #define QGSCOLORBUTTONV2PLUGIN_H
 
+
+#include <QtGlobal>
+#if QT_VERSION < 0x050000
+#include <QDesignerCustomWidgetCollectionInterface>
 #include <QDesignerExportWidget>
-#include <QDesignerCustomWidgetInterface>
+#else
+#include <QtUiPlugin/QDesignerCustomWidgetInterface>
+#include <QtUiPlugin/QDesignerExportWidget>
+#endif
 
 
 class CUSTOMWIDGETS_EXPORT QgsColorButtonV2Plugin : public QObject, public QDesignerCustomWidgetInterface

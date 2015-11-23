@@ -32,8 +32,8 @@
 #include "qgseditorwidgetconfig.h"
 #include "qgsfield.h"
 #include "qgssnapper.h"
-#include "qgsrelation.h"
 #include "qgsvectorsimplifymethod.h"
+#include "qgseditformconfig.h"
 
 class QPainter;
 class QImage;
@@ -68,250 +68,6 @@ class QgsPointV2;
 
 typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
-
-
-/**
- * This is an abstract base class for any elements of a drag and drop form.
- *
- * This can either be a container which will be represented on the screen
- * as a tab widget or ca collapsible group box. Or it can be a field which will
- * then be represented based on the QgsEditorWidgetV2 type and configuration.
- * Or it can be a relation and embed the form of several children of another
- * layer.
- */
-class CORE_EXPORT QgsAttributeEditorElement : public QObject
-{
-    Q_OBJECT
-  public:
-
-    enum AttributeEditorType
-    {
-      AeTypeContainer, //!< A container
-      AeTypeField,     //!< A field
-      AeTypeRelation,  //!< A relation
-      AeTypeInvalid    //!< Invalid
-    };
-
-    /**
-     * Constructor
-     *
-     * @param type The type of the new element. Should never
-     * @param name
-     * @param parent
-     */
-    QgsAttributeEditorElement( AttributeEditorType type, const QString& name, QObject *parent = NULL )
-        : QObject( parent ), mType( type ), mName( name ) {}
-
-    //! Destructor
-    virtual ~QgsAttributeEditorElement() {}
-
-    /**
-     * Return the name of this element
-     *
-     * @return The name for this element
-     */
-    QString name() const { return mName; }
-
-    /**
-     * The type of this element
-     *
-     * @return The type
-     */
-    AttributeEditorType type() const { return mType; }
-
-    /**
-     * Is reimplemented in classes inheriting from this to serialize it.
-     *
-     * @param doc The QDomDocument which is used to create new XML elements
-     *
-     * @return An DOM element which represents this element
-     */
-    virtual QDomElement toDomElement( QDomDocument& doc ) const = 0;
-
-  protected:
-    AttributeEditorType mType;
-    QString mName;
-};
-
-/**
- * This is a container for attribute editors, used to group them visually in the
- * attribute form if it is set to the drag and drop designer.
- */
-class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
-{
-  public:
-    /**
-     * Creates a new attribute editor container
-     *
-     * @param name   The name to show as title
-     * @param parent The parent. May be another container.
-     */
-    QgsAttributeEditorContainer( const QString& name, QObject *parent )
-        : QgsAttributeEditorElement( AeTypeContainer, name, parent )
-        , mIsGroupBox( true )
-    {}
-
-    //! Destructor
-    virtual ~QgsAttributeEditorContainer() {}
-
-    /**
-     * Will serialize this containers information into a QDomElement for saving it in an XML file.
-     *
-     * @param doc The QDomDocument used to generate the QDomElement
-     *
-     * @return The XML element
-     */
-    virtual QDomElement toDomElement( QDomDocument& doc ) const override;
-
-    /**
-     * Add a child element to this container. This may be another container, a field or a relation.
-     *
-     * @param element The element to add as child
-     */
-    virtual void addChildElement( QgsAttributeEditorElement* element );
-
-    /**
-     * Determines if this container is rendered as collapsible group box or tab in a tabwidget
-     *
-     * @param isGroupBox If true, this will be a group box
-     */
-    virtual void setIsGroupBox( bool isGroupBox ) { mIsGroupBox = isGroupBox; }
-
-    /**
-     * Returns if this  ccontainer is going to be rendered as a group box
-     *
-     * @return True if it will be a group box, false if it will be a tab
-     */
-    virtual bool isGroupBox() const { return mIsGroupBox; }
-
-    /**
-     * Get a list of the children elements of this container
-     *
-     * @return A list of elements
-     */
-    QList<QgsAttributeEditorElement*> children() const { return mChildren; }
-
-    /**
-     * Traverses the element tree to find any element of the specified type
-     *
-     * @param type The type which should be searched
-     *
-     * @return A list of elements of the type which has been searched for
-     */
-    virtual QList<QgsAttributeEditorElement*> findElements( AttributeEditorType type ) const;
-
-    /**
-     * Change the name of this container
-     *
-     * @param name
-     */
-    void setName( const QString& name );
-
-  private:
-    bool mIsGroupBox;
-    QList<QgsAttributeEditorElement*> mChildren;
-};
-
-/**
- * This element will load a field's widget onto the form.
- */
-class CORE_EXPORT QgsAttributeEditorField : public QgsAttributeEditorElement
-{
-  public:
-    /**
-     * Creates a new attribute editor element which represents a field
-     *
-     * @param name   The name of the element
-     * @param idx    The index of the field which should be embedded
-     * @param parent The parent of this widget (used as container)
-     */
-    QgsAttributeEditorField( const QString& name, int idx, QObject *parent )
-        : QgsAttributeEditorElement( AeTypeField, name, parent ), mIdx( idx ) {}
-
-    //! Destructor
-    virtual ~QgsAttributeEditorField() {}
-
-    /**
-     * Will serialize this elements information into a QDomElement for saving it in an XML file.
-     *
-     * @param doc The QDomDocument used to generate the QDomElement
-     *
-     * @return The XML element
-     */
-    virtual QDomElement toDomElement( QDomDocument& doc ) const override;
-
-    /**
-     * Return the index of the field
-     * @return
-     */
-    int idx() const { return mIdx; }
-
-  private:
-    int mIdx;
-};
-
-/**
- * This element will load a relation editor onto the form.
- *
- * @note Added in 2.1
- */
-class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
-{
-  public:
-    /**
-     * Creates a new element which embeds a relation.
-     *
-     * @param name         The name of this element
-     * @param relationId   The id of the relation to embed
-     * @param parent       The parent (used as container)
-     */
-    QgsAttributeEditorRelation( const QString& name, const QString &relationId, QObject *parent )
-        : QgsAttributeEditorElement( AeTypeRelation, name, parent )
-        , mRelationId( relationId ) {}
-
-    /**
-     * Creates a new element which embeds a relation.
-     *
-     * @param name         The name of this element
-     * @param relation     The relation to embed
-     * @param parent       The parent (used as container)
-     */
-    QgsAttributeEditorRelation( const QString& name, const QgsRelation& relation, QObject *parent )
-        : QgsAttributeEditorElement( AeTypeRelation, name, parent )
-        , mRelationId( relation.id() )
-        , mRelation( relation ) {}
-
-    //! Destructor
-    virtual ~QgsAttributeEditorRelation() {}
-
-    /**
-     * Will serialize this elements information into a QDomElement for saving it in an XML file.
-     *
-     * @param doc The QDomDocument used to generate the QDomElement
-     *
-     * @return The XML element
-     */
-    virtual QDomElement toDomElement( QDomDocument& doc ) const override;
-
-    /**
-     * Get the id of the relation which shall be embedded
-     *
-     * @return the id
-     */
-    const QgsRelation& relation() const { return mRelation; }
-
-    /**
-     * Initializes the relation from the id
-     *
-     * @param relManager The relation manager to use for the initialization
-     * @return true if the relation was found in the relationmanager
-     */
-    bool init( QgsRelationManager *relManager );
-
-  private:
-    QString mRelationId;
-    QgsRelation mRelation;
-};
 
 
 struct CORE_EXPORT QgsVectorJoinInfo
@@ -630,7 +386,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     Q_OBJECT
 
   public:
-    /** The different types to layout the attribute editor. */
+
+    typedef QgsEditFormConfig::GroupData GroupData;
+    typedef QgsEditFormConfig::TabData TabData;
+
     enum EditorLayout
     {
       GeneratedLayout = 0,
@@ -638,47 +397,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       UiFileLayout = 2
     };
 
-    /**
-     * @deprecated Use the editorWidgetV2() system instead
-     */
-    enum EditType
-    {
-      LineEdit,
-      UniqueValues,
-      UniqueValuesEditable,
-      ValueMap,
-      Classification,
-      EditRange,
-      SliderRange,
-      CheckBox,
-      FileName,
-      Enumeration,
-      Immutable,      /**< The attribute value should not be changed in the attribute form */
-      Hidden,         /**< The attribute value should not be shown in the attribute form */
-      TextEdit,       /**< multiline edit */
-      Calendar,       /**< calendar widget */
-      DialRange,      /**< dial range */
-      ValueRelation,  /**< value map from an table */
-      UuidGenerator,  /**< uuid generator - readonly and automatically intialized */
-      Photo,          /**< phote widget */
-      WebView,        /**< webview widget */
-      Color,          /**< color */
-      EditorWidgetV2, /**< modularized edit widgets @note added in 2.1 */
-    };
-
-    /** Types of feature form suppression after feature creation
-     * @note added in 2.1 */
-    enum FeatureFormSuppress
-    {
-      SuppressDefault = 0, // use the application-wide setting
-      SuppressOn = 1,
-      SuppressOff = 2
-    };
-
     struct RangeData
     {
-      RangeData() { mMin = QVariant( 0 ); mMax = QVariant( 5 ); mStep = QVariant( 1 );}
-      RangeData( const QVariant& theMin, const QVariant& theMax, const QVariant& theStep )
+      Q_DECL_DEPRECATED RangeData() { mMin = QVariant( 0 ); mMax = QVariant( 5 ); mStep = QVariant( 1 );}
+      Q_DECL_DEPRECATED RangeData( const QVariant& theMin, const QVariant& theMax, const QVariant& theStep )
           : mMin( theMin ), mMax( theMax ), mStep( theStep ) {}
 
       QVariant mMin;
@@ -710,23 +432,44 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       bool mAllowMulti;  /* allow selection of multiple keys */
     };
 
-    struct GroupData
+    /**
+     * Types of feature form suppression after feature creation
+     * @note added in 2.1
+     * @deprecated in 2.14, Use QgsEditFormConfig instead
+     */
+    enum FeatureFormSuppress
     {
-      GroupData() {}
-      GroupData( const QString& name, const QList<QString>& fields )
-          : mName( name ), mFields( fields ) {}
-      QString mName;
-      QList<QString> mFields;
+      SuppressDefault = 0, // use the application-wide setting
+      SuppressOn = 1,
+      SuppressOff = 2
     };
 
-    struct TabData
+    /**
+     * @deprecated Use the editorWidgetV2() system instead
+     */
+    enum EditType
     {
-      TabData() {}
-      TabData( const QString& name, const QList<QString>& fields, const QList<GroupData>& groups )
-          : mName( name ), mFields( fields ), mGroups( groups ) {}
-      QString mName;
-      QList<QString> mFields;
-      QList<GroupData> mGroups;
+      LineEdit,
+      UniqueValues,
+      UniqueValuesEditable,
+      ValueMap,
+      Classification,
+      EditRange,
+      SliderRange,
+      CheckBox,
+      FileName,
+      Enumeration,
+      Immutable,      /**< The attribute value should not be changed in the attribute form */
+      Hidden,         /**< The attribute value should not be shown in the attribute form */
+      TextEdit,       /**< multiline edit */
+      Calendar,       /**< calendar widget */
+      DialRange,      /**< dial range */
+      ValueRelation,  /**< value map from an table */
+      UuidGenerator,  /**< uuid generator - readonly and automatically intialized */
+      Photo,          /**< phote widget */
+      WebView,        /**< webview widget */
+      Color,          /**< color */
+      EditorWidgetV2, /**< modularized edit widgets @note added in 2.1 */
     };
 
     /** Constructor - creates a vector layer
@@ -1149,6 +892,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Moves the vertex at the given position number,
      *  ring and item (first number is index 0), and feature
      *  to the given coordinates
+     *  @note available in python as moveVertexV2
      */
     bool moveVertex( const QgsPointV2& p, QgsFeatureId atFeatureId, int atVertex );
 
@@ -1181,7 +925,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
             0 in case of success
             1 problem with feature type
             2 ring not closed
-            6 layer not editable*/
+            6 layer not editable
+       @note available in python as addCurvedRing
+     */
     int addRing( QgsCurveV2* ring, QgsFeatureId* featureId = 0 );
 
     /** Adds a new part polygon to a multipart feature
@@ -1196,6 +942,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
        7 layer not editable */
     int addPart( const QList<QgsPoint>& ring );
 
+    //! @note available in python as addCurvedPart
     int addPart( QgsCurveV2* ring );
 
     /** Translates feature by dx, dy
@@ -1424,8 +1171,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /**
      * Adds a tab (for the attribute editor form) holding groups and fields
+     *
+     * @deprecated Use `editFormConfig()->addTab()` instead
      */
-    void addAttributeEditorWidget( QgsAttributeEditorElement* data );
+    Q_DECL_DEPRECATED void addAttributeEditorWidget( QgsAttributeEditorElement* data ) {mEditFormConfig->addTab( data );}
 
     /**
      * Get the id for the editor widget used to represent the field at the given index
@@ -1433,8 +1182,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @param fieldIdx  The index of the field
      *
      * @return The id for the editor widget or a NULL string if not applicable
+     *
+     * @deprecated Use `editFormConfig()->widgetType()` instead
      */
-    const QString editorWidgetV2( int fieldIdx ) const;
+    Q_DECL_DEPRECATED const QString editorWidgetV2( int fieldIdx ) const { return mEditFormConfig->widgetType( fieldIdx ); }
 
     /**
      * Get the id for the editor widget used to represent the field at the given index
@@ -1444,8 +1195,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @return The id for the editor widget or a NULL string if not applicable
      *
      * @note python method name editorWidgetV2ByName
+     *
+     * @deprecated Use `editFormConfig()->widgetType()` instead
      */
-    const QString editorWidgetV2( const QString& fieldName ) const;
+    Q_DECL_DEPRECATED const QString editorWidgetV2( const QString& fieldName ) const { return mEditFormConfig->widgetType( fieldName ); }
 
     /**
      * Get the configuration for the editor widget used to represent the field at the given index
@@ -1453,8 +1206,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @param fieldIdx  The index of the field
      *
      * @return The configuration for the editor widget or an empty config if the field does not exist
+     *
+     * @deprecated Use `editFormConfig()->widgetConfig()` instead
      */
-    const QgsEditorWidgetConfig editorWidgetV2Config( int fieldIdx ) const;
+    Q_DECL_DEPRECATED const QgsEditorWidgetConfig editorWidgetV2Config( int fieldIdx ) const { return mEditFormConfig->widgetConfig( fieldIdx ); }
 
     /**
      * Get the configuration for the editor widget used to represent the field with the given name
@@ -1464,17 +1219,30 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @return The configuration for the editor widget or an empty config if the field does not exist
      *
      * @note python method name is editorWidgetV2ConfigByName
+     *
+     * @deprecated Use `editFormConfig()->widgetConfig()` instead
      */
-    const QgsEditorWidgetConfig editorWidgetV2Config( const QString& fieldName ) const;
+    Q_DECL_DEPRECATED const QgsEditorWidgetConfig editorWidgetV2Config( const QString& fieldName ) const { return mEditFormConfig->widgetConfig( fieldName ); }
 
     /**
      * Returns a list of tabs holding groups and fields
+     *
+     * @deprecated Use `editFormConfig()->tabs()` instead
      */
-    QList< QgsAttributeEditorElement* > &attributeEditorElements();
+    Q_DECL_DEPRECATED QList< QgsAttributeEditorElement* > attributeEditorElements() { return mEditFormConfig->tabs(); }
+
+    /**
+     * Get the configuration of the form used to represent this vector layer.
+     * This is a writable configuration that can directly be changed in place.
+     *
+     * @return The configuration of this layers' form
+     */
+    QgsEditFormConfig* editFormConfig() const { return mEditFormConfig; }
+
     /**
      * Clears all the tabs for the attribute editor form
      */
-    void clearAttributeEditorWidgets();
+    void clearAttributeEditorWidgets() { mEditFormConfig->clearTabs(); }
 
     /** Returns the alias of an attribute name or an empty string if there is no alias */
     QString attributeAlias( int attributeIndex ) const;
@@ -1534,22 +1302,28 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /**
      * Get edit type
      *
-     * @deprecated Use editorWidgetV2() instead
+     * @deprecated Use `editFormConfig()->widgetType()` instead
      */
     Q_DECL_DEPRECATED EditType editType( int idx );
 
     /**
      * Get edit type
      *
-     * @deprecated Use setEditorWidgetV2() instead
+     * @deprecated Use `editFormConfig()->setWidgetType()` instead
      */
     Q_DECL_DEPRECATED void setEditType( int idx, EditType edit );
 
-    /** Get the active layout for the attribute editor for this layer */
-    EditorLayout editorLayout();
+    /**
+     * Get the active layout for the attribute editor for this layer
+     * @deprecated Use `editFormConfig()->layout()` instead
+     */
+    Q_DECL_DEPRECATED EditorLayout editorLayout() { return ( EditorLayout )mEditFormConfig->layout(); }
 
-    /** Set the active layout for the attribute editor for this layer */
-    void setEditorLayout( EditorLayout editorLayout );
+    /**
+     * Set the active layout for the attribute editor for this layer
+     * @deprecated Use `editFormConfig()->setLayout()` instead
+     */
+    Q_DECL_DEPRECATED void setEditorLayout( EditorLayout editorLayout ) { mEditFormConfig->setLayout(( QgsEditFormConfig::EditorLayout )editorLayout ); }
 
     /**
      * Set the editor widget type for a field
@@ -1578,8 +1352,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      *
      * @param attrIdx     Index of the field
      * @param widgetType  Type id of the editor widget to use
+     *
+     * @deprecated Use `editFormConfig()->setWidgetType()` instead
      */
-    void setEditorWidgetV2( int attrIdx, const QString& widgetType );
+    Q_DECL_DEPRECATED void setEditorWidgetV2( int attrIdx, const QString& widgetType ) { mEditFormConfig->setWidgetType( attrIdx, widgetType ); }
 
     /**
      * Set the editor widget config for a field.
@@ -1595,29 +1371,42 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @param config      The config to set for this field
      *
      * @see setEditorWidgetV2() for a list of widgets and choose the widget to see the available options.
+     *
+     * @deprecated Use `editFormConfig()->setWidgetConfig()` instead
      */
-    void setEditorWidgetV2Config( int attrIdx, const QgsEditorWidgetConfig& config );
+    Q_DECL_DEPRECATED void setEditorWidgetV2Config( int attrIdx, const QgsEditorWidgetConfig& config ) { mEditFormConfig->setWidgetConfig( attrIdx, config ); }
 
     /**
      * Set string representing 'true' for a checkbox
      *
-     * @deprecated Use setEditorWidgetV2Config() instead
+     * @deprecated Use @deprecated Use `editFormConfig()->setWidgetConfig()` instead
      */
     Q_DECL_DEPRECATED void setCheckedState( int idx, const QString& checked, const QString& notChecked );
 
-    /** Get edit form */
-    QString editForm();
+    /**
+     * Get edit form
+     *
+     * @deprecated Use `editFormConfig()->uiForm()` instead
+     */
+    Q_DECL_DEPRECATED QString editForm() const { return mEditFormConfig->uiForm(); }
 
-    /** Set edit form */
-    void setEditForm( const QString& ui );
+    /**
+     * Set edit form
+     * @deprecated Use `editFormConfig()->setUiForm()` instead
+     */
+    Q_DECL_DEPRECATED void setEditForm( const QString& ui ) { mEditFormConfig->setUiForm( ui ); }
 
     /** Type of feature form pop-up suppression after feature creation (overrides app setting)
-     * @note added in 2.1 */
-    QgsVectorLayer::FeatureFormSuppress featureFormSuppress() const { return mFeatureFormSuppress; }
+     * @note added in 2.1
+     * @deprecated Use `editFormConfig()->suppress()` instead
+     */
+    Q_DECL_DEPRECATED QgsVectorLayer::FeatureFormSuppress featureFormSuppress() const { return ( FeatureFormSuppress )mEditFormConfig->suppress(); }
 
     /** Set type of feature form pop-up suppression after feature creation (overrides app setting)
-     * @note added in 2.1 */
-    void setFeatureFormSuppress( QgsVectorLayer::FeatureFormSuppress s ) { mFeatureFormSuppress = s; }
+     * @note added in 2.1
+     * @deprecated Use `editFormConfig()->setSuppress()` instead
+     */
+    Q_DECL_DEPRECATED void setFeatureFormSuppress( QgsVectorLayer::FeatureFormSuppress s ) { mEditFormConfig->setSuppress(( QgsEditFormConfig::FeatureFormSuppress )s ); }
 
     /** Get annotation form */
     QString annotationForm() const { return mAnnotationForm; }
@@ -1625,34 +1414,30 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Set annotation form for layer */
     void setAnnotationForm( const QString& ui );
 
-    /** Get python function for edit form initialization */
-    QString editFormInit();
+    /**
+     * Get python function for edit form initialization
+     *
+     * @deprecated Use `editFormConfig()->initFunction()` instead
+     */
+    Q_DECL_DEPRECATED QString editFormInit() const { return mEditFormConfig->initFunction(); }
 
-    /** Get python code for edit form initialization */
-    QString editFormInitCode();
-
-    /** Reeturn if python code has to be loaded for edit form initialization */
-    bool editFormInitUseCode();
-
-    /** Set python function for edit form initialization */
-    void setEditFormInit( const QString& function );
-
-    /** Set python code for edit form initialization */
-    void setEditFormInitCode( const QString& code );
-
-    /** Set python code for edit form initialization */
-    void setEditFormInitUseCode( const bool useCode );
+    /**
+     * Set python function for edit form initialization
+     *
+     * @deprecated Use `editFormConfig()->setInitFunction()` instead
+     */
+    Q_DECL_DEPRECATED void setEditFormInit( const QString& function ) { mEditFormConfig->setInitFunction( function ); }
 
     /**
      * Access value map
-     * @deprecated Use editorWidgetV2Config() instead
+     * @deprecated Use `editFormConfig()->widgetConfig()` instead
      */
     Q_DECL_DEPRECATED QMap<QString, QVariant> valueMap( int idx );
 
     /**
      * Access range widget config data
      *
-     * @deprecated Use editorWidgetV2Config() instead
+     * @deprecated Use `editFormConfig()->widgetConfig()` instead
      */
     Q_DECL_DEPRECATED RangeData range( int idx );
 
@@ -1670,28 +1455,41 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /**
      * Access date format
      *
-     * @deprecated Use setEditorWidgetV2Config() instead
+     * @deprecated Use `editFormConfig()->widgetConfig()` instead
      */
     Q_DECL_DEPRECATED QString dateFormat( int idx );
 
     /**
      * Access widget size for photo and webview widget
      *
-     * @deprecated Use setEditorWidgetV2Config() instead
+     * @deprecated Use `editFormConfig()->widgetConfig()` instead
      */
     Q_DECL_DEPRECATED QSize widgetSize( int idx );
 
-    /** Is edit widget editable **/
-    bool fieldEditable( int idx );
+    /**
+     * Is edit widget editable
+     *
+     * @deprecated Use `editFormConfig()->fieldEditable()` instead
+     */
+    Q_DECL_DEPRECATED bool fieldEditable( int idx ) { return !mEditFormConfig->readOnly( idx ); }
 
-    /** Label widget on top **/
-    bool labelOnTop( int idx );
+    /**
+     * Label widget on top
+     * @deprecated Use `editFormConfig()->labelOnTop()` instead
+     */
+    Q_DECL_DEPRECATED bool labelOnTop( int idx ) { return mEditFormConfig->labelOnTop( idx ); }
 
-    /** Set edit widget editable **/
-    void setFieldEditable( int idx, bool editable );
+    /**
+     * Set edit widget editable
+     * @deprecated Use `editFormConfig()->setFieldEditable()` instead
+     */
+    Q_DECL_DEPRECATED void setFieldEditable( int idx, bool editable ) { mEditFormConfig->setReadOnly( idx, !editable ); }
 
-    /** Label widget on top **/
-    void setLabelOnTop( int idx, bool onTop );
+    /**
+     * Label widget on top
+     * @deprecated Use `editFormConfig()->setLabelOnTop()` instead
+     */
+    Q_DECL_DEPRECATED void setLabelOnTop( int idx, bool onTop ) { mEditFormConfig->setLabelOnTop( idx, onTop ); }
 
     //! Buffer with uncommitted editing operations. Only valid after editing has been turned on.
     QgsVectorLayerEditBuffer* editBuffer() { return mEditBuffer; }
@@ -1897,6 +1695,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @see updatedFields()
      */
     void attributeAdded( int idx );
+
     /**
      * Will be emitted, when an expression field is going to be added to this vector layer.
      * Applies only to types {@link QgsFields::OriginExpression }
@@ -1904,6 +1703,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @param fieldName The name of the attribute to be added
      */
     void beforeAddingExpressionField( const QString& fieldName );
+
     /**
      * Will be emitted, when an attribute has been deleted from this vector layer.
      * Applies only to types {@link QgsFields::OriginEdit}, {@link QgsFields::OriginProvider} and {@link QgsFields::OriginExpression }
@@ -1913,6 +1713,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @see updatedFields()
      */
     void attributeDeleted( int idx );
+
     /**
      * Will be emitted, when an expression field is going to be deleted from this vector layer.
      * Applies only to types {@link QgsFields::OriginExpression }
@@ -1927,6 +1728,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @param fid The id of the new feature
      */
     void featureAdded( QgsFeatureId fid );
+
     /**
      * Emitted when a feature has been deleted.
      *
@@ -1936,16 +1738,18 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @param fid The id of the feature which has been deleted
      */
     void featureDeleted( QgsFeatureId fid );
+
     /**
      * Emitted when features have been deleted.
      *
      * If features are deleted within an edit command, this will only be emitted once at the end
      * to allow connected slots to minimize the overhead.
-     * If features are delted outside of an edit command, this signal will be emitted once per feature.
+     * If features are deleted outside of an edit command, this signal will be emitted once per feature.
      *
      * @param fids The feature ids that have been deleted.
      */
     void featuresDeleted( const QgsFeatureIds& fids );
+
     /**
      * Is emitted, whenever the fields available from this layer have been changed.
      * This can be due to manually adding attributes or due to a join.
@@ -2018,9 +1822,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     void writeCustomSymbology( QDomElement& element, QDomDocument& doc, QString& errorMessage ) const;
 
-
   private slots:
-    void onRelationsLoaded();
     void onJoinedFieldsChanged();
     void onFeatureDeleted( const QgsFeatureId& fid );
 
@@ -2101,16 +1903,14 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Map that stores the aliases for attributes. Key is the attribute name and value the alias for that attribute*/
     QMap< QString, QString > mAttributeAliasMap;
 
-    /** Stores a list of attribute editor elements (Each holding a tree structure for a tab in the attribute editor)*/
-    QList< QgsAttributeEditorElement* > mAttributeEditorElements;
+    /** Holds the configuration for the edit form */
+    QgsEditFormConfig* mEditFormConfig;
 
     /** Attributes which are not published in WMS*/
     QSet<QString> mExcludeAttributesWMS;
+
     /** Attributes which are not published in WFS*/
     QSet<QString> mExcludeAttributesWFS;
-
-    /** Map that stores the tab for attributes in the edit form. Key is the tab order and value the tab name*/
-    QList< TabData > mTabs;
 
     /** Geometry type as defined in enum WkbType (qgis.h) */
     QGis::WkbType mWkbType;
@@ -2144,23 +1944,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     QStringList mCommitErrors;
 
-    QMap< QString, bool> mFieldEditables;
-    QMap< QString, bool> mLabelOnTop;
-
-    QMap<QString, QString> mEditorWidgetV2Types;
-    QMap<QString, QgsEditorWidgetConfig > mEditorWidgetV2Configs;
-
-    /** Defines the default layout to use for the attribute editor (Drag and drop, UI File, Generated) */
-    EditorLayout mEditorLayout;
-
-    QString mEditForm, mEditFormInit, mEditFormInitCode;
-    bool mEditFormInitUseCode;
-
-    /** Type of feature form suppression after feature creation
-     * @note added in 2.1 */
-    QgsVectorLayer::FeatureFormSuppress mFeatureFormSuppress;
-
-    //annotation form for this layer
+    //! Annotation form for this layer
     QString mAnnotationForm;
 
     //! cache for some vector layer data - currently only geometries for faster editing

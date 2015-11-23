@@ -375,7 +375,13 @@ class CORE_EXPORT QgsMarkerSymbolV2 : public QgsSymbolV2
 
     void renderPoint( const QPointF& point, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
 
-    virtual QgsSymbolV2* clone() const override;
+    /** Returns the approximate bounding box of the marker symbol, which includes the bounding box
+     * of all symbol layers for the symbol.
+     * @returns approximate symbol bounds, in painter units
+     * @note added in QGIS 2.14     */
+    QRectF bounds( const QPointF& point, QgsRenderContext& context ) const;
+
+    virtual QgsMarkerSymbolV2* clone() const override;
 
   private:
 
@@ -415,7 +421,7 @@ class CORE_EXPORT QgsLineSymbolV2 : public QgsSymbolV2
 
     void renderPolyline( const QPolygonF& points, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
 
-    virtual QgsSymbolV2* clone() const override;
+    virtual QgsLineSymbolV2* clone() const override;
 
   private:
 
@@ -437,7 +443,7 @@ class CORE_EXPORT QgsFillSymbolV2 : public QgsSymbolV2
     void setAngle( double angle );
     void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
 
-    virtual QgsSymbolV2* clone() const override;
+    virtual QgsFillSymbolV2* clone() const override;
 
   private:
 

@@ -9,8 +9,10 @@ class QgsSingleSymbolRendererV2 : QgsFeatureRendererV2
 
     virtual ~QgsSingleSymbolRendererV2();
 
+    //! @note available in python as symbolForFeature2
     virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) /PyName=symbolForFeature2/;
 
+    //! @note available in python as originalSymbolForFeature2
     virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feature, QgsRenderContext& context ) /PyName=originalSymbolForFeature2/;
 
     virtual void startRender( QgsRenderContext& context, const QgsFields& fields );
@@ -33,7 +35,7 @@ class QgsSingleSymbolRendererV2 : QgsFeatureRendererV2
 
     virtual QString dump() const;
 
-    virtual QgsFeatureRendererV2* clone() const /Factory/;
+    virtual QgsSingleSymbolRendererV2* clone() const /Factory/;
 
     virtual void toSld( QDomDocument& doc, QDomElement &element ) const;
     static QgsFeatureRendererV2* createFromSld( QDomElement& element, QGis::GeometryType geomType );
@@ -41,6 +43,7 @@ class QgsSingleSymbolRendererV2 : QgsFeatureRendererV2
     //! returns bitwise OR-ed capabilities of the renderer
     virtual int capabilities();
 
+    //! @note available in python as symbol2
     virtual QgsSymbolV2List symbols( QgsRenderContext& context ) /PyName=symbols2/;
 
     //! create renderer from XML element

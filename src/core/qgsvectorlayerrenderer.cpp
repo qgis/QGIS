@@ -32,6 +32,7 @@
 #include "qgsvectorlayerlabeling.h"
 #include "qgsvectorlayerlabelprovider.h"
 #include "qgspainteffect.h"
+#include "qgsfeaturefilterprovider.h"
 
 #include <QSettings>
 #include <QPicture>
@@ -43,6 +44,7 @@
 QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer* layer, QgsRenderContext& context )
     : QgsMapLayerRenderer( layer->id() )
     , mContext( context )
+    , mLayer( layer )
     , mFields( layer->fields() )
     , mRendererV2( 0 )
     , mCache( 0 )
@@ -150,12 +152,17 @@ bool QgsVectorLayerRenderer::render()
 
   QgsFeatureRequest featureRequest = QgsFeatureRequest()
                                      .setFilterRect( requestExtent )
-                                     .setSubsetOfAttributes( mAttrNames, mFields );
+                                     .setSubsetOfAttributes( mAttrNames, mFields )
+                                     .setExpressionContext( mContext.expressionContext() );
 
+  const QgsFeatureFilterProvider* featureFilterProvider = mContext.featureFilterProvider();
+  if ( featureFilterProvider )
+  {
+    featureFilterProvider->filterFeatures( mLayer, featureRequest );
+  }
   if ( !rendererFilter.isEmpty() && rendererFilter != "TRUE" )
   {
-    featureRequest.setFilterExpression( rendererFilter );
-    featureRequest.setExpressionContext( mContext.expressionContext() );
+    featureRequest.combineFilterExpression( rendererFilter );
   }
 
   // enable the simplification of the geometries (Using the current map2pixel context) before send it to renderer engine.
@@ -319,13 +326,18 @@ void QgsVectorLayerRenderer::drawRendererV2( QgsFeatureIterator& fit )
         // new labeling engine
         if ( mContext.labelingEngineV2() )
         {
+          QScopedPointer<QgsGeometry> obstacleGeometry;
+          if ( fet.constGeometry()->type() == QGis::Point )
+          {
+            obstacleGeometry.reset( QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, mContext, mRendererV2 ) );
+          }
           if ( mLabelProvider )
           {
-            mLabelProvider->registerFeature( fet, mContext );
+            mLabelProvider->registerFeature( fet, mContext, obstacleGeometry.data() );
           }
           if ( mDiagramProvider )
           {
-            mDiagramProvider->registerFeature( fet, mContext );
+            mDiagramProvider->registerFeature( fet, mContext, obstacleGeometry.data() );
           }
         }
       }
@@ -338,14 +350,14 @@ void QgsVectorLayerRenderer::drawRendererV2( QgsFeatureIterator& fit )
     }
   }
 
-  stopRendererV2( NULL );
+  stopRendererV2( 0 );
 }
 
 void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
 {
   QHash< QgsSymbolV2*, QList<QgsFeature> > features; // key = symbol, value = array of features
 
-  QgsSingleSymbolRendererV2* selRenderer = NULL;
+  QgsSingleSymbolRendererV2* selRenderer = 0;
   if ( !mSelectedFeatureIds.isEmpty() )
   {
     selRenderer = new QgsSingleSymbolRendererV2( QgsSymbolV2::defaultSymbol( mGeometryType ) );
@@ -402,13 +414,18 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
     // new labeling engine
     if ( mContext.labelingEngineV2() )
     {
+      QScopedPointer<QgsGeometry> obstacleGeometry;
+      if ( fet.constGeometry()->type() == QGis::Point )
+      {
+        obstacleGeometry.reset( QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, mContext, mRendererV2 ) );
+      }
       if ( mLabelProvider )
       {
-        mLabelProvider->registerFeature( fet, mContext );
+        mLabelProvider->registerFeature( fet, mContext, obstacleGeometry.data() );
       }
       if ( mDiagramProvider )
       {
-        mDiagramProvider->registerFeature( fet, mContext );
+        mDiagramProvider->registerFeature( fet, mContext, obstacleGeometry.data() );
       }
     }
   }

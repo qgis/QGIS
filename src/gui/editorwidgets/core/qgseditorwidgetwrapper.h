@@ -61,7 +61,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      *
      * @return The current value the widget represents
      */
-    virtual QVariant value() = 0;
+    virtual QVariant value() const = 0;
 
     /**
      * Access the field index.
@@ -70,7 +70,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      *
      * @see layer()
      */
-    int fieldIdx();
+    int fieldIdx() const;
 
     /**
      * Access the field.
@@ -79,7 +79,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      *
      * @see layer()
      */
-    QgsField field();
+    QgsField field() const;
 
     /**
      * Access the default value of the field.
@@ -88,7 +88,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      *
      * @see layer()
      */
-    QVariant defaultValue();
+    QVariant defaultValue() const;
 
     /**
      * Will return a wrapper for a given widget

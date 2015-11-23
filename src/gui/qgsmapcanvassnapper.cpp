@@ -74,7 +74,7 @@ int QgsMapCanvasSnapper::snapToCurrentLayer( const QPoint& p, QList<QgsSnappingR
   int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
   if ( allResutInTolerance )
   {
-    mSnapper->setSnapMode( QgsSnapper::SnapWithResultsWithinTolerances);
+    mSnapper->setSnapMode( QgsSnapper::SnapWithResultsWithinTolerances );
   }
   else if ( topologicalEditing == 0 )
   {

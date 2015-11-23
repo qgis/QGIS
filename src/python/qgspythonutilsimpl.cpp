@@ -33,6 +33,12 @@
 #include <QStringList>
 #include <QDir>
 
+#ifdef PYTHON2
+#define PYOBJ2QSTRING(obj) PyString_AsString( obj )
+#else
+#define PYOBJ2QSTRING(obj) QString::fromUtf8( PyUnicode_AsUTF8( obj ) )
+#endif
+
 PyThreadState* _mainState;
 
 QgsPythonUtilsImpl::QgsPythonUtilsImpl()
@@ -119,13 +125,21 @@ bool QgsPythonUtilsImpl::checkSystemImports()
       return false;
     }
   }
-
+#ifdef PYTHON2
   // import Qt bindings
   if ( !runString( "from PyQt4 import QtCore, QtGui",
-                   QObject::tr( "Couldn't load PyQt4." ) + '\n' + QObject::tr( "Python support will be disabled." ) ) )
+                   QObject::tr( "Couldn't load PyQt." ) + '\n' + QObject::tr( "Python support will be disabled." ) ) )
   {
     return false;
   }
+#else
+  // import Qt bindings
+  if ( !runString( "from PyQt5 import QtCore, QtGui",
+                   QObject::tr( "Couldn't load PyQt." ) + '\n' + QObject::tr( "Python support will be disabled." ) ) )
+  {
+    return false;
+  }
+#endif
 
   // import QGIS bindings
   QString error_msg = QObject::tr( "Couldn't load PyQGIS." ) + '\n' + QObject::tr( "Python support will be disabled." );
@@ -349,9 +363,15 @@ QString QgsPythonUtilsImpl::getTraceback()
   PyErr_Fetch( &type, &value, &traceback );
   PyErr_NormalizeException( &type, &value, &traceback );
 
-  modStringIO = PyImport_ImportModule( "cStringIO" );
+#ifdef PYTHON2
+  const char* iomod = "cStringIO";
+#else
+  const char* iomod = "io";
+#endif
+
+  modStringIO = PyImport_ImportModule( iomod );
   if ( modStringIO == NULL )
-    TRACEBACK_FETCH_ERROR( "can't import cStringIO" );
+    TRACEBACK_FETCH_ERROR( QString( "can't import %1" ).arg( iomod ) );
 
   obStringIO = PyObject_CallMethod( modStringIO, ( char* ) "StringIO", NULL );
 
@@ -379,15 +399,16 @@ QString QgsPythonUtilsImpl::getTraceback()
     TRACEBACK_FETCH_ERROR( "getvalue() failed." );
 
   /* And it should be a string all ready to go - duplicate it. */
-  if ( !PyUnicode_Check( obResult ) )
+  if ( !
+#ifdef PYTHON2
+       PyString_Check( obResult )
+#else
+       PyUnicode_Check( obResult )
+#endif
+     )
     TRACEBACK_FETCH_ERROR( "getvalue() did not return a string" );
 
-#if PYTHON2
-  result = PyString_AsString( obResult );
-#else
-  result = QString::fromUtf8( PyUnicode_AsUTF8( obResult ) );
-#endif
-
+  result = PYOBJ2QSTRING( obResult );
 
 done:
 
@@ -413,23 +434,27 @@ done:
 
 QString QgsPythonUtilsImpl::getTypeAsString( PyObject* obj )
 {
-  if ( obj == NULL )
-    return NULL;
+  if ( !obj )
+    return 0;
+
+#ifdef PYTHON2
   if ( PyClass_Check( obj ) )
   {
     QgsDebugMsg( "got class" );
     return QString( PyString_AsString((( PyClassObject* )obj )->cl_name ) );
   }
-  else if ( PyType_Check( obj ) )
-  {
-    QgsDebugMsg( "got type" );
-    return QString((( PyTypeObject* )obj )->tp_name );
-  }
   else
-  {
-    QgsDebugMsg( "got object" );
-    return PyObjectToQString( obj );
-  }
+#endif
+    if ( PyType_Check( obj ) )
+    {
+      QgsDebugMsg( "got type" );
+      return QString((( PyTypeObject* )obj )->tp_name );
+    }
+    else
+    {
+      QgsDebugMsg( "got object" );
+      return PyObjectToQString( obj );
+    }
 }
 
 bool QgsPythonUtilsImpl::getError( QString& errorClassName, QString& errorText )
@@ -487,15 +512,20 @@ QString QgsPythonUtilsImpl::PyObjectToQString( PyObject* obj )
   // check whether the object is already a unicode string
   if ( PyUnicode_Check( obj ) )
   {
+#ifdef PYTHON2
     PyObject* utf8 = PyUnicode_AsUTF8String( obj );
     if ( utf8 )
       result = QString::fromUtf8( PyString_AS_STRING( utf8 ) );
     else
       result = "(qgis error)";
     Py_XDECREF( utf8 );
+#else
+    result = PYOBJ2QSTRING( obj );
+#endif
     return result;
   }
 
+#if PYTHON2
   // check whether the object is a classical (8-bit) string
   if ( PyString_Check( obj ) )
   {
@@ -504,7 +534,6 @@ QString QgsPythonUtilsImpl::PyObjectToQString( PyObject* obj )
 
   // it's some other type of object:
   // convert object to unicode string (equivalent to calling unicode(obj) )
-
   PyObject* obj_uni = PyObject_Unicode( obj ); // obj_uni is new reference
   if ( obj_uni )
   {
@@ -515,15 +544,18 @@ QString QgsPythonUtilsImpl::PyObjectToQString( PyObject* obj )
       result = QString::fromUtf8( PyString_AsString( obj_utf8 ) );
     else
       result = "(qgis error)";
+
     Py_XDECREF( obj_utf8 );
     Py_XDECREF( obj_uni );
     return result;
   }
+#endif
+
   // if conversion to unicode failed, try to convert it to classic string, i.e. str(obj)
   PyObject* obj_str = PyObject_Str( obj ); // new reference
   if ( obj_str )
   {
-    result = QString::fromUtf8( PyString_AS_STRING( obj_str ) );
+    result = PYOBJ2QSTRING( obj_str );
     Py_XDECREF( obj_str );
     return result;
   }
@@ -572,11 +604,11 @@ QString QgsPythonUtilsImpl::homePythonPath()
   QString settingsDir = QgsApplication::qgisSettingsDirPath();
   if ( QDir::cleanPath( settingsDir ) == QDir::homePath() + QString( "/.qgis%1" ).arg( QGis::QGIS_VERSION_INT / 10000 ) )
   {
-    return QString( "\"%1/.qgis%2/python\".decode('utf-8')" ).arg( QDir::homePath() ).arg( QGis::QGIS_VERSION_INT / 10000 );
+    return QString( "b\"%1/.qgis%2/python\".decode('utf-8')" ).arg( QDir::homePath() ).arg( QGis::QGIS_VERSION_INT / 10000 );
   }
   else
   {
-    return '"' + settingsDir.replace( '\\', "\\\\" ) + "python\".decode('utf-8')";
+    return "b\"" + settingsDir.replace( '\\', "\\\\" ) + "python\".decode('utf-8')";
   }
 }
 

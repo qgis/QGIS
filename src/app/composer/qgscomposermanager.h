@@ -52,7 +52,7 @@ class QgsComposerManager: public QDialog, private Ui::QgsComposerManagerBase
     QgsComposerManager( QWidget * parent = 0, Qt::WindowFlags f = 0 );
     ~QgsComposerManager();
 
-    void addTemplates( QMap<QString, QString> templates );
+    void addTemplates( const QMap<QString, QString>& templates );
 
   public slots:
     /** Raise, unminimize and activate this window */
@@ -69,7 +69,7 @@ class QgsComposerManager: public QDialog, private Ui::QgsComposerManagerBase
     QMap<QString, QString> defaultTemplates( bool fromUser = false ) const;
     QMap<QString, QString> otherTemplates() const;
 
-    QMap<QString, QString> templatesFromPath( QString path ) const;
+    QMap<QString, QString> templatesFromPath( const QString& path ) const;
 
     /** Open local directory with user's system, creating it if not present
      */

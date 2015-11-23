@@ -8,8 +8,7 @@ class Bezier3D : ParametricLine
     /** Default constructor*/
     Bezier3D();
     /** Constructor, par is a pointer to the parent, controlpoly a controlpolygon*/
-    //! @note not available in python binding
-    // Bezier3D( ParametricLine* par, QVector<Point3D*>* controlpoly );
+    Bezier3D( ParametricLine* par, QVector<Point3D*>* controlpoly );
     /** Destructor*/
     virtual ~Bezier3D();
     /** Do not use this method, since a Bezier curve does not consist of other curves*/
@@ -30,8 +29,7 @@ class Bezier3D : ParametricLine
     /** Returns a control point*/
     virtual const Point3D* getControlPoint( int number ) const;
     /** Returns a pointer to the control polygon*/
-    //! @note not available in python binding
-    // virtual const QVector<Point3D*>* getControlPoly() const;
+    virtual const QVector<Point3D*>* getControlPoly() const;
     /** Returns the degree of the curve*/
     virtual int getDegree() const;
     /** Returns the parent*/
@@ -39,7 +37,6 @@ class Bezier3D : ParametricLine
     /** Sets the parent*/
     virtual void setParent( ParametricLine* par );
     /** Sets the control polygon*/
-    //! @note not available in python binding
-    // virtual void setControlPoly( QVector<Point3D*>* cp );
+    virtual void setControlPoly( QVector<Point3D*>* cp );
 
 };

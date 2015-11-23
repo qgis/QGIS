@@ -73,5 +73,6 @@ QGIS is on GitHub at https://github.com/qgis/QGIS. If you wish to contribute
 patches you can [fork the project](https://help.github.com/forking/), make your changes, commit to your
 repository, and then [issue a pull request](http://help.github.com/pull-requests/). The development team can then
 review your contribution and commit it upstream as appropriate.
+If you commit a new feature, add [FEATURE] to your commit message AND give a clear description of the new feature. A webhook will automatically create an issue on the QGIS-Documentation repo to tell people to write about it.
 
 If you are not a developer, there are many other possibilities which do not require programing skills to help QGIS to evolve. Check our [project homepage for more information](http://qgis.org/en/site/getinvolved/index.html).

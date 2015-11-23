@@ -56,7 +56,7 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
     QgsRasterRenderer( QgsRasterInterface* input = 0, const QString& type = "" );
     virtual ~QgsRasterRenderer();
 
-    QgsRasterInterface * clone() const override = 0;
+    QgsRasterRenderer * clone() const override = 0;
 
     virtual int bandCount() const override;
 

@@ -32,7 +32,7 @@ class CORE_EXPORT QgsBrightnessContrastFilter : public QgsRasterInterface
     QgsBrightnessContrastFilter( QgsRasterInterface *input = 0 );
     ~QgsBrightnessContrastFilter();
 
-    QgsRasterInterface * clone() const override;
+    QgsBrightnessContrastFilter* clone() const override;
 
     int bandCount() const override;
 

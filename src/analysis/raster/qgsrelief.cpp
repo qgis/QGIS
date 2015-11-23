@@ -510,7 +510,7 @@ bool QgsRelief::exportFrequencyDistributionToCsv( const QString& file )
 
   if ( !minOk || !maxOk )
   {
-    GDALComputeRasterMinMax( elevationBand, TRUE, minMax );
+    GDALComputeRasterMinMax( elevationBand, true, minMax );
   }
 
   //2. go through raster cells and get frequency of classes
@@ -593,7 +593,7 @@ QList< QgsRelief::ReliefColor > QgsRelief::calculateOptimizedReliefClasses()
 
   if ( !minOk || !maxOk )
   {
-    GDALComputeRasterMinMax( elevationBand, TRUE, minMax );
+    GDALComputeRasterMinMax( elevationBand, true, minMax );
   }
 
   //2. go through raster cells and get frequency of classes

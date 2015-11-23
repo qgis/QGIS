@@ -558,20 +558,27 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds& featureIds, const Qg
     case pktOid:
     case pktInt:
     {
-      //simple primary key, so prefer to use an "IN (...)" query. These are much faster then multiple chained ...OR... clauses
-      QString delim;
-      QString expr = QString( "%1 IN (" ).arg(( pkType == pktOid ? "oid" : QgsPostgresConn::quotedIdentifier( fields[ pkAttrs[0] ].name() ) ) );
+      QString expr;
 
-      Q_FOREACH ( const QgsFeatureId featureId, featureIds )
+      //simple primary key, so prefer to use an "IN (...)" query. These are much faster then multiple chained ...OR... clauses
+      if ( !featureIds.isEmpty() )
       {
-        expr += delim + QString::number( featureId );
-        delim = ',';
+        QString delim;
+        expr = QString( "%1 IN (" ).arg(( pkType == pktOid ? "oid" : QgsPostgresConn::quotedIdentifier( fields[ pkAttrs[0] ].name() ) ) );
+
+        Q_FOREACH ( const QgsFeatureId featureId, featureIds )
+        {
+          expr += delim + FID_TO_STRING( featureId );
+          delim = ',';
+        }
+        expr += ')';
       }
-      expr += ')';
 
       return expr;
     }
-    default:
+    case pktFidMap:
+    case pktTid:
+    case pktUnknown:
     {
       //complex primary key, need to build up where string
       QStringList whereClauses;
@@ -582,6 +589,7 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds& featureIds, const Qg
       return whereClauses.isEmpty() ? "" : whereClauses.join( " OR " ).prepend( '(' ).append( ')' );
     }
   }
+  return QString(); //avoid warning
 }
 
 QString QgsPostgresUtils::andWhereClauses( const QString& c1, const QString& c2 )
@@ -868,6 +876,11 @@ bool QgsPostgresProvider::loadFields()
       else if ( fieldTypeName == "date" )
       {
         fieldType = QVariant::Date;
+        fieldSize = -1;
+      }
+      else if ( fieldTypeName == "timestamp" )
+      {
+        fieldType = QVariant::DateTime;
         fieldSize = -1;
       }
       else if ( fieldTypeName == "text" ||
@@ -1955,7 +1968,8 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
     }
 
     conn->PQexecNR( "DEALLOCATE addfeatures" );
-    conn->commit();
+
+    returnvalue &= conn->commit();
 
     mShared->addFeaturesCounted( flist.size() );
   }
@@ -2003,7 +2017,7 @@ bool QgsPostgresProvider::deleteFeatures( const QgsFeatureIds & id )
       mShared->removeFid( *it );
     }
 
-    conn->commit();
+    returnvalue &= conn->commit();
 
     if ( mSpatialColType == sctTopoGeometry )
     {
@@ -2088,7 +2102,7 @@ bool QgsPostgresProvider::addAttributes( const QList<QgsField> &attributes )
       }
     }
 
-    conn->commit();
+    returnvalue &= conn->commit();
   }
   catch ( PGException &e )
   {
@@ -2143,7 +2157,7 @@ bool QgsPostgresProvider::deleteAttributes( const QgsAttributeIds& ids )
       mAttributeFields.remove( index );
     }
 
-    conn->commit();
+    returnvalue &= conn->commit();
   }
   catch ( PGException &e )
   {
@@ -2255,7 +2269,7 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
       }
     }
 
-    conn->commit();
+    returnvalue &= conn->commit();
   }
   catch ( PGException &e )
   {
@@ -2451,7 +2465,8 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
       connectionRO()->PQexecNR( "DEALLOCATE getid" );
       conn->PQexecNR( "DEALLOCATE replacetopogeom" );
     }
-    conn->commit();
+
+    returnvalue &= conn->commit();
   }
   catch ( PGException &e )
   {
@@ -2900,7 +2915,43 @@ bool QgsPostgresProvider::getGeometryDetails()
   }
   else
   {
-    detectedType = mRequestedGeomType == QGis::WKBUnknown ? "" : QgsPostgresConn::postgisWkbTypeName( mRequestedGeomType );
+    sql = QString( "SELECT %1 FROM %2 LIMIT 0" ).arg( quotedIdentifier( mGeometryColumn ), mQuery );
+    result = connectionRO()->PQexec( sql );
+    if ( PGRES_TUPLES_OK == result.PQresultStatus() )
+    {
+      sql = QString( "SELECT (SELECT t.typname FROM pg_type t WHERE oid = %1), upper(postgis_typmod_type(%2)), postgis_typmod_srid(%2)" )
+            .arg( QString::number( result.PQftype( 0 ) ), QString::number( result.PQfmod( 0 ) ) );
+      result = connectionRO()->PQexec( sql );
+      if ( result.PQntuples() == 1 )
+      {
+        geomColType  = result.PQgetvalue( 0, 0 );
+        detectedType = result.PQgetvalue( 0, 1 );
+        detectedSrid = result.PQgetvalue( 0, 2 );
+        if ( geomColType == "geometry" )
+          mSpatialColType = sctGeometry;
+        else if ( geomColType == "geography" )
+          mSpatialColType = sctGeography;
+        else if ( geomColType == "topogeometry" )
+          mSpatialColType = sctTopoGeometry;
+        else if ( geomColType == "pcpatch" )
+          mSpatialColType = sctPcPatch;
+        else
+        {
+          detectedType = mRequestedGeomType == QGis::WKBUnknown ? "" : QgsPostgresConn::postgisWkbTypeName( mRequestedGeomType );
+          detectedSrid = mRequestedSrid;
+        }
+      }
+      else
+      {
+        connectionRO()->PQexecNR( "COMMIT" );
+        detectedType = mRequestedGeomType == QGis::WKBUnknown ? "" : QgsPostgresConn::postgisWkbTypeName( mRequestedGeomType );
+      }
+    }
+    else
+    {
+      mValid = false;
+      return false;
+    }
   }
 
   mDetectedGeomType = QgsPostgresConn::wkbTypeFromPostgis( detectedType );

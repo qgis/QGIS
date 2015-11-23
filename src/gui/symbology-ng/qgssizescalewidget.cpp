@@ -32,6 +32,8 @@
 
 #include <limits>
 
+///@cond
+//not part of public API
 
 class ItemDelegate : public QItemDelegate
 {
@@ -63,6 +65,8 @@ struct SignalBlocker
 private:
   QObject * mObject;
 };
+
+///@endcond
 
 void QgsSizeScaleWidget::setFromSymbol()
 {

@@ -184,7 +184,7 @@ QgsRasterProjector & QgsRasterProjector::operator=( const QgsRasterProjector & p
   return *this;
 }
 
-QgsRasterInterface * QgsRasterProjector::clone() const
+QgsRasterProjector* QgsRasterProjector::clone() const
 {
   QgsDebugMsg( "Entered" );
   QgsRasterProjector * projector = new QgsRasterProjector( mSrcCRS, mDestCRS, mMaxSrcXRes, mMaxSrcYRes, mExtent );

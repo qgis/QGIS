@@ -32,6 +32,12 @@
 #include <QSharedData>
 #include "qgsfield.h"
 
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests in testqgsfield.cpp.
+ * See details in QEP #17
+ ****************************************************************************/
+
 class QgsFieldPrivate : public QSharedData
 {
   public:
@@ -89,6 +95,12 @@ class QgsFieldPrivate : public QSharedData
     QString comment;
 };
 
+
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests in testqgsfields.cpp.
+ * See details in QEP #17
+ ****************************************************************************/
 
 class CORE_EXPORT QgsFieldsPrivate : public QSharedData
 {

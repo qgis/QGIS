@@ -26,7 +26,8 @@
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
 
-
+///@cond
+//not part of public API
 class CustomLayerOrderModel : public QAbstractListModel
 {
   public:
@@ -171,6 +172,7 @@ class CustomLayerOrderModel : public QAbstractListModel
     QgsLayerTreeMapCanvasBridge* mBridge;
     QStringList mOrder;
 };
+/// @endcond
 
 
 QgsCustomLayerOrderWidget::QgsCustomLayerOrderWidget( QgsLayerTreeMapCanvasBridge* bridge, QWidget* parent )

@@ -26,63 +26,63 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
   switch (sipCpp->type())
   {
   case QgsComposerItem::ComposerItem:
-    sipClass = sipClass_QgsComposerItem;
+    sipType = sipType_QgsComposerItem;
     *sipCppRet = static_cast<QgsComposerItem*>(sipCpp);
     break;
   case QgsComposerItem::ComposerArrow:
-    sipClass = sipClass_QgsComposerArrow;
+    sipType = sipType_QgsComposerArrow;
     *sipCppRet = static_cast<QgsComposerArrow*>(sipCpp);
     break;
   case QgsComposerItem::ComposerItemGroup:
-    sipClass = sipClass_QgsComposerItemGroup;
+    sipType = sipType_QgsComposerItemGroup;
     *sipCppRet = static_cast<QgsComposerItemGroup*>(sipCpp);
     break;
   case QgsComposerItem::ComposerLabel:
-    sipClass = sipClass_QgsComposerLabel;
+    sipType = sipType_QgsComposerLabel;
     *sipCppRet = static_cast<QgsComposerLabel*>(sipCpp);
     break;
   case QgsComposerItem::ComposerLegend:
-    sipClass = sipClass_QgsComposerLegend;
+    sipType = sipType_QgsComposerLegend;
     *sipCppRet = static_cast<QgsComposerLegend*>(sipCpp);
     break;
   case QgsComposerItem::ComposerMap:
-    sipClass = sipClass_QgsComposerMap;
+    sipType = sipType_QgsComposerMap;
     *sipCppRet = static_cast<QgsComposerMap*>(sipCpp);
     break;
   case QgsComposerItem::ComposerPaper:
-    sipClass = sipClass_QgsPaperItem;
+    sipType = sipType_QgsPaperItem;
     *sipCppRet = static_cast<QgsPaperItem*>(sipCpp);
     break;
   case QgsComposerItem::ComposerPicture:
-    sipClass = sipClass_QgsComposerPicture;
+    sipType = sipType_QgsComposerPicture;
     *sipCppRet = static_cast<QgsComposerPicture*>(sipCpp);
     break;
   case QgsComposerItem::ComposerScaleBar:
-    sipClass = sipClass_QgsComposerScaleBar;
+    sipType = sipType_QgsComposerScaleBar;
     *sipCppRet = static_cast<QgsComposerScaleBar*>(sipCpp);
     break;
   case QgsComposerItem::ComposerShape:
-    sipClass = sipClass_QgsComposerShape;
+    sipType = sipType_QgsComposerShape;
     *sipCppRet = static_cast<QgsComposerShape*>(sipCpp);
     break;
   case QgsComposerItem::ComposerTable:
-    sipClass = sipClass_QgsComposerTable;
+    sipType = sipType_QgsComposerTable;
     *sipCppRet = static_cast<QgsComposerTable*>(sipCpp);
     break;
   case QgsComposerItem::ComposerAttributeTable:
-    sipClass = sipClass_QgsComposerAttributeTable;
+    sipType = sipType_QgsComposerAttributeTable;
     *sipCppRet = static_cast<QgsComposerAttributeTable*>(sipCpp);
     break;
   case QgsComposerItem::ComposerTextTable:
-    sipClass = sipClass_QgsComposerTextTable;
+    sipType = sipType_QgsComposerTextTable;
     *sipCppRet = static_cast<QgsComposerTextTable*>(sipCpp);
     break;
   case QgsComposerItem::ComposerFrame:
-    sipClass = sipClass_QgsComposerFrame;
+    sipType = sipType_QgsComposerFrame;
     *sipCppRet = static_cast<QgsComposerFrame*>(sipCpp);
     break;
   default:
-    sipClass = 0;
+    sipType = 0;
   }
 %End
 

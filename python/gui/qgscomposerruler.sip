@@ -28,4 +28,8 @@ class QgsComposerRuler : QWidget
     void mouseMoveEvent( QMouseEvent* event );
     void mouseReleaseEvent( QMouseEvent* event );
     void mousePressEvent( QMouseEvent* event );
+
+  signals:
+    /** Is emitted when mouse cursor coordinates change*/
+    void cursorPosChanged( QPointF );
 };

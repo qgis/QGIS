@@ -68,7 +68,8 @@ class Parameter:
         # It can be used as any other parameter, but it will not be
         # shown to the user
         self.hidden = False
-        self.optional = optional
+
+        self.optional = parseBool(optional)
 
     def setValue(self, obj):
         """
@@ -159,6 +160,7 @@ class ParameterCrs(Parameter):
     def getAsScriptCode(self):
         return '##' + self.name + '=crs ' + str(self.default)
 
+
 class ParameterDataObject(Parameter):
 
     def getValueAsCommandLineParameter(self):
@@ -205,6 +207,7 @@ class ParameterExtent(Parameter):
     def getAsScriptCode(self):
         return '##' + self.name + '=extent'
 
+
 class ParameterFile(Parameter):
 
     def __init__(self, name='', description='', isFolder=False, optional=True, ext=None):
@@ -248,7 +251,7 @@ class ParameterFixedTable(Parameter):
         if isinstance(cols, basestring):
             self.cols = self.cols.split(";")
         self.numRows = int(numRows)
-        self.fixedNumOfRows = fixedNumOfRows
+        self.fixedNumOfRows = parseBool(fixedNumOfRows)
         self.value = None
 
     def setValue(self, obj):
@@ -427,6 +430,7 @@ class ParameterMultipleInput(ParameterDataObject):
         else:
             return '##' + self.name + '=multiple vector'
 
+
 class ParameterNumber(Parameter):
 
     def __init__(self, name='', description='', minValue=None, maxValue=None,
@@ -470,9 +474,9 @@ class ParameterNumber(Parameter):
         except:
             return False
 
-
     def getAsScriptCode(self):
         return '##' + self.name + '=number ' + str(self.default)
+
 
 class ParameterRange(Parameter):
 
@@ -575,6 +579,7 @@ class ParameterSelection(Parameter):
     def __init__(self, name='', description='', options=[], default=0, isSource=False,
                  optional=False):
         Parameter.__init__(self, name, description, optional)
+        isSource = parseBool(isSource)
         self.options = options
         if isSource:
             self.options = []
@@ -632,11 +637,12 @@ class ParameterString(Parameter):
 
     def getValueAsCommandLineParameter(self):
         return ('"' + unicode(self.value.replace(ParameterString.NEWLINE,
-                             ParameterString.ESCAPED_NEWLINE)) + '"'
-                             if self.value is not None else unicode(None))
+                                                 ParameterString.ESCAPED_NEWLINE)) + '"'
+                if self.value is not None else unicode(None))
 
     def getAsScriptCode(self):
         return '##' + self.name + '=string ' + self.default
+
 
 class ParameterTable(ParameterDataObject):
 

@@ -12,7 +12,7 @@ class QgsInvertedPolygonRenderer : QgsFeatureRendererV2
     virtual ~QgsInvertedPolygonRenderer();
 
     /** Used to clone this feature renderer.*/
-    virtual QgsFeatureRendererV2* clone() const /Factory/;
+    virtual QgsInvertedPolygonRenderer* clone() const /Factory/;
 
     virtual void startRender( QgsRenderContext& context, const QgsFields& fields );
 
@@ -40,15 +40,25 @@ class QgsInvertedPolygonRenderer : QgsFeatureRendererV2
     virtual QList<QString> usedAttributes();
     /** Proxy that will call this method on the embedded renderer. */
     virtual int capabilities();
-    /** Proxy that will call this method on the embedded renderer. */
+    /** Proxy that will call this method on the embedded renderer.
+      @note available in python bindings as symbol2
+     */
     virtual QgsSymbolV2List symbols( QgsRenderContext& context ) /PyName=symbols2/;
-    /** Proxy that will call this method on the embedded renderer. */
+    /** Proxy that will call this method on the embedded renderer.
+      @note available in python bindings as symbolForFeature2
+     */
     virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) /PyName=symbolForFeature2/;
-    /** Proxy that will call this method on the embedded renderer. */
+    /** Proxy that will call this method on the embedded renderer.
+      @note available in python bindings as originalSymbolForFeature2
+     */
     virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feat, QgsRenderContext& context ) /PyName=originalSymbolForFeature2/;
-    /** Proxy that will call this method on the embedded renderer. */
+    /** Proxy that will call this method on the embedded renderer.
+      @note available in python bindings as symbolsForFeature
+     */
     virtual QgsSymbolV2List symbolsForFeature( QgsFeature& feat, QgsRenderContext& context ) /PyName=symbolsForFeature/;
-    /** Proxy that will call this method on the embedded renderer. */
+    /** Proxy that will call this method on the embedded renderer.
+      @note available in python bindings as originalSymbolsForFeature2
+     */
     virtual QgsSymbolV2List originalSymbolsForFeature( QgsFeature& feat, QgsRenderContext& context ) /PyName=originalSymbolsForFeature2/;
     /** Proxy that will call this method on the embedded renderer. */
     virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize );
@@ -56,7 +66,9 @@ class QgsInvertedPolygonRenderer : QgsFeatureRendererV2
       @note not available in python bindings
      */
     // virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString& rule = "" );
-    /** Proxy that will call this method on the embedded renderer. */
+    /** Proxy that will call this method on the embedded renderer.
+      @note available in python bindings as willRenderFeature2
+     */
     virtual bool willRenderFeature( QgsFeature& feat, QgsRenderContext& context ) /PyName=willRenderFeature2/;
 
     /** Creates a renderer out of an XML, for loading*/

@@ -106,3 +106,16 @@ bool QgsMultiCurveV2::addGeometry( QgsAbstractGeometryV2* g )
   setZMTypeFromSubGeometry( g, QgsWKBTypes::MultiCurve );
   return QgsGeometryCollectionV2::addGeometry( g );
 }
+
+QgsMultiCurveV2* QgsMultiCurveV2::reversed() const
+{
+  QgsMultiCurveV2* reversedMultiCurve = new QgsMultiCurveV2();
+  Q_FOREACH ( const QgsAbstractGeometryV2 *geom, mGeometries )
+  {
+    if ( dynamic_cast<const QgsCurveV2*>( geom ) )
+    {
+      reversedMultiCurve->addGeometry( static_cast<const QgsCurveV2*>( geom )->reversed() );
+    }
+  }
+  return reversedMultiCurve;
+}

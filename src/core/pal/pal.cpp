@@ -151,31 +151,7 @@ namespace pal
   bool extractFeatCallback( FeaturePart *ft_ptr, void *ctx )
   {
     double amin[2], amax[2];
-
     FeatCallBackCtx *context = ( FeatCallBackCtx* ) ctx;
-
-#ifdef _DEBUG_FULL_
-    std::cout << "extract feat : " << ft_ptr->getLayer()->getName() << "/" << ft_ptr->getUID() << std::endl;
-#endif
-
-    // all feature which are obstacle will be inserted into obstacles
-    if ( ft_ptr->isObstacle() )
-    {
-      ft_ptr->getBoundingBox( amin, amax );
-      context->obstacles->Insert( amin, amax, ft_ptr );
-    }
-
-    // first do some checks whether to extract candidates or not
-
-    // feature has to be labeled?
-    if ( !context->layer->labelLayer() )
-      return true;
-
-    // is the feature well defined?  TODO Check epsilon
-    if ( ft_ptr->getLabelWidth() < 0.0000001 || ft_ptr->getLabelHeight() < 0.0000001 )
-      return true;
-
-    // OK, everything's fine, let's process the feature part
 
     // Holes of the feature are obstacles
     for ( int i = 0; i < ft_ptr->getNumSelfObstacles(); i++ )
@@ -210,8 +186,28 @@ namespace pal
     return true;
   }
 
+  typedef struct _obstaclebackCtx
+  {
+    RTree<FeaturePart*, double, 2, double> *obstacles;
+    int obstacleCount;
+  } ObstacleCallBackCtx;
 
+  /*
+   * Callback function
+   *
+   * Extract obstacles from indexes
+   */
+  bool extractObstaclesCallback( FeaturePart *ft_ptr, void *ctx )
+  {
+    double amin[2], amax[2];
+    ObstacleCallBackCtx *context = ( ObstacleCallBackCtx* ) ctx;
 
+    // insert into obstacles
+    ft_ptr->getBoundingBox( amin, amax );
+    context->obstacles->Insert( amin, amax, ft_ptr );
+    context->obstacleCount++;
+    return true;
+  }
 
   typedef struct _filterContext
   {
@@ -267,20 +263,23 @@ namespace pal
 
     QLinkedList<Feats*> *fFeats = new QLinkedList<Feats*>;
 
-    FeatCallBackCtx *context = new FeatCallBackCtx();
-    context->fFeats = fFeats;
-    context->obstacles = obstacles;
-    context->candidates = prob->candidates;
+    FeatCallBackCtx context;
+    context.fFeats = fFeats;
+    context.obstacles = obstacles;
+    context.candidates = prob->candidates;
+    context.bbox_min[0] = amin[0];
+    context.bbox_min[1] = amin[1];
+    context.bbox_max[0] = amax[0];
+    context.bbox_max[1] = amax[1];
 
-    context->bbox_min[0] = amin[0];
-    context->bbox_min[1] = amin[1];
-
-    context->bbox_max[0] = amax[0];
-    context->bbox_max[1] = amax[1];
+    ObstacleCallBackCtx obstacleContext;
+    obstacleContext.obstacles = obstacles;
+    obstacleContext.obstacleCount = 0;
 
     // first step : extract features from layers
 
     int previousFeatureCount = 0;
+    int previousObstacleCount = 0;
 
     QStringList layersWithFeaturesInBBox;
 
@@ -303,19 +302,23 @@ namespace pal
 
       layer->chopFeaturesAtRepeatDistance();
 
-      // find features within bounding box and generate candidates list
-      context->layer = layer;
-      context->layer->mMutex.lock();
-      context->layer->rtree->Search( amin, amax, extractFeatCallback, ( void* ) context );
-      context->layer->mMutex.unlock();
+      layer->mMutex.lock();
 
-      if ( context->fFeats->size() - previousFeatureCount > 0 )
+      // find features within bounding box and generate candidates list
+      context.layer = layer;
+      layer->mFeatureIndex->Search( amin, amax, extractFeatCallback, ( void* ) &context );
+      // find obstacles within bounding box
+      layer->mObstacleIndex->Search( amin, amax, extractObstaclesCallback, ( void* ) &obstacleContext );
+
+      layer->mMutex.unlock();
+
+      if ( context.fFeats->size() - previousFeatureCount > 0 || obstacleContext.obstacleCount > previousObstacleCount )
       {
         layersWithFeaturesInBBox << layer->name();
       }
-      previousFeatureCount = context->fFeats->size();
+      previousFeatureCount = context.fFeats->size();
+      previousObstacleCount = obstacleContext.obstacleCount;
     }
-    delete context;
     mMutex.unlock();
 
     prob->nbLabelledLayers = layersWithFeaturesInBBox.size();

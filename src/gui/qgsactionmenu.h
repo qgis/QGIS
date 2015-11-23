@@ -27,7 +27,7 @@
  * This class is a menu that is populated automatically with the actions defined for a given layer.
  */
 
-class QgsActionMenu : public QMenu
+class GUI_EXPORT QgsActionMenu : public QMenu
 {
     Q_OBJECT
 
@@ -109,12 +109,6 @@ class QgsActionMenu : public QMenu
      *                 as long as the menu is displayed and the action is running.
      */
     void setFeature( QgsFeature* feature );
-
-    /**
-     * @brief setFeature
-     * @param feature
-     */
-    void setFeature( QgsFeatureId feature );
 
   private slots:
     void triggerAction();

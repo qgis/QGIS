@@ -246,7 +246,7 @@ class CORE_EXPORT QgsSingleCategoryDiagramRenderer : public QgsDiagramRendererV2
     QgsSingleCategoryDiagramRenderer();
     ~QgsSingleCategoryDiagramRenderer();
 
-    QgsDiagramRendererV2* clone() const override;
+    QgsSingleCategoryDiagramRenderer* clone() const override;
 
     QString rendererName() const override { return "SingleCategory"; }
 
@@ -276,7 +276,7 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
     QgsLinearlyInterpolatedDiagramRenderer();
     ~QgsLinearlyInterpolatedDiagramRenderer();
 
-    QgsDiagramRendererV2* clone() const override;
+    QgsLinearlyInterpolatedDiagramRenderer* clone() const override;
 
     /** Returns list with all diagram settings in the renderer*/
     QList<QgsDiagramSettings> diagramSettings() const override;

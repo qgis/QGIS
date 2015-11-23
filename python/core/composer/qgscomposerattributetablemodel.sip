@@ -105,8 +105,8 @@ class QgsComposerTableSortColumnsProxyModel : QSortFilterProxyModel
      */
     enum ColumnFilterType
     {
-      ShowSortedColumns, /*!< show only sorted columns */
-      ShowUnsortedColumns/*!< show only unsorted columns */
+      ShowSortedColumns,  /*!< show only sorted columns */
+      ShowUnsortedColumns /*!< show only unsorted columns */
     };
 
     /** Constructor for QgsComposerTableSortColumnsProxyModel.
@@ -114,7 +114,7 @@ class QgsComposerTableSortColumnsProxyModel : QSortFilterProxyModel
      * @param filterType filter for columns, controls whether sorted or unsorted columns are shown
      * @param parent optional parent
      */
-    QgsComposerTableSortColumnsProxyModel( QgsComposerAttributeTable *composerTable, ColumnFilterType filterType, QObject *parent /TransferThis/ = 0 );
+    QgsComposerTableSortColumnsProxyModel( QgsComposerAttributeTable *composerTable, QgsComposerTableSortColumnsProxyModel::ColumnFilterType filterType, QObject *parent /TransferThis/ = 0 );
 
     virtual ~QgsComposerTableSortColumnsProxyModel();
 

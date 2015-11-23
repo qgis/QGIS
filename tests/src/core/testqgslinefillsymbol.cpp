@@ -116,7 +116,7 @@ void TestQgsLineFillSymbol::initTestCase()
   // and is more light weight
   //
   mMapSettings.setLayers( QStringList() << mpPolysLayer->id() );
-  mReport += "<h1>Gradient Renderer Tests</h1>\n";
+  mReport += "<h1>Line Fill Symbol Tests</h1>\n";
 
 }
 void TestQgsLineFillSymbol::cleanupTestCase()
@@ -139,7 +139,7 @@ void TestQgsLineFillSymbol::lineFillSymbol()
 
   QgsStringMap properties;
   properties.insert( "color", "0,0,0,255" );
-  properties.insert( "width", "0.3" );
+  properties.insert( "width", "1" );
   properties.insert( "capstyle", "flat" );
   QgsLineSymbolV2* lineSymbol = QgsLineSymbolV2::createSimple( properties );
 
@@ -153,7 +153,7 @@ void TestQgsLineFillSymbol::dataDefinedSubSymbol()
 
   QgsStringMap properties;
   properties.insert( "color", "0,0,0,255" );
-  properties.insert( "width", "0.3" );
+  properties.insert( "width", "1" );
   properties.insert( "capstyle", "flat" );
   QgsLineSymbolV2* lineSymbol = QgsLineSymbolV2::createSimple( properties );
   lineSymbol->symbolLayer( 0 )->setDataDefinedProperty( "color", new QgsDataDefined( QString( "if(\"Name\" ='Lake','#ff0000','#ff00ff')" ) ) );

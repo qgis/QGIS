@@ -29,7 +29,7 @@ QgsTextEditWrapper::QgsTextEditWrapper( QgsVectorLayer* vl, int fieldIdx, QWidge
 {
 }
 
-QVariant QgsTextEditWrapper::value()
+QVariant QgsTextEditWrapper::value() const
 {
   QString v;
 
@@ -130,7 +130,7 @@ void QgsTextEditWrapper::initWidget( QWidget* editor )
   }
 }
 
-bool QgsTextEditWrapper::valid()
+bool QgsTextEditWrapper::valid() const
 {
   return mLineEdit || mTextEdit || mPlainTextEdit;
 }

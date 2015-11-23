@@ -23,7 +23,7 @@
 #include <QSizePolicy>
 
 QgsValueMapSearchWidgetWrapper::QgsValueMapSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
-    : QgsDefaultSearchWidgetWrapper( vl, fieldIdx, parent ),
+    : QgsSearchWidgetWrapper( vl, fieldIdx, parent ),
     mComboBox( NULL )
 {
 }
@@ -33,13 +33,33 @@ QWidget* QgsValueMapSearchWidgetWrapper::createWidget( QWidget* parent )
   return new QComboBox( parent );
 }
 
-void QgsValueMapSearchWidgetWrapper::comboBoxIndexChanged( int )
+void QgsValueMapSearchWidgetWrapper::comboBoxIndexChanged( int idx )
 {
   if ( mComboBox )
-    setExpression( mComboBox->itemData( mComboBox->currentIndex() ).toString() );
+  {
+    if ( idx == 0 )
+    {
+      clearExpression();
+    }
+    else
+    {
+      setExpression( mComboBox->itemData( idx ).toString() );
+    }
+    emit expressionChanged( mExpression );
+  }
 }
 
 bool QgsValueMapSearchWidgetWrapper::applyDirectly()
+{
+  return true;
+}
+
+QString QgsValueMapSearchWidgetWrapper::expression()
+{
+  return mExpression;
+}
+
+bool QgsValueMapSearchWidgetWrapper::valid() const
 {
   return true;
 }
@@ -61,5 +81,17 @@ void QgsValueMapSearchWidgetWrapper::initWidget( QWidget* editor )
     }
     connect( mComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( comboBoxIndexChanged( int ) ) );
   }
+}
+
+void QgsValueMapSearchWidgetWrapper::setExpression( QString exp )
+{
+  QString fieldName = layer()->fields().at( mFieldIdx ).name();
+  QString str;
+
+  str = QString( "%1 = '%2'" )
+        .arg( QgsExpression::quotedColumnRef( fieldName ),
+              exp.replace( '\'', "''" ) );
+
+  mExpression = str;
 }
 

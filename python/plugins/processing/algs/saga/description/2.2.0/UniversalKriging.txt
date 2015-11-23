@@ -1,7 +1,7 @@
-Universal Kriging
+Simple Kriging
 statistics_kriging
 ParameterVector|POINTS|Points|0|False
-ParameterTableField|ZFIELD|Attribute|POINTS|-1|False
+ParameterTableField|FIELD|Attribute|POINTS|-1|False
 ParameterSelection|TQUALITY|Type of Quality Measure|[0] standard deviation;[1] variance
 ParameterBoolean|LOG|Logarithmic Transformation|True
 ParameterBoolean|BLOCK|Block Kriging|True
@@ -10,9 +10,6 @@ ParameterNumber|VAR_MAXDIST|Maximum Distance|None|None|-1.0
 ParameterNumber|VAR_NCLASSES|Lag Distance Classes|1|None|100
 ParameterNumber|VAR_NSKIP|Skip|1|None|1
 ParameterString|VAR_MODEL|Variogram Model|a + b * x
-ParameterMultipleInput|GRIDS|Input Grids|3|True
-ParameterSelection|INTERPOL|Grid Interpolation|[0] Nearest Neighbor;[1] Bilinear Interpolation;[2] Inverse Distance Interpolation;[3] Bicubic Spline Interpolation;[4] B-Spline Interpolation
-ParameterBoolean|COORDS|Coordinates|False
 ParameterSelection|SEARCH_RANGE|Search Range|[0] local;[1] global
 ParameterNumber|SEARCH_RADIUS|Maximum Search Distance|0|None|1000
 ParameterSelection|SEARCH_POINTS_ALL|Number of Points|[0] maximum number of nearest points;[1] all points within search distance

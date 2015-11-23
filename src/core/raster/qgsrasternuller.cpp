@@ -27,7 +27,7 @@ QgsRasterNuller::~QgsRasterNuller()
 {
 }
 
-QgsRasterInterface * QgsRasterNuller::clone() const
+QgsRasterNuller* QgsRasterNuller::clone() const
 {
   QgsDebugMsg( "Entered" );
   QgsRasterNuller * nuller = new QgsRasterNuller( 0 );

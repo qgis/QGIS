@@ -236,7 +236,7 @@ namespace pal
       } PruneCtx;
 
       /** Check whether the candidate in ctx overlap with obstacle feat */
-      static bool pruneCallback( LabelPosition *lp, void *ctx );
+      static bool pruneCallback( LabelPosition *candidatePosition, void *ctx );
 
       // for sorting
       static bool costShrink( void *l, void *r );

@@ -73,7 +73,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     //! Destructor
     ~QgsGdalProvider();
 
-    QgsRasterInterface * clone() const override;
+    QgsGdalProvider * clone() const override;
 
     /** \brief   Renders the layer as an image
      */

@@ -238,13 +238,13 @@ bool QgsVectorLayerFeatureIterator::fetchFeature( QgsFeature& f )
 
     if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression && mProviderRequest.filterType() != QgsFeatureRequest::FilterExpression )
     {
-        //filtering by expression, and couldn't do it on the provider side
-        mRequest.expressionContext()->setFeature( f );
-        if ( !mRequest.filterExpression()->evaluate( mRequest.expressionContext() ).toBool() )
-        {
-          //feature did not match filter
-          continue;
-        }
+      //filtering by expression, and couldn't do it on the provider side
+      mRequest.expressionContext()->setFeature( f );
+      if ( !mRequest.filterExpression()->evaluate( mRequest.expressionContext() ).toBool() )
+      {
+        //feature did not match filter
+        continue;
+      }
     }
 
     // update geometry

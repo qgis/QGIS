@@ -134,6 +134,7 @@ void TestQgsLabelingEngineV2::testBasic()
   QVERIFY( imageCheck( "labeling_basic", img, 0 ) );
 
   // now let's test the variant when integrated into rendering loop
+  //note the reference images are slightly different due to use of renderer for this test
 
   job.start();
   job.waitForFinished();
@@ -141,8 +142,9 @@ void TestQgsLabelingEngineV2::testBasic()
 
   vl->setCustomProperty( "labeling/enabled", false );
 
-  QVERIFY( imageCheck( "labeling_basic", img2, 0 ) );
+  QVERIFY( imageCheck( "labeling_basic_loop", img2, 0 ) );
 }
+
 
 void TestQgsLabelingEngineV2::testDiagrams()
 {

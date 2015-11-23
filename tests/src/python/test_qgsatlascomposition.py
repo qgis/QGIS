@@ -293,32 +293,32 @@ class TestQgsAtlasComposition(unittest.TestCase):
         f1.initAttributes(2)
         f1.setAttribute(0, 1)
         f1.setAttribute(1, "Test label 1")
-        f1.setGeometry( QgsGeometry.fromPoint(QgsPoint(-0.638,48.954)) )
+        f1.setGeometry(QgsGeometry.fromPoint(QgsPoint(-0.638, 48.954)))
         f2 = QgsFeature(2)
         f2.initAttributes(2)
         f2.setAttribute(0, 2)
         f2.setAttribute(1, "Test label 2")
-        f2.setGeometry( QgsGeometry.fromPoint(QgsPoint(-1.682,48.550)) )
-        pr.addFeatures([f1,f2])
+        f2.setGeometry(QgsGeometry.fromPoint(QgsPoint(-1.682, 48.550)))
+        pr.addFeatures([f1, f2])
 
         # categorized symbology
-        r = QgsCategorizedSymbolRendererV2( "attr", [ QgsRendererCategoryV2( 1, QgsMarkerSymbolV2.createSimple( {"color": "255,0,0"} ), "red" ),
-                                                      QgsRendererCategoryV2( 2, QgsMarkerSymbolV2.createSimple( {"color": "0,0,255"} ), "blue" ) ] )
-        ptLayer.setRendererV2( r )
+        r = QgsCategorizedSymbolRendererV2("attr", [QgsRendererCategoryV2(1, QgsMarkerSymbolV2.createSimple({"color": "255,0,0"}), "red"),
+                                                    QgsRendererCategoryV2(2, QgsMarkerSymbolV2.createSimple({"color": "0,0,255"}), "blue")])
+        ptLayer.setRendererV2(r)
 
         QgsMapLayerRegistry.instance().addMapLayer(ptLayer)
 
         # add the point layer to the map settings
         layers = self.mapSettings.layers()
-        layers = [ ptLayer.id() ] + layers
-        self.mapSettings.setLayers( layers )
+        layers = [ptLayer.id()] + layers
+        self.mapSettings.setLayers(layers)
 
         # add a legend
-        legend = QgsComposerLegend( self.mComposition )
-        legend.moveBy( 200, 100 )
+        legend = QgsComposerLegend(self.mComposition)
+        legend.moveBy(200, 100)
         # sets the legend filter parameter
-        legend.setComposerMap( self.mAtlasMap )
-        legend.setLegendFilterOutAtlas( True )
+        legend.setComposerMap(self.mAtlasMap)
+        legend.setLegendFilterOutAtlas(True)
         self.mComposition.addComposerLegend(legend)
 
         self.mAtlas.beginRender()
@@ -333,8 +333,8 @@ class TestQgsAtlasComposition(unittest.TestCase):
         self.mAtlas.endRender()
 
         # restore state
-        self.mapSettings.setLayers( [layers[1]] )
-        self.mComposition.removeComposerItem( legend )
+        self.mapSettings.setLayers([layers[1]])
+        self.mComposition.removeComposerItem(legend)
         QgsMapLayerRegistry.instance().removeMapLayer(ptLayer.id())
 
 

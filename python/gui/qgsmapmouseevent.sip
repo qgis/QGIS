@@ -24,6 +24,14 @@ class QgsMapMouseEvent : QMouseEvent
 %TypeHeaderCode
 #include "qgsmapmouseevent.h"
 %End
+
+%ConvertToSubClassCode
+  if ( dynamic_cast<QgsMapMouseEvent*>( sipCpp ) )
+    sipType = sipType_QgsMapMouseEvent;
+  else
+    sipType = 0;
+%End
+
   public:
 
     enum SnappingMode

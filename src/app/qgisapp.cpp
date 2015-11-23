@@ -992,6 +992,7 @@ QgisApp::QgisApp()
     , mMacrosWarn( 0 )
     , mUserInputDockWidget( 0 )
     , mVectorLayerTools( 0 )
+    , mActionFilterLegend( 0 )
     , mLegendExpressionFilterButton( 0 )
     , mSnappingUtils( 0 )
     , mProjectLastModified()
@@ -1479,12 +1480,14 @@ void QgisApp::createActions()
 #ifdef Q_OS_MAC
   mActionHelpContents->setShortcut( QString( "Ctrl+?" ) );
   mActionQgisHomePage->setShortcut( QString() );
+  mActionReportaBug->setShortcut( QString() );
 #endif
 
   mActionHelpContents->setEnabled( QFileInfo( QgsApplication::pkgDataPath() + "/doc/index.html" ).exists() );
 
   connect( mActionHelpContents, SIGNAL( triggered() ), this, SLOT( helpContents() ) );
   connect( mActionHelpAPI, SIGNAL( triggered() ), this, SLOT( apiDocumentation() ) );
+  connect( mActionReportaBug, SIGNAL( triggered() ), this, SLOT( reportaBug() ) );
   connect( mActionNeedSupport, SIGNAL( triggered() ), this, SLOT( supportProviders() ) );
   connect( mActionQgisHomePage, SIGNAL( triggered() ), this, SLOT( helpQgisHomePage() ) );
   connect( mActionCheckQgisVersion, SIGNAL( triggered() ), this, SLOT( checkQgisVersion() ) );
@@ -6805,6 +6808,10 @@ void QgisApp::copyStyle( QgsMapLayer * sourceLayer )
     rootNode.setAttribute( "version", QString( "%1" ).arg( QGis::QGIS_VERSION ) );
     doc.appendChild( rootNode );
 
+    rootNode.setAttribute( "hasScaleBasedVisibilityFlag", selectionLayer->hasScaleBasedVisibility() ? 1 : 0 );
+    rootNode.setAttribute( "minimumScale", QString::number( selectionLayer->minimumScale() ) );
+    rootNode.setAttribute( "maximumScale", QString::number( selectionLayer->maximumScale() ) );
+
     /*
      * Check to see if the layer is vector - in which case we should also copy its geometryType
      * to avoid eventually pasting to a layer with a different geometry
@@ -6885,6 +6892,10 @@ void QgisApp::pasteStyle( QgsMapLayer * destinationLayer )
                                    QgsMessageBar::CRITICAL, messageTimeout() );
         return;
       }
+
+      selectionLayer->setScaleBasedVisibility( rootNode.attribute( "hasScaleBasedVisibilityFlag" ).toInt() == 1 );
+      selectionLayer->setMinimumScale( rootNode.attribute( "minimumScale" ).toFloat() );
+      selectionLayer->setMaximumScale( rootNode.attribute( "maximumScale" ).toFloat() );
 
       mLayerTreeView->refreshLayerSymbology( selectionLayer->id() );
       mMapCanvas->clearCache();
@@ -8086,7 +8097,7 @@ void QgisApp::adjustBrightnessContrast( int delta, bool updateBrightness )
 void QgisApp::helpContents()
 {
   // We should really ship the HTML version of the docs local too.
-  openURL( QString( "http://docs.qgis.org/%1.%2/%3/docs/user_manual/" )
+  openURL( QString( "https://docs.qgis.org/%1.%2/%3/docs/user_manual/" )
            .arg( QGis::QGIS_VERSION_INT / 10000 )
            .arg( QGis::QGIS_VERSION_INT / 100 % 100 )
            .arg( tr( "en", "documentation language" ) ),
@@ -8101,18 +8112,22 @@ void QgisApp::apiDocumentation()
   }
   else
   {
-    openURL( "http://qgis.org/api/", false );
+    openURL( "https://qgis.org/api/", false );
   }
 }
 
+void QgisApp::reportaBug()
+{
+  openURL( tr( "https://qgis.org/en/site/getinvolved/development/index.html#bugs-features-and-issues" ), false );
+}
 void QgisApp::supportProviders()
 {
-  openURL( tr( "http://qgis.org/en/site/forusers/commercial_support.html" ), false );
+  openURL( tr( "https://qgis.org/en/site/forusers/commercial_support.html" ), false );
 }
 
 void QgisApp::helpQgisHomePage()
 {
-  openURL( "http://qgis.org", false );
+  openURL( "https://qgis.org", false );
 }
 
 void QgisApp::openURL( QString url, bool useQgisDocDirectory )
@@ -10186,19 +10201,19 @@ void QgisApp::oldProjectVersionWarning( const QString& oldVersion )
                         "<p>Version of the project file: %1<br>Current version of QGIS: %2" )
                     .arg( oldVersion,
                           QGis::QGIS_VERSION,
-                          "<a href=\"http://hub.qgis.org/projects/quantum-gis\">http://hub.qgis.org/projects/quantum-gis</a> ",
+                          "<a href=\"https://hub.qgis.org/projects/quantum-gis\">https://hub.qgis.org/projects/quantum-gis</a> ",
                           tr( "<tt>Settings:Options:General</tt>", "Menu path to setting options" ),
                           tr( "Warn me when opening a project file saved with an older version of QGIS" ) );
     QString title =  tr( "Project file is older" );
 
 #ifdef ANDROID
-    //this is needed to deal with http://hub.qgis.org/issues/4573
+    //this is needed to deal with https://hub.qgis.org/issues/4573
     QMessageBox box( QMessageBox::Warning, title, tr( "This project file was saved by an older version of QGIS" ), QMessageBox::Ok, NULL );
     box.setDetailedText(
       text.remove( 0, 3 )
       .replace( QString( "<p>" ), QString( "\n\n" ) )
       .replace( QString( "<br>" ), QString( "\n" ) )
-      .replace( QString( "<a href=\"http://hub.qgis.org/projects/quantum-gis\">http://hub.qgis.org/projects/quantum-gis</a> " ), QString( "\nhttp://hub.qgis.org/projects/quantum-gis" ) )
+      .replace( QString( "<a href=\"https://hub.qgis.org/projects/quantum-gis\">https://hub.qgis.org/projects/quantum-gis</a> " ), QString( "\nhttps://hub.qgis.org/projects/quantum-gis" ) )
       .replace( QRegExp( "</?tt>" ), QString() )
     );
     box.exec();

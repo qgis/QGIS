@@ -39,6 +39,9 @@
 
 // ------------------------------ Model ------------------------------------
 
+///@cond
+//not part of public API
+
 QgsGraduatedSymbolRendererV2Model::QgsGraduatedSymbolRendererV2Model( QObject * parent ) : QAbstractItemModel( parent )
     , mRenderer( 0 )
     , mMimeFormat( "application/x-qgsgraduatedsymbolrendererv2model" )
@@ -372,6 +375,8 @@ void QgsGraduatedSymbolRendererV2ViewStyle::drawPrimitive( PrimitiveElement elem
   }
   QProxyStyle::drawPrimitive( element, option, painter, widget );
 }
+
+///@endcond
 
 // ------------------------------ Widget ------------------------------------
 

@@ -55,12 +55,12 @@ QgsRectangle QgsAbstractGeometryV2::boundingBox() const
 
 bool QgsAbstractGeometryV2::is3D() const
 {
-  return(( mWkbType >= 1001 && mWkbType <= 1017 ) || ( mWkbType > 3000 || mWkbType & 0x80000000 ) );
+  return QgsWKBTypes::hasZ( mWkbType );
 }
 
 bool QgsAbstractGeometryV2::isMeasure() const
 {
-  return ( mWkbType >= 2001 && mWkbType <= 3017 );
+  return QgsWKBTypes::hasM( mWkbType );
 }
 
 #if 0
@@ -86,15 +86,15 @@ void QgsAbstractGeometryV2::setZMTypeFromSubGeometry( const QgsAbstractGeometryV
 
   if ( hasZ && hasM )
   {
-    mWkbType = ( QgsWKBTypes::Type )( baseGeomType + 3000 );
+    mWkbType = QgsWKBTypes::addM( QgsWKBTypes::addZ( baseGeomType ) );
   }
   else if ( hasZ )
   {
-    mWkbType = ( QgsWKBTypes::Type )( baseGeomType + 1000 );
+    mWkbType = QgsWKBTypes::addZ( baseGeomType );
   }
   else if ( hasM )
   {
-    mWkbType = ( QgsWKBTypes::Type )( baseGeomType + 2000 );
+    mWkbType =  QgsWKBTypes::addM( baseGeomType );
   }
   else
   {

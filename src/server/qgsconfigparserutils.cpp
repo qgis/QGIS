@@ -154,7 +154,7 @@ void QgsConfigParserUtils::appendLayerBoundingBoxes( QDomElement& layerElem, QDo
     layerElem.appendChild( ExGeoBBoxElement );
     //layerElem.appendChild( bBoxElement );
   }
-  
+
   //In case the number of advertised CRS is constrained
   if ( constrainedCrsList.size() > 0 )
   {
@@ -179,15 +179,15 @@ void QgsConfigParserUtils::appendLayerBoundingBox( QDomElement& layerElem, QDomD
   {
     return;
   }
-  
+
   QString version = doc.documentElement().attribute( "version" );
-  
+
   const QgsCoordinateReferenceSystem& crs = QgsCRSCache::instance()->crsByAuthId( crsText );
-  
+
   //transform the layers native CRS into CRS
   QgsCoordinateTransform crsTransform( layerCRS, crs );
   QgsRectangle crsExtent = crsTransform.transformBoundingBox( layerExtent );
-  
+
   //BoundingBox element
   QDomElement bBoxElement = doc.createElement( "BoundingBox" );
   if ( crs.isValid() )

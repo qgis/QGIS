@@ -25,6 +25,7 @@
 #include <QString>
 #include <QUrl>
 #include <QObject>
+#include <QSizeF>
 
 class QDomElement;
 class QImage;
@@ -55,6 +56,12 @@ class CORE_EXPORT QgsSvgCacheEntry
     double outlineWidth;
     double widthScaleFactor;
     double rasterScaleFactor;
+
+    /** SVG viewbox size.
+     * @note added in QGIS 2.14
+     */
+    QSizeF viewboxSize;
+
     QColor fill;
     QColor outline;
     QImage* image;
@@ -108,6 +115,20 @@ class CORE_EXPORT QgsSvgCache : public QObject
      */
     const QPicture& svgAsPicture( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
                                   double widthScaleFactor, double rasterScaleFactor, bool forceVectorOutput = false );
+
+    /** Calculates the viewbox size of a (possibly cached) SVG file.
+     * @param file Absolute or relative path to SVG file.
+     * @param size size of cached image
+     * @param fill color of fill
+     * @param outline color of outline
+     * @param outlineWidth width of outline
+     * @param widthScaleFactor width scale factor
+     * @param rasterScaleFactor raster scale factor
+     * @returns viewbox size set in SVG file
+     * @note added in QGIS 2.14
+     */
+    QSizeF svgViewboxSize( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
+                           double widthScaleFactor, double rasterScaleFactor );
 
     /** Tests if an svg file contains parameters for fill, outline color, outline width. If yes, possible default values are returned. If there are several
       default values in the svg file, only the first one is considered*/
@@ -200,7 +221,7 @@ class CORE_EXPORT QgsSvgCache : public QObject
                              bool& hasOutlineWidthParam, bool& hasDefaultOutlineWidth, double& defaultOutlineWidth ) const;
 
     /** Calculates scaling for rendered image sizes to SVG logical sizes*/
-    double calcSizeScaleFactor( QgsSvgCacheEntry* entry, const QDomElement& docElem ) const;
+    double calcSizeScaleFactor( QgsSvgCacheEntry* entry, const QDomElement& docElem, QSizeF& viewboxSize ) const;
 
     /** Release memory and remove cache entry from mEntryLookup*/
     void removeCacheEntry( const QString& s, QgsSvgCacheEntry* entry );

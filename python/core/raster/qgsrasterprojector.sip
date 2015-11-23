@@ -44,7 +44,7 @@ class QgsRasterProjector : QgsRasterInterface
     /** \brief The destructor */
     ~QgsRasterProjector();
 
-    QgsRasterInterface *clone() const /Factory/;
+    virtual QgsRasterProjector *clone() const /Factory/;
 
     int bandCount() const;
 

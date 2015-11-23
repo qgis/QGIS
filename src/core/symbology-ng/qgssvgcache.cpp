@@ -192,6 +192,15 @@ const QByteArray& QgsSvgCache::svgContent( const QString& file, double size, con
   return currentEntry->svgContent;
 }
 
+QSizeF QgsSvgCache::svgViewboxSize( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth, double widthScaleFactor, double rasterScaleFactor )
+{
+  QMutexLocker locker( &mMutex );
+
+  QgsSvgCacheEntry *currentEntry = cacheEntry( file, size, fill, outline, outlineWidth, widthScaleFactor, rasterScaleFactor );
+
+  return currentEntry->viewboxSize;
+}
+
 QgsSvgCacheEntry* QgsSvgCache::insertSVG( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
     double widthScaleFactor, double rasterScaleFactor )
 {
@@ -280,14 +289,16 @@ void QgsSvgCache::replaceParamsAndCacheSvg( QgsSvgCacheEntry* entry )
   //replace fill color, outline color, outline with in all nodes
   QDomElement docElem = svgDoc.documentElement();
 
-  double sizeScaleFactor = calcSizeScaleFactor( entry, docElem );
+  QSizeF viewboxSize;
+  double sizeScaleFactor = calcSizeScaleFactor( entry, docElem, viewboxSize );
+  entry->viewboxSize = viewboxSize;
   replaceElemParams( docElem, entry->fill, entry->outline, entry->outlineWidth * sizeScaleFactor );
 
   entry->svgContent = svgDoc.toByteArray();
   mTotalSize += entry->svgContent.size();
 }
 
-double QgsSvgCache::calcSizeScaleFactor( QgsSvgCacheEntry* entry, const QDomElement& docElem ) const
+double QgsSvgCache::calcSizeScaleFactor( QgsSvgCacheEntry* entry, const QDomElement& docElem, QSizeF& viewboxSize ) const
 {
   QString viewBox;
 
@@ -319,11 +330,16 @@ double QgsSvgCache::calcSizeScaleFactor( QgsSvgCacheEntry* entry, const QDomElem
   if ( parts.count() != 4 )
     return 1.0;
 
+  bool heightOk = false;
+  double height = parts.at( 3 ).toDouble( &heightOk );
+
   bool widthOk = false;
   double width = parts.at( 2 ).toDouble( &widthOk );
   if ( widthOk )
   {
-    return width / entry->size ;
+    if ( heightOk )
+      viewboxSize = QSizeF( width, height );
+    return width / entry->size;
   }
 
   return 1.0;

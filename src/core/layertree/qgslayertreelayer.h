@@ -62,7 +62,7 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
 
     virtual QString dump() const override;
 
-    virtual QgsLayerTreeNode* clone() const override;
+    virtual QgsLayerTreeLayer* clone() const override;
 
   protected slots:
     void registryLayersAdded( const QList<QgsMapLayer*>& layers );

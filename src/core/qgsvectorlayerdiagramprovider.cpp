@@ -225,15 +225,15 @@ bool QgsVectorLayerDiagramProvider::prepare( const QgsRenderContext& context, QS
 }
 
 
-void QgsVectorLayerDiagramProvider::registerFeature( QgsFeature& feature, QgsRenderContext& context )
+void QgsVectorLayerDiagramProvider::registerFeature( QgsFeature& feature, QgsRenderContext& context, QgsGeometry* obstacleGeometry )
 {
-  QgsLabelFeature* label = registerDiagram( feature, context );
+  QgsLabelFeature* label = registerDiagram( feature, context, obstacleGeometry );
   if ( label )
     mFeatures << label;
 }
 
 
-QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& feat, QgsRenderContext &context )
+QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& feat, QgsRenderContext &context, QgsGeometry* obstacleGeometry )
 {
   const QgsMapSettings& mapSettings = mEngine->mapSettings();
 
@@ -284,8 +284,25 @@ QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& fea
   {
     return 0; // invalid geometry
   }
-
   GEOSGeometry* geomCopy = GEOSGeom_clone_r( QgsGeometry::getGEOSHandler(), geos_geom );
+
+  const GEOSGeometry* geosObstacleGeom = 0;
+  QScopedPointer<QgsGeometry> scopedObstacleGeom;
+  if ( mSettings.obstacle && obstacleGeometry && QgsPalLabeling::geometryRequiresPreparation( obstacleGeometry, context, mSettings.ct, extentGeom.data() ) )
+  {
+    scopedObstacleGeom.reset( QgsPalLabeling::prepareGeometry( obstacleGeometry, context, mSettings.ct, extentGeom.data() ) );
+    geosObstacleGeom = scopedObstacleGeom.data()->asGeos();
+  }
+  else if ( mSettings.obstacle && obstacleGeometry )
+  {
+    geosObstacleGeom = obstacleGeometry->asGeos();
+  }
+  GEOSGeometry* geosObstacleGeomClone = 0;
+  if ( geosObstacleGeom )
+  {
+    geosObstacleGeomClone = GEOSGeom_clone_r( QgsGeometry::getGEOSHandler(), geosObstacleGeom );
+  }
+
 
   double diagramWidth = 0;
   double diagramHeight = 0;
@@ -336,6 +353,10 @@ QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& fea
   lf->setFixedAngle( 0 );
   lf->setAlwaysShow( alwaysShow );
   lf->setIsObstacle( mSettings.obstacle );
+  if ( geosObstacleGeomClone )
+  {
+    lf->setObstacleGeometry( geosObstacleGeomClone );
+  }
 
   if ( dr )
   {

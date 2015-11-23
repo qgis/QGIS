@@ -23,6 +23,8 @@
 #include "qgscapabilitiescache.h"
 #include "qgsrequesthandler.h"
 #include "qgsserverfilter.h"
+#include "qgsaccesscontrolfilter.h"
+#include "qgsaccesscontrol.h"
 
 /**
  * \ingroup server
@@ -45,6 +47,7 @@ class SERVER_EXPORT QgsServerInterface
     /**
      * Set the request handler
      * @param requestHandler request handler
+     * @note not available in Python bindings
      */
     virtual void setRequestHandler( QgsRequestHandler* requestHandler ) = 0;
 
@@ -85,6 +88,13 @@ class SERVER_EXPORT QgsServerInterface
      * @return QgsServerFiltersMap list of QgsServerFilter
      */
     virtual QgsServerFiltersMap filters( ) = 0;
+    /** Register an access control filter
+     * @param accessControl the access control to register
+     * @param priority the priority used to order them
+     */
+    virtual void registerAccessControl( QgsAccessControlFilter* accessControl, int priority = 0 ) = 0;
+    /** Gets the registred access control filters */
+    virtual const QgsAccessControl* accessControls( ) const = 0;
 
     //! Return an enrironment variable, used to pass  environment variables to python
     virtual QString getEnv( const QString& name ) const = 0;
@@ -99,7 +109,7 @@ class SERVER_EXPORT QgsServerInterface
      * Set the configuration file path
      * @param configFilePath QString with the configuration file path
      */
-    virtual void setConfigFilePath( QString configFilePath ) = 0;
+    virtual void setConfigFilePath( const QString& configFilePath ) = 0;
 
   private:
     QString mConfigFilePath;

@@ -212,6 +212,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   mToggleEditingButton->blockSignals( false );
 
   mSaveEditsButton->setEnabled( mToggleEditingButton->isEnabled() && mLayer->isEditable() );
+  mReloadButton->setEnabled( ! mLayer->isEditable() );
   mAddAttribute->setEnabled(( canChangeAttributes || canAddAttributes ) && mLayer->isEditable() );
   mDeleteSelectedButton->setEnabled( canDeleteFeatures && mLayer->isEditable() );
   mAddFeature->setEnabled( canAddFeatures && mLayer->isEditable() );
@@ -327,7 +328,7 @@ void QgsAttributeTableDialog::columnBoxInit()
   mFilterButton->addAction( mActionFilterColumnsMenu );
   mFilterButton->addAction( mActionAdvancedFilter );
 
-  QList<QgsField> fields = mLayer->fields().toList();
+  const QList<QgsField> fields = mLayer->fields().toList();
 
   Q_FOREACH ( const QgsField& field, fields )
   {
@@ -335,13 +336,14 @@ void QgsAttributeTableDialog::columnBoxInit()
     if ( idx < 0 )
       continue;
 
-    if ( mLayer->editorWidgetV2( idx ) != "Hidden" )
+    if ( mLayer->editFormConfig()->widgetType( idx ) != "Hidden" )
     {
       QIcon icon = QgsApplication::getThemeIcon( "/mActionNewAttribute.png" );
-      QString text = field.name();
+      QString alias = mLayer->attributeDisplayName( idx );
 
       // Generate action for the filter popup button
-      QAction* filterAction = new QAction( icon, text, mFilterButton );
+      QAction* filterAction = new QAction( icon, alias, mFilterButton );
+      filterAction->setData( field.name() );
       mFilterActionMapper->setMapping( filterAction, filterAction );
       connect( filterAction, SIGNAL( triggered() ), mFilterActionMapper, SLOT( map() ) );
       mFilterColumnsMenu->addAction( filterAction );
@@ -453,13 +455,13 @@ void QgsAttributeTableDialog::filterColumnChanged( QObject* filterAction )
     mCurrentSearchWidgetWrapper->widget()->setVisible( false );
     delete mCurrentSearchWidgetWrapper;
   }
-  QString fieldName = mFilterButton->defaultAction()->text();
+  QString fieldName = mFilterButton->defaultAction()->data().toString();
   // get the search widget
   int fldIdx = mLayer->fieldNameIndex( fieldName );
   if ( fldIdx < 0 )
     return;
-  const QString widgetType = mLayer->editorWidgetV2( fldIdx );
-  const QgsEditorWidgetConfig widgetConfig = mLayer->editorWidgetV2Config( fldIdx );
+  const QString widgetType = mLayer->editFormConfig()->widgetType( fldIdx );
+  const QgsEditorWidgetConfig widgetConfig = mLayer->editFormConfig()->widgetConfig( fldIdx );
   mCurrentSearchWidgetWrapper = QgsEditorWidgetRegistry::instance()->
                                 createSearchWidget( widgetType, mLayer, fldIdx, widgetConfig, mFilterContainer );
   if ( mCurrentSearchWidgetWrapper->applyDirectly() )
@@ -579,6 +581,11 @@ void QgsAttributeTableDialog::on_mSaveEditsButton_clicked()
   QgisApp::instance()->saveEdits( mLayer, true, true );
 }
 
+void QgsAttributeTableDialog::on_mReloadButton_clicked()
+{
+  mMainView->masterModel()->layer()->dataProvider()->forceReload();
+}
+
 void QgsAttributeTableDialog::on_mAddFeature_clicked()
 {
   if ( !mLayer->isEditable() )
@@ -658,6 +665,7 @@ void QgsAttributeTableDialog::editingToggled()
   mToggleEditingButton->blockSignals( true );
   mToggleEditingButton->setChecked( mLayer->isEditable() );
   mSaveEditsButton->setEnabled( mLayer->isEditable() );
+  mReloadButton->setEnabled( ! mLayer->isEditable() );
   mToggleEditingButton->blockSignals( false );
 
   bool canChangeAttributes = mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues;

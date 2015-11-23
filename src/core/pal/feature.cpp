@@ -74,6 +74,17 @@ namespace pal
 
   }
 
+  FeaturePart::FeaturePart( const FeaturePart& other )
+      : PointSet( other )
+      , mLF( other.mLF )
+  {
+    Q_FOREACH ( FeaturePart* hole, other.mHoles )
+    {
+      mHoles << new FeaturePart( *hole );
+      mHoles.last()->holeOf = this;
+    }
+  }
+
 
   FeaturePart::~FeaturePart()
   {
@@ -152,6 +163,14 @@ namespace pal
   QgsFeatureId FeaturePart::featureId() const
   {
     return mLF->id();
+  }
+
+  bool FeaturePart::hasSameLabelFeatureAs( FeaturePart* part ) const
+  {
+    if ( !part )
+      return false;
+
+    return mLF->id() == part->featureId() && mLF->layer()->name() == part->layer()->name();
   }
 
   LabelPosition::Quadrant FeaturePart::quadrantFromOffset() const

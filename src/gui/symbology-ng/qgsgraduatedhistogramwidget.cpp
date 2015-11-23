@@ -180,6 +180,8 @@ void QgsGraduatedHistogramWidget::findClosestRange( double value, int &closestRa
   }
 }
 
+///@cond
+
 QgsGraduatedHistogramEventFilter::QgsGraduatedHistogramEventFilter( QwtPlot *plot )
     : QObject( plot )
     , mPlot( plot )
@@ -226,3 +228,4 @@ double QgsGraduatedHistogramEventFilter::posToValue( const QPointF &point ) cons
 
   return mPlot->canvasMap( QwtPlot::xBottom ).invTransform( point.x() );
 }
+///@endcond

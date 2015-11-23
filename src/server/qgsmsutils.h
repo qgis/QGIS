@@ -25,7 +25,7 @@ namespace QgsMSUtils
      the current working directory on windows*/
   QString createTempFilePath();
   /** Stores the specified text in a temporary file. Returns 0 in case of success*/
-  int createTextFile( QString filePath, const QString& text );
+  int createTextFile( const QString& filePath, const QString& text );
 }
 
 #endif

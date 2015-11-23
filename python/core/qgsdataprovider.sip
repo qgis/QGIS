@@ -9,15 +9,15 @@ class QgsDataProvider : QObject
 %ConvertToSubClassCode
     if (sipCpp->inherits("QgsVectorDataProvider"))
     {
-        sipClass = sipClass_QgsVectorDataProvider;
+        sipType = sipType_QgsVectorDataProvider;
     }
     else if (sipCpp->inherits("QgsRasterDataProvider"))
     {
-	sipClass = sipClass_QgsRasterDataProvider;
+	sipType = sipType_QgsRasterDataProvider;
     }
     else
     {
-        sipClass = 0;
+        sipType = 0;
     }
 %End
 

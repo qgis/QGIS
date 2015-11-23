@@ -49,6 +49,8 @@ email                : marco.hugentobler at sourcepole dot com
     return r; \
   }
 
+///@cond
+//not part of public API
 
 static void throwGEOSException( const char *fmt, ... )
 {
@@ -97,6 +99,9 @@ class GEOSInit
 };
 
 static GEOSInit geosinit;
+
+///@endcond
+
 
 /**
  * @brief Scoped GEOS pointer
@@ -546,7 +551,7 @@ GEOSGeometry* QgsGeos::linePointDifference( GEOSGeometry* GEOSsplitPoint ) const
       //For each segment
       QgsLineStringV2 newLine;
       newLine.addVertex( line->pointN( 0 ) );
-      int nVertices = newLine.numPoints();
+      int nVertices = line->numPoints();
       for ( int j = 1; j < ( nVertices - 1 ); ++j )
       {
         QgsPointV2 currentPoint = line->pointN( j );
@@ -1366,20 +1371,20 @@ bool QgsGeos::pointOnSurface( QgsPointV2& pt, QString* errorMsg ) const
   try
   {
     geos.reset( GEOSPointOnSurface_r( geosinit.ctxt, mGeos ) );
+
+    if ( !geos || GEOSisEmpty_r( geosinit.ctxt, geos.get() ) != 0 )
+    {
+      return false;
+    }
+
+    double x, y;
+    GEOSGeomGetX_r( geosinit.ctxt, geos.get(), &x );
+    GEOSGeomGetY_r( geosinit.ctxt, geos.get(), &y );
+
+    pt.setX( x );
+    pt.setY( y );
   }
   CATCH_GEOS_WITH_ERRMSG( false );
-
-  if ( !geos )
-  {
-    return false;
-  }
-
-  double x, y;
-  GEOSGeomGetX_r( geosinit.ctxt, geos.get(), &x );
-  GEOSGeomGetY_r( geosinit.ctxt, geos.get(), &y );
-
-  pt.setX( x );
-  pt.setY( y );
 
   return true;
 }

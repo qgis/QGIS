@@ -36,7 +36,23 @@ Advanced configuration
 
 ### Postgres
 
+Make sure that you have enabled building of postgres test in CMake.
+`cmake -DENABLE_PGTEST=ON ..`
+
 To test the postgres provider you will need to have a database available to
-which the postgres provider can connect. This will need to have postgis support
-enabled and be available as a service called `qgis_test` on the machine you run
-the tests on.
+which the postgres provider can connect. The server will need to have postgis
+support enabled.
+By default the test uses the following connection options:
+    dbname='qgis_test'
+    host=localhost
+    port=5432
+    user='postgres'
+    password='postgres'
+
+If this does not match your setup you can set the environment variable
+QGIS_PGTEST_DB to the desired connection string.
+
+Please note that the database needs to be initialized using the sql-script
+    tests/testdata/provider/testdata.sql
+It takes care of activating postgis for the test database and
+creates some tables containing test data.

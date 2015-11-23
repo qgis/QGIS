@@ -31,9 +31,9 @@ class QgsMapCanvas : QGraphicsView
 
 %ConvertToSubClassCode
   if (dynamic_cast<QgsMapCanvas*>(sipCpp) != NULL)
-    sipClass = sipClass_QgsMapCanvas;
+    sipType = sipType_QgsMapCanvas;
   else
-    sipClass = NULL;
+    sipType = NULL;
 %End
 
   public:

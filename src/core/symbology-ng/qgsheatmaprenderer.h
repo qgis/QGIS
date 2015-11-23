@@ -38,11 +38,13 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRendererV2
     virtual ~QgsHeatmapRenderer();
 
     //reimplemented methods
-    virtual QgsFeatureRendererV2* clone() const override;
+    virtual QgsHeatmapRenderer* clone() const override;
     virtual void startRender( QgsRenderContext& context, const QgsFields& fields ) override;
     virtual bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override;
     virtual void stopRender( QgsRenderContext& context ) override;
+    //! @note symbolForFeature2 in python bindings
     virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature, QgsRenderContext &context ) override;
+    //! @note symbol2 in python bindings
     virtual QgsSymbolV2List symbols( QgsRenderContext &context ) override;
     virtual QString dump() const override;
     virtual QList<QString> usedAttributes() override;

@@ -25,10 +25,9 @@ class DualEdgeTriangulation: Triangulation
     /** Returns the number of the point opposite to the triangle points p1, p2 (which have to be on a halfedge)*/
     int getOppositePoint( int p1, int p2 );
     /** Finds out, in which triangle the point with coordinates x and y is and assigns the numbers of the vertices to 'n1', 'n2' and 'n3' and the vertices to 'p1', 'p2' and 'p3'*/
-    //! @note not available in python bindings
-    // virtual bool getTriangle( double x, double y, Point3D* p1, int* n1, Point3D* p2, int* n2, Point3D* p3, int* n3 );
+    bool getTriangle( double x, double y, Point3D* p1, int* n1 /Out/, Point3D* p2 /Out/, int* n2 /Out/, Point3D* p3 /Out/, int* n3 /Out/ );
     /** Finds out, in which triangle the point with coordinates x and y is and assigns addresses to the points at the vertices to 'p1', 'p2' and 'p3*/
-    virtual bool getTriangle( double x, double y, Point3D* p1, Point3D* p2, Point3D* p3 );
+        bool getTriangle( double x, double y, Point3D* p1 /Out/, Point3D* p2 /Out/, Point3D* p3 /Out/ );
     /** Returns a pointer to a value list with the information of the triangles surrounding (counterclockwise) a point. Four integer values describe a triangle, the first three are the number of the half edges of the triangle and the fourth is -10, if the third (and most counterclockwise) edge is a breakline, and -20 otherwise. The value list has to be deleted by the code which called the method*/
     QList<int>* getSurroundingTriangles( int pointno );
     /** Returns the largest x-coordinate value of the bounding box*/
@@ -41,10 +40,6 @@ class DualEdgeTriangulation: Triangulation
     virtual double getYMin() const;
     /** Returns the number of points*/
     virtual int getNumberOfPoints() const;
-    /** Removes the line with number i from the triangulation*/
-    void removeLine( int i );
-    /** Removes the point with the number i from the triangulation*/
-    void removePoint( int i );
     /** Sets the behaviour of the triangulation in case of crossing forced lines*/
     virtual void setForcedCrossBehaviour( Triangulation::forcedCrossBehaviour b );
     /** Sets the color of the normal edges*/
@@ -81,7 +76,7 @@ class DualEdgeTriangulation: Triangulation
     /** Threshold for the leftOfTest to handle numerical instabilities*/
     //const static double leftOfTresh=0.00001;
     /** Security to prevent endless loops in 'baseEdgeOfTriangle'. It there are more iteration then this number, the point will not be inserted*/
-    const static int nBaseOfRuns = 300000;
+    //const static int nBaseOfRuns;
     /** Returns the number of an edge which points to the point with number 'point' or -1 if there is an error*/
     int baseEdgeOfPoint( int point );
     /** Returns the number of a HalfEdge from a triangle in which 'point' is in. If the number -10 is returned, this means, that 'point' is outside the convex hull. If -5 is returned, then numerical problems with the leftOfTest occured (and the value of the possible edge is stored in the variable 'mUnstableEdge'. -20 means, that the inserted point is exactly on an edge (the number is stored in the variable 'mEdgeWithPoint'). -25 means, that the point is already in the triangulation (the number of the point is stored in the member 'mTwiceInsPoint'. If -100 is returned, this means that something else went wrong*/

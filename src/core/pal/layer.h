@@ -249,6 +249,9 @@ namespace pal
       /** List of feature parts */
       QLinkedList<FeaturePart*> mFeatureParts;
 
+      /** List of obstacle parts */
+      QList<FeaturePart*> mObstacleParts;
+
       Pal *pal;
 
       double mDefaultPriority;
@@ -269,9 +272,12 @@ namespace pal
       UpsideDownLabels mUpsidedownLabels;
 
       // indexes (spatial and id)
-      RTree<FeaturePart*, double, 2, double, 8, 4> *rtree;
+      RTree<FeaturePart*, double, 2, double, 8, 4> *mFeatureIndex;
       //! Lookup table of label features (owned by the label feature provider that created them)
       QHash< QgsFeatureId, QgsLabelFeature*> mHashtable;
+
+      //obstacle r-tree
+      RTree<FeaturePart*, double, 2, double, 8, 4> *mObstacleIndex;
 
       QHash< QString, QLinkedList<FeaturePart*>* > mConnectedHashtable;
       QStringList mConnectedTexts;
@@ -295,6 +301,9 @@ namespace pal
 
       /** Add newly created feature part into r tree and to the list */
       void addFeaturePart( FeaturePart* fpart, const QString &labelText = QString() );
+
+      /** Add newly created obstacle part into r tree and to the list */
+      void addObstaclePart( FeaturePart* fpart );
 
   };
 

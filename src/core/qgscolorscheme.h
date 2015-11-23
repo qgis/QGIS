@@ -147,7 +147,7 @@ class CORE_EXPORT QgsUserColorScheme : public QgsGplColorScheme
 
     virtual QString schemeName() const override;
 
-    virtual QgsColorScheme* clone() const override;
+    virtual QgsUserColorScheme* clone() const override;
 
     virtual bool isEditable() const override { return true; }
 
@@ -191,7 +191,7 @@ class CORE_EXPORT QgsRecentColorScheme : public QgsColorScheme
     virtual QgsNamedColorList fetchColors( const QString &context = QString(),
                                            const QColor &baseColor = QColor() ) override;
 
-    QgsColorScheme* clone() const override;
+    QgsRecentColorScheme* clone() const override;
 };
 
 /** \ingroup core
@@ -218,7 +218,7 @@ class CORE_EXPORT QgsCustomColorScheme : public QgsColorScheme
 
     virtual bool setColors( const QgsNamedColorList &colors, const QString &context = QString(), const QColor &baseColor = QColor() ) override;
 
-    QgsColorScheme* clone() const override;
+    QgsCustomColorScheme* clone() const override;
 };
 
 /** \ingroup core
@@ -245,7 +245,7 @@ class CORE_EXPORT QgsProjectColorScheme : public QgsColorScheme
 
     virtual bool setColors( const QgsNamedColorList &colors, const QString &context = QString(), const QColor &baseColor = QColor() ) override;
 
-    QgsColorScheme* clone() const override;
+    QgsProjectColorScheme* clone() const override;
 };
 
 #endif

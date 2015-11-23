@@ -30,7 +30,7 @@ class QgsSimpleFillSymbolLayerV2 : QgsFillSymbolLayerV2
 
     QgsStringMap properties() const;
 
-    QgsSymbolLayerV2* clone() const /Factory/;
+    virtual QgsSimpleFillSymbolLayerV2* clone() const /Factory/;
 
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const;
 
@@ -154,7 +154,7 @@ class QgsGradientFillSymbolLayerV2 : QgsFillSymbolLayerV2
 
     QgsStringMap properties() const;
 
-    QgsSymbolLayerV2* clone() const /Factory/;
+    virtual QgsGradientFillSymbolLayerV2* clone() const /Factory/;
 
     double estimateMaxBleed() const;
 
@@ -252,7 +252,7 @@ class QgsShapeburstFillSymbolLayerV2 : QgsFillSymbolLayerV2
 
     QgsStringMap properties() const;
 
-    QgsSymbolLayerV2* clone() const /Factory/;
+    virtual QgsShapeburstFillSymbolLayerV2* clone() const /Factory/;
 
     double estimateMaxBleed() const;
 
@@ -438,7 +438,7 @@ class QgsImageFillSymbolLayer: QgsFillSymbolLayerV2
     void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context );
 
     virtual QgsSymbolV2* subSymbol();
-    virtual bool setSubSymbol( QgsSymbolV2* symbol );
+    virtual bool setSubSymbol( QgsSymbolV2* symbol /Transfer/ );
 
     void setOutlineWidthUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit outlineWidthUnit() const;
@@ -490,12 +490,12 @@ class QgsRasterFillSymbolLayer: QgsImageFillSymbolLayer
     void startRender( QgsSymbolV2RenderContext& context );
     void stopRender( QgsSymbolV2RenderContext& context );
     QgsStringMap properties() const;
-    QgsSymbolLayerV2* clone() const;
+    virtual QgsRasterFillSymbolLayer* clone() const;
     virtual double estimateMaxBleed() const;
 
     //override QgsImageFillSymbolLayer's support for sub symbols
     virtual QgsSymbolV2* subSymbol();
-    virtual bool setSubSymbol( QgsSymbolV2* symbol );
+    virtual bool setSubSymbol( QgsSymbolV2* symbol /Transfer/ );
 
     /** Sets the path to the raster image used for the fill.
      * @param imagePath path to image file
@@ -655,7 +655,7 @@ class QgsSVGFillSymbolLayer: QgsImageFillSymbolLayer
 
     QgsStringMap properties() const;
 
-    QgsSymbolLayerV2* clone() const /Factory/;
+    virtual QgsSVGFillSymbolLayer* clone() const /Factory/;
 
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const;
 
@@ -714,7 +714,7 @@ class QgsLinePatternFillSymbolLayer: QgsImageFillSymbolLayer
 
     QgsStringMap properties() const;
 
-    QgsSymbolLayerV2* clone() const /Factory/;
+    virtual QgsLinePatternFillSymbolLayer* clone() const /Factory/;
 
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const;
 
@@ -758,7 +758,7 @@ class QgsLinePatternFillSymbolLayer: QgsImageFillSymbolLayer
     void setMapUnitScale( const QgsMapUnitScale& scale );
     QgsMapUnitScale mapUnitScale() const;
 
-    bool setSubSymbol( QgsSymbolV2* symbol );
+    bool setSubSymbol( QgsSymbolV2* symbol /Transfer/ );
     QgsSymbolV2* subSymbol();
 
     QSet<QString> usedAttributes() const;
@@ -785,7 +785,7 @@ class QgsPointPatternFillSymbolLayer : QgsImageFillSymbolLayer
 
     QgsStringMap properties() const;
 
-    QgsSymbolLayerV2* clone() const /Factory/;
+    virtual QgsPointPatternFillSymbolLayer* clone() const /Factory/;
 
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const;
 
@@ -804,7 +804,7 @@ class QgsPointPatternFillSymbolLayer : QgsImageFillSymbolLayer
     double displacementY() const;
     void setDisplacementY( double d );
 
-    bool setSubSymbol( QgsSymbolV2* symbol );
+    bool setSubSymbol( QgsSymbolV2* symbol /Transfer/ );
     virtual QgsSymbolV2* subSymbol();
 
     void setDistanceXUnit( QgsSymbolV2::OutputUnit unit );
@@ -870,7 +870,7 @@ class QgsCentroidFillSymbolLayerV2 : QgsFillSymbolLayerV2
 
     QgsStringMap properties() const;
 
-    QgsSymbolLayerV2* clone() const /Factory/;
+    virtual QgsCentroidFillSymbolLayerV2* clone() const /Factory/;
 
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const;
 
@@ -886,4 +886,7 @@ class QgsCentroidFillSymbolLayerV2 : QgsFillSymbolLayerV2
     QgsMapUnitScale mapUnitScale() const;
 
     virtual QSet<QString> usedAttributes() const;
+
+    void setPointOnSurface( bool pointOnSurface );
+    bool pointOnSurface() const;
 };

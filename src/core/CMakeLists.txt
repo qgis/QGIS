@@ -98,6 +98,7 @@ SET(QGIS_CORE_SRCS
   qgsdbfilterproxymodel.cpp
   qgsdiagramrendererv2.cpp
   qgsdistancearea.cpp
+  qgseditformconfig.cpp
   qgserror.cpp
   qgsexpression.cpp
   qgsexpressioncontext.cpp
@@ -178,6 +179,7 @@ SET(QGIS_CORE_SRCS
   qgssnapper.cpp
   qgssnappingutils.cpp
   qgsspatialindex.cpp
+  qgssqlexpressioncompiler.cpp
   qgsstatisticalsummary.cpp
   qgsstringutils.cpp
   qgstransaction.cpp
@@ -402,6 +404,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgscoordinatetransform.h
   qgsdataitem.h
   qgsdataprovider.h
+  qgseditformconfig.h
   qgsgml.h
   qgsgmlschema.h
   qgsmaplayer.h
@@ -562,6 +565,7 @@ SET(QGIS_CORE_HDRS
   qgsdiagramrendererv2.h
   qgsdistancearea.h
   qgseditorwidgetconfig.h
+  qgsfeaturefilterprovider.h
   qgserror.h
   qgsexception.h
   qgsexpression.h
@@ -624,6 +628,7 @@ SET(QGIS_CORE_HDRS
   qgssnapper.h
   qgssnappingutils.h
   qgsspatialindex.h
+  qgssqlexpressioncompiler.h
   qgsstatisticalsummary.h
   qgsstringutils.h
   qgstolerance.h

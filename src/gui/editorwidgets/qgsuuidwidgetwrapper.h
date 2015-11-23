@@ -24,9 +24,8 @@
 
 /**
  * Wraps a uuid widget. Will create a new UUID if empty or represent the current value if not empty.
- *
+ * \note not available in Python bindings
  */
-
 
 class GUI_EXPORT QgsUuidWidgetWrapper : public QgsEditorWidgetWrapper
 {
@@ -36,12 +35,12 @@ class GUI_EXPORT QgsUuidWidgetWrapper : public QgsEditorWidgetWrapper
 
     // QgsEditorWidgetWrapper interface
   public:
-    QVariant value() override;
+    QVariant value() const override;
 
   protected:
     QWidget* createWidget( QWidget* parent ) override;
     void initWidget( QWidget* editor ) override;
-    bool valid() override;
+    bool valid() const override;
 
   public slots:
     void setValue( const QVariant& value ) override;

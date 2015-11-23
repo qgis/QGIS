@@ -23,6 +23,11 @@ class QgsCurveV2: public QgsAbstractGeometryV2
     virtual bool nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const;
     virtual bool pointAt( int i, QgsPointV2& vertex, QgsVertexId::VertexType& type ) const = 0;
 
+    /** Returns a reversed copy of the curve, where the direction of the curve has been flipped.
+     * @note added in QGIS 2.14
+     */
+    virtual QgsCurveV2* reversed() const = 0 /Factory/;
+
     /** Returns a geometry without curves. Caller takes ownership*/
     QgsAbstractGeometryV2* segmentize() const /Factory/;
 

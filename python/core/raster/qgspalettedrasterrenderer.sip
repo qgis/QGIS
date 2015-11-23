@@ -7,7 +7,7 @@ class QgsPalettedRasterRenderer : QgsRasterRenderer
     /** Renderer owns color array*/
     QgsPalettedRasterRenderer( QgsRasterInterface* input, int bandNumber, QColor* colorArray /Array,Transfer/, int nColors /ArraySize/, const QVector<QString>& labels = QVector<QString>() );
     ~QgsPalettedRasterRenderer();
-    QgsRasterInterface * clone() const /Factory/;
+    virtual QgsPalettedRasterRenderer * clone() const /Factory/;
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterInterface* input ) /Factory/;
 
     QgsRasterBlock *block( int bandNo, const QgsRectangle & extent, int width, int height ) /Factory/;

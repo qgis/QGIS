@@ -43,7 +43,7 @@ class QgisInterface;
 
 /** \class QgisPlugin
  * \brief Abstract base class from which all plugins must inherit
- *
+ * \note not available in Python bindings
  */
 class QgisPlugin
 {

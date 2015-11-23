@@ -138,7 +138,7 @@ QString QgsLayerTreeLayer::dump() const
   return QString( "LAYER: %1 visible=%2 expanded=%3 id=%4\n" ).arg( layerName() ).arg( mVisible ).arg( mExpanded ).arg( layerId() );
 }
 
-QgsLayerTreeNode* QgsLayerTreeLayer::clone() const
+QgsLayerTreeLayer* QgsLayerTreeLayer::clone() const
 {
   return new QgsLayerTreeLayer( *this );
 }

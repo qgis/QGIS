@@ -1896,25 +1896,32 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString t
 #endif
 }
 
-
-void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &context, const QString& dxfLayer, QgsLabelFeature** labelFeature )
+void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &context, const QString& dxfLayer, QgsLabelFeature** labelFeature , QgsGeometry* obstacleGeometry )
 {
   // either used in QgsPalLabeling (palLayer is set) or in QgsLabelingEngineV2 (labelFeature is set)
   Q_ASSERT( labelFeature );
 
   Q_UNUSED( dxfLayer ); // now handled in QgsDxfLabelProvider
 
+  QVariant exprVal; // value() is repeatedly nulled on data defined evaluation and replaced when successful
+  mCurFeat = &f;
+
+  // data defined is obstacle? calculate this first, to avoid wasting time working with obstacles we don't require
+  bool isObstacle = obstacle; // start with layer default
+  if ( dataDefinedEvaluate( QgsPalLayerSettings::IsObstacle, exprVal, &context.expressionContext(), obstacle ) )
+  {
+    isObstacle = exprVal.toBool();
+  }
+
   if ( !drawLabels )
   {
-    if ( obstacle )
+    if ( isObstacle )
     {
-      registerObstacleFeature( f, context, QString(), labelFeature );
+      registerObstacleFeature( f, context, QString(), labelFeature, obstacleGeometry );
     }
     return;
   }
 
-  QVariant exprVal; // value() is repeatedly nulled on data defined evaluation and replaced when successful
-  mCurFeat = &f;
 //  mCurFields = &layer->pendingFields();
 
   // store data defined-derived values for later adding to label feature for use during rendering
@@ -2237,7 +2244,6 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
   const GEOSGeometry* geos_geom = 0;
   const QgsGeometry* preparedGeom = geom;
   QScopedPointer<QgsGeometry> scopedPreparedGeom;
-
   if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, ct, doClip ? extentGeom : 0 ) )
   {
     scopedPreparedGeom.reset( QgsPalLabeling::prepareGeometry( geom, context, ct, doClip ? extentGeom : 0 ) );
@@ -2249,6 +2255,20 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
   else
   {
     geos_geom = geom->asGeos();
+  }
+  const GEOSGeometry* geosObstacleGeom = 0;
+  QScopedPointer<QgsGeometry> scopedObstacleGeom;
+  if ( isObstacle )
+  {
+    if ( obstacleGeometry && QgsPalLabeling::geometryRequiresPreparation( obstacleGeometry, context, ct, doClip ? extentGeom : 0 ) )
+    {
+      scopedObstacleGeom.reset( QgsPalLabeling::prepareGeometry( obstacleGeometry, context, ct, doClip ? extentGeom : 0 ) );
+      geosObstacleGeom = scopedObstacleGeom.data()->asGeos();
+    }
+    else if ( obstacleGeometry )
+    {
+      geosObstacleGeom = obstacleGeometry->asGeos();
+    }
   }
 
   if ( minFeatureSize > 0 && !checkMinimumSizeMM( context, preparedGeom, minFeatureSize ) )
@@ -2291,6 +2311,12 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
   {
     geos_geom_clone = GEOSGeom_clone_r( QgsGeometry::getGEOSHandler(), geos_geom );
   }
+  GEOSGeometry* geosObstacleGeomClone = 0;
+  if ( geosObstacleGeom )
+  {
+    geosObstacleGeomClone = GEOSGeom_clone_r( QgsGeometry::getGEOSHandler(), geosObstacleGeom );
+  }
+
 
   //data defined position / alignment / rotation?
   bool dataDefinedPosition = false;
@@ -2610,6 +2636,10 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
   ( *labelFeature )->setAlwaysShow( alwaysShow );
   ( *labelFeature )->setRepeatDistance( repeatDist );
   ( *labelFeature )->setLabelText( labelText );
+  if ( geosObstacleGeomClone )
+  {
+    ( *labelFeature )->setObstacleGeometry( geosObstacleGeomClone );
+  }
 
   // store the label's calculated font for later use during painting
   QgsDebugMsgLevel( QString( "PAL font stored definedFont: %1, Style: %2" ).arg( labelFont.toString(), labelFont.styleName() ), 4 );
@@ -2678,13 +2708,6 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
     }
   }
 
-  // data defined is obstacle?
-  bool isObstacle = obstacle; // start with layer default
-  if ( dataDefinedEvaluate( QgsPalLayerSettings::IsObstacle, exprVal, &context.expressionContext(), obstacle ) )
-  {
-    isObstacle = exprVal.toBool();
-  }
-
   ( *labelFeature )->setIsObstacle( isObstacle );
 
   double featObstacleFactor = obstacleFactor;
@@ -2705,14 +2728,22 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
   lf->setDataDefinedValues( dataDefinedValues );
 }
 
-
-void QgsPalLayerSettings::registerObstacleFeature( QgsFeature& f, QgsRenderContext &context, const QString& dxfLayer, QgsLabelFeature** obstacleFeature )
+void QgsPalLayerSettings::registerObstacleFeature( QgsFeature& f, QgsRenderContext &context, const QString& dxfLayer, QgsLabelFeature** obstacleFeature, QgsGeometry* obstacleGeometry )
 {
   Q_UNUSED( dxfLayer ); // now handled in QgsDxfLabelProvider
 
   mCurFeat = &f;
 
-  const QgsGeometry* geom = f.constGeometry();
+  const QgsGeometry* geom = 0;
+  if ( obstacleGeometry )
+  {
+    geom = obstacleGeometry;
+  }
+  else
+  {
+    geom = f.constGeometry();
+  }
+
   if ( !geom )
   {
     return;
@@ -4913,7 +4944,7 @@ void QgsPalLabeling::clearEngineSettings()
   QgsProject::instance()->removeEntry( "PAL", "/DrawOutlineLabels" );
 }
 
-QgsLabelingEngineInterface* QgsPalLabeling::clone()
+QgsPalLabeling* QgsPalLabeling::clone()
 {
   QgsPalLabeling* lbl = new QgsPalLabeling();
   lbl->setShowingAllLabels( isShowingAllLabels() );

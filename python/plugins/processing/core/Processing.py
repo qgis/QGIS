@@ -357,10 +357,10 @@ class Processing:
 
         progress = None
         if kwargs is not None and "progress" in kwargs.keys():
-            progress = kwargs["progress"] 
-        elif iface is not None :
+            progress = kwargs["progress"]
+        elif iface is not None:
             progress = MessageBarProgress()
-        
+
         ret = runalg(alg, progress)
         if ret:
             if onFinish is not None:

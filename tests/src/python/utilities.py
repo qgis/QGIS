@@ -18,8 +18,8 @@ import glob
 import platform
 import tempfile
 
-from PyQt4.QtCore import QSize, QDir
-from PyQt4.QtGui import QWidget
+from PyQt.QtCore import QSize, QDir
+from PyQt.QtWidgets import QWidget
 
 from qgis.core import (
     QgsApplication,
@@ -35,7 +35,6 @@ from qgis.gui import QgsMapCanvas
 from qgis_interface import QgisInterface
 import hashlib
 import re
-from itertools import izip
 try:
     import xml.etree.cElementTree as ET
 except ImportError:
@@ -52,7 +51,7 @@ if sys.version_info[0:2] < (2, 7):
         from unittest2 import TestCase, expectedFailure
         import unittest2 as unittest
     except ImportError:
-        print "You should install unittest2 to run the salt tests"
+        print("You should install unittest2 to run the salt tests")
         sys.exit(0)
 else:
     from unittest import TestCase, expectedFailure
@@ -92,7 +91,7 @@ def assertHashForFile(theHash, theFilename):
 def hashForFile(theFilename):
     """Return an md5 checksum for a file"""
     myPath = theFilename
-    myData = file(myPath).read()
+    myData = open(myPath).read()
     myHash = hashlib.md5()
     myHash.update(myData)
     myHash = myHash.hexdigest()
@@ -117,13 +116,20 @@ def getQgisTestApp():
     if QGISAPP is None:
         myGuiFlag = True  # All test will run qgis in gui mode
 
+        # In python3 we need to conver to a bytes object (or should
+        # QgsApplication accept a QString instead of const char* ?)
+        try:
+            argvb = list(map(os.fsencode, sys.argv))
+        except AttributeError:
+            argvb = sys.argv
+
         # Note: QGIS_PREFIX_PATH is evaluated in QgsApplication -
         # no need to mess with it here.
-        QGISAPP = QgsApplication(sys.argv, myGuiFlag)
+        QGISAPP = QgsApplication(argvb, myGuiFlag)
 
         QGISAPP.initQgis()
         s = QGISAPP.showSettings()
-        print s
+        print(s)
 
     global PARENT  # pylint: disable=W0603
     if PARENT is None:
@@ -187,7 +193,7 @@ def setCanvasCrs(theEpsgId, theOtfpFlag=False):
 
 def writeShape(theMemoryLayer, theFileName):
     myFileName = os.path.join(str(QDir.tempPath()), theFileName)
-    print myFileName
+    print(myFileName)
     # Explicitly giving all options, not really needed but nice for clarity
     myErrorMessage = ''
     myOptions = []
@@ -222,20 +228,20 @@ def compareWkt(a, b, tol=0.000001):
     Compares two WKT strings, ignoring allowed differences between strings
     and allowing a tolerance for coordinates
     """
-    #ignore case
+    # ignore case
     a0 = a.lower()
     b0 = b.lower()
 
-    #remove optional spaces before z/m
+    # remove optional spaces before z/m
     r = re.compile("\s+([zm])")
     a0 = r.sub(r'\1', a0)
     b0 = r.sub(r'\1', b0)
 
-    #spaces before brackets are optional
+    # spaces before brackets are optional
     r = re.compile("\s*\(\s*")
     a0 = r.sub('(', a0)
     b0 = r.sub('(', b0)
-    #spaces after brackets are optional
+    # spaces after brackets are optional
     r = re.compile("\s*\)\s*")
     a0 = r.sub(')', a0)
     b0 = r.sub(')', b0)
@@ -254,7 +260,7 @@ def compareWkt(a, b, tol=0.000001):
     if len(a0) != len(b0):
         return False
 
-    for (a1, b1) in izip(a0, b0):
+    for (a1, b1) in zip(a0, b0):
         if not doubleNear(a1, b1, tol):
             return False
 
@@ -300,7 +306,7 @@ def mapSettingsString(ms):
 
     s = 'MapSettings...\n'
     s += '  layers(): {0}\n'.format(
-        [unicode(QgsMapLayerRegistry.instance().mapLayer(i).name())
+        [QgsMapLayerRegistry.instance().mapLayer(i).name()
          for i in ms.layers()])
     s += '  backgroundColor(): rgba {0},{1},{2},{3}\n'.format(
         ms.backgroundColor().red(), ms.backgroundColor().green(),
@@ -439,12 +445,12 @@ class DoxygenParser():
         documentable_members = 0
         documented_members = 0
 
-        #Wrap everything in a try, as sometimes Doxygen XML is malformed
+        # Wrap everything in a try, as sometimes Doxygen XML is malformed
         try:
             for event, elem in ET.iterparse(f):
                 if event == 'end' and elem.tag == 'compounddef':
                     if self.elemIsPublicClass(elem):
-                        #store documentation status
+                        # store documentation status
                         members, documented, undocumented, bindable = self.parseClassElem(elem)
                         documentable_members += members
                         documented_members += documented
@@ -455,7 +461,7 @@ class DoxygenParser():
                                 self.undocumented_string += ' Missing: {}\n'.format(u)
                             self.undocumented_string += "\n"
 
-                        #store bindable members
+                        # store bindable members
                         if self.classElemIsBindable(elem):
                             for m in bindable:
                                 self.bindable_members.append(m)
@@ -470,7 +476,7 @@ class DoxygenParser():
                         line = l
                         break
             caret = '{:=>{}}'.format('^', col)
-            print 'ParseError in {}\n{}\n{}\n{}'.format(f, e, line, caret)
+            print('ParseError in {}\n{}\n{}\n{}'.format(f, e, line, caret))
 
         self.documentable_members += documentable_members
         self.documented_members += documented_members
@@ -492,7 +498,7 @@ class DoxygenParser():
             :param elem: XML element corresponding to a class
         """
         try:
-            #check for 'not available in python bindings' note in class docs
+            # check for 'not available in python bindings' note in class docs
             detailed_sec = elem.find('detaileddescription')
             for p in detailed_sec.getiterator('para'):
                 for s in p.getiterator('simplesect'):
@@ -547,18 +553,30 @@ class DoxygenParser():
         if not self.visibility(elem) in ('public', 'protected'):
             return False
 
-        if self.isVariable(elem) and self.visibility(elem) == 'protected':
-            #protected variables can't be bound in SIP
+        # property themselves are not bound, only getters and setters
+        if self.isProperty(elem):
             return False
 
-        #check for members with special python doc notes (probably 'not available' or renamed methods, either way
-        #they should be safe to ignore as obviously some consideration has been given to Python bindings)
+        # ignore friend classes
+        if self.isFriendClass(elem):
+            return False
+
+        # ignore typedefs (can't test for them)
+        if self.isTypeDef(elem):
+            return False
+
+        if self.isVariable(elem) and self.visibility(elem) == 'protected':
+            # protected variables can't be bound in SIP
+            return False
+
+        # check for members with special python doc notes (probably 'not available' or renamed methods, either way
+        # they should be safe to ignore as obviously some consideration has been given to Python bindings)
         try:
             detailed_sec = elem.find('detaileddescription')
             for p in detailed_sec.getiterator('para'):
                 for s in p.getiterator('simplesect'):
                     for ps in s.getiterator('para'):
-                        if 'python' in ps.text.lower():
+                        if ps.text and 'python' in ps.text.lower():
                             return False
         except:
             pass
@@ -569,6 +587,10 @@ class DoxygenParser():
 
         # ignore operators, also can't test
         if self.isOperator(elem):
+            return False
+
+        # ignore deprecated members
+        if self.isDeprecated(elem):
             return False
 
         return True
@@ -588,6 +610,10 @@ class DoxygenParser():
 
         # ignore reimplemented methods
         if self.isReimplementation(elem):
+            return False
+
+        # ignore friend classes
+        if self.isFriendClass(elem):
             return False
 
         # ignore destructor
@@ -619,12 +645,8 @@ class DoxygenParser():
             pass
 
         # ignore deprecated members
-        typeelem = elem.find('type')
-        try:
-            if typeelem.text and 'Q_DECL_DEPRECATED' in typeelem.text:
-                return False
-        except:
-            pass
+        if self.isDeprecated(elem):
+            return False
 
         return True
 
@@ -649,6 +671,18 @@ class DoxygenParser():
 
         return False
 
+    def isProperty(self, member_elem):
+        """ Tests whether an member is a property
+            :param member_elem: XML element for a class member
+        """
+        try:
+            if member_elem.get('kind') == 'property':
+                return True
+        except:
+            pass
+
+        return False
+
     def isDestructor(self, member_elem):
         """ Tests whether an member is a destructor
             :param member_elem: XML element for a class member
@@ -656,7 +690,7 @@ class DoxygenParser():
         try:
             name = member_elem.find('name').text
             if name.startswith('~'):
-                #destructor
+                # destructor
                 return True
         except:
             pass
@@ -689,6 +723,28 @@ class DoxygenParser():
 
         return False
 
+    def isFriendClass(self, member_elem):
+        """ Tests whether an member is a friend class
+            :param member_elem: XML element for a class member
+        """
+        try:
+            if member_elem.get('kind') == 'friend':
+                return True
+        except:
+            pass
+        return False
+
+    def isTypeDef(self, member_elem):
+        """ Tests whether an member is a type def
+            :param member_elem: XML element for a class member
+        """
+        try:
+            if member_elem.get('kind') == 'typedef':
+                return True
+        except:
+            pass
+        return False
+
     def isReimplementation(self, member_elem):
         """ Tests whether an member is a reimplementation
             :param member_elem: XML element for a class member
@@ -699,6 +755,20 @@ class DoxygenParser():
             if member_elem.find('reimplements') is not None:
                 return True
             if ' override' in member_elem.find('argsstring').text:
+                return True
+        except:
+            pass
+
+        return False
+
+    def isDeprecated(self, member_elem):
+        """ Tests whether an member is deprecated
+            :param member_elem: XML element for a class member
+        """
+
+        type_elem = member_elem.find('type')
+        try:
+            if 'Q_DECL_DEPRECATED' in type_elem.text:
                 return True
         except:
             pass

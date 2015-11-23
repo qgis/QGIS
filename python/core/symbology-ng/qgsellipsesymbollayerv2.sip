@@ -15,7 +15,7 @@ class QgsEllipseSymbolLayerV2 : QgsMarkerSymbolLayerV2
     QString layerType() const;
     void startRender( QgsSymbolV2RenderContext& context );
     void stopRender( QgsSymbolV2RenderContext& context );
-    QgsSymbolLayerV2* clone() const /Factory/;
+    virtual QgsEllipseSymbolLayerV2* clone() const /Factory/;
     QgsStringMap properties() const;
 
     void toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props ) const;
@@ -67,4 +67,6 @@ class QgsEllipseSymbolLayerV2 : QgsMarkerSymbolLayerV2
 
     void setMapUnitScale( const QgsMapUnitScale& scale );
     QgsMapUnitScale mapUnitScale() const;
+
+    QRectF bounds( const QPointF& point, QgsSymbolV2RenderContext& context );
 };

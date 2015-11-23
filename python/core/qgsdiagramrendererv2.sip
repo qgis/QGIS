@@ -137,7 +137,7 @@ class QgsDiagramRendererV2
 
     /** Returns new instance that is equivalent to this one
      * @note added in 2.4 */
-    virtual QgsDiagramRendererV2* clone() const = 0;
+    virtual QgsDiagramRendererV2* clone() const = 0 /Factory/;
 
     /** Returns size of the diagram for a feature in map units. Returns an invalid QSizeF in case of error*/
     virtual QSizeF sizeMapUnits( const QgsFeature& feature, const QgsRenderContext& c );
@@ -198,7 +198,7 @@ class QgsSingleCategoryDiagramRenderer : QgsDiagramRendererV2
     QgsSingleCategoryDiagramRenderer();
     ~QgsSingleCategoryDiagramRenderer();
 
-    QgsDiagramRendererV2* clone() const;
+    virtual QgsSingleCategoryDiagramRenderer* clone() const /Factory/;
 
     QString rendererName() const;
 
@@ -229,7 +229,7 @@ class QgsLinearlyInterpolatedDiagramRenderer : QgsDiagramRendererV2
     QgsLinearlyInterpolatedDiagramRenderer();
     ~QgsLinearlyInterpolatedDiagramRenderer();
 
-    QgsDiagramRendererV2* clone() const;
+    virtual QgsLinearlyInterpolatedDiagramRenderer* clone() const /Factory/;
 
     /** Returns list with all diagram settings in the renderer*/
     QList<QgsDiagramSettings> diagramSettings() const;

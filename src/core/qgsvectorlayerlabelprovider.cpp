@@ -22,6 +22,10 @@
 #include "qgspallabeling.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerfeatureiterator.h"
+#include "qgsrendererv2.h"
+#include "qgspolygonv2.h"
+#include "qgslinestringv2.h"
+#include "qgsmultipolygonv2.h"
 
 #include "feature.h"
 #include "labelposition.h"
@@ -46,12 +50,14 @@ static void _fixQPictureDPI( QPainter* p )
 
 
 QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( QgsVectorLayer* layer, bool withFeatureLoop, const QgsPalLayerSettings* settings, const QString& layerName )
+    : mSettings( settings ? *settings : QgsPalLayerSettings::fromLayer( layer ) )
+    , mLayerId( layer->id() )
+    , mRenderer( layer->rendererV2() )
+    , mFields( layer->fields() )
+    , mCrs( layer->crs() )
 {
-  mSettings = settings ? *settings : QgsPalLayerSettings::fromLayer( layer );
   mName = layerName.isEmpty() ? layer->id() : layerName;
-  mLayerId = layer->id();
-  mFields = layer->fields();
-  mCrs = layer->crs();
+
   if ( withFeatureLoop )
   {
     mSource = new QgsVectorLayerFeatureSource( layer );
@@ -66,15 +72,15 @@ QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( QgsVectorLayer* layer,
   init();
 }
 
-QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider(
-  const QgsPalLayerSettings& settings,
-  const QString& layerId,
-  const QgsFields& fields,
-  const QgsCoordinateReferenceSystem& crs,
-  QgsAbstractFeatureSource* source,
-  bool ownsSource )
+QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( const QgsPalLayerSettings& settings,
+    const QString& layerId,
+    const QgsFields& fields,
+    const QgsCoordinateReferenceSystem& crs,
+    QgsAbstractFeatureSource* source,
+    bool ownsSource, QgsFeatureRendererV2* renderer )
     : mSettings( settings )
     , mLayerId( layerId )
+    , mRenderer( renderer )
     , mFields( fields )
     , mCrs( crs )
     , mSource( source )
@@ -263,22 +269,105 @@ QList<QgsLabelFeature*> QgsVectorLayerLabelProvider::labelFeatures( QgsRenderCon
   QgsFeature fet;
   while ( fit.nextFeature( fet ) )
   {
-    registerFeature( fet, ctx );
+    QScopedPointer<QgsGeometry> obstacleGeometry;
+    if ( fet.constGeometry()->type() == QGis::Point )
+    {
+      //point feature, use symbol bounds as obstacle
+      obstacleGeometry.reset( getPointObstacleGeometry( fet, ctx, mRenderer ) );
+    }
+    registerFeature( fet, ctx, obstacleGeometry.data() );
   }
 
   return mLabels;
 }
 
-
-void QgsVectorLayerLabelProvider::registerFeature( QgsFeature& feature, QgsRenderContext& context )
+void QgsVectorLayerLabelProvider::registerFeature( QgsFeature& feature, QgsRenderContext& context, QgsGeometry* obstacleGeometry )
 {
   QgsLabelFeature* label = 0;
-  mSettings.registerFeature( feature, context, QString(), &label );
+  mSettings.registerFeature( feature, context, QString(), &label, obstacleGeometry );
   if ( label )
     mLabels << label;
 }
 
+QgsGeometry* QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature& fet, QgsRenderContext& context, QgsFeatureRendererV2* renderer )
+{
+  if ( !fet.constGeometry() || fet.constGeometry()->isEmpty() || fet.constGeometry()->type() != QGis::Point || !renderer )
+    return 0;
 
+  //calculate bounds for symbols for feature
+  QgsSymbolV2List symbols = renderer->originalSymbolsForFeature( fet, context );
+
+  bool isMultiPoint = fet.constGeometry()->geometry()->nCoordinates() > 1;
+  QgsAbstractGeometryV2* obstacleGeom = 0;
+  if ( isMultiPoint )
+    obstacleGeom = new QgsMultiPolygonV2();
+  else
+    obstacleGeom = new QgsPolygonV2();
+
+  // for each point
+  for ( int i = 0; i < fet.constGeometry()->geometry()->nCoordinates(); ++i )
+  {
+    QRectF bounds;
+    QgsPointV2 p =  fet.constGeometry()->geometry()->vertexAt( QgsVertexId( i, 0, 0 ) );
+    double x = p.x();
+    double y = p.y();
+    double z = 0; // dummy variable for coordinate transforms
+
+    //transform point to pixels
+    if ( context.coordinateTransform() )
+    {
+      context.coordinateTransform()->transformInPlace( x, y, z );
+    }
+    context.mapToPixel().transformInPlace( x, y );
+
+    QPointF pt( x, y );
+    Q_FOREACH ( QgsSymbolV2* symbol, symbols )
+    {
+      if ( symbol->type() == QgsSymbolV2::Marker )
+      {
+        if ( bounds.isValid() )
+          bounds = bounds.united( static_cast< QgsMarkerSymbolV2* >( symbol )->bounds( pt, context ) );
+        else
+          bounds = static_cast< QgsMarkerSymbolV2* >( symbol )->bounds( pt, context );
+      }
+    }
+
+    //convert bounds to a geometry
+    QgsLineStringV2* boundLineString = new QgsLineStringV2();
+    boundLineString->addVertex( QgsPointV2( bounds.topLeft() ) );
+    boundLineString->addVertex( QgsPointV2( bounds.topRight() ) );
+    boundLineString->addVertex( QgsPointV2( bounds.bottomRight() ) );
+    boundLineString->addVertex( QgsPointV2( bounds.bottomLeft() ) );
+
+    //then transform back to map units
+    //TODO - remove when labeling is refactored to use screen units
+    for ( int i = 0; i < boundLineString->numPoints(); ++i )
+    {
+      QgsPoint point = context.mapToPixel().toMapCoordinates( boundLineString->xAt( i ), boundLineString->yAt( i ) );
+      boundLineString->setXAt( i, point.x() );
+      boundLineString->setYAt( i, point.y() );
+    }
+    if ( context.coordinateTransform() )
+    {
+      boundLineString->transform( *context.coordinateTransform(), QgsCoordinateTransform::ReverseTransform );
+    }
+    boundLineString->close();
+
+    QgsPolygonV2* obstaclePolygon = new QgsPolygonV2();
+    obstaclePolygon->setExteriorRing( boundLineString );
+
+    if ( isMultiPoint )
+    {
+      static_cast<QgsMultiPolygonV2*>( obstacleGeom )->addGeometry( obstaclePolygon );
+    }
+    else
+    {
+      obstacleGeom = obstaclePolygon;
+    }
+  }
+
+  return new QgsGeometry( obstacleGeom );
+}
 
 void QgsVectorLayerLabelProvider::drawLabel( QgsRenderContext& context, pal::LabelPosition* label ) const
 {

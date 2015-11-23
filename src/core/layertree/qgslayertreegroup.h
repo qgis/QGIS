@@ -87,7 +87,7 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
     virtual QString dump() const override;
 
     //! Return a clone of the group. The children are cloned too.
-    virtual QgsLayerTreeNode* clone() const override;
+    virtual QgsLayerTreeGroup* clone() const override;
 
     //! Return the check state of the group node
     Qt::CheckState isVisible() const { return mChecked; }

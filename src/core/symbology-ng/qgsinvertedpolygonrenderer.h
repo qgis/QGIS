@@ -48,7 +48,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRendererV2
     virtual ~QgsInvertedPolygonRenderer();
 
     /** Used to clone this feature renderer.*/
-    virtual QgsFeatureRendererV2* clone() const override;
+    virtual QgsInvertedPolygonRenderer* clone() const override;
 
     virtual void startRender( QgsRenderContext& context, const QgsFields& fields ) override;
 
@@ -76,15 +76,25 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRendererV2
     virtual QList<QString> usedAttributes() override;
     /** Proxy that will call this method on the embedded renderer. */
     virtual int capabilities() override;
-    /** Proxy that will call this method on the embedded renderer. */
+    /** Proxy that will call this method on the embedded renderer.
+      @note available in python bindings as symbol2
+     */
     virtual QgsSymbolV2List symbols( QgsRenderContext& context ) override;
-    /** Proxy that will call this method on the embedded renderer. */
+    /** Proxy that will call this method on the embedded renderer.
+      @note available in python bindings as symbolForFeature2
+     */
     virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
-    /** Proxy that will call this method on the embedded renderer. */
+    /** Proxy that will call this method on the embedded renderer.
+      @note available in python bindings as originalSymbolForFeature2
+     */
     virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feat, QgsRenderContext& context ) override;
-    /** Proxy that will call this method on the embedded renderer. */
+    /** Proxy that will call this method on the embedded renderer.
+      @note available in python bindings as symbolsForFeature
+     */
     virtual QgsSymbolV2List symbolsForFeature( QgsFeature& feat, QgsRenderContext& context ) override;
-    /** Proxy that will call this method on the embedded renderer. */
+    /** Proxy that will call this method on the embedded renderer.
+      @note available in python bindings as originalSymbolsForFeature2
+     */
     virtual QgsSymbolV2List originalSymbolsForFeature( QgsFeature& feat, QgsRenderContext& context ) override;
     /** Proxy that will call this method on the embedded renderer. */
     virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize ) override;
@@ -92,7 +102,9 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRendererV2
       @note not available in python bindings
      */
     virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString& rule = "" ) override;
-    /** Proxy that will call this method on the embedded renderer. */
+    /** Proxy that will call this method on the embedded renderer.
+      @note available in python bindings as willRenderFeature2
+     */
     virtual bool willRenderFeature( QgsFeature& feat, QgsRenderContext& context ) override;
 
     /** Creates a renderer out of an XML, for loading*/

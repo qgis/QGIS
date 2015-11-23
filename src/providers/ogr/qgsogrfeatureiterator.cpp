@@ -16,6 +16,7 @@
 
 #include "qgsogrprovider.h"
 #include "qgsogrgeometrysimplifier.h"
+#include "qgsogrexpressioncompiler.h"
 
 #include "qgsapplication.h"
 #include "qgsgeometry.h"
@@ -38,6 +39,7 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource* source, bool 
     , ogrLayer( 0 )
     , mSubsetStringSet( false )
     , mGeometrySimplifier( NULL )
+    , mExpressionCompiled( false )
 {
   mFeatureFetched = false;
 
@@ -80,6 +82,32 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource* source, bool 
   else
   {
     OGR_L_SetSpatialFilter( ogrLayer, 0 );
+  }
+
+  if ( request.filterType() == QgsFeatureRequest::FilterExpression
+       && QSettings().value( "/qgis/compileExpressions", true ).toBool() )
+  {
+    QgsOgrExpressionCompiler compiler = QgsOgrExpressionCompiler( source );
+
+    QgsSqlExpressionCompiler::Result result = compiler.compile( request.filterExpression() );
+
+    if ( result == QgsSqlExpressionCompiler::Complete || result == QgsSqlExpressionCompiler::Partial )
+    {
+      QString whereClause = compiler.result();
+      if ( OGR_L_SetAttributeFilter( ogrLayer, whereClause.toLocal8Bit().data() ) == OGRERR_NONE )
+      {
+        //if only partial success when compiling expression, we need to double-check results using QGIS' expressions
+        mExpressionCompiled = ( result == QgsSqlExpressionCompiler::Complete );
+      }
+    }
+    else
+    {
+      OGR_L_SetAttributeFilter( ogrLayer, 0 );
+    }
+  }
+  else
+  {
+    OGR_L_SetAttributeFilter( ogrLayer, 0 );
   }
 
   //start with first feature
@@ -126,6 +154,14 @@ bool QgsOgrFeatureIterator::prepareSimplification( const QgsSimplifyMethod& simp
     QgsDebugMsg( QString( "Simplification method type (%1) is not recognised by OgrFeatureIterator class" ).arg( methodType ) );
   }
   return QgsAbstractFeatureIterator::prepareSimplification( simplifyMethod );
+}
+
+bool QgsOgrFeatureIterator::nextFeatureFilterExpression( QgsFeature& f )
+{
+  if ( !mExpressionCompiled )
+    return QgsAbstractFeatureIterator::nextFeatureFilterExpression( f );
+  else
+    return fetchFeature( f );
 }
 
 bool QgsOgrFeatureIterator::providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const
@@ -333,6 +369,7 @@ bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature& feature )
 
 
 QgsOgrFeatureSource::QgsOgrFeatureSource( const QgsOgrProvider* p )
+    : mProvider( p )
 {
   mFilePath = p->filePath();
   mLayerName = p->layerName();

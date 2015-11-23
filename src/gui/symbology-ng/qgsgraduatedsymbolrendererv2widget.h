@@ -23,6 +23,9 @@
 
 #include "ui_qgsgraduatedsymbolrendererv2widget.h"
 
+///@cond
+//not part of public API
+
 class GUI_EXPORT QgsGraduatedSymbolRendererV2Model : public QAbstractItemModel
 {
     Q_OBJECT
@@ -68,6 +71,8 @@ class QgsGraduatedSymbolRendererV2ViewStyle: public QProxyStyle
 
     void drawPrimitive( PrimitiveElement element, const QStyleOption * option, QPainter * painter, const QWidget * widget = 0 ) const override;
 };
+
+///@endcond
 
 class GUI_EXPORT QgsGraduatedSymbolRendererV2Widget : public QgsRendererV2Widget, private Ui::QgsGraduatedSymbolRendererV2Widget
 {

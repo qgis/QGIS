@@ -37,8 +37,8 @@ except:
 # DON'T RAISE THIS THRESHOLD!!!
 # (changes which lower this threshold are welcomed though!)
 
-ACCEPTABLE_MISSING_CLASSES = 198
-ACCEPTABLE_MISSING_MEMBERS = 530
+ACCEPTABLE_MISSING_CLASSES = 85
+ACCEPTABLE_MISSING_MEMBERS = 267
 
 
 class TestQgsSipCoverage(TestCase):
@@ -55,27 +55,14 @@ class TestQgsSipCoverage(TestCase):
         bound_objects = {}
         for o in objects:
             try:
-                bound_objects[o] = globals()[o]
+                if '::' in o:
+                    bound_objects[o] = getattr(globals()[o.split('::')[0]], o.split('::')[1])
+                else:
+                    bound_objects[o] = globals()[o]
             except:
                 missing_objects.append(o)
 
         missing_objects.sort()
-
-        missing_count = len(missing_objects)
-        present_count = len(objects) - missing_count
-        coverage = 100.0 * present_count / len(objects)
-
-        print "---------------------------------"
-        printImportant("{} total bindable classes".format(len(objects)))
-        printImportant("{} total have bindings".format(present_count))
-        printImportant("Binding coverage by classes {}%".format(coverage))
-        printImportant("---------------------------------")
-        printImportant("{} classes missing bindings, out of {} allowed".format(missing_count, ACCEPTABLE_MISSING_CLASSES))
-        print "---------------------------------"
-
-        assert missing_count <= ACCEPTABLE_MISSING_CLASSES, """\n\nFAIL: new unbound classes have been introduced, please add SIP bindings for these classes
-If these classes are not suitable for the Python bindings, please add the Doxygen tag
-"@note not available in Python bindings" to the CLASS Doxygen comments"""
 
         #next check for individual members
         parser.bindable_members.sort()
@@ -83,12 +70,44 @@ If these classes are not suitable for the Python bindings, please add the Doxyge
         for m in parser.bindable_members:
             if m[0] in bound_objects:
                 obj = bound_objects[m[0]]
-                if not hasattr(obj, m[1]):
-                    missing_members.append('{}.{}'.format(m[0], m[1]))
+
+                #try two different methods of checking for member existence
+                try:
+                    if hasattr(obj, m[1]):
+                        continue
+                except:
+                    pass
+
+                try:
+                    if m[1] in dir(obj):
+                        continue
+                except:
+                    printImportant("SIP coverage test: something strange happened in {}.{}, obj={}".format(m[0], m[1], obj))
+
+                missing_members.append('{}.{}'.format(m[0], m[1]))
 
         missing_members.sort()
-        missing_count = len(missing_members)
-        present_count = len(parser.bindable_members) - missing_count
+
+        print "---------------------------------"
+        print 'Missing classes:\n {}'.format('\n '.join(missing_objects))
+        print "---------------------------------"
+        print 'Missing members:\n {}'.format('\n '.join(missing_members))
+
+        #print summaries
+        missing_class_count = len(missing_objects)
+        present_count = len(objects) - missing_class_count
+        coverage = 100.0 * present_count / len(objects)
+
+        print "---------------------------------"
+        printImportant("{} total bindable classes".format(len(objects)))
+        printImportant("{} total have bindings".format(present_count))
+        printImportant("Binding coverage by classes {}%".format(coverage))
+        printImportant("---------------------------------")
+        printImportant("{} classes missing bindings, out of {} allowed".format(missing_class_count, ACCEPTABLE_MISSING_CLASSES))
+        print "---------------------------------"
+
+        missing_member_count = len(missing_members)
+        present_count = len(parser.bindable_members) - missing_member_count
         coverage = 100.0 * present_count / len(parser.bindable_members)
 
         print "---------------------------------"
@@ -96,16 +115,22 @@ If these classes are not suitable for the Python bindings, please add the Doxyge
         printImportant("{} total have bindings".format(present_count))
         printImportant("Binding coverage by members {}%".format(coverage))
         printImportant("---------------------------------")
-        printImportant("{} members missing bindings, out of {} allowed".format(missing_count, ACCEPTABLE_MISSING_MEMBERS))
-        print "---------------------------------"
-        print 'Missing classes:\n {}'.format('\n '.join(missing_objects))
-        print "---------------------------------"
-        print 'Missing members:\n {}'.format('\n '.join(missing_members))
+        printImportant("{} members missing bindings, out of {} allowed".format(missing_member_count, ACCEPTABLE_MISSING_MEMBERS))
 
-        assert missing_count <= ACCEPTABLE_MISSING_MEMBERS, """\n\nFAIL: new unbound members have been introduced, please add SIP bindings for these members
+        assert missing_class_count <= ACCEPTABLE_MISSING_CLASSES, """\n\nFAIL: new unbound classes have been introduced, please add SIP bindings for these classes
+If these classes are not suitable for the Python bindings, please add the Doxygen tag
+"@note not available in Python bindings" to the CLASS Doxygen comments"""
+
+        assert missing_member_count <= ACCEPTABLE_MISSING_MEMBERS, """\n\nFAIL: new unbound members have been introduced, please add SIP bindings for these members
 If these members are not suitable for the Python bindings, please add the Doxygen tag
 "@note not available in Python bindings" to the MEMBER Doxygen comments"""
 
 
 if __name__ == '__main__':
+    if "MISSING_SIP_CLASSES" in os.environ:
+        ACCEPTABLE_MISSING_CLASSES += int(os.environ['MISSING_SIP_CLASSES'])
+
+    if "MISSING_SIP_MEMBERS" in os.environ:
+        ACCEPTABLE_MISSING_MEMBERS += int(os.environ['MISSING_SIP_MEMBERS'])
+
     unittest.main()

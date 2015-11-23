@@ -66,7 +66,7 @@ class QgsLayerTreeGroup : QgsLayerTreeNode
     virtual QString dump() const;
 
     //! Return a clone of the group. The children are cloned too.
-    virtual QgsLayerTreeNode* clone() const /Factory/;
+    virtual QgsLayerTreeGroup* clone() const /Factory/;
 
     //! Return the check state of the group node
     Qt::CheckState isVisible() const;

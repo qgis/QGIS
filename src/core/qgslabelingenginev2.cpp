@@ -349,6 +349,7 @@ QgsLabelFeature::QgsLabelFeature( QgsFeatureId id, GEOSGeometry* geometry, const
     : mLayer( 0 )
     , mId( id )
     , mGeometry( geometry )
+    , mObstacleGeometry( 0 )
     , mSize( size )
     , mPriority( -1 )
     , mHasFixedPosition( false )
@@ -369,7 +370,18 @@ QgsLabelFeature::~QgsLabelFeature()
   if ( mGeometry )
     GEOSGeom_destroy_r( QgsGeometry::getGEOSHandler(), mGeometry );
 
+  if ( mObstacleGeometry )
+    GEOSGeom_destroy_r( QgsGeometry::getGEOSHandler(), mObstacleGeometry );
+
   delete mInfo;
+}
+
+void QgsLabelFeature::setObstacleGeometry( GEOSGeometry* obstacleGeom )
+{
+  if ( mObstacleGeometry )
+    GEOSGeom_destroy_r( QgsGeometry::getGEOSHandler(), mObstacleGeometry );
+
+  mObstacleGeometry = obstacleGeom;
 }
 
 QgsAbstractLabelProvider*QgsLabelFeature::provider() const

@@ -29,6 +29,9 @@
 #include <QCheckBox>
 #include <QToolButton>
 
+///@cond
+//not part of public API
+
 static const int EffectItemType = QStandardItem::UserType + 1;
 
 class EffectItem : public QStandardItem
@@ -84,6 +87,7 @@ class EffectItem : public QStandardItem
     QgsPaintEffect* mEffect;
     QgsEffectStackPropertiesWidget* mWidget;
 };
+///@endcond
 
 //
 // QgsEffectStackPropertiesWidget

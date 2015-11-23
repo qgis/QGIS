@@ -31,7 +31,7 @@ class GUI_EXPORT QgsMapUnitScaleDialog : public QDialog, private Ui::QgsMapUnitS
     Q_OBJECT
 
   public:
-    QgsMapUnitScaleDialog( QWidget* parent );
+    QgsMapUnitScaleDialog( QWidget* parent = 0 );
 
     /** Returns the map unit scale */
     QgsMapUnitScale getMapUnitScale() const;
@@ -87,6 +87,7 @@ class GUI_EXPORT QgsUnitSelectionWidget : public QWidget, private Ui::QgsUnitSel
 
     /** Sets the selected unit index
      * @param unitIndex index of unit to set as current
+     * @note available in Python bindings as setUnitIndex
     */
     void setUnit( int unitIndex );
 

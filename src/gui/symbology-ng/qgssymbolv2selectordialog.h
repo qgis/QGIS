@@ -41,6 +41,8 @@ class QgsLineSymbolLayerV2;
 
 class QgsMapCanvas;
 
+///@cond
+//not part of public API
 class DataDefinedRestorer: public QObject
 {
     Q_OBJECT
@@ -67,6 +69,7 @@ class DataDefinedRestorer: public QObject
 
     void save();
 };
+///@endcond
 
 class GUI_EXPORT QgsSymbolV2SelectorDialog : public QDialog, private Ui::QgsSymbolV2SelectorDialogBase
 {

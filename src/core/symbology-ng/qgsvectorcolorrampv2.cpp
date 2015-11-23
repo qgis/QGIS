@@ -156,7 +156,7 @@ QColor QgsVectorGradientColorRampV2::color( double value ) const
   }
 }
 
-QgsVectorColorRampV2* QgsVectorGradientColorRampV2::clone() const
+QgsVectorGradientColorRampV2* QgsVectorGradientColorRampV2::clone() const
 {
   QgsVectorGradientColorRampV2* r = new QgsVectorGradientColorRampV2( mColor1, mColor2,
       mDiscrete, mStops );
@@ -305,7 +305,7 @@ QColor QgsVectorRandomColorRampV2::color( double value ) const
   return QColor();
 }
 
-QgsVectorColorRampV2* QgsVectorRandomColorRampV2::clone() const
+QgsVectorRandomColorRampV2* QgsVectorRandomColorRampV2::clone() const
 {
   return new QgsVectorRandomColorRampV2( mCount, mHueMin, mHueMax, mSatMin, mSatMax, mValMin, mValMax );
 }
@@ -441,7 +441,7 @@ QString QgsRandomColorsV2::type() const
   return "randomcolors";
 }
 
-QgsVectorColorRampV2* QgsRandomColorsV2::clone() const
+QgsRandomColorsV2* QgsRandomColorsV2::clone() const
 {
   return new QgsRandomColorsV2();
 }
@@ -504,7 +504,7 @@ QColor QgsVectorColorBrewerColorRampV2::color( double value ) const
   return mPalette.at( paletteEntry );
 }
 
-QgsVectorColorRampV2* QgsVectorColorBrewerColorRampV2::clone() const
+QgsVectorColorBrewerColorRampV2* QgsVectorColorBrewerColorRampV2::clone() const
 {
   return new QgsVectorColorBrewerColorRampV2( mSchemeName, mColors );
 }
@@ -560,7 +560,7 @@ QgsVectorColorRampV2* QgsCptCityColorRampV2::create( const QgsStringMap& props )
   return new QgsCptCityColorRampV2( schemeName, variantName );
 }
 
-QgsVectorColorRampV2* QgsCptCityColorRampV2::clone() const
+QgsCptCityColorRampV2* QgsCptCityColorRampV2::clone() const
 {
   QgsCptCityColorRampV2* ramp = new QgsCptCityColorRampV2( "", "", false );
   ramp->copy( this );

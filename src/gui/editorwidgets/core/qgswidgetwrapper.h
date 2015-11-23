@@ -87,21 +87,21 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
      *
      * @return the value assigned to this configuration option
      */
-    QVariant config( const QString& key, const QVariant& defaultVal = QVariant() );
+    QVariant config( const QString& key, const QVariant& defaultVal = QVariant() ) const;
 
     /**
      * Returns the whole config
      *
      * @return The configuration
      */
-    const QgsEditorWidgetConfig config();
+    QgsEditorWidgetConfig config() const;
 
     /**
      * Returns information about the context in which this widget is shown
      *
      * @return context information
      */
-    const QgsAttributeEditorContext& context();
+    const QgsAttributeEditorContext& context() const;
 
     /**
      * Access the QgsVectorLayer, you are working on
@@ -110,7 +110,7 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
      *
      * @see field()
      */
-    QgsVectorLayer* layer();
+    QgsVectorLayer* layer() const;
 
     /**
      * Will return a wrapper for a given widget
@@ -130,7 +130,7 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
      *
      * @note Added in 2.12
      */
-    virtual bool valid() = 0;
+    virtual bool valid() const = 0;
 
   protected:
     /**

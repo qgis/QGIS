@@ -13,9 +13,9 @@ class QgsComposerView : QGraphicsView
 
 %ConvertToSubClassCode
   if (sipCpp->inherits("QgsComposerView"))
-    sipClass = sipClass_QgsComposerView;
+    sipType = sipType_QgsComposerView;
   else
-    sipClass = NULL;
+    sipType = NULL;
 %End
 
   public:

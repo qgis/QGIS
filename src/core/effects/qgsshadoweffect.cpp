@@ -178,7 +178,7 @@ QgsDropShadowEffect::~QgsDropShadowEffect()
 
 }
 
-QgsPaintEffect *QgsDropShadowEffect::clone() const
+QgsDropShadowEffect* QgsDropShadowEffect::clone() const
 {
   return new QgsDropShadowEffect( *this );
 }
@@ -206,7 +206,7 @@ QgsInnerShadowEffect::~QgsInnerShadowEffect()
 
 }
 
-QgsPaintEffect *QgsInnerShadowEffect::clone() const
+QgsInnerShadowEffect* QgsInnerShadowEffect::clone() const
 {
   return new QgsInnerShadowEffect( *this );
 }

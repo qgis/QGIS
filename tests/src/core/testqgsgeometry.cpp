@@ -30,6 +30,7 @@
 #include <qgsgeometry.h>
 #include <qgspoint.h>
 #include "qgspointv2.h"
+#include "qgslinestringv2.h"
 
 //qgs unit test utility class
 #include "qgsrenderchecker.h"
@@ -49,11 +50,11 @@ class TestQgsGeometry : public QObject
     void cleanupTestCase();// will be called after the last testfunction was executed.
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
-
     void copy();
     void assignment();
     void asVariant(); //test conversion to and from a QVariant
     void isEmpty();
+    void pointV2(); //test QgsPointV2
 
     void fromQgsPoint();
     void fromQPoint();
@@ -69,6 +70,7 @@ class TestQgsGeometry : public QObject
 #if 0
     void simplifyCheck1();
 #endif
+
     void intersectionCheck1();
     void intersectionCheck2();
     void translateCheck1();
@@ -81,6 +83,8 @@ class TestQgsGeometry : public QObject
     void smoothCheck();
 
     void dataStream();
+    
+    void exportToGeoJSON();
 
   private:
     /** A helper method to do a render check to see if the geometry op is as expected */
@@ -91,6 +95,7 @@ class TestQgsGeometry : public QObject
     void dumpPolygon( QgsPolygon &thePolygon );
     /** A helper method to dump to qdebug the geometry of a polyline */
     void dumpPolyline( QgsPolyline &thePolyline );
+
     QgsPoint mPoint1;
     QgsPoint mPoint2;
     QgsPoint mPoint3;
@@ -132,6 +137,35 @@ TestQgsGeometry::TestQgsGeometry()
 
 }
 
+void TestQgsGeometry::initTestCase()
+{
+  // Runs once before any tests are run
+  // init QGIS's paths - true means that all path will be inited from prefix
+  QgsApplication::init();
+  QgsApplication::initQgis();
+  QgsApplication::showSettings();
+  mReport += "<h1>Geometry Tests</h1>\n";
+  mReport += "<p><font color=\"green\">Green = polygonA</font></p>\n";
+  mReport += "<p><font color=\"red\">Red = polygonB</font></p>\n";
+  mReport += "<p><font color=\"blue\">Blue = polygonC</font></p>\n";
+}
+
+
+void TestQgsGeometry::cleanupTestCase()
+{
+  // Runs once after all tests are run
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  QFile myFile( myReportFile );
+  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
+  {
+    QTextStream myQTextStream( &myFile );
+    myQTextStream << mReport;
+    myFile.close();
+    //QDesktopServices::openUrl( "file:///" + myReportFile );
+  }
+
+  QgsApplication::exitQgis();
+}
 
 void TestQgsGeometry::init()
 {
@@ -301,6 +335,319 @@ void TestQgsGeometry::isEmpty()
   QVERIFY( geom.isEmpty() );
 }
 
+void TestQgsGeometry::pointV2()
+{
+  //test QgsPointV2
+
+  //test constructors
+  QgsPointV2 p1( 5.0, 6.0 );
+  QCOMPARE( p1.x(), 5.0 );
+  QCOMPARE( p1.y(), 6.0 );
+  QVERIFY( !p1.isEmpty() );
+  QVERIFY( !p1.is3D() );
+  QVERIFY( !p1.isMeasure() );
+  QCOMPARE( p1.wkbType(), QgsWKBTypes::Point );
+  QCOMPARE( p1.wktTypeStr(), QString( "Point" ) );
+
+  QgsPointV2 p2( QgsPoint( 3.0, 4.0 ) );
+  QCOMPARE( p2.x(), 3.0 );
+  QCOMPARE( p2.y(), 4.0 );
+  QVERIFY( !p2.isEmpty() );
+  QVERIFY( !p2.is3D() );
+  QVERIFY( !p2.isMeasure() );
+  QCOMPARE( p2.wkbType(), QgsWKBTypes::Point );
+
+  QgsPointV2 p3( QPointF( 7.0, 9.0 ) );
+  QCOMPARE( p3.x(), 7.0 );
+  QCOMPARE( p3.y(), 9.0 );
+  QVERIFY( !p3.isEmpty() );
+  QVERIFY( !p3.is3D() );
+  QVERIFY( !p3.isMeasure() );
+  QCOMPARE( p3.wkbType(), QgsWKBTypes::Point );
+
+  QgsPointV2 p4( QgsWKBTypes::Point, 11.0, 13.0 );
+  QCOMPARE( p4.x(), 11.0 );
+  QCOMPARE( p4.y(), 13.0 );
+  QVERIFY( !p4.isEmpty() );
+  QVERIFY( !p4.is3D() );
+  QVERIFY( !p4.isMeasure() );
+  QCOMPARE( p4.wkbType(), QgsWKBTypes::Point );
+
+  QgsPointV2 p5( QgsWKBTypes::PointZ, 11.0, 13.0, 15.0 );
+  QCOMPARE( p5.x(), 11.0 );
+  QCOMPARE( p5.y(), 13.0 );
+  QCOMPARE( p5.z(), 15.0 );
+  QVERIFY( !p5.isEmpty() );
+  QVERIFY( p5.is3D() );
+  QVERIFY( !p5.isMeasure() );
+  QCOMPARE( p5.wkbType(), QgsWKBTypes::PointZ );
+  QCOMPARE( p5.wktTypeStr(), QString( "PointZ" ) );
+
+  QgsPointV2 p6( QgsWKBTypes::PointM, 11.0, 13.0, 0.0, 17.0 );
+  QCOMPARE( p6.x(), 11.0 );
+  QCOMPARE( p6.y(), 13.0 );
+  QCOMPARE( p6.m(), 17.0 );
+  QVERIFY( !p6.isEmpty() );
+  QVERIFY( !p6.is3D() );
+  QVERIFY( p6.isMeasure() );
+  QCOMPARE( p6.wkbType(), QgsWKBTypes::PointM );
+  QCOMPARE( p6.wktTypeStr(), QString( "PointM" ) );
+
+  QgsPointV2 p7( QgsWKBTypes::PointZM, 11.0, 13.0, 0.0, 17.0 );
+  QCOMPARE( p7.x(), 11.0 );
+  QCOMPARE( p7.y(), 13.0 );
+  QCOMPARE( p7.m(), 17.0 );
+  QVERIFY( !p7.isEmpty() );
+  QVERIFY( p7.is3D() );
+  QVERIFY( p7.isMeasure() );
+  QCOMPARE( p7.wkbType(), QgsWKBTypes::PointZM );
+  QCOMPARE( p7.wktTypeStr(), QString( "PointZM" ) );
+
+  QgsPointV2 p8( QgsWKBTypes::Point25D, 21.0, 23.0, 25.0 );
+  QCOMPARE( p8.x(), 21.0 );
+  QCOMPARE( p8.y(), 23.0 );
+  QCOMPARE( p8.z(), 25.0 );
+  QVERIFY( !p8.isEmpty() );
+  QVERIFY( p8.is3D() );
+  QVERIFY( !p8.isMeasure() );
+  QCOMPARE( p8.wkbType(), QgsWKBTypes::Point25D );
+
+#if 0 //should trigger an assert
+  //try creating a point with a nonsense WKB type
+  QgsPointV2 p9( QgsWKBTypes::PolygonZM, 11.0, 13.0, 9.0, 17.0 );
+  QCOMPARE( p9.wkbType(), QgsWKBTypes::Unknown );
+#endif
+
+  //test equality operator
+  QVERIFY( QgsPointV2( QgsWKBTypes::Point, 2 / 3.0, 1 / 3.0 ) == QgsPointV2( QgsWKBTypes::Point, 2 / 3.0, 1 / 3.0 ) );
+  QVERIFY( !( QgsPointV2( QgsWKBTypes::PointZ, 2 / 3.0, 1 / 3.0 ) == QgsPointV2( QgsWKBTypes::Point, 2 / 3.0, 1 / 3.0 ) ) );
+  QVERIFY( !( QgsPointV2( QgsWKBTypes::Point, 1 / 3.0, 1 / 3.0 ) == QgsPointV2( QgsWKBTypes::Point, 2 / 3.0, 1 / 3.0 ) ) );
+  QVERIFY( !( QgsPointV2( QgsWKBTypes::Point, 2 / 3.0, 2 / 3.0 ) == QgsPointV2( QgsWKBTypes::Point, 2 / 3.0, 1 / 3.0 ) ) );
+  QVERIFY( QgsPointV2( QgsWKBTypes::PointZ, 3.0, 4.0, 1 / 3.0 ) == QgsPointV2( QgsWKBTypes::PointZ, 3.0, 4.0, 1 / 3.0 ) );
+  QVERIFY( !( QgsPointV2( QgsWKBTypes::PointZ, 3.0, 4.0, 1 / 3.0 ) == QgsPointV2( QgsWKBTypes::PointZM, 3.0, 4.0, 1 / 3.0 ) ) );
+  QVERIFY( !( QgsPointV2( QgsWKBTypes::PointZ, 3.0, 4.0, 2 / 3.0 ) == QgsPointV2( QgsWKBTypes::PointZ, 3.0, 4.0, 1 / 3.0 ) ) );
+  QVERIFY( QgsPointV2( QgsWKBTypes::PointM, 3.0, 4.0, 0.0, 1 / 3.0 ) == QgsPointV2( QgsWKBTypes::PointM, 3.0, 4.0, 0.0, 1 / 3.0 ) );
+  QVERIFY( !( QgsPointV2( QgsWKBTypes::PointM, 3.0, 4.0, 0.0, 1 / 3.0 ) == QgsPointV2( QgsWKBTypes::PointZ, 3.0, 4.0, 0.0, 1 / 3.0 ) ) );
+  QVERIFY( !( QgsPointV2( QgsWKBTypes::PointM, 3.0, 4.0, 0.0, 1 / 3.0 ) == QgsPointV2( QgsWKBTypes::PointM, 3.0, 4.0, 0.0, 2 / 3.0 ) ) );
+  QVERIFY( QgsPointV2( QgsWKBTypes::PointZM, 3.0, 4.0, 2 / 3.0, 1 / 3.0 ) == QgsPointV2( QgsWKBTypes::PointZM, 3.0, 4.0, 2 / 3.0, 1 / 3.0 ) );
+  QVERIFY( QgsPointV2( QgsWKBTypes::Point25D, 3.0, 4.0, 2 / 3.0 ) == QgsPointV2( QgsWKBTypes::Point25D, 3.0, 4.0, 2 / 3.0 ) );
+  QVERIFY( !( QgsPointV2( QgsWKBTypes::Point25D, 3.0, 4.0, 2 / 3.0 ) == QgsPointV2( QgsWKBTypes::PointZ, 3.0, 4.0, 2 / 3.0 ) ) );
+  //test inequality operator
+  QVERIFY( !( QgsPointV2( QgsWKBTypes::Point, 2 / 3.0, 1 / 3.0 ) != QgsPointV2( QgsWKBTypes::Point, 2 / 3.0, 1 / 3.0 ) ) );
+  QVERIFY( QgsPointV2( QgsWKBTypes::Point, 2 / 3.0, 1 / 3.0 ) != QgsPointV2( QgsWKBTypes::PointZ, 2 / 3.0, 1 / 3.0 ) );
+
+  //test setters and getters
+  //x
+  QgsPointV2 p10( QgsWKBTypes::PointZM );
+  p10.setX( 5.0 );
+  QCOMPARE( p10.x(), 5.0 );
+  QCOMPARE( p10.rx(), 5.0 );
+  p10.rx() = 9.0;
+  QCOMPARE( p10.x(), 9.0 );
+  //y
+  p10.setY( 7.0 );
+  QCOMPARE( p10.y(), 7.0 );
+  QCOMPARE( p10.ry(), 7.0 );
+  p10.ry() = 3.0;
+  QCOMPARE( p10.y(), 3.0 );
+  //z
+  p10.setZ( 17.0 );
+  QCOMPARE( p10.z(), 17.0 );
+  QCOMPARE( p10.rz(), 17.0 );
+  p10.rz() = 13.0;
+  QCOMPARE( p10.z(), 13.0 );
+  //m
+  p10.setM( 27.0 );
+  QCOMPARE( p10.m(), 27.0 );
+  QCOMPARE( p10.rm(), 27.0 );
+  p10.rm() = 23.0;
+  QCOMPARE( p10.m(), 23.0 );
+
+  //other checks
+  QCOMPARE( p10.geometryType(), QString( "Point" ) );
+  QCOMPARE( p10.dimension(), 0 );
+
+  //clone
+  QScopedPointer< QgsPointV2 >clone( p10.clone() );
+  QVERIFY( p10 == *clone );
+
+  //assignment
+  QgsPointV2 original( QgsWKBTypes::PointZM, 1.0, 2.0, 3.0, -4.0 );
+  QgsPointV2 assigned( 6.0, 7.0 );
+  assigned = original;
+  QVERIFY( assigned == original );
+
+  //clear
+  QgsPointV2 p11( 5.0, 6.0 );
+  p11.clear();
+  QCOMPARE( p11.wkbType(), QgsWKBTypes::Unknown );
+  QCOMPARE( p11.x(), 0.0 );
+  QCOMPARE( p11.y(), 0.0 );
+
+  //to/from WKB
+  QgsPointV2 p12( QgsWKBTypes::PointZM, 1.0, 2.0, 3.0, -4.0 );
+  int size = 0;
+  unsigned char* wkb = p12.asWkb( size );
+  QCOMPARE( size, p12.wkbSize() );
+  QgsPointV2 p13;
+  p13.fromWkb( wkb );
+  QVERIFY( p13 == p12 );
+
+  //bad WKB - check for no crash
+  p13 = QgsPointV2( 1, 2 );
+  QVERIFY( !p13.fromWkb( 0 ) );
+  QCOMPARE( p13.wkbType(), QgsWKBTypes::Unknown );
+  QgsLineStringV2 line;
+  p13 = QgsPointV2( 1, 2 );
+  QVERIFY( !p13.fromWkb( line.asWkb( size ) ) );
+  QCOMPARE( p13.wkbType(), QgsWKBTypes::Unknown );
+
+  //to/from WKT
+  p13 = QgsPointV2( QgsWKBTypes::PointZM, 1.0, 2.0, 3.0, -4.0 );
+  QString wkt = p13.asWkt();
+  QVERIFY( !wkt.isEmpty() );
+  QgsPointV2 p14;
+  QVERIFY( p14.fromWkt( wkt ) );
+  QVERIFY( p14 == p13 );
+
+  //bad WKT
+  QVERIFY( !p14.fromWkt( "Polygon()" ) );
+  QCOMPARE( p14.wkbType(), QgsWKBTypes::Unknown );
+
+  //TODO asGML2, asGML3, asJSON
+
+  //bounding box
+  QgsPointV2 p15( 1.0, 2.0 );
+  QCOMPARE( p15.boundingBox(), QgsRectangle( 1.0, 2.0, 1.0, 2.0 ) );
+  //modify points and test that bounding box is updated accordingly
+  p15.setX( 3.0 );
+  QCOMPARE( p15.boundingBox(), QgsRectangle( 3.0, 2.0, 3.0, 2.0 ) );
+  p15.setY( 6.0 );
+  QCOMPARE( p15.boundingBox(), QgsRectangle( 3.0, 6.0, 3.0, 6.0 ) );
+  p15.rx() = 4.0;
+  QCOMPARE( p15.boundingBox(), QgsRectangle( 4.0, 6.0, 4.0, 6.0 ) );
+  p15.ry() = 9.0;
+  QCOMPARE( p15.boundingBox(), QgsRectangle( 4.0, 9.0, 4.0, 9.0 ) );
+  p15.moveVertex( QgsVertexId( 0, 0, 0 ), QgsPointV2( 11.0, 13.0 ) );
+  QCOMPARE( p15.boundingBox(), QgsRectangle( 11.0, 13.0, 11.0, 13.0 ) );
+  p15 = QgsPointV2( 21.0, 23.0 );
+  QCOMPARE( p15.boundingBox(), QgsRectangle( 21.0, 23.0, 21.0, 23.0 ) );
+
+  //CRS transform
+  QgsCoordinateReferenceSystem sourceSrs;
+  sourceSrs.createFromSrid( 3994 );
+  QgsCoordinateReferenceSystem destSrs;
+  destSrs.createFromSrid( 4326 );
+  QgsCoordinateTransform tr( sourceSrs, destSrs );
+  QgsPointV2 p16( QgsWKBTypes::PointZM, 6374985, -3626584, 1, 2 );
+  p16.transform( tr, QgsCoordinateTransform::ForwardTransform );
+  QVERIFY( qgsDoubleNear( p16.x(), 175.771, 0.001 ) );
+  QVERIFY( qgsDoubleNear( p16.y(), -39.722, 0.001 ) );
+  QVERIFY( qgsDoubleNear( p16.z(), 57.2958, 0.001 ) );
+  QCOMPARE( p16.m(), 2.0 );
+  p16.transform( tr, QgsCoordinateTransform::ReverseTransform );
+  QVERIFY( qgsDoubleNear( p16.x(), 6374985, 1 ) );
+  QVERIFY( qgsDoubleNear( p16.y(), -3626584, 1 ) );
+  QVERIFY( qgsDoubleNear( p16.z(), 1.0, 0.001 ) );
+  QCOMPARE( p16.m(), 2.0 );
+
+  //QTransform transform
+  QTransform qtr = QTransform::fromScale( 2, 3 );
+  QgsPointV2 p17( QgsWKBTypes::PointZM, 10, 20, 30, 40 );
+  p17.transform( qtr );
+  QVERIFY( p17 == QgsPointV2( QgsWKBTypes::PointZM, 20, 60, 30, 40 ) );
+
+  //coordinateSequence
+  QList< QList< QList< QgsPointV2 > > > coord;
+  QgsPointV2 p18( QgsWKBTypes::PointZM, 1.0, 2.0, 3.0, 4.0 );
+  p18.coordinateSequence( coord );
+  QCOMPARE( coord.count(), 1 );
+  QCOMPARE( coord.at( 0 ).count(), 1 );
+  QCOMPARE( coord.at( 0 ).at( 0 ).count(), 1 );
+  QCOMPARE( coord.at( 0 ).at( 0 ).at( 0 ), p18 );
+
+  //low level editing
+  //insertVertex should have no effect
+  QgsPointV2 p19( QgsWKBTypes::PointZM, 3.0, 4.0, 6.0, 7.0 );
+  p19.insertVertex( QgsVertexId( 1, 2, 3 ), QgsPointV2( 6.0, 7.0 ) );
+  QCOMPARE( p19, QgsPointV2( QgsWKBTypes::PointZM, 3.0, 4.0, 6.0, 7.0 ) );
+
+  //moveVertex
+  p19.moveVertex( QgsVertexId( 0, 0, 0 ), QgsPointV2( QgsWKBTypes::PointZM, 1.0, 2.0, 3.0, 4.0 ) );
+  QCOMPARE( p19, QgsPointV2( QgsWKBTypes::PointZM, 1.0, 2.0, 3.0, 4.0 ) );
+  //invalid vertex id, should not crash
+  p19.moveVertex( QgsVertexId( 1, 2, 3 ), QgsPointV2( QgsWKBTypes::PointZM, 2.0, 3.0, 1.0, 2.0 ) );
+  QCOMPARE( p19, QgsPointV2( QgsWKBTypes::PointZM, 2.0, 3.0, 1.0, 2.0 ) );
+  //move PointZM using Point
+  p19.moveVertex( QgsVertexId( 0, 0, 0 ), QgsPointV2( QgsWKBTypes::Point, 11.0, 12.0 ) );
+  QCOMPARE( p19, QgsPointV2( QgsWKBTypes::PointZM, 11.0, 12.0, 1.0, 2.0 ) );
+  //move PointZM using PointZ
+  p19.moveVertex( QgsVertexId( 0, 0, 0 ), QgsPointV2( QgsWKBTypes::PointZ, 21.0, 22.0, 23.0 ) );
+  QCOMPARE( p19, QgsPointV2( QgsWKBTypes::PointZM, 21.0, 22.0, 23.0, 2.0 ) );
+  //move PointZM using PointM
+  p19.moveVertex( QgsVertexId( 0, 0, 0 ), QgsPointV2( QgsWKBTypes::PointM, 31.0, 32.0, 0.0, 43.0 ) );
+  QCOMPARE( p19, QgsPointV2( QgsWKBTypes::PointZM, 31.0, 32.0, 23.0, 43.0 ) );
+  //move Point using PointZM (z/m should be ignored)
+  QgsPointV2 p20( 3.0, 4.0 );
+  p20.moveVertex( QgsVertexId( 0, 0, 0 ), QgsPointV2( QgsWKBTypes::PointZM, 2.0, 3.0, 1.0, 2.0 ) );
+  QCOMPARE( p20, QgsPointV2( 2.0, 3.0 ) );
+
+  //deleteVertex - should do nothing, but not crash
+  p20.deleteVertex( QgsVertexId( 0, 0, 0 ) );
+  QCOMPARE( p20, QgsPointV2( 2.0, 3.0 ) );
+
+  //closestSegment
+  QgsPointV2 closest;
+  QgsVertexId after;
+  QCOMPARE( p20.closestSegment( QgsPointV2( 4.0, 6.0 ), closest, after, 0, 0 ), 13.0 );
+  QCOMPARE( closest, p20 );
+  QCOMPARE( after, QgsVertexId( 0, 0, 0 ) );
+
+  //nextVertex
+  QgsPointV2 p21( 3.0, 4.0 );
+  QgsPointV2 p22;
+  QgsVertexId v( 0, 0, -1 );
+  QVERIFY( p21.nextVertex( v, p22 ) );
+  QCOMPARE( p22, p21 );
+  QCOMPARE( v, QgsVertexId( 0, 0, 0 ) );
+  //no more vertices
+  QVERIFY( !p21.nextVertex( v, p22 ) );
+
+  //vertexAt - will always be same as point
+  QCOMPARE( p21.vertexAt( QgsVertexId() ), p21 );
+  QCOMPARE( p21.vertexAt( QgsVertexId( 0, 0, 0 ) ), p21 );
+
+  //vertexAngle - undefined, but check that it doesn't crash
+  ( void )p21.vertexAngle( QgsVertexId() );
+
+  //counts
+  QCOMPARE( p20.vertexCount(), 1 );
+  QCOMPARE( p20.ringCount(), 1 );
+  QCOMPARE( p20.partCount(), 1 );
+
+  //measures and other abstract geometry methods
+  QCOMPARE( p20.length(), 0.0 );
+  QCOMPARE( p20.perimeter(), 0.0 );
+  QCOMPARE( p20.area(), 0.0 );
+  QCOMPARE( p20.centroid(), p20 );
+  QVERIFY( !p20.hasCurvedSegments() );
+  QScopedPointer< QgsPointV2 >segmented( static_cast< QgsPointV2*>( p20.segmentize() ) );
+  QCOMPARE( *segmented, p20 );
+
+  //addZValue
+  QgsPointV2 p23( 1.0, 2.0 );
+  QVERIFY( p23.addZValue( 5.0 ) );
+  QCOMPARE( p23, QgsPointV2( QgsWKBTypes::PointZ, 1.0, 2.0, 5.0 ) );
+  QVERIFY( !p23.addZValue( 6.0 ) );
+
+  //addMValue
+  QgsPointV2 p24( 1.0, 2.0 );
+  QVERIFY( p24.addMValue( 5.0 ) );
+  QCOMPARE( p24, QgsPointV2( QgsWKBTypes::PointM, 1.0, 2.0, 0.0, 5.0 ) );
+  QVERIFY( !p24.addMValue( 6.0 ) );
+
+}
+
 void TestQgsGeometry::fromQgsPoint()
 {
   QgsPoint point( 1.0, 2.0 );
@@ -439,41 +786,7 @@ void TestQgsGeometry::comparePolygons()
   QVERIFY( !QgsGeometry::compare( poly3, poly4 ) );
 }
 
-void TestQgsGeometry::initTestCase()
-{
-  //
-  // Runs once before any tests are run
-  //
-  // init QGIS's paths - true means that all path will be inited from prefix
-  QgsApplication::init();
-  QgsApplication::initQgis();
-  QgsApplication::showSettings();
-  mReport += "<h1>Geometry Tests</h1>\n";
-  mReport += "<p><font color=\"green\">Green = polygonA</font></p>\n";
-  mReport += "<p><font color=\"red\">Red = polygonB</font></p>\n";
-  mReport += "<p><font color=\"blue\">Blue = polygonC</font></p>\n";
-}
 
-
-void TestQgsGeometry::cleanupTestCase()
-{
-
-
-  //
-  // Runs once after all tests are run
-  //
-  QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-    //QDesktopServices::openUrl( "file:///" + myReportFile );
-  }
-
-  QgsApplication::exitQgis();
-}
 
 // MK, Disabled 14.11.2014
 // Too unclear what exactly should be tested and which variations are allowed for the line
@@ -737,6 +1050,51 @@ void TestQgsGeometry::dataStream()
   ds2 >> resultGeometry;
 
   QVERIFY( resultGeometry.isEmpty() );
+}
+
+void TestQgsGeometry::exportToGeoJSON()
+{
+  //Point
+  QString wkt = "Point (40 50)";
+  QScopedPointer<QgsGeometry> geom( QgsGeometry::fromWkt( wkt ) );
+  QString obtained = geom->exportToGeoJSON();
+  QString geojson = "{\"type\": \"Point\", \"coordinates\": [40, 50]}";
+  QCOMPARE( obtained, geojson );
+  
+  //MultiPoint
+  wkt = "MultiPoint (0 0, 10 0, 10 10, 20 10)";
+  geom.reset( QgsGeometry::fromWkt( wkt ) );
+  obtained = geom->exportToGeoJSON();
+  geojson = "{\"type\": \"MultiPoint\", \"coordinates\": [ [0, 0], [10, 0], [10, 10], [20, 10]] }";
+  QCOMPARE( obtained, geojson );
+
+  //Linestring
+  wkt = "LineString(0 0, 10 0, 10 10, 20 10)";
+  geom.reset( QgsGeometry::fromWkt( wkt ) );
+  obtained = geom->exportToGeoJSON();
+  geojson = "{\"type\": \"LineString\", \"coordinates\": [ [0, 0], [10, 0], [10, 10], [20, 10]]}";
+  QCOMPARE( obtained, geojson );
+  
+  //MultiLineString
+  wkt = "MultiLineString ((0 0, 10 0, 10 10, 20 10),(30 30, 40 30, 40 40, 50 40))";
+  geom.reset( QgsGeometry::fromWkt( wkt ) );
+  obtained = geom->exportToGeoJSON();
+  geojson = "{\"type\": \"MultiLineString\", \"coordinates\": [[ [0, 0], [10, 0], [10, 10], [20, 10]], [ [30, 30], [40, 30], [40, 40], [50, 40]]] }";
+  QCOMPARE( obtained, geojson );
+  
+  //Polygon
+  wkt = "Polygon ((0 0, 10 0, 10 10, 0 10, 0 0 ),(2 2, 4 2, 4 4, 2 4, 2 2))";
+  geom.reset( QgsGeometry::fromWkt( wkt ) );
+  obtained = geom->exportToGeoJSON();
+  geojson = "{\"type\": \"Polygon\", \"coordinates\": [[ [0, 0], [10, 0], [10, 10], [0, 10], [0, 0]], [ [2, 2], [4, 2], [4, 4], [2, 4], [2, 2]]] }";
+  QCOMPARE( obtained, geojson );
+
+  //MultiPolygon
+  wkt = "MultiPolygon (((0 0, 10 0, 10 10, 0 10, 0 0 )),((2 2, 4 2, 4 4, 2 4, 2 2)))";
+  geom.reset( QgsGeometry::fromWkt( wkt ) );
+  obtained = geom->exportToGeoJSON();
+  geojson = "{\"type\": \"MultiPolygon\", \"coordinates\": [[[ [0, 0], [10, 0], [10, 10], [0, 10], [0, 0]]], [[ [2, 2], [4, 2], [4, 4], [2, 4], [2, 2]]]] }";
+  QCOMPARE( obtained, geojson );
 }
 
 bool TestQgsGeometry::renderCheck( const QString& theTestName, const QString& theComment, int mismatchCount )

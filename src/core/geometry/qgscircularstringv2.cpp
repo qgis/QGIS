@@ -512,6 +512,12 @@ void QgsCircularStringV2::segmentize( const QgsPointV2& p1, const QgsPointV2& p2
   points.append( p1 );
   if ( p2 != p3 && p1 != p2 ) //draw straight line segment if two points have the same position
   {
+    QgsWKBTypes::Type pointWkbType = QgsWKBTypes::Point;
+    if ( hasZ )
+      pointWkbType = QgsWKBTypes::addZ( pointWkbType );
+    if ( hasM )
+      pointWkbType = QgsWKBTypes::addM( pointWkbType );
+
     for ( double angle = a1 + increment; clockwise ? angle > a3 : angle < a3; angle += increment )
     {
       x = centerX + radius * cos( angle );
@@ -532,7 +538,7 @@ void QgsCircularStringV2::segmentize( const QgsPointV2& p1, const QgsPointV2& p2
         m = interpolateArc( angle, a1, a2, a3, p1.m(), p2.m(), p3.m() );
       }
 
-      points.append( QgsPointV2( mWkbType, x, y, z, m ) );
+      points.append( QgsPointV2( pointWkbType, x, y, z, m ) );
     }
   }
   points.append( p3 );
@@ -1007,6 +1013,22 @@ double QgsCircularStringV2::vertexAngle( const QgsVertexId& vId ) const
     }
   }
   return 0.0;
+}
+
+QgsCircularStringV2* QgsCircularStringV2::reversed() const
+{
+  QgsCircularStringV2* copy = clone();
+  std::reverse( copy->mX.begin(), copy->mX.end() );
+  std::reverse( copy->mY.begin(), copy->mY.end() );
+  if ( is3D() )
+  {
+    std::reverse( copy->mZ.begin(), copy->mZ.end() );
+  }
+  if ( isMeasure() )
+  {
+    std::reverse( copy->mM.begin(), copy->mM.end() );
+  }
+  return copy;
 }
 
 bool QgsCircularStringV2::addZValue( double zValue )

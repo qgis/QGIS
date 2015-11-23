@@ -101,7 +101,7 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   QModelIndex firstItem = mProxyModel->index( 0, 0, QModelIndex() );
   expressionTree->setCurrentIndex( firstItem );
 
-  lblAutoSave->setText("");
+  lblAutoSave->setText( "" );
 }
 
 
@@ -208,7 +208,7 @@ void QgsExpressionBuilderWidget::updateFunctionFileList( const QString& path )
   {
     QFileInfo info( mFunctionsPath + QDir::separator() + name );
     if ( info.baseName() == "__init__" ) continue;
-    QListWidgetItem* item = new QListWidgetItem( QgsApplication::getThemeIcon("console/iconTabEditorConsole.png"), info.baseName() );
+    QListWidgetItem* item = new QListWidgetItem( QgsApplication::getThemeIcon( "console/iconTabEditorConsole.png" ), info.baseName() );
     cmbFileNames->addItem( item );
   }
   if ( !cmbFileNames->currentItem() )

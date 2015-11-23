@@ -20,7 +20,7 @@
 
 /**
  * Wraps a hidden widget. Fields with this widget type will not be visible.
- *
+ * \note not available in Python bindings
  */
 
 class GUI_EXPORT QgsHiddenWidgetWrapper : public QgsEditorWidgetWrapper
@@ -31,12 +31,12 @@ class GUI_EXPORT QgsHiddenWidgetWrapper : public QgsEditorWidgetWrapper
 
     // QgsEditorWidgetWrapper interface
   public:
-    QVariant value() override;
+    QVariant value() const override;
 
   protected:
     QWidget* createWidget( QWidget* parent ) override;
     void initWidget( QWidget* editor ) override;
-    bool valid() override;
+    bool valid() const override;
 
   public slots:
     void setValue( const QVariant& value ) override;

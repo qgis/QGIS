@@ -62,7 +62,7 @@ QgsPointDisplacementRenderer::~QgsPointDisplacementRenderer()
   delete mRenderer;
 }
 
-QgsFeatureRendererV2* QgsPointDisplacementRenderer::clone() const
+QgsPointDisplacementRenderer* QgsPointDisplacementRenderer::clone() const
 {
   QgsPointDisplacementRenderer* r = new QgsPointDisplacementRenderer( mLabelAttributeName );
   r->setEmbeddedRenderer( mRenderer->clone() );
@@ -78,7 +78,7 @@ QgsFeatureRendererV2* QgsPointDisplacementRenderer::clone() const
   r->setToleranceMapUnitScale( mToleranceMapUnitScale );
   if ( mCenterSymbol )
   {
-    r->setCenterSymbol( dynamic_cast<QgsMarkerSymbolV2*>( mCenterSymbol->clone() ) );
+    r->setCenterSymbol( mCenterSymbol->clone() );
   }
   copyPaintEffect( r );
   return r;

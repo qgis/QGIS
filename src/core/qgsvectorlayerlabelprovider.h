@@ -19,6 +19,7 @@
 #include "qgslabelingenginev2.h"
 
 class QgsAbstractFeatureSource;
+class QgsFeatureRendererV2;
 
 /**
  * @brief The QgsVectorLayerLabelProvider class implements a label provider
@@ -40,7 +41,8 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
                                  const QgsFields& fields,
                                  const QgsCoordinateReferenceSystem& crs,
                                  QgsAbstractFeatureSource* source,
-                                 bool ownsSource );
+                                 bool ownsSource,
+                                 QgsFeatureRendererV2* renderer = 0 );
 
     ~QgsVectorLayerLabelProvider();
 
@@ -64,8 +66,22 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
      * @param feature feature to label
      * @param context render context. The QgsExpressionContext contained within the render context
      * must have already had the feature and fields sets prior to calling this method.
+     * @param obstacleGeometry optional obstacle geometry, if a different geometry to the feature's geometry
+     * should be used as an obstacle for labels (eg, if the feature has been rendered with an offset point
+     * symbol, the obstacle geometry should represent the bounds of the offset symbol). If not set,
+     * the feature's original geometry will be used as an obstacle for labels.
      */
-    virtual void registerFeature( QgsFeature& feature, QgsRenderContext &context );
+    virtual void registerFeature( QgsFeature& feature, QgsRenderContext &context, QgsGeometry* obstacleGeometry = 0 );
+
+    /** Returns the geometry for a point feature which should be used as an obstacle for labels. This
+     * obstacle geometry will respect the dimensions and offsets of the symbol used to render the
+     * point, and ensures that labels will not overlap large or offset points.
+     * @param fet point feature
+     * @param context render context
+     * @param renderer renderer used for layer, required to determine symbols rendered for point feature
+     * @note added in QGIS 2.14
+     */
+    static QgsGeometry* getPointObstacleGeometry( QgsFeature& fet, QgsRenderContext& context, QgsFeatureRendererV2* renderer );
 
   protected:
     //! initialization method - called from constructors
@@ -78,6 +94,8 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
     QgsPalLayerSettings mSettings;
     //! Layer's ID
     QString mLayerId;
+
+    QgsFeatureRendererV2* mRenderer;
 
     // these are needed only if using own renderer loop
 

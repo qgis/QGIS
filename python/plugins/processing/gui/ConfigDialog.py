@@ -32,8 +32,9 @@ from PyQt4 import uic
 from PyQt4.QtCore import Qt, QEvent, QPyNullVariant
 from PyQt4.QtGui import (QFileDialog, QDialog, QIcon, QStyle,
                          QStandardItemModel, QStandardItem, QMessageBox, QStyledItemDelegate,
-                         QLineEdit, QSpinBox, QDoubleSpinBox, QWidget, QToolButton, QHBoxLayout,
+                         QLineEdit, QWidget, QToolButton, QHBoxLayout,
                          QComboBox)
+from qgis.gui import QgsDoubleSpinBox, QgsSpinBox
 
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.core.Processing import Processing
@@ -144,9 +145,9 @@ class ConfigDialog(BASE, WIDGET):
             else:
                 try:
                     setting.setValue(unicode(self.items[setting].text()))
-                except ValueError, e:
+                except ValueError as e:
                     QMessageBox.warning(self, self.tr('Wrong value'),
-                                         self.tr('Wrong value for parameter "%s":\n\n%s' %(setting.description, unicode(e))))
+                                        self.tr('Wrong value for parameter "%s":\n\n%s' % (setting.description, unicode(e))))
                     return
             setting.save()
         Processing.updateAlgsList()
@@ -198,11 +199,11 @@ class SettingDelegate(QStyledItemDelegate):
         else:
             value = self.convertValue(index.model().data(index, Qt.EditRole))
             if isinstance(value, (int, long)):
-                spnBox = QSpinBox(parent)
+                spnBox = QgsSpinBox(parent)
                 spnBox.setRange(-999999999, 999999999)
                 return spnBox
             elif isinstance(value, float):
-                spnBox = QDoubleSpinBox(parent)
+                spnBox = QgsDoubleSpinBox(parent)
                 spnBox.setRange(-999999999.999999, 999999999.999999)
                 spnBox.setDecimals(6)
                 return spnBox
@@ -227,7 +228,6 @@ class SettingDelegate(QStyledItemDelegate):
                 model.setData(index, editor.text(), Qt.EditRole)
             else:
                 model.setData(index, editor.value(), Qt.EditRole)
-
 
     def sizeHint(self, option, index):
         return QSpinBox().sizeHint()

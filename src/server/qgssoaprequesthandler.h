@@ -26,7 +26,7 @@ class QDomElement;
 class QgsSOAPRequestHandler: public QgsHttpRequestHandler
 {
   public:
-    explicit QgsSOAPRequestHandler( const bool captureOutput = FALSE );
+    explicit QgsSOAPRequestHandler( const bool captureOutput = false );
     ~QgsSOAPRequestHandler();
     void parseInput() override;
     void setGetMapResponse( const QString& service, QImage* img );

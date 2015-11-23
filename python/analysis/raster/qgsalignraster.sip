@@ -160,5 +160,13 @@ class QgsAlignRaster
     //! Return index of the layer which has smallest cell size (returns -1 on error)
     int suggestedReferenceLayer() const;
 
+  protected:
+
+    //! Internal function for processing of one raster (1. create output, 2. do the alignment)
+    bool createAndWarp( const Item& raster );
+
+    //! Determine suggested output of raster warp to a different CRS. Returns true on success
+    static bool suggestedWarpOutput( const RasterInfo& info, const QString& destWkt, QSizeF* cellSize = 0, QPointF* gridOffset = 0, QgsRectangle* rect = 0 );
+
 };
 

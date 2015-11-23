@@ -99,7 +99,7 @@ class ConcaveHull(GeoAlgorithm):
         #dissolve all Delaunay triangles
         progress.setText(self.tr('Dissolving Delaunay triangles...'))
         dissolved = processing.runalg("qgis:dissolve", delaunay_layer,
-                                      True, None)['OUTPUT']
+                                      True, None, None)['OUTPUT']
         dissolved_layer = processing.getObject(dissolved)
         #save result
         progress.setText(self.tr('Saving data...'))

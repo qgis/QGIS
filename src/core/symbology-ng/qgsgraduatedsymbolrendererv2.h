@@ -120,8 +120,9 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
 
     virtual ~QgsGraduatedSymbolRendererV2();
 
+    //! @note labelForLowerUpper in python bindings
     virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature, QgsRenderContext &context ) override;
-
+    //! @note originalSymbolForFeature2 in python bindings
     virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feature, QgsRenderContext &context ) override;
 
     virtual void startRender( QgsRenderContext& context, const QgsFields& fields ) override;
@@ -132,13 +133,14 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
 
     virtual QString dump() const override;
 
-    virtual QgsFeatureRendererV2* clone() const override;
+    virtual QgsGraduatedSymbolRendererV2* clone() const override;
 
     virtual void toSld( QDomDocument& doc, QDomElement &element ) const override;
 
     //! returns bitwise OR-ed capabilities of the renderer
     virtual int capabilities() override { return SymbolLevels | RotationField | Filter; }
 
+    //! @note symbol2 in python bindings
     virtual QgsSymbolV2List symbols( QgsRenderContext &context ) override;
 
     QString classAttribute() const { return mAttrName; }

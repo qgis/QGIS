@@ -243,7 +243,9 @@ QgsSymbolV2* QgsCategorizedSymbolRendererV2::originalSymbolForFeature( QgsFeatur
   QVariant value;
   if ( mAttrNum == -1 )
   {
-    Q_ASSERT( mExpression.data() );
+    if ( !mExpression.data() )
+      return 0;
+
     value = mExpression->evaluate( &context.expressionContext() );
   }
   else
@@ -484,7 +486,7 @@ QString QgsCategorizedSymbolRendererV2::dump() const
   return s;
 }
 
-QgsFeatureRendererV2* QgsCategorizedSymbolRendererV2::clone() const
+QgsCategorizedSymbolRendererV2* QgsCategorizedSymbolRendererV2::clone() const
 {
   QgsCategorizedSymbolRendererV2* r = new QgsCategorizedSymbolRendererV2( mAttrName, mCategories );
   if ( mSourceSymbol.data() )

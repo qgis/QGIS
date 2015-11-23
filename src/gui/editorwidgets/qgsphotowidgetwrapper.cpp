@@ -100,7 +100,7 @@ void QgsPhotoWidgetWrapper::loadPixmap( const QString& fileName )
   }
 }
 
-QVariant QgsPhotoWidgetWrapper::value()
+QVariant QgsPhotoWidgetWrapper::value() const
 {
   QVariant v;
 
@@ -186,9 +186,13 @@ void QgsPhotoWidgetWrapper::initWidget( QWidget* editor )
   }
 }
 
-bool QgsPhotoWidgetWrapper::valid()
+bool QgsPhotoWidgetWrapper::valid() const
 {
+#ifdef WITH_QTWEBKIT
   return mPhotoLabel || mLineEdit || mButton || mWebView;
+#else
+  return mPhotoLabel || mLineEdit || mButton;
+#endif
 }
 
 void QgsPhotoWidgetWrapper::setValue( const QVariant& value )

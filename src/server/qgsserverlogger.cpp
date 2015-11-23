@@ -59,7 +59,7 @@ QgsServerLogger::QgsServerLogger(): mLogFile( 0 )
            SLOT( logMessage( QString, QString, QgsMessageLog::MessageLevel ) ) );
 }
 
-void QgsServerLogger::logMessage( QString message, QString tag, QgsMessageLog::MessageLevel level )
+void QgsServerLogger::logMessage( const QString& message, const QString& tag, QgsMessageLog::MessageLevel level )
 {
   Q_UNUSED( tag );
   if ( !mLogFile.isOpen() || mLogLevel > level )

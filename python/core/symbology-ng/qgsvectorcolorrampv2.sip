@@ -6,17 +6,17 @@ class QgsVectorColorRampV2
 
 %ConvertToSubClassCode
   if (sipCpp->type() == "gradient")
-    sipClass = sipClass_QgsVectorGradientColorRampV2;
+    sipType = sipType_QgsVectorGradientColorRampV2;
   else if (sipCpp->type() == "random")
-    sipClass = sipClass_QgsVectorRandomColorRampV2;
+    sipType = sipType_QgsVectorRandomColorRampV2;
   else if (sipCpp->type() == "randomcolors")
-    sipClass = sipClass_QgsRandomColorsV2;
+    sipType = sipType_QgsRandomColorsV2;
   else if (sipCpp->type() == "colorbrewer")
-    sipClass = sipClass_QgsVectorColorBrewerColorRampV2;
+    sipType = sipType_QgsVectorColorBrewerColorRampV2;
   else if (sipCpp->type() == "cpt-city")
-    sipClass = sipClass_QgsCptCityColorRampV2;
+    sipType = sipType_QgsCptCityColorRampV2;
   else
-    sipClass = 0;
+    sipType = 0;
 %End
 
   public:
@@ -33,7 +33,7 @@ class QgsVectorColorRampV2
 
     virtual QString type() const = 0;
 
-    virtual QgsVectorColorRampV2* clone() const = 0;
+    virtual QgsVectorColorRampV2* clone() const = 0 /Factory/;
 
     virtual QgsStringMap properties() const = 0;
 
@@ -69,7 +69,7 @@ class QgsVectorGradientColorRampV2 : QgsVectorColorRampV2
 
     virtual QString type() const;
 
-    virtual QgsVectorColorRampV2* clone() const /Factory/;
+    virtual QgsVectorGradientColorRampV2* clone() const /Factory/;
 
     virtual QgsStringMap properties() const;
 
@@ -112,7 +112,7 @@ class QgsVectorRandomColorRampV2 : QgsVectorColorRampV2
 
     virtual QString type() const;
 
-    virtual QgsVectorColorRampV2* clone() const /Factory/;
+    virtual QgsVectorRandomColorRampV2* clone() const /Factory/;
 
     virtual QgsStringMap properties() const;
 
@@ -164,7 +164,7 @@ class QgsRandomColorsV2 : QgsVectorColorRampV2
 
     QString type() const;
 
-    QgsVectorColorRampV2* clone() const;
+    virtual QgsRandomColorsV2* clone() const /Factory/;
 
     QgsStringMap properties() const;
 };
@@ -186,7 +186,7 @@ class QgsVectorColorBrewerColorRampV2 : QgsVectorColorRampV2
 
     virtual QString type() const;
 
-    virtual QgsVectorColorRampV2* clone() const /Factory/;
+    virtual QgsVectorColorBrewerColorRampV2* clone() const /Factory/;
 
     virtual QgsStringMap properties() const;
 
@@ -222,7 +222,7 @@ class QgsCptCityColorRampV2 : QgsVectorGradientColorRampV2
 
     virtual QString type() const;
 
-    virtual QgsVectorColorRampV2* clone() const /Factory/;
+    virtual QgsCptCityColorRampV2* clone() const /Factory/;
     void copy( const QgsCptCityColorRampV2* other );
     QgsVectorGradientColorRampV2* cloneGradientRamp() const /Factory/;
 

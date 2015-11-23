@@ -35,7 +35,7 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
     QgsPalettedRasterRenderer( QgsRasterInterface* input, int bandNumber, QColor* colorArray, int nColors, const QVector<QString>& labels = QVector<QString>() );
     QgsPalettedRasterRenderer( QgsRasterInterface* input, int bandNumber, QRgb* colorArray, int nColors, const QVector<QString>& labels = QVector<QString>() );
     ~QgsPalettedRasterRenderer();
-    QgsRasterInterface * clone() const override;
+    QgsPalettedRasterRenderer * clone() const override;
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterInterface* input );
 
     QgsRasterBlock *block( int bandNo, const QgsRectangle & extent, int width, int height ) override;

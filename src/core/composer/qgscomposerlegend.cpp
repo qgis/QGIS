@@ -64,6 +64,9 @@ QgsComposerLegend::QgsComposerLegend()
     , mComposerMap( 0 )
     , mLegendFilterByMap( false )
     , mLegendFilterByExpression( false )
+    , mFilterOutAtlas( false )
+    , mFilterAskedForUpdate( false )
+    , mInAtlas( false )
 {
 
 }

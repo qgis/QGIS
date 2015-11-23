@@ -30,5 +30,5 @@ QgsEditorWidgetWrapper* QgsHiddenWidgetFactory::create( QgsVectorLayer* vl, int 
 
 QgsEditorConfigWidget* QgsHiddenWidgetFactory::configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const
 {
-  return new QgsDummyConfigDlg( vl, fieldIdx, parent, QObject::tr( "A hidden attribute will be invisible - the user is not able to see it's contents." ) );
+  return new QgsDummyConfigDlg( vl, fieldIdx, parent, QObject::tr( "A hidden field will be invisible - the user is not able to see its contents." ) );
 }

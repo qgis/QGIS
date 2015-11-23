@@ -152,4 +152,9 @@ class QgsAttributeForm : QWidget
      * Sets all values to the values of the current feature
      */
     void resetValues();
+
+    /**
+     * reload current feature
+     */
+    void refreshFeature();
 };

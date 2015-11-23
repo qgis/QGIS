@@ -15,9 +15,9 @@ class QgsGraphBuilderInterface
 
 %ConvertToSubClassCode
   if ( dynamic_cast< QgsGraphBuilder* > ( sipCpp ) != NULL )
-    sipClass = sipClass_QgsGraphBuilder;
+    sipType = sipType_QgsGraphBuilder;
   else
-    sipClass = NULL;
+    sipType = NULL;
 %End
 
   public:

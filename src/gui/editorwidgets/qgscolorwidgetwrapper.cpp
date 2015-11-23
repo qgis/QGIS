@@ -22,7 +22,7 @@ QgsColorWidgetWrapper::QgsColorWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, 
 }
 
 
-QVariant QgsColorWidgetWrapper::value()
+QVariant QgsColorWidgetWrapper::value() const
 {
   QVariant v;
 
@@ -46,7 +46,7 @@ void QgsColorWidgetWrapper::initWidget( QWidget* editor )
   connect( mColorButton, SIGNAL( colorChanged( QColor ) ), this, SLOT( valueChanged() ) );
 }
 
-bool QgsColorWidgetWrapper::valid()
+bool QgsColorWidgetWrapper::valid() const
 {
   return mColorButton;
 }

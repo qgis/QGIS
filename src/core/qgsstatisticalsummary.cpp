@@ -19,6 +19,12 @@
 #include <QString>
 #include <QObject>
 
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests in testqgsstatisticalsummary.cpp.
+ * See details in QEP #17
+ ****************************************************************************/
+
 QgsStatisticalSummary::QgsStatisticalSummary( const Statistics& stats )
     : mStatistics( stats )
 {
@@ -46,6 +52,12 @@ void QgsStatisticalSummary::reset()
   mThirdQuartile = 0;
   mValueCount.clear();
 }
+
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests in testqgsstatisticalsummary.cpp.
+ * See details in QEP #17
+ ****************************************************************************/
 
 void QgsStatisticalSummary::calculate( const QList<double> &values )
 {
@@ -175,6 +187,12 @@ void QgsStatisticalSummary::calculate( const QList<double> &values )
   }
 
 }
+
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests in testqgsstatisticalsummary.cpp.
+ * See details in QEP #17
+ ****************************************************************************/
 
 double QgsStatisticalSummary::statistic( QgsStatisticalSummary::Statistic stat ) const
 {

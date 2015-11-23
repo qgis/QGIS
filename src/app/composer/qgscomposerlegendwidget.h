@@ -99,7 +99,7 @@ class QgsComposerLegendWidget: public QgsComposerItemBaseWidget, private Ui::Qgs
     /** Sets GUI according to state of mLegend*/
     void setGuiElements();
 
-    /** update the enabling state of the filter by atlas button */
+    /** Update the enabling state of the filter by atlas button */
     void updateFilterLegendByAtlasButton();
 
   private:

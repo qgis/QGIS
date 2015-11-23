@@ -34,7 +34,7 @@
  * <li><b>Max</b> <i>The maximal allowed value</i></li>
  * <li><b>Step</b> <i>The step size when incrementing/decrementing the value</i></li>
  * </ul>
- *
+ * \note not available in Python bindings
  */
 
 class GUI_EXPORT QgsRangeWidgetWrapper : public QgsEditorWidgetWrapper
@@ -45,12 +45,12 @@ class GUI_EXPORT QgsRangeWidgetWrapper : public QgsEditorWidgetWrapper
 
     // QgsEditorWidgetWrapper interface
   public:
-    virtual QVariant value() override;
+    virtual QVariant value() const override;
 
   protected:
     virtual QWidget* createWidget( QWidget* parent ) override;
     virtual void initWidget( QWidget* editor ) override;
-    bool valid() override;
+    bool valid() const override;
 
   public slots:
     virtual void setValue( const QVariant& value ) override;

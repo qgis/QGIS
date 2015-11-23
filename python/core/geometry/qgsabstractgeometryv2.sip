@@ -36,31 +36,31 @@ class QgsAbstractGeometryV2
 
 %ConvertToSubClassCode
       if (dynamic_cast<QgsPointV2*>(sipCpp) != NULL)
-        sipClass = sipClass_QgsPointV2;
+        sipType = sipType_QgsPointV2;
       else if (dynamic_cast<QgsLineStringV2*>(sipCpp) != NULL )
-        sipClass = sipClass_QgsLineStringV2;
+        sipType = sipType_QgsLineStringV2;
       else if (dynamic_cast<QgsCircularStringV2*>(sipCpp) != NULL )
-        sipClass = sipClass_QgsCircularStringV2;
+        sipType = sipType_QgsCircularStringV2;
       else if (dynamic_cast<QgsCompoundCurveV2*>(sipCpp) != NULL )
-        sipClass = sipClass_QgsCompoundCurveV2;
+        sipType = sipType_QgsCompoundCurveV2;
       else if (dynamic_cast<QgsPolygonV2*>(sipCpp) != NULL )
-        sipClass = sipClass_QgsPolygonV2;
+        sipType = sipType_QgsPolygonV2;
       else if (dynamic_cast<QgsCurvePolygonV2*>(sipCpp) != NULL )
-        sipClass = sipClass_QgsCurvePolygonV2;
+        sipType = sipType_QgsCurvePolygonV2;
       else if (dynamic_cast<QgsMultiPointV2*>(sipCpp) != NULL )
-        sipClass = sipClass_QgsMultiPointV2;
+        sipType = sipType_QgsMultiPointV2;
       else if (dynamic_cast<QgsMultiLineStringV2*>(sipCpp) != NULL )
-        sipClass = sipClass_QgsMultiLineStringV2;
+        sipType = sipType_QgsMultiLineStringV2;
       else if (dynamic_cast<QgsMultiPolygonV2*>(sipCpp) != NULL )
-        sipClass = sipClass_QgsMultiPolygonV2;
+        sipType = sipType_QgsMultiPolygonV2;
       else if (dynamic_cast<QgsMultiSurfaceV2*>(sipCpp) != NULL )
-        sipClass = sipClass_QgsMultiSurfaceV2;
+        sipType = sipType_QgsMultiSurfaceV2;
       else if (dynamic_cast<QgsMultiCurveV2*>(sipCpp) != NULL )
-        sipClass = sipClass_QgsMultiCurveV2;
+        sipType = sipType_QgsMultiCurveV2;
       else if (dynamic_cast<QgsGeometryCollectionV2*>(sipCpp) != NULL )
-        sipClass = sipClass_QgsGeometryCollectionV2;
+        sipType = sipType_QgsGeometryCollectionV2;
       else
-        sipClass = 0;
+        sipType = 0;
 %End
 
     public:
@@ -139,6 +139,10 @@ class QgsAbstractGeometryV2
     /** Returns the centroid of the geometry*/
     virtual QgsPointV2 centroid() const;
 
+    /** Returns true if the geometry is empty
+     */
+    bool isEmpty() const;
+
     virtual bool hasCurvedSegments() const;
     /** Returns a geometry without curves. Caller takes ownership*/
     virtual QgsAbstractGeometryV2* segmentize() const /Factory/;
@@ -166,4 +170,21 @@ class QgsAbstractGeometryV2
      * @see addZValue
      */
     virtual bool addMValue( double mValue = 0 ) = 0;
+
+  protected:
+
+    /** Updates the geometry type based on whether sub geometries contain z or m values.
+     */
+    void setZMTypeFromSubGeometry( const QgsAbstractGeometryV2* subggeom, QgsWKBTypes::Type baseGeomType );
+
+    /** Reads a WKB header and tests its validity.
+     * @param wkbPtr
+     * @param wkbType destination for WKB type from header
+     * @param endianSwap will be set to true if endian from WKB must be swapped to match QGIS platform endianness
+     * @param expectedType expected WKB type
+     * @returns true if header is valid and matches expected type
+     * @note not available in Python bindings
+     */
+    //static bool readWkbHeader( QgsConstWkbPtr& wkbPtr, QgsWKBTypes::Type& wkbType, bool& endianSwap, QgsWKBTypes::Type expectedType );
+
 };

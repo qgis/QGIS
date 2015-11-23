@@ -178,7 +178,7 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
     // Names of layer styles before editing started
     QMap<QgsVectorLayer *, QString> mOldStyles;
     // Original layer form suppress
-    QMap<QgsVectorLayer *, QgsVectorLayer::FeatureFormSuppress> mFormSuppress;
+    QMap<QgsVectorLayer *, QgsEditFormConfig::FeatureFormSuppress> mFormSuppress;
 };
 
 #endif // QGSGRASSPLUGIN_H

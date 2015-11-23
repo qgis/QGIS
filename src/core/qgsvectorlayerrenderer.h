@@ -86,6 +86,9 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
 
     QgsRenderContext& mContext;
 
+    /** The rendered layer */
+    QgsVectorLayer* mLayer;
+
     QgsFields mFields; // TODO: use fields from mSource
 
     QgsFeatureIds mSelectedFeatureIds;

@@ -47,7 +47,7 @@ void QgsSingleBandPseudoColorRenderer::setBand( int bandNo )
   mBand = bandNo;
 }
 
-QgsRasterInterface * QgsSingleBandPseudoColorRenderer::clone() const
+QgsSingleBandPseudoColorRenderer* QgsSingleBandPseudoColorRenderer::clone() const
 {
   QgsRasterShader *shader = 0;
 

@@ -74,7 +74,7 @@ void QgsRelationWidgetWrapper::initWidget( QWidget* editor )
   mWidget = w;
 }
 
-bool QgsRelationWidgetWrapper::valid()
+bool QgsRelationWidgetWrapper::valid() const
 {
   return mWidget;
 }

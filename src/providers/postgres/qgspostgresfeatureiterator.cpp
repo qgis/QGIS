@@ -35,6 +35,7 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
     , mFetched( 0 )
     , mFetchGeometry( false )
     , mExpressionCompiled( false )
+    , mLastFetch( false )
 {
   if ( !source->mTransactionConnection )
   {
@@ -76,11 +77,11 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
     whereClause = QgsPostgresUtils::andWhereClauses( whereClause, fidsWhereClause );
   }
   else if ( request.filterType() == QgsFeatureRequest::FilterExpression
-            && QSettings().value( "/qgis/postgres/compileExpressions", false ).toBool() )
+            && QSettings().value( "/qgis/compileExpressions", true ).toBool() )
   {
     QgsPostgresExpressionCompiler compiler = QgsPostgresExpressionCompiler( source );
 
-    if ( compiler.compile( request.filterExpression() ) == QgsPostgresExpressionCompiler::Complete )
+    if ( compiler.compile( request.filterExpression() ) == QgsSqlExpressionCompiler::Complete )
     {
       whereClause = QgsPostgresUtils::andWhereClauses( whereClause, compiler.result() );
       mExpressionCompiled = true;
@@ -119,7 +120,7 @@ bool QgsPostgresFeatureIterator::fetchFeature( QgsFeature& feature )
   if ( mClosed )
     return false;
 
-  if ( mFeatureQueue.empty() )
+  if ( mFeatureQueue.empty() && !mLastFetch )
   {
     QString fetch = QString( "FETCH FORWARD %1 FROM %2" ).arg( mFeatureQueueSize ).arg( mCursorName );
     QgsDebugMsgLevel( QString( "fetching %1 features." ).arg( mFeatureQueueSize ), 4 );
@@ -144,6 +145,8 @@ bool QgsPostgresFeatureIterator::fetchFeature( QgsFeature& feature )
       int rows = queryResult.PQntuples();
       if ( rows == 0 )
         continue;
+
+      mLastFetch = rows < mFeatureQueueSize;
 
       for ( int row = 0; row < rows; row++ )
       {
@@ -215,6 +218,7 @@ bool QgsPostgresFeatureIterator::rewind()
   mConn->PQexecNR( QString( "move absolute 0 in %1" ).arg( mCursorName ) );
   mFeatureQueue.clear();
   mFetched = 0;
+  mLastFetch = false;
 
   return true;
 }
@@ -323,7 +327,6 @@ QString QgsPostgresFeatureIterator::whereClauseRect()
 bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause )
 {
   mFetchGeometry = !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) && !mSource->mGeometryColumn.isNull();
-
 #if 0
   // TODO: check that all field indexes exist
   if ( !hasAllFields )
@@ -432,6 +435,7 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause )
     return false;
   }
 
+  mLastFetch = false;
   return true;
 }
 

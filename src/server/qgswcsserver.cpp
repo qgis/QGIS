@@ -23,6 +23,7 @@
 #include "qgsrasterfilewriter.h"
 #include "qgslogger.h"
 #include "qgsmapserviceexception.h"
+#include "qgsaccesscontrol.h"
 
 #include <QTemporaryFile>
 #include <QUrl>
@@ -37,15 +38,38 @@ static const QString WCS_NAMESPACE = "http://www.opengis.net/wcs";
 static const QString GML_NAMESPACE = "http://www.opengis.net/gml";
 static const QString OGC_NAMESPACE = "http://www.opengis.net/ogc";
 
-QgsWCSServer::QgsWCSServer( const QString& configFilePath, QMap<QString, QString> &parameters, QgsWCSProjectParser* pp,
-                            QgsRequestHandler* rh )
-    : QgsOWSServer( configFilePath, parameters, rh )
-    , mConfigParser( pp )
+QgsWCSServer::QgsWCSServer(
+  const QString& configFilePath
+  , QMap<QString, QString> &parameters
+  , QgsWCSProjectParser* pp
+  , QgsRequestHandler* rh
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+  , const QgsAccessControl* accessControl
+#endif
+)
+    : QgsOWSServer(
+      configFilePath
+      , parameters
+      , rh
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+      , accessControl
+#endif
+    )
+    , mConfigParser(
+      pp
+    )
 {
 }
 
 QgsWCSServer::QgsWCSServer()
-    : QgsOWSServer( QString(), QMap<QString, QString>(), 0 )
+    : QgsOWSServer(
+      QString()
+      , QMap<QString, QString>()
+      , 0
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+      , NULL
+#endif
+    )
     , mConfigParser( 0 )
 {
 }
@@ -353,6 +377,13 @@ QByteArray* QgsWCSServer::getCoverage()
   QgsRasterLayer* rLayer = dynamic_cast<QgsRasterLayer*>( layer );
   if ( rLayer && wcsLayersId.contains( rLayer->id() ) )
   {
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    if ( !mAccessControl->layerReadPermission( rLayer ) )
+    {
+      throw QgsMapServiceException( "Security", "You are not allowed to access to this coverage" );
+    }
+#endif
+
     // RESPONSE_CRS
     QgsCoordinateReferenceSystem responseCRS = rLayer->crs();
     crs = mParameters.value( "RESPONSE_CRS", "" );

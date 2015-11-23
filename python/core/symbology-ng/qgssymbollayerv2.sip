@@ -10,56 +10,56 @@ class QgsSymbolLayerV2
   {
     case QgsSymbolV2::Marker:
       if (dynamic_cast<QgsEllipseSymbolLayerV2*>(sipCpp) != NULL)
-	sipClass = sipClass_QgsEllipseSymbolLayerV2;
+	sipType = sipType_QgsEllipseSymbolLayerV2;
       else if (dynamic_cast<QgsFontMarkerSymbolLayerV2*>(sipCpp) != NULL)
-	sipClass = sipClass_QgsFontMarkerSymbolLayerV2;
+	sipType = sipType_QgsFontMarkerSymbolLayerV2;
       else if (dynamic_cast<QgsSimpleMarkerSymbolLayerV2*>(sipCpp) != NULL)
-	sipClass = sipClass_QgsSimpleMarkerSymbolLayerV2;
+	sipType = sipType_QgsSimpleMarkerSymbolLayerV2;
       else if (dynamic_cast<QgsSvgMarkerSymbolLayerV2*>(sipCpp) != NULL)
-	sipClass = sipClass_QgsSvgMarkerSymbolLayerV2;
+	sipType = sipType_QgsSvgMarkerSymbolLayerV2;
       else if (dynamic_cast<QgsVectorFieldSymbolLayer*>(sipCpp) != NULL)
-	sipClass = sipClass_QgsVectorFieldSymbolLayer;
+	sipType = sipType_QgsVectorFieldSymbolLayer;
       else
-	sipClass = sipClass_QgsMarkerSymbolLayerV2;
+	sipType = sipType_QgsMarkerSymbolLayerV2;
       break;
 
     case QgsSymbolV2::Line:
       if (dynamic_cast<QgsMarkerLineSymbolLayerV2*>(sipCpp) != NULL)
-	sipClass = sipClass_QgsMarkerLineSymbolLayerV2;
+	sipType = sipType_QgsMarkerLineSymbolLayerV2;
       else if (dynamic_cast<QgsSimpleLineSymbolLayerV2*>(sipCpp) != NULL)
-	sipClass = sipClass_QgsSimpleLineSymbolLayerV2;
+	sipType = sipType_QgsSimpleLineSymbolLayerV2;
       else
-	sipClass = sipClass_QgsLineSymbolLayerV2;
+	sipType = sipType_QgsLineSymbolLayerV2;
       break;
 
     case QgsSymbolV2::Fill:
       if (dynamic_cast<QgsSimpleFillSymbolLayerV2*>(sipCpp) != NULL)
-	sipClass = sipClass_QgsSimpleFillSymbolLayerV2;
+	sipType = sipType_QgsSimpleFillSymbolLayerV2;
       else if (dynamic_cast<QgsImageFillSymbolLayer*>(sipCpp) != NULL)
       {
 	if (dynamic_cast<QgsLinePatternFillSymbolLayer*>(sipCpp) != NULL)
-	  sipClass = sipClass_QgsLinePatternFillSymbolLayer;
+	  sipType = sipType_QgsLinePatternFillSymbolLayer;
 	else if (dynamic_cast<QgsPointPatternFillSymbolLayer*>(sipCpp) != NULL)
-	  sipClass = sipClass_QgsPointPatternFillSymbolLayer;
+	  sipType = sipType_QgsPointPatternFillSymbolLayer;
 	else if (dynamic_cast<QgsSVGFillSymbolLayer*>(sipCpp) != NULL)
-	  sipClass = sipClass_QgsSVGFillSymbolLayer;
+	  sipType = sipType_QgsSVGFillSymbolLayer;
 	else if (dynamic_cast<QgsRasterFillSymbolLayer*>(sipCpp) != NULL)
-	  sipClass = sipClass_QgsRasterFillSymbolLayer;
+	  sipType = sipType_QgsRasterFillSymbolLayer;
 	else
-	  sipClass = sipClass_QgsImageFillSymbolLayer;
+	  sipType = sipType_QgsImageFillSymbolLayer;
       }
       else if (dynamic_cast<QgsCentroidFillSymbolLayerV2*>(sipCpp) != NULL)
-	sipClass = sipClass_QgsCentroidFillSymbolLayerV2;
+	sipType = sipType_QgsCentroidFillSymbolLayerV2;
       else if (dynamic_cast<QgsGradientFillSymbolLayerV2*>(sipCpp) != NULL)
-	sipClass = sipClass_QgsGradientFillSymbolLayerV2;
+	sipType = sipType_QgsGradientFillSymbolLayerV2;
       else if (dynamic_cast<QgsShapeburstFillSymbolLayerV2*>(sipCpp) != NULL)
-	sipClass = sipClass_QgsShapeburstFillSymbolLayerV2;
+	sipType = sipType_QgsShapeburstFillSymbolLayerV2;
       else
-	sipClass = sipClass_QgsFillSymbolLayerV2;
+	sipType = sipType_QgsFillSymbolLayerV2;
       break;
 
     default:
-      sipClass = 0;
+      sipType = 0;
       break;
   }
 %End
@@ -385,12 +385,22 @@ class QgsMarkerSymbolLayerV2 : QgsSymbolLayerV2
     void setVerticalAnchorPoint( VerticalAnchorPoint v );
     VerticalAnchorPoint verticalAnchorPoint() const;
 
+    /** Returns the approximate bounding box of the marker symbol layer, taking into account
+     * any data defined overrides and offsets which are set for the marker layer.
+     * @returns approximate symbol bounds, in painter units
+     * @note added in QGIS 2.14
+     * @note this method will become pure virtual in QGIS 3.0
+     */
+    //TODO QGIS 3.0 - make pure virtual
+    virtual QRectF bounds( const QPointF& point, QgsSymbolV2RenderContext& context );
+
   protected:
     QgsMarkerSymbolLayerV2( bool locked = false );
 
     //handles marker offset and anchor point shift together
     void markerOffset( QgsSymbolV2RenderContext& context, double& offsetX, double& offsetY ) const;
 
+    //! @note available in python as markerOffsetWithWidthAndHeight
     void markerOffset( QgsSymbolV2RenderContext& context, double width, double height, double& offsetX, double& offsetY ) const /PyName=markerOffsetWithWidthAndHeight/;
 
     //! @note available in python bindings as markerOffset2

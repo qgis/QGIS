@@ -21,6 +21,10 @@
 #include "ui_qgsrelationreferenceconfigdlgbase.h"
 #include "qgseditorconfigwidget.h"
 
+/** \class QgsRelationReferenceConfigDlg
+ * \note not available in Python bindings
+ */
+
 class GUI_EXPORT QgsRelationReferenceConfigDlg : public QgsEditorConfigWidget, private Ui::QgsRelReferenceConfigDlgBase
 {
     Q_OBJECT

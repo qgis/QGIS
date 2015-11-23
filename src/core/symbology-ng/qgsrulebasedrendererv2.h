@@ -110,6 +110,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
          */
         QSet<QString> usedAttributes();
 
+        //! @note available in python bindings as symbol2
         QgsSymbolV2List symbols( const QgsRenderContext& context = QgsRenderContext() );
 
         //! @note not available in python bindings
@@ -162,7 +163,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
 
         //! @note added in 2.6
         //! @deprecated use active instead
-        bool checkState() const { return mIsActive; }
+        Q_DECL_DEPRECATED bool checkState() const { return mIsActive; }
         /**
          * Returns if this rule is active
          *
@@ -388,7 +389,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
 
     virtual QList<QString> usedAttributes() override;
 
-    virtual QgsFeatureRendererV2* clone() const override;
+    virtual QgsRuleBasedRendererV2* clone() const override;
 
     virtual void toSld( QDomDocument& doc, QDomElement &element ) const override;
 

@@ -48,16 +48,24 @@ class TestPyQgsPostgresProvider(TestCase, ProviderTestCase):
         """Run after all tests"""
 
     def enableCompiler(self):
-        QSettings().setValue(u'/qgis/postgres/compileExpressions', True)
+        QSettings().setValue(u'/qgis/compileExpressions', True)
 
     def disableCompiler(self):
-        QSettings().setValue(u'/qgis/postgres/compileExpressions', False)
+        QSettings().setValue(u'/qgis/compileExpressions', False)
 
 # HERE GO THE PROVIDER SPECIFIC TESTS
     def testDefaultValue(self):
         assert self.provider.defaultValue(0) == u'nextval(\'qgis_test."someData_pk_seq"\'::regclass)'
         assert self.provider.defaultValue(1) == NULL
         assert self.provider.defaultValue(2) == '\'qgis\'::text'
+
+    def testQueryLayers(self):
+        def test_query(dbconn, query, key):
+            ql = QgsVectorLayer('%s srid=4326 table="%s" (geom) key=\'%s\' sql=' % (dbconn, query.replace('"', '\\"'), key), "testgeom", "postgres")
+            print query, key
+            assert(ql.isValid())
+
+        test_query(self.dbconn, '(SELECT NULL::integer "Id1", NULL::integer "Id2", NULL::geometry(Point, 4326) geom LIMIT 0)', '"Id1","Id2"')
 
     def testWkbTypes(self):
         def test_table(dbconn, table_name, wkt):

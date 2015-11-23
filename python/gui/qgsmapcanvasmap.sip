@@ -15,11 +15,11 @@ class QgsMapCanvasMap : QgsMapCanvasItem
 %ConvertToSubClassCode
     if (dynamic_cast<QgsMapCanvasMap*>(sipCpp) != NULL)
     {
-        sipClass = sipClass_QgsMapCanvasMap;
+        sipType = sipType_QgsMapCanvasMap;
     }
   else
   {
-    sipClass = NULL;
+    sipType = NULL;
   }
 %End
 

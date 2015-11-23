@@ -43,7 +43,7 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsFeatureRendererV2
     QgsPointDisplacementRenderer( const QString& labelAttributeName = "" );
     ~QgsPointDisplacementRenderer();
 
-    QgsFeatureRendererV2* clone() const override;
+    QgsPointDisplacementRenderer* clone() const override;
 
     virtual void toSld( QDomDocument& doc, QDomElement &element ) const override;
 
@@ -54,17 +54,29 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsFeatureRendererV2
     virtual QList<QString> usedAttributes() override;
     /** Proxy that will call this method on the embedded renderer. */
     virtual int capabilities() override;
-    /** Proxy that will call this method on the embedded renderer. */
+    /** Proxy that will call this method on the embedded renderer.
+      @note available in python as symbols2
+     */
     virtual QgsSymbolV2List symbols( QgsRenderContext& context ) override;
-    /** Proxy that will call this method on the embedded renderer. */
+    /** Proxy that will call this method on the embedded renderer.
+      @note available in python as symbolForFeature2
+     */
     virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
-    /** Proxy that will call this method on the embedded renderer. */
+    /** Proxy that will call this method on the embedded renderer.
+      @note available in python as originalSymbolForFeature2
+     */
     virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feat, QgsRenderContext& context ) override;
-    /** Proxy that will call this method on the embedded renderer. */
+    /** Proxy that will call this method on the embedded renderer.
+      @note available in python as symbolsForFeature2
+     */
     virtual QgsSymbolV2List symbolsForFeature( QgsFeature& feat, QgsRenderContext& context ) override;
-    /** Proxy that will call this method on the embedded renderer. */
+    /** Proxy that will call this method on the embedded renderer.
+      @note available in python as originalSymbolsForFeature2
+     */
     virtual QgsSymbolV2List originalSymbolsForFeature( QgsFeature& feat, QgsRenderContext& context ) override;
-    /** Proxy that will call this method on the embedded renderer. */
+    /** Proxy that will call this method on the embedded renderer.
+      @note available in python as willRenderFeature2
+     */
     virtual bool willRenderFeature( QgsFeature& feat, QgsRenderContext& context ) override;
 
     virtual void startRender( QgsRenderContext& context, const QgsFields& fields ) override;

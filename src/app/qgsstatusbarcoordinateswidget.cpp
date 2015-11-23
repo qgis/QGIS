@@ -98,7 +98,7 @@ void QgsStatusBarCoordinatesWidget::setMapCanvas( QgsMapCanvas *mapCanvas )
   connect( mMapCanvas, SIGNAL( extentsChanged() ), this, SLOT( showExtent() ) );
 }
 
-void QgsStatusBarCoordinatesWidget::setFont( QFont myFont )
+void QgsStatusBarCoordinatesWidget::setFont( const QFont& myFont )
 {
   mLineEdit->setFont( myFont );
   mLabel->setFont( myFont );

@@ -31,7 +31,7 @@ QgsTextDiagram::~QgsTextDiagram()
 {
 }
 
-QgsDiagram* QgsTextDiagram::clone() const
+QgsTextDiagram* QgsTextDiagram::clone() const
 {
   return new QgsTextDiagram( *this );
 }

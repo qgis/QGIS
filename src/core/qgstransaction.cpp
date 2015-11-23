@@ -123,6 +123,8 @@ bool QgsTransaction::addLayer( const QString& layerId )
   //connection string not compatible
   if ( QgsDataSourceURI( layer->source() ).connectionInfo() != mConnString )
   {
+    QgsDebugMsg( QString( "Couldn't start transaction because connection string for layer %1 : '%2' does not match '%3'" ).arg(
+                   layerId, QgsDataSourceURI( layer->source() ).connectionInfo(), mConnString ) );
     return false;
   }
 

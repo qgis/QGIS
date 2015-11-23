@@ -1,7 +1,7 @@
 import inspect
 import string
 from qgis._core import *
-from PyQt4.QtCore import QCoreApplication
+from PyQt.QtCore import QCoreApplication
 
 
 def register_function(function, arg_count, group, usesgeometry=False, **kwargs):
@@ -139,7 +139,12 @@ try:
     NULL = QPyNullVariant(int)
 
 except ImportError:
-    pass
+    try:
+        # TODO: Fixme, this creates an invalid variant, not a NULL one
+        from PyQt5.QtCore import QVariant
+        NULL = QVariant()
+    except ImportError:
+        pass
 
 
 class QgsEditError(Exception):

@@ -42,7 +42,7 @@ class QgsLayerTreeLayer : QgsLayerTreeNode
 
     virtual QString dump() const;
 
-    virtual QgsLayerTreeNode* clone() const /Factory/;
+    virtual QgsLayerTreeLayer* clone() const /Factory/;
 
   signals:
     //! emitted when a previously unavailable layer got loaded

@@ -415,7 +415,7 @@ QgsSingleCategoryDiagramRenderer::~QgsSingleCategoryDiagramRenderer()
 {
 }
 
-QgsDiagramRendererV2* QgsSingleCategoryDiagramRenderer::clone() const
+QgsSingleCategoryDiagramRenderer* QgsSingleCategoryDiagramRenderer::clone() const
 {
   return new QgsSingleCategoryDiagramRenderer( *this );
 }
@@ -469,7 +469,7 @@ QgsLinearlyInterpolatedDiagramRenderer::~QgsLinearlyInterpolatedDiagramRenderer(
 {
 }
 
-QgsDiagramRendererV2 *QgsLinearlyInterpolatedDiagramRenderer::clone() const
+QgsLinearlyInterpolatedDiagramRenderer* QgsLinearlyInterpolatedDiagramRenderer::clone() const
 {
   return new QgsLinearlyInterpolatedDiagramRenderer( *this );
 }

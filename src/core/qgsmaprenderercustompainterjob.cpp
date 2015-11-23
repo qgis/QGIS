@@ -331,7 +331,7 @@ void QgsMapRendererJob::drawOldLabeling( const QgsMapSettings& settings, QgsRend
     {
       ct = settings.layerTransform( ml );
       if ( ct )
-        reprojectToLayerExtent( ct, ml->crs().geographicFlag(), r1, r2 );
+        reprojectToLayerExtent( ml, ct, r1, r2 );
     }
 
     renderContext.setCoordinateTransform( ct );

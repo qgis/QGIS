@@ -392,7 +392,7 @@ void QgsStyleV2ExportImportDialog::clearSelection()
   listItems->clearSelection();
 }
 
-void QgsStyleV2ExportImportDialog::selectSymbols( const QStringList symbolNames )
+void QgsStyleV2ExportImportDialog::selectSymbols( const QStringList& symbolNames )
 {
   Q_FOREACH ( const QString &symbolName, symbolNames )
   {
@@ -404,7 +404,7 @@ void QgsStyleV2ExportImportDialog::selectSymbols( const QStringList symbolNames 
   }
 }
 
-void QgsStyleV2ExportImportDialog::deselectSymbols( const QStringList symbolNames )
+void QgsStyleV2ExportImportDialog::deselectSymbols( const QStringList& symbolNames )
 {
   Q_FOREACH ( const QString &symbolName, symbolNames )
   {
@@ -417,7 +417,7 @@ void QgsStyleV2ExportImportDialog::deselectSymbols( const QStringList symbolName
   }
 }
 
-void QgsStyleV2ExportImportDialog::selectGroup( const QString groupName )
+void QgsStyleV2ExportImportDialog::selectGroup( const QString& groupName )
 {
   QStringList symbolNames = mQgisStyle->symbolsOfGroup( QgsStyleV2::SymbolEntity, mQgisStyle->groupId( groupName ) );
   selectSymbols( symbolNames );
@@ -426,7 +426,7 @@ void QgsStyleV2ExportImportDialog::selectGroup( const QString groupName )
 }
 
 
-void QgsStyleV2ExportImportDialog::deselectGroup( const QString groupName )
+void QgsStyleV2ExportImportDialog::deselectGroup( const QString& groupName )
 {
   QStringList symbolNames = mQgisStyle->symbolsOfGroup( QgsStyleV2::SymbolEntity, mQgisStyle->groupId( groupName ) );
   deselectSymbols( symbolNames );
@@ -434,7 +434,7 @@ void QgsStyleV2ExportImportDialog::deselectGroup( const QString groupName )
   deselectSymbols( symbolNames );
 }
 
-void QgsStyleV2ExportImportDialog::selectSmartgroup( const QString groupName )
+void QgsStyleV2ExportImportDialog::selectSmartgroup( const QString& groupName )
 {
   QStringList symbolNames = mQgisStyle->symbolsOfSmartgroup( QgsStyleV2::SymbolEntity, mQgisStyle->smartgroupId( groupName ) );
   selectSymbols( symbolNames );
@@ -442,7 +442,7 @@ void QgsStyleV2ExportImportDialog::selectSmartgroup( const QString groupName )
   selectSymbols( symbolNames );
 }
 
-void QgsStyleV2ExportImportDialog::deselectSmartgroup( const QString groupName )
+void QgsStyleV2ExportImportDialog::deselectSmartgroup( const QString& groupName )
 {
   QStringList symbolNames = mQgisStyle->symbolsOfSmartgroup( QgsStyleV2::SymbolEntity, mQgisStyle->smartgroupId( groupName ) );
   deselectSymbols( symbolNames );

@@ -16,8 +16,15 @@
 #ifndef QGSEXTENTGROUPBOXPLUGIN_H
 #define QGSEXTENTGROUPBOXPLUGIN_H
 
+
+#include <QtGlobal>
+#if QT_VERSION < 0x050000
+#include <QDesignerCustomWidgetCollectionInterface>
 #include <QDesignerExportWidget>
-#include <QDesignerCustomWidgetInterface>
+#else
+#include <QtUiPlugin/QDesignerCustomWidgetInterface>
+#include <QtUiPlugin/QDesignerExportWidget>
+#endif
 
 
 class CUSTOMWIDGETS_EXPORT QgsExtentGroupBoxPlugin : public QObject, public QDesignerCustomWidgetInterface

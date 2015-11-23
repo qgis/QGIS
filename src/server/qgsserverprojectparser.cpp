@@ -744,7 +744,7 @@ void QgsServerProjectParser::addLayerProjectSettings( QDomElement& layerElem, QD
       }
 
       //edit type to text
-      attributeElem.setAttribute( "editType", vLayer->editorWidgetV2( idx ) );
+      attributeElem.setAttribute( "editType", vLayer->editFormConfig()->widgetType( idx ) );
       attributeElem.setAttribute( "comment", field.comment() );
       attributeElem.setAttribute( "length", field.length() );
       attributeElem.setAttribute( "precision", field.precision() );
@@ -1423,10 +1423,10 @@ void QgsServerProjectParser::addValueRelationLayersForLayer( const QgsVectorLaye
 
   for ( int idx = 0; idx < vl->pendingFields().size(); idx++ )
   {
-    if ( vl->editorWidgetV2( idx ) != "ValueRelation" )
+    if ( vl->editFormConfig()->widgetType( idx ) != "ValueRelation" )
       continue;
 
-    QgsEditorWidgetConfig cfg( vl->editorWidgetV2Config( idx ) );
+    QgsEditorWidgetConfig cfg( vl->editFormConfig()->widgetConfig( idx ) );
     if ( !cfg.contains( "Layer" ) )
       continue;
 

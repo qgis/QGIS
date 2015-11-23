@@ -296,8 +296,7 @@ class ModelerDialog(BASE, WIDGET):
         with codecs.open(filename, 'w', encoding='utf-8') as fout:
             fout.write(text)
         QMessageBox.information(self, self.tr('Model exported'),
-                                    self.tr('Model was correctly exported.'))
-
+                                self.tr('Model was correctly exported.'))
 
     def saveModel(self, saveAs):
         if unicode(self.textGroup.text()).strip() == '' \

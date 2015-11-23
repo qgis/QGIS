@@ -103,6 +103,12 @@ typedef int QgsFeatureId;
 // key = field index, value = field value
 typedef QMap<int, QVariant> QgsAttributeMap;
 
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests in testqgsfeature.cpp.
+ * See details in QEP #17
+ ****************************************************************************/
+
 /**
  * A vector of attributes. Mostly equal to QVector<QVariant>.
  */
@@ -166,6 +172,11 @@ class QgsField;
 
 #include "qgsfield.h"
 
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests in testqgsfeature.cpp.
+ * See details in QEP #17
+ ****************************************************************************/
 
 /** \ingroup core
  * The feature class encapsulates a single feature including its id,

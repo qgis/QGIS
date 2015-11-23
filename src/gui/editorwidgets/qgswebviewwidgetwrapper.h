@@ -24,7 +24,7 @@
 
 /**
  * Wraps a web view widget. Will show the content available at the URL of the value in a web browser.
- *
+ * \note not available in Python bindings
  */
 
 class GUI_EXPORT QgsWebViewWidgetWrapper : public QgsEditorWidgetWrapper
@@ -36,12 +36,12 @@ class GUI_EXPORT QgsWebViewWidgetWrapper : public QgsEditorWidgetWrapper
 
     // QgsEditorWidgetWrapper interface
   public:
-    QVariant value() override;
+    QVariant value() const override;
 
   protected:
     QWidget* createWidget( QWidget* parent ) override;
     void initWidget( QWidget* editor ) override;
-    bool valid() override;
+    bool valid() const override;
 
   public slots:
     void setValue( const QVariant& value ) override;
