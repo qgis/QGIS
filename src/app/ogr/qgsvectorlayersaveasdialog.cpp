@@ -67,6 +67,15 @@ void QgsVectorLayerSaveAsDialog::setup()
   mFormatComboBox->setCurrentIndex( mFormatComboBox->findData( format ) );
   mFormatComboBox->blockSignals( false );
 
+  //add geometry types to combobox
+  mGeometryTypeComboBox->addItem( tr( "Automatic" ), -1 );
+  mGeometryTypeComboBox->addItem( QgsWKBTypes::displayString( QgsWKBTypes::Point ), QgsWKBTypes::Point );
+  mGeometryTypeComboBox->addItem( QgsWKBTypes::displayString( QgsWKBTypes::LineString ), QgsWKBTypes::LineString );
+  mGeometryTypeComboBox->addItem( QgsWKBTypes::displayString( QgsWKBTypes::Polygon ), QgsWKBTypes::Polygon );
+  mGeometryTypeComboBox->addItem( QgsWKBTypes::displayString( QgsWKBTypes::GeometryCollection ), QgsWKBTypes::GeometryCollection );
+  mGeometryTypeComboBox->addItem( tr( "No geometry" ), QgsWKBTypes::NoGeometry );
+  mGeometryTypeComboBox->setCurrentIndex( mGeometryTypeComboBox->findData( -1 ) );
+
   mEncodingComboBox->addItems( QgsVectorDataProvider::availableEncodings() );
 
   QString enc = settings.value( "/UI/encoding", "System" ).toString();
@@ -458,6 +467,44 @@ bool QgsVectorLayerSaveAsDialog::onlySelected() const
   return mSelectedOnly->isChecked();
 }
 
+QgsWKBTypes::Type QgsVectorLayerSaveAsDialog::geometryType() const
+{
+  int currentIndexData = mGeometryTypeComboBox->itemData( mGeometryTypeComboBox->currentIndex() ).toInt();
+  if ( currentIndexData == -1 )
+  {
+    //automatic
+    return QgsWKBTypes::Unknown;
+  }
+
+  return ( QgsWKBTypes::Type )currentIndexData;
+}
+
+bool QgsVectorLayerSaveAsDialog::automaticGeometryType() const
+{
+  int currentIndexData = mGeometryTypeComboBox->itemData( mGeometryTypeComboBox->currentIndex() ).toInt();
+  return currentIndexData == -1;
+}
+
+bool QgsVectorLayerSaveAsDialog::forceMulti() const
+{
+  return mForceMultiCheckBox->isChecked();
+}
+
+void QgsVectorLayerSaveAsDialog::setForceMulti( bool checked )
+{
+  mForceMultiCheckBox->setChecked( checked );
+}
+
+bool QgsVectorLayerSaveAsDialog::includeZ() const
+{
+  return mIncludeZCheckBox->isChecked();
+}
+
+void QgsVectorLayerSaveAsDialog::setIncludeZ( bool checked )
+{
+  mIncludeZCheckBox->setChecked( checked );
+}
+
 void QgsVectorLayerSaveAsDialog::on_mSymbologyExportComboBox_currentIndexChanged( const QString& text )
 {
   bool scaleEnabled = true;
@@ -467,4 +514,12 @@ void QgsVectorLayerSaveAsDialog::on_mSymbologyExportComboBox_currentIndexChanged
   }
   mScaleSpinBox->setEnabled( scaleEnabled );
   mScaleLabel->setEnabled( scaleEnabled );
+}
+
+void QgsVectorLayerSaveAsDialog::on_mGeometryTypeComboBox_currentIndexChanged( int index )
+{
+  int currentIndexData = mGeometryTypeComboBox->itemData( index ).toInt();
+
+  mForceMultiCheckBox->setEnabled( currentIndexData != -1 );
+  mIncludeZCheckBox->setEnabled( currentIndexData != -1 );
 }
