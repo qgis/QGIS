@@ -163,7 +163,11 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     /** Transforms the measurements of derived attributes in the desired units*/
     virtual QGis::UnitType displayUnits();
 
-    QMap< QString, QString > featureDerivedAttributes( QgsFeature *feature, QgsMapLayer *layer );
+    QMap< QString, QString > featureDerivedAttributes( QgsFeature *feature, QgsMapLayer *layer, const QgsPoint& layerPoint = QgsPoint() );
+
+    /** Adds details of the closest vertex to derived attributes
+     */
+    void closestVertexAttributes( const QgsAbstractGeometryV2& geometry, QgsVertexId vId, QgsMapLayer *layer, QMap< QString, QString >& derivedAttributes );
 
     // Last point in canvas CRS
     QgsPoint mLastPoint;
