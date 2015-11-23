@@ -24,6 +24,7 @@ __copyright__ = '(C) 2014, Agresta S. Coop'
 __revision__ = '$Format:%H$'
 
 import os
+import subprocess
 from processing.core.parameters import ParameterFile
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterSelection
@@ -92,7 +93,7 @@ class TinSurfaceCreate(FusionAlgorithm):
             commands.extend(files)
         FusionUtils.runFusion(commands, progress)
         commands = [os.path.join(FusionUtils.FusionPath(), 'DTM2ASCII.exe')]
-        #commands.append('/raster')
+        commands.append('/raster')
         commands.append(outFile)
         commands.append(self.getOutputValue(self.OUTPUT))
         p = subprocess.Popen(commands, shell=True)
