@@ -142,7 +142,7 @@ void TestQgsLabelingEngineV2::testBasic()
 
   vl->setCustomProperty( "labeling/enabled", false );
 
-  QVERIFY( imageCheck( "labeling_basic_loop", img2, 0 ) );
+  QVERIFY( imageCheck( "labeling_basic", img2, 0 ) );
 }
 
 

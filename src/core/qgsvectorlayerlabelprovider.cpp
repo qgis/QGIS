@@ -257,6 +257,9 @@ QList<QgsLabelFeature*> QgsVectorLayerLabelProvider::labelFeatures( QgsRenderCon
   if ( !prepare( ctx, attrNames ) )
     return QList<QgsLabelFeature*>();
 
+  if ( mRenderer )
+    mRenderer->startRender( ctx, mFields );
+
   QgsRectangle layerExtent = ctx.extent();
   if ( mSettings.ct )
     layerExtent = mSettings.ct->transformBoundingBox( ctx.extent(), QgsCoordinateTransform::ReverseTransform );
@@ -277,6 +280,9 @@ QList<QgsLabelFeature*> QgsVectorLayerLabelProvider::labelFeatures( QgsRenderCon
     }
     registerFeature( fet, ctx, obstacleGeometry.data() );
   }
+
+  if ( mRenderer )
+    mRenderer->stopRender( ctx );
 
   return mLabels;
 }

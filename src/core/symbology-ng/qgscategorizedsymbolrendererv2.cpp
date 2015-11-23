@@ -243,8 +243,7 @@ QgsSymbolV2* QgsCategorizedSymbolRendererV2::originalSymbolForFeature( QgsFeatur
   QVariant value;
   if ( mAttrNum == -1 )
   {
-    if ( !mExpression.data() )
-      return 0;
+    Q_ASSERT( mExpression.data() );
 
     value = mExpression->evaluate( &context.expressionContext() );
   }
