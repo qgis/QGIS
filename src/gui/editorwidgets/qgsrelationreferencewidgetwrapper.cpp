@@ -30,7 +30,6 @@ QgsRelationReferenceWidgetWrapper::QgsRelationReferenceWidgetWrapper( QgsVectorL
 QWidget* QgsRelationReferenceWidgetWrapper::createWidget( QWidget* parent )
 {
   QgsRelationReferenceWidget* w = new QgsRelationReferenceWidget( parent );
-  w->setSizePolicy( w->sizePolicy().horizontalPolicy(), QSizePolicy::Expanding );
   return w;
 }
 

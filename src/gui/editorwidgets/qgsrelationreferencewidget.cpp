@@ -83,7 +83,9 @@ QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget* parent )
 {
   mTopLayout = new QVBoxLayout( this );
   mTopLayout->setContentsMargins( 0, 0, 0, 0 );
-  mTopLayout->setAlignment( Qt::AlignTop );
+
+  setSizePolicy( sizePolicy().horizontalPolicy(), QSizePolicy::Fixed );
+
   setLayout( mTopLayout );
 
   QHBoxLayout* editLayout = new QHBoxLayout();
@@ -141,9 +143,6 @@ QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget* parent )
   mRemoveFKButton->setIcon( QgsApplication::getThemeIcon( "/mActionRemove.svg" ) );
   mRemoveFKButton->setText( tr( "No selection" ) );
   editLayout->addWidget( mRemoveFKButton );
-
-  // spacer
-  editLayout->addItem( new QSpacerItem( 0, 0, QSizePolicy::Expanding ) );
 
   // add line to top layout
   mTopLayout->addLayout( editLayout );
@@ -379,6 +378,12 @@ void QgsRelationReferenceWidget::setEditorContext( const QgsAttributeEditorConte
 
 void QgsRelationReferenceWidget::setEmbedForm( bool display )
 {
+  if ( display )
+  {
+    setSizePolicy( sizePolicy().horizontalPolicy(), QSizePolicy::MinimumExpanding );
+    mTopLayout->setAlignment( Qt::AlignTop );
+  }
+
   mAttributeEditorFrame->setVisible( display );
   mEmbedForm = display;
 }
@@ -483,6 +488,10 @@ void QgsRelationReferenceWidget::init()
           }
         }
       }
+    }
+    else
+    {
+      mFilterContainer->hide();
     }
 
     QgsExpression exp( mReferencedLayer->displayExpression() );
