@@ -1725,7 +1725,8 @@ OGRFeatureH QgsVectorFileWriter::createFeature( QgsFeature& feature )
     QgsGeometry *geom = feature.geometry();
 
     // turn single geoemetry to multi geometry if needed
-    if ( geom && geom->wkbType() != mWkbType && geom->wkbType() == QGis::singleType( mWkbType ) )
+    if ( geom && geom->wkbType() != mWkbType &&
+         QgsWKBTypes::flatType( geom->geometry()->wkbType() ) == QgsWKBTypes::flatType( QgsWKBTypes::singleType( QGis::fromOldWkbType( mWkbType ) ) ) )
     {
       geom->convertToMultiType();
     }
@@ -1738,6 +1739,10 @@ OGRFeatureH QgsVectorFileWriter::createFeature( QgsFeature& feature )
       // we must force the use of 25D.
       if ( mWkbType >= QGis::WKBPoint25D && mWkbType <= QGis::WKBMultiPolygon25D )
       {
+        //ND: I suspect there's a bug here, in that this is NOT converting the geometry's WKB type,
+        //so the exported WKB has a different type to what the OGRGeometry is expecting.
+        //possibly this is handled already in OGR, but it should be fixed regardless by actually converting
+        //geom to the correct WKB type
         QgsWKBTypes::Type wkbType = QGis::fromOldWkbType( geom->wkbType() );
         if ( wkbType >= QgsWKBTypes::PointZ && wkbType <= QgsWKBTypes::MultiPolygonZ )
         {
@@ -1799,6 +1804,10 @@ OGRFeatureH QgsVectorFileWriter::createFeature( QgsFeature& feature )
       // set geometry (ownership is not passed to OGR)
       OGR_F_SetGeometry( poFeature, mGeom );
     }
+    else
+    {
+      OGR_F_SetGeometry( poFeature, createEmptyGeometry( mWkbType ) );
+    }
   }
   return poFeature;
 }
@@ -1848,7 +1857,10 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
     QString *newFilename,
     SymbologyExport symbologyExport,
     double symbologyScale,
-    const QgsRectangle* filterExtent )
+    const QgsRectangle* filterExtent,
+    QgsWKBTypes::Type overrideGeometryType,
+    bool forceMulti,
+    bool includeZ )
 {
   QgsCoordinateTransform* ct = 0;
   if ( destCRS && layer )
@@ -1857,7 +1869,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
   }
 
   QgsVectorFileWriter::WriterError error = writeAsVectorFormat( layer, fileName, fileEncoding, ct, driverName, onlySelected,
-      errorMessage, datasourceOptions, layerOptions, skipAttributeCreation, newFilename, symbologyExport, symbologyScale, filterExtent );
+      errorMessage, datasourceOptions, layerOptions, skipAttributeCreation, newFilename, symbologyExport, symbologyScale, filterExtent, overrideGeometryType, forceMulti, includeZ );
   delete ct;
   return error;
 }
@@ -1875,7 +1887,10 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
     QString *newFilename,
     SymbologyExport symbologyExport,
     double symbologyScale,
-    const QgsRectangle* filterExtent )
+    const QgsRectangle* filterExtent,
+    QgsWKBTypes::Type overrideGeometryType,
+    bool forceMulti,
+    bool includeZ )
 {
   if ( !layer )
   {
@@ -1896,7 +1911,18 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
     outputCRS = &layer->crs();
   }
 
-  QGis::WkbType wkbType = layer->wkbType();
+  QgsWKBTypes::Type destWkbType = QGis::fromOldWkbType( layer->wkbType() );
+  if ( overrideGeometryType != QgsWKBTypes::Unknown )
+  {
+    destWkbType = QgsWKBTypes::flatType( overrideGeometryType );
+    if ( QgsWKBTypes::hasZ( overrideGeometryType ) || includeZ )
+      destWkbType = QgsWKBTypes::addZ( destWkbType );
+  }
+  if ( forceMulti )
+  {
+    destWkbType = QgsWKBTypes::multiType( destWkbType );
+  }
+
   QgsFields fields = skipAttributeCreation ? QgsFields() : layer->fields();
 
   if ( layer->providerType() == "ogr" && layer->dataProvider() )
@@ -1912,19 +1938,21 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
     }
 
     // Shapefiles might contain multi types although wkbType() only reports singles
-    if ( layer->storageType() == "ESRI Shapefile" )
+    if ( layer->storageType() == "ESRI Shapefile" && !QgsWKBTypes::isMultiType( destWkbType ) )
     {
-      const QgsFeatureIds &ids = layer->selectedFeaturesIds();
-      QgsFeatureIterator fit = layer->getFeatures();
+      QgsFeatureRequest req;
+      if ( onlySelected )
+      {
+        req.setFilterFids( layer->selectedFeaturesIds() );
+      }
+      QgsFeatureIterator fit = layer->getFeatures( req );
       QgsFeature fet;
+
       while ( fit.nextFeature( fet ) )
       {
-        if ( onlySelected && !ids.contains( fet.id() ) )
-          continue;
-
-        if ( fet.constGeometry() && fet.constGeometry()->wkbType() == QGis::multiType( wkbType ) )
+        if ( fet.constGeometry() && !fet.constGeometry()->isEmpty() && QgsWKBTypes::isMultiType( fet.constGeometry()->geometry()->wkbType() ) )
         {
-          wkbType = QGis::multiType( wkbType );
+          destWkbType = QgsWKBTypes::multiType( destWkbType );
           break;
         }
       }
@@ -1947,7 +1975,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
   }
 
   QgsVectorFileWriter* writer =
-    new QgsVectorFileWriter( fileName, fileEncoding, fields, wkbType, outputCRS, driverName, datasourceOptions, layerOptions, newFilename, symbologyExport );
+    new QgsVectorFileWriter( fileName, fileEncoding, fields, QGis::fromNewWkbType( destWkbType ), outputCRS, driverName, datasourceOptions, layerOptions, newFilename, symbologyExport );
   writer->setSymbologyScaleDenominator( symbologyScale );
 
   if ( newFilename )
