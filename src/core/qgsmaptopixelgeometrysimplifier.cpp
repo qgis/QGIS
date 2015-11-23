@@ -48,7 +48,7 @@ inline static QgsRectangle calculateBoundingBox( QGis::WkbType wkbType, const un
   r.setMinimal();
 
   int sizeOfDoubleX = sizeof( double );
-  int sizeOfDoubleY = QGis::wkbDimensions( wkbType ) == 3 /*hasZValue*/ ? 2 * sizeof( double ) : sizeof( double );
+  int sizeOfDoubleY = ( QGis::wkbDimensions( wkbType ) - 1 ) * sizeof( double );
 
   for ( size_t i = 0; i < numPoints; ++i )
   {
@@ -157,7 +157,6 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry(
   bool writeHeader, bool isaLinearRing )
 {
   bool isGeneralizable = true;
-  bool hasZValue = QGis::wkbDimensions( wkbType ) == 3;
   bool result = false;
 
   // Save initial WKB settings to use when the simplification creates invalid geometries
@@ -206,7 +205,7 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry(
     r.setMinimal();
 
     int sizeOfDoubleX = sizeof( double );
-    int sizeOfDoubleY = QGis::wkbDimensions( wkbType ) == 3 /*hasZValue*/ ? 2 * sizeof( double ) : sizeof( double );
+    int sizeOfDoubleY = ( QGis::wkbDimensions( wkbType ) - 1 ) * sizeof( double );
 
     int numPoints;
     memcpy( &numPoints, sourceWkb, 4 );
@@ -329,7 +328,7 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry(
       memcpy( &numPoints_i, sourceWkb, 4 );
       QgsRectangle envelope_i = numRings == 1 ? envelope : calculateBoundingBox( wkbType, sourceWkb + 4, numPoints_i );
 
-      size_t sourceWkbSize_i = 4 + numPoints_i * ( hasZValue ? 3 : 2 ) * sizeof( double );
+      size_t sourceWkbSize_i = 4 + numPoints_i * QGis::wkbDimensions( wkbType ) * sizeof( double );
       size_t targetWkbSize_i = 0;
 
       result |= simplifyWkbGeometry( simplifyFlags, wkbType, sourceWkb, sourceWkbSize_i, targetWkb, targetWkbSize_i, envelope_i, map2pixelTol, false, true );
@@ -360,7 +359,7 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry(
       {
         int numPoints_i;
         memcpy( &numPoints_i, wkb1 + 5, 4 );
-        int wkbSize_i = 4 + numPoints_i * ( hasZValue ? 3 : 2 ) * sizeof( double );
+        int wkbSize_i = 4 + numPoints_i * QGis::wkbDimensions( wkbType ) * sizeof( double );
 
         sourceWkbSize_i += 5 + wkbSize_i;
         wkb1 += 5 + wkbSize_i;
@@ -376,7 +375,7 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry(
         {
           int numPoints_i;
           memcpy( &numPoints_i, wkb1, 4 );
-          int wkbSize_i = 4 + numPoints_i * ( hasZValue ? 3 : 2 ) * sizeof( double );
+          int wkbSize_i = 4 + numPoints_i * QGis::wkbDimensions( wkbType ) * sizeof( double );
 
           sourceWkbSize_i += wkbSize_i;
           wkb1 += wkbSize_i;
