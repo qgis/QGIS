@@ -22,6 +22,7 @@ from osgeo import gdal
 from osgeo.gdalconst import GA_ReadOnly
 from qgis.server import QgsServer, QgsAccessControlFilter
 from qgis.core import QgsRenderChecker
+from PyQt4.QtCore import QSize
 import tempfile
 
 
@@ -238,10 +239,10 @@ class TestQgsServerAccessControl(TestCase):
         }.items()])
 
         response, headers = self._get_fullaccess(query_string)
-        self._img_diff_error(response, headers, "WMS_GetLegendGraphic_Hello", 250)
+        self._img_diff_error(response, headers, "WMS_GetLegendGraphic_Hello", 250, QSize(10, 10))
 
         response, headers = self._get_restricted(query_string)
-        self._img_diff_error(response, headers, "WMS_GetLegendGraphic_Hello", 250)
+        self._img_diff_error(response, headers, "WMS_GetLegendGraphic_Hello", 250, QSize(10, 10))
 
     def test_wms_getlegendgraphic_country(self):
         query_string = "&".join(["%s=%s" % i for i in {
@@ -253,7 +254,7 @@ class TestQgsServerAccessControl(TestCase):
         }.items()])
 
         response, headers = self._get_fullaccess(query_string)
-        self._img_diff_error(response, headers, "WMS_GetLegendGraphic_Country", 250)
+        self._img_diff_error(response, headers, "WMS_GetLegendGraphic_Country", 250, QSize(10, 10))
 
         response, headers = self._get_restricted(query_string)
         self.assertEquals(
@@ -990,7 +991,7 @@ class TestQgsServerAccessControl(TestCase):
         del environ["REQUEST_BODY"]
         return result
 
-    def _img_diff(self, image, control_image, max_diff):
+    def _img_diff(self, image, control_image, max_diff, max_size_diff=QSize()):
         temp_image = path.join(tempfile.gettempdir(), "%s_result.png" % control_image)
         with open(temp_image, "w") as f:
             f.write(image)
@@ -999,13 +1000,15 @@ class TestQgsServerAccessControl(TestCase):
         control.setControlPathPrefix("qgis_server_accesscontrol")
         control.setControlName(control_image)
         control.setRenderedImage(temp_image)
+        if max_size_diff.isValid():
+            control.setSizeTolerance(max_size_diff.width(), max_size_diff.height())
         return control.compareImages(control_image), control.report()
 
-    def _img_diff_error(self, response, headers, image, max_diff=10):
+    def _img_diff_error(self, response, headers, image, max_diff=10, max_size_diff=QSize()):
         self.assertEquals(
             headers.get("Content-Type"), "image/png",
             "Content type is wrong: %s" % headers.get("Content-Type"))
-        test, report = self._img_diff(response, image, max_diff)
+        test, report = self._img_diff(response, image, max_diff, max_size_diff)
 
         result_img = check_output(["base64", path.join(tempfile.gettempdir(), image + "_result.png")])
         message = "Image is wrong\n%s\nImage:\necho '%s' | base64 -d >%s/%s_result.png" % (
