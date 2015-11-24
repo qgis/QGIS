@@ -271,6 +271,7 @@ class CORE_EXPORT QgsEditFormConfig : public QObject
     Q_OBJECT
 
   public:
+
     /** The different types to layout the attribute editor. */
     enum EditorLayout
     {
@@ -306,6 +307,17 @@ class CORE_EXPORT QgsEditFormConfig : public QObject
       SuppressDefault = 0, //!< Use the application-wide setting
       SuppressOn = 1,      //!< Suppress feature form
       SuppressOff = 2      //!< Do not suppress feature form
+    };
+
+    /**
+     * The python init code source options.
+     */
+    enum PythonInitCodeSource
+    {
+      CodeSourceNone = 0,             //!< Do not use python code at all
+      CodeSourceFile = 1,             //!< Load the python code from an external file
+      CodeSourceDialog = 2,           //!< Use the python code provided in the dialog
+      CodeSourceEnvironment = 3       //!< Use the python code available in the python environment
     };
 
     /**
@@ -459,17 +471,7 @@ class CORE_EXPORT QgsEditFormConfig : public QObject
     void setLabelOnTop( int idx, bool onTop );
 
 
-
-
-
-
-
-
-
-
-
-    // Python stuff
-
+    // Python form init function stuff
 
     /**
      * Get python function for edit form initialization.
@@ -490,20 +492,35 @@ class CORE_EXPORT QgsEditFormConfig : public QObject
     /**
      * Get python code for edit form initialization.
      */
-    QString initCode() const { return mEditFormInitCode; }
+    QString initCode() const { return mInitCode; }
 
     /**
-     * Get python code for edit form initialization.
+     * Set python code for edit form initialization.
      * Make sure that you also set the appropriate function name in
      * @link setInitFunction @endlink
      */
-    void setInitCode( const QString& code ) { mEditFormInitCode = code; }
+    void setInitCode( const QString& code ) { mInitCode = code; }
 
-    /** Return if python code shall be loaded for edit form initialization */
-    bool useInitCode() const { return mUseInitCode; }
+    /**
+     * Get python external file path for edit form initialization.
+     */
+    QString initFilePath() const { return mInitFilePath; }
 
-    /** Set if python code shall be used for edit form initialization */
-    void setUseInitCode( const bool useCode ) { mUseInitCode = useCode; }
+    /**
+     * Set python external file path for edit form initialization.
+     * Make sure that you also set the appropriate function name in
+     * @link setInitFunction @endlink
+     */
+    void setInitFilePath( const QString& filePath ) { mInitFilePath = filePath; }
+
+    /** Return python code source for edit form initialization
+     *  (if it shall be loaded from a file, read from the
+     *  provided dialog editor or inherited from the environment)
+     */
+    PythonInitCodeSource initCodeSource() const { return mInitCodeSource; }
+
+    /** Set if python code shall be used for edit form initialization and its origin */
+    void setInitCodeSource( const PythonInitCodeSource initCodeSource ) { mInitCodeSource = initCodeSource; }
 
     /** Type of feature form pop-up suppression after feature creation (overrides app setting) */
     FeatureFormSuppress suppress() const { return mFeatureFormSuppress; }
@@ -547,9 +564,16 @@ class CORE_EXPORT QgsEditFormConfig : public QObject
     /** Defines the default layout to use for the attribute editor (Drag and drop, UI File, Generated) */
     EditorLayout mEditorLayout;
 
+    /** Init form instance */
     QString mEditForm;
+    /** Name of the python form init function */
     QString mInitFunction;
-    QString mEditFormInitCode;
+    /** Path of the python external file to be loaded */
+    QString mInitFilePath;
+    /** Choose the source of the init founction */
+    PythonInitCodeSource mInitCodeSource;
+    /** Python init code provided in the dialog */
+    QString mInitCode;
 
     /** Type of feature form suppression after feature creation */
     FeatureFormSuppress mFeatureFormSuppress;

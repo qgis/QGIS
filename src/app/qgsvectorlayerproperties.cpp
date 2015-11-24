@@ -1317,5 +1317,5 @@ void QgsVectorLayerProperties::updateVariableEditor()
 void QgsVectorLayerProperties::updateFieldsPropertiesDialog()
 {
   QgsEditFormConfig* cfg = layer->editFormConfig();
-  mFieldsPropertiesDialog->setEditFormInit( cfg->uiForm(), cfg->initFunction(), cfg->initCode(), cfg->useInitCode() );
+  mFieldsPropertiesDialog->setEditFormInit( cfg->uiForm(), cfg->initFunction(), cfg->initCode(), cfg->initFilePath(), cfg->initCodeSource() );
 }

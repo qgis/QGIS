@@ -1786,10 +1786,16 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
     mEditFormConfig->setInitCode( editFormInitCodeNode.toElement().text() );
   }
 
-  QDomNode editFormInitUseCodeNode = node.namedItem( "editforminitusecode" );
-  if ( !editFormInitCodeNode.isNull() || ( !editFormInitNode.isNull() && !editFormInitNode.toElement().text().isEmpty() ) )
+  QDomNode editFormInitCodeSourceNode = node.namedItem( "editforminitcodesource" );
+  if ( !editFormInitCodeSourceNode.isNull() || ( !editFormInitCodeSourceNode.isNull() && !editFormInitCodeSourceNode.toElement().text().isEmpty() ) )
   {
-    mEditFormConfig->setUseInitCode( editFormInitUseCodeNode.toElement().text().toInt() );
+    mEditFormConfig->setInitCodeSource(( QgsEditFormConfig::PythonInitCodeSource ) editFormInitCodeSourceNode.toElement().text().toInt() );
+  }
+
+  QDomNode editFormInitFilePathNode = node.namedItem( "editforminitfilepath" );
+  if ( !editFormInitFilePathNode.isNull() || ( !editFormInitFilePathNode.isNull() && !editFormInitFilePathNode.toElement().text().isEmpty() ) )
+  {
+    mEditFormConfig->setInitFilePath( editFormInitFilePathNode.toElement().text() );
   }
 
   QDomNode fFSuppNode = node.namedItem( "featformsuppress" );
@@ -2054,9 +2060,14 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
     efiField.appendChild( doc.createTextNode( mEditFormConfig->initFunction() ) );
   node.appendChild( efiField );
 
-  QDomElement efiucField  = doc.createElement( "editforminitusecode" );
-  efiucField.appendChild( doc.createTextNode( mEditFormConfig->useInitCode() ? "1" : "0" ) );
-  node.appendChild( efiucField );
+  QDomElement eficsField  = doc.createElement( "editforminitcodesource" );
+  eficsField.appendChild( doc.createTextNode( QString::number( mEditFormConfig->initCodeSource() ) ) );
+  node.appendChild( eficsField );
+
+  QDomElement efifpField  = doc.createElement( "editforminitfilepath" );
+  efifpField.appendChild( doc.createTextNode( mEditFormConfig->initFilePath() ) );
+  node.appendChild( efifpField );
+
 
   QDomElement eficField  = doc.createElement( "editforminitcode" );
   eficField.appendChild( doc.createCDATASection( mEditFormConfig->initCode() ) );

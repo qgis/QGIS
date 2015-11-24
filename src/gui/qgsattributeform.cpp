@@ -25,7 +25,9 @@
 #include "qgsvectordataprovider.h"
 
 #include <QDir>
+#include <QTextStream>
 #include <QFileInfo>
+#include <QFile>
 #include <QFormLayout>
 #include <QGridLayout>
 #include <QGroupBox>
@@ -575,36 +577,63 @@ void QgsAttributeForm::initPython()
   cleanPython();
 
   // Init Python
-  if ( !mLayer->editFormConfig()->initFunction().isEmpty() )
+  if ( !mLayer->editFormConfig()->initFunction().isEmpty()
+       && mLayer->editFormConfig()->initCodeSource() != QgsEditFormConfig::PythonInitCodeSource::CodeSourceNone )
   {
-    QString module = mLayer->editFormConfig()->initFunction();
 
-    int pos = module.lastIndexOf( '.' );
+    QString initFunction = mLayer->editFormConfig()->initFunction();
+    QString initFilePath = mLayer->editFormConfig()->initFilePath();
+    QString initCode;
 
-    if ( pos >= 0 ) // It's a module
+    switch ( mLayer->editFormConfig()->initCodeSource() )
     {
-      QgsPythonRunner::run( QString( "import %1" ).arg( module.left( pos ) ) );
-      /* Reload the module if the DEBUGMODE switch has been set in the module.
-      If set to False you have to reload QGIS to reset it to True due to Python
-      module caching */
-      QString reload = QString( "if hasattr(%1,'DEBUGMODE') and %1.DEBUGMODE:"
-                                " reload(%1)" ).arg( module.left( pos ) );
+      case QgsEditFormConfig::PythonInitCodeSource::CodeSourceFile:
+        if ( ! initFilePath.isEmpty() )
+        {
+          QFile inputFile( initFilePath );
 
-      QgsPythonRunner::run( reload );
-    }
-    else if ( mLayer->editFormConfig()->useInitCode() )  // Must be supplied code
-    {
-      QgsPythonRunner::run( mLayer->editFormConfig()->initCode() );
-    }
-    else
-    {
-      QgsDebugMsg( "No dot in editFormInit and no custom python code provided! There is nothing to run." );
+          if ( inputFile.open( QFile::ReadOnly ) )
+          {
+            // Read it into a string
+            QTextStream inf( &inputFile );
+            initCode = inf.readAll();
+            inputFile.close();
+          }
+          else // The file couldn't be opened
+          {
+            QgsLogger::warning( QString( "The external python file path %1 could not be opened!" ).arg( initFilePath ) );
+          }
+        }
+        else
+        {
+          QgsLogger::warning( QString( "The external python file path is empty!" ) );
+        }
+        break;
+
+      case( QgsEditFormConfig::PythonInitCodeSource::CodeSourceDialog ):
+        initCode = mLayer->editFormConfig()->initCode();
+        if ( initCode.isEmpty() )
+        {
+          QgsLogger::warning( QString( "The python code provided in the dialog is empty!" ) );
+        }
+        break;
+
+      case( QgsEditFormConfig::PythonInitCodeSource::CodeSourceEnvironment ):
+      case( QgsEditFormConfig::PythonInitCodeSource::CodeSourceNone ):
+      default:
+        // Nothing to do
+        break;
     }
 
+    // If we have a function code, run it
+    if ( ! initCode.isEmpty() )
+    {
+      QgsPythonRunner::run( initCode );
+    }
 
     QgsPythonRunner::run( "import inspect" );
     QString numArgs;
-    QgsPythonRunner::eval( QString( "len(inspect.getargspec(%1)[0])" ).arg( module ), numArgs );
+    QgsPythonRunner::eval( QString( "len(inspect.getargspec(%1)[0])" ).arg( initFunction ), numArgs );
 
     static int sFormId = 0;
     mPyFormVarName = QString( "_qgis_featureform_%1_%2" ).arg( mFormNr ).arg( sFormId++ );
@@ -620,7 +649,7 @@ void QgsAttributeForm::initPython()
     // Legacy
     if ( numArgs == "3" )
     {
-      addInterface( new QgsAttributeFormLegacyInterface( module, mPyFormVarName, this ) );
+      addInterface( new QgsAttributeFormLegacyInterface( initFunction, mPyFormVarName, this ) );
     }
     else
     {
