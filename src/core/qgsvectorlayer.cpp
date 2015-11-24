@@ -2754,10 +2754,10 @@ void QgsVectorLayer::setEditType( int idx, EditType type )
 
   Q_NOWARN_DEPRECATED_PUSH
   const QString widgetType = QgsLegacyHelpers::convertEditType( type, cfg, this, mUpdatedFields[idx].name() );
-  Q_NOWARN_DEPRECATED_POP
 
   setEditorWidgetV2( idx, widgetType );
   setEditorWidgetV2Config( idx, cfg );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 void QgsVectorLayer::setAnnotationForm( const QString& ui )
@@ -2767,28 +2767,36 @@ void QgsVectorLayer::setAnnotationForm( const QString& ui )
 
 QMap< QString, QVariant > QgsVectorLayer::valueMap( int idx )
 {
+  Q_NOWARN_DEPRECATED_PUSH
   return editorWidgetV2Config( idx );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 QgsVectorLayer::RangeData QgsVectorLayer::range( int idx )
 {
+  Q_NOWARN_DEPRECATED_PUSH
   const QgsEditorWidgetConfig cfg = editorWidgetV2Config( idx );
   return RangeData(
            cfg.value( "Min" ),
            cfg.value( "Max" ),
            cfg.value( "Step" )
          );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 QString QgsVectorLayer::dateFormat( int idx )
 {
+  Q_NOWARN_DEPRECATED_PUSH
   return editorWidgetV2Config( idx ).value( "DateFormat" ).toString();
+  Q_NOWARN_DEPRECATED_POP
 }
 
 QSize QgsVectorLayer::widgetSize( int idx )
 {
+  Q_NOWARN_DEPRECATED_PUSH
   const QgsEditorWidgetConfig cfg = editorWidgetV2Config( idx );
   return QSize( cfg.value( "Width" ).toInt(), cfg.value( "Height" ).toInt() );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 void QgsVectorLayer::setRendererV2( QgsFeatureRendererV2 *r )
@@ -2859,10 +2867,12 @@ void QgsVectorLayer::destroyEditCommand()
 
 void QgsVectorLayer::setCheckedState( int idx, const QString& checked, const QString& unchecked )
 {
+  Q_NOWARN_DEPRECATED_PUSH
   QgsEditorWidgetConfig cfg = editorWidgetV2Config( idx );
   cfg["CheckedState"] = checked;
   cfg["UncheckedState"] = unchecked;
   setEditorWidgetV2Config( idx, cfg );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 int QgsVectorLayer::fieldNameIndex( const QString& fieldName ) const
