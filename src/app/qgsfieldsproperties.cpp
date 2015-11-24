@@ -469,6 +469,7 @@ void QgsFieldsProperties::on_mInitCodeSourceComboBox_currentIndexChanged( int co
   mPythonInitCodeGroupBox->setVisible( codeSource == QgsEditFormConfig::PythonInitCodeSource::CodeSourceDialog );
   mInitFilePathLineEdit->setVisible( codeSource == QgsEditFormConfig::PythonInitCodeSource::CodeSourceFile );
   mInitFilePathLabel->setVisible( codeSource == QgsEditFormConfig::PythonInitCodeSource::CodeSourceFile );
+  pbtnSelectInitFilePath->setVisible( codeSource == QgsEditFormConfig::PythonInitCodeSource::CodeSourceFile );
 }
 
 void QgsFieldsProperties::attributeTypeDialog()
