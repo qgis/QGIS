@@ -1780,17 +1780,32 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
     mEditFormConfig->setInitFunction( editFormInitNode.toElement().text() );
   }
 
+  QDomNode editFormInitCodeSourceNode = node.namedItem( "editforminitcodesource" );
+  if ( !editFormInitCodeSourceNode.isNull() || ( !editFormInitCodeSourceNode.isNull() && !editFormInitCodeSourceNode.toElement().text().isEmpty() ) )
+  {
+    mEditFormConfig->setInitCodeSource(( QgsEditFormConfig::PythonInitCodeSource ) editFormInitCodeSourceNode.toElement().text().toInt() );
+  }
+
   QDomNode editFormInitCodeNode = node.namedItem( "editforminitcode" );
   if ( !editFormInitCodeNode.isNull() )
   {
     mEditFormConfig->setInitCode( editFormInitCodeNode.toElement().text() );
   }
 
-  QDomNode editFormInitCodeSourceNode = node.namedItem( "editforminitcodesource" );
-  if ( !editFormInitCodeSourceNode.isNull() || ( !editFormInitCodeSourceNode.isNull() && !editFormInitCodeSourceNode.toElement().text().isEmpty() ) )
+  // Temporary < 2.12 b/w compatibility "dot" support patch
+  // @see: https://github.com/qgis/QGIS/pull/2498
+  // For b/w compatibility, check if there's a dot in the function name
+  // and if yes, transform it in an import statement for the module
+  // and set the PythonInitCodeSource to CodeSourceDialog
+  QString initFunction = mEditFormConfig->initFunction();
+  int dotPos = initFunction.lastIndexOf( '.' );
+  if ( dotPos >= 0 ) // It's a module
   {
-    mEditFormConfig->setInitCodeSource(( QgsEditFormConfig::PythonInitCodeSource ) editFormInitCodeSourceNode.toElement().text().toInt() );
+    mEditFormConfig->setInitCodeSource( QgsEditFormConfig::PythonInitCodeSource::CodeSourceDialog );
+    mEditFormConfig->setInitFunction( initFunction.mid( dotPos + 1 ) );
+    mEditFormConfig->setInitCode( QString( "from %1 import %2\n" ).arg( initFunction.left( dotPos ), initFunction.mid( dotPos + 1 ) ) );
   }
+
 
   QDomNode editFormInitFilePathNode = node.namedItem( "editforminitfilepath" );
   if ( !editFormInitFilePathNode.isNull() || ( !editFormInitFilePathNode.isNull() && !editFormInitFilePathNode.toElement().text().isEmpty() ) )

@@ -633,34 +633,41 @@ void QgsAttributeForm::initPython()
 
     QgsPythonRunner::run( "import inspect" );
     QString numArgs;
-    QgsPythonRunner::eval( QString( "len(inspect.getargspec(%1)[0])" ).arg( initFunction ), numArgs );
 
-    static int sFormId = 0;
-    mPyFormVarName = QString( "_qgis_featureform_%1_%2" ).arg( mFormNr ).arg( sFormId++ );
-
-    QString form = QString( "%1 = sip.wrapinstance( %2, qgis.gui.QgsAttributeForm )" )
-                   .arg( mPyFormVarName )
-                   .arg(( unsigned long ) this );
-
-    QgsPythonRunner::run( form );
-
-    QgsDebugMsg( QString( "running featureForm init: %1" ).arg( mPyFormVarName ) );
-
-    // Legacy
-    if ( numArgs == "3" )
+    // Check for eval result
+    if ( QgsPythonRunner::eval( QString( "len(inspect.getargspec(%1)[0])" ).arg( initFunction ), numArgs ) )
     {
-      addInterface( new QgsAttributeFormLegacyInterface( initFunction, mPyFormVarName, this ) );
+      static int sFormId = 0;
+      mPyFormVarName = QString( "_qgis_featureform_%1_%2" ).arg( mFormNr ).arg( sFormId++ );
+
+      QString form = QString( "%1 = sip.wrapinstance( %2, qgis.gui.QgsAttributeForm )" )
+                     .arg( mPyFormVarName )
+                     .arg(( unsigned long ) this );
+
+      QgsPythonRunner::run( form );
+
+      QgsDebugMsg( QString( "running featureForm init: %1" ).arg( mPyFormVarName ) );
+
+      // Legacy
+      if ( numArgs == "3" )
+      {
+        addInterface( new QgsAttributeFormLegacyInterface( initFunction, mPyFormVarName, this ) );
+      }
+      else
+      {
+#if 0
+        QString expr = QString( "%1(%2)" )
+                       .arg( mLayer->editFormInit() )
+                       .arg( mPyFormVarName );
+        QgsAttributeFormInterface* iface = QgsPythonRunner::evalToSipObject<QgsAttributeFormInterface*>( expr, "QgsAttributeFormInterface" );
+        if ( iface )
+          addInterface( iface );
+#endif
+      }
     }
     else
     {
-#if 0
-      QString expr = QString( "%1(%2)" )
-                     .arg( mLayer->editFormInit() )
-                     .arg( mPyFormVarName );
-      QgsAttributeFormInterface* iface = QgsPythonRunner::evalToSipObject<QgsAttributeFormInterface*>( expr, "QgsAttributeFormInterface" );
-      if ( iface )
-        addInterface( iface );
-#endif
+      QgsLogger::warning( QString( "There was an error evaluating the python init function!" ) );
     }
   }
 }
