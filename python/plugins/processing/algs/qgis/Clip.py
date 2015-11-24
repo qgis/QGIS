@@ -103,7 +103,7 @@ class Clip(GeoAlgorithm):
                     try:
                         cur_geom = QgsGeometry(outFeat.geometry())
                         new_geom = QgsGeometry(geom.intersection(cur_geom))
-                        if new_geom.wkbType() == 0 or QgsWKBTypes.flatType(int_geom.geometry().wkbType()) == QgsWKBTypes.GeometryCollection:
+                        if new_geom.wkbType() == QGis.WKBUnknown or QgsWKBTypes.flatType(new_geom.geometry().wkbType()) == QgsWKBTypes.GeometryCollection:
                             int_com = QgsGeometry(geom.combine(cur_geom))
                             int_sym = QgsGeometry(geom.symDifference(cur_geom))
                             new_geom = QgsGeometry(int_com.difference(int_sym))

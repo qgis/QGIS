@@ -99,7 +99,7 @@ class Union(GeoAlgorithm):
                         else:
                             int_geom = QgsGeometry(int_geom)
 
-                        if int_geom.wkbType() == 0 or QgsWKBTypes.flatType(int_geom.geometry().wkbType()) == QgsWKBTypes.GeometryCollection:
+                        if int_geom.wkbType() == QGis.WKBUnknown or QgsWKBTypes.flatType(int_geom.geometry().wkbType()) == QgsWKBTypes.GeometryCollection:
                             # Intersection produced different geomety types
                             temp_list = int_geom.asGeometryCollection()
                             for i in temp_list:
