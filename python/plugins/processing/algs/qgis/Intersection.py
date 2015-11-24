@@ -25,7 +25,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QGis, QgsFeatureRequest, QgsFeature, QgsGeometry
+from qgis.core import QGis, QgsFeatureRequest, QgsFeature, QgsGeometry, QgsWKBTypes
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.parameters import ParameterVector
@@ -79,7 +79,7 @@ class Intersection(GeoAlgorithm):
                     if geom.intersects(tmpGeom):
                         atMapB = inFeatB.attributes()
                         int_geom = QgsGeometry(geom.intersection(tmpGeom))
-                        if int_geom.wkbType() == QGis.WKBUnknown:
+                        if int_geom.wkbType() == QGis.WKBUnknown or QgsWKBTypes.flatType(int_geom.geometry().wkbType()) == QgsWKBTypes.GeometryCollection:
                             int_com = geom.combine(tmpGeom)
                             int_sym = geom.symDifference(tmpGeom)
                             int_geom = QgsGeometry(int_com.difference(int_sym))
