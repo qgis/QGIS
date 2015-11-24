@@ -239,6 +239,12 @@ namespace pal
       /** Join connected features with the same label text */
       void joinConnectedFeatures();
 
+      /** Returns the connected feature ID for a label feature ID, which is unique for all features
+       * which have been joined as a result of joinConnectedFeatures()
+       * @returns connected feature ID, or -1 if feature was not joined
+       */
+      int connectedFeatureId( QgsFeatureId featureId ) const;
+
       /** Chop layer features at the repeat distance **/
       void chopFeaturesAtRepeatDistance();
 
@@ -281,6 +287,7 @@ namespace pal
 
       QHash< QString, QLinkedList<FeaturePart*>* > mConnectedHashtable;
       QStringList mConnectedTexts;
+      QHash< QgsFeatureId, int > mConnectedFeaturesIds;
 
       QMutex mMutex;
 

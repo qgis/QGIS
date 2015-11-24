@@ -357,10 +357,13 @@ namespace pal
   void Layer::joinConnectedFeatures()
   {
     // go through all label texts
+    int connectedFeaturesId = 0;
     Q_FOREACH ( const QString& labelText, mConnectedTexts )
     {
       if ( !mConnectedHashtable.contains( labelText ) )
         continue; // shouldn't happen
+
+      connectedFeaturesId++;
 
       QLinkedList<FeaturePart*>* parts = mConnectedHashtable.value( labelText );
 
@@ -381,11 +384,13 @@ namespace pal
           mFeatureIndex->Remove( bmin, bmax, partCheck );
           mFeatureParts.removeOne( partCheck );
 
+          mConnectedFeaturesIds.insert( partCheck->featureId(), connectedFeaturesId );
           otherPart->getBoundingBox( bmin, bmax );
 
           // merge points from partCheck to p->item
           if ( otherPart->mergeWithFeaturePart( partCheck ) )
           {
+            mConnectedFeaturesIds.insert( otherPart->featureId(), connectedFeaturesId );
             // reinsert p->item to r-tree (probably not needed)
             mFeatureIndex->Remove( bmin, bmax, otherPart );
             otherPart->getBoundingBox( bmin, bmax );
@@ -407,6 +412,11 @@ namespace pal
     mConnectedHashtable.clear();
 
     mConnectedTexts.clear();
+  }
+
+  int Layer::connectedFeatureId( QgsFeatureId featureId ) const
+  {
+    return mConnectedFeaturesIds.value( featureId, -1 );
   }
 
   void Layer::chopFeaturesAtRepeatDistance()

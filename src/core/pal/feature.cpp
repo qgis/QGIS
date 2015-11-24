@@ -170,7 +170,18 @@ namespace pal
     if ( !part )
       return false;
 
-    return mLF->id() == part->featureId() && mLF->layer()->name() == part->layer()->name();
+    if ( mLF->layer()->name() != part->layer()->name() )
+      return false;
+
+    if ( mLF->id() == part->featureId() )
+      return true;
+
+    // any part of joined features are also treated as having the same label feature
+    int connectedFeatureId = mLF->layer()->connectedFeatureId( mLF->id() );
+    if ( connectedFeatureId >= 0 && connectedFeatureId == mLF->layer()->connectedFeatureId( part->featureId() ) )
+      return true;
+
+    return false;
   }
 
   LabelPosition::Quadrant FeaturePart::quadrantFromOffset() const
