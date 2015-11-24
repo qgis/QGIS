@@ -103,6 +103,7 @@ QgsBookmarks::QgsBookmarks( QWidget *parent ) : QDockWidget( parent )
 
 QgsBookmarks::~QgsBookmarks()
 {
+  delete lstBookmarks->model();
   QSqlDatabase::removeDatabase( "bookmarks" );
   saveWindowLocation();
 }
