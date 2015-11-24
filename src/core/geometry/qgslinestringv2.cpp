@@ -132,7 +132,7 @@ QDomElement QgsLineStringV2::asGML3( QDomDocument& doc, int precision, const QSt
 
   QDomElement elemCurve = doc.createElementNS( ns, "Curve" );
   QDomElement elemSegments = doc.createElementNS( ns, "segments" );
-  QDomElement elemArcString = doc.createElementNS( ns, "LineString" );
+  QDomElement elemArcString = doc.createElementNS( ns, "LineStringSegment" );
   elemArcString.appendChild( QgsGeometryUtils::pointsToGML3( pts, doc, precision, ns, is3D() ) );
   elemSegments.appendChild( elemArcString );
   elemCurve.appendChild( elemSegments );
@@ -303,11 +303,7 @@ void QgsLineStringV2::setPoints( const QList<QgsPointV2>& points )
 
   if ( points.isEmpty() )
   {
-    mWkbType = QgsWKBTypes::Unknown;
-    mX.clear();
-    mY.clear();
-    mZ.clear();
-    mM.clear();
+    clear();
     return;
   }
 
@@ -366,8 +362,26 @@ void QgsLineStringV2::append( const QgsLineStringV2* line )
 
   mX += line->mX;
   mY += line->mY;
-  mZ += line->mZ;
-  mM += line->mM;
+
+  if ( line->is3D() )
+  {
+    mZ += line->mZ;
+  }
+  else
+  {
+    // if append line does not have z coordinates, fill with 0 to match number of points in final line
+    mZ.insert( mZ.count(), mX.size() - mZ.size(), 0 );
+  }
+
+  if ( line->is3D() )
+  {
+    mM += line->mM;
+  }
+  else
+  {
+    // if append line does not have m values, fill with 0 to match number of points in final line
+    mM.insert( mM.count(), mX.size() - mM.size(), 0 );
+  }
 
   mBoundingBox = QgsRectangle(); //set bounding box invalid
 }
@@ -524,7 +538,7 @@ bool QgsLineStringV2::deleteVertex( const QgsVertexId& position )
 
 void QgsLineStringV2::addVertex( const QgsPointV2& pt )
 {
-  if ( mWkbType == QgsWKBTypes::Unknown )
+  if ( mWkbType == QgsWKBTypes::Unknown || mX.isEmpty() )
   {
     setZMTypeFromSubGeometry( &pt, QgsWKBTypes::LineString );
   }
