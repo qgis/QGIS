@@ -3550,7 +3550,7 @@
                    </widget>
                   </item>
                   <item row="0" column="5">
-                   <widget class="QgsColorButtonV2" name="mSelectColorToolButton">
+                   <widget class="QgsColorButtonV2" name="mFillColorToolButton">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -3583,7 +3583,7 @@
                      </sizepolicy>
                     </property>
                     <property name="text">
-                     <string>Select color</string>
+                     <string>Fill color</string>
                     </property>
                    </widget>
                   </item>

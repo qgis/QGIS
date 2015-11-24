@@ -794,14 +794,14 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   mLineColorToolButton->setContext( "gui" );
   mLineColorToolButton->setDefaultColor( QColor( 255, 0, 0, 200 ) );
 
-  myRed = settings.value( "/qgis/digitizing/select_color_red", 255 ).toInt();
-  myGreen = settings.value( "/qgis/digitizing/select_color_green", 0 ).toInt();
-  myBlue = settings.value( "/qgis/digitizing/lselect_color_blue", 0 ).toInt();
-  myAlpha = settings.value( "/qgis/digitizing/select_color_alpha", 30 ).toInt();
-  mSelectColorToolButton->setColor( QColor( myRed, myGreen, myBlue, myAlpha ) );
-  mSelectColorToolButton->setAllowAlpha( true );
-  mSelectColorToolButton->setContext( "gui" );
-  mSelectColorToolButton->setDefaultColor( QColor( 255, 0, 0, 30 ) );
+  myRed = settings.value( "/qgis/digitizing/fill_color_red", 255 ).toInt();
+  myGreen = settings.value( "/qgis/digitizing/fill_color_green", 0 ).toInt();
+  myBlue = settings.value( "/qgis/digitizing/fill_color_blue", 0 ).toInt();
+  myAlpha = settings.value( "/qgis/digitizing/fill_color_alpha", 30 ).toInt();
+  mFillColorToolButton->setColor( QColor( myRed, myGreen, myBlue, myAlpha ) );
+  mFillColorToolButton->setAllowAlpha( true );
+  mFillColorToolButton->setContext( "gui" );
+  mFillColorToolButton->setDefaultColor( QColor( 255, 0, 0, 30 ) );
 
   //default snap mode
   mDefaultSnapModeComboBox->insertItem( 0, tr( "To vertex" ), "to vertex" );
@@ -1297,11 +1297,11 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/digitizing/line_color_blue", digitizingColor.blue() );
   settings.setValue( "/qgis/digitizing/line_color_alpha", digitizingColor.alpha() );
 
-  digitizingColor = mSelectColorToolButton->color();
-  settings.setValue( "/qgis/digitizing/select_color_red", digitizingColor.red() );
-  settings.setValue( "/qgis/digitizing/select_color_green", digitizingColor.green() );
-  settings.setValue( "/qgis/digitizing/select_color_blue", digitizingColor.blue() );
-  settings.setValue( "/qgis/digitizing/select_color_alpha", digitizingColor.alpha() );
+  digitizingColor = mFillColorToolButton->color();
+  settings.setValue( "/qgis/digitizing/fill_color_red", digitizingColor.red() );
+  settings.setValue( "/qgis/digitizing/fill_color_green", digitizingColor.green() );
+  settings.setValue( "/qgis/digitizing/fill_color_blue", digitizingColor.blue() );
+  settings.setValue( "/qgis/digitizing/fill_color_alpha", digitizingColor.alpha() );
 
   //default snap mode
   QString defaultSnapModeString = mDefaultSnapModeComboBox->itemData( mDefaultSnapModeComboBox->currentIndex() ).toString();
