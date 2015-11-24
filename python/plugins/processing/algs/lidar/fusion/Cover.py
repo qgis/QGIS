@@ -73,6 +73,7 @@ class Cover(FusionAlgorithm):
             commands.append('/ground:' + unicode(ground))
         outFile = self.getOutputValue(self.OUTPUT) + '.dtm'
         commands.append(outFile)
+        commands.append(unicode(self.getParameterValue(self.HEIGHTBREAK)))
         commands.append(unicode(self.getParameterValue(self.CELLSIZE)))
         commands.append(self.UNITS[self.getParameterValue(self.XYUNITS)][0])
         commands.append(self.UNITS[self.getParameterValue(self.ZUNITS)][0])
