@@ -879,7 +879,6 @@ QString QgsCoordinateReferenceSystem::toProj4() const
 
   if ( mProj4.isEmpty() )
   {
-    QString toProj4;
     char *proj4src = NULL;
     OSRExportToProj4( mCRS, &proj4src );
     mProj4 = proj4src;
