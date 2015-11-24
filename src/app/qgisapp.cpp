@@ -2484,9 +2484,7 @@ void QgisApp::createOverview()
 
   mOverviewCanvas->setWhatsThis( tr( "Map overview canvas. This canvas can be used to display a locator map that shows the current extent of the map canvas. The current extent is shown as a red rectangle. Any layer on the map can be added to the overview canvas." ) );
 
-  QBitmap overviewPanBmp = QBitmap::fromData( QSize( 16, 16 ), pan_bits );
-  QBitmap overviewPanBmpMask = QBitmap::fromData( QSize( 16, 16 ), pan_mask_bits );
-  mOverviewMapCursor = new QCursor( overviewPanBmp, overviewPanBmpMask, 0, 0 ); //set upper left corner as hot spot - this is better when extent marker is small; hand won't cover the marker
+  mOverviewMapCursor = new QCursor( Qt::OpenHandCursor );
   mOverviewCanvas->setCursor( *mOverviewMapCursor );
 //  QVBoxLayout *myOverviewLayout = new QVBoxLayout;
 //  myOverviewLayout->addWidget(overviewCanvas);

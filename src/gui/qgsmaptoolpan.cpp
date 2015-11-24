@@ -28,9 +28,13 @@ QgsMapToolPan::QgsMapToolPan( QgsMapCanvas* canvas )
 {
   mToolName = tr( "Pan" );
   // set cursor
-  QBitmap panBmp = QBitmap::fromData( QSize( 16, 16 ), pan_bits );
-  QBitmap panBmpMask = QBitmap::fromData( QSize( 16, 16 ), pan_mask_bits );
-  mCursor = QCursor( panBmp, panBmpMask, 5, 5 );
+  mCursor = QCursor( Qt::OpenHandCursor );
+}
+
+void QgsMapToolPan::canvasPressEvent( QgsMapMouseEvent* e )
+{
+  if ( e->button() == Qt::LeftButton )
+    mCanvas->setCursor( QCursor( Qt::ClosedHandCursor ) );
 }
 
 
@@ -61,4 +65,5 @@ void QgsMapToolPan::canvasReleaseEvent( QgsMapMouseEvent* e )
       mCanvas->refresh();
     }
   }
+  mCanvas->setCursor( mCursor );
 }
