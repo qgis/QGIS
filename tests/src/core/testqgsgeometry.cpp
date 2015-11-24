@@ -514,7 +514,26 @@ void TestQgsGeometry::pointV2()
   QVERIFY( !p14.fromWkt( "Polygon()" ) );
   QCOMPARE( p14.wkbType(), QgsWKBTypes::Unknown );
 
-  //TODO asGML2, asGML3, asJSON
+  //asGML2
+  QgsPointV2 exportPoint( 1, 2 );
+  QgsPointV2 exportPointFloat( 1 / 3.0, 2 / 3.0 );
+  QDomDocument doc( "gml" );
+  QString expectedGML2( "<Point xmlns=\"gml\"><coordinates xmlns=\"gml\">1,2</coordinates></Point>" );
+  QCOMPARE( elemToString( exportPoint.asGML2( doc ) ), expectedGML2 );
+  QString expectedGML2prec3( "<Point xmlns=\"gml\"><coordinates xmlns=\"gml\">0.333,0.667</coordinates></Point>" );
+  QCOMPARE( elemToString( exportPointFloat.asGML2( doc, 3 ) ), expectedGML2prec3 );
+
+  //asGML3
+  QString expectedGML3( "<Point xmlns=\"gml\"><pos xmlns=\"gml\" srsDimension=\"2\">1 2</pos></Point>" );
+  QCOMPARE( elemToString( exportPoint.asGML3( doc ) ), expectedGML3 );
+  QString expectedGML3prec3( "<Point xmlns=\"gml\"><pos xmlns=\"gml\" srsDimension=\"2\">0.333 0.667</pos></Point>" );
+  QCOMPARE( elemToString( exportPointFloat.asGML3( doc, 3 ) ), expectedGML3prec3 );
+
+  //asJSON
+  QString expectedJson( "{\"type\": \"Point\", \"coordinates\": [1, 2]}" );
+  QCOMPARE( exportPoint.asJSON(), expectedJson );
+  QString expectedJsonPrec3( "{\"type\": \"Point\", \"coordinates\": [0.333, 0.667]}" );
+  QCOMPARE( exportPointFloat.asJSON( 3 ), expectedJsonPrec3 );
 
   //bounding box
   QgsPointV2 p15( 1.0, 2.0 );
@@ -1060,7 +1079,7 @@ void TestQgsGeometry::exportToGeoJSON()
   QString obtained = geom->exportToGeoJSON();
   QString geojson = "{\"type\": \"Point\", \"coordinates\": [40, 50]}";
   QCOMPARE( obtained, geojson );
-  
+
   //MultiPoint
   wkt = "MultiPoint (0 0, 10 0, 10 10, 20 10)";
   geom.reset( QgsGeometry::fromWkt( wkt ) );
@@ -1074,14 +1093,14 @@ void TestQgsGeometry::exportToGeoJSON()
   obtained = geom->exportToGeoJSON();
   geojson = "{\"type\": \"LineString\", \"coordinates\": [ [0, 0], [10, 0], [10, 10], [20, 10]]}";
   QCOMPARE( obtained, geojson );
-  
+
   //MultiLineString
   wkt = "MultiLineString ((0 0, 10 0, 10 10, 20 10),(30 30, 40 30, 40 40, 50 40))";
   geom.reset( QgsGeometry::fromWkt( wkt ) );
   obtained = geom->exportToGeoJSON();
   geojson = "{\"type\": \"MultiLineString\", \"coordinates\": [[ [0, 0], [10, 0], [10, 10], [20, 10]], [ [30, 30], [40, 30], [40, 40], [50, 40]]] }";
   QCOMPARE( obtained, geojson );
-  
+
   //Polygon
   wkt = "Polygon ((0 0, 10 0, 10 10, 0 10, 0 0 ),(2 2, 4 2, 4 4, 2 4, 2 2))";
   geom.reset( QgsGeometry::fromWkt( wkt ) );
@@ -1160,6 +1179,15 @@ void TestQgsGeometry::dumpPolyline( QgsPolyline &thePolyline )
 //    }
   }
   mpPainter->drawPolyline( myPoints );
+}
+
+QString TestQgsGeometry::elemToString( const QDomElement& elem ) const
+{
+  QString s;
+  QTextStream stream( &s );
+  elem.save( stream, -1 );
+
+  return s;
 }
 
 QTEST_MAIN( TestQgsGeometry )

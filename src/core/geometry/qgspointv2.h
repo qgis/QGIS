@@ -20,6 +20,12 @@
 
 #include "qgsabstractgeometryv2.h"
 
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests in testqgsgeometry.cpp.
+ * See details in QEP #17
+ ****************************************************************************/
+
 /** \ingroup core
  * \class QgsPointV2
  * \brief Point geometry type, with support for z-dimension and m-values.
