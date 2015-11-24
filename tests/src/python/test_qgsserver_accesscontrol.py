@@ -163,7 +163,7 @@ class TestQgsServerAccessControl(TestCase):
             if k in environ:
                 del environ[k]
 
-        self.projectPath = urllib.quote( path.join(self.testdata_path, "project.qgs") )
+        self.projectPath = urllib.quote(path.join(self.testdata_path, "project.qgs"))
 
     def tearDown(self):
         copyfile(path.join(self.testdata_path, "_helloworld.db"), path.join(self.testdata_path, "helloworld.db"))
@@ -871,7 +871,8 @@ class TestQgsServerAccessControl(TestCase):
             "FEATURE_COUNT": "10",
             "INFO_FORMAT": "application/vnd.ogc.gml",
             "X": "56",
-            "Y": "144"
+            "Y": "144",
+            "MAP": self.projectPath
         }.items()])
 
         response, headers = self._get_fullaccess(query_string)
@@ -906,7 +907,8 @@ class TestQgsServerAccessControl(TestCase):
             "FEATURE_COUNT": "10",
             "INFO_FORMAT": "application/vnd.ogc.gml",
             "X": "146",
-            "Y": "160"
+            "Y": "160",
+            "MAP": self.projectPath
         }.items()])
 
         response, headers = self._get_fullaccess(query_string)
@@ -1002,17 +1004,21 @@ class TestQgsServerAccessControl(TestCase):
     def _post_fullaccess(self, data, query_string=None):
         environ["REQUEST_METHOD"] = "POST"
         environ["REQUEST_BODY"] = data
+        environ["QGIS_PROJECT_FILE"] = self.projectPath
         result = self._handle_request(False, query_string)
         del environ["REQUEST_METHOD"]
         del environ["REQUEST_BODY"]
+        del environ["QGIS_PROJECT_FILE"]
         return result
 
     def _post_restricted(self, data, query_string=None):
         environ["REQUEST_METHOD"] = "POST"
         environ["REQUEST_BODY"] = data
+        environ["QGIS_PROJECT_FILE"] = self.projectPath
         result = self._handle_request(True, query_string)
         del environ["REQUEST_METHOD"]
         del environ["REQUEST_BODY"]
+        del environ["QGIS_PROJECT_FILE"]
         return result
 
     def _img_diff(self, image, control_image, max_diff, max_size_diff=QSize()):
