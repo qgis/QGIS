@@ -2389,9 +2389,9 @@ void QgisApp::createCanvasTools()
            this, SLOT( copyFeatures( QgsFeatureStore & ) ) );
   mMapTools.mFeatureAction = new QgsMapToolFeatureAction( mMapCanvas );
   mMapTools.mFeatureAction->setAction( mActionFeatureAction );
-  mMapTools.mMeasureDist = new QgsMeasureTool( mMapCanvas, this, false /* area */ );
+  mMapTools.mMeasureDist = new QgsMeasureTool( mMapCanvas, false /* area */ );
   mMapTools.mMeasureDist->setAction( mActionMeasure );
-  mMapTools.mMeasureArea = new QgsMeasureTool( mMapCanvas, this, true /* area */ );
+  mMapTools.mMeasureArea = new QgsMeasureTool( mMapCanvas, true /* area */ );
   mMapTools.mMeasureArea->setAction( mActionMeasureArea );
   mMapTools.mMeasureAngle = new QgsMapToolMeasureAngle( mMapCanvas );
   mMapTools.mMeasureAngle->setAction( mActionMeasureAngle );

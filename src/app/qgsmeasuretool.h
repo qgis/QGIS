@@ -19,7 +19,6 @@
 
 #include "qgsmaptool.h"
 
-class QgisApp;
 class QgsDistanceArea;
 class QgsMapCanvas;
 class QgsMeasureDialog;
@@ -33,7 +32,7 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
 
   public:
 
-    QgsMeasureTool( QgsMapCanvas* canvas, QgisApp* qgis, bool measureArea );
+    QgsMeasureTool( QgsMapCanvas* canvas, bool measureArea );
 
     ~QgsMeasureTool();
 
@@ -75,12 +74,7 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
     //! updates the projections we're using
     void updateSettings();
 
-    // Open the Settings dialog
-    void openConfigTab();
-
   protected:
-    //! Pointer to QGIS application
-    QgisApp* mQgis;
 
     QList<QgsPoint> mPoints;
 

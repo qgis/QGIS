@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgisapp.h"
 #include "qgsdistancearea.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
@@ -32,10 +31,9 @@
 #include <QMouseEvent>
 #include <QSettings>
 
-QgsMeasureTool::QgsMeasureTool( QgsMapCanvas* canvas, QgisApp* qgis, bool measureArea )
-    : QgsMapTool( canvas ),
-      mQgis( qgis ),
-      mWrongProjectProjection( false )
+QgsMeasureTool::QgsMeasureTool( QgsMapCanvas* canvas, bool measureArea )
+    : QgsMapTool( canvas )
+    , mWrongProjectProjection( false )
 {
   mMeasureArea = measureArea;
 
@@ -69,10 +67,6 @@ const QList<QgsPoint>& QgsMeasureTool::points()
   return mPoints;
 }
 
-void QgsMeasureTool::openConfigTab()
-{
-  mQgis->showOptionsDialog( mDialog, QString( "mOptionsPageMapTool" ) );
-}
 
 void QgsMeasureTool::activate()
 {
