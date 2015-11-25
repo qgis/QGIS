@@ -40,6 +40,11 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool* tool, Qt::WindowFlags f )
   buttonBox->addButton( nb, QDialogButtonBox::ActionRole );
   connect( nb, SIGNAL( clicked() ), this, SLOT( restart() ) );
 
+  // Add a configuration button
+  nb = new QPushButton( tr( "&Configuration" ) );
+  buttonBox->addButton( nb, QDialogButtonBox::ActionRole );
+  connect( nb, SIGNAL( clicked() ), tool, SLOT( openConfigTab() ) );
+
   mMeasureArea = tool->measureArea();
   mTotal = 0.;
 
