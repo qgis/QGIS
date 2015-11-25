@@ -79,6 +79,7 @@ class QgsRuleBasedRendererV2Widget : QgsRendererV2Widget
     void setRenderingOrder();
 
     void currentRuleChanged( const QModelIndex& current = QModelIndex(), const QModelIndex& previous = QModelIndex() );
+    void selectedRulesChanged();
 
     void saveSectionWidth( int section, int oldSize, int newSize );
     void restoreSectionWidths();
