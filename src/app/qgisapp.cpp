@@ -2484,9 +2484,7 @@ void QgisApp::createOverview()
 
   mOverviewCanvas->setWhatsThis( tr( "Map overview canvas. This canvas can be used to display a locator map that shows the current extent of the map canvas. The current extent is shown as a red rectangle. Any layer on the map can be added to the overview canvas." ) );
 
-  QBitmap overviewPanBmp = QBitmap::fromData( QSize( 16, 16 ), pan_bits );
-  QBitmap overviewPanBmpMask = QBitmap::fromData( QSize( 16, 16 ), pan_mask_bits );
-  mOverviewMapCursor = new QCursor( overviewPanBmp, overviewPanBmpMask, 0, 0 ); //set upper left corner as hot spot - this is better when extent marker is small; hand won't cover the marker
+  mOverviewMapCursor = new QCursor( Qt::OpenHandCursor );
   mOverviewCanvas->setCursor( *mOverviewMapCursor );
 //  QVBoxLayout *myOverviewLayout = new QVBoxLayout;
 //  myOverviewLayout->addWidget(overviewCanvas);
@@ -5476,6 +5474,7 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer* vlayer, bool symbologyOpt
   QgsVectorLayerSaveAsDialog *dialog = new QgsVectorLayerSaveAsDialog( vlayer->crs().srsid(), vlayer->extent(), vlayer->selectedFeatureCount() != 0, options, this );
 
   dialog->setCanvasExtent( mMapCanvas->mapSettings().visibleExtent(), mMapCanvas->mapSettings().destinationCrs() );
+  dialog->setIncludeZ( QgsWKBTypes::hasZ( QGis::fromOldWkbType( vlayer->wkbType() ) ) );
 
   if ( dialog->exec() == QDialog::Accepted )
   {
@@ -5483,6 +5482,8 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer* vlayer, bool symbologyOpt
     QString vectorFilename = dialog->filename();
     QString format = dialog->format();
     QStringList datasourceOptions = dialog->datasourceOptions();
+    bool autoGeometryType = dialog->automaticGeometryType();
+    QgsWKBTypes::Type forcedGeometryType = dialog->geometryType();
 
     QgsCoordinateTransform* ct = 0;
     destCRS = QgsCoordinateReferenceSystem( dialog->crs(), QgsCoordinateReferenceSystem::InternalCrsId );
@@ -5529,7 +5530,11 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer* vlayer, bool symbologyOpt
               &newFilename,
               ( QgsVectorFileWriter::SymbologyExport )( dialog->symbologyExport() ),
               dialog->scaleDenominator(),
-              dialog->hasFilterExtent() ? &filterExtent : 0 );
+              dialog->hasFilterExtent() ? &filterExtent : 0,
+              autoGeometryType ? QgsWKBTypes::Unknown : forcedGeometryType,
+              dialog->forceMulti(),
+              dialog->includeZ()
+            );
 
     delete ct;
 

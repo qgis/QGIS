@@ -32,7 +32,7 @@
 
 from PyQt4.QtCore import SIGNAL, QObject, Qt, QFile, QThread, QVariant
 from PyQt4.QtGui import QDialog, QDoubleValidator, QDialogButtonBox, QMessageBox
-from qgis.core import QGis, QgsVectorFileWriter, QgsFeature, QgsGeometry, QgsFields, QgsField, QgsFeatureRequest, QgsPoint, QgsDistanceArea
+from qgis.core import QGis, QgsVectorFileWriter, QgsFeature, QgsGeometry, QgsFields, QgsField, QgsFeatureRequest, QgsPoint, QgsDistanceArea, QgsWKBTypes
 
 from ui_frmGeoprocessing import Ui_Dialog
 import ftools_utils
@@ -204,14 +204,14 @@ class GeoprocessingDialog(QDialog, Ui_Dialog):
         self.inShapeA.addItems(myListA)
         self.inShapeB.addItems(myListB)
 
-#1: Buffer
-#2: Convex Hull
-#3: Difference
-#4: Dissolve
-#5: Intersection
-#6: Union
-#7: Symmetrical Difference
-#8: Clip
+# 1: Buffer
+# 2: Convex Hull
+# 3: Difference
+# 4: Dissolve
+# 5: Intersection
+# 6: Union
+# 7: Symmetrical Difference
+# 8: Clip
 
     def geoprocessing(self, myLayerA, myLayerB, myParam, myMerge, mySelectionA, mySelectionB, mySegments):
         check = QFile(self.shapefileName)
@@ -966,7 +966,7 @@ class geoprocessingThread(QThread):
                                 if geom.intersects(tmpGeom):
                                     atMapB = inFeatB.attributes()
                                     int_geom = QgsGeometry(geom.intersection(tmpGeom))
-                                    if int_geom.wkbType() == 0:
+                                    if int_geom.wkbType() == QGis.WKBUnknown or QgsWKBTypes.flatType(int_geom.geometry().wkbType()) == QgsWKBTypes.GeometryCollection:
                                         int_com = geom.combine(tmpGeom)
                                         int_sym = geom.symDifference(tmpGeom)
                                         int_geom = QgsGeometry(int_com.difference(int_sym))
@@ -1001,7 +1001,7 @@ class geoprocessingThread(QThread):
                             if geom.intersects(tmpGeom):
                                 atMapB = inFeatB.attributes()
                                 int_geom = QgsGeometry(geom.intersection(tmpGeom))
-                                if int_geom.wkbType() == 0:
+                                if int_geom.wkbType() == QGis.WKBUnknown or QgsWKBTypes.flatType(int_geom.geometry().wkbType()) == QgsWKBTypes.GeometryCollection:
                                     int_com = geom.combine(tmpGeom)
                                     int_sym = geom.symDifference(tmpGeom)
                                     int_geom = QgsGeometry(int_com.difference(int_sym))
@@ -1040,7 +1040,7 @@ class geoprocessingThread(QThread):
                                 if geom.intersects(tmpGeom):
                                     atMapB = inFeatB.attributes()
                                     int_geom = QgsGeometry(geom.intersection(tmpGeom))
-                                    if int_geom.wkbType() == 0:
+                                    if int_geom.wkbType() == QGis.WKBUnknown or QgsWKBTypes.flatType(int_geom.geometry().wkbType()) == QgsWKBTypes.GeometryCollection:
                                         int_com = geom.combine(tmpGeom)
                                         int_sym = geom.symDifference(tmpGeom)
                                         int_geom = QgsGeometry(int_com.difference(int_sym))
@@ -1072,7 +1072,7 @@ class geoprocessingThread(QThread):
                             if geom.intersects(tmpGeom):
                                 atMapB = inFeatB.attributes()
                                 int_geom = QgsGeometry(geom.intersection(tmpGeom))
-                                if int_geom.wkbType() == 0:
+                                if (int_geom.wkbType() == QGis.WKBUnknown or QgsWKBTypes.flatType(int_geom.geometry().wkbType()) == QgsWKBTypes.GeometryCollection):
                                     int_com = geom.combine(tmpGeom)
                                     int_sym = geom.symDifference(tmpGeom)
                                     int_geom = QgsGeometry(int_com.difference(int_sym))
@@ -1161,7 +1161,7 @@ class geoprocessingThread(QThread):
                             else:
                                 int_geom = QgsGeometry(int_geom)
 
-                            if int_geom.wkbType() == 0:
+                            if int_geom.wkbType() == QGis.WKBUnknown or QgsWKBTypes.flatType(int_geom.geometry().wkbType()) == QgsWKBTypes.GeometryCollection:
                                 # intersection produced different geometry types
                                 temp_list = int_geom.asGeometryCollection()
                                 for i in temp_list:
@@ -1197,7 +1197,7 @@ class geoprocessingThread(QThread):
                         intB = QgsGeometry.unaryUnion(lstIntersectingB)
                         diff_geom = diff_geom.difference(intB)
 
-                    if diff_geom.wkbType() == 0:
+                    if diff_geom.wkbType() == QGis.WKBUnknown or QgsWKBTypes.flatType(diff_geom.geometry().wkbType()) == QgsWKBTypes.GeometryCollection:
                         temp_list = diff_geom.asGeometryCollection()
                         for i in temp_list:
                             if i.type() == geom.type():
@@ -1415,7 +1415,7 @@ class geoprocessingThread(QThread):
                         try:
                             cur_geom = QgsGeometry(outFeat.geometry())
                             new_geom = QgsGeometry(geom.intersection(cur_geom))
-                            if new_geom.wkbType() == 0:
+                            if new_geom.wkbType() == QGis.WKBUnknown or QgsWKBTypes.flatType(new_geom.geometry().wkbType()) == QgsWKBTypes.GeometryCollection:
                                 int_com = QgsGeometry(geom.combine(cur_geom))
                                 int_sym = QgsGeometry(geom.symDifference(cur_geom))
                                 new_geom = QgsGeometry(int_com.difference(int_sym))
@@ -1459,7 +1459,7 @@ class geoprocessingThread(QThread):
                         try:
                             cur_geom = QgsGeometry(outFeat.geometry())
                             new_geom = QgsGeometry(geom.intersection(cur_geom))
-                            if new_geom.wkbType() == 0:
+                            if new_geom.wkbType() == QGis.WKBUnknown or QgsWKBTypes.flatType(new_geom.geometry().wkbType()) == QgsWKBTypes.GeometryCollection:
                                 int_com = QgsGeometry(geom.combine(cur_geom))
                                 int_sym = QgsGeometry(geom.symDifference(cur_geom))
                                 new_geom = QgsGeometry(int_com.difference(int_sym))
@@ -1511,7 +1511,7 @@ class geoprocessingThread(QThread):
                         try:
                             cur_geom = QgsGeometry(outFeat.geometry())
                             new_geom = QgsGeometry(geom.intersection(cur_geom))
-                            if new_geom.wkbType() == 0:
+                            if new_geom.wkbType() == QGis.WKBUnknown or QgsWKBTypes.flatType(new_geom.geometry().wkbType()) == QgsWKBTypes.GeometryCollection:
                                 int_com = QgsGeometry(geom.combine(cur_geom))
                                 int_sym = QgsGeometry(geom.symDifference(cur_geom))
                                 new_geom = QgsGeometry(int_com.difference(int_sym))
@@ -1557,7 +1557,7 @@ class geoprocessingThread(QThread):
                             try:
                                 cur_geom = QgsGeometry(outFeat.geometry())
                                 new_geom = QgsGeometry(geom.intersection(cur_geom))
-                                if new_geom.wkbType() == 0:
+                                if new_geom.wkbType() == QGis.WKBUnknown or QgsWKBTypes.flatType(new_geom.geometry().wkbType()) == QgsWKBTypes.GeometryCollection:
                                     int_com = QgsGeometry(geom.combine(cur_geom))
                                     int_sym = QgsGeometry(geom.symDifference(cur_geom))
                                     new_geom = QgsGeometry(int_com.difference(int_sym))

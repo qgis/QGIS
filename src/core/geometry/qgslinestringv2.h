@@ -107,7 +107,8 @@ class CORE_EXPORT QgsLineStringV2: public QgsCurveV2
      */
     void setMAt( int index, double m );
 
-    /** Resets the line string to match the specified list of points.
+    /** Resets the line string to match the specified list of points. The line string will
+     * inherit the dimensionality of the first point in the list.
      * @param points new points for line string. If empty, line string will be cleared.
      */
     void setPoints( const QList<QgsPointV2>& points );

@@ -590,6 +590,37 @@ namespace pal
     return ceil( totalCost / n );
   }
 
+  bool LabelPosition::intersectsWithPolygon( PointSet* polygon ) const
+  {
+    if ( !mGeos )
+      createGeosGeom();
+
+    if ( !polygon->mGeos )
+      polygon->createGeosGeom();
+
+    GEOSContextHandle_t geosctxt = geosContext();
+    try
+    {
+      if ( GEOSPreparedIntersects_r( geosctxt, polygon->preparedGeom(), mGeos ) == 1 )
+      {
+        return true;
+      }
+    }
+    catch ( GEOSException &e )
+    {
+      QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
+    }
+
+    if ( nextPart )
+    {
+      return nextPart->intersectsWithPolygon( polygon );
+    }
+    else
+    {
+      return false;
+    }
+  }
+
   double LabelPosition::polygonIntersectionCostForParts( PointSet *polygon ) const
   {
     if ( !mGeos )

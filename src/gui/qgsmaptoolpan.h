@@ -32,6 +32,9 @@ class GUI_EXPORT QgsMapToolPan : public QgsMapTool
     //! constructor
     QgsMapToolPan( QgsMapCanvas* canvas );
 
+    //! Mouse press event
+    virtual void canvasPressEvent( QgsMapMouseEvent* e ) override;
+
     //! Overridden mouse move event
     virtual void canvasMoveEvent( QgsMapMouseEvent* e ) override;
 

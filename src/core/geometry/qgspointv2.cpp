@@ -24,6 +24,12 @@
 #include "qgswkbptr.h"
 #include <QPainter>
 
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests.
+ * See details in QEP #17
+ ****************************************************************************/
+
 QgsPointV2::QgsPointV2( double x, double y )
     : QgsAbstractGeometryV2()
     , mX( x )
@@ -64,6 +70,12 @@ QgsPointV2::QgsPointV2( QgsWKBTypes::Type type, double x, double y, double z, do
   Q_ASSERT( QgsWKBTypes::flatType( type ) == QgsWKBTypes::Point );
   mWkbType = type;
 }
+
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests.
+ * See details in QEP #17
+ ****************************************************************************/
 
 bool QgsPointV2::operator==( const QgsPointV2& pt ) const
 {
@@ -106,6 +118,12 @@ bool QgsPointV2::fromWkb( const unsigned char* wkb )
 
   return true;
 }
+
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests.
+ * See details in QEP #17
+ ****************************************************************************/
 
 bool QgsPointV2::fromWkt( const QString& wkt )
 {
@@ -155,6 +173,12 @@ int QgsPointV2::wkbSize() const
   return size;
 }
 
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests.
+ * See details in QEP #17
+ ****************************************************************************/
+
 unsigned char* QgsPointV2::asWkb( int& binarySize ) const
 {
   binarySize = wkbSize();
@@ -199,7 +223,7 @@ QDomElement QgsPointV2::asGML2( QDomDocument& doc, int precision, const QString&
 QDomElement QgsPointV2::asGML3( QDomDocument& doc, int precision, const QString& ns ) const
 {
   QDomElement elemPoint = doc.createElementNS( ns, "Point" );
-  QDomElement elemPosList = doc.createElementNS( ns, "posList" );
+  QDomElement elemPosList = doc.createElementNS( ns, "pos" );
   elemPosList.setAttribute( "srsDimension", is3D() ? 3 : 2 );
   QString strCoordinates = qgsDoubleToString( mX, precision ) + ' ' + qgsDoubleToString( mY, precision );
   if ( is3D() )
@@ -209,6 +233,12 @@ QDomElement QgsPointV2::asGML3( QDomDocument& doc, int precision, const QString&
   elemPoint.appendChild( elemPosList );
   return elemPoint;
 }
+
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests.
+ * See details in QEP #17
+ ****************************************************************************/
 
 QString QgsPointV2::asJSON( int precision ) const
 {
@@ -242,6 +272,12 @@ void QgsPointV2::coordinateSequence( QList< QList< QList< QgsPointV2 > > >& coor
   featureCoord.append( QList< QgsPointV2 >() << QgsPointV2( *this ) );
   coord.append( featureCoord );
 }
+
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests.
+ * See details in QEP #17
+ ****************************************************************************/
 
 bool QgsPointV2::moveVertex( const QgsVertexId& position, const QgsPointV2& newPos )
 {
@@ -289,6 +325,12 @@ bool QgsPointV2::nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const
     return false;
   }
 }
+
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests.
+ * See details in QEP #17
+ ****************************************************************************/
 
 bool QgsPointV2::addZValue( double zValue )
 {

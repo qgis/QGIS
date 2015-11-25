@@ -52,6 +52,7 @@ static void _fixQPictureDPI( QPainter* p )
 QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( QgsVectorLayer* layer, bool withFeatureLoop, const QgsPalLayerSettings* settings, const QString& layerName )
     : mSettings( settings ? *settings : QgsPalLayerSettings::fromLayer( layer ) )
     , mLayerId( layer->id() )
+    , mLayerGeometryType( layer->geometryType() )
     , mRenderer( layer->rendererV2() )
     , mFields( layer->fields() )
     , mCrs( layer->crs() )
@@ -80,6 +81,7 @@ QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( const QgsPalLayerSetti
     bool ownsSource, QgsFeatureRendererV2* renderer )
     : mSettings( settings )
     , mLayerId( layerId )
+    , mLayerGeometryType( QGis::UnknownGeometry )
     , mRenderer( renderer )
     , mFields( fields )
     , mCrs( crs )
@@ -102,7 +104,17 @@ void QgsVectorLayerLabelProvider::init()
   if ( mSettings.fitInPolygonOnly ) mFlags |= FitInPolygonOnly;
   if ( mSettings.labelPerPart ) mFlags |= LabelPerFeaturePart;
   mPriority = 1 - mSettings.priority / 10.0; // convert 0..10 --> 1..0
-  mObstacleType = mSettings.obstacleType;
+
+  if ( mLayerGeometryType == QGis::Point && mRenderer )
+  {
+    //override obstacle type to treat any intersection of a label with the point symbol as a high cost conflict
+    mObstacleType = QgsPalLayerSettings::PolygonWhole;
+  }
+  else
+  {
+    mObstacleType = mSettings.obstacleType;
+  }
+
   mUpsidedownLabels = mSettings.upsidedownLabels;
 }
 
@@ -257,6 +269,9 @@ QList<QgsLabelFeature*> QgsVectorLayerLabelProvider::labelFeatures( QgsRenderCon
   if ( !prepare( ctx, attrNames ) )
     return QList<QgsLabelFeature*>();
 
+  if ( mRenderer )
+    mRenderer->startRender( ctx, mFields );
+
   QgsRectangle layerExtent = ctx.extent();
   if ( mSettings.ct )
     layerExtent = mSettings.ct->transformBoundingBox( ctx.extent(), QgsCoordinateTransform::ReverseTransform );
@@ -277,6 +292,9 @@ QList<QgsLabelFeature*> QgsVectorLayerLabelProvider::labelFeatures( QgsRenderCon
     }
     registerFeature( fet, ctx, obstacleGeometry.data() );
   }
+
+  if ( mRenderer )
+    mRenderer->stopRender( ctx );
 
   return mLabels;
 }

@@ -25,7 +25,6 @@ build*
 debian/*.debhelper
 debian/*.substvars
 desktop.ini
-doc/CODING.tex
 doc/INSTALL.tex
 i18n/*.qm
 Makefile
