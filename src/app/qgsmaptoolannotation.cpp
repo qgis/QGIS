@@ -26,6 +26,7 @@
 #include "qgstextannotationitem.h"
 #include "qgssvgannotationdialog.h"
 #include "qgssvgannotationitem.h"
+#include "qgsproject.h"
 #include <QDialog>
 #include <QMouseEvent>
 
@@ -141,6 +142,7 @@ void QgsMapToolAnnotation::keyPressEvent( QKeyEvent* e )
         mCanvas->scene()->removeItem( sItem );
         delete sItem;
         mCanvas->setCursor( neutralCursor );
+        QgsProject::instance()->setDirty( true ); // TODO QGIS3: Rework the whole annotation code to be MVC compliant, see PR #2506
 
         // Override default shortcut management in MapCanvas
         e->ignore();
@@ -158,6 +160,7 @@ void QgsMapToolAnnotation::canvasMoveEvent( QgsMapMouseEvent* e )
     {
       sItem->setMapPosition( toMapCoordinates( e->pos() ) );
       sItem->update();
+      QgsProject::instance()->setDirty( true );
     }
     else if ( mCurrentMoveAction == QgsAnnotationItem::MoveFramePosition )
     {
@@ -171,6 +174,7 @@ void QgsMapToolAnnotation::canvasMoveEvent( QgsMapMouseEvent* e )
         sItem->setMapPosition( toMapCoordinates( newCanvasPos.toPoint() ) );
       }
       sItem->update();
+      QgsProject::instance()->setDirty( true );
     }
     else if ( mCurrentMoveAction != QgsAnnotationItem::NoAction )
     {
@@ -220,6 +224,7 @@ void QgsMapToolAnnotation::canvasMoveEvent( QgsMapMouseEvent* e )
       sItem->setOffsetFromReferencePoint( QPointF( xmin, ymin ) );
       sItem->setFrameSize( QSizeF( xmax - xmin, ymax - ymin ) );
       sItem->update();
+      QgsProject::instance()->setDirty( true );
     }
   }
   else if ( sItem )
@@ -243,7 +248,8 @@ void QgsMapToolAnnotation::canvasDoubleClickEvent( QgsMapMouseEvent* e )
   QDialog* itemEditor = createItemEditor( item );
   if ( itemEditor )
   {
-    itemEditor->exec();
+    if ( itemEditor->exec() )
+      QgsProject::instance()->setDirty( true );
     delete itemEditor;
   }
 }
