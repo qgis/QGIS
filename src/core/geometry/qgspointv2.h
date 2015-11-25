@@ -44,8 +44,8 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometryV2
     double z() const { return mZ; }
     double m() const { return mM; }
 
-    void setX( double x ) { mX = x; }
-    void setY( double y ) { mY = y; }
+    void setX( double x ) { mX = x; mBoundingBox = QgsRectangle(); }
+    void setY( double y ) { mY = y; mBoundingBox = QgsRectangle(); }
     void setZ( double z ) { mZ = z; }
     void setM( double m ) { mM = m; }
 

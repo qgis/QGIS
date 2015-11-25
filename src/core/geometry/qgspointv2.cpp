@@ -64,6 +64,7 @@ bool QgsPointV2::fromWkb( const unsigned char* wkb )
   QgsWKBTypes::Type type = wkbPtr.readHeader();
   if ( QgsWKBTypes::flatType( type ) != QgsWKBTypes::Point )
   {
+    clear();
     return false;
   }
   mWkbType = type;
@@ -74,6 +75,8 @@ bool QgsPointV2::fromWkb( const unsigned char* wkb )
     wkbPtr >> mZ;
   if ( isMeasure() )
     wkbPtr >> mM;
+
+  mBoundingBox = QgsRectangle();
 
   return true;
 }
@@ -88,8 +91,8 @@ bool QgsPointV2::fromWkt( const QString& wkt )
     return false;
   mWkbType = parts.first;
 
-  QStringList coordinates = parts.second.split( " ", QString::SkipEmptyParts );
-  if ( coordinates.size() < 2 + is3D() + isMeasure() )
+  QStringList coordinates = parts.second.split( ' ', QString::SkipEmptyParts );
+  if ( coordinates.size() < 2 )
   {
     clear();
     return false;
@@ -111,9 +114,9 @@ bool QgsPointV2::fromWkt( const QString& wkt )
   int idx = 0;
   mX = coordinates[idx++].toDouble();
   mY = coordinates[idx++].toDouble();
-  if ( is3D() )
+  if ( is3D() && coordinates.length() > 2 )
     mZ = coordinates[idx++].toDouble();
-  if ( isMeasure() )
+  if ( isMeasure() && coordinates.length() > 2 + is3D() )
     mM = coordinates[idx++].toDouble();
 
   return true;
@@ -197,10 +200,12 @@ void QgsPointV2::clear()
 {
   mWkbType = QgsWKBTypes::Unknown;
   mX = mY = mZ = mM = 0.;
+  mBoundingBox = QgsRectangle();
 }
 
 void QgsPointV2::transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d )
 {
+  mBoundingBox = QgsRectangle();
   ct.transformInPlace( mX, mY, mZ, d );
 }
 
@@ -215,6 +220,7 @@ void QgsPointV2::coordinateSequence( QList< QList< QList< QgsPointV2 > > >& coor
 bool QgsPointV2::moveVertex( const QgsVertexId& position, const QgsPointV2& newPos )
 {
   Q_UNUSED( position );
+  mBoundingBox = QgsRectangle();
   mX = newPos.mX;
   mY = newPos.mY;
   if ( is3D() && newPos.is3D() )
@@ -225,7 +231,6 @@ bool QgsPointV2::moveVertex( const QgsVertexId& position, const QgsPointV2& newP
   {
     mM = newPos.mM;
   }
-  mBoundingBox = QgsRectangle(); //set bounding box invalid
   return true;
 }
 
@@ -279,6 +284,7 @@ bool QgsPointV2::addMValue( double mValue )
 
 void QgsPointV2::transform( const QTransform& t )
 {
+  mBoundingBox = QgsRectangle();
   qreal x, y;
   t.map( mX, mY, &x, &y );
   mX = x; mY = y;
