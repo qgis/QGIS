@@ -634,6 +634,8 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
 
 void QgsCoordinateTransform::transformCoords( const int& numPoints, double *x, double *y, double *z, TransformDirection direction ) const
 {
+  if ( mShortCircuit || !mInitialisedFlag )
+    return;
   // Refuse to transform the points if the srs's are invalid
   if ( !mSourceCRS.isValid() )
   {
