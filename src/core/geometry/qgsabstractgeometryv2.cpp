@@ -81,6 +81,14 @@ void QgsAbstractGeometryV2::setZMTypeFromSubGeometry( const QgsAbstractGeometryV
     return;
   }
 
+  //special handling for 25d types:
+  if ( baseGeomType == QgsWKBTypes::LineString &&
+       ( subgeom->wkbType() == QgsWKBTypes::Point25D || subgeom->wkbType() == QgsWKBTypes::LineString25D ) )
+  {
+    mWkbType = QgsWKBTypes::LineString25D;
+    return;
+  }
+
   bool hasZ = subgeom->is3D();
   bool hasM = subgeom->isMeasure();
 

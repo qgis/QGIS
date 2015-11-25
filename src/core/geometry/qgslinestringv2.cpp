@@ -214,7 +214,11 @@ QgsPointV2 QgsLineStringV2::pointN( int i ) const
   }
 
   QgsWKBTypes::Type t = QgsWKBTypes::Point;
-  if ( hasZ && hasM )
+  if ( mWkbType == QgsWKBTypes::LineString25D )
+  {
+    t = QgsWKBTypes::Point25D;
+  }
+  else if ( hasZ && hasM )
   {
     t = QgsWKBTypes::PointZM;
   }
@@ -481,6 +485,12 @@ bool QgsLineStringV2::insertVertex( const QgsVertexId& position, const QgsPointV
   {
     return false;
   }
+
+  if ( mWkbType == QgsWKBTypes::Unknown || mX.isEmpty() )
+  {
+    setZMTypeFromSubGeometry( &vertex, QgsWKBTypes::LineString );
+  }
+
   mX.insert( position.vertex, vertex.x() );
   mY.insert( position.vertex, vertex.y() );
   if ( is3D() )
@@ -682,6 +692,12 @@ bool QgsLineStringV2::addZValue( double zValue )
   if ( QgsWKBTypes::hasZ( mWkbType ) )
     return false;
 
+  if ( mWkbType == QgsWKBTypes::Unknown )
+  {
+    mWkbType = QgsWKBTypes::LineStringZ;
+    return true;
+  }
+
   mWkbType = QgsWKBTypes::addZ( mWkbType );
 
   mZ.clear();
@@ -699,7 +715,20 @@ bool QgsLineStringV2::addMValue( double mValue )
   if ( QgsWKBTypes::hasM( mWkbType ) )
     return false;
 
-  mWkbType = QgsWKBTypes::addM( mWkbType );
+  if ( mWkbType == QgsWKBTypes::Unknown )
+  {
+    mWkbType = QgsWKBTypes::LineStringM;
+    return true;
+  }
+
+  if ( mWkbType == QgsWKBTypes::LineString25D )
+  {
+    mWkbType = QgsWKBTypes::LineStringZM;
+  }
+  else
+  {
+    mWkbType = QgsWKBTypes::addM( mWkbType );
+  }
 
   mM.clear();
   int nPoints = numPoints();
