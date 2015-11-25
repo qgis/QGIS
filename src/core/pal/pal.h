@@ -89,7 +89,8 @@ namespace pal
   enum ObstacleType
   {
     PolygonInterior,
-    PolygonBoundary
+    PolygonBoundary,
+    PolygonWhole
   };
 
   /**

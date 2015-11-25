@@ -134,8 +134,12 @@ class CORE_EXPORT QgsPalLayerSettings
     {
       PolygonInterior, /*!< avoid placing labels over interior of polygon (prefer placing labels totally
        outside or just slightly inside polygon) */
-      PolygonBoundary /*!< avoid placing labels over boundary of polygon (prefer placing outside or
+      PolygonBoundary, /*!< avoid placing labels over boundary of polygon (prefer placing outside or
        completely inside polygon) */
+      PolygonWhole /*!< avoid placing labels over ANY part of polygon. Where PolygonInterior will prefer
+       to place labels with the smallest area of intersection between the label and the polygon,
+       PolygonWhole will penalise any label which intersects with the polygon by an equal amount, so that
+       placing labels over any part of the polygon is avoided.*/
     };
 
     enum ShapeType

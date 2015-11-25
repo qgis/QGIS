@@ -110,6 +110,9 @@ void QgsLabelingEngineV2::processProvider( QgsAbstractLabelProvider* provider, Q
     case QgsPalLayerSettings::PolygonBoundary:
       l->setObstacleType( pal::PolygonBoundary );
       break;
+    case QgsPalLayerSettings::PolygonWhole:
+      l->setObstacleType( pal::PolygonWhole );
+      break;
   }
 
   // set whether location of centroid must be inside of polygons

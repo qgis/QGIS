@@ -77,6 +77,10 @@ namespace pal
             // penalty may need tweaking, given that interior mode ranges up to 12
             n = ( lp->crossesBoundary( obstacle ) ? 6 : 0 );
             break;
+          case PolygonWhole:
+            // n is either 0 or 12
+            n = ( lp->intersectsWithPolygon( obstacle ) ? 12 : 0 );
+            break;
         }
 
         break;
