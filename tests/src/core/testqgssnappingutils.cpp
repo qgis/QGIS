@@ -120,7 +120,7 @@ class TestQgsSnappingUtils : public QObject
       QVERIFY( !m3.isValid() );
    }
 
-   void testSnapModeCurrentOTF()
+   void testSnapModeCurrentWithReprojection()
    {
       // test with OTF reprojection enabled.
       // test with UTM<->Pseudo-Mercator, both with meters as units.
@@ -159,14 +159,14 @@ class TestQgsSnappingUtils : public QObject
 
       u.setMapSettings( mapSettings );
 
-      m = u.snapToMap( mapSettings.mapToLayerCoordinates( mVL, mapSettings.mapToPixel().toMapCoordinates( QPoint( 100, 100 ) ) ) );
-      QVERIFY( m.isValid() );
-      QVERIFY( m.hasVertex() );
-      QCOMPARE( m.point(), QgsPoint( 1, 0 ) );
+      QgsPointLocator::Match m3 = u.snapToMap( mapSettings.mapToLayerCoordinates( mVL, mapSettings.mapToPixel().toMapCoordinates( QPoint( 100, 100 ) ) ) );
+      QVERIFY( m3.isValid() );
+      QVERIFY( m3.hasVertex() );
+      QCOMPARE( m3.point(), QgsPoint( 1, 0 ) );
 
-      m2 = u.snapToMap( mapSettings.mapToLayerCoordinates( mVL, mapSettings.mapToPixel().toMapCoordinates( QPoint( 0, 100 ) ) ) );
-      QVERIFY( !m2.isValid() );
-      QVERIFY( !m2.hasVertex() );
+      QgsPointLocator::Match m4 = u.snapToMap( mapSettings.mapToLayerCoordinates( mVL, mapSettings.mapToPixel().toMapCoordinates( QPoint( 0, 100 ) ) ) );
+      QVERIFY( !m4.isValid() );
+      QVERIFY( !m4.hasVertex() );
     }
 
     void testSnapModeAll()
