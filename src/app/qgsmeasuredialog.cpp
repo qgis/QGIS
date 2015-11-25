@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgisapp.h"
 #include "qgsmeasuredialog.h"
 #include "qgsmeasuretool.h"
 
@@ -40,6 +41,11 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool* tool, Qt::WindowFlags f )
   buttonBox->addButton( nb, QDialogButtonBox::ActionRole );
   connect( nb, SIGNAL( clicked() ), this, SLOT( restart() ) );
 
+  // Add a configuration button
+  QPushButton* cb = new QPushButton( tr( "&Configuration" ) );
+  buttonBox->addButton( cb, QDialogButtonBox::ActionRole );
+  connect( cb, SIGNAL( clicked() ), this, SLOT( openConfigTab() ) );
+
   mMeasureArea = tool->measureArea();
   mTotal = 0.;
 
@@ -58,6 +64,11 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool* tool, Qt::WindowFlags f )
   connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
 
   groupBox->setCollapsed( true );
+}
+
+void QgsMeasureDialog::openConfigTab()
+{
+  QgisApp::instance()->showOptionsDialog( this, "mOptionsPageMapTools" );
 }
 
 void QgsMeasureDialog::updateSettings()
