@@ -270,7 +270,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   mWMSUrlLineEdit->setText( QgsProject::instance()->readEntry( "WMSUrl", "/", "" ) );
   mWMSFees->setText( QgsProject::instance()->readEntry( "WMSFees", "/", "" ) );
   mWMSAccessConstraints->setText( QgsProject::instance()->readEntry( "WMSAccessConstraints", "/", "" ) );
-  mWMSKeywordList->setText( QgsProject::instance()->readListEntry( "WMSKeywordList", "/" ).join( "," ) );
+  mWMSKeywordList->setText( QgsProject::instance()->readListEntry( "WMSKeywordList", "/" ).join( ", " ) );
 
   // WMS GetFeatureInfo precision
   int WMSprecision = QgsProject::instance()->readNumEntry( "WMSPrecision", "/", -1 );
@@ -733,7 +733,8 @@ void QgsProjectProperties::apply()
   QStringList keywordStringList = mWMSKeywordList->text().split( "," );
   if ( keywordStringList.size() > 0 )
   {
-    QgsProject::instance()->writeEntry( "WMSKeywordList", "/", mWMSKeywordList->text().split( "," ) );
+    keywordStringList.replaceInStrings( QRegExp( "^\\s+" ), "" ).replaceInStrings( QRegExp( "\\s+$" ), "" );
+    QgsProject::instance()->writeEntry( "WMSKeywordList", "/", keywordStringList );
   }
   else
   {
