@@ -19,6 +19,7 @@
 
 const QString QgsLegacyHelpers::convertEditType( QgsVectorLayer::EditType editType, QgsEditorWidgetConfig& cfg, QgsVectorLayer* vl, const QString& name, const QDomElement &editTypeElement )
 {
+  Q_NOWARN_DEPRECATED_PUSH
   QString widgetType = "TextEdit"; // Fallback
 
   switch ( editType )
@@ -202,10 +203,13 @@ const QString QgsLegacyHelpers::convertEditType( QgsVectorLayer::EditType editTy
   }
 
   return widgetType;
+  Q_NOWARN_DEPRECATED_POP
 }
 
 QgsVectorLayer::EditType QgsLegacyHelpers::convertEditType( const QString& editType, const QgsEditorWidgetConfig& cfg, QgsVectorLayer* vl, const QString& name )
 {
+  Q_NOWARN_DEPRECATED_PUSH
+
   int idx = vl->fieldNameIndex( name );
 
   if ( !vl->fieldEditable( idx ) )
@@ -310,4 +314,5 @@ QgsVectorLayer::EditType QgsLegacyHelpers::convertEditType( const QString& editT
   }
 
   return QgsVectorLayer::EditorWidgetV2;
+  Q_NOWARN_DEPRECATED_POP
 }
