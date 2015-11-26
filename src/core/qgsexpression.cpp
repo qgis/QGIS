@@ -1725,6 +1725,22 @@ static QVariant fcnDifference( const QVariantList& values, const QgsExpressionCo
   delete geom;
   return result;
 }
+
+static QVariant fcnReverse( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
+  if ( fGeom.isEmpty() )
+    return QVariant();
+
+  QgsCurveV2* curve = dynamic_cast< QgsCurveV2* >( fGeom.geometry() );
+  if ( !curve )
+    return QVariant();
+
+  QgsCurveV2* reversed = curve->reversed();
+  QVariant result = reversed ? QVariant::fromValue( QgsGeometry( reversed ) ) : QVariant();
+  return result;
+}
+
 static QVariant fcnDistance( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
@@ -2333,7 +2349,7 @@ const QStringList& QgsExpression::BuiltinFunctions()
     << "geom_from_gml" << "geomFromGML" << "intersects_bbox" << "bbox"
     << "disjoint" << "intersects" << "touches" << "crosses" << "contains"
     << "relate"
-    << "overlaps" << "within" << "buffer" << "centroid" << "bounds"
+    << "overlaps" << "within" << "buffer" << "centroid" << "bounds" << "reverse"
     << "bounds_width" << "bounds_height" << "convex_hull" << "difference"
     << "distance" << "intersection" << "sym_difference" << "combine"
     << "union" << "geom_to_wkt" << "geomToWKT" << "geometry"
@@ -2470,6 +2486,7 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( "within", 2, fcnWithin, "GeometryGroup" )
     << new StaticFunction( "buffer", -1, fcnBuffer, "GeometryGroup" )
     << new StaticFunction( "centroid", 1, fcnCentroid, "GeometryGroup" )
+    << new StaticFunction( "reverse", 1, fcnReverse, "GeometryGroup" )
     << new StaticFunction( "bounds", 1, fcnBounds, "GeometryGroup" )
     << new StaticFunction( "num_points", 1, fcnGeomNumPoints, "GeometryGroup" )
     << new StaticFunction( "bounds_width", 1, fcnBoundsWidth, "GeometryGroup" )
