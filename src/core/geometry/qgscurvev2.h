@@ -84,8 +84,12 @@ class CORE_EXPORT QgsCurveV2: public QgsAbstractGeometryV2
     virtual bool nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const override;
 
     /** Returns the point and vertex id of a point within the curve.
+     * @param node node number, where the first node is 0
+     * @param point will be set to point at corresponding node in the curve
+     * @param type will be set to the vertex type of the node
+     * @returns true if node exists within the curve
      */
-    virtual bool pointAt( int i, QgsPointV2& vertex, QgsVertexId::VertexType& type ) const = 0;
+    virtual bool pointAt( int node, QgsPointV2& point, QgsVertexId::VertexType& type ) const = 0;
 
     /** Returns a reversed copy of the curve, where the direction of the curve has been flipped.
      * @note added in QGIS 2.14

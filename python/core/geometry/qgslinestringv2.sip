@@ -152,6 +152,8 @@ class QgsLineStringV2: public QgsCurveV2
     double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const;
     bool pointAt( int i, QgsPointV2& vertex, QgsVertexId::VertexType& type ) const;
 
+    virtual QgsPointV2 centroid() const;
+
     void sumUpArea( double& sum ) const;
     double vertexAngle( const QgsVertexId& vertex ) const;
 

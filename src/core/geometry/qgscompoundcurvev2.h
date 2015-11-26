@@ -95,7 +95,7 @@ class CORE_EXPORT QgsCompoundCurveV2: public QgsCurveV2
     virtual bool deleteVertex( const QgsVertexId& position ) override;
 
     virtual double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const override;
-    bool pointAt( int i, QgsPointV2& vertex, QgsVertexId::VertexType& type ) const override;
+    bool pointAt( int node, QgsPointV2& point, QgsVertexId::VertexType& type ) const override;
 
     void sumUpArea( double& sum ) const override;
 

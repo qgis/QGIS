@@ -108,7 +108,7 @@ class CORE_EXPORT QgsCircularStringV2: public QgsCurveV2
     /**
      * @copydoc QgsCurveV2::pointAt()
      */
-    bool pointAt( int i, QgsPointV2& vertex, QgsVertexId::VertexType& type ) const override;
+    bool pointAt( int node, QgsPointV2& point, QgsVertexId::VertexType& type ) const override;
 
     /**
      * @copydoc QgsCurveV2::sumUpArea()

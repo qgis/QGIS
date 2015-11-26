@@ -111,6 +111,16 @@ class QgsAbstractGeometryV2
     virtual void coordinateSequence( QList< QList< QList< QgsPointV2 > > >& coord /Out/ ) const = 0;
     int nCoordinates() const;
     virtual QgsPointV2 vertexAt( const QgsVertexId& id ) const = 0;
+
+    /** Searches for the closest segment of the geometry to a given point.
+     * @param pt specifies the point to find closest segment to
+     * @param segmentPt storage for the closest point within the geometry
+     * @param vertexAfter storage for the ID of the vertex at the end of the closest segment
+     * @param leftOf returns whether the point lies on the left side of the nearest segment (true if point is to left of segment,
+     * false if point is to right of segment)
+     * @param epsilon epsilon for segment snapping
+     * @returns squared distance to closest segment
+     */
     virtual double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const = 0;
 
     //low-level editing

@@ -222,10 +222,11 @@ class CORE_EXPORT QgsAbstractGeometryV2
     virtual QgsPointV2 vertexAt( const QgsVertexId& id ) const = 0;
 
     /** Searches for the closest segment of the geometry to a given point.
-     * @param pt Specifies the point for search
+     * @param pt specifies the point to find closest segment to
      * @param segmentPt storage for the closest point within the geometry
-     * @param vertexAfter storage for the id of the vertex after the closest segment
-     * @param leftOf returns if the point lies on the left of right side of the segment ( < 0 means left, > 0 means right )
+     * @param vertexAfter storage for the ID of the vertex at the end of the closest segment
+     * @param leftOf returns whether the point lies on the left side of the nearest segment (true if point is to left of segment,
+     * false if point is to right of segment)
      * @param epsilon epsilon for segment snapping
      * @returns squared distance to closest segment
      */

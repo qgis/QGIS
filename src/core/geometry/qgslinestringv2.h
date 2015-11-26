@@ -171,7 +171,9 @@ class CORE_EXPORT QgsLineStringV2: public QgsCurveV2
     virtual QgsLineStringV2* reversed() const override;
 
     double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const override;
-    bool pointAt( int i, QgsPointV2& vertex, QgsVertexId::VertexType& type ) const override;
+    bool pointAt( int node, QgsPointV2& point, QgsVertexId::VertexType& type ) const override;
+
+    virtual QgsPointV2 centroid() const override;
 
     void sumUpArea( double& sum ) const override;
     double vertexAngle( const QgsVertexId& vertex ) const override;

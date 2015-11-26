@@ -24,6 +24,7 @@
 #include <QPainter>
 #include <limits>
 #include <QDomDocument>
+#include <QtCore/qmath.h>
 
 QgsLineStringV2::QgsLineStringV2(): QgsCurveV2()
 {
@@ -573,6 +574,17 @@ double QgsLineStringV2::closestSegment( const QgsPointV2& pt, QgsPointV2& segmen
   double segmentPtX, segmentPtY;
 
   int size = mX.size();
+  if ( size == 0 )
+  {
+    vertexAfter = QgsVertexId( 0, 0, 0 );
+    return sqrDist;
+  }
+  else if ( size == 1 )
+  {
+    segmentPt = pointN( 0 );
+    vertexAfter = QgsVertexId( 0, 0, 1 );
+    return QgsGeometryUtils::sqrDistance2D( pt, segmentPt );
+  }
   for ( int i = 1; i < size; ++i )
   {
     double prevX = mX.at( i - 1 );
@@ -587,7 +599,7 @@ double QgsLineStringV2::closestSegment( const QgsPointV2& pt, QgsPointV2& segmen
       segmentPt.setY( segmentPtY );
       if ( leftOf )
       {
-        *leftOf = ( QgsGeometryUtils::leftOfLine( segmentPtX, segmentPtY, prevX, prevY, pt.x(), pt.y() ) < 0 );
+        *leftOf = ( QgsGeometryUtils::leftOfLine( pt.x(), pt.y(), prevX, prevY, currentX, currentY ) < 0 );
       }
       vertexAfter.part = 0; vertexAfter.ring = 0; vertexAfter.vertex = i;
     }
@@ -595,20 +607,61 @@ double QgsLineStringV2::closestSegment( const QgsPointV2& pt, QgsPointV2& segmen
   return sqrDist;
 }
 
-bool QgsLineStringV2::pointAt( int i, QgsPointV2& vertex, QgsVertexId::VertexType& type ) const
+bool QgsLineStringV2::pointAt( int node, QgsPointV2& point, QgsVertexId::VertexType& type ) const
 {
-  if ( i >= numPoints() )
+  if ( node < 0 || node >= numPoints() )
   {
     return false;
   }
-  vertex = pointN( i );
+  point = pointN( node );
   type = QgsVertexId::SegmentVertex;
   return true;
+}
+
+QgsPointV2 QgsLineStringV2::centroid() const
+{
+  if ( mX.isEmpty() )
+    return QgsPointV2();
+
+  int numPoints = mX.count();
+  if ( numPoints == 1 )
+    return QgsPointV2( mX.at( 0 ), mY.at( 0 ) );
+
+  double totalLineLength = 0.0;
+  double prevX = mX.at( 0 );
+  double prevY = mY.at( 0 );
+  double sumX = 0.0;
+  double sumY = 0.0;
+
+  for ( int i = 1; i < numPoints ; ++i )
+  {
+    double currentX = mX.at( i );
+    double currentY = mY.at( i );
+    double segmentLength = sqrt( qPow( currentX - prevX, 2.0 ) +
+                                 qPow( currentY - prevY, 2.0 ) );
+    if ( qgsDoubleNear( segmentLength, 0.0 ) )
+      continue;
+
+    totalLineLength += segmentLength;
+    sumX += segmentLength * 0.5 * ( currentX + prevX );
+    sumY += segmentLength * 0.5 * ( currentY + prevY );
+    prevX = currentX;
+    prevY = currentY;
+  }
+
+  if ( qgsDoubleNear( totalLineLength, 0.0 ) )
+    return QgsPointV2( mX.at( 0 ), mY.at( 0 ) );
+  else
+    return QgsPointV2( sumX / totalLineLength, sumY / totalLineLength );
+
 }
 
 void QgsLineStringV2::sumUpArea( double& sum ) const
 {
   int maxIndex = numPoints() - 1;
+  if ( maxIndex == 1 )
+    return; //no area, just a single line
+
   for ( int i = 0; i < maxIndex; ++i )
   {
     sum += 0.5 * ( mX.at( i ) * mY.at( i + 1 ) - mY.at( i ) * mX.at( i + 1 ) );
