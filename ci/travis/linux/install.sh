@@ -5,7 +5,6 @@ export CC="clang-3.7"
 cmake -DWITH_SERVER=ON \
       -DWITH_STAGED_PLUGINS=OFF \
       -DWITH_GRASS=ON \
-      -DWITH_GRASS7=ON \
       -DSUPPRESS_QT_WARNINGS=ON \
       -DENABLE_MODELTEST=ON \
       -DENABLE_PGTEST=ON \
