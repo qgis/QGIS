@@ -230,7 +230,7 @@ class SettingDelegate(QStyledItemDelegate):
                 model.setData(index, editor.value(), Qt.EditRole)
 
     def sizeHint(self, option, index):
-        return QSpinBox().sizeHint()
+        return QgsSpinBox().sizeHint()
 
     def eventFilter(self, editor, event):
         if event.type() == QEvent.FocusOut and hasattr(editor, 'canFocusOut'):
