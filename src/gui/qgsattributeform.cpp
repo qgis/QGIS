@@ -37,6 +37,7 @@
 #include <QScrollArea>
 #include <QTabWidget>
 #include <QUiLoader>
+#include <QMessageBox>
 
 int QgsAttributeForm::sFormCounter = 0;
 
@@ -576,7 +577,8 @@ void QgsAttributeForm::initPython()
 {
   cleanPython();
 
-  // Init Python
+  // Init Python, if init function is not empty and the combo indicates
+  // the source for the function code
   if ( !mLayer->editFormConfig()->initFunction().isEmpty()
        && mLayer->editFormConfig()->initCodeSource() != QgsEditFormConfig::PythonInitCodeSource::CodeSourceNone )
   {
@@ -621,7 +623,7 @@ void QgsAttributeForm::initPython()
       case( QgsEditFormConfig::PythonInitCodeSource::CodeSourceEnvironment ):
       case( QgsEditFormConfig::PythonInitCodeSource::CodeSourceNone ):
       default:
-        // Nothing to do
+        // Nothing to do: the function code should be already in the environment
         break;
     }
 
@@ -655,6 +657,10 @@ void QgsAttributeForm::initPython()
       }
       else
       {
+        // If we get here, it means that the function doesn't accept three arguments
+        QMessageBox msgBox;
+        msgBox.setText( tr( "The python init function (<code>%1</code>) does not accept three arguments as expected!<br>Please check the function name in the  <b>Fields</b> tab of the layer properties." ).arg( initFunction ) );
+        msgBox.exec();
 #if 0
         QString expr = QString( "%1(%2)" )
                        .arg( mLayer->editFormInit() )
@@ -667,7 +673,10 @@ void QgsAttributeForm::initPython()
     }
     else
     {
-      QgsLogger::warning( QString( "There was an error evaluating the python init function!" ) );
+      // If we get here, it means that inspect couldn't find the function
+      QMessageBox msgBox;
+      msgBox.setText( tr( "The python init function (<code>%1</code>) could not be found!<br>Please check the function name in the <b>Fields</b> tab of the layer properties." ).arg( initFunction ) );
+      msgBox.exec();
     }
   }
 }
