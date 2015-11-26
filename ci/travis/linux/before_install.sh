@@ -1,7 +1,6 @@
 export DEBIAN_FRONTEND=noninteractive
 sudo add-apt-repository ppa:ubuntugis/ppa -y
 sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable -y # For postgresql-9.1-postgis-2.1
-sudo add-apt-repository ppa:grass/grass-stable -y
 sudo add-apt-repository ppa:smspillaz/cmake-3.0.2 -y
 sudo add-apt-repository ppa:kedazo/doxygen-updates-precise -y # For doxygen 1.8.8
 sudo apt-get update -qq
@@ -14,7 +13,6 @@ sudo apt-get install --force-yes --no-install-recommends --no-install-suggests \
         git \
         graphviz \
         grass-dev \
-        grass7-dev \
         libexpat1-dev \
         libfcgi-dev \
         libgdal1-dev \
