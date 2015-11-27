@@ -30,6 +30,7 @@ import os
 from PyQt4 import uic
 from PyQt4.QtGui import QMenu, QAction, QCursor, QInputDialog
 
+from qgis.gui import QgsMessageBar
 from qgis.core import QgsRasterLayer, QgsVectorLayer
 from qgis.utils import iface
 
@@ -37,6 +38,7 @@ from processing.gui.RectangleMapTool import RectangleMapTool
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterMultipleInput
+from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
@@ -150,12 +152,22 @@ class ExtentSelectionPanel(BASE, WIDGET):
         extents = [CANVAS_KEY]
         layers = dataobjects.getAllLayers()
         for layer in layers:
-            extents.append(layer.name())
-            extentsDict[layer.name()] = layer.extent()
+            authid = layer.crs().authid()
+            if ProcessingConfig.getSetting(ProcessingConfig.SHOW_CRS_DEF) \
+                    and authid is not None:
+                layerName = u'{} [{}]'.format(layer.name(), authid)
+            else:
+                layerName = layer.name()
+            extents.append(layerName)
+            extentsDict[layerName] = {"extent": layer.extent(), "authid": authid}
         (item, ok) = QInputDialog.getItem(self, self.tr('Select extent'),
                                           self.tr('Use extent from'), extents, False)
         if ok:
-            self.setValueFromRect(extentsDict[item])
+            self.setValueFromRect(extentsDict[item]["extent"])
+            if extentsDict[item]["authid"] != iface.mapCanvas().mapRenderer().destinationCrs().authid():
+                iface.messageBar().pushMessage(self.tr("Warning"),
+                                               self.tr("The projection of the chosen layer is not the same as canvas projection! The selected extent might not be what was intended."), 
+                                               QgsMessageBar.WARNING, 8)
 
     def selectOnCanvas(self):
         canvas = iface.mapCanvas()
