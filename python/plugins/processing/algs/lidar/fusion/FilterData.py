@@ -26,7 +26,6 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-import subprocess
 from processing.core.parameters import ParameterFile
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputFile
@@ -59,7 +58,7 @@ class FilterData(FusionAlgorithm):
         commands = [os.path.join(FusionUtils.FusionPath(), 'FilterData.exe')]
         commands.append('/verbose')
         self.addAdvancedModifiersToCommand(commands)
-        commands.append('outlier')
+        commands.append('/outlier')
         commands.append(unicode(self.getParameterValue(self.VALUE)))
         commands.append(unicode(self.getParameterValue(self.WINDOWSIZE)))
         outFile = self.getOutputValue(self.OUTPUT)
@@ -71,5 +70,3 @@ class FilterData(FusionAlgorithm):
             FusionUtils.createFileList(files)
             commands.append(FusionUtils.tempFileListFilepath())
         FusionUtils.runFusion(commands, progress)
-        p = subprocess.Popen(commands, shell=True)
-        p.wait()
