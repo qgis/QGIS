@@ -59,6 +59,8 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
   mCursorName = mConn->uniqueCursorName();
   QString whereClause;
 
+  bool limitAtProvider = ( mRequest.limit() >= 0 );
+
   if ( !request.filterRect().isNull() && !mSource->mGeometryColumn.isNull() )
   {
     whereClause = whereClauseRect();
@@ -76,15 +78,25 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
 
     whereClause = QgsPostgresUtils::andWhereClauses( whereClause, fidsWhereClause );
   }
-  else if ( request.filterType() == QgsFeatureRequest::FilterExpression
-            && QSettings().value( "/qgis/compileExpressions", true ).toBool() )
+  else if ( request.filterType() == QgsFeatureRequest::FilterExpression )
   {
-    QgsPostgresExpressionCompiler compiler = QgsPostgresExpressionCompiler( source );
-
-    if ( compiler.compile( request.filterExpression() ) == QgsSqlExpressionCompiler::Complete )
+    if ( QSettings().value( "/qgis/compileExpressions", true ).toBool() )
     {
-      whereClause = QgsPostgresUtils::andWhereClauses( whereClause, compiler.result() );
-      mExpressionCompiled = true;
+      QgsPostgresExpressionCompiler compiler = QgsPostgresExpressionCompiler( source );
+
+      if ( compiler.compile( request.filterExpression() ) == QgsSqlExpressionCompiler::Complete )
+      {
+        whereClause = QgsPostgresUtils::andWhereClauses( whereClause, compiler.result() );
+        mExpressionCompiled = true;
+      }
+      else
+      {
+        limitAtProvider = false;
+      }
+    }
+    else
+    {
+      limitAtProvider = false;
     }
   }
 
@@ -96,7 +108,7 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
     whereClause += '(' + mSource->mSqlWhereClause + ')';
   }
 
-  if ( !declareCursor( whereClause ) )
+  if ( !declareCursor( whereClause, limitAtProvider ? mRequest.limit() : -1 ) )
   {
     mClosed = true;
     iteratorClosed();
@@ -324,7 +336,7 @@ QString QgsPostgresFeatureIterator::whereClauseRect()
 
 
 
-bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause )
+bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause, long limit )
 {
   mFetchGeometry = !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) && !mSource->mGeometryColumn.isNull();
 #if 0
@@ -482,6 +494,9 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause )
 
   if ( !whereClause.isEmpty() )
     query += QString( " WHERE %1" ).arg( whereClause );
+
+  if ( limit >= 0 )
+    query += QString( " LIMIT %1" ).arg( limit );
 
   if ( !mConn->openCursor( mCursorName, query ) )
   {

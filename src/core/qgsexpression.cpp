@@ -2184,6 +2184,7 @@ static QVariant fcnGetFeature( const QVariantList& values, const QgsExpressionCo
   QgsFeatureRequest req;
   req.setFilterExpression( QString( "%1=%2" ).arg( QgsExpression::quotedColumnRef( attribute ),
                            QgsExpression::quotedString( attVal.toString() ) ) );
+  req.setLimit( 1 );
   if ( !parent->needsGeometry() )
   {
     req.setFlags( QgsFeatureRequest::NoGeometry );

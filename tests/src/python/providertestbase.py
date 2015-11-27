@@ -12,7 +12,7 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from qgis.core import QgsRectangle, QgsFeatureRequest, QgsGeometry, NULL
+from qgis.core import QgsRectangle, QgsFeatureRequest, QgsFeature, QgsGeometry, NULL
 
 
 class ProviderTestCase(object):
@@ -126,6 +126,45 @@ class ProviderTestCase(object):
                 .setFilterRect(extent))])
         expected = [4]
         assert set(expected) == result, 'Expected {} and got {} when testing for combination of filterRect and expression'.format(set(expected), result)
+
+    def testGetFeaturesLimit(self):
+        it = self.provider.getFeatures(QgsFeatureRequest().setLimit(2))
+        features = [f['pk'] for f in it]
+        assert len(features) == 2, 'Expected two features, got {} instead'.format(len(features))
+        #fetch one feature
+        feature = QgsFeature()
+        assert not it.nextFeature(feature), 'Expected no feature after limit, got one'
+        it.rewind()
+        features = [f['pk'] for f in it]
+        assert len(features) == 2, 'Expected two features after rewind, got {} instead'.format(len(features))
+        it.rewind()
+        assert it.nextFeature(feature), 'Expected feature after rewind, got none'
+        it.rewind()
+        features = [f['pk'] for f in it]
+        assert len(features) == 2, 'Expected two features after rewind, got {} instead'.format(len(features))
+        #test with expression, both with and without compilation
+        try:
+            self.disableCompiler()
+        except AttributeError:
+            pass
+        it = self.provider.getFeatures(QgsFeatureRequest().setLimit(2).setFilterExpression('cnt <= 100'))
+        features = [f['pk'] for f in it]
+        assert set(features) == set([1, 5]), 'Expected [1,5] for expression and feature limit, Got {} instead'.format(features)
+        try:
+            self.enableCompiler()
+        except AttributeError:
+            pass
+        it = self.provider.getFeatures(QgsFeatureRequest().setLimit(2).setFilterExpression('cnt <= 100'))
+        features = [f['pk'] for f in it]
+        assert set(features) == set([1, 5]), 'Expected [1,5] for expression and feature limit, Got {} instead'.format(features)
+        #limit to more features than exist
+        it = self.provider.getFeatures(QgsFeatureRequest().setLimit(3).setFilterExpression('cnt <= 100'))
+        features = [f['pk'] for f in it]
+        assert set(features) == set([1, 5]), 'Expected [1,5] for expression and feature limit, Got {} instead'.format(features)
+        #limit to less features than possible
+        it = self.provider.getFeatures(QgsFeatureRequest().setLimit(1).setFilterExpression('cnt <= 100'))
+        features = [f['pk'] for f in it]
+        assert 1 in features or 5 in features, 'Expected either 1 or 5 for expression and feature limit, Got {} instead'.format(features)
 
     def testMinValue(self):
         assert self.provider.minimumValue(1) == -200
