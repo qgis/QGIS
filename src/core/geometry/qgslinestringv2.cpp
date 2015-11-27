@@ -26,6 +26,13 @@
 #include <QDomDocument>
 #include <QtCore/qmath.h>
 
+
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests.
+ * See details in QEP #17
+ ****************************************************************************/
+
 QgsLineStringV2::QgsLineStringV2(): QgsCurveV2()
 {
   mWkbType = QgsWKBTypes::LineString;
@@ -72,6 +79,12 @@ void QgsLineStringV2::fromWkbPoints( QgsWKBTypes::Type type, const QgsConstWkbPt
   importVerticesFromWkb( wkb );
 }
 
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests.
+ * See details in QEP #17
+ ****************************************************************************/
+
 bool QgsLineStringV2::fromWkt( const QString& wkt )
 {
   clear();
@@ -105,6 +118,12 @@ unsigned char* QgsLineStringV2::asWkb( int& binarySize ) const
   QgsGeometryUtils::pointsToWKB( wkb, pts, is3D(), isMeasure() );
   return geomPtr;
 }
+
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests.
+ * See details in QEP #17
+ ****************************************************************************/
 
 QString QgsLineStringV2::asWkt( int precision ) const
 {
@@ -149,6 +168,12 @@ QString QgsLineStringV2::asJSON( int precision ) const
   return "{\"type\": \"LineString\", \"coordinates\": " + QgsGeometryUtils::pointsToJSON( pts, precision ) + '}';
 }
 
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests.
+ * See details in QEP #17
+ ****************************************************************************/
+
 double QgsLineStringV2::length() const
 {
   double length = 0;
@@ -180,6 +205,12 @@ QgsPointV2 QgsLineStringV2::endPoint() const
   }
   return pointN( numPoints() - 1 );
 }
+
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests.
+ * See details in QEP #17
+ ****************************************************************************/
 
 QgsLineStringV2* QgsLineStringV2::curveToLine() const
 {
@@ -233,6 +264,12 @@ QgsPointV2 QgsLineStringV2::pointN( int i ) const
   }
   return QgsPointV2( t, x, y, z, m );
 }
+
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests.
+ * See details in QEP #17
+ ****************************************************************************/
 
 double QgsLineStringV2::xAt( int index ) const
 {
@@ -291,6 +328,12 @@ void QgsLineStringV2::setMAt( int index, double m )
   if ( index >= 0 && index < mM.size() )
     mM[ index ] = m;
 }
+
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests.
+ * See details in QEP #17
+ ****************************************************************************/
 
 void QgsLineStringV2::points( QList<QgsPointV2>& pts ) const
 {
@@ -353,6 +396,12 @@ void QgsLineStringV2::setPoints( const QList<QgsPointV2>& points )
   }
 }
 
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests.
+ * See details in QEP #17
+ ****************************************************************************/
+
 void QgsLineStringV2::append( const QgsLineStringV2* line )
 {
   if ( !line )
@@ -407,6 +456,12 @@ QgsLineStringV2* QgsLineStringV2::reversed() const
   return copy;
 }
 
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests.
+ * See details in QEP #17
+ ****************************************************************************/
+
 void QgsLineStringV2::draw( QPainter& p ) const
 {
   p.drawPolyline( asQPolygonF() );
@@ -446,6 +501,12 @@ QPolygonF QgsLineStringV2::asQPolygonF() const
   return points;
 }
 
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests.
+ * See details in QEP #17
+ ****************************************************************************/
+
 void QgsLineStringV2::transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d )
 {
   double* zArray = mZ.data();
@@ -479,6 +540,12 @@ void QgsLineStringV2::transform( const QTransform& t )
   }
   mBoundingBox = QgsRectangle();
 }
+
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests.
+ * See details in QEP #17
+ ****************************************************************************/
 
 bool QgsLineStringV2::insertVertex( const QgsVertexId& position, const QgsPointV2& vertex )
 {
@@ -547,6 +614,12 @@ bool QgsLineStringV2::deleteVertex( const QgsVertexId& position )
   return true;
 }
 
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests.
+ * See details in QEP #17
+ ****************************************************************************/
+
 void QgsLineStringV2::addVertex( const QgsPointV2& pt )
 {
   if ( mWkbType == QgsWKBTypes::Unknown || mX.isEmpty() )
@@ -607,6 +680,12 @@ double QgsLineStringV2::closestSegment( const QgsPointV2& pt, QgsPointV2& segmen
   return sqrDist;
 }
 
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests.
+ * See details in QEP #17
+ ****************************************************************************/
+
 bool QgsLineStringV2::pointAt( int node, QgsPointV2& point, QgsVertexId::VertexType& type ) const
 {
   if ( node < 0 || node >= numPoints() )
@@ -656,6 +735,12 @@ QgsPointV2 QgsLineStringV2::centroid() const
 
 }
 
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests.
+ * See details in QEP #17
+ ****************************************************************************/
+
 void QgsLineStringV2::sumUpArea( double& sum ) const
 {
   int maxIndex = numPoints() - 1;
@@ -693,6 +778,12 @@ void QgsLineStringV2::importVerticesFromWkb( const QgsConstWkbPtr& wkb )
   }
   mBoundingBox = QgsRectangle(); //set bounding box invalid
 }
+
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests.
+ * See details in QEP #17
+ ****************************************************************************/
 
 void QgsLineStringV2::close()
 {
@@ -745,6 +836,12 @@ double QgsLineStringV2::vertexAngle( const QgsVertexId& vertex ) const
     return QgsGeometryUtils::averageAngle( previousX, previousY, currentX, currentY, afterX, afterY );
   }
 }
+
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests.
+ * See details in QEP #17
+ ****************************************************************************/
 
 bool QgsLineStringV2::addZValue( double zValue )
 {

@@ -22,6 +22,12 @@
 #include "qgswkbptr.h"
 #include <QPolygonF>
 
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests in testqgsgeometry.cpp.
+ * See details in QEP #17
+ ****************************************************************************/
+
 /** \ingroup core
  * \class QgsLineStringV2
  * \brief Line string geometry type, with support for z-dimension and m-values.
