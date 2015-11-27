@@ -157,8 +157,12 @@ class QgsAbstractGeometryV2
     /** Returns a geometry without curves. Caller takes ownership*/
     virtual QgsAbstractGeometryV2* segmentize() const /Factory/;
 
-    /** Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
-        @return rotation in radians, clockwise from north*/
+    /** Returns approximate angle at a vertex. This is usually the average angle between adjacent
+     * segments, and can be pictured as the orientation of a line following the curvature of the
+     * geometry at the specified vertex.
+     * @param vertex the vertex id
+     * @return rotation in radians, clockwise from north
+    */
     virtual double vertexAngle( const QgsVertexId& vertex ) const = 0;
 
     virtual int vertexCount(int part = 0, int ring = 0) const = 0;

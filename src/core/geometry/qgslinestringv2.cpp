@@ -705,12 +705,18 @@ void QgsLineStringV2::close()
 
 double QgsLineStringV2::vertexAngle( const QgsVertexId& vertex ) const
 {
+  if ( mX.count() < 2 )
+  {
+    //undefined
+    return 0.0;
+  }
+
   if ( vertex.vertex == 0 || vertex.vertex >= ( numPoints() - 1 ) )
   {
     if ( isClosed() )
     {
-      double previousX = mX.at( numPoints() - 1 );
-      double previousY = mY.at( numPoints() - 1 );
+      double previousX = mX.at( numPoints() - 2 );
+      double previousY = mY.at( numPoints() - 2 );
       double currentX = mX.at( 0 );
       double currentY = mY.at( 0 );
       double afterX = mX.at( 1 );
@@ -719,13 +725,13 @@ double QgsLineStringV2::vertexAngle( const QgsVertexId& vertex ) const
     }
     else if ( vertex.vertex == 0 )
     {
-      return QgsGeometryUtils::linePerpendicularAngle( mX.at( 0 ), mY.at( 0 ), mX.at( 1 ), mY.at( 1 ) );
+      return QgsGeometryUtils::lineAngle( mX.at( 0 ), mY.at( 0 ), mX.at( 1 ), mY.at( 1 ) );
     }
     else
     {
       int a = numPoints() - 2;
       int b = numPoints() - 1;
-      return QgsGeometryUtils::linePerpendicularAngle( mX.at( a ), mY.at( a ), mX.at( b ), mY.at( b ) );
+      return QgsGeometryUtils::lineAngle( mX.at( a ), mY.at( a ), mX.at( b ), mY.at( b ) );
     }
   }
   else

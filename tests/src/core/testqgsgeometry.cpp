@@ -1339,6 +1339,10 @@ void TestQgsGeometry::lineStringV2()
   QVERIFY( qgsDoubleNear( l21.pointN( 0 ).y(), -39.722, 0.001 ) );
   QVERIFY( qgsDoubleNear( l21.pointN( 1 ).x(), 176.959, 0.001 ) );
   QVERIFY( qgsDoubleNear( l21.pointN( 1 ).y(), -38.798, 0.001 ) );
+  QVERIFY( qgsDoubleNear( l21.boundingBox().xMinimum(), 175.771, 0.001 ) );
+  QVERIFY( qgsDoubleNear( l21.boundingBox().yMinimum(), -39.722, 0.001 ) );
+  QVERIFY( qgsDoubleNear( l21.boundingBox().xMaximum(), 176.959, 0.001 ) );
+  QVERIFY( qgsDoubleNear( l21.boundingBox().yMaximum(), -38.798, 0.001 ) );
 
   //3d CRS transform
   QgsLineStringV2 l22;
@@ -1373,7 +1377,7 @@ void TestQgsGeometry::lineStringV2()
   l23.transform( qtr );
   QCOMPARE( l23.pointN( 0 ), QgsPointV2( QgsWKBTypes::PointZM, 2, 6, 3, 4 ) );
   QCOMPARE( l23.pointN( 1 ), QgsPointV2( QgsWKBTypes::PointZM, 22, 36, 13, 14 ) );
-
+  QCOMPARE( l23.boundingBox(), QgsRectangle( 2, 6, 22, 36 ) );
 
   //insert vertex
 
@@ -1784,7 +1788,12 @@ void TestQgsGeometry::lineStringV2()
   QCOMPARE( l34.centroid(), QgsPointV2( 10, 5 ) );
   l34.setPoints( QList< QgsPointV2 >() << QgsPointV2( 0, 0 ) << QgsPointV2( 0, 9 ) << QgsPointV2( 2, 9 ) << QgsPointV2( 2, 0 ) );
   QCOMPARE( l34.centroid(), QgsPointV2( 1, 4.95 ) );
-
+  //linestring with 0 length segment
+  l34.setPoints( QList< QgsPointV2 >() << QgsPointV2( 0, 0 ) << QgsPointV2( 0, 9 ) << QgsPointV2( 2, 9 ) << QgsPointV2( 2, 9 ) << QgsPointV2( 2, 0 ) );
+  QCOMPARE( l34.centroid(), QgsPointV2( 1, 4.95 ) );
+  //linestring with 0 total length segment
+  l34.setPoints( QList< QgsPointV2 >() << QgsPointV2( 5, 4 ) << QgsPointV2( 5, 4 ) << QgsPointV2( 5, 4 ) );
+  QCOMPARE( l34.centroid(), QgsPointV2( 5, 4 ) );
 
   //closest segment
   QgsLineStringV2 l35;
@@ -1837,10 +1846,80 @@ void TestQgsGeometry::lineStringV2()
   l36.sumUpArea( area );
   QVERIFY( qgsDoubleNear( area, 7.0 ) );
 
-  //boundingBox
-
+  //boundingBox - test that bounding box is updated after every modification to the line string
+  QgsLineStringV2 l37;
+  QVERIFY( l37.boundingBox().isNull() );
+  l37.setPoints( QList< QgsPointV2 >() << QgsPointV2( 5, 10 ) << QgsPointV2( 10, 15 ) );
+  QCOMPARE( l37.boundingBox(), QgsRectangle( 5, 10, 10, 15 ) );
+  l37.setPoints( QList< QgsPointV2 >() << QgsPointV2( -5, -10 ) << QgsPointV2( -6, -10 ) << QgsPointV2( -5.5, -9 ) );
+  QCOMPARE( l37.boundingBox(), QgsRectangle( -6, -10, -5, -9 ) );
+  //setXAt
+  l37.setXAt( 2, -4 );
+  QCOMPARE( l37.boundingBox(), QgsRectangle( -6, -10, -4, -9 ) );
+  //setYAt
+  l37.setYAt( 1, -15 );
+  QCOMPARE( l37.boundingBox(), QgsRectangle( -6, -15, -4, -9 ) );
+  //append
+  toAppend.reset( new QgsLineStringV2() );
+  toAppend->setPoints( QList< QgsPointV2 >() << QgsPointV2( 1, 2 ) << QgsPointV2( 4, 0 ) );
+  l37.append( toAppend.data() );
+  QCOMPARE( l37.boundingBox(), QgsRectangle( -6, -15, 4, 2 ) );
+  l37.addVertex( QgsPointV2( 6, 3 ) );
+  QCOMPARE( l37.boundingBox(), QgsRectangle( -6, -15, 6, 3 ) );
+  l37.clear();
+  QVERIFY( l37.boundingBox().isNull() );
+  l37.setPoints( QList< QgsPointV2 >() << QgsPointV2( 5, 10 ) << QgsPointV2( 10, 15 ) );
+  wkb = toAppend->asWkb( size );
+  l37.fromWkb( wkb );
+  delete wkb;
+  wkb = 0;
+  QCOMPARE( l37.boundingBox(), QgsRectangle( 1, 0, 4, 2 ) );
+  l37.fromWkt( QString( "LineString( 1 5, 3 4, 6 3 )" ) );
+  QCOMPARE( l37.boundingBox(), QgsRectangle( 1, 3, 6, 5 ) );
+  l37.insertVertex( QgsVertexId( 0, 0, 1 ), QgsPointV2( -1, 7 ) );
+  QCOMPARE( l37.boundingBox(), QgsRectangle( -1, 3, 6, 7 ) );
+  l37.moveVertex( QgsVertexId( 0, 0, 1 ), QgsPointV2( -3, 10 ) );
+  QCOMPARE( l37.boundingBox(), QgsRectangle( -3, 3, 6, 10 ) );
+  l37.deleteVertex( QgsVertexId( 0, 0, 1 ) );
+  QCOMPARE( l37.boundingBox(), QgsRectangle( 1, 3, 6, 5 ) );
 
   //angle
+  QgsLineStringV2 l38;
+  ( void )l38.vertexAngle( QgsVertexId() ); //just want no crash
+  ( void )l38.vertexAngle( QgsVertexId( 0, 0, 0 ) ); //just want no crash
+  l38.setPoints( QList< QgsPointV2 >() << QgsPointV2( 0, 0 ) );
+  ( void )l38.vertexAngle( QgsVertexId( 0, 0, 0 ) ); //just want no crash, any answer is meaningless
+  l38.setPoints( QList< QgsPointV2 >() << QgsPointV2( 0, 0 ) << QgsPointV2( 1, 0 ) );
+  QVERIFY( qgsDoubleNear( l38.vertexAngle( QgsVertexId( 0, 0, 0 ) ), 1.5708, 0.0001 ) );
+  QVERIFY( qgsDoubleNear( l38.vertexAngle( QgsVertexId( 0, 0, 1 ) ), 1.5708, 0.0001 ) );
+  ( void )l38.vertexAngle( QgsVertexId( 0, 0, 2 ) ); //no crash
+  l38.setPoints( QList< QgsPointV2 >() << QgsPointV2( 0, 0 ) << QgsPointV2( 0, 1 ) );
+  QVERIFY( qgsDoubleNear( l38.vertexAngle( QgsVertexId( 0, 0, 0 ) ), 0.0 ) );
+  QVERIFY( qgsDoubleNear( l38.vertexAngle( QgsVertexId( 0, 0, 1 ) ), 0.0 ) );
+  l38.setPoints( QList< QgsPointV2 >() << QgsPointV2( 1, 0 ) << QgsPointV2( 0, 0 ) );
+  QVERIFY( qgsDoubleNear( l38.vertexAngle( QgsVertexId( 0, 0, 0 ) ), 4.71239, 0.0001 ) );
+  QVERIFY( qgsDoubleNear( l38.vertexAngle( QgsVertexId( 0, 0, 1 ) ), 4.71239, 0.0001 ) );
+  l38.setPoints( QList< QgsPointV2 >() << QgsPointV2( 0, 1 ) << QgsPointV2( 0, 0 ) );
+  QVERIFY( qgsDoubleNear( l38.vertexAngle( QgsVertexId( 0, 0, 0 ) ), 3.1416, 0.0001 ) );
+  QVERIFY( qgsDoubleNear( l38.vertexAngle( QgsVertexId( 0, 0, 1 ) ), 3.1416, 0.0001 ) );
+  l38.setPoints( QList< QgsPointV2 >() << QgsPointV2( 0, 0 ) << QgsPointV2( 1, 0 ) << QgsPointV2( 1, 1 ) );
+  QVERIFY( qgsDoubleNear( l38.vertexAngle( QgsVertexId( 0, 0, 0 ) ), 1.5708, 0.0001 ) );
+  QVERIFY( qgsDoubleNear( l38.vertexAngle( QgsVertexId( 0, 0, 1 ) ), 0.7854, 0.0001 ) );
+  QVERIFY( qgsDoubleNear( l38.vertexAngle( QgsVertexId( 0, 0, 2 ) ), 0.0, 0.0001 ) );
+  l38.setPoints( QList< QgsPointV2 >() << QgsPointV2( 0, 0 ) << QgsPointV2( 0.5, 0 ) << QgsPointV2( 1, 0 )
+                 << QgsPointV2( 2, 1 ) << QgsPointV2( 1, 2 ) << QgsPointV2( 0, 2 ) );
+  ( void )l38.vertexAngle( QgsVertexId( 0, 0, 20 ) );
+  QVERIFY( qgsDoubleNear( l38.vertexAngle( QgsVertexId( 0, 0, 0 ) ), 1.5708, 0.0001 ) );
+  QVERIFY( qgsDoubleNear( l38.vertexAngle( QgsVertexId( 0, 0, 1 ) ), 1.5708, 0.0001 ) );
+  QVERIFY( qgsDoubleNear( l38.vertexAngle( QgsVertexId( 0, 0, 2 ) ), 1.17809, 0.00001 ) );
+  QVERIFY( qgsDoubleNear( l38.vertexAngle( QgsVertexId( 0, 0, 3 ) ), 0.0, 0.00001 ) );
+  QVERIFY( qgsDoubleNear( l38.vertexAngle( QgsVertexId( 0, 0, 4 ) ), 5.10509, 0.00001 ) );
+  QVERIFY( qgsDoubleNear( l38.vertexAngle( QgsVertexId( 0, 0, 5 ) ), 4.71239, 0.00001 ) );
+  //closed line string
+  l38.close();
+  QVERIFY( qgsDoubleNear( l38.vertexAngle( QgsVertexId( 0, 0, 5 ) ), 3.92699, 0.00001 ) );
+  QVERIFY( qgsDoubleNear( l38.vertexAngle( QgsVertexId( 0, 0, 0 ) ), 2.35619, 0.00001 ) );
+  QVERIFY( qgsDoubleNear( l38.vertexAngle( QgsVertexId( 0, 0, 6 ) ), 2.35619, 0.00001 ) );
 
 }
 
