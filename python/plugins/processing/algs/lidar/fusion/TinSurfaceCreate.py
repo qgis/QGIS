@@ -34,7 +34,6 @@ from FusionAlgorithm import FusionAlgorithm
 from FusionUtils import FusionUtils
 
 
-
 class TinSurfaceCreate(FusionAlgorithm):
 
     INPUT = 'INPUT'
@@ -64,7 +63,7 @@ class TinSurfaceCreate(FusionAlgorithm):
         class_var.isAdvanced = True
         self.addParameter(class_var)
         return_sel = ParameterString(self.RETURN,
-                                    self.tr('Select specific return'), '', False, True)
+                                     self.tr('Select specific return'), '', False, True)
         return_sel.isAdvanced = True
         self.addParameter(return_sel)
 

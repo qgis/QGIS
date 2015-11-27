@@ -351,7 +351,7 @@ QString QgsEditorWidgetRegistry::findSuitableWrapper( QWidget* editor, const QSt
   QMap<const char*, QPair<int, QString> >::ConstIterator it;
 
   QString widgetid;
-  
+
   // Editor can be null
   if ( editor )
   {

@@ -68,17 +68,19 @@ QStringList makeKeyTokens_( QString const &scope, QString const &key )
   keyTokens.push_front( "properties" );
 
   //check validy of keys since an unvalid xml name will will be dropped upon saving the xml file. If not valid, we print a message to the console.
-  for (int i = 0; i < keyTokens.size(); ++i){
-    QString keyToken = keyTokens.at(i);
+  for ( int i = 0; i < keyTokens.size(); ++i )
+  {
+    QString keyToken = keyTokens.at( i );
 
     //invalid chars in XML are found at http://www.w3.org/TR/REC-xml/#NT-NameChar
     //note : it seems \x10000-\xEFFFF is valid, but it when added to the regexp, a lot of unwanted characters remain
     QString nameCharRegexp = QString( "[^:A-Z_a-z\\xC0-\\xD6\\xD8-\\xF6\\xF8-\\x2FF\\x370-\\x37D\\x37F-\\x1FFF\\x200C-\\x200D\\x2070-\\x218F\\x2C00-\\x2FEF\\x3001-\\xD7FF\\xF900-\\xFDCF\\xFDF0-\\xFFFD\\-\\.0-9\\xB7\\x0300-\\x036F\\x203F-\\x2040]" );
     QString nameStartCharRegexp = QString( "^[^:A-Z_a-z\\xC0-\\xD6\\xD8-\\xF6\\xF8-\\x2FF\\x370-\\x37D\\x37F-\\x1FFF\\x200C-\\x200D\\x2070-\\x218F\\x2C00-\\x2FEF\\x3001-\\xD7FF\\xF900-\\xFDCF\\xFDF0-\\xFFFD]" );
 
-    if( keyToken.contains( QRegExp(nameCharRegexp) ) || keyToken.contains( QRegExp(nameStartCharRegexp) ) ){
+    if ( keyToken.contains( QRegExp( nameCharRegexp ) ) || keyToken.contains( QRegExp( nameStartCharRegexp ) ) )
+    {
 
-      QString errorString = QObject::tr("Entry token invalid : '%1'. The token will not be saved to file.").arg(keyToken);
+      QString errorString = QObject::tr( "Entry token invalid : '%1'. The token will not be saved to file." ).arg( keyToken );
       QgsMessageLog::logMessage( errorString, QString::null, QgsMessageLog::CRITICAL );
 
     }

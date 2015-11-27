@@ -166,7 +166,7 @@ class ExtentSelectionPanel(BASE, WIDGET):
             self.setValueFromRect(extentsDict[item]["extent"])
             if extentsDict[item]["authid"] != iface.mapCanvas().mapRenderer().destinationCrs().authid():
                 iface.messageBar().pushMessage(self.tr("Warning"),
-                                               self.tr("The projection of the chosen layer is not the same as canvas projection! The selected extent might not be what was intended."), 
+                                               self.tr("The projection of the chosen layer is not the same as canvas projection! The selected extent might not be what was intended."),
                                                QgsMessageBar.WARNING, 8)
 
     def selectOnCanvas(self):
