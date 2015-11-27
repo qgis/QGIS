@@ -613,6 +613,20 @@ QString QgsGeometryUtils::pointsToJSON( const QList<QgsPointV2>& points, int pre
   return json;
 }
 
+double QgsGeometryUtils::normalizedAngle( double angle )
+{
+  double clippedAngle = angle;
+  if ( clippedAngle >= M_PI * 2 || clippedAngle <= -2 * M_PI )
+  {
+    clippedAngle = fmod( clippedAngle, 2 * M_PI );
+  }
+  if ( clippedAngle < 0.0 )
+  {
+    clippedAngle += 2 * M_PI;
+  }
+  return clippedAngle;
+}
+
 QPair<QgsWKBTypes::Type, QString> QgsGeometryUtils::wktReadBlock( const QString &wkt )
 {
   QgsWKBTypes::Type wkbType = QgsWKBTypes::parseType( wkt );
@@ -662,38 +676,28 @@ double QgsGeometryUtils::lineAngle( double x1, double y1, double x2, double y2 )
 {
   double at = atan2( y2 - y1, x2 - x1 );
   double a = -at + M_PI / 2.0;
-  if ( a < 0 )
-  {
-    a = 2 * M_PI + a;
-  }
-  if ( a >= 2 * M_PI )
-  {
-    a -= 2 * M_PI;
-  }
-  return a;
+  return normalizedAngle( a );
 }
 
 double QgsGeometryUtils::linePerpendicularAngle( double x1, double y1, double x2, double y2 )
 {
   double a = lineAngle( x1, y1, x2, y2 );
   a += ( M_PI / 2.0 );
-  if ( a >= 2 * M_PI )
-  {
-    a -= ( 2 * M_PI );
-  }
-  return a;
+  return normalizedAngle( a );
 }
 
 double QgsGeometryUtils::averageAngle( double x1, double y1, double x2, double y2, double x3, double y3 )
 {
   // calc average angle between the previous and next point
-  double a1 = linePerpendicularAngle( x1, y1, x2, y2 );
-  double a2 = linePerpendicularAngle( x2, y2, x3, y3 );
+  double a1 = lineAngle( x1, y1, x2, y2 );
+  double a2 = lineAngle( x2, y2, x3, y3 );
   return averageAngle( a1, a2 );
 }
 
 double QgsGeometryUtils::averageAngle( double a1, double a2 )
 {
+  a1 = normalizedAngle( a1 );
+  a2 = normalizedAngle( a2 );
   double clockwiseDiff = 0.0;
   if ( a2 >= a1 )
   {
@@ -714,14 +718,5 @@ double QgsGeometryUtils::averageAngle( double a1, double a2 )
   {
     resultAngle = a1 - counterClockwiseDiff / 2.0;
   }
-
-  if ( resultAngle >= 2 * M_PI )
-  {
-    resultAngle -= 2 * M_PI;
-  }
-  else if ( resultAngle < 0 )
-  {
-    resultAngle = 2 * M_PI - resultAngle;
-  }
-  return resultAngle;
+  return normalizedAngle( resultAngle );
 }

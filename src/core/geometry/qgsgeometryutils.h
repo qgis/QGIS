@@ -151,15 +151,41 @@ class CORE_EXPORT QgsGeometryUtils
     static QDomElement pointsToGML3( const QList<QgsPointV2>& points, QDomDocument &doc, int precision, const QString& ns, bool is3D );
     /** Returns a geoJSON coordinates string */
     static QString pointsToJSON( const QList<QgsPointV2>& points, int precision );
-    /** Calculates direction of line (clockwise from north direction) in radians*/
+
+    /** Ensures that an angle is in the range 0 <= angle < 2 pi.
+     * @param angle angle in radians
+     * @returns equivalent angle within the range [0, 2 pi)
+    */
+    static double normalizedAngle( double angle );
+
+    /** Calculates the direction of line joining two points in radians, clockwise from the north direction.
+     * @param x1 x-coordinate of line start
+     * @param y1 y-coordinate of line start
+     * @param x2 x-coordinate of line end
+     * @param y2 y-coordinate of line end
+     * @returns angle in radians. Returned value is undefined if start and end point are the same.
+    */
     static double lineAngle( double x1, double y1, double x2, double y2 );
-    /** Calculates angle perpendicular to line*/
+
+    /** Calculates the perpendicular angle to a line joining two points. Returned angle is in radians,
+     * clockwise from the north direction.
+     * @param x1 x-coordinate of line start
+     * @param y1 y-coordinate of line start
+     * @param x2 x-coordinate of line end
+     * @param y2 y-coordinate of line end
+     * @returns angle in radians. Returned value is undefined if start and end point are the same.
+    */
     static double linePerpendicularAngle( double x1, double y1, double x2, double y2 );
+
     /** Angle between two linear segments*/
     static double averageAngle( double x1, double y1, double x2, double y2, double x3, double y3 );
-    /** Averages two angles*/
-    static double averageAngle( double a1, double a2 );
 
+    /** Averages two angles, correctly handling negative angles and ensuring the result is between 0 and 2 pi.
+     * @param a1 first angle (in radians)
+     * @param a2 second angle (in radians)
+     * @returns average angle (in radians)
+    */
+    static double averageAngle( double a1, double a2 );
 
     /** Parses a WKT block of the format "TYPE( contents )" and returns a pair of geometry type to contents ("Pair(wkbType, "contents")")
      */
