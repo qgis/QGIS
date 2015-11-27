@@ -50,7 +50,7 @@ QgsComposerManager::QgsComposerManager( QWidget * parent, Qt::WindowFlags f ): Q
   mShowButton = mButtonBox->addButton( tr( "&Show" ), QDialogButtonBox::ActionRole );
   connect( mShowButton, SIGNAL( clicked() ), this, SLOT( show_clicked() ) );
 
-  mDuplicateButton = mButtonBox->addButton( tr ( "&Duplicate" ), QDialogButtonBox::ActionRole );
+  mDuplicateButton = mButtonBox->addButton( tr( "&Duplicate" ), QDialogButtonBox::ActionRole );
   connect( mDuplicateButton, SIGNAL( clicked() ), this, SLOT( duplicate_clicked() ) );
 
   mRemoveButton = mButtonBox->addButton( tr( "&Remove" ), QDialogButtonBox::ActionRole );
@@ -58,7 +58,7 @@ QgsComposerManager::QgsComposerManager( QWidget * parent, Qt::WindowFlags f ): Q
 
   mRenameButton = mButtonBox->addButton( tr( "Re&name" ), QDialogButtonBox::ActionRole );
   connect( mRenameButton, SIGNAL( clicked() ), this, SLOT( rename_clicked() ) );
-  
+
 #ifdef Q_OS_MAC
   // Create action to select this window
   mWindowAction = new QAction( windowTitle(), this );
@@ -91,7 +91,7 @@ QgsComposerManager::~QgsComposerManager()
 void QgsComposerManager::refreshComposers()
 {
   // Backup selection
-  QList<QgsComposer *> selectedComposers;
+  QSet<QgsComposer *> selectedComposers;
   Q_FOREACH ( QListWidgetItem* item, mComposerListWidget->selectedItems() )
   {
     QMap<QListWidgetItem*, QgsComposer*>::iterator it = mItemComposerMap.find( item );
@@ -100,7 +100,7 @@ void QgsComposerManager::refreshComposers()
       selectedComposers << it.value();
     }
   }
-  
+
   mItemComposerMap.clear();
   mComposerListWidget->clear();
 
@@ -115,26 +115,25 @@ void QgsComposerManager::refreshComposers()
   mComposerListWidget->sortItems();
 
   // Restore selection
+  bool selectionRestored = false;
   if ( !selectedComposers.isEmpty() )
   {
-    Q_FOREACH ( QgsComposer* c, selectedComposers )
+    QMap<QListWidgetItem*, QgsComposer*>::const_iterator i = mItemComposerMap.constBegin();
+    while ( i != mItemComposerMap.constEnd() )
     {
-      QMap<QListWidgetItem*, QgsComposer*>::const_iterator i = mItemComposerMap.constBegin();
-      while ( i != mItemComposerMap.constEnd() )
+      // This composer was selected: reselect it !
+      if ( selectedComposers.contains( i.value() ) )
       {
-	// This composer was selected: reselect it !
-	if ( c == i.value() )
-	{
-	  int inDex = mComposerListWidget->row( i.key() );
-	  QModelIndex selectLine = mComposerListWidget->model()->index( inDex, 0, QModelIndex() );
-	  mComposerListWidget->selectionModel()->select( selectLine, QItemSelectionModel::Select );
-	}
-	++i;
+        selectionRestored = true;
+        int inDex = mComposerListWidget->row( i.key() );
+        QModelIndex selectLine = mComposerListWidget->model()->index( inDex, 0, QModelIndex() );
+        mComposerListWidget->selectionModel()->select( selectLine, QItemSelectionModel::Select );
       }
+      ++i;
     }
   }
   // Select the first item by default
-  else if ( mComposerListWidget->count() > 0 )
+  if ( !selectionRestored && mComposerListWidget->count() > 0 )
   {
     QModelIndex firstLine = mComposerListWidget->model()->index( 0, 0, QModelIndex() );
     mComposerListWidget->selectionModel()->select( firstLine, QItemSelectionModel::Select );
@@ -389,21 +388,21 @@ void QgsComposerManager::changeEvent( QEvent* event )
 
 void QgsComposerManager::remove_clicked()
 {
-  QList<QgsComposer *> composersList;
-  QList<QListWidgetItem *> composersItems = mComposerListWidget->selectedItems();
+  QList<QgsComposer *> composerList;
+  QList<QListWidgetItem *> composerItems = mComposerListWidget->selectedItems();
   QString title = tr( "Remove composers" );
-  QString message = tr( "Do you really want to remove all these map composers ?" );
+  QString message = tr( "Do you really want to remove all selected map composers ?" );
 
-  if ( composersItems.isEmpty() )
+  if ( composerItems.isEmpty() )
   {
     return;
   }
 
   // Ask for confirmation
-  if ( composersItems.count() == 1)
+  if ( composerItems.count() == 1 )
   {
     title = tr( "Remove composer" );
-    QListWidgetItem* uniqItem = composersItems.at( 0 );
+    QListWidgetItem* uniqItem = composerItems.at( 0 );
     message = tr( "Do you really want to remove the map composer '%1'?" ).arg( uniqItem->text() );
   }
 
@@ -413,19 +412,19 @@ void QgsComposerManager::remove_clicked()
   }
 
   // Find the QgsComposers that need to be deleted
-  Q_FOREACH ( QListWidgetItem* item, composersItems )
+  Q_FOREACH ( QListWidgetItem* item, composerItems )
   {
     QMap<QListWidgetItem*, QgsComposer*>::iterator it = mItemComposerMap.find( item );
     if ( it != mItemComposerMap.end() )
     {
-      composersList << it.value();
+      composerList << it.value();
     }
   }
-  
+
   // Once we have the composer list, we can delete all of them !
-  Q_FOREACH ( QgsComposer* c, composersList )
+  Q_FOREACH ( QgsComposer* c, composerList )
   {
-      QgisApp::instance()->deleteComposer( c );
+    QgisApp::instance()->deleteComposer( c );
   }
 }
 
@@ -433,26 +432,26 @@ void QgsComposerManager::show_clicked()
 {
   Q_FOREACH ( QListWidgetItem* item, mComposerListWidget->selectedItems() )
   {
-    QMap<QListWidgetItem*, QgsComposer*>::iterator it = mItemComposerMap.find( item );
-    if ( it != mItemComposerMap.end() )
+    QMap<QListWidgetItem*, QgsComposer*>::const_iterator it = mItemComposerMap.find( item );
+    if ( it != mItemComposerMap.constEnd() )
     {
       QgsComposer* c = 0;
       if ( it.value() ) //a normal composer
       {
-	c = it.value();
+        c = it.value();
         if ( c )
-	{
-	  // extra activation steps for Windows
-	  bool shown = c->isVisible();
+        {
+          // extra activation steps for Windows
+          bool shown = c->isVisible();
 
-	  c->activate();
+          c->activate();
 
-	  // extra activation steps for Windows
-	  if ( !shown )
-	  {
-	    c->on_mActionZoomAll_triggered();
-	  }
-	}
+          // extra activation steps for Windows
+          if ( !shown )
+          {
+            c->on_mActionZoomAll_triggered();
+          }
+        }
       }
     }
   }
@@ -467,8 +466,8 @@ void QgsComposerManager::duplicate_clicked()
 
   QgsComposer* currentComposer = 0;
   QString currentTitle;
-  
-  QListWidgetItem* item = mComposerListWidget->selectedItems().takeFirst();
+
+  QListWidgetItem* item = mComposerListWidget->selectedItems().at( 0 );
   QMap<QListWidgetItem*, QgsComposer*>::iterator it = mItemComposerMap.find( item );
   if ( it != mItemComposerMap.end() )
   {
@@ -518,8 +517,8 @@ void QgsComposerManager::rename_clicked()
 
   QString currentTitle;
   QgsComposer* currentComposer = 0;
-  
-  QListWidgetItem* item = mComposerListWidget->selectedItems().takeFirst();
+
+  QListWidgetItem* item = mComposerListWidget->selectedItems().at( 0 );
   QMap<QListWidgetItem*, QgsComposer*>::iterator it = mItemComposerMap.find( item );
   if ( it != mItemComposerMap.end() )
   {
@@ -530,7 +529,7 @@ void QgsComposerManager::rename_clicked()
   {
     return;
   }
-  
+
   QString newTitle;
   if ( !QgisApp::instance()->uniqueComposerTitle( this, newTitle, false, currentTitle ) )
   {
