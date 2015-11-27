@@ -518,6 +518,10 @@
         <file>themes/default/mActionCircularStringCurvePoint.svg</file>
         <file>themes/default/mActionCircularStringRadius.png</file>
         <file>themes/default/mActionCircularStringRadius.svg</file>
+        <file>themes/default/mIconFloatField.svg</file>
+        <file>themes/default/mIconIntegerField.svg</file>
+        <file>themes/default/mIconDateField.svg</file>
+        <file>themes/default/mIconDateTimeField.svg</file>
         <file>flags/zh.png</file>
     </qresource>
     <qresource prefix="/images/tips">
