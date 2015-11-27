@@ -14,11 +14,13 @@
 ***************************************************************************/
 
 #include <QFont>
+#include <QIcon>
 
 #include "qgsfieldmodel.h"
 #include "qgsmaplayermodel.h"
 #include "qgsmaplayerproxymodel.h"
 #include "qgslogger.h"
+#include "qgsapplication.h"
 
 
 QgsFieldModel::QgsFieldModel( QObject *parent )
@@ -355,6 +357,46 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
         return font;
       }
       return QVariant();
+    }
+
+    case Qt::DecorationRole:
+    {
+      if ( exprIdx < 0 )
+      {
+        QgsField field = mFields[index.row()];
+        int fieldType = ( int )field.type();
+        QIcon icon;
+
+        switch ( fieldType )
+        {
+          case QVariant::Int:
+          case QVariant::UInt:
+          case QVariant::LognLong:
+          case QVariant::ULongLong:
+          {
+            return  icon = QgsApplication::getThemeIcon( "/mIconIntegerField.svg" );
+          }
+          case QVariant::Double:
+          {
+            return  icon = QgsApplication::getThemeIcon( "/mIconFloatField.svg" );
+          }
+          case QVariant::String:
+          {
+            return  icon = QgsApplication::getThemeIcon( "propertyicons/labeltext.svg" );
+          }
+          case QVariant::Date:
+          {
+            return  icon = QgsApplication::getThemeIcon( "/mIconDateField.svg" );
+          }
+          case QVariant::DateTime:
+          {
+            return  icon = QgsApplication::getThemeIcon( "/mIconDateTimeField.svg" );
+          }
+          default:
+            return QIcon();
+        }
+      }
+      return QIcon();
     }
 
     default:
