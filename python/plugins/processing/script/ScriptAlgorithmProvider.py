@@ -77,5 +77,5 @@ class ScriptAlgorithmProvider(AlgorithmProvider):
         folder = ScriptUtils.scriptsFolder()
         self.algs = ScriptUtils.loadFromFolder(folder)
 
-    def addAlgorithmsFromFolder(self, folder)
+    def addAlgorithmsFromFolder(self, folder):
         self.algs.extend(ScriptUtils.loadFromFolder(folder))
