@@ -1220,8 +1220,6 @@ void TestQgsGeometry::lineStringV2()
   wkb = 0;
   QCOMPARE( l16.wkbType(), QgsWKBTypes::Unknown );
 
-  //TODO - from WKB points
-
   //to/from WKT
   QgsLineStringV2 l17;
   l17.setPoints( QList< QgsPointV2 >() << QgsPointV2( QgsWKBTypes::PointZM, 1, 2, 3, 4 )

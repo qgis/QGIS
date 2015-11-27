@@ -14,13 +14,6 @@ class QgsLineStringV2: public QgsCurveV2
     QgsLineStringV2();
     ~QgsLineStringV2();
 
-    /** Resets the line string to match the line string in a WKB geometry.
-     * @param type WKB type
-     * @param wkb WKB representation of line geometry
-     * @note not available in Python bindings
-     */
-    //void fromWkbPoints( QgsWKBTypes::Type type, const QgsConstWkbPtr& wkb );
-
     /** Returns the specified point from inside the line string.
      * @param i index of point, starting at 0 for the first point
      */
