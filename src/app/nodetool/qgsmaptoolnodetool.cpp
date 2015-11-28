@@ -366,23 +366,27 @@ void QgsMapToolNodeTool::updateSelectFeature( QgsGeometry &geom )
 {
   delete mSelectRubberBand;
 
-  mSelectRubberBand = new QgsGeometryRubberBand( mCanvas, mSelectedFeature->geometry()->type() );
-  mSelectRubberBand->setBrushStyle( Qt::SolidPattern );
+  if ( geom.geometry() ) {
+    mSelectRubberBand = new QgsGeometryRubberBand( mCanvas, mSelectedFeature->geometry()->type() );
+    mSelectRubberBand->setBrushStyle( Qt::SolidPattern );
 
-  QSettings settings;
-  QColor color(
-    settings.value( "/qgis/digitizing/select_color_red", 255 ).toInt(),
-    settings.value( "/qgis/digitizing/select_color_green", 0 ).toInt(),
-    settings.value( "/qgis/digitizing/select_color_blue", 0 ).toInt() );
-  double myAlpha = settings.value( "/qgis/digitizing/select_color_alpha", 30 ).toInt() / 255.0 ;
-  color.setAlphaF( myAlpha );
-  mSelectRubberBand->setFillColor( color );
+    QSettings settings;
+    QColor color(
+      settings.value( "/qgis/digitizing/select_color_red", 255 ).toInt(),
+      settings.value( "/qgis/digitizing/select_color_green", 0 ).toInt(),
+      settings.value( "/qgis/digitizing/select_color_blue", 0 ).toInt() );
+    double myAlpha = settings.value( "/qgis/digitizing/select_color_alpha", 30 ).toInt() / 255.0 ;
+    color.setAlphaF( myAlpha );
+    mSelectRubberBand->setFillColor( color );
 
-  QgsAbstractGeometryV2* rbGeom = geom.geometry()->clone();
-  QgsVectorLayer *vlayer = mSelectedFeature->vlayer();
-  if ( mCanvas->mapSettings().layerTransform( vlayer ) )
-    rbGeom->transform( *mCanvas->mapSettings().layerTransform( vlayer ) );
-  mSelectRubberBand->setGeometry( rbGeom );
+    QgsAbstractGeometryV2* rbGeom = geom.geometry()->clone();
+    QgsVectorLayer *vlayer = mSelectedFeature->vlayer();
+    if ( mCanvas->mapSettings().layerTransform( vlayer ) )
+      rbGeom->transform( *mCanvas->mapSettings().layerTransform( vlayer ) );
+    mSelectRubberBand->setGeometry( rbGeom );
+  } else {
+    mSelectRubberBand = 0;
+  }
 }
 
 void QgsMapToolNodeTool::selectedFeatureDestroyed()
