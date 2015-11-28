@@ -34,7 +34,7 @@ modified.
  * SDTS
  * GeoTiff
  * Tiff with world file
- * WMS
+ * WMS, WCS
 
 ## Supported vector formats include:
 
