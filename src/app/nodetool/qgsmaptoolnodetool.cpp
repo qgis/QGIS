@@ -114,11 +114,8 @@ void QgsMapToolNodeTool::canvasMoveEvent( QgsMapMouseEvent* e )
   {
     if ( mMoveRubberBands.empty() )
     {
-      if ( mSelectRubberBand )
-      {
-        delete mSelectRubberBand;
-        mSelectRubberBand = 0;
-      }
+      delete mSelectRubberBand;
+      mSelectRubberBand = 0;
       QgsGeometryRubberBand* rb = new QgsGeometryRubberBand( mCanvas, mSelectedFeature->geometry()->type() );
       rb->setOutlineColor( Qt::blue );
       rb->setBrushStyle( Qt::NoBrush );
