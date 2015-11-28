@@ -114,6 +114,11 @@ void QgsMapToolNodeTool::canvasMoveEvent( QgsMapMouseEvent* e )
   {
     if ( mMoveRubberBands.empty() )
     {
+      if ( mSelectRubberBand )
+      {
+        delete mSelectRubberBand;
+        mSelectRubberBand = 0;
+      }
       QgsGeometryRubberBand* rb = new QgsGeometryRubberBand( mCanvas, mSelectedFeature->geometry()->type() );
       rb->setOutlineColor( Qt::blue );
       rb->setBrushStyle( Qt::NoBrush );
@@ -228,6 +233,7 @@ void QgsMapToolNodeTool::canvasPressEvent( QgsMapMouseEvent* e )
     }
     connect( QgisApp::instance()->layerTreeView(), SIGNAL( currentLayerChanged( QgsMapLayer* ) ), this, SLOT( currentLayerChanged( QgsMapLayer* ) ) );
     connect( mSelectedFeature, SIGNAL( destroyed() ), this, SLOT( selectedFeatureDestroyed() ) );
+    connect( vlayer, SIGNAL( geometryChanged( QgsFeatureId, QgsGeometry & ) ), this, SLOT( geometryChanged( QgsFeatureId, QgsGeometry & ) ) );
     connect( vlayer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
     mIsPoint = vlayer->geometryType() == QGis::Point;
     mNodeEditor = new QgsNodeEditor( vlayer, mSelectedFeature, mCanvas );
@@ -356,6 +362,11 @@ void QgsMapToolNodeTool::canvasPressEvent( QgsMapMouseEvent* e )
 
 void QgsMapToolNodeTool::updateSelectFeature()
 {
+  updateSelectFeature( *mSelectedFeature->geometry() );
+}
+
+void QgsMapToolNodeTool::updateSelectFeature( QgsGeometry &geom )
+{
   delete mSelectRubberBand;
 
   mSelectRubberBand = new QgsGeometryRubberBand( mCanvas, mSelectedFeature->geometry()->type() );
@@ -370,7 +381,7 @@ void QgsMapToolNodeTool::updateSelectFeature()
   color.setAlphaF( myAlpha );
   mSelectRubberBand->setFillColor( color );
 
-  QgsAbstractGeometryV2* rbGeom = mSelectedFeature->geometry()->geometry()->clone();
+  QgsAbstractGeometryV2* rbGeom = geom.geometry()->clone();
   QgsVectorLayer *vlayer = mSelectedFeature->vlayer();
   if ( mCanvas->mapSettings().layerTransform( vlayer ) )
     rbGeom->transform( *mCanvas->mapSettings().layerTransform( vlayer ) );
@@ -381,6 +392,14 @@ void QgsMapToolNodeTool::selectedFeatureDestroyed()
 {
   QgsDebugCall;
   cleanTool( false );
+}
+
+void QgsMapToolNodeTool::geometryChanged( QgsFeatureId fid, QgsGeometry &geom )
+{
+  if ( mSelectedFeature && ( mSelectedFeature->featureId() == fid ) )
+  {
+    updateSelectFeature( geom );
+  }
 }
 
 void QgsMapToolNodeTool::currentLayerChanged( QgsMapLayer *layer )
