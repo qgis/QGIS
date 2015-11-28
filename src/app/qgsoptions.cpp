@@ -804,6 +804,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   mFillColorToolButton->setContext( "gui" );
   mFillColorToolButton->setDefaultColor( QColor( 255, 0, 0, 30 ) );
 
+  mLineGhostCheckBox->setChecked( settings.value( "/qgis/digitizing/line_ghost", false ).toBool() );
+
   //default snap mode
   mDefaultSnapModeComboBox->insertItem( 0, tr( "To vertex" ), "to vertex" );
   mDefaultSnapModeComboBox->insertItem( 1, tr( "To segment" ), "to segment" );
@@ -1304,6 +1306,8 @@ void QgsOptions::saveOptions()
   mSettings->setValue( "/qgis/digitizing/fill_color_green", digitizingColor.green() );
   mSettings->setValue( "/qgis/digitizing/fill_color_blue", digitizingColor.blue() );
   mSettings->setValue( "/qgis/digitizing/fill_color_alpha", digitizingColor.alpha() );
+
+  settings.setValue( "/qgis/digitizing/line_ghost", mLineGhostCheckBox->isChecked() );
 
   //default snap mode
   QString defaultSnapModeString = mDefaultSnapModeComboBox->itemData( mDefaultSnapModeComboBox->currentIndex() ).toString();
