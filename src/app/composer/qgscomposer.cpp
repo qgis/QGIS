@@ -4037,12 +4037,12 @@ void QgsComposer::writeWorldFile( const QString& worldFileName, double a, double
 
   // QString::number does not use locale settings (for the decimal point)
   // which is what we want here
-  fout << QString::number( a, 'f' ) << "\r\n";
-  fout << QString::number( d, 'f' ) << "\r\n";
-  fout << QString::number( b, 'f' ) << "\r\n";
-  fout << QString::number( e, 'f' ) << "\r\n";
-  fout << QString::number( c, 'f' ) << "\r\n";
-  fout << QString::number( f, 'f' ) << "\r\n";
+  fout << QString::number( a, 'f', 12 ) << "\r\n";
+  fout << QString::number( d, 'f', 12 ) << "\r\n";
+  fout << QString::number( b, 'f', 12 ) << "\r\n";
+  fout << QString::number( e, 'f', 12 ) << "\r\n";
+  fout << QString::number( c, 'f', 12 ) << "\r\n";
+  fout << QString::number( f, 'f', 12 ) << "\r\n";
 }
 
 
