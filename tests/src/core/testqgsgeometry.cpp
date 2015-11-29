@@ -496,6 +496,7 @@ void TestQgsGeometry::pointV2()
   QCOMPARE( size, p12.wkbSize() );
   QgsPointV2 p13;
   p13.fromWkb( wkb );
+  delete[] wkb;
   wkb = 0;
   QVERIFY( p13 == p12 );
 
@@ -507,6 +508,7 @@ void TestQgsGeometry::pointV2()
   p13 = QgsPointV2( 1, 2 );
   wkb = line.asWkb( size );
   QVERIFY( !p13.fromWkb( wkb ) );
+  delete[] wkb;
   wkb = 0;
   QCOMPARE( p13.wkbType(), QgsWKBTypes::Unknown );
 
@@ -1192,7 +1194,7 @@ void TestQgsGeometry::lineStringV2()
   QCOMPARE( size, l15.wkbSize() );
   QgsLineStringV2 l16;
   l16.fromWkb( wkb );
-  delete wkb;
+  delete[] wkb;
   wkb = 0;
   QCOMPARE( l16.numPoints(), 4 );
   QCOMPARE( l16.vertexCount(), 4 );
@@ -1214,7 +1216,7 @@ void TestQgsGeometry::lineStringV2()
   QgsPointV2 point( 1, 2 );
   wkb = point.asWkb( size ) ;
   QVERIFY( !l16.fromWkb( wkb ) );
-  delete wkb;
+  delete[] wkb;
   wkb = 0;
   QCOMPARE( l16.wkbType(), QgsWKBTypes::Unknown );
 
@@ -1867,7 +1869,7 @@ void TestQgsGeometry::lineStringV2()
   l37.setPoints( QList< QgsPointV2 >() << QgsPointV2( 5, 10 ) << QgsPointV2( 10, 15 ) );
   wkb = toAppend->asWkb( size );
   l37.fromWkb( wkb );
-  delete wkb;
+  delete[] wkb;
   wkb = 0;
   QCOMPARE( l37.boundingBox(), QgsRectangle( 1, 0, 4, 2 ) );
   l37.fromWkt( QString( "LineString( 1 5, 3 4, 6 3 )" ) );

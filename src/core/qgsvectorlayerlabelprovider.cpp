@@ -319,8 +319,6 @@ QgsGeometry* QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature& 
   QgsAbstractGeometryV2* obstacleGeom = 0;
   if ( isMultiPoint )
     obstacleGeom = new QgsMultiPolygonV2();
-  else
-    obstacleGeom = new QgsPolygonV2();
 
   // for each point
   for ( int i = 0; i < fet.constGeometry()->geometry()->nCoordinates(); ++i )
@@ -380,7 +378,6 @@ QgsGeometry* QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature& 
     }
     else
     {
-      delete obstacleGeom;
       obstacleGeom = obstaclePolygon;
     }
   }
