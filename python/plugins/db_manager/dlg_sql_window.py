@@ -209,7 +209,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         self.update()
         QApplication.restoreOverrideCursor()
 
-    def _getSqlLayer(self):
+    def _getSqlLayer(self, _filter):
         hasUniqueField = self.uniqueColumnCheck.checkState() == Qt.Checked
         if hasUniqueField:
             if self.allowMultiColumnPk:
@@ -258,7 +258,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
 
         # create the layer
         layer = self.db.toSqlLayer(query, geomFieldName, uniqueFieldName, newLayerName, layerType,
-                                   self.avoidSelectById.isChecked(), self.filter)
+                                   self.avoidSelectById.isChecked(), _filter)
         if layer.isValid():
             return layer
         else:
@@ -266,16 +266,15 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
 
     def loadSqlLayer(self):
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-        layer = self._getSqlLayer()
-        QApplication.restoreOverrideCursor()
+        try:
+            layer = self._getSqlLayer(self.filter)
+            if layer == None:
+                return
 
-        if layer == None:
-            return
-
-        from qgis.core import QgsMapLayerRegistry
-        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-        QgsMapLayerRegistry.instance().addMapLayers([layer], True)
-        QApplication.restoreOverrideCursor()
+            from qgis.core import QgsMapLayerRegistry
+            QgsMapLayerRegistry.instance().addMapLayers([layer], True)
+        finally:
+            QApplication.restoreOverrideCursor()
 
     def fillColumnCombos(self):
         query = self._getSqlQuery()
@@ -460,18 +459,12 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
 
     def setFilter(self):
         from qgis.gui import QgsQueryBuilder
-        layer = self._getSqlLayer()
-
-        if layer == None:
-            # probably the defined filter does not work for the query, so try to create the layer without the filter
-            filter = self.filter
-            self.filter = ""
-            layer = self._getSqlLayer()
-            self.filter = filter
-            if layer == None:
-                return
+        layer = self._getSqlLayer("")
+        if not layer:
+            return
 
         dlg = QgsQueryBuilder(layer)
         dlg.setSql(self.filter)
         if dlg.exec_():
             self.filter = dlg.sql()
+        layer.deleteLater()
