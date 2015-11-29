@@ -380,6 +380,7 @@ QgsGeometry* QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature& 
     }
     else
     {
+      delete obstacleGeom;
       obstacleGeom = obstaclePolygon;
     }
   }

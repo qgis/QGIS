@@ -496,7 +496,6 @@ void TestQgsGeometry::pointV2()
   QCOMPARE( size, p12.wkbSize() );
   QgsPointV2 p13;
   p13.fromWkb( wkb );
-  delete wkb;
   wkb = 0;
   QVERIFY( p13 == p12 );
 
@@ -508,7 +507,6 @@ void TestQgsGeometry::pointV2()
   p13 = QgsPointV2( 1, 2 );
   wkb = line.asWkb( size );
   QVERIFY( !p13.fromWkb( wkb ) );
-  delete wkb;
   wkb = 0;
   QCOMPARE( p13.wkbType(), QgsWKBTypes::Unknown );
 
