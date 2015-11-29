@@ -123,16 +123,11 @@ QgsWFSProvider::QgsWFSProvider( const QString& uri )
     setDataSourceUri( bkUri );
   }
 
-#if 0 //non-cached mode is broken
   mCached = !uri.contains( "BBOX=" );
   if ( mCached )
   { //"Cache Features" option; get all features in layer immediately
     reloadData();
   } //otherwise, defer feature retrieval until layer is first rendered
-#endif //0
-
-  mCached = true;
-  reloadData();
 
   if ( mValid )
   {
@@ -159,7 +154,8 @@ QgsAbstractFeatureSource* QgsWFSProvider::featureSource() const
 void QgsWFSProvider::reloadData()
 {
   mPendingRetrieval = false;
-  deleteData();
+  if (mCached)
+      deleteData();
   delete mSpatialIndex;
   mSpatialIndex = new QgsSpatialIndex();
   mValid = !getFeature( dataSourceUri() );
@@ -285,8 +281,29 @@ QgsFeatureIterator QgsWFSProvider::getFeatures( const QgsFeatureRequest& request
     }
 
   }
-#endif
   return new QgsWFSFeatureIterator( new QgsWFSFeatureSource( this ), true, request );
+#else
+  QgsRectangle rect = request.filterRect();
+  if ( !( request.flags() & QgsFeatureRequest::NoGeometry ) && !rect.isEmpty() )
+  {
+      deleteData();
+      mGetExtent = rect;
+
+      QString dsURI = dataSourceUri();
+      dsURI = dsURI.replace( QRegExp( "BBOX=[^&]*" ),
+                               QString( "BBOX=%1,%2,%3,%4" )
+                               .arg( qgsDoubleToString( rect.xMinimum() ) )
+                               .arg( qgsDoubleToString( rect.yMinimum() ) )
+                               .arg( qgsDoubleToString( rect.xMaximum() ) )
+                               .arg( qgsDoubleToString( rect.yMaximum() ) ) );
+      //TODO: BBOX may not be combined with FILTER. WFS spec v. 1.1.0, sec. 14.7.3 ff.
+      //      if a FILTER is present, the BBOX must be merged into it, capabilities permitting.
+      //      Else one criterion must be abandoned and the user warned.  [WBC 111221]
+      setDataSourceUri( dsURI );
+      reloadData();
+  }
+  return new QgsWFSFeatureIterator( new QgsWFSFeatureSource( this ), true, request );
+#endif
 }
 
 int QgsWFSProvider::getFeature( const QString& uri )
@@ -1723,6 +1740,7 @@ void QgsWFSProvider::extendExtent( const QgsRectangle &extent )
   if ( mGetExtent.contains( r ) )
     return;
 
+#if 0
   if ( mGetExtent.isEmpty() )
   {
     mGetExtent = r;
@@ -1738,6 +1756,9 @@ void QgsWFSProvider::extendExtent( const QgsRectangle &extent )
   {
     mGetExtent.combineExtentWith( &r );
   }
+#else
+  mGetExtent = extent;
+#endif
 
   setDataSourceUri( dataSourceUri().replace( QRegExp( "BBOX=[^&]*" ),
                     QString( "BBOX=%1,%2,%3,%4" )
