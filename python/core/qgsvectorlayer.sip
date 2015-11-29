@@ -755,6 +755,8 @@ class QgsVectorLayer : QgsMapLayer
         @param f feature to add
         @param alsoUpdateExtent If True, will also go to the effort of e.g. updating the extents.
         @return                    True in case of success and False in case of error
+
+	// TODO QGIS3: QgsFeature& f /InOut/
      */
     bool addFeature( QgsFeature& f, bool alsoUpdateExtent = true );
 
