@@ -125,8 +125,8 @@ void QgsComposerManager::refreshComposers()
       if ( selectedComposers.contains( i.value() ) )
       {
         selectionRestored = true;
-        int inDex = mComposerListWidget->row( i.key() );
-        QModelIndex selectLine = mComposerListWidget->model()->index( inDex, 0, QModelIndex() );
+        int index = mComposerListWidget->row( i.key() );
+        QModelIndex selectLine = mComposerListWidget->model()->index( index, 0, QModelIndex() );
         mComposerListWidget->selectionModel()->select( selectLine, QItemSelectionModel::Select );
       }
       ++i;
@@ -391,7 +391,7 @@ void QgsComposerManager::remove_clicked()
   QList<QgsComposer *> composerList;
   QList<QListWidgetItem *> composerItems = mComposerListWidget->selectedItems();
   QString title = tr( "Remove composers" );
-  QString message = tr( "Do you really want to remove all selected map composers ?" );
+  QString message = tr( "Do you really want to remove all selected map composers?" );
 
   if ( composerItems.isEmpty() )
   {
