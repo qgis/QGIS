@@ -75,8 +75,11 @@ void QgsAppLegendInterface::removeGroup( int groupIndex )
   parentGroup->removeChildNode( group );
 }
 
-void QgsAppLegendInterface::moveLayer( QgsMapLayer * ml, int groupIndex )
+void QgsAppLegendInterface::moveLayer( QgsMapLayer *ml, int groupIndex )
 {
+  if ( !ml )
+    return;
+
   QgsLayerTreeGroup* group = groupIndexToNode( groupIndex );
   if ( !group )
     return;
@@ -155,14 +158,20 @@ int QgsAppLegendInterface::groupNodeToIndex( QgsLayerTreeGroup* group )
   return _groupNodeToIndex( group, mLayerTreeView->layerTreeModel()->rootGroup(), currentIndex );
 }
 
-void QgsAppLegendInterface::setLayerVisible( QgsMapLayer * ml, bool visible )
+void QgsAppLegendInterface::setLayerVisible( QgsMapLayer *ml, bool visible )
 {
+  if ( !ml )
+    return;
+
   if ( QgsLayerTreeLayer* nodeLayer = mLayerTreeView->layerTreeModel()->rootGroup()->findLayer( ml->id() ) )
     nodeLayer->setVisible( visible ? Qt::Checked : Qt::Unchecked );
 }
 
 void QgsAppLegendInterface::setLayerExpanded( QgsMapLayer * ml, bool expand )
 {
+  if ( !ml )
+    return;
+
   if ( QgsLayerTreeLayer* nodeLayer = mLayerTreeView->layerTreeModel()->rootGroup()->findLayer( ml->id() ) )
     setExpanded( nodeLayer, expand );
 }
@@ -247,8 +256,11 @@ bool QgsAppLegendInterface::isGroupVisible( int groupIndex )
   return false;
 }
 
-bool QgsAppLegendInterface::isLayerExpanded( QgsMapLayer * ml )
+bool QgsAppLegendInterface::isLayerExpanded( QgsMapLayer *ml )
 {
+  if ( !ml )
+    return false;
+
   if ( QgsLayerTreeLayer* nodeLayer = mLayerTreeView->layerTreeModel()->rootGroup()->findLayer( ml->id() ) )
     return nodeLayer->isExpanded();
 
@@ -256,8 +268,11 @@ bool QgsAppLegendInterface::isLayerExpanded( QgsMapLayer * ml )
 }
 
 
-bool QgsAppLegendInterface::isLayerVisible( QgsMapLayer * ml )
+bool QgsAppLegendInterface::isLayerVisible( QgsMapLayer *ml )
 {
+  if ( !ml )
+    return false;
+
   if ( QgsLayerTreeLayer* nodeLayer = mLayerTreeView->layerTreeModel()->rootGroup()->findLayer( ml->id() ) )
     return nodeLayer->isVisible() == Qt::Checked;
 
@@ -283,6 +298,9 @@ QList< QgsMapLayer * > QgsAppLegendInterface::layers() const
 
 void QgsAppLegendInterface::refreshLayerSymbology( QgsMapLayer *ml )
 {
+  if ( !ml )
+    return;
+
   mLayerTreeView->refreshLayerSymbology( ml->id() );
 }
 
