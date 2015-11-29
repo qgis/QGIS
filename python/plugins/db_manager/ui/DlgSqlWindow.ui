@@ -38,6 +38,40 @@
          <property name="margin">
           <number>0</number>
          </property>
+         <item row="2" column="0">
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <item>
+            <widget class="QCheckBox" name="avoidSelectById">
+             <property name="toolTip">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Avoid selecting feature by id. Sometimes - especially when running expensive queries/views - fetching the data sequentially instead of fetching features by id can be much quicker.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="text">
+              <string>Avoid selecting by feature id</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QPushButton" name="loadLayerBtn">
+             <property name="text">
+              <string>Load now!</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
          <item row="0" column="0">
           <layout class="QHBoxLayout" name="horizontalLayout_6">
            <item>
@@ -203,25 +237,18 @@ columns</string>
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="loadLayerBtn">
+            <widget class="QPushButton" name="btnSetFilter">
              <property name="text">
-              <string>Load now!</string>
+              <string>Set filter</string>
+             </property>
+             <property name="autoDefault">
+              <bool>false</bool>
              </property>
             </widget>
            </item>
           </layout>
          </item>
         </layout>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QCheckBox" name="avoidSelectById">
-        <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Avoid selecting feature by id. Sometimes - especially when running expensive queries/views - fetching the data sequentially instead of fetching features by id can be much quicker.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="text">
-         <string>Avoid selecting by feature id</string>
-        </property>
        </widget>
       </item>
      </layout>
@@ -432,6 +459,22 @@ columns</string>
     <hint type="destinationlabel">
      <x>274</x>
      <y>385</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>loadAsLayerGroup</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>loadAsLayerWidget</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>312</x>
+     <y>450</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>312</x>
+     <y>456</y>
     </hint>
    </hints>
   </connection>
