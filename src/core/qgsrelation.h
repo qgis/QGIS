@@ -227,6 +227,10 @@ class CORE_EXPORT QgsRelation
      */
     QList< FieldPair > fieldPairs() const;
 
+    QgsAttributeList referencedFields() const;
+
+    QgsAttributeList referencingFields() const;
+
     /**
      * Returns the validity of this relation. Don't use the information if it's not valid.
      *
