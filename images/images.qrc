@@ -346,6 +346,12 @@
         <file>themes/default/mIconExpressionPreview.svg</file>
         <file>themes/default/mIconExpressionSelect.svg</file>
         <file>themes/default/mIconFavourites.png</file>
+        <file>themes/default/mIconFieldDate.svg</file>
+        <file>themes/default/mIconFieldDateTime.svg</file>
+        <file>themes/default/mIconFieldFloat.svg</file>
+        <file>themes/default/mIconFieldInteger.svg</file>
+        <file>themes/default/mIconFieldText.svg</file>
+        <file>themes/default/mIconFieldTime.svg</file>
         <file>themes/default/mIconFirst.png</file>
         <file>themes/default/mIconGeometryLayer.png</file>
         <file>themes/default/mIconInfo.png</file>
@@ -518,10 +524,6 @@
         <file>themes/default/mActionCircularStringCurvePoint.svg</file>
         <file>themes/default/mActionCircularStringRadius.png</file>
         <file>themes/default/mActionCircularStringRadius.svg</file>
-        <file>themes/default/mIconFloatField.svg</file>
-        <file>themes/default/mIconIntegerField.svg</file>
-        <file>themes/default/mIconDateField.svg</file>
-        <file>themes/default/mIconDateTimeField.svg</file>
         <file>flags/zh.png</file>
     </qresource>
     <qresource prefix="/images/tips">
