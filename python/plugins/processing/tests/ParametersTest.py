@@ -26,68 +26,139 @@ __copyright__ = '(C) 2013, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import unittest
-from processing.core.parameters import ParameterNumber
-from processing.core.parameters import ParameterCrs
-from processing.core.parameters import ParameterExtent
+from processing.core.parameters import (ParameterNumber,
+                                        ParameterCrs,
+                                        ParameterExtent,
+                                        ParameterBoolean)
 
+class ParameterBooleanTest(unittest.TestCase):
+    def testInitDefaults(self):
+        parameter = ParameterBoolean()
+        self.assertEqual(parameter.name, '')
+        self.assertEqual(parameter.description, '')
+        self.assertEqual(parameter.default, True)
+        self.assertEqual(parameter.optional, False)
 
-class ParametersTest(unittest.TestCase):
+    def testInit(self):
+        parameter = ParameterBoolean('myName', 'myDescription', False, True)
+        self.assertEqual(parameter.name, 'myName')
+        self.assertEqual(parameter.description, 'myDescription')
+        self.assertEqual(parameter.default, False)
+        self.assertEqual(parameter.optional, True)
 
-    def testParameterNumber(self):
-        param = ParameterNumber('name', 'desc', 0, 10)
-        assert not param.setValue('wrongvalue')
-        assert param.value is None
-        assert not param.setValue(25)
-        assert param.value is None
-        assert param.setValue(5)
-        assert param.value == 5
-        assert param.setValue(None)
-        assert param.value == param.default
-        s = param.serialize()
-        param2 = ParameterNumber()
-        param2.deserialize(s)
-        assert param.default == param2.default
-        assert param.max == param2.max
-        assert param.min == param2.min
-        assert param.description == param2.description
-        assert param.name == param2.name
+    def testSetValue(self):
+        parameter = ParameterBoolean('myName', 'myDescription', False, True)
+        self.assertEqual(parameter.value, None)
+        parameter.setValue(True)
+        self.assertEqual(parameter.value, True)
+        parameter.setValue(False)
+        self.assertEqual(parameter.value, False)
 
-    def testParameterCRS(self):
-        param = ParameterCrs('name', 'desc')
-        assert param.setValue('EPSG:12003')
-        assert param.value == 'EPSG:12003'
-        assert param.setValue(None)
-        assert param.value == param.default
-        s = param.serialize()
-        param2 = ParameterCrs()
-        param2.deserialize(s)
-        assert param.default == param2.default
-        assert param.description == param2.description
-        assert param.name == param2.name
+    def testDefault(self):
+        default = False
+        parameter = ParameterBoolean('myName', 'myDescription', default, True)
+        parameter.setValue(None)
+        self.assertEqual(parameter.value, default)
 
-    def testParameterExtent(self):
-        param = ParameterExtent('name', 'desc')
-        assert not param.setValue('0,2,0')
-        assert not param.setValue('0,2,0,a')
-        assert not param.setValue('0,2,2,4')
-        assert param.value == '0,2,2,4'
-        assert param.setValue(None)
-        assert param.value == param.default
-        s = param.serialize()
-        param2 = ParameterExtent()
-        param2.deserialize(s)
-        assert param.default == param2.default
-        assert param.description == param2.description
-        assert param.name == param2.name
+    def testOptional(self):
+        optionalParameter = ParameterBoolean('myName', 'myDescription', default = False, optional = True)
+        optionalParameter.setValue(True)
+        optionalParameter.setValue(None)
+        self.assertEqual(optionalParameter.value, False)
 
+        requiredParameter = ParameterBoolean('myName', 'myDescription', default = False, optional = False)
+        requiredParameter.setValue(True)
+        requiredParameter.setValue(None)
+        self.assertEqual(requiredParameter.value, True)
+
+class ParameterCRSTest(unittest.TestCase):
+
+    def testSetValue(self):
+        parameter = ParameterCrs('myName', 'myDesc', default='EPSG:4326', optional=False)
+        self.assertTrue(parameter.setValue('EPSG:12003'))
+        self.assertEqual(parameter.value, 'EPSG:12003')
+
+    def testOptional(self):
+        optionalParameter = ParameterCrs('myName', 'myDesc', default='EPSG:4326', optional=True)
+        optionalParameter.setValue('EPSG:12003')
+        optionalParameter.setValue(None)
+        self.assertEqual(optionalParameter.value, 'EPSG:4326')
+
+        requiredParameter = ParameterCrs('myName', 'myDesc', default='EPSG:4326', optional=False)
+        requiredParameter.setValue('EPSG:12003')
+        requiredParameter.setValue(None)
+        self.assertEqual(requiredParameter.value, 'EPSG:12003')
+
+class ParameterExtentTest(unittest.TestCase):
+    def testSetInvalidValue(self):
+        parameter = ParameterExtent('myName', 'myDesc')
+        self.assertFalse(parameter.setValue('0,2,0'))
+        self.assertFalse(parameter.setValue('0,2,0,a'))
+
+    def testSetValue(self):
+        parameter = ParameterExtent('myName', 'myDesc')
+        self.assertTrue(parameter.setValue('0,2,2,4'))
+        self.assertEqual(parameter.value, '0,2,2,4')
+
+    def testOptional(self):
+        optionalParameter = ParameterExtent('myName', 'myDesc', default='0,1,0,1', optional=True)
+        optionalParameter.setValue('1,2,3,4')
+        optionalParameter.setValue(None)
+        # Extent is unique in that it will let you set "None", whereas other
+        # optional params become "default" when assigning None.
+        self.assertEqual(optionalParameter.value, None)
+
+        requiredParameter = ParameterExtent('myName', 'myDesc', default='0,1,0,1', optional=False)
+        requiredParameter.setValue('1,2,3,4')
+        requiredParameter.setValue(None)
+        self.assertEqual(requiredParameter.value, '1,2,3,4')
+
+class ParameterNumberTest(unittest.TestCase):
+    def testSetOnlyValidNumbers(self):
+        parameter = ParameterNumber('myName', 'myDescription', minValue = 0, maxValue = 10, default = 1.0, optional = True)
+        self.assertFalse(parameter.setValue('wrongvalue'))
+        self.assertEqual(parameter.value, None)
+
+    def testMaxValue(self):
+        parameter = ParameterNumber('myName', 'myDescription', minValue = 0, maxValue = 10, default = 1.0, optional = True)
+        self.assertFalse(parameter.setValue(11))
+        self.assertEqual(parameter.value, None)
+        self.assertTrue(parameter.setValue(10))
+        self.assertEqual(parameter.value, 10)
+
+    def testMinValue(self):
+        parameter = ParameterNumber('myName', 'myDescription', minValue = 3, maxValue = 10, default = 1.0, optional = True)
+        self.assertFalse(parameter.setValue(1))
+        self.assertFalse(parameter.setValue(-2))
+        self.assertEqual(parameter.value, None)
+        self.assertTrue(parameter.setValue(3))
+        self.assertEqual(parameter.value, 3)
+
+    def testSetValue(self):
+        parameter = ParameterNumber('myName', 'myDescription', minValue = 0, maxValue = 10, default = 1.0, optional = True)
+        self.assertTrue(parameter.setValue(5))
+        self.assertEquals(parameter.value, 5)
+
+    def testOptional(self):
+        optionalParameter = ParameterNumber('myName', 'myDescription', minValue = 0, maxValue = 10, default = 1.0, optional = True)
+        optionalParameter.setValue(5)
+        optionalParameter.setValue(None)
+        self.assertEqual(optionalParameter.value, 1.0)
+
+        requiredParameter = ParameterNumber('myName', 'myDescription', minValue = 0, maxValue = 10, default = 1.0, optional = False)
+        requiredParameter.setValue(5)
+        requiredParameter.setValue(None)
+        self.assertEqual(requiredParameter.value, 5)
 
 def suite():
     suite = unittest.makeSuite(ParametersTest, 'test')
     return suite
-
 
 def runtests():
     result = unittest.TestResult()
     testsuite = suite()
     testsuite.run(result)
     return result
+
+if __name__ == '__main__':
+    unittest.main()
