@@ -63,6 +63,7 @@ QgsWFSProvider::QgsWFSProvider( const QString& uri )
     , mWKBType( QGis::WKBUnknown )
     , mSourceCRS( 0 )
     , mFeatureCount( 0 )
+    , mMaxFeatureCount( 0 )
     , mValid( true )
     , mCached( false )
     , mPendingRetrieval( false )
@@ -737,6 +738,15 @@ int QgsWFSProvider::getFeatureGET( const QString& uri, const QString& geometryAt
     }
   }
   mFeatureCount = mFeatures.size();
+
+  if ( mFeatureCount && mFeatureCount >= mMaxFeatureCount && mFeatureCount % 500 == 0 )
+    QgsMessageLog::logMessage(
+      tr( "%1: %2 features fetched hints at reaching a download limit. " ).arg( typeName ).arg( mFeatureCount ) +
+      tr( "Zoom in to fetch all data if your layer has the 'current view extent' option enabled." ),
+      "WFS" );
+
+  if ( mFeatureCount > mMaxFeatureCount )
+    mMaxFeatureCount = mFeatureCount;
 
   return 0;
 }
