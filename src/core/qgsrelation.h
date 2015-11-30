@@ -227,8 +227,20 @@ class CORE_EXPORT QgsRelation
      */
     QList< FieldPair > fieldPairs() const;
 
+    /**
+     * Returns a list of attributes used to form the referenced fields
+     * (most likely primary key) on the referenced layer.
+     *
+     * @return A list of attributes
+     */
     QgsAttributeList referencedFields() const;
 
+    /**
+     * Returns a list of attributes used to form the referencing fields
+     * (foreign key) on the referencing layer.
+     *
+     * @return A list of attributes
+     */
     QgsAttributeList referencingFields() const;
 
     /**
