@@ -387,7 +387,7 @@ void QgsComposerScaleBar::applyDefaultSettings()
   mPen = QPen( Qt::black );
   mPen.setJoinStyle( mLineJoinStyle );
   mPen.setCapStyle( mLineCapStyle );
-  mPen.setWidthF( 1.0 );
+  mPen.setWidthF( 0.3 );
 
   mBrush.setColor( Qt::black );
   mBrush.setStyle( Qt::SolidPattern );
@@ -760,7 +760,7 @@ bool QgsComposerScaleBar::readXML( const QDomElement& itemElem, const QDomDocume
   mMaxBarWidth = itemElem.attribute( "maxBarWidth", "150" ).toInt();
   mSegmentMillimeters = itemElem.attribute( "segmentMillimeters", "0.0" ).toDouble();
   mNumMapUnitsPerScaleBarUnit = itemElem.attribute( "numMapUnitsPerScaleBarUnit", "1.0" ).toDouble();
-  mPen.setWidthF( itemElem.attribute( "outlineWidth", "1.0" ).toDouble() );
+  mPen.setWidthF( itemElem.attribute( "outlineWidth", "0.3" ).toDouble() );
   mUnitLabeling = itemElem.attribute( "unitLabel" );
   mLineJoinStyle = QgsSymbolLayerV2Utils::decodePenJoinStyle( itemElem.attribute( "lineJoinStyle", "miter" ) );
   mPen.setJoinStyle( mLineJoinStyle );
