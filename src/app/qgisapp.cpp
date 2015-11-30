@@ -4602,7 +4602,14 @@ bool QgisApp::openLayer( const QString & fileName, bool allowInteractive )
   // try to load it as raster
   if ( QgsRasterLayer::isValidRasterFileName( fileName ) )
   {
-    ok  = addRasterLayer( fileName, fileInfo.completeBaseName() );
+    // open .adf as a directory
+    if ( fileName.toLower().endsWith( ".adf" ) )
+    {
+      QString dirName = fileInfo.path();
+      ok  = addRasterLayer( dirName, QFileInfo( dirName ).completeBaseName() );
+    }
+    else
+      ok  = addRasterLayer( fileName, fileInfo.completeBaseName() );
   }
   // TODO - should we really call isValidRasterFileName() before addRasterLayer()
   //        this results in 2 calls to GDALOpen()
@@ -9871,7 +9878,13 @@ QgsRasterLayer* QgisApp::addRasterLayerPrivate(
   // XXX ya know QgsRasterLayer can snip out the basename on its own;
   // XXX why do we have to pass it in for it?
   // ET : we may not be getting "normal" files here, so we still need the baseName argument
-  if ( providerKey.isEmpty() )
+  if ( !providerKey.isEmpty() && uri.toLower().endsWith( ".adf" ) )
+  {
+    QFileInfo fileInfo( uri );
+    QString dirName = fileInfo.path();
+    layer = new QgsRasterLayer( dirName, QFileInfo( dirName ).completeBaseName(), "gdal" );
+  }
+  else if ( providerKey.isEmpty() )
     layer = new QgsRasterLayer( uri, baseName ); // fi.completeBaseName());
   else
     layer = new QgsRasterLayer( uri, baseName, providerKey );
@@ -10002,16 +10015,9 @@ bool QgisApp::addRasterLayers( QStringList const &theFileNameQStringList, bool g
     if ( QgsRasterLayer::isValidRasterFileName( *myIterator, errMsg ) )
     {
       QFileInfo myFileInfo( *myIterator );
-      // get the directory the .adf file was in
-      QString myDirNameQString = myFileInfo.path();
-      //extract basename
-      QString myBaseNameQString = myFileInfo.completeBaseName();
-      //only allow one copy of a ai grid file to be loaded at a
-      //time to prevent the user selecting all adfs in 1 dir which
-      //actually represent 1 coverage,
 
       // try to create the layer
-      QgsRasterLayer *layer = addRasterLayerPrivate( *myIterator, myBaseNameQString,
+      QgsRasterLayer *layer = addRasterLayerPrivate( *myIterator, myFileInfo.completeBaseName(),
                               QString(), guiWarning, true );
       if ( layer && layer->isValid() )
       {
@@ -10019,7 +10025,7 @@ bool QgisApp::addRasterLayers( QStringList const &theFileNameQStringList, bool g
         //time to prevent the user selecting all adfs in 1 dir which
         //actually represent 1 coverate,
 
-        if ( myBaseNameQString.toLower().endsWith( ".adf" ) )
+        if ( myFileInfo.fileName().toLower().endsWith( ".adf" ) )
         {
           break;
         }
