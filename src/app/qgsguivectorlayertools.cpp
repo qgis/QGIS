@@ -32,12 +32,19 @@ QgsGuiVectorLayerTools::QgsGuiVectorLayerTools()
     : QObject( NULL )
 {}
 
-bool QgsGuiVectorLayerTools::addFeature( QgsVectorLayer* layer, const QgsAttributeMap& defaultValues, const QgsGeometry& defaultGeometry ) const
+bool QgsGuiVectorLayerTools::addFeature( QgsVectorLayer* layer, const QgsAttributeMap& defaultValues, const QgsGeometry& defaultGeometry, QgsFeature* feat ) const
 {
-  QgsFeature f;
-  f.setGeometry( defaultGeometry );
-  QgsFeatureAction a( tr( "Add feature" ), f, layer );
-  return a.addFeature( defaultValues );
+  QgsFeature* f = feat;
+  if ( !feat )
+    f = new QgsFeature();
+
+  feat->setGeometry( defaultGeometry );
+  QgsFeatureAction a( tr( "Add feature" ), *f, layer );
+  bool added = a.addFeature( defaultValues );
+  if ( !feat )
+    delete f;
+
+  return added;
 }
 
 bool QgsGuiVectorLayerTools::startEditing( QgsVectorLayer* layer ) const

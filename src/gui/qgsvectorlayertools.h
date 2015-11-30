@@ -45,10 +45,10 @@ class GUI_EXPORT QgsVectorLayerTools
      * @param layer           The layer to which the feature should be added
      * @param defaultValues   Default values for the feature to add
      * @param defaultGeometry A default geometry to add to the feature
+     * @param feature         Updated feature after adding will be written back to this
      * @return                True in case of success, False if the operation failed/was aborted
      */
-    virtual bool addFeature( QgsVectorLayer* layer, const QgsAttributeMap& defaultValues = QgsAttributeMap(), const QgsGeometry& defaultGeometry = QgsGeometry() ) const = 0;
-
+    virtual bool addFeature( QgsVectorLayer* layer, const QgsAttributeMap& defaultValues = QgsAttributeMap(), const QgsGeometry& defaultGeometry = QgsGeometry(), QgsFeature* feature = 0 ) const = 0;
 
     /**
      * This will be called, whenever a vector layer should be switched to edit mode. Check the providers

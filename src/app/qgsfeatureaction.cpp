@@ -218,6 +218,9 @@ void QgsFeatureAction::onFeatureSaved( const QgsFeature& feature )
   Q_UNUSED( form ) // only used for Q_ASSERT
   Q_ASSERT( form );
 
+  // Assign provider generated values
+  mFeature = feature;
+
   mFeatureSaved = true;
 
   QSettings settings;
