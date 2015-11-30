@@ -104,7 +104,9 @@ void TestQgsComposerScaleBar::initTestCase()
   mComposerScaleBar->setNumSegmentsLeft( 0 );
   mComposerScaleBar->setNumSegments( 2 );
   mComposerScaleBar->setHeight( 5 );
-
+  QPen scalePen = mComposerScaleBar->pen();
+  scalePen.setWidthF( 1.0 );
+  mComposerScaleBar->setPen( scalePen );
 
   qWarning() << "scalebar font: " << mComposerScaleBar->font().toString() << " exactMatch:" << mComposerScaleBar->font().exactMatch();
 
