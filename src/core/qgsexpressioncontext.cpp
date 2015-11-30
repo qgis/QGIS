@@ -28,12 +28,13 @@
 #include <QSettings>
 #include <QDir>
 
-
+/// @cond
 const QString QgsExpressionContext::EXPR_FIELDS( "_fields_" );
 const QString QgsExpressionContext::EXPR_FEATURE( "_feature_" );
 const QString QgsExpressionContext::EXPR_ORIGINAL_VALUE( "value" );
 const QString QgsExpressionContext::EXPR_SYMBOL_COLOR( "symbol_color" );
 const QString QgsExpressionContext::EXPR_SYMBOL_ANGLE( "symbol_angle" );
+/// @endcond
 
 //
 // QgsExpressionContextScope

@@ -418,11 +418,13 @@ class CORE_EXPORT QgsExpressionContext
      */
     void setOriginalValueVariable( const QVariant& value );
 
+    /// @cond
     static const QString EXPR_FIELDS;
     static const QString EXPR_FEATURE;
     static const QString EXPR_ORIGINAL_VALUE;
     static const QString EXPR_SYMBOL_COLOR;
     static const QString EXPR_SYMBOL_ANGLE;
+    /// @endcond
 
   private:
 
