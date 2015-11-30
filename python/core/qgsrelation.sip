@@ -183,6 +183,22 @@ class QgsRelation
 %End
 
     /**
+     * Returns a list of attributes used to form the referenced fields
+     * (most likely primary key) on the referenced layer.
+     *
+     * @return A list of attributes
+     */
+    QgsAttributeList referencedFields() const;
+
+    /**
+     * Returns a list of attributes used to form the referencing fields
+     * (foreign key) on the referencing layer.
+     *
+     * @return A list of attributes
+     */
+    QgsAttributeList referencingFields() const;
+
+    /**
      * Returns the validity of this relation. Don't use the information if it's not valid.
      *
      * @return true if the relation is valid
