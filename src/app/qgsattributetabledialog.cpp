@@ -242,7 +242,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
 
   mUpdateExpressionText->registerGetExpressionContextCallback( &_getExpressionContext, mLayer );
 
-  mFieldModel = new QgsFieldModel();
+  mFieldModel = new QgsFieldModel( this );
   mFieldModel->setLayer( mLayer );
   mFieldCombo->setModel( mFieldModel );
   connect( mRunFieldCalc, SIGNAL( clicked() ), this, SLOT( updateFieldFromExpression() ) );
