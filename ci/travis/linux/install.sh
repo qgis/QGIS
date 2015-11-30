@@ -8,7 +8,7 @@ cmake --version
 ${CC} --version
 
 cmake -DWITH_SERVER=ON \
-      -DWITH_STAGED_PLUGINS=OFF \
+      -DWITH_STAGED_PLUGINS=ON \
       -DWITH_GRASS=ON \
       -DSUPPRESS_QT_WARNINGS=ON \
       -DENABLE_MODELTEST=ON \
