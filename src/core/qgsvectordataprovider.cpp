@@ -544,6 +544,7 @@ QStringList QgsVectorDataProvider::errors()
 
 void QgsVectorDataProvider::pushError( const QString& msg )
 {
+  QgsDebugMsg( msg );
   mErrors << msg;
 }
 
