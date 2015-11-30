@@ -68,44 +68,77 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
      */
     void editingToggled();
 
+    /**
+     * @brief Called when the loading of features has been completed
+     */
+    void loadFinished();
+
+    /**
+     * @brief Called while features are being loaded, cancel to abort
+     * @param i
+     * @param cancel
+     */
+    void loadProgress( int i, bool &cancel );
+
+    /**
+     * @brief Called when features loading starts
+     * @param numFeatures total number of features
+     */
+    void loadStarted( long numFeatures );
+
   private slots:
+    /**
+     * Set cancel to TRUE and abort loading
+     * @brief on_mLoadAbortButton_clicked
+     */
+    void on_mLoadAbortButton_clicked();
+
     /**
      * Copies selected rows to the clipboard
      */
     void on_mCopySelectedRowsButton_clicked();
+
     /**
      * Paste features from the clipboard
      */
     void on_mPasteFeatures_clicked();
+
     /**
      * Toggles editing mode
      */
     void on_mToggleEditingButton_toggled();
+
     /**
      * Saves edits
      */
     void on_mSaveEditsButton_clicked();
+
     /**
      * Reload the data
      */
     void on_mReloadButton_clicked();
 
+
     /**
      * Inverts selection
      */
     void on_mInvertSelectionButton_clicked();
+
     /**
      * Clears selection
      */
     void on_mRemoveSelectionButton_clicked();
+
     /**
      * Zooms to selected features
      */
     void on_mZoomMapToSelectedRowsButton_clicked();
+
     /**
      * Pans to selected features
      */
     void on_mPanMapToSelectedRowsButton_clicked();
+
     /**
      * Moves selected lines to the top
      */
@@ -120,6 +153,7 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
      * Opens dialog to remove attribute
      */
     void on_mRemoveAttribute_clicked();
+
     /**
      * Opens field calculator dialog
      */
@@ -219,6 +253,9 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
 
     QgsRubberBand* mRubberBand;
     QgsSearchWidgetWrapper* mCurrentSearchWidgetWrapper;
+
+    // Load/progress bar related
+    bool mLoadAborted;
 };
 
 

@@ -176,6 +176,23 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      * Is emitted, whenever the filter changes
      */
     void filterChanged();
+    /**
+     * @brief Called when the loading of features has been completed
+     */
+    void loadFinished();
+
+    /**
+     * @brief Called while features are being loaded, cancel to abort
+     * @param i
+     * @param cancel
+     */
+    void loadProgress( int i, bool &cancel );
+
+    /**
+     * @brief Called when features loading starts
+     * @param numFeatures total number of features
+     */
+    void loadStarted( long numFeatures );
 
   private slots:
 
@@ -203,20 +220,6 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      */
     void featureFormAttributeChanged();
 
-    /**
-     * Will be called periodically, when loading layers from slow data providers.
-     *
-     * @param i       The number of features already loaded
-     * @param cancel  Set to true to cancel
-     */
-    virtual void progress( int i, bool &cancel );
-
-    /**
-     * Will be called, once all the features are loaded.
-     * Use e.g. to close a dialog created from progress( int i, bool &cancel )
-     */
-    virtual void finished();
-
   private:
     void initLayerCache( QgsVectorLayer *layer, bool cacheGeometry );
     void initModels( QgsMapCanvas* mapCanvas, const QgsFeatureRequest& request );
@@ -229,7 +232,6 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     QSignalMapper* mPreviewActionMapper;
     QMenu* mPreviewColumnsMenu;
     QgsVectorLayerCache* mLayerCache;
-    QProgressDialog* mProgressDlg;
     QgsIFeatureSelectionManager* mFeatureSelectionManager;
     QgsDistanceArea mDistanceArea;
     QString mDisplayExpression;

@@ -14,7 +14,16 @@
    <string>Attribute Table</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <property name="spacing">
@@ -502,6 +511,20 @@
       </spacer>
      </item>
      <item>
+      <widget class="QProgressBar" name="mLoadProgressBar">
+       <property name="value">
+        <number>24</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="mLoadAbortButton">
+       <property name="text">
+        <string>Abort</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QToolButton" name="mSetStyles">
        <property name="text">
         <string>Cond</string>
@@ -592,7 +615,16 @@
         <property name="sizeConstraint">
          <enum>QLayout::SetDefaultConstraint</enum>
         </property>
-        <property name="margin">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
          <number>0</number>
         </property>
         <item row="0" column="0">
@@ -701,7 +733,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QgsFieldExpressionWidget" name="mUpdateExpressionText">
+       <widget class="QgsFieldExpressionWidget" name="mUpdateExpressionText" native="true">
         <property name="sizePolicy">
          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
           <horstretch>0</horstretch>

@@ -30,6 +30,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgssymbollayerv2utils.h"
+#include "qgsattributetableloadworker.h"
 
 #include <QVariant>
 
@@ -40,6 +41,7 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayerCache *layerCache,
     , mLayerCache( layerCache )
     , mFieldCount( 0 )
     , mCachedField( -1 )
+    , mLoadWorker( NULL )
 {
   QgsDebugMsg( "entered." );
 
@@ -66,6 +68,15 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayerCache *layerCache,
   connect( layer(), SIGNAL( editCommandEnded() ), this, SLOT( editCommandEnded() ) );
   connect( mLayerCache, SIGNAL( featureAdded( QgsFeatureId ) ), this, SLOT( featureAdded( QgsFeatureId ) ) );
   connect( mLayerCache, SIGNAL( cachedLayerDeleted() ), this, SLOT( layerDeleted() ) );
+}
+
+QgsAttributeTableModel::~QgsAttributeTableModel()
+{
+  if ( mLoadWorker && mLoadWorker->isRunning() )
+  {
+    // Stop it
+    mLoadWorker->stopJob();
+  }
 }
 
 bool QgsAttributeTableModel::loadFeatureAtId( QgsFeatureId fid ) const
@@ -341,9 +352,69 @@ void QgsAttributeTableModel::loadAttributes()
   }
 }
 
+
+void QgsAttributeTableModel::loadLayerFinished()
+{
+  QgsDebugMsg( "loadLayerFinished" );
+  endResetModel();
+  emit loadFinished();
+}
+
+
+void QgsAttributeTableModel::featuresReady( QgsFeatureList features, int loadedCount )
+{
+  QgsDebugMsg( "featuresReady" );
+  bool cancel = false;
+  emit loadProgress( loadedCount, cancel );
+  if ( cancel )
+  {
+    if ( mLoadWorker && mLoadWorker->isRunning() )
+    {
+      mLoadWorker->stopJob();
+    }
+    return;
+  }
+  QgsFeatureId fid;
+  int n = mRowIdMap.size();
+  int m = n + features.count() - 1;
+  beginInsertRows( QModelIndex(), n, m );
+  Q_FOREACH ( const QgsFeature &f, features )
+  {
+    mFeat = f;
+    fid = f.id();
+    // Is this check really necessary?
+    if ( mFeatureRequest.acceptFeature( mFeat ) )
+    {
+      mFieldCache[ fid ] = mFeat.attribute( mCachedField );
+      mIdRowMap.insert( fid, n );
+      mRowIdMap.insert( n, fid );
+    }
+    n++;
+  }
+  endInsertRows();
+  reload( index( rowCount() - 1, 0 ), index( rowCount() + features.count() - 1, columnCount() ) );
+}
+
+
 void QgsAttributeTableModel::loadLayer()
 {
   QgsDebugMsg( "entered." );
+
+  // Stop old thread
+  if ( mLoadWorker && mLoadWorker->isRunning() )
+  {
+    mLoadWorker->stopJob();
+  }
+
+  QgsFeatureIterator features = mLayerCache->getFeatures( mFeatureRequest );
+
+  // Pass the total number of features as a maximum for the progress bar
+  long fc = mLayerCache->layer()->featureCount();
+  emit loadStarted( fc );
+
+  // Ensure signals are delivered
+  qApp->processEvents();
+
 
   // make sure attributes are properly updated before caching the data
   // (emit of progress() signal may enter event loop and thus attribute
@@ -358,38 +429,24 @@ void QgsAttributeTableModel::loadLayer()
     removeRows( 0, rowCount() );
   }
 
-  QgsFeatureIterator features = mLayerCache->getFeatures( mFeatureRequest );
+  // Set up the loader worker
+  mLoadWorker = new QgsAttributeTableLoadWorker( features );
+  mLoadWorkerThread = new QThread;
+  mLoadWorker->moveToThread( mLoadWorkerThread );
 
-  int i = 0;
-
-  QTime t;
-  t.start();
-
-  QgsFeature feat;
-  while ( features.nextFeature( feat ) )
-  {
-    ++i;
-
-    QgsDebugMsg( QString( "Next feature %1" ).arg( i ) );
-
-    if ( t.elapsed() > 1000 )
-    {
-      bool cancel = false;
-      emit progress( i, cancel );
-      if ( cancel )
-        break;
-
-      t.restart();
-    }
-    mFeat = feat;
-    featureAdded( feat.id() );
-  }
-
-  emit finished();
+  connect( mLoadWorkerThread, SIGNAL( started() ), mLoadWorker, SLOT( startJob() ) );
+  connect( mLoadWorker, SIGNAL( finished() ), mLoadWorkerThread, SLOT( quit() ) );
+  connect( mLoadWorker, SIGNAL( finished() ), mLoadWorker, SLOT( deleteLater() ) );
+  connect( mLoadWorkerThread, SIGNAL( finished() ), mLoadWorkerThread, SLOT( deleteLater() ) );
+  // Local
+  connect( mLoadWorker, SIGNAL( finished() ), this, SLOT( loadLayerFinished() ) );
+  qRegisterMetaType<QgsFeatureList>( "QgsFeatureList" );
+  connect( mLoadWorker, SIGNAL( featuresReady( QgsFeatureList, int ) ), this, SLOT( featuresReady( QgsFeatureList, int ) ) );
 
   connect( mLayerCache, SIGNAL( invalidated() ), this, SLOT( loadLayer() ), Qt::UniqueConnection );
 
-  endResetModel();
+  mLoadWorkerThread->start();
+
 }
 
 void QgsAttributeTableModel::fieldConditionalStyleChanged( const QString &fieldName )

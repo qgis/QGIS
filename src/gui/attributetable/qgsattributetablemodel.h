@@ -23,11 +23,14 @@
 #include <QHash>
 #include <QQueue>
 #include <QMap>
+#include <QThread>
 
 #include "qgsvectorlayer.h" // QgsAttributeList
 #include "qgsvectorlayercache.h"
 #include "qgsconditionalstyle.h"
 #include "qgsattributeeditorcontext.h"
+#include "qgsattributetableloadworker.h"
+
 
 class QgsMapCanvas;
 class QgsMapLayerAction;
@@ -63,6 +66,11 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * @param parent      The parent QObject (owner)
      */
     QgsAttributeTableModel( QgsVectorLayerCache *layerCache, QObject *parent = 0 );
+
+    /**
+     * Destructor
+     */
+    ~QgsAttributeTableModel( );
 
     /**
      * Returns the number of rows
@@ -241,9 +249,22 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      */
     void modelChanged();
 
-    //! @note not available in python bindings
-    void progress( int i, bool &cancel );
-    void finished();
+    /**
+     * Called while the features are loaded
+     * @note not available in python bindings
+     */
+    void loadProgress( int i, bool &cancel );
+
+    /**
+     * @brief Called when the loading of features has been completed
+     */
+    void loadFinished();
+
+    /**
+     * @brief Called when the loading of features starts
+     * @param numFeatures number of features to be loaded
+     */
+    void loadStarted( long numFeatures );
 
   private slots:
     /**
@@ -276,11 +297,26 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * @param fids feature ids
      */
     virtual void featuresDeleted( const QgsFeatureIds& fids );
+
     /**
      * Launched when a feature has been added
      * @param fid feature id
      */
     virtual void featureAdded( QgsFeatureId fid );
+
+
+    /**
+     * Launched from the load worker when a feature is ready to be added
+     * adds a batch of features to the model
+     * @param features feature list
+     * @param loadedCount number of loaded features
+     */
+    virtual void featuresReady( QgsFeatureList features , int loadedCount );
+
+    /**
+     * Called when the load worker has finished its job
+     */
+    virtual void loadLayerFinished();
 
     /**
      * Launched when layer has been deleted
@@ -336,6 +372,8 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     QRect mChangedCellBounds;
 
     QgsAttributeEditorContext mEditorContext;
+    QgsAttributeTableLoadWorker* mLoadWorker;
+    QThread* mLoadWorkerThread;
 };
 
 

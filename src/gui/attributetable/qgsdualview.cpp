@@ -30,7 +30,7 @@
 #include <QDialog>
 #include <QMenu>
 #include <QMessageBox>
-#include <QProgressDialog>
+
 
 QgsDualView::QgsDualView( QWidget* parent )
     : QStackedWidget( parent )
@@ -40,7 +40,6 @@ QgsDualView::QgsDualView( QWidget* parent )
     , mFeatureListModel( 0 )
     , mAttributeForm( 0 )
     , mLayerCache( 0 )
-    , mProgressDlg( 0 )
     , mFeatureSelectionManager( 0 )
 {
   setupUi( this );
@@ -221,8 +220,8 @@ void QgsDualView::initLayerCache( QgsVectorLayer* layer, bool cacheGeometry )
   mLayerCache->setCacheGeometry( cacheGeometry );
   if ( 0 == cacheSize || 0 == ( QgsVectorDataProvider::SelectAtId & mLayerCache->layer()->dataProvider()->capabilities() ) )
   {
-    connect( mLayerCache, SIGNAL( progress( int, bool & ) ), this, SLOT( progress( int, bool & ) ) );
-    connect( mLayerCache, SIGNAL( finished() ), this, SLOT( finished() ) );
+    // TODO: rm connect( mLayerCache, SIGNAL( progress( int, bool & ) ), parent(), SLOT( progress( int, bool & ) ) );
+    // TODO: rm connect( mLayerCache, SIGNAL( finished() ), parent(), SLOT( finished() ) );
 
     mLayerCache->setFullCache( true );
   }
@@ -238,10 +237,12 @@ void QgsDualView::initModels( QgsMapCanvas* mapCanvas, const QgsFeatureRequest& 
   mMasterModel->setRequest( request );
   mMasterModel->setEditorContext( mEditorContext );
 
-  connect( mMasterModel, SIGNAL( progress( int, bool & ) ), this, SLOT( progress( int, bool & ) ) );
-  connect( mMasterModel, SIGNAL( finished() ), this, SLOT( finished() ) );
-
   connect( mConditionalFormatWidget, SIGNAL( rulesUpdated( QString ) ), mMasterModel, SLOT( fieldConditionalStyleChanged( QString ) ) );
+
+  // Forward progress bar signals
+  connect( mMasterModel, SIGNAL( loadProgress( int, bool & ) ), this, SIGNAL( loadProgress( int, bool & ) ) );
+  connect( mMasterModel, SIGNAL( loadFinished() ), this, SIGNAL( loadFinished() ) );
+  connect( mMasterModel, SIGNAL( loadStarted( long ) ), this, SIGNAL( loadStarted( long ) ) );
 
   mMasterModel->loadLayer();
 
@@ -420,29 +421,6 @@ void QgsDualView::setFeatureSelectionManager( QgsIFeatureSelectionManager* featu
   mFeatureSelectionManager = featureSelectionManager;
 }
 
-void QgsDualView::progress( int i, bool& cancel )
-{
-  if ( !mProgressDlg )
-  {
-    mProgressDlg = new QProgressDialog( tr( "Loading features..." ), tr( "Abort" ), 0, 0, this );
-    mProgressDlg->setWindowTitle( tr( "Attribute table" ) );
-    mProgressDlg->setWindowModality( Qt::WindowModal );
-    mProgressDlg->show();
-  }
-
-  mProgressDlg->setValue( i );
-  mProgressDlg->setLabelText( tr( "%1 features loaded." ).arg( i ) );
-
-  QCoreApplication::processEvents();
-
-  cancel = mProgressDlg && mProgressDlg->wasCanceled();
-}
-
-void QgsDualView::finished()
-{
-  delete mProgressDlg;
-  mProgressDlg = 0;
-}
 
 /*
  * QgsAttributeTableAction
