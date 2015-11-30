@@ -26,6 +26,9 @@ __copyright__ = '(C) 2013, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import unittest
+from utilities import getQgisTestApp, unittest
+QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+
 from processing.core.parameters import (ParameterNumber,
                                         ParameterCrs,
                                         ParameterExtent,
