@@ -54,6 +54,18 @@ bool QgsVectorLayerEditPassthrough::deleteFeature( QgsFeatureId fid )
   return false;
 }
 
+bool QgsVectorLayerEditPassthrough::deleteFeatures( QgsFeatureIds fids )
+{
+  if ( L->dataProvider()->deleteFeatures( fids ) )
+  {
+    Q_FOREACH ( const QgsFeatureId& fid, fids )
+      emit featureDeleted( fid );
+
+    return true;
+  }
+  return false;
+}
+
 bool QgsVectorLayerEditPassthrough::changeGeometry( QgsFeatureId fid, QgsGeometry* geom )
 {
   QgsGeometryMap geomMap;

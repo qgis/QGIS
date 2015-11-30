@@ -161,6 +161,17 @@ bool QgsVectorLayerEditBuffer::deleteFeature( QgsFeatureId fid )
   return true;
 }
 
+bool QgsVectorLayerEditBuffer::deleteFeatures( QgsFeatureIds fids )
+{
+  if ( !( L->dataProvider()->capabilities() & QgsVectorDataProvider::DeleteFeatures ) )
+    return false;
+
+  Q_FOREACH ( const QgsFeatureId& fid, fids )
+    deleteFeature( fid );
+
+  return true;
+}
+
 
 bool QgsVectorLayerEditBuffer::changeGeometry( QgsFeatureId fid, QgsGeometry* geom )
 {

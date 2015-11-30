@@ -755,8 +755,6 @@ class QgsVectorLayer : QgsMapLayer
         @param f feature to add
         @param alsoUpdateExtent If True, will also go to the effort of e.g. updating the extents.
         @return                    True in case of success and False in case of error
-
-	// TODO QGIS3: QgsFeature& f /InOut/
      */
     bool addFeature( QgsFeature& f, bool alsoUpdateExtent = true );
 
@@ -1145,6 +1143,15 @@ class QgsVectorLayer : QgsMapLayer
 
     /** Delete a feature from the layer (but does not commit it) */
     bool deleteFeature( QgsFeatureId fid );
+
+    /**
+     * Deletes a set of features from the layer (but does not commit it)
+     * @param fids The feature ids to delete
+     *
+     * @return false if the layer is not in edit mode or does not support deleting
+     *         in case of an active transaction depends on the provider implementation
+     */
+    bool deleteFeatures( QgsFeatureIds fids );
 
     /**
       Attempts to commit any changes to disk.  Returns the result of the attempt.

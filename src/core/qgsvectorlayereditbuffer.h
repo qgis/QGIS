@@ -53,6 +53,9 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
     /** Delete a feature from the layer (but does not commit it) */
     virtual bool deleteFeature( QgsFeatureId fid );
 
+    /** Deletes a set of features from the layer (but does not commit it) */
+    virtual bool deleteFeatures( QgsFeatureIds fid );
+
     /** Change feature's geometry */
     virtual bool changeGeometry( QgsFeatureId fid, QgsGeometry* geom );
 

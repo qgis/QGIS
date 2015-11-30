@@ -2332,6 +2332,21 @@ bool QgsVectorLayer::deleteFeature( QgsFeatureId fid )
   return res;
 }
 
+bool QgsVectorLayer::deleteFeatures( QgsFeatureIds fids )
+{
+  if ( !mEditBuffer )
+    return false;
+
+  bool res = mEditBuffer->deleteFeatures( fids );
+
+  if ( res )
+    mSelectedFeatureIds.subtract( fid ); // remove it from selection
+
+  updateExtents();
+
+  return res;
+}
+
 QgsAttributeList QgsVectorLayer::pkAttributeList() const
 {
   QgsAttributeList pkAttributesList;
