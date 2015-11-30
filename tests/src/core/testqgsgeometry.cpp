@@ -57,7 +57,6 @@ class TestQgsGeometry : public QObject
     void isEmpty();
     void pointV2(); //test QgsPointV2
     void lineStringV2(); //test QgsLineStringV2
-    void utils(); //test QgsGeometryUtils
 
     void fromQgsPoint();
     void fromQPoint();
@@ -1919,50 +1918,6 @@ void TestQgsGeometry::lineStringV2()
   QVERIFY( qgsDoubleNear( l38.vertexAngle( QgsVertexId( 0, 0, 0 ) ), 2.35619, 0.00001 ) );
   QVERIFY( qgsDoubleNear( l38.vertexAngle( QgsVertexId( 0, 0, 6 ) ), 2.35619, 0.00001 ) );
 
-}
-
-void TestQgsGeometry::utils()
-{
-  //test normalizedAngle
-  QVERIFY( qgsDoubleNear( QgsGeometryUtils::normalizedAngle( 0.0 ), 0.0, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( QgsGeometryUtils::normalizedAngle( 1.5708 ), 1.5708, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( QgsGeometryUtils::normalizedAngle( 3.1416 ), 3.1416, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( QgsGeometryUtils::normalizedAngle( 4.7124 ), 4.7124, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( QgsGeometryUtils::normalizedAngle( 2 * M_PI ), 0.0, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( QgsGeometryUtils::normalizedAngle( 6.80678 ), 0.5236, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( QgsGeometryUtils::normalizedAngle( 12.5664 ), 0.0, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( QgsGeometryUtils::normalizedAngle( 12.7409 ), 0.174533, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( QgsGeometryUtils::normalizedAngle( -0.174533 ), 6.10865, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( QgsGeometryUtils::normalizedAngle( -6.28318 ), 0.0, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( QgsGeometryUtils::normalizedAngle( -6.45772 ), 6.10865, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( QgsGeometryUtils::normalizedAngle( -13.2645 ), 5.58505, 0.0001 ) );
-
-  //test lineAngle
-  ( void )QgsGeometryUtils::lineAngle( 0.0, 0.0, 0.0, 0.0 ); //undefined, but don't want a crash
-  QVERIFY( qgsDoubleNear( QgsGeometryUtils::lineAngle( 0.0, 0.0, 0.0, 1.0 ), 0.0, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( QgsGeometryUtils::lineAngle( 0.0, 0.0, 1.0, 1.0 ), 0.7854, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( QgsGeometryUtils::lineAngle( 0.0, 0.0, 1.0, 0.0 ), 1.5708, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( QgsGeometryUtils::lineAngle( 0.0, 0.0, 0.0, -1.0 ), 3.1416, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( QgsGeometryUtils::lineAngle( 0.0, 0.0, -1.0, 0.0 ), 4.7124, 0.0001 ) );
-
-  //test linePerpendicularAngle
-  ( void )QgsGeometryUtils::linePerpendicularAngle( 0.0, 0.0, 0.0, 0.0 ); //undefined, but don't want a crash
-  QVERIFY( qgsDoubleNear( QgsGeometryUtils::linePerpendicularAngle( 0.0, 0.0, 0.0, 1.0 ), 1.5708, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( QgsGeometryUtils::linePerpendicularAngle( 0.0, 0.0, 1.0, 1.0 ), 2.3562, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( QgsGeometryUtils::linePerpendicularAngle( 0.0, 0.0, 1.0, 0.0 ), 3.1416, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( QgsGeometryUtils::linePerpendicularAngle( 0.0, 0.0, 0.0, -1.0 ), 4.7124, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( QgsGeometryUtils::linePerpendicularAngle( 0.0, 0.0, -1.0, 0.0 ), 0.0, 0.0001 ) );
-
-  //test averageAngle
-  QVERIFY( qgsDoubleNear( QgsGeometryUtils::averageAngle( 0.0, 0.0 ), 0.0, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( QgsGeometryUtils::averageAngle( 0.0, 6.28319 ), 0.0, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( QgsGeometryUtils::averageAngle( 0.0, 12.5664 ), 0.0, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( QgsGeometryUtils::averageAngle( 6.28319, 0.0 ), 0.0, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( QgsGeometryUtils::averageAngle( -6.28318, 0.0 ), 0.0, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( QgsGeometryUtils::averageAngle( -6.28318, -6.28318 ), 0.0, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( QgsGeometryUtils::averageAngle( 0.0, 3.141592 ), 1.5708, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( QgsGeometryUtils::averageAngle( 0.0, -3.141592 ), 4.71239, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( QgsGeometryUtils::averageAngle( 5.49779, 4.71239 ), 5.1051, 0.0001 ) );
 }
 
 void TestQgsGeometry::fromQgsPoint()
