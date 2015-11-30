@@ -102,8 +102,8 @@ class ProviderTestCase(object):
         self.assert_query(provider, 'not name = \'Apple\' and not pk = 4', [1, 3])
         self.assert_query(provider, 'not pk IN (1, 2, 4, 8)', [3, 5])
 
-        #type conversion - QGIS expressions do not mind that we are comparing a string
-        #against numeric literals
+        # type conversion - QGIS expressions do not mind that we are comparing a string
+        # against numeric literals
         self.assert_query(provider, 'num_char IN (2, 4, 5)', [2, 4, 5])
 
     def testGetFeaturesUncompiled(self):
