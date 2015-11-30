@@ -28,6 +28,7 @@ from PyQt4.QtGui import QWidget
 
 from ui_widgetBuildVRT import Ui_GdalToolsWidget as Ui_Widget
 from widgetPluginBase import GdalToolsBasePluginWidget as BasePluginWidget
+from dialogSRS import GdalToolsSRSDialog as SRSDialog
 import GdalTools_utils as Utils
 
 
@@ -41,28 +42,33 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         self.setupUi(self)
         BasePluginWidget.__init__(self, self.iface, "gdalbuildvrt")
 
-        self.inSelector.setType(self.inSelector.FILE)
-        self.outSelector.setType(self.outSelector.FILE)
+        self.inSelector.setType( self.inSelector.FILE )
+        self.outSelector.setType( self.outSelector.FILE )
         self.recurseCheck.hide()
         self.visibleRasterLayers = []
 
-        self.setParamsStatus([
-            (self.inSelector, SIGNAL("filenameChanged()")),
-            (self.outSelector, SIGNAL("filenameChanged()")),
-            (self.resolutionComboBox, SIGNAL("currentIndexChanged(int)"), self.resolutionCheck),
-            (self.srcNoDataSpin, SIGNAL("valueChanged(int)"), self.srcNoDataCheck, 1700),
-            (self.inputDirCheck, SIGNAL("stateChanged(int)")),
-            (self.separateCheck, SIGNAL("stateChanged(int)"), None, 1700),
-            (self.allowProjDiffCheck, SIGNAL("stateChanged(int)"), None, 1700),
-            (self.recurseCheck, SIGNAL("stateChanged(int)"), self.inputDirCheck),
-            (self.inputSelLayersCheck, SIGNAL("stateChanged(int)"))
-        ])
+        self.setParamsStatus(
+            [
+                (self.inSelector, SIGNAL("filenameChanged()")),
+                (self.outSelector, SIGNAL("filenameChanged()")),
+                (self.resolutionComboBox, SIGNAL("currentIndexChanged(int)"), self.resolutionCheck),
+                (self.srcNoDataSpin, SIGNAL("valueChanged(int)"), self.srcNoDataCheck, 1700),
+                (self.inputDirCheck, SIGNAL("stateChanged(int)")),
+                (self.separateCheck, SIGNAL("stateChanged(int)"), None, 1700),
+                (self.targetSRSEdit, SIGNAL("textChanged(const QString &)"), self.targetSRSCheck),
+                (self.allowProjDiffCheck, SIGNAL("stateChanged(int)"), None, 1700),
+                (self.recurseCheck, SIGNAL("stateChanged(int)"), self.inputDirCheck),
+                (self.inputSelLayersCheck, SIGNAL("stateChanged(int)"))
+            ]
+        )
 
         self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFilesEdit)
         self.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFileEdit)
-        self.connect(self.inputDirCheck, SIGNAL("stateChanged( int )"), self.switchToolMode)
-        self.connect(self.inputSelLayersCheck, SIGNAL("stateChanged( int )"), self.switchLayerMode)
-        self.connect(self.iface.mapCanvas(), SIGNAL("stateChanged( int )"), self.switchLayerMode)
+        self.connect( self.inputDirCheck, SIGNAL( "stateChanged( int )" ), self.switchToolMode )
+        self.connect( self.inputSelLayersCheck, SIGNAL( "stateChanged( int )" ), self.switchLayerMode )
+        self.connect( self.iface.mapCanvas(), SIGNAL( "stateChanged( int )" ), self.switchLayerMode )
+        self.connect(self.selectTargetSRSButton, SIGNAL("clicked()"), self.fillTargetSRSEdit)
+
 
     def initialize(self):
         # connect to mapCanvas.layerChanged() signal
@@ -75,57 +81,63 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         self.disconnect(self.iface.mapCanvas(), SIGNAL("layersChanged()"), self.onVisibleLayersChanged)
         BasePluginWidget.onClosing(self)
 
+
     def onVisibleLayersChanged(self):
         # refresh list of visible raster layers
         self.visibleRasterLayers = []
         for layer in self.iface.mapCanvas().layers():
-            if Utils.LayerRegistry.isRaster(layer):
-                self.visibleRasterLayers.append(layer.source())
+            if Utils.LayerRegistry.isRaster( layer ):
+                self.visibleRasterLayers.append( layer.source() )
 
         # refresh the text in the command viewer
         self.someValueChanged()
 
     def switchToolMode(self):
-        self.recurseCheck.setVisible(self.inputDirCheck.isChecked())
+        self.recurseCheck.setVisible( self.inputDirCheck.isChecked() )
         self.inSelector.clear()
 
         if self.inputDirCheck.isChecked():
             self.inFileLabel = self.label.text()
-            self.label.setText(QCoreApplication.translate("GdalTools", "&Input directory"))
+            self.label.setText( QCoreApplication.translate( "GdalTools", "&Input directory" ) )
 
             QObject.disconnect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFilesEdit)
             QObject.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputDir)
         else:
-            self.label.setText(self.inFileLabel)
+            self.label.setText( self.inFileLabel )
 
             QObject.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFilesEdit)
             QObject.disconnect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputDir)
 
     def switchLayerMode(self):
         enableInputFiles = not self.inputSelLayersCheck.isChecked()
-        self.inputDirCheck.setEnabled(enableInputFiles)
-        self.inSelector.setEnabled(enableInputFiles)
-        self.recurseCheck.setEnabled(enableInputFiles)
+        self.inputDirCheck.setEnabled( enableInputFiles )
+        self.inSelector.setEnabled( enableInputFiles )
+        self.recurseCheck.setEnabled( enableInputFiles )
 
     def fillInputFilesEdit(self):
         lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
-        files = Utils.FileDialog.getOpenFileNames(self, self.tr("Select the files for VRT"), Utils.FileFilter.allRastersFilter(), lastUsedFilter)
+        files = Utils.FileDialog.getOpenFileNames(self, self.tr( "Select the files for VRT" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter)
         if files == '':
             return
         Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
         self.inSelector.setFilename(",".join(files))
 
     def fillOutputFileEdit(self):
-        outputFile = Utils.FileDialog.getSaveFileName(self, self.tr("Select where to save the VRT"), self.tr("VRT (*.vrt)"))
+        outputFile = Utils.FileDialog.getSaveFileName(self, self.tr( "Select where to save the VRT" ), self.tr( "VRT (*.vrt)" ))
         if outputFile == '':
             return
         self.outSelector.setFilename(outputFile)
 
-    def fillInputDir(self):
-        inputDir = Utils.FileDialog.getExistingDirectory(self, self.tr("Select the input directory with files for VRT"))
+    def fillInputDir( self ):
+        inputDir = Utils.FileDialog.getExistingDirectory( self, self.tr( "Select the input directory with files for VRT" ))
         if inputDir == '':
             return
-        self.inSelector.setFilename(inputDir)
+        self.inSelector.setFilename( inputDir )
+
+    def fillTargetSRSEdit(self):
+        dialog = SRSDialog( "Select the target SRS", self )
+        if dialog.exec_():
+            self.targetSRSEdit.setText(dialog.getProjection())
 
     def getArguments(self):
         arguments = []
@@ -136,14 +148,17 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
             arguments.append("-separate")
         if self.srcNoDataCheck.isChecked():
             arguments.append("-srcnodata")
-            arguments.append(unicode(self.srcNoDataSpin.value()))
+            arguments.append(str(self.srcNoDataSpin.value()))
+        if self.targetSRSCheck.isChecked() and self.targetSRSEdit.text():
+            arguments.append("-a_srs")
+            arguments.append(self.targetSRSEdit.text())
         if self.allowProjDiffCheck.isChecked():
             arguments.append("-allow_projection_difference")
         arguments.append(self.getOutputFileName())
         if self.inputSelLayersCheck.isChecked():
             arguments.extend(self.visibleRasterLayers)
         elif self.inputDirCheck.isChecked():
-            arguments.extend(Utils.getRasterFiles(self.getInputFileName(), self.recurseCheck.isChecked()))
+            arguments.extend(Utils.getRasterFiles( self.getInputFileName(), self.recurseCheck.isChecked() ))
         else:
             arguments.extend(self.getInputFileName())
         return arguments
