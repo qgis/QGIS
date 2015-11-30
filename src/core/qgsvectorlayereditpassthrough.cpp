@@ -24,7 +24,7 @@ bool QgsVectorLayerEditPassthrough::addFeature( QgsFeature& f )
   fl << f;
   if ( L->dataProvider()->addFeatures( fl ) )
   {
-    f.setFeatureId( fl.first().id() );
+    f = fl.first();
     emit featureAdded( f.id() );
     return true;
   }
