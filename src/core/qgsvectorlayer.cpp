@@ -2340,7 +2340,7 @@ bool QgsVectorLayer::deleteFeatures( QgsFeatureIds fids )
   bool res = mEditBuffer->deleteFeatures( fids );
 
   if ( res )
-    mSelectedFeatureIds.subtract( fid ); // remove it from selection
+    mSelectedFeatureIds.subtract( fids ); // remove it from selection
 
   updateExtents();
 
