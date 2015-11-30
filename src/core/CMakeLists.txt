@@ -397,47 +397,47 @@ ADD_FLEX_FILES(QGIS_CORE_SRCS qgsexpressionlexer.ll)
 ADD_BISON_FILES(QGIS_CORE_SRCS qgsexpressionparser.yy)
 
 SET(QGIS_CORE_MOC_HDRS
-
   qgsapplication.h
   qgsbrowsermodel.h
   qgscontexthelp.h
   qgscoordinatetransform.h
+  qgscredentials.h
   qgsdataitem.h
   qgsdataprovider.h
   qgseditformconfig.h
+  qgsgeometryvalidator.h
   qgsgml.h
   qgsgmlschema.h
   qgsmaplayer.h
   qgsmaplayerlegend.h
   qgsmaplayerregistry.h
   qgsmaplayerstylemanager.h
-  qgsmaprenderer.h
   qgsmaprenderercache.h
   qgsmaprenderercustompainterjob.h
+  qgsmaprenderer.h
   qgsmaprendererjob.h
   qgsmaprendererparalleljob.h
   qgsmaprenderersequentialjob.h
-  qgsmessageoutput.h
   qgsmessagelog.h
-  qgsnetworkreplyparser.h
+  qgsmessageoutput.h
+  qgsnetworkaccessmanager.h
   qgsnetworkcontentfetcher.h
+  qgsnetworkreplyparser.h
   qgsofflineediting.h
-  qgscredentials.h
   qgspluginlayer.h
   qgspointlocator.h
   qgsproject.h
-  qgsrunprocess.h
   qgsrelationmanager.h
+  qgsrunprocess.h
   qgssnappingutils.h
-  qgsvectorlayer.h
-  qgsvectorlayereditpassthrough.h
-  qgsvectorlayereditbuffer.h
-  qgsnetworkaccessmanager.h
+  qgstransaction.h
   qgsvectordataprovider.h
   qgsvectorlayercache.h
+  qgsvectorlayereditbuffer.h
+  qgsvectorlayereditpassthrough.h
+  qgsvectorlayer.h
   qgsvectorlayerjoinbuffer.h
   qgsvisibilitypresetcollection.h
-  qgsgeometryvalidator.h
   qgswebview.h
 
   auth/qgsauthmanager.h
@@ -632,7 +632,7 @@ SET(QGIS_CORE_HDRS
   qgsstatisticalsummary.h
   qgsstringutils.h
   qgstolerance.h
-  qgstransaction.h
+
   qgsvectordataprovider.h
   qgsvectorlayercache.h
   qgsvectorfilewriter.h

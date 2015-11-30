@@ -22,6 +22,7 @@
 #include <QString>
 
 class QgsVectorDataProvider;
+class QgsVectorLayer;
 
 /**
  * This class allows to include a set of layers in a database-side transaction,
@@ -44,8 +45,10 @@ class QgsVectorDataProvider;
  *
  * Edits on features can get rejected if another conflicting transaction is active.
  */
-class CORE_EXPORT QgsTransaction
+class CORE_EXPORT QgsTransaction : public QObject
 {
+    Q_OBJECT
+
   public:
     /** Creates a transaction for the specified connection string and provider */
     static QgsTransaction* create( const QString& connString, const QString& providerKey );
@@ -58,6 +61,9 @@ class CORE_EXPORT QgsTransaction
 
     /** Add layer to the transaction. The layer must not be in edit mode. The transaction must not be active. */
     bool addLayer( const QString& layerId );
+
+    /** Add layer to the transaction. The layer must not be in edit mode. The transaction must not be active. */
+    bool addLayer( QgsVectorLayer* layer );
 
     /** Begin transaction
      *  The statement timeout, in seconds, specifies how long an sql statement
@@ -78,6 +84,12 @@ class CORE_EXPORT QgsTransaction
     /** Executes sql */
     virtual bool executeSql( const QString& sql, QString& error ) = 0;
 
+  signals:
+    void afterRollback();
+
+  private slots:
+    void onLayersDeleted( const QStringList& layerids );
+
   protected:
     QgsTransaction( const QString& connString );
 
@@ -88,7 +100,7 @@ class CORE_EXPORT QgsTransaction
     const QgsTransaction& operator=( const QgsTransaction& other );
 
     bool mTransactionActive;
-    QSet<QString> mLayers;
+    QSet<QgsVectorLayer*> mLayers;
 
     void setLayerTransactionIds( QgsTransaction *transaction );
 

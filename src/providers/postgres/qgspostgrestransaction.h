@@ -24,6 +24,8 @@ class QgsPostgresConn;
 
 class QgsPostgresTransaction : public QgsTransaction
 {
+    Q_OBJECT
+
   public:
     explicit QgsPostgresTransaction( const QString& connString );
     bool executeSql( const QString& sql, QString& error ) override;
