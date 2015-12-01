@@ -248,9 +248,7 @@ SET(QGIS_GUI_SRCS
   qgsrasterformatsaveoptionswidget.cpp
   qgsrasterlayersaveasdialog.cpp
   qgsrasterpyramidsoptionswidget.cpp
-  qgsrelationadddlg.cpp
   qgsrelationeditorwidget.cpp
-  qgsrelationmanagerdialog.cpp
   qgsrubberband.cpp
   qgsscalecombobox.cpp
   qgsscalerangewidget.cpp
@@ -380,9 +378,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsrasterformatsaveoptionswidget.h
   qgsrasterlayersaveasdialog.h
   qgsrasterpyramidsoptionswidget.h
-  qgsrelationadddlg.h
   qgsrelationeditorwidget.h
-  qgsrelationmanagerdialog.h
   qgsscalecombobox.h
   qgsscalerangewidget.h
   qgsscalevisibilitydialog.h
