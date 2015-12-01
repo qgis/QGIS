@@ -115,6 +115,8 @@ QgsLayerPropertiesWidget::QgsLayerPropertiesWidget( QgsSymbolLayerV2* layer, con
 
   connect( mEffectWidget, SIGNAL( changed() ), this, SLOT( emitSignalChanged() ) );
   mEffectWidget->setPaintEffect( mLayer->paintEffect() );
+
+  mModificationExpressionSelector->setLayer( const_cast<QgsVectorLayer*>( vl ) );
 }
 
 void QgsLayerPropertiesWidget::setMapCanvas( QgsMapCanvas *canvas )
