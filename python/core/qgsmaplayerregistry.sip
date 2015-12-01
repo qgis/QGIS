@@ -108,7 +108,7 @@ class QgsMapLayerRegistry : QObject
      *
      * @note As a side-effect QgsProject is made dirty.
      */
-    void removeMapLayers( const QList<QgsMapLayer*>& theLayerIds );
+    void removeMapLayers( const QList<QgsMapLayer*>& layers );
 
     /**
      * @brief
@@ -173,9 +173,9 @@ class QgsMapLayerRegistry : QObject
     /**
      * Emitted when one or more layers are removed from the registry
      *
-     * @param theLayerIds  A list layers which are removed.
+     * @param layers  A list of layers which are removed.
      */
-    void layersWillBeRemoved( const QList<QgsMapLayer*>& layer );
+    void layersWillBeRemoved( const QList<QgsMapLayer*>& layers );
 
     /**
      * Emitted when an owned layer is removed from the registry
