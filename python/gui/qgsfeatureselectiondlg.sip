@@ -1,8 +1,8 @@
 /***************************************************************************
-    qgsfeatureselectiondlg.h
+    qgsfeatureselectiondlg.sip
      --------------------------------------
-    Date                 : 11.6.2013
-    Copyright            : (C) 2013 Matthias Kuhn
+    Date                 : 30.11.2015
+    Copyright            : (C) 2015 Matthias Kuhn
     Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
@@ -13,19 +13,27 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSFEATURESELECTIONDLG_H
-#define QGSFEATURESELECTIONDLG_H
+// This is required for the ConvertToSubClassCode to work properly
+// so RTTI for casting is available in the whole module.
+%ModuleCode
+#include "qgsfeatureselectiondlg.h"
+%End
 
-class QgsGenericFeatureSelectionManager;
-
-#include "ui_qgsfeatureselectiondlg.h"
-
-class GUI_EXPORT QgsFeatureSelectionDlg : public QDialog, private Ui::QgsFeatureSelectionDlg
+class QgsFeatureSelectionDlg : QDialog
 {
-    Q_OBJECT
+%TypeHeaderCode
+#include "qgsfeatureselectiondlg.h"
+%End
+
+%ConvertToSubClassCode
+  if ( qobject_cast<QgsFeatureSelectionDlg*>( sipCpp ) )
+    sipType = sipType_QgsFeatureSelectionDlg;
+  else
+    sipType = 0;
+%End
 
   public:
-    explicit QgsFeatureSelectionDlg( QgsVectorLayer* vl, QgsAttributeEditorContext &context, QWidget *parent = 0 );
+    explicit QgsFeatureSelectionDlg( QgsVectorLayer* vl, QgsAttributeEditorContext &context, QWidget *parent /TransferThis/ = 0 );
 
     /**
      * Get the selected features
@@ -39,10 +47,4 @@ class GUI_EXPORT QgsFeatureSelectionDlg : public QDialog, private Ui::QgsFeature
      * @param ids The feature ids to select
      */
     void setSelectedFeatures( const QgsFeatureIds& ids );
-
-  private:
-    QgsGenericFeatureSelectionManager* mFeatureSelection;
-    QgsVectorLayer* mVectorLayer;
 };
-
-#endif // QGSFEATURESELECTIONDLG_H

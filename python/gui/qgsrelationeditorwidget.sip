@@ -1,8 +1,8 @@
 /***************************************************************************
-    qgsrelationeditor.h
+    qgsrelationeditorwidget.sip
      --------------------------------------
-    Date                 : 17.5.2013
-    Copyright            : (C) 2013 Matthias Kuhn
+    Date                 : 28.11.2015
+    Copyright            : (C) 2015 Matthias Kuhn
     Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
@@ -13,40 +13,35 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSRELATIONEDITOR_H
-#define QGSRELATIONEDITOR_H
+%ModuleCode
+#include "qgsrelationeditorwidget.h"
+%End
 
-#include <QWidget>
-#include <QToolButton>
-#include <QButtonGroup>
-#include <QGridLayout>
-
-#include "qgsattributeeditorcontext.h"
-#include "qgscollapsiblegroupbox.h"
-#include "qgsdualview.h"
-#include "qgsrelation.h"
-
-class QgsFeature;
-class QgsGenericFeatureSelectionManager;
-class QgsVectorLayer;
-class QgsVectorLayerTools;
-
-class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
+class QgsRelationEditorWidget : QgsCollapsibleGroupBox
 {
-    Q_OBJECT
-    Q_PROPERTY( QgsDualView::ViewMode viewMode READ viewMode WRITE setViewMode )
+%TypeHeaderCode
+#include <qgsrelationeditorwidget.h>
+%End
+
+
+%ConvertToSubClassCode
+  if ( qobject_cast<QgsRelationEditorWidget*>( sipCpp ) )
+    sipType = sipType_QgsRelationEditorWidget;
+  else
+    sipType = 0;
+%End
 
   public:
     /**
      * @param parent parent widget
      */
-    QgsRelationEditorWidget( QWidget* parent = NULL );
+    QgsRelationEditorWidget( QWidget* parent /TransferThis/= 0 );
 
     //! Define the view mode for the dual view
     void setViewMode( QgsDualView::ViewMode mode );
 
     //! Get the view mode for the dual view
-    QgsDualView::ViewMode viewMode() {return mViewMode;}
+    QgsDualView::ViewMode viewMode();
 
     void setRelationFeature( const QgsRelation& relation, const QgsFeature& feature );
 
@@ -70,42 +65,4 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
      * which are currently being edited.
      */
     QgsIFeatureSelectionManager* featureSelectionManager();
-
-  private slots:
-    void setViewMode( int mode ) {setViewMode( static_cast<QgsDualView::ViewMode>( mode ) );}
-    void updateButtons();
-
-    void addFeature();
-    void linkFeature();
-    void deleteFeature();
-    void unlinkFeature();
-    void saveEdits();
-    void toggleEditing( bool state );
-    void onCollapsedStateChanged( bool collapsed );
-
-  private:
-    void updateUi();
-
-    QgsDualView* mDualView;
-    QgsDualView::ViewMode mViewMode;
-    QgsGenericFeatureSelectionManager* mFeatureSelectionMgr;
-    QgsAttributeEditorContext mEditorContext;
-    QgsRelation mRelation;
-    QgsRelation mNmRelation;
-    QgsFeature mFeature;
-
-    QToolButton* mToggleEditingButton;
-    QToolButton* mSaveEditsButton;
-    QToolButton* mAddFeatureButton;
-    QToolButton* mDeleteFeatureButton;
-    QToolButton* mLinkFeatureButton;
-    QToolButton* mUnlinkFeatureButton;
-    QToolButton* mFormViewButton;
-    QToolButton* mTableViewButton;
-    QGridLayout* mRelationLayout;
-    QButtonGroup* mViewModeButtonGroup;
-
-    bool mVisible;
 };
-
-#endif // QGSRELATIONEDITOR_H

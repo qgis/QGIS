@@ -89,7 +89,7 @@ void QgsCollapsibleGroupBoxBasic::init()
 
 void QgsCollapsibleGroupBoxBasic::showEvent( QShowEvent * event )
 {
-  //QgsDebugMsg( "Entered" );
+  QgsDebugMsg( "Entered" );
   // initialise widget on first show event only
   if ( mShown )
   {

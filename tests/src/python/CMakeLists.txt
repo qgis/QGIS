@@ -79,6 +79,7 @@ ENDIF (WITH_DESKTOP)
 
 IF (ENABLE_PGTEST)
   ADD_PYTHON_TEST(PyQgsPostgresProvider test_provider_postgres.py)
+  ADD_PYTHON_TEST(PyQgsRelationEditWidget test_qgsrelationeditwidget.py)
 ENDIF (ENABLE_PGTEST)
 
 IF (WITH_APIDOC)
