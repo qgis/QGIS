@@ -185,9 +185,9 @@ class SymbolLayerItem : public QStandardItem
         {
           switch ( mSymbol->type() )
           {
-            case QgsSymbolV2::Marker : return "Marker";
-            case QgsSymbolV2::Fill   : return "Fill";
-            case QgsSymbolV2::Line   : return "Line";
+            case QgsSymbolV2::Marker : return tr( "Marker" );
+            case QgsSymbolV2::Fill   : return tr( "Fill" );
+            case QgsSymbolV2::Line   : return tr( "Line" );
             default: return "Symbol";
           }
         }
