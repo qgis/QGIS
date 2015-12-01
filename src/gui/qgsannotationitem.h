@@ -19,6 +19,7 @@
 #define QGSANNOTATIONITEM_H
 
 #include "qgsmapcanvasitem.h"
+#include "qgscoordinatereferencesystem.h"
 
 class QDomDocument;
 class QDomElement;
@@ -68,6 +69,12 @@ class GUI_EXPORT QgsAnnotationItem: public QgsMapCanvasItem
     virtual void setMapPosition( const QgsPoint& pos );
     QgsPoint mapPosition() const { return mMapPosition; }
 
+    /** Sets the CRS of the map position.
+      @param crs the CRS to set */
+    virtual void setMapPositionCrs( const QgsCoordinateReferenceSystem& crs );
+    /** Returns the CRS of the map position.*/
+    QgsCoordinateReferenceSystem mapPositionCrs() const { return mMapPositionCrs; }
+
     void setFrameSize( const QSizeF& size );
     QSizeF frameSize() const { return mFrameSize; }
 
@@ -98,6 +105,9 @@ class GUI_EXPORT QgsAnnotationItem: public QgsMapCanvasItem
     bool mMapPositionFixed;
     /** Map position (in case mMapPositionFixed is true)*/
     QgsPoint mMapPosition;
+    /** CRS of the map position */
+    QgsCoordinateReferenceSystem mMapPositionCrs;
+
     /** Describes the shift of the item content box to the reference point*/
     QPointF mOffsetFromReferencePoint;
 

@@ -26,6 +26,7 @@
 QgsAnnotationItem::QgsAnnotationItem( QgsMapCanvas* mapCanvas )
     : QgsMapCanvasItem( mapCanvas )
     , mMapPositionFixed( true )
+    , mMapPositionCrs( QgsCoordinateReferenceSystem() )
     , mOffsetFromReferencePoint( QPointF( 50, -50 ) )
     , mBalloonSegment( -1 )
 {
@@ -53,6 +54,12 @@ void QgsAnnotationItem::setMapPosition( const QgsPoint& pos )
 {
   mMapPosition = pos;
   setPos( toCanvasCoordinates( mMapPosition ) );
+  mMapPositionCrs = mMapCanvas->mapSettings().destinationCrs();
+}
+
+void QgsAnnotationItem::setMapPositionCrs( const QgsCoordinateReferenceSystem& crs )
+{
+  mMapPositionCrs = crs;
 }
 
 void QgsAnnotationItem::setOffsetFromReferencePoint( const QPointF& offset )
@@ -85,7 +92,8 @@ void QgsAnnotationItem::updatePosition()
 {
   if ( mMapPositionFixed )
   {
-    setPos( toCanvasCoordinates( mMapPosition ) );
+    QgsCoordinateTransform t( mMapPositionCrs, mMapCanvas->mapSettings().destinationCrs() );
+    setPos( toCanvasCoordinates( t.transform( mMapPosition ) ) );
   }
   else
   {
@@ -392,6 +400,8 @@ void QgsAnnotationItem::_writeXML( QDomDocument& doc, QDomElement& itemElem ) co
   annotationElem.setAttribute( "mapPositionFixed", mMapPositionFixed );
   annotationElem.setAttribute( "mapPosX", qgsDoubleToString( mMapPosition.x() ) );
   annotationElem.setAttribute( "mapPosY", qgsDoubleToString( mMapPosition.y() ) );
+  if ( mMapPositionCrs.isValid() )
+    mMapPositionCrs.writeXML( annotationElem, doc );
   annotationElem.setAttribute( "offsetX", qgsDoubleToString( mOffsetFromReferencePoint.x() ) );
   annotationElem.setAttribute( "offsetY", qgsDoubleToString( mOffsetFromReferencePoint.y() ) );
   annotationElem.setAttribute( "frameWidth", QString::number( mFrameSize.width() ) );
@@ -431,6 +441,8 @@ void QgsAnnotationItem::_readXML( const QDomDocument& doc, const QDomElement& an
   mapPos.setX( annotationElem.attribute( "mapPosX", "0" ).toDouble() );
   mapPos.setY( annotationElem.attribute( "mapPosY", "0" ).toDouble() );
   mMapPosition = mapPos;
+  if ( !mMapPositionCrs.readXML( annotationElem ) )
+    mMapPositionCrs = mMapCanvas->mapSettings().destinationCrs();
   mFrameBorderWidth = annotationElem.attribute( "frameBorderWidth", "0.5" ).toDouble();
   mFrameColor.setNamedColor( annotationElem.attribute( "frameColor", "#000000" ) );
   mFrameColor.setAlpha( annotationElem.attribute( "frameColorAlpha", "255" ).toInt() );

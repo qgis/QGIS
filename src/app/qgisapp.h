@@ -1128,6 +1128,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void addHtmlAnnotation();
     void addSvgAnnotation();
     void modifyAnnotation();
+    void reprojectAnnotations();
 
     /** Alerts user when labeling font for layer has not been found on system */
     void labelingFontNotFound( QgsVectorLayer *vlayer, const QString& fontfamily );

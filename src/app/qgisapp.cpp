@@ -2316,6 +2316,9 @@ void QgisApp::setupConnections()
   connect( mRenderSuppressionCBox, SIGNAL( toggled( bool ) ),
            mMapCanvas, SLOT( setRenderFlag( bool ) ) );
 
+  connect( mMapCanvas, SIGNAL( destinationCrsChanged() ),
+           this, SLOT( reprojectAnnotations() ) );
+
   // connect MapCanvas keyPress event so we can check if selected feature collection must be deleted
   connect( mMapCanvas, SIGNAL( keyPressed( QKeyEvent * ) ),
            this, SLOT( mapCanvas_keyPressed( QKeyEvent * ) ) );
@@ -5159,6 +5162,14 @@ void QgisApp::addSvgAnnotation()
 void QgisApp::modifyAnnotation()
 {
   mMapCanvas->setMapTool( mMapTools.mAnnotation );
+}
+
+void QgisApp::reprojectAnnotations()
+{
+  Q_FOREACH ( QgsAnnotationItem * annotation, annotationItems() )
+  {
+    annotation->updatePosition();
+  }
 }
 
 void QgisApp::labelingFontNotFound( QgsVectorLayer* vlayer, const QString& fontfamily )
