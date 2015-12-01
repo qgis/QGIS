@@ -58,4 +58,7 @@ class QgsTransaction /Abstract/
 
     /** Executes sql */
     virtual bool executeSql( const QString& sql, QString& error /Out/ ) = 0;
+
+  signals:
+    void afterRollback();
 };
