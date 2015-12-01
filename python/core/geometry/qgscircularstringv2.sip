@@ -65,6 +65,9 @@ class QgsCircularStringV2: public QgsCurveV2
     virtual bool addZValue( double zValue = 0 );
     virtual bool addMValue( double mValue = 0 );
 
+    virtual bool dropZValue();
+    virtual bool dropMValue();
+
   private:
     void segmentize( const QgsPointV2& p1, const QgsPointV2& p2, const QgsPointV2& p3, QList<QgsPointV2>& points ) const;
 };

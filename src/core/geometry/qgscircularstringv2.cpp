@@ -1064,3 +1064,23 @@ bool QgsCircularStringV2::addMValue( double mValue )
   }
   return true;
 }
+
+bool QgsCircularStringV2::dropZValue()
+{
+  if ( !QgsWKBTypes::hasZ( mWkbType ) )
+    return false;
+
+  mWkbType = QgsWKBTypes::dropZ( mWkbType );
+  mZ.clear();
+  return true;
+}
+
+bool QgsCircularStringV2::dropMValue()
+{
+  if ( !QgsWKBTypes::hasM( mWkbType ) )
+    return false;
+
+  mWkbType = QgsWKBTypes::dropM( mWkbType );
+  mM.clear();
+  return true;
+}

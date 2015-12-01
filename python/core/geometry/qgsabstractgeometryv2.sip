@@ -185,6 +185,22 @@ class QgsAbstractGeometryV2
      */
     virtual bool addMValue( double mValue = 0 ) = 0;
 
+    /** Drops any z-dimensions which exist in the geometry.
+     * @returns true if Z values were present and have been removed
+     * @see addZValue()
+     * @see dropMValue()
+     * @note added in QGIS 2.14
+     */
+    virtual bool dropZValue() = 0;
+
+    /** Drops any measure values which exist in the geometry.
+     * @returns true if m-values were present and have been removed
+     * @see addMValue()
+     * @see dropZValue()
+     * @note added in QGIS 2.14
+     */
+    virtual bool dropMValue() = 0;
+
   protected:
 
     /** Updates the geometry type based on whether sub geometries contain z or m values.

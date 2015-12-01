@@ -180,6 +180,8 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometryV2
 
     virtual bool addZValue( double zValue = 0 ) override;
     virtual bool addMValue( double mValue = 0 ) override;
+    virtual bool dropZValue() override;
+    virtual bool dropMValue() override;
 
   private:
     double mX;

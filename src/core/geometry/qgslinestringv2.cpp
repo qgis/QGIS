@@ -895,3 +895,23 @@ bool QgsLineStringV2::addMValue( double mValue )
   }
   return true;
 }
+
+bool QgsLineStringV2::dropZValue()
+{
+  if ( !is3D() )
+    return false;
+
+  mWkbType = QgsWKBTypes::dropZ( mWkbType );
+  mZ.clear();
+  return true;
+}
+
+bool QgsLineStringV2::dropMValue()
+{
+  if ( !isMeasure() )
+    return false;
+
+  mWkbType = QgsWKBTypes::dropM( mWkbType );
+  mM.clear();
+  return true;
+}

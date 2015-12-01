@@ -310,7 +310,8 @@ class CORE_EXPORT QgsAbstractGeometryV2
      * @param zValue initial z-value for all nodes
      * @returns true on success
      * @note added in QGIS 2.12
-     * @see addMValue
+     * @see dropZValue()
+     * @see addMValue()
      */
     virtual bool addZValue( double zValue = 0 ) = 0;
 
@@ -318,9 +319,26 @@ class CORE_EXPORT QgsAbstractGeometryV2
      * @param mValue initial m-value for all nodes
      * @returns true on success
      * @note added in QGIS 2.12
-     * @see addZValue
+     * @see dropMValue()
+     * @see addZValue()
      */
     virtual bool addMValue( double mValue = 0 ) = 0;
+
+    /** Drops any z-dimensions which exist in the geometry.
+     * @returns true if Z values were present and have been removed
+     * @see addZValue()
+     * @see dropMValue()
+     * @note added in QGIS 2.14
+     */
+    virtual bool dropZValue() = 0;
+
+    /** Drops any measure values which exist in the geometry.
+     * @returns true if m-values were present and have been removed
+     * @see addMValue()
+     * @see dropZValue()
+     * @note added in QGIS 2.14
+     */
+    virtual bool dropMValue() = 0;
 
   protected:
     QgsWKBTypes::Type mWkbType;

@@ -74,6 +74,8 @@ class QgsGeometryCollectionV2: public QgsAbstractGeometryV2
 
     virtual bool addZValue( double zValue = 0 );
     virtual bool addMValue( double mValue = 0 );
+    virtual bool dropZValue();
+    virtual bool dropMValue();
 
   protected:
 

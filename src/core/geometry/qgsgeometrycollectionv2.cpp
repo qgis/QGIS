@@ -595,3 +595,30 @@ bool QgsGeometryCollectionV2::addMValue( double mValue )
   }
   return true;
 }
+
+
+bool QgsGeometryCollectionV2::dropZValue()
+{
+  if ( !is3D() )
+    return false;
+
+  mWkbType = QgsWKBTypes::dropZ( mWkbType );
+  Q_FOREACH ( QgsAbstractGeometryV2* geom, mGeometries )
+  {
+    geom->dropZValue();
+  }
+  return true;
+}
+
+bool QgsGeometryCollectionV2::dropMValue()
+{
+  if ( !isMeasure() )
+    return false;
+
+  mWkbType = QgsWKBTypes::dropM( mWkbType );
+  Q_FOREACH ( QgsAbstractGeometryV2* geom, mGeometries )
+  {
+    geom->dropMValue();
+  }
+  return true;
+}

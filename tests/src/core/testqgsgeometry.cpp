@@ -682,6 +682,29 @@ void TestQgsGeometry::pointV2()
   QCOMPARE( p24, QgsPointV2( QgsWKBTypes::PointM, 1.0, 2.0, 0.0, 5.0 ) );
   QVERIFY( !p24.addMValue( 6.0 ) );
 
+  //dropZ
+  QgsPointV2 p25( QgsWKBTypes::PointZ, 1.0, 2.0, 3.0 );
+  QVERIFY( p25.dropZValue( ) );
+  QCOMPARE( p25, QgsPointV2( 1.0, 2.0 ) );
+  QVERIFY( !p25.dropZValue( ) );
+  QgsPointV2 p26( QgsWKBTypes::PointZM, 1.0, 2.0, 3.0, 4.0 );
+  QVERIFY( p26.dropZValue( ) );
+  QCOMPARE( p26, QgsPointV2( QgsWKBTypes::PointM, 1.0, 2.0, 0.0, 4.0 ) );
+  QVERIFY( !p26.dropZValue( ) );
+  QgsPointV2 p26a( QgsWKBTypes::Point25D, 1.0, 2.0, 3.0 );
+  QVERIFY( p26a.dropZValue( ) );
+  QCOMPARE( p26a, QgsPointV2( QgsWKBTypes::Point, 1.0, 2.0 ) );
+  QVERIFY( !p26a.dropZValue( ) );
+
+  //dropM
+  QgsPointV2 p27( QgsWKBTypes::PointM, 1.0, 2.0, 0.0, 3.0 );
+  QVERIFY( p27.dropMValue( ) );
+  QCOMPARE( p27, QgsPointV2( 1.0, 2.0 ) );
+  QVERIFY( !p27.dropMValue( ) );
+  QgsPointV2 p28( QgsWKBTypes::PointZM, 1.0, 2.0, 3.0, 4.0 );
+  QVERIFY( p28.dropMValue( ) );
+  QCOMPARE( p28, QgsPointV2( QgsWKBTypes::PointZ, 1.0, 2.0, 3.0, 0.0 ) );
+  QVERIFY( !p28.dropMValue( ) );
 }
 
 void TestQgsGeometry::lineStringV2()
@@ -1611,6 +1634,58 @@ void TestQgsGeometry::lineStringV2()
   QCOMPARE( l29.wkbType(), QgsWKBTypes::LineStringZM );
   QCOMPARE( l29.pointN( 0 ), QgsPointV2( QgsWKBTypes::PointZM, 1, 2, 3, 5 ) );
   QCOMPARE( l29.pointN( 1 ), QgsPointV2( QgsWKBTypes::PointZM, 11, 12, 4, 5 ) );
+
+
+  //dropZValue
+  QgsLineStringV2 l28d;
+  QVERIFY( !l28d.dropZValue() );
+  l28d.setPoints( QList< QgsPointV2 >() << QgsPointV2( 1, 2 ) << QgsPointV2( 11, 12 ) );
+  QVERIFY( !l28d.dropZValue() );
+  l28d.addZValue( 1.0 );
+  QCOMPARE( l28d.wkbType(), QgsWKBTypes::LineStringZ );
+  QVERIFY( l28d.is3D() );
+  QVERIFY( l28d.dropZValue() );
+  QVERIFY( !l28d.is3D() );
+  QCOMPARE( l28d.wkbType(), QgsWKBTypes::LineString );
+  QCOMPARE( l28d.pointN( 0 ), QgsPointV2( QgsWKBTypes::Point, 1, 2 ) );
+  QCOMPARE( l28d.pointN( 1 ), QgsPointV2( QgsWKBTypes::Point, 11, 12 ) );
+  QVERIFY( !l28d.dropZValue() ); //already dropped
+  //linestring with m
+  l28d.setPoints( QList< QgsPointV2 >() << QgsPointV2( QgsWKBTypes::PointZM, 1, 2, 3, 4 ) << QgsPointV2( QgsWKBTypes::PointZM, 11, 12, 3, 4 ) );
+  QVERIFY( l28d.dropZValue() );
+  QVERIFY( !l28d.is3D() );
+  QVERIFY( l28d.isMeasure() );
+  QCOMPARE( l28d.wkbType(), QgsWKBTypes::LineStringM );
+  QCOMPARE( l28d.pointN( 0 ), QgsPointV2( QgsWKBTypes::PointM, 1, 2, 0, 4 ) );
+  QCOMPARE( l28d.pointN( 1 ), QgsPointV2( QgsWKBTypes::PointM, 11, 12, 0, 4 ) );
+  //linestring25d
+  l28d.setPoints( QList< QgsPointV2 >() << QgsPointV2( QgsWKBTypes::Point25D, 1, 2, 3 ) << QgsPointV2( QgsWKBTypes::Point25D, 11, 12, 4 ) );
+  QCOMPARE( l28d.wkbType(), QgsWKBTypes::LineString25D );
+  QVERIFY( l28d.dropZValue() );
+  QCOMPARE( l28d.wkbType(), QgsWKBTypes::LineString );
+  QCOMPARE( l28d.pointN( 0 ), QgsPointV2( QgsWKBTypes::Point, 1, 2 ) );
+  QCOMPARE( l28d.pointN( 1 ), QgsPointV2( QgsWKBTypes::Point, 11, 12 ) );
+
+  //dropMValue
+  l28d.setPoints( QList< QgsPointV2 >() << QgsPointV2( 1, 2 ) << QgsPointV2( 11, 12 ) );
+  QVERIFY( !l28d.dropMValue() );
+  l28d.addMValue( 1.0 );
+  QCOMPARE( l28d.wkbType(), QgsWKBTypes::LineStringM );
+  QVERIFY( l28d.isMeasure() );
+  QVERIFY( l28d.dropMValue() );
+  QVERIFY( !l28d.isMeasure() );
+  QCOMPARE( l28d.wkbType(), QgsWKBTypes::LineString );
+  QCOMPARE( l28d.pointN( 0 ), QgsPointV2( QgsWKBTypes::Point, 1, 2 ) );
+  QCOMPARE( l28d.pointN( 1 ), QgsPointV2( QgsWKBTypes::Point, 11, 12 ) );
+  QVERIFY( !l28d.dropMValue() ); //already dropped
+  //linestring with z
+  l28d.setPoints( QList< QgsPointV2 >() << QgsPointV2( QgsWKBTypes::PointZM, 1, 2, 3, 4 ) << QgsPointV2( QgsWKBTypes::PointZM, 11, 12, 3, 4 ) );
+  QVERIFY( l28d.dropMValue() );
+  QVERIFY( !l28d.isMeasure() );
+  QVERIFY( l28d.is3D() );
+  QCOMPARE( l28d.wkbType(), QgsWKBTypes::LineStringZ );
+  QCOMPARE( l28d.pointN( 0 ), QgsPointV2( QgsWKBTypes::PointZ, 1, 2, 3, 0 ) );
+  QCOMPARE( l28d.pointN( 1 ), QgsPointV2( QgsWKBTypes::PointZ, 11, 12, 3, 0 ) );
 
   //isRing
   QgsLineStringV2 l30;

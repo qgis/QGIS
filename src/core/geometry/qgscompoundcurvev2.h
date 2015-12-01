@@ -114,6 +114,9 @@ class CORE_EXPORT QgsCompoundCurveV2: public QgsCurveV2
     virtual bool addZValue( double zValue = 0 ) override;
     virtual bool addMValue( double mValue = 0 ) override;
 
+    virtual bool dropZValue() override;
+    virtual bool dropMValue() override;
+
   private:
     QList< QgsCurveV2* > mCurves;
     /** Turns a vertex id for the compound curve into one or more ids for the subcurves

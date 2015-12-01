@@ -664,3 +664,29 @@ bool QgsCompoundCurveV2::addMValue( double mValue )
   return true;
 }
 
+bool QgsCompoundCurveV2::dropZValue()
+{
+  if ( !QgsWKBTypes::hasZ( mWkbType ) )
+    return false;
+
+  mWkbType = QgsWKBTypes::dropZ( mWkbType );
+  Q_FOREACH ( QgsCurveV2* curve, mCurves )
+  {
+    curve->dropZValue();
+  }
+  return true;
+}
+
+bool QgsCompoundCurveV2::dropMValue()
+{
+  if ( !QgsWKBTypes::hasM( mWkbType ) )
+    return false;
+
+  mWkbType = QgsWKBTypes::dropM( mWkbType );
+  Q_FOREACH ( QgsCurveV2* curve, mCurves )
+  {
+    curve->dropMValue();
+  }
+  return true;
+}
+

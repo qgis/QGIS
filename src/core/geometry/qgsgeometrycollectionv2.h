@@ -122,6 +122,8 @@ class CORE_EXPORT QgsGeometryCollectionV2: public QgsAbstractGeometryV2
 
     virtual bool addZValue( double zValue = 0 ) override;
     virtual bool addMValue( double mValue = 0 ) override;
+    virtual bool dropZValue() override;
+    virtual bool dropMValue() override;
 
   protected:
     QVector< QgsAbstractGeometryV2* > mGeometries;

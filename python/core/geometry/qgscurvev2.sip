@@ -35,4 +35,18 @@ class QgsCurveV2: public QgsAbstractGeometryV2
     virtual int ringCount(int part = 0) const;
     virtual int partCount() const;
     virtual QgsPointV2 vertexAt( const QgsVertexId& id ) const;
+
+    /** Drops any Z dimensions which exist in the geometry.
+     * @returns true if Z values were present and have been removed
+     * @see dropMValue()
+     * @note added in QGIS 2.14
+     */
+    virtual bool dropZValue() = 0;
+
+    /** Drops any M values which exist in the geometry.
+     * @returns true if M values were present and have been removed
+     * @see dropZValue()
+     * @note added in QGIS 2.14
+     */
+    virtual bool dropMValue() = 0;
 };

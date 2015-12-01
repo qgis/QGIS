@@ -772,3 +772,33 @@ bool QgsCurvePolygonV2::addMValue( double mValue )
   }
   return true;
 }
+
+bool QgsCurvePolygonV2::dropZValue()
+{
+  if ( !is3D() )
+    return false;
+
+  mWkbType = QgsWKBTypes::dropZ( mWkbType );
+  if ( mExteriorRing )
+    mExteriorRing->dropZValue();
+  Q_FOREACH ( QgsCurveV2* curve, mInteriorRings )
+  {
+    curve->dropZValue();
+  }
+  return true;
+}
+
+bool QgsCurvePolygonV2::dropMValue()
+{
+  if ( !isMeasure() )
+    return false;
+
+  mWkbType = QgsWKBTypes::dropM( mWkbType );
+  if ( mExteriorRing )
+    mExteriorRing->dropMValue();
+  Q_FOREACH ( QgsCurveV2* curve, mInteriorRings )
+  {
+    curve->dropMValue();
+  }
+  return true;
+}

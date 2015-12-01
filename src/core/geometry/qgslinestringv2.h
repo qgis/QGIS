@@ -180,6 +180,9 @@ class CORE_EXPORT QgsLineStringV2: public QgsCurveV2
     virtual bool addZValue( double zValue = 0 ) override;
     virtual bool addMValue( double mValue = 0 ) override;
 
+    virtual bool dropZValue() override;
+    virtual bool dropMValue() override;
+
   private:
     QVector<double> mX;
     QVector<double> mY;

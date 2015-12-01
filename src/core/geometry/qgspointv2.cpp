@@ -359,3 +359,24 @@ void QgsPointV2::transform( const QTransform& t )
   t.map( mX, mY, &x, &y );
   mX = x; mY = y;
 }
+
+
+bool QgsPointV2::dropZValue()
+{
+  if ( !is3D() )
+    return false;
+
+  mWkbType = QgsWKBTypes::dropZ( mWkbType );
+  mZ = 0.0;
+  return true;
+}
+
+bool QgsPointV2::dropMValue()
+{
+  if ( !isMeasure() )
+    return false;
+
+  mWkbType = QgsWKBTypes::dropM( mWkbType );
+  mM = 0.0;
+  return true;
+}
