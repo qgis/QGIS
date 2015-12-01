@@ -408,8 +408,6 @@ class CORE_EXPORT QgsEditFormConfig : public QObject
      * @param fieldName  The name of the field
      *
      * @return The id for the editor widget or a NULL string if not applicable
-     *
-     * @note python method name editorWidgetV2ByName
      */
     QString widgetType( const QString& fieldName ) const;
 
@@ -420,30 +418,30 @@ class CORE_EXPORT QgsEditFormConfig : public QObject
      *
      * Example:
      * \code{.py}
-     *   layer.setEditorWidgetV2Config( 1, { 'Layer': 'otherlayerid_1234', 'Key': 'Keyfield', 'Value': 'ValueField' } )
+     *   layer.setWidgetConfig( 1, { 'Layer': 'otherlayerid_1234', 'Key': 'Keyfield', 'Value': 'ValueField' } )
      * \endcode
      *
      * @param attrIdx     Index of the field
      * @param config      The config to set for this field
      *
-     * @see setEditorWidgetV2() for a list of widgets and choose the widget to see the available options.
+     * @see setWidgetType() for a list of widgets and choose the widget to see the available options.
      */
     void setWidgetConfig( int attrIdx, const QgsEditorWidgetConfig& config );
 
     /**
-     * Set the editor widget config for a field.
+     * Set the editor widget config for a widget.
      *
-     * Python: Will accept a map.
+     * Python: Will accept a map
      *
      * Example:
      * \code{.py}
-     *   layer.setEditorWidgetV2Config( 1, { 'Layer': 'otherlayerid_1234', 'Key': 'Keyfield', 'Value': 'ValueField' } )
+     *   layer.setWidgetConfig( 'relation_id', { 'nm-rel': 'other_relation' } )
      * \endcode
      *
-     * @param attrIdx     Index of the field
+     * @param widgetName  The name of the widget or field to configure
      * @param config      The config to set for this field
      *
-     * @see setEditorWidgetV2() for a list of widgets and choose the widget to see the available options.
+     * @see setWidgetType() for a list of widgets and choose the widget to see the available options.
      */
     void setWidgetConfig( const QString& widgetName , const QgsEditorWidgetConfig& config );
 
@@ -462,8 +460,6 @@ class CORE_EXPORT QgsEditFormConfig : public QObject
      * @param widgetName The name of the widget. This can be a field name or the name of an additional widget.
      *
      * @return The configuration for the editor widget or an empty config if the field does not exist
-     *
-     * @note python method name is editorWidgetV2ConfigByName
      */
     QgsEditorWidgetConfig widgetConfig( const QString& widgetName ) const;
 
