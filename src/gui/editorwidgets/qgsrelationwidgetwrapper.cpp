@@ -17,6 +17,7 @@
 
 #include "qgsrelationeditorwidget.h"
 #include "qgsattributeeditorcontext.h"
+#include "qgsproject.h"
 
 #include <QWidget>
 
@@ -35,7 +36,7 @@ QWidget* QgsRelationWidgetWrapper::createWidget( QWidget* parent )
 void QgsRelationWidgetWrapper::setFeature( const QgsFeature& feature )
 {
   if ( mWidget && mRelation.isValid() )
-    mWidget->setRelationFeature( mRelation, feature );
+    mWidget->setFeature( feature );
 }
 
 void QgsRelationWidgetWrapper::initWidget( QWidget* editor )
@@ -70,6 +71,10 @@ void QgsRelationWidgetWrapper::initWidget( QWidget* editor )
     ctx = ctx->parentContext();
   }
   while ( ctx );
+
+  QgsRelation nmrel = QgsProject::instance()->relationManager()->relation( config( "nm-rel" ).toString() );
+
+  w->setRelations( mRelation, nmrel );
 
   mWidget = w;
 }

@@ -793,7 +793,7 @@ QWidget* QgsAttributeForm::createWidgetFromDef( const QgsAttributeEditorElement 
       }
       QWidget* spacer = new QWidget();
       spacer->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Preferred );
-      gbLayout->addWidget( spacer, index, 0 );
+      // gbLayout->addWidget( spacer, index, 0 );
 
       labelText = QString::null;
       labelOnTop = true;

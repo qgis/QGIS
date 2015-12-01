@@ -71,6 +71,7 @@
 %Include qgsfieldvalidator.sip
 %Include qgsfiledropedit.sip
 %Include qgsfilterlineedit.sip
+%Include qgsfeatureselectiondlg.sip
 %Include qgsformannotationitem.sip
 %Include qgsgenericprojectionselector.sip
 %Include qgsgeometryrubberband.sip
@@ -126,6 +127,7 @@
 %Include qgsrasterlayersaveasdialog.sip
 %Include qgsrasterpyramidsoptionswidget.sip
 %Include qgsrubberband.sip
+%Include qgsrelationeditorwidget.sip
 %Include qgsscalecombobox.sip
 %Include qgsscalerangewidget.sip
 %Include qgsscalevisibilitydialog.sip
@@ -231,6 +233,7 @@
 %Include editorwidgets/qgsdoublespinbox.sip
 %Include editorwidgets/qgsrelationreferencewidget.sip
 %Include editorwidgets/qgsrelationreferencewidgetwrapper.sip
+%Include editorwidgets/qgsrelationwidgetwrapper.sip
 %Include editorwidgets/qgsspinbox.sip
 %Include editorwidgets/qgsdatetimeedit.sip
 
