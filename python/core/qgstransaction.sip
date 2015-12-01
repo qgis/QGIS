@@ -37,6 +37,9 @@ class QgsTransaction /Abstract/
     /** Add layer to the transaction. The layer must not be in edit mode. The transaction must not be active. */
     bool addLayer( const QString& layerId );
 
+    /** Add layer to the transaction. The layer must not be in edit mode. The transaction must not be active. */
+    bool addLayer( QgsVectorLayer* layer );
+
     /** Begin transaction
      *  The statement timeout, in seconds, specifies how long an sql statement
      *  is allowed to block QGIS before it is aborted. Statements can block,
