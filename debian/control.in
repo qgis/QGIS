@@ -6,7 +6,7 @@ Priority: optional
 Build-Depends:
  bison,
  cmake (>= 2.8),
-#sid stretch jessie wheezy saucy trusty utopic vivid wily# debhelper (>= 9),
+#sid stretch jessie wheezy saucy trusty utopic vivid wily# debhelper (>= 9), dh-python,
 #precise# debhelper (>= 7),
  flex,
  grass-dev,
