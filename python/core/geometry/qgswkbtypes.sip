@@ -167,4 +167,20 @@ class QgsWKBTypes
      * @see hasM()
      */
     static Type addM( Type type );
+
+    /** Drops the z dimension (if present) for a WKB type and returns the new type.
+     * @param type original type
+     * @note added in QGIS 2.14
+     * @see dropM()
+     * @see addZ()
+     */
+    static Type dropZ( Type type );
+
+    /** Drops the m dimension (if present) for a WKB type and returns the new type.
+     * @param type original type
+     * @note added in QGIS 2.14
+     * @see dropZ()
+     * @see addM()
+     */
+    static Type dropM( Type type );
 };

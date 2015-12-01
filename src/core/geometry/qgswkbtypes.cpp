@@ -214,6 +214,28 @@ QgsWKBTypes::Type QgsWKBTypes::addM( QgsWKBTypes::Type type )
     return ( QgsWKBTypes::Type )( flat + 2000 );
 }
 
+QgsWKBTypes::Type QgsWKBTypes::dropZ( QgsWKBTypes::Type type )
+{
+  if ( !hasZ( type ) )
+    return type;
+
+  QgsWKBTypes::Type returnType = flatType( type );
+  if ( hasM( type ) )
+    returnType = addM( returnType );
+  return returnType;
+}
+
+QgsWKBTypes::Type QgsWKBTypes::dropM( QgsWKBTypes::Type type )
+{
+  if ( !hasM( type ) )
+    return type;
+
+  QgsWKBTypes::Type returnType = flatType( type );
+  if ( hasZ( type ) )
+    returnType = addZ( returnType );
+  return returnType;
+}
+
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests.
