@@ -153,7 +153,6 @@ QgsAbstractFeatureSource* QgsWFSProvider::featureSource() const
 
 void QgsWFSProvider::reloadData()
 {
-  mPendingRetrieval = false;
   if (mCached)
       deleteData();
   delete mSpatialIndex;
@@ -162,6 +161,7 @@ void QgsWFSProvider::reloadData()
 
   if ( !mCached )
     emit dataChanged();
+  mPendingRetrieval = false;
 }
 
 void QgsWFSProvider::deleteData()
