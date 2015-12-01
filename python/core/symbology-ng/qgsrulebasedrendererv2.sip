@@ -326,7 +326,7 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
 
     virtual void stopRender( QgsRenderContext& context );
 
-    virtual QString filter();
+    virtual QString filter( const QgsFields& fields = QgsFields() );
 
     virtual QList<QString> usedAttributes();
 

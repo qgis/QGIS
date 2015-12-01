@@ -66,6 +66,8 @@ class QgsCategorizedSymbolRendererV2 : QgsFeatureRendererV2
     //! returns bitwise OR-ed capabilities of the renderer
     virtual int capabilities();
 
+    virtual QString filter( const QgsFields& fields = QgsFields() );
+
     //! @note available in python as symbols2
     virtual QgsSymbolV2List symbols( QgsRenderContext& context ) /PyName=symbols2/;
     void updateSymbols( QgsSymbolV2 * sym );

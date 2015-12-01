@@ -385,7 +385,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
 
     virtual void stopRender( QgsRenderContext& context ) override;
 
-    virtual QString filter() override;
+    virtual QString filter( const QgsFields& fields = QgsFields() ) override;
 
     virtual QList<QString> usedAttributes() override;
 

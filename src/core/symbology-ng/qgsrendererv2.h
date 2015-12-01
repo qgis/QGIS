@@ -20,6 +20,7 @@
 #include "qgsrectangle.h"
 #include "qgsrendercontext.h"
 #include "qgssymbolv2.h"
+#include "qgsfield.h"
 
 #include <QList>
 #include <QString>
@@ -30,7 +31,6 @@
 #include <QDomElement>
 
 class QgsFeature;
-class QgsFields;
 class QgsVectorLayer;
 class QgsPaintEffect;
 
@@ -141,7 +141,7 @@ class CORE_EXPORT QgsFeatureRendererV2
      *
      * @return An expression used as where clause
      */
-    virtual QString filter() { return QString::null; }
+    virtual QString filter( const QgsFields& fields = QgsFields() ) { Q_UNUSED( fields ); return QString::null; }
 
     virtual QList<QString> usedAttributes() = 0;
 
