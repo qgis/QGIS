@@ -1737,7 +1737,8 @@ void QgsWFSProvider::extendExtent( const QgsRectangle &extent )
 
   QgsRectangle r( mExtent.intersect( &extent ) );
 
-  if ( mGetExtent.contains( r ) )
+  if ( (extent == mGetExtent || mFeatureCount == 0 || mFeatureCount % 500 != 0)
+      && mGetExtent.contains( r ) )
     return;
 
 #if 0
