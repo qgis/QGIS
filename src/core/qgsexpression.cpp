@@ -2623,6 +2623,33 @@ QString QgsExpression::quotedString( QString text )
   return QString( "'%1'" ).arg( text );
 }
 
+QString QgsExpression::quotedValue( const QVariant &value )
+{
+  return quotedValue( value, value.type() );
+}
+
+QString QgsExpression::quotedValue( const QVariant& value, QVariant::Type type )
+{
+  if ( value.isNull() )
+    return "NULL";
+
+  switch ( type )
+  {
+    case QVariant::Int:
+    case QVariant::LongLong:
+    case QVariant::Double:
+      return value.toString();
+
+    case QVariant::Bool:
+      return value.toBool() ? "TRUE" : "FALSE";
+
+    default:
+    case QVariant::String:
+      return quotedString( value.toString() );
+  }
+
+}
+
 bool QgsExpression::isFunctionName( const QString &name )
 {
   return functionIndex( name ) != -1;
