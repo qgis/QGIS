@@ -86,7 +86,7 @@ void QgsAttributeTableModel::featuresDeleted( const QgsFeatureIds& fids )
 
   Q_FOREACH ( const QgsFeatureId& fid, fids )
   {
-    QgsDebugMsgLevel( QString( "(%2) fid: %1" ).arg( fid ).arg( mFeatureRequest.filterType() ), 4 );
+    QgsDebugMsgLevel( QString( "(%2) fid: %1, size: %3" ).arg( fid ).arg( mFeatureRequest.filterType() ).arg( mIdRowMap.size() ), 4 );
 
     int row = idToRow( fid );
     if ( row != -1 )
@@ -138,9 +138,12 @@ void QgsAttributeTableModel::featuresDeleted( const QgsFeatureIds& fids )
 
 bool QgsAttributeTableModel::removeRows( int row, int count, const QModelIndex &parent )
 {
+  if ( row < 0 || count < 1 )
+    return false;
+
   beginRemoveRows( parent, row, row + count - 1 );
 #ifdef QGISDEBUG
-  if ( 3 > QgsLogger::debugLevel() )
+  if ( 3 <= QgsLogger::debugLevel() )
     QgsDebugMsgLevel( QString( "remove %2 rows at %1 (rows %3, ids %4)" ).arg( row ).arg( count ).arg( mRowIdMap.size() ).arg( mIdRowMap.size() ), 3 );
 #endif
 
@@ -148,7 +151,7 @@ bool QgsAttributeTableModel::removeRows( int row, int count, const QModelIndex &
   for ( int i = row; i < row + count; i++ )
   {
     mFieldCache.remove( mRowIdMap[i] );
-    mIdRowMap.remove( mRowIdMap[ i ] );
+    mIdRowMap.remove( mRowIdMap[i] );
     mRowIdMap.remove( i );
   }
 
@@ -157,20 +160,18 @@ bool QgsAttributeTableModel::removeRows( int row, int count, const QModelIndex &
   for ( int i = row + count; i < n; i++ )
   {
     QgsFeatureId id = mRowIdMap[i];
-    mIdRowMap[ id ] -= count;
-    mRowIdMap[ i-count ] = id;
+    mIdRowMap[id] -= count;
+    mRowIdMap[i-count] = id;
     mRowIdMap.remove( i );
   }
 
 #ifdef QGISDEBUG
-  if ( 4 > QgsLogger::debugLevel() )
+  if ( 4 <= QgsLogger::debugLevel() )
   {
     QgsDebugMsgLevel( QString( "after removal rows %1, ids %2" ).arg( mRowIdMap.size() ).arg( mIdRowMap.size() ), 4 );
     QgsDebugMsgLevel( "id->row", 4 );
     for ( QHash<QgsFeatureId, int>::iterator it = mIdRowMap.begin(); it != mIdRowMap.end(); ++it )
       QgsDebugMsgLevel( QString( "%1->%2" ).arg( FID_TO_STRING( it.key() ) ).arg( *it ), 4 );
-
-    QHash<QgsFeatureId, int>::iterator idit;
 
     QgsDebugMsgLevel( "row->id", 4 );
     for ( QHash<int, QgsFeatureId>::iterator it = mRowIdMap.begin(); it != mRowIdMap.end(); ++it )
@@ -195,7 +196,7 @@ void QgsAttributeTableModel::featureAdded( QgsFeatureId fid )
 
   if ( featOk && mFeatureRequest.acceptFeature( mFeat ) )
   {
-    mFieldCache[ fid ] = mFeat.attribute( mCachedField );
+    mFieldCache[fid] = mFeat.attribute( mCachedField );
 
     int n = mRowIdMap.size();
     beginInsertRows( QModelIndex(), n, n );
@@ -249,7 +250,7 @@ void QgsAttributeTableModel::attributeValueChanged( QgsFeatureId fid, int idx, c
   QgsDebugMsgLevel( QString( "(%4) fid: %1, idx: %2, value: %3" ).arg( fid ).arg( idx ).arg( value.toString() ).arg( mFeatureRequest.filterType() ), 3 );
 
   if ( idx == mCachedField )
-    mFieldCache[ fid ] = value;
+    mFieldCache[fid] = value;
 
   // No filter request: skip all possibly heavy checks
   if ( mFeatureRequest.filterType() == QgsFeatureRequest::FilterNone )
@@ -475,7 +476,7 @@ QgsFeatureId QgsAttributeTableModel::rowToId( const int row ) const
 
 int QgsAttributeTableModel::fieldIdx( int col ) const
 {
-  return mAttributes[ col ];
+  return mAttributes[col];
 }
 
 int QgsAttributeTableModel::fieldCol( int idx ) const
@@ -552,7 +553,7 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
   if ( index.column() >= mFieldCount )
     return role == Qt::DisplayRole ? rowId : QVariant();
 
-  int fieldId = mAttributes[ index.column()];
+  int fieldId = mAttributes[index.column()];
 
   if ( role == FieldIndexRole )
     return fieldId;
@@ -575,7 +576,7 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
   // if we don't have the row in current cache, load it from layer first
   if ( mCachedField == fieldId )
   {
-    val = mFieldCache[ rowId ];
+    val = mFieldCache[rowId];
   }
   else
   {
@@ -593,7 +594,7 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
 
   if ( role == Qt::DisplayRole )
   {
-    return mWidgetFactories[ index.column()]->representValue( layer(), fieldId, mWidgetConfigs[ index.column()], mAttributeWidgetCaches[ index.column()], val );
+    return mWidgetFactories[index.column()]->representValue( layer(), fieldId, mWidgetConfigs[index.column()], mAttributeWidgetCaches[index.column()], val );
   }
 
   if ( role == Qt::BackgroundColorRole || role == Qt::TextColorRole || role == Qt::DecorationRole || role == Qt::FontRole )
@@ -681,7 +682,7 @@ Qt::ItemFlags QgsAttributeTableModel::flags( const QModelIndex &index ) const
   Qt::ItemFlags flags = QAbstractItemModel::flags( index );
 
   if ( layer()->isEditable() &&
-       !layer()->editFormConfig()->readOnly( mAttributes[ index.column()] ) &&
+       !layer()->editFormConfig()->readOnly( mAttributes[index.column()] ) &&
        (( layer()->dataProvider() && layer()->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) ||
         FID_IS_NEW( rowToId( index.row() ) ) ) )
     flags |= Qt::ItemIsEditable;
@@ -733,10 +734,10 @@ void QgsAttributeTableModel::prefetchColumnData( int column )
   {
     if ( column >= mAttributes.count() )
       return;
-    int fieldId = mAttributes[ column ];
+    int fieldId = mAttributes[column];
     const QgsFields& fields = layer()->fields();
     QStringList fldNames;
-    fldNames << fields[ fieldId ].name();
+    fldNames << fields[fieldId].name();
 
     QgsFeatureRequest r( mFeatureRequest );
     QgsFeatureIterator it = mLayerCache->getFeatures( r.setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( fldNames, fields ) );
