@@ -19,7 +19,7 @@
  *
  * Edits on features can get rejected if another conflicting transaction is active.
  */
-class QgsTransaction /Abstract/
+class QgsTransaction : QObject /Abstract/
 {
 %TypeHeaderCode
 #include <qgstransaction.h>
@@ -60,5 +60,8 @@ class QgsTransaction /Abstract/
     virtual bool executeSql( const QString& sql, QString& error /Out/ ) = 0;
 
   signals:
+    /**
+     * Emitted after a rollback
+     */
     void afterRollback();
 };

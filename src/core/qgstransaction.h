@@ -85,6 +85,9 @@ class CORE_EXPORT QgsTransaction : public QObject
     virtual bool executeSql( const QString& sql, QString& error ) = 0;
 
   signals:
+    /**
+     * Emitted after a rollback
+     */
     void afterRollback();
 
   private slots:
