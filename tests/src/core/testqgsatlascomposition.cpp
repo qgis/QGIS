@@ -472,6 +472,7 @@ void TestQgsAtlasComposition::test_signals()
 
 void TestQgsAtlasComposition::test_remove_layer()
 {
+  QgsMapLayerRegistry::instance()->addMapLayer( mVectorLayer2 );
   mAtlas->setCoverageLayer( mVectorLayer2 );
   mAtlas->setEnabled( true );
 
