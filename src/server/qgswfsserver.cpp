@@ -463,7 +463,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
       if ( layer && wfsLayersId.contains( layer->id() ) )
       {
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-        if ( !mAccessControl->layerReadPermission( currentLayer ) )
+        if ( !mAccessControl->layerReadPermission( currentLayer->id() ) )
         {
           throw QgsMapServiceException( "Security", "Feature access permission denied" );
         }
@@ -550,7 +550,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
         QgsFeatureRequest fReq;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
         fReq.setFlags( QgsFeatureRequest::ExactIntersect | ( mWithGeom ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) );
-        mAccessControl->filterFeatures( layer, fReq );
+        mAccessControl->filterFeatures( layer->id(), fReq );
 
         QStringList attributes = QStringList();
         foreach ( int idx, attrIndexes )
@@ -558,7 +558,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
           attributes.append( layer->pendingFields().field( idx ).name() );
         }
         fReq.setSubsetOfAttributes(
-          mAccessControl->layerAttributes( layer, attributes ),
+          mAccessControl->layerAttributes( layer->id(), attributes ),
           layer->pendingFields() );
 #endif
 
@@ -1484,21 +1484,21 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
       if ( actionName == "Insert" )
       {
-        if ( !mAccessControl->layerInsertPermission( layer ) )
+        if ( !mAccessControl->layerInsertPermission( layer->id() ) )
         {
           throw QgsMapServiceException( "Security", "Feature insert permission denied" );
         }
       }
       else if ( actionName == "Update" )
       {
-        if ( !mAccessControl->layerUpdatePermission( layer ) )
+        if ( !mAccessControl->layerUpdatePermission( layer->id() ) )
         {
           throw QgsMapServiceException( "Security", "Feature update permission denied" );
         }
       }
       else if ( actionName == "Delete" )
       {
-        if ( !mAccessControl->layerDeletePermission( layer ) )
+        if ( !mAccessControl->layerDeletePermission( layer->id() ) )
         {
           throw QgsMapServiceException( "Security", "Feature delete permission denied" );
         }
@@ -1576,7 +1576,7 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
             QgsFeature feature;
             while ( fit.nextFeature( feature ) )
             {
-              if ( !mAccessControl->allowToEdit( layer, feature ) )
+              if ( !mAccessControl->allowToEdit( layer->id(), feature ) )
               {
                 throw QgsMapServiceException( "Security", "Feature modify permission denied" );
               }
@@ -1611,7 +1611,7 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
             fit = layer->getFeatures( QgsFeatureRequest( *fidIt ) );
             while ( fit.nextFeature( feature ) )
             {
-              if ( !mAccessControl->allowToEdit( layer, feature ) )
+              if ( !mAccessControl->allowToEdit( layer->id(), feature ) )
               {
                 layer->rollBack();
                 throw QgsMapServiceException( "Security", "Feature modify permission denied" );
@@ -1657,7 +1657,7 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
             QgsFeature feature;
             while ( fit.nextFeature( feature ) )
             {
-              if ( !mAccessControl->allowToEdit( layer, feature ) )
+              if ( !mAccessControl->allowToEdit( layer->id(), feature ) )
               {
                 throw QgsMapServiceException( "Security", "Feature modify permission denied" );
               }
@@ -1752,7 +1752,7 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
       QgsFeatureList::iterator featureIt = inFeatList.begin();
       while ( featureIt != inFeatList.end() )
       {
-        if ( !mAccessControl->allowToEdit( layer, *featureIt ) )
+        if ( !mAccessControl->allowToEdit( layer->id(), *featureIt ) )
         {
           throw QgsMapServiceException( "Security", "Feature modify permission denied" );
         }

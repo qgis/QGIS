@@ -53,10 +53,10 @@ class SERVER_EXPORT QgsAccessControl : public QgsFeatureFilterProvider
     }
 
     /** Filter the features of the layer
-     * @param layer the layer to control
+     * @param layerId the layer id to control
      * @param filterFeatures the request to fill
      */
-    void filterFeatures( const QgsVectorLayer* layer, QgsFeatureRequest& filterFeatures ) const;
+    void filterFeatures( const QString& layerId, QgsFeatureRequest& filterFeatures ) const;
 
     /** Return a clone of the object
      * @return A clone
@@ -64,48 +64,48 @@ class SERVER_EXPORT QgsAccessControl : public QgsFeatureFilterProvider
     QgsFeatureFilterProvider* clone() const;
 
     /** Return an additional subset string (typically SQL) filter
-     * @param layer the layer to control
+     * @param layerId the layer id to control
      * @return the subset string to use
      */
-    const QString extraSubsetString( const QgsVectorLayer* layer ) const;
+    const QString extraSubsetString( const QString& layerId ) const;
 
     /** Return the layer read right
-     * @param layer the layer to control
+     * @param layerId the layer id to control
      * @return true if it can be read
      */
-    bool layerReadPermission( const QgsMapLayer* layer ) const;
+    bool layerReadPermission( const QString& layerId ) const;
 
     /** Return the layer insert right
-     * @param layer the layer to control
+     * @param layerId the layer id to control
      * @return true if we can insert on it
      */
-    bool layerInsertPermission( const QgsVectorLayer* layer ) const;
+    bool layerInsertPermission( const QString& layerId ) const;
 
     /** Return the layer update right
-     * @param layer the layer to control
+     * @param layerId the layer id to control
      * @return true if we can do an update
      */
-    bool layerUpdatePermission( const QgsVectorLayer* layer ) const;
+    bool layerUpdatePermission( const QString& layerId ) const;
 
     /** Return the layer delete right
-     * @param layer the layer to control
+     * @param layerId the layer id to control
      * @return true if we can do a delete
      */
-    bool layerDeletePermission( const QgsVectorLayer* layer ) const;
+    bool layerDeletePermission( const QString& layerId ) const;
 
     /** Return the authorized layer attributes
-     * @param layer the layer to control
+     * @param layerId the layer id to control
      * @param attributes the list of attribute
      * @return the list of visible attributes
      */
-    const QStringList layerAttributes( const QgsVectorLayer* layer, const QStringList attributes ) const;
+    const QStringList layerAttributes( const QString& layerId, const QStringList attributes ) const;
 
     /** Are we authorized to modify the following geometry
-     * @param layer the layer to control
+     * @param layerId the layer id to control
      * @param feature the concerned feature
      * @return true if we are allowed to edit the feature
      */
-    bool allowToEdit( const QgsVectorLayer* layer, const QgsFeature& feature ) const;
+    bool allowToEdit( const QString& layerId, const QgsFeature& feature ) const;
 
     /** Fill the capabilities caching key
      * @param cacheKey the list to fill with a cache variant

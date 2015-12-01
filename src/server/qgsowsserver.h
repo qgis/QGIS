@@ -20,6 +20,7 @@
 
 #include "qgsrequesthandler.h"
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
+#include "qgsmaplayer.h"
 #include "qgsaccesscontrol.h"
 #endif
 

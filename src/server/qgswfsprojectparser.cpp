@@ -88,7 +88,7 @@ void QgsWFSProjectParser::featureTypeList( QDomElement& parentElement, QDomDocum
         continue;
       }
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-      if ( !mAccessControl->layerReadPermission( layer ) )
+      if ( !mAccessControl->layerReadPermission( layer->id() ) )
       {
         continue;
       }
@@ -349,7 +349,7 @@ void QgsWFSProjectParser::describeFeatureType( const QString& aTypeName, QDomEle
         continue;
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-      if ( !mAccessControl->layerReadPermission( layer ) )
+      if ( !mAccessControl->layerReadPermission( layer->id() ) )
       {
         continue;
       }

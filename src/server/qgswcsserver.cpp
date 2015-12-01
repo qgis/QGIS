@@ -381,7 +381,7 @@ QByteArray* QgsWCSServer::getCoverage()
   if ( rLayer && wcsLayersId.contains( rLayer->id() ) )
   {
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-    if ( !mAccessControl->layerReadPermission( rLayer ) )
+    if ( !mAccessControl->layerReadPermission( rLayer->id() ) )
     {
       throw QgsMapServiceException( "Security", "You are not allowed to access to this coverage" );
     }

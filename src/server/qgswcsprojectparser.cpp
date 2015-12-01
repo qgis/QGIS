@@ -97,7 +97,7 @@ void QgsWCSProjectParser::wcsContentMetadata( QDomElement& parentElement, QDomDo
       if ( layer && wcsLayersId.contains( layer->id() ) )
       {
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-        if ( !mAccessControl->layerReadPermission( layer ) )
+        if ( !mAccessControl->layerReadPermission( layer->id() ) )
         {
           continue;
         }
@@ -224,7 +224,7 @@ void QgsWCSProjectParser::describeCoverage( const QString& aCoveName, QDomElemen
         continue;
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-      if ( !mAccessControl->layerReadPermission( rLayer ) )
+      if ( !mAccessControl->layerReadPermission( rLayer->id() ) )
       {
         continue;
       }

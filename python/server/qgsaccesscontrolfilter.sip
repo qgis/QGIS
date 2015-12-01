@@ -36,7 +36,6 @@ class QgsAccessControlFilter
 #include "qgsaccesscontrolfilter.h"
 #include "qgsserverinterface.h"
 #include "qgsfeature.h"
-#include "qgsmaplayer.h"
 %End
 
   public:
@@ -60,16 +59,16 @@ class QgsAccessControlFilter
     /** Return the QgsServerInterface instance*/
     const QgsServerInterface* serverInterface() const;
     /** Return an additional expression filter */
-    virtual const QString layerFilterExpression( const QgsVectorLayer* layer /Transfer/ ) const;
+    virtual const QString layerFilterExpression( const QString& layerId ) const;
     /** Return an additional the subset string (typically SQL) filter.
         Faster than the layerFilterExpression but not supported on all the type of layer */
-    virtual const QString layerFilterSubsetString( const QgsVectorLayer* layer /Transfer/ ) const;
+    virtual const QString layerFilterSubsetString( const QString& layerId ) const;
     /** Return the layer permissions */
-    virtual const LayerPermissions layerPermissions( const QgsMapLayer* layer /Transfer/ ) const;
+    virtual const LayerPermissions layerPermissions( const QString& layerId ) const;
     /** Return the authorized layer attributes */
-    virtual const QStringList* authorizedLayerAttributes( const QgsVectorLayer* layer /Transfer/, const QStringList& attributes ) const;
+    virtual const QStringList* authorizedLayerAttributes( const QString& layerId, const QStringList& attributes ) const;
     /** Are we authorize to modify the following geometry */
-    virtual bool allowToEdit( const QgsVectorLayer* layer /Transfer/, const QgsFeature& feature /Transfer/ ) const;
+    virtual bool allowToEdit( const QString& layerId, const QgsFeature& feature /Transfer/ ) const;
     /** Cache key to used to create the capabilities cache, "" for no cache, shouldn't any contains "-", default to "" */
     virtual const QString cacheKey() const;
 };

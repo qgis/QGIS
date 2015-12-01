@@ -1026,7 +1026,7 @@ void QgsWMSProjectParser::addLayers( QDomDocument &doc,
         continue;
       }
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-      if ( !mAccessControl->layerReadPermission( currentLayer ) )
+      if ( !mAccessControl->layerReadPermission( currentLayer->id() ) )
       {
         continue;
       }
@@ -1678,7 +1678,7 @@ QDomDocument QgsWMSProjectParser::describeLayer( QStringList& layerList, const Q
       QgsMapLayer* currentLayer = currentLayerList.at( j );
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-      if ( !mAccessControl->layerReadPermission( currentLayer ) )
+      if ( !mAccessControl->layerReadPermission( currentLayer->id() ) )
       {
         throw QgsMapServiceException( "Security", "You are not allowed to access to this layer" );
       }
