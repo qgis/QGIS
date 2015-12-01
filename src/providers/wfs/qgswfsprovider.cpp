@@ -287,19 +287,6 @@ QgsFeatureIterator QgsWFSProvider::getFeatures( const QgsFeatureRequest& request
   if ( !( request.flags() & QgsFeatureRequest::NoGeometry ) && !rect.isEmpty() )
   {
       deleteData();
-      mGetExtent = rect;
-
-      QString dsURI = dataSourceUri();
-      dsURI = dsURI.replace( QRegExp( "BBOX=[^&]*" ),
-                               QString( "BBOX=%1,%2,%3,%4" )
-                               .arg( qgsDoubleToString( rect.xMinimum() ) )
-                               .arg( qgsDoubleToString( rect.yMinimum() ) )
-                               .arg( qgsDoubleToString( rect.xMaximum() ) )
-                               .arg( qgsDoubleToString( rect.yMaximum() ) ) );
-      //TODO: BBOX may not be combined with FILTER. WFS spec v. 1.1.0, sec. 14.7.3 ff.
-      //      if a FILTER is present, the BBOX must be merged into it, capabilities permitting.
-      //      Else one criterion must be abandoned and the user warned.  [WBC 111221]
-      setDataSourceUri( dsURI );
       reloadData();
   }
   return new QgsWFSFeatureIterator( new QgsWFSFeatureSource( this ), true, request );
