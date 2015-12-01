@@ -277,4 +277,21 @@ class QgsEditFormConfig : QObject
     FeatureFormSuppress suppress() const;
     /** Set type of feature form pop-up suppression after feature creation (overrides app setting) */
     void setSuppress( FeatureFormSuppress s );
+
+    /**
+     * Read XML information
+     * Deserialize on project load
+     */
+    void readXml( const QDomNode& node );
+
+    /**
+     * Write XML information
+     * Serialize on project save
+     */
+    void writeXml( QDomNode& node ) const;
+
+    /**
+     * Deserialize drag and drop designer elements.
+     */
+    QgsAttributeEditorElement* attributeEditorElementFromDomElement( QDomElement &elem, QObject* parent );
 };

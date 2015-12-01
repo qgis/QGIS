@@ -552,10 +552,21 @@ class CORE_EXPORT QgsEditFormConfig : public QObject
 
     // Serialization
 
+    /**
+     * Read XML information
+     * Deserialize on project load
+     */
     void readXml( const QDomNode& node );
 
+    /**
+     * Write XML information
+     * Serialize on project save
+     */
     void writeXml( QDomNode& node ) const;
 
+    /**
+     * Deserialize drag and drop designer elements.
+     */
     QgsAttributeEditorElement* attributeEditorElementFromDomElement( QDomElement &elem, QObject* parent );
 
   private slots:
