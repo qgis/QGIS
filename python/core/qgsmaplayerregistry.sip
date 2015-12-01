@@ -97,6 +97,21 @@ class QgsMapLayerRegistry : QObject
 
     /**
      * @brief
+     * Remove a set of layers from the registry
+     *
+     * Any canvases using the affected layers will need to remove them
+     *
+     * The layers being removed are deleted as well as the registry
+     * table entries.
+     *
+     * @param layers  The layers to remove
+     *
+     * @note As a side-effect QgsProject is made dirty.
+     */
+    void removeMapLayers( const QList<QgsMapLayer*>& theLayerIds );
+
+    /**
+     * @brief
      * Remove a layer from qgis
      *
      * Any canvases using the affected layers will need to remove them
@@ -109,6 +124,21 @@ class QgsMapLayerRegistry : QObject
      * @note As a side-effect QgsProject is made dirty.
      */
     void removeMapLayer( const QString& theLayerId );
+
+    /**
+     * @brief
+     * Remove a layer from qgis
+     *
+     * Any canvases using the affected layers will need to remove them
+     *
+     * The layer being removed is deleted as well as the registry
+     * table entry.
+     *
+     * @param layer   The layer to remove
+     *
+     * @note As a side-effect QgsProject is made dirty.
+     */
+    void removeMapLayer( QgsMapLayer* layer );
 
     /**
      * Remove all registered layers
@@ -141,13 +171,29 @@ class QgsMapLayerRegistry : QObject
     void layersWillBeRemoved( const QStringList& theLayerIds );
 
     /**
-     * Emitted when a layer is removed from the registry
+     * Emitted when one or more layers are removed from the registry
+     *
+     * @param theLayerIds  A list layers which are removed.
+     */
+    void layersWillBeRemoved( const QList<QgsMapLayer*>& layer );
+
+    /**
+     * Emitted when an owned layer is removed from the registry
      *
      * @param theLayerId  The id of the layer being removed
      *
      * @note Consider using {@link layersWillBeRemoved()} instead
      */
     void layerWillBeRemoved( const QString& theLayerId );
+
+    /**
+     * Emitted when an owned layer is removed from the registry
+     *
+     * @param layer  The layer being removed
+     *
+     * @note Consider using {@link layersWillBeRemoved()} instead
+     */
+    void layerWillBeRemoved( QgsMapLayer* layer );
 
     /**
      * Emitted after one or more layers were removed from the registry

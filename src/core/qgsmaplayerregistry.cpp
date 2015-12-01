@@ -116,26 +116,52 @@ QgsMapLayerRegistry::addMapLayer( QgsMapLayer* theMapLayer,
 //introduced in 1.8
 void QgsMapLayerRegistry::removeMapLayers( const QStringList& theLayerIds )
 {
-  emit layersWillBeRemoved( theLayerIds );
-
+  QList<QgsMapLayer*> layers;
   Q_FOREACH ( const QString &myId, theLayerIds )
   {
-    QgsMapLayer* lyr = mMapLayers[myId];
+    layers << mMapLayers[myId];
+  }
+
+  removeMapLayers( layers );
+}
+
+void QgsMapLayerRegistry::removeMapLayers( const QList<QgsMapLayer*>& layers )
+{
+  QStringList layerIds;
+
+  Q_FOREACH ( QgsMapLayer* layer, layers )
+  {
+    layerIds << layer->id();
+  }
+
+  emit layersWillBeRemoved( layerIds );
+  emit layersWillBeRemoved( layers );
+
+  Q_FOREACH ( QgsMapLayer* lyr, layers )
+  {
+    QString myId( lyr->id() );
     if ( mOwnedLayers.contains( lyr ) )
     {
       emit layerWillBeRemoved( myId );
+      emit layerWillBeRemoved( lyr );
       delete lyr;
       mOwnedLayers.remove( lyr );
     }
     mMapLayers.remove( myId );
     emit layerRemoved( myId );
   }
-  emit layersRemoved( theLayerIds );
+
+  emit layersRemoved( layerIds );
 }
 
 void QgsMapLayerRegistry::removeMapLayer( const QString& theLayerId )
 {
-  removeMapLayers( QStringList( theLayerId ) );
+  removeMapLayers( QList<QgsMapLayer*>() << mMapLayers[theLayerId] );
+}
+
+void QgsMapLayerRegistry::removeMapLayer( QgsMapLayer* layer )
+{
+  removeMapLayers( QList<QgsMapLayer*>() << layer );
 }
 
 void QgsMapLayerRegistry::removeAllMapLayers()
@@ -146,10 +172,6 @@ void QgsMapLayerRegistry::removeAllMapLayers()
   removeMapLayers( mMapLayers.keys() );
   mMapLayers.clear();
 } // QgsMapLayerRegistry::removeAllMapLayers()
-
-void QgsMapLayerRegistry::clearAllLayerCaches()
-{
-}
 
 void QgsMapLayerRegistry::reloadAllLayers()
 {
