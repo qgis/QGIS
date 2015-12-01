@@ -58,10 +58,17 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
 
   mCursorName = mConn->uniqueCursorName();
   QString whereClause;
+  bool useFallbackWhereClause = false;
+  QString fallbackWhereClause;
 
   if ( !request.filterRect().isNull() && !mSource->mGeometryColumn.isNull() )
   {
     whereClause = whereClauseRect();
+  }
+
+  if ( !mSource->mSqlWhereClause.isEmpty() )
+  {
+    whereClause = QgsPostgresUtils::andWhereClauses( whereClause, mSource->mSqlWhereClause );
   }
 
   if ( request.filterType() == QgsFeatureRequest::FilterFid )
@@ -79,28 +86,31 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
   else if ( request.filterType() == QgsFeatureRequest::FilterExpression
             && QSettings().value( "/qgis/compileExpressions", true ).toBool() )
   {
+    //IMPORTANT - this MUST be the last clause added!
     QgsPostgresExpressionCompiler compiler = QgsPostgresExpressionCompiler( source );
 
     if ( compiler.compile( request.filterExpression() ) == QgsSqlExpressionCompiler::Complete )
     {
+      useFallbackWhereClause = true;
+      fallbackWhereClause = whereClause;
       whereClause = QgsPostgresUtils::andWhereClauses( whereClause, compiler.result() );
       mExpressionCompiled = true;
     }
   }
 
-  if ( !mSource->mSqlWhereClause.isEmpty() )
+  bool success = declareCursor( whereClause, false );
+  if ( !success && useFallbackWhereClause )
   {
-    if ( !whereClause.isEmpty() )
-      whereClause += " AND ";
-
-    whereClause += '(' + mSource->mSqlWhereClause + ')';
+    //try with the fallback where clause, eg for cases when using compiled expression failed to prepare
+    mExpressionCompiled = false;
+    success = declareCursor( fallbackWhereClause, false );
   }
 
-  if ( !declareCursor( whereClause ) )
+  if ( !success )
   {
+    close();
     mClosed = true;
     iteratorClosed();
-    return;
   }
 
   mFetched = 0;
@@ -324,7 +334,7 @@ QString QgsPostgresFeatureIterator::whereClauseRect()
 
 
 
-bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause )
+bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause, bool closeOnFail )
 {
   mFetchGeometry = !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) && !mSource->mGeometryColumn.isNull();
 #if 0
@@ -431,7 +441,8 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause )
 
     // reloading the fields might help next time around
     // TODO how to cleanly force reload of fields?  P->loadFields();
-    close();
+    if ( closeOnFail )
+      close();
     return false;
   }
 
