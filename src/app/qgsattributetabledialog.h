@@ -75,10 +75,8 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
 
     /**
      * @brief Called while features are being loaded, cancel to abort
-     * @param i
-     * @param cancel
      */
-    void loadProgress( int i, bool &cancel );
+    void loadProgress( int featuresLoaded, bool &cancel );
 
     /**
      * @brief Called when features loading starts

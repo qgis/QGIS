@@ -253,7 +253,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * Called while the features are loaded
      * @note not available in python bindings
      */
-    void loadProgress( int i, bool &cancel );
+    void loadProgress( int featuresLoaded, bool &cancel );
 
     /**
      * @brief Called when the loading of features has been completed

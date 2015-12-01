@@ -34,6 +34,9 @@ class TestQgsDualView : public QObject
         , mDualView( 0 )
     {}
 
+  public slots:
+    void wait();
+
   private slots:
     void initTestCase(); // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
@@ -81,12 +84,22 @@ void TestQgsDualView::cleanupTestCase()
 void TestQgsDualView::init()
 {
   mDualView = new QgsDualView();
+  connect( mDualView, SIGNAL( loadStarted( long ) ), this, SLOT( wait() ) );
   mDualView->init( mPointsLayer, mCanvas );
 }
 
 void TestQgsDualView::cleanup()
 {
   delete mDualView;
+}
+
+void TestQgsDualView::wait()
+{
+  // Wait for the threaded worker
+  QEventLoop* loop = new QEventLoop();
+  connect( mDualView, SIGNAL( loadFinished() ), loop, SLOT( quit() ) );
+  loop->exec();
+  delete loop;
 }
 
 void TestQgsDualView::testSelectAll()
@@ -96,7 +109,6 @@ void TestQgsDualView::testSelectAll()
   mCanvas->setExtent( QgsRectangle( -139, 23, -100, 48 ) );
   mDualView->mTableView->selectAll();
   QVERIFY( mPointsLayer->selectedFeatureCount() == 10 );
-
   mPointsLayer->setSelectedFeatures( QgsFeatureIds() );
   mCanvas->setExtent( QgsRectangle( -110, 40, -100, 48 ) );
   mDualView->mTableView->selectAll();

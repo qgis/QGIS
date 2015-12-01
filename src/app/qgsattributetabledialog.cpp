@@ -71,7 +71,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
 {
   setupUi( this );
 
-  mLoadAborted =  FALSE;
+  mLoadAborted =  false;
 
   // Fix selection color on loosing focus (Windows)
   setStyleSheet( QgisApp::instance()->styleSheet() );
@@ -878,15 +878,16 @@ void QgsAttributeTableDialog::loadStarted( long numFeatures )
 {
   mLoadProgressBar->setFormat( "%v / %m" );
   mLoadProgressBar->setMaximum( numFeatures );
-  mLoadAborted = FALSE;
+  mLoadAborted = false;
   mLoadProgressBar->show();
   mLoadAbortButton->show();
 }
 
-void QgsAttributeTableDialog::loadProgress( int i, bool& cancel )
+
+void QgsAttributeTableDialog::loadProgress( int featuresLoaded, bool& cancel )
 {
   cancel = mLoadAborted;
-  mLoadProgressBar->setValue( i );
+  mLoadProgressBar->setValue( featuresLoaded );
 }
 
 void QgsAttributeTableDialog::loadFinished()

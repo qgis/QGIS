@@ -19,8 +19,8 @@
 #include "qgsfeatureiterator.h"
 
 QgsAttributeTableLoadWorker::QgsAttributeTableLoadWorker( const QgsFeatureIterator &features ):
-    mIsRunning( FALSE ),
-    mStopped( FALSE )
+    mIsRunning( false ),
+    mStopped( false )
 {
   QgsDebugMsg( "QgsAttributeTableLoadWorker created!" );
   mFeatures = features;
@@ -33,7 +33,7 @@ QgsAttributeTableLoadWorker::~QgsAttributeTableLoadWorker()
 
 void QgsAttributeTableLoadWorker::stopJob()
 {
-  mStopped = TRUE;
+  mStopped = true;
   QgsDebugMsg( "QgsAttributeTableLoadWorker stopped!" );
 }
 
@@ -41,8 +41,8 @@ void QgsAttributeTableLoadWorker::stopJob()
 void QgsAttributeTableLoadWorker::startJob()
 {
   QgsDebugMsg( "QgsAttributeTableLoadWorker started!" );
-  mStopped = FALSE;
-  mIsRunning = TRUE;
+  mStopped = false;
+  mIsRunning = true;
   QgsFeature feat;
   QgsFeatureList features;
   int i = 0;
@@ -52,7 +52,7 @@ void QgsAttributeTableLoadWorker::startJob()
     features.append( feat );
     if ( i % 1000 == 0 )
     {
-
+      QgsDebugMsg( "QgsAttributeTableLoadWorker featuresReady (batch)" );
       emit featuresReady( features, i );
       qApp->processEvents();
       features.clear();
@@ -61,9 +61,10 @@ void QgsAttributeTableLoadWorker::startJob()
   // Remaining features?
   if ( i % 1000 )
   {
+    QgsDebugMsg( "QgsAttributeTableLoadWorker featuresReady (flush)" );
     emit featuresReady( features, i );
-    qApp->processEvents();
   }
-  mIsRunning = FALSE;
+  mIsRunning = false;
+  QgsDebugMsg( "QgsAttributeTableLoadWorker finished!" );
   emit finished();
 }

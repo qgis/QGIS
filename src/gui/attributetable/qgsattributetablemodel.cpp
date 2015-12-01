@@ -41,7 +41,8 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayerCache *layerCache,
     , mLayerCache( layerCache )
     , mFieldCount( 0 )
     , mCachedField( -1 )
-    , mLoadWorker( NULL )
+    , mLoadWorker( 0 )
+    , mLoadWorkerThread( 0 )
 {
   QgsDebugMsg( "entered." );
 
@@ -140,11 +141,11 @@ void QgsAttributeTableModel::featuresDeleted( const QgsFeatureIds& fids )
 
     lastRow = row;
   }
-
   if ( !reset )
     removeRows( beginRow - removedRows, currentRowCount );
   else
     resetModel();
+  Q_ASSERT( mRowIdMap.size() == mIdRowMap.size() );
 }
 
 bool QgsAttributeTableModel::removeRows( int row, int count, const QModelIndex &parent )
@@ -190,9 +191,8 @@ bool QgsAttributeTableModel::removeRows( int row, int count, const QModelIndex &
   }
 #endif
 
-  Q_ASSERT( mRowIdMap.size() == mIdRowMap.size() );
-
   endRemoveRows();
+  Q_ASSERT( mRowIdMap.size() == mIdRowMap.size() );
 
   return true;
 }
@@ -219,6 +219,7 @@ void QgsAttributeTableModel::featureAdded( QgsFeatureId fid )
 
     reload( index( rowCount() - 1, 0 ), index( rowCount() - 1, columnCount() ) );
   }
+  Q_ASSERT( mRowIdMap.size() == mIdRowMap.size() );
 }
 
 void QgsAttributeTableModel::updatedFields()
@@ -358,19 +359,21 @@ void QgsAttributeTableModel::loadLayerFinished()
   QgsDebugMsg( "loadLayerFinished" );
   endResetModel();
   emit loadFinished();
+  Q_ASSERT( mRowIdMap.size() == mIdRowMap.size() );
 }
 
 
 void QgsAttributeTableModel::featuresReady( QgsFeatureList features, int loadedCount )
 {
   QgsDebugMsg( "featuresReady" );
+  Q_ASSERT( mRowIdMap.size() == mIdRowMap.size() );
   bool cancel = false;
   emit loadProgress( loadedCount, cancel );
   if ( cancel )
   {
-    if ( mLoadWorker && mLoadWorker->isRunning() )
+    if ( mLoadWorkerThread && mLoadWorkerThread->isRunning() )
     {
-      mLoadWorker->stopJob();
+      mLoadWorkerThread->quit();
     }
     return;
   }
@@ -388,10 +391,11 @@ void QgsAttributeTableModel::featuresReady( QgsFeatureList features, int loadedC
       mFieldCache[ fid ] = mFeat.attribute( mCachedField );
       mIdRowMap.insert( fid, n );
       mRowIdMap.insert( n, fid );
+      n++;
     }
-    n++;
   }
   endInsertRows();
+  Q_ASSERT( mRowIdMap.size() == mIdRowMap.size() );
   reload( index( rowCount() - 1, 0 ), index( rowCount() + features.count() - 1, columnCount() ) );
 }
 
@@ -401,20 +405,12 @@ void QgsAttributeTableModel::loadLayer()
   QgsDebugMsg( "entered." );
 
   // Stop old thread
-  if ( mLoadWorker && mLoadWorker->isRunning() )
+  if ( mLoadWorkerThread && mLoadWorkerThread->isRunning() )
   {
-    mLoadWorker->stopJob();
+    mLoadWorkerThread->quit();
   }
 
   QgsFeatureIterator features = mLayerCache->getFeatures( mFeatureRequest );
-
-  // Pass the total number of features as a maximum for the progress bar
-  long fc = mLayerCache->layer()->featureCount();
-  emit loadStarted( fc );
-
-  // Ensure signals are delivered
-  qApp->processEvents();
-
 
   // make sure attributes are properly updated before caching the data
   // (emit of progress() signal may enter event loop and thus attribute
@@ -446,6 +442,9 @@ void QgsAttributeTableModel::loadLayer()
   connect( mLayerCache, SIGNAL( invalidated() ), this, SLOT( loadLayer() ), Qt::UniqueConnection );
 
   mLoadWorkerThread->start();
+
+  // Pass the total number of features as a maximum for the progress bar
+  emit loadStarted( mLayerCache->layer()->featureCount() );
 
 }
 

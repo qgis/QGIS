@@ -22,8 +22,9 @@
 #include "qgsfeatureiterator.h"
 
 /**
- * A worker that iterates through features in a vector cache
+ * A worker that iterates QgsFeatureIterator and emit signals every 1000 featched features
  *
+ * @note not available in Python bindings
  */
 class GUI_EXPORT QgsAttributeTableLoadWorker: public QObject
 {
@@ -67,7 +68,7 @@ class GUI_EXPORT QgsAttributeTableLoadWorker: public QObject
     void finished();
 
     /**
-     * Launched when a feature has been fetched
+     * Launched when a batch of features has been fetched
      * @param features feature list
      * @param loadedCount The number of features already loaded
      */
