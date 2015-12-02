@@ -291,6 +291,7 @@ void QgsSymbolsListWidget::updateDataDefinedMarkerSize()
     || !isDefault )
   {
     markerSymbol->setDataDefinedSize( dd );
+    markerSymbol->setScaleMethod( QgsSymbolV2::ScaleDiameter );
     emit changed();
   }
 }

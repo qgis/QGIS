@@ -499,6 +499,7 @@ QgsDataDefined QgsDataDefinedSizeDialog::symbolDataDefined( const QgsSymbolV2 *s
 void QgsDataDefinedSizeDialog::setDataDefined( QgsSymbolV2* symbol, const QgsDataDefined& dd )
 {
   static_cast<QgsMarkerSymbolV2*>( symbol )->setDataDefinedSize( dd );
+  static_cast<QgsMarkerSymbolV2*>( symbol )->setScaleMethod( QgsSymbolV2::ScaleDiameter );
 }
 
 
