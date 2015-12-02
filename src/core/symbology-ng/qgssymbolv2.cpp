@@ -366,10 +366,7 @@ QgsSymbolV2* QgsSymbolV2::defaultSymbol( QGis::GeometryType geomType )
 
 QgsSymbolLayerV2* QgsSymbolV2::symbolLayer( int layer )
 {
-  if ( layer < 0 || layer >= mLayers.count() )
-    return NULL;
-
-  return mLayers[layer];
+  return mLayers.value( layer );
 }
 
 

@@ -3071,7 +3071,7 @@ QgsPolygonGeneratorSymbolLayerWidget::QgsPolygonGeneratorSymbolLayerWidget( cons
 {
   setupUi( this );
   modificationExpressionSelector->setLayer( const_cast<QgsVectorLayer*>( vl ) );
-  connect( modificationExpressionSelector, SIGNAL( fieldChanged( QString ) ), this, SLOT( updateConfig() ) );
+  connect( modificationExpressionSelector, SIGNAL( expressionParsed( bool ) ), this, SLOT( updateConfig() ) );
 }
 
 void QgsPolygonGeneratorSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* l )
@@ -3079,12 +3079,7 @@ void QgsPolygonGeneratorSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* l )
   mLayer = static_cast<QgsPolygonGeneratorSymbolLayer*>( l );
   Q_ASSERT( mLayer );
 
-  modificationExpressionSelector->setField( mLayer->geometryModifier() );
-
-  QgsSymbolsListWidget* symbolsList = new QgsSymbolsListWidget( mLayer->symbol(), QgsStyleV2::defaultStyle(), 0, this, vectorLayer() );
-  symbolWidget->layout()->addWidget( symbolsList );
-  symbolsList->setExpressionContext( mPresetExpressionContext );
-  symbolsList->setMapCanvas( mMapCanvas );
+  modificationExpressionSelector->setExpressionText( mLayer->geometryModifier() );
 }
 
 QgsSymbolLayerV2* QgsPolygonGeneratorSymbolLayerWidget::symbolLayer()
@@ -3096,5 +3091,5 @@ void QgsPolygonGeneratorSymbolLayerWidget::updateConfig()
 {
   emit changed();
 
-  mLayer->setGeometryModifier( modificationExpressionSelector->currentText() );
+  mLayer->setGeometryModifier( modificationExpressionSelector->expressionText() );
 }

@@ -52,7 +52,7 @@ class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayerV2
     QString layerType() const override { return "VectorField"; }
 
     bool setSubSymbol( QgsSymbolV2* symbol ) override;
-    QgsSymbolV2* subSymbol() override { return mLineSymbol; }
+    QgsSymbolV2* subSymbol() const override { return mLineSymbol; }
 
     void renderPoint( const QPointF& point, QgsSymbolV2RenderContext& context ) override;
     void startRender( QgsSymbolV2RenderContext& context ) override;

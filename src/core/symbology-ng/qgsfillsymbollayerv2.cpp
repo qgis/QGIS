@@ -2320,7 +2320,7 @@ bool QgsLinePatternFillSymbolLayer::setSubSymbol( QgsSymbolV2* symbol )
   return false;
 }
 
-QgsSymbolV2* QgsLinePatternFillSymbolLayer::subSymbol()
+QgsSymbolV2* QgsLinePatternFillSymbolLayer::subSymbol() const
 {
   return mFillLineSymbol;
 }
@@ -3443,7 +3443,7 @@ QgsSymbolLayerV2* QgsCentroidFillSymbolLayerV2::createFromSld( QDomElement &elem
 }
 
 
-QgsSymbolV2* QgsCentroidFillSymbolLayerV2::subSymbol()
+QgsSymbolV2* QgsCentroidFillSymbolLayerV2::subSymbol() const
 {
   return mMarker;
 }

@@ -9,40 +9,42 @@ class CORE_EXPORT QgsPolygonGeneratorSymbolLayer : public QgsFillSymbolLayerV2
   public:
     static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
 
-    QgsPolygonGeneratorSymbolLayer( QgsSymbolV2* symbol, const QgsStringMap& properties = QgsStringMap() );
+    QgsPolygonGeneratorSymbolLayer( QgsFillSymbolV2* symbol, const QgsStringMap& properties = QgsStringMap() );
 
-    QString layerType() const;
+    QString layerType() const override;
 
-    void startRender( QgsSymbolV2RenderContext& context );
+    void startRender( QgsSymbolV2RenderContext& context ) override;
 
-    void stopRender( QgsSymbolV2RenderContext& context );
+    void stopRender( QgsSymbolV2RenderContext& context ) override;
 
-    QgsSymbolLayerV2* clone() const;
+    QgsSymbolLayerV2* clone() const override;
 
-    QgsStringMap properties() const;
+    QgsStringMap properties() const override;
 
-    void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size );
+    void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size ) override;
 
     void setGeometryModifier( const QString& exp );
 
     QString geometryModifier() const { return mExpression->expression(); }
 
-    QgsSymbolV2* symbol() const { return mSymbol; }
+    virtual QgsSymbolV2* subSymbol() const override { return mSymbol; }
+
+    virtual bool setSubSymbol( QgsSymbolV2* symbol ) override;
 
     QgsExpressionContext* expressionContext();
 
-    virtual QSet<QString> usedAttributes() const;
+    virtual QSet<QString> usedAttributes() const override;
 
     //! Will always return true.
     //! This is a hybrid layer, it constructs its own geometry so it does not
     //! care about the geometry of its parents.
-    bool isCompatibleWithSymbol( QgsSymbolV2* symbol );
+    bool isCompatibleWithSymbol( QgsSymbolV2* symbol ) override;
 
-    void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context );
+    void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context ) override;
 
   private:
     QScopedPointer<QgsExpression> mExpression;
-    QgsSymbolV2* mSymbol;
+    QgsFillSymbolV2* mSymbol;
 };
 
 #endif // QGSGEOMETRYMODIFIEDSYMBOLLAYERV2_H

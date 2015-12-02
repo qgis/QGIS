@@ -86,7 +86,7 @@ class CORE_EXPORT QgsSymbolLayerV2
 
     virtual void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size ) = 0;
 
-    virtual QgsSymbolV2* subSymbol() { return NULL; }
+    virtual QgsSymbolV2* subSymbol() const { return NULL; }
     //! set layer's subsymbol. takes ownership of the passed symbol
     virtual bool setSubSymbol( QgsSymbolV2* symbol ) { delete symbol; return false; }
 

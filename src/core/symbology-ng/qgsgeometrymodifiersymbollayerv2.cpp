@@ -6,7 +6,7 @@ QgsSymbolLayerV2* QgsPolygonGeneratorSymbolLayer::create( const QgsStringMap& pr
   return new QgsPolygonGeneratorSymbolLayer( QgsFillSymbolV2::createSimple( properties ), properties );
 }
 
-QgsPolygonGeneratorSymbolLayer::QgsPolygonGeneratorSymbolLayer( QgsSymbolV2* symbol, const QgsStringMap& properties )
+QgsPolygonGeneratorSymbolLayer::QgsPolygonGeneratorSymbolLayer( QgsFillSymbolV2* symbol, const QgsStringMap& properties )
     : QgsFillSymbolLayerV2( QgsSymbolV2::Fill )
     , mSymbol( symbol )
     , mExpression( new QgsExpression( properties.value( "geometryModifier" ) ) )
@@ -23,8 +23,7 @@ void QgsPolygonGeneratorSymbolLayer::startRender( QgsSymbolV2RenderContext& cont
   // TODO prepare expression context
   mExpression->prepare( *context.fields() );
 
-  if ( mSymbol )
-    mSymbol->startRender( context.renderContext() );
+  subSymbol()->startRender( context.renderContext() );
 }
 
 void QgsPolygonGeneratorSymbolLayer::stopRender( QgsSymbolV2RenderContext& context )
@@ -57,6 +56,12 @@ void QgsPolygonGeneratorSymbolLayer::drawPreviewIcon( QgsSymbolV2RenderContext& 
 void QgsPolygonGeneratorSymbolLayer::setGeometryModifier( const QString& exp )
 {
   mExpression.reset( new QgsExpression( exp ) );
+}
+
+bool QgsPolygonGeneratorSymbolLayer::setSubSymbol( QgsSymbolV2* symbol )
+{
+  mSymbol = dynamic_cast<QgsFillSymbolV2*>( symbol );
+  return true;
 }
 
 QgsExpressionContext* QgsPolygonGeneratorSymbolLayer::expressionContext()
