@@ -58,6 +58,12 @@ QgsExpressionContext* QgsPolygonGeneratorSymbolLayer::expressionContext()
 
 }
 
+QSet<QString> QgsPolygonGeneratorSymbolLayer::usedAttributes() const
+{
+  // TODO combine with attributes used by expression
+  return mSymbol->usedAttributes();
+}
+
 bool QgsPolygonGeneratorSymbolLayer::isCompatibleWithSymbol( QgsSymbolV2* symbol )
 {
   Q_UNUSED( symbol )

@@ -31,6 +31,8 @@ class CORE_EXPORT QgsPolygonGeneratorSymbolLayer : public QgsSymbolLayerV2
 
     QgsExpressionContext* expressionContext();
 
+    virtual QSet<QString> usedAttributes() const;
+
     //! This is a hybrid layer, it constructs its own geometry so it does not
     //! care about the geometry of its parents.
     bool isCompatibleWithSymbol( QgsSymbolV2* symbol );
