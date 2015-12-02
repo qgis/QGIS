@@ -373,6 +373,12 @@ class TestQgsDelimitedTextProviderWKT(TestCase, ProviderTestCase):
 
 class TestQgsDelimitedTextProviderOther(TestCase):
 
+    @classmethod
+    def setUpClass(cls):
+        """Run before all tests"""
+        # toggle full ctest output to debug flaky CI test
+        print('CTEST_FULL_OUTPUT')
+
     def test_001_provider_defined(self):
         registry = QgsProviderRegistry.instance()
         metadata = registry.providerMetadata('delimitedtext')
