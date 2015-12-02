@@ -224,6 +224,13 @@ class CORE_EXPORT QgsFeatureRendererV2
     //! @note added in 2.5
     virtual void checkLegendSymbolItem( const QString& key, bool state = true );
 
+    /** Sets the symbol to be used for a legend symbol item.
+     * @param key rule key for legend symbol
+     * @param symbol new symbol for legend item. Ownership is transferred to renderer.
+     * @note added in QGIS 2.14
+     */
+    virtual void setLegendSymbolItem( const QString& key, QgsSymbolV2* symbol );
+
     //! return a list of item text / symbol
     //! @note not available in python bindings
     virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString& rule = "" );

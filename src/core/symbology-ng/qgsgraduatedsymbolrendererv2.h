@@ -325,6 +325,8 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
     //! @note added in 2.6
     virtual void checkLegendSymbolItem( const QString& key, bool state = true ) override;
 
+    virtual void setLegendSymbolItem( const QString& key, QgsSymbolV2* symbol ) override;
+
     //! If supported by the renderer, return classification attribute for the use in legend
     //! @note added in 2.6
     virtual QString legendClassificationAttribute() const override { return classAttribute(); }

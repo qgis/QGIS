@@ -356,6 +356,8 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
     //! @note added in 2.5
     virtual void checkLegendSymbolItem( const QString& key, bool state = true );
 
+    virtual void setLegendSymbolItem( const QString& key, QgsSymbolV2* symbol /Transfer/ );
+
     //! return a list of item text / symbol
     //! @note not available in python bindings
     // virtual QgsLegendSymbolList legendSymbolItems();

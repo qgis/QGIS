@@ -153,6 +153,8 @@ class QgsCategorizedSymbolRendererV2 : QgsFeatureRendererV2
     // @note added in 2.5
     virtual bool legendSymbolItemChecked( const QString& key );
 
+    virtual void setLegendSymbolItem( const QString& key, QgsSymbolV2* symbol /Transfer/ );
+
     //! item in symbology was checked
     // @note added in 2.5
     virtual void checkLegendSymbolItem( const QString& key, bool state = true );

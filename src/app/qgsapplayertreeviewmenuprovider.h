@@ -44,6 +44,10 @@ class QgsAppLayerTreeViewMenuProvider : public QObject, public QgsLayerTreeViewM
     QgsMapCanvas* mCanvas;
 
     QMap< QgsMapLayer::LayerType, QList< LegendLayerAction > > mLegendLayerActionMap;
+
+  private slots:
+
+    void editSymbolLegendNodeSymbol();
 };
 
 #endif // QGSAPPLAYERTREEVIEWMENUPROVIDER_H

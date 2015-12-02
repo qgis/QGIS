@@ -9,12 +9,16 @@
 #include "qgslayertreemodellegendnode.h"
 #include "qgslayertreeviewdefaultactions.h"
 #include "qgsmaplayerstyleguiutils.h"
+#include "qgsmaplayerregistry.h"
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
+#include "qgsrendererv2.h"
+#include "qgssymbolv2.h"
+#include "qgsstylev2.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgslayertreeregistrybridge.h"
-
+#include "qgssymbolv2selectordialog.h"
 
 QgsAppLayerTreeViewMenuProvider::QgsAppLayerTreeViewMenuProvider( QgsLayerTreeView* view, QgsMapCanvas* canvas )
     : mView( view )
@@ -200,6 +204,11 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
                          symbolNode, SLOT( checkAllItems() ) );
         menu->addAction( QgsApplication::getThemeIcon( "/mActionHideAllLayers.png" ), tr( "&Hide All Items" ),
                          symbolNode, SLOT( uncheckAllItems() ) );
+        menu->addSeparator();
+        QAction* editSymbolAction = new QAction( tr( "Edit Symbol..." ), menu );
+        connect( editSymbolAction, SIGNAL( triggered() ), this, SLOT( editSymbolLegendNodeSymbol() ) );
+        editSymbolAction->setData( qVariantFromValue( qobject_cast< QObject *>( symbolNode ) ) );
+        menu->addAction( editSymbolAction );
       }
     }
   }
@@ -350,5 +359,30 @@ void QgsAppLayerTreeViewMenuProvider::addCustomLayerActions( QMenu* menu, QgsMap
       }
     }
     menu->addSeparator();
+  }
+}
+
+void QgsAppLayerTreeViewMenuProvider::editSymbolLegendNodeSymbol()
+{
+  QAction* action = qobject_cast< QAction*>( sender() );
+  if ( !action )
+    return;
+
+  QgsSymbolV2LegendNode* node = qobject_cast<QgsSymbolV2LegendNode *>( action->data().value<QObject *>() );
+  if ( !node )
+    return;
+
+  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( node->layerNode()->layer() );
+
+  const QgsSymbolV2* originalSymbol = node->symbol();
+  if ( !originalSymbol )
+    return;
+
+  QScopedPointer< QgsSymbolV2 > symbol( originalSymbol->clone() );
+  QgsSymbolV2SelectorDialog dlg( symbol.data(), QgsStyleV2::defaultStyle(), vlayer, mView );
+  dlg.setMapCanvas( mCanvas );
+  if ( dlg.exec() )
+  {
+    node->setSymbol( symbol.take() );
   }
 }

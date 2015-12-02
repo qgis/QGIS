@@ -1433,6 +1433,15 @@ void QgsGraduatedSymbolRendererV2::checkLegendSymbolItem( const QString& key, bo
     updateRangeRenderState( index, state );
 }
 
+void QgsGraduatedSymbolRendererV2::setLegendSymbolItem( const QString& key, QgsSymbolV2* symbol )
+{
+  bool ok;
+  int index = key.toInt( &ok );
+  if ( ok )
+    updateRangeSymbol( index, symbol );
+  else
+    delete symbol;
+}
 
 void QgsGraduatedSymbolRendererV2::addClass( QgsSymbolV2* symbol )
 {

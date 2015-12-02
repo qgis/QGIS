@@ -145,6 +145,19 @@ class QgsSymbolV2LegendNode : QgsLayerTreeModelLegendNode
     //! @note added in 2.10
     QSize minimumIconSize() const;
 
+    /** Returns the symbol used by the legend node.
+     * @see setSymbol()
+     * @note added in QGIS 2.14
+     */
+    const QgsSymbolV2* symbol() const;
+
+    /** Sets the symbol to be used by the legend node.
+     * @param symbol new symbol for node. Ownership is transferred.
+     * @see symbol()
+     * @note added in QGIS 2.14
+     */
+    void setSymbol( QgsSymbolV2* symbol /Transfer/ );
+
   public slots:
 
     /** Checks all items belonging to the same layer as this node.
