@@ -20,6 +20,7 @@
 
 #include <QSet>
 #include <QString>
+#include <QObject>
 
 class QgsVectorDataProvider;
 class QgsVectorLayer;
