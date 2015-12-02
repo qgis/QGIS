@@ -280,7 +280,6 @@ class ParameterFixedTable(Parameter):
         tablestring = tablestring[:-1]
         return tablestring
 
-
 class ParameterMultipleInput(ParameterDataObject):
 
     """A parameter representing several data objects.

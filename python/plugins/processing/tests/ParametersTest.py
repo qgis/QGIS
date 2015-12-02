@@ -35,6 +35,7 @@ from processing.core.parameters import (Parameter,
                                         ParameterDataObject,
                                         ParameterExtent,
                                         ParameterFile,
+                                        ParameterFixedTable,
                                         ParameterNumber)
 
 class ParameterTest(unittest.TestCase):
@@ -176,6 +177,53 @@ class ParameterFileTest(unittest.TestCase):
         parameter = ParameterFile('myName', 'myDesc')
         parameter.setValue('myFile.png')
         self.assertEqual(parameter.getValueAsCommandLineParameter(), '"myFile.png"')
+
+class TestParameterFixedTable(unittest.TestCase):
+
+    def testTableToString(self):
+        table = [
+                    ['a0', 'a1', 'a2'],
+                    ['b0', 'b1', 'b2']
+                ]
+        self.assertEquals(ParameterFixedTable.tableToString(table), 'a0,a1,a2,b0,b1,b2')
+
+        table = [['a0']]
+        self.assertEquals(ParameterFixedTable.tableToString(table), 'a0')
+
+        table = [[]]
+        self.assertEquals(ParameterFixedTable.tableToString(table), '')
+
+    def testSetStringValue(self):
+        parameter = ParameterFixedTable('myName', 'myDesc')
+        self.assertTrue(parameter.setValue('1,2,3'))
+        self.assertEqual(parameter.value, '1,2,3')
+
+    def testSet2DListValue(self):
+        table = [
+                    ['a0', 'a1', 'a2'],
+                    ['b0', 'b1', 'b2']
+                ]
+        parameter = ParameterFixedTable('myName', 'myDesc')
+        self.assertTrue(parameter.setValue(table))
+        self.assertEqual(parameter.value, 'a0,a1,a2,b0,b1,b2')
+
+    def testOptional(self):
+        parameter = ParameterFixedTable('myName', 'myDesc', numRows=3, cols=['values'], fixedNumOfRows=False, optional=True)
+        self.assertTrue(parameter.setValue('1,2,3'))
+        self.assertEqual(parameter.value, '1,2,3')
+
+        self.assertTrue(parameter.setValue(None))
+        self.assertEqual(parameter.value, None)
+
+        parameter = ParameterFixedTable('myName', 'myDesc', numRows=3, cols=['values'], fixedNumOfRows=False, optional=False)
+        self.assertFalse(parameter.setValue(None))
+        self.assertEqual(parameter.value, None)
+
+        self.assertTrue(parameter.setValue('1,2,3'))
+        self.assertEqual(parameter.value, '1,2,3')
+
+        self.assertFalse(parameter.setValue(None))
+        self.assertEqual(parameter.value, '1,2,3')
 
 class ParameterNumberTest(unittest.TestCase):
     def testSetOnlyValidNumbers(self):
