@@ -355,6 +355,11 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      */
     virtual bool loadFeatureAtId( QgsFeatureId fid ) const;
 
+    /**
+     * @brief loadWorkerStop: stop the load worker and the thread
+     */
+    void loadWorkerStop();
+
     QgsFeatureRequest mFeatureRequest;
 
     /** The currently cached column */

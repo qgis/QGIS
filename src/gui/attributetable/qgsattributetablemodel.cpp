@@ -73,10 +73,23 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayerCache *layerCache,
 
 QgsAttributeTableModel::~QgsAttributeTableModel()
 {
+  loadWorkerStop();
+}
+
+void QgsAttributeTableModel::loadWorkerStop()
+{
   if ( mLoadWorker && mLoadWorker->isRunning() )
   {
-    // Stop it
     mLoadWorker->stopJob();
+    if ( mLoadWorkerThread && mLoadWorkerThread->isRunning() )
+    {
+      qWarning( "mLoadWorkerThread deadlock detected, terminating: bad things may happen !!!" );
+      if ( !mLoadWorkerThread->wait( 1000 ) )
+      {
+        mLoadWorkerThread->terminate();
+        mLoadWorkerThread->wait();
+      }
+    }
   }
 }
 
@@ -371,10 +384,7 @@ void QgsAttributeTableModel::featuresReady( QgsFeatureList features, int loadedC
   emit loadProgress( loadedCount, cancel );
   if ( cancel )
   {
-    if ( mLoadWorkerThread && mLoadWorkerThread->isRunning() )
-    {
-      mLoadWorkerThread->quit();
-    }
+    loadWorkerStop();
     return;
   }
   QgsFeatureId fid;
@@ -395,6 +405,7 @@ void QgsAttributeTableModel::featuresReady( QgsFeatureList features, int loadedC
     }
   }
   endInsertRows();
+  QgsDebugMsg( QString( "mRowIdMap.size(%1) == mIdRowMap.size(%2)" ).arg( mRowIdMap.size() ).arg( mIdRowMap.size() ) );
   Q_ASSERT( mRowIdMap.size() == mIdRowMap.size() );
   reload( index( rowCount() - 1, 0 ), index( rowCount() + features.count() - 1, columnCount() ) );
 }
@@ -405,10 +416,7 @@ void QgsAttributeTableModel::loadLayer()
   QgsDebugMsg( "entered." );
 
   // Stop old thread
-  if ( mLoadWorkerThread && mLoadWorkerThread->isRunning() )
-  {
-    mLoadWorkerThread->quit();
-  }
+  loadWorkerStop();
 
   QgsFeatureIterator features = mLayerCache->getFeatures( mFeatureRequest );
 
