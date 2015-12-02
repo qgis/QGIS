@@ -1621,10 +1621,8 @@ class OracleDBConnector(DBConnector):
         CREATE INDEX {0}
         ON {1}({2})
         INDEXTYPE IS MDSYS.SPATIAL_INDEX
-        PARAMETERS ('TABLESPACE={3} SDO_DML_BATCH_SIZE = 1')
         """.format(idx_name, self.quoteId(table),
-                   self.quoteId(geom_column),
-                   u"{}_INDEX".format(schema))
+                   self.quoteId(geom_column))
         self._execute_and_commit(sql)
 
     def deleteSpatialIndex(self, table, geom_column='GEOM'):
