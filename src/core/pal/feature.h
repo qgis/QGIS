@@ -39,7 +39,7 @@
 #include <cmath>
 #include <QString>
 
-#include "qgslabelingenginev2.h"
+#include "qgslabelfeature.h"
 
 /**
  * \class pal::LabelInfo
