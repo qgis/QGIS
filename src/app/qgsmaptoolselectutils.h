@@ -37,8 +37,8 @@ namespace QgsMapToolSelectUtils
     for any required geometry transformations
     @param selectGeometry The geometry to select the layers features. This geometry
     must be in terms of the canvas coordinate system.
-    @param doContains Features will only be selected if contained within the
-    selection rubber band.
+    @param doContains Features will only be selected if fully contained within
+    the selection rubber band (otherwise intersection is enough).
     @param doDifference Take the symmetric difference of the current selected
     features and the new features found within the provided selectGeometry.
     @param singleSelect Only selects the closest feature to the selectGeometry.
