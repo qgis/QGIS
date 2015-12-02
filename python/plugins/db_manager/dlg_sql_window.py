@@ -54,7 +54,8 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         QWidget.__init__(self, parent)
         self.iface = iface
         self.db = db
-        self.allowMultiColumnPk = isinstance(db, PGDatabase) # at the moment only PostGIS allows a primary key to span multiple columns, spatialite doesn't
+        self.allowMultiColumnPk = isinstance(db, PGDatabase) # at the moment only PostgreSQL allows a primary key to span multiple columns, spatialite doesn't
+        self.aliasSubQuery = isinstance(db, PGDatabase)	# only PostgreSQL requires subqueries to be aliases
         self.setupUi(self)
         self.setWindowTitle(
             u"%s - %s [%s]" % (self.windowTitle(), db.connection().connectionName(), db.connection().typeNameString()))
@@ -270,15 +271,6 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
 
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
 
-        # get a new alias
-        aliasIndex = 0
-        while True:
-            alias = "_%s__%d" % ("subQuery", aliasIndex)
-            escaped = re.compile('\\b("?)' + re.escape(alias) + '\\1\\b')
-            if not escaped.search(query):
-                break
-            aliasIndex += 1
-
         # remove a trailing ';' from query if present
         if query.strip().endswith(';'):
             query = query.strip()[:-1]
@@ -287,7 +279,19 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         cols = []
         quotedCols = []
         connector = self.db.connector
-        sql = u"SELECT * FROM (%s\n) AS %s WHERE 0=1" % (unicode(query), connector.quoteId(alias))
+        if self.aliasSubQuery:
+            # get a new alias
+            aliasIndex = 0
+            while True:
+                alias = "_subQuery__%d" % aliasIndex
+                escaped = re.compile('\\b("?)' + re.escape(alias) + '\\1\\b')
+                if not escaped.search(query):
+                    break
+                aliasIndex += 1
+
+            sql = u"SELECT * FROM (%s\n) AS %s LIMIT 0" % (unicode(query), connector.quoteId(alias))
+        else:
+            sql = u"SELECT * FROM (%s\n) WHERE 1=0" % unicode(query)
 
         c = None
         try:
