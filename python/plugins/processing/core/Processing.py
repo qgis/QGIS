@@ -106,6 +106,8 @@ class Processing:
         try:
             provider.unload()
             Processing.providers.remove(provider)
+            if provider.getName() in Processing.actions.keys():
+                Processing.actions.remove(provider.getName())
             ProcessingConfig.readSettings()
             Processing.updateAlgsList()
         except:
