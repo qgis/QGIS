@@ -45,8 +45,11 @@ sudo apt-get install --force-yes --no-install-recommends --no-install-suggests \
         python-qt4 \
         python-qt4-dev \
         python-qt4-sql \
+        python-qscintilla2 \
         python-sip \
         python-sip-dev \
+        python-psycopg2 \
+        python-numpy \
         python-gdal \
         spawn-fcgi \
         txt2tags \
