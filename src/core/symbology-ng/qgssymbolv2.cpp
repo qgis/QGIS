@@ -1121,7 +1121,7 @@ void QgsFillSymbolV2::renderPolygon( const QPolygonF& points, QList<QPolygonF>* 
   {
     if ( layer >= 0 && layer < mLayers.count() )
     {
-      renderPolygonUsingLayer( mLayers[layer], points, rings, symbolContext );
+      renderPolygonUsingLayer( mLayers.at( layer ), points, rings, symbolContext );
     }
     return;
   }
@@ -1149,11 +1149,11 @@ void QgsFillSymbolV2::renderPolygonUsingLayer( QgsSymbolLayerV2* layer, const QP
     effect->begin( context.renderContext() );
     if ( layertype == QgsSymbolV2::Fill )
     {
-      (( QgsFillSymbolLayerV2* )layer )->renderPolygon( points.translated( -bounds.topLeft() ), translatedRings, context );
+      ( static_cast<QgsFillSymbolLayerV2*>( layer ) )->renderPolygon( points.translated( -bounds.topLeft() ), translatedRings, context );
     }
     else if ( layertype == QgsSymbolV2::Line )
     {
-      (( QgsLineSymbolLayerV2* )layer )->renderPolygonOutline( points.translated( -bounds.topLeft() ), translatedRings, context );
+      ( static_cast<QgsLineSymbolLayerV2*>( layer ) )->renderPolygonOutline( points.translated( -bounds.topLeft() ), translatedRings, context );
     }
     delete translatedRings;
 
@@ -1164,11 +1164,11 @@ void QgsFillSymbolV2::renderPolygonUsingLayer( QgsSymbolLayerV2* layer, const QP
   {
     if ( layertype == QgsSymbolV2::Fill )
     {
-      (( QgsFillSymbolLayerV2* )layer )->renderPolygon( points, rings, context );
+      ( static_cast<QgsFillSymbolLayerV2*>( layer ) )->renderPolygon( points, rings, context );
     }
     else if ( layertype == QgsSymbolV2::Line )
     {
-      (( QgsLineSymbolLayerV2* )layer )->renderPolygonOutline( points, rings, context );
+      ( static_cast<QgsLineSymbolLayerV2*>( layer ) )->renderPolygonOutline( points, rings, context );
     }
   }
 }
