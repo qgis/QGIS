@@ -30,11 +30,12 @@ from utilities import getQgisTestApp, unittest
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 
 from processing.core.parameters import (Parameter,
-                                        ParameterNumber,
+                                        ParameterBoolean,
                                         ParameterCrs,
                                         ParameterDataObject,
                                         ParameterExtent,
-                                        ParameterBoolean)
+                                        ParameterFile,
+                                        ParameterNumber)
 
 class ParameterTest(unittest.TestCase):
     def testGetValueAsCommandLineParameter(self):
@@ -139,6 +140,42 @@ class ParameterExtentTest(unittest.TestCase):
         requiredParameter.setValue('1,2,3,4')
         requiredParameter.setValue(None)
         self.assertEqual(requiredParameter.value, '1,2,3,4')
+
+class ParameterFileTest(unittest.TestCase):
+    def testSetValueWhenOptional(self):
+        parameter = ParameterFile('myName', 'myDesc', isFolder=False, optional=True)
+        self.assertTrue(parameter.setValue('myFile.png'))
+        self.assertEquals(parameter.value, 'myFile.png')
+
+        self.assertTrue(parameter.setValue(""))
+        self.assertEquals(parameter.value, '')
+
+        self.assertTrue(parameter.setValue(None))
+        self.assertEquals(parameter.value, '')
+
+    def testSetValidValueWhenRequired(self):
+        parameter = ParameterFile('myName', 'myDesc', isFolder=False, optional=False)
+        self.assertTrue(parameter.setValue('myFile.png'))
+        self.assertEquals(parameter.value, 'myFile.png')
+
+        self.assertFalse(parameter.setValue(""))
+        self.assertEquals(parameter.value, '')
+
+        self.assertFalse(parameter.setValue(None))
+        self.assertEquals(parameter.value, '')
+
+    def testSetValueWithExtension(self):
+        parameter = ParameterFile('myName', 'myDesc', isFolder=False, optional=True, ext="png")
+        self.assertTrue(parameter.setValue('myFile.png'))
+        self.assertEquals(parameter.value, 'myFile.png')
+
+        self.assertFalse(parameter.setValue('myFile.bmp'))
+        self.assertEquals(parameter.value, 'myFile.bmp')
+
+    def testGetValueAsCommandLineParameter(self):
+        parameter = ParameterFile('myName', 'myDesc')
+        parameter.setValue('myFile.png')
+        self.assertEqual(parameter.getValueAsCommandLineParameter(), '"myFile.png"')
 
 class ParameterNumberTest(unittest.TestCase):
     def testSetOnlyValidNumbers(self):
