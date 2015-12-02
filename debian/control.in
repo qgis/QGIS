@@ -6,7 +6,7 @@ Priority: optional
 Build-Depends:
  bison,
  cmake (>= 2.8),
-#sid stretch jessie wheezy saucy trusty utopic vivid wily# debhelper (>= 9),
+#sid stretch jessie wheezy saucy trusty utopic vivid wily# debhelper (>= 9), dh-python,
 #precise# debhelper (>= 7),
  flex,
  grass-dev,
@@ -17,7 +17,7 @@ Build-Depends:
 #saucy# libgdal-dev (>= 1.9.0),
 #wheezy# libgdal1-dev,
  libgeos-dev (>= 3.0.0),
- libgsl0-dev,
+ libgsl-dev | libgsl0-dev,
  libpq-dev,
  libproj-dev,
  libqt4-dev (>= 4.7.0),
@@ -220,7 +220,7 @@ Depends:
 #saucy# libgdal-dev (>= 1.9.0),
 #wheezy# libgdal1-dev,
  libgeos-dev (>= 3.0.0),
- libgsl0-dev,
+ libgsl-dev | libgsl0-dev,
  libpq-dev,
  libproj-dev,
  libqgis-core{QGIS_ABI} (= ${binary:Version}),
@@ -253,8 +253,8 @@ Depends:
  qgis (= ${binary:Version}),
  ${shlibs:Depends},
  ${misc:Depends}
-#grass7#Breaks: qgis-plugin-grass
-#grass7#Replaces: qgis-plugin-grass
+#grass7#Breaks: qgis-plugin-grass (<< 2.8.4)
+#grass7#Replaces: qgis-plugin-grass (<< 2.8.4)
 Description: GRASS plugin for QGIS
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
