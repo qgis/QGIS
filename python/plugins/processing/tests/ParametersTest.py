@@ -31,6 +31,7 @@ QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 
 from processing.core.parameters import (ParameterNumber,
                                         ParameterCrs,
+                                        ParameterDataObject,
                                         ParameterExtent,
                                         ParameterBoolean)
 
@@ -91,6 +92,16 @@ class ParameterCRSTest(unittest.TestCase):
         requiredParameter.setValue('EPSG:12003')
         requiredParameter.setValue(None)
         self.assertEqual(requiredParameter.value, 'EPSG:12003')
+
+class ParameterDataObjectTest(unittest.TestCase):
+    def testGetValueAsCommandLineParameter(self):
+        parameter = ParameterDataObject('myName', 'myDesc')
+        parameter.setValue(None)
+        self.assertEqual(parameter.getValueAsCommandLineParameter(), "None")
+
+        parameter = ParameterDataObject('myName', 'myDesc')
+        parameter.setValue("someFile.dat")
+        self.assertEqual(parameter.getValueAsCommandLineParameter(), '"someFile.dat"')
 
 class ParameterExtentTest(unittest.TestCase):
     def testSetInvalidValue(self):
