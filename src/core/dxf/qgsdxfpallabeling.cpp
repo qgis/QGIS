@@ -17,10 +17,11 @@
 
 #include "qgsdxfpallabeling.h"
 #include "qgsdxfexport.h"
-#include "qgspalgeometry.h"
+#include "qgstextlabelfeature.h"
 #include "qgspallabeling.h"
 #include "qgsmapsettings.h"
 
+#include "pal/feature.h"
 #include "pal/pointset.h"
 #include "pal/labelposition.h"
 

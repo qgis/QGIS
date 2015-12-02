@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include "qgspallabeling.h"
-#include "qgspalgeometry.h"
+#include "qgstextlabelfeature.h"
 
 #include <list>
 

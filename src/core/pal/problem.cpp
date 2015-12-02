@@ -41,6 +41,8 @@
 #include <cfloat>
 #include <limits.h> //for INT_MAX
 
+#include "qgslabelingenginev2.h"
+
 using namespace pal;
 
 inline void delete_chain( Chain *chain )

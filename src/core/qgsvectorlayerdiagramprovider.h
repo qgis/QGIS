@@ -17,7 +17,7 @@
 #define QGSVECTORLAYERDIAGRAMPROVIDER_H
 
 #include "qgslabelingenginev2.h"
-
+#include "qgslabelfeature.h"
 
 /**
  * Class that adds extra information to QgsLabelFeature for labeling of diagrams

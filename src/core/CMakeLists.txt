@@ -120,6 +120,7 @@ SET(QGIS_CORE_SRCS
   qgslayerdefinition.cpp
   qgslabel.cpp
   qgslabelattributes.cpp
+  qgslabelfeature.cpp
   qgslabelingenginev2.cpp
   qgslabelsearchtree.cpp
   qgslegacyhelpers.cpp
@@ -184,6 +185,7 @@ SET(QGIS_CORE_SRCS
   qgsstatisticalsummary.cpp
   qgsstringutils.cpp
   qgstransaction.cpp
+  qgstextlabelfeature.cpp
   qgstolerance.cpp
   qgsvectordataprovider.cpp
   qgsvectorfilewriter.cpp
@@ -608,6 +610,7 @@ SET(QGIS_CORE_HDRS
   qgslayerdefinition.h
   qgslabel.h
   qgslabelattributes.h
+  qgslabelfeature.h
   qgslabelingenginev2.h
   qgslabelsearchtree.h
   qgslegacyhelpers.h
@@ -627,7 +630,6 @@ SET(QGIS_CORE_HDRS
   qgsogcutils.h
   qgsowsconnection.h
   qgspaintenginehack.h
-  qgspalgeometry.h
   qgspallabeling.h
   qgspluginlayerregistry.h
   qgspoint.h
@@ -655,6 +657,7 @@ SET(QGIS_CORE_HDRS
   qgssqlexpressioncompiler.h
   qgsstatisticalsummary.h
   qgsstringutils.h
+  qgstextlabelfeature.h
   qgstolerance.h
 
   qgsvectordataprovider.h
