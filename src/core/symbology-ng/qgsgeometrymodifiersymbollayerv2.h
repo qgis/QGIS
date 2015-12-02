@@ -4,12 +4,12 @@
 #include "qgssymbollayerv2.h"
 
 // template
-class CORE_EXPORT QgsPolygonGeneratorSymbolLayer : public QgsSymbolLayerV2
+class CORE_EXPORT QgsPolygonGeneratorSymbolLayer : public QgsFillSymbolLayerV2
 {
   public:
     static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
 
-    QgsPolygonGeneratorSymbolLayer( QgsSymbolV2* symbol );
+    QgsPolygonGeneratorSymbolLayer( QgsSymbolV2* symbol, const QgsStringMap& properties = QgsStringMap() );
 
     QString layerType() const;
 
@@ -25,7 +25,7 @@ class CORE_EXPORT QgsPolygonGeneratorSymbolLayer : public QgsSymbolLayerV2
 
     void setGeometryModifier( const QString& exp );
 
-    QString geometryModifier() const { return mExpression; }
+    QString geometryModifier() const { return mExpression->expression(); }
 
     QgsSymbolV2* symbol() const { return mSymbol; }
 
@@ -33,12 +33,15 @@ class CORE_EXPORT QgsPolygonGeneratorSymbolLayer : public QgsSymbolLayerV2
 
     virtual QSet<QString> usedAttributes() const;
 
+    //! Will always return true.
     //! This is a hybrid layer, it constructs its own geometry so it does not
     //! care about the geometry of its parents.
     bool isCompatibleWithSymbol( QgsSymbolV2* symbol );
 
+    void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context );
+
   private:
-    QString mExpression;
+    QScopedPointer<QgsExpression> mExpression;
     QgsSymbolV2* mSymbol;
 };
 

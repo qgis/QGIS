@@ -631,6 +631,9 @@ class GUI_EXPORT QgsPolygonGeneratorSymbolLayerWidget : public QgsSymbolLayerV2W
 
   protected:
     QgsPolygonGeneratorSymbolLayer* mLayer;
+
+  private slots:
+    void updateConfig();
 };
 
 

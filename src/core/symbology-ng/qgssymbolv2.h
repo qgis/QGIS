@@ -42,6 +42,7 @@ class QgsMarkerSymbolLayerV2;
 class QgsLineSymbolLayerV2;
 class QgsFillSymbolLayerV2;
 class QgsDataDefined;
+class QgsSymbolV2RenderContext;
 
 typedef QList<QgsSymbolLayerV2*> QgsSymbolLayerV2List;
 
@@ -227,10 +228,18 @@ class CORE_EXPORT QgsSymbolV2
     void setLayer( const QgsVectorLayer* layer ) { mLayer = layer; }
     const QgsVectorLayer* layer() const { return mLayer; }
 
+    void renderFeature( const QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false, int currentVertexMarkerType = 0, int currentVertexMarkerSize = 0 );
+
   protected:
     QgsSymbolV2( SymbolType type, const QgsSymbolLayerV2List& layers ); // can't be instantiated
 
+    static const unsigned char* _getPoint( QPointF& pt, QgsRenderContext& context, const unsigned char* wkb );
+    static const unsigned char* _getLineString( QPolygonF& pts, QgsRenderContext& context, const unsigned char* wkb, bool clipToExtent = true );
+    static const unsigned char* _getPolygon( QPolygonF& pts, QList<QPolygonF>& holes, QgsRenderContext& context, const unsigned char* wkb, bool clipToExtent = true );
+
     QgsSymbolLayerV2List cloneLayers() const;
+
+    void renderUsingLayer( QgsSymbolLayerV2* layer, QgsSymbolV2RenderContext& context );
 
     //! check whether a symbol layer type can be used within the symbol
     //! (marker-marker, line-line, fill-fill/line)
