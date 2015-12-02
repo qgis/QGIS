@@ -33,6 +33,7 @@ import time
 import json
 import codecs
 import traceback
+import logging
 from PyQt4.QtCore import QCoreApplication, QPointF
 from PyQt4.QtGui import QIcon
 from qgis.core import QgsRasterLayer, QgsVectorLayer
@@ -552,7 +553,9 @@ class ModelerAlgorithm(GeoAlgorithm):
                     return QPointF(values["x"], values["y"])
 
                 def _import(name):
+                    logging.disable(logging.INFO)
                     __import__(name)
+                    logging.disable(logging.NOTSET)
                     return sys.modules[name]
 
                 if moduleName.startswith("processing.parameters"):
