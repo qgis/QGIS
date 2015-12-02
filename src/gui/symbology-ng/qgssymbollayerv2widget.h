@@ -612,4 +612,26 @@ class GUI_EXPORT QgsCentroidFillSymbolLayerV2Widget : public QgsSymbolLayerV2Wid
 };
 
 
+#include "ui_widget_geometrymodifier.h"
+
+class QgsPolygonGeneratorSymbolLayer;
+
+class GUI_EXPORT QgsPolygonGeneratorSymbolLayerWidget : public QgsSymbolLayerV2Widget, private Ui::WidgetGeometryModifier
+{
+    Q_OBJECT
+
+  public:
+    QgsPolygonGeneratorSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent = NULL );
+
+    static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) { return new QgsPolygonGeneratorSymbolLayerWidget( vl ); }
+
+    // from base class
+    virtual void setSymbolLayer( QgsSymbolLayerV2* layer ) override;
+    virtual QgsSymbolLayerV2* symbolLayer() override;
+
+  protected:
+    QgsPolygonGeneratorSymbolLayer* mLayer;
+};
+
+
 #endif

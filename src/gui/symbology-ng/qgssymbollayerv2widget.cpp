@@ -19,6 +19,8 @@
 #include "qgslinesymbollayerv2.h"
 #include "qgsmarkersymbollayerv2.h"
 #include "qgsfillsymbollayerv2.h"
+#include "qgsgeometrymodifiersymbollayerv2.h"
+#include "qgssymbolslistwidget.h"
 
 #include "characterwidget.h"
 #include "qgsdashspacedialog.h"
@@ -3062,4 +3064,33 @@ void QgsRasterFillSymbolLayerWidget::updatePreviewImage()
   p.drawImage( imageRect.left(), imageRect.top(), image );
   p.end();
   mLabelImagePreview->setPixmap( QPixmap::fromImage( previewImage ) );
+}
+
+QgsPolygonGeneratorSymbolLayerWidget::QgsPolygonGeneratorSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent )
+    : QgsSymbolLayerV2Widget( parent, vl )
+{
+  setupUi( this );
+  modificationExpressionSelector->setLayer( const_cast<QgsVectorLayer*>( vl ) );
+}
+
+void QgsPolygonGeneratorSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* l )
+{
+  QgsPolygonGeneratorSymbolLayer* layer = static_cast<QgsPolygonGeneratorSymbolLayer*>( l );
+  Q_ASSERT( layer );
+
+  modificationExpressionSelector->setField( layer->geometryModifier() );
+
+  QgsSymbolsListWidget* symbolsList = new QgsSymbolsListWidget( layer->symbol(), QgsStyleV2::defaultStyle(), 0, this, vectorLayer() );
+  symbolWidget->layout()->addWidget( symbolsList );
+  symbolsList->setExpressionContext( mPresetExpressionContext );
+  symbolsList->setMapCanvas( mMapCanvas );
+
+  connect( symbolsList, SIGNAL( changed() ), this, SLOT( symbolChanged() ) );
+}
+
+QgsSymbolLayerV2* QgsPolygonGeneratorSymbolLayerWidget::symbolLayer()
+{
+  QgsPolygonGeneratorSymbolLayer* layer = static_cast<QgsPolygonGeneratorSymbolLayer*>( QgsPolygonGeneratorSymbolLayer::create() );
+  layer->setGeometryModifier( modificationExpressionSelector->currentText() );
+  return layer;
 }

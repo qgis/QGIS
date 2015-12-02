@@ -69,7 +69,8 @@ class CORE_EXPORT QgsSymbolV2
     {
       Marker, //!< Marker symbol
       Line,   //!< Line symbol
-      Fill    //!< Fill symbol
+      Fill,   //!< Fill symbol
+      Hybrid  //!< Hybrid symbol
     };
 
     /**

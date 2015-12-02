@@ -20,6 +20,7 @@
 #include "qgslinesymbollayerv2.h"
 #include "qgsfillsymbollayerv2.h"
 #include "qgsvectorfieldsymbollayer.h"
+#include "qgsgeometrymodifiersymbollayerv2.h"
 
 QgsSymbolLayerV2Registry::QgsSymbolLayerV2Registry()
 {
@@ -56,6 +57,15 @@ QgsSymbolLayerV2Registry::QgsSymbolLayerV2Registry()
                       QgsLinePatternFillSymbolLayer::create, QgsLinePatternFillSymbolLayer::createFromSld ) );
   addSymbolLayerType( new QgsSymbolLayerV2Metadata( "PointPatternFill", QObject::tr( "Point pattern fill" ), QgsSymbolV2::Fill,
                       QgsPointPatternFillSymbolLayer::create, QgsPointPatternFillSymbolLayer::createFromSld ) );
+
+  addSymbolLayerType( new QgsSymbolLayerV2Metadata( "PolygonGenerator", QObject::tr( "Polygon Generator" ), QgsSymbolV2::Hybrid,
+                      QgsPolygonGeneratorSymbolLayer::create ) );
+#if 0
+  addSymbolLayerType( new QgsSymbolLayerV2Metadata( "LineGenerator", QObject::tr( "Line Generator" ), QgsSymbolV2::Line,
+                      QgsPolygonGeneratorSymbolLayer::create ) );
+  addSymbolLayerType( new QgsSymbolLayerV2Metadata( "PointGenerator", QObject::tr( "Point Generator" ), QgsSymbolV2::Marker,
+                      QgsPolygonGeneratorSymbolLayer::create ) );
+#endif
 }
 
 QgsSymbolLayerV2Registry::~QgsSymbolLayerV2Registry()
@@ -79,10 +89,7 @@ bool QgsSymbolLayerV2Registry::addSymbolLayerType( QgsSymbolLayerV2AbstractMetad
 
 QgsSymbolLayerV2AbstractMetadata* QgsSymbolLayerV2Registry::symbolLayerMetadata( const QString& name ) const
 {
-  if ( mMetadata.contains( name ) )
-    return mMetadata.value( name );
-  else
-    return NULL;
+  return mMetadata.value( name );
 }
 
 QgsSymbolLayerV2Registry* QgsSymbolLayerV2Registry::instance()
@@ -130,7 +137,7 @@ QStringList QgsSymbolLayerV2Registry::symbolLayersForType( QgsSymbolV2::SymbolTy
   QMap<QString, QgsSymbolLayerV2AbstractMetadata*>::ConstIterator it = mMetadata.begin();
   for ( ; it != mMetadata.end(); ++it )
   {
-    if (( *it )->type() == type )
+    if ( it.value()->type() == type || it.value()->type() == QgsSymbolV2::Hybrid )
       lst.append( it.key() );
   }
   return lst;

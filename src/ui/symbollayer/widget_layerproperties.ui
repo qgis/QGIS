@@ -29,28 +29,8 @@
    <property name="verticalSpacing">
     <number>3</number>
    </property>
-   <item row="2" column="0">
-    <widget class="QStackedWidget" name="stackedWidget">
-     <widget class="QWidget" name="pageDummy">
-      <layout class="QVBoxLayout" name="verticalLayout">
-       <item>
-        <widget class="QLabel" name="label_2">
-         <property name="text">
-          <string>This layer doesn't have any editable properties</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </widget>
-   </item>
    <item row="9" column="0">
-    <widget class="QgsEffectStackCompactWidget" name="mEffectWidget" native="true">
-     <zorder>stackedWidget</zorder>
-    </widget>
+    <widget class="QgsEffectStackCompactWidget" name="mEffectWidget" native="true"/>
    </item>
    <item row="1" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout">
@@ -73,32 +53,22 @@
      </item>
     </layout>
    </item>
-   <item row="10" column="0">
-    <widget class="QGroupBox" name="groupBox">
-     <property name="title">
-      <string>Modify geometry for rendering</string>
-     </property>
-     <property name="checkable">
-      <bool>true</bool>
-     </property>
-     <layout class="QFormLayout" name="formLayout">
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_3">
-        <property name="text">
-         <string>Transformation expression</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QgsFieldExpressionWidget" name="mModificationExpressionSelector" native="true">
-        <property name="expressionDialogTitle" stdset="0">
-         <string>Geometry modifier</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-     <zorder>mModificationExpressionSelector</zorder>
-     <zorder>label_3</zorder>
+   <item row="2" column="0">
+    <widget class="QStackedWidget" name="stackedWidget">
+     <widget class="QWidget" name="pageDummy">
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>This layer doesn't have any editable properties</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
   </layout>
@@ -108,12 +78,6 @@
    <class>QgsEffectStackCompactWidget</class>
    <extends>QWidget</extends>
    <header>effects/qgseffectstackpropertieswidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsFieldExpressionWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsfieldexpressionwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
