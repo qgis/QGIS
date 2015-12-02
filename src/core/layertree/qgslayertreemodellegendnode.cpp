@@ -185,6 +185,16 @@ QSize QgsSymbolV2LegendNode::minimumIconSize() const
   return minSz;
 }
 
+void QgsSymbolV2LegendNode::checkAllItems()
+{
+  checkAll( true );
+}
+
+void QgsSymbolV2LegendNode::uncheckAllItems()
+{
+  checkAll( false );
+}
+
 inline
 QgsRenderContext * QgsSymbolV2LegendNode::createTemporaryRenderContext() const
 {
@@ -201,6 +211,22 @@ QgsRenderContext * QgsSymbolV2LegendNode::createTemporaryRenderContext() const
   context->setRendererScale( scale );
   context->setMapToPixel( QgsMapToPixel( mupp ) );
   return validData ? context.take() : 0;
+}
+
+void QgsSymbolV2LegendNode::checkAll( bool state )
+{
+  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( mLayerNode->layer() );
+  if ( !vlayer || !vlayer->rendererV2() )
+    return;
+
+  QgsLegendSymbolListV2 symbolList = vlayer->rendererV2()->legendSymbolItemsV2();
+  Q_FOREACH ( const QgsLegendSymbolItemV2& item, symbolList )
+  {
+    vlayer->rendererV2()->checkLegendSymbolItem( item.ruleKey(), state );
+  }
+
+  emit dataChanged();
+  vlayer->triggerRepaint();
 }
 
 QVariant QgsSymbolV2LegendNode::data( int role ) const

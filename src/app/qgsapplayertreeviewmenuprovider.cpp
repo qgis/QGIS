@@ -6,6 +6,7 @@
 #include "qgsclipboard.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
+#include "qgslayertreemodellegendnode.h"
 #include "qgslayertreeviewdefaultactions.h"
 #include "qgsmaplayerstyleguiutils.h"
 #include "qgsproject.h"
@@ -188,9 +189,19 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
     }
 
   }
-  else
+  else if ( QgsLayerTreeModelLegendNode* node = mView->layerTreeModel()->index2legendNode( idx ) )
   {
-    // symbology item?
+    if ( QgsSymbolV2LegendNode* symbolNode = dynamic_cast< QgsSymbolV2LegendNode* >( node ) )
+    {
+      // symbology item
+      if ( symbolNode->flags() & Qt::ItemIsUserCheckable )
+      {
+        menu->addAction( QgsApplication::getThemeIcon( "/mActionShowAllLayers.png" ), tr( "&Show All Items" ),
+                         symbolNode, SLOT( checkAllItems() ) );
+        menu->addAction( QgsApplication::getThemeIcon( "/mActionHideAllLayers.png" ), tr( "&Hide All Items" ),
+                         symbolNode, SLOT( uncheckAllItems() ) );
+      }
+    }
   }
 
   return menu;
