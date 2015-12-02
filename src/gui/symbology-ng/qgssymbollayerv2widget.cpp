@@ -3084,8 +3084,6 @@ void QgsPolygonGeneratorSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* l )
   symbolWidget->layout()->addWidget( symbolsList );
   symbolsList->setExpressionContext( mPresetExpressionContext );
   symbolsList->setMapCanvas( mMapCanvas );
-
-  connect( symbolsList, SIGNAL( changed() ), this, SLOT( symbolChanged() ) );
 }
 
 QgsSymbolLayerV2* QgsPolygonGeneratorSymbolLayerWidget::symbolLayer()

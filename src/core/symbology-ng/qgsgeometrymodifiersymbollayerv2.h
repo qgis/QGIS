@@ -9,7 +9,7 @@ class CORE_EXPORT QgsPolygonGeneratorSymbolLayer : public QgsSymbolLayerV2
   public:
     static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
 
-    QgsPolygonGeneratorSymbolLayer();
+    QgsPolygonGeneratorSymbolLayer( QgsSymbolV2* symbol );
 
     QString layerType() const;
 
@@ -30,6 +30,10 @@ class CORE_EXPORT QgsPolygonGeneratorSymbolLayer : public QgsSymbolLayerV2
     QgsSymbolV2* symbol() const { return mSymbol; }
 
     QgsExpressionContext* expressionContext();
+
+    //! This is a hybrid layer, it constructs its own geometry so it does not
+    //! care about the geometry of its parents.
+    bool isCompatibleWithSymbol( QgsSymbolV2* symbol );
 
   private:
     QString mExpression;

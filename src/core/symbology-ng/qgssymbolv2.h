@@ -234,7 +234,8 @@ class CORE_EXPORT QgsSymbolV2
 
     //! check whether a symbol layer type can be used within the symbol
     //! (marker-marker, line-line, fill-fill/line)
-    bool isSymbolLayerCompatible( SymbolType t );
+    //! @deprecated since 2.14, use QgsSymbolLayerV2::isCompatibleWithSymbol instead
+    Q_DECL_DEPRECATED bool isSymbolLayerCompatible( SymbolType layerType );
 
     SymbolType mType;
     QgsSymbolLayerV2List mLayers;

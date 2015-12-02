@@ -90,7 +90,7 @@ QgsSymbolV2::QgsSymbolV2( SymbolType type, const QgsSymbolLayerV2List& layers )
     {
       mLayers.removeAt( i-- );
     }
-    else if ( !isSymbolLayerCompatible( mLayers[i]->type() ) )
+    else if ( !mLayers[i]->isCompatibleWithSymbol( this ) )
     {
       delete mLayers[i];
       mLayers.removeAt( i-- );
@@ -224,13 +224,13 @@ QgsSymbolLayerV2* QgsSymbolV2::symbolLayer( int layer )
 }
 
 
-bool QgsSymbolV2::isSymbolLayerCompatible( SymbolType t )
+bool QgsSymbolV2::isSymbolLayerCompatible( SymbolType layerType )
 {
   // fill symbol can contain also line symbol layers for drawing of outlines
-  if ( mType == Fill && t == Line )
+  if ( mType == Fill && layerType == Line )
     return true;
 
-  return mType == t;
+  return mType == layerType;
 }
 
 
@@ -238,7 +238,7 @@ bool QgsSymbolV2::insertSymbolLayer( int index, QgsSymbolLayerV2* layer )
 {
   if ( index < 0 || index > mLayers.count() ) // can be added also after the last index
     return false;
-  if ( layer == NULL || !isSymbolLayerCompatible( layer->type() ) )
+  if ( layer == NULL || !layer->isCompatibleWithSymbol( this ) )
     return false;
 
   mLayers.insert( index, layer );
@@ -248,7 +248,7 @@ bool QgsSymbolV2::insertSymbolLayer( int index, QgsSymbolLayerV2* layer )
 
 bool QgsSymbolV2::appendSymbolLayer( QgsSymbolLayerV2* layer )
 {
-  if ( layer == NULL || !isSymbolLayerCompatible( layer->type() ) )
+  if ( layer == NULL || !layer->isCompatibleWithSymbol( this ) )
     return false;
 
   mLayers.append( layer );
@@ -280,7 +280,7 @@ bool QgsSymbolV2::changeSymbolLayer( int index, QgsSymbolLayerV2* layer )
 {
   if ( index < 0 || index >= mLayers.count() )
     return false;
-  if ( layer == NULL || !isSymbolLayerCompatible( layer->type() ) )
+  if ( layer == NULL || !layer->isCompatibleWithSymbol( this ) )
     return false;
 
   delete mLayers[index]; // first delete the original layer
@@ -926,12 +926,16 @@ void QgsLineSymbolV2::setWidth( double w )
 double QgsLineSymbolV2::width() const
 {
   double maxWidth = 0;
-  for ( QgsSymbolLayerV2List::const_iterator it = mLayers.begin(); it != mLayers.end(); ++it )
+
+  Q_FOREACH ( QgsSymbolLayerV2* symbolLayer, mLayers )
   {
-    const QgsLineSymbolLayerV2* layer = ( const QgsLineSymbolLayerV2* ) * it;
-    double width = layer->width();
-    if ( width > maxWidth )
-      maxWidth = width;
+    const QgsLineSymbolLayerV2* layer = dynamic_cast<QgsLineSymbolLayerV2*>( symbolLayer );
+    if ( layer )
+    {
+      double width = layer->width();
+      if ( width > maxWidth )
+        maxWidth = width;
+    }
   }
   return maxWidth;
 }
@@ -977,8 +981,8 @@ QgsDataDefined QgsLineSymbolV2::dataDefinedWidth() const
   // find the base of the "en masse" pattern
   for ( QgsSymbolLayerV2List::const_iterator it = mLayers.begin(); it != mLayers.end(); ++it )
   {
-    const QgsLineSymbolLayerV2* layer = static_cast<const QgsLineSymbolLayerV2*>( *it );
-    if ( layer->width() == symbolWidth && layer->getDataDefinedProperty( "width" ) )
+    const QgsLineSymbolLayerV2* layer = dynamic_cast<const QgsLineSymbolLayerV2*>( *it );
+    if ( layer && layer->width() == symbolWidth && layer->getDataDefinedProperty( "width" ) )
     {
       symbolDD = layer->getDataDefinedProperty( "width" );
       break;
@@ -1029,14 +1033,20 @@ void QgsLineSymbolV2::renderPolyline( const QPolygonF& points, const QgsFeature*
   {
     if ( layer >= 0 && layer < mLayers.count() )
     {
-      renderPolylineUsingLayer(( QgsLineSymbolLayerV2* ) mLayers[layer], points, symbolContext );
+      QgsLineSymbolLayerV2* lineLayer = dynamic_cast<QgsLineSymbolLayerV2*>( mLayers.at( layer ) );
+
+      if ( lineLayer )
+        renderPolylineUsingLayer( lineLayer, points, symbolContext );
     }
     return;
   }
 
-  for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
+  Q_FOREACH ( QgsSymbolLayerV2* symbolLayer, mLayers )
   {
-    renderPolylineUsingLayer(( QgsLineSymbolLayerV2* ) * it, points, symbolContext );
+    QgsLineSymbolLayerV2* lineLayer = dynamic_cast<QgsLineSymbolLayerV2*>( symbolLayer );
+
+    if ( lineLayer )
+      renderPolylineUsingLayer( lineLayer, points, symbolContext );
   }
 
   context.setPainter( renderPainter );

@@ -87,10 +87,13 @@ class CORE_EXPORT QgsSymbolLayerV2
     virtual void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size ) = 0;
 
     virtual QgsSymbolV2* subSymbol() { return NULL; }
-    // set layer's subsymbol. takes ownership of the passed symbol
+    //! set layer's subsymbol. takes ownership of the passed symbol
     virtual bool setSubSymbol( QgsSymbolV2* symbol ) { delete symbol; return false; }
 
     QgsSymbolV2::SymbolType type() const { return mType; }
+
+    //! Returns if the layer can be used below the specified symbol
+    virtual bool isCompatibleWithSymbol( QgsSymbolV2* symbol );
 
     void setLocked( bool locked ) { mLocked = locked; }
     bool isLocked() const { return mLocked; }
