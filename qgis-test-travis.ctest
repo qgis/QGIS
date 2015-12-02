@@ -5,7 +5,7 @@ SET (CTEST_BINARY_DIRECTORY "$ENV{TRAVIS_BUILD_DIR}/build")
 
 SET( CTEST_CMAKE_GENERATOR  "Unix Makefiles" )
 SET (CTEST_CMAKE_COMMAND "cmake" )
-SET (CTEST_BUILD_COMMAND "/usr/bin/make -j2 -i -k" )
+SET (CTEST_BUILD_COMMAND "/usr/bin/make -j2" )
 SET (CTEST_SITE "travis-ci.org" )
 IF ($ENV{TRAVIS_PULL_REQUEST} STREQUAL "false")
   # No pull request
