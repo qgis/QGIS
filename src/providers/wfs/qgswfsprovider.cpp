@@ -123,16 +123,11 @@ QgsWFSProvider::QgsWFSProvider( const QString& uri )
     setDataSourceUri( bkUri );
   }
 
-#if 0 //non-cached mode is broken
   mCached = !uri.contains( "BBOX=" );
   if ( mCached )
   { //"Cache Features" option; get all features in layer immediately
     reloadData();
   } //otherwise, defer feature retrieval until layer is first rendered
-#endif //0
-
-  mCached = true;
-  reloadData();
 
   if ( mValid )
   {
@@ -158,14 +153,15 @@ QgsAbstractFeatureSource* QgsWFSProvider::featureSource() const
 
 void QgsWFSProvider::reloadData()
 {
-  mPendingRetrieval = false;
-  deleteData();
+  if (mCached)
+      deleteData();
   delete mSpatialIndex;
   mSpatialIndex = new QgsSpatialIndex();
   mValid = !getFeature( dataSourceUri() );
 
   if ( !mCached )
     emit dataChanged();
+  mPendingRetrieval = false;
 }
 
 void QgsWFSProvider::deleteData()
@@ -285,8 +281,16 @@ QgsFeatureIterator QgsWFSProvider::getFeatures( const QgsFeatureRequest& request
     }
 
   }
-#endif
   return new QgsWFSFeatureIterator( new QgsWFSFeatureSource( this ), true, request );
+#else
+  QgsRectangle rect = request.filterRect();
+  if ( !( request.flags() & QgsFeatureRequest::NoGeometry ) && !rect.isEmpty() )
+  {
+      deleteData();
+      reloadData();
+  }
+  return new QgsWFSFeatureIterator( new QgsWFSFeatureSource( this ), true, request );
+#endif
 }
 
 int QgsWFSProvider::getFeature( const QString& uri )
@@ -1720,9 +1724,11 @@ void QgsWFSProvider::extendExtent( const QgsRectangle &extent )
 
   QgsRectangle r( mExtent.intersect( &extent ) );
 
-  if ( mGetExtent.contains( r ) )
+  if ( (extent == mGetExtent || mFeatureCount == 0 || mFeatureCount % 500 != 0)
+      && mGetExtent.contains( r ) )
     return;
 
+#if 0
   if ( mGetExtent.isEmpty() )
   {
     mGetExtent = r;
@@ -1738,6 +1744,9 @@ void QgsWFSProvider::extendExtent( const QgsRectangle &extent )
   {
     mGetExtent.combineExtentWith( &r );
   }
+#else
+  mGetExtent = extent;
+#endif
 
   setDataSourceUri( dataSourceUri().replace( QRegExp( "BBOX=[^&]*" ),
                     QString( "BBOX=%1,%2,%3,%4" )
