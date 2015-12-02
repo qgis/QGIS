@@ -489,7 +489,7 @@ QgsMarkerSymbolLayerV2::QgsMarkerSymbolLayerV2( bool locked )
     , mSize( 2.0 )
     , mSizeUnit( QgsSymbolV2::MM )
     , mOffsetUnit( QgsSymbolV2::MM )
-    , mScaleMethod( QgsSymbolV2::ScaleArea )
+    , mScaleMethod( QgsSymbolV2::ScaleDiameter )
     , mHorizontalAnchorPoint( HCenter )
     , mVerticalAnchorPoint( VCenter )
 {
