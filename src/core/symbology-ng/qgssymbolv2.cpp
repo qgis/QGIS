@@ -101,8 +101,7 @@ QgsSymbolV2::QgsSymbolV2( SymbolType type, const QgsSymbolLayerV2List& layers )
 QgsSymbolV2::~QgsSymbolV2()
 {
   // delete all symbol layers (we own them, so it's okay)
-  for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
-    delete *it;
+  qDeleteAll( mLayers );
 }
 
 QgsSymbolV2::OutputUnit QgsSymbolV2::outputUnit() const
@@ -294,26 +293,26 @@ void QgsSymbolV2::startRender( QgsRenderContext& context, const QgsFields* field
   QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, false, mRenderHints, 0, fields, mapUnitScale() );
 
 
-  for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
-    ( *it )->startRender( symbolContext );
+  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
+    layer->startRender( symbolContext );
 }
 
 void QgsSymbolV2::stopRender( QgsRenderContext& context )
 {
   QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, false, mRenderHints, 0, 0, mapUnitScale() );
 
-  for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
-    ( *it )->stopRender( symbolContext );
+  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
+    layer->stopRender( symbolContext );
 
   mLayer = NULL;
 }
 
 void QgsSymbolV2::setColor( const QColor& color )
 {
-  for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
+  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
   {
-    if ( !( *it )->isLocked() )
-      ( *it )->setColor( color );
+    if ( !layer->isLocked() )
+      layer->setColor( color );
   }
 }
 
@@ -334,22 +333,25 @@ void QgsSymbolV2::drawPreviewIcon( QPainter* painter, QSize size, QgsRenderConte
   context.setForceVectorOutput( true );
   QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, false, mRenderHints, 0, 0, mapUnitScale() );
 
-  for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
+  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
   {
-    if ( mType == Fill && ( *it )->type() == Line )
+    if ( mType == Fill && layer->type() == Line )
     {
       // line symbol layer would normally draw just a line
       // so we override this case to force it to draw a polygon outline
-      QgsLineSymbolLayerV2* lsl = ( QgsLineSymbolLayerV2* ) * it;
+      QgsLineSymbolLayerV2* lsl = dynamic_cast<QgsLineSymbolLayerV2*>( layer );
 
-      // from QgsFillSymbolLayerV2::drawPreviewIcon()
-      QPolygonF poly = QRectF( QPointF( 0, 0 ), QPointF( size.width() - 1, size.height() - 1 ) );
-      lsl->startRender( symbolContext );
-      lsl->renderPolygonOutline( poly, NULL, symbolContext );
-      lsl->stopRender( symbolContext );
+      if ( lsl )
+      {
+        // from QgsFillSymbolLayerV2::drawPreviewIcon()
+        QPolygonF poly = QRectF( QPointF( 0, 0 ), QPointF( size.width() - 1, size.height() - 1 ) );
+        lsl->startRender( symbolContext );
+        lsl->renderPolygonOutline( poly, NULL, symbolContext );
+        lsl->stopRender( symbolContext );
+      }
     }
     else
-      ( *it )->drawPreviewIcon( symbolContext, size );
+      layer->drawPreviewIcon( symbolContext, size );
   }
 }
 
@@ -587,10 +589,11 @@ void QgsMarkerSymbolV2::setAngle( double ang )
 {
   double origAngle = angle();
   double angleDiff = ang - origAngle;
-  for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
+  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
   {
-    QgsMarkerSymbolLayerV2* layer = ( QgsMarkerSymbolLayerV2* ) * it;
-    layer->setAngle( layer->angle() + angleDiff );
+    QgsMarkerSymbolLayerV2* markerLayer = dynamic_cast<QgsMarkerSymbolLayerV2*>( layer );
+    if ( markerLayer )
+      markerLayer->setAngle( markerLayer->angle() + angleDiff );
   }
 }
 
@@ -608,10 +611,12 @@ double QgsMarkerSymbolV2::angle() const
 
 void QgsMarkerSymbolV2::setLineAngle( double lineAng )
 {
-  for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
+  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
   {
-    QgsMarkerSymbolLayerV2* layer = ( QgsMarkerSymbolLayerV2* ) * it;
-    layer->setLineAngle( lineAng );
+    QgsMarkerSymbolLayerV2* markerLayer = dynamic_cast<QgsMarkerSymbolLayerV2*>( layer );
+
+    if ( markerLayer )
+      markerLayer->setLineAngle( lineAng );
   }
 }
 
@@ -619,23 +624,27 @@ void QgsMarkerSymbolV2::setDataDefinedAngle( const QgsDataDefined& dd )
 {
   const double symbolRotation = angle();
 
-  for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
+  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
   {
-    QgsMarkerSymbolLayerV2* layer = static_cast<QgsMarkerSymbolLayerV2 *>( *it );
-    if ( dd.hasDefaultValues() )
+    QgsMarkerSymbolLayerV2* markerLayer = dynamic_cast<QgsMarkerSymbolLayerV2*>( layer );
+
+    if ( markerLayer )
     {
-      layer->removeDataDefinedProperty( "angle" );
-    }
-    else
-    {
-      if ( qgsDoubleNear( layer->angle(), symbolRotation ) )
+      if ( dd.hasDefaultValues() )
       {
-        layer->setDataDefinedProperty( "angle", new QgsDataDefined( dd ) );
+        layer->removeDataDefinedProperty( "angle" );
       }
       else
       {
-        QgsDataDefined* rotatedDD = rotateWholeSymbol( layer->angle() - symbolRotation, dd );
-        layer->setDataDefinedProperty( "angle", rotatedDD );
+        if ( qgsDoubleNear( markerLayer->angle(), symbolRotation ) )
+        {
+          layer->setDataDefinedProperty( "angle", new QgsDataDefined( dd ) );
+        }
+        else
+        {
+          QgsDataDefined* rotatedDD = rotateWholeSymbol( markerLayer->angle() - symbolRotation, dd );
+          layer->setDataDefinedProperty( "angle", rotatedDD );
+        }
       }
     }
   }
@@ -687,20 +696,20 @@ void QgsMarkerSymbolV2::setSize( double s )
 {
   double origSize = size();
 
-  for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
+  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
   {
-    QgsMarkerSymbolLayerV2* layer = static_cast<QgsMarkerSymbolLayerV2*>( *it );
-    if ( layer->size() == origSize )
-      layer->setSize( s );
+    QgsMarkerSymbolLayerV2* markerLayer = dynamic_cast<QgsMarkerSymbolLayerV2*>( layer );
+    if ( markerLayer->size() == origSize )
+      markerLayer->setSize( s );
     else if ( origSize != 0 )
     {
       // proportionally scale size
-      layer->setSize( layer->size() * s / origSize );
+      markerLayer->setSize( markerLayer->size() * s / origSize );
     }
     // also scale offset to maintain relative position
-    if ( origSize != 0 && ( layer->offset().x() || layer->offset().y() ) )
-      layer->setOffset( QPointF( layer->offset().x() * s / origSize,
-                                 layer->offset().y() * s / origSize ) );
+    if ( origSize != 0 && ( markerLayer->offset().x() || markerLayer->offset().y() ) )
+      markerLayer->setOffset( QPointF( markerLayer->offset().x() * s / origSize,
+                                       markerLayer->offset().y() * s / origSize ) );
   }
 }
 
@@ -722,31 +731,31 @@ void QgsMarkerSymbolV2::setDataDefinedSize( const QgsDataDefined &dd )
 {
   const double symbolSize = size();
 
-  for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
+  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
   {
-    QgsMarkerSymbolLayerV2* layer = static_cast<QgsMarkerSymbolLayerV2 *>( *it );
+    QgsMarkerSymbolLayerV2* markerLayer = dynamic_cast<QgsMarkerSymbolLayerV2 *>( layer );
 
     if ( dd.hasDefaultValues() )
     {
-      layer->removeDataDefinedProperty( "size" );
-      layer->removeDataDefinedProperty( "offset" );
+      markerLayer->removeDataDefinedProperty( "size" );
+      markerLayer->removeDataDefinedProperty( "offset" );
     }
     else
     {
-      if ( symbolSize == 0 || qgsDoubleNear( layer->size(), symbolSize ) )
+      if ( symbolSize == 0 || qgsDoubleNear( markerLayer->size(), symbolSize ) )
       {
-        layer->setDataDefinedProperty( "size", new QgsDataDefined( dd ) );
+        markerLayer->setDataDefinedProperty( "size", new QgsDataDefined( dd ) );
       }
       else
       {
-        layer->setDataDefinedProperty( "size", scaleWholeSymbol( layer->size() / symbolSize, dd ) );
+        markerLayer->setDataDefinedProperty( "size", scaleWholeSymbol( markerLayer->size() / symbolSize, dd ) );
       }
 
-      if ( layer->offset().x() || layer->offset().y() )
+      if ( markerLayer->offset().x() || markerLayer->offset().y() )
       {
-        layer->setDataDefinedProperty( "offset", scaleWholeSymbol(
-                                         layer->offset().x() / symbolSize,
-                                         layer->offset().y() / symbolSize, dd ) );
+        markerLayer->setDataDefinedProperty( "offset", scaleWholeSymbol(
+                                               markerLayer->offset().x() / symbolSize,
+                                               markerLayer->offset().y() / symbolSize, dd ) );
       }
     }
   }
@@ -805,10 +814,11 @@ QgsDataDefined QgsMarkerSymbolV2::dataDefinedSize() const
 
 void QgsMarkerSymbolV2::setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod )
 {
-  for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
+  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
   {
-    QgsMarkerSymbolLayerV2* layer = static_cast<QgsMarkerSymbolLayerV2*>( *it );
-    layer->setScaleMethod( scaleMethod );
+    QgsMarkerSymbolLayerV2* markerLayer = dynamic_cast<QgsMarkerSymbolLayerV2*>( layer );
+    if ( markerLayer )
+      markerLayer->setScaleMethod( scaleMethod );
   }
 }
 
@@ -860,9 +870,12 @@ void QgsMarkerSymbolV2::renderPoint( const QPointF& point, const QgsFeature* f, 
     return;
   }
 
-  for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
+  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
   {
-    renderPointUsingLayer(( QgsMarkerSymbolLayerV2* ) * it, point, symbolContext );
+    QgsMarkerSymbolLayerV2* markerLayer = dynamic_cast<QgsMarkerSymbolLayerV2*>( layer );
+
+    if ( markerLayer )
+      renderPointUsingLayer( markerLayer, point, symbolContext );
   }
 }
 
@@ -905,21 +918,25 @@ void QgsLineSymbolV2::setWidth( double w )
 {
   double origWidth = width();
 
-  for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
+  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
   {
-    QgsLineSymbolLayerV2* layer = ( QgsLineSymbolLayerV2* ) * it;
-    if ( layer->width() == origWidth )
+    QgsLineSymbolLayerV2* lineLayer = dynamic_cast<QgsLineSymbolLayerV2*>( layer );
+
+    if ( lineLayer )
     {
-      layer->setWidth( w );
+      if ( lineLayer->width() == origWidth )
+      {
+        lineLayer->setWidth( w );
+      }
+      else if ( origWidth != 0 )
+      {
+        // proportionally scale the width
+        lineLayer->setWidth( lineLayer->width() * w / origWidth );
+      }
+      // also scale offset to maintain relative position
+      if ( origWidth != 0 && lineLayer->offset() )
+        lineLayer->setOffset( lineLayer->offset() * w / origWidth );
     }
-    else if ( origWidth != 0 )
-    {
-      // proportionally scale the width
-      layer->setWidth( layer->width() * w / origWidth );
-    }
-    // also scale offset to maintain relative position
-    if ( origWidth != 0 && layer->offset() )
-      layer->setOffset( layer->offset() * w / origWidth );
   }
 }
 
@@ -929,10 +946,10 @@ double QgsLineSymbolV2::width() const
 
   Q_FOREACH ( QgsSymbolLayerV2* symbolLayer, mLayers )
   {
-    const QgsLineSymbolLayerV2* layer = dynamic_cast<QgsLineSymbolLayerV2*>( symbolLayer );
-    if ( layer )
+    const QgsLineSymbolLayerV2* lineLayer = dynamic_cast<QgsLineSymbolLayerV2*>( symbolLayer );
+    if ( lineLayer )
     {
-      double width = layer->width();
+      double width = lineLayer->width();
       if ( width > maxWidth )
         maxWidth = width;
     }
@@ -944,29 +961,32 @@ void QgsLineSymbolV2::setDataDefinedWidth( const QgsDataDefined& dd )
 {
   const double symbolWidth = width();
 
-  for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
+  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
   {
-    QgsLineSymbolLayerV2* layer = static_cast<QgsLineSymbolLayerV2*>( *it );
+    QgsLineSymbolLayerV2* lineLayer = dynamic_cast<QgsLineSymbolLayerV2*>( layer );
 
-    if ( dd.hasDefaultValues() )
+    if ( lineLayer )
     {
-      layer->removeDataDefinedProperty( "width" );
-      layer->removeDataDefinedProperty( "offset" );
-    }
-    else
-    {
-      if ( symbolWidth == 0 || qgsDoubleNear( layer->width(), symbolWidth ) )
+      if ( dd.hasDefaultValues() )
       {
-        layer->setDataDefinedProperty( "width", new QgsDataDefined( dd ) );
+        lineLayer->removeDataDefinedProperty( "width" );
+        lineLayer->removeDataDefinedProperty( "offset" );
       }
       else
       {
-        layer->setDataDefinedProperty( "width", scaleWholeSymbol( layer->width() / symbolWidth, dd ) );
-      }
+        if ( symbolWidth == 0 || qgsDoubleNear( lineLayer->width(), symbolWidth ) )
+        {
+          lineLayer->setDataDefinedProperty( "width", new QgsDataDefined( dd ) );
+        }
+        else
+        {
+          lineLayer->setDataDefinedProperty( "width", scaleWholeSymbol( lineLayer->width() / symbolWidth, dd ) );
+        }
 
-      if ( layer->offset() )
-      {
-        layer->setDataDefinedProperty( "offset", scaleWholeSymbol( layer->offset() / symbolWidth, dd ) );
+        if ( lineLayer->offset() )
+        {
+          lineLayer->setDataDefinedProperty( "offset", scaleWholeSymbol( lineLayer->offset() / symbolWidth, dd ) );
+        }
       }
     }
   }
@@ -1106,9 +1126,9 @@ void QgsFillSymbolV2::renderPolygon( const QPolygonF& points, QList<QPolygonF>* 
     return;
   }
 
-  for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
+  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
   {
-    renderPolygonUsingLayer( *it, points, rings, symbolContext );
+    renderPolygonUsingLayer( layer, points, rings, symbolContext );
   }
 }
 
@@ -1192,10 +1212,12 @@ QgsFillSymbolV2* QgsFillSymbolV2::clone() const
 
 void QgsFillSymbolV2::setAngle( double angle )
 {
-  for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
+  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
   {
-    QgsFillSymbolLayerV2* layer = ( QgsFillSymbolLayerV2* ) * it;
-    layer->setAngle( angle );
+    QgsFillSymbolLayerV2* fillLayer = dynamic_cast<QgsFillSymbolLayerV2*>( layer );
+
+    if ( fillLayer )
+      fillLayer->setAngle( angle );
   }
 }
 
