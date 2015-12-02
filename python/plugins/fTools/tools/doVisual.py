@@ -181,9 +181,9 @@ class VisualDialog(QDialog, Ui_Dialog):
             self.tblUnique.setColumnCount(2)
             for rec in range(numRows):
                 if ":" not in result[rec]:
-                	tmp = result[rec].split(u"\uff1a")
+                    tmp = result[rec].split(u"\uff1a")
                 else:
-                	tmp = result[rec].split(":")
+                    tmp = result[rec].split(":")
                 item = QTableWidgetItem(tmp[0])
                 self.tblUnique.setItem(rec, 0, item)
                 item = QTableWidgetItem(tmp[1])

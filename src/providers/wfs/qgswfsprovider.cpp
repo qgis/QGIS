@@ -153,8 +153,8 @@ QgsAbstractFeatureSource* QgsWFSProvider::featureSource() const
 
 void QgsWFSProvider::reloadData()
 {
-  if (mCached)
-      deleteData();
+  if ( mCached )
+    deleteData();
   delete mSpatialIndex;
   mSpatialIndex = new QgsSpatialIndex();
   mValid = !getFeature( dataSourceUri() );
@@ -286,8 +286,8 @@ QgsFeatureIterator QgsWFSProvider::getFeatures( const QgsFeatureRequest& request
   QgsRectangle rect = request.filterRect();
   if ( !( request.flags() & QgsFeatureRequest::NoGeometry ) && !rect.isEmpty() )
   {
-      deleteData();
-      reloadData();
+    deleteData();
+    reloadData();
   }
   return new QgsWFSFeatureIterator( new QgsWFSFeatureSource( this ), true, request );
 #endif
@@ -1724,7 +1724,7 @@ void QgsWFSProvider::extendExtent( const QgsRectangle &extent )
 
   QgsRectangle r( mExtent.intersect( &extent ) );
 
-  if ( (extent == mGetExtent || mFeatureCount == 0 || mFeatureCount % 500 != 0)
+  if (( extent == mGetExtent || mFeatureCount == 0 || mFeatureCount % 500 != 0 )
       && mGetExtent.contains( r ) )
     return;
 
