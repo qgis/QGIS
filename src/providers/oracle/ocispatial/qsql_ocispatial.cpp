@@ -3075,7 +3075,18 @@ int QOCISpatialResult::numRowsAffected()
 bool QOCISpatialResult::prepare( const QString& query )
 {
   ENTER
-  qDebug() << "prepare(" << query << ")";
+
+  static int sDebugLevel = -1;
+  if ( sDebugLevel < 0 )
+  {
+    if ( getenv( "QGIS_DEBUG" ) )
+      sDebugLevel = atoi( getenv( "QGIS_DEBUG" ) );
+    else
+      sDebugLevel = 0;
+  }
+
+  if ( sDebugLevel >= 4 )
+    qDebug() << "prepare(" << query << ")";
 
   int r = 0;
   QSqlResult::prepare( query );
