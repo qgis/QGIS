@@ -29,11 +29,24 @@ import unittest
 from utilities import getQgisTestApp, unittest
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 
-from processing.core.parameters import (ParameterNumber,
+from processing.core.parameters import (Parameter,
+                                        ParameterNumber,
                                         ParameterCrs,
                                         ParameterDataObject,
                                         ParameterExtent,
                                         ParameterBoolean)
+
+class ParameterTest(unittest.TestCase):
+    def testGetValueAsCommandLineParameter(self):
+        parameter = Parameter('myName', 'myDesc')
+        parameter.setValue(None)
+        self.assertEqual(parameter.getValueAsCommandLineParameter(), "None")
+
+        parameter.setValue("someValue")
+        self.assertEqual(parameter.getValueAsCommandLineParameter(), 'someValue')
+
+        parameter.setValue(123)
+        self.assertEqual(parameter.getValueAsCommandLineParameter(), '123')
 
 class ParameterBooleanTest(unittest.TestCase):
     def testInitDefaults(self):
