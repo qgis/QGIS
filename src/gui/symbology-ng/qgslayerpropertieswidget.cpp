@@ -76,6 +76,8 @@ static void _initWidgetFunctions()
   _initWidgetFunction( "LinePatternFill", QgsLinePatternFillSymbolLayerWidget::create );
   _initWidgetFunction( "PointPatternFill", QgsPointPatternFillSymbolLayerWidget::create );
 
+  _initWidgetFunction( "PolygonGenerator", QgsPolygonGeneratorSymbolLayerWidget::create );
+
   initialized = true;
 }
 
@@ -151,7 +153,6 @@ void QgsLayerPropertiesWidget::populateLayerTypes()
       cboLayerType->addItem( name, typesLine[i] );
     }
   }
-
 }
 
 void QgsLayerPropertiesWidget::updateSymbolLayerWidget( QgsSymbolLayerV2* layer )

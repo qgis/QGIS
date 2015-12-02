@@ -486,7 +486,8 @@ void QgsSymbolsListWidget::updateSymbolInfo()
   if ( mSymbol->type() == QgsSymbolV2::Line || mSymbol->type() == QgsSymbolV2::Fill )
   {
     //add clip features option for line or fill symbols
-    btnAdvanced->menu()->addAction( mClipFeaturesAction );
+    if ( !btnAdvanced->menu()->actions().contains( mClipFeaturesAction ) )
+      btnAdvanced->menu()->addAction( mClipFeaturesAction );
   }
   else
   {

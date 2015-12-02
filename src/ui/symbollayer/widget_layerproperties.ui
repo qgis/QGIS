@@ -29,6 +29,9 @@
    <property name="verticalSpacing">
     <number>3</number>
    </property>
+   <item row="9" column="0">
+    <widget class="QgsEffectStackCompactWidget" name="mEffectWidget" native="true"/>
+   </item>
    <item row="1" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
@@ -68,16 +71,13 @@
      </widget>
     </widget>
    </item>
-   <item row="3" column="0">
-    <widget class="QgsEffectStackCompactWidget" name="mEffectWidget" native="true"/>
-   </item>
   </layout>
  </widget>
  <customwidgets>
   <customwidget>
    <class>QgsEffectStackCompactWidget</class>
    <extends>QWidget</extends>
-   <header>qgseffectstackpropertieswidget.h</header>
+   <header>effects/qgseffectstackpropertieswidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

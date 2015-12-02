@@ -550,7 +550,7 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayerV2
     virtual ~QgsImageFillSymbolLayer();
     void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context ) override;
 
-    virtual QgsSymbolV2* subSymbol() override { return mOutline; }
+    virtual QgsSymbolV2* subSymbol() const override { return mOutline; }
     virtual bool setSubSymbol( QgsSymbolV2* symbol ) override;
 
     void setOutlineWidthUnit( QgsSymbolV2::OutputUnit unit ) { mOutlineWidthUnit = unit; }
@@ -618,7 +618,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
     virtual double estimateMaxBleed() const override;
 
     //override QgsImageFillSymbolLayer's support for sub symbols
-    virtual QgsSymbolV2* subSymbol() override { return 0; }
+    virtual QgsSymbolV2* subSymbol() const override { return 0; }
     virtual bool setSubSymbol( QgsSymbolV2* symbol ) override;
 
     /** Sets the path to the raster image used for the fill.
@@ -925,7 +925,7 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
     QgsMapUnitScale mapUnitScale() const override;
 
     bool setSubSymbol( QgsSymbolV2* symbol ) override;
-    QgsSymbolV2* subSymbol() override;
+    QgsSymbolV2* subSymbol() const override;
 
     QSet<QString> usedAttributes() const override;
 
@@ -993,7 +993,7 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     void setDisplacementY( double d ) { mDisplacementY = d; }
 
     bool setSubSymbol( QgsSymbolV2* symbol ) override;
-    virtual QgsSymbolV2* subSymbol() override { return mMarkerSymbol; }
+    virtual QgsSymbolV2* subSymbol() const override { return mMarkerSymbol; }
 
     void setDistanceXUnit( QgsSymbolV2::OutputUnit unit ) { mDistanceXUnit = unit; }
     QgsSymbolV2::OutputUnit distanceXUnit() const { return mDistanceXUnit; }
@@ -1078,7 +1078,7 @@ class CORE_EXPORT QgsCentroidFillSymbolLayerV2 : public QgsFillSymbolLayerV2
 
     void setColor( const QColor& color ) override;
 
-    QgsSymbolV2* subSymbol() override;
+    QgsSymbolV2* subSymbol() const override;
     bool setSubSymbol( QgsSymbolV2* symbol ) override;
 
     void setOutputUnit( QgsSymbolV2::OutputUnit unit ) override;

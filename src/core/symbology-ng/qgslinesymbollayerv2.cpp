@@ -1336,7 +1336,7 @@ QgsStringMap QgsMarkerLineSymbolLayerV2::properties() const
   return map;
 }
 
-QgsSymbolV2* QgsMarkerLineSymbolLayerV2::subSymbol()
+QgsSymbolV2* QgsMarkerLineSymbolLayerV2::subSymbol() const
 {
   return mMarker;
 }

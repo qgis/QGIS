@@ -177,7 +177,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
 
     void setColor( const QColor& color ) override;
 
-    QgsSymbolV2* subSymbol() override;
+    QgsSymbolV2* subSymbol() const override;
     bool setSubSymbol( QgsSymbolV2* symbol ) override;
 
     virtual void setWidth( double width ) override;
