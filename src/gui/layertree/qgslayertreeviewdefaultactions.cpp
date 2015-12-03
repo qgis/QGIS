@@ -152,8 +152,9 @@ void QgsLayerTreeViewDefaultActions::showInOverview()
   QgsLayerTreeNode* node = mView->currentNode();
   if ( !node )
     return;
-
-  node->setCustomProperty( "overview", node->customProperty( "overview", 0 ).toInt() ? 0 : 1 );
+  int newValue = node->customProperty( "overview", 0 ).toInt();
+  Q_FOREACH ( QgsLayerTreeLayer* l, mView->selectedLayerNodes() )
+    l->setCustomProperty( "overview", newValue ? 0 : 1 );
 }
 
 void QgsLayerTreeViewDefaultActions::showFeatureCount()
@@ -162,8 +163,9 @@ void QgsLayerTreeViewDefaultActions::showFeatureCount()
   if ( !QgsLayerTree::isLayer( node ) )
     return;
 
-
-  node->setCustomProperty( "showFeatureCount", node->customProperty( "showFeatureCount", 0 ).toInt() ? 0 : 1 );
+  int newValue = node->customProperty( "showFeatureCount", 0 ).toInt();
+  Q_FOREACH ( QgsLayerTreeLayer* l, mView->selectedLayerNodes() )
+    l->setCustomProperty( "showFeatureCount", newValue ? 0 : 1 );
 }
 
 
@@ -263,18 +265,16 @@ QString QgsLayerTreeViewDefaultActions::uniqueGroupName( QgsLayerTreeGroup* pare
 
 void QgsLayerTreeViewDefaultActions::makeTopLevel()
 {
-  QgsLayerTreeNode* node = mView->currentNode();
-  if ( !node )
-    return;
-
-  QgsLayerTreeGroup* rootGroup = mView->layerTreeModel()->rootGroup();
-  QgsLayerTreeGroup* parentGroup = qobject_cast<QgsLayerTreeGroup*>( node->parent() );
-  if ( !parentGroup || parentGroup == rootGroup )
-    return;
-
-  QgsLayerTreeNode* clonedNode = node->clone();
-  rootGroup->addChildNode( clonedNode );
-  parentGroup->removeChildNode( node );
+  Q_FOREACH ( QgsLayerTreeLayer* l, mView->selectedLayerNodes() )
+  {
+    QgsLayerTreeGroup* rootGroup = mView->layerTreeModel()->rootGroup();
+    QgsLayerTreeGroup* parentGroup = qobject_cast<QgsLayerTreeGroup*>( l->parent() );
+    if ( !parentGroup || parentGroup == rootGroup )
+      continue;
+    QgsLayerTreeLayer* clonedLayer = l->clone();
+    rootGroup->addChildNode( clonedLayer );
+    parentGroup->removeChildNode( l );
+  }
 }
 
 
