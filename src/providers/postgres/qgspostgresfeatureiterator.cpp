@@ -364,12 +364,69 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause )
                                            ? mSource->mRequestedGeomType
                                            : mSource->mDetectedGeomType ) ) != QGis::WKBPoint )
     {
+      // PostGIS simplification method to use
+      QString simplifyPostgisMethod;
+
+      // Simplify again with st_simplify after first simplification ?
+      bool postSimplification;
+      postSimplification = false; // default to false. Set to true only for postgis >= 2.2 when using st_removerepeatedpoints
+
+      if ( mRequest.simplifyMethod().methodType() == QgsSimplifyMethod::OptimizeForRendering )
+      {
+        // Optimize simplification for rendering
+        if ( mConn->majorVersion() < 2 )
+        {
+          simplifyPostgisMethod = "snaptogrid";
+        }
+        else
+        {
+
+          // Default to st_snaptogrid
+          simplifyPostgisMethod = "st_snaptogrid";
+
+          if (( mConn->majorVersion() == 2 && mConn->minorVersion() >= 2 ) ||
+              mConn->majorVersion() > 2 )
+          {
+            // For postgis >= 2.2 Use ST_RemoveRepeatedPoints instead
+            // Do it only if threshold is <= 1 pixel to avoid holes in adjacent polygons
+            // We should perhaps use it always for Linestrings, even if threshold > 1 ?
+            if ( mRequest.simplifyMethod().threshold() <= 1.0 )
+            {
+              simplifyPostgisMethod = "st_removerepeatedpoints";
+              postSimplification = true; // Ask to apply a post-filtering simplification
+            }
+          }
+        }
+      }
+      else
+      {
+        // preserve topology
+        if ( mConn->majorVersion() < 2 )
+        {
+          simplifyPostgisMethod = "simplifypreservetopology";
+        }
+        else
+        {
+          simplifyPostgisMethod = "st_simplifypreservetopology";
+        }
+      }
+      QgsDebugMsg(
+        QString( "PostGIS Server side simplification : threshold %1 pixels - method %2" )
+        .arg( mRequest.simplifyMethod().threshold() )
+        .arg( simplifyPostgisMethod )
+      );
+
       geom = QString( "%1(%2,%3)" )
-             .arg( mRequest.simplifyMethod().methodType() == QgsSimplifyMethod::OptimizeForRendering
-                   ? ( mConn->majorVersion() < 2 ? "snaptogrid" : "st_snaptogrid" )
-                       : ( mConn->majorVersion() < 2 ? "simplifypreservetopology" : "st_simplifypreservetopology" ),
-                       geom )
-                 .arg( mRequest.simplifyMethod().tolerance() * 0.8 ); //-> Default factor for the maximum displacement distance for simplification, similar as GeoServer does
+             .arg( simplifyPostgisMethod, geom )
+             .arg( mRequest.simplifyMethod().tolerance() * 0.8 ); //-> Default factor for the maximum displacement distance for simplification, similar as GeoServer does
+
+      // Post-simplification
+      if ( postSimplification )
+      {
+        geom = QString( "st_simplify( %1, %2, true )" )
+               .arg( geom )
+               .arg( mRequest.simplifyMethod().tolerance() * 0.7 ); //-> We use a smaller tolerance than pre-filtering to be on the safe side
+      }
     }
 
     geom = QString( "%1(%2,'%3')" )
@@ -382,7 +439,7 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause )
   }
 
   switch ( mSource->mPrimaryKeyType )
-{
+  {
     case pktOid:
       query += delim + "oid";
       delim = ',';
