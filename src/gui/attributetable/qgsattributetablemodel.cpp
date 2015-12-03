@@ -505,11 +505,6 @@ int QgsAttributeTableModel::idToRow( QgsFeatureId id ) const
   if ( !mIdRowMap.contains( id ) )
   {
     QgsDebugMsg( QString( "idToRow: id %1 not in the map" ).arg( id ) );
-    QgsDebugMsg( "mIdRowMap:" );
-    Q_FOREACH ( int row, mIdRowMap )
-    {
-      QgsDebugMsg( QString( "\t%1 -> %2" ).arg( row ).arg( mIdRowMap[row] ) );
-    }
     return -1;
   }
   return mIdRowMap[id];
