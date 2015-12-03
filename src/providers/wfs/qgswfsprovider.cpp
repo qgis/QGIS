@@ -1732,31 +1732,17 @@ void QgsWFSProvider::extendExtent( const QgsRectangle &extent )
   if ( mCached )
     return;
 
-  QgsRectangle r( mExtent.intersect( &extent ) );
-
-  if (( extent == mGetExtent || mFeatureCount == 0 || mFeatureCount % 500 != 0 )
-      && mGetExtent.contains( r ) )
+  if ( qgsDoubleNear( mGetExtent.xMinimum(), extent.xMinimum() ) &&
+       qgsDoubleNear( mGetExtent.yMinimum(), extent.yMinimum() ) &&
+       qgsDoubleNear( mGetExtent.xMaximum(), extent.xMaximum() ) &&
+       qgsDoubleNear( mGetExtent.yMaximum(), extent.yMaximum() ) )
     return;
 
-#if 0
-  if ( mGetExtent.isEmpty() )
-  {
-    mGetExtent = r;
-  }
-  else if ( qgsDoubleNear( mGetExtent.xMinimum(), r.xMinimum() ) &&
-            qgsDoubleNear( mGetExtent.yMinimum(), r.yMinimum() ) &&
-            qgsDoubleNear( mGetExtent.xMaximum(), r.xMaximum() ) &&
-            qgsDoubleNear( mGetExtent.yMaximum(), r.yMaximum() ) )
-  {
+  if ( ( mFeatureCount == 0 || mFeatureCount < mMaxFeatureCount || mFeatureCount % 500 != 0 )
+      && mGetExtent.contains( extent ) )
     return;
-  }
-  else
-  {
-    mGetExtent.combineExtentWith( &r );
-  }
-#else
+
   mGetExtent = extent;
-#endif
 
   setDataSourceUri( dataSourceUri().replace( QRegExp( "BBOX=[^&]*" ),
                     QString( "BBOX=%1,%2,%3,%4" )
