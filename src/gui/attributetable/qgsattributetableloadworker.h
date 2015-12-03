@@ -49,16 +49,17 @@ class GUI_EXPORT QgsAttributeTableLoadWorker: public QObject
      */
     bool isRunning() { return mIsRunning; }
 
-    /**
-     * Stop the worker
-     */
-    void stopJob();
 
   public slots:
     /**
      * Start pulling features from the cache
      */
     void startJob( );
+
+    /**
+     * Stop the worker
+     */
+    void stopJob();
 
   signals:
 

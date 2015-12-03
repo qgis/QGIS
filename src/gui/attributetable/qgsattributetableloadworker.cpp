@@ -59,10 +59,11 @@ void QgsAttributeTableLoadWorker::startJob()
     }
   }
   // Remaining features?
-  if ( i % 1000 )
+  if ( ! features.isEmpty() )
   {
     QgsDebugMsg( "QgsAttributeTableLoadWorker featuresReady (flush)" );
     emit featuresReady( features, i );
+    qApp->processEvents();
   }
   mIsRunning = false;
   QgsDebugMsg( "QgsAttributeTableLoadWorker finished!" );

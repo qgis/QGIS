@@ -888,10 +888,12 @@ void QgsAttributeTableDialog::loadProgress( int featuresLoaded, bool& cancel )
 {
   cancel = mLoadAborted;
   mLoadProgressBar->setValue( featuresLoaded );
+  updateTitle();
 }
 
 void QgsAttributeTableDialog::loadFinished()
 {
   mLoadProgressBar->hide();
   mLoadAbortButton->hide();
+  updateTitle();
 }

@@ -121,7 +121,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     void reload( const QModelIndex &index1, const QModelIndex &index2 );
 
     /**
-     * Remove rows
+     * Removes count rows starting with the given row under parent parent from the model.
      */
     bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
 
@@ -266,6 +266,11 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      */
     void loadStarted( long numFeatures );
 
+    /**
+     * @brief Called when the loading of features is stopped
+     */
+    void loadStopped( );
+
   private slots:
     /**
      * Launched whenever the number of fields has changed
@@ -323,6 +328,14 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      */
     virtual void layerDeleted();
 
+    /*
+    private slots:
+      //! set mLoadWorker pointer to 0
+      virtual void resetLoadWorkerThread();
+      //! set mLoadWorkerThread pointer to 0
+      virtual void resetLoadWorker();
+    */
+
   protected:
     QgsVectorLayerCache *mLayerCache;
     int mFieldCount;
@@ -333,10 +346,6 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     QVector<QgsEditorWidgetFactory*> mWidgetFactories;
     QVector<QVariant> mAttributeWidgetCaches;
     QVector<QgsEditorWidgetConfig> mWidgetConfigs;
-
-    QHash<QgsFeatureId, int> mIdRowMap;
-    QHash<int, QgsFeatureId> mRowIdMap;
-    mutable QHash<int, QList<QgsConditionalStyle> > mRowStylesMap;
 
     mutable QgsExpressionContext mExpressionContext;
 
@@ -367,6 +376,11 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     /** Allows caching of one specific column (used for sorting) */
     QHash<QgsFeatureId, QVariant> mFieldCache;
 
+    /** Indexes */
+    QHash<QgsFeatureId, int> mIdRowMap;
+    QHash<int, QgsFeatureId> mRowIdMap;
+    mutable QHash<int, QList<QgsConditionalStyle> > mRowStylesMap;
+
     /**
      * Holds the bounds of changed cells while an update operation is running
      * top    = min row
@@ -378,7 +392,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
 
     QgsAttributeEditorContext mEditorContext;
     QgsAttributeTableLoadWorker* mLoadWorker;
-    QThread* mLoadWorkerThread;
+    QThread mLoadWorkerThread;
 };
 
 

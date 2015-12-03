@@ -42,9 +42,10 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayerCache *layerCache,
     , mFieldCount( 0 )
     , mCachedField( -1 )
     , mLoadWorker( 0 )
-    , mLoadWorkerThread( 0 )
 {
   QgsDebugMsg( "entered." );
+
+  Q_ASSERT( qApp->thread() == QThread::currentThread() );
 
   mExpressionContext << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
@@ -78,18 +79,13 @@ QgsAttributeTableModel::~QgsAttributeTableModel()
 
 void QgsAttributeTableModel::loadWorkerStop()
 {
-  if ( mLoadWorker && mLoadWorker->isRunning() )
+  Q_ASSERT( qApp->thread() == QThread::currentThread() );
+  if ( mLoadWorker )
   {
-    mLoadWorker->stopJob();
-    if ( mLoadWorkerThread && mLoadWorkerThread->isRunning() )
-    {
-      qWarning( "mLoadWorkerThread deadlock detected, terminating: bad things may happen !!!" );
-      if ( !mLoadWorkerThread->wait( 1000 ) )
-      {
-        mLoadWorkerThread->terminate();
-        mLoadWorkerThread->wait();
-      }
-    }
+    emit loadStopped();
+    mLoadWorkerThread.quit();
+    mLoadWorkerThread.wait();
+    mLoadWorker = 0;
   }
 }
 
@@ -125,10 +121,10 @@ void QgsAttributeTableModel::featuresDeleted( const QgsFeatureIds& fids )
   int currentRowCount = 0;
   int removedRows = 0;
   bool reset = false;
-
   Q_FOREACH ( int row, rows )
   {
 #if 0
+
     qDebug() << "Row: " << row << ", begin " << beginRow << ", last " << lastRow << ", current " << currentRowCount << ", removed " << removedRows;
 #endif
     if ( lastRow == -1 )
@@ -158,7 +154,6 @@ void QgsAttributeTableModel::featuresDeleted( const QgsFeatureIds& fids )
     removeRows( beginRow - removedRows, currentRowCount );
   else
     resetModel();
-  Q_ASSERT( mRowIdMap.size() == mIdRowMap.size() );
 }
 
 bool QgsAttributeTableModel::removeRows( int row, int count, const QModelIndex &parent )
@@ -175,6 +170,7 @@ bool QgsAttributeTableModel::removeRows( int row, int count, const QModelIndex &
   // clean old references
   for ( int i = row; i < row + count; i++ )
   {
+    //QgsDebugMsg(QString("Cleaning row: %1").arg(i));
     mFieldCache.remove( mRowIdMap[i] );
     mIdRowMap.remove( mRowIdMap[i] );
     mRowIdMap.remove( i );
@@ -184,6 +180,7 @@ bool QgsAttributeTableModel::removeRows( int row, int count, const QModelIndex &
   int n = mRowIdMap.size() + count;
   for ( int i = row + count; i < n; i++ )
   {
+    //QgsDebugMsg(QString("Updating row: %1").arg(i));
     QgsFeatureId id = mRowIdMap[i];
     mIdRowMap[id] -= count;
     mRowIdMap[i-count] = id;
@@ -202,11 +199,11 @@ bool QgsAttributeTableModel::removeRows( int row, int count, const QModelIndex &
     for ( QHash<int, QgsFeatureId>::iterator it = mRowIdMap.begin(); it != mRowIdMap.end(); ++it )
       QgsDebugMsgLevel( QString( "%1->%2" ).arg( it.key() ).arg( FID_TO_STRING( *it ) ), 4 );
   }
+  QgsDebugMsg( QString( "mRowIdMap.size(%1) == mIdRowMap.size(%2)" ).arg( mRowIdMap.size() ).arg( mIdRowMap.size() ) );
 #endif
 
   endRemoveRows();
   Q_ASSERT( mRowIdMap.size() == mIdRowMap.size() );
-
   return true;
 }
 
@@ -372,14 +369,14 @@ void QgsAttributeTableModel::loadLayerFinished()
   QgsDebugMsg( "loadLayerFinished" );
   endResetModel();
   emit loadFinished();
-  Q_ASSERT( mRowIdMap.size() == mIdRowMap.size() );
 }
+
 
 
 void QgsAttributeTableModel::featuresReady( QgsFeatureList features, int loadedCount )
 {
   QgsDebugMsg( "featuresReady" );
-  Q_ASSERT( mRowIdMap.size() == mIdRowMap.size() );
+  Q_ASSERT( qApp->thread() == QThread::currentThread() );
   bool cancel = false;
   emit loadProgress( loadedCount, cancel );
   if ( cancel )
@@ -403,6 +400,10 @@ void QgsAttributeTableModel::featuresReady( QgsFeatureList features, int loadedC
       mRowIdMap.insert( n, fid );
       n++;
     }
+    else
+    {
+      qDebug() << "Skipping feature " << f.id();
+    }
   }
   endInsertRows();
   QgsDebugMsg( QString( "mRowIdMap.size(%1) == mIdRowMap.size(%2)" ).arg( mRowIdMap.size() ).arg( mIdRowMap.size() ) );
@@ -414,6 +415,7 @@ void QgsAttributeTableModel::featuresReady( QgsFeatureList features, int loadedC
 void QgsAttributeTableModel::loadLayer()
 {
   QgsDebugMsg( "entered." );
+  Q_ASSERT( qApp->thread() == QThread::currentThread() );
 
   // Stop old thread
   loadWorkerStop();
@@ -435,21 +437,22 @@ void QgsAttributeTableModel::loadLayer()
 
   // Set up the loader worker
   mLoadWorker = new QgsAttributeTableLoadWorker( features );
-  mLoadWorkerThread = new QThread;
-  mLoadWorker->moveToThread( mLoadWorkerThread );
+  mLoadWorker->moveToThread( &mLoadWorkerThread );
 
-  connect( mLoadWorkerThread, SIGNAL( started() ), mLoadWorker, SLOT( startJob() ) );
-  connect( mLoadWorker, SIGNAL( finished() ), mLoadWorkerThread, SLOT( quit() ) );
-  connect( mLoadWorker, SIGNAL( finished() ), mLoadWorker, SLOT( deleteLater() ) );
-  connect( mLoadWorkerThread, SIGNAL( finished() ), mLoadWorkerThread, SLOT( deleteLater() ) );
-  // Local
-  connect( mLoadWorker, SIGNAL( finished() ), this, SLOT( loadLayerFinished() ) );
+  connect( &mLoadWorkerThread, SIGNAL( started() ), mLoadWorker, SLOT( startJob() ) );
   qRegisterMetaType<QgsFeatureList>( "QgsFeatureList" );
   connect( mLoadWorker, SIGNAL( featuresReady( QgsFeatureList, int ) ), this, SLOT( featuresReady( QgsFeatureList, int ) ) );
 
+  connect( mLoadWorker, SIGNAL( finished() ), &mLoadWorkerThread, SLOT( quit() ) );
+  connect( this, SIGNAL( loadStopped() ), mLoadWorker, SLOT( stopJob() ) );
+
+  // Local
+  connect( mLoadWorker, SIGNAL( finished() ), this, SLOT( loadLayerFinished() ) );
+  connect( mLoadWorker, SIGNAL( finished() ), mLoadWorker, SLOT( deleteLater() ) );
+
   connect( mLayerCache, SIGNAL( invalidated() ), this, SLOT( loadLayer() ), Qt::UniqueConnection );
 
-  mLoadWorkerThread->start();
+  mLoadWorkerThread.start();
 
   // Pass the total number of features as a maximum for the progress bar
   emit loadStarted( mLayerCache->layer()->featureCount() );
@@ -502,9 +505,13 @@ int QgsAttributeTableModel::idToRow( QgsFeatureId id ) const
   if ( !mIdRowMap.contains( id ) )
   {
     QgsDebugMsg( QString( "idToRow: id %1 not in the map" ).arg( id ) );
+    QgsDebugMsg( "mIdRowMap:" );
+    Q_FOREACH ( int row, mIdRowMap )
+    {
+      QgsDebugMsg( QString( "\t%1 -> %2" ).arg( row ).arg( mIdRowMap[row] ) );
+    }
     return -1;
   }
-
   return mIdRowMap[id];
 }
 
