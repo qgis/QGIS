@@ -13,6 +13,7 @@ SET(ORACLE_SRCS
   qgsoracletablemodel.cpp
   qgsoraclecolumntypethread.cpp
   qgsoraclefeatureiterator.cpp
+  qgsoracleconnpool.cpp
 )
 
 SET(ORACLE_MOC_HDRS
@@ -23,6 +24,7 @@ SET(ORACLE_MOC_HDRS
   qgsoraclenewconnection.h
   qgsoracletablemodel.h
   qgsoraclecolumntypethread.h
+  qgsoracleconnpool.h
 )
 
 

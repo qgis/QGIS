@@ -23,6 +23,7 @@
 #include "qgscontexthelp.h"
 #include "qgsdatasourceuri.h"
 #include "qgsoracletablemodel.h"
+#include "qgsoracleconnpool.h"
 
 QgsOracleNewConnection::QgsOracleNewConnection( QWidget *parent, const QString& connName, Qt::WindowFlags fl )
     : QDialog( parent, fl ), mOriginalConnName( connName )
@@ -138,7 +139,7 @@ void QgsOracleNewConnection::on_btnConnect_clicked()
   if ( !txtOptions->text().isEmpty() )
     uri.setParam( "dboptions", txtOptions->text() );
 
-  QgsOracleConn *conn = QgsOracleConn::connectDb( uri );
+  QgsOracleConn *conn = QgsOracleConnPool::instance()->acquireConnection( uri.connectionInfo() );
 
   if ( conn )
   {
@@ -148,7 +149,7 @@ void QgsOracleNewConnection::on_btnConnect_clicked()
                               tr( "Connection to %1 was successful" ).arg( txtDatabase->text() ) );
 
     // free connection resources
-    conn->disconnect();
+    QgsOracleConnPool::instance()->releaseConnection( conn );
   }
   else
   {

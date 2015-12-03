@@ -439,7 +439,6 @@ QgsOracleSourceSelect::~QgsOracleSourceSelect()
   if ( mColumnTypeThread )
   {
     mColumnTypeThread->stop();
-    mColumnTypeThread->wait();
     finishList();
   }
 

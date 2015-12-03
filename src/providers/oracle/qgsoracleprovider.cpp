@@ -33,6 +33,7 @@
 #include "qgsoraclesourceselect.h"
 #include "qgsoracledataitems.h"
 #include "qgsoraclefeatureiterator.h"
+#include "qgsoracleconnpool.h"
 
 #include <QSqlRecord>
 #include <QSqlField>
@@ -69,7 +70,7 @@ QgsOracleProvider::QgsOracleProvider( QString const & uri )
   mRequestedGeomType = mUri.wkbType();
   mUseEstimatedMetadata = mUri.useEstimatedMetadata();
 
-  mConnection = QgsOracleConn::connectDb( mUri );
+  mConnection = QgsOracleConnPool::instance()->acquireConnection( mUri.connectionInfo() );
   if ( !mConnection )
   {
     return;
@@ -210,7 +211,7 @@ QgsAbstractFeatureSource *QgsOracleProvider::featureSource() const
 void QgsOracleProvider::disconnectDb()
 {
   if ( mConnection )
-    mConnection->disconnect();
+    QgsOracleConnPool::instance()->releaseConnection( mConnection );
   mConnection = 0;
 }
 
@@ -2973,7 +2974,6 @@ QGISEXTERN bool deleteLayer( const QString& uri, QString& errCause )
   if ( !conn )
   {
     errCause = QObject::tr( "Connection to database failed" );
-    conn->disconnect();
     return false;
   }
 

@@ -274,7 +274,7 @@ void _testTableCache()
   // fetch
 
   QgsDataSourceURI uri = QgsOracleConn::connUri( connName );
-  QgsOracleConn* c = QgsOracleConn::connectDb( uri.connectionInfo() );
+  QgsOracleConn* c = QgsOracleConnectionPool::instance()->acquireConnection( uri.connectionInfo() );
   if ( !c )
     return;
 
@@ -289,7 +289,7 @@ void _testTableCache()
     c->retrieveLayerTypes( layerProperty, useEstimated, onlyExisting );
   }
 
-  c->disconnect();
+  QgsOracleConnPool::instance()->releaseConnection( c );
 
   // save
 

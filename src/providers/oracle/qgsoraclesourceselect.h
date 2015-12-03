@@ -22,6 +22,7 @@
 #include "qgsdbfilterproxymodel.h"
 #include "qgsoracletablemodel.h"
 #include "qgscontexthelp.h"
+#include "qgsoracleconnpool.h"
 
 #include <QMap>
 #include <QPair>
@@ -56,7 +57,7 @@ class QgsOracleSourceSelectDelegate : public QItemDelegate
     void setConnectionInfo( const QgsDataSourceURI& connInfo ) { mConnInfo = connInfo; }
 
   protected:
-    void setConn( QgsOracleConn *conn ) const { if ( mConn ) mConn->disconnect();  mConn = conn; }
+    void setConn( QgsOracleConn *conn ) const { if ( mConn ) QgsOracleConnPool::instance()->releaseConnection( mConn ); mConn = conn; }
 
     QgsOracleConn* conn() const
     {

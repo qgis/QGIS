@@ -15,6 +15,7 @@
 
 #include "qgsoraclefeatureiterator.h"
 #include "qgsoracleprovider.h"
+#include "qgsoracleconnpool.h"
 
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
@@ -26,7 +27,7 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource* sour
     : QgsAbstractFeatureIteratorFromSource<QgsOracleFeatureSource>( source, ownSource, request )
     , mRewind( false )
 {
-  mConnection = QgsOracleConn::connectDb( mSource->mUri.connectionInfo() );
+  mConnection = QgsOracleConnPool::instance()->acquireConnection( mSource->mUri.connectionInfo() );
   if ( !mConnection )
   {
     close();
@@ -269,7 +270,7 @@ bool QgsOracleFeatureIterator::close()
     mQry.finish();
 
   if ( mConnection )
-    mConnection->disconnect();
+    QgsOracleConnPool::instance()->releaseConnection( mConnection );
   mConnection = 0;
 
   iteratorClosed();
