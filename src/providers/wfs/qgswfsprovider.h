@@ -203,6 +203,7 @@ class QgsWFSProvider : public QgsVectorDataProvider
     /** Source CRS*/
     QgsCoordinateReferenceSystem mSourceCRS;
     int mFeatureCount;
+    int mMaxFeatureCount;
     /** Flag if provider is valid*/
     bool mValid;
     bool mCached;
