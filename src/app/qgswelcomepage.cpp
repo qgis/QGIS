@@ -38,7 +38,7 @@ QgsWelcomePage::QgsWelcomePage( QWidget* parent )
 
   QWidget* recentProjctsContainer = new QWidget;
   recentProjctsContainer->setLayout( new QVBoxLayout );
-  recentProjctsContainer->layout()->setContentsMargins( 3, 3, 3, 3 );
+  recentProjctsContainer->layout()->setContentsMargins( 3, 3, 3, 0 );
   QLabel* recentProjectsTitle = new QLabel( QString( "<h1>%1</h1>" ).arg( tr( "Recent Projects" ) ) );
   recentProjctsContainer->layout()->addWidget( recentProjectsTitle );
 
