@@ -136,6 +136,8 @@ class TestQgsTextEditWidget(TestCase):
         # This is actually more checking that the database on delete action is properly set on the relation
         self.assertEquals(0, len([f for f in self.vl_link.getFeatures()]))
 
+        self.assertEquals(self.table_view.model().rowCount(), 0)
+
     def test_list(self):
         """
         Simple check if several related items are shown
@@ -161,6 +163,8 @@ class TestQgsTextEditWidget(TestCase):
 
         # Link entry has been created
         self.assertEquals(5, len([f for f in self.vl_link.getFeatures()]))
+
+        self.assertEquals(self.table_view.model().rowCount(), 1)
 
     def test_link_feature(self):
         """
@@ -190,6 +194,8 @@ class TestQgsTextEditWidget(TestCase):
 
         link_feature = self.vl_link.getFeatures(QgsFeatureRequest().setFilterExpression('"fk_book"={}'.format(f[0]))).next()
         self.assertIsNotNone(link_feature[0])
+
+        self.assertEquals(self.table_view.model().rowCount(), 1)
 
     def test_unlink_feature(self):
         """
