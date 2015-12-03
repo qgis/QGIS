@@ -2998,7 +2998,7 @@ void QgsComposer::on_mActionSaveAsTemplate_triggered()
 {
   //show file dialog
   QSettings settings;
-  QString lastSaveDir = settings.value( "UI/lastComposerTemplateDir", "" ).toString();
+  QString lastSaveDir = settings.value( "UI/lastComposerTemplateDir", QDir::homePath() ).toString();
 #ifdef Q_OS_MAC
   mQgis->activateWindow();
   this->raise();

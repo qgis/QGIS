@@ -82,7 +82,7 @@ void QgsTINInterpolatorDialog::on_mTriangulationFileButton_clicked()
 {
   QSettings s;
   //read last triangulation directory
-  QString lastTriangulationDir = s.value( "/Interpolation/lastTriangulationDir", "" ).toString();
+  QString lastTriangulationDir = s.value( "/Interpolation/lastTriangulationDir", QDir::homePath() ).toString();
   QString filename = QFileDialog::getSaveFileName( 0, tr( "Save triangulation to file" ), lastTriangulationDir, "*shp" );
   if ( !filename.isEmpty() )
   {
