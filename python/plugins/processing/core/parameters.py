@@ -223,9 +223,9 @@ class ParameterFile(Parameter):
         self.value = unicode(obj)
 
         if self.value.strip() == '' or self.value == 'None':
-            self.value = ''
             if not self.optional:
                 return False
+            self.value = ''
         if self.ext is not None and self.value != '':
             return self.value.endswith(self.ext)
         return True

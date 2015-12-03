@@ -158,16 +158,17 @@ class ParameterFileTest(unittest.TestCase):
         self.assertTrue(parameter.setValue(None))
         self.assertEquals(parameter.value, '')
 
-    def testSetValidValueWhenRequired(self):
+    def testSetValueWhenRequired(self):
         parameter = ParameterFile('myName', 'myDesc', isFolder=False, optional=False)
         self.assertTrue(parameter.setValue('myFile.png'))
         self.assertEquals(parameter.value, 'myFile.png')
 
-        self.assertFalse(parameter.setValue(""))
+        self.assertFalse(parameter.setValue(''))
         self.assertEquals(parameter.value, '')
 
+        self.assertTrue(parameter.setValue('myFile.png'))
         self.assertFalse(parameter.setValue(None))
-        self.assertEquals(parameter.value, '')
+        self.assertEquals(parameter.value, 'myFile.png')
 
     def testSetValueWithExtension(self):
         parameter = ParameterFile('myName', 'myDesc', isFolder=False, optional=True, ext="png")
