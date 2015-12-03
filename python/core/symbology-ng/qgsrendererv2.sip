@@ -103,7 +103,18 @@ class QgsFeatureRendererV2
 
     virtual void stopRender( QgsRenderContext& context ) = 0;
 
-    virtual QString filter();
+    /**
+     * If a renderer does not require all the features this method may be overridden
+     * and return an expression used as where clause.
+     * This will be called once after {@link startRender()} and before the first call
+     * to {@link renderFeature()}.
+     * By default this returns a null string and all features will be requested.
+     * You do not need to specify the extent in here, this is taken care of separately and
+     * will be combined with a filter returned from this method.
+     *
+     * @return An expression used as where clause
+     */
+    virtual QString filter( const QgsFields& fields = QgsFields() );
 
     virtual QList<QString> usedAttributes() = 0;
 
