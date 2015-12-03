@@ -24,20 +24,6 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <item>
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>Layer name</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="mNameLineEdit"/>
-     </item>
-    </layout>
-   </item>
-   <item>
     <widget class="QGroupBox" name="buttonGroup1">
      <property name="title">
       <string>Type</string>
@@ -87,6 +73,20 @@
       </item>
      </layout>
     </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Layer name</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="mNameLineEdit"/>
+     </item>
+    </layout>
    </item>
    <item>
     <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
