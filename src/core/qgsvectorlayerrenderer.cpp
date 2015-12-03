@@ -145,7 +145,7 @@ bool QgsVectorLayerRenderer::render()
 
   mRendererV2->startRender( mContext, mFields );
 
-  QString rendererFilter = mRendererV2->filter();
+  QString rendererFilter = mRendererV2->filter( mFields );
 
   QgsRectangle requestExtent = mContext.extent();
   mRendererV2->modifyRequestExtent( requestExtent, mContext );

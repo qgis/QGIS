@@ -97,6 +97,8 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
     //! returns bitwise OR-ed capabilities of the renderer
     virtual int capabilities() override { return SymbolLevels | RotationField | Filter; }
 
+    virtual QString filter( const QgsFields& fields = QgsFields() ) override;
+
     //! @note available in python as symbols2
     virtual QgsSymbolV2List symbols( QgsRenderContext& context ) override;
     void updateSymbols( QgsSymbolV2 * sym );

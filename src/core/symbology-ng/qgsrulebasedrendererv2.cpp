@@ -895,7 +895,7 @@ void QgsRuleBasedRendererV2::stopRender( QgsRenderContext& context )
   mRootRule->stopRender( context );
 }
 
-QString QgsRuleBasedRendererV2::filter()
+QString QgsRuleBasedRendererV2::filter( const QgsFields& )
 {
   return mFilter;
 }

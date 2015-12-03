@@ -519,6 +519,75 @@ void QgsCategorizedSymbolRendererV2::toSld( QDomDocument &doc, QDomElement &elem
   }
 }
 
+QString QgsCategorizedSymbolRendererV2::filter( const QgsFields& fields )
+{
+  int attrNum = fields.fieldNameIndex( mAttrName );
+  bool isExpression = ( attrNum == -1 );
+
+  bool hasDefault = false;
+  bool defaultActive = false;
+  bool allActive = true;
+  bool noneActive = true;
+
+  //we need to build lists of both inactive and active values, as either list may be required
+  //depending on whether the default category is active or not
+  QString activeValues;
+  QString inactiveValues;
+
+  Q_FOREACH ( const QgsRendererCategoryV2& cat, mCategories )
+  {
+    if ( cat.value() == "" )
+    {
+      hasDefault = true;
+      defaultActive = cat.renderState();
+    }
+
+    noneActive = noneActive && !cat.renderState();
+    allActive = allActive && cat.renderState();
+
+    QVariant::Type valType = isExpression ? cat.value().type() : fields.at( attrNum ).type();
+    QString value = QgsExpression::quotedValue( cat.value(), valType );
+
+    if ( !cat.renderState() )
+    {
+      if ( cat.value() != "" )
+      {
+        if ( !inactiveValues.isEmpty() )
+          inactiveValues.append( ',' );
+
+        inactiveValues.append( value );
+      }
+    }
+    else
+    {
+      if ( cat.value() != "" )
+      {
+        if ( !activeValues.isEmpty() )
+          activeValues.append( ',' );
+
+        activeValues.append( value );
+      }
+    }
+  }
+
+  if ( allActive && hasDefault )
+  {
+    return QString();
+  }
+  else if ( noneActive )
+  {
+    return "FALSE";
+  }
+  else if ( defaultActive )
+  {
+    return QString( "(%1) NOT IN (%2)" ).arg( mAttrName, inactiveValues );
+  }
+  else
+  {
+    return QString( "(%1) IN (%2)" ).arg( mAttrName, activeValues );
+  }
+}
+
 QgsSymbolV2List QgsCategorizedSymbolRendererV2::symbols( QgsRenderContext &context )
 {
   Q_UNUSED( context );
