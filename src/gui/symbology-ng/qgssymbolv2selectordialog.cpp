@@ -337,6 +337,7 @@ void QgsSymbolV2SelectorDialog::loadSymbol( QgsSymbolV2* symbol, SymbolLayerItem
     {
       loadSymbol( symbol->symbolLayer( i )->subSymbol(), layerItem );
     }
+    layersTree->setExpanded( layerItem->index(), true );
   }
   layersTree->setExpanded( symbolItem->index(), true );
 }
