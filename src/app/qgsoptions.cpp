@@ -230,7 +230,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   }
 
   //local directories to search when looking for an SVG with a given basename
-  myPaths = settings.value( "svg/searchPathsForSVG", "" ).toString();
+  myPaths = settings.value( "svg/searchPathsForSVG", QDir::homePath() ).toString();
   if ( !myPaths.isEmpty() )
   {
     QStringList myPathList = myPaths.split( '|' );

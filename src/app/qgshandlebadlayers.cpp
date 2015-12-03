@@ -291,7 +291,7 @@ void QgsHandleBadLayers::browseClicked()
     QString title = tr( "Select new directory of selected files" );
 
     QSettings settings;
-    QString lastDir = settings.value( "/UI/missingDirectory", "" ).toString();
+    QString lastDir = settings.value( "/UI/missingDirectory", QDir::homePath() ).toString();
     QString selectedFolder = QFileDialog::getExistingDirectory( this, title, lastDir );
     if ( selectedFolder.isEmpty() )
     {

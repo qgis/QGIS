@@ -33,7 +33,7 @@ namespace QgisGui
 
     QSettings settings;
     QString lastUsedFilter = settings.value( "/UI/" + filterName, "" ).toString();
-    QString lastUsedDir = settings.value( "/UI/" + filterName + "Dir", "." ).toString();
+    QString lastUsedDir = settings.value( "/UI/" + filterName + "Dir", QDir::homePath() ).toString();
 
     QgsDebugMsg( "Opening file dialog with filters: " + filters );
     if ( !cancelAll )
