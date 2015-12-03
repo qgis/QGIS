@@ -95,6 +95,7 @@ QgsRuleBasedRendererV2Widget::QgsRuleBasedRendererV2Widget( QgsVectorLayer* laye
   connect( viewRules, SIGNAL( customContextMenuRequested( const QPoint& ) ),  this, SLOT( contextMenuViewCategories( const QPoint& ) ) );
 
   connect( viewRules->selectionModel(), SIGNAL( currentChanged( QModelIndex, QModelIndex ) ), this, SLOT( currentRuleChanged( QModelIndex, QModelIndex ) ) );
+  connect( viewRules->selectionModel(), SIGNAL( selectionChanged( QItemSelection, QItemSelection ) ), this, SLOT( selectedRulesChanged() ) );
 
   connect( btnAddRule, SIGNAL( clicked() ), this, SLOT( addRule() ) );
   connect( btnEditRule, SIGNAL( clicked() ), this, SLOT( editRule() ) );
@@ -105,6 +106,7 @@ QgsRuleBasedRendererV2Widget::QgsRuleBasedRendererV2Widget( QgsVectorLayer* laye
   connect( btnRenderingOrder, SIGNAL( clicked() ), this, SLOT( setRenderingOrder() ) );
 
   currentRuleChanged();
+  selectedRulesChanged();
 
   // store/restore header section widths
   connect( viewRules->header(), SIGNAL( sectionResized( int, int, int ) ), this, SLOT( saveSectionWidth( int, int, int ) ) );
@@ -200,7 +202,7 @@ void QgsRuleBasedRendererV2Widget::removeRule()
 void QgsRuleBasedRendererV2Widget::currentRuleChanged( const QModelIndex& current, const QModelIndex& previous )
 {
   Q_UNUSED( previous );
-  btnRefineRule->setEnabled( current.isValid() );
+  btnEditRule->setEnabled( current.isValid() );
 }
 
 
@@ -576,6 +578,13 @@ void QgsRuleBasedRendererV2Widget::countFeatures()
 #endif
 
   mModel->setFeatureCounts( countMap );
+}
+
+void QgsRuleBasedRendererV2Widget::selectedRulesChanged()
+{
+  bool enabled = !viewRules->selectionModel()->selectedIndexes().isEmpty();
+  btnRefineRule->setEnabled( enabled );
+  btnRemoveRule->setEnabled( enabled );
 }
 
 ///////////
