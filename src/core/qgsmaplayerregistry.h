@@ -129,7 +129,7 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
      * The layers being removed are deleted as well as the registry
      * table entries.
      *
-     * @param layers  The layers to remove
+     * @param layers  The layers to remove. Null pointers are ignored
      *
      * @note As a side-effect QgsProject is made dirty.
      */
@@ -159,7 +159,7 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
      * The layer being removed is deleted as well as the registry
      * table entry.
      *
-     * @param layer   The layer to remove
+     * @param layer   The layer to remove. Nothing happens if the pointer is null
      *
      * @note As a side-effect QgsProject is made dirty.
      */

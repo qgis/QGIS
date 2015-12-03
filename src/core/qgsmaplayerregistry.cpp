@@ -131,7 +131,8 @@ void QgsMapLayerRegistry::removeMapLayers( const QList<QgsMapLayer*>& layers )
 
   Q_FOREACH ( QgsMapLayer* layer, layers )
   {
-    layerIds << layer->id();
+    if ( layer )
+      layerIds << layer->id();
   }
 
   emit layersWillBeRemoved( layerIds );
@@ -139,6 +140,9 @@ void QgsMapLayerRegistry::removeMapLayers( const QList<QgsMapLayer*>& layers )
 
   Q_FOREACH ( QgsMapLayer* lyr, layers )
   {
+    if ( !lyr )
+      continue;
+
     QString myId( lyr->id() );
     if ( mOwnedLayers.contains( lyr ) )
     {
