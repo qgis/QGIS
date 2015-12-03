@@ -56,7 +56,11 @@ sudo apt-get install --force-yes --no-install-recommends --no-install-suggests \
         xfonts-base \
         xfonts-scalable \
         xvfb \
+        python-pip \
+        flip \
         postgresql-9.1-postgis-2.1/precise # from ubuntugis-unstable, not pgdg
+
+sudo -H pip install autopep8 # TODO when switching to trusty or above: replace python-pip with python-autopep8
 
 #update clang
 sudo apt-get install --force-yes llvm-3.7 llvm-3.7-dev clang-3.7 libstdc++-4.9-dev

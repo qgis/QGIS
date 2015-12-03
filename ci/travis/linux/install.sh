@@ -10,6 +10,7 @@ cmake -DWITH_SERVER=ON \
       -DENABLE_PGTEST=ON \
       -DWITH_QWTPOLAR=OFF \
       -DWITH_APIDOC=ON \
+      -DWITH_ASTYLE=ON \
       -DWITH_PYSPATIALITE=ON \
       -DGRASS_PREFIX7=/usr/lib/grass70 \
       -DGRASS_INCLUDE_DIR7=/usr/lib/grass70/include ..
