@@ -157,7 +157,7 @@ void QgsRasterLayerSaveAsDialog::on_mBrowseButton_clicked()
   QString fileName;
 
   QSettings settings;
-  QString dirName = mSaveAsLineEdit->text().isEmpty() ? settings.value( "/UI/lastRasterFileDir", "." ).toString() : mSaveAsLineEdit->text();
+  QString dirName = mSaveAsLineEdit->text().isEmpty() ? settings.value( "/UI/lastRasterFileDir", QDir::homePath() ).toString() : mSaveAsLineEdit->text();
 
   if ( mTileModeCheckBox->isChecked() )
   {

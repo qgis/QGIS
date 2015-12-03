@@ -1655,7 +1655,7 @@ void QgsComposer::exportCompositionAsPDF( QgsComposer::OutputMode mode )
     }
 
     QSettings myQSettings;
-    QString lastUsedDir = myQSettings.value( "/UI/lastSaveAtlasAsPdfDir", "." ).toString();
+    QString lastUsedDir = myQSettings.value( "/UI/lastSaveAtlasAsPdfDir", QDir::homePath() ).toString();
     outputDir = QFileDialog::getExistingDirectory( this,
                 tr( "Export atlas to directory" ),
                 lastUsedDir,
@@ -1995,7 +1995,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
 
     if ( atlasMap->enabled() && mComposition->atlasMode() == QgsComposition::PreviewAtlas )
     {
-      QString lastUsedDir = settings.value( "/UI/lastSaveAsImageDir", "." ).toString();
+      QString lastUsedDir = settings.value( "/UI/lastSaveAsImageDir", QDir::homePath() ).toString();
       outputFileName = QDir( lastUsedDir ).filePath( atlasMap->currentFilename() );
     }
 
@@ -2141,7 +2141,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
     }
 
     QSettings myQSettings;
-    QString lastUsedDir = myQSettings.value( "/UI/lastSaveAtlasAsImagesDir", "." ).toString();
+    QString lastUsedDir = myQSettings.value( "/UI/lastSaveAtlasAsImagesDir", QDir::homePath() ).toString();
     QString lastUsedFormat = myQSettings.value( "/UI/lastSaveAtlasAsImagesFormat", "jpg" ).toString();
 
     QFileDialog dlg( this, tr( "Export atlas to directory" ) );
@@ -2498,7 +2498,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
     }
 
     QSettings myQSettings;
-    QString lastUsedDir = myQSettings.value( "/UI/lastSaveAtlasAsSvgDir", "." ).toString();
+    QString lastUsedDir = myQSettings.value( "/UI/lastSaveAtlasAsSvgDir", QDir::homePath() ).toString();
 
     // open file dialog
     outputDir = QFileDialog::getExistingDirectory( this,

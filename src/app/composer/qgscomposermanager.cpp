@@ -324,7 +324,7 @@ void QgsComposerManager::on_mTemplate_currentIndexChanged( int indx )
 void QgsComposerManager::on_mTemplatePathBtn_pressed()
 {
   QSettings settings;
-  QString lastTmplDir = settings.value( "/UI/lastComposerTemplateDir", "." ).toString();
+  QString lastTmplDir = settings.value( "/UI/lastComposerTemplateDir", QDir::homePath() ).toString();
   QString tmplPath = QFileDialog::getOpenFileName( this,
                      tr( "Choose template" ),
                      lastTmplDir,

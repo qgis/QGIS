@@ -269,7 +269,7 @@ bool QgsSpatiaLiteSourceSelect::newConnection( QWidget* parent )
 {
   // Retrieve last used project dir from persistent settings
   QSettings settings;
-  QString lastUsedDir = settings.value( "/UI/lastSpatiaLiteDir", "." ).toString();
+  QString lastUsedDir = settings.value( "/UI/lastSpatiaLiteDir", QDir::homePath() ).toString();
 
   QString myFile = QFileDialog::getOpenFileName( parent,
                    tr( "Choose a SpatiaLite/SQLite DB to open" ),

@@ -291,7 +291,7 @@ void QgsVectorLayerSaveAsDialog::on_leFilename_textChanged( const QString& text 
 void QgsVectorLayerSaveAsDialog::on_browseFilename_clicked()
 {
   QSettings settings;
-  QString dirName = leFilename->text().isEmpty() ? settings.value( "/UI/lastVectorFileFilterDir", "." ).toString() : leFilename->text();
+  QString dirName = leFilename->text().isEmpty() ? settings.value( "/UI/lastVectorFileFilterDir", QDir::homePath() ).toString() : leFilename->text();
   QString filterString = QgsVectorFileWriter::filterForDriver( format() );
   QString outputFile = QFileDialog::getSaveFileName( 0, tr( "Save layer as..." ), dirName, filterString );
   if ( !outputFile.isNull() )

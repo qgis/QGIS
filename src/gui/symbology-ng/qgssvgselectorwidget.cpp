@@ -255,7 +255,7 @@ void QgsSvgSelectorWidget::populateIcons( const QModelIndex& idx )
 void QgsSvgSelectorWidget::on_mFilePushButton_clicked()
 {
   QSettings settings;
-  QString openDir = settings.value( "/UI/lastSVGMarkerDir", "." ).toString();
+  QString openDir = settings.value( "/UI/lastSVGMarkerDir", QDir::homePath() ).toString();
 
   QString lineEditText = mFileLineEdit->text();
   if ( !lineEditText.isEmpty() )

@@ -2895,7 +2895,7 @@ void QgsRasterFillSymbolLayerWidget::on_mBrowseToolButton_clicked()
 
   if ( openDir.isEmpty() )
   {
-    openDir = s.value( "/UI/lastRasterFillImageDir", "" ).toString();
+    openDir = s.value( "/UI/lastRasterFillImageDir", QDir::homePath() ).toString();
   }
 
   //show file dialog

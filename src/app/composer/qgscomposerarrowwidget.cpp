@@ -261,7 +261,7 @@ void QgsComposerArrowWidget::on_mStartMarkerToolButton_clicked()
 
   if ( openDir.isEmpty() )
   {
-    openDir = s.value( "/UI/lastComposerMarkerDir", "" ).toString();
+    openDir = s.value( "/UI/lastComposerMarkerDir", QDir::homePath() ).toString();
   }
 
   QString svgFileName = QFileDialog::getOpenFileName( this, tr( "Start marker svg file" ), openDir );
@@ -288,7 +288,7 @@ void QgsComposerArrowWidget::on_mEndMarkerToolButton_clicked()
 
   if ( openDir.isEmpty() )
   {
-    openDir = s.value( "/UI/lastComposerMarkerDir", "" ).toString();
+    openDir = s.value( "/UI/lastComposerMarkerDir", QDir::homePath() ).toString();
   }
 
   QString svgFileName = QFileDialog::getOpenFileName( this, tr( "End marker svg file" ), openDir );

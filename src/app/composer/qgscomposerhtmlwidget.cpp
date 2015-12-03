@@ -133,7 +133,7 @@ void QgsComposerHtmlWidget::on_mUrlLineEdit_editingFinished()
 void QgsComposerHtmlWidget::on_mFileToolButton_clicked()
 {
   QSettings s;
-  QString lastDir = s.value( "/UI/lastHtmlDir", "" ).toString();
+  QString lastDir = s.value( "/UI/lastHtmlDir", QDir::homePath() ).toString();
   QString file = QFileDialog::getOpenFileName( this, tr( "Select HTML document" ), lastDir, "HTML (*.html *.htm);;All files (*.*)" );
   if ( !file.isEmpty() )
   {

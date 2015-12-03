@@ -105,7 +105,7 @@ namespace QgisGui
 #endif
 
     QSettings settings;  // where we keep last used filter in persistent state
-    QString lastUsedDir = settings.value( "/UI/lastSaveAsImageDir", "." ).toString();
+    QString lastUsedDir = settings.value( "/UI/lastSaveAsImageDir", QDir::homePath() ).toString();
 
     // Prefer "png" format unless the user previously chose a different format
     QString pngExtension = "png";

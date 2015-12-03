@@ -86,7 +86,7 @@ void QgsComposerPictureWidget::on_mPictureBrowseButton_clicked()
 
   if ( openDir.isEmpty() )
   {
-    openDir = s.value( "/UI/lastComposerPictureDir", "" ).toString();
+    openDir = s.value( "/UI/lastComposerPictureDir", QDir::homePath() ).toString();
   }
 
   //show file dialog

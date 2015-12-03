@@ -379,7 +379,7 @@ void QgsColorDialogV2::on_mButtonBox_clicked( QAbstractButton * button )
 void QgsColorDialogV2::importColors()
 {
   QSettings s;
-  QString lastDir = s.value( "/UI/lastGplPaletteDir", "" ).toString();
+  QString lastDir = s.value( "/UI/lastGplPaletteDir", QDir::homePath() ).toString();
   QString filePath = QFileDialog::getOpenFileName( this, tr( "Select palette file" ), lastDir, "GPL (*.gpl);;All files (*.*)" );
   activateWindow();
   if ( filePath.isEmpty() )
@@ -421,7 +421,7 @@ void QgsColorDialogV2::refreshSchemeComboBox()
 void QgsColorDialogV2::importPalette()
 {
   QSettings s;
-  QString lastDir = s.value( "/UI/lastGplPaletteDir", "" ).toString();
+  QString lastDir = s.value( "/UI/lastGplPaletteDir", QDir::homePath() ).toString();
   QString filePath = QFileDialog::getOpenFileName( this, tr( "Select palette file" ), lastDir, "GPL (*.gpl);;All files (*.*)" );
   activateWindow();
   if ( filePath.isEmpty() )
@@ -563,7 +563,7 @@ QString QgsColorDialogV2::gplFilePath()
 void QgsColorDialogV2::exportColors()
 {
   QSettings s;
-  QString lastDir = s.value( "/UI/lastGplPaletteDir", "" ).toString();
+  QString lastDir = s.value( "/UI/lastGplPaletteDir", QDir::homePath() ).toString();
   QString fileName = QFileDialog::getSaveFileName( this, tr( "Palette file" ), lastDir, "GPL (*.gpl)" );
   activateWindow();
   if ( fileName.isEmpty() )

@@ -1769,7 +1769,7 @@ void QgsProjectProperties::on_mButtonAddColor_clicked()
 void QgsProjectProperties::on_mButtonImportColors_clicked()
 {
   QSettings s;
-  QString lastDir = s.value( "/UI/lastGplPaletteDir", "" ).toString();
+  QString lastDir = s.value( "/UI/lastGplPaletteDir", QDir::homePath() ).toString();
   QString filePath = QFileDialog::getOpenFileName( this, tr( "Select palette file" ), lastDir, "GPL (*.gpl);;All files (*.*)" );
   activateWindow();
   if ( filePath.isEmpty() )
@@ -1798,7 +1798,7 @@ void QgsProjectProperties::on_mButtonImportColors_clicked()
 void QgsProjectProperties::on_mButtonExportColors_clicked()
 {
   QSettings s;
-  QString lastDir = s.value( "/UI/lastGplPaletteDir", "" ).toString();
+  QString lastDir = s.value( "/UI/lastGplPaletteDir", QDir::homePath() ).toString();
   QString fileName = QFileDialog::getSaveFileName( this, tr( "Palette file" ), lastDir, "GPL (*.gpl)" );
   activateWindow();
   if ( fileName.isEmpty() )

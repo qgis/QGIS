@@ -968,7 +968,7 @@ void QgsOptions::on_mProjectOnLaunchPushBtn_pressed()
 {
   // Retrieve last used project dir from persistent settings
   QSettings settings;
-  QString lastUsedDir = settings.value( "/UI/lastProjectDir", "." ).toString();
+  QString lastUsedDir = settings.value( "/UI/lastProjectDir", QDir::homePath() ).toString();
   QString projPath = QFileDialog::getOpenFileName( this,
                      tr( "Choose project file to open at launch" ),
                      lastUsedDir,
@@ -2078,7 +2078,7 @@ void QgsOptions::on_mButtonAddColor_clicked()
 void QgsOptions::on_mButtonImportColors_clicked()
 {
   QSettings s;
-  QString lastDir = s.value( "/UI/lastGplPaletteDir", "" ).toString();
+  QString lastDir = s.value( "/UI/lastGplPaletteDir", QDir::homePath() ).toString();
   QString filePath = QFileDialog::getOpenFileName( this, tr( "Select palette file" ), lastDir, "GPL (*.gpl);;All files (*.*)" );
   activateWindow();
   if ( filePath.isEmpty() )
@@ -2107,7 +2107,7 @@ void QgsOptions::on_mButtonImportColors_clicked()
 void QgsOptions::on_mButtonExportColors_clicked()
 {
   QSettings s;
-  QString lastDir = s.value( "/UI/lastGplPaletteDir", "" ).toString();
+  QString lastDir = s.value( "/UI/lastGplPaletteDir", QDir::homePath() ).toString();
   QString fileName = QFileDialog::getSaveFileName( this, tr( "Palette file" ), lastDir, "GPL (*.gpl)" );
   activateWindow();
   if ( fileName.isEmpty() )

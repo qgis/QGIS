@@ -244,7 +244,7 @@ QString QgsNewVectorLayerDialog::runAndCreateLayer( QWidget* parent, QString* pE
   geomDialog.attributes( attributes );
 
   QSettings settings;
-  QString lastUsedDir = settings.value( "/UI/lastVectorFileFilterDir", "." ).toString();
+  QString lastUsedDir = settings.value( "/UI/lastVectorFileFilterDir", QDir::homePath() ).toString();
   QString filterString = QgsVectorFileWriter::filterForDriver( fileformat );
   QString fileName = QFileDialog::getSaveFileName( 0, tr( "Save layer as..." ), lastUsedDir, filterString );
   if ( fileName.isNull() )

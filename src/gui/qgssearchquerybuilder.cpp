@@ -365,7 +365,7 @@ void QgsSearchQueryBuilder::on_btnILike_clicked()
 void QgsSearchQueryBuilder::saveQuery()
 {
   QSettings s;
-  QString lastQueryFileDir = s.value( "/UI/lastQueryFileDir", "" ).toString();
+  QString lastQueryFileDir = s.value( "/UI/lastQueryFileDir", QDir::homePath() ).toString();
   //save as qqt (QGIS query file)
   QString saveFileName = QFileDialog::getSaveFileName( 0, tr( "Save query to file" ), lastQueryFileDir, "*.qqf" );
   if ( saveFileName.isNull() )
@@ -401,7 +401,7 @@ void QgsSearchQueryBuilder::saveQuery()
 void QgsSearchQueryBuilder::loadQuery()
 {
   QSettings s;
-  QString lastQueryFileDir = s.value( "/UI/lastQueryFileDir", "" ).toString();
+  QString lastQueryFileDir = s.value( "/UI/lastQueryFileDir", QDir::homePath() ).toString();
 
   QString queryFileName = QFileDialog::getOpenFileName( 0, tr( "Load query from file" ), lastQueryFileDir, tr( "Query files" ) + " (*.qqf);;" + tr( "All files" ) + " (*)" );
   if ( queryFileName.isNull() )
