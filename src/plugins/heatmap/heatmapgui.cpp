@@ -241,7 +241,7 @@ void HeatmapGui::on_mButtonBox_helpRequested()
 void HeatmapGui::on_mBrowseButton_clicked()
 {
   QSettings s;
-  QString lastDir = s.value( "/Heatmap/lastOutputDir", "" ).toString();
+  QString lastDir = s.value( "/Heatmap/lastOutputDir", QDir::homePath() ).toString();
 
   QString outputFilename = QFileDialog::getSaveFileName( 0, tr( "Save Heatmap as:" ), lastDir );
   if ( !outputFilename.isEmpty() )

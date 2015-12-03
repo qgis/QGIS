@@ -137,7 +137,7 @@ void QgsTransformSettingsDialog::resetSettings()
   s.setValue( "/Plugin-GeoReferencer/user_specified_resx",  1.0 );
   s.setValue( "/Plugin-GeoReferencer/user_specified_resy", -1.0 );
   s.setValue( "/Plugin-GeoReferencer/word_file_checkbox", false );
-  s.setValue( "/Plugin-GeoReferencer/lastPDFReportDir", "" );
+  s.setValue( "/Plugin-GeoReferencer/lastPDFReportDir", QDir::homePath() );
 }
 
 void QgsTransformSettingsDialog::changeEvent( QEvent *e )
@@ -218,7 +218,7 @@ void QgsTransformSettingsDialog::on_tbnOutputRaster_clicked()
 void QgsTransformSettingsDialog::on_tbnMapFile_clicked()
 {
   QSettings s;
-  QString myLastUsedDir = s.value( "/Plugin-GeoReferencer/lastPDFReportDir", "" ).toString();
+  QString myLastUsedDir = s.value( "/Plugin-GeoReferencer/lastPDFReportDir", QDir::homePath() ).toString();
   QString initialFile = !mMapFileLineEdit->text().isEmpty() ? mMapFileLineEdit->text() : myLastUsedDir;
   QString outputFileName = QFileDialog::getSaveFileName( this, tr( "Save Map File as" ), initialFile, tr( "PDF Format" ) + " (*.pdf *PDF)" );
   if ( !outputFileName.isNull() )
@@ -234,7 +234,7 @@ void QgsTransformSettingsDialog::on_tbnMapFile_clicked()
 void QgsTransformSettingsDialog::on_tbnReportFile_clicked()
 {
   QSettings s;
-  QString myLastUsedDir = s.value( "/Plugin-GeoReferencer/lastPDFReportDir", "" ).toString();
+  QString myLastUsedDir = s.value( "/Plugin-GeoReferencer/lastPDFReportDir", QDir::homePath() ).toString();
   QString initialFile = !mReportFileLineEdit->text().isEmpty() ? mReportFileLineEdit->text() : myLastUsedDir;
   QString outputFileName = QFileDialog::getSaveFileName( this, tr( "Save Report File as" ), initialFile, tr( "PDF Format" ) + " (*.pdf *PDF)" );
   if ( !outputFileName.isNull() )

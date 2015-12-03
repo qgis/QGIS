@@ -1226,7 +1226,7 @@ void QgsRasterLayerProperties::adjustTransparencyCellWidth( int row, int column 
 void QgsRasterLayerProperties::on_pbnExportTransparentPixelValues_clicked()
 {
   QSettings myQSettings;
-  QString myLastDir = myQSettings.value( "lastRasterFileFilterDir", "" ).toString();
+  QString myLastDir = myQSettings.value( "lastRasterFileFilterDir", QDir::homePath() ).toString();
   QString myFileName = QFileDialog::getSaveFileName( this, tr( "Save file" ), myLastDir, tr( "Textfile" ) + " (*.txt)" );
   if ( !myFileName.isEmpty() )
   {
@@ -1391,7 +1391,7 @@ void QgsRasterLayerProperties::on_pbnImportTransparentPixelValues_clicked()
   bool myImportError = false;
   QString myBadLines;
   QSettings myQSettings;
-  QString myLastDir = myQSettings.value( "lastRasterFileFilterDir", "" ).toString();
+  QString myLastDir = myQSettings.value( "lastRasterFileFilterDir", QDir::homePath() ).toString();
   QString myFileName = QFileDialog::getOpenFileName( this, tr( "Open file" ), myLastDir, tr( "Textfile" ) + " (*.txt)" );
   QFile myInputFile( myFileName );
   if ( myInputFile.open( QFile::ReadOnly ) )
@@ -1684,7 +1684,7 @@ void QgsRasterLayerProperties::saveDefaultStyle_clicked()
 void QgsRasterLayerProperties::loadStyle_clicked()
 {
   QSettings settings;
-  QString lastUsedDir = settings.value( "style/lastStyleDir", "." ).toString();
+  QString lastUsedDir = settings.value( "style/lastStyleDir", QDir::homePath() ).toString();
 
   QString fileName = QFileDialog::getOpenFileName(
                        this,
@@ -1715,7 +1715,7 @@ void QgsRasterLayerProperties::loadStyle_clicked()
 void QgsRasterLayerProperties::saveStyleAs_clicked()
 {
   QSettings settings;
-  QString lastUsedDir = settings.value( "style/lastStyleDir", "." ).toString();
+  QString lastUsedDir = settings.value( "style/lastStyleDir", QDir::homePath() ).toString();
 
   QString outputFileName = QFileDialog::getSaveFileName(
                              this,

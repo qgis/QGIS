@@ -45,7 +45,7 @@ eVisConfiguration::eVisConfiguration()
   setAttributeCompassOffset( myQSettings.value( "/eVis/attributecompassoffset", false ).toBool() );
   setCompassOffsetField( myQSettings.value( "/eVis/compassoffsetfield", "" ).toString() );
 
-  setBasePath( myQSettings.value( "/eVis/basepath", "" ).toString() );
+  setBasePath( myQSettings.value( "/eVis/basepath", QDir::homePath() ).toString() );
   mUseOnlyFilename = myQSettings.value( "/eVis/useonlyfilename", false ).toBool();
 }
 

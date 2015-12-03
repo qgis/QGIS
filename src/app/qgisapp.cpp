@@ -1906,11 +1906,6 @@ void QgisApp::createToolBars()
   connect( tbAddCircularString, SIGNAL( triggered( QAction * ) ), this, SLOT( toolButtonActionTriggered( QAction * ) ) );
   mDigitizeToolBar->insertWidget( mActionMoveFeature, tbAddCircularString );
 
-  // Help Toolbar
-  QAction* actionWhatsThis = QWhatsThis::createAction( this );
-  actionWhatsThis->setIcon( QgsApplication::getThemeIcon( "/mActionWhatsThis.svg" ) );
-  mHelpToolBar->addAction( actionWhatsThis );
-
   // Cad toolbar
   mAdvancedDigitizeToolBar->insertAction( mActionUndo, mAdvancedDigitizingDockWidget->enableAction() );
 }

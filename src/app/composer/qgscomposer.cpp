@@ -3043,7 +3043,7 @@ void QgsComposer::on_mActionLoadFromTemplate_triggered()
 void QgsComposer::loadTemplate( const bool newComposer )
 {
   QSettings settings;
-  QString openFileDir = settings.value( "UI/lastComposerTemplateDir", "" ).toString();
+  QString openFileDir = settings.value( "UI/lastComposerTemplateDir", QDir::homePath() ).toString();
   QString openFileString = QFileDialog::getOpenFileName( 0, tr( "Load template" ), openFileDir, "*.qpt" );
 
   if ( openFileString.isEmpty() )

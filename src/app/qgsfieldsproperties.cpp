@@ -808,7 +808,7 @@ QgsAttributeEditorElement* QgsFieldsProperties::createAttributeEditorWidget( QTr
 void QgsFieldsProperties::on_pbnSelectEditForm_clicked()
 {
   QSettings myQSettings;
-  QString lastUsedDir = myQSettings.value( "style/lastUIDir", "." ).toString();
+  QString lastUsedDir = myQSettings.value( "style/lastUIDir", QDir::homePath() ).toString();
   QString uifilename = QFileDialog::getOpenFileName( this, tr( "Select edit form" ), lastUsedDir, tr( "UI file" )  + " (*.ui)" );
 
   if ( uifilename.isNull() )

@@ -814,7 +814,7 @@ void QgsVectorLayerProperties::saveDefaultStyle_clicked()
 void QgsVectorLayerProperties::loadStyle_clicked()
 {
   QSettings myQSettings;  // where we keep last used filter in persistent state
-  QString myLastUsedDir = myQSettings.value( "style/lastStyleDir", "." ).toString();
+  QString myLastUsedDir = myQSettings.value( "style/lastStyleDir", QDir::homePath() ).toString();
 
   QString myFileName = QFileDialog::getOpenFileName( this, tr( "Load layer properties from style file" ), myLastUsedDir,
                        tr( "QGIS Layer Style File" ) + " (*.qml);;" + tr( "SLD File" ) + " (*.sld)" );
@@ -875,7 +875,7 @@ void QgsVectorLayerProperties::saveStyleAsMenuTriggered( QAction *action )
 void QgsVectorLayerProperties::saveStyleAs( StyleType styleType )
 {
   QSettings myQSettings;  // where we keep last used filter in persistent state
-  QString myLastUsedDir = myQSettings.value( "style/lastStyleDir", "." ).toString();
+  QString myLastUsedDir = myQSettings.value( "style/lastStyleDir", QDir::homePath() ).toString();
 
   QString format, extension;
   if ( styleType == DB )

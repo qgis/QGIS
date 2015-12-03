@@ -166,7 +166,7 @@ void QgsGPSPlugin::run()
 void QgsGPSPlugin::createGPX()
 {
   QSettings settings;
-  QString dir = settings.value( "/Plugin-GPS/gpxdirectory", "." ).toString();
+  QString dir = settings.value( "/Plugin-GPS/gpxdirectory", QDir::homePath() ).toString();
   QString fileName =
     QFileDialog::getSaveFileName( mQGisInterface->mainWindow(),
                                   tr( "Save new GPX file as..." ),
@@ -562,7 +562,7 @@ void QgsGPSPlugin::setupBabel()
 {
   // where is gpsbabel?
   QSettings settings;
-  mBabelPath = settings.value( "/Plugin-GPS/gpsbabelpath", "" ).toString();
+  mBabelPath = settings.value( "/Plugin-GPS/gpsbabelpath", QDir::homePath() ).toString();
   if ( mBabelPath.isEmpty() )
     mBabelPath = "gpsbabel";
   // the importable formats

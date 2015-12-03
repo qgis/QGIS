@@ -492,7 +492,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mLoadFromFileButton_clicked()
 void QgsSingleBandPseudoColorRendererWidget::on_mExportToFileButton_clicked()
 {
   QSettings settings;
-  QString lastDir = settings.value( "lastRasterFileFilterDir", "" ).toString();
+  QString lastDir = settings.value( "lastRasterFileFilterDir", QDir::homePath() ).toString();
   QString fileName = QFileDialog::getSaveFileName( this, tr( "Save file" ), lastDir, tr( "Textfile (*.txt)" ) );
   if ( !fileName.isEmpty() )
   {

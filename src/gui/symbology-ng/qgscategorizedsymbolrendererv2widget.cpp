@@ -964,7 +964,7 @@ int QgsCategorizedSymbolRendererV2Widget::matchToSymbols( QgsStyleV2* style )
 void QgsCategorizedSymbolRendererV2Widget::matchToSymbolsFromXml()
 {
   QSettings settings;
-  QString openFileDir = settings.value( "UI/lastMatchToSymbolsDir", "" ).toString();
+  QString openFileDir = settings.value( "UI/lastMatchToSymbolsDir", QDir::homePath() ).toString();
 
   QString fileName = QFileDialog::getOpenFileName( this, tr( "Match to symbols from file" ), openFileDir,
                      tr( "XML files (*.xml *XML)" ) );
