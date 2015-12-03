@@ -38,6 +38,7 @@ CREATE TABLE qgis_test."someData" (
     cnt integer,
     name text DEFAULT 'qgis',
     name2 text DEFAULT 'qgis',
+    num_char text,
     geom public.geometry(Point,4326)
 );
 
@@ -48,12 +49,12 @@ CREATE TABLE qgis_test."someData" (
 -- Data for Name: someData; Type: TABLE DATA; Schema: qgis_test; Owner: postgres
 --
 
-INSERT INTO qgis_test."someData" (pk, cnt, name, name2, geom) VALUES
-(5, -200, NULL, 'NuLl', '0101000020E61000001D5A643BDFC751C01F85EB51B88E5340'),
-(3,  300, 'Pear', 'PEaR', NULL),
-(1,  100, 'Orange', 'oranGe', '0101000020E61000006891ED7C3F9551C085EB51B81E955040'),
-(2,  200, 'Apple', 'Apple', '0101000020E6100000CDCCCCCCCC0C51C03333333333B35140'),
-(4,  400, 'Honey', 'Honey', '0101000020E610000014AE47E17A5450C03333333333935340')
+INSERT INTO qgis_test."someData" (pk, cnt, name, name2, num_char, geom) VALUES
+(5, -200, NULL, 'NuLl', '5', '0101000020E61000001D5A643BDFC751C01F85EB51B88E5340'),
+(3,  300, 'Pear', 'PEaR', '3', NULL),
+(1,  100, 'Orange', 'oranGe', '1', '0101000020E61000006891ED7C3F9551C085EB51B81E955040'),
+(2,  200, 'Apple', 'Apple', '2', '0101000020E6100000CDCCCCCCCC0C51C03333333333B35140'),
+(4,  400, 'Honey', 'Honey', '4', '0101000020E610000014AE47E17A5450C03333333333935340')
 ;
 
 
