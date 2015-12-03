@@ -615,6 +615,12 @@ QString QgsExpressionBuilderWidget::formatPreviewString( const QVariant& value )
     QgsFeature feat = value.value<QgsFeature>();
     return tr( "<i>&lt;feature: %1&gt;</i>" ).arg( feat.id() );
   }
+  else if ( value.canConvert< QgsExpression::Interval >() )
+  {
+    //result is a feature
+    QgsExpression::Interval interval = value.value<QgsExpression::Interval>();
+    return tr( "<i>&lt;interval: %1 days&gt;</i>" ).arg( interval.days() );
+  }
   else
   {
     QString previewString = value.toString();
