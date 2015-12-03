@@ -36,7 +36,11 @@ from processing.core.parameters import (Parameter,
                                         ParameterExtent,
                                         ParameterFile,
                                         ParameterFixedTable,
+                                        ParameterMultipleInput,
                                         ParameterNumber)
+
+from qgis.core import (QgsRasterLayer,
+                       QgsVectorLayer)
 
 class ParameterTest(unittest.TestCase):
     def testGetValueAsCommandLineParameter(self):
@@ -225,10 +229,57 @@ class TestParameterFixedTable(unittest.TestCase):
         self.assertFalse(parameter.setValue(None))
         self.assertEqual(parameter.value, '1,2,3')
 
+class ParameterMultipleInputTest(unittest.TestCase):
+    def testOptional(self):
+        parameter = ParameterMultipleInput('myName', 'myDesc', optional=True)
+        self.assertTrue(parameter.setValue('myLayerFile.shp'))
+        self.assertEqual(parameter.value, 'myLayerFile.shp')
+
+        self.assertTrue(parameter.setValue(None))
+        self.assertEqual(parameter.value, None)
+
+        parameter = ParameterMultipleInput('myName', 'myDesc', optional=False)
+        self.assertFalse(parameter.setValue(None))
+        self.assertEqual(parameter.value, None)
+
+        self.assertTrue(parameter.setValue("myLayerFile.shp"))
+        self.assertEqual(parameter.value, "myLayerFile.shp")
+
+        self.assertFalse(parameter.setValue(None))
+        self.assertEqual(parameter.value, "myLayerFile.shp")
+
+    def testGetAsStringWhenRaster(self):
+        parameter = ParameterMultipleInput('myName', 'myDesc', datatype=ParameterMultipleInput.TYPE_RASTER)
+
+        # With Path
+        self.assertEqual(parameter.getAsString('/some/path'), '/some/path')
+
+        # With Layer
+        layer = QgsRasterLayer('/path/to/myRaster.tif', 'myRaster')
+        self.assertEqual(parameter.getAsString(layer), '/path/to/myRaster.tif')
+
+        #TODO With Layer Name, instead of Layer object
+
+    def testGetAsStringWhenFile(self):
+        parameter = ParameterMultipleInput('myName', 'myDesc', datatype=ParameterMultipleInput.TYPE_FILE)
+        self.assertEqual(parameter.getAsString('/some/path'), '/some/path')
+
+    def testGetAsStringWhenVector(self):
+        parameter = ParameterMultipleInput('myName', 'myDesc', datatype=ParameterMultipleInput.TYPE_VECTOR_ANY)
+
+        # With Path
+        self.assertEqual(parameter.getAsString('/some/path'), '/some/path')
+
+        # With Layer
+        layer = QgsVectorLayer('/path/to/myVector.shp', 'myVector', 'memory')
+        self.assertEqual(parameter.getAsString(layer), '/path/to/myVector.shp')
+
+        #TODO With Layer Name, instead of Layer object
+
 class ParameterNumberTest(unittest.TestCase):
     def testSetOnlyValidNumbers(self):
         parameter = ParameterNumber('myName', 'myDescription', minValue = 0, maxValue = 10, default = 1.0, optional = True)
-        self.assertFalse(parameter.setValue('wrongvalue'))
+        self.assertFalse(parameter.setValue('not a number'))
         self.assertEqual(parameter.value, None)
 
     def testMaxValue(self):

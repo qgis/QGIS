@@ -384,9 +384,9 @@ class ParameterMultipleInput(ParameterDataObject):
                     if layer.name() == s:
                         return unicode(layer.dataProvider().dataSourceUri())
                 return s
-        if self.datatype == ParameterMultipleInput.TYPE_FILE:
+        elif self.datatype == ParameterMultipleInput.TYPE_FILE:
             return unicode(value)
-        else:
+        else: # Some vector type
             if isinstance(value, QgsVectorLayer):
                 return unicode(value.source())
             else:
