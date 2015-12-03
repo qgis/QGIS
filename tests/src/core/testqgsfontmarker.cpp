@@ -149,7 +149,7 @@ void TestQgsFontMarkerSymbol::bounds()
   //use a narrow character to test that width is correctly calculated
   mFontMarkerLayer->setCharacter( 'l' );
   mFontMarkerLayer->setSize( 12 );
-  mFontMarkerLayer->setDataDefinedProperty( "size", new QgsDataDefined( true, true, "min(\"importance\" * 20, 50)" ) );
+  mFontMarkerLayer->setDataDefinedProperty( "size", new QgsDataDefined( true, true, "min(\"importance\" * 4.47214, 7.07106)" ) );
 
   mMapSettings.setFlag( QgsMapSettings::DrawSymbolBounds, true );
   bool result = imageCheck( "fontmarker_bounds" );
