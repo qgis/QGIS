@@ -1487,6 +1487,11 @@ GEOSCoordSequence* QgsGeos::createCoordinateSequence( const QgsCurveV2* curve, d
   try
   {
     coordSeq = GEOSCoordSeq_create_r( geosinit.ctxt, numPoints, coordDims );
+    if ( !coordSeq )
+    {
+      QgsMessageLog::logMessage( QObject::tr( "Could not create coordinate sequence for %1 points in %2 dimensions" ).arg( numPoints ).arg( coordDims ), QObject::tr( "GEOS" ) );
+      return 0;
+    }
     if ( precision > 0. )
     {
       for ( int i = 0; i < numPoints; ++i )
@@ -1542,6 +1547,11 @@ GEOSGeometry* QgsGeos::createGeosPoint( const QgsAbstractGeometryV2* point, int 
   try
   {
     GEOSCoordSequence* coordSeq = GEOSCoordSeq_create_r( geosinit.ctxt, 1, coordDims );
+    if ( !coordSeq )
+    {
+      QgsMessageLog::logMessage( QObject::tr( "Could not create coordinate sequence for point with %1 dimensions" ).arg( coordDims ), QObject::tr( "GEOS" ) );
+      return 0;
+    }
     if ( precision > 0. )
     {
       GEOSCoordSeq_setX_r( geosinit.ctxt, coordSeq, 0, qgsRound( pt->x() / precision ) * precision );
