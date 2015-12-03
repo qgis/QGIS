@@ -6644,7 +6644,7 @@ QgsVectorLayer *QgisApp::pasteAsNewMemoryVector( const QString & theLayerName )
   {
     bool ok;
     QString defaultName = tr( "Pasted" );
-    layerName = QInputDialog::getText( this, tr( "New memory layer name" ),
+    layerName = QInputDialog::getText( this, tr( "New temporary scratch layer name" ),
                                        tr( "Layer name" ), QLineEdit::Normal,
                                        defaultName, &ok );
     if ( !ok )
@@ -6794,7 +6794,7 @@ QgsVectorLayer *QgisApp::pasteToNewMemoryVector()
   }
   layer->removeSelection();
 
-  QgsDebugMsg( QString( "%1 features pasted to memory layer" ).arg( layer->featureCount() ) );
+  QgsDebugMsg( QString( "%1 features pasted to temporary scratch layer" ).arg( layer->featureCount() ) );
   return layer;
 }
 
