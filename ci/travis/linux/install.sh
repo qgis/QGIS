@@ -2,7 +2,8 @@ mkdir build
 cd build
 export CXX="clang++-3.7"
 export CC="clang-3.7"
-cmake -DWITH_SERVER=ON \
+cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+      -DWITH_SERVER=ON \
       -DWITH_STAGED_PLUGINS=OFF \
       -DWITH_GRASS=ON \
       -DSUPPRESS_QT_WARNINGS=ON \
