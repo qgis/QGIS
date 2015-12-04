@@ -870,7 +870,7 @@ void QgsAttributeTableDock::closeEvent( QCloseEvent* ev )
 
 void QgsAttributeTableDialog::on_mLoadAbortButton_clicked()
 {
-  mLoadAborted = TRUE;
+  mLoadAborted = true;
 }
 
 
