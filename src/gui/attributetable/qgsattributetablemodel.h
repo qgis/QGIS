@@ -295,6 +295,20 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      */
     virtual void attributeDeleted( int idx );
 
+    /**
+     * Launched from the load worker when a feature is ready to be added
+     * adds a batch of features to the model
+     * @param features feature list
+     * @param loadedCount number of loaded features
+     */
+    virtual void featuresReady( QgsFeatureList features , int loadedCount );
+
+    /**
+     * Called when the load worker has finished its job
+     */
+    virtual void loadLayerFinished();
+
+
   protected slots:
     /**
      * Launched when attribute value has been changed
@@ -315,25 +329,10 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      */
     virtual void featureAdded( QgsFeatureId fid );
 
-
-    /**
-     * Launched from the load worker when a feature is ready to be added
-     * adds a batch of features to the model
-     * @param features feature list
-     * @param loadedCount number of loaded features
-     */
-    virtual void featuresReady( QgsFeatureList features , int loadedCount );
-
-    /**
-     * Called when the load worker has finished its job
-     */
-    virtual void loadLayerFinished();
-
     /**
      * Launched when layer has been deleted
      */
     virtual void layerDeleted();
-
 
 
   protected:
