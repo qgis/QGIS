@@ -15,6 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QMutexLocker>
+
 #include "qgsvectorlayercache.h"
 #include "qgscacheindex.h"
 #include "qgscachedfeatureiterator.h"
@@ -24,7 +26,9 @@ QgsVectorLayerCache::QgsVectorLayerCache( QgsVectorLayer* layer, int cacheSize, 
     , mLayer( layer )
     , mFullCache( false )
 {
+  mMutex.lock();
   mCache.setMaxCost( cacheSize );
+  mMutex.unlock();
 
   connect( mLayer, SIGNAL( featureDeleted( QgsFeatureId ) ), SLOT( featureDeleted( QgsFeatureId ) ) );
   connect( mLayer, SIGNAL( featureAdded( QgsFeatureId ) ), SLOT( onFeatureAdded( QgsFeatureId ) ) );
@@ -48,16 +52,19 @@ QgsVectorLayerCache::~QgsVectorLayerCache()
 
 void QgsVectorLayerCache::setCacheSize( int cacheSize )
 {
+  QMutexLocker locker( &mMutex );
   mCache.setMaxCost( cacheSize );
 }
 
 int QgsVectorLayerCache::cacheSize()
 {
+  QMutexLocker locker( &mMutex );
   return mCache.maxCost();
 }
 
 void QgsVectorLayerCache::setCacheGeometry( bool cacheGeometry )
 {
+  QMutexLocker locker( &mMutex );
   mCacheGeometry = cacheGeometry && mLayer->hasGeometryType();
   if ( cacheGeometry )
   {
@@ -71,11 +78,13 @@ void QgsVectorLayerCache::setCacheGeometry( bool cacheGeometry )
 
 void QgsVectorLayerCache::setCacheSubsetOfAttributes( const QgsAttributeList& attributes )
 {
+  QMutexLocker locker( &mMutex );
   mCachedAttributes = attributes;
 }
 
 void QgsVectorLayerCache::setFullCache( bool fullCache )
 {
+  QMutexLocker locker( &mMutex );
   mFullCache = fullCache;
 
   if ( mFullCache )
@@ -117,11 +126,13 @@ void QgsVectorLayerCache::setFullCache( bool fullCache )
 
 void QgsVectorLayerCache::addCacheIndex( QgsAbstractCacheIndex* cacheIndex )
 {
+  QMutexLocker locker( &mMutex );
   mCacheIndices.append( cacheIndex );
 }
 
 void QgsVectorLayerCache::setCacheAddedAttributes( bool cacheAddedAttributes )
 {
+  QMutexLocker locker( &mMutex );
   if ( cacheAddedAttributes )
   {
     connect( mLayer, SIGNAL( attributeAdded( int ) ), SLOT( attributeAdded( int ) ) );
@@ -134,6 +145,7 @@ void QgsVectorLayerCache::setCacheAddedAttributes( bool cacheAddedAttributes )
 
 bool QgsVectorLayerCache::featureAtId( QgsFeatureId featureId, QgsFeature& feature, bool skipCache )
 {
+  QMutexLocker locker( &mMutex );
   bool featureFound = false;
 
   QgsCachedFeature* cachedFeature = NULL;
@@ -163,6 +175,7 @@ bool QgsVectorLayerCache::featureAtId( QgsFeatureId featureId, QgsFeature& featu
 
 bool QgsVectorLayerCache::removeCachedFeature( QgsFeatureId fid )
 {
+  QMutexLocker locker( &mMutex );
   return mCache.remove( fid );
 }
 
@@ -193,6 +206,7 @@ void QgsVectorLayerCache::featureRemoved( QgsFeatureId fid )
 
 void QgsVectorLayerCache::onAttributeValueChanged( QgsFeatureId fid, int field, const QVariant& value )
 {
+  QMutexLocker locker( &mMutex );
   QgsCachedFeature* cachedFeat = mCache[ fid ];
 
   if ( NULL != cachedFeat )
@@ -262,12 +276,13 @@ void QgsVectorLayerCache::layerDeleted()
 
 void QgsVectorLayerCache::invalidate()
 {
-  mCache.clear();
   emit invalidated();
+  mCache.clear();
 }
 
 QgsFeatureIterator QgsVectorLayerCache::getFeatures( const QgsFeatureRequest &featureRequest )
 {
+  QMutexLocker locker( &mMutex );
   QgsFeatureIterator it;
   bool requiresWriterIt = true; // If a not yet cached, but cachable request is made, this stays true.
 
@@ -321,6 +336,7 @@ QgsFeatureIterator QgsVectorLayerCache::getFeatures( const QgsFeatureRequest &fe
 
 bool QgsVectorLayerCache::isFidCached( const QgsFeatureId fid )
 {
+  QMutexLocker locker( &mMutex );
   return mCache.contains( fid );
 }
 

@@ -20,6 +20,7 @@
 #define QgsVectorLayerCache_H
 
 #include <QCache>
+#include <QMutex>
 
 #include "qgsvectorlayer.h"
 
@@ -28,6 +29,9 @@ class QgsAbstractCacheIndex;
 
 /**
  * This class caches features of a given QgsVectorLayer.
+ *
+ * This is supposed to be thread safe, mutex is used to protect cache access
+ * on all public methods.
  *
  * @brief
  * The cached features can be indexed by @link QgsAbstractCacheIndex @endlink.
@@ -291,5 +295,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     friend class QgsCachedFeatureIterator;
     friend class QgsCachedFeatureWriterIterator;
     friend class QgsCachedFeature;
+
+    mutable QMutex mMutex;
 };
 #endif // QgsVectorLayerCache_H
