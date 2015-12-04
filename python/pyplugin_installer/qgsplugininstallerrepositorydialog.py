@@ -24,7 +24,9 @@
  ***************************************************************************/
 """
 
-from PyQt4.QtGui import QDialog, QDialogButtonBox
+from qgis.gui import QgsAuthConfigSelect
+from PyQt4.QtGui import QDialog, QDialogButtonBox, QVBoxLayout
+from PyQt4.QtCore import Qt
 
 from ui_qgsplugininstallerrepositorybase import Ui_QgsPluginInstallerRepositoryDetailsDialogBase
 
@@ -38,9 +40,28 @@ class QgsPluginInstallerRepositoryDialog(QDialog, Ui_QgsPluginInstallerRepositor
         self.editURL.setText("http://")
         self.editName.textChanged.connect(self.textChanged)
         self.editURL.textChanged.connect(self.textChanged)
+        self.btnClearAuthCfg.clicked.connect(self.editAuthCfg.clear)
+        self.btnEditAuthCfg.clicked.connect(self.editAuthCfgId)
         self.textChanged(None)
 
     # ----------------------------------------- #
     def textChanged(self, string):
         enable = (len(self.editName.text()) > 0 and len(self.editURL.text()) > 0)
         self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(enable)
+
+    def editAuthCfgId(self):
+        dlg = QDialog(self)
+        dlg.setWindowModality(Qt.WindowModal)
+        layout = QVBoxLayout()
+        selector = QgsAuthConfigSelect(self)
+        if self.editAuthCfg.text():
+            selector.setConfigId(self.editAuthCfg.text())
+        layout.addWidget(selector)
+        buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Close)
+        buttonBox.accepted.connect(dlg.accept)
+        buttonBox.rejected.connect(dlg.reject)
+        layout.addWidget(buttonBox)
+        dlg.setLayout(layout)
+        if dlg.exec_():
+            self.editAuthCfg.setText(selector.configId())
+        del dlg

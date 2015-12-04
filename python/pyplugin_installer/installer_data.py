@@ -31,7 +31,8 @@ import os
 import codecs
 import ConfigParser
 import qgis.utils
-from qgis.core import QGis, QgsNetworkAccessManager
+from qgis.core import QGis, QgsNetworkAccessManager, QgsAuthManager
+from qgis.gui import QgsMessageBar
 from qgis.utils import iface, plugin_paths
 from version_compare import compareVersions, normalizeVersion, isCompatible
 
@@ -320,6 +321,7 @@ class Repositories(QObject):
         for key in settings.childGroups():
             self.mRepositories[key] = {}
             self.mRepositories[key]["url"] = settings.value(key + "/url", "", type=unicode)
+            self.mRepositories[key]["authcfg"] = settings.value(key + "/authcfg", "", type=unicode)
             self.mRepositories[key]["enabled"] = settings.value(key + "/enabled", True, type=bool)
             self.mRepositories[key]["valid"] = settings.value(key + "/valid", True, type=bool)
             self.mRepositories[key]["Relay"] = Relay(key)
@@ -337,6 +339,17 @@ class Repositories(QObject):
         #url.addQueryItem('qgis', '.'.join([str(int(s)) for s in [v[0], v[1:3]]]) ) # don't include the bugfix version!
 
         self.mRepositories[key]["QRequest"] = QNetworkRequest(url)
+        authcfg = self.mRepositories[key]["authcfg"]
+        if authcfg and isinstance(authcfg, basestring):
+            if not QgsAuthManager.instance().updateNetworkRequest(
+                    self.mRepositories[key]["QRequest"], authcfg.strip()):
+                msg = QCoreApplication.translate(
+                    "QgsPluginInstaller",
+                    "Update of network request with authentication "
+                    "credentials FAILED for configuration '{0}'").format(authcfg)
+                iface.pluginManagerInterface().pushMessage(msg, QgsMessageBar.WARNING)
+                self.mRepositories[key]["QRequest"] = None
+                return
         self.mRepositories[key]["QRequest"].setAttribute(QNetworkRequest.User, key)
         self.mRepositories[key]["xmlData"] = QgsNetworkAccessManager.instance().get(self.mRepositories[key]["QRequest"])
         self.mRepositories[key]["xmlData"].setProperty('reposName', key)
