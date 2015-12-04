@@ -263,7 +263,7 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   mDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
   mDock->setWidget( this );
   if ( !QgisApp::instance()->restoreDockWidget( mDock ) )
-    QgisApp::instance()->addDockWidget( Qt::LeftDockWidgetArea, mDock );
+    QgisApp::instance()->addDockWidget( Qt::RightDockWidgetArea, mDock );
   else
     QgisApp::instance()->panelMenu()->addAction( mDock->toggleViewAction() );
 
