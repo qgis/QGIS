@@ -85,62 +85,8 @@
               <property name="margin">
                <number>0</number>
               </property>
-              <item row="2" column="0" colspan="2">
-               <layout class="QHBoxLayout" name="horizontalLayout_4">
-                <item>
-                 <widget class="QLabel" name="label_2">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="toolTip">
-                   <string>Output preview is generated &lt;br&gt; using the first feature from the layer.</string>
-                  </property>
-                  <property name="text">
-                   <string>Output preview: </string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QLabel" name="lblPreview">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="toolTip">
-                   <string>Output preview is generated &lt;br&gt; using the first feature from the layer.</string>
-                  </property>
-                  <property name="frameShape">
-                   <enum>QFrame::NoFrame</enum>
-                  </property>
-                  <property name="frameShadow">
-                   <enum>QFrame::Sunken</enum>
-                  </property>
-                  <property name="lineWidth">
-                   <number>0</number>
-                  </property>
-                  <property name="midLineWidth">
-                   <number>0</number>
-                  </property>
-                  <property name="text">
-                   <string/>
-                  </property>
-                  <property name="scaledContents">
-                   <bool>false</bool>
-                  </property>
-                  <property name="wordWrap">
-                   <bool>false</bool>
-                  </property>
-                  <property name="textInteractionFlags">
-                   <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
+              <item row="1" column="0" colspan="2">
+               <widget class="QgsCodeEditorSQL" name="txtExpressionString" native="true"/>
               </item>
               <item row="0" column="0">
                <widget class="QFrame" name="mOperatorsGroupBox">
@@ -301,11 +247,75 @@
                    </property>
                   </widget>
                  </item>
+                 <item>
+                  <widget class="QPushButton" name="btnNewLinePushButton">
+                   <property name="toolTip">
+                    <string>Close Bracket </string>
+                   </property>
+                   <property name="text">
+                    <string>'\n'</string>
+                   </property>
+                  </widget>
+                 </item>
                 </layout>
                </widget>
               </item>
-              <item row="1" column="0" colspan="2">
-               <widget class="QgsCodeEditorSQL" name="txtExpressionString" native="true"/>
+              <item row="2" column="0" colspan="2">
+               <layout class="QHBoxLayout" name="horizontalLayout_4">
+                <item>
+                 <widget class="QLabel" name="label_2">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="toolTip">
+                   <string>Output preview is generated &lt;br&gt; using the first feature from the layer.</string>
+                  </property>
+                  <property name="text">
+                   <string>Output preview: </string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="lblPreview">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="toolTip">
+                   <string>Output preview is generated &lt;br&gt; using the first feature from the layer.</string>
+                  </property>
+                  <property name="frameShape">
+                   <enum>QFrame::NoFrame</enum>
+                  </property>
+                  <property name="frameShadow">
+                   <enum>QFrame::Sunken</enum>
+                  </property>
+                  <property name="lineWidth">
+                   <number>0</number>
+                  </property>
+                  <property name="midLineWidth">
+                   <number>0</number>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="scaledContents">
+                   <bool>false</bool>
+                  </property>
+                  <property name="wordWrap">
+                   <bool>false</bool>
+                  </property>
+                  <property name="textInteractionFlags">
+                   <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
               </item>
              </layout>
             </widget>
