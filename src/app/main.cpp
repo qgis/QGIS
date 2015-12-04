@@ -750,10 +750,7 @@ int main( int argc, char *argv[] )
 
   QgsApplication myApp( argc, argv, myUseGuiFlag, configpath );
 
-// (if Windows/Mac, use icon from resource)
-#if !defined(Q_OS_WIN) && !defined(Q_OS_MAC)
   myApp.setWindowIcon( QIcon( QgsApplication::appIconPath() ) );
-#endif
 
   //
   // Set up the QSettings environment must be done after qapp is created
