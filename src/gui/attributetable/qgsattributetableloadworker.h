@@ -33,10 +33,17 @@ class GUI_EXPORT QgsAttributeTableLoadWorker: public QObject
 
   public:
     /**
-     * Constructor
+     * Constructor using default batch size = 1000
      * @param features    The feature iterator
      */
     QgsAttributeTableLoadWorker( const QgsFeatureIterator &features );
+
+    /**
+     * Constructor
+     * @param features    The feature iterator
+     * @param batchSize   Number of features to fetch before emitting featuresReady
+     */
+    QgsAttributeTableLoadWorker( const QgsFeatureIterator &features, int batchSize );
 
     /**
      * Destructor
@@ -79,6 +86,7 @@ class GUI_EXPORT QgsAttributeTableLoadWorker: public QObject
 
     bool mIsRunning;
     bool mStopped;
+    int mBatchSize;
     QgsFeatureIterator mFeatures;
 };
 

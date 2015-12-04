@@ -103,6 +103,10 @@ bool QgsAttributeTableModel::loadFeatureAtId( QgsFeatureId fid ) const
 
 void QgsAttributeTableModel::featuresDeleted( const QgsFeatureIds& fids )
 {
+
+  // Wait for the loader thread to complete
+  waitLoader();
+
   QList<int> rows;
 
   Q_FOREACH ( const QgsFeatureId& fid, fids )
@@ -209,6 +213,8 @@ bool QgsAttributeTableModel::removeRows( int row, int count, const QModelIndex &
 
 void QgsAttributeTableModel::featureAdded( QgsFeatureId fid )
 {
+  // Wait for the loader to finish
+  waitLoader();
   QgsDebugMsgLevel( QString( "(%2) fid: %1" ).arg( fid ).arg( mFeatureRequest.filterType() ), 4 );
   bool featOk = true;
 
@@ -395,14 +401,22 @@ void QgsAttributeTableModel::featuresReady( QgsFeatureList features, int loadedC
     // Is this check really necessary?
     if ( mFeatureRequest.acceptFeature( mFeat ) )
     {
-      mFieldCache[ fid ] = mFeat.attribute( mCachedField );
-      mIdRowMap.insert( fid, n );
-      mRowIdMap.insert( n, fid );
-      n++;
+      // Don't insert twice the same feature!
+      if ( !mIdRowMap.contains( fid ) )
+      {
+        mFieldCache[ fid ] = mFeat.attribute( mCachedField );
+        mIdRowMap.insert( fid, n );
+        mRowIdMap.insert( n, fid );
+        n++;
+      }
+      else
+      {
+        qDebug() << "Skipping feature (alreay indexed)" << f.id();
+      }
     }
     else
     {
-      qDebug() << "Skipping feature " << f.id();
+      qDebug() << "Skipping feature (not accepted)" << f.id();
     }
   }
   endInsertRows();
@@ -435,15 +449,17 @@ void QgsAttributeTableModel::loadLayer()
     removeRows( 0, rowCount() );
   }
 
-  // Set up the loader worker
-  mLoadWorker = new QgsAttributeTableLoadWorker( features );
+  // Set up the loader worker with a batch size of 1000
+  mLoadWorker = new QgsAttributeTableLoadWorker( features, 1000 );
   mLoadWorker->moveToThread( &mLoadWorkerThread );
 
   connect( &mLoadWorkerThread, SIGNAL( started() ), mLoadWorker, SLOT( startJob() ) );
   qRegisterMetaType<QgsFeatureList>( "QgsFeatureList" );
   connect( mLoadWorker, SIGNAL( featuresReady( QgsFeatureList, int ) ), this, SLOT( featuresReady( QgsFeatureList, int ) ) );
 
+  // Quit the thread when the worker finishes
   connect( mLoadWorker, SIGNAL( finished() ), &mLoadWorkerThread, SLOT( quit() ) );
+  // Stop the worker job when loadStopped is emitted
   connect( this, SIGNAL( loadStopped() ), mLoadWorker, SLOT( stopJob() ) );
 
   // Local
@@ -793,6 +809,9 @@ QgsFeature QgsAttributeTableModel::feature( const QModelIndex &idx ) const
 
 void QgsAttributeTableModel::prefetchColumnData( int column )
 {
+
+  waitLoader();
+
   mFieldCache.clear();
 
   if ( column == -1 )
@@ -828,7 +847,10 @@ void QgsAttributeTableModel::setRequest( const QgsFeatureRequest& request )
     mFeatureRequest.setFlags( mFeatureRequest.flags() | QgsFeatureRequest::NoGeometry );
 }
 
-const QgsFeatureRequest &QgsAttributeTableModel::request() const
+void QgsAttributeTableModel::waitLoader()
 {
-  return mFeatureRequest;
+  while ( mLoadWorkerThread.isRunning() )
+  {
+    QCoreApplication::processEvents();
+  }
 }

@@ -71,6 +71,11 @@ class QgsAttributeTableModel : QAbstractTableModel
     void reload( const QModelIndex &index1, const QModelIndex &index2 );
 
     /**
+     * Wait until the loader thread has finished, mainly used for testing
+     */
+    void waitLoader();
+
+    /**
      * Remove rows
      */
     bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() );

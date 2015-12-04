@@ -18,12 +18,18 @@
 #include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
 
-QgsAttributeTableLoadWorker::QgsAttributeTableLoadWorker( const QgsFeatureIterator &features ):
+QgsAttributeTableLoadWorker::QgsAttributeTableLoadWorker( const QgsFeatureIterator &features )
+{
+  QgsAttributeTableLoadWorker( features, 1000 );
+}
+
+QgsAttributeTableLoadWorker::QgsAttributeTableLoadWorker( const QgsFeatureIterator &features, int batchSize ):
     mIsRunning( false ),
     mStopped( false )
 {
-  QgsDebugMsg( "QgsAttributeTableLoadWorker created!" );
   mFeatures = features;
+  mBatchSize = batchSize;
+  QgsDebugMsg( "QgsAttributeTableLoadWorker created!" );
 }
 
 QgsAttributeTableLoadWorker::~QgsAttributeTableLoadWorker()
@@ -50,9 +56,9 @@ void QgsAttributeTableLoadWorker::startJob()
   {
     i++;
     features.append( feat );
-    if ( i % 1000 == 0 )
+    if ( i % mBatchSize == 0 )
     {
-      QgsDebugMsg( "QgsAttributeTableLoadWorker featuresReady (batch)" );
+      QgsDebugMsg( QString( "QgsAttributeTableLoadWorker featuresReady (batch: %1)" ).arg( i ) );
       emit featuresReady( features, i );
       qApp->processEvents();
       features.clear();
@@ -61,7 +67,7 @@ void QgsAttributeTableLoadWorker::startJob()
   // Remaining features?
   if ( ! features.isEmpty() )
   {
-    QgsDebugMsg( "QgsAttributeTableLoadWorker featuresReady (flush)" );
+    QgsDebugMsg( QString( "QgsAttributeTableLoadWorker featuresReady (flush: %1)" ).arg( i ) );
     emit featuresReady( features, i );
     qApp->processEvents();
   }

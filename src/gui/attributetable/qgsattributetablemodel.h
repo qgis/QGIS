@@ -212,7 +212,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     /**
      * Get the the feature request
      */
-    const QgsFeatureRequest &request() const;
+    const QgsFeatureRequest &request( ) const { return mFeatureRequest; }
 
     /**
      * Sets the context in which this table is shown.
@@ -229,6 +229,11 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * @return The context
      */
     const QgsAttributeEditorContext& editorContext() const { return mEditorContext; }
+
+    /**
+     * Wait until the loader thread has finished, mainly used internally and for testing
+     */
+    void waitLoader();
 
   public slots:
     /**
@@ -270,6 +275,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * @brief Called when the loading of features is stopped
      */
     void loadStopped( );
+
 
   private slots:
     /**
@@ -328,13 +334,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      */
     virtual void layerDeleted();
 
-    /*
-    private slots:
-      //! set mLoadWorker pointer to 0
-      virtual void resetLoadWorkerThread();
-      //! set mLoadWorkerThread pointer to 0
-      virtual void resetLoadWorker();
-    */
+
 
   protected:
     QgsVectorLayerCache *mLayerCache;
@@ -393,6 +393,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     QgsAttributeEditorContext mEditorContext;
     QgsAttributeTableLoadWorker* mLoadWorker;
     QThread mLoadWorkerThread;
+    QgsVectorLayerCache* mLoadWorkerLayerCache;
 };
 
 
