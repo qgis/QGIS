@@ -1273,15 +1273,20 @@ void QgsMarkerSymbolV2::renderPointUsingLayer( QgsMarkerSymbolLayerV2* layer, co
   }
 }
 
-void QgsMarkerSymbolV2::renderPoint( const QPointF& point, const QgsFeature* f, QgsRenderContext& context, int layer, bool selected )
+void QgsMarkerSymbolV2::renderPoint( const QPointF& point, const QgsFeature* f, QgsRenderContext& context, int layerIdx, bool selected )
 {
   QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, selected, mRenderHints, f, 0, mapUnitScale() );
 
-  if ( layer != -1 )
+  if ( layerIdx != -1 )
   {
-    if ( layer >= 0 && layer < mLayers.count() )
+    if ( layerIdx >= 0 && layerIdx < mLayers.count() )
     {
-      renderPointUsingLayer(( QgsMarkerSymbolLayerV2* ) mLayers[layer], point, symbolContext );
+      QgsMarkerSymbolLayerV2* markerLayer = dynamic_cast<QgsMarkerSymbolLayerV2*>( mLayers.at( layerIdx ) );
+
+      if ( markerLayer )
+        renderPointUsingLayer( markerLayer, point, symbolContext );
+      else
+        renderUsingLayer( mLayers.at( layerIdx ), symbolContext );
     }
     return;
   }
@@ -1292,6 +1297,8 @@ void QgsMarkerSymbolV2::renderPoint( const QPointF& point, const QgsFeature* f, 
 
     if ( markerLayer )
       renderPointUsingLayer( markerLayer, point, symbolContext );
+    else
+      renderUsingLayer( layer, symbolContext );
   }
 }
 
@@ -1459,24 +1466,34 @@ QgsDataDefined QgsLineSymbolV2::dataDefinedWidth() const
   return QgsDataDefined( *symbolDD );
 }
 
-void QgsLineSymbolV2::renderPolyline( const QPolygonF& points, const QgsFeature* f, QgsRenderContext& context, int layer, bool selected )
+void QgsLineSymbolV2::renderPolyline( const QPolygonF& points, const QgsFeature* f, QgsRenderContext& context, int layerIdx, bool selected )
 {
   //save old painter
   QPainter* renderPainter = context.painter();
   QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, selected, mRenderHints, f, 0, mapUnitScale() );
 
-  if ( layer != -1 )
+  if ( layerIdx != -1 )
   {
-    if ( layer >= 0 && layer < mLayers.count() )
+    if ( layerIdx >= 0 && layerIdx < mLayers.count() )
     {
-      renderPolylineUsingLayer(( QgsLineSymbolLayerV2* ) mLayers[layer], points, symbolContext );
+      QgsLineSymbolLayerV2* lineLayer = dynamic_cast<QgsLineSymbolLayerV2*>( mLayers.at( layerIdx ) );
+
+      if ( lineLayer )
+        renderPolylineUsingLayer( lineLayer, points, symbolContext );
+      else
+        renderUsingLayer( mLayers.at( layerIdx ), symbolContext );
     }
     return;
   }
 
-  for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
+  Q_FOREACH ( QgsSymbolLayerV2* symbolLayer, mLayers )
   {
-    renderPolylineUsingLayer(( QgsLineSymbolLayerV2* ) * it, points, symbolContext );
+    QgsLineSymbolLayerV2* lineLayer = dynamic_cast<QgsLineSymbolLayerV2*>( symbolLayer );
+
+    if ( lineLayer )
+      renderPolylineUsingLayer( lineLayer, points, symbolContext );
+    else
+      renderUsingLayer( symbolLayer, symbolContext );
   }
 
   context.setPainter( renderPainter );
@@ -1523,22 +1540,29 @@ QgsFillSymbolV2::QgsFillSymbolV2( const QgsSymbolLayerV2List& layers )
     mLayers.append( new QgsSimpleFillSymbolLayerV2() );
 }
 
-void QgsFillSymbolV2::renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, const QgsFeature* f, QgsRenderContext& context, int layer, bool selected )
+void QgsFillSymbolV2::renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, const QgsFeature* f, QgsRenderContext& context, int layerIdx, bool selected )
 {
   QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, selected, mRenderHints, f, 0, mapUnitScale() );
 
-  if ( layer != -1 )
+  if ( layerIdx != -1 )
   {
-    if ( layer >= 0 && layer < mLayers.count() )
+    if ( layerIdx >= 0 && layerIdx < mLayers.count() )
     {
-      renderPolygonUsingLayer( mLayers[layer], points, rings, symbolContext );
+      QgsSymbolLayerV2* layer = mLayers.at( layerIdx );
+      if ( layer->type() == Fill || layer->type() == Line )
+        renderPolygonUsingLayer( layer, points, rings, symbolContext );
+      else
+        renderUsingLayer( layer, symbolContext );
     }
     return;
   }
 
-  for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
+  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
   {
-    renderPolygonUsingLayer( *it, points, rings, symbolContext );
+    if ( layer->type() == Fill || layer->type() == Line )
+      renderPolygonUsingLayer( layer, points, rings, symbolContext );
+    else
+      renderUsingLayer( layer, symbolContext );
   }
 }
 
