@@ -741,7 +741,7 @@ int QgsWFSProvider::getFeatureGET( const QString& uri, const QString& geometryAt
 
   if ( mFeatureCount && mFeatureCount >= mMaxFeatureCount && mFeatureCount % 500 == 0 )
     QgsMessageLog::logMessage(
-      tr( "%1: %2 features fetched hints at reaching a download limit. " ).arg( typeName ).arg( mFeatureCount ) +
+      tr( "%1: Exactly %2 features fetched which suggests hitting a download limit. " ).arg( typeName ).arg( mFeatureCount ) +
       tr( "Zoom in to fetch all data if your layer has the 'current view extent' option enabled." ),
       "WFS" );
 
