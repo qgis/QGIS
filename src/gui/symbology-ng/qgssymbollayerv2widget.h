@@ -667,15 +667,18 @@ class GUI_EXPORT QgsGeometryGeneratorSymbolLayerWidget : public QgsSymbolLayerV2
     Q_OBJECT
 
   public:
-    QgsGeometryGeneratorSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent = NULL );
+    QgsGeometryGeneratorSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent = 0 );
 
+    /**
+     * Will be registered as factory
+     */
     static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) { return new QgsGeometryGeneratorSymbolLayerWidget( vl ); }
 
     // from base class
     virtual void setSymbolLayer( QgsSymbolLayerV2* layer ) override;
     virtual QgsSymbolLayerV2* symbolLayer() override;
 
-  protected:
+  private:
     QgsGeometryGeneratorSymbolLayerV2* mLayer;
 
   private slots:

@@ -3129,4 +3129,3 @@ void QgsGeometryGeneratorSymbolLayerWidget::updateSymbolType()
 
   emit symbolChanged();
 }
-

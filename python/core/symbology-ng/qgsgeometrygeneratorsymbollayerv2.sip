@@ -1,5 +1,5 @@
 /***************************************************************************
- qgspolygongeneratorsymbollayerv2.sip
+ qgsgeometrygeneratorsymbollayerv2.sip
  ---------------------
  begin                : November 2015
  copyright            : (C) 2015 by Matthias Kuhn
@@ -12,17 +12,25 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-class QgsPolygonGeneratorSymbolLayerV2 : QgsFillSymbolLayerV2
+class QgsGeometryGeneratorSymbolLayerV2 : QgsSymbolLayerV2
 {
 %TypeHeaderCode
-#include "qgspolygongeneratorsymbollayerv2.h"
+#include "qgsgeometrygeneratorsymbollayerv2.h"
 %End
   public:
     static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
 
-    QgsPolygonGeneratorSymbolLayerV2( QgsFillSymbolV2* symbol, const QgsStringMap& properties = QgsStringMap() );
-
     QString layerType() const;
+
+    /**
+     * Set the type of symbol which should be created.
+     * Should match with the return type of the expression.
+     *
+     * @param symbolType The symbol type which shall be used below this symbol.
+     */
+    void setSymbolType( QgsSymbolV2::SymbolType symbolType );
+
+    QgsSymbolV2::SymbolType symbolType() const;
 
     void startRender( QgsSymbolV2RenderContext& context );
 
@@ -36,6 +44,9 @@ class QgsPolygonGeneratorSymbolLayerV2 : QgsFillSymbolLayerV2
 
     void setGeometryExpression( const QString& exp );
 
+    /**
+     * Get the expression to generate this geometry.
+     */
     QString geometryExpression() const;
 
     virtual QgsSymbolV2* subSymbol();
@@ -49,8 +60,8 @@ class QgsPolygonGeneratorSymbolLayerV2 : QgsFillSymbolLayerV2
     //! care about the geometry of its parents.
     bool isCompatibleWithSymbol( QgsSymbolV2* symbol );
 
-    void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context );
+    virtual void render( QgsSymbolV2RenderContext& context );
 
   private:
-    QgsPolygonGeneratorSymbolLayerV2( const QgsPolygonGeneratorSymbolLayerV2& copy );
+    QgsGeometryGeneratorSymbolLayerV2( const QgsGeometryGeneratorSymbolLayerV2& copy );
 };
