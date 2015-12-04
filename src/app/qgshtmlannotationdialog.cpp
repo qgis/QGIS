@@ -74,6 +74,10 @@ void QgsHtmlAnnotationDialog::on_mBrowseToolButton_clicked()
   {
     directory = fi.absolutePath();
   }
+  else
+  {
+    directory = QDir::homePath();
+  }
   QString filename = QFileDialog::getOpenFileName( 0, tr( "html" ), directory, "HTML (*.html *.htm);;All files (*.*)" );
   mFileLineEdit->setText( filename );
 }
