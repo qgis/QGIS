@@ -1923,7 +1923,7 @@ void QgsOptions::on_pbnDefaultScaleValues_clicked()
 
 void QgsOptions::on_pbnImportScales_clicked()
 {
-  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load scales" ), ".",
+  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load scales" ), QDir::homePath(),
                      tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
@@ -1949,7 +1949,7 @@ void QgsOptions::on_pbnImportScales_clicked()
 
 void QgsOptions::on_pbnExportScales_clicked()
 {
-  QString fileName = QFileDialog::getSaveFileName( this, tr( "Save scales" ), ".",
+  QString fileName = QFileDialog::getSaveFileName( this, tr( "Save scales" ), QDir::homePath(),
                      tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {

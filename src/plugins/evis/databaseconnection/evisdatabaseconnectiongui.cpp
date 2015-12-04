@@ -313,7 +313,7 @@ void eVisDatabaseConnectionGui::on_pbtnLoadPredefinedQueries_clicked()
   //There probably needs to be some more error checking, but works for now.
 
   //Select the XML file to parse
-  QString myFilename = QFileDialog::getOpenFileName( this, tr( "Open File" ), ".", "XML ( *.xml )" );
+  QString myFilename = QFileDialog::getOpenFileName( this, tr( "Open File" ), QDir::homePath(), "XML ( *.xml )" );
   if ( myFilename != "" )
   {
     //Display the name of the file being parsed
@@ -453,9 +453,9 @@ void eVisDatabaseConnectionGui::on_cboxPredefinedQueryList_currentIndexChanged( 
 void eVisDatabaseConnectionGui::on_pbtnOpenFile_clicked()
 {
   if ( cboxDatabaseType->currentText() == "MSAccess" )
-    leDatabaseName->setText( QFileDialog::getOpenFileName( this, tr( "Open File" ), ".", "MSAccess ( *.mdb )" ) );
+    leDatabaseName->setText( QFileDialog::getOpenFileName( this, tr( "Open File" ), QDir::homePath(), "MSAccess ( *.mdb )" ) );
   else
-    leDatabaseName->setText( QFileDialog::getOpenFileName( this, tr( "Open File" ), ".", "Sqlite ( *.db )" ) );
+    leDatabaseName->setText( QFileDialog::getOpenFileName( this, tr( "Open File" ), QDir::homePath(), "Sqlite ( *.db )" ) );
 }
 
 /**

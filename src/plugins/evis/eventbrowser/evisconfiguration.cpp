@@ -25,6 +25,7 @@
 **
 **/
 #include <QSettings>
+#include <QDir>
 
 #include "evisconfiguration.h"
 

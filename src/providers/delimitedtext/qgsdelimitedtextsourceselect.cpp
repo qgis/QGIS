@@ -627,7 +627,7 @@ void QgsDelimitedTextSourceSelect::getOpenFileName()
   QString s = QFileDialog::getOpenFileName(
                 this,
                 tr( "Choose a delimited text file to open" ),
-                settings.value( mPluginKey + "/text_path", "./" ).toString(),
+                settings.value( mPluginKey + "/text_path", QDir::homePath() ).toString(),
                 tr( "Text files" ) + " (*.txt *.csv *.dat *.wkt);;"
                 + tr( "All files" ) + " (* *.*)",
                 &selectedFilter

@@ -1051,7 +1051,7 @@ void QgsGPSInformationWidget::on_mBtnLogFile_clicked()
   // Retrieve last used log file dir from persistent settings
   QSettings settings;
   QString settingPath( "/gps/lastLogFileDir" );
-  QString lastUsedDir = settings.value( settingPath, "." ).toString();
+  QString lastUsedDir = settings.value( settingPath, QDir::homePath() ).toString();
   QString saveFilePath = QFileDialog::getSaveFileName( this, tr( "Save GPS log file as" ), lastUsedDir, tr( "NMEA files" ) + " (*.nmea)" );
   if ( saveFilePath.isNull() ) //canceled
   {

@@ -212,7 +212,7 @@ void QgsRasterTerrainAnalysisDialog::on_mAutomaticColorButton_clicked()
 
 void QgsRasterTerrainAnalysisDialog::on_mExportToCsvButton_clicked()
 {
-  QString file = QFileDialog::getSaveFileName( 0, tr( "Export Frequency distribution as csv" ) );
+  QString file = QFileDialog::getSaveFileName( 0, tr( "Export Frequency distribution as csv" ), QDir::homePath() );
   if ( file.isEmpty() )
   {
     return;
@@ -225,7 +225,7 @@ void QgsRasterTerrainAnalysisDialog::on_mExportToCsvButton_clicked()
 void QgsRasterTerrainAnalysisDialog::on_mExportColorsButton_clicked()
 {
   qWarning( "Export colors clicked" );
-  QString file = QFileDialog::getSaveFileName( 0, tr( "Export Colors and elevations as xml" ) );
+  QString file = QFileDialog::getSaveFileName( 0, tr( "Export Colors and elevations as xml" ), QDir::homePath() );
   if ( file.isEmpty() )
   {
     return;
@@ -259,7 +259,7 @@ void QgsRasterTerrainAnalysisDialog::on_mExportColorsButton_clicked()
 
 void QgsRasterTerrainAnalysisDialog::on_mImportColorsButton_clicked()
 {
-  QString file = QFileDialog::getOpenFileName( 0, tr( "Import Colors and elevations from xml" ) );
+  QString file = QFileDialog::getOpenFileName( 0, tr( "Import Colors and elevations from xml" ), QDir::homePath() );
   if ( file.isEmpty() )
   {
     return;
@@ -297,7 +297,7 @@ void QgsRasterTerrainAnalysisDialog::on_mImportColorsButton_clicked()
 void QgsRasterTerrainAnalysisDialog::on_mOutputLayerToolButton_clicked()
 {
   QSettings s;
-  QString lastDir = s.value( "/RasterTerrainAnalysis/lastOutputDir" ).toString();
+  QString lastDir = s.value( "/RasterTerrainAnalysis/lastOutputDir", QDir::homePath() ).toString();
   QString saveFileName = QFileDialog::getSaveFileName( 0, tr( "Enter result file" ), lastDir );
   if ( !saveFileName.isNull() )
   {

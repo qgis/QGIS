@@ -91,7 +91,7 @@ void QgsManageConnectionsDialog::doExportImport()
 
   if ( mDialogMode == Export )
   {
-    QString fileName = QFileDialog::getSaveFileName( this, tr( "Save connections" ), ".",
+    QString fileName = QFileDialog::getSaveFileName( this, tr( "Save connections" ), QDir::homePath(),
                        tr( "XML files (*.xml *.XML)" ) );
     if ( fileName.isEmpty() )
     {

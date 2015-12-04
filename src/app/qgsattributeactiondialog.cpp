@@ -166,7 +166,7 @@ void QgsAttributeActionDialog::browse()
 {
   // Popup a file browser and place the results into the action widget
   QString action = QFileDialog::getOpenFileName(
-                     this, tr( "Select an action", "File dialog window title" ) );
+                     this, tr( "Select an action", "File dialog window title" ), QDir::homePath() );
 
   if ( !action.isNull() )
     actionAction->insertPlainText( action );

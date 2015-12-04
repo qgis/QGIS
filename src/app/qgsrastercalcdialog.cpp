@@ -225,7 +225,7 @@ void QgsRasterCalcDialog::on_mButtonBox_accepted()
 void QgsRasterCalcDialog::on_mOutputLayerPushButton_clicked()
 {
   QSettings s;
-  QString saveFileName = QFileDialog::getSaveFileName( 0, tr( "Enter result file" ), s.value( "/RasterCalculator/lastOutputDir" ).toString(), QDir::homePath() );
+  QString saveFileName = QFileDialog::getSaveFileName( 0, tr( "Enter result file" ), s.value( "/RasterCalculator/lastOutputDir", QDir::homePath() ).toString() );
   if ( !saveFileName.isNull() )
   {
     mOutputLayerLineEdit->setText( saveFileName );

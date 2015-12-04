@@ -1102,7 +1102,7 @@ void eVisGenericEventBrowserGui::on_tableFileTypeAssociations_cellDoubleClicked(
 {
   if ( 1 == theColumn )
   {
-    QString myApplication = QFileDialog::getOpenFileName( this, tr( "Select Application" ), "", tr( "All ( * )" ) );
+    QString myApplication = QFileDialog::getOpenFileName( this, tr( "Select Application" ), QDir::homePath(), tr( "All ( * )" ) );
     if ( "" != myApplication )
     {
       tableFileTypeAssociations->setItem( theRow, theColumn, new QTableWidgetItem( myApplication ) );

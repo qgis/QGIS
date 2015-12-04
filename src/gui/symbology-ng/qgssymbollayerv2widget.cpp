@@ -1933,7 +1933,7 @@ void QgsSvgMarkerSymbolLayerV2Widget::on_mFileToolButton_clicked()
   QSettings s;
   QString file = QFileDialog::getOpenFileName( 0,
                  tr( "Select SVG file" ),
-                 s.value( "/UI/lastSVGMarkerDir" ).toString(),
+                 s.value( "/UI/lastSVGMarkerDir", QDir::homePath() ).toString(),
                  tr( "SVG files" ) + " (*.svg)" );
   QFileInfo fi( file );
   if ( file.isEmpty() || !fi.exists() )
@@ -2133,7 +2133,7 @@ QgsSymbolLayerV2* QgsSVGFillSymbolLayerWidget::symbolLayer()
 
 void QgsSVGFillSymbolLayerWidget::on_mBrowseToolButton_clicked()
 {
-  QString filePath = QFileDialog::getOpenFileName( 0, tr( "Select SVG texture file" ), QString(), tr( "SVG file" ) + " (*.svg);;" + tr( "All files" ) + " (*.*)" );
+  QString filePath = QFileDialog::getOpenFileName( 0, tr( "Select SVG texture file" ), QDir::homePath(), tr( "SVG file" ) + " (*.svg);;" + tr( "All files" ) + " (*.*)" );
   if ( !filePath.isNull() )
   {
     mSVGLineEdit->setText( filePath );

@@ -123,7 +123,7 @@ void QgsStyleV2ExportImportDialog::doExportImport()
 
   if ( mDialogMode == Export )
   {
-    QString fileName = QFileDialog::getSaveFileName( this, tr( "Save styles" ), ".",
+    QString fileName = QFileDialog::getSaveFileName( this, tr( "Save styles" ), QDir::homePath(),
                        tr( "XML files (*.xml *.XML)" ) );
     if ( fileName.isEmpty() )
     {
@@ -497,7 +497,7 @@ void QgsStyleV2ExportImportDialog::browse()
 
   if ( type == "file" )
   {
-    mFileName = QFileDialog::getOpenFileName( this, tr( "Load styles" ), ".",
+    mFileName = QFileDialog::getOpenFileName( this, tr( "Load styles" ), QDir::homePath(),
                 tr( "XML files (*.xml *XML)" ) );
     if ( mFileName.isEmpty() )
     {

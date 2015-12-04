@@ -220,7 +220,7 @@ void QgsCustomizationDialog::on_actionSave_triggered( bool checked )
 {
   Q_UNUSED( checked );
   QSettings mySettings;
-  QString lastDir = mySettings.value( mLastDirSettingsName, "." ).toString();
+  QString lastDir = mySettings.value( mLastDirSettingsName, QDir::homePath() ).toString();
 
   QString fileName = QFileDialog::getSaveFileName( this,
                      tr( "Choose a customization INI file" ),
@@ -239,7 +239,7 @@ void QgsCustomizationDialog::on_actionLoad_triggered( bool checked )
 {
   Q_UNUSED( checked );
   QSettings mySettings;
-  QString lastDir = mySettings.value( mLastDirSettingsName, "." ).toString();
+  QString lastDir = mySettings.value( mLastDirSettingsName, QDir::homePath() ).toString();
 
   QString fileName = QFileDialog::getOpenFileName( this,
                      tr( "Choose a customization INI file" ),

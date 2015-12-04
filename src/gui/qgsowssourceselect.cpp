@@ -291,7 +291,7 @@ void QgsOWSSourceSelect::on_mSaveButton_clicked()
 
 void QgsOWSSourceSelect::on_mLoadButton_clicked()
 {
-  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load connections" ), ".",
+  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load connections" ), QDir::homePath(),
                      tr( "XML files (*.xml *XML)" ) );
   if ( fileName.isEmpty() )
   {
