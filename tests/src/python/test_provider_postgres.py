@@ -93,5 +93,20 @@ class TestPyQgsPostgresProvider(TestCase, ProviderTestCase):
         test_table(self.dbconn, 'mls2d', 'MultiLineString ((0 0, 1 1),(2 2, 3 3))')
         test_table(self.dbconn, 'mls3d', 'MultiLineStringZ ((0 0 0, 1 1 1),(2 2 2, 3 3 3))')
 
+    def testGetFeaturesUniqueId(self):
+        def test_unique(dbconn, table_name, num_features):
+            vl = QgsVectorLayer('%s srid=4326 table="qgis_test".%s (geom) sql=' % (dbconn, table_name), "testgeom", "postgres")
+            assert(vl.isValid())
+            features = [f for f in vl.getFeatures()]
+            featureids = []
+            for f in features:
+                self.assertFalse(f.id() in featureids)
+                featureids.append(f.id())
+            self.assertEqual(len(features), num_features)
+
+        test_unique(self.dbconn, 'someData', 5)
+        test_unique(self.dbconn, 'base_table', 4)
+
+
 if __name__ == '__main__':
     unittest.main()

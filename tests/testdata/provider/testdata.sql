@@ -188,3 +188,47 @@ CREATE TABLE qgis_test.mls3d(
 );
 
 INSERT INTO qgis_test.mls3d values (1, 'srid=4326;MultiLineString((0 0 0, 1 1 1),(2 2 2, 3 3 3))'::geometry);
+
+
+CREATE TABLE qgis_test.base_table
+(
+  gid serial NOT NULL,
+  geom geometry(Point,4326),
+  code character varying,
+  CONSTRAINT base_pkey PRIMARY KEY (gid)
+)
+WITH (
+  OIDS=FALSE
+);
+
+CREATE TABLE qgis_test.child_table
+(
+  gid serial NOT NULL,
+  geom geometry(Point,4326),
+  code character varying,
+  CONSTRAINT child_pkey PRIMARY KEY (gid)
+)
+INHERITS ( qgis_test.base_table)
+WITH (
+  OIDS=FALSE
+);
+
+
+CREATE TABLE qgis_test.child_table2
+(
+  gid serial NOT NULL,
+  geom geometry(Point,4326),
+  code character varying,
+  CONSTRAINT child2_pkey PRIMARY KEY (gid)
+)
+INHERITS ( qgis_test.base_table)
+WITH (
+  OIDS=FALSE
+);
+
+INSERT INTO qgis_test.child_table (gid, geom, code) VALUES (1, 'srid=4326;Point(0 0)'::geometry, 'child 1');
+INSERT INTO qgis_test.child_table (gid, geom, code) VALUES (2, 'srid=4326;Point(1 1)'::geometry, 'child 2');
+
+
+INSERT INTO qgis_test.child_table2 (gid, geom, code) VALUES (1, 'srid=4326;Point(-1 -1)::geometry', 'child2 1');
+INSERT INTO qgis_test.child_table2 (gid, geom, code) VALUES (2, 'srid=4326;Point(-1 1)::geometry', 'child2 2');
