@@ -105,6 +105,14 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource* sour
     whereClause += QgsOracleConn::databaseTypeFilter( "featureRequest", mSource->mGeometryColumn, mSource->mRequestedGeomType );
   }
 
+  if ( request.limit() >= 0 )
+  {
+    if ( !whereClause.isEmpty() )
+      whereClause += " AND ";
+
+    whereClause += QString( "rownum<=%1" ).arg( request.limit() );
+  }
+
   if ( !mSource->mSqlWhereClause.isEmpty() )
   {
     if ( !whereClause.isEmpty() )
