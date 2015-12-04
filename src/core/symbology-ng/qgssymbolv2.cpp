@@ -19,6 +19,7 @@
 #include "qgslinesymbollayerv2.h"
 #include "qgsmarkersymbollayerv2.h"
 #include "qgsfillsymbollayerv2.h"
+#include "qgsgeometrygeneratorsymbollayerv2.h"
 
 #include "qgslogger.h"
 #include "qgsrendercontext.h" // for bigSymbolPreview
@@ -424,12 +425,15 @@ QgsSymbolLayerV2* QgsSymbolV2::takeSymbolLayer( int index )
 
 bool QgsSymbolV2::changeSymbolLayer( int index, QgsSymbolLayerV2* layer )
 {
-  if ( index < 0 || index >= mLayers.count() )
-    return false;
-  if ( layer == NULL || !layer->isCompatibleWithSymbol( this ) )
+  QgsSymbolLayerV2* oldLayer = mLayers.value( index );
+
+  if ( oldLayer == layer )
     return false;
 
-  delete mLayers[index]; // first delete the original layer
+  if ( !layer || !layer->isCompatibleWithSymbol( this ) )
+    return false;
+
+  delete oldLayer; // first delete the original layer
   mLayers[index] = layer; // set new layer
   return true;
 }
@@ -627,63 +631,25 @@ QgsSymbolLayerV2List QgsSymbolV2::cloneLayers() const
 
 void QgsSymbolV2::renderUsingLayer( QgsSymbolLayerV2* layer, QgsSymbolV2RenderContext& context )
 {
-  static QPointF nullPoint;
-  static QPolygonF nullLine;
-  static QList<QPolygonF> nullRings;
+  Q_ASSERT( layer->type() == Hybrid );
 
+  QgsGeometryGeneratorSymbolLayerV2* generatorLayer = static_cast<QgsGeometryGeneratorSymbolLayerV2*>( layer );
 
-  QgsPaintEffect* effect = layer->paintEffect();
+  QgsPaintEffect* effect = generatorLayer->paintEffect();
   if ( effect && effect->enabled() )
   {
     QPainter* p = context.renderContext().painter();
     p->save();
 
     effect->begin( context.renderContext() );
-    switch ( layer->type() )
-    {
-      case Fill:
-        static_cast<QgsFillSymbolLayerV2*>( layer )->renderPolygon( nullLine, &nullRings, context );
-        break;
-
-      case Line:
-        static_cast<QgsLineSymbolLayerV2*>( layer )->renderPolyline( nullLine, context );
-        break;
-
-      case Marker:
-        static_cast<QgsMarkerSymbolLayerV2*>( layer )->renderPoint( nullPoint, context );
-        break;
-
-      case Hybrid:
-        Q_ASSERT( false );
-        // Layers should only be registered as accepting hybrid input but always return a defined output
-        break;
-    }
-
+    generatorLayer->render( context );
     effect->end( context.renderContext() );
 
     p->restore();
   }
   else
   {
-    switch ( layer->type() )
-    {
-      case Fill:
-        static_cast<QgsFillSymbolLayerV2*>( layer )->renderPolygon( nullLine, &nullRings, context );
-        break;
-
-      case Line:
-        static_cast<QgsLineSymbolLayerV2*>( layer )->renderPolyline( nullLine, context );
-        break;
-
-      case Marker:
-        static_cast<QgsMarkerSymbolLayerV2*>( layer )->renderPoint( nullPoint, context );
-        break;
-
-      case Hybrid:
-        Q_ASSERT( false );
-        // Layers should only be registered as accepting hybrid input but always return a defined output
-        break;
-    }
+    generatorLayer->render( context );
   }
 }
 

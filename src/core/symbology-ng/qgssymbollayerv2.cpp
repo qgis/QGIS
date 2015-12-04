@@ -401,6 +401,14 @@ QgsSymbolLayerV2::~QgsSymbolLayerV2()
   delete mPaintEffect;
 }
 
+bool QgsSymbolLayerV2::isCompatibleWithSymbol( QgsSymbolV2* symbol )
+{
+  if ( symbol->type() == QgsSymbolV2::Fill && mType == QgsSymbolV2::Line )
+    return true;
+
+  return symbol->type() == mType;
+}
+
 QSet<QString> QgsSymbolLayerV2::usedAttributes() const
 {
   QStringList columns;

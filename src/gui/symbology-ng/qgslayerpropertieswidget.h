@@ -80,6 +80,9 @@ class GUI_EXPORT QgsLayerPropertiesWidget : public QWidget, private Ui::LayerPro
     const QgsSymbolV2* mSymbol;
     const QgsVectorLayer* mVectorLayer;
 
+  private slots:
+    void reloadLayer();
+
   private:
     QgsExpressionContext* mPresetExpressionContext;
     QgsMapCanvas* mMapCanvas;

@@ -20,6 +20,7 @@
 #include "qgslinesymbollayerv2.h"
 #include "qgsfillsymbollayerv2.h"
 #include "qgsvectorfieldsymbollayer.h"
+#include "qgsgeometrygeneratorsymbollayerv2.h"
 
 QgsSymbolLayerV2Registry::QgsSymbolLayerV2Registry()
 {
@@ -56,6 +57,9 @@ QgsSymbolLayerV2Registry::QgsSymbolLayerV2Registry()
                       QgsLinePatternFillSymbolLayer::create, QgsLinePatternFillSymbolLayer::createFromSld ) );
   addSymbolLayerType( new QgsSymbolLayerV2Metadata( "PointPatternFill", QObject::tr( "Point pattern fill" ), QgsSymbolV2::Fill,
                       QgsPointPatternFillSymbolLayer::create, QgsPointPatternFillSymbolLayer::createFromSld ) );
+
+  addSymbolLayerType( new QgsSymbolLayerV2Metadata( "GeometryGenerator", QObject::tr( "Geometry Generator" ), QgsSymbolV2::Hybrid,
+                      QgsGeometryGeneratorSymbolLayerV2::create ) );
 }
 
 QgsSymbolLayerV2Registry::~QgsSymbolLayerV2Registry()
@@ -79,10 +83,7 @@ bool QgsSymbolLayerV2Registry::addSymbolLayerType( QgsSymbolLayerV2AbstractMetad
 
 QgsSymbolLayerV2AbstractMetadata* QgsSymbolLayerV2Registry::symbolLayerMetadata( const QString& name ) const
 {
-  if ( mMetadata.contains( name ) )
-    return mMetadata.value( name );
-  else
-    return NULL;
+  return mMetadata.value( name );
 }
 
 QgsSymbolLayerV2Registry* QgsSymbolLayerV2Registry::instance()
@@ -103,8 +104,10 @@ QgsSymbolLayerV2* QgsSymbolLayerV2Registry::defaultSymbolLayer( QgsSymbolV2::Sym
 
     case QgsSymbolV2::Fill:
       return QgsSimpleFillSymbolLayerV2::create();
+
+    case QgsSymbolV2::Hybrid:
+      return 0;
   }
-  return NULL;
 }
 
 
@@ -130,7 +133,7 @@ QStringList QgsSymbolLayerV2Registry::symbolLayersForType( QgsSymbolV2::SymbolTy
   QMap<QString, QgsSymbolLayerV2AbstractMetadata*>::ConstIterator it = mMetadata.begin();
   for ( ; it != mMetadata.end(); ++it )
   {
-    if (( *it )->type() == type )
+    if ( it.value()->type() == type || it.value()->type() == QgsSymbolV2::Hybrid )
       lst.append( it.key() );
   }
   return lst;

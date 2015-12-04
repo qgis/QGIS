@@ -19,6 +19,8 @@
 #include "qgslinesymbollayerv2.h"
 #include "qgsmarkersymbollayerv2.h"
 #include "qgsfillsymbollayerv2.h"
+#include "qgsgeometrygeneratorsymbollayerv2.h"
+#include "qgssymbolslistwidget.h"
 
 #include "characterwidget.h"
 #include "qgsdashspacedialog.h"
@@ -3081,4 +3083,50 @@ void QgsSvgGroupsModel::createTree( QStandardItem*& parentGroup )
 
 
 /// @endcond
+
+
+
+
+
+
+QgsGeometryGeneratorSymbolLayerWidget::QgsGeometryGeneratorSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent )
+    : QgsSymbolLayerV2Widget( parent, vl )
+{
+  setupUi( this );
+  modificationExpressionSelector->setLayer( const_cast<QgsVectorLayer*>( vl ) );
+  cbxGeometryType->addItem( tr( "Fill" ), QgsSymbolV2::Fill );
+  cbxGeometryType->addItem( tr( "Line" ), QgsSymbolV2::Line );
+  cbxGeometryType->addItem( tr( "Marker" ), QgsSymbolV2::Marker );
+  connect( modificationExpressionSelector, SIGNAL( expressionParsed( bool ) ), this, SLOT( updateExpression() ) );
+  connect( cbxGeometryType, SIGNAL( currentIndexChanged( int ) ), this, SLOT( updateSymbolType() ) );
+}
+
+void QgsGeometryGeneratorSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* l )
+{
+  mLayer = static_cast<QgsGeometryGeneratorSymbolLayerV2*>( l );
+
+  if ( mPresetExpressionContext )
+    modificationExpressionSelector->setExpressionContext( *mPresetExpressionContext );
+  modificationExpressionSelector->setExpressionText( mLayer->geometryExpression() );
+  cbxGeometryType->setCurrentIndex( cbxGeometryType->findData( mLayer->symbolType() ) );
+}
+
+QgsSymbolLayerV2* QgsGeometryGeneratorSymbolLayerWidget::symbolLayer()
+{
+  return mLayer;
+}
+
+void QgsGeometryGeneratorSymbolLayerWidget::updateExpression()
+{
+  mLayer->setGeometryExpression( modificationExpressionSelector->expressionText() );
+
+  emit changed();
+}
+
+void QgsGeometryGeneratorSymbolLayerWidget::updateSymbolType()
+{
+  mLayer->setSymbolType( static_cast<QgsSymbolV2::SymbolType>( cbxGeometryType->itemData( cbxGeometryType->currentIndex() ).toInt() ) );
+
+  emit symbolChanged();
+}
 
