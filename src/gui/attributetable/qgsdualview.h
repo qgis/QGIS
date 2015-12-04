@@ -185,6 +185,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      * @brief Called while features are being loaded, cancel to abort
      * @param i
      * @param cancel
+     * @note not available in Python bindings
      */
     void loadProgress( int i, bool &cancel );
 

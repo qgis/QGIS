@@ -146,13 +146,6 @@ class QgsDualView : QStackedWidget
     void loadFinished();
 
     /**
-     * @brief Called while features are being loaded, cancel to abort
-     * @param i
-     * @param cancel
-     */
-    void loadProgress( int i, bool &cancel );
-
-    /**
      * @brief Called when features loading starts
      * @param numFeatures total number of features
      */
