@@ -251,6 +251,10 @@ class CORE_EXPORT QgsRelation
     bool isValid() const;
 
   protected:
+    /**
+     * Updates the validity status of this relation.
+     * Will be called internally whenever a member is changed.
+     */
     void updateRelationStatus();
 
   private:
