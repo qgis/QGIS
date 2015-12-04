@@ -71,7 +71,7 @@ class ClipData(FusionAlgorithm):
         commands.append('/shape:' + unicode(self.getParameterValue(self.SHAPE)))
         dtm = self.getParameterValue(self.DTM)
         if dtm:
-            commands.append('/dtm:'+unicode(dtm))
+            commands.append('/dtm:' + unicode(dtm))
         height = self.getParameterValue(self.HEIGHT)
         if height:
             commands.append('/height')

@@ -100,7 +100,7 @@ void QgsConfigureShortcutsDialog::populateActions()
 void QgsConfigureShortcutsDialog::saveShortcuts()
 {
   QString fileName = QFileDialog::getSaveFileName( this, tr( "Save shortcuts" ), QDir::homePath(),
-                                                   tr( "XML file" ) + " (*.xml);;" + tr( "All files" ) + " (*)" );
+                     tr( "XML file" ) + " (*.xml);;" + tr( "All files" ) + " (*)" );
 
   if ( fileName.isEmpty() )
     return;
@@ -153,7 +153,7 @@ void QgsConfigureShortcutsDialog::saveShortcuts()
 void QgsConfigureShortcutsDialog::loadShortcuts()
 {
   QString fileName = QFileDialog::getOpenFileName( this, tr( "Load shortcuts" ), QDir::homePath(),
-                                                   tr( "XML file" ) + " (*.xml);;" + tr( "All files" ) + " (*)" );
+                     tr( "XML file" ) + " (*.xml);;" + tr( "All files" ) + " (*)" );
 
   if ( fileName.isEmpty() )
   {
