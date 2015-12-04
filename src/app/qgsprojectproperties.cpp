@@ -1470,6 +1470,9 @@ void QgsProjectProperties::populateStyles()
       case QgsSymbolV2::Fill :
         cbo = cboStyleFill;
         break;
+      case QgsSymbolV2::Hybrid:
+        // Shouldn't get here
+        break;
     }
     if ( cbo )
     {

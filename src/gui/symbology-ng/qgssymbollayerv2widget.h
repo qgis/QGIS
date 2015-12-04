@@ -94,7 +94,18 @@ class GUI_EXPORT QgsSymbolLayerV2Widget : public QWidget
     Q_DECL_DEPRECATED virtual QString dataDefinedPropertyLabel( const QString &entryName );
 
   signals:
+    /**
+     * Should be emitted whenever configuration changes happened on this symbol layer configuration.
+     * If the subsymbol is changed, {@link symbolChanged()} should be emitted instead.
+     */
     void changed();
+    /**
+     * Should be emitted whenever the sub symbol changed on this symbol layer configuration.
+     * Normally {@link changed()} should be preferred.
+     *
+     * @see {@link changed()}
+     */
+    void symbolChanged();
 
   protected slots:
     void updateDataDefinedProperty();
@@ -646,5 +657,30 @@ class QgsSvgGroupsModel : public QStandardItemModel
 };
 
 ///@endcond
+
+#include "ui_qgsgeometrygeneratorwidgetbase.h"
+
+class QgsGeometryGeneratorSymbolLayerV2;
+
+class GUI_EXPORT QgsGeometryGeneratorSymbolLayerWidget : public QgsSymbolLayerV2Widget, private Ui::GeometryGeneratorWidgetBase
+{
+    Q_OBJECT
+
+  public:
+    QgsGeometryGeneratorSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent = NULL );
+
+    static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) { return new QgsGeometryGeneratorSymbolLayerWidget( vl ); }
+
+    // from base class
+    virtual void setSymbolLayer( QgsSymbolLayerV2* layer ) override;
+    virtual QgsSymbolLayerV2* symbolLayer() override;
+
+  protected:
+    QgsGeometryGeneratorSymbolLayerV2* mLayer;
+
+  private slots:
+    void updateExpression();
+    void updateSymbolType();
+};
 
 #endif

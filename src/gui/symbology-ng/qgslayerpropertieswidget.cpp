@@ -76,6 +76,8 @@ static void _initWidgetFunctions()
   _initWidgetFunction( "LinePatternFill", QgsLinePatternFillSymbolLayerWidget::create );
   _initWidgetFunction( "PointPatternFill", QgsPointPatternFillSymbolLayerWidget::create );
 
+  _initWidgetFunction( "GeometryGenerator", QgsGeometryGeneratorSymbolLayerWidget::create );
+
   initialized = true;
 }
 
@@ -151,7 +153,6 @@ void QgsLayerPropertiesWidget::populateLayerTypes()
       cboLayerType->addItem( name, typesLine[i] );
     }
   }
-
 }
 
 void QgsLayerPropertiesWidget::updateSymbolLayerWidget( QgsSymbolLayerV2* layer )
@@ -172,14 +173,15 @@ void QgsLayerPropertiesWidget::updateSymbolLayerWidget( QgsSymbolLayerV2* layer 
     QgsSymbolLayerV2Widget* w = am->createSymbolLayerWidget( mVectorLayer );
     if ( w )
     {
-      w->setSymbolLayer( layer );
       w->setExpressionContext( mPresetExpressionContext );
       if ( mMapCanvas )
         w->setMapCanvas( mMapCanvas );
+      w->setSymbolLayer( layer );
       stackedWidget->addWidget( w );
       stackedWidget->setCurrentWidget( w );
       // start receiving updates from widget
       connect( w, SIGNAL( changed() ), this, SLOT( emitSignalChanged() ) );
+      connect( w, SIGNAL( symbolChanged() ), this, SLOT( reloadLayer() ) );
       return;
     }
   }
@@ -218,4 +220,9 @@ void QgsLayerPropertiesWidget::emitSignalChanged()
 
   // also update paint effect preview
   mEffectWidget->setPreviewPicture( QgsSymbolLayerV2Utils::symbolLayerPreviewPicture( mLayer, QgsSymbolV2::MM, QSize( 80, 80 ) ) );
+}
+
+void QgsLayerPropertiesWidget::reloadLayer()
+{
+  emit changeLayer( mLayer );
 }
