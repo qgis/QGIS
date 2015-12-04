@@ -38,9 +38,6 @@ QgsSponsors::~QgsSponsors()
 
 void QgsSponsors::init()
 {
-
   // set the 60x60 icon pixmap
-  QPixmap icon( QgsApplication::iconsPath() + "qgis-icon-60x60.png" );
-  qgisIcon->setPixmap( icon );
-
+  qgisIcon->setPixmap( QPixmap( QgsApplication::appIconPath() ) );
 }

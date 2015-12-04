@@ -752,7 +752,7 @@ int main( int argc, char *argv[] )
 
 // (if Windows/Mac, use icon from resource)
 #if !defined(Q_OS_WIN) && !defined(Q_OS_MAC)
-  myApp.setWindowIcon( QIcon( QgsApplication::iconsPath() + "qgis-icon-60x60.png" ) );
+  myApp.setWindowIcon( QIcon( QgsApplication::appIconPath() ) );
 #endif
 
   //

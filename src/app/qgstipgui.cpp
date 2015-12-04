@@ -64,8 +64,7 @@ void QgsTipGui::showTip( QgsTip myTip )
   //        once Qt 4.6 is the minimum required version for building QGIS.
   //
   QString content = "<img src='"
-                    + QgsApplication::iconsPath()
-                    + "qgis-icon-60x60.png"
+                    + QgsApplication::appIconPath()
                     + "' style='float:left;'>"
                     + "<h2>"
                     + myTip.title()

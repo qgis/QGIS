@@ -382,6 +382,10 @@ QString QgsApplication::activeThemePath()
   return userThemesFolder() + QDir::separator() + themeName() + QDir::separator() + "icons/";
 }
 
+QString QgsApplication::appIconPath()
+{
+  return iconsPath() + ( QDate::currentDate().month() == 12 ? tr( "qgis-icon-60x60_xmas.png", "December application icon" ) : QString( "qgis-icon-60x60.png" ) );
+}
 
 QString QgsApplication::iconPath( const QString& iconFile )
 {

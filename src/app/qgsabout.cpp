@@ -72,16 +72,7 @@ void QgsAbout::init()
   connect( developersMapView, SIGNAL( linkClicked( const QUrl & ) ), this, SLOT( openUrl( const QUrl & ) ) );
 
   // set the 60x60 icon pixmap
-  QPixmap icon;
-  if ( QDate::currentDate().month() == 12 )
-  {
-    icon.load( QgsApplication::iconsPath() + "qgis-icon-60x60_xmas.png" );
-  }
-  else
-  {
-    icon.load( QgsApplication::iconsPath() + "qgis-icon-60x60.png" );
-  }
-  qgisIcon->setPixmap( icon );
+  qgisIcon->setPixmap( QPixmap( QgsApplication::appIconPath() ) );
 
   //read the authors file to populate the svn committers list
   QStringList lines;
