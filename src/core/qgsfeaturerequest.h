@@ -175,6 +175,19 @@ class CORE_EXPORT QgsFeatureRequest
      */
     QgsFeatureRequest& disableFilter() { mFilter = FilterNone; return *this; }
 
+    /** Set the maximum number of features to request.
+     * @param limit maximum number of features, or -1 to request all features.
+     * @see limit()
+     * @note added in QGIS 2.14
+     */
+    QgsFeatureRequest& setLimit( long limit );
+
+    /** Returns the maximum number of features to request, or -1 if no limit set.
+     * @see setLimit
+     * @note added in QGIS 2.14
+     */
+    long limit() const { return mLimit; }
+
     //! Set flags that affect how features will be fetched
     QgsFeatureRequest& setFlags( const QgsFeatureRequest::Flags& flags );
     const Flags& flags() const { return mFlags; }
@@ -223,6 +236,7 @@ class CORE_EXPORT QgsFeatureRequest
     Flags mFlags;
     QgsAttributeList mAttrs;
     QgsSimplifyMethod mSimplifyMethod;
+    long mLimit;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsFeatureRequest::Flags )

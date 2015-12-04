@@ -22,6 +22,7 @@ QgsAbstractFeatureIterator::QgsAbstractFeatureIterator( const QgsFeatureRequest&
     : mRequest( request )
     , mClosed( false )
     , refs( 0 )
+    , mFetchedCount( 0 )
     , mGeometrySimplifier( NULL )
     , mLocalSimplification( false )
 {
@@ -36,6 +37,10 @@ QgsAbstractFeatureIterator::~QgsAbstractFeatureIterator()
 bool QgsAbstractFeatureIterator::nextFeature( QgsFeature& f )
 {
   bool dataOk = false;
+  if ( mRequest.limit() >= 0 && mFetchedCount >= mRequest.limit() )
+  {
+    return false;
+  }
 
   switch ( mRequest.filterType() )
   {
@@ -59,6 +64,9 @@ bool QgsAbstractFeatureIterator::nextFeature( QgsFeature& f )
     if ( geometry )
       simplify( f );
   }
+  if ( dataOk )
+    mFetchedCount++;
+
   return dataOk;
 }
 

@@ -87,6 +87,9 @@ class CORE_EXPORT QgsAbstractFeatureIterator
     void deref(); //!< remove reference, delete if refs == 0
     friend class QgsFeatureIterator;
 
+    //! Number of features already fetched by iterator
+    long mFetchedCount;
+
     //! Setup the simplification of geometries to fetch using the specified simplify method
     virtual bool prepareSimplification( const QgsSimplifyMethod& simplifyMethod );
 
@@ -198,11 +201,17 @@ inline bool QgsFeatureIterator::nextFeature( QgsFeature& f )
 
 inline bool QgsFeatureIterator::rewind()
 {
+  if ( mIter )
+    mIter->mFetchedCount = 0;
+
   return mIter ? mIter->rewind() : false;
 }
 
 inline bool QgsFeatureIterator::close()
 {
+  if ( mIter )
+    mIter->mFetchedCount = 0;
+
   return mIter ? mIter->close() : false;
 }
 

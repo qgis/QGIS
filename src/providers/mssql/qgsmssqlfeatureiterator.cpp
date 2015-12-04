@@ -63,6 +63,9 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest& request )
   // build sql statement
   mStatement = QString( "SELECT " );
 
+  if ( request.limit() >= 0 && request.filterType() != QgsFeatureRequest::FilterExpression )
+    mStatement += QString( "TOP %1 " ).arg( mRequest.limit() );
+
   mStatement += QString( "[%1]" ).arg( mSource->mFidColName );
   mFidCol = mSource->mFields.indexFromName( mSource->mFidColName );
   mAttributesToFetch.append( mFidCol );

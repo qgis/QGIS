@@ -27,6 +27,7 @@ QgsFeatureRequest::QgsFeatureRequest()
     , mFilterFid( -1 )
     , mFilterExpression( 0 )
     , mFlags( 0 )
+    , mLimit( -1 )
 {
 }
 
@@ -35,6 +36,7 @@ QgsFeatureRequest::QgsFeatureRequest( QgsFeatureId fid )
     , mFilterFid( fid )
     , mFilterExpression( 0 )
     , mFlags( 0 )
+    , mLimit( -1 )
 {
 }
 
@@ -44,6 +46,7 @@ QgsFeatureRequest::QgsFeatureRequest( const QgsRectangle& rect )
     , mFilterFid( -1 )
     , mFilterExpression( 0 )
     , mFlags( 0 )
+    , mLimit( -1 )
 {
 }
 
@@ -53,6 +56,7 @@ QgsFeatureRequest::QgsFeatureRequest( const QgsExpression& expr, const QgsExpres
     , mFilterExpression( new QgsExpression( expr.expression() ) )
     , mExpressionContext( context )
     , mFlags( 0 )
+    , mLimit( -1 )
 {
 }
 
@@ -79,6 +83,7 @@ QgsFeatureRequest& QgsFeatureRequest::operator=( const QgsFeatureRequest & rh )
   mExpressionContext = rh.mExpressionContext;
   mAttrs = rh.mAttrs;
   mSimplifyMethod = rh.mSimplifyMethod;
+  mLimit = rh.mLimit;
   return *this;
 }
 
@@ -102,7 +107,7 @@ QgsFeatureRequest& QgsFeatureRequest::setFilterFid( QgsFeatureId fid )
   return *this;
 }
 
-QgsFeatureRequest&QgsFeatureRequest::setFilterFids( const QgsFeatureIds& fids )
+QgsFeatureRequest& QgsFeatureRequest::setFilterFids( const QgsFeatureIds& fids )
 {
   mFilter = FilterFids;
   mFilterFids = fids;
@@ -117,7 +122,7 @@ QgsFeatureRequest& QgsFeatureRequest::setFilterExpression( const QString& expres
   return *this;
 }
 
-QgsFeatureRequest&QgsFeatureRequest::combineFilterExpression( const QString& expression )
+QgsFeatureRequest& QgsFeatureRequest::combineFilterExpression( const QString& expression )
 {
   if ( mFilterExpression )
   {
@@ -133,6 +138,12 @@ QgsFeatureRequest&QgsFeatureRequest::combineFilterExpression( const QString& exp
 QgsFeatureRequest &QgsFeatureRequest::setExpressionContext( const QgsExpressionContext &context )
 {
   mExpressionContext = context;
+  return *this;
+}
+
+QgsFeatureRequest& QgsFeatureRequest::setLimit( long limit )
+{
+  mLimit = limit;
   return *this;
 }
 

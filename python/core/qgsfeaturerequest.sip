@@ -92,6 +92,19 @@ class QgsFeatureRequest
      */
     QgsFeatureRequest& disableFilter();
 
+    /** Set the maximum number of features to request.
+     * @param limit maximum number of features, or -1 to request all features.
+     * @see limit()
+     * @note added in QGIS 2.14
+     */
+    QgsFeatureRequest& setLimit( long limit );
+
+    /** Returns the maximum number of features to request, or -1 if no limit set.
+     * @see setLimit
+     * @note added in QGIS 2.14
+     */
+    long limit() const;
+
     //! Set flags that affect how features will be fetched
     QgsFeatureRequest& setFlags( const Flags& flags );
     const Flags& flags() const;

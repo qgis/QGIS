@@ -37,6 +37,11 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
 
   QStringList whereClauses;
   QString whereClause;
+
+  //beware - limitAtProvider needs to be set to false if the request cannot be completely handled
+  //by the provider (eg utilising QGIS expression filters)
+  bool limitAtProvider = ( mRequest.limit() >= 0 );
+
   if ( !request.filterRect().isNull() && !mSource->mGeometryColumn.isNull() )
   {
     // some kind of MBR spatial filtering is required
@@ -63,22 +68,33 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
       whereClauses.append( whereClause );
     }
   }
-  else if ( request.filterType() == QgsFeatureRequest::FilterExpression
-            && QSettings().value( "/qgis/compileExpressions", true ).toBool() )
+  else if ( request.filterType() == QgsFeatureRequest::FilterExpression )
   {
-    QgsSpatiaLiteExpressionCompiler compiler = QgsSpatiaLiteExpressionCompiler( source );
-
-    QgsSqlExpressionCompiler::Result result = compiler.compile( request.filterExpression() );
-
-    if ( result == QgsSqlExpressionCompiler::Complete || result == QgsSqlExpressionCompiler::Partial )
+    if ( QSettings().value( "/qgis/compileExpressions", true ).toBool() )
     {
-      whereClause = compiler.result();
-      if ( !whereClause.isEmpty() )
+      QgsSpatiaLiteExpressionCompiler compiler = QgsSpatiaLiteExpressionCompiler( source );
+
+      QgsSqlExpressionCompiler::Result result = compiler.compile( request.filterExpression() );
+
+      if ( result == QgsSqlExpressionCompiler::Complete || result == QgsSqlExpressionCompiler::Partial )
       {
-        whereClauses.append( whereClause );
-        //if only partial success when compiling expression, we need to double-check results using QGIS' expressions
-        mExpressionCompiled = ( result == QgsSqlExpressionCompiler::Complete );
+        whereClause = compiler.result();
+        if ( !whereClause.isEmpty() )
+        {
+          whereClauses.append( whereClause );
+          //if only partial success when compiling expression, we need to double-check results using QGIS' expressions
+          mExpressionCompiled = ( result == QgsSqlExpressionCompiler::Complete );
+        }
       }
+      if ( result != QgsSqlExpressionCompiler::Complete )
+      {
+        //can't apply limit at provider side as we need to check all results using QGIS expressions
+        limitAtProvider = false;
+      }
+    }
+    else
+    {
+      limitAtProvider = false;
     }
   }
 
@@ -94,7 +110,7 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
   whereClause = whereClauses.join( " AND " );
 
   // preparing the SQL statement
-  if ( !prepareStatement( whereClause ) )
+  if ( !prepareStatement( whereClause, limitAtProvider ? mRequest.limit() : -1 ) )
   {
     // some error occurred
     sqliteStatement = NULL;
@@ -183,7 +199,7 @@ bool QgsSpatiaLiteFeatureIterator::close()
 ////
 
 
-bool QgsSpatiaLiteFeatureIterator::prepareStatement( const QString& whereClause )
+bool QgsSpatiaLiteFeatureIterator::prepareStatement( const QString& whereClause, long limit )
 {
   if ( !mHandle )
     return false;
@@ -221,6 +237,9 @@ bool QgsSpatiaLiteFeatureIterator::prepareStatement( const QString& whereClause 
 
     if ( !whereClause.isEmpty() )
       sql += QString( " WHERE %1" ).arg( whereClause );
+
+    if ( limit >= 0 )
+      sql += QString( " LIMIT %1" ).arg( limit );
 
     if ( sqlite3_prepare_v2( mHandle->handle(), sql.toUtf8().constData(), -1, &sqliteStatement, NULL ) != SQLITE_OK )
     {
