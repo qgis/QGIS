@@ -1164,10 +1164,15 @@ bool QgsPostgresProvider::determinePrimaryKey()
   QString sql;
   if ( !mIsQuery )
   {
+    sql = QString( "SELECT count(*) FROM pg_inherits WHERE inhparent=%1::regclass" ).arg( quotedValue( mQuery ) );
+    QgsDebugMsg( QString( "Checking whether %1 is a parent table" ).arg( sql ) );
+    QgsPostgresResult res( connectionRO()->PQexec( sql ) );
+    bool isParentTable( res.PQntuples() == 0 || res.PQgetvalue( 0, 0 ).toInt() > 0 );
+
     sql = QString( "SELECT indexrelid FROM pg_index WHERE indrelid=%1::regclass AND (indisprimary OR indisunique) ORDER BY CASE WHEN indisprimary THEN 1 ELSE 2 END LIMIT 1" ).arg( quotedValue( mQuery ) );
     QgsDebugMsg( QString( "Retrieving first primary or unique index: %1" ).arg( sql ) );
 
-    QgsPostgresResult res( connectionRO()->PQexec( sql ) );
+    res = connectionRO()->PQexec( sql );
     QgsDebugMsg( QString( "Got %1 rows." ).arg( res.PQntuples() ) );
 
     QStringList log;
@@ -1220,7 +1225,6 @@ bool QgsPostgresProvider::determinePrimaryKey()
             QgsMessageLog::logMessage( tr( "The table has no column suitable for use as a key. QGIS requires a primary key, a PostgreSQL oid column or a ctid for tables." ), tr( "PostGIS" ) );
           }
         }
-
       }
       else if ( type == "v" || type == "m" ) // the relation is a view
       {
@@ -1276,9 +1280,9 @@ bool QgsPostgresProvider::determinePrimaryKey()
 
       mPrimaryKeyType = ( mPrimaryKeyAttrs.size() == 1 && isInt ) ? pktInt : pktFidMap;
 
-      if ( mightBeNull && !mUseEstimatedMetadata && !uniqueData( primaryKey ) )
+      if ( ( mightBeNull || isParentTable ) && !mUseEstimatedMetadata && !uniqueData( primaryKey ) )
       {
-        QgsMessageLog::logMessage( tr( "Ignoring key candidate because of NULL values" ), tr( "PostGIS" ) );
+        QgsMessageLog::logMessage( tr( "Ignoring key candidate because of NULL values or inheritance" ), tr( "PostGIS" ) );
         mPrimaryKeyType = pktUnknown;
         mPrimaryKeyAttrs.clear();
       }
