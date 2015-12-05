@@ -16,16 +16,19 @@
 #include "qgsoraclefeatureiterator.h"
 #include "qgsoracleprovider.h"
 #include "qgsoracleconnpool.h"
+#include "qgsoracleexpressioncompiler.h"
 
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsgeometry.h"
 
 #include <QObject>
+#include <QSettings>
 
 QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource* source, bool ownSource, const QgsFeatureRequest &request )
     : QgsAbstractFeatureIteratorFromSource<QgsOracleFeatureSource>( source, ownSource, request )
     , mRewind( false )
+    , mExpressionCompiled( false )
 {
   mConnection = QgsOracleConnPool::instance()->acquireConnection( mSource->mUri.connectionInfo() );
   if ( !mConnection )
@@ -90,6 +93,15 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource* sour
       break;
 
     case QgsFeatureRequest::FilterExpression:
+      if ( QSettings().value( "/qgis/compileExpressions", true ).toBool() )
+      {
+        QgsOracleExpressionCompiler compiler( mSource );
+        if ( compiler.compile( request.filterExpression() ) == QgsSqlExpressionCompiler::Complete )
+        {
+          whereClause = QgsOracleUtils::andWhereClauses( whereClause, compiler.result() );
+          mExpressionCompiled = true;
+        }
+      }
       break;
 
     case QgsFeatureRequest::FilterRect:
@@ -126,6 +138,14 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource* sour
 QgsOracleFeatureIterator::~QgsOracleFeatureIterator()
 {
   close();
+}
+
+bool QgsOracleFeatureIterator::nextFeatureFilterExpression( QgsFeature& f )
+{
+  if ( !mExpressionCompiled )
+    return QgsAbstractFeatureIterator::nextFeatureFilterExpression( f );
+  else
+    return fetchFeature( f );
 }
 
 bool QgsOracleFeatureIterator::fetchFeature( QgsFeature& feature )

@@ -52,6 +52,7 @@ class QgsOracleFeatureSource : public QgsAbstractFeatureSource
     QSharedPointer<QgsOracleSharedData> mShared;
 
     friend class QgsOracleFeatureIterator;
+    friend class QgsOracleExpressionCompiler;
 };
 
 
@@ -63,20 +64,24 @@ class QgsOracleFeatureIterator : public QgsAbstractFeatureIteratorFromSource<Qgs
     ~QgsOracleFeatureIterator();
 
     //! reset the iterator to the starting position
-    virtual bool rewind();
+    virtual bool rewind() override;
 
     //! end of iterating: free the resources / lock
-    virtual bool close();
+    virtual bool close() override;
 
   protected:
     //! fetch next feature, return true on success
-    virtual bool fetchFeature( QgsFeature& feature );
+    virtual bool fetchFeature( QgsFeature& feature ) override;
+
+    //! fetch next feature filter expression
+    bool nextFeatureFilterExpression( QgsFeature& f ) override;
 
     bool openQuery( QString whereClause );
 
     QgsOracleConn *mConnection;
     QSqlQuery mQry;
     bool mRewind;
+    bool mExpressionCompiled;
     QgsAttributeList mAttributeList;
 };
 
