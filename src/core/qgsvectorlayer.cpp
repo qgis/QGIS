@@ -2080,7 +2080,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
   node.appendChild( eficsField );
 
   QDomElement efifpField  = doc.createElement( "editforminitfilepath" );
-  efifpField.appendChild( doc.createTextNode( mEditFormConfig->initFilePath() ) );
+  efifpField.appendChild( doc.createTextNode( QgsProject::instance()->writePath( mEditFormConfig->initFilePath() ) ) );
   node.appendChild( efifpField );
 
 
