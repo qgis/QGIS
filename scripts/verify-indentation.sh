@@ -61,8 +61,9 @@ if [ -s "$ASTYLEDIFF" ]; then
 	cat <<EOF
 
 Tips to prevent and resolve:
-* Enable WITH_ASTYLE in your cmake configuration
-* Use scripts/astyle.sh file to fix the now badly indented files
+* Enable WITH_ASTYLE in your cmake configuration to format C++ code
+* Install autopep8 to format python code
+* Use "scripts/astyle.sh file" to fix the now badly indented files
 * Consider using scripts/prepare-commit.sh as pre-commit hook to avoid this
   in the future (ln -s scripts/prepare-commit.sh .git/hooks/pre-commit) or
   run it manually before each commit.
