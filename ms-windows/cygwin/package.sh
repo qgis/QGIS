@@ -12,7 +12,6 @@ cmake -D BUILDNAME="cygwin" \
         -D WITH_SPATIALITE=TRUE \
         -D WITH_QSPATIALITE=TRUE \
         -D WITH_SERVER=TRUE \
-        -D WITH_ASTYLE=TRUE \
         -D WITH_GLOBE=TRUE \
         -D WITH_TOUCH=TRUE \
         -D WITH_ORACLE=FALSE \
