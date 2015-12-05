@@ -163,11 +163,16 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
     /**
      * @brief setEditFormInit set the private ui fields
      * @param editForm
-     * @param editFormInit
-     * @param editFormInitCode
-     * @param editFormInitUseCode
+     * @param initFunction
+     * @param initCode
+     * @param initFilePath
+     * @param codeSource
      */
-    void setEditFormInit( const QString &editForm, const QString &editFormInit, const QString &editFormInitCode, const bool editFormInitUseCode );
+    void setEditFormInit( const QString &editForm,
+                          const QString &initFunction,
+                          const QString &initCode,
+                          const QString &initFilePath,
+                          const QgsEditFormConfig::PythonInitCodeSource &codeSource );
 
   signals:
     void toggleEditing();
@@ -177,9 +182,10 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
     void on_mDeleteAttributeButton_clicked();
     void on_mCalculateFieldButton_clicked();
     void onAttributeSelectionChanged();
+    void on_pbtnSelectInitFilePath_clicked();
     void on_pbnSelectEditForm_clicked();
     void on_mEditorLayoutComboBox_currentIndexChanged( int index );
-    void on_leEditFormInitUseCode_toggled( bool checked );
+    void on_mInitCodeSourceComboBox_currentIndexChanged( int codeSource );
     void attributeAdded( int idx );
     void attributeDeleted( int idx );
     void attributeTypeDialog();

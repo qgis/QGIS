@@ -115,6 +115,12 @@ QgsFieldsProperties::QgsFieldsProperties( QgsVectorLayer *layer, QWidget* parent
   mRelationsList->setHorizontalHeaderItem( RelFieldCol, new QTableWidgetItem( tr( "Field" ) ) );
   mRelationsList->verticalHeader()->hide();
 
+  // Init function stuff
+  mInitCodeSourceComboBox->addItem( tr( "" ) );
+  mInitCodeSourceComboBox->addItem( tr( "Load from external file" ) );
+  mInitCodeSourceComboBox->addItem( tr( "Provide code in this dialog" ) );
+  mInitCodeSourceComboBox->addItem( tr( "Load from the environment" ) );
+
   loadRelations();
 
   updateButtons();
@@ -183,11 +189,15 @@ QTreeWidgetItem *QgsFieldsProperties::loadAttributeEditorTreeItem( QgsAttributeE
   return newWidget;
 }
 
-void QgsFieldsProperties::setEditFormInit( const QString &editForm, const QString &editFormInit, const QString &editFormInitCode, const bool editFormInitUseCode )
+void QgsFieldsProperties::setEditFormInit( const QString &editForm,
+    const QString &initFunction,
+    const QString &initCode,
+    const QString &initFilePath,
+    const QgsEditFormConfig::PythonInitCodeSource &codeSource )
 {
 
   // Python init function and code
-  QString code( editFormInitCode );
+  QString code( initCode );
   if ( code.isEmpty( ) )
   {
     code.append( tr( "# -*- coding: utf-8 -*-\n\"\"\"\n"
@@ -206,12 +216,11 @@ void QgsFieldsProperties::setEditFormInit( const QString &editForm, const QStrin
                      "\tcontrol = dialog.findChild(QWidget, \"MyLineEdit\")\n" ) );
 
   }
-  leEditForm->setText( editForm );
-  leEditFormInitCode->setText( code );
-  leEditFormInit->setText( editFormInit );
-  leEditFormInitUseCode->setChecked( editFormInitUseCode );
-  // Show or hide as needed
-  mPythonInitCodeGroupBox->setVisible( editFormInitUseCode );
+  mEditFormLineEdit->setText( editForm );
+  mInitFilePathLineEdit->setText( initFilePath );
+  mInitCodeEditorPython->setText( code );
+  mInitFunctionLineEdit->setText( initFunction );
+  mInitCodeSourceComboBox->setCurrentIndex( codeSource );
 }
 
 
@@ -453,9 +462,14 @@ void QgsFieldsProperties::on_mMoveUpItem_clicked()
   }
 }
 
-void QgsFieldsProperties::on_leEditFormInitUseCode_toggled( bool checked )
+void QgsFieldsProperties::on_mInitCodeSourceComboBox_currentIndexChanged( int codeSource )
 {
-  mPythonInitCodeGroupBox->setVisible( checked );
+  // Show or hide ui elements as needed
+  mInitFunctionContainer->setVisible( codeSource != QgsEditFormConfig::PythonInitCodeSource::CodeSourceNone );
+  mPythonInitCodeGroupBox->setVisible( codeSource == QgsEditFormConfig::PythonInitCodeSource::CodeSourceDialog );
+  mInitFilePathLineEdit->setVisible( codeSource == QgsEditFormConfig::PythonInitCodeSource::CodeSourceFile );
+  mInitFilePathLabel->setVisible( codeSource == QgsEditFormConfig::PythonInitCodeSource::CodeSourceFile );
+  pbtnSelectInitFilePath->setVisible( codeSource == QgsEditFormConfig::PythonInitCodeSource::CodeSourceFile );
 }
 
 void QgsFieldsProperties::attributeTypeDialog()
@@ -805,6 +819,22 @@ QgsAttributeEditorElement* QgsFieldsProperties::createAttributeEditorWidget( QTr
   return widgetDef;
 }
 
+
+void QgsFieldsProperties::on_pbtnSelectInitFilePath_clicked()
+{
+  QSettings myQSettings;
+  QString lastUsedDir = myQSettings.value( "style/lastUIDir", "." ).toString();
+  QString pyfilename = QFileDialog::getOpenFileName( this, tr( "Select Python file" ), lastUsedDir, tr( "Python file" )  + " (*.py)" );
+
+  if ( pyfilename.isNull() )
+    return;
+
+  QFileInfo fi( pyfilename );
+  myQSettings.setValue( "style/lastUIDir", fi.path() );
+  mInitFilePathLineEdit->setText( pyfilename );
+}
+
+
 void QgsFieldsProperties::on_pbnSelectEditForm_clicked()
 {
   QSettings myQSettings;
@@ -816,7 +846,7 @@ void QgsFieldsProperties::on_pbnSelectEditForm_clicked()
 
   QFileInfo fi( uifilename );
   myQSettings.setValue( "style/lastUIDir", fi.path() );
-  leEditForm->setText( uifilename );
+  mEditFormLineEdit->setText( uifilename );
 }
 
 void QgsFieldsProperties::on_mEditorLayoutComboBox_currentIndexChanged( int index )
@@ -875,10 +905,14 @@ void QgsFieldsProperties::apply()
 
   mLayer->editFormConfig()->setLayout(( QgsEditFormConfig::EditorLayout ) mEditorLayoutComboBox->currentIndex() );
   if ( mEditorLayoutComboBox->currentIndex() == QgsEditFormConfig::UiFileLayout )
-    mLayer->editFormConfig()->setUiForm( leEditForm->text() );
-  mLayer->editFormConfig()->setInitFunction( leEditFormInit->text() );
-  mLayer->editFormConfig()->setUseInitCode( leEditFormInitUseCode->isChecked() );
-  mLayer->editFormConfig()->setInitCode( leEditFormInitCode->text() );
+    mLayer->editFormConfig()->setUiForm( mEditFormLineEdit->text() );
+
+  // Init function configuration
+  mLayer->editFormConfig()->setInitFunction( mInitFunctionLineEdit->text( ) );
+  mLayer->editFormConfig()->setInitCode( mInitCodeEditorPython->text( ) );
+  mLayer->editFormConfig()->setInitFilePath( mInitFilePathLineEdit->text( ) );
+  mLayer->editFormConfig()->setInitCodeSource(( QgsEditFormConfig::PythonInitCodeSource )mInitCodeSourceComboBox->currentIndex() );
+
   mLayer->editFormConfig()->setSuppress(( QgsEditFormConfig::FeatureFormSuppress )mFormSuppressCmbBx->currentIndex() );
 
   mLayer->setExcludeAttributesWMS( excludeAttributesWMS );

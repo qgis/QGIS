@@ -58,6 +58,18 @@ class QgsEditFormConfig : QObject
     };
 
     /**
+     * The python init code source options.
+     */
+    enum PythonInitCodeSource
+    {
+      CodeSourceNone = 0,             //!< Do not use python code at all
+      CodeSourceFile = 1,             //!< Load the python code from a file
+      CodeSourceDialog = 2,           //!< Use the python code provided in the dialog
+      CodeSourceEnvironment = 3       //!< Use the python code available in the python environment
+    };
+
+
+    /**
      * This is only useful in combination with EditorLayout::TabLayout.
      *
      * Adds a new tab to the layout. Should be a QgsAttributeEditorContainer.
@@ -208,15 +220,6 @@ class QgsEditFormConfig : QObject
     void setLabelOnTop( int idx, bool onTop );
 
 
-
-
-
-
-
-
-
-
-
     // Python stuff
 
 
@@ -237,9 +240,21 @@ class QgsEditFormConfig : QObject
     void setInitFunction( const QString& function );
 
     /**
-     * Get python code for edit form initialization.
+     * Get python code for edit form initialization from the configuration dialog.
      */
     QString initCode() const;
+
+    /**
+     * Get python external file path for edit form initialization.
+     */
+    QString initFilePath() const;
+
+    /**
+     * Set python external file path for edit form initialization.
+     * Make sure that you also set the appropriate function name in
+     * @link setInitFunction @endlink
+     */
+    void setInitFilePath( const QString& filePath );
 
     /**
      * Get python code for edit form initialization.
@@ -248,11 +263,15 @@ class QgsEditFormConfig : QObject
      */
     void setInitCode( const QString& code );
 
-    /** Return if python code shall be loaded for edit form initialization */
-    bool useInitCode() const;
+    /** Return python code source for edit form initialization
+     *  (if it shall be loaded from a file, read from the
+     *  provided dialog editor or just read from the environment
+     */
+    PythonInitCodeSource initCodeSource() const;
 
     /** Set if python code shall be used for edit form initialization */
-    void setUseInitCode( const bool useCode );
+    void setInitCodeSource( const PythonInitCodeSource initCodeSource );
+
 
     /** Type of feature form pop-up suppression after feature creation (overrides app setting) */
     FeatureFormSuppress suppress() const;

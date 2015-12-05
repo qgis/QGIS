@@ -4,8 +4,8 @@
 QgsEditFormConfig::QgsEditFormConfig( QObject* parent )
     : QObject( parent )
     , mEditorLayout( GeneratedLayout )
+    , mInitCodeSource( QgsEditFormConfig::PythonInitCodeSource::CodeSourceNone )
     , mFeatureFormSuppress( SuppressDefault )
-    , mUseInitCode( false )
 {
   connect( QgsProject::instance()->relationManager(), SIGNAL( relationsLoaded() ), this, SLOT( onRelationsLoaded() ) );
 }
