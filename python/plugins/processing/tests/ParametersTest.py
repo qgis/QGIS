@@ -42,7 +42,9 @@ from processing.core.parameters import (Parameter,
 from qgis.core import (QgsRasterLayer,
                        QgsVectorLayer)
 
+
 class ParameterTest(unittest.TestCase):
+
     def testGetValueAsCommandLineParameter(self):
         parameter = Parameter('myName', 'myDesc')
         parameter.setValue(None)
@@ -54,7 +56,9 @@ class ParameterTest(unittest.TestCase):
         parameter.setValue(123)
         self.assertEqual(parameter.getValueAsCommandLineParameter(), '123')
 
+
 class ParameterBooleanTest(unittest.TestCase):
+
     def testSetValue(self):
         parameter = ParameterBoolean('myName', 'myDescription')
         self.assertEqual(parameter.value, None)
@@ -64,20 +68,21 @@ class ParameterBooleanTest(unittest.TestCase):
         self.assertEqual(parameter.value, False)
 
     def testDefault(self):
-        parameter = ParameterBoolean('myName', 'myDescription', default = False, optional = True)
+        parameter = ParameterBoolean('myName', 'myDescription', default=False, optional=True)
         parameter.setValue(None)
         self.assertEqual(parameter.value, False)
 
     def testOptional(self):
-        optionalParameter = ParameterBoolean('myName', 'myDescription', default = False, optional = True)
+        optionalParameter = ParameterBoolean('myName', 'myDescription', default=False, optional=True)
         optionalParameter.setValue(True)
         optionalParameter.setValue(None)
         self.assertEqual(optionalParameter.value, False)
 
-        requiredParameter = ParameterBoolean('myName', 'myDescription', default = False, optional = False)
+        requiredParameter = ParameterBoolean('myName', 'myDescription', default=False, optional=False)
         requiredParameter.setValue(True)
         requiredParameter.setValue(None)
         self.assertEqual(requiredParameter.value, True)
+
 
 class ParameterCRSTest(unittest.TestCase):
 
@@ -97,7 +102,9 @@ class ParameterCRSTest(unittest.TestCase):
         requiredParameter.setValue(None)
         self.assertEqual(requiredParameter.value, 'EPSG:12003')
 
+
 class ParameterDataObjectTest(unittest.TestCase):
+
     def testGetValueAsCommandLineParameter(self):
         parameter = ParameterDataObject('myName', 'myDesc')
         parameter.setValue(None)
@@ -107,7 +114,9 @@ class ParameterDataObjectTest(unittest.TestCase):
         parameter.setValue("someFile.dat")
         self.assertEqual(parameter.getValueAsCommandLineParameter(), '"someFile.dat"')
 
+
 class ParameterExtentTest(unittest.TestCase):
+
     def testSetValue(self):
         parameter = ParameterExtent('myName', 'myDesc')
         self.assertTrue(parameter.setValue('0,2,2,4'))
@@ -131,7 +140,9 @@ class ParameterExtentTest(unittest.TestCase):
         requiredParameter.setValue(None)
         self.assertEqual(requiredParameter.value, '1,2,3,4')
 
+
 class ParameterFileTest(unittest.TestCase):
+
     def testSetValue(self):
         parameter = ParameterFile('myName', 'myDesc')
         self.assertTrue(parameter.setValue('myFile.png'))
@@ -174,13 +185,14 @@ class ParameterFileTest(unittest.TestCase):
         parameter.setValue('myFile.png')
         self.assertEqual(parameter.getValueAsCommandLineParameter(), '"myFile.png"')
 
+
 class TestParameterFixedTable(unittest.TestCase):
 
     def testTableToString(self):
         table = [
-                    ['a0', 'a1', 'a2'],
-                    ['b0', 'b1', 'b2']
-                ]
+            ['a0', 'a1', 'a2'],
+            ['b0', 'b1', 'b2']
+        ]
         self.assertEquals(ParameterFixedTable.tableToString(table), 'a0,a1,a2,b0,b1,b2')
 
         table = [['a0']]
@@ -196,9 +208,9 @@ class TestParameterFixedTable(unittest.TestCase):
 
     def testSet2DListValue(self):
         table = [
-                    ['a0', 'a1', 'a2'],
-                    ['b0', 'b1', 'b2']
-                ]
+            ['a0', 'a1', 'a2'],
+            ['b0', 'b1', 'b2']
+        ]
         parameter = ParameterFixedTable('myName', 'myDesc')
         self.assertTrue(parameter.setValue(table))
         self.assertEqual(parameter.value, 'a0,a1,a2,b0,b1,b2')
@@ -221,7 +233,9 @@ class TestParameterFixedTable(unittest.TestCase):
         self.assertFalse(parameter.setValue(None))
         self.assertEqual(parameter.value, '1,2,3')
 
+
 class ParameterMultipleInputTest(unittest.TestCase):
+
     def testOptional(self):
         parameter = ParameterMultipleInput('myName', 'myDesc', optional=True)
         self.assertTrue(parameter.setValue('myLayerFile.shp'))
@@ -250,7 +264,7 @@ class ParameterMultipleInputTest(unittest.TestCase):
         layer = QgsRasterLayer('/path/to/myRaster.tif', 'myRaster')
         self.assertEqual(parameter.getAsString(layer), '/path/to/myRaster.tif')
 
-        #TODO With Layer Name, instead of Layer object
+        # TODO With Layer Name, instead of Layer object
 
     def testGetAsStringWhenFile(self):
         parameter = ParameterMultipleInput('myName', 'myDesc', datatype=ParameterMultipleInput.TYPE_FILE)
@@ -266,9 +280,11 @@ class ParameterMultipleInputTest(unittest.TestCase):
         layer = QgsVectorLayer('/path/to/myVector.shp', 'myVector', 'memory')
         self.assertEqual(parameter.getAsString(layer), '/path/to/myVector.shp')
 
-        #TODO With Layer Name, instead of Layer object
+        # TODO With Layer Name, instead of Layer object
+
 
 class ParameterNumberTest(unittest.TestCase):
+
     def testSetValue(self):
         parameter = ParameterNumber('myName', 'myDescription')
         self.assertTrue(parameter.setValue(5))
@@ -280,14 +296,14 @@ class ParameterNumberTest(unittest.TestCase):
         self.assertEqual(parameter.value, None)
 
     def testMaxValue(self):
-        parameter = ParameterNumber('myName', 'myDescription', maxValue = 10)
+        parameter = ParameterNumber('myName', 'myDescription', maxValue=10)
         self.assertFalse(parameter.setValue(11))
         self.assertEqual(parameter.value, None)
         self.assertTrue(parameter.setValue(10))
         self.assertEqual(parameter.value, 10)
 
     def testMinValue(self):
-        parameter = ParameterNumber('myName', 'myDescription', minValue = 3)
+        parameter = ParameterNumber('myName', 'myDescription', minValue=3)
         self.assertFalse(parameter.setValue(1))
         self.assertEqual(parameter.value, None)
         self.assertFalse(parameter.setValue(-2))
@@ -296,19 +312,21 @@ class ParameterNumberTest(unittest.TestCase):
         self.assertEqual(parameter.value, 3)
 
     def testOptional(self):
-        optionalParameter = ParameterNumber('myName', 'myDescription', default = 1.0, optional = True)
+        optionalParameter = ParameterNumber('myName', 'myDescription', default=1.0, optional=True)
         optionalParameter.setValue(5)
         optionalParameter.setValue(None)
         self.assertEqual(optionalParameter.value, 1.0)
 
-        requiredParameter = ParameterNumber('myName', 'myDescription',default = 1.0, optional = False)
+        requiredParameter = ParameterNumber('myName', 'myDescription', default=1.0, optional=False)
         requiredParameter.setValue(5)
         requiredParameter.setValue(None)
         self.assertEqual(requiredParameter.value, 5)
 
+
 def suite():
     suite = unittest.makeSuite(ParametersTest, 'test')
     return suite
+
 
 def runtests():
     result = unittest.TestResult()
