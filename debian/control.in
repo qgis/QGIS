@@ -26,7 +26,7 @@ Build-Depends:
  libqca2-dev,
  libqca2-plugin-ossl,
  libqtwebkit-dev,
-#stretch jessie wheezy# libqwt-dev,
+#jessie wheezy# libqwt-dev,
 #precise saucy trusty utopic vivid wily stretch sid# libqwt5-qt4-dev,
  libspatialite-dev,
  libsqlite3-dev,
