@@ -20,6 +20,13 @@ QgsLabelingWidget::QgsLabelingWidget( QgsVectorLayer* layer, QgsMapCanvas* canva
 
   connect( mLabelModeComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( labelModeChanged( int ) ) );
 
+  adaptToLayer();
+}
+
+void QgsLabelingWidget::adaptToLayer()
+{
+  mLabelModeComboBox->setCurrentIndex( -1 );
+
   // pick the right mode of the layer
   if ( mLayer->labeling() && mLayer->labeling()->type() == "rule-based" )
   {
@@ -68,6 +75,9 @@ void QgsLabelingWidget::apply()
 
 void QgsLabelingWidget::labelModeChanged( int index )
 {
+  if ( index < 0 )
+    return;
+
   if ( index < 3 )
   {
     if ( QgsLabelingGui* widgetSimple = qobject_cast<QgsLabelingGui*>( mWidget ) )
