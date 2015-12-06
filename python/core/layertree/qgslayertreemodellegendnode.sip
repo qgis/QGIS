@@ -144,6 +144,21 @@ class QgsSymbolV2LegendNode : QgsLayerTreeModelLegendNode
     //! Get the minimum icon size to prevent cropping
     //! @note added in 2.10
     QSize minimumIconSize() const;
+
+  public slots:
+
+    /** Checks all items belonging to the same layer as this node.
+     * @note added in QGIS 2.14
+     * @see uncheckAllItems()
+     */
+    void checkAllItems();
+
+    /** Unchecks all items belonging to the same layer as this node.
+     * @note added in QGIS 2.14
+     * @see checkAllItems()
+     */
+    void uncheckAllItems();
+
 };
 
 

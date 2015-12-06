@@ -21,6 +21,9 @@
 #include <qgsvectorlayer.h>
 #include <qgsvectorlayerdiagramprovider.h>
 #include <qgsvectorlayerlabelprovider.h>
+#include <qgscategorizedsymbolrendererv2.h>
+#include <qgslayertreemodel.h>
+#include <qgslayertreemodellegendnode.h>
 
 class TestQgsLayerTree : public QObject
 {
@@ -34,6 +37,7 @@ class TestQgsLayerTree : public QObject
     void testCheckStateChildToParent();
     void testCheckStateMutuallyExclusive();
     void testCheckStateMutuallyExclusiveEdgeCases();
+    void testShowHideAllSymbolNodes();
 
   private:
 
@@ -51,6 +55,9 @@ class TestQgsLayerTree : public QObject
 
 void TestQgsLayerTree::initTestCase()
 {
+  QgsApplication::init();
+  QgsApplication::initQgis();
+
   mRoot = new QgsLayerTreeGroup();
   mRoot->addGroup( "grp1" );
   mRoot->addGroup( "grp2" );
@@ -62,6 +69,7 @@ void TestQgsLayerTree::initTestCase()
 void TestQgsLayerTree::cleanupTestCase()
 {
   delete mRoot;
+  QgsApplication::exitQgis();
 }
 
 void TestQgsLayerTree::testCheckStateParentToChild()
@@ -208,6 +216,56 @@ void TestQgsLayerTree::testCheckStateMutuallyExclusiveEdgeCases()
   QCOMPARE( QgsLayerTree::toGroup( root3->children().at( 0 ) )->isVisible(), Qt::Checked );
   QCOMPARE( root3->isVisible(), Qt::Checked );
   delete root3;
+}
+
+void TestQgsLayerTree::testShowHideAllSymbolNodes()
+{
+  //new memory layer
+  QgsVectorLayer* vl = new QgsVectorLayer( "Point?field=col1:integer", "vl", "memory" );
+  QVERIFY( vl->isValid() );
+
+  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << vl );
+
+  //create a categorized renderer for layer
+  QgsCategorizedSymbolRendererV2* renderer = new QgsCategorizedSymbolRendererV2();
+  renderer->setClassAttribute( "col1" );
+  renderer->setSourceSymbol( QgsSymbolV2::defaultSymbol( QGis::Point ) );
+  renderer->addCategory( QgsRendererCategoryV2( "a", QgsSymbolV2::defaultSymbol( QGis::Point ), "a" ) );
+  renderer->addCategory( QgsRendererCategoryV2( "b", QgsSymbolV2::defaultSymbol( QGis::Point ), "b" ) );
+  renderer->addCategory( QgsRendererCategoryV2( "c", QgsSymbolV2::defaultSymbol( QGis::Point ), "c" ) );
+  vl->setRendererV2( renderer );
+
+  //create legend with symbology nodes for categorized renderer
+  QgsLayerTreeGroup* root = new QgsLayerTreeGroup();
+  QgsLayerTreeLayer* n = new QgsLayerTreeLayer( vl );
+  root->addChildNode( n );
+  QgsLayerTreeModel* m = new QgsLayerTreeModel( root, 0 );
+  m->refreshLayerLegend( n );
+
+  //test that all nodes are initially checked
+  QList<QgsLayerTreeModelLegendNode*> nodes = m->layerLegendNodes( n );
+  QCOMPARE( nodes.length(), 3 );
+  Q_FOREACH ( QgsLayerTreeModelLegendNode* ln, nodes )
+  {
+    QVERIFY( ln->data( Qt::CheckStateRole ) == Qt::Checked );
+  }
+  //uncheck all and test that all nodes are unchecked
+  static_cast< QgsSymbolV2LegendNode* >( nodes.at( 0 ) )->uncheckAllItems();
+  Q_FOREACH ( QgsLayerTreeModelLegendNode* ln, nodes )
+  {
+    QVERIFY( ln->data( Qt::CheckStateRole ) == Qt::Unchecked );
+  }
+  //check all and test that all nodes are checked
+  static_cast< QgsSymbolV2LegendNode* >( nodes.at( 0 ) )->checkAllItems();
+  Q_FOREACH ( QgsLayerTreeModelLegendNode* ln, nodes )
+  {
+    QVERIFY( ln->data( Qt::CheckStateRole ) == Qt::Checked );
+  }
+
+  //cleanup
+  delete m;
+  delete root;
+  QgsMapLayerRegistry::instance()->removeMapLayers( QList<QgsMapLayer*>() << vl );
 }
 
 
