@@ -874,13 +874,13 @@ void QgsWmsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, in
 }
 
 
-bool QgsWmsProvider::retrieveServerCapabilities( bool /*forceRefresh*/ )
+bool QgsWmsProvider::retrieveServerCapabilities( bool forceRefresh )
 {
-  QgsDebugMsg( "entering." );
+  QgsDebugMsg( QString( "entering: forceRefresh=%1" ).arg( forceRefresh ) );
 
   if ( !mCaps.isValid() )
   {
-    QgsWmsCapabilitiesDownload downloadCaps( mSettings.baseUrl(), mSettings.authorization() );
+    QgsWmsCapabilitiesDownload downloadCaps( mSettings.baseUrl(), mSettings.authorization(), forceRefresh );
     if ( !downloadCaps.downloadCapabilities() )
     {
       mErrorFormat = "text/plain";
@@ -3693,7 +3693,7 @@ QgsWmsLegendDownloadHandler::startUrl( const QUrl& url )
 
   QNetworkRequest request( url );
   mSettings.authorization().setAuthorization( request );
-  request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferNetwork );
+  request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
   request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
   mReply = mNetworkAccessManager.get( request );

@@ -4441,6 +4441,24 @@
                    </layout>
                   </item>
                   <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_40">
+                    <item>
+                     <widget class="QLabel" name="label_45">
+                      <property name="text">
+                       <string>Default expiration period for WMS capabilities (hours)</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QSpinBox" name="mDefaultCapabilitiesExpirySpinBox">
+                      <property name="maximum">
+                       <number>100000000</number>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
+                  <item>
                    <layout class="QHBoxLayout" name="horizontalLayout_17">
                     <item>
                      <widget class="QLabel" name="label_32">

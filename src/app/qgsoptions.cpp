@@ -262,6 +262,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   mNetworkTimeoutSpinBox->setValue( settings.value( "/qgis/networkAndProxy/networkTimeout", "60000" ).toInt() );
   leUserAgent->setText( settings.value( "/qgis/networkAndProxy/userAgent", "Mozilla/5.0" ).toString() );
 
+  // WMS capabilities expiry time
+  mDefaultCapabilitiesExpirySpinBox->setValue( settings.value( "/qgis/defaultCapabilitiesExpiry", "24" ).toInt() );
+
   // WMS/WMS-C tile expiry time
   mDefaultTileExpirySpinBox->setValue( settings.value( "/qgis/defaultTileExpiry", "24" ).toInt() );
 
@@ -1040,6 +1043,9 @@ void QgsOptions::saveOptions()
   //Network timeout
   settings.setValue( "/qgis/networkAndProxy/networkTimeout", mNetworkTimeoutSpinBox->value() );
   settings.setValue( "/qgis/networkAndProxy/userAgent", leUserAgent->text() );
+
+  // WMS capabiltiies expiry time
+  settings.setValue( "/qgis/defaultCapabilitiesExpiry", mDefaultCapabilitiesExpirySpinBox->value() );
 
   // WMS/WMS-C tile expiry time
   settings.setValue( "/qgis/defaultTileExpiry", mDefaultTileExpirySpinBox->value() );

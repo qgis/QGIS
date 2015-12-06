@@ -30,7 +30,7 @@ QgsWMSConnectionItem::QgsWMSConnectionItem( QgsDataItem* parent, QString name, Q
     , mCapabilitiesDownload( 0 )
 {
   mIconName = "mIconConnect.png";
-  mCapabilitiesDownload = new QgsWmsCapabilitiesDownload();
+  mCapabilitiesDownload = new QgsWmsCapabilitiesDownload( false );
 }
 
 QgsWMSConnectionItem::~QgsWMSConnectionItem()

@@ -4,6 +4,8 @@
 
 #include <QFile>
 #include <QDir>
+#include <QNetworkCacheMetaData>
+#include <QSettings>
 
 #include "qgscoordinatetransform.h"
 #include "qgsdatasourceuri.h"
@@ -709,11 +711,14 @@ void QgsWmsCapabilities::parseLayer( QDomElement const & e, QgsWmsLayerProperty&
   //QgsDebugMsg( "entering." );
 
 // TODO: Delete this stanza completely, depending on success of "Inherit things into the sublayer" below.
-//  // enforce WMS non-inheritance rules
-//  layerProperty.name =        QString::null;
-//  layerProperty.title =       QString::null;
-//  layerProperty.abstract =    QString::null;
-//  layerProperty.keywordList.clear();
+#if 0
+  // enforce WMS non-inheritance rules
+  layerProperty.name =        QString::null;
+  layerProperty.title =       QString::null;
+  layerProperty.abstract =    QString::null;
+  layerProperty.keywordList.clear();
+#endif
+
   layerProperty.orderId     = ++mLayerCount;
   layerProperty.queryable   = e.attribute( "queryable" ).toUInt();
   layerProperty.cascaded    = e.attribute( "cascaded" ).toUInt();
@@ -1860,20 +1865,22 @@ int QgsWmsCapabilities::identifyCapabilities() const
 
 // -----------------
 
-QgsWmsCapabilitiesDownload::QgsWmsCapabilitiesDownload( QObject *parent )
+QgsWmsCapabilitiesDownload::QgsWmsCapabilitiesDownload( bool forceRefresh, QObject *parent )
     : QObject( parent )
     , mCapabilitiesReply( 0 )
     , mIsAborted( false )
+    , mForceRefresh( forceRefresh )
 {
   connectManager();
 }
 
-QgsWmsCapabilitiesDownload::QgsWmsCapabilitiesDownload( const QString& baseUrl, const QgsWmsAuthorization& auth, QObject *parent )
+QgsWmsCapabilitiesDownload::QgsWmsCapabilitiesDownload( const QString& baseUrl, const QgsWmsAuthorization& auth, bool forceRefresh, QObject *parent )
     : QObject( parent )
     , mBaseUrl( baseUrl )
     , mAuth( auth )
     , mCapabilitiesReply( 0 )
     , mIsAborted( false )
+    , mForceRefresh( forceRefresh )
 {
   connectManager();
 }
@@ -1902,7 +1909,7 @@ bool QgsWmsCapabilitiesDownload::downloadCapabilities( const QString& baseUrl, c
 
 bool QgsWmsCapabilitiesDownload::downloadCapabilities()
 {
-  QgsDebugMsg( "entering." );
+  QgsDebugMsg( QString( "entering: forceRefresh=%1" ).arg( mForceRefresh ) );
   abort(); // cancel previous
   mIsAborted = false;
 
@@ -1923,7 +1930,7 @@ bool QgsWmsCapabilitiesDownload::downloadCapabilities()
     QgsMessageLog::logMessage( mError, tr( "WMS" ) );
     return false;
   }
-  request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferNetwork );
+  request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, mForceRefresh ? QNetworkRequest::PreferNetwork : QNetworkRequest::PreferCache );
   request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
   connect( QgsNetworkAccessManager::instance(), SIGNAL( requestSent( QNetworkReply *, QObject * ) ),
@@ -2014,13 +2021,13 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
             emit downloadFinished();
             return;
           }
-          request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferNetwork );
+          request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, mForceRefresh ? QNetworkRequest::PreferNetwork : QNetworkRequest::PreferCache );
           request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
           mCapabilitiesReply->deleteLater();
           mCapabilitiesReply = 0;
 
-          QgsDebugMsg( QString( "redirected getcapabilities: %1" ).arg( redirect.toString() ) );
+          QgsDebugMsg( QString( "redirected getcapabilities: %1 forceRefresh=%2" ).arg( redirect.toString() ).arg( mForceRefresh ) );
           //mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
           connect( QgsNetworkAccessManager::instance(),
                    SIGNAL( requestSent( QNetworkReply *, QObject * ) ),
@@ -2031,6 +2038,37 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
       }
       else
       {
+        const QgsNetworkAccessManager *nam = QgsNetworkAccessManager::instance();
+
+        if ( nam->cache() )
+        {
+          QNetworkCacheMetaData cmd = nam->cache()->metaData( mCapabilitiesReply->request().url() );
+
+          QNetworkCacheMetaData::RawHeaderList hl;
+          Q_FOREACH ( const QNetworkCacheMetaData::RawHeader &h, cmd.rawHeaders() )
+          {
+            if ( h.first != "Cache-Control" )
+              hl.append( h );
+          }
+          cmd.setRawHeaders( hl );
+
+          QgsDebugMsg( QString( "expirationDate:%1" ).arg( cmd.expirationDate().toString() ) );
+          if ( cmd.expirationDate().isNull() )
+          {
+            QSettings s;
+            cmd.setExpirationDate( QDateTime::currentDateTime().addSecs( s.value( "/qgis/defaultCapabilitiesExpiry", "24" ).toInt() * 60 * 60 ) );
+          }
+
+          nam->cache()->updateMetaData( cmd );
+        }
+        else
+        {
+          QgsDebugMsg( "No cache for capabilites!" );
+        }
+
+        bool fromCache = mCapabilitiesReply->attribute( QNetworkRequest::SourceIsFromCacheAttribute ).toBool();
+        QgsDebugMsg( QString( "Capabilities reply was cached: %1" ).arg( fromCache ) );
+
         mHttpCapabilitiesResponse = mCapabilitiesReply->readAll();
 
         if ( mHttpCapabilitiesResponse.isEmpty() )

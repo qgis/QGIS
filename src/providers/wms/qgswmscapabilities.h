@@ -696,9 +696,9 @@ class QgsWmsCapabilitiesDownload : public QObject
     Q_OBJECT
 
   public:
-    explicit QgsWmsCapabilitiesDownload( QObject* parent = 0 );
+    explicit QgsWmsCapabilitiesDownload( bool forceRefresh, QObject* parent = 0 );
 
-    QgsWmsCapabilitiesDownload( const QString& baseUrl, const QgsWmsAuthorization& auth, QObject* parent = 0 );
+    QgsWmsCapabilitiesDownload( const QString& baseUrl, const QgsWmsAuthorization& auth, bool forceRefresh, QObject* parent = 0 );
 
     virtual ~QgsWmsCapabilitiesDownload();
 
@@ -751,6 +751,7 @@ class QgsWmsCapabilitiesDownload : public QObject
     QByteArray mHttpCapabilitiesResponse;
 
     bool mIsAborted;
+    bool mForceRefresh;
 
   private:
     void connectManager();

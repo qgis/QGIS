@@ -446,7 +446,7 @@ void QgsWMSSourceSelect::on_btnConnect_clicked()
     return;
   }
 
-  QgsWmsCapabilitiesDownload capDownload( wmsSettings.baseUrl(), wmsSettings.authorization() );
+  QgsWmsCapabilitiesDownload capDownload( wmsSettings.baseUrl(), wmsSettings.authorization(), true );
   connect( &capDownload, SIGNAL( statusChanged( QString ) ), this, SLOT( showStatusMessage( QString ) ) );
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
