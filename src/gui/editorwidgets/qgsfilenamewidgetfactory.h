@@ -17,6 +17,8 @@
 #define QGSFILENAMEWIDGETFACTORY_H
 
 #include "qgseditorwidgetfactory.h"
+#include "qgsfilenameconfigdlg.h"
+#include "qgsfilenamewidgetwrapper.h"
 
 /** \class QgsFileNameWidgetFactory
  * \note not available in Python bindings
@@ -25,12 +27,20 @@
 class GUI_EXPORT QgsFileNameWidgetFactory : public QgsEditorWidgetFactory
 {
   public:
-    explicit QgsFileNameWidgetFactory( const QString& name );
+    QgsFileNameWidgetFactory( const QString& name );
 
     // QgsEditorWidgetFactory interface
   public:
     QgsEditorWidgetWrapper* create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const override;
     QgsEditorConfigWidget* configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const override;
+    
+    // QgsEditorWidgetFactory interface
+  public:
+    void writeConfig( const QgsEditorWidgetConfig& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx ) override;
+
+  private:
+    QgsEditorWidgetConfig readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx ) override;
+    bool isFieldSupported( QgsVectorLayer* vl, int fieldIdx ) override;
 };
 
 #endif // QGSFILENAMEWIDGETFACTORY_H
