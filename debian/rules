@@ -16,9 +16,9 @@ DEB_BUILD_MULTIARCH ?= $(shell dpkg-architecture -qDEB_BUILD_MULTIARCH)
 QT_PLUGIN_DIR = usr/lib/$(DEB_BUILD_MULTIARCH)/qt4/plugins
 
 DEB_TEST_TARGET ?= Experimental
-BUILDDIR ?= debian/build
+QGIS_BUILDDIR ?= debian/build
 
-QGIS_VERSION=$(shell dpkg-parsechangelog | sed -ne 's/^Version: \(.*\)-.*/\1/p')
+QGIS_VERSION=$(shell dpkg-parsechangelog | sed -ne 's/^Version: \([0-9]\+:\)\?\([^+-]\+\).*$$/\2/p')
 
 ifeq (,$(DISTRIBUTION))
 	DISTRIBUTION := $(shell dpkg-parsechangelog --format rfc822 | sed -ne "s/^Distribution: //p")
@@ -148,6 +148,7 @@ ifneq (,$(findstring profile,$(DEB_BUILD_OPTIONS)))
 	LDFLAGS += -pg
 endif
 
+
 # multi distribution support:
 # - remove lines with applicable excludes
 # - remove prefixes with applicable includes
@@ -189,8 +190,13 @@ cleantemplates:
 	$(MAKE) -f debian/rules templateclean
 	$(MAKE) -f debian/rules debian/control debian/compat
 
-binary binary-arch binary-indep build build-arch build-indep clean install install-arch install-indep:
-	dh $@ --with python2 --parallel --builddirectory=$(BUILDDIR)
+build: ;
+
+binary binary-arch binary-indep build-arch build-indep clean install install-arch install-indep:
+	dh $@ --with python2 --parallel --builddirectory=$(QGIS_BUILDDIR)
+
+override_dh_auto_build-arch:
+	dh_auto_build
 
 override_dh_clean: cleantemplates
 	dh_clean
@@ -199,27 +205,32 @@ override_dh_clean: cleantemplates
 	-$(RM) $(CURDIR)/src/core/qgscontexthelp_texts.cpp
 	-$(RM) $(CURDIR)/src/core/qgsexpression_texts.cpp
 
-	-$(RM) -r $(CURDIR)/$(BUILDDIR)/
+	-$(RM) -r $(CURDIR)/$(QGIS_BUILDDIR)/
 
-override_dh_auto_configure: templates
+override_dh_auto_configure-arch: templates
 	dh_auto_configure -- $(CMAKE_OPTS)
 
+override_dh_auto_test-arch:
 ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
-override_dh_auto_test:
 	# Code to run the package test suite - and ignore the outcome for now
 	mkdir -p debian/tmp/locale/
 	localedef -f UTF-8 -i en_US ./debian/tmp/locale/en_US.UTF-8/
 	-LOCPATH=$(CURDIR)/debian/tmp/locale/ \
 	LC_ALL=en_US.UTF-8 \
-	LD_LIBRARY_PATH=$(CURDIR)/$(BUILDDIR)/output/lib:$(LD_LIBRARY_PATH) \
+	LD_LIBRARY_PATH=$(CURDIR)/$(QGIS_BUILDDIR)/output/lib:$(LD_LIBRARY_PATH) \
 	PATH=/usr/sbin:$(PATH) \
-	$(TESTMAKE) -C $(BUILDDIR) $(DEB_TEST_TARGET)
+	$(TESTMAKE) -C $(QGIS_BUILDDIR) $(DEB_TEST_TARGET)
 else
-override_dh_auto_test:
 	@echo Skipping tests.
 endif
 
-override_dh_auto_install:
+override_dh_auto_configure-indep: ;
+override_dh_auto_test-indep: ;
+override_dh_auto_install-indep: ;
+override_dh_auto_build-indep: ;
+override_dh_install-indep: ;
+
+override_dh_auto_install-arch:
 	dh_auto_install
 
 	# Install menu pixmap
@@ -273,7 +284,7 @@ override_dh_auto_install:
 	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis-plugin-grass/usr/bin/qgis
 	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis-plugin-grass/usr/bin/qbrowser
 
-override_dh_install:
+override_dh_install-arch:
 	# Don't ship srs.db, automatically updated in postinst with crssync
 	mv $(CURDIR)/debian/tmp/usr/share/qgis/resources/srs.db $(CURDIR)/debian/tmp/usr/share/qgis/resources/srs-template.db
 
