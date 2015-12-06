@@ -580,7 +580,7 @@ void QgsAttributeForm::initPython()
   // Init Python, if init function is not empty and the combo indicates
   // the source for the function code
   if ( !mLayer->editFormConfig()->initFunction().isEmpty()
-       && mLayer->editFormConfig()->initCodeSource() != QgsEditFormConfig::PythonInitCodeSource::CodeSourceNone )
+       && mLayer->editFormConfig()->initCodeSource() != QgsEditFormConfig::CodeSourceNone )
   {
 
     QString initFunction = mLayer->editFormConfig()->initFunction();
@@ -589,7 +589,7 @@ void QgsAttributeForm::initPython()
 
     switch ( mLayer->editFormConfig()->initCodeSource() )
     {
-      case QgsEditFormConfig::PythonInitCodeSource::CodeSourceFile:
+      case QgsEditFormConfig::CodeSourceFile:
         if ( ! initFilePath.isEmpty() )
         {
           QFile inputFile( initFilePath );
@@ -612,7 +612,7 @@ void QgsAttributeForm::initPython()
         }
         break;
 
-      case( QgsEditFormConfig::PythonInitCodeSource::CodeSourceDialog ):
+      case QgsEditFormConfig::CodeSourceDialog:
         initCode = mLayer->editFormConfig()->initCode();
         if ( initCode.isEmpty() )
         {
@@ -620,8 +620,8 @@ void QgsAttributeForm::initPython()
         }
         break;
 
-      case( QgsEditFormConfig::PythonInitCodeSource::CodeSourceEnvironment ):
-      case( QgsEditFormConfig::PythonInitCodeSource::CodeSourceNone ):
+      case QgsEditFormConfig::CodeSourceEnvironment:
+      case QgsEditFormConfig::CodeSourceNone:
       default:
         // Nothing to do: the function code should be already in the environment
         break;

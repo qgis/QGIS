@@ -465,11 +465,11 @@ void QgsFieldsProperties::on_mMoveUpItem_clicked()
 void QgsFieldsProperties::on_mInitCodeSourceComboBox_currentIndexChanged( int codeSource )
 {
   // Show or hide ui elements as needed
-  mInitFunctionContainer->setVisible( codeSource != QgsEditFormConfig::PythonInitCodeSource::CodeSourceNone );
-  mPythonInitCodeGroupBox->setVisible( codeSource == QgsEditFormConfig::PythonInitCodeSource::CodeSourceDialog );
-  mInitFilePathLineEdit->setVisible( codeSource == QgsEditFormConfig::PythonInitCodeSource::CodeSourceFile );
-  mInitFilePathLabel->setVisible( codeSource == QgsEditFormConfig::PythonInitCodeSource::CodeSourceFile );
-  pbtnSelectInitFilePath->setVisible( codeSource == QgsEditFormConfig::PythonInitCodeSource::CodeSourceFile );
+  mInitFunctionContainer->setVisible( codeSource != QgsEditFormConfig::CodeSourceNone );
+  mPythonInitCodeGroupBox->setVisible( codeSource == QgsEditFormConfig::CodeSourceDialog );
+  mInitFilePathLineEdit->setVisible( codeSource == QgsEditFormConfig::CodeSourceFile );
+  mInitFilePathLabel->setVisible( codeSource == QgsEditFormConfig::CodeSourceFile );
+  pbtnSelectInitFilePath->setVisible( codeSource == QgsEditFormConfig::CodeSourceFile );
 }
 
 void QgsFieldsProperties::attributeTypeDialog()

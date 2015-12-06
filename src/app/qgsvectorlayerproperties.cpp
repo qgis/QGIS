@@ -730,10 +730,10 @@ void QgsVectorLayerProperties::loadDefaultStyle_clicked()
 
     switch ( askToUser.exec() )
     {
-      case( 0 ):
+      case 0:
         return;
         break;
-      case( 2 ):
+      case 2:
         msg = layer->loadNamedStyle( layer->styleURI(), defaultLoadedFlag );
         if ( !defaultLoadedFlag )
         {
@@ -787,10 +787,10 @@ void QgsVectorLayerProperties::saveDefaultStyle_clicked()
 
     switch ( askToUser.exec() )
     {
-      case( 0 ):
+      case 0:
         return;
         break;
-      case( 2 ):
+      case 2:
         layer->saveStyleToDatabase( "", "", true, "", errorMsg );
         if ( errorMsg.isNull() )
         {

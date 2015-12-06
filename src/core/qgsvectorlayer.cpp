@@ -1801,7 +1801,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
   int dotPos = initFunction.lastIndexOf( '.' );
   if ( dotPos >= 0 ) // It's a module
   {
-    mEditFormConfig->setInitCodeSource( QgsEditFormConfig::PythonInitCodeSource::CodeSourceDialog );
+    mEditFormConfig->setInitCodeSource( QgsEditFormConfig::CodeSourceDialog );
     mEditFormConfig->setInitFunction( initFunction.mid( dotPos + 1 ) );
     mEditFormConfig->setInitCode( QString( "from %1 import %2\n" ).arg( initFunction.left( dotPos ), initFunction.mid( dotPos + 1 ) ) );
   }
