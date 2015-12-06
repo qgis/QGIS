@@ -131,8 +131,8 @@ class ParameterExtentTest(unittest.TestCase):
         optionalParameter = ParameterExtent('myName', 'myDesc', default='0,1,0,1', optional=True)
         optionalParameter.setValue('1,2,3,4')
         optionalParameter.setValue(None)
-        # Extent is unique in that it will let you set "None", whereas other
-        # optional parameterss become "default" when assigning None.
+        # Extent is unique in that it will let you set `None`, whereas other
+        # optional parameters become "default" when assigning None.
         self.assertEqual(optionalParameter.value, None)
 
         requiredParameter = ParameterExtent('myName', 'myDesc', default='0,1,0,1', optional=False)
