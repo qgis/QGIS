@@ -928,7 +928,11 @@ QStringList QgsLayerTreeModel::mimeTypes() const
 
 QMimeData* QgsLayerTreeModel::mimeData( const QModelIndexList& indexes ) const
 {
-  QList<QgsLayerTreeNode*> nodesFinal = indexes2nodes( indexes, true );
+  // Sort the indexes. Depending on how the user selected the items, the indexes may be unsorted.
+  QModelIndexList sortedIndexes = indexes;
+  qSort( sortedIndexes.begin(), sortedIndexes.end(), qLess<QModelIndex>() );
+
+  QList<QgsLayerTreeNode*> nodesFinal = indexes2nodes( sortedIndexes, true );
 
   if ( nodesFinal.count() == 0 )
     return 0;
