@@ -40,19 +40,23 @@ class GUI_EXPORT QgsFileNameWidgetWrapper : public QgsEditorWidgetWrapper
     // QgsEditorWidgetWrapper interface
   public:
     QVariant value() const override;
-    bool valid() const override;
 
   protected:
     QWidget* createWidget( QWidget* parent ) override;
     void initWidget( QWidget* editor ) override;
-
+    bool valid() const override;
+    
   public slots:
     void setValue( const QVariant& value ) override;
+    void setEnabled( bool enabled ) override;
 
   private:
     QLineEdit* mLineEdit;
     QPushButton* mPushButton;
     QLabel* mLabel;
+    QString toUrl( const QVariant& value );
+    QString relativePath( QString filePath, bool removeRelative );
+    QVariant mValue;
 };
 
 #endif // QGSFILENAMEWIDGETWRAPPER_H
