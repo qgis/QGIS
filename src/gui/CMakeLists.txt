@@ -103,6 +103,7 @@ SET(QGIS_GUI_SRCS
   editorwidgets/qgsdummyconfigdlg.cpp
   editorwidgets/qgsenumerationwidgetwrapper.cpp
   editorwidgets/qgsenumerationwidgetfactory.cpp
+  editorwidgets/qgsfilenameconfigdlg.cpp
   editorwidgets/qgsfilenamewidgetwrapper.cpp
   editorwidgets/qgsfilenamewidgetfactory.cpp
   editorwidgets/qgshiddenwidgetwrapper.cpp
@@ -495,6 +496,7 @@ SET(QGIS_GUI_MOC_HDRS
   editorwidgets/qgsdoublespinbox.h
   editorwidgets/qgsdummyconfigdlg.h
   editorwidgets/qgsenumerationwidgetwrapper.h
+  editorwidgets/qgsfilenameconfigdlg.h
   editorwidgets/qgsfilenamewidgetwrapper.h
   editorwidgets/qgshiddenwidgetwrapper.h
   editorwidgets/qgsphotoconfigdlg.h
