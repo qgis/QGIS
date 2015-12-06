@@ -861,7 +861,7 @@ QVariant QgsRuleBasedRendererV2Model::data( const QModelIndex &index, int role )
   {
     if ( index.column() != 0 )
       return QVariant();
-    return rule->checkState() ? Qt::Checked : Qt::Unchecked;
+    return rule->active() ? Qt::Checked : Qt::Unchecked;
   }
   else
     return QVariant();
