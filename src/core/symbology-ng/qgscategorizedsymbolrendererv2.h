@@ -186,6 +186,8 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
     // @note added in 2.5
     virtual bool legendSymbolItemChecked( const QString& key ) override;
 
+    virtual void setLegendSymbolItem( const QString& key, QgsSymbolV2* symbol ) override;
+
     //! item in symbology was checked
     // @note added in 2.5
     virtual void checkLegendSymbolItem( const QString& key, bool state = true ) override;

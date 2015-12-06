@@ -66,7 +66,6 @@ class CORE_EXPORT QgsLegendSymbolItemV2
     //! @note added in 2.8
     QString parentRuleKey() const { return mParentKey; }
 
-  protected:
     //! Set symbol of the item. Takes ownership of symbol.
     void setSymbol( QgsSymbolV2* s );
 

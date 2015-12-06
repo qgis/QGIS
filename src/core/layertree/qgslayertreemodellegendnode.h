@@ -145,6 +145,8 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
  */
 class CORE_EXPORT QgsSymbolV2LegendNode : public QgsLayerTreeModelLegendNode
 {
+    Q_OBJECT
+
   public:
     QgsSymbolV2LegendNode( QgsLayerTreeLayer* nodeLayer, const QgsLegendSymbolItemV2& item, QObject* parent = 0 );
     ~QgsSymbolV2LegendNode();
@@ -173,6 +175,33 @@ class CORE_EXPORT QgsSymbolV2LegendNode : public QgsLayerTreeModelLegendNode
     //! @note added in 2.10
     QSize minimumIconSize() const;
 
+    /** Returns the symbol used by the legend node.
+     * @see setSymbol()
+     * @note added in QGIS 2.14
+     */
+    const QgsSymbolV2* symbol() const;
+
+    /** Sets the symbol to be used by the legend node.
+     * @param symbol new symbol for node. Ownership is transferred.
+     * @see symbol()
+     * @note added in QGIS 2.14
+     */
+    void setSymbol( QgsSymbolV2* symbol );
+
+  public slots:
+
+    /** Checks all items belonging to the same layer as this node.
+     * @note added in QGIS 2.14
+     * @see uncheckAllItems()
+     */
+    void checkAllItems();
+
+    /** Unchecks all items belonging to the same layer as this node.
+     * @note added in QGIS 2.14
+     * @see checkAllItems()
+     */
+    void uncheckAllItems();
+
   private:
     void updateLabel();
 
@@ -189,6 +218,10 @@ class CORE_EXPORT QgsSymbolV2LegendNode : public QgsLayerTreeModelLegendNode
     // return a temporary context or null if legendMapViewData are not valid
     QgsRenderContext * createTemporaryRenderContext() const;
 
+    /** Sets all items belonging to the same layer as this node to the same check state.
+     * @param state check state
+     */
+    void checkAll( bool state );
 };
 
 

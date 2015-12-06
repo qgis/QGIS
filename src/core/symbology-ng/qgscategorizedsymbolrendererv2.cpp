@@ -954,6 +954,16 @@ bool QgsCategorizedSymbolRendererV2::legendSymbolItemChecked( const QString& key
     return true;
 }
 
+void QgsCategorizedSymbolRendererV2::setLegendSymbolItem( const QString& key, QgsSymbolV2* symbol )
+{
+  bool ok;
+  int index = key.toInt( &ok );
+  if ( ok )
+    updateCategorySymbol( index, symbol );
+  else
+    delete symbol;
+}
+
 void QgsCategorizedSymbolRendererV2::checkLegendSymbolItem( const QString& key, bool state )
 {
   bool ok;
