@@ -409,6 +409,16 @@ static QVariant fcnGetVariable( const QVariantList& values, const QgsExpressionC
   return context->variable( name );
 }
 
+static QVariant fcnEval( const QVariantList& values, const QgsExpressionContext* context, QgsExpression* parent )
+{
+  if ( !context )
+    return QVariant();
+
+  QString expString = getStringValue( values.at( 0 ), parent );
+  QgsExpression expression( expString );
+  return expression.evaluate( context );
+}
+
 static QVariant fcnSqrt( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   double x = getDoubleValue( values.at( 0 ), parent );
@@ -2518,6 +2528,7 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( "get_feature", 3, fcnGetFeature, "Record", QString(), false, QStringList(), false, QStringList() << "getFeature" )
     << new StaticFunction( "layer_property", 2, fcnGetLayerProperty, "General" )
     << new StaticFunction( "var", 1, fcnGetVariable, "General" )
+    << new StaticFunction( "eval", 1, fcnEval, "General" )
 
     //return all attributes string for referencedColumns - this is caught by
     // QgsFeatureRequest::setSubsetOfAttributes and causes all attributes to be fetched by the
