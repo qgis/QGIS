@@ -155,8 +155,7 @@ class TestQgsRectangle(TestCase):
         assert rect1.contains(rect2), myMessage
 
         print rect1.toString()
-        assert (rect1 == QgsRectangle(0.0, 0.0, 7.0, 7.0),
-                'Wrong combine with rectangle result')
+        assert rect1 == QgsRectangle(0.0, 0.0, 7.0, 7.0), 'Wrong combine with rectangle result'
 
         rect1 = QgsRectangle(0.0, 0.0, 5.0, 5.0)
         rect1.combineExtentWith(6.0, 2.0)
