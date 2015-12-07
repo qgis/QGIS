@@ -74,7 +74,7 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     void adjustBoxSize();
 
     /** Returns pointer to the legend model*/
-    //! @note deprecated in 2.6 - use modelV2()
+    //! @deprecated in 2.6 - use modelV2()
     Q_DECL_DEPRECATED QgsLegendModel* model() {return &mLegendModel;}
 
     //! @note added in 2.6

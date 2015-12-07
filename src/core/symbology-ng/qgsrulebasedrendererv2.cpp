@@ -261,7 +261,7 @@ QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::clone() const
 {
   QgsSymbolV2* sym = mSymbol ? mSymbol->clone() : NULL;
   Rule* newrule = new Rule( sym, mScaleMinDenom, mScaleMaxDenom, mFilterExp, mLabel, mDescription );
-  newrule->setCheckState( mIsActive );
+  newrule->setActive( mIsActive );
   // clone children
   Q_FOREACH ( Rule* rule, mChildren )
     newrule->appendChild( rule->clone() );
@@ -652,7 +652,7 @@ QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::create( QDomElement&
   if ( !ruleKey.isEmpty() )
     rule->mRuleKey = ruleKey;
 
-  rule->setCheckState( ruleElem.attribute( "checkstate", "1" ).toInt() );
+  rule->setActive( ruleElem.attribute( "checkstate", "1" ).toInt() );
 
   QDomElement childRuleElem = ruleElem.firstChildElement( "rule" );
   while ( !childRuleElem.isNull() )
@@ -987,7 +987,7 @@ void QgsRuleBasedRendererV2::checkLegendSymbolItem( const QString& key, bool sta
 {
   Rule* rule = mRootRule->findRuleByKey( key );
   if ( rule )
-    rule->setCheckState( state );
+    rule->setActive( state );
 }
 
 QgsLegendSymbolList QgsRuleBasedRendererV2::legendSymbolItems( double scaleDenominator, const QString& rule )

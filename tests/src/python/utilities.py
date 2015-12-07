@@ -766,14 +766,34 @@ class DoxygenParser():
             :param member_elem: XML element for a class member
         """
 
+        #look for both Q_DECL_DEPRECATED and Doxygen deprecated tag
+        decl_deprecated = False
         type_elem = member_elem.find('type')
         try:
             if 'Q_DECL_DEPRECATED' in type_elem.text:
-                return True
+                decl_deprecated = True
         except:
             pass
 
-        return False
+        doxy_deprecated = False
+        try:
+            for p in member_elem.find('detaileddescription').getiterator('para'):
+                for s in p.getiterator('xrefsect'):
+                    if s.find('xreftitle') is not None and 'Deprecated' in s.find('xreftitle').text:
+                        doxy_deprecated = True
+                        break
+        except:
+            assert 0, member_elem.find('definition').text
+
+        if not decl_deprecated and not doxy_deprecated:
+            return False
+
+        #only functions for now, but in future this should also apply for enums and variables
+        if member_elem.get('kind') in ('function', 'variable'):
+            assert decl_deprecated, 'Error: Missing Q_DECL_DEPRECATED for {}'.format(member_elem.find('definition').text)
+            assert doxy_deprecated, 'Error: Missing Doxygen deprecated tag for {}'.format(member_elem.find('definition').text)
+
+        return True
 
     def memberIsDocumented(self, member_elem):
         """ Tests whether an member has documentation

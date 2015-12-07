@@ -688,7 +688,9 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
      */
     void drawArrowHead( QPainter* p, double x, double y, double angle, double arrowHeadWidth ) const /Deprecated/;
 
-    /** Returns angle of the line from p1 to p2 (clockwise, starting at N)*/
+    /** Returns angle of the line from p1 to p2 (clockwise, starting at N)
+     * @deprecated will be removed in QGIS 3.0
+    */
     double angle( const QPointF& p1, const QPointF& p2 ) const /Deprecated/;
 
     /** Returns the current (zoom level dependent) tolerance to decide if mouse position is close enough to the

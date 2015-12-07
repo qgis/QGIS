@@ -740,6 +740,7 @@ class QgsComposerMap : QgsComposerItem
     /** Transforms map coordinates to item coordinates (considering rotation and move offset)*/
     QPointF mapToItemCoords( const QPointF& mapCoords ) const;
 
+    //! @deprecated will be removed in QGIS 3.0
     void connectMapOverviewSignals() /Deprecated/;
 
     /** Calculates the extent to request and the yShift of the top-left point in case of rotation.

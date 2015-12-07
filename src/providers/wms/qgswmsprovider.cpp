@@ -2718,7 +2718,9 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
                   OGR_G_ExportToWkb( ogrGeom, ( OGRwkbByteOrder ) QgsApplication::endian(), wkb );
                   OGR_G_DestroyGeometry( ogrGeom );
 
-                  feature.setGeometryAndOwnership( wkb, wkbSize );
+                  QgsGeometry *g = new QgsGeometry();
+                  g->fromWkb( wkb, wkbSize );
+                  feature.setGeometry( g );
 
                   if ( coordinateTransform && feature.constGeometry() )
                   {

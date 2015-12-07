@@ -366,7 +366,7 @@ void checkDock::runTests( ValidateType type )
       QSettings settings;
       if ( te->conflict()->type() == QGis::Polygon )
       {
-        rb = new QgsRubberBand( qgsInterface->mapCanvas(), true );
+        rb = new QgsRubberBand( qgsInterface->mapCanvas(), QGis::Polygon );
       }
       else
       {

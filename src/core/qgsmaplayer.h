@@ -487,7 +487,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
   signals:
 
     //! @deprecated in 2.4 - not emitted anymore
-    void drawingProgress( int theProgress, int theTotalSteps );
+    Q_DECL_DEPRECATED void drawingProgress( int theProgress, int theTotalSteps );
 
     /** Emit a signal with status (e.g. to be caught by QgisApp and display a msg on status bar) */
     void statusChanged( const QString& theStatus );

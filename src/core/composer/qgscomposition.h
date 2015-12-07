@@ -417,6 +417,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
       composer user interface item properties).
       @param item the item.
       @return QgsComposerHtml pointer or 0 pointer if no such item exists.
+      @deprecated Use QgsComposerFrame::multiFrame() instead
      */
     Q_DECL_DEPRECATED const QgsComposerHtml* getComposerHtmlByItem( QgsComposerItem *item ) const;
 

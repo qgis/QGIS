@@ -107,6 +107,7 @@ class CORE_EXPORT QgsExpression
     const Node* rootNode() const { return mRootNode; }
 
     //! Get the expression ready for evaluation - find out column indexes.
+    //! @deprecated use prepare( const QgsExpressionContext *context ) instead
     Q_DECL_DEPRECATED bool prepare( const QgsFields &fields );
 
     /** Get the expression ready for evaluation - find out column indexes.
@@ -132,20 +133,24 @@ class CORE_EXPORT QgsExpression
 
     //! Evaluate the feature and return the result
     //! @note prepare() should be called before calling this method
+    //! @deprecated use evaluate( const QgsExpressionContext* context ) instead
     Q_DECL_DEPRECATED QVariant evaluate( const QgsFeature* f );
 
     //! Evaluate the feature and return the result
     //! @note prepare() should be called before calling this method
     //! @note available in python bindings as evaluatePrepared
+    //! @deprecated use evaluate( const QgsExpressionContext* context ) instead
     Q_DECL_DEPRECATED QVariant evaluate( const QgsFeature& f );
 
     //! Evaluate the feature and return the result
     //! @note this method does not expect that prepare() has been called on this instance
+    //! @deprecated use evaluate( const QgsExpressionContext* context ) instead
     Q_DECL_DEPRECATED QVariant evaluate( const QgsFeature* f, const QgsFields& fields );
 
     //! Evaluate the feature and return the result
     //! @note this method does not expect that prepare() has been called on this instance
     //! @note not available in python bindings
+    //! @deprecated use evaluate( const QgsExpressionContext* context ) instead
     Q_DECL_DEPRECATED QVariant evaluate( const QgsFeature& f, const QgsFields& fields );
 
     /** Evaluate the feature and return the result.
@@ -169,8 +174,10 @@ class CORE_EXPORT QgsExpression
     void setEvalErrorString( const QString& str ) { mEvalErrorString = str; }
 
     //! Set the number for $rownum special column
+    //! @deprecated use QgsExpressionContext to set row number instead
     Q_DECL_DEPRECATED void setCurrentRowNumber( int rowNumber ) { mRowNumber = rowNumber; }
     //! Return the number used for $rownum special column
+    //! @deprecated use QgsExpressionContext to retrieve row number instead
     Q_DECL_DEPRECATED int currentRowNumber() { return mRowNumber; }
 
     //TODO QGIS 3.0: make the following methods private. They are still required for replaceExpressionText
@@ -198,6 +205,7 @@ class CORE_EXPORT QgsExpression
      */
     bool isField() const { return rootNode() && dynamic_cast<const NodeColumnRef*>( rootNode() ) ;}
 
+    //! @deprecated use QgsExpressionContext variant instead
     Q_DECL_DEPRECATED static bool isValid( const QString& text, const QgsFields& fields, QString &errorMessage );
 
     /** Tests whether a string is a valid expression.
@@ -245,6 +253,7 @@ class CORE_EXPORT QgsExpression
        @param substitutionMap
        @param distanceArea optional QgsDistanceArea. If specified, the QgsDistanceArea is used for distance
        and area conversion
+       @deprecated use QgsExpressionContext variant instead
     */
     Q_DECL_DEPRECATED static QString replaceExpressionText( const QString &action, const QgsFeature *feat,
         QgsVectorLayer *layer,
@@ -407,6 +416,7 @@ class CORE_EXPORT QgsExpression
         /** The help text for the function. */
         const QString helptext() { return mHelpText.isEmpty() ? QgsExpression::helptext( mName ) : mHelpText; }
 
+        //! @deprecated Use QgsExpressionContext variant instead
         Q_DECL_DEPRECATED virtual QVariant func( const QVariantList&, const QgsFeature*, QgsExpression* );
 
         /** Returns result of evaluating the function.
@@ -444,6 +454,7 @@ class CORE_EXPORT QgsExpression
     class StaticFunction : public Function
     {
       public:
+        //! @deprecated use QgsExpressionContext variant instead
         Q_DECL_DEPRECATED StaticFunction( const QString& fnname,
                                           int params,
                                           FcnEval fcn,
@@ -480,6 +491,7 @@ class CORE_EXPORT QgsExpression
             , mAliases( aliases )
         {}
 
+        //! @deprecated use QgsExpressionContext variant instead
         Q_DECL_DEPRECATED virtual QVariant func( const QVariantList& values, const QgsFeature* f, QgsExpression* parent ) override;
 
         /** Returns result of evaluating the function.
@@ -606,6 +618,7 @@ class CORE_EXPORT QgsExpression
         /**
           * Abstract virtual eval method
           * Errors are reported to the parent
+          * @deprecated use QgsExpressionContext variant instead
           */
         Q_DECL_DEPRECATED virtual QVariant eval( QgsExpression* parent, const QgsFeature* f );
 
@@ -619,6 +632,7 @@ class CORE_EXPORT QgsExpression
         /**
          * Abstract virtual preparation method
          * Errors are reported to the parent
+         * @deprecated use QgsExpressionContext variant instead
          */
         Q_DECL_DEPRECATED virtual bool prepare( QgsExpression* parent, const QgsFields &fields );
 

@@ -74,7 +74,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      *  @param mapCanvas The map canvas to draw onto. It's CRS will be used map points onto screen coordinates.
      *  @param isPolygon true: draw as (multi-)polygon, false draw as (multi-)linestring
      */
-    QgsRubberBand( QgsMapCanvas* mapCanvas, bool isPolygon );
+    Q_DECL_DEPRECATED QgsRubberBand( QgsMapCanvas* mapCanvas, bool isPolygon );
     ~QgsRubberBand();
 
     /**
@@ -137,7 +137,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      * Sets the representation type according to isPolygon.
      *  @param isPolygon true: draw as (multi-)polygon, false draw as (multi-)linestring
      */
-    void reset( bool isPolygon );
+    Q_DECL_DEPRECATED void reset( bool isPolygon );
 
     /**
      * Add a vertex to the rubberband and update canvas.

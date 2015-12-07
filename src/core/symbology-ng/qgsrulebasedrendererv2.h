@@ -164,6 +164,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
         //! @note added in 2.6
         //! @deprecated use active instead
         Q_DECL_DEPRECATED bool checkState() const { return mIsActive; }
+
         /**
          * Returns if this rule is active
          *
@@ -214,7 +215,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
 
         //! @note added in 2.6
         //! @deprecated use setActive instead
-        void setCheckState( bool state ) { mIsActive = state; }
+        Q_DECL_DEPRECATED void setCheckState( bool state ) { mIsActive = state; }
 
         /**
          * Sets if this rule is active
@@ -230,7 +231,9 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
 
         QDomElement save( QDomDocument& doc, QgsSymbolV2Map& symbolMap );
 
-        //! prepare the rule for rendering and its children (build active children array)
+        /** Prepare the rule for rendering and its children (build active children array)
+         * @deprecated use startRender( QgsRenderContext& context, const QgsFields& fields, QString& filter ) instead
+         */
         Q_DECL_DEPRECATED bool startRender( QgsRenderContext& context, const QgsFields& fields );
 
         //! prepare the rule for rendering and its children (build active children array)

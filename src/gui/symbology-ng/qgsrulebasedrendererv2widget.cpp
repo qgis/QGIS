@@ -950,7 +950,7 @@ bool QgsRuleBasedRendererV2Model::setData( const QModelIndex & index, const QVar
 
   if ( role == Qt::CheckStateRole )
   {
-    rule->setCheckState( value.toInt() == Qt::Checked );
+    rule->setActive( value.toInt() == Qt::Checked );
     emit dataChanged( index, index );
     return true;
   }

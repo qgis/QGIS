@@ -305,6 +305,7 @@ class CORE_EXPORT QgsFeature
      * @returns pointer to feature's geometry
      * @see geometry
      * @see setGeometry
+     * @deprecated use constGeometry() instead
      */
     Q_DECL_DEPRECATED QgsGeometry *geometryAndOwnership();
 
@@ -326,7 +327,6 @@ class CORE_EXPORT QgsFeature
      * @see constGeometry
      * @see geometryAndOwnership
      * @see setGeometryAndOwnership
-     * @deprecated will be removed in QGIS 3.0
      */
     void setGeometry( QgsGeometry* geom );
 
@@ -340,7 +340,7 @@ class CORE_EXPORT QgsFeature
      * @see geometryAndOwnership
      * @deprecated will be removed in QGIS 3.0
      */
-    void setGeometryAndOwnership( unsigned char * geom, size_t length );
+    Q_DECL_DEPRECATED void setGeometryAndOwnership( unsigned char * geom, size_t length );
 
     /** Assign a field map with the feature to allow attribute access by attribute name.
      *  @param fields The attribute fields which this feature holds

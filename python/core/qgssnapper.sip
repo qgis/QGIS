@@ -69,7 +69,7 @@ class QgsSnapper
       QgsTolerance::UnitType mUnitType;
     };
 
-    //!@ deprecated since 2.4 - use constructor with QgsMapSettings
+    //!@deprecated since 2.4 - use constructor with QgsMapSettings
     QgsSnapper( QgsMapRenderer *mapRender ) /Deprecated/;
 
     explicit QgsSnapper( const QgsMapSettings& mapSettings );

@@ -119,7 +119,10 @@ void QgsWFSFeatureIterator::copyFeature( const QgsFeature* f, QgsFeature& featur
     int geomSize = geometry->wkbSize();
     unsigned char* copiedGeom = new unsigned char[geomSize];
     memcpy( copiedGeom, geom, geomSize );
-    feature.setGeometryAndOwnership( copiedGeom, geomSize );
+
+    QgsGeometry *g = new QgsGeometry();
+    g->fromWkb( copiedGeom, geomSize );
+    feature.setGeometry( g );
   }
   else
   {

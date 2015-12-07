@@ -176,7 +176,9 @@ bool QgsMssqlFeatureIterator::fetchFeature( QgsFeature& feature )
       unsigned char* wkb = mParser.ParseSqlGeometry(( unsigned char* )ar.data(), ar.size() );
       if ( wkb )
       {
-        feature.setGeometryAndOwnership( wkb, mParser.GetWkbLen() );
+        QgsGeometry *g = new QgsGeometry();
+        g->fromWkb( wkb, mParser.GetWkbLen() );
+        feature.setGeometry( g );
       }
     }
 

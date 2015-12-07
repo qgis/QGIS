@@ -122,6 +122,7 @@ class QgsRendererV2DataDefinedMenus : public QObject
 
   public:
 
+    //! @deprecated will be removed in QGIS 3.0
     Q_DECL_DEPRECATED QgsRendererV2DataDefinedMenus( QMenu* menu, QgsVectorLayer* layer, const QString& rotationField, const QString& sizeScaleField, QgsSymbolV2::ScaleMethod scaleMethod );
     ~QgsRendererV2DataDefinedMenus();
 

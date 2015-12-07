@@ -567,11 +567,13 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
         }
       }
 
-      feature.setGeometryAndOwnership( featureGeom, returnedLength + 1 );
+      QgsGeometry *g = new QgsGeometry();
+      g->fromWkb( featureGeom, returnedLength + 1 );
+      feature.setGeometry( g );
     }
     else
     {
-      feature.setGeometryAndOwnership( 0, 0 );
+      feature.setGeometry( 0 );
     }
 
     col++;

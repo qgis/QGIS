@@ -116,7 +116,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     virtual void setState( State state );
 
     //! @deprecated in 2.8, use state()
-    bool isPopulated() { return state() == Populated; }
+    Q_DECL_DEPRECATED bool isPopulated() { return state() == Populated; }
 
     // Insert new child using alphabetical order based on mName, emits necessary signal to model before and after, sets parent and connects signals
     // refresh - refresh populated item, emit signals to model

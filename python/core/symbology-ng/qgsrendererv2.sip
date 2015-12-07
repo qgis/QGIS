@@ -64,6 +64,7 @@ class QgsFeatureRendererV2
     /** To be overridden
      * @param feature feature
      * @return returns pointer to symbol or 0 if symbol was not found
+     * @deprecated use symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) instead
      */
     virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature ) /Deprecated/;
 
@@ -83,6 +84,7 @@ class QgsFeatureRendererV2
      * symbol which can be used as an identifier for renderer's rule - the former may return a temporary replacement
      * of a symbol for use in rendering.
      * @note added in 2.6
+     * @deprecated use originalSymbolForFeature( QgsFeature& feature, QgsRenderContext& context ) instead
      */
     virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feature ) /Deprecated/;
 
@@ -139,7 +141,9 @@ class QgsFeatureRendererV2
     //! returns bitwise OR-ed capabilities of the renderer
     virtual int capabilities();
 
-    //! for symbol levels
+    /** For symbol levels
+     * @deprecated use symbols( QgsRenderContext& context ) instead
+     */
     virtual QgsSymbolV2List symbols() /Deprecated/;
 
     /** Returns list of symbols used by the renderer.
@@ -217,9 +221,11 @@ class QgsFeatureRendererV2
     //! sets rotation field of renderer (if supported by the renderer)
     virtual void setRotationField( const QString& fieldName ) /Deprecated/;
 
-    //! return whether the renderer will render a feature or not.
-    //! Must be called between startRender() and stopRender() calls.
-    //! Default implementation uses symbolForFeature().
+    /** Returns whether the renderer will render a feature or not.
+     * Must be called between startRender() and stopRender() calls.
+     * Default implementation uses symbolForFeature().
+     * @deprecated use willRenderFeature( QgsFeature& feat, QgsRenderContext& context ) instead
+     */
     virtual bool willRenderFeature( QgsFeature& feat ) /Deprecated/;
 
     /** Returns whether the renderer will render a feature or not.
@@ -231,9 +237,11 @@ class QgsFeatureRendererV2
     //TODO - QGIS 3.0 change PyName to willRenderFeature when deprecated method is removed
     virtual bool willRenderFeature( QgsFeature& feat, QgsRenderContext& context ) /PyName=willRenderFeature2/;
 
-    //! return list of symbols used for rendering the feature.
-    //! For renderers that do not support MoreSymbolsPerFeature it is more efficient
-    //! to use symbolForFeature()
+    /** Returns list of symbols used for rendering the feature.
+     * For renderers that do not support MoreSymbolsPerFeature it is more efficient
+     * to use symbolForFeature()
+     * @deprecated use symbolsForFeature( QgsFeature& feat, QgsRenderContext& context ) instead
+     */
     virtual QgsSymbolV2List symbolsForFeature( QgsFeature& feat ) /Deprecated/;
 
     /** Returns list of symbols used for rendering the feature.
@@ -245,9 +253,11 @@ class QgsFeatureRendererV2
     //TODO - QGIS 3.0 change PyName to symbolsForFeature when deprecated method is removed
     virtual QgsSymbolV2List symbolsForFeature( QgsFeature& feat, QgsRenderContext& context ) /PyName=symbolsForFeature2/;
 
-    //! Equivalent of originalSymbolsForFeature() call
-    //! extended to support renderers that may use more symbols per feature - similar to symbolsForFeature()
-    //! @note added in 2.6
+    /** Equivalent of originalSymbolsForFeature() call
+     * extended to support renderers that may use more symbols per feature - similar to symbolsForFeature()
+     * @note added in 2.6
+     * @deprecated use originalSymbolsForFeature( QgsFeature& feat, QgsRenderContext& context ) instead
+     */
     virtual QgsSymbolV2List originalSymbolsForFeature( QgsFeature& feat ) /Deprecated/;
 
      /** Equivalent of originalSymbolsForFeature() call

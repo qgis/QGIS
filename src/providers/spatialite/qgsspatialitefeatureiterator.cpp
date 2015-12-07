@@ -19,6 +19,7 @@
 #include "qgsspatialiteprovider.h"
 #include "qgsspatialiteexpressioncompiler.h"
 
+#include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include <QSettings>
@@ -379,7 +380,7 @@ bool QgsSpatiaLiteFeatureIterator::getFeature( sqlite3_stmt *stmt, QgsFeature &f
   if ( !mFetchGeometry )
   {
     // no geometry was required
-    feature.setGeometryAndOwnership( 0, 0 );
+    feature.setGeometry( 0 );
   }
 
   feature.initAttributes( mSource->mFields.count() );
@@ -474,14 +475,18 @@ void QgsSpatiaLiteFeatureIterator::getFeatureGeometry( sqlite3_stmt* stmt, int i
     QgsSpatiaLiteProvider::convertToGeosWKB(( const unsigned char * )blob, blob_size,
                                             &featureGeom, &geom_size );
     if ( featureGeom )
-      feature.setGeometryAndOwnership( featureGeom, geom_size );
+    {
+      QgsGeometry *g = new QgsGeometry();
+      g->fromWkb( featureGeom, geom_size );
+      feature.setGeometry( g );
+    }
     else
-      feature.setGeometryAndOwnership( 0, 0 );
+      feature.setGeometry( 0 );
   }
   else
   {
     // NULL geometry
-    feature.setGeometryAndOwnership( 0, 0 );
+    feature.setGeometry( 0 );
   }
 }
 

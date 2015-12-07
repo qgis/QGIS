@@ -198,6 +198,7 @@ class CORE_EXPORT QgsSymbolLayerV2
      * @see hasDataDefinedProperty
      * @see getDataDefinedProperty
      * @note added in QGIS 2.9
+     * @deprecated use variant which takes QgsSymbolV2RenderContext instead
      */
     Q_DECL_DEPRECATED virtual QVariant evaluateDataDefinedProperty( const QString& property, const QgsFeature* feature, const QVariant& defaultVal = QVariant(), bool *ok = 0 ) const;
 
@@ -268,6 +269,7 @@ class CORE_EXPORT QgsSymbolLayerV2
      * be called prior to evaluating data defined properties.
      * @param fields associated layer fields
      * @param scale map scale
+     * @deprecated use variant which takes QgsSymbolV2RenderContext instead
      */
     Q_DECL_DEPRECATED virtual void prepareExpressions( const QgsFields* fields, double scale = -1.0 );
 

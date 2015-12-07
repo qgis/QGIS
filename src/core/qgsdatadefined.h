@@ -146,6 +146,7 @@ class CORE_EXPORT QgsDataDefined
     /** Prepares the expression using a vector layer
      * @param layer vector layer
      * @returns true if expression was successfully prepared
+     * @deprecated use QgsExpressionContext variant instead
      */
     Q_DECL_DEPRECATED bool prepareExpression( QgsVectorLayer* layer );
 
@@ -153,6 +154,7 @@ class CORE_EXPORT QgsDataDefined
      * @param fields
      * @returns true if expression was successfully prepared
      * @note added in QGIS 2.9
+     * @deprecated use QgsExpressionContext variant instead
      */
     Q_DECL_DEPRECATED bool prepareExpression( const QgsFields &fields );
 
@@ -172,12 +174,14 @@ class CORE_EXPORT QgsDataDefined
 
     /** Returns the columns referenced by the QgsDataDefined
      * @param layer vector layer, used for preparing the expression if required
+     * @deprecated use QgsExpressionContext variant instead
      */
     Q_DECL_DEPRECATED QStringList referencedColumns( QgsVectorLayer* layer );
 
     /** Returns the columns referenced by the QgsDataDefined
      * @param fields vector layer, used for preparing the expression if required
      * @note added in QGIS 2.9
+     * @deprecated use QgsExpressionContext variant instead
      */
     Q_DECL_DEPRECATED QStringList referencedColumns( const QgsFields& fields );
 

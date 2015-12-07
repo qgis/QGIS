@@ -254,10 +254,14 @@ public:
      */
     void setMargin( float margin ) /Deprecated/;
 
+    //! @deprecated use sortKeyAttributeName instead
     int sortKeyAttributeIndex() const /Deprecated/;
+    //! @deprecated use setSortKeyAttributeName instead
     void setSortKeyAttributeIndex( int idx ) /Deprecated/;
 
-    /** Returns the current atlas feature. Must be called after prepareForFeature(). */
+    /** Returns the current atlas feature. Must be called after prepareForFeature( i ).
+     * @deprecated use feature() instead
+    */
     QgsFeature* currentFeature() /Deprecated/;
 
     /** Returns the current atlas geometry in the given projection system (default to the coverage layer's CRS) */

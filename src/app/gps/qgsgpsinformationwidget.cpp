@@ -834,7 +834,9 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked()
     memcpy( &wkb[5], &x, sizeof( double ) );
     memcpy( &wkb[5] + sizeof( double ), &y, sizeof( double ) );
 
-    f->setGeometryAndOwnership( &wkb[0], size );
+    QgsGeometry *g = new QgsGeometry();
+    g->fromWkb( &wkb[0], size );
+    f->setGeometry( g );
 
     QgsFeatureAction action( tr( "Feature added" ), *f, vlayer, -1, -1, this );
     if ( action.addFeature() )
@@ -893,7 +895,10 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked()
         memcpy( &wkb[position], &y, sizeof( double ) );
         position += sizeof( double );
       }
-      f->setGeometryAndOwnership( &wkb[0], size );
+
+      QgsGeometry *g = new QgsGeometry();
+      g->fromWkb( &wkb[0], size );
+      f->setGeometry( g );
     }
     else if ( layerWKBType == QGis::WKBPolygon )
     {
@@ -934,7 +939,10 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked()
       position += sizeof( double );
 
       memcpy( &wkb[position], &y, sizeof( double ) );
-      f->setGeometryAndOwnership( &wkb[0], size );
+
+      QgsGeometry *g = new QgsGeometry();
+      g->fromWkb( &wkb[0], size );
+      f->setGeometry( g );
 
       int avoidIntersectionsReturn = f->geometry()->avoidIntersections();
       if ( avoidIntersectionsReturn == 1 )
@@ -1038,7 +1046,7 @@ void QgsGPSInformationWidget::createRubberBand()
   {
     delete mpRubberBand;
   }
-  mpRubberBand = new QgsRubberBand( mpCanvas, false );
+  mpRubberBand = new QgsRubberBand( mpCanvas, QGis::Line );
   mpRubberBand->setColor( mTrackColor );
   mpRubberBand->setWidth( mSpinTrackWidth->value() );
   mpRubberBand->show();

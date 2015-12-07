@@ -15,7 +15,7 @@ class QgsCachedFeatureIterator : QgsAbstractFeatureIterator
      * @deprecated Use QgsCachedFeatureIterator( QgsVectorLayerCache* vlCache, QgsFeatureRequest featureRequest )
      *             instead
      */
-    QgsCachedFeatureIterator( QgsVectorLayerCache* vlCache, const QgsFeatureRequest& featureRequest, const QgsFeatureIds& featureIds );
+    QgsCachedFeatureIterator( QgsVectorLayerCache* vlCache, const QgsFeatureRequest& featureRequest, const QgsFeatureIds& featureIds ) /Deprecated/;
 
     /**
      * This constructor creates a feature iterator, that delivers all cached features. No request is made to the backend.

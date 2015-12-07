@@ -42,6 +42,7 @@ class CORE_EXPORT QgsDiagram
 
     void clearCache();
 
+    //! @deprecated use QgsExpressionContext variant instead
     Q_DECL_DEPRECATED QgsExpression* getExpression( const QString& expression, const QgsFields* fields );
 
     /** Returns a prepared expression for the specified context.

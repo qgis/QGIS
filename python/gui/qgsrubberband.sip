@@ -109,7 +109,7 @@ class QgsRubberBand: QgsMapCanvasItem
      * Sets the representation type according to isPolygon.
      *  @param isPolygon true: draw as (multi-)polygon, false draw as (multi-)linestring
      */
-    void reset( bool isPolygon );
+    void reset( bool isPolygon ) /Deprecated/;
 
     /**
      * Add a vertex to the rubberband and update canvas.

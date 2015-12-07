@@ -218,7 +218,7 @@ int QgsMapToolCapture::addVertex( const QgsPoint& point )
   }
   else
   {
-    mTempRubberBand->reset( mCaptureMode == CapturePolygon ? true : false );
+    mTempRubberBand->reset( mCaptureMode == CapturePolygon ? QGis::Polygon : QGis::Line );
   }
   if ( mCaptureMode == CaptureLine )
   {
@@ -308,7 +308,7 @@ void QgsMapToolCapture::undo()
     }
     else
     {
-      mTempRubberBand->reset( mCaptureMode == CapturePolygon ? true : false );
+      mTempRubberBand->reset( mCaptureMode == CapturePolygon ? QGis::Polygon : QGis::Line );
     }
 
     QgsVertexId vertexToRemove;

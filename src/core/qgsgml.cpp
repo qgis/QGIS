@@ -381,7 +381,9 @@ void QgsGml::endElement( const XML_Char* el )
     Q_ASSERT( mCurrentFeature );
     if ( mCurrentWKBSize > 0 )
     {
-      mCurrentFeature->setGeometryAndOwnership( mCurrentWKB, mCurrentWKBSize );
+      QgsGeometry *g = new QgsGeometry();
+      g->fromWkb( mCurrentWKB, mCurrentWKBSize );
+      mCurrentFeature->setGeometry( g );
       mCurrentWKB = 0;
     }
     else if ( !mCurrentExtent.isEmpty() )

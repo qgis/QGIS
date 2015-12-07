@@ -324,8 +324,10 @@ class QgsVectorLayer : QgsMapLayer
 
     struct RangeData
     {
-      RangeData();
-      RangeData( const QVariant& theMin, const QVariant& theMax, const QVariant& theStep );
+      //! @deprecated Use the editorWidgetV2() system instead
+      RangeData() /Deprecated/;
+      //! @deprecated Use the editorWidgetV2() system instead
+      RangeData( const QVariant& theMin, const QVariant& theMax, const QVariant& theStep ) /Deprecated/;
 
       QVariant mMin;
       QVariant mMax;
@@ -678,7 +680,7 @@ class QgsVectorLayer : QgsMapLayer
      *
      * @deprecated Will be removed for QGIS 3 in favor of importNamedStyle
      */
-    virtual bool applyNamedStyle( const QString& namedStyle, QString &errorMsg /Out/ );
+    virtual bool applyNamedStyle( const QString& namedStyle, QString &errorMsg /Out/ ) /Deprecated/;
 
     /** Convert a saved attribute editor element into a AttributeEditor structure as it's used internally.
      * @param elem the DOM element
@@ -946,7 +948,7 @@ class QgsVectorLayer : QgsMapLayer
     bool draw( QgsRenderContext& rendererContext );
 
     /** Draws the layer labels using the old labeling engine
-     * @note deprecated
+     * @deprecated will be removed in QGIS 3.0
     */
     void drawLabels( QgsRenderContext& rendererContext ) /Deprecated/;
 

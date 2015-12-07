@@ -692,7 +692,9 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      */
     Q_DECL_DEPRECATED void drawArrowHead( QPainter* p, double x, double y, double angle, double arrowHeadWidth ) const;
 
-    /** Returns angle of the line from p1 to p2 (clockwise, starting at N)*/
+    /** Returns angle of the line from p1 to p2 (clockwise, starting at N)
+     * @deprecated will be removed in QGIS 3.0
+    */
     Q_DECL_DEPRECATED double angle( const QPointF& p1, const QPointF& p2 ) const;
 
     /** Returns the current (zoom level dependent) tolerance to decide if mouse position is close enough to the

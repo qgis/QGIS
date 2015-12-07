@@ -178,7 +178,7 @@ void TestQgsRubberband::testVisibility()
   QCOMPARE( mRubberband->isVisible(), true );
 
   // Add point without update
-  mRubberband->reset( true );
+  mRubberband->reset( QGis::Polygon );
   mRubberband->addPoint( QgsPoint( 10, 10 ), false );
   QCOMPARE( mRubberband->isVisible(), false );
 

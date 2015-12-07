@@ -203,7 +203,7 @@ class CORE_EXPORT QGis
 
     /** Old search radius in % of canvas width
      *  @deprecated since 2.3, use DEFAULT_SEARCH_RADIUS_MM */
-    static const double DEFAULT_IDENTIFY_RADIUS;
+    Q_DECL_DEPRECATED static const double DEFAULT_IDENTIFY_RADIUS;
 
     /** Identify search radius in mm
      *  @note added in 2.3 */

@@ -94,7 +94,7 @@ class CORE_EXPORT QgsSnapper
       QgsTolerance::UnitType mUnitType;
     };
 
-    //!@ deprecated since 2.4 - use constructor with QgsMapSettings
+    //!@deprecated since 2.4 - use constructor with QgsMapSettings
     Q_DECL_DEPRECATED QgsSnapper( QgsMapRenderer *mapRender );
 
     explicit QgsSnapper( const QgsMapSettings& mapSettings );

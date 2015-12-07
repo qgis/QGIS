@@ -356,6 +356,7 @@ class QgsFeature
      * @returns pointer to feature's geometry
      * @see geometry
      * @see setGeometry
+     * @deprecated use constGeometry() instead
      */
     QgsGeometry *geometryAndOwnership() /Factory,Deprecated/;
 
@@ -391,7 +392,7 @@ class QgsFeature
      * @see geometryAndOwnership
      * @deprecated will be removed in QGIS 3.0
      */
-    void setGeometryAndOwnership( unsigned char * geom /Transfer/, size_t length );
+    void setGeometryAndOwnership( unsigned char * geom /Transfer/, size_t length ) /Deprecated/;
 
     /** Assign a field map with the feature to allow attribute access by attribute name.
      *  @param fields The attribute fields which this feature holds

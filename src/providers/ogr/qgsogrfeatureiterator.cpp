@@ -328,7 +328,16 @@ bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature& feature )
       OGR_G_ExportToWkb( geom, ( OGRwkbByteOrder ) QgsApplication::endian(), wkb );
 
       QgsGeometry* geometry = feature.geometry();
-      if ( !geometry ) feature.setGeometryAndOwnership( wkb, memorySize ); else geometry->fromWkb( wkb, memorySize );
+      if ( !geometry )
+      {
+        QgsGeometry *g = new QgsGeometry();
+        g->fromWkb( wkb, memorySize );
+        feature.setGeometry( g );
+      }
+      else
+      {
+        geometry->fromWkb( wkb, memorySize );
+      }
     }
     else
       feature.setGeometry( 0 );

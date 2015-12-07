@@ -105,7 +105,7 @@ class QgsMapCanvas : QGraphicsView
     int mapUpdateInterval() const;
 
     //! @deprecated since 2.4 - there could be more than just one "map" items
-    QgsMapCanvasMap* map();
+    QgsMapCanvasMap* map() /Deprecated/;
 
     //! @deprecated since 2.4 - use mapSettings() for anything related to current renderer settings
     //// SIP: removed /Transfer/ because it crashes after few calls to iface.mapCanvas().mapRenderer().hasCrsTransformEnabled()

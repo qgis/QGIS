@@ -117,7 +117,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
     r.setFilterRect( extent );
 
     QgsGeometry *g = QgsGeometry::fromRect( extent );
-    mRubberBand = new QgsRubberBand( mc, true );
+    mRubberBand = new QgsRubberBand( mc, QGis::Polygon );
     mRubberBand->setToGeometry( g, theLayer );
     delete g;
 

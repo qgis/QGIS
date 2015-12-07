@@ -286,10 +286,14 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
      */
     Q_DECL_DEPRECATED void setMargin( float margin );
 
+    //! @deprecated use sortKeyAttributeName instead
     Q_DECL_DEPRECATED int sortKeyAttributeIndex() const;
+    //! @deprecated use setSortKeyAttributeName instead
     Q_DECL_DEPRECATED void setSortKeyAttributeIndex( int idx );
 
-    /** Returns the current atlas feature. Must be called after prepareForFeature( i ). */
+    /** Returns the current atlas feature. Must be called after prepareForFeature( i ).
+     * @deprecated use feature() instead
+    */
     Q_DECL_DEPRECATED QgsFeature* currentFeature() { return &mCurrentFeature; }
 
     /** Returns the current atlas geometry in the given projection system (default to the coverage layer's CRS) */

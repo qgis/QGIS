@@ -10,6 +10,8 @@ class QgsDiagram
     virtual QgsDiagram* clone() const = 0 /Factory/;
 
     void clearCache();
+
+    //! @deprecated use QgsExpressionContext variant instead
     QgsExpression* getExpression( const QString& expression, const QgsFields* fields ) /Deprecated/;
 
     /** Returns a prepared expression for the specified context.
