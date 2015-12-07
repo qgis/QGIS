@@ -2066,8 +2066,10 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
           QgsDebugMsg( "No cache for capabilites!" );
         }
 
+#ifdef QGISDEBUG
         bool fromCache = mCapabilitiesReply->attribute( QNetworkRequest::SourceIsFromCacheAttribute ).toBool();
         QgsDebugMsg( QString( "Capabilities reply was cached: %1" ).arg( fromCache ) );
+#endif
 
         mHttpCapabilitiesResponse = mCapabilitiesReply->readAll();
 
