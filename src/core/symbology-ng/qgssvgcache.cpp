@@ -620,13 +620,21 @@ void QgsSvgCache::replaceElemParams( QDomElement& elem, const QColor& fill, cons
         }
         QString key = keyValueSplit.at( 0 );
         QString value = keyValueSplit.at( 1 );
-        if ( value.startsWith( "param(fill" ) )
+        if ( value.startsWith( "param(fill)" ) )
         {
           value = fill.name();
+        }
+        else if ( value.startsWith( "param(fill-opacity)" ) )
+        {
+          value = fill.alphaF();
         }
         else if ( value.startsWith( "param(outline)" ) )
         {
           value = outline.name();
+        }
+        else if ( value.startsWith( "param(outline-opacity)" ) )
+        {
+          value = outline.alphaF();
         }
         else if ( value.startsWith( "param(outline-width)" ) )
         {
@@ -648,9 +656,17 @@ void QgsSvgCache::replaceElemParams( QDomElement& elem, const QColor& fill, cons
       {
         elem.setAttribute( attribute.name(), fill.name() );
       }
+      else if ( value.startsWith( "param(fill-opacity)" ) )
+      {
+        elem.setAttribute( attribute.name(), fill.alphaF() );
+      }
       else if ( value.startsWith( "param(outline)" ) )
       {
         elem.setAttribute( attribute.name(), outline.name() );
+      }
+      else if ( value.startsWith( "param(outline-opacity)" ) )
+      {
+        elem.setAttribute( attribute.name(), outline.alphaF() );
       }
       else if ( value.startsWith( "param(outline-width)" ) )
       {
