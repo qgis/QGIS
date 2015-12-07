@@ -30,15 +30,14 @@
 #include "qgsvectorlayer.h" //QgsFeatureIds
 #include "qgsfieldmodel.h"
 #include "qgssearchwidgetwrapper.h"
+#include <QDockWidget>
 
 class QDialogButtonBox;
 class QPushButton;
 class QLineEdit;
 class QComboBox;
 class QMenu;
-class QDockWidget;
 class QSignalMapper;
-
 class QgsAttributeTableModel;
 class QgsAttributeTableFilterModel;
 class QgsRubberBand;
@@ -221,5 +220,17 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     QgsRubberBand* mRubberBand;
     QgsSearchWidgetWrapper* mCurrentSearchWidgetWrapper;
 };
+
+
+class QgsAttributeTableDock : public QDockWidget
+{
+    Q_OBJECT
+
+  public:
+    QgsAttributeTableDock( const QString & title, QWidget * parent = 0, Qt::WindowFlags flags = 0 );
+
+    virtual void closeEvent( QCloseEvent * ev ) override;
+};
+
 
 #endif

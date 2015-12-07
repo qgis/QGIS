@@ -28,31 +28,6 @@
 #include <QMessageBox>
 #include <QSettings>
 
-/// @cond
-
-class VariableEditorDelegate : public QItemDelegate
-{
-
-  public:
-    VariableEditorDelegate( QObject *parent = 0, QgsVariableEditorTree *tree = 0 )
-        : QItemDelegate( parent )
-        , mParentTree( tree )
-    {}
-
-    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option,
-                           const QModelIndex &index ) const override;
-    void updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option,
-                               const QModelIndex &index ) const override;
-    QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
-    void setModelData( QWidget* widget, QAbstractItemModel* model,
-                       const QModelIndex & index ) const override;
-    void setEditorData( QWidget *, const QModelIndex & ) const override {}
-
-  private:
-    QgsVariableEditorTree *mParentTree;
-};
-
-QIcon QgsVariableEditorTree::mExpandIcon;
 
 //
 // QgsVariableEditorWidget
@@ -267,9 +242,12 @@ void QgsVariableEditorWidget::selectionChanged()
 }
 
 
+/// @cond
 //
 // VariableEditorTree
 //
+
+QIcon QgsVariableEditorTree::mExpandIcon;
 
 QgsVariableEditorTree::QgsVariableEditorTree( QWidget *parent )
     : QTreeWidget( parent )
@@ -683,7 +661,6 @@ void QgsVariableEditorTree::mousePressEvent( QMouseEvent *event )
   }
 }
 
-
 //
 // VariableEditorDelegate
 //
@@ -784,4 +761,4 @@ void VariableEditorDelegate::setModelData( QWidget* widget, QAbstractItemModel *
   mParentTree->refreshTree();
 }
 
-/// @endcond
+///@endcond

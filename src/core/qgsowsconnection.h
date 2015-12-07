@@ -32,6 +32,7 @@
  */
 class CORE_EXPORT QgsOWSConnection : public QObject
 {
+    Q_OBJECT
 
   public:
     /**

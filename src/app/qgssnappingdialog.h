@@ -19,9 +19,8 @@
 #define QGSSNAPPINGDIALOG_H
 
 #include "qgsmaplayer.h"
+#include <QDockWidget>
 #include "ui_qgssnappingdialogbase.h"
-
-class QDockWidget;
 
 class QgsMapCanvas;
 
@@ -100,6 +99,18 @@ class APP_EXPORT QgsSnappingDialog: public QDialog, private Ui::QgsSnappingDialo
     void setIntersectionSnappingState();
 
     void setSnappingMode();
+};
+
+
+class QgsSnappingDock : public QDockWidget
+{
+    Q_OBJECT
+
+  public:
+    QgsSnappingDock( const QString & title, QWidget * parent = 0, Qt::WindowFlags flags = 0 );
+
+    virtual void closeEvent( QCloseEvent *e ) override;
+
 };
 
 #endif

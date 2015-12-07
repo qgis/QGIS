@@ -23,6 +23,8 @@
  */
 class GUI_EXPORT QgsFileDropEdit: public QLineEdit
 {
+    Q_OBJECT
+
   public:
     QgsFileDropEdit( QWidget *parent = 0 );
     virtual ~QgsFileDropEdit();

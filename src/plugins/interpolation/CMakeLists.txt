@@ -20,6 +20,7 @@ SET (INTERPOLATION_MOC_HDRS
      qgstininterpolatordialog.h
      qgsidwinterpolatordialog.h
      qgsinterpolationdialog.h
+     qgsinterpolatordialog.h
 )
 
 SET (INTERPOLATION_RCCS  interpolator.qrc)

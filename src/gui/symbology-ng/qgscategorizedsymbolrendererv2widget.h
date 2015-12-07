@@ -66,6 +66,8 @@ class GUI_EXPORT QgsCategorizedSymbolRendererV2Model : public QAbstractItemModel
 // View style which shows drop indicator line between items
 class QgsCategorizedSymbolRendererV2ViewStyle: public QProxyStyle
 {
+    Q_OBJECT
+
   public:
     explicit QgsCategorizedSymbolRendererV2ViewStyle( QStyle* style = 0 );
 

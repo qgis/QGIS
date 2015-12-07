@@ -21,6 +21,8 @@
 
 class QgsMapToolCircularStringCurvePoint: public QgsMapToolAddCircularString
 {
+    Q_OBJECT
+
   public:
     QgsMapToolCircularStringCurvePoint( QgsMapToolCapture* parentTool, QgsMapCanvas* canvas, CaptureMode mode = CaptureLine );
     ~QgsMapToolCircularStringCurvePoint();

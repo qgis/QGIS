@@ -23,6 +23,7 @@
 #include "qgscptcityarchive.h"
 
 #include <QAbstractProxyModel>
+#include <QSortFilterProxyModel>
 
 class QgsCptCityColorRampV2;
 class TreeFilterProxyModel;
@@ -81,6 +82,26 @@ class GUI_EXPORT QgsCptCityColorRampV2Dialog : public QDialog, private Ui::QgsCp
     QVector<QgsCptCityColorRampItem*> mListRamps;
 
 };
+
+///@cond
+//not part of public API
+
+class TreeFilterProxyModel : public QSortFilterProxyModel
+{
+    Q_OBJECT
+
+  public:
+    TreeFilterProxyModel( QObject *parent, QgsCptCityBrowserModel* model );
+
+  protected:
+    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
+    // bool lessThan(const QModelIndex &left, const QModelIndex &right) const;
+
+  private:
+    QgsCptCityBrowserModel* mModel;
+};
+
+///@endcond
 
 
 #endif

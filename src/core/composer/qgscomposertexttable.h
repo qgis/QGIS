@@ -24,6 +24,8 @@
 /** A text table item that reads text from string lists*/
 class CORE_EXPORT QgsComposerTextTable: public QgsComposerTable
 {
+    Q_OBJECT
+
   public:
     QgsComposerTextTable( QgsComposition* c );
     ~QgsComposerTextTable();

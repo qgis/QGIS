@@ -51,8 +51,11 @@ SET (GEOREF_MOC_HDRS
      qgsgeoreftooladdpoint.h
      qgsgeoreftooldeletepoint.h
      qgsgeoreftoolmovepoint.h
+     qgsgeorefvalidators.h
      qgsmapcoordsdialog.h
+     qgsresidualplotitem.h
      qgstransformsettingsdialog.h
+     qgsvalidateddoublespinbox.h
      
      qgsgcplistmodel.h
      qgsgcplistwidget.h

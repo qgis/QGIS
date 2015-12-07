@@ -45,6 +45,7 @@
 */
 class eVisEventIdTool : public QgsMapTool
 {
+    Q_OBJECT
 
   public:
     /** \brief Constructor */

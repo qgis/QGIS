@@ -22,6 +22,7 @@
 #include "qgsdatadefinedbutton.h"
 #include "ui_widget_size_scale.h"
 #include <QStandardItemModel>
+#include <QItemDelegate>
 
 class QgsVectorLayer;
 class QgsSymbolV2;
@@ -65,5 +66,27 @@ class GUI_EXPORT QgsSizeScaleWidget : public QgsDataDefinedAssistant, private Ui
     void setFromSymbol();
 
 };
+
+
+///@cond
+/// not part of public API
+class ItemDelegate : public QItemDelegate
+{
+    Q_OBJECT
+
+  public:
+    explicit ItemDelegate( QStandardItemModel* model ) : mModel( model ) {}
+
+    QSize sizeHint( const QStyleOptionViewItem& /*option*/, const QModelIndex & index ) const override
+    {
+      return mModel->item( index.row() )->icon().actualSize( QSize( 512, 512 ) );
+    }
+
+  private:
+    QStandardItemModel* mModel;
+
+};
+
+///@endcond
 
 #endif //QGSSIZESCALEWIDGET_H

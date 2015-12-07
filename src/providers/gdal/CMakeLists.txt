@@ -5,6 +5,7 @@ SET(GDAL_SRCS
 )
 SET(GDAL_MOC_HDRS
   qgsgdalprovider.h
+  qgsgdaldataitems.h
 )
 
 INCLUDE_DIRECTORIES (

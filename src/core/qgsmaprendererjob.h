@@ -188,6 +188,8 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
  */
 class CORE_EXPORT QgsMapRendererQImageJob : public QgsMapRendererJob
 {
+    Q_OBJECT
+
   public:
     QgsMapRendererQImageJob( const QgsMapSettings& settings );
 

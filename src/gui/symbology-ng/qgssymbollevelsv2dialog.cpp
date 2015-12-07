@@ -23,47 +23,7 @@
 #include <QItemDelegate>
 #include <QSpinBox>
 
-///@cond
-//not part of public API
 
-// delegate used from Qt Spin Box example
-class SpinBoxDelegate : public QItemDelegate
-{
-  public:
-    explicit SpinBoxDelegate( QObject *parent = 0 ) : QItemDelegate( parent ) {}
-
-    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem & /*option*/, const QModelIndex &/*index*/ ) const override
-    {
-      QSpinBox *editor = new QSpinBox( parent );
-      editor->setMinimum( 0 );
-      editor->setMaximum( 999 );
-      return editor;
-    }
-
-    void setEditorData( QWidget *editor, const QModelIndex &index ) const override
-    {
-      int value = index.model()->data( index, Qt::EditRole ).toInt();
-      QSpinBox *spinBox = static_cast<QSpinBox*>( editor );
-      spinBox->setValue( value );
-    }
-
-    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override
-    {
-      QSpinBox *spinBox = static_cast<QSpinBox*>( editor );
-      spinBox->interpretText();
-      int value = spinBox->value();
-
-      model->setData( index, value, Qt::EditRole );
-    }
-
-    void updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex & /*index*/ ) const override
-    {
-      editor->setGeometry( option.rect );
-    }
-
-};
-
-///@endcond
 
 ////////////////
 
@@ -202,3 +162,38 @@ void QgsSymbolLevelsV2Dialog::setForceOrderingEnabled( bool enabled )
   else
     chkEnable->show();
 }
+
+
+///@cond
+
+QWidget* SpinBoxDelegate::createEditor( QWidget* parent, const QStyleOptionViewItem&, const QModelIndex& ) const
+{
+  QSpinBox *editor = new QSpinBox( parent );
+  editor->setMinimum( 0 );
+  editor->setMaximum( 999 );
+  return editor;
+}
+
+void SpinBoxDelegate::setEditorData( QWidget* editor, const QModelIndex& index ) const
+{
+  int value = index.model()->data( index, Qt::EditRole ).toInt();
+  QSpinBox *spinBox = static_cast<QSpinBox*>( editor );
+  spinBox->setValue( value );
+}
+
+void SpinBoxDelegate::setModelData( QWidget* editor, QAbstractItemModel* model, const QModelIndex& index ) const
+{
+  QSpinBox *spinBox = static_cast<QSpinBox*>( editor );
+  spinBox->interpretText();
+  int value = spinBox->value();
+
+  model->setData( index, value, Qt::EditRole );
+}
+
+void SpinBoxDelegate::updateEditorGeometry( QWidget* editor, const QStyleOptionViewItem& option, const QModelIndex& ) const
+{
+  editor->setGeometry( option.rect );
+}
+
+
+///@endcond

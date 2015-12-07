@@ -17,6 +17,7 @@
 #define QGSCUSTOMLAYERORDERWIDGET_H
 
 #include <QWidget>
+#include <QAbstractListModel>
 
 class CustomLayerOrderModel;
 class QgsLayerTreeMapCanvasBridge;
@@ -57,5 +58,45 @@ class GUI_EXPORT QgsCustomLayerOrderWidget : public QWidget
     CustomLayerOrderModel* mModel;
     QListView* mView;
 };
+
+
+///@cond
+//not part of public API
+class CustomLayerOrderModel : public QAbstractListModel
+{
+    Q_OBJECT
+
+  public:
+    CustomLayerOrderModel( QgsLayerTreeMapCanvasBridge* bridge, QObject* parent = 0 );
+
+    int rowCount( const QModelIndex & ) const override;
+
+    QVariant data( const QModelIndex &index, int role ) const override;
+
+    bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
+
+    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+
+    Qt::DropActions supportedDropActions() const override;
+
+    QStringList mimeTypes() const override;
+
+    QMimeData* mimeData( const QModelIndexList& indexes ) const override;
+
+    bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
+
+    bool removeRows( int row, int count, const QModelIndex& parent ) override;
+
+    void refreshModel( const QStringList& order );
+
+    QStringList order() const { return mOrder; }
+
+    void updateLayerVisibility( const QString& layerId );
+
+  protected:
+    QgsLayerTreeMapCanvasBridge* mBridge;
+    QStringList mOrder;
+};
+/// @endcond
 
 #endif // QGSCUSTOMLAYERORDERWIDGET_H

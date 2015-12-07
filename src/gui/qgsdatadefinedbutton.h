@@ -36,6 +36,8 @@ class QgsMapCanvas;
  */
 class GUI_EXPORT QgsDataDefinedAssistant: public QDialog
 {
+    Q_OBJECT
+
   public:
     QgsDataDefinedAssistant() : mMapCanvas( 0 ) {}
 

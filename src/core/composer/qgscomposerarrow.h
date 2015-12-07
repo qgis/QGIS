@@ -27,6 +27,8 @@ class QgsLineSymbolV2;
 /** An item that draws an arrow between to points*/
 class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
 {
+    Q_OBJECT
+
   public:
 
     enum MarkerMode

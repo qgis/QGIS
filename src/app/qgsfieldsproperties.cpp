@@ -947,12 +947,12 @@ QgsFieldsProperties::FieldConfig::FieldConfig( QgsVectorLayer* layer, int idx )
  * DragList implementation
  */
 
-QStringList QgsFieldsProperties::DragList::mimeTypes() const
+QStringList DragList::mimeTypes() const
 {
   return QStringList() << QLatin1String( "application/x-qgsattributetabledesignerelement" );
 }
 
-QMimeData* QgsFieldsProperties::DragList::mimeData( const QList<QTableWidgetItem*> items ) const
+QMimeData* DragList::mimeData( const QList<QTableWidgetItem*> items ) const
 {
   if ( items.count() <= 0 )
     return 0;
@@ -972,7 +972,7 @@ QMimeData* QgsFieldsProperties::DragList::mimeData( const QList<QTableWidgetItem
     // Relevant information is always in the UserRole of the first column
     if ( item && item->column() == 0 )
     {
-      DesignerTreeItemData itemData = item->data( DesignerTreeRole ).value<DesignerTreeItemData>();
+      QgsFieldsProperties::DesignerTreeItemData itemData = item->data( QgsFieldsProperties::DesignerTreeRole ).value<QgsFieldsProperties::DesignerTreeItemData>();
       stream << itemData;
     }
   }
@@ -986,22 +986,22 @@ QMimeData* QgsFieldsProperties::DragList::mimeData( const QList<QTableWidgetItem
  * DesignerTree implementation
  */
 
-QTreeWidgetItem* QgsFieldsProperties::DesignerTree::addContainer( QTreeWidgetItem* parent, const QString& title )
+QTreeWidgetItem* DesignerTree::addContainer( QTreeWidgetItem* parent, const QString& title )
 {
   QTreeWidgetItem *newItem = new QTreeWidgetItem( QStringList() << title );
   newItem->setBackground( 0, QBrush( Qt::lightGray ) );
   newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled );
-  newItem->setData( 0, DesignerTreeRole, DesignerTreeItemData( DesignerTreeItemData::Container, title ).asQVariant() );
+  newItem->setData( 0, QgsFieldsProperties::DesignerTreeRole, QgsFieldsProperties::DesignerTreeItemData( QgsFieldsProperties::DesignerTreeItemData::Container, title ).asQVariant() );
   parent->addChild( newItem );
   newItem->setExpanded( true );
   return newItem;
 }
 
-QTreeWidgetItem* QgsFieldsProperties::DesignerTree::addItem( QTreeWidgetItem* parent, DesignerTreeItemData data )
+QTreeWidgetItem* DesignerTree::addItem( QTreeWidgetItem* parent, QgsFieldsProperties::DesignerTreeItemData data )
 {
   QTreeWidgetItem* newItem = new QTreeWidgetItem( QStringList() << data.name() );
   newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled );
-  if ( data.type() == DesignerTreeItemData::Container )
+  if ( data.type() == QgsFieldsProperties::DesignerTreeItemData::Container )
   {
     newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled );
     newItem->setBackground( 0, QBrush( Qt::lightGray ) );
@@ -1023,7 +1023,7 @@ QTreeWidgetItem* QgsFieldsProperties::DesignerTree::addItem( QTreeWidgetItem* pa
     }
 #endif
   }
-  newItem->setData( 0, DesignerTreeRole, data.asQVariant() );
+  newItem->setData( 0, QgsFieldsProperties::DesignerTreeRole, data.asQVariant() );
   parent->addChild( newItem );
 
   return newItem;
@@ -1034,21 +1034,21 @@ QTreeWidgetItem* QgsFieldsProperties::DesignerTree::addItem( QTreeWidgetItem* pa
  * drop event. Used to inhibit dropping fields onto the root item.
  */
 
-void QgsFieldsProperties::DesignerTree::dragMoveEvent( QDragMoveEvent *event )
+void DesignerTree::dragMoveEvent( QDragMoveEvent *event )
 {
   QTreeWidgetItem* targetItem = itemAt( event->pos() );
   const QMimeData* data = event->mimeData();
 
   if ( data->hasFormat( "application/x-qgsattributetabledesignerelement" ) )
   {
-    DesignerTreeItemData itemElement;
+    QgsFieldsProperties::DesignerTreeItemData itemElement;
 
     QByteArray itemData = data->data( "application/x-qgsattributetabledesignerelement" );
     QDataStream stream( &itemData, QIODevice::ReadOnly );
     stream >> itemElement;
 
     // Forbid dropping fields on root item
-    if ( itemElement.type() == DesignerTreeItemData::Field && !targetItem )
+    if ( itemElement.type() == QgsFieldsProperties::DesignerTreeItemData::Field && !targetItem )
     {
       event->ignore();
       return;
@@ -1069,7 +1069,7 @@ void QgsFieldsProperties::DesignerTree::dragMoveEvent( QDragMoveEvent *event )
 }
 
 
-bool QgsFieldsProperties::DesignerTree::dropMimeData( QTreeWidgetItem* parent, int index, const QMimeData * data, Qt::DropAction action )
+bool DesignerTree::dropMimeData( QTreeWidgetItem* parent, int index, const QMimeData * data, Qt::DropAction action )
 {
   Q_UNUSED( index )
   bool bDropSuccessful = false;
@@ -1082,7 +1082,7 @@ bool QgsFieldsProperties::DesignerTree::dropMimeData( QTreeWidgetItem* parent, i
   {
     QByteArray itemData = data->data( "application/x-qgsattributetabledesignerelement" );
     QDataStream stream( &itemData, QIODevice::ReadOnly );
-    DesignerTreeItemData itemElement;
+    QgsFieldsProperties::DesignerTreeItemData itemElement;
 
     while ( !stream.atEnd() )
     {
@@ -1104,7 +1104,7 @@ bool QgsFieldsProperties::DesignerTree::dropMimeData( QTreeWidgetItem* parent, i
   return bDropSuccessful;
 }
 
-void QgsFieldsProperties::DesignerTree::dropEvent( QDropEvent* event )
+void DesignerTree::dropEvent( QDropEvent* event )
 {
   if ( !event->mimeData()->hasFormat( "application/x-qgsattributetabledesignerelement" ) )
     return;
@@ -1117,12 +1117,12 @@ void QgsFieldsProperties::DesignerTree::dropEvent( QDropEvent* event )
   QTreeWidget::dropEvent( event );
 }
 
-QStringList QgsFieldsProperties::DesignerTree::mimeTypes() const
+QStringList DesignerTree::mimeTypes() const
 {
   return QStringList() << QLatin1String( "application/x-qgsattributetabledesignerelement" );
 }
 
-QMimeData* QgsFieldsProperties::DesignerTree::mimeData( const QList<QTreeWidgetItem*> items ) const
+QMimeData* DesignerTree::mimeData( const QList<QTreeWidgetItem*> items ) const
 {
   if ( items.count() <= 0 )
     return 0;
@@ -1142,7 +1142,7 @@ QMimeData* QgsFieldsProperties::DesignerTree::mimeData( const QList<QTreeWidgetI
     if ( item )
     {
       // Relevant information is always in the DesignerTreeRole of the first column
-      DesignerTreeItemData itemData = item->data( 0, DesignerTreeRole ).value<DesignerTreeItemData>();
+      QgsFieldsProperties::DesignerTreeItemData itemData = item->data( 0, QgsFieldsProperties::DesignerTreeRole ).value<QgsFieldsProperties::DesignerTreeItemData>();
       stream << itemData;
     }
   }

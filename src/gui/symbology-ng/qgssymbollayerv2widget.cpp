@@ -1599,130 +1599,6 @@ QgsSvgMarkerSymbolLayerV2Widget::~QgsSvgMarkerSymbolLayerV2Widget()
 #include <QPixmapCache>
 #include <QStyle>
 
-///@cond
-//not part of public API
-
-class QgsSvgListModel : public QAbstractListModel
-{
-
-  public:
-    explicit QgsSvgListModel( QObject* parent ) : QAbstractListModel( parent )
-    {
-      mSvgFiles = QgsSymbolLayerV2Utils::listSvgFiles();
-    }
-
-    // Constructor to create model for icons in a specific path
-    QgsSvgListModel( QObject* parent, const QString& path ) : QAbstractListModel( parent )
-    {
-      mSvgFiles = QgsSymbolLayerV2Utils::listSvgFilesAt( path );
-    }
-
-    int rowCount( const QModelIndex & parent = QModelIndex() ) const override
-    {
-      Q_UNUSED( parent );
-      return mSvgFiles.count();
-    }
-
-    QVariant data( const QModelIndex & index, int role = Qt::DisplayRole ) const override
-    {
-      QString entry = mSvgFiles.at( index.row() );
-
-      if ( role == Qt::DecorationRole ) // icon
-      {
-        QPixmap pixmap;
-        if ( !QPixmapCache::find( entry, pixmap ) )
-        {
-          // render SVG file
-          QColor fill, outline;
-          double outlineWidth;
-          bool fillParam, outlineParam, outlineWidthParam;
-          bool hasDefaultFillColor = false, hasDefaultOutlineColor = false, hasDefaultOutlineWidth = false;
-          QgsSvgCache::instance()->containsParams( entry, fillParam, hasDefaultFillColor, fill,
-              outlineParam, hasDefaultOutlineColor, outline,
-              outlineWidthParam, hasDefaultOutlineWidth, outlineWidth );
-
-          //if defaults not set in symbol, use these values
-          if ( !hasDefaultFillColor )
-            fill = QColor( 200, 200, 200 );
-          if ( !hasDefaultOutlineColor )
-            outline = Qt::black;
-          if ( !hasDefaultOutlineWidth )
-            outlineWidth = 0.6;
-
-          bool fitsInCache; // should always fit in cache at these sizes (i.e. under 559 px ^ 2, or half cache size)
-          const QImage& img = QgsSvgCache::instance()->svgAsImage( entry, 30.0, fill, outline, outlineWidth, 3.5 /*appr. 88 dpi*/, 1.0, fitsInCache );
-          pixmap = QPixmap::fromImage( img );
-          QPixmapCache::insert( entry, pixmap );
-        }
-
-        return pixmap;
-      }
-      else if ( role == Qt::UserRole || role == Qt::ToolTipRole )
-      {
-        return entry;
-      }
-
-      return QVariant();
-    }
-
-  protected:
-    QStringList mSvgFiles;
-};
-
-class QgsSvgGroupsModel : public QStandardItemModel
-{
-  public:
-    explicit QgsSvgGroupsModel( QObject* parent ) : QStandardItemModel( parent )
-    {
-      QStringList svgPaths = QgsApplication::svgPaths();
-      QStandardItem *parentItem = invisibleRootItem();
-
-      for ( int i = 0; i < svgPaths.size(); i++ )
-      {
-        QDir dir( svgPaths[i] );
-        QStandardItem *baseGroup;
-
-        if ( dir.path().contains( QgsApplication::pkgDataPath() ) )
-        {
-          baseGroup = new QStandardItem( QString( "App Symbols" ) );
-        }
-        else if ( dir.path().contains( QgsApplication::qgisSettingsDirPath() ) )
-        {
-          baseGroup = new QStandardItem( QString( "User Symbols" ) );
-        }
-        else
-        {
-          baseGroup = new QStandardItem( dir.dirName() );
-        }
-        baseGroup->setData( QVariant( svgPaths[i] ) );
-        baseGroup->setEditable( false );
-        baseGroup->setCheckable( false );
-        baseGroup->setIcon( QgsApplication::style()->standardIcon( QStyle::SP_DirIcon ) );
-        baseGroup->setToolTip( dir.path() );
-        parentItem->appendRow( baseGroup );
-        createTree( baseGroup );
-        QgsDebugMsg( QString( "SVG base path %1: %2" ).arg( i ).arg( baseGroup->data().toString() ) );
-      }
-    }
-  private:
-    void createTree( QStandardItem* &parentGroup )
-    {
-      QDir parentDir( parentGroup->data().toString() );
-      Q_FOREACH ( const QString& item, parentDir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
-      {
-        QStandardItem* group = new QStandardItem( item );
-        group->setData( QVariant( parentDir.path() + '/' + item ) );
-        group->setEditable( false );
-        group->setCheckable( false );
-        group->setToolTip( parentDir.path() + '/' + item );
-        group->setIcon( QgsApplication::style()->standardIcon( QStyle::SP_DirIcon ) );
-        parentGroup->appendRow( group );
-        createTree( group );
-      }
-    }
-};
-
-///@endcond
 
 void QgsSvgMarkerSymbolLayerV2Widget::populateList()
 {
@@ -3063,3 +2939,118 @@ void QgsRasterFillSymbolLayerWidget::updatePreviewImage()
   p.end();
   mLabelImagePreview->setPixmap( QPixmap::fromImage( previewImage ) );
 }
+
+
+/// @cond
+
+QgsSvgListModel::QgsSvgListModel( QObject* parent ) : QAbstractListModel( parent )
+{
+  mSvgFiles = QgsSymbolLayerV2Utils::listSvgFiles();
+}
+
+QgsSvgListModel::QgsSvgListModel( QObject* parent, const QString& path ) : QAbstractListModel( parent )
+{
+  mSvgFiles = QgsSymbolLayerV2Utils::listSvgFilesAt( path );
+}
+
+int QgsSvgListModel::rowCount( const QModelIndex& parent ) const
+{
+  Q_UNUSED( parent );
+  return mSvgFiles.count();
+}
+
+QVariant QgsSvgListModel::data( const QModelIndex& index, int role ) const
+{
+  QString entry = mSvgFiles.at( index.row() );
+
+  if ( role == Qt::DecorationRole ) // icon
+  {
+    QPixmap pixmap;
+    if ( !QPixmapCache::find( entry, pixmap ) )
+    {
+      // render SVG file
+      QColor fill, outline;
+      double outlineWidth;
+      bool fillParam, outlineParam, outlineWidthParam;
+      bool hasDefaultFillColor = false, hasDefaultOutlineColor = false, hasDefaultOutlineWidth = false;
+      QgsSvgCache::instance()->containsParams( entry, fillParam, hasDefaultFillColor, fill,
+          outlineParam, hasDefaultOutlineColor, outline,
+          outlineWidthParam, hasDefaultOutlineWidth, outlineWidth );
+
+      //if defaults not set in symbol, use these values
+      if ( !hasDefaultFillColor )
+        fill = QColor( 200, 200, 200 );
+      if ( !hasDefaultOutlineColor )
+        outline = Qt::black;
+      if ( !hasDefaultOutlineWidth )
+        outlineWidth = 0.6;
+
+      bool fitsInCache; // should always fit in cache at these sizes (i.e. under 559 px ^ 2, or half cache size)
+      const QImage& img = QgsSvgCache::instance()->svgAsImage( entry, 30.0, fill, outline, outlineWidth, 3.5 /*appr. 88 dpi*/, 1.0, fitsInCache );
+      pixmap = QPixmap::fromImage( img );
+      QPixmapCache::insert( entry, pixmap );
+    }
+
+    return pixmap;
+  }
+  else if ( role == Qt::UserRole || role == Qt::ToolTipRole )
+  {
+    return entry;
+  }
+
+  return QVariant();
+}
+
+
+QgsSvgGroupsModel::QgsSvgGroupsModel( QObject* parent ) : QStandardItemModel( parent )
+{
+  QStringList svgPaths = QgsApplication::svgPaths();
+  QStandardItem *parentItem = invisibleRootItem();
+
+  for ( int i = 0; i < svgPaths.size(); i++ )
+  {
+    QDir dir( svgPaths[i] );
+    QStandardItem *baseGroup;
+
+    if ( dir.path().contains( QgsApplication::pkgDataPath() ) )
+    {
+      baseGroup = new QStandardItem( QString( "App Symbols" ) );
+    }
+    else if ( dir.path().contains( QgsApplication::qgisSettingsDirPath() ) )
+    {
+      baseGroup = new QStandardItem( QString( "User Symbols" ) );
+    }
+    else
+    {
+      baseGroup = new QStandardItem( dir.dirName() );
+    }
+    baseGroup->setData( QVariant( svgPaths[i] ) );
+    baseGroup->setEditable( false );
+    baseGroup->setCheckable( false );
+    baseGroup->setIcon( QgsApplication::style()->standardIcon( QStyle::SP_DirIcon ) );
+    baseGroup->setToolTip( dir.path() );
+    parentItem->appendRow( baseGroup );
+    createTree( baseGroup );
+    QgsDebugMsg( QString( "SVG base path %1: %2" ).arg( i ).arg( baseGroup->data().toString() ) );
+  }
+}
+
+void QgsSvgGroupsModel::createTree( QStandardItem*& parentGroup )
+{
+  QDir parentDir( parentGroup->data().toString() );
+  Q_FOREACH ( const QString& item, parentDir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
+  {
+    QStandardItem* group = new QStandardItem( item );
+    group->setData( QVariant( parentDir.path() + '/' + item ) );
+    group->setEditable( false );
+    group->setCheckable( false );
+    group->setToolTip( parentDir.path() + '/' + item );
+    group->setIcon( QgsApplication::style()->standardIcon( QStyle::SP_DirIcon ) );
+    parentGroup->appendRow( group );
+    createTree( group );
+  }
+}
+
+
+/// @endcond
+

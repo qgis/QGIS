@@ -43,50 +43,6 @@
 #include <QInputDialog>
 
 
-
-class QgsComposerLegendMenuProvider : public QObject, public QgsLayerTreeViewMenuProvider
-{
-  public:
-    QgsComposerLegendMenuProvider( QgsLayerTreeView* view, QgsComposerLegendWidget* w ) : mView( view ), mWidget( w ) {}
-
-    virtual QMenu* createContextMenu() override
-    {
-      if ( !mView->currentNode() )
-        return 0;
-
-      if ( mWidget->legend()->autoUpdateModel() )
-        return 0; // no editing allowed
-
-      QMenu* menu = new QMenu();
-
-      if ( QgsLayerTree::isLayer( mView->currentNode() ) )
-      {
-        menu->addAction( tr( "Reset to defaults" ), mWidget, SLOT( resetLayerNodeToDefaults() ) );
-        menu->addSeparator();
-      }
-
-      QgsComposerLegendStyle::Style currentStyle = QgsLegendRenderer::nodeLegendStyle( mView->currentNode(), mView->layerTreeModel() );
-
-      QList<QgsComposerLegendStyle::Style> lst;
-      lst << QgsComposerLegendStyle::Hidden << QgsComposerLegendStyle::Group << QgsComposerLegendStyle::Subgroup;
-      Q_FOREACH ( QgsComposerLegendStyle::Style style, lst )
-      {
-        QAction* action = menu->addAction( QgsComposerLegendStyle::styleLabel( style ), mWidget, SLOT( setCurrentNodeStyleFromAction() ) );
-        action->setCheckable( true );
-        action->setChecked( currentStyle == style );
-        action->setData(( int ) style );
-      }
-
-      return menu;
-    }
-
-  protected:
-    QgsLayerTreeView* mView;
-    QgsComposerLegendWidget* mWidget;
-};
-
-
-
 QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend* legend )
     : QgsComposerItemBaseWidget( 0, legend )
     , mLegend( legend )
@@ -1095,4 +1051,45 @@ void QgsComposerLegendWidget::updateFilterLegendByAtlasButton()
 {
   const QgsAtlasComposition& atlas = mLegend->composition()->atlasComposition();
   mFilterLegendByAtlasCheckBox->setEnabled( atlas.enabled() && atlas.coverageLayer() && atlas.coverageLayer()->geometryType() == QGis::Polygon );
+}
+
+
+//
+// QgsComposerLegendMenuProvider
+//
+
+QgsComposerLegendMenuProvider::QgsComposerLegendMenuProvider( QgsLayerTreeView* view, QgsComposerLegendWidget* w )
+    : mView( view )
+    , mWidget( w )
+{}
+
+QMenu*QgsComposerLegendMenuProvider::createContextMenu()
+{
+  if ( !mView->currentNode() )
+    return 0;
+
+  if ( mWidget->legend()->autoUpdateModel() )
+    return 0; // no editing allowed
+
+  QMenu* menu = new QMenu();
+
+  if ( QgsLayerTree::isLayer( mView->currentNode() ) )
+  {
+    menu->addAction( tr( "Reset to defaults" ), mWidget, SLOT( resetLayerNodeToDefaults() ) );
+    menu->addSeparator();
+  }
+
+  QgsComposerLegendStyle::Style currentStyle = QgsLegendRenderer::nodeLegendStyle( mView->currentNode(), mView->layerTreeModel() );
+
+  QList<QgsComposerLegendStyle::Style> lst;
+  lst << QgsComposerLegendStyle::Hidden << QgsComposerLegendStyle::Group << QgsComposerLegendStyle::Subgroup;
+  Q_FOREACH ( QgsComposerLegendStyle::Style style, lst )
+  {
+    QAction* action = menu->addAction( QgsComposerLegendStyle::styleLabel( style ), mWidget, SLOT( setCurrentNodeStyleFromAction() ) );
+    action->setCheckable( true );
+    action->setChecked( currentStyle == style );
+    action->setData(( int ) style );
+  }
+
+  return menu;
 }
