@@ -67,6 +67,9 @@ QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
   mLayerName = capitaliseLayerName( mLayerOrigName );
   QgsDebugMsg( "display name: '" + mLayerName + '\'' );
 
+  // Set short name = the first original name
+  mShortName = lyrname;
+
   // Generate the unique ID of this layer
   QDateTime dt = QDateTime::currentDateTime();
   mID = lyrname + dt.toString( "yyyyMMddhhmmsszzz" );
@@ -425,6 +428,13 @@ bool QgsMapLayer::readLayerXML( const QDomElement& layerElement )
   mne = mnl.toElement();
   setLayerName( mne.text() );
 
+  //short name
+  QDomElement shortNameElem = layerElement.firstChildElement( "shortname" );
+  if ( !shortNameElem.isNull() )
+  {
+    mShortName = shortNameElem.text();
+  }
+
   //title
   QDomElement titleElem = layerElement.firstChildElement( "title" );
   if ( !titleElem.isNull() )
@@ -640,6 +650,11 @@ bool QgsMapLayer::writeLayerXML( QDomElement& layerElement, QDomDocument& docume
   QDomText layerNameText = document.createTextNode( originalName() );
   layerName.appendChild( layerNameText );
 
+  // layer short name
+  QDomElement layerShortName = document.createElement( "shortname" );
+  QDomText layerShortNameText = document.createTextNode( shortName() );
+  layerShortName.appendChild( layerShortNameText );
+
   // layer title
   QDomElement layerTitle = document.createElement( "title" );
   QDomText layerTitleText = document.createTextNode( title() );
@@ -651,6 +666,7 @@ bool QgsMapLayer::writeLayerXML( QDomElement& layerElement, QDomDocument& docume
   layerAbstract.appendChild( layerAbstractText );
 
   layerElement.appendChild( layerName );
+  layerElement.appendChild( layerShortName );
   layerElement.appendChild( layerTitle );
   layerElement.appendChild( layerAbstract );
 

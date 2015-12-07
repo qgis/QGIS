@@ -101,6 +101,8 @@ void QgsWFSProjectParser::featureTypeList( QDomElement& parentElement, QDomDocum
       //We use the layer name even though it might not be unique.
       //Because the id sometimes contains user/pw information and the name is more descriptive
       QString typeName = layer->name();
+      if ( !layer->shortName().isEmpty() )
+        typeName = layer->shortName();
       typeName = typeName.replace( " ", "_" );
       QDomText nameText = doc.createTextNode( typeName );
       nameElem.appendChild( nameText );
@@ -356,6 +358,8 @@ void QgsWFSProjectParser::describeFeatureType( const QString& aTypeName, QDomEle
 #endif
 
       QString typeName = layer->name();
+      if ( !layer->shortName().isEmpty() )
+        typeName = layer->shortName();
       typeName = typeName.replace( " ", "_" );
 
       if ( wfsLayersId.contains( layer->id() ) && ( aTypeName == "" || typeNameList.contains( typeName ) ) )
@@ -546,6 +550,8 @@ QList<QgsMapLayer*> QgsWFSProjectParser::mapLayerFromTypeName( const QString& aT
         continue;
 
       QString typeName = layer->name();
+      if ( !layer->shortName().isEmpty() )
+        typeName = layer->shortName();
       typeName = typeName.replace( " ", "_" );
 
       if ( wfsLayersId.contains( layer->id() ) && ( aTypeName == "" || typeNameList.contains( typeName ) ) )

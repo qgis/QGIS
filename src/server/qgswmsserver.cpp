@@ -1712,7 +1712,11 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, const QString& version )
       else
       {
         layerElement = result.createElement( "Layer" );
-        QString layerName = mConfigParser && mConfigParser->useLayerIDs() ? currentLayer->id() : currentLayer->name();
+        QString layerName =  currentLayer->name();
+        if ( mConfigParser && mConfigParser->useLayerIDs() )
+          layerName = currentLayer->id();
+        else if ( !currentLayer->shortName().isEmpty() )
+          layerName = currentLayer->shortName();
 
         //check if the layer is given a different name for GetFeatureInfo output
         QHash<QString, QString>::const_iterator layerAliasIt = layerAliasMap.find( layerName );
@@ -2241,7 +2245,11 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
     {
       bool withGeom = layer->wkbType() != QGis::WKBNoGeometry && addWktGeometry;
       int version = infoFormat.startsWith( "application/vnd.ogc.gml/3" ) ? 3 : 2;
-      QString typeName = mConfigParser && mConfigParser->useLayerIDs() ? layer->id() : layer->name();
+      QString typeName =  layer->name();
+      if ( mConfigParser && mConfigParser->useLayerIDs() )
+        typeName = layer->id();
+      else if ( !layer->shortName().isEmpty() )
+        typeName = layer->shortName();
       QDomElement elem = createFeatureGML(
                            &feature, layer, infoDocument, outputCrs, typeName, withGeom, version
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
@@ -2388,7 +2396,11 @@ int QgsWMSServer::featureInfoFromRasterLayer( QgsRasterLayer* layer,
 
     QgsCoordinateReferenceSystem layerCrs = layer->crs();
     int version = infoFormat.startsWith( "application/vnd.ogc.gml/3" ) ? 3 : 2;
-    QString typeName = mConfigParser && mConfigParser->useLayerIDs() ? layer->id() : layer->name();
+    QString typeName =  layer->name();
+    if ( mConfigParser && mConfigParser->useLayerIDs() )
+      typeName = layer->id();
+    else if ( !layer->shortName().isEmpty() )
+      typeName = layer->shortName();
     QDomElement elem = createFeatureGML(
                          &feature, nullptr, infoDocument, layerCrs, typeName, false, version, nullptr );
     layerElement.appendChild( elem );
@@ -2442,7 +2454,12 @@ QStringList QgsWMSServer::layerSet( const QStringList &layersList,
       theMapLayer = layerList.at( listIndex );
       if ( theMapLayer )
       {
-        QgsMessageLog::logMessage( QString( "Checking layer: %1" ).arg( mConfigParser && mConfigParser->useLayerIDs() ? theMapLayer->id() : theMapLayer->name() ) );
+        QString lName =  theMapLayer->name();
+        if ( mConfigParser && mConfigParser->useLayerIDs() )
+          lName = theMapLayer->id();
+        else if ( !theMapLayer->shortName().isEmpty() )
+          lName = theMapLayer->shortName();
+        QgsMessageLog::logMessage( QString( "Checking layer: %1" ).arg( lName ) );
         //test if layer is visible in requested scale
         bool useScaleConstraint = ( scaleDenominator > 0 && theMapLayer->hasScaleBasedVisibility() );
         if ( !useScaleConstraint ||
@@ -2505,9 +2522,15 @@ QMap<QString, QString> QgsWMSServer::applyRequestedLayerFilters( const QStringLi
 
       Q_FOREACH ( QgsMapLayer *layer, QgsMapLayerRegistry::instance()->mapLayers() )
       {
-        if ( layer && ( mConfigParser && mConfigParser->useLayerIDs() ? layer->id() : layer->name() ) == eqSplit.at( 0 ) )
+        if ( layer )
         {
-          layersToFilter.push_back( layer );
+          QString lName =  layer->name();
+          if ( mConfigParser && mConfigParser->useLayerIDs() )
+            lName = layer->id();
+          else if ( !layer->shortName().isEmpty() )
+            lName = layer->shortName();
+          if ( lName == eqSplit.at( 0 ) )
+            layersToFilter.push_back( layer );
         }
       }
 
@@ -2727,11 +2750,19 @@ QStringList QgsWMSServer::applyFeatureSelections( const QStringList& layerList )
 
     Q_FOREACH ( QgsMapLayer *layer, QgsMapLayerRegistry::instance()->mapLayers() )
     {
-      if ( layer && ( mConfigParser && mConfigParser->useLayerIDs() ? layer->id() : layer->name() ) == layerName )
+      if ( layer )
       {
-        vLayer = qobject_cast<QgsVectorLayer*>( layer );
-        layersWithSelections.push_back( vLayer->id() );
-        break;
+        QString lName =  layer->name();
+        if ( mConfigParser && mConfigParser->useLayerIDs() )
+          lName = layer->id();
+        else if ( !layer->shortName().isEmpty() )
+          lName = layer->shortName();
+        if ( lName == layerName )
+        {
+          vLayer = qobject_cast<QgsVectorLayer*>( layer );
+          layersWithSelections.push_back( vLayer->id() );
+          break;
+        }
       }
     }
 

@@ -26,6 +26,7 @@
 #include "qgsmslayercache.h"
 #include "qgsrasterlayer.h"
 #include "qgseditorwidgetregistry.h"
+#include "qgslayertreegroup.h"
 
 #include <QDomDocument>
 #include <QFileInfo>
@@ -48,19 +49,14 @@ QgsServerProjectParser::QgsServerProjectParser( QDomDocument* xmlDoc, const QStr
     {
       currentElement = layerNodeList.at( i ).toElement();
       mProjectLayerElements.push_back( currentElement );
-      mProjectLayerElementsByName.insert( layerName( currentElement ), currentElement );
+      QString lName = layerShortName( currentElement );
+      if ( lName.isNull() )
+        lName = layerName( currentElement );
+      mProjectLayerElementsByName.insert( lName, currentElement );
       mProjectLayerElementsById.insert( layerId( currentElement ), currentElement );
     }
 
-    QDomElement legendElement = mXMLDoc->documentElement().firstChildElement( "legend" );
-    if ( !legendElement.isNull() )
-    {
-      QDomNodeList groupNodeList = legendElement.elementsByTagName( "legendgroup" );
-      for ( int i = 0; i < groupNodeList.size(); ++i )
-      {
-        mLegendGroupElements.push_back( groupNodeList.at( i ).toElement() );
-      }
-    }
+    mLegendGroupElements = findLegendGroupElements();
 
     mUseLayerIDs = findUseLayerIDs();
     mRestrictedLayers = findRestrictedLayers();
@@ -272,7 +268,7 @@ QgsMapLayer* QgsServerProjectParser::createLayerFromElement( const QDomElement& 
     }
 
     layer->readLayerXML( const_cast<QDomElement&>( elem ) ); //should be changed to const in QgsMapLayer
-    layer->setLayerName( layerName( elem ) );
+    //layer->setLayerName( layerName( elem ) );
 
     if ( layer->type() == QgsMapLayer::VectorLayer )
     {
@@ -331,6 +327,21 @@ QString QgsServerProjectParser::layerId( const QDomElement& layerElem ) const
     return layerElem.attribute( "id" );
   }
   return idElem.text();
+}
+
+QString QgsServerProjectParser::layerShortName( const QDomElement& layerElem ) const
+{
+  if ( layerElem.isNull() )
+  {
+    return QString();
+  }
+
+  QDomElement nameElem = layerElem.firstChildElement( "shortname" );
+  if ( nameElem.isNull() )
+  {
+    return QString();
+  }
+  return nameElem.text().replace( ",", "%60" );
 }
 
 QgsRectangle QgsServerProjectParser::projectExtent() const
@@ -397,6 +408,7 @@ void QgsServerProjectParser::serviceCapabilities( QDomElement& parentElement, QD
   serviceElem.appendChild( wmsNameElem );
 
   //WMS title
+  //why not use project title ?
   QDomElement titleElem = propertiesElement.firstChildElement( "WMSServiceTitle" );
   if ( !titleElem.isNull() )
   {
@@ -741,6 +753,11 @@ void QgsServerProjectParser::addLayerProjectSettings( QDomElement& layerElem, QD
   {
     return;
   }
+  // Layer tree name
+  QDomElement treeNameElem = doc.createElement( "TreeName" );
+  QDomText treeNameText = doc.createTextNode( currentLayer->name() );
+  treeNameElem.appendChild( treeNameText );
+  layerElem.appendChild( treeNameElem );
 
   if ( currentLayer->type() == QgsMapLayer::VectorLayer )
   {
@@ -1167,6 +1184,72 @@ void QgsServerProjectParser::layerFromLegendLayer( const QDomElement& legendLaye
       layers.insertMulti( drawingOrder, layer );
     }
   }
+}
+
+QList<QDomElement> QgsServerProjectParser::findLegendGroupElements() const
+{
+  QList<QDomElement> LegendGroupElemList;
+  QgsLayerTreeGroup* rootLayerTreeGroup = new QgsLayerTreeGroup;;
+
+  QDomElement layerTreeElem = mXMLDoc->documentElement().firstChildElement( "layer-tree-group" );
+  if ( !layerTreeElem.isNull() )
+  {
+    rootLayerTreeGroup = QgsLayerTreeGroup::readXML( layerTreeElem );
+  }
+
+  QDomElement legendElement = mXMLDoc->documentElement().firstChildElement( "legend" );
+  if ( !legendElement.isNull() && rootLayerTreeGroup )
+  {
+    LegendGroupElemList.append( setLegendGroupElementsWithLayerTree( rootLayerTreeGroup, legendElement ) );
+  }
+
+  if ( !legendElement.isNull() )
+  {
+    QDomNodeList groupNodeList = legendElement.elementsByTagName( "legendgroup" );
+    for ( int i = 0; i < groupNodeList.size(); ++i )
+    {
+      LegendGroupElemList.push_back( groupNodeList.at( i ).toElement() );
+    }
+    return LegendGroupElemList;
+  }
+  return LegendGroupElemList;
+}
+
+QList<QDomElement> QgsServerProjectParser::setLegendGroupElementsWithLayerTree( QgsLayerTreeGroup* layerTreeGroup, QDomElement legendElement ) const
+{
+  QList<QDomElement> LegendGroupElemList;
+  QList< QgsLayerTreeNode * > layerTreeGroupChildren = layerTreeGroup->children();
+  QDomNodeList legendElementChildNodes = legendElement.childNodes();
+  int g = 0; // index of the last child layer tree group
+  for ( int i = 0; i < legendElementChildNodes.size(); ++i )
+  {
+    QDomNode legendElementNode = legendElementChildNodes.at( i );
+    if ( !legendElementNode.isElement() )
+      continue;
+    QDomElement legendElement = legendElementNode.toElement();
+    if ( legendElement.tagName() != "legendgroup" )
+      continue;
+    for ( int j = g; j < i + 1; ++j )
+    {
+      QgsLayerTreeNode* layerTreeNode = layerTreeGroupChildren.at( j );
+      if ( layerTreeNode->nodeType() != QgsLayerTreeNode::NodeGroup )
+        continue;
+      QgsLayerTreeGroup* layerTreeGroup = dynamic_cast<QgsLayerTreeGroup *>( layerTreeNode );
+      if ( layerTreeGroup->name() == legendElement.attribute( "name" ) )
+      {
+        g = j;
+        QString shortName = layerTreeGroup->customProperty( "wmsShortName" ).toString();
+        if ( !shortName.isEmpty() )
+          legendElement.setAttribute( "shortName", shortName );
+        QString title = layerTreeGroup->customProperty( "wmsTitle" ).toString();
+        if ( !title.isEmpty() )
+          legendElement.setAttribute( "title", title );
+        LegendGroupElemList.append( setLegendGroupElementsWithLayerTree( layerTreeGroup, legendElement ) );
+      }
+    }
+    LegendGroupElemList.push_back( legendElement );
+  }
+  return LegendGroupElemList;
 }
 
 void QgsServerProjectParser::sublayersOfEmbeddedGroup( const QString& projectFilePath, const QString& groupName, QSet<QString>& layerSet )

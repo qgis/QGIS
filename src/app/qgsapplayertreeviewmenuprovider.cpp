@@ -61,6 +61,8 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       menu->addAction( actions->actionRenameGroupOrLayer( menu ) );
 
+      menu->addAction( tr( "&Set Group WMS data" ), QgisApp::instance(), SLOT( legendGroupSetWMSData() ) );
+
       menu->addAction( actions->actionMutuallyExclusiveGroup( menu ) );
 
       if ( mView->selectedNodes( true ).count() >= 2 )
