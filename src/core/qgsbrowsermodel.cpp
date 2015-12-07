@@ -112,6 +112,10 @@ void QgsBrowserModel::addRootItems()
   Q_FOREACH ( const QFileInfo& drive, QDir::drives() )
   {
     QString path = drive.absolutePath();
+
+    if ( QgsDirectoryItem::hiddenPath( path ) )
+      continue;
+
     QgsDirectoryItem *item = new QgsDirectoryItem( NULL, path, path );
 
     connectItem( item );
@@ -528,4 +532,33 @@ void QgsBrowserModel::removeFavourite( const QModelIndex &index )
     return;
 
   mFavourites->removeDirectory( item );
+}
+
+void QgsBrowserModel::hidePath( QgsDataItem *item )
+{
+  QSettings settings;
+  QStringList hiddenItems = settings.value( "/browser/hiddenPaths",
+                            QStringList() ).toStringList();
+  int idx = hiddenItems.indexOf( item->path() );
+  if ( idx != -1 )
+  {
+    hiddenItems.removeAt( idx );
+  }
+  else
+  {
+    hiddenItems << item->path();
+  }
+  settings.setValue( "/browser/hiddenPaths", hiddenItems );
+  if ( item->parent() )
+  {
+    item->parent()->deleteChildItem( item );
+  }
+  else
+  {
+    int i = mRootItems.indexOf( item );
+    emit beginRemoveRows( QModelIndex(), i, i );
+    mRootItems.remove( i );
+    item->deleteLater();
+    emit endRemoveRows();
+  }
 }

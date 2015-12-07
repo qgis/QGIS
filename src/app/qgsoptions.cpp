@@ -258,6 +258,16 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
     }
   }
 
+  QStringList hiddenItems = settings.value( "/browser/hiddenPaths",
+                            QStringList() ).toStringList();
+  QStringList::const_iterator pathIt = hiddenItems.constBegin();
+  for ( ; pathIt != hiddenItems.constEnd(); ++pathIt )
+  {
+    QListWidgetItem* newItem = new QListWidgetItem( mListHiddenBrowserPaths );
+    newItem->setText( *pathIt );
+    mListHiddenBrowserPaths->addItem( newItem );
+  }
+
   //Network timeout
   mNetworkTimeoutSpinBox->setValue( settings.value( "/qgis/networkAndProxy/networkTimeout", "60000" ).toInt() );
   leUserAgent->setText( settings.value( "/qgis/networkAndProxy/userAgent", "Mozilla/5.0" ).toString() );
@@ -865,6 +875,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   mVariableEditor->reloadContext();
   mVariableEditor->setEditableScopeIndex( 0 );
 
+
+
   mAdvancedSettingsEditor->setSettingsObject( &settings );
 
   // restore window and widget geometry/state
@@ -1039,6 +1051,13 @@ void QgsOptions::saveOptions()
     myPaths += mListComposerTemplatePaths->item( i )->text();
   }
   settings.setValue( "composer/searchPathsForTemplates", myPaths );
+
+  QStringList paths;
+  for ( int i = 0; i < mListHiddenBrowserPaths->count(); ++i )
+  {
+    paths << mListHiddenBrowserPaths->item( i )->text();
+  }
+  settings.setValue( "/browser/hiddenPaths", paths );
 
   //Network timeout
   settings.setValue( "/qgis/networkAndProxy/networkTimeout", mNetworkTimeoutSpinBox->value() );
@@ -1690,6 +1709,13 @@ void QgsOptions::on_mBtnAddSVGPath_clicked()
     mListSVGPaths->addItem( newItem );
     mListSVGPaths->setCurrentItem( newItem );
   }
+}
+
+void QgsOptions::on_mBtnRemoveHiddenPath_clicked()
+{
+  int currentRow = mListHiddenBrowserPaths->currentRow();
+  QListWidgetItem* itemToRemove = mListHiddenBrowserPaths->takeItem( currentRow );
+  delete itemToRemove;
 }
 
 void QgsOptions::on_mBtnRemoveSVGPath_clicked()

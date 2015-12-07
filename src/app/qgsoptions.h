@@ -155,6 +155,11 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
      * used for finding SVG files. */
     void on_mBtnRemoveSVGPath_clicked();
 
+    /* Let the user remove a path from the hidden path list
+     * for the browser */
+    void on_mBtnRemoveHiddenPath_clicked();
+
+
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
     void on_mBrowseCacheDirectory_clicked();

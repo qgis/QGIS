@@ -138,6 +138,8 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     void removeFavourite( const QModelIndex &index );
     void updateProjectHome();
 
+    void hidePath( QgsDataItem *item );
+
   protected:
     // populates the model
     void addRootItems();
