@@ -16,6 +16,21 @@ class QgsColorScheme
 #include <qgscolorscheme.h>
 %End
 
+%ConvertToSubClassCode
+      if (dynamic_cast<QgsUserColorScheme*>(sipCpp) != NULL)
+	sipType = sipType_QgsUserColorScheme;
+      else if (dynamic_cast<QgsRecentColorScheme*>(sipCpp) != NULL)
+	sipType = sipType_QgsRecentColorScheme;
+      else if (dynamic_cast<QgsCustomColorScheme*>(sipCpp) != NULL)
+	sipType = sipType_QgsCustomColorScheme;
+      else if (dynamic_cast<QgsProjectColorScheme*>(sipCpp) != NULL)
+	sipType = sipType_QgsProjectColorScheme;
+      else if (dynamic_cast<QgsGplColorScheme*>(sipCpp) != NULL)
+	sipType = sipType_QgsGplColorScheme;
+      else
+	sipType = sipType_QgsColorScheme;
+%End
+
   public:
 
     /** Flags for controlling behaviour of color scheme
