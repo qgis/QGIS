@@ -28,10 +28,15 @@ git diff --name-only $TRAVIS_COMMIT_RANGE >>/tmp/ctest-important.log 2>&1
 
 git diff --name-only $TRAVIS_COMMIT_RANGE | while read f
 do
+	if ! [ -f "$f" ]; then
+		echo "$f was removed." >>/tmp/ctest-important.log
+		continue
+	fi
+
 	echo "Checking $f" >>/tmp/ctest-important.log
 	case "$f" in
 	src/core/gps/qextserialport/*|src/plugins/dxf2shp_converter/dxflib/src/*|src/plugins/globe/osgEarthQt/*|src/plugins/globe/osgEarthUtil/*)
-		echo $f skipped
+		echo "$f skipped"
 		continue
 		;;
 
@@ -43,11 +48,11 @@ do
 		;;
 	esac
 
-	m=$f.prepare
+	m="$f.prepare"
 	cp "$f" "$m"
 	astyle.sh "$f"
 	if diff -u "$m" "$f" >>$ASTYLEDIFF; then
-		rm $m
+		rm "$m"
 	else
 		echo "File $f needs indentation"
 	fi
