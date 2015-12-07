@@ -1564,11 +1564,12 @@ QgsSvgMarkerSymbolLayerV2Widget::QgsSvgMarkerSymbolLayerV2Widget( const QgsVecto
   mBorderWidthUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit << QgsSymbolV2::Pixel );
   mOffsetUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit << QgsSymbolV2::Pixel );
   viewGroups->setHeaderHidden( true );
-
+  mChangeColorButton->setAllowAlpha( true );
   mChangeColorButton->setColorDialogTitle( tr( "Select fill color" ) );
   mChangeColorButton->setContext( "symbology" );
+  mChangeBorderColorButton->setAllowAlpha( true );
   mChangeBorderColorButton->setColorDialogTitle( tr( "Select border color" ) );
-  mChangeColorButton->setContext( "symbology" );
+  mChangeBorderColorButton->setContext( "symbology" );
 
   spinOffsetX->setClearValue( 0.0 );
   spinOffsetY->setClearValue( 0.0 );
