@@ -104,25 +104,6 @@ QgsSymbolV2::QgsSymbolV2( SymbolType type, const QgsSymbolLayerV2List& layers )
   }
 }
 
-const unsigned char* QgsSymbolV2::_getPoint( QPointF& pt, QgsRenderContext& context, const unsigned char* wkb )
-{
-  QgsConstWkbPtr wkbPtr( wkb + 1 );
-  unsigned int wkbType;
-  wkbPtr >> wkbType >> pt.rx() >> pt.ry();
-
-  if (( QgsWKBTypes::Type )wkbType == QgsWKBTypes::Point25D || ( QgsWKBTypes::Type )wkbType == QgsWKBTypes::PointZ )
-    wkbPtr += sizeof( double );
-
-  if ( context.coordinateTransform() )
-  {
-    double z = 0; // dummy variable for coordiante transform
-    context.coordinateTransform()->transformInPlace( pt.rx(), pt.ry(), z );
-  }
-
-  context.mapToPixel().transformInPlace( pt.rx(), pt.ry() );
-
-  return wkbPtr;
-}
 
 const unsigned char* QgsSymbolV2::_getLineString( QPolygonF& pts, QgsRenderContext& context, const unsigned char* wkb, bool clipToExtent )
 {
@@ -690,26 +671,15 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
   context.setGeometry( geom->geometry() );
 
   //convert curve types to normal point/line/polygon ones
-  switch ( QgsWKBTypes::flatType( geom->geometry()->wkbType() ) )
+  if ( geom->geometry()->hasCurvedSegments() )
   {
-    case QgsWKBTypes::CurvePolygon:
-    case QgsWKBTypes::CircularString:
-    case QgsWKBTypes::CompoundCurve:
-    case QgsWKBTypes::MultiSurface:
-    case QgsWKBTypes::MultiCurve:
+    QgsAbstractGeometryV2* g = geom->geometry()->segmentize();
+    if ( !g )
     {
-      QgsAbstractGeometryV2* g = geom->geometry()->segmentize();
-      if ( !g )
-      {
-        return;
-      }
-      segmentizedGeometry = new QgsGeometry( g );
-      deleteSegmentizedGeometry = true;
-      break;
+      return;
     }
-
-    default:
-      break;
+    segmentizedGeometry = new QgsGeometry( g );
+    deleteSegmentizedGeometry = true;
   }
 
   switch ( QgsWKBTypes::flatType( segmentizedGeometry->geometry()->wkbType() ) )
@@ -722,8 +692,10 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
         QgsDebugMsg( "point can be drawn only with marker symbol!" );
         break;
       }
-      _getPoint( pt, context, segmentizedGeometry->asWkb() );
+
+      _getPoint( pt, context, segmentizedGeometry->asPoint() );
       ( static_cast<QgsMarkerSymbolV2*>( this ) )->renderPoint( pt, &feature, context, layer, selected );
+
       if ( context.testFlag( QgsRenderContext::DrawSymbolBounds ) )
       {
         //draw debugging rect
@@ -769,14 +741,11 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
         break;
       }
 
-      QgsConstWkbPtr wkbPtr( segmentizedGeometry->asWkb() + 1 + sizeof( int ) );
-      unsigned int num;
-      wkbPtr >> num;
-      const unsigned char* ptr = wkbPtr;
+      QgsMultiPoint multiPoint = segmentizedGeometry->asMultiPoint();
 
-      for ( unsigned int i = 0; i < num; ++i )
+      Q_FOREACH ( const QgsPoint& point, multiPoint )
       {
-        ptr = QgsConstWkbPtr( _getPoint( pt, context, ptr ) );
+        _getPoint( pt, context, point );
         static_cast<QgsMarkerSymbolV2*>( this )->renderPoint( pt, &feature, context, layer, selected );
       }
     }
@@ -888,8 +857,7 @@ QgsSymbolV2RenderContext::QgsSymbolV2RenderContext( QgsRenderContext& c, QgsSymb
     mSelected( selected ),
     mRenderHints( renderHints ),
     mFeature( f ),
-    mFields( fields ),
-    mExpressionContext( c.expressionContext() )
+    mFields( fields )
 {
 }
 
