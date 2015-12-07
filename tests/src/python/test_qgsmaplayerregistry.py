@@ -21,7 +21,7 @@ class TestQgsMapLayerRegistry(unittest.TestCase):
     def setUp(self):
         pass
 
-    def test_removeMapLayer(self):
+    def test_RemoveLayerShouldNotSegFault(self):
         reg = QgsMapLayerRegistry.instance()
         # Should not segfault
         reg.removeMapLayers(['not_exists'])
