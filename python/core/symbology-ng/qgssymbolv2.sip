@@ -187,7 +187,7 @@ class QgsSymbolV2
      * Creates a point in screen coordinates from a wkb string in map
      * coordinates
      */
-    static const unsigned char* _getPoint( QPointF& pt, QgsRenderContext& context, const unsigned char* wkb );
+    static void _getPoint( QPointF& pt /Out/, QgsRenderContext& context, const QgsPoint& point );
     /**
      * Creates a line string in screen coordinates from a wkb string in map
      * coordinates

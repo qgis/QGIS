@@ -20,6 +20,7 @@
 #include <QList>
 #include <QMap>
 #include "qgsmapunitscale.h"
+#include "qgsgeometry.h"
 
 class QColor;
 class QImage;
@@ -242,15 +243,24 @@ class CORE_EXPORT QgsSymbolV2
     QgsSymbolV2( SymbolType type, const QgsSymbolLayerV2List& layers ); // can't be instantiated
 
     /**
-     * Creates a point in screen coordinates from a wkb string in map
-     * coordinates
+     * Creates a point in screen coordinates from a QgsPoint in map coordinates
      */
-    static const unsigned char* _getPoint( QPointF& pt, QgsRenderContext& context, const unsigned char* wkb );
+    static inline void _getPoint( QPointF& pt, QgsRenderContext& context, const QgsPoint& point )
+    {
+      if ( context.coordinateTransform() )
+        pt = context.coordinateTransform()->transform( point ).toQPointF();
+      else
+        pt = point.toQPointF();
+
+      context.mapToPixel().transformInPlace( pt.rx(), pt.ry() );
+    }
+
     /**
      * Creates a line string in screen coordinates from a wkb string in map
      * coordinates
      */
     static const unsigned char* _getLineString( QPolygonF& pts, QgsRenderContext& context, const unsigned char* wkb, bool clipToExtent = true );
+
     /**
      * Creates a polygon in screen coordinates from a wkb string in map
      * coordinates
@@ -303,8 +313,6 @@ class CORE_EXPORT QgsSymbolV2RenderContext
     QgsRenderContext& renderContext() { return mRenderContext; }
     const QgsRenderContext& renderContext() const { return mRenderContext; }
 
-    const QgsExpressionContext& expressionContext() const { return mExpressionContext; }
-
     /** Sets the original value variable value for data defined symbology
      * @param value value for original value variable. This usually represents the symbol property value
      * before any data defined overrides have been applied.
@@ -354,7 +362,6 @@ class CORE_EXPORT QgsSymbolV2RenderContext
     int mRenderHints;
     const QgsFeature* mFeature; //current feature
     const QgsFields* mFields;
-    QgsExpressionContext mExpressionContext;
 };
 
 
