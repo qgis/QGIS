@@ -1530,6 +1530,36 @@ class TestQgsExpression: public QObject
       Q_NOWARN_DEPRECATED_POP
     }
 
+    void eval_eval()
+    {
+      QgsFeature f( 100 );
+      QgsFields fields;
+      fields.append( QgsField( "col1" ) );
+      fields.append( QgsField( "second_column", QVariant::Int ) );
+      f.setFields( fields, true );
+      f.setAttribute( QString( "col1" ), QString( "test value" ) );
+      f.setAttribute( QString( "second_column" ), 5 );
+
+      QgsExpressionContext context = QgsExpressionContextUtils::createFeatureBasedContext( f, QgsFields() );
+
+      QgsExpression exp1( "eval()" );
+      QVariant v1 = exp1.evaluate( &context );
+
+      Q_ASSERT( !v1.isValid() );
+
+      QgsExpression exp2( "eval('4')" );
+      QVariant v2 = exp2.evaluate( &context );
+      QCOMPARE( v2, QVariant( 4 ) );
+
+      QgsExpression exp3( "eval('\"second_column\" * 2')" );
+      QVariant v3 = exp3.evaluate( &context );
+      QCOMPARE( v3, QVariant( 10 ) );
+
+      QgsExpression exp4( "eval('\"col1\"')" );
+      QVariant v4 = exp4.evaluate( &context );
+      QCOMPARE( v4, QVariant( "test value" ) );
+    }
+
     void expression_from_expression_data()
     {
       QTest::addColumn<QString>( "string" );

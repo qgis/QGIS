@@ -409,6 +409,16 @@ static QVariant fcnGetVariable( const QVariantList& values, const QgsExpressionC
   return context->variable( name );
 }
 
+static QVariant fcnEval( const QVariantList& values, const QgsExpressionContext* context, QgsExpression* parent )
+{
+  if ( !context )
+    return QVariant();
+
+  QString expString = getStringValue( values.at( 0 ), parent );
+  QgsExpression expression( expString );
+  return expression.evaluate( context );
+}
+
 static QVariant fcnSqrt( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   double x = getDoubleValue( values.at( 0 ), parent );
@@ -2522,6 +2532,7 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     //return all attributes string for referencedColumns - this is caught by
     // QgsFeatureRequest::setSubsetOfAttributes and causes all attributes to be fetched by the
     // feature request
+    << new StaticFunction( "eval", 1, fcnEval, "General", QString(), true, QStringList( QgsFeatureRequest::AllAttributes ) )
     << new StaticFunction( "attribute", 2, fcnAttribute, "Record", QString(), false, QStringList( QgsFeatureRequest::AllAttributes ) )
 
     << new StaticFunction( "_specialcol_", 1, fcnSpecialColumn, "Special" )
