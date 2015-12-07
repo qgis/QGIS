@@ -97,6 +97,15 @@ class QgsLayerTreeModel : QAbstractItemModel
     //! @note added in 2.6
     QList<QgsLayerTreeModelLegendNode*> layerLegendNodes( QgsLayerTreeLayer* nodeLayer );
 
+    /** Searches through the layer tree to find a legend node with a matching layer ID
+     * and rule key.
+     * @param layerId map layer ID
+     * @param ruleKey legend node rule key
+     * @returns QgsLayerTreeModelLegendNode if found
+     * @note added in QGIS 2.14
+     */
+    QgsLayerTreeModelLegendNode* findLegendNode( const QString& layerId, const QString& ruleKey ) const;
+
     //! Return pointer to the root node of the layer tree. Always a non-null pointer.
     QgsLayerTreeGroup* rootGroup() const;
     //! Reset the model and use a new root group node

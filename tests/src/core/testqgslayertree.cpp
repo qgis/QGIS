@@ -38,6 +38,7 @@ class TestQgsLayerTree : public QObject
     void testCheckStateMutuallyExclusive();
     void testCheckStateMutuallyExclusiveEdgeCases();
     void testShowHideAllSymbolNodes();
+    void testFindLegendNode();
 
   private:
 
@@ -260,6 +261,48 @@ void TestQgsLayerTree::testShowHideAllSymbolNodes()
   Q_FOREACH ( QgsLayerTreeModelLegendNode* ln, nodes )
   {
     QVERIFY( ln->data( Qt::CheckStateRole ) == Qt::Checked );
+  }
+
+  //cleanup
+  delete m;
+  delete root;
+  QgsMapLayerRegistry::instance()->removeMapLayers( QList<QgsMapLayer*>() << vl );
+}
+
+void TestQgsLayerTree::testFindLegendNode()
+{
+  //new memory layer
+  QgsVectorLayer* vl = new QgsVectorLayer( "Point?field=col1:integer", "vl", "memory" );
+  QVERIFY( vl->isValid() );
+
+  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << vl );
+
+  //create a categorized renderer for layer
+  QgsCategorizedSymbolRendererV2* renderer = new QgsCategorizedSymbolRendererV2();
+  renderer->setClassAttribute( "col1" );
+  renderer->setSourceSymbol( QgsSymbolV2::defaultSymbol( QGis::Point ) );
+  renderer->addCategory( QgsRendererCategoryV2( "a", QgsSymbolV2::defaultSymbol( QGis::Point ), "a" ) );
+  renderer->addCategory( QgsRendererCategoryV2( "b", QgsSymbolV2::defaultSymbol( QGis::Point ), "b" ) );
+  renderer->addCategory( QgsRendererCategoryV2( "c", QgsSymbolV2::defaultSymbol( QGis::Point ), "c" ) );
+  vl->setRendererV2( renderer );
+
+  //create legend with symbology nodes for categorized renderer
+  QgsLayerTreeGroup* root = new QgsLayerTreeGroup();
+  QgsLayerTreeModel* m = new QgsLayerTreeModel( root, 0 );
+  QVERIFY( !m->findLegendNode( QString( "id" ), QString( "rule" ) ) );
+  QgsLayerTreeLayer* n = new QgsLayerTreeLayer( vl );
+  root->addChildNode( n );
+  m->refreshLayerLegend( n );
+  QVERIFY( !m->findLegendNode( QString( "id" ), QString( "rule" ) ) );
+  QVERIFY( !m->findLegendNode( QString( "vl" ), QString( "rule" ) ) );
+
+  QgsLegendSymbolListV2 symbolList = renderer->legendSymbolItemsV2();
+  Q_FOREACH ( const QgsLegendSymbolItemV2& symbol, symbolList )
+  {
+    QgsLayerTreeModelLegendNode* found = m->findLegendNode( vl->id(), symbol.ruleKey() );
+    QVERIFY( found );
+    QCOMPARE( found->layerNode()->layerId(), vl->id() );
+    QCOMPARE( found->data( Qt::DisplayRole ).toString(), symbol.label() );
   }
 
   //cleanup

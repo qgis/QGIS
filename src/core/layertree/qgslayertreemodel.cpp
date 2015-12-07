@@ -1333,6 +1333,26 @@ QList<QgsLayerTreeModelLegendNode*> QgsLayerTreeModel::layerLegendNodes( QgsLaye
   return mLegend.value( nodeLayer ).activeNodes;
 }
 
+QgsLayerTreeModelLegendNode* QgsLayerTreeModel::findLegendNode( const QString& layerId, const QString& ruleKey ) const
+{
+  Q_FOREACH ( QgsLayerTreeLayer* layer, mLegend.keys() )
+  {
+    if ( layer->layerId() == layerId )
+    {
+      Q_FOREACH ( QgsLayerTreeModelLegendNode* legendNode, mLegend.value( layer ).activeNodes )
+      {
+        if ( legendNode->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString() == ruleKey )
+        {
+          //found it!
+          return legendNode;
+        }
+      }
+    }
+  }
+
+  return 0;
+}
+
 void QgsLayerTreeModel::legendInvalidateMapBasedData()
 {
   if ( !testFlag( DeferredLegendInvalidation ) )
