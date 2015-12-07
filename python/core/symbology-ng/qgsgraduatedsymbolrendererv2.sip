@@ -282,6 +282,8 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
     //! @note added in 2.6
     virtual void checkLegendSymbolItem( const QString& key, bool state = true );
 
+    virtual void setLegendSymbolItem( const QString& key, QgsSymbolV2* symbol /Transfer/ );
+
     //! If supported by the renderer, return classification attribute for the use in legend
     //! @note added in 2.6
     virtual QString legendClassificationAttribute();

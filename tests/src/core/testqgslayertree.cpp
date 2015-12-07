@@ -22,6 +22,8 @@
 #include <qgsvectorlayerdiagramprovider.h>
 #include <qgsvectorlayerlabelprovider.h>
 #include <qgscategorizedsymbolrendererv2.h>
+#include <qgsgraduatedsymbolrendererv2.h>
+#include <qgsrulebasedrendererv2.h>
 #include <qgslayertreemodel.h>
 #include <qgslayertreemodellegendnode.h>
 
@@ -39,10 +41,15 @@ class TestQgsLayerTree : public QObject
     void testCheckStateMutuallyExclusiveEdgeCases();
     void testShowHideAllSymbolNodes();
     void testFindLegendNode();
+    void testLegendSymbolCategorized();
+    void testLegendSymbolGraduated();
+    void testLegendSymbolRuleBased();
 
   private:
 
     QgsLayerTreeGroup* mRoot;
+
+    void testRendererLegend( QgsFeatureRendererV2* renderer );
 
     Qt::CheckState childState( int childIndex )
     {
@@ -304,6 +311,106 @@ void TestQgsLayerTree::testFindLegendNode()
     QCOMPARE( found->layerNode()->layerId(), vl->id() );
     QCOMPARE( found->data( Qt::DisplayRole ).toString(), symbol.label() );
   }
+
+  //cleanup
+  delete m;
+  delete root;
+  QgsMapLayerRegistry::instance()->removeMapLayers( QList<QgsMapLayer*>() << vl );
+}
+
+void TestQgsLayerTree::testLegendSymbolCategorized()
+{
+  //test retrieving/setting a categorized renderer's symbol through the legend node
+  QgsCategorizedSymbolRendererV2* renderer = new QgsCategorizedSymbolRendererV2();
+  renderer->setClassAttribute( "col1" );
+  renderer->setSourceSymbol( QgsSymbolV2::defaultSymbol( QGis::Point ) );
+  QgsStringMap props;
+  props.insert( "color", "#ff0000" );
+  renderer->addCategory( QgsRendererCategoryV2( "a", QgsMarkerSymbolV2::createSimple( props ), "a" ) );
+  props.insert( "color", "#00ff00" );
+  renderer->addCategory( QgsRendererCategoryV2( "b", QgsMarkerSymbolV2::createSimple( props ), "b" ) );
+  props.insert( "color", "#0000ff" );
+  renderer->addCategory( QgsRendererCategoryV2( "c", QgsMarkerSymbolV2::createSimple( props ), "c" ) );
+  testRendererLegend( renderer );
+}
+
+void TestQgsLayerTree::testLegendSymbolGraduated()
+{
+  //test retrieving/setting a graduated renderer's symbol through the legend node
+  QgsGraduatedSymbolRendererV2* renderer = new QgsGraduatedSymbolRendererV2();
+  renderer->setClassAttribute( "col1" );
+  renderer->setSourceSymbol( QgsSymbolV2::defaultSymbol( QGis::Point ) );
+  QgsStringMap props;
+  props.insert( "color", "#ff0000" );
+  renderer->addClass( QgsRendererRangeV2( 1, 2, QgsMarkerSymbolV2::createSimple( props ), "a" ) );
+  props.insert( "color", "#00ff00" );
+  renderer->addClass( QgsRendererRangeV2( 2, 3, QgsMarkerSymbolV2::createSimple( props ), "b" ) );
+  props.insert( "color", "#0000ff" );
+  renderer->addClass( QgsRendererRangeV2( 3, 4, QgsMarkerSymbolV2::createSimple( props ), "c" ) );
+  testRendererLegend( renderer );
+}
+
+void TestQgsLayerTree::testLegendSymbolRuleBased()
+{
+  //test retrieving/setting a rule based renderer's symbol through the legend node
+  QgsRuleBasedRendererV2::Rule* root = new QgsRuleBasedRendererV2::Rule( 0 );
+  QgsStringMap props;
+  props.insert( "color", "#ff0000" );
+  root->appendChild( new QgsRuleBasedRendererV2::Rule( QgsMarkerSymbolV2::createSimple( props ), 0, 0, "\"col1\"=1" ) );
+  props.insert( "color", "#00ff00" );
+  root->appendChild( new QgsRuleBasedRendererV2::Rule( QgsMarkerSymbolV2::createSimple( props ), 0, 0, "\"col1\"=2" ) );
+  props.insert( "color", "#0000ff" );
+  root->appendChild( new QgsRuleBasedRendererV2::Rule( QgsMarkerSymbolV2::createSimple( props ), 0, 0, "ELSE" ) );
+  QgsRuleBasedRendererV2* renderer = new QgsRuleBasedRendererV2( root );
+  testRendererLegend( renderer );
+}
+
+void TestQgsLayerTree::testRendererLegend( QgsFeatureRendererV2* renderer )
+{
+  // runs renderer legend through a bunch of legend symbol tests
+
+  // NOTE: test expects renderer with at least 3 symbol nodes, where the initial symbol colors should be:
+  // #ff0000, #00ff00, #0000ff
+
+  //new memory layer
+  QgsVectorLayer* vl = new QgsVectorLayer( "Point?field=col1:integer", "vl", "memory" );
+  QVERIFY( vl->isValid() );
+
+  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << vl );
+  vl->setRendererV2( renderer );
+
+  //create legend with symbology nodes for renderer
+  QgsLayerTreeGroup* root = new QgsLayerTreeGroup();
+  QgsLayerTreeLayer* n = new QgsLayerTreeLayer( vl );
+  root->addChildNode( n );
+  QgsLayerTreeModel* m = new QgsLayerTreeModel( root, 0 );
+  m->refreshLayerLegend( n );
+
+  //test initial symbol
+  QgsLegendSymbolListV2 symbolList = renderer->legendSymbolItemsV2();
+  Q_FOREACH ( const QgsLegendSymbolItemV2& symbol, symbolList )
+  {
+    QgsSymbolV2LegendNode* symbolNode = dynamic_cast< QgsSymbolV2LegendNode* >( m->findLegendNode( vl->id(), symbol.ruleKey() ) );
+    QVERIFY( symbolNode );
+    QCOMPARE( symbolNode->symbol()->color(), symbol.symbol()->color() );
+  }
+  //try changing a symbol's color
+  QgsSymbolV2LegendNode* symbolNode = dynamic_cast< QgsSymbolV2LegendNode* >( m->findLegendNode( vl->id(), symbolList.at( 1 ).ruleKey() ) );
+  QgsSymbolV2* newSymbol = symbolNode->symbol()->clone();
+  newSymbol->setColor( QColor( 255, 255, 0 ) );
+  symbolNode->setSymbol( newSymbol );
+  QCOMPARE( symbolNode->symbol()->color(), QColor( 255, 255, 0 ) );
+  //test that symbol change was sent to renderer
+  symbolList = renderer->legendSymbolItemsV2();
+  QCOMPARE( symbolList.at( 1 ).symbol()->color(), QColor( 255, 255, 0 ) );
+
+  //another test - check directly setting symbol at renderer
+  QgsStringMap props;
+  props.insert( "color", "#00ffff" );
+  renderer->setLegendSymbolItem( symbolList.at( 2 ).ruleKey(), QgsMarkerSymbolV2::createSimple( props ) );
+  m->refreshLayerLegend( n );
+  symbolNode = dynamic_cast< QgsSymbolV2LegendNode* >( m->findLegendNode( vl->id(), symbolList.at( 2 ).ruleKey() ) );
+  QCOMPARE( symbolNode->symbol()->color(), QColor( 0, 255, 255 ) );
 
   //cleanup
   delete m;

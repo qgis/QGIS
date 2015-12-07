@@ -9,12 +9,16 @@
 #include "qgslayertreemodellegendnode.h"
 #include "qgslayertreeviewdefaultactions.h"
 #include "qgsmaplayerstyleguiutils.h"
+#include "qgsmaplayerregistry.h"
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
+#include "qgsrendererv2.h"
+#include "qgssymbolv2.h"
+#include "qgsstylev2.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgslayertreeregistrybridge.h"
-
+#include "qgssymbolv2selectordialog.h"
 
 QgsAppLayerTreeViewMenuProvider::QgsAppLayerTreeViewMenuProvider( QgsLayerTreeView* view, QgsMapCanvas* canvas )
     : mView( view )
@@ -200,6 +204,14 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
                          symbolNode, SLOT( checkAllItems() ) );
         menu->addAction( QgsApplication::getThemeIcon( "/mActionHideAllLayers.png" ), tr( "&Hide All Items" ),
                          symbolNode, SLOT( uncheckAllItems() ) );
+        menu->addSeparator();
+        QAction* editSymbolAction = new QAction( tr( "Edit Symbol..." ), menu );
+        //store the layer id and rule key in action, so we can later retrieve the corresponding
+        //legend node, if it still exists
+        editSymbolAction->setProperty( "layerId", symbolNode->layerNode()->layerId() );
+        editSymbolAction->setProperty( "ruleKey", symbolNode->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString() );
+        connect( editSymbolAction, SIGNAL( triggered() ), this, SLOT( editSymbolLegendNodeSymbol() ) );
+        menu->addAction( editSymbolAction );
       }
     }
   }
@@ -350,5 +362,32 @@ void QgsAppLayerTreeViewMenuProvider::addCustomLayerActions( QMenu* menu, QgsMap
       }
     }
     menu->addSeparator();
+  }
+}
+
+void QgsAppLayerTreeViewMenuProvider::editSymbolLegendNodeSymbol()
+{
+  QAction* action = qobject_cast< QAction*>( sender() );
+  if ( !action )
+    return;
+
+  QString layerId = action->property( "layerId" ).toString();
+  QString ruleKey = action->property( "ruleKey" ).toString();
+
+  QgsSymbolV2LegendNode* node = dynamic_cast<QgsSymbolV2LegendNode*>( mView->layerTreeModel()->findLegendNode( layerId, ruleKey ) );
+  if ( !node )
+    return;
+
+  const QgsSymbolV2* originalSymbol = node->symbol();
+  if ( !originalSymbol )
+    return;
+
+  QScopedPointer< QgsSymbolV2 > symbol( originalSymbol->clone() );
+  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( node->layerNode()->layer() );
+  QgsSymbolV2SelectorDialog dlg( symbol.data(), QgsStyleV2::defaultStyle(), vlayer, mView );
+  dlg.setMapCanvas( mCanvas );
+  if ( dlg.exec() )
+  {
+    node->setSymbol( symbol.take() );
   }
 }

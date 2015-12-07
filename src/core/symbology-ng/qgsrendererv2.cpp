@@ -671,6 +671,12 @@ void QgsFeatureRendererV2::checkLegendSymbolItem( const QString& key, bool state
   Q_UNUSED( state );
 }
 
+void QgsFeatureRendererV2::setLegendSymbolItem( const QString& key, QgsSymbolV2* symbol )
+{
+  Q_UNUSED( key );
+  delete symbol;
+}
+
 QgsLegendSymbolList QgsFeatureRendererV2::legendSymbolItems( double scaleDenominator, const QString& rule )
 {
   Q_UNUSED( scaleDenominator );

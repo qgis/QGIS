@@ -990,6 +990,15 @@ void QgsRuleBasedRendererV2::checkLegendSymbolItem( const QString& key, bool sta
     rule->setActive( state );
 }
 
+void QgsRuleBasedRendererV2::setLegendSymbolItem( const QString& key, QgsSymbolV2* symbol )
+{
+  Rule* rule = mRootRule->findRuleByKey( key );
+  if ( rule )
+    rule->setSymbol( symbol );
+  else
+    delete symbol;
+}
+
 QgsLegendSymbolList QgsRuleBasedRendererV2::legendSymbolItems( double scaleDenominator, const QString& rule )
 {
   return mRootRule->legendSymbolItems( scaleDenominator, rule );

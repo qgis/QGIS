@@ -185,6 +185,29 @@ QSize QgsSymbolV2LegendNode::minimumIconSize() const
   return minSz;
 }
 
+const QgsSymbolV2* QgsSymbolV2LegendNode::symbol() const
+{
+  return mItem.symbol();
+}
+
+void QgsSymbolV2LegendNode::setSymbol( QgsSymbolV2* symbol )
+{
+  if ( !symbol )
+    return;
+
+  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( mLayerNode->layer() );
+  if ( !vlayer || !vlayer->rendererV2() )
+    return;
+
+  mItem.setSymbol( symbol );
+  vlayer->rendererV2()->setLegendSymbolItem( mItem.ruleKey(), symbol->clone() );
+
+  mPixmap = QPixmap();
+
+  emit dataChanged();
+  vlayer->triggerRepaint();
+}
+
 void QgsSymbolV2LegendNode::checkAllItems()
 {
   checkAll( true );
