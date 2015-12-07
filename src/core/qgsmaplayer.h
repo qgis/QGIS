@@ -92,6 +92,17 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     QString originalName() const { return mLayerOrigName; }
 
+    /** Set the short name of the layer
+     *  used by QGIS Server to identify the layer
+     * @return the layer short name
+     */
+    void setShortName( const QString& shortName ) { mShortName = shortName; }
+    /** Get the short name of the layer
+     *  used by QGIS Server to identify the layer
+     * @return the layer short name
+     */
+    QString shortName() const { return mShortName; }
+
     /** Set the title of the layer
      *  used by QGIS Server in GetCapabilities request
      * @return the layer title
@@ -677,6 +688,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     QString mLayerOrigName;
 
+    QString mShortName;
     QString mTitle;
 
     /** Description of the layer*/

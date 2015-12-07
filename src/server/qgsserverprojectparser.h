@@ -30,6 +30,7 @@ class QgsCoordinateReferenceSystem;
 class QgsMapLayer;
 class QgsRectangle;
 class QDomDocument;
+class QgsLayerTreeGroup;
 
 class SERVER_EXPORT QgsServerProjectParser
 {
@@ -100,7 +101,7 @@ class SERVER_EXPORT QgsServerProjectParser
     QList< QPair< QString, QgsLayerCoordinateTransform > > layerCoordinateTransforms() const;
 
     /** Returns the text of the <layername> element for a layer element
-    @return id or a null string in case of error*/
+    @return name or a null string in case of error*/
     QString layerName( const QDomElement& layerElem ) const;
 
     QString serviceUrl() const;
@@ -119,6 +120,10 @@ class SERVER_EXPORT QgsServerProjectParser
     /** Returns the text of the <id> element for a layer element
     @return id or a null string in case of error*/
     QString layerId( const QDomElement& layerElem ) const;
+
+    /** Returns the text of the <id> element for a layer element
+    @return id or a null string in case of error*/
+    QString layerShortName( const QDomElement& layerElem ) const;
 
     QgsRectangle projectExtent() const;
 
@@ -163,6 +168,9 @@ class SERVER_EXPORT QgsServerProjectParser
     QStringList mCustomLayerOrder;
 
     bool findUseLayerIDs() const;
+
+    QList<QDomElement> findLegendGroupElements() const;
+    QList<QDomElement> setLegendGroupElementsWithLayerTree( QgsLayerTreeGroup* layerTreeGroup, QDomElement legendElement ) const;
 
     /** Adds sublayers of an embedded group to layer set*/
     static void sublayersOfEmbeddedGroup( const QString& projectFilePath, const QString& groupName, QSet<QString>& layerSet );

@@ -249,6 +249,11 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   diagLayout->addWidget( diagramPropertiesDialog );
   mDiagramFrame->setLayout( diagLayout );
 
+  // WMS Name as layer short name
+  mLayerShortNameLineEdit->setText( layer->shortName() );
+  // WMS Name validator
+  QValidator *shortNameValidator = new QRegExpValidator( QgsApplication::shortNameRegExp(), this );
+  mLayerShortNameLineEdit->setValidator( shortNameValidator );
 
   //layer title and abstract
   mLayerTitleLineEdit->setText( layer->title() );
@@ -588,6 +593,7 @@ void QgsVectorLayerProperties::apply()
   diagramPropertiesDialog->apply();
 
   //layer title and abstract
+  layer->setShortName( mLayerShortNameLineEdit->text() );
   layer->setTitle( mLayerTitleLineEdit->text() );
   layer->setAbstract( mLayerAbstractTextEdit->toPlainText() );
   layer->setKeywordList( mLayerKeywordListLineEdit->text() );

@@ -717,6 +717,11 @@ QString QgsApplication::userStyleV2Path()
   return qgisSettingsDirPath() + QLatin1String( "symbology-ng-style.db" );
 }
 
+QRegExp QgsApplication::shortNameRegExp()
+{
+  return QRegExp( "^[A-Za-z][A-Za-z0-9\\._-]*" );
+}
+
 QString QgsApplication::userThemesFolder()
 {
   return qgisSettingsDirPath() + QLatin1String( "/themes" );

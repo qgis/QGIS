@@ -205,6 +205,7 @@
 #include "qgsrectangle.h"
 #include "qgsscalecombobox.h"
 #include "qgsscalevisibilitydialog.h"
+#include "qgsgroupwmsdatadialog.h"
 #include "qgsshortcutsmanager.h"
 #include "qgssinglebandgrayrenderer.h"
 #include "qgssnappingdialog.h"
@@ -7830,6 +7831,24 @@ void QgisApp::legendGroupSetCRS()
       nodeLayer->layer()->triggerRepaint();
     }
   }
+}
+
+void QgisApp::legendGroupSetWMSData()
+{
+  QgsLayerTreeGroup* currentGroup = mLayerTreeView->currentGroupNode();
+  if ( !currentGroup )
+    return;
+  QgsGroupWMSDataDialog* dlg = new QgsGroupWMSDataDialog( this );
+  dlg->setGroupShortName( currentGroup->customProperty( "wmsShortName" ).toString() );
+  dlg->setGroupTitle( currentGroup->customProperty( "wmsTitle" ).toString() );
+  dlg->setGroupTitle( currentGroup->customProperty( "wmsAbstract" ).toString() );
+  if ( dlg->exec() )
+  {
+    currentGroup->setCustomProperty( "wmsShortName", dlg->groupShortName() );
+    currentGroup->setCustomProperty( "wmsTitle", dlg->groupTitle() );
+    currentGroup->setCustomProperty( "wmsAbstract", dlg->groupAbstract() );
+  }
+  delete dlg;
 }
 
 void QgisApp::zoomToLayerExtent()

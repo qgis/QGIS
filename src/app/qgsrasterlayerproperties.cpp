@@ -750,6 +750,13 @@ void QgsRasterLayerProperties::sync()
   txtbMetadata->document()->setDefaultStyleSheet( myStyle );
   txtbMetadata->setHtml( mRasterLayer->metadata() );
 
+  // WMS Name as layer short name
+  mLayerShortNameLineEdit->setText( mRasterLayer->shortName() );
+  // WMS Name validator
+  QValidator *shortNameValidator = new QRegExpValidator( QgsApplication::shortNameRegExp(), this );
+  mLayerShortNameLineEdit->setValidator( shortNameValidator );
+
+  //layer title and abstract
   mLayerTitleLineEdit->setText( mRasterLayer->title() );
   mLayerAbstractTextEdit->setPlainText( mRasterLayer->abstract() );
   mLayerKeywordListLineEdit->setText( mRasterLayer->keywordList() );
@@ -934,6 +941,7 @@ void QgsRasterLayerProperties::apply()
   QPixmap thumbnail = QPixmap::fromImage( mRasterLayer->previewAsImage( pixmapThumbnail->size() ) );
   pixmapThumbnail->setPixmap( thumbnail );
 
+  mRasterLayer->setShortName( mLayerShortNameLineEdit->text() );
   mRasterLayer->setTitle( mLayerTitleLineEdit->text() );
   mRasterLayer->setAbstract( mLayerAbstractTextEdit->toPlainText() );
   mRasterLayer->setKeywordList( mLayerKeywordListLineEdit->text() );

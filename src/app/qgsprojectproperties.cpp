@@ -262,6 +262,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
 
   grpOWSServiceCapabilities->setChecked( QgsProject::instance()->readBoolEntry( "WMSServiceCapabilities", "/", false ) );
   mWMSTitle->setText( QgsProject::instance()->readEntry( "WMSServiceTitle", "/" ) );
+  mWMSName->setText( QgsProject::instance()->readEntry( "WMSRootName", "/" ) );
   mWMSContactOrganization->setText( QgsProject::instance()->readEntry( "WMSContactOrganization", "/", "" ) );
   mWMSContactPerson->setText( QgsProject::instance()->readEntry( "WMSContactPerson", "/", "" ) );
   mWMSContactMail->setText( QgsProject::instance()->readEntry( "WMSContactMail", "/", "" ) );
@@ -270,6 +271,10 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   mWMSOnlineResourceLineEdit->setText( QgsProject::instance()->readEntry( "WMSOnlineResource", "/", "" ) );
   mWMSUrlLineEdit->setText( QgsProject::instance()->readEntry( "WMSUrl", "/", "" ) );
   mWMSKeywordList->setText( QgsProject::instance()->readListEntry( "WMSKeywordList", "/" ).join( ", " ) );
+
+  // WMS Name validator
+  QValidator *shortNameValidator = new QRegExpValidator( QgsApplication::shortNameRegExp(), this );
+  mWMSName->setValidator( shortNameValidator );
 
   // WMS Contact Position
   QString contactPositionText = QgsProject::instance()->readEntry( "WMSContactPosition", "/", "" );
@@ -785,6 +790,7 @@ void QgsProjectProperties::apply()
 
   QgsProject::instance()->writeEntry( "WMSServiceCapabilities", "/", grpOWSServiceCapabilities->isChecked() );
   QgsProject::instance()->writeEntry( "WMSServiceTitle", "/", mWMSTitle->text() );
+  QgsProject::instance()->writeEntry( "WMSRootName", "/", mWMSName->text() );
   QgsProject::instance()->writeEntry( "WMSContactOrganization", "/", mWMSContactOrganization->text() );
   QgsProject::instance()->writeEntry( "WMSContactPerson", "/", mWMSContactPerson->text() );
   QgsProject::instance()->writeEntry( "WMSContactMail", "/", mWMSContactMail->text() );
