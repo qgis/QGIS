@@ -126,6 +126,7 @@ class APP_EXPORT QgsBrowserDockWidget : public QDockWidget, private Ui::QgsBrows
     void addCurrentLayer();
     void addSelectedLayers();
     void showProperties();
+    void hideItem();
     void toggleFastScan();
 
     void selectionChanged( const QItemSelection & selected, const QItemSelection & deselected );

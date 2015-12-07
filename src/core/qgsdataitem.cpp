@@ -787,10 +787,14 @@ QVector<QgsDataItem*> QgsDirectoryItem::createChildren()
       deleteLater( children );
       return children;
     }
+
     QString subdirPath = dir.absoluteFilePath( subdir );
+
     QgsDebugMsgLevel( QString( "creating subdir: %1" ).arg( subdirPath ), 2 );
 
     QString path = mPath + '/' + subdir; // may differ from subdirPath
+    if ( QgsDirectoryItem::hiddenPath( path ) )
+      continue;
     QgsDirectoryItem *item = new QgsDirectoryItem( this, subdir, subdirPath, path );
     // propagate signals up to top
 
@@ -878,6 +882,15 @@ void QgsDirectoryItem::directoryChanged()
   {
     refresh();
   }
+}
+
+bool QgsDirectoryItem::hiddenPath( QString path )
+{
+  QSettings settings;
+  QStringList hiddenItems = settings.value( "/browser/hiddenPaths",
+                            QStringList() ).toStringList();
+  int idx = hiddenItems.indexOf( path );
+  return ( idx > -1 );
 }
 
 void QgsDirectoryItem::childrenCreated()

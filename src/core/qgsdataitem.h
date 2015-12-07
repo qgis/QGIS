@@ -409,6 +409,8 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
     //! @note deprecated since 2.10 - use QgsDataItemProviderRegistry
     Q_DECL_DEPRECATED static QVector<QLibrary*> mLibraries;
 
+    static bool hiddenPath( QString path );
+
   public slots:
     virtual void childrenCreated() override;
     void directoryChanged();

@@ -608,6 +608,7 @@ void QgsBrowserDockWidget::showContextMenu( const QPoint & pt )
       menu->addAction( tr( "Remove favourite" ), this, SLOT( removeFavourite() ) );
     }
     menu->addAction( tr( "Properties" ), this, SLOT( showProperties() ) );
+    menu->addAction( tr( "Hide from browser" ), this, SLOT( hideItem() ) );
     QAction *action = menu->addAction( tr( "Fast scan this dir." ), this, SLOT( toggleFastScan() ) );
     action->setCheckable( true );
     action->setChecked( settings.value( "/qgis/scanItemsFastScanUris",
@@ -791,6 +792,19 @@ void QgsBrowserDockWidget::addSelectedLayers()
   }
 
   QApplication::restoreOverrideCursor();
+}
+
+void QgsBrowserDockWidget::hideItem()
+{
+  QModelIndex index = mProxyModel->mapToSource( mBrowserView->currentIndex() );
+  QgsDataItem* item = mModel->dataItem( index );
+  if ( ! item )
+    return;
+
+  if ( item->type() == QgsDataItem::Directory )
+  {
+    mModel->hidePath( item );
+  }
 }
 
 void QgsBrowserDockWidget::showProperties()
