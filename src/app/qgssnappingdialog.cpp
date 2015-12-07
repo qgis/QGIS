@@ -32,24 +32,6 @@
 #include <QPushButton>
 #include <QDoubleSpinBox>
 
-
-class QgsSnappingDock : public QDockWidget
-{
-  public:
-    QgsSnappingDock( const QString & title, QWidget * parent = 0, Qt::WindowFlags flags = 0 )
-        : QDockWidget( title, parent, flags )
-    {
-      setObjectName( "Snapping and Digitizing Options" ); // set object name so the position can be saved
-    }
-
-    virtual void closeEvent( QCloseEvent *e ) override
-    {
-      Q_UNUSED( e );
-      // deleteLater();
-    }
-
-};
-
 QgsSnappingDialog::QgsSnappingDialog( QWidget* parent, QgsMapCanvas* canvas )
     : QDialog( parent )
     , mMapCanvas( canvas )
@@ -507,4 +489,21 @@ void QgsSnappingDialog::setSnappingMode()
     mSnapModeComboBox->setCurrentIndex( 2 );
   onSnappingModeIndexChanged( mSnapModeComboBox->currentIndex() );
   mSnapModeComboBox->blockSignals( false );
+}
+
+
+//
+// QgsSnappingDock
+//
+
+QgsSnappingDock::QgsSnappingDock( const QString& title, QWidget* parent, Qt::WindowFlags flags )
+    : QDockWidget( title, parent, flags )
+{
+  setObjectName( "Snapping and Digitizing Options" ); // set object name so the position can be saved
+}
+
+void QgsSnappingDock::closeEvent( QCloseEvent* e )
+{
+  Q_UNUSED( e );
+  // deleteLater();
 }

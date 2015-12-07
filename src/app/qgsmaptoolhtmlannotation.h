@@ -22,6 +22,8 @@
 
 class APP_EXPORT QgsMapToolHtmlAnnotation: public QgsMapToolAnnotation
 {
+    Q_OBJECT
+
   public:
     QgsMapToolHtmlAnnotation( QgsMapCanvas* canvas );
     ~QgsMapToolHtmlAnnotation();

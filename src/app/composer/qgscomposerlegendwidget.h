@@ -111,5 +111,21 @@ class QgsComposerLegendWidget: public QgsComposerItemBaseWidget, private Ui::Qgs
     QgsComposerLegend* mLegend;
 };
 
+
+class QgsComposerLegendMenuProvider : public QObject, public QgsLayerTreeViewMenuProvider
+{
+    Q_OBJECT
+
+  public:
+    QgsComposerLegendMenuProvider( QgsLayerTreeView* view, QgsComposerLegendWidget* w );
+
+    virtual QMenu* createContextMenu() override;
+
+  protected:
+    QgsLayerTreeView* mView;
+    QgsComposerLegendWidget* mWidget;
+};
+
+
 #endif
 

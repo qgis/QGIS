@@ -31,6 +31,8 @@ SET (evis_MOC_HDRS
 
      eventbrowser/evisgenericeventbrowsergui.h
      eventbrowser/evisimagedisplaywidget.h
+     
+     idtool/eviseventidtool.h
 )
 
 SET (evis_RCCS resources/evis.qrc)

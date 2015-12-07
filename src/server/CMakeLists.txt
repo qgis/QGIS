@@ -62,6 +62,7 @@ SET (qgis_mapserv_MOC_HDRS
   qgsconfigcache.h
   qgsmslayercache.h
   qgsserverlogger.h
+  qgsserverstreamingdevice.h
 )
 
 SET (qgis_mapserv_RCCS

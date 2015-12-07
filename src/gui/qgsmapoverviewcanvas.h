@@ -115,4 +115,27 @@ class GUI_EXPORT QgsMapOverviewCanvas : public QWidget
     QgsMapRendererQImageJob* mJob;
 };
 
+
+
+///@cond
+/// not part of public API
+
+//! widget that serves as rectangle showing current extent in overview
+class QgsPanningWidget : public QWidget
+{
+    Q_OBJECT
+
+    QPolygon mPoly;
+
+  public:
+    explicit QgsPanningWidget( QWidget* parent );
+
+    void setPolygon( const QPolygon& p );
+
+    void paintEvent( QPaintEvent* pe ) override;
+
+};
+///@endcond
+
+
 #endif

@@ -23,6 +23,8 @@ class QgsRenderContext;
 
 class APP_EXPORT QgsLabelPreview : public QLabel
 {
+    Q_OBJECT
+
   public:
     QgsLabelPreview( QWidget* parent = NULL );
 

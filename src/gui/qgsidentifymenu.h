@@ -23,6 +23,19 @@
 #include "qgsmaptoolidentify.h"
 #include "qgsvectorlayer.h"
 
+///@cond
+/// not part of public API
+class CustomActionRegistry : public QgsMapLayerActionRegistry
+{
+    Q_OBJECT
+
+  public:
+    explicit CustomActionRegistry( QObject *parent );
+    // remove all actions
+    void clear() { mMapLayerActionList.clear(); }
+};
+///@endcond
+
 /**
  * @brief The QgsIdentifyMenu class builds a menu to be used with identify results (@see QgsMapToolIdentify).
  * It is customizable and can display attribute actions (@see QgsAttributeAction) as well as map layer actions (@see QgsMapLayerAction).
@@ -146,13 +159,6 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
     void triggerMapLayerAction();
 
   private:
-    class CustomActionRegistry : public QgsMapLayerActionRegistry
-    {
-      public:
-        explicit CustomActionRegistry( QObject *parent );
-        // remove all actions
-        void clear() {mMapLayerActionList.clear();}
-    };
 
     //! adds a raster layer in the menu being built
     void addRasterLayer( QgsMapLayer* layer );

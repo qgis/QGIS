@@ -404,6 +404,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgscredentials.h
   qgsdataitem.h
   qgsdataprovider.h
+  qgsdbfilterproxymodel.h
   qgseditformconfig.h
   qgsgeometryvalidator.h
   qgsgml.h
@@ -424,6 +425,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsnetworkcontentfetcher.h
   qgsnetworkreplyparser.h
   qgsofflineediting.h
+  qgsowsconnection.h
   qgspluginlayer.h
   qgspointlocator.h
   qgsproject.h
@@ -445,6 +447,7 @@ SET(QGIS_CORE_MOC_HDRS
 
   composer/qgsaddremoveitemcommand.h
   composer/qgsatlascomposition.h
+  composer/qgscomposerarrow.h
   composer/qgscomposerattributetable.h
   composer/qgscomposerattributetablemodel.h
   composer/qgscomposerattributetablemodelv2.h
@@ -473,6 +476,7 @@ SET(QGIS_CORE_MOC_HDRS
   composer/qgscomposertexttable.h
   composer/qgscomposition.h
   composer/qgslegendmodel.h
+  composer/qgspaperitem.h
 
   raster/qgsrasterlayer.h
   raster/qgsrasterdataprovider.h

@@ -27,6 +27,8 @@ class QgsRubberBand;
 /** Base class for map tools that modify label properties*/
 class APP_EXPORT QgsMapToolLabel: public QgsMapTool
 {
+    Q_OBJECT
+
   public:
     QgsMapToolLabel( QgsMapCanvas* canvas );
     ~QgsMapToolLabel();

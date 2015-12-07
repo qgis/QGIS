@@ -24,6 +24,8 @@
 the length of the residual arrows are scaled*/
 class QgsResidualPlotItem: public QgsComposerItem
 {
+    Q_OBJECT
+
   public:
     explicit QgsResidualPlotItem( QgsComposition* c );
     ~QgsResidualPlotItem();

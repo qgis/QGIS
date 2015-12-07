@@ -24,6 +24,8 @@
  as a proxy for QgsDbTableModel*/
 class CORE_EXPORT QgsDbFilterProxyModel: public QSortFilterProxyModel
 {
+    Q_OBJECT
+
   public:
     QgsDbFilterProxyModel( QObject* parent = 0 );
     ~QgsDbFilterProxyModel();

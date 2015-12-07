@@ -45,22 +45,6 @@
 #include "qgsfield.h"
 #include "qgseditorwidgetregistry.h"
 
-class QgsAttributeTableDock : public QDockWidget
-{
-  public:
-    QgsAttributeTableDock( const QString & title, QWidget * parent = 0, Qt::WindowFlags flags = 0 )
-        : QDockWidget( title, parent, flags )
-    {
-      setObjectName( "AttributeTable" ); // set object name so the position can be saved
-    }
-
-    virtual void closeEvent( QCloseEvent * ev ) override
-    {
-      Q_UNUSED( ev );
-      deleteLater();
-    }
-};
-
 static QgsExpressionContext _getExpressionContext( const void* context )
 {
   QgsExpressionContext expContext;
@@ -856,4 +840,21 @@ void QgsAttributeTableDialog::setFilterExpression( const QString& filterString )
     return;
   }
   mMainView->setFilterMode( QgsAttributeTableFilterModel::ShowFilteredList );
+}
+
+
+//
+// QgsAttributeTableDock
+//
+
+QgsAttributeTableDock::QgsAttributeTableDock( const QString& title, QWidget* parent, Qt::WindowFlags flags )
+    : QDockWidget( title, parent, flags )
+{
+  setObjectName( "AttributeTable" ); // set object name so the position can be saved
+}
+
+void QgsAttributeTableDock::closeEvent( QCloseEvent* ev )
+{
+  Q_UNUSED( ev );
+  deleteLater();
 }

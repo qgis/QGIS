@@ -21,11 +21,13 @@
 #include "qgsattributeaction.h"
 #include "qgshighlight.h"
 
-QgsIdentifyMenu::CustomActionRegistry::CustomActionRegistry( QObject* parent )
+
+///@cond
+CustomActionRegistry::CustomActionRegistry( QObject* parent )
     : QgsMapLayerActionRegistry( parent )
 {
 }
-
+///@endcond
 
 QgsIdentifyMenu::QgsIdentifyMenu( QgsMapCanvas* canvas )
     : QMenu( canvas )

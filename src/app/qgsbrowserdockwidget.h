@@ -22,6 +22,8 @@
 #include <ui_qgsbrowserpropertiesdialogbase.h>
 
 #include "qgsdataitem.h"
+#include "qgsbrowsertreeview.h"
+#include <QSortFilterProxyModel>
 
 class QgsBrowserModel;
 class QModelIndex;
@@ -151,5 +153,68 @@ class APP_EXPORT QgsBrowserDockWidget : public QDockWidget, private Ui::QgsBrows
 
   private:
 };
+
+
+/**
+Utility class for correct drag&drop handling.
+
+We want to allow user to drag layers to qgis window. At the same time we do not
+accept drops of the items on our view - but if we ignore the drag enter action
+then qgis application consumes the drag events and it is possible to drop the
+items on the tree view although the drop is actually managed by qgis app.
+ */
+class QgsDockBrowserTreeView : public QgsBrowserTreeView
+{
+    Q_OBJECT
+
+  public:
+    explicit QgsDockBrowserTreeView( QWidget* parent );
+
+    void dragEnterEvent( QDragEnterEvent* e ) override;
+    void dragMoveEvent( QDragMoveEvent* e ) override;
+};
+
+/**
+Utility class for filtering browser items
+ */
+class QgsBrowserTreeFilterProxyModel : public QSortFilterProxyModel
+{
+    Q_OBJECT
+  public:
+    explicit QgsBrowserTreeFilterProxyModel( QObject *parent );
+
+    void setBrowserModel( QgsBrowserModel* model );
+
+    void setFilterSyntax( const QString & syntax );
+
+    void setFilter( const QString & filter );
+
+    void setCaseSensitive( bool caseSensitive );
+
+    void updateFilter();
+
+  protected:
+
+    QgsBrowserModel* mModel;
+    QString mFilter; //filter string provided
+    QVector<QRegExp> mREList; //list of filters, separated by "|"
+    QString mPatternSyntax;
+    Qt::CaseSensitivity mCaseSensitivity;
+
+    bool filterAcceptsString( const QString & value ) const;
+
+    // It would be better to apply the filer only to expanded (visible) items, but using mapFromSource() + view here was causing strange errors
+    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
+
+    // returns true if at least one ancestor is accepted by filter
+    bool filterAcceptsAncestor( const QModelIndex &sourceIndex ) const;
+
+    // returns true if at least one descendant s accepted by filter
+    bool filterAcceptsDescendant( const QModelIndex &sourceIndex ) const;
+
+    // filter accepts item name
+    bool filterAcceptsItem( const QModelIndex &sourceIndex ) const;
+};
+
 
 #endif // QGSBROWSERDOCKWIDGET_H

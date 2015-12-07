@@ -41,6 +41,8 @@ class QgsLegendRenderer;
  */
 class CORE_EXPORT QgsLegendModelV2 : public QgsLayerTreeModel
 {
+    Q_OBJECT
+
   public:
     QgsLegendModelV2( QgsLayerTreeGroup* rootNode, QObject *parent = 0 );
 

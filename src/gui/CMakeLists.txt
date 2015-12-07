@@ -320,6 +320,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsdialog.h
   qgsencodingfiledialog.h
   qgserrordialog.h
+  qgsexpressionbuilderdialog.h
   qgsexpressionbuilderwidget.h
   qgsexpressionhighlighter.h
   qgsexpressionselectiondialog.h
@@ -330,6 +331,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsfieldmodel.h
   qgsfieldproxymodel.h
   qgsfieldvalidator.h
+  qgsfiledropedit.h
   qgsfilterlineedit.h
   qgsformannotationitem.h
   qgsgenericprojectionselector.h

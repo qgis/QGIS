@@ -26,6 +26,9 @@
 #include "qgsvectorlayer.h"
 #include "ui_qgsfieldspropertiesbase.h"
 
+class DesignerTree;
+class DragList;
+
 class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPropertiesBase
 {
     Q_OBJECT
@@ -68,52 +71,6 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
       protected:
         Type mType;
         QString mName;
-    };
-
-    /**
-     * This class overrides mime type handling to be able to work with
-     * the drag and drop attribute editor.
-     *
-     * The mime type is application/x-qgsattributetablefield
-     */
-
-    class DragList : public QTableWidget
-    {
-      public:
-        explicit DragList( QWidget* parent = 0 )
-            : QTableWidget( parent )
-        {}
-
-        // QTreeWidget interface
-      protected:
-        virtual QStringList mimeTypes() const override;
-
-        virtual QMimeData* mimeData( const QList<QTableWidgetItem*> items ) const override;
-    };
-
-
-    /**
-     * Graphical representation for the attribute editor drag and drop editor
-     */
-    class DesignerTree : public QTreeWidget
-    {
-      public:
-        explicit DesignerTree( QWidget* parent = 0 )
-            : QTreeWidget( parent )
-        {}
-        QTreeWidgetItem* addItem( QTreeWidgetItem* parent, DesignerTreeItemData data );
-        QTreeWidgetItem* addContainer( QTreeWidgetItem* parent, const QString& title );
-
-      protected:
-        virtual void dragMoveEvent( QDragMoveEvent *event ) override;
-        virtual void dropEvent( QDropEvent *event ) override;
-        virtual bool dropMimeData( QTreeWidgetItem * parent, int index, const QMimeData * data, Qt::DropAction action ) override;
-        /* Qt::DropActions supportedDropActions() const;*/
-
-        // QTreeWidget interface
-      protected:
-        virtual QStringList mimeTypes() const override;
-        virtual QMimeData* mimeData( const QList<QTreeWidgetItem*> items ) const override;
     };
 
     /**
@@ -252,7 +209,58 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
 QDataStream& operator<< ( QDataStream& stream, const QgsFieldsProperties::DesignerTreeItemData& data );
 QDataStream& operator>> ( QDataStream& stream, QgsFieldsProperties::DesignerTreeItemData& data );
 
+
+/**
+ * This class overrides mime type handling to be able to work with
+ * the drag and drop attribute editor.
+ *
+ * The mime type is application/x-qgsattributetablefield
+ */
+
+class DragList : public QTableWidget
+{
+    Q_OBJECT
+
+  public:
+    explicit DragList( QWidget* parent = 0 )
+        : QTableWidget( parent )
+    {}
+
+    // QTreeWidget interface
+  protected:
+    virtual QStringList mimeTypes() const override;
+
+    virtual QMimeData* mimeData( const QList<QTableWidgetItem*> items ) const override;
+};
+
+/**
+ * Graphical representation for the attribute editor drag and drop editor
+ */
+class DesignerTree : public QTreeWidget
+{
+    Q_OBJECT
+
+  public:
+    explicit DesignerTree( QWidget* parent = 0 )
+        : QTreeWidget( parent )
+    {}
+    QTreeWidgetItem* addItem( QTreeWidgetItem* parent, QgsFieldsProperties::DesignerTreeItemData data );
+    QTreeWidgetItem* addContainer( QTreeWidgetItem* parent, const QString& title );
+
+  protected:
+    virtual void dragMoveEvent( QDragMoveEvent *event ) override;
+    virtual void dropEvent( QDropEvent *event ) override;
+    virtual bool dropMimeData( QTreeWidgetItem * parent, int index, const QMimeData * data, Qt::DropAction action ) override;
+    /* Qt::DropActions supportedDropActions() const;*/
+
+    // QTreeWidget interface
+  protected:
+    virtual QStringList mimeTypes() const override;
+    virtual QMimeData* mimeData( const QList<QTreeWidgetItem*> items ) const override;
+};
+
 Q_DECLARE_METATYPE( QgsFieldsProperties::FieldConfig )
 Q_DECLARE_METATYPE( QgsFieldsProperties::DesignerTreeItemData )
 
 #endif // QGSFIELDSPROPERTIES_H
+

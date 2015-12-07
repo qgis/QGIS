@@ -28,6 +28,8 @@ class QgisInterface;
 /** Abstract base class for dialogs that allow to enter the options for interpolators*/
 class QgsInterpolatorDialog: public QDialog
 {
+    Q_OBJECT
+
   public:
     QgsInterpolatorDialog( QWidget* parent, QgisInterface* iface );
     virtual ~QgsInterpolatorDialog();

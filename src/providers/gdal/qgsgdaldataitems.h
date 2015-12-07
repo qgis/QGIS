@@ -19,6 +19,8 @@
 
 class QgsGdalLayerItem : public QgsLayerItem
 {
+    Q_OBJECT
+
   private:
 
     QStringList sublayers;

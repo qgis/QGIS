@@ -93,6 +93,8 @@ class CORE_EXPORT QgsAttributeEditorElement : public QObject
  */
 class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
 {
+    Q_OBJECT
+
   public:
     /**
      * Creates a new attribute editor container
@@ -171,6 +173,8 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
  */
 class CORE_EXPORT QgsAttributeEditorField : public QgsAttributeEditorElement
 {
+    Q_OBJECT
+
   public:
     /**
      * Creates a new attribute editor element which represents a field
@@ -209,6 +213,8 @@ class CORE_EXPORT QgsAttributeEditorField : public QgsAttributeEditorElement
  */
 class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
 {
+    Q_OBJECT
+
   public:
     /**
      * Creates a new element which embeds a relation.
