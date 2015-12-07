@@ -32,6 +32,7 @@ from processing.core.parameters import ParameterFile
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterString
+from processing.core.parameters import ParameterBoolean
 from processing.core.outputs import OutputFile
 from FusionAlgorithm import FusionAlgorithm
 from FusionUtils import FusionUtils
