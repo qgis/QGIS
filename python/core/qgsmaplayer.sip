@@ -76,6 +76,17 @@ class QgsMapLayer : QObject
      */
     QString originalName() const;
 
+    /** Set the short name of the layer
+     *  used by QGIS Server to identify the layer
+     * @return the layer short name
+     */
+    void setShortName( const QString& shortName );
+    /** Get the short name of the layer
+     *  used by QGIS Server to identify the layer
+     * @return the layer short name
+     */
+    QString shortName() const;
+
     /** Set the title of the layer
      *  used by QGIS Server in GetCapabilities request
      * @return the layer title

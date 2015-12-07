@@ -228,6 +228,9 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     //! Returns the path to user's style.
     static QString userStyleV2Path();
 
+    //! Returns the short name regular exprecience for line edit validator
+    static QRegExp shortNameRegExp();
+
     //! Returns the path to user's themes folder
     static QString userThemesFolder();
 

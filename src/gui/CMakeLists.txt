@@ -265,6 +265,7 @@ SET(QGIS_GUI_SRCS
   qgsvertexmarker.cpp
   qgsunitselectionwidget.cpp
   qgslegendfilterbutton.cpp
+  qgsgroupwmsdatadialog.cpp
 )
 
 IF (WITH_QTWEBKIT)
@@ -392,6 +393,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsunitselectionwidget.h
   qgsuserinputdockwidget.h
   qgslegendfilterbutton.h
+  qgsgroupwmsdatadialog.h
 
   raster/qgsrasterminmaxwidget.h
   raster/qgspalettedrendererwidget.h

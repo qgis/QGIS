@@ -753,6 +753,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /** Set the CRS of the current legend group*/
     void legendGroupSetCRS();
+    /** Set the WMS data of the current legend group*/
+    void legendGroupSetWMSData();
 
     //! zoom to extent of layer
     void zoomToLayerExtent();
