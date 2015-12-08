@@ -458,9 +458,11 @@ void TestQgsLegendRenderer::testFilterByPolygon()
   // again with useExtent to true
   legendModel.setLegendFilter( &mapSettings, /*useExtent*/ true, *geom.data() );
 
+  QString testName2 = testName + "2";
+  QString report2 = mReport + "2";
   _setStandardTestFont( settings );
-  _renderLegend( testName, &legendModel, settings );
-  QVERIFY( _verifyImage( testName, mReport ) );
+  _renderLegend( testName2, &legendModel, settings );
+  QVERIFY( _verifyImage( testName2, report2 ) );
 }
 
 void TestQgsLegendRenderer::testFilterByExpression()
@@ -497,9 +499,11 @@ void TestQgsLegendRenderer::testFilterByExpression()
   legendModel.setLegendFilterByMap( 0 );
   legendModel.setLegendFilter( &mapSettings, /*useExtent*/ false );
 
+  QString testName2 = testName + "2";
+  QString report2 = mReport + "2";
   _setStandardTestFont( settings );
-  _renderLegend( testName, &legendModel, settings );
-  QVERIFY( _verifyImage( testName, mReport ) );
+  _renderLegend( testName2, &legendModel, settings );
+  QVERIFY( _verifyImage( testName2, report2 ) );
 }
 
 QTEST_MAIN( TestQgsLegendRenderer )
