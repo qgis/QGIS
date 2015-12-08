@@ -7,7 +7,7 @@ except:
 import inspect
 import string
 from qgis._core import *
-from PyQt.QtCore import QCoreApplication
+from PyQt4.QtCore import QCoreApplication
 
 
 def register_function(function, arg_count, group, usesgeometry=False, **kwargs):
