@@ -182,7 +182,7 @@ void eVis::unload()
   mQGisIface->removeDatabaseToolBarIcon( mEventBrowserActionPointer );
   delete mEventBrowserActionPointer;
 
-  while ( mTemporaryFileList.size() > 0 )
+  while ( !mTemporaryFileList.isEmpty() )
   {
     delete( mTemporaryFileList.takeLast() );
   }

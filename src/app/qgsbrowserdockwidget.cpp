@@ -421,7 +421,7 @@ void QgsBrowserDockWidget::showContextMenu( const QPoint & pt )
     menu->addActions( actions );
   }
 
-  if ( menu->actions().count() == 0 )
+  if ( menu->actions().isEmpty() )
   {
     delete menu;
     return;

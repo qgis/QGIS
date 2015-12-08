@@ -241,7 +241,7 @@ void QgsWFSSourceSelect::capabilitiesReplyFinished()
     mAvailableCRS.insert( std::make_pair( featureType.name, currentCRSList ) );
   }
 
-  if ( caps.featureTypes.count() > 0 )
+  if ( !caps.featureTypes.isEmpty() )
   {
     treeView->resizeColumnToContents( 0 );
     treeView->resizeColumnToContents( 1 );

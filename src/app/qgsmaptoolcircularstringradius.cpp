@@ -47,7 +47,7 @@ void QgsMapToolCircularStringRadius::cadCanvasReleaseEvent( QgsMapMouseEvent* e 
 
   if ( e->button() == Qt::LeftButton )
   {
-    if ( mPoints.size() == 0 )
+    if ( mPoints.isEmpty() )
     {
       //get first point from parent tool if there. Todo: move to upper class
       const QgsCompoundCurveV2* compoundCurve = mParentTool->captureCurve();
@@ -117,7 +117,7 @@ void QgsMapToolCircularStringRadius::cadCanvasReleaseEvent( QgsMapMouseEvent* e 
 
 void QgsMapToolCircularStringRadius::cadCanvasMoveEvent( QgsMapMouseEvent* e )
 {
-  if ( mPoints.size() > 0 && mRadiusMode )
+  if ( !mPoints.isEmpty() && mRadiusMode )
   {
     mLastMouseMapPos.setX( e->mapPoint().x() );
     mLastMouseMapPos.setY( e->mapPoint().y() );

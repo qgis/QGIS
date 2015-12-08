@@ -70,7 +70,7 @@ bool QgsComposerTableColumn::readXML( const QDomElement& columnElem )
   mWidth = columnElem.attribute( "width", "0.0" ).toDouble();
 
   QDomNodeList bgColorList = columnElem.elementsByTagName( "backgroundColor" );
-  if ( bgColorList.size() > 0 )
+  if ( !bgColorList.isEmpty() )
   {
     QDomElement bgColorElem = bgColorList.at( 0 ).toElement();
     bool redOk, greenOk, blueOk, alphaOk;

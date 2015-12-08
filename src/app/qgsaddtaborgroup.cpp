@@ -33,7 +33,7 @@ QgsAddTabOrGroup::QgsAddTabOrGroup( QgsVectorLayer *lyr, const QList < TabPair >
 
   mTabButton->setChecked( true );
   mTabList->setEnabled( false );
-  if ( mTabs.size() > 0 )
+  if ( !mTabs.isEmpty() )
   {
     int i = 0;
     Q_FOREACH ( const TabPair& tab, mTabs )

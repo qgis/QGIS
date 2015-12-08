@@ -290,7 +290,7 @@ void QgsDataDefinedButton::aboutToShowMenu()
 
     mFieldsMenu->clear();
 
-    if ( mFieldNameList.size() > 0 )
+    if ( !mFieldNameList.isEmpty() )
     {
 
       for ( int j = 0; j < mFieldNameList.count(); ++j )

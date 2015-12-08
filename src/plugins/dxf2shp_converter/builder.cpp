@@ -447,7 +447,7 @@ void Builder::print_shpObjects()
 
   QgsDebugMsg( "Done!" );
 
-  if ( textObjects.size() > 0 )
+  if ( !textObjects.isEmpty() )
   {
     SHPHandle thSHP;
 
@@ -509,7 +509,7 @@ void Builder::print_shpObjects()
     QgsDebugMsg( "Done!" );
   }
 
-  if ( insertObjects.size() > 0 )
+  if ( !insertObjects.isEmpty() )
   {
     SHPHandle ihSHP;
 

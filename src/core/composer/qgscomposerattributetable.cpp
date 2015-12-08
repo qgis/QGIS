@@ -650,7 +650,7 @@ bool QgsComposerAttributeTable::readXML( const QDomElement& itemElem, const QDom
   //restore display attribute map. This is required to upgrade pre 2.4 projects.
   QSet<int> displayAttributes;
   QDomNodeList displayAttributeList = itemElem.elementsByTagName( "displayAttributes" );
-  if ( displayAttributeList.size() > 0 )
+  if ( !displayAttributeList.isEmpty() )
   {
     QDomElement displayAttributesElem =  displayAttributeList.at( 0 ).toElement();
     QDomNodeList attributeEntryList = displayAttributesElem.elementsByTagName( "attributeEntry" );
@@ -669,7 +669,7 @@ bool QgsComposerAttributeTable::readXML( const QDomElement& itemElem, const QDom
   //restore alias map. This is required to upgrade pre 2.4 projects.
   QMap<int, QString> fieldAliasMap;
   QDomNodeList aliasMapNodeList = itemElem.elementsByTagName( "attributeAliasMap" );
-  if ( aliasMapNodeList.size() > 0 )
+  if ( !aliasMapNodeList.isEmpty() )
   {
     QDomElement attributeAliasMapElem = aliasMapNodeList.at( 0 ).toElement();
     QDomNodeList aliasMepEntryList = attributeAliasMapElem.elementsByTagName( "aliasEntry" );

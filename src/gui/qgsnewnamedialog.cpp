@@ -198,5 +198,5 @@ bool QgsNewNameDialog::exists( const QString& name, const QStringList& extension
 {
   QStringList newNames = fullNames( name, extensions );
   QStringList conflicts = matching( newNames, existing, cs );
-  return conflicts.size() > 0;
+  return !conflicts.isEmpty();
 }

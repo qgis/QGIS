@@ -1641,7 +1641,7 @@ void QgsComposer::exportCompositionAsPDF( QgsComposer::OutputMode mode )
   // else, we need to choose a directory
   else
   {
-    if ( atlasMap->filenamePattern().size() == 0 )
+    if ( atlasMap->filenamePattern().isEmpty() )
     {
       int res = QMessageBox::warning( 0, tr( "Empty filename pattern" ),
                                       tr( "The filename pattern is empty. A default one will be used." ),
@@ -2127,7 +2127,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
   else
   {
     // else, it has an atlas to render, so a directory must first be selected
-    if ( atlasMap->filenamePattern().size() == 0 )
+    if ( atlasMap->filenamePattern().isEmpty() )
     {
       int res = QMessageBox::warning( 0, tr( "Empty filename pattern" ),
                                       tr( "The filename pattern is empty. A default one will be used." ),
@@ -2484,7 +2484,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
   else
   {
     // If we have an Atlas
-    if ( atlasMap->filenamePattern().size() == 0 )
+    if ( atlasMap->filenamePattern().isEmpty() )
     {
       int res = QMessageBox::warning( 0, tr( "Empty filename pattern" ),
                                       tr( "The filename pattern is empty. A default one will be used." ),

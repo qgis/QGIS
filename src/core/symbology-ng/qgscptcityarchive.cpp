@@ -575,7 +575,7 @@ int QgsCptCityDataItem::leafCount() const
 
 bool QgsCptCityDataItem::hasChildren()
 {
-  return ( mPopulated ? mChildren.count() > 0 : true );
+  return ( mPopulated ? !mChildren.isEmpty() : true );
 }
 
 void QgsCptCityDataItem::addChildItem( QgsCptCityDataItem * child, bool refresh )
@@ -1046,7 +1046,7 @@ QMap< QString, QStringList > QgsCptCityDirectoryItem::rampsMap()
     if ( prevAdd )
     {
       // depending on number of variants, make one or more items
-      if ( listVariant.count() == 0 )
+      if ( listVariant.isEmpty() )
       {
         // set num colors=-1 to parse file on request only
         // mSchemeNumColors[ prevName ] = -1;
@@ -1135,11 +1135,11 @@ QgsCptCityDataItem* QgsCptCityDirectoryItem::dataItem( QgsCptCityDataItem* paren
   QgsDebugMsg( QString( "item has %1 dirs and %2 ramps" ).arg( theDirEntries.count() ).arg( theRampsMap.count() ) );
 
   // return item if has at least one subdir
-  if ( theDirEntries.count() > 0 )
+  if ( !theDirEntries.isEmpty() )
     return dirItem;
 
   // if 0 ramps, delete item
-  if ( theRampsMap.count() == 0 )
+  if ( theRampsMap.isEmpty() )
   {
     delete dirItem;
     return 0;

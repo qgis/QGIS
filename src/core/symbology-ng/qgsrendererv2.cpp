@@ -357,7 +357,7 @@ void QgsFeatureRendererV2::renderFeatureWithSymbol( QgsFeature& feature, QgsSymb
       QPolygonF pts;
       QList<QPolygonF> holes;
       _getPolygon( pts, holes, context, segmentizedGeometry->asWkb(), symbol->clipFeaturesToExtent() );
-      (( QgsFillSymbolV2* )symbol )->renderPolygon( pts, ( holes.count() ? &holes : NULL ), &feature, context, layer, selected );
+      (( QgsFillSymbolV2* )symbol )->renderPolygon( pts, ( !holes.isEmpty() ? &holes : NULL ), &feature, context, layer, selected );
     }
     break;
 
@@ -437,7 +437,7 @@ void QgsFeatureRendererV2::renderFeatureWithSymbol( QgsFeature& feature, QgsSymb
           context.setGeometry( geomCollection->geometryN( i ) );
         }
         ptr = _getPolygon( pts, holes, context, ptr, symbol->clipFeaturesToExtent() );
-        (( QgsFillSymbolV2* )symbol )->renderPolygon( pts, ( holes.count() ? &holes : NULL ), &feature, context, layer, selected );
+        (( QgsFillSymbolV2* )symbol )->renderPolygon( pts, ( !holes.isEmpty() ? &holes : NULL ), &feature, context, layer, selected );
       }
       break;
     }

@@ -121,7 +121,7 @@ namespace pal
     int nGeom;
     int i;
 
-    while ( queue->size() > 0 )
+    while ( !queue->isEmpty() )
     {
       geom = queue->takeFirst();
       GEOSContextHandle_t geosctxt = geosContext();

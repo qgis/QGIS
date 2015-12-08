@@ -2179,7 +2179,7 @@ static QVariant fcnGetFeature( const QVariantList& values, const QgsExpressionCo
   if ( !vl )
   {
     QList<QgsMapLayer *> layersByName = QgsMapLayerRegistry::instance()->mapLayersByName( layerString );
-    if ( layersByName.size() > 0 )
+    if ( !layersByName.isEmpty() )
     {
       vl = qobject_cast<QgsVectorLayer*>( layersByName.at( 0 ) );
     }
@@ -2225,7 +2225,7 @@ static QVariant fcnGetLayerProperty( const QVariantList& values, const QgsExpres
   if ( !layer )
   {
     QList<QgsMapLayer *> layersByName = QgsMapLayerRegistry::instance()->mapLayersByName( layerIdOrName );
-    if ( layersByName.size() > 0 )
+    if ( !layersByName.isEmpty() )
     {
       layer = layersByName.at( 0 );
     }
@@ -3739,7 +3739,7 @@ QString QgsExpression::helptext( QString name )
     {
       helpContents += QString( "<code><span class=\"functionname\">%1</span>" ).arg( name );
 
-      if ( f.mType == tr( "function" ) && ( f.mName[0] != '$' || v.mArguments.size() > 0 || v.mVariableLenArguments ) )
+      if ( f.mType == tr( "function" ) && ( f.mName[0] != '$' || !v.mArguments.isEmpty() || v.mVariableLenArguments ) )
       {
         helpContents += '(';
 
@@ -3763,7 +3763,7 @@ QString QgsExpression::helptext( QString name )
       helpContents += "</code>";
     }
 
-    if ( v.mArguments.size() > 0 )
+    if ( !v.mArguments.isEmpty() )
     {
       helpContents += QString( "<h4>%1</h4>\n<div class=\"arguments\">\n<table>" ).arg( tr( "Arguments" ) );
 
@@ -3778,7 +3778,7 @@ QString QgsExpression::helptext( QString name )
       helpContents += "</table>\n</div>\n";
     }
 
-    if ( v.mExamples.size() > 0 )
+    if ( !v.mExamples.isEmpty() )
     {
       helpContents += QString( "<h4>%1</h4>\n<div class=\"examples\">\n<ul>\n" ).arg( tr( "Examples" ) );
 

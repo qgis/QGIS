@@ -53,11 +53,11 @@ class QgsNetworkProxyFactory : public QNetworkProxyFactory
       Q_FOREACH ( QNetworkProxyFactory *f, nam->proxyFactories() )
       {
         QList<QNetworkProxy> systemproxies = f->systemProxyForQuery( query );
-        if ( systemproxies.size() > 0 )
+        if ( !systemproxies.isEmpty() )
           return systemproxies;
 
         QList<QNetworkProxy> proxies = f->queryProxy( query );
-        if ( proxies.size() > 0 )
+        if ( !proxies.isEmpty() )
           return proxies;
       }
 

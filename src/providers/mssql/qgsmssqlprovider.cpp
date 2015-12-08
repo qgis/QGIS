@@ -118,7 +118,7 @@ QgsMssqlProvider::QgsMssqlProvider( const QString& uri )
   {
     // Get a list of table
     mTables = mDatabase.tables( QSql::Tables );
-    if ( mTables.count() > 0 )
+    if ( !mTables.isEmpty() )
       mTableName = mTables[0];
     else
       mValid = false;
@@ -958,7 +958,7 @@ bool QgsMssqlProvider::addAttributes( const QList<QgsField> &attributes )
 {
   QString statement;
 
-  if ( attributes.count() == 0 )
+  if ( attributes.isEmpty() )
     return true;
 
   for ( QList<QgsField>::const_iterator it = attributes.begin(); it != attributes.end(); ++it )

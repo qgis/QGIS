@@ -174,7 +174,7 @@ void QgsLayerTreeGroup::removeChildrenGroupWithoutLayers()
     if ( treeNode->nodeType() == QgsLayerTreeNode::NodeGroup )
     {
       QgsLayerTreeGroup* treeGroup = qobject_cast<QgsLayerTreeGroup*>( treeNode );
-      if ( treeGroup->findLayerIds().count() == 0 )
+      if ( treeGroup->findLayerIds().isEmpty() )
         removeChildNode( treeNode );
       else
         treeGroup->removeChildrenGroupWithoutLayers();
@@ -452,7 +452,7 @@ void QgsLayerTreeGroup::updateVisibilityFromChildren()
   if ( mChangingChildVisibility )
     return;
 
-  if ( mChildren.count() == 0 )
+  if ( mChildren.isEmpty() )
     return;
 
   if ( mMutuallyExclusive )

@@ -41,7 +41,7 @@ void QgsSpatiaLiteTableModel::addTableEntry( const QString& type, const QString&
   QList < QStandardItem * >dbItems = findItems( mSqliteDb, Qt::MatchExactly, 0 );
 
   //there is already an item
-  if ( dbItems.size() > 0 )
+  if ( !dbItems.isEmpty() )
   {
     dbItem = dbItems.at( 0 );
   }

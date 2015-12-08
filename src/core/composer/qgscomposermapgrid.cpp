@@ -1794,7 +1794,7 @@ int QgsComposerMapGrid::xGridLinesCRSTransform( const QgsRectangle& bbox, const 
     QList<QPolygonF>::const_iterator lineIt = lineSegments.constBegin();
     for ( ; lineIt != lineSegments.constEnd(); ++lineIt )
     {
-      if (( *lineIt ).size() > 0 )
+      if ( !( *lineIt ).isEmpty() )
       {
         lines.append( qMakePair( currentLevel, *lineIt ) );
         gridLineCount++;
@@ -1863,7 +1863,7 @@ int QgsComposerMapGrid::yGridLinesCRSTransform( const QgsRectangle& bbox, const 
     QList<QPolygonF>::const_iterator lineIt = lineSegments.constBegin();
     for ( ; lineIt != lineSegments.constEnd(); ++lineIt )
     {
-      if (( *lineIt ).size() > 0 )
+      if ( !( *lineIt ).isEmpty() )
       {
         lines.append( qMakePair( currentLevel, *lineIt ) );
         gridLineCount++;

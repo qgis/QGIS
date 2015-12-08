@@ -348,7 +348,7 @@ void QgsDelimitedTextFile::setTypeRegexp( const QString& regexp )
   mDelimRegexp.setPattern( regexp );
   mAnchoredRegexp = regexp.startsWith( '^' );
   mParser = &QgsDelimitedTextFile::parseRegexp;
-  mDefinitionValid = regexp.size() > 0 && mDelimRegexp.isValid();
+  mDefinitionValid = !regexp.isEmpty() && mDelimRegexp.isValid();
   if ( ! mDefinitionValid )
   {
     QgsDebugMsg( "Invalid regular expression in delimited text file delimiter: " + regexp );
@@ -380,7 +380,7 @@ void QgsDelimitedTextFile::setTypeCSV( const QString& delim, const QString& quot
   mQuoteChar = decodeChars( quote );
   mEscapeChar = decodeChars( escape );
   mParser = &QgsDelimitedTextFile::parseQuoted;
-  mDefinitionValid = mDelimChars.size() > 0;
+  mDefinitionValid = !mDelimChars.isEmpty();
   if ( ! mDefinitionValid )
   {
     QgsDebugMsg( "Invalid empty delimiter defined for text file delimiter" );

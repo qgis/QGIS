@@ -135,7 +135,7 @@ namespace pal
 
     bool featureGeomIsObstacleGeom = !lf->obstacleGeometry();
 
-    while ( simpleGeometries->size() > 0 )
+    while ( !simpleGeometries->isEmpty() )
     {
       const GEOSGeometry* geom = simpleGeometries->takeFirst();
 
@@ -233,7 +233,7 @@ namespace pal
         throw InternalException::UnknownGeometry();
       }
 
-      while ( simpleGeometries->size() > 0 )
+      while ( !simpleGeometries->isEmpty() )
       {
         const GEOSGeometry* geom = simpleGeometries->takeFirst();
 

@@ -86,7 +86,7 @@ void QgsEllipseSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   btnChangeColorFill->setColor( mLayer->fillColor() );
 
   QList<QListWidgetItem *> symbolItemList = mShapeListWidget->findItems( mLayer->symbolName(), Qt::MatchExactly );
-  if ( symbolItemList.size() > 0 )
+  if ( !symbolItemList.isEmpty() )
   {
     mShapeListWidget->setCurrentItem( symbolItemList.at( 0 ) );
   }

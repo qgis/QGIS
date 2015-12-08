@@ -29,7 +29,7 @@ QgsLayerTreeMapCanvasBridge::QgsLayerTreeMapCanvasBridge( QgsLayerTreeGroup *roo
     , mHasCustomLayerOrder( false )
     , mAutoSetupOnFirstLayer( true )
     , mAutoEnableCrsTransform( true )
-    , mLastLayerCount( root->findLayers().count() )
+    , mLastLayerCount( !root->findLayers().isEmpty() )
 {
   connect( root, SIGNAL( addedChildren( QgsLayerTreeNode*, int, int ) ), this, SLOT( nodeAddedChildren( QgsLayerTreeNode*, int, int ) ) );
   connect( root, SIGNAL( customPropertyChanged( QgsLayerTreeNode*, QString ) ), this, SLOT( nodeCustomPropertyChanged( QgsLayerTreeNode*, QString ) ) );

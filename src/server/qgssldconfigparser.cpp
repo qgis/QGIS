@@ -117,7 +117,7 @@ void QgsSLDConfigParser::layersAndStylesCapabilities( QDomElement& parentElement
 
         //add name
         QDomNodeList nameList = layerNodeList.item( i ).toElement().elementsByTagName( "Name" );
-        if ( nameList.size() > 0 )
+        if ( !nameList.isEmpty() )
         {
           //layer name
           QDomElement layerNameElement = doc.createElement( "Name" );
@@ -128,7 +128,7 @@ void QgsSLDConfigParser::layersAndStylesCapabilities( QDomElement& parentElement
 
         //add title
         QDomNodeList titleList = layerNodeList.item( i ).toElement().elementsByTagName( "Title" );
-        if ( titleList.size() > 0 )
+        if ( !titleList.isEmpty() )
         {
           QDomElement layerTitleElement = doc.createElement( "Title" );
           QDomText layerTitleText = doc.createTextNode( titleList.item( 0 ).toElement().text() );
@@ -137,7 +137,7 @@ void QgsSLDConfigParser::layersAndStylesCapabilities( QDomElement& parentElement
         }
         //add abstract
         QDomNodeList abstractList = layerNodeList.item( i ).toElement().elementsByTagName( "Abstract" );
-        if ( abstractList.size() > 0 )
+        if ( !abstractList.isEmpty() )
         {
           QDomElement layerAbstractElement = doc.createElement( "Abstract" );
           QDomText layerAbstractText = doc.createTextNode( abstractList.item( 0 ).toElement().text() );
@@ -176,7 +176,7 @@ void QgsSLDConfigParser::layersAndStylesCapabilities( QDomElement& parentElement
           layerElement.appendChild( styleElement );
           //Name
           QDomNodeList nameList = userStyleList.item( j ).toElement().elementsByTagName( "Name" );
-          if ( nameList.size() > 0 )
+          if ( !nameList.isEmpty() )
           {
             QDomElement styleNameElement = doc.createElement( "Name" );
             QDomText styleNameText = doc.createTextNode( nameList.item( 0 ).toElement().text() );
@@ -190,7 +190,7 @@ void QgsSLDConfigParser::layersAndStylesCapabilities( QDomElement& parentElement
           }
           //Title
           QDomNodeList titleList = userStyleList.item( j ).toElement().elementsByTagName( "Title" );
-          if ( titleList.size() > 0 )
+          if ( !titleList.isEmpty() )
           {
             QDomElement styleTitleElement = doc.createElement( "Title" );
             QDomText styleTitleText = doc.createTextNode( titleList.item( 0 ).toElement().text() );
@@ -199,7 +199,7 @@ void QgsSLDConfigParser::layersAndStylesCapabilities( QDomElement& parentElement
           }
           //Abstract
           QDomNodeList abstractList = userStyleList.item( j ).toElement().elementsByTagName( "Abstract" );
-          if ( abstractList.size() > 0 )
+          if ( !abstractList.isEmpty() )
           {
             QDomElement styleAbstractElement = doc.createElement( "Abstract" );
             QDomText styleAbstractText = doc.createTextNode( abstractList.item( 0 ).toElement().text() );
@@ -225,7 +225,7 @@ QList<QgsMapLayer*> QgsSLDConfigParser::mapLayerFromStyle( const QString& lName,
     if ( !userStyleElement.isNull() )
     {
       fallbackLayerList = mFallbackParser->mapLayerFromStyle( lName, "", false );
-      if ( fallbackLayerList.size() > 0 )
+      if ( !fallbackLayerList.isEmpty() )
       {
         QgsVectorLayer* v = dynamic_cast<QgsVectorLayer*>( fallbackLayerList.at( 0 ) );
         if ( v )
@@ -263,7 +263,7 @@ QList<QgsMapLayer*> QgsSLDConfigParser::mapLayerFromStyle( const QString& lName,
     if ( !namedStyleElement.isNull() )
     {
       fallbackLayerList = mFallbackParser->mapLayerFromStyle( lName, styleName, false );
-      if ( fallbackLayerList.size() > 0 )
+      if ( !fallbackLayerList.isEmpty() )
       {
         resultList << fallbackLayerList;
         return resultList;
@@ -787,7 +787,7 @@ QList<QDomElement> QgsSLDConfigParser::findNamedLayerElements( const QString& la
       for ( int i = 0; i < NamedLayerList.size(); ++i )
       {
         QDomNodeList nameList = NamedLayerList.item( i ).toElement().elementsByTagName( "Name" );
-        if ( nameList.size() > 0 )
+        if ( !nameList.isEmpty() )
         {
           if ( nameList.item( 0 ).toElement().text() == layerName )
           {
@@ -809,7 +809,7 @@ QDomElement QgsSLDConfigParser::findUserStyleElement( const QDomElement& userLay
     for ( int i = 0; i < userStyleList.size(); ++i )
     {
       QDomNodeList nameList = userStyleList.item( i ).toElement().elementsByTagName( "Name" );
-      if ( nameList.size() > 0 )
+      if ( !nameList.isEmpty() )
       {
         if ( nameList.item( 0 ).toElement().text() == styleName )
         {
@@ -830,7 +830,7 @@ QDomElement QgsSLDConfigParser::findNamedStyleElement( const QDomElement& layerE
     for ( int i = 0; i < styleList.size(); ++i )
     {
       QDomNodeList nameList = styleList.item( i ).toElement().elementsByTagName( "Name" );
-      if ( nameList.size() > 0 )
+      if ( !nameList.isEmpty() )
       {
         if ( nameList.item( 0 ).toElement().text() == styleName )
         {
@@ -1027,7 +1027,7 @@ bool QgsSLDConfigParser::labelSettingsFromUserStyle( const QDomElement& userStyl
   QDomNodeList labelBufferElementList = textSymbolizerElement.elementsByTagName( "Halo" );
   QDomNodeList labelPlacementElementList = textSymbolizerElement.elementsByTagName( "LabelPlacement" );
   // Iterate through sld:font
-  if (( labelFontElementList.size() > 0 ) )
+  if ( !labelFontElementList.isEmpty() )
   {
     if ( !labelFontElementList.item( 0 ).toElement().isNull() )
     {
@@ -1087,7 +1087,7 @@ bool QgsSLDConfigParser::labelSettingsFromUserStyle( const QDomElement& userStyl
   }
 
   // Iterate through sld:fill
-  if (( labelFillElementList.size() > 0 ) )
+  if ( !labelFillElementList.isEmpty() )
   {
     if ( !labelFillElementList.item( 0 ).toElement().isNull() )
     {
@@ -1177,7 +1177,7 @@ bool QgsSLDConfigParser::labelSettingsFromUserStyle( const QDomElement& userStyl
   }
   // set label buffer(sld:halo)
 
-  if (( labelBufferElementList.size() > 0 ) )
+  if ( !labelBufferElementList.isEmpty() )
   {
     if ( !labelBufferElementList.item( 0 ).toElement().isNull() )
     {
@@ -1272,7 +1272,7 @@ bool QgsSLDConfigParser::labelSettingsFromUserStyle( const QDomElement& userStyl
   }
 
   // label placement
-  if (( labelPlacementElementList.size() > 0 ) )
+  if ( !labelPlacementElementList.isEmpty() )
   {
     if ( !labelPlacementElementList.item( 0 ).toElement().isNull() )
     {
@@ -1518,7 +1518,7 @@ QDomElement QgsSLDConfigParser::findUserLayerElement( const QString& layerName )
       for ( int i = 0; i < UserLayerList.size(); ++i )
       {
         QDomNodeList nameList = UserLayerList.item( i ).toElement().elementsByTagName( "Name" );
-        if ( nameList.size() > 0 )
+        if ( !nameList.isEmpty() )
         {
           if ( nameList.item( 0 ).toElement().text() == layerName )
           {
@@ -1608,7 +1608,7 @@ QgsMapLayer* QgsSLDConfigParser::mapLayerFromUserLayer( const QDomElement& userL
   if ( !theMapLayer && mFallbackParser )
   {
     QList<QgsMapLayer*> fallbackList = mFallbackParser->mapLayerFromStyle( layerName, "", allowCaching );
-    if ( fallbackList.size() > 0 )
+    if ( !fallbackList.isEmpty() )
     {
       QgsMapLayer* fallbackLayer = fallbackList.at( 0 ); //todo: prevent crash if layer list is empty
       if ( fallbackLayer )

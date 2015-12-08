@@ -1107,7 +1107,7 @@ QSet<QString> QgsServerProjectParser::findRestrictedLayers() const
       {
         // get legend layer file element
         QDomNodeList layerfileList = layerElem.elementsByTagName( "legendlayerfile" );
-        if ( layerfileList.size() > 0 )
+        if ( !layerfileList.isEmpty() )
         {
           // add layer id
           restrictedLayerSet.insert( layerfileList.at( 0 ).toElement().attribute( "layerid" ) );

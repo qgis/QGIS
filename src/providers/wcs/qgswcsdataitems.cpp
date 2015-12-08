@@ -138,7 +138,7 @@ QgsWCSLayerItem::QgsWCSLayerItem( QgsDataItem* parent, QString name, QString pat
     mChildren.append( layer );
   }
 
-  if ( mChildren.size() == 0 )
+  if ( mChildren.isEmpty() )
   {
     mIconName = "mIconWcs.svg";
   }
@@ -203,7 +203,7 @@ QString QgsWCSLayerItem::createUri()
       break;
     }
   }
-  if ( crs.isEmpty() && mCoverageSummary.supportedCrs.size() > 0 )
+  if ( crs.isEmpty() && !mCoverageSummary.supportedCrs.isEmpty() )
   {
     crs = mCoverageSummary.supportedCrs.value( 0 );
   }

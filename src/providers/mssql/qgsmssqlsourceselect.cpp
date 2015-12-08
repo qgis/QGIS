@@ -72,7 +72,7 @@ QWidget *QgsMssqlSourceSelectDelegate::createEditor( QWidget *parent, const QSty
   {
     QStringList values = index.data( Qt::UserRole + 1 ).toStringList();
 
-    if ( values.size() > 0 )
+    if ( !values.isEmpty() )
     {
       QComboBox *cb = new QComboBox( parent );
       cb->addItems( values );

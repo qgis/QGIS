@@ -950,8 +950,8 @@ QString QgsApplication::absolutePathToRelativePath( const QString& aPath, const 
 
   // remove common part
   int n = 0;
-  while ( aPathElems.size() > 0 &&
-          targetElems.size() > 0 &&
+  while ( !aPathElems.isEmpty() &&
+          !targetElems.isEmpty() &&
           aPathElems[0].compare( targetElems[0], cs ) == 0 )
   {
     aPathElems.removeFirst();
@@ -965,7 +965,7 @@ QString QgsApplication::absolutePathToRelativePath( const QString& aPath, const 
     return aPathUrl;
   }
 
-  if ( targetElems.size() > 0 )
+  if ( !targetElems.isEmpty() )
   {
     // go up to the common directory
     for ( int i = 0; i < targetElems.size(); i++ )

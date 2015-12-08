@@ -44,7 +44,7 @@ QgsLegendModel::QgsLegendModel(): QStandardItemModel(), mAutoUpdate( true )
   }
 
   QWidgetList topLevelWidgets = QApplication::topLevelWidgets();
-  mHasTopLevelWindow = ( topLevelWidgets.size() > 0 );
+  mHasTopLevelWindow = ( !topLevelWidgets.isEmpty() );
 }
 
 QgsLegendModel::~QgsLegendModel()

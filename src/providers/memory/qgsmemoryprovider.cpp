@@ -473,7 +473,7 @@ int QgsMemoryProvider::capabilities() const
 
 void QgsMemoryProvider::updateExtent()
 {
-  if ( mFeatures.count() == 0 )
+  if ( mFeatures.isEmpty() )
   {
     mExtent = QgsRectangle();
   }

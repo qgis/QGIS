@@ -104,7 +104,7 @@ class TestQgsRuleBasedRenderer: public QObject
       QVERIFY( lst2.count() == 2 );
       ctx.expressionContext().setFeature( f3 );
       QgsSymbolV2List lst3 = r.symbolsForFeature( f3, ctx );
-      QVERIFY( lst3.count() == 0 );
+      QVERIFY( lst3.isEmpty() );
 
       r.stopRender( ctx );
 

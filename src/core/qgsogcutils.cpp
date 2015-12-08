@@ -96,7 +96,7 @@ QgsGeometry* QgsOgcUtils::geometryFromGMLPoint( const QDomElement& geometryEleme
   QgsPolyline pointCoordinate;
 
   QDomNodeList coordList = geometryElement.elementsByTagNameNS( GML_NAMESPACE, "coordinates" );
-  if ( coordList.size() > 0 )
+  if ( !coordList.isEmpty() )
   {
     QDomElement coordElement = coordList.at( 0 ).toElement();
     if ( readGMLCoordinates( pointCoordinate, coordElement ) != 0 )
@@ -151,7 +151,7 @@ QgsGeometry* QgsOgcUtils::geometryFromGMLLineString( const QDomElement& geometry
   QgsPolyline lineCoordinates;
 
   QDomNodeList coordList = geometryElement.elementsByTagNameNS( GML_NAMESPACE, "coordinates" );
-  if ( coordList.size() > 0 )
+  if ( !coordList.isEmpty() )
   {
     QDomElement coordElement = coordList.at( 0 ).toElement();
     if ( readGMLCoordinates( lineCoordinates, coordElement ) != 0 )
@@ -215,7 +215,7 @@ QgsGeometry* QgsOgcUtils::geometryFromGMLPolygon( const QDomElement& geometryEle
   //read coordinates for outer boundary
   QgsPolyline exteriorPointList;
   QDomNodeList outerBoundaryList = geometryElement.elementsByTagNameNS( GML_NAMESPACE, "outerBoundaryIs" );
-  if ( outerBoundaryList.size() > 0 ) //outer ring is necessary
+  if ( !outerBoundaryList.isEmpty() ) //outer ring is necessary
   {
     QDomElement coordinatesElement = outerBoundaryList.at( 0 ).firstChild().firstChild().toElement();
     if ( coordinatesElement.isNull() )
@@ -357,7 +357,7 @@ QgsGeometry* QgsOgcUtils::geometryFromGMLMultiPoint( const QDomElement& geometry
     }
     //<coordinates> element
     coordinatesList = pointNodeList.at( 0 ).toElement().elementsByTagNameNS( GML_NAMESPACE, "coordinates" );
-    if ( coordinatesList.size() > 0 )
+    if ( !coordinatesList.isEmpty() )
     {
       currentPoint.clear();
       if ( readGMLCoordinates( currentPoint, coordinatesList.at( 0 ).toElement() ) != 0 )
@@ -449,7 +449,7 @@ QgsGeometry* QgsOgcUtils::geometryFromGMLMultiLineString( const QDomElement& geo
   QDomNodeList currentPosList;
 
   QDomNodeList lineStringMemberList = geometryElement.elementsByTagNameNS( GML_NAMESPACE, "lineStringMember" );
-  if ( lineStringMemberList.size() > 0 ) //geoserver
+  if ( !lineStringMemberList.isEmpty() ) //geoserver
   {
     for ( int i = 0; i < lineStringMemberList.size(); ++i )
     {
@@ -460,7 +460,7 @@ QgsGeometry* QgsOgcUtils::geometryFromGMLMultiLineString( const QDomElement& geo
       }
       currentLineStringElement = lineStringNodeList.at( 0 ).toElement();
       currentCoordList = currentLineStringElement.elementsByTagNameNS( GML_NAMESPACE, "coordinates" );
-      if ( currentCoordList.size() > 0 )
+      if ( !currentCoordList.isEmpty() )
       {
         QgsPolyline currentPointList;
         if ( readGMLCoordinates( currentPointList, currentCoordList.at( 0 ).toElement() ) != 0 )
@@ -488,13 +488,13 @@ QgsGeometry* QgsOgcUtils::geometryFromGMLMultiLineString( const QDomElement& geo
   else
   {
     QDomNodeList lineStringList = geometryElement.elementsByTagNameNS( GML_NAMESPACE, "LineString" );
-    if ( lineStringList.size() > 0 ) //mapserver
+    if ( !lineStringList.isEmpty() ) //mapserver
     {
       for ( int i = 0; i < lineStringList.size(); ++i )
       {
         currentLineStringElement = lineStringList.at( i ).toElement();
         currentCoordList = currentLineStringElement.elementsByTagNameNS( GML_NAMESPACE, "coordinates" );
-        if ( currentCoordList.size() > 0 )
+        if ( !currentCoordList.isEmpty() )
         {
           QgsPolyline currentPointList;
           if ( readGMLCoordinates( currentPointList, currentCoordList.at( 0 ).toElement() ) != 0 )
@@ -616,7 +616,7 @@ QgsGeometry* QgsOgcUtils::geometryFromGMLMultiPolygon( const QDomElement& geomet
 
     //find exterior ring
     outerBoundaryList = currentPolygonElement.elementsByTagNameNS( GML_NAMESPACE, "outerBoundaryIs" );
-    if ( outerBoundaryList.size() > 0 )
+    if ( !outerBoundaryList.isEmpty() )
     {
       currentOuterBoundaryElement = outerBoundaryList.at( 0 ).toElement();
       QgsPolyline ringCoordinates;

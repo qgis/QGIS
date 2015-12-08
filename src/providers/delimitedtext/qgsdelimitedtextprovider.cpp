@@ -380,7 +380,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
       messages.append( tr( "%0 field %1 is not defined in delimited text file" ).arg( "Y", mWktFieldName ) );
     }
   }
-  if ( messages.size() > 0 )
+  if ( !messages.isEmpty() )
   {
     reportErrors( messages );
     QgsDebugMsg( "Delimited text source invalid - missing geometry fields" );
@@ -758,7 +758,7 @@ void QgsDelimitedTextProvider::rescanFile()
       messages.append( tr( "%0 field %1 is not defined in delimited text file" ).arg( "Y", mWktFieldName ) );
     }
   }
-  if ( messages.size() > 0 )
+  if ( !messages.isEmpty() )
   {
     reportErrors( messages );
     QgsDebugMsg( "Delimited text source invalid on rescan - missing geometry fields" );

@@ -327,7 +327,7 @@ QgsFeatureRendererV2* QgsSingleSymbolRendererV2::createFromSld( QDomElement& ele
     childElem = childElem.nextSiblingElement();
   }
 
-  if ( layers.size() == 0 )
+  if ( layers.isEmpty() )
     return NULL;
 
   // now create the symbol
@@ -456,7 +456,7 @@ QgsSingleSymbolRendererV2* QgsSingleSymbolRendererV2::convertFromRenderer( const
 
   QgsRenderContext context;
   QgsSymbolV2List symbols = const_cast<QgsFeatureRendererV2 *>( renderer )->symbols( context );
-  if ( symbols.size() > 0 )
+  if ( !symbols.isEmpty() )
   {
     return new QgsSingleSymbolRendererV2( symbols.at( 0 )->clone() );
   }

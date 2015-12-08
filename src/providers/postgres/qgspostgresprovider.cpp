@@ -1363,7 +1363,7 @@ void QgsPostgresProvider::determinePrimaryKeyFromUriKeyColumn()
       mPrimaryKeyAttrs << idx;
     }
 
-    if ( mPrimaryKeyAttrs.size() > 0 )
+    if ( !mPrimaryKeyAttrs.isEmpty() )
     {
       if ( mUseEstimatedMetadata || uniqueData( primaryKey ) )
       {
@@ -1746,7 +1746,7 @@ QString QgsPostgresProvider::geomParam( int offset ) const
 
 bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
 {
-  if ( flist.size() == 0 )
+  if ( flist.isEmpty() )
     return true;
 
   if ( mIsQuery )
@@ -2054,7 +2054,7 @@ bool QgsPostgresProvider::addAttributes( const QList<QgsField> &attributes )
   if ( mIsQuery )
     return false;
 
-  if ( attributes.count() == 0 )
+  if ( attributes.isEmpty() )
     return true;
 
   QgsPostgresConn* conn = connectionRW();

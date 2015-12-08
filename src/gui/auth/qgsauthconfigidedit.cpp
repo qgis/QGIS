@@ -54,7 +54,7 @@ bool QgsAuthConfigIdEdit::validate()
 {
   QString authcfg( leAuthCfg->text() );
   bool curvalid = (( authcfg == mAuthCfgOrig && authcfg.size() == 7 )
-                   || ( mAllowEmpty && authcfg.size() == 0 ) );
+                   || ( mAllowEmpty && authcfg.isEmpty() ) );
 
   if ( !QgsAuthManager::instance()->isDisabled() && !curvalid && authcfg.size() == 7 && isAlphaNumeric( authcfg ) )
   {

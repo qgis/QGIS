@@ -286,7 +286,7 @@ void QgsSpatialQuery::populateIndexResult(
 {
   QList<QgsFeatureId> listIdReference;
   listIdReference = mIndexReference.intersects( geomTarget->boundingBox() );
-  if ( listIdReference.count() == 0 )
+  if ( listIdReference.isEmpty() )
   {
     return;
   }
@@ -312,7 +312,7 @@ void QgsSpatialQuery::populateIndexResultDisjoint(
 {
   QList<QgsFeatureId> listIdReference;
   listIdReference = mIndexReference.intersects( geomTarget->boundingBox() );
-  if ( listIdReference.count() == 0 )
+  if ( listIdReference.isEmpty() )
   {
     qsetIndexResult.insert( idTarget );
     return;

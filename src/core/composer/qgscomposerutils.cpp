@@ -325,7 +325,7 @@ void QgsComposerUtils::readDataDefinedPropertyMap( const QDomElement &itemElem, 
   {
     QString elemName = i.value();
     QDomNodeList ddNodeList = itemElem.elementsByTagName( elemName );
-    if ( ddNodeList.size() > 0 )
+    if ( !ddNodeList.isEmpty() )
     {
       QDomElement ddElem = ddNodeList.at( 0 ).toElement();
       readDataDefinedProperty( i.key(), ddElem, dataDefinedProperties );

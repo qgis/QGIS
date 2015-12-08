@@ -22,7 +22,7 @@
 NormVecDecorator::~NormVecDecorator()
 {
   //remove all the normals
-  if ( mNormVec->count() > 0 )
+  if ( !mNormVec->isEmpty() )
   {
     for ( int i = 0; i < mNormVec->count(); i++ )
     {

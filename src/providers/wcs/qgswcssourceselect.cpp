@@ -89,7 +89,7 @@ void QgsWCSSourceSelect::populateLayerList()
     lItem->setData( 0, Qt::UserRole + 1, "" );
 
     // Make only leaves selectable
-    if ( coverageParents.keys( coverage->orderId ).size() > 0 )
+    if ( !coverageParents.keys( coverage->orderId ).isEmpty() )
     {
       lItem->setFlags( Qt::ItemIsEnabled );
     }

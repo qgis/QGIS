@@ -701,7 +701,7 @@ void QgsRelief::optimiseClassBreaks( QList<int>& breaks, double* frequencies )
     }
 
     double aParam, bParam;
-    if ( regressionInput.size() > 0 && calculateRegression( regressionInput, aParam, bParam ) )
+    if ( !regressionInput.isEmpty() && calculateRegression( regressionInput, aParam, bParam ) )
     {
       a[i] = aParam;
       b[i] = bParam;

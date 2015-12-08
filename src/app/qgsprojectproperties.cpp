@@ -205,7 +205,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   {
     mLayerSrsId = mMapCanvas->currentLayer()->crs().srsid();
   }
-  else if ( mapLayers.size() > 0 )
+  else if ( !mapLayers.isEmpty() )
   {
     mLayerSrsId = mapLayers.begin().value()->crs().srsid();
   }
@@ -358,7 +358,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   }
 
   values = QgsProject::instance()->readListEntry( "WMSCrsList", "/", QStringList(), &ok );
-  grpWMSList->setChecked( ok && values.size() > 0 );
+  grpWMSList->setChecked( ok && !values.isEmpty() );
   if ( grpWMSList->isChecked() )
   {
     mWMSList->addItems( values );
@@ -366,7 +366,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   else
   {
     values = QgsProject::instance()->readListEntry( "WMSEpsgList", "/", QStringList(), &ok );
-    grpWMSList->setChecked( ok && values.size() > 0 );
+    grpWMSList->setChecked( ok && !values.isEmpty() );
     if ( grpWMSList->isChecked() )
     {
       QStringList list;
@@ -834,7 +834,7 @@ void QgsProjectProperties::apply()
 
   //WMS keyword list
   QStringList keywordStringList = mWMSKeywordList->text().split( ',' );
-  if ( keywordStringList.size() > 0 )
+  if ( !keywordStringList.isEmpty() )
   {
     keywordStringList.replaceInStrings( QRegExp( "^\\s+" ), "" ).replaceInStrings( QRegExp( "\\s+$" ), "" );
     QgsProject::instance()->writeEntry( "WMSKeywordList", "/", keywordStringList );
@@ -1052,7 +1052,7 @@ void QgsProjectProperties::on_cbxProjectionEnabled_toggled( bool onFlyEnabled )
     {
       mLayerSrsId = mMapCanvas->currentLayer()->crs().srsid();
     }
-    else if ( mapLayers.size() > 0 )
+    else if ( !mapLayers.isEmpty() )
     {
       mLayerSrsId = mapLayers.begin().value()->crs().srsid();
     }
@@ -1198,7 +1198,7 @@ void QgsProjectProperties::on_pbnWMSAddSRS_clicked()
     QString authid = mySelector->selectedAuthId();
 
     QList<QListWidgetItem *> items = mWMSList->findItems( authid.mid( 5 ), Qt::MatchFixedString );
-    if ( items.size() == 0 )
+    if ( items.isEmpty() )
     {
       mWMSList->addItem( authid );
     }

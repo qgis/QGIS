@@ -110,7 +110,7 @@ void QgsLayerTreeNode::writeCommonXML( QDomElement& element )
 
 void QgsLayerTreeNode::insertChildrenPrivate( int index, QList<QgsLayerTreeNode*> nodes )
 {
-  if ( nodes.count() == 0 )
+  if ( nodes.isEmpty() )
     return;
 
   Q_FOREACH ( QgsLayerTreeNode *node, nodes )

@@ -69,7 +69,7 @@ QGraphicsView* QgsComposerMouseHandles::graphicsView()
   if ( scene() )
   {
     QList<QGraphicsView*> viewList = scene()->views();
-    if ( viewList.size() > 0 )
+    if ( !viewList.isEmpty() )
     {
       mGraphicsView = viewList.at( 0 );
       return mGraphicsView;
@@ -140,7 +140,7 @@ void QgsComposerMouseHandles::drawSelectedItemBounds( QPainter* painter )
 {
   //draw dotted border around selected items to give visual feedback which items are selected
   QList<QgsComposerItem*> selectedItems = mComposition->selectedComposerItems( false );
-  if ( selectedItems.size() == 0 )
+  if ( selectedItems.isEmpty() )
   {
     return;
   }
@@ -254,7 +254,7 @@ void QgsComposerMouseHandles::updateHandles()
 
   //first check to see if any items are selected
   QList<QgsComposerItem*> selectedItems = mComposition->selectedComposerItems( false );
-  if ( selectedItems.size() > 0 )
+  if ( !selectedItems.isEmpty() )
   {
     //one or more items are selected, get bounds of all selected items
 
@@ -517,7 +517,7 @@ QgsComposerMouseHandles::MouseAction QgsComposerMouseHandles::mouseActionForPosi
   //find out if cursor position is over a selected item
   QPointF scenePoint = mapToScene( itemCoordPos );
   QList<QGraphicsItem *> itemsAtCursorPos = mComposition->items( scenePoint );
-  if ( itemsAtCursorPos.size() == 0 )
+  if ( itemsAtCursorPos.isEmpty() )
   {
     //no items at cursor position
     return QgsComposerMouseHandles::SelectItem;

@@ -241,7 +241,7 @@ QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& fea
   if ( dr )
   {
     QList<QgsDiagramSettings> settingList = dr->diagramSettings();
-    if ( settingList.size() > 0 && settingList.at( 0 ).scaleBasedVisibility )
+    if ( !settingList.isEmpty() && settingList.at( 0 ).scaleBasedVisibility )
     {
       double minScale = settingList.at( 0 ).minScaleDenominator;
       if ( minScale > 0 && context.rendererScale() < minScale )

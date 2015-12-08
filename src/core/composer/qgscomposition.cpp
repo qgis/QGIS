@@ -1595,7 +1595,7 @@ void QgsComposition::selectNextByZOrder( ZValueDirection direction )
 {
   QgsComposerItem* previousSelectedItem = 0;
   QList<QgsComposerItem*> selectedItems = selectedComposerItems();
-  if ( selectedItems.size() > 0 )
+  if ( !selectedItems.isEmpty() )
   {
     previousSelectedItem = selectedItems.at( 0 );
   }
@@ -3009,7 +3009,7 @@ QGraphicsView *QgsComposition::graphicsView() const
 {
   //try to find current view attached to composition
   QList<QGraphicsView*> viewList = views();
-  if ( viewList.size() > 0 )
+  if ( !viewList.isEmpty() )
   {
     return viewList.at( 0 );
   }

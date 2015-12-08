@@ -332,7 +332,7 @@ bool QgsComposerTable::tableReadXML( const QDomElement& itemElem, const QDomDocu
   qDeleteAll( mColumns );
   mColumns.clear();
   QDomNodeList columnsList = itemElem.elementsByTagName( "displayColumns" );
-  if ( columnsList.size() > 0 )
+  if ( !columnsList.isEmpty() )
   {
     QDomElement columnsElem =  columnsList.at( 0 ).toElement();
     QDomNodeList columnEntryList = columnsElem.elementsByTagName( "column" );
@@ -347,7 +347,7 @@ bool QgsComposerTable::tableReadXML( const QDomElement& itemElem, const QDomDocu
 
   //restore general composer item properties
   QDomNodeList composerItemList = itemElem.elementsByTagName( "ComposerItem" );
-  if ( composerItemList.size() > 0 )
+  if ( !composerItemList.isEmpty() )
   {
     QDomElement composerItemElem = composerItemList.at( 0 ).toElement();
     _readXML( composerItemElem, doc );

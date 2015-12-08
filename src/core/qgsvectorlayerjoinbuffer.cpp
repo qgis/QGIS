@@ -111,7 +111,7 @@ void QgsVectorLayerJoinBuffer::removeJoin( const QString& joinLayerId )
 void QgsVectorLayerJoinBuffer::cacheJoinLayer( QgsVectorJoinInfo& joinInfo )
 {
   //memory cache not required or already done
-  if ( !joinInfo.memoryCache || joinInfo.cachedAttributes.size() > 0 )
+  if ( !joinInfo.memoryCache || !joinInfo.cachedAttributes.isEmpty() )
   {
     return;
   }

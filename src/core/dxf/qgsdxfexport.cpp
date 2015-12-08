@@ -3956,7 +3956,7 @@ void QgsDxfExport::writeSymbolLayerLinetype( const QgsSymbolLayerV2* symbolLayer
 
   QgsSymbolV2::OutputUnit unit;
   QVector<qreal> customLinestyle = symbolLayer->dxfCustomDashPattern( unit );
-  if ( customLinestyle.size() > 0 )
+  if ( !customLinestyle.isEmpty() )
   {
     QString name = QString( "symbolLayer%1" ).arg( mSymbolLayerCounter++ );
     writeLinetype( name, customLinestyle, unit );

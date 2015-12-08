@@ -1378,7 +1378,7 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
 
   //extent
   QDomNodeList extentNodeList = itemElem.elementsByTagName( "Extent" );
-  if ( extentNodeList.size() > 0 )
+  if ( !extentNodeList.isEmpty() )
   {
     QDomElement extentElem = extentNodeList.at( 0 ).toElement();
     double xmin, xmax, ymin, ymax;
@@ -1421,7 +1421,7 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
   //mLayerSet
   QDomNodeList layerSetNodeList = itemElem.elementsByTagName( "LayerSet" );
   QStringList layerSet;
-  if ( layerSetNodeList.size() > 0 )
+  if ( !layerSetNodeList.isEmpty() )
   {
     QDomElement layerSetElem = layerSetNodeList.at( 0 ).toElement();
     QDomNodeList layerIdNodeList = layerSetElem.elementsByTagName( "Layer" );
@@ -1436,7 +1436,7 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
 
   // override styles
   QDomNodeList layerStylesNodeList = itemElem.elementsByTagName( "LayerStyles" );
-  mKeepLayerStyles = layerStylesNodeList.size() > 0;
+  mKeepLayerStyles = !layerStylesNodeList.isEmpty();
   if ( mKeepLayerStyles )
   {
     QDomElement layerStylesElem = layerStylesNodeList.at( 0 ).toElement();
@@ -1465,7 +1465,7 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
   //only do this if the grid stack didn't load any grids, otherwise this will
   //be the dummy element created by QGIS >= 2.5 (refs #10905)
   QDomNodeList gridNodeList = itemElem.elementsByTagName( "Grid" );
-  if ( mGridStack->size() == 0 && gridNodeList.size() > 0 )
+  if ( mGridStack->size() == 0 && !gridNodeList.isEmpty() )
   {
     QDomElement gridElem = gridNodeList.at( 0 ).toElement();
     QgsComposerMapGrid* mapGrid = new QgsComposerMapGrid( tr( "Grid %1" ).arg( 1 ), this );
@@ -1502,7 +1502,7 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
 
     //annotation
     QDomNodeList annotationNodeList = gridElem.elementsByTagName( "Annotation" );
-    if ( annotationNodeList.size() > 0 )
+    if ( !annotationNodeList.isEmpty() )
     {
       QDomElement annotationElem = annotationNodeList.at( 0 ).toElement();
       mapGrid->setAnnotationEnabled( annotationElem.attribute( "show", "0" ) != "0" );
@@ -1549,7 +1549,7 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
 
   //atlas
   QDomNodeList atlasNodeList = itemElem.elementsByTagName( "AtlasMap" );
-  if ( atlasNodeList.size() > 0 )
+  if ( !atlasNodeList.isEmpty() )
   {
     QDomElement atlasElem = atlasNodeList.at( 0 ).toElement();
     mAtlasDriven = ( atlasElem.attribute( "atlasDriven", "0" ) != "0" );
@@ -1566,7 +1566,7 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
 
   //restore general composer item properties
   QDomNodeList composerItemList = itemElem.elementsByTagName( "ComposerItem" );
-  if ( composerItemList.size() > 0 )
+  if ( !composerItemList.isEmpty() )
   {
     QDomElement composerItemElem = composerItemList.at( 0 ).toElement();
 

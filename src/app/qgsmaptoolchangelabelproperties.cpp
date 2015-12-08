@@ -79,7 +79,7 @@ void QgsMapToolChangeLabelProperties::applyChanges( const QgsAttributeMap& chang
   if ( !vlayer )
     return;
 
-  if ( changes.size() > 0 )
+  if ( !changes.isEmpty() )
   {
     vlayer->beginEditCommand( tr( "Changed properties for label" ) + QString( " '%1'" ).arg( currentLabelText( 24 ) ) );
 

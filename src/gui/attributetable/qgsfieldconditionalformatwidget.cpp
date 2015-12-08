@@ -78,7 +78,7 @@ void QgsFieldConditionalFormatWidget::setExpression()
 
 void QgsFieldConditionalFormatWidget::presetSet( int index )
 {
-  if ( index == -1 || mPresets.count() == 0 )
+  if ( index == -1 || mPresets.isEmpty() )
     return;
 
   QgsConditionalStyle style = mPresets.at( index );

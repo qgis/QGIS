@@ -91,7 +91,7 @@ QList<QgsMapLayer *> QgsMapLayerRegistry::addMapLayers(
       emit layerWasAdded( myLayer );
     }
   }
-  if ( myResultList.count() > 0 )
+  if ( !myResultList.isEmpty() )
   {
     emit layersAdded( myResultList );
 

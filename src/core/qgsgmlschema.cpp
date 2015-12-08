@@ -279,7 +279,7 @@ QList<QDomElement> QgsGmlSchema::domElements( const QDomElement &element, const 
   QList<QDomElement> list;
 
   QStringList names = path.split( '.' );
-  if ( names.size() == 0 ) return list;
+  if ( names.isEmpty() ) return list;
   QString name = names.value( 0 );
   names.removeFirst();
 
@@ -292,7 +292,7 @@ QList<QDomElement> QgsGmlSchema::domElements( const QDomElement &element, const 
       QString tagName = stripNS( el.tagName() );
       if ( tagName == name )
       {
-        if ( names.size() == 0 )
+        if ( names.isEmpty() )
         {
           list.append( el );
         }

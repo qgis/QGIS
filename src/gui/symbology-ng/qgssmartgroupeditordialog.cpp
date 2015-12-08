@@ -115,7 +115,7 @@ void QgsSmartGroupEditorDialog::addCondition()
   mLayout->addWidget( cond, mCondCount, 0, 1, 1 );
 
   connect( cond, SIGNAL( removed( int ) ), this, SLOT( removeCondition( int ) ) );
-  if ( mConditionMap.count() == 0 )
+  if ( mConditionMap.isEmpty() )
   {
     cond->hideRemoveButton( true );
   }

@@ -40,7 +40,7 @@ bool QgsEnumerationWidgetFactory::isFieldSupported( QgsVectorLayer* vl, int fiel
 {
   QStringList list;
   vl->dataProvider()->enumValues( fieldIdx, list );
-  if ( list.size() > 0 )
+  if ( !list.isEmpty() )
     return true;
   else
     return false;

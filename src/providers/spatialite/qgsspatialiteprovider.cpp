@@ -3548,7 +3548,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
   QString separator;
   int ia, ret;
 
-  if ( flist.size() == 0 )
+  if ( flist.isEmpty() )
     return true;
   QgsAttributes attributevec = flist[0].attributes();
 
@@ -3802,7 +3802,7 @@ bool QgsSpatiaLiteProvider::addAttributes( const QList<QgsField> &attributes )
   bool toCommit = false;
   QString sql;
 
-  if ( attributes.count() == 0 )
+  if ( attributes.isEmpty() )
     return true;
 
   int ret = sqlite3_exec( sqliteHandle, "BEGIN", NULL, NULL, &errMsg );

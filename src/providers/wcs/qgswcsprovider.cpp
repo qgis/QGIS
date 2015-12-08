@@ -169,7 +169,7 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
     {
       setCoverageCrs( "EPSG:4326" );
     }
-    else if ( mCoverageSummary.supportedCrs.size() > 0 )
+    else if ( !mCoverageSummary.supportedCrs.isEmpty() )
     {
       setCoverageCrs( mCoverageSummary.supportedCrs.value( 0 ) );
     }
@@ -781,7 +781,7 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const & viewExtent, int
   handler.blockingDownload();
 
   QgsDebugMsg( QString( "%1 bytes received" ).arg( mCachedData.size() ) );
-  if ( mCachedData.size() == 0 )
+  if ( mCachedData.isEmpty() )
   {
     QgsMessageLog::logMessage( tr( "No data received" ), tr( "WCS" ) );
     clearCache();

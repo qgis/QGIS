@@ -406,7 +406,7 @@ namespace pal
 
     PointSet *shape;
 
-    while ( shapes_toProcess.size() > 0 )
+    while ( !shapes_toProcess.isEmpty() )
     {
 #ifdef _DEBUG_FULL_
       std::cout << "Shape popping()" << std::endl;

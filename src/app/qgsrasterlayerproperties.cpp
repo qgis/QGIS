@@ -666,7 +666,7 @@ void QgsRasterLayerProperties::sync()
 
   QgsRasterRangeList noDataRangeList = mRasterLayer->dataProvider()->userNoDataValues( 1 );
   QgsDebugMsg( QString( "noDataRangeList.size = %1" ).arg( noDataRangeList.size() ) );
-  if ( noDataRangeList.size() > 0 )
+  if ( !noDataRangeList.isEmpty() )
   {
     leNoDataValue->insert( QgsRasterBlock::printValue( noDataRangeList.value( 0 ).min() ) );
   }

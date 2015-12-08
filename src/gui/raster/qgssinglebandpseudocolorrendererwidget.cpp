@@ -392,7 +392,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mLoadFromBandButton_clicked()
 
 
   QList<QgsColorRampShader::ColorRampItem> colorRampList = mRasterLayer->dataProvider()->colorTable( bandIndex );
-  if ( colorRampList.size() > 0 )
+  if ( !colorRampList.isEmpty() )
   {
     populateColormapTreeWidget( colorRampList );
     mColorInterpolationComboBox->setCurrentIndex( mColorInterpolationComboBox->findText( tr( "Linear" ) ) );

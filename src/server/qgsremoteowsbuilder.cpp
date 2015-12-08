@@ -375,14 +375,14 @@ QgsVectorLayer* QgsRemoteOWSBuilder::sosLayer( const QDomElement& remoteOWSElem,
   QDomElement requestRootElem;
 
   QDomNodeList getObservationNodeList = parentElem.elementsByTagName( "GetObservation" );
-  if ( getObservationNodeList.size() > 0 )
+  if ( !getObservationNodeList.isEmpty() )
   {
     requestRootElem = getObservationNodeList.at( 0 ).toElement();
   }
   else //GetObservationById?
   {
     QDomNodeList getObservationByIdNodeList = parentElem.elementsByTagName( "GetObservationById" );
-    if ( getObservationByIdNodeList.size() > 0 )
+    if ( !getObservationByIdNodeList.isEmpty() )
     {
       requestRootElem = getObservationByIdNodeList.at( 0 ).toElement();
     }

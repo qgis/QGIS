@@ -184,7 +184,7 @@ QString QgsProjectionSelector::ogcWmsCrsFilterAsSqlExpression( QSet<QString> * c
   if ( authParts.isEmpty() )
     return sqlExpression;
 
-  if ( authParts.size() > 0 )
+  if ( !authParts.isEmpty() )
   {
     QString prefix = " AND (";
     Q_FOREACH ( const QString& auth_name, authParts.keys() )
@@ -242,7 +242,7 @@ void QgsProjectionSelector::applySelection( int column, QString value )
     return;
 
   QList<QTreeWidgetItem*> nodes = lstCoordinateSystems->findItems( value, Qt::MatchExactly | Qt::MatchRecursive, column );
-  if ( nodes.count() > 0 )
+  if ( !nodes.isEmpty() )
   {
     QgsDebugMsg( QString( "found %1,%2" ).arg( column ).arg( value ) );
     lstCoordinateSystems->setCurrentItem( nodes.first() );
@@ -264,7 +264,7 @@ void QgsProjectionSelector::insertRecent( long theCrsId )
     return;
 
   QList<QTreeWidgetItem*> nodes = lstCoordinateSystems->findItems( QString::number( theCrsId ), Qt::MatchExactly | Qt::MatchRecursive, QGIS_CRS_ID_COLUMN );
-  if ( nodes.count() == 0 )
+  if ( nodes.isEmpty() )
     return;
 
   lstRecent->insertTopLevelItem( 0, new QTreeWidgetItem( lstRecent, QStringList()
@@ -630,7 +630,7 @@ void QgsProjectionSelector::loadCrsList( QSet<QString> *crsFilter )
         else
         { // Different from last one, need to search
           QList<QTreeWidgetItem*> nodes = lstCoordinateSystems->findItems( srsType, Qt::MatchExactly | Qt::MatchRecursive, NAME_COLUMN );
-          if ( nodes.count() == 0 )
+          if ( nodes.isEmpty() )
           {
             // the node doesn't exist -- create it
             // Make in an italic font to distinguish them from real projections
@@ -696,7 +696,7 @@ void QgsProjectionSelector::on_lstCoordinateSystems_currentItemChanged( QTreeWid
     teSelected->setText( selectedName() );
 
     QList<QTreeWidgetItem*> nodes = lstRecent->findItems( current->text( QGIS_CRS_ID_COLUMN ), Qt::MatchExactly, QGIS_CRS_ID_COLUMN );
-    if ( nodes.count() > 0 )
+    if ( !nodes.isEmpty() )
     {
       QgsDebugMsg( QString( "found srs %1 in recent" ).arg( current->text( QGIS_CRS_ID_COLUMN ) ) );
       lstRecent->setCurrentItem( nodes.first() );
@@ -731,7 +731,7 @@ void QgsProjectionSelector::on_lstRecent_currentItemChanged( QTreeWidgetItem *cu
   lstRecent->scrollToItem( current );
 
   QList<QTreeWidgetItem*> nodes = lstCoordinateSystems->findItems( current->text( QGIS_CRS_ID_COLUMN ), Qt::MatchExactly | Qt::MatchRecursive, QGIS_CRS_ID_COLUMN );
-  if ( nodes.count() > 0 )
+  if ( !nodes.isEmpty() )
     lstCoordinateSystems->setCurrentItem( nodes.first() );
 }
 

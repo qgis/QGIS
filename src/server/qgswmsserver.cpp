@@ -575,7 +575,7 @@ QDomDocument QgsWMSServer::getCapabilities( QString version, bool fullProjectInf
   {
     //WFS layers
     QStringList wfsLayers = mConfigParser->wfsLayerNames();
-    if ( wfsLayers.size() > 0 )
+    if ( !wfsLayers.isEmpty() )
     {
       QDomElement wfsLayersElem = doc.createElement( "WFSLayers" );
       QStringList::const_iterator wfsIt = wfsLayers.constBegin();
@@ -3017,7 +3017,7 @@ void QgsWMSServer::convertFeatureInfoToSIA2045( QDomDocument& doc )
       //raster?
       QDomNodeList attributeList = currentLayerElem.elementsByTagName( "Attribute" );
       QDomElement rasterLayerElem;
-      if ( attributeList.size() > 0 )
+      if ( !attributeList.isEmpty() )
       {
         rasterLayerElem = SIAInfoDoc.createElement( currentLayerName );
       }
@@ -3031,7 +3031,7 @@ void QgsWMSServer::convertFeatureInfoToSIA2045( QDomDocument& doc )
         outAttributeElem.appendChild( outAttributeText );
         rasterLayerElem.appendChild( outAttributeElem );
       }
-      if ( attributeList.size() > 0 )
+      if ( !attributeList.isEmpty() )
       {
         SIAInfoDocElement.appendChild( rasterLayerElem );
       }

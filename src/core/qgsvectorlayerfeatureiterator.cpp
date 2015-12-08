@@ -422,7 +422,7 @@ void QgsVectorLayerFeatureIterator::useChangedAttributeFeature( QgsFeatureId fid
   }
 
   bool subsetAttrs = ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes );
-  if ( !subsetAttrs || mRequest.subsetOfAttributes().count() > 0 )
+  if ( !subsetAttrs || !mRequest.subsetOfAttributes().isEmpty() )
   {
     // retrieve attributes from provider
     QgsFeature tmp;

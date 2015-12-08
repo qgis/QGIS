@@ -38,7 +38,7 @@ QgsHistogramDiagram* QgsHistogramDiagram::clone() const
 QSizeF QgsHistogramDiagram::diagramSize( const QgsFeature& feature, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is )
 {
   QSizeF size;
-  if ( feature.attributes().count() == 0 )
+  if ( feature.attributes().isEmpty() )
   {
     return size; //zero size if no attributes
   }
@@ -88,7 +88,7 @@ QSizeF QgsHistogramDiagram::diagramSize( const QgsAttributes& attributes, const 
   Q_UNUSED( c );
   QSizeF size;
 
-  if ( attributes.count() == 0 )
+  if ( attributes.isEmpty() )
   {
     return QSizeF(); //zero size if no attributes
   }

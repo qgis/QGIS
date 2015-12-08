@@ -129,7 +129,7 @@ QSslCertificate QgsAuthCertUtils::certFromFile( const QString &certpath )
 {
   QSslCertificate cert;
   QList<QSslCertificate> certs( QgsAuthCertUtils::certsFromFile( certpath ) );
-  if ( certs.size() > 0 )
+  if ( !certs.isEmpty() )
   {
     cert = certs.first();
   }

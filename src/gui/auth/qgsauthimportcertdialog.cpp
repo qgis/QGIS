@@ -194,7 +194,7 @@ void QgsAuthImportCertDialog::validateCertificates()
             && ( allowinvalid || certssize == validcerts )
             && ( !filterCAs || nixcerts.size() < certssize ) );
 
-  if ( nixcerts.size() > 0 )
+  if ( !nixcerts.isEmpty() )
   {
     Q_FOREACH ( const QSslCertificate &nixcert, nixcerts )
     {
@@ -218,7 +218,7 @@ void QgsAuthImportCertDialog::validateCertificates()
   if ( filterCAs )
   {
     msg += tr( "\nAuthorities/Issuers: %1%2" ).arg( cas )
-           .arg( nixcerts.size() > 0 && nixcerts.size() < certssize ? " (others not imported)" : "" );
+           .arg( !nixcerts.isEmpty() && nixcerts.size() < certssize ? " (others not imported)" : "" );
   }
 
   teValidation->setText( msg );

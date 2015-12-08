@@ -469,7 +469,7 @@ void QgsVectorLayer::select( QgsRectangle & rect, bool addToSelection )
 void QgsVectorLayer::modifySelection( QgsFeatureIds selectIds, QgsFeatureIds deselectIds )
 {
   QgsFeatureIds intersectingIds = selectIds & deselectIds;
-  if ( intersectingIds.count() > 0 )
+  if ( !intersectingIds.isEmpty() )
   {
     QgsDebugMsg( "Trying to select and deselect the same item at the same time. Unsure what to do. Selecting dubious items." );
   }
@@ -540,7 +540,7 @@ void QgsVectorLayer::invertSelectionInRectangle( QgsRectangle & rect )
 
 void QgsVectorLayer::removeSelection()
 {
-  if ( mSelectedFeatureIds.size() == 0 )
+  if ( mSelectedFeatureIds.isEmpty() )
     return;
 
   setSelectedFeatures( QgsFeatureIds() );
@@ -607,7 +607,7 @@ QGis::WkbType QgsVectorLayer::wkbType() const
 
 QgsRectangle QgsVectorLayer::boundingBoxOfSelected()
 {
-  if ( !mValid || mSelectedFeatureIds.size() == 0 ) //no selected features
+  if ( !mValid || mSelectedFeatureIds.isEmpty() ) //no selected features
   {
     return QgsRectangle( 0, 0, 0, 0 );
   }
@@ -684,7 +684,7 @@ bool QgsVectorLayer::diagramsEnabled() const
     return false;
 
   QList<QgsDiagramSettings> settingList = mDiagramRenderer->diagramSettings();
-  if ( settingList.size() > 0 )
+  if ( !settingList.isEmpty() )
   {
     return settingList.at( 0 ).enabled;
   }
@@ -2119,7 +2119,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
   node.appendChild( editorLayoutElem );
 
   //attribute aliases
-  if ( mAttributeAliasMap.size() > 0 )
+  if ( !mAttributeAliasMap.isEmpty() )
   {
     QDomElement aliasElem = doc.createElement( "aliases" );
     QMap<QString, QString>::const_iterator a_it = mAttributeAliasMap.constBegin();
@@ -2163,7 +2163,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
   node.appendChild( excludeWFSElem );
 
   // tabs and groups of edit form
-  if ( mEditFormConfig->tabs().size() > 0 )
+  if ( !mEditFormConfig->tabs().isEmpty() )
   {
     QDomElement tabsElem = doc.createElement( "attributeEditorForm" );
 
@@ -2530,7 +2530,7 @@ QgsFeatureList QgsVectorLayer::selectedFeatures()
 
 QgsFeatureIterator QgsVectorLayer::selectedFeaturesIterator( QgsFeatureRequest request )
 {
-  if ( mSelectedFeatureIds.count() == 0 )
+  if ( mSelectedFeatureIds.isEmpty() )
     return QgsFeatureIterator();
 
   if ( geometryType() == QGis::NoGeometry )
@@ -2880,7 +2880,7 @@ void QgsVectorLayer::endEditCommand()
   {
     undoStack()->endMacro();
     mEditCommandActive = false;
-    if ( mDeletedFids.count() )
+    if ( !mDeletedFids.isEmpty() )
     {
       emit featuresDeleted( mDeletedFids );
       mDeletedFids.clear();

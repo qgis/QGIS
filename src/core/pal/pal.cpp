@@ -324,7 +324,7 @@ namespace pal
     prob->nbLabelledLayers = layersWithFeaturesInBBox.size();
     prob->labelledLayersName = layersWithFeaturesInBBox;
 
-    if ( fFeats->size() == 0 )
+    if ( fFeats->isEmpty() )
     {
 #ifdef _VERBOSE_
       std::cout << std::endl << "Empty problem" << std::endl;
@@ -418,7 +418,7 @@ namespace pal
 
     int nbOverlaps = 0;
 
-    while ( fFeats->size() > 0 ) // foreach feature
+    while ( !fFeats->isEmpty() ) // foreach feature
     {
       if ( isCancelled() )
       {

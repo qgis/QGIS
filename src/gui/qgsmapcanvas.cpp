@@ -1907,7 +1907,7 @@ void QgsMapCanvas::getDatumTransformInfo( const QgsMapLayer* ml, const QString& 
     int srcTransform = -1;
     int destTransform = -1;
     QList<int> t = d.selectedDatumTransform();
-    if ( t.size() > 0 )
+    if ( !t.isEmpty() )
     {
       srcTransform = t.at( 0 );
     }

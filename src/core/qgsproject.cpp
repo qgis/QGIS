@@ -754,7 +754,7 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
   {
     // postpone readMapLayer signal for vector layers with joins
     QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer*>( mapLayer );
-    if ( !vLayer || vLayer->vectorJoins().size() == 0 )
+    if ( !vLayer || vLayer->vectorJoins().isEmpty() )
       emit readMapLayer( mapLayer, layerElem );
     else
       vectorLayerList.push_back( qMakePair( vLayer, layerElem ) );
@@ -1561,8 +1561,8 @@ QString QgsProject::writePath( const QString& src, const QString& relativeBasePa
 
   // remove common part
   int n = 0;
-  while ( srcElems.size() > 0 &&
-          projElems.size() > 0 &&
+  while ( !srcElems.isEmpty() &&
+          !projElems.isEmpty() &&
           srcElems[0].compare( projElems[0], cs ) == 0 )
   {
     srcElems.removeFirst();
@@ -1576,7 +1576,7 @@ QString QgsProject::writePath( const QString& src, const QString& relativeBasePa
     return src;
   }
 
-  if ( projElems.size() > 0 )
+  if ( !projElems.isEmpty() )
   {
     // go up to the common directory
     for ( int i = 0; i < projElems.size(); i++ )

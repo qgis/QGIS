@@ -430,7 +430,7 @@ void QgsPGLayerItem::truncateTable()
 
 QString QgsPGLayerItem::createUri()
 {
-  QString pkColName = mLayerProperty.pkCols.size() > 0 ? mLayerProperty.pkCols.at( 0 ) : QString::null;
+  QString pkColName = !mLayerProperty.pkCols.isEmpty() ? mLayerProperty.pkCols.at( 0 ) : QString::null;
   QgsPGConnectionItem *connItem = qobject_cast<QgsPGConnectionItem *>( parent() ? parent()->parent() : 0 );
 
   if ( !connItem )

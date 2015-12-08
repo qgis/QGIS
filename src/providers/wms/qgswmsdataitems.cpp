@@ -83,7 +83,7 @@ QVector<QgsDataItem*> QgsWMSConnectionItem::createChildren()
 
   // Attention: supportedLayers() gives tree leafs, not top level
   QVector<QgsWmsLayerProperty> layerProperties = caps.supportedLayers();
-  if ( layerProperties.count() )
+  if ( !layerProperties.isEmpty() )
   {
     QgsWmsCapabilitiesProperty capabilitiesProperty = caps.capabilitiesProperty();
     const QgsWmsCapabilityProperty& capabilityProperty = capabilitiesProperty.capability;
@@ -105,7 +105,7 @@ QVector<QgsDataItem*> QgsWMSConnectionItem::createChildren()
   }
 
   QList<QgsWmtsTileLayer> tileLayers = caps.supportedTileLayers();
-  if ( tileLayers.count() )
+  if ( !tileLayers.isEmpty() )
   {
     QHash<QString, QgsWmtsTileMatrixSet> tileMatrixSets = caps.supportedTileMatrixSets();
 
@@ -254,7 +254,7 @@ QString QgsWMSLayerItem::createUri()
 
   // Number of styles must match number of layers
   mDataSourceUri.setParam( "layers", mLayerProperty.name );
-  QString style = mLayerProperty.style.size() > 0 ? mLayerProperty.style[0].name : "";
+  QString style = !mLayerProperty.style.isEmpty() ? mLayerProperty.style[0].name : "";
   mDataSourceUri.setParam( "styles", style );
 
   QString format;
@@ -282,7 +282,7 @@ QString QgsWMSLayerItem::createUri()
       break;
     }
   }
-  if ( crs.isEmpty() && mLayerProperty.crs.size() > 0 )
+  if ( crs.isEmpty() && !mLayerProperty.crs.isEmpty() )
   {
     crs = mLayerProperty.crs[0];
   }

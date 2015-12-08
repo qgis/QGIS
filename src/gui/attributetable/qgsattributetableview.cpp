@@ -224,7 +224,7 @@ void QgsAttributeTableView::contextMenuEvent( QContextMenuEvent* event )
   // let some other parts of the application add some actions
   emit willShowContextMenu( mActionPopup, idx );
 
-  if ( mActionPopup->actions().count() > 0 )
+  if ( !mActionPopup->actions().isEmpty() )
   {
     mActionPopup->popup( event->globalPos() );
   }

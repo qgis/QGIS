@@ -99,7 +99,7 @@ QgsMapLayer* QgsInterpolationLayerBuilder::createMapLayer( const QDomElement &el
 
   layerDataList.push_back( currentLayerData );
 
-  if ( idwList.size() > 0 ) //inverse distance interpolator
+  if ( !idwList.isEmpty() ) //inverse distance interpolator
   {
     theInterpolator = new QgsIDWInterpolator( layerDataList );
 

@@ -231,7 +231,7 @@ void TestVectorLayerJoinBuffer::testJoinDetectCycle()
   QVERIFY( !res );
 
   // the join in layer B must be rejected
-  QVERIFY( mLayerB->vectorJoins().count() == 0 );
+  QVERIFY( mLayerB->vectorJoins().isEmpty() );
 
   mLayerA->removeJoin( mLayerB->id() );
 }

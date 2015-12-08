@@ -774,7 +774,7 @@ bool QgsComposerScaleBar::readXML( const QDomElement& itemElem, const QDomDocume
   //colors
   //fill color
   QDomNodeList fillColorList = itemElem.elementsByTagName( "fillColor" );
-  if ( fillColorList.size() > 0 )
+  if ( !fillColorList.isEmpty() )
   {
     QDomElement fillColorElem = fillColorList.at( 0 ).toElement();
     bool redOk, greenOk, blueOk, alphaOk;
@@ -797,7 +797,7 @@ bool QgsComposerScaleBar::readXML( const QDomElement& itemElem, const QDomDocume
 
   //fill color 2
   QDomNodeList fillColor2List = itemElem.elementsByTagName( "fillColor2" );
-  if ( fillColor2List.size() > 0 )
+  if ( !fillColor2List.isEmpty() )
   {
     QDomElement fillColor2Elem = fillColor2List.at( 0 ).toElement();
     bool redOk, greenOk, blueOk, alphaOk;
@@ -820,7 +820,7 @@ bool QgsComposerScaleBar::readXML( const QDomElement& itemElem, const QDomDocume
 
   //stroke color
   QDomNodeList strokeColorList = itemElem.elementsByTagName( "strokeColor" );
-  if ( strokeColorList.size() > 0 )
+  if ( !strokeColorList.isEmpty() )
   {
     QDomElement strokeColorElem = strokeColorList.at( 0 ).toElement();
     bool redOk, greenOk, blueOk, alphaOk;
@@ -843,7 +843,7 @@ bool QgsComposerScaleBar::readXML( const QDomElement& itemElem, const QDomDocume
 
   //font color
   QDomNodeList textColorList = itemElem.elementsByTagName( "textColor" );
-  if ( textColorList.size() > 0 )
+  if ( !textColorList.isEmpty() )
   {
     QDomElement textColorElem = textColorList.at( 0 ).toElement();
     bool redOk, greenOk, blueOk, alphaOk;
@@ -890,7 +890,7 @@ bool QgsComposerScaleBar::readXML( const QDomElement& itemElem, const QDomDocume
 
   //restore general composer item properties
   QDomNodeList composerItemList = itemElem.elementsByTagName( "ComposerItem" );
-  if ( composerItemList.size() > 0 )
+  if ( !composerItemList.isEmpty() )
   {
     QDomElement composerItemElem = composerItemList.at( 0 ).toElement();
     _readXML( composerItemElem, doc );

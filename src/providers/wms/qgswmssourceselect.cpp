@@ -338,11 +338,11 @@ bool QgsWMSSourceSelect::populateLayerList( const QgsWmsCapabilities& capabiliti
 
   mTileLayers = capabilities.supportedTileLayers();
 
-  tabServers->setTabEnabled( tabServers->indexOf( tabTilesets ), mTileLayers.size() > 0 );
+  tabServers->setTabEnabled( tabServers->indexOf( tabTilesets ), !mTileLayers.isEmpty() );
   if ( tabServers->isTabEnabled( tabServers->indexOf( tabTilesets ) ) )
     tabServers->setCurrentWidget( tabTilesets );
 
-  if ( mTileLayers.size() > 0 )
+  if ( !mTileLayers.isEmpty() )
   {
     QHash<QString, QgsWmtsTileMatrixSet> tileMatrixSets = capabilities.supportedTileMatrixSets();
 

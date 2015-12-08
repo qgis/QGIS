@@ -530,7 +530,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
               }
             }
           }
-          if ( idxList.size() > 0 )
+          if ( !idxList.isEmpty() )
           {
             attrIndexes = idxList;
           }
@@ -563,11 +563,11 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
 
         long featCounter = 0;
         QDomNodeList filterNodes = queryElem.elementsByTagName( "Filter" );
-        if ( filterNodes.size() > 0 )
+        if ( !filterNodes.isEmpty() )
         {
           QDomElement filterElem = filterNodes.at( 0 ).toElement();
           QDomNodeList fidNodes = filterElem.elementsByTagName( "FeatureId" );
-          if ( fidNodes.size() > 0 )
+          if ( !fidNodes.isEmpty() )
           {
             QDomElement fidElem;
             QString fid = "";
@@ -876,7 +876,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
       if ( mPropertyName != "*" )
       {
         QStringList attrList = mPropertyName.split( "," );
-        if ( attrList.size() > 0 )
+        if ( !attrList.isEmpty() )
         {
           QStringList::const_iterator alstIt;
           QList<int> idxList;
@@ -892,7 +892,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
               idxList.append( fieldIt.value() );
             }
           }
-          if ( idxList.size() > 0 )
+          if ( !idxList.isEmpty() )
           {
             attrIndexes = idxList;
           }
@@ -983,7 +983,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
       {
         QDomElement filterElem = filter.firstChildElement();
         QDomNodeList fidNodes = filterElem.elementsByTagName( "FeatureId" );
-        if ( fidNodes.size() > 0 )
+        if ( !fidNodes.isEmpty() )
         {
           QDomElement fidElem;
           QString fid = "";
@@ -1739,7 +1739,7 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
   }
 
   // Put the Feature Ids of the inserted feature
-  if ( insertResults.size() > 0 )
+  if ( !insertResults.isEmpty() )
   {
     Q_FOREACH ( const QString &fidStr, insertResults )
     {

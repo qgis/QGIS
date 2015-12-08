@@ -201,7 +201,7 @@ QgsWmsProvider* QgsWmsProvider::clone() const
 
 QString QgsWmsProvider::getMapUrl() const
 {
-  return mCaps.mCapabilities.capability.request.getMap.dcpType.size() == 0
+  return mCaps.mCapabilities.capability.request.getMap.dcpType.isEmpty()
          ? mSettings.mBaseUrl
          : prepareUri( mCaps.mCapabilities.capability.request.getMap.dcpType.front().http.get.onlineResource.xlinkHref );
 }
@@ -209,15 +209,15 @@ QString QgsWmsProvider::getMapUrl() const
 
 QString QgsWmsProvider::getFeatureInfoUrl() const
 {
-  return mCaps.mCapabilities.capability.request.getFeatureInfo.dcpType.size() == 0
+  return mCaps.mCapabilities.capability.request.getFeatureInfo.dcpType.isEmpty()
          ? mSettings.mBaseUrl
          : prepareUri( mCaps.mCapabilities.capability.request.getFeatureInfo.dcpType.front().http.get.onlineResource.xlinkHref );
 }
 
 QString QgsWmsProvider::getTileUrl() const
 {
-  if ( mCaps.mCapabilities.capability.request.getTile.dcpType.size() == 0 ||
-       ( mCaps.mCapabilities.capability.request.getTile.allowedEncodings.size() > 0 &&
+  if ( mCaps.mCapabilities.capability.request.getTile.dcpType.isEmpty() ||
+       ( !mCaps.mCapabilities.capability.request.getTile.allowedEncodings.isEmpty() &&
          !mCaps.mCapabilities.capability.request.getTile.allowedEncodings.contains( "KVP" ) ) )
   {
     return QString::null;
@@ -258,7 +258,7 @@ QString QgsWmsProvider::getLegendGraphicUrl() const
     }
   }
 
-  if ( url.isEmpty() && mCaps.mCapabilities.capability.request.getLegendGraphic.dcpType.size() > 0 )
+  if ( url.isEmpty() && !mCaps.mCapabilities.capability.request.getLegendGraphic.dcpType.isEmpty() )
   {
     url = mCaps.mCapabilities.capability.request.getLegendGraphic.dcpType.front().http.get.onlineResource.xlinkHref;
   }
@@ -366,7 +366,7 @@ bool QgsWmsProvider::setImageCrs( QString const & crs )
     }
 
     QgsDebugMsg( QString( "mTileLayersSupported.size() = %1" ).arg( mCaps.mTileLayersSupported.size() ) );
-    if ( mCaps.mTileLayersSupported.size() == 0 )
+    if ( mCaps.mTileLayersSupported.isEmpty() )
     {
       appendError( ERR( tr( "Tile layer not found" ) ) );
       return false;
@@ -575,7 +575,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
     {
       Q_ASSERT( mTileLayer );
       Q_ASSERT( mTileMatrixSet );
-      Q_ASSERT( mTileMatrixSet->tileMatrices.size() > 0 );
+      Q_ASSERT( !mTileMatrixSet->tileMatrices.isEmpty() );
 
       QMap<double, QgsWmtsTileMatrix> &m =  mTileMatrixSet->tileMatrices;
 
@@ -1828,7 +1828,7 @@ QString QgsWmsProvider::metadata()
       metadata += l.identifier == mSettings.mActiveSubLayers.join( "," ) ? tr( "Yes" ) : tr( "No" );
       metadata += "</td></tr>";
 
-      if ( l.styles.size() > 0 )
+      if ( !l.styles.isEmpty() )
       {
         metadata += "<tr><td class=\"glossy\">";
         metadata += tr( "Available Styles" );
@@ -2241,7 +2241,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
     const QgsWmtsTileMatrix *tm = 0;
 
     Q_ASSERT( mTileMatrixSet );
-    Q_ASSERT( mTileMatrixSet->tileMatrices.size() > 0 );
+    Q_ASSERT( !mTileMatrixSet->tileMatrices.isEmpty() );
 
     QMap<double, QgsWmtsTileMatrix> &m =  mTileMatrixSet->tileMatrices;
 
@@ -2370,7 +2370,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
     mIdentifyReply->setProperty( "eventLoop", QVariant::fromValue( qobject_cast<QObject *>( &loop ) ) );
     loop.exec( QEventLoop::ExcludeUserInputEvents );
 
-    if ( mIdentifyResultBodies.size() == 0 ) // no result
+    if ( mIdentifyResultBodies.isEmpty() ) // no result
     {
       QgsDebugMsg( "mIdentifyResultBodies is empty" );
       continue;

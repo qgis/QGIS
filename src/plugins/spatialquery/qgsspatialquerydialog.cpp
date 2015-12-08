@@ -231,7 +231,7 @@ void QgsSpatialQueryDialog::showResultQuery( QDateTime *datetimeStart, QDateTime
   on_cbTypeItems_currentIndexChanged( index );
 
   // Result target
-  if ( mFeatureResult.size() > 0 )
+  if ( !mFeatureResult.isEmpty() )
   {
     // Select features
     TypeResultFor typeResultFor = ( TypeResultFor ) cbResultFor->itemData( cbResultFor->currentIndex() ).toInt();
@@ -254,7 +254,7 @@ void QgsSpatialQueryDialog::showResultQuery( QDateTime *datetimeStart, QDateTime
 
 QString QgsSpatialQueryDialog::getSubsetFIDs( const QgsFeatureIds *fids, const QString& fieldFID )
 {
-  if ( fids->size() == 0 )
+  if ( fids->isEmpty() )
   {
     return QString();
   }
@@ -749,7 +749,7 @@ void QgsSpatialQueryDialog::apply()
   mIsSelectedOperator = true;
   runQuery();
   QDateTime datetimeEnd = QDateTime::currentDateTime();
-  if ( mFeatureResult.count() == 0 )
+  if ( mFeatureResult.isEmpty() )
   {
     mIsSelectedOperator = false;
   }

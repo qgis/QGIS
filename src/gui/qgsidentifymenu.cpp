@@ -76,7 +76,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsIdentifyMenu::exec( const QList<Qgs
 
   QList<QgsMapToolIdentify::IdentifyResult> returnResults = QList<QgsMapToolIdentify::IdentifyResult>();
 
-  if ( idResults.count() == 0 )
+  if ( idResults.isEmpty() )
   {
     return returnResults;
   }
@@ -182,7 +182,7 @@ void QgsIdentifyMenu::addRasterLayer( QgsMapLayer* layer )
   }
 
   // use a menu only if actions will be listed
-  if ( !layerActions.count() )
+  if ( layerActions.isEmpty() )
   {
     layerAction = new QAction( layer->name(), this );
   }
@@ -254,17 +254,17 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer* layer, const QList<QgsMapT
   // 2. several features (2a) or display feature actions (2b) => create a menu
   // 3. case 2 but only one layer (singeLayer) => do not create a menu, but give the top menu instead
 
-  bool createMenu = results.count() > 1 || layerActions.count() > 0;
+  bool createMenu = results.count() > 1 || !layerActions.isEmpty();
 
   // case 2b: still create a menu for layer, if there is a sub-level for features
   // i.e custom actions or map layer actions at feature level
   if ( !createMenu )
   {
-    createMenu = mCustomActionRegistry.mapLayerActions( layer, QgsMapLayerAction::SingleFeature ).count() > 0;
+    createMenu = !mCustomActionRegistry.mapLayerActions( layer, QgsMapLayerAction::SingleFeature ).isEmpty();
     if ( !createMenu && mShowFeatureActions )
     {
       QgsActionMenu* featureActionMenu = new QgsActionMenu( layer, &( results[0].mFeature ), this );
-      createMenu  = featureActionMenu->actions().count() > 0;
+      createMenu  = !featureActionMenu->actions().isEmpty();
       delete featureActionMenu;
     }
   }
@@ -356,7 +356,7 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer* layer, const QList<QgsMapT
     if ( featureTitle.isEmpty() )
       featureTitle = QString( "%1" ).arg( result.mFeature.id() );
 
-    if ( !customFeatureActions.count() && ( !featureActionMenu || !featureActionMenu->actions().count() ) )
+    if ( customFeatureActions.isEmpty() && ( !featureActionMenu || featureActionMenu->actions().isEmpty() ) )
     {
       featureAction = new QAction( featureTitle, layerMenu );
       // add the feature action (or menu) to the layer menu

@@ -822,7 +822,7 @@ bool QgsGdalProvider::srcHasNoDataValue( int bandNo ) const
 
 double  QgsGdalProvider::noDataValue() const
 {
-  if ( mNoDataValue.size() > 0 )
+  if ( !mNoDataValue.isEmpty() )
   {
     return mNoDataValue[0];
   }
@@ -921,7 +921,7 @@ QString QgsGdalProvider::generateBandName( int theBandNumber ) const
           unitsMap[ values.at( 0 ).split( '#' ).at( 0 )] = val;
         }
       }
-      if ( dimExtraValues.count() > 0 )
+      if ( !dimExtraValues.isEmpty() )
       {
         QStringList bandNameValues;
         GDALRasterBandH gdalBand = GDALGetRasterBand( mGdalDataset, theBandNumber );
@@ -951,7 +951,7 @@ QString QgsGdalProvider::generateBandName( int theBandNumber ) const
           }
         }
 
-        if ( bandNameValues.count() > 0 )
+        if ( !bandNameValues.isEmpty() )
           return tr( "Band" ) + QString( " %1 / %2" ) .arg( theBandNumber, 1 + ( int ) log10(( float ) bandCount() ), 10, QChar( '0' ) ).arg( bandNameValues.join( " / " ) );
       }
     }
@@ -1227,7 +1227,7 @@ QStringList QgsGdalProvider::subLayers( GDALDatasetH dataset )
     }
   }
 
-  if ( subLayers.size() > 0 )
+  if ( !subLayers.isEmpty() )
   {
     QgsDebugMsg( "sublayers:\n  " + subLayers.join( "\n  " ) );
   }
@@ -1261,7 +1261,7 @@ bool QgsGdalProvider::hasHistogram( int theBandNo,
   }
 
   if (( srcHasNoDataValue( theBandNo ) && !useSrcNoDataValue( theBandNo ) ) ||
-      userNoDataValues( theBandNo ).size() > 0 )
+      !userNoDataValues( theBandNo ).isEmpty() )
   {
     QgsDebugMsg( "Custom no data values -> GDAL histogram not sufficient." );
     return false;
@@ -1351,7 +1351,7 @@ QgsRasterHistogram QgsGdalProvider::histogram( int theBandNo,
   }
 
   if (( srcHasNoDataValue( theBandNo ) && !useSrcNoDataValue( theBandNo ) ) ||
-      userNoDataValues( theBandNo ).size() > 0 )
+      !userNoDataValues( theBandNo ).isEmpty() )
   {
     QgsDebugMsg( "Custom no data values, using generic histogram." );
     return QgsRasterDataProvider::histogram( theBandNo, theBinCount, theMinimum, theMaximum, theExtent, theSampleSize, theIncludeOutOfRange );
@@ -2215,7 +2215,7 @@ QGISEXTERN bool isValidRasterFileName( QString const & theFileNameQString, QStri
     QStringList layers = QgsGdalProvider::subLayers( myDataset );
     GDALClose( myDataset );
     myDataset = NULL;
-    if ( layers.size() == 0 )
+    if ( layers.isEmpty() )
     {
       retErrMsg = QObject::tr( "This raster file has no bands and is invalid as a raster layer." );
       return false;
@@ -2246,7 +2246,7 @@ bool QgsGdalProvider::hasStatistics( int theBandNo,
   initStatistics( myRasterBandStats, theBandNo, theStats, theExtent, theSampleSize );
 
   if (( srcHasNoDataValue( theBandNo ) && !useSrcNoDataValue( theBandNo ) ) ||
-      userNoDataValues( theBandNo ).size() > 0 )
+      !userNoDataValues( theBandNo ).isEmpty() )
   {
     QgsDebugMsg( "Custom no data values -> GDAL statistics not sufficient." );
     return false;
@@ -2340,7 +2340,7 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int theBandNo, int theStats,
   // We cannot use GDAL stats if user disabled src no data value or set
   // custom  no data values
   if (( srcHasNoDataValue( theBandNo ) && !useSrcNoDataValue( theBandNo ) ) ||
-      userNoDataValues( theBandNo ).size() > 0 )
+      !userNoDataValues( theBandNo ).isEmpty() )
   {
     QgsDebugMsg( "Custom no data values, using generic statistics." );
     return QgsRasterDataProvider::bandStatistics( theBandNo, theStats, theExtent, theSampleSize );
@@ -2535,7 +2535,7 @@ void QgsGdalProvider::initBaseDataset()
     QString msg = QString::fromUtf8( CPLGetLastErrorMsg() );
 
     // if there are no subdatasets, then close the dataset
-    if ( mSubLayers.size() == 0 )
+    if ( mSubLayers.isEmpty() )
     {
       appendError( ERRMSG( tr( "Cannot get GDAL raster band: %1" ).arg( msg ) ) );
 
@@ -2913,7 +2913,7 @@ QString QgsGdalProvider::validateCreationOptions( const QStringList& createOptio
   if ( format.toLower() == "gtiff" && optionsMap.contains( "PREDICTOR" ) )
   {
     QString value = optionsMap.value( "PREDICTOR" );
-    GDALDataType nDataType = ( mGdalDataType.count() > 0 ) ? ( GDALDataType ) mGdalDataType[ 0 ] : GDT_Unknown;
+    GDALDataType nDataType = ( !mGdalDataType.isEmpty() ) ? ( GDALDataType ) mGdalDataType[ 0 ] : GDT_Unknown;
     int nBitsPerSample = nDataType != GDT_Unknown ? GDALGetDataTypeSize( nDataType ) : 0;
     QgsDebugMsg( QString( "PREDICTOR: %1 nbits: %2 type: %3" ).arg( value ).arg( nBitsPerSample ).arg(( GDALDataType ) mGdalDataType[ 0 ] ) );
     // PREDICTOR=2 only valid for 8/16/32 bits per sample

@@ -1172,7 +1172,7 @@ bool QgsComposerMapWidget::hasPredefinedScales() const
     QSettings settings;
     QString scalesStr( settings.value( "Map/scales", PROJECT_SCALES ).toString() );
     QStringList myScalesList = scalesStr.split( ',' );
-    return myScalesList.size() > 0 && myScalesList[0] != "";
+    return !myScalesList.isEmpty() && myScalesList[0] != "";
   }
   return true;
 }

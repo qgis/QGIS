@@ -74,7 +74,7 @@ QWidget *QgsPgSourceSelectDelegate::createEditor( QWidget *parent, const QStyleO
   {
     QStringList values = index.data( Qt::UserRole + 1 ).toStringList();
 
-    if ( values.size() > 0 )
+    if ( !values.isEmpty() )
     {
       QComboBox *cb = new QComboBox( parent );
       cb->setItemDelegate( new QStyledItemDelegate( parent ) );

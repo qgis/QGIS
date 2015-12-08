@@ -1209,7 +1209,7 @@ void QgsStyleV2ManagerDialog::tagsChanged()
     if ( !newtags.contains( tag ) )
       removetags.append( tag );
   }
-  if ( removetags.size() > 0 )
+  if ( !removetags.isEmpty() )
   {
     Q_FOREACH ( const QModelIndex& index, indexes )
     {
@@ -1222,7 +1222,7 @@ void QgsStyleV2ManagerDialog::tagsChanged()
     if ( !oldtags.contains( tag ) )
       addtags.append( tag );
   }
-  if ( addtags.size() > 0 )
+  if ( !addtags.isEmpty() )
   {
     Q_FOREACH ( const QModelIndex& index, indexes )
     {

@@ -2749,7 +2749,7 @@ void QgisApp::updateNewLayerInsertionPoint()
 
 void QgisApp::autoSelectAddedLayer( QList<QgsMapLayer*> layers )
 {
-  if ( layers.count() )
+  if ( !layers.isEmpty() )
   {
     QgsLayerTreeLayer* nodeLayer = QgsProject::instance()->layerTreeRoot()->findLayer( layers[0]->id() );
 
@@ -3172,7 +3172,7 @@ bool QgisApp::addVectorLayers( const QStringList &theLayerQStringList, const QSt
         delete layer;
 
       }
-      else if ( sublayers.count() > 0 ) // there is 1 layer of data available
+      else if ( !sublayers.isEmpty() ) // there is 1 layer of data available
       {
         //set friendly name for datasources with only one layer
         QStringList sublayers = layer->dataProvider()->subLayers();
@@ -3208,7 +3208,7 @@ bool QgisApp::addVectorLayers( const QStringList &theLayerQStringList, const QSt
   }
 
   // make sure at least one layer was successfully added
-  if ( myList.count() == 0 )
+  if ( myList.isEmpty() )
   {
     return false;
   }
@@ -4016,7 +4016,7 @@ void QgisApp::fileOpenAfterLaunch()
     connect( this, SIGNAL( newProject() ), this, SLOT( showMapCanvas() ) );
     return;
   }
-  if ( mProjOpen == 1 && mRecentProjects.size() > 0 ) // most recent project
+  if ( mProjOpen == 1 && !mRecentProjects.isEmpty() ) // most recent project
   {
     projPath = mRecentProjects.at( 0 ).path;
   }
@@ -5503,7 +5503,7 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer* vlayer, bool symbologyOpt
         if ( d.exec() == QDialog::Accepted )
         {
           QList< int > sdt = d.selectedDatumTransform();
-          if ( sdt.size() > 0 )
+          if ( !sdt.isEmpty() )
           {
             ct->setSourceDatumTransform( sdt.at( 0 ) );
           }
@@ -6713,7 +6713,7 @@ QgsVectorLayer *QgisApp::pasteToNewMemoryVector()
     }
   }
 
-  QGis::WkbType wkbType = typeCounts.size() > 0 ? typeCounts.keys().value( 0 ) : QGis::WKBPoint;
+  QGis::WkbType wkbType = !typeCounts.isEmpty() ? typeCounts.keys().value( 0 ) : QGis::WKBPoint;
 
   QString typeName = QString( QGis::featureType( wkbType ) ).remove( "WKB" );
 
@@ -6723,11 +6723,11 @@ QgsVectorLayer *QgisApp::pasteToNewMemoryVector()
 
   QString message;
 
-  if ( features.size() == 0 )
+  if ( features.isEmpty() )
   {
     message = tr( "No features in clipboard." ); // should not happen
   }
-  else if ( typeCounts.size() == 0 )
+  else if ( typeCounts.isEmpty() )
   {
     message = tr( "No features with geometry found, point type layer will be created." );
   }
@@ -7248,11 +7248,11 @@ void QgisApp::updateLayerModifiedActions()
   mActionRollbackEdits->setEnabled( QgsLayerTreeUtils::layersModified( selectedLayerNodes ) );
   mActionCancelEdits->setEnabled( QgsLayerTreeUtils::layersEditable( selectedLayerNodes ) );
 
-  bool hasEditLayers = ( editableLayers().count() > 0 );
+  bool hasEditLayers = !editableLayers().isEmpty();
   mActionAllEdits->setEnabled( hasEditLayers );
   mActionCancelAllEdits->setEnabled( hasEditLayers );
 
-  bool hasModifiedLayers = ( editableLayers( true ).count() > 0 );
+  bool hasModifiedLayers = !editableLayers( true ).isEmpty();
   mActionSaveAllEdits->setEnabled( hasModifiedLayers );
   mActionRollbackAllEdits->setEnabled( hasModifiedLayers );
 }
@@ -8340,7 +8340,7 @@ void QgisApp::embedLayers()
     }
 
     mMapCanvas->freeze( false );
-    if ( groups.size() > 0 || layerIds.size() > 0 )
+    if ( !groups.isEmpty() || !layerIds.isEmpty() )
     {
       mMapCanvas->refresh();
     }
@@ -8558,7 +8558,7 @@ void QgisApp::removePluginMenu( const QString& name, QAction* action )
 {
   QMenu* menu = getPluginMenu( name );
   menu->removeAction( action );
-  if ( menu->actions().count() == 0 )
+  if ( menu->actions().isEmpty() )
   {
     mPluginMenu->removeAction( menu->menuAction() );
   }
@@ -8857,13 +8857,13 @@ void QgisApp::removePluginDatabaseMenu( const QString& name, QAction* action )
 {
   QMenu* menu = getDatabaseMenu( name );
   menu->removeAction( action );
-  if ( menu->actions().count() == 0 )
+  if ( menu->actions().isEmpty() )
   {
     mDatabaseMenu->removeAction( menu->menuAction() );
   }
 
   // remove the Database menu from the menuBar if there are no more actions
-  if ( mDatabaseMenu->actions().count() > 0 )
+  if ( !mDatabaseMenu->actions().isEmpty() )
     return;
 
   QList<QAction*> actions = menuBar()->actions();
@@ -8881,7 +8881,7 @@ void QgisApp::removePluginRasterMenu( const QString& name, QAction* action )
 {
   QMenu* menu = getRasterMenu( name );
   menu->removeAction( action );
-  if ( menu->actions().count() == 0 )
+  if ( menu->actions().isEmpty() )
   {
     mRasterMenu->removeAction( menu->menuAction() );
   }
@@ -8899,13 +8899,13 @@ void QgisApp::removePluginVectorMenu( const QString& name, QAction* action )
 {
   QMenu* menu = getVectorMenu( name );
   menu->removeAction( action );
-  if ( menu->actions().count() == 0 )
+  if ( menu->actions().isEmpty() )
   {
     mVectorMenu->removeAction( menu->menuAction() );
   }
 
   // remove the Vector menu from the menuBar if there are no more actions
-  if ( mVectorMenu->actions().count() > 0 )
+  if ( !mVectorMenu->actions().isEmpty() )
     return;
 
   QList<QAction*> actions = menuBar()->actions();
@@ -8923,13 +8923,13 @@ void QgisApp::removePluginWebMenu( const QString& name, QAction* action )
 {
   QMenu* menu = getWebMenu( name );
   menu->removeAction( action );
-  if ( menu->actions().count() == 0 )
+  if ( menu->actions().isEmpty() )
   {
     mWebMenu->removeAction( menu->menuAction() );
   }
 
   // remove the Web menu from the menuBar if there are no more actions
-  if ( mWebMenu->actions().count() > 0 )
+  if ( !mWebMenu->actions().isEmpty() )
     return;
 
   QList<QAction*> actions = menuBar()->actions();
@@ -9345,9 +9345,9 @@ void QgisApp::legendLayerSelectionChanged( void )
 {
   QList<QgsLayerTreeLayer*> selectedLayers = mLayerTreeView ? mLayerTreeView->selectedLayerNodes() : QList<QgsLayerTreeLayer*>();
 
-  mActionDuplicateLayer->setEnabled( selectedLayers.count() > 0 );
-  mActionSetLayerScaleVisibility->setEnabled( selectedLayers.count() > 0 );
-  mActionSetLayerCRS->setEnabled( selectedLayers.count() > 0 );
+  mActionDuplicateLayer->setEnabled( !selectedLayers.isEmpty() );
+  mActionSetLayerScaleVisibility->setEnabled( !selectedLayers.isEmpty() );
+  mActionSetLayerCRS->setEnabled( !selectedLayers.isEmpty() );
   mActionSetProjectCRSFromLayer->setEnabled( selectedLayers.count() == 1 );
 
   mActionSaveEdits->setEnabled( QgsLayerTreeUtils::layersModified( selectedLayers ) );
@@ -9519,7 +9519,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
 
     bool isEditable = vlayer->isEditable();
     bool layerHasSelection = vlayer->selectedFeatureCount() > 0;
-    bool layerHasActions = vlayer->actions()->size() + QgsMapLayerActionRegistry::instance()->mapLayerActions( vlayer ).size() > 0;
+    bool layerHasActions = vlayer->actions()->size() || !QgsMapLayerActionRegistry::instance()->mapLayerActions( vlayer ).isEmpty();
 
     mActionLocalHistogramStretch->setEnabled( false );
     mActionFullHistogramStretch->setEnabled( false );
@@ -9782,7 +9782,7 @@ void QgisApp::refreshActionFeatureAction()
 
   QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( layer );
 
-  bool layerHasActions = vlayer->actions()->size() + QgsMapLayerActionRegistry::instance()->mapLayerActions( vlayer ).size() > 0;
+  bool layerHasActions = vlayer->actions()->size() || !QgsMapLayerActionRegistry::instance()->mapLayerActions( vlayer ).isEmpty();
   mActionFeatureAction->setEnabled( layerHasActions );
 }
 
@@ -10041,7 +10041,7 @@ bool QgisApp::addRasterLayers( QStringList const &theFileNameQStringList, bool g
         QString msg;
 
         msg = tr( "%1 is not a supported raster data source" ).arg( *myIterator );
-        if ( errMsg.size() > 0 )
+        if ( !errMsg.isEmpty() )
           msg += '\n' + errMsg;
         error.append( QGS_ERROR_MESSAGE( msg, tr( "Raster layer" ) ) );
 

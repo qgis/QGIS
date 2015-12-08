@@ -1259,7 +1259,7 @@ void QgsMarkerLineSymbolLayerV2::renderOffsetVertexAlongLine( const QPolygonF &p
 
 void QgsMarkerLineSymbolLayerV2::renderPolylineCentral( const QPolygonF& points, QgsSymbolV2RenderContext& context )
 {
-  if ( points.size() > 0 )
+  if ( !points.isEmpty() )
   {
     // calc length
     qreal length = 0;

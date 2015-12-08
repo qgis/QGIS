@@ -656,7 +656,7 @@ bool QgsMapLayer::writeLayerXML( QDomElement& layerElement, QDomDocument& docume
 
   // layer keyword list
   QStringList keywordStringList = keywordList().split( ',' );
-  if ( keywordStringList.size() > 0 )
+  if ( !keywordStringList.isEmpty() )
   {
     QDomElement layerKeywordList = document.createElement( "keywordList" );
     for ( int i = 0; i < keywordStringList.size(); ++i )

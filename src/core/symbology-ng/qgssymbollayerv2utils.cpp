@@ -925,7 +925,7 @@ QgsSymbolV2* QgsSymbolLayerV2Utils::loadSymbol( const QDomElement &element )
     layerNode = layerNode.nextSibling();
   }
 
-  if ( layers.count() == 0 )
+  if ( layers.isEmpty() )
   {
     QgsDebugMsg( "no layers for symbol" );
     return NULL;
@@ -1886,7 +1886,7 @@ void QgsSymbolLayerV2Utils::lineToSld( QDomDocument &doc, QDomElement &element,
   if ( penCapStyle )
     element.appendChild( createSvgParameterElement( doc, "stroke-linecap", encodeSldLineCapStyle( *penCapStyle ) ) );
 
-  if ( pattern->size() > 0 )
+  if ( !pattern->isEmpty() )
   {
     element.appendChild( createSvgParameterElement( doc, "stroke-dasharray", encodeSldRealVector( *pattern ) ) );
     if ( !qgsDoubleNear( dashOffset, 0.0 ) )
@@ -1952,7 +1952,7 @@ bool QgsSymbolLayerV2Utils::lineFromSld( QDomElement &element,
     else if ( it.key() == "stroke-dasharray" )
     {
       QVector<qreal> dashPattern = decodeSldRealVector( it.value() );
-      if ( dashPattern.size() > 0 )
+      if ( !dashPattern.isEmpty() )
       {
         // convert the dasharray to one of the QT pen style,
         // if no match is found then set pen style to CustomDashLine
@@ -2374,7 +2374,7 @@ QString QgsSymbolLayerV2Utils::ogrFeatureStylePen( double width, double mmScaleF
   penStyle.append( "mm" );
 
   //dash dot vector
-  if ( dashPattern && dashPattern->size() > 0 )
+  if ( dashPattern && !dashPattern->isEmpty() )
   {
     penStyle.append( ",p:\"" );
     QVector<qreal>::const_iterator pIt = dashPattern->constBegin();
@@ -2506,7 +2506,7 @@ bool QgsSymbolLayerV2Utils::functionFromSldElement( QDomElement &element, QStrin
   if ( element.tagName() != "Filter" )
   {
     QDomNodeList filterNodes = element.elementsByTagName( "Filter" );
-    if ( filterNodes.size() > 0 )
+    if ( !filterNodes.isEmpty() )
     {
       elem = filterNodes.at( 0 ).toElement();
     }

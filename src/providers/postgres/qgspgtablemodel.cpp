@@ -69,7 +69,7 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty& layerProper
     {
       tip = tr( "Enter a SRID into the '%1' column" ).arg( tr( "SRID" ) );
     }
-    else if ( layerProperty.pkCols.size() > 0 )
+    else if ( !layerProperty.pkCols.isEmpty() )
     {
       tip = tr( "Select columns in the '%1' column that uniquely identify features of this layer" ).arg( tr( "Feature id" ) );
     }
@@ -95,7 +95,7 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty& layerProper
     }
 
     QStandardItem *pkItem = new QStandardItem( "" );
-    if ( layerProperty.pkCols.size() > 0 )
+    if ( !layerProperty.pkCols.isEmpty() )
     {
       pkItem->setText( tr( "Select..." ) );
       pkItem->setFlags( pkItem->flags() | Qt::ItemIsEditable );
@@ -152,7 +152,7 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty& layerProper
       QList<QStandardItem*> schemaItems = findItems( layerProperty.schemaName, Qt::MatchExactly, dbtmSchema );
 
       // there is already an item for this schema
-      if ( schemaItems.size() > 0 )
+      if ( !schemaItems.isEmpty() )
       {
         schemaItem = schemaItems.at( dbtmSchema );
       }
@@ -274,7 +274,7 @@ bool QgsPgTableModel::setData( const QModelIndex &idx, const QVariant &value, in
     }
 
     QStringList pkCols = idx.sibling( idx.row(), dbtmPkCol ).data( Qt::UserRole + 1 ).toStringList();
-    if ( tip.isEmpty() && pkCols.size() > 0 )
+    if ( tip.isEmpty() && !pkCols.isEmpty() )
     {
       QSet<QString> s0( idx.sibling( idx.row(), dbtmPkCol ).data( Qt::UserRole + 2 ).toStringList().toSet() );
       QSet<QString> s1( pkCols.toSet() );

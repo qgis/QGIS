@@ -82,7 +82,7 @@ void QgsMapLayerModel::removeLayers( const QStringList& layerIds )
   {
     QModelIndex startIndex = index( 0, 0 );
     QModelIndexList list = match( startIndex, LayerIdRole, layerId, 1 );
-    if ( list.count() )
+    if ( !list.isEmpty() )
     {
       QModelIndex index = list[0];
       beginRemoveRows( QModelIndex(), index.row(), index.row() );

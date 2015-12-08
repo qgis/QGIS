@@ -173,7 +173,7 @@ void QgsComposerManager::toggleButtons()
 
 void QgsComposerManager::addTemplates( const QMap<QString, QString>& templates )
 {
-  if ( templates.size() > 0 )
+  if ( !templates.isEmpty() )
   {
     mTemplate->insertSeparator( mTemplate->count() );
     QMap<QString, QString>::const_iterator templateIt = templates.constBegin();

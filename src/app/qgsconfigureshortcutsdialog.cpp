@@ -412,7 +412,7 @@ void QgsConfigureShortcutsDialog::setCurrentActionShortcut( const QKeySequence& 
     // reset action of the conflicting other action!
     QgsShortcutsManager::instance()->setActionShortcut( otherAction, QString() );
     QList<QTreeWidgetItem*> items = treeActions->findItems( otherActionText, Qt::MatchExactly );
-    if ( items.count() > 0 ) // there should be exactly one
+    if ( !items.isEmpty() ) // there should be exactly one
       items[0]->setText( 1, QString() );
   }
 

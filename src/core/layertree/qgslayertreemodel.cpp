@@ -930,7 +930,7 @@ QMimeData* QgsLayerTreeModel::mimeData( const QModelIndexList& indexes ) const
 {
   QList<QgsLayerTreeNode*> nodesFinal = indexes2nodes( indexes, true );
 
-  if ( nodesFinal.count() == 0 )
+  if ( nodesFinal.isEmpty() )
     return 0;
 
   QMimeData *mimeData = new QMimeData();
@@ -983,7 +983,7 @@ bool QgsLayerTreeModel::dropMimeData( const QMimeData* data, Qt::DropAction acti
     elem = elem.nextSiblingElement();
   }
 
-  if ( nodes.count() == 0 )
+  if ( nodes.isEmpty() )
     return false;
 
   if ( parent.isValid() && row == -1 )

@@ -157,7 +157,7 @@ void QgsRasterFormatSaveOptionsWidget::updateProfiles()
   {
     it.next();
     QString profileKey = it.key();
-    if ( ! profileKeys.contains( profileKey ) && it.value().count() > 0 )
+    if ( ! profileKeys.contains( profileKey ) && !it.value().isEmpty() )
     {
       // insert key if is for all formats or this format (GTiff)
       if ( it.value()[0] == "" ||  it.value()[0] == format )

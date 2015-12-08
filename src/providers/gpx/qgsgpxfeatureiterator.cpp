@@ -201,7 +201,7 @@ bool QgsGPXFeatureIterator::readWaypoint( const QgsWaypoint& wpt, QgsFeature& fe
 
 bool QgsGPXFeatureIterator::readRoute( const QgsRoute& rte, QgsFeature& feature )
 {
-  if ( rte.points.size() == 0 )
+  if ( rte.points.isEmpty() )
     return false;
 
   QgsGeometry* theGeometry = readRouteGeometry( rte );
@@ -430,7 +430,7 @@ QgsGeometry* QgsGPXFeatureIterator::readTrackGeometry( const QgsTrack& trk )
 {
   // TODO: support multi line string for segments
 
-  if ( trk.segments.size() == 0 )
+  if ( trk.segments.isEmpty() )
     return 0;
 
   // A track consists of several segments. Add all those segments into one.

@@ -263,7 +263,7 @@ void QgsGeorefPluginGui::openRaster()
   {
     QString msg = tr( "%1 is not a supported raster data source" ).arg( mRasterFileName );
 
-    if ( errMsg.size() > 0 )
+    if ( !errMsg.isEmpty() )
       msg += '\n' + errMsg;
 
     QMessageBox::information( this, tr( "Unsupported Data Source" ), msg );

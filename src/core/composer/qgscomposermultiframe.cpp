@@ -242,7 +242,7 @@ void QgsComposerMultiFrame::handleFrameRemoval( QgsComposerItem* item )
   }
 
   mFrameItems.removeAt( index );
-  if ( mFrameItems.size() > 0 )
+  if ( !mFrameItems.isEmpty() )
   {
     if ( resizeMode() != QgsComposerMultiFrame::RepeatOnEveryPage && !mIsRecalculatingSize )
     {

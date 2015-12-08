@@ -197,7 +197,7 @@ bool QgsMessageBar::clearWidgets()
   if ( !mCurrentItem && mItems.empty() )
     return true;
 
-  while ( mItems.count() > 0 )
+  while ( !mItems.isEmpty() )
   {
     popWidget();
   }
@@ -339,9 +339,9 @@ void QgsMessageBar::resetCountdown()
 
 void QgsMessageBar::updateItemCount()
 {
-  mItemCount->setText( mItems.count() > 0 ? tr( "%n more", "unread messages", mItems.count() ) : QString() );
+  mItemCount->setText( !mItems.isEmpty() ? tr( "%n more", "unread messages", mItems.count() ) : QString() );
 
   // do not show the down arrow for opening menu with "close all" if there is just one message
-  mCloseBtn->setMenu( mItems.count() > 0 ? mCloseMenu : 0 );
-  mCloseBtn->setPopupMode( mItems.count() > 0 ? QToolButton::MenuButtonPopup : QToolButton::DelayedPopup );
+  mCloseBtn->setMenu( !mItems.isEmpty() ? mCloseMenu : 0 );
+  mCloseBtn->setPopupMode( !mItems.isEmpty() ? QToolButton::MenuButtonPopup : QToolButton::DelayedPopup );
 }

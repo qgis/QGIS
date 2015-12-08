@@ -552,7 +552,7 @@ bool QgsComposerArrow::readXML( const QDomElement& itemElem, const QDomDocument&
     int alpha = 255;
 
     QDomNodeList arrowColorList = itemElem.elementsByTagName( "ArrowColor" );
-    if ( arrowColorList.size() > 0 )
+    if ( !arrowColorList.isEmpty() )
     {
       QDomElement arrowColorElem = arrowColorList.at( 0 ).toElement();
       red = arrowColorElem.attribute( "red", "0" ).toInt();
@@ -573,7 +573,7 @@ bool QgsComposerArrow::readXML( const QDomElement& itemElem, const QDomDocument&
   //restore general composer item properties
   //needs to be before start point / stop point because setSceneRect()
   QDomNodeList composerItemList = itemElem.elementsByTagName( "ComposerItem" );
-  if ( composerItemList.size() > 0 )
+  if ( !composerItemList.isEmpty() )
   {
     QDomElement composerItemElem = composerItemList.at( 0 ).toElement();
     _readXML( composerItemElem, doc );
@@ -581,7 +581,7 @@ bool QgsComposerArrow::readXML( const QDomElement& itemElem, const QDomDocument&
 
   //start point
   QDomNodeList startPointList = itemElem.elementsByTagName( "StartPoint" );
-  if ( startPointList.size() > 0 )
+  if ( !startPointList.isEmpty() )
   {
     QDomElement startPointElem = startPointList.at( 0 ).toElement();
     mStartPoint.setX( startPointElem.attribute( "x", "0.0" ).toDouble() );
@@ -590,7 +590,7 @@ bool QgsComposerArrow::readXML( const QDomElement& itemElem, const QDomDocument&
 
   //stop point
   QDomNodeList stopPointList = itemElem.elementsByTagName( "StopPoint" );
-  if ( stopPointList.size() > 0 )
+  if ( !stopPointList.isEmpty() )
   {
     QDomElement stopPointElem = stopPointList.at( 0 ).toElement();
     mStopPoint.setX( stopPointElem.attribute( "x", "0.0" ).toDouble() );

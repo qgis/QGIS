@@ -71,7 +71,7 @@ void QgsMapToolFeatureAction::canvasReleaseEvent( QgsMapMouseEvent* e )
   }
 
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-  if ( vlayer->actions()->size() == 0 && QgsMapLayerActionRegistry::instance()->mapLayerActions( vlayer ).size() == 0 )
+  if ( vlayer->actions()->size() == 0 && QgsMapLayerActionRegistry::instance()->mapLayerActions( vlayer ).isEmpty() )
   {
     emit messageEmitted( tr( "The active vector layer has no defined actions" ), QgsMessageBar::INFO );
     return;
@@ -128,7 +128,7 @@ bool QgsMapToolFeatureAction::doAction( QgsVectorLayer *layer, int x, int y )
     QgsDebugMsg( QString( "Caught CRS exception %1" ).arg( cse.what() ) );
   }
 
-  if ( featList.size() == 0 )
+  if ( featList.isEmpty() )
     return false;
 
   Q_FOREACH ( const QgsFeature& feat, featList )

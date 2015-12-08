@@ -187,7 +187,7 @@ double QgsGCPCanvasItem::residualToScreenFactor() const
   double mapUnitsPerRasterPixel = 1.0;
 
   QStringList canvasLayers = mMapCanvas->mapSettings().layers();
-  if ( canvasLayers.size() > 0 )
+  if ( !canvasLayers.isEmpty() )
   {
     QString layerId = canvasLayers.at( 0 );
     QgsMapLayer* mapLayer = QgsMapLayerRegistry::instance()->mapLayer( layerId );

@@ -202,7 +202,7 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
         //CTRL modifier, so we are trying to select the next item below the current one
         //first, find currently selected item
         QList<QgsComposerItem*> selectedItems = composition()->selectedComposerItems();
-        if ( selectedItems.size() > 0 )
+        if ( !selectedItems.isEmpty() )
         {
           previousSelectedItem = selectedItems.at( 0 );
         }
@@ -246,7 +246,7 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
 
         //Check if we have any remaining selected items, and if so, update the item panel
         QList<QgsComposerItem*> selectedItems = composition()->selectedComposerItems();
-        if ( selectedItems.size() > 0 )
+        if ( !selectedItems.isEmpty() )
         {
           emit selectedItemChanged( selectedItems.at( 0 ) );
         }
@@ -300,7 +300,7 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
     {
       //get a list of items at clicked position
       QList<QGraphicsItem *> itemsAtCursorPos = items( e->pos() );
-      if ( itemsAtCursorPos.size() == 0 )
+      if ( itemsAtCursorPos.isEmpty() )
       {
         //no items at clicked position
         return;
@@ -370,7 +370,7 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
         newScaleBar->setSceneRect( QRectF( snappedScenePoint.x(), snappedScenePoint.y(), 20, 20 ) );
         composition()->addComposerScaleBar( newScaleBar );
         QList<const QgsComposerMap*> mapItemList = composition()->composerMapItems();
-        if ( mapItemList.size() > 0 )
+        if ( !mapItemList.isEmpty() )
         {
           newScaleBar->setComposerMap( mapItemList.at( 0 ) );
         }
@@ -563,7 +563,7 @@ void QgsComposerView::endMarqueeSelect( QMouseEvent* e )
 
   //update item panel
   QList<QgsComposerItem*> selectedItemList = composition()->selectedComposerItems();
-  if ( selectedItemList.size() > 0 )
+  if ( !selectedItemList.isEmpty() )
   {
     emit selectedItemChanged( selectedItemList[0] );
   }
@@ -848,7 +848,7 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
       {
         QgsComposerLegend* newLegend = new QgsComposerLegend( composition() );
         QList<const QgsComposerMap*> mapItemList = composition()->composerMapItems();
-        if ( mapItemList.size() > 0 )
+        if ( !mapItemList.isEmpty() )
         {
           newLegend->setComposerMap( mapItemList.at( 0 ) );
         }
@@ -876,7 +876,7 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
       {
         QgsComposerAttributeTable* newTable = new QgsComposerAttributeTable( composition() );
         QList<const QgsComposerMap*> mapItemList = composition()->composerMapItems();
-        if ( mapItemList.size() > 0 )
+        if ( !mapItemList.isEmpty() )
         {
           newTable->setComposerMap( mapItemList.at( 0 ) );
         }
@@ -904,7 +904,7 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
       {
         QgsComposerAttributeTableV2* newTable = new QgsComposerAttributeTableV2( composition(), true );
         QList<const QgsComposerMap*> mapItemList = composition()->composerMapItems();
-        if ( mapItemList.size() > 0 )
+        if ( !mapItemList.isEmpty() )
         {
           newTable->setComposerMap( mapItemList.at( 0 ) );
         }

@@ -146,7 +146,7 @@ void QgsOWSSourceSelect::populateFormats()
 
   clearFormats();
 
-  if ( mProviderFormats.size() == 0 )
+  if ( mProviderFormats.isEmpty() )
   {
     mProviderFormats = providerFormats();
     for ( int i = 0; i < mProviderFormats.size(); i++ )

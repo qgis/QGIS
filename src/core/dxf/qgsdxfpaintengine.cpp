@@ -120,7 +120,7 @@ void QgsDxfPaintEngine::drawPath( const QPainterPath& path )
   endCurve();
   endPolygon();
 
-  if ( mPolygon.size() > 0 && mBrush.style() != Qt::NoBrush )
+  if ( !mPolygon.isEmpty() && mBrush.style() != Qt::NoBrush )
     mDxf->writePolygon( mPolygon, mLayer, "SOLID", mBrush.color() );
 
   mPolygon.clear();
@@ -142,7 +142,7 @@ void QgsDxfPaintEngine::lineTo( double dx, double dy )
 void QgsDxfPaintEngine::curveTo( double dx, double dy )
 {
   endCurve();
-  if ( mCurrentPolygon.size() > 0 )
+  if ( !mCurrentPolygon.isEmpty() )
     mCurrentCurve.append( mCurrentPolygon.last() );
 
   mCurrentCurve.append( QPointF( dx, dy ) );

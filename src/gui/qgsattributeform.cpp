@@ -533,7 +533,7 @@ void QgsAttributeForm::init()
       mWidgets.append( rww );
     }
 
-    if ( QgsProject::instance()->relationManager()->referencedRelations( mLayer ).size() == 0 )
+    if ( QgsProject::instance()->relationManager()->referencedRelations( mLayer ).isEmpty() )
     {
       QSpacerItem *spacerItem = new QSpacerItem( 20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding );
       gridLayout->addItem( spacerItem, row++, 0 );

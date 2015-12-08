@@ -372,7 +372,7 @@ QgsColorSwatchGridAction::QgsColorSwatchGridAction( QgsColorScheme* scheme, QMen
   connect( mColorSwatchGrid, SIGNAL( hovered() ), this, SLOT( onHover() ) );
 
   //hide the action if no colors to be shown
-  setVisible( mColorSwatchGrid->colors()->count() > 0 );
+  setVisible( !mColorSwatchGrid->colors()->isEmpty() );
 }
 
 QgsColorSwatchGridAction::~QgsColorSwatchGridAction()
@@ -404,7 +404,7 @@ void QgsColorSwatchGridAction::refreshColors()
 {
   mColorSwatchGrid->refreshColors();
   //hide the action if no colors shown
-  setVisible( mColorSwatchGrid->colors()->count() > 0 );
+  setVisible( !mColorSwatchGrid->colors()->isEmpty() );
 }
 
 void QgsColorSwatchGridAction::setColor( const QColor &color )

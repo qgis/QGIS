@@ -205,8 +205,8 @@ QList<TestQgsWcsPublicServers::Issue> TestQgsWcsPublicServers::issues( const QSt
     {
       Q_FOREACH ( const Issue& issue, server.issues )
       {
-        if (( issue.coverages.size() == 0 || issue.coverages.contains( coverage ) ) &&
-            ( issue.versions.size() == 0 || issue.versions.contains( version ) ) )
+        if (( issue.coverages.isEmpty() || issue.coverages.contains( coverage ) ) &&
+            ( issue.versions.isEmpty() || issue.versions.contains( version ) ) )
         {
           issues << issue;
         }
@@ -388,7 +388,7 @@ void TestQgsWcsPublicServers::test()
         myCoverage = myCapabilities.coverage( myCoverage.identifier ); // get described
         QgsDataSourceURI myUri = myServerUri;
         myUri.setParam( "identifier", myCoverage.identifier );
-        if ( myCoverage.times.size() > 0 )
+        if ( !myCoverage.times.isEmpty() )
         {
           myUri.setParam( "time", myCoverage.times.value( 0 ) );
         }
@@ -591,7 +591,7 @@ void TestQgsWcsPublicServers::report()
     {
       myReport += myServer.description + "<br>\n";
     }
-    if ( myServer.params.size() > 0 )
+    if ( !myServer.params.isEmpty() )
     {
       myReport += "<br>Additional params: ";
       Q_FOREACH ( const QString& key, myServer.params.keys() )

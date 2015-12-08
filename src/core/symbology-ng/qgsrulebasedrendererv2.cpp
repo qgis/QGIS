@@ -448,16 +448,16 @@ bool QgsRuleBasedRendererV2::Rule::startRender( QgsRenderContext& context, const
 
   if ( isElse() )
   {
-    if ( !sf.trimmed().length() )
+    if ( sf.trimmed().isEmpty() )
       filter = "TRUE";
     else
       filter = sf;
   }
-  else if ( mFilterExp.trimmed().length() && sf.trimmed().length() )
+  else if ( !mFilterExp.trimmed().isEmpty() && !sf.trimmed().isEmpty() )
     filter = QString( "(%1) AND (%2)" ).arg( mFilterExp, sf );
-  else if ( mFilterExp.trimmed().length() )
+  else if ( !mFilterExp.trimmed().isEmpty() )
     filter = mFilterExp;
-  else if ( !sf.length() )
+  else if ( sf.isEmpty() )
     filter = "TRUE";
   else
     filter = sf;
@@ -761,7 +761,7 @@ QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::createFromSld( QDomE
 
   // now create the symbol
   QgsSymbolV2 *symbol = 0;
-  if ( layers.size() > 0 )
+  if ( !layers.isEmpty() )
   {
     switch ( geomType )
     {

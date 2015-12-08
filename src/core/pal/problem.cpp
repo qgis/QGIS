@@ -689,7 +689,7 @@ namespace pal
 
     LabelPosition *lp;
 
-    while ( ri->size() < r && queue->size() > 0 )
+    while ( ri->size() < r && !queue->isEmpty() )
     {
       id = queue->takeFirst();
       ri->append( id );
@@ -715,14 +715,14 @@ namespace pal
 
     i = 0;
 
-    while ( queue->size() > 0 )
+    while ( !queue->isEmpty() )
     {
       sub[i] = queue->takeFirst();
       isIn[sub[i]] = 0;
       i++;
     }
 
-    while ( ri->size() > 0 )
+    while ( !ri->isEmpty() )
     {
       sub[i] = ri->takeFirst();
       isIn[sub[i]] = 0;
@@ -1456,7 +1456,7 @@ namespace pal
               std::cout << "Conflicts:" <<  conflicts->size() << std::endl;
 #endif
               // no conflict -> end of chain
-              if ( conflicts->size() == 0 )
+              if ( conflicts->isEmpty() )
               {
                 if ( !retainedChain || delta + lp->cost() < delta_best )
                 {
@@ -1533,7 +1533,7 @@ namespace pal
                 j++;
 
 
-                while ( conflicts->size() > 0 )
+                while ( !conflicts->isEmpty() )
                 {
                   int ftid = conflicts->takeFirst();
                   newChain->feat[j] = ftid;
@@ -1637,7 +1637,7 @@ namespace pal
       }
     }
 
-    while ( currentChain->size() > 0 )
+    while ( !currentChain->isEmpty() )
     {
       ElemTrans* et =  currentChain->takeFirst();
 
@@ -1743,7 +1743,7 @@ namespace pal
               candidates_sol->Search( amin, amax, chainCallback, ( void* ) &context );
 
               // no conflict -> end of chain
-              if ( conflicts->size() == 0 )
+              if ( conflicts->isEmpty() )
               {
                 if ( !retainedChain || delta + lp->cost() < delta_best )
                 {
@@ -1821,7 +1821,7 @@ namespace pal
                 j++;
 
                 // hide all conflictual candidates
-                while ( conflicts->size() > 0 )
+                while ( !conflicts->isEmpty() )
                 {
                   int ftid = conflicts->takeFirst();
                   newChain->feat[j] = ftid;
@@ -1926,7 +1926,7 @@ namespace pal
     }
 
 
-    while ( currentChain->size() > 0 )
+    while ( !currentChain->isEmpty() )
     {
       ElemTrans* et =  currentChain->takeFirst();
 
@@ -2398,7 +2398,7 @@ namespace pal
       std::cerr << "Error in solution !!!!" << std::endl;
     }
 
-    while ( list->size() > 0 )
+    while ( !list->isEmpty() )
     {
       LabelPosition *lp = list->takeFirst();
       int probFeatId = lp->getProblemFeatureId();

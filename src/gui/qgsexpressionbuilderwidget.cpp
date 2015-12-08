@@ -218,7 +218,7 @@ void QgsExpressionBuilderWidget::updateFunctionFileList( const QString& path )
 void QgsExpressionBuilderWidget::newFunctionFile( const QString& fileName )
 {
   QList<QListWidgetItem*> items = cmbFileNames->findItems( fileName, Qt::MatchExactly );
-  if ( items.count() > 0 )
+  if ( !items.isEmpty() )
     return;
 
   QString templatetxt;

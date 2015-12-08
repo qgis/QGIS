@@ -758,7 +758,7 @@ bool QgsComposerPicture::readXML( const QDomElement& itemElem, const QDomDocumen
   mPictureAnchor = ( QgsComposerItem::ItemPositionMode ) itemElem.attribute( "anchorPoint", QString::number( QgsComposerItem::Middle ) ).toInt();
 
   QDomNodeList composerItemList = itemElem.elementsByTagName( "ComposerItem" );
-  if ( composerItemList.size() > 0 )
+  if ( !composerItemList.isEmpty() )
   {
     QDomElement composerItemElem = composerItemList.at( 0 ).toElement();
 

@@ -26,7 +26,7 @@ double leftOfTresh = 0.00000001;
 DualEdgeTriangulation::~DualEdgeTriangulation()
 {
   //remove all the points
-  if ( mPointVector.count() > 0 )
+  if ( !mPointVector.isEmpty() )
   {
     for ( int i = 0; i < mPointVector.count(); i++ )
     {
@@ -35,7 +35,7 @@ DualEdgeTriangulation::~DualEdgeTriangulation()
   }
 
   //remove all the HalfEdge
-  if ( mHalfEdge.count() > 0 )
+  if ( !mHalfEdge.isEmpty() )
   {
     for ( int i = 0; i < mHalfEdge.count(); i++ )
     {
@@ -114,7 +114,7 @@ int DualEdgeTriangulation::addPoint( Point3D* p )
 // QgsDebugMsg( QString("inserting point %1,%2//%3//%4").arg(mPointVector.count()).arg(p->getX()).arg(p->getY()).arg(p->getZ()));
 
     //first update the bounding box
-    if ( mPointVector.count() == 0 )//update bounding box when the first point is inserted
+    if ( mPointVector.isEmpty() )//update bounding box when the first point is inserted
     {
       xMin = ( *p ).getX();
       yMin = ( *p ).getY();
@@ -743,7 +743,7 @@ void DualEdgeTriangulation::doSwap( unsigned int edge, unsigned int recursiveDee
 void DualEdgeTriangulation::draw( QPainter* p, double xlowleft, double ylowleft, double xupright, double yupright, double width, double height ) const
 {
   //if mPointVector is empty, there is nothing to do
-  if ( mPointVector.count() == 0 )
+  if ( mPointVector.isEmpty() )
   {
     return;
   }

@@ -216,14 +216,14 @@ void QgsHistogramWidget::drawHistogram()
   //draw histogram
 #if defined(QWT_VERSION) && QWT_VERSION>=0x060000
   QwtPlotHistogram * plotHistogram = 0;
-  plotHistogram = createPlotHistogram( mRanges.count() > 0 ? mRanges.at( 0 ).label() : QString(),
-                                       mRanges.count() > 0 ? QBrush( mHistoColors.at( 0 ) ) : mBrush,
-                                       mRanges.count() > 0 ? Qt::NoPen : mPen );
+  plotHistogram = createPlotHistogram( !mRanges.isEmpty() ? mRanges.at( 0 ).label() : QString(),
+                                       !mRanges.isEmpty() ? QBrush( mHistoColors.at( 0 ) ) : mBrush,
+                                       !mRanges.isEmpty() ? Qt::NoPen : mPen );
 #else
   HistogramItem *plotHistogramItem = 0;
-  plotHistogramItem = createHistoItem( mRanges.count() > 0 ? mRanges.at( 0 ).label() : QString(),
-                                       mRanges.count() > 0 ? QBrush( mHistoColors.at( 0 ) ) : mBrush,
-                                       mRanges.count() > 0 ? Qt::NoPen : mPen );
+  plotHistogramItem = createHistoItem( !mRanges.isEmpty() > 0 ? mRanges.at( 0 ).label() : QString(),
+                                       !mRanges.isEmpty() > 0 ? QBrush( mHistoColors.at( 0 ) ) : mBrush,
+                                       !mRanges.isEmpty() > 0 ? Qt::NoPen : mPen );
 #endif
 
 #if defined(QWT_VERSION) && QWT_VERSION>=0x060000
@@ -269,7 +269,7 @@ void QgsHistogramWidget::drawHistogram()
 #endif
     }
 
-    double upperEdge = mRanges.count() > 0 ? qMin( edges.at( bin + 1 ), mRanges.at( rangeIndex ).upperValue() )
+    double upperEdge = !mRanges.isEmpty() ? qMin( edges.at( bin + 1 ), mRanges.at( rangeIndex ).upperValue() )
                        : edges.at( bin + 1 );
 
 #if defined(QWT_VERSION) && QWT_VERSION>=0x060000

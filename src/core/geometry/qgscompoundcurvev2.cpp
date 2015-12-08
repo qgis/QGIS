@@ -400,7 +400,7 @@ void QgsCompoundCurveV2::addVertex( const QgsPointV2& pt )
 
   //is last curve QgsLineStringV2
   QgsCurveV2* lastCurve = 0;
-  if ( mCurves.size() > 0 )
+  if ( !mCurves.isEmpty() )
   {
     lastCurve = mCurves.at( mCurves.size() - 1 );
   }
@@ -502,7 +502,7 @@ bool QgsCompoundCurveV2::moveVertex( const QgsVertexId& position, const QgsPoint
     mCurves[idIt->first]->moveVertex( idIt->second, newPos );
   }
 
-  bool success = curveIds.size() > 0;
+  bool success = !curveIds.isEmpty();
   if ( success )
   {
     mBoundingBox = QgsRectangle(); //bbox changed
@@ -519,7 +519,7 @@ bool QgsCompoundCurveV2::deleteVertex( const QgsVertexId& position )
     mCurves[idIt->first]->deleteVertex( idIt->second );
   }
 
-  bool success = curveIds.size() > 0;
+  bool success = !curveIds.isEmpty();
   if ( success )
   {
     mBoundingBox = QgsRectangle(); //bbox changed

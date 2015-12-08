@@ -140,7 +140,7 @@ void QgsMapToolNodeTool::canvasMoveEvent( QgsMapMouseEvent* e )
       mSnapper.snapToBackgroundLayers( e->pos(), snapResults, QList<QgsPoint>() << mClosestMapVertex );
 
       QgsPoint curPos = snapPointFromResults( snapResults, e->pos() );
-      QgsPoint pressPos = snapResults.size() > 0 ? mClosestMapVertex : toMapCoordinates( mPressCoordinates );
+      QgsPoint pressPos = !snapResults.isEmpty() ? mClosestMapVertex : toMapCoordinates( mPressCoordinates );
       double deltaX = curPos.x() - pressPos.x();
       double deltaY = curPos.y() - pressPos.y();
 
@@ -288,7 +288,7 @@ void QgsMapToolNodeTool::canvasPressEvent( QgsMapMouseEvent* e )
       if ( !mIsPoint )
         mSnapper.snapToCurrentLayer( e->pos(), snapResults, QgsSnapper::SnapToSegment, tol, QList<QgsPoint>(), true );
 
-      if ( snapResults.size() > 0 )
+      if ( !snapResults.isEmpty() )
       {
         // need to check all if there is a point in the feature
         mAnother = snapResults.first().snappedAtGeometry;
@@ -431,7 +431,7 @@ void QgsMapToolNodeTool::canvasReleaseEvent( QgsMapMouseEvent* e )
       QgsPoint releaseLayerCoords = toLayerCoordinates( vlayer, snapPointFromResults( snapResults, e->pos() ) );
 
       QgsPoint pressLayerCoords;
-      if ( snapResults.size() > 0 )
+      if ( !snapResults.isEmpty() )
       {
         pressLayerCoords = toLayerCoordinates( vlayer, mClosestMapVertex );
 

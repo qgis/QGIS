@@ -579,7 +579,7 @@ QgsFillSymbolV2* QgsFillSymbolV2::createSimple( const QgsStringMap& properties )
 QgsMarkerSymbolV2::QgsMarkerSymbolV2( const QgsSymbolLayerV2List& layers )
     : QgsSymbolV2( Marker, layers )
 {
-  if ( mLayers.count() == 0 )
+  if ( mLayers.isEmpty() )
     mLayers.append( new QgsSimpleMarkerSymbolLayerV2() );
 }
 
@@ -897,7 +897,7 @@ QgsMarkerSymbolV2* QgsMarkerSymbolV2::clone() const
 QgsLineSymbolV2::QgsLineSymbolV2( const QgsSymbolLayerV2List& layers )
     : QgsSymbolV2( Line, layers )
 {
-  if ( mLayers.count() == 0 )
+  if ( mLayers.isEmpty() )
     mLayers.append( new QgsSimpleLineSymbolLayerV2() );
 }
 
@@ -1079,7 +1079,7 @@ QgsLineSymbolV2* QgsLineSymbolV2::clone() const
 QgsFillSymbolV2::QgsFillSymbolV2( const QgsSymbolLayerV2List& layers )
     : QgsSymbolV2( Fill, layers )
 {
-  if ( mLayers.count() == 0 )
+  if ( mLayers.isEmpty() )
     mLayers.append( new QgsSimpleFillSymbolLayerV2() );
 }
 

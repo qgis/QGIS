@@ -444,7 +444,7 @@ void QgsProjectFileTransform::transform1400to1500()
       }
 
       QDomElement classificationElement;
-      if ( vectorClassificationList.size() > 0 ) //we guess it is a vector layer
+      if ( !vectorClassificationList.isEmpty() ) //we guess it is a vector layer
       {
         classificationElement = mDom.createElement( "VectorClassificationItem" );
       }

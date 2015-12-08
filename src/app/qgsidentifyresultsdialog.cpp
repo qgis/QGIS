@@ -421,7 +421,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
   //get valid QgsMapLayerActions for this layer
   QList< QgsMapLayerAction* > registeredActions = QgsMapLayerActionRegistry::instance()->mapLayerActions( vlayer );
 
-  if ( vlayer->fields().size() > 0 || vlayer->actions()->size() || registeredActions.size() )
+  if ( !vlayer->fields().isEmpty() || vlayer->actions()->size() || !registeredActions.isEmpty() )
   {
     QTreeWidgetItem *actionItem = new QTreeWidgetItem( QStringList() << tr( "(Actions)" ) );
     actionItem->setData( 0, Qt::UserRole, "actions" );
@@ -800,7 +800,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
   //tblResults->resizeColumnToContents( 1 );
 
   // graph
-  if ( attributes.count() > 0 )
+  if ( !attributes.isEmpty() )
   {
     mPlotCurves.append( new QgsIdentifyPlotCurve( attributes, mPlot, layer->name() ) );
   }
@@ -981,7 +981,7 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent* event )
       mActionPopup->addAction( tr( "Copy GetFeatureInfo request URL" ), this, SLOT( copyGetFeatureInfoUrl() ) );
     }
   }
-  if ( mActionPopup->children().size() > 0 )
+  if ( !mActionPopup->children().isEmpty() )
   {
     mActionPopup->addSeparator();
   }
@@ -1027,7 +1027,7 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent* event )
     //get valid QgsMapLayerActions for this layer
     QList< QgsMapLayerAction* > registeredActions = QgsMapLayerActionRegistry::instance()->mapLayerActions( vlayer );
 
-    if ( registeredActions.size() > 0 )
+    if ( !registeredActions.isEmpty() )
     {
       //add a separator between user defined and standard actions
       mActionPopup->addSeparator();

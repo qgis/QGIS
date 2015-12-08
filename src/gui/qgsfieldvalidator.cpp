@@ -119,10 +119,10 @@ QValidator::State QgsFieldValidator::validate( QString &s, int &i ) const
   {
     // allow to enter the NULL representation, which might be
     // longer than the actual field
-    if ( mNullValue.size() > 0 && s.size() > 0 && s.size() < mNullValue.size() && s == mNullValue.left( s.size() ) )
+    if ( !mNullValue.isEmpty() && !s.isEmpty() && s.size() < mNullValue.size() && s == mNullValue.left( s.size() ) )
       return Intermediate;
 
-    if ( mDefaultValue.size() > 0 && s.size() > 0 && s.size() < mDefaultValue.size() && s == mDefaultValue.left( s.size() ) )
+    if ( !mDefaultValue.isEmpty() && !s.isEmpty() && s.size() < mDefaultValue.size() && s == mDefaultValue.left( s.size() ) )
       return Intermediate;
 
     if ( s == mNullValue )

@@ -544,7 +544,7 @@ QPixmap QgsRasterLayer::paletteAsPixmap( int theBandNumber )
     QgsDebugMsg( "....found paletted image" );
     QgsColorRampShader myShader;
     QList<QgsColorRampShader::ColorRampItem> myColorRampItemList = mDataProvider->colorTable( theBandNumber );
-    if ( myColorRampItemList.size() > 0 )
+    if ( !myColorRampItemList.isEmpty() )
     {
       QgsDebugMsg( "....got color ramp item list" );
       myShader.setColorRampItemList( myColorRampItemList );

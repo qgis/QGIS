@@ -75,7 +75,7 @@ void QgsJoinDialog::setJoinInfo( const QgsVectorJoinInfo& joinInfo )
   }
 
   QStringList* lst = joinInfo.joinFieldNamesSubset();
-  mUseJoinFieldsSubset->setChecked( lst && lst->count() > 0 );
+  mUseJoinFieldsSubset->setChecked( lst && !lst->isEmpty() );
   QAbstractItemModel* model = mJoinFieldsSubsetView->model();
   if ( model )
   {

@@ -88,7 +88,7 @@ void QgsPaperGrid::paint( QPainter* painter, const QStyleOptionGraphicsItem* ite
           if ( scene() )
           {
             QList<QGraphicsView*> viewList = scene()->views();
-            if ( viewList.size() > 0 )
+            if ( !viewList.isEmpty() )
             {
               QGraphicsView* currentView = viewList.at( 0 );
               if ( currentView->isVisible() )

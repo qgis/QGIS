@@ -246,7 +246,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
 
     //assume single category or linearly interpolated diagram renderer for now
     QList<QgsDiagramSettings> settingList = dr->diagramSettings();
-    if ( settingList.size() > 0 )
+    if ( !settingList.isEmpty() )
     {
       mEnableDiagramsCheckBox->setChecked( settingList.at( 0 ).enabled );
       mDiagramTypeFrame->setEnabled( mEnableDiagramsCheckBox->isChecked() );

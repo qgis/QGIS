@@ -31,7 +31,7 @@ QgsGdalLayerItem::QgsGdalLayerItem( QgsDataItem* parent,
   mToolTip = uri;
   // save sublayers for subsequent access
   // if there are sublayers, set populated=false so item can be populated on demand
-  if ( theSublayers && theSublayers->size() > 0 )
+  if ( theSublayers && !theSublayers->isEmpty() )
   {
     sublayers = *theSublayers;
     setState( NotPopulated );
@@ -82,7 +82,7 @@ QVector<QgsDataItem*> QgsGdalLayerItem::createChildren()
   QVector<QgsDataItem*> children;
 
   // get children from sublayers
-  if ( sublayers.count() > 0 )
+  if ( !sublayers.isEmpty() )
   {
     QgsDataItem * childItem = NULL;
     QgsDebugMsg( QString( "got %1 sublayers" ).arg( sublayers.count() ) );

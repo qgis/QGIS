@@ -120,7 +120,7 @@ void QgsDualView::columnBoxInit()
   {
     QgsAttributeList pkAttrs = mLayerCache->layer()->pkAttributeList();
 
-    if ( pkAttrs.size() > 0 )
+    if ( !pkAttrs.isEmpty() )
     {
       if ( pkAttrs.size() == 1 )
         defaultField = pkAttrs.at( 0 );
@@ -135,7 +135,7 @@ void QgsDualView::columnBoxInit()
 
       displayExpression = pkFields.join( "||', '||" );
     }
-    else if ( fields.size() > 0 )
+    else if ( !fields.isEmpty() )
     {
       if ( fields.size() == 1 )
         defaultField = fields.at( 0 ).name();
@@ -371,7 +371,7 @@ void QgsDualView::viewWillShowContextMenu( QMenu* menu, const QModelIndex& atInd
 
   //add actions from QgsMapLayerActionRegistry to context menu
   QList<QgsMapLayerAction *> registeredActions = QgsMapLayerActionRegistry::instance()->mapLayerActions( mLayerCache->layer() );
-  if ( registeredActions.size() > 0 )
+  if ( !registeredActions.isEmpty() )
   {
     //add a separator between user defined and standard actions
     menu->addSeparator();

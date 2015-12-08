@@ -351,7 +351,7 @@ bool QgsFontUtils::setFromXmlChildNode( QFont& font, const QDomElement& element,
   }
 
   QDomNodeList nodeList = element.elementsByTagName( childNode );
-  if ( nodeList.size() > 0 )
+  if ( !nodeList.isEmpty() )
   {
     QDomElement fontElem = nodeList.at( 0 ).toElement();
     return setFromXmlElement( font, fontElem );

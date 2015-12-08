@@ -258,12 +258,12 @@ void QgsNewSpatialiteLayerDialog::on_pbnFindSRID_clicked()
 
 void QgsNewSpatialiteLayerDialog::nameChanged( const QString& name )
 {
-  mAddAttributeButton->setDisabled( name.isEmpty() || mAttributeView->findItems( name, Qt::MatchExactly ).size() > 0 );
+  mAddAttributeButton->setDisabled( name.isEmpty() || ! mAttributeView->findItems( name, Qt::MatchExactly ).isEmpty() );
 }
 
 void QgsNewSpatialiteLayerDialog::selectionChanged()
 {
-  mRemoveAttributeButton->setDisabled( mAttributeView->selectedItems().size() == 0 );
+  mRemoveAttributeButton->setDisabled( mAttributeView->selectedItems().isEmpty() );
 }
 
 bool QgsNewSpatialiteLayerDialog::createDb()

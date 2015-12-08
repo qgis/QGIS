@@ -181,7 +181,7 @@ void QgsBookmarks::deleteClicked()
     }
   }
 
-  if ( rows.size() == 0 )
+  if ( rows.isEmpty() )
     return;
 
   // make sure the user really wants to delete these bookmarks

@@ -51,7 +51,7 @@ void QgsConfigParserUtils::appendCRSElementsToLayer( QDomElement& layerElement, 
   QDomElement CRSPrecedingElement = abstractElement.isNull() ? titleElement : abstractElement; //last element before the CRS elements
 
   //In case the number of advertised CRS is constrained
-  if ( constrainedCrsList.size() > 0 )
+  if ( !constrainedCrsList.isEmpty() )
   {
     for ( int i = constrainedCrsList.size() - 1; i >= 0; --i )
     {
@@ -156,7 +156,7 @@ void QgsConfigParserUtils::appendLayerBoundingBoxes( QDomElement& layerElem, QDo
   }
 
   //In case the number of advertised CRS is constrained
-  if ( constrainedCrsList.size() > 0 )
+  if ( !constrainedCrsList.isEmpty() )
   {
     for ( int i = constrainedCrsList.size() - 1; i >= 0; --i )
     {

@@ -444,7 +444,7 @@ void QgsRelationReferenceWidget::init()
 
     QgsVectorLayerCache* layerCache = new QgsVectorLayerCache( mReferencedLayer, 100000, this );
 
-    if ( mFilterFields.size() )
+    if ( !mFilterFields.isEmpty() )
     {
       Q_FOREACH ( const QString& fieldName, mFilterFields )
       {
@@ -517,7 +517,7 @@ void QgsRelationReferenceWidget::init()
     if ( mOrderByValue )
     {
       const QStringList referencedColumns = QgsExpression( mReferencedLayer->displayExpression() ).referencedColumns();
-      if ( referencedColumns.size() > 0 )
+      if ( !referencedColumns.isEmpty() )
       {
         int sortIdx = mReferencedLayer->fieldNameIndex( referencedColumns.first() );
         mFilterModel->sort( sortIdx );

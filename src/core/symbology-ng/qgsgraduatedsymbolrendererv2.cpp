@@ -597,7 +597,7 @@ static QList<double> _calcQuantileBreaks( QList<double> values, int classes )
   QList<double> breaks;
 
   // If there are no values to process: bail out
-  if ( !values.count() )
+  if ( values.isEmpty() )
     return breaks;
 
   int n = values.count();
@@ -634,7 +634,7 @@ static QList<double> _calcStdDevBreaks( QList<double> values, int classes, QList
   // values of 'values', and may have a number of classes different from 'classes'.
 
   // If there are no values to process: bail out
-  if ( !values.count() )
+  if ( values.isEmpty() )
     return QList<double>();
 
   double mean = 0.0;
@@ -683,7 +683,7 @@ static QList<double> _calcJenksBreaks( QList<double> values, int classes,
   // Returns class breaks such that classes are internally homogeneous while
   // assuring heterogeneity among classes.
 
-  if ( !values.count() )
+  if ( values.isEmpty() )
     return QList<double>();
 
   if ( classes <= 1 )
@@ -979,7 +979,7 @@ QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2::create( QDomElement& element
   QgsGraduatedSymbolRendererV2* r = new QgsGraduatedSymbolRendererV2( attrName, ranges );
 
   QString attrMethod = element.attribute( "graduatedMethod" );
-  if ( attrMethod.length() )
+  if ( !attrMethod.isEmpty() )
   {
     if ( attrMethod == graduatedMethodStr( GraduatedColor ) )
       r->setGraduatedMethod( GraduatedColor );
@@ -1671,7 +1671,7 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::convertFromRenderer(
   QgsGraduatedSymbolRendererV2* r = new QgsGraduatedSymbolRendererV2( "", QgsRangeList() );
   QgsRenderContext context;
   QgsSymbolV2List symbols = const_cast<QgsFeatureRendererV2 *>( renderer )->symbols( context );
-  if ( symbols.size() > 0 )
+  if ( !symbols.isEmpty() )
   {
     r->setSourceSymbol( symbols.at( 0 )->clone() );
   }

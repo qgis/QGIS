@@ -124,7 +124,7 @@ void QgsDelimitedTextSourceSelect::on_buttonBox_accepted()
   }
   if ( delimiterChars->isChecked() )
   {
-    if ( selectedChars().size() == 0 )
+    if ( selectedChars().isEmpty() )
     {
       QMessageBox::warning( this, tr( "No delimiters set" ), tr( "Use one or more characters as the delimiter, or choose a different delimiter type" ) );
       txtDelimiterOther->setFocus();
@@ -678,7 +678,7 @@ bool QgsDelimitedTextSourceSelect::validate()
   {
     message = tr( "Please enter a layer name" );
   }
-  else if ( delimiterChars->isChecked() && selectedChars().size() == 0 )
+  else if ( delimiterChars->isChecked() && selectedChars().isEmpty() )
   {
     message = tr( "At least one delimiter character must be specified" );
   }

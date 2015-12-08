@@ -198,7 +198,7 @@ void QgsRubberBand::removePoint( int index, bool doUpdate/* = true*/, int geomet
   }
 
 
-  if ( mPoints[geometryIndex].size() > 0 )
+  if ( !mPoints[geometryIndex].isEmpty() )
   {
     // negative index removes from end, eg -1 removes last one
     if ( index < 0 )
@@ -351,7 +351,7 @@ void QgsRubberBand::addGeometry( const QgsGeometry* geom, QgsVectorLayer* layer 
       {
         QgsPolyline line = mline[i];
 
-        if ( line.size() == 0 )
+        if ( line.isEmpty() )
         {
           --idx;
         }
@@ -449,7 +449,7 @@ void QgsRubberBand::setToCanvasRectangle( const QRect& rect )
   */
 void QgsRubberBand::paint( QPainter* p )
 {
-  if ( mPoints.size() > 0 )
+  if ( !mPoints.isEmpty() )
   {
     p->setBrush( mBrush );
     p->setPen( mPen );
@@ -656,7 +656,7 @@ QgsGeometry *QgsRubberBand::asGeometry()
     case QGis::Line:
     default:
     {
-      if ( mPoints.size() > 0 )
+      if ( !mPoints.isEmpty() )
       {
         if ( mPoints.size() > 1 )
         {

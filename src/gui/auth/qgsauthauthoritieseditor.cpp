@@ -741,7 +741,7 @@ void QgsAuthAuthoritiesEditor::on_btnCaFileClear_clicked()
   {
     QList<QSslCertificate> certs( QgsAuthCertUtils::certsFromFile( fn ) );
 
-    if ( certs.size() > 0 )
+    if ( !certs.isEmpty() )
     {
       if ( !QgsAuthManager::instance()->removeCertTrustPolicies( certs ) )
       {

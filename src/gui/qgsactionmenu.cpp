@@ -141,7 +141,7 @@ void QgsActionMenu::reloadActions()
 
   QList<QgsMapLayerAction*> mapLayerActions = QgsMapLayerActionRegistry::instance()->mapLayerActions( mLayer, QgsMapLayerAction::SingleFeature );
 
-  if ( mapLayerActions.size() > 0 )
+  if ( !mapLayerActions.isEmpty() )
   {
     //add a separator between user defined and standard actions
     addSeparator();

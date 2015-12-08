@@ -216,12 +216,12 @@ QString QgsNewVectorLayerDialog::selectedFileEncoding() const
 
 void QgsNewVectorLayerDialog::nameChanged( const QString& name )
 {
-  mAddAttributeButton->setDisabled( name.isEmpty() || mAttributeView->findItems( name, Qt::MatchExactly ).size() > 0 );
+  mAddAttributeButton->setDisabled( name.isEmpty() || !mAttributeView->findItems( name, Qt::MatchExactly ).isEmpty() );
 }
 
 void QgsNewVectorLayerDialog::selectionChanged()
 {
-  mRemoveAttributeButton->setDisabled( mAttributeView->selectedItems().size() == 0 );
+  mRemoveAttributeButton->setDisabled( mAttributeView->selectedItems().isEmpty() );
 }
 
 

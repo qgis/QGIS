@@ -425,7 +425,7 @@ QgsMssqlLayerItem* QgsMssqlLayerItem::createClone()
 
 QString QgsMssqlLayerItem::createUri()
 {
-  QString pkColName = mLayerProperty.pkCols.size() > 0 ? mLayerProperty.pkCols.at( 0 ) : QString::null;
+  QString pkColName = !mLayerProperty.pkCols.isEmpty() ? mLayerProperty.pkCols.at( 0 ) : QString::null;
   QgsMssqlConnectionItem *connItem = qobject_cast<QgsMssqlConnectionItem *>( parent() ? parent()->parent() : 0 );
 
   if ( !connItem )

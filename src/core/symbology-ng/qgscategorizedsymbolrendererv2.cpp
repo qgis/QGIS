@@ -188,7 +188,7 @@ QgsSymbolV2* QgsCategorizedSymbolRendererV2::symbolForValue( const QVariant& val
   QHash<QString, QgsSymbolV2*>::iterator it = mSymbolHash.find( value.isNull() ? "" : value.toString() );
   if ( it == mSymbolHash.end() )
   {
-    if ( mSymbolHash.size() == 0 )
+    if ( mSymbolHash.isEmpty() )
     {
       QgsDebugMsg( "there are no hashed symbols!!!" );
     }
@@ -989,7 +989,7 @@ QgsCategorizedSymbolRendererV2* QgsCategorizedSymbolRendererV2::convertFromRende
   QgsCategorizedSymbolRendererV2* r = new QgsCategorizedSymbolRendererV2( "", QgsCategoryList() );
   QgsRenderContext context;
   QgsSymbolV2List symbols = const_cast<QgsFeatureRendererV2 *>( renderer )->symbols( context );
-  if ( symbols.size() > 0 )
+  if ( !symbols.isEmpty() )
   {
     r->setSourceSymbol( symbols.at( 0 )->clone() );
   }

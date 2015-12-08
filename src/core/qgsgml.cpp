@@ -135,7 +135,7 @@ int QgsGml::getFeatures( const QString& uri, QGis::WkbType* wkbType, QgsRectangl
       atEnd = 1;
     }
     QByteArray readData = reply->readAll();
-    if ( readData.size() > 0 )
+    if ( !readData.isEmpty() )
     {
       if ( XML_Parse( p, readData.constData(), readData.size(), atEnd ) == 0 )
       {
@@ -413,7 +413,7 @@ void QgsGml::endElement( const XML_Char* el )
       //error
     }
 
-    if ( pointList.count() == 0 )
+    if ( pointList.isEmpty() )
       return;  // error
 
     if ( theParseMode == QgsGml::geometry )
@@ -553,7 +553,7 @@ void QgsGml::endElement( const XML_Char* el )
 void QgsGml::characters( const XML_Char* chars, int len )
 {
   //save chars in mStringCash attribute mode or coordinate mode
-  if ( mParseModeStack.size() == 0 )
+  if ( mParseModeStack.isEmpty() )
   {
     return;
   }

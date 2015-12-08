@@ -163,7 +163,7 @@ bool TestZipLayer::testZipItem( const QString& myFileName, const QString& myChil
   QVector<QgsDataItem*> myChildren = myZipItem->children();
 
   QgsDebugMsg( QString( "has %1 items" ).arg( myChildren.size() ) );
-  if ( myChildren.size() > 0 )
+  if ( !myChildren.isEmpty() )
   {
     Q_FOREACH ( QgsDataItem* item, myChildren )
     {

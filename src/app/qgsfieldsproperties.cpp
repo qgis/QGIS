@@ -144,7 +144,7 @@ void QgsFieldsProperties::init()
 void QgsFieldsProperties::onAttributeSelectionChanged()
 {
   bool isAddPossible = false;
-  if ( mDesignerTree->selectedItems().count() == 1 && mFieldsList->selectedItems().count() > 0 )
+  if ( mDesignerTree->selectedItems().count() == 1 && !mFieldsList->selectedItems().isEmpty() )
     if ( mDesignerTree->selectedItems()[0]->data( 0, DesignerTreeRole ).value<DesignerTreeItemData>().type() == DesignerTreeItemData::Container )
       isAddPossible = true;
   mAddItemButton->setEnabled( isAddPossible );
@@ -366,7 +366,7 @@ void QgsFieldsProperties::on_mAddItemButton_clicked()
   QList<QTableWidgetItem*> listItems = mFieldsList->selectedItems();
   QList<QTreeWidgetItem*> treeItems = mDesignerTree->selectedItems();
 
-  if ( treeItems.count() != 1 && listItems.count() == 0 )
+  if ( treeItems.count() != 1 && listItems.isEmpty() )
     return;
 
   QTreeWidgetItem *parent = treeItems[0];
@@ -630,10 +630,10 @@ void QgsFieldsProperties::on_mDeleteAttributeButton_clicked()
     }
   }
 
-  if ( expressionFields.count() )
+  if ( !expressionFields.isEmpty() )
     mLayer->deleteAttributes( expressionFields.toList() );
 
-  if ( providerFields.count() )
+  if ( !providerFields.isEmpty() )
   {
     mLayer->beginEditCommand( tr( "Deleted attributes" ) );
     if ( mLayer->deleteAttributes( providerFields.toList() ) )
@@ -661,7 +661,7 @@ void QgsFieldsProperties::updateButtons()
     mAddAttributeButton->setEnabled( false );
 
     // Enable delete button if items are selected
-    mDeleteAttributeButton->setEnabled( mFieldsList->selectedItems().count() > 0 );
+    mDeleteAttributeButton->setEnabled( !mFieldsList->selectedItems().isEmpty() );
 
     // and only if all selected items have their origin in an expression
     Q_FOREACH ( QTableWidgetItem* item, mFieldsList->selectedItems() )

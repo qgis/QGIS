@@ -263,7 +263,7 @@ int QgsAtlasComposition::updateFeatures()
   }
 
   // sort features, if asked for
-  if ( mFeatureKeys.count() )
+  if ( !mFeatureKeys.isEmpty() )
   {
     FieldSorter sorter( mFeatureKeys, mSortAscending );
     qSort( mFeatureIds.begin(), mFeatureIds.end(), sorter );
@@ -408,7 +408,7 @@ bool QgsAtlasComposition::prepareForFeature( const int featureI, const bool upda
     return false;
   }
 
-  if ( mFeatureIds.size() == 0 )
+  if ( mFeatureIds.isEmpty() )
   {
     emit statusMsgChanged( tr( "No matching atlas features" ) );
     return false;
@@ -469,7 +469,7 @@ bool QgsAtlasComposition::prepareForFeature( const int featureI, const bool upda
     atlasMaps << currentMap;
   }
 
-  if ( atlasMaps.count() > 0 )
+  if ( !atlasMaps.isEmpty() )
   {
     //clear the transformed bounds of the previous feature
     mTransformedFeatureBounds = QgsRectangle();
@@ -812,7 +812,7 @@ bool QgsAtlasComposition::updateFilenameExpression()
 
   QgsExpressionContext expressionContext = createExpressionContext();
 
-  if ( mFilenamePattern.size() > 0 )
+  if ( !mFilenamePattern.isEmpty() )
   {
     mFilenameExpr.reset( new QgsExpression( mFilenamePattern ) );
     // expression used to evaluate each filename
@@ -838,7 +838,7 @@ bool QgsAtlasComposition::updateFilenameExpression()
 bool QgsAtlasComposition::evalFeatureFilename( const QgsExpressionContext &context )
 {
   //generate filename for current atlas feature
-  if ( mFilenamePattern.size() > 0 && !mFilenameExpr.isNull() )
+  if ( !mFilenamePattern.isEmpty() && !mFilenameExpr.isNull() )
   {
     QVariant filenameRes = mFilenameExpr->evaluate( &context );
     if ( mFilenameExpr->hasEvalError() )

@@ -173,7 +173,7 @@ void QgsHandleBadLayers::selectionChanged()
     mRows << item->row();
   }
 
-  mBrowseButton->setEnabled( mRows.size() > 0 );
+  mBrowseButton->setEnabled( !mRows.isEmpty() );
 }
 
 QString QgsHandleBadLayers::filename( int row )

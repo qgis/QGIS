@@ -191,7 +191,7 @@ bool QgsComposerTableV2::readXML( const QDomElement &itemElem, const QDomDocumen
   qDeleteAll( mColumns );
   mColumns.clear();
   QDomNodeList columnsList = itemElem.elementsByTagName( "displayColumns" );
-  if ( columnsList.size() > 0 )
+  if ( !columnsList.isEmpty() )
   {
     QDomElement columnsElem =  columnsList.at( 0 ).toElement();
     QDomNodeList columnEntryList = columnsElem.elementsByTagName( "column" );
@@ -206,14 +206,14 @@ bool QgsComposerTableV2::readXML( const QDomElement &itemElem, const QDomDocumen
 
   //restore cell styles
   QDomNodeList stylesList = itemElem.elementsByTagName( "cellStyles" );
-  if ( stylesList.size() > 0 )
+  if ( !stylesList.isEmpty() )
   {
     QDomElement stylesElem = stylesList.at( 0 ).toElement();
     Q_FOREACH ( CellStyleGroup group, mCellStyleNames.keys() )
     {
       QString styleName  = mCellStyleNames.value( group );
       QDomNodeList styleList = stylesElem.elementsByTagName( styleName );
-      if ( styleList.size() > 0 )
+      if ( !styleList.isEmpty() )
       {
         QDomElement styleElem = styleList.at( 0 ).toElement();
         mCellStyles.value( group )->readXML( styleElem );

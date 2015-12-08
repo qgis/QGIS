@@ -168,7 +168,7 @@ QList<QgsLegendRenderer::Atom> QgsLegendRenderer::createAtomList( QgsLayerTreeGr
         nucleon.item = node;
         nucleon.size = drawGroupTitle( nodeGroup );
 
-        if ( groupAtoms.size() > 0 )
+        if ( !groupAtoms.isEmpty() )
         {
           // Add internal space between this group title and the next nucleon
           groupAtoms[0].size.rheight() += spaceAboveAtom( groupAtoms[0] );
@@ -228,7 +228,7 @@ QList<QgsLegendRenderer::Atom> QgsLegendRenderer::createAtomList( QgsLayerTreeGr
           // the width is not correct at this moment, we must align all symbol labels
           atom.size.rwidth() = qMax( symbolNucleon.size.width(), atom.size.width() );
           // Add symbol space only if there is already title or another item above
-          if ( atom.nucleons.size() > 0 )
+          if ( !atom.nucleons.isEmpty() )
           {
             // TODO: for now we keep Symbol and SymbolLabel Top margin in sync
             atom.size.rheight() += mSettings.style( QgsComposerLegendStyle::Symbol ).margin( QgsComposerLegendStyle::Top );
@@ -422,7 +422,7 @@ QSizeF QgsLegendRenderer::drawTitle( QPainter* painter, QPointF point, Qt::Align
 
 double QgsLegendRenderer::spaceAboveAtom( const Atom& atom )
 {
-  if ( atom.nucleons.size() == 0 ) return 0;
+  if ( atom.nucleons.isEmpty() ) return 0;
 
   Nucleon nucleon = atom.nucleons.first();
 

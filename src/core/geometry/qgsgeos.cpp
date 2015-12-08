@@ -798,7 +798,7 @@ int QgsGeos::mergeGeometriesMultiTypeSplit( QVector<GEOSGeometry*>& splitResult 
   }
 
   //make multifeature out of unionGeom
-  if ( unionGeom.size() > 0 )
+  if ( !unionGeom.isEmpty() )
   {
     if ( type == GEOS_MULTILINESTRING )
       splitResult << createGeosCollection( GEOS_MULTILINESTRING, unionGeom );
@@ -1928,7 +1928,7 @@ GEOSGeometry* QgsGeos::reshapeLine( const GEOSGeometry* line, const GEOSGeometry
   }
 
   //add the longest segment from the probable list for rings (only used for polygon rings)
-  if ( isRing && probableParts.size() > 0 )
+  if ( isRing && !probableParts.isEmpty() )
   {
     GEOSGeometry* maxGeom = 0; //the longest geometry in the probabla list
     GEOSGeometry* currentGeom = 0;

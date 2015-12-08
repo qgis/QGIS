@@ -197,7 +197,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
       destNoDataValue = srcProvider->srcNoDataValue( bandNo );
       destHasNoDataValue = true;
     }
-    else if ( nuller && nuller->noData( bandNo ).size() > 0 )
+    else if ( nuller && !nuller->noData( bandNo ).isEmpty() )
     {
       // Use one user defined no data value
       destNoDataValue = nuller->noData( bandNo ).value( 0 ).min();

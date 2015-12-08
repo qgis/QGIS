@@ -45,7 +45,7 @@ bool QgsMultiRenderChecker::runTest( const QString& theTestName, unsigned int th
 
   QStringList subDirs = QDir( baseDir ).entryList( QDir::Dirs | QDir::NoDotAndDotDot );
 
-  if ( subDirs.count() == 0 )
+  if ( subDirs.isEmpty() )
   {
     subDirs << "";
   }

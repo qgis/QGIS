@@ -430,7 +430,7 @@ bool QgsComposerLegend::readXML( const QDomElement& itemElem, const QDomDocument
   mSettings.setEqualColumnWidth( itemElem.attribute( "equalColumnWidth", "0" ).toInt() == 1 );
 
   QDomNodeList stylesNodeList = itemElem.elementsByTagName( "styles" );
-  if ( stylesNodeList.size() > 0 )
+  if ( !stylesNodeList.isEmpty() )
   {
     QDomNode stylesNode = stylesNodeList.at( 0 );
     for ( int i = 0; i < stylesNode.childNodes().size(); i++ )
@@ -492,7 +492,7 @@ bool QgsComposerLegend::readXML( const QDomElement& itemElem, const QDomDocument
 
   //restore general composer item properties
   QDomNodeList composerItemList = itemElem.elementsByTagName( "ComposerItem" );
-  if ( composerItemList.size() > 0 )
+  if ( !composerItemList.isEmpty() )
   {
     QDomElement composerItemElem = composerItemList.at( 0 ).toElement();
     _readXML( composerItemElem, doc );

@@ -108,7 +108,7 @@ eVisDatabaseConnectionGui::~eVisDatabaseConnectionGui()
 void eVisDatabaseConnectionGui::drawNewVectorLayer( const QString& layerName, const QString& xCoordinate, const QString& yCoordinate )
 {
   //if coorindate fields are defined, load as a delimited text layer
-  if ( !xCoordinate.isEmpty() && !yCoordinate.isEmpty() && mTempOutputFileList->size() > 0 )
+  if ( !xCoordinate.isEmpty() && !yCoordinate.isEmpty() && !mTempOutputFileList->isEmpty() )
   {
     //fileName is only available if the file is open
     //the last file in the list is always the newest

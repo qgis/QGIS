@@ -64,7 +64,7 @@ void QgsHttpRequestHandler::setHttpResponse( QByteArray *ba, const QString &form
 
 bool QgsHttpRequestHandler::responseReady() const
 {
-  return mHeaders.count() || mBody.size();
+  return !mHeaders.isEmpty() || !mBody.isEmpty();
 }
 
 bool QgsHttpRequestHandler::exceptionRaised() const

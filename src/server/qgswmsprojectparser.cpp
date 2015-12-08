@@ -224,7 +224,7 @@ QList<QgsMapLayer*> QgsWMSProjectParser::mapLayerFromStyle( const QString& lName
     }
   }
 
-  if ( layers.count() == 0 )
+  if ( layers.isEmpty() )
     throw QgsMapServiceException( "LayerNotDefined", QString( "Layer \"%1\" does not exist" ).arg( lName ) );
 
   return layers.values();
@@ -706,7 +706,7 @@ void QgsWMSProjectParser::owsGeneralAndResourceList( QDomElement& parentElement,
       keywordsElem.appendChild( keywordElem );
     }
 
-    if ( keywordList.size() > 0 )
+    if ( !keywordList.isEmpty() )
     {
       generalElem.appendChild( keywordsElem );
     }

@@ -534,7 +534,7 @@ void QgsCategorizedSymbolRendererV2Widget::changeSelectedSymbols()
 {
   QList<int> selectedCats = selectedCategories();
 
-  if ( selectedCats.size() > 0 )
+  if ( !selectedCats.isEmpty() )
   {
     QgsSymbolV2* newSymbol = mCategorizedSymbol->clone();
     QgsSymbolV2SelectorDialog dlg( newSymbol, mStyle, mLayer, this );
@@ -562,7 +562,7 @@ void QgsCategorizedSymbolRendererV2Widget::changeCategorizedSymbol()
   QItemSelectionModel* m = viewCategories->selectionModel();
   QModelIndexList i = m->selectedRows();
 
-  if ( m && i.size() > 0 )
+  if ( m && !i.isEmpty() )
   {
     changeSelectedSymbols();
     return;
@@ -733,7 +733,7 @@ void QgsCategorizedSymbolRendererV2Widget::addCategories()
 
   if ( !mOldClassificationAttribute.isEmpty() &&
        attrName != mOldClassificationAttribute &&
-       mRenderer->categories().count() > 0 )
+       !mRenderer->categories().isEmpty() )
   {
     int res = QMessageBox::question( this,
                                      tr( "Confirm Delete" ),
@@ -754,7 +754,7 @@ void QgsCategorizedSymbolRendererV2Widget::addCategories()
   if ( !deleteExisting )
   {
     QgsCategoryList prevCats = mRenderer->categories();
-    keepExistingColors = prevCats.size() > 0;
+    keepExistingColors = !prevCats.isEmpty();
     for ( int i = 0; i < cats.size(); ++i )
     {
       bool contains = false;
@@ -878,7 +878,7 @@ QList<QgsSymbolV2*> QgsCategorizedSymbolRendererV2Widget::selectedSymbols()
   QItemSelectionModel* m = viewCategories->selectionModel();
   QModelIndexList selectedIndexes = m->selectedRows( 1 );
 
-  if ( m && selectedIndexes.size() > 0 )
+  if ( m && !selectedIndexes.isEmpty() )
   {
     const QgsCategoryList& categories = mRenderer->categories();
     QModelIndexList::const_iterator indexIt = selectedIndexes.constBegin();
@@ -902,7 +902,7 @@ QgsCategoryList QgsCategorizedSymbolRendererV2Widget::selectedCategoryList()
   QItemSelectionModel* m = viewCategories->selectionModel();
   QModelIndexList selectedIndexes = m->selectedRows( 1 );
 
-  if ( m && selectedIndexes.size() > 0 )
+  if ( m && !selectedIndexes.isEmpty() )
   {
     QModelIndexList::const_iterator indexIt = selectedIndexes.constBegin();
     for ( ; indexIt != selectedIndexes.constEnd(); ++indexIt )

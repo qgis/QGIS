@@ -673,7 +673,7 @@ QStringList QgsOgrProvider::subLayers() const
       OGR_L_ResetReading( layer );
       // it may happen that there are no features in the layer, in that case add unknown type
       // to show to user that the layer exists but it is empty
-      if ( fCount.size() == 0 )
+      if ( fCount.isEmpty() )
       {
         fCount[wkbUnknown] = 0;
       }
@@ -2273,7 +2273,7 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
   {
     QStringList fields = it->second.split( ';' );
 
-    if ( fields.size() == 0 )
+    if ( fields.isEmpty() )
       continue;
 
     int width = fields.size() > 1 ? fields[1].toInt() : -1;

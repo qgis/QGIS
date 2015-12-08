@@ -349,7 +349,7 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
 
   //pen
   QDomNodeList frameColorList = itemElem.elementsByTagName( "FrameColor" );
-  if ( frameColorList.size() > 0 )
+  if ( !frameColorList.isEmpty() )
   {
     QDomElement frameColorElem = frameColorList.at( 0 ).toElement();
     bool redOk, greenOk, blueOk, alphaOk, widthOk;
@@ -374,7 +374,7 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
 
   //brush
   QDomNodeList bgColorList = itemElem.elementsByTagName( "BackgroundColor" );
-  if ( bgColorList.size() > 0 )
+  if ( !bgColorList.isEmpty() )
   {
     QDomElement bgColorElem = bgColorList.at( 0 ).toElement();
     bool redOk, greenOk, blueOk, alphaOk;
@@ -1004,7 +1004,7 @@ double QgsComposerItem::horizontalViewScaleFactor() const
   if ( scene() )
   {
     QList<QGraphicsView*> viewList = scene()->views();
-    if ( viewList.size() > 0 ) //if not, probably this function was called from non-gui code
+    if ( !viewList.isEmpty() ) //if not, probably this function was called from non-gui code
     {
       QGraphicsView* currentView = viewList.at( 0 );
       if ( currentView->isVisible() )

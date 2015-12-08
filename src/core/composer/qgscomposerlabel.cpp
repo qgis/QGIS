@@ -458,7 +458,7 @@ bool QgsComposerLabel::readXML( const QDomElement& itemElem, const QDomDocument&
 
   //font color
   QDomNodeList fontColorList = itemElem.elementsByTagName( "FontColor" );
-  if ( fontColorList.size() > 0 )
+  if ( !fontColorList.isEmpty() )
   {
     QDomElement fontColorElem = fontColorList.at( 0 ).toElement();
     int red = fontColorElem.attribute( "red", "0" ).toInt();
@@ -473,7 +473,7 @@ bool QgsComposerLabel::readXML( const QDomElement& itemElem, const QDomDocument&
 
   //restore general composer item properties
   QDomNodeList composerItemList = itemElem.elementsByTagName( "ComposerItem" );
-  if ( composerItemList.size() > 0 )
+  if ( !composerItemList.isEmpty() )
   {
     QDomElement composerItemElem = composerItemList.at( 0 ).toElement();
 

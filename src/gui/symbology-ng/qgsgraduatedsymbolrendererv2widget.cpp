@@ -619,7 +619,7 @@ void QgsGraduatedSymbolRendererV2Widget::updateUiFromRenderer( bool updateCount 
   else
   {
     methodComboBox->setCurrentIndex( 1 );
-    if ( mRenderer->ranges().count() ) // avoid overiding default size with zeros
+    if ( !mRenderer->ranges().isEmpty() ) // avoid overiding default size with zeros
     {
       minSizeSpinBox->setValue( mRenderer->minSymbolSize() );
       maxSizeSpinBox->setValue( mRenderer->maxSymbolSize() );
@@ -777,7 +777,7 @@ void QgsGraduatedSymbolRendererV2Widget::changeGraduatedSymbol()
   // Change the selected symbols alone if anything is selected
   QItemSelectionModel* m = viewGraduated->selectionModel();
   QModelIndexList i = m->selectedRows();
-  if ( m && i.size() > 0 )
+  if ( m && !i.isEmpty() )
   {
     changeSelectedSymbols();
     return;
@@ -874,7 +874,7 @@ void QgsGraduatedSymbolRendererV2Widget::changeSelectedSymbols()
 {
   QItemSelectionModel* m = viewGraduated->selectionModel();
   QModelIndexList selectedIndexes = m->selectedRows( 1 );
-  if ( m && selectedIndexes.size() > 0 )
+  if ( m && !selectedIndexes.isEmpty() )
   {
     QgsSymbolV2* newSymbol = mGraduatedSymbol->clone();
     QgsSymbolV2SelectorDialog dlg( newSymbol, mStyle, mLayer, this );
@@ -1052,7 +1052,7 @@ QList<QgsSymbolV2*> QgsGraduatedSymbolRendererV2Widget::selectedSymbols()
 
   QItemSelectionModel* m = viewGraduated->selectionModel();
   QModelIndexList selectedIndexes = m->selectedRows( 1 );
-  if ( m && selectedIndexes.size() > 0 )
+  if ( m && !selectedIndexes.isEmpty() )
   {
     const QgsRangeList& ranges = mRenderer->ranges();
     QModelIndexList::const_iterator indexIt = selectedIndexes.constBegin();

@@ -533,7 +533,7 @@ void eVisGenericEventBrowserGui::displayImage()
 
     //clear any selection that may be present
     mVectorLayer->removeSelection();
-    if ( mFeatureIds.size() > 0 )
+    if ( !mFeatureIds.isEmpty() )
     {
       //select the current feature in the layer
       mVectorLayer->select( mFeatureIds.at( mCurrentFeatureIndex ) );
@@ -1118,7 +1118,7 @@ void eVisGenericEventBrowserGui::on_tableFileTypeAssociations_cellDoubleClicked(
 void eVisGenericEventBrowserGui::renderSymbol( QPainter* thePainter )
 {
 
-  if ( mFeatureIds.size() > 0 && mVectorLayer != 0 )
+  if ( !mFeatureIds.isEmpty() && mVectorLayer != 0 )
   {
     //Get a pointer to the current feature
     QgsFeature* myFeature = featureAtId( mFeatureIds.at( mCurrentFeatureIndex ) );

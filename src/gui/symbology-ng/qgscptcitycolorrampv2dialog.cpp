@@ -299,7 +299,7 @@ void QgsCptCityColorRampV2Dialog::on_mListWidget_itemClicked( QListWidgetItem * 
 
 void QgsCptCityColorRampV2Dialog::on_mListWidget_itemSelectionChanged()
 {
-  if ( mListWidget->selectedItems().count() == 0 )
+  if ( mListWidget->selectedItems().isEmpty() )
   {
     mRamp->setName( "", "" );
   }

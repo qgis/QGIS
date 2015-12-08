@@ -414,7 +414,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
     {
       QStringList split = pkeyIt->split( '/' );
       QString srcAuthId, destAuthId;
-      if ( split.size() > 0 )
+      if ( ! split.isEmpty() )
       {
         srcAuthId = split.at( 0 );
       }

@@ -58,7 +58,7 @@ void QgsTileScaleWidget::layerChanged( QgsMapLayer *layer )
     mResolutions << r.toDouble();
   }
 
-  if ( mResolutions.size() == 0 )
+  if ( mResolutions.isEmpty() )
     return;
 
   mSlider->setRange( 0, mResolutions.size() - 1 );
@@ -77,7 +77,7 @@ void QgsTileScaleWidget::scaleChanged( double scale )
 {
   Q_UNUSED( scale );
 
-  if ( mResolutions.size() == 0 )
+  if ( mResolutions.isEmpty() )
     return;
 
   double mupp = mMapCanvas->mapUnitsPerPixel();

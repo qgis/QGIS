@@ -102,7 +102,7 @@ bool QgsRasterInterface::hasStatistics( int theBandNo,
                                         int theSampleSize )
 {
   QgsDebugMsg( QString( "theBandNo = %1 theStats = %2 theSampleSize = %3" ).arg( theBandNo ).arg( theStats ).arg( theSampleSize ) );
-  if ( mStatistics.size() == 0 ) return false;
+  if ( mStatistics.isEmpty() ) return false;
 
   QgsRasterBandStats myRasterBandStats;
   initStatistics( myRasterBandStats, theBandNo, theStats, theExtent, theSampleSize );
@@ -376,7 +376,7 @@ bool QgsRasterInterface::hasHistogram( int theBandNo,
   QgsDebugMsg( QString( "theBandNo = %1 theBinCount = %2 theMinimum = %3 theMaximum = %4 theSampleSize = %5" ).arg( theBandNo ).arg( theBinCount ).arg( theMinimum ).arg( theMaximum ).arg( theSampleSize ) );
   // histogramDefaults() needs statistics if theMinimum or theMaximum is NaN ->
   // do other checks which don't need statistics before histogramDefaults()
-  if ( mHistograms.size() == 0 ) return false;
+  if ( mHistograms.isEmpty() ) return false;
 
   QgsRasterHistogram myHistogram;
   initHistogram( myHistogram, theBandNo, theBinCount, theMinimum, theMaximum, theExtent, theSampleSize, theIncludeOutOfRange );

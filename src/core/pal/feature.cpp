@@ -656,7 +656,7 @@ namespace pal
     delete[] ad;
 
     int nbp = positions.size();
-    while ( positions.size() > 0 )
+    while ( !positions.isEmpty() )
     {
       lPos << positions.takeFirst();
     }
@@ -1033,7 +1033,7 @@ namespace pal
 
     int nbp;
 
-    if ( shapes_final.size() > 0 )
+    if ( !shapes_final.isEmpty() )
     {
       QLinkedList<LabelPosition*> positions;
 
@@ -1051,7 +1051,7 @@ namespace pal
       j = 0;
 
       // Compute bounding box foreach finalShape
-      while ( shapes_final.size() > 0 )
+      while ( !shapes_final.isEmpty() )
       {
         PointSet *shape = shapes_final.takeFirst();
         boxes[j] = shape->compute_chull_bbox();
