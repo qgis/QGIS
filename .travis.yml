@@ -5,7 +5,6 @@ dist: precise
 group: edge
 
 os:
-  - linux
   - osx
 
 compiler:
