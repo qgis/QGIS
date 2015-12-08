@@ -25,6 +25,11 @@ class TestQgsMapLayerRegistry(unittest.TestCase):
         reg = QgsMapLayerRegistry.instance()
         # Should not segfault
         reg.removeMapLayers(['not_exists'])
+        reg.removeMapLayer('not_exists2')
+
+        # check also that the removal of an unexistant layer does not insert a null layer
+        for k, layer in reg.mapLayers().items():
+            assert(layer is not None)
 
 
 if __name__ == '__main__':
