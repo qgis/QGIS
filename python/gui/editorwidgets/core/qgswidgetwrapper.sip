@@ -14,6 +14,12 @@
  ***************************************************************************/
 
 
+// This is required for the ConvertToSubClassCode to work properly
+// so RTTI for casting is available in the whole module.
+%ModuleCode
+#include "qgsrelationwidgetwrapper.h"
+%End
+
 /**
  * Manages an editor widget
  * Widget and wrapper share the same parent
@@ -32,9 +38,10 @@ class QgsWidgetWrapper : QObject
 %End
 
 %ConvertToSubClassCode
-  QgsEditorWidgetWrapper* eww = qobject_cast<QgsEditorWidgetWrapper*>( sipCpp );
-  if ( eww )
+  if ( qobject_cast<QgsEditorWidgetWrapper*>( sipCpp ) )
     sipType = sipType_QgsEditorWidgetWrapper;
+  else if ( qobject_cast<QgsRelationWidgetWrapper*>( sipCpp ) )
+    sipType = sipType_QgsRelationWidgetWrapper;
   else
     sipType = 0;
 %End

@@ -40,4 +40,9 @@ const QgsFeatureIds& QgsFeatureSelectionDlg::selectedFeatures()
   return mFeatureSelection->selectedFeaturesIds();
 }
 
+void QgsFeatureSelectionDlg::setSelectedFeatures( const QgsFeatureIds& ids )
+{
+  mFeatureSelection->setSelectedFeatures( ids );
+}
+
 
