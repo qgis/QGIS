@@ -1700,6 +1700,14 @@ static QVariant fcnBuffer( const QVariantList& values, const QgsExpressionContex
   delete geom;
   return result;
 }
+static QVariant fcnTranslate( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
+  double dx = getDoubleValue( values.at( 1 ), parent );
+  double dy = getDoubleValue( values.at( 2 ), parent );
+  fGeom.translate( dx, dy );
+  return QVariant::fromValue( fGeom );
+}
 static QVariant fcnCentroid( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
@@ -2485,6 +2493,7 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( "contains", 2, fcnContains, "GeometryGroup" )
     << new StaticFunction( "overlaps", 2, fcnOverlaps, "GeometryGroup" )
     << new StaticFunction( "within", 2, fcnWithin, "GeometryGroup" )
+    << new StaticFunction( "translate", 3, fcnTranslate, "GeometryGroup" )
     << new StaticFunction( "buffer", -1, fcnBuffer, "GeometryGroup" )
     << new StaticFunction( "centroid", 1, fcnCentroid, "GeometryGroup" )
     << new StaticFunction( "reverse", 1, fcnReverse, "GeometryGroup" )

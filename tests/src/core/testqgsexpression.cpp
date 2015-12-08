@@ -1424,7 +1424,9 @@ class TestQgsExpression: public QObject
       QTest::addColumn<bool>( "needGeom" );
       QTest::addColumn<void*>( "resultptr" );
 
-      QgsPolyline polygon_ring;
+      QgsPoint point( 0, 0 );
+      QgsPolyline line, polygon_ring;
+      line << QgsPoint( 0, 0 ) << QgsPoint( 10, 10 );
       polygon_ring << QgsPoint( 0, 0 ) << QgsPoint( 10, 10 ) << QgsPoint( 10, 0 ) << QgsPoint( 0, 0 );
       QgsPolygon polygon;
       polygon << polygon_ring;
@@ -1460,6 +1462,13 @@ class TestQgsExpression: public QObject
       QTest::newRow( "convexHull multi" ) << "convexHull( geomFromWKT('GEOMETRYCOLLECTION(POINT(0 1), POINT(0 0), POINT(1 0), POINT(1 1))') )" << ( void* ) geom << false << false << ( void* ) QgsGeometry::fromWkt( "POLYGON ((0 0,0 1,1 1,1 0,0 0))" );
       geom = QgsGeometry::fromPolygon( polygon );
       QTest::newRow( "bounds" ) << "bounds( $geometry )" << ( void* ) geom << false << true << ( void* ) QgsGeometry::fromRect( geom->boundingBox() );
+
+      geom = QgsGeometry::fromPolygon( polygon );
+      QTest::newRow( "translate" ) << "translate( $geometry, 1, 2)" << ( void* ) geom << false << true << ( void* ) QgsGeometry::fromWkt( "POLYGON ((1 2,11 12,11 2,1 2))" );
+      geom = QgsGeometry::fromPolyline( line );
+      QTest::newRow( "translate" ) << "translate( $geometry, -1, 2)" << ( void* ) geom << false << true << ( void* ) QgsGeometry::fromWkt( "LINESTRING (-1 2, 9 12)" );
+      geom = QgsGeometry::fromPoint( point );
+      QTest::newRow( "translate" ) << "translate( $geometry, 1, -2)" << ( void* ) geom << false << true << ( void* ) QgsGeometry::fromWkt( "POINT(1 -2)" );
     }
 
     void eval_geometry_method()
