@@ -50,8 +50,13 @@ class CORE_EXPORT QgsSymbolLayerV2
 
     virtual ~QgsSymbolLayerV2();
 
-    // not necessarily supported by all symbol layers...
+    /**
+     * The fill color.
+     */
     virtual QColor color() const { return mColor; }
+    /**
+     * The fill color.
+     */
     virtual void setColor( const QColor& color ) { mColor = color; }
 
     /** Set outline color. Supported by marker and fill layers.
@@ -70,11 +75,18 @@ class CORE_EXPORT QgsSymbolLayerV2
      * @note added in 2.1 */
     virtual QColor fillColor() const { return QColor(); }
 
+    /**
+     * Returns a string that represents this layer type. Used for serialization.
+     * Should match with the string used to register this symbol layer in the registry.
+     */
     virtual QString layerType() const = 0;
 
     virtual void startRender( QgsSymbolV2RenderContext& context ) = 0;
     virtual void stopRender( QgsSymbolV2RenderContext& context ) = 0;
 
+    /**
+     * Shall be reimplemented by subclasses to create a deep copy of the instance.
+     */
     virtual QgsSymbolLayerV2* clone() const = 0;
 
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const
@@ -82,15 +94,23 @@ class CORE_EXPORT QgsSymbolLayerV2
 
     virtual QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const { Q_UNUSED( mmScaleFactor ); Q_UNUSED( mapUnitScaleFactor ); return QString(); }
 
+    /**
+     * Should be reimplemented by subclasses to return a string map that
+     * contains the configuration information for the symbol layer. This
+     * is used to serialize a symbol layer perstistently.
+     */
     virtual QgsStringMap properties() const = 0;
 
     virtual void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size ) = 0;
 
-    virtual QgsSymbolV2* subSymbol() { return NULL; }
-    // set layer's subsymbol. takes ownership of the passed symbol
+    virtual QgsSymbolV2* subSymbol() { return 0; }
+    //! set layer's subsymbol. takes ownership of the passed symbol
     virtual bool setSubSymbol( QgsSymbolV2* symbol ) { delete symbol; return false; }
 
     QgsSymbolV2::SymbolType type() const { return mType; }
+
+    //! Returns if the layer can be used below the specified symbol
+    virtual bool isCompatibleWithSymbol( QgsSymbolV2* symbol );
 
     void setLocked( bool locked ) { mLocked = locked; }
     bool isLocked() const { return mLocked; }

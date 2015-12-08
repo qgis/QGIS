@@ -20,6 +20,7 @@
 #include <QList>
 #include <QMap>
 #include "qgsmapunitscale.h"
+#include "qgsgeometry.h"
 
 class QColor;
 class QImage;
@@ -42,6 +43,7 @@ class QgsMarkerSymbolLayerV2;
 class QgsLineSymbolLayerV2;
 class QgsFillSymbolLayerV2;
 class QgsDataDefined;
+class QgsSymbolV2RenderContext;
 
 typedef QList<QgsSymbolLayerV2*> QgsSymbolLayerV2List;
 
@@ -69,7 +71,8 @@ class CORE_EXPORT QgsSymbolV2
     {
       Marker, //!< Marker symbol
       Line,   //!< Line symbol
-      Fill    //!< Fill symbol
+      Fill,   //!< Fill symbol
+      Hybrid  //!< Hybrid symbol
     };
 
     /**
@@ -215,6 +218,11 @@ class CORE_EXPORT QgsSymbolV2
      */
     bool clipFeaturesToExtent() const { return mClipFeaturesToExtent; }
 
+    /**
+     * Return a list of attributes required to render this feature.
+     * This should include any attributes required by the symbology including
+     * the ones required by expressions.
+     */
     QSet<QString> usedAttributes() const;
 
     /** Returns whether the symbol utilises any data defined properties.
@@ -226,14 +234,60 @@ class CORE_EXPORT QgsSymbolV2
     void setLayer( const QgsVectorLayer* layer ) { mLayer = layer; }
     const QgsVectorLayer* layer() const { return mLayer; }
 
+    /**
+     * Render a feature.
+     */
+    void renderFeature( const QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false, int currentVertexMarkerType = 0, int currentVertexMarkerSize = 0 );
+
   protected:
     QgsSymbolV2( SymbolType type, const QgsSymbolLayerV2List& layers ); // can't be instantiated
 
+    /**
+     * Creates a point in screen coordinates from a QgsPoint in map coordinates
+     */
+    static inline void _getPoint( QPointF& pt, QgsRenderContext& context, const QgsPoint& point )
+    {
+      if ( context.coordinateTransform() )
+        pt = context.coordinateTransform()->transform( point ).toQPointF();
+      else
+        pt = point.toQPointF();
+
+      context.mapToPixel().transformInPlace( pt.rx(), pt.ry() );
+    }
+
+    /**
+     * Creates a line string in screen coordinates from a wkb string in map
+     * coordinates
+     */
+    static const unsigned char* _getLineString( QPolygonF& pts, QgsRenderContext& context, const unsigned char* wkb, bool clipToExtent = true );
+
+    /**
+     * Creates a polygon in screen coordinates from a wkb string in map
+     * coordinates
+     */
+    static const unsigned char* _getPolygon( QPolygonF& pts, QList<QPolygonF>& holes, QgsRenderContext& context, const unsigned char* wkb, bool clipToExtent = true );
+
+    /**
+     * Retrieve a cloned list of all layers that make up this symbol.
+     * Ownership is transferred to the caller.
+     */
     QgsSymbolLayerV2List cloneLayers() const;
+
+    /**
+     * Renders a context using a particular symbol layer without passing in a
+     * geometry. This is used as fallback, if the symbol being rendered is not
+     * compatible with the specified layer. In such a case, this method can be
+     * called and will call the layer's rendering method anyway but the
+     * geometry passed to the layer will be empty.
+     * This is required for layers that generate their own geometry from other
+     * information in the rendering context.
+     */
+    void renderUsingLayer( QgsSymbolLayerV2* layer, QgsSymbolV2RenderContext& context );
 
     //! check whether a symbol layer type can be used within the symbol
     //! (marker-marker, line-line, fill-fill/line)
-    bool isSymbolLayerCompatible( SymbolType t );
+    //! @deprecated since 2.14, use QgsSymbolLayerV2::isCompatibleWithSymbol instead
+    Q_DECL_DEPRECATED bool isSymbolLayerCompatible( SymbolType layerType );
 
     SymbolType mType;
     QgsSymbolLayerV2List mLayers;

@@ -58,8 +58,8 @@ class QgsSymbolLayerV2
 	sipType = sipType_QgsFillSymbolLayerV2;
       break;
 
-    default:
-      sipType = 0;
+    case QgsSymbolV2::Hybrid:
+      sipType = sipType_QgsGeometryGeneratorSymbolLayerV2;
       break;
   }
 %End

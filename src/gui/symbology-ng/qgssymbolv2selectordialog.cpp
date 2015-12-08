@@ -132,7 +132,7 @@ class SymbolLayerItem : public QStandardItem
     {
       mLayer = layer;
       mIsLayer = true;
-      mSymbol = NULL;
+      mSymbol = 0;
       updatePreview();
     }
 
@@ -140,7 +140,7 @@ class SymbolLayerItem : public QStandardItem
     {
       mSymbol = symbol;
       mIsLayer = false;
-      mLayer = NULL;
+      mLayer = 0;
       updatePreview();
     }
 
@@ -163,16 +163,12 @@ class SymbolLayerItem : public QStandardItem
     // returns the symbol pointer; helpful in determining a layer's parent symbol
     QgsSymbolV2* symbol()
     {
-      if ( mIsLayer )
-        return NULL;
       return mSymbol;
     }
 
     QgsSymbolLayerV2* layer()
     {
-      if ( mIsLayer )
-        return mLayer;
-      return NULL;
+      return mLayer;
     }
 
     QVariant data( int role ) const override
@@ -396,11 +392,11 @@ SymbolLayerItem* QgsSymbolV2SelectorDialog::currentLayerItem()
 {
   QModelIndex idx = layersTree->currentIndex();
   if ( !idx.isValid() )
-    return NULL;
+    return 0;
 
   SymbolLayerItem *item = static_cast<SymbolLayerItem*>( model->itemFromIndex( idx ) );
   if ( !item->isLayer() )
-    return NULL;
+    return 0;
 
   return item;
 }
@@ -647,7 +643,7 @@ void QgsSymbolV2SelectorDialog::saveSymbol()
 
 void QgsSymbolV2SelectorDialog::changeLayer( QgsSymbolLayerV2* newLayer )
 {
-  SymbolLayerItem *item = currentLayerItem();
+  SymbolLayerItem* item = currentLayerItem();
   QgsSymbolLayerV2* layer = item->layer();
 
   if ( layer->subSymbol() )
@@ -670,6 +666,6 @@ void QgsSymbolV2SelectorDialog::changeLayer( QgsSymbolLayerV2* newLayer )
 
   item->updatePreview();
   updatePreview();
-  // Important: This lets the layer to have its own layer properties widget
+  // Important: This lets the layer have its own layer properties widget
   layerChanged();
 }

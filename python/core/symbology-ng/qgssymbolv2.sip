@@ -160,6 +160,11 @@ class QgsSymbolV2
      */
     bool clipFeaturesToExtent() const;
 
+    /**
+     * Return a list of attributes required to render this feature.
+     * This should include any attributes required by the symbology including
+     * the ones required by expressions.
+     */
     QSet<QString> usedAttributes() const;
 
     /** Returns whether the symbol utilises any data defined properties.
@@ -170,10 +175,41 @@ class QgsSymbolV2
     void setLayer( const QgsVectorLayer* layer );
     const QgsVectorLayer* layer() const;
 
+    /**
+     * Render a feature.
+     */
+    void renderFeature( const QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false, int currentVertexMarkerType = 0, int currentVertexMarkerSize = 0 );
+
   protected:
     QgsSymbolV2( SymbolType type, const QgsSymbolLayerV2List& layers /Transfer/ ); // can't be instantiated
 
+    /**
+     * Creates a point in screen coordinates from a wkb string in map
+     * coordinates
+     */
+    static void _getPoint( QPointF& pt /Out/, QgsRenderContext& context, const QgsPoint& point );
+    /**
+     * Creates a line string in screen coordinates from a wkb string in map
+     * coordinates
+     */
+    static const unsigned char* _getLineString( QPolygonF& pts, QgsRenderContext& context, const unsigned char* wkb, bool clipToExtent = true );
+    /**
+     * Creates a polygon in screen coordinates from a wkb string in map
+     * coordinates
+     */
+    static const unsigned char* _getPolygon( QPolygonF& pts, QList<QPolygonF>& holes, QgsRenderContext& context, const unsigned char* wkb, bool clipToExtent = true );
+
     QgsSymbolLayerV2List cloneLayers() const /Factory/;
+    /**
+     * Renders a context using a particular symbol layer without passing in a
+     * geometry. This is used as fallback, if the symbol being rendered is not
+     * compatible with the specified layer. In such a case, this method can be
+     * called and will call the layer's rendering method anyway but the
+     * geometry passed to the layer will be empty.
+     * This is required for layers that generate their own geometry from other
+     * information in the rendering context.
+     */
+    void renderUsingLayer( QgsSymbolLayerV2* layer, QgsSymbolV2RenderContext& context );
 
     //! check whether a symbol layer type can be used within the symbol
     //! (marker-marker, line-line, fill-fill/line)
