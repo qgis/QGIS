@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
+ <author>Médéric Ribreux</author>
  <class>QgsFileNameConfigDlg</class>
  <widget class="QWidget" name="QgsFileNameConfigDlg">
   <property name="geometry">
@@ -7,13 +8,13 @@
     <x>0</x>
     <y>0</y>
     <width>444</width>
-    <height>251</height>
+    <height>287</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,0,0,0,1">
+  <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,0,0,0">
    <property name="sizeConstraint">
     <enum>QLayout::SetMinimumSize</enum>
    </property>
@@ -29,10 +30,13 @@
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This option displays file paths as clickable hyperlinks. When you click on the file path, the file should normally be opened by the default viewer defined in your operating system.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="title">
-      <string>Use an hyperlink for file name</string>
+      <string>Use a hyperlink for file name</string>
      </property>
      <property name="checkable">
       <bool>true</bool>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
      </property>
      <layout class="QFormLayout" name="formLayout">
       <item row="0" column="0">
@@ -77,8 +81,17 @@
      </item>
      <item>
       <widget class="QLineEdit" name="mRootPath">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
        <property name="toolTip">
         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When not null, opens the file selector at the root of this path for searching new files.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="autoFillBackground">
+        <bool>false</bool>
+       </property>
+       <property name="placeholderText">
+        <string>File selection will start from this path</string>
        </property>
       </widget>
      </item>
@@ -92,26 +105,62 @@
     </layout>
    </item>
    <item>
-    <widget class="QCheckBox" name="mRelativeDefault">
-     <property name="enabled">
+    <widget class="QGroupBox" name="mRelativeGroupBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If you want to make the attribute to store only relative paths, toggle one of these options.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="title">
+      <string>Relative Paths</string>
+     </property>
+     <property name="flat">
       <bool>false</bool>
      </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If possible, this option makes the storage of the filenames with relative paths from the default path set just above.&lt;/p&gt;&lt;p&gt;Eg: if your default path is &lt;span style=&quot; font-style:italic;&quot;&gt;&amp;quot;/home/user/data/&amp;quot;&lt;/span&gt; and your filename is &lt;span style=&quot; font-style:italic;&quot;&gt;&amp;quot;/home/user/data/files/test.pdf&amp;quot;&lt;/span&gt;, the attribute will only store &lt;span style=&quot; font-style:italic;&quot;&gt;&amp;quot;files/test.pdf&amp;quot;&lt;/span&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     <property name="checkable">
+      <bool>true</bool>
      </property>
-     <property name="text">
-      <string>Store relative paths to the default path</string>
+     <property name="checked">
+      <bool>false</bool>
      </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QCheckBox" name="mRelativeProj">
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If possible, this option makes the storage of the filenames with relative paths from the current QGIS project path.&lt;/p&gt;&lt;p&gt;Eg: if your QGIS project is in &lt;span style=&quot; font-style:italic;&quot;&gt;&amp;quot;/home/user/my_project.qgs&amp;quot;&lt;/span&gt; and your filename is &lt;span style=&quot; font-style:italic;&quot;&gt;&amp;quot;/home/user/data/files/test.pdf&amp;quot;&lt;/span&gt;, the attribute will only store &lt;span style=&quot; font-style:italic;&quot;&gt;&amp;quot;data/files/test.pdf&amp;quot;&lt;/span&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="text">
-      <string>Store paths relatives to the project path</string>
-     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_3">
+      <item>
+       <widget class="QRadioButton" name="mRelativeProj">
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If possible, this option makes the storage of the filenames with relative paths from the current QGIS project path.&lt;/p&gt;&lt;p&gt;Eg: if your QGIS project is in &lt;span style=&quot; font-style:italic;&quot;&gt;&amp;quot;/home/user/my_project.qgs&amp;quot;&lt;/span&gt; and your filename is &lt;span style=&quot; font-style:italic;&quot;&gt;&amp;quot;/home/user/data/files/test.pdf&amp;quot;&lt;/span&gt;, the attribute will only store &lt;span style=&quot; font-style:italic;&quot;&gt;&amp;quot;data/files/test.pdf&amp;quot;&lt;/span&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="text">
+         <string>Store relative paths to project path</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+        <attribute name="buttonGroup">
+         <string notr="true">mRelativeButtonGroup</string>
+        </attribute>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="mRelativeDefault">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If possible, this option makes the storage of the filenames with relative paths from the default path set just above.&lt;/p&gt;&lt;p&gt;Eg: if your default path is &lt;span style=&quot; font-style:italic;&quot;&gt;&amp;quot;/home/user/data/&amp;quot;&lt;/span&gt; and your filename is &lt;span style=&quot; font-style:italic;&quot;&gt;&amp;quot;/home/user/data/files/test.pdf&amp;quot;&lt;/span&gt;, the attribute will only store &lt;span style=&quot; font-style:italic;&quot;&gt;&amp;quot;files/test.pdf&amp;quot;&lt;/span&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="text">
+         <string>Store relative paths to default path</string>
+        </property>
+        <attribute name="buttonGroup">
+         <string notr="true">mRelativeButtonGroup</string>
+        </attribute>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
    <item>
@@ -126,7 +175,7 @@
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set exclusive file selection methods.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="title">
-      <string>File storage options</string>
+      <string>File path storage option</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
@@ -135,7 +184,7 @@
          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If this option is checked, the attribute can only store filenames (this is the default choice).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="text">
-         <string>Store only files</string>
+         <string>Store file paths</string>
         </property>
         <property name="checked">
          <bool>true</bool>
@@ -151,7 +200,7 @@
          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If this option is checked, the attribute can only store directories and not filenames. The file selector will let you choose only directories and not files.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="text">
-         <string>Store only directories</string>
+         <string>Store directory paths</string>
         </property>
         <attribute name="buttonGroup">
          <string notr="true">mStorageButtonGroup</string>
@@ -167,5 +216,6 @@
  <connections/>
  <buttongroups>
   <buttongroup name="mStorageButtonGroup"/>
+  <buttongroup name="mRelativeButtonGroup"/>
  </buttongroups>
 </ui>

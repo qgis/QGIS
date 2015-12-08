@@ -35,11 +35,8 @@ QgsFileNameConfigDlg::QgsFileNameConfigDlg( QgsVectorLayer* vl, int fieldIdx, QW
   // Activate Relative Default Path option only if Default Path is set
   connect( mRootPath, SIGNAL( textChanged( const QString &) ), this, SLOT( enableRelativeDefault() ) );
 
-  // Disable Relative Project path if Relative Default Path is checked
-  connect( mRelativeDefault, SIGNAL( stateChanged( int ) ), this, SLOT( enableRelativeProj( int ) ) );
-
-  // Disable Relative Default Path if Relative Project path is checked
-  connect( mRelativeProj, SIGNAL( stateChanged( int ) ), this, SLOT( enableRelativeDefault() ) );
+  // Dynamic GroupBox for relative paths option
+  connect( mRelativeGroupBox, SIGNAL( toggled( bool ) ), this, SLOT( enableRelative( bool ) ) );
 
   // set ids for StorageTypeButtons
   mStorageButtonGroup->setId( mStoreFilesButton, 0 );
@@ -47,12 +44,23 @@ QgsFileNameConfigDlg::QgsFileNameConfigDlg( QgsVectorLayer* vl, int fieldIdx, QW
 
   // First button is toggled by default
   mStorageButtonGroup->button( 0 )->toggle();
+
+  // set ids for RelativeButtons
+  mRelativeButtonGroup->setId( mRelativeProj, 0 );
+  mRelativeButtonGroup->setId( mRelativeDefault, 1 );
+
+  mRelativeButtonGroup->button( 0 )->toggle();
 }
 
 // Choose a base directory for rootPath
 void QgsFileNameConfigDlg::chooseDefaultPath()
 {
-  QString dir = QSettings().value( "/UI/lastFileNameWidgetDir", QDir::homePath() ).toString();
+  QString dir;
+  if ( !mRootPath->text().isEmpty() )
+    dir = mRootPath->text();
+  else
+    dir = QSettings().value( "/UI/lastFileNameWidgetDir", QDir::homePath() ).toString();
+  
   QString rootName = QFileDialog::getExistingDirectory( this, tr( "Select a directory" ), dir, QFileDialog::ShowDirsOnly );
 
   if ( rootName.isNull() )
@@ -61,31 +69,34 @@ void QgsFileNameConfigDlg::chooseDefaultPath()
   mRootPath->setText( rootName );
 }
 
-// Dynamic options
+// Modify RelativeDefault according to mRootPath content
 void QgsFileNameConfigDlg::enableRelativeDefault()
 {
-  if ( !mRelativeProj->isChecked() )
-  {
-    if ( mRootPath->text().isEmpty() )
-    {
-      mRelativeDefault->setCheckState( Qt::Unchecked );
-      mRelativeProj->setEnabled( true );
-    }
+  // Activate (or not) the RelativeDefault button if default path
+  if ( mRelativeGroupBox->isChecked() )
     mRelativeDefault->setEnabled( !mRootPath->text().isEmpty() );
+
+  // If no default path, RelativeProj button enabled by default
+  if ( mRootPath->text().isEmpty() )
+    mRelativeProj->toggle();
+}
+
+// Dynamic activation of RelativeGroupBox
+void QgsFileNameConfigDlg::enableRelative( bool state )
+{
+  if ( state )
+  {
+    mRelativeProj->setEnabled( true );
+    if ( mRootPath->text().isEmpty() )
+      mRelativeDefault->setEnabled( false );
+    else
+      mRelativeDefault->setEnabled( true );
   }
   else
   {
+    mRelativeProj->setEnabled( false );
     mRelativeDefault->setEnabled( false );
   }
-}
-
-// Dynamic activation
-void QgsFileNameConfigDlg::enableRelativeProj( int state )
-{
-  if ( state == Qt::Checked )
-    mRelativeProj->setEnabled( false );
-  else if ( state == Qt::Unchecked )
-    mRelativeProj->setEnabled( true );
 }
 
 // All non mandatory options are not stored to reduce
@@ -103,10 +114,6 @@ QgsEditorWidgetConfig QgsFileNameConfigDlg::config()
   
   if ( !mRootPath->text().isEmpty() )
     cfg.insert( "DefaultRoot", mRootPath->text() );
-  if ( mRelativeDefault->isChecked() )
-    cfg.insert( "RelativeStorage", "Default" );
-  if ( mRelativeProj->isChecked() )
-    cfg.insert( "RelativeStorage", "Project" );
 
   // Save Storage Mode
   int but = mStorageButtonGroup->checkedId();
@@ -116,6 +123,19 @@ QgsEditorWidgetConfig QgsFileNameConfigDlg::config()
       cfg.insert( "StorageMode", "Files" );
     else if ( but == 1 )
       cfg.insert( "StorageMode", "Dirs" );
+  }
+
+  // Save Relative Paths option
+  if ( mRelativeGroupBox->isChecked() )
+  {
+    but = mRelativeButtonGroup->checkedId();
+    if ( but != -1 )
+    {
+      if ( but == 0 )
+	cfg.insert( "RelativeStorage", "Project" );
+      else if ( but == 1 )
+	cfg.insert( "RelativeStorage", "Default" );
+    }
   }
   
   return cfg;
@@ -136,10 +156,11 @@ void QgsFileNameConfigDlg::setConfig( const QgsEditorWidgetConfig& config )
   
   if ( config.contains( "RelativeStorage" ) )
   {
+    mRelativeGroupBox->setChecked( true );
     if ( config.value( "RelativeStorage") == "Default" )
-      mRelativeDefault->setCheckState( Qt::Checked );
+      mRelativeDefault->toggle();
     else if ( config.value( "RelativeStorage") == "Project" )
-      mRelativeProj->setCheckState( Qt::Checked );
+      mRelativeProj->toggle();
   }
 
   // set storage mode

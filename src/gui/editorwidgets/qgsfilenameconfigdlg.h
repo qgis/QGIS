@@ -40,7 +40,7 @@ class GUI_EXPORT QgsFileNameConfigDlg : public QgsEditorConfigWidget, private Ui
   private slots:
     void chooseDefaultPath();
     void enableRelativeDefault();
-    void enableRelativeProj( int state );
+    void enableRelative( bool state );
 };
 
 #endif // QGSFILENAMECONFIGDLG_H
