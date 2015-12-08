@@ -214,6 +214,8 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
 
     void saveDefaultDatumTransformations();
 
+    QListWidgetItem* addScaleToScaleList( const QString &newScale );
+
   protected:
     QgisAppStyleSheet* mStyleSheetBuilder;
     QMap<QString, QVariant> mStyleSheetNewOpts;

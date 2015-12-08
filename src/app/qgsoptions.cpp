@@ -689,10 +689,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
     QStringList myScalesList = myPaths.split( ',' );
     Q_FOREACH ( const QString& scale, myScalesList )
     {
-      QListWidgetItem* newItem = new QListWidgetItem( mListGlobalScales );
-      newItem->setText( scale );
-      newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-      mListGlobalScales->addItem( newItem );
+      addScaleToScaleList( scale );
     }
   }
 
@@ -1922,10 +1919,7 @@ void QgsOptions::on_pbnAddScale_clicked()
 
   if ( myScale != -1 )
   {
-    QListWidgetItem* newItem = new QListWidgetItem( mListGlobalScales );
-    newItem->setText( QString( "1:%1" ).arg( myScale ) );
-    newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-    mListGlobalScales->addItem( newItem );
+    QListWidgetItem* newItem = addScaleToScaleList( QString( "1:%1" ).arg( myScale ) );
     mListGlobalScales->setCurrentItem( newItem );
   }
 }
@@ -1944,10 +1938,7 @@ void QgsOptions::on_pbnDefaultScaleValues_clicked()
   QStringList myScalesList = PROJECT_SCALES.split( ',' );
   Q_FOREACH ( const QString& scale, myScalesList )
   {
-    QListWidgetItem* newItem = new QListWidgetItem( mListGlobalScales );
-    newItem->setText( scale );
-    newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-    mListGlobalScales->addItem( newItem );
+    addScaleToScaleList( scale );
   }
 }
 
@@ -1969,10 +1960,7 @@ void QgsOptions::on_pbnImportScales_clicked()
 
   Q_FOREACH ( const QString& scale, myScales )
   {
-    QListWidgetItem* newItem = new QListWidgetItem( mListGlobalScales );
-    newItem->setText( scale );
-    newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-    mListGlobalScales->addItem( newItem );
+    addScaleToScaleList( scale );
   }
 }
 
@@ -2160,4 +2148,13 @@ void QgsOptions::on_mButtonExportColors_clicked()
     QMessageBox::critical( 0, tr( "Error exporting" ), tr( "Error writing palette file" ) );
     return;
   }
+}
+
+QListWidgetItem* QgsOptions::addScaleToScaleList( const QString &newScale )
+{
+  QListWidgetItem* newItem = new QListWidgetItem();
+  newItem->setText( newScale );
+  newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+  mListGlobalScales->addItem( newItem );
+  return newItem;
 }
