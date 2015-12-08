@@ -687,11 +687,10 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   if ( !myPaths.isEmpty() )
   {
     QStringList myScalesList = myPaths.split( ',' );
-    QStringList::const_iterator scaleIt = myScalesList.constBegin();
-    for ( ; scaleIt != myScalesList.constEnd(); ++scaleIt )
+    Q_FOREACH ( const QString& scale, myScalesList )
     {
       QListWidgetItem* newItem = new QListWidgetItem( mListGlobalScales );
-      newItem->setText( *scaleIt );
+      newItem->setText( scale );
       newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
       mListGlobalScales->addItem( newItem );
     }
@@ -1943,11 +1942,10 @@ void QgsOptions::on_pbnDefaultScaleValues_clicked()
   mListGlobalScales->clear();
 
   QStringList myScalesList = PROJECT_SCALES.split( ',' );
-  QStringList::const_iterator scaleIt = myScalesList.constBegin();
-  for ( ; scaleIt != myScalesList.constEnd(); ++scaleIt )
+  Q_FOREACH ( const QString& scale, myScalesList )
   {
     QListWidgetItem* newItem = new QListWidgetItem( mListGlobalScales );
-    newItem->setText( *scaleIt );
+    newItem->setText( scale );
     newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
     mListGlobalScales->addItem( newItem );
   }
@@ -1969,11 +1967,10 @@ void QgsOptions::on_pbnImportScales_clicked()
     QgsDebugMsg( msg );
   }
 
-  QStringList::const_iterator scaleIt = myScales.constBegin();
-  for ( ; scaleIt != myScales.constEnd(); ++scaleIt )
+  Q_FOREACH ( const QString& scale, myScales )
   {
     QListWidgetItem* newItem = new QListWidgetItem( mListGlobalScales );
-    newItem->setText( *scaleIt );
+    newItem->setText( scale );
     newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
     mListGlobalScales->addItem( newItem );
   }
