@@ -2243,21 +2243,36 @@ void QgsSVGFillSymbolLayer::setDefaultSvgParams()
     return;
   }
 
-  bool hasFillParam, hasOutlineParam, hasOutlineWidthParam;
-  bool hasDefaultFillColor, hasDefaultOutlineColor, hasDefaultOutlineWidth;
+  bool hasFillParam, hasFillOpacityParam, hasOutlineParam, hasOutlineWidthParam, hasOutlineOpacityParam;
+  bool hasDefaultFillColor, hasDefaultFillOpacity, hasDefaultOutlineColor, hasDefaultOutlineWidth, hasDefaultOutlineOpacity;
   QColor defaultFillColor, defaultOutlineColor;
-  double defaultOutlineWidth;
+  double defaultOutlineWidth, defaultFillOpacity, defaultOutlineOpacity;
   QgsSvgCache::instance()->containsParams( mSvgFilePath, hasFillParam, hasDefaultFillColor, defaultFillColor,
+      hasFillOpacityParam, hasDefaultFillOpacity, defaultFillOpacity,
       hasOutlineParam, hasDefaultOutlineColor, defaultOutlineColor,
-      hasOutlineWidthParam, hasDefaultOutlineWidth, defaultOutlineWidth );
+      hasOutlineWidthParam, hasDefaultOutlineWidth, defaultOutlineWidth,
+      hasOutlineOpacityParam, hasDefaultOutlineOpacity, defaultOutlineOpacity );
+
+  double newFillOpacity = hasFillOpacityParam ? mColor.alphaF() : 1.0;
+  double newOutlineOpacity = hasOutlineOpacityParam ? mSvgOutlineColor.alphaF() : 1.0;
 
   if ( hasDefaultFillColor )
   {
     mColor = defaultFillColor;
+    mColor.setAlphaF( newFillOpacity );
+  }
+  if ( hasDefaultFillOpacity )
+  {
+    mColor.setAlphaF( defaultFillOpacity );
   }
   if ( hasDefaultOutlineColor )
   {
     mSvgOutlineColor = defaultOutlineColor;
+    mSvgOutlineColor.setAlphaF( newOutlineOpacity );
+  }
+  if ( hasDefaultOutlineOpacity )
+  {
+    mSvgOutlineColor.setAlphaF( defaultOutlineOpacity );
   }
   if ( hasDefaultOutlineWidth )
   {

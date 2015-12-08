@@ -1149,15 +1149,25 @@ QgsSymbolLayerV2* QgsSvgMarkerSymbolLayerV2::create( const QgsStringMap& props )
        !props.contains( "outline_color" ) && !props.contains( "outline-width" ) && !props.contains( "outline_width" ) )
   {
     QColor fillColor, outlineColor;
+    double fillOpacity = 1.0;
+    double outlineOpacity = 1.0;
     double outlineWidth;
-    bool hasFillParam = false, hasOutlineParam = false, hasOutlineWidthParam = false;
-    bool hasDefaultFillColor = false, hasDefaultOutlineColor = false, hasDefaultOutlineWidth = false;
+    bool hasFillParam = false, hasFillOpacityParam = false, hasOutlineParam = false, hasOutlineWidthParam = false, hasOutlineOpacityParam = false;
+    bool hasDefaultFillColor = false, hasDefaultFillOpacity = false, hasDefaultOutlineColor = false, hasDefaultOutlineWidth = false, hasDefaultOutlineOpacity = false;
     QgsSvgCache::instance()->containsParams( name, hasFillParam, hasDefaultFillColor, fillColor,
+        hasFillOpacityParam, hasDefaultFillOpacity, fillOpacity,
         hasOutlineParam, hasDefaultOutlineColor, outlineColor,
-        hasOutlineWidthParam, hasDefaultOutlineWidth, outlineWidth );
+        hasOutlineWidthParam, hasDefaultOutlineWidth, outlineWidth,
+        hasOutlineOpacityParam, hasDefaultOutlineOpacity, outlineOpacity );
     if ( hasDefaultFillColor )
     {
       m->setFillColor( fillColor );
+    }
+    if ( hasDefaultFillOpacity )
+    {
+      QColor c = m->fillColor();
+      c.setAlphaF( fillOpacity );
+      m->setFillColor( c );
     }
     if ( hasDefaultOutlineColor )
     {
@@ -1166,6 +1176,12 @@ QgsSymbolLayerV2* QgsSvgMarkerSymbolLayerV2::create( const QgsStringMap& props )
     if ( hasDefaultOutlineWidth )
     {
       m->setOutlineWidth( outlineWidth );
+    }
+    if ( hasDefaultOutlineOpacity )
+    {
+      QColor c = m->outlineColor();
+      c.setAlphaF( outlineOpacity );
+      m->setOutlineColor( c );
     }
   }
 
@@ -1244,24 +1260,44 @@ QgsSymbolLayerV2* QgsSvgMarkerSymbolLayerV2::create( const QgsStringMap& props )
 void QgsSvgMarkerSymbolLayerV2::setPath( const QString& path )
 {
   mPath = path;
-  QColor fillColor, outlineColor;
-  double outlineWidth;
-  bool hasFillParam = false, hasOutlineParam = false, hasOutlineWidthParam = false;
-  bool hasDefaultFillColor = false, hasDefaultOutlineColor = false, hasDefaultOutlineWidth = false;
-  QgsSvgCache::instance()->containsParams( path, hasFillParam, hasDefaultFillColor, fillColor,
-      hasOutlineParam, hasDefaultOutlineColor, outlineColor,
-      hasOutlineWidthParam, hasDefaultOutlineWidth, outlineWidth );
+  QColor defaultFillColor, defaultOutlineColor;
+  double outlineWidth, fillOpacity, outlineOpacity;
+  bool hasFillParam = false, hasFillOpacityParam = false, hasOutlineParam = false, hasOutlineWidthParam = false, hasOutlineOpacityParam = false;
+  bool hasDefaultFillColor = false, hasDefaultFillOpacity = false, hasDefaultOutlineColor = false, hasDefaultOutlineWidth = false, hasDefaultOutlineOpacity = false;
+  QgsSvgCache::instance()->containsParams( path, hasFillParam, hasDefaultFillColor, defaultFillColor,
+      hasFillOpacityParam, hasDefaultFillOpacity, fillOpacity,
+      hasOutlineParam, hasDefaultOutlineColor, defaultOutlineColor,
+      hasOutlineWidthParam, hasDefaultOutlineWidth, outlineWidth,
+      hasOutlineOpacityParam, hasDefaultOutlineOpacity, outlineOpacity );
+
+  double newFillOpacity = hasFillOpacityParam ? fillColor().alphaF() : 1.0;
+  double newOutlineOpacity = hasOutlineOpacityParam ? outlineColor().alphaF() : 1.0;
+
   if ( hasDefaultFillColor )
   {
-    setFillColor( fillColor );
+    defaultFillColor.setAlphaF( newFillOpacity );
+    setFillColor( defaultFillColor );
+  }
+  if ( hasDefaultFillOpacity )
+  {
+    QColor c = fillColor();
+    c.setAlphaF( fillOpacity );
+    setFillColor( c );
   }
   if ( hasDefaultOutlineColor )
   {
-    setOutlineColor( outlineColor );
+    defaultOutlineColor.setAlphaF( newOutlineOpacity );
+    setOutlineColor( defaultOutlineColor );
   }
   if ( hasDefaultOutlineWidth )
   {
     setOutlineWidth( outlineWidth );
+  }
+  if ( hasDefaultOutlineOpacity )
+  {
+    QColor c = outlineColor();
+    c.setAlphaF( outlineOpacity );
+    setOutlineColor( c );
   }
 }
 

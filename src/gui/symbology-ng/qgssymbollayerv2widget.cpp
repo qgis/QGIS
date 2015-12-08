@@ -1636,38 +1636,42 @@ void QgsSvgMarkerSymbolLayerV2Widget::setGuiForSvg( const QgsSvgMarkerSymbolLaye
   }
 
   //activate gui for svg parameters only if supported by the svg file
-  bool hasFillParam, hasOutlineParam, hasOutlineWidthParam;
+  bool hasFillParam, hasFillOpacityParam, hasOutlineParam, hasOutlineWidthParam, hasOutlineOpacityParam;
   QColor defaultFill, defaultOutline;
-  double defaultOutlineWidth;
-  bool hasDefaultFillColor, hasDefaultOutlineColor, hasDefaultOutlineWidth;
+  double defaultOutlineWidth, defaultFillOpacity, defaultOutlineOpacity;
+  bool hasDefaultFillColor, hasDefaultFillOpacity, hasDefaultOutlineColor, hasDefaultOutlineWidth, hasDefaultOutlineOpacity;
   QgsSvgCache::instance()->containsParams( layer->path(), hasFillParam, hasDefaultFillColor, defaultFill,
+      hasFillOpacityParam, hasDefaultFillOpacity, defaultFillOpacity,
       hasOutlineParam, hasDefaultOutlineColor, defaultOutline,
-      hasOutlineWidthParam, hasDefaultOutlineWidth, defaultOutlineWidth );
+      hasOutlineWidthParam, hasDefaultOutlineWidth, defaultOutlineWidth,
+      hasOutlineOpacityParam, hasDefaultOutlineOpacity, defaultOutlineOpacity );
   mChangeColorButton->setEnabled( hasFillParam );
+  mChangeColorButton->setAllowAlpha( hasFillOpacityParam );
   mChangeBorderColorButton->setEnabled( hasOutlineParam );
+  mChangeBorderColorButton->setAllowAlpha( hasOutlineOpacityParam );
   mBorderWidthSpinBox->setEnabled( hasOutlineWidthParam );
 
   if ( hasFillParam )
   {
-    if ( layer->fillColor().isValid() )
+    QColor fill = layer->fillColor();
+    double existingOpacity = hasFillOpacityParam ? fill.alphaF() : 1.0;
+    if ( hasDefaultFillColor )
     {
-      mChangeColorButton->setColor( layer->fillColor() );
+      fill = defaultFill;
     }
-    else if ( hasDefaultFillColor )
-    {
-      mChangeColorButton->setColor( defaultFill );
-    }
+    fill.setAlphaF( hasDefaultFillOpacity ? defaultFillOpacity : existingOpacity );
+    mChangeColorButton->setColor( fill );
   }
   if ( hasOutlineParam )
   {
-    if ( layer->outlineColor().isValid() )
+    QColor outline = layer->outlineColor();
+    double existingOpacity = hasOutlineOpacityParam ? outline.alphaF() : 1.0;
+    if ( hasDefaultOutlineColor )
     {
-      mChangeBorderColorButton->setColor( layer->outlineColor() );
+      outline = defaultOutline;
     }
-    else if ( hasDefaultOutlineColor )
-    {
-      mChangeBorderColorButton->setColor( defaultOutline );
-    }
+    outline.setAlphaF( hasDefaultOutlineOpacity ? defaultOutlineOpacity : existingOpacity );
+    mChangeBorderColorButton->setColor( outline );
   }
 
   mFileLineEdit->blockSignals( true );
@@ -1675,7 +1679,7 @@ void QgsSvgMarkerSymbolLayerV2Widget::setGuiForSvg( const QgsSvgMarkerSymbolLaye
   mFileLineEdit->blockSignals( false );
 
   mBorderWidthSpinBox->blockSignals( true );
-  mBorderWidthSpinBox->setValue( layer->outlineWidth() );
+  mBorderWidthSpinBox->setValue( hasDefaultOutlineWidth ? defaultOutlineWidth : layer->outlineWidth() );
   mBorderWidthSpinBox->blockSignals( false );
 }
 
@@ -2118,23 +2122,41 @@ void QgsSVGFillSymbolLayerWidget::on_mRotationSpinBox_valueChanged( double d )
 void QgsSVGFillSymbolLayerWidget::updateParamGui( bool resetValues )
 {
   //activate gui for svg parameters only if supported by the svg file
-  bool hasFillParam, hasOutlineParam, hasOutlineWidthParam;
+  bool hasFillParam, hasFillOpacityParam, hasOutlineParam, hasOutlineWidthParam, hasOutlineOpacityParam;
   QColor defaultFill, defaultOutline;
-  double defaultOutlineWidth;
-  bool hasDefaultFillColor, hasDefaultOutlineColor, hasDefaultOutlineWidth;
+  double defaultOutlineWidth, defaultFillOpacity, defaultOutlineOpacity;
+  bool hasDefaultFillColor, hasDefaultFillOpacity, hasDefaultOutlineColor, hasDefaultOutlineWidth, hasDefaultOutlineOpacity;
   QgsSvgCache::instance()->containsParams( mSVGLineEdit->text(), hasFillParam, hasDefaultFillColor, defaultFill,
+      hasFillOpacityParam, hasDefaultFillOpacity, defaultFillOpacity,
       hasOutlineParam, hasDefaultOutlineColor, defaultOutline,
-      hasOutlineWidthParam, hasDefaultOutlineWidth, defaultOutlineWidth );
-  if ( hasDefaultFillColor && resetValues )
+      hasOutlineWidthParam, hasDefaultOutlineWidth, defaultOutlineWidth,
+      hasOutlineOpacityParam, hasDefaultOutlineOpacity, defaultOutlineOpacity );
+  if ( resetValues )
   {
-    mChangeColorButton->setColor( defaultFill );
+    QColor fill = mChangeColorButton->color();
+    double newOpacity = hasFillOpacityParam ? fill.alphaF() : 1.0;
+    if ( hasDefaultFillColor )
+    {
+      fill = defaultFill;
+    }
+    fill.setAlphaF( hasDefaultFillOpacity ? defaultFillOpacity : newOpacity );
+    mChangeColorButton->setColor( fill );
   }
   mChangeColorButton->setEnabled( hasFillParam );
-  if ( hasDefaultOutlineColor && resetValues )
+  mChangeColorButton->setAllowAlpha( hasFillOpacityParam );
+  if ( resetValues )
   {
-    mChangeBorderColorButton->setColor( defaultOutline );
+    QColor outline = mChangeBorderColorButton->color();
+    double newOpacity = hasOutlineOpacityParam ? outline.alphaF() : 1.0;
+    if ( hasDefaultOutlineColor )
+    {
+      outline = defaultOutline;
+    }
+    outline.setAlphaF( hasDefaultOutlineOpacity ? defaultOutlineOpacity : newOpacity );
+    mChangeBorderColorButton->setColor( outline );
   }
   mChangeBorderColorButton->setEnabled( hasOutlineParam );
+  mChangeBorderColorButton->setAllowAlpha( hasOutlineOpacityParam );
   if ( hasDefaultOutlineWidth && resetValues )
   {
     mBorderWidthSpinBox->setValue( defaultOutlineWidth );
@@ -2971,18 +2993,23 @@ QVariant QgsSvgListModel::data( const QModelIndex& index, int role ) const
     {
       // render SVG file
       QColor fill, outline;
-      double outlineWidth;
-      bool fillParam, outlineParam, outlineWidthParam;
-      bool hasDefaultFillColor = false, hasDefaultOutlineColor = false, hasDefaultOutlineWidth = false;
+      double outlineWidth, fillOpacity, outlineOpacity;
+      bool fillParam, fillOpacityParam, outlineParam, outlineWidthParam, outlineOpacityParam;
+      bool hasDefaultFillColor = false, hasDefaultFillOpacity = false, hasDefaultOutlineColor = false,
+                                 hasDefaultOutlineWidth = false, hasDefaultOutlineOpacity = false;
       QgsSvgCache::instance()->containsParams( entry, fillParam, hasDefaultFillColor, fill,
+          fillOpacityParam, hasDefaultFillOpacity, fillOpacity,
           outlineParam, hasDefaultOutlineColor, outline,
-          outlineWidthParam, hasDefaultOutlineWidth, outlineWidth );
+          outlineWidthParam, hasDefaultOutlineWidth, outlineWidth,
+          outlineOpacityParam, hasDefaultOutlineOpacity, outlineOpacity );
 
       //if defaults not set in symbol, use these values
       if ( !hasDefaultFillColor )
         fill = QColor( 200, 200, 200 );
+      fill.setAlphaF( hasDefaultFillOpacity ? fillOpacity : 1.0 );
       if ( !hasDefaultOutlineColor )
         outline = Qt::black;
+      outline.setAlphaF( hasDefaultOutlineOpacity ? outlineOpacity : 1.0 );
       if ( !hasDefaultOutlineWidth )
         outlineWidth = 0.6;
 
