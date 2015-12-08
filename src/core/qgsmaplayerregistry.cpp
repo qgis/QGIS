@@ -119,7 +119,7 @@ void QgsMapLayerRegistry::removeMapLayers( const QStringList& theLayerIds )
   QList<QgsMapLayer*> layers;
   Q_FOREACH ( const QString &myId, theLayerIds )
   {
-    layers << mMapLayers[myId];
+    layers << mMapLayers.value( myId );
   }
 
   removeMapLayers( layers );
@@ -160,12 +160,13 @@ void QgsMapLayerRegistry::removeMapLayers( const QList<QgsMapLayer*>& layers )
 
 void QgsMapLayerRegistry::removeMapLayer( const QString& theLayerId )
 {
-  removeMapLayers( QList<QgsMapLayer*>() << mMapLayers[theLayerId] );
+  removeMapLayers( QList<QgsMapLayer*>() << mMapLayers.value( theLayerId ) );
 }
 
 void QgsMapLayerRegistry::removeMapLayer( QgsMapLayer* layer )
 {
-  removeMapLayers( QList<QgsMapLayer*>() << layer );
+  if ( layer )
+    removeMapLayers( QList<QgsMapLayer*>() << layer );
 }
 
 void QgsMapLayerRegistry::removeAllMapLayers()
