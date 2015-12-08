@@ -2153,8 +2153,16 @@ void QgsOptions::on_mButtonExportColors_clicked()
 QListWidgetItem* QgsOptions::addScaleToScaleList( const QString &newScale )
 {
   QListWidgetItem* newItem = new QListWidgetItem();
+  int newDenominator = newScale.split( ":" ).value( 1 ).toInt();
+  int i;
+  for ( i = 0; i < mListGlobalScales->count(); i++ )
+  {
+    int denominator = mListGlobalScales->item( i )->text().split( ":" ).value( 1 ).toInt();
+    if ( newDenominator > denominator )
+      break;
+  }
   newItem->setText( newScale );
   newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-  mListGlobalScales->addItem( newItem );
+  mListGlobalScales->insertItem( i, newItem );
   return newItem;
 }
