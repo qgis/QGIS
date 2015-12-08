@@ -89,8 +89,8 @@ QgsRasterLayer::QgsRasterLayer()
 }
 
 QgsRasterLayer::QgsRasterLayer(
-  QString const & path,
-  QString const & baseName,
+  const QString& path,
+  const QString& baseName,
   bool loadDefaultStyleFlag )
     : QgsMapLayer( RasterLayer, baseName, path )
     , QSTRING_NOT_SET( "Not Set" )
@@ -167,7 +167,7 @@ QgsRasterLayer::~QgsRasterLayer()
 /**
  * This helper checks to see whether the file name appears to be a valid raster file name
  */
-bool QgsRasterLayer::isValidRasterFileName( QString const & theFileNameQString, QString & retErrMsg )
+bool QgsRasterLayer::isValidRasterFileName( const QString& theFileNameQString, QString& retErrMsg )
 {
   isvalidrasterfilename_t *pValid = ( isvalidrasterfilename_t * ) cast_to_fptr( QgsProviderRegistry::instance()->function( "gdal",  "isValidRasterFileName" ) );
   if ( ! pValid )

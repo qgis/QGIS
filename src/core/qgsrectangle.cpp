@@ -35,7 +35,7 @@ QgsRectangle::QgsRectangle( double newxmin, double newymin, double newxmax, doub
   normalize();
 }
 
-QgsRectangle::QgsRectangle( QgsPoint const & p1, QgsPoint const & p2 )
+QgsRectangle::QgsRectangle( const QgsPoint& p1, const QgsPoint& p2 )
 {
   set( p1, p2 );
 }
