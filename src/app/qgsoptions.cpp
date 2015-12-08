@@ -692,6 +692,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
       addScaleToScaleList( scale );
     }
   }
+  connect( mListGlobalScales, SIGNAL( itemChanged( QListWidgetItem* ) ), this, SLOT( scaleItemChanged( QListWidgetItem* ) ) );
 
   //
   // Color palette
@@ -2152,12 +2153,18 @@ void QgsOptions::on_mButtonExportColors_clicked()
 
 QListWidgetItem* QgsOptions::addScaleToScaleList( const QString &newScale )
 {
-  QListWidgetItem* newItem;
-  newItem = mListGlobalScales->findItems( newScale, Qt::MatchExactly ).value( 0 );
-  if ( newItem )
-    return newItem;
+  QListWidgetItem* newItem = new QListWidgetItem( newScale );
+  addScaleToScaleList( newItem );
+  return newItem;
+}
 
-  int newDenominator = newScale.split( ":" ).value( 1 ).toInt();
+void QgsOptions::addScaleToScaleList( QListWidgetItem* newItem )
+{
+  // If the new scale already exists, delete it.
+  QListWidgetItem* duplicateItem = mListGlobalScales->findItems( newItem->text(), Qt::MatchExactly ).value( 0 );
+  delete duplicateItem;
+
+  int newDenominator = newItem->text().split( ":" ).value( 1 ).toInt();
   int i;
   for ( i = 0; i < mListGlobalScales->count(); i++ )
   {
@@ -2165,8 +2172,31 @@ QListWidgetItem* QgsOptions::addScaleToScaleList( const QString &newScale )
     if ( newDenominator > denominator )
       break;
   }
-  newItem = new QListWidgetItem( newScale );
+
+  newItem->setData( Qt::UserRole, newItem->text() );
   newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
   mListGlobalScales->insertItem( i, newItem );
-  return newItem;
+}
+
+void QgsOptions::scaleItemChanged( QListWidgetItem* changedScaleItem )
+{
+  // Check if the new value is valid, restore the old value if not.
+  QRegExp regExp( "1:0*[1-9]\\d*" );
+  if ( regExp.exactMatch( changedScaleItem->text() ) )
+  {
+    //Remove leading zeroes from the denominator
+    regExp.setPattern( "1:0*" );
+    changedScaleItem->setText( changedScaleItem->text().replace( regExp, "1:" ) );
+  }
+  else
+  {
+    QMessageBox::warning( this, tr( "Invalid scale" ), tr( "The text you entered is not a valid scale." ) );
+    changedScaleItem->setText( changedScaleItem->data( Qt::UserRole ).toString() );
+  }
+
+  // Take the changed item out of the list and re-add it. This keeps things ordered and creates correct meta-data for the changed item.
+  int row = mListGlobalScales->row( changedScaleItem );
+  mListGlobalScales->takeItem( row );
+  addScaleToScaleList( changedScaleItem );
+  mListGlobalScales->setCurrentItem( changedScaleItem );
 }
