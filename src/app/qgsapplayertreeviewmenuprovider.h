@@ -48,6 +48,7 @@ class QgsAppLayerTreeViewMenuProvider : public QObject, public QgsLayerTreeViewM
   private slots:
 
     void editSymbolLegendNodeSymbol();
+    void setSymbolLegendNodeColor( const QColor &color );
 };
 
 #endif // QGSAPPLAYERTREEVIEWMENUPROVIDER_H

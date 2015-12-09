@@ -4,6 +4,9 @@
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgsclipboard.h"
+#include "qgscolorwidgets.h"
+#include "qgscolorschemeregistry.h"
+#include "qgscolorswatchgrid.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreemodellegendnode.h"
@@ -205,6 +208,22 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
         menu->addAction( QgsApplication::getThemeIcon( "/mActionHideAllLayers.png" ), tr( "&Hide All Items" ),
                          symbolNode, SLOT( uncheckAllItems() ) );
         menu->addSeparator();
+
+        if ( symbolNode->symbol() )
+        {
+          QgsColorWheel* colorWheel = new QgsColorWheel( menu );
+          colorWheel->setColor( symbolNode->symbol()->color() );
+          QgsColorWidgetAction* colorAction = new QgsColorWidgetAction( colorWheel, menu, menu );
+          colorAction->setDismissOnColorSelection( false );
+          connect( colorAction, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setSymbolLegendNodeColor( const QColor& ) ) );
+          //store the layer id and rule key in action, so we can later retrieve the corresponding
+          //legend node, if it still exists
+          colorAction->setProperty( "layerId", symbolNode->layerNode()->layerId() );
+          colorAction->setProperty( "ruleKey", symbolNode->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString() );
+          menu->addAction( colorAction );
+          menu->addSeparator();
+        }
+
         QAction* editSymbolAction = new QAction( tr( "Edit Symbol..." ), menu );
         //store the layer id and rule key in action, so we can later retrieve the corresponding
         //legend node, if it still exists
@@ -390,4 +409,26 @@ void QgsAppLayerTreeViewMenuProvider::editSymbolLegendNodeSymbol()
   {
     node->setSymbol( symbol.take() );
   }
+}
+
+void QgsAppLayerTreeViewMenuProvider::setSymbolLegendNodeColor( const QColor &color )
+{
+  QAction* action = qobject_cast< QAction*>( sender() );
+  if ( !action )
+    return;
+
+  QString layerId = action->property( "layerId" ).toString();
+  QString ruleKey = action->property( "ruleKey" ).toString();
+
+  QgsSymbolV2LegendNode* node = dynamic_cast<QgsSymbolV2LegendNode*>( mView->layerTreeModel()->findLegendNode( layerId, ruleKey ) );
+  if ( !node )
+    return;
+
+  const QgsSymbolV2* originalSymbol = node->symbol();
+  if ( !originalSymbol )
+    return;
+
+  QgsSymbolV2* newSymbol = originalSymbol->clone();
+  newSymbol->setColor( color );
+  node->setSymbol( newSymbol );
 }
