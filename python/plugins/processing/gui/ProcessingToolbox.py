@@ -300,7 +300,7 @@ class ProcessingToolbox(BASE, WIDGET):
 
         if len(groups) > 0:
             mainItem = QTreeWidgetItem()
-            mainItem.setText(0, 'Geoalgorithms')
+            mainItem.setText(0, self.tr('Geoalgorithms'))
             mainItem.setIcon(0, GeoAlgorithm.getDefaultIcon())
             mainItem.setToolTip(0, mainItem.text(0))
             for (groupname, group) in groups.items():
