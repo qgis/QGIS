@@ -607,6 +607,11 @@ class TestQgsExpression: public QObject
       QTest::newRow( "set color part yellow" ) << "to_int(color_part(set_color_part(color_cmyk(21,0,92,70),'yellow',96),'yellow'))" << false << QVariant( 96 );
       QTest::newRow( "set color part black" ) << "to_int(color_part(set_color_part(color_cmyk(21,0,92,70),'black',100),'black'))" << false << QVariant( 100 );
 
+      QTest::newRow( "color darker" ) << "darker('200,100,30',150)" << false << QVariant( "133,66,20,255" );
+      QTest::newRow( "color darker bad color" ) << "darker('notacolor',150)" << true << QVariant();
+      QTest::newRow( "color lighter" ) << "lighter('200,100,30',150)" << false << QVariant( "255,154,83,255" );
+      QTest::newRow( "color lighter bad color" ) << "lighter('notacolor',150)" << true << QVariant();
+
       // Precedence and associativity
       QTest::newRow( "multiplication first" ) << "1+2*3" << false << QVariant( 7 );
       QTest::newRow( "brackets first" ) << "(1+2)*(3+4)" << false << QVariant( 21 );
