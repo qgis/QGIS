@@ -5,7 +5,7 @@ export CXX="clang++-3.7"
 export CC="clang-3.7"
 
 cmake --version
-clang --version
+${CC} --version
 
 cmake -DWITH_SERVER=ON \
       -DWITH_STAGED_PLUGINS=OFF \
