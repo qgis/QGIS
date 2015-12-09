@@ -38,7 +38,7 @@ bool QgsGuiVectorLayerTools::addFeature( QgsVectorLayer* layer, const QgsAttribu
   if ( !feat )
     f = new QgsFeature();
 
-  feat->setGeometry( defaultGeometry );
+  f->setGeometry( defaultGeometry );
   QgsFeatureAction a( tr( "Add feature" ), *f, layer );
   bool added = a.addFeature( defaultValues );
   if ( !feat )

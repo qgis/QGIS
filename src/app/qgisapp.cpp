@@ -9904,7 +9904,7 @@ QgsRasterLayer* QgisApp::addRasterLayerPrivate(
   {
     QFileInfo fileInfo( uri );
     QString dirName = fileInfo.path();
-    layer = new QgsRasterLayer( dirName, QFileInfo( dirName ).completeBaseName(), "gdal" );
+    layer = new QgsRasterLayer( dirName, QFileInfo( dirName ).completeBaseName(), QString( "gdal" ) );
   }
   else if ( providerKey.isEmpty() )
     layer = new QgsRasterLayer( uri, baseName ); // fi.completeBaseName());

@@ -396,6 +396,7 @@ void TestQgsLayerTree::testRendererLegend( QgsFeatureRendererV2* renderer )
   }
   //try changing a symbol's color
   QgsSymbolV2LegendNode* symbolNode = dynamic_cast< QgsSymbolV2LegendNode* >( m->findLegendNode( vl->id(), symbolList.at( 1 ).ruleKey() ) );
+  QVERIFY( symbolNode );
   QgsSymbolV2* newSymbol = symbolNode->symbol()->clone();
   newSymbol->setColor( QColor( 255, 255, 0 ) );
   symbolNode->setSymbol( newSymbol );
@@ -410,6 +411,7 @@ void TestQgsLayerTree::testRendererLegend( QgsFeatureRendererV2* renderer )
   renderer->setLegendSymbolItem( symbolList.at( 2 ).ruleKey(), QgsMarkerSymbolV2::createSimple( props ) );
   m->refreshLayerLegend( n );
   symbolNode = dynamic_cast< QgsSymbolV2LegendNode* >( m->findLegendNode( vl->id(), symbolList.at( 2 ).ruleKey() ) );
+  QVERIFY( symbolNode );
   QCOMPARE( symbolNode->symbol()->color(), QColor( 0, 255, 255 ) );
 
   //cleanup

@@ -622,8 +622,6 @@ class CORE_EXPORT QgsEditFormConfig : public QObject
 
     QgsFields mFields;
 
-    bool mUseInitCode;
-
     friend class QgsVectorLayer;
 };
 
