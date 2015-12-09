@@ -16,6 +16,7 @@
 #ifndef QGSCOLORWIDGETS_H
 #define QGSCOLORWIDGETS_H
 
+#include <QWidgetAction>
 #include <QWidget>
 
 class QColor;
@@ -117,6 +118,11 @@ class GUI_EXPORT QgsColorWidget : public QWidget
      */
     void colorChanged( const QColor &color );
 
+    /** Emitted when mouse hovers over widget.
+     * @note added in QGIS 2.14
+     */
+    void hovered();
+
   protected:
 
     QColor mCurrentColor;
@@ -170,7 +176,81 @@ class GUI_EXPORT QgsColorWidget : public QWidget
 
     //Reimplemented to accept dropped colors
     void dropEvent( QDropEvent *e ) override;
+
+    void mouseMoveEvent( QMouseEvent* e ) override;
+    void mousePressEvent( QMouseEvent* e ) override;
+    void mouseReleaseEvent( QMouseEvent* e ) override;
 };
+
+
+/** \ingroup gui
+ * \class QgsColorWidgetAction
+ * An action containing a color widget, which can be embedded into a menu.
+ * @see QgsColorWidget
+ * @note introduced in QGIS 2.14
+ */
+
+class GUI_EXPORT QgsColorWidgetAction: public QWidgetAction
+{
+    Q_OBJECT
+
+  public:
+
+    /** Construct a new color widget action.
+     * @param colorWidget QgsColorWidget to show in action
+     * @param menu parent menu
+     * @param parent parent widget
+     */
+    QgsColorWidgetAction( QgsColorWidget* colorWidget, QMenu* menu = 0, QWidget *parent = 0 );
+
+    virtual ~QgsColorWidgetAction();
+
+    /** Returns the color widget contained in the widget action.
+     */
+    QgsColorWidget* colorWidget() { return mColorWidget; }
+
+    /** Sets whether the parent menu should be dismissed and closed when a color is selected
+     * from the action's color widget.
+     * @param dismiss set to true (default) to immediately close the menu when a color is selected
+     * from the widget. If set to false, the colorChanged signal will be emitted but the menu will
+     * stay open.
+     * @see dismissOnColorSelection()
+     */
+    void setDismissOnColorSelection( bool dismiss ) { mDismissOnColorSelection = dismiss; }
+
+    /** Returns whether the parent menu will be dismissed after a color is selected from the
+     * action's color widget.
+     * @see setDismissOnColorSelection
+     */
+    bool dismissOnColorSelection() const { return mDismissOnColorSelection; }
+
+  signals:
+
+    /** Emitted when a color has been selected from the widget
+     * @param color selected color
+     */
+    void colorChanged( const QColor &color );
+
+  private:
+    QMenu* mMenu;
+    QgsColorWidget* mColorWidget;
+
+    //used to supress recursion with hover events
+    bool mSuppressRecurse;
+
+    bool mDismissOnColorSelection;
+
+  private slots:
+
+    /** Handles setting the active action for the menu when cursor hovers over color widget
+     */
+    void onHover();
+
+    /** Emits color changed signal and closes parent menu
+     */
+    void setColor( const QColor &color );
+};
+
 
 
 /** \ingroup gui
@@ -193,6 +273,7 @@ class GUI_EXPORT QgsColorWheel : public QgsColorWidget
 
     virtual ~QgsColorWheel();
 
+    virtual QSize sizeHint() const override;
     void paintEvent( QPaintEvent* event ) override;
 
   public slots:
@@ -607,6 +688,7 @@ class GUI_EXPORT QgsColorPreviewWidget : public QgsColorWidget
     virtual ~QgsColorPreviewWidget();
 
     void paintEvent( QPaintEvent* event ) override;
+    virtual QSize sizeHint() const override;
 
     /** Returns the secondary color for the widget
      * @returns secondary widget color, or an invalid color if the widget

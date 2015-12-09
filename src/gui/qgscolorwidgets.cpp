@@ -28,6 +28,7 @@
 #include <QSettings>
 #include <QDrag>
 #include <cmath>
+#include "qgslogger.h"
 
 
 //
@@ -221,6 +222,25 @@ void QgsColorWidget::dropEvent( QDropEvent *e )
   //could not get color from mime data
 }
 
+void QgsColorWidget::mouseMoveEvent( QMouseEvent *e )
+{
+  emit hovered();
+  e->accept();
+  //don't pass to QWidget::mouseMoveEvent, causes issues with widget used in QWidgetAction
+}
+
+void QgsColorWidget::mousePressEvent( QMouseEvent *e )
+{
+  e->accept();
+  //don't pass to QWidget::mousePressEvent, causes issues with widget used in QWidgetAction
+}
+
+void QgsColorWidget::mouseReleaseEvent( QMouseEvent *e )
+{
+  e->accept();
+  //don't pass to QWidget::mouseReleaseEvent, causes issues with widget used in QWidgetAction
+}
+
 QColor QgsColorWidget::color() const
 {
   return mCurrentColor;
@@ -376,6 +396,11 @@ QgsColorWheel::~QgsColorWheel()
   delete mWheelImage;
   delete mTriangleImage;
   delete mWidgetImage;
+}
+
+QSize QgsColorWheel::sizeHint() const
+{
+  return QSize( 200, 200 );
 }
 
 void QgsColorWheel::paintEvent( QPaintEvent *event )
@@ -585,6 +610,7 @@ void QgsColorWheel::setColorFromPos( const QPointF pos )
 void QgsColorWheel::mouseMoveEvent( QMouseEvent *event )
 {
   setColorFromPos( event->posF() );
+  QgsColorWidget::mouseMoveEvent( event );
 }
 
 void QgsColorWheel::mousePressEvent( QMouseEvent *event )
@@ -828,6 +854,7 @@ void QgsColorBox::resizeEvent( QResizeEvent *event )
 void QgsColorBox::mouseMoveEvent( QMouseEvent *event )
 {
   setColorFromPoint( event->pos() );
+  QgsColorWidget::mouseMoveEvent( event );
 }
 
 void QgsColorBox::mousePressEvent( QMouseEvent *event )
@@ -1148,6 +1175,7 @@ void QgsColorRampWidget::setMarkerSize( const int markerSize )
 void QgsColorRampWidget::mouseMoveEvent( QMouseEvent *event )
 {
   setColorFromPoint( event->posF() );
+  QgsColorWidget::mouseMoveEvent( event );
 }
 
 void QgsColorRampWidget::mousePressEvent( QMouseEvent *event )
@@ -1571,6 +1599,11 @@ void QgsColorPreviewWidget::paintEvent( QPaintEvent *event )
   painter.end();
 }
 
+QSize QgsColorPreviewWidget::sizeHint() const
+{
+  return QSize( 200, 150 );
+}
+
 void QgsColorPreviewWidget::setColor2( const QColor &color )
 {
   if ( color == mColor2 )
@@ -1587,7 +1620,7 @@ void QgsColorPreviewWidget::mousePressEvent( QMouseEvent *e )
   {
     mDragStartPosition = e->pos();
   }
-  QWidget::mousePressEvent( e );
+  QgsColorWidget::mousePressEvent( e );
 }
 
 void QgsColorPreviewWidget::mouseReleaseEvent( QMouseEvent *e )
@@ -1595,7 +1628,7 @@ void QgsColorPreviewWidget::mouseReleaseEvent( QMouseEvent *e )
   if (( e->pos() - mDragStartPosition ).manhattanLength() >= QApplication::startDragDistance() )
   {
     //mouse moved, so a drag. nothing to do here
-    QWidget::mouseReleaseEvent( e );
+    QgsColorWidget::mouseReleaseEvent( e );
     return;
   }
 
@@ -1621,14 +1654,14 @@ void QgsColorPreviewWidget::mouseMoveEvent( QMouseEvent *e )
   if ( !( e->buttons() & Qt::LeftButton ) )
   {
     //left button not depressed, so not a drag
-    QWidget::mouseMoveEvent( e );
+    QgsColorWidget::mouseMoveEvent( e );
     return;
   }
 
   if (( e->pos() - mDragStartPosition ).manhattanLength() < QApplication::startDragDistance() )
   {
     //mouse not moved, so not a drag
-    QWidget::mouseMoveEvent( e );
+    QgsColorWidget::mouseMoveEvent( e );
     return;
   }
 
@@ -1650,4 +1683,54 @@ void QgsColorPreviewWidget::mouseMoveEvent( QMouseEvent *e )
   drag->setMimeData( QgsSymbolLayerV2Utils::colorToMimeData( dragColor ) );
   drag->setPixmap( createDragIcon( dragColor ) );
   drag->exec( Qt::CopyAction );
+}
+
+
+//
+// QgsColorWidgetAction
+//
+
+QgsColorWidgetAction::QgsColorWidgetAction( QgsColorWidget* colorWidget, QMenu* menu, QWidget* parent )
+    : QWidgetAction( parent )
+    , mMenu( menu )
+    , mColorWidget( colorWidget )
+    , mSuppressRecurse( false )
+    , mDismissOnColorSelection( true )
+{
+  setDefaultWidget( mColorWidget );
+  connect( mColorWidget, SIGNAL( colorChanged( QColor ) ), this, SLOT( setColor( QColor ) ) );
+
+  connect( this, SIGNAL( hovered() ), this, SLOT( onHover() ) );
+  connect( mColorWidget, SIGNAL( hovered() ), this, SLOT( onHover() ) );
+}
+
+QgsColorWidgetAction::~QgsColorWidgetAction()
+{
+
+}
+
+void QgsColorWidgetAction::onHover()
+{
+  //see https://bugreports.qt-project.org/browse/QTBUG-10427?focusedCommentId=185610&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-185610
+  if ( mSuppressRecurse )
+  {
+    return;
+  }
+
+  if ( mMenu )
+  {
+    mSuppressRecurse = true;
+    mMenu->setActiveAction( this );
+    mSuppressRecurse = false;
+  }
+}
+
+void QgsColorWidgetAction::setColor( const QColor& color )
+{
+  emit colorChanged( color );
+  QAction::trigger();
+  if ( mMenu && mDismissOnColorSelection )
+  {
+    mMenu->hide();
+  }
 }
