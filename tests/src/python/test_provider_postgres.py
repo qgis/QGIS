@@ -120,7 +120,7 @@ class TestPyQgsPostgresProvider(TestCase, ProviderTestCase):
         vl = QgsVectorLayer('%s srid=4326 table="qgis_test".%s (geom) sql=' % (self.dbconn, 'base_table_good'), "testgeom", "postgres")
         self.assertTrue(vl.isValid())
         test_unique([f for f in vl.getFeatures()], 4)
-        # Test base_table_bad with use estimated metadata: layer is valid
+        # Test base_table_good with use estimated metadata: layer is valid
         vl = QgsVectorLayer('%s srid=4326 estimatedmetadata="true" table="qgis_test".%s (geom) sql=' % (self.dbconn, 'base_table_good'), "testgeom", "postgres")
         self.assertTrue(vl.isValid())
         test_unique([f for f in vl.getFeatures()], 4)
