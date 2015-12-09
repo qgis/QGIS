@@ -64,8 +64,3 @@ sudo -H pip install autopep8 # TODO when switching to trusty or above: replace p
 
 #update clang
 sudo apt-get install --force-yes llvm-3.7 llvm-3.7-dev clang-3.7 libstdc++-4.9-dev
-export CXX="clang++-3.7" 
-export CC="clang-3.7"
-
-cmake --version
-clang --version
