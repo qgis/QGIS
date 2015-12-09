@@ -273,6 +273,11 @@ QgsLayerTreeGroup* QgsLayerTreeView::currentGroupNode() const
   return 0;
 }
 
+QgsLayerTreeModelLegendNode* QgsLayerTreeView::currentLegendNode() const
+{
+  return layerTreeModel()->index2legendNode( selectionModel()->currentIndex() );
+}
+
 QList<QgsLayerTreeNode*> QgsLayerTreeView::selectedNodes( bool skipInternal ) const
 {
   return layerTreeModel()->indexes2nodes( selectionModel()->selectedIndexes(), skipInternal );

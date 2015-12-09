@@ -403,7 +403,7 @@ void QgsAppLayerTreeViewMenuProvider::editSymbolLegendNodeSymbol()
 
   QScopedPointer< QgsSymbolV2 > symbol( originalSymbol->clone() );
   QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( node->layerNode()->layer() );
-  QgsSymbolV2SelectorDialog dlg( symbol.data(), QgsStyleV2::defaultStyle(), vlayer, mView );
+  QgsSymbolV2SelectorDialog dlg( symbol.data(), QgsStyleV2::defaultStyle(), vlayer, mView->window() );
   dlg.setMapCanvas( mCanvas );
   if ( dlg.exec() )
   {

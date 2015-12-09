@@ -54,6 +54,11 @@ class QgsLayerTreeView : QTreeView
     //! Get current group node. If a layer is current node, the function will return parent group. May be null.
     QgsLayerTreeGroup* currentGroupNode() const;
 
+    /** Get current legend node. May be null if current node is not a legend node.
+     * @note added in QGIS 2.14
+     */
+    QgsLayerTreeModelLegendNode* currentLegendNode() const;
+
     //! Return list of selected nodes
     //! @arg skipInternal If true, will ignore nodes which have an ancestor in the selection
     QList<QgsLayerTreeNode*> selectedNodes( bool skipInternal = false ) const;

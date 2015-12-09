@@ -156,6 +156,7 @@
 #include "qgslayertree.h"
 #include "qgslayertreemapcanvasbridge.h"
 #include "qgslayertreemodel.h"
+#include "qgslayertreemodellegendnode.h"
 #include "qgslayertreeregistrybridge.h"
 #include "qgslayertreeutils.h"
 #include "qgslayertreeview.h"
@@ -209,6 +210,8 @@
 #include "qgssnappingdialog.h"
 #include "qgssponsors.h"
 #include "qgsstatisticalsummarydockwidget.h"
+#include "qgssymbolv2selectordialog.h"
+#include "qgsstylev2.h"
 #include "qgssvgannotationitem.h"
 #include "qgstextannotationitem.h"
 #include "qgstipgui.h"
@@ -411,8 +414,32 @@ void QgisApp::layerTreeViewDoubleClicked( const QModelIndex& index )
   switch ( settings.value( "/qgis/legendDoubleClickAction", 0 ).toInt() )
   {
     case 0:
+    {
+      //show properties
+      if ( mLayerTreeView )
+      {
+        // if it's a legend node, open symbol editor directly
+        if ( QgsSymbolV2LegendNode* node = dynamic_cast<QgsSymbolV2LegendNode*>( mLayerTreeView->currentLegendNode() ) )
+        {
+          const QgsSymbolV2* originalSymbol = node->symbol();
+          if ( !originalSymbol )
+            return;
+
+          QScopedPointer< QgsSymbolV2 > symbol( originalSymbol->clone() );
+          QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( node->layerNode()->layer() );
+          QgsSymbolV2SelectorDialog dlg( symbol.data(), QgsStyleV2::defaultStyle(), vlayer, this );
+          dlg.setMapCanvas( mMapCanvas );
+          if ( dlg.exec() )
+          {
+            node->setSymbol( symbol.take() );
+          }
+
+          return;
+        }
+      }
       QgisApp::instance()->layerProperties();
       break;
+    }
     case 1:
       QgisApp::instance()->attributeTable();
       break;
