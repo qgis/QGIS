@@ -42,6 +42,7 @@
 #include "qgsgeometrycollectionv2.h"
 #include "qgspointv2.h"
 #include "qgspolygonv2.h"
+#include "qgsexpressionprivate.h"
 
 #if QT_VERSION < 0x050000
 #include <qtextdocument.h>
@@ -2660,6 +2661,18 @@ bool QgsExpression::isValid( const QString &text, const QgsExpressionContext *co
   return !exp.hasParserError();
 }
 
+void QgsExpression::setScale( double scale ) { d->mScale = scale; }
+
+double QgsExpression::scale() { return d->mScale; }
+
+const QString QgsExpression::expression() const
+{
+  if ( !d->mExp.isNull() )
+    return d->mExp;
+  else
+    return dump();
+}
+
 QList<QgsExpression::Function*> QgsExpression::specialColumns()
 {
   QList<Function*> defs;
@@ -2741,29 +2754,48 @@ int QgsExpression::functionCount()
 
 
 QgsExpression::QgsExpression( const QString& expr )
-    : mRowNumber( 0 )
-    , mScale( 0 )
-    , mExp( expr )
-    , mCalc( 0 )
+    : d( new QgsExpressionPrivate )
 {
-  mRootNode = ::parseExpression( expr, mParserErrorString );
+  d->mRootNode = ::parseExpression( expr, d->mParserErrorString );
+  d->mExp = expr;
+  Q_ASSERT( !d->mParserErrorString.isNull() || d->mRootNode );
+}
 
-  if ( mParserErrorString.isNull() )
-    Q_ASSERT( mRootNode );
+QgsExpression::QgsExpression( const QgsExpression& other )
+    : d( other.d )
+{
+  d->ref.ref();
+}
+
+QgsExpression& QgsExpression::operator=( const QgsExpression & other )
+{
+  d = other.d;
+  d->ref.ref();
+  return *this;
+}
+
+QgsExpression::QgsExpression()
+    : d( new QgsExpressionPrivate )
+{
 }
 
 QgsExpression::~QgsExpression()
 {
-  delete mCalc;
-  delete mRootNode;
+  Q_ASSERT( d );
+  if ( !d->ref.deref() )
+    delete d;
 }
+
+bool QgsExpression::hasParserError() const { return !d->mParserErrorString.isNull(); }
+
+QString QgsExpression::parserErrorString() const { return d->mParserErrorString; }
 
 QStringList QgsExpression::referencedColumns() const
 {
-  if ( !mRootNode )
+  if ( !d->mRootNode )
     return QStringList();
 
-  QStringList columns = mRootNode->referencedColumns();
+  QStringList columns = d->mRootNode->referencedColumns();
 
   // filter out duplicates
   for ( int i = 0; i < columns.count(); i++ )
@@ -2784,64 +2816,77 @@ QStringList QgsExpression::referencedColumns() const
 
 bool QgsExpression::needsGeometry() const
 {
-  if ( !mRootNode )
+  if ( !d->mRootNode )
     return false;
-  return mRootNode->needsGeometry();
+  return d->mRootNode->needsGeometry();
 }
 
 void QgsExpression::initGeomCalculator()
 {
-  if ( mCalc )
+  if ( d->mCalc.data() )
     return;
 
   // Use planimetric as default
-  mCalc = new QgsDistanceArea();
-  mCalc->setEllipsoidalMode( false );
+  d->mCalc = QSharedPointer<QgsDistanceArea>( new QgsDistanceArea() );
+  d->mCalc->setEllipsoidalMode( false );
+}
+
+void QgsExpression::detach()
+{
+  Q_ASSERT( d );
+
+  if ( d->ref > 1 )
+  {
+    d->ref.deref();
+
+    d = new QgsExpressionPrivate( *d );
+  }
 }
 
 void QgsExpression::setGeomCalculator( const QgsDistanceArea &calc )
 {
-  delete mCalc;
-  mCalc = new QgsDistanceArea( calc );
+  d->mCalc = QSharedPointer<QgsDistanceArea>( new QgsDistanceArea( calc ) );
 }
 
 bool QgsExpression::prepare( const QgsFields& fields )
 {
+  detach();
   QgsExpressionContext fc = QgsExpressionContextUtils::createFeatureBasedContext( 0, fields );
   return prepare( &fc );
 }
 
 bool QgsExpression::prepare( const QgsExpressionContext *context )
 {
-  mEvalErrorString = QString();
-  if ( !mRootNode )
+  detach();
+  d->mEvalErrorString = QString();
+  if ( !d->mRootNode )
   {
     //re-parse expression. Creation of QgsExpressionContexts may have added extra
     //known functions since this expression was created, so we have another try
     //at re-parsing it now that the context must have been created
-    mRootNode = ::parseExpression( mExp, mParserErrorString );
+    d->mRootNode = ::parseExpression( d->mExp, d->mParserErrorString );
   }
 
-  if ( !mRootNode )
+  if ( !d->mRootNode )
   {
-    mEvalErrorString = tr( "No root node! Parsing failed?" );
+    d->mEvalErrorString = tr( "No root node! Parsing failed?" );
     return false;
   }
 
-  return mRootNode->prepare( this, context );
+  return d->mRootNode->prepare( this, context );
 }
 
 QVariant QgsExpression::evaluate( const QgsFeature* f )
 {
-  mEvalErrorString = QString();
-  if ( !mRootNode )
+  d->mEvalErrorString = QString();
+  if ( !d->mRootNode )
   {
-    mEvalErrorString = tr( "No root node! Parsing failed?" );
+    d->mEvalErrorString = tr( "No root node! Parsing failed?" );
     return QVariant();
   }
 
   QgsExpressionContext context = QgsExpressionContextUtils::createFeatureBasedContext( f ? *f : QgsFeature(), QgsFields() );
-  return mRootNode->eval( this, &context );
+  return d->mRootNode->eval( this, &context );
 }
 
 QVariant QgsExpression::evaluate( const QgsFeature &f )
@@ -2872,40 +2917,68 @@ inline QVariant QgsExpression::evaluate( const QgsFeature& f, const QgsFields& f
 
 QVariant QgsExpression::evaluate()
 {
-  mEvalErrorString = QString();
-  if ( !mRootNode )
+  d->mEvalErrorString = QString();
+  if ( !d->mRootNode )
   {
-    mEvalErrorString = tr( "No root node! Parsing failed?" );
+    d->mEvalErrorString = tr( "No root node! Parsing failed?" );
     return QVariant();
   }
 
-  return mRootNode->eval( this, ( QgsExpressionContext* )0 );
+  return d->mRootNode->eval( this, ( QgsExpressionContext* )0 );
 }
 
 QVariant QgsExpression::evaluate( const QgsExpressionContext *context )
 {
-  mEvalErrorString = QString();
-  if ( !mRootNode )
+  d->mEvalErrorString = QString();
+  if ( !d->mRootNode )
   {
-    mEvalErrorString = tr( "No root node! Parsing failed?" );
+    d->mEvalErrorString = tr( "No root node! Parsing failed?" );
     return QVariant();
   }
 
-  return mRootNode->eval( this, context );
+  return d->mRootNode->eval( this, context );
 }
+
+bool QgsExpression::hasEvalError() const
+{
+  return !d->mEvalErrorString.isNull();
+}
+
+QString QgsExpression::evalErrorString() const
+{
+  return d->mEvalErrorString;
+}
+
+void QgsExpression::setEvalErrorString( const QString& str )
+{
+  d->mEvalErrorString = str;
+}
+
+void QgsExpression::setCurrentRowNumber( int rowNumber )
+{
+  d->mRowNumber = rowNumber;
+}
+
+int QgsExpression::currentRowNumber() { return d->mRowNumber; }
 
 QString QgsExpression::dump() const
 {
-  if ( !mRootNode )
+  if ( !d->mRootNode )
     return tr( "(no root)" );
 
-  return mRootNode->dump();
+  return d->mRootNode->dump();
+}
+
+QgsDistanceArea* QgsExpression::geomCalculator()
+{
+  initGeomCalculator();
+  return d->mCalc.data();
 }
 
 void QgsExpression::acceptVisitor( QgsExpression::Visitor& v ) const
 {
-  if ( mRootNode )
-    mRootNode->accept( v );
+  if ( d->mRootNode )
+    d->mRootNode->accept( v );
 }
 
 QString QgsExpression::replaceExpressionText( const QString &action, const QgsFeature *feat,
@@ -3021,6 +3094,17 @@ double QgsExpression::evaluateToDouble( const QString &text, const double fallba
 ///////////////////////////////////////////////
 // nodes
 
+QgsExpression::NodeList* QgsExpression::NodeList::clone() const
+{
+  NodeList* nl = new NodeList;
+  Q_FOREACH ( Node* node, mList )
+  {
+    nl->mList.append( node->clone() );
+  }
+
+  return nl;
+}
+
 QString QgsExpression::NodeList::dump() const
 {
   QString msg; bool first = true;
@@ -3071,6 +3155,11 @@ bool QgsExpression::NodeUnaryOperator::prepare( QgsExpression *parent, const Qgs
 QString QgsExpression::NodeUnaryOperator::dump() const
 {
   return QString( "%1 %2" ).arg( UnaryOperatorText[mOp], mOperand->dump() );
+}
+
+QgsExpression::Node*QgsExpression::NodeUnaryOperator::clone() const
+{
+  return new NodeUnaryOperator( mOp, mOperand->clone() );
 }
 
 //
@@ -3428,6 +3517,11 @@ QString QgsExpression::NodeBinaryOperator::dump() const
   return fmt.arg( mOpLeft->dump(), BinaryOperatorText[mOp], mOpRight->dump() );
 }
 
+QgsExpression::Node* QgsExpression::NodeBinaryOperator::clone() const
+{
+  return new NodeBinaryOperator( mOp, mOpLeft->clone(), mOpRight->clone() );
+}
+
 //
 
 QVariant QgsExpression::NodeInOperator::eval( QgsExpression *parent, const QgsExpressionContext *context )
@@ -3489,6 +3583,11 @@ bool QgsExpression::NodeInOperator::prepare( QgsExpression *parent, const QgsExp
 QString QgsExpression::NodeInOperator::dump() const
 {
   return QString( "%1 %2 IN (%3)" ).arg( mNode->dump(), mNotIn ? "NOT" : "", mList->dump() );
+}
+
+QgsExpression::Node*QgsExpression::NodeInOperator::clone() const
+{
+  return new NodeInOperator( mNode->clone(), mList->clone(), mNotIn );
 }
 
 //
@@ -3571,6 +3670,11 @@ QStringList QgsExpression::NodeFunction::referencedColumns() const
   return functionColumns.toSet().toList();
 }
 
+QgsExpression::Node* QgsExpression::NodeFunction::clone() const
+{
+  return new NodeFunction( mFnIndex, mArgs ? mArgs->clone() : nullptr );
+}
+
 //
 
 QVariant QgsExpression::NodeLiteral::eval( QgsExpression *parent, const QgsExpressionContext *context )
@@ -3603,6 +3707,11 @@ QString QgsExpression::NodeLiteral::dump() const
   }
 }
 
+QgsExpression::Node*QgsExpression::NodeLiteral::clone() const
+{
+  return new NodeLiteral( mValue );
+}
+
 //
 
 QVariant QgsExpression::NodeColumnRef::eval( QgsExpression *parent, const QgsExpressionContext *context )
@@ -3633,7 +3742,7 @@ bool QgsExpression::NodeColumnRef::prepare( QgsExpression *parent, const QgsExpr
   }
   else
   {
-    parent->mEvalErrorString = tr( "Column '%1' not found" ).arg( mName );
+    parent->d->mEvalErrorString = tr( "Column '%1' not found" ).arg( mName );
     mIndex = -1;
     return false;
   }
@@ -3642,6 +3751,11 @@ bool QgsExpression::NodeColumnRef::prepare( QgsExpression *parent, const QgsExpr
 QString QgsExpression::NodeColumnRef::dump() const
 {
   return QRegExp( "^[A-Za-z_\x80-\xff][A-Za-z0-9_\x80-\xff]*$" ).exactMatch( mName ) ? mName : quotedColumnRef( mName );
+}
+
+QgsExpression::Node*QgsExpression::NodeColumnRef::clone() const
+{
+  return new NodeColumnRef( mName );
 }
 
 //
@@ -3728,6 +3842,14 @@ bool QgsExpression::NodeCondition::needsGeometry() const
     return true;
 
   return false;
+}
+
+QgsExpression::Node* QgsExpression::NodeCondition::clone() const
+{
+  WhenThenList conditions;
+  Q_FOREACH ( WhenThen* wt, mConditions )
+    conditions.append( new WhenThen( wt->mWhenExp->clone(), wt->mThenExp->clone() ) );
+  return new NodeCondition( &conditions, mElseExp->clone() );
 }
 
 
@@ -3953,7 +4075,6 @@ QString QgsExpression::group( const QString& name )
   return gGroups.value( name, name );
 }
 
-
 QVariant QgsExpression::Function::func( const QVariantList& values, const QgsFeature* feature, QgsExpression* parent )
 {
   //default implementation creates a QgsFeatureBasedExpressionContext
@@ -4016,3 +4137,5 @@ QVariant QgsExpression::StaticFunction::func( const QVariantList &values, const 
   return mFnc ? mFnc( values, f, parent ) : QVariant();
   Q_NOWARN_DEPRECATED_POP
 }
+
+const QgsExpression::Node* QgsExpression::rootNode() const { return d->mRootNode; }

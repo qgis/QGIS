@@ -25,6 +25,7 @@
 
 #include "qgis.h"
 
+
 class QgsFeature;
 class QgsGeometry;
 class QgsOgcUtils;
@@ -35,6 +36,7 @@ class QgsFields;
 class QgsDistanceArea;
 class QDomElement;
 class QgsExpressionContext;
+class QgsExpressionPrivate;
 
 /**
 Class for parsing and evaluation of expressions (formerly called "search strings").
@@ -94,17 +96,19 @@ class CORE_EXPORT QgsExpression
     Q_DECLARE_TR_FUNCTIONS( QgsExpression )
   public:
     QgsExpression( const QString& expr );
+    QgsExpression( const QgsExpression& other );
+    QgsExpression& operator=( const QgsExpression& other );
     ~QgsExpression();
 
     //! Returns true if an error occurred when parsing the input expression
-    bool hasParserError() const { return !mParserErrorString.isNull(); }
+    bool hasParserError() const;
     //! Returns parser error
-    QString parserErrorString() const { return mParserErrorString; }
+    QString parserErrorString() const;
 
     class Node;
 
     //! Returns root node of the expression. Root node is null is parsing has failed
-    const Node* rootNode() const { return mRootNode; }
+    const Node* rootNode() const;
 
     //! Get the expression ready for evaluation - find out column indexes.
     //! @deprecated use prepare( const QgsExpressionContext *context ) instead
@@ -167,20 +171,18 @@ class CORE_EXPORT QgsExpression
     QVariant evaluate( const QgsExpressionContext* context );
 
     //! Returns true if an error occurred when evaluating last input
-    bool hasEvalError() const { return !mEvalErrorString.isNull(); }
+    bool hasEvalError() const;
     //! Returns evaluation error
-    QString evalErrorString() const { return mEvalErrorString; }
+    QString evalErrorString() const;
     //! Set evaluation error (used internally by evaluation functions)
-    void setEvalErrorString( const QString& str ) { mEvalErrorString = str; }
+    void setEvalErrorString( const QString& str );
 
     //! Set the number for $rownum special column
     //! @deprecated use QgsExpressionContext to set row number instead
-    Q_DECL_DEPRECATED void setCurrentRowNumber( int rowNumber ) { mRowNumber = rowNumber; }
+    Q_DECL_DEPRECATED void setCurrentRowNumber( int rowNumber );
     //! Return the number used for $rownum special column
     //! @deprecated use QgsExpressionContext to retrieve row number instead
-    Q_DECL_DEPRECATED int currentRowNumber() { return mRowNumber; }
-
-    //TODO QGIS 3.0: make the following methods private. They are still required for replaceExpressionText
+    Q_DECL_DEPRECATED int currentRowNumber();    //TODO QGIS 3.0: make the following methods private. They are still required for replaceExpressionText
     //but should not be publicly used
     /** Assign a special column
      * @deprecated use global or project QgsExpressionContext variables instead
@@ -217,25 +219,19 @@ class CORE_EXPORT QgsExpression
      */
     static bool isValid( const QString& text, const QgsExpressionContext* context, QString &errorMessage );
 
-    void setScale( double scale ) { mScale = scale; }
+    void setScale( double scale );
 
-    double scale() { return mScale; }
+    double scale();
 
     //! Alias for dump()
-    const QString expression() const
-    {
-      if ( !mExp.isNull() )
-        return mExp;
-      else
-        return dump();
-    }
+    const QString expression() const;
 
     //! Return the expression string that represents this QgsExpression.
     QString dump() const;
 
     //! Return calculator used for distance and area calculations
     //! (used by internal functions)
-    QgsDistanceArea *geomCalculator() { initGeomCalculator(); return mCalc; }
+    QgsDistanceArea* geomCalculator();
 
     //! Sets the geometry calculator used in evaluation of expressions,
     // instead of the default.
@@ -541,10 +537,10 @@ class CORE_EXPORT QgsExpression
      */
     static void cleanRegisteredFunctions();
 
-    // tells whether the identifier is a name of existing function
+    //! tells whether the identifier is a name of existing function
     static bool isFunctionName( const QString& name );
 
-    // return index of the function in Functions array
+    //! return index of the function in Functions array
     static int functionIndex( const QString& name );
 
     /** Returns the number of functions defined in the parser
@@ -651,6 +647,16 @@ class CORE_EXPORT QgsExpression
         virtual QString dump() const = 0;
 
         /**
+         * Generate a clone of this node.
+         * Make sure that the clone does not contain any information which is
+         * generated in prepare and context related.
+         * Ownership is transferred to the caller.
+         *
+         * @return a deep copy of this node.
+         */
+        virtual Node* clone() const = 0;
+
+        /**
          * Abstract virtual method which returns a list of columns required to
          * evaluate this node.
          *
@@ -699,6 +705,8 @@ class CORE_EXPORT QgsExpression
         void append( Node* node ) { mList.append( node ); }
         int count() { return mList.count(); }
         QList<Node*> list() { return mList; }
+        /** Creates a deep copy of this list. Ownership is transferred to the caller */
+        NodeList* clone() const;
 
         virtual QString dump() const;
 
@@ -731,6 +739,7 @@ class CORE_EXPORT QgsExpression
         bool operator==( const QgsExpression::Interval& other ) const;
         static QgsExpression::Interval invalidInterVal();
         static QgsExpression::Interval fromString( const QString& string );
+
       private:
         double mSeconds;
         bool mValid;
@@ -753,6 +762,7 @@ class CORE_EXPORT QgsExpression
         virtual QStringList referencedColumns() const override { return mOperand->referencedColumns(); }
         virtual bool needsGeometry() const override { return mOperand->needsGeometry(); }
         virtual void accept( Visitor& v ) const override { v.visit( *this ); }
+        virtual Node* clone() const override;
 
       protected:
         UnaryOperator mOp;
@@ -777,6 +787,7 @@ class CORE_EXPORT QgsExpression
         virtual QStringList referencedColumns() const override { return mOpLeft->referencedColumns() + mOpRight->referencedColumns(); }
         virtual bool needsGeometry() const override { return mOpLeft->needsGeometry() || mOpRight->needsGeometry(); }
         virtual void accept( Visitor& v ) const override { v.visit( *this ); }
+        virtual Node* clone() const override;
 
         int precedence() const;
         bool leftAssociative() const;
@@ -810,6 +821,7 @@ class CORE_EXPORT QgsExpression
         virtual QStringList referencedColumns() const override { QStringList lst( mNode->referencedColumns() ); Q_FOREACH ( Node* n, mList->list() ) lst.append( n->referencedColumns() ); return lst; }
         virtual bool needsGeometry() const override { bool needs = false; Q_FOREACH ( Node* n, mList->list() ) needs |= n->needsGeometry(); return needs; }
         virtual void accept( Visitor& v ) const override { v.visit( *this ); }
+        virtual Node* clone() const override;
 
       protected:
         Node* mNode;
@@ -835,6 +847,7 @@ class CORE_EXPORT QgsExpression
         virtual QStringList referencedColumns() const override;
         virtual bool needsGeometry() const override { bool needs = Functions()[mFnIndex]->usesgeometry(); if ( mArgs ) { Q_FOREACH ( Node* n, mArgs->list() ) needs |= n->needsGeometry(); } return needs; }
         virtual void accept( Visitor& v ) const override { v.visit( *this ); }
+        virtual Node* clone() const override;
 
       protected:
         //QString mName;
@@ -861,6 +874,7 @@ class CORE_EXPORT QgsExpression
         virtual QStringList referencedColumns() const override { return QStringList(); }
         virtual bool needsGeometry() const override { return false; }
         virtual void accept( Visitor& v ) const override { v.visit( *this ); }
+        virtual Node* clone() const override;
 
       protected:
         QVariant mValue;
@@ -882,6 +896,7 @@ class CORE_EXPORT QgsExpression
         virtual bool needsGeometry() const override { return false; }
 
         virtual void accept( Visitor& v ) const override { v.visit( *this ); }
+        virtual Node* clone() const override;
 
       protected:
         QString mName;
@@ -894,7 +909,7 @@ class CORE_EXPORT QgsExpression
         WhenThen( Node* whenExp, Node* thenExp ) : mWhenExp( whenExp ), mThenExp( thenExp ) {}
         ~WhenThen() { delete mWhenExp; delete mThenExp; }
 
-        //protected:
+        // protected:
         Node* mWhenExp;
         Node* mThenExp;
     };
@@ -914,6 +929,7 @@ class CORE_EXPORT QgsExpression
         virtual QStringList referencedColumns() const override;
         virtual bool needsGeometry() const override;
         virtual void accept( Visitor& v ) const override { v.visit( *this ); }
+        virtual Node* clone() const override;
 
       protected:
         WhenThenList mConditions;
@@ -964,20 +980,9 @@ class CORE_EXPORT QgsExpression
     /**
      * Used by QgsOgcUtils to create an empty
      */
-    QgsExpression() : mRootNode( 0 ), mRowNumber( 0 ), mScale( 0.0 ), mCalc( 0 ) {}
+    QgsExpression();
 
     void initGeomCalculator();
-
-    Node* mRootNode;
-
-    QString mParserErrorString;
-    QString mEvalErrorString;
-
-    int mRowNumber;
-    double mScale;
-    QString mExp;
-
-    QgsDistanceArea *mCalc;
 
     static QMap<QString, QVariant> gmSpecialColumns;
     static QMap<QString, QString> gmSpecialColumnGroups;
@@ -1050,6 +1055,10 @@ class CORE_EXPORT QgsExpression
       QList<HelpVariant> mVariants;
     };
 
+    void detach();
+
+    QgsExpressionPrivate* d;
+
     static QHash<QString, Help> gFunctionHelpTexts;
     static QHash<QString, QString> gVariableHelpTexts;
     static QHash<QString, QString> gGroups;
@@ -1058,10 +1067,9 @@ class CORE_EXPORT QgsExpression
     static void initVariableHelp();
 
     friend class QgsOgcUtils;
-
-  private:
-    Q_DISABLE_COPY( QgsExpression )  // for now - until we have proper copy constructor / implicit sharing
 };
+
+
 Q_NOWARN_DEPRECATED_POP
 
 Q_DECLARE_METATYPE( QgsExpression::Interval )
