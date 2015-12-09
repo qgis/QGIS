@@ -1,5 +1,6 @@
-mkdir build
-cd build
+mkdir /var/ramfs/build
+cd /var/ramfs/build
+
 export CXX="clang++-3.7"
 export CC="clang-3.7"
 cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo \
@@ -14,4 +15,5 @@ cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo \
       -DWITH_ASTYLE=ON \
       -DWITH_PYSPATIALITE=ON \
       -DGRASS_PREFIX7=/usr/lib/grass70 \
-      -DGRASS_INCLUDE_DIR7=/usr/lib/grass70/include ..
+      -DGRASS_INCLUDE_DIR7=/usr/lib/grass70/include \
+      ${TRAVIS_BUILD_DIR}
