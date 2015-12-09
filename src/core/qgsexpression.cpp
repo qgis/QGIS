@@ -2665,7 +2665,7 @@ void QgsExpression::setScale( double scale ) { d->mScale = scale; }
 
 double QgsExpression::scale() { return d->mScale; }
 
-const QString QgsExpression::expression() const
+QString QgsExpression::expression() const
 {
   if ( !d->mExp.isNull() )
     return d->mExp;

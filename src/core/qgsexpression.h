@@ -67,6 +67,9 @@ Possible QVariant value types:
 - string
 - geometry
 
+Three Value Logic
+=================
+
 Similarly to SQL, this class supports three-value logic: true/false/unknown.
 Unknown value may be a result of operations with missing data (NULL). Please note
 that NULL is different value than zero or an empty string. For example
@@ -75,10 +78,16 @@ that NULL is different value than zero or an empty string. For example
 There is no special (three-value) 'boolean' type: true/false is represented as
 1/0 integer, unknown value is represented the same way as NULL values: invalid QVariant.
 
+Performance
+===========
+
 For better performance with many evaluations you may first call prepare(fields) function
 to find out indices of columns and then repeatedly call evaluate(feature).
 
-Type conversion: operators and functions that expect arguments to be of particular
+Type conversion
+===============
+
+Operators and functions that expect arguments to be of a particular
 type automatically convert the arguments to that type, e.g. sin('2.1') will convert
 the argument to a double, length(123) will first convert the number to a string.
 Explicit conversion can be achieved with toint, toreal, tostring functions.
@@ -88,15 +97,47 @@ or they can be converted to numeric types.
 
 Arithmetic operators do integer arithmetics if both operands are integer. That is
 2+2 yields integer 4, but 2.0+2 returns real number 4.0. There are also two versions of
-division and modulo operators: 1.0/2 returns 0.5 while 1/2 returns 0. */
+division and modulo operators: 1.0/2 returns 0.5 while 1/2 returns 0.
+
+Implicit sharing
+================
+
+This class is implicitly shared, copying has a very low overhead.
+It is normally preferable to call `QgsExpression( otherExpression )` instead of
+`QgsExpression( otherExpression.expression() )`. A deep copy will only be made
+when {@link prepare()} is called. For usage this means mainly, that you should
+normally keep an unprepared master copy of a QgsExpression and whenever using it
+with a particular QgsFeatureIterator copy it just before and prepare it using the
+same context as the iterator.
+
+Implicit sharing was added in 2.14
+
+*/
 
 Q_NOWARN_DEPRECATED_PUSH
 class CORE_EXPORT QgsExpression
 {
     Q_DECLARE_TR_FUNCTIONS( QgsExpression )
   public:
+    /**
+     * Creates a new expression based on the provided string.
+     * The string will immediately be parsed. For optimization
+     * {@link prepare()} should alwys be called before every
+     * loop in which this expression is used.
+     */
     QgsExpression( const QString& expr );
+
+    /**
+     * Create a copy of this expression. This is preferred
+     * over recreating an expression from a string since
+     * it does not need to be re-parsed.
+     */
     QgsExpression( const QgsExpression& other );
+    /**
+     * Create a copy of this expression. This is preferred
+     * over recreating an expression from a string since
+     * it does not need to be re-parsed.
+     */
     QgsExpression& operator=( const QgsExpression& other );
     ~QgsExpression();
 
@@ -223,10 +264,15 @@ class CORE_EXPORT QgsExpression
 
     double scale();
 
-    //! Alias for dump()
-    const QString expression() const;
+    //! Return the original, unmodified expression string.
+    //! If there was none supplied because it was constructed by sole
+    //! API calls, dump() will be used to create one instead.
+    QString expression() const;
 
-    //! Return the expression string that represents this QgsExpression.
+    //! Return an expression string, constructed from the internal
+    //! abstract syntax tree. This does not contain any nice whitespace
+    //! formatting or comments. In general it is preferrable to use
+    //! expression() instead.
     QString dump() const;
 
     //! Return calculator used for distance and area calculations
@@ -331,6 +377,7 @@ class CORE_EXPORT QgsExpression
       // strings
       boConcat,
     };
+
     enum SpatialOperator
     {
       soBbox,
@@ -1055,6 +1102,12 @@ class CORE_EXPORT QgsExpression
       QList<HelpVariant> mVariants;
     };
 
+    /**
+     * Helper for implicit sharing. When called will create
+     * a new deep copy of this expression.
+     *
+     * @note not available in Python bindings
+     */
     void detach();
 
     QgsExpressionPrivate* d;
