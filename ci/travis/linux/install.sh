@@ -3,6 +3,10 @@ cd /var/ramfs/build
 
 export CXX="clang++-3.7"
 export CC="clang-3.7"
+
+cmake --version
+clang --version
+
 cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo \
       -DWITH_SERVER=ON \
       -DWITH_STAGED_PLUGINS=OFF \
