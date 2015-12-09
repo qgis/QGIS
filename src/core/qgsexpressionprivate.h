@@ -23,6 +23,12 @@
 #include "qgsexpression.h"
 #include "qgsdistancearea.h"
 
+///@cond
+/**
+ * This class exists only for implicit sharing of QgsExpression
+ * and is not part of the public API.
+ * It should be considered an implementation detail.
+ */
 class QgsExpressionPrivate
 {
   public:
@@ -62,5 +68,6 @@ class QgsExpressionPrivate
 
     QSharedPointer<QgsDistanceArea> mCalc;
 };
+///@endcond
 
 #endif // QGSEXPRESSIONPRIVATE_H
