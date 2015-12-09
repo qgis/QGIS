@@ -39,7 +39,7 @@ def register_function(function, arg_count, group, usesgeometry=False, **kwargs):
     """
     class QgsExpressionFunction(QgsExpression.Function):
 
-        def __init__(self, func, name, args, group, helptext='', usesgeometry=False, expandargs=False):
+        def __init__(self, func, name, args, group, helptext='', usesgeometry=True, expandargs=False):
             QgsExpression.Function.__init__(self, name, args, group, helptext, usesgeometry)
             self.function = func
             self.expandargs = expandargs
