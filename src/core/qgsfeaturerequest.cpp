@@ -53,7 +53,7 @@ QgsFeatureRequest::QgsFeatureRequest( const QgsRectangle& rect )
 QgsFeatureRequest::QgsFeatureRequest( const QgsExpression& expr, const QgsExpressionContext &context )
     : mFilter( FilterExpression )
     , mFilterFid( -1 )
-    , mFilterExpression( new QgsExpression( expr.expression() ) )
+    , mFilterExpression( new QgsExpression( expr ) )
     , mExpressionContext( context )
     , mFlags( nullptr )
     , mLimit( -1 )
@@ -74,7 +74,7 @@ QgsFeatureRequest& QgsFeatureRequest::operator=( const QgsFeatureRequest & rh )
   mFilterFids = rh.mFilterFids;
   if ( rh.mFilterExpression )
   {
-    mFilterExpression = new QgsExpression( rh.mFilterExpression->expression() );
+    mFilterExpression = new QgsExpression( *rh.mFilterExpression );
   }
   else
   {
