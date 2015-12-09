@@ -2135,6 +2135,34 @@ static QVariant fncSetColorPart( const QVariantList &values, const QgsExpression
   return QgsSymbolLayerV2Utils::encodeColor( color );
 }
 
+static QVariant fncDarker( const QVariantList &values, const QgsExpressionContext*, QgsExpression *parent )
+{
+  QColor color = QgsSymbolLayerV2Utils::decodeColor( values.at( 0 ).toString() );
+  if ( ! color.isValid() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to color" ).arg( values.at( 0 ).toString() ) );
+    return QVariant();
+  }
+
+  color = color.darker( getIntValue( values.at( 1 ), parent ) );
+
+  return QgsSymbolLayerV2Utils::encodeColor( color );
+}
+
+static QVariant fncLighter( const QVariantList &values, const QgsExpressionContext*, QgsExpression *parent )
+{
+  QColor color = QgsSymbolLayerV2Utils::decodeColor( values.at( 0 ).toString() );
+  if ( ! color.isValid() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to color" ).arg( values.at( 0 ).toString() ) );
+    return QVariant();
+  }
+
+  color = color.lighter( getIntValue( values.at( 1 ), parent ) );
+
+  return QgsSymbolLayerV2Utils::encodeColor( color );
+}
+
 static QVariant fcnSpecialColumn( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   QString varName = getStringValue( values.at( 0 ), parent );
@@ -2466,6 +2494,8 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( "color_cmyk", 4, fcnColorCmyk, "Color" )
     << new StaticFunction( "color_cmyka", 5, fncColorCmyka, "Color" )
     << new StaticFunction( "color_part", 2, fncColorPart, "Color" )
+    << new StaticFunction( "darker", 2, fncDarker, "Color" )
+    << new StaticFunction( "lighter", 2, fncLighter, "Color" )
     << new StaticFunction( "set_color_part", 3, fncSetColorPart, "Color" )
     << new StaticFunction( "$geometry", 0, fcnGeometry, "GeometryGroup", QString(), true )
     << new StaticFunction( "$area", 0, fcnGeomArea, "GeometryGroup", QString(), true )
