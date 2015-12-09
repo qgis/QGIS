@@ -62,7 +62,7 @@ from utilities import (unitTestDataPath,
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 
 
-class TestQgsTextEditWidget(TestCase):
+class TestQgsRelationEditWidget(TestCase):
 
     @classmethod
     def setUpClass(cls):

@@ -1743,6 +1743,82 @@ class TestQgsExpression: public QObject
       QCOMPARE( QgsExpression( "sqrt(foo)" ).isField(), false );
       QCOMPARE( QgsExpression( "foo + bar" ).isField(), false );
     }
+
+    void test_implicitSharing()
+    {
+      QgsExpression* exp = new QgsExpression( "Pilots > 2" );
+
+      QgsExpression expcopy( *exp );
+
+      QVERIFY( expcopy.rootNode() );
+      QCOMPARE( expcopy.expression(), QString( "Pilots > 2" ) );
+
+      // Delete original instance, should preserve copy.
+      delete exp;
+
+      // This mainly should not crash, root node should have outlived the original one
+      QVERIFY( !expcopy.rootNode()->dump().isEmpty() );
+
+
+      // Let's take another copy
+      QgsExpression expcopy2( expcopy );
+
+      QgsExpressionContext ctx = QgsExpressionContextUtils::createFeatureBasedContext( 0, mPointsLayer->fields() );
+
+      // Prepare with the current set of fields
+      expcopy.prepare( &ctx );
+
+      QgsFeatureIterator it = mPointsLayer->getFeatures();
+      QgsFeature feat;
+
+      // Let's count some features
+      int count = 0;
+      while ( it.nextFeature( feat ) )
+      {
+        QgsExpressionContext ctx = QgsExpressionContextUtils::createFeatureBasedContext( feat, mPointsLayer->fields() );
+        if ( expcopy.evaluate( &ctx ).toBool() )
+          count++;
+      }
+
+      QCOMPARE( count, 6 );
+
+      // Let's remove the field referenced in the expression
+      mPointsLayer->startEditing();
+      mPointsLayer->deleteAttribute( mPointsLayer->fieldNameIndex( "Pilots" ) );
+
+      // Now the prepared expression is broken
+      // The cached field index points to the index which now is
+      // used by "Cabin Crew". Not a particularly good test
+      // since it actually relies on undefined behavior (changing
+      // fields after prepare() )
+
+      it = mPointsLayer->getFeatures();
+      count = 0;
+      while ( it.nextFeature( feat ) )
+      {
+        QgsExpressionContext ctx = QgsExpressionContextUtils::createFeatureBasedContext( feat, mPointsLayer->fields() );
+        if ( expcopy.evaluate( &ctx ).toBool() )
+          count++;
+      }
+
+      QCOMPARE( count, 3 );
+
+      // But the copy should not have cached field indexes
+      it = mPointsLayer->getFeatures();
+      count = 0;
+      while ( it.nextFeature( feat ) )
+      {
+        QgsExpressionContext ctx = QgsExpressionContextUtils::createFeatureBasedContext( feat, mPointsLayer->fields() );
+        if ( expcopy2.evaluate( &ctx ).toBool() )
+          count++;
+      }
+
+      QCOMPARE( count, 0 );
+
+      // Detach a more complex expression
+      QgsExpression nodeExpression( "1 IN (1, 2, 3, 4)" );
+      QgsExpression nodeExpression2( nodeExpression );
+    }
 };
 
 QTEST_MAIN( TestQgsExpression )

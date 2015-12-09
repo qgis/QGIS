@@ -1,6 +1,7 @@
 #include "qgsogcutils.h"
 
 #include "qgsexpression.h"
+#include "qgsexpressionprivate.h"
 #include "qgsgeometry.h"
 #include "qgswkbptr.h"
 
@@ -1457,25 +1458,25 @@ QgsExpression* QgsOgcUtils::expressionFromOgcFilter( const QDomElement& element 
     if ( !node )
     {
       // invalid expression, parser error
-      expr->mParserErrorString = errorMsg;
+      expr->d->mParserErrorString = errorMsg;
       return expr;
     }
 
     // use the concat binary operator to append to the root node
-    if ( !expr->mRootNode )
+    if ( !expr->d->mRootNode )
     {
-      expr->mRootNode = node;
+      expr->d->mRootNode = node;
     }
     else
     {
-      expr->mRootNode = new QgsExpression::NodeBinaryOperator( QgsExpression::boConcat, expr->mRootNode, node );
+      expr->d->mRootNode = new QgsExpression::NodeBinaryOperator( QgsExpression::boConcat, expr->d->mRootNode, node );
     }
 
     childElem = childElem.nextSiblingElement();
   }
 
   // update expression string
-  expr->mExp = expr->dump();
+  expr->d->mExp = expr->dump();
 
   return expr;
 }
