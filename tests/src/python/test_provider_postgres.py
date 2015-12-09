@@ -53,7 +53,7 @@ class TestPyQgsPostgresProvider(TestCase, ProviderTestCase):
     def disableCompiler(self):
         QSettings().setValue(u'/qgis/compileExpressions', False)
 
-# HERE GO THE PROVIDER SPECIFIC TESTS
+    # HERE GO THE PROVIDER SPECIFIC TESTS
     def testDefaultValue(self):
         assert self.provider.defaultValue(0) == u'nextval(\'qgis_test."someData_pk_seq"\'::regclass)'
         assert self.provider.defaultValue(1) == NULL
@@ -92,6 +92,39 @@ class TestPyQgsPostgresProvider(TestCase, ProviderTestCase):
         test_table(self.dbconn, 'mpt3d', 'MultiPointZ ((0 0 0),(1 1 1))')
         test_table(self.dbconn, 'mls2d', 'MultiLineString ((0 0, 1 1),(2 2, 3 3))')
         test_table(self.dbconn, 'mls3d', 'MultiLineStringZ ((0 0 0, 1 1 1),(2 2 2, 3 3 3))')
+
+    def testGetFeaturesUniqueId(self):
+        """
+        Test tables with inheritance for unique ids
+        """
+        def test_unique(features, num_features):
+            featureids = []
+            for f in features:
+                self.assertFalse(f.id() in featureids)
+                featureids.append(f.id())
+            self.assertEqual(len(features), num_features)
+
+        vl = QgsVectorLayer('%s srid=4326 table="qgis_test".%s (geom) sql=' % (self.dbconn, 'someData'), "testgeom", "postgres")
+        self.assertTrue(vl.isValid())
+        # Test someData
+        test_unique([f for f in vl.getFeatures()], 5)
+
+        # Test base_table_bad: layer is invalid
+        vl = QgsVectorLayer('%s srid=4326 table="qgis_test".%s (geom) sql=' % (self.dbconn, 'base_table_bad'), "testgeom", "postgres")
+        self.assertFalse(vl.isValid())
+        # Test base_table_bad with use estimated metadata: layer is valid because the unique test is skipped
+        vl = QgsVectorLayer('%s srid=4326 estimatedmetadata="true" table="qgis_test".%s (geom) sql=' % (self.dbconn, 'base_table_bad'), "testgeom", "postgres")
+        self.assertTrue(vl.isValid())
+
+        # Test base_table_good: layer is valid
+        vl = QgsVectorLayer('%s srid=4326 table="qgis_test".%s (geom) sql=' % (self.dbconn, 'base_table_good'), "testgeom", "postgres")
+        self.assertTrue(vl.isValid())
+        test_unique([f for f in vl.getFeatures()], 4)
+        # Test base_table_good with use estimated metadata: layer is valid
+        vl = QgsVectorLayer('%s srid=4326 estimatedmetadata="true" table="qgis_test".%s (geom) sql=' % (self.dbconn, 'base_table_good'), "testgeom", "postgres")
+        self.assertTrue(vl.isValid())
+        test_unique([f for f in vl.getFeatures()], 4)
+
 
 if __name__ == '__main__':
     unittest.main()

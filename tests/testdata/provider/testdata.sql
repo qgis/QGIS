@@ -188,3 +188,104 @@ CREATE TABLE qgis_test.mls3d(
 );
 
 INSERT INTO qgis_test.mls3d values (1, 'srid=4326;MultiLineString((0 0 0, 1 1 1),(2 2 2, 3 3 3))'::geometry);
+
+
+-----------------------------------------
+-- Test tables with INHERITS
+--
+-- This is bad design: the common fields
+-- are replicated in child tables and
+-- leads to duplicated ids in the parent
+-- table
+--
+
+
+CREATE TABLE qgis_test.base_table_bad
+(
+  gid serial NOT NULL,
+  geom geometry(Point,4326),
+  code character varying,
+  CONSTRAINT base_bad_pkey PRIMARY KEY (gid)
+)
+WITH (
+  OIDS=FALSE
+);
+
+CREATE TABLE qgis_test.child_table_bad
+(
+  gid serial NOT NULL,
+  geom geometry(Point,4326),
+  code character varying,
+  CONSTRAINT child_bad_pkey PRIMARY KEY (gid)
+)
+INHERITS ( qgis_test.base_table_bad)
+WITH (
+  OIDS=FALSE
+);
+
+
+CREATE TABLE qgis_test.child_table2_bad
+(
+  gid serial NOT NULL,
+  geom geometry(Point,4326),
+  code character varying,
+  CONSTRAINT child2_bad_pkey PRIMARY KEY (gid)
+)
+INHERITS ( qgis_test.base_table_bad)
+WITH (
+  OIDS=FALSE
+);
+
+INSERT INTO qgis_test.child_table_bad (geom, code) VALUES ('srid=4326;Point(0 0)'::geometry, 'child 1');
+INSERT INTO qgis_test.child_table_bad (geom, code) VALUES ('srid=4326;Point(1 1)'::geometry, 'child 2');
+
+
+INSERT INTO qgis_test.child_table2_bad (geom, code) VALUES ('srid=4326;Point(-1 -1)'::geometry, 'child2 1');
+INSERT INTO qgis_test.child_table2_bad (geom, code) VALUES ('srid=4326;Point(-1 1)'::geometry, 'child2 2');
+
+
+
+-----------------------------------------
+-- Test tables with INHERITS
+--
+-- This is good design: the common fields
+-- and the pk are only in the parent table
+-- no pk duplication
+
+
+CREATE TABLE qgis_test.base_table_good
+(
+  gid serial NOT NULL,
+  geom geometry(Point,4326),
+  CONSTRAINT base_good_pkey PRIMARY KEY (gid)
+)
+WITH (
+  OIDS=FALSE
+);
+
+CREATE TABLE qgis_test.child_table_good
+(
+  code1 character varying
+)
+INHERITS ( qgis_test.base_table_good)
+WITH (
+  OIDS=FALSE
+);
+
+
+CREATE TABLE qgis_test.child_table2_good
+(
+  code2 character varying
+)
+INHERITS ( qgis_test.base_table_good)
+WITH (
+  OIDS=FALSE
+);
+
+INSERT INTO qgis_test.child_table_good (geom, code1) VALUES ('srid=4326;Point(0 0)'::geometry, 'child 1');
+INSERT INTO qgis_test.child_table_good (geom, code1) VALUES ('srid=4326;Point(1 1)'::geometry, 'child 2');
+
+
+INSERT INTO qgis_test.child_table2_good (geom, code2) VALUES ('srid=4326;Point(-1 -1)'::geometry, 'child2 1');
+INSERT INTO qgis_test.child_table2_good (geom, code2) VALUES ('srid=4326;Point(-1 1)'::geometry, 'child2 2');
+
