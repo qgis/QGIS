@@ -75,7 +75,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
         layout = QVBoxLayout()
         layout.setContentsMargins(0, 0, 0, 5)
         self.tabWidget.setStyleSheet("QTabBar::tab { height: 30px; }")
-        runAsBatchButton = QPushButton("Run as batch process...")
+        runAsBatchButton = QPushButton(self.tr("Run as batch process..."))
         runAsBatchButton.clicked.connect(self.runAsBatch)
         layout.addWidget(runAsBatchButton)
         cornerWidget.setLayout(layout)
