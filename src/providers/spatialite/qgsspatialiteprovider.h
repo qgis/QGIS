@@ -426,6 +426,8 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     static int computeMultiWKB3Dsize( const unsigned char *p_in, int little_endian,
                                       int endian_arch );
   private:
+    void updatePrimaryKeyCapabilities();
+
     int computeSizeFromMultiWKB2D( const unsigned char *p_in, int nDims,
                                    int little_endian,
                                    int endian_arch );
@@ -496,6 +498,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     QgsSqliteHandle *handle;
 
     friend class QgsSpatiaLiteFeatureSource;
+
 };
 
 #endif

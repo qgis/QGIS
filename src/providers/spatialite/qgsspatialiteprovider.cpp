@@ -588,8 +588,23 @@ QgsAbstractFeatureSource* QgsSpatiaLiteProvider::featureSource() const
   return new QgsSpatiaLiteFeatureSource( this );
 }
 
+void QgsSpatiaLiteProvider::updatePrimaryKeyCapabilities()
+{
+  if ( mPrimaryKey.isEmpty() )
+  {
+    enabledCapabilities &= ~QgsVectorDataProvider::SelectAtId;
+    enabledCapabilities &= ~QgsVectorDataProvider::SelectGeometryAtId;
+  }
+  else
+  {
+    enabledCapabilities |= QgsVectorDataProvider::SelectAtId;
+    enabledCapabilities |= QgsVectorDataProvider::SelectGeometryAtId;
+  }
+}
+
 #ifdef SPATIALITE_VERSION_GE_4_0_0
 // only if libspatialite version is >= 4.0.0
+
 void QgsSpatiaLiteProvider::loadFieldsAbstractInterface( gaiaVectorLayerPtr lyr )
 {
   if ( lyr == NULL )
@@ -657,6 +672,9 @@ void QgsSpatiaLiteProvider::loadFieldsAbstractInterface( gaiaVectorLayerPtr lyr 
       mPrimaryKeyAttrs << i - 1;
     }
   }
+
+  updatePrimaryKeyCapabilities();
+
   sqlite3_free_table( results );
 }
 #endif
@@ -848,6 +866,8 @@ void QgsSpatiaLiteProvider::loadFields()
     // setting the Primary Key column name
     mPrimaryKey = pkName;
   }
+
+  updatePrimaryKeyCapabilities();
 
   return;
 
