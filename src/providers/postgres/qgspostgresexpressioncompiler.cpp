@@ -26,7 +26,7 @@ QString QgsPostgresExpressionCompiler::quotedIdentifier( const QString& identifi
   return QgsPostgresConn::quotedIdentifier( identifier );
 }
 
-QString QgsPostgresExpressionCompiler::quotedValue( const QVariant& value )
+QString QgsPostgresExpressionCompiler::quotedValue( const QVariant& value, bool& )
 {
   return QgsPostgresConn::quotedValue( value );
 }

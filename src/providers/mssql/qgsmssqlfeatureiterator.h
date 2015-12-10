@@ -65,6 +65,7 @@ class QgsMssqlFeatureSource : public QgsAbstractFeatureSource
     bool isSpatial() { return !mGeometryColName.isEmpty() || !mGeometryColType.isEmpty(); }
 
     friend class QgsMssqlFeatureIterator;
+    friend class QgsMssqlExpressionCompiler;
 };
 
 class QgsMssqlFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsMssqlFeatureSource>
@@ -87,6 +88,9 @@ class QgsMssqlFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsM
     //! fetch next feature, return true on success
     virtual bool fetchFeature( QgsFeature& feature ) override;
 
+    //! fetch next feature filter expression
+    bool nextFeatureFilterExpression( QgsFeature& f ) override;
+
     // The current database
     QSqlDatabase mDatabase;
 
@@ -96,6 +100,8 @@ class QgsMssqlFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsM
     // The current sql statement
     QString mStatement;
 
+    QString mFallbackStatement;
+
     // Field index of FID column
     long mFidCol;
 
@@ -104,6 +110,8 @@ class QgsMssqlFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsM
 
     // for parsing sql geometries
     QgsMssqlGeometryParser mParser;
+
+    bool mExpressionCompiled;
 };
 
 #endif // QGSMSSQLFEATUREITERATOR_H

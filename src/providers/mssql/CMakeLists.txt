@@ -1,5 +1,25 @@
-SET (MSSQL_SRCS qgsmssqlprovider.cpp qgsmssqlgeometryparser.cpp qgsmssqlsourceselect.cpp qgsmssqltablemodel.cpp qgsmssqlnewconnection.cpp qgsmssqldataitems.cpp qgsmssqlfeatureiterator.cpp)
-SET (MSSQL_MOC_HDRS qgsmssqlprovider.h qgsmssqlsourceselect.h qgsmssqltablemodel.h qgsmssqlnewconnection.h qgsmssqldataitems.h)
+SET(MSSQL_SRCS
+  qgsmssqlprovider.cpp
+  qgsmssqlgeometryparser.cpp
+  qgsmssqlsourceselect.cpp
+  qgsmssqltablemodel.cpp
+  qgsmssqlnewconnection.cpp
+  qgsmssqldataitems.cpp
+  qgsmssqlexpressioncompiler.cpp
+  qgsmssqlfeatureiterator.cpp
+)
+
+SET(MSSQL_MOC_HDRS
+  qgsmssqlprovider.h
+  qgsmssqlsourceselect.h
+  qgsmssqltablemodel.h
+  qgsmssqlnewconnection.h
+  qgsmssqldataitems.h
+)
+
+SET(MSSQL_HDRS
+  qgsmssqlexpressioncompiler.h
+)
 
 ########################################################
 # Build
@@ -23,7 +43,7 @@ INCLUDE_DIRECTORIES(
 )
 
 
-ADD_LIBRARY(mssqlprovider MODULE ${MSSQL_SRCS} ${MSSQL_MOC_SRCS})
+ADD_LIBRARY(mssqlprovider MODULE ${MSSQL_SRCS} ${MSSQL_MOC_SRCS} ${MSSQL_HDRS})
 
 TARGET_LINK_LIBRARIES(mssqlprovider
   qgis_core

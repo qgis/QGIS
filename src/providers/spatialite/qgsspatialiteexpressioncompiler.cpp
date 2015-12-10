@@ -52,7 +52,7 @@ QString QgsSpatiaLiteExpressionCompiler::quotedIdentifier( const QString& identi
   return QgsSpatiaLiteProvider::quotedIdentifier( identifier );
 }
 
-QString QgsSpatiaLiteExpressionCompiler::quotedValue( const QVariant& value )
+QString QgsSpatiaLiteExpressionCompiler::quotedValue( const QVariant& value, bool& )
 {
   if ( value.isNull() )
     return "NULL";

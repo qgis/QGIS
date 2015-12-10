@@ -16,16 +16,19 @@
  ***************************************************************************/
 
 #include "qgsmssqlfeatureiterator.h"
+#include "qgsmssqlexpressioncompiler.h"
 #include "qgsmssqlprovider.h"
 #include "qgslogger.h"
 
 #include <QObject>
 #include <QTextStream>
 #include <QSqlRecord>
+#include <QSettings>
 
 
 QgsMssqlFeatureIterator::QgsMssqlFeatureIterator( QgsMssqlFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
     : QgsAbstractFeatureIteratorFromSource<QgsMssqlFeatureSource>( source, ownSource, request )
+    , mExpressionCompiled( false )
 {
   mClosed = false;
   mQuery = NULL;
@@ -60,12 +63,14 @@ QgsMssqlFeatureIterator::~QgsMssqlFeatureIterator()
 
 void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest& request )
 {
+  mFallbackStatement.clear();
+  mStatement.clear();
+
+  bool limitAtProvider = ( mRequest.limit() >= 0 );
+
   // build sql statement
-  mStatement = QString( "SELECT " );
 
-  if ( request.limit() >= 0 && request.filterType() != QgsFeatureRequest::FilterExpression )
-    mStatement += QString( "TOP %1 " ).arg( mRequest.limit() );
-
+  // note: 'SELECT ' is added later, to account for 'SELECT TOP...' type queries
   mStatement += QString( "[%1]" ).arg( mSource->mFidColName );
   mFidCol = mSource->mFields.indexFromName( mSource->mFidColName );
   mAttributesToFetch.append( mFidCol );
@@ -131,6 +136,52 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest& request )
       mStatement += " WHERE (" + mSource->mSqlWhereClause + ')';
     else
       mStatement += " AND (" + mSource->mSqlWhereClause + ')';
+    filterAdded = true;
+  }
+
+  //NOTE - must be last added!
+  mExpressionCompiled = false;
+  if ( request.filterType() == QgsFeatureRequest::FilterExpression )
+  {
+    if ( QSettings().value( "/qgis/compileExpressions", true ).toBool() )
+    {
+      QgsMssqlExpressionCompiler compiler = QgsMssqlExpressionCompiler( mSource );
+      QgsSqlExpressionCompiler::Result result = compiler.compile( request.filterExpression() );
+      if ( result == QgsSqlExpressionCompiler::Complete || result == QgsSqlExpressionCompiler::Partial )
+      {
+        mFallbackStatement = mStatement;
+        if ( !filterAdded )
+          mStatement += " WHERE (" + compiler.result() + ')';
+        else
+          mStatement += " AND (" + compiler.result() + ')';
+        filterAdded = true;
+
+        //if only partial success when compiling expression, we need to double-check results using QGIS' expressions
+        mExpressionCompiled = ( result == QgsSqlExpressionCompiler::Complete );
+        limitAtProvider = mExpressionCompiled;
+      }
+      else
+      {
+        limitAtProvider = false;
+      }
+    }
+    else
+    {
+      limitAtProvider = false;
+    }
+  }
+
+  if ( request.limit() >= 0 && limitAtProvider )
+  {
+    mStatement.prepend( QString( "SELECT TOP %1 " ).arg( mRequest.limit() ) );
+    if ( !mFallbackStatement.isEmpty() )
+      mFallbackStatement.prepend( QString( "SELECT TOP %1 " ).arg( mRequest.limit() ) );
+  }
+  else
+  {
+    mStatement.prepend( "SELECT " );
+    if ( !mFallbackStatement.isEmpty() )
+      mFallbackStatement.prepend( "SELECT " );
   }
 
   QgsDebugMsg( mStatement );
@@ -188,6 +239,13 @@ bool QgsMssqlFeatureIterator::fetchFeature( QgsFeature& feature )
   return false;
 }
 
+bool QgsMssqlFeatureIterator::nextFeatureFilterExpression( QgsFeature& f )
+{
+  if ( !mExpressionCompiled )
+    return QgsAbstractFeatureIterator::nextFeatureFilterExpression( f );
+  else
+    return fetchFeature( f );
+}
 
 bool QgsMssqlFeatureIterator::rewind()
 {
@@ -205,10 +263,28 @@ bool QgsMssqlFeatureIterator::rewind()
 
   mQuery->clear();
   mQuery->setForwardOnly( true );
-  if ( !mQuery->exec( mStatement ) )
+
+  bool result = mQuery->exec( mStatement );
+  if ( !result && !mFallbackStatement.isEmpty() )
+  {
+    //try with fallback statement
+    result = mQuery->exec( mFallbackStatement );
+    mExpressionCompiled = false;
+  }
+
+  if ( !result )
   {
     QString msg = mQuery->lastError().text();
     QgsDebugMsg( msg );
+    delete mQuery;
+    mQuery = 0;
+    if ( mDatabase.isOpen() )
+      mDatabase.close();
+
+    iteratorClosed();
+
+    mClosed = true;
+    return false;
   }
 
   return true;
@@ -231,7 +307,10 @@ bool QgsMssqlFeatureIterator::close()
   }
 
   if ( mQuery )
+  {
     delete mQuery;
+    mQuery = 0;
+  }
 
   if ( mDatabase.isOpen() )
     mDatabase.close();
