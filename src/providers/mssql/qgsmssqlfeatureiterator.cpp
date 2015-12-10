@@ -119,7 +119,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest& request )
   // set fid filter
   if ( request.filterType() == QgsFeatureRequest::FilterFid && !mSource->mFidColName.isEmpty() )
   {
-    QString fidfilter = QString( " [%1] = %2" ).arg( mSource->mFidColName, QString::number( request.filterFid() ) );
+    QString fidfilter = QString( " [%1] = %2" ).arg( mSource->mFidColName, FID_TO_STRING( request.filterFid() ) );
     // set attribute filter
     if ( !filterAdded )
       mStatement += " WHERE ";
@@ -127,6 +127,26 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest& request )
       mStatement += " AND ";
 
     mStatement += fidfilter;
+    filterAdded = true;
+  }
+  else if ( request.filterType() == QgsFeatureRequest::FilterFids && !mSource->mFidColName.isEmpty()
+            && !mRequest.filterFids().isEmpty() )
+  {
+    QString delim;
+    QString inClause = QString( "%1 IN (" ).arg( mSource->mFidColName );
+    Q_FOREACH ( QgsFeatureId featureId, mRequest.filterFids() )
+    {
+      inClause += delim + FID_TO_STRING( featureId );
+      delim = ',';
+    }
+    inClause.append( ')' );
+
+    if ( !filterAdded )
+      mStatement += " WHERE ";
+    else
+      mStatement += " AND ";
+
+    mStatement += inClause;
     filterAdded = true;
   }
 
