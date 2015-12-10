@@ -37,6 +37,8 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
   mRowNumber = 0;
 
   QStringList whereClauses;
+  bool useFallbackWhereClause = false;
+  QString fallbackWhereClause;
   QString whereClause;
 
   //beware - limitAtProvider needs to be set to false if the request cannot be completely handled
@@ -47,6 +49,15 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
   {
     // some kind of MBR spatial filtering is required
     whereClause = whereClauseRect();
+    if ( ! whereClause.isEmpty() )
+    {
+      whereClauses.append( whereClause );
+    }
+  }
+
+  if ( !mSource->mSubsetString.isEmpty() )
+  {
+    whereClause = "( " + mSource->mSubsetString + ')';
     if ( ! whereClause.isEmpty() )
     {
       whereClauses.append( whereClause );
@@ -69,6 +80,7 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
       whereClauses.append( whereClause );
     }
   }
+  //IMPORTANT - this MUST be the last clause added!
   else if ( request.filterType() == QgsFeatureRequest::FilterExpression )
   {
     if ( QSettings().value( "/qgis/compileExpressions", true ).toBool() )
@@ -82,6 +94,8 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
         whereClause = compiler.result();
         if ( !whereClause.isEmpty() )
         {
+          useFallbackWhereClause = true;
+          fallbackWhereClause = whereClauses.join( " AND " );
           whereClauses.append( whereClause );
           //if only partial success when compiling expression, we need to double-check results using QGIS' expressions
           mExpressionCompiled = ( result == QgsSqlExpressionCompiler::Complete );
@@ -99,24 +113,23 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
     }
   }
 
-  if ( !mSource->mSubsetString.isEmpty() )
-  {
-    whereClause = "( " + mSource->mSubsetString + ')';
-    if ( ! whereClause.isEmpty() )
-    {
-      whereClauses.append( whereClause );
-    }
-  }
 
   whereClause = whereClauses.join( " AND " );
 
   // preparing the SQL statement
-  if ( !prepareStatement( whereClause, limitAtProvider ? mRequest.limit() : -1 ) )
+  bool success = prepareStatement( whereClause, limitAtProvider ? mRequest.limit() : -1 );
+  if ( !success && useFallbackWhereClause )
+  {
+    //try with the fallback where clause, eg for cases when using compiled expression failed to prepare
+    mExpressionCompiled = false;
+    success = prepareStatement( fallbackWhereClause, -1 );
+  }
+
+  if ( !success )
   {
     // some error occurred
     sqliteStatement = NULL;
     close();
-    return;
   }
 }
 
