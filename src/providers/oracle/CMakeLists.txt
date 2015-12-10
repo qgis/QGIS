@@ -26,6 +26,9 @@ SET(ORACLE_MOC_HDRS
   qgsoracletablemodel.h
   qgsoraclecolumntypethread.h
   qgsoracleconnpool.h
+)
+
+SET(ORACLE_HDRS
   qgsoracleexpressioncompiler.h
 )
 
@@ -51,7 +54,7 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${QSCINTILLA_INCLUDE_DIR}
 )
 
-ADD_LIBRARY (oracleprovider MODULE ${ORACLE_SRCS} ${ORACLE_MOC_SRCS})
+ADD_LIBRARY (oracleprovider MODULE ${ORACLE_SRCS} ${ORACLE_HDRS} ${ORACLE_MOC_SRCS})
 
 TARGET_LINK_LIBRARIES (oracleprovider
   qgis_core

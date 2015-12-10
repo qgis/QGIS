@@ -180,7 +180,9 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature& feature )
       unsigned char *copy = new unsigned char[ba->size()];
       memcpy( copy, ba->constData(), ba->size() );
 
-      feature.setGeometryAndOwnership( copy, ba->size() );
+      QgsGeometry *g = new QgsGeometry();
+      g->fromWkb( copy, ba->size() );
+      feature.setGeometry( g );
 
       if (( mRequest.flags() & QgsFeatureRequest::ExactIntersect ) != 0 && ( !mConnection->hasSpatial() || !mSource->mHasSpatialIndex ) &&
           mRequest.filterType() == QgsFeatureRequest::FilterRect &&
@@ -194,7 +196,7 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature& feature )
 
       if (( mRequest.flags() & QgsFeatureRequest::NoGeometry ) != 0 )
       {
-        feature.setGeometryAndOwnership( 0, 0 );
+        feature.setGeometry( 0 );
       }
     }
 

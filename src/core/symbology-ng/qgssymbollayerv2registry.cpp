@@ -108,6 +108,8 @@ QgsSymbolLayerV2* QgsSymbolLayerV2Registry::defaultSymbolLayer( QgsSymbolV2::Sym
     case QgsSymbolV2::Hybrid:
       return 0;
   }
+
+  return 0;
 }
 
 
