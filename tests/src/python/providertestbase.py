@@ -67,7 +67,7 @@ class ProviderTestCase(object):
         self.assert_query(provider, 'true', [1, 2, 3, 4, 5])
         self.assert_query(provider, 'false', [])
 
-        #Three value logic
+        # Three value logic
         self.assert_query(provider, 'false and false', [])
         self.assert_query(provider, 'false and true', [])
         self.assert_query(provider, 'false and NULL', [])
@@ -90,7 +90,7 @@ class ProviderTestCase(object):
         self.assert_query(provider, 'not false', [1, 2, 3, 4, 5])
         self.assert_query(provider, 'not null', [])
 
-        #not
+        # not
         self.assert_query(provider, 'not name = \'Apple\'', [1, 3, 4])
         self.assert_query(provider, 'not name IS NULL', [1, 2, 3, 4])
         self.assert_query(provider, 'not name = \'Apple\' or name = \'Apple\'', [1, 2, 3, 4])
@@ -121,9 +121,7 @@ class ProviderTestCase(object):
     def testRectAndExpression(self):
         extent = QgsRectangle(-70, 67, -60, 80)
         result = set([f['pk'] for f in self.provider.getFeatures(
-            QgsFeatureRequest()
-                .setFilterExpression('"cnt">200')
-                .setFilterRect(extent))])
+            QgsFeatureRequest().setFilterExpression('"cnt">200').setFilterRect(extent))])
         expected = [4]
         assert set(expected) == result, 'Expected {} and got {} when testing for combination of filterRect and expression'.format(set(expected), result)
 
@@ -131,7 +129,7 @@ class ProviderTestCase(object):
         it = self.provider.getFeatures(QgsFeatureRequest().setLimit(2))
         features = [f['pk'] for f in it]
         assert len(features) == 2, 'Expected two features, got {} instead'.format(len(features))
-        #fetch one feature
+        # fetch one feature
         feature = QgsFeature()
         assert not it.nextFeature(feature), 'Expected no feature after limit, got one'
         it.rewind()
@@ -142,7 +140,7 @@ class ProviderTestCase(object):
         it.rewind()
         features = [f['pk'] for f in it]
         assert len(features) == 2, 'Expected two features after rewind, got {} instead'.format(len(features))
-        #test with expression, both with and without compilation
+        # test with expression, both with and without compilation
         try:
             self.disableCompiler()
         except AttributeError:
@@ -157,32 +155,32 @@ class ProviderTestCase(object):
         it = self.provider.getFeatures(QgsFeatureRequest().setLimit(2).setFilterExpression('cnt <= 100'))
         features = [f['pk'] for f in it]
         assert set(features) == set([1, 5]), 'Expected [1,5] for expression and feature limit, Got {} instead'.format(features)
-        #limit to more features than exist
+        # limit to more features than exist
         it = self.provider.getFeatures(QgsFeatureRequest().setLimit(3).setFilterExpression('cnt <= 100'))
         features = [f['pk'] for f in it]
         assert set(features) == set([1, 5]), 'Expected [1,5] for expression and feature limit, Got {} instead'.format(features)
-        #limit to less features than possible
+        # limit to less features than possible
         it = self.provider.getFeatures(QgsFeatureRequest().setLimit(1).setFilterExpression('cnt <= 100'))
         features = [f['pk'] for f in it]
         assert 1 in features or 5 in features, 'Expected either 1 or 5 for expression and feature limit, Got {} instead'.format(features)
 
     def testMinValue(self):
-        assert self.provider.minimumValue(1) == -200
-        assert self.provider.minimumValue(2) == 'Apple'
+        self.assertEqual(self.provider.minimumValue(1), -200)
+        self.assertEqual(self.provider.minimumValue(2), 'Apple')
 
     def testMaxValue(self):
-        assert self.provider.maximumValue(1) == 400
-        assert self.provider.maximumValue(2) == 'Pear'
+        self.assertEqual(self.provider.maximumValue(1), 400)
+        self.assertEqual(self.provider.maximumValue(2), 'Pear')
 
     def testExtent(self):
         reference = QgsGeometry.fromRect(
             QgsRectangle(-71.123, 66.33, -65.32, 78.3))
         provider_extent = QgsGeometry.fromRect(self.provider.extent())
 
-        assert QgsGeometry.compare(provider_extent.asPolygon(), reference.asPolygon(), 0.000001)
+        assert QgsGeometry.compare(provider_extent.asPolygon(), reference.asPolygon(), 0.00001), 'Expected {}, got {}'.format(reference.exportToWkt(), provider_extent.exportToWkt())
 
     def testUnique(self):
-        assert set(self.provider.uniqueValues(1)) == set([-200, 100, 200, 300, 400])
+        self.assertEqual(set(self.provider.uniqueValues(1)), set([-200, 100, 200, 300, 400]))
         assert set([u'Apple', u'Honey', u'Orange', u'Pear', NULL]) == set(self.provider.uniqueValues(2)), 'Got {}'.format(set(self.provider.uniqueValues(2)))
 
     def testFeatureCount(self):
