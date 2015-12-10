@@ -48,7 +48,7 @@ class TestQgsSpatialiteProvider(TestCase, ProviderTestCase):
     def setUpClass(cls):
         """Run before all tests"""
         # setup provider for base tests
-        cls.vl = QgsVectorLayer('dbname=\'{}/provider/spatialite.db\' table="somedata" (geometry) sql='.format(TEST_DATA_DIR), 'test', 'spatialite')
+        cls.vl = QgsVectorLayer('dbname=\'{}/provider/spatialite.db\' table="somedata" (geom) sql='.format(TEST_DATA_DIR), 'test', 'spatialite')
         assert(cls.vl.isValid())
         cls.provider = cls.vl.dataProvider()
 
@@ -111,7 +111,7 @@ class TestQgsSpatialiteProvider(TestCase, ProviderTestCase):
     def tearDownClass(cls):
         """Run after all tests"""
         # for the time being, keep the file to check with qgis
-        #if os.path.exists(cls.dbname) :
+        # if os.path.exists(cls.dbname) :
         #    os.remove(cls.dbname)
         pass
 
