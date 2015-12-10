@@ -1930,7 +1930,7 @@ bool QgsWmsCapabilitiesDownload::downloadCapabilities()
     QgsMessageLog::logMessage( mError, tr( "WMS" ) );
     return false;
   }
-  request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, mForceRefresh ? QNetworkRequest::PreferNetwork : QNetworkRequest::PreferCache );
+  request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, mForceRefresh ? QNetworkRequest::AlwaysNetwork : QNetworkRequest::PreferCache );
   request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
   connect( QgsNetworkAccessManager::instance(), SIGNAL( requestSent( QNetworkReply *, QObject * ) ),
@@ -2021,7 +2021,7 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
             emit downloadFinished();
             return;
           }
-          request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, mForceRefresh ? QNetworkRequest::PreferNetwork : QNetworkRequest::PreferCache );
+          request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, mForceRefresh ? QNetworkRequest::AlwaysNetwork : QNetworkRequest::PreferCache );
           request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
           mCapabilitiesReply->deleteLater();
