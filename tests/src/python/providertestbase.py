@@ -60,7 +60,10 @@ class ProviderTestCase(object):
         self.assert_query(provider, 'cnt - 1 = 99', [1])
         self.assert_query(provider, 'cnt + 1 = 101', [1])
         self.assert_query(provider, 'cnt = 1100 % 1000', [1])
+        self.assert_query(provider, '"name" || \' \' || "name" = \'Orange Orange\'', [1])
         self.assert_query(provider, '"name" || \' \' || "cnt" = \'Orange 100\'', [1])
+        self.assert_query(provider, '\'x\' || "name" IS NOT NULL', [1, 2, 3, 4])
+        self.assert_query(provider, '\'x\' || "name" IS NULL', [5])
         self.assert_query(provider, 'cnt = 10 ^ 2', [1])
         self.assert_query(provider, '"name" ~ \'[OP]ra[gne]+\'', [1])
         self.assert_query(provider, '"name"="name2"', [2, 4])  # mix of matched and non-matched case sensitive names

@@ -89,7 +89,7 @@ QString QgsOgrExpressionCompiler::quotedIdentifier( const QString& identifier )
   return mSource->mProvider->quotedIdentifier( identifier.toUtf8() );
 }
 
-QString QgsOgrExpressionCompiler::quotedValue( const QVariant& value )
+QString QgsOgrExpressionCompiler::quotedValue( const QVariant& value, bool& )
 {
   return QgsOgrUtils::quotedValue( value );
 }

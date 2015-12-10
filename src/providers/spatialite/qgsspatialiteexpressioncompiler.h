@@ -30,7 +30,7 @@ class QgsSpatiaLiteExpressionCompiler : public QgsSqlExpressionCompiler
 
     virtual Result compileNode( const QgsExpression::Node* node, QString& str ) override;
     virtual QString quotedIdentifier( const QString& identifier ) override;
-    virtual QString quotedValue( const QVariant& value ) override;
+    virtual QString quotedValue( const QVariant& value, bool& ok ) override;
 
 };
 
