@@ -3626,17 +3626,17 @@ bool QgsExpression::NodeColumnRef::prepare( QgsExpression *parent, const QgsExpr
 
   QgsFields fields = qvariant_cast<QgsFields>( context->variable( QgsExpressionContext::EXPR_FIELDS ) );
 
-  for ( int i = 0; i < fields.count(); ++i )
+  mIndex = fields.fieldNameIndex( mName );
+  if ( mIndex >= 0 )
   {
-    if ( QString::compare( fields.at( i ).name(), mName, Qt::CaseInsensitive ) == 0 )
-    {
-      mIndex = i;
-      return true;
-    }
+    return true;
   }
-  parent->mEvalErrorString = tr( "Column '%1' not found" ).arg( mName );
-  mIndex = -1;
-  return false;
+  else
+  {
+    parent->mEvalErrorString = tr( "Column '%1' not found" ).arg( mName );
+    mIndex = -1;
+    return false;
+  }
 }
 
 QString QgsExpression::NodeColumnRef::dump() const
