@@ -184,8 +184,7 @@ class QgsSymbolV2
     QgsSymbolV2( SymbolType type, const QgsSymbolLayerV2List& layers /Transfer/ ); // can't be instantiated
 
     /**
-     * Creates a point in screen coordinates from a wkb string in map
-     * coordinates
+      Creates a point in screen coordinates from a QgsPoint in map coordinates
      */
     static void _getPoint( QPointF& pt /Out/, QgsRenderContext& context, const QgsPoint& point );
     /**
