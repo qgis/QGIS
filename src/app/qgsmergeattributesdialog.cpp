@@ -170,7 +170,7 @@ QComboBox *QgsMergeAttributesDialog::createMergeComboBox( QVariant::Type columnT
   QgsFeatureList::const_iterator f_it = mFeatureList.constBegin();
   for ( ; f_it != mFeatureList.constEnd(); ++f_it )
   {
-    newComboBox->addItem( tr( "Feature %1" ).arg( f_it->id() ), QString( "f%1" ).arg( f_it->id() ) );
+    newComboBox->addItem( tr( "Feature %1" ).arg( f_it->id() ), QString( "f%1" ).arg( FID_TO_STRING( f_it->id() ) ) );
   }
 
   if ( columnType == QVariant::Double || columnType == QVariant::Int )
@@ -223,7 +223,7 @@ void QgsMergeAttributesDialog::selectedRowChanged()
 {
   //find out selected row
   QList<QTableWidgetItem *> selectionList = mTableWidget->selectedItems();
-  if ( selectionList.size() < 1 )
+  if ( selectionList.isEmpty() )
   {
     delete mSelectionRubberBand;
     mSelectionRubberBand = 0;
@@ -245,7 +245,7 @@ void QgsMergeAttributesDialog::selectedRowChanged()
   }
 
   bool conversionSuccess = false;
-  int featureIdToSelect = idItem->text().toInt( &conversionSuccess );
+  QgsFeatureId featureIdToSelect = idItem->text().toLongLong( &conversionSuccess );
   if ( !conversionSuccess )
   {
     //the merge result row was selected
@@ -275,10 +275,10 @@ void QgsMergeAttributesDialog::refreshMergedValue( int col )
   {
     mergeResult = tr( "Skipped" );
   }
-  else if ( mergeBehaviourString.startsWith( "f" ) )
+  else if ( mergeBehaviourString.startsWith( 'f' ) )
   {
-    //an existing feature value - TODO should be QgsFeatureId, not int
-    int featureId = mergeBehaviourString.mid( 1 ).toInt();
+    //an existing feature value
+    QgsFeatureId featureId = STRING_TO_FID( mergeBehaviourString.mid( 1 ) );
     mergeResult = featureAttribute( featureId, col );
   }
   else
@@ -295,7 +295,7 @@ void QgsMergeAttributesDialog::refreshMergedValue( int col )
   mTableWidget->setItem( mTableWidget->rowCount() - 1, col, newTotalItem );
 }
 
-QVariant QgsMergeAttributesDialog::featureAttribute( int featureId, int col )
+QVariant QgsMergeAttributesDialog::featureAttribute( QgsFeatureId featureId, int col )
 {
   int idx = mTableWidget->horizontalHeaderItem( col )->data( Qt::UserRole ).toInt();
 
@@ -362,7 +362,7 @@ void QgsMergeAttributesDialog::on_mFromSelectedPushButton_clicked()
 
   //find out feature id of selected row
   QList<QTableWidgetItem *> selectionList = mTableWidget->selectedItems();
-  if ( selectionList.size() < 1 )
+  if ( selectionList.isEmpty() )
   {
     return;
   }
@@ -377,7 +377,7 @@ void QgsMergeAttributesDialog::on_mFromSelectedPushButton_clicked()
   }
 
   bool conversionSuccess;
-  int featureId = selectedHeaderItem->text().toInt( &conversionSuccess );
+  QgsFeatureId featureId = selectedHeaderItem->text().toLongLong( &conversionSuccess );
   if ( !conversionSuccess )
   {
     return;
@@ -393,7 +393,7 @@ void QgsMergeAttributesDialog::on_mFromSelectedPushButton_clicked()
     QComboBox* currentComboBox = qobject_cast<QComboBox *>( mTableWidget->cellWidget( 0, i ) );
     if ( currentComboBox )
     {
-      currentComboBox->setCurrentIndex( currentComboBox->findData( QString::number( featureId ) ) );
+      currentComboBox->setCurrentIndex( currentComboBox->findData( QString( "f%1" ).arg( FID_TO_STRING( featureId ) ) ) );
     }
   }
 }
@@ -407,7 +407,7 @@ void QgsMergeAttributesDialog::on_mRemoveFeatureFromSelectionButton_clicked()
 
   //find out feature id of selected row
   QList<QTableWidgetItem *> selectionList = mTableWidget->selectedItems();
-  if ( selectionList.size() < 1 )
+  if ( selectionList.isEmpty() )
   {
     return;
   }
@@ -422,7 +422,7 @@ void QgsMergeAttributesDialog::on_mRemoveFeatureFromSelectionButton_clicked()
   }
 
   bool conversionSuccess;
-  int featureId = selectedHeaderItem->text().toInt( &conversionSuccess );
+  QgsFeatureId featureId = selectedHeaderItem->text().toLongLong( &conversionSuccess );
   if ( !conversionSuccess )
   {
     selectedRowChanged();
@@ -446,7 +446,7 @@ void QgsMergeAttributesDialog::on_mRemoveFeatureFromSelectionButton_clicked()
       continue;
 
     currentComboBox->blockSignals( true );
-    currentComboBox->removeItem( currentComboBox->findData( QString::number( featureId ) ) );
+    currentComboBox->removeItem( currentComboBox->findData( QString( "f%1" ).arg( FID_TO_STRING( featureId ) ) ) );
     currentComboBox->blockSignals( false );
   }
 
@@ -463,7 +463,7 @@ void QgsMergeAttributesDialog::on_mRemoveFeatureFromSelectionButton_clicked()
   }
 }
 
-void QgsMergeAttributesDialog::createRubberBandForFeature( int featureId )
+void QgsMergeAttributesDialog::createRubberBandForFeature( QgsFeatureId featureId )
 {
   //create rubber band to highlight the feature
   delete mSelectionRubberBand;
