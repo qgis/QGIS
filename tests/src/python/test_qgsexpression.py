@@ -27,11 +27,11 @@ class TestQgsExpressionCustomFunctions(TestCase):
 
     @qgsfunction(args="auto", group='testing', register=False)
     def autocount(value1, value2, value3, feature, parent):
-                pass
+        pass
 
     @qgsfunction(args="auto", group='testing', register=False)
     def expandargs(value1, value2, value3, feature, parent):
-                return value1, value2, value3
+        return value1, value2, value3
 
     @qgsfunction(args=0, group='testing', register=False)
     def special(values, feature, parent):

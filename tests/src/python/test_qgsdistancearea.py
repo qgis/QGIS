@@ -97,7 +97,7 @@ class TestQgsDistanceArea(TestCase):
         area = da.measure(polygon)
         assert area == 8, "Expected:\n%f\nGot:\n%f\n" % (8, area)
 
-#MH150729: Changed behaviour to consider inner rings for perimeter calculation. Therefore, expected result is 16.
+# MH150729: Changed behaviour to consider inner rings for perimeter calculation. Therefore, expected result is 16.
         perimeter = da.measurePerimeter(polygon)
         assert perimeter == 16, "Expected:\n%f\nGot:\n%f\n" % (16, perimeter)
 

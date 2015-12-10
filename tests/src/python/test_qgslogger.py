@@ -40,7 +40,7 @@ class TestQgsLogger(TestCase):
             myLogger.debug('This is a debug')
             myLogger.warning('This is a warning')
             myLogger.critical('This is critical')
-            #myLogger.fatal('Aaaargh...fatal');  #kills QGIS not testable
+            # myLogger.fatal('Aaaargh...fatal');  #kills QGIS not testable
             myFile = open(myFilename, 'rt')
             myText = myFile.readlines()
             myFile.close()

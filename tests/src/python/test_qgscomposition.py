@@ -30,7 +30,7 @@ from utilities import (unitTestDataPath,
                        getQgisTestApp,
                        TestCase,
                        unittest
-                       #expectedFailure
+                       # expectedFailure
                        )
 
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()

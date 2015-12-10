@@ -60,17 +60,17 @@ class TestQgsCategorizedSymbolRendererV2(TestCase):
         renderer.addCategory(QgsRendererCategoryV2('', createMarkerSymbol(), 'default'))
 
         self.assertEqual(renderer.filter(), '')
-        #remove categories, leaving default
+        # remove categories, leaving default
         assert renderer.updateCategoryRenderState(0, False)
         self.assertEqual(renderer.filter(), "(field) NOT IN ('a')")
         assert renderer.updateCategoryRenderState(1, False)
         self.assertEqual(renderer.filter(), "(field) NOT IN ('a','b')")
         assert renderer.updateCategoryRenderState(2, False)
         self.assertEqual(renderer.filter(), "(field) NOT IN ('a','b','c')")
-        #remove default category
+        # remove default category
         assert renderer.updateCategoryRenderState(3, False)
         self.assertEqual(renderer.filter(), "FALSE")
-        #add back other categories, leaving default disabled
+        # add back other categories, leaving default disabled
         assert renderer.updateCategoryRenderState(0, True)
         self.assertEqual(renderer.filter(), "(field) IN ('a')")
         assert renderer.updateCategoryRenderState(1, True)
@@ -99,7 +99,7 @@ class TestQgsCategorizedSymbolRendererV2(TestCase):
         self.assertEqual(renderer.filter(), "FALSE")
 
         renderer.deleteAllCategories()
-        #numeric categories
+        # numeric categories
         renderer.addCategory(QgsRendererCategoryV2(1, createMarkerSymbol(), 'a'))
         renderer.addCategory(QgsRendererCategoryV2(2, createMarkerSymbol(), 'b'))
         renderer.addCategory(QgsRendererCategoryV2(3, createMarkerSymbol(), 'c'))
@@ -113,4 +113,4 @@ class TestQgsCategorizedSymbolRendererV2(TestCase):
 
 
 if __name__ == "__main__":
-        unittest.main()
+    unittest.main()

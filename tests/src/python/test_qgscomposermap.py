@@ -144,7 +144,7 @@ class TestQgsComposerMap(TestCase):
         self.mComposition.writeXML(documentElement, doc)
         self.mComposition.addItemsFromXML(documentElement, doc, 0, False)
 
-        #test if both composer maps have different ids
+        # test if both composer maps have different ids
         newMap = QgsComposerMap()
         mapList = self.mComposition.composerMapItems()
 

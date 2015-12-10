@@ -63,12 +63,12 @@ class TestQgsColorSchemeRegistry(TestCase):
         recentScheme = QgsRecentColorScheme()
         registry.addColorScheme(recentScheme)
         self.assertTrue(len(registry.schemes()) == 1)
-        #remove the scheme
+        # remove the scheme
         registry.removeColorScheme(recentScheme)
         self.assertTrue(len(registry.schemes()) == 0)
-        #try removing a scheme not in the registry
+        # try removing a scheme not in the registry
         self.assertFalse(registry.removeColorScheme(recentScheme))
 
 
 if __name__ == "__main__":
-        unittest.main()
+    unittest.main()

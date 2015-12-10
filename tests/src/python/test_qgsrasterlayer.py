@@ -50,7 +50,7 @@ class TestQgsRasterLayer(TestCase):
         myMessage = 'Raster not loaded: %s' % myPath
         assert myRasterLayer.isValid(), myMessage
         myPoint = QgsPoint(786690, 3345803)
-        #print 'Extents: %s' % myRasterLayer.extent().toString()
+        # print 'Extents: %s' % myRasterLayer.extent().toString()
         #myResult, myRasterValues = myRasterLayer.identify(myPoint)
         #assert myResult
         myRasterValues = myRasterLayer.dataProvider().identify(myPoint, QgsRaster.IdentifyFormatValue).results()
@@ -59,7 +59,7 @@ class TestQgsRasterLayer(TestCase):
 
         # Get the name of the first band
         myBand = myRasterValues.keys()[0]
-        #myExpectedName = 'Band 1
+        # myExpectedName = 'Band 1
         myExpectedBand = 1
         myMessage = 'Expected "%s" got "%s" for first raster band name' % (
                     myExpectedBand, myBand)
@@ -92,9 +92,9 @@ class TestQgsRasterLayer(TestCase):
             QgsRaster.ContrastEnhancementMinMax)
 
         myContrastEnhancement = myRasterLayer.renderer().contrastEnhancement()
-        #print ("myContrastEnhancement.minimumValue = %.17g" %
+        # print ("myContrastEnhancement.minimumValue = %.17g" %
         #       myContrastEnhancement.minimumValue())
-        #print ("myContrastEnhancement.maximumValue = %.17g" %
+        # print ("myContrastEnhancement.maximumValue = %.17g" %
         #        myContrastEnhancement.maximumValue())
 
         # Unfortunately the minimum/maximum values calculated in C++ and Python

@@ -22,7 +22,7 @@ from utilities import (TestCase, unittest)
 class PyQgsMapUnitScale(TestCase):
 
     def testConstructor(self):
-        #test creating QgsMapUnitScale
+        # test creating QgsMapUnitScale
         c = QgsMapUnitScale()
         self.assertEqual(c.minScale, 0)
         self.assertEqual(c.maxScale, 0)
@@ -32,7 +32,7 @@ class PyQgsMapUnitScale(TestCase):
         self.assertEqual(c.maxScale, 0.005)
 
     def testEquality(self):
-        #test equality operator
+        # test equality operator
 
         c1 = QgsMapUnitScale(0.0001, 0.005)
         c1.minSizeMMEnabled = True
@@ -73,27 +73,27 @@ class PyQgsMapUnitScale(TestCase):
         self.assertEqual(c1, c2)
 
     def testMapUnitsPerPixel(self):
-        #test computeMapUnitsPerPixel
+        # test computeMapUnitsPerPixel
 
         ms = QgsMapSettings()
         ms.setExtent(QgsRectangle(0, 0, 100, 100))
         ms.setOutputSize(QSize(100, 50))
         r = QgsRenderContext.fromMapSettings(ms)
 
-        #renderer scale should be about 1:291937841
+        # renderer scale should be about 1:291937841
 
-        #start with no min/max scale
+        # start with no min/max scale
         c = QgsMapUnitScale()
 
         mup = c.computeMapUnitsPerPixel(r)
         self.assertAlmostEqual(mup, 2.0, places=5)
 
-        #add a minimum scale less than the renderer scale, so should be no change
+        # add a minimum scale less than the renderer scale, so should be no change
         c.minScale = 1 / 350000000.0
         mup = c.computeMapUnitsPerPixel(r)
         self.assertAlmostEqual(mup, 2.0, places=5)
 
-        #minimum scale greater than the renderer scale, so should be limited to minScale
+        # minimum scale greater than the renderer scale, so should be limited to minScale
         c.minScale = 1 / 150000000.0
         mup = c.computeMapUnitsPerPixel(r)
         self.assertAlmostEqual(mup, 1.0276160, places=5)
@@ -102,12 +102,12 @@ class PyQgsMapUnitScale(TestCase):
         self.assertAlmostEqual(mup, 0.3425386, places=5)
         c.minScale = 1 / 350000000.0
 
-        #add a maximum scale greater than the renderer scale, so should be no change
+        # add a maximum scale greater than the renderer scale, so should be no change
         c.maxScale = 1 / 150000000.0
         mup = c.computeMapUnitsPerPixel(r)
         self.assertAlmostEqual(mup, 2.0, places=5)
 
-        #maximum scale less than the renderer scale, so should be limited to maxScale
+        # maximum scale less than the renderer scale, so should be limited to maxScale
         c.maxScale = 1 / 350000000.0
         mup = c.computeMapUnitsPerPixel(r)
         self.assertAlmostEqual(mup, 2.3977706, places=5)
@@ -115,14 +115,14 @@ class PyQgsMapUnitScale(TestCase):
         mup = c.computeMapUnitsPerPixel(r)
         self.assertAlmostEqual(mup, 3.4253867, places=5)
 
-        #test resetting to min/max
+        # test resetting to min/max
         c.minScale = 0
         c.maxScale = 0
         mup = c.computeMapUnitsPerPixel(r)
         self.assertAlmostEqual(mup, 2.0, places=5)
 
     def testLineWidthScaleFactor(self):
-        #test QgsSymbolLayerV2Utils::lineWidthScaleFactor() using QgsMapUnitScale
+        # test QgsSymbolLayerV2Utils::lineWidthScaleFactor() using QgsMapUnitScale
 
         ms = QgsMapSettings()
         ms.setExtent(QgsRectangle(0, 0, 100, 100))
@@ -130,9 +130,9 @@ class PyQgsMapUnitScale(TestCase):
         ms.setOutputDpi(300)
         r = QgsRenderContext.fromMapSettings(ms)
 
-        #renderer scale should be about 1:291937841
+        # renderer scale should be about 1:291937841
 
-        #start with no min/max scale
+        # start with no min/max scale
         c = QgsMapUnitScale()
 
         sf = QgsSymbolLayerV2Utils.lineWidthScaleFactor(r, QgsSymbolV2.MapUnit, c)
@@ -142,29 +142,29 @@ class PyQgsMapUnitScale(TestCase):
         sf = QgsSymbolLayerV2Utils.lineWidthScaleFactor(r, QgsSymbolV2.Pixel, c)
         self.assertAlmostEqual(sf, 1.0, places=5)
 
-        #minimum scale greater than the renderer scale, so should be limited to minScale
+        # minimum scale greater than the renderer scale, so should be limited to minScale
         c.minScale = 1 / 150000000.0
         sf = QgsSymbolLayerV2Utils.lineWidthScaleFactor(r, QgsSymbolV2.MapUnit, c)
         self.assertAlmostEqual(sf, 3.89250455, places=5)
-        #only conversion from mapunits should be affected
+        # only conversion from mapunits should be affected
         sf = QgsSymbolLayerV2Utils.lineWidthScaleFactor(r, QgsSymbolV2.MM, c)
         self.assertAlmostEqual(sf, 11.8110236, places=5)
         sf = QgsSymbolLayerV2Utils.lineWidthScaleFactor(r, QgsSymbolV2.Pixel, c)
         self.assertAlmostEqual(sf, 1.0, places=5)
         c.minScale = 0
 
-        #maximum scale less than the renderer scale, so should be limited to maxScale
+        # maximum scale less than the renderer scale, so should be limited to maxScale
         c.maxScale = 1 / 350000000.0
         sf = QgsSymbolLayerV2Utils.lineWidthScaleFactor(r, QgsSymbolV2.MapUnit, c)
         self.assertAlmostEqual(sf, 0.5, places=5)
-        #only conversion from mapunits should be affected
+        # only conversion from mapunits should be affected
         sf = QgsSymbolLayerV2Utils.lineWidthScaleFactor(r, QgsSymbolV2.MM, c)
         self.assertAlmostEqual(sf, 11.8110236, places=5)
         sf = QgsSymbolLayerV2Utils.lineWidthScaleFactor(r, QgsSymbolV2.Pixel, c)
         self.assertAlmostEqual(sf, 1.0, places=5)
 
     def testConvertToPainterUnits(self):
-        #test QgsSymbolLayerV2Utils::convertToPainterUnits() using QgsMapUnitScale
+        # test QgsSymbolLayerV2Utils::convertToPainterUnits() using QgsMapUnitScale
 
         ms = QgsMapSettings()
         ms.setExtent(QgsRectangle(0, 0, 100, 100))
@@ -172,9 +172,9 @@ class PyQgsMapUnitScale(TestCase):
         ms.setOutputDpi(300)
         r = QgsRenderContext.fromMapSettings(ms)
 
-        #renderer scale should be about 1:291937841
+        # renderer scale should be about 1:291937841
 
-        #start with no min/max scale
+        # start with no min/max scale
         c = QgsMapUnitScale()
 
         size = QgsSymbolLayerV2Utils.convertToPainterUnits(r, 2, QgsSymbolV2.MapUnit, c)
@@ -184,31 +184,31 @@ class PyQgsMapUnitScale(TestCase):
         size = QgsSymbolLayerV2Utils.convertToPainterUnits(r, 2, QgsSymbolV2.Pixel, c)
         self.assertAlmostEqual(size, 2.0, places=5)
 
-        #minimum size greater than the calculated size, so size should be limited to minSizeMM
+        # minimum size greater than the calculated size, so size should be limited to minSizeMM
         c.minSizeMM = 5
         c.minSizeMMEnabled = True
         size = QgsSymbolLayerV2Utils.convertToPainterUnits(r, 2, QgsSymbolV2.MapUnit, c)
         self.assertAlmostEqual(size, 59.0551181, places=5)
-        #only conversion from mapunits should be affected
+        # only conversion from mapunits should be affected
         size = QgsSymbolLayerV2Utils.convertToPainterUnits(r, 2, QgsSymbolV2.MM, c)
         self.assertAlmostEqual(size, 23.622047, places=5)
         size = QgsSymbolLayerV2Utils.convertToPainterUnits(r, 2, QgsSymbolV2.Pixel, c)
         self.assertAlmostEqual(size, 2.0, places=5)
         c.minSizeMMEnabled = False
 
-        #maximum size less than the calculated size, so size should be limited to maxSizeMM
+        # maximum size less than the calculated size, so size should be limited to maxSizeMM
         c.maxSizeMM = 0.1
         c.maxSizeMMEnabled = True
         size = QgsSymbolLayerV2Utils.convertToPainterUnits(r, 2, QgsSymbolV2.MapUnit, c)
         self.assertAlmostEqual(size, 1.0, places=5)
-        #only conversion from mapunits should be affected
+        # only conversion from mapunits should be affected
         size = QgsSymbolLayerV2Utils.convertToPainterUnits(r, 2, QgsSymbolV2.MM, c)
         self.assertAlmostEqual(size, 23.622047, places=5)
         size = QgsSymbolLayerV2Utils.convertToPainterUnits(r, 2, QgsSymbolV2.Pixel, c)
         self.assertAlmostEqual(size, 2.0, places=5)
 
     def testPixelSizeScaleFactor(self):
-        #test QgsSymbolLayerV2Utils::pixelSizeScaleFactor() using QgsMapUnitScale
+        # test QgsSymbolLayerV2Utils::pixelSizeScaleFactor() using QgsMapUnitScale
 
         ms = QgsMapSettings()
         ms.setExtent(QgsRectangle(0, 0, 100, 100))
@@ -216,9 +216,9 @@ class PyQgsMapUnitScale(TestCase):
         ms.setOutputDpi(300)
         r = QgsRenderContext.fromMapSettings(ms)
 
-        #renderer scale should be about 1:291937841
+        # renderer scale should be about 1:291937841
 
-        #start with no min/max scale
+        # start with no min/max scale
         c = QgsMapUnitScale()
 
         sf = QgsSymbolLayerV2Utils.pixelSizeScaleFactor(r, QgsSymbolV2.MapUnit, c)
@@ -228,29 +228,29 @@ class PyQgsMapUnitScale(TestCase):
         sf = QgsSymbolLayerV2Utils.pixelSizeScaleFactor(r, QgsSymbolV2.Pixel, c)
         self.assertAlmostEqual(sf, 1.0, places=5)
 
-        #minimum scale greater than the renderer scale, so should be limited to minScale
+        # minimum scale greater than the renderer scale, so should be limited to minScale
         c.minScale = 1 / 150000000.0
         sf = QgsSymbolLayerV2Utils.pixelSizeScaleFactor(r, QgsSymbolV2.MapUnit, c)
         self.assertAlmostEqual(sf, 3.8925045, places=5)
-        #only conversion from mapunits should be affected
+        # only conversion from mapunits should be affected
         sf = QgsSymbolLayerV2Utils.pixelSizeScaleFactor(r, QgsSymbolV2.MM, c)
         self.assertAlmostEqual(sf, 11.811023, places=5)
         sf = QgsSymbolLayerV2Utils.pixelSizeScaleFactor(r, QgsSymbolV2.Pixel, c)
         self.assertAlmostEqual(sf, 1.0, places=5)
         c.minScale = 0
 
-        #maximum scale less than the renderer scale, so should be limited to maxScale
+        # maximum scale less than the renderer scale, so should be limited to maxScale
         c.maxScale = 1 / 350000000.0
         sf = QgsSymbolLayerV2Utils.pixelSizeScaleFactor(r, QgsSymbolV2.MapUnit, c)
         self.assertAlmostEqual(sf, 0.5, places=5)
-        #only conversion from mapunits should be affected
+        # only conversion from mapunits should be affected
         sf = QgsSymbolLayerV2Utils.pixelSizeScaleFactor(r, QgsSymbolV2.MM, c)
         self.assertAlmostEqual(sf, 11.8110236, places=5)
         sf = QgsSymbolLayerV2Utils.pixelSizeScaleFactor(r, QgsSymbolV2.Pixel, c)
         self.assertAlmostEqual(sf, 1.0, places=5)
 
     def testMapUnitScaleFactor(self):
-        #test QgsSymbolLayerV2Utils::mapUnitScaleFactor() using QgsMapUnitScale
+        # test QgsSymbolLayerV2Utils::mapUnitScaleFactor() using QgsMapUnitScale
 
         ms = QgsMapSettings()
         ms.setExtent(QgsRectangle(0, 0, 100, 100))
@@ -258,7 +258,7 @@ class PyQgsMapUnitScale(TestCase):
         ms.setOutputDpi(300)
         r = QgsRenderContext.fromMapSettings(ms)
 
-        #renderer scale should be about 1:291937841
+        # renderer scale should be about 1:291937841
 
         c = QgsMapUnitScale()
         sf = QgsSymbolLayerV2Utils.mapUnitScaleFactor(r, QgsSymbolV2.MapUnit, c)

@@ -102,14 +102,14 @@ class TestQgsBlendModes(TestCase):
     def testVectorBlending(self):
         """Test that blend modes work for vector layers."""
 
-        #Add vector layers to map
+        # Add vector layers to map
         myLayers = []
         myLayers.append(self.mLineLayer.id())
         myLayers.append(self.mPolygonLayer.id())
         self.mapSettings.setLayers(myLayers)
         self.mapSettings.setExtent(self.extent)
 
-        #Set blending modes for both layers
+        # Set blending modes for both layers
         self.mLineLayer.setBlendMode(QPainter.CompositionMode_Difference)
         self.mPolygonLayer.setBlendMode(QPainter.CompositionMode_Difference)
 
@@ -122,21 +122,21 @@ class TestQgsBlendModes(TestCase):
         myMessage = ('vector blending failed')
         assert myResult, myMessage
 
-        #Reset layers
+        # Reset layers
         self.mLineLayer.setBlendMode(QPainter.CompositionMode_SourceOver)
         self.mPolygonLayer.setBlendMode(QPainter.CompositionMode_SourceOver)
 
     def testVectorFeatureBlending(self):
         """Test that feature blend modes work for vector layers."""
 
-        #Add vector layers to map
+        # Add vector layers to map
         myLayers = []
         myLayers.append(self.mLineLayer.id())
         myLayers.append(self.mPolygonLayer.id())
         self.mapSettings.setLayers(myLayers)
         self.mapSettings.setExtent(self.extent)
 
-        #Set feature blending for line layer
+        # Set feature blending for line layer
         self.mLineLayer.setFeatureBlendMode(QPainter.CompositionMode_Plus)
 
         checker = QgsMultiRenderChecker()
@@ -148,20 +148,20 @@ class TestQgsBlendModes(TestCase):
         myMessage = ('vector feature blending failed')
         assert myResult, myMessage
 
-        #Reset layers
+        # Reset layers
         self.mLineLayer.setFeatureBlendMode(QPainter.CompositionMode_SourceOver)
 
     def testVectorLayerTransparency(self):
         """Test that layer transparency works for vector layers."""
 
-        #Add vector layers to map
+        # Add vector layers to map
         myLayers = []
         myLayers.append(self.mLineLayer.id())
         myLayers.append(self.mPolygonLayer.id())
         self.mapSettings.setLayers(myLayers)
         self.mapSettings.setExtent(self.extent)
 
-        #Set feature blending for line layer
+        # Set feature blending for line layer
         self.mLineLayer.setLayerTransparency(50)
 
         checker = QgsMultiRenderChecker()
@@ -175,14 +175,14 @@ class TestQgsBlendModes(TestCase):
 
     def testRasterBlending(self):
         """Test that blend modes work for raster layers."""
-        #Add raster layers to map
+        # Add raster layers to map
         myLayers = []
         myLayers.append(self.mRasterLayer1.id())
         myLayers.append(self.mRasterLayer2.id())
         self.mapSettings.setLayers(myLayers)
         self.mapSettings.setExtent(self.mRasterLayer1.extent())
 
-        #Set blending mode for top layer
+        # Set blending mode for top layer
         self.mRasterLayer1.setBlendMode(QPainter.CompositionMode_Difference)
         checker = QgsMultiRenderChecker()
         checker.setControlName("expected_raster_blendmodes")

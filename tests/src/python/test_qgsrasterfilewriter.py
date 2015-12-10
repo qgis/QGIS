@@ -27,7 +27,7 @@ from utilities import (unitTestDataPath,
                        getQgisTestApp,
                        TestCase,
                        unittest
-                       #expectedFailure
+                       # expectedFailure
                        )
 # Convenience instances in case you may need them
 # not used in this test

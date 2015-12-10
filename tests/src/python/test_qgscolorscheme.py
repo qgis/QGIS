@@ -17,7 +17,7 @@ from utilities import unittest, TestCase
 from qgis.core import QgsColorScheme
 from PyQt4.QtGui import QColor
 
-#Make a dummy color scheme for testing
+# Make a dummy color scheme for testing
 
 
 class DummyColorScheme(QgsColorScheme):
@@ -89,4 +89,4 @@ class TestQgsColorScheme(TestCase):
 
 
 if __name__ == "__main__":
-        unittest.main()
+    unittest.main()

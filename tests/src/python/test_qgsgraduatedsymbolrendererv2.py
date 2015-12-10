@@ -505,4 +505,4 @@ class TestQgsGraduatedSymbolRendererV2(TestCase):
         # symbolForFeature correctly selects range
 
 if __name__ == "__main__":
-        unittest.main()
+    unittest.main()

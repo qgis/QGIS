@@ -137,7 +137,7 @@ class TestQgsServer(unittest.TestCase):
         expected = 'Content-type: text/plain\n\nHello from SimpleServer!Hello from Filter1!Hello from Filter2!'
         self.assertEqual(response, expected)
 
-    ## WMS tests
+    # WMS tests
     def wms_request_compare(self, request):
         project = self.testdata_path + "test+project.qgs"
         assert os.path.exists(project), "Project file not found: " + project
@@ -167,7 +167,7 @@ class TestQgsServer(unittest.TestCase):
             self.wms_request_compare(request)
 
     # The following code was used to test type conversion in python bindings
-    #def test_qpair(self):
+    # def test_qpair(self):
     #    """Test QPair bindings"""
     #    f, s = self.server.testQPair(('First', 'Second'))
     #    self.assertEqual(f, 'First')

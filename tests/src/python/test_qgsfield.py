@@ -34,48 +34,48 @@ class TestQgsFields(TestCase):
         assert ml.isValid()
         fields = ml.fields()
 
-        #check no error
+        # check no error
         fields.remove(1)
-        #check exceptions raised
+        # check exceptions raised
         with self.assertRaises(KeyError):
             fields.remove(-1)
         with self.assertRaises(KeyError):
             fields.remove(111)
 
         fields = ml.fields()
-        #check no error
+        # check no error
         fields.at(1)
-        #check exceptions raised
+        # check exceptions raised
         with self.assertRaises(KeyError):
             fields.at(-1)
         with self.assertRaises(KeyError):
             fields.at(111)
 
-        #check no error
+        # check no error
         fields.field(1)
-        #check exceptions raised
+        # check exceptions raised
         with self.assertRaises(KeyError):
             fields.field(-1)
         with self.assertRaises(KeyError):
             fields.field(111)
 
-        #check no error
+        # check no error
         fields.field('value')
-        #check exceptions raised
+        # check exceptions raised
         with self.assertRaises(KeyError):
             fields.field('bad')
 
-        #check no error
+        # check no error
         fields.fieldOrigin(1)
-        #check exceptions raised
+        # check exceptions raised
         with self.assertRaises(KeyError):
             fields.fieldOrigin(-1)
         with self.assertRaises(KeyError):
             fields.fieldOrigin(111)
 
-        #check no error
+        # check no error
         fields.fieldOriginIndex(1)
-        #check exceptions raised
+        # check exceptions raised
         with self.assertRaises(KeyError):
             fields.fieldOriginIndex(-1)
         with self.assertRaises(KeyError):

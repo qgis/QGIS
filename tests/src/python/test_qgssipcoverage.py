@@ -20,7 +20,7 @@ from utilities import (TestCase,
 
 from PyQt4.QtCore import qDebug
 
-#Import all the things!
+# Import all the things!
 from qgis.analysis import *
 from qgis.core import *
 from qgis.gui import *
@@ -49,7 +49,7 @@ class TestQgsSipCoverage(TestCase):
         docPath = os.path.join(prefixPath, '..', 'doc', 'api', 'xml')
         parser = DoxygenParser(docPath)
 
-        #first look for objects without any bindings
+        # first look for objects without any bindings
         objects = set([m[0] for m in parser.bindable_members])
         missing_objects = []
         bound_objects = {}
@@ -64,14 +64,14 @@ class TestQgsSipCoverage(TestCase):
 
         missing_objects.sort()
 
-        #next check for individual members
+        # next check for individual members
         parser.bindable_members.sort()
         missing_members = []
         for m in parser.bindable_members:
             if m[0] in bound_objects:
                 obj = bound_objects[m[0]]
 
-                #try two different methods of checking for member existence
+                # try two different methods of checking for member existence
                 try:
                     if hasattr(obj, m[1]):
                         continue
@@ -93,7 +93,7 @@ class TestQgsSipCoverage(TestCase):
         print "---------------------------------"
         print 'Missing members:\n {}'.format('\n '.join(missing_members))
 
-        #print summaries
+        # print summaries
         missing_class_count = len(missing_objects)
         present_count = len(objects) - missing_class_count
         coverage = 100.0 * present_count / len(objects)
