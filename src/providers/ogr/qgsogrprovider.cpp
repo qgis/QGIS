@@ -89,7 +89,7 @@ bool QgsOgrProvider::convertField( QgsField &field, const QTextCodec &encoding )
   switch ( field.type() )
   {
     case QVariant::LongLong:
-      ogrType = OFTString;
+      ogrType = OFTInteger64;
       ogrWidth = ogrWidth > 0 && ogrWidth <= 21 ? ogrWidth : 21;
       ogrPrecision = -1;
       break;
@@ -439,6 +439,7 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
 
   mNativeTypes
   << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), "integer", QVariant::Int, 1, 10 )
+  << QgsVectorDataProvider::NativeType( tr( "Whole number (integer 64 bit)" ), "integer64", QVariant::LongLong, 1, 10 )
   << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), "double", QVariant::Double, 1, 20, 0, 15 )
   << QgsVectorDataProvider::NativeType( tr( "Text (string)" ), "string", QVariant::String, 1, 255 )
   << QgsVectorDataProvider::NativeType( tr( "Date" ), "date", QVariant::Date, 8, 8 );
@@ -771,6 +772,7 @@ void QgsOgrProvider::loadFields()
       switch ( ogrType )
       {
         case OFTInteger: varType = QVariant::Int; break;
+        case OFTInteger64: varType = QVariant::LongLong; break;
         case OFTReal: varType = QVariant::Double; break;
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1400
         case OFTDate: varType = QVariant::Date; break;
@@ -1130,6 +1132,9 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
     {
       case QVariant::Int:
         type = OFTInteger;
+        break;
+      case QVariant::LongLong:
+        type = OFTInteger64;
         break;
       case QVariant::Double:
         type = OFTReal;
