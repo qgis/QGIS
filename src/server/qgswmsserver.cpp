@@ -782,6 +782,11 @@ QImage* QgsWMSServer::getLegendGraphics()
       }
     }
   }
+  
+  // Checks showFeatureCount parameter
+  bool showFeatureCount = false;
+  if ( mParameters.contains( "SHOWFEATURECOUNT" ) )
+    showFeatureCount = QVariant(mParameters[ "SHOWFEATURECOUNT" ]).toBool();
 
   // Create the layer tree root
   QgsLayerTreeGroup rootGroup;
@@ -799,6 +804,9 @@ QImage* QgsWMSServer::getLegendGraphics()
     // set layer name with layer's title to have it in legend
     if ( !ml->title().isEmpty() )
       layer->setLayerName( ml->title() );
+    // set show feature count
+    if ( showFeatureCount )
+      layer->setCustomProperty( "showFeatureCount", showFeatureCount );
   }
   QgsLayerTreeModel legendModel( &rootGroup );
 
