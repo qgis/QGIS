@@ -782,11 +782,11 @@ QImage* QgsWMSServer::getLegendGraphics()
       }
     }
   }
-  
+
   // Checks showFeatureCount parameter
   bool showFeatureCount = false;
   if ( mParameters.contains( "SHOWFEATURECOUNT" ) )
-    showFeatureCount = QVariant(mParameters[ "SHOWFEATURECOUNT" ]).toBool();
+    showFeatureCount = QVariant( mParameters[ "SHOWFEATURECOUNT" ] ).toBool();
 
   // Create the layer tree root
   QgsLayerTreeGroup rootGroup;
