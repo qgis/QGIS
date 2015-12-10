@@ -43,8 +43,10 @@ QString QgsSqlExpressionCompiler::quotedIdentifier( const QString& identifier )
   return quoted;
 }
 
-QString QgsSqlExpressionCompiler::quotedValue( const QVariant& value )
+QString QgsSqlExpressionCompiler::quotedValue( const QVariant& value, bool& ok )
 {
+  ok = true;
+
   if ( value.isNull() )
     return "NULL";
 
@@ -231,17 +233,18 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
     case QgsExpression::ntLiteral:
     {
       const QgsExpression::NodeLiteral* n = static_cast<const QgsExpression::NodeLiteral*>( node );
+      bool ok = false;
       if ( mFlags.testFlag( CaseInsensitiveStringMatch ) && n->value().type() == QVariant::String )
       {
         // provider uses case insensitive matching, so if literal was a string then we only have a Partial compilation and need to
         // double check results using QGIS' expression engine
-        result = quotedValue( n->value() );
-        return Partial;
+        result = quotedValue( n->value(), ok );
+        return ok ? Partial : Fail;
       }
       else
       {
-        result = quotedValue( n->value() );
-        return Complete;
+        result = quotedValue( n->value(), ok );
+        return ok ? Complete : Fail;
       }
     }
 

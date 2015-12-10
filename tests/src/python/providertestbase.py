@@ -60,7 +60,10 @@ class ProviderTestCase(object):
         self.assert_query(provider, 'cnt - 1 = 99', [1])
         self.assert_query(provider, 'cnt + 1 = 101', [1])
         self.assert_query(provider, 'cnt = 1100 % 1000', [1])
+        self.assert_query(provider, '"name" || \' \' || "name" = \'Orange Orange\'', [1])
         self.assert_query(provider, '"name" || \' \' || "cnt" = \'Orange 100\'', [1])
+        self.assert_query(provider, '\'x\' || "name" IS NOT NULL', [1, 2, 3, 4])
+        self.assert_query(provider, '\'x\' || "name" IS NULL', [5])
         self.assert_query(provider, 'cnt = 10 ^ 2', [1])
         self.assert_query(provider, '"name" ~ \'[OP]ra[gne]+\'', [1])
         self.assert_query(provider, '"name"="name2"', [2, 4])  # mix of matched and non-matched case sensitive names
@@ -116,6 +119,29 @@ class ProviderTestCase(object):
             self.runGetFeatureTests(self.provider)
         except AttributeError:
             print 'Provider does not support compiling'
+
+    def testGetFeaturesFidTests(self):
+        fids = [f.id() for f in self.provider.getFeatures()]
+        assert len(fids) == 5, 'Expected 5 features, got {} instead'.format(len(fids))
+        for id in fids:
+            result = [f.id() for f in self.provider.getFeatures(QgsFeatureRequest().setFilterFid(id))]
+            expected = [id]
+            assert result == expected, 'Expected {} and got {} when testing for feature ID filter'.format(expected, result)
+
+    def testGetFeaturesFidsTests(self):
+        fids = [f.id() for f in self.provider.getFeatures()]
+
+        result = set([f.id() for f in self.provider.getFeatures(QgsFeatureRequest().setFilterFids([fids[0], fids[2]]))])
+        expected = set([fids[0], fids[2]])
+        assert result == expected, 'Expected {} and got {} when testing for feature IDs filter'.format(expected, result)
+
+        result = set([f.id() for f in self.provider.getFeatures(QgsFeatureRequest().setFilterFids([fids[1], fids[3], fids[4]]))])
+        expected = set([fids[1], fids[3], fids[4]])
+        assert result == expected, 'Expected {} and got {} when testing for feature IDs filter'.format(expected, result)
+
+        result = set([f.id() for f in self.provider.getFeatures(QgsFeatureRequest().setFilterFids([]))])
+        expected = set([])
+        assert result == expected, 'Expected {} and got {} when testing for feature IDs filter'.format(expected, result)
 
     def testGetFeaturesFilterRectTests(self):
         extent = QgsRectangle(-70, 67, -60, 80)

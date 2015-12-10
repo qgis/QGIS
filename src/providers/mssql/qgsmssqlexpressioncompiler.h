@@ -1,9 +1,9 @@
 /***************************************************************************
-              qgspostgresexpressioncompiler.h
-              ----------------------------------------------------
-              date                 : 22.4.2015
-              copyright            : (C) 2015 by Matthias Kuhn
-              email                : matthias (at) opengis.ch
+ qgsmssqlexpressioncompiler.h
+ ----------------------------
+ begin                : 9.12.2015
+ copyright            : (C) 2015 by Nyall Dawson
+ email                : nyall dot dawson at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -13,23 +13,23 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSPOSTGRESEXPRESSIONCOMPILER_H
-#define QGSPOSTGRESEXPRESSIONCOMPILER_H
+#ifndef QGSMSSQLEXPRESSIONCOMPILER_H
+#define QGSMSSQLEXPRESSIONCOMPILER_H
 
 #include "qgssqlexpressioncompiler.h"
 #include "qgsexpression.h"
-#include "qgspostgresfeatureiterator.h"
+#include "qgsmssqlfeatureiterator.h"
 
-class QgsPostgresExpressionCompiler : public QgsSqlExpressionCompiler
+class QgsMssqlExpressionCompiler : public QgsSqlExpressionCompiler
 {
   public:
 
-    explicit QgsPostgresExpressionCompiler( QgsPostgresFeatureSource* source );
+    explicit QgsMssqlExpressionCompiler( QgsMssqlFeatureSource* source );
 
   protected:
-
-    virtual QString quotedIdentifier( const QString& identifier ) override;
+    virtual Result compileNode( const QgsExpression::Node* node, QString& result ) override;
     virtual QString quotedValue( const QVariant& value, bool& ok ) override;
+
 };
 
-#endif // QGSPOSTGRESEXPRESSIONCOMPILER_H
+#endif // QGSMSSQLEXPRESSIONCOMPILER_H
