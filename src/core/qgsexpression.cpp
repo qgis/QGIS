@@ -1736,6 +1736,14 @@ static QVariant fcnCentroid( const QVariantList& values, const QgsExpressionCont
   delete geom;
   return result;
 }
+static QVariant fcnPointOnSurface( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
+  QgsGeometry* geom = fGeom.pointOnSurface();
+  QVariant result = geom ? QVariant::fromValue( *geom ) : QVariant();
+  delete geom;
+  return result;
+}
 static QVariant fcnConvexHull( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
@@ -2548,6 +2556,7 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( "translate", 3, fcnTranslate, "GeometryGroup" )
     << new StaticFunction( "buffer", -1, fcnBuffer, "GeometryGroup" )
     << new StaticFunction( "centroid", 1, fcnCentroid, "GeometryGroup" )
+    << new StaticFunction( "point_on_surface", 1, fcnPointOnSurface, "GeometryGroup" )
     << new StaticFunction( "reverse", 1, fcnReverse, "GeometryGroup" )
     << new StaticFunction( "bounds", 1, fcnBounds, "GeometryGroup" )
     << new StaticFunction( "num_points", 1, fcnGeomNumPoints, "GeometryGroup" )
