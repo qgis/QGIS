@@ -39,6 +39,9 @@ class CORE_EXPORT QgsLineStringV2: public QgsCurveV2
     QgsLineStringV2();
     ~QgsLineStringV2();
 
+    bool operator==( const QgsLineStringV2& other ) const;
+    bool operator!=( const QgsLineStringV2& other ) const;
+
     /** Returns the specified point from inside the line string.
      * @param i index of point, starting at 0 for the first point
      */

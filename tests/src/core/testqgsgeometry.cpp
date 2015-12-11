@@ -1075,6 +1075,47 @@ void TestQgsGeometry::lineStringV2()
   QCOMPARE( l10.pointN( 1 ), QgsPointV2( QgsWKBTypes::Point25D, 31, 32, 33 ) );
   QCOMPARE( l10.pointN( 2 ), QgsPointV2( QgsWKBTypes::Point25D, 41, 42, 43 ) );
 
+  //equality
+  QgsLineStringV2 e1;
+  QgsLineStringV2 e2;
+  QVERIFY( e1 == e2 );
+  QVERIFY( !( e1 != e2 ) );
+  e1.addVertex( QgsPointV2( 1, 2 ) );
+  QVERIFY( !( e1 == e2 ) ); //different number of vertices
+  QVERIFY( e1 != e2 );
+  e2.addVertex( QgsPointV2( 1, 2 ) );
+  QVERIFY( e1 == e2 );
+  QVERIFY( !( e1 != e2 ) );
+  e1.addVertex( QgsPointV2( 1 / 3.0, 4 / 3.0 ) );
+  e2.addVertex( QgsPointV2( 2 / 6.0, 8 / 6.0 ) );
+  QVERIFY( e1 == e2 ); //check non-integer equality
+  QVERIFY( !( e1 != e2 ) );
+  e1.addVertex( QgsPointV2( 7, 8 ) );
+  e2.addVertex( QgsPointV2( 6, 9 ) );
+  QVERIFY( !( e1 == e2 ) ); //different coordinates
+  QVERIFY( e1 != e2 );
+  QgsLineStringV2 e3;
+  e3.setPoints( QList< QgsPointV2 >() << QgsPointV2( QgsWKBTypes::PointZ, 1, 2, 0 )
+                << QgsPointV2( QgsWKBTypes::PointZ, 1 / 3.0, 4 / 3.0, 0 )
+                << QgsPointV2( QgsWKBTypes::PointZ, 7, 8, 0 ) );
+  QVERIFY( !( e1 == e3 ) ); //different dimension
+  QVERIFY( e1 != e3 );
+  QgsLineStringV2 e4;
+  e4.setPoints( QList< QgsPointV2 >() << QgsPointV2( QgsWKBTypes::PointZ, 1, 2, 2 )
+                << QgsPointV2( QgsWKBTypes::PointZ, 1 / 3.0, 4 / 3.0, 3 )
+                << QgsPointV2( QgsWKBTypes::PointZ, 7, 8, 4 ) );
+  QVERIFY( !( e3 == e4 ) ); //different z coordinates
+  QVERIFY( e3 != e4 );
+  QgsLineStringV2 e5;
+  e5.setPoints( QList< QgsPointV2 >() << QgsPointV2( QgsWKBTypes::PointM, 1, 2, 0, 1 )
+                << QgsPointV2( QgsWKBTypes::PointM, 1 / 3.0, 4 / 3.0, 0, 2 )
+                << QgsPointV2( QgsWKBTypes::PointM, 7, 8, 0, 3 ) );
+  QgsLineStringV2 e6;
+  e6.setPoints( QList< QgsPointV2 >() << QgsPointV2( QgsWKBTypes::PointM, 1, 2, 0, 11 )
+                << QgsPointV2( QgsWKBTypes::PointM, 1 / 3.0, 4 / 3.0, 0, 12 )
+                << QgsPointV2( QgsWKBTypes::PointM, 7, 8, 0, 13 ) );
+  QVERIFY( !( e5 == e6 ) ); //different m values
+  QVERIFY( e5 != e6 );
 
   //close/isClosed
   QgsLineStringV2 l11;

@@ -41,6 +41,35 @@ QgsLineStringV2::QgsLineStringV2(): QgsCurveV2()
 QgsLineStringV2::~QgsLineStringV2()
 {}
 
+bool QgsLineStringV2::operator==( const QgsLineStringV2& other ) const
+{
+  if ( mWkbType != other.mWkbType )
+    return false;
+
+  if ( mX.count() != other.mX.count() )
+    return false;
+
+  for ( int i = 0; i < mX.count(); ++i )
+  {
+    if ( !qgsDoubleNear( mX.at( i ), other.mX.at( i ) )
+         || !qgsDoubleNear( mY.at( i ), other.mY.at( i ) ) )
+      return false;
+
+    if ( is3D() && !qgsDoubleNear( mZ.at( i ), other.mZ.at( i ) ) )
+      return false;
+
+    if ( isMeasure() && !qgsDoubleNear( mM.at( i ), other.mM.at( i ) ) )
+      return false;
+  }
+
+  return true;
+}
+
+bool QgsLineStringV2::operator!=( const QgsLineStringV2& other ) const
+{
+  return !operator==( other );
+}
+
 QgsLineStringV2 *QgsLineStringV2::clone() const
 {
   return new QgsLineStringV2( *this );
