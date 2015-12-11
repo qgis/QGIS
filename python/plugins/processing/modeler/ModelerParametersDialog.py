@@ -277,6 +277,10 @@ class ModelerParametersDialog(QDialog):
             bools = self.getAvailableValuesOfType(ParameterBoolean, None)
             for b in bools:
                 item.addItem(self.resolveValueDescription(b), b)
+            if param.default:
+                item.setCurrentIndex(0)
+            else:
+                item.setCurrentIndex(1)
         elif isinstance(param, ParameterSelection):
             item = QComboBox()
             item.addItems(param.options)

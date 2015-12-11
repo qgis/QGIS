@@ -161,7 +161,7 @@ class OutputRaster(Output):
 
     def getDefaultFileExtension(self, alg):
         supported = alg.provider.getSupportedOutputRasterLayerExtensions()
-        default = ProcessingConfig.getSetting(ProcessingConfig.DEFAULT_OUTPUT_VECTOR_LAYER_EXT)
+        default = ProcessingConfig.getSetting(ProcessingConfig.DEFAULT_OUTPUT_RASTER_LAYER_EXT)
         ext = default if default in supported else supported[0]
         return ext
 
