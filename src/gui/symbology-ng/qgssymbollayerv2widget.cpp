@@ -3094,9 +3094,9 @@ QgsGeometryGeneratorSymbolLayerWidget::QgsGeometryGeneratorSymbolLayerWidget( co
 {
   setupUi( this );
   modificationExpressionSelector->setLayer( const_cast<QgsVectorLayer*>( vl ) );
-  cbxGeometryType->addItem( tr( "Polygon / MultiPolygon" ), QgsSymbolV2::Fill );
-  cbxGeometryType->addItem( tr( "LineString / MultiLineString" ), QgsSymbolV2::Line );
-  cbxGeometryType->addItem( tr( "Point / MultiPoint" ), QgsSymbolV2::Marker );
+  cbxGeometryType->addItem( QgsApplication::getThemeIcon( "/mIconPolygonLayer.svg" ), tr( "Polygon / MultiPolygon" ), QgsSymbolV2::Fill );
+  cbxGeometryType->addItem( QgsApplication::getThemeIcon( "/mIconLineLayer.svg" ), tr( "LineString / MultiLineString" ), QgsSymbolV2::Line );
+  cbxGeometryType->addItem( QgsApplication::getThemeIcon( "/mIconPointLayer.svg" ), tr( "Point / MultiPoint" ), QgsSymbolV2::Marker );
   connect( modificationExpressionSelector, SIGNAL( expressionParsed( bool ) ), this, SLOT( updateExpression() ) );
   connect( cbxGeometryType, SIGNAL( currentIndexChanged( int ) ), this, SLOT( updateSymbolType() ) );
 }
