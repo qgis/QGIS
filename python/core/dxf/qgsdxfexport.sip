@@ -31,53 +31,217 @@ class QgsDxfExport
     QgsDxfExport();
     ~QgsDxfExport();
 
+    /**
+     * Add layers to export
+     * @param layers list of layers and corresponding attribute indexes that determine the layer name (-1 for original layer name or title)
+     * @see setLayerTitleAsName
+     */
     void addLayers( const QList< QPair<QgsVectorLayer *, int > > &layers );
+
+    /**
+     * Export to a dxf file in the given encoding
+     * @param d device
+     * @param codec encoding
+     * @returns 0 on success, 1 on invalid device, 2 when devices is not writable
+     */
     int writeToFile( QIODevice *d, const QString& codec );  //maybe add progress dialog? other parameters (e.g. scale, dpi)?
 
+    /**
+     * Set reference scale for output
+     * @param d scale denominator
+     */
     void setSymbologyScaleDenominator( double d );
+
+    /**
+     * Retrieve reference scale for output
+     * @returns reference scale
+     * @see setSymbologyScaleDenominator
+     */
     double symbologyScaleDenominator() const;
 
+    /**
+     * Set map units
+     * @param u unit
+     */
     void setMapUnits( QGis::UnitType u );
+
+    /**
+     * Retrieve map units
+     * @returns unit
+     * @see setMapUnits
+     */
     QGis::UnitType mapUnits() const;
 
+    /**
+     * Set symbology export mode
+     * @param e the mode
+     */
     void setSymbologyExport( QgsDxfExport::SymbologyExport e );
+
+    /**
+     * Get symbology export mode
+     * @returns mode
+     * @see setSymbologyExport
+     */
     QgsDxfExport::SymbologyExport symbologyExport() const;
 
+    /**
+     * Set extent of area to export
+     * @param r area to export
+     */
     void setExtent( const QgsRectangle &r );
+
+    /**
+     * Get extent of area to export
+     * @returns area to export
+     * @see setExtent
+     */
     QgsRectangle extent() const;
 
-    //get closest entry in dxf palette
+    /**
+     * Enable use of title (where set) instead of layer name,
+     * when attribute index of corresponding layer index is -1
+     * @param layerTitleAsName flag
+     * @see addLayers
+     */
+    void setLayerTitleAsName( bool layerTitleAsName );
+
+    /**
+     * Retrieve wether layer title (where set) instead of name shall be use
+     * @returns flag
+     * @see setLayerTitleAsName
+     */
+    bool layerTitleAsName();
+
+    /**
+     * Get DXF palette index of nearest entry for given color
+     * @param color
+     */
     static int closestColorMatch( QRgb pixel );
 
+    /**
+     * Get layer name for feature
+     * @param id layer id of layer
+     * @param f feature of layer
+     * @returns layer name for feature
+     */
     QString layerName( const QString &id, const QgsFeature &f ) const;
 
-    //! @note available in python bindings as writeGroupInt
+    /**
+     * Get name for layer respecting the use layer title as layer name mode
+     * @param vl the vector layer
+     * @returns name of layer
+     * @see setLayerTitleAsName
+     */
+    QString layerName( QgsVectorLayer *vl ) const;
+
+    /**
+     * Write a tuple of group code and integer value
+     * @param code group code
+     * @param i integer value
+     * @note available in python bindings as writeGroupInt
+     */
     void writeGroup( int code, int i ) /PyName=writeGroupInt/;
-    //! @note available in python bindings as writeGroupDouble
+
+    /**
+     * Write a group code with a floating point value
+     * @param code group code
+     * @param d floating point value
+     * @note available in python bindings as writeGroupDouble
+     */
     void writeGroup( int code, double d ) /PyName=writeGroupDouble/;
+
+    /**
+     * Write a group code with a string value
+     * @param code group code
+     * @param s string value
+     */
     void writeGroup( int code, const QString &s );
-    void writeGroupCode( int code );
-    void writeInt( int i );
-    void writeDouble( double d );
-    void writeString( const QString &s );
-    //! @note available in python bindings as writeGroupPoint
+
+    /**
+     * Write a group code with a point
+     * @param code group code
+     * @param p point value
+     * @param z z value of the point (defaults to 0.0)
+     * @param skipz write point in 2d (defaults to false)
+     * @note available in python bindings as writeGroupPoint
+     */
     void writeGroup( int code, const QgsPoint &p, double z = 0.0, bool skipz = false ) /PyName=writeGroupPoint/;
+
+    /**
+     * Write a group code with color value
+     * @param color color
+     * @param exactMatch group code to use if the color has an exact match in the dxf palette
+     * @param rgbCode group code to use if the color doesn't have an exact match or has a transparency component
+     * @param transparencyCode group code to use for transparency component
+     * @note available in python bindings as writeGroupPoint
+     */
     void writeGroup( const QColor& color, int exactMatch = 62, int rgbCode = 420, int transparencyCode = 440 );
 
+    /**
+     * Write a group code
+     * @param code group code value
+     */
+    void writeGroupCode( int code );
+
+    /**
+     * Write an integer value
+     * @param i integer value
+     */
+    void writeInt( int i );
+
+    /**
+     * Write a floating point value
+     * @param d floating point value
+     */
+    void writeDouble( double d );
+
+    /**
+     * Write a string value
+     * @param s string value
+     */
+    void writeString( const QString &s );
+
+    /**
+     * Write a tuple of group code and a handle
+     * @param code group code to use
+     * @param handle handle to use (0 generates a new handle)
+     * @returns the used handle
+     */
     int writeHandle( int code = 5, int handle = 0 );
 
-    //! Draw dxf primitives (LWPOLYLINE)
+    /**
+     * Draw dxf primitives (LWPOLYLINE)
+     * @param line polyline
+     * @param layer layer name to use
+     * @param lineStyleName line type to use
+     * @param color coolor to use
+     * @param width line width to use
+     */
     void writePolyline( const QgsPolyline &line, const QString &layer, const QString &lineStyleName, const QColor& color, double width = -1 );
 
-    //! Draw dxf polygon (HATCH)
+    /**
+     * Draw dxf filled polygon (HATCH)
+     * @param polygon polygon
+     * @param layer layer name to use
+     * @param hatchPattern hatchPattern to use
+     * @param color coolor to use
+     */
     void writePolygon( const QgsPolygon &polygon, const QString &layer, const QString &hatchPattern, const QColor& color );
 
-    /** Draw solid
+    /**
+     * Draw dxf filled polygon (SOLID)
+     * @param layer layer name to use
+     * @param color color to use
+     * @param pt1 1. point of solid
+     * @param pt2 2. point of solid
+     * @param pt3 3. point of solid
+     * @param pt4 4. point of solid
      * @deprecated see writePolygon
      */
     void writeSolid( const QString &layer, const QColor& color, const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, const QgsPoint &pt4 ) /Deprecated/;
 
-    //! write line (as a polyline)
+    //! Write line (as a polyline)
     void writeLine( const QgsPoint &pt1, const QgsPoint &pt2, const QString &layer, const QString &lineStyleName, const QColor& color, double width = -1 );
 
     //! Write point
@@ -99,5 +263,11 @@ class QgsDxfExport
 
     //! Return cleaned layer name for use in DXF
     static QString dxfLayerName( const QString &name );
+
+    //! return DXF encoding for Qt encoding
+    static QString dxfEncoding( const QString &name );
+
+    //! return list of available DXF encodings
+    static QStringList encodings();
 
 };
