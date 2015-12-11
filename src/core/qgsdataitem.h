@@ -85,7 +85,7 @@ class CORE_EXPORT QgsDataItem : public QObject
       Layer,
       Error,
       Favourites,
-      Project
+      Project //! Represents a QGIS project
     };
 
     /** Create new data item. */
@@ -434,6 +434,12 @@ class CORE_EXPORT QgsProjectItem : public QgsDataItem
     Q_OBJECT
   public:
 
+    /**
+     * @brief A data item holding a reference to a QGIS project file.
+     * @param parent The parent data item.
+     * @param name The name of the of the project. Displayed to the user.
+     * @param path The full path to the project.
+     */
     QgsProjectItem( QgsDataItem* parent, const QString& name, const QString& path );
     ~QgsProjectItem();
 

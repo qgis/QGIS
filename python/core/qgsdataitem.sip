@@ -59,7 +59,8 @@ class QgsDataItem : QObject
       Directory,
       Layer,
       Error,
-      Favourites
+      Favourites,
+      Project //! Represents a QGIS project
     };
 
     /** Create new data item. */
@@ -339,6 +340,12 @@ class QgsProjectItem : QgsDataItem
 %End
   public:
 
+    /**
+     * @brief A data item holding a reference to a QGIS project file.
+     * @param parent The parent data item.
+     * @param name The name of the of the project. Displayed to the user.
+     * @param path The full path to the project.
+     */
     QgsProjectItem( QgsDataItem* parent, const QString& name, const QString& path );
     ~QgsProjectItem();
 
