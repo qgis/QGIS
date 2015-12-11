@@ -304,6 +304,11 @@ class CORE_EXPORT QgsAbstractGeometryV2
 
     virtual int vertexCount( int part = 0, int ring = 0 ) const = 0;
     virtual int ringCount( int part = 0 ) const = 0;
+
+    /** Returns count of parts contained in the geometry.
+     * @see vertexCount
+     * @see ringCount
+     */
     virtual int partCount() const = 0;
 
     /** Adds a z-dimension to the geometry, initialized to a preset value.
