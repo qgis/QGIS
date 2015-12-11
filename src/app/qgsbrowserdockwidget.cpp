@@ -541,6 +541,16 @@ void QgsBrowserDockWidget::addLayerAtIndex( const QModelIndex& index )
   QgsDebugMsg( QString( "rowCount() = %1" ).arg( mModel->rowCount( mProxyModel->mapToSource( index ) ) ) );
   QgsDataItem *item = mModel->dataItem( mProxyModel->mapToSource( index ) );
 
+  if ( item != NULL && item->type() == QgsDataItem::Project )
+  {
+    QgsProjectItem *projectItem = qobject_cast<QgsProjectItem*>( item );
+    if ( projectItem != NULL )
+    {
+      QApplication::setOverrideCursor( Qt::WaitCursor );
+      QgisApp::instance()->openFile( projectItem->path() );
+      QApplication::restoreOverrideCursor();
+    }
+  }
   if ( item != NULL && item->type() == QgsDataItem::Layer )
   {
     QgsLayerItem *layerItem = qobject_cast<QgsLayerItem*>( item );
@@ -565,6 +575,21 @@ void QgsBrowserDockWidget::addSelectedLayers()
   // get a sorted list of selected indexes
   QModelIndexList list = mBrowserView->selectionModel()->selectedIndexes();
   qSort( list );
+
+  // If any of the layer items are QGIS we just open and exit the loop
+  for ( int i = 0; i <= list.size(); i++ )
+  {
+    QgsDataItem *item = mModel->dataItem( mProxyModel->mapToSource( list[i] ) );
+    if ( item && item->type() == QgsDataItem::Project )
+    {
+      QgsProjectItem *projectItem = qobject_cast<QgsProjectItem*>( item );
+      if ( projectItem )
+        QgisApp::instance()->openFile( projectItem->path() );
+
+      QApplication::restoreOverrideCursor();
+      return;
+    }
+  }
 
   // add items in reverse order so they are in correct order in the layers dock
   for ( int i = list.size() - 1; i >= 0; i-- )

@@ -47,6 +47,8 @@ class QgsDataItem : QObject
     sipType = sipType_QgsZipItem;
   else if (qobject_cast<QgsDataCollectionItem*>(sipCpp))
     sipType = sipType_QgsDataCollectionItem;
+  else if (qobject_cast<QgsProjectItem*>(sipCpp))
+    sipType = sipType_QgsProjectItem;
   else
     sipType = 0;
 %End
@@ -322,6 +324,21 @@ class QgsDirectoryItem : QgsDataCollectionItem
     /* static QVector<QgsDataProvider*> mProviders; */
     //! @note not available via python bindings
     // static QVector<QLibrary*> mLibraries;
+};
+
+/**
+ Data item that can be used to represent QGIS projects.
+ */
+class QgsProjectItem : QgsDataItem
+{
+%TypeHeaderCode
+#include <qgsdataitem.h>
+%End
+  public:
+
+    QgsProjectItem( QgsDataItem* parent, const QString& name, const QString& path );
+    ~QgsProjectItem();
+
 };
 
 /**

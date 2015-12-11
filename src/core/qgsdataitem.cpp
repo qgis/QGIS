@@ -813,6 +813,13 @@ QVector<QgsDataItem*> QgsDirectoryItem::createChildren()
     QString path = dir.absoluteFilePath( name );
     QFileInfo fileInfo( path );
 
+    if ( fileInfo.suffix() == "qgs" )
+    {
+      QgsDataItem * item = new QgsProjectItem( this, name, path );
+      children.append( item );
+      continue;
+    }
+
     // vsizip support was added to GDAL/OGR 1.6 but GDAL_VERSION_NUM not available here
     //   so we assume it's available anyway
     {
@@ -1064,6 +1071,17 @@ void QgsDirectoryParamWidget::showHideColumn()
   settings.setValue( "/dataitem/directoryHiddenColumns", lst );
 }
 
+QgsProjectItem::QgsProjectItem( QgsDataItem* parent, const QString &name, const QString& path )
+    : QgsDataItem( QgsDataItem::Project, parent, name, path )
+{
+  mIconName = ":/images/icons/qgis-icon-16x16.png";
+
+  setState( Populated ); // no more children
+}
+
+QgsProjectItem::~QgsProjectItem()
+{
+}
 
 QgsErrorItem::QgsErrorItem( QgsDataItem* parent, const QString& error, const QString& path )
     : QgsDataItem( QgsDataItem::Error, parent, error, path )

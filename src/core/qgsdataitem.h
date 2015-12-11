@@ -84,7 +84,8 @@ class CORE_EXPORT QgsDataItem : public QObject
       Directory,
       Layer,
       Error,
-      Favourites
+      Favourites,
+      Project
     };
 
     /** Create new data item. */
@@ -422,6 +423,19 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
   private:
     QFileSystemWatcher * mFileSystemWatcher;
     bool mRefreshLater;
+};
+
+/**
+ Data item that can be used to represent QGIS projects.
+ */
+class CORE_EXPORT QgsProjectItem : public QgsDataItem
+{
+    Q_OBJECT
+  public:
+
+    QgsProjectItem( QgsDataItem* parent, const QString& name, const QString& path );
+    ~QgsProjectItem();
+
 };
 
 /**

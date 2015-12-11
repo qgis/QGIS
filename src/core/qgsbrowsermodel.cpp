@@ -16,6 +16,7 @@
 #include <QApplication>
 #include <QStyle>
 #include <QtConcurrentMap>
+#include <QUrl>
 
 #include "qgis.h"
 #include "qgsapplication.h"
@@ -185,7 +186,7 @@ Qt::ItemFlags QgsBrowserModel::flags( const QModelIndex & index ) const
   Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 
   QgsDataItem* ptr = ( QgsDataItem* ) index.internalPointer();
-  if ( ptr->type() == QgsDataItem::Layer )
+  if ( ptr->type() == QgsDataItem::Layer || ptr->type() == QgsDataItem::Project )
   {
     flags |= Qt::ItemIsDragEnabled;
   }
@@ -448,6 +449,16 @@ QMimeData * QgsBrowserModel::mimeData( const QModelIndexList &indexes ) const
     if ( index.isValid() )
     {
       QgsDataItem* ptr = ( QgsDataItem* ) index.internalPointer();
+      if ( ptr->type() == QgsDataItem::Project )
+      {
+        QMimeData *mimeData = new QMimeData();
+        QUrl url = QUrl::fromLocalFile( ptr->path() );
+        QList<QUrl> urls;
+        urls << url;
+        mimeData->setUrls( urls );
+        return mimeData;
+      }
+
       if ( ptr->type() != QgsDataItem::Layer ) continue;
       QgsLayerItem *layer = ( QgsLayerItem* ) ptr;
       lst.append( QgsMimeDataUtils::Uri( layer ) );
