@@ -45,6 +45,7 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayerCache *layerCache,
 {
   QgsDebugMsg( "entered." );
 
+  // Debug check: must be running in the GUI thread
   Q_ASSERT( qApp->thread() == QThread::currentThread() );
 
   mExpressionContext << QgsExpressionContextUtils::globalScope()
@@ -105,6 +106,9 @@ void QgsAttributeTableModel::featuresDeleted( const QgsFeatureIds& fids )
 {
 
   // Wait for the loader thread to complete
+  // FIXME: Do we really need to block?
+  // We risk that the deleted feature is in the featuresReady pool
+  // or has not been loaded yet.
   waitLoader();
 
   QList<int> rows;
@@ -379,7 +383,7 @@ void QgsAttributeTableModel::loadLayerFinished()
 
 
 
-void QgsAttributeTableModel::featuresReady( QgsFeatureList features, int loadedCount )
+void QgsAttributeTableModel::featuresReady( const QgsFeatureList features, const int loadedCount )
 {
   QgsDebugMsg( "featuresReady" );
   Q_ASSERT( qApp->thread() == QThread::currentThread() );
@@ -434,8 +438,6 @@ void QgsAttributeTableModel::loadLayer()
   // Stop old thread
   loadWorkerStop();
 
-  QgsFeatureIterator features = mLayerCache->getFeatures( mFeatureRequest );
-
   // make sure attributes are properly updated before caching the data
   // (emit of progress() signal may enter event loop and thus attribute
   // table view may be updated with inconsistent model which may assume
@@ -449,8 +451,8 @@ void QgsAttributeTableModel::loadLayer()
     removeRows( 0, rowCount() );
   }
 
-  // Set up the loader worker with a batch size of 1000
-  mLoadWorker = new QgsAttributeTableLoadWorker( features, 1000 );
+  // Set up the loader worker with a (default) batch size of 1000
+  mLoadWorker = new QgsAttributeTableLoadWorker( mLayerCache->getFeatures( mFeatureRequest ) );
   mLoadWorker->moveToThread( &mLoadWorkerThread );
 
   connect( &mLoadWorkerThread, SIGNAL( started() ), mLoadWorker, SLOT( startJob() ) );
@@ -459,7 +461,8 @@ void QgsAttributeTableModel::loadLayer()
 
   // Quit the thread when the worker finishes
   connect( mLoadWorker, SIGNAL( finished() ), &mLoadWorkerThread, SLOT( quit() ) );
-  // Stop the worker job when loadStopped is emitted
+  // Stop the worker job when loadStopped is emitted, this connection
+  // is used to stop the loader gracefully before stopping the thread
   connect( this, SIGNAL( loadStopped() ), mLoadWorker, SLOT( stopJob() ) );
 
   // Local
@@ -570,7 +573,6 @@ int QgsAttributeTableModel::fieldCol( int idx ) const
 
 int QgsAttributeTableModel::rowCount( const QModelIndex &parent ) const
 {
-  QgsDebugMsg( QString( "Row Count %1" ).arg( mRowIdMap.size() ) );
   Q_UNUSED( parent );
   return mRowIdMap.size();
 }
@@ -810,7 +812,12 @@ QgsFeature QgsAttributeTableModel::feature( const QModelIndex &idx ) const
 void QgsAttributeTableModel::prefetchColumnData( int column )
 {
 
-  waitLoader();
+  // FIXME: not sure about this blocking call:
+  // if we don't block, the risk is that the field cache will be
+  // filled with incomplete values.
+  // Maybe disabling sort operations while loading would be a better
+  // idea.
+  //waitLoader();
 
   mFieldCache.clear();
 

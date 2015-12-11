@@ -46,6 +46,7 @@ QgsVectorLayerCache::QgsVectorLayerCache( QgsVectorLayer* layer, int cacheSize, 
 
 QgsVectorLayerCache::~QgsVectorLayerCache()
 {
+  QMutexLocker locker( &mMutex );
   qDeleteAll( mCacheIndices );
   mCacheIndices.clear();
 }
@@ -97,27 +98,8 @@ void QgsVectorLayerCache::setFullCache( bool fullCache )
                            .setSubsetOfAttributes( mCachedAttributes )
                            .setFlags( mCacheGeometry ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) ) );
 
-    int i = 0;
-
-    QTime t;
-    t.start();
-
     QgsFeature f;
-    while ( it.nextFeature( f ) )
-    {
-      ++i;
-
-      if ( t.elapsed() > 1000 )
-      {
-        bool cancel = false;
-        emit progress( i, cancel );
-        if ( cancel )
-          break;
-
-        t.restart();
-      }
-    }
-
+    while ( it.nextFeature( f ) ) { }
     it.close();
 
     emit finished();
@@ -145,14 +127,15 @@ void QgsVectorLayerCache::setCacheAddedAttributes( bool cacheAddedAttributes )
 
 bool QgsVectorLayerCache::featureAtId( QgsFeatureId featureId, QgsFeature& feature, bool skipCache )
 {
-  QMutexLocker locker( &mMutex );
   bool featureFound = false;
 
   QgsCachedFeature* cachedFeature = NULL;
 
   if ( !skipCache )
   {
+    mMutex.lock();
     cachedFeature = mCache[ featureId ];
+    mMutex.unlock();
   }
 
   if ( cachedFeature != NULL )
@@ -160,14 +143,24 @@ bool QgsVectorLayerCache::featureAtId( QgsFeatureId featureId, QgsFeature& featu
     feature = QgsFeature( *cachedFeature->feature() );
     featureFound = true;
   }
-  else if ( mLayer->getFeatures( QgsFeatureRequest()
-                                 .setFilterFid( featureId )
-                                 .setSubsetOfAttributes( mCachedAttributes )
-                                 .setFlags( !mCacheGeometry ? QgsFeatureRequest::NoGeometry : QgsFeatureRequest::Flags( 0 ) ) )
-            .nextFeature( feature ) )
+  else
   {
-    cacheFeature( feature );
-    featureFound = true;
+    mMutex.lock();
+    if ( mLayer->getFeatures( QgsFeatureRequest()
+                              .setFilterFid( featureId )
+                              .setSubsetOfAttributes( mCachedAttributes )
+                              .setFlags( !mCacheGeometry ? QgsFeatureRequest::NoGeometry : QgsFeatureRequest::Flags( 0 ) ) )
+         .nextFeature( feature ) )
+    {
+      mMutex.unlock();
+      cacheFeature( feature );
+      featureFound = true;
+    }
+    else
+    {
+      mMutex.unlock();
+    }
+
   }
 
   return featureFound;
@@ -186,6 +179,7 @@ QgsVectorLayer* QgsVectorLayerCache::layer()
 
 void QgsVectorLayerCache::requestCompleted( const QgsFeatureRequest& featureRequest, const QgsFeatureIds& fids )
 {
+  QMutexLocker locker( &mMutex );
   // If a request is too large for the cache don't notify to prevent from indexing incomplete requests
   if ( fids.count() < mCache.size() )
   {
@@ -219,6 +213,7 @@ void QgsVectorLayerCache::onAttributeValueChanged( QgsFeatureId fid, int field, 
 
 void QgsVectorLayerCache::featureDeleted( QgsFeatureId fid )
 {
+  QMutexLocker locker( &mMutex );
   mCache.remove( fid );
 }
 
@@ -226,10 +221,13 @@ void QgsVectorLayerCache::onFeatureAdded( QgsFeatureId fid )
 {
   if ( mFullCache )
   {
-    if ( cacheSize() <= mLayer->featureCount() )
+    mMutex.lock();
+    long featureCount = mLayer->featureCount();
+    if ( cacheSize() <= featureCount )
     {
-      setCacheSize( mLayer->featureCount() + 100 );
+      setCacheSize( featureCount + 100 );
     }
+    mMutex.unlock();
 
     QgsFeature feat;
     featureAtId( fid, feat );
@@ -239,6 +237,7 @@ void QgsVectorLayerCache::onFeatureAdded( QgsFeatureId fid )
 
 void QgsVectorLayerCache::attributeAdded( int field )
 {
+  QMutexLocker locker( &mMutex );
   Q_UNUSED( field )
   mCachedAttributes.append( field );
   mCache.clear();
@@ -246,6 +245,7 @@ void QgsVectorLayerCache::attributeAdded( int field )
 
 void QgsVectorLayerCache::attributeDeleted( int field )
 {
+  QMutexLocker locker( &mMutex );
   QgsAttributeList attrs = mCachedAttributes;
   mCachedAttributes.clear();
 
@@ -260,6 +260,7 @@ void QgsVectorLayerCache::attributeDeleted( int field )
 
 void QgsVectorLayerCache::geometryChanged( QgsFeatureId fid, QgsGeometry& geom )
 {
+  QMutexLocker locker( &mMutex );
   QgsCachedFeature* cachedFeat = mCache[ fid ];
 
   if ( cachedFeat != NULL )
@@ -271,13 +272,16 @@ void QgsVectorLayerCache::geometryChanged( QgsFeatureId fid, QgsGeometry& geom )
 void QgsVectorLayerCache::layerDeleted()
 {
   emit cachedLayerDeleted();
+  QMutexLocker locker( &mMutex );
   mLayer = NULL;
 }
 
 void QgsVectorLayerCache::invalidate()
 {
-  emit invalidated();
+  mMutex.lock();
   mCache.clear();
+  mMutex.unlock();
+  emit invalidated();
 }
 
 QgsFeatureIterator QgsVectorLayerCache::getFeatures( const QgsFeatureRequest &featureRequest )

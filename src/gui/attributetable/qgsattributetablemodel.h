@@ -231,7 +231,9 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     const QgsAttributeEditorContext& editorContext() const { return mEditorContext; }
 
     /**
-     * Wait until the loader thread has finished, mainly used internally and for testing
+     * Wait until the loader thread has finished, mainly used internally
+     * and for testing purposes. It blocks the calling thread until the
+     * loader thread has finished.
      */
     void waitLoader();
 
@@ -262,6 +264,8 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
 
     /**
      * @brief Called when the loading of features has been completed
+     * This signal can be used in the GUI thread to update the GUI
+     * and inform the user that the loading has been completed
      */
     void loadFinished();
 
@@ -278,6 +282,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
 
 
   private slots:
+
     /**
      * Launched whenever the number of fields has changed
      */
@@ -301,7 +306,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * @param features feature list
      * @param loadedCount number of loaded features
      */
-    virtual void featuresReady( QgsFeatureList features , int loadedCount );
+    virtual void featuresReady( const QgsFeatureList features , const int loadedCount );
 
     /**
      * Called when the load worker has finished its job

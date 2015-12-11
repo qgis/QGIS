@@ -18,12 +18,7 @@
 #include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
 
-QgsAttributeTableLoadWorker::QgsAttributeTableLoadWorker( const QgsFeatureIterator &features )
-{
-  QgsAttributeTableLoadWorker( features, 1000 );
-}
-
-QgsAttributeTableLoadWorker::QgsAttributeTableLoadWorker( const QgsFeatureIterator &features, int batchSize ):
+QgsAttributeTableLoadWorker::QgsAttributeTableLoadWorker( const QgsFeatureIterator features, int batchSize ):
     mIsRunning( false ),
     mStopped( false )
 {
@@ -60,6 +55,7 @@ void QgsAttributeTableLoadWorker::startJob()
     {
       QgsDebugMsg( QString( "QgsAttributeTableLoadWorker featuresReady (batch: %1)" ).arg( i ) );
       emit featuresReady( features, i );
+      // This will notify the GUI thread that the features are ready to be processed
       qApp->processEvents();
       features.clear();
     }
@@ -69,6 +65,7 @@ void QgsAttributeTableLoadWorker::startJob()
   {
     QgsDebugMsg( QString( "QgsAttributeTableLoadWorker featuresReady (flush: %1)" ).arg( i ) );
     emit featuresReady( features, i );
+    // This will notify the GUI thread that the features are ready to be processed
     qApp->processEvents();
   }
   mIsRunning = false;

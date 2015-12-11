@@ -117,38 +117,6 @@ class QgsVectorLayerCache : QObject
      */
     QgsVectorLayer* layer();
 
-  protected:
-    /**
-     * @brief
-     * Gets called, whenever the full list of feature ids for a certain request is known.
-     * Broadcasts this information to indices, so they can update their tables.
-     *
-     * @param featureRequest  The feature request that was answered
-     * @param fids            The feature ids that have been returned
-     */
-    void requestCompleted( const QgsFeatureRequest& featureRequest, const QgsFeatureIds& fids );
-
-    /**
-     * @brief
-     * Gets called, whenever a feature has been removed.
-     * Broadcasts this information to indices, so they can invalidate their cache if required.
-     *
-     * @param fid             The feature id of the removed feature.
-     */
-    void featureRemoved( QgsFeatureId fid );
-
-    /**
-     * @brief
-     * Checks if the information required to complete the request is cached.
-     * i.e. If all attributes required and the geometry is held in the cache.
-     * Please note, that this does not check, if the requested features are cached.
-     *
-     *
-     * @param featureRequest  The {@link QgsFeatureRequest} to be answered
-     * @return                True if the information is being cached, false if not
-     */
-    bool checkInformationCovered( const QgsFeatureRequest& featureRequest );
-
 
   signals:
 
