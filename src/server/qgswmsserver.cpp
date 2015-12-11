@@ -1439,13 +1439,15 @@ void QgsWMSServer::getMapAsDxf()
   }
   dxf.setExtent( extent );
 
-  //get format options (for MODE,SCALE, LAYERATTRIBUTES )
+  //get format options (for MODE, USE_TITLE_AS_LAYERNAME, SCALE, LAYERATTRIBUTES)
   QMap<QString, QString > formatOptionsMap;
   readFormatOptions( formatOptionsMap );
 
   QList< QPair<QgsVectorLayer *, int > > layers;
   readDxfLayerSettings( layers, formatOptionsMap );
   dxf.addLayers( layers );
+
+  dxf.setLayerTitleAsName( formatOptionsMap.contains( "USE_TITLE_AS_LAYERNAME" ) );
 
   //MODE
   QMap<QString, QString>::const_iterator modeIt = formatOptionsMap.find( "MODE" );

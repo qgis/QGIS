@@ -445,6 +445,7 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
   //last symbol scale
   mScaleWidget->setMapCanvas( QgisApp::instance()->mapCanvas() );
   mScaleWidget->setScale( QgsProject::instance()->readEntry( "dxf", "/lastSymbologyExportScale", s.value( "qgis/lastSymbologyExportScale", "1/50000" ).toString() ).toDouble() );
+  mLayerTitleAsName->setChecked( QgsProject::instance()->readEntry( "dxf", "/lastDxfLayerTitleAsName", s.value( "qgis/lastDxfLayerTitleAsName", "false" ).toString() ) != "false" );
   mMapExtentCheckBox->setChecked( QgsProject::instance()->readEntry( "dxf", "/lastDxfMapRectangle", s.value( "qgis/lastDxfMapRectangle", "false" ).toString() ) != "false" );
 
   QStringList ids = QgsProject::instance()->visibilityPresetCollection()->presets();
@@ -580,6 +581,10 @@ bool QgsDxfExportDialog::exportMapExtent() const
   return mMapExtentCheckBox->isChecked();
 }
 
+bool QgsDxfExportDialog::layerTitleAsName() const
+{
+  return mLayerTitleAsName->isChecked();
+}
 
 void QgsDxfExportDialog::saveSettings()
 {
@@ -589,10 +594,12 @@ void QgsDxfExportDialog::saveSettings()
   s.setValue( "qgis/lastDxfSymbologyMode", mSymbologyModeComboBox->currentIndex() );
   s.setValue( "qgis/lastSymbologyExportScale", mScaleWidget->scale() );
   s.setValue( "qgis/lastDxfMapRectangle", mMapExtentCheckBox->isChecked() );
+  s.setValue( "qgis/lastDxfLayerTitleAsName", mLayerTitleAsName->isChecked() );
   s.setValue( "qgis/lastDxfEncoding", mEncoding->currentText() );
 
   QgsProject::instance()->writeEntry( "dxf", "/lastDxfSymbologyMode", mSymbologyModeComboBox->currentIndex() );
   QgsProject::instance()->writeEntry( "dxf", "/lastSymbologyExportScale", mScaleWidget->scale() );
+  QgsProject::instance()->writeEntry( "dxf", "/lastDxfLayerTitleAsName", mLayerTitleAsName->isChecked() );
   QgsProject::instance()->writeEntry( "dxf", "/lastDxfMapRectangle", mMapExtentCheckBox->isChecked() );
   QgsProject::instance()->writeEntry( "dxf", "/lastDxfEncoding", mEncoding->currentText() );
   QgsProject::instance()->writeEntry( "dxf", "/lastVisibilityPreset", mVisibilityPresets->currentText() );

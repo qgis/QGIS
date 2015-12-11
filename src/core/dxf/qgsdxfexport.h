@@ -59,10 +59,14 @@ class CORE_EXPORT QgsDxfExport
     void setExtent( const QgsRectangle &r ) { mExtent = r; }
     QgsRectangle extent() const { return mExtent; }
 
+    bool layerTitleAsName() { return mLayerTitleAsName; }
+    void setLayerTitleAsName( bool layerTitleAsName ) { mLayerTitleAsName = layerTitleAsName; };
+
     //get closest entry in dxf palette
     static int closestColorMatch( QRgb pixel );
 
     QString layerName( const QString &id, const QgsFeature &f ) const;
+    QString layerName( QgsVectorLayer *vl ) const;
 
     //! @note available in python bindings as writeGroupInt
     void writeGroup( int code, int i );
@@ -128,6 +132,7 @@ class CORE_EXPORT QgsDxfExport
     double mSymbologyScaleDenominator;
     SymbologyExport mSymbologyExport;
     QGis::UnitType mMapUnits;
+    bool mLayerTitleAsName;
 
     QTextStream mTextStream;
 

@@ -4512,6 +4512,7 @@ void QgisApp::dxfExport()
     dxfExport.addLayers( d.layers() );
     dxfExport.setSymbologyScaleDenominator( d.symbologyScale() );
     dxfExport.setSymbologyExport( d.symbologyMode() );
+    dxfExport.setLayerTitleAsName( d.layerTitleAsName() );
     if ( mapCanvas() )
     {
       dxfExport.setMapUnits( mapCanvas()->mapUnits() );

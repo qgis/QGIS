@@ -356,6 +356,7 @@ QgsDxfExport::QgsDxfExport()
     : mSymbologyScaleDenominator( 1.0 )
     , mSymbologyExport( NoSymbology )
     , mMapUnits( QGis::Meters )
+    , mLayerTitleAsName( false )
     , mSymbolLayerCounter( 0 )
     , mNextHandleId( DXF_HANDSEED )
     , mBlockCounter( 0 )
@@ -716,7 +717,7 @@ void QgsDxfExport::writeTables()
     {
       if ( layerIt->second < 0 )
       {
-        layerNames << dxfLayerName( layerIt->first->name() );
+        layerNames << dxfLayerName( layerName( layerIt->first ) );
       }
       else
       {
@@ -967,12 +968,12 @@ void QgsDxfExport::writeEntities()
     while ( featureIt.nextFeature( fet ) )
     {
       ctx.expressionContext().setFeature( fet );
-      QString layerName( dxfLayerName( layerIt->second == -1 ? vl->name() : fet.attribute( layerIt->second ).toString() ) );
+      QString lName( dxfLayerName( layerIt->second == -1 ? layerName( vl ) : fet.attribute( layerIt->second ).toString() ) );
 
       sctx.setFeature( &fet );
       if ( mSymbologyExport == NoSymbology )
       {
-        addFeature( sctx, layerName, 0, 0 ); // no symbology at all
+        addFeature( sctx, lName, 0, 0 ); // no symbology at all
       }
       else
       {
@@ -990,7 +991,7 @@ void QgsDxfExport::writeEntities()
             int nSymbolLayers = ( *symbolIt )->symbolLayerCount();
             for ( int i = 0; i < nSymbolLayers; ++i )
             {
-              addFeature( sctx, layerName, ( *symbolIt )->symbolLayer( i ), *symbolIt );
+              addFeature( sctx, lName, ( *symbolIt )->symbolLayer( i ), *symbolIt );
             }
           }
         }
@@ -1002,12 +1003,12 @@ void QgsDxfExport::writeEntities()
           {
             continue;
           }
-          addFeature( sctx, layerName, s->symbolLayer( 0 ), s );
+          addFeature( sctx, lName, s->symbolLayer( 0 ), s );
         }
 
         if ( lp )
         {
-          lp->registerDxfFeature( fet, ctx, layerName );
+          lp->registerDxfFeature( fet, ctx, lName );
         }
       }
     }
@@ -4119,7 +4120,9 @@ QString QgsDxfExport::layerName( const QString &id, const QgsFeature &f ) const
   for ( ; layerIt != mLayers.constEnd(); ++layerIt )
   {
     if ( layerIt->first && layerIt->first->id() == id )
-      return dxfLayerName( layerIt->second < 0 ? layerIt->first->name() : f.attribute( layerIt->second ).toString() );
+    {
+      return dxfLayerName( layerIt->second < 0 ? layerName( layerIt->first ) : f.attribute( layerIt->second ).toString() );
+    }
   }
 
   return "0";
@@ -4158,4 +4161,10 @@ QStringList QgsDxfExport::encodings()
       encodings << codec.data();
   }
   return encodings;
+}
+
+QString QgsDxfExport::layerName( QgsVectorLayer *vl ) const
+{
+  Q_ASSERT( vl );
+  return mLayerTitleAsName && !vl->title().isEmpty() ? vl->title() : vl->name();
 }
