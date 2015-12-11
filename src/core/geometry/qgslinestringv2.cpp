@@ -944,3 +944,22 @@ bool QgsLineStringV2::dropMValue()
   mM.clear();
   return true;
 }
+
+bool QgsLineStringV2::convertTo( QgsWKBTypes::Type type )
+{
+  if ( type == mWkbType )
+    return true;
+
+  if ( type == QgsWKBTypes::LineString25D )
+  {
+    //special handling required for conversion to LineString25D
+    dropMValue();
+    addZValue();
+    mWkbType = QgsWKBTypes::LineString25D;
+    return true;
+  }
+  else
+  {
+    return QgsCurveV2::convertTo( type );
+  }
+}

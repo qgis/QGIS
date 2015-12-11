@@ -380,3 +380,33 @@ bool QgsPointV2::dropMValue()
   mM = 0.0;
   return true;
 }
+
+bool QgsPointV2::convertTo( QgsWKBTypes::Type type )
+{
+  if ( type == mWkbType )
+    return true;
+
+  switch ( type )
+  {
+    case QgsWKBTypes::Point:
+      mZ = 0.0;
+      mM = 0.0;
+      mWkbType = type;
+      return true;
+    case QgsWKBTypes::PointZ:
+    case QgsWKBTypes::Point25D:
+      mM = 0.0;
+      mWkbType = type;
+      return true;
+    case QgsWKBTypes::PointM:
+      mZ = 0.0;
+      mWkbType = type;
+      return true;
+    case QgsWKBTypes::PointZM:
+      mWkbType = type;
+      return true;
+    default:
+      return false;
+  }
+  return false;
+}

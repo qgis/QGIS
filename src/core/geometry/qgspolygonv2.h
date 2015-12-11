@@ -29,6 +29,8 @@
 class CORE_EXPORT QgsPolygonV2: public QgsCurvePolygonV2
 {
   public:
+    QgsPolygonV2();
+
     virtual QString geometryType() const override { return "Polygon"; }
     virtual QgsPolygonV2* clone() const override;
 
@@ -43,5 +45,7 @@ class CORE_EXPORT QgsPolygonV2: public QgsCurvePolygonV2
     // inherited: QString asJSON( int precision = 17 ) const;
 
     QgsPolygonV2* surfaceToPolygon() const override;
+
+    void addInteriorRing( QgsCurveV2* ring ) override;
 };
 #endif // QGSPOLYGONV2_H

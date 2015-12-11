@@ -201,6 +201,12 @@ class QgsAbstractGeometryV2
      */
     virtual bool dropMValue() = 0;
 
+    /** Converts the geometry to a specified type.
+     * @returns true if conversion was successful
+     * @note added in QGIS 2.14
+     */
+    virtual bool convertTo( QgsWKBTypes::Type type );
+
   protected:
 
     /** Updates the geometry type based on whether sub geometries contain z or m values.

@@ -21,6 +21,12 @@
 #include "qgslinestringv2.h"
 #include "qgswkbptr.h"
 
+QgsPolygonV2::QgsPolygonV2()
+    : QgsCurvePolygonV2()
+{
+  mWkbType = QgsWKBTypes::Polygon;
+}
+
 QgsPolygonV2* QgsPolygonV2::clone() const
 {
   return new QgsPolygonV2( *this );
@@ -102,8 +108,34 @@ unsigned char* QgsPolygonV2::asWkb( int& binarySize ) const
     curve->points( pts );
     QgsGeometryUtils::pointsToWKB( wkb, pts, curve->is3D(), curve->isMeasure() );
   }
+
   return geomPtr;
 }
+
+void QgsPolygonV2::addInteriorRing( QgsCurveV2* ring )
+{
+  if ( !ring )
+    return;
+
+  if ( ring->hasCurvedSegments() )
+  {
+    //can't add a curved ring to a QgsPolygonV2
+    QgsLineStringV2* segmented = ring->curveToLine();
+    delete ring;
+    ring = segmented;
+  }
+
+  if ( mWkbType == QgsWKBTypes::Polygon25D )
+  {
+    ring->convertTo( QgsWKBTypes::LineString25D );
+    mInteriorRings.append( ring );
+  }
+  else
+  {
+    QgsCurvePolygonV2::addInteriorRing( ring );
+  }
+}
+
 
 QgsPolygonV2* QgsPolygonV2::surfaceToPolygon() const
 {

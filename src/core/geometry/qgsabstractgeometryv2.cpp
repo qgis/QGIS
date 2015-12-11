@@ -88,6 +88,12 @@ void QgsAbstractGeometryV2::setZMTypeFromSubGeometry( const QgsAbstractGeometryV
     mWkbType = QgsWKBTypes::LineString25D;
     return;
   }
+  else if ( baseGeomType == QgsWKBTypes::Polygon &&
+            ( subgeom->wkbType() == QgsWKBTypes::Point25D || subgeom->wkbType() == QgsWKBTypes::LineString25D ) )
+  {
+    mWkbType = QgsWKBTypes::Polygon25D;
+    return;
+  }
 
   bool hasZ = subgeom->is3D();
   bool hasM = subgeom->isMeasure();
@@ -235,6 +241,37 @@ QgsPointV2 QgsAbstractGeometryV2::centroid() const
   {
     return QgsPointV2( Cx / ( 3. * A ), Cy / ( 3. * A ) );
   }
+}
+
+bool QgsAbstractGeometryV2::convertTo( QgsWKBTypes::Type type )
+{
+  if ( type == mWkbType )
+    return true;
+
+  if ( QgsWKBTypes::flatType( type ) != QgsWKBTypes::flatType( mWkbType ) )
+    return false;
+
+  bool needZ = QgsWKBTypes::hasZ( type );
+  bool needM = QgsWKBTypes::hasM( type );
+  if ( !needZ )
+  {
+    dropZValue();
+  }
+  else if ( !is3D() )
+  {
+    addZValue();
+  }
+
+  if ( !needM )
+  {
+    dropMValue();
+  }
+  else if ( !isMeasure() )
+  {
+    addMValue();
+  }
+
+  return true;
 }
 
 bool QgsAbstractGeometryV2::isEmpty() const

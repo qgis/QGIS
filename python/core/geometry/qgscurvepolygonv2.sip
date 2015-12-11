@@ -43,7 +43,7 @@ class QgsCurvePolygonV2: public QgsSurfaceV2
     void setExteriorRing( QgsCurveV2* ring /Transfer/ );
     /** Sets interior rings (takes ownership)*/
     void setInteriorRings( const QList<QgsCurveV2*>& rings );
-    void addInteriorRing( QgsCurveV2* ring /Transfer/ );
+    virtual void addInteriorRing( QgsCurveV2* ring /Transfer/ );
     /** Removes ring. Exterior ring is 0, first interior ring 1, ...*/
     bool removeInteriorRing( int nr );
 

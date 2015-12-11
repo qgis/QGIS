@@ -5,6 +5,8 @@ class QgsPolygonV2: public QgsCurvePolygonV2
 %End
 
   public:
+    QgsPolygonV2();
+
     virtual QString geometryType() const;
     virtual QgsPolygonV2* clone() const;
 
@@ -19,4 +21,6 @@ class QgsPolygonV2: public QgsCurvePolygonV2
     // inherited: QString asJSON( int precision = 17 ) const;
 
     QgsPolygonV2* surfaceToPolygon() const;
+
+    void addInteriorRing( QgsCurveV2* ring /Transfer/ );
 };

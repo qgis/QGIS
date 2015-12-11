@@ -340,6 +340,12 @@ class CORE_EXPORT QgsAbstractGeometryV2
      */
     virtual bool dropMValue() = 0;
 
+    /** Converts the geometry to a specified type.
+     * @returns true if conversion was successful
+     * @note added in QGIS 2.14
+     */
+    virtual bool convertTo( QgsWKBTypes::Type type );
+
   protected:
     QgsWKBTypes::Type mWkbType;
     mutable QgsRectangle mBoundingBox;

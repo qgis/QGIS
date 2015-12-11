@@ -378,6 +378,9 @@ double QgsCurvePolygonV2::area() const
 
 double QgsCurvePolygonV2::perimeter() const
 {
+  if ( !mExteriorRing )
+    return 0.0;
+
   //sum perimeter of rings
   double perimeter = mExteriorRing->length();
   QList<QgsCurveV2*>::const_iterator ringIt = mInteriorRings.constBegin();
@@ -440,7 +443,7 @@ QgsCurveV2* QgsCurvePolygonV2::exteriorRing() const
 
 QgsCurveV2* QgsCurvePolygonV2::interiorRing( int i ) const
 {
-  if ( i >= mInteriorRings.size() )
+  if ( i < 0 || i >= mInteriorRings.size() )
   {
     return 0;
   }
@@ -470,17 +473,37 @@ void QgsCurvePolygonV2::setExteriorRing( QgsCurveV2* ring )
 void QgsCurvePolygonV2::setInteriorRings( const QList<QgsCurveV2*>& rings )
 {
   qDeleteAll( mInteriorRings );
-  mInteriorRings = rings;
+  mInteriorRings.clear();
+
+  //add rings one-by-one, so that they can each be converted to the correct type for the CurvePolygon
+  Q_FOREACH ( QgsCurveV2* ring, rings )
+  {
+    addInteriorRing( ring );
+  }
 }
 
 void QgsCurvePolygonV2::addInteriorRing( QgsCurveV2* ring )
 {
+  if ( !ring )
+    return;
+
+  //ensure dimensionality of ring matches curve polygon
+  if ( !is3D() )
+    ring->dropZValue();
+  else if ( !ring->is3D() )
+    ring->addZValue();
+
+  if ( !isMeasure() )
+    ring->dropMValue();
+  else if ( !ring->isMeasure() )
+    ring->addMValue();
+
   mInteriorRings.append( ring );
 }
 
 bool QgsCurvePolygonV2::removeInteriorRing( int nr )
 {
-  if ( nr >= mInteriorRings.size() )
+  if ( nr < 0 || nr >= mInteriorRings.size() )
   {
     return false;
   }

@@ -186,6 +186,8 @@ class CORE_EXPORT QgsLineStringV2: public QgsCurveV2
     virtual bool dropZValue() override;
     virtual bool dropMValue() override;
 
+    bool convertTo( QgsWKBTypes::Type type ) override;
+
   private:
     QVector<double> mX;
     QVector<double> mY;
