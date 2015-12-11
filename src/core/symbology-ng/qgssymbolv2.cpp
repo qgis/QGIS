@@ -949,24 +949,24 @@ void QgsMarkerSymbolV2::setAngle( double ang )
 
 double QgsMarkerSymbolV2::angle() const
 {
-  QgsSymbolLayerV2List::const_iterator it = mLayers.begin();
-
-  if ( it == mLayers.end() )
-    return 0;
-
-  // return angle of the first symbol layer
-  const QgsMarkerSymbolLayerV2* layer = static_cast<const QgsMarkerSymbolLayerV2 *>( *it );
-  return layer->angle();
+  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
+  {
+    if ( layer->type() !=  QgsSymbolV2::Marker )
+      continue;
+    const QgsMarkerSymbolLayerV2* markerLayer = static_cast<const QgsMarkerSymbolLayerV2*>( layer );
+    return markerLayer->angle();
+  }
+  return 0;
 }
 
 void QgsMarkerSymbolV2::setLineAngle( double lineAng )
 {
   Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
   {
-    QgsMarkerSymbolLayerV2* markerLayer = dynamic_cast<QgsMarkerSymbolLayerV2*>( layer );
-
-    if ( markerLayer )
-      markerLayer->setLineAngle( lineAng );
+    if ( layer->type() !=  QgsSymbolV2::Marker )
+      continue;
+    QgsMarkerSymbolLayerV2* markerLayer = static_cast<QgsMarkerSymbolLayerV2*>( layer );
+    markerLayer->setLineAngle( lineAng );
   }
 }
 
@@ -976,25 +976,23 @@ void QgsMarkerSymbolV2::setDataDefinedAngle( const QgsDataDefined& dd )
 
   Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
   {
-    QgsMarkerSymbolLayerV2* markerLayer = dynamic_cast<QgsMarkerSymbolLayerV2*>( layer );
-
-    if ( markerLayer )
+    if ( layer->type() !=  QgsSymbolV2::Marker )
+      continue;
+    const QgsMarkerSymbolLayerV2* markerLayer = static_cast<const QgsMarkerSymbolLayerV2*>( layer );
+    if ( dd.hasDefaultValues() )
     {
-      if ( dd.hasDefaultValues() )
+      layer->removeDataDefinedProperty( "angle" );
+    }
+    else
+    {
+      if ( qgsDoubleNear( markerLayer->angle(), symbolRotation ) )
       {
-        layer->removeDataDefinedProperty( "angle" );
+        layer->setDataDefinedProperty( "angle", new QgsDataDefined( dd ) );
       }
       else
       {
-        if ( qgsDoubleNear( markerLayer->angle(), symbolRotation ) )
-        {
-          layer->setDataDefinedProperty( "angle", new QgsDataDefined( dd ) );
-        }
-        else
-        {
-          QgsDataDefined* rotatedDD = rotateWholeSymbol( markerLayer->angle() - symbolRotation, dd );
-          layer->setDataDefinedProperty( "angle", rotatedDD );
-        }
+        QgsDataDefined* rotatedDD = rotateWholeSymbol( markerLayer->angle() - symbolRotation, dd );
+        layer->setDataDefinedProperty( "angle", rotatedDD );
       }
     }
   }
@@ -1006,12 +1004,14 @@ QgsDataDefined QgsMarkerSymbolV2::dataDefinedAngle() const
   QgsDataDefined* symbolDD = 0;
 
   // find the base of the "en masse" pattern
-  for ( QgsSymbolLayerV2List::const_iterator it = mLayers.begin(); it != mLayers.end(); ++it )
+  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
   {
-    const QgsMarkerSymbolLayerV2* layer = static_cast<const QgsMarkerSymbolLayerV2 *>( *it );
-    if ( layer->angle() == symbolRotation && layer->getDataDefinedProperty( "angle" ) )
+    if ( layer->type() !=  QgsSymbolV2::Marker )
+      continue;
+    const QgsMarkerSymbolLayerV2* markerLayer = static_cast<const QgsMarkerSymbolLayerV2*>( layer );
+    if ( markerLayer->angle() == symbolRotation && markerLayer->getDataDefinedProperty( "angle" ) )
     {
-      symbolDD = layer->getDataDefinedProperty( "angle" );
+      symbolDD = markerLayer->getDataDefinedProperty( "angle" );
       break;
     }
   }
@@ -1020,20 +1020,21 @@ QgsDataDefined QgsMarkerSymbolV2::dataDefinedAngle() const
     return QgsDataDefined();
 
   // check that all layer's angle expressions match the "en masse" pattern
-  for ( QgsSymbolLayerV2List::const_iterator it = mLayers.begin(); it != mLayers.end(); ++it )
+  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
   {
-    const QgsMarkerSymbolLayerV2* layer = static_cast<const QgsMarkerSymbolLayerV2 *>( *it );
+    if ( layer->type() !=  QgsSymbolV2::Marker )
+      continue;
+    const QgsMarkerSymbolLayerV2* markerLayer = static_cast<const QgsMarkerSymbolLayerV2*>( layer );
+    QgsDataDefined* layerAngleDD = markerLayer->getDataDefinedProperty( "angle" );
 
-    QgsDataDefined* layerAngleDD = layer->getDataDefinedProperty( "angle" );
-
-    if ( qgsDoubleNear( layer->angle(), symbolRotation ) )
+    if ( qgsDoubleNear( markerLayer->angle(), symbolRotation ) )
     {
       if ( !layerAngleDD || *layerAngleDD != *symbolDD )
         return QgsDataDefined();
     }
     else
     {
-      QScopedPointer< QgsDataDefined > rotatedDD( rotateWholeSymbol( layer->angle() - symbolRotation, *symbolDD ) );
+      QScopedPointer< QgsDataDefined > rotatedDD( rotateWholeSymbol( markerLayer->angle() - symbolRotation, *symbolDD ) );
       if ( !layerAngleDD || *layerAngleDD != *( rotatedDD.data() ) )
         return QgsDataDefined();
     }
@@ -1048,7 +1049,9 @@ void QgsMarkerSymbolV2::setSize( double s )
 
   Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
   {
-    QgsMarkerSymbolLayerV2* markerLayer = dynamic_cast<QgsMarkerSymbolLayerV2*>( layer );
+    if ( layer->type() !=  QgsSymbolV2::Marker )
+      continue;
+    QgsMarkerSymbolLayerV2* markerLayer = static_cast<QgsMarkerSymbolLayerV2*>( layer );
     if ( markerLayer->size() == origSize )
       markerLayer->setSize( s );
     else if ( origSize != 0 )
@@ -1067,10 +1070,12 @@ double QgsMarkerSymbolV2::size() const
 {
   // return size of the largest symbol
   double maxSize = 0;
-  for ( QgsSymbolLayerV2List::const_iterator it = mLayers.begin(); it != mLayers.end(); ++it )
+  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
   {
-    const QgsMarkerSymbolLayerV2* layer = static_cast<const QgsMarkerSymbolLayerV2 *>( *it );
-    double lsize = layer->size();
+    if ( layer->type() !=  QgsSymbolV2::Marker )
+      continue;
+    const QgsMarkerSymbolLayerV2* markerLayer = static_cast<const QgsMarkerSymbolLayerV2*>( layer );
+    double lsize = markerLayer->size();
     if ( lsize > maxSize )
       maxSize = lsize;
   }
@@ -1083,7 +1088,9 @@ void QgsMarkerSymbolV2::setDataDefinedSize( const QgsDataDefined &dd )
 
   Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
   {
-    QgsMarkerSymbolLayerV2* markerLayer = dynamic_cast<QgsMarkerSymbolLayerV2 *>( layer );
+    if ( layer->type() !=  QgsSymbolV2::Marker )
+      continue;
+    QgsMarkerSymbolLayerV2* markerLayer = static_cast<QgsMarkerSymbolLayerV2*>( layer );
 
     if ( dd.hasDefaultValues() )
     {
@@ -1118,12 +1125,14 @@ QgsDataDefined QgsMarkerSymbolV2::dataDefinedSize() const
   QgsDataDefined* symbolDD = 0;
 
   // find the base of the "en masse" pattern
-  for ( QgsSymbolLayerV2List::const_iterator it = mLayers.begin(); it != mLayers.end(); ++it )
+  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
   {
-    const QgsMarkerSymbolLayerV2* layer = static_cast<const QgsMarkerSymbolLayerV2 *>( *it );
-    if ( layer->size() == symbolSize && layer->getDataDefinedProperty( "size" ) )
+    if ( layer->type() !=  QgsSymbolV2::Marker )
+      continue;
+    const QgsMarkerSymbolLayerV2* markerLayer = static_cast<const QgsMarkerSymbolLayerV2*>( layer );
+    if ( markerLayer->size() == symbolSize && markerLayer->getDataDefinedProperty( "size" ) )
     {
-      symbolDD = layer->getDataDefinedProperty( "size" );
+      symbolDD = markerLayer->getDataDefinedProperty( "size" );
       break;
     }
   }
@@ -1132,14 +1141,16 @@ QgsDataDefined QgsMarkerSymbolV2::dataDefinedSize() const
     return QgsDataDefined();
 
   // check that all layers size expressions match the "en masse" pattern
-  for ( QgsSymbolLayerV2List::const_iterator it = mLayers.begin(); it != mLayers.end(); ++it )
+  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
   {
-    const QgsMarkerSymbolLayerV2* layer = static_cast<const QgsMarkerSymbolLayerV2 *>( *it );
+    if ( layer->type() !=  QgsSymbolV2::Marker )
+      continue;
+    const QgsMarkerSymbolLayerV2* markerLayer = static_cast<const QgsMarkerSymbolLayerV2*>( layer );
 
-    QgsDataDefined* layerSizeDD = layer->getDataDefinedProperty( "size" );
-    QgsDataDefined* layerOffsetDD = layer->getDataDefinedProperty( "offset" );
+    QgsDataDefined* layerSizeDD = markerLayer->getDataDefinedProperty( "size" );
+    QgsDataDefined* layerOffsetDD = markerLayer->getDataDefinedProperty( "offset" );
 
-    if ( qgsDoubleNear( layer->size(), symbolSize ) )
+    if ( qgsDoubleNear( markerLayer->size(), symbolSize ) )
     {
       if ( !layerSizeDD || *layerSizeDD != *symbolDD )
         return QgsDataDefined();
@@ -1149,12 +1160,12 @@ QgsDataDefined QgsMarkerSymbolV2::dataDefinedSize() const
       if ( symbolSize == 0 )
         return QgsDataDefined();
 
-      QScopedPointer< QgsDataDefined > scaledDD( scaleWholeSymbol( layer->size() / symbolSize, *symbolDD ) );
+      QScopedPointer< QgsDataDefined > scaledDD( scaleWholeSymbol( markerLayer->size() / symbolSize, *symbolDD ) );
       if ( !layerSizeDD ||  *layerSizeDD != *( scaledDD.data() ) )
         return QgsDataDefined();
     }
 
-    QScopedPointer< QgsDataDefined > scaledOffsetDD( scaleWholeSymbol( layer->offset().x() / symbolSize, layer->offset().y() / symbolSize, *symbolDD ) );
+    QScopedPointer< QgsDataDefined > scaledOffsetDD( scaleWholeSymbol( markerLayer->offset().x() / symbolSize, markerLayer->offset().y() / symbolSize, *symbolDD ) );
     if ( layerOffsetDD && *layerOffsetDD != *( scaledOffsetDD.data() ) )
       return QgsDataDefined();
   }
@@ -1166,22 +1177,25 @@ void QgsMarkerSymbolV2::setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod )
 {
   Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
   {
-    QgsMarkerSymbolLayerV2* markerLayer = dynamic_cast<QgsMarkerSymbolLayerV2*>( layer );
-    if ( markerLayer )
-      markerLayer->setScaleMethod( scaleMethod );
+    if ( layer->type() !=  QgsSymbolV2::Marker )
+      continue;
+    QgsMarkerSymbolLayerV2* markerLayer = static_cast<QgsMarkerSymbolLayerV2*>( layer );
+    markerLayer->setScaleMethod( scaleMethod );
   }
 }
 
 QgsSymbolV2::ScaleMethod QgsMarkerSymbolV2::scaleMethod()
 {
-  QgsSymbolLayerV2List::const_iterator it = mLayers.begin();
+  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
+  {
+    if ( layer->type() !=  QgsSymbolV2::Marker )
+      continue;
+    const QgsMarkerSymbolLayerV2* markerLayer = static_cast<const QgsMarkerSymbolLayerV2*>( layer );
+    // return scale method of the first symbol layer
+    return markerLayer->scaleMethod();
+  }
 
-  if ( it == mLayers.end() )
-    return DEFAULT_SCALE_METHOD;
-
-  // return scale method of the first symbol layer
-  const QgsMarkerSymbolLayerV2* layer = static_cast<const QgsMarkerSymbolLayerV2 *>( *it );
-  return layer->scaleMethod();
+  return DEFAULT_SCALE_METHOD;
 }
 
 void QgsMarkerSymbolV2::renderPointUsingLayer( QgsMarkerSymbolLayerV2* layer, const QPointF& point, QgsSymbolV2RenderContext& context )
@@ -1241,12 +1255,16 @@ QRectF QgsMarkerSymbolV2::bounds( const QPointF& point, QgsRenderContext& contex
   QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, false, mRenderHints, 0, 0, mapUnitScale() );
 
   QRectF bound;
-  for ( QgsSymbolLayerV2List::const_iterator it = mLayers.constBegin(); it != mLayers.constEnd(); ++it )
+  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
   {
-    if ( bound.isNull() )
-      bound = static_cast< QgsMarkerSymbolLayerV2* >( *it )->bounds( point, symbolContext );
-    else
-      bound = bound.united( static_cast< QgsMarkerSymbolLayerV2* >( *it )->bounds( point, symbolContext ) );
+    if ( layer->type() == QgsSymbolV2::Marker )
+    {
+      QgsMarkerSymbolLayerV2* symbolLayer = static_cast< QgsMarkerSymbolLayerV2* >( layer );
+      if ( bound.isNull() )
+        bound = symbolLayer->bounds( point, symbolContext );
+      else
+        bound = symbolLayer->bounds( point, symbolContext );
+    }
   }
   return bound;
 }
@@ -1370,14 +1388,16 @@ QgsDataDefined QgsLineSymbolV2::dataDefinedWidth() const
     return QgsDataDefined();
 
   // check that all layers width expressions match the "en masse" pattern
-  for ( QgsSymbolLayerV2List::const_iterator it = mLayers.begin(); it != mLayers.end(); ++it )
+  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
   {
-    const QgsLineSymbolLayerV2* layer = static_cast<const QgsLineSymbolLayerV2*>( *it );
+    if ( layer->type() !=  QgsSymbolV2::Line )
+      continue;
+    const QgsLineSymbolLayerV2* lineLayer = static_cast<const QgsLineSymbolLayerV2*>( layer );
 
-    QgsDataDefined* layerWidthDD = layer->getDataDefinedProperty( "width" );
-    QgsDataDefined* layerOffsetDD = layer->getDataDefinedProperty( "offset" );
+    QgsDataDefined* layerWidthDD = lineLayer->getDataDefinedProperty( "width" );
+    QgsDataDefined* layerOffsetDD = lineLayer->getDataDefinedProperty( "offset" );
 
-    if ( qgsDoubleNear( layer->width(), symbolWidth ) )
+    if ( qgsDoubleNear( lineLayer->width(), symbolWidth ) )
     {
       if ( !layerWidthDD || *layerWidthDD != *symbolDD )
         return QgsDataDefined();
@@ -1387,12 +1407,12 @@ QgsDataDefined QgsLineSymbolV2::dataDefinedWidth() const
       if ( symbolWidth == 0 )
         return QgsDataDefined();
 
-      QScopedPointer< QgsDataDefined > scaledDD( scaleWholeSymbol( layer->width() / symbolWidth, *symbolDD ) );
+      QScopedPointer< QgsDataDefined > scaledDD( scaleWholeSymbol( lineLayer->width() / symbolWidth, *symbolDD ) );
       if ( !layerWidthDD || *layerWidthDD != *( scaledDD.data() ) )
         return QgsDataDefined();
     }
 
-    QScopedPointer< QgsDataDefined > scaledOffsetDD( scaleWholeSymbol( layer->offset() / symbolWidth, *symbolDD ) );
+    QScopedPointer< QgsDataDefined > scaledOffsetDD( scaleWholeSymbol( lineLayer->offset() / symbolWidth, *symbolDD ) );
     if ( layerOffsetDD && *layerOffsetDD != *( scaledOffsetDD.data() ) )
       return QgsDataDefined();
   }
@@ -1422,7 +1442,9 @@ void QgsLineSymbolV2::renderPolyline( const QPolygonF& points, const QgsFeature*
 
   Q_FOREACH ( QgsSymbolLayerV2* symbolLayer, mLayers )
   {
-    QgsLineSymbolLayerV2* lineLayer = dynamic_cast<QgsLineSymbolLayerV2*>( symbolLayer );
+    if ( symbolLayer->type() != QgsSymbolV2::Line )
+      continue;
+    QgsLineSymbolLayerV2* lineLayer = static_cast<QgsLineSymbolLayerV2*>( symbolLayer );
 
     if ( lineLayer )
       renderPolylineUsingLayer( lineLayer, points, symbolContext );
@@ -1480,9 +1502,9 @@ void QgsFillSymbolV2::renderPolygon( const QPolygonF& points, QList<QPolygonF>* 
 
   if ( layerIdx != -1 )
   {
-    if ( layerIdx >= 0 && layerIdx < mLayers.count() )
+    QgsSymbolLayerV2* layer = mLayers.value( layerIdx );
+    if ( layer )
     {
-      QgsSymbolLayerV2* layer = mLayers.at( layerIdx );
       if ( layer->type() == Fill || layer->type() == Line )
         renderPolygonUsingLayer( layer, points, rings, symbolContext );
       else
@@ -1582,7 +1604,10 @@ void QgsFillSymbolV2::setAngle( double angle )
 {
   Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
   {
-    QgsFillSymbolLayerV2* fillLayer = dynamic_cast<QgsFillSymbolLayerV2*>( layer );
+    if ( layer->type() != QgsSymbolV2::Fill )
+      continue;
+
+    QgsFillSymbolLayerV2* fillLayer = static_cast<QgsFillSymbolLayerV2*>( layer );
 
     if ( fillLayer )
       fillLayer->setAngle( angle );
