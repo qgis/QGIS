@@ -96,6 +96,7 @@ class QgsBrowserModel : QAbstractItemModel
     void removeFavourite( const QModelIndex &index );
     void updateProjectHome();
 
+    /** Hide the given path in the browser model */
     void hidePath( QgsDataItem *item );
 
   protected:

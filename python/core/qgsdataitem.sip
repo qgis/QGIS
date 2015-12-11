@@ -324,6 +324,9 @@ class QgsDirectoryItem : QgsDataCollectionItem
     /* static QVector<QgsDataProvider*> mProviders; */
     //! @note not available via python bindings
     // static QVector<QLibrary*> mLibraries;
+
+    /** Check if the given path is hidden from the browser model */
+    static bool hiddenPath( QString path );
 };
 
 /**

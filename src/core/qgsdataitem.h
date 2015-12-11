@@ -410,6 +410,7 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
     //! @note deprecated since 2.10 - use QgsDataItemProviderRegistry
     Q_DECL_DEPRECATED static QVector<QLibrary*> mLibraries;
 
+    /** Check if the given path is hidden from the browser model */
     static bool hiddenPath( QString path );
 
   public slots:
