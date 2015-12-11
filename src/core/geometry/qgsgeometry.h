@@ -460,7 +460,8 @@ class CORE_EXPORT QgsGeometry
     /** Returns the smallest convex polygon that contains all the points in the geometry. */
     QgsGeometry* convexHull() const;
 
-    /* Return interpolated point on line at distance
+    /**
+     * Return interpolated point on line at distance
      * @note added in 1.9
      */
     QgsGeometry* interpolate( double distance ) const;
