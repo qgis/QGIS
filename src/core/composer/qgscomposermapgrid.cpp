@@ -400,16 +400,9 @@ bool QgsComposerMapGrid::readXML( const QDomElement& itemElem, const QDomDocumen
     }
   }
 
-
-  QDomElement crsElem = itemElem.firstChildElement( "spatialrefsys" );
-  if ( !crsElem.isNull() )
-  {
-    mCRS.readXML( itemElem );
-  }
-  else
-  {
+  if ( !mCRS.readXML( itemElem ) )
     mCRS = QgsCoordinateReferenceSystem();
-  }
+
   mBlendMode = ( QPainter::CompositionMode )( itemElem.attribute( "blendMode", "0" ).toUInt() );
 
   //annotation
