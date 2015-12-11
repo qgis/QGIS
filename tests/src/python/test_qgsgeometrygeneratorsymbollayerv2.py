@@ -31,6 +31,7 @@ from PyQt.QtCore import QSize
 from qgis.core import (QgsVectorLayer,
                        QgsSingleSymbolRendererV2,
                        QgsFillSymbolV2,
+                       QgsLineSymbolV2,
                        QgsMarkerSymbolV2,
                        QgsMapLayerRegistry,
                        QgsRectangle,
@@ -53,49 +54,98 @@ TEST_DATA_DIR = unitTestDataPath()
 class TestQgsGeometryGeneratorSymbolLayerV2(TestCase):
 
     def setUp(self):
-        myShpFile = os.path.join(TEST_DATA_DIR, 'polys_overlapping.shp')
-        layer = QgsVectorLayer(myShpFile, 'Polygons', 'ogr')
-        QgsMapLayerRegistry.instance().addMapLayer(layer)
+        polys_shp = os.path.join(TEST_DATA_DIR, 'polys.shp')
+        points_shp = os.path.join(TEST_DATA_DIR, 'points.shp')
+        lines_shp = os.path.join(TEST_DATA_DIR, 'lines.shp')
+        self.polys_layer = QgsVectorLayer(polys_shp, 'Polygons', 'ogr')
+        self.points_layer = QgsVectorLayer(points_shp, 'Points', 'ogr')
+        self.lines_layer = QgsVectorLayer(lines_shp, 'Lines', 'ogr')
+        QgsMapLayerRegistry.instance().addMapLayer(self.polys_layer)
+        QgsMapLayerRegistry.instance().addMapLayer(self.lines_layer)
+        QgsMapLayerRegistry.instance().addMapLayer(self.points_layer)
 
         # Create style
         sym1 = QgsFillSymbolV2.createSimple({'color': '#fdbf6f'})
+        sym2 = QgsLineSymbolV2.createSimple({'color': '#fdbf6f'})
+        sym3 = QgsMarkerSymbolV2.createSimple({'color': '#fdbf6f'})
 
-        self.renderer = QgsSingleSymbolRendererV2(sym1)
-        layer.setRendererV2(self.renderer)
+        self.polys_layer.setRendererV2(QgsSingleSymbolRendererV2(sym1))
+        self.lines_layer.setRendererV2(QgsSingleSymbolRendererV2(sym2))
+        self.points_layer.setRendererV2(QgsSingleSymbolRendererV2(sym3))
+
         self.mapsettings = CANVAS.mapSettings()
         self.mapsettings.setOutputSize(QSize(400, 400))
         self.mapsettings.setOutputDpi(96)
         self.mapsettings.setExtent(QgsRectangle(-133, 22, -70, 52))
 
-        rendered_layers = [layer.id()]
-        self.mapsettings.setLayers(rendered_layers)
-
     def tearDown(self):
         QgsMapLayerRegistry.instance().removeAllMapLayers()
 
     def test_marker(self):
-        sym = self.renderer.symbol()
+        sym = self.polys_layer.rendererV2().symbol()
         sym_layer = QgsGeometryGeneratorSymbolLayerV2.create({'geometryModifier': 'centroid($geometry)'})
         sym_layer.setSymbolType(QgsSymbolV2.Marker)
         sym.changeSymbolLayer(0, sym_layer)
+
+        rendered_layers = [self.polys_layer.id()]
+        self.mapsettings.setLayers(rendered_layers)
+
         renderchecker = QgsMultiRenderChecker()
         renderchecker.setMapSettings(self.mapsettings)
         renderchecker.setControlName('expected_geometrygenerator_marker')
         self.assertTrue(renderchecker.runTest('geometrygenerator_marker'))
 
     def test_mixed(self):
-        sym = self.renderer.symbol()
+        sym = self.polys_layer.rendererV2().symbol()
+
         buffer_layer = QgsGeometryGeneratorSymbolLayerV2.create({'geometryModifier': 'buffer($geometry, "value"/15)'})
         buffer_layer.setSymbolType(QgsSymbolV2.Fill)
-        buffer_layer.subSymbol()
+        self.assertIsNotNone(buffer_layer.subSymbol())
         sym.appendSymbolLayer(buffer_layer)
         marker_layer = QgsGeometryGeneratorSymbolLayerV2.create({'geometryModifier': 'centroid($geometry)'})
         marker_layer.setSymbolType(QgsSymbolV2.Marker)
         sym.appendSymbolLayer(marker_layer)
+
+        rendered_layers = [self.polys_layer.id()]
+        self.mapsettings.setLayers(rendered_layers)
+
         renderchecker = QgsMultiRenderChecker()
         renderchecker.setMapSettings(self.mapsettings)
         renderchecker.setControlName('expected_geometrygenerator_mixed')
         self.assertTrue(renderchecker.runTest('geometrygenerator_mixed'))
+
+    def test_buffer_lines(self):
+        sym = self.lines_layer.rendererV2().symbol()
+
+        buffer_layer = QgsGeometryGeneratorSymbolLayerV2.create({'geometryModifier': 'buffer($geometry, "value"/15)'})
+        buffer_layer.setSymbolType(QgsSymbolV2.Fill)
+        self.assertIsNotNone(buffer_layer.subSymbol())
+        sym.appendSymbolLayer(buffer_layer)
+
+        rendered_layers = [self.lines_layer.id()]
+        self.mapsettings.setLayers(rendered_layers)
+
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(self.mapsettings)
+        renderchecker.setControlName('expected_geometrygenerator_buffer_lines')
+        self.assertTrue(renderchecker.runTest('geometrygenerator_buffer_lines'))
+
+    def test_buffer_points(self):
+        sym = self.points_layer.rendererV2().symbol()
+
+        buffer_layer = QgsGeometryGeneratorSymbolLayerV2.create({'geometryModifier': 'buffer($geometry, "staff"/15)'})
+        buffer_layer.setSymbolType(QgsSymbolV2.Fill)
+        self.assertIsNotNone(buffer_layer.subSymbol())
+        sym.appendSymbolLayer(buffer_layer)
+
+        rendered_layers = [self.points_layer.id()]
+        self.mapsettings.setLayers(rendered_layers)
+
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(self.mapsettings)
+        renderchecker.setControlName('expected_geometrygenerator_buffer_points')
+        self.assertTrue(renderchecker.runTest('geometrygenerator_buffer_points'))
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -1227,26 +1227,29 @@ void QgsMarkerSymbolV2::renderPoint( const QPointF& point, const QgsFeature* f, 
 
   if ( layerIdx != -1 )
   {
-    if ( layerIdx >= 0 && layerIdx < mLayers.count() )
+    QgsSymbolLayerV2* symbolLayer = mLayers.value( layerIdx );
+    if ( symbolLayer )
     {
-      QgsMarkerSymbolLayerV2* markerLayer = dynamic_cast<QgsMarkerSymbolLayerV2*>( mLayers.at( layerIdx ) );
-
-      if ( markerLayer )
+      if ( symbolLayer->type() == QgsSymbolV2::Marker )
+      {
+        QgsMarkerSymbolLayerV2* markerLayer = static_cast<QgsMarkerSymbolLayerV2*>( symbolLayer );
         renderPointUsingLayer( markerLayer, point, symbolContext );
+      }
       else
-        renderUsingLayer( mLayers.at( layerIdx ), symbolContext );
+        renderUsingLayer( symbolLayer, symbolContext );
     }
     return;
   }
 
-  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
+  Q_FOREACH ( QgsSymbolLayerV2* symbolLayer, mLayers )
   {
-    QgsMarkerSymbolLayerV2* markerLayer = dynamic_cast<QgsMarkerSymbolLayerV2*>( layer );
-
-    if ( markerLayer )
+    if ( symbolLayer->type() == QgsSymbolV2::Marker )
+    {
+      QgsMarkerSymbolLayerV2* markerLayer = static_cast<QgsMarkerSymbolLayerV2*>( symbolLayer );
       renderPointUsingLayer( markerLayer, point, symbolContext );
+    }
     else
-      renderUsingLayer( layer, symbolContext );
+      renderUsingLayer( symbolLayer, symbolContext );
   }
 }
 
@@ -1428,28 +1431,31 @@ void QgsLineSymbolV2::renderPolyline( const QPolygonF& points, const QgsFeature*
 
   if ( layerIdx != -1 )
   {
-    if ( layerIdx >= 0 && layerIdx < mLayers.count() )
+    QgsSymbolLayerV2* symbolLayer = mLayers.value( layerIdx );
+    if ( symbolLayer )
     {
-      QgsLineSymbolLayerV2* lineLayer = dynamic_cast<QgsLineSymbolLayerV2*>( mLayers.at( layerIdx ) );
-
-      if ( lineLayer )
+      if ( symbolLayer->type() == QgsSymbolV2::Line )
+      {
+        QgsLineSymbolLayerV2* lineLayer = static_cast<QgsLineSymbolLayerV2*>( symbolLayer );
         renderPolylineUsingLayer( lineLayer, points, symbolContext );
+      }
       else
-        renderUsingLayer( mLayers.at( layerIdx ), symbolContext );
+        renderUsingLayer( symbolLayer, symbolContext );
     }
     return;
   }
 
   Q_FOREACH ( QgsSymbolLayerV2* symbolLayer, mLayers )
   {
-    if ( symbolLayer->type() != QgsSymbolV2::Line )
-      continue;
-    QgsLineSymbolLayerV2* lineLayer = static_cast<QgsLineSymbolLayerV2*>( symbolLayer );
-
-    if ( lineLayer )
+    if ( symbolLayer->type() == QgsSymbolV2::Line )
+    {
+      QgsLineSymbolLayerV2* lineLayer = static_cast<QgsLineSymbolLayerV2*>( symbolLayer );
       renderPolylineUsingLayer( lineLayer, points, symbolContext );
+    }
     else
+    {
       renderUsingLayer( symbolLayer, symbolContext );
+    }
   }
 
   context.setPainter( renderPainter );
@@ -1502,23 +1508,23 @@ void QgsFillSymbolV2::renderPolygon( const QPolygonF& points, QList<QPolygonF>* 
 
   if ( layerIdx != -1 )
   {
-    QgsSymbolLayerV2* layer = mLayers.value( layerIdx );
-    if ( layer )
+    QgsSymbolLayerV2* symbolLayer = mLayers.value( layerIdx );
+    if ( symbolLayer )
     {
-      if ( layer->type() == Fill || layer->type() == Line )
-        renderPolygonUsingLayer( layer, points, rings, symbolContext );
+      if ( symbolLayer->type() == Fill || symbolLayer->type() == Line )
+        renderPolygonUsingLayer( symbolLayer, points, rings, symbolContext );
       else
-        renderUsingLayer( layer, symbolContext );
+        renderUsingLayer( symbolLayer, symbolContext );
     }
     return;
   }
 
-  Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
+  Q_FOREACH ( QgsSymbolLayerV2* symbolLayer, mLayers )
   {
-    if ( layer->type() == Fill || layer->type() == Line )
-      renderPolygonUsingLayer( layer, points, rings, symbolContext );
+    if ( symbolLayer->type() == Fill || symbolLayer->type() == Line )
+      renderPolygonUsingLayer( symbolLayer, points, rings, symbolContext );
     else
-      renderUsingLayer( layer, symbolContext );
+      renderUsingLayer( symbolLayer, symbolContext );
   }
 }
 

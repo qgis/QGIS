@@ -714,7 +714,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Return const renderer V2. */
     const QgsFeatureRendererV2* rendererV2() const { return mRendererV2; }
 
-    /** Set renderer V2. */
+    /**
+     * Set renderer which will be invoked to represent this layer.
+     * Ownership is transferred.
+     */
     void setRendererV2( QgsFeatureRendererV2* r );
 
     /** Returns point, line or polygon */
