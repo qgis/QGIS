@@ -300,11 +300,11 @@ QList<QAction*> QgsMssqlConnectionItem::actions()
   connect( actionShowNoGeom, SIGNAL( toggled( bool ) ), this, SLOT( setAllowGeometrylessTables( bool ) ) );
   lst.append( actionShowNoGeom );
 
-  QAction* actionEdit = new QAction( tr( "Edit..." ), this );
+  QAction* actionEdit = new QAction( tr( "Edit Connection..." ), this );
   connect( actionEdit, SIGNAL( triggered() ), this, SLOT( editConnection() ) );
   lst.append( actionEdit );
 
-  QAction* actionDelete = new QAction( tr( "Delete" ), this );
+  QAction* actionDelete = new QAction( tr( "Delete Connection" ), this );
   connect( actionDelete, SIGNAL( triggered() ), this, SLOT( deleteConnection() ) );
   lst.append( actionDelete );
 
