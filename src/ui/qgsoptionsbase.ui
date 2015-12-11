@@ -1656,7 +1656,7 @@
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="groupBox_28">
                  <property name="title">
-                  <string>Hideen Browser Path</string>
+                  <string>Hidden Browser Path</string>
                  </property>
                  <layout class="QGridLayout" name="_15">
                   <item row="0" column="0">
