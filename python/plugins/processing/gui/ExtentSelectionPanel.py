@@ -148,7 +148,8 @@ class ExtentSelectionPanel(BASE, WIDGET):
     def useLayerExtent(self):
         CANVAS_KEY = 'Use canvas extent'
         extentsDict = {}
-        extentsDict[CANVAS_KEY] = iface.mapCanvas().extent()
+        extentsDict[CANVAS_KEY] = {"extent": iface.mapCanvas().extent(),
+                                   "authid": iface.mapCanvas().mapRenderer().destinationCrs().authid()}
         extents = [CANVAS_KEY]
         layers = dataobjects.getAllLayers()
         for layer in layers:
