@@ -571,7 +571,7 @@
    <item row="7" column="0">
     <widget class="QgsDualView" name="mMainView">
      <property name="currentIndex">
-      <number>-1</number>
+      <number>0</number>
      </property>
     </widget>
    </item>
