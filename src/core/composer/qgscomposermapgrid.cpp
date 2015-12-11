@@ -404,7 +404,7 @@ bool QgsComposerMapGrid::readXML( const QDomElement& itemElem, const QDomDocumen
   QDomElement crsElem = itemElem.firstChildElement( "spatialrefsys" );
   if ( !crsElem.isNull() )
   {
-    mCRS.readXML( const_cast<QDomElement&>( itemElem ) ); //better would be to change argument in QgsCoordinateReferenceSystem::readXML to const
+    mCRS.readXML( itemElem );
   }
   else
   {

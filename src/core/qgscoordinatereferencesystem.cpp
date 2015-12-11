@@ -1145,7 +1145,7 @@ QString QgsCoordinateReferenceSystem::toWkt() const
   return mWkt;
 }
 
-bool QgsCoordinateReferenceSystem::readXML( QDomNode & theNode )
+bool QgsCoordinateReferenceSystem::readXML( const QDomNode & theNode )
 {
   QgsDebugMsg( "Reading Spatial Ref Sys from xml ------------------------!" );
   QDomNode srsNode  = theNode.namedItem( "spatialrefsys" );
