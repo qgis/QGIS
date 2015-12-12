@@ -90,6 +90,9 @@ class GdalTools:
                 self.translator.load(self.localePath)
                 QCoreApplication.installTranslator(self.translator)
 
+        # The list of actions added to menus, so we can remove them when unloading the plugin
+        self._menuActions = []
+
     def initGui(self):
         if not valid:
             return
@@ -123,7 +126,7 @@ class GdalTools:
             menu_bar.insertMenu(lastAction, self.menu)
         else:
             self.menu = rasterMenu
-            self.menu.addSeparator()
+            self._menuActions.append(self.menu.addSeparator())
 
         # projections menu (Warp (Reproject), Assign projection)
         self.projectionsMenu = QMenu(QCoreApplication.translate("GdalTools", "Projections"), self.iface.mainWindow())
@@ -280,25 +283,27 @@ class GdalTools:
 
         self.miscellaneousMenu.addActions([self.merge, self.info, self.overview, self.tileindex])
 
-        self.menu.addMenu(self.projectionsMenu)
-        self.menu.addMenu(self.conversionMenu)
-        self.menu.addMenu(self.extractionMenu)
+        self._menuActions.append(self.menu.addMenu(self.projectionsMenu))
+        self._menuActions.append(self.menu.addMenu(self.conversionMenu))
+        self._menuActions.append(self.menu.addMenu(self.extractionMenu))
 
         if not self.analysisMenu.isEmpty():
-            self.menu.addMenu(self.analysisMenu)
+            self._menuActions.append(self.menu.addMenu(self.analysisMenu))
 
-        self.menu.addMenu(self.miscellaneousMenu)
+        self._menuActions.append(self.menu.addMenu(self.miscellaneousMenu))
 
         self.settings = QAction(QCoreApplication.translate("GdalTools", "GdalTools Settings..."), self.iface.mainWindow())
         self.settings.setObjectName("settings")
         self.settings.setStatusTip(QCoreApplication.translate("GdalTools", "Various settings for Gdal Tools"))
         QObject.connect(self.settings, SIGNAL("triggered()"), self.doSettings)
         self.menu.addAction(self.settings)
+        self._menuActions.append(self.settings)
 
     def unload(self):
         if not valid:
             return
-        pass
+        for a in self._menuActions:
+            self.menu.removeAction(a)
 
     def doBuildVRT(self):
         from tools.doBuildVRT import GdalToolsDialog as BuildVRT
