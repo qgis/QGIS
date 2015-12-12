@@ -2086,6 +2086,11 @@ void buildSupportedRasterFileFilterAndExtensions( QString & theFileFiltersString
           glob += " *.jpeg";
           theExtensions << "jpeg";
         }
+        else if ( myGdalDriverDescription == "VRT" )
+        {
+          glob += " *.ovr";
+          theExtensions << "ovr";
+        }
 
         theFileFiltersString += createFileFilter_( myGdalDriverLongName, glob );
 

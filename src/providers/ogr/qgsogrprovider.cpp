@@ -1701,6 +1701,10 @@ QString createFilters( QString type )
       {
         myProtocolDrivers += "DODS/OPeNDAP,DODS;";
       }
+      else if ( driverName.startsWith( QObject::tr( "CouchDB" ) ) )
+      {
+        myProtocolDrivers += "CouchDB;";
+      }
       else if ( driverName.startsWith( "FileGDB" ) )
       {
         myDirectoryDrivers += QObject::tr( "ESRI FileGDB" ) + ",FileGDB;";
@@ -1782,8 +1786,8 @@ QString createFilters( QString type )
       }
       else if ( driverName.startsWith( "KML" ) )
       {
-        myFileFilters += createFileFilter_( QObject::tr( "Keyhole Markup Language [KML]" ), "*.kml" );
-        myExtensions << "kml";
+        myFileFilters += createFileFilter_( QObject::tr( "Keyhole Markup Language [KML]" ), "*.kml *.kmz" );
+        myExtensions << "kml" << "kmz";
       }
       else if ( driverName.startsWith( "MapInfo File" ) )
       {
@@ -1842,8 +1846,8 @@ QString createFilters( QString type )
       }
       else if ( driverName.startsWith( "SQLite" ) )
       {
-        myFileFilters += createFileFilter_( QObject::tr( "SQLite/SpatiaLite" ), "*.sqlite *.db" );
-        myExtensions << "sqlite" << "db";
+        myFileFilters += createFileFilter_( QObject::tr( "SQLite/SpatiaLite" ), "*.sqlite *.db *.sqlite3 *.db3 *.s3db *.sl3" );
+        myExtensions << "sqlite" << "db" << "sqlite3" << "db3" << "s3db" << "sl3";
       }
       else if ( driverName.startsWith( "SXF" ) )
       {
@@ -1861,8 +1865,8 @@ QString createFilters( QString type )
       else if ( driverName.startsWith( "VRT" ) )
       {
         myFileFilters += createFileFilter_( QObject::tr( "VRT - Virtual Datasource" ),
-                                            "*.vrt" );
-        myExtensions << "vrt";
+                                            "*.vrt *.ovf" );
+        myExtensions << "vrt" << "ovf";
       }
       else if ( driverName.startsWith( "XPlane" ) )
       {
