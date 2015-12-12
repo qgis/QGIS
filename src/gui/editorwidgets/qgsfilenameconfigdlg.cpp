@@ -29,12 +29,13 @@ QgsFileNameConfigDlg::QgsFileNameConfigDlg( QgsVectorLayer* vl, int fieldIdx, QW
   // By default, uncheck some options
   mUseLink->setChecked( false );
   mFullUrl->setChecked( false );
+  mRootPath->setPlaceholderText( QSettings().value( "/UI/lastFileNameWidgetDir", QDir::toNativeSeparators( QDir::cleanPath( QgsProject::instance()->fileInfo().absolutePath() ) ) ).toString() );
 
   // Add connection to button for choosing default path
   connect( mRootPathButton, SIGNAL( clicked() ), this, SLOT( chooseDefaultPath() ) );
 
   // Activate Relative Default Path option only if Default Path is set
-  connect( mRootPath, SIGNAL( textChanged( const QString &) ), this, SLOT( enableRelativeDefault() ) );
+  connect( mRootPath, SIGNAL( textChanged( const QString & ) ), this, SLOT( enableRelativeDefault() ) );
 
   // Dynamic GroupBox for relative paths option
   connect( mRelativeGroupBox, SIGNAL( toggled( bool ) ), this, SLOT( enableRelative( bool ) ) );
@@ -61,7 +62,7 @@ void QgsFileNameConfigDlg::chooseDefaultPath()
     dir = mRootPath->text();
   else
     dir = QSettings().value( "/UI/lastFileNameWidgetDir", QDir::toNativeSeparators( QDir::cleanPath( QgsProject::instance()->fileInfo().absolutePath() ) ) ).toString();
-  
+
   QString rootName = QFileDialog::getExistingDirectory( this, tr( "Select a directory" ), dir, QFileDialog::ShowDirsOnly );
 
   if ( rootName.isNull() )
@@ -112,7 +113,7 @@ QgsEditorWidgetConfig QgsFileNameConfigDlg::config()
     if ( mFullUrl->isChecked() )
       cfg.insert( "FullUrl", mFullUrl->isChecked() );
   }
-  
+
   if ( !mRootPath->text().isEmpty() )
     cfg.insert( "DefaultRoot", mRootPath->text() );
 
@@ -133,12 +134,12 @@ QgsEditorWidgetConfig QgsFileNameConfigDlg::config()
     if ( but != -1 )
     {
       if ( but == 0 )
-	cfg.insert( "RelativeStorage", "Project" );
+        cfg.insert( "RelativeStorage", "Project" );
       else if ( but == 1 )
-	cfg.insert( "RelativeStorage", "Default" );
+        cfg.insert( "RelativeStorage", "Default" );
     }
   }
-  
+
   return cfg;
 }
 
@@ -154,15 +155,13 @@ void QgsFileNameConfigDlg::setConfig( const QgsEditorWidgetConfig& config )
 
   if ( config.contains( "DefaultRoot" ) )
     mRootPath->setText( config.value( "DefaultRoot" ).toString() );
-  else 
-    mRootPath->setPlaceholderText( QSettings().value( "/UI/lastFileNameWidgetDir", QDir::toNativeSeparators( QDir::cleanPath( QgsProject::instance()->fileInfo().absolutePath() ) ) ).toString() );
-  
+
   if ( config.contains( "RelativeStorage" ) )
   {
     mRelativeGroupBox->setChecked( true );
-    if ( config.value( "RelativeStorage") == "Default" )
+    if ( config.value( "RelativeStorage" ) == "Default" )
       mRelativeDefault->toggle();
-    else if ( config.value( "RelativeStorage") == "Project" )
+    else if ( config.value( "RelativeStorage" ) == "Project" )
       mRelativeProj->toggle();
   }
 

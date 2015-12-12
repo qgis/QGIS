@@ -91,7 +91,7 @@
         <bool>false</bool>
        </property>
        <property name="placeholderText">
-        <string>File selection will start from this path</string>
+        <string/>
        </property>
       </widget>
      </item>
