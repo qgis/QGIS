@@ -62,10 +62,6 @@ checkDock::checkDock( QgisInterface* qIface, QWidget* parent )
   mConfigureDialog = new rulesDialog( mTest->testMap(), qIface, parent );
   mTestTable = mConfigureDialog->rulesTable();
 
-  mValidateExtentButton->setIcon( QIcon( ":/topology/validateExtent.png" ) );
-  mValidateAllButton->setIcon( QIcon( ":/topology/validateAll.png" ) );
-  mConfigureButton->setIcon( QIcon( ":/topology/configureRules.png" ) );
-
   QgsMapCanvas* canvas = qIface->mapCanvas();// mQgisApp->mapCanvas();
   mRBFeature1 = new QgsRubberBand( canvas );
   mRBFeature2 = new QgsRubberBand( canvas );
@@ -83,10 +79,10 @@ checkDock::checkDock( QgisInterface* qIface, QWidget* parent )
   mVMFeature1 = 0;
   mVMFeature2 = 0;
 
-  connect( mConfigureButton, SIGNAL( clicked() ), this, SLOT( configure() ) );
-  connect( mValidateAllButton, SIGNAL( clicked() ), this, SLOT( validateAll() ) );
+  connect( actionConfigure, SIGNAL( triggered() ), this, SLOT( configure() ) );
+  connect( actionValidateAll, SIGNAL( triggered() ), this, SLOT( validateAll() ) );
   //connect( mValidateSelectedButton, SIGNAL( clicked() ), this, SLOT( validateSelected() ) );
-  connect( mValidateExtentButton, SIGNAL( clicked() ), this, SLOT( validateExtent() ) );
+  connect( actionValidateExtent, SIGNAL( triggered() ), this, SLOT( validateExtent() ) );
   connect( mToggleRubberband, SIGNAL( clicked() ), this, SLOT( toggleErrorMarker() ) );
 
   connect( mFixButton, SIGNAL( clicked() ), this, SLOT( fix() ) );

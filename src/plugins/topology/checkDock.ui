@@ -6,52 +6,46 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>307</width>
+    <width>382</width>
     <height>280</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Topology Checker</string>
+   <string>Topology Checker Panel</string>
   </property>
   <widget class="QWidget" name="dockWidgetContents">
    <layout class="QGridLayout" name="gridLayout_2">
+    <property name="margin">
+     <number>0</number>
+    </property>
     <item row="0" column="0">
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
-       <widget class="QTableView" name="mErrorTableView"/>
-      </item>
-     </layout>
+     <widget class="QToolBar" name="mTopologyToolbar">
+      <property name="iconSize">
+       <size>
+        <width>16</width>
+        <height>16</height>
+       </size>
+      </property>
+      <property name="floatable">
+       <bool>false</bool>
+      </property>
+      <addaction name="actionValidateAll"/>
+      <addaction name="actionValidateExtent"/>
+      <addaction name="actionConfigure"/>
+     </widget>
     </item>
     <item row="1" column="0">
-     <layout class="QHBoxLayout" name="horizontalLayout_4">
+     <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
-       <widget class="QPushButton" name="mConfigureButton">
-        <property name="text">
-         <string>Configure</string>
-        </property>
+       <widget class="QTableView" name="mErrorTableView">
+        <attribute name="horizontalHeaderStretchLastSection">
+         <bool>true</bool>
+        </attribute>
        </widget>
       </item>
      </layout>
     </item>
     <item row="2" column="0">
-     <layout class="QHBoxLayout" name="horizontalLayout_3">
-      <item>
-       <widget class="QPushButton" name="mValidateAllButton">
-        <property name="text">
-         <string>Validate All</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="mValidateExtentButton">
-        <property name="text">
-         <string>Validate Extent</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item row="3" column="0">
      <layout class="QHBoxLayout" name="horizontalLayout_5">
       <item>
        <widget class="QCheckBox" name="mToggleRubberband">
@@ -75,7 +69,7 @@
       </item>
      </layout>
     </item>
-    <item row="4" column="0">
+    <item row="3" column="0">
      <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="0">
        <widget class="QComboBox" name="mFixBox">
@@ -97,7 +91,45 @@
     </item>
    </layout>
   </widget>
+  <action name="actionValidateAll">
+   <property name="icon">
+    <iconset resource="topol.qrc">
+     <normaloff>:/topology/mActionValidateAll.svg</normaloff>:/topology/mActionValidateAll.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Validate All</string>
+   </property>
+   <property name="toolTip">
+    <string>Validate All</string>
+   </property>
+  </action>
+  <action name="actionValidateExtent">
+   <property name="icon">
+    <iconset resource="topol.qrc">
+     <normaloff>:/topology/mActionValidateExtent.svg</normaloff>:/topology/mActionValidateExtent.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Validate Extent</string>
+   </property>
+   <property name="toolTip">
+    <string>Validate Extent</string>
+   </property>
+  </action>
+  <action name="actionConfigure">
+   <property name="icon">
+    <iconset resource="topol.qrc">
+     <normaloff>:/topology/mActionConfigure.svg</normaloff>:/topology/mActionConfigure.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Configure</string>
+   </property>
+   <property name="toolTip">
+    <string>Configure</string>
+   </property>
+  </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="topol.qrc"/>
+ </resources>
  <connections/>
 </ui>
