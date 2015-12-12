@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsfilenameconfigdlg.h"
+#include "qgsproject.h"
 
 #include <QFileDialog>
 #include <QSettings>
@@ -59,7 +60,7 @@ void QgsFileNameConfigDlg::chooseDefaultPath()
   if ( !mRootPath->text().isEmpty() )
     dir = mRootPath->text();
   else
-    dir = QSettings().value( "/UI/lastFileNameWidgetDir", QDir::homePath() ).toString();
+    dir = QSettings().value( "/UI/lastFileNameWidgetDir", QDir::toNativeSeparators( QDir::cleanPath( QgsProject::instance()->fileInfo().absolutePath() ) ) ).toString();
   
   QString rootName = QFileDialog::getExistingDirectory( this, tr( "Select a directory" ), dir, QFileDialog::ShowDirsOnly );
 
@@ -153,6 +154,8 @@ void QgsFileNameConfigDlg::setConfig( const QgsEditorWidgetConfig& config )
 
   if ( config.contains( "DefaultRoot" ) )
     mRootPath->setText( config.value( "DefaultRoot" ).toString() );
+  else 
+    mRootPath->setPlaceholderText( QSettings().value( "/UI/lastFileNameWidgetDir", QDir::toNativeSeparators( QDir::cleanPath( QgsProject::instance()->fileInfo().absolutePath() ) ) ).toString() );
   
   if ( config.contains( "RelativeStorage" ) )
   {

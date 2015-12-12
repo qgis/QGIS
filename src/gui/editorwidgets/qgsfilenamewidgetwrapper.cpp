@@ -172,18 +172,18 @@ void QgsFileNameWidgetWrapper::selectFileName()
   QSettings settings;
   QString oldPath;
 
+  // If we use fixed default path
+  if ( config().contains( "DefaultRoot" ) )
+    oldPath = QDir::cleanPath( config( "DefaultRoot").toString() );
   // if we use a relative path option, we need to obtain the full path
-  if ( !value().isNull() )
+  else if ( !value().isNull() )
     oldPath = relativePath( value().toString(), false );
-
-  // If there is no valid value, find a default path to use
-  QUrl theUrl = QUrl::fromUserInput( oldPath );
-  if ( !theUrl.isValid() )
+  else
   {
-    if ( config().contains( "DefaultRoot" ) )
-      oldPath = config( "DefaultRoot" ).toString();
-    else
-      oldPath = settings.value( "/UI/lastFileNameWidgetDir", QDir::homePath() ).toString();
+    // If there is no valid value, find a default path to use
+    QUrl theUrl = QUrl::fromUserInput( oldPath );
+    if ( !theUrl.isValid() )
+      oldPath = settings.value( "/UI/lastFileNameWidgetDir", QDir::cleanPath( QgsProject::instance()->fileInfo().absolutePath() ) ).toString();
   }
 
   // Handle Storage

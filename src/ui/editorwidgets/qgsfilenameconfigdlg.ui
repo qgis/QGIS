@@ -7,7 +7,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>444</width>
+    <width>481</width>
     <height>287</height>
    </rect>
   </property>
@@ -75,7 +75,7 @@
      <item>
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>Default Path</string>
+        <string>Default path</string>
        </property>
       </widget>
      </item>
@@ -85,7 +85,7 @@
         <bool>true</bool>
        </property>
        <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When not null, opens the file selector at the root of this path for searching new files.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When not empty, always open the file selector at the root of this path for searching new files. If empty, the last used path of this editor widget will be used. If this editor widget has never been used by the user, the project path will be used.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="autoFillBackground">
         <bool>false</bool>
@@ -116,7 +116,7 @@
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If you want to make the attribute to store only relative paths, toggle one of these options.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="title">
-      <string>Relative Paths</string>
+      <string>Relative paths</string>
      </property>
      <property name="flat">
       <bool>false</bool>
