@@ -1145,9 +1145,10 @@ QString QgsCoordinateReferenceSystem::toWkt() const
   return mWkt;
 }
 
-bool QgsCoordinateReferenceSystem::readXML( QDomNode & theNode )
+bool QgsCoordinateReferenceSystem::readXML( const QDomNode & theNode )
 {
   QgsDebugMsg( "Reading Spatial Ref Sys from xml ------------------------!" );
+  bool result = true;
   QDomNode srsNode  = theNode.namedItem( "spatialrefsys" );
 
   if ( ! srsNode.isNull() )
@@ -1260,8 +1261,9 @@ bool QgsCoordinateReferenceSystem::readXML( QDomNode & theNode )
   {
     // Return default CRS if none was found in the XML.
     createFromId( GEOCRS_ID, InternalCrsId );
+    result = false;
   }
-  return true;
+  return result;
 }
 
 bool QgsCoordinateReferenceSystem::writeXML( QDomNode & theNode, QDomDocument & theDoc ) const

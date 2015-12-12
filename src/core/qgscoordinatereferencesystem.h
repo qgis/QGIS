@@ -230,7 +230,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * @param theNode The node from which state will be restored
      * @return bool True on success, False on failure
      */
-    bool readXML( QDomNode & theNode );
+    bool readXML( const QDomNode & theNode );
     /** Stores state to the given Dom node in the given document.
      * Below is an example of the generated tag.
      \code{.xml}
