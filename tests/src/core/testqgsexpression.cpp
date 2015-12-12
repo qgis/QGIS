@@ -449,6 +449,18 @@ class TestQgsExpression: public QObject
       QTest::newRow( "reverse point" ) << "reverse(geom_from_wkt('POINT(1 2)'))" << false << QVariant();
       QTest::newRow( "reverse polygon" ) << "reverse(geom_from_wkt('POLYGON((-1 -1, 4 0, 4 2, 0 2, -1 -1))'))" << false << QVariant();
       QTest::newRow( "reverse line" ) << "geom_to_wkt(reverse(geom_from_wkt('LINESTRING(0 0, 1 1, 2 2)')))" << false << QVariant( "LineString (2 2, 1 1, 0 0)" );
+      QTest::newRow( "centroid polygon" ) << "geom_to_wkt(centroid( geomFromWKT('POLYGON((0 0,0 9,9 0,0 0))')))" << false << QVariant( "Point (3 3)" );
+      QTest::newRow( "centroid multi polygon" ) << "geom_to_wkt(centroid( geomFromWKT('MULTIPOLYGON(((0 0,0 1,1 1,1 0,0 0)),((2 0,2 1,3 1,3 0,2 0)))') ))" << false << QVariant( "Point (1.5 0.5)" );
+      QTest::newRow( "centroid point" ) << "geom_to_wkt(centroid( geomFromWKT('POINT (1.5 0.5)') ))" << false << QVariant( "Point (1.5 0.5)" );
+      QTest::newRow( "centroid line" ) << "geom_to_wkt(centroid( geomFromWKT('LINESTRING (-1 2, 9 12)') ))" << false << QVariant( "Point (4 7)" );
+      QTest::newRow( "centroid not geom" ) << "centroid('g')" << true << QVariant();
+      QTest::newRow( "centroid null" ) << "centroid(NULL)" << false << QVariant();
+      QTest::newRow( "point on surface polygon" ) << "geom_to_wkt(point_on_surface( geomFromWKT('POLYGON((0 0,0 9,9 0,0 0))')))" << false << QVariant( "Point (2.25 4.5)" );
+      QTest::newRow( "point on surface multi polygon" ) << "geom_to_wkt(point_on_surface( geomFromWKT('MULTIPOLYGON(((0 0,0 1,1 1,1 0,0 0)),((2 0,2 1,3 1,3 0,2 0)))') ))" << false << QVariant( "Point (0.5 0.5)" );
+      QTest::newRow( "point on surface point" ) << "geom_to_wkt(point_on_surface( geomFromWKT('POINT (1.5 0.5)') ))" << false << QVariant( "Point (1.5 0.5)" );
+      QTest::newRow( "point on surface line" ) << "geom_to_wkt(point_on_surface( geomFromWKT('LINESTRING (-1 2, 9 12)') ))" << false << QVariant( "Point (-1 2)" );
+      QTest::newRow( "point on surface not geom" ) << "point_on_surface('g')" << true << QVariant();
+      QTest::newRow( "point on surface null" ) << "point_on_surface(NULL)" << false << QVariant();
       QTest::newRow( "make_point" ) << "geom_to_wkt(make_point(2.2,4.4))" << false << QVariant( "Point (2.2 4.4)" );
       QTest::newRow( "make_point z" ) << "geom_to_wkt(make_point(2.2,4.4,5.5))" << false << QVariant( "PointZ (2.2 4.4 5.5)" );
       QTest::newRow( "make_point zm" ) << "geom_to_wkt(make_point(2.2,4.4,5.5,6.6))" << false << QVariant( "PointZM (2.2 4.4 5.5 6.6)" );
@@ -1459,10 +1471,6 @@ class TestQgsExpression: public QObject
       geom = QgsGeometry::fromPolygon( polygon );
       QTest::newRow( "symDifference" ) << "symDifference( $geometry, geomFromWKT('POLYGON((0 0, 0 10, 10 0, 0 0))') )" << ( void* ) geom << false << true << ( void* ) QgsGeometry::fromWkt( "MULTIPOLYGON(((5 5,0 0,0 10,5 5)),((5 5,10 10,10 0,5 5)))" );
 
-      geom = QgsGeometry::fromPolygon( polygon );
-      QTest::newRow( "centroid polygon" ) << "centroid( $geometry )" << ( void* ) geom << false << true << ( void* ) geom->centroid();
-      geom = QgsGeometry::fromPolygon( polygon );
-      QTest::newRow( "centroid multi polygon" ) << "centroid( geomFromWKT('MULTIPOLYGON(((0 0,0 1,1 1,1 0,0 0)),((2 0,2 1,3 1,3 0,2 0)))') )" << ( void* ) geom << false << false << ( void* ) QgsGeometry::fromWkt( "POINT (1.5 0.5)" );
       geom = QgsGeometry::fromPolygon( polygon );
       QTest::newRow( "convexHull simple" ) << "convexHull( $geometry )" << ( void* ) geom << false << true << ( void* ) geom->convexHull();
       geom = QgsGeometry::fromPolygon( polygon );
