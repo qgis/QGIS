@@ -197,6 +197,14 @@ QString createProtocolURI( const QString& type, const QString& url )
   {
     uri = url;
   }
+  else if ( type == "CouchDB" )
+  {
+    uri = QString( "couchdb:%1" ).arg( url );
+  }
+  else if ( type == "DODS/OPeNDAP" )
+  {
+    uri = QString( "DODS:%1" ).arg( url );
+  }
   QgsDebugMsg( "Connection type is=" + type + " and uri=" + uri );
   return uri;
 }

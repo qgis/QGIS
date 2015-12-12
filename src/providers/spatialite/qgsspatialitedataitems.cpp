@@ -321,7 +321,7 @@ void QgsSLRootItem::createDatabase()
 
   QString filename = QFileDialog::getSaveFileName( 0, tr( "New SpatiaLite Database File" ),
                      lastUsedDir,
-                     tr( "SpatiaLite" ) + " (*.sqlite *.db)" );
+                     tr( "SpatiaLite" ) + " (*.sqlite *.db *.sqlite3 *.db3 *.s3db)" );
   if ( filename.isEmpty() )
     return;
 
