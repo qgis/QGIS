@@ -1777,6 +1777,21 @@ static QVariant fcnReverse( const QVariantList& values, const QgsExpressionConte
   return result;
 }
 
+static QVariant fcnExteriorRing( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
+  if ( fGeom.isEmpty() )
+    return QVariant();
+
+  QgsCurvePolygonV2* curvePolygon = dynamic_cast< QgsCurvePolygonV2* >( fGeom.geometry() );
+  if ( !curvePolygon || !curvePolygon->exteriorRing() )
+    return QVariant();
+
+  QgsCurveV2* exterior = static_cast< QgsCurveV2* >( curvePolygon->exteriorRing()->clone() );
+  QVariant result = exterior ? QVariant::fromValue( QgsGeometry( exterior ) ) : QVariant();
+  return result;
+}
+
 static QVariant fcnDistance( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
@@ -2414,7 +2429,7 @@ const QStringList& QgsExpression::BuiltinFunctions()
     << "geom_from_gml" << "geomFromGML" << "intersects_bbox" << "bbox"
     << "disjoint" << "intersects" << "touches" << "crosses" << "contains"
     << "relate"
-    << "overlaps" << "within" << "buffer" << "centroid" << "bounds" << "reverse"
+    << "overlaps" << "within" << "buffer" << "centroid" << "bounds" << "reverse" << "exterior_ring"
     << "bounds_width" << "bounds_height" << "convex_hull" << "difference"
     << "distance" << "intersection" << "sym_difference" << "combine"
     << "union" << "geom_to_wkt" << "geomToWKT" << "geometry"
@@ -2558,6 +2573,7 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( "centroid", 1, fcnCentroid, "GeometryGroup" )
     << new StaticFunction( "point_on_surface", 1, fcnPointOnSurface, "GeometryGroup" )
     << new StaticFunction( "reverse", 1, fcnReverse, "GeometryGroup" )
+    << new StaticFunction( "exterior_ring", 1, fcnExteriorRing, "GeometryGroup" )
     << new StaticFunction( "bounds", 1, fcnBounds, "GeometryGroup" )
     << new StaticFunction( "num_points", 1, fcnGeomNumPoints, "GeometryGroup" )
     << new StaticFunction( "bounds_width", 1, fcnBoundsWidth, "GeometryGroup" )
