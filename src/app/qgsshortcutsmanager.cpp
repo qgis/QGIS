@@ -47,8 +47,7 @@ bool QgsShortcutsManager::registerAction( QAction* action, const QString& defaul
   QSettings settings;
   QString shortcut = settings.value( "/shortcuts/" + actionText, defaultShortcut ).toString();
 
-  if ( !shortcut.isEmpty() )
-    action->setShortcut( shortcut );
+  action->setShortcut( shortcut );
 
   return true;
 }
