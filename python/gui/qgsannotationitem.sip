@@ -44,6 +44,12 @@ class QgsAnnotationItem: QgsMapCanvasItem
     virtual void setMapPosition( const QgsPoint& pos );
     QgsPoint mapPosition() const;
 
+    /** Sets the CRS of the map position.
+      @param crs the CRS to set */
+    virtual void setMapPositionCrs( const QgsCoordinateReferenceSystem& crs );
+    /** Returns the CRS of the map position.*/
+    QgsCoordinateReferenceSystem mapPositionCrs() const;
+
     void setFrameSize( const QSizeF& size );
     QSizeF frameSize() const;
 
