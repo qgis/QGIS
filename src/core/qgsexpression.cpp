@@ -1628,6 +1628,19 @@ static QVariant fcnYMax( const QVariantList& values, const QgsExpressionContext*
   return QVariant::fromValue( geom.boundingBox().yMaximum() );
 }
 
+static QVariant fcnIsClosed( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
+  if ( fGeom.isEmpty() )
+    return QVariant();
+
+  QgsCurveV2* curve = dynamic_cast< QgsCurveV2* >( fGeom.geometry() );
+  if ( !curve )
+    return QVariant();
+
+  return QVariant::fromValue( curve->isClosed() );
+}
+
 static QVariant fcnRelate( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   if ( values.length() < 2 || values.length() > 3 )
@@ -2430,7 +2443,7 @@ const QStringList& QgsExpression::BuiltinFunctions()
     << "disjoint" << "intersects" << "touches" << "crosses" << "contains"
     << "relate"
     << "overlaps" << "within" << "buffer" << "centroid" << "bounds" << "reverse" << "exterior_ring"
-    << "bounds_width" << "bounds_height" << "convex_hull" << "difference"
+    << "bounds_width" << "bounds_height" << "is_closed" << "convex_hull" << "difference"
     << "distance" << "intersection" << "sym_difference" << "combine"
     << "union" << "geom_to_wkt" << "geomToWKT" << "geometry"
     << "transform" << "get_feature" << "getFeature"
@@ -2578,6 +2591,7 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( "num_points", 1, fcnGeomNumPoints, "GeometryGroup" )
     << new StaticFunction( "bounds_width", 1, fcnBoundsWidth, "GeometryGroup" )
     << new StaticFunction( "bounds_height", 1, fcnBoundsHeight, "GeometryGroup" )
+    << new StaticFunction( "is_closed", 1, fcnIsClosed, "GeometryGroup" )
     << new StaticFunction( "convex_hull", 1, fcnConvexHull, "GeometryGroup", QString(), false, QStringList(), false, QStringList() << "convexHull" )
     << new StaticFunction( "difference", 2, fcnDifference, "GeometryGroup" )
     << new StaticFunction( "distance", 2, fcnDistance, "GeometryGroup" )
