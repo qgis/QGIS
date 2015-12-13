@@ -7746,7 +7746,33 @@ void QgisApp::legendLayerStretchUsingCurrentExtent()
   }
 }
 
+void QgisApp::applyStyleToGroup()
+{
+  if ( !mLayerTreeView )
+    return;
 
+  Q_FOREACH ( QgsLayerTreeNode* node, mLayerTreeView->selectedNodes() )
+  {
+    if ( QgsLayerTree::isGroup( node ) )
+    {
+      Q_FOREACH ( QgsLayerTreeLayer* nodeLayer, QgsLayerTree::toGroup( node )->findLayers() )
+      {
+        if ( nodeLayer->layer() )
+        {
+          pasteStyle( nodeLayer->layer() );
+        }
+      }
+    }
+    else if ( QgsLayerTree::isLayer( node ) )
+    {
+      QgsLayerTreeLayer* nodeLayer = QgsLayerTree::toLayer( node );
+      if ( nodeLayer->layer() )
+      {
+        pasteStyle( nodeLayer->layer() );
+      }
+    }
+  }
+}
 
 void QgisApp::legendGroupSetCRS()
 {

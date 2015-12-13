@@ -66,6 +66,11 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
       if ( mView->selectedNodes( true ).count() >= 2 )
         menu->addAction( actions->actionGroupSelected( menu ) );
 
+      if ( QgisApp::instance()->clipboard()->hasFormat( QGSCLIPBOARD_STYLE_MIME ) )
+      {
+        menu->addAction( tr( "Paste Style" ), QgisApp::instance(), SLOT( applyStyleToGroup() ) );
+      }
+
       menu->addAction( tr( "Save As Layer Definition File..." ), QgisApp::instance(), SLOT( saveAsLayerDefinition() ) );
 
       menu->addAction( actions->actionAddGroup( menu ) );
@@ -120,6 +125,13 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
         QgsMapLayerStyleGuiUtils::instance()->addStyleManagerActions( menuStyleManager, layer );
 
         menu->addMenu( menuStyleManager );
+      }
+      else
+      {
+        if ( QgisApp::instance()->clipboard()->hasFormat( QGSCLIPBOARD_STYLE_MIME ) )
+        {
+          menu->addAction( tr( "Paste Style" ), QgisApp::instance(), SLOT( applyStyleToGroup() ) );
+        }
       }
 
       menu->addSeparator();

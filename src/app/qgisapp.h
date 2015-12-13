@@ -748,6 +748,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
         Only workds on raster layers*/
     void legendLayerStretchUsingCurrentExtent();
 
+    /** Apply the same style to selected layers or to current legend group*/
+    void applyStyleToGroup();
+
     /** Set the CRS of the current legend group*/
     void legendGroupSetCRS();
 
