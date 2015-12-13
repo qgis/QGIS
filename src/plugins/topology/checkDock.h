@@ -39,7 +39,7 @@ class QgisApp;
 class QgisInterface;
 class checkDock;
 
-class checkDock : public QDockWidget, public Ui::checkDock
+class checkDock : public QDockWidget, private Ui::checkDock
 {
     Q_OBJECT
 

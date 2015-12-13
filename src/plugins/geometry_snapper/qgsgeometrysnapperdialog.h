@@ -27,7 +27,7 @@ class QgisInterface;
 class QgsSpatialIndex;
 class QgsVectorLayer;
 
-class QgsGeometrySnapperDialog: public QDialog
+class QgsGeometrySnapperDialog: public QDialog, private Ui::QgsGeometrySnapperDialog
 {
     Q_OBJECT
   public:
@@ -35,7 +35,6 @@ class QgsGeometrySnapperDialog: public QDialog
 
   private:
     QgisInterface* mIface;
-    Ui::QgsGeometrySnapperDialog ui;
     QAbstractButton* mRunButton;
     QString mOutputDriverName;
 

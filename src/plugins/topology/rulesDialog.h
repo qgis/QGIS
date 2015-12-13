@@ -28,7 +28,7 @@
 class QgisInterface;
 class QgsMapLayerRegistry;
 
-class rulesDialog : public QDialog, public Ui::rulesDialog
+class rulesDialog : public QDialog, private Ui::rulesDialog
 {
     Q_OBJECT
 
