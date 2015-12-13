@@ -188,6 +188,9 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     /** Auto slot executed when the active page in the option section widget is changed */
     void on_mOptionsStackedWidget_currentChanged( int theIndx );
 
+    /** A scale in the list of predefined scales changed */
+    void scaleItemChanged( QListWidgetItem* changedScaleItem );
+
     /* Load the list of drivers available in GDAL */
     void loadGdalDriverList();
 
@@ -213,6 +216,9 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     void addCustomEnvVarRow( const QString& varName, const QString& varVal, const QString& varApply = QString() );
 
     void saveDefaultDatumTransformations();
+
+    QListWidgetItem* addScaleToScaleList( const QString &newScale );
+    void addScaleToScaleList( QListWidgetItem* newItem );
 
   protected:
     QgisAppStyleSheet* mStyleSheetBuilder;

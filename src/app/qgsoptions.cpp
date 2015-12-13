@@ -687,15 +687,12 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   if ( !myPaths.isEmpty() )
   {
     QStringList myScalesList = myPaths.split( ',' );
-    QStringList::const_iterator scaleIt = myScalesList.constBegin();
-    for ( ; scaleIt != myScalesList.constEnd(); ++scaleIt )
+    Q_FOREACH ( const QString& scale, myScalesList )
     {
-      QListWidgetItem* newItem = new QListWidgetItem( mListGlobalScales );
-      newItem->setText( *scaleIt );
-      newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-      mListGlobalScales->addItem( newItem );
+      addScaleToScaleList( scale );
     }
   }
+  connect( mListGlobalScales, SIGNAL( itemChanged( QListWidgetItem* ) ), this, SLOT( scaleItemChanged( QListWidgetItem* ) ) );
 
   //
   // Color palette
@@ -1923,10 +1920,7 @@ void QgsOptions::on_pbnAddScale_clicked()
 
   if ( myScale != -1 )
   {
-    QListWidgetItem* newItem = new QListWidgetItem( mListGlobalScales );
-    newItem->setText( QString( "1:%1" ).arg( myScale ) );
-    newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-    mListGlobalScales->addItem( newItem );
+    QListWidgetItem* newItem = addScaleToScaleList( QString( "1:%1" ).arg( myScale ) );
     mListGlobalScales->setCurrentItem( newItem );
   }
 }
@@ -1943,13 +1937,9 @@ void QgsOptions::on_pbnDefaultScaleValues_clicked()
   mListGlobalScales->clear();
 
   QStringList myScalesList = PROJECT_SCALES.split( ',' );
-  QStringList::const_iterator scaleIt = myScalesList.constBegin();
-  for ( ; scaleIt != myScalesList.constEnd(); ++scaleIt )
+  Q_FOREACH ( const QString& scale, myScalesList )
   {
-    QListWidgetItem* newItem = new QListWidgetItem( mListGlobalScales );
-    newItem->setText( *scaleIt );
-    newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-    mListGlobalScales->addItem( newItem );
+    addScaleToScaleList( scale );
   }
 }
 
@@ -1969,13 +1959,9 @@ void QgsOptions::on_pbnImportScales_clicked()
     QgsDebugMsg( msg );
   }
 
-  QStringList::const_iterator scaleIt = myScales.constBegin();
-  for ( ; scaleIt != myScales.constEnd(); ++scaleIt )
+  Q_FOREACH ( const QString& scale, myScales )
   {
-    QListWidgetItem* newItem = new QListWidgetItem( mListGlobalScales );
-    newItem->setText( *scaleIt );
-    newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-    mListGlobalScales->addItem( newItem );
+    addScaleToScaleList( scale );
   }
 }
 
@@ -2163,4 +2149,54 @@ void QgsOptions::on_mButtonExportColors_clicked()
     QMessageBox::critical( 0, tr( "Error exporting" ), tr( "Error writing palette file" ) );
     return;
   }
+}
+
+QListWidgetItem* QgsOptions::addScaleToScaleList( const QString &newScale )
+{
+  QListWidgetItem* newItem = new QListWidgetItem( newScale );
+  addScaleToScaleList( newItem );
+  return newItem;
+}
+
+void QgsOptions::addScaleToScaleList( QListWidgetItem* newItem )
+{
+  // If the new scale already exists, delete it.
+  QListWidgetItem* duplicateItem = mListGlobalScales->findItems( newItem->text(), Qt::MatchExactly ).value( 0 );
+  delete duplicateItem;
+
+  int newDenominator = newItem->text().split( ":" ).value( 1 ).toInt();
+  int i;
+  for ( i = 0; i < mListGlobalScales->count(); i++ )
+  {
+    int denominator = mListGlobalScales->item( i )->text().split( ":" ).value( 1 ).toInt();
+    if ( newDenominator > denominator )
+      break;
+  }
+
+  newItem->setData( Qt::UserRole, newItem->text() );
+  newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+  mListGlobalScales->insertItem( i, newItem );
+}
+
+void QgsOptions::scaleItemChanged( QListWidgetItem* changedScaleItem )
+{
+  // Check if the new value is valid, restore the old value if not.
+  QRegExp regExp( "1:0*[1-9]\\d*" );
+  if ( regExp.exactMatch( changedScaleItem->text() ) )
+  {
+    //Remove leading zeroes from the denominator
+    regExp.setPattern( "1:0*" );
+    changedScaleItem->setText( changedScaleItem->text().replace( regExp, "1:" ) );
+  }
+  else
+  {
+    QMessageBox::warning( this, tr( "Invalid scale" ), tr( "The text you entered is not a valid scale." ) );
+    changedScaleItem->setText( changedScaleItem->data( Qt::UserRole ).toString() );
+  }
+
+  // Take the changed item out of the list and re-add it. This keeps things ordered and creates correct meta-data for the changed item.
+  int row = mListGlobalScales->row( changedScaleItem );
+  mListGlobalScales->takeItem( row );
+  addScaleToScaleList( changedScaleItem );
+  mListGlobalScales->setCurrentItem( changedScaleItem );
 }

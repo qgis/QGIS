@@ -90,6 +90,9 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     /** Let the user load scales from file */
     void on_pbnExportScales_clicked();
 
+    /** A scale in the list of project scales changed */
+    void scaleItemChanged( QListWidgetItem* changedScaleItem );
+
     /*!
      * Slots for WMS project settings
      */
@@ -207,6 +210,12 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
 
     //! Populates list with ellipsoids from Sqlite3 db
     void populateEllipsoidList();
+
+    //! Create a new scale item and add it to the list of scales
+    QListWidgetItem* addScaleToScaleList( const QString &newScale );
+
+    //! Add a scale item to the list of scales
+    void addScaleToScaleList( QListWidgetItem* newItem );
 
     static const char * GEO_NONE_DESC;
 

@@ -183,15 +183,12 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   QStringList myScales = QgsProject::instance()->readListEntry( "Scales", "/ScalesList" );
   if ( !myScales.isEmpty() )
   {
-    QStringList::const_iterator scaleIt = myScales.constBegin();
-    for ( ; scaleIt != myScales.constEnd(); ++scaleIt )
+    Q_FOREACH ( const QString& scale, myScales )
     {
-      QListWidgetItem* newItem = new QListWidgetItem( lstScales );
-      newItem->setText( *scaleIt );
-      newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-      lstScales->addItem( newItem );
+      addScaleToScaleList( scale );
     }
   }
+  connect( lstScales, SIGNAL( itemChanged( QListWidgetItem* ) ), this, SLOT( scaleItemChanged( QListWidgetItem* ) ) );
 
   grpProjectScales->setChecked( QgsProject::instance()->readBoolEntry( "Scales", "/useProjectScales" ) );
 
@@ -1362,10 +1359,7 @@ void QgsProjectProperties::on_pbnAddScale_clicked()
 
   if ( myScale != -1 )
   {
-    QListWidgetItem* newItem = new QListWidgetItem( lstScales );
-    newItem->setText( QString( "1:%1" ).arg( myScale ) );
-    newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-    lstScales->addItem( newItem );
+    QListWidgetItem* newItem = addScaleToScaleList( QString( "1:%1" ).arg( myScale ) );
     lstScales->setCurrentItem( newItem );
   }
 }
@@ -1393,13 +1387,9 @@ void QgsProjectProperties::on_pbnImportScales_clicked()
     QgsDebugMsg( msg );
   }
 
-  QStringList::const_iterator scaleIt = myScales.constBegin();
-  for ( ; scaleIt != myScales.constEnd(); ++scaleIt )
+  Q_FOREACH ( const QString& scale, myScales )
   {
-    QListWidgetItem* newItem = new QListWidgetItem( lstScales );
-    newItem->setText( *scaleIt );
-    newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-    lstScales->addItem( newItem );
+    addScaleToScaleList( scale );
   }
 }
 
@@ -1825,4 +1815,55 @@ void QgsProjectProperties::on_mButtonExportColors_clicked()
     QMessageBox::critical( 0, tr( "Error exporting" ), tr( "Error writing palette file" ) );
     return;
   }
+}
+
+QListWidgetItem* QgsProjectProperties::addScaleToScaleList( const QString &newScale )
+{
+  // TODO QGIS3: Rework the scale list widget to be a reusable piece of code, see PR #2558
+  QListWidgetItem* newItem = new QListWidgetItem( newScale );
+  addScaleToScaleList( newItem );
+  return newItem;
+}
+
+void QgsProjectProperties::addScaleToScaleList( QListWidgetItem* newItem )
+{
+  // If the new scale already exists, delete it.
+  QListWidgetItem* duplicateItem = lstScales->findItems( newItem->text(), Qt::MatchExactly ).value( 0 );
+  delete duplicateItem;
+
+  int newDenominator = newItem->text().split( ":" ).value( 1 ).toInt();
+  int i;
+  for ( i = 0; i < lstScales->count(); i++ )
+  {
+    int denominator = lstScales->item( i )->text().split( ":" ).value( 1 ).toInt();
+    if ( newDenominator > denominator )
+      break;
+  }
+
+  newItem->setData( Qt::UserRole, newItem->text() );
+  newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+  lstScales->insertItem( i, newItem );
+}
+
+void QgsProjectProperties::scaleItemChanged( QListWidgetItem* changedScaleItem )
+{
+  // Check if the new value is valid, restore the old value if not.
+  QRegExp regExp( "1:0*[1-9]\\d*" );
+  if ( regExp.exactMatch( changedScaleItem->text() ) )
+  {
+    //Remove leading zeroes from the denominator
+    regExp.setPattern( "1:0*" );
+    changedScaleItem->setText( changedScaleItem->text().replace( regExp, "1:" ) );
+  }
+  else
+  {
+    QMessageBox::warning( this, tr( "Invalid scale" ), tr( "The text you entered is not a valid scale." ) );
+    changedScaleItem->setText( changedScaleItem->data( Qt::UserRole ).toString() );
+  }
+
+  // Take the changed item out of the list and re-add it. This keeps things ordered and creates correct meta-data for the changed item.
+  int row = lstScales->row( changedScaleItem );
+  lstScales->takeItem( row );
+  addScaleToScaleList( changedScaleItem );
+  lstScales->setCurrentItem( changedScaleItem );
 }
