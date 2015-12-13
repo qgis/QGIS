@@ -3938,6 +3938,9 @@ void QgsExpression::initVariableHelp()
   gVariableHelpTexts.insert( "row_number", QCoreApplication::translate( "variable_help", "Stores the number of the current row." ) );
   gVariableHelpTexts.insert( "grid_number", QCoreApplication::translate( "variable_help", "Current grid annotation value." ) );
   gVariableHelpTexts.insert( "grid_axis", QCoreApplication::translate( "variable_help", "Current grid annotation axis (eg, 'x' for longitude, 'y' for latitude)." ) );
+
+  gVariableHelpTexts.insert( "symbol_color", QCoreApplication::translate( "symbol_color", "Color of symbol used to render the feature." ) );
+  gVariableHelpTexts.insert( "symbol_angle", QCoreApplication::translate( "symbol_angle", "Angle of symbol used to render the feature (valid for marker symbols only)." ) );
 }
 
 QString QgsExpression::variableHelpText( const QString &variableName, bool showValue, const QVariant &value )

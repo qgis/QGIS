@@ -480,6 +480,16 @@ class QgsExpressionContextUtils
      */
     static QgsExpressionContextScope* mapSettingsScope( const QgsMapSettings &mapSettings ) /Factory/;
 
+    /** Adds variables related to a QgsSymbolV2 to an expression context. Note that unlike the other
+     * methods in QgsExpressionContextUtils, this method adds its variable directly to the final
+     * scope in the context. This is designed to allow the method to be used thousands of times
+     * with the same context without the cost of adding additional scopes for each symbol.
+     * @param context expression context to add symbol scope variables to
+     * @param symbol symbol to extract properties from
+     * @note added in QGIS 2.14
+     */
+    static void addSymbolScope( QgsExpressionContext& context, const QgsSymbolV2* symbol );
+
     /** Creates a new scope which contains variables and functions relating to a QgsComposition.
      * For instance, number of pages and page sizes.
      * @param composition source composition

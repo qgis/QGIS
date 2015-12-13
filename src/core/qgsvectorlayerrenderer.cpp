@@ -329,10 +329,17 @@ void QgsVectorLayerRenderer::drawRendererV2( QgsFeatureIterator& fit )
         if ( mContext.labelingEngineV2() )
         {
           QScopedPointer<QgsGeometry> obstacleGeometry;
-          if ( fet.constGeometry()->type() == QGis::Point )
+          QgsSymbolV2List symbols = mRendererV2->originalSymbolsForFeature( fet, mContext );
+
+          if ( !symbols.isEmpty() && fet.constGeometry()->type() == QGis::Point )
           {
-            obstacleGeometry.reset( QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, mContext, mRendererV2 ) );
+            obstacleGeometry.reset( QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, mContext, symbols ) );
           }
+          if ( !symbols.isEmpty() )
+          {
+            QgsExpressionContextUtils::addSymbolScope( mContext.expressionContext(), symbols.at( 0 ) );
+          }
+
           if ( mLabelProvider )
           {
             mLabelProvider->registerFeature( fet, mContext, obstacleGeometry.data() );
@@ -417,10 +424,17 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
     if ( mContext.labelingEngineV2() )
     {
       QScopedPointer<QgsGeometry> obstacleGeometry;
-      if ( fet.constGeometry()->type() == QGis::Point )
+      QgsSymbolV2List symbols = mRendererV2->originalSymbolsForFeature( fet, mContext );
+
+      if ( !symbols.isEmpty() && fet.constGeometry()->type() == QGis::Point )
       {
-        obstacleGeometry.reset( QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, mContext, mRendererV2 ) );
+        obstacleGeometry.reset( QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, mContext, symbols ) );
       }
+      if ( !symbols.isEmpty() )
+      {
+        QgsExpressionContextUtils::addSymbolScope( mContext.expressionContext(), symbols.at( 0 ) );
+      }
+
       if ( mLabelProvider )
       {
         mLabelProvider->registerFeature( fet, mContext, obstacleGeometry.data() );

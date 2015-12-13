@@ -17,9 +17,11 @@
 #define QGSVECTORLAYERLABELPROVIDER_H
 
 #include "qgslabelingenginev2.h"
+#include "qgsrendererv2.h"
 
 class QgsAbstractFeatureSource;
 class QgsFeatureRendererV2;
+class QgsSymbolV2;
 
 /**
  * @brief The QgsVectorLayerLabelProvider class implements a label provider
@@ -78,10 +80,10 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
      * point, and ensures that labels will not overlap large or offset points.
      * @param fet point feature
      * @param context render context
-     * @param renderer renderer used for layer, required to determine symbols rendered for point feature
+     * @param symbols symbols rendered for point feature
      * @note added in QGIS 2.14
      */
-    static QgsGeometry* getPointObstacleGeometry( QgsFeature& fet, QgsRenderContext& context, QgsFeatureRendererV2* renderer );
+    static QgsGeometry* getPointObstacleGeometry( QgsFeature& fet, QgsRenderContext& context, const QgsSymbolV2List& symbols );
 
   protected:
     //! initialization method - called from constructors
