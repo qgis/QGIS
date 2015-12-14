@@ -91,7 +91,7 @@ const QgsAbstractGeometryV2* QgsGeometryCollectionV2::geometryN( int n ) const
 
 QgsAbstractGeometryV2* QgsGeometryCollectionV2::geometryN( int n )
 {
-  if ( n >= mGeometries.size() )
+  if ( n < 0 || n >= mGeometries.size() )
   {
     return 0;
   }

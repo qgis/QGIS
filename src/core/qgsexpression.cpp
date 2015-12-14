@@ -42,6 +42,9 @@
 #include "qgsgeometrycollectionv2.h"
 #include "qgspointv2.h"
 #include "qgspolygonv2.h"
+#include "qgsmultipointv2.h"
+#include "qgsmultilinestringv2.h"
+#include "qgscurvepolygonv2.h"
 
 #if QT_VERSION < 0x050000
 #include <qtextdocument.h>
@@ -1382,6 +1385,160 @@ static QVariant fcnEndPoint( const QVariantList& values, const QgsExpressionCont
   return QVariant::fromValue( QgsGeometry( new QgsPointV2( point ) ) );
 }
 
+static QVariant fcnNodesToPoints( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QgsGeometry geom = getGeometry( values.at( 0 ), parent );
+
+  if ( geom.isEmpty() )
+    return QVariant();
+
+  bool ignoreClosing = false;
+  if ( values.length() > 1 )
+  {
+    ignoreClosing = getIntValue( values.at( 1 ), parent );
+  }
+
+  QgsMultiPointV2* mp = new QgsMultiPointV2();
+
+  QList< QList< QList< QgsPointV2 > > > coords;
+  geom.geometry()->coordinateSequence( coords );
+
+  Q_FOREACH ( const QList< QList< QgsPointV2 > >& part, coords )
+  {
+    Q_FOREACH ( const QList< QgsPointV2 >& ring, part )
+    {
+      bool skipLast = false;
+      if ( ignoreClosing && ring.count() > 2 && ring.first() == ring.last() )
+      {
+        skipLast = true;
+      }
+
+      for ( int i = 0; i < ( skipLast ? ring.count() - 1 : ring.count() ); ++ i )
+      {
+        mp->addGeometry( ring.at( i ).clone() );
+      }
+    }
+  }
+
+  return QVariant::fromValue( QgsGeometry( mp ) );
+}
+
+static QVariant fcnSegmentsToLines( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QgsGeometry geom = getGeometry( values.at( 0 ), parent );
+
+  if ( geom.isEmpty() )
+    return QVariant();
+
+  QList< QgsAbstractGeometryV2 * > geometries;
+
+  QgsGeometryCollectionV2* collection = dynamic_cast< QgsGeometryCollectionV2* >( geom.geometry() );
+  if ( collection )
+  {
+    for ( int i = 0; i < collection->numGeometries(); ++i )
+    {
+      geometries.append( collection->geometryN( i ) );
+    }
+  }
+  else
+  {
+    geometries.append( geom.geometry() );
+  }
+
+  QList< QgsLineStringV2* > linesToProcess;
+  while ( ! geometries.isEmpty() )
+  {
+    QgsAbstractGeometryV2* g = geometries.takeFirst();
+    QgsCurveV2* curve = dynamic_cast< QgsCurveV2* >( g );
+    if ( curve )
+    {
+      linesToProcess << static_cast< QgsLineStringV2* >( curve->segmentize() );
+      continue;
+    }
+    QgsGeometryCollectionV2* collection = dynamic_cast< QgsGeometryCollectionV2* >( g );
+    if ( collection )
+    {
+      for ( int i = 0; i < collection->numGeometries(); ++i )
+      {
+        geometries.append( collection->geometryN( i ) );
+      }
+    }
+    QgsCurvePolygonV2* curvePolygon = dynamic_cast< QgsCurvePolygonV2* >( g );
+    if ( curvePolygon )
+    {
+      if ( curvePolygon->exteriorRing() )
+        linesToProcess << static_cast< QgsLineStringV2* >( curvePolygon->exteriorRing()->segmentize() );
+
+      for ( int i = 0; i < curvePolygon->numInteriorRings(); ++i )
+      {
+        linesToProcess << static_cast< QgsLineStringV2* >( curvePolygon->interiorRing( i )->segmentize() );
+      }
+      continue;
+    }
+  }
+
+  //ok, now we have a complete list of segmentized lines from the geometry
+  QgsMultiLineStringV2* ml = new QgsMultiLineStringV2();
+  Q_FOREACH ( QgsLineStringV2* line, linesToProcess )
+  {
+    for ( int i = 0; i < line->numPoints() - 1; ++i )
+    {
+      QgsLineStringV2* segment = new QgsLineStringV2();
+      segment->setPoints( QList<QgsPointV2>()
+                          << line->pointN( i )
+                          << line->pointN( i + 1 ) );
+      ml->addGeometry( segment );
+    }
+    delete line;
+  }
+
+  return QVariant::fromValue( QgsGeometry( ml ) );
+}
+
+static QVariant fcnInteriorRingN( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QgsGeometry geom = getGeometry( values.at( 0 ), parent );
+
+  if ( geom.isEmpty() )
+    return QVariant();
+
+  QgsCurvePolygonV2* curvePolygon = dynamic_cast< QgsCurvePolygonV2* >( geom.geometry() );
+  if ( !curvePolygon )
+    return QVariant();
+
+  //idx is 1 based
+  int idx = getIntValue( values.at( 1 ), parent ) - 1;
+
+  if ( idx >= curvePolygon->numInteriorRings() || idx < 0 )
+    return QVariant();
+
+  QgsCurveV2* curve = static_cast< QgsCurveV2* >( curvePolygon->interiorRing( idx )->clone() );
+  QVariant result = curve ? QVariant::fromValue( QgsGeometry( curve ) ) : QVariant();
+  return result;
+}
+
+static QVariant fcnGeometryN( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QgsGeometry geom = getGeometry( values.at( 0 ), parent );
+
+  if ( geom.isEmpty() )
+    return QVariant();
+
+  QgsGeometryCollectionV2* collection = dynamic_cast< QgsGeometryCollectionV2* >( geom.geometry() );
+  if ( !collection )
+    return QVariant();
+
+  //idx is 1 based
+  int idx = getIntValue( values.at( 1 ), parent ) - 1;
+
+  if ( idx < 0 || idx >= collection->numGeometries() )
+    return QVariant();
+
+  QgsAbstractGeometryV2* part = collection->geometryN( idx )->clone();
+  QVariant result = part ? QVariant::fromValue( QgsGeometry( part ) ) : QVariant();
+  return result;
+}
+
 static QVariant fcnMakePoint( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   if ( values.count() < 2 || values.count() > 4 )
@@ -1581,6 +1738,77 @@ static QVariant fcnGeomNumPoints( const QVariantList& values, const QgsExpressio
 {
   QgsGeometry geom = getGeometry( values.at( 0 ), parent );
   return QVariant( geom.isEmpty() ? 0 : geom.geometry()->nCoordinates() );
+}
+
+static QVariant fcnGeomNumGeometries( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QgsGeometry geom = getGeometry( values.at( 0 ), parent );
+  if ( geom.isEmpty() )
+    return QVariant();
+
+  return QVariant( geom.geometry()->partCount() );
+}
+
+static QVariant fcnGeomNumInteriorRings( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QgsGeometry geom = getGeometry( values.at( 0 ), parent );
+
+  if ( geom.isEmpty() )
+    return QVariant();
+
+  QgsCurvePolygonV2* curvePolygon = dynamic_cast< QgsCurvePolygonV2* >( geom.geometry() );
+  if ( curvePolygon )
+    return QVariant( curvePolygon->numInteriorRings() );
+
+  QgsGeometryCollectionV2* collection = dynamic_cast< QgsGeometryCollectionV2* >( geom.geometry() );
+  if ( collection )
+  {
+    //find first CurvePolygon in collection
+    for ( int i = 0; i < collection->numGeometries(); ++i )
+    {
+      curvePolygon = dynamic_cast< QgsCurvePolygonV2*>( collection->geometryN( i ) );
+      if ( !curvePolygon )
+        continue;
+
+      return QVariant( curvePolygon->isEmpty() ? 0 : curvePolygon->numInteriorRings() );
+    }
+  }
+
+  return QVariant();
+}
+
+static QVariant fcnGeomNumRings( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QgsGeometry geom = getGeometry( values.at( 0 ), parent );
+
+  if ( geom.isEmpty() )
+    return QVariant();
+
+  QgsCurvePolygonV2* curvePolygon = dynamic_cast< QgsCurvePolygonV2* >( geom.geometry() );
+  if ( curvePolygon )
+    return QVariant( curvePolygon->ringCount() );
+
+  bool foundPoly = false;
+  int ringCount = 0;
+  QgsGeometryCollectionV2* collection = dynamic_cast< QgsGeometryCollectionV2* >( geom.geometry() );
+  if ( collection )
+  {
+    //find CurvePolygons in collection
+    for ( int i = 0; i < collection->numGeometries(); ++i )
+    {
+      curvePolygon = dynamic_cast< QgsCurvePolygonV2*>( collection->geometryN( i ) );
+      if ( !curvePolygon )
+        continue;
+
+      foundPoly = true;
+      ringCount += curvePolygon->ringCount();
+    }
+  }
+
+  if ( !foundPoly )
+    return QVariant();
+
+  return QVariant( ringCount );
 }
 
 static QVariant fcnBounds( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
@@ -2435,7 +2663,10 @@ const QStringList& QgsExpression::BuiltinFunctions()
     << "color_cmyk" << "color_cmyka" << "color_part" << "set_color_part"
     << "xat" << "yat" << "$area" << "area" << "perimeter"
     << "$length" << "$perimeter" << "x" << "y" << "$x" << "$y" << "z" << "m" << "num_points"
+    << "num_interior_rings" << "num_rings" << "num_geometries"
+    << "geometry_n" << "interior_ring_n"
     << "point_n" << "start_point" << "end_point" << "make_point" << "make_point_m"
+    << "nodes_to_points" << "segments_to_lines"
     << "make_line" << "make_polygon"
     << "$x_at" << "x_at" << "xat" << "$y_at" << "y_at" << "yat" << "x_min" << "xmin" << "x_max" << "xmax"
     << "y_min" << "ymin" << "y_max" << "ymax" << "geom_from_wkt" << "geomFromWKT"
@@ -2560,6 +2791,8 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( "point_n", 2, fcnPointN, "GeometryGroup" )
     << new StaticFunction( "start_point", 1, fcnStartPoint, "GeometryGroup" )
     << new StaticFunction( "end_point", 1, fcnEndPoint, "GeometryGroup" )
+    << new StaticFunction( "nodes_to_points", -1, fcnNodesToPoints, "GeometryGroup" )
+    << new StaticFunction( "segments_to_lines", 1, fcnSegmentsToLines, "GeometryGroup" )
     << new StaticFunction( "make_point", -1, fcnMakePoint, "GeometryGroup" )
     << new StaticFunction( "make_point_m", 3, fcnMakePointM, "GeometryGroup" )
     << new StaticFunction( "make_line", -1, fcnMakeLine, "GeometryGroup" )
@@ -2587,8 +2820,13 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( "point_on_surface", 1, fcnPointOnSurface, "GeometryGroup" )
     << new StaticFunction( "reverse", 1, fcnReverse, "GeometryGroup" )
     << new StaticFunction( "exterior_ring", 1, fcnExteriorRing, "GeometryGroup" )
+    << new StaticFunction( "interior_ring_n", 2, fcnInteriorRingN, "GeometryGroup" )
+    << new StaticFunction( "geometry_n", 2, fcnGeometryN, "GeometryGroup" )
     << new StaticFunction( "bounds", 1, fcnBounds, "GeometryGroup" )
     << new StaticFunction( "num_points", 1, fcnGeomNumPoints, "GeometryGroup" )
+    << new StaticFunction( "num_interior_rings", 1, fcnGeomNumInteriorRings, "GeometryGroup" )
+    << new StaticFunction( "num_rings", 1, fcnGeomNumRings, "GeometryGroup" )
+    << new StaticFunction( "num_geometries", 1, fcnGeomNumGeometries, "GeometryGroup" )
     << new StaticFunction( "bounds_width", 1, fcnBoundsWidth, "GeometryGroup" )
     << new StaticFunction( "bounds_height", 1, fcnBoundsHeight, "GeometryGroup" )
     << new StaticFunction( "is_closed", 1, fcnIsClosed, "GeometryGroup" )
