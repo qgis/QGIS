@@ -218,6 +218,14 @@ QgsTipFactory::QgsTipFactory() : QObject()
                         "instead of layer list."
                       ) );
   addGuiTip( myTip );
+  // by Alister Hood
+  myTip.setTitle( tr( "Use VRT files" ) );
+  myTip.setContent( tr( "If you have a number of aerial photos spread across a wide area, instead of "
+                        "loading each file as a separate layer you can treat them all as a single layer "
+                        "by using a .vrt file. "
+                        "To create a .vrt, go to Raster -> Miscellaneous -> Build Virtual Raster (Catalog)."
+                      ) );
+  addGuiTip( myTip );
 
   /* Template for adding more tips
   myTip.setTitle(tr(""));
