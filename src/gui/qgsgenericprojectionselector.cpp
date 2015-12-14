@@ -36,6 +36,9 @@ QgsGenericProjectionSelector::QgsGenericProjectionSelector( QWidget *parent,
 
   //we will show this only when a message is set
   textEdit->hide();
+
+  //apply selected projection upon double click on item
+  connect( projectionSelector, SIGNAL( projectionDoubleClicked() ), this, SLOT( accept() ) );
 }
 
 void QgsGenericProjectionSelector::setMessage( QString theMessage )

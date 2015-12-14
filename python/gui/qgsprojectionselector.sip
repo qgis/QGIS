@@ -105,4 +105,7 @@ class QgsProjectionSelector : QWidget
     //! Notify others that the widget is now fully initialized, including deferred selection of projection
     //! @note added in 2.4
     void initialized();
+    //! Apply projection on double click
+    //! @note added in 2.14
+    void projectionDoubleClicked();
 };
