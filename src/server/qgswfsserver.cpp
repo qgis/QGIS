@@ -411,6 +411,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
 
   long maxFeat = 0;
   long maxFeatures = -1;
+  long startIndex = 0;
   long featureCounter = 0;
   int layerPrec = 8;
 
@@ -426,6 +427,8 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
 
     if ( docElem.hasAttribute( "maxFeatures" ) )
       maxFeatures = docElem.attribute( "maxFeatures" ).toLong();
+    if ( docElem.hasAttribute( "startIndex" ) )
+      startIndex = docElem.attribute( "startIndex" ).toLong();
 
     QDomNodeList queryNodes = docElem.elementsByTagName( "Query" );
     QDomElement queryElem;
@@ -624,13 +627,16 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
             req.setSubsetOfAttributes( attrIndexes );
 
             QgsFeatureIterator fit = layer->getFeatures( req );
-            while ( fit.nextFeature( feature ) && ( maxFeatures == -1 || featureCounter < maxFeat ) )
+            while ( fit.nextFeature( feature ) && ( maxFeatures == -1 || featureCounter < maxFeat + startIndex ) )
             {
-              if ( featureCounter == 0 )
+              if ( featureCounter == startIndex )
                 startGetFeature( request, format, layerPrec, layerCrs, &searchRect );
 
-              setGetFeature( request, format, &feature, featCounter, layerPrec, layerCrs, attrIndexes, layerExcludedAttributes );
-              ++featCounter;
+              if ( featureCounter >= startIndex )
+              {
+                setGetFeature( request, format, &feature, featCounter, layerPrec, layerCrs, attrIndexes, layerExcludedAttributes );
+                ++featCounter;
+              }
               ++featureCounter;
             }
           }
@@ -643,7 +649,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
               {
                 throw QgsMapServiceException( "RequestNotWellFormed", filter->parserErrorString() );
               }
-              while ( fit.nextFeature( feature ) && ( maxFeatures == -1 || featureCounter < maxFeat ) )
+              while ( fit.nextFeature( feature ) && ( maxFeatures == -1 || featureCounter < maxFeat + startIndex ) )
               {
                 expressionContext.setFeature( feature );
 
@@ -654,12 +660,15 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
                 }
                 if ( res.toInt() != 0 )
                 {
-                  if ( featureCounter == 0 )
+                  if ( featureCounter == startIndex )
                     startGetFeature( request, format, layerPrec, layerCrs, &searchRect );
 
-                  setGetFeature( request, format, &feature, featureCounter, layerPrec, layerCrs, attrIndexes, layerExcludedAttributes );
+                  if ( featureCounter >= startIndex )
+                  {
+                    setGetFeature( request, format, &feature, featCounter, layerPrec, layerCrs, attrIndexes, layerExcludedAttributes );
+                    ++featCounter;
+                  }
                   ++featureCounter;
-                  ++featCounter;
                 }
               }
             }
@@ -667,13 +676,16 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
         }
         else
         {
-          while ( fit.nextFeature( feature ) && ( maxFeatures == -1 || featureCounter < maxFeat ) )
+          while ( fit.nextFeature( feature ) && ( maxFeatures == -1 || featureCounter < maxFeat + startIndex ) )
           {
-            if ( featureCounter == 0 )
+            if ( featureCounter == startIndex )
               startGetFeature( request, format, layerPrec, layerCrs, &searchRect );
 
-            setGetFeature( request, format, &feature, featCounter, layerPrec, layerCrs, attrIndexes, layerExcludedAttributes );
-            ++featCounter;
+            if ( featureCounter >= startIndex )
+            {
+              setGetFeature( request, format, &feature, featCounter, layerPrec, layerCrs, attrIndexes, layerExcludedAttributes );
+              ++featCounter;
+            }
             ++featureCounter;
           }
         }
@@ -692,7 +704,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
     QgsMessageLog::logMessage( mErrors.join( "\n" ) );
 
     QgsMapLayerRegistry::instance()->removeAllMapLayers();
-    if ( featureCounter == 0 )
+    if ( featureCounter <= startIndex )
       startGetFeature( request, format, layerPrec, layerCrs, &searchRect );
     endGetFeature( request, format );
     return 0;
@@ -804,6 +816,15 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
     bool mfOk;
     maxFeatures = mfString.toLong( &mfOk, 10 );
     maxFeat = mfString.toLong( &mfOk, 10 );
+  }
+
+  //read STARTINDEX
+  QMap<QString, QString>::const_iterator siIt = mParameters.find( "STARTINDEX" );
+  if ( siIt != mParameters.end() )
+  {
+    QString siString = siIt.value();
+    bool siOk;
+    startIndex = siString.toLong( &siOk, 10 );
   }
 
   //read PROPERTYNAME
@@ -959,7 +980,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
           {
             throw QgsMapServiceException( "RequestNotWellFormed", QString( "Expression filter error message: %1." ).arg( filter->parserErrorString() ) );
           }
-          while ( fit.nextFeature( feature ) && ( maxFeatures == -1 || featureCounter < maxFeat ) )
+          while ( fit.nextFeature( feature ) && ( maxFeatures == -1 || featureCounter < maxFeat + startIndex ) )
           {
             expressionContext.setFeature( feature );
             QVariant res = filter->evaluate( &expressionContext );
@@ -969,11 +990,14 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
             }
             if ( res.toInt() != 0 )
             {
-              if ( featureCounter == 0 )
+              if ( featureCounter == startIndex )
                 startGetFeature( request, format, layerPrec, layerCrs, &searchRect );
 
-              setGetFeature( request, format, &feature, featCounter, layerPrec, layerCrs, attrIndexes, layerExcludedAttributes );
-              ++featCounter;
+              if ( featureCounter >= startIndex )
+              {
+                setGetFeature( request, format, &feature, featCounter, layerPrec, layerCrs, attrIndexes, layerExcludedAttributes );
+                ++featCounter;
+              }
               ++featureCounter;
             }
           }
@@ -1040,13 +1064,16 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
           req.setSubsetOfAttributes( attrIndexes );
 
           QgsFeatureIterator fit = layer->getFeatures( req );
-          while ( fit.nextFeature( feature ) && ( maxFeatures == -1 || featureCounter < maxFeat ) )
+          while ( fit.nextFeature( feature ) && ( maxFeatures == -1 || featureCounter < maxFeat + startIndex ) )
           {
-            if ( featureCounter == 0 )
+            if ( featureCounter == startIndex )
               startGetFeature( request, format, layerPrec, layerCrs, &searchRect );
 
-            setGetFeature( request, format, &feature, featCounter, layerPrec, layerCrs, attrIndexes, layerExcludedAttributes );
-            ++featCounter;
+            if ( featureCounter >= startIndex )
+            {
+              setGetFeature( request, format, &feature, featCounter, layerPrec, layerCrs, attrIndexes, layerExcludedAttributes );
+              ++featCounter;
+            }
             ++featureCounter;
           }
         }
@@ -1078,7 +1105,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
             }
             req.setSubsetOfAttributes( attrIndexes );
             QgsFeatureIterator fit = layer->getFeatures( req );
-            while ( fit.nextFeature( feature ) && ( maxFeatures == -1 || featureCounter < maxFeat ) )
+            while ( fit.nextFeature( feature ) && ( maxFeatures == -1 || featureCounter < maxFeat + startIndex ) )
             {
               expressionContext.setFeature( feature );
               QVariant res = filter->evaluate( &expressionContext );
@@ -1088,12 +1115,15 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
               }
               if ( res.toInt() != 0 )
               {
-                if ( featureCounter == 0 )
+                if ( featureCounter == startIndex )
                   startGetFeature( request, format, layerPrec, layerCrs, &searchRect );
 
-                setGetFeature( request, format, &feature, featureCounter, layerPrec, layerCrs, attrIndexes, layerExcludedAttributes );
+                if ( featureCounter >= startIndex )
+                {
+                  setGetFeature( request, format, &feature, featCounter, layerPrec, layerCrs, attrIndexes, layerExcludedAttributes );
+                  ++featCounter;
+                }
                 ++featureCounter;
-                ++featCounter;
               }
             }
           }
@@ -1121,14 +1151,17 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
         }
         req.setSubsetOfAttributes( attrIndexes );
         QgsFeatureIterator fit = layer->getFeatures( req );
-        while ( fit.nextFeature( feature ) && ( maxFeatures == -1 || featureCounter < maxFeat ) )
+        while ( fit.nextFeature( feature ) && ( maxFeatures == -1 || featureCounter < maxFeat + startIndex ) )
         {
           mErrors << QString( "The feature %2 of layer for the TypeName '%1'" ).arg( tnStr ).arg( featureCounter );
-          if ( featureCounter == 0 )
+          if ( featureCounter == startIndex )
             startGetFeature( request, format, layerPrec, layerCrs, &searchRect );
 
-          setGetFeature( request, format, &feature, featCounter, layerPrec, layerCrs, attrIndexes, layerExcludedAttributes );
-          ++featCounter;
+          if ( featureCounter >= startIndex )
+          {
+            setGetFeature( request, format, &feature, featCounter, layerPrec, layerCrs, attrIndexes, layerExcludedAttributes );
+            ++featCounter;
+          }
           ++featureCounter;
         }
       }
@@ -1142,7 +1175,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
   }
 
   QgsMapLayerRegistry::instance()->removeAllMapLayers();
-  if ( featureCounter == 0 )
+  if ( featureCounter <= startIndex )
     startGetFeature( request, format, layerPrec, layerCrs, &searchRect );
   endGetFeature( request, format );
 
@@ -1214,6 +1247,10 @@ void QgsWFSServer::startGetFeature( QgsRequestHandler& request, const QString& f
         mapUrl.removeQueryItem( queryIt->first );
       }
       else if ( queryIt->first.compare( "MAXFEATURES", Qt::CaseInsensitive ) == 0 )
+      {
+        mapUrl.removeQueryItem( queryIt->first );
+      }
+      else if ( queryIt->first.compare( "STARTINDEX", Qt::CaseInsensitive ) == 0 )
       {
         mapUrl.removeQueryItem( queryIt->first );
       }
