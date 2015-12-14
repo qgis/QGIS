@@ -100,7 +100,9 @@ class GUI_EXPORT QgsProjectionSelector : public QWidget, private Ui::QgsProjecti
      */
     void setOgcWmsCrsFilter( const QSet<QString>& crsFilter );
     void on_lstCoordinateSystems_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *prev );
+    void on_lstCoordinateSystems_itemDoubleClicked( QTreeWidgetItem *current, int column );
     void on_lstRecent_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *prev );
+    void on_lstRecent_itemDoubleClicked( QTreeWidgetItem *current, int column );
     void on_cbxHideDeprecated_stateChanged();
     void on_leSearch_textChanged( const QString & );
 
@@ -208,6 +210,9 @@ class GUI_EXPORT QgsProjectionSelector : public QWidget, private Ui::QgsProjecti
     //! Notify others that the widget is now fully initialized, including deferred selection of projection
     //! @note added in 2.4
     void initialized();
+    //! Apply projection on double click
+    //! @note added in 2.14
+    void projectionDoubleClicked();
 };
 
 #endif
