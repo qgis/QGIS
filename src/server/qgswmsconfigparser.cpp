@@ -157,7 +157,7 @@ QgsComposition* QgsWMSConfigParser::createPrintComposition( const QString& compo
 
         QList<QgsMapLayer*> layerList = mapLayerFromStyle( wmsLayer, styleName, allowCaching );
         int listIndex;
-        for ( listIndex = layerList.size() - 1; listIndex >= 0; listIndex-- )
+        for ( listIndex = 0; listIndex < layerList.size(); listIndex++ )
         {
           QgsMapLayer* layer = layerList.at( listIndex );
           if ( layer )
