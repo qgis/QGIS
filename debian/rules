@@ -190,13 +190,8 @@ cleantemplates:
 	$(MAKE) -f debian/rules templateclean
 	$(MAKE) -f debian/rules debian/control debian/compat
 
-build: ;
-
-binary binary-arch binary-indep build-arch build-indep clean install install-arch install-indep:
+binary binary-arch binary-indep build build-arch build-indep clean install install-arch install-indep:
 	dh $@ --with python2 --parallel --builddirectory=$(QGIS_BUILDDIR)
-
-override_dh_auto_build-arch:
-	dh_auto_build
 
 override_dh_clean: cleantemplates
 	dh_clean
@@ -207,10 +202,12 @@ override_dh_clean: cleantemplates
 
 	-$(RM) -r $(CURDIR)/$(QGIS_BUILDDIR)/
 
-override_dh_auto_configure-arch: templates
+override_dh_auto_configure: templates
 	dh_auto_configure -- $(CMAKE_OPTS)
 
-override_dh_auto_test-arch:
+override_dh_auto_test: test-stamp
+
+test-stamp:
 ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
 	# Code to run the package test suite - and ignore the outcome for now
 	mkdir -p debian/tmp/locale/
@@ -223,14 +220,9 @@ ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
 else
 	@echo Skipping tests.
 endif
+	touch test-stamp
 
-override_dh_auto_configure-indep: ;
-override_dh_auto_test-indep: ;
-override_dh_auto_install-indep: ;
-override_dh_auto_build-indep: ;
-override_dh_install-indep: ;
-
-override_dh_auto_install-arch:
+override_dh_auto_install:
 	dh_auto_install
 
 	# Install menu pixmap
@@ -284,7 +276,7 @@ override_dh_auto_install-arch:
 	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis-plugin-grass/usr/bin/qgis
 	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis-plugin-grass/usr/bin/qbrowser
 
-override_dh_install-arch:
+override_dh_install:
 	# Don't ship srs.db, automatically updated in postinst with crssync
 	mv $(CURDIR)/debian/tmp/usr/share/qgis/resources/srs.db $(CURDIR)/debian/tmp/usr/share/qgis/resources/srs-template.db
 
